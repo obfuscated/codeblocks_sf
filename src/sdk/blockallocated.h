@@ -14,6 +14,7 @@
 #include <vector>
 #include <wx/file.h>
 #include <typeinfo>
+#include "globals.h"
 
 namespace BlkAllc
 {

@@ -14,6 +14,7 @@
 
 #ifndef CB_PRECOMP
     #include "blockallocated.h"
+    #include "wx/regex.h"
 #endif
 
 namespace BlkAllc
