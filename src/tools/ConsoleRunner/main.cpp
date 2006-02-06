@@ -87,10 +87,11 @@ int main(int argc, char** argv)
         // Close process and thread handles.
         CloseHandle( pi.hProcess );
         CloseHandle( pi.hThread );
+        printf("\nPress any key to continue.\n");
     #else
         int ret = system(cmdline);
+        printf("\nPress ENTER to continue.\n");
     #endif
-    printf("\nPress any key to continue.\n");
 
     wait_key();
 
