@@ -534,7 +534,7 @@ int CodeBlocksApp::BatchJob()
             #ifdef __WXMSW__
                 wxICON(A_MAIN_ICON),
             #else
-                wxIcon(app)
+                wxIcon(app),
             #endif // __WXMSW__
                 _("Building ") + wxFileNameFromPath(wxString(argv[argc-1])));
 
