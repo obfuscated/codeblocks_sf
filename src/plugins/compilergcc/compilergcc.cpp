@@ -36,7 +36,7 @@
 #include <editormanager.h>
 #include <scriptingmanager.h>
 #include <configurationpanel.h>
-
+#include <pluginmanager.h>
 #include <cbeditor.h>
 #include <annoyingdialog.h>
 #include <wx/xrc/xmlres.h>
