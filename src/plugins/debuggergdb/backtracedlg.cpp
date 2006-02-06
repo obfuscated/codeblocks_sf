@@ -5,6 +5,7 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/button.h>
 #include <wx/wfstream.h>
+#include <globals.h>
 
 BEGIN_EVENT_TABLE(BacktraceDlg, wxPanel)
     EVT_BUTTON(XRCID("btnSave"), BacktraceDlg::OnSave)
@@ -103,6 +104,7 @@ void BacktraceDlg::OnSave(wxCommandEvent& event)
                         wxEmptyString,
                         ALL_FILES_FILTER,
                         wxSAVE | wxOVERWRITE_PROMPT);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
 

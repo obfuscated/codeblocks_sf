@@ -38,6 +38,7 @@
 #include <wx/colordlg.h>
 #include <configmanager.h>
 #include <manager.h>
+#include "globals.h"
 
 static const wxString g_SampleClasses =
 	_T("class A_class"
@@ -139,6 +140,7 @@ void CCOptionsDlg::OnChooseColor(wxCommandEvent& event)
     data.SetColour(sender->GetBackgroundColour());
 
 	wxColourDialog dlg(this, &data);
+	PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
     	wxColour color = dlg.GetColourData().GetColour();

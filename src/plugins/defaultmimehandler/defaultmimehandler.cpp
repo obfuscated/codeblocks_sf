@@ -24,6 +24,7 @@
 #include <wx/filedlg.h>
 #include <wx/filename.h>
 #include "editmimetypesdlg.h"
+#include <globals.h>
 
 CB_IMPLEMENT_PLUGIN(DefaultMimeHandler);
 
@@ -138,6 +139,7 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
                                 sizeof(choices) / sizeof(choices[0]),
                                 choices);
         dlg.SetSelection(0);
+        PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_OK)
         {
             wxString ext = wxFileName(filename).GetExt().Lower();
@@ -203,6 +205,7 @@ wxString DefaultMimeHandler::ChooseExternalProgram()
                             wxEmptyString,
                             ALL_FILES_FILTER,
                             wxOPEN);
+    PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
         return dlg->GetPath();
     return wxEmptyString;

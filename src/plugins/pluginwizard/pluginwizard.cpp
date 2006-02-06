@@ -37,6 +37,7 @@
 #include <projectmanager.h>
 #include <cbproject.h>
 #include "pluginwizarddlg.h"
+#include <globals.h>
 
 CB_IMPLEMENT_PLUGIN(PluginWizard);
 
@@ -73,6 +74,7 @@ void PluginWizard::OnRelease(bool appShutDown)
 int PluginWizard::Execute()
 {
     PluginWizardDlg dlg;
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return -1;
 
@@ -161,6 +163,7 @@ int PluginWizard::Execute()
                     "for your environment..."),
                     _("Information"),
                     wxOK | wxICON_INFORMATION);
+    PlaceWindow(&msg);
     msg.ShowModal();
 #endif
     return 0;

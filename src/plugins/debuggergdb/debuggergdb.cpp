@@ -55,6 +55,7 @@
 #include "editbreakpointdlg.h"
 #include "editwatchesdlg.h"
 #include "editwatchdlg.h"
+#include "globals.h"
 
 #ifdef __WXMSW__
     #include <winbase.h> //For GetShortPathName()...only for windows systems
@@ -1462,6 +1463,7 @@ void DebuggerGDB::OnEditWatches(wxCommandEvent& event)
 {
 	WatchesArray watches = m_pTree->GetWatches();
     EditWatchesDlg dlg(watches);
+    PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_OK)
 	{
 		m_pTree->SetWatches(watches);
@@ -1532,6 +1534,7 @@ void DebuggerGDB::OnBreakpointEdit(CodeBlocksEvent& event)
     if (!bp)
         return;
     EditBreakpointDlg dlg(bp);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         m_State.ResetBreakpoint(idx);

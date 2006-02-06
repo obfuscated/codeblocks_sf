@@ -31,6 +31,7 @@
 #include "environmentsettingsdlg.h"
 #include "compilersettingsdlg.h"
 #include <cbworkspace.h>
+#include "../sdk/globals.h"
 
 #if defined(_MSC_VER) && defined( _DEBUG )
 	#define _CRTDBG_MAP_ALLOC
@@ -2522,7 +2523,7 @@ void MainFrame::OnProjectImportMSVSWksp(wxCommandEvent& event)
 void MainFrame::OnHelpAbout(wxCommandEvent& WXUNUSED(event))
 {
     dlgAbout* dlg = new dlgAbout(this);
-//    PlaceWindow(dlg, pdlHead);
+    PlaceWindow(dlg, pdlHead);
     dlg->ShowModal();
     delete dlg;
 }
@@ -2885,6 +2886,7 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
     bool edmanCloseBtn = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/show_close_button"), false);
 
 	EnvironmentSettingsDlg dlg(this, m_LayoutManager.GetArtProvider());
+	PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_OK)
 	{
         DoUpdateEditorStyle();

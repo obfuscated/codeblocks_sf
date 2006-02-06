@@ -902,6 +902,7 @@ bool cbEditor::SaveAs()
                             wxSAVE | wxOVERWRITE_PROMPT);
     dlg->SetFilterIndex(7);// all files;
 
+    PlaceWindow(dlg);
     if (dlg->ShowModal() != wxID_OK)
         return false;
     m_Filename = dlg->GetPath();

@@ -61,6 +61,7 @@ class IOLib
                             defaultFile,
                             filter,
                             wxOPEN);
+            PlaceWindow(&dlg);
             if (dlg.ShowModal() == wxID_OK)
                 return dlg.GetPath();
             return wxEmptyString;

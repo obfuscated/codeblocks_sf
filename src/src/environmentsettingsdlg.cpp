@@ -26,6 +26,8 @@
 #include <wx/msgdlg.h>
 #include "wxAUI/manager.h"
 #include "appglobals.h"
+#include "../sdk/globals.h"
+
 
 #include "environmentsettingsdlg.h"
 #ifdef __WXMSW__
@@ -61,6 +63,8 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
     EVT_BUTTON(XRCID("btnAuiInactiveCaptionColor"), EnvironmentSettingsDlg::OnChooseColor)
     EVT_BUTTON(XRCID("btnAuiInactiveCaptionGradientColor"), EnvironmentSettingsDlg::OnChooseColor)
     EVT_BUTTON(XRCID("btnAuiInactiveCaptionTextColor"), EnvironmentSettingsDlg::OnChooseColor)
+    EVT_CHECKBOX(XRCID("chkDoPlace"), EnvironmentSettingsDlg::OnPlaceCheck)
+    EVT_CHECKBOX(XRCID("chkPlaceHead"), EnvironmentSettingsDlg::OnHeadCheck)
 
     EVT_LISTBOOK_PAGE_CHANGING(XRCID("nbMain"), EnvironmentSettingsDlg::OnPageChanging)
     EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EnvironmentSettingsDlg::OnPageChanged)
@@ -85,6 +89,11 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_modified_files"), true));
     XRCCTRL(*this, "chkDebugLog", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/has_debug_log"), false));
     XRCCTRL(*this, "rbAppStart", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/blank_workspace"), true) ? 1 : 0);
+    XRCCTRL(*this, "chkDoPlace", wxCheckBox)->Enable(false); // ### diagrafo
+    bool do_place = cfg->ReadBool(_T("/dialog_placement/do_place"), false);
+    XRCCTRL(*this, "chkDoPlace", wxCheckBox)->SetValue(do_place);
+    XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->SetValue(cfg->ReadInt(_T("/dialog_placement/dialog_position"), 0) == pdlHead ? 1 : 0);
+    XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(do_place);
 
     // tab "View"
     XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->SetSelection(pcfg->ReadInt(_T("/open_files"), 1));
@@ -260,6 +269,8 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         cfg->Write(_T("/environment/check_associations"),    (bool) XRCCTRL(*this, "chkAssociations", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/check_modified_files"),  (bool) XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->GetValue());
         mcfg->Write(_T("/has_debug_log"),                    (bool) XRCCTRL(*this, "chkDebugLog", wxCheckBox)->GetValue());
+        cfg->Write(_T("/dialog_placement/do_place"),         (bool) XRCCTRL(*this, "chkDoPlace", wxCheckBox)->GetValue());
+        cfg->Write(_T("/dialog_placement/dialog_position"),  (int)  (XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->GetValue()) ? pdlHead : pdlCentre);
 
         // tab "View"
         cfg->Write(_T("/environment/blank_workspace"),       (bool) XRCCTRL(*this, "rbAppStart", wxRadioBox)->GetSelection() ? true : false);
@@ -336,3 +347,14 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 
     wxDialog::EndModal(retCode);
 }
+
+void EnvironmentSettingsDlg::OnPlaceCheck(wxCommandEvent& event)
+{
+    XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(event.IsChecked());
+}
+
+void EnvironmentSettingsDlg::OnHeadCheck(wxCommandEvent& event)
+{
+    PlaceWindow(this, event.IsChecked() ? pdlHead : pdlCentre, true);
+}
+

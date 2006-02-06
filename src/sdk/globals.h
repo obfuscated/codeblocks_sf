@@ -8,6 +8,7 @@
 #include <wx/filename.h>
 #include <wx/intl.h>
 
+
 class TiXmlDocument;
 
 /// Known plugin types
@@ -138,5 +139,20 @@ extern DLLIMPORT wxBitmap LoadPNGWindows2000Hack(const wxString& filename);
   * @return True if @c win is shown, false if not.
   */
 extern DLLIMPORT bool IsWindowReallyShown(wxWindow* win);
+
+
+class wxTopLevelWindow;
+
+typedef enum
+{
+    pdlDont = 0,
+    pdlBest,
+    pdlCentre,
+    pdlHead,
+    pdlConstrain,
+    pdlClip
+}cbPlaceDialogMode;
+
+extern void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode = pdlBest, bool enforce = false);
 
 #endif // SDK_GLOBALS_H

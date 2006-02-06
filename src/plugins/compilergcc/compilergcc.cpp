@@ -47,6 +47,7 @@
 #include "makefilegenerator.h"
 #include "compileroptionsdlg.h"
 #include "directcommands.h"
+#include "globals.h"
 
 #include "compilerMINGW.h"
 // TODO (mandrav#1#): Find out which compilers exist for linux and adapt this
@@ -384,6 +385,7 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
     cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, _("Project build options"));
     cbConfigurationPanel* panel = new CompilerOptionsDlg(&dlg, this, project, target);
     dlg.AttachConfigurationPanel(panel);
+    PlaceWindow(&dlg);
     if(dlg.ShowModal() == wxID_OK)
     {
         m_ConsoleTerm = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
@@ -2329,6 +2331,7 @@ void CompilerGCC::OnRebuild(wxCommandEvent& event)
 					wxART_QUESTION,
 					AnnoyingDialog::YES_NO,
 					wxID_YES);
+    PlaceWindow(&dlg);
     if (m_Project && dlg.ShowModal() == wxID_NO)
     {
         return;
@@ -2375,6 +2378,7 @@ void CompilerGCC::OnRebuildAll(wxCommandEvent& event)
 					wxART_QUESTION,
 					AnnoyingDialog::YES_NO,
 					wxID_YES);
+    PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_NO)
     {
         return;
@@ -2394,6 +2398,7 @@ void CompilerGCC::OnCleanAll(wxCommandEvent& event)
 					wxART_QUESTION,
 					AnnoyingDialog::YES_NO,
 					wxID_YES);
+    PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_NO)
     {
         return;
@@ -2416,6 +2421,7 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
 					wxART_QUESTION,
 					AnnoyingDialog::YES_NO,
 					wxID_YES);
+    PlaceWindow(&dlg);
 	if (m_Project && dlg.ShowModal() == wxID_NO)
     {
         return;

@@ -312,6 +312,7 @@ void cbProject::Open()
                                 CompilerFactory::Compilers.GetCount(),
                                 comps);
             dlg.SetSelection(CompilerFactory::GetDefaultCompilerIndex());
+            PlaceWindow(&dlg);
             if (dlg.ShowModal() == wxID_OK)
                 compilerIdx = dlg.GetSelection();
         }
@@ -414,6 +415,7 @@ bool cbProject::SaveAs()
                     CODEBLOCKS_FILES_FILTER,
                     wxSAVE | wxOVERWRITE_PROMPT);
 
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return false;
     m_Filename = dlg.GetPath();
@@ -1024,6 +1026,7 @@ bool cbProject::SaveAllFiles()
 bool cbProject::ShowOptions()
 {
     ProjectOptionsDlg dlg(Manager::Get()->GetAppWindow(), this);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         // update file details
@@ -1045,6 +1048,7 @@ int cbProject::SelectTarget(int initial, bool evenIfOne)
 		return 0;
 
 	SelectTargetDlg dlg(0L, this, initial);
+    PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_OK)
 		return dlg.GetSelection();
 	return -1;

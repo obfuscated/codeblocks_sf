@@ -36,6 +36,7 @@
 #include <wx/combobox.h>
 #include <wx/checkbox.h>
 #include <wx/textctrl.h>
+#include <globals.h>
 
 BEGIN_EVENT_TABLE(PluginWizardDlg, wxDialog)
 	EVT_UPDATE_UI(-1, PluginWizardDlg::OnUpdateUI)
@@ -363,6 +364,7 @@ void PluginWizardDlg::OnUpdateUI(wxUpdateUIEvent& event)
 void PluginWizardDlg::OnEditInfoClick(wxCommandEvent& event)
 {
 	EnterInfoDlg dlg(m_Info);
+    PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_OK)
 		m_Info = dlg.GetInfo();
 }

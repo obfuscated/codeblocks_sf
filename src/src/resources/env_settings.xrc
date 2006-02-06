@@ -162,9 +162,27 @@
                   <flag>wxLEFT|wxTOP|wxEXPAND</flag>
                   <border>8</border>
                 </object>
-              </object>
-            </object>
-          </object>
+		
+		<object class="spacer">
+			<size>0,16</size>
+		</object>
+		<object class="sizeritem">
+			<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+			<border>5</border>
+			<object class="wxCheckBox" name="chkDoPlace">
+			<label>Enhanced multi-monitor dialog placement</label>
+			</object>
+		</object>
+		<object class="sizeritem">
+			    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT</flag>
+			    <border>25</border>
+			    <object class="wxCheckBox" name="chkPlaceHead">
+				<label>Move to "head up" position</label>
+			    </object>
+		</object>
+</object>
+</object>
+</object>
           <object class="listbookpage">
             <label>Notebooks appearence</label>
             <object class="wxPanel" name="pblNotebooks">

@@ -44,6 +44,7 @@
 #include "parser/parser.h"
 #include "cclist.h"
 #include "selectincludefile.h"
+#include "globals.h"
 
 CB_IMPLEMENT_PLUGIN(CodeCompletion);
 
@@ -525,6 +526,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
 
     wxString filename = ed->GetFilename();
     InsertClassMethodDlg dlg(Manager::Get()->GetAppWindow(), parser, filename);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         int pos = ed->GetControl()->GetCurrentPos();
@@ -753,6 +755,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 	    }
 	}
 	IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), tokens, _("Select function..."), _("Please select function to go to:"));
+    PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_OK)
 	{
         wxString sel = dlg.GetStringSelection();
@@ -828,6 +831,7 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
 		{	// more then 1 hit : let the user choose
 			SelectIncludeFile Dialog(Manager::Get()->GetAppWindow());
 			Dialog.AddListEntries(FoundSet);
+            PlaceWindow(&Dialog);
 			if(Dialog.ShowModal() == wxID_OK)
 			{
 			  tmp = Dialog.GetIncludeFile();

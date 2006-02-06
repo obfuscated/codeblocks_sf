@@ -24,6 +24,7 @@
 #include "todolist.h"
 #include "addtododlg.h"
 #include "todosettingsdlg.h"
+#include <globals.h>
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(ToDoItems);
@@ -151,6 +152,7 @@ bool ToDoList::BuildToolBar(wxToolBar* toolBar)
 int ToDoList::Configure()
 {
     ToDoSettingsDlg dlg;
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
         m_AutoRefresh = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("auto_refresh"), true);
 	return 0;
@@ -198,6 +200,7 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 
     // display todo dialog
     AddTodoDlg dlg(Manager::Get()->GetAppWindow(), m_Types);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
     SaveTypes();

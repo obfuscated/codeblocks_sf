@@ -7,7 +7,7 @@
 #include <wx/button.h>
 #include <wx/listctrl.h>
 #include <wx/wfstream.h>
-
+#include <globals.h>
 BEGIN_EVENT_TABLE(DisassemblyDlg, wxPanel)
     EVT_BUTTON(XRCID("btnSave"), DisassemblyDlg::OnSave)
 //    EVT_BUTTON(XRCID("btnRefresh"), DisassemblyDlg::OnRefresh)
@@ -94,6 +94,7 @@ void DisassemblyDlg::OnSave(wxCommandEvent& event)
                         wxEmptyString,
                         ALL_FILES_FILTER,
                         wxSAVE | wxOVERWRITE_PROMPT);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
 

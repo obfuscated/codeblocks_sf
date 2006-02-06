@@ -16,6 +16,7 @@
     #include <wx/wx.h>
     #include "configmanager.h"
     #include "cbexception.h"
+    #include "globals.h"
 #endif
 
 #include "annoyingdialog.h"
@@ -145,5 +146,6 @@ int AnnoyingDialog::ShowModal()
 {
     if(dontAnnoy)
         return defRet;
+    PlaceWindow(this);
     return wxDialog::ShowModal();
 };

@@ -595,6 +595,7 @@ void DebuggerTree::OnLoadWatchFile(wxCommandEvent& event)
                     _T(""),
                     _T("Watch files (*.watch)|*.watch|Any file (*)|*"),
                     wxOPEN | wxFILE_MUST_EXIST | wxCHANGE_DIR);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
 
@@ -640,6 +641,7 @@ void DebuggerTree::OnSaveWatchFile(wxCommandEvent& event)
                     _T(""),
                     _T("Watch files (*.watch)|*.watch|Any file (*)|*"),
                     wxSAVE | wxOVERWRITE_PROMPT);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
 
@@ -679,6 +681,7 @@ void DebuggerTree::OnEditWatch(wxCommandEvent& event)
     if (w)
     {
         EditWatchDlg dlg(w);
+        PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_OK && !dlg.GetWatch().keyword.IsEmpty())
         {
             *w = dlg.GetWatch();
@@ -690,6 +693,7 @@ void DebuggerTree::OnEditWatch(wxCommandEvent& event)
 void DebuggerTree::OnAddWatch(wxCommandEvent& event)
 {
     EditWatchDlg dlg;
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK && !dlg.GetWatch().keyword.IsEmpty())
         AddWatch(dlg.GetWatch().keyword, dlg.GetWatch().format);
 }

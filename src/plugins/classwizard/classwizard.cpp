@@ -37,6 +37,7 @@
 #include <projectmanager.h>
 #include "classwizarddlg.h"
 #include <cbproject.h>
+#include "globals.h"
 
 CB_IMPLEMENT_PLUGIN(ClassWizard);
 
@@ -80,6 +81,7 @@ int ClassWizard::Execute()
         wxSetWorkingDirectory(prj->GetBasePath());
 
 	ClassWizardDlg dlg(Manager::Get()->GetAppWindow());
+    PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_OK)
 	{
 		if (!prj)
@@ -88,6 +90,7 @@ int ClassWizard::Execute()
 							_("The new class has been created."),
 							_("Information"),
 							wxOK | wxICON_INFORMATION);
+            PlaceWindow(&msg);
 			msg.ShowModal();
 			return 0;
 		}
@@ -97,6 +100,7 @@ int ClassWizard::Execute()
 							"Do you want to add it to the current project?"),
 							_("Add to project?"),
 							wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
+        PlaceWindow(&msg);
 		if (msg.ShowModal() == wxID_YES)
 		{
             wxArrayInt targets;

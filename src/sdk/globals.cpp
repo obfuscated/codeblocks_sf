@@ -19,8 +19,9 @@
 * Contact e-mail: Yiannis An. Mandravellos <mandrav@codeblocks.org>
 * Program URL   : http://www.codeblocks.org
 *
+* $Revision$
 * $Id$
-* $Date$
+* $HeadURL$
 */
 
 #include "sdk_precomp.h"
@@ -33,6 +34,7 @@
     #include "globals.h"
     #include <wx/filename.h>
     #include <wx/file.h>
+    #include "cbexception.h"
 #endif
 
 #include "tinyxml/tinyxml.h"
@@ -40,6 +42,7 @@
 #include <wx/dirdlg.h>
 #include <wx/msgdlg.h>
 #include <wx/fontmap.h>
+#include <algorithm>
 
 wxString GetStringFromArray(const wxArrayString& array, const wxString& separator)
 {
@@ -593,3 +596,177 @@ wxBitmap LoadPNGWindows2000Hack(const wxString& filename)
     wxBitmap bmp(im);
     return bmp;
 }
+
+
+
+#ifdef __WXMSW__
+
+void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
+{
+    HMONITOR hMonitor;
+    MONITORINFO mi;
+    RECT        r;
+
+    int the_mode;
+
+    if(!w)
+        cbThrow(_T("Passed NULL pointer to PlaceWindow."));
+
+    wxTopLevelWindow *referenceWindow = Manager::Get()->GetAppWindow();
+
+    if(!referenceWindow)    // no application window available, so this is as good as we can get
+        referenceWindow = w;
+
+    wxRect windowRect = w->GetRect();
+
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
+    if(!enforce && cfg->ReadBool(_T("/dialog_placement/do_place")) == false)
+        return;
+
+    if(mode == pdlBest)
+        the_mode = cfg->ReadInt(_T("/dialog_placement/dialog_position"), (int) pdlCentre);
+    else
+        the_mode = (int) mode;
+
+
+    hMonitor = MonitorFromWindow((HWND) referenceWindow->GetHandle(), MONITOR_DEFAULTTONEAREST);
+
+    mi.cbSize = sizeof(mi);
+    GetMonitorInfo(hMonitor, &mi);
+    r = mi.rcWork;
+
+    int monitorWidth  = r.right - r.left;
+    int monitorHeight = r.bottom - r. top;
+
+    switch(the_mode)
+    {
+        case pdlCentre:
+        {
+            windowRect.x = r.left + (monitorWidth  - windowRect.width)/2;
+            windowRect.y = r.top  + (monitorHeight - windowRect.height)/2;
+        }
+        break;
+
+
+        case pdlHead:
+        {
+            windowRect.x = r.left + (monitorWidth  - windowRect.width)/2;
+            windowRect.y = r.top  + (monitorHeight - windowRect.height)/3;
+        }
+        break;
+
+
+        case pdlConstrain:
+        {
+            int x1 = windowRect.x;
+            int x2 = windowRect.x + windowRect.width;
+            int y1 = windowRect.y;
+            int y2 = windowRect.y + windowRect.height;
+
+            if(windowRect.width > monitorWidth) // cannot place without clipping, so center it
+            {
+                x1 = r.left + (monitorWidth  - windowRect.width)/2;
+                x2 = x1 + windowRect.width;
+            }
+            else
+            {
+                x2 = std::min((int) r.right, windowRect.GetRight());
+                x1 = std::max(x2 - windowRect.width, (int) r.left);
+                x2 = x1 + windowRect.width;
+            }
+            if(windowRect.height > monitorHeight) // cannot place without clipping, so center it
+            {
+                y1 = r.top + (monitorHeight  - windowRect.height)/2;
+                y2 = y1 + windowRect.height;
+            }
+            else
+            {
+                y2 = std::min((int) r.bottom, windowRect.GetBottom());
+                y1 = std::max(y2 - windowRect.height, (int) r.top);
+                y2 = y1 + windowRect.height;
+            }
+            windowRect = wxRect(x1, y1, x2-x1, y2-y1);
+        }
+        break;
+
+
+        case pdlClip:
+        {
+            int x1 = windowRect.x;
+            int x2 = windowRect.x + windowRect.width;
+            int y1 = windowRect.y;
+            int y2 = windowRect.y + windowRect.height;
+
+            x1 = std::max(x1, (int) r.left);
+            x2 = std::min(x2, (int) r.right);
+            y1 = std::max(y1, (int) r.top);
+            y2 = std::min(y2, (int) r.bottom);
+
+            windowRect = wxRect(x1, y1, x2-x1, y2-y1);
+        }
+        break;
+    }
+
+    w->SetSize(windowRect);
+}
+
+
+#else // ----- non-Windows ----------------------------------------------
+
+
+void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
+// TODO (thomas#1#): The non-Windows implementation is *pathetic*.
+// However, I don't know how to do it well under GTK / X / Xinerama / whatever.
+// Anyone?
+{
+    int the_mode;
+
+    wxFrame *referenceWindow = Manager::Get()->GetAppWindow();
+    if(!referenceWindow) // let's not crash on shutdown
+        return;
+
+    if(!w)
+        cbThrow(_T("Passed NULL pointer to PlaceWindow."));
+
+
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
+    if(!enforce && cfg->ReadBool(_T("/dialog_placement/do_place")) == false)
+        return;
+
+    if(mode == pdlBest)
+        the_mode = cfg->ReadInt(_T("/dialog_placement/dialog_position"), (int) pdlCentre);
+    else
+        the_mode = (int) mode;
+
+
+    if(the_mode == pdlCentre || the_mode == pdlHead)
+    {
+        if(w->GetParent())
+            w->CentreOnParent(); // poo!
+        else
+            w->CentreOnScreen();
+
+        return;
+    }
+    else
+    {
+        wxRect windowRect = w->GetRect();
+        wxRect parentRect = referenceWindow->GetRect();   // poo again!
+
+        int x1 = windowRect.x;
+        int x2 = windowRect.x + windowRect.width;
+        int y1 = windowRect.y;
+        int y2 = windowRect.y + windowRect.height;
+
+        x1 = std::max(x1, parentRect.x);
+        x2 = std::min(x2, parentRect.GetRight());
+        y1 = std::max(y1, parentRect.y);
+        y2 = std::min(y2, parentRect.GetBottom());
+
+        w->SetSize(wxRect(x1, y1, x2-x1, y2-y1));
+    }
+}
+
+
+#endif //platform-specific placement code
+

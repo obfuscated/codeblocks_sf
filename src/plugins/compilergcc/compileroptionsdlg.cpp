@@ -36,6 +36,7 @@
 #include <macrosmanager.h>
 #include "editpathdlg.h"
 #include "editpairdlg.h"
+#include <globals.h>
 
 BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_UPDATE_UI(			XRCID("btnEditDir"),	    CompilerOptionsDlg::OnUpdateUI)
@@ -1023,6 +1024,7 @@ void CompilerOptionsDlg::OnAddDirClick(wxCommandEvent& event)
             m_pProject ? m_pProject->GetBasePath() : _T(""),
             _("Add directory"));
 
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         wxString path = dlg.GetPath();
@@ -1044,6 +1046,7 @@ void CompilerOptionsDlg::OnEditDirClick(wxCommandEvent& event)
             m_pProject ? m_pProject->GetBasePath() : _T(""),
             _("Edit directory"));
 
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         wxString path = dlg.GetPath();
@@ -1074,6 +1077,7 @@ void CompilerOptionsDlg::OnAddVarClick(wxCommandEvent& event)
     wxString key;
     wxString value;
     EditPairDlg dlg(this, key, value, _("Add new variable"), EditPairDlg::bmBrowseForDirectory);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         base->SetVar(key, value);
@@ -1099,6 +1103,7 @@ void CompilerOptionsDlg::OnEditVarClick(wxCommandEvent& event)
     wxString old_value = value;
 
     EditPairDlg dlg(this, key, value, _("Edit variable"), EditPairDlg::bmBrowseForDirectory);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         if (value != old_value)
@@ -1245,6 +1250,7 @@ void CompilerOptionsDlg::OnAddLibClick(wxCommandEvent& event)
             true,
             _("Library files (*.a, *.so, *.lib)|*.a;*.so;*.lib|All files (*)|*"));
 
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         wxArrayString paths = GetArrayFromString(dlg.GetPath());
@@ -1271,6 +1277,7 @@ void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& event)
             false,
             _("Library files (*.a, *.so, *.lib)|*.a;*.so;*.lib|All files (*)|*"));
 
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         /*lstLibs->SetString(lstLibs->GetSelection(), dlg.GetLib());*/
@@ -1473,6 +1480,7 @@ void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)
                             wxOPEN | wxFILE_MUST_EXIST);
     dlg->SetFilterIndex(0);
 
+    PlaceWindow(dlg);
     if (dlg->ShowModal() != wxID_OK)
         return;
     wxFileName fname(dlg->GetPath());
@@ -1494,6 +1502,7 @@ void CompilerOptionsDlg::OnAdvancedClick(wxCommandEvent& event)
         wxComboBox* cmb = XRCCTRL(*this, "cmbCompiler", wxComboBox);
         int compilerIdx = cmb->GetSelection();
         AdvancedCompilerOptionsDlg dlg(this, compilerIdx);
+        PlaceWindow(&dlg);
         dlg.ShowModal();
     }
 }

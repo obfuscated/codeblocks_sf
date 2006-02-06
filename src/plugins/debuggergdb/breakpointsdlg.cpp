@@ -13,6 +13,7 @@
 #include <wx/listbox.h>
 #include <wx/checkbox.h>
 #include <wx/spinctrl.h>
+#include <globals.h>
 
 static const int idRemove = wxNewId();
 static const int idRemoveAll = wxNewId();
@@ -126,6 +127,7 @@ void BreakpointsDlg::OnProperties(wxCommandEvent& event)
     int idx = m_State.HasBreakpoint(bp->filename, bp->line);
     bp = m_State.GetBreakpoint(idx);
     EditBreakpointDlg dlg(bp);
+    PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
         m_State.ResetBreakpoint(idx);
