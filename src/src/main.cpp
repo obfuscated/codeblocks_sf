@@ -1324,6 +1324,9 @@ void MainFrame::DoUpdateAppTitle()
 
 void MainFrame::ShowHideStartPage(bool forceHasProject)
 {
+    if (Manager::IsBatchBuild())
+        return;
+
     // we use the 'forceHasProject' param because when a project is opened
     // the EVT_PROJECT_OPEN event is fired *before* ProjectManager::GetProjects()
     // and ProjectManager::GetActiveProject() are updated...

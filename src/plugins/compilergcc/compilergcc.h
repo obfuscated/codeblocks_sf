@@ -170,6 +170,7 @@ class CompilerGCC : public cbCompilerPlugin
         void ResetBuildState();
         void BuildStateManagement(); ///< This uses m_BuildJob.
         BuildState GetNextStateBasedOnJob();
+        void NotifyJobDone(bool showNothingToBeDone = false);
 
         // wxArrayString from DirectCommands
         void AddToCommandQueue(const wxArrayString& commands);

@@ -14,6 +14,7 @@
 #include "messagelog.h"
 #include <wx/hashmap.h>
 #include <wx/menu.h>
+#include <wx/dialog.h>
 #include "sanitycheck.h"
 
 // convenience macros
@@ -44,8 +45,6 @@ class wxFlatNotebookEvent;
 class DLLIMPORT MessageManager : public Mgr<MessageManager>, public wxEvtHandler
 {
 	public:
-        typedef short int LockToken;
-
         friend class Mgr<MessageManager>;
         friend class Manager; // give Manager access to our private members
 		void CreateMenu(wxMenuBar* menuBar);
@@ -55,6 +54,9 @@ class DLLIMPORT MessageManager : public Mgr<MessageManager>, public wxEvtHandler
 
         int AddLog(MessageLog* log, const wxString& title, const wxBitmap& bitmap = wxNullBitmap);
         void RemoveLog(MessageLog* log);
+
+        void SetBatchBuildLog(int log);
+        wxDialog* GetBatchBuildDialog();
 
 		void LogToStdOut(const wxChar* msg, ...);
 		void Log(const wxChar* msg, ...);
@@ -121,6 +123,8 @@ class DLLIMPORT MessageManager : public Mgr<MessageManager>, public wxEvtHandler
         LogsMap m_Logs;
 		int m_AppLog;
 		int m_DebugLog;
+		int m_BatchBuildLog;
+		wxDialog* m_BatchBuildLogDialog;
 		short int m_LockCounter;
 		bool m_AutoHide; // auto-hide?
 

@@ -306,6 +306,7 @@ void CompilerGCC::OnAttach()
     m_Log = new SimpleTextLog();
     m_Log->GetTextControl()->SetFont(font);
     m_PageIndex = msgMan->AddLog(m_Log, _("Build log"));
+    msgMan->SetBatchBuildLog(m_PageIndex);
 
     // set log image
 	wxBitmap bmp;
@@ -870,10 +871,7 @@ int CompilerGCC::DoRunQueue()
             cmd = m_CommandQueue.Next();
             if (!cmd && m_BuildState == bsNone && m_NextBuildState == bsNone)
             {
-                m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
-                msgMan->Log(m_PageIndex, _("Nothing to be done."));
-                msgMan->LogToStdOut(_("Nothing to be done.\n"));
-                m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+                NotifyJobDone(true);
                 ResetBuildState();
                 if (m_RunAfterCompile)
                 {
@@ -1842,10 +1840,18 @@ int CompilerGCC::DoBuild(cbProject* prj)
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
         return -2;
     }
-    if (m_BuildingTargetIdx == -1 && m_HasTargetAll)
+    if (m_BuildingTargetIdx == -1)
     {
-        m_BuildingTargetIdx = 0;
-        bt =  prj->GetBuildTarget(0);
+        if (m_HasTargetAll)
+        {
+            m_BuildingTargetIdx = 0;
+            bt =  prj->GetBuildTarget(0);
+        }
+        else
+        {
+            m_BuildingTargetIdx = prj->SelectTarget();
+            bt = prj->GetBuildTarget(m_BuildingTargetIdx);
+        }
     }
 
     if (!bt || !CompilerValid(bt))
@@ -2075,6 +2081,7 @@ int CompilerGCC::KillProcess()
 
         // Close input pipe
         m_Processes[i]->CloseOutput();
+
         ret = wxProcess::Kill(m_Pid[i], wxSIGTERM);
         if(ret != wxKILL_OK)
         {
@@ -2744,6 +2751,8 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T(" ")); // blank line
 
+        NotifyJobDone();
+
         if (m_Errors.GetErrorsCount())
         {
             Manager::Get()->GetMessageManager()->Open();
@@ -2765,5 +2774,22 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             }
         }
         m_RunAfterCompile = false;
+    }
+}
+
+void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
+{
+    if (showNothingToBeDone)
+    {
+        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Nothing to be done."));
+        Manager::Get()->GetMessageManager()->LogToStdOut(_("Nothing to be done.\n"));
+        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+    }
+
+    if (!IsProcessRunning())
+    {
+        CodeBlocksEvent evt(cbEVT_COMPILER_FINISHED, 0, 0, 0, this);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
     }
 }

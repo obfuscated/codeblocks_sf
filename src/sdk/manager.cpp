@@ -59,7 +59,7 @@ Manager::Manager() : m_pAppWindow(0)
 
 Manager::~Manager()
 {
-    Shutdown();
+//    Shutdown();
     CfgMgrBldr::Free(); // only terminate config at the very last moment
 }
 
@@ -83,6 +83,11 @@ Manager* Manager::Get(wxFrame *appWindow)
         }
     }
     return &instance;
+}
+
+void Manager::SetBatchBuild(bool is_batch)
+{
+    isBatch = is_batch;
 }
 
 void Manager::BlockYields(bool block)
@@ -275,3 +280,4 @@ ConfigManager* Manager::GetConfigManager(const wxString& name_space) const
 
 bool Manager::appShuttingDown = false;
 bool Manager::blockYields = false;
+bool Manager::isBatch = false;

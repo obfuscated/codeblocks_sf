@@ -35,20 +35,73 @@
     #include "messagemanager.h" // class's header file
     #include "editormanager.h"
     #include "configmanager.h"
+    #include "pluginmanager.h"
+    #include "cbplugin.h"
     #include "simpletextlog.h"
 #endif
 
 #include <wx/laywin.h>
 #include <wx/settings.h>
 #include <wx/bitmap.h>
+#include <wx/utils.h>
+#include <wx/filedlg.h>
 
 #include <wxFlatNotebook.h>
 
+// Custom window to shutdown the app when closed.
+// used for batch builds only.
+class BatchLogWindow : public wxDialog
+{
+    public:
+        BatchLogWindow(wxWindow *parent, const wxChar *title)
+            : wxDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
+        {
+            wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+            m_pText = new wxTextCtrl(this, -1, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE | wxTE_RICH2 | wxHSCROLL);
+            m_pText->SetFont(font);
+
+            wxSize size;
+            size.SetWidth(Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/batch_build_log/width"), wxDefaultSize.GetWidth()));
+            size.SetHeight(Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/batch_build_log/height"), wxDefaultSize.GetHeight()));
+            SetSize(size);
+            Layout();
+        }
+        void EndModal(int retCode)
+        {
+            // allowed to close?
+            // find compiler plugin
+            PluginsArray arr = Manager::Get()->GetPluginManager()->GetCompilerOffers();
+            if (arr.GetCount() != 0)
+            {
+                cbCompilerPlugin* compiler = static_cast<cbCompilerPlugin*>(arr[0]);
+                if (compiler && compiler->IsRunning())
+                {
+                    if (wxMessageBox(_("The build is in progress. Are you sure you want to abort it?"),
+                                    _("Abort build?"),
+                                    wxICON_QUESTION | wxYES_NO) == wxYES)
+                    {
+                        compiler->KillProcess();
+                        while (compiler->IsRunning())
+                        {
+                            wxMilliSleep(100);
+                            Manager::Yield();
+                        }
+                        wxDialog::EndModal(retCode);
+                    }
+                    return;
+                }
+            }
+
+            Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/batch_build_log/width"), (int)GetSize().GetWidth());
+            Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/batch_build_log/height"), (int)GetSize().GetHeight());
+            wxDialog::EndModal(retCode);
+        }
+        wxTextCtrl* m_pText;
+};
 
 static const int idNB = wxNewId();
 static const int idNB_TabTop = wxNewId();
 static const int idNB_TabBottom = wxNewId();
-
 
 BEGIN_EVENT_TABLE(MessageManager, wxEvtHandler)
     EVT_MENU(idNB_TabTop, MessageManager::OnTabPosition)
@@ -62,6 +115,8 @@ END_EVENT_TABLE()
 MessageManager::MessageManager()
     : m_AppLog(-1),
     m_DebugLog(-1),
+    m_BatchBuildLog(-1),
+    m_BatchBuildLogDialog(0),
     m_LockCounter(0),
     m_AutoHide(false)
 {
@@ -107,6 +162,9 @@ MessageManager::~MessageManager()
 {
     SC_DESTRUCTOR_BEGIN
     SC_DESTRUCTOR_END
+
+//    delete m_BatchBuildLogWindow;
+
     delete m_pNotebook->GetImageList();
     m_pNotebook->Destroy();
 }
@@ -219,7 +277,31 @@ int MessageManager::AddLog(MessageLog* log, const wxString& title, const wxBitma
 
 void MessageManager::RemoveLog(MessageLog* log)
 {
-    // TODO
+    int id = m_pNotebook->GetPageIndex(log);
+//    wxMessageBox(wxString::Format(_T("Removing %d"), id));
+    if (id != -1)
+        m_pNotebook->RemovePage(id);
+    for (LogsMap::iterator it = m_Logs.begin(); it != m_Logs.end(); ++it)
+    {
+        if (it->second == log)
+        {
+            m_Logs.erase(it);
+            break;
+        }
+    }
+}
+
+wxDialog* MessageManager::GetBatchBuildDialog()
+{
+    if (!m_BatchBuildLogDialog)
+        m_BatchBuildLogDialog = new BatchLogWindow(Manager::Get()->GetAppWindow(), _("Batch build"));
+    return m_BatchBuildLogDialog;
+}
+
+void MessageManager::SetBatchBuildLog(int log)
+{
+    if (CheckLogId(log))
+        m_BatchBuildLog = log;
 }
 
 // add a new log page
@@ -251,6 +333,20 @@ void MessageManager::Log(int id, const wxChar* msg, ...)
     va_end(arg_list);
 
     m_Logs[id]->AddLog(tmp);
+
+    if (Manager::IsBatchBuild() && id == m_BatchBuildLog)
+    {
+        // this log is the batch build log
+        if (!m_BatchBuildLogDialog)
+            GetBatchBuildDialog();
+        BatchLogWindow* dlg = static_cast<BatchLogWindow*>(m_BatchBuildLogDialog);
+        if (dlg->m_pText)
+        {
+            dlg->m_pText->AppendText(tmp + _T('\n')); // log to build log window
+            dlg->m_pText->ScrollLines(-1);
+            Manager::ProcessPendingEvents();
+        }
+    }
 }
 
 void MessageManager::AppendLog(const wxChar* msg, ...)

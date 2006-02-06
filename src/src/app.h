@@ -45,6 +45,7 @@ class CodeBlocksApp : public wxApp
         bool OnCmdLineParsed(wxCmdLineParser& parser);
         void OnFatalException();
     protected:
+        void OnBatchBuildDone(CodeBlocksEvent& event);
         bool LoadConfig();
         void InitAssociations();
         void InitDebugConsole();

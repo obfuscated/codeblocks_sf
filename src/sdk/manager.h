@@ -39,11 +39,14 @@ class DLLIMPORT Manager
     wxFrame* m_pAppWindow;
     static bool appShuttingDown;
     static bool blockYields;
+    static bool isBatch;
 
     Manager();
     ~Manager();
 
 public:
+    static void SetBatchBuild(bool isBatch);
+    static bool IsBatchBuild(){ return isBatch; }
     /// Blocks/unblocks Manager::Yield(). Be carefull when using it. Actually, do *not* use it ;)
     static void BlockYields(bool block);
     /// Whenever you need to call wxYield(), call Manager::Yield(). It's safer.
@@ -111,8 +114,6 @@ public:
     static void AddonToolBar(wxToolBar* toolBar,wxString resid);
     static bool isToolBar16x16(wxToolBar* toolBar);
 };
-
-
 
 template <class MgrT> class Mgr
 {

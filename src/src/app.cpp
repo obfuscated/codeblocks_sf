@@ -90,6 +90,7 @@ IMPLEMENT_APP(CodeBlocksApp)
 
 BEGIN_EVENT_TABLE(CodeBlocksApp, wxApp)
 	EVT_ACTIVATE_APP(CodeBlocksApp::OnAppActivate)
+	EVT_COMPILER_FINISHED(CodeBlocksApp::OnBatchBuildDone)
 END_EVENT_TABLE()
 
 bool CodeBlocksApp::LoadConfig()
@@ -411,16 +412,18 @@ bool CodeBlocksApp::OnInit()
             return false;
         }
 
+        Manager::SetBatchBuild(m_Batch);
         MainFrame* frame = InitFrame();
 
         if (m_Batch)
         {
-            m_BatchExitCode = BatchJob();
+            BatchJob();
+            frame->Close();
             return false;
         }
 
         CheckVersion();
-    	Manager::Get()->GetMessageManager()->DebugLog(_("Initializing plugins..."));
+        Manager::Get()->GetMessageManager()->DebugLog(_("Initializing plugins..."));
 
         CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
         Manager::Get()->ProcessEvent(event);
@@ -434,7 +437,6 @@ bool CodeBlocksApp::OnInit()
         SetTopWindow(frame);
         frame->Show();
         frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
-
         return true;
     }
     catch (cbException& exception)
@@ -465,6 +467,8 @@ int CodeBlocksApp::OnExit()
 #endif
     if (m_pSingleInstance)
         delete m_pSingleInstance;
+    // WX docs say that this function's return value is ignored,
+    // but we return our value anyway. It might not be ignored at some point...
     return m_Batch ? m_BatchExitCode : 0;
 }
 
@@ -516,8 +520,6 @@ int CodeBlocksApp::BatchJob()
     if (!m_Batch)
         return -1;
 
-    wxTaskBarIcon tbicon;
-
     // find compiler plugin
     PluginsArray arr = Manager::Get()->GetPluginManager()->GetCompilerOffers();
     if (arr.GetCount() == 0)
@@ -527,37 +529,51 @@ int CodeBlocksApp::BatchJob()
     if (!compiler)
         return -3;
 
-#ifdef __WXMSW__
-    tbicon.SetIcon(wxICON(A_MAIN_ICON),_("Building ")
-        +wxFileNameFromPath(wxString(argv[argc-1])));
-#else
-    tbicon.SetIcon(wxIcon(app),_("Building ")
-        +wxFileNameFromPath(wxString(argv[argc-1])));
-#endif // __WXMSW__
+    wxTaskBarIcon* tbIcon = new wxTaskBarIcon();
+    tbIcon->SetIcon(
+            #ifdef __WXMSW__
+                wxICON(A_MAIN_ICON),
+            #else
+                wxIcon(app)
+            #endif // __WXMSW__
+                _("Building ") + wxFileNameFromPath(wxString(argv[argc-1])));
 
     if (m_ReBuild)
         compiler->RebuildWorkspace(m_BatchTarget);
     else if (m_Build)
         compiler->BuildWorkspace(m_BatchTarget);
 
-    // wait for compiler to finish
-    while (compiler->IsRunning())
-    {
-        wxMilliSleep(10);
-        Manager::Yield();
-    }
-    int exitCode = compiler->GetExitCode();
+    Manager::Get()->GetMessageManager()->GetBatchBuildDialog()->ShowModal();
+    tbIcon->RemoveIcon();
+    delete tbIcon;
+
+    return 0;
+}
+
+void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
+{
+    event.Skip();
+    // the event comes more than once. deal with it...
+    static bool one_time_only = false;
+    if (!m_Batch || one_time_only)
+        return;
+    one_time_only = true;
+
+    cbCompilerPlugin* compiler = static_cast<cbCompilerPlugin*>(event.GetPlugin());
+    m_BatchExitCode = compiler->GetExitCode();
 
     if (m_BatchNotify)
     {
         wxString msg;
-        msg.Printf(_("Batch build is complete.\nProcess exited with status code %d."), exitCode);
-        wxMessageBox(msg, g_AppName, exitCode == 0 ? wxICON_INFORMATION : wxICON_WARNING);
+        if (m_BatchExitCode == 0)
+            msg << _("Batch build ended.\n");
+        else
+            msg << _("Batch build stopped with errors.\n");
+        msg << wxString::Format(_("Process exited with status code %d."), m_BatchExitCode);
+        wxMessageBox(msg, g_AppName, m_BatchExitCode == 0 ? wxICON_INFORMATION : wxICON_WARNING);
     }
-
-    tbicon.RemoveIcon();
-
-    return exitCode;
+    else
+        wxBell();
 }
 
 void CodeBlocksApp::ShowSplashScreen()
