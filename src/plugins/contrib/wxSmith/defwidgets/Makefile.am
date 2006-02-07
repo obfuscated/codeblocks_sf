@@ -53,7 +53,8 @@ wxsstaticbox.cpp \
 wxshtmlwindow.cpp \
 wxsslider.cpp \
 wxschecklistbox.cpp \
-wxscustomwidget.cpp
+wxscustomwidget.cpp \
+wxsstddialogbuttonsizer.cpp
 
 noinst_HEADERS = wxsboxsizer.h \
 wxsbutton.h \
@@ -98,4 +99,5 @@ wxsstaticbox.h \
 wxshtmlwindow.h \
 wxsslider.h \
 wxschecklistbox.h \
-wxscustomwidget.h
+wxscustomwidget.h \
+wxsstddialogbuttonsizer.h
