@@ -8,7 +8,8 @@
 
 DebuggerState::DebuggerState(DebuggerGDB* plugin)
     : m_pPlugin(plugin),
-    m_pDriver(0)
+    m_pDriver(0),
+    m_BpAutoIndex(0)
 {
 }
 
@@ -19,6 +20,7 @@ DebuggerState::~DebuggerState()
 bool DebuggerState::StartDriver(ProjectBuildTarget* target)
 {
     StopDriver();
+    SetupBreakpointIndices();
     int idx = target ? target->GetCompilerIndex() : CompilerFactory::GetDefaultCompilerIndex();
     if (idx == 1) // MSVC // TODO: do not hardcode these
         m_pDriver = new CDB_driver(m_pPlugin);
@@ -53,6 +55,17 @@ void DebuggerState::CleanUp()
     m_Breakpoints.Clear();
 }
 
+// Re-number indices. Called before starting the debugging session
+void DebuggerState::SetupBreakpointIndices()
+{
+    m_BpAutoIndex = 0;
+    for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
+    {
+        DebuggerBreakpoint* bp = m_Breakpoints[i];
+        bp->index = ++m_BpAutoIndex;
+    }
+}
+
 int DebuggerState::AddBreakpoint(const wxString& file, int line, bool temp, const wxString& lineText)
 {
     // do we have a bp there?
@@ -73,7 +86,7 @@ int DebuggerState::AddBreakpoint(DebuggerBreakpoint* bp)
 {
     if (!bp)
         return -1;
-    bp->index = m_Breakpoints.GetCount();
+    bp->index = ++m_BpAutoIndex;
     m_Breakpoints.Add(bp);
 
     // notify driver if it is active
@@ -95,10 +108,6 @@ DebuggerBreakpoint* DebuggerState::RemoveBreakpoint(int idx, bool deleteit)
     // yes, remove it from the list
     DebuggerBreakpoint* bp = m_Breakpoints[idx];
     m_Breakpoints.RemoveAt(idx);
-
-    // reset bp->index for breakpoints after it, since list indices are now changed
-    for (unsigned int x = idx; x < m_Breakpoints.GetCount(); ++x)
-        m_Breakpoints[x]->index = x;
 
     // notify driver if it is active
     if (m_pDriver)
@@ -146,6 +155,17 @@ DebuggerBreakpoint* DebuggerState::GetBreakpoint(int idx)
     return m_Breakpoints[idx];
 }
 
+DebuggerBreakpoint* DebuggerState::GetBreakpointByNumber(int num)
+{
+    for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
+    {
+        DebuggerBreakpoint* bp = m_Breakpoints[i];
+        if (bp->index == num)
+            return bp;
+    }
+    return 0;
+}
+
 void DebuggerState::ResetBreakpoint(int idx)
 {
     DebuggerBreakpoint* bp = RemoveBreakpoint(idx, false);
@@ -167,15 +187,13 @@ void DebuggerState::ApplyBreakpoints()
         --i;
     }
 
-//    Log(_T("Setting breakpoints"));
+    m_pPlugin->Log(_("Setting breakpoints"));
 	m_pDriver->RemoveBreakpoint(0); // clear all breakpoints
 
     i = (int)m_Breakpoints.GetCount() - 1;
     while (i >= 0)
     {
         DebuggerBreakpoint* bp = m_Breakpoints[i];
-        bp->bpNum = -1;
-        bp->index = i;
         m_pDriver->AddBreakpoint(bp);
         --i;
 	}

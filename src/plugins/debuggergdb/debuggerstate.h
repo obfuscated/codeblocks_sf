@@ -27,13 +27,17 @@ class DebuggerState
         void RemoveAllBreakpoints(const wxString& file, bool deleteit = true);
         int HasBreakpoint(const wxString& file, int line); // returns -1 if not found
         DebuggerBreakpoint* GetBreakpoint(int idx);
+        DebuggerBreakpoint* GetBreakpointByNumber(int num);
         void ResetBreakpoint(int idx);
         void ApplyBreakpoints();
     protected:
+        void SetupBreakpointIndices();
+
         DebuggerGDB* m_pPlugin;
         DebuggerDriver* m_pDriver;
         WatchesArray m_Watches;
         BreakpointsList m_Breakpoints;
+        size_t m_BpAutoIndex;
 };
 
 #endif // DEBUGGERSTATE_H

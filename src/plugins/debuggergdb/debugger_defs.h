@@ -96,12 +96,11 @@ struct DebuggerBreakpoint
         ignoreCount(0),
         useCondition(false),
         address(0),
-        bpNum(-1),
         alreadySet(false)
     {}
     wxString filename; ///< The filename for the breakpoint.
 	int line; ///< The line for the breakpoint.
-	int index; ///< 0-based index in the debugger's list of breakpoints. Set automatically. *Don't* write to it.
+	long int index; ///< The breakpoint number. Set automatically. *Don't* write to it.
 	bool temporary; ///< Is this a temporary (one-shot) breakpoint?
 	bool enabled; ///< Is the breakpoint enabled?
 	bool active; ///< Is the breakpoint active? (currently unused)
@@ -111,7 +110,6 @@ struct DebuggerBreakpoint
 	wxString condition; ///< The condition that must be met for the breakpoint to hit. @c useCondition must be true.
 	wxString func; ///< The function to set the breakpoint. If this is set, it is preferred over the filename/line combination.
 	unsigned long int address; ///< The actual breakpoint address. This is read back from the debugger. *Don't* write to it.
-	long int bpNum; ///< The breakpoint number. This is read back from the debugger. *Don't* write to it.
 	bool alreadySet; ///< Is this already set? Used to mark temporary breakpoints for removal.
 	wxString lineText; ///< Optionally, the breakpoint line's text (used by GDB for setting breapoints on ctors/dtors).
 };

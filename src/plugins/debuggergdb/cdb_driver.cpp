@@ -161,7 +161,6 @@ void CDB_driver::CPURegisters()
 
 void CDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
 {
-	bp->bpNum = bp->index;
 	QueueCommand(new CdbCmd_AddBreakpoint(this, bp));
 }
 
@@ -274,7 +273,7 @@ void CDB_driver::ParseOutput(const wxString& output)
 
             long int bpNum;
             reBP.GetMatch(lines[i], 1).ToLong(&bpNum);
-            DebuggerBreakpoint* bp = m_pDBG->GetState().GetBreakpoint(bpNum);
+            DebuggerBreakpoint* bp = m_pDBG->GetState().GetBreakpointByNumber(bpNum);
             if (bp)
             {
                 // force cursor notification because we don't have an actual address

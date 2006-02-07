@@ -226,6 +226,10 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
             : DebuggerCmd(driver),
             m_BP(bp)
         {
+            // gdb doesn't allow setting the bp number.
+            // instead, we must read it back in ParseOutput()...
+            m_BP->index = -1;
+
             if (m_BP->enabled)
             {
                 if (m_BP->func.IsEmpty())
@@ -267,14 +271,14 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                 if (!m_BP->func.IsEmpty())
                     m_pDriver->Log(_("GDB workaround for constructor/destructor breakpoints activated."));
 
-                reBreakpoint.GetMatch(output, 1).ToLong(&m_BP->bpNum);
+                reBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
                 reBreakpoint.GetMatch(output, 2).ToULong(&m_BP->address, 16);
 
                 // conditional breakpoint
                 if (m_BP->useCondition && !m_BP->condition.IsEmpty())
                 {
                     wxString cmd;
-                    cmd << _T("condition ") << wxString::Format(_T("%d"), (int) m_BP->bpNum) << _T(" ") << m_BP->condition;
+                    cmd << _T("condition ") << wxString::Format(_T("%d"), (int) m_BP->index) << _T(" ") << m_BP->condition;
                     m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, cmd), DebuggerDriver::High);
                 }
 
@@ -282,7 +286,7 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                 if (m_BP->useIgnoreCount && m_BP->ignoreCount > 0)
                 {
                     wxString cmd;
-                    cmd << _T("ignore ") << wxString::Format(_T("%d"), (int) m_BP->bpNum) << _T(" ") << m_BP->ignoreCount;
+                    cmd << _T("ignore ") << wxString::Format(_T("%d"), (int) m_BP->index) << _T(" ") << wxString::Format(_T("%d"), (int) m_BP->ignoreCount);
                     m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, cmd), DebuggerDriver::High);
                 }
             }
@@ -310,9 +314,9 @@ class GdbCmd_RemoveBreakpoint : public DebuggerCmd
                 return;
             }
 
-            if (bp->enabled && bp->bpNum > 0)
+            if (bp->enabled && bp->index >= 0)
             {
-                m_Cmd << _T("delete ") << wxString::Format(_T("%d"), (int) bp->bpNum);
+                m_Cmd << _T("delete ") << wxString::Format(_T("%d"), (int) bp->index);
             }
         }
         void ParseOutput(const wxString& output)
@@ -321,7 +325,7 @@ class GdbCmd_RemoveBreakpoint : public DebuggerCmd
                 return;
 
             // invalidate bp number
-            m_BP->bpNum = -1;
+            m_BP->index = -1;
 
             if (!output.IsEmpty())
                 m_pDriver->Log(output);

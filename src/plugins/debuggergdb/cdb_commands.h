@@ -184,8 +184,8 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
                 wxString out = m_BP->filename;
                 DebuggerGDB::ConvertToGDBFile(out);
                 QuoteStringIfNeeded(out);
-                // we add one to line,  because scintilla uses 0-based line numbers, while gdb uses 1-based
-                m_Cmd << _T("bu") << wxString::Format(_T("%d"), (int) m_BP->bpNum) << _T(' ');
+                // we add one to line,  because scintilla uses 0-based line numbers, while cdb uses 1-based
+                m_Cmd << _T("bu") << wxString::Format(_T("%d"), (int) m_BP->index) << _T(' ');
                 if (m_BP->temporary)
                     m_Cmd << _T("/1 ");
                 if (bp->func.IsEmpty())
@@ -227,7 +227,7 @@ class CdbCmd_RemoveBreakpoint : public DebuggerCmd
             if (!bp)
                 m_Cmd << _T("bc *");
             else
-                m_Cmd << _T("bc ") << wxString::Format(_T("%d"), (int) bp->bpNum);
+                m_Cmd << _T("bc ") << wxString::Format(_T("%d"), (int) bp->index);
         }
         void ParseOutput(const wxString& output)
         {

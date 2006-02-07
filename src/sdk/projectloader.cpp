@@ -459,8 +459,8 @@ void ProjectLoader::DoCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarg
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString option = UnixFilename(_U(child->Attribute("option")));
-        wxString dir = UnixFilename(_U(child->Attribute("directory")));
+        wxString option = _U(child->Attribute("option"));
+        wxString dir = _U(child->Attribute("directory"));
         if (!option.IsEmpty())
         {
             if (target)
@@ -489,7 +489,7 @@ void ProjectLoader::DoResourceCompilerOptions(TiXmlElement* parentNode, ProjectB
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString dir = UnixFilename(_U(child->Attribute("directory")));
+        wxString dir = _U(child->Attribute("directory"));
         if (!dir.IsEmpty())
         {
             if (target)
@@ -511,7 +511,7 @@ void ProjectLoader::DoLinkerOptions(TiXmlElement* parentNode, ProjectBuildTarget
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString option = UnixFilename(_U(child->Attribute("option")));
+        wxString option = _U(child->Attribute("option"));
         wxString dir = UnixFilename(_U(child->Attribute("directory")));
         wxString lib = UnixFilename(_U(child->Attribute("library")));
         if (!option.IsEmpty())
@@ -571,7 +571,7 @@ void ProjectLoader::DoLibsOptions(TiXmlElement* parentNode, ProjectBuildTarget* 
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString option = UnixFilename(_U(child->Attribute("option")));
+        wxString option = _U(child->Attribute("option"));
         if (!option.IsEmpty())
         {
             if (target)
@@ -612,9 +612,9 @@ void ProjectLoader::DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget
                 after = _U(child->Attribute("after"));
 
             if (!before.IsEmpty())
-                base->AddCommandsBeforeBuild(UnixFilename(before));
+                base->AddCommandsBeforeBuild(before);
             if (!after.IsEmpty())
-                base->AddCommandsAfterBuild(UnixFilename(after));
+                base->AddCommandsAfterBuild(after);
 
             child = child->NextSiblingElement("Add");
         }

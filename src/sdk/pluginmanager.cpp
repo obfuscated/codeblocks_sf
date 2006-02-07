@@ -569,6 +569,8 @@ void PluginManager::NotifyPlugins(CodeBlocksEvent& event)
         {
             if (plug)
                 plug->ProcessEvent(event); // Plugins require immediate attention
+            if (!event.GetSkipped())
+                break; // if someone handled it, abort the rest
             // wxPostEvent(plug, event);
             sendEvt = false;
         }
