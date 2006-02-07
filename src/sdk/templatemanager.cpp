@@ -145,7 +145,7 @@ cbProject* TemplateManager::NewProject()
     {
     	wxMessageBox(_("These templates are only provided for your convenience.\n"
                         "Many of the available templates need extra libraries "
-                        "in order to be compiled succesfuly.\n\n"
+                        "in order to be compiled successfully.\n\n"
                         "Extra libraries which Code::Blocks does *NOT* provide..."),
                     _("One-time information"),
                     wxICON_INFORMATION);
