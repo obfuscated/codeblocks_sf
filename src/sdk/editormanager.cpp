@@ -659,6 +659,7 @@ bool EditorManager::UpdateProjectFiles(cbProject* project)
 			continue;
 		pf->editorTopLine = ed->GetControl()->GetFirstVisibleLine();
 		pf->editorPos = ed->GetControl()->GetCurrentPos();
+		pf->editorTabPos = i + 1;
 		pf->editorOpen = true;
 	}
     return true;

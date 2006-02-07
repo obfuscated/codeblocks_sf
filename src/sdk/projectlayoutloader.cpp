@@ -109,6 +109,7 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
             pf->editorTopLine = 0;
             int open = 0;
             int top = 0;
+            int tabpos = 0;
             if (elem->QueryIntAttribute("open", &open) == TIXML_SUCCESS)
                 pf->editorOpen = open != 0;
             if (elem->QueryIntAttribute("top", &top) == TIXML_SUCCESS)
@@ -116,6 +117,8 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
                 if(top)
                     m_TopProjectFile = pf;
             }
+            if (elem->QueryIntAttribute("tabpos", &tabpos) == TIXML_SUCCESS)
+				pf->editorTabPos = tabpos;
 
             TiXmlElement* cursor = elem->FirstChildElement();
             if (cursor)
@@ -159,12 +162,13 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
 	{
 		ProjectFile* f = m_pProject->GetFile(i);
 
-		if (f->editorOpen || f->editorPos || f->editorTopLine)
+		if (f->editorOpen || f->editorPos || f->editorTopLine || f->editorTabPos)
 		{
             TiXmlElement* node = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("File")));
             node->SetAttribute("name", _C(f->relativeFilename));
             node->SetAttribute("open", f->editorOpen);
             node->SetAttribute("top", (f == active));
+            node->SetAttribute("tabpos", f->editorTabPos);
 
             TiXmlElement* cursor = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Cursor")));
             cursor->SetAttribute("position", f->editorPos);

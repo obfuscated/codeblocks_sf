@@ -46,6 +46,7 @@
     #include "compilerfactory.h"
 #endif
 
+#include <map>
 #include "projectoptionsdlg.h"
 #include "projectloader.h"
 #include "devcpploader.h"
@@ -498,18 +499,27 @@ bool cbProject::LoadLayout()
             ProjectLayoutLoader loader(this);
             if (loader.Open(fname.GetFullPath()))
             {
+            	typedef std::map<int, ProjectFile*> open_files_map;
+            	open_files_map open_files;
+
+            	// Get all files to open and sort them according to their tab-position:
                 FilesList::Node* node = m_Files.GetFirst();
                 while(node)
                 {
                     ProjectFile* f = node->GetData();
                     if (f->editorOpen)
-                    {
-                        cbEditor* ed = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath(),0,f);
-                        if (ed)
-                            ed->SetProjectFile(f);
-                    }
+						open_files[f->editorTabPos] = f;
                     node = node->GetNext();
                 }
+
+				// Open all requested files:
+				for (open_files_map::iterator it = open_files.begin(); it != open_files.end(); ++it)
+                {
+                    cbEditor* ed = Manager::Get()->GetEditorManager()->Open((*it).second->file.GetFullPath(),0,(*it).second);
+                    if (ed)
+                        ed->SetProjectFile((*it).second);
+                }
+
                 ProjectFile* f = loader.GetTopProjectFile();
                 if (f)
                 {

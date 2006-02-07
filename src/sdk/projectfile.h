@@ -111,6 +111,9 @@ class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
         /** The last known caret line in an editor for this file. */
         int editorTopLine; // layout info
 
+		/** The position of the editor-tab for this file. */
+		int editorTabPos; // layout info
+
         /** A custom build command for this file. @c useCustomBuildCommand must be true for this to be used. */
         wxString buildCommand;
 
