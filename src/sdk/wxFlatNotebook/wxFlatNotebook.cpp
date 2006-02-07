@@ -1657,7 +1657,8 @@ void wxPageContainer::DoDeletePage(size_t page)
 	std::vector<wxPageInfo>::iterator endIter = m_pagesInfoVec.end();
 
 	m_pagesInfoVec.erase(iter + page);
-	m_iActivePage--;
+	if (m_iActivePage >= (int)page)
+        m_iActivePage--;
 
 	// The delete page was the last first on the array,
 	// but the book still has more pages, so we set the
