@@ -124,7 +124,7 @@ void cbProject::NotifyPlugins(wxEventType type)
 
 void cbProject::SetCompilerIndex(int compilerIdx)
 {
-    if(abs(compilerIdx)>=CompilerFactory::Compilers.GetCount())
+    if(((unsigned int) abs(compilerIdx)) >= CompilerFactory::Compilers.GetCount())
         return; // Invalid compiler
     if (compilerIdx != m_CompilerIdx)
     {

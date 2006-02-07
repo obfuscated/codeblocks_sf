@@ -25,6 +25,8 @@ static wxString s_Errors;
 class asCOutputStream : public asIOutputStream
 {
     public:
+        virtual ~asCOutputStream(){};
+
         void Write(const char *text)
         {
             s_Errors << _U(text);
