@@ -3,7 +3,7 @@
 // Purpose:     shared build defines
 // Author:      Francesco Montorsi
 // Created:     2005/07/10
-// RCS-ID:      $Id: keybinderdef.h,v 1.1 2005/07/10 15:42:51 frm Exp $
+// RCS-ID:      $Id$
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////

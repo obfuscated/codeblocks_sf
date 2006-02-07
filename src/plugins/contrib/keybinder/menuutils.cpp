@@ -4,7 +4,7 @@
 //              wxMenuShortcutWalker...
 // Author:      Francesco Montorsi
 // Created:     2004/02/19
-// RCS-ID:      $Id: menuutils.cpp,v 1.11 2005/07/15 21:12:03 frm Exp $
+// RCS-ID:      $Id$
 // Copyright:   (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////

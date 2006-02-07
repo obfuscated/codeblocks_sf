@@ -3,7 +3,7 @@
 // Purpose:     Classes for binding keypresses to commands.
 // Author:      Francesco Montorsi
 // Created:     2004/02/19
-// RCS-ID:      $Id: menuutils.h,v 1.8 2005/07/10 15:42:51 frm Exp $
+// RCS-ID:      $Id$
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
