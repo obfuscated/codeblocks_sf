@@ -99,7 +99,7 @@ void Exporter::BuildMenu(wxMenuBar *menuBar)
 
   // decide where to insert in "File" menu
   size_t printPos = file->GetMenuItemCount() - 4; // the default location
-  int printID = file->FindItem(_("Print..."));
+  int printID = file->FindItem(_("Print"));
 
   if (printID != wxNOT_FOUND)
   {
@@ -108,12 +108,16 @@ void Exporter::BuildMenu(wxMenuBar *menuBar)
   }
 
   // insert menu items
-  wxMenu *export_menu = new wxMenu;
-  export_menu->Append(idFileExportHTML, _("As &HTML..."), _("Exports the current file to HTML"));
-  export_menu->Append(idFileExportRTF, _("As &RTF..."), _("Exports the current file to RTF"));
-  export_menu->Append(idFileExportODT, _("As &ODT..."), _("Exports the current file to ODT"));
-  export_menu->Append(idFileExportPDF, _("As &PDF..."), _("Exports the current file to PDF"));
-  file->Insert(printPos, new wxMenuItem(export_menu, idFileExport, _("&Export"), _(""), wxITEM_NORMAL));
+  wxMenu *export_submenu = new wxMenu;
+  export_submenu->Append(idFileExportHTML, _("As &HTML..."), _("Exports the current file to HTML"));
+  export_submenu->Append(idFileExportRTF, _("As &RTF..."), _("Exports the current file to RTF"));
+  export_submenu->Append(idFileExportODT, _("As &ODT..."), _("Exports the current file to ODT"));
+  export_submenu->Append(idFileExportPDF, _("As &PDF..."), _("Exports the current file to PDF"));
+
+  wxMenuItem *export_menu = new wxMenuItem(0, idFileExport, _("&Export"), _(""), wxITEM_NORMAL);
+  export_menu->SetSubMenu(export_submenu);
+
+  file->Insert(printPos, export_menu);
 }
 
 void Exporter::RemoveMenu(wxMenuBar *menuBar)
