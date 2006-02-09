@@ -25,6 +25,11 @@
 // made keybinder "usableWindow" filter efficient (cf. Attach())
 // add recursive "winExist" check to stop disappearing panels crash
 
+// v0.4.15 2/9/2006 2
+// removed incorrect delete dlg
+// fixed {PRIOR/NEXT} keys unrecognized by wxGetAccelFromString()
+
+
 #ifndef CBKEYBINDER_H
 #define CBKEYBINDER_H
 

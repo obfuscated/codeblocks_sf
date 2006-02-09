@@ -17,6 +17,7 @@
 //commit 1/11/2006 3 PM v0.4.10
 //commit 1/17/2006 v0.4.11
 //commit 1/23/2006 v0.4.13
+//commit 2/9/2006 2 v0.4.15
 
 
 
@@ -62,10 +63,10 @@ cbKeyBinder::cbKeyBinder()
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts configuration");
-	m_PluginInfo.version = _T("0.4.13");
+	m_PluginInfo.version = _T("0.4.15");
 	m_PluginInfo.description <<_("Code::Blocks KeyBinder\n")
                             << _("NOTE: Ctrl+Alt+{UP|DOWN} unsupported.\n")
-                            << _("1/23/2006,4\n");
+                            << _("2/9/2006.2\n");
 	m_PluginInfo.author = _T("Pecan && Mispent Intent");
 	m_PluginInfo.authorEmail = _T("");
 	m_PluginInfo.authorWebsite = _T("");
@@ -371,7 +372,7 @@ void cbKeyBinder::OnKeybindingsDialogDone(MyDialog* dlg)
         LOGIT(_T("DialogDone keys MODIFIED"));
     }
     delete pKBA;
-    delete dlg;
+    // don't delete dlg; CodeBlocks will destory it
 
     //update Windows/EventHanders from changed wxKeyProfile
     if ( modified )

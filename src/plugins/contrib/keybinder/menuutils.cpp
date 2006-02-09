@@ -154,7 +154,9 @@ void wxMenuCmd::Update() // for __WXMSW__
     // clearing previous shortcuts if none now assigned
 	if (m_nShortcuts <= 0) {
         if ( ! pItemAccel) return;
-		////wxLogDebug(wxT("wxMenuCmd::Update - Removing shortcuts [%s] for [%s]"), strText.c_str(),newtext.c_str());
+        #if LOGGING
+		 LOGIT(wxT("wxMenuCmd::Update - Removing shortcuts [%s] for [%s]"), strText.c_str(),newtext.c_str());
+		#endif
 		// set "non bitmapped" text to preserve menu width
         m_pItem->SetText(newtext);
          //now rebuild the menuitem if bitmapped
@@ -173,7 +175,9 @@ void wxMenuCmd::Update() // for __WXMSW__
          && ( pItemAccel->GetFlags() == pPrfAccel->GetFlags() )
          && ( pItemAccel->GetKeyCode() == pPrfAccel->GetKeyCode() ) )
          return;
-    ////wxLogDebug(wxT("wxMenuCmd::Update - Setting shortcuts for [%s]"), newtext.c_str());
+    #if LOGGING
+     LOGIT(wxT("wxMenuCmd::Update - Setting shortcuts for [%s]"), newtext.c_str());
+    #endif
     m_pItem->SetText(newtext);
     //now rebuild the menuitem if bitmapped
     if (m_pItem->GetBitmap().GetWidth())
