@@ -1,14 +1,17 @@
 #ifndef PROJECTLOADER_H
 #define PROJECTLOADER_H
 
+#include <wx/hashmap.h>
 #include "ibaseloader.h"
 
 #define PROJECT_FILE_VERSION_MAJOR 1
-#define PROJECT_FILE_VERSION_MINOR 2
+#define PROJECT_FILE_VERSION_MINOR 3
 
 class cbProject;
 class ProjectBuildTarget;
 class ProjectFile;
+
+WX_DECLARE_STRING_HASH_MAP(wxString, CompilerSubstitutes);
 
 /** Code::Blocks project file loader. */
 class DLLIMPORT ProjectLoader : public IBaseLoader
@@ -62,7 +65,7 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
 
         // accepts a questionable compiler index and returns a valid compiler index
         // (popping up a selection dialog if needed)
-        int GetValidCompilerIndex(int proposal, const wxString& scope);
+        wxString GetValidCompilerID(const wxString& proposal, const wxString& scope);
 
         ProjectLoader(){} // no default ctor
 
@@ -70,6 +73,7 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         bool m_Upgraded;
         bool m_OpenDirty; // set this to true if the project is loaded but modified (like the case when setting another compiler, if invalid)
         bool m_IsPre_1_2;
+        CompilerSubstitutes m_CompilerSubstitutes;
 };
 
 #endif // PROJECTLOADER_H

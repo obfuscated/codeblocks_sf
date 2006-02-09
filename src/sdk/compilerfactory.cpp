@@ -23,54 +23,107 @@
 
 // statics
 CompilersArray CompilerFactory::Compilers;
-int CompilerFactory::s_DefaultCompilerIdx = 0;
+Compiler* CompilerFactory::s_DefaultCompiler = 0;
+
+size_t CompilerFactory::GetCompilersCount()
+{
+    return Compilers.GetCount();
+}
+
+Compiler* CompilerFactory::GetCompiler(size_t index)
+{
+    if (index > Compilers.GetCount() - 1)
+        return 0;
+    return Compilers[index];
+}
+
+Compiler* CompilerFactory::GetCompiler(const wxString& id)
+{
+    const wxString lid = id.Lower();
+    for (size_t i = 0; i < Compilers.GetCount(); ++i)
+    {
+        if (Compilers[i]->GetID().IsSameAs(lid))
+        {
+            return Compilers[i];
+        }
+    }
+    return 0;
+}
+
+int CompilerFactory::GetCompilerIndex(const wxString& id)
+{
+    const wxString lid = id.Lower();
+    for (size_t i = 0; i < Compilers.GetCount(); ++i)
+    {
+        if (Compilers[i]->GetID().IsSameAs(lid))
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int CompilerFactory::GetCompilerIndex(Compiler* compiler)
+{
+    for (size_t i = 0; i < Compilers.GetCount(); ++i)
+    {
+        if (Compilers[i] == compiler)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
 
 void CompilerFactory::RegisterCompiler(Compiler* compiler)
 {
     CompilerFactory::Compilers.Add(compiler);
+    // if it's the first one, set it as default
+    if (!s_DefaultCompiler)
+        s_DefaultCompiler = compiler;
 }
 
 void CompilerFactory::RegisterUserCompilers()
 {
-    wxArrayString paths = Manager::Get()->GetConfigManager(_T("compiler"))->EnumerateSubPaths(_T("/sets"));
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("compiler"));
+    wxArrayString paths = cfg->EnumerateSubPaths(_T("/user_sets"));
     for (unsigned int i = 0; i < paths.GetCount(); ++i)
     {
-		int parent = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/sets/") + paths[i] + _T("/parent"), -1);
-        if (CompilerIndexOK(parent - 1))
-            CreateCompilerCopy(Compilers[parent - 1]);
+        wxString base = _T("/user_sets/") + paths[i];
+		wxString parent = cfg->Read(base + _T("/parent"), wxEmptyString);
+        if (!parent.IsEmpty())
+        {
+            Compiler* compiler = GetCompiler(parent);
+            wxString name = cfg->Read(base + _T("/name"), wxEmptyString);
+            CreateCompilerCopy(compiler, name);
+        }
 	}
 }
 
-int CompilerFactory::CreateCompilerCopy(Compiler* compiler)
+Compiler* CompilerFactory::CreateCompilerCopy(Compiler* compiler, const wxString& newName)
 {
+    if (!compiler)
+        return 0;
     Compiler* newC = compiler->CreateCopy();
+    if (!newName.IsEmpty())
+    {
+        Compiler::m_CompilerIDs.Remove(newC->GetID());
+        newC->SetName(newName);
+        newC->m_ID = newName;
+        newC->MakeValidID();
+    }
     RegisterCompiler(newC);
-    newC->LoadSettings(_T("/sets"));
+    newC->LoadSettings(_T("/user_sets"));
     Manager::Get()->GetMessageManager()->DebugLog(_("Added compiler \"%s\""), newC->GetName().c_str());
-    return Compilers.GetCount() - 1; // return the index for the new compiler
+    return newC; // return the index for the new compiler
 }
 
 void CompilerFactory::RemoveCompiler(Compiler* compiler)
 {
-    if (!compiler)
+    if (!compiler || compiler->m_ParentID.IsEmpty())
         return;
-    int listIdx = compiler->m_ID;
+    Manager::Get()->GetConfigManager(_T("compiler"))->DeleteSubPath(_T("/user_sets/") + compiler->GetID());
 
-    // loop through compilers list and adjust all following compilers m_ID -= 1 and m_ParentID -= 1
-    for (unsigned int i = listIdx; i < Compilers.GetCount(); ++i)
-    {
-        Compiler* tmp = Compilers[i];
-        if (tmp->m_ParentID == compiler->m_ID)
-        {
-            // this compiler has parent the compiler to be deleted
-            tmp->m_ParentID = compiler->m_ParentID;
-        }
-        else if (tmp->m_ParentID >= listIdx)
-        {
-            tmp->m_ParentID -= 1;
-        }
-        tmp->m_ID -= 1;
-    }
     Compilers.Remove(compiler);
     Manager::Get()->GetMessageManager()->DebugLog(_("Compiler \"%s\" removed"), compiler->GetName().c_str());
     delete compiler;
@@ -84,47 +137,43 @@ void CompilerFactory::UnregisterCompilers()
     CompilerFactory::Compilers.Empty();
 }
 
-bool CompilerFactory::CompilerIndexOK(int compilerIdx)
+const wxString& CompilerFactory::GetDefaultCompilerID()
 {
-    return CompilerFactory::Compilers.GetCount() && compilerIdx >= 0 && compilerIdx < (int)CompilerFactory::Compilers.GetCount();
-}
+    if (s_DefaultCompiler)
+        return s_DefaultCompiler->GetID();
 
-int CompilerFactory::GetDefaultCompilerIndex()
-{
-    return CompilerIndexOK(s_DefaultCompilerIdx) ? s_DefaultCompilerIdx : 0;
-}
-
-void CompilerFactory::SetDefaultCompilerIndex(int compilerIdx)
-{
-    if (CompilerIndexOK(compilerIdx))
-        s_DefaultCompilerIdx = compilerIdx;
+    static wxString empty = wxEmptyString;
+    return empty;
 }
 
 Compiler* CompilerFactory::GetDefaultCompiler()
 {
-    if (CompilerIndexOK(s_DefaultCompilerIdx))
-        return Compilers[s_DefaultCompilerIdx];
-    return 0;
+    return s_DefaultCompiler;
+}
+
+void CompilerFactory::SetDefaultCompiler(size_t index)
+{
+    if (index < Compilers.GetCount())
+        s_DefaultCompiler = Compilers[index];
+}
+
+void CompilerFactory::SetDefaultCompiler(const wxString& id)
+{
+    Compiler* compiler = GetCompiler(id.Lower());
+    SetDefaultCompiler(compiler);
 }
 
 void CompilerFactory::SetDefaultCompiler(Compiler* compiler)
 {
-    for (unsigned int i = 0; i < Compilers.GetCount(); ++i)
-    {
-        if (compiler == Compilers[i])
-        {
-            s_DefaultCompilerIdx = i;
-            break;
-        }
-    }
+    if (compiler)
+        s_DefaultCompiler = compiler;
 }
 
 void CompilerFactory::SaveSettings()
 {
-    wxString baseKey = _T("/sets");
-//    Manager::Get()->GetConfigManager(_T("compiler"))->UnSet(baseKey);
-    for (unsigned int i = 0; i < Compilers.GetCount(); ++i)
+    for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
+        wxString baseKey = Compilers[i]->GetParentID().IsEmpty() ? _T("/sets") : _T("/user_sets");
         Compilers[i]->SaveSettings(baseKey);
     }
 }
@@ -132,9 +181,9 @@ void CompilerFactory::SaveSettings()
 void CompilerFactory::LoadSettings()
 {
     bool needAutoDetection = false;
-    wxString baseKey = _T("/sets");
-    for (unsigned int i = 0; i < Compilers.GetCount(); ++i)
+    for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
+        wxString baseKey = Compilers[i]->GetParentID().IsEmpty() ? _T("/sets") : _T("/user_sets");
         Compilers[i]->LoadSettings(baseKey);
         if (Compilers[i]->GetMasterPath().IsEmpty())
             needAutoDetection = true;
@@ -147,4 +196,41 @@ void CompilerFactory::LoadSettings()
         PlaceWindow(&adc);
         adc.ShowModal();
     }
+}
+
+Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxString& preselectedID)
+{
+    int selected = -1;
+    const wxString lid = preselectedID.Lower();
+
+    // first build a list of available compilers
+    wxString* comps = new wxString[Compilers.GetCount()];
+    for (size_t i = 0; i < Compilers.GetCount(); ++i)
+    {
+        comps[i] = Compilers[i]->GetName();
+        if (selected == -1)
+        {
+            if (lid.IsEmpty())
+            {
+                if (Compilers[i] == s_DefaultCompiler)
+                    selected = i;
+            }
+            else
+            {
+                if (Compilers[i]->GetID().IsSameAs(lid))
+                    selected = i;
+            }
+        }
+    }
+    // now display a choice dialog
+    wxSingleChoiceDialog dlg(0,
+                        _("Compiler selection"),
+                        message,
+                        CompilerFactory::Compilers.GetCount(),
+                        comps);
+    dlg.SetSelection(selected);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() == wxID_OK)
+        return Compilers[dlg.GetSelection()];
+    return 0;
 }

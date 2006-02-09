@@ -54,7 +54,7 @@ MSVCLoader::~MSVCLoader()
 bool MSVCLoader::Open(const wxString& filename)
 {
  /* NOTE (mandrav#1#): not necessary to ask for switches conversion... */
-    m_ConvertSwitches = m_pProject->GetCompilerIndex() == 0; // GCC
+    m_ConvertSwitches = m_pProject->GetCompilerID().IsSameAs(_T("gcc"));
 
    m_Filename = filename;
     if (!ReadConfigurations())
@@ -220,7 +220,7 @@ bool MSVCLoader::ParseConfiguration(int index)
     ProjectBuildTarget* bt = m_pProject->AddBuildTarget(m_Configurations[index]);
     if (!bt)
         return false;
-    bt->SetCompilerIndex(m_pProject->GetCompilerIndex());
+    bt->SetCompilerID(m_pProject->GetCompilerID());
     m_Type = ttCommandsOnly;
     HashTargetType::iterator it = m_TargetBasedOn.find(m_Configurations[index]);
     if (it != m_TargetBasedOn.end()) m_Type = it->second;
@@ -518,7 +518,7 @@ I need it here and there... */
                 wxFileName newf = opt;
                 if (newf.IsRelative())
                     newf.MakeAbsolute(m_pProject->GetBasePath());
-                Compiler* compiler = CompilerFactory::Compilers[m_pProject->GetCompilerIndex()];
+                Compiler* compiler = CompilerFactory::GetCompiler(m_pProject->GetCompilerID());
                 newf.SetExt(compiler->GetSwitches().libExtension);
                 wxString name = newf.GetName();
                 wxString prefix = compiler->GetSwitches().libPrefix;

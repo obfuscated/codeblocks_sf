@@ -28,7 +28,7 @@
 #endif
 
 CompilerMINGW::CompilerMINGW()
-    : Compiler(_("GNU GCC Compiler"))
+    : Compiler(_("GNU GCC Compiler"), _T("gcc"))
 {
     Reset();
 }

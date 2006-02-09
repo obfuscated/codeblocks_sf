@@ -159,8 +159,7 @@ struct CompilerSwitches
 class DLLIMPORT Compiler : public CompileOptionsBase
 {
 	public:
-		Compiler(const wxString& name);
-		Compiler(const Compiler& other); // copy ctor to copy everything but update m_ID
+		Compiler(const wxString& name, const wxString& ID, const wxString& parentID = wxEmptyString);
 		virtual ~Compiler();
 
 		/** @brief Check if the supplied string is a compiler warning/error */
@@ -219,16 +218,24 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         virtual AutoDetectResult AutoDetectInstallationDir() = 0;
 
         /** @brief Get this compiler's unique ID */
-        long GetID() const { return m_ID; }
+        const wxString& GetID() const { return m_ID; }
         /** @brief Get this compiler's parent's unique ID */
-        long GetParentID() const { return m_ParentID; }
+        const wxString& GetParentID() const { return m_ParentID; }
 
         /** @brief Get the command type descriptions (used in advanced compiler options) */
         static wxString CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT];
 	protected:
         friend class CompilerFactory;
+		Compiler(const Compiler& other); // copy ctor to copy everything but update m_ID
+
         /** @brief Implement this in new compilers, to return a new copy */
         virtual Compiler* CreateCopy() = 0;
+
+        // purposely non-virtual
+        bool IsUniqueID(const wxString& ID){ return m_CompilerIDs.Index(ID) == wxNOT_FOUND; }
+        // converts, if needed, m_ID to something that is valid
+        void MakeValidID();
+
         // set the following members in your class
         wxString m_Name;
         wxString m_MasterPath;
@@ -242,10 +249,9 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         wxString m_ErrorLine;
         wxString m_Error;
 	private:
-        long m_ID;
-        long m_ParentID; // -1 for builtin compilers, the builtin compiler's ID to derive from for user compilers...
-        static long CompilerIDCounter; // for builtin compilers
-        static long UserCompilerIDCounter; // for user compilers
+        wxString m_ID;
+        wxString m_ParentID; // -1 for builtin compilers, the builtin compiler's ID to derive from for user compilers...
+        static wxArrayString m_CompilerIDs; // map to guarantee unique IDs
 };
 
 #endif // COMPILER_H

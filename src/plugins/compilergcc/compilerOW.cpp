@@ -20,7 +20,7 @@
 #include <wx/filefn.h>
 
 CompilerOW::CompilerOW()
-    : Compiler(wxT("OpenWatcom (W32) Compiler"))
+    : Compiler(wxT("OpenWatcom (W32) Compiler"), _T("ow"))
 {
     Reset();
 }

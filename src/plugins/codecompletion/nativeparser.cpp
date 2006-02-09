@@ -171,15 +171,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
     wxString base = project->GetBasePath();
     parser->AddIncludeDir(base); // add project's base path
 
-    Compiler* compiler = 0;
-//    // apply compiler global vars
-	if (CompilerFactory::Compilers.GetCount() > 0 && CompilerFactory::CompilerIndexOK(project->GetCompilerIndex()))
-//	{
-		compiler = CompilerFactory::Compilers[project->GetCompilerIndex()];
-//        compiler->GetCustomVars().ApplyVarsToEnvironment();
-//	}
-    // apply project vars
-//    project->GetCustomVars().ApplyVarsToEnvironment();
+    Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
 
     // get project include dirs
     for (unsigned int i = 0; i < project->GetIncludeDirs().GetCount(); ++i)
@@ -226,12 +218,11 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
                     Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());
             }
             // get the compiler
-            int CompilerIndex = target->GetCompilerIndex();
-			if (CompilerFactory::Compilers.GetCount() > 0 && CompilerFactory::CompilerIndexOK(CompilerIndex))
+            wxString CompilerIndex = target->GetCompilerID();
+            Compiler* myc = CompilerFactory::GetCompiler(CompilerIndex);
+			if (myc)
 			{
-				// QUESTION for YIANNIS : can we assume that this pointer is not NULL ? I did.
-				Compilers[nCompilers] = CompilerFactory::Compilers[CompilerIndex];
-//				Compilers[nCompilers]->GetCustomVars().ApplyVarsToEnvironment();
+				Compilers[nCompilers] = myc;
 				++nCompilers;
 			}
         }

@@ -326,8 +326,12 @@ void DebuggerGDB::OnRelease(bool appShutDown)
     if (Manager::Get()->GetMessageManager())
     {
         if (m_HasDebugLog)
+        {
             Manager::Get()->GetMessageManager()->RemoveLog(m_pDbgLog);
+            m_pDbgLog->Destroy();
+        }
         Manager::Get()->GetMessageManager()->RemoveLog(m_pLog);
+        m_pLog->Destroy();
     }
 }
 
@@ -348,8 +352,32 @@ int DebuggerGDB::Configure()
 
 cbConfigurationPanel* DebuggerGDB::GetConfigurationPanel(wxWindow* parent)
 {
-	DebuggerOptionsDlg* dlg = new DebuggerOptionsDlg(parent);
+	DebuggerOptionsDlg* dlg = new DebuggerOptionsDlg(parent, this);
 	return dlg;
+}
+
+void DebuggerGDB::RefreshConfiguration()
+{
+    // the only thing that we need to change on the fly, is the debugger's debug log
+    bool log_visible = Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debug_log"), false);
+
+    if (!log_visible && m_HasDebugLog)
+    {
+        Manager::Get()->GetMessageManager()->RemoveLog(m_pDbgLog);
+        m_pDbgLog->Destroy();
+        m_pDbgLog = 0;
+    }
+    else if (log_visible && !m_HasDebugLog)
+    {
+        m_pDbgLog = new SimpleTextLog();
+        m_pDbgLog->GetTextControl()->SetFont(m_pLog->GetTextControl()->GetFont());
+        m_DbgPageIndex = Manager::Get()->GetMessageManager()->AddLog(m_pDbgLog, m_PluginInfo.title + _(" (debug)"));
+        // set log image
+        wxBitmap bmp;
+        bmp.LoadFile(ConfigManager::GetDataFolder() + _T("/images/contents_16x16.png"), wxBITMAP_TYPE_PNG);
+        Manager::Get()->GetMessageManager()->SetLogImage(m_pDbgLog, bmp);
+    }
+    m_HasDebugLog = log_visible;
 }
 
 void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
@@ -668,7 +696,7 @@ int DebuggerGDB::Debug()
         msgMan->Log(m_PageIndex, target->GetTitle());
 
         // find the target's compiler (to get gdb path and make sure the target is compiled already)
-        actualCompiler = CompilerFactory::Compilers[target ? target->GetCompilerIndex() : project->GetCompilerIndex()];
+        actualCompiler = CompilerFactory::GetCompiler(target ? target->GetCompilerID() : project->GetCompilerID());
     }
     else
         actualCompiler = CompilerFactory::GetDefaultCompiler();

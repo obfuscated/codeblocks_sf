@@ -168,7 +168,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
     if (isResource)
         return ret;
 #endif
-    Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] : m_pCompiler;
+    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
     wxString compilerCmd = pf->useCustomBuildCommand
                             ? pf->buildCommand
                             : compiler->GetCommand(isResource ? ctCompileResourceCmd : ctCompileObjectCmd);
@@ -498,7 +498,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         //
         // So, we first scan the command for this special case and, if found,
         // set a flag so that the linkfiles array is filled with the correct options
-        Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] : m_pCompiler;
+        Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
         wxString compilerCmd = compiler->GetCommand(ctLinkStaticCmd);
         wxRegEx re(_T("\\$([-+]+)link_objects"));
         if (re.Matches(compilerCmd))
@@ -578,7 +578,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
 			cbThrow(ex);
         break;
     }
-    Compiler* compiler = target ? CompilerFactory::Compilers[target->GetCompilerIndex()] : m_pCompiler;
+    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
     wxString compilerCmd = compiler->GetCommand(ct);
     m_pGenerator->CreateSingleFileCompileCmd(compilerCmd,
                                              target,

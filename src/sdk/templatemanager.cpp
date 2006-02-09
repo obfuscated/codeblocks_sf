@@ -241,12 +241,12 @@ cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
         if (option.useDefaultCompiler)
         {
             // we must update the project (and the targets) to use the default compiler
-            int compilerIdx = CompilerFactory::GetDefaultCompilerIndex();
-            prj->SetCompilerIndex(compilerIdx);
+            wxString compilerId = CompilerFactory::GetDefaultCompilerID();
+            prj->SetCompilerID(compilerId);
             for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
             {
                 ProjectBuildTarget* bt = prj->GetBuildTarget(i);
-                bt->SetCompilerIndex(compilerIdx);
+                bt->SetCompilerID(compilerId);
             }
         }
 

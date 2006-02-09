@@ -268,7 +268,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
           */
         void SetModeForPCH(PCHMode mode){ m_PCHMode = mode; SetModified(true); }
 
-        void SetCompilerIndex(int compilerIdx); // overriden
+        void SetCompilerID(const wxString& id); // overriden
 
         /** @return The root item of this project in the project manager's tree. */
         wxTreeItemId GetProjectNode(){ return m_ProjectNode; }

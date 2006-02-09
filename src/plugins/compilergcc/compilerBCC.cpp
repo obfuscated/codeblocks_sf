@@ -7,7 +7,7 @@
 #include <wx/regex.h>
 
 CompilerBCC::CompilerBCC()
-    : Compiler(_("Borland C++ Compiler 5.5"))
+    : Compiler(_("Borland C++ Compiler 5.5"), _T("bcc"))
 {
     Reset();
 }

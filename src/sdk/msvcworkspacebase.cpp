@@ -158,7 +158,7 @@ void MSVCWorkspaceBase::updateProjects() {
                     wxFileName fname;
                     if (type==ttDynamicLib) {
                         // targetDep->GetStaticLibFilename() do not work since it uses the filename instead of output filename
-                        Compiler* compiler = CompilerFactory::Compilers[ depIt->second._project->GetCompilerIndex()];
+                        Compiler* compiler = CompilerFactory::GetCompiler(depIt->second._project->GetCompilerID());
                         wxString prefix = compiler->GetSwitches().libPrefix;
                         wxString suffix = compiler->GetSwitches().libExtension;
                         fname = targetDep->GetOutputFilename();

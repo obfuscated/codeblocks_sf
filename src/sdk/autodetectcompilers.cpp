@@ -39,13 +39,13 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
 		list->InsertColumn(0, _("Compiler"), wxLIST_FORMAT_LEFT, 240);
 		list->InsertColumn(1, _("Status"), wxLIST_FORMAT_LEFT, 76);
 
-        for (size_t i = 0; i < CompilerFactory::Compilers.GetCount(); ++i)
+        for (size_t i = 0; i < CompilerFactory::GetCompilersCount(); ++i)
         {
-            Compiler* compiler = CompilerFactory::Compilers[i];
+            Compiler* compiler = CompilerFactory::GetCompiler(i);
             list->InsertItem(list->GetItemCount(), compiler->GetName());
 
             int idx = list->GetItemCount() - 1;
-            if (compiler->GetParentID() != -1) // not built-in
+            if (!compiler->GetParentID().IsEmpty()) // not built-in
                 list->SetItem(idx, 1, _("User-defined"));
             else
             {
@@ -76,7 +76,7 @@ void AutoDetectCompilers::OnDefaultClick(wxCommandEvent& event)
     int idx = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (idx != -1)
     {
-        CompilerFactory::SetDefaultCompilerIndex(idx);
+        CompilerFactory::SetDefaultCompiler(idx);
         XRCCTRL(*this, "lblDefCompiler", wxStaticText)->SetLabel(CompilerFactory::GetDefaultCompiler()->GetName());
     }
 }

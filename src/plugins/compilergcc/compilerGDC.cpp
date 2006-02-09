@@ -28,7 +28,7 @@
 #endif
 
 CompilerGDC::CompilerGDC()
-    : Compiler(_("GNU GDC Compiler"))
+    : Compiler(_("GNU GDC Compiler"), _T("gdc"))
 {
     Reset();
 }

@@ -11,21 +11,42 @@ WX_DEFINE_ARRAY(Compiler*, CompilersArray);
 class DLLIMPORT CompilerFactory
 {
     public:
+        /// @return the number of registered compilers.
+        static size_t GetCompilersCount();
+        /// @return the compiler by an index.
+        static Compiler* GetCompiler(size_t index);
+        /// @return the compiler by a name (ID). *Not* the compiler's title...
+        static Compiler* GetCompiler(const wxString& id);
+
+        /// @return the compiler's index from its id. Returns -1 if it doesn't exist.
+        static int GetCompilerIndex(const wxString& id);
+        /// @return the compiler's index. Returns -1 if it doesn't exist.
+        static int GetCompilerIndex(Compiler* compiler);
+
+        /// Register a supported (builtin) compiler.
         static void RegisterCompiler(Compiler* compiler);
+        /// Register all user-defined compiler copies.
         static void RegisterUserCompilers();
-        static int CreateCompilerCopy(Compiler* compiler);
+        /// Create a copy of a compiler.
+        static Compiler* CreateCompilerCopy(Compiler* compiler, const wxString& newName);
+        /// Remove a compiler.
         static void RemoveCompiler(Compiler* compiler);
+        /// Unregister all compilers.
         static void UnregisterCompilers();
+
         static void SaveSettings();
         static void LoadSettings();
-        static bool CompilerIndexOK(int compilerIdx);
-        static int GetDefaultCompilerIndex();
-        static void SetDefaultCompilerIndex(int compilerIdx);
+
+        static const wxString& GetDefaultCompilerID();
         static Compiler* GetDefaultCompiler();
+        static void SetDefaultCompiler(size_t index);
+        static void SetDefaultCompiler(const wxString& id);
         static void SetDefaultCompiler(Compiler* compiler);
-        static CompilersArray Compilers;
+
+        static Compiler* SelectCompilerUI(const wxString& message = _("Select compiler"), const wxString& preselectedID = wxEmptyString);
     private:
-        static int s_DefaultCompilerIdx;
+        static CompilersArray Compilers;
+        static Compiler* s_DefaultCompiler;
 };
 
 #endif // COMPILERFACTORY_H

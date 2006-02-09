@@ -338,11 +338,13 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
                     (TargetType)cmb->GetSelection() == ttDynamicLib);
     browseO->Enable(true);
 
+    Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
+
     wxFileName fname = target->GetOutputFilename();
     wxString name = fname.GetName();
     wxString ext = fname.GetExt();
-    wxString libext = CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().libExtension;
-    wxString libpre = CompilerFactory::Compilers[target->GetCompilerIndex()]->GetSwitches().libPrefix;
+    wxString libext = compiler->GetSwitches().libExtension;
+    wxString libpre = compiler->GetSwitches().libPrefix;
     switch ((TargetType)cmb->GetSelection())
     {
         case ttConsoleOnly:

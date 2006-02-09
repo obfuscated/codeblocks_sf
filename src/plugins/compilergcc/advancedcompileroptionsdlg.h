@@ -8,7 +8,7 @@
 class AdvancedCompilerOptionsDlg : public wxDialog
 {
 	public:
-		AdvancedCompilerOptionsDlg(wxWindow* parent, int compilerIdx);
+		AdvancedCompilerOptionsDlg(wxWindow* parent, const wxString& compilerId);
 		virtual ~AdvancedCompilerOptionsDlg();
 	protected:
         void OnCommandsChange(wxCommandEvent& event);
@@ -19,17 +19,17 @@ class AdvancedCompilerOptionsDlg : public wxDialog
         void OnRegexDefaults(wxCommandEvent& event);
         void OnRegexUp(wxSpinEvent& event);
         void OnRegexDown(wxSpinEvent& event);
-        
+
         void EndModal(int retCode);
         void ReadCompilerOptions();
         void WriteCompilerOptions();
         void DisplayCommand(int nr);
-        
+
         void FillRegexes();
         void FillRegexDetails(int index);
         void SaveRegexDetails(int index);
-        
-        int m_CompilerIdx;
+
+        wxString m_CompilerId;
         int m_LastCmdIndex;
         RegExArray m_Regexes;
         int m_SelectedRegex;

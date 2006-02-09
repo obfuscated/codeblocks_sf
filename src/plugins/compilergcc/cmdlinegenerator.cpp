@@ -81,7 +81,7 @@ void CmdLineGenerator::Init(cbProject* project)
         DoBuildScripts(target, _T("SetBuildOptions"));
 
         // access the compiler used for this target
-        Compiler* compiler = CompilerFactory::Compilers[target->GetCompilerIndex()];
+        Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
 
         SetupOutputFilenames(compiler, target);
         SetupIncludeDirs(compiler, target);
@@ -108,7 +108,7 @@ void CmdLineGenerator::CreateSingleFileCompileCmd(wxString& command,
                                                     const wxString& deps)
 {
     Compiler* compiler = target
-                            ? CompilerFactory::Compilers[target->GetCompilerIndex()]
+                            ? CompilerFactory::GetCompiler(target->GetCompilerID())
                             : CompilerFactory::GetDefaultCompiler();
     wxString compilerStr;
     if (pf)

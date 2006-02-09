@@ -70,7 +70,7 @@ bool MSVC7Loader::Open(const wxString& filename)
         return false;
 
 /* NOTE (mandrav#1#): not necessary to ask for switches conversion... */
-    m_ConvertSwitches = m_pProject->GetCompilerIndex() == 0; // GCC
+    m_ConvertSwitches = m_pProject->GetCompilerID().IsSameAs(_T("gcc"));
     m_ProjectName = wxFileName(filename).GetName();
 
     pMsg->DebugLog(_("Importing MSVC 7.xx project: %s"), filename.c_str());
@@ -199,7 +199,7 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
     ProjectBuildTarget* bt = m_pProject->GetBuildTarget(m_ConfigurationName);
     if (!bt)
         bt = m_pProject->AddBuildTarget(m_ConfigurationName);
-    bt->SetCompilerIndex(m_pProject->GetCompilerIndex());
+    bt->SetCompilerID(m_pProject->GetCompilerID());
 
     // See http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vcext/html/vxlrfvcprojectenginelibraryruntimelibraryoption.asp
 
@@ -255,11 +255,12 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             if (tmp.Last() == _T('.')) tmp.RemoveLast();
             if (bt->GetTargetType() == ttStaticLib) {
                 // convert the lib name
-                Compiler* compiler = CompilerFactory::Compilers[m_pProject->GetCompilerIndex()];
+                Compiler* compiler = CompilerFactory::GetCompiler(m_pProject->GetCompilerID());
                 wxString prefix = compiler->GetSwitches().libPrefix;
                 wxString suffix = compiler->GetSwitches().libExtension;
                 wxFileName fname = tmp;
-                if (!fname.GetName().StartsWith(prefix)) fname.SetName(prefix + fname.GetName());
+                if (!fname.GetName().StartsWith(prefix))
+                    fname.SetName(prefix + fname.GetName());
                 fname.SetExt(suffix);
                 tmp = fname.GetFullPath();
             }

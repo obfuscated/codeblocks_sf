@@ -70,7 +70,8 @@ cbProject::cbProject(const wxString& filename)
     m_PCHMode(pchObjectDir),
     m_CurrentlyCompilingTarget(0)
 {
-    SetCompilerIndex(CompilerFactory::GetDefaultCompilerIndex());
+    SetCompilerID(CompilerFactory::GetDefaultCompilerID());
+    SetModified(false);
 
 	m_Files.Clear();
     if (!filename.IsEmpty() && wxFileExists(filename))
@@ -122,11 +123,16 @@ void cbProject::NotifyPlugins(wxEventType type)
 	Manager::Get()->GetPluginManager()->NotifyPlugins(event);
 }
 
-void cbProject::SetCompilerIndex(int compilerIdx)
+void cbProject::SetCompilerID(const wxString& id)
 {
-    if(((unsigned int) abs(compilerIdx)) >= CompilerFactory::Compilers.GetCount())
+// TODO (mandrav##): Is this needed? The project's compiler has nothing to do with the targets' compilers...
+
+
+    if (!CompilerFactory::GetCompiler(id))
         return; // Invalid compiler
-    if (compilerIdx != m_CompilerIdx)
+
+    CompileTargetBase::SetCompilerID(id);
+    if (id != GetCompilerID())
     {
         // update object filenames
         for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
@@ -134,22 +140,24 @@ void cbProject::SetCompilerIndex(int compilerIdx)
             ProjectBuildTarget* target = m_Targets[i];
             if (target)
             {
+                Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
+                if (!compiler)
+                    continue;
+
                 int count = GetFilesCount();
                 for (int i = 0; i < count; ++i)
                 {
                     ProjectFile* pf = GetFile(i);
                     wxFileName obj(pf->GetObjName());
                     if (FileTypeOf(pf->relativeFilename) != ftResource &&
-                        obj.GetExt() == CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches().objectExtension)
+                        obj.GetExt() == compiler->GetSwitches().objectExtension)
                     {
-                        obj.SetExt(CompilerFactory::Compilers[compilerIdx]->GetSwitches().objectExtension);
+                        obj.SetExt(compiler->GetSwitches().objectExtension);
                         pf->SetObjName(obj.GetFullName());
                     }
                 }
             }
         }
-        m_CompilerIdx = compilerIdx;
-        SetModified(true);
     }
 }
 
@@ -160,8 +168,8 @@ bool cbProject::GetModified()
 		return true;
 
     // check active target
-    if (m_LastSavedActiveTarget != m_ActiveTarget)
-        return true;
+//    if (m_LastSavedActiveTarget != m_ActiveTarget)
+//        return true;
 
 	// check targets
     for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
@@ -291,36 +299,22 @@ void cbProject::Open()
                  return;
         }
 
-        int compilerIdx = -1;
+        wxString compilerID;
         if (ImportersGlobals::UseDefaultCompiler)
-            compilerIdx = CompilerFactory::GetDefaultCompilerIndex();
+            compilerID = CompilerFactory::GetDefaultCompilerID();
         else
         {
             // select compiler for the imported project
             // need to do it before actual import, because the importer might need
             // project's compiler information (like the object files extension etc).
-
-            // first build a list of available compilers
-            wxString* comps = new wxString[CompilerFactory::Compilers.GetCount()];
-            for (unsigned int i = 0; i < CompilerFactory::Compilers.GetCount(); ++i)
-            {
-                comps[i] = CompilerFactory::Compilers[i]->GetName();
-            }
-            // now display a choice dialog
-            wxSingleChoiceDialog dlg(0,
-                                _("Select compiler to use for the imported project"),
-                                _("Select compiler for ") + wxFileName(m_Filename).GetFullName(),
-                                CompilerFactory::Compilers.GetCount(),
-                                comps);
-            dlg.SetSelection(CompilerFactory::GetDefaultCompilerIndex());
-            PlaceWindow(&dlg);
-            if (dlg.ShowModal() == wxID_OK)
-                compilerIdx = dlg.GetSelection();
+            Compiler* compiler = CompilerFactory::SelectCompilerUI(_("Select compiler for ") + wxFileName(m_Filename).GetFullName());
+            if (compiler)
+                compilerID = compiler->GetID();
         }
 
-        if (compilerIdx != -1)
+        if (!compilerID.IsEmpty())
         {
-            SetCompilerIndex(compilerIdx);
+            SetCompilerID(compilerID);
 
             // actually import project file
             m_CurrentlyLoading = true;
@@ -1076,7 +1070,7 @@ ProjectBuildTarget* cbProject::AddBuildTarget(const wxString& targetName)
     ProjectBuildTarget* target = new ProjectBuildTarget(this);
     target->m_Filename = m_Filename; // really important
     target->SetTitle(targetName);
-    target->SetCompilerIndex(GetCompilerIndex()); // same compiler as project's
+    target->SetCompilerID(GetCompilerID()); // same compiler as project's
     target->SetOutputFilename(wxFileName(GetOutputFilename()).GetFullName());
     target->SetWorkingDir(_T("."));
     target->SetObjectOutput(_T(".objs"));

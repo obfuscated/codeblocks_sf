@@ -35,8 +35,7 @@
 #endif
 
 CompileTargetBase::CompileTargetBase()
-    : m_TargetType(ttExecutable),
-    m_CompilerIdx(0)
+    : m_TargetType(ttExecutable)
 {
 	//ctor
     for (int i = 0; i < 4; ++i)
@@ -229,9 +228,9 @@ wxString CompileTargetBase::GetDynamicLibDefFilename()
     wxFileName fname(m_Filename);
 
     wxString prefix = _T("lib");
-    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+    if (compiler)
     {
-        Compiler* compiler = CompilerFactory::Compilers[m_CompilerIdx];
         prefix = compiler->GetSwitches().libPrefix;
     }
     fname.SetName(prefix + fname.GetName());
@@ -249,9 +248,9 @@ wxString CompileTargetBase::GetStaticLibFilename()
 
     wxString prefix = _T("lib");
     wxString suffix = STATICLIB_EXT;
-    if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+    if (compiler)
     {
-        Compiler* compiler = CompilerFactory::Compilers[m_CompilerIdx];
         prefix = compiler->GetSwitches().libPrefix;
         suffix = compiler->GetSwitches().libExtension;
     }
@@ -310,11 +309,11 @@ void CompileTargetBase::SetHostApplication(const wxString& app)
 	SetModified(true);
 }
 
-void CompileTargetBase::SetCompilerIndex(int compilerIdx)
+void CompileTargetBase::SetCompilerID(const wxString& id)
 {
-    if (compilerIdx == m_CompilerIdx)
+    if (id == m_CompilerId)
         return;
-    m_CompilerIdx = compilerIdx;
+    m_CompilerId = id;
     SetModified(true);
 }
 

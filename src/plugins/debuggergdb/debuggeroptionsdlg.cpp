@@ -32,7 +32,10 @@
 #include <wx/textctrl.h>
 #include <wx/checkbox.h>
 
-DebuggerOptionsDlg::DebuggerOptionsDlg(wxWindow* parent)
+#include "debuggergdb.h"
+
+DebuggerOptionsDlg::DebuggerOptionsDlg(wxWindow* parent, DebuggerGDB* plugin)
+    : m_pPlugin(plugin)
 {
 	//ctor
 	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgDebuggerOptions"));
@@ -64,4 +67,6 @@ void DebuggerOptionsDlg::OnApply()
     cfg->Write(_T("eval_tooltip"), XRCCTRL(*this, "chkTooltipEval", wxCheckBox)->GetValue());
     cfg->Write(_T("debug_log"), XRCCTRL(*this, "chkDebugLog", wxCheckBox)->GetValue());
     cfg->Write(_T("add_other_search_dirs"), XRCCTRL(*this, "chkAddForeignDirs", wxCheckBox)->GetValue());
+
+    m_pPlugin->RefreshConfiguration();
 }

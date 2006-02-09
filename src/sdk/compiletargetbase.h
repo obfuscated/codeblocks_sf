@@ -87,8 +87,8 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual void SetExecutionParameters(const wxString& params); ///< Set the target's execution parameters to \c params
 		virtual const wxString& GetHostApplication(); ///< Read the target's host application
 		virtual void SetHostApplication(const wxString& app); ///< Set the target's host application to \c app
-        virtual void SetCompilerIndex(int compilerIdx); ///< Set the target's compiler index
-        virtual int GetCompilerIndex(){ return m_CompilerIdx; } ///< Read the target's compiler index
+        virtual void SetCompilerID(const wxString& id); ///< Set the target's compiler
+        virtual const wxString& GetCompilerID(){ return m_CompilerId; } ///< Read the target's compiler
         virtual wxString GetMakeCommandFor(MakeCommand cmd){ return m_MakeCommands[cmd]; } ///< Get the "make" command used for @c cmd
         virtual void SetMakeCommandFor(MakeCommand cmd, const wxString& make); ///< Set the "make" command used for @c cmd
         virtual bool MakeCommandsModified(){ return m_MakeCommandsModified; } ///< True if any of the "make" commands is modified.
@@ -104,7 +104,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         wxString m_HostApplication;
         OptionsRelation m_OptionsRelation[ortLast];
         TargetType m_TargetType;
-        int m_CompilerIdx;
+        wxString m_CompilerId;
         wxString m_MakeCommands[mcLast];
         bool m_MakeCommandsModified;
 	private:

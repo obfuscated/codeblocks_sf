@@ -24,7 +24,7 @@
 #endif
 
 CompilerSDCC::CompilerSDCC()
-    : Compiler(_("SDCC Compiler"))
+    : Compiler(_("SDCC Compiler"), _T("sdcc"))
 {
     Reset();
 }

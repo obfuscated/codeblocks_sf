@@ -87,8 +87,8 @@ class CompilerGCC : public cbCompilerPlugin
 		int GetConfigurationGroup(){ return cgCompiler; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 
-		void SwitchCompiler(int compilerIdx);
-		int GetCurrentCompilerIndex();
+		void SwitchCompiler(const wxString& id);
+		const wxString& GetCurrentCompilerID();
 		const wxString& GetConsoleShell(){ return m_ConsoleShell; }
 		const wxString& GetConsoleTerminal(){ return m_ConsoleTerm; }
 
@@ -128,7 +128,7 @@ class CompilerGCC : public cbCompilerPlugin
 		int GetActiveProcessCount() const;
 
 		void SetupEnvironment();
-		void SetEnvironmentForCompilerIndex(int idx, wxString& envPath);
+		void SetEnvironmentForCompiler(const wxString& id, wxString& envPath);
 		void OnProjectActivated(CodeBlocksEvent& event);
 		void OnProjectLoaded(CodeBlocksEvent& event);
 		/*void OnProjectPopupMenu(wxNotifyEvent& event);*/
@@ -180,7 +180,7 @@ class CompilerGCC : public cbCompilerPlugin
         bool m_BuildingWorkspace;
 
 		// programs
-		int m_CompilerIdx;
+		wxString m_CompilerId;
 		CompilerPrograms m_EmptyCompilerPrograms; // always empty; returned on invalid compiler index
 
 		wxString m_EnvironmentMsg;

@@ -176,7 +176,6 @@ END_EVENT_TABLE()
 
 CompilerGCC::CompilerGCC()
     : m_BuildingWorkspace(false),
-    m_CompilerIdx(-1),
     m_PageIndex(-1),
 	m_ListPageIndex(-1),
     m_Menu(0L),
@@ -332,7 +331,7 @@ void CompilerGCC::OnAttach()
     Manager::Get()->GetMessageManager()->SetLogImage(m_pListLog, bmp);
 
     // set default compiler for new projects
-    CompilerFactory::SetDefaultCompilerIndex(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/default_compiler"), 0));
+    CompilerFactory::SetDefaultCompiler(Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/default_compiler"), _T("gcc")));
 	LoadOptions();
 //	SetupEnvironment();
 }
@@ -341,7 +340,7 @@ void CompilerGCC::OnRelease(bool appShutDown)
 {
     DoDeleteTempMakefile();
 	SaveOptions();
-    Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/default_compiler"), CompilerFactory::GetDefaultCompilerIndex());
+    Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/default_compiler"), CompilerFactory::GetDefaultCompilerID());
 	if (Manager::Get()->GetMessageManager())
 	{
         Manager::Get()->GetMessageManager()->RemoveLog(m_Log);
@@ -529,7 +528,7 @@ bool CompilerGCC::BuildToolBar(wxToolBar* toolBar)
 
 void CompilerGCC::SetupEnvironment()
 {
-    if (!CompilerFactory::CompilerIndexOK(m_CompilerIdx))
+    if (!CompilerFactory::GetCompiler(m_CompilerId))
         return;
 
     m_EnvironmentMsg.Clear();
@@ -547,25 +546,7 @@ void CompilerGCC::SetupEnvironment()
         if (m_OriginalPath.IsEmpty())
             m_OriginalPath = path;
 
-        SetEnvironmentForCompilerIndex(m_CompilerIdx, path);
-
-//        wxArrayInt compilers;
-//        if(m_Project)
-//        {
-//            for (int x = 0; x < m_Project->GetBuildTargetsCount(); ++x)
-//            {
-//                ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
-//                int idx = target->GetCompilerIndex();
-//
-//                // one time per compiler
-//                if (compilers.Index(idx) != wxNOT_FOUND || !CompilerFactory::CompilerIndexOK(idx))
-//                    continue;
-//                compilers.Add(idx);
-//                SetEnvironmentForCompilerIndex(idx, path);
-//            }
-//        }
-//        else
-//            SetEnvironmentForCompilerIndex(CompilerFactory::GetDefaultCompilerIndex(), path);
+        SetEnvironmentForCompiler(m_CompilerId, path);
 	}
 	else
 		m_EnvironmentMsg = _("Could not read the PATH environment variable!\n"
@@ -576,12 +557,12 @@ void CompilerGCC::SetupEnvironment()
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "PATH set to: %s", path.c_str());
 }
 
-void CompilerGCC::SetEnvironmentForCompilerIndex(int idx, wxString& envPath)
+void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPath)
 {
-    if (!CompilerFactory::CompilerIndexOK(idx))
+    if (!CompilerFactory::GetCompiler(id))
         return;
 
-    Compiler* compiler = CompilerFactory::Compilers[idx];
+    Compiler* compiler = CompilerFactory::GetCompiler(id);
     wxString sep = wxFileName::GetPathSeparator();
 
     wxString masterPath = compiler->GetMasterPath();
@@ -670,16 +651,17 @@ void CompilerGCC::LoadOptions()
     CompilerFactory::LoadSettings();
 }
 
-int CompilerGCC::GetCurrentCompilerIndex()
+const wxString& CompilerGCC::GetCurrentCompilerID()
 {
-    return CompilerFactory::CompilerIndexOK(m_CompilerIdx) ? m_CompilerIdx : 0;
+    static wxString def = _T("gcc");
+    return CompilerFactory::GetCompiler(m_CompilerId) ? m_CompilerId : def;
 }
 
-void CompilerGCC::SwitchCompiler(int compilerIdx)
+void CompilerGCC::SwitchCompiler(const wxString& id)
 {
-    if (!CompilerFactory::CompilerIndexOK(compilerIdx))
+    if (!CompilerFactory::GetCompiler(id))
         return;
-    m_CompilerIdx = compilerIdx;
+    m_CompilerId = id;
     SetupEnvironment();
 }
 
@@ -693,8 +675,8 @@ void CompilerGCC::AskForActiveProject()
 bool CompilerGCC::CheckProject()
 {
     AskForActiveProject();
-    if (m_Project && m_Project->GetCompilerIndex() != m_CompilerIdx)
-        SwitchCompiler(m_Project->GetCompilerIndex());
+    if (m_Project && m_Project->GetCompilerID() != m_CompilerId)
+        SwitchCompiler(m_Project->GetCompilerID());
     return m_Project;
 }
 
@@ -761,10 +743,10 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
 //            if (bt)
 //            {
 //                m_Project->SetCurrentlyCompilingTarget(bt);
-//                SwitchCompiler(bt->GetCompilerIndex());
+//                SwitchCompiler(bt->GetCompilerID());
 //                // re-apply the env vars for this target
-//                if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
-//                    CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
+//                if (CompilerFactory::CompilerIndexOK(m_CompilerId))
+//                    CompilerFactory::GetCompiler(m_CompilerId)->GetCustomVars().ApplyVarsToEnvironment();
 //                m_Project->GetCustomVars().ApplyVarsToEnvironment();
 //                bt->GetCustomVars().ApplyVarsToEnvironment();
 //
@@ -1038,7 +1020,7 @@ void CompilerGCC::DoRecreateTargetMenu()
 			&CompilerGCC::OnSelectTarget );
 	DoUpdateTargetMenu();
 
-    SwitchCompiler(m_Project->GetCompilerIndex());
+    SwitchCompiler(m_Project->GetCompilerID());
 }
 
 void CompilerGCC::DoUpdateTargetMenu()
@@ -1113,14 +1095,14 @@ bool CompilerGCC::UseMake(ProjectBuildTarget* target)
 {
     if (!m_Project)
         return false;
-    int idx = m_Project->GetCompilerIndex();
-    if (CompilerFactory::CompilerIndexOK(idx))
+    wxString idx = m_Project->GetCompilerID();
+    if (CompilerFactory::GetCompiler(idx))
     {
         if (m_Project->IsMakefileCustom())
             return true;
         else
         {
-            if (CompilerFactory::Compilers[idx]->GetSwitches().buildMethod == cbmUseMake)
+            if (CompilerFactory::GetCompiler(idx)->GetSwitches().buildMethod == cbmUseMake)
             {
                 // since November 28 2005, "make" is no more a valid build method
                 // except if the project is set to use a custom Makefile
@@ -1147,8 +1129,8 @@ bool CompilerGCC::UseMake(ProjectBuildTarget* target)
 
 bool CompilerGCC::CompilerValid(ProjectBuildTarget* target)
 {
-	int idx = target ? target->GetCompilerIndex() : (m_Project ? m_Project->GetCompilerIndex() : CompilerFactory::GetDefaultCompilerIndex());
-	bool ret = CompilerFactory::CompilerIndexOK(idx);
+	wxString idx = target ? target->GetCompilerID() : (m_Project ? m_Project->GetCompilerID() : CompilerFactory::GetDefaultCompilerID());
+	bool ret = CompilerFactory::GetCompiler(idx);
 	if (!ret)
 	{
 		wxString msg;
@@ -1461,7 +1443,7 @@ wxString CompilerGCC::GetMakeCommandFor(MakeCommand cmd, ProjectBuildTarget* tar
         return wxEmptyString;
     wxString command = target ? target->GetMakeCommandFor(cmd) : m_Project->GetMakeCommandFor(cmd);
     command.Replace(_T("$makefile"), m_Project->GetMakefile());
-    command.Replace(_T("$make"), CompilerFactory::Compilers[m_CompilerIdx]->GetPrograms().MAKE);
+    command.Replace(_T("$make"), CompilerFactory::GetCompiler(m_CompilerId)->GetPrograms().MAKE);
     command.Replace(_T("$target"), target ? target->GetTitle() : _T(""));
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Make: %s"), command.c_str());
     return command;
@@ -1501,7 +1483,7 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
         wxArrayString clean;
         if (m_Project)
         {
-            DirectCommands dc(this, &m_Generator, CompilerFactory::Compilers[m_CompilerIdx], m_Project, m_PageIndex);
+            DirectCommands dc(this, &m_Generator, CompilerFactory::GetCompiler(m_CompilerId), m_Project, m_PageIndex);
             clean = dc.GetCleanCommands(target, true);
             Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Cleaning %s..."), target ? target->GetTitle().c_str() : m_Project->GetTitle().c_str());
         }
@@ -1703,7 +1685,7 @@ void CompilerGCC::BuildStateManagement()
     {
         Manager::Get()->GetMacrosManager()->RecalcVars(m_pBuildingProject, Manager::Get()->GetEditorManager()->GetActiveEditor(), bt);
         if (bt)
-            SwitchCompiler(bt->GetCompilerIndex());
+            SwitchCompiler(bt->GetCompilerID());
 
         bool hasLogged = m_Log->GetTextControl()->GetInsertionPoint() != 0;
 //        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("CHANGE *****> m_BuildState=%s, m_NextBuildState=%s, m_pBuildingProject=%p, bt=%p (%p)"), StateToString(m_BuildState).c_str(), StateToString(m_NextBuildState).c_str(), m_pBuildingProject, bt, m_pLastBuildingTarget);
@@ -1725,7 +1707,7 @@ void CompilerGCC::BuildStateManagement()
     }
 
     m_pBuildingProject->SetCurrentlyCompilingTarget(bt);
-    DirectCommands dc(this, &m_Generator, CompilerFactory::Compilers[m_CompilerIdx], m_pBuildingProject, m_PageIndex);
+    DirectCommands dc(this, &m_Generator, CompilerFactory::GetCompiler(m_CompilerId), m_pBuildingProject, m_PageIndex);
     dc.m_doYield = true;
 
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("NOCHANGE *****> m_BuildState=%s, m_NextBuildState=%s, m_pBuildingProject=%p, bt=%p"), StateToString(m_BuildState).c_str(), StateToString(m_NextBuildState).c_str(), m_pBuildingProject, bt);
@@ -2163,7 +2145,7 @@ int CompilerGCC::CompileFile(const wxString& file)
         Manager::Get()->GetEditorManager()->Save(file);
 
         // switch to the default compiler
-        SwitchCompiler(CompilerFactory::GetDefaultCompilerIndex());
+        SwitchCompiler(CompilerFactory::GetDefaultCompilerID());
 //        Manager::Get()->GetMessageManager()->DebugLog("-----CompileFile [if(!pf)]-----");
 		Manager::Get()->GetMacrosManager()->Reset();
         m_Generator.Init(0);
@@ -2203,12 +2185,12 @@ int CompilerGCC::CompileFile(const wxString& file)
     }
     else
     {
-//        if (CompilerFactory::CompilerIndexOK(m_CompilerIdx))
-//            CompilerFactory::Compilers[m_CompilerIdx]->GetCustomVars().ApplyVarsToEnvironment();
+//        if (CompilerFactory::CompilerIndexOK(m_CompilerId))
+//            CompilerFactory::GetCompiler(m_CompilerId)->GetCustomVars().ApplyVarsToEnvironment();
 //        m_Project->GetCustomVars().ApplyVarsToEnvironment();
         m_Generator.Init(m_Project);
 
-        DirectCommands dc(this, &m_Generator, CompilerFactory::Compilers[bt->GetCompilerIndex()], m_Project, m_PageIndex);
+        DirectCommands dc(this, &m_Generator, CompilerFactory::GetCompiler(bt->GetCompilerID()), m_Project, m_PageIndex);
         wxArrayString compile = dc.CompileFile(bt, pf);
         AddToCommandQueue(compile);
     }
@@ -2643,7 +2625,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
         }
     }
 
-	Compiler* compiler = CompilerFactory::Compilers[m_CompilerIdx];
+	Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
 	CompilerLineType clt = compiler->CheckForWarningsAndErrors(output);
 
 	switch (clt)

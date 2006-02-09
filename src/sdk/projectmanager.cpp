@@ -659,7 +659,7 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
             break; // sanity check
 
         project->LoadLayout();
-        project->SetModified(false);
+//        project->SetModified(false);
         if (!sanity_check())
             break; // sanity check
         if (m_pWorkspace)

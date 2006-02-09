@@ -70,7 +70,7 @@ bool DevPakUpdater::ConfigurationValid()
                         "(needed to be able to actually compile anything)"),
                         _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
         {
-            Compiler* compiler = CompilerFactory::Compilers[0]; // GCC is always first compiler
+            Compiler* compiler = CompilerFactory::GetCompiler(0); // GCC is always first compiler
             if (!compiler)
             {
                 wxMessageBox(_("Invalid compiler!?!"), _("Error"), wxICON_ERROR);

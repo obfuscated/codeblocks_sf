@@ -76,6 +76,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		DebuggerState& GetState(){ return m_State; }
 
 		void BringAppToFront();
+		void RefreshConfiguration();
 
         static void ConvertToGDBFriendly(wxString& str);
         static void ConvertToGDBFile(wxString& str);

@@ -122,8 +122,12 @@ void ProjectFile::SetObjName(const wxString& name)
         fname.SetExt(fname.GetExt() + _T(".gch"));
     else
     {
-        if (project && CompilerFactory::CompilerIndexOK(project->GetCompilerIndex()))
-            fname.SetExt(CompilerFactory::Compilers[project->GetCompilerIndex()]->GetSwitches().objectExtension);
+        if (project)
+        {
+            Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
+            if (compiler)
+                fname.SetExt(compiler->GetSwitches().objectExtension);
+        }
         else
             fname.SetExt(_T(".o")); // fallback?
     }
@@ -238,7 +242,7 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     {
         // don't change object extension for precompiled headers
         Compiler* compiler = target
-                                ? CompilerFactory::Compilers[target->GetCompilerIndex()]
+                                ? CompilerFactory::GetCompiler(target->GetCompilerID())
                                 : CompilerFactory::GetDefaultCompiler();
         if (compiler)
             tmp.SetExt(compiler->GetSwitches().objectExtension);

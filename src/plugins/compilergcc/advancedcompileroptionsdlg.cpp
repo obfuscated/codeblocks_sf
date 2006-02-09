@@ -20,8 +20,8 @@ BEGIN_EVENT_TABLE(AdvancedCompilerOptionsDlg, wxDialog)
     EVT_SPIN_DOWN(XRCID("spnRegexOrder"),   AdvancedCompilerOptionsDlg::OnRegexDown)
 END_EVENT_TABLE()
 
-AdvancedCompilerOptionsDlg::AdvancedCompilerOptionsDlg(wxWindow* parent, int compilerIdx)
-    : m_CompilerIdx(compilerIdx),
+AdvancedCompilerOptionsDlg::AdvancedCompilerOptionsDlg(wxWindow* parent, const wxString& compilerId)
+    : m_CompilerId(compilerId),
     m_LastCmdIndex(-1)
 {
 	//ctor
@@ -36,11 +36,13 @@ AdvancedCompilerOptionsDlg::~AdvancedCompilerOptionsDlg()
 
 void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
 {
+    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+
     wxListBox* lst = XRCCTRL(*this, "lstCommands", wxListBox);
     lst->Clear();
     for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
     {
-        m_Commands[i] = CompilerFactory::Compilers[m_CompilerIdx]->GetCommand((CommandType)i);
+        m_Commands[i] = compiler->GetCommand((CommandType)i);
         m_Commands[i].Replace(_T("\t"), _T(""));
         lst->Append(Compiler::CommandTypeDescriptions[i]);
     }
@@ -48,7 +50,7 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
     DisplayCommand(0);
 
     // switches
-    const CompilerSwitches& switches = CompilerFactory::Compilers[m_CompilerIdx]->GetSwitches();
+    const CompilerSwitches& switches = compiler->GetSwitches();
     XRCCTRL(*this, "txtAddIncludePath", wxTextCtrl)->SetValue(switches.includeDirs);
     XRCCTRL(*this, "txtAddLibPath", wxTextCtrl)->SetValue(switches.libDirs);
     XRCCTRL(*this, "txtAddLib", wxTextCtrl)->SetValue(switches.linkLibs);
@@ -63,17 +65,19 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
     XRCCTRL(*this, "chkForceCompilerQuotes", wxCheckBox)->SetValue(switches.forceCompilerUseQuotes);
     XRCCTRL(*this, "chkForceLinkerQuotes", wxCheckBox)->SetValue(switches.forceLinkerUseQuotes);
 
-    m_Regexes = CompilerFactory::Compilers[m_CompilerIdx]->GetRegExArray();
+    m_Regexes = compiler->GetRegExArray();
     m_SelectedRegex = m_Regexes.Count() > 0 ? 0 : -1;
     FillRegexes();
 }
 
 void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
 {
+    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+
     for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
     {
         m_Commands[i].Replace(_T("\n"), _T("\n\t"));
-        CompilerFactory::Compilers[m_CompilerIdx]->SetCommand((CommandType)i, m_Commands[i]);
+        compiler->SetCommand((CommandType)i, m_Commands[i]);
     }
 
     // switches
@@ -91,7 +95,7 @@ void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
     switches.needDependencies = XRCCTRL(*this, "chkNeedDeps", wxCheckBox)->GetValue();
     switches.forceCompilerUseQuotes = XRCCTRL(*this, "chkForceCompilerQuotes", wxCheckBox)->GetValue();
     switches.forceLinkerUseQuotes = XRCCTRL(*this, "chkForceLinkerQuotes", wxCheckBox)->GetValue();
-    CompilerFactory::Compilers[m_CompilerIdx]->SetSwitches(switches);
+    compiler->SetSwitches(switches);
 }
 
 void AdvancedCompilerOptionsDlg::DisplayCommand(int nr)
@@ -209,8 +213,9 @@ void AdvancedCompilerOptionsDlg::OnRegexDefaults(wxCommandEvent& event)
                     "counterparts!\n\n"
                     "Are you REALLY sure?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
     {
-        CompilerFactory::Compilers[m_CompilerIdx]->LoadDefaultRegExArray();
-        m_Regexes = CompilerFactory::Compilers[m_CompilerIdx]->GetRegExArray();
+        Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+        compiler->LoadDefaultRegExArray();
+        m_Regexes = compiler->GetRegExArray();
         while (m_SelectedRegex >= (int)m_Regexes.Count())
             --m_SelectedRegex;
         FillRegexes();
@@ -252,7 +257,7 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& event)
         return;
     }
 
-    Compiler* compiler = CompilerFactory::Compilers[m_CompilerIdx];
+    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
 
     // backup regexes
     RegExArray regex_copy = m_Regexes;
@@ -307,13 +312,15 @@ void AdvancedCompilerOptionsDlg::EndModal(int retCode)
 {
     if (retCode == wxID_OK)
     {
+        Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+
         // make sure we update the first command, if it changed
         DisplayCommand(m_LastCmdIndex);
         // write options
         WriteCompilerOptions();
         // save regexes
         SaveRegexDetails(m_SelectedRegex);
-        CompilerFactory::Compilers[m_CompilerIdx]->SetRegExArray(m_Regexes);
+        compiler->SetRegExArray(m_Regexes);
     }
     wxDialog::EndModal(retCode);
 }

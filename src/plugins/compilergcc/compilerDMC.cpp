@@ -13,7 +13,7 @@
 #endif
 
 CompilerDMC::CompilerDMC()
-    : Compiler(_("Digital Mars Compiler"))
+    : Compiler(_("Digital Mars Compiler"), _T("dmc"))
 {
     Reset();
 }

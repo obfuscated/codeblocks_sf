@@ -11,10 +11,12 @@
 
 #include <cbplugin.h>
 
+class DebuggerGDB;
+
 class DebuggerOptionsDlg : public cbConfigurationPanel
 {
 	public:
-		DebuggerOptionsDlg(wxWindow* parent);
+		DebuggerOptionsDlg(wxWindow* parent, DebuggerGDB* plugin);
 		virtual ~DebuggerOptionsDlg();
 
         virtual wxString GetTitle(){ return _T("Debugger settings"); }
@@ -22,6 +24,7 @@ class DebuggerOptionsDlg : public cbConfigurationPanel
         virtual void OnApply();
         virtual void OnCancel(){}
 	protected:
+        DebuggerGDB* m_pPlugin;
 	private:
 };
 

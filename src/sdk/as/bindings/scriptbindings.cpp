@@ -334,8 +334,8 @@ template <class T> void Register_CompileTargetBase(asIScriptEngine* engine, cons
     engine->RegisterObjectMethod(_C(classname), "void SetExecutionParameters(const wxString& in)", asMETHOD(T, SetExecutionParameters), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "wxString& GetHostApplication()", asMETHOD(T, GetHostApplication), asCALL_THISCALL);
     engine->RegisterObjectMethod(_C(classname), "void SetHostApplication(const wxString& in)", asMETHOD(T, SetHostApplication), asCALL_THISCALL);
-    engine->RegisterObjectMethod(_C(classname), "void SetCompilerIndex(int)", asMETHOD(T, SetCompilerIndex), asCALL_THISCALL);
-    engine->RegisterObjectMethod(_C(classname), "int GetCompilerIndex()", asMETHOD(T, GetCompilerIndex), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "void SetCompilerID(const wxString& in)", asMETHOD(T, SetCompilerID), asCALL_THISCALL);
+    engine->RegisterObjectMethod(_C(classname), "const wxString& GetCompilerID() const", asMETHOD(T, GetCompilerID), asCALL_THISCALL);
 }
 
 //------------------------------------------------------------------------------

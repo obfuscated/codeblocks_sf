@@ -14,7 +14,7 @@
 #endif
 
 CompilerMSVC::CompilerMSVC()
-    : Compiler(_("Microsoft Visual C++ Toolkit 2003"))
+    : Compiler(_("Microsoft Visual C++ Toolkit 2003"), _T("msvctk"))
 {
     Reset();
 }

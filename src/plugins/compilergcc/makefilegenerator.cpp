@@ -37,7 +37,7 @@
 // class constructor
 MakefileGenerator::MakefileGenerator(CompilerGCC* compiler, cbProject* project, const wxString& makefile, int logIndex)
     : m_Compiler(compiler),
-    m_CompilerSet(CompilerFactory::Compilers[compiler->GetCurrentCompilerIndex()]),
+    m_CompilerSet(CompilerFactory::GetCompiler(compiler->GetCurrentCompilerID())),
 	m_Project(project),
     m_Makefile(makefile),
     m_LogIndex(logIndex),
@@ -52,11 +52,11 @@ MakefileGenerator::~MakefileGenerator()
 
 void MakefileGenerator::UpdateCompiler(ProjectBuildTarget* target)
 {
-    int idx = target
-                ? target->GetCompilerIndex()
-                : (m_Project ? m_Project->GetCompilerIndex() : -1);
-    if (idx != -1)
-        m_CompilerSet = CompilerFactory::Compilers[idx];
+    wxString idx = target
+                ? target->GetCompilerID()
+                : (m_Project ? m_Project->GetCompilerID() : _T(""));
+    if (!idx.IsEmpty())
+        m_CompilerSet = CompilerFactory::GetCompiler(idx);
     else
         m_CompilerSet = CompilerFactory::GetDefaultCompiler();
 }
@@ -394,8 +394,8 @@ void MakefileGenerator::DoAppendLinkerLibs(wxString& cmd, ProjectBuildTarget* ta
 	else
 	{
         obj = target ? (CompileOptionsBase*)target : (m_Project ? (CompileOptionsBase*)m_Project : m_CompilerSet);
-        int index = target ? target->GetCompilerIndex() : (m_Project ? m_Project->GetCompilerIndex() : CompilerFactory::GetDefaultCompilerIndex());
-        m_CompilerSet = CompilerFactory::Compilers[index];
+        wxString index = target ? target->GetCompilerID() : (m_Project ? m_Project->GetCompilerID() : CompilerFactory::GetDefaultCompilerID());
+        m_CompilerSet = CompilerFactory::GetCompiler(index);
     }
 
     wxArrayString libs = obj->GetLinkLibs();
@@ -681,7 +681,7 @@ void MakefileGenerator::DoAddMakefileVars(wxString& buffer)
 //    buffer << _T("### Variables used in this Makefile") << _T('\n');
 //
 //    // compiler global vars
-//    DoAddVarsSet(buffer, CompilerFactory::Compilers[m_Project->GetCompilerIndex()]->GetCustomVars());
+//    DoAddVarsSet(buffer, CompilerFactory::GetCompiler(m_Project->GetCompilerID())->GetCustomVars());
 //    // project vars
 //    DoAddVarsSet(buffer, m_Project->GetCustomVars());
 //    int targetsCount = m_Project->GetBuildTargetsCount();
@@ -690,7 +690,7 @@ void MakefileGenerator::DoAddMakefileVars(wxString& buffer)
 //        ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
 //        if (!IsTargetValid(target))
 //            continue;
-//        Compiler* compilerSet = CompilerFactory::Compilers[target->GetCompilerIndex()];
+//        Compiler* compilerSet = CompilerFactory::GetCompiler(target->GetCompilerID());
 //
 //        // target vars
 //        DoAddVarsSet(buffer, compilerSet->GetCustomVars());

@@ -13,6 +13,7 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include "cbexception.h"
     #include "compiler.h"
     #include "manager.h"
     #include "messagemanager.h"
@@ -23,9 +24,11 @@
     #include <wx/regex.h>
 #endif
 
-
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(RegExArray);
+
+// static
+wxArrayString Compiler::m_CompilerIDs; // map to guarantee unique IDs
 
 wxString Compiler::CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT] =
 {
@@ -39,24 +42,25 @@ wxString Compiler::CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT] =
     _("Link object files to dynamic library"),
     _("Link object files to static library")
 };
-long Compiler::CompilerIDCounter = 0; // built-in compilers can have IDs from 1 to 255
-long Compiler::UserCompilerIDCounter = 255; // user compilers have IDs over 255 (256+)
 
-Compiler::Compiler(const wxString& name)
+Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& parentID)
     : m_Name(name),
-    m_ID(++CompilerIDCounter),
-    m_ParentID(-1)
+    m_ID(ID.Lower()),
+    m_ParentID(parentID.Lower())
 {
 	//ctor
+    MakeValidID();
+
     Manager::Get()->GetMessageManager()->DebugLog(_("Added compiler \"%s\""), m_Name.c_str());
 }
 
 Compiler::Compiler(const Compiler& other)
     : CompileOptionsBase(other),
-    m_ID(++UserCompilerIDCounter),
-    m_ParentID(other.m_ID)
+    m_ParentID(other.m_ParentID.IsEmpty() ? other.m_ID : other.m_ParentID)
 {
     m_Name = _("Copy of ") + other.m_Name;
+    MakeValidID();
+
     m_MasterPath = other.m_MasterPath;
     m_Programs = other.m_Programs;
     m_Switches = other.m_Switches;
@@ -80,15 +84,66 @@ Compiler::~Compiler()
 	//dtor
 }
 
+void Compiler::MakeValidID()
+{
+    // basically, make it XML-element compatible
+    // only allow a-z, 0-9 and _
+    // (it is already lowercase)
+    // any non-conformant character will be removed
+
+    wxString newID;
+    if (m_ID.IsEmpty())
+        m_ID = m_Name;
+
+    size_t pos = 0;
+    while (pos < m_ID.Length())
+    {
+        wxChar ch = m_ID[pos];
+        if (wxIsalnum(ch) || ch == _T('_'))
+        {
+            // valid character
+            newID.Append(ch);
+        }
+        else if (wxIsspace(ch))
+        {
+            // convert spaces to underscores
+            newID.Append(_T('_'));
+        }
+        ++pos;
+    }
+
+    // make sure it's not starting with a number.
+    // if it is, prepend an underscore
+    if (wxIsdigit(newID.GetChar(0)))
+        newID.Prepend(_T('_'));
+
+    if (newID.IsEmpty())
+    {
+        // empty? wtf?
+        cbThrow(_T("Can't create a valid compiler ID for ") + m_Name);
+    }
+    m_ID = newID.Lower();
+
+	// check for unique ID
+	if (!IsUniqueID(m_ID))
+        cbThrow(_T("Compiler ID already exists for ") + m_Name);
+    m_CompilerIDs.Add(m_ID);
+}
+
 void Compiler::SaveSettings(const wxString& baseKey)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("compiler"));
 
     wxString tmp;
-    tmp.Printf(_T("%s/set%3.3d"), baseKey.c_str(), (int)m_ID);
+
+    // delete old-style keys (using integer IDs)
+    tmp.Printf(_T("%s/set%3.3d"), baseKey.c_str(), CompilerFactory::GetCompilerIndex(this) + 1);
+    cfg->DeleteSubPath(tmp);
+
+    tmp.Printf(_T("%s/%s"), baseKey.c_str(), m_ID.c_str());
 
 	cfg->Write(tmp + _T("/name"), m_Name);
-	cfg->Write(tmp + _T("/parent"), (int)m_ParentID);
+	cfg->Write(tmp + _T("/parent"), m_ParentID, true);
 
 	wxString key = GetStringFromArray(m_CompilerOptions);
 	cfg->Write(tmp + _T("/compiler_options"), key, true);
@@ -177,14 +232,32 @@ void Compiler::LoadSettings(const wxString& baseKey)
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("compiler"));
 
     wxString tmp;
-    tmp.Printf(_T("%s/set%3.3d"), baseKey.c_str(), (int)m_ID);
+
+    // if using old-style keys (using integer IDs), notify user about the changes
+    static bool saidAboutCompilerIDs = false;
+    tmp.Printf(_T("%s/set%3.3d"), baseKey.c_str(), CompilerFactory::GetCompilerIndex(this) + 1);
+    if (cfg->Exists(tmp + _T("/name")))
+    {
+        if (!saidAboutCompilerIDs)
+        {
+            saidAboutCompilerIDs = true;
+            wxMessageBox(_("Compilers now use unique names instead of integer IDs.\n"
+                            "Projects will be updated accordingly on load, mostly automatic."),
+                            _("Information"),
+                            wxICON_INFORMATION);
+        }
+        // at this point, we 'll be using the old style configuration to load settings
+    }
+    else // it's OK to use new style
+        tmp.Printf(_T("%s/%s"), baseKey.c_str(), m_ID.c_str());
+
     if (!cfg->Exists(tmp + _T("/name")))
         return;
 
     wxString sep = wxFileName::GetPathSeparator();
 
-    if (m_ID > 255) // name changes are allowed only for user compilers
-        m_Name = cfg->Read(tmp + _T("/name"), m_Name);
+//    if (m_ID > 255) // name changes are allowed only for user compilers
+    m_Name = cfg->Read(tmp + _T("/name"), m_Name);
 
     m_MasterPath = cfg->Read(tmp + _T("/master_path"), m_MasterPath);
     m_ExtraPaths = GetArrayFromString(cfg->Read(tmp + _T("/extra_paths"), _T("")), _T(";"));

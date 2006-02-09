@@ -16,7 +16,7 @@
 #include "messagemanager.h"
 
 CompilerICC::CompilerICC()
-    : Compiler(_("Intel C/C++ Compiler"))
+    : Compiler(_("Intel C/C++ Compiler"), _T("icc"))
 {
     Reset();
 }

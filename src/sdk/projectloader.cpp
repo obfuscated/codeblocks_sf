@@ -163,8 +163,8 @@ void ProjectLoader::ConvertLibraries(CompileTargetBase* object)
     wxArrayString linkerOpts = object->GetLinkerOptions();
     wxArrayString linkLibs = object->GetLinkLibs();
 
-    int compilerIdx = object->GetCompilerIndex();
-    Compiler* compiler = CompilerFactory::Compilers[compilerIdx];
+    wxString compilerId = object->GetCompilerID();
+    Compiler* compiler = CompilerFactory::GetCompiler(compilerId);
     wxString linkLib = compiler->GetSwitches().linkLibs;
     wxString libExt = compiler->GetSwitches().libExtension;
     size_t libExtLen = libExt.Length();
@@ -230,7 +230,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     bool makefile_custom = false;
     int defaultTarget = 0;
     int activeTarget = -1;
-    int compilerIdx = 0;
+    wxString compilerId = _T("gcc");
     PCHMode pch_mode = m_IsPre_1_2 ? pchSourceDir : pchObjectDir;
 
     // loop through all options
@@ -249,7 +249,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
             defaultTarget = atoi(node->Attribute("default_target"));
 
         else if (node->Attribute("compiler"))
-            compilerIdx = GetValidCompilerIndex(atoi(node->Attribute("compiler")), _("project"));
+            compilerId = GetValidCompilerID(_U(node->Attribute("compiler")), _T("the project"));
 
         else if (node->Attribute("pch_mode"))
             pch_mode = (PCHMode)atoi(node->Attribute("pch_mode"));
@@ -262,7 +262,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     m_pProject->SetMakefileCustom(makefile_custom);
     m_pProject->SetDefaultExecuteTargetIndex(defaultTarget);
     m_pProject->SetActiveBuildTarget(activeTarget);
-    m_pProject->SetCompilerIndex(compilerIdx);
+    m_pProject->SetCompilerID(compilerId);
     m_pProject->SetModeForPCH(pch_mode);
 
     DoMakeCommands(parentNode->FirstChildElement("MakeCommands"), m_pProject);
@@ -332,7 +332,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     wxString deps;
     wxString added;
     int type = -1;
-    int compilerIdx = m_pProject->GetCompilerIndex();
+    wxString compilerId = m_pProject->GetCompilerID();
     wxString parameters;
     wxString hostApplication;
     bool includeInTargetAll = m_IsPre_1_2 ? true : false;
@@ -371,7 +371,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
             type = atoi(node->Attribute("type"));
 
         else if (node->Attribute("compiler"))
-            compilerIdx = GetValidCompilerIndex(atoi(node->Attribute("compiler")), _("build target"));
+            compilerId = GetValidCompilerID(_U(node->Attribute("compiler")), target->GetTitle());
 
         else if (node->Attribute("parameters"))
             parameters = _U(node->Attribute("parameters"));
@@ -434,7 +434,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
             target->SetDepsOutput(deps_output);
         target->SetExternalDeps(deps);
         target->SetAdditionalOutputFiles(added);
-        target->SetCompilerIndex(compilerIdx);
+        target->SetCompilerID(compilerId);
         target->SetExecutionParameters(parameters);
         target->SetHostApplication(hostApplication);
         target->SetIncludeInTargetAll(includeInTargetAll);
@@ -675,6 +675,8 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
     bool foundLink = false;
     bool foundCompilerVar = false;
 
+    Compiler* compiler = CompilerFactory::GetCompiler(m_pProject->GetCompilerID());
+
     TiXmlElement* node = parentNode->FirstChildElement("Option");
     while (node)
     {
@@ -731,7 +733,7 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
             FileType ft = FileTypeOf(file->relativeFilename);
             if (ft != ftResource && ft != ftResourceBin)
             {
-                if (objName.GetExt() != CompilerFactory::Compilers[m_pProject->GetCompilerIndex()]->GetSwitches().objectExtension)
+                if (objName.GetExt() != compiler->GetSwitches().objectExtension)
                     file->SetObjName(UnixFilename(file->relativeFilename));
             }
         }
@@ -821,6 +823,8 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
     if (!rootnode)
         return false;
 
+    Compiler* compiler = CompilerFactory::GetCompiler(m_pProject->GetCompilerID());
+
     rootnode->InsertEndChild(TiXmlElement("FileVersion"));
     rootnode->FirstChildElement("FileVersion")->SetAttribute("major", PROJECT_FILE_VERSION_MAJOR);
     rootnode->FirstChildElement("FileVersion")->SetAttribute("minor", PROJECT_FILE_VERSION_MINOR);
@@ -837,7 +841,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         AddElement(prjnode, "Option", "pch_mode", (int)m_pProject->GetModeForPCH());
     if (m_pProject->GetDefaultExecuteTargetIndex() != 0)
         AddElement(prjnode, "Option", "default_target", m_pProject->GetDefaultExecuteTargetIndex());
-    AddElement(prjnode, "Option", "compiler", m_pProject->GetCompilerIndex());
+    AddElement(prjnode, "Option", "compiler", m_pProject->GetCompilerID());
 
     if (m_pProject->MakeCommandsModified())
     {
@@ -886,7 +890,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         if (!target->GetAdditionalOutputFiles().IsEmpty())
             AddElement(tgtnode, "Option", "additional_output", target->GetAdditionalOutputFiles());
         AddElement(tgtnode, "Option", "type", target->GetTargetType());
-        AddElement(tgtnode, "Option", "compiler", target->GetCompilerIndex());
+        AddElement(tgtnode, "Option", "compiler", target->GetCompilerID());
         if (target->GetTargetType() == ttConsoleOnly && !target->GetUseConsoleRunner())
             AddElement(tgtnode, "Option", "use_console_runner", 0);
         if (!target->GetExecutionParameters().IsEmpty())
@@ -1022,7 +1026,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         {
             wxFileName tmp(f->GetObjName());
             if (FileTypeOf(f->relativeFilename) != ftHeader &&
-                tmp.GetExt() != CompilerFactory::Compilers[m_pProject->GetCompilerIndex()]->GetSwitches().objectExtension)
+                tmp.GetExt() != compiler->GetSwitches().objectExtension)
             {
                 AddElement(unitnode, "Option", "objectName", f->GetObjName());
             }
@@ -1034,27 +1038,44 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
     return cbSaveTinyXMLDocument(&doc, filename);
 }
 
-int ProjectLoader::GetValidCompilerIndex(int proposal, const wxString& scope)
+wxString ProjectLoader::GetValidCompilerID(const wxString& proposal, const wxString& scope)
 {
-    if (CompilerFactory::CompilerIndexOK(proposal))
+    if (CompilerFactory::GetCompiler(proposal))
         return proposal;
 
     m_OpenDirty = true;
 
-    wxArrayString compilers;
-    for (unsigned int i = 0; i < CompilerFactory::Compilers.GetCount(); ++i)
+    // check the map; maybe we asked the user before
+    CompilerSubstitutes::iterator it = m_CompilerSubstitutes.find(proposal);
+    if (it != m_CompilerSubstitutes.end())
+        return it->second;
+
+    Compiler* compiler = 0;
+
+    // if compiler is a number, then this is an older version of the project file
+    // propose the same compiler by index
+    if (!proposal.IsEmpty())
     {
-        compilers.Add(CompilerFactory::Compilers[i]->GetName());
+        long int idx = -1;
+        proposal.ToLong(&idx);
+        compiler = CompilerFactory::GetCompiler(idx);
     }
 
-    wxString msg;
-    msg.Printf(_("The specified compiler does not exist.\nPlease select the compiler to use for the %s:"), scope.c_str());
-    proposal = wxGetSingleChoiceIndex(msg, _("Select compiler"), compilers);
+    if (!compiler)
+    {
+        wxString msg;
+        msg.Printf(_("The defined compiler for %s cannot be located. "
+                    "Please choose the compiler you want to use:"), scope.c_str());
+        compiler = CompilerFactory::SelectCompilerUI(msg);
+    }
 
-    if (proposal == -1)
+    if (!compiler)
     {
         wxMessageBox(_("Setting to default compiler..."), _("Warning"), wxICON_WARNING);
-        return CompilerFactory::GetDefaultCompilerIndex();
+        return CompilerFactory::GetDefaultCompilerID();
     }
-    return proposal;
+
+    // finally, keep the user selection in the map so we don't ask him again
+    m_CompilerSubstitutes[proposal] = compiler->GetID();
+    return compiler->GetID();
 }
