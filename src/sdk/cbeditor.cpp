@@ -797,7 +797,7 @@ void cbEditor::SetLanguage( HighlightLanguage lang )
     }
     else
     {
-        m_lang = HL_NONE;
+        m_lang = HL_AUTO;
     }
 }
 
