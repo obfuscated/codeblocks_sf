@@ -1484,7 +1484,9 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
                                         Manager::Get()->GetAppWindow(),
                                         wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
 
+    PlaceWindow(progress);
     // keep a copy of the find struct
+
     cbFindReplaceData localData = *data;
 
     if ( !data->delOldSearches ) {
