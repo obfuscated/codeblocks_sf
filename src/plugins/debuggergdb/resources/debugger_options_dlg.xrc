@@ -98,7 +98,7 @@
           <object class="sizeritem">
             <object class="wxCheckBox" name="chkDebugLog">
               <label>Display debugger's  log</label>
-              <tooltip>If enabled, the debugger's raw input/output will be looged in a separate log page</tooltip>
+              <tooltip>If enabled, the debugger's raw input/output will be logged in a separate log page</tooltip>
             </object>
           </object>
           <object class="sizeritem">
