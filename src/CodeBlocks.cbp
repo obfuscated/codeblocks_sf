@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="2" />
+	<FileVersion major="1" minor="3" />
 	<Project>
 		<Option title="Code::Blocks" />
 		<Option pch_mode="2" />
 		<Option default_target="9" />
-		<Option compiler="0" />
+		<Option compiler="gcc" />
 		<Build>
 			<Target title="AutoRevision">
 				<Option output="tools\AutoRevision\autorevision.exe" />
 				<Option object_output=".objs\2.6" />
 				<Option type="1" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
@@ -24,7 +24,7 @@
 				<Option working_dir="tools\ConsoleRunner" />
 				<Option object_output=".objs\2.6" />
 				<Option type="1" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectCompilerOptionsRelation="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -39,7 +39,7 @@
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
@@ -51,7 +51,7 @@
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
@@ -63,7 +63,7 @@
 				<Option working_dir="devel" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option createStaticLib="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
@@ -90,7 +90,7 @@
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
 			</Target>
@@ -99,7 +99,7 @@
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
@@ -112,7 +112,7 @@
 				<Option object_output=".objs\2.6" />
 				<Option external_deps="sdk\tinyxml\libtxml.a;sdk\as\libangelscript.a;sdk\propgrid\libpropgrid.a;sdk\wxFlatNotebook\libwxflatnotebook.a;devel\libwxscintilla.a;" />
 				<Option type="3" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations" />
 				<Option includeInTargetAll="1" />
 				<Option createStaticLib="1" />
@@ -149,7 +149,7 @@
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
@@ -165,7 +165,7 @@
 				<Option object_output=".objs\2.6" />
 				<Option external_deps="src\wxAUI\libwxaui.a;" />
 				<Option type="0" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations -ns" />
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -207,7 +207,7 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
@@ -230,7 +230,7 @@
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
@@ -243,7 +243,7 @@
 				<Option object_output=".objs\2.6" />
 				<Option external_deps="plugins\compilergcc\depslib\libdepslib.a;" />
 				<Option type="3" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
@@ -270,7 +270,7 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
@@ -297,7 +297,7 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
@@ -321,7 +321,7 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
@@ -345,7 +345,7 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
@@ -368,7 +368,7 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
@@ -392,7 +392,7 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
@@ -412,7 +412,7 @@
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectResourceIncludeDirsRelation="0" />
