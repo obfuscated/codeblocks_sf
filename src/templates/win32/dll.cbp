@@ -9,7 +9,6 @@
 		<Build>
 			<Target title="default">
 				<Option type="3"/>
-				<Option output="sample.dll"/> 
 				<Option createStaticLib="1"/>
 			</Target>
 		</Build>
