@@ -83,9 +83,12 @@ void cbWorkspace::Load()
 	if (!m_Filename.FileExists())
 	{
 		Manager::Get()->GetMessageManager()->DebugLog(_("File does not exist."));
-		wxString msg;
-		msg.Printf(_("Workspace '%s' does not exist..."), fname.c_str());
-		wxMessageBox(msg, _("Error"), wxOK | wxCENTRE | wxICON_ERROR);
+		if (!m_IsDefault)
+		{
+            wxString msg;
+            msg.Printf(_("Workspace '%s' does not exist..."), fname.c_str());
+            wxMessageBox(msg, _("Error"), wxOK | wxCENTRE | wxICON_ERROR);
+		}
 		// workspace wasn't loaded succesfully
 		m_IsOK = false;
 		return;
