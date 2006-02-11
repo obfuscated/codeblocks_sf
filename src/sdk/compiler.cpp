@@ -19,6 +19,7 @@
     #include "messagemanager.h"
     #include "configmanager.h"
     #include "globals.h"
+    #include "compilerfactory.h"
 
     #include <wx/intl.h>
     #include <wx/regex.h>
