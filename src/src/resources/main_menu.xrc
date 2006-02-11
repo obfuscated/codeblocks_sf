@@ -48,7 +48,7 @@
         <help>Save the active file</help>
       </object>
       <object class="wxMenuItem" name="idFileSaveAs">
-        <label>&amp;Save &amp;as...</label>
+        <label>Save &amp;as...</label>
         <bitmap>images\16x16\filesaveas.png</bitmap>
         <help>Save the active file under a different name</help>
       </object>
