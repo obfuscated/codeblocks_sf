@@ -57,7 +57,7 @@ class cbTextInputStream : public wxTextInputStream
         // The only change, is the removal of the MB2WC function
         // With PipedProcess we work with compilers/debuggers which (usually) don't
         // send us unicode (at least GDB).
-        wxChar cbTextInputStream::NextChar()
+        wxChar NextChar()
         {
         #if wxUSE_UNICODE
             wxChar wbuf[2];
