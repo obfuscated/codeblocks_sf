@@ -52,6 +52,40 @@ class cbTextInputStream : public wxTextInputStream
 #endif
         ~cbTextInputStream(){}
 
+
+        // The folowing function was copied verbatim from wxTextStream::NextChar()
+        // The only change, is the removal of the MB2WC function
+        // With PipedProcess we work with compilers/debuggers which (usually) don't
+        // send us unicode (at least GDB).
+        wxChar cbTextInputStream::NextChar()
+        {
+        #if wxUSE_UNICODE
+            wxChar wbuf[2];
+            memset((void*)m_lastBytes, 0, 10);
+            for(size_t inlen = 0; inlen < 9; inlen++)
+            {
+                // actually read the next character
+                m_lastBytes[inlen] = m_input.GetC();
+
+                if(m_input.LastRead() <= 0)
+                    return wxEOT;
+//                int retlen = (int) m_conv.MB2WC(wbuf, m_lastBytes, 2); // returns -1 for failure
+//                if(retlen >= 0) // res == 0 could happen for '\0' char
+//                    return wbuf[0];
+                return m_lastBytes[inlen]; // C::B fix (?)
+            }
+            // there should be no encoding which requires more than nine bytes for one character...
+            return wxEOT;
+        #else
+            m_lastBytes[0] = m_input.GetC();
+
+            if(m_input.LastRead() <= 0)
+                return wxEOT;
+
+            return m_lastBytes[0];
+        #endif
+        }
+
         // The folowing function was copied verbatim from wxTextStream::ReadLine()
         // The only change, is the addition of m_input.CanRead() in the while()
         wxString ReadLine()
