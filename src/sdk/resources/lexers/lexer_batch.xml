@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Batch"
+				index="12"
+				filemasks="*.bat,*.cmd,*.nt">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+                <Style name="Comment"
+						index="1"
+						fg="128,128,128"/>
+                <Style name="Keyword"
+						index="2"
+						fg="0,0,160"
+						bold="1"/>
+                <Style name="Label"
+						index="3"
+						fg="224,160,0"
+						bold="1"/>
+                <Style name="Hide command character"
+						index="4"
+						fg="128,128,0"/>
+                <Style name="External command"
+						index="5"
+						fg="0,128,128"
+						bold="1"/>
+                <Style name="Variable: %%"
+						index="6"
+						fg="128,0,128"/>
+                <Style name="Operator"
+						index="7"
+						fg="255,0,0"/>
+                <Keywords>
+                        <Language index="0"
+                                value="rem set if exist errorlevel for in do break call chcp cd chdir
+                                       choice cls country ctty date del erase dir echo exit goto
+                                       loadfix loadhigh mkdir md move path pause prompt rename ren
+                                       rmdir rd shift time type ver verify vol com con lpt nul"/>
+                        <User index="1"
+                                value=""/>
+                        <Documentation index="2"
+                                value=""/>
+                </Keywords>
+                <SampleCode value="lexer_batch.sample"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

@@ -79,7 +79,7 @@ void EditorLexerLoader::DoLexer(TiXmlElement* node)
     wxString name = wxString( node->Attribute("name"), wxConvUTF8 );
     int lexer = atol(node->Attribute("index"));
     wxString masks = wxString ( node->Attribute("filemasks"), wxConvUTF8 );
-    int style = m_pTarget->AddHighlightLanguage(lexer, name);
+    HighlightLanguage style = m_pTarget->AddHighlightLanguage(lexer, name);
     if (style == HL_NONE)
         return; // wasn't added
     m_pTarget->SetFileMasks(style, masks);
@@ -90,7 +90,7 @@ void EditorLexerLoader::DoLexer(TiXmlElement* node)
     DoSampleCode(style, node);
 }
 
-void EditorLexerLoader::DoStyles(int language, TiXmlElement* node)
+void EditorLexerLoader::DoStyles(HighlightLanguage language, TiXmlElement* node)
 {
     TiXmlElement* style = node->FirstChildElement("Style");
     while (style)
@@ -149,7 +149,7 @@ void EditorLexerLoader::DoStyles(int language, TiXmlElement* node)
     }
 }
 
-void EditorLexerLoader::DoKeywords(int language, TiXmlElement* node)
+void EditorLexerLoader::DoKeywords(HighlightLanguage language, TiXmlElement* node)
 {
     TiXmlElement* keywords = node->FirstChildElement("Keywords");
     if (!keywords)
@@ -159,7 +159,7 @@ void EditorLexerLoader::DoKeywords(int language, TiXmlElement* node)
     DoSingleKeywordNode(language, keywords, _T("User"));
 }
 
-void EditorLexerLoader::DoSingleKeywordNode(int language, TiXmlElement* node, const wxString& nodename)
+void EditorLexerLoader::DoSingleKeywordNode(HighlightLanguage language, TiXmlElement* node, const wxString& nodename)
 {
     TiXmlElement* keywords = node->FirstChildElement(nodename.mb_str());
     if (!keywords)
@@ -171,7 +171,7 @@ void EditorLexerLoader::DoSingleKeywordNode(int language, TiXmlElement* node, co
         m_pTarget->SetKeywords(language, keyidx, wxString ( keywords->Attribute("value"), wxConvUTF8 ) );
 }
 
-void EditorLexerLoader::DoSampleCode(int language, TiXmlElement* node)
+void EditorLexerLoader::DoSampleCode(HighlightLanguage language, TiXmlElement* node)
 {
     TiXmlElement* sample = node->FirstChildElement("SampleCode");
     if (!sample)

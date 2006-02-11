@@ -2691,6 +2691,16 @@
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_batch.sample">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_batch.xml">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_cg.sample">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
@@ -2725,13 +2735,21 @@
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_d.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_diff.sample">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_diff.xml">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_f77.sample">
 			<Option compilerVar="CPP" />
@@ -2752,7 +2770,6 @@
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_gm.sample">
 			<Option compilerVar="CPP" />

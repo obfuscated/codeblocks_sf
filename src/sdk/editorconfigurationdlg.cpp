@@ -97,7 +97,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 	: m_TextColorControl(0L),
 	m_AutoCompTextControl(0L),
 	m_Theme(0L),
-	m_Lang(-1),
+	m_Lang(HL_NONE),
 	m_DefCodeFileType(0),
 	m_ThemeModified(false),
 	m_LastAutoCompKeyword(-1)
@@ -441,8 +441,11 @@ void EditorConfigurationDlg::LoadThemes()
 	cmbThemes->Clear();
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 	wxArrayString list = cfg->EnumerateSubPaths(_T("/color_sets"));
+	list.Sort();
 	for (unsigned int i = 0; i < list.GetCount(); ++i)
-        cmbThemes->Append(list[i]);
+	{
+        cmbThemes->Append(cfg->Read(_T("/color_sets/") + list[i] + _T("/name"), list[i]));
+	}
     if (cmbThemes->GetCount() == 0)
         cmbThemes->Append(COLORSET_DEFAULT);
     wxString group = cfg->Read(_T("/color_sets/active_color_set"), COLORSET_DEFAULT);
@@ -567,11 +570,14 @@ void EditorConfigurationDlg::OnRenameColorTheme(wxCommandEvent& event)
 
     wxString name = dlg.GetValue();
     wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
-    int idx = cmbThemes->FindString(m_Theme->GetName());
+    int idx = cmbThemes->GetSelection();
     if (idx != wxNOT_FOUND)
         cmbThemes->SetString(idx, name);
     Manager::Get()->GetConfigManager(_T("editor"))->DeleteSubPath(_T("/color_sets/") + m_Theme->GetName());
     m_Theme->SetName(name);
+
+    cmbThemes->SetSelection(cmbThemes->FindString(name));
+    ChangeTheme();
 }
 
 void EditorConfigurationDlg::OnEditKeywords(wxCommandEvent& event)

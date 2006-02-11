@@ -12,12 +12,6 @@ class cbStyledTextCtrl;
 
 #define COLORSET_DEFAULT	_T("default")
 
-typedef short int HighlightLanguage;
-#define HL_AUTO     -2
-#define HL_NONE     -1
-#define HL_LAST     100
-// up to 100 language definitions; should be enough ;)
-
 struct OptionColor
 {
 	wxString name;
@@ -28,8 +22,13 @@ struct OptionColor
 	bool italics;
 	bool underlined;
 	bool isStyle;
+
 	wxColour originalfore;
 	wxColour originalback;
+	bool originalbold;
+	bool originalitalics;
+	bool originalunderlined;
+	bool originalisStyle;
 };
 WX_DEFINE_ARRAY(OptionColor*, OptionColors);
 
@@ -44,7 +43,15 @@ struct OptionSet
     int m_BreakLine;
     int m_DebugLine;
     int m_ErrorLine;
+
+    wxString m_originalKeywords[3]; // 3 keyword sets
+    wxArrayString m_originalFileMasks;
 };
+WX_DECLARE_STRING_HASH_MAP(OptionSet, OptionSetsMap);
+
+typedef wxString HighlightLanguage;
+#define HL_AUTO _T(" ")
+#define HL_NONE _T("  ")
 
 class EditorColorSet
 {
@@ -94,9 +101,8 @@ class EditorColorSet
 		void Load();
 		void ClearAllOptionColors();
 
-		int m_LanguageID;
 		wxString m_Name;
-		OptionSet m_Sets[HL_LAST];
+		OptionSetsMap m_Sets;
 };
 
 #endif // EDITORCOLORSET_H
