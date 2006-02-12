@@ -96,6 +96,9 @@ bool ToolsManager::Execute(Tool* tool)
 	wxString params = tool->params;
 	wxString dir = tool->workingDir;
 
+    // hack to force-update macros
+	Manager::Get()->GetMacrosManager()->RecalcVars(0, 0, 0);
+
 	Manager::Get()->GetMacrosManager()->ReplaceMacros(cmd);
 	Manager::Get()->GetMacrosManager()->ReplaceMacros(params);
 	Manager::Get()->GetMacrosManager()->ReplaceMacros(dir);
