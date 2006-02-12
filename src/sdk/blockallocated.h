@@ -83,9 +83,9 @@ public:
     ~BlockAllocator()
     {
         if(debug)
-            BlkAllc::DebugLog(_U(typeid(T).name()), allocBlocks.size(), pool_size, max_refs, total_refs, ref_count);
+            BlkAllc::DebugLog(cbC2U(typeid(T).name()), allocBlocks.size(), pool_size, max_refs, total_refs, ref_count);
         else if(BlkAllc::enable_global_debug && (BlkAllc::verbose || ref_count != 0))
-            BlkAllc::DebugLog(_U(typeid(T).name()), allocBlocks.size(), pool_size, max_refs, total_refs, ref_count);
+            BlkAllc::DebugLog(cbC2U(typeid(T).name()), allocBlocks.size(), pool_size, max_refs, total_refs, ref_count);
 
         for(unsigned int i = 0; i < allocBlocks.size(); ++i)
             delete[] allocBlocks[i];

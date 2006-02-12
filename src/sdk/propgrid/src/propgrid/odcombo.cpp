@@ -37,6 +37,7 @@
     #include "wx/textctrl.h"
     #include "wx/dcclient.h"
     #include "wx/settings.h"
+    #include "wx/dialog.h"
 
 #endif
 

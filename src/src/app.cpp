@@ -636,6 +636,9 @@ wxString CodeBlocksApp::GetAppPath() const
     GetModuleFileName(0L, name, MAX_PATH);
     wxFileName fname(name);
     base = fname.GetPath(wxPATH_GET_VOLUME);
+#elif defined(__WXMAC__)
+	// TODO: get the path
+	base = _T(".");
 #else
     if (!m_Prefix.IsEmpty())
         return m_Prefix;

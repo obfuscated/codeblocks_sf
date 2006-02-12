@@ -30,6 +30,7 @@
     #include "manager.h"
     #include "pluginmanager.h"
     #include "projectmanager.h"
+    #include "scriptingmanager.h"
     #include "compilerfactory.h"
     #include "globals.h"
 

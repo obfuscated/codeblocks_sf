@@ -47,6 +47,7 @@
 #include <wx/fontmap.h>
 #include <wx/textctrl.h>
 #include <wx/listbook.h>
+#include <wx/listctrl.h>
 
 #include "editorcolorset.h"
 #include "editorconfigurationdlg.h"

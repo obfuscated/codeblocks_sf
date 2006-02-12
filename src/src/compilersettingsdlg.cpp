@@ -18,6 +18,7 @@
 #include <cbplugin.h>
 #include <wx/intl.h>
 #include <wx/listbook.h>
+#include <wx/listctrl.h>
 
 #include "compilersettingsdlg.h"
 #include "appglobals.h"

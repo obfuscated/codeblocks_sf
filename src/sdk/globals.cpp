@@ -34,6 +34,7 @@
     #include "globals.h"
     #include <wx/filename.h>
     #include <wx/file.h>
+    #include <wx/image.h>
     #include "cbexception.h"
 #endif
 
