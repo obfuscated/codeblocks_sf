@@ -24,6 +24,7 @@
 #include "todolist.h"
 #include "addtododlg.h"
 #include "todosettingsdlg.h"
+#include "asktypedlg.h"
 #include <globals.h>
 
 #include <wx/arrimpl.cpp>
@@ -212,8 +213,40 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 	int crlfLen = 0; // length of newline chars
 	int origPos = control->GetCurrentPos(); // keep current position in the document
 	int line = control->GetCurrentLine(); // current line
+	ToDoCommentType CmtType = dlg.GetCommentType();
 	if (dlg.GetPosition() == tdpCurrent)
+	{
 		idx = control->GetCurrentPos(); // current position in the document
+		// if the style is cpp comments (// ...), there's the possibility that the current position
+		// is somewhere in the middle of a line of code; this would result
+		// in everything after the insertion point to turn into comments
+		// let's double check this with the user
+		if(idx != control->GetLineEndPosition(line))
+		{
+			// let's ask the user, and present as options
+			// keep cpp style at current position, switch to c style, add the todo at the end (keeping cpp style)
+			// if user cancels out / do nothing : just return
+			// future idea : check if there's any non white space character
+			// if yes -> in the middle of code
+			// if no -> then only whitespace after the insertion point -> no harm to turn that into comments
+			AskTypeDlg dlg(Manager::Get()->GetAppWindow());
+			PlaceWindow(&dlg);
+			if (dlg.ShowModal() != wxID_OK)
+				return;
+			switch(dlg.GetTypeCorrection())
+			{
+				case tcCppStay:
+					break; // do nothing, leave things as they are
+				case tcCpp2C:
+					CmtType = tdctC;
+					break;
+				case tcCppMove:
+				default:
+					idx = control->GetLineEndPosition(line);
+					break;
+			} // end switch
+		}
+	}
 	else
 	{
 		if (dlg.GetPosition() == tdpAbove)
@@ -239,17 +272,21 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 	wxString buffer;
 
 	// start with the comment
-    if (dlg.GetCommentType() == tdctCpp && dlg.GetPosition() != tdpCurrent)
-		buffer << _T("// "); // if tdpCurrent we can't use this type of comment...
-	else
-    {
-        if (dlg.GetCommentType() == tdctWarning)
-            buffer << _T("#warning ");
-        else if (dlg.GetCommentType() == tdctError)
-            buffer << _T("#error ");
-        else
-            buffer << _T("/* ");
-    }
+	switch(CmtType)
+	{
+		case tdctCpp:
+			buffer << _T("// ");
+			break;
+		case tdctWarning:
+			buffer << _T("#warning ");
+			break;
+		case tdctError:
+			buffer << _T("#error ");
+			break;
+		default:
+			buffer << _T("/* ");
+			break;
+	} // end switch
 
     // continue with the type
 	buffer << dlg.GetType() << _T(" ");
@@ -258,7 +295,7 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 	buffer << _T("(") << dlg.GetUser() << _T("#") << dlg.GetPriority() << _T("#): ");
 
     wxString text = dlg.GetText();
-    if (dlg.GetCommentType() != tdctC)
+    if (CmtType != tdctC)
     {
         // make sure that multi-line notes, don't break the to-do
         if (text.Replace(_T("\r\n"), _T("\\\r\n")) == 0)
@@ -271,10 +308,10 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 	// add the actual text
 	buffer << text;
 
-    if (dlg.GetCommentType() == tdctWarning || dlg.GetCommentType() == tdctError)
+    if (CmtType == tdctWarning || CmtType == tdctError)
         buffer << _T("");
 
-    else if (dlg.GetCommentType() == tdctC || dlg.GetPosition() == tdpCurrent)
+    else if (CmtType == tdctC)// || dlg.GetPosition() == tdpCurrent)
 		buffer << _T(" */");
 
 	// add newline char(s), only if dlg.GetPosition() != tdpCurrent
@@ -297,7 +334,7 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 	control->EnsureCaretVisible();
 
 	m_pListLog->Parse();
-}
+} // end of OnAddItem
 
 void ToDoList::OnReparse(CodeBlocksEvent& event)
 {

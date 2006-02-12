@@ -14,11 +14,13 @@ libtodo_la_LIBADD = ../../sdk/libcodeblocks.la \
 				../../sdk/wxscintilla/libwxscintilla.la
 
 libtodo_la_SOURCES = addtododlg.cpp \
+			asktypedlg.cpp \
 			todolist.cpp \
 			todolistview.cpp \
 			todosettingsdlg.cpp
 
 noinst_HEADERS = addtododlg.h \
+			asktypedlg.h \
 			todolist.h \
 			todolistview.h \
 			todosettingsdlg.h

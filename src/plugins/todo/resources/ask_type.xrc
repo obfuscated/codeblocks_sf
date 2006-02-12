@@ -1,0 +1,65 @@
+<resource>
+    <object class="wxDialog" name="dlgAskType">
+        <title>Validation on used Comment Style needed</title>
+        <centered>1</centered>
+        <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>8</border>
+                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxFlexGridSizer">
+                    <cols>1</cols>
+                    <vgap>0</vgap>
+                    <hgap>0</hgap>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <object class="wxStaticText" name="">
+                            <label>The insertion point is in the middle of a line of code, this will turn \neverything after the insertion point into comments as well.\nWhat would you like to do : </label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <border>8</border>
+                        <flag>wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                        <object class="wxComboBox" name="cmbCorrect">
+                            <selection>0</selection>
+                            <content>
+                                <item>keep C++ style comment and move it to the end of the line</item>
+                                <item>keep C++ style comment at the current position</item>
+                                <item>switch to C style comment(/* ...*/)</item>
+                            </content>
+                            <style>wxCB_READONLY</style>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxStaticLine" name="" />
+            </object>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP</flag>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <object class="wxButton" name="wxID_OK">
+                            <label>&amp;OK</label>
+                            <default>1</default>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <border>8</border>
+                        <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <object class="wxButton" name="wxID_CANCEL">
+                            <label>&amp;Cancel</label>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

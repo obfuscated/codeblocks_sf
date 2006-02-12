@@ -1369,7 +1369,23 @@
 			<Option link="0" />
 			<Option target="To-do" />
 		</Unit>
+		<Unit filename="plugins\todo\asktypedlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\asktypedlg.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="To-do" />
+		</Unit>
 		<Unit filename="plugins\todo\resources\add_todo.xrc">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins\todo\resources\ask_type.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
