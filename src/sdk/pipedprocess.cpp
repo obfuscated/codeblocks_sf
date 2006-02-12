@@ -60,7 +60,7 @@ class cbTextInputStream : public wxTextInputStream
         wxChar NextChar()
         {
         #if wxUSE_UNICODE
-            wxChar wbuf[2];
+//            wxChar wbuf[2];
             memset((void*)m_lastBytes, 0, 10);
             for(size_t inlen = 0; inlen < 9; inlen++)
             {
