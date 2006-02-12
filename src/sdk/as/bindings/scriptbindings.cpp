@@ -85,8 +85,8 @@ void RegisterBindings(asIScriptEngine* engine)
     Register_wxString(engine);
     Register_wxArrayString(engine);
 
-    // IO is disabled, for security reasons
-//    Register_IO(engine);
+    // IO is enabled, but just for harmless functions
+    Register_IO(engine);
 
     // register types
     engine->RegisterObjectType("Editor", 0, asOBJ_CLASS);
@@ -154,7 +154,7 @@ void Register_ConfigManager(asIScriptEngine* engine)
     engine->RegisterObjectMethod("ConfigManagerClass", "void Write(const wxString& in,const wxString& in,bool)", asMETHODPR(ConfigManager, Write, (const wxString&,const wxString&,bool), void), asCALL_THISCALL);
 
     // actually bind ConfigManager's instance
-    engine->RegisterGlobalProperty("ConfigManagerClass ConfigManager", Manager::Get()->GetConfigManager(_T("volatile:scripting")));
+    engine->RegisterGlobalProperty("ConfigManagerClass ConfigManager", Manager::Get()->GetConfigManager(_T("scripts")));
 }
 
 //------------------------------------------------------------------------------
