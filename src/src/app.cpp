@@ -318,11 +318,11 @@ void CodeBlocksApp::InitLocale()
         wxLocale::AddCatalogLookupPathPrefix(ConfigManager::GetDataFolder() + _T("/locale"));
         wxLocale::AddCatalogLookupPathPrefix(wxT("."));
         wxLocale::AddCatalogLookupPathPrefix(wxT(".."));
-		int catalogNum = cfg->ReadInt(_T("/locale/catalogNum"), 0);
+		int catalogNum = cfg->ReadInt(_T("/locale/catalogNum"), (int)0);
 		if (catalogNum == 0)
 		{
 			catalogNum = 1;
-			cfg->Write(_T("/locale/Domain1"), _T("codeblocks"));
+			cfg->Write(_T("/locale/Domain1"), "codeblocks");
 		}
 
 		for (int i = 1; i <= catalogNum; ++i)
