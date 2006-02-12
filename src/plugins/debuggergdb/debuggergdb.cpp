@@ -991,7 +991,8 @@ void DebuggerGDB::SendCommand(const wxString& cmd)
 
 void DebuggerGDB::RunCommand(int cmd)
 {
-    if (!m_pProcess || !IsStopped())
+    // just check for the process
+    if (!m_pProcess)
         return;
 
     switch (cmd)
