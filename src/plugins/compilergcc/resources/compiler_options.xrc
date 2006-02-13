@@ -276,7 +276,7 @@
                                     <orient>wxHORIZONTAL</orient>
                                     <object class="sizeritem">
                                       <flag>wxRIGHT</flag>
-                                      <border>8</border>
+                                      <border>4</border>
                                       <object class="wxButton" name="btnAddLib">
                                         <label>Add</label>
                                         <style>wxBU_EXACTFIT</style>
@@ -284,7 +284,7 @@
                                     </object>
                                     <object class="sizeritem">
                                       <flag>wxRIGHT</flag>
-                                      <border>8</border>
+                                      <border>4</border>
                                       <object class="wxButton" name="btnEditLib">
                                         <label>Edit</label>
                                         <style>wxBU_EXACTFIT</style>
@@ -292,7 +292,7 @@
                                     </object>
                                     <object class="sizeritem">
                                       <flag>wxRIGHT</flag>
-                                      <border>8</border>
+                                      <border>4</border>
                                       <object class="wxButton" name="btnDelLib">
                                         <label>Delete</label>
                                         <style>wxBU_EXACTFIT</style>
@@ -305,7 +305,7 @@
                                       </object>
                                     </object>
                                   </object>
-                                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+                                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
                                   <border>4</border>
                                 </object>
                               </object>
