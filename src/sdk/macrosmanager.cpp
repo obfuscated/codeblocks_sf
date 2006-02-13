@@ -41,6 +41,7 @@
     #include "globals.h"
 #endif
 
+#include <stdlib.h>
 
 /*
     standard macros are:
@@ -108,6 +109,7 @@ void MacrosManager::Reset()
     ClearProjectKeys();
     m_re.Compile(_T("(%|\\$[({]?)(#?[A-Za-z_0-9.]+)([)}%/\\]?)"));
     m_uVarMan = Manager::Get()->GetUserVariableManager();
+    srand(time(0));
 }
 
 void MacrosManager::ClearProjectKeys()
@@ -311,9 +313,16 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuil
         }
         else
         {
-            MacrosMap::iterator it;
-            if((it = macros.find(var)) != macros.end())
-                replace = it->second;
+            if(var.IsSameAs(_T("COIN")))
+                replace = rand() & 1 ? _T("1") : _T("0");
+            else if(var.IsSameAs(_T("RANDOM")))
+                replace = wxString::Format(_T("%d"), rand() & 0xffff);
+            else
+            {
+                MacrosMap::iterator it;
+                if((it = macros.find(var)) != macros.end())
+                    replace = it->second;
+            }
         }
 
 
