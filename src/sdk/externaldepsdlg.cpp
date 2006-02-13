@@ -27,6 +27,8 @@
 
 BEGIN_EVENT_TABLE(ExternalDepsDlg, wxDialog)
     EVT_UPDATE_UI(-1, ExternalDepsDlg::OnUpdateUI)
+    EVT_LISTBOX_DCLICK(XRCID("lstAdditionalFiles"), ExternalDepsDlg::OnEditAdditional)
+    EVT_LISTBOX_DCLICK(XRCID("lstExternalFiles"), ExternalDepsDlg::OnEditExternal)
     EVT_BUTTON(XRCID("btnAddAdditional"), ExternalDepsDlg::OnAddAdditional)
     EVT_BUTTON(XRCID("btnEditAdditional"), ExternalDepsDlg::OnEditAdditional)
     EVT_BUTTON(XRCID("btnDelAdditional"), ExternalDepsDlg::OnDelAdditional)
