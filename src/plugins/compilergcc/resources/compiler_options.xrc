@@ -291,8 +291,16 @@
                                       </object>
                                     </object>
                                     <object class="sizeritem">
+                                      <flag>wxRIGHT</flag>
+                                      <border>8</border>
                                       <object class="wxButton" name="btnDelLib">
                                         <label>Delete</label>
+                                        <style>wxBU_EXACTFIT</style>
+                                      </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                      <object class="wxButton" name="btnClearLib">
+                                        <label>Clear</label>
                                         <style>wxBU_EXACTFIT</style>
                                       </object>
                                     </object>

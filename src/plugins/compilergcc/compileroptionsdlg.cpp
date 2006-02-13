@@ -58,6 +58,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_UPDATE_UI(			XRCID("btnAddLib"),	        CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnEditLib"),	    CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnDelLib"),	        CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnClearLib"),	        CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("spnLibs"),	        CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("txtMasterPath"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnMasterPath"),		CompilerOptionsDlg::OnUpdateUI)
@@ -100,6 +101,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_BUTTON(			    XRCID("btnEditLib"),	    CompilerOptionsDlg::OnEditLibClick)
 	EVT_LISTBOX_DCLICK(		XRCID("lstLibs"),   	    CompilerOptionsDlg::OnEditLibClick)
     EVT_BUTTON(			    XRCID("btnDelLib"),	        CompilerOptionsDlg::OnRemoveLibClick)
+    EVT_BUTTON(			    XRCID("btnClearLib"),	        CompilerOptionsDlg::OnClearLibClick)
     EVT_BUTTON(			    XRCID("btnExtraAdd"),	    CompilerOptionsDlg::OnAddExtraPathClick)
     EVT_BUTTON(			    XRCID("btnExtraEdit"),	    CompilerOptionsDlg::OnEditExtraPathClick)
     EVT_BUTTON(			    XRCID("btnExtraDelete"),	CompilerOptionsDlg::OnRemoveExtraPathClick)
@@ -1309,6 +1311,15 @@ void CompilerOptionsDlg::OnRemoveLibClick(wxCommandEvent& event)
         lstLibs->Delete(lstLibs->GetSelection());
 }
 
+void CompilerOptionsDlg::OnClearLibClick(wxCommandEvent& event)
+{
+    wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
+    if (!lstLibs || lstLibs->GetSelection() < 0)
+        return;
+    if (wxMessageBox(_("Remove all libraries from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxOK)
+        lstLibs->Clear();
+}
+
 void CompilerOptionsDlg::OnAddExtraPathClick(wxCommandEvent& event)
 {
     wxString path = ChooseDirectory(this,
@@ -1544,6 +1555,7 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     bool en = XRCCTRL(*this, "lstLibs", wxListBox)->GetSelection() >= 0;
     XRCCTRL(*this, "btnEditLib", wxButton)->Enable(en);
     XRCCTRL(*this, "btnDelLib", wxButton)->Enable(en);
+    XRCCTRL(*this, "btnClearLib", wxButton)->Enable(en);
     XRCCTRL(*this, "spnLibs", wxSpinButton)->Enable(en);
 
     // add/edit/delete vars
@@ -1675,7 +1687,7 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
     int myid = 0;
     unsigned int myidx = 0;
 
-    const wxChar* str_libs[3] = { _T("btnEditLib"),_T("btnAddLib"),_T("btnDelLib") };
+    const wxChar* str_libs[4] = { _T("btnEditLib"),_T("btnAddLib"),_T("btnDelLib"),_T("btnClearLib") };
     const wxChar* str_dirs[3] = { _T("btnEditDir"),_T("btnAddDir"),_T("btnDelDir") };
     const wxChar* str_vars[3] = { _T("btnEditVar"),_T("btnAddVar"),_T("btnDeleteVar") };
     const wxChar* str_xtra[3] = { _T("btnExtraEdit"),_T("btnExtraAdd"),_T("btnExtraDelete") };
