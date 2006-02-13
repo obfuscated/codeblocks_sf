@@ -29,15 +29,34 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& types)
     if (m_Types.Index(_T("NOTE")) == wxNOT_FOUND)
         cmb->Append(_T("NOTE"));
 
-    wxString sels = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_type"));
-    if (!sels.IsEmpty())
+    wxString lastType = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_type"));
+    wxString lastStyle = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_style"));
+    wxString lastPos = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_position"));
+    if (!lastType.IsEmpty())
     {
-        int sel = cmb->FindString(sels);
+        int sel = cmb->FindString(lastType);
         if (sel != -1)
             cmb->SetSelection(sel);
     }
     else
         cmb->SetSelection(0);
+
+
+    cmb = XRCCTRL(*this, "cmbStyle", wxComboBox);
+    if (!lastStyle.IsEmpty())
+    {
+        int sel = cmb->FindString(lastStyle);
+        if (sel != -1)
+            cmb->SetSelection(sel);
+    }
+
+    cmb = XRCCTRL(*this, "cmbPosition", wxComboBox);
+    if (!lastPos.IsEmpty())
+    {
+        int sel = cmb->FindString(lastPos);
+        if (sel != -1)
+            cmb->SetSelection(sel);
+    }
 }
 
 AddTodoDlg::~AddTodoDlg()
@@ -124,6 +143,10 @@ void AddTodoDlg::EndModal(int retVal)
         }
 
         Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_type"), cmb->GetValue());
+        cmb = XRCCTRL(*this, "cmbStyle", wxComboBox);
+        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_style"), cmb->GetValue());
+        cmb = XRCCTRL(*this, "cmbPosition", wxComboBox);
+        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_position"), cmb->GetValue());
 	}
 
 	wxDialog::EndModal(retVal);
