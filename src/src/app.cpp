@@ -143,14 +143,14 @@ void CodeBlocksApp::InitAssociations()
             HideSplashScreen();
             wxString msg;
             msg.Printf(_("%s is not currently the default application for C/C++ source files\nDo you want to set it as default?"), g_AppName.c_str());
-            int answer = wxMessageBox(msg,
+            int answer = cbMessageBox(msg,
                                         _("File associations"),
                                         wxICON_QUESTION | wxYES_NO | wxYES_DEFAULT);
             if (answer == wxYES)
                 Associations::Set();
             else
             {
-                wxMessageBox(_("File associations will *not* be checked from now on, on program startup.\n"
+                cbMessageBox(_("File associations will *not* be checked from now on, on program startup.\n"
                                "If you want to enable the check, go to \"Settings/Environment\" and check \"Check & set file associations\"..."),
                              _("Information"),
                              wxICON_INFORMATION);
@@ -196,15 +196,15 @@ void CodeBlocksApp::InitImageHandlers()
 
 void CodeBlocksApp::ClearConf()
 {
-    int ret = wxMessageBox(_("Do you want to clear all Code::Blocks configuration settings?"), _("Clear configuration settings"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
+    int ret = cbMessageBox(_("Do you want to clear all Code::Blocks configuration settings?"), _("Clear configuration settings"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
     if (ret == wxYES)
     {
-        ret = wxMessageBox(_("Are you *really* sure you want to clear all Code::Blocks configuration settings?"), _("Clear configuration settings"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
+        ret = cbMessageBox(_("Are you *really* sure you want to clear all Code::Blocks configuration settings?"), _("Clear configuration settings"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
         if (ret == wxYES)
         {
 //            OldConfigManager::Get()->DeleteAll(); // leave this for now
             //Manager::Get()->GetConfigManager(_T("app"))->DeleteAll();
-            ret = wxMessageBox(_("Code::Blocks configuration settings cleared"), _("Information"), wxICON_INFORMATION);
+            ret = cbMessageBox(_("Code::Blocks configuration settings cleared"), _("Information"), wxICON_INFORMATION);
         }
     }
     // When using the --clear-configuration switch, the program doesn't run
@@ -509,7 +509,7 @@ void CodeBlocksApp::OnFatalException()
     if ( preview.Show(report) )
         report.Process();
 #else
-    wxMessageBox(wxString::Format(_("Something has gone wrong inside %s and it "
+    cbMessageBox(wxString::Format(_("Something has gone wrong inside %s and it "
                                     "will terminate immediately.\n"
                                     "We are sorry for the inconvenience..."), g_AppName.c_str()));
 #endif
@@ -572,7 +572,7 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
         else
             msg << _("Batch build stopped with errors.\n");
         msg << wxString::Format(_("Process exited with status code %d."), m_BatchExitCode);
-        wxMessageBox(msg, g_AppName, m_BatchExitCode == 0 ? wxICON_INFORMATION : wxICON_WARNING);
+        cbMessageBox(msg, g_AppName, m_BatchExitCode == 0 ? wxICON_INFORMATION : wxICON_WARNING);
     }
     else
         wxBell();
@@ -621,7 +621,7 @@ bool CodeBlocksApp::CheckResource(const wxString& res)
     		g_AppName.c_str(),
     		ConfigManager::ReadDataPath().c_str(),
     		g_AppName.c_str());
-    	wxMessageBox(msg);
+    	cbMessageBox(msg);
     	return false;
     }
 

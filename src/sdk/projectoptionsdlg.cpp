@@ -525,7 +525,7 @@ void ProjectOptionsDlg::OnCopyBuildTargetClick(wxCommandEvent& event)
         return;
     if (!m_Project->DuplicateBuildTarget(targetIdx, newTargetName))
     {
-        wxMessageBox(_("Failed to duplicate this build target..."), _("Error"), wxICON_ERROR);
+        cbMessageBox(_("Failed to duplicate this build target..."), _("Error"), wxICON_ERROR);
         return;
     }
 
@@ -593,7 +593,7 @@ void ProjectOptionsDlg::OnExportTargetClick(wxCommandEvent& event)
     if (dlg.ShowModal() == wxID_YES)
     {
         if (m_Project->ExportTargetAsProject(target->GetTitle()))
-            wxMessageBox(_("New project created succesfully!"), _("Information"), wxICON_INFORMATION);
+            cbMessageBox(_("New project created succesfully!"), _("Information"), wxICON_INFORMATION);
     }
 }
 
@@ -695,7 +695,7 @@ bool ProjectOptionsDlg::DoCheckScripts(CompileTargetBase* base)
             wxString msg;
             msg << _("Invalid build script: ") + scripts[i] << _T('\n');
             msg << _("First seen in: ") + base->GetTitle() << _T('\n');
-            wxMessageBox(msg, _("Error"), wxICON_ERROR);
+            cbMessageBox(msg, _("Error"), wxICON_ERROR);
             return false;
         }
     }
@@ -713,7 +713,7 @@ void ProjectOptionsDlg::OnCheckScripts(wxCommandEvent& event)
             return;
     }
 
-    wxMessageBox(_("All scripts seem to be valid!"), _("Information"), wxICON_INFORMATION);
+    cbMessageBox(_("All scripts seem to be valid!"), _("Information"), wxICON_INFORMATION);
 }
 
 void ProjectOptionsDlg::OnAddScript(wxCommandEvent& event)

@@ -38,6 +38,7 @@
     #include "pluginmanager.h"
     #include "cbplugin.h"
     #include "simpletextlog.h"
+    #include "globals.h"
 #endif
 
 #include <wx/laywin.h>
@@ -76,7 +77,7 @@ class BatchLogWindow : public wxDialog
                 cbCompilerPlugin* compiler = static_cast<cbCompilerPlugin*>(arr[0]);
                 if (compiler && compiler->IsRunning())
                 {
-                    if (wxMessageBox(_("The build is in progress. Are you sure you want to abort it?"),
+                    if (cbMessageBox(_("The build is in progress. Are you sure you want to abort it?"),
                                     _("Abort build?"),
                                     wxICON_QUESTION | wxYES_NO) == wxYES)
                     {
@@ -278,7 +279,7 @@ int MessageManager::AddLog(MessageLog* log, const wxString& title, const wxBitma
 void MessageManager::RemoveLog(MessageLog* log)
 {
     int id = m_pNotebook->GetPageIndex(log);
-//    wxMessageBox(wxString::Format(_T("Removing %d"), id));
+//    cbMessageBox(wxString::Format(_T("Removing %d"), id));
     if (id != -1)
         m_pNotebook->RemovePage(id);
     for (LogsMap::iterator it = m_Logs.begin(); it != m_Logs.end(); ++it)

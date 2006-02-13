@@ -107,7 +107,7 @@ void CfgMgrBldr::SwitchTo(const wxString& absFileName)
     }
 
     if(doc->ErrorId())
-        wxMessageBox(wxString(_T("TinyXML error:\n")) << _U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
+        cbMessageBox(wxString(_T("TinyXML error:\n")) << _U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
 
     TiXmlElement* docroot = doc->FirstChildElement(_C(CfgMgrConsts::rootTag));
     if(!docroot)
@@ -123,11 +123,11 @@ void CfgMgrBldr::SwitchTo(const wxString& absFileName)
     }
 
     if(doc->ErrorId())
-        wxMessageBox(wxString(_T("TinyXML error:\n")) << _U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
+        cbMessageBox(wxString(_T("TinyXML error:\n")) << _U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
 
     const char *vers = docroot->Attribute("version");
     if(!vers || atoi(vers) != 1)
-        wxMessageBox(_("ConfigManager encountered an unknown config file version. Continuing happily."), _("Warning"), wxICON_WARNING);
+        cbMessageBox(_("ConfigManager encountered an unknown config file version. Continuing happily."), _("Warning"), wxICON_WARNING);
 
     doc->ClearError();
 }
@@ -456,7 +456,7 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
 {
     if(doc->ErrorId())
     {
-        wxMessageBox(wxString(_T("TinyXML error:\n")) << _U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
+        cbMessageBox(wxString(_T("TinyXML error:\n")) << _U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
         doc->ClearError();
     }
 
@@ -530,7 +530,7 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
         }
         if(doc->Error())
         {
-            wxMessageBox(wxString(_T("TinyXML error:\n")) << _U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
+            cbMessageBox(wxString(_T("TinyXML error:\n")) << _U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
             doc->ClearError();
         }
     }
@@ -992,7 +992,7 @@ void ConfigManager::DeleteSubPath(const wxString& thePath)
 {
     if(doc->ErrorId())
     {
-        wxMessageBox(wxString(_T("### TinyXML error:\n")) << _U(doc->ErrorDesc()));
+        cbMessageBox(wxString(_T("### TinyXML error:\n")) << _U(doc->ErrorDesc()));
         doc->ClearError();
     }
 

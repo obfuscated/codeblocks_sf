@@ -143,7 +143,7 @@ cbProject* TemplateManager::NewProject()
 	// one-time warning message
     if (Manager::Get()->GetConfigManager(_T("template_manager"))->ReadBool(_T("/notification"), true))
     {
-    	wxMessageBox(_("These templates are only provided for your convenience.\n"
+    	cbMessageBox(_("These templates are only provided for your convenience.\n"
                         "Many of the available templates need extra libraries "
                         "in order to be compiled successfully.\n\n"
                         "Extra libraries which Code::Blocks does *NOT* provide..."),
@@ -200,12 +200,12 @@ cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
 
     if (!wxDirExists(ProjectPath + wxFILE_SEP_PATH))
     {
-        if (wxMessageBox(wxString::Format(_("The directory %s does not exist. Are you sure you want to create it?"), ProjectPath.c_str()), _("Confirmation"), wxICON_QUESTION | wxYES_NO) != wxYES)
+        if (cbMessageBox(wxString::Format(_("The directory %s does not exist. Are you sure you want to create it?"), ProjectPath.c_str()), _("Confirmation"), wxICON_QUESTION | wxYES_NO) != wxYES)
             return NULL;
     }
     if (wxDirExists(ProjectPath + wxFILE_SEP_PATH + dlg.GetProjectName() + wxFILE_SEP_PATH))
     {
-        if (wxMessageBox(wxString::Format(_("The directory %s already exists. Are you sure you want to create the new project there?"), wxString(ProjectPath + wxFILE_SEP_PATH + dlg.GetProjectName()).c_str()), _("Confirmation"), wxICON_QUESTION | wxYES_NO) != wxYES)
+        if (cbMessageBox(wxString::Format(_("The directory %s already exists. Are you sure you want to create the new project there?"), wxString(ProjectPath + wxFILE_SEP_PATH + dlg.GetProjectName()).c_str()), _("Confirmation"), wxICON_QUESTION | wxYES_NO) != wxYES)
             return NULL;
     }
 
@@ -216,13 +216,13 @@ cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     LOGSTREAM << _T("Creating ") << fname.GetPath() << _T('\n');
     if (!CreateDirRecursively(fname.GetPath() + wxFILE_SEP_PATH))
     {
-        wxMessageBox(_("Failed to create directory ") + fname.GetPath(), _("Error"), wxICON_ERROR);
+        cbMessageBox(_("Failed to create directory ") + fname.GetPath(), _("Error"), wxICON_ERROR);
         return NULL;
     }
 
     if (ProjectPath != Manager::Get()->GetConfigManager(_T("template_manager"))->Read(_T("/projects_path")))
     {
-        if (wxMessageBox(wxString::Format(_("Do you want to set %s as the default directory for new projects?"), ProjectPath.c_str()), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
+        if (cbMessageBox(wxString::Format(_("Do you want to set %s as the default directory for new projects?"), ProjectPath.c_str()), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
             Manager::Get()->GetConfigManager(_T("template_manager"))->Write(_T("/projects_path"), ProjectPath);
     }
 
@@ -261,7 +261,7 @@ cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
                 {
                     wxString msg;
                     msg.Printf(_("File %s already exists.\nDo you really want to overwrite this file?"), dst.c_str());
-                    if (wxMessageBox(msg, _("Overwrite existing file?"), wxYES_NO | wxICON_WARNING) == wxYES)
+                    if (cbMessageBox(msg, _("Overwrite existing file?"), wxYES_NO | wxICON_WARNING) == wxYES)
                         break;
                     wxFileDialog fdlg(0L,
                                         _("Save file as..."),
@@ -273,7 +273,7 @@ cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
                     if (fdlg.ShowModal() == wxID_CANCEL)
                     {
                         msg.Printf(_("File %s is skipped..."), dst.c_str());
-                        wxMessageBox(msg, _("File skipped"), wxICON_ERROR);
+                        cbMessageBox(msg, _("File skipped"), wxICON_ERROR);
                         skipped = true;
                         break;
                     }
@@ -295,9 +295,9 @@ cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
         Manager::Get()->GetProjectManager()->RebuildTree();
 
         if (!pt->m_Notice.IsEmpty())
-            wxMessageBox(pt->m_Notice, _("Notice"), pt->m_NoticeMsgType);
+            cbMessageBox(pt->m_Notice, _("Notice"), pt->m_NoticeMsgType);
         if (!option.notice.IsEmpty())
-            wxMessageBox(option.notice, _("Notice"), option.noticeMsgType);
+            cbMessageBox(option.notice, _("Notice"), option.noticeMsgType);
     }
     return prj;
 }
@@ -358,12 +358,12 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
             Manager::Get()->GetMessageManager()->DebugLog(_("Failed copying %s to %s"), src.c_str(), dst.c_str());
     }
     if (count != total_count)
-        wxMessageBox(_("Some files could not be loaded with the template..."), _("Error"), wxICON_ERROR);
+        cbMessageBox(_("Some files could not be loaded with the template..."), _("Error"), wxICON_ERROR);
     else
     {
         // open new project
         if (project_filename.IsEmpty())
-            wxMessageBox(_("User-template saved succesfuly but no project file exists in it!"));
+            cbMessageBox(_("User-template saved succesfuly but no project file exists in it!"));
         else
         {
         	// ask to rename the project file, if need be
@@ -390,7 +390,7 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
     if (!prj->SaveAllFiles() ||
         !prj->Save())
     {
-        wxMessageBox(_("Could not save project and/or all its files. Aborting..."), _("Error"), wxICON_ERROR);
+        cbMessageBox(_("Could not save project and/or all its files. Aborting..."), _("Error"), wxICON_ERROR);
         return;
     }
 
@@ -418,7 +418,7 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
             break;
         }
         else
-            wxMessageBox(_("You have another template with the same title.\nPlease choose another title..."));
+            cbMessageBox(_("You have another template with the same title.\nPlease choose another title..."));
     }
 
     wxBusyCursor busy;
@@ -442,12 +442,12 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
     }
     fname.Assign(prj->GetFilename());
     if (!wxCopyFile(prj->GetFilename(), templ + fname.GetFullName()))
-        wxMessageBox(_("Failed to copy the project file!"), _("Error"), wxICON_ERROR);
+        cbMessageBox(_("Failed to copy the project file!"), _("Error"), wxICON_ERROR);
 
     if (count == total_count)
-        wxMessageBox(_("User-template saved succesfuly"));
+        cbMessageBox(_("User-template saved succesfuly"));
     else
-        wxMessageBox(_("Some files could not be saved with the template..."), _("Error"), wxICON_ERROR);
+        cbMessageBox(_("Some files could not be saved with the template..."), _("Error"), wxICON_ERROR);
 }
 
 // events

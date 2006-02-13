@@ -94,7 +94,7 @@ bool ProjectDepsDlg::SaveList()
 
         if (!Manager::Get()->GetProjectManager()->AddProjectDependency(thisprj, prj))
         {
-            wxMessageBox(wxString::Format(_("Cannot add project '%s' as a dependency to '%s' because this "
+            cbMessageBox(wxString::Format(_("Cannot add project '%s' as a dependency to '%s' because this "
                                             "would cause a circular dependency error..."),
                                             thisprj->GetTitle().c_str(), prj->GetTitle().c_str()),
                         _("Error"), wxICON_ERROR);

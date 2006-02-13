@@ -464,7 +464,7 @@ bool EditorConfigurationDlg::AskToSaveTheme()
     {
         wxString msg;
         msg.Printf(_("The color theme \"%s\" is modified.\nDo you want to save the changes?"), m_Theme->GetName().c_str());
-        int ret = wxMessageBox(msg, _("Save"), wxYES_NO | wxCANCEL);
+        int ret = cbMessageBox(msg, _("Save"), wxYES_NO | wxCANCEL);
         switch (ret)
         {
             case wxYES: m_Theme->Save(); break;
@@ -550,7 +550,7 @@ void EditorConfigurationDlg::OnAddColorTheme(wxCommandEvent& event)
 
 void EditorConfigurationDlg::OnDeleteColorTheme(wxCommandEvent& event)
 {
-    if (wxMessageBox(_("Are you sure you want to delete this theme?"), _("Confirmation"), wxYES_NO) == wxYES)
+    if (cbMessageBox(_("Are you sure you want to delete this theme?"), _("Confirmation"), wxYES_NO) == wxYES)
     {
         Manager::Get()->GetConfigManager(_T("editor"))->DeleteSubPath(_T("/color_sets/") + m_Theme->GetName());
         wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
@@ -615,7 +615,7 @@ void EditorConfigurationDlg::OnColorsReset(wxCommandEvent& event)
 	    wxString tmp;
 	    tmp.Printf(_("Are you sure you want to reset all settings to defaults for \"%s\"?"),
                     m_Theme->GetLanguageName(m_Lang).c_str());
-        if (wxMessageBox(tmp, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxYES)
+        if (cbMessageBox(tmp, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxYES)
         {
             m_Theme->Reset(m_Lang);
             ApplyColors();
@@ -699,7 +699,7 @@ void EditorConfigurationDlg::OnAutoCompAdd(wxCommandEvent& event)
         AutoCompleteMap::iterator it = m_AutoCompMap.find(key);
         if (it != m_AutoCompMap.end())
         {
-            wxMessageBox(_("This keyword already exists!"), _("Error"), wxICON_ERROR);
+            cbMessageBox(_("This keyword already exists!"), _("Error"), wxICON_ERROR);
             return;
         }
         m_AutoCompMap[key] = _T("");
@@ -718,7 +718,7 @@ void EditorConfigurationDlg::OnAutoCompDelete(wxCommandEvent& event)
     if (lstKeyword->GetSelection() == -1)
         return;
 
-    if (wxMessageBox(_("Are you sure you want to delete this keyword?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
+    if (cbMessageBox(_("Are you sure you want to delete this keyword?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
         return;
 
     int sel = lstKeyword->GetSelection();

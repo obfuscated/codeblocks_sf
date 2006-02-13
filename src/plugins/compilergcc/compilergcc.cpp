@@ -1111,7 +1111,7 @@ bool CompilerGCC::UseMake(ProjectBuildTarget* target)
                 if (!Manager::Get()->GetConfigManager(_T("compiler"))->Exists(_T("/notify_no_make")))
                 {
                     Manager::Get()->GetConfigManager(_T("compiler"))->Set(_T("/notify_no_make"));
-                    wxMessageBox(_("Code::Blocks no longer supports the \"GNU make\" build method, "
+                    cbMessageBox(_("Code::Blocks no longer supports the \"GNU make\" build method, "
                                     "except for projects which\nare using a custom Makefile "
                                     "(in which case, this build method is selected automatically).\n"
                                     "This poses no problem on the overall build process and this "
@@ -1135,7 +1135,7 @@ bool CompilerGCC::CompilerValid(ProjectBuildTarget* target)
 	{
 		wxString msg;
 		msg.Printf(_("This %s is configured to use an invalid compiler.\nThe operation failed..."), target ? _("target") : _("project"));
-		wxMessageBox(msg, _("Error"), wxICON_ERROR);
+		cbMessageBox(msg, _("Error"), wxICON_ERROR);
 	}
 	return ret;
 }
@@ -1147,7 +1147,7 @@ bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
     // display error about incorrect compile environment
 	if (!m_EnvironmentMsg.IsEmpty())
 	{
-		wxMessageBox(m_EnvironmentMsg, _("Error"), wxICON_ERROR);
+		cbMessageBox(m_EnvironmentMsg, _("Error"), wxICON_ERROR);
 		m_EnvironmentMsg.Clear(); // once is enough, per session...
 	}
 
@@ -1278,7 +1278,7 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), exe_filename.c_str());
     if (!wxFileExists(exe_filename))
     {
-    	int ret = wxMessageBox(_("It seems that this file has not been built yet.\n"
+    	int ret = cbMessageBox(_("It seems that this file has not been built yet.\n"
                                 "Do you want to build it now?"),
                                 _("Information"),
                                 wxYES | wxNO | wxCANCEL | wxICON_QUESTION);
@@ -1388,7 +1388,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 		// check for hostapp
 		if (target->GetHostApplication().IsEmpty())
 		{
-			wxMessageBox(_("You must select a host application to \"run\" a library..."));
+			cbMessageBox(_("You must select a host application to \"run\" a library..."));
             m_Project->SetCurrentlyCompilingTarget(0);
 			return -1;
 		}
@@ -1406,7 +1406,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     else
     {
         // commands-only target?
-        wxMessageBox(_("You can't \"run\" a commands-only target..."));
+        cbMessageBox(_("You can't \"run\" a commands-only target..."));
         m_Project->SetCurrentlyCompilingTarget(0);
         return -1;
     }
@@ -1414,7 +1414,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), f.GetFullPath().c_str());
     if (!wxFileExists(f.GetFullPath()))
     {
-    	int ret = wxMessageBox(_("It seems that this project has not been built yet.\n"
+    	int ret = cbMessageBox(_("It seems that this project has not been built yet.\n"
                                 "Do you want to build it now?"),
                                 _("Information"),
                                 wxYES | wxNO | wxCANCEL | wxICON_QUESTION);
@@ -1511,7 +1511,7 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
 
 void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
 {
-    wxMessageBox(_("This functionality has been temporarily removed from Code::Blocks.\n"
+    cbMessageBox(_("This functionality has been temporarily removed from Code::Blocks.\n"
                     "With all the updates from the last couple of months, the makefile exporter "
                     "is not anymore in-sync with the rest of the build process.\n"
                     "We are sorry for the inconvenience..."),
@@ -1537,7 +1537,7 @@ void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
     }
     wxString msg;
     msg.Printf(_("\"%s\" has been exported in the same directory as the project file."), makefile.c_str());
-    wxMessageBox(msg);
+    cbMessageBox(msg);
 }
 
 void CompilerGCC::InitBuildState(BuildJob job, const wxString& target)
@@ -2080,10 +2080,10 @@ int CompilerGCC::KillProcess()
         }
         else switch (ret)
         {
-//            case wxKILL_ACCESS_DENIED: wxMessageBox(_("Access denied")); break;
-//            case wxKILL_NO_PROCESS: wxMessageBox(_("No process")); break;
-//            case wxKILL_BAD_SIGNAL: wxMessageBox(_("Bad signal")); break;
-//            case wxKILL_ERROR: wxMessageBox(_("Unspecified error")); break;
+//            case wxKILL_ACCESS_DENIED: cbMessageBox(_("Access denied")); break;
+//            case wxKILL_NO_PROCESS: cbMessageBox(_("No process")); break;
+//            case wxKILL_BAD_SIGNAL: cbMessageBox(_("Bad signal")); break;
+//            case wxKILL_ERROR: cbMessageBox(_("Unspecified error")); break;
 
             case wxKILL_OK:
             default: break;//Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Process killed..."));
@@ -2104,7 +2104,7 @@ ProjectBuildTarget* CompilerGCC::GetBuildTargetForFile(ProjectFile* pf)
 
     if (!pf->buildTargets.GetCount())
     {
-        wxMessageBox(_("That file isn't assigned to any target."),
+        cbMessageBox(_("That file isn't assigned to any target."),
                     _("Information"), wxICON_INFORMATION);
         return 0;
     }
@@ -2158,7 +2158,7 @@ int CompilerGCC::CompileFile(const wxString& file)
 
         if (useMake)
         {
-            wxMessageBox(_("That file doesn't belong to a project.\n"
+            cbMessageBox(_("That file doesn't belong to a project.\n"
                             "If you want to compile it as stand-alone, please use the \"Invoke compiler directly\" build method\n"
                             "(Settings->Compiler->Other->Build method)"),
                         _("Information"), wxICON_INFORMATION);

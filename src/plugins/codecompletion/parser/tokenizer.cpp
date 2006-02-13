@@ -31,7 +31,7 @@
 #include <wx/msgdlg.h>
 #include "../../../sdk/manager.h"
 #include <cctype>
-
+#include <globals.h>
 
 namespace TokenizerConsts
 {
@@ -76,7 +76,7 @@ bool Tokenizer::Init(const wxString& filename)
 	{
 		if (m_Filename.IsEmpty())
 		{
-			wxMessageBox(_T("Tokenizer::Init() called without filename..."));
+			cbMessageBox(_T("Tokenizer::Init() called without filename..."));
 			return false;
 		}
 	}
@@ -88,13 +88,13 @@ bool Tokenizer::Init(const wxString& filename)
 
 	if (!ReadFile())
 	{
-		wxMessageBox(_T("File ") + filename + _T(" does not exist..."));
+		cbMessageBox(_T("File ") + filename + _T(" does not exist..."));
 		return false;
 	}
 
 	if (!m_BufferLen)
 	{
-		//wxMessageBox("File is empty!");
+		//cbMessageBox("File is empty!");
 		return false;
 	}
 

@@ -6,6 +6,7 @@
 #include <scriptingmanager.h>
 #include <scriptingcall.h>
 #include <angelscript.h>
+#include <globals.h>
 
 #include <wx/arrimpl.cpp> // this is a magic incantation which must be done!
 WX_DEFINE_OBJARRAY(TypesArray);
@@ -374,9 +375,9 @@ void GDB_driver::ParseOutput(const wxString& output)
             {
                 // don't ask; it's already shown
                 // just grab the user's attention
-                wxMessageBox(lines[i], _("Signal received"), wxICON_ERROR);
+                cbMessageBox(lines[i], _("Signal received"), wxICON_ERROR);
             }
-            else if (wxMessageBox(wxString::Format(_("%s\nDo you want to view the backtrace?"), lines[i].c_str()), _("Signal received"), wxICON_ERROR | wxYES_NO) == wxYES)
+            else if (cbMessageBox(wxString::Format(_("%s\nDo you want to view the backtrace?"), lines[i].c_str()), _("Signal received"), wxICON_ERROR | wxYES_NO) == wxYES)
             {
                 // show the backtrace window
                 CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);

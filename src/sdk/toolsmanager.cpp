@@ -313,5 +313,5 @@ void ToolsManager::OnToolClick(wxCommandEvent& event)
     SANITY_CHECK();
 	Tool* tool = GetToolById(event.GetId());
 	if (!Execute(tool))
-		wxMessageBox(_("Could not execute ") + tool->name);
+		cbMessageBox(_("Could not execute ") + tool->name);
 }

@@ -158,7 +158,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
     if (!pfd.object_dir_native.IsEmpty() && !wxDirExists(pfd.object_dir_native))
     {
         if (!CreateDirRecursively(pfd.object_dir_native, 0755))
-            wxMessageBox(_("Can't create object output directory ") + pfd.object_dir_native);
+            cbMessageBox(_("Can't create object output directory ") + pfd.object_dir_native);
     }
 
     bool isResource = ft == ftResource;
@@ -348,7 +348,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
 
     // make sure all project files are saved
     if (!m_pProject->SaveAllFiles())
-        wxMessageBox(_("Could not save all files. Build might be incomplete..."));
+        cbMessageBox(_("Could not save all files. Build might be incomplete..."));
 
     // set list of #include directories
     DepsSearchStart(target);
@@ -539,7 +539,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     if (!dstname.IsEmpty() && !wxDirExists(dstname))
     {
         if (!CreateDirRecursively(dstname, 0755))
-            wxMessageBox(_("Can't create output directory ") + dstname);
+            cbMessageBox(_("Can't create output directory ") + dstname);
     }
 
     // add actual link command

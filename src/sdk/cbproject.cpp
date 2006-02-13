@@ -267,7 +267,7 @@ void cbProject::Open()
 	{
         wxString msg;
         msg.Printf(_("Project '%s' does not exist..."), m_Filename.c_str());
-        wxMessageBox(msg, _("Error"), wxOK | wxCENTRE | wxICON_ERROR);
+        cbMessageBox(msg, _("Error"), wxOK | wxCENTRE | wxICON_ERROR);
         return;
     }
 
@@ -346,7 +346,7 @@ void cbProject::Open()
             wxString msg;
             msg.Printf(_("The project file of \"%s\" needs to be updated to the latest format.\n"
                         "This will happen automatically when you save the project."), m_Title.c_str());
-            wxMessageBox(msg, _("Information"), wxICON_INFORMATION);
+            cbMessageBox(msg, _("Information"), wxICON_INFORMATION);
         }
 	}
 	else

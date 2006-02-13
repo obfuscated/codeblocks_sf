@@ -48,7 +48,7 @@ void cbException::ShowErrorMessage(bool safe)
     if (safe)
         wxSafeShowMessage(title, err);
     else
-        wxMessageBox(err, title, wxICON_ERROR);
+        cbMessageBox(err, title, wxICON_ERROR);
 }
 
 

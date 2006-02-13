@@ -920,7 +920,7 @@ void CompilerOptionsDlg::CompilerChanged(ScopeTreeData* data)
 
 void CompilerOptionsDlg::UpdateCompilerForTargets(int compilerIdx)
 {
-    int ret = wxMessageBox(_("You have changed the compiler used for the project.\n"
+    int ret = cbMessageBox(_("You have changed the compiler used for the project.\n"
                             "Do you want to use the same compiler for all the project's build targets too?"),
                             _("Question"),
                             wxICON_QUESTION | wxYES_NO);
@@ -950,7 +950,7 @@ void CompilerOptionsDlg::AutoDetectCompiler()
         {
             wxString msg;
             msg.Printf(_("Auto-detected installation path of \"%s\"\nin \"%s\""), compiler->GetName().c_str(), compiler->GetMasterPath().c_str());
-            wxMessageBox(msg);
+            cbMessageBox(msg);
         }
         break;
 
@@ -960,7 +960,7 @@ void CompilerOptionsDlg::AutoDetectCompiler()
             msg.Printf(_("Could not auto-detect installation path of \"%s\"...\n"
                         "Do you want to use this compiler's default installation directory?"),
                         compiler->GetName().c_str());
-            if (wxMessageBox(msg, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
+            if (cbMessageBox(msg, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
                 compiler->SetMasterPath(backup);
         }
         break;
@@ -1066,7 +1066,7 @@ void CompilerOptionsDlg::OnRemoveDirClick(wxCommandEvent& event)
     wxListBox* control = GetDirsListBox();
     if (!control || control->GetSelection() < 0)
         return;
-	if (wxMessageBox(_("Remove '")+control->GetStringSelection()+_("' from the list?"),
+	if (cbMessageBox(_("Remove '")+control->GetStringSelection()+_("' from the list?"),
 					_("Confirmation"),
 					wxOK | wxCANCEL | wxICON_QUESTION) == wxOK)
 	{
@@ -1136,7 +1136,7 @@ void CompilerOptionsDlg::OnRemoveVarClick(wxCommandEvent& event)
 	if (key.IsEmpty())
 		return;
 
-	if (wxMessageBox(_("Are you sure you want to delete this variable?"),
+	if (cbMessageBox(_("Are you sure you want to delete this variable?"),
 					_("Confirmation"),
 					wxYES | wxNO | wxICON_QUESTION) == wxYES)
 	{
@@ -1152,7 +1152,7 @@ void CompilerOptionsDlg::OnSetDefaultCompilerClick(wxCommandEvent& event)
     CompilerFactory::SetDefaultCompiler(idx);
     wxString msg;
     msg.Printf(_("%s is now selected as the default compiler for new projects"), CompilerFactory::GetDefaultCompiler()->GetName().c_str());
-    wxMessageBox(msg);
+    cbMessageBox(msg);
 }
 
 void CompilerOptionsDlg::OnAddCompilerClick(wxCommandEvent& event)
@@ -1187,7 +1187,7 @@ void CompilerOptionsDlg::OnAddCompilerClick(wxCommandEvent& event)
         DoFillOptions();
         DoLoadOptions(newIdx, 0);
         m_LastCompilerIdx = newIdx;
-        wxMessageBox(_("The new compiler has been added! Don't forget to update the \"Programs\" page..."));
+        cbMessageBox(_("The new compiler has been added! Don't forget to update the \"Programs\" page..."));
     }
 }
 
@@ -1206,7 +1206,7 @@ void CompilerOptionsDlg::OnEditCompilerClick(wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnRemoveCompilerClick(wxCommandEvent& event)
 {
-	if (wxMessageBox(_("Are you sure you want to remove this compiler?"),
+	if (cbMessageBox(_("Are you sure you want to remove this compiler?"),
 					_("Confirmation"),
 					wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxOK)
     {
@@ -1228,10 +1228,10 @@ void CompilerOptionsDlg::OnRemoveCompilerClick(wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnResetCompilerClick(wxCommandEvent& event)
 {
-	if (wxMessageBox(_("Reset this compiler's settings to the defaults?"),
+	if (cbMessageBox(_("Reset this compiler's settings to the defaults?"),
 					_("Confirmation"),
 					wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxOK)
-	if (wxMessageBox(_("Reset this compiler's settings to the defaults?\n"
+	if (cbMessageBox(_("Reset this compiler's settings to the defaults?\n"
 	                   "\nAre you REALLY sure?"),
 					_("Confirmation"),
 					wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxOK)
@@ -1307,7 +1307,7 @@ void CompilerOptionsDlg::OnRemoveLibClick(wxCommandEvent& event)
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
     if (!lstLibs || lstLibs->GetSelection() < 0)
         return;
-    if (wxMessageBox(_("Remove library '")+lstLibs->GetStringSelection()+_("' from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxOK)
+    if (cbMessageBox(_("Remove library '")+lstLibs->GetStringSelection()+_("' from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxOK)
         lstLibs->Delete(lstLibs->GetSelection());
 }
 
@@ -1316,7 +1316,7 @@ void CompilerOptionsDlg::OnClearLibClick(wxCommandEvent& event)
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
     if (!lstLibs || lstLibs->GetSelection() < 0)
         return;
-    if (wxMessageBox(_("Remove all libraries from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxOK)
+    if (cbMessageBox(_("Remove all libraries from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxOK)
         lstLibs->Clear();
 }
 
@@ -1339,7 +1339,7 @@ void CompilerOptionsDlg::OnAddExtraPathClick(wxCommandEvent& event)
         wxArrayString extraPaths = CompilerFactory::GetCompiler(compilerIdx)->GetExtraPaths();
         if (extraPaths.Index(path) != wxNOT_FOUND)
         {
-            wxMessageBox(_("Path already in extra paths list!"), _("Warning"), wxICON_WARNING);
+            cbMessageBox(_("Path already in extra paths list!"), _("Warning"), wxICON_WARNING);
             return;
         }
         extraPaths.Add(path);
@@ -1373,7 +1373,7 @@ void CompilerOptionsDlg::OnEditExtraPathClick(wxCommandEvent& event)
     wxArrayString extraPaths = CompilerFactory::GetCompiler(compilerIdx)->GetExtraPaths();
     if (extraPaths.Index(path) != wxNOT_FOUND)
     {
-        wxMessageBox(_("Path already in extra paths list!"), _("Warning"), wxICON_WARNING);
+        cbMessageBox(_("Path already in extra paths list!"), _("Warning"), wxICON_WARNING);
         return;
     }
     extraPaths[control->GetSelection()] = path;
@@ -1636,7 +1636,7 @@ void CompilerOptionsDlg::OnApply()
     {
         m_pProject->SetCompilerID(CompilerFactory::GetCompiler(idx)->GetID());
         UpdateCompilerForTargets(idx);
-        wxMessageBox(_("You changed the compiler used for this project.\n"
+        cbMessageBox(_("You changed the compiler used for this project.\n"
                         "It is recommended that you fully rebuild your project, "
                         "otherwise linking errors might occur..."),
                         _("Notice"),
@@ -1664,7 +1664,7 @@ void CompilerOptionsDlg::OnApply()
     if (spn)
     {
         if (m_Compiler->IsRunning())
-            wxMessageBox(_("You can't change the number of parallel processes while building!\nSetting ignored..."), _("Warning"), wxICON_WARNING);
+            cbMessageBox(_("You can't change the number of parallel processes while building!\nSetting ignored..."), _("Warning"), wxICON_WARNING);
         else
         {
             Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/parallel_processes"), (int)spn->GetValue());

@@ -1146,7 +1146,7 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
 //    Manager::Get()->GetMessageManager()->DebugLog(_("Opening project '%s'"), filename.c_str());
     if (!wxFileExists(filename))
     {
-        wxMessageBox(_("The project file does not exist..."), _("Error"), wxICON_ERROR);
+        cbMessageBox(_("The project file does not exist..."), _("Error"), wxICON_ERROR);
         return false;
     }
 
@@ -1638,7 +1638,7 @@ void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
 	if (!ed || !project)
 		return;
 
-	if (wxMessageBox(_("Do you want to add this new file in the active project?"),
+	if (cbMessageBox(_("Do you want to add this new file in the active project?"),
 					_("Add file to project"),
 					wxYES_NO | wxICON_QUESTION) == wxYES)
 	{
@@ -1764,7 +1764,7 @@ void MainFrame::OnFileSave(wxCommandEvent& event)
     {
         wxString msg;
         msg.Printf(_("File %s could not be saved..."), Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename().c_str());
-        wxMessageBox(msg, _("Error saving file"));
+        cbMessageBox(msg, _("Error saving file"));
     }
     DoUpdateStatusBar();
 }
@@ -1775,7 +1775,7 @@ void MainFrame::OnFileSaveAs(wxCommandEvent& event)
     {
         wxString msg;
         msg.Printf(_("File %s could not be saved..."), Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename().c_str());
-        wxMessageBox(msg, _("Error saving file"));
+        cbMessageBox(msg, _("Error saving file"));
     }
     DoUpdateStatusBar();
 }
@@ -2317,7 +2317,7 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
 {
     if (m_LastLayoutName == gDefaultLayout)
     {
-        if (wxMessageBox(_("The default layout cannot be deleted. It can always be reverted to "
+        if (cbMessageBox(_("The default layout cannot be deleted. It can always be reverted to "
                         "a predefined state though.\nDo you want to revert it now?"),
                         _("Confirmation"),
                         wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
@@ -2328,7 +2328,7 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
         }
     }
 
-    if (wxMessageBox(wxString::Format(_("Are you really sure you want to delete the layout '%s'?"), m_LastLayoutName.c_str()),
+    if (cbMessageBox(wxString::Format(_("Are you really sure you want to delete the layout '%s'?"), m_LastLayoutName.c_str()),
                     _("Confirmation"),
                     wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
     {
@@ -2351,7 +2351,7 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
                 m_PluginIDsMap.erase(it2);
         }
 
-        wxMessageBox(wxString::Format(_("Layout '%s' deleted.\nWill now revert to layout '%s'..."), m_LastLayoutName.c_str(), gDefaultLayout.c_str()),
+        cbMessageBox(wxString::Format(_("Layout '%s' deleted.\nWill now revert to layout '%s'..."), m_LastLayoutName.c_str(), gDefaultLayout.c_str()),
                         _("Information"), wxICON_INFORMATION);
 
         // finally, revert to the default layout
@@ -2907,13 +2907,13 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
 
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/show_close_button"), false) != edmanCloseBtn)
         {
-        	wxMessageBox(_("Some of the changes you made will be applied after you restart Code::Blocks."),
+        	cbMessageBox(_("Some of the changes you made will be applied after you restart Code::Blocks."),
                             _("Information"),
                             wxICON_INFORMATION);
         }
 	}
 	if (needRestart)
-        wxMessageBox(_("Code::Blocks needs to be restarted for the changes to take effect."), _("Information"), wxICON_INFORMATION);
+        cbMessageBox(_("Code::Blocks needs to be restarted for the changes to take effect."), _("Information"), wxICON_INFORMATION);
 }
 
 void MainFrame::OnGlobalUserVars(wxCommandEvent& event)
@@ -2939,7 +2939,7 @@ void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
 	if (Manager::Get()->GetPluginManager()->Configure() == wxID_OK)
 	{
         // mandrav: disabled on-the-fly plugins enabling/disabling (still has glitches)
-        wxMessageBox(_("Changes will take effect on the next startup."),
+        cbMessageBox(_("Changes will take effect on the next startup."),
                     _("Information"),
                     wxICON_INFORMATION);
 //        wxBusyCursor busy;

@@ -567,7 +567,7 @@ void EditorColorSet::Load()
 		    cfg->DeleteSubPath(key);
 		    if (!s_notifiedUser)
 		    {
-		        wxMessageBox(_("The way editor syntax highlighting configuration is saved, has changed.\n"
+		        cbMessageBox(_("The way editor syntax highlighting configuration is saved, has changed.\n"
                                 "Syntax highlighting for all supported languages will revert to defaults now.\n"
                                 "We 're sorry for the inconvenience..."),
                                 _("Information"),

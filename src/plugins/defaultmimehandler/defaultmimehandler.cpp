@@ -157,7 +157,7 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
                         mt->wildcard = wild;
                         mt->useEditor = false;
                         mt->program = prg;
-                        mt->programIsModal = wxMessageBox(_("Do you want Code::Blocks to be disabled while the external program is running?"), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES;
+                        mt->programIsModal = cbMessageBox(_("Do you want Code::Blocks to be disabled while the external program is running?"), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES;
                         m_MimeTypes.Add(mt);
                         return DoOpenFile(mt, filename);
                     }

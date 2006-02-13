@@ -134,7 +134,7 @@ void EditPathDlg::OnBrowse(wxCommandEvent& event)
     if (m_AskMakeRelative && !m_Basepath.IsEmpty())
     {
         // ask the user if he wants it to be kept as relative
-        if (wxMessageBox(_("Keep this as a relative path?"),
+        if (cbMessageBox(_("Keep this as a relative path?"),
                         _("Question"),
                         wxICON_QUESTION | wxYES_NO) == wxYES)
         {

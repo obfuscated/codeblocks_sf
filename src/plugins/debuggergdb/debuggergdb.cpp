@@ -346,7 +346,7 @@ int DebuggerGDB::Configure()
 //
 //	bool needsRestart = Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debug_log"), false) != m_HasDebugLog;
 //	if (needsRestart)
-//        wxMessageBox(_("Code::Blocks needs to be restarted for the changes to take effect."), _("Information"), wxICON_INFORMATION);
+//        cbMessageBox(_("Code::Blocks needs to be restarted for the changes to take effect."), _("Information"), wxICON_INFORMATION);
     return 0;
 }
 
@@ -608,7 +608,7 @@ wxString DebuggerGDB::GetDebuggee(ProjectBuildTarget* target)
             // check for hostapp
             if (target->GetHostApplication().IsEmpty())
             {
-                wxMessageBox(_("You must select a host application to \"run\" a library..."));
+                cbMessageBox(_("You must select a host application to \"run\" a library..."));
                 return wxEmptyString;
             }
             out = UnixFilename(target->GetHostApplication());
@@ -688,7 +688,7 @@ int DebuggerGDB::Debug()
         target = project->GetBuildTarget(m_TargetIndex);
         if (target->GetTargetType() == ttCommandsOnly)
         {
-            wxMessageBox(_("The selected target is only running pre/post build step commands\n"
+            cbMessageBox(_("The selected target is only running pre/post build step commands\n"
                         "Can't debug such a target..."), _("Information"), wxICON_INFORMATION);
             msgMan->Log(m_PageIndex, _("aborted"));
             return 3;
@@ -705,7 +705,7 @@ int DebuggerGDB::Debug()
     {
         wxString msg;
         msg.Printf(_("This %s is configured to use an invalid debugger.\nThe operation failed..."), target ? _("target") : _("project"));
-        wxMessageBox(msg, _("Error"), wxICON_ERROR);
+        cbMessageBox(msg, _("Error"), wxICON_ERROR);
         return 9;
     }
 
@@ -730,7 +730,7 @@ int DebuggerGDB::Debug()
     cmdexe = FindDebuggerExecutable(actualCompiler);
     if (cmdexe.IsEmpty())
 	{
-        wxMessageBox(_("The debugger executable is not set.\n"
+        cbMessageBox(_("The debugger executable is not set.\n"
                     "To set it, go to \"Settings/Configure plugins/Compiler\", switch to the \"Programs\" tab\n"
                     "and select the debugger program."), _("Error"), wxICON_ERROR);
         msgMan->Log(m_PageIndex, _("Aborted"));
@@ -777,7 +777,7 @@ int DebuggerGDB::Debug()
     // start debugger driver based on target compiler, or default compiler if no target
     if (!m_State.StartDriver(target))
     {
-        wxMessageBox(_T("Could not decide which debugger to use!"), _T("Error"), wxICON_ERROR);
+        cbMessageBox(_T("Could not decide which debugger to use!"), _T("Error"), wxICON_ERROR);
         return -1;
     }
     m_State.GetDriver()->SetDebugWindows(m_pBacktrace, m_pDisassembly, m_pCPURegisters);
@@ -1244,7 +1244,7 @@ void DebuggerGDB::Stop()
 			wxKillError err = m_pProcess->Kill(m_Pid, wxSIGKILL);
 			if (err == wxKILL_OK){
 /*
-				wxMessageBox(_("Debug session terminated!"),
+				cbMessageBox(_("Debug session terminated!"),
 					_("Debug"), wxOK | wxICON_EXCLAMATION);
 */
 			}
@@ -1534,7 +1534,7 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
 
 	if (m_NoDebugInfo)
 	{
-        wxMessageBox(_("This project/target has no debugging info."
+        cbMessageBox(_("This project/target has no debugging info."
                         "Please change this in the project's build options and retry..."),
                         _("Error"),
                         wxICON_STOP);

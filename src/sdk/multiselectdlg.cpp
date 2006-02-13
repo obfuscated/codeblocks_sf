@@ -144,7 +144,7 @@ void MultiSelectDlg::OnWildcard(wxCommandEvent& event)
     if (wild.IsEmpty())
         return;
 
-    bool clear = wxMessageBox(_("Do you want to clear the previous selections?"),
+    bool clear = cbMessageBox(_("Do you want to clear the previous selections?"),
                             _("Question"),
                             wxICON_QUESTION | wxYES_NO) == wxYES;
     SelectWildCard(wild, true, clear);

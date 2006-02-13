@@ -9,6 +9,7 @@
     #include "configmanager.h"
     #include "cbeditor.h"
     #include <settings.h>
+    #include "globals.h"
 
     #include <wx/msgdlg.h>
     #include <wx/file.h>
@@ -140,13 +141,13 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
 	r = m_pEngine->AddScriptSection(_C(module), _C(filename), script, strlen(script), 0, false);
 	if (r < 0)
 	{
-	    wxMessageBox(wxString::Format(_("Error returned from scripting AddScriptSection():\nError code: %d\nMessage: %s"), r, GetErrorDescription(r).c_str()), _("Scripting error"), wxICON_ERROR);
+	    cbMessageBox(wxString::Format(_("Error returned from scripting AddScriptSection():\nError code: %d\nMessage: %s"), r, GetErrorDescription(r).c_str()), _("Scripting error"), wxICON_ERROR);
 	    return r;
 	}
 	r = m_pEngine->Build(_C(module));
 	if (r < 0)
 	{
-	    wxMessageBox(wxString::Format(_("Error returned from scripting Build():\nError code: %d\nMessage: %s"), r, GetErrorDescription(r).c_str()), _("Scripting error"), wxICON_ERROR);
+	    cbMessageBox(wxString::Format(_("Error returned from scripting Build():\nError code: %d\nMessage: %s"), r, GetErrorDescription(r).c_str()), _("Scripting error"), wxICON_ERROR);
 	    return r;
 	}
 
@@ -161,7 +162,7 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
         ret = exec.Call();
         if (!exec.Success())
         {
-            if (wxMessageBox(_("An exception has been raised from the script:\n\n") +
+            if (cbMessageBox(_("An exception has been raised from the script:\n\n") +
                             exec.CreateErrorString() +
                             _("\n\nDo you want to open this script in the editor?"), _T("Script error"), wxICON_ERROR | wxYES_NO) == wxYES)
             {
@@ -183,7 +184,7 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
         wxRegEx re(_T("\\(([0-9]+), ([0-9]+)\\)[ \t]:[ \t][Ee]rror[ \t]+:[ \t](.*)"));
         if (re.Matches(s_Errors))
         {
-            if (wxMessageBox(s_Errors + _T("\n\nDo you want to open this script in the editor?"), _("Script error"), wxICON_ERROR | wxYES_NO) == wxYES)
+            if (cbMessageBox(s_Errors + _T("\n\nDo you want to open this script in the editor?"), _("Script error"), wxICON_ERROR | wxYES_NO) == wxYES)
             {
                 cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname);
                 if (ed)

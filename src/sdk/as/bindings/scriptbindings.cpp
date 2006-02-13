@@ -12,6 +12,7 @@
 #include "sc_wxstring.h"
 #include "sc_wxarraystring.h"
 #include "sc_io.h"
+#include <globals.h>
 
 #ifdef offsetof
     #undef offsetof
@@ -54,11 +55,11 @@ static const int scICON_QUESTION    = wxICON_QUESTION;
 static const int scICON_INFORMATION = wxICON_INFORMATION;
 static const int scICON_WARNING     = wxICON_WARNING;
 static const int scICON_ERROR       = wxICON_ERROR;
-int gMessage(const wxString& msg, const wxString& caption, int buttons){ return wxMessageBox(msg, caption, buttons); }
-void gShowMessage(const wxString& msg){ wxMessageBox(msg, _("Script message")); }
-void gShowMessageWarn(const wxString& msg){ wxMessageBox(msg, _("Script message (warning)"), wxICON_WARNING); }
-void gShowMessageError(const wxString& msg){ wxMessageBox(msg, _("Script message (error)"), wxICON_ERROR); }
-void gShowMessageInfo(const wxString& msg){ wxMessageBox(msg, _("Script message (information)"), wxICON_INFORMATION); }
+int gMessage(const wxString& msg, const wxString& caption, int buttons){ return cbMessageBox(msg, caption, buttons); }
+void gShowMessage(const wxString& msg){ cbMessageBox(msg, _("Script message")); }
+void gShowMessageWarn(const wxString& msg){ cbMessageBox(msg, _("Script message (warning)"), wxICON_WARNING); }
+void gShowMessageError(const wxString& msg){ cbMessageBox(msg, _("Script message (error)"), wxICON_ERROR); }
+void gShowMessageInfo(const wxString& msg){ cbMessageBox(msg, _("Script message (information)"), wxICON_INFORMATION); }
 void gDebugLog(const wxString& msg){ DBGLOG(msg); }
 wxString gReplaceMacros(const wxString& buffer, bool envVarsToo)
 {

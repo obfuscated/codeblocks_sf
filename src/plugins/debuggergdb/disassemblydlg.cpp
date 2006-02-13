@@ -114,9 +114,9 @@ void DisassemblyDlg::OnSave(wxCommandEvent& event)
     }
 
     if (XRCCTRL(*this, "txtCode", wxTextCtrl)->SaveFile(dlg.GetPath()))
-        wxMessageBox(_("File saved"), _("Result"), wxICON_INFORMATION);
+        cbMessageBox(_("File saved"), _("Result"), wxICON_INFORMATION);
     else
-        wxMessageBox(_("File could not be saved..."), _("Result"), wxICON_ERROR);
+        cbMessageBox(_("File could not be saved..."), _("Result"), wxICON_ERROR);
 }
 
 void DisassemblyDlg::OnRefresh(wxCommandEvent& event)

@@ -18,6 +18,7 @@
     #include <wx/button.h>
     #include <wx/msgdlg.h>
     #include <wx/listbox.h>
+    #include <globals.h>
 #endif
 
 #include "editarraystringdlg.h"
@@ -85,7 +86,7 @@ void EditArrayStringDlg::OnEdit(wxCommandEvent& event)
 
 void EditArrayStringDlg::OnDelete(wxCommandEvent& event)
 {
-	if (wxMessageBox(_("Delete this item?"), _("Confirm"), wxYES_NO) == wxYES)
+	if (cbMessageBox(_("Delete this item?"), _("Confirm"), wxYES_NO) == wxYES)
 	{
 		wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
 		list->Delete(list->GetSelection());

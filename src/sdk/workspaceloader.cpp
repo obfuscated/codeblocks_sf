@@ -22,6 +22,7 @@
     #include "projectmanager.h"
     #include "messagemanager.h"
     #include "cbproject.h"
+    #inclued "globals.h"
     #include "workspaceloader.h"
 #endif
 
@@ -121,7 +122,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
 						cbProject* pProject = GetpMan()->LoadProject(fname.GetFullPath(), true); // activate it
 						if(!pProject)
 						{
-							wxMessageBox(_("Unable to open ") + projectFilename,
+							cbMessageBox(_("Unable to open ") + projectFilename,
 							 _("Opening WorkSpace") + filename, wxICON_WARNING);
 						}
 					}
@@ -134,7 +135,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
 					cbProject* pProject = GetpMan()->LoadProject(fname.GetFullPath(), false); // don't activate it
 					if(!pProject)
 					{
-						wxMessageBox(_("Unable to open ") + projectFilename,
+						cbMessageBox(_("Unable to open ") + projectFilename,
 						 _("Opening WorkSpace") + filename, wxICON_WARNING);
 					}
                     break;

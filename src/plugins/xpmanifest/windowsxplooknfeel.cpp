@@ -34,6 +34,7 @@
 #include <messagemanager.h>
 #include <licenses.h>
 #include "windowsxplooknfeel.h"
+#include <globals.h>
 
 CB_IMPLEMENT_PLUGIN(WindowsXPLookNFeel, "Windows XP Look'n'Feel");
 
@@ -90,7 +91,7 @@ int WindowsXPLookNFeel::Execute()
 	if (!project)
 	{
 		wxString msg = _("No active project!");
-		wxMessageBox(msg, _("Error"), wxICON_ERROR | wxOK);
+		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK);
 		Manager::Get()->GetMessageManager()->DebugLog(msg);
 		return -1;
 	}
@@ -130,7 +131,7 @@ int WindowsXPLookNFeel::Execute()
 
 	if (target)
 	{
-		if (wxMessageBox(_("Do you want to create the manifest file?"),
+		if (cbMessageBox(_("Do you want to create the manifest file?"),
 						_("Confirmation"),
 						wxYES_NO | wxICON_QUESTION) == wxNO)
 			return -2;
@@ -171,7 +172,7 @@ int WindowsXPLookNFeel::Execute()
 		wxFile file(filename, wxFile::write);
 		cbWrite(file,buffer);
 
-		wxMessageBox(_("Manifest file created"));
+		cbMessageBox(_("Manifest file created"));
 	}
 
 	return 0;

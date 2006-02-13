@@ -726,7 +726,7 @@ bool EditorManager::QueryClose(EditorBase *ed)
 // TODO (mandrav#1#): Move this in EditorBase
         wxString msg;
         msg.Printf(_("File %s is modified...\nDo you want to save the changes?"), ed->GetFilename().c_str());
-        switch (wxMessageBox(msg, _("Save file"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
+        switch (cbMessageBox(msg, _("Save file"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
         {
             case wxYES:     if (!ed->Save())
                                 return false;
@@ -852,7 +852,7 @@ bool EditorManager::SaveAll()
 		{
 			wxString msg;
 			msg.Printf(_("File %s could not be saved..."), ed->GetFilename().c_str());
-			wxMessageBox(msg, _("Error saving file"));
+			cbMessageBox(msg, _("Error saving file"));
 		}
     }
 #ifdef USE_OPENFILES_TREE
@@ -913,7 +913,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
         	msg.Printf(_("%s has been deleted, or is no longer available.\n"
 				"Do you wish to keep the file open?\n"
 				"Yes to keep the file, No to close it."), ed->GetFilename().c_str());
-        	if (wxMessageBox(msg, _("File changed!"), wxYES_NO) == wxYES)
+        	if (cbMessageBox(msg, _("File changed!"), wxYES_NO) == wxYES)
 				ed->SetModified(true);
 			else
 			{
@@ -975,7 +975,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
     {
         wxString msg;
         msg.Printf(_("Could not reload all files:\n\n%s"), GetStringFromArray(failedFiles, _T("\n")).c_str());
-        wxMessageBox(msg, _("Error"), wxICON_ERROR);
+        cbMessageBox(msg, _("Error"), wxICON_ERROR);
     }
 	m_isCheckingForExternallyModifiedFiles = false;
 }
@@ -1361,7 +1361,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 // we can make a user-definable                 // tiwag 050902
                 bool DONTASK = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/auto_wrap_search"), true);
                 if (DONTASK) wxBell();                          // tiwag 050902
-                if (DONTASK || wxMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK)
+                if (DONTASK || cbMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK)
                 {
                     if (data->directionDown)
                     {
@@ -1383,7 +1383,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
             {
                 wxString msg;
                 msg.Printf(_("Not found: %s"), data->findText.c_str());
-                wxMessageBox(msg, _("Result"), wxICON_INFORMATION);
+                cbMessageBox(msg, _("Result"), wxICON_INFORMATION);
                 break; // done
             }
         }
@@ -1391,7 +1391,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         {
             wxString msg;
             msg.Printf(_("Not found: %s"), data->findText.c_str());
-            wxMessageBox(msg, _("Result"), wxICON_INFORMATION);
+            cbMessageBox(msg, _("Result"), wxICON_INFORMATION);
             break; // done
         }
         else
@@ -1468,7 +1468,7 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     // if the list is empty, leave
     if (filesList.GetCount() == 0)
     {
-        wxMessageBox(_("No files to search in!"), _("Error"), wxICON_WARNING);
+        cbMessageBox(_("No files to search in!"), _("Error"), wxICON_WARNING);
         return 0;
     }
 
@@ -1560,7 +1560,7 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         if ( data->delOldSearches )
         {
             msg.Printf(_("Not found: %s"), data->findText.c_str());
-            wxMessageBox(msg, _("Result"), wxICON_INFORMATION);
+            cbMessageBox(msg, _("Result"), wxICON_INFORMATION);
         }
         else
         {

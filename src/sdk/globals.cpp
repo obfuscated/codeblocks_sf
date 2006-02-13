@@ -305,7 +305,7 @@ bool CreateDirRecursively(const wxString& full_path, int perms)
         wxFileName tmp(_T("C:") + full_path.SubString(1, full_path.Length()));
         dirs = tmp.GetDirs();
         currdir = _T("\\\\") + dirs[0] + wxFILE_SEP_PATH;
-        wxMessageBox(currdir);
+        cbMessageBox(currdir);
         dirs.RemoveAt(0);
     }
     else
@@ -345,7 +345,7 @@ wxString ChooseDirectory(wxWindow* parent,
     if (askToMakeRelative && !basePath.IsEmpty())
     {
         // ask the user if he wants it to be kept as relative
-        if (wxMessageBox(_("Keep this as a relative path?"),
+        if (cbMessageBox(_("Keep this as a relative path?"),
                          _("Question"),
                          wxICON_QUESTION | wxYES_NO) == wxYES)
         {
@@ -603,7 +603,7 @@ wxBitmap LoadPNGWindows2000Hack(const wxString& filename)
 
 #ifdef __WXMSW__
 
-void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
+void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
 {
     HMONITOR hMonitor;
     MONITORINFO mi;
@@ -614,7 +614,7 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
     if(!w)
         cbThrow(_T("Passed NULL pointer to PlaceWindow."));
 
-    wxTopLevelWindow *referenceWindow = Manager::Get()->GetAppWindow();
+    wxWindow *referenceWindow = Manager::Get()->GetAppWindow();
 
     if(!referenceWindow)    // no application window available, so this is as good as we can get
         referenceWindow = w;
@@ -716,7 +716,7 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
 #else // ----- non-Windows ----------------------------------------------
 
 
-void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
+void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
 // TODO (thomas#1#): The non-Windows implementation is *pathetic*.
 // However, I don't know how to do it well under GTK / X / Xinerama / whatever.
 // Anyone?

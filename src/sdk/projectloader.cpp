@@ -97,7 +97,7 @@ bool ProjectLoader::Open(const wxString& filename)
         else if (major >= PROJECT_FILE_VERSION_MAJOR && minor > PROJECT_FILE_VERSION_MINOR)
         {
             pMsg->DebugLog(_("Project version is > %d.%d. Trying to load..."), PROJECT_FILE_VERSION_MAJOR, PROJECT_FILE_VERSION_MINOR);
-            wxMessageBox(_("This project file was saved with a newer version of Code::Blocks.\n"
+            cbMessageBox(_("This project file was saved with a newer version of Code::Blocks.\n"
                             "Will try to load, but you should make sure all the settings were loaded correctly..."),
                             _("Warning"),
                             wxICON_WARNING);
@@ -145,7 +145,7 @@ void ProjectLoader::ConvertVersion_Pre_1_1()
                 "Do you want to auto-detect the libraries \"%s\" is using and configure it accordingly?"),
                 m_pProject->GetTitle().c_str(),
                 m_pProject->GetTitle().c_str());
-    if (wxMessageBox(msg, _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
+    if (cbMessageBox(msg, _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
     {
         // project first
         ConvertLibraries(m_pProject);
@@ -1071,7 +1071,7 @@ wxString ProjectLoader::GetValidCompilerID(const wxString& proposal, const wxStr
 
     if (!compiler)
     {
-        wxMessageBox(_("Setting to default compiler..."), _("Warning"), wxICON_WARNING);
+        cbMessageBox(_("Setting to default compiler..."), _("Warning"), wxICON_WARNING);
         return CompilerFactory::GetDefaultCompilerID();
     }
 

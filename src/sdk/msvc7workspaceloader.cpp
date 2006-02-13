@@ -47,7 +47,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename)
 {
     bool askForCompiler = false;
     bool askForTargets = false;
-    switch (wxMessageBox(_("Do you want the imported projects to use the default compiler?\n"
+    switch (cbMessageBox(_("Do you want the imported projects to use the default compiler?\n"
                         "(If you answer No, you will be asked for each and every project"
                         " which compiler to use...)"), _("Question"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
     {
@@ -55,7 +55,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename)
         case wxNO: askForCompiler = true; break;
         case wxCANCEL: return false;
     }
-    switch (wxMessageBox(_("Do you want to import all configurations (e.g. Debug/Release) from the "
+    switch (cbMessageBox(_("Do you want to import all configurations (e.g. Debug/Release) from the "
                         "imported projects?\n"
                         "(If you answer No, you will be asked for each and every project"
                         " which configurations to import...)"), _("Question"), wxICON_QUESTION | wxYES_NO | wxCANCEL))

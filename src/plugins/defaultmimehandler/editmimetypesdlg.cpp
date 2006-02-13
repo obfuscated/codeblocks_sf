@@ -145,7 +145,7 @@ void EditMimeTypesDlg::OnDelete(wxCommandEvent& event)
 {
     if (m_Selection == -1)
         return;
-    if (wxMessageBox(_("Are you sure you want to remove this wildcard?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
+    if (cbMessageBox(_("Are you sure you want to remove this wildcard?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
     {
         cbMimeType* mt = m_Array[m_Selection];
         m_Array.RemoveAt(m_Selection);

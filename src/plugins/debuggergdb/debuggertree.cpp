@@ -629,7 +629,7 @@ void DebuggerTree::OnSaveWatchFile(wxCommandEvent& event)
     size_t wc = m_Watches.GetCount();
     if (wc<1)
     {
-        wxMessageBox(_("There are no watches in the list to save."),
+        cbMessageBox(_("There are no watches in the list to save."),
                      _("Save Watches"), wxICON_ERROR);
         return;
     }
@@ -711,7 +711,7 @@ void DebuggerTree::OnDeleteWatch(wxCommandEvent& event)
 
 void DebuggerTree::OnDeleteAllWatches(wxCommandEvent& event)
 {
-    if (wxMessageBox(_("Are you sure you want to delete all watches?"), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
+    if (cbMessageBox(_("Are you sure you want to delete all watches?"), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
         DeleteAllWatches();
 }
 

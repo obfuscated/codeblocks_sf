@@ -8,6 +8,7 @@
 #include <wx/combobox.h>
 #include <wx/checkbox.h>
 #include <wx/msgdlg.h>
+#include <globals.h>
 
 BEGIN_EVENT_TABLE(AdvancedCompilerOptionsDlg, wxDialog)
     EVT_LISTBOX(XRCID("lstCommands"),       AdvancedCompilerOptionsDlg::OnCommandsChange)
@@ -196,7 +197,7 @@ void AdvancedCompilerOptionsDlg::OnRegexAdd(wxCommandEvent& event)
 
 void AdvancedCompilerOptionsDlg::OnRegexDelete(wxCommandEvent& event)
 {
-    if (wxMessageBox(_("Are you sure you want to delete this regular expression?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
+    if (cbMessageBox(_("Are you sure you want to delete this regular expression?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
     {
         m_Regexes.RemoveAt(m_SelectedRegex);
         if (m_SelectedRegex >= (int)m_Regexes.Count())
@@ -207,7 +208,7 @@ void AdvancedCompilerOptionsDlg::OnRegexDelete(wxCommandEvent& event)
 
 void AdvancedCompilerOptionsDlg::OnRegexDefaults(wxCommandEvent& event)
 {
-    if (wxMessageBox(_("Are you sure you want to load the default regular expressions "
+    if (cbMessageBox(_("Are you sure you want to load the default regular expressions "
                     "for this compiler?\n"
                     "ALL regular expressions will be erased and replaced with their default "
                     "counterparts!\n\n"
@@ -253,7 +254,7 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& event)
     wxString text = XRCCTRL(*this, "txtRegexTest", wxTextCtrl)->GetValue();
     if (text.IsEmpty())
     {
-        wxMessageBox(_("Please enter a compiler line in the \"Compiler output\" text box..."), _("Error"), wxICON_ERROR);
+        cbMessageBox(_("Please enter a compiler line in the \"Compiler output\" text box..."), _("Error"), wxICON_ERROR);
         return;
     }
 
@@ -283,7 +284,7 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& event)
                 compiler->GetLastError().c_str()
                 );
 
-    wxMessageBox(msg, _("Test results"), wxICON_INFORMATION);
+    cbMessageBox(msg, _("Test results"), wxICON_INFORMATION);
 }
 
 wxString AdvancedCompilerOptionsDlg::ControlCharsToString(const wxString& src)

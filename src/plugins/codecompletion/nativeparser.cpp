@@ -107,7 +107,7 @@ void NativeParser::RereadParserOptions()
 	}
 	if (needsReparsing)
 	{
-		if (wxMessageBox(_("You changed some class parser options. Do you want to "
+		if (cbMessageBox(_("You changed some class parser options. Do you want to "
 						"reparse your projects now, using the new options?"),
 						_("Reparse?"),
 						wxYES | wxNO | wxICON_QUESTION) == wxYES)

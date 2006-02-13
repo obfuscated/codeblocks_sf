@@ -68,7 +68,7 @@ wxString UserVariableManager::Replace(const wxString& variable)
 
     if(base.IsEmpty())
     {
-        wxMessageBox(_("At least one global variable is used but not yet defined.\n"
+        cbMessageBox(_("At least one global variable is used but not yet defined.\n"
                        "Please define it now..."), _("Warning"), wxICON_WARNING);
         UsrGlblMgrEditDialog d(Manager::Get()->GetAppWindow(), package);
         PlaceWindow(&d);

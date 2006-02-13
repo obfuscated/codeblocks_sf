@@ -242,7 +242,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
         if (!saidAboutCompilerIDs)
         {
             saidAboutCompilerIDs = true;
-            wxMessageBox(_("Compilers now use unique names instead of integer IDs.\n"
+            cbMessageBox(_("Compilers now use unique names instead of integer IDs.\n"
                             "Projects will be updated accordingly on load, mostly automatic."),
                             _("Information"),
                             wxICON_INFORMATION);

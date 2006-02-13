@@ -320,7 +320,7 @@ void ProjectManager::BuildTree()
 
     for (int i = 0; i < 14; ++i)
     {
-//        wxMessageBox(wxString::Format(_T("%d: %s"), i, wxString(prefix + imgs[i]).c_str()));
+//        cbMessageBox(wxString::Format(_T("%d: %s"), i, wxString(prefix + imgs[i]).c_str()));
         bmp.LoadFile(prefix + imgs[i], wxBITMAP_TYPE_PNG); // workspace
         m_pImages->Add(bmp);
     }
@@ -743,7 +743,7 @@ bool ProjectManager::QueryCloseProject(cbProject *proj,bool dontsavefiles)
     {
         wxString msg;
         msg.Printf(_("Project '%s' is modified...\nDo you want to save the changes?"), proj->GetTitle().c_str());
-        switch (wxMessageBox(msg, _("Save project"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
+        switch (cbMessageBox(msg, _("Save project"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
         {
             case wxYES:     if (!proj->Save()) return false;
             case wxNO:      break;
@@ -1012,7 +1012,7 @@ bool ProjectManager::QueryCloseWorkspace()
         // workspace needs save
         wxString msg;
         msg.Printf(_("Workspace '%s' is modified. Do you want to save it?"), m_pWorkspace->GetTitle().c_str());
-        switch (wxMessageBox(msg,
+        switch (cbMessageBox(msg,
                         _("Save workspace"),
                         wxYES_NO | wxCANCEL | wxICON_QUESTION))
         {
@@ -1781,7 +1781,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
             wxArrayInt indices = dlg.GetSelectedIndices();
             if (indices.GetCount() == 0)
                 return;
-            if (wxMessageBox(_("Are you sure you want to remove these files from the project?"),
+            if (cbMessageBox(_("Are you sure you want to remove these files from the project?"),
                             _("Confirmation"),
                             wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) != wxYES)
             {
@@ -1827,7 +1827,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
     else if (event.GetId() == idMenuRemoveFolderFilesPopup)
     {
         // remove all files from a folder
-        if (wxMessageBox(_("Are you sure you want to recursively remove from the project all the files under this folder?"),
+        if (cbMessageBox(_("Are you sure you want to recursively remove from the project all the files under this folder?"),
                         _("Confirmation"),
                         wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) != wxYES)
         {

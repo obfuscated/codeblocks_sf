@@ -132,7 +132,7 @@ void BacktraceDlg::OnSave(wxCommandEvent& event)
             << _T('(') << file << _T(':') << line << _T(')')
             << _T('\n');
     }
-    wxMessageBox(_("File saved"), _("Result"), wxICON_INFORMATION);
+    cbMessageBox(_("File saved"), _("Result"), wxICON_INFORMATION);
 }
 
 void BacktraceDlg::OnRefresh(wxCommandEvent& event)

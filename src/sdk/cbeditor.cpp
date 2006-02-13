@@ -696,7 +696,7 @@ void cbEditor::SetEncoding( wxFontEncoding encoding )
 
     wxString msg;
     msg.Printf(_("Do you want to reload the file with the new encoding (you will lose any unsaved work)?"));
-    if (wxMessageBox(msg, _("Reload file?"), wxYES_NO) == wxYES)
+    if (cbMessageBox(msg, _("Reload file?"), wxYES_NO) == wxYES)
         Reload(false);
     else
         SetModified(true);
@@ -1587,7 +1587,7 @@ void cbEditor::Print(bool selectionOnly, PrintColorMode pcm)
     {
         if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
         {
-            wxMessageBox(_("There was a problem printing.\n"
+            cbMessageBox(_("There was a problem printing.\n"
                             "Perhaps your current printer is not set correctly?"), _("Printing"), wxICON_ERROR);
         }
     }

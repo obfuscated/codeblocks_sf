@@ -122,7 +122,7 @@ void ConfigureToolsDlg::OnRemove(wxCommandEvent& event)
 {
 	wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
 	int sel = list->GetSelection();
-	if (wxMessageBox(_("Are you sure you want to remove this tool?"),
+	if (cbMessageBox(_("Are you sure you want to remove this tool?"),
 					_("Remove tool?"),
 					wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION) == wxYES)
 	{

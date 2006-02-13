@@ -3,7 +3,7 @@
 
 #include <wx/intl.h> // for _() and _T()
 #include <wx/log.h> // for wxSafeShowMessage()
-#include <wx/msgdlg.h> // for wxMessageBox()
+#include <globals.h>
 
 #include "configmanager.h"
 

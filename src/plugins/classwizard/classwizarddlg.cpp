@@ -163,7 +163,7 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 	{
         wxString msg;
         msg.Printf(_("Could not create header file %s.\nAborting..."), m_Header.c_str());
-        wxMessageBox(msg, _("Error"), wxICON_ERROR);
+        cbMessageBox(msg, _("Error"), wxICON_ERROR);
         return;
 	}
 	cbWrite(hdr,buffer);
@@ -189,7 +189,7 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 	{
         wxString msg;
         msg.Printf(_("Could not create implementation file %s.\nAborting..."), m_Implementation.c_str());
-        wxMessageBox(msg, _("Error"), wxICON_ERROR);
+        cbMessageBox(msg, _("Error"), wxICON_ERROR);
         return;
 	}
 	cbWrite(impl,buffer);

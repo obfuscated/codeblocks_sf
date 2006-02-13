@@ -739,7 +739,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 
 	if (!tmptree->size())
 	{
-		wxMessageBox(_("No functions parsed in this file..."));
+		cbMessageBox(_("No functions parsed in this file..."));
 		return;
 	}
 	wxArrayString tokens;
@@ -811,7 +811,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 		}
 
     }
-    wxMessageBox(wxString::Format(_("Not found: %s"), txt.c_str()), _("Warning"), wxICON_WARNING);
+    cbMessageBox(wxString::Format(_("Not found: %s"), txt.c_str()), _("Warning"), wxICON_WARNING);
 }
 
 void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
@@ -862,5 +862,5 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
         return;
     }
 
-    wxMessageBox(wxString::Format(_("Not found: %s"), m_LastIncludeFile.c_str()), _("Warning"), wxICON_WARNING);
+    cbMessageBox(wxString::Format(_("Not found: %s"), m_LastIncludeFile.c_str()), _("Warning"), wxICON_WARNING);
 } // end of OnOpenIncludeFile

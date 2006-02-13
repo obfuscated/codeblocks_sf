@@ -229,7 +229,7 @@ void EnvironmentSettingsDlg::OnSetAssocs(wxCommandEvent& event)
 #ifdef __WXMSW__
     Associations::Set();
 #endif
-    wxMessageBox(_("Code::Blocks associated with C/C++ files."), _("Information"), wxICON_INFORMATION);
+    cbMessageBox(_("Code::Blocks associated with C/C++ files."), _("Information"), wxICON_INFORMATION);
 }
 
 void EnvironmentSettingsDlg::OnChooseColor(wxCommandEvent& event)

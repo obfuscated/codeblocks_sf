@@ -7,7 +7,7 @@
 #include <wx/file.h>
 #include <wx/filename.h>
 #include <wx/intl.h>
-
+#include <wx/msgdlg.h>
 
 class TiXmlDocument;
 
@@ -141,7 +141,7 @@ extern DLLIMPORT wxBitmap LoadPNGWindows2000Hack(const wxString& filename);
 extern DLLIMPORT bool IsWindowReallyShown(wxWindow* win);
 
 
-class wxTopLevelWindow;
+class wxWindow;
 
 typedef enum
 {
@@ -153,6 +153,15 @@ typedef enum
     pdlClip
 }cbPlaceDialogMode;
 
-extern void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode = pdlBest, bool enforce = false);
+extern void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode = pdlBest, bool enforce = false);
+
+
+
+inline int cbMessageBox(const wxString& message, const wxString& caption = wxEmptyString, int style = wxOK, wxWindow *parent = NULL, int x = -1, int y = -1)
+{
+    wxMessageDialog dlg(parent, message, caption, style, wxPoint(x,y));
+    PlaceWindow(&dlg);
+    return dlg.ShowModal();
+};
 
 #endif // SDK_GLOBALS_H
