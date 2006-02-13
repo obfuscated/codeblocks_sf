@@ -90,10 +90,10 @@ void FilesGroupsAndMasks::Save()
 	{
         FileGroups* fg = m_Groups[i];
         wxString key;
-        key << _("/file_groups/group") << wxString::Format(_T("%d"), i) << _T("/") << _T("name");
+        key << _T("/file_groups/group") << wxString::Format(_T("%d"), i) << _T("/") << _T("name");
 		conf->Write(key, fg->groupName);
         key.Clear();
-        key << _("/file_groups/group") << wxString::Format(_T("%d"), i) << _T("/") << _T("mask");
+        key << _T("/file_groups/group") << wxString::Format(_T("%d"), i) << _T("/") << _T("mask");
 		conf->Write(key, GetStringFromArray(fg->fileMasks, _T(";")));
 	}
 }

@@ -30,7 +30,7 @@ class CompilerOptionsDlg : public cbConfigurationPanel
 		CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, cbProject* project = 0L, ProjectBuildTarget* target = 0L);
 		~CompilerOptionsDlg();
 
-        virtual wxString GetTitle(){ return _T("Global compiler settings"); }
+        virtual wxString GetTitle(){ return _("Global compiler settings"); }
         virtual wxString GetBitmapBaseName(){ return _T("compiler"); }
         virtual void OnApply();
         virtual void OnCancel(){}

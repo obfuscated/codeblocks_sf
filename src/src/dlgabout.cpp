@@ -50,9 +50,9 @@ dlgAbout::dlgAbout(wxWindow* parent)
 	wxString file = ConfigManager::ReadDataPath() + _T("/images/splash.png");
 	bmp.LoadFile(file, wxBITMAP_TYPE_PNG);
 	XRCCTRL(*this, "lblTitle", wxStaticBitmap)->SetBitmap(bmp);
-	XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_T("Build: ")) + g_AppBuildTimestamp);
+	XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_("Build: ")) + g_AppBuildTimestamp);
 	XRCCTRL(*this, "txtDescription", wxTextCtrl)->SetValue(description);
-	XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(_T(
+	XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(_(
         "Developers:\n"
         "--------------\n"
         "Yiannis Mandravellos: Project leader - Core developer\n"

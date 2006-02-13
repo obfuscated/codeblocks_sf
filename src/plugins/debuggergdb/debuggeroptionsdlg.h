@@ -19,7 +19,7 @@ class DebuggerOptionsDlg : public cbConfigurationPanel
 		DebuggerOptionsDlg(wxWindow* parent, DebuggerGDB* plugin);
 		virtual ~DebuggerOptionsDlg();
 
-        virtual wxString GetTitle(){ return _T("Debugger settings"); }
+        virtual wxString GetTitle(){ return _("Debugger settings"); }
         virtual wxString GetBitmapBaseName(){ return _T("debugger"); }
         virtual void OnApply();
         virtual void OnCancel(){}

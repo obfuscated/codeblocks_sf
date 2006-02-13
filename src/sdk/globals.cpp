@@ -513,7 +513,7 @@ bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& filename)
 wxString cbC2U(const char* str)
 {
 #if wxUSE_UNICODE
-    return wxString(str, wxConvLocal);
+    return wxString(str, wxConvUTF8);
 #else
     return wxString(str);
 #endif
@@ -523,7 +523,7 @@ wxString cbC2U(const char* str)
 wxWX2MBbuf cbU2C(const wxString& str)
 {
 #if wxUSE_UNICODE
-    return str.mb_str(wxConvLocal);
+    return str.mb_str(wxConvUTF8);
 #else
     return (wxChar*)str.mb_str();
 #endif
