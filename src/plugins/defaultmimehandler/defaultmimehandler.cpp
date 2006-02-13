@@ -26,7 +26,7 @@
 #include "editmimetypesdlg.h"
 #include <globals.h>
 
-CB_IMPLEMENT_PLUGIN(DefaultMimeHandler);
+CB_IMPLEMENT_PLUGIN(DefaultMimeHandler, "Files extension handler");
 
 DefaultMimeHandler::DefaultMimeHandler()
 {

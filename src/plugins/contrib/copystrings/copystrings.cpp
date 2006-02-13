@@ -19,7 +19,7 @@
 using namespace std;
 
 // Implement the plugin's hooks
-CB_IMPLEMENT_PLUGIN(copystrings);
+CB_IMPLEMENT_PLUGIN(copystrings, "Copy Strings to clipboard");
 
 copystrings::copystrings()
 {

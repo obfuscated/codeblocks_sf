@@ -9,7 +9,7 @@
 
 #include "codestat.h"
 
-CB_IMPLEMENT_PLUGIN(CodeStat);
+CB_IMPLEMENT_PLUGIN(CodeStat, "Code Statistics");
 
 CodeStat::CodeStat()
 {

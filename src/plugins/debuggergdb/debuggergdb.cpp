@@ -98,7 +98,7 @@ int idTimerPollDebugger = wxNewId();
 int idMenuDebuggerAddWatch = wxNewId();
 int idMenuSettings = wxNewId();
 
-CB_IMPLEMENT_PLUGIN(DebuggerGDB);
+CB_IMPLEMENT_PLUGIN(DebuggerGDB, "Debugger");
 
 BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	EVT_UPDATE_UI_RANGE(idMenuContinue, idMenuDebuggerAddWatch, DebuggerGDB::OnUpdateUI)

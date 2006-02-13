@@ -46,7 +46,7 @@
 #include "selectincludefile.h"
 #include "globals.h"
 
-CB_IMPLEMENT_PLUGIN(CodeCompletion);
+CB_IMPLEMENT_PLUGIN(CodeCompletion, "Code completion");
 
 // menu IDS
 // just because we don't know other plugins' used identifiers,

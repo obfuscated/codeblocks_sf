@@ -65,7 +65,10 @@ template <typename RET> inline RET ExecuteGetRet(asIScriptContext* ctx)
 template <> inline asQWORD ExecuteGetRet(asIScriptContext* ctx){ return ctx->GetReturnQWord(); }
 template <> inline asDWORD ExecuteGetRet(asIScriptContext* ctx){ return ctx->GetReturnDWord(); }
 template <> inline bool ExecuteGetRet(asIScriptContext* ctx){ return ctx->GetReturnDWord() != 0; }
+template <> inline char ExecuteGetRet(asIScriptContext* ctx){ return ctx->GetReturnDWord(); }
 template <> inline int ExecuteGetRet(asIScriptContext* ctx){ return ctx->GetReturnDWord(); }
+template <> inline short int ExecuteGetRet(asIScriptContext* ctx){ return ctx->GetReturnDWord(); }
+template <> inline unsigned int ExecuteGetRet(asIScriptContext* ctx){ return ctx->GetReturnDWord(); }
 template <> inline double ExecuteGetRet(asIScriptContext* ctx){ return ctx->GetReturnDouble(); }
 template <> inline float ExecuteGetRet(asIScriptContext* ctx){ return ctx->GetReturnFloat(); }
 template <> inline void* ExecuteGetRet(asIScriptContext* ctx){ return ctx->GetReturnObject(); }

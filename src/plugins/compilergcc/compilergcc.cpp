@@ -65,7 +65,7 @@
 #define COLOUR_MAROON wxColour(0xa0, 0x00, 0x00)
 #define COLOUR_NAVY   wxColour(0x00, 0x00, 0xa0)
 
-CB_IMPLEMENT_PLUGIN(CompilerGCC);
+CB_IMPLEMENT_PLUGIN(CompilerGCC, "Compiler");
 
 // menu IDS
 // just because we don't know other plugins' used identifiers,
@@ -1344,6 +1344,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     if (!target)
 		return -1;
 
+    m_Project->SetCurrentlyCompilingTarget(target); // help macros manager
+
     wxString out = UnixFilename(target->GetOutputFilename());
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
 
@@ -1387,6 +1389,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 		if (target->GetHostApplication().IsEmpty())
 		{
 			wxMessageBox(_("You must select a host application to \"run\" a library..."));
+            m_Project->SetCurrentlyCompilingTarget(0);
 			return -1;
 		}
 		wxString tmp = target->GetHostApplication();
@@ -1404,6 +1407,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     {
         // commands-only target?
         wxMessageBox(_("You can't \"run\" a commands-only target..."));
+        m_Project->SetCurrentlyCompilingTarget(0);
         return -1;
     }
 
@@ -1418,6 +1422,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         {
         	case wxYES:
         	{
+                m_Project->SetCurrentlyCompilingTarget(0);
         	    m_RunAfterCompile = true;
         		Build(target);
         		return -1;
@@ -1425,6 +1430,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
             case wxNO:
                 break;
             default:
+                m_Project->SetCurrentlyCompilingTarget(0);
                 return -1;
         }
     }
@@ -1432,8 +1438,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(m_CdRun);
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Executing: %s (in %s)"), cmd.c_str(), m_CdRun.c_str());
     m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_Project, target, true));
-//    m_RunCmd = cmd;
-//    m_RunAfterCompile = true;
+
+    m_Project->SetCurrentlyCompilingTarget(0);
     return 0;
 }
 

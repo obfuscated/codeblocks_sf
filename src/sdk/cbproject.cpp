@@ -1078,6 +1078,8 @@ ProjectBuildTarget* cbProject::AddBuildTarget(const wxString& targetName)
     m_Targets.Add(target);
 
     SetModified(true);
+
+    NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
     return target;
 }
 
@@ -1094,6 +1096,7 @@ bool cbProject::RenameBuildTarget(int index, const wxString& targetName)
         }
         target->SetTitle(targetName);
         SetModified(true);
+        NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
         return true;
     }
     return false;
@@ -1121,6 +1124,7 @@ ProjectBuildTarget* cbProject::DuplicateBuildTarget(int index, const wxString& n
         }
         SetModified(true);
         m_Targets.Add(newTarget);
+        NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
     }
     return newTarget;
 }
@@ -1182,6 +1186,7 @@ bool cbProject::RemoveBuildTarget(int index)
         delete target;
         m_Targets.RemoveAt(index);
         SetModified(true);
+        NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
         return true;
     }
     return false;

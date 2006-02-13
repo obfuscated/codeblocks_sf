@@ -39,7 +39,7 @@
 #include "pluginwizarddlg.h"
 #include <globals.h>
 
-CB_IMPLEMENT_PLUGIN(PluginWizard);
+CB_IMPLEMENT_PLUGIN(PluginWizard, "Code::Blocks Plugin wizard");
 
 
 PluginWizard::PluginWizard()

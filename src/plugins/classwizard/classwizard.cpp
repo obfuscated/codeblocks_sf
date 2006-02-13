@@ -39,7 +39,7 @@
 #include <cbproject.h>
 #include "globals.h"
 
-CB_IMPLEMENT_PLUGIN(ClassWizard);
+CB_IMPLEMENT_PLUGIN(ClassWizard, "Class wizard");
 
 
 ClassWizard::ClassWizard()

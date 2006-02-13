@@ -58,7 +58,7 @@
 int idHelpMenus[MAX_HELP_ITEMS];
 int idPopupMenus[MAX_HELP_ITEMS];
 
-CB_IMPLEMENT_PLUGIN(HelpPlugin);
+CB_IMPLEMENT_PLUGIN(HelpPlugin, "Help plugin");
 
 BEGIN_EVENT_TABLE(HelpPlugin, cbPlugin)
   // we hook the menus dynamically

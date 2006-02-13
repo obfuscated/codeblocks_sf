@@ -30,7 +30,7 @@
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(ToDoItems);
 
-CB_IMPLEMENT_PLUGIN(ToDoList);
+CB_IMPLEMENT_PLUGIN(ToDoList, "To-Do List");
 
 const int idViewTodo = wxNewId();
 const int idAddTodo = wxNewId();

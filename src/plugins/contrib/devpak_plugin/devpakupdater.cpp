@@ -19,7 +19,7 @@
 #include <wx/dirdlg.h>
 #include <wx/intl.h>
 
-CB_IMPLEMENT_PLUGIN(DevPakUpdater);
+CB_IMPLEMENT_PLUGIN(DevPakUpdater, "Dev-C++ DevPak updater/installer");
 
 DevPakUpdater::DevPakUpdater()
 {

@@ -27,7 +27,7 @@ static int idFileExportODT = wxNewId();
 static int idFileExportPDF = wxNewId();
 
 // Implement the plugin's hooks
-CB_IMPLEMENT_PLUGIN(Exporter);
+CB_IMPLEMENT_PLUGIN(Exporter, "Source Exporter");
 
 BEGIN_EVENT_TABLE(Exporter, cbPlugin)
   EVT_MENU(idFileExportHTML, Exporter::OnExportHTML)

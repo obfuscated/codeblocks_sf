@@ -278,7 +278,17 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuil
     EditorBase* editor = Manager::Get()->GetEditorManager()->GetActiveEditor();
 
     if(!target)
-        target = project ? project->GetCurrentlyCompilingTarget() : 0;
+    {
+        if (project)
+        {
+            // use the currently compiling target
+            target = project->GetCurrentlyCompilingTarget();
+            // if none,
+            if (!target)
+                // use the last known active target
+                target = project->GetBuildTarget(project->GetActiveBuildTarget());
+        }
+    }
 
     if(project != m_lastProject || target != m_lastTarget || editor != m_lastEditor)
         RecalcVars(project, editor, target);

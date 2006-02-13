@@ -51,6 +51,15 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 		static void CreateMenu(wxMenuBar* menuBar);
         /// Application menu removal. Called by the application only.
 		void ReleaseMenu(wxMenuBar* menuBar);
+		/** Retrieve the default path for new projects.
+		  * @return The default path for new projects. Contains trailing path separator.
+		  * @note This might be empty if not configured before...
+		  */
+        wxString GetDefaultPath();
+        /** Set the default path for new projects.
+          * @note ProjectManager doesn't use this by itself. It's only doing the book-keeping.
+          * Usually this is set/queried from project wizards...*/
+        void SetDefaultPath(const wxString& path);
         /** Retrieve the active project. Most of the times, this is the function
           * you 'll be calling in ProjectManager.
           * @return A pointer to the active project.

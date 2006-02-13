@@ -443,6 +443,8 @@ void Register_Project(asIScriptEngine* engine)
 //------------------------------------------------------------------------------
 void Register_ProjectManager(asIScriptEngine* engine)
 {
+    engine->RegisterObjectMethod("ProjectManagerClass", "wxString GetDefaultPath()", asMETHOD(ProjectManager, GetDefaultPath), asCALL_THISCALL);
+    engine->RegisterObjectMethod("ProjectManagerClass", "void SetDefaultPath(const wxString& in)", asMETHOD(ProjectManager, SetDefaultPath), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectManagerClass", "Project@ GetActiveProject()", asMETHOD(ProjectManager, GetActiveProject), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectManagerClass", "void SetProject(Project@, bool)", asMETHOD(ProjectManager, SetProject), asCALL_THISCALL);
     engine->RegisterObjectMethod("ProjectManagerClass", "bool LoadWorkspace(const wxString& in)", asMETHOD(ProjectManager, LoadWorkspace), asCALL_THISCALL);

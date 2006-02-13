@@ -36,7 +36,7 @@
 // ----------------------------------------------------------------------------
 
 // Implement the plugin's hooks
-CB_IMPLEMENT_PLUGIN(cbKeyBinder);
+CB_IMPLEMENT_PLUGIN(cbKeyBinder, "Keyboard shortcuts configuration");
 
 // ----------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(cbKeyBinder, cbPlugin)

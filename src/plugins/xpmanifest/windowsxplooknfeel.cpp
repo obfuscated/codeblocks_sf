@@ -35,7 +35,7 @@
 #include <licenses.h>
 #include "windowsxplooknfeel.h"
 
-CB_IMPLEMENT_PLUGIN(WindowsXPLookNFeel);
+CB_IMPLEMENT_PLUGIN(WindowsXPLookNFeel, "Windows XP Look'n'Feel");
 
 WindowsXPLookNFeel::WindowsXPLookNFeel()
 {

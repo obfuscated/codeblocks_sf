@@ -388,6 +388,19 @@ void ProjectManager::ReleaseMenu(wxMenuBar* menuBar)
     SANITY_CHECK();
 }
 
+wxString ProjectManager::GetDefaultPath()
+{
+    wxString path = Manager::Get()->GetConfigManager(_T("project_manager"))->Read(_T("default_path"), wxEmptyString);
+    if (!path.IsEmpty() && path.Last() != _T('/') && path.Last() != _T('\\'))
+        path.Append(wxFILE_SEP_PATH);
+    return path;
+}
+
+void ProjectManager::SetDefaultPath(const wxString& path)
+{
+    Manager::Get()->GetConfigManager(_T("project_manager"))->Write(_T("default_path"), path);
+}
+
 void ProjectManager::SetProject(cbProject* project, bool refresh)
 {
     SANITY_CHECK();

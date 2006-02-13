@@ -29,7 +29,7 @@
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
 #define PLUGIN_SDK_VERSION_MINOR 6
-#define PLUGIN_SDK_VERSION_RELEASE 8
+#define PLUGIN_SDK_VERSION_RELEASE 9
 
 // class decls
 class ProjectBuildTarget;
@@ -486,8 +486,8 @@ typedef void(*FreePluginProc)(cbPlugin*);
   * Implements and exports one plugin of class @c name.
   * @param name The plugin's name (class).
   */
-#define CB_IMPLEMENT_PLUGIN(name) \
-    wxString PluginName(size_t index){ return _T(#name); } \
+#define CB_IMPLEMENT_PLUGIN(name,title) \
+    wxString PluginName(size_t index){ return _T(title); } \
     size_t GetPluginsCount(){ return 1; } \
     cbPlugin* CreatePlugin(size_t index) { return new name; } \
     void FreePlugin(cbPlugin* plugin){ delete plugin; } \
@@ -502,8 +502,8 @@ typedef void(*FreePluginProc)(cbPlugin*);
   * Implements and exports ONE plugin of class @c name.
   * @param name The plugin's name (class).
   */
-#define CB_IMPLEMENT_PLUGINS_1(name) \
-    wxString PluginName(size_t index){ return _T(#name); } \
+#define CB_IMPLEMENT_PLUGINS_1(name,title) \
+    wxString PluginName(size_t index){ return _T(title); } \
     size_t GetPluginsCount(){ return 1; } \
     cbPlugin* CreatePlugin(size_t index) { return new name; } \
     void FreePlugin(cbPlugin* plugin){ delete plugin; } \
@@ -519,13 +519,13 @@ typedef void(*FreePluginProc)(cbPlugin*);
   * @param name1 The first plugin's name (class).
   * @param name2 The second plugin's name (class).
   */
-#define CB_IMPLEMENT_PLUGINS_2(name1,name2) \
+#define CB_IMPLEMENT_PLUGINS_2(name1,title1,name2,title2) \
     wxString PluginName(size_t index) \
     { \
         switch (index) \
         { \
-            case 0: return _T(#name1);  \
-            case 1: return _T(#name2);  \
+            case 0: return _T(title1);  \
+            case 1: return _T(title2);  \
             default: cbThrow(_("Invalid plugin index in PluginName()!")); \
         } \
     } \
@@ -553,14 +553,14 @@ typedef void(*FreePluginProc)(cbPlugin*);
   * @param name2 The second plugin's name (class).
   * @param name3 The third plugin's name (class).
   */
-#define CB_IMPLEMENT_PLUGINS_3(name1,name2,name3) \
+#define CB_IMPLEMENT_PLUGINS_3(name1,title1,name2,title2,name3,title3) \
     wxString PluginName(size_t index) \
     { \
         switch (index) \
         { \
-            case 0: return _T(#name1);  \
-            case 1: return _T(#name2);  \
-            case 2: return _T(#name3);  \
+            case 0: return _T(title1);  \
+            case 1: return _T(title2);  \
+            case 2: return _T(title3);  \
             default: cbThrow(_("Invalid plugin index in PluginName()!")); \
         } \
     } \

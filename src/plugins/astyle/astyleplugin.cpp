@@ -28,7 +28,7 @@
 using std::istringstream;
 using std::string;
 
-CB_IMPLEMENT_PLUGIN(AStylePlugin);
+CB_IMPLEMENT_PLUGIN(AStylePlugin, "Source code formatter (AStyle)");
 
 AStylePlugin::AStylePlugin()
 {

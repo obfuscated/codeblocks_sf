@@ -11,7 +11,7 @@
 #include "cbprofiler.h"
 #include <configmanager.h>
 
-CB_IMPLEMENT_PLUGIN(CBProfiler);
+CB_IMPLEMENT_PLUGIN(CBProfiler, "Code profiler");
 
 CBProfiler::CBProfiler()
 {
@@ -22,7 +22,7 @@ CBProfiler::CBProfiler()
     wxXmlResource::Get()->Load(resPath + _T("/profiler.zip#zip:*.xrc"));
 
     m_PluginInfo.name = _T("CBProfiler");
-    m_PluginInfo.title = _("C::B Profiler");
+    m_PluginInfo.title = _("Code profiler");
     m_PluginInfo.version = _("1.0RC2");
     m_PluginInfo.description = _("A simple graphical interface to the GNU GProf Profiler\n\nGNU GProf Online Reference:\nhttp://www.gnu.org/software/binutils/manual/gprof-2.9.1/html_mono/gprof.html");
     m_PluginInfo.author = _("Dark Lord & Zlika");

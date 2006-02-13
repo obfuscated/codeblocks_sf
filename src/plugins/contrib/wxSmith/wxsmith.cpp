@@ -40,7 +40,9 @@ static int NewPanelId = wxNewId();
 static int ImportXrcId = wxNewId();
 static int ConfigureId = wxNewId();
 
-CB_IMPLEMENT_PLUGINS_3(wxSmith,wxSmithMime,wxSmithWizard);
+CB_IMPLEMENT_PLUGINS_3( wxSmith, "wxSmith",
+                        wxSmithMime, "wxSmith - MIME plugin",
+                        wxSmithWizard, "wxSmith - Project Wizard plugin");
 
 wxSmith* wxSmith::Singleton = NULL;
 
