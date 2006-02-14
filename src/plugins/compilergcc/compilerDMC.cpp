@@ -138,6 +138,8 @@ void CompilerDMC::Reset()
 	//. m_Options.AddOption(_("Suppress warning number n"), _T("-wn"), _("Warnings"));
 	m_Options.AddOption(_("Treat warnings as errors"), _T("-wx"), _("Warnings"));
 	//. m_Options.AddOption(_("Windows prolog/epilog (-WA exe -WD dll)"), _T("-W{0123ADabdefmrstuvwx-+}"), _("Architecture"));
+	m_Options.AddOption(_("Windows prolog/epilog : Win32 Exe"), _T("-WA"), _("Architecture"));
+	m_Options.AddOption(_("Windows prolog/epilog : Win32 Dll"), _T("-WD"), _("Architecture"));
 	m_Options.AddOption(_("Turn off error maximum"), _T("-x"), _("Warnings"));
 	m_Options.AddOption(_("Instantiate templates"), _T("-XD"), _("C++ Features"));
 	//. m_Options.AddOption(_("Instantiate template class temp<type>"), _T("-XItemp<type>"), _("C++ Features"));
@@ -151,9 +153,9 @@ void CompilerDMC::Reset()
     // FIXME (hd#1#): should be work on: we need $res_options
     m_Commands[(int)ctCompileObjectCmd] = _T("$compiler -mn -c $options $includes -o$object $file");
     m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp -32 -I$res_includes -o$resource_output $file");
-    m_Commands[(int)ctLinkExeCmd] = _T("$linker /NOLOGO /subsystem:windows -WA $link_options $link_objects, $exe_output, , $libs, , $link_resobjects");
+    m_Commands[(int)ctLinkExeCmd] = _T("$linker /NOLOGO /subsystem:windows $link_options $link_objects, $exe_output, , $libs, , $link_resobjects");
     m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker /NOLOGO $link_options $link_objects, $exe_output, , $libs");
-    m_Commands[(int)ctLinkDynamicCmd] = _T("$linker /NOLOGO /subsystem:windows -WD $link_options $link_objects, $exe_output, , $libs, , $link_resobjects");
+    m_Commands[(int)ctLinkDynamicCmd] = _T("$linker /NOLOGO /subsystem:windows $link_options $link_objects, $exe_output, , $libs, , $link_resobjects");
     m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker -c $link_options $static_output $link_objects");
 
     LoadDefaultRegExArray();
