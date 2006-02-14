@@ -145,7 +145,7 @@ void ProjectLoader::ConvertVersion_Pre_1_1()
                 "Do you want to auto-detect the libraries \"%s\" is using and configure it accordingly?"),
                 m_pProject->GetTitle().c_str(),
                 m_pProject->GetTitle().c_str());
-    if (cbMessageBox(msg, _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
+    if (cbMessageBox(msg, _("Question"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
     {
         // project first
         ConvertLibraries(m_pProject);

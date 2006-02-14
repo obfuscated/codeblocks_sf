@@ -1281,16 +1281,16 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
     	int ret = cbMessageBox(_("It seems that this file has not been built yet.\n"
                                 "Do you want to build it now?"),
                                 _("Information"),
-                                wxYES | wxNO | wxCANCEL | wxICON_QUESTION);
+                                wxYES_NO | wxCANCEL | wxICON_QUESTION);
         switch (ret)
         {
-        	case wxYES:
+        	case wxID_YES:
         	{
         	    m_RunAfterCompile = true;
         		Build(wxEmptyString);
         		return -1;
         	}
-            case wxNO:
+            case wxID_NO:
                 break;
             default:
                 return -1;
@@ -1417,17 +1417,17 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     	int ret = cbMessageBox(_("It seems that this project has not been built yet.\n"
                                 "Do you want to build it now?"),
                                 _("Information"),
-                                wxYES | wxNO | wxCANCEL | wxICON_QUESTION);
+                                wxYES_NO | wxCANCEL | wxICON_QUESTION);
         switch (ret)
         {
-        	case wxYES:
+        	case wxID_YES:
         	{
                 m_Project->SetCurrentlyCompilingTarget(0);
         	    m_RunAfterCompile = true;
         		Build(target);
         		return -1;
         	}
-            case wxNO:
+            case wxID_NO:
                 break;
             default:
                 m_Project->SetCurrentlyCompilingTarget(0);

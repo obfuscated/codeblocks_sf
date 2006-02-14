@@ -110,7 +110,7 @@ void NativeParser::RereadParserOptions()
 		if (cbMessageBox(_("You changed some class parser options. Do you want to "
 						"reparse your projects now, using the new options?"),
 						_("Reparse?"),
-						wxYES | wxNO | wxICON_QUESTION) == wxYES)
+						wxYES_NO | wxICON_QUESTION) == wxID_YES)
 		{
 			cbProject* proj = Manager::Get()->GetProjectManager()->GetActiveProject();
 			ClearParsers();

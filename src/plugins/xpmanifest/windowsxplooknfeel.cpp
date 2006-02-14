@@ -133,7 +133,7 @@ int WindowsXPLookNFeel::Execute()
 	{
 		if (cbMessageBox(_("Do you want to create the manifest file?"),
 						_("Confirmation"),
-						wxYES_NO | wxICON_QUESTION) == wxNO)
+						wxYES_NO | wxICON_QUESTION) == wxID_NO)
 			return -2;
 		wxString filename = target->GetOutputFilename();
 		filename << _T(".Manifest");

@@ -728,11 +728,11 @@ bool EditorManager::QueryClose(EditorBase *ed)
         msg.Printf(_("File %s is modified...\nDo you want to save the changes?"), ed->GetFilename().c_str());
         switch (cbMessageBox(msg, _("Save file"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
         {
-            case wxYES:     if (!ed->Save())
+            case wxID_YES:     if (!ed->Save())
                                 return false;
                             break;
-            case wxNO:      break;
-            case wxCANCEL:  return false;
+            case wxID_NO:      break;
+            case wxID_CANCEL:  return false;
         }
 	ed->SetModified(false);
     }
@@ -913,7 +913,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
         	msg.Printf(_("%s has been deleted, or is no longer available.\n"
 				"Do you wish to keep the file open?\n"
 				"Yes to keep the file, No to close it."), ed->GetFilename().c_str());
-        	if (cbMessageBox(msg, _("File changed!"), wxYES_NO) == wxYES)
+        	if (cbMessageBox(msg, _("File changed!"), wxYES_NO) == wxID_YES)
 				ed->SetModified(true);
 			else
 			{
@@ -1361,7 +1361,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 // we can make a user-definable                 // tiwag 050902
                 bool DONTASK = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/auto_wrap_search"), true);
                 if (DONTASK) wxBell();                          // tiwag 050902
-                if (DONTASK || cbMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxOK)
+                if (DONTASK || cbMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
                 {
                     if (data->directionDown)
                     {

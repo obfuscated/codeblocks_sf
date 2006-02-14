@@ -255,7 +255,7 @@ void CDB_driver::ParseOutput(const wxString& output)
                 cbMessageBox(lines[i], _("Access violation"), wxICON_ERROR);
                 Backtrace();
             }
-            else if (cbMessageBox(wxString::Format(_("%s\n\nDo you want to view the backtrace?"), lines[i].c_str()), _("Access violation"), wxICON_ERROR | wxYES_NO) == wxYES)
+            else if (cbMessageBox(wxString::Format(_("%s\n\nDo you want to view the backtrace?"), lines[i].c_str()), _("Access violation"), wxICON_ERROR | wxYES_NO) == wxID_YES)
             {
                 // show the backtrace window
                 CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);

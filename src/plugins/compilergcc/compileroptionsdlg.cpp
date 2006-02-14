@@ -924,7 +924,7 @@ void CompilerOptionsDlg::UpdateCompilerForTargets(int compilerIdx)
                             "Do you want to use the same compiler for all the project's build targets too?"),
                             _("Question"),
                             wxICON_QUESTION | wxYES_NO);
-    if (ret == wxYES)
+    if (ret == wxID_YES)
     {
         for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
         {
@@ -960,7 +960,7 @@ void CompilerOptionsDlg::AutoDetectCompiler()
             msg.Printf(_("Could not auto-detect installation path of \"%s\"...\n"
                         "Do you want to use this compiler's default installation directory?"),
                         compiler->GetName().c_str());
-            if (cbMessageBox(msg, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
+            if (cbMessageBox(msg, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_NO)
                 compiler->SetMasterPath(backup);
         }
         break;
@@ -1068,7 +1068,7 @@ void CompilerOptionsDlg::OnRemoveDirClick(wxCommandEvent& event)
         return;
 	if (cbMessageBox(_("Remove '")+control->GetStringSelection()+_("' from the list?"),
 					_("Confirmation"),
-					wxOK | wxCANCEL | wxICON_QUESTION) == wxOK)
+					wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
 	{
         control->Delete(control->GetSelection());
     }
@@ -1138,7 +1138,7 @@ void CompilerOptionsDlg::OnRemoveVarClick(wxCommandEvent& event)
 
 	if (cbMessageBox(_("Are you sure you want to delete this variable?"),
 					_("Confirmation"),
-					wxYES | wxNO | wxICON_QUESTION) == wxYES)
+					wxYES_NO | wxICON_QUESTION) == wxID_YES)
 	{
 	    base->UnsetVar(key);
         XRCCTRL(*this, "lstVars", wxListBox)->Delete(sel);
@@ -1208,7 +1208,7 @@ void CompilerOptionsDlg::OnRemoveCompilerClick(wxCommandEvent& event)
 {
 	if (cbMessageBox(_("Are you sure you want to remove this compiler?"),
 					_("Confirmation"),
-					wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxOK)
+					wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxID_OK)
     {
         wxComboBox* cmb = XRCCTRL(*this, "cmbCompiler", wxComboBox);
         int compilerIdx = cmb->GetSelection();
@@ -1230,11 +1230,11 @@ void CompilerOptionsDlg::OnResetCompilerClick(wxCommandEvent& event)
 {
 	if (cbMessageBox(_("Reset this compiler's settings to the defaults?"),
 					_("Confirmation"),
-					wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxOK)
+					wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxID_OK)
 	if (cbMessageBox(_("Reset this compiler's settings to the defaults?\n"
 	                   "\nAre you REALLY sure?"),
 					_("Confirmation"),
-					wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxOK)
+					wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxID_OK)
     {
         wxComboBox* cmb = XRCCTRL(*this, "cmbCompiler", wxComboBox);
         int compilerIdx = cmb->GetSelection();
@@ -1307,7 +1307,7 @@ void CompilerOptionsDlg::OnRemoveLibClick(wxCommandEvent& event)
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
     if (!lstLibs || lstLibs->GetSelection() < 0)
         return;
-    if (cbMessageBox(_("Remove library '")+lstLibs->GetStringSelection()+_("' from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxOK)
+    if (cbMessageBox(_("Remove library '")+lstLibs->GetStringSelection()+_("' from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxID_OK)
         lstLibs->Delete(lstLibs->GetSelection());
 }
 
@@ -1316,7 +1316,7 @@ void CompilerOptionsDlg::OnClearLibClick(wxCommandEvent& event)
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
     if (!lstLibs || lstLibs->GetSelection() < 0)
         return;
-    if (cbMessageBox(_("Remove all libraries from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxOK)
+    if (cbMessageBox(_("Remove all libraries from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxID_OK)
         lstLibs->Clear();
 }
 

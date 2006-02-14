@@ -467,8 +467,8 @@ bool EditorConfigurationDlg::AskToSaveTheme()
         int ret = cbMessageBox(msg, _("Save"), wxYES_NO | wxCANCEL);
         switch (ret)
         {
-            case wxYES: m_Theme->Save(); break;
-            case wxCANCEL:
+            case wxID_YES: m_Theme->Save(); break;
+            case wxID_CANCEL:
             {
                 int idx = cmbThemes->FindString(m_Theme->GetName());
                 cmbThemes->SetSelection(idx);
@@ -550,7 +550,7 @@ void EditorConfigurationDlg::OnAddColorTheme(wxCommandEvent& event)
 
 void EditorConfigurationDlg::OnDeleteColorTheme(wxCommandEvent& event)
 {
-    if (cbMessageBox(_("Are you sure you want to delete this theme?"), _("Confirmation"), wxYES_NO) == wxYES)
+    if (cbMessageBox(_("Are you sure you want to delete this theme?"), _("Confirmation"), wxYES_NO) == wxID_YES)
     {
         Manager::Get()->GetConfigManager(_T("editor"))->DeleteSubPath(_T("/color_sets/") + m_Theme->GetName());
         wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
@@ -615,7 +615,7 @@ void EditorConfigurationDlg::OnColorsReset(wxCommandEvent& event)
 	    wxString tmp;
 	    tmp.Printf(_("Are you sure you want to reset all settings to defaults for \"%s\"?"),
                     m_Theme->GetLanguageName(m_Lang).c_str());
-        if (cbMessageBox(tmp, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxYES)
+        if (cbMessageBox(tmp, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
         {
             m_Theme->Reset(m_Lang);
             ApplyColors();
@@ -718,7 +718,7 @@ void EditorConfigurationDlg::OnAutoCompDelete(wxCommandEvent& event)
     if (lstKeyword->GetSelection() == -1)
         return;
 
-    if (cbMessageBox(_("Are you sure you want to delete this keyword?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxNO)
+    if (cbMessageBox(_("Are you sure you want to delete this keyword?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_NO)
         return;
 
     int sel = lstKeyword->GetSelection();

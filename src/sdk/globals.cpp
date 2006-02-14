@@ -347,7 +347,7 @@ wxString ChooseDirectory(wxWindow* parent,
         // ask the user if he wants it to be kept as relative
         if (cbMessageBox(_("Keep this as a relative path?"),
                          _("Question"),
-                         wxICON_QUESTION | wxYES_NO) == wxYES)
+                         wxICON_QUESTION | wxYES_NO) == wxID_YES)
         {
             path.MakeRelativeTo(basePath);
         }

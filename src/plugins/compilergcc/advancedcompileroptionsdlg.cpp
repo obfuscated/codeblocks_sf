@@ -197,7 +197,7 @@ void AdvancedCompilerOptionsDlg::OnRegexAdd(wxCommandEvent& event)
 
 void AdvancedCompilerOptionsDlg::OnRegexDelete(wxCommandEvent& event)
 {
-    if (cbMessageBox(_("Are you sure you want to delete this regular expression?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
+    if (cbMessageBox(_("Are you sure you want to delete this regular expression?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
     {
         m_Regexes.RemoveAt(m_SelectedRegex);
         if (m_SelectedRegex >= (int)m_Regexes.Count())
@@ -212,7 +212,7 @@ void AdvancedCompilerOptionsDlg::OnRegexDefaults(wxCommandEvent& event)
                     "for this compiler?\n"
                     "ALL regular expressions will be erased and replaced with their default "
                     "counterparts!\n\n"
-                    "Are you REALLY sure?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
+                    "Are you REALLY sure?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
     {
         Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
         compiler->LoadDefaultRegExArray();

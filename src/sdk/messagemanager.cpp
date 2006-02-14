@@ -79,7 +79,7 @@ class BatchLogWindow : public wxDialog
                 {
                     if (cbMessageBox(_("The build is in progress. Are you sure you want to abort it?"),
                                     _("Abort build?"),
-                                    wxICON_QUESTION | wxYES_NO) == wxYES)
+                                    wxICON_QUESTION | wxYES_NO) == wxID_YES)
                     {
                         compiler->KillProcess();
                         while (compiler->IsRunning())

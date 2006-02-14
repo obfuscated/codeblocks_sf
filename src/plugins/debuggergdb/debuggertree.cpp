@@ -711,7 +711,7 @@ void DebuggerTree::OnDeleteWatch(wxCommandEvent& event)
 
 void DebuggerTree::OnDeleteAllWatches(wxCommandEvent& event)
 {
-    if (cbMessageBox(_("Are you sure you want to delete all watches?"), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES)
+    if (cbMessageBox(_("Are you sure you want to delete all watches?"), _("Question"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
         DeleteAllWatches();
 }
 

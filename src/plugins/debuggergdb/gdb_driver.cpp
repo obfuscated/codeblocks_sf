@@ -377,7 +377,7 @@ void GDB_driver::ParseOutput(const wxString& output)
                 // just grab the user's attention
                 cbMessageBox(lines[i], _("Signal received"), wxICON_ERROR);
             }
-            else if (cbMessageBox(wxString::Format(_("%s\nDo you want to view the backtrace?"), lines[i].c_str()), _("Signal received"), wxICON_ERROR | wxYES_NO) == wxYES)
+            else if (cbMessageBox(wxString::Format(_("%s\nDo you want to view the backtrace?"), lines[i].c_str()), _("Signal received"), wxICON_ERROR | wxYES_NO) == wxID_YES)
             {
                 // show the backtrace window
                 CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);

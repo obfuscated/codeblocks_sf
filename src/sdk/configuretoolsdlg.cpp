@@ -124,7 +124,7 @@ void ConfigureToolsDlg::OnRemove(wxCommandEvent& event)
 	int sel = list->GetSelection();
 	if (cbMessageBox(_("Are you sure you want to remove this tool?"),
 					_("Remove tool?"),
-					wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION) == wxYES)
+					wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION) == wxID_YES)
 	{
 		Manager::Get()->GetToolsManager()->RemoveToolByIndex(sel);
 		DoFillList();

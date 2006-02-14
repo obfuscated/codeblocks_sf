@@ -49,18 +49,18 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
                         "(If you answer No, you will be asked for each and every project"
                         " which compiler to use...)"), _("Question"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
     {
-        case wxYES: askForCompiler = false; break;
-        case wxNO: askForCompiler = true; break;
-        case wxCANCEL: return false;
+        case wxID_YES: askForCompiler = false; break;
+        case wxID_NO: askForCompiler = true; break;
+        case wxID_CANCEL: return false;
     }
     switch (cbMessageBox(_("Do you want to import all configurations (e.g. Debug/Release) from the "
                         "imported projects?\n"
                         "(If you answer No, you will be asked for each and every project"
                         " which configurations to import...)"), _("Question"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
     {
-        case wxYES: askForTargets = false; break;
-        case wxNO: askForTargets = true; break;
-        case wxCANCEL: return false;
+        case wxID_YES: askForTargets = false; break;
+        case wxID_NO: askForTargets = true; break;
+        case wxID_CANCEL: return false;
     }
 
     wxFileInputStream file(filename);

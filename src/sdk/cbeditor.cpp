@@ -696,7 +696,7 @@ void cbEditor::SetEncoding( wxFontEncoding encoding )
 
     wxString msg;
     msg.Printf(_("Do you want to reload the file with the new encoding (you will lose any unsaved work)?"));
-    if (cbMessageBox(msg, _("Reload file?"), wxYES_NO) == wxYES)
+    if (cbMessageBox(msg, _("Reload file?"), wxYES_NO) == wxID_YES)
         Reload(false);
     else
         SetModified(true);

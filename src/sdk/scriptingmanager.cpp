@@ -13,6 +13,7 @@
 
     #include <wx/msgdlg.h>
     #include <wx/file.h>
+    #include <wx/filename.h>
     #include <wx/regex.h>
 #endif
 
@@ -135,23 +136,31 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
     fclose(fp);
 
     s_Errors.Clear();
+    int ret = 0;
 
     // build script
     int r;
-	r = m_pEngine->AddScriptSection(_C(module), _C(filename), script, strlen(script), 0, false);
+	r = m_pEngine->AddScriptSection(_C(module),
+                                    _C(_T('[') + module + _T("] ") + wxFileName(filename).GetFullName()),
+                                    script,
+                                    strlen(script),
+                                    0,
+                                    false);
 	if (r < 0)
 	{
-	    cbMessageBox(wxString::Format(_("Error returned from scripting AddScriptSection():\nError code: %d\nMessage: %s"), r, GetErrorDescription(r).c_str()), _("Scripting error"), wxICON_ERROR);
-	    return r;
-	}
-	r = m_pEngine->Build(_C(module));
-	if (r < 0)
-	{
-	    cbMessageBox(wxString::Format(_("Error returned from scripting Build():\nError code: %d\nMessage: %s"), r, GetErrorDescription(r).c_str()), _("Scripting error"), wxICON_ERROR);
-	    return r;
+	    cbMessageBox(wxString::Format(_("Error returned from scripting AddScriptSection().\nError code: %d (%s)\n\nDetails:\n%s"), r, GetErrorDescription(r).c_str(), s_Errors.c_str()), _("Scripting error"), wxICON_ERROR);
+        delete[] script;
+        return -1;
 	}
 
-    int ret = 0;
+    r = m_pEngine->Build(_C(module));
+    if (r < 0)
+    {
+        cbMessageBox(wxString::Format(_("Error returned from scripting Build().\nError code: %d (%s)\n\nDetails:\n%s"), r, GetErrorDescription(r).c_str(), s_Errors.c_str()), _("Scripting error"), wxICON_ERROR);
+        delete[] script;
+        return -1;
+    }
+
     if (autorunMain)
     {
         // locate and run "int main()"
@@ -164,7 +173,7 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
         {
             if (cbMessageBox(_("An exception has been raised from the script:\n\n") +
                             exec.CreateErrorString() +
-                            _("\n\nDo you want to open this script in the editor?"), _T("Script error"), wxICON_ERROR | wxYES_NO) == wxYES)
+                            _("\n\nDo you want to open this script in the editor?"), _T("Script error"), wxICON_ERROR | wxYES_NO) == wxID_YES)
             {
                 cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname);
                 if (ed && exec.GetLineNumber() != 0)
@@ -174,36 +183,38 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
                 }
             }
         }
-    }
-
-    // display errors (if any)
-    if (!s_Errors.IsEmpty())
-    {
-//        LOGSTREAM << s_Errors << '\n';
-        // startup.script (6, 2) : Error   : Expected ';'
-        wxRegEx re(_T("\\(([0-9]+), ([0-9]+)\\)[ \t]:[ \t][Ee]rror[ \t]+:[ \t](.*)"));
-        if (re.Matches(s_Errors))
-        {
-            if (cbMessageBox(s_Errors + _T("\n\nDo you want to open this script in the editor?"), _("Script error"), wxICON_ERROR | wxYES_NO) == wxYES)
-            {
-                cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname);
-                if (ed)
-                {
-                    long line = 0;
-                    long column = 0;
-                    re.GetMatch(s_Errors, 1).ToLong(&line);
-                    re.GetMatch(s_Errors, 2).ToLong(&column);
-                    if (line != 0)
-                    {
-                        int pos = ed->GetControl()->PositionFromLine(line - 1);
-                        ed->GotoLine(line - 1);
-                        ed->GetControl()->GotoPos(pos + column - 1);
-                        ed->GetControl()->SetFocus();
-                    }
-                }
-            }
-        }
-    }
+	}
+//
+//    // display errors (if any)
+//    if (!s_Errors.IsEmpty())
+//    {
+////        LOGSTREAM << s_Errors << '\n';
+//        cbMessageBox(s_Errors, _("Script compile error"), wxICON_ERROR);
+//
+//        // startup.script (6, 2) : Error   : Expected ';'
+//        wxRegEx re(_T("\\(([0-9]+), ([0-9]+)\\)[ \t]:[ \t][Ee]rror[ \t]+:[ \t](.*)"));
+//        if (re.Matches(s_Errors))
+//        {
+//            if (cbMessageBox(_T("Do you want to open this script in the editor?"), _("Debug script?"), wxICON_QUESTION | wxYES_NO) == wxYES)
+//            {
+//                cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname);
+//                if (ed)
+//                {
+//                    long line = 0;
+//                    long column = 0;
+//                    re.GetMatch(s_Errors, 1).ToLong(&line);
+//                    re.GetMatch(s_Errors, 2).ToLong(&column);
+//                    if (line != 0)
+//                    {
+//                        int pos = ed->GetControl()->PositionFromLine(line - 1);
+//                        ed->GotoLine(line - 1);
+//                        ed->GetControl()->GotoPos(pos + column - 1);
+//                        ed->GetControl()->SetFocus();
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     delete[] script;
 	return ret;

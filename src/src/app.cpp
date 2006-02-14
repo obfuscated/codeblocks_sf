@@ -146,7 +146,7 @@ void CodeBlocksApp::InitAssociations()
             int answer = cbMessageBox(msg,
                                         _("File associations"),
                                         wxICON_QUESTION | wxYES_NO | wxYES_DEFAULT);
-            if (answer == wxYES)
+            if (answer == wxID_YES)
                 Associations::Set();
             else
             {
@@ -197,10 +197,10 @@ void CodeBlocksApp::InitImageHandlers()
 void CodeBlocksApp::ClearConf()
 {
     int ret = cbMessageBox(_("Do you want to clear all Code::Blocks configuration settings?"), _("Clear configuration settings"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
-    if (ret == wxYES)
+    if (ret == wxID_YES)
     {
         ret = cbMessageBox(_("Are you *really* sure you want to clear all Code::Blocks configuration settings?"), _("Clear configuration settings"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
-        if (ret == wxYES)
+        if (ret == wxID_YES)
         {
 //            OldConfigManager::Get()->DeleteAll(); // leave this for now
             //Manager::Get()->GetConfigManager(_T("app"))->DeleteAll();

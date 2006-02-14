@@ -745,9 +745,9 @@ bool ProjectManager::QueryCloseProject(cbProject *proj,bool dontsavefiles)
         msg.Printf(_("Project '%s' is modified...\nDo you want to save the changes?"), proj->GetTitle().c_str());
         switch (cbMessageBox(msg, _("Save project"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
         {
-            case wxYES:     if (!proj->Save()) return false;
-            case wxNO:      break;
-            case wxCANCEL:  return false;
+            case wxID_YES:     if (!proj->Save()) return false;
+            case wxID_NO:      break;
+            case wxID_CANCEL:  return false;
         }
     }
     return true;
@@ -1016,8 +1016,8 @@ bool ProjectManager::QueryCloseWorkspace()
                         _("Save workspace"),
                         wxYES_NO | wxCANCEL | wxICON_QUESTION))
         {
-            case wxYES: SaveWorkspace(); break;
-            case wxCANCEL: return false;
+            case wxID_YES: SaveWorkspace(); break;
+            case wxID_CANCEL: return false;
             default: break;
         }
     }
@@ -1783,7 +1783,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
                 return;
             if (cbMessageBox(_("Are you sure you want to remove these files from the project?"),
                             _("Confirmation"),
-                            wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) != wxYES)
+                            wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) != wxID_YES)
             {
                 return;
             }
@@ -1829,7 +1829,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
         // remove all files from a folder
         if (cbMessageBox(_("Are you sure you want to recursively remove from the project all the files under this folder?"),
                         _("Confirmation"),
-                        wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) != wxYES)
+                        wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) != wxID_YES)
         {
             return;
         }

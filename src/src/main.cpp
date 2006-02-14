@@ -1640,7 +1640,7 @@ void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
 
 	if (cbMessageBox(_("Do you want to add this new file in the active project?"),
 					_("Add file to project"),
-					wxYES_NO | wxICON_QUESTION) == wxYES)
+					wxYES_NO | wxICON_QUESTION) == wxID_YES)
 	{
         wxArrayInt targets;
 		if (Manager::Get()->GetProjectManager()->AddFileToProject(ed->GetFilename(), project, targets) != 0)
@@ -2320,7 +2320,7 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
         if (cbMessageBox(_("The default layout cannot be deleted. It can always be reverted to "
                         "a predefined state though.\nDo you want to revert it now?"),
                         _("Confirmation"),
-                        wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
+                        wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
         {
             m_LayoutViews[gDefaultLayout] = gDefaultLayoutData;
             LoadViewLayout(gDefaultLayout);
@@ -2330,7 +2330,7 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
 
     if (cbMessageBox(wxString::Format(_("Are you really sure you want to delete the layout '%s'?"), m_LastLayoutName.c_str()),
                     _("Confirmation"),
-                    wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxYES)
+                    wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
     {
         // first delete it from the hashmap
         LayoutViewsMap::iterator it = m_LayoutViews.find(m_LastLayoutName);
