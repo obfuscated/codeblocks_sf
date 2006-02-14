@@ -60,6 +60,11 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * @note ProjectManager doesn't use this by itself. It's only doing the book-keeping.
           * Usually this is set/queried from project wizards...*/
         void SetDefaultPath(const wxString& path);
+        /** Is this a valid project? (i.e. is it still open?)
+          * @param project The project to check its validity.
+          * @return True if the project is valid (i.e. still open), false if not.
+          */
+        bool IsProjectStillOpen(cbProject* project);
         /** Retrieve the active project. Most of the times, this is the function
           * you 'll be calling in ProjectManager.
           * @return A pointer to the active project.

@@ -152,7 +152,7 @@ void CompilerErrors::DoGotoError(const CompileError& error)
         return;
 	DoClearErrorMarkFromAllEditors();
 	cbProject* project = error.project ? error.project : Manager::Get()->GetProjectManager()->GetActiveProject();
-	if (project)
+	if (project && Manager::Get()->GetProjectManager()->IsProjectStillOpen(project))
 	{
         wxString filename = error.filename;
         bool isAbsolute = (filename.Length() > 1 && filename.GetChar(1) == ':') ||

@@ -138,15 +138,15 @@ void DebuggerState::RemoveAllBreakpoints(const wxString& file, bool deleteit)
 
 int DebuggerState::HasBreakpoint(const wxString& file, int line)
 {
-    m_pPlugin->Log(wxString::Format(_T("Looking for breakpoint at %s, line %d"), file.c_str(), line));
+//    m_pPlugin->Log(wxString::Format(_T("Looking for breakpoint at %s, line %d"), file.c_str(), line));
     for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
     {
         DebuggerBreakpoint* bp = m_Breakpoints[i];
-        m_pPlugin->Log(wxString::Format(_T("+ Checking %s, line %d"), bp->filename.c_str(), bp->line));
+//        m_pPlugin->Log(wxString::Format(_T("+ Checking %s, line %d"), bp->filename.c_str(), bp->line));
         if (bp->filename == file && bp->line == line)
             return i;
     }
-    m_pPlugin->Log(_T("+ Not found..."));
+//    m_pPlugin->Log(_T("+ Not found..."));
     return -1;
 }
 

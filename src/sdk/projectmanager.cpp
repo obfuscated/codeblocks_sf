@@ -401,6 +401,17 @@ void ProjectManager::SetDefaultPath(const wxString& path)
     Manager::Get()->GetConfigManager(_T("project_manager"))->Write(_T("default_path"), path);
 }
 
+bool ProjectManager::IsProjectStillOpen(cbProject* project)
+{
+    int count = m_pProjects->GetCount();
+    for (int i = 0; i < count; ++i)
+    {
+        if (m_pProjects->Item(i) == project)
+            return true;
+    }
+    return false;
+}
+
 void ProjectManager::SetProject(cbProject* project, bool refresh)
 {
     SANITY_CHECK();
