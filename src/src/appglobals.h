@@ -16,4 +16,10 @@ extern const wxString g_AppBuildTimestamp;
 
 extern const wxString g_DefaultBatchBuildArgs;
 
+#define LOCALIZE   true
+#define LANGUAGES  2
+//Please fix this. I have no Idea that the WXSIZEOF couldn't work whithout defining LANGUAGES
+extern const wxString langs[LANGUAGES];
+extern const int locales[LANGUAGES];
+
 #endif // APPGLOBALS_H

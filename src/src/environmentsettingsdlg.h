@@ -21,6 +21,7 @@ class EnvironmentSettingsDlg : public wxDialog
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnPlaceCheck(wxCommandEvent& event);
         void OnHeadCheck(wxCommandEvent& event);
+        void OnI18NCheck(wxCommandEvent& event);
 	private:
         void AddPluginPanels();
         void LoadListbookImages();

@@ -276,55 +276,26 @@ void CodeBlocksApp::CheckVersion()
 void CodeBlocksApp::InitLocale()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
-    const wxString langs[] =
-    {
-        _T("(System default)")
-//        ,_T("English (U.S.)")
-//        ,_T("English")
-//        ,_T("Chinese (Simplified)")
-//        ,_T("German")
-//        ,_T("Russian")
-    };
 
-    // Must have the same order than the above
-    const long int locales[] =
-    {
-        wxLANGUAGE_DEFAULT
-//        ,wxLANGUAGE_ENGLISH_US
-//        ,wxLANGUAGE_ENGLISH
-//        ,wxLANGUAGE_CHINESE_SIMPLIFIED
-//        ,wxLANGUAGE_GERMAN
-//        ,wxLANGUAGE_RUSSIAN
-    };
 
-    long int lng = cfg->ReadInt(_T("/locale/language"),(long int)-2);
+    bool i18n=cfg->ReadBool(_T("/environment/I18N"),LOCALIZE);
+	int lng =-1;	// -1 = Don't use locale; the default is 0 = Use locale
+	if(i18n)
+		lng = cfg->ReadInt(_T("/locale/language"),(int)0);
 
-    if (lng <= -2 && WXSIZEOF(langs)>=2) // ask only if undefined and there are at least 2 choices
-    {
-        lng = wxGetSingleChoiceIndex(_T("Please choose language:"), _T("Language"), WXSIZEOF(langs), langs);
-        if (lng >= 0 && static_cast<unsigned int>(lng) < WXSIZEOF(locales))
-        {
-            lng = locales[lng];
-        }
-    }
-    else
-    {
-        lng = -1; // -1 = Don't use locale
-    }
+	int catalogNum = cfg->ReadInt(_T("/locale/catalogNum"), (int)0);
+	if (catalogNum == 0)
+	{
+		catalogNum = 1;
+		cfg->Write(_T("/locale/Domain1"), "codeblocks");
+	}
 
     if (lng>=0)
     {
-        m_locale.Init(lng);
+        m_locale.Init(locales[lng]);
         wxLocale::AddCatalogLookupPathPrefix(ConfigManager::GetDataFolder() + _T("/locale"));
         wxLocale::AddCatalogLookupPathPrefix(wxT("."));
         wxLocale::AddCatalogLookupPathPrefix(wxT(".."));
-		int catalogNum = cfg->ReadInt(_T("/locale/catalogNum"), (int)0);
-		if (catalogNum == 0)
-		{
-			catalogNum = 1;
-			cfg->Write(_T("/locale/Domain1"), "codeblocks");
-		}
-
 		for (int i = 1; i <= catalogNum; ++i)
 		{
 			wxString tempStr = wxString::Format(_T("/locale/Domain%d"), i);
@@ -338,9 +309,10 @@ void CodeBlocksApp::InitLocale()
 			else if (cfg->Read(_T("/plugins/") + catalogName))
 				m_locale.AddCatalog(catalogName);
 		}
-		cfg->Write(_T("/locale/catalogNum"), (int)catalogNum);
+		
     }
-
+	cfg->Write(_T("/locale/catalogNum"), (int)catalogNum);
+	cfg->Write(_T("/environment/I18N"),  (bool)i18n);
     cfg->Write(_T("/locale/language"), (int)lng);
 }
 

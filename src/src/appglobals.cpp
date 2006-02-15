@@ -43,3 +43,25 @@ const wxString g_AppContactEmail		= _T("info@codeblocks.org");
 const wxString g_AppBuildTimestamp = (wxString(wxT(__DATE__)) + wxT(", ") + wxT(__TIME__) + wxT(" - wx") + wxString(wxT(wxVERSION_NUM_DOT_STRING)) + wxT(" (") + g_AppPlatform + wxT(", ") + g_AppWXAnsiUnicode + wxT(")") );
 
 const wxString g_DefaultBatchBuildArgs = _T("-na -nd -ns --batch-build-notify");
+
+
+const wxString langs[] =
+{
+	_("(System default)")
+//        ,_T("English (U.S.)")
+//        ,_T("English")
+	,_("Chinese (Simplified)")
+//        ,_T("German")
+//        ,_T("Russian")
+};
+
+// Must have the same order than the above
+const int locales[] =
+{
+	wxLANGUAGE_DEFAULT
+//        ,wxLANGUAGE_ENGLISH_US
+//        ,wxLANGUAGE_ENGLISH
+	,wxLANGUAGE_CHINESE_SIMPLIFIED
+//        ,wxLANGUAGE_GERMAN
+//        ,wxLANGUAGE_RUSSIAN
+};

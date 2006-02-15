@@ -66,6 +66,7 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
     EVT_BUTTON(XRCID("btnAuiInactiveCaptionTextColor"), EnvironmentSettingsDlg::OnChooseColor)
     EVT_CHECKBOX(XRCID("chkDoPlace"), EnvironmentSettingsDlg::OnPlaceCheck)
     EVT_CHECKBOX(XRCID("chkPlaceHead"), EnvironmentSettingsDlg::OnHeadCheck)
+    EVT_CHECKBOX(XRCID("chkI18N"), EnvironmentSettingsDlg::OnI18NCheck)
 
     EVT_LISTBOOK_PAGE_CHANGING(XRCID("nbMain"), EnvironmentSettingsDlg::OnPageChanging)
     EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EnvironmentSettingsDlg::OnPageChanged)
@@ -102,6 +103,23 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_hide"), false));
     XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/start_here_page"), true));
 
+	bool i18n=cfg->ReadBool(_T("/environment/I18N"), false);
+		XRCCTRL(*this, "chkI18N", wxCheckBox)->SetValue(i18n);
+	for(size_t i=0; i < WXSIZEOF(langs); i++)
+	{
+		XRCCTRL(*this, "cbxLanguage", wxComboBox)->Append(langs[i]);
+	}
+	XRCCTRL(*this, "cbxLanguage", wxComboBox)->Enable(i18n);
+	if(i18n)
+	{
+		int lng = cfg->ReadInt(_T("/locale/language"),-1);
+
+		if (lng >= 0 && static_cast<unsigned int>(lng) < WXSIZEOF(locales))
+		{
+			XRCCTRL(*this, "cbxLanguage", wxComboBox)->SetSelection(lng+1);
+		}
+	}
+	
     // tab "Notebook"
     XRCCTRL(*this, "cmbEditorTabs", wxComboBox)->SetSelection(cfg->ReadInt(_T("/environment/tabs_style"), 0));
     XRCCTRL(*this, "btnFNBorder", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
@@ -280,6 +298,8 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         cfg->Write(_T("/environment/toolbar_size"),          (bool) XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->GetSelection() == 1);
         mcfg->Write(_T("/auto_hide"),                        (bool) XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/start_here_page"),       (bool) XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/I18N"),                       (bool) XRCCTRL(*this, "chkI18N", wxCheckBox)->GetValue());
+        cfg->Write(_T("/locale/language"),                   (int)  XRCCTRL(*this, "cbxLanguage", wxComboBox)->GetSelection()-1);
 
         // tab "Appearence"
         cfg->Write(_T("/environment/tabs_style"),           (int)XRCCTRL(*this, "cmbEditorTabs", wxComboBox)->GetSelection());
@@ -358,5 +378,9 @@ void EnvironmentSettingsDlg::OnPlaceCheck(wxCommandEvent& event)
 void EnvironmentSettingsDlg::OnHeadCheck(wxCommandEvent& event)
 {
     PlaceWindow(this, event.IsChecked() ? pdlHead : pdlCentre, true);
+}
+void EnvironmentSettingsDlg::OnI18NCheck(wxCommandEvent& event)
+{
+    XRCCTRL(*this, "cbxLanguage", wxComboBox)->Enable(event.IsChecked());
 }
 
