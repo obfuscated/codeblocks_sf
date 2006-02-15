@@ -36,7 +36,7 @@ void Associations::Set()
 	GetModuleFileName(0L, name, MAX_PATH);
 
 	DoSetAssociation(CODEBLOCKS_EXT, g_AppName + _(" project file"), name, _T("1"));
-	DoSetAssociation(WORKSPACE_EXT, g_AppName +  _("workspace file"), name, _T("1"));
+	DoSetAssociation(WORKSPACE_EXT, g_AppName +  _("workspace file"), name, _T("9"));
 	DoSetAssociation(C_EXT, _("C source file"), name, _T("2"));
 	DoSetAssociation(CPP_EXT, _("C++ source file"), name, _T("3"));
 	DoSetAssociation(CC_EXT, _("C++ source file"), name, _T("3"));
@@ -45,7 +45,10 @@ void Associations::Set()
 	DoSetAssociation(HPP_EXT, _("C/C++ header file"), name, _T("4"));
 	DoSetAssociation(HH_EXT, _("C/C++ header file"), name, _T("4"));
 	DoSetAssociation(HXX_EXT, _("C/C++ header file"), name, _T("4"));
-	DoSetAssociation(D_EXT, _("D source file"), name, _T("5"));
+	DoSetAssociation(D_EXT, _("D source file"), name, _T("6"));
+    DoSetAssociation(_T("rc"), _T("resource file"), name, _T("8"));
+    DoSetAssociation(_T("cg"), _T("cg source file"), name, _T("5"));
+    DoSetAssociation(_T("F"), _T("Fortran source file"), name, _T("7"));
 
 	SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, 0L, 0L);
 }
@@ -56,7 +59,7 @@ bool Associations::Check()
 	GetModuleFileName(0L, name, MAX_PATH);
 
 	return DoCheckAssociation(CODEBLOCKS_EXT, g_AppName + _(" project file"), name, _T("1")) &&
-            DoCheckAssociation(WORKSPACE_EXT, g_AppName + _(" workspace file"), name, _T("1")) &&
+            DoCheckAssociation(WORKSPACE_EXT, g_AppName + _(" workspace file"), name, _T("9")) &&
             DoCheckAssociation(C_EXT, _T("C source file"), name, _T("2")) &&
             DoCheckAssociation(CPP_EXT, _T("C++ source file"), name, _T("3")) &&
             DoCheckAssociation(CC_EXT, _T("C++ source file"), name, _T("3")) &&
@@ -65,7 +68,10 @@ bool Associations::Check()
             DoCheckAssociation(HPP_EXT, _T("C/C++ header file"), name, _T("4")) &&
             DoCheckAssociation(HH_EXT, _T("C/C++ header file"), name, _T("4")) &&
             DoCheckAssociation(HXX_EXT, _T("C/C++ header file"), name, _T("4")) &&
-            DoCheckAssociation(D_EXT, _T("D source file"), name, _T("5"));
+            DoCheckAssociation(D_EXT, _T("D source file"), name, _T("6"));
+            DoCheckAssociation(_T("rc"), _T("resource file"), name, _T("8"));
+            DoCheckAssociation(_T("cg"), _T("cg source file"), name, _T("5"));
+            DoCheckAssociation(_T("F"), _T("Fortran source file"), name, _T("7"));
 }
 
 void DoSetAssociation(const wxString& ext, const wxString& descr, const wxString& exe, const wxString& icoNum)

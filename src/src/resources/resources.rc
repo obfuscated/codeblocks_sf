@@ -1,10 +1,13 @@
 A_MAIN_ICON ICON "src/resources/icons/app.ico"
-PROJECT_FILE ICON "src/resources/icons/csd.ico"
+PROJECT_FILE ICON "src/resources/icons/cbp.ico"
 SOURCE_FILE_CPP ICON "src/resources/icons/cpp.ico"
 SOURCE_FILE_C ICON "src/resources/icons/c.ico"
 SOURCE_FILE_H ICON "src/resources/icons/h.ico"
-SOURCE_FILE_ZD ICON "src/resources/icons/d.ico"
-
+SOURCE_FILE_X_D ICON "src/resources/icons/d.ico"
+SOURCE_FILE_X_F ICON "src/resources/icons/f.ico"
+WORKSPACE_FILE ICON "src/resources/icons/csd.ico"
+SOURCE_FILE_X_CG ICON "src/resources/icons/cg.ico"
+SOURCE_FILE_X_RC ICON "src/resources/icons/rc.ico"
 //wxBITMAP_STD_COLOURS    BITMAP "wx/msw/colours.bmp"
 // is the only thing needed from
 #include <wx/msw/wx.rc>
