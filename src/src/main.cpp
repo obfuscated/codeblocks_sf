@@ -1135,7 +1135,12 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
         default:
         {
             cbMimePlugin* plugin = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(filename);
-            return plugin && plugin->OpenFile(filename) == 0;
+            if (plugin && plugin->OpenFile(filename) == 0)
+            {
+                AddToRecentFilesHistory(filename);
+                return true;
+            }
+            return false;
         }
     }
     return true;
@@ -1376,13 +1381,23 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
         {
             if (!OpenGeneric(hist->GetHistoryFile(count), true))
             {
-                // invalid file, update start here page
-                hist->RemoveFileFromHistory(count);
-                EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
-                if (sh)
-                    ((StartHerePage*)sh)->Reload();
+                AskToRemoveFileFromHistory(hist, count);
             }
         }
+    }
+}
+
+void MainFrame::AskToRemoveFileFromHistory(wxFileHistory* hist, int id)
+{
+    if (cbMessageBox(_("Can't open file.\nDo you want to remove it from the recent files list?"),
+                    _("Question"),
+                    wxYES_NO | wxICON_QUESTION) == wxID_YES)
+    {
+        hist->RemoveFileFromHistory(id);
+        // update start here page
+        EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
+        if (sh)
+            ((StartHerePage*)sh)->Reload();
     }
 }
 
@@ -1513,6 +1528,11 @@ void MainFrame::AddToRecentFilesHistory(const wxString& filename)
             recentFiles->AppendSeparator();
         recentFiles->Append(clear);
     }
+
+    // update start here page
+    EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
+    if (sh)
+        ((StartHerePage*)sh)->Reload();
 }
 
 void MainFrame::AddToRecentProjectsHistory(const wxString& filename)
@@ -1552,6 +1572,11 @@ void MainFrame::AddToRecentProjectsHistory(const wxString& filename)
             recentProjects->AppendSeparator();
         recentProjects->Append(clear);
     }
+
+    // update start here page
+    EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
+    if (sh)
+        ((StartHerePage*)sh)->Reload();
 }
 
 void MainFrame::TerminateRecentFilesHistory()
@@ -1708,11 +1733,7 @@ void MainFrame::OnFileReopenProject(wxCommandEvent& event)
     wxString fname = m_ProjectsHistory.GetHistoryFile(id);
     if (!OpenGeneric(fname, true))
     {
-        m_ProjectsHistory.RemoveFileFromHistory(id);
-        // update start here page
-        EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
-        if (sh)
-            ((StartHerePage*)sh)->Reload();
+        AskToRemoveFileFromHistory(&m_ProjectsHistory, id);
     }
 }
 
@@ -1736,11 +1757,7 @@ void MainFrame::OnFileReopen(wxCommandEvent& event)
     wxString fname = m_FilesHistory.GetHistoryFile(id);
     if (!OpenGeneric(fname, true))
     {
-        m_FilesHistory.RemoveFileFromHistory(id);
-        // update start here page
-        EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
-        if (sh)
-            ((StartHerePage*)sh)->Reload();
+        AskToRemoveFileFromHistory(&m_FilesHistory, id);
     }
 }
 

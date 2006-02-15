@@ -755,7 +755,7 @@ bool DDEConnection::OnExecute(const wxString& topic, wxChar *data, int size, wxI
 	{
 		wxString file = reCmd.GetMatch(strData, 1);
 		if(m_Frame)
-            m_Frame->Open(file, false); // don't add to history, files that open through DDE
+            m_Frame->Open(file, true); // add to history, files that open through DDE
 	}
     return true;
 }
