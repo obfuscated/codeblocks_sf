@@ -22,10 +22,12 @@ class EnvironmentSettingsDlg : public wxDialog
         void OnPlaceCheck(wxCommandEvent& event);
         void OnHeadCheck(wxCommandEvent& event);
         void OnI18NCheck(wxCommandEvent& event);
+        void OnSettingsIconsSize(wxCommandEvent& event);
 	private:
         void AddPluginPanels();
         void LoadListbookImages();
         void UpdateListbookImages();
+
         wxDockArt* m_pArt;
         ConfigurationPanelsArray m_PluginPanels;
         DECLARE_EVENT_TABLE()

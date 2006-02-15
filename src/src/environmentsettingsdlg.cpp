@@ -67,6 +67,7 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
     EVT_CHECKBOX(XRCID("chkDoPlace"), EnvironmentSettingsDlg::OnPlaceCheck)
     EVT_CHECKBOX(XRCID("chkPlaceHead"), EnvironmentSettingsDlg::OnHeadCheck)
     EVT_CHECKBOX(XRCID("chkI18N"), EnvironmentSettingsDlg::OnI18NCheck)
+    EVT_RADIOBOX(XRCID("rbSettingsIconsSize"), EnvironmentSettingsDlg::OnSettingsIconsSize)
 
     EVT_LISTBOOK_PAGE_CHANGING(XRCID("nbMain"), EnvironmentSettingsDlg::OnPageChanging)
     EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EnvironmentSettingsDlg::OnPageChanged)
@@ -75,13 +76,16 @@ END_EVENT_TABLE()
 EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     : m_pArt(art)
 {
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEnvironmentSettings"));
-    LoadListbookImages();
-
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
     ConfigManager *pcfg = Manager::Get()->GetConfigManager(_T("project_manager"));
     ConfigManager *mcfg = Manager::Get()->GetConfigManager(_T("message_manager"));
     ConfigManager *acfg = Manager::Get()->GetConfigManager(_T("an_dlg"));
+
+    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEnvironmentSettings"));
+    int sel = cfg->ReadInt(_T("/environment/settings_size"), 0);
+    wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
+    SetSettingsIconsStyle(lb->GetListView(), (SettingsIconsStyle)sel);
+    LoadListbookImages();
 
     // tab "General"
     XRCCTRL(*this, "chkShowSplash", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/show_splash"), true));
@@ -100,6 +104,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     // tab "View"
     XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->SetSelection(pcfg->ReadInt(_T("/open_files"), 1));
     XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/toolbar_size"), true) ? 1 : 0);
+    XRCCTRL(*this, "rbSettingsIconsSize", wxRadioBox)->SetSelection(cfg->ReadInt(_T("/environment/settings_size"), 0));
     XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_hide"), false));
     XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/start_here_page"), true));
 
@@ -119,7 +124,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
 			XRCCTRL(*this, "cbxLanguage", wxComboBox)->SetSelection(lng+1);
 		}
 	}
-	
+
     // tab "Notebook"
     XRCCTRL(*this, "cmbEditorTabs", wxComboBox)->SetSelection(cfg->ReadInt(_T("/environment/tabs_style"), 0));
     XRCCTRL(*this, "btnFNBorder", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
@@ -223,7 +228,9 @@ void EnvironmentSettingsDlg::UpdateListbookImages()
 
     // the selection color is ruining the on/off effect,
     // so make sure no item is selected ;)
-    lb->GetListView()->Select(sel, false);
+    // (only if we have icons showing)
+    if (GetSettingsIconsStyle(lb->GetListView()) != sisNoIcons)
+        lb->GetListView()->Select(sel, false);
 
     // update the page title
     wxString label = lb->GetPageText(sel);
@@ -265,6 +272,27 @@ void EnvironmentSettingsDlg::OnChooseColor(wxCommandEvent& event)
     }
 }
 
+void EnvironmentSettingsDlg::OnPlaceCheck(wxCommandEvent& event)
+{
+    XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(event.IsChecked());
+}
+
+void EnvironmentSettingsDlg::OnHeadCheck(wxCommandEvent& event)
+{
+    PlaceWindow(this, event.IsChecked() ? pdlHead : pdlCentre, true);
+}
+
+void EnvironmentSettingsDlg::OnI18NCheck(wxCommandEvent& event)
+{
+    XRCCTRL(*this, "cbxLanguage", wxComboBox)->Enable(event.IsChecked());
+}
+
+void EnvironmentSettingsDlg::OnSettingsIconsSize(wxCommandEvent& event)
+{
+    wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
+    SetSettingsIconsStyle(lb->GetListView(), (SettingsIconsStyle)event.GetSelection());
+}
+
 void EnvironmentSettingsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
     bool en = XRCCTRL(*this, "cmbEditorTabs", wxComboBox)->GetSelection() == 1;
@@ -296,6 +324,7 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         cfg->Write(_T("/environment/blank_workspace"),       (bool) XRCCTRL(*this, "rbAppStart", wxRadioBox)->GetSelection() ? true : false);
         pcfg->Write(_T("/open_files"),                       (int)  XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->GetSelection());
         cfg->Write(_T("/environment/toolbar_size"),          (bool) XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->GetSelection() == 1);
+        cfg->Write(_T("/environment/settings_size"),         (int)  XRCCTRL(*this, "rbSettingsIconsSize", wxRadioBox)->GetSelection());
         mcfg->Write(_T("/auto_hide"),                        (bool) XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/start_here_page"),       (bool) XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/I18N"),                       (bool) XRCCTRL(*this, "chkI18N", wxCheckBox)->GetValue());
@@ -369,18 +398,3 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 
     wxDialog::EndModal(retCode);
 }
-
-void EnvironmentSettingsDlg::OnPlaceCheck(wxCommandEvent& event)
-{
-    XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(event.IsChecked());
-}
-
-void EnvironmentSettingsDlg::OnHeadCheck(wxCommandEvent& event)
-{
-    PlaceWindow(this, event.IsChecked() ? pdlHead : pdlCentre, true);
-}
-void EnvironmentSettingsDlg::OnI18NCheck(wxCommandEvent& event)
-{
-    XRCCTRL(*this, "cbxLanguage", wxComboBox)->Enable(event.IsChecked());
-}
-

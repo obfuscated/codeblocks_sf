@@ -140,6 +140,25 @@ extern DLLIMPORT wxBitmap LoadPNGWindows2000Hack(const wxString& filename);
   */
 extern DLLIMPORT bool IsWindowReallyShown(wxWindow* win);
 
+/** Icons styles for settings dialogs.
+  */
+enum SettingsIconsStyle
+{
+    sisLargeIcons    = 0, ///< Large icons (default)
+    sisNoIcons       = 1, ///< No icons, just text
+};
+
+class wxListCtrl;
+
+/** Set the icons style for the supplied list control.
+  * @param lc The wxListCtrl.
+  * @param style The style to use.
+  */
+extern DLLIMPORT void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style);
+/** Get the icons style for the supplied list control.
+  * @return The icons style.
+  */
+extern DLLIMPORT SettingsIconsStyle GetSettingsIconsStyle(wxListCtrl* lc);
 
 class wxWindow;
 
@@ -155,8 +174,12 @@ typedef enum
 
 extern void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode = pdlBest, bool enforce = false);
 
-
-
+/** wxMessageBox wrapper.
+  *
+  * Use this instead of wxMessageBox(), as this uses PlaceWindow() to show it in the correct monitor.
+  * @note The return value for wxOK would be wxID_OK and so on for other buttons.
+  * So, read wxMessageDialog 's documentation, *not* wxMessageBox 's...
+  */
 inline int cbMessageBox(const wxString& message, const wxString& caption = wxEmptyString, int style = wxOK, wxWindow *parent = NULL, int x = -1, int y = -1)
 {
     wxMessageDialog dlg(parent, message, caption, style, wxPoint(x,y));

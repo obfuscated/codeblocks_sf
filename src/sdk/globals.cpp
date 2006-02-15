@@ -35,6 +35,7 @@
     #include <wx/filename.h>
     #include <wx/file.h>
     #include <wx/image.h>
+    #include <wx/listctrl.h>
     #include "cbexception.h"
 #endif
 
@@ -599,7 +600,24 @@ wxBitmap LoadPNGWindows2000Hack(const wxString& filename)
     return bmp;
 }
 
+void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)
+{
+    long flags = lc->GetWindowStyleFlag();
+    switch (style)
+    {
+        case sisNoIcons: flags = (flags & ~wxLC_ICON) | wxLC_SMALL_ICON; break;
+        default: flags = (flags & ~wxLC_SMALL_ICON) | wxLC_ICON; break;
+    }
+    lc->SetWindowStyleFlag(flags);
+}
 
+SettingsIconsStyle GetSettingsIconsStyle(wxListCtrl* lc)
+{
+    long flags = lc->GetWindowStyleFlag();
+    if (flags & wxLC_SMALL_ICON)
+        return sisNoIcons;
+    return sisLargeIcons;
+}
 
 #ifdef __WXMSW__
 
@@ -769,6 +787,4 @@ void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
     }
 }
 
-
 #endif //platform-specific placement code
-

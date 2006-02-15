@@ -37,6 +37,7 @@
     #include "editormanager.h"
     #include "cbeditor.h"
     #include "globals.h"
+    #include <wx/listbook.h>
     #include <wx/listbox.h>
     #include <wx/colordlg.h>
     #include <wx/radiobox.h>
@@ -193,6 +194,8 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     }
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     lb->AssignImageList(images);
+    int sel = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/settings_size"), 0);
+    SetSettingsIconsStyle(lb->GetListView(), (SettingsIconsStyle)sel);
 
     // add all plugins configuration panels
     AddPluginPanels();
@@ -246,7 +249,9 @@ void EditorConfigurationDlg::UpdateListbookImages()
 
     // the selection color is ruining the on/off effect,
     // so make sure no item is selected ;)
-    lb->GetListView()->Select(sel, false);
+    // (only if we have icons showing)
+    if (GetSettingsIconsStyle(lb->GetListView()) != sisNoIcons)
+        lb->GetListView()->Select(sel, false);
 
     // update the page title
     wxString label = lb->GetPageText(sel);
