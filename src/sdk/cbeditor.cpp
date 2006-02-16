@@ -749,8 +749,8 @@ void cbEditor::DetectEncoding( )
 
     m_pData->m_useByteOrderMark = false;
     // FIXME: Should this default to local encoding or latin-1? (IOW, implement proper encoding detection)
-//    m_pData->m_encoding = wxLocale::GetSystemEncoding();
-    m_pData->m_encoding = wxFONTENCODING_ISO8859_1;
+    m_pData->m_encoding = wxLocale::GetSystemEncoding();
+//    m_pData->m_encoding = wxFONTENCODING_ISO8859_1;
 
     // Simple BOM detection
     wxFile file(m_Filename);
