@@ -43,9 +43,11 @@
 BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_UPDATE_UI(			XRCID("btnEditDir"),	    CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnDelDir"),	        CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnClearDir"),	        CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("spnDirs"),	        CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnEditVar"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnDeleteVar"),		CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnClearVar"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("cmbCompilerPolicy"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("cmbLinkerPolicy"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("cmbIncludesPolicy"),	CompilerOptionsDlg::OnUpdateUI)
@@ -97,6 +99,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
 	EVT_LISTBOX_DCLICK(		XRCID("lstLibDirs"),        CompilerOptionsDlg::OnEditDirClick)
 	EVT_LISTBOX_DCLICK(		XRCID("lstResDirs"),        CompilerOptionsDlg::OnEditDirClick)
 	EVT_BUTTON(				XRCID("btnDelDir"),	        CompilerOptionsDlg::OnRemoveDirClick)
+	EVT_BUTTON(				XRCID("btnClearDir"),	        CompilerOptionsDlg::OnClearDirClick)
     EVT_BUTTON(			    XRCID("btnAddLib"),	        CompilerOptionsDlg::OnAddLibClick)
     EVT_BUTTON(			    XRCID("btnEditLib"),	    CompilerOptionsDlg::OnEditLibClick)
 	EVT_LISTBOX_DCLICK(		XRCID("lstLibs"),   	    CompilerOptionsDlg::OnEditLibClick)
@@ -112,6 +115,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
 	EVT_BUTTON(				XRCID("btnAddVar"),			CompilerOptionsDlg::OnAddVarClick)
 	EVT_BUTTON(				XRCID("btnEditVar"),		CompilerOptionsDlg::OnEditVarClick)
 	EVT_BUTTON(				XRCID("btnDeleteVar"),		CompilerOptionsDlg::OnRemoveVarClick)
+	EVT_BUTTON(				XRCID("btnClearVar"),		CompilerOptionsDlg::OnClearVarClick)
 	EVT_BUTTON(				XRCID("btnMasterPath"),		CompilerOptionsDlg::OnMasterPathClick)
 	EVT_BUTTON(				XRCID("btnAutoDetect"),		CompilerOptionsDlg::OnAutoDetectClick)
 	EVT_BUTTON(				XRCID("btnCcompiler"),		CompilerOptionsDlg::OnSelectProgramClick)
@@ -1074,6 +1078,19 @@ void CompilerOptionsDlg::OnRemoveDirClick(wxCommandEvent& event)
     }
 }
 
+void CompilerOptionsDlg::OnClearDirClick(wxCommandEvent& event)
+{
+    wxListBox* control = GetDirsListBox();
+    if (!control || control->GetSelection() < 0)
+        return;
+	if (cbMessageBox(_("Remove all directories from the list?"),
+					_("Confirmation"),
+					wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
+	{
+        control->Clear();
+    }
+}
+
 void CompilerOptionsDlg::OnAddVarClick(wxCommandEvent& event)
 {
     CompileOptionsBase* base = GetVarsOwner();
@@ -1142,6 +1159,32 @@ void CompilerOptionsDlg::OnRemoveVarClick(wxCommandEvent& event)
 	{
 	    base->UnsetVar(key);
         XRCCTRL(*this, "lstVars", wxListBox)->Delete(sel);
+	}
+}
+
+void CompilerOptionsDlg::OnClearVarClick(wxCommandEvent& event)
+{
+	wxListBox* lstVars = XRCCTRL(*this, "lstVars", wxListBox);
+	if (lstVars->IsEmpty())
+		return;
+
+  CompileOptionsBase* base = GetVarsOwner();
+  if (!base)
+    return;
+
+	if (cbMessageBox(_("Are you sure you want to clear all variables?"),
+                   _("Confirmation"),
+                   wxYES | wxNO | wxICON_QUESTION) == wxID_YES)
+	{
+    // Unset all variables of lstVars
+    for (int i=0; i<lstVars->GetCount(); i++)
+    {
+      wxString key = lstVars->GetString(i).BeforeFirst(_T('=')).Trim(true);
+      if (!key.IsEmpty())
+        base->UnsetVar(key);
+    }
+
+    lstVars->Clear();
 	}
 }
 
@@ -1542,10 +1585,11 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     wxListBox* control = GetDirsListBox();
     if (control)
     {
-        // add/edit/delete dir
+        // add/edit/delete/clear dir
         bool en = control->GetSelection() >= 0;
         XRCCTRL(*this, "btnEditDir", wxButton)->Enable(en);
         XRCCTRL(*this, "btnDelDir", wxButton)->Enable(en);
+        XRCCTRL(*this, "btnClearDir", wxButton)->Enable(en);
 
         // moveup/movedown dir
         XRCCTRL(*this, "spnDirs", wxSpinButton)->Enable(en);
@@ -1558,12 +1602,13 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "btnClearLib", wxButton)->Enable(en);
     XRCCTRL(*this, "spnLibs", wxSpinButton)->Enable(en);
 
-    // add/edit/delete vars
+    // add/edit/delete/clear vars
     if (XRCCTRL(*this, "lstVars", wxListBox))
     {
         en = XRCCTRL(*this, "lstVars", wxListBox)->GetSelection() >= 0;
         XRCCTRL(*this, "btnEditVar", wxButton)->Enable(en);
         XRCCTRL(*this, "btnDeleteVar", wxButton)->Enable(en);
+        XRCCTRL(*this, "btnClearVar", wxButton)->Enable(en);
     }
 
     // policies
@@ -1688,8 +1733,8 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
     unsigned int myidx = 0;
 
     const wxChar* str_libs[4] = { _T("btnEditLib"),_T("btnAddLib"),_T("btnDelLib"),_T("btnClearLib") };
-    const wxChar* str_dirs[3] = { _T("btnEditDir"),_T("btnAddDir"),_T("btnDelDir") };
-    const wxChar* str_vars[3] = { _T("btnEditVar"),_T("btnAddVar"),_T("btnDeleteVar") };
+    const wxChar* str_dirs[4] = { _T("btnEditDir"),_T("btnAddDir"),_T("btnDelDir"),_T("btnClearDir") };
+    const wxChar* str_vars[4] = { _T("btnEditVar"),_T("btnAddVar"),_T("btnDeleteVar"),_T("btnClearVar") };
     const wxChar* str_xtra[3] = { _T("btnExtraEdit"),_T("btnExtraAdd"),_T("btnExtraDelete") };
 
     if(keycode == WXK_RETURN || keycode == WXK_NUMPAD_ENTER)

@@ -539,6 +539,13 @@
                               <object class="wxButton" name="btnDelDir">
                                 <label>Delete</label>
                               </object>
+                              <flag>wxRIGHT</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnClearDir">
+                                <label>Clear</label>
+                              </object>
                             </object>
                           </object>
                           <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
@@ -915,17 +922,26 @@ or in any of the &quot;Additional paths&quot;...</label>
                               <object class="wxButton" name="btnAddVar">
                                 <label>&amp;Add</label>
                               </object>
+                              <flag>wxRIGHT</flag>
+                              <border>8</border>
                             </object>
                             <object class="sizeritem">
                               <object class="wxButton" name="btnEditVar">
                                 <label>&amp;Edit</label>
                               </object>
-                              <flag>wxLEFT|wxRIGHT</flag>
+                              <flag>wxRIGHT</flag>
                               <border>8</border>
                             </object>
                             <object class="sizeritem">
                               <object class="wxButton" name="btnDeleteVar">
                                 <label>&amp;Delete</label>
+                              </object>
+                              <flag>wxRIGHT</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnClearVar">
+                                <label>&amp;Clear</label>
                               </object>
                             </object>
                           </object>

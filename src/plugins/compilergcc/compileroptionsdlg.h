@@ -67,9 +67,11 @@ class CompilerOptionsDlg : public cbConfigurationPanel
 		void OnAddDirClick(wxCommandEvent& event);
 		void OnEditDirClick(wxCommandEvent& event);
 		void OnRemoveDirClick(wxCommandEvent& event);
+		void OnClearDirClick(wxCommandEvent& event);
 		void OnAddVarClick(wxCommandEvent& event);
 		void OnEditVarClick(wxCommandEvent& event);
 		void OnRemoveVarClick(wxCommandEvent& event);
+		void OnClearVarClick(wxCommandEvent& event);
 		void OnSetDefaultCompilerClick(wxCommandEvent& event);
 		void OnAddCompilerClick(wxCommandEvent& event);
 		void OnEditCompilerClick(wxCommandEvent& event);
