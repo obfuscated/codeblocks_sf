@@ -58,6 +58,7 @@
     #include "compilerOW.h"
     #include "compilerGDC.h"
     #include "compilerDMD.h"
+	#include "compilerGNUARM.h"
 #endif
 #include "compilerICC.h"
 #include "compilerSDCC.h"
@@ -250,6 +251,7 @@ CompilerGCC::CompilerGCC()
 #ifdef __WXMSW__
 	CompilerFactory::RegisterCompiler(new CompilerGDC);
 	CompilerFactory::RegisterCompiler(new CompilerDMD);
+	CompilerFactory::RegisterCompiler(new CompilerGNUARM);
 #endif
 
 	// register (if any) user-copies of built-in compilers
