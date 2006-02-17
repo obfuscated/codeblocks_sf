@@ -44,9 +44,10 @@ const Associations::Assoc knownTypes[] =
     { _T("F"),         _T("Fortran source file"), 7 },
 
 
-    { _T("Dev"),       _T("Dev-CPP project file"), 9 },
-    { _T("dsw"),       _T("MS Visual C++ workspace file"), 9 },
-    { _T("dsp"),       _T("MS Visual C++ project file"), 9 },
+    { _T("dev"),       _T("Dev-CPP project file"), 18 },
+    { _T("dsp"),       _T("MS Visual C++ project file"), 19 },
+    { _T("dsw"),       _T("MS Visual C++ workspace file"), 20 }
+    // { _T("proj"),      _T(""), 21 },
 
 };
 

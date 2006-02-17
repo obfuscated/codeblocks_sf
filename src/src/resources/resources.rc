@@ -8,6 +8,10 @@ SOURCE_FILE_X_F ICON "src/resources/icons/f.ico"
 WORKSPACE_FILE ICON "src/resources/icons/csd.ico"
 SOURCE_FILE_X_CG ICON "src/resources/icons/cg.ico"
 SOURCE_FILE_X_RC ICON "src/resources/icons/rc.ico"
+X_PRJ_FILE_DEV ICON "src/resources/icons/dev.ico"
+X_PRJ_FILE_DSP ICON "src/resources/icons/dsp.ico"
+X_PRJ_FILE_DSW ICON "src/resources/icons/dsw.ico"
+X_PRJ_FILE_PROJ ICON "src/resources/icons/proj.ico"
 //wxBITMAP_STD_COLOURS    BITMAP "wx/msw/colours.bmp"
 // is the only thing needed from
 #include <wx/msw/wx.rc>
