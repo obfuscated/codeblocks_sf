@@ -92,6 +92,7 @@ class CompilerOptionsDlg : public cbConfigurationPanel
 		void OnAddExtraPathClick(wxCommandEvent& event);
 		void OnEditExtraPathClick(wxCommandEvent& event);
 		void OnRemoveExtraPathClick(wxCommandEvent& event);
+		void OnClearExtraPathClick(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
 		void OnMyCharHook(wxKeyEvent& event);
 

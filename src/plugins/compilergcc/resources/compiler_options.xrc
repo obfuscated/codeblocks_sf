@@ -855,15 +855,26 @@ or in any of the &quot;Additional paths&quot;...</label>
                                             <object class="wxButton" name="btnExtraAdd">
                                               <label>Add</label>
                                             </object>
+                                            <flag>wxRIGHT</flag>
+                                            <border>8</border>
                                           </object>
                                           <object class="sizeritem">
                                             <object class="wxButton" name="btnExtraEdit">
                                               <label>Edit</label>
                                             </object>
+                                            <flag>wxRIGHT</flag>
+                                            <border>8</border>
                                           </object>
                                           <object class="sizeritem">
                                             <object class="wxButton" name="btnExtraDelete">
                                               <label>Delete</label>
+                                            </object>
+                                            <flag>wxRIGHT</flag>
+                                            <border>8</border>
+                                          </object>
+                                          <object class="sizeritem">
+                                            <object class="wxButton" name="btnExtraClear">
+                                              <label>Clear</label>
                                             </object>
                                           </object>
                                         </object>

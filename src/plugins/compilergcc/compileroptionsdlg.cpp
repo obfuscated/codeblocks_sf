@@ -67,6 +67,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_UPDATE_UI(			XRCID("btnExtraAdd"),	    CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnExtraEdit"),	    CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnExtraDelete"),	CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnExtraClear"),	CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("txtCcompiler"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnCcompiler"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("txtCPPcompiler"),	CompilerOptionsDlg::OnUpdateUI)
@@ -108,6 +109,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_BUTTON(			    XRCID("btnExtraAdd"),	    CompilerOptionsDlg::OnAddExtraPathClick)
     EVT_BUTTON(			    XRCID("btnExtraEdit"),	    CompilerOptionsDlg::OnEditExtraPathClick)
     EVT_BUTTON(			    XRCID("btnExtraDelete"),	CompilerOptionsDlg::OnRemoveExtraPathClick)
+    EVT_BUTTON(			    XRCID("btnExtraClear"),	CompilerOptionsDlg::OnClearExtraPathClick)
     EVT_SPIN_UP(			XRCID("spnLibs"),	        CompilerOptionsDlg::OnMoveLibUpClick)
     EVT_SPIN_DOWN(			XRCID("spnLibs"),	        CompilerOptionsDlg::OnMoveLibDownClick)
     EVT_SPIN_UP(			XRCID("spnDirs"),	        CompilerOptionsDlg::OnMoveDirUpClick)
@@ -1438,6 +1440,22 @@ void CompilerOptionsDlg::OnRemoveExtraPathClick(wxCommandEvent& event)
     control->Delete(control->GetSelection());
 }
 
+void CompilerOptionsDlg::OnClearExtraPathClick(wxCommandEvent& event)
+{
+    wxListBox* control = XRCCTRL(*this, "lstExtraPaths", wxListBox);
+    if (!control || control->IsEmpty())
+        return;
+
+    if (cbMessageBox(_("Remove all extra paths from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxID_OK)
+    {
+        int compilerIdx = XRCCTRL(*this, "cmbCompiler", wxComboBox)->GetSelection();
+        Compiler* compiler = CompilerFactory::GetCompiler(compilerIdx);
+        wxArrayString empty;
+        compiler->SetExtraPaths(empty);
+        control->Clear();
+    }
+}
+
 void CompilerOptionsDlg::OnMoveLibUpClick(wxSpinEvent& event)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
@@ -1649,6 +1667,7 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
         XRCCTRL(*this, "btnExtraAdd", wxButton)->Enable(en);
         XRCCTRL(*this, "btnExtraEdit", wxButton)->Enable(en && extraSel != -1);
         XRCCTRL(*this, "btnExtraDelete", wxButton)->Enable(en && extraSel != -1);
+        XRCCTRL(*this, "btnExtraClear", wxButton)->Enable(en && extraSel != -1);
         XRCCTRL(*this, "txtCcompiler", wxTextCtrl)->Enable(en);
         XRCCTRL(*this, "btnCcompiler", wxButton)->Enable(en);
         XRCCTRL(*this, "txtCPPcompiler", wxTextCtrl)->Enable(en);
@@ -1735,7 +1754,7 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
     const wxChar* str_libs[4] = { _T("btnEditLib"),_T("btnAddLib"),_T("btnDelLib"),_T("btnClearLib") };
     const wxChar* str_dirs[4] = { _T("btnEditDir"),_T("btnAddDir"),_T("btnDelDir"),_T("btnClearDir") };
     const wxChar* str_vars[4] = { _T("btnEditVar"),_T("btnAddVar"),_T("btnDeleteVar"),_T("btnClearVar") };
-    const wxChar* str_xtra[3] = { _T("btnExtraEdit"),_T("btnExtraAdd"),_T("btnExtraDelete") };
+    const wxChar* str_xtra[4] = { _T("btnExtraEdit"),_T("btnExtraAdd"),_T("btnExtraDelete"),_T("btnExtraClear") };
 
     if(keycode == WXK_RETURN || keycode == WXK_NUMPAD_ENTER)
         { myidx = 0; } // Edit
