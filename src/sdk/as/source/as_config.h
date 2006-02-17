@@ -165,6 +165,9 @@
 // AS_X86
 // Use assembler code for the x86 CPU family
 
+// AS_PPC
+// Use assembler code for the PPC CPU family
+
 // AS_SH4
 // Use assembler code for the SH4 CPU family
 
@@ -276,8 +279,20 @@
 		#define CDECL_RETURN_SIMPLE_IN_MEMORY
 		#define STDCALL_RETURN_SIMPLE_IN_MEMORY
 	#endif
+	#if defined(__APPLE__) && defined(__MACH__)
+		// Mach-O
+	#endif
 	#ifdef i386
 		#define AS_X86
+	#endif
+	#ifdef __i386__
+		#define AS_X86
+	#endif
+	#ifdef __ppc__
+		#define AS_PPC
+	#endif
+	#ifdef __powerpc__
+		#define AS_PPC
 	#endif
 #endif
 

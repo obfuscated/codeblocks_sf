@@ -21,6 +21,7 @@ $(srcdir)/source/as_bytecode.cpp \
 $(srcdir)/source/as_c.cpp \
 $(srcdir)/source/as_callfunc.cpp \
 $(srcdir)/source/as_callfunc_sh4.cpp \
+$(srcdir)/source/as_callfunc_ppc.cpp \
 $(srcdir)/source/as_callfunc_x86.cpp \
 $(srcdir)/source/as_compiler.cpp \
 $(srcdir)/source/as_configgroup.cpp \

@@ -28,10 +28,14 @@
    andreas@angelcode.com
 */
 
-
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <assert.h>
 #include <new>
+#if defined(WIN32) || defined(HAVE_MALLOC_H)
 #include <malloc.h>
+#endif
 
 #include "as_config.h"
 #include "as_arrayobject.h"

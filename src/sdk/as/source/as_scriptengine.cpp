@@ -36,7 +36,12 @@
 //
 
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#if defined(WIN32) || defined(HAVE_MALLOC_H)
 #include <malloc.h>
+#endif
 
 #include "as_config.h"
 #include "as_scriptengine.h"

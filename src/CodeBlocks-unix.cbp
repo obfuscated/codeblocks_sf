@@ -1718,6 +1718,10 @@
             <Option link="0" />
             <Option target="AngelScript" />
         </Unit>
+        <Unit filename="sdk/as/source/as_callfunc_ppc.cpp">
+            <Option compilerVar="CPP" />
+            <Option target="AngelScript" />
+        </Unit>
         <Unit filename="sdk/as/source/as_callfunc_sh4.cpp">
             <Option compilerVar="CPP" />
             <Option target="AngelScript" />
