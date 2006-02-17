@@ -12,6 +12,7 @@
 #include "sc_wxstring.h"
 #include "sc_wxarraystring.h"
 #include "sc_io.h"
+#include "const_bindings.h"
 #include <globals.h>
 
 #ifdef offsetof
@@ -45,18 +46,7 @@ template <class T> void Register_CompileOptionsBase(asIScriptEngine* engine, con
 //------------------------------------------------------------------------------
 // Globals
 //------------------------------------------------------------------------------
-// dialog buttons
-static const int scOK                   = wxOK;
-static const int scYES_NO               = wxYES_NO;
-static const int scCANCEL               = wxCANCEL;
-static const int scID_OK                = wxID_OK;
-static const int scID_YES               = wxID_YES;
-static const int scID_NO                = wxID_NO;
-static const int scID_CANCEL            = wxID_CANCEL;
-static const int scICON_QUESTION        = wxICON_QUESTION;
-static const int scICON_INFORMATION     = wxICON_INFORMATION;
-static const int scICON_WARNING         = wxICON_WARNING;
-static const int scICON_ERROR           = wxICON_ERROR;
+// message functions
 int gMessage(const wxString& msg, const wxString& caption, int buttons){ return cbMessageBox(msg, caption, buttons); }
 void gShowMessage(const wxString& msg){ cbMessageBox(msg, _("Script message")); }
 void gShowMessageWarn(const wxString& msg){ cbMessageBox(msg, _("Script message (warning)"), wxICON_WARNING); }
@@ -67,17 +57,6 @@ wxString gReplaceMacros(const wxString& buffer, bool envVarsToo)
 {
     return Manager::Get()->GetMacrosManager()->ReplaceMacros(buffer, envVarsToo);
 }
-// platform constants
-static const int PLATFORM_MSW = 0;
-static const int PLATFORM_GTK = 1;
-static const int PLATFORM_UNKNOWN = 99;
-#ifdef __WXMSW__
-    static const int PLATFORM = PLATFORM_MSW;
-#elif __WXGTK__
-    static const int PLATFORM = PLATFORM_GTK;
-#else
-    static const int PLATFORM = PLATFORM_UNKNOWN;
-#endif
 
 //------------------------------------------------------------------------------
 // Actual registration
@@ -125,23 +104,8 @@ void RegisterBindings(asIScriptEngine* engine)
     engine->RegisterGlobalFunction("void Log(const wxString& in)", asFUNCTION(gDebugLog), asCALL_CDECL);
     engine->RegisterGlobalFunction("wxString ReplaceMacros(const wxString& in, bool)", asFUNCTION(gReplaceMacros), asCALL_CDECL);
 
-    // register global constants
-    engine->RegisterGlobalProperty("const int wxOK", (void*)&scOK);
-    engine->RegisterGlobalProperty("const int wxYES_NO", (void*)&scYES_NO);
-    engine->RegisterGlobalProperty("const int wxCANCEL", (void*)&scCANCEL);
-    engine->RegisterGlobalProperty("const int wxID_OK", (void*)&scID_OK);
-    engine->RegisterGlobalProperty("const int wxID_YES", (void*)&scID_YES);
-    engine->RegisterGlobalProperty("const int wxID_NO", (void*)&scID_NO);
-    engine->RegisterGlobalProperty("const int wxID_CANCEL", (void*)&scID_CANCEL);
-    engine->RegisterGlobalProperty("const int wxICON_QUESTION", (void*)&scICON_QUESTION);
-    engine->RegisterGlobalProperty("const int wxICON_INFORMATION", (void*)&scICON_INFORMATION);
-    engine->RegisterGlobalProperty("const int wxICON_WARNING", (void*)&scICON_WARNING);
-    engine->RegisterGlobalProperty("const int wxICON_ERROR", (void*)&scICON_ERROR);
-    // platform related
-    engine->RegisterGlobalProperty("const int PLATFORM", (void*)&PLATFORM);
-    engine->RegisterGlobalProperty("const int PLATFORM_MSW", (void*)&PLATFORM_MSW);
-    engine->RegisterGlobalProperty("const int PLATFORM_GTK", (void*)&PLATFORM_GTK);
-    engine->RegisterGlobalProperty("const int PLATFORM_UNKNOWN", (void*)&PLATFORM_UNKNOWN);
+    // Register constants
+    RegisterConstBindings(engine);
 }
 
 //------------------------------------------------------------------------------
