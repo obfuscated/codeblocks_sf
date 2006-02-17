@@ -1105,6 +1105,9 @@ void CompilerOptionsDlg::OnAddVarClick(wxCommandEvent& event)
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
+        key.Trim(true).Trim(false);
+        value.Trim(true).Trim(false);
+        ::QuoteStringIfNeeded(value);
         base->SetVar(key, value);
         XRCCTRL(*this, "lstVars", wxListBox)->Append(key + _T(" = ") + value);
     }
@@ -1120,17 +1123,21 @@ void CompilerOptionsDlg::OnEditVarClick(wxCommandEvent& event)
     if (!base)
         return;
 
-    wxString key = XRCCTRL(*this, "lstVars", wxListBox)->GetStringSelection().BeforeFirst(_T('=')).Trim(true);
+    wxString key = XRCCTRL(*this, "lstVars", wxListBox)->GetStringSelection().BeforeFirst(_T('=')).Trim(true).Trim(false);
 	if (key.IsEmpty())
 		return;
     wxString old_key = key;
-    wxString value = XRCCTRL(*this, "lstVars", wxListBox)->GetStringSelection().AfterFirst(_T('=')).Trim();
+    wxString value = XRCCTRL(*this, "lstVars", wxListBox)->GetStringSelection().AfterFirst(_T('=')).Trim(true).Trim(false);
     wxString old_value = value;
 
     EditPairDlg dlg(this, key, value, _("Edit variable"), EditPairDlg::bmBrowseForDirectory);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
+        key.Trim(true).Trim(false);
+        value.Trim(true).Trim(false);
+        ::QuoteStringIfNeeded(value);
+
         if (value != old_value)
         {
             if (key != old_key)
