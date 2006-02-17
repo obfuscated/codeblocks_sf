@@ -44,6 +44,39 @@ const wxString g_AppBuildTimestamp = (wxString(wxT(__DATE__)) + wxT(", ") + wxT(
 
 const wxString g_DefaultBatchBuildArgs = _T("-na -nd -ns --batch-build-notify");
 
+operating_system_t __cb_get_os()
+{
+#if   defined(__UNIX__)
+    return osLinux;
+#elif defined(__WXMAC__)
+    return osOSX;
+#elif defined(__WXOS2__)
+    return osOS2;
+#elif defined(__WXMSW__)
+	int Major = 0;
+	int family = wxGetOsVersion(&Major, NULL);
+	if(family == wxWIN95)
+        return osWindows9598ME;
+    if(family == wxWINDOWS_NT)
+    {
+        if(Major > 4)
+            return osWindowsXP;
+        else
+            return osWindowsNT2000;
+    }
+    else
+        return osUnknownWindows;
+#else
+#error Unable to determine OS
+#endif
+};
+
+operating_system_t OS()
+{
+    static operating_system_t theOS = __cb_get_os();
+    return theOS;
+}
+
 
 const wxString langs[] =
 {

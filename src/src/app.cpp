@@ -140,24 +140,26 @@ void CodeBlocksApp::InitAssociations()
 	{
 		if (!Associations::Check())
 		{
-            HideSplashScreen();
-            wxString msg;
-            msg.Printf(_("%s is not currently the default application for C/C++ source files\nDo you want to set it as default?"), g_AppName.c_str());
-            int answer = cbMessageBox(msg,
-                                        _("File associations"),
-                                        wxICON_QUESTION | wxYES_NO | wxYES_DEFAULT);
-            if (answer == wxID_YES)
-                Associations::Set();
-            else
+            AskAssocDialog dlg(Manager::Get()->GetAppWindow());
+            PlaceWindow(&dlg);
+
+            switch(dlg.ShowModal())
             {
-                cbMessageBox(_("File associations will *not* be checked from now on, on program startup.\n"
-                               "If you want to enable the check, go to \"Settings/Environment\" and check \"Check & set file associations\"..."),
-                             _("Information"),
-                             wxICON_INFORMATION);
+            case 0:
                 Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/check_associations"), false);
-            }
-		}
-	}
+                break;
+            case 1:
+                break;
+            case 2:
+                Associations::SetCore();
+                break;
+            case 3:
+                Associations::SetAll();
+                break;
+            };
+
+        }
+    }
 
 	if (!m_NoDDE && cfg->ReadBool(_T("/environment/use_dde"), true))
 	{
@@ -309,7 +311,7 @@ void CodeBlocksApp::InitLocale()
 			else if (cfg->Read(_T("/plugins/") + catalogName))
 				m_locale.AddCatalog(catalogName);
 		}
-		
+
     }
 	cfg->Write(_T("/locale/catalogNum"), (int)catalogNum);
 	cfg->Write(_T("/environment/I18N"),  (bool)i18n);
@@ -340,6 +342,13 @@ bool CodeBlocksApp::OnInit()
             return false;
 
         InitImageHandlers();
+
+        if(!InitXRCStuff())
+        {
+           // wsSafeShowMessage(_T("Fatal error"), _T("Initialisation of resources failed."));
+            return false;
+        }
+
         if (!m_Batch)
             ShowSplashScreen();
 
@@ -370,16 +379,10 @@ bool CodeBlocksApp::OnInit()
             }
         }
 
-        InitAssociations();
         InitDebugConsole();
         if(m_ClearConf)
         {
             ClearConf();
-            HideSplashScreen();
-            return false;
-        }
-        if(!InitXRCStuff())
-        {
             HideSplashScreen();
             return false;
         }
@@ -409,6 +412,7 @@ bool CodeBlocksApp::OnInit()
         SetTopWindow(frame);
         frame->Show();
         frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
+        InitAssociations();
         return true;
     }
     catch (cbException& exception)

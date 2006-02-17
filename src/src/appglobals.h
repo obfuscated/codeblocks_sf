@@ -22,4 +22,17 @@ extern const wxString g_DefaultBatchBuildArgs;
 extern const wxString langs[LANGUAGES];
 extern const int locales[LANGUAGES];
 
+typedef enum
+{
+osUnknownWindows,
+osWindows9598ME,
+osWindowsNT2000,
+osWindowsXP,
+osLinux,
+osOS2,
+osOSX
+}operating_system_t;
+
+operating_system_t OS();
+
 #endif // APPGLOBALS_H

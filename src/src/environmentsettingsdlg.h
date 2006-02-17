@@ -6,6 +6,7 @@
 
 class wxDockArt;
 class wxListbookEvent;
+class wxCheckListBox;
 
 class EnvironmentSettingsDlg : public wxDialog
 {
@@ -17,6 +18,7 @@ class EnvironmentSettingsDlg : public wxDialog
         void OnPageChanging(wxListbookEvent& event);
         void OnPageChanged(wxListbookEvent& event);
         void OnSetAssocs(wxCommandEvent& event);
+        void OnManageAssocs(wxCommandEvent& event);
         void OnChooseColor(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnPlaceCheck(wxCommandEvent& event);
@@ -32,6 +34,8 @@ class EnvironmentSettingsDlg : public wxDialog
         ConfigurationPanelsArray m_PluginPanels;
         DECLARE_EVENT_TABLE()
 };
+
+
 
 #endif // ENVIRONMENTSETTINGSDLG_H
 

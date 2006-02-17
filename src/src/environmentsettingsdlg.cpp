@@ -28,7 +28,7 @@
 #include "wxAUI/manager.h"
 #include "appglobals.h"
 #include "../sdk/globals.h"
-
+#include "associations.h"
 
 #include "environmentsettingsdlg.h"
 #ifdef __WXMSW__
@@ -49,6 +49,7 @@ const int IMAGES_COUNT = sizeof(base_imgs) / sizeof(wxString);
 BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
     EVT_UPDATE_UI(-1, EnvironmentSettingsDlg::OnUpdateUI)
     EVT_BUTTON(XRCID("btnSetAssocs"), EnvironmentSettingsDlg::OnSetAssocs)
+    EVT_BUTTON(XRCID("btnManageAssocs"), EnvironmentSettingsDlg::OnManageAssocs)
     EVT_BUTTON(XRCID("btnFNBorder"), EnvironmentSettingsDlg::OnChooseColor)
     EVT_BUTTON(XRCID("btnFNFrom"), EnvironmentSettingsDlg::OnChooseColor)
     EVT_BUTTON(XRCID("btnFNTo"), EnvironmentSettingsDlg::OnChooseColor)
@@ -162,6 +163,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     XRCCTRL(*this, "chkDDE", wxCheckBox)->Enable(false);
     XRCCTRL(*this, "chkAssociations", wxCheckBox)->Enable(false);
     XRCCTRL(*this, "btnSetAssocs", wxButton)->Enable(false);
+    XRCCTRL(*this, "btnManageAssocs", wxButton)->Enable(false);
 #endif
 
     // add all plugins configuration panels
@@ -251,10 +253,15 @@ void EnvironmentSettingsDlg::OnPageChanged(wxListbookEvent& event)
 
 void EnvironmentSettingsDlg::OnSetAssocs(wxCommandEvent& event)
 {
-#ifdef __WXMSW__
-    Associations::Set();
-#endif
-    cbMessageBox(_("Code::Blocks associated with C/C++ files."), _("Information"), wxICON_INFORMATION);
+    Associations::SetCore();
+    //cbMessageBox(_("Code::Blocks associated with C/C++ files."), _("Information"), wxICON_INFORMATION);
+}
+
+void EnvironmentSettingsDlg::OnManageAssocs(wxCommandEvent& event)
+{
+    ManageAssocsDialog dlg(this);
+    PlaceWindow(&dlg);
+    dlg.ShowModal();
 }
 
 void EnvironmentSettingsDlg::OnChooseColor(wxCommandEvent& event)
@@ -398,3 +405,8 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 
     wxDialog::EndModal(retCode);
 }
+
+
+
+
+
