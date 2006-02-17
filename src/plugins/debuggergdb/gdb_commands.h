@@ -310,13 +310,13 @@ class GdbCmd_RemoveBreakpoint : public DebuggerCmd
         {
             if (!bp)
             {
-                m_Cmd << _T("delete");
+                m_Cmd << _T("delete breakpoints");
                 return;
             }
 
             if (bp->enabled && bp->index >= 0)
             {
-                m_Cmd << _T("delete ") << wxString::Format(_T("%d"), (int) bp->index);
+                m_Cmd << _T("delete breakpoints ") << wxString::Format(_T("%d"), (int) bp->index);
             }
         }
         void ParseOutput(const wxString& output)
