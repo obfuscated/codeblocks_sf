@@ -88,6 +88,11 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     SetSettingsIconsStyle(lb->GetListView(), (SettingsIconsStyle)sel);
     LoadListbookImages();
 
+    // this setting sis not available under wxGTK
+    #ifndef __WXMSW__
+    XRCCTRL(*this, "rbSettingsIconsSize", wxRadioBox)->Enable(false);
+    #endif
+
     // tab "General"
     XRCCTRL(*this, "chkShowSplash", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/show_splash"), true));
     XRCCTRL(*this, "chkDDE", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/use_dde"), true));

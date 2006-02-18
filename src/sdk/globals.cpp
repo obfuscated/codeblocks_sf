@@ -602,6 +602,8 @@ wxBitmap LoadPNGWindows2000Hack(const wxString& filename)
 
 void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)
 {
+// this doesn't work under wxGTK...
+#ifdef __WXMSW__
     long flags = lc->GetWindowStyleFlag();
     switch (style)
     {
@@ -609,13 +611,17 @@ void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)
         default: flags = (flags & ~wxLC_SMALL_ICON) | wxLC_ICON; break;
     }
     lc->SetWindowStyleFlag(flags);
+#endif
 }
 
 SettingsIconsStyle GetSettingsIconsStyle(wxListCtrl* lc)
 {
+// this doesn't work under wxGTK...
+#ifdef __WXMSW__
     long flags = lc->GetWindowStyleFlag();
     if (flags & wxLC_SMALL_ICON)
         return sisNoIcons;
+#endif
     return sisLargeIcons;
 }
 
