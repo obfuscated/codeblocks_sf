@@ -12,6 +12,8 @@ class wxHtmlLinkInfo;
 
 class StartHerePage : public EditorBase
 {
+	wxString revInfo;
+
 	public:
 		StartHerePage(wxEvtHandler* owner, wxWindow* parent);
 		virtual ~StartHerePage();

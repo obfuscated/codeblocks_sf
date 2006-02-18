@@ -1361,17 +1361,17 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
 {
     wxCommandEvent evt;
     wxString link = event.GetString();
-    if (link.Matches(_T("CB_CMD_NEW_PROJECT")))
+    if(link.IsSameAs(_T("CB_CMD_NEW_PROJECT")))
         TemplateManager::Get()->NewProject();
-    else if (link.Matches(_T("CB_CMD_OPEN_PROJECT")))
+    else if(link.IsSameAs(_T("CB_CMD_OPEN_PROJECT")))
         OnProjectOpen(evt);
-    else if (link.Matches(_T("CB_CMD_CONF_ENVIRONMENT")))
-        OnSettingsEnvironment(evt);
-    else if (link.Matches(_T("CB_CMD_CONF_EDITOR")))
-        Manager::Get()->GetEditorManager()->Configure();
-    else if (link.Matches(_T("CB_CMD_CONF_COMPILER")))
-        OnSettingsCompilerDebugger(evt);
-    else if (link.StartsWith(_T("CB_CMD_OPEN_HISTORY_")))
+//    else if (link.IsSameAs(_T("CB_CMD_CONF_ENVIRONMENT")))
+//        OnSettingsEnvironment(evt);
+//    else if (link.IsSameAs(_T("CB_CMD_CONF_EDITOR")))
+//        Manager::Get()->GetEditorManager()->Configure();
+//    else if (link.IsSameAs(_T("CB_CMD_CONF_COMPILER")))
+//        OnSettingsCompilerDebugger(evt);
+    else if(link.StartsWith(_T("CB_CMD_OPEN_HISTORY_")))
     {
         wxFileHistory* hist = link.StartsWith(_T("CB_CMD_OPEN_HISTORY_PROJECT_")) ? &m_ProjectsHistory : &m_FilesHistory;
 		unsigned long count;
@@ -1415,7 +1415,7 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
     if (m_ProjectsHistory.GetCount())
     {
         links << _T("<b>Recent projects</b><br>\n");
-        for (int i = 0; i < 5; ++i)
+        for (int i = 0; i < 9; ++i)
         {
             if (i >= (int)m_ProjectsHistory.GetCount())
                 break;
@@ -1427,7 +1427,7 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
     if (m_FilesHistory.GetCount())
     {
         links << _T("<br><b>Recent files</b><br>\n");
-        for (int i = 0; i < 5; ++i)
+        for (int i = 0; i < 9; ++i)
         {
             if (i >= (int)m_FilesHistory.GetCount())
                 break;

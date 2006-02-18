@@ -24,6 +24,8 @@
 #include <configmanager.h>
 #include "startherepage.h"
 #include "appglobals.h"
+#include <wx/clipbrd.h>
+#include <wx/dataobj.h>
 
 const wxString g_StartHereTitle = _("Start here");
 int idStartHerePageLink = wxNewId();
@@ -104,7 +106,6 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
         buf = _("<html><body><h1>Welcome to Code::Blocks!</h1><br>The default start page seems to be missing...</body></html>");
     delete fs;
 
-	wxString revInfo;
 	#ifdef __GNUC__
 	revInfo.Printf(_T("Version %s (gcc %d.%d.%d %s/%s, build: %s %s)"),
 					g_AppActualVersionVerb.c_str(),
@@ -167,5 +168,20 @@ bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
         wxPostEvent(m_pOwner, evt);
         return true;
     }
+
+    if(link.GetHref().IsSameAs(_T("http://www.codeblocks.org/"))
+    || link.GetHref().StartsWith(_T("http://developer.berlios.de/bugs/")))
+        {
+        wxTextDataObject *data = new wxTextDataObject(revInfo);
+        wxTheClipboard->SetData(data);
+        }
+
+    if(link.GetHref().IsSameAs(_T("rev")))
+        {
+        wxTextDataObject *data = new wxTextDataObject(revInfo);
+        wxTheClipboard->SetData(data);
+        return true;
+        }
+
     return false;
 }
