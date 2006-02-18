@@ -253,15 +253,19 @@ void EnvironmentSettingsDlg::OnPageChanged(wxListbookEvent& event)
 
 void EnvironmentSettingsDlg::OnSetAssocs(wxCommandEvent& event)
 {
+#ifdef __WXMSW__
     Associations::SetCore();
     //cbMessageBox(_("Code::Blocks associated with C/C++ files."), _("Information"), wxICON_INFORMATION);
+#endif
 }
 
 void EnvironmentSettingsDlg::OnManageAssocs(wxCommandEvent& event)
 {
+#ifdef __WXMSW__
     ManageAssocsDialog dlg(this);
     PlaceWindow(&dlg);
     dlg.ShowModal();
+#endif
 }
 
 void EnvironmentSettingsDlg::OnChooseColor(wxCommandEvent& event)
