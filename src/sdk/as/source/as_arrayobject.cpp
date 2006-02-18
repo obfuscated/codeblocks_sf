@@ -2,23 +2,23 @@
    AngelCode Scripting Library
    Copyright (c) 2003-2006 Andreas Jönsson
 
-   This software is provided 'as-is', without any express or implied 
-   warranty. In no event will the authors be held liable for any 
+   This software is provided 'as-is', without any express or implied
+   warranty. In no event will the authors be held liable for any
    damages arising from the use of this software.
 
-   Permission is granted to anyone to use this software for any 
-   purpose, including commercial applications, and to alter it and 
+   Permission is granted to anyone to use this software for any
+   purpose, including commercial applications, and to alter it and
    redistribute it freely, subject to the following restrictions:
 
-   1. The origin of this software must not be misrepresented; you 
+   1. The origin of this software must not be misrepresented; you
       must not claim that you wrote the original software. If you use
-      this software in a product, an acknowledgment in the product 
+      this software in a product, an acknowledgment in the product
       documentation would be appreciated but is not required.
 
-   2. Altered source versions must be plainly marked as such, and 
+   2. Altered source versions must be plainly marked as such, and
       must not be misrepresented as being the original software.
 
-   3. This notice may not be removed or altered from any source 
+   3. This notice may not be removed or altered from any source
       distribution.
 
    The original version of this library can be located at:
@@ -33,9 +33,7 @@
 #endif
 #include <assert.h>
 #include <new>
-#if defined(WIN32) || defined(HAVE_MALLOC_H)
 #include <malloc.h>
-#endif
 
 #include "as_config.h"
 #include "as_arrayobject.h"
@@ -161,7 +159,7 @@ void RegisterArrayObject(asCScriptEngine *engine)
 	r = engine->RegisterSpecialObjectBehaviour(engine->defaultArrayObjectType, asBEHAVE_INDEX, "int &f(uint) const", asFUNCTION(ArrayObjectAt_Generic), asCALL_GENERIC); assert( r >= 0 );
 	r = engine->RegisterSpecialObjectMethod(asDEFAULT_ARRAY, "uint length() const", asFUNCTION(ArrayObjectLength_Generic), asCALL_GENERIC); assert( r >= 0 );
 	r = engine->RegisterSpecialObjectMethod(asDEFAULT_ARRAY, "void resize(uint)", asFUNCTION(ArrayObjectResize_Generic), asCALL_GENERIC); assert( r >= 0 );
-#endif 
+#endif
 }
 
 asCArrayObject &asCArrayObject::operator=(asCArrayObject &other)
@@ -174,7 +172,7 @@ asCArrayObject &asCArrayObject::operator=(asCArrayObject &other)
 
 	// Copy all elements from the other array
 	CreateBuffer(&buffer, other.buffer->numElements);
-	CopyBuffer(buffer, other.buffer);	
+	CopyBuffer(buffer, other.buffer);
 
 	return *this;
 }
@@ -261,7 +259,7 @@ void asCArrayObject::Resize(asUINT numElements)
 		asDWORD **s = (asDWORD**)buffer->data;
 		for( int n = 0; n < c; n++ )
 			d[n] = s[n];
-		
+
 		if( numElements > buffer->numElements )
 		{
 			Construct(newBuffer, buffer->numElements, numElements);
@@ -370,7 +368,7 @@ void asCArrayObject::Construct(sArrayBuffer *buf, asUINT start, asUINT end)
 			asDWORD **max = (asDWORD**)(buf->data + end * sizeof(void*));
 			asDWORD **d = (asDWORD**)(buf->data + start * sizeof(void*));
 
-			if( subType->flags & asOBJ_SCRIPT_STRUCT ) 
+			if( subType->flags & asOBJ_SCRIPT_STRUCT )
 			{
 				for( ; d < max; d++ )
 				{
@@ -487,7 +485,7 @@ void asCArrayObject::CopyBuffer(sArrayBuffer *dst, sArrayBuffer *src)
 			asDWORD **max = (asDWORD**)(dst->data + count * sizeof(void*));
 			asDWORD **d   = (asDWORD**)dst->data;
 			asDWORD **s   = (asDWORD**)src->data;
-			
+
 			for( ; d < max; d++, s++ )
 			{
 				*d = *s;
