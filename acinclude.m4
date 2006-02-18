@@ -195,6 +195,7 @@ fi
 GCC_PCH=0
 PCH_FLAGS=
 pch_default="yes"
+AM_CONDITIONAL([PRECOMPILE_HEADERS], [false])
 AC_ARG_ENABLE(pch, [AC_HELP_STRING([--enable-pch], [use precompiled headers if available (default YES)])],,
                        enable_pch=$pch_default)
 if test "x$enable_pch" = "x" -o "x$enable_pch" = "xyes" ; then

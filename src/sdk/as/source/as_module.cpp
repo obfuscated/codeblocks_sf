@@ -579,7 +579,7 @@ int asCModule::AllocGlobalMemory(int size)
 	for( asUINT n = 0; n < globalVarPointers.GetLength(); n++ )
 	{
 		if( globalVarPointers[n] >= start && globalVarPointers[n] < (start+index) )
-			globalVarPointers[n] = &globalMem[0] + (int(globalVarPointers[n]) - int(start))/sizeof(void*);
+			globalVarPointers[n] = &globalMem[0] + (long(globalVarPointers[n]) - long(start))/sizeof(void*);
 	}
 
 	return index;

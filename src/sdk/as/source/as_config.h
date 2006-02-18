@@ -303,7 +303,12 @@
 	#define AS_SH4
 #endif
 
-
+// None of the above
+#if (!defined(AS_X86) && !defined(AS_SH4))
+    #ifndef AS_MAX_PORTABILITY
+        #define AS_MAX_PORTABILITY
+    #endif
+#endif
 
 // 
 // Alignment macros

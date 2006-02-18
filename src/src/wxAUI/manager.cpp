@@ -1159,7 +1159,7 @@ bool wxFrameManager::AddPane(wxWindow* window, const wxPaneInfo& pane_info)
     if (pinfo.name.IsEmpty())
     {
         pinfo.name.Printf(wxT("%08x%08x%08x%08x"),
-             (unsigned int)pinfo.window, (unsigned int)time(NULL),
+             (long)pinfo.window, (unsigned int)time(NULL),
              (unsigned int)clock(), m_panes.GetCount());
     }
 

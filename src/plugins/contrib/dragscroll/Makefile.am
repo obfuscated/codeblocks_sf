@@ -11,12 +11,12 @@ libdragscroll_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -av
 libdragscroll_la_LIBADD = ../../../sdk/libcodeblocks.la \
 				../../../sdk/wxscintilla/libwxscintilla.la
 
-libdragscroll_la_SOURCES = cbdragscroll.cpp \
-			cbdragscrollcfg.cpp
+libdragscroll_la_SOURCES = dragscroll.cpp \
+			dragscrollcfg.cpp
 
-noinst_HEADERS = cbdragscroll.h \
-			cbdragscrollcfg.h
+noinst_HEADERS = dragscroll.h \
+			dragscrollcfg.h
 
-EXTRA_DIST = dragscroll.cbp \
-		dragscroll-unix.cbp
+EXTRA_DIST = DragScroll.cbp \
+		DragScroll-unix.cbp
 

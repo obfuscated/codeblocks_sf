@@ -4,6 +4,8 @@
 #include "sc_wxstring.h"
 #include <globals.h>
 
+#define AS_ASSERT wxASSERT
+
 //--------------
 // constructors
 //--------------
@@ -34,7 +36,7 @@ scWxString::scWxString(const scWxString &s)
 
 scWxString::~scWxString()
 {
-	assert( refCount == 0 );
+	AS_ASSERT( refCount == 0 );
 }
 
 //--------------------
@@ -268,7 +270,7 @@ static void *StringAlloc(int)
 // This function deallocates the memory for the wxString object
 static void StringFree(void *p)
 {
-	assert( p );
+	AS_ASSERT( p );
 	delete (char*)p;
 }
 
@@ -293,83 +295,83 @@ void Register_wxString(asIScriptEngine *engine)
 	int r;
 
 	// Register the type
-	r = engine->RegisterObjectType("wxString", sizeof(scWxString), asOBJ_CLASS_CDA); assert( r >= 0 );
+	r = engine->RegisterObjectType("wxString", sizeof(scWxString), asOBJ_CLASS_CDA); AS_ASSERT( r >= 0 );
 
 	// Register the object operator overloads
 	// Note: We don't have to register the destructor, since the object uses reference counting
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_CONSTRUCT,  "void f()",                    asFUNCTION(ConstructString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADDREF,     "void f()",                    asMETHOD(scWxString,AddRef), asCALL_THISCALL); assert( r >= 0 );
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_RELEASE,    "void f()",                    asMETHOD(scWxString,Release), asCALL_THISCALL); assert( r >= 0 );
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(const wxString &in)", asMETHODPR(scWxString, operator =, (const scWxString&), scWxString&), asCALL_THISCALL); assert( r >= 0 );
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(const wxString &in)", asMETHODPR(scWxString, operator+=, (const scWxString&), scWxString&), asCALL_THISCALL); assert( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_CONSTRUCT,  "void f()",                    asFUNCTION(ConstructString), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADDREF,     "void f()",                    asMETHOD(scWxString,AddRef), asCALL_THISCALL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_RELEASE,    "void f()",                    asMETHOD(scWxString,Release), asCALL_THISCALL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(const wxString &in)", asMETHODPR(scWxString, operator =, (const scWxString&), scWxString&), asCALL_THISCALL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(const wxString &in)", asMETHODPR(scWxString, operator+=, (const scWxString&), scWxString&), asCALL_THISCALL); AS_ASSERT( r >= 0 );
 
 	// Register the memory allocator routines. This will make all memory allocations for the wxString
 	// object be made in one place, which is important if for example the script library is used from a dll
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ALLOC, "wxString &f(uint)", asFUNCTION(StringAlloc), asCALL_CDECL); assert( r >= 0 );
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_FREE, "void f(wxString &in)", asFUNCTION(StringFree), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ALLOC, "wxString &f(uint)", asFUNCTION(StringAlloc), asCALL_CDECL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_FREE, "void f(wxString &in)", asFUNCTION(StringFree), asCALL_CDECL); AS_ASSERT( r >= 0 );
 
 	// Register the factory to return a handle to a new wxString
 	// Note: We must register the wxString factory after the basic behaviours,
 	// otherwise the library will not allow the use of object handles for this type
-	r = engine->RegisterStringFactory("wxString@", asFUNCTION(StringFactory), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterStringFactory("wxString@", asFUNCTION(StringFactory), asCALL_CDECL); AS_ASSERT( r >= 0 );
 
 	// Register the global operator overloads
 	// Note: We can use wxString's methods directly because the
 	// internal wxString is placed at the beginning of the class
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_EQUAL,       "bool f(const wxString &in, const wxString &in)",    asFUNCTIONPR(operator==, (const wxString &, const wxString &), bool), asCALL_CDECL); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_NOTEQUAL,    "bool f(const wxString &in, const wxString &in)",    asFUNCTIONPR(operator!=, (const wxString &, const wxString &), bool), asCALL_CDECL); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_LEQUAL,      "bool f(const wxString &in, const wxString &in)",    asFUNCTIONPR(operator<=, (const wxString &, const wxString &), bool), asCALL_CDECL); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_GEQUAL,      "bool f(const wxString &in, const wxString &in)",    asFUNCTIONPR(operator>=, (const wxString &, const wxString &), bool), asCALL_CDECL); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_LESSTHAN,    "bool f(const wxString &in, const wxString &in)",    asFUNCTIONPR(operator <, (const wxString &, const wxString &), bool), asCALL_CDECL); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_GREATERTHAN, "bool f(const wxString &in, const wxString &in)",    asFUNCTIONPR(operator >, (const wxString &, const wxString &), bool), asCALL_CDECL); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, const wxString &in)", asFUNCTIONPR(operator +, (const scWxString &, const scWxString &), scWxString*), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_EQUAL,       "bool f(const wxString &in, const wxString &in)",    asFUNCTIONPR(operator==, (const wxString &, const wxString &), bool), asCALL_CDECL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_NOTEQUAL,    "bool f(const wxString &in, const wxString &in)",    asFUNCTIONPR(operator!=, (const wxString &, const wxString &), bool), asCALL_CDECL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_LEQUAL,      "bool f(const wxString &in, const wxString &in)",    asFUNCTIONPR(operator<=, (const wxString &, const wxString &), bool), asCALL_CDECL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_GEQUAL,      "bool f(const wxString &in, const wxString &in)",    asFUNCTIONPR(operator>=, (const wxString &, const wxString &), bool), asCALL_CDECL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_LESSTHAN,    "bool f(const wxString &in, const wxString &in)",    asFUNCTIONPR(operator <, (const wxString &, const wxString &), bool), asCALL_CDECL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_GREATERTHAN, "bool f(const wxString &in, const wxString &in)",    asFUNCTIONPR(operator >, (const wxString &, const wxString &), bool), asCALL_CDECL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, const wxString &in)", asFUNCTIONPR(operator +, (const scWxString &, const scWxString &), scWxString*), asCALL_CDECL); AS_ASSERT( r >= 0 );
 
 	// Register the index operator, both as a mutator and as an inspector
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_INDEX, "uint8 &f(uint)", asFUNCTION(StringCharAt), asCALL_CDECL_OBJLAST); assert( r >= 0 );
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_INDEX, "const uint8 &f(uint) const", asFUNCTION(StringCharAt), asCALL_CDECL_OBJLAST); assert( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_INDEX, "uint8 &f(uint)", asFUNCTION(StringCharAt), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_INDEX, "const uint8 &f(uint) const", asFUNCTION(StringCharAt), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
 
 	// Register the object methods
-	r = engine->RegisterObjectMethod("wxString", "uint length() const", asMETHOD(wxString,size), asCALL_THISCALL); assert( r >= 0 );
-	r = engine->RegisterObjectMethod("wxString", "uint Length() const", asMETHOD(wxString,size), asCALL_THISCALL); assert( r >= 0 );
-	r = engine->RegisterObjectMethod("wxString", "uint Len() const", asMETHOD(wxString,size), asCALL_THISCALL); assert( r >= 0 );
-	r = engine->RegisterObjectMethod("wxString", "uint size() const", asMETHOD(wxString,size), asCALL_THISCALL); assert( r >= 0 );
-	r = engine->RegisterObjectMethod("wxString", "bool IsEmpty()", asMETHOD(wxString,IsEmpty), asCALL_THISCALL); assert( r >= 0 );
-	r = engine->RegisterObjectMethod("wxString", "uint Replace(const wxString& in,const wxString& in,bool)", asMETHOD(wxString,Replace), asCALL_THISCALL); assert( r >= 0 );
-	r = engine->RegisterObjectMethod("wxString", "wxString BeforeFirst(uint8) const", asMETHOD(wxString,BeforeFirst), asCALL_THISCALL); assert( r >= 0 );
-	r = engine->RegisterObjectMethod("wxString", "wxString AfterFirst(uint8) const", asMETHOD(wxString,AfterFirst), asCALL_THISCALL); assert( r >= 0 );
-	r = engine->RegisterObjectMethod("wxString", "wxString BeforeLast(uint8) const", asMETHOD(wxString,BeforeLast), asCALL_THISCALL); assert( r >= 0 );
-	r = engine->RegisterObjectMethod("wxString", "wxString AfterLast(uint8) const", asMETHOD(wxString,AfterLast), asCALL_THISCALL); assert( r >= 0 );
-	r = engine->RegisterObjectMethod("wxString", "int Find(uint8,bool) const", asMETHODPR(wxString,Find,(wxChar, bool) const, int), asCALL_THISCALL); assert( r >= 0 );
-	r = engine->RegisterObjectMethod("wxString", "int Find(const wxString& in) const", asMETHODPR(wxString,Find,(const wxChar*) const, int), asCALL_THISCALL); assert( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "uint length() const", asMETHOD(wxString,size), asCALL_THISCALL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "uint Length() const", asMETHOD(wxString,size), asCALL_THISCALL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "uint Len() const", asMETHOD(wxString,size), asCALL_THISCALL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "uint size() const", asMETHOD(wxString,size), asCALL_THISCALL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "bool IsEmpty()", asMETHOD(wxString,IsEmpty), asCALL_THISCALL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "uint Replace(const wxString& in,const wxString& in,bool)", asMETHOD(wxString,Replace), asCALL_THISCALL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "wxString BeforeFirst(uint8) const", asMETHOD(wxString,BeforeFirst), asCALL_THISCALL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "wxString AfterFirst(uint8) const", asMETHOD(wxString,AfterFirst), asCALL_THISCALL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "wxString BeforeLast(uint8) const", asMETHOD(wxString,BeforeLast), asCALL_THISCALL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "wxString AfterLast(uint8) const", asMETHOD(wxString,AfterLast), asCALL_THISCALL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "int Find(uint8,bool) const", asMETHODPR(wxString,Find,(wxChar, bool) const, int), asCALL_THISCALL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectMethod("wxString", "int Find(const wxString& in) const", asMETHODPR(wxString,Find,(const wxChar*) const, int), asCALL_THISCALL); AS_ASSERT( r >= 0 );
 
 	// Automatic conversion from values
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(double)", asFUNCTION(AssignDoubleToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(double)", asFUNCTION(AddAssignDoubleToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, double)", asFUNCTION(AddStringDouble), asCALL_CDECL); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(double, const wxString &in)", asFUNCTION(AddDoubleString), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(double)", asFUNCTION(AssignDoubleToString), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(double)", asFUNCTION(AddAssignDoubleToString), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, double)", asFUNCTION(AddStringDouble), asCALL_CDECL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(double, const wxString &in)", asFUNCTION(AddDoubleString), asCALL_CDECL); AS_ASSERT( r >= 0 );
 
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(float)", asFUNCTION(AssignFloatToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(float)", asFUNCTION(AddAssignFloatToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, float)", asFUNCTION(AddStringFloat), asCALL_CDECL); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(float, const wxString &in)", asFUNCTION(AddFloatString), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(float)", asFUNCTION(AssignFloatToString), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(float)", asFUNCTION(AddAssignFloatToString), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, float)", asFUNCTION(AddStringFloat), asCALL_CDECL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(float, const wxString &in)", asFUNCTION(AddFloatString), asCALL_CDECL); AS_ASSERT( r >= 0 );
 
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(int)", asFUNCTION(AssignIntToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(int)", asFUNCTION(AddAssignIntToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, int)", asFUNCTION(AddStringInt), asCALL_CDECL); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(int, const wxString &in)", asFUNCTION(AddIntString), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(int)", asFUNCTION(AssignIntToString), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(int)", asFUNCTION(AddAssignIntToString), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, int)", asFUNCTION(AddStringInt), asCALL_CDECL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(int, const wxString &in)", asFUNCTION(AddIntString), asCALL_CDECL); AS_ASSERT( r >= 0 );
 
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(uint)", asFUNCTION(AssignUIntToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(uint)", asFUNCTION(AddAssignUIntToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, uint)", asFUNCTION(AddStringUInt), asCALL_CDECL); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(uint, const wxString &in)", asFUNCTION(AddUIntString), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(uint)", asFUNCTION(AssignUIntToString), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(uint)", asFUNCTION(AddAssignUIntToString), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, uint)", asFUNCTION(AddStringUInt), asCALL_CDECL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(uint, const wxString &in)", asFUNCTION(AddUIntString), asCALL_CDECL); AS_ASSERT( r >= 0 );
 
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(uint8)", asFUNCTION(AssignCharToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(uint8)", asFUNCTION(AddAssignCharToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, uint8)", asFUNCTION(AddStringChar), asCALL_CDECL); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(uint8, const wxString &in)", asFUNCTION(AddCharString), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(uint8)", asFUNCTION(AssignCharToString), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(uint8)", asFUNCTION(AddAssignCharToString), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, uint8)", asFUNCTION(AddStringChar), asCALL_CDECL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(uint8, const wxString &in)", asFUNCTION(AddCharString), asCALL_CDECL); AS_ASSERT( r >= 0 );
 
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(bits)", asFUNCTION(AssignBitsToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
-	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(bits)", asFUNCTION(AddAssignBitsToString), asCALL_CDECL_OBJLAST); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, bits)", asFUNCTION(AddStringBits), asCALL_CDECL); assert( r >= 0 );
-	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(bits, const wxString &in)", asFUNCTION(AddBitsString), asCALL_CDECL); assert( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ASSIGNMENT, "wxString &f(bits)", asFUNCTION(AssignBitsToString), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
+	r = engine->RegisterObjectBehaviour("wxString", asBEHAVE_ADD_ASSIGN, "wxString &f(bits)", asFUNCTION(AddAssignBitsToString), asCALL_CDECL_OBJLAST); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(const wxString &in, bits)", asFUNCTION(AddStringBits), asCALL_CDECL); AS_ASSERT( r >= 0 );
+	r = engine->RegisterGlobalBehaviour(asBEHAVE_ADD,         "wxString@ f(bits, const wxString &in)", asFUNCTION(AddBitsString), asCALL_CDECL); AS_ASSERT( r >= 0 );
 }

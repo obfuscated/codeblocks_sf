@@ -2607,7 +2607,7 @@ int asCContext::CallGeneric(int id, void *objectPointer)
 			}
 
 			// Add the base offset for multiple inheritance
-			currentObject = (void*)(int(currentObject) + sysFunc->baseOffset);
+			currentObject = (void*)(long(currentObject) + sysFunc->baseOffset);
 
 			// Keep a reference to the object to protect it 
 			// from being released before the method returns
