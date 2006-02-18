@@ -33,10 +33,6 @@ const Associations::Assoc knownTypes[] =
     { HH_EXT,   _T("Header file"), 4 },
     { HXX_EXT,  _T("Header file"), 4 },
 
-    { HXX_EXT,  _T("Header file"), 4 },
-    { HXX_EXT,  _T("Header file"), 4 },
-    { HXX_EXT,  _T("Header file"), 4 },
-
     { _T("cg"),        _T("cg source file"),      5 },
     { D_EXT,           _("D source file"),        6 },
     { RESOURCE_EXT,    _T("resource file"),       8 },
