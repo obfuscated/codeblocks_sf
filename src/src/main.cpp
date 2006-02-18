@@ -2998,8 +2998,9 @@ void MainFrame::OnEditorActivated(CodeBlocksEvent& event)
 
 void MainFrame::OnEditorClosed(CodeBlocksEvent& event)
 {
-    DoUpdateAppTitle();
-    event.Skip();
+	DoUpdateAppTitle();
+	DoUpdateStatusBar();
+	event.Skip();
 }
 
 void MainFrame::OnEditorSaved(CodeBlocksEvent& event)
