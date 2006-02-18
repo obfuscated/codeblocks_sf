@@ -131,7 +131,7 @@ bool Associations::Check()
 void Associations::DoSetAssociation(const wxString& ext, const wxString& descr, const wxString& exe, int icoNum)
 {
 	wxString BaseKeyName(_T("HKEY_CURRENT_USER\\Software\\Classes\\"));
-    if(OS() == osWindows9598ME);
+    if(OS() == osWindows9598ME)
 		BaseKeyName = _T("HKEY_CLASSES_ROOT\\");
 
     wxString node(_T("CodeBlocks.") + ext);
@@ -182,7 +182,7 @@ void Associations::DoSetAssociation(const wxString& ext, const wxString& descr, 
 void Associations::DoClearAssociation(const wxString& ext)
 {
 	wxString BaseKeyName(_T("HKEY_CURRENT_USER\\Software\\Classes\\"));
-    if(OS() == osWindows9598ME);
+    if(OS() == osWindows9598ME)
 		BaseKeyName = _T("HKEY_CLASSES_ROOT\\");
 
 	wxRegKey key;
@@ -205,7 +205,7 @@ bool Associations::DoCheckAssociation(const wxString& ext, const wxString& descr
 {
 	wxString BaseKeyName(_T("HKEY_CURRENT_USER\\Software\\Classes\\"));
 
-    if(OS() == osWindows9598ME);
+    if(OS() == osWindows9598ME)
 		BaseKeyName = _T("HKEY_CLASSES_ROOT\\");
 
 	wxRegKey key; // defaults to HKCR
