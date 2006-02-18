@@ -546,6 +546,10 @@ void MainFrame::CreateIDE()
     DoUpdateLayout();
     DoUpdateLayoutColors();
     DoUpdateEditorStyle();
+
+    m_pEdMan->GetNotebook()->SetDropTarget(new wxMyFileDropTarget(this));
+    m_pPrjMan->GetNotebook()->SetDropTarget(new wxMyFileDropTarget(this));
+    m_pMsgMan->GetNotebook()->SetDropTarget(new wxMyFileDropTarget(this));
 }
 
 wxMenu* MainFrame::RecreateMenu(wxMenuBar* mbar, const wxString& name)
