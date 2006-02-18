@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="2" />
+	<FileVersion major="1" minor="3" />
 	<Project>
 		<Option title="C::B KeyBinder" />
 		<Option pch_mode="0" />
-		<Option compiler="0" />
+		<Option compiler="gcc" />
 		<Build>
 			<Target title="KeyBinder plugin">
 				<Option output="../../../devel/share/codeblocks/plugins/libkeybinder.so" />
 				<Option working_dir="../keybinder" />
 				<Option object_output="../../../.objs/plugins/contrib/keybinder" />
 				<Option type="3" />
-				<Option compiler="0" />
+				<Option compiler="gcc" />
 				<Option host_application="../../../devel/codeblocks" />
 				<Option includeInTargetAll="1" />
 				<Compiler>
@@ -32,6 +32,7 @@
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
+			<Add option="-fPIC" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />

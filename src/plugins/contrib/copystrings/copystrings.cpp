@@ -10,7 +10,6 @@
 #include <licenses.h> // defines some common licenses (like the GPL)
 #include <wx/clipbrd.h>
 
-#include <sdk.h>
 #include <manager.h>
 #include <editormanager.h>
 #include <cbeditor.h>

@@ -2,61 +2,72 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="3" />
 	<Project>
-		<Option title="C::B Profiler (Unix)" />
+		<Option title="Code statitstics (Unix)" />
 		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../devel/share/codeblocks/plugins/libcbprofiler.so" />
+				<Option output="../../../devel/share/codeblocks/plugins/libcodestat.so" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option host_application="../../../devel/codeblocks" />
 				<Option includeInTargetAll="1" />
+				<Option projectCompilerOptionsRelation="0" />
 			</Target>
-			<Environment>
-				<Variable name="CBDIR" value="../../.." />
-			</Environment>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-g" />
 			<Add option="`wx-config --cflags`" />
+			<Add option="-Winvalid-pch" />
+			<Add option='-include &quot;sdk.h&quot;' />
+			<Add option="-fexceptions" />
 			<Add option="-fPIC" />
-			<Add option="-DBUILDING_PLUGIN" />
-			<Add directory="$(CBDIR)/sdk" />
-			<Add directory="$(CBDIR)/sdk/wxscintilla/include" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DcbDEBUG" />
+			<Add directory="../../../sdk" />
+			<Add directory="../../../sdk/wxscintilla" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
-			<Add library="codeblocks" />
-			<Add directory="$(CBDIR)/devel" />
+			<Add library="libcodeblocks.a" />
+			<Add directory="../../../devel" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ../../../devel/share/codeblocks/profiler.zip resources/*.xrc" />
+			<Add after="zip -j9 ../../../devel/share/codeblocks/codestat.zip resources/*.xrc" />
+			<Mode after="always" />
 		</ExtraCommands>
-		<Unit filename="cbprofiler.cpp">
+		<Unit filename="codestat.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="cbprofiler.h">
+		<Unit filename="codestat.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="cbprofilerconfig.cpp">
+		<Unit filename="codestatconfig.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="cbprofilerconfig.h">
+		<Unit filename="codestatconfig.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="cbprofilerexec.cpp">
+		<Unit filename="codestatexec.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="cbprofilerexec.h">
+		<Unit filename="codestatexec.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="language_def.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />

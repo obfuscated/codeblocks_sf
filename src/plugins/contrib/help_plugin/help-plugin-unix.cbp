@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="3" />
+	<Project>
+		<Option title="Help Plugin (Unix)" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="help_plugin">
+				<Option output="../../../devel/share/codeblocks/plugins/libhelp_plugin.so" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="../../../devel/codeblocks.exe" />
+				<Option includeInTargetAll="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="`wx-config --cflags`" />
+			<Add option="-Winvalid-pch" />
+			<Add option='-include &quot;sdk.h&quot;' />
+			<Add option="-fexceptions" />
+			<Add option="-fPIC" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DcbDEBUG" />
+			<Add directory="../../../sdk" />
+			<Add directory="../../../sdk/wxscintilla" />
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --libs`" />
+			<Add library="codeblocks" />
+			<Add library="wxscintilla" />
+			<Add directory="../../../devel" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ../../../devel/share/codeblocks/help_plugin.zip *.xrc" />
+		</ExtraCommands>
+		<Unit filename="HelpConfigDialog.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="help_plugin" />
+		</Unit>
+		<Unit filename="HelpConfigDialog.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="help_plugin" />
+		</Unit>
+		<Unit filename="help_common.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="help_plugin" />
+		</Unit>
+		<Unit filename="help_common.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="help_plugin" />
+		</Unit>
+		<Unit filename="help_plugin.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="help_plugin" />
+		</Unit>
+		<Unit filename="help_plugin.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="help_plugin" />
+		</Unit>
+		<Unit filename="help_plugin.xrc">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="help_plugin" />
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
