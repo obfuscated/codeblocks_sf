@@ -4,6 +4,7 @@
 		<Project filename="plugins\contrib\codestat\codestat.cbp" active="1" />
 		<Project filename="plugins\contrib\copystrings\copystrings.cbp" />
 		<Project filename="plugins\contrib\devpak_plugin\DevPakPlugin.cbp" />
+		<Project filename="plugins\contrib\dragscroll\dragscroll.cbp" />
 		<Project filename="plugins\contrib\help_plugin\help-plugin.cbp" />
 		<Project filename="plugins\contrib\keybinder\keybinder.cbp" />
 		<Project filename="plugins\contrib\profiler\cbprofiler.cbp" />
