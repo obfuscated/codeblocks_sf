@@ -31,7 +31,15 @@
 // LOGGER->SwitchTo(m_PageIndex)
 // LOGSTREAM << "Logged to standard log (debug)\n"
 
-WX_DECLARE_HASH_MAP(int, MessageLog*, wxIntegerHash, wxIntegerEqual, LogsMap);
+struct LogStruct
+{
+    LogStruct() : log(0), visible(true) {}
+    MessageLog* log;
+    bool visible;
+    wxString title;
+    wxBitmap bitmap;
+};
+WX_DECLARE_HASH_MAP(int, LogStruct*, wxIntegerHash, wxIntegerEqual, LogsMap);
 
 // forward decls
 class wxMenuBar;
@@ -54,6 +62,9 @@ class DLLIMPORT MessageManager : public Mgr<MessageManager>, public wxEvtHandler
 
         int AddLog(MessageLog* log, const wxString& title, const wxBitmap& bitmap = wxNullBitmap);
         void RemoveLog(MessageLog* log);
+        void ShowLog(MessageLog* log, bool show = true);
+        void ShowLog(int id, bool show = true);
+        void ResetLogFont();
 
         void SetBatchBuildLog(int log);
         wxDialog* GetBatchBuildDialog();
@@ -107,7 +118,7 @@ class DLLIMPORT MessageManager : public Mgr<MessageManager>, public wxEvtHandler
             tmp << val;
             AppendLog(m_DebugLog, tmp);
             return *this;
-		}        /** @brief Special streaming operator for target log */
+		}
     private:
 		MessageManager();
 		~MessageManager();
@@ -117,7 +128,9 @@ class DLLIMPORT MessageManager : public Mgr<MessageManager>, public wxEvtHandler
         void OnTabPosition(wxCommandEvent& event);
         void OnAppDoneStartup(wxCommandEvent& event);
         void OnAppStartShutdown(wxCommandEvent& event);
+        void OnShowHideLog(wxCommandEvent& event);
         void OnPageChanged(wxFlatNotebookEvent& event);
+        void OnPageContextMenu(wxFlatNotebookEvent& event);
 
         wxFlatNotebook* m_pNotebook;
         LogsMap m_Logs;

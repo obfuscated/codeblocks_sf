@@ -29,8 +29,10 @@
 #ifndef CB_PRECOMP
     #include "messagelog.h" // class's header file
     #include "manager.h"
-#endif
+    #include "messagemanager.h"
 
+    #include <wx/intl.h>
+#endif
 
 // class constructor
 MessageLog::MessageLog()
@@ -42,4 +44,14 @@ MessageLog::MessageLog()
 // class destructor
 MessageLog::~MessageLog()
 {
+}
+
+wxFont MessageLog::GetDefaultLogFont(bool fixedPitchFont)
+{
+    int size = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/log_font_size"), 8);
+    wxFont font(size,
+                fixedPitchFont ? wxFONTFAMILY_MODERN : wxFONTFAMILY_DEFAULT,
+                wxFONTSTYLE_NORMAL,
+                wxFONTWEIGHT_NORMAL);
+    return font;
 }

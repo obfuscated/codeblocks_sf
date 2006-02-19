@@ -39,6 +39,7 @@
 const wxString base_imgs[] =
 {
     _T("general-prefs"),
+    _T("view"),
     _T("notebook-appearance"),
     _T("colours"),
     _T("dialogs"),
@@ -88,7 +89,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     SetSettingsIconsStyle(lb->GetListView(), (SettingsIconsStyle)sel);
     LoadListbookImages();
 
-    // this setting sis not available under wxGTK
+    // this setting is not available under wxGTK
     #ifndef __WXMSW__
     XRCCTRL(*this, "rbSettingsIconsSize", wxRadioBox)->Enable(false);
     #endif
@@ -99,7 +100,6 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     XRCCTRL(*this, "chkSingleInstance", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/single_instance"), true));
     XRCCTRL(*this, "chkAssociations", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_associations"), true));
     XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_modified_files"), true));
-    XRCCTRL(*this, "chkDebugLog", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/has_debug_log"), false));
     XRCCTRL(*this, "rbAppStart", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/blank_workspace"), true) ? 1 : 0);
 
     bool do_place = cfg->ReadBool(_T("/dialog_placement/do_place"), false);
@@ -113,6 +113,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     XRCCTRL(*this, "rbSettingsIconsSize", wxRadioBox)->SetSelection(cfg->ReadInt(_T("/environment/settings_size"), 0));
     XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_hide"), false));
     XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/start_here_page"), true));
+    XRCCTRL(*this, "spnLogFontSize", wxSpinCtrl)->SetValue(mcfg->ReadInt(_T("/log_font_size"), 8));
 
 	bool i18n=cfg->ReadBool(_T("/environment/I18N"), false);
 		XRCCTRL(*this, "chkI18N", wxCheckBox)->SetValue(i18n);
@@ -332,7 +333,6 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         cfg->Write(_T("/environment/single_instance"),       (bool) XRCCTRL(*this, "chkSingleInstance", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/check_associations"),    (bool) XRCCTRL(*this, "chkAssociations", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/check_modified_files"),  (bool) XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->GetValue());
-        mcfg->Write(_T("/has_debug_log"),                    (bool) XRCCTRL(*this, "chkDebugLog", wxCheckBox)->GetValue());
         cfg->Write(_T("/dialog_placement/do_place"),         (bool) XRCCTRL(*this, "chkDoPlace", wxCheckBox)->GetValue());
         cfg->Write(_T("/dialog_placement/dialog_position"),  (int)  (XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->GetValue()) ? pdlHead : pdlCentre);
 
@@ -344,7 +344,8 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         mcfg->Write(_T("/auto_hide"),                        (bool) XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/start_here_page"),       (bool) XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/I18N"),                       (bool) XRCCTRL(*this, "chkI18N", wxCheckBox)->GetValue());
-        cfg->Write(_T("/locale/language"),                   (int)  XRCCTRL(*this, "cbxLanguage", wxComboBox)->GetSelection()-1);
+        cfg->Write(_T("/locale/language"),                   (int) XRCCTRL(*this, "cbxLanguage", wxComboBox)->GetSelection()-1);
+        mcfg->Write(_T("/log_font_size"),                    (int) XRCCTRL(*this, "spnLogFontSize", wxSpinCtrl)->GetValue());
 
         // tab "Appearence"
         cfg->Write(_T("/environment/tabs_style"),           (int)XRCCTRL(*this, "cmbEditorTabs", wxComboBox)->GetSelection());

@@ -1616,6 +1616,7 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     if (count > 0)
     {
         static_cast<SearchResultsLog*>(m_pSearchLog)->SetBasePath(data->searchPath);
+        Manager::Get()->GetMessageManager()->ShowLog(m_SearchLogIndex);
         Manager::Get()->GetMessageManager()->SwitchTo(m_SearchLogIndex);
         Manager::Get()->GetMessageManager()->Open();
         static_cast<SearchResultsLog*>(m_pSearchLog)->FocusEntry(oldcount);

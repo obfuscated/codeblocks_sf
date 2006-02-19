@@ -301,12 +301,10 @@ bool CompilerGCC::ReAllocProcesses()
 
 void CompilerGCC::OnAttach()
 {
-    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
 	// create compiler's log
-    m_Log = new SimpleTextLog();
-    m_Log->GetTextControl()->SetFont(font);
+    m_Log = new SimpleTextLog(true);
     m_PageIndex = msgMan->AddLog(m_Log, _("Build log"));
     msgMan->SetBatchBuildLog(m_PageIndex);
 
@@ -325,7 +323,6 @@ void CompilerGCC::OnAttach()
 
 	m_pListLog = new CompilerMessages(3, widths, titles);
 	m_pListLog->SetCompilerErrors(&m_Errors);
-    m_pListLog->GetListControl()->SetFont(font);
 	m_ListPageIndex = msgMan->AddLog(m_pListLog, _("Build messages"));
 
     // set log image

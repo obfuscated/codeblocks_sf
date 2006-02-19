@@ -192,9 +192,7 @@ DebuggerGDB::DebuggerGDB()
 void DebuggerGDB::OnAttach()
 {
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
-    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
-    m_pLog = new SimpleTextLog();
-    m_pLog->GetTextControl()->SetFont(font);
+    m_pLog = new SimpleTextLog(true);
     m_PageIndex = msgMan->AddLog(m_pLog, _("Debugger"));
     // set log image
 	wxBitmap bmp;
@@ -205,8 +203,7 @@ void DebuggerGDB::OnAttach()
     m_HasDebugLog = Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debug_log"), false);
     if (m_HasDebugLog)
     {
-        m_pDbgLog = new SimpleTextLog();
-        m_pDbgLog->GetTextControl()->SetFont(font);
+        m_pDbgLog = new SimpleTextLog(true);
         m_DbgPageIndex = msgMan->AddLog(m_pDbgLog, m_PluginInfo.title + _(" (debug)"));
         // set log image
         bmp.LoadFile(prefix + _T("contents_16x16.png"), wxBITMAP_TYPE_PNG);

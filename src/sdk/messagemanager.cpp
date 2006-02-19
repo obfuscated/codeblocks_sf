@@ -104,12 +104,28 @@ static const int idNB = wxNewId();
 static const int idNB_TabTop = wxNewId();
 static const int idNB_TabBottom = wxNewId();
 
+// 64 logs should be more than enough
+static const int MAX_LOGS = 64;
+static const int idNB_ShowHide[MAX_LOGS] =
+{
+    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
+    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
+    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
+    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
+    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
+    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
+    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
+    wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(), wxNewId(),
+};
+
 BEGIN_EVENT_TABLE(MessageManager, wxEvtHandler)
+    EVT_MENU_RANGE(idNB_ShowHide[0], idNB_ShowHide[MAX_LOGS - 1], MessageManager::OnShowHideLog)
     EVT_MENU(idNB_TabTop, MessageManager::OnTabPosition)
     EVT_MENU(idNB_TabBottom, MessageManager::OnTabPosition)
     EVT_APP_STARTUP_DONE(MessageManager::OnAppDoneStartup)
     EVT_APP_START_SHUTDOWN(MessageManager::OnAppStartShutdown)
     EVT_FLATNOTEBOOK_PAGE_CHANGED(idNB, MessageManager::OnPageChanged)
+    EVT_FLATNOTEBOOK_CONTEXT_MENU(idNB, MessageManager::OnPageContextMenu)
 END_EVENT_TABLE()
 
 // class constructor
@@ -127,11 +143,6 @@ MessageManager::MessageManager()
     m_pNotebook->SetWindowStyleFlag(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/message_tabs_style"), wxFNB_BOTTOM | wxFNB_NO_X_BUTTON));
     m_pNotebook->SetImageList(new wxFlatNotebookImageList);
 
-    wxMenu* NBmenu = new wxMenu(); // deleted automatically by wxFlatNotebook
-    NBmenu->Append(idNB_TabTop, _("Tabs at top"));
-    NBmenu->Append(idNB_TabBottom, _("Tabs at bottom"));
-    m_pNotebook->SetRightClickMenu(NBmenu);
-
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("message_manager"));
 
     // add default log and debug images (index 0 and 1)
@@ -145,11 +156,12 @@ MessageManager::MessageManager()
 
     m_AppLog = DoAddLog(new SimpleTextLog(), _("Code::Blocks"));
 
+    m_DebugLog = DoAddLog(new SimpleTextLog(), _("Code::Blocks Debug"));
+    SetLogImage(m_DebugLog, bmp); // set debug log image
 	bool hasDebugLog = cfg->ReadBool(_T("/has_debug_log"), false);
 	if (hasDebugLog)
 	{
-		m_DebugLog = DoAddLog(new SimpleTextLog(), _("Code::Blocks Debug"));
-		SetLogImage(m_DebugLog, bmp); // set debug log image
+	    ShowLog(m_DebugLog, hasDebugLog);
     }
 
     m_AutoHide = cfg->ReadBool(_T("/auto_hide"), false);
@@ -207,7 +219,7 @@ void MessageManager::Log(const wxChar* msg, ...)
     tmp = wxString::FormatV(msg, arg_list);
     va_end(arg_list);
 
-    m_Logs[m_AppLog]->AddLog(tmp);
+    m_Logs[m_AppLog]->log->AddLog(tmp);
 }
 
 void MessageManager::DebugLog(const wxChar* msg, ...)
@@ -225,7 +237,7 @@ void MessageManager::DebugLog(const wxChar* msg, ...)
 	wxDateTime timestamp = wxDateTime::UNow();
 	wxString ts;
 	ts.Printf(_T("%2.2d:%2.2d:%2.2d.%3.3d"), timestamp.GetHour(), timestamp.GetMinute(), timestamp.GetSecond(), timestamp.GetMillisecond());
-    m_Logs[m_DebugLog]->AddLog(_T("[") + ts + _T("]: ") + tmp);
+    m_Logs[m_DebugLog]->log->AddLog(_T("[") + ts + _T("]: ") + tmp);
 //    m_Logs[mltDebug]->AddLog(_T("[") + timestamp.Format(_T("%X.%l")) + _T("]: ") + tmp);
 //    m_Logs[mltDebug]->AddLog(tmp);
 }
@@ -284,11 +296,63 @@ void MessageManager::RemoveLog(MessageLog* log)
         m_pNotebook->RemovePage(id);
     for (LogsMap::iterator it = m_Logs.begin(); it != m_Logs.end(); ++it)
     {
-        if (it->second == log)
+        if (it->second->log == log)
         {
             m_Logs.erase(it);
             break;
         }
+    }
+}
+
+void MessageManager::ShowLog(MessageLog* log, bool show)
+{
+    // do we manage it?
+    int id = -1;
+    LogStruct* ls = 0;
+    for (LogsMap::iterator it = m_Logs.begin(); it != m_Logs.end(); ++it)
+    {
+        if (it->second->log == log)
+        {
+            id = it->first;
+            ls = it->second;
+            break;
+        }
+    }
+    if (!ls)
+        return;
+
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("message_manager"));
+
+    if (show && !ls->visible)
+    {
+        // show
+        // InsertPage() suffers from the same bug Remove() suffered (split-window-like bug)
+//        m_pNotebook->InsertPage(id, log, ls->title, false);
+        m_pNotebook->AddPage(log, ls->title, false);
+        SetLogImage(id, ls->bitmap);
+        ls->visible = true;
+
+        if (id == m_DebugLog)
+            cfg->Write(_T("/has_debug_log"), (bool)true);
+    }
+    else if (!show && ls->visible)
+    {
+        // hide
+        int id = m_pNotebook->GetPageIndex(log);
+        if (id != -1)
+            m_pNotebook->RemovePage(id);
+        ls->visible = false;
+
+        if (id == m_DebugLog)
+            cfg->Write(_T("/has_debug_log"), (bool)false);
+    }
+}
+
+void MessageManager::ShowLog(int id, bool show)
+{
+    if (CheckLogId(id))
+    {
+        ShowLog(m_Logs[id]->log, show);
     }
 }
 
@@ -314,7 +378,12 @@ int MessageManager::DoAddLog(MessageLog* log, const wxString& title, const wxBit
     int id = pageId++;
 
     log->m_PageId = id;
-    m_Logs[id] = log;
+    LogStruct* ls = new LogStruct;
+    ls->log = log;
+    ls->visible = true;
+    ls->title = title;
+    ls->bitmap = bitmap;
+    m_Logs[id] = ls;
     m_pNotebook->AddPage(log, title, false);
     SetLogImage(id, bitmap);
     return id;
@@ -333,7 +402,7 @@ void MessageManager::Log(int id, const wxChar* msg, ...)
     tmp = wxString::FormatV(msg, arg_list);
     va_end(arg_list);
 
-    m_Logs[id]->AddLog(tmp);
+    m_Logs[id]->log->AddLog(tmp);
 
     if (Manager::IsBatchBuild() && id == m_BatchBuildLog)
     {
@@ -360,7 +429,7 @@ void MessageManager::AppendLog(const wxChar* msg, ...)
     tmp = wxString::FormatV(msg, arg_list);
     va_end(arg_list);
 
-    m_Logs[m_AppLog]->AddLog(tmp, false);
+    m_Logs[m_AppLog]->log->AddLog(tmp, false);
 }
 
 void MessageManager::AppendLog(int id, const wxChar* msg, ...)
@@ -376,7 +445,7 @@ void MessageManager::AppendLog(int id, const wxChar* msg, ...)
     tmp = wxString::FormatV(msg, arg_list);
     va_end(arg_list);
 
-    m_Logs[id]->AddLog(tmp, false);
+    m_Logs[id]->log->AddLog(tmp, false);
 }
 
 // switch to log page
@@ -386,7 +455,7 @@ void MessageManager::SwitchTo(int id)
 
     if (!CheckLogId(id))
         return;
-    int index = m_pNotebook->GetPageIndex(m_Logs[id]);
+    int index = m_pNotebook->GetPageIndex(m_Logs[id]->log);
     m_pNotebook->SetSelection(index);
 }
 
@@ -396,7 +465,7 @@ void MessageManager::SetLogImage(int id, const wxBitmap& bitmap)
     if (!CheckLogId(id))
         return;
 
-    int index = m_pNotebook->GetPageIndex(m_Logs[id]);
+    int index = m_pNotebook->GetPageIndex(m_Logs[id]->log);
     if (!bitmap.Ok())
         m_pNotebook->SetPageImageIndex(index, 0); // default log image
     else
@@ -468,6 +537,14 @@ void MessageManager::Unlock(bool force)
     }
 }
 
+void MessageManager::ResetLogFont()
+{
+    for (LogsMap::iterator it = m_Logs.begin(); it != m_Logs.end(); ++it)
+    {
+        it->second->log->ResetLogFont();
+    }
+}
+
 void MessageManager::OnTabPosition(wxCommandEvent& event)
 {
     long style = m_pNotebook->GetWindowStyleFlag();
@@ -490,6 +567,21 @@ void MessageManager::OnAppStartShutdown(wxCommandEvent& event)
     event.Skip(); // allow others to process it too
 }
 
+void MessageManager::OnShowHideLog(wxCommandEvent& event)
+{
+    // find log from index
+    int idx = event.GetId() - idNB_ShowHide[0];
+    int count = 0;
+    for (LogsMap::iterator it = m_Logs.begin(); it != m_Logs.end() && idx < MAX_LOGS; ++it)
+    {
+        if (idx == count++)
+        {
+            ShowLog(it->second->log, !it->second->visible);
+            break;
+        }
+    }
+}
+
 void MessageManager::OnPageChanged(wxFlatNotebookEvent& event)
 {
     if (m_AutoHide && event.GetEventObject() == this)
@@ -498,4 +590,27 @@ void MessageManager::OnPageChanged(wxFlatNotebookEvent& event)
     }
 
     event.Skip();
+}
+
+void MessageManager::OnPageContextMenu(wxFlatNotebookEvent& event)
+{
+    wxMenu* NBmenu = new wxMenu();
+    NBmenu->Append(idNB_TabTop, _("Tabs at top"));
+    NBmenu->Append(idNB_TabBottom, _("Tabs at bottom"));
+    NBmenu->AppendSeparator();
+
+    wxMenu* sub = new wxMenu;
+    int idx = 0;
+    for (LogsMap::iterator it = m_Logs.begin(); it != m_Logs.end() && idx < MAX_LOGS; ++it, ++idx)
+    {
+        if (idx == 0)
+            continue; // don't hide the app log
+        wxMenuItem* item = sub->AppendCheckItem(idNB_ShowHide[idx], it->second->title);
+        item->Check(it->second->visible);
+    }
+
+    NBmenu->Append(0, _("Show/hide"), sub);
+
+    m_pNotebook->PopupMenu(NBmenu);
+    delete NBmenu;
 }

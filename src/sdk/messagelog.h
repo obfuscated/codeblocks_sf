@@ -4,6 +4,7 @@
 #include "settings.h"
 #include <wx/panel.h>
 #include <wx/notebook.h>
+#include <wx/font.h>
 
 /*
  * No description
@@ -16,6 +17,8 @@ class DLLIMPORT MessageLog : public wxPanel
 
 		virtual void AddLog(const wxString& msg, bool addNewLine = true) = 0;
 		virtual int GetPageId() const { return m_PageId; }
+		virtual void ResetLogFont() = 0;
+		virtual wxFont GetDefaultLogFont(bool fixedPitchFont = false);
     protected:
 		// class constructor
 		MessageLog();

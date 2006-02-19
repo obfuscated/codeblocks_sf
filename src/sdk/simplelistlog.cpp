@@ -37,24 +37,32 @@ int ID_List = wxNewId();
 
 
 // class constructor
-SimpleListLog::SimpleListLog()
+SimpleListLog::SimpleListLog(bool fixedPitchFont)
 {
-	Init();
+	Init(fixedPitchFont);
 }
 
-SimpleListLog::SimpleListLog(int numCols, int widths[], const wxArrayString& titles)
+SimpleListLog::SimpleListLog(int numCols, int widths[], const wxArrayString& titles, bool fixedPitchFont)
 {
-	Init();
+	Init(fixedPitchFont);
 	SetColumns(numCols, widths, titles);
 }
 
-void SimpleListLog::Init()
+void SimpleListLog::Init(bool fixedPitchFont)
 {
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
 	m_pList = new wxListCtrl(this, ID_List, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL);
     bs->Add(m_pList, 1, wxEXPAND | wxALL);
     SetAutoLayout(TRUE);
     SetSizer(bs);
+
+    m_UseFixedPitchFont = fixedPitchFont;
+    m_pList->SetFont(GetDefaultLogFont(fixedPitchFont));
+}
+
+void SimpleListLog::ResetLogFont()
+{
+    m_pList->SetFont(GetDefaultLogFont(m_UseFixedPitchFont));
 }
 
 // class destructor

@@ -2909,7 +2909,6 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
 {
     bool tbarsmall = m_SmallToolBar;
     bool needRestart = false;
-    bool edmanCloseBtn = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/show_close_button"), false);
 
 	EnvironmentSettingsDlg dlg(this, m_LayoutManager.GetArtProvider());
 	PlaceWindow(&dlg);
@@ -2922,16 +2921,10 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
         needRestart = m_SmallToolBar != tbarsmall;
         bool autoHide = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_hide"), false);
         Manager::Get()->GetMessageManager()->EnableAutoHide(autoHide);
+        Manager::Get()->GetMessageManager()->ResetLogFont();
 //        if (!autoHide)
 //            pDockWindow2->Show(true); // make sure it's shown
         ShowHideStartPage();
-
-        if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/show_close_button"), false) != edmanCloseBtn)
-        {
-        	cbMessageBox(_("Some of the changes you made will be applied after you restart Code::Blocks."),
-                            _("Information"),
-                            wxICON_INFORMATION);
-        }
 	}
 	if (needRestart)
         cbMessageBox(_("Code::Blocks needs to be restarted for the changes to take effect."), _("Information"), wxICON_INFORMATION);

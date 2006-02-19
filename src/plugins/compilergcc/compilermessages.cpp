@@ -13,7 +13,7 @@ BEGIN_EVENT_TABLE(CompilerMessages, SimpleListLog)
 END_EVENT_TABLE()
 
 CompilerMessages::CompilerMessages(int numCols, int widths[], const wxArrayString& titles)
-    : SimpleListLog(numCols, widths, titles)
+    : SimpleListLog(numCols, widths, titles, true)
 {
 	//ctor
     int id = m_pList->GetId();

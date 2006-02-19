@@ -1321,7 +1321,7 @@ bool wxPageContainer::InsertPage(size_t index, wxWindow* /*page*/, const wxStrin
 {
 	if(select)
 	{
-		m_iActivePage = (int)m_pagesInfoVec.size();
+		m_iActivePage = (int)index;//m_pagesInfoVec.size();
 	}
 	wxPageInfo pg(text, imgindex);
 	pg.SetPosition(wxPoint(1,1));
