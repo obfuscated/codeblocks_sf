@@ -52,8 +52,8 @@
 #include <wx/generic/helpext.h> //(external HTML browser controller)
 #include <wx/html/helpctrl.h> //(wxHTML based help controller: wxHtmlHelpController)
 
-// max 20 help items (it should be sufficient)
-#define MAX_HELP_ITEMS 20
+// 20 wasn't enough
+#define MAX_HELP_ITEMS 32
 
 int idHelpMenus[MAX_HELP_ITEMS];
 int idPopupMenus[MAX_HELP_ITEMS];
