@@ -84,6 +84,16 @@ dlgAbout::dlgAbout(wxWindow* parent)
 	XRCCTRL(*this, "lblAuthor", wxStaticText)->SetLabel(_("The Code::Blocks Team"));
 	XRCCTRL(*this, "lblEmail", wxStaticText)->SetLabel(g_AppContactEmail);
 	XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(g_AppUrl);
+
+#ifdef __WXMAC__
+	// Courier 8 point is not readable on Mac OS X, increase font size:
+	wxFont font1 = XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->GetFont();
+	font1.SetPointSize(10);
+	XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetFont(font1);
+	wxFont font2 = XRCCTRL(*this, "txtLicense", wxTextCtrl)->GetFont();
+	font2.SetPointSize(10);
+	XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetFont(font2);
+#endif
 }
 
 // class destructor
