@@ -309,6 +309,8 @@ ManageAssocsDialog::ManageAssocsDialog(wxWindow* parent)
         list->Append(d + knownTypes[i].ext + _T("  (") + knownTypes[i].descr + _T(")"));
         list->Check(i, Associations::DoCheckAssociation(knownTypes[i].ext, knownTypes[i].descr, exe, knownTypes[i].index));
     }
+
+    CenterOnParent();
 }
 
 void ManageAssocsDialog::OnApply(wxCommandEvent& event)

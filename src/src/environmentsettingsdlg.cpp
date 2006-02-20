@@ -177,6 +177,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
 
     // make sure everything is laid out properly
     GetSizer()->SetSizeHints(this);
+    CenterOnParent();
 }
 
 EnvironmentSettingsDlg::~EnvironmentSettingsDlg()
