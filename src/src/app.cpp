@@ -132,7 +132,7 @@ bool CodeBlocksApp::LoadConfig()
     return true;
 }
 
-void CodeBlocksApp::InitAssociations()
+void CodeBlocksApp::InitAssociations(MainFrame* frame)
 {
 #ifdef __WXMSW__
 	ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
@@ -163,7 +163,7 @@ void CodeBlocksApp::InitAssociations()
 
 	if (!m_NoDDE && cfg->ReadBool(_T("/environment/use_dde"), true))
 	{
-		g_DDEServer = new DDEServer(0);
+		g_DDEServer = new DDEServer(frame);
 		g_DDEServer->Create(DDE_SERVICE);
 	}
 #endif
@@ -412,7 +412,7 @@ bool CodeBlocksApp::OnInit()
         SetTopWindow(frame);
         frame->Show();
         frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
-        InitAssociations();
+        InitAssociations(frame);
         return true;
     }
     catch (cbException& exception)

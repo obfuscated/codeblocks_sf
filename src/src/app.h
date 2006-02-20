@@ -47,7 +47,7 @@ class CodeBlocksApp : public wxApp
     protected:
         void OnBatchBuildDone(CodeBlocksEvent& event);
         bool LoadConfig();
-        void InitAssociations();
+        void InitAssociations(MainFrame* frame);
         void InitDebugConsole();
         void InitExceptionHandler();
         void InitImageHandlers();
