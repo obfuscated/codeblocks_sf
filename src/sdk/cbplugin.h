@@ -189,7 +189,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		/** This method logs a "Not implemented" message and is provided for
 		  * convenience only.
 		  */
-        virtual void NotImplemented(const wxString& log);
+        virtual void NotImplemented(const wxString& log) const;
 		/** Holds the PluginInfo structure that describes the plugin. */
         PluginInfo m_PluginInfo;
 		/** Holds the plugin's type. Set in the default constructor. You shouldn't change it. */
