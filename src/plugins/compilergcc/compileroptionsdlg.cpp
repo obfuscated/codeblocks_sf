@@ -1614,7 +1614,7 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
         bool en = control->GetSelection() >= 0;
         XRCCTRL(*this, "btnEditDir", wxButton)->Enable(en);
         XRCCTRL(*this, "btnDelDir", wxButton)->Enable(en);
-        XRCCTRL(*this, "btnClearDir", wxButton)->Enable(en);
+        XRCCTRL(*this, "btnClearDir", wxButton)->Enable(control->GetCount() != 0);
 
         // moveup/movedown dir
         XRCCTRL(*this, "spnDirs", wxSpinButton)->Enable(en);
@@ -1624,7 +1624,7 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     bool en = XRCCTRL(*this, "lstLibs", wxListBox)->GetSelection() >= 0;
     XRCCTRL(*this, "btnEditLib", wxButton)->Enable(en);
     XRCCTRL(*this, "btnDelLib", wxButton)->Enable(en);
-    XRCCTRL(*this, "btnClearLib", wxButton)->Enable(en);
+    XRCCTRL(*this, "btnClearLib", wxButton)->Enable(XRCCTRL(*this, "lstLibs", wxListBox)->GetCount() != 0);
     XRCCTRL(*this, "spnLibs", wxSpinButton)->Enable(en);
 
     // add/edit/delete/clear vars
@@ -1633,7 +1633,7 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
         en = XRCCTRL(*this, "lstVars", wxListBox)->GetSelection() >= 0;
         XRCCTRL(*this, "btnEditVar", wxButton)->Enable(en);
         XRCCTRL(*this, "btnDeleteVar", wxButton)->Enable(en);
-        XRCCTRL(*this, "btnClearVar", wxButton)->Enable(en);
+        XRCCTRL(*this, "btnClearVar", wxButton)->Enable(XRCCTRL(*this, "lstVars", wxListBox)->GetCount() != 0);
     }
 
     // policies
@@ -1674,7 +1674,7 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
         XRCCTRL(*this, "btnExtraAdd", wxButton)->Enable(en);
         XRCCTRL(*this, "btnExtraEdit", wxButton)->Enable(en && extraSel != -1);
         XRCCTRL(*this, "btnExtraDelete", wxButton)->Enable(en && extraSel != -1);
-        XRCCTRL(*this, "btnExtraClear", wxButton)->Enable(en && extraSel != -1);
+        XRCCTRL(*this, "btnExtraClear", wxButton)->Enable(en && XRCCTRL(*this, "lstExtraPaths", wxListBox)->GetCount() != 0);
         XRCCTRL(*this, "txtCcompiler", wxTextCtrl)->Enable(en);
         XRCCTRL(*this, "btnCcompiler", wxButton)->Enable(en);
         XRCCTRL(*this, "txtCPPcompiler", wxTextCtrl)->Enable(en);
