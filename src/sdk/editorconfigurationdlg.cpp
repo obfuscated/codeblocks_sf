@@ -148,6 +148,25 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 	// color set
 	LoadThemes();
 
+    // fill encodings
+    wxComboBox* cmbEnc = XRCCTRL(*this, "cmbEncoding", wxComboBox);
+    if (cmbEnc)
+    {
+        cmbEnc->Clear();
+        wxString def_enc_name = cfg->Read(_T("/default_encoding"), wxLocale::GetSystemEncodingName());
+        int sel = 0;
+        size_t count = wxFontMapper::GetSupportedEncodingsCount();
+        for (size_t i = 0; i < count; ++i)
+        {
+            wxFontEncoding enc = wxFontMapper::GetEncoding(i);
+            wxString enc_name = wxFontMapper::GetEncodingName(enc);
+            cmbEnc->Append(enc_name);
+            if (enc_name.CmpNoCase(def_enc_name) == 0)
+                sel = i;
+        }
+        cmbEnc->SetSelection(sel);
+    }
+
     // auto-complete
     CreateAutoCompText();
     wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
@@ -817,6 +836,13 @@ void EditorConfigurationDlg::EndModal(int retCode)
             cfg->Write(_T("/color_sets/active_color_set"), m_Theme->GetName());
         }
         cfg->Write(_T("/color_sets/active_lang"), XRCCTRL(*this, "cmbLangs", wxComboBox)->GetStringSelection());
+
+        // encoding
+        wxComboBox* cmbEnc = XRCCTRL(*this, "cmbEncoding", wxComboBox);
+        if (cmbEnc)
+        {
+            cfg->Write(_T("/default_encoding"), cmbEnc->GetStringSelection());
+        }
 
         // save any changes in auto-completion
         wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
