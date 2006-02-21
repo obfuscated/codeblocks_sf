@@ -28,6 +28,8 @@ const wxString g_AppContactEmail		= _T("info@codeblocks.org");
   const wxString g_AppPlatform = _T("OS/2");
 #elif defined(__WXMAC__)
   const wxString g_AppPlatform = _T("Mac OS X");
+#elif defined(__FreeBSD__)
+  const wxString g_AppPlatform = _T("FreeBSD");
 #elif defined(__UNIX__)
   const wxString g_AppPlatform = _T("Linux");
 #else
@@ -46,7 +48,9 @@ const wxString g_DefaultBatchBuildArgs = _T("-na -nd -ns --batch-build-notify");
 
 operating_system_t __cb_get_os()
 {
-#if   defined(__UNIX__)
+#if defined(__FreeBSD__)
+    return oxFreeBSD;
+#elif defined(__UNIX__)
     return osLinux;
 #elif defined(__WXMAC__)
     return osOSX;
@@ -78,7 +82,7 @@ operating_system_t OS()
 }
 
 
-const wxString langs[] =
+const wxString langs[LANGUAGES_SIZE] =
 {
 	_T("(System default)")   // Do *not* translate. If you do, people may be unable to switch back if they accidentially change the language
 //        ,_T("English (U.S.)")
@@ -89,7 +93,7 @@ const wxString langs[] =
 };
 
 // Must have the same order than the above
-const int locales[] =
+const int locales[LANGUAGES_SIZE] =
 {
 	wxLANGUAGE_DEFAULT
 //        ,wxLANGUAGE_ENGLISH_US

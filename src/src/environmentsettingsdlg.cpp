@@ -117,7 +117,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
 
 	bool i18n=cfg->ReadBool(_T("/environment/I18N"), false);
 		XRCCTRL(*this, "chkI18N", wxCheckBox)->SetValue(i18n);
-	for(size_t i=0; i < WXSIZEOF(langs); i++)
+	for(size_t i=0; i < LANGUAGES_SIZE; i++)
 	{
 		XRCCTRL(*this, "cbxLanguage", wxComboBox)->Append(langs[i]);
 	}
@@ -126,7 +126,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
 	{
 		int lng = cfg->ReadInt(_T("/locale/language"),-1);
 
-		if (lng >= 0 && static_cast<unsigned int>(lng) < WXSIZEOF(locales))
+		if (lng >= 0 && static_cast<unsigned int>(lng) < LANGUAGES_SIZE)
 		{
 			XRCCTRL(*this, "cbxLanguage", wxComboBox)->SetSelection(lng+1);
 		}

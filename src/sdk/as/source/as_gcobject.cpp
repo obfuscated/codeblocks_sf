@@ -34,8 +34,11 @@
 #endif
 #include <assert.h>
 #include <new>
-#if defined(WIN32) || defined(HAVE_MALLOC_H)
-#include <malloc.h>
+
+#ifdef __FreeBSD__
+    #include <stdlib.h>
+#else
+    #include <malloc.h>
 #endif
 
 #include "as_config.h"

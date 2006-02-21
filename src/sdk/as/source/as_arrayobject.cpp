@@ -33,7 +33,13 @@
 #endif
 #include <assert.h>
 #include <new>
-#include <malloc.h>
+
+#ifdef __FreeBSD__
+    #include <stdlib.h>
+#else
+    #include <malloc.h>
+#endif
+
 
 #include "as_config.h"
 #include "as_arrayobject.h"

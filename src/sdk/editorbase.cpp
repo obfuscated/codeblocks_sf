@@ -317,6 +317,7 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
         }
         m_SwitchTo.clear();
     }
+#if wxABI_VERSION >= 20601
     else if (id == idGoogle)/////////////////// TODO: UrlEncode
     {
         wxLaunchDefaultBrowser(wxString(_T("http://www.google.com/search?q=")) << URLEncode(lastWord));
@@ -325,6 +326,7 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
     {
         wxLaunchDefaultBrowser(wxString(_T("http://search.microsoft.com/search/results.aspx?qu=")) << URLEncode(lastWord) << _T("&View=msdn"));
     }
+#endif
     else
     {
         event.Skip();

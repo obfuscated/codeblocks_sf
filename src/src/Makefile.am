@@ -14,9 +14,9 @@ bin_PROGRAMS = codeblocks
 
 codeblocks_LDFLAGS = 
 
-codeblocks_LDADD =  $(WX_LIBS) \
-			-LwxAUI -lwxaui \
+codeblocks_LDADD =  -LwxAUI -lwxaui \
 			-L../sdk -lcodeblocks \
+			$(WX_LIBS) \
 			$(WX_XRC)
 
 codeblocks_SOURCES = app.cpp \

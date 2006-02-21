@@ -1230,8 +1230,7 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::StringSet
     if(mNode)
     {
         while((curr = mNode->IterateChildren(curr)->ToElement()))
-            set->insert(_U(curr->FirstChild()->ToText()->Value()))
-            ;
+            set->insert(_U(curr->FirstChild()->ToText()->Value()));
     }
 }
 

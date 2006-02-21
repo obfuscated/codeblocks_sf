@@ -17,10 +17,10 @@ extern const wxString g_AppBuildTimestamp;
 extern const wxString g_DefaultBatchBuildArgs;
 
 #define LOCALIZE   true
-#define LANGUAGES  2
-//Please fix this. I have no Idea that the WXSIZEOF couldn't work whithout defining LANGUAGES
-extern const wxString langs[LANGUAGES];
-extern const int locales[LANGUAGES];
+#define LANGUAGES_SIZE  2
+
+extern const wxString langs[LANGUAGES_SIZE];
+extern const int locales[LANGUAGES_SIZE];
 
 typedef enum
 {
@@ -28,6 +28,7 @@ osUnknownWindows,
 osWindows9598ME,
 osWindowsNT2000,
 osWindowsXP,
+oxFreeBSD,
 osLinux,
 osOS2,
 osOSX

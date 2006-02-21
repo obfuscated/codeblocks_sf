@@ -39,7 +39,12 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-#include <malloc.h>
+
+#ifdef __FreeBSD__
+    #include <stdlib.h>
+#else
+    #include <malloc.h>
+#endif
 
 #include "as_config.h"
 #include "as_scriptengine.h"
