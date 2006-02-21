@@ -52,7 +52,7 @@ Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& par
 	//ctor
     MakeValidID();
 
-    Manager::Get()->GetMessageManager()->DebugLog(_("Added compiler \"%s\""), m_Name.c_str());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Added compiler \"%s\""), m_Name.c_str());
 }
 
 Compiler::Compiler(const Compiler& other)

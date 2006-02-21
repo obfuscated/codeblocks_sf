@@ -343,7 +343,7 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColorSet* t
     m_timerWait.SetOwner(this);
 
     InitFilename(filename);
-//    Manager::Get()->GetMessageManager()->DebugLog(_("ctor: Filename=%s\nShort=%s"), m_Filename.c_str(), m_Shortname.c_str());
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("ctor: Filename=%s\nShort=%s"), m_Filename.c_str(), m_Shortname.c_str());
 
 	CreateEditor();
 	SetEditorStyle();
@@ -939,7 +939,7 @@ void cbEditor::AutoComplete()
     int wordStartPos = m_pControl->WordStartPosition(curPos, true);
     wxString keyword = m_pControl->GetTextRange(wordStartPos, curPos);
     wxString lineIndent = GetLineIndentString(m_pControl->GetCurrentLine());
-    msgMan->DebugLog(_("Auto-complete keyword: %s"), keyword.c_str());
+    msgMan->DebugLog(_T("Auto-complete keyword: %s"), keyword.c_str());
 
     AutoCompleteMap::iterator it;
     for (it = map.begin(); it != map.end(); ++it)
@@ -947,7 +947,7 @@ void cbEditor::AutoComplete()
         if (keyword == it->first)
         {
             // found; auto-complete it
-            msgMan->DebugLog(_("Match found"));
+            msgMan->DebugLog(_T("Match found"));
             m_pControl->BeginUndoAction();
 
             // indent code accordingly
@@ -967,7 +967,7 @@ void cbEditor::AutoComplete()
                     break; // no ending parenthesis
 
                 wxString macroName = code.SubString(macroPos + 2, macroPosEnd - 1);
-                msgMan->DebugLog(_("Found macro: %s"), macroName.c_str());
+                msgMan->DebugLog(_T("Found macro: %s"), macroName.c_str());
                 wxString macro = wxGetTextFromUser(_("Please enter the text for \"") + macroName + _T("\":"), _("Macro substitution"));
                 code.Replace(_T("$(") + macroName + _T(")"), macro);
                 macroPos = code.Find(_T("$("));
@@ -1659,7 +1659,7 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         RemoveBreakpoint(m_pData->m_LastMarginMenuLine);
     else
         event.Skip();
-	//Manager::Get()->GetMessageManager()->DebugLog(_("Leaving OnContextMenuEntry"));
+	//Manager::Get()->GetMessageManager()->DebugLog(_T("Leaving OnContextMenuEntry"));
 }
 
 void cbEditor::OnMarginClick(wxScintillaEvent& event)
@@ -1791,7 +1791,7 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
 			((ch == _T(':')) && (m_pControl->GetCharAt(pos - 2) == _T(':'))))
 	{
         int style = m_pControl->GetStyleAt(pos);
-		//Manager::Get()->GetMessageManager()->DebugLog(_("Style at %d is %d (char '%c')"), pos, style, ch);
+		//Manager::Get()->GetMessageManager()->DebugLog(_T("Style at %d is %d (char '%c')"), pos, style, ch);
         if (ch == _T('"') || ch == _T('<'))
         {
              if (style != wxSCI_C_PREPROCESSOR)

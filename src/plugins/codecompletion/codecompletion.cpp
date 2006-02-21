@@ -152,7 +152,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
         m_EditMenu->Append(idMenuShowCallTip, _("Show call tip\tCtrl-Shift-Space"));
     }
     else
-    	Manager::Get()->GetMessageManager()->DebugLog(_("Could not find Edit menu!"));
+    	Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find Edit menu!"));
     pos = menuBar->FindMenu(_("Sea&rch"));
     if (pos != wxNOT_FOUND)
     {
@@ -160,7 +160,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
         m_SearchMenu->Append(idMenuGotoFunction, _("Goto function...\tCtrl-Alt-G"));
     }
     else
-    	Manager::Get()->GetMessageManager()->DebugLog(_("Could not find Search menu!"));
+    	Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find Search menu!"));
 }
 
 void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
@@ -234,13 +234,13 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
                     subMenu->Append(idClassMethod, _("Class method declaration/implementation..."));
                 }
                 else
-                    Manager::Get()->GetMessageManager()->DebugLog(_("Could not find Insert menu 3!"));
+                    Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find Insert menu 3!"));
             }
             else
-                Manager::Get()->GetMessageManager()->DebugLog(_("Could not find Insert menu 2!"));
+                Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find Insert menu 2!"));
         }
         else
-            Manager::Get()->GetMessageManager()->DebugLog(_("Could not find Insert menu!"));
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find Insert menu!"));
 		}
 	}
 }
@@ -322,7 +322,7 @@ int CodeCompletion::CodeComplete()
 	Parser* parser = m_NativeParsers.FindParserFromEditor(ed);
 	if (!parser)
 	{
-		Manager::Get()->GetMessageManager()->DebugLog(_("Active editor has no associated parser ?!?"));
+		Manager::Get()->GetMessageManager()->DebugLog(_T("Active editor has no associated parser ?!?"));
 		return -4;
 	}
 
@@ -335,7 +335,7 @@ int CodeCompletion::CodeComplete()
         }
         else
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_("Generating tokens list"));
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Generating tokens list"));
             int pos = ed->GetControl()->GetCurrentPos();
             int start = ed->GetControl()->WordStartPosition(pos, true);
 
@@ -369,7 +369,7 @@ int CodeCompletion::CodeComplete()
                 items.Sort();
             else
                 items.Sort(SortCCList);
-            Manager::Get()->GetMessageManager()->DebugLog(_("Done generating tokens list"));
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Done generating tokens list"));
 
             ed->GetControl()->AutoCompSetIgnoreCase(!caseSens);
             ed->GetControl()->AutoCompSetCancelAtStart(true);
@@ -520,7 +520,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
 	Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
 	if (!parser)
 	{
-		Manager::Get()->GetMessageManager()->DebugLog(_("Active editor has no associated parser ?!?"));
+		Manager::Get()->GetMessageManager()->DebugLog(_T("Active editor has no associated parser ?!?"));
 		return -4;
 	}
 
@@ -560,8 +560,8 @@ void CodeCompletion::DoCodeComplete()
     	return;
 
     int style = ed->GetControl()->GetStyleAt(ed->GetControl()->GetCurrentPos());
-//	Manager::Get()->GetMessageManager()->DebugLog(_("Style at %d is %d"), ed->GetControl()->GetCurrentPos(), style);
-//	Manager::Get()->GetMessageManager()->DebugLog(_("wxSCI_C_PREPROCESSOR is %d"), wxSCI_C_PREPROCESSOR);
+//	Manager::Get()->GetMessageManager()->DebugLog(_T("Style at %d is %d"), ed->GetControl()->GetCurrentPos(), style);
+//	Manager::Get()->GetMessageManager()->DebugLog(_T("wxSCI_C_PREPROCESSOR is %d"), wxSCI_C_PREPROCESSOR);
     if (style == wxSCI_C_PREPROCESSOR)
     {
         CodeCompleteIncludes();
@@ -762,7 +762,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
         Token* token = tmpsearch.GetItem(sel);
         if(token)
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_("Token found at line %d"), token->m_Line);
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Token found at line %d"), token->m_Line);
             ed->GotoLine(token->m_Line - 1);
         }
 	}
@@ -780,7 +780,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 //   		return;
 
     wxString txt = m_LastKeyword;
-//    Manager::Get()->GetMessageManager()->DebugLog(_("Go to decl for '%s'"), txt.c_str());
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Go to decl for '%s'"), txt.c_str());
 
     Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
 	if (!parser)

@@ -114,7 +114,7 @@ Compiler* CompilerFactory::CreateCompilerCopy(Compiler* compiler, const wxString
     }
     RegisterCompiler(newC);
     newC->LoadSettings(_T("/user_sets"));
-    Manager::Get()->GetMessageManager()->DebugLog(_("Added compiler \"%s\""), newC->GetName().c_str());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Added compiler \"%s\""), newC->GetName().c_str());
     return newC; // return the index for the new compiler
 }
 
@@ -125,7 +125,7 @@ void CompilerFactory::RemoveCompiler(Compiler* compiler)
     Manager::Get()->GetConfigManager(_T("compiler"))->DeleteSubPath(_T("/user_sets/") + compiler->GetID());
 
     Compilers.Remove(compiler);
-    Manager::Get()->GetMessageManager()->DebugLog(_("Compiler \"%s\" removed"), compiler->GetName().c_str());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Compiler \"%s\" removed"), compiler->GetName().c_str());
     delete compiler;
 
     SaveSettings();

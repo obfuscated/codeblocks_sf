@@ -84,7 +84,7 @@ void Exporter::BuildMenu(wxMenuBar *menuBar)
 
   if (fileMenuPos == -1)
   {
-    //cbThrow(_("Can't find \"File\" menu position?!?"));
+    //cbThrow(_T("Can't find \"File\" menu position?!?"));
     return;
   }
 
@@ -93,7 +93,7 @@ void Exporter::BuildMenu(wxMenuBar *menuBar)
 
   if (!file)
   {
-    //cbThrow(_("Can't find \"File\" menu?!?"));
+    //cbThrow(_T("Can't find \"File\" menu?!?"));
     return;
   }
 

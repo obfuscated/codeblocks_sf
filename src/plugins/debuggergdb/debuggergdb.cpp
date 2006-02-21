@@ -472,7 +472,7 @@ void DebuggerGDB::DoSwitchLayout(const wxString& config_key)
     wxString layout = cfg->Read(config_key, wxEmptyString);
     if (!layout.IsEmpty())
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_("Switching layout to \"%s\""), layout.c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Switching layout to \"%s\""), layout.c_str());
         CodeBlocksLayoutEvent evt(cbEVT_SWITCH_VIEW_LAYOUT, layout);
         Manager::Get()->GetAppWindow()->ProcessEvent(evt);
     }

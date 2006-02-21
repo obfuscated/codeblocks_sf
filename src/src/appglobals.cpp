@@ -80,7 +80,7 @@ operating_system_t OS()
 
 const wxString langs[] =
 {
-	_("(System default)")
+	_T("(System default)")   // Do *not* translate. If you do, people may be unable to switch back if they accidentially change the language
 //        ,_T("English (U.S.)")
 //        ,_T("English")
 	,_("Chinese (Simplified)")

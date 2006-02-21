@@ -277,7 +277,7 @@ wxString HelpPlugin::HelpFileFromId(int id)
 void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
 {
   wxString ext = wxFileName(helpfile).GetExt();
-  Manager::Get()->GetMessageManager()->DebugLog(_("Help File is %s"), helpfile.c_str());
+  Manager::Get()->GetMessageManager()->DebugLog(_T("Help File is %s"), helpfile.c_str());
 
   if (!keyword.IsEmpty())
   {

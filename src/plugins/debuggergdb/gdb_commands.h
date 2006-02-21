@@ -249,7 +249,7 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                 else
                 {
 //                    if (m_BP->temporary)
-//                        cbThrow(_("Temporary breakpoint on constructor/destructor is not allowed"));
+//                        cbThrow(_T("Temporary breakpoint on constructor/destructor is not allowed"));
                     m_Cmd << _T("rbreak ") << m_BP->func;
                 }
                 //end GDB workaround

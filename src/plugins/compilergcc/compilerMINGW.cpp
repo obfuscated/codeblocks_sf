@@ -215,7 +215,7 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
                 if (ok) {
                 	name = key.GetName() + _T("\\") + name;
                     key.SetName(name);
-                    Manager::Get()->GetMessageManager()->DebugLog(_("name: %s"), name.c_str());
+                    Manager::Get()->GetMessageManager()->DebugLog(_T("name: %s"), name.c_str());
                     if (key.Exists()) key.QueryValue(_T("InstallLocation"), m_MasterPath);
                 }
             }

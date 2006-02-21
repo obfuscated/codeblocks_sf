@@ -220,7 +220,7 @@ ConfigManager* CfgMgrBldr::GetConfigManager(const wxString& name_space)
 ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
 {
     if(name_space.IsEmpty())
-        cbThrow(_("You attempted to get a ConfigManager instance without providing a namespace."));
+        cbThrow(_T("You attempted to get a ConfigManager instance without providing a namespace."));
 
     wxCriticalSectionLocker locker(cs);
     NamespaceMap::iterator it = namespaces.find(name_space);
@@ -259,7 +259,7 @@ ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
     }
 
     if(!root) // now what!
-        cbThrow(_("Unable to create namespace in document tree (actually not possible..?)"));
+        cbThrow(_T("Unable to create namespace in document tree (actually not possible..?)"));
 
     ConfigManager *c = new ConfigManager(root);
     namespaces[name_space] = c;

@@ -76,7 +76,7 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
         wxString line = input.ReadLine();
         if (line.IsEmpty())
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_("Unsupported format."));
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Unsupported format."));
             return false;
         }
         comps = GetArrayFromString(line, _T(","));
@@ -85,14 +85,14 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
         line.Trim(false);
         if (line != _T("Microsoft Developer Studio Workspace File"))
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_("Unsupported format."));
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Unsupported format."));
             return false;
         }
         line = comps.GetCount() > 1 ? comps[1] : wxString(wxEmptyString);
         line.Trim(true);
         line.Trim(false);
         if (line != _T("Format Version 6.00"))
-            Manager::Get()->GetMessageManager()->DebugLog(_("Format not recognized. Will try to parse though..."));
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Format not recognized. Will try to parse though..."));
     }
 
     ImportersGlobals::UseDefaultCompiler = !askForCompiler;
@@ -103,7 +103,7 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
     cbProject* firstproject = 0;
     wxFileName wfname = filename;
     wfname.Normalize();
-    Manager::Get()->GetMessageManager()->DebugLog(_("Workspace dir: %s"), wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR).c_str());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Workspace dir: %s"), wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR).c_str());
     while (!file.Eof())
     {
         wxString line = input.ReadLine();
@@ -152,7 +152,7 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename)
           ++count;
           wxFileName fname(UnixFilename(prjFile));
           fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
-          Manager::Get()->GetMessageManager()->DebugLog(_("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str());
+          Manager::Get()->GetMessageManager()->DebugLog(_T("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str());
           project = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath(), false);
           if (!firstproject) firstproject = project;
           if (project) registerProject(project->GetTitle(), project);

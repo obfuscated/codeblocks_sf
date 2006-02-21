@@ -608,7 +608,7 @@ void DebuggerTree::OnLoadWatchFile(wxCommandEvent& event)
         {
             if (!cmd.IsEmpty()) // Skip empty lines
             {
-//                Manager::Get()->GetMessageManager()->DebugLog(_("Adding watch \"%s\" to debugger:"), keyword);
+//                Manager::Get()->GetMessageManager()->DebugLog(_T("Adding watch \"%s\" to debugger:"), keyword);
                 AddWatch(cmd, Undefined, false); // do not notify about new watch (we 'll do it when done)
             }
             if (tf.Eof()) break;
@@ -620,7 +620,7 @@ void DebuggerTree::OnLoadWatchFile(wxCommandEvent& event)
         NotifyForChangedWatches();
     }
     else
-        Manager::Get()->GetMessageManager()->DebugLog(_("Error opening debugger watch file: %s"), fname.c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Error opening debugger watch file: %s"), fname.c_str());
 }
 
 void DebuggerTree::OnSaveWatchFile(wxCommandEvent& event)
@@ -671,7 +671,7 @@ void DebuggerTree::OnSaveWatchFile(wxCommandEvent& event)
         tf.Close(); // release file handle
     }
     else
-        Manager::Get()->GetMessageManager()->DebugLog(_("Error opening debugger watch file: %s"), fname.c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Error opening debugger watch file: %s"), fname.c_str());
 }
 
 void DebuggerTree::OnEditWatch(wxCommandEvent& event)

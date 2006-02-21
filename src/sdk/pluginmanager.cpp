@@ -92,7 +92,7 @@ int PluginManager::ScanForPlugins(const wxString& path)
     bool ok = dir.GetFirst(&filename, PLUGINS_MASK, wxDIR_FILES);
     while (ok)
     {
-//		Manager::Get()->GetMessageManager()->AppendDebugLog(_("Trying %s: "), filename.c_str());
+//		Manager::Get()->GetMessageManager()->AppendDebugLog(_T("Trying %s: "), filename.c_str());
         if (LoadPlugin(path + _T('/') + filename))
             ++count;
 		else
@@ -117,7 +117,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
     lib->Load(pluginName);
     if (!lib->IsLoaded())
     {
-        msgMan->DebugLog(_("%s: not loaded (file exists?)"), pluginName.c_str());
+        msgMan->DebugLog(_T("%s: not loaded (file exists?)"), pluginName.c_str());
         delete lib;
         return false;
     }
@@ -126,7 +126,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
     PluginNameProc nameproc = (PluginNameProc)lib->GetSymbol(_T("PluginName"));
     if (!nameproc)
     {
-        msgMan->DebugLog(_("%s: not a plugin (no PluginName)"), pluginName.c_str());
+        msgMan->DebugLog(_T("%s: not a plugin (no PluginName)"), pluginName.c_str());
         delete lib;
         return false;
     }
@@ -139,7 +139,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
     // if no SDK version entry point, abort
     if (!versionproc)
     {
-        msgMan->DebugLog(_("%s: no SDK version entry point"), pluginName.c_str());
+        msgMan->DebugLog(_T("%s: no SDK version entry point"), pluginName.c_str());
         delete lib;
         return false;
     }
@@ -183,7 +183,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
     {
         lib->Unload();
         delete lib;
-        msgMan->DebugLog(_("%s: not a plugin"), pluginName.c_str());
+        msgMan->DebugLog(_T("%s: not a plugin"), pluginName.c_str());
         return false;
     }
 
@@ -222,7 +222,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
         wxString plugName = plug->GetInfo()->name;
         if (FindPluginByName(plugName))
         {
-            msgMan->DebugLog(_("%s: another plugin with name \"%s\" is already loaded..."), pluginName.c_str(), plugName.c_str());
+            msgMan->DebugLog(_T("%s: another plugin with name \"%s\" is already loaded..."), pluginName.c_str(), plugName.c_str());
             delete plug;
             continue;
         }
@@ -240,7 +240,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
 
         ++libUseCount;
 
-        msgMan->DebugLog(_("%s: loaded"), plugName.c_str());
+        msgMan->DebugLog(_T("%s: loaded"), plugName.c_str());
     }
 
     if (libUseCount == 0)
@@ -329,14 +329,14 @@ void PluginManager::UnloadAllPlugins()
     while (i > 0)
     {
 		--i;
-//		Manager::Get()->GetMessageManager()->DebugLog(_("At %d"), i);
+//		Manager::Get()->GetMessageManager()->DebugLog(_T("At %d"), i);
         cbPlugin* plug = m_Plugins[i]->plugin;
 		if (!plug)
 			continue;
-//        Manager::Get()->GetMessageManager()->DebugLog(_("Doing '%s'"), m_Plugins[i]->name.c_str());
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("Doing '%s'"), m_Plugins[i]->name.c_str());
         plug->Release(true);
         //it->first->library->Unload();
-//        Manager::Get()->GetMessageManager()->DebugLog(_("Plugin '%s' unloaded"), m_Plugins[i]->name.c_str());
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("Plugin '%s' unloaded"), m_Plugins[i]->name.c_str());
         // FIXME: find a way to delete the toolbars too...
     }
 
@@ -398,7 +398,7 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
         if (plug->GetType() != ptTool)
         {
             MessageManager* msgMan = Manager::Get()->GetMessageManager();
-            msgMan->DebugLog(_("Plugin %s is not a tool to have Execute() method!"), plug->GetInfo()->name.c_str());
+            msgMan->DebugLog(_T("Plugin %s is not a tool to have Execute() method!"), plug->GetInfo()->name.c_str());
         }
         else
         {

@@ -32,7 +32,7 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES])
    	if (!filename.FileExists())
    	{
    		nb_files_not_found++;
-   		//Manager::Get()->GetMessageManager()->DebugLog(_("Code Statistics: Ignoring file '%s' (file not found)"), filename.GetName());
+   		//Manager::Get()->GetMessageManager()->DebugLog(_T("Code Statistics: Ignoring file '%s' (file not found)"), filename.GetName());
    	}
    	else
    	{

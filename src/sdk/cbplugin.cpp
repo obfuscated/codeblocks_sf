@@ -110,7 +110,7 @@ void cbPlugin::Release(bool appShutDown)
 
 void cbPlugin::NotImplemented(const wxString& log) const
 {
-    Manager::Get()->GetMessageManager()->DebugLog(_("%s : not implemented"), log.c_str());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("%s : not implemented"), log.c_str());
 }
 
 /////

@@ -43,7 +43,7 @@ void MSVCWorkspaceBase::addDependency(const wxString& projectID, const wxString&
             it->second._dependencyList.Add(dependencyID.Lower());
     }
     else {
-        Manager::Get()->GetMessageManager()->DebugLog(_("ERROR: project id not found: %s"), projectID.c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR: project id not found: %s"), projectID.c_str());
     }
 }
 

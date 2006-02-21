@@ -122,7 +122,7 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
         fp = fopen(_C(fname), "r");
         if(!fp)
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_("Can't open script %s"), filename.c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Can't open script %s"), filename.c_str());
             return -1;
         }
     }
@@ -171,9 +171,9 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
         ret = exec.Call();
         if (!exec.Success())
         {
-            if (cbMessageBox(_("An exception has been raised from the script:\n\n") +
+            if (cbMessageBox(_T("An exception has been raised from the script:\n\n") +
                             exec.CreateErrorString() +
-                            _("\n\nDo you want to open this script in the editor?"), _T("Script error"), wxICON_ERROR | wxYES_NO) == wxID_YES)
+                            _T("\n\nDo you want to open this script in the editor?"), _T("Script error"), wxICON_ERROR | wxYES_NO) == wxID_YES)
             {
                 cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname);
                 if (ed && exec.GetLineNumber() != 0)

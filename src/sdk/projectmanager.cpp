@@ -1805,11 +1805,11 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
                 ProjectFile* pf = prj->GetFile(indices[i]);
                 if (!pf)
                 {
-                    Manager::Get()->GetMessageManager()->DebugLog(_("Invalid project file: Index %d"), indices[i]);
+                    Manager::Get()->GetMessageManager()->DebugLog(_T("Invalid project file: Index %d"), indices[i]);
                     continue;
                 }
                 wxString filename = pf->file.GetFullPath();
-                Manager::Get()->GetMessageManager()->DebugLog(_("Removing index %d, %s"), indices[i], filename.c_str());
+                Manager::Get()->GetMessageManager()->DebugLog(_T("Removing index %d, %s"), indices[i], filename.c_str());
                 prj->RemoveFile(indices[i]);
                 CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
                 evt.SetProject(prj);
@@ -2010,7 +2010,7 @@ void ProjectManager::OnGotoFile(wxCommandEvent& event)
     SANITY_CHECK();
 	if (!m_pActiveProject)
 	{
-		Manager::Get()->GetMessageManager()->DebugLog(_("No active project!"));
+		Manager::Get()->GetMessageManager()->DebugLog(_T("No active project!"));
 		return;
 	}
 

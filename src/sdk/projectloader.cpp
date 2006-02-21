@@ -51,12 +51,12 @@ bool ProjectLoader::Open(const wxString& filename)
         return false;
 
     wxStopWatch sw;
-    pMsg->DebugLog(_("Loading project file..."));
+    pMsg->DebugLog(_T("Loading project file..."));
     TiXmlDocument doc(filename.mb_str());
     if (!doc.LoadFile())
         return false;
 
-    pMsg->DebugLog(_("Parsing project file..."));
+    pMsg->DebugLog(_T("Parsing project file..."));
     TiXmlElement* root;
     TiXmlElement* proj;
 
@@ -67,14 +67,14 @@ bool ProjectLoader::Open(const wxString& filename)
         root = doc.FirstChildElement("Code::Blocks_project_file");
         if (!root)
         {
-            pMsg->DebugLog(_("Not a valid Code::Blocks project file..."));
+            pMsg->DebugLog(_T("Not a valid Code::Blocks project file..."));
             return false;
         }
     }
     proj = root->FirstChildElement("Project");
     if (!proj)
     {
-        pMsg->DebugLog(_("No 'Project' element in file..."));
+        pMsg->DebugLog(_T("No 'Project' element in file..."));
         return false;
     }
 
@@ -90,12 +90,12 @@ bool ProjectLoader::Open(const wxString& filename)
             (major == 1 && minor < 2))
         {
             // pre-1.2
-            pMsg->DebugLog(_("Project version is %d.%d. Defaults have changed since then..."), major, minor);
+            pMsg->DebugLog(_T("Project version is %d.%d. Defaults have changed since then..."), major, minor);
             m_IsPre_1_2 = true;
         }
         else if (major >= PROJECT_FILE_VERSION_MAJOR && minor > PROJECT_FILE_VERSION_MINOR)
         {
-            pMsg->DebugLog(_("Project version is > %d.%d. Trying to load..."), PROJECT_FILE_VERSION_MAJOR, PROJECT_FILE_VERSION_MINOR);
+            pMsg->DebugLog(_T("Project version is > %d.%d. Trying to load..."), PROJECT_FILE_VERSION_MAJOR, PROJECT_FILE_VERSION_MINOR);
             cbMessageBox(_("This project file was saved with a newer version of Code::Blocks.\n"
                             "Will try to load, but you should make sure all the settings were loaded correctly..."),
                             _("Warning"),
@@ -309,7 +309,7 @@ void ProjectLoader::DoBuildTarget(TiXmlElement* parentNode)
 
         if (target)
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_("Loading target %s"), title.c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Loading target %s"), title.c_str());
             DoBuildTargetOptions(node, target);
             DoCompilerOptions(node, target);
             DoResourceCompilerOptions(node, target);

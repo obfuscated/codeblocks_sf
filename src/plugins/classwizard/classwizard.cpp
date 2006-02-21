@@ -51,13 +51,13 @@ ClassWizard::ClassWizard()
 
     m_PluginInfo.name = _T("ClassWizard");
     m_PluginInfo.title = _("Class wizard");
-    m_PluginInfo.version = _("0.2");
+    m_PluginInfo.version = _T("0.2");
     m_PluginInfo.description = _("This plugin provides an easy way to create a " \
                                "new C++ class file pair. It's by no means " \
                                "complete yet but it's here nevertheless;)");
-    m_PluginInfo.author = _("Yiannis An. Mandravellos");
-    m_PluginInfo.authorEmail = _("info@codeblocks.org");
-    m_PluginInfo.authorWebsite = _("www.codeblocks.org");
+    m_PluginInfo.author = _T("Yiannis An. Mandravellos");
+    m_PluginInfo.authorEmail = _T("info@codeblocks.org");
+    m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
     m_PluginInfo.thanksTo = _T("");
 }
 

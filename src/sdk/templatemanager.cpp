@@ -110,7 +110,7 @@ void TemplateManager::LoadTemplates()
 
         ok = dir.GetNext(&filename);
     }
-	Manager::Get()->GetMessageManager()->DebugLog(_("%d templates loaded"), m_Templates.GetCount());
+	Manager::Get()->GetMessageManager()->DebugLog(_T("%d templates loaded"), m_Templates.GetCount());
 }
 
 void TemplateManager::LoadUserTemplates()
@@ -134,7 +134,7 @@ void TemplateManager::LoadUserTemplates()
         ok = dir.GetNext(&filename);
     }
 
-	Manager::Get()->GetMessageManager()->DebugLog(_("%d user templates loaded"), m_UserTemplates.GetCount());
+	Manager::Get()->GetMessageManager()->DebugLog(_T("%d user templates loaded"), m_UserTemplates.GetCount());
 }
 
 cbProject* TemplateManager::NewProject()
@@ -185,7 +185,7 @@ cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     ProjectTemplateLoader* pt = dlg.GetTemplate();
     if (!pt)
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_("Templates dialog returned OK but no template was selected ?!?"));
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Templates dialog returned OK but no template was selected ?!?"));
         return NULL;
     }
     int optidx = dlg.GetOptionIndex();
@@ -307,7 +307,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
     cbProject* prj = NULL;
     if (!dlg.SelectedUserTemplate())
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_("TemplateManager::NewProjectFromUserTemplate() called when no user template was selected ?!?"));
+        Manager::Get()->GetMessageManager()->DebugLog(_T("TemplateManager::NewProjectFromUserTemplate() called when no user template was selected ?!?"));
         return NULL;
     }
 
@@ -329,7 +329,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
     templ << sep << _T(".CodeBlocks") << sep << dlg.GetSelectedUserTemplate();
     if (!wxDirExists(templ))
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_("Cannot open user-template source path '%s'!"), templ.c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Cannot open user-template source path '%s'!"), templ.c_str());
         return NULL;
     }
 
@@ -347,7 +347,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
         wxString dst = path + sep + dstname.GetFullPath();
 //        Manager::Get()->GetMessageManager()->DebugLog("dst=%s, dstname=%s", dst.c_str(), dstname.GetFullPath().c_str());
         if (!CreateDirRecursively(dst))
-            Manager::Get()->GetMessageManager()->DebugLog(_("Failed creating directory for %s"), dst.c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Failed creating directory for %s"), dst.c_str());
         if (wxCopyFile(src, dst, true))
         {
             if (FileTypeOf(dst) == ftCodeBlocksProject)
@@ -355,7 +355,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
             ++count;
         }
         else
-            Manager::Get()->GetMessageManager()->DebugLog(_("Failed copying %s to %s"), src.c_str(), dst.c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Failed copying %s to %s"), src.c_str(), dst.c_str());
     }
     if (count != total_count)
         cbMessageBox(_("Some files could not be loaded with the template..."), _("Error"), wxICON_ERROR);
@@ -432,13 +432,13 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
     {
         wxString src = prj->GetFile(i)->file.GetFullPath();
         wxString dst = templ + prj->GetFile(i)->relativeFilename;
-//        Manager::Get()->GetMessageManager()->DebugLog(_("Copying %s to %s"), src.c_str(), dst.c_str());
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("Copying %s to %s"), src.c_str(), dst.c_str());
         if (!CreateDirRecursively(dst))
-            Manager::Get()->GetMessageManager()->DebugLog(_("Failed creating directory for %s"), dst.c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Failed creating directory for %s"), dst.c_str());
         if (wxCopyFile(src, dst, true))
             ++count;
         else
-            Manager::Get()->GetMessageManager()->DebugLog(_("Failed copying %s to %s"), src.c_str(), dst.c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Failed copying %s to %s"), src.c_str(), dst.c_str());
     }
     fname.Assign(prj->GetFilename());
     if (!wxCopyFile(prj->GetFilename(), templ + fname.GetFullName()))

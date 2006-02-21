@@ -526,7 +526,7 @@ typedef void(*FreePluginProc)(cbPlugin*);
         { \
             case 0: return _T(title1);  \
             case 1: return _T(title2);  \
-            default: cbThrow(_("Invalid plugin index in PluginName()!")); \
+            default: cbThrow(_T("Invalid plugin index in PluginName()!")); \
         } \
     } \
     size_t GetPluginsCount(){ return 2; } \
@@ -536,7 +536,7 @@ typedef void(*FreePluginProc)(cbPlugin*);
         { \
             case 0: return new name1; \
             case 1: return new name2; \
-            default: cbThrow(_("Invalid plugin index in CreatePlugin()!")); \
+            default: cbThrow(_T("Invalid plugin index in CreatePlugin()!")); \
         } \
     } \
     void FreePlugin(cbPlugin* plugin){ delete plugin; } \
@@ -561,7 +561,7 @@ typedef void(*FreePluginProc)(cbPlugin*);
             case 0: return _T(title1);  \
             case 1: return _T(title2);  \
             case 2: return _T(title3);  \
-            default: cbThrow(_("Invalid plugin index in PluginName()!")); \
+            default: cbThrow(_T("Invalid plugin index in PluginName()!")); \
         } \
     } \
     size_t GetPluginsCount(){ return 3; } \
@@ -572,7 +572,7 @@ typedef void(*FreePluginProc)(cbPlugin*);
             case 0: return new name1; \
             case 1: return new name2; \
             case 2: return new name3; \
-            default: cbThrow(_("Invalid plugin index in CreatePlugin()!")); \
+            default: cbThrow(_T("Invalid plugin index in CreatePlugin()!")); \
         } \
     } \
     void FreePlugin(cbPlugin* plugin){ delete plugin; } \

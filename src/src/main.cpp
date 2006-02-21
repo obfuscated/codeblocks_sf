@@ -687,7 +687,7 @@ void MainFrame::CreateToolbars()
     if(m_SmallToolBar) // Insert logic here
         xrcToolbarName += _T("_16x16");
     myres->Load(resPath + _T("/resources.zip#zip:*.xrc"));
-    Manager::Get()->GetMessageManager()->DebugLog(_("Loading toolbar..."));
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Loading toolbar..."));
 
     wxSize size = m_SmallToolBar ? wxSize(16, 16) : wxSize(22, 22);
     m_pToolbar = new wxToolBar(this, -1, wxDefaultPosition, size, wxTB_FLAT | wxTB_NODIVIDER);
@@ -1033,7 +1033,7 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
 
 void MainFrame::DoAddPlugin(cbPlugin* plugin)
 {
-    //Manager::Get()->GetMessageManager()->DebugLog(_("Adding plugin: %s"), plugin->GetInfo()->name.c_str());
+    //Manager::Get()->GetMessageManager()->DebugLog(_T("Adding plugin: %s"), plugin->GetInfo()->name.c_str());
     AddPluginInSettingsMenu(plugin);
     AddPluginInHelpPluginsMenu(plugin);
     if (plugin->GetType() == ptTool)
@@ -1062,8 +1062,8 @@ bool MainFrame::Open(const wxString& filename, bool addToHistory)
     wxFileName fn(filename);
     fn.Normalize(); // really important so that two same files with different names are not loaded twice
     wxString name = fn.GetFullPath();
-    //Manager::Get()->GetMessageManager()->DebugLog(_("Opening file '%s'"), sname.c_str());
-    Manager::Get()->GetMessageManager()->DebugLog(_("Opening file %s"), name.c_str());
+    //Manager::Get()->GetMessageManager()->DebugLog(_T("Opening file '%s'"), sname.c_str());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Opening file %s"), name.c_str());
     bool ret = OpenGeneric(name, addToHistory);
 	return ret;
 }
@@ -1152,7 +1152,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
 
 bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
 {
-//    Manager::Get()->GetMessageManager()->DebugLog(_("Opening project '%s'"), filename.c_str());
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Opening project '%s'"), filename.c_str());
     if (!wxFileExists(filename))
     {
         cbMessageBox(_("The project file does not exist..."), _("Error"), wxICON_ERROR);
@@ -1622,7 +1622,7 @@ void MainFrame::OnPluginsExecuteMenu(wxCommandEvent& event)
     if (!pluginName.IsEmpty())
         Manager::Get()->GetPluginManager()->ExecutePlugin(pluginName);
     else
-        Manager::Get()->GetMessageManager()->DebugLog(_("No plugin found for ID %d"), event.GetId());
+        Manager::Get()->GetMessageManager()->DebugLog(_T("No plugin found for ID %d"), event.GetId());
 }
 
 void MainFrame::OnPluginSettingsMenu(wxCommandEvent& event)
@@ -1631,7 +1631,7 @@ void MainFrame::OnPluginSettingsMenu(wxCommandEvent& event)
     if (!pluginName.IsEmpty())
         Manager::Get()->GetPluginManager()->ConfigurePlugin(pluginName);
     else
-        Manager::Get()->GetMessageManager()->DebugLog(_("No plugin found for ID %d"), event.GetId());
+        Manager::Get()->GetMessageManager()->DebugLog(_T("No plugin found for ID %d"), event.GetId());
 }
 
 void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
@@ -1642,7 +1642,7 @@ void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
         const PluginInfo* pi = Manager::Get()->GetPluginManager()->GetPluginInfo(pluginName);
         if (!pi)
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_("No plugin info for %s!"), pluginName.c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_T("No plugin info for %s!"), pluginName.c_str());
             return;
         }
         dlgAboutPlugin dlg(this, pi);
@@ -1650,7 +1650,7 @@ void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
         dlg.ShowModal();
     }
     else
-        Manager::Get()->GetMessageManager()->DebugLog(_("No plugin found for ID %d"), event.GetId());
+        Manager::Get()->GetMessageManager()->DebugLog(_T("No plugin found for ID %d"), event.GetId());
 }
 
 void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
@@ -2883,7 +2883,7 @@ void MainFrame::OnPluginLoaded(CodeBlocksEvent& event)
         if (!m_ReconfiguringPlugins)
             DoAddPlugin(plug);
         wxString msg = plug->GetInfo()->title;
-        Manager::Get()->GetMessageManager()->DebugLog(_("%s plugin loaded"), msg.c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_T("%s plugin loaded"), msg.c_str());
 	}
 }
 
@@ -2900,7 +2900,7 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
             CreateMenubar();
 		}
         wxString msg = plug->GetInfo()->title;
-        Manager::Get()->GetMessageManager()->DebugLog(_("%s plugin unloaded"), msg.c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_T("%s plugin unloaded"), msg.c_str());
     }
 }
 #endif

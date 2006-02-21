@@ -361,7 +361,7 @@ void cbProject::CalculateCommonTopLevelPath()
     // in their paths
     wxString sep = wxFileName::GetPathSeparator();
     wxFileName base = GetBasePath() + sep;
-    Manager::Get()->GetMessageManager()->DebugLog(_("Project's base path: %s"), base.GetFullPath().c_str());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Project's base path: %s"), base.GetFullPath().c_str());
     for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
     {
         ProjectFile* f = node->GetData();
@@ -391,7 +391,7 @@ void cbProject::CalculateCommonTopLevelPath()
         f->SetObjName(f->relativeToCommonTopLevelPath);
     }
     m_CommonTopLevelPath = base.GetFullPath();
-    Manager::Get()->GetMessageManager()->DebugLog(_("Project's common toplevel path: %s"), m_CommonTopLevelPath.c_str());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Project's common toplevel path: %s"), m_CommonTopLevelPath.c_str());
 }
 
 wxString cbProject::GetCommonTopLevelPath()
@@ -1271,7 +1271,7 @@ void cbProject::ReOrderTargets(const wxArrayString& nameOrder)
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
     if (nameOrder.GetCount() != m_Targets.GetCount())
     {
-        msgMan->DebugLog(_("cbProject::ReOrderTargets() : Count does not match (%d sent, %d had)..."), nameOrder.GetCount(), m_Targets.GetCount());
+        msgMan->DebugLog(_T("cbProject::ReOrderTargets() : Count does not match (%d sent, %d had)..."), nameOrder.GetCount(), m_Targets.GetCount());
         return;
     }
 
@@ -1280,7 +1280,7 @@ void cbProject::ReOrderTargets(const wxArrayString& nameOrder)
         ProjectBuildTarget* target = GetBuildTarget(nameOrder[i]);
         if (!target)
         {
-            msgMan->DebugLog(_("cbProject::ReOrderTargets() : Target \"%s\" not found..."), nameOrder[i].c_str());
+            msgMan->DebugLog(_T("cbProject::ReOrderTargets() : Target \"%s\" not found..."), nameOrder[i].c_str());
             break;
         }
 

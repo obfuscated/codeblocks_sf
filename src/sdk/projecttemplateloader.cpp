@@ -40,7 +40,7 @@ bool ProjectTemplateLoader::Open(const wxString& filename)
     if (!pMsg)
         return false;
 
-//    pMsg->DebugLog(_("Reading template file %s"), filename.c_str());
+//    pMsg->DebugLog(_T("Reading template file %s"), filename.c_str());
 
     TiXmlDocument doc(filename.mb_str());
     if (!doc.LoadFile())
@@ -55,7 +55,7 @@ bool ProjectTemplateLoader::Open(const wxString& filename)
         root = doc.FirstChildElement("Code::Blocks_template_file");
         if (!root)
         {
-            pMsg->DebugLog(_("Not a valid Code::Blocks template file..."));
+            pMsg->DebugLog(_T("Not a valid Code::Blocks template file..."));
             return false;
         }
     }

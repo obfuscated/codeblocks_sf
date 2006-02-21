@@ -61,7 +61,7 @@ bool MSVCLoader::Open(const wxString& filename)
         return false;
 
     // the file is read, now process it
-    Manager::Get()->GetMessageManager()->DebugLog(_("Importing MSVC project: %s"), filename.c_str());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Importing MSVC project: %s"), filename.c_str());
 
     // delete all targets of the project (we 'll create new ones from the imported configurations)
     while (m_pProject->GetBuildTargetsCount())
@@ -141,10 +141,10 @@ bool MSVCLoader::ReadConfigurations()
                 else if (projcode.Matches(_T("010a"))) type = ttCommandsOnly;
                 else {
                   type = ttCommandsOnly;
-                  Manager::Get()->GetMessageManager()->DebugLog(_("unrecognized target type"));
+                  Manager::Get()->GetMessageManager()->DebugLog(_T("unrecognized target type"));
                 }
 
-                //Manager::Get()->GetMessageManager()->DebugLog(_("TargType '%s' is %d"), targtype.c_str(), type);
+                //Manager::Get()->GetMessageManager()->DebugLog(_T("TargType '%s' is %d"), targtype.c_str(), type);
                 m_TargType[targtype] = type;
             }
             continue;
@@ -158,7 +158,7 @@ bool MSVCLoader::ReadConfigurations()
             wxArrayString projectTarget = GetArrayFromString(line.Left(pos), _T("-"));
             wxString target = projectTarget[1];
             if (projectTarget.GetCount() != 2) {
-                Manager::Get()->GetMessageManager()->DebugLog(_("ERROR: bad target format"));
+                Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR: bad target format"));
                 return false;
             }
             line.Remove(0, pos+1);
@@ -170,11 +170,11 @@ bool MSVCLoader::ReadConfigurations()
             HashTargetType::iterator it = m_TargType.find(basedon);
             if (it != m_TargType.end()) type = it->second;
             else {
-                Manager::Get()->GetMessageManager()->DebugLog(_("ERROR: target type not found"));
+                Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR: target type not found"));
                 return false;
             }
             m_TargetBasedOn[target] = type;
-            //Manager::Get()->GetMessageManager()->DebugLog(_("Target '%s' type %d"), target.c_str(), type);
+            //Manager::Get()->GetMessageManager()->DebugLog(_T("Target '%s' type %d"), target.c_str(), type);
         }
         else if (line.StartsWith(_T("!IF  \"$(CFG)\" ==")))
             size = 16;
@@ -426,7 +426,7 @@ void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxStri
             else if (opt.Matches(_T("/U")))
                 target->AddCompilerOption(_T("/U") + RemoveQuotes(array[++i]));
             else if (opt.StartsWith(_T("/Yu")))
-                Manager::Get()->GetMessageManager()->DebugLog(_("Ignoring precompiled headers option (/Yu)"));
+                Manager::Get()->GetMessageManager()->DebugLog(_T("Ignoring precompiled headers option (/Yu)"));
             else if (opt.Matches(_T("/c")) || opt.Matches(_T("/nologo"))) {} // do nothing
             else
                 target->AddCompilerOption(opt);
@@ -475,7 +475,7 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
                 // do nothing; it is handled below, in common options
             }
             else
-                Manager::Get()->GetMessageManager()->DebugLog(_("Unknown linker option: " + opt));
+                Manager::Get()->GetMessageManager()->DebugLog(_T("Unknown linker option: " + opt));
         }
         else // !m_ConvertSwitches
         {

@@ -1757,7 +1757,7 @@ bool MakefileGenerator::CreateMakefile()
     m_GeneratingMakefile = true;
 
     if (m_CompilerSet->GetSwitches().logging != clogFull)
-        m_Quiet = _("@");
+        m_Quiet = _T("@");
     else
         m_Quiet = wxEmptyString;
     DoPrepareFiles();

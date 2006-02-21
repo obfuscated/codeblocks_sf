@@ -502,7 +502,7 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
         // as a parameter
         if(data)
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_("project data set for %s"), data->file.GetFullPath().c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_T("project data set for %s"), data->file.GetFullPath().c_str());
         }
         else
         {
@@ -513,7 +513,7 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
                 ProjectFile* pf = prj->GetFileByFilename(ed->GetFilename(), false);
                 if (pf)
                 {
-                    Manager::Get()->GetMessageManager()->DebugLog(_("found %s"), pf->file.GetFullPath().c_str());
+                    Manager::Get()->GetMessageManager()->DebugLog(_T("found %s"), pf->file.GetFullPath().c_str());
                     data = pf;
                     break;
                 }

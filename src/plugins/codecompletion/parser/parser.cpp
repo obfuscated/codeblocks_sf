@@ -518,12 +518,12 @@ void Parser::Clear()
     DisconnectEvents();
 	if(m_ShuttingDown)
 	{
-        Manager::Get()->GetMessageManager()->DebugLog(_("Terminating threads..."));
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Terminating threads..."));
 	}
 	TerminateAllThreads(); //
 	if(m_ShuttingDown)
 	{
-        Manager::Get()->GetMessageManager()->DebugLog(_("Done."));
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Done."));
 	}
 
     Manager::ProcessPendingEvents();
@@ -673,7 +673,7 @@ bool Parser::WriteToCache(wxOutputStream* f)
 
     for (i = 0; i < tcount; ++i)
     {
-        // Manager::Get()->GetMessageManager()->DebugLog(_("Token #%d, offset %d"),i,f->TellO());
+        // Manager::Get()->GetMessageManager()->DebugLog(_T("Token #%d, offset %d"),i,f->TellO());
         Token* token = m_pTokens->at(i);
         SaveIntToFile(f,(token!=0) ? 1 : 0);
         if(token)
@@ -699,7 +699,7 @@ void Parser::AddIncludeDir(const wxString& file)
 {
 	if(m_IncludeDirs.Index(file) == wxNOT_FOUND)
 	{
-//    	Manager::Get()->GetMessageManager()->DebugLog(_("Adding %s"), file.c_str());
+//    	Manager::Get()->GetMessageManager()->DebugLog(_T("Adding %s"), file.c_str());
 		m_IncludeDirs.Add(file);
 	}
 } // end of AddIncludeDir
@@ -735,8 +735,8 @@ wxArrayString Parser::FindFileInIncludeDirs(const wxString& file,bool firstonly)
                 break;
 		}
 	} // end for : idx : idxSearch
-//	Manager::Get()->GetMessageManager()->DebugLog(_("Searching %s"), file.c_str());
-//	Manager::Get()->GetMessageManager()->DebugLog(_("Found %d"), FoundSet.GetCount());
+//	Manager::Get()->GetMessageManager()->DebugLog(_T("Searching %s"), file.c_str());
+//	Manager::Get()->GetMessageManager()->DebugLog(_T("Found %d"), FoundSet.GetCount());
 	return FoundSet;
 } // end of FindFileInIncludeDirs
 
@@ -1064,7 +1064,7 @@ bool Parser::ReparseModifiedFiles()
 {
     if(!m_NeedsReparse || !m_Pool.Done())
         return false;
-    Manager::Get()->GetMessageManager()->DebugLog(_("Reparsing saved files..."));
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Reparsing saved files..."));
     m_NeedsReparse = false;
     int numfiles = 0;
     vector<wxString> files_list;

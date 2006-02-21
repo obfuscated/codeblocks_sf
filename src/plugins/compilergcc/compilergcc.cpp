@@ -533,7 +533,7 @@ void CompilerGCC::SetupEnvironment()
     m_EnvironmentMsg.Clear();
 
 	wxString path;
-//	Manager::Get()->GetMessageManager()->DebugLog(_("Setting up compiler environment..."));
+//	Manager::Get()->GetMessageManager()->DebugLog(_T("Setting up compiler environment..."));
 
     // reset PATH to original value
     if (!m_OriginalPath.IsEmpty())
@@ -606,7 +606,7 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
     if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
     {
         m_EnvironmentMsg << _("Can't find compiler executable in your search path for ") << compiler->GetName() << _T('\n');
-        Manager::Get()->GetMessageManager()->DebugLog(_("Can't find compiler executable in your search path (%s)..."), compiler->GetName().c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Can't find compiler executable in your search path (%s)..."), compiler->GetName().c_str());
     }
     else
     {

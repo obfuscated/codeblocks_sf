@@ -398,7 +398,7 @@ bool CodeBlocksApp::OnInit()
         }
 
         CheckVersion();
-        Manager::Get()->GetMessageManager()->DebugLog(_("Initializing plugins..."));
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Initializing plugins..."));
 
         CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
         Manager::Get()->ProcessEvent(event);
@@ -421,11 +421,11 @@ bool CodeBlocksApp::OnInit()
     }
     catch (const char* message)
     {
-        wxSafeShowMessage(_("Exception"), _U(message));
+        wxSafeShowMessage(_T("Exception"), _U(message));
     }
     catch (...)
     {
-        wxSafeShowMessage(_("Exception"), _("Unknown exception was raised. The application will terminate immediately..."));
+        wxSafeShowMessage(_T("Exception"), _T("Unknown exception was raised. The application will terminate immediately..."));
     }
     // if we reached here, return error
     return false;
