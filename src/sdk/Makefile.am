@@ -89,6 +89,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						projectfileoptionsdlg.cpp \
 						projectlayoutloader.cpp \
 						projectloader.cpp \
+						projectloader_hooks.cpp \
 						projectmanager.cpp \
 						projectoptionsdlg.cpp \
 						projectsfilemasksdlg.cpp \
@@ -176,6 +177,7 @@ noinst_HEADERS = annoyingdialog.h \
 				projectfileoptionsdlg.h \
 				projectlayoutloader.h \
 				projectloader.h \
+				projectloader_hooks.h \
 				projectmanager.h \
 				projectoptionsdlg.h \
 				projectsfilemasksdlg.h \

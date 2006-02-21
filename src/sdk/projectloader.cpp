@@ -28,9 +28,8 @@
     #include "globals.h"
 #endif
 
-
 #include "projectloader.h"
-
+#include "projectloader_hooks.h"
 
 ProjectLoader::ProjectLoader(cbProject* project)
     : m_pProject(project),
@@ -113,6 +112,13 @@ bool ProjectLoader::Open(const wxString& filename)
     DoLibsOptions(proj);
     DoExtraCommands(proj);
     DoUnits(proj);
+
+    // as a last step, run all hooked callbacks
+    TiXmlElement* node = proj->FirstChildElement("Extensions");
+    if (node)
+    {
+        ProjectLoaderHooks::CallHooks(node, true);
+    }
 
     if (!version)
     {
@@ -1033,6 +1039,16 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         }
         for (unsigned int x = 0; x < f->buildTargets.GetCount(); ++x)
             AddElement(unitnode, "Option", "target", f->buildTargets[x]);
+    }
+
+    // as a last step, run all hooked callbacks
+    if (ProjectLoaderHooks::HasRegisteredHooks())
+    {
+        TiXmlElement* node = AddElement(prjnode, "Extensions", "", wxEmptyString);
+        if (node)
+        {
+            ProjectLoaderHooks::CallHooks(node, false);
+        }
     }
 
     return cbSaveTinyXMLDocument(&doc, filename);
