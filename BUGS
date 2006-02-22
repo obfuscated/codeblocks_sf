@@ -1,6 +1,0 @@
-Bugs that need immediate attention:
------------------------------------
-* File properties crashes when no compiler plugins loaded:
-When there are no compiler plugins installed, selecting the properties of any project files causes an assertion failure + a crash, because ProjectFile::SetObjName is called, and this line:
-"fname.SetExt(CompilerFactory::Compilers[project->GetCompilerIndex()]->GetSwitches().objectExtension);"
-relies on having compilers in the compilers array, which is actually empty.
