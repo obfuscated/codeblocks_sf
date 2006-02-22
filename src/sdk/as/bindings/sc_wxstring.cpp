@@ -278,7 +278,7 @@ static void StringFree(void *p)
 static scWxString *StringFactory(asUINT length, const char *s)
 {
 	// Return a script handle to a new wxString
-	return new scWxString(_U(s));
+	return new scWxString(cbC2U(s));
 }
 
 // This is a wrapper for the default scWxString constructor, since

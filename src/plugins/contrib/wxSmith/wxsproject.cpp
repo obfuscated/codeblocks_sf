@@ -74,7 +74,7 @@ wxsProject::IntegrationState wxsProject::BindProject(cbProject* Proj)
 
     /* Trying to read configuration data */
 
-    TiXmlDocument Doc(_C(WorkingPath.GetFullPath()));
+    TiXmlDocument Doc(cbU2C(WorkingPath.GetFullPath()));
 
     if ( !Doc.LoadFile() )
     {
@@ -171,13 +171,13 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem;
             Elem = Elem->NextSiblingElement(XML_DIALOG_STR) )
     {
-    	wxString Mode = _U(Elem->Attribute(XML_EDITMODE_STR));
-    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : _U( Elem->Attribute(XML_XRCFILE_STR));
+    	wxString Mode = cbC2U(Elem->Attribute(XML_EDITMODE_STR));
+    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : cbC2U( Elem->Attribute(XML_XRCFILE_STR));
         AddDialogResource(
-            _U( Elem->Attribute(XML_FNAME_STR) ),
-            _U( Elem->Attribute(XML_CNAME_STR) ),
-            _U( Elem->Attribute(XML_SFILE_STR) ),
-            _U( Elem->Attribute(XML_HFILE_STR) ),
+            cbC2U( Elem->Attribute(XML_FNAME_STR) ),
+            cbC2U( Elem->Attribute(XML_CNAME_STR) ),
+            cbC2U( Elem->Attribute(XML_SFILE_STR) ),
+            cbC2U( Elem->Attribute(XML_HFILE_STR) ),
             Xrc );
     }
 
@@ -187,13 +187,13 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem;
             Elem = Elem->NextSiblingElement(XML_FRAME_STR) )
     {
-    	wxString Mode = _U(Elem->Attribute(XML_EDITMODE_STR));
-    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : _U( Elem->Attribute(XML_XRCFILE_STR) );
+    	wxString Mode = cbC2U(Elem->Attribute(XML_EDITMODE_STR));
+    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : cbC2U( Elem->Attribute(XML_XRCFILE_STR) );
         AddFrameResource(
-            _U( Elem->Attribute(XML_FNAME_STR) ),
-            _U( Elem->Attribute(XML_CNAME_STR) ),
-            _U( Elem->Attribute(XML_SFILE_STR) ),
-            _U( Elem->Attribute(XML_HFILE_STR) ),
+            cbC2U( Elem->Attribute(XML_FNAME_STR) ),
+            cbC2U( Elem->Attribute(XML_CNAME_STR) ),
+            cbC2U( Elem->Attribute(XML_SFILE_STR) ),
+            cbC2U( Elem->Attribute(XML_HFILE_STR) ),
             Xrc );
     }
 
@@ -203,13 +203,13 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
             Elem;
             Elem = Elem->NextSiblingElement(XML_PANEL_STR) )
     {
-    	wxString Mode = _U(Elem->Attribute(XML_EDITMODE_STR));
-    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : _U( Elem->Attribute(XML_XRCFILE_STR) );
+    	wxString Mode = cbC2U(Elem->Attribute(XML_EDITMODE_STR));
+    	wxString Xrc = ( Mode == _T("Source") ) ? _T("") : cbC2U( Elem->Attribute(XML_XRCFILE_STR) );
         AddPanelResource(
-            _U( Elem->Attribute(XML_FNAME_STR) ),
-            _U( Elem->Attribute(XML_CNAME_STR) ),
-            _U( Elem->Attribute(XML_SFILE_STR) ),
-            _U( Elem->Attribute(XML_HFILE_STR) ),
+            cbC2U( Elem->Attribute(XML_FNAME_STR) ),
+            cbC2U( Elem->Attribute(XML_CNAME_STR) ),
+            cbC2U( Elem->Attribute(XML_SFILE_STR) ),
+            cbC2U( Elem->Attribute(XML_HFILE_STR) ),
             Xrc );
     }
 
@@ -218,9 +218,9 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
     Elem = MainNode->FirstChildElement(XML_CONFIG_STR);
     if ( Elem )
     {
-        AppFile = _U( Elem->Attribute(XML_APPFILE_STR) );
-        MainResource = _U( Elem->Attribute(XML_MAINRES_STR) );
-        wxString InitAllMode = _U( Elem->Attribute(XML_INITALL_STR));
+        AppFile = cbC2U( Elem->Attribute(XML_APPFILE_STR) );
+        MainResource = cbC2U( Elem->Attribute(XML_MAINRES_STR) );
+        wxString InitAllMode = cbC2U( Elem->Attribute(XML_INITALL_STR));
         if ( InitAllMode == _T("never") )
         {
             CallInitAll = false;
@@ -247,7 +247,7 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
         TiXmlText* Text = Elem->FirstChild()->ToText();
         if ( Text && Text->Value() )
         {
-            wxString FileName = _U(Text->Value());
+            wxString FileName = cbC2U(Text->Value());
             if ( FileName.Length() )
             {
                 LoadedResources.Add(FileName);
@@ -372,11 +372,11 @@ TiXmlDocument* wxsProject::GenerateXml()
         wxsDialogRes* Sett = *i;
         wxFileName WxsFile(Sett->GetWxsFile());
         WxsFile.MakeRelativeTo(WorkingPath.GetPath());
-        Dlg.SetAttribute(XML_FNAME_STR,_C(WxsFile.GetFullPath()));
-        Dlg.SetAttribute(XML_CNAME_STR,_C(Sett->GetClassName()));
-        Dlg.SetAttribute(XML_SFILE_STR,_C(Sett->GetSourceFile()));
-        Dlg.SetAttribute(XML_HFILE_STR,_C(Sett->GetHeaderFile()));
-        Dlg.SetAttribute(XML_XRCFILE_STR,_C(Sett->GetXrcFile()));
+        Dlg.SetAttribute(XML_FNAME_STR,cbU2C(WxsFile.GetFullPath()));
+        Dlg.SetAttribute(XML_CNAME_STR,cbU2C(Sett->GetClassName()));
+        Dlg.SetAttribute(XML_SFILE_STR,cbU2C(Sett->GetSourceFile()));
+        Dlg.SetAttribute(XML_HFILE_STR,cbU2C(Sett->GetHeaderFile()));
+        Dlg.SetAttribute(XML_XRCFILE_STR,cbU2C(Sett->GetXrcFile()));
         Dlg.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsREMSource?"Source":"Xrc");
         Elem->InsertEndChild(Dlg);
     }
@@ -387,11 +387,11 @@ TiXmlDocument* wxsProject::GenerateXml()
         wxsFrameRes* Sett = *i;
         wxFileName WxsFile(Sett->GetWxsFile());
         WxsFile.MakeRelativeTo(WorkingPath.GetPath());
-        Frm.SetAttribute(XML_FNAME_STR,_C(WxsFile.GetFullPath()));
-        Frm.SetAttribute(XML_CNAME_STR,_C(Sett->GetClassName()));
-        Frm.SetAttribute(XML_SFILE_STR,_C(Sett->GetSourceFile()));
-        Frm.SetAttribute(XML_HFILE_STR,_C(Sett->GetHeaderFile()));
-        Frm.SetAttribute(XML_XRCFILE_STR,_C(Sett->GetWxsFile()));
+        Frm.SetAttribute(XML_FNAME_STR,cbU2C(WxsFile.GetFullPath()));
+        Frm.SetAttribute(XML_CNAME_STR,cbU2C(Sett->GetClassName()));
+        Frm.SetAttribute(XML_SFILE_STR,cbU2C(Sett->GetSourceFile()));
+        Frm.SetAttribute(XML_HFILE_STR,cbU2C(Sett->GetHeaderFile()));
+        Frm.SetAttribute(XML_XRCFILE_STR,cbU2C(Sett->GetWxsFile()));
         Frm.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsREMSource?"Source":"Xrc");
         Elem->InsertEndChild(Frm);
     }
@@ -402,11 +402,11 @@ TiXmlDocument* wxsProject::GenerateXml()
         wxsPanelRes* Sett = *i;
         wxFileName WxsFile(Sett->GetWxsFile());
         WxsFile.MakeRelativeTo(WorkingPath.GetPath());
-        Pan.SetAttribute(XML_FNAME_STR,_C(WxsFile.GetFullPath()));
-        Pan.SetAttribute(XML_CNAME_STR,_C(Sett->GetClassName()));
-        Pan.SetAttribute(XML_SFILE_STR,_C(Sett->GetSourceFile()));
-        Pan.SetAttribute(XML_HFILE_STR,_C(Sett->GetHeaderFile()));
-        Pan.SetAttribute(XML_XRCFILE_STR,_C(Sett->GetWxsFile()));
+        Pan.SetAttribute(XML_FNAME_STR,cbU2C(WxsFile.GetFullPath()));
+        Pan.SetAttribute(XML_CNAME_STR,cbU2C(Sett->GetClassName()));
+        Pan.SetAttribute(XML_SFILE_STR,cbU2C(Sett->GetSourceFile()));
+        Pan.SetAttribute(XML_HFILE_STR,cbU2C(Sett->GetHeaderFile()));
+        Pan.SetAttribute(XML_XRCFILE_STR,cbU2C(Sett->GetWxsFile()));
         Pan.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsREMSource?"Source":"Xrc");
         Elem->InsertEndChild(Pan);
     }
@@ -414,8 +414,8 @@ TiXmlDocument* wxsProject::GenerateXml()
     TiXmlElement* Config = Elem->InsertEndChild(TiXmlElement(XML_CONFIG_STR))->ToElement();
     if ( Config )
     {
-        Config->SetAttribute(XML_APPFILE_STR,_C(AppFile));
-        Config->SetAttribute(XML_MAINRES_STR,_C(MainResource));
+        Config->SetAttribute(XML_APPFILE_STR,cbU2C(AppFile));
+        Config->SetAttribute(XML_MAINRES_STR,cbU2C(MainResource));
 
         if ( CallInitAll && CallInitAllNecessary )
         {
@@ -434,7 +434,7 @@ TiXmlDocument* wxsProject::GenerateXml()
     for ( size_t i=0; i< LoadedResources.GetCount(); ++i )
     {
         TiXmlNode* Node = Elem->InsertEndChild(TiXmlElement(XML_AUTOLOAD_STR));
-        if ( Node ) Node->InsertEndChild(TiXmlText(_C(LoadedResources[i])));
+        if ( Node ) Node->InsertEndChild(TiXmlText(cbU2C(LoadedResources[i])));
     }
 
     return Doc;
@@ -454,7 +454,7 @@ void wxsProject::SaveProject()
 
     if ( Doc )
     {
-        Doc->SaveFile(_C(WorkingPath.GetFullPath()));
+        Doc->SaveFile(cbU2C(WorkingPath.GetFullPath()));
         delete Doc;
     }
 

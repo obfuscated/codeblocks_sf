@@ -93,8 +93,8 @@ void CfgMgrBldr::SwitchTo(const wxString& absFileName)
     {
         cfg = absFileName;
         doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
-        doc->InsertEndChild(TiXmlElement(_C(CfgMgrConsts::rootTag)));
-        doc->FirstChildElement(_C(CfgMgrConsts::rootTag))->SetAttribute("version", CfgMgrConsts::version);
+        doc->InsertEndChild(TiXmlElement(cbU2C(CfgMgrConsts::rootTag)));
+        doc->FirstChildElement(cbU2C(CfgMgrConsts::rootTag))->SetAttribute("version", CfgMgrConsts::version);
     }
     else
     {
@@ -107,15 +107,15 @@ void CfgMgrBldr::SwitchTo(const wxString& absFileName)
     }
 
     if(doc->ErrorId())
-        cbMessageBox(wxString(_T("TinyXML error:\n")) << _U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
+        cbMessageBox(wxString(_T("TinyXML error:\n")) << cbC2U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
 
-    TiXmlElement* docroot = doc->FirstChildElement(_C(CfgMgrConsts::rootTag));
+    TiXmlElement* docroot = doc->FirstChildElement(cbU2C(CfgMgrConsts::rootTag));
     if(!docroot)
     {
         wxString s;
         s.Printf(_("Fatal error parsing configuration. The file %s is not a valid Code::Blocks config file."),
 #if wxUSE_UNICODE
-                 _U(doc->Value()).c_str());
+                 cbC2U(doc->Value()).c_str());
 #else
                  doc->Value());
 #endif
@@ -123,7 +123,7 @@ void CfgMgrBldr::SwitchTo(const wxString& absFileName)
     }
 
     if(doc->ErrorId())
-        cbMessageBox(wxString(_T("TinyXML error:\n")) << _U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
+        cbMessageBox(wxString(_T("TinyXML error:\n")) << cbC2U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
 
     const char *vers = docroot->Attribute("version");
     if(!vers || atoi(vers) != 1)
@@ -158,7 +158,7 @@ void CfgMgrBldr::SwitchToR(const wxString& absFileName)
 
             doc = new TiXmlDocument();
 
-            if(doc->Parse(_C(str)))
+            if(doc->Parse(cbU2C(str)))
             {
                 doc->ClearError();
                 delete is;
@@ -167,7 +167,7 @@ void CfgMgrBldr::SwitchToR(const wxString& absFileName)
             if(Manager::Get()->GetMessageManager())
             {
                 Manager::Get()->GetMessageManager()->DebugLog(_T("##### Error loading or parsing remote config file"));
-                Manager::Get()->GetMessageManager()->DebugLog(_U(doc->ErrorDesc()));
+                Manager::Get()->GetMessageManager()->DebugLog(cbC2U(doc->ErrorDesc()));
                 doc->ClearError();
             }
         }
@@ -234,28 +234,28 @@ ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
         if(!volatile_doc)
         {
             volatile_doc = new TiXmlDocument();
-            volatile_doc->InsertEndChild(TiXmlElement(_C(CfgMgrConsts::rootTag)));
+            volatile_doc->InsertEndChild(TiXmlElement(cbU2C(CfgMgrConsts::rootTag)));
             volatile_doc->SetCondenseWhiteSpace(false);
         }
-        docroot = volatile_doc->FirstChildElement(_C(CfgMgrConsts::rootTag));
+        docroot = volatile_doc->FirstChildElement(cbU2C(CfgMgrConsts::rootTag));
     }
     else
     {
-        docroot = doc->FirstChildElement(_C(CfgMgrConsts::rootTag));
+        docroot = doc->FirstChildElement(cbU2C(CfgMgrConsts::rootTag));
         if(!docroot)
         {
             wxString err(_("Fatal error parsing supplied configuration file.\nParser error message:\n"));
-            err << _U(doc->ErrorDesc());
+            err << cbC2U(doc->ErrorDesc());
             cbThrow(err);
         }
     }
 
-    TiXmlElement* root = docroot->FirstChildElement(_C(name_space));
+    TiXmlElement* root = docroot->FirstChildElement(cbU2C(name_space));
 
     if(!root) // namespace does not exist
     {
-        docroot->InsertEndChild(TiXmlElement(_C(name_space)));
-        root = docroot->FirstChildElement(_C(name_space));
+        docroot->InsertEndChild(TiXmlElement(cbU2C(name_space)));
+        root = docroot->FirstChildElement(cbU2C(name_space));
     }
 
     if(!root) // now what!
@@ -435,11 +435,11 @@ wxString ConfigManager::GetPath() const
     wxString ret;
     ret.Alloc(64);
 
-    ret = _U(e->Value());
+    ret = cbC2U(e->Value());
     while((e = e->Parent()->ToElement()) && e != root)
     {
         ret.Prepend(_T("/"));
-        ret.Prepend(_U(e->Value()));
+        ret.Prepend(cbC2U(e->Value()));
     }
     ret.Prepend(_T("/"));
     return ret;
@@ -456,7 +456,7 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
 {
     if(doc->ErrorId())
     {
-        cbMessageBox(wxString(_T("TinyXML error:\n")) << _U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
+        cbMessageBox(wxString(_T("TinyXML error:\n")) << cbC2U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
         doc->ClearError();
     }
 
@@ -478,8 +478,8 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
             s.Printf(_("The Configuration key %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for variable naming.\nVariables names are required to start with a letter."),
                      path.c_str(),
 #if wxUSE_UNICODE
-                     _U(pathNode->Value()).c_str(),
-                     _U(root->Value()).c_str());
+                     cbC2U(pathNode->Value()).c_str(),
+                     cbC2U(root->Value()).c_str());
 #else
 
                      pathNode->Value(),
@@ -511,8 +511,8 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
             wxString s;
             s.Printf(_("The subpath %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for path naming.\nPaths and subpaths are required to start with a letter."), sub.c_str(),
 #if wxUSE_UNICODE
-                     _U(e->Value()).c_str(),
-                     _U(root->Value()).c_str());
+                     cbC2U(e->Value()).c_str(),
+                     cbC2U(root->Value()).c_str());
 #else
 
                      e->Value(),
@@ -522,15 +522,15 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
         }
         else
         {
-            TiXmlElement* n = e->FirstChildElement(_C(sub));
+            TiXmlElement* n = e->FirstChildElement(cbU2C(sub));
             if(n)
                 e = n;
             else
-                e = (TiXmlElement*) e->InsertEndChild(TiXmlElement(_C(sub)));
+                e = (TiXmlElement*) e->InsertEndChild(TiXmlElement(cbU2C(sub)));
         }
         if(doc->Error())
         {
-            cbMessageBox(wxString(_T("TinyXML error:\n")) << _U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
+            cbMessageBox(wxString(_T("TinyXML error:\n")) << cbC2U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
             doc->ClearError();
         }
     }
@@ -543,8 +543,8 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
         s.Printf(_("The Configuration key %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for variable naming.\nVariables names are required to start with a letter."),
                  path.c_str(),
 #if wxUSE_UNICODE
-                 _U(pathNode->Value()).c_str(),
-                 _U(root->Value()).c_str());
+                 cbC2U(pathNode->Value()).c_str(),
+                 cbC2U(root->Value()).c_str());
 #else
 
                  pathNode->Value(),
@@ -569,7 +569,7 @@ void ConfigManager::Clear()
 void ConfigManager::Delete()
 {
     CfgMgrBldr * bld = CfgMgrBldr::Get();
-    wxString ns(_U(root->Value()));
+    wxString ns(cbC2U(root->Value()));
 
     root->Clear();
     doc->RootElement()->RemoveChild(root);
@@ -585,7 +585,7 @@ void ConfigManager::Delete()
 void ConfigManager::DeleteAll()
 {
     CfgMgrBldr * bld = CfgMgrBldr::Get();
-    wxString ns(_U(root->Value()));
+    wxString ns(cbC2U(root->Value()));
 
     if(!ns.IsSameAs(_T("app")))
         cbThrow(_T("Illegal attempt to invoke DeleteAll()."));
@@ -607,10 +607,10 @@ void ConfigManager::DeleteAll()
 TiXmlElement* ConfigManager::GetUniqElement(TiXmlElement* p, const wxString& q)
 {
     TiXmlElement* r;
-    if((r = p->FirstChildElement(_C(q))))
+    if((r = p->FirstChildElement(cbU2C(q))))
         return r;
 
-    return (TiXmlElement*)(p->InsertEndChild(TiXmlElement(_C(q))));
+    return (TiXmlElement*)(p->InsertEndChild(TiXmlElement(cbU2C(q))));
 }
 
 void ConfigManager::SetNodeText(TiXmlElement* n, const TiXmlText& t)
@@ -661,7 +661,7 @@ void ConfigManager::Write(const wxString& key, const char* str)
 {
     /* NOTE (mandrav#1#): Do *not* remove 'false' from the call because in ANSI builds,
     it matches this very function and overflows the stack... */
-    Write(key, _U(str), false);
+    Write(key, cbC2U(str), false);
 };
 
 wxString ConfigManager::Read(const wxString& name, const wxString& defaultVal)
@@ -696,11 +696,11 @@ bool ConfigManager::Read(const wxString& name, wxString* str)
     TiXmlElement* e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
-    TiXmlText *t = (TiXmlText *) parentHandle.FirstChild(_C(key)).FirstChild("str").FirstChild().Node();
+    TiXmlText *t = (TiXmlText *) parentHandle.FirstChild(cbU2C(key)).FirstChild("str").FirstChild().Node();
 
     if(t)
     {
-        str->assign(_U(t->Value()));
+        str->assign(cbC2U(t->Value()));
         return true;
     }
     return false;
@@ -735,7 +735,7 @@ bool ConfigManager::Read(const wxString& name, wxColour* ret)
     TiXmlElement* e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
-    TiXmlElement *c = (TiXmlElement *) parentHandle.FirstChild(_C(key)).FirstChild("colour").Element();
+    TiXmlElement *c = (TiXmlElement *) parentHandle.FirstChild(cbU2C(key)).FirstChild("colour").Element();
 
     if(c)
     {
@@ -774,7 +774,7 @@ bool ConfigManager::Read(const wxString& name,  int* value)
     TiXmlElement* e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
-    TiXmlElement *leaf = parentHandle.FirstChild(_C(key)).Element();
+    TiXmlElement *leaf = parentHandle.FirstChild(cbU2C(key)).Element();
 
     if(leaf)
         return leaf->QueryIntAttribute("int", value) == TIXML_SUCCESS;
@@ -807,7 +807,7 @@ bool ConfigManager::Read(const wxString& name,  bool* value)
     TiXmlElement* e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
-    TiXmlElement *leaf = parentHandle.FirstChild(_C(key)).Element();
+    TiXmlElement *leaf = parentHandle.FirstChild(cbU2C(key)).Element();
 
     if(leaf && leaf->Attribute("bool"))
     {
@@ -843,7 +843,7 @@ bool ConfigManager::Read(const wxString& name,  double* value)
     TiXmlElement* e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
-    TiXmlElement *leaf = parentHandle.FirstChild(_C(key)).Element();
+    TiXmlElement *leaf = parentHandle.FirstChild(cbU2C(key)).Element();
 
     if(leaf)
         return leaf->QueryDoubleAttribute("double", value) == TIXML_SUCCESS;
@@ -873,7 +873,7 @@ bool ConfigManager::Exists(const wxString& name)
     TiXmlElement* e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
-    TiXmlElement *leaf = parentHandle.FirstChild(_C(key)).Element();
+    TiXmlElement *leaf = parentHandle.FirstChild(cbU2C(key)).Element();
 
     return leaf;
 }
@@ -906,13 +906,13 @@ void ConfigManager::Read(const wxString& name, wxArrayString *arrayString)
     TiXmlElement* e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
-    TiXmlNode *asNode = parentHandle.FirstChild(_C(key)).FirstChild("astr").Node();
+    TiXmlNode *asNode = parentHandle.FirstChild(cbU2C(key)).FirstChild("astr").Node();
 
     TiXmlNode *curr = 0;
     if(asNode)
     {
         while((curr = asNode->IterateChildren("s", curr)->ToElement()))
-            arrayString->Add(_U(curr->FirstChild()->ToText()->Value()));
+            arrayString->Add(cbC2U(curr->FirstChild()->ToText()->Value()));
     }
 }
 
@@ -949,7 +949,7 @@ wxString ConfigManager::ReadBinary(const wxString& name)
     unsigned int crc;
 
     TiXmlHandle parentHandle(e);
-    TiXmlElement* bin = parentHandle.FirstChild(_C(key)).FirstChild("bin").Element();
+    TiXmlElement* bin = parentHandle.FirstChild(cbU2C(key)).FirstChild("bin").Element();
 
     if(!bin)
         return wxEmptyString;
@@ -960,7 +960,7 @@ wxString ConfigManager::ReadBinary(const wxString& name)
     TiXmlText *t = bin->FirstChild()->ToText();
     if (t)
     {
-        str.assign(_U(t->Value()));
+        str.assign(cbC2U(t->Value()));
         str = wxBase64::Decode(str);
         if(crc ==  wxCrc32::FromString(str))
             return str;
@@ -980,9 +980,9 @@ wxArrayString ConfigManager::EnumerateSubPaths(const wxString& path)
     {
         while((curr = e->IterateChildren(curr)->ToElement()))
         {
-            wxChar c = *(_U(curr->Value()));
+            wxChar c = *(cbC2U(curr->Value()));
             if(c < _T('A') || c > _T('Z')) // first char must be a letter, uppercase letters are key names
-                ret.Add(_U(curr->Value()));
+                ret.Add(cbC2U(curr->Value()));
         }
     }
     return ret;
@@ -992,7 +992,7 @@ void ConfigManager::DeleteSubPath(const wxString& thePath)
 {
     if(doc->ErrorId())
     {
-        cbMessageBox(wxString(_T("### TinyXML error:\n")) << _U(doc->ErrorDesc()));
+        cbMessageBox(wxString(_T("### TinyXML error:\n")) << cbC2U(doc->ErrorDesc()));
         doc->ClearError();
     }
 
@@ -1032,7 +1032,7 @@ void ConfigManager::DeleteSubPath(const wxString& thePath)
                 parent = parent->Parent()->ToElement();
             else
             {
-                TiXmlElement* n = parent->FirstChildElement(_C(sub));
+                TiXmlElement* n = parent->FirstChildElement(cbU2C(sub));
                 if(n)
                     parent = n;
                 else
@@ -1044,7 +1044,7 @@ void ConfigManager::DeleteSubPath(const wxString& thePath)
 
     if(!path.IsEmpty())
     {
-        if(TiXmlNode *toRemove = parent->FirstChild(_C(path)))
+        if(TiXmlNode *toRemove = parent->FirstChild(cbU2C(path)))
         {
             toRemove->Clear();
             parent->RemoveChild(toRemove);
@@ -1064,9 +1064,9 @@ wxArrayString ConfigManager::EnumerateKeys(const wxString& path)
     {
         while((curr = e->IterateChildren(curr)->ToElement()))
         {
-            wxChar c = *(_U(curr->Value()));
+            wxChar c = *(cbC2U(curr->Value()));
             if(c >= _T('A') && c <= _T('Z')) // opposite of the above
-                ret.Add(_U(curr->Value()));
+                ret.Add(cbC2U(curr->Value()));
         }
     }
     return ret;
@@ -1080,7 +1080,7 @@ void ConfigManager::Write(const wxString& name, const ISerializable& object)
     TiXmlElement *obj = GetUniqElement(e, key);
 
     TiXmlElement *s = GetUniqElement(obj, _T("obj"));
-    SetNodeText(s, TiXmlText(_C(wxBase64::Encode(object.SerializeOut()))));
+    SetNodeText(s, TiXmlText(cbU2C(wxBase64::Encode(object.SerializeOut()))));
 }
 
 bool ConfigManager::Read(const wxString& name, ISerializable* object)
@@ -1090,11 +1090,11 @@ bool ConfigManager::Read(const wxString& name, ISerializable* object)
     TiXmlElement* e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
-    TiXmlText *t = (TiXmlText *) parentHandle.FirstChild(_C(key)).FirstChild("obj").FirstChild().Node();
+    TiXmlText *t = (TiXmlText *) parentHandle.FirstChild(cbU2C(key)).FirstChild("obj").FirstChild().Node();
 
     if(t)
     {
-        str.assign(_U(t->Value()));
+        str.assign(cbC2U(t->Value()));
         object->SerializeIn(wxBase64::Decode(str));
     }
     return wxEmptyString;
@@ -1114,8 +1114,8 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::St
 
     for(ConfigManagerContainer::StringToStringMap::const_iterator it = map.begin(); it != map.end(); ++it)
     {
-        TiXmlElement s(_C(it->first));
-        s.InsertEndChild(TiXmlText(_C(it->second)));
+        TiXmlElement s(cbU2C(it->first));
+        s.InsertEndChild(TiXmlText(cbU2C(it->second)));
         mNode->InsertEndChild(s);
     }
 }
@@ -1126,13 +1126,13 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::StringToS
     TiXmlElement* e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
-    TiXmlNode *mNode = parentHandle.FirstChild(_C(key)).FirstChild("ssmap").Node();
+    TiXmlNode *mNode = parentHandle.FirstChild(cbU2C(key)).FirstChild("ssmap").Node();
 
     TiXmlNode *curr = 0;
     if(mNode)
     {
         while((curr = mNode->IterateChildren(curr)->ToElement()))
-            (*map)[_U(curr->Value())] = _U(curr->FirstChild()->ToText()->Value());
+            (*map)[cbC2U(curr->Value())] = cbC2U(curr->FirstChild()->ToText()->Value());
     }
 }
 
@@ -1159,8 +1159,8 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::In
     for(ConfigManagerContainer::IntToStringMap::const_iterator it = map.begin(); it != map.end(); ++it)
     {
         tmp.Printf(_T("x%d"), (int) it->first);
-        TiXmlElement s(_C(tmp));
-        s.InsertEndChild(TiXmlText(_C(it->second)));
+        TiXmlElement s(cbU2C(tmp));
+        s.InsertEndChild(TiXmlText(cbU2C(it->second)));
         mNode->InsertEndChild(s);
     }
 }
@@ -1171,7 +1171,7 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::IntToStri
     TiXmlElement* e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
-    TiXmlNode *mNode = parentHandle.FirstChild(_C(key)).FirstChild("ismap").Node();
+    TiXmlNode *mNode = parentHandle.FirstChild(cbU2C(key)).FirstChild("ismap").Node();
 
     TiXmlNode *curr = 0;
     long tmp;
@@ -1179,8 +1179,8 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::IntToStri
     {
         while((curr = mNode->IterateChildren(curr)->ToElement()))
         {
-            _U(curr->Value()).Mid(1).ToLong(&tmp);
-            (*map)[tmp] = _U(curr->FirstChild()->ToText()->Value());
+            cbC2U(curr->Value()).Mid(1).ToLong(&tmp);
+            (*map)[tmp] = cbC2U(curr->FirstChild()->ToText()->Value());
         }
     }
 }
@@ -1212,7 +1212,7 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::St
     for(ConfigManagerContainer::StringSet::const_iterator it = set.begin(); it != set.end(); ++it)
     {
         TiXmlElement s("s");
-        s.InsertEndChild(TiXmlText(_C(*it)));
+        s.InsertEndChild(TiXmlText(cbU2C(*it)));
         mNode->InsertEndChild(s);
     }
 }
@@ -1224,13 +1224,13 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::StringSet
     TiXmlElement* e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
-    TiXmlNode *mNode = parentHandle.FirstChild(_C(key)).FirstChild("sset").Node();
+    TiXmlNode *mNode = parentHandle.FirstChild(cbU2C(key)).FirstChild("sset").Node();
 
     TiXmlNode *curr = 0;
     if(mNode)
     {
         while((curr = mNode->IterateChildren(curr)->ToElement()))
-            set->insert(_U(curr->FirstChild()->ToText()->Value()));
+            set->insert(cbC2U(curr->FirstChild()->ToText()->Value()));
     }
 }
 
@@ -1256,8 +1256,8 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::Se
 
     for(ConfigManagerContainer::SerializableObjectMap::const_iterator it = map->begin(); it != map->end(); ++it)
     {
-        TiXmlElement s(_C(it->first));
-        s.InsertEndChild(TiXmlText(_C(wxBase64::Encode(it->second->SerializeOut()))));
+        TiXmlElement s(cbU2C(it->first));
+        s.InsertEndChild(TiXmlText(cbU2C(wxBase64::Encode(it->second->SerializeOut()))));
         mNode->InsertEndChild(s);
     }
 }

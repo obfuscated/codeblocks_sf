@@ -125,7 +125,7 @@ int AStylePlugin::Execute()
 
   while (formatter.hasMoreLines())
   {
-    formattedText << _U(formatter.nextLine().c_str());
+    formattedText << cbC2U(formatter.nextLine().c_str());
 
     if (formatter.hasMoreLines())
     {

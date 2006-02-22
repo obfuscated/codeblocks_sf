@@ -6,7 +6,7 @@
 #include <wx/tipwin.h>
 #include <globals.h>
 
-#define NOT_IMPLEMENTED() DebugLog(wxString(_U(__PRETTY_FUNCTION__)) + _T(": Not implemented in driver"))
+#define NOT_IMPLEMENTED() DebugLog(wxString(cbC2U(__PRETTY_FUNCTION__)) + _T(": Not implemented in driver"))
 
 class DebuggerGDB;
 class DebuggerTree;

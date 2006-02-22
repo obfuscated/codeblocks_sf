@@ -98,7 +98,7 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
     	{
     		memset(tmp, 0, sizeof(tmp));
     		is->Read(tmp, sizeof(tmp) - 1);
-    		buf << _U((const char*)tmp);
+    		buf << cbC2U((const char*)tmp);
     	}
         delete f;
     }

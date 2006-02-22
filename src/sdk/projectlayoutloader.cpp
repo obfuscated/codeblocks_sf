@@ -93,7 +93,7 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
     while (elem)
     {
         //pMsg->DebugLog(elem->Value());
-        fname = _U(elem->Attribute("name"));
+        fname = cbC2U(elem->Attribute("name"));
         if (fname.IsEmpty())
         {
             //pMsg->DebugLog(_T("'File' node exists, but no filename?!?"));
@@ -165,7 +165,7 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
 		if (f->editorOpen || f->editorPos || f->editorTopLine || f->editorTabPos)
 		{
             TiXmlElement* node = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("File")));
-            node->SetAttribute("name", _C(f->relativeFilename));
+            node->SetAttribute("name", cbU2C(f->relativeFilename));
             node->SetAttribute("open", f->editorOpen);
             node->SetAttribute("top", (f == active));
             node->SetAttribute("tabpos", f->editorTabPos);
@@ -181,7 +181,7 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
 		if (!en[i].IsEmpty())
 		{
             TiXmlElement* node = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("Expand")));
-            node->SetAttribute("folder", _C(en[i]));
+            node->SetAttribute("folder", cbU2C(en[i]));
 		}
 	}
     return cbSaveTinyXMLDocument(&doc, filename);

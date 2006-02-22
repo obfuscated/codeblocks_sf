@@ -35,7 +35,7 @@ wxString wxsCheckListBox::GetProducingCode(const wxsCodeParams& Params)
         Params.Pos.c_str(),
         Params.Size.c_str(),
         Params.Style.c_str());
-        
+
     for ( size_t i = 0; i < arrayChoices.Count(); ++i )
     {
         Code << wxString::Format(_T("%s->Append(%s);\n"),
@@ -59,12 +59,12 @@ wxWindow* wxsCheckListBox::MyCreatePreview(wxWindow* Parent)
 {
     wxCheckListBox* Wnd = new wxCheckListBox(
         Parent,-1L,GetPosition(),GetSize(),0,NULL,GetStyle());
-        
+
     for ( size_t i = 0; i < arrayChoices.Count(); ++i )
     {
         Wnd->Append(arrayChoices[i]);
     }
-        
+
     for ( size_t i = 0; i < arrayChecks.Count(); ++i )
     {
         if ( arrayChecks[i] )
@@ -79,27 +79,27 @@ bool wxsCheckListBox::MyXmlLoad()
 {
     TiXmlElement* Content = XmlElem()->FirstChildElement("content");
     if ( !Content ) return true;
-    
+
     for ( TiXmlElement* Item = Content->FirstChildElement("item");
           Item;
           Item = Item->NextSiblingElement("item") )
     {
-        bool Checked = _U(Item->Attribute("checked")) == _T("1");
+        bool Checked = cbC2U(Item->Attribute("checked")) == _T("1");
         wxString Text;
         for ( TiXmlNode* FindText = Item->FirstChild(); FindText; FindText = FindText->NextSibling() )
         {
             TiXmlText* TextNode = FindText->ToText();
             if ( TextNode )
             {
-                Text = _U(TextNode->Value());
+                Text = cbC2U(TextNode->Value());
                 break;
             }
         }
-        
+
         arrayChoices.Add(Text);
         arrayChecks.Add(Checked);
     }
-    
+
     return true;
 }
 
@@ -107,15 +107,15 @@ bool wxsCheckListBox::MyXmlSave()
 {
     TiXmlElement* Elem = XmlElem()->InsertEndChild(TiXmlElement("content"))->ToElement();
     if ( !Elem ) return false;
-    
+
     for ( size_t i = 0; i<arrayChoices.Count(); ++i )
     {
         TiXmlElement* Item = Elem->InsertEndChild(TiXmlElement("item"))->ToElement();
         if ( !Item ) return false;
         Item->SetAttribute("checked",arrayChecks[i]?"1":"0");
-        Item->InsertEndChild(TiXmlText(_C(arrayChoices[i])));
+        Item->InsertEndChild(TiXmlText(cbU2C(arrayChoices[i])));
     }
-    
+
     return true;
 }
 

@@ -48,7 +48,7 @@ void GDB_driver::InitializeScripting()
     const wxString script = _T("gdb_types.script");
 
     // discard any old instance
-    int r = engine->Discard(_C(module));
+    int r = engine->Discard(cbU2C(module));
 
     if (r != 0)
     {

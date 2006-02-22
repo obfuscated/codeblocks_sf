@@ -31,7 +31,7 @@ class asCOutputStream : public asIOutputStream
 
         void Write(const char *text)
         {
-            s_Errors << _U(text);
+            s_Errors << cbC2U(text);
         }
 };
 
@@ -115,11 +115,11 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
 //    }
 
     wxString fname = filename;
-    FILE* fp = fopen(_C(fname), "r");
+    FILE* fp = fopen(cbU2C(fname), "r");
     if (!fp)
     {
         fname = ConfigManager::GetScriptsFolder() + _T("/") + filename;
-        fp = fopen(_C(fname), "r");
+        fp = fopen(cbU2C(fname), "r");
         if(!fp)
         {
             Manager::Get()->GetMessageManager()->DebugLog(_T("Can't open script %s"), filename.c_str());
@@ -140,8 +140,8 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
 
     // build script
     int r;
-	r = m_pEngine->AddScriptSection(_C(module),
-                                    _C(_T('[') + module + _T("] ") + wxFileName(filename).GetFullName()),
+	r = m_pEngine->AddScriptSection(cbU2C(module),
+                                    cbU2C(_T('[') + module + _T("] ") + wxFileName(filename).GetFullName()),
                                     script,
                                     strlen(script),
                                     0,
@@ -153,7 +153,7 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
         return -1;
 	}
 
-    r = m_pEngine->Build(_C(module));
+    r = m_pEngine->Build(cbU2C(module));
     if (r < 0)
     {
         cbMessageBox(wxString::Format(_("Error returned from scripting Build().\nError code: %d (%s)\n\nDetails:\n%s"), r, GetErrorDescription(r).c_str(), s_Errors.c_str()), _("Scripting error"), wxICON_ERROR);
@@ -222,10 +222,10 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
 
 int ScriptingManager::FindFunctionByDeclaration(const wxString& decl, const wxString& module)
 {
-	return m_pEngine->GetFunctionIDByDecl(_C(module), _C(decl));
+	return m_pEngine->GetFunctionIDByDecl(cbU2C(module), cbU2C(decl));
 }
 
 int ScriptingManager::FindFunctionByName(const wxString& name, const wxString& module)
 {
-	return m_pEngine->GetFunctionIDByName(_C(module), _C(name));
+	return m_pEngine->GetFunctionIDByName(cbU2C(module), cbU2C(name));
 }

@@ -71,13 +71,13 @@ void ProjectTemplateLoader::DoTemplate(TiXmlElement* parentNode)
     while (node)
     {
         if (node->Attribute("name"))
-            m_Name = _U(node->Attribute("name"));
+            m_Name = cbC2U(node->Attribute("name"));
         if (node->Attribute("title"))
-            m_Title = _U(node->Attribute("title"));
+            m_Title = cbC2U(node->Attribute("title"));
         if (node->Attribute("category"))
-            m_Category = _U(node->Attribute("category"));
+            m_Category = cbC2U(node->Attribute("category"));
         if (node->Attribute("bitmap"))
-            m_Bitmap = _U(node->Attribute("bitmap"));
+            m_Bitmap = cbC2U(node->Attribute("bitmap"));
 
         DoTemplateNotice(node);
         DoFileSet(node);
@@ -92,11 +92,11 @@ void ProjectTemplateLoader::DoTemplateNotice(TiXmlElement* parentNode)
     TiXmlElement* node = parentNode->FirstChildElement("Notice");
     if (!node)
         return;
-    m_Notice = _U(node->Attribute("value"));
+    m_Notice = cbC2U(node->Attribute("value"));
     while (m_Notice.Replace(_T("  "), _T(" ")))
         ;
     m_Notice.Replace(_T("\t"), _T(""));
-    m_NoticeMsgType = _U(node->Attribute("value")) == _T("0") ? wxICON_INFORMATION : wxICON_WARNING;
+    m_NoticeMsgType = cbC2U(node->Attribute("value")) == _T("0") ? wxICON_INFORMATION : wxICON_WARNING;
 }
 
 void ProjectTemplateLoader::DoFileSet(TiXmlElement* parentNode)
@@ -106,9 +106,9 @@ void ProjectTemplateLoader::DoFileSet(TiXmlElement* parentNode)
     {
         FileSet fs;
         if (node->Attribute("name"))
-            fs.name = _U(node->Attribute("name"));
+            fs.name = cbC2U(node->Attribute("name"));
         if (node->Attribute("title"))
-            fs.title = _U(node->Attribute("title"));
+            fs.title = cbC2U(node->Attribute("title"));
 
         if (!fs.name.IsEmpty() && !fs.title.IsEmpty())
         {
@@ -127,11 +127,11 @@ void ProjectTemplateLoader::DoFileSetFile(TiXmlElement* parentNode, FileSet& fs)
     {
         FileSetFile fsf;
         if (node->Attribute("source"))
-            fsf.source = _U(node->Attribute("source"));
+            fsf.source = cbC2U(node->Attribute("source"));
         if (node->Attribute("destination"))
-            fsf.destination = _U(node->Attribute("destination"));
+            fsf.destination = cbC2U(node->Attribute("destination"));
         if (node->Attribute("targets"))
-            fsf.targets = _U(node->Attribute("targets"));
+            fsf.targets = cbC2U(node->Attribute("targets"));
 
         if (!fsf.source.IsEmpty() && !fsf.destination.IsEmpty())
             fs.files.Add(fsf);
@@ -149,14 +149,14 @@ void ProjectTemplateLoader::DoOption(TiXmlElement* parentNode)
         to.useDefaultCompiler = true;
 
         if (node->Attribute("name"))
-            to.name = _U(node->Attribute("name"));
+            to.name = cbC2U(node->Attribute("name"));
 
         if (!to.name.IsEmpty())
         {
             TiXmlElement* tmpnode = node->FirstChildElement("Notice");
             if (tmpnode)
             {
-                to.notice << _T("\n") << _U(tmpnode->Attribute("value"));
+                to.notice << _T("\n") << cbC2U(tmpnode->Attribute("value"));
                 while (to.notice.Replace(_T("  "), _T(" ")))
                     ;
                 to.notice.Replace(_T("\t"), _T(""));
@@ -179,7 +179,7 @@ void ProjectTemplateLoader::DoOptionProject(TiXmlElement* parentNode, TemplateOp
     if (node)
     {
         if (node->Attribute("file"))
-            to.file = _U(node->Attribute("file"));
+            to.file = cbC2U(node->Attribute("file"));
         if (node->Attribute("useDefaultCompiler"))
             to.useDefaultCompiler = strncmp(node->Attribute("useDefaultCompiler"), "0", 1) != 0;
     }
@@ -191,7 +191,7 @@ void ProjectTemplateLoader::DoOptionCompiler(TiXmlElement* parentNode, TemplateO
     while (node)
     {
         if (node->Attribute("flag"))
-            to.extraCFlags.Add(_U(node->Attribute("flag")));
+            to.extraCFlags.Add(cbC2U(node->Attribute("flag")));
 
         node = node->NextSiblingElement("Compiler");
     }
@@ -203,7 +203,7 @@ void ProjectTemplateLoader::DoOptionLinker(TiXmlElement* parentNode, TemplateOpt
     while (node)
     {
         if (node->Attribute("flag"))
-            to.extraLDFlags.Add(_U(node->Attribute("flag")));
+            to.extraLDFlags.Add(cbC2U(node->Attribute("flag")));
 
         node = node->NextSiblingElement("Linker");
     }

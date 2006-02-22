@@ -210,19 +210,19 @@ void ProjectLoader::DoMakeCommands(TiXmlElement* parentNode, CompileTargetBase* 
 
     node = parentNode->FirstChildElement("Build");
     if (node && node->Attribute("command"))
-        target->SetMakeCommandFor(mcBuild, _U(node->Attribute("command")));
+        target->SetMakeCommandFor(mcBuild, cbC2U(node->Attribute("command")));
 
     node = parentNode->FirstChildElement("CompileFile");
     if (node && node->Attribute("command"))
-        target->SetMakeCommandFor(mcCompileFile, _U(node->Attribute("command")));
+        target->SetMakeCommandFor(mcCompileFile, cbC2U(node->Attribute("command")));
 
     node = parentNode->FirstChildElement("Clean");
     if (node && node->Attribute("command"))
-        target->SetMakeCommandFor(mcClean, _U(node->Attribute("command")));
+        target->SetMakeCommandFor(mcClean, cbC2U(node->Attribute("command")));
 
     node = parentNode->FirstChildElement("DistClean");
     if (node && node->Attribute("command"))
-        target->SetMakeCommandFor(mcDistClean, _U(node->Attribute("command")));
+        target->SetMakeCommandFor(mcDistClean, cbC2U(node->Attribute("command")));
 }
 
 void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
@@ -243,10 +243,10 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     while (node)
     {
         if (node->Attribute("title"))
-            title = _U(node->Attribute("title"));
+            title = cbC2U(node->Attribute("title"));
 
         else if (node->Attribute("makefile")) // there is only one attribute per option, so "else" is a safe optimisation
-            makefile = _U(node->Attribute("makefile"));
+            makefile = cbC2U(node->Attribute("makefile"));
 
         else if (node->Attribute("makefile_is_custom"))
             makefile_custom = strncmp(node->Attribute("makefile_is_custom"), "1", 1) == 0;
@@ -255,7 +255,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
             defaultTarget = atoi(node->Attribute("default_target"));
 
         else if (node->Attribute("compiler"))
-            compilerId = GetValidCompilerID(_U(node->Attribute("compiler")), _T("the project"));
+            compilerId = GetValidCompilerID(cbC2U(node->Attribute("compiler")), _T("the project"));
 
         else if (node->Attribute("pch_mode"))
             pch_mode = (PCHMode)atoi(node->Attribute("pch_mode"));
@@ -283,7 +283,7 @@ void ProjectLoader::DoBuild(TiXmlElement* parentNode)
         while (opt)
         {
             if (opt->Attribute("file"))
-                m_pProject->AddBuildScript(_U(opt->Attribute("file")));
+                m_pProject->AddBuildScript(cbC2U(opt->Attribute("file")));
 
             opt = opt->NextSiblingElement("Script");
         }
@@ -303,7 +303,7 @@ void ProjectLoader::DoBuildTarget(TiXmlElement* parentNode)
     while (node)
     {
         ProjectBuildTarget* target = 0L;
-        wxString title = _U(node->Attribute("title"));
+        wxString title = cbC2U(node->Attribute("title"));
         if (!title.IsEmpty())
             target = m_pProject->AddBuildTarget(title);
 
@@ -356,34 +356,34 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
             use_console_runner = strncmp(node->Attribute("use_console_runner"), "0", 1) != 0;
 
         else if (node->Attribute("output"))
-            output = UnixFilename(_U(node->Attribute("output")));
+            output = UnixFilename(cbC2U(node->Attribute("output")));
 
         else if (node->Attribute("working_dir"))
-            working_dir = UnixFilename(_U(node->Attribute("working_dir")));
+            working_dir = UnixFilename(cbC2U(node->Attribute("working_dir")));
 
         else if (node->Attribute("object_output"))
-            obj_output = UnixFilename(_U(node->Attribute("object_output")));
+            obj_output = UnixFilename(cbC2U(node->Attribute("object_output")));
 
         else if (node->Attribute("deps_output"))
-            deps_output = UnixFilename(_U(node->Attribute("deps_output")));
+            deps_output = UnixFilename(cbC2U(node->Attribute("deps_output")));
 
         else if (node->Attribute("external_deps"))
-            deps = UnixFilename(_U(node->Attribute("external_deps")));
+            deps = UnixFilename(cbC2U(node->Attribute("external_deps")));
 
         else if (node->Attribute("additional_output"))
-            added = UnixFilename(_U(node->Attribute("additional_output")));
+            added = UnixFilename(cbC2U(node->Attribute("additional_output")));
 
         else if (node->Attribute("type"))
             type = atoi(node->Attribute("type"));
 
         else if (node->Attribute("compiler"))
-            compilerId = GetValidCompilerID(_U(node->Attribute("compiler")), target->GetTitle());
+            compilerId = GetValidCompilerID(cbC2U(node->Attribute("compiler")), target->GetTitle());
 
         else if (node->Attribute("parameters"))
-            parameters = _U(node->Attribute("parameters"));
+            parameters = cbC2U(node->Attribute("parameters"));
 
         else if (node->Attribute("host_application"))
-            hostApplication = UnixFilename(_U(node->Attribute("host_application")));
+            hostApplication = UnixFilename(cbC2U(node->Attribute("host_application")));
 
         else if (node->Attribute("includeInTargetAll"))
             includeInTargetAll = atoi(node->Attribute("includeInTargetAll")) != 0;
@@ -422,7 +422,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     while (node)
     {
         if (node->Attribute("file"))
-            target->AddBuildScript(UnixFilename(_U(node->Attribute("file"))));
+            target->AddBuildScript(UnixFilename(cbC2U(node->Attribute("file"))));
 
         node = node->NextSiblingElement("Script");
     }
@@ -465,8 +465,8 @@ void ProjectLoader::DoCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarg
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString option = _U(child->Attribute("option"));
-        wxString dir = _U(child->Attribute("directory"));
+        wxString option = cbC2U(child->Attribute("option"));
+        wxString dir = cbC2U(child->Attribute("directory"));
         if (!option.IsEmpty())
         {
             if (target)
@@ -495,7 +495,7 @@ void ProjectLoader::DoResourceCompilerOptions(TiXmlElement* parentNode, ProjectB
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString dir = _U(child->Attribute("directory"));
+        wxString dir = cbC2U(child->Attribute("directory"));
         if (!dir.IsEmpty())
         {
             if (target)
@@ -517,9 +517,9 @@ void ProjectLoader::DoLinkerOptions(TiXmlElement* parentNode, ProjectBuildTarget
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString option = _U(child->Attribute("option"));
-        wxString dir = UnixFilename(_U(child->Attribute("directory")));
-        wxString lib = UnixFilename(_U(child->Attribute("library")));
+        wxString option = cbC2U(child->Attribute("option"));
+        wxString dir = UnixFilename(cbC2U(child->Attribute("directory")));
+        wxString lib = UnixFilename(cbC2U(child->Attribute("library")));
         if (!option.IsEmpty())
         {
             if (target)
@@ -555,7 +555,7 @@ void ProjectLoader::DoIncludesOptions(TiXmlElement* parentNode, ProjectBuildTarg
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString option = UnixFilename(_U(child->Attribute("option")));
+        wxString option = UnixFilename(cbC2U(child->Attribute("option")));
         if (!option.IsEmpty())
         {
             if (target)
@@ -577,7 +577,7 @@ void ProjectLoader::DoLibsOptions(TiXmlElement* parentNode, ProjectBuildTarget* 
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
-        wxString option = _U(child->Attribute("option"));
+        wxString option = cbC2U(child->Attribute("option"));
         if (!option.IsEmpty())
         {
             if (target)
@@ -599,7 +599,7 @@ void ProjectLoader::DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget
         TiXmlElement* child = node->FirstChildElement("Mode");
         while (child)
         {
-            wxString mode = _U(child->Attribute("after"));
+            wxString mode = cbC2U(child->Attribute("after"));
             if (mode == _T("always"))
                 base->SetAlwaysRunPostBuildSteps(true);
 
@@ -613,9 +613,9 @@ void ProjectLoader::DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget
             wxString after;
 
             if (child->Attribute("before"))
-                before = _U(child->Attribute("before"));
+                before = cbC2U(child->Attribute("before"));
             if (child->Attribute("after"))
-                after = _U(child->Attribute("after"));
+                after = cbC2U(child->Attribute("after"));
 
             if (!before.IsEmpty())
                 base->AddCommandsBeforeBuild(before);
@@ -638,8 +638,8 @@ void ProjectLoader::DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* 
         TiXmlElement* child = node->FirstChildElement("Variable");
         while (child)
         {
-            wxString name = _U(child->Attribute("name"));
-            wxString value = _U(child->Attribute("value"));
+            wxString name = cbC2U(child->Attribute("name"));
+            wxString value = cbC2U(child->Attribute("value"));
             if (!name.IsEmpty())
             	base->SetVar(name, UnixFilename(value));
 
@@ -656,7 +656,7 @@ void ProjectLoader::DoUnits(TiXmlElement* parentNode)
     TiXmlElement* unit = parentNode->FirstChildElement("Unit");
     while (unit)
     {
-        wxString filename = _U(unit->Attribute("filename"));
+        wxString filename = cbC2U(unit->Attribute("filename"));
         if (!filename.IsEmpty())
         {
             ProjectFile* file = m_pProject->AddFile(-1, UnixFilename(filename));
@@ -688,7 +688,7 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
     {
         if (node->Attribute("compilerVar"))
         {
-            file->compilerVar = _U(node->Attribute("compilerVar"));
+            file->compilerVar = cbC2U(node->Attribute("compilerVar"));
             foundCompilerVar = true;
         }
         //
@@ -712,7 +712,7 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
         //
         if (node->Attribute("buildCommand"))
         {
-            wxString tmp = _U(node->Attribute("buildCommand"));
+            wxString tmp = cbC2U(node->Attribute("buildCommand"));
             if (!tmp.IsEmpty())
             {
                 tmp.Replace(_T("\\n"), _T("\n"));
@@ -725,7 +725,7 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
         //
         if (node->Attribute("customDeps"))
         {
-            wxString tmp = _U(node->Attribute("customDeps"));
+            wxString tmp = cbC2U(node->Attribute("customDeps"));
             if (!tmp.IsEmpty())
             {
                 tmp.Replace(_T("\\n"), _T("\n"));
@@ -735,7 +735,7 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
         //
         if (node->Attribute("objectName"))
         {
-            wxFileName objName(_U(node->Attribute("objectName")));
+            wxFileName objName(cbC2U(node->Attribute("objectName")));
             FileType ft = FileTypeOf(file->relativeFilename);
             if (ft != ftResource && ft != ftResourceBin)
             {
@@ -745,7 +745,7 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
         }
         //
         if (node->Attribute("target"))
-            file->AddBuildTarget(_U(node->Attribute("target")));
+            file->AddBuildTarget(cbC2U(node->Attribute("target")));
 
         node = node->NextSiblingElement("Option");
     }
@@ -765,7 +765,7 @@ TiXmlElement* ProjectLoader::AddElement(TiXmlElement* parent, const char* name, 
     TiXmlNode* node = parent->InsertEndChild(TiXmlElement(name));
     TiXmlElement* elem = static_cast<TiXmlElement*>(node);
     if (attr && strlen(attr))
-        elem->SetAttribute(attr, _C(attribute));
+        elem->SetAttribute(attr, cbU2C(attribute));
     return elem;
 }
 
@@ -804,7 +804,7 @@ void ProjectLoader::SaveEnvironment(TiXmlElement* parent, CompileOptionsBase* ba
     for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
     {
         TiXmlElement* elem = AddElement(node, "Variable", "name", it->first);
-        elem->SetAttribute("value", _C(it->second));
+        elem->SetAttribute("value", cbU2C(it->second));
     }
 }
 

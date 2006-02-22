@@ -131,9 +131,9 @@ void wxsWidgetEvents::XmlLoadFunctions(TiXmlElement* Element)
 
     	if ( ! ( HandlerName  = Handler->Attribute(HandlerXmlEntryName) ) ) continue;
     	if ( ! ( FunctionName = Handler->Attribute(HandlerXmlFunctionName) ) ) continue;
-    	if ( ! ( Event = GetEventByEntry(_U(HandlerName)) ) ) continue;
-    	if ( GetEventByFunction(_U(FunctionName)) ) continue;
-    	Event->FunctionName = _U(FunctionName);
+    	if ( ! ( Event = GetEventByEntry(cbC2U(HandlerName)) ) ) continue;
+    	if ( GetEventByFunction(cbC2U(FunctionName)) ) continue;
+    	Event->FunctionName = cbC2U(FunctionName);
     }
 }
 
@@ -145,8 +145,8 @@ void wxsWidgetEvents::XmlSaveFunctions(TiXmlElement* Element)
     	if ( Event->FunctionName.Length() )
     	{
     		TiXmlElement* Handler = Element->InsertEndChild( TiXmlElement(HandlerXmlElementName) ) -> ToElement();
-    		Handler->SetAttribute(HandlerXmlEntryName,_C(Event->EventEntry));
-    		Handler->SetAttribute(HandlerXmlFunctionName,_C(Event->FunctionName));
+    		Handler->SetAttribute(HandlerXmlEntryName,cbU2C(Event->EventEntry));
+    		Handler->SetAttribute(HandlerXmlFunctionName,cbU2C(Event->FunctionName));
     	}
     }
 }

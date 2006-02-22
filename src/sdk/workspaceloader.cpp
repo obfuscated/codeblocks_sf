@@ -87,7 +87,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
         return false;
     }
 
-    m_Title = _U(wksp->Attribute("title")); // Conversion to unicode is automatic (see wxString::operator= )
+    m_Title = cbC2U(wksp->Attribute("title")); // Conversion to unicode is automatic (see wxString::operator= )
     if (m_Title.IsEmpty())
         m_Title = _("Default workspace");
 
@@ -103,7 +103,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
     {
         if(Manager::isappShuttingDown() || !GetpMan() || !GetpMsg())
             return false;
-        projectFilename = UnixFilename(_U(proj->Attribute("filename")));
+        projectFilename = UnixFilename(cbC2U(proj->Attribute("filename")));
         if (projectFilename.IsEmpty())
         {
             GetpMsg()->DebugLog(_T("'Project' node exists, but no filename?!?"));
@@ -149,7 +149,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
     while (proj)
     {
         cbProject* thisprj = 0;
-        projectFilename = UnixFilename(_U(proj->Attribute("filename")));
+        projectFilename = UnixFilename(cbC2U(proj->Attribute("filename")));
         if (projectFilename.IsEmpty())
         {
             GetpMsg()->DebugLog(_T("'Project' node exists, but no filename?!?"));
@@ -167,7 +167,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
             TiXmlElement* dep = proj->FirstChildElement("Depends");
             while (dep)
             {
-                wxFileName fname(UnixFilename(_U(dep->Attribute("filename"))));
+                wxFileName fname(UnixFilename(cbC2U(dep->Attribute("filename"))));
                 fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
                 cbProject* depprj = Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath());
                 if (depprj)
@@ -193,7 +193,7 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
         return false;
 
     TiXmlElement* wksp = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("Workspace")));
-    wksp->SetAttribute("title", _C(title));
+    wksp->SetAttribute("title", cbU2C(title));
 
     ProjectsArray* arr = Manager::Get()->GetProjectManager()->GetProjects();
     for (unsigned int i = 0; i < arr->GetCount(); ++i)
@@ -205,7 +205,7 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
         fname.MakeRelativeTo(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
 
         TiXmlElement* node = static_cast<TiXmlElement*>(wksp->InsertEndChild(TiXmlElement("Project")));
-        node->SetAttribute("filename", _C(fname.GetFullPath()));
+        node->SetAttribute("filename", cbU2C(fname.GetFullPath()));
         if (prj == Manager::Get()->GetProjectManager()->GetActiveProject())
             node->SetAttribute("active", 1);
 
@@ -218,7 +218,7 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
                 fname.Assign(prj->GetFilename());
                 fname.MakeRelativeTo(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
                 TiXmlElement* dnode = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Depends")));
-                dnode->SetAttribute("filename", _C(fname.GetFullPath()));
+                dnode->SetAttribute("filename", cbU2C(fname.GetFullPath()));
             }
         }
     }

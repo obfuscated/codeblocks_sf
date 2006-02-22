@@ -24,7 +24,7 @@ void wxsWindowResDataObject::GetAllFormats(wxDataFormat *formats, Direction dir)
 bool wxsWindowResDataObject::GetDataHere(const wxDataFormat& format, void *buf) const
 {
 	wxString XmlData = GetXmlData();
-    memcpy(buf,_C(XmlData),XmlData.Length()+1);
+    memcpy(buf,cbU2C(XmlData),XmlData.Length()+1);
    	return true;
 }
 
@@ -48,7 +48,7 @@ bool wxsWindowResDataObject::SetData(const wxDataFormat& format, size_t len, con
     char* CharBuff = new char[len+1];
     memcpy(CharBuff,buf,len);
     CharBuff[len] = '\0';      // Adding padding zero
-    bool Ret = SetXmlData(_U(CharBuff));
+    bool Ret = SetXmlData(cbC2U(CharBuff));
     delete[] CharBuff;
     return Ret;
 }
@@ -65,7 +65,7 @@ bool wxsWindowResDataObject::AddWidget(wxsWidget* Widget)
 	if ( !Widget ) return false;
     TiXmlElement* Elem = XmlElem->InsertEndChild(TiXmlElement("object"))->ToElement();
     if ( !Elem ) return false;
-    Elem->SetAttribute("class",_C(Widget->GetInfo().Name));
+    Elem->SetAttribute("class",cbU2C(Widget->GetInfo().Name));
     if ( !Widget->XmlSave(Elem) )
     {
         XmlElem->RemoveChild(Elem);
@@ -95,7 +95,7 @@ wxsWidget* wxsWindowResDataObject::BuildWidget(wxsWindowRes* Resource,int Index)
 	const char* Class = Root->Attribute("class");
 	if ( !Class || !*Class ) return NULL;
 
-	wxsWidget* Widget = wxsGEN(_U(Class),Resource);
+	wxsWidget* Widget = wxsGEN(cbC2U(Class),Resource);
 	if ( !Widget )
 	{
 	    if ( Resource->GetEditMode() == wxsREMSource ) return false;
@@ -111,10 +111,10 @@ bool wxsWindowResDataObject::SetXmlData(const wxString& Data)
 {
     XmlDoc.Clear();
     WidgetsCount = 0;
-	XmlDoc.Parse(_C(Data));
+	XmlDoc.Parse(cbU2C(Data));
     if ( XmlDoc.Error() )
     {
-        DBGLOG(_T("wxSmith: Error loading Xml data -> ") + _U(XmlDoc.ErrorDesc()));
+        DBGLOG(_T("wxSmith: Error loading Xml data -> ") + cbC2U(XmlDoc.ErrorDesc()));
     	Clear();
     	return false;
     }
@@ -141,10 +141,10 @@ wxString wxsWindowResDataObject::GetXmlData() const
     #ifdef TIXML_USE_STL
         std::ostringstream buffer;
         buffer << XmlDoc;
-        return _U(buffer.str().c_str());
+        return cbC2U(buffer.str().c_str());
     #else
         TiXmlOutStream buffer;
         buffer << XmlDoc;
-        return _U(buffer.c_str());
+        return cbC2U(buffer.c_str());
     #endif
 }

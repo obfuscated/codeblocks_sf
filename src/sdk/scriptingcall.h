@@ -124,11 +124,11 @@ class ScriptingCall
             m_Success = false;
             asIScriptEngine* engine = Manager::Get()->GetScriptingManager()->GetEngine();
             int funcID = m_pCtx->GetExceptionFunction();
-            m_Function = _U(engine->GetFunctionDeclaration(funcID));
-            m_Module = _U(engine->GetModuleNameFromIndex(asMODULEIDX(funcID)));
-            m_Section = _U(engine->GetFunctionSection(funcID));
+            m_Function = cbC2U(engine->GetFunctionDeclaration(funcID));
+            m_Module = cbC2U(engine->GetModuleNameFromIndex(asMODULEIDX(funcID)));
+            m_Section = cbC2U(engine->GetFunctionSection(funcID));
             m_Line = m_pCtx->GetExceptionLineNumber();
-            m_Error = _U(m_pCtx->GetExceptionString());
+            m_Error = cbC2U(m_pCtx->GetExceptionString());
         }
         asIScriptContext* m_pCtx;
         bool m_Success;

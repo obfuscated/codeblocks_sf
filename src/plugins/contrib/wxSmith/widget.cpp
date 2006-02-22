@@ -343,7 +343,7 @@ bool wxsWidget::XmlLoadDefaultsT(wxsBasePropertiesType pType)
     /* Processing variable name and locality */
     if ( pType & bptVariable )
     {
-        BaseProperties.VarName = _U(XmlElem()->Attribute("variable"));
+        BaseProperties.VarName = cbC2U(XmlElem()->Attribute("variable"));
         const char* IsMember = XmlElem()->Attribute("member");
         BaseProperties.IsMember = IsMember ? ( strcasecmp(IsMember,"no") != 0 ) : true;
     }
@@ -566,12 +566,12 @@ bool wxsWidget::XmlSaveDefaultsT(wxsBasePropertiesType pType)
 
     if ( pType & bptId )
     {
-        XmlElem()->SetAttribute("name",_C(BaseProperties.IdName));
+        XmlElem()->SetAttribute("name",cbU2C(BaseProperties.IdName));
     }
 
     if ( pType & bptVariable )
     {
-        XmlElem()->SetAttribute("variable",_C(BaseProperties.VarName));
+        XmlElem()->SetAttribute("variable",cbU2C(BaseProperties.VarName));
         XmlElem()->SetAttribute("member",BaseProperties.IsMember?"yes":"no");
     }
 
@@ -726,7 +726,7 @@ wxString wxsWidget::XmlGetVariable(const wxString& name)
     assert ( XmlElem() != NULL );
 
     if ( name.empty() ) return _T("");
-    TiXmlElement* Elem = XmlElem()->FirstChildElement(_C(name));
+    TiXmlElement* Elem = XmlElem()->FirstChildElement(cbU2C(name));
     if ( !Elem ) return _T("");
 
     TiXmlNode* Node = Elem->FirstChild();
@@ -735,7 +735,7 @@ wxString wxsWidget::XmlGetVariable(const wxString& name)
         TiXmlText* Text = Node->ToText();
         if ( Text )
         {
-            return _U(Text->Value());
+            return cbC2U(Text->Value());
         }
         Node = Node->NextSibling();
     }
@@ -777,10 +777,10 @@ bool wxsWidget::XmlGetIntPair(const wxString& Name,int& P1,int& P2,int DefP1,int
 bool wxsWidget::XmlSetVariable(const wxString& Name,const wxString& Value)
 {
     assert ( XmlElem() != NULL );
-    TiXmlNode * NewNode = XmlElem()->InsertEndChild(TiXmlElement(_C(Name)));
+    TiXmlNode * NewNode = XmlElem()->InsertEndChild(TiXmlElement(cbU2C(Name)));
     if ( NewNode )
     {
-        NewNode->InsertEndChild(TiXmlText(_C(Value)));
+        NewNode->InsertEndChild(TiXmlText(cbU2C(Value)));
         return true;
     }
     return false;
@@ -826,7 +826,7 @@ bool wxsWidget::XmlLoadChild(TiXmlElement* Element)
 
     if ( Name && *Name )
     {
-        wxsWidget* Child = wxsGEN(_U(Name),GetResource());
+        wxsWidget* Child = wxsGEN(cbC2U(Name),GetResource());
         if ( !Child )
         {
             if ( GetResource()->GetEditMode() == wxsREMSource ) return false;
@@ -866,7 +866,7 @@ bool wxsWidget::XmlSaveChild(int ChildIndex,TiXmlElement* AddHere)
 
         if ( !SaveTo ) return false;
 
-        SaveTo->SetAttribute("class",_C(W->GetInfo().Name));
+        SaveTo->SetAttribute("class",cbU2C(W->GetInfo().Name));
         if ( !W->XmlSave(SaveTo) ) return false;
     }
 
@@ -1136,14 +1136,14 @@ bool wxsWidget::XmlSetStringArray(const wxString& ParentName,const wxString& Chi
     // Adding <ParentName>  element
     TiXmlElement* ParentElement;
     TiXmlElement* ChildElement;
-    ParentElement = XmlElem()->InsertEndChild(TiXmlElement(_C(ParentName)))->ToElement();
+    ParentElement = XmlElem()->InsertEndChild(TiXmlElement(cbU2C(ParentName)))->ToElement();
 
     for ( int i=0; i<Count; i++ )
     {
-      ChildElement = ParentElement->InsertEndChild(TiXmlElement(_C(ChildName)))->ToElement();
+      ChildElement = ParentElement->InsertEndChild(TiXmlElement(cbU2C(ChildName)))->ToElement();
 
       if (ChildElement)
-        ChildElement->InsertEndChild(TiXmlText(_C(stringArray[i])));
+        ChildElement->InsertEndChild(TiXmlText(cbU2C(stringArray[i])));
     }
     return true;
 }
@@ -1171,12 +1171,12 @@ bool wxsWidget::XmlGetStringArray(const wxString& ParentName,const wxString& Chi
      // Empty it to make sure element added in an empty wxArrayString
       stringArray.Empty();
 
-    TiXmlElement* ParentElement = XmlElem()->FirstChildElement(_C(ParentName));
+    TiXmlElement* ParentElement = XmlElem()->FirstChildElement(cbU2C(ParentName));
     if(!ParentElement) return false;
 
-    for (TiXmlElement* ChildElement= ParentElement->FirstChildElement(_C(ChildName));
+    for (TiXmlElement* ChildElement= ParentElement->FirstChildElement(cbU2C(ChildName));
           ChildElement != NULL;
-          ChildElement = ChildElement->NextSiblingElement(_C(ChildName)))
+          ChildElement = ChildElement->NextSiblingElement(cbU2C(ChildName)))
           {
 
            TiXmlNode* Node = ChildElement->FirstChild();
@@ -1184,7 +1184,7 @@ bool wxsWidget::XmlGetStringArray(const wxString& ParentName,const wxString& Chi
 			while(Node)
 			{
 			 if(Node->ToText())
-              stringArray.Add(_U(Node->ToText()->Value()));
+              stringArray.Add(cbC2U(Node->ToText()->Value()));
 
               Node=Node->NextSibling();
             }

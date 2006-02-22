@@ -421,7 +421,7 @@ bool CodeBlocksApp::OnInit()
     }
     catch (const char* message)
     {
-        wxSafeShowMessage(_T("Exception"), _U(message));
+        wxSafeShowMessage(_T("Exception"), cbC2U(message));
     }
     catch (...)
     {
@@ -460,7 +460,7 @@ int CodeBlocksApp::OnRun()
     }
     catch (const char* message)
     {
-        wxSafeShowMessage(_("Exception"), _U(message));
+        wxSafeShowMessage(_("Exception"), cbC2U(message));
     }
     catch (...)
     {

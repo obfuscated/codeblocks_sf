@@ -307,7 +307,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
 
     // Loading xrc file into xml document
 
-    TiXmlDocument Doc(_C(FileName));
+    TiXmlDocument Doc(cbU2C(FileName));
     TiXmlElement* Resource;     if (! Doc.LoadFile() ||
         ! (Resource = Doc.FirstChildElement("resource")) )
     {
@@ -326,7 +326,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     	     !strcmp(Class,"wxPanel") ||
     	     !strcmp(Class,"wxFrame") )
         {
-        	Resources.Add(_U(Name));
+        	Resources.Add(cbC2U(Name));
         }
 
         Element = Element->NextSiblingElement("object");
@@ -359,7 +359,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     Element = Resource->FirstChildElement("object");
     while ( Element )
     {
-        if ( !strcmp(Element->Attribute("name"),_C(Name)) )
+        if ( !strcmp(Element->Attribute("name"),cbU2C(Name)) )
         {
             break;
         }
@@ -367,7 +367,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     }     if ( !Element ) return;
 
     // Creating fake resource and testing if xrc can be loaded without any errors
-    wxsWidget* Test = wxsGEN(_U(Element->Attribute("class")),NULL);
+    wxsWidget* Test = wxsGEN(cbC2U(Element->Attribute("class")),NULL);
     if ( !Test )
     {
     	// Something went wrong - default factory is not working ?

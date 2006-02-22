@@ -97,11 +97,6 @@ extern DLLIMPORT wxString cbC2U(const char* str);
 /// Return multibyte (C string) representation of the string
 extern DLLIMPORT wxWX2MBbuf cbU2C(const wxString& str);
 
-// Convenience macros until we update the codebase...
-// TODO (mandrav##): Remove the leading underscores from the following macros
-#define _U(x) cbC2U(x)
-#define _C(x) cbU2C(x)
-
 extern DLLIMPORT wxString GetStringFromArray(const wxArrayString& array, const wxString& separator = DEFAULT_ARRAY_SEP);
 extern DLLIMPORT wxArrayString GetArrayFromString(const wxString& text, const wxString& separator = DEFAULT_ARRAY_SEP, bool trimSpaces = true);
 extern DLLIMPORT void AppendArray(const wxArrayString& from, wxArrayString& to);

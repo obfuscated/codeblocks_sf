@@ -90,7 +90,7 @@ bool TAR::Next(TAR::Record* rec)
         return false;
 
     rec->pos = pos;
-    rec->name = _U(buffer.name);
+    rec->name = cbC2U(buffer.name);
     rec->size = OctToInt(buffer.size);
 
 #if 1

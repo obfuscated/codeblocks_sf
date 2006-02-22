@@ -65,16 +65,16 @@ bool wxsCustomWidget::MyXmlLoad()
     }
     else
     {
-        ClassName = _U(XmlElem()->Attribute("class"));
+        ClassName = cbC2U(XmlElem()->Attribute("class"));
         Style = XmlGetVariable(_T("style"));
-        
+
         XmlDataDoc.Clear();
         for ( TiXmlElement* Elem = XmlElem()->FirstChildElement();
               Elem;
               Elem = Elem->NextSiblingElement() )
         {
             // Skipping all standard elements
-            wxString Name = _U(Elem->Value());
+            wxString Name = cbC2U(Elem->Value());
             if ( Name != _T("pos") &&
                  Name != _T("size") &&
                  Name != _T("style") &&
@@ -92,7 +92,7 @@ bool wxsCustomWidget::MyXmlLoad()
 
         RebuildXmlData();
     }
-    
+
     return true;
 }
 
@@ -106,15 +106,15 @@ bool wxsCustomWidget::MyXmlSave()
     }
     else
     {
-        XmlElem()->SetAttribute("class",_C(ClassName));
+        XmlElem()->SetAttribute("class",cbU2C(ClassName));
         XmlSetVariable(_T("style"),Style);
-        
+
         for ( TiXmlElement* Elem = XmlDataDoc.FirstChildElement();
               Elem;
               Elem = Elem->NextSiblingElement() )
         {
             // Skipping all standard elements
-            wxString Name = _U(Elem->Value());
+            wxString Name = cbC2U(Elem->Value());
             if ( Name != _T("pos") &&
                  Name != _T("size") &&
                  Name != _T("style") &&
@@ -130,7 +130,7 @@ bool wxsCustomWidget::MyXmlSave()
             }
         }
     }
-    
+
     return true;
 }
 
@@ -167,18 +167,18 @@ void wxsCustomWidget::RebuildXmlData()
     #ifdef TIXML_USE_STL
         std::ostringstream buffer;
         buffer << XmlDataDoc;
-        XmlData = _U(buffer.str().c_str());
+        XmlData = cbC2U(buffer.str().c_str());
     #else
         TiXmlOutStream buffer;
         buffer << XmlDataDoc;
-        XmlData = _U(buffer.c_str());
+        XmlData = cbC2U(buffer.c_str());
     #endif
 }
 
 bool wxsCustomWidget::RebuildXmlDataDoc(bool Validate,bool Correct)
 {
     XmlDataDoc.Clear();
-    XmlDataDoc.Parse(_C(XmlData));
+    XmlDataDoc.Parse(cbU2C(XmlData));
     if ( !Validate ) return true;
     if ( !XmlDataDoc.Error() ) return true;
     if ( Correct )
@@ -190,13 +190,13 @@ bool wxsCustomWidget::RebuildXmlDataDoc(bool Validate,bool Correct)
         wxString::Format(
             _("Invalid Xml structure.\nError at line %d, column %d:\n\t\"%s\""),
                 XmlDataDoc.ErrorRow(),XmlDataDoc.ErrorCol(),
-                wxGetTranslation(_U(XmlDataDoc.ErrorDesc()).c_str())));
+                wxGetTranslation(cbC2U(XmlDataDoc.ErrorDesc()).c_str())));
     return false;
 }
 
 bool wxsCustomWidget::MyPropertiesChanged(bool Validate,bool Correct)
 {
-    bool Ret = ( GetResource()->GetEditMode() == wxsREMSource ) ? 
+    bool Ret = ( GetResource()->GetEditMode() == wxsREMSource ) ?
         true :
         RebuildXmlDataDoc(Validate,Correct);
     return wxsWidget::PropertiesChanged(Validate,Correct) && Ret;

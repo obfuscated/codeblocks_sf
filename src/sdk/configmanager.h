@@ -202,8 +202,8 @@ public:
             while(e = n->IterateChildren(e)->ToElement())
             {
                 T *obj = new T;
-                obj->SerializeIn(wxBase64::Decode(_U(e->FirstChild()->ToText()->Value())));
-                (*map)[_U(e->Value())] = obj;
+                obj->SerializeIn(wxBase64::Decode(cbC2U(e->FirstChild()->ToText()->Value())));
+                (*map)[cbC2U(e->Value())] = obj;
             }
     };
 
