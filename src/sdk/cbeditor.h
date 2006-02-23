@@ -1,5 +1,5 @@
-#ifndef EDITOR_H
-#define EDITOR_H
+#ifndef CBEDITOR_H
+#define CBEDITOR_H
 
 #include <wx/wxscintilla.h>
 #include <wx/hashmap.h>
@@ -262,4 +262,4 @@ class DLLIMPORT cbEditor : public EditorBase
         cbEditorInternalData* m_pData;
 };
 
-#endif // EDITOR_H
+#endif // CBEDITOR_H
