@@ -1808,8 +1808,11 @@ bool EditorManager::OpenFilesTreeSupported()
     #endif
 }
 
+// This function is not used anymore, so we turned it into a synonym
+// for RefreshOpenedFilesTree().
 void EditorManager::RefreshOpenFilesTree()
 {
+    RefreshOpenedFilesTree();
 }
 
 void EditorManager::ShowOpenFilesTree(bool show)
@@ -1822,10 +1825,10 @@ void EditorManager::ShowOpenFilesTree(bool show)
         return;
     if(Manager::isappShuttingDown())
         return;
-    if (show && !IsOpenFilesTreeVisible())
-        m_pTree->Show(true);
-    else if (!show && IsOpenFilesTreeVisible())
-        m_pTree->Show(false);
+//    if (show && !IsOpenFilesTreeVisible())
+//        m_pTree->Show(true);
+//    else if (!show && IsOpenFilesTreeVisible())
+//        m_pTree->Show(false);
     RefreshOpenFilesTree();
 
     CodeBlocksDockEvent evt(show ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
@@ -2057,10 +2060,13 @@ void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
         tree=GetTree();
     if(!tree)
         return;
+    tree->Freeze();
     tree->DeleteChildren(m_pData->m_TreeOpenedFiles);
     if(!GetEditorsCount())
+    {
+        tree->Thaw();
         return;
-    tree->Freeze();
+    }
     for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         EditorBase* ed = InternalGetEditorBase(i);

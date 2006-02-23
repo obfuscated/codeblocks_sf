@@ -48,6 +48,10 @@
 #include "annoyingdialog.h"
 #include "pluginsconfigurationdlg.h"
 
+// this is used by NotifyPlugins
+// it just keeps a pointer to the last active plugin in the chain...
+static cbPlugin* s_LastKnownActivePlugin = 0;
+
 // class constructor
 PluginManager::PluginManager()
 {
@@ -297,6 +301,7 @@ void PluginManager::LoadAllPlugins()
             try
             {
                 plug->Attach();
+                s_LastKnownActivePlugin = plug;
                 Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), wxEmptyString, false);
             }
             catch (cbException& exception)
@@ -323,6 +328,8 @@ void PluginManager::UnloadAllPlugins()
     SANITY_CHECK_ADVANCED(); // don't use "normal" sanity check because
                              // this function is called by the destructor
 //    Manager::Get()->GetMessageManager()->DebugLog("Count %d", m_Plugins.GetCount());
+
+    s_LastKnownActivePlugin = 0;
 
     // first loop to release all plugins
 	unsigned int i = m_Plugins.GetCount();
@@ -547,34 +554,16 @@ void PluginManager::AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu,
 void PluginManager::NotifyPlugins(CodeBlocksEvent& event)
 {
     SANITY_CHECK();
-    /*
-    A plugin might process the event we 'll send it or not. The event then
-    "travels" up the chain of plugins. If one plugin (say in the middle) is
-    disabled, it's not processing events and so the event "travelling" stops.
-    The rest of the plugins never "hear" about this event.
-    The solution is that the plugin manager checks for disabled plugins and
-    posts the event not only to the last plugin but also to all plugins that
-    are followed by a disabled plugin (skipping the chain-breakers that is)...
-    */
-    if (!m_Plugins.GetCount())
-		return;
 
-    bool sendEvt = true;
-    for (unsigned int i = m_Plugins.GetCount() - 1; i > 0; --i)
-    {
-        cbPlugin* plug = m_Plugins[i]->plugin;
-        if (!plug || (plug && !plug->IsAttached()))
-            sendEvt = true;
-        else if (sendEvt)
-        {
-            if (plug)
-                plug->ProcessEvent(event); // Plugins require immediate attention
-            if (!event.GetSkipped())
-                break; // if someone handled it, abort the rest
-            // wxPostEvent(plug, event);
-            sendEvt = false;
-        }
-    }
+    /* Things are simpler than before.
+     * Just ask the last active plugin to process this event.
+     * Because plugins are linked to the main app's event handler,
+     * the event will travel up the chain normally.
+     */
+    if (s_LastKnownActivePlugin)
+        s_LastKnownActivePlugin->ProcessEvent(event);
+    else
+        Manager::Get()->GetAppWindow()->ProcessEvent(event);
 }
 
 cbMimePlugin* PluginManager::GetMIMEHandlerForFile(const wxString& filename)
