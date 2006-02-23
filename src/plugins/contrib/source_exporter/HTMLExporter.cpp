@@ -232,7 +232,7 @@ void HTMLExporter::Export(const wxString &filename, const wxString &title, const
   HighlightLanguage lang = const_cast<EditorColorSet *>(color_set)->GetLanguageForFilename(title);
 
   html_code += HTMLHeaderBEG;
-  html_code += string("<title>") + string(reinterpret_cast<const char *>(title.c_str())) + string("</title>\n");
+  html_code += string("<title>") + string(cbU2C(title.c_str())) + string("</title>\n");
   html_code += HTMLMeta;
   html_code += HTMLStyleBEG;
   html_code += HTMLStyle(color_set, lang);
@@ -242,6 +242,6 @@ void HTMLExporter::Export(const wxString &filename, const wxString &title, const
   html_code += HTMLBody(styled_text);
   html_code += HTMLBodyEND;
 
-  ofstream file(filename.mb_str());
+  ofstream file(cbU2C(filename));
   file << html_code;
 }

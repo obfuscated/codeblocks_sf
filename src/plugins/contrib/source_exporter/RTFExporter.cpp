@@ -376,6 +376,6 @@ void RTFExporter::Export(const wxString &filename, const wxString &title, const 
   rtf_code += RTFBody(styled_text, pt);
   rtf_code += RTFEnd;
 
-  ofstream file(filename.mb_str());
+  ofstream file(cbU2C(filename));
   file << rtf_code;
 }
