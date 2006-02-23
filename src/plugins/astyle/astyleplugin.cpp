@@ -95,7 +95,7 @@ int AStylePlugin::Execute()
     return 0;
   }
 
-  string edText(ed->GetControl()->GetText().mb_str());
+  string edText(cbU2C(ed->GetControl()->GetText()));
   wxString formattedText;
 
   astyle::ASFormatter formatter;
