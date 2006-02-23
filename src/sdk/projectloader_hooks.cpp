@@ -52,12 +52,12 @@ bool ProjectLoaderHooks::HasRegisteredHooks()
     return s_HookFunctorsMap.size() != 0;
 }
 
-void ProjectLoaderHooks::CallHooks(TiXmlElement* elem, bool isLoading)
+void ProjectLoaderHooks::CallHooks(cbProject* project, TiXmlElement* elem, bool isLoading)
 {
     for (HookFunctorsMap::iterator it = s_HookFunctorsMap.begin(); it != s_HookFunctorsMap.end(); ++it)
     {
         ProjectLoaderHooks::HookFunctorBase* functor = it->second;
         if (functor)
-            functor->Call(elem, isLoading);
+            functor->Call(project, elem, isLoading);
     }
 }

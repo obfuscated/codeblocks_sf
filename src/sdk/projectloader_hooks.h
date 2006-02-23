@@ -4,6 +4,7 @@
 #include "settings.h"
 
 class TiXmlElement;
+class cbProject;
 
 /** Provides static functions to add hooks to the project loading/saving procedure. */
 namespace ProjectLoaderHooks
@@ -12,7 +13,8 @@ namespace ProjectLoaderHooks
     class DLLIMPORT HookFunctorBase
     {
         public:
-            virtual void Call(TiXmlElement* elem, bool isLoading) const = 0;
+            virtual ~HookFunctorBase(){}
+            virtual void Call(cbProject*, TiXmlElement*, bool) const = 0;
     };
 
     /** Functor class for use as a project loading/saving hook.
@@ -27,7 +29,7 @@ namespace ProjectLoaderHooks
       * ProjectLoaderHooks::UnregisterHook(id, true);
       *
       * Member functions used as hook callbacks must have the following signature:
-      * void YourFunctionName(TiXmlElement*, bool)
+      * void YourFunctionName(cbProject*, TiXmlElement*, bool)
       *
       * Use normal TinyXML procedures to work with the TiXmlElement* argument.
       * The isLoading argument is true if your hook is called when the project is being loaded,
@@ -41,10 +43,10 @@ namespace ProjectLoaderHooks
                 : m_pObj(obj),
                 m_pFunc(func)
             {}
-            virtual void Call(TiXmlElement* elem, bool isLoading) const
+            virtual void Call(cbProject* project, TiXmlElement* elem, bool isLoading) const
             {
                 if (m_pObj && m_pFunc)
-                    (m_pObj->*m_pFunc)(elem, isLoading);
+                    (m_pObj->*m_pFunc)(project, elem, isLoading);
             }
         protected:
             T* m_pObj;
@@ -69,8 +71,11 @@ namespace ProjectLoaderHooks
     extern DLLIMPORT bool HasRegisteredHooks();
     /** Call all registered hooks using the supplied parameters.
       * This is called by ProjectLoader.
+      * @param project The project in question.
+      * @param elem The XML element under which the called hook can read/write.
+      * @param isLoading True if the project is being loaded, false if being saved.
       */
-    extern DLLIMPORT void CallHooks(TiXmlElement* elem, bool isLoading);
+    extern DLLIMPORT void CallHooks(cbProject* project, TiXmlElement* elem, bool isLoading);
 };
 
 #endif // PROJECTLOADER_HOOKS_H

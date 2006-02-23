@@ -117,7 +117,7 @@ bool ProjectLoader::Open(const wxString& filename)
     TiXmlElement* node = proj->FirstChildElement("Extensions");
     if (node)
     {
-        ProjectLoaderHooks::CallHooks(node, true);
+        ProjectLoaderHooks::CallHooks(m_pProject, node, true);
     }
 
     if (!version)
@@ -1047,7 +1047,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         TiXmlElement* node = AddElement(prjnode, "Extensions", "", wxEmptyString);
         if (node)
         {
-            ProjectLoaderHooks::CallHooks(node, false);
+            ProjectLoaderHooks::CallHooks(m_pProject, node, false);
         }
     }
 
