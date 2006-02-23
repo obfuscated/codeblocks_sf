@@ -16,7 +16,7 @@ class EditArrayOrderDlg : public wxDialog
 		~EditArrayOrderDlg();
 		void SetArray(const wxArrayString& array){ m_Array = array; }
 		const wxArrayString& GetArray(){ return m_Array; }
-		void OnOK(wxCommandEvent& event);
+		void EndModal(int retCode);
 		void OnMoveUp(wxCommandEvent& event);
 		void OnMoveDown(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);

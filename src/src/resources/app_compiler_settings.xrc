@@ -75,19 +75,17 @@ http://wiki.codeblocks.org/index.php?title=Personalities</label>
         <border>8</border>
       </object>
       <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
+        <object class="wxStdDialogButtonSizer">
+          <object class="button">
             <object class="wxButton" name="wxID_OK">
-              <label>&amp;OK</label>
+              <label></label>
+              <label>&amp;Ok</label>
               <default>1</default>
             </object>
           </object>
-          <object class="spacer">
-            <size>8,0</size>
-          </object>
-          <object class="sizeritem">
+          <object class="button">
             <object class="wxButton" name="wxID_CANCEL">
+              <label></label>
               <label>&amp;Cancel</label>
             </object>
           </object>

@@ -37,7 +37,6 @@
 
 BEGIN_EVENT_TABLE(EditArrayOrderDlg, wxDialog)
     EVT_UPDATE_UI( -1, EditArrayOrderDlg::OnUpdateUI)
-	EVT_BUTTON(XRCID("btnOK"), EditArrayOrderDlg::OnOK)
 	EVT_BUTTON(XRCID("btnMoveUp"), EditArrayOrderDlg::OnMoveUp)
 	EVT_BUTTON(XRCID("btnMoveDown"), EditArrayOrderDlg::OnMoveDown)
 END_EVENT_TABLE()
@@ -99,14 +98,17 @@ void EditArrayOrderDlg::OnMoveDown(wxCommandEvent& event)
     }
 }
 
-void EditArrayOrderDlg::OnOK(wxCommandEvent& event)
+void EditArrayOrderDlg::EndModal(int retCode)
 {
-    wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
+    if (retCode == wxID_OK)
+    {
+        wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
 
-    m_Array.Clear();
-    for (int i = 0; i < list->GetCount(); ++i)
-        m_Array.Add(list->GetString(i));
+        m_Array.Clear();
+        for (int i = 0; i < list->GetCount(); ++i)
+            m_Array.Add(list->GetString(i));
+    }
 
-    EndModal(wxID_OK);
+    wxDialog::EndModal(retCode);
 }
 

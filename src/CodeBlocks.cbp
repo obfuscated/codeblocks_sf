@@ -3723,11 +3723,6 @@
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
-		<Unit filename="src\resources\imp_exp_config.xrc">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-		</Unit>
 		<Unit filename="src\resources\main_menu.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
@@ -3740,6 +3735,11 @@
 		</Unit>
 		<Unit filename="src\resources\main_toolbar_16x16.xrc">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src\resources\manage_assocs.xrc">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>

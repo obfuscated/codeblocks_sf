@@ -15,9 +15,7 @@ class PluginsConfigurationDlg : public wxDialog
 		// class destructor
 		~PluginsConfigurationDlg();
 
-		void OnOK(wxCommandEvent& event);
-    private:
-    	DECLARE_EVENT_TABLE()
+		void EndModal(int retCode);
 };
 
 #endif // PLUGINSCONFIGURATIONDLG_H

@@ -21,7 +21,7 @@ class ProjectOptionsDlg : public wxDialog
 		// class destructor
 		~ProjectOptionsDlg();
 
-		void OnOK(wxCommandEvent& event);
+		void EndModal(int retCode);
 		void OnFileOptionsClick(wxCommandEvent& event);
 		void OnFileToggleMarkClick(wxCommandEvent& event);
         void OnProjectTypeChanged(wxCommandEvent& event);

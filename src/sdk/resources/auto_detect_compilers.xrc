@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxDialog" name="dlgAutoDetectCompilers">
     <title>Compilers auto-detection</title>
@@ -55,16 +55,16 @@
         <border>8</border>
       </object>
       <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_CANCEL">
-              <label>Close</label>
+        <object class="wxStdDialogButtonSizer">
+          <object class="button">
+            <object class="wxButton" name="wxID_OK">
+              <label></label>
+              <label>&amp;Ok</label>
               <default>1</default>
             </object>
           </object>
         </object>
-        <flag>wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
         <border>8</border>
       </object>
     </object>

@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxDialog" name="dlgAbout">
     <title>About...</title>
@@ -7,48 +7,31 @@
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
         <object class="wxStaticBitmap" name="lblTitle">
-          
           <size>460,135</size>
-          
           <font>
-            
             <size>14</size>
-            
             <style>swiss</style>
-            
             <weight>normal</weight>
-            
             <family>bold</family>
-            
             <underlined>0</underlined>
-            
             <face>Arial</face>
           </font>
-          
           <bitmap></bitmap>
         </object>
-        
         <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
-        
         <border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxStaticText" name="lblBuildTimestamp">
-          
           <label></label>
-          
           <style>wxALIGN_RIGHT</style>
         </object>
-        
         <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-        
         <border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxStaticLine"/>
-        
         <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-        
         <border>5</border>
       </object>
       <object class="sizeritem">
@@ -62,17 +45,13 @@
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxTextCtrl" name="txtDescription">
-                    
-                    <style>wxTE_MULTILINE|wxTE_READONLY</style>
+                    <style>wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER</style>
                   </object>
-                  
                   <option>1</option>
-                  
                   <flag>wxALL|wxEXPAND</flag>
                 </object>
               </object>
             </object>
-            
             <selected>1</selected>
           </object>
           <object class="notebookpage">
@@ -89,78 +68,61 @@
                     <growablecols>1</growablecols>
                     <object class="sizeritem">
                       <object class="wxStaticText">
-                        
                         <label>Name:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText" name="lblName">
-                        
                         <label>nnn</label>
                       </object>
-                      
                       <flag>wxEXPAND</flag>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText">
-                        
                         <label>Version:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText" name="lblVersion">
-                        
                         <label>vvv</label>
                       </object>
-                      
                       <flag>wxEXPAND</flag>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText">
-                        
                         <label>Author:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText" name="lblAuthor">
-                        
                         <label>aaa</label>
                       </object>
-                      
                       <flag>wxEXPAND</flag>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText">
-                        
                         <label>E-mail:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText" name="lblEmail">
-                        
                         <label>eee</label>
                       </object>
-                      
                       <flag>wxEXPAND</flag>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText">
-                        
                         <label>Website:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText" name="lblWebsite">
-                        
                         <label>www</label>
                       </object>
-                      
                       <flag>wxEXPAND</flag>
                     </object>
                   </object>
-                  
                   <flag>wxALL|wxEXPAND</flag>
-                  
                   <border>8</border>
                 </object>
               </object>
@@ -173,27 +135,17 @@
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxTextCtrl" name="txtThanksTo">
-                    
-                    <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
-                    
+                    <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxNO_BORDER</style>
                     <font>
-                      
                       <size>8</size>
-                      
                       <style>swiss</style>
-                      
                       <weight>normal</weight>
-                      
                       <family>normal</family>
-                      
                       <underlined>0</underlined>
-                      
                       <face>Courier New</face>
                     </font>
                   </object>
-                  
                   <option>1</option>
-                  
                   <flag>wxALL|wxEXPAND</flag>
                 </object>
               </object>
@@ -206,52 +158,34 @@
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxTextCtrl" name="txtLicense">
-                    
-                    <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
-                    
+                    <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxNO_BORDER</style>
                     <font>
-                      
                       <size>8</size>
-                      
                       <style>swiss</style>
-                      
                       <weight>normal</weight>
-                      
                       <family>normal</family>
-                      
                       <underlined>0</underlined>
-                      
                       <face>Courier New</face>
                     </font>
                   </object>
-                  
                   <option>1</option>
-                  
                   <flag>wxALL|wxEXPAND</flag>
-                  
                   <minsize>320,240</minsize>
                 </object>
               </object>
             </object>
           </object>
         </object>
-        
         <option>1</option>
-        
         <flag>wxALL|wxEXPAND</flag>
-        
         <border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxButton" name="wxID_CANCEL">
-          
           <label>Close</label>
-          
           <default>1</default>
         </object>
-        
         <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
-        
         <border>8</border>
       </object>
     </object>

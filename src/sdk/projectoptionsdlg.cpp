@@ -51,7 +51,6 @@
 
 BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
     EVT_UPDATE_UI( -1,                                 ProjectOptionsDlg::OnUpdateUI)
-	EVT_BUTTON(    XRCID("btnOK"),                     ProjectOptionsDlg::OnOK)
 	EVT_BUTTON(    XRCID("btnProjectBuildOptions"),    ProjectOptionsDlg::OnProjectBuildOptionsClick)
 	EVT_BUTTON(    XRCID("btnProjectDeps"),            ProjectOptionsDlg::OnProjectDepsClick)
 	EVT_BUTTON(    XRCID("btnTargetBuildOptions"),     ProjectOptionsDlg::OnTargetBuildOptionsClick)
@@ -861,22 +860,24 @@ void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "btnCheckScripts", wxSpinButton)->Enable(!customMake);
 }
 
-void ProjectOptionsDlg::OnOK(wxCommandEvent& event)
+void ProjectOptionsDlg::EndModal(int retCode)
 {
+    if (retCode == wxID_OK)
+    {
+        m_Project->SetTitle(XRCCTRL(*this, "txtProjectName", wxTextCtrl)->GetValue());
+        m_Project->RenameInTree(m_Project->GetTitle());
+        m_Project->SetMakefile(XRCCTRL(*this, "txtProjectMakefile", wxTextCtrl)->GetValue());
+        m_Project->SetMakefileCustom(XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->GetValue());
+        m_Project->SetTargetType(TargetType(XRCCTRL(*this, "cmbProjectType", wxComboBox)->GetSelection()));
+        m_Project->SetModeForPCH((PCHMode)XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->GetSelection());
 
-	m_Project->SetTitle(XRCCTRL(*this, "txtProjectName", wxTextCtrl)->GetValue());
-	m_Project->RenameInTree(m_Project->GetTitle());
-	m_Project->SetMakefile(XRCCTRL(*this, "txtProjectMakefile", wxTextCtrl)->GetValue());
-	m_Project->SetMakefileCustom(XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->GetValue());
-	m_Project->SetTargetType(TargetType(XRCCTRL(*this, "cmbProjectType", wxComboBox)->GetSelection()));
-	m_Project->SetModeForPCH((PCHMode)XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->GetSelection());
+    #if 1
+        if (m_Current_Sel == -1)
+            m_Current_Sel = 0; // force update of global options
+        DoBeforeTargetChange(true);
+    #endif
+    }
 
-#if 1
-    if (m_Current_Sel == -1)
-        m_Current_Sel = 0; // force update of global options
-    DoBeforeTargetChange(true);
-#endif
-
-    EndModal(wxID_OK);
+    wxDialog::EndModal(retCode);
 }
 

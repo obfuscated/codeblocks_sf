@@ -11,12 +11,9 @@
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
             <object class="wxListBox" name="lstTools">
-              
               <content/>
             </object>
-            
             <option>1</option>
-            
             <flag>wxEXPAND</flag>
           </object>
           <object class="sizeritem">
@@ -24,79 +21,62 @@
               <orient>wxVERTICAL</orient>
               <object class="sizeritem">
                 <object class="wxButton" name="btnUp">
-                  
                   <label>Move &amp;up</label>
                 </object>
-              
                 <flag>wxGROW</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxButton" name="btnDown">
-                  
                   <label>Move &amp;down</label>
                 </object>
-              
                 <flag>wxGROW</flag>
               </object>
               <object class="spacer">
-                
                 <size>0,16</size>
               </object>
               <object class="sizeritem">
                 <object class="wxButton" name="btnAdd">
-                  
                   <label>&amp;Add</label>
                 </object>
-              
                 <flag>wxGROW</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxButton" name="btnEdit">
-                  
                   <label>&amp;Edit</label>
                 </object>
-              
                 <flag>wxGROW</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxButton" name="btnRemove">
-                  
                   <label>&amp;Remove</label>
                 </object>
-              
                 <flag>wxGROW</flag>
               </object>
             </object>
-            
             <flag>wxLEFT|wxEXPAND</flag>
-            
             <border>8</border>
           </object>
         </object>
-        
         <option>1</option>
-        
         <flag>wxALL|wxEXPAND</flag>
-        
         <border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxStaticLine"/>
-        
         <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-        
         <border>8</border>
       </object>
       <object class="sizeritem">
-        <object class="wxButton" name="wxID_CANCEL">
-          
-          <label>&amp;Close</label>
-          
-          <default>1</default>
+        <object class="wxStdDialogButtonSizer">
+          <object class="button">
+            <object class="wxButton" name="wxID_OK">
+              <label></label>
+              <label>&amp;Ok</label>
+              <default>1</default>
+            </object>
+          </object>
         </object>
-        
         <flag>wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
-        
         <border>8</border>
       </object>
     </object>

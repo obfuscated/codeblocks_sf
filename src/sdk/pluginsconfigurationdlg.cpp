@@ -39,12 +39,6 @@
 
 #include "pluginsconfigurationdlg.h" // class's header file
 
-
-
-BEGIN_EVENT_TABLE(PluginsConfigurationDlg, wxDialog)
-	EVT_BUTTON(XRCID("btnOK"), PluginsConfigurationDlg::OnOK)
-END_EVENT_TABLE()
-
 // class constructor
 PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
 {
@@ -80,20 +74,23 @@ PluginsConfigurationDlg::~PluginsConfigurationDlg()
 	// insert your code here
 }
 
-void PluginsConfigurationDlg::OnOK(wxCommandEvent& event)
+void PluginsConfigurationDlg::EndModal(int retCode)
 {
-    wxCheckListBox* list = XRCCTRL(*this, "lstPlugins", wxCheckListBox);
-    PluginManager* man = Manager::Get()->GetPluginManager();
-    PluginElementsArray& plugins = man->GetPlugins();
-
-    for (int i = 0; i < list->GetCount(); ++i)
+    if (retCode == wxID_OK)
     {
-        PluginElement* elem = plugins[i];
-        wxString baseKey;
-        baseKey << _T("/") << elem->name;
-        bool checked = list->IsChecked(i);
-        Manager::Get()->GetConfigManager(_T("plugins"))->Write(baseKey, checked);
+        wxCheckListBox* list = XRCCTRL(*this, "lstPlugins", wxCheckListBox);
+        PluginManager* man = Manager::Get()->GetPluginManager();
+        PluginElementsArray& plugins = man->GetPlugins();
+
+        for (int i = 0; i < list->GetCount(); ++i)
+        {
+            PluginElement* elem = plugins[i];
+            wxString baseKey;
+            baseKey << _T("/") << elem->name;
+            bool checked = list->IsChecked(i);
+            Manager::Get()->GetConfigManager(_T("plugins"))->Write(baseKey, checked);
+        }
     }
 
-    EndModal(wxID_OK);
+    wxDialog::EndModal(retCode);
 }

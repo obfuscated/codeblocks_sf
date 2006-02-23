@@ -12,10 +12,10 @@ class ProjectFileOptionsDlg : public wxDialog
 		ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf);
 		~ProjectFileOptionsDlg();
 		void OnUpdateUI(wxUpdateUIEvent& event);
-		void OnOKClick(wxCommandEvent& event);
+		void EndModal(int retCode);
 	private:
 		ProjectFile* m_ProjectFile;
-		
+
 		DECLARE_EVENT_TABLE()
 };
 

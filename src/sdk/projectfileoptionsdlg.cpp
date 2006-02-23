@@ -44,7 +44,6 @@
 
 BEGIN_EVENT_TABLE(ProjectFileOptionsDlg, wxDialog)
 	EVT_UPDATE_UI(-1, ProjectFileOptionsDlg::OnUpdateUI)
-	EVT_BUTTON(XRCID("btnOK"), ProjectFileOptionsDlg::OnOKClick)
 END_EVENT_TABLE()
 
 // some help functions and type (copied and adapted from the codestat plug-in)
@@ -256,29 +255,33 @@ void ProjectFileOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 	}
 }
 
-void ProjectFileOptionsDlg::OnOKClick(wxCommandEvent& event)
+void ProjectFileOptionsDlg::EndModal(int retCode)
 {
-	m_ProjectFile->buildTargets.Clear();
-	wxCheckListBox *list = XRCCTRL(*this, "lstTargets", wxCheckListBox);
-	for (int i = 0; i < list->GetCount(); i++)
-	{
-		if (list->IsChecked(i))
-			m_ProjectFile->AddBuildTarget(list->GetString(i));
-	}
+    if (retCode == wxID_OK)
+    {
+        m_ProjectFile->buildTargets.Clear();
+        wxCheckListBox *list = XRCCTRL(*this, "lstTargets", wxCheckListBox);
+        for (int i = 0; i < list->GetCount(); i++)
+        {
+            if (list->IsChecked(i))
+                m_ProjectFile->AddBuildTarget(list->GetString(i));
+        }
 
-	m_ProjectFile->compile = XRCCTRL(*this, "chkCompile", wxCheckBox)->GetValue();
-	m_ProjectFile->link = XRCCTRL(*this, "chkLink", wxCheckBox)->GetValue();
-	m_ProjectFile->weight = XRCCTRL(*this, "sliderWeight", wxSlider)->GetValue();
-//	m_ProjectFile->SetObjName(XRCCTRL(*this, "txtObjName", wxTextCtrl)->GetValue());
-	m_ProjectFile->useCustomBuildCommand = XRCCTRL(*this, "chkBuildStage", wxCheckBox)->GetValue();
-	m_ProjectFile->buildCommand = XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->GetValue();
-	m_ProjectFile->compilerVar = XRCCTRL(*this, "txtCompiler", wxTextCtrl)->GetValue();
+        m_ProjectFile->compile = XRCCTRL(*this, "chkCompile", wxCheckBox)->GetValue();
+        m_ProjectFile->link = XRCCTRL(*this, "chkLink", wxCheckBox)->GetValue();
+        m_ProjectFile->weight = XRCCTRL(*this, "sliderWeight", wxSlider)->GetValue();
+    //	m_ProjectFile->SetObjName(XRCCTRL(*this, "txtObjName", wxTextCtrl)->GetValue());
+        m_ProjectFile->useCustomBuildCommand = XRCCTRL(*this, "chkBuildStage", wxCheckBox)->GetValue();
+        m_ProjectFile->buildCommand = XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->GetValue();
+        m_ProjectFile->compilerVar = XRCCTRL(*this, "txtCompiler", wxTextCtrl)->GetValue();
 
-	// make sure we have a compiler var, if the file is to be compiled
-	if (m_ProjectFile->compile && m_ProjectFile->compilerVar.IsEmpty())
-        m_ProjectFile->compilerVar = _T("CPP");
+        // make sure we have a compiler var, if the file is to be compiled
+        if (m_ProjectFile->compile && m_ProjectFile->compilerVar.IsEmpty())
+            m_ProjectFile->compilerVar = _T("CPP");
 
-    cbProject* prj = m_ProjectFile->GetParentProject();
-    prj->SetModified(true);
-	EndModal(wxID_OK);
+        cbProject* prj = m_ProjectFile->GetParentProject();
+        prj->SetModified(true);
+    }
+
+	wxDialog::EndModal(retCode);
 }

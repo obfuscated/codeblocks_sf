@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxDialog" name="dlgAboutPlugin">
     <title>About plugin...</title>
@@ -36,7 +36,7 @@
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxTextCtrl" name="txtDescription">
-                    <style>wxTE_MULTILINE|wxTE_READONLY</style>
+                    <style>wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER</style>
                   </object>
                   <option>1</option>
                   <flag>wxALL|wxEXPAND</flag>
@@ -126,7 +126,7 @@
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxTextCtrl" name="txtThanksTo">
-                    <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
+                    <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxNO_BORDER</style>
                     <font>
                       <size>8</size>
                       <style>swiss</style>
@@ -149,7 +149,7 @@
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxTextCtrl" name="txtLicense">
-                    <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
+                    <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxNO_BORDER</style>
                     <font>
                       <size>8</size>
                       <style>swiss</style>

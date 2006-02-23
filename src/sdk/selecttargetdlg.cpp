@@ -39,7 +39,6 @@
 #include "selecttargetdlg.h"
 
 BEGIN_EVENT_TABLE(SelectTargetDlg, wxDialog)
-	EVT_BUTTON(XRCID("btnOK"), SelectTargetDlg::OnOK)
 	EVT_CHECKBOX(XRCID("chkSetAsDefaultExec"), SelectTargetDlg::OnCheckboxSelection)
 	EVT_LISTBOX(XRCID("lstItems"), SelectTargetDlg::OnListboxSelection)
 	EVT_LISTBOX_DCLICK(XRCID("lstItems"), SelectTargetDlg::OnOK)
@@ -60,6 +59,7 @@ SelectTargetDlg::SelectTargetDlg(wxWindow* parent, cbProject* project, int selec
 		list->Append(target->GetTitle());
 	}
 	list->SetSelection(m_pProject->GetDefaultExecuteTargetIndex());
+
 	UpdateSelected();
 }
 
@@ -108,15 +108,18 @@ void SelectTargetDlg::OnCheckboxSelection(wxCommandEvent& event)
     }
 }
 
-void SelectTargetDlg::OnOK(wxCommandEvent& event)
+void SelectTargetDlg::EndModal(int retCode)
 {
-	m_Selected = XRCCTRL(*this, "lstItems", wxListBox)->GetSelection();
-	ProjectBuildTarget* target = m_pProject->GetBuildTarget(m_Selected);
-	if (target)
-	{
-		target->SetExecutionParameters(XRCCTRL(*this, "txtParams", wxTextCtrl)->GetValue());
-		target->SetHostApplication(XRCCTRL(*this, "txtHostApp", wxTextCtrl)->GetValue());
-	}
+    if (retCode == wxID_OK)
+    {
+        m_Selected = XRCCTRL(*this, "lstItems", wxListBox)->GetSelection();
+        ProjectBuildTarget* target = m_pProject->GetBuildTarget(m_Selected);
+        if (target)
+        {
+            target->SetExecutionParameters(XRCCTRL(*this, "txtParams", wxTextCtrl)->GetValue());
+            target->SetHostApplication(XRCCTRL(*this, "txtHostApp", wxTextCtrl)->GetValue());
+        }
+    }
 
-	EndModal(wxID_OK);
+	wxDialog::EndModal(retCode);
 }
