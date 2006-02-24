@@ -255,10 +255,11 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 		}
 		// find out which compiler, if gnu, do the special trick
 		// to find it's internal include paths
-		wxString CompilerName = (Compilers[idxCompiler])->GetName();
-		if(CompilerName == _("GNU GCC Compiler"))
+		wxString CompilerID = (Compilers[idxCompiler])->GetID();
+		if(CompilerID == _T("gcc"))
 		{ // for starters , only do this for gnu compiler
-//			Manager::Get()->GetMessageManager()->DebugLog(_T("CompilerName ") + CompilerName);
+		    wxLogNull ln; // spare us the error messages; we 'll deal with them on our own
+//			Manager::Get()->GetMessageManager()->DebugLog(_T("CompilerID ") + CompilerID);
 			//	wxString Command("mingw32-g++ -v -E -x c++ - < nul");
 			// specifying "< nul", does not seem to work
 			// workaround : create a dummy file (let's hope it does not exist)
