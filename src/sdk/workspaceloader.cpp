@@ -22,7 +22,7 @@
     #include "projectmanager.h"
     #include "messagemanager.h"
     #include "cbproject.h"
-    #inclued "globals.h"
+    #include "globals.h"
     #include "workspaceloader.h"
 #endif
 

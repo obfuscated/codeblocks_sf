@@ -30,6 +30,7 @@
     #include "messagelog.h" // class's header file
     #include "manager.h"
     #include "messagemanager.h"
+	#include "configmanager.h"
 
     #include <wx/intl.h>
 #endif

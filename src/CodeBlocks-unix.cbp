@@ -784,16 +784,6 @@
 			<Option link="0" />
 			<Option target="Compiler" />
 		</Unit>
-		<Unit filename="plugins/compilergcc/cmdlinegenerator.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/cmdlinegenerator.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Compiler" />
-		</Unit>
 		<Unit filename="plugins/compilergcc/compilerBCC.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Compiler" />
