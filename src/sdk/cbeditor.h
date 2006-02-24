@@ -18,7 +18,6 @@ struct cbEditorInternalData; // this is the private data struct used by the edit
 class cbEditor;
 class ProjectFile;
 class EditorColorSet;
-class wxNotebook;
 
 class cbStyledTextCtrl : public wxScintilla
 {

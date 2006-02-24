@@ -15,7 +15,6 @@
 
 // forward decls
 class wxFrame;
-class wxNotebook;
 class ProjectManager;
 class EditorManager;
 class MessageManager;
