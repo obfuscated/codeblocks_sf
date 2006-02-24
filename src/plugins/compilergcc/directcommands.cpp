@@ -15,20 +15,19 @@
 #include <messagemanager.h>
 #include <macrosmanager.h>
 #include "directcommands.h"
-#include "cmdlinegenerator.h"
+#include "compilercommandgenerator.h"
 #include "compilergcc.h"
 #include "cbexception.h"
 #include <depslib.h>
 
 DirectCommands::DirectCommands(CompilerGCC* compilerPlugin,
-                                CmdLineGenerator* generator,
                                 Compiler* compiler,
                                 cbProject* project,
                                 int logPageIndex)
     : m_doYield(false),
     m_PageIndex(logPageIndex),
     m_pCompilerPlugin(compilerPlugin),
-    m_pGenerator(generator),
+//    m_pGenerator(generator),
     m_pCompiler(compiler),
     m_pProject(project),
     m_pCurrTarget(0)
@@ -169,15 +168,19 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         return ret;
 #endif
     Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
-    wxString compilerCmd = pf->useCustomBuildCommand
-                            ? pf->buildCommand
-                            : compiler->GetCommand(isResource ? ctCompileResourceCmd : ctCompileObjectCmd);
-    m_pGenerator->CreateSingleFileCompileCmd(compilerCmd,
-                                             target,
-                                             pf,
-                                             pfd.source_file,
-                                             pfd.object_file,
-                                             pfd.dep_file);
+    wxString compilerCmd;
+    if (!isHeader || compiler->GetSwitches().supportsPCH)
+    {
+        compilerCmd = pf->useCustomBuildCommand
+                        ? pf->buildCommand
+                        : compiler->GetCommand(isResource ? ctCompileResourceCmd : ctCompileObjectCmd);
+        compiler->GenerateCommandLine(compilerCmd,
+                                         target,
+                                         pf,
+                                         pfd.source_file,
+                                         pfd.object_file,
+                                         pfd.dep_file);
+    }
 
     if (!compilerCmd.IsEmpty())
     {
@@ -236,19 +239,19 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
 
     Compiler* compiler = CompilerFactory::GetDefaultCompiler();
     wxString compilerCmd = compiler->GetCommand(ctCompileObjectCmd);
-    m_pGenerator->CreateSingleFileCompileCmd(compilerCmd,
-                                             0,
-                                             0,
-                                             s_filename,
-                                             o_filename,
-                                             wxEmptyString);
+    compiler->GenerateCommandLine(compilerCmd,
+                                     0,
+                                     0,
+                                     s_filename,
+                                     o_filename,
+                                     wxEmptyString);
     wxString linkerCmd = compiler->GetCommand(ctLinkConsoleExeCmd);
-    m_pGenerator->CreateSingleFileCompileCmd(linkerCmd,
-                                             0,
-                                             0,
-                                             wxEmptyString,
-                                             o_filename,
-                                             wxEmptyString);
+    compiler->GenerateCommandLine(linkerCmd,
+                                     0,
+                                     0,
+                                     wxEmptyString,
+                                     o_filename,
+                                     wxEmptyString);
 
     if (!compilerCmd.IsEmpty())
     {
@@ -397,6 +400,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
 
 wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
 {
+    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
     wxArrayString buildcmds = target ? target->GetCommandsBeforeBuild() : m_pProject->GetCommandsBeforeBuild();
     if (!buildcmds.IsEmpty())
     {
@@ -404,7 +408,7 @@ wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
         wxArrayString tmp;
         for (size_t i = 0; i < buildcmds.GetCount(); ++i)
         {
-            m_pGenerator->CreateSingleFileCompileCmd(buildcmds[i], target, 0, wxEmptyString, wxEmptyString, wxEmptyString);
+            compiler->GenerateCommandLine(buildcmds[i], target, 0, wxEmptyString, wxEmptyString, wxEmptyString);
             tmp.Add(wxString(COMPILER_SIMPLE_LOG) + buildcmds[i]);
             tmp.Add(buildcmds[i]);
         }
@@ -421,7 +425,7 @@ wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
 
 wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
 {
-//    m_pProject->GetCustomVars().ApplyVarsToEnvironment();
+    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
     wxArrayString buildcmds = target ? target->GetCommandsAfterBuild() : m_pProject->GetCommandsAfterBuild();
     if (!buildcmds.IsEmpty())
     {
@@ -429,7 +433,7 @@ wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
         wxArrayString tmp;
         for (size_t i = 0; i < buildcmds.GetCount(); ++i)
         {
-            m_pGenerator->CreateSingleFileCompileCmd(buildcmds[i], target, 0, wxEmptyString, wxEmptyString, wxEmptyString);
+            compiler->GenerateCommandLine(buildcmds[i], target, 0, wxEmptyString, wxEmptyString, wxEmptyString);
             tmp.Add(wxString(COMPILER_SIMPLE_LOG) + buildcmds[i]);
             tmp.Add(buildcmds[i]);
         }
@@ -580,7 +584,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     }
     Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
     wxString compilerCmd = compiler->GetCommand(ct);
-    m_pGenerator->CreateSingleFileCompileCmd(compilerCmd,
+    compiler->GenerateCommandLine(compilerCmd,
                                              target,
                                              0,
                                              _T(""),

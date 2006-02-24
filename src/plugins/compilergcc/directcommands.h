@@ -15,7 +15,6 @@ class cbProject;
 class ProjectBuildTarget;
 class ProjectFile;
 class pfDetails;
-class CmdLineGenerator;
 
 WX_DEFINE_ARRAY(ProjectFile*, MyFilesArray); // keep our own copy, to sort it by file weight (priority)
 
@@ -23,7 +22,6 @@ class DirectCommands
 {
 	public:
 		DirectCommands(CompilerGCC* compilerPlugin,
-                        CmdLineGenerator* generator,
                         Compiler* compiler,
                         cbProject* project,
                         int logPageIndex = 0);
@@ -51,7 +49,6 @@ class DirectCommands
 
         int m_PageIndex;
         CompilerGCC* m_pCompilerPlugin;
-        CmdLineGenerator* m_pGenerator;
         Compiler* m_pCompiler;
         cbProject* m_pProject;
         ProjectBuildTarget* m_pCurrTarget; // temp

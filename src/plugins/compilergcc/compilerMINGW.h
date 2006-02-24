@@ -11,6 +11,7 @@ class CompilerMINGW : public Compiler
         virtual void Reset();
 		virtual void LoadDefaultRegExArray();
         virtual AutoDetectResult AutoDetectInstallationDir();
+        virtual CompilerCommandGenerator* GetCommandGenerator();
     protected:
         virtual Compiler* CreateCopy();
 	private:

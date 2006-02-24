@@ -20,6 +20,7 @@
 #include <wx/log.h>
 #include "manager.h"
 #include "messagemanager.h"
+#include "compilerMINGWgenerator.h"
 
 #include <configmanager.h>
 
@@ -41,6 +42,11 @@ CompilerMINGW::~CompilerMINGW()
 Compiler * CompilerMINGW::CreateCopy()
 {
     return new CompilerMINGW(*this);
+}
+
+CompilerCommandGenerator* CompilerMINGW::GetCommandGenerator()
+{
+    return new CompilerMINGWGenerator;
 }
 
 void CompilerMINGW::Reset()
@@ -77,6 +83,8 @@ void CompilerMINGW::Reset()
 	m_Switches.linkerNeedsLibPrefix = false;
 	m_Switches.linkerNeedsLibExtension = false;
 	m_Switches.buildMethod = cbmDirect;
+    m_Switches.supportsPCH = true;
+    m_Switches.PCHExtension = _T("h.gch");
 
     // Summary of GCC options: http://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html
 

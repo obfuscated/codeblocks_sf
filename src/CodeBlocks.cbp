@@ -731,16 +731,6 @@
 			<Option link="0" />
 			<Option target="Compiler" />
 		</Unit>
-		<Unit filename="plugins\compilergcc\cmdlinegenerator.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins\compilergcc\cmdlinegenerator.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Compiler" />
-		</Unit>
 		<Unit filename="plugins\compilergcc\compilerBCC.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Compiler" />
@@ -807,6 +797,16 @@
 		</Unit>
 		<Unit filename="plugins\compilergcc\compilerMINGW.h">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMINGWgenerator.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMINGWgenerator.h">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Compiler" />
@@ -1982,6 +1982,16 @@
 		</Unit>
 		<Unit filename="sdk\compiler.h">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\compilercommandgenerator.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\compilercommandgenerator.h">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="sdk" />

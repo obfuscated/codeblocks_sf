@@ -18,7 +18,6 @@ libcompiler_la_LIBADD = ../../sdk/libcodeblocks.la \
 				depslib/src/libdepslib.la
 
 libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
-			cmdlinegenerator.cpp \
 			compilerBCC.cpp \
 			compiler_defs.cpp \
 			compilerDMC.cpp \
@@ -29,6 +28,7 @@ libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 			compilerICC.cpp \
 			compilermessages.cpp \
 			compilerMINGW.cpp \
+			compilerMINGWgenerator.cpp \
 			compilerMSVC.cpp \
 			compileroptionsdlg.cpp \
 			compilerOW.cpp \
@@ -38,7 +38,6 @@ libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 			makefilegenerator.cpp
 
 noinst_HEADERS = advancedcompileroptionsdlg.h \
-			cmdlinegenerator.h \
 			compilerBCC.h \
 			compiler_defs.h \
 			compilerDMC.h \
@@ -49,6 +48,7 @@ noinst_HEADERS = advancedcompileroptionsdlg.h \
 			compilerICC.h \
 			compilermessages.h \
 			compilerMINGW.h \
+			compilerMINGWgenerator.h \
 			compilerMSVC.h \
 			compileroptionsdlg.h \
 			compilerOW.h \

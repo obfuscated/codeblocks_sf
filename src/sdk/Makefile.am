@@ -37,6 +37,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						cbworkspace.cpp \
 						compileoptionsbase.cpp \
 						compiler.cpp \
+						compilercommandgenerator.cpp \
 						compilerfactory.cpp \
 						compileroptions.cpp \
 						compiletargetbase.cpp \
@@ -120,8 +121,9 @@ noinst_HEADERS = annoyingdialog.h \
 				cbthreadpool.h \
 				cbworkspace.h \
 				compileoptionsbase.h \
-				compilerfactory.h \
 				compiler.h \
+				compilercommandgenerator.h \
+				compilerfactory.h \
 				compileroptions.h \
 				compiletargetbase.h \
 				configmanager.h \

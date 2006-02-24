@@ -102,6 +102,10 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
 	XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->SetValue(m_Project->IsMakefileCustom());
 	XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->SetSelection((int)m_Project->GetModeForPCH());
 
+	Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
+	bool hasPCH = compiler && compiler->GetSwitches().supportsPCH;
+	XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->Enable(hasPCH);
+
     FillBuildTargets();
 
 	PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();

@@ -844,6 +844,16 @@
 			<Option link="0" />
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins/compilergcc/compilerMINGWgenerator.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerMINGWgenerator.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins/compilergcc/compilerMSVC.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Compiler" />
@@ -2121,6 +2131,16 @@
 		</Unit>
 		<Unit filename="sdk/compiler.h">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/compilercommandgenerator.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/compilercommandgenerator.h">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="sdk" />

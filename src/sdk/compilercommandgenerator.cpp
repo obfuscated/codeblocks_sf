@@ -1,6 +1,7 @@
-#include <sdk.h>
-#include "cmdlinegenerator.h"
+#include "sdk_precomp.h"
+#include "compilercommandgenerator.h"
 #include <wx/intl.h>
+#include "cbexception.h"
 #include "cbproject.h"
 #include "compilerfactory.h"
 #include "compiler.h"
@@ -11,17 +12,17 @@
 #include "scriptingmanager.h"
 #include "scriptingcall.h"
 
-CmdLineGenerator::CmdLineGenerator()
+CompilerCommandGenerator::CompilerCommandGenerator()
 {
     //ctor
 }
 
-CmdLineGenerator::~CmdLineGenerator()
+CompilerCommandGenerator::~CompilerCommandGenerator()
 {
     //dtor
 }
 
-void CmdLineGenerator::Init(cbProject* project)
+void CompilerCommandGenerator::Init(cbProject* project)
 {
     // clear old arrays
     m_Output.clear();
@@ -39,15 +40,17 @@ void CmdLineGenerator::Init(cbProject* project)
     {
         // access the default compiler
         Compiler* compiler = CompilerFactory::GetDefaultCompiler();
+        if (!compiler)
+            cbThrow(_T("Compiler not valid"));
 
-        SetupOutputFilenames(compiler, 0);
-        SetupIncludeDirs(compiler, 0);
-        SetupLibrariesDirs(compiler, 0);
-        SetupResourceIncludeDirs(compiler, 0);
-        SetupCompilerOptions(compiler, 0);
-        SetupLinkerOptions(compiler, 0);
-        SetupLinkLibraries(compiler, 0);
-        SetupResourceCompilerOptions(compiler, 0);
+        m_DefOutput[0] = SetupOutputFilenames(compiler, 0);
+        m_Inc[0] = SetupIncludeDirs(compiler, 0);
+        m_Lib[0] = SetupLibrariesDirs(compiler, 0);
+        m_RC[0] = SetupResourceIncludeDirs(compiler, 0);
+        m_CFlags[0] = SetupCompilerOptions(compiler, 0);
+        m_LDFlags[0] = SetupLinkerOptions(compiler, 0);
+        m_LDAdd[0] = SetupLinkLibraries(compiler, 0);
+        m_RCFlags[0] = SetupResourceCompilerOptions(compiler, 0);
         return;
     }
 
@@ -82,15 +85,17 @@ void CmdLineGenerator::Init(cbProject* project)
 
         // access the compiler used for this target
         Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
+        if (!compiler)
+            cbThrow(_T("Compiler not valid"));
 
-        SetupOutputFilenames(compiler, target);
-        SetupIncludeDirs(compiler, target);
-        SetupLibrariesDirs(compiler, target);
-        SetupResourceIncludeDirs(compiler, target);
-        SetupCompilerOptions(compiler, target);
-        SetupLinkerOptions(compiler, target);
-        SetupLinkLibraries(compiler, target);
-        SetupResourceCompilerOptions(compiler, target);
+        m_DefOutput[target] = SetupOutputFilenames(compiler, target);
+        m_Inc[target] = SetupIncludeDirs(compiler, target);
+        m_Lib[target] = SetupLibrariesDirs(compiler, target);
+        m_RC[target] = SetupResourceIncludeDirs(compiler, target);
+        m_CFlags[target] = SetupCompilerOptions(compiler, target);
+        m_LDFlags[target] = SetupLinkerOptions(compiler, target);
+        m_LDAdd[target] = SetupLinkLibraries(compiler, target);
+        m_RCFlags[target] = SetupResourceCompilerOptions(compiler, target);
 
         // target post-build scripts
         DoBuildScripts(target, _T("UnsetBuildOptions"));
@@ -100,7 +105,7 @@ void CmdLineGenerator::Init(cbProject* project)
     DoBuildScripts(project, _T("UnsetBuildOptions"));
 }
 
-void CmdLineGenerator::CreateSingleFileCompileCmd(wxString& command,
+void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
                                                     ProjectBuildTarget* target,
                                                     ProjectFile* pf,
                                                     const wxString& file,
@@ -149,20 +154,20 @@ void CmdLineGenerator::CreateSingleFileCompileCmd(wxString& command,
         }
     }
 
-    command.Replace(_T("$compiler"), compilerStr);
-    command.Replace(_T("$linker"), compiler->GetPrograms().LD);
-    command.Replace(_T("$lib_linker"), compiler->GetPrograms().LIB);
-    command.Replace(_T("$rescomp"), compiler->GetPrograms().WINDRES);
-    command.Replace(_T("$options"), m_CFlags[target]);
-    command.Replace(_T("$link_options"), m_LDFlags[target]);
-    command.Replace(_T("$includes"), m_Inc[target] + fileInc);
-    command.Replace(_T("$res_includes"), m_RC[target] + fileInc);
-    command.Replace(_T("$libdirs"), m_Lib[target]);
-    command.Replace(_T("$libs"), m_LDAdd[target]);
-    command.Replace(_T("$file"), file);
-    command.Replace(_T("$dep_object"), deps);
-    command.Replace(_T("$object"), object);
-    command.Replace(_T("$resource_output"), object);
+    macro.Replace(_T("$compiler"), compilerStr);
+    macro.Replace(_T("$linker"), compiler->GetPrograms().LD);
+    macro.Replace(_T("$lib_linker"), compiler->GetPrograms().LIB);
+    macro.Replace(_T("$rescomp"), compiler->GetPrograms().WINDRES);
+    macro.Replace(_T("$options"), m_CFlags[target]);
+    macro.Replace(_T("$link_options"), m_LDFlags[target]);
+    macro.Replace(_T("$includes"), m_Inc[target] + fileInc);
+    macro.Replace(_T("$res_includes"), m_RC[target] + fileInc);
+    macro.Replace(_T("$libdirs"), m_Lib[target]);
+    macro.Replace(_T("$libs"), m_LDAdd[target]);
+    macro.Replace(_T("$file"), file);
+    macro.Replace(_T("$dep_object"), deps);
+    macro.Replace(_T("$object"), object);
+    macro.Replace(_T("$resource_output"), object);
     if (!target)
     {
         // single file compilation, probably
@@ -173,44 +178,44 @@ void CmdLineGenerator::CreateSingleFileCompileCmd(wxString& command,
         fname.SetExt(EXECUTABLE_EXT);
         wxString output = fname.GetFullPath();
         QuoteStringIfNeeded(output);
-        command.Replace(_T("$exe_output"), output);
+        macro.Replace(_T("$exe_output"), output);
     }
     else
-        command.Replace(_T("$exe_output"), m_Output[target]);
-    command.Replace(_T("$link_resobjects"), deps);
-    command.Replace(_T("$link_objects"), object);
-    // the following were added to support the QUICK HACK
-    // at directcommands.cpp:576
-    command.Replace(_T("$+link_objects"), object);
-    command.Replace(_T("$-link_objects"), object);
-    command.Replace(_T("$-+link_objects"), object);
-    command.Replace(_T("$+-link_objects"), object);
+        macro.Replace(_T("$exe_output"), m_Output[target]);
+    macro.Replace(_T("$link_resobjects"), deps);
+    macro.Replace(_T("$link_objects"), object);
+    // the following were added to support the QUICK HACK in compiler plugin:
+    // DirectCommands::GetTargetLinkCommands()
+    macro.Replace(_T("$+link_objects"), object);
+    macro.Replace(_T("$-link_objects"), object);
+    macro.Replace(_T("$-+link_objects"), object);
+    macro.Replace(_T("$+-link_objects"), object);
 
     if (target && (target->GetTargetType() == ttStaticLib || target->GetTargetType() == ttDynamicLib))
     {
         if (target->GetTargetType() == ttStaticLib || target->GetCreateStaticLib())
-            command.Replace(_T("$static_output"), m_StaticOutput[target]);
+            macro.Replace(_T("$static_output"), m_StaticOutput[target]);
         else
         {
-            command.Replace(_T("-Wl,--out-implib=$static_output"), _T("")); // special gcc case
-            command.Replace(_T("$static_output"), _T(""));
+            macro.Replace(_T("-Wl,--out-implib=$static_output"), _T("")); // special gcc case
+            macro.Replace(_T("$static_output"), _T(""));
         }
 
         if (target->GetCreateDefFile())
-            command.Replace(_T("$def_output"), m_DefOutput[target]);
+            macro.Replace(_T("$def_output"), m_DefOutput[target]);
         else
         {
-            command.Replace(_T("-Wl,--output-def=$def_output"), _T("")); // special gcc case
-            command.Replace(_T("$def_output"), _T(""));
+            macro.Replace(_T("-Wl,--output-def=$def_output"), _T("")); // special gcc case
+            macro.Replace(_T("$def_output"), _T(""));
         }
     }
 
     // finally, replace all macros in one go
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(command, true, target);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(macro, true, target);
 }
 
 /// Apply pre-build scripts for @c base.
-void CmdLineGenerator::DoBuildScripts(CompileOptionsBase* base, const wxString& funcName)
+void CompilerCommandGenerator::DoBuildScripts(CompileOptionsBase* base, const wxString& funcName)
 {
     const wxString module = _T("build-scripts");
     const wxArrayString& scripts = base->GetBuildScripts();
@@ -226,12 +231,11 @@ void CmdLineGenerator::DoBuildScripts(CompileOptionsBase* base, const wxString& 
     }
 }
 
-
 /// Setup output filename for build target.
-void CmdLineGenerator::SetupOutputFilenames(Compiler* compiler, ProjectBuildTarget* target)
+wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, ProjectBuildTarget* target)
 {
     if (!target)
-        return;
+        return wxEmptyString;
 
     // exe file
     wxString result = target->GetOutputFilename();
@@ -257,52 +261,13 @@ void CmdLineGenerator::SetupOutputFilenames(Compiler* compiler, ProjectBuildTarg
     fname.SetExt(_T("def"));
     result = UnixFilename(fname.GetFullPath());
     QuoteStringIfNeeded(result); // NOTE (thomas#1#): Do we really need to call QuoteStringIfNeeded that often? ReplaceMacros already does it, and we do it twice again without ever possibly adding whitespace
-    m_DefOutput[target] = result;
+    return result;
 }
 
 /// Setup compiler include dirs for build target.
-void CmdLineGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target)
+wxString CompilerCommandGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target)
 {
     wxString result;
-
-    // for PCH to work, the very first include dir *must* be the object output dir
-    // *only* if PCH is generated in the object output dir
-    if (target &&
-        target->GetParentProject()->GetModeForPCH() == pchObjectDir)
-    {
-        wxArrayString includedDirs; // avoid adding duplicate dirs...
-        wxString sep = wxFILE_SEP_PATH;
-        // find all PCH in project
-        int count = target->GetParentProject()->GetFilesCount();
-        for (int i = 0; i < count; ++i)
-        {
-            ProjectFile* f = target->GetParentProject()->GetFile(i);
-            if (FileTypeOf(f->relativeFilename) == ftHeader &&
-                f->compile)
-            {
-                // it is a PCH; add it's object dir to includes
-                wxString dir = wxFileName(target->GetObjectOutput() + sep + f->GetObjName()).GetPath();
-                if (includedDirs.Index(dir) == wxNOT_FOUND)
-                {
-                    includedDirs.Add(dir);
-                    QuoteStringIfNeeded(dir);
-                    // for gcc-4.0+, use the following:
-                    // result << _T("-iquote") << dir << _T(' ');
-                    // for earlier versions, -I- must be used
-                    result << compiler->GetSwitches().includeDirs << dir << _T(' ');
-                }
-            }
-        }
-        // for earlier that gcc-4.0
-        result << _T("-I- ");
-        count = (int)includedDirs.GetCount();
-        for (int i = 0; i < count; ++i)
-        {
-            QuoteStringIfNeeded(includedDirs[i]);
-            result << compiler->GetSwitches().includeDirs << includedDirs[i] << _T(' ');
-        }
-        result << _T("-I. ");
-    }
 
     if (target)
     {
@@ -340,11 +305,11 @@ void CmdLineGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* 
     }
 
     // add in array
-    m_Inc[target] = result;
+    return result;
 }
 
 /// Setup linker include dirs for build target.
-void CmdLineGenerator::SetupLibrariesDirs(Compiler* compiler, ProjectBuildTarget* target)
+wxString CompilerCommandGenerator::SetupLibrariesDirs(Compiler* compiler, ProjectBuildTarget* target)
 {
     wxString result;
 
@@ -384,11 +349,11 @@ void CmdLineGenerator::SetupLibrariesDirs(Compiler* compiler, ProjectBuildTarget
     }
 
     // add in array
-    m_Lib[target] = result;
+    return result;
 }
 
 /// Setup resource compiler include dirs for build target.
-void CmdLineGenerator::SetupResourceIncludeDirs(Compiler* compiler, ProjectBuildTarget* target)
+wxString CompilerCommandGenerator::SetupResourceIncludeDirs(Compiler* compiler, ProjectBuildTarget* target)
 {
     wxString result;
 
@@ -428,11 +393,11 @@ void CmdLineGenerator::SetupResourceIncludeDirs(Compiler* compiler, ProjectBuild
     }
 
     // add in array
-    m_RC[target] = result;
+    return result;
 }
 
 /// Setup compiler flags for build target.
-void CmdLineGenerator::SetupCompilerOptions(Compiler* compiler, ProjectBuildTarget* target)
+wxString CompilerCommandGenerator::SetupCompilerOptions(Compiler* compiler, ProjectBuildTarget* target)
 {
     wxString result;
 
@@ -454,11 +419,11 @@ void CmdLineGenerator::SetupCompilerOptions(Compiler* compiler, ProjectBuildTarg
     ExpandBackticks(result);
 
     // add in array
-    m_CFlags[target] = result;
+    return result;
 }
 
 /// Setup linker flags for build target.
-void CmdLineGenerator::SetupLinkerOptions(Compiler* compiler, ProjectBuildTarget* target)
+wxString CompilerCommandGenerator::SetupLinkerOptions(Compiler* compiler, ProjectBuildTarget* target)
 {
     wxString result;
 
@@ -480,11 +445,11 @@ void CmdLineGenerator::SetupLinkerOptions(Compiler* compiler, ProjectBuildTarget
     ExpandBackticks(result);
 
     // add in array
-    m_LDFlags[target] = result;
+    return result;
 }
 
 /// Fix library name based on advanced compiler settings
-wxString CmdLineGenerator::FixupLinkLibraries(Compiler* compiler, const wxString& lib)
+wxString CompilerCommandGenerator::FixupLinkLibraries(Compiler* compiler, const wxString& lib)
 {
     if (lib.IsEmpty())
         return wxEmptyString;
@@ -531,7 +496,7 @@ wxString CmdLineGenerator::FixupLinkLibraries(Compiler* compiler, const wxString
 }
 
 /// Setup link libraries for build target.
-void CmdLineGenerator::SetupLinkLibraries(Compiler* compiler, ProjectBuildTarget* target)
+wxString CompilerCommandGenerator::SetupLinkLibraries(Compiler* compiler, ProjectBuildTarget* target)
 {
     wxString result;
 
@@ -557,21 +522,21 @@ void CmdLineGenerator::SetupLinkLibraries(Compiler* compiler, ProjectBuildTarget
     result << GetStringFromArray(compiler->GetLinkLibs(), _T(' '));
 
     // add in array
-    m_LDAdd[target] = result;
+    return result;
 }
 
 /// Setup resource compiler flags for build target.
-void CmdLineGenerator::SetupResourceCompilerOptions(Compiler* compiler, ProjectBuildTarget* target)
+wxString CompilerCommandGenerator::SetupResourceCompilerOptions(Compiler* compiler, ProjectBuildTarget* target)
 {
     // resource compiler options are not implemented in C::B yet
-    m_RCFlags[target] = wxEmptyString;
+    return wxEmptyString;
 }
 
 /** Arrange order of options.
   * Depending on the order defined for the build target, it concatenates
   * @c project_options with @c target_options and returns the result.
   */
-wxString CmdLineGenerator::GetOrderedOptions(ProjectBuildTarget* target, OptionsRelationType rel, const wxString& project_options, const wxString& target_options)
+wxString CompilerCommandGenerator::GetOrderedOptions(ProjectBuildTarget* target, OptionsRelationType rel, const wxString& project_options, const wxString& target_options)
 {
     wxString result;
     OptionsRelation relation = target->GetOptionRelation(rel);
@@ -594,7 +559,7 @@ wxString CmdLineGenerator::GetOrderedOptions(ProjectBuildTarget* target, Options
 }
 
 /** Adds support for backtick'd expressions under windows. */
-void CmdLineGenerator::ExpandBackticks(wxString& str)
+void CompilerCommandGenerator::ExpandBackticks(wxString& str)
 {
     // only for windows...
     // real OSes support this natively ;)

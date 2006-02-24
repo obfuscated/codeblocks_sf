@@ -1,6 +1,7 @@
-#ifndef CMDLINEGENERATOR_H
-#define CMDLINEGENERATOR_H
+#ifndef COMPILERCOMMANDGENERATOR_H
+#define COMPILERCOMMANDGENERATOR_H
 
+#include "settings.h"
 #include <wx/string.h>
 #include <wx/hashmap.h>
 #include <compiletargetbase.h>
@@ -14,38 +15,39 @@ WX_DECLARE_HASH_MAP(ProjectBuildTarget*, wxString, wxPointerHash, wxPointerEqual
 WX_DECLARE_STRING_HASH_MAP(wxString, BackticksMap);
 
 /** Generate command-lines needed to produce a build.
+  * This pre-generates everything when Init() is called.
   *
-  * This is used by DirectCommands to generate the needed
+  * This is used by compilers to generate the needed
   * command lines for a build.
   */
-class CmdLineGenerator
+class DLLIMPORT CompilerCommandGenerator
 {
     public:
-        CmdLineGenerator();
-        ~CmdLineGenerator();
+        CompilerCommandGenerator();
+        virtual ~CompilerCommandGenerator();
 
         /** Initialize for use with the specified @c project. */
-        void Init(cbProject* project);
+        virtual void Init(cbProject* project);
 
         /** Get the command line to compile/link the specific file. */
-        void CreateSingleFileCompileCmd(wxString& command,
+        virtual void GenerateCommandLine(wxString& macro,
                                         ProjectBuildTarget* target,
                                         ProjectFile* pf,
                                         const wxString& file,
                                         const wxString& object,
                                         const wxString& deps);
     protected:
-        void DoBuildScripts(CompileOptionsBase* base, const wxString& funcName);
-        wxString GetOrderedOptions(ProjectBuildTarget* target, OptionsRelationType rel, const wxString& project_options, const wxString& target_options);
-        void SetupOutputFilenames(Compiler* compiler, ProjectBuildTarget* target);
-        void SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target);
-        void SetupLibrariesDirs(Compiler* compiler, ProjectBuildTarget* target);
-        void SetupResourceIncludeDirs(Compiler* compiler, ProjectBuildTarget* target);
-        void SetupCompilerOptions(Compiler* compiler, ProjectBuildTarget* target);
-        void SetupLinkerOptions(Compiler* compiler, ProjectBuildTarget* target);
-        void SetupLinkLibraries(Compiler* compiler, ProjectBuildTarget* target);
-        void SetupResourceCompilerOptions(Compiler* compiler, ProjectBuildTarget* target);
-        wxString FixupLinkLibraries(Compiler* compiler, const wxString& lib);
+        virtual void DoBuildScripts(CompileOptionsBase* base, const wxString& funcName);
+        virtual wxString GetOrderedOptions(ProjectBuildTarget* target, OptionsRelationType rel, const wxString& project_options, const wxString& target_options);
+        virtual wxString SetupOutputFilenames(Compiler* compiler, ProjectBuildTarget* target);
+        virtual wxString SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target);
+        virtual wxString SetupLibrariesDirs(Compiler* compiler, ProjectBuildTarget* target);
+        virtual wxString SetupResourceIncludeDirs(Compiler* compiler, ProjectBuildTarget* target);
+        virtual wxString SetupCompilerOptions(Compiler* compiler, ProjectBuildTarget* target);
+        virtual wxString SetupLinkerOptions(Compiler* compiler, ProjectBuildTarget* target);
+        virtual wxString SetupLinkLibraries(Compiler* compiler, ProjectBuildTarget* target);
+        virtual wxString SetupResourceCompilerOptions(Compiler* compiler, ProjectBuildTarget* target);
+        virtual wxString FixupLinkLibraries(Compiler* compiler, const wxString& lib);
 
         OptionsMap m_Output; ///< output filenames, per-target
         OptionsMap m_StaticOutput; ///< static output filenames, per-target
@@ -62,4 +64,4 @@ class CmdLineGenerator
         BackticksMap m_Backticks;
 };
 
-#endif // CMDLINEGENERATOR_H
+#endif // COMPILERCOMMANDGENERATOR_H

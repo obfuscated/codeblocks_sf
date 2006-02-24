@@ -118,8 +118,12 @@ void ProjectFile::SetObjName(const wxString& name)
     FileType ft = FileTypeOf(name);
     if (ft == ftResource || ft == ftResourceBin)
         fname.SetExt(RESOURCEBIN_EXT);
-    else if (ft == ftHeader) // support precompiled headers
-        fname.SetExt(fname.GetExt() + _T(".gch"));
+    else if (ft == ftHeader) // support precompiled headers?
+    {
+        Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
+        if (compiler && compiler->GetSwitches().supportsPCH)
+            fname.SetExt(compiler->GetSwitches().PCHExtension);
+    }
     else
     {
         if (project)
@@ -233,6 +237,10 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     tmp = pf->GetObjName();
     FileType ft = FileTypeOf(pf->relativeFilename);
 
+    Compiler* compiler = target
+                            ? CompilerFactory::GetCompiler(target->GetCompilerID())
+                            : CompilerFactory::GetDefaultCompiler();
+
     if (ft == ftResource)
     {
         // windows resources need different extension than other object files
@@ -241,15 +249,12 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     else if (ft != ftHeader)
     {
         // don't change object extension for precompiled headers
-        Compiler* compiler = target
-                                ? CompilerFactory::GetCompiler(target->GetCompilerID())
-                                : CompilerFactory::GetDefaultCompiler();
         if (compiler)
             tmp.SetExt(compiler->GetSwitches().objectExtension);
     }
 
     // support for precompiled headers
-    if (target && ft == ftHeader)
+    if (target && ft == ftHeader && compiler && compiler->GetSwitches().supportsPCH)
     {
         switch (target->GetParentProject()->GetModeForPCH())
         {
@@ -266,7 +271,9 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                 new_gch.Replace(_T("\\"), _T("_"));
                 new_gch.Replace(_T(" "), _T("_"));
 
-                object_file_native = source_file_native + _T(".gch") +
+                wxFileName fn(source_file_native);
+                object_file_native = fn.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) +
+                                    fn.GetName() + _T('.') + compiler->GetSwitches().PCHExtension +
                                     wxFILE_SEP_PATH +
                                     new_gch;
                 break;

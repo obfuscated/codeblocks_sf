@@ -7,6 +7,11 @@
 #include "compileoptionsbase.h"
 #include "compileroptions.h"
 
+class CompilerCommandGenerator;
+class cbProject;
+class ProjectBuildTarget;
+class ProjectFile;
+
 /*
     Macros used in command specs:
 
@@ -149,6 +154,8 @@ struct CompilerSwitches
     wxString libExtension; // a
     bool linkerNeedsLibPrefix; // when adding a link library, linker needs prefix?
     bool linkerNeedsLibExtension; // when adding a link library, linker needs extension?
+    bool supportsPCH; // supports precompiled headers?
+    wxString PCHExtension; // precompiled headers extension
 };
 
 /**
@@ -206,6 +213,19 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 		/** @brief Set the array of regexes used in errors/warnings recognition */
 		virtual void SetRegExArray(const RegExArray& regexes){ m_RegExes = regexes; }
 
+        /** Initialize for use with the specified @c project.
+          * Transfers the call to the generator returned by GetCommandGenerator()*/
+        virtual void Init(cbProject* project);
+
+        /** Get the command line to compile/link the specific file.
+          * Transfers the call to the generator returned by GetCommandGenerator()*/
+        virtual void GenerateCommandLine(wxString& macro,
+                                        ProjectBuildTarget* target,
+                                        ProjectFile* pf,
+                                        const wxString& file,
+                                        const wxString& object,
+                                        const wxString& deps);
+
         /** @brief Save settings */
         virtual void SaveSettings(const wxString& baseKey);
         /** @brief Load settings */
@@ -227,6 +247,11 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 	protected:
         friend class CompilerFactory;
 		Compiler(const Compiler& other); // copy ctor to copy everything but update m_ID
+
+        /** This is to be overriden, if compiler needs to alter the default
+          * command line generation.
+          */
+        virtual CompilerCommandGenerator* GetCommandGenerator();
 
         /** @brief Implement this in new compilers, to return a new copy */
         virtual Compiler* CreateCopy() = 0;
@@ -252,6 +277,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         wxString m_ID;
         wxString m_ParentID; // -1 for builtin compilers, the builtin compiler's ID to derive from for user compilers...
         static wxArrayString m_CompilerIDs; // map to guarantee unique IDs
+        CompilerCommandGenerator* m_pGenerator;
 };
 
 #endif // COMPILER_H

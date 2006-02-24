@@ -1475,7 +1475,7 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
 
     if (m_Project)
         wxSetWorkingDirectory(m_Project->GetBasePath());
-    m_Generator.Init(m_Project);
+    CompilerFactory::GetCompiler(m_CompilerId)->Init(m_Project);
 
     if (UseMake(target))
     {
@@ -1488,13 +1488,13 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
         wxArrayString clean;
         if (m_Project)
         {
-            DirectCommands dc(this, &m_Generator, CompilerFactory::GetCompiler(m_CompilerId), m_Project, m_PageIndex);
+            DirectCommands dc(this, CompilerFactory::GetCompiler(m_CompilerId), m_Project, m_PageIndex);
             clean = dc.GetCleanCommands(target, true);
             Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Cleaning %s..."), target ? target->GetTitle().c_str() : m_Project->GetTitle().c_str());
         }
         else
         {
-            DirectCommands dc(this, &m_Generator, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
+            DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
             clean = dc.GetCleanSingleFileCommand(Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename());
             Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Cleaning object and output files..."));
         }
@@ -1705,14 +1705,14 @@ void CompilerGCC::BuildStateManagement()
         {
             m_pLastBuildingProject = m_pBuildingProject;
             wxSetWorkingDirectory(m_pBuildingProject->GetBasePath());
-            m_Generator.Init(m_pBuildingProject);
+            CompilerFactory::GetCompiler(m_CompilerId)->Init(m_pBuildingProject);
         }
         if (bt != m_pLastBuildingTarget)
             m_pLastBuildingTarget = bt;
     }
 
     m_pBuildingProject->SetCurrentlyCompilingTarget(bt);
-    DirectCommands dc(this, &m_Generator, CompilerFactory::GetCompiler(m_CompilerId), m_pBuildingProject, m_PageIndex);
+    DirectCommands dc(this, CompilerFactory::GetCompiler(m_CompilerId), m_pBuildingProject, m_PageIndex);
     dc.m_doYield = true;
 
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("NOCHANGE *****> m_BuildState=%s, m_NextBuildState=%s, m_pBuildingProject=%p, bt=%p"), StateToString(m_BuildState).c_str(), StateToString(m_NextBuildState).c_str(), m_pBuildingProject, bt);
@@ -1982,7 +1982,7 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 
 //	Manager::Get()->GetMacrosManager()->Reset();
 
-    m_Generator.Init(m_Project);
+    CompilerFactory::GetCompiler(m_CompilerId)->Init(m_Project);
 
     if (UseMake(target))
     {
@@ -2153,7 +2153,7 @@ int CompilerGCC::CompileFile(const wxString& file)
         SwitchCompiler(CompilerFactory::GetDefaultCompilerID());
 //        Manager::Get()->GetMessageManager()->DebugLog("-----CompileFile [if(!pf)]-----");
 		Manager::Get()->GetMacrosManager()->Reset();
-        m_Generator.Init(0);
+        CompilerFactory::GetCompiler(m_CompilerId)->Init(0);
 
         if (useMake)
         {
@@ -2165,7 +2165,7 @@ int CompilerGCC::CompileFile(const wxString& file)
         else
         {
             // get compile commands for file (always linked as console-executable)
-            DirectCommands dc(this, &m_Generator, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
+            DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
             wxArrayString compile = dc.GetCompileSingleFileCommand(file);
             AddToCommandQueue(compile);
         }
@@ -2190,12 +2190,9 @@ int CompilerGCC::CompileFile(const wxString& file)
     }
     else
     {
-//        if (CompilerFactory::CompilerIndexOK(m_CompilerId))
-//            CompilerFactory::GetCompiler(m_CompilerId)->GetCustomVars().ApplyVarsToEnvironment();
-//        m_Project->GetCustomVars().ApplyVarsToEnvironment();
-        m_Generator.Init(m_Project);
+        CompilerFactory::GetCompiler(m_CompilerId)->Init(m_Project);
 
-        DirectCommands dc(this, &m_Generator, CompilerFactory::GetCompiler(bt->GetCompilerID()), m_Project, m_PageIndex);
+        DirectCommands dc(this, CompilerFactory::GetCompiler(bt->GetCompilerID()), m_Project, m_PageIndex);
         wxArrayString compile = dc.CompileFile(bt, pf);
         AddToCommandQueue(compile);
     }

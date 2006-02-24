@@ -54,18 +54,6 @@ void CompilerDMD::Reset()
 	m_Switches.linkerNeedsLibExtension = true;
 
     m_Options.ClearOptions();
-	m_Options.AddOption(_("Produce debugging symbols"),
-				_T("-g"),
-				_("Debugging"),
-				_T(""),
-				true,
-				_T("-O -O+space"),
-				_("You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."));
-
-
-    //
-    // TODO (hd#3#): should be simplified
-    //
 
 	//. m_Options.AddOption(_("Alignment of struct members"), "-a[1|2|4|8]", _("Architecture"));
 	//m_Options.AddOption(_("compile only, do not link"), _T("-c"), _("D Features"));

@@ -65,6 +65,8 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
     XRCCTRL(*this, "chkNeedDeps", wxCheckBox)->SetValue(switches.needDependencies);
     XRCCTRL(*this, "chkForceCompilerQuotes", wxCheckBox)->SetValue(switches.forceCompilerUseQuotes);
     XRCCTRL(*this, "chkForceLinkerQuotes", wxCheckBox)->SetValue(switches.forceLinkerUseQuotes);
+    XRCCTRL(*this, "chkSupportsPCH", wxCheckBox)->SetValue(switches.supportsPCH);
+    XRCCTRL(*this, "txtPCHExt", wxTextCtrl)->SetValue(switches.PCHExtension);
 
     m_Regexes = compiler->GetRegExArray();
     m_SelectedRegex = m_Regexes.Count() > 0 ? 0 : -1;
@@ -96,6 +98,8 @@ void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
     switches.needDependencies = XRCCTRL(*this, "chkNeedDeps", wxCheckBox)->GetValue();
     switches.forceCompilerUseQuotes = XRCCTRL(*this, "chkForceCompilerQuotes", wxCheckBox)->GetValue();
     switches.forceLinkerUseQuotes = XRCCTRL(*this, "chkForceLinkerQuotes", wxCheckBox)->GetValue();
+    switches.supportsPCH = XRCCTRL(*this, "chkSupportsPCH", wxCheckBox)->GetValue();
+    switches.PCHExtension = XRCCTRL(*this, "txtPCHExt", wxTextCtrl)->GetValue();
     compiler->SetSwitches(switches);
 }
 

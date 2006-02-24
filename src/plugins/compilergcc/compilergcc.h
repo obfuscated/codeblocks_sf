@@ -11,7 +11,6 @@
 #include <wx/process.h>
 #include <wx/dynarray.h>
 #include "compilererrors.h"
-#include "cmdlinegenerator.h"
 #include "compiler_defs.h"
 #include <compilerfactory.h>
 
@@ -175,7 +174,6 @@ class CompilerGCC : public cbCompilerPlugin
         // wxArrayString from DirectCommands
         void AddToCommandQueue(const wxArrayString& commands);
 
-        CmdLineGenerator m_Generator;
         CompilerQueue m_CommandQueue;
         bool m_BuildingWorkspace;
 

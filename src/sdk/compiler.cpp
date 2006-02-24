@@ -25,6 +25,7 @@
     #include <wx/regex.h>
 #endif
 
+#include "compilercommandgenerator.h"
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(RegExArray);
 
@@ -47,17 +48,21 @@ wxString Compiler::CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT] =
 Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& parentID)
     : m_Name(name),
     m_ID(ID.Lower()),
-    m_ParentID(parentID.Lower())
+    m_ParentID(parentID.Lower()),
+    m_pGenerator(0)
 {
 	//ctor
     MakeValidID();
+
+    m_Switches.supportsPCH = false;
 
     Manager::Get()->GetMessageManager()->DebugLog(_T("Added compiler \"%s\""), m_Name.c_str());
 }
 
 Compiler::Compiler(const Compiler& other)
     : CompileOptionsBase(other),
-    m_ParentID(other.m_ParentID.IsEmpty() ? other.m_ID : other.m_ParentID)
+    m_ParentID(other.m_ParentID.IsEmpty() ? other.m_ID : other.m_ParentID),
+    m_pGenerator(0)
 {
     m_Name = _("Copy of ") + other.m_Name;
     MakeValidID();
@@ -83,6 +88,7 @@ Compiler::Compiler(const Compiler& other)
 Compiler::~Compiler()
 {
 	//dtor
+	delete m_pGenerator;
 }
 
 void Compiler::MakeValidID()
@@ -129,6 +135,30 @@ void Compiler::MakeValidID()
 	if (!IsUniqueID(m_ID))
         cbThrow(_T("Compiler ID already exists for ") + m_Name);
     m_CompilerIDs.Add(m_ID);
+}
+
+CompilerCommandGenerator* Compiler::GetCommandGenerator()
+{
+    return new CompilerCommandGenerator;
+}
+
+void Compiler::Init(cbProject* project)
+{
+    if (!m_pGenerator)
+        m_pGenerator = GetCommandGenerator();
+    m_pGenerator->Init(project);
+}
+
+void Compiler::GenerateCommandLine(wxString& macro,
+                                    ProjectBuildTarget* target,
+                                    ProjectFile* pf,
+                                    const wxString& file,
+                                    const wxString& object,
+                                    const wxString& deps)
+{
+    if (!m_pGenerator)
+        cbThrow(_T("Compiler::Init() not called or generator invalid!"));
+    m_pGenerator->GenerateCommandLine(macro, target, pf, file, object, deps);
 }
 
 void Compiler::SaveSettings(const wxString& baseKey)
