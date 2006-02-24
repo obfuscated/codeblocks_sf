@@ -1824,7 +1824,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
     {
         // remove single file
         wxString filename = ftd->GetProjectFile()->file.GetFullPath();
-        prj->RemoveFile(ftd->GetFileIndex());
+        prj->RemoveFile(ftd->GetProjectFile());
         prj->CalculateCommonTopLevelPath();
         if (prj->GetCommonTopLevelPath() != oldpath)
             RebuildTree();
@@ -1853,7 +1853,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
             if (pf->file.GetFullPath().StartsWith(ftd->GetFolder()))
             {
                 wxString filename = pf->file.GetFullPath();
-                prj->RemoveFile(i);
+                prj->RemoveFile(pf);
                 CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
                 evt.SetProject(prj);
                 evt.SetString(filename);

@@ -681,14 +681,22 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 	return f;
 }
 
-bool cbProject::RemoveFile(int index)
+bool cbProject::RemoveFile(ProjectFile* pf)
 {
-    ProjectFile* f = m_Files[index];
-    m_ProjectFilesMap.erase(UnixFilename(f->relativeFilename)); // remove from hashmap
-    Manager::Get()->GetEditorManager()->Close(f->file.GetFullPath());
+    if (!pf)
+        return false;
+    m_ProjectFilesMap.erase(UnixFilename(pf->relativeFilename)); // remove from hashmap
+    Manager::Get()->GetEditorManager()->Close(pf->file.GetFullPath());
 
-    FilesList::Node* node = m_Files.Item(index);
-    m_Files.DeleteNode(node);
+    FilesList::Node* node = m_Files.Find(pf);
+    if (!node)
+    {
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Can't locate node for ProjectFile* !"));
+    }
+    else
+    {
+        m_Files.DeleteNode(node);
+    }
 
     // remove this file from all targets too
     for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
@@ -696,13 +704,21 @@ bool cbProject::RemoveFile(int index)
         ProjectBuildTarget* target = m_Targets[i];
         if (target)
         {
-            target->GetFilesList().DeleteObject(f);
+            target->GetFilesList().DeleteObject(pf);
         }
     }
-    delete f;
+    delete pf;
 
     SetModified(true);
 	return true;
+}
+
+bool cbProject::RemoveFile(int index)
+{
+    if (index < 0 || index >= (int)m_Files.GetCount())
+        return false; // invalid index
+    ProjectFile* f = m_Files[index];
+    return RemoveFile(f);
 }
 
 int filesSort(const ProjectFile** arg1, const ProjectFile** arg2)

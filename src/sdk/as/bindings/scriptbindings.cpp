@@ -381,7 +381,8 @@ void Register_Project(asIScriptEngine* engine)
 
     engine->RegisterObjectMethod("Project", "int GetFilesCount()", asMETHOD(cbProject, GetFilesCount), asCALL_THISCALL);
     engine->RegisterObjectMethod("Project", "ProjectFile@ GetFile(int)", asMETHOD(cbProject, GetFile), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Project", "bool RemoveFile(int)", asMETHOD(cbProject, RemoveFile), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Project", "bool RemoveFile(int)", asMETHODPR(cbProject, RemoveFile, (int), bool), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Project", "bool RemoveFile(ProjectFile@)", asMETHODPR(cbProject, RemoveFile, (ProjectFile*), bool), asCALL_THISCALL);
     engine->RegisterObjectMethod("Project", "ProjectFile@ AddFile(int,const wxString& in,bool,bool,uint16)", asMETHODPR(cbProject, AddFile, (int,const wxString&,bool,bool,unsigned short int), ProjectFile*), asCALL_THISCALL);
     engine->RegisterObjectMethod("Project", "ProjectFile@ AddFile(const wxString& in,const wxString& in,bool,bool,uint16)", asMETHODPR(cbProject, AddFile, (const wxString&,const wxString&,bool,bool,unsigned short int), ProjectFile*), asCALL_THISCALL);
 

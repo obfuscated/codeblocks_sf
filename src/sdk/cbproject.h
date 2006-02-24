@@ -343,6 +343,12 @@ class DLLIMPORT cbProject : public CompileTargetBase
           */
         bool RemoveFile(int index);
 
+        /** Remove a file from the project.
+          * @param pf The pointer to ProjectFile.
+          * @return True if @c pf was a valid project file, false if not.
+          */
+        bool RemoveFile(ProjectFile* pf);
+
         /** Display the project options dialog.
           * @return True if the dialog was closed with "OK", false if closed with "Cancel".
           */
