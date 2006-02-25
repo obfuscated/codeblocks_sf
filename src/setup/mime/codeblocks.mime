@@ -1,2 +1,5 @@
 application/x-codeblocks
-	ext: cbp workspace
+	ext: cbp
+
+application/x-codeblocks-workspace
+	ext: workspace

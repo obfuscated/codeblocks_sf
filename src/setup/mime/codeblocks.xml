@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
   <mime-type type="application/x-codeblocks">
-    <comment>Code::Blocks Project/Workspace</comment>
+    <comment>Code::Blocks Project</comment>
     <glob pattern="*.cbp"/>
+  </mime-type>
+  <mime-type type="application/x-codeblocks-workspace">
+    <comment>Code::Blocks Workspace</comment>
     <glob pattern="*.workspace"/>
   </mime-type>
 </mime-info>

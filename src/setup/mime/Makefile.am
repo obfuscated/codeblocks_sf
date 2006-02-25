@@ -11,7 +11,8 @@ mimexmldir = $(datadir)/mime/packages
 mimexml_DATA = codeblocks.xml
 
 mimeicondir = $(datadir)/icons/gnome/48x48/mimetypes
-mimeicon_DATA = $(srcdir)/gnome-mime-application-x-codeblocks.png
+mimeicon_DATA = $(srcdir)/gnome-mime-application-x-codeblocks.png \
+                            $(srcdir)/gnome-mime-application-x-codeblocks-workspace.png
 
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = $(srcdir)/codeblocks.png
