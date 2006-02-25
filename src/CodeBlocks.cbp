@@ -130,6 +130,7 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--export-all-symbols" />
 					<Add option="-Wl,--add-stdcall-alias" />
+					<Add library="libshfolder.a" />
 					<Add library="libtxml.a" />
 					<Add library="libangelscript.a" />
 					<Add library="libwxscintilla.a" />
