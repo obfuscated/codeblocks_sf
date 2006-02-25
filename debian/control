@@ -1,0 +1,28 @@
+Source: codeblocks
+Section: x11
+Priority: optional
+Maintainer: Yiannis Mandravellos <mandrav@codeblocks.org>
+Build-Depends: debhelper, autotools-dev, libc6-dev, libstdc++6-4.0-dev, libwxgtk2.6-dev, wx-common
+Standards-Version: 3.6.1
+
+Package: codeblocks
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, binutils, coreutils, file, libc6, libgcc1 (>= 1 ), libmagic1, libncurses5, libstdc++6, zlib1g
+Description: Code::Blocks integrated development environment (IDE)
+ Code::Blocks is the open-source, cross-platform Integrated Development Environment (IDE).
+ It is based on a self-developed plugin framework allowing unlimited extensibility.
+ Most of its functionality is already provided by plugins.
+ Most important official available plugins (included) are:
+    * Compiler frontend to many free compilers
+    * Debugger frontend for GDB (and CDB for windows platforms)
+    * Source formatter (based on AStyle)
+    * Code profiler (based on gprof)
+    * Wizard to create new classes
+    * Code-completion / class-browser (work in progress)
+    * Code statistics (SLOCs etc)
+    * Source exporter to PDF/HTML/ODT/RTF
+    * Help
+    * Keyboard shortcuts configuration
+    * Wizard to create new Code::Blocks plugins
+    * To-do list
+    * GUI RAD builder (wxSmith)
