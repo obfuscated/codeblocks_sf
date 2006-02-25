@@ -2293,7 +2293,13 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
     }
 
     if (m_Project)
+    {
+    	if(!m_Project->SaveAllFiles())
+    	{
+			Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
+    	}
         file.MakeRelativeTo(m_Project->GetBasePath());
+    }
 #ifdef ALWAYS_USE_MAKEFILE
 	file.SetExt(OBJECT_EXT);
 #endif
