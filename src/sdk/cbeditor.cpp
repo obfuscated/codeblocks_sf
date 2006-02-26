@@ -597,6 +597,7 @@ void cbEditor::SetEditorStyle()
     m_pData->m_ensure_final_line_end = mgr->ReadBool(_T("/eol/ensure_final_line_end"), true);
     m_pData->m_ensure_consistent_line_ends = mgr->ReadBool(_T("/eol/ensure_consistent_line_ends"), false);
 
+// NOTE: a same block of code is in editorconfigurationdlg.cpp (ctor)
 #if defined(__WXMSW__)
 	const int default_eol = 0; //CR&LF
 #elif defined(__WXMAC__)
@@ -604,6 +605,7 @@ void cbEditor::SetEditorStyle()
 #elif defined(__UNIX__)
 	const int default_eol = 2; //LF
 #endif
+
     switch (mgr->ReadInt(_T("/eol/eolmode"), default_eol))
     {
         case 1:
