@@ -422,7 +422,6 @@
       </object>
       <object class="wxMenuItem" name="idViewManager">
         <label>&amp;Manager</label>
-        <bitmap>images\16x16\view_sidetree.png</bitmap>
         <accel>Shift-F2</accel>
         <help>Show/hide manager</help>
         <checkable>1</checkable>
@@ -430,7 +429,6 @@
       </object>
       <object class="wxMenuItem" name="idViewOpenFilesTree">
         <label>&amp;Open files list</label>
-        <bitmap>images\16x16\view_tree.png</bitmap>
         <help>Show/hide open files list</help>
         <checkable>1</checkable>
         <enabled>1</enabled>
@@ -451,7 +449,6 @@
       <object class="separator"/>
       <object class="wxMenuItem" name="idViewFullScreen">
         <label>F&amp;ullScreen</label>
-        <bitmap>images\16x16\window_fullscreen.png</bitmap>
         <help>Switch to FullScreen view</help>
         <checkable>1</checkable>
         <enabled>1</enabled>
