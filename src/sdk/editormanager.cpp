@@ -434,7 +434,6 @@ EditorBase* EditorManager::IsOpen(const wxString& filename)
         if (fname.IsSameAs(uFilename) || fname.IsSameAs(g_EditorModified + uFilename))
             return eb;
 #endif
-
     }
 
     return NULL;
@@ -467,7 +466,9 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
 {
     SANITY_CHECK(0L);
     bool can_updateui = !GetActiveEditor() || !Manager::Get()->GetProjectManager()->IsLoading();
-    wxString fname = UnixFilename(filename);
+    wxFileName fn(filename);
+    NormalizePath(fn, wxEmptyString);
+    wxString fname = UnixFilename(fn.GetFullPath());
     //  Manager::Get()->GetMessageManager()->DebugLog("Trying to open '%s'", fname.c_str());
     if (!wxFileExists(fname))
         return NULL;

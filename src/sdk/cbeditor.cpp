@@ -343,6 +343,9 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColorSet* t
     m_timerWait.SetOwner(this);
 
     InitFilename(filename);
+    wxFileName fname(m_Filename);
+    NormalizePath(fname, wxEmptyString);
+    m_Filename = fname.GetFullPath();
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("ctor: Filename=%s\nShort=%s"), m_Filename.c_str(), m_Shortname.c_str());
 
 	CreateEditor();

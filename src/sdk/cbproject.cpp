@@ -642,6 +642,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     else
 #endif
         fname.Assign(GetBasePath() + wxFILE_SEP_PATH + filename);
+    NormalizePath(fname, GetBasePath());
 
     wxString fullFilename = fname.GetFullPath();
     f->file.Assign(fname);
