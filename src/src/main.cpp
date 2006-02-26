@@ -2477,6 +2477,7 @@ void MainFrame::OnProjectSaveProject(wxCommandEvent& event)
         Manager::Get()->GetProjectManager()->SaveActiveProjectAs())
         AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetActiveProject()->GetFilename());
     DoUpdateStatusBar();
+    DoUpdateAppTitle();
 }
 
 void MainFrame::OnProjectSaveProjectAs(wxCommandEvent& event)
@@ -2484,12 +2485,14 @@ void MainFrame::OnProjectSaveProjectAs(wxCommandEvent& event)
     if (Manager::Get()->GetProjectManager()->SaveActiveProjectAs())
         AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetActiveProject()->GetFilename());
     DoUpdateStatusBar();
+    DoUpdateAppTitle();
 }
 
 void MainFrame::OnProjectSaveAllProjects(wxCommandEvent& event)
 {
     Manager::Get()->GetProjectManager()->SaveAllProjects();
     DoUpdateStatusBar();
+    DoUpdateAppTitle();
 }
 
 void MainFrame::OnProjectSaveTemplate(wxCommandEvent& event)
