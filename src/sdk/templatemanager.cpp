@@ -118,8 +118,7 @@ void TemplateManager::LoadUserTemplates()
     wxLogNull zero; // disable error logging
 
     m_UserTemplates.Clear();
-    wxString baseDir = wxGetHomeDir();
-	baseDir << _T("/.CodeBlocks");
+    wxString baseDir = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + _T("UserTemplates");
 
     wxDir dir(baseDir);
 
@@ -325,8 +324,8 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
 
     wxBusyCursor busy;
 
-    wxString templ = wxGetHomeDir();
-    templ << sep << _T(".CodeBlocks") << sep << dlg.GetSelectedUserTemplate();
+    wxString templ = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + _T("UserTemplates");
+    templ << sep << dlg.GetSelectedUserTemplate();
     if (!wxDirExists(templ))
     {
         Manager::Get()->GetMessageManager()->DebugLog(_T("Cannot open user-template source path '%s'!"), templ.c_str());
@@ -395,8 +394,7 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
     }
 
     // create destination dir
-    wxString templ = wxGetHomeDir();
-    templ << _T("/.CodeBlocks");
+    wxString templ = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + _T("UserTemplates");
     if (!wxDirExists(templ))
         wxMkdir(templ, 0755);
 
