@@ -88,6 +88,7 @@ int idMenuAddFilesRecursively = wxNewId();
 int idMenuRemoveFolderFilesPopup = wxNewId();
 int idMenuRemoveFilePopup = wxNewId();
 int idMenuRemoveFile = wxNewId();
+int idMenuRenameFile = wxNewId();
 int idMenuProjectProperties = wxNewId();
 int idMenuFileProperties = wxNewId();
 int idMenuTreeProjectProperties = wxNewId();
@@ -171,6 +172,7 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuAddFilesRecursivelyPopup, ProjectManager::OnAddFilesToProjectRecursively)
     EVT_MENU(idMenuRemoveFolderFilesPopup, ProjectManager::OnRemoveFileFromProject)
     EVT_MENU(idMenuRemoveFilePopup, ProjectManager::OnRemoveFileFromProject)
+    EVT_MENU(idMenuRenameFile, ProjectManager::OnRenameFile)
     EVT_MENU(idMenuCloseProject, ProjectManager::OnCloseProject)
     EVT_MENU(idMenuCloseFile, ProjectManager::OnCloseFile)
     EVT_MENU(idMenuOpenFile, ProjectManager::OnOpenFile)
@@ -504,6 +506,11 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             openWith->Append(idOpenWithInternal, _("Internal editor"));
             menu.Append(wxID_ANY, _("Open with..."), openWith);
 
+            if(pf->GetFileState() == fvsNormal &&  !Manager::Get()->GetEditorManager()->IsOpen(pf->file.GetFullPath()))
+            {
+                menu.AppendSeparator();
+                menu.Append(idMenuRenameFile, _("Rename file..."));
+    	    }
     		menu.AppendSeparator();
     	    menu.Append(idMenuRemoveFilePopup, _("Remove file from project"));
     	}
@@ -2063,5 +2070,52 @@ void ProjectManager::OnViewFileMasks(wxCommandEvent& event)
 void ProjectManager::OnIdle(wxIdleEvent& event)
 {
     event.Skip();
+}
+
+void ProjectManager::OnRenameFile(wxCommandEvent& event)
+{
+    SANITY_CHECK();
+    wxTreeItemId sel = m_pTree->GetSelection();
+    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+    if (!ftd)
+        return;
+    cbProject* prj = ftd->GetProject();
+    if (!prj)
+        return;
+
+    wxString filename = ftd->GetProjectFile()->file.GetFullPath();
+    wxString newFilename;
+
+    wxFileDialog dlg(Manager::Get()->GetAppWindow(), _T("Rename to..."), filename, filename, _T("*.*"), wxSAVE | wxOVERWRITE_PROMPT);
+    PlaceWindow(&dlg);
+    if(dlg.ShowModal() == wxID_OK)
+    {
+        newFilename = dlg.GetPath();
+
+        if(filename != newFilename)
+        {
+            if(!wxRenameFile(filename, newFilename))
+            {
+                wxBell();
+                return;
+            }
+
+            ftd->GetProjectFile()->file.Assign(newFilename);
+            ftd->GetProjectFile()->UpdateFileDetails();
+
+            prj->CalculateCommonTopLevelPath();
+            RebuildTree();
+
+            CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
+            evt.SetProject(prj);
+            evt.SetString(filename);
+            Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+
+            CodeBlocksEvent evt2(cbEVT_PROJECT_FILE_ADDED);
+            evt2.SetProject(prj);
+            evt2.SetString(newFilename);
+            Manager::Get()->GetPluginManager()->NotifyPlugins(evt2);
+        }
+    }
 }
 
