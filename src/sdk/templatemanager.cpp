@@ -312,7 +312,8 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
 
     // select directory to copy user template files
     wxString sep = wxFileName::GetPathSeparator();
-    wxString path = ChooseDirectory(0, _("Choose a directory to create the new project"));
+    wxString path = ChooseDirectory(0, _("Choose a directory to create the new project"),
+						_T(""), _T(""), false, true);
     if (path.IsEmpty())
     {
         return NULL;
