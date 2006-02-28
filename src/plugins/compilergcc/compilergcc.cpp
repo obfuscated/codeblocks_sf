@@ -2321,7 +2321,6 @@ void CompilerGCC::OnRebuild(wxCommandEvent& event)
 					wxART_QUESTION,
 					AnnoyingDialog::YES_NO,
 					wxID_YES);
-    PlaceWindow(&dlg);
     if (m_Project && dlg.ShowModal() == wxID_NO)
     {
         return;
@@ -2368,7 +2367,6 @@ void CompilerGCC::OnRebuildAll(wxCommandEvent& event)
 					wxART_QUESTION,
 					AnnoyingDialog::YES_NO,
 					wxID_YES);
-    PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_NO)
     {
         return;
@@ -2388,7 +2386,6 @@ void CompilerGCC::OnCleanAll(wxCommandEvent& event)
 					wxART_QUESTION,
 					AnnoyingDialog::YES_NO,
 					wxID_YES);
-    PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_NO)
     {
         return;
@@ -2411,7 +2408,6 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
 					wxART_QUESTION,
 					AnnoyingDialog::YES_NO,
 					wxID_YES);
-    PlaceWindow(&dlg);
 	if (m_Project && dlg.ShowModal() == wxID_NO)
     {
         return;

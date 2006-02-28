@@ -1595,7 +1595,6 @@ void CompilerOptionsDlg::OnAdvancedClick(wxCommandEvent& event)
 					wxART_QUESTION,
 					AnnoyingDialog::YES_NO,
 					wxID_YES);
-    PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_YES)
     {
         wxComboBox* cmb = XRCCTRL(*this, "cmbCompiler", wxComboBox);
