@@ -5,36 +5,6 @@
 #include <wx/sizer.h>
 #include <wx/listctrl.h>
 
-// static
-wxString CPURegistersDlg::Registers[] = {
-    _T("eax"),
-    _T("ebx"),
-    _T("ecx"),
-    _T("edx"),
-    _T("esp"),
-    _T("esi"),
-    _T("ebp"),
-    _T("edi"),
-    _T("eip"),
-    _T("eflags"),
-    _T("cs"),
-    _T("ds"),
-    _T("es"),
-    _T("fs"),
-    _T("gs"),
-    _T("ss")
-};
-
-int CPURegistersDlg::RegisterIndexFromName(const wxString& name)
-{
-    for (int i = 0; i < 16; ++i)
-    {
-        if (name.Matches(CPURegistersDlg::Registers[i]))
-            return i;
-    }
-    return -1;
-}
-
 BEGIN_EVENT_TABLE(CPURegistersDlg, wxPanel)
 //    EVT_BUTTON(XRCID("btnRefresh"), CPURegistersDlg::OnRefresh)
 END_EVENT_TABLE()
@@ -49,6 +19,9 @@ CPURegistersDlg::CPURegistersDlg(wxWindow* parent, DebuggerGDB* debugger)
 	sizer->Add(m_pList, 1, wxGROW);
 	SetSizer(sizer);
 	Layout();
+
+	wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+    m_pList->SetFont(font);
 
     Clear();
 }
@@ -69,26 +42,27 @@ void CPURegistersDlg::Clear()
 	m_pList->Thaw();
 }
 
-void CPURegistersDlg::AddRegisterValue(int idx, long int value)
+int CPURegistersDlg::RegisterIndex(const wxString& reg_name)
 {
-    if (idx == -1)
-        return;
-	m_pList->Freeze();
-	m_pList->InsertItem(m_pList->GetItemCount(), Registers[idx]);
-	SetRegisterValue(m_pList->GetItemCount() - 1, value);
-	m_pList->Thaw();
+    for (int i = 0; i < m_pList->GetItemCount(); ++i)
+    {
+        if (m_pList->GetItemText(i).CmpNoCase(reg_name) == 0)
+            return i;
+    }
+    return -1;
 }
 
-void CPURegistersDlg::SetRegisterValue(int idx, long int value)
+void CPURegistersDlg::SetRegisterValue(const wxString& reg_name, long int value)
 {
+    // find existing register
+    int idx = RegisterIndex(reg_name);
     if (idx == -1)
-        return;
-    if (!m_pList->GetItemCount())
     {
-        Clear();
-        for (int i = 0; i < 16; ++i)
-            AddRegisterValue(i, 0);
+        // if it doesn't exist, add it
+        idx = m_pList->GetItemCount();
+        m_pList->InsertItem(idx, reg_name);
     }
+
 	wxString fmt;
 	fmt.Printf(_T("0x%x"), (size_t)value);
     m_pList->SetItem(idx, 1, fmt);

@@ -456,7 +456,7 @@ class CdbCmd_InfoRegisters : public DebuggerCmd
                 {
                     long int addrL;
                     addr.ToLong(&addrL, 16);
-                    m_pDlg->SetRegisterValue(CPURegistersDlg::RegisterIndexFromName(reg), addrL);
+                    m_pDlg->SetRegisterValue(reg, addrL);
                 }
     		}
 //            m_pDlg->Show(true);

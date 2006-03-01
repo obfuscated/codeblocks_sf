@@ -693,7 +693,7 @@ class GdbCmd_InfoRegisters : public DebuggerCmd
                 {
                     long int addr;
                     reRegisters.GetMatch(lines[i], 2).ToLong(&addr, 16);
-                    m_pDlg->SetRegisterValue(CPURegistersDlg::RegisterIndexFromName(reRegisters.GetMatch(lines[i], 1)), addr);
+                    m_pDlg->SetRegisterValue(reRegisters.GetMatch(lines[i], 1), addr);
                 }
     		}
 //            m_pDlg->Show(true);

@@ -99,6 +99,11 @@ void DisassemblyDlg::OnSave(wxCommandEvent& event)
         return;
 
     wxFFileOutputStream output(dlg.GetPath());
+    if (!output.Ok())
+    {
+        cbMessageBox(_("Could not open file for saving..."), _("Result"), wxICON_ERROR);
+        return;
+    }
     wxTextOutputStream text(output);
 
     wxListCtrl* lc = XRCCTRL(*this, "lcCode", wxListCtrl);
@@ -112,11 +117,7 @@ void DisassemblyDlg::OnSave(wxCommandEvent& event)
 
         text << lc->GetItemText(i) << _T(": ") << instr << _T('\n');
     }
-
-    if (XRCCTRL(*this, "txtCode", wxTextCtrl)->SaveFile(dlg.GetPath()))
-        cbMessageBox(_("File saved"), _("Result"), wxICON_INFORMATION);
-    else
-        cbMessageBox(_("File could not be saved..."), _("Result"), wxICON_ERROR);
+    cbMessageBox(_("File saved"), _("Result"), wxICON_INFORMATION);
 }
 
 void DisassemblyDlg::OnRefresh(wxCommandEvent& event)
