@@ -39,7 +39,6 @@ class BlockAllocator
     std::vector<LinkedBlock<T>*> allocBlocks;
 
     LinkedBlock<T> *first;
-    LinkedBlock<T> *last;
     int ref_count;
     int max_refs;
     int total_refs;
@@ -55,13 +54,7 @@ class BlockAllocator
 
         ptr[pool_size - 1].next = 0;
 
-        if(first == 0)
-            first = ptr;
-
-        if(last)
-            last->next = ptr;
-
-        last = &ptr[pool_size -1];
+        first = ptr;
     };
 
 
@@ -73,7 +66,7 @@ class BlockAllocator
 
 public:
 
-    BlockAllocator() : first(0), last(0), ref_count(0), max_refs(0), total_refs(0)
+    BlockAllocator() : first(0), ref_count(0), max_refs(0), total_refs(0)
     {
 	#ifdef __GNUC__
 	assert(__builtin_constant_p(debug));
