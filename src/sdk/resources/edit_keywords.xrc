@@ -1,84 +1,68 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgEditLangKeywords">
-    <title>Edit keywords</title>
-    <centered>1</centered>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxFlexGridSizer">
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Language:</label>
-            </object>
-            <flag>wxGROW</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>User:</label>
-            </object>
-            <flag>wxGROW</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Documentation:</label>
-            </object>
-            <flag>wxGROW</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxTextCtrl" name="txtKeywords1">
-              <style>wxTE_MULTILINE</style>
-            </object>
-            <flag>wxGROW</flag>
-            <minsize>160,160</minsize>
-          </object>
-          <object class="sizeritem">
-            <object class="wxTextCtrl" name="txtKeywords2">
-              <style>wxTE_MULTILINE</style>
-            </object>
-            <flag>wxGROW</flag>
-            <minsize>160,160</minsize>
-          </object>
-          <object class="sizeritem">
-            <object class="wxTextCtrl" name="txtKeywords3">
-              <style>wxTE_MULTILINE</style>
-            </object>
-            <flag>wxGROW</flag>
-            <minsize>160,160</minsize>
-          </object>
-          <vgap>4</vgap>
-          <hgap>8</hgap>
-          <cols>3</cols>
-        </object>
-        <option>1</option>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
+    <object class="wxDialog" name="dlgEditLangKeywords">
+        <title>Edit keywords</title>
+        <centered>1</centered>
         <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_OK">
-              <label>&amp;OK</label>
-              <default>1</default>
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <border>5</border>
+                        <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                        <object class="wxStaticText" name="ID_STATICTEXT1">
+                            <label>Set:</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <border>8</border>
+                        <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <object class="wxSpinCtrl" name="spnSet">
+                            <value>1</value>
+                            <min>1</min>
+                            <max>9</max>
+                        </object>
+                    </object>
+                </object>
             </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_CANCEL">
-              <label>&amp;Cancel</label>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <object class="wxStaticText" name="ID_STATICTEXT2">
+                    <label>Keywords:</label>
+                </object>
             </object>
-            <flag>wxLEFT</flag>
-            <border>8</border>
-          </object>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>8</border>
+                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxTextCtrl" name="txtKeywords">
+                    <value>Text</value>
+                    <size>240,192</size>
+                    <style>wxTE_MULTILINE</style>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxStaticLine" name="ID_STATICLINE1" />
+            </object>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP</flag>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER</flag>
+                        <object class="wxButton" name="wxID_OK">
+                            <label>&amp;OK</label>
+                            <default>1</default>
+                        </object>
+                    </object>
+                </object>
+            </object>
         </object>
-        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
     </object>
-  </object>
 </resource>

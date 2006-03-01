@@ -338,6 +338,8 @@ void GDB_driver::ParseOutput(const wxString& output)
         return; // come back later
     }
 
+    bool needsUpdate = false;
+
     // non-command messages (e.g. breakpoint hits)
     // break them up in lines
     wxArrayString lines = GetArrayFromString(buffer, _T('\n'));
@@ -384,6 +386,7 @@ void GDB_driver::ParseOutput(const wxString& output)
                 evt.pWindow = m_pBacktrace;
                 Manager::Get()->GetAppWindow()->ProcessEvent(evt);
             }
+            needsUpdate = true;
             // the backtrace will be generated when NotifyPlugins() is called
             // and only if the backtrace window is shown
         }
@@ -414,7 +417,7 @@ void GDB_driver::ParseOutput(const wxString& output)
             #endif
 				lineStr.ToLong(&m_Cursor.line);
                 m_Cursor.changed = true;
-                NotifyCursorChanged();
+                needsUpdate = true;
 			}
         }
         else
@@ -429,9 +432,16 @@ void GDB_driver::ParseOutput(const wxString& output)
 				m_Cursor.address = reBreak2.GetMatch(lines[i], 1);
 				m_Cursor.line = -1;
                 m_Cursor.changed = true;
-                NotifyCursorChanged();
+                needsUpdate = true;
 			}
         }
     }
     buffer.Clear();
+
+    // if program is stopped, update various states
+    if (needsUpdate)
+    {
+        if (m_Cursor.changed)
+            NotifyCursorChanged();
+    }
 }

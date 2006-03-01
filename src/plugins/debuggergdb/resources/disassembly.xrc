@@ -10,160 +10,40 @@
           <hgap>4</hgap>
           <object class="sizeritem">
             <object class="wxStaticText">
-              
-              
-              
-              
-              
-              
-              
-              
-              
               <label>Function:</label>
             </object>
           </object>
           <object class="sizeritem">
             <object class="wxStaticText" name="lblFunction">
-              
-              
-              
-              
-              
-              
-              
-              
-              
               <label>func</label>
             </object>
-            
-            
-            
-            
-            
-            
-            
-            
-            
             <flag>wxGROW</flag>
           </object>
           <object class="sizeritem">
             <object class="wxStaticText">
-              
-              
-              
-              
-              
-              
-              
-              
-              
               <label>Frame start:</label>
             </object>
           </object>
           <object class="sizeritem">
             <object class="wxStaticText" name="lblAddress">
-              
-              
-              
-              
-              
-              
-              
-              
-              
               <label>addr</label>
             </object>
-            
-            
-            
-            
-            
-            
-            
-            
-            
             <flag>wxGROW</flag>
           </object>
           <growablecols>1</growablecols>
         </object>
-        
-        
-        
-        
-        
-        
-        
-        
-        
         <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-        
-        
-        
-        
-        
-      
-        
-        
-        
-        
         <border>2</border>
       </object>
       <object class="sizeritem">
-        <object class="wxListCtrl" name="lcCode">
-              
-              
-              
-              
-          
-          
-          
-          
-          <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
-            </object>
-            
-            
-            
-            
-            
-        
-        
-        
-        
+        <object class="unknown" name="lcCode"/>
         <option>1</option>
-            
-            
-        
-        
-        
-        
         <flag>wxGROW</flag>
-            
-          
-            
-            
-        
-        
-          </object>
+      </object>
       <object class="sizeritem">
         <object class="wxButton" name="btnSave">
-              
-              
-              
-              
-              
-              
-              
-              
-              
           <label>&amp;Save to text file</label>
-              
-              
-              
-              
-              
-              
-            </object>
-          
+        </object>
         <flag>wxALL|wxALIGN_RIGHT</flag>
         <border>2</border>
       </object>

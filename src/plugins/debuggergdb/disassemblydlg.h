@@ -4,6 +4,7 @@
 #include <wx/panel.h>
 
 class DebuggerGDB;
+class wxScintilla;
 struct StackFrame;
 
 class DisassemblyDlg : public wxPanel
@@ -20,7 +21,9 @@ class DisassemblyDlg : public wxPanel
         void OnRefresh(wxCommandEvent& event);
 
         DebuggerGDB* m_pDbg;
+        wxScintilla* m_pCode;
         unsigned long int m_LastActiveAddr;
+        bool m_HasActiveAddr;
 	private:
         DECLARE_EVENT_TABLE();
 };

@@ -15,19 +15,28 @@
 #ifndef CB_PRECOMP
     #include <wx/intl.h>
     #include <wx/xrc/xmlres.h>
+    #include <wx/spinctrl.h>
     #include <wx/textctrl.h>
 #endif
 
 #include "editkeywordsdlg.h"
 
+BEGIN_EVENT_TABLE(EditKeywordsDlg, wxDialog)
+    EVT_SPINCTRL(-1, EditKeywordsDlg::OnSetChange)
+END_EVENT_TABLE()
+
 EditKeywordsDlg::EditKeywordsDlg(wxWindow* parent, EditorColorSet* theme, HighlightLanguage lang)
+    : m_pTheme(theme),
+    m_Lang(lang)
 {
     //ctor
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditLangKeywords"));
 
-	XRCCTRL(*this, "txtKeywords1", wxTextCtrl)->SetValue(theme->GetKeywords(lang, 0));
-	XRCCTRL(*this, "txtKeywords2", wxTextCtrl)->SetValue(theme->GetKeywords(lang, 1));
-	XRCCTRL(*this, "txtKeywords3", wxTextCtrl)->SetValue(theme->GetKeywords(lang, 2));
+    spnSet = XRCCTRL(*this, "spnSet", wxSpinCtrl);
+	txtKeywords = XRCCTRL(*this, "txtKeywords", wxTextCtrl);
+
+    m_LastSet = spnSet->GetValue() - 1;
+	txtKeywords->SetValue(m_pTheme->GetKeywords(m_Lang, m_LastSet));
 }
 
 EditKeywordsDlg::~EditKeywordsDlg()
@@ -35,17 +44,9 @@ EditKeywordsDlg::~EditKeywordsDlg()
     //dtor
 }
 
-wxString EditKeywordsDlg::GetLangKeywords()
+void EditKeywordsDlg::OnSetChange(wxSpinEvent& event)
 {
-    return XRCCTRL(*this, "txtKeywords1", wxTextCtrl)->GetValue();
-}
-
-wxString EditKeywordsDlg::GetDocKeywords()
-{
-    return XRCCTRL(*this, "txtKeywords2", wxTextCtrl)->GetValue();
-}
-
-wxString EditKeywordsDlg::GetUserKeywords()
-{
-    return XRCCTRL(*this, "txtKeywords3", wxTextCtrl)->GetValue();
+	m_pTheme->SetKeywords(m_Lang, m_LastSet, txtKeywords->GetValue());
+	m_LastSet = spnSet->GetValue() - 1;
+	txtKeywords->SetValue(m_pTheme->GetKeywords(m_Lang, m_LastSet));
 }

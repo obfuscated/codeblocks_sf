@@ -36,7 +36,7 @@ struct OptionSet
 {
     wxString m_Langs;
     OptionColors m_Colors;
-    wxString m_Keywords[3]; // 3 keyword sets
+    wxString m_Keywords[wxSCI_KEYWORDSET_MAX + 1]; // wxSCI_KEYWORDSET_MAX+1 keyword sets
     wxArrayString m_FileMasks;
     int m_Lexers;
     wxString m_SampleCode;
@@ -44,7 +44,7 @@ struct OptionSet
     int m_DebugLine;
     int m_ErrorLine;
 
-    wxString m_originalKeywords[3]; // 3 keyword sets
+    wxString m_originalKeywords[wxSCI_KEYWORDSET_MAX + 1]; // wxSCI_KEYWORDSET_MAX+1 keyword sets
     wxArrayString m_originalFileMasks;
 };
 WX_DECLARE_STRING_HASH_MAP(OptionSet, OptionSetsMap);

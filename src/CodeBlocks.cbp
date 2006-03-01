@@ -2688,6 +2688,11 @@
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
+		<Unit filename="sdk\resources\edit_keywords.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="sdk\resources\edit_path.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
@@ -2854,6 +2859,16 @@
 			<Option link="0" />
 		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_lua.xml">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_masm.sample">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_masm.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

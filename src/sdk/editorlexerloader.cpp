@@ -157,18 +157,22 @@ void EditorLexerLoader::DoKeywords(HighlightLanguage language, TiXmlElement* nod
     DoSingleKeywordNode(language, keywords, _T("Language"));
     DoSingleKeywordNode(language, keywords, _T("Documentation"));
     DoSingleKeywordNode(language, keywords, _T("User"));
+    DoSingleKeywordNode(language, keywords, _T("Set"));
 }
 
 void EditorLexerLoader::DoSingleKeywordNode(HighlightLanguage language, TiXmlElement* node, const wxString& nodename)
 {
     TiXmlElement* keywords = node->FirstChildElement(nodename.mb_str());
-    if (!keywords)
-        return;
-//    LOGSTREAM << "Found " << nodename << '\n';
-    int keyidx = keywords->Attribute("index") ? atol(keywords->Attribute("index")) : -1;
-//    LOGSTREAM << "keyidx=" << keyidx << '\n';
-    if (keyidx != -1)
-        m_pTarget->SetKeywords(language, keyidx, wxString ( keywords->Attribute("value"), wxConvUTF8 ) );
+    while (keywords)
+    {
+    //    LOGSTREAM << "Found " << nodename << '\n';
+        int keyidx = keywords->Attribute("index") ? atol(keywords->Attribute("index")) : -1;
+    //    LOGSTREAM << "keyidx=" << keyidx << '\n';
+        if (keyidx != -1)
+            m_pTarget->SetKeywords(language, keyidx, wxString ( keywords->Attribute("value"), wxConvUTF8 ) );
+
+        keywords = keywords->NextSiblingElement(nodename.mb_str());
+    }
 }
 
 void EditorLexerLoader::DoSampleCode(HighlightLanguage language, TiXmlElement* node)

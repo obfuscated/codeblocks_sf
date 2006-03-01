@@ -619,12 +619,7 @@ void EditorConfigurationDlg::OnEditKeywords(wxCommandEvent& event)
 	{
 	    EditKeywordsDlg dlg(0, m_Theme, m_Lang);
         PlaceWindow(&dlg);
-	    if (dlg.ShowModal() == wxID_OK)
-	    {
-			m_Theme->SetKeywords(m_Lang, 0, dlg.GetLangKeywords());
-			m_Theme->SetKeywords(m_Lang, 1, dlg.GetDocKeywords());
-			m_Theme->SetKeywords(m_Lang, 2, dlg.GetUserKeywords());
-	    }
+	    dlg.ShowModal();
 	}
 }
 
@@ -632,7 +627,7 @@ void EditorConfigurationDlg::OnEditFilemasks(wxCommandEvent& event)
 {
 	if (m_Theme && m_Lang != HL_NONE)
 	{
-		wxString masks = wxGetTextFromUser(_("Edit filemasks (use commas to spearate them - case insensitive):"),
+		wxString masks = wxGetTextFromUser(_("Edit filemasks (use commas to separate them - case insensitive):"),
 										m_Theme->GetLanguageName(m_Lang),
 										GetStringFromArray(m_Theme->GetFileMasks(m_Lang), _T(",")));
 		if (!masks.IsEmpty())

@@ -64,9 +64,10 @@ EditorColorSet::EditorColorSet(const EditorColorSet& other) // copy ctor
 
 		mset.m_Langs = it->second.m_Langs;
 		mset.m_Lexers = it->second.m_Lexers;
-		mset.m_Keywords[0] = it->second.m_Keywords[0];
-		mset.m_Keywords[1] = it->second.m_Keywords[1];
-		mset.m_Keywords[2] = it->second.m_Keywords[2];
+		for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
+		{
+            mset.m_Keywords[i] = it->second.m_Keywords[i];
+		}
 		mset.m_FileMasks = it->second.m_FileMasks;
 		mset.m_SampleCode = it->second.m_SampleCode;
 		mset.m_BreakLine = it->second.m_BreakLine;
@@ -114,8 +115,10 @@ void EditorColorSet::LoadAvailableSets()
             continue;
 
         // keep the original filemasks and keywords, so we know what needs saving later
-        for (int i = 0; i < 3; ++i)
+        for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
+        {
             it->second.m_originalKeywords[i] = it->second.m_Keywords[i];
+        }
         it->second.m_originalFileMasks = it->second.m_FileMasks;
 
         // remove old settings, no longer used
@@ -448,8 +451,10 @@ void EditorColorSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
 		}
 	}
 	control->SetLexer(mset.m_Lexers);
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
+	{
         control->SetKeyWords(i, mset.m_Keywords[i]);
+	}
     control->Colourise(0, -1); // the *most* important part!
 }
 
@@ -518,7 +523,7 @@ void EditorColorSet::Save()
             }
 		}
         wxString tmpkey;
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
 		{
 		    if (it->second.m_Keywords[i] != it->second.m_originalKeywords[i])
 		    {
@@ -621,7 +626,7 @@ void EditorColorSet::Load()
                 opt->isStyle = cfg->ReadBool(tmpKey + _T("/isStyle"), opt->isStyle);
 		}
         wxString tmpkey;
-        for (int i = 0; i < 3; ++i)
+        for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
         {
             tmpkey.Printf(_T("%s/editor/keywords/set%d"), key.c_str(), i);
             if (cfg->Exists(tmpkey))
@@ -648,12 +653,14 @@ void EditorColorSet::Reset(HighlightLanguage lang)
 
 wxString& EditorColorSet::GetKeywords(HighlightLanguage lang, int idx)
 {
+    if (idx < 0 || idx > wxSCI_KEYWORDSET_MAX)
+        idx = 0;
     return m_Sets[lang].m_Keywords[idx];
 }
 
 void EditorColorSet::SetKeywords(HighlightLanguage lang, int idx, const wxString& keywords)
 {
-    if (lang != HL_NONE && idx >=0 && idx < 3)
+    if (lang != HL_NONE && idx >=0 && idx <= wxSCI_KEYWORDSET_MAX)
     {
         OptionSet& mset = m_Sets[lang];
         mset.m_Keywords[idx] = keywords;
