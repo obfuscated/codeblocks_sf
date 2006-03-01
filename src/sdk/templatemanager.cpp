@@ -376,6 +376,12 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
         		project_filename = fname.GetFullPath();
         	}
             prj = Manager::Get()->GetProjectManager()->LoadProject(project_filename);
+            if(prj && !newname.IsEmpty())
+            {
+		prj->SetTitle(newname);
+		Manager::Get()->GetProjectManager()->RebuildTree(); // so the tree shows the new name
+		// TO DO : title update of window --> ??how ; throw an acitivate or opened event ??
+            }
         }
     }
     return prj;
