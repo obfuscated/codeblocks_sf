@@ -427,8 +427,11 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
     if (m_pActiveProject)
         m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), false);
     m_pActiveProject = project;
-    if (m_pActiveProject)
+    if (m_pActiveProject){
+        wxTreeItemId tid = m_pActiveProject->GetProjectNode();      //pecan 2006/2/28
+        if (tid)                                                    //pecan 2006/2/28
         m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), true);
+    }
 	if (refresh)
 		RebuildTree();
 
@@ -1075,9 +1078,9 @@ void ProjectManager::FreezeTree()
     if (!m_pTree)
         return;
 // wx 2.5.x implement nested Freeze()/Thaw() calls correctly
-#if !wxCHECK_VERSION(2,5,0)
+//#if !wxCHECK_VERSION(2,5,0)   //pecan 2006/2/28
     ++m_TreeFreezeCounter;
-#endif
+//#endif                        //pecan 2006/2/28
     m_pTree->Freeze();
 }
 
@@ -1095,7 +1098,10 @@ void ProjectManager::UnfreezeTree(bool force)
         m_TreeFreezeCounter = 0;
     }
 #else
-    m_pTree->Thaw();
+    if (m_TreeFreezeCounter){           //pecan 2006/2/28
+            --m_TreeFreezeCounter;      //pecan 2006/2/28
+            m_pTree->Thaw();
+    }
 #endif
 }
 
