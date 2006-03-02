@@ -36,5 +36,16 @@
       <longhelp>Stop current debugging session</longhelp>
       <bitmap>images/stop.png</bitmap>
     </object>
+    <object class="separator" />
+    <object class="tool" name="idDebuggerToolWindows">
+      <tooltip>Debugging windows</tooltip>
+      <longhelp>Show/hide debugging windows</longhelp>
+      <bitmap>images/window.png</bitmap>
+    </object>
+    <object class="tool" name="idDebuggerToolInfo">
+      <tooltip>Various info</tooltip>
+      <longhelp>Show information about various debugging subjects</longhelp>
+      <bitmap>images/dbginfo.png</bitmap>
+    </object>
   </object>
 </resource>

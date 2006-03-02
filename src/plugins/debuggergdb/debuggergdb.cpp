@@ -98,6 +98,9 @@ int idMenuEditWatches = XRCID("idDebuggerMenuEditWatches");
 int idMenuAttachToProcess = XRCID("idDebuggerMenuAttachToProcess");
 int idMenuDetach = XRCID("idDebuggerMenuDetach");
 
+int idDebuggerToolWindows = XRCID("idDebuggerToolWindows");
+
+int idDebuggerToolInfo = XRCID("idDebuggerToolInfo");
 int idMenuInfoFrame = XRCID("idDebuggerCurrentFrame");
 int idMenuInfoDLL = XRCID("idDebuggerLoadedDLLs");
 int idMenuInfoFiles = XRCID("idDebuggerFiles");
@@ -130,6 +133,8 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	EVT_UPDATE_UI(XRCID("idDebuggerSignals"), DebuggerGDB::OnUpdateUI)
 	EVT_UPDATE_UI(XRCID("idDebuggerThreads"), DebuggerGDB::OnUpdateUI)
 
+	EVT_UPDATE_UI(XRCID("idDebuggerToolInfo"), DebuggerGDB::OnUpdateUI)
+
 	EVT_MENU(idMenuDebug, DebuggerGDB::OnDebug)
 	EVT_MENU(idMenuContinue, DebuggerGDB::OnContinue)
 	EVT_MENU(idMenuNext, DebuggerGDB::OnNext)
@@ -151,6 +156,9 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
     EVT_MENU(idMenuAttachToProcess, DebuggerGDB::OnAttachToProcess)
     EVT_MENU(idMenuDetach, DebuggerGDB::OnDetach)
     EVT_MENU(idMenuSettings, DebuggerGDB::OnSettings)
+
+    EVT_MENU(idDebuggerToolWindows, DebuggerGDB::OnDebugWindows)
+    EVT_MENU(idDebuggerToolInfo, DebuggerGDB::OnToolInfo)
 
     EVT_MENU(idMenuInfoFrame, DebuggerGDB::OnInfoFrame)
     EVT_MENU(idMenuInfoDLL, DebuggerGDB::OnInfoDLL)
@@ -1405,6 +1413,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
     tbar->EnableTool(idMenuStep, en && stopped);
     tbar->EnableTool(idMenuStepOut, m_pProcess && en && stopped);
     tbar->EnableTool(idMenuStop, m_pProcess && en);
+    tbar->EnableTool(idDebuggerToolInfo, m_pProcess && en);
 	#endif
 
     // allow other UpdateUI handlers to process this event
@@ -1553,6 +1562,37 @@ void DebuggerGDB::OnEditWatches(wxCommandEvent& event)
 	{
 		m_pTree->SetWatches(watches);
 	}
+}
+
+void DebuggerGDB::OnDebugWindows(wxCommandEvent& event)
+{
+    wxMenu m;
+
+    m.AppendCheckItem(idMenuBreakpoints,    _("Breakpoints"));
+    m.AppendCheckItem(idMenuBacktrace,      _("Call stack"));
+    m.AppendCheckItem(idMenuRegisters,      _("CPU Registers"));
+    m.AppendCheckItem(idMenuCPU,            _("Disassembly"));
+    m.AppendCheckItem(idMenuWatches,        _("Watches"));
+
+    m.Check(idMenuBreakpoints,  IsWindowReallyShown(m_pBreakpointsWindow));
+    m.Check(idMenuBacktrace,    IsWindowReallyShown(m_pBacktrace));
+    m.Check(idMenuRegisters,    IsWindowReallyShown(m_pCPURegisters));
+    m.Check(idMenuCPU,          IsWindowReallyShown(m_pDisassembly));
+    m.Check(idMenuWatches,      IsWindowReallyShown(m_pTree));
+
+    Manager::Get()->GetAppWindow()->PopupMenu(&m);
+}
+
+void DebuggerGDB::OnToolInfo(wxCommandEvent& event)
+{
+    wxMenu m;
+    m.Append(idMenuInfoFrame,   _("Current stack frame"));
+    m.Append(idMenuInfoDLL,     _("Loaded libraries"));
+    m.Append(idMenuInfoFiles,   _("Targets and files"));
+    m.Append(idMenuInfoFPU,     _("FPU status"));
+    m.Append(idMenuInfoSignals, _("Signal handling"));
+    m.Append(idMenuInfoThreads, _("Threads"));
+    Manager::Get()->GetAppWindow()->PopupMenu(&m);
 }
 
 void DebuggerGDB::OnInfoFrame(wxCommandEvent& event)
