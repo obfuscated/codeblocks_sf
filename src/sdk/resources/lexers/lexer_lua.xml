@@ -45,9 +45,9 @@
 						index="35"
 						bg="255,0,0"/>
 				<Keywords>
-						<Language index="0"
-								value="if elseif else then end do while nil true false 
-								in for and or function local not repeat return until "/>
+                        <Set index="0"
+                            value="if elseif else then end do while nil true false
+                                   in for and or function local not repeat return until"/>
 				</Keywords>
 				<SampleCode value="lexer_lua.sample"
 						error_line="9"/>
