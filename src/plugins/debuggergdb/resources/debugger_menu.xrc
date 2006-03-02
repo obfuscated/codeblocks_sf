@@ -88,6 +88,33 @@
         <checkable>1</checkable>
       </object>
     </object>
+    <object class="wxMenu" name="idDebuggerInfo">
+      <label>Information</label>
+      <object class="wxMenuItem" name="idDebuggerCurrentFrame">
+        <label>Current stack frame</label>
+        <help>Displays info about the current (selected) stack frame</help>
+      </object>
+      <object class="wxMenuItem" name="idDebuggerLoadedDLLs">
+        <label>Loaded libraries</label>
+        <help>List dynamically loaded libraries (DLL/SO)</help>
+      </object>
+      <object class="wxMenuItem" name="idDebuggerFiles">
+        <label>Targets and files</label>
+        <help>Displays info on the targets and files being debugged</help>
+      </object>
+      <object class="wxMenuItem" name="idDebuggerFPU">
+        <label>FPU status</label>
+        <help>Displays the status of the floating point unit</help>
+      </object>
+      <object class="wxMenuItem" name="idDebuggerSignals">
+        <label>Signal handling</label>
+        <help>Displays how the debugger handles various signals</help>
+      </object>
+      <object class="wxMenuItem" name="idDebuggerThreads">
+        <label>Threads</label>
+        <help>Displays list of running threads</help>
+      </object>
+    </object>
     <object class="wxMenuItem" name="idDebuggerMenuEditWatches">
       <label>Edit &amp;watches...</label>
       <help>Edit watches</help>

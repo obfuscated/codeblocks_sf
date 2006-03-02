@@ -241,6 +241,36 @@ void GDB_driver::CPURegisters()
     QueueCommand(new GdbCmd_InfoRegisters(this, m_pCPURegisters));
 }
 
+void GDB_driver::InfoFrame()
+{
+    QueueCommand(new DebuggerInfoCmd(this, _T("info frame"), _("Selected frame")));
+}
+
+void GDB_driver::InfoDLL()
+{
+    QueueCommand(new DebuggerInfoCmd(this, _T("info dll"), _("Loaded libraries")));
+}
+
+void GDB_driver::InfoFiles()
+{
+    QueueCommand(new DebuggerInfoCmd(this, _T("info files"), _("Files and targets")));
+}
+
+void GDB_driver::InfoFPU()
+{
+    QueueCommand(new DebuggerInfoCmd(this, _T("info float"), _("Floating point unit")));
+}
+
+void GDB_driver::InfoSignals()
+{
+    QueueCommand(new DebuggerInfoCmd(this, _T("info signals"), _("Signals handling")));
+}
+
+void GDB_driver::InfoThreads()
+{
+    QueueCommand(new DebuggerInfoCmd(this, _T("info threads"), _("Running threads")));
+}
+
 void GDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
 {
     //Workaround for GDB to break on C++ constructor/destructor

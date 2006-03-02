@@ -82,6 +82,13 @@ class DebuggerDriver
         virtual void Disassemble() = 0;
         virtual void CPURegisters() = 0;
 
+        virtual void InfoFrame() = 0;
+        virtual void InfoDLL() = 0;
+        virtual void InfoFiles() = 0;
+        virtual void InfoFPU() = 0;
+        virtual void InfoSignals() = 0;
+        virtual void InfoThreads() = 0;
+
         /** Add a breakpoint.
             @param bp The breakpoint to add.
             @param editor The editor this breakpoint is set (might be NULL).

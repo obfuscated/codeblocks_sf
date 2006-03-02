@@ -65,6 +65,25 @@ class DebuggerCmd
         bool m_LogToNormalLog;  ///< if true, log to normal log, else the debug log
 };
 
+/** This command is similar to DebuggerCmd
+  * The only difference is that instead of logging its output in the debugger log,
+  * it displays it in a dialog.
+  */
+class DebuggerInfoCmd : public DebuggerCmd
+{
+    public:
+        DebuggerInfoCmd(DebuggerDriver* driver, const wxString& cmd, const wxString& title)
+            : DebuggerCmd(driver, cmd),
+            m_Title(title)
+        {
+            m_Cmd = cmd;
+        }
+        virtual ~DebuggerInfoCmd(){}
+
+        virtual void ParseOutput(const wxString& output);
+        wxString m_Title;
+};
+
 /** Action-only debugger comand to signal the watches tree to update. */
 class DbgCmd_UpdateWatchesTree : public DebuggerCmd
 {

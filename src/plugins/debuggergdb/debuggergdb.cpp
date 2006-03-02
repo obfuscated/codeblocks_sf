@@ -98,6 +98,13 @@ int idMenuEditWatches = XRCID("idDebuggerMenuEditWatches");
 int idMenuAttachToProcess = XRCID("idDebuggerMenuAttachToProcess");
 int idMenuDetach = XRCID("idDebuggerMenuDetach");
 
+int idMenuInfoFrame = XRCID("idDebuggerCurrentFrame");
+int idMenuInfoDLL = XRCID("idDebuggerLoadedDLLs");
+int idMenuInfoFiles = XRCID("idDebuggerFiles");
+int idMenuInfoFPU = XRCID("idDebuggerFPU");
+int idMenuInfoSignals = XRCID("idDebuggerSignals");
+int idMenuInfoThreads = XRCID("idDebuggerThreads");
+
 int idGDBProcess = wxNewId();
 int idTimerPollDebugger = wxNewId();
 int idMenuDebuggerAddWatch = wxNewId();
@@ -111,9 +118,17 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	EVT_UPDATE_UI(XRCID("idDebuggerMenuDebug"), DebuggerGDB::OnUpdateUI)
 	EVT_UPDATE_UI(XRCID("idDebuggerMenuRunToCursor"), DebuggerGDB::OnUpdateUI)
 	EVT_UPDATE_UI(XRCID("idDebuggerMenuNext"), DebuggerGDB::OnUpdateUI)
+	EVT_UPDATE_UI(XRCID("idDebuggerMenuNextInstr"), DebuggerGDB::OnUpdateUI)
 	EVT_UPDATE_UI(XRCID("idDebuggerMenuStep"), DebuggerGDB::OnUpdateUI)
 	EVT_UPDATE_UI(XRCID("idDebuggerMenuStepOut"), DebuggerGDB::OnUpdateUI)
 	EVT_UPDATE_UI(XRCID("idDebuggerMenuStop"), DebuggerGDB::OnUpdateUI)
+
+	EVT_UPDATE_UI(XRCID("idDebuggerCurrentFrame"), DebuggerGDB::OnUpdateUI)
+	EVT_UPDATE_UI(XRCID("idDebuggerLoadedDLLs"), DebuggerGDB::OnUpdateUI)
+	EVT_UPDATE_UI(XRCID("idDebuggerFiles"), DebuggerGDB::OnUpdateUI)
+	EVT_UPDATE_UI(XRCID("idDebuggerFPU"), DebuggerGDB::OnUpdateUI)
+	EVT_UPDATE_UI(XRCID("idDebuggerSignals"), DebuggerGDB::OnUpdateUI)
+	EVT_UPDATE_UI(XRCID("idDebuggerThreads"), DebuggerGDB::OnUpdateUI)
 
 	EVT_MENU(idMenuDebug, DebuggerGDB::OnDebug)
 	EVT_MENU(idMenuContinue, DebuggerGDB::OnContinue)
@@ -136,6 +151,13 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
     EVT_MENU(idMenuAttachToProcess, DebuggerGDB::OnAttachToProcess)
     EVT_MENU(idMenuDetach, DebuggerGDB::OnDetach)
     EVT_MENU(idMenuSettings, DebuggerGDB::OnSettings)
+
+    EVT_MENU(idMenuInfoFrame, DebuggerGDB::OnInfoFrame)
+    EVT_MENU(idMenuInfoDLL, DebuggerGDB::OnInfoDLL)
+    EVT_MENU(idMenuInfoFiles, DebuggerGDB::OnInfoFiles)
+    EVT_MENU(idMenuInfoFPU, DebuggerGDB::OnInfoFPU)
+    EVT_MENU(idMenuInfoSignals, DebuggerGDB::OnInfoSignals)
+    EVT_MENU(idMenuInfoThreads, DebuggerGDB::OnInfoThreads)
 
 	EVT_EDITOR_BREAKPOINT_ADD(DebuggerGDB::OnBreakpointAdd)
 	EVT_EDITOR_BREAKPOINT_EDIT(DebuggerGDB::OnBreakpointEdit)
@@ -1360,6 +1382,13 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuAttachToProcess, !m_pProcess);
         mbar->Enable(idMenuDetach, m_pProcess && m_PidToAttach != 0);
 
+ 		mbar->Enable(idMenuInfoFrame, m_pProcess && stopped);
+ 		mbar->Enable(idMenuInfoDLL, m_pProcess && stopped);
+ 		mbar->Enable(idMenuInfoFiles, m_pProcess && stopped);
+ 		mbar->Enable(idMenuInfoFPU, m_pProcess && stopped);
+ 		mbar->Enable(idMenuInfoSignals, m_pProcess && stopped);
+ 		mbar->Enable(idMenuInfoThreads, m_pProcess && stopped);
+
  		mbar->Check(idMenuBacktrace, IsWindowReallyShown(m_pBacktrace));
  		mbar->Check(idMenuCPU, IsWindowReallyShown(m_pDisassembly));
  		mbar->Check(idMenuWatches, IsWindowReallyShown(m_pTree));
@@ -1524,6 +1553,54 @@ void DebuggerGDB::OnEditWatches(wxCommandEvent& event)
 	{
 		m_pTree->SetWatches(watches);
 	}
+}
+
+void DebuggerGDB::OnInfoFrame(wxCommandEvent& event)
+{
+    if (m_State.GetDriver())
+    {
+        m_State.GetDriver()->InfoFrame();
+    }
+}
+
+void DebuggerGDB::OnInfoDLL(wxCommandEvent& event)
+{
+    if (m_State.GetDriver())
+    {
+        m_State.GetDriver()->InfoDLL();
+    }
+}
+
+void DebuggerGDB::OnInfoFiles(wxCommandEvent& event)
+{
+    if (m_State.GetDriver())
+    {
+        m_State.GetDriver()->InfoFiles();
+    }
+}
+
+void DebuggerGDB::OnInfoFPU(wxCommandEvent& event)
+{
+    if (m_State.GetDriver())
+    {
+        m_State.GetDriver()->InfoFPU();
+    }
+}
+
+void DebuggerGDB::OnInfoSignals(wxCommandEvent& event)
+{
+    if (m_State.GetDriver())
+    {
+        m_State.GetDriver()->InfoSignals();
+    }
+}
+
+void DebuggerGDB::OnInfoThreads(wxCommandEvent& event)
+{
+    if (m_State.GetDriver())
+    {
+        m_State.GetDriver()->InfoThreads();
+    }
 }
 
 void DebuggerGDB::OnGDBOutput(wxCommandEvent& event)

@@ -49,6 +49,13 @@ class GDB_driver : public DebuggerDriver
         virtual void CPURegisters();
         virtual void Detach();
 
+        void InfoFrame();
+        void InfoDLL();
+        void InfoFiles();
+        void InfoFPU();
+        void InfoSignals();
+        void InfoThreads();
+
         virtual void AddBreakpoint(DebuggerBreakpoint* bp);
         virtual void RemoveBreakpoint(DebuggerBreakpoint* bp);
         virtual void EvaluateSymbol(const wxString& symbol, wxTipWindow** tipWin, const wxRect& tipRect);

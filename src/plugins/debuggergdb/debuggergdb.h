@@ -131,6 +131,13 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnDetach(wxCommandEvent& event);
         void OnSettings(wxCommandEvent& event);
 
+        void OnInfoFrame(wxCommandEvent& event);
+        void OnInfoDLL(wxCommandEvent& event);
+        void OnInfoFiles(wxCommandEvent& event);
+        void OnInfoFPU(wxCommandEvent& event);
+        void OnInfoSignals(wxCommandEvent& event);
+        void OnInfoThreads(wxCommandEvent& event);
+
 		wxMenu* m_pMenu;
         SimpleTextLog* m_pLog;
         SimpleTextLog* m_pDbgLog;
