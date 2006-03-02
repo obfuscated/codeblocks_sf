@@ -75,6 +75,7 @@ class DebuggerDriver
 
         virtual void Continue() = 0;
         virtual void Step() = 0;
+        virtual void StepInstruction() = 0;
         virtual void StepIn() = 0;
         virtual void StepOut() = 0;
         virtual void Backtrace() = 0;

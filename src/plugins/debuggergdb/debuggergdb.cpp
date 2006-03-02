@@ -64,13 +64,17 @@
 #define implement_debugger_toolbar
 
 // valid debugger command constants
-#define CMD_CONTINUE    1
-#define CMD_STEP        2
-#define CMD_STEPIN      3
-#define CMD_STOP        4
-#define CMD_BACKTRACE   5
-#define CMD_DISASSEMBLE 6
-#define CMD_REGISTERS   7
+enum DebugCommandConst
+{
+    CMD_CONTINUE,
+    CMD_STEP,
+    CMD_STEPIN,
+    CMD_STEP_INSTR,
+    CMD_STOP,
+    CMD_BACKTRACE,
+    CMD_DISASSEMBLE,
+    CMD_REGISTERS,
+};
 
 const wxString g_EscapeChars = wxChar(26);
 
@@ -78,6 +82,7 @@ int idMenuDebug = XRCID("idDebuggerMenuDebug");
 int idMenuRunToCursor = XRCID("idDebuggerMenuRunToCursor");
 int idMenuNext = XRCID("idDebuggerMenuNext");
 int idMenuStep = XRCID("idDebuggerMenuStep");
+int idMenuNextInstr = XRCID("idDebuggerMenuNextInstr");
 int idMenuStepOut = XRCID("idDebuggerMenuStepOut");
 int idMenuStop = XRCID("idDebuggerMenuStop");
 int idMenuContinue = XRCID("idDebuggerMenuContinue");
@@ -114,6 +119,7 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	EVT_MENU(idMenuContinue, DebuggerGDB::OnContinue)
 	EVT_MENU(idMenuNext, DebuggerGDB::OnNext)
 	EVT_MENU(idMenuStep, DebuggerGDB::OnStep)
+	EVT_MENU(idMenuNextInstr, DebuggerGDB::OnNextInstr)
 	EVT_MENU(idMenuStepOut, DebuggerGDB::OnStepOut)
 	EVT_MENU(idMenuToggleBreakpoint, DebuggerGDB::OnToggleBreakpoint)
 	EVT_MENU(idMenuRunToCursor, DebuggerGDB::OnRunToCursor)
@@ -1011,6 +1017,18 @@ void DebuggerGDB::RunCommand(int cmd)
 //            QueueCommand(new DebuggerCmd(this, _T("next")));
             break;
 
+        case CMD_STEP_INSTR:
+            ClearActiveMarkFromAllEditors();
+            if (!IsWindowReallyShown(m_pDisassembly))
+            {
+                // first time users should have some help from us ;)
+                Disassemble();
+            }
+            if (m_State.GetDriver())
+                m_State.GetDriver()->StepInstruction();
+//            QueueCommand(new DebuggerCmd(this, _T("nexti")));
+            break;
+
         case CMD_STEPIN:
             ClearActiveMarkFromAllEditors();
             if (m_State.GetDriver())
@@ -1141,6 +1159,11 @@ void DebuggerGDB::Continue()
 void DebuggerGDB::Next()
 {
     RunCommand(CMD_STEP);
+}
+
+void DebuggerGDB::NextInstr()
+{
+    RunCommand(CMD_STEP_INSTR);
 }
 
 void DebuggerGDB::Step()
@@ -1326,6 +1349,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuDebug, !m_pProcess && en);
         mbar->Enable(idMenuContinue, m_pProcess && en && stopped);
         mbar->Enable(idMenuNext, m_pProcess && en && stopped);
+        mbar->Enable(idMenuNextInstr, m_pProcess && en && stopped);
         mbar->Enable(idMenuStep, en && stopped);
         mbar->Enable(idMenuStepOut, m_pProcess && en && stopped);
  		mbar->Enable(idMenuRunToCursor, en && ed && stopped);
@@ -1348,6 +1372,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
     tbar->EnableTool(idMenuDebug, (!m_pProcess || stopped) && en);
     tbar->EnableTool(idMenuRunToCursor, en && ed && stopped);
     tbar->EnableTool(idMenuNext, m_pProcess && en && stopped);
+    tbar->EnableTool(idMenuNextInstr, m_pProcess && en && stopped);
     tbar->EnableTool(idMenuStep, en && stopped);
     tbar->EnableTool(idMenuStepOut, m_pProcess && en && stopped);
     tbar->EnableTool(idMenuStop, m_pProcess && en);
@@ -1377,6 +1402,11 @@ void DebuggerGDB::OnContinue(wxCommandEvent& event)
 void DebuggerGDB::OnNext(wxCommandEvent& event)
 {
 	Next();
+}
+
+void DebuggerGDB::OnNextInstr(wxCommandEvent& event)
+{
+	NextInstr();
 }
 
 void DebuggerGDB::OnStep(wxCommandEvent& event)

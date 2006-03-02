@@ -202,6 +202,12 @@ void GDB_driver::Step()
     QueueCommand(new DebuggerCmd(this, _T("next")));
 }
 
+void GDB_driver::StepInstruction()
+{
+    ResetCursor();
+    QueueCommand(new DebuggerCmd(this, _T("nexti")));
+}
+
 void GDB_driver::StepIn()
 {
     ResetCursor();
@@ -211,7 +217,7 @@ void GDB_driver::StepIn()
 void GDB_driver::StepOut()
 {
     ResetCursor();
-    NOT_IMPLEMENTED();
+    QueueCommand(new DebuggerCmd(this, _T("finish")));
 }
 
 void GDB_driver::Backtrace()

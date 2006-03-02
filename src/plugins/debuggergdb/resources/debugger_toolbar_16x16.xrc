@@ -12,19 +12,24 @@
       <bitmap>images/16x16/dbgrunto.png</bitmap>
     </object>
     <object class="tool" name="idDebuggerMenuNext">
-      <tooltip>Step over</tooltip>
+      <tooltip>Next line</tooltip>
       <longhelp>Execute the next line of code</longhelp>
       <bitmap>images/16x16/dbgnext.png</bitmap>
     </object>
+    <object class="tool" name="idDebuggerMenuNextInstr">
+      <tooltip>Next instruction</tooltip>
+      <longhelp>Execute the next assembly instruction</longhelp>
+      <bitmap>images/16x16/dbgstepi.png</bitmap>
+    </object>
     <object class="tool" name="idDebuggerMenuStep">
       <tooltip>Step into</tooltip>
-      <longhelp>Execute the next instruction, stepping into functions</longhelp>
+      <longhelp>Execute the next line of code, but step inside functions</longhelp>
       <bitmap>images/16x16/dbgstep.png</bitmap>
     </object>
     <object class="tool" name="idDebuggerMenuStepOut">
       <tooltip>Step out</tooltip>
-      <longhelp>Execute until the current block exit</longhelp>
-	  <bitmap>images/16x16/dbgstepout.png</bitmap>
+      <longhelp>Continue execution until the current frame exits</longhelp>
+      <bitmap>images/16x16/dbgstepout.png</bitmap>
     </object>
     <object class="tool" name="idDebuggerMenuStop">
       <tooltip>Stop debugger</tooltip>

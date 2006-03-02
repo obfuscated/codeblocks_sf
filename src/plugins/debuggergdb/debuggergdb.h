@@ -58,6 +58,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		int Debug();
 		void Continue();
 		void Next();
+		void NextInstr();
 		void Step();
 		void StepOut();
 		void RunToCursor();
@@ -108,6 +109,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void OnEditWatches(wxCommandEvent& event);
 		void OnContinue(wxCommandEvent& event);
 		void OnNext(wxCommandEvent& event);
+		void OnNextInstr(wxCommandEvent& event);
 		void OnStep(wxCommandEvent& event);
 		void OnStepOut(wxCommandEvent& event);
 		void OnToggleBreakpoint(wxCommandEvent& event);

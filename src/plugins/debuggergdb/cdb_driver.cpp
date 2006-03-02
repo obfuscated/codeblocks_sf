@@ -126,6 +126,12 @@ void CDB_driver::Step()
     QueueCommand(new DebuggerCmd(this, _T("k n 1")));
 }
 
+void CDB_driver::StepInstruction()
+{
+    ResetCursor();
+    NOT_IMPLEMENTED();
+}
+
 void CDB_driver::StepIn()
 {
     ResetCursor();

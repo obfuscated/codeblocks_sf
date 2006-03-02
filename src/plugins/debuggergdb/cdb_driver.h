@@ -17,6 +17,7 @@ class CDB_driver : public DebuggerDriver
 
         virtual void Continue();
         virtual void Step();
+        virtual void StepInstruction();
         virtual void StepIn();
         virtual void StepOut();
         virtual void Backtrace();

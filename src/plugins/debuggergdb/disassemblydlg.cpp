@@ -41,7 +41,15 @@ DisassemblyDlg::DisassemblyDlg(wxWindow* parent, DebuggerGDB* debugger)
 	m_pCode->MarkerSetBackground(DEBUG_MARKER, wxColour(0xFF, 0xFF, 0x00));
     wxXmlResource::Get()->AttachUnknownControl(_T("lcCode"), m_pCode);
 
-	wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+    // use the same font as editor's
+    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+    wxString fontstring = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);
+    if (!fontstring.IsEmpty())
+    {
+        wxNativeFontInfo nfi;
+        nfi.FromString(fontstring);
+        font.SetNativeFontInfo(nfi);
+    }
     m_pCode->StyleSetFont(wxSCI_STYLE_DEFAULT, font);
 
     EditorColorSet* set = Manager::Get()->GetEditorManager()->GetColorSet();
@@ -71,8 +79,18 @@ void DisassemblyDlg::Clear(const StackFrame& frame)
     m_HasActiveAddr = false;
 
 	m_pCode->SetReadOnly(false);
-    m_pCode->SetText(_("\"Please wait while disassemblying...\""));
-    m_ClearFlag = true; // clear the above message when adding the first line
+	if (m_pDbg->IsRunning())
+	{
+	    // if debugger is running, show a message
+        m_pCode->SetText(_("\"Please wait while disassemblying...\""));
+        m_ClearFlag = true; // clear the above message when adding the first line
+	}
+	else
+	{
+	    // if debugger isn't running, just clear the window
+        m_pCode->ClearAll();
+        m_ClearFlag = false;
+	}
 	m_pCode->SetReadOnly(true);
     m_pCode->MarkerDeleteAll(DEBUG_MARKER);
 }

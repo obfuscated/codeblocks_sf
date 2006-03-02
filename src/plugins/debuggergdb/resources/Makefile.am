@@ -14,12 +14,14 @@ EXTRA_DIST = backtrace.xrc \
 	images/dbgnext.png \
 	images/dbgrun.png \
 	images/dbgrunto.png \
+	images/dbgstepi.png \
 	images/dbgstepout.png \
 	images/dbgstep.png \
 	images/stop.png \
 	images/16x16/dbgnext.png \
 	images/16x16/dbgrun.png \
 	images/16x16/dbgrunto.png \
+	images/16x16/dbgstepi.png \
 	images/16x16/dbgstepout.png \
 	images/16x16/dbgstep.png \
 	images/16x16/stop.png
