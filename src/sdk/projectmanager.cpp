@@ -2089,38 +2089,34 @@ void ProjectManager::OnRenameFile(wxCommandEvent& event)
     if (!prj)
         return;
 
-    wxString filename = ftd->GetProjectFile()->file.GetFullPath();
-    wxString newFilename;
+    wxString path = ftd->GetProjectFile()->file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    wxString name = ftd->GetProjectFile()->file.GetFullName();
 
-    wxFileDialog dlg(Manager::Get()->GetAppWindow(), _T("Rename to..."), filename, filename, _T("*.*"), wxSAVE | wxOVERWRITE_PROMPT);
+    wxTextEntryDialog dlg(Manager::Get()->GetAppWindow(), _T("Please enter the new name:"), _T("Rename file"), name, wxOK | wxCANCEL | wxCENTRE);
     PlaceWindow(&dlg);
     if(dlg.ShowModal() == wxID_OK)
     {
-        newFilename = dlg.GetPath();
+        wxFileName fn(dlg.GetValue());
+        wxString new_name = fn.GetFullName();
 
-        if(filename != newFilename)
+        if(name != new_name)
         {
-            if(!wxRenameFile(filename, newFilename))
+            if(!wxRenameFile(path + name, path + new_name))
             {
                 wxBell();
                 return;
             }
+            ProjectFile *pf = ftd->GetProjectFile();
 
-            ftd->GetProjectFile()->file.Assign(newFilename);
-            ftd->GetProjectFile()->UpdateFileDetails();
+            pf->file.Assign(path + new_name);
+            pf->relativeFilename = pf->relativeFilename.BeforeLast(wxFILE_SEP_PATH);
+            pf->relativeFilename.IsEmpty() || pf->relativeFilename.Append(wxFILE_SEP_PATH);
+            pf->relativeFilename.Append(new_name);
 
+            pf->UpdateFileDetails();
             prj->CalculateCommonTopLevelPath();
             RebuildTree();
-
-            CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
-            evt.SetProject(prj);
-            evt.SetString(filename);
-            Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
-
-            CodeBlocksEvent evt2(cbEVT_PROJECT_FILE_ADDED);
-            evt2.SetProject(prj);
-            evt2.SetString(newFilename);
-            Manager::Get()->GetPluginManager()->NotifyPlugins(evt2);
+            prj->SetModified(true);
         }
     }
 }
