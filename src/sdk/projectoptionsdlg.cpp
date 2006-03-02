@@ -861,7 +861,7 @@ void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "btnAddPreScripts", wxButton)->Enable(scrsel);
     XRCCTRL(*this, "btnRemovePreScripts", wxButton)->Enable(scrsel && presel);
     XRCCTRL(*this, "spnPreScripts", wxSpinButton)->Enable(scrsel && presel && lstPreScripts->GetCount() > 1);
-    XRCCTRL(*this, "btnCheckScripts", wxSpinButton)->Enable(!customMake);
+    XRCCTRL(*this, "btnCheckScripts", wxButton)->Enable(!customMake);
 }
 
 void ProjectOptionsDlg::EndModal(int retCode)
