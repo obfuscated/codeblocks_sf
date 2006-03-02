@@ -343,6 +343,8 @@ void MessageManager::ShowLog(MessageLog* log, bool show)
             m_pNotebook->RemovePage(id);
         ls->visible = false;
 
+        log->Show(false);
+
         if (id == m_DebugLog)
             cfg->Write(_T("/has_debug_log"), (bool)false);
     }
