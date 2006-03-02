@@ -57,15 +57,20 @@ class BatchLogWindow : public wxDialog
         BatchLogWindow(wxWindow *parent, const wxChar *title)
             : wxDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
         {
+            wxSizer* sizer = new wxBoxSizer(wxVERTICAL);
             wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
             m_pText = new wxTextCtrl(this, -1, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE | wxTE_RICH2 | wxHSCROLL);
             m_pText->SetFont(font);
+
+            sizer->Add(m_pText, 1, wxGROW);
 
             wxSize size;
             size.SetWidth(Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/batch_build_log/width"), wxDefaultSize.GetWidth()));
             size.SetHeight(Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/batch_build_log/height"), wxDefaultSize.GetHeight()));
             SetSize(size);
-            Layout();
+
+            SetSizer(sizer);
+            sizer->Layout();
         }
         void EndModal(int retCode)
         {
