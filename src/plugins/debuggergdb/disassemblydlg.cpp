@@ -23,7 +23,8 @@ END_EVENT_TABLE()
 
 DisassemblyDlg::DisassemblyDlg(wxWindow* parent, DebuggerGDB* debugger)
     : m_pDbg(debugger),
-    m_LastActiveAddr(0)
+    m_LastActiveAddr(0),
+    m_ClearFlag(false)
 {
 	//ctor
 	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgDisassembly"));
@@ -69,18 +70,26 @@ void DisassemblyDlg::Clear(const StackFrame& frame)
 
     m_HasActiveAddr = false;
 
-    m_pCode->Clear();
+	m_pCode->SetReadOnly(false);
+    m_pCode->SetText(_("\"Please wait while disassemblying...\""));
+    m_ClearFlag = true; // clear the above message when adding the first line
+	m_pCode->SetReadOnly(true);
     m_pCode->MarkerDeleteAll(DEBUG_MARKER);
 }
 
 void DisassemblyDlg::AddAssemblerLine(unsigned long int addr, const wxString& line)
 {
+	m_pCode->SetReadOnly(false);
+    if (m_ClearFlag)
+    {
+        m_ClearFlag = false;
+        m_pCode->ClearAll();
+    }
 	wxString fmt;
 	fmt.Printf(_T("0x%x\t%s\n"), (size_t)addr, line.c_str());
-	m_pCode->SetReadOnly(false);
 	m_pCode->AppendText(fmt);
-	m_pCode->SetReadOnly(true);
 	SetActiveAddress(m_LastActiveAddr);
+	m_pCode->SetReadOnly(true);
 }
 
 void DisassemblyDlg::SetActiveAddress(unsigned long int addr)
