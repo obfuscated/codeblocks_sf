@@ -82,6 +82,11 @@
         <help>Disassembles the current stack frame</help>
         <checkable>1</checkable>
       </object>
+      <object class="wxMenuItem" name="idDebuggerMenuMemory">
+        <label>Examine memory</label>
+        <help>Displays the contents of a memory location (256 bytes)</help>
+        <checkable>1</checkable>
+      </object>
       <object class="wxMenuItem" name="idDebuggerMenuWatches">
         <label>Watches</label>
         <help>Watch variables</help>

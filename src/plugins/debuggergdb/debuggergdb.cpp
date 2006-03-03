@@ -54,6 +54,7 @@
 #include "debuggertree.h"
 #include "editbreakpointdlg.h"
 #include "editwatchesdlg.h"
+#include "examinememorydlg.h"
 #include "editwatchdlg.h"
 #include "globals.h"
 
@@ -93,6 +94,7 @@ int idMenuCPU = XRCID("idDebuggerMenuCPU");
 int idMenuRegisters = XRCID("idDebuggerMenuRegisters");
 int idMenuWatches = XRCID("idDebuggerMenuWatches");
 int idMenuBacktrace = XRCID("idDebuggerMenuBacktrace");
+int idMenuMemory = XRCID("idDebuggerMenuMemory");
 int idMenuBreakpoints = XRCID("idDebuggerMenuBreakpoints");
 int idMenuEditWatches = XRCID("idDebuggerMenuEditWatches");
 int idMenuAttachToProcess = XRCID("idDebuggerMenuAttachToProcess");
@@ -147,6 +149,7 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	EVT_MENU(idMenuSendCommandToGDB, DebuggerGDB::OnSendCommandToGDB)
 	EVT_MENU(idMenuAddSymbolFile, DebuggerGDB::OnAddSymbolFile)
 	EVT_MENU(idMenuBacktrace, DebuggerGDB::OnBacktrace)
+	EVT_MENU(idMenuMemory, DebuggerGDB::OnExamineMemory)
 	EVT_MENU(idMenuCPU, DebuggerGDB::OnDisassemble)
 	EVT_MENU(idMenuRegisters, DebuggerGDB::OnRegisters)
 	EVT_MENU(idMenuWatches, DebuggerGDB::OnViewWatches)
@@ -208,7 +211,8 @@ DebuggerGDB::DebuggerGDB()
 	m_pDisassembly(0),
 	m_pCPURegisters(0),
 	m_pBacktrace(0),
-	m_pBreakpointsWindow(0)
+	m_pBreakpointsWindow(0),
+	m_pExamineMemoryDlg(0)
 {
     Manager::Get()->Loadxrc(_T("/debugger_gdb.zip#zip:*.xrc"));
 
@@ -251,6 +255,7 @@ void DebuggerGDB::OnAttach()
     m_pCPURegisters = new CPURegistersDlg(Manager::Get()->GetAppWindow(), this);
     m_pBacktrace = new BacktraceDlg(Manager::Get()->GetAppWindow(), this);
     m_pBreakpointsWindow = new BreakpointsDlg(m_State);
+    m_pExamineMemoryDlg = new ExamineMemoryDlg(Manager::Get()->GetAppWindow(), this);
 
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
 
@@ -299,12 +304,29 @@ void DebuggerGDB::OnAttach()
     evt.minimumSize.Set(150, 150);
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
+    evt.name = _T("ExamineMemoryPane");
+    evt.title = _("Memory");
+    evt.pWindow = m_pExamineMemoryDlg;
+    evt.dockSide = CodeBlocksDockEvent::dsFloating;
+    evt.desiredSize.Set(450, 250);
+    evt.floatingSize.Set(450, 250);
+    evt.minimumSize.Set(350, 150);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 }
 
 void DebuggerGDB::OnRelease(bool appShutDown)
 {
     if (m_State.GetDriver())
         m_State.GetDriver()->SetDebugWindows(0, 0, 0);
+
+    if (m_pExamineMemoryDlg)
+    {
+        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+        evt.pWindow = m_pExamineMemoryDlg;
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        m_pExamineMemoryDlg->Destroy();
+    }
+    m_pExamineMemoryDlg = 0;
 
     if (m_pBreakpointsWindow)
     {
@@ -1181,6 +1203,28 @@ void DebuggerGDB::Backtrace()
     RunCommand(CMD_BACKTRACE);
 }
 
+void DebuggerGDB::ExamineMemory(const wxString& address)
+{
+    if (!m_pProcess)
+        return;
+
+    wxString addrS = address;
+    if (address.IsEmpty())
+    {
+        addrS = wxGetTextFromUser(_("Please enter the address to examine (hex or &var):"), _("Examine memory"), addrS);
+
+        if (addrS.IsEmpty())
+            return;
+    }
+
+    // show it
+    CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+    evt.pWindow = m_pExamineMemoryDlg;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    m_State.GetDriver()->ExamineMemory(addrS, m_pExamineMemoryDlg);
+}
+
 void DebuggerGDB::Continue()
 {
     RunCommand(CMD_CONTINUE);
@@ -1397,6 +1441,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
  		mbar->Enable(idMenuInfoSignals, m_pProcess && stopped);
  		mbar->Enable(idMenuInfoThreads, m_pProcess && stopped);
 
+ 		mbar->Check(idMenuMemory, IsWindowReallyShown(m_pExamineMemoryDlg));
  		mbar->Check(idMenuBacktrace, IsWindowReallyShown(m_pBacktrace));
  		mbar->Check(idMenuCPU, IsWindowReallyShown(m_pDisassembly));
  		mbar->Check(idMenuWatches, IsWindowReallyShown(m_pTree));
@@ -1553,6 +1598,17 @@ void DebuggerGDB::OnBreakpoints(wxCommandEvent& event)
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 }
 
+void DebuggerGDB::OnExamineMemory(wxCommandEvent& event)
+{
+    // show it
+    CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = m_pExamineMemoryDlg;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    if (event.IsChecked())
+        ExamineMemory();
+}
+
 void DebuggerGDB::OnEditWatches(wxCommandEvent& event)
 {
 	WatchesArray watches = m_pTree->GetWatches();
@@ -1572,12 +1628,14 @@ void DebuggerGDB::OnDebugWindows(wxCommandEvent& event)
     m.AppendCheckItem(idMenuBacktrace,      _("Call stack"));
     m.AppendCheckItem(idMenuRegisters,      _("CPU Registers"));
     m.AppendCheckItem(idMenuCPU,            _("Disassembly"));
+    m.AppendCheckItem(idMenuMemory,         _("Examine memory"));
     m.AppendCheckItem(idMenuWatches,        _("Watches"));
 
     m.Check(idMenuBreakpoints,  IsWindowReallyShown(m_pBreakpointsWindow));
     m.Check(idMenuBacktrace,    IsWindowReallyShown(m_pBacktrace));
     m.Check(idMenuRegisters,    IsWindowReallyShown(m_pCPURegisters));
     m.Check(idMenuCPU,          IsWindowReallyShown(m_pDisassembly));
+    m.Check(idMenuMemory,       IsWindowReallyShown(m_pExamineMemoryDlg));
     m.Check(idMenuWatches,      IsWindowReallyShown(m_pTree));
 
     Manager::Get()->GetAppWindow()->PopupMenu(&m);

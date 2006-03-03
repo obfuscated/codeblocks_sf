@@ -13,6 +13,7 @@ class DebuggerTree;
 class BacktraceDlg;
 class DisassemblyDlg;
 class CPURegistersDlg;
+class ExamineMemoryDlg;
 class Compiler;
 
 WX_DEFINE_ARRAY(DebuggerCmd*, DebuggerCommands);
@@ -83,6 +84,7 @@ class DebuggerDriver
         virtual void CPURegisters() = 0;
         virtual void SwitchToFrame(size_t number) = 0;
         virtual void SetVarValue(const wxString& var, const wxString& value) = 0;
+        virtual void ExamineMemory(const wxString& address, ExamineMemoryDlg* memdlg) = 0;
 
         virtual void InfoFrame() = 0;
         virtual void InfoDLL() = 0;

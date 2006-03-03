@@ -20,6 +20,7 @@
 #include "gdb_driver.h"
 #include "debuggertree.h"
 #include "backtracedlg.h"
+#include "examinememorydlg.h"
 
 static int GetScriptParserFuncID(const wxString& parseFunc)
 {
@@ -788,5 +789,48 @@ class GdbCmd_DisassemblyInit : public DebuggerCmd
 };
 // static
 wxString GdbCmd_DisassemblyInit::LastAddr;
+
+/**
+  * Command to examine a memory region.
+  */
+class GdbCmd_ExamineMemory : public DebuggerCmd
+{
+        ExamineMemoryDlg* m_pDlg;
+    public:
+        /** @param dlg The memory dialog. */
+        GdbCmd_ExamineMemory(DebuggerDriver* driver, const wxString& address, ExamineMemoryDlg* dlg)
+            : DebuggerCmd(driver),
+            m_pDlg(dlg)
+        {
+            m_Cmd << _T("x/256xb ") << address;
+        }
+        void ParseOutput(const wxString& output)
+        {
+            // output is a series of:
+            //
+            // 0x22ffc0:       0xf0    0xff    0x22    0x00    0x4f    0x6d    0x81    0x7c
+
+            if (!m_pDlg)
+                return;
+            m_pDlg->Clear();
+
+            wxArrayString lines = GetArrayFromString(output, _T('\n'));
+    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
+    		{
+    		    wxString addr = lines[i].BeforeFirst(_T(':'));
+    		    size_t pos = lines[i].find(_T('x'), 3); // skip 'x' of address
+    		    while (pos != wxString::npos)
+    		    {
+    		        wxString hexbyte;
+    		        hexbyte << lines[i][pos + 1];
+    		        hexbyte << lines[i][pos + 2];
+    		        m_pDlg->AddHexByte(addr, hexbyte);
+                    pos = lines[i].find(_T('x'), pos + 1); // skip current 'x'
+    		    }
+    		}
+//            m_pDlg->Show(true);
+//            m_pDriver->DebugLog(output);
+        }
+};
 
 #endif // DEBUGGER_COMMANDS_H

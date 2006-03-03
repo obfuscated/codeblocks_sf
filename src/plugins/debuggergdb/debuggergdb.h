@@ -27,6 +27,7 @@ class DisassemblyDlg;
 class CPURegistersDlg;
 class BacktraceDlg;
 class BreakpointsDlg;
+class ExamineMemoryDlg;
 
 class DebuggerGDB : public cbDebuggerPlugin
 {
@@ -48,6 +49,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void Disassemble();
 		void Registers();
 		void Backtrace();
+		void ExamineMemory(const wxString& address = wxEmptyString);
 
 		bool AddBreakpoint(const wxString& file, int line);
 		bool AddBreakpoint(const wxString& functionSignature);
@@ -130,6 +132,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnAttachToProcess(wxCommandEvent& event);
         void OnDetach(wxCommandEvent& event);
         void OnSettings(wxCommandEvent& event);
+        void OnExamineMemory(wxCommandEvent& event);
 
         void OnDebugWindows(wxCommandEvent& event);
         void OnToolInfo(wxCommandEvent& event);
@@ -175,6 +178,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		CPURegistersDlg* m_pCPURegisters;
 		BacktraceDlg* m_pBacktrace;
         BreakpointsDlg* m_pBreakpointsWindow;
+        ExamineMemoryDlg* m_pExamineMemoryDlg;
 
 		DECLARE_EVENT_TABLE()
 };

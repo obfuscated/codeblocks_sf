@@ -1312,6 +1312,16 @@
 			<Option link="0" />
 			<Option target="Debugger" />
 		</Unit>
+		<Unit filename="plugins/debuggergdb/examinememorydlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins/debuggergdb/examinememorydlg.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debugger" />
+		</Unit>
 		<Unit filename="plugins/debuggergdb/gdb_commands.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
