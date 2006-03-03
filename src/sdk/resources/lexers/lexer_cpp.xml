@@ -75,39 +75,43 @@
 						bg="255,0,0"
 						bold="1"/>
 				<Keywords>
-						<Language index="0"
-								value="asm auto bool break case catch char class const
-								const_cast continue default delete do double
-								dynamic_cast else enum explicit export extern
-								false float for friend goto if inline int long
-								mutable namespace new operator private protected
-								public register reinterpret_cast restrict return short signed
-								sizeof static static_cast struct switch template this
-								throw true try typedef typeid typename union unsigned
-								using virtual void volatile while
+                        <!-- Primary keywords and identifiers -->
+                        <Set index="0"
+                            value="asm auto bool break case catch char class const
+                                   const_cast continue default delete do double
+                                   dynamic_cast else enum explicit export extern
+                                   false float for friend goto if inline int long
+                                   mutable namespace new operator private protected
+                                   public register reinterpret_cast restrict return short signed
+                                   sizeof static static_cast struct switch template this
+                                   throw true try typedef typeid typename union unsigned
+                                   using virtual void volatile while
 
-                                int8_t uint8_t int16_t uint16_t int32_t uint32_t int64_t uint64_t
-                                int_least8_t uint_least8_t int_least16_t uint_least16_t
-                                int_least32_t uint_least32_t int_least64_t uint_least64_t
-                                int_fast8_t uint_fast8_t int_fast16_t uint_fast16_t
-                                int_fast32_t uint_fast32_t int_fast64_t uint_fast64_t
-                                intptr_t uintptr_t intmax_t uintmax_t
-                                wint_t wchar_t wctrans_t wctype_t size_t time_t
-                                and and_eq bitand bitor compl not not_eq or or_eq xor xor_eq
-                                complex imaginary _Complex _Imaginary _Bool _Pragma
-                                "/>
-						<User index="1"/>
-						<Documentation index="2"
-								value="a addindex addtogroup anchor arg attention
-								author b brief bug c class code date def defgroup deprecated dontinclude
-								e em endcode endhtmlonly endif endlatexonly endlink endverbatim enum example exception
-								f$ f[ f] file fn hideinitializer htmlinclude htmlonly
-								if image include ingroup internal invariant interface latexonly li line link
-								mainpage name namespace nosubgrouping note overload
-								p page par param post pre ref relates remarks return retval
-								sa section see showinitializer since skip skipline struct subsection
-								test throw todo typedef union until
-								var verbatim verbinclude version warning weakgroup $ @ \ & < > # { }"/>
+                                   int8_t uint8_t int16_t uint16_t int32_t uint32_t int64_t uint64_t
+                                   int_least8_t uint_least8_t int_least16_t uint_least16_t
+                                   int_least32_t uint_least32_t int_least64_t uint_least64_t
+                                   int_fast8_t uint_fast8_t int_fast16_t uint_fast16_t
+                                   int_fast32_t uint_fast32_t int_fast64_t uint_fast64_t
+                                   intptr_t uintptr_t intmax_t uintmax_t
+                                   wint_t wchar_t wctrans_t wctype_t size_t time_t
+                                   and and_eq bitand bitor compl not not_eq or or_eq xor xor_eq
+                                   complex imaginary _Complex _Imaginary _Bool _Pragma"/>
+                        <!-- Secondary keywords and identifiers -->
+                        <Set index="1"
+                            value=""/>
+                        <!-- Documentation comment keywords -->
+						<Set index="2"
+                            value="a addindex addtogroup anchor arg attention
+                                   author b brief bug c class code date def defgroup deprecated
+                                   dontinclude e em endcode endhtmlonly endif endlatexonly endlink
+                                   endverbatim enum example exception f$ f[ f] file fn
+                                   hideinitializer htmlinclude htmlonly if image include ingroup
+                                   internal invariant interface latexonly li line link mainpage name
+                                   namespace nosubgrouping note overload p page par param post pre
+                                   ref relates remarks return retval sa section see showinitializer
+                                   since skip skipline struct subsection test throw todo typedef
+                                   union until var verbatim verbinclude version warning weakgroup
+                                   $ @ \ & < > # { }"/>
 				</Keywords>
 				<SampleCode value="lexer_cpp.sample"
 						breakpoint_line="20"

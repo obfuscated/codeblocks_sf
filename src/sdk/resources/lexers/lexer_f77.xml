@@ -3,7 +3,7 @@
 <CodeBlocks_lexer_properties>
 		<Lexer name="Fortran77"
 				index="37"
-				filemasks="*.f,*.for,*.f77,*.cmn,*.inc">
+				filemasks="*.f,*.for,*.f77">
 				<Style name="Default"
 						index="0"
 						fg="0,0,0"
@@ -64,25 +64,21 @@
 						index="35"
 						bg="255,0,0"/>
 				<Keywords>
-						<Language index="0"
-								value="assign backspace block
-								call character close continue common complex
-								data dimension double precision do
-								entry equivalence external else end enddo endfile endif
-								format function go goto to if implicit inquire integer intrinsic
-								logical none open parameter pause print program
-								read real return rewind save sequence stop subroutine
-								then to write
-								abs acos aimag alog10 amax0 amax1 amin0 amin1 amod anint
-								asin atan atan2
-  								cabs ccos cexp clog cmplx conjg cos cosh csin csqrt
-								dabs dacos dasin datan datan2 dble dcos dcosh ddim
-								dexp dim dint dlog dlog10 dmax0 dmax1 dmin0 dmin1 dmod
-								dprod dsign dsin dsqrt dtan dtanh exp float fmt
-								ichar idim idint ifix index int isign
-								len lge lgt lle llt log log10 max max0 max1 min min0 min1 mod
-								real sign sin sngl sqrt tan tanh
-								formatted unformatted unit"/>
+                        <!-- Primary keywords and identifiers -->
+                        <Set index="0"
+                            value="assign backspace block call character close continue common
+                                   complex data dimension double precision do entry equivalence
+                                   external else end enddo endfile endif format function go goto to
+                                   if implicit inquire integer intrinsic logical none open parameter
+                                   pause print program read real return rewind save sequence stop
+                                   subroutine then to write abs acos aimag alog10 amax0 amax1 amin0
+                                   amin1 amod anint asin atan atan2 cabs ccos cexp clog cmplx conjg
+                                   cos cosh csin csqrt dabs dacos dasin datan datan2 dble dcos dcosh
+                                   ddim dexp dim dint dlog dlog10 dmax0 dmax1 dmin0 dmin1 dmod dprod
+                                   dsign dsin dsqrt dtan dtanh exp float fmt ichar idim idint ifix
+                                   index int isign len lge lgt lle llt log log10 max max0 max1 min
+                                   min0 min1 mod real sign sin sngl sqrt tan tanh formatted
+                                   unformatted unit"/>
 				</Keywords>
 				<SampleCode value="lexer_f77.sample"
 						breakpoint_line="20"
