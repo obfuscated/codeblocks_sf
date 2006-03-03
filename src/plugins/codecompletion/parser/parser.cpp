@@ -54,13 +54,12 @@ BEGIN_EVENT_TABLE(Parser, wxEvtHandler)
 END_EVENT_TABLE()
 
 Parser::Parser(wxEvtHandler* parent)
-	: m_MaxThreadsCount(8),
-	m_pParent(parent)
+	: m_pParent(parent)
 #ifndef STANDALONE
 	,m_pImageList(0L),
 #endif
     m_UsingCache(false),
-    m_Pool(this, idPool,1),
+    m_Pool(this, idPool, 1),
     m_pTokens(0),
     m_pTempTokens(0),
     m_NeedsReparse(false),
@@ -159,9 +158,9 @@ void Parser::ConnectEvents()
     Connect(-1,-1,cbEVT_THREADTASK_ALLDONE,
             (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
             &Parser::OnAllThreadsDone);
-    Connect(-1,TIMER_ID, wxEVT_TIMER,(wxObjectEventFunction)
+    Connect(TIMER_ID,-1, wxEVT_TIMER,(wxObjectEventFunction)
             (wxEventFunction)(wxTimerEventFunction)&Parser::OnTimer);
-    Connect(-1,BATCH_TIMER_ID,wxEVT_TIMER,(wxObjectEventFunction)
+    Connect(BATCH_TIMER_ID,-1,wxEVT_TIMER,(wxObjectEventFunction)
             (wxEventFunction)(wxTimerEventFunction)&Parser::OnBatchTimer);
 }
 
@@ -185,7 +184,7 @@ void Parser::ReadOptions()
 	m_BrowserOptions.showAllSymbols = false;
 #else // !STANDALONE
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
-	m_MaxThreadsCount = cfg->ReadInt(_T("/max_threads"), wxThread::GetCPUCount());
+	m_Pool.SetConcurrentThreads(cfg->ReadInt(_T("/max_threads"), 1));
 	m_Options.followLocalIncludes = cfg->ReadBool(_T("/parser_follow_local_includes"), false);
 	m_Options.followGlobalIncludes = cfg->ReadBool(_T("/parser_follow_global_includes"), false);
 	m_Options.caseSensitive = cfg->ReadBool(_T("/case_sensitive"), false);
@@ -201,7 +200,7 @@ void Parser::WriteOptions()
 {
 #ifndef STANDALONE
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
-	cfg->Write(_T("/max_threads"), (int)m_MaxThreadsCount);
+	cfg->Write(_T("/max_threads"), (int)GetMaxThreads());
 	cfg->Write(_T("/parser_follow_local_includes"), m_Options.followLocalIncludes);
 	cfg->Write(_T("/parser_follow_global_includes"), m_Options.followGlobalIncludes);
 	cfg->Write(_T("/case_sensitive"), m_Options.caseSensitive);

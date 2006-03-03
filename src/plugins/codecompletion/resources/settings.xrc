@@ -1,282 +1,304 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
 <resource>
-  <object class="wxPanel" name="dlgCCSettings">
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxNotebook">
-          <object class="notebookpage">
-            <label>Code completion</label>
-            <object class="wxPanel" name="tabCC">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxStaticBoxSizer">
-                    <label>Code completion options</label>
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkNoCC">
-                        <label>Disable code-completion</label>
-                        <tooltip>Check this if you 're having problems with code-completion.\nThe class-browser will still continue to function.</tooltip>
-                      </object>
-                      <flag>wxTOP|wxLEFT|wxRIGHT</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkSimpleMode">
-                        <label>Disable SmartSense</label>
-                        <tooltip>With SmartSense, code-completion tries to be &quot;smart&quot; on what should be displayed in the list.\nWithout it, it just displays everything known.</tooltip>
-                      </object>
-                      <flag>wxTOP|wxLEFT|wxRIGHT</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkCaseSensitive">
-                        <label>Case sensitive matches</label>
-                        <tooltip>Check this if you want case-sensitive matches of the word you 're typing.</tooltip>
-                      </object>
-                      <flag>wxALL</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Delay (ms):</label>
-                      </object>
-                      <flag>wxTOP|wxLEFT</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxBoxSizer">
-                        <orient>wxHORIZONTAL</orient>
-                        <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>1 ms</label>
-                          </object>
-                          <flag>wxTOP|wxLEFT</flag>
-                          <border>8</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxBoxSizer">
-                            <orient>wxVERTICAL</orient>
-                            <object class="sizeritem">
-                              <object class="wxSlider" name="sliderDelay">
-                                <value>5</value>
-                                <min>0</min>
-                                <max>25</max>
-                                <style>wxSL_AUTOTICKS</style>
-                                <tickfreq>5</tickfreq>
-                                <pagesize>10</pagesize>
-                                <tooltip>Set the delay in milliseconds before code-completion kicks-in automatically.\nCode-completion is invoked automatically when you type '.', '-&gt;' or '::'.</tooltip>
-                              </object>
-                              <option>1</option>
-                              <flag>wxALL|wxGROW</flag>
-                              <border>8</border>
+    <object class="wxPanel" name="dlgCCSettings">
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>8</border>
+                <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxNotebook" name="ID_NOTEBOOK1">
+                    <object class="notebookpage">
+                        <label>Code completion</label>
+                        <object class="wxPanel" name="tabCC">
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <border>8</border>
+                                    <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                    <object class="wxStaticBoxSizer">
+                                        <orient>wxVERTICAL</orient>
+                                        <label>Code completion options</label>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxCheckBox" name="chkNoCC">
+                                                <label>Disable code-completion</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxCheckBox" name="chkSimpleMode">
+                                                <label>Disable SmartSense</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxCheckBox" name="chkCaseSensitive">
+                                                <label>Case sensitive matches</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxLEFT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxStaticText" name="ID_STATICTEXT1">
+                                                <label>Delay (ms):</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <border>8</border>
+                                                    <flag>wxLEFT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                                    <object class="wxStaticText" name="ID_STATICTEXT2">
+                                                        <label>1 ms</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <option>1</option>
+                                                    <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                                    <object class="wxBoxSizer">
+                                                        <orient>wxVERTICAL</orient>
+                                                        <object class="sizeritem">
+                                                            <option>1</option>
+                                                            <border>8</border>
+                                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                                            <object class="wxSlider" name="sliderDelay">
+                                                                <value>5</value>
+                                                                <max>25</max>
+                                                                <pagesize>10</pagesize>
+                                                                <tickfreq>5</tickfreq>
+                                                                <style>wxSL_AUTOTICKS</style>
+                                                            </object>
+                                                        </object>
+                                                        <object class="sizeritem">
+                                                            <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP</flag>
+                                                            <object class="wxStaticText" name="lblDelay">
+                                                                <label>500 ms</label>
+                                                            </object>
+                                                        </object>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <border>8</border>
+                                                    <flag>wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                                    <object class="wxStaticText" name="ID_STATICTEXT3">
+                                                        <label>2.5 sec</label>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <border>8</border>
+                                    <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                    <object class="wxStaticBoxSizer">
+                                        <orient>wxVERTICAL</orient>
+                                        <label>List control</label>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                            <object class="wxCheckBox" name="chkCustomList">
+                                                <label>Use custom control for code-completion list</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <border>4</border>
+                                                    <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                                    <object class="wxStaticText" name="ID_STATICTEXT4">
+                                                        <label>List color (for custom list control):</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <option>1</option>
+                                                    <border>8</border>
+                                                    <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                                    <object class="wxButton" name="btnColor">
+                                                        <label></label>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
                             </object>
-                            <object class="sizeritem">
-                              <object class="wxStaticText" name="lblDelay">
-                                <label>500 ms</label>
-                              </object>
-                              <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>Parser</label>
+                        <object class="wxPanel" name="tabParser">
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <border>8</border>
+                                    <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                    <object class="wxStaticBoxSizer">
+                                        <orient>wxVERTICAL</orient>
+                                        <label>C/C++ Parser options</label>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxCheckBox" name="chkLocals">
+                                                <label>Follow LOCAL includes</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxCheckBox" name="chkGlobals">
+                                                <label>Follow GLOBAL includes</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxCheckBox" name="chkPreprocessor">
+                                                <label>Parse preprocessor directives</label>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <border>8</border>
+                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                    <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                            <border>5</border>
+                                            <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                            <object class="wxStaticText" name="ID_STATICTEXT6">
+                                                <label>Concurrently parsing threads:</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxLEFT|wxALIGN_CENTER</flag>
+                                            <object class="wxSpinCtrl" name="spnThreadsNum">
+                                                <value>2</value>
+                                                <min>1</min>
+                                                <max>16</max>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
                             </object>
-                          </object>
-                          <option>1</option>
-                          <flag>wxGROW</flag>
                         </object>
-                        <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>2.5 sec</label>
-                          </object>
-                          <flag>wxTOP|wxRIGHT</flag>
-                          <border>8</border>
-                        </object>
-                      </object>
-                      <flag>wxGROW</flag>
                     </object>
-                  </object>
-                  <flag>wxALL|wxEXPAND</flag>
-                  <border>8</border>
+                    <object class="notebookpage">
+                        <label>Class browser</label>
+                        <object class="wxPanel" name="tabCB">
+                            <object class="wxBoxSizer">
+                                <orient>wxHORIZONTAL</orient>
+                                <object class="sizeritem">
+                                    <option>1</option>
+                                    <border>8</border>
+                                    <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                    <object class="wxTreeCtrl" name="treeClasses" />
+                                </object>
+                                <object class="sizeritem">
+                                    <border>8</border>
+                                    <flag>wxRIGHT|wxTOP|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                    <object class="wxBoxSizer">
+                                        <orient>wxVERTICAL</orient>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <border>4</border>
+                                                    <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                                    <object class="wxStaticText" name="ID_STATICTEXT5">
+                                                        <label>View:</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <option>1</option>
+                                                    <border>8</border>
+                                                    <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                                    <object class="wxComboBox" name="cmbCBView">
+                                                        <selection>1</selection>
+                                                        <content>
+                                                            <item>Flat</item>
+                                                            <item>Structured</item>
+                                                        </content>
+                                                        <style>wxCB_READONLY|wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxCheckBox" name="chkInheritance">
+                                                <label>Show inherited members</label>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>Cache</label>
+                        <object class="wxPanel" name="tabCache">
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <border>8</border>
+                                    <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                    <object class="wxStaticBoxSizer">
+                                        <orient>wxVERTICAL</orient>
+                                        <label>Cache file options</label>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                            <object class="wxCheckBox" name="chkUseCache">
+                                                <label>Use cache</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                            <object class="wxCheckBox" name="chkAlwaysUpdateCache">
+                                                <label>Always update cache</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                            <object class="wxCheckBox" name="chkShowCacheProgress">
+                                                <label>Display cache loading/saving progress</label>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                                <object class="spacer">
+                                    <option>1</option>
+                                    <border>5</border>
+                                    <flag>wxALL|wxALIGN_CENTER</flag>
+                                </object>
+                                <object class="sizeritem">
+                                    <border>8</border>
+                                    <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                    <object class="wxStaticText" name="ID_STATICTEXT7">
+                                        <label>The cache has been disabled and will soon be removed completely.</label>
+                                        <fg>#800000</fg>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
                 </object>
-                <object class="sizeritem">
-                  <object class="wxStaticBoxSizer">
-                    <label>List control</label>
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkCustomList">
-                        <label>Use custom control for code-completion list</label>
-                      </object>
-                      <flag>wxALL|wxGROW</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxBoxSizer">
-                        <orient>wxHORIZONTAL</orient>
-                        <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>List color (for custom list control):</label>
-                          </object>
-                          <flag>wxTOP</flag>
-                          <border>4</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxButton" name="btnColor">
-                            <label></label>
-                            <tooltip>Select the list's background color.</tooltip>
-                          </object>
-                          <option>1</option>
-                          <flag>wxLEFT|wxEXPAND</flag>
-                          <border>8</border>
-                        </object>
-                      </object>
-                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                      <border>8</border>
-                    </object>
-                  </object>
-                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-                  <border>8</border>
-                </object>
-              </object>
             </object>
-          </object>
-          <object class="notebookpage">
-            <label>Parser</label>
-            <object class="wxPanel" name="tabParser">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxStaticBoxSizer">
-                    <label>C/C++ Parser options</label>
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkLocals">
-                        <label>Follow LOCAL includes</label>
-                        <tooltip>If checked, adds the project's and target's include directories to the parser's search path.</tooltip>
-                      </object>
-                      <flag>wxALL</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkGlobals">
-                        <label>Follow GLOBAL includes</label>
-                        <tooltip>If checked, adds the global compiler include directories to the parser's search path.\nThis will slow down parsing but it will be more accurate.</tooltip>
-                      </object>
-                      <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkPreprocessor">
-                        <label>Parse preprocessor directives</label>
-                        <tooltip>If checked, the parser will scan for preprocessor directives.\nIf not, it will simply ignore them.</tooltip>
-                      </object>
-                      <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
-                      <border>8</border>
-                    </object>
-                  </object>
-                  <flag>wxALL|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-              </object>
-            </object>
-          </object>
-          <object class="notebookpage">
-            <label>Class browser</label>
-            <object class="wxPanel" name="tabCB">
-              <object class="wxBoxSizer">
-                <orient>wxHORIZONTAL</orient>
-                <object class="sizeritem">
-                  <object class="wxTreeCtrl" name="treeClasses"/>
-                  <option>1</option>
-                  <flag>wxALL|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxBoxSizer">
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                      <object class="wxBoxSizer">
-                        <orient>wxHORIZONTAL</orient>
-                        <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>View:</label>
-                          </object>
-                          <flag>wxTOP</flag>
-                          <border>4</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxComboBox" name="cmbCBView">
-                            <content>
-                              <item>Flat</item>
-                              <item>Structured</item>
-                            </content>
-                            <selection>1</selection>
-                            <style>wxCB_READONLY|wxCB_DROPDOWN</style>
-                          </object>
-                          <option>1</option>
-                          <flag>wxLEFT|wxEXPAND</flag>
-                          <border>8</border>
-                        </object>
-                      </object>
-                      <flag>wxEXPAND</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkInheritance">
-                        <label>Show inherited members</label>
-                      </object>
-                      <flag>wxTOP</flag>
-                      <border>8</border>
-                    </object>
-                  </object>
-                  <flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-              </object>
-            </object>
-          </object>
-          <usenotebooksizer>1</usenotebooksizer>
-          <object class="notebookpage">
-            <label>Cache</label>
-            <object class="wxPanel" name="tabCache">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxStaticBoxSizer">
-                    <label>Cache file options</label>
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkUseCache">
-                        <label>Use cache</label>
-                        <tooltip>If checked, a code-completion cache file will be created in the project dir.\nIt speeds up the parsing when you open the project (load cache instead of parse), but slows down when you close the project (save cache).</tooltip>
-                      </object>
-                      <flag>wxALL|wxGROW</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkAlwaysUpdateCache">
-                        <label>Always update cache</label>
-                        <tooltip>If checked, the cache file will be updated every time the project is closed. If not, it will be updated only if needed.</tooltip>
-                      </object>
-                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkShowCacheProgress">
-                        <label>Display cache loading/saving progress</label>
-                        <tooltip>If checked, a progress bar will be shown while the cache is being loaded/saved</tooltip>
-                      </object>
-                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-                      <border>8</border>
-                    </object>
-                  </object>
-                  <flag>wxALL|wxGROW</flag>
-                  <border>8</border>
-                </object>
-              </object>
-            </object>
-          </object>
         </object>
-        <option>1</option>
-        <flag>wxLEFT|wxEXPAND</flag>
-        <border>8</border>
-      </object>
     </object>
-  </object>
 </resource>

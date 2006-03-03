@@ -3,13 +3,14 @@
 
 #include <wx/event.h>
 #include <wx/hashmap.h>
+#include "parser/parser.h"
 
 // forward decls
 class cbEditor;
 class EditorBase;
 class cbProject;
 class ClassBrowser;
-class Parser;
+//class Parser;
 class Token;
 
 WX_DECLARE_HASH_MAP(cbProject*, Parser*, wxPointerHash, wxPointerEqual, ParsersMap);
@@ -50,9 +51,6 @@ class NativeParser : public wxEvtHandler
 		int GetEditorStartWord(){ return m_EditorStartWord; }
 		int GetEditorEndWord(){ return m_EditorEndWord; }
 
-		cbProject* FindProjectFromParser(Parser* parser);
-		cbProject* FindProjectFromEditor(cbEditor* editor);
-		cbProject* FindProjectFromActiveEditor();
 		Parser* FindParserFromActiveEditor();
 		Parser* FindParserFromEditor(cbEditor* editor);
 		Parser* FindParserFromActiveProject();
@@ -75,7 +73,7 @@ class NativeParser : public wxEvtHandler
 		void AddCompilerDirs(Parser* parser, cbProject* project);
 		bool LoadCachedData(Parser* parser, cbProject* project);
 		bool SaveCachedData(Parser* parser, const wxString& projectFilename);
-		void DisplayStatus(Parser* parser, cbProject* project);
+		void DisplayStatus(Parser* parser);
 		void OnThreadStart(wxCommandEvent& event);
 		void OnThreadEnd(wxCommandEvent& event);
 		void OnParserEnd(wxCommandEvent& event);
@@ -84,8 +82,7 @@ class NativeParser : public wxEvtHandler
 		bool SkipWhitespaceForward(cbEditor* editor, int& pos);
 		bool SkipWhitespaceBackward(cbEditor* editor, int& pos);
 
-		ParsersMap m_Parsers;
-		ParsersFilenameMap m_ParsersFilenames;
+        Parser m_Parser;
 		int m_EditorStartWord;
 		int m_EditorEndWord;
 		wxString m_CCItems;

@@ -40,8 +40,12 @@ class PrivateThread : public wxThread
           m_pTask(0),
         m_Abort(false)
         {
+//            Manager::Get()->GetMessageManager()->DebugLog(_T("Thread %p created"), this);
         }
-		~PrivateThread(){}
+		~PrivateThread()
+		{
+//            Manager::Get()->GetMessageManager()->DebugLog(_T("Thread %p destroyed"), this);
+		}
 
 		bool Aborted()
 		{
@@ -73,8 +77,13 @@ class PrivateThread : public wxThread
                 m_pPool->m_CounterCriticalSection.Enter();
                 m_pTask = 0;
                 m_pPool->m_CounterCriticalSection.Leave();
+
+                // should we abort?
                 if (Aborted())
                     break;
+
+                // wait for signal from pool
+                m_pPool->m_Semaphore.Wait();
 
                 // should we abort?
                 if (Aborted())
@@ -86,31 +95,30 @@ class PrivateThread : public wxThread
                 bool doneWork = false;
                 cbTaskElement elem;
                 m_pPool->GetNextElement(elem);
-                if (!elem.task)
-                    break; // We're out of jobs
-                // increment the "busy" counter
-                m_pPool->m_CounterCriticalSection.Enter();
-                ++m_pPool->m_Counter;
-                m_pTask = elem.task;
-                m_pPool->m_CounterCriticalSection.Leave();
+                if (elem.task)
+                {
+                    // increment the "busy" counter
+                    m_pPool->m_CounterCriticalSection.Enter();
+                    ++m_pPool->m_Counter;
+                    m_pTask = elem.task;
+                    m_pPool->m_CounterCriticalSection.Leave();
 
-                if (!Aborted())
-                    m_pTask->Execute();
-                doneWork = true;
+                    if (!Aborted())
+                        m_pTask->Execute();
+                    doneWork = true;
 
-                // decrement the "busy" counter
-                m_pPool->m_CounterCriticalSection.Enter();
-                m_pTask = 0;
-                --m_pPool->m_Counter;
-                m_pPool->m_CounterCriticalSection.Leave();
+                    // decrement the "busy" counter
+                    m_pPool->m_CounterCriticalSection.Enter();
+                    m_pTask = 0;
+                    --m_pPool->m_Counter;
+                    m_pPool->m_CounterCriticalSection.Leave();
+                }
                 if (elem.autoDelete)
                     delete elem.task;
 
+                // tell the pool we 're done
                 if (doneWork)
-                {
-                    // tell the pool we 're done
                     m_pPool->OnThreadTaskDone(this);
-                }
             }
             return 0;
         }
@@ -146,20 +154,35 @@ cbThreadPool::~cbThreadPool()
 
 void cbThreadPool::SetConcurrentThreads(int concurrentThreads)
 {
+    if (concurrentThreads <= 0 || concurrentThreads > 16)
+        concurrentThreads = -1;
+    if (concurrentThreads == m_ConcurrentThreads && concurrentThreads > 0)
+    {
+        m_ConcurrentThreadsSchedule = 0;
+        return;
+    }
+
     // if == -1, means auto i.e. same as number of CPUs
     if (concurrentThreads == -1)
-        m_ConcurrentThreads = wxThread::GetCPUCount();
+        m_ConcurrentThreadsSchedule = wxThread::GetCPUCount();
     else
-        m_ConcurrentThreads = concurrentThreads;
+        m_ConcurrentThreadsSchedule = concurrentThreads;
 
     // if still == -1, something's wrong; reset to 1
-    if (m_ConcurrentThreads == -1)
-        m_ConcurrentThreads = 1;
+    if (m_ConcurrentThreadsSchedule == -1)
+        m_ConcurrentThreadsSchedule = 1;
 
-	Manager::Get()->GetMessageManager()->DebugLog(_T("Concurrent threads for pool set to %d"), m_ConcurrentThreads);
+    if (Done())
+    {
+        m_ConcurrentThreads = m_ConcurrentThreadsSchedule;
+        m_ConcurrentThreadsSchedule = 0; // no schedule
 
-    // alloc (or dealloc) based on new thread count
-    AllocThreads();
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Concurrent threads for pool set to %d"), m_ConcurrentThreads);
+
+        // alloc (or dealloc) based on new thread count
+        AllocThreads();
+    }
+    // else it will be called when all threads are done
 }
 
 // called by PrivateThread when it's done running a task
@@ -171,12 +194,14 @@ void cbThreadPool::OnThreadTaskDone(PrivateThread* thread)
     CodeBlocksEvent evt(cbEVT_THREADTASK_ENDED, m_ID);
     wxPostEvent(m_pOwner, evt);
 
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Thread %p done"), thread);
     if (m_TaskQueue.IsEmpty())
     {
         // check no running threads are busy
         m_CounterCriticalSection.Enter();
         bool reallyDone = m_Counter == 0;
         m_CounterCriticalSection.Leave();
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("Live threads %d"), m_Counter);
 
         if (reallyDone)
         {
@@ -185,9 +210,16 @@ void cbThreadPool::OnThreadTaskDone(PrivateThread* thread)
             // notify the owner that all tasks are done
             CodeBlocksEvent evt(cbEVT_THREADTASK_ALLDONE, m_ID);
             wxPostEvent(m_pOwner, evt);
+
+            // change concurrent threads count now that we 're done
+            if (m_ConcurrentThreadsSchedule != 0)
+                SetConcurrentThreads(m_ConcurrentThreadsSchedule);
         }
     }
     m_CriticalSection.Leave();
+
+    // make sure any waiting threads "wake-up"
+    m_Semaphore.Post();
 }
 
 void cbThreadPool::BatchBegin()
@@ -199,7 +231,8 @@ void cbThreadPool::BatchEnd()
 {
     m_Batching = false;
     // launch the thread (if there's room in the pool)
-    RunThreads();
+    m_Semaphore.Post();
+//    RunThreads();
 }
 
 void cbThreadPool::RunThreads()
@@ -234,7 +267,8 @@ bool cbThreadPool::AddTask(cbThreadPoolTask* task, bool autoDelete)
     if (!m_Batching)
     {
         // launch the thread (if there's room in the pool)
-        RunThreads();
+        m_Semaphore.Post();
+//        RunThreads();
     }
 
     return true;
@@ -290,6 +324,7 @@ void cbThreadPool::AllocThreads()
         PrivateThread* thr = new PrivateThread(this);
         thr->Create(); // Create the thread
         m_Threads.Add(thr);
+        thr->Run();
     }
 }
 
@@ -302,6 +337,9 @@ void cbThreadPool::FreeThreads()
         PrivateThread* thread = m_Threads[i];
         thread->Abort();  // set m_Abort on *every* thread first
     }
+
+    for (i = 0; i < m_Threads.GetCount(); ++i)
+        m_Semaphore.Post(); // now it does not matter which thread wakes up
 
     // actually give them CPU time to die, too
 #if wxCHECK_VERSION(2,6,0)
@@ -335,5 +373,6 @@ void cbThreadPool::FreeThreads()
             }
         }
     }
+    WX_CLEAR_ARRAY(m_Threads);
     m_Threads.Clear();
 }

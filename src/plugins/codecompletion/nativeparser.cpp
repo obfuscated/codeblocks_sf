@@ -53,7 +53,7 @@ BEGIN_EVENT_TABLE(NativeParser, wxEvtHandler)
 END_EVENT_TABLE()
 
 NativeParser::NativeParser()
-	: m_Parsers(1)
+	: m_Parser(this)//m_Parsers(1)
 {
 	//ctor
     m_pClassBrowser = 0L;
@@ -89,22 +89,17 @@ void NativeParser::RemoveClassBrowser(bool appShutDown)
 void NativeParser::RereadParserOptions()
 {
 	bool needsReparsing = false;
-	for (ParsersMap::iterator it = m_Parsers.begin(); it != m_Parsers.end(); ++it)
-	{
-		Parser* parser = it->second;
-		if (parser)
-		{
-			ParserOptions opts = parser->Options();
-			parser->ReadOptions();
-			if (opts.followLocalIncludes != parser->Options().followLocalIncludes ||
-				opts.followGlobalIncludes != parser->Options().followGlobalIncludes ||
-				opts.wantPreprocessor != parser->Options().wantPreprocessor)
-			{
-				// important options changed... flag for reparsing
-				needsReparsing = true;
-			}
-		}
-	}
+
+    ParserOptions opts = m_Parser.Options();
+    m_Parser.ReadOptions();
+    if (opts.followLocalIncludes != m_Parser.Options().followLocalIncludes ||
+        opts.followGlobalIncludes != m_Parser.Options().followGlobalIncludes ||
+        opts.wantPreprocessor != m_Parser.Options().wantPreprocessor)
+    {
+        // important options changed... flag for reparsing
+        needsReparsing = true;
+    }
+
 	if (needsReparsing)
 	{
 		if (cbMessageBox(_("You changed some class parser options. Do you want to "
@@ -112,7 +107,6 @@ void NativeParser::RereadParserOptions()
 						_("Reparse?"),
 						wxYES_NO | wxICON_QUESTION) == wxID_YES)
 		{
-			cbProject* proj = Manager::Get()->GetProjectManager()->GetActiveProject();
 			ClearParsers();
 			ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
 			for (unsigned int i = 0; i < projects->GetCount(); ++i)
@@ -120,7 +114,7 @@ void NativeParser::RereadParserOptions()
 				AddParser(projects->Item(i));
 			}
 			if (m_pClassBrowser)
-				m_pClassBrowser->SetParser(m_Parsers[proj]);
+				m_pClassBrowser->SetParser(&m_Parser);//m_Parsers[proj]);
 		}
 	}
 	if (m_pClassBrowser)
@@ -130,19 +124,12 @@ void NativeParser::RereadParserOptions()
 void NativeParser::SetClassBrowserProject(cbProject* project)
 {
     if (m_pClassBrowser)
-		m_pClassBrowser->SetParser(m_Parsers[project]);
+		m_pClassBrowser->SetParser(&m_Parser);//m_Parsers[project]);
 }
 
 void NativeParser::SetCBViewMode(const BrowserViewMode& mode)
 {
-	for (ParsersMap::iterator it = m_Parsers.begin(); it != m_Parsers.end(); ++it)
-	{
-		Parser* parser = it->second;
-		if (parser)
-		{
-			parser->ClassBrowserOptions().showInheritance = mode == bvmInheritance;
-		}
-	}
+    m_Parser.ClassBrowserOptions().showInheritance = mode == bvmInheritance;
 	if (m_pClassBrowser)
 		m_pClassBrowser->Update();
 }
@@ -151,15 +138,13 @@ void NativeParser::ClearParsers()
 {
 	if (m_pClassBrowser)
 		m_pClassBrowser->SetParser(0L);
-	for (ParsersMap::iterator it = m_Parsers.begin(); it != m_Parsers.end(); ++it)
-	{
-		Parser* parser = it->second;
-		if (parser)
-		{
-			delete parser;
-        }
-	}
-	m_Parsers.clear();
+//    ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
+//    for (size_t i = 0; i < projects->GetCount(); ++i)
+//    {
+//        cbProject* prj = projects->Item(i);
+//        RemoveParser(prj, false);
+//    }
+    m_Parser.Clear();
 }
 
 void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
@@ -330,29 +315,9 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
 	if (!project)
 		return;
 
-	// check if we already have a parser for this project
-	if (m_Parsers[project])
-		return;
-
-	Manager::Get()->GetMessageManager()->DebugLog(_T("Start parsing project %s"), project->GetTitle().c_str());
-	Parser* parser = new Parser(this);
-	m_Parsers[project] = parser;
-	m_ParsersFilenames[project] = project->GetFilename();
+	Manager::Get()->GetMessageManager()->DebugLog(_T("Add project %s in parsing queue"), project->GetTitle().c_str());
+	Parser* parser = &m_Parser;//new Parser(this);
 	AddCompilerDirs(parser, project);
-
-    if (useCache && Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/use_cache"), false))
-    {
-        parser->StartStopWatch();
-        bool could_load_cache = LoadCachedData(parser, project);
-        parser->EndStopWatch();
-        if (could_load_cache)
-        {
-            wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, PARSER_END);
-            evt.SetClientData(parser);
-            this->ProcessEvent(evt);
-            return;
-        }
-    }
 
     wxArrayString files;
 
@@ -384,44 +349,23 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
 
 void NativeParser::RemoveParser(cbProject* project, bool useCache)
 {
-	// check if we already have a parser for this project
-	Parser* parser = m_Parsers[project];
-	if (!parser)
-		return;
-
-    if (useCache && Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/use_cache"), false))
+    if (!project)
+        return;
+    for (int i = 0; i < project->GetFilesCount(); ++i)
     {
-        if (Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/update_cache_always"), false) ||
-            parser->CacheNeedsUpdate())
-        {
-            SaveCachedData(parser, m_ParsersFilenames[project]);
-        }
+        ProjectFile* pf = project->GetFile(i);
+        m_Parser.RemoveFile(pf->file.GetFullPath());
     }
-
-	m_Parsers.erase(project);
-	m_ParsersFilenames.erase(project);
-	if (parser)
-	{
-		delete parser;
-	}
-    if (m_pClassBrowser)
-		m_pClassBrowser->SetParser(0L);
 }
 
 void NativeParser::AddFileToParser(cbProject* project, const wxString& filename)
 {
-	Parser* parser = m_Parsers[project];
-	if (!parser)
-		return;
-	parser->Parse(filename, true);
+	m_Parser.Parse(filename, true);
 }
 
 void NativeParser::RemoveFileFromParser(cbProject* project, const wxString& filename)
 {
-	Parser* parser = m_Parsers[project];
-	if (!parser)
-		return;
-	parser->RemoveFile(filename);
+	m_Parser.RemoveFile(filename);
 }
 
 void NativeParser::ForceReparseActiveProject()
@@ -434,68 +378,27 @@ void NativeParser::ForceReparseActiveProject()
     }
 }
 
-cbProject* NativeParser::FindProjectFromParser(Parser* parser)
-{
-	for (ParsersMap::iterator it = m_Parsers.begin(); it != m_Parsers.end(); ++it)
-	{
-		if (parser == it->second)
-			return it->first;
-	}
-	return 0L;
-}
-
-cbProject* NativeParser::FindProjectFromEditor(cbEditor* editor)
-{
-	Parser* parser = FindParserFromEditor(editor);
-	return FindProjectFromParser(parser);
-}
-
-cbProject* NativeParser::FindProjectFromActiveEditor()
-{
-	EditorManager* edMan = Manager::Get()->GetEditorManager();
-//    if (!edMan)
-//    	return 0L;
-    cbEditor* ed = edMan->GetBuiltinActiveEditor();
-	return FindProjectFromEditor(ed);
-}
-
 Parser* NativeParser::FindParserFromEditor(cbEditor* editor)
 {
-    if (!editor)
-    	return 0L;
-
-    FileType ft = FileTypeOf(editor->GetFilename());
-    if (ft != ftSource && ft != ftHeader)
-        return 0L;
-
-	ProjectFile* pf = editor->GetProjectFile();
-	if (!pf)
-		return 0L;
-	cbProject* project = pf->GetParentProject();
-	return m_Parsers[project];
+    return &m_Parser;
 }
 
 Parser* NativeParser::FindParserFromActiveEditor()
 {
-	EditorManager* edMan = Manager::Get()->GetEditorManager();
-//    if (!edMan)
-//    	return 0L;
-    cbEditor* ed = edMan->GetBuiltinActiveEditor();
-	return FindParserFromEditor(ed);
+    return &m_Parser;
 }
 
 Parser* NativeParser::FindParserFromActiveProject()
 {
-	return FindParserFromProject(Manager::Get()->GetProjectManager()->GetActiveProject());
+    return &m_Parser;
 }
 
 Parser* NativeParser::FindParserFromProject(cbProject* project)
 {
-    if (!project)
-    	return 0L;
-	return m_Parsers[project];
+    return &m_Parser;
 }
 
+// UNUSED
 bool NativeParser::LoadCachedData(Parser* parser, cbProject* project)
 {
     if (!parser || !project)
@@ -537,6 +440,7 @@ bool NativeParser::LoadCachedData(Parser* parser, cbProject* project)
     return ret;
 }
 
+// UNUSED
 bool NativeParser::SaveCachedData(Parser* parser, const wxString& projectFilename)
 {
     bool result = false;
@@ -565,13 +469,12 @@ bool NativeParser::SaveCachedData(Parser* parser, const wxString& projectFilenam
     return result;
 }
 
-void NativeParser::DisplayStatus(Parser* parser, cbProject* project)
+void NativeParser::DisplayStatus(Parser* parser)
 {
-    if (!parser || !project)
+    if (!parser)
         return;
     long int tim = parser->LastParseTime();
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Done parsing project %s (%d total parsed files, %d tokens in %d minute(s), %d.%d seconds)."),
-                    project->GetTitle().c_str(),
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Parsing stage done (%d total parsed files, %d tokens in %d minute(s), %d.%d seconds)."),
                     parser->GetFilesCount(),
                     parser->GetTokens()->realsize(),
                     (tim / 60000),
@@ -1345,13 +1248,8 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 	Parser* parser = (Parser*)event.GetClientData();
 	if (parser)// && parser->Done())
 	{
-		cbProject* project = FindProjectFromParser(parser);
-		if (project)
-            DisplayStatus(parser, project);
-		else
-			Manager::Get()->GetMessageManager()->DebugLog(_T("Parser aborted (project closed)."));
-
-		if (project == Manager::Get()->GetProjectManager()->GetActiveProject())
+        DisplayStatus(parser);
+		if (parser->Done())
         {
             Manager::Get()->GetMessageManager()->DebugLog(_T("Updating class browser..."));
 			if (m_pClassBrowser)

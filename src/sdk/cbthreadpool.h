@@ -47,15 +47,16 @@ class DLLIMPORT cbThreadPool
         cbThreadPool(wxEvtHandler* owner, int id = -1, int concurrentThreads = -1);
         virtual ~cbThreadPool();
 
+        virtual void SetConcurrentThreads(int concurrentThreads);
+        virtual int GetConcurrentThreads() const { return m_ConcurrentThreadsSchedule == 0 ? m_ConcurrentThreads : m_ConcurrentThreadsSchedule; }
         virtual void BatchBegin(); ///< When adding a task, it will not start until calling BatchEnd()
         virtual void BatchEnd();
         virtual bool AddTask(cbThreadPoolTask* task, bool autoDelete = true);
         virtual void AbortAllTasks();
-        virtual bool Done(){ return m_Done; }
+        virtual bool Done() const { return m_Done; }
     protected:
         friend class PrivateThread;
         virtual void GetNextElement(cbTaskElement& element);
-        virtual void SetConcurrentThreads(int concurrentThreads);
         virtual void ClearTaskQueue();
         virtual void AllocThreads();
         virtual void RunThreads();
@@ -67,11 +68,13 @@ class DLLIMPORT cbThreadPool
         cbTaskList m_TaskQueue;
         cbThreadsArray m_Threads; // task threads
         int m_ConcurrentThreads;
+        int m_ConcurrentThreadsSchedule;
         int m_MaxThreads;
         bool m_Done;
         bool m_Batching;
 
     private:
+        wxSemaphore m_Semaphore;
         wxCriticalSection m_CriticalSection;
         int m_Counter;
         wxCriticalSection m_CounterCriticalSection;
