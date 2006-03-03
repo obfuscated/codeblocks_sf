@@ -17,8 +17,6 @@ class WindowsXPLookNFeel : public cbToolPlugin
 		int Execute();
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-	protected:
-	private:
 };
 
 CB_DECLARE_PLUGIN();

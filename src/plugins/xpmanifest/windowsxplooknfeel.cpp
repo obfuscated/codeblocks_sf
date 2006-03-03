@@ -83,10 +83,6 @@ int WindowsXPLookNFeel::Execute()
 	if (!m_IsAttached)
 		return -1;
 
-#ifndef __WXMSW__
-	#error This plugin is for use under Win32 only!
-#endif // __WXMSW__
-
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
 	if (!project)
 	{
@@ -172,7 +168,7 @@ int WindowsXPLookNFeel::Execute()
 		wxFile file(filename, wxFile::write);
 		cbWrite(file,buffer);
 
-		cbMessageBox(_("Manifest file created"));
+		cbMessageBox(_("Manifest file created"), _("Information"), wxICON_INFORMATION | wxOK);
 	}
 
 	return 0;
