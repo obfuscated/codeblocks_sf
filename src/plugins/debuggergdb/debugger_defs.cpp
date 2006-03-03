@@ -2,6 +2,7 @@
 #include "debugger_defs.h"
 #include "debuggerdriver.h"
 #include "debuggertree.h"
+#include "manager.h"
 
 #include <wx/dialog.h>
 #include <wx/font.h>

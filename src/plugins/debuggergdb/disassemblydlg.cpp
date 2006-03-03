@@ -8,10 +8,12 @@
 #include <wx/button.h>
 #include <wx/listctrl.h>
 #include <wx/wfstream.h>
+#include <wx/fontutil.h>
 #include <globals.h>
 #include <editorcolorset.h>
 #include <manager.h>
 #include <editormanager.h>
+#include <configmanager.h>
 
 #define DEBUG_MARKER		4
 #define DEBUG_STYLE 		wxSCI_MARK_ARROW
