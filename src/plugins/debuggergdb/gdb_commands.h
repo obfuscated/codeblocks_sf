@@ -786,6 +786,7 @@ class GdbCmd_DisassemblyInit : public DebuggerCmd
 //            m_pDriver->DebugLog(output);
         }
 };
+// static
 wxString GdbCmd_DisassemblyInit::LastAddr;
 
 #endif // DEBUGGER_COMMANDS_H

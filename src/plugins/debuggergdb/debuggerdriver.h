@@ -81,6 +81,7 @@ class DebuggerDriver
         virtual void Backtrace() = 0;
         virtual void Disassemble() = 0;
         virtual void CPURegisters() = 0;
+        virtual void SwitchToFrame(size_t number) = 0;
 
         virtual void InfoFrame() = 0;
         virtual void InfoDLL() = 0;

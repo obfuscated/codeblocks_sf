@@ -1,6 +1,7 @@
 #include <sdk.h>
 #include "backtracedlg.h"
 #include "debuggergdb.h"
+#include "debuggerdriver.h"
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/button.h>
@@ -8,8 +9,8 @@
 #include <globals.h>
 
 BEGIN_EVENT_TABLE(BacktraceDlg, wxPanel)
+    EVT_BUTTON(XRCID("btnSwitchFrame"), BacktraceDlg::OnSwitchFrame)
     EVT_BUTTON(XRCID("btnSave"), BacktraceDlg::OnSave)
-//    EVT_BUTTON(XRCID("btnRefresh"), BacktraceDlg::OnRefresh)
     EVT_LIST_ITEM_ACTIVATED(XRCID("lstTrace"), BacktraceDlg::OnDblClick)
 END_EVENT_TABLE()
 
@@ -18,7 +19,7 @@ BacktraceDlg::BacktraceDlg(wxWindow* parent, DebuggerGDB* debugger)
 {
 	//ctor
 	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgBacktrace"));
-	SetWindowStyle(GetWindowStyle() | wxFRAME_FLOAT_ON_PARENT);
+//	SetWindowStyle(GetWindowStyle() | wxFRAME_FLOAT_ON_PARENT);
 
     wxListCtrl* lst = XRCCTRL(*this, "lstTrace", wxListCtrl);
 
@@ -135,7 +136,18 @@ void BacktraceDlg::OnSave(wxCommandEvent& event)
     cbMessageBox(_("File saved"), _("Result"), wxICON_INFORMATION);
 }
 
-void BacktraceDlg::OnRefresh(wxCommandEvent& event)
+void BacktraceDlg::OnSwitchFrame(wxCommandEvent& event)
 {
-    m_pDbg->Backtrace();
+    wxListCtrl* lst = XRCCTRL(*this, "lstTrace", wxListCtrl);
+    if (lst->GetSelectedItemCount() == 0)
+        return;
+
+    // find selected item index
+    int index = lst->GetNextItem(-1,
+                                 wxLIST_NEXT_ALL,
+                                 wxLIST_STATE_SELECTED);
+
+    // switch to this frame
+    if (m_pDbg->GetState().GetDriver())
+        m_pDbg->GetState().GetDriver()->SwitchToFrame(index);
 }

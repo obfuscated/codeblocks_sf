@@ -241,6 +241,12 @@ void GDB_driver::CPURegisters()
     QueueCommand(new GdbCmd_InfoRegisters(this, m_pCPURegisters));
 }
 
+void GDB_driver::SwitchToFrame(size_t number)
+{
+    ResetCursor();
+    QueueCommand(new DebuggerCmd(this, wxString::Format(_T("frame %d"), number)));
+}
+
 void GDB_driver::InfoFrame()
 {
     QueueCommand(new DebuggerInfoCmd(this, _T("info frame"), _("Selected frame")));

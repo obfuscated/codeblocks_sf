@@ -23,6 +23,7 @@ class CDB_driver : public DebuggerDriver
         virtual void Backtrace();
         virtual void Disassemble();
         virtual void CPURegisters();
+        virtual void SwitchToFrame(size_t number);
         virtual void Detach();
 
         void InfoFrame();

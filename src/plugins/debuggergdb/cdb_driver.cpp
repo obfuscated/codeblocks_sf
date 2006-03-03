@@ -166,6 +166,11 @@ void CDB_driver::CPURegisters()
     QueueCommand(new CdbCmd_InfoRegisters(this, m_pCPURegisters));
 }
 
+void CDB_driver::SwitchToFrame(size_t number)
+{
+    NOT_IMPLEMENTED();
+}
+
 void CDB_driver::InfoFrame()
 {
     NOT_IMPLEMENTED();
