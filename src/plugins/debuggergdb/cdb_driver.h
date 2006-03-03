@@ -24,6 +24,7 @@ class CDB_driver : public DebuggerDriver
         virtual void Disassemble();
         virtual void CPURegisters();
         virtual void SwitchToFrame(size_t number);
+        virtual void SetVarValue(const wxString& var, const wxString& value);
         virtual void Detach();
 
         void InfoFrame();

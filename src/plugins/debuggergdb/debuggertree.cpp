@@ -8,6 +8,8 @@
 #include <wx/msgdlg.h>
 #include <wx/app.h>
 #include <globals.h>
+#include "debuggergdb.h"
+#include "debuggerdriver.h"
 #include "debuggertree.h"
 #include <manager.h>
 #include <messagemanager.h>
@@ -25,6 +27,7 @@ int idDeleteWatch = wxNewId();
 int idDeleteAllWatches = wxNewId();
 int idDereferenceValue = wxNewId();
 int idWatchThis = wxNewId();
+int idChangeValue = wxNewId();
 
 #ifndef __WXMSW__
 /*
@@ -72,9 +75,10 @@ BEGIN_EVENT_TABLE(DebuggerTree, wxPanel)
 	EVT_MENU(idDeleteAllWatches, DebuggerTree::OnDeleteAllWatches)
 	EVT_MENU(idDereferenceValue, DebuggerTree::OnDereferencePointer)
 	EVT_MENU(idWatchThis, DebuggerTree::OnWatchThis)
+	EVT_MENU(idChangeValue, DebuggerTree::OnChangeValue)
 END_EVENT_TABLE()
 
-DebuggerTree::DebuggerTree(wxWindow* parent, wxEvtHandler* debugger)
+DebuggerTree::DebuggerTree(wxWindow* parent, DebuggerGDB* debugger)
     : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN),
 	m_pDebugger(debugger),
 	m_InUpdateBlock(false)
@@ -551,6 +555,8 @@ void DebuggerTree::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         menu.Append(idDeleteWatch, _("&Delete watch"));
 	}
     menu.AppendSeparator();
+    menu.Append(idChangeValue, _("&Change value..."));
+    menu.AppendSeparator();
 	menu.Append(idLoadWatchFile, _("&Load watch file"));
 	menu.Append(idSaveWatchFile, _("&Save watch file"));
     menu.AppendSeparator();
@@ -733,4 +739,61 @@ void DebuggerTree::OnWatchThis(wxCommandEvent& event)
 {
     m_Watches.Add(Watch(_T("*this")));
     NotifyForChangedWatches();
+}
+
+void DebuggerTree::FixupVarNameForChange(wxString& str)
+{
+    // remove everything from '=' and after
+    str = str.BeforeFirst(_T('='));
+    str.Trim(false);
+    str.Trim(true);
+
+    // if it contains invalid chars, clear it
+    if (str.find_first_of(_T(" \t")) != wxString::npos)
+        str.Clear();
+}
+
+void DebuggerTree::OnChangeValue(wxCommandEvent& event)
+{
+    DebuggerDriver* driver = m_pDebugger->GetState().GetDriver();
+    if (!driver)
+        return;
+
+    wxString var;
+    wxTreeItemId parent;
+    wxTreeItemId item = m_pTree->GetSelection();
+    if (item.IsOk())
+    {
+        wxString itemtext = m_pTree->GetItemText(item);
+        FixupVarNameForChange(itemtext);
+        if (!itemtext.IsEmpty())
+            var = itemtext;
+        while ((parent = m_pTree->GetItemParent(item)) && parent.IsOk())
+        {
+            item = parent;
+            wxString itemtext = m_pTree->GetItemText(item);
+
+            FixupVarNameForChange(itemtext);
+
+            if (!itemtext.IsEmpty())
+            {
+                if (!var.IsEmpty())
+                    var.Prepend(_T('.'));
+                var.Prepend(itemtext);
+            }
+        }
+    }
+
+    if (!var.IsEmpty())
+    {
+        // ask for the new value
+        wxString newvalue = wxGetTextFromUser(wxString::Format(_("Please enter the new value for %s"), var.c_str()),
+                                                _("Change variable's value"));
+        // finally, actually change the value
+        if (!newvalue.IsEmpty())
+        {
+            driver->SetVarValue(var, newvalue);
+            NotifyForChangedWatches();
+        }
+    }
 }

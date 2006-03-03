@@ -82,6 +82,7 @@ class DebuggerDriver
         virtual void Disassemble() = 0;
         virtual void CPURegisters() = 0;
         virtual void SwitchToFrame(size_t number) = 0;
+        virtual void SetVarValue(const wxString& var, const wxString& value) = 0;
 
         virtual void InfoFrame() = 0;
         virtual void InfoDLL() = 0;

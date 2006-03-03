@@ -247,6 +247,11 @@ void GDB_driver::SwitchToFrame(size_t number)
     QueueCommand(new DebuggerCmd(this, wxString::Format(_T("frame %d"), number)));
 }
 
+void GDB_driver::SetVarValue(const wxString& var, const wxString& value)
+{
+    QueueCommand(new DebuggerCmd(this, wxString::Format(_T("set variable %s=%s"), var.c_str(), value.c_str())));
+}
+
 void GDB_driver::InfoFrame()
 {
     QueueCommand(new DebuggerInfoCmd(this, _T("info frame"), _("Selected frame")));

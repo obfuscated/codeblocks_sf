@@ -19,10 +19,12 @@ class WatchTreeData : public wxTreeItemData
         bool m_UpToDate;
 };
 
+class DebuggerGDB;
+
 class DebuggerTree : public wxPanel
 {
 	public:
-		DebuggerTree(wxWindow* parent, wxEvtHandler* debugger);
+		DebuggerTree(wxWindow* parent, DebuggerGDB* debugger);
 		virtual ~DebuggerTree();
 		wxTreeCtrl* GetTree(){ return m_pTree; }
 
@@ -54,9 +56,10 @@ class DebuggerTree : public wxPanel
 		void OnDeleteAllWatches(wxCommandEvent& event);
 		void OnDereferencePointer(wxCommandEvent& event);
 		void OnWatchThis(wxCommandEvent& event);
+		void OnChangeValue(wxCommandEvent& event);
 
 		wxTreeCtrl* m_pTree;
-		wxEvtHandler* m_pDebugger;
+		DebuggerGDB* m_pDebugger;
 		WatchesArray m_Watches;
         wxArrayString m_TreeState;
         int m_NumUpdates;
@@ -69,6 +72,8 @@ class DebuggerTree : public wxPanel
 		void ParseEntry(Watch* watch, wxTreeItemId& parent, wxString& text);
         int FindCharOutsideQuotes(const wxString& str, wxChar ch); // returns position of ch in str
         int FindCommaPos(const wxString& str); // ignores commas in function signatures
+        void FixupVarNameForChange(wxString& str);
+
         bool m_InUpdateBlock;
 		DECLARE_EVENT_TABLE()
 };
