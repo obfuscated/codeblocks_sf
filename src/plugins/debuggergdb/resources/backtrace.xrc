@@ -9,32 +9,6 @@
                     <style>wxLC_REPORT</style>
                 </object>
             </object>
-            <object class="sizeritem">
-                <border>2</border>
-                <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
-                <object class="wxBoxSizer">
-                    <orient>wxHORIZONTAL</orient>
-                    <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxALIGN_CENTER</flag>
-                        <object class="wxButton" name="btnSwitchFrame">
-                            <label>Switch to selected</label>
-                        </object>
-                    </object>
-                    <object class="spacer">
-                        <option>1</option>
-                        <border>5</border>
-                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
-                    </object>
-                    <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                        <object class="wxButton" name="btnSave">
-                            <label>&amp;Save to file</label>
-                        </object>
-                    </object>
-                </object>
-            </object>
         </object>
     </object>
 </resource>

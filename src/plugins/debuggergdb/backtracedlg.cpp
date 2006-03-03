@@ -6,11 +6,18 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/button.h>
 #include <wx/wfstream.h>
+#include <wx/menu.h>
 #include <globals.h>
 
+static const int idSwitch = wxNewId();
+static const int idSave = wxNewId();
+static const int idJump = wxNewId();
+
 BEGIN_EVENT_TABLE(BacktraceDlg, wxPanel)
-    EVT_BUTTON(XRCID("btnSwitchFrame"), BacktraceDlg::OnSwitchFrame)
-    EVT_BUTTON(XRCID("btnSave"), BacktraceDlg::OnSave)
+    EVT_LIST_ITEM_RIGHT_CLICK(XRCID("lstTrace"), BacktraceDlg::OnListRightClick)
+    EVT_MENU(idSwitch, BacktraceDlg::OnSwitchFrame)
+    EVT_MENU(idSave, BacktraceDlg::OnSave)
+    EVT_MENU(idJump, BacktraceDlg::OnJump)
     EVT_LIST_ITEM_ACTIVATED(XRCID("lstTrace"), BacktraceDlg::OnDblClick)
 END_EVENT_TABLE()
 
@@ -73,6 +80,25 @@ void BacktraceDlg::AddFrame(const StackFrame& frame)
 	{
         lst->SetColumnWidth(i, wxLIST_AUTOSIZE);
 	}
+}
+
+void BacktraceDlg::OnListRightClick(wxListEvent& event)
+{
+    wxListCtrl* lst = XRCCTRL(*this, "lstTrace", wxListCtrl);
+
+    wxMenu m;
+    m.Append(idJump, _("Jump to this file/line"));
+    m.Append(idSwitch, _("Switch to this frame"));
+    m.AppendSeparator();
+    m.Append(idSave, _("Save to file..."));
+
+    lst->PopupMenu(&m);
+}
+
+void BacktraceDlg::OnJump(wxCommandEvent& event)
+{
+    wxListEvent evt;
+    OnDblClick(evt);
 }
 
 void BacktraceDlg::OnDblClick(wxListEvent& event)

@@ -16,6 +16,8 @@ class BacktraceDlg : public wxPanel
         void Clear();
 		void AddFrame(const StackFrame& frame);
 	protected:
+		void OnListRightClick(wxListEvent& event);
+        void OnJump(wxCommandEvent& event);
         void OnDblClick(wxListEvent& event);
         void OnSave(wxCommandEvent& event);
         void OnSwitchFrame(wxCommandEvent& event);
