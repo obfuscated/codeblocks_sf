@@ -137,12 +137,10 @@ void BreakpointsDlg::OnProperties(wxCommandEvent& event)
 void BreakpointsDlg::OnOpen(wxCommandEvent& event)
 {
     long item = m_pList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-    if (item == -1)
-        return;
     if (item < 0 || item >= (int)m_State.GetBreakpoints().GetCount())
         return;
     DebuggerBreakpoint* bp = m_State.GetBreakpoints()[item];
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(bp->filename);
+    cbEditor* ed = Manager::Get()->GetEditorManager()->Open(bp->filename);
     if (ed)
     {
         ed->GotoLine(bp->line, true);
