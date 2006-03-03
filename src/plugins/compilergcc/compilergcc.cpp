@@ -1351,8 +1351,10 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     wxString cmd;
     wxFileName f(out);
     f.MakeAbsolute(m_Project->GetBasePath());
-//    m_CdRun = f.GetPath(wxPATH_GET_VOLUME);
-    wxFileName cd(target->GetWorkingDir());
+
+    m_CdRun = target->GetWorkingDir();
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(m_CdRun);
+    wxFileName cd(m_CdRun);
     if (cd.IsRelative())
         cd.MakeAbsolute(m_Project->GetBasePath());
     m_CdRun = cd.GetFullPath();
@@ -1434,7 +1436,6 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         }
     }
 
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(m_CdRun);
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Executing: %s (in %s)"), cmd.c_str(), m_CdRun.c_str());
     m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_Project, target, true));
 
