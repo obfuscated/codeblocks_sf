@@ -27,6 +27,7 @@ class CCOptionsDlg : public cbConfigurationPanel
 		void OnChooseColor(wxCommandEvent& event);
 		void OnInheritanceToggle(wxCommandEvent& event);
 		void OnSliderScroll(wxScrollEvent& event);
+		void OnUpdateUI(wxUpdateUIEvent& event);
 	private:
 		void UpdateSliderLabel();
 		Parser m_Parser;

@@ -233,7 +233,6 @@ class DLLIMPORT cbEditor : public EditorBase
 		void OnEditorDwellEnd(wxScintillaEvent& event);
 		void OnEditorModified(wxScintillaEvent& event);
 		void OnUserListSelection(wxScintillaEvent& event);
-        void OnTimer(wxTimerEvent& event);
 		void OnClose(wxCloseEvent& event);
 
 		// one event handler for all popup menu entries
@@ -251,7 +250,6 @@ class DLLIMPORT cbEditor : public EditorBase
 		ProjectFile* m_pProjectFile;
 		EditorColorSet* m_pTheme;
 		HighlightLanguage m_lang;
-		short int m_ActiveCalltipsNest;
         wxDateTime m_LastModified; // to check if the file was modified outside the editor
 
         // DO NOT ADD ANY MORE VARIABLES HERE!

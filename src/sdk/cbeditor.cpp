@@ -46,6 +46,7 @@
 
 #include "editorcolorset.h"
 #include "cbeditorprintout.h"
+#include "editor_hooks.h"
 
 const wxString g_EditorModified = _T("*");
 
@@ -115,7 +116,6 @@ struct cbEditorInternalData
 {
     cbEditorInternalData(cbEditor* owner)
         : m_pOwner(owner),
-        lastPosForCodeCompletion(0),
         m_strip_trailing_spaces(true),
         m_ensure_final_line_end(false),
         m_ensure_consistent_line_ends(true),
@@ -247,7 +247,6 @@ struct cbEditorInternalData
     }
 
     //vars
-    int lastPosForCodeCompletion;
     bool m_strip_trailing_spaces;
     bool m_ensure_final_line_end;
     bool m_ensure_consistent_line_ends;
@@ -295,7 +294,6 @@ const int idBreakpointRemove = wxNewId();
 
 BEGIN_EVENT_TABLE(cbEditor, EditorBase)
     EVT_CLOSE(cbEditor::OnClose)
-    EVT_TIMER(-1, cbEditor::OnTimer)
     // we got dynamic events; look in CreateEditor()
 
 	EVT_MENU(idUndo, cbEditor::OnContextMenuEntry)
@@ -332,15 +330,12 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColorSet* t
 	m_Index(-1),
 	m_pProjectFile(0L),
 	m_pTheme(theme),
-	m_lang(HL_AUTO),
-	m_ActiveCalltipsNest(0)
+	m_lang(HL_AUTO)
 {
     // first thing to do!
     // if we add more constructors in the future, don't forget to set this!
     m_pData = new cbEditorInternalData(this);
     m_IsBuiltinEditor = true;
-
-    m_timerWait.SetOwner(this);
 
     InitFilename(filename);
     wxFileName fname(m_Filename);
@@ -929,12 +924,6 @@ bool cbEditor::RenameTo(const wxString& filename, bool deleteOldFromDisk)
     wxLogWarning(_("Not implemented..."));
 	//NotifyPlugins(cbEVT_EDITOR_RENAME);
 	return false;
-}
-
-void cbEditor::DoAskForCodeCompletion()
-{
-    m_timerWait.Stop();
-	NotifyPlugins(cbEVT_EDITOR_AUTOCOMPLETE);
 }
 
 void cbEditor::AutoComplete()
@@ -1710,26 +1699,11 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
     // if message manager is auto-hiding, this will close it if not needed open
     Manager::Get()->GetMessageManager()->Close();
 
-    m_timerWait.Stop();
 	int pos = m_pControl->GetCurrentPos();
 	wxChar ch = event.GetKey();
-	if (ch == _T('('))
-	{
-		if (m_pControl->CallTipActive())
-			++m_ActiveCalltipsNest;
-		NotifyPlugins(cbEVT_EDITOR_CALLTIP);
-	}
-	if (ch == _T(')'))
-	{
-		// cancel any active calltip
-		m_pControl->CallTipCancel();
-		if (m_ActiveCalltipsNest > 0)
-		{
-			--m_ActiveCalltipsNest;
-			NotifyPlugins(cbEVT_EDITOR_CALLTIP);
-		}
-	}
-	else if (ch == _T('\n'))
+
+	// indent
+	if (ch == _T('\n'))
 	{
         m_pControl->BeginUndoAction();
 		// new-line: adjust indentation
@@ -1758,6 +1732,8 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
 		}
 		m_pControl->EndUndoAction();
 	}
+
+	// unindent
 	else if (ch == _T('}'))
 	{
 		bool smartIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/smart_indent"), true);
@@ -1789,33 +1765,12 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
             m_pControl->EndUndoAction();
         }
 	}
-	// we use -2 because the char has already been added and Pos is ahead of it...
-	else if ((ch == _T('"')) || // this and the next one are for #include's completion
-             (ch == _T('<')) ||
-             (ch == _T('.')) ||
-			((ch == _T('>')) && (m_pControl->GetCharAt(pos - 2) == _T('-'))) ||
-			((ch == _T(':')) && (m_pControl->GetCharAt(pos - 2) == _T(':'))))
-	{
-        int style = m_pControl->GetStyleAt(pos);
-		//Manager::Get()->GetMessageManager()->DebugLog(_T("Style at %d is %d (char '%c')"), pos, style, ch);
-        if (ch == _T('"') || ch == _T('<'))
+    else
+    {
+        // call any hooked functors
+        if (EditorHooks::HasRegisteredHooks())
         {
-             if (style != wxSCI_C_PREPROCESSOR)
-                return;
-        }
-        else
-        {
-            if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER)
-                return;
-        }
-
-		int timerDelay = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/cc_delay"), 500);
-		if (timerDelay == 0)
-			DoAskForCodeCompletion();
-		else
-		{
-            m_pData->lastPosForCodeCompletion = pos;
-			m_timerWait.Start(timerDelay);
+            EditorHooks::CallHooks(this, event);
         }
     }
 }
@@ -1873,14 +1828,6 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
 
 void cbEditor::OnUserListSelection(wxScintillaEvent& event)
 {
-	NotifyPlugins(cbEVT_EDITOR_USERLIST_SELECTION, 0, event.GetText());
-}
-
-void cbEditor::OnTimer(wxTimerEvent& event)
-{
-    // ask for code-completion *only* if the editor is still after the "." or "->" operator
-    if (m_pControl->GetCurrentPos() == m_pData->lastPosForCodeCompletion)
-        DoAskForCodeCompletion();
 }
 
 void cbEditor::OnClose(wxCloseEvent& event)

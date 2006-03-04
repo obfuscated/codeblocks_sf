@@ -57,6 +57,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						editorconfigurationdlg.cpp \
 						editorlexerloader.cpp \
 						editormanager.cpp \
+						editor_hooks.cpp \
 						editpairdlg.cpp \
 						editpathdlg.cpp \
 						edittooldlg.cpp \
@@ -141,6 +142,7 @@ noinst_HEADERS = annoyingdialog.h \
 				editorconfigurationdlg.h \
 				editorlexerloader.h \
 				editormanager.h \
+				editor_hooks.h \
 				editpairdlg.h \
 				editpathdlg.h \
 				edittooldlg.h \

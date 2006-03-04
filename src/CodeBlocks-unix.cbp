@@ -338,6 +338,7 @@
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
+			<Add option="-DAS_MAX_PORTABILITY" />
 			<Add directory="sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>
@@ -2279,6 +2280,16 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/editor_hooks.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/editor_hooks.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/editorbase.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />
@@ -2704,7 +2715,8 @@
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="sdk" />
-		</Unit>		<Unit filename="sdk/projectmanager.cpp">
+		</Unit>
+		<Unit filename="sdk/projectmanager.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />
 		</Unit>
@@ -4147,12 +4159,6 @@
 			<Option link="0" />
 			<Option target="src" />
 		</Unit>
-		<Unit filename="src/resources/imp_exp_config.xrc">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="src" />
-		</Unit>
 		<Unit filename="src/resources/main_menu.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
@@ -4170,6 +4176,11 @@
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/manage_assocs.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
 		</Unit>
 		<Unit filename="src/resources/print_dialog.xrc">
 			<Option compilerVar="" />

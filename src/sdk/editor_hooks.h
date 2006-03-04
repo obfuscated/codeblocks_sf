@@ -1,20 +1,20 @@
-#ifndef PROJECTLOADER_HOOKS_H
-#define PROJECTLOADER_HOOKS_H
+#ifndef EDITOR_HOOKS_H
+#define EDITOR_HOOKS_H
 
 #include "settings.h"
 
-class TiXmlElement;
-class cbProject;
+class cbEditor;
+class wxScintillaEvent;
 
 /** Provides static functions to add hooks to the project loading/saving procedure. */
-namespace ProjectLoaderHooks
+namespace EditorHooks
 {
     /** Abstract base hook functor interface. */
     class DLLIMPORT HookFunctorBase
     {
         public:
             virtual ~HookFunctorBase(){}
-            virtual void Call(cbProject*, TiXmlElement*, bool) const = 0;
+            virtual void Call(cbEditor*, wxScintillaEvent&) const = 0;
     };
 
     /** Functor class for use as a project loading/saving hook.
@@ -22,11 +22,11 @@ namespace ProjectLoaderHooks
       * UnregisterHook().
       *
       * example:
-      * ProjectLoaderHooks::HookFunctorBase* myhook = new ProjectLoaderHooks::HookFunctor<MyClass>(this, &MyClass::OnHookCalled);
-      * int id = ProjectLoaderHooks::RegisterHook(myhook);
+      * EditorHooks::HookFunctorBase* myhook = new EditorHooks::HookFunctor<MyClass>(this, &MyClass::OnHookCalled);
+      * int id = EditorHooks::RegisterHook(myhook);
       * ...
       * (and before your class' destruction - or earlier):
-      * ProjectLoaderHooks::UnregisterHook(id, true);
+      * EditorHooks::UnregisterHook(id, true);
       *
       * Member functions used as hook callbacks must have the following signature:
       * void YourFunctionName(cbProject*, TiXmlElement*, bool)
@@ -38,15 +38,15 @@ namespace ProjectLoaderHooks
     template<class T> class DLLIMPORT HookFunctor : public HookFunctorBase
     {
         public:
-            typedef void (T::*Func)(cbProject*, TiXmlElement*, bool);
+            typedef void (T::*Func)(cbEditor*, wxScintillaEvent&);
             HookFunctor(T* obj, Func func)
                 : m_pObj(obj),
                 m_pFunc(func)
             {}
-            virtual void Call(cbProject* project, TiXmlElement* elem, bool isLoading) const
+            virtual void Call(cbEditor* editor, wxScintillaEvent& event) const
             {
                 if (m_pObj && m_pFunc)
-                    (m_pObj->*m_pFunc)(project, elem, isLoading);
+                    (m_pObj->*m_pFunc)(editor, event);
             }
         protected:
             T* m_pObj;
@@ -75,7 +75,7 @@ namespace ProjectLoaderHooks
       * @param elem The XML element under which the called hook can read/write.
       * @param isLoading True if the project is being loaded, false if being saved.
       */
-    extern DLLIMPORT void CallHooks(cbProject* project, TiXmlElement* elem, bool isLoading);
+    extern DLLIMPORT void CallHooks(cbEditor* editor, wxScintillaEvent& event);
 };
 
-#endif // PROJECTLOADER_HOOKS_H
+#endif // EDITOR_HOOKS_H

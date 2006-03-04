@@ -14,29 +14,59 @@
                                 <orient>wxVERTICAL</orient>
                                 <object class="sizeritem">
                                     <border>8</border>
+                                    <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                    <object class="wxCheckBox" name="chkNoCC">
+                                        <label>Disable code-completion</label>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <border>8</border>
                                     <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                                     <object class="wxStaticBoxSizer">
                                         <orient>wxVERTICAL</orient>
                                         <label>Code completion options</label>
                                         <object class="sizeritem">
                                             <border>8</border>
-                                            <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                            <object class="wxCheckBox" name="chkNoCC">
-                                                <label>Disable code-completion</label>
-                                            </object>
-                                        </object>
-                                        <object class="sizeritem">
-                                            <border>8</border>
-                                            <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                                             <object class="wxCheckBox" name="chkSimpleMode">
                                                 <label>Disable SmartSense</label>
                                             </object>
                                         </object>
                                         <object class="sizeritem">
                                             <border>8</border>
-                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                                             <object class="wxCheckBox" name="chkCaseSensitive">
                                                 <label>Case sensitive matches</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                            <object class="wxCheckBox" name="chkAutoSelectOne">
+                                                <label>Auto-select, if only one match</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <option>1</option>
+                                            <border>8</border>
+                                            <flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                                    <object class="wxCheckBox" name="chkAutoLaunch">
+                                                        <label>Automatically launch when typed # letters:</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <border>4</border>
+                                                    <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                                    <object class="wxSpinCtrl" name="spnAutoLaunchChars">
+                                                        <value>4</value>
+                                                        <min>2</min>
+                                                        <max>8</max>
+                                                    </object>
+                                                </object>
                                             </object>
                                         </object>
                                         <object class="sizeritem">

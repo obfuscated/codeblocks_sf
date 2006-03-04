@@ -46,6 +46,10 @@
 #include "selectincludefile.h"
 #include "globals.h"
 
+#include "editor_hooks.h"
+#include "cbeditor.h"
+#include <wx/wxscintilla.h>
+
 CB_IMPLEMENT_PLUGIN(CodeCompletion, "Code completion");
 
 // menu IDS
@@ -61,6 +65,8 @@ int idGotoDeclaration = wxNewId();
 int idGotoImplementation = wxNewId();
 int idOpenIncludeFile = wxNewId();
 int idStartParsingProjects = wxNewId();
+int idCodeCompleteTimer = wxNewId();
+
 BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_UPDATE_UI_RANGE(idMenuCodeComplete, idMenuGotoFunction, CodeCompletion::OnUpdateUI)
 
@@ -71,11 +77,10 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_MENU(idGotoDeclaration, CodeCompletion::OnGotoDeclaration)
 	EVT_MENU(idGotoImplementation, CodeCompletion::OnGotoDeclaration)
 	EVT_MENU(idOpenIncludeFile, CodeCompletion::OnOpenIncludeFile)
-	EVT_TIMER(idStartParsingProjects, CodeCompletion::OnStartParsingProjects)
 
-	EVT_EDITOR_AUTOCOMPLETE(CodeCompletion::OnCodeComplete)
-	EVT_EDITOR_CALLTIP(CodeCompletion::OnShowCallTip)
-	EVT_EDITOR_USERLIST_SELECTION(CodeCompletion::OnUserListSelection)
+	EVT_TIMER(idStartParsingProjects, CodeCompletion::OnStartParsingProjects)
+	EVT_TIMER(idCodeCompleteTimer, CodeCompletion::OnCodeCompleteTimer)
+
 	EVT_EDITOR_SAVE(CodeCompletion::OnReparseActiveEditor)
 	EVT_EDITOR_ACTIVATED(CodeCompletion::OnEditorActivated)
 
@@ -90,7 +95,11 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 END_EVENT_TABLE()
 
 CodeCompletion::CodeCompletion() :
-m_timer(this, idStartParsingProjects)
+    m_timer(this, idStartParsingProjects),
+    m_EditorHookId(0),
+    m_timerCodeCompletion(this, idCodeCompleteTimer),
+    m_pCodeCompletionLastEditor(0),
+    m_ActiveCalltipsNest(0)
 {
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
@@ -254,10 +263,18 @@ bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 void CodeCompletion::OnAttach()
 {
 	m_NativeParsers.CreateClassBrowser();
+
+    // hook to editors
+    EditorHooks::HookFunctorBase* myhook = new EditorHooks::HookFunctor<CodeCompletion>(this, &CodeCompletion::EditorEventHook);
+    m_EditorHookId = EditorHooks::RegisterHook(myhook);
 }
 
 void CodeCompletion::OnRelease(bool appShutDown)
 {
+    // unregister hook
+    // 'true' will delete the functor too
+    EditorHooks::UnregisterHook(m_EditorHookId, true);
+
 	m_NativeParsers.RemoveClassBrowser(appShutDown);
 	m_NativeParsers.ClearParsers();
 	CCList::Free();
@@ -307,6 +324,7 @@ int CodeCompletion::CodeComplete()
 	if (!m_IsAttached || !m_InitDone)
 		return -1;
 
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
 //  Plugins are destroyed prior to EditorManager, so this is guaranteed to be valid at all times
 //    if (!edMan)
@@ -328,7 +346,7 @@ int CodeCompletion::CodeComplete()
 
     if (m_NativeParsers.MarkItemsByAI(parser->Options().useSmartSense))
     {
-        if (Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/use_custom_control"), USE_CUST_CTRL))
+        if (cfg->ReadBool(_T("/use_custom_control"), USE_CUST_CTRL))
         {
             CCList::Free(); // free any previously open cc list
             CCList::Get(this, ed->GetControl(), parser)->Show();
@@ -374,7 +392,7 @@ int CodeCompletion::CodeComplete()
             ed->GetControl()->AutoCompSetIgnoreCase(!caseSens);
             ed->GetControl()->AutoCompSetCancelAtStart(true);
             ed->GetControl()->AutoCompSetFillUps(_T(">.;([="));
-            ed->GetControl()->AutoCompSetChooseSingle(true);
+            ed->GetControl()->AutoCompSetChooseSingle(cfg->ReadBool(_T("/auto_select_one"), false));
             ed->GetControl()->AutoCompSetAutoHide(true);
             ed->GetControl()->AutoCompSetDropRestOfWord(true);
             wxString final = GetStringFromArray(items, _T(" "));
@@ -604,6 +622,19 @@ void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent& event)
     // timer, the splash screen is closed and Code::Blocks doesn't take so long
     // in starting.
     m_timer.Start(200,wxTIMER_ONE_SHOT);
+}
+
+void CodeCompletion::OnCodeCompleteTimer(wxTimerEvent& event)
+{
+    if (Manager::Get()->GetEditorManager()->FindPageFromEditor(m_pCodeCompletionLastEditor) == -1)
+        return; // editor is invalid (prbably closed already)
+
+    // ask for code-completion *only* if the editor is still after the "." or "->" operator
+    if (m_pCodeCompletionLastEditor->GetControl()->GetCurrentPos() == m_LastPosForCodeCompletion)
+    {
+        DoCodeComplete();
+        m_LastPosForCodeCompletion = -1; // reset it
+    }
 }
 
 void CodeCompletion::OnStartParsingProjects(wxTimerEvent& event)
@@ -864,3 +895,96 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
 
     cbMessageBox(wxString::Format(_("Not found: %s"), m_LastIncludeFile.c_str()), _("Warning"), wxICON_WARNING);
 } // end of OnOpenIncludeFile
+
+void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+
+    if (!m_IsAttached ||
+        !m_InitDone ||
+        !cfg->ReadBool(_T("/use_code_completion"), true))
+    {
+        event.Skip();
+        return;
+    }
+
+    cbStyledTextCtrl* control = editor->GetControl();
+
+    if (event.GetEventType() == wxEVT_SCI_CHARADDED &&
+        !control->AutoCompActive()) // not already active autocompletion
+    {
+        // a character was just added in the editor
+        m_timerCodeCompletion.Stop();
+        wxChar ch = event.GetKey();
+        int pos = control->GetCurrentPos();
+        int wordstart = control->WordStartPosition(pos, true);
+
+        // if more than two chars have been typed, invoke CC
+        int autoCCchars = cfg->ReadInt(_T("/auto_launch"), 4);
+        bool autoCC = cfg->ReadBool(_T("/auto_launch"), true) &&
+                    pos - wordstart >= autoCCchars;
+
+        // start calltip
+        if (ch == _T('('))
+        {
+            if (control->CallTipActive())
+                ++m_ActiveCalltipsNest;
+            ShowCallTip();
+        }
+
+        // end calltip
+        else if (ch == _T(')'))
+        {
+            // cancel any active calltip
+            control->CallTipCancel();
+            if (m_ActiveCalltipsNest > 0)
+            {
+                --m_ActiveCalltipsNest;
+                ShowCallTip();
+            }
+        }
+
+        else if (autoCC ||
+            (ch == _T('"')) || // this and the next one are for #include's completion
+             (ch == _T('<')) ||
+             (ch == _T('.')) ||
+            // we use -2 because the char has already been added and Pos is ahead of it...
+            ((ch == _T('>')) && (control->GetCharAt(pos - 2) == _T('-'))) ||
+            ((ch == _T(':')) && (control->GetCharAt(pos - 2) == _T(':'))))
+        {
+            int style = control->GetStyleAt(pos);
+            //Manager::Get()->GetMessageManager()->DebugLog(_T("Style at %d is %d (char '%c')"), pos, style, ch);
+            if (ch == _T('"') || ch == _T('<'))
+            {
+                if (style != wxSCI_C_PREPROCESSOR)
+                {
+                    event.Skip();
+                    return;
+                }
+            }
+            else
+            {
+                if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER)
+                {
+                    event.Skip();
+                    return;
+                }
+            }
+
+            int timerDelay = cfg->ReadInt(_T("/cc_delay"), 500);
+            if (autoCC || timerDelay == 0)
+            {
+                DoCodeComplete();
+            }
+            else
+            {
+                m_LastPosForCodeCompletion = pos;
+                m_pCodeCompletionLastEditor = editor;
+                m_timerCodeCompletion.Start(timerDelay, wxTIMER_ONE_SHOT);
+            }
+        }
+    }
+
+    // allow others to handle this event
+    event.Skip();
+}

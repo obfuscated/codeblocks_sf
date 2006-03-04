@@ -142,6 +142,8 @@ DECLARE_CB_EVENT_TYPE(cbEVT_APP_STARTUP_DONE)
 #define EVT_APP_STARTUP_DONE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_APP_STARTUP_DONE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 DECLARE_CB_EVENT_TYPE(cbEVT_APP_START_SHUTDOWN)
 #define EVT_APP_START_SHUTDOWN(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_APP_START_SHUTDOWN, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+DECLARE_CB_EVENT_TYPE(cbEVT_APP_UPDATE_TITLE)
+#define EVT_APP_UPDATE_TITLE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_APP_UPDATE_TITLE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
 // plugin events
 DECLARE_CB_EVENT_TYPE(cbEVT_PLUGIN_ATTACHED)
@@ -162,15 +164,9 @@ DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_SAVE)
 #define EVT_EDITOR_SAVE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_SAVE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_MODIFIED)
 #define EVT_EDITOR_MODIFIED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_MODIFIED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
-DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_AUTOCOMPLETE)
-#define EVT_EDITOR_AUTOCOMPLETE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_AUTOCOMPLETE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
-DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_CALLTIP)
-#define EVT_EDITOR_CALLTIP(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_CALLTIP, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_TOOLTIP)
 #define EVT_EDITOR_TOOLTIP(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_TOOLTIP, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_TOOLTIP_CANCEL)
-#define EVT_EDITOR_TOOLTIP_CANCEL(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_TOOLTIP_CANCEL, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
-DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_USERLIST_SELECTION)
 #define EVT_EDITOR_USERLIST_SELECTION(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_USERLIST_SELECTION, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_BREAKPOINT_ADD)
 #define EVT_EDITOR_BREAKPOINT_ADD(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_BREAKPOINT_ADD, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
@@ -230,7 +226,6 @@ DECLARE_CB_EVENT_TYPE(cbEVT_SHOW_DOCK_WINDOW)
 // request app to hide a docked window
 DECLARE_CB_EVENT_TYPE(cbEVT_HIDE_DOCK_WINDOW)
 #define EVT_HIDE_DOCK_WINDOW(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_HIDE_DOCK_WINDOW, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksDockEventFunction) & fn, (wxObject *) NULL ),
-
 // request app to switch view layout
 DECLARE_CB_EVENT_TYPE(cbEVT_SWITCH_VIEW_LAYOUT)
 #define EVT_SWITCH_VIEW_LAYOUT(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_SWITCH_VIEW_LAYOUT, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksLayoutEventFunction) & fn, (wxObject *) NULL ),
