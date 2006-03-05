@@ -1660,11 +1660,17 @@ void ProjectManager::OnSetActiveProject(wxCommandEvent& event)
     }
     else if (event.GetId() == idMenuProjectUp)
     {
-        MoveProjectUp(m_pActiveProject);
+        wxTreeItemId sel = m_pTree->GetSelection();
+        FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+        if (ftd)
+            MoveProjectUp(ftd->GetProject());
     }
     else if (event.GetId() == idMenuProjectDown)
     {
-        MoveProjectDown(m_pActiveProject);
+        wxTreeItemId sel = m_pTree->GetSelection();
+        FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+        if (ftd)
+            MoveProjectDown(ftd->GetProject());
     }
 }
 
