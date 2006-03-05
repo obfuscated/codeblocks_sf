@@ -338,7 +338,6 @@
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
-			<Add option="-DAS_MAX_PORTABILITY" />
 			<Add directory="sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>

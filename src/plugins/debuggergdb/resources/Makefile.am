@@ -5,12 +5,13 @@ debugger_gdb.zip:
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/debugger_gdb.zip *.xrc images/*.png images/16x16/*.png > /dev/null
 
 EXTRA_DIST = backtrace.xrc \
+    breakpoints.xrc \
 	debugger_menu.xrc \
 	debugger_options_dlg.xrc \
 	debugger_toolbar_16x16.xrc \
 	debugger_toolbar.xrc \
-	cpuregisters.xrc \
 	disassembly.xrc \
+	edit_watches_dlg.xrc \
 	images/dbgnext.png \
 	images/dbgrun.png \
 	images/dbgrunto.png \

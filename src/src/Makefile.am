@@ -40,3 +40,6 @@ noinst_HEADERS = app.h \
 			prefix.h \
 			printdlg.h \
 			startherepage.h
+
+EXTRADIST = associations.cpp \
+            associations.h

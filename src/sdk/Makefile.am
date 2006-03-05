@@ -27,8 +27,8 @@ libcodeblocks_la_LIBADD =  $(WX_LIBS) \
 libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						autodetectcompilers.cpp \
 						base64.cpp \
-						cbexception.cpp \
 						blockallocated.cpp \
+						cbexception.cpp \
 						cbeditor.cpp \
 						cbeditorprintout.cpp \
 						cbplugin.cpp \
@@ -114,6 +114,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 noinst_HEADERS = annoyingdialog.h \
 				autodetectcompilers.h \
 				base64.h \
+				blockallocated.h \
 				cbeditor.h \
 				cbeditorprintout.h \
 				cbexception.h \
@@ -188,7 +189,10 @@ noinst_HEADERS = annoyingdialog.h \
 				projecttemplateloader.h \
 				replacedlg.h \
 				sanitycheck.h \
+				scriptingcall.h \
 				scriptingmanager.h \
+				sdk.h \
+				sdk_precomp.h \
 				sdk_events.h \
 				searchresultslog.h \
 				selecttargetdlg.h \
