@@ -22,6 +22,6 @@ noinst_HEADERS = codestatconfig.h \
 			codestat.h \
 			language_def.h
 
-EXTRA_DIST = Installation\ Instructions.txt \
-			Build\ Instructions.txt \
+EXTRA_DIST = InstallationInstructions.txt \
+			BuildInstructions.txt \
 			codestat.cbp

@@ -1,10 +1,10 @@
 AC_PREREQ(2.50)
 
-AC_INIT([codeblocks], [1.0-RC2])
+AC_INIT([codeblocks], [1.0HEAD])
 
 AC_CANONICAL_TARGET
 
-AM_INIT_AUTOMAKE([codeblocks], 1.0-RC2)
+AM_INIT_AUTOMAKE([codeblocks], 1.0HEAD)
 AC_CONFIG_HEADER([src/sdk/config.h])
 
 dnl Checks for programs.

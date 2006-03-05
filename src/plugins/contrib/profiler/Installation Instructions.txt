@@ -1,3 +1,0 @@
-First compile the plugin (cf. Build Instructions.txt).
-
-Suposing %CODEBLOCKS% is the root of your Code::Blocks Installation...Copy "CBProfiler.dll" to "%CODEBLOCKS%\share\CodeBlocks\plugins\"(Under Linux you'd have a .so instead of a dll)Copy "profiler.zip" to "%CODEBLOCKS%\share\CodeBlocks\"

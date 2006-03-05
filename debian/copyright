@@ -1,7 +1,7 @@
 This package was debianized by Yiannis Mandravellos <mandrav@codeblocks.org> on
 Sat, 25 Feb 2006 12:26:36 +0200.
 
-It was exported from svn://svn.berlios.de/codeblocks/trunk at revision 2075.
+It was exported from svn://svn.berlios.de/codeblocks/trunk.
 The only extra thing performed before debianization, was to run bootstrap to generate the autotools build configuration.
 
 Copyright Holder: Yiannis Mandravellos <mandrav@codeblocks.org>

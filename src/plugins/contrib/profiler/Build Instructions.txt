@@ -1,3 +1,0 @@
-Don't forget to check the project build properties, and change the include/lib paths accordingto your WxWidgets and C::B SDK/Full Sources paths.
-
-The plugin should compile under wxWidget 2.4.2 or 2.6.1.

@@ -21,7 +21,7 @@ noinst_HEADERS = cbprofilerconfig.h \
 			cbprofilerexec.h \
 			cbprofiler.h
 
-EXTRA_DIST = Installation\ Instructions.txt \
-			Build\ Instructions.txt \
+EXTRA_DIST = InstallationInstructions.txt \
+			BuildInstructions.txt \
 			cbprofiler.cbp \
 			cbprofiler.unix.cbp

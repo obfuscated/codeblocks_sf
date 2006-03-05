@@ -23,7 +23,7 @@ dist_pkgdata_DATA = dll.cbp \
 		SmartWin.cbp \
 		SmartWin.png \
 		SmartWin.template \
-		SmartWin-main.cbp \
+		SmartWin-main.cpp \
 		win32.cbp \
 		win32gui.template \
 		win32-main.cpp \
