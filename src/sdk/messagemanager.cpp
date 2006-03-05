@@ -214,6 +214,17 @@ void MessageManager::LogToStdOut(const wxChar* msg, ...)
     fprintf(stdout, tmp.mb_str());
 }
 
+void MessageManager::LogToStdOut(const wxString& msg)
+{
+    fputs(msg.mb_str(), stdout);
+}
+
+void MessageManager::Log(const wxString& msg)
+{
+    SANITY_CHECK();
+    m_Logs[m_AppLog]->log->AddLog(msg);
+}
+
 void MessageManager::Log(const wxChar* msg, ...)
 {
     SANITY_CHECK();
