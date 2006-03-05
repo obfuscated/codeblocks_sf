@@ -66,22 +66,26 @@ Manager::~Manager()
 
 Manager* Manager::Get(wxFrame *appWindow)
 {
-	static Manager instance;
-
     if(appWindow)
     {
-        if(instance.m_pAppWindow)
+        if(Get()->m_pAppWindow)
         {
             cbThrow(_T("Illegal argument to Manager::Get()"));
         }
         else
         {
-            instance.m_pAppWindow = appWindow;
+            Get()->m_pAppWindow = appWindow;
             Initxrc(true);
             Loadxrc(_T("/manager_resources.zip#zip:*.xrc"));
             Get()->GetMessageManager()->Log(_("Manager initialized"));
         }
     }
+    return Get();
+}
+
+Manager* Manager::Get()
+{
+	static Manager instance;
     return &instance;
 }
 

@@ -58,7 +58,7 @@ public:
     /** Use Manager::Get() to get a pointer to its instance
      * Manager::Get() is guaranteed to never return an invalid pointer.
      */
-    static Manager* Get(wxFrame* appWindow = 0);
+    static Manager* Get();
 
     wxFrame* GetAppWindow() const;
 
@@ -109,6 +109,9 @@ public:
     /// Loads ToolBar from XRC
     static wxToolBar *LoadToolBar(wxFrame *parent,wxString resid,bool defaultsmall=true);
     /// Loads ToolBarAddOn from XRC into existing Toolbar
+
+    // Do not use this, use Get()
+    static Manager* Get(wxFrame* appWindow);
 
     static void AddonToolBar(wxToolBar* toolBar,wxString resid);
     static bool isToolBar16x16(wxToolBar* toolBar);
