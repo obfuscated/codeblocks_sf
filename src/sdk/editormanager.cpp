@@ -1154,6 +1154,14 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
         return -2;
     }
 
+    // Don't look for empty strings:
+    if (dlg->GetFindString().empty())
+    {
+        delete dlg;
+        cbMessageBox(_("Can't look for an empty search criterion!"), _("Error"), wxOK | wxICON_EXCLAMATION, Manager::Get()->GetAppWindow());
+        return -2;
+    }
+
     if (!m_LastFindReplaceData)
         m_LastFindReplaceData = new cbFindReplaceData;
 
