@@ -76,6 +76,7 @@ class DLLIMPORT MessageManager : public Mgr<MessageManager>, public wxEvtHandler
 		void DebugLog(const wxChar* msg, ...);
 		void DebugLogWarning(const wxChar* msg, ...);
 		void DebugLogError(const wxChar* msg, ...);
+		void Log(int id, const wxString& msg);
 		void Log(int id, const wxChar* msg, ...);
 		void AppendLog(const wxChar* msg, ...);
 		void AppendLog(int id, const wxChar* msg, ...);

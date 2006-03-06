@@ -407,6 +407,29 @@ int MessageManager::DoAddLog(MessageLog* log, const wxString& title, const wxBit
     return id;
 }
 
+void MessageManager::Log(int id, const wxString& msg)
+{
+    SANITY_CHECK();
+    if (!CheckLogId(id))
+        return;
+
+    m_Logs[id]->log->AddLog(msg);
+
+    if (Manager::IsBatchBuild() && id == m_BatchBuildLog)
+    {
+        // this log is the batch build log
+        if (!m_BatchBuildLogDialog)
+            GetBatchBuildDialog();
+        BatchLogWindow* dlg = static_cast<BatchLogWindow*>(m_BatchBuildLogDialog);
+        if (dlg->m_pText)
+        {
+            dlg->m_pText->AppendText(msg + _T('\n')); // log to build log window
+            dlg->m_pText->ScrollLines(-1);
+            Manager::ProcessPendingEvents();
+        }
+    }
+}
+
 void MessageManager::Log(int id, const wxChar* msg, ...)
 {
     SANITY_CHECK();
