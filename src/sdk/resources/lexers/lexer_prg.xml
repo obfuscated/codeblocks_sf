@@ -72,26 +72,33 @@
 						index="-4"
 						bg="255,128,0"/>
 				<Keywords>
-						<Language index="0"
-								value="if iif then else endif do exit loop enddo
-								while endwhile for to endfor next scan break go
-								goto endscan end case otherwise endcase and or
-								not .and. .or. .not. null .null. true .t. .y. .f.
-								false define class enddefine return master
-								procedure proc end endproc function endfunc local
-								private global public form parameters params int
-								date time file word array on error at" />
-                        <Documentation index="1"
-                                value="aadd ctod month row abs fcount lastrec
-                                pcol rtrim transform asc day fieldname len chr
-                                pcount seconds trim deleted lock prow select
-                                break devpos flock log reccount setpos upper
-                                bof dow found lower recno space cdow dtoc ltrim
-                                replicate sqrt dtos max rlock str val type
-                                valtype cmonth empty inkey min round substr year
-                                col eof browse select into close clear message
-                                messagebox wait" />
-                        <User index="2"/>
+                        <!-- Keywords -->
+						<Set index="0"
+                            value="if iif then else endif do exit loop enddo
+                                   while endwhile for to endfor next scan break go
+                                   goto endscan end case otherwise endcase and or
+                                   not .and. .or. .not. null .null. true .t. .y. .f.
+                                   false define class enddefine return master
+                                   procedure proc end endproc function endfunc local
+                                   private global public form parameters params int
+                                   date time file word array on error at"/>
+                        <!-- Functions -->
+                        <Set index="1"
+                            value="aadd ctod month row abs fcount lastrec
+                                    pcol rtrim transform asc day fieldname len chr
+                                    pcount seconds trim deleted lock prow select
+                                    break devpos flock log reccount setpos upper
+                                    bof dow found lower recno space cdow dtoc ltrim
+                                    replicate sqrt dtos max rlock str val type
+                                    valtype cmonth empty inkey min round substr year
+                                    col eof browse select into close clear message
+                                    messagebox wait"/>
+                        <!-- User defined -->
+                        <Set index="2"
+                            value=""/>
+                        <!-- User defined -->
+                        <Set index="3"
+                            value=""/>
 				</Keywords>
 				<SampleCode value="lexer_prg.sample"
 						error_line="25"/>
