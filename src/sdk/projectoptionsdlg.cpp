@@ -875,11 +875,10 @@ void ProjectOptionsDlg::EndModal(int retCode)
         m_Project->SetTargetType(TargetType(XRCCTRL(*this, "cmbProjectType", wxComboBox)->GetSelection()));
         m_Project->SetModeForPCH((PCHMode)XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->GetSelection());
 
-    #if 1
         if (m_Current_Sel == -1)
             m_Current_Sel = 0; // force update of global options
+
         DoBeforeTargetChange(true);
-    #endif
     }
 
     wxDialog::EndModal(retCode);

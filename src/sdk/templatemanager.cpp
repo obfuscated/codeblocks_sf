@@ -450,7 +450,7 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
         cbMessageBox(_("Failed to copy the project file!"), _("Error"), wxICON_ERROR);
 
     if (count == total_count)
-        cbMessageBox(_("User-template saved succesfuly"));
+        cbMessageBox(_("User-template saved succesfuly"), _("Information"), wxICON_INFORMATION | wxOK);
     else
         cbMessageBox(_("Some files could not be saved with the template..."), _("Error"), wxICON_ERROR);
 }
