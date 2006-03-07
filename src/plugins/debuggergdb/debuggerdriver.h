@@ -42,7 +42,10 @@ class DebuggerDriver
         ////////////////////////////////
 
         /** Inform the driver about the plugin's available (not necessarily visible) debugging windows. */
-        virtual void SetDebugWindows(BacktraceDlg* b, DisassemblyDlg* d, CPURegistersDlg* r);
+        virtual void SetDebugWindows(BacktraceDlg* b,
+                                    DisassemblyDlg* d,
+                                    CPURegistersDlg* r,
+                                    ExamineMemoryDlg* m);
 
         /** Add a directory in search list. */
         virtual void AddDirectory(const wxString& dir);
@@ -84,7 +87,7 @@ class DebuggerDriver
         virtual void CPURegisters() = 0;
         virtual void SwitchToFrame(size_t number) = 0;
         virtual void SetVarValue(const wxString& var, const wxString& value) = 0;
-        virtual void ExamineMemory(const wxString& address, ExamineMemoryDlg* memdlg) = 0;
+        virtual void MemoryDump() = 0;
 
         virtual void InfoFrame() = 0;
         virtual void InfoDLL() = 0;
@@ -156,6 +159,7 @@ class DebuggerDriver
         BacktraceDlg* m_pBacktrace;
         DisassemblyDlg* m_pDisassembly;
         CPURegistersDlg* m_pCPURegisters;
+        ExamineMemoryDlg* m_pExamineMemory;
 
 		// commands
 		DebuggerCommands m_DCmds;

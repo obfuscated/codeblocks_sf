@@ -176,7 +176,7 @@ void CDB_driver::SetVarValue(const wxString& var, const wxString& value)
     NOT_IMPLEMENTED();
 }
 
-void CDB_driver::ExamineMemory(const wxString& address, ExamineMemoryDlg* memdlg)
+void CDB_driver::MemoryDump()
 {
     NOT_IMPLEMENTED();
 }

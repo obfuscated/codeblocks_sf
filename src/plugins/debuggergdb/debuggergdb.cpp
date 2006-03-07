@@ -75,6 +75,7 @@ enum DebugCommandConst
     CMD_BACKTRACE,
     CMD_DISASSEMBLE,
     CMD_REGISTERS,
+    CMD_MEMORYDUMP,
 };
 
 const wxString g_EscapeChars = wxChar(26);
@@ -317,7 +318,7 @@ void DebuggerGDB::OnAttach()
 void DebuggerGDB::OnRelease(bool appShutDown)
 {
     if (m_State.GetDriver())
-        m_State.GetDriver()->SetDebugWindows(0, 0, 0);
+        m_State.GetDriver()->SetDebugWindows(0, 0, 0, 0);
 
     if (m_pExamineMemoryDlg)
     {
@@ -835,7 +836,7 @@ int DebuggerGDB::Debug()
         cbMessageBox(_T("Could not decide which debugger to use!"), _T("Error"), wxICON_ERROR);
         return -1;
     }
-    m_State.GetDriver()->SetDebugWindows(m_pBacktrace, m_pDisassembly, m_pCPURegisters);
+    m_State.GetDriver()->SetDebugWindows(m_pBacktrace, m_pDisassembly, m_pCPURegisters, m_pExamineMemoryDlg);
 
 
     // create gdb launch command
@@ -1117,6 +1118,12 @@ void DebuggerGDB::RunCommand(int cmd)
             break;
         }
 
+        case CMD_MEMORYDUMP:
+        {
+            if (m_State.GetDriver())
+                m_State.GetDriver()->MemoryDump();
+        }
+
         default: break;
     }
 }
@@ -1203,26 +1210,16 @@ void DebuggerGDB::Backtrace()
     RunCommand(CMD_BACKTRACE);
 }
 
-void DebuggerGDB::ExamineMemory(const wxString& address)
+void DebuggerGDB::MemoryDump()
 {
-    if (!m_pProcess)
-        return;
-
-    wxString addrS = address;
-    if (address.IsEmpty())
-    {
-        addrS = wxGetTextFromUser(_("Please enter the address to examine (hex or &var):"), _("Examine memory"), addrS);
-
-        if (addrS.IsEmpty())
-            return;
-    }
+    m_pExamineMemoryDlg->Clear();
 
     // show it
     CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
     evt.pWindow = m_pExamineMemoryDlg;
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
-    m_State.GetDriver()->ExamineMemory(addrS, m_pExamineMemoryDlg);
+    RunCommand(CMD_MEMORYDUMP);
 }
 
 void DebuggerGDB::Continue()
@@ -1606,7 +1603,7 @@ void DebuggerGDB::OnExamineMemory(wxCommandEvent& event)
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
     if (event.IsChecked())
-        ExamineMemory();
+        MemoryDump();
 }
 
 void DebuggerGDB::OnEditWatches(wxCommandEvent& event)
@@ -1628,7 +1625,7 @@ void DebuggerGDB::OnDebugWindows(wxCommandEvent& event)
     m.AppendCheckItem(idMenuBacktrace,      _("Call stack"));
     m.AppendCheckItem(idMenuRegisters,      _("CPU Registers"));
     m.AppendCheckItem(idMenuCPU,            _("Disassembly"));
-    m.AppendCheckItem(idMenuMemory,         _("Examine memory"));
+    m.AppendCheckItem(idMenuMemory,         _("Memory dump"));
     m.AppendCheckItem(idMenuWatches,        _("Watches"));
 
     m.Check(idMenuBreakpoints,  IsWindowReallyShown(m_pBreakpointsWindow));
@@ -1897,6 +1894,10 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& event)
                 m_pDisassembly->SetActiveAddress(addrL);
                 RunCommand(CMD_DISASSEMBLE);
             }
+
+            // update memory examiner
+            if (IsWindowReallyShown(m_pExamineMemoryDlg))
+                MemoryDump();
         }
     }
 }

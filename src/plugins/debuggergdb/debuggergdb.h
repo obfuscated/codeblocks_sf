@@ -49,7 +49,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void Disassemble();
 		void Registers();
 		void Backtrace();
-		void ExamineMemory(const wxString& address = wxEmptyString);
+		void MemoryDump();
 
 		bool AddBreakpoint(const wxString& file, int line);
 		bool AddBreakpoint(const wxString& functionSignature);

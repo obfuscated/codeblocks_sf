@@ -12,6 +12,7 @@ EXTRA_DIST = backtrace.xrc \
 	debugger_toolbar.xrc \
 	disassembly.xrc \
 	edit_watches_dlg.xrc \
+	memdump.xrc \
 	images/dbgnext.png \
 	images/dbgrun.png \
 	images/dbgrunto.png \

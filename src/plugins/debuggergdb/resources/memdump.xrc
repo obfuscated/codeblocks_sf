@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+  <object class="wxPanel" name="MemoryDumpPanel">
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Address:</label>
+            </object>
+            <flag>wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+            <border>4</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxTextCtrl" name="txtAddress">
+              <value>0x0</value>
+            </object>
+            <option>1</option>
+            <flag>wxALL|wxGROW</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Bytes:</label>
+            </object>
+            <flag>wxLEFT|wxALIGN_CENTRE_VERTICAL</flag>
+            <border>4</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxComboBox" name="cmbBytes">
+              <content>
+                <item>16</item>
+                <item>32</item>
+                <item>64</item>
+                <item>128</item>
+                <item>256</item>
+              </content>
+              <selection>1</selection>
+              <style>wxCB_SIMPLE|wxCB_READONLY</style>
+            </object>
+            <flag>wxGROW</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnGo">
+              <label>Go</label>
+            </object>
+            <flag>wxALL</flag>
+          </object>
+        </object>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+        <border>4</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText">
+          <label>(e.g. 0x401060, or &amp;&amp;variable, or $$eax)</label>
+        </object>
+        <flag>wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>4</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxTextCtrl" name="txtDump">
+          <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxGROW</flag>
+      </object>
+    </object>
+  </object>
+</resource>

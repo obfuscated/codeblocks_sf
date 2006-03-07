@@ -252,9 +252,11 @@ void GDB_driver::SetVarValue(const wxString& var, const wxString& value)
     QueueCommand(new DebuggerCmd(this, wxString::Format(_T("set variable %s=%s"), var.c_str(), value.c_str())));
 }
 
-void GDB_driver::ExamineMemory(const wxString& address, ExamineMemoryDlg* memdlg)
+void GDB_driver::MemoryDump()
 {
-    QueueCommand(new GdbCmd_ExamineMemory(this, address, memdlg));
+    if (!m_pExamineMemory)
+        return;
+    QueueCommand(new GdbCmd_ExamineMemory(this, m_pExamineMemory));
 }
 
 void GDB_driver::InfoFrame()

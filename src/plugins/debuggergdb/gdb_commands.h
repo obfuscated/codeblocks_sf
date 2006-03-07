@@ -798,11 +798,11 @@ class GdbCmd_ExamineMemory : public DebuggerCmd
         ExamineMemoryDlg* m_pDlg;
     public:
         /** @param dlg The memory dialog. */
-        GdbCmd_ExamineMemory(DebuggerDriver* driver, const wxString& address, ExamineMemoryDlg* dlg)
+        GdbCmd_ExamineMemory(DebuggerDriver* driver, ExamineMemoryDlg* dlg)
             : DebuggerCmd(driver),
             m_pDlg(dlg)
         {
-            m_Cmd << _T("x/256xb ") << address;
+            m_Cmd.Printf(_T("x/%dxb %s"), dlg->GetBytes(), dlg->GetBaseAddress().c_str());
         }
         void ParseOutput(const wxString& output)
         {
@@ -812,11 +812,17 @@ class GdbCmd_ExamineMemory : public DebuggerCmd
 
             if (!m_pDlg)
                 return;
+            m_pDlg->Begin();
             m_pDlg->Clear();
 
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
     		for (unsigned int i = 0; i < lines.GetCount(); ++i)
     		{
+    		    if (lines[i].First(_T(':')) == -1)
+    		    {
+    		        m_pDlg->AddError(lines[i]);
+    		        continue;
+    		    }
     		    wxString addr = lines[i].BeforeFirst(_T(':'));
     		    size_t pos = lines[i].find(_T('x'), 3); // skip 'x' of address
     		    while (pos != wxString::npos)
@@ -828,7 +834,7 @@ class GdbCmd_ExamineMemory : public DebuggerCmd
                     pos = lines[i].find(_T('x'), pos + 1); // skip current 'x'
     		    }
     		}
-//            m_pDlg->Show(true);
+            m_pDlg->End();
 //            m_pDriver->DebugLog(output);
         }
 };
