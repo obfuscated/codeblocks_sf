@@ -2633,12 +2633,16 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
         hasSel = eb->HasSelection();
         canPaste = eb->CanPaste();
     }
-
-    mbar->Enable(idEditUndo, eb && canUndo);
-    mbar->Enable(idEditRedo, eb && canRedo);
-    mbar->Enable(idEditCut, eb && hasSel);
-    mbar->Enable(idEditCopy, eb && hasSel);
-    mbar->Enable(idEditPaste, eb && canPaste);
+    // Dont block other routines from using copy/paste menu                 //pecan 2006/3/3
+    wxWindow* pFocused = wxWindow::FindFocus();                             //pecan 2006/3/3
+    if (pFocused && ed && (pFocused == ed->GetControl()) )                  //pecan 2006/3/3
+    {
+        mbar->Enable(idEditUndo, eb && canUndo);
+        mbar->Enable(idEditRedo, eb && canRedo);
+        mbar->Enable(idEditCut, eb && hasSel);
+        mbar->Enable(idEditCopy, eb && hasSel);
+        mbar->Enable(idEditPaste, eb && canPaste);
+    }                                                                       //pecan 2006/3/3
     mbar->Enable(idEditSwapHeaderSource, ed);
     mbar->Enable(idEditGotoMatchingBrace, ed);
     mbar->Enable(idEditHighlightMode, ed);
@@ -2679,14 +2683,18 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
         mbar->Check(idEditEncodingUnicode32LE, ed && ed->GetEncoding() == wxFONTENCODING_UTF32LE);
     }
 
-	if (m_pToolbar)
-	{
-		m_pToolbar->EnableTool(idEditUndo, eb && canUndo);
-		m_pToolbar->EnableTool(idEditRedo, eb && canRedo);
-		m_pToolbar->EnableTool(idEditCut, eb && hasSel);
-		m_pToolbar->EnableTool(idEditCopy, eb && hasSel);
-		m_pToolbar->EnableTool(idEditPaste, eb && canPaste);
-	}
+    // Dont block other routines from using copy/paste tools                //pecan 2006/3/3
+    if (pFocused && ed && (pFocused == ed->GetControl()) )                  //pecan 2006/3/3
+    {
+        if (m_pToolbar)
+        {
+            m_pToolbar->EnableTool(idEditUndo, eb && canUndo);
+            m_pToolbar->EnableTool(idEditRedo, eb && canRedo);
+            m_pToolbar->EnableTool(idEditCut, eb && hasSel);
+            m_pToolbar->EnableTool(idEditCopy, eb && hasSel);
+            m_pToolbar->EnableTool(idEditPaste, eb && canPaste);
+        }
+    }                                                                       //pecan 2006/03/3
 
 	event.Skip();
 }
