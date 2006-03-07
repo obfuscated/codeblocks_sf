@@ -160,12 +160,6 @@ void CodeBlocksApp::InitAssociations(MainFrame* frame)
 
         }
     }
-
-	if (!m_NoDDE && cfg->ReadBool(_T("/environment/use_dde"), true))
-	{
-		g_DDEServer = new DDEServer(frame);
-		g_DDEServer->Create(DDE_SERVICE);
-	}
 #endif
 }
 
@@ -411,6 +405,18 @@ bool CodeBlocksApp::OnInit()
         HideSplashScreen();
         SetTopWindow(frame);
         frame->Show();
+
+#ifdef __WXMSW__
+        // moved from InitAssociations()
+        // fixes DDE bug when app is started by double clicking a file in Windows Explorer and
+        // the "Tip of the Day" dialog is enabled.
+        if (!m_NoDDE && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/use_dde"), true))
+        {
+            g_DDEServer = new DDEServer(frame);
+            g_DDEServer->Create(DDE_SERVICE);
+        }
+#endif
+
         frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
         InitAssociations(frame);
         return true;
