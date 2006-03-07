@@ -109,6 +109,11 @@ bool ToolsManager::Execute(Tool* tool)
         return false; // We cannot afford the Macros Manager to fail here!
                       // What if it failed already?
     wxSetWorkingDirectory(dir);
+
+    // log info so user can troubleshoot
+    dir = wxGetCwd(); // read in the actual working dir
+    Manager::Get()->GetMessageManager()->Log(_("Launching tool '%s': %s (in %s)"), tool->name.c_str(), cmdline.c_str(), dir.c_str());
+
 	wxProcess* process = new wxProcess();
 	return wxExecute(cmdline, wxEXEC_ASYNC, process);
 }
