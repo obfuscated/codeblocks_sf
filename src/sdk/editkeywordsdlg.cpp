@@ -17,6 +17,7 @@
     #include <wx/xrc/xmlres.h>
     #include <wx/spinctrl.h>
     #include <wx/textctrl.h>
+    #include <wx/wxscintilla.h>
 #endif
 
 #include "editkeywordsdlg.h"

@@ -17,6 +17,7 @@
     #include "manager.h"
     #include "messagemanager.h"
     #include <wx/dynarray.h>
+    #include <wx/wxscintilla.h>
 #endif
 
 #include "editorcolorset.h"
