@@ -1452,7 +1452,12 @@
 			<Option link="0" />
 			<Option target="Debugger" />
 		</Unit>
-		<Unit filename="plugins/defaultmimehandler/defaultmimehandler.cpp">
+		<Unit filename="plugins/debuggergdb/resources/memdump.xrc">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debugger" />
+		</Unit>		<Unit filename="plugins/defaultmimehandler/defaultmimehandler.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Default MIME handler" />
 		</Unit>
