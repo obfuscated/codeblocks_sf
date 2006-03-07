@@ -313,7 +313,7 @@ void CompilerOW::Reset()
     m_Commands[(int)ctCompileObjectCmd]
         = wxT("$compiler -c $options $includes -fo=$object $file");
     m_Commands[(int)ctCompileResourceCmd]
-        = wxT("$rescomp -fo=$resource_output $res_includes $file");
+        = wxT("$rescomp -r -fo=$resource_output $res_includes $file");
     m_Commands[(int)ctLinkExeCmd]
         = wxT("$linker $link_options $libdirs $link_objects -fe=$exe_output $libs $link_resobjects");
     m_Commands[(int)ctLinkConsoleExeCmd]
