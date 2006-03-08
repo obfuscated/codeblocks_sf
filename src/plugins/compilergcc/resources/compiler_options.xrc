@@ -158,6 +158,7 @@
                                     <border>8</border>
                                     <object class="wxCheckList" name="lstCompilerOptions">
                                       <content/>
+                                      <style>wxLB_HSCROLL</style>
                                     </object>
                                   </object>
                                 </object>
