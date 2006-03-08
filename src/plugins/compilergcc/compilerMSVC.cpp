@@ -57,7 +57,7 @@ void CompilerMSVC::Reset()
 
     m_Options.ClearOptions();
 	m_Options.AddOption(_("Produce debugging symbols"),
-				_T("/Zi /DDEBUG"),
+				_T("/Zi /D_DEBUG"),
 				_("Debugging"),
 				_T("/DEBUG"),
 				true,
