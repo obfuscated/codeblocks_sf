@@ -73,6 +73,8 @@ class CodeCompletion : public cbCodeCompletionPlugin
 		cbEditor* m_pCodeCompletionLastEditor;
 		int m_ActiveCalltipsNest;
 
+		bool m_IsAutoPopup;
+
         DECLARE_EVENT_TABLE()
 };
 

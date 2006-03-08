@@ -99,7 +99,8 @@ CodeCompletion::CodeCompletion() :
     m_EditorHookId(0),
     m_timerCodeCompletion(this, idCodeCompleteTimer),
     m_pCodeCompletionLastEditor(0),
-    m_ActiveCalltipsNest(0)
+    m_ActiveCalltipsNest(0),
+    m_IsAutoPopup(false)
 {
     wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
@@ -391,10 +392,10 @@ int CodeCompletion::CodeComplete()
 
             ed->GetControl()->AutoCompSetIgnoreCase(!caseSens);
             ed->GetControl()->AutoCompSetCancelAtStart(true);
-            ed->GetControl()->AutoCompSetFillUps(_T(">.;([="));
-            ed->GetControl()->AutoCompSetChooseSingle(cfg->ReadBool(_T("/auto_select_one"), false));
+            ed->GetControl()->AutoCompSetFillUps(m_IsAutoPopup ? _T("") : _T(">.;([="));
+            ed->GetControl()->AutoCompSetChooseSingle(m_IsAutoPopup ? false : cfg->ReadBool(_T("/auto_select_one"), false));
             ed->GetControl()->AutoCompSetAutoHide(true);
-            ed->GetControl()->AutoCompSetDropRestOfWord(true);
+            ed->GetControl()->AutoCompSetDropRestOfWord(m_IsAutoPopup ? false : true);
             wxString final = GetStringFromArray(items, _T(" "));
             final.RemoveLast(); // remove last space
             ed->GetControl()->AutoCompShow(pos - start, final);
@@ -974,7 +975,11 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             int timerDelay = cfg->ReadInt(_T("/cc_delay"), 500);
             if (autoCC || timerDelay == 0)
             {
+                if (autoCC)
+                    m_IsAutoPopup = true;
                 DoCodeComplete();
+                if (autoCC)
+                    m_IsAutoPopup = false;
             }
             else
             {
