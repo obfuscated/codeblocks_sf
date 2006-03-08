@@ -1709,7 +1709,15 @@ void CompilerGCC::BuildStateManagement()
             CompilerFactory::GetCompiler(m_CompilerId)->Init(m_pBuildingProject);
         }
         if (bt != m_pLastBuildingTarget)
+        {
+            // check if we 're switching compilers, now that we 're switching targets
+            // if so, we must Init() the target's compiler...
+            Compiler* last = m_pLastBuildingTarget ? CompilerFactory::GetCompiler(m_pLastBuildingTarget->GetCompilerID()) : 0;
+            Compiler* curr = bt ? CompilerFactory::GetCompiler(bt->GetCompilerID()) : 0;
+            if (curr && last != curr)
+                curr->Init(m_pBuildingProject);
             m_pLastBuildingTarget = bt;
+        }
     }
 
     m_pBuildingProject->SetCurrentlyCompilingTarget(bt);
