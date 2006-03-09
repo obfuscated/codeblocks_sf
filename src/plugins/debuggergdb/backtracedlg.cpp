@@ -172,8 +172,14 @@ void BacktraceDlg::OnSwitchFrame(wxCommandEvent& event)
     int index = lst->GetNextItem(-1,
                                  wxLIST_NEXT_ALL,
                                  wxLIST_STATE_SELECTED);
-
-    // switch to this frame
-    if (m_pDbg->GetState().GetDriver())
-        m_pDbg->GetState().GetDriver()->SwitchToFrame(index);
+    // read the frame number from the first column
+    long realFrameNr;
+    if (lst->GetItemText(index).ToLong(&realFrameNr))
+    {
+        // switch to this frame
+        if (m_pDbg->GetState().GetDriver())
+            m_pDbg->GetState().GetDriver()->SwitchToFrame(realFrameNr);
+    }
+    else
+        cbMessageBox(_("Couldn't find out the frame number!"), _("Error"), wxICON_ERROR);
 }
