@@ -175,7 +175,7 @@
                                     <flag>wxALL|wxEXPAND</flag>
                                     <border>8</border>
                                     <object class="wxTextCtrl" name="txtCompilerOptions">
-                                      <style>wxTE_MULTILINE|wxHSCROLL|wxTE_RICH2</style>
+                                      <style>wxTE_MULTILINE|wxHSCROLL</style>
                                     </object>
                                   </object>
                                 </object>
@@ -192,7 +192,7 @@
                                     <flag>wxALL|wxEXPAND</flag>
                                     <border>8</border>
                                     <object class="wxTextCtrl" name="txtCompilerDefines">
-                                      <style>wxTE_MULTILINE|wxHSCROLL|wxTE_RICH2</style>
+                                      <style>wxTE_MULTILINE|wxHSCROLL</style>
                                     </object>
                                   </object>
                                 </object>
@@ -320,7 +320,7 @@
                                 <orient>wxVERTICAL</orient>
                                 <object class="sizeritem">
                                   <object class="wxTextCtrl" name="txtLinkerOptions">
-                                    <style>wxTE_MULTILINE|wxHSCROLL|wxTE_RICH2</style>
+                                    <style>wxTE_MULTILINE|wxHSCROLL</style>
                                   </object>
                                   <option>1</option>
                                   <flag>wxALL|wxGROW</flag>
