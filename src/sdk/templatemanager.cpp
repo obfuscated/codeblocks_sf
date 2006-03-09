@@ -310,10 +310,11 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
         return NULL;
     }
 
-    // select directory to copy user template files
+    wxString path = Manager::Get()->GetConfigManager(_T("template_manager"))->Read(_T("/projects_path"));
     wxString sep = wxFileName::GetPathSeparator();
-    wxString path = ChooseDirectory(0, _("Choose a directory to create the new project"),
-						_T(""), _T(""), false, true);
+    // select directory to copy user template files
+    path = ChooseDirectory(0, _("Choose a directory to create the new project"),
+                        path, _T(""), false, true);
     if (path.IsEmpty())
     {
         return NULL;
@@ -389,6 +390,8 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
 
 void TemplateManager::SaveUserTemplate(cbProject* prj)
 {
+    wxLogNull ln; // we check everything ourselves
+
     if (!prj)
         return;
 
@@ -402,8 +405,11 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
 
     // create destination dir
     wxString templ = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + _T("UserTemplates");
-    if (!wxDirExists(templ))
-        wxMkdir(templ, 0755);
+    if (!CreateDirRecursively(templ, 0755))
+    {
+        cbMessageBox(_("Couldn't create directory for user templates:\n") + templ, _("Error"), wxICON_ERROR);
+        return;
+    }
 
     // check if it exists and ask a different title
     wxString title = prj->GetTitle();
@@ -416,9 +422,9 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
             return;
 
         title = dlg.GetValue();
-        if (!wxDirExists(templ + _T("/") + title))
+        if (!wxDirExists(templ + wxFILE_SEP_PATH + title))
         {
-            templ << _T("/") << title;
+            templ << wxFILE_SEP_PATH << title;
             wxMkdir(templ, 0755);
             break;
         }
@@ -431,13 +437,13 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
     // copy project and all files to destination dir
     int count = 0;
     int total_count = prj->GetFilesCount();
-    templ << _T("/");
+    templ << wxFILE_SEP_PATH;
     wxFileName fname;
     for (int i = 0; i < total_count; ++i)
     {
         wxString src = prj->GetFile(i)->file.GetFullPath();
-        wxString dst = templ + prj->GetFile(i)->relativeFilename;
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("Copying %s to %s"), src.c_str(), dst.c_str());
+        wxString dst = templ + prj->GetFile(i)->relativeToCommonTopLevelPath;
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Copying %s to %s"), src.c_str(), dst.c_str());
         if (!CreateDirRecursively(dst))
             Manager::Get()->GetMessageManager()->DebugLog(_T("Failed creating directory for %s"), dst.c_str());
         if (wxCopyFile(src, dst, true))
@@ -445,9 +451,27 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
         else
             Manager::Get()->GetMessageManager()->DebugLog(_T("Failed copying %s to %s"), src.c_str(), dst.c_str());
     }
+
+    // cbProject doesn't have a GetRelativeToCommonTopLevelPath() function, so we simulate it here
+    // to find out the real destination file to create...
+    wxString topLevelPath = prj->GetCommonTopLevelPath();
     fname.Assign(prj->GetFilename());
-    if (!wxCopyFile(prj->GetFilename(), templ + fname.GetFullName()))
-        cbMessageBox(_("Failed to copy the project file!"), _("Error"), wxICON_ERROR);
+    fname.MakeRelativeTo(topLevelPath);
+    fname.Assign(templ + fname.GetFullPath());
+    if (!CreateDirRecursively(fname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), 0755))
+    {
+        cbMessageBox(_("Failed to create the directory for the project file!"), _("Error"), wxICON_ERROR);
+        ++count;
+    }
+    else
+    {
+        if (!wxCopyFile(prj->GetFilename(), fname.GetFullPath()))
+        {
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Failed to copy the project file: %s"), fname.GetFullPath().c_str());
+            cbMessageBox(_("Failed to copy the project file!"), _("Error"), wxICON_ERROR);
+            ++count;
+        }
+    }
 
     if (count == total_count)
         cbMessageBox(_("User-template saved succesfuly"), _("Information"), wxICON_INFORMATION | wxOK);
