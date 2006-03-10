@@ -20,6 +20,7 @@
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>
 #include <globals.h>
+#include <filefilters.h>
 
 BEGIN_EVENT_TABLE(EditMimeTypesDlg, wxPanel)
     EVT_BUTTON(XRCID("btnNew"), EditMimeTypesDlg::OnNew)
@@ -161,7 +162,7 @@ void EditMimeTypesDlg::OnBrowseProgram(wxCommandEvent& event)
                             _("Select program"),
                             wxEmptyString,
                             XRCCTRL(*this, "txtProgram", wxTextCtrl)->GetValue(),
-                            ALL_FILES_FILTER,
+                            FileFilters::GetFilterAll(),
                             wxOPEN);
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)

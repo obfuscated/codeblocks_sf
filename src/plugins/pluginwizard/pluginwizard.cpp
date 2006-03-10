@@ -38,6 +38,7 @@
 #include <cbproject.h>
 #include "pluginwizarddlg.h"
 #include <globals.h>
+#include <filefilters.h>
 
 CB_IMPLEMENT_PLUGIN(PluginWizard, "Plugin wizard");
 
@@ -151,7 +152,7 @@ int PluginWizard::Execute()
     target->SetTargetType(ttDynamicLib);
     target->SetCreateDefFile(false);
     target->SetCreateStaticLib(false);
-    target->SetOutputFilename(name + _T(".") + DYNAMICLIB_EXT);
+    target->SetOutputFilename(name + _T(".") + FileFilters::DYNAMICLIB_EXT);
 
     Manager::Get()->GetProjectManager()->RebuildTree();
 

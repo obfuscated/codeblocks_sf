@@ -21,7 +21,7 @@
 
 #include <wx/filedlg.h>
 #include "editpairdlg.h"
-
+#include "filefilters.h"
 
 BEGIN_EVENT_TABLE(EditPairDlg, wxDialog)
     EVT_BUTTON(XRCID("btnBrowse"), EditPairDlg::OnBrowse)
@@ -61,7 +61,7 @@ void EditPairDlg::OnBrowse(wxCommandEvent& event)
                             _("Select file"),
                             XRCCTRL(*this, "txtValue", wxTextCtrl)->GetValue(),
                             _T(""),
-                            ALL_FILES_FILTER,
+                            FileFilters::GetFilterAll(),
                             wxOPEN);
             PlaceWindow(&dlg);
             if (dlg.ShowModal() == wxID_OK)

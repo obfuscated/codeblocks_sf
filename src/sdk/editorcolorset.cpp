@@ -38,6 +38,7 @@
 
 #include "editorcolorset.h"
 #include "editorlexerloader.h"
+#include "filefilters.h"
 
 const int cbHIGHLIGHT_LINE = -98; // highlight line under caret virtual style
 const int cbSELECTION      = -99; // selection virtual style
@@ -680,7 +681,12 @@ const wxArrayString& EditorColorSet::GetFileMasks(HighlightLanguage lang)
 void EditorColorSet::SetFileMasks(HighlightLanguage lang, const wxString& masks, const wxString& separator)
 {
     if (lang != HL_NONE)
+    {
         m_Sets[lang].m_FileMasks = GetArrayFromString(masks.Lower(), separator);
+
+        // let's add these filemasks in the file filters master list ;)
+        FileFilters::Add(wxString::Format(_("%s files"), m_Sets[lang].m_Langs.c_str()), masks);
+    }
 }
 
 wxString EditorColorSet::GetSampleCode(HighlightLanguage lang, int* breakLine, int* debugLine, int* errorLine)

@@ -8,6 +8,7 @@
 #include <wx/wfstream.h>
 #include <wx/menu.h>
 #include <globals.h>
+#include <filefilters.h>
 
 static const int idSwitch = wxNewId();
 static const int idSave = wxNewId();
@@ -129,7 +130,7 @@ void BacktraceDlg::OnSave(wxCommandEvent& event)
                         _("Save as text file"),
                         wxEmptyString,
                         wxEmptyString,
-                        ALL_FILES_FILTER,
+                        FileFilters::GetFilterAll(),
                         wxSAVE | wxOVERWRITE_PROMPT);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)

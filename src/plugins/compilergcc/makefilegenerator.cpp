@@ -31,6 +31,7 @@
 #include <messagemanager.h>
 #include <wx/file.h>
 #include <compilerfactory.h>
+#include <filefilters.h>
 
 // TODO (mandrav#1#): Fix Makefile for targets using different compilers
 
@@ -271,7 +272,7 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(const wxString& command,
         if (!object_unquoted.IsEmpty() && object_unquoted.GetChar(0) == '"')
             object_unquoted.Replace(_T("\""), _T(""));
         wxFileName fname(object_unquoted);
-        fname.SetExt(EXECUTABLE_EXT);
+        fname.SetExt(FileFilters::EXECUTABLE_EXT);
         output = fname.GetFullPath();
     }
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(output);
@@ -734,7 +735,7 @@ void MakefileGenerator::DoAddMakefileResources(wxString& buffer)
 
         wxFileName resFile;
         resFile.SetName(target->GetTitle() + _T("_private"));
-        resFile.SetExt(RESOURCEBIN_EXT);
+        resFile.SetExt(FileFilters::RESOURCEBIN_EXT);
         resFile.MakeRelativeTo(m_Project->GetBasePath());
 
         // now create the resource file...
@@ -767,7 +768,7 @@ void MakefileGenerator::DoAddMakefileResources(wxString& buffer)
             buffer << out << _T('\n');
             // write private resource file to disk
             resFile.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
-            resFile.SetExt(RESOURCE_EXT);
+            resFile.SetExt(FileFilters::RESOURCE_EXT);
             wxFile file(resFile.GetFullPath(), wxFile::write);
             cbWrite(file,resBuf);
         }
@@ -1637,7 +1638,7 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
         {
             wxFileName resFile;
             resFile.SetName(target->GetTitle() + _T("_private"));
-            resFile.SetExt(RESOURCE_EXT);
+            resFile.SetExt(FileFilters::RESOURCE_EXT);
             resFile.MakeRelativeTo(m_Project->GetBasePath());
             buffer << _T("$(") << target->GetTitle() << _T("_RESOURCE): ");
             if (m_CompilerSet->GetSwitches().needDependencies)

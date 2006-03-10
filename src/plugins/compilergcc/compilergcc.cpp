@@ -39,6 +39,7 @@
 #include <pluginmanager.h>
 #include <cbeditor.h>
 #include <annoyingdialog.h>
+#include <filefilters.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/sizer.h>
 #include <wx/button.h>
@@ -1240,7 +1241,7 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
     }
 
     m_CdRun = fname.GetPath();
-    fname.SetExt(EXECUTABLE_EXT);
+    fname.SetExt(FileFilters::EXECUTABLE_EXT);
     wxString exe_filename = fname.GetFullPath();
     wxString cmd;
 

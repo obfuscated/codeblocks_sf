@@ -40,7 +40,7 @@
 #include "msvcworkspaceloader.h"
 #include "msvc7workspaceloader.h"
 #include <wx/filedlg.h>
-
+#include "filefilters.h"
 
 cbWorkspace::cbWorkspace(const wxString& filename)
 {
@@ -109,7 +109,7 @@ void cbWorkspace::Load()
 	SANITY_CHECK();
 
     SANITY_CHECK();
-    m_Filename.SetExt(WORKSPACE_EXT);
+    m_Filename.SetExt(FileFilters::WORKSPACE_EXT);
     SetModified(modified);
 
     if (pWsp)
@@ -140,7 +140,7 @@ bool cbWorkspace::SaveAs(const wxString& filename)
                             _("Save workspace"),
                             m_Filename.GetPath(),
                             m_Filename.GetFullName(),
-                            WORKSPACES_FILES_FILTER,
+                            FileFilters::GetFilterString(_T('.') + FileFilters::WORKSPACE_EXT),
                             wxSAVE | wxOVERWRITE_PROMPT);
     PlaceWindow(dlg);
     if (dlg->ShowModal() != wxID_OK)

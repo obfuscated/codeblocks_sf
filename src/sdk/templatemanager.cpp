@@ -47,7 +47,7 @@
 #include <wx/mdi.h>
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>
-
+#include "filefilters.h"
 
 int idMenuNewFromTemplate = wxNewId();
 
@@ -211,7 +211,7 @@ cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
     wxFileName fname;
     fname.Assign(ProjectPath + wxFILE_SEP_PATH +
                 dlg.GetProjectName() + wxFILE_SEP_PATH +
-                dlg.GetProjectName() + _T(".") + CODEBLOCKS_EXT);
+                dlg.GetProjectName() + _T(".") + FileFilters::CODEBLOCKS_EXT);
     LOGSTREAM << _T("Creating ") << fname.GetPath() << _T('\n');
     if (!CreateDirRecursively(fname.GetPath() + wxFILE_SEP_PATH))
     {
@@ -266,7 +266,7 @@ cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
                                         _("Save file as..."),
                                         wxEmptyString,
                                         dst,
-                                        SOURCE_FILES_FILTER,
+                                        FileFilters::GetFilterString(dst.c_str()),
                                         wxSAVE);
                     PlaceWindow(&fdlg);
                     if (fdlg.ShowModal() == wxID_CANCEL)

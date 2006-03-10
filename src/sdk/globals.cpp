@@ -45,7 +45,9 @@
 #include <wx/msgdlg.h>
 #include <wx/fontmap.h>
 #include <algorithm>
+#include "filefilters.h"
 
+const wxString DEFAULT_WORKSPACE		= _T("default.workspace");
 const wxString DEFAULT_ARRAY_SEP        = _T(";");
 const wxString DEFAULT_CONSOLE_TERM     = _T("xterm -T $TITLE -e");
 const wxString DEFAULT_CONSOLE_SHELL    = _T("/bin/sh -c");
@@ -132,61 +134,61 @@ FileType FileTypeOf(const wxString& filename)
 {
     wxString ext = filename.AfterLast(_T('.')).Lower();
 
-    if (ext.Matches(CPP_EXT) ||
-            ext.Matches(C_EXT) ||
-            ext.Matches(CC_EXT) ||
-            ext.Matches(CXX_EXT) ||
-            ext.Matches(D_EXT)
+    if (ext.Matches(FileFilters::CPP_EXT) ||
+            ext.Matches(FileFilters::C_EXT) ||
+            ext.Matches(FileFilters::CC_EXT) ||
+            ext.Matches(FileFilters::CXX_EXT) ||
+            ext.Matches(FileFilters::D_EXT)
        )
         return ftSource;
 
-    else if (ext.Matches(HPP_EXT) ||
-             ext.Matches(H_EXT) ||
-             ext.Matches(HH_EXT) ||
-             ext.Matches(HXX_EXT)
+    else if (ext.Matches(FileFilters::HPP_EXT) ||
+             ext.Matches(FileFilters::H_EXT) ||
+             ext.Matches(FileFilters::HH_EXT) ||
+             ext.Matches(FileFilters::HXX_EXT)
             )
         return ftHeader;
 
-    else if (ext.Matches(CODEBLOCKS_EXT))
+    else if (ext.Matches(FileFilters::CODEBLOCKS_EXT))
         return ftCodeBlocksProject;
 
-    else if (ext.Matches(WORKSPACE_EXT))
+    else if (ext.Matches(FileFilters::WORKSPACE_EXT))
         return ftCodeBlocksWorkspace;
 
-    else if (ext.Matches(DEVCPP_EXT))
+    else if (ext.Matches(FileFilters::DEVCPP_EXT))
         return ftDevCppProject;
 
-    else if (ext.Matches(MSVC6_EXT))
+    else if (ext.Matches(FileFilters::MSVC6_EXT))
         return ftMSVC6Project;
 
-    else if (ext.Matches(MSVC7_EXT))
+    else if (ext.Matches(FileFilters::MSVC7_EXT))
         return ftMSVC7Project;
 
-    else if (ext.Matches(MSVC6_WORKSPACE_EXT))
+    else if (ext.Matches(FileFilters::MSVC6_WORKSPACE_EXT))
         return ftMSVC6Workspace;
 
-    else if (ext.Matches(MSVC7_WORKSPACE_EXT))
+    else if (ext.Matches(FileFilters::MSVC7_WORKSPACE_EXT))
         return ftMSVC7Workspace;
 
-    else if (ext.Matches(OBJECT_EXT))
+    else if (ext.Matches(FileFilters::OBJECT_EXT))
         return ftObject;
 
-    else if (ext.Matches(XRCRESOURCE_EXT))
+    else if (ext.Matches(FileFilters::XRCRESOURCE_EXT))
         return ftXRCResource;
 
-    else if (ext.Matches(RESOURCE_EXT))
+    else if (ext.Matches(FileFilters::RESOURCE_EXT))
         return ftResource;
 
-    else if (ext.Matches(RESOURCEBIN_EXT))
+    else if (ext.Matches(FileFilters::RESOURCEBIN_EXT))
         return ftResourceBin;
 
-    else if (ext.Matches(STATICLIB_EXT))
+    else if (ext.Matches(FileFilters::STATICLIB_EXT))
         return ftStaticLib;
 
-    else if (ext.Matches(DYNAMICLIB_EXT))
+    else if (ext.Matches(FileFilters::DYNAMICLIB_EXT))
         return ftDynamicLib;
 
-    else if (ext.Matches(EXECUTABLE_EXT))
+    else if (ext.Matches(FileFilters::EXECUTABLE_EXT))
         return ftExecutable;
 
     return ftOther;

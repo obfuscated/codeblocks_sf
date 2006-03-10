@@ -77,10 +77,10 @@ enum FileVisualState
     fvsLast
 };
 
-
-extern const wxString DEFAULT_ARRAY_SEP;
-extern const wxString DEFAULT_CONSOLE_TERM;
-extern const wxString DEFAULT_CONSOLE_SHELL;
+extern DLLIMPORT const wxString DEFAULT_WORKSPACE;
+extern DLLIMPORT const wxString DEFAULT_ARRAY_SEP;
+extern DLLIMPORT const wxString DEFAULT_CONSOLE_TERM;
+extern DLLIMPORT const wxString DEFAULT_CONSOLE_SHELL;
 
 // global helper funcs
 /// Reads a wxString from a non-unicode file. File must be open. File is closed automatically.

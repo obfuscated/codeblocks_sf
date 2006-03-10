@@ -15,34 +15,34 @@
 #include "appglobals.h"
 #include <manager.h>
 #include <configmanager.h>
+#include <filefilters.h>
 #include <wx/checklst.h>
-
 
 const Associations::Assoc knownTypes[] =
 {
-    { CODEBLOCKS_EXT, _T("project file"),   1 },
-    { WORKSPACE_EXT,  _T("workspace file"), 9 },
+    { FileFilters::CODEBLOCKS_EXT, _T("project file"),   1 },
+    { FileFilters::WORKSPACE_EXT,  _T("workspace file"), 9 },
 
 
-    { C_EXT,    _T("C source file"), 2 },
-    { CPP_EXT,  _T("C++ source file"), 3 },
-    { CC_EXT,   _T("C++ source file"), 3 },
-    { CXX_EXT,  _T("C++ source file"), 3 },
-    { H_EXT,    _T("Header file"), 4 },
-    { HPP_EXT,  _T("Header file"), 4 },
-    { HH_EXT,   _T("Header file"), 4 },
-    { HXX_EXT,  _T("Header file"), 4 },
+    { FileFilters::C_EXT,    _T("C source file"), 2 },
+    { FileFilters::CPP_EXT,  _T("C++ source file"), 3 },
+    { FileFilters::CC_EXT,   _T("C++ source file"), 3 },
+    { FileFilters::CXX_EXT,  _T("C++ source file"), 3 },
+    { FileFilters::H_EXT,    _T("Header file"), 4 },
+    { FileFilters::HPP_EXT,  _T("Header file"), 4 },
+    { FileFilters::HH_EXT,   _T("Header file"), 4 },
+    { FileFilters::HXX_EXT,  _T("Header file"), 4 },
 
     { _T("cg"),        _T("cg source file"),      5 },
-    { D_EXT,           _("D source file"),        6 },
-    { RESOURCE_EXT,    _T("resource file"),       8 },
-    { XRCRESOURCE_EXT, _T("XRC resource file"),   8 },
+    { FileFilters::D_EXT,           _("D source file"),        6 },
+    { FileFilters::RESOURCE_EXT,    _T("resource file"),       8 },
+    { FileFilters::XRCRESOURCE_EXT, _T("XRC resource file"),   8 },
     { _T("F"),         _T("Fortran source file"), 7 },
 
 
-    { _T("dev"),       _T("Dev-CPP project file"), 18 },
-    { _T("dsp"),       _T("MS Visual C++ project file"), 19 },
-    { _T("dsw"),       _T("MS Visual C++ workspace file"), 20 }
+    { FileFilters::DEVCPP_EXT,       _T("Dev-CPP project file"), 18 },
+    { FileFilters::MSVC6_EXT,       _T("MS Visual C++ project file"), 19 },
+    { FileFilters::MSVC6_WORKSPACE_EXT,       _T("MS Visual C++ workspace file"), 20 }
     // { _T("proj"),      _T(""), 21 },
 
 };
@@ -165,7 +165,7 @@ void Associations::DoSetAssociation(const wxString& ext, const wxString& descr, 
 	key.Create();
 	key = DDE_TOPIC;
 
-	if(ext.IsSameAs(CODEBLOCKS_EXT) || ext.IsSameAs(WORKSPACE_EXT))
+	if(ext.IsSameAs(FileFilters::CODEBLOCKS_EXT) || ext.IsSameAs(FileFilters::WORKSPACE_EXT))
 	{
 	    wxString batchbuildargs = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs);
 		key.SetName(BaseKeyName + node + _T("\\shell\\Build\\command"));
@@ -258,7 +258,7 @@ bool Associations::DoCheckAssociation(const wxString& ext, const wxString& descr
     if (strVal != DDE_TOPIC)
         return false;
 
-	if(ext.IsSameAs(CODEBLOCKS_EXT) || ext.IsSameAs(WORKSPACE_EXT))
+	if(ext.IsSameAs(FileFilters::CODEBLOCKS_EXT) || ext.IsSameAs(FileFilters::WORKSPACE_EXT))
 	{
 	    wxString batchbuildargs = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs);
 		key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\Build\\command"));

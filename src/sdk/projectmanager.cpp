@@ -58,7 +58,7 @@
 #include "projectsfilemasksdlg.h"
 #include "projectdepsdlg.h"
 #include "multiselectdlg.h"
-
+#include "filefilters.h"
 
 // maximum number of items in "Open with" context menu
 static const unsigned int MAX_OPEN_WITH_ITEMS = 20; // keep it in sync with below array!
@@ -1763,9 +1763,9 @@ void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
                     _("Add files to project..."),
                     prj->GetBasePath(),
                     wxEmptyString,
-                    KNOWN_SOURCES_DIALOG_FILTER,
+                    FileFilters::GetFilterString(),
                     wxOPEN | wxMULTIPLE | wxFILE_MUST_EXIST);
-    dlg.SetFilterIndex(KNOWN_SOURCES_FILTER_INDEX);
+    dlg.SetFilterIndex(FileFilters::GetIndexForFilterAll());
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)

@@ -14,6 +14,7 @@
 #include <manager.h>
 #include <editormanager.h>
 #include <configmanager.h>
+#include <filefilters.h>
 
 #define DEBUG_MARKER		4
 #define DEBUG_STYLE 		wxSCI_MARK_ARROW
@@ -140,7 +141,7 @@ void DisassemblyDlg::OnSave(wxCommandEvent& event)
                         _("Save as text file"),
                         wxEmptyString,
                         wxEmptyString,
-                        ALL_FILES_FILTER,
+                        FileFilters::GetFilterAll(),
                         wxSAVE | wxOVERWRITE_PROMPT);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)

@@ -34,6 +34,8 @@
     #include "globals.h"
 #endif
 
+#include "filefilters.h"
+
 CompileTargetBase::CompileTargetBase()
     : m_TargetType(ttExecutable)
 {
@@ -200,7 +202,7 @@ wxString CompileTargetBase::GetExecutableFilename()
         return wxEmptyString;
     wxFileName fname(m_Filename);
 #ifdef __WXMSW__
-    fname.SetExt(EXECUTABLE_EXT);
+    fname.SetExt(FileFilters::EXECUTABLE_EXT);
 #else
     fname.SetExt(_T(""));
 #endif
@@ -215,7 +217,7 @@ wxString CompileTargetBase::GetDynamicLibFilename()
         m_Filename = m_OutputFilename;
     wxFileName fname(m_Filename);
     fname.SetName(fname.GetName());
-    fname.SetExt(DYNAMICLIB_EXT);
+    fname.SetExt(FileFilters::DYNAMICLIB_EXT);
     return fname.GetFullPath();
 }
 
@@ -247,7 +249,7 @@ wxString CompileTargetBase::GetStaticLibFilename()
     wxFileName fname(m_Filename);
 
     wxString prefix = _T("lib");
-    wxString suffix = STATICLIB_EXT;
+    wxString suffix = FileFilters::STATICLIB_EXT;
     Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
     if (compiler)
     {

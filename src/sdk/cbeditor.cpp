@@ -47,6 +47,7 @@
 #include "editorcolorset.h"
 #include "cbeditorprintout.h"
 #include "editor_hooks.h"
+#include "filefilters.h"
 
 const wxString g_EditorModified = _T("*");
 
@@ -900,9 +901,8 @@ bool cbEditor::SaveAs()
                             _("Save file"),
                             fname.GetPath(),
                             fname.GetFullName(),
-                            SOURCE_FILES_DIALOG_FILTER,
+                            FileFilters::GetFilterString(),
                             wxSAVE | wxOVERWRITE_PROMPT);
-    dlg->SetFilterIndex(7);// all files;
 
     PlaceWindow(dlg);
     if (dlg->ShowModal() != wxID_OK)

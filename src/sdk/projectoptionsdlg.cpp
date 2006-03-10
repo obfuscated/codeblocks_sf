@@ -48,6 +48,7 @@
 #include "externaldepsdlg.h"
 #include "annoyingdialog.h"
 #include "angelscript.h"
+#include "filefilters.h"
 
 BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
     EVT_UPDATE_UI( -1,                                 ProjectOptionsDlg::OnUpdateUI)
@@ -353,8 +354,8 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
     {
         case ttConsoleOnly:
         case ttExecutable:
-            if (ext != EXECUTABLE_EXT)
-                fname.SetExt(EXECUTABLE_EXT);
+            if (ext != FileFilters::EXECUTABLE_EXT)
+                fname.SetExt(FileFilters::EXECUTABLE_EXT);
             if (!libpre.IsEmpty() && name.StartsWith(libpre))
             {
                 name.Remove(0, libpre.Length());
@@ -363,8 +364,8 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
             txt->SetValue(fname.GetFullPath());
             break;
         case ttDynamicLib:
-            if (ext != DYNAMICLIB_EXT)
-                fname.SetExt(DYNAMICLIB_EXT);
+            if (ext != FileFilters::DYNAMICLIB_EXT)
+                fname.SetExt(FileFilters::DYNAMICLIB_EXT);
             if (!libpre.IsEmpty() && name.StartsWith(libpre))
             {
                 name.Remove(0, libpre.Length());
@@ -635,7 +636,7 @@ void ProjectOptionsDlg::OnBrowseOutputFilenameClick(wxCommandEvent& event)
                     _("Select output filename"),
                     fname.GetPath(),
                     fname.GetFullName(),
-                    ALL_FILES_FILTER,
+                    FileFilters::GetFilterAll(),
                     wxSAVE | wxOVERWRITE_PROMPT);
 
     PlaceWindow(&dlg);

@@ -23,6 +23,7 @@
 
 #include <wx/filedlg.h>
 #include "editarrayfiledlg.h"
+#include "filefilters.h"
 
 BEGIN_EVENT_TABLE(EditArrayFileDlg, wxDialog)
 	EVT_LISTBOX_DCLICK(XRCID("lstItems"), EditArrayFileDlg::OnEdit)
@@ -82,7 +83,7 @@ void EditArrayFileDlg::OnAdd(wxCommandEvent& event)
                     _("Select file"),
                     m_BasePath,
                     _T(""),
-                    ALL_FILES_FILTER,
+                    FileFilters::GetFilterAll(),
                     wxOPEN);
 
     PlaceWindow(&dlg);
@@ -102,7 +103,7 @@ void EditArrayFileDlg::OnEdit(wxCommandEvent& event)
                     _("Select file"),
                     m_BasePath,
                     list->GetStringSelection(),
-                    ALL_FILES_FILTER,
+                    FileFilters::GetFilterAll(),
                     wxOPEN);
 
     PlaceWindow(&dlg);

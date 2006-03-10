@@ -62,6 +62,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						editpathdlg.cpp \
 						edittooldlg.cpp \
 						externaldepsdlg.cpp \
+						filefilters.cpp \
 						filegroupsandmasks.cpp \
 						finddlg.cpp \
 						globals.cpp \
@@ -101,7 +102,6 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						sdk_events.cpp \
 						searchresultslog.cpp \
 						selecttargetdlg.cpp \
-						settings.cpp \
 						simplelistlog.cpp \
 						simpletextlog.cpp \
 						templatemanager.cpp \
@@ -148,6 +148,7 @@ noinst_HEADERS = annoyingdialog.h \
 				editpathdlg.h \
 				edittooldlg.h \
 				externaldepsdlg.h \
+				filefilters.h \
 				filegroupsandmasks.h \
 				finddlg.h \
 				findreplacebase.h \

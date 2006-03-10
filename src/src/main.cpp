@@ -31,7 +31,8 @@
 #include "environmentsettingsdlg.h"
 #include "compilersettingsdlg.h"
 #include <cbworkspace.h>
-#include "../sdk/globals.h"
+#include <globals.h>
+#include <filefilters.h>
 
 #if defined(_MSC_VER) && defined( _DEBUG )
 	#define _CRTDBG_MAP_ALLOC
@@ -449,6 +450,9 @@ MainFrame::MainFrame(wxWindow* parent)
     m_pAccel = new wxAcceleratorTable(7, entries);
 
     this->SetAcceleratorTable(*m_pAccel);
+
+    // add file filters for supported projects/workspaces
+    FileFilters::AddDefaultFileFilters();
 
     m_SmallToolBar = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/toolbar_size"), true);
 	CreateIDE();
@@ -1716,9 +1720,9 @@ void MainFrame::OnFileOpen(wxCommandEvent& event)
                             _("Open file"),
                             wxEmptyString,
                             wxEmptyString,
-                            SOURCE_FILES_DIALOG_FILTER,
+                            FileFilters::GetFilterString(),
                             wxOPEN | wxMULTIPLE);
-    dlg->SetFilterIndex(SOURCE_FILES_FILTER_INDEX);
+    dlg->SetFilterIndex(FileFilters::GetIndexForFilterAll());
 
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
@@ -2457,7 +2461,7 @@ void MainFrame::OnProjectOpen(wxCommandEvent& event)
                             _("Open project"),
                             wxEmptyString,
                             wxEmptyString,
-                            CODEBLOCKS_FILES_FILTER,
+                            FileFilters::GetFilterString(_T('.') + FileFilters::CODEBLOCKS_EXT),
                             wxOPEN | wxMULTIPLE);
 
     PlaceWindow(dlg);
@@ -2526,27 +2530,27 @@ void MainFrame::OnProjectCloseAllProjects(wxCommandEvent& event)
 
 void MainFrame::OnProjectImportDevCpp(wxCommandEvent& event)
 {
-    OpenGeneric(ShowOpenFileDialog(_("Import Dev-C++ project"), DEVCPP_FILES_FILTER), false);
+    OpenGeneric(ShowOpenFileDialog(_("Import Dev-C++ project"), FileFilters::GetFilterString(_T('.') + FileFilters::DEVCPP_EXT)), false);
 }
 
 void MainFrame::OnProjectImportMSVC(wxCommandEvent& event)
 {
-    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual C++ 6.0 project"), MSVC6_FILES_FILTER), false);
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual C++ 6.0 project"), FileFilters::GetFilterString(_T('.') + FileFilters::MSVC6_EXT)), false);
 }
 
 void MainFrame::OnProjectImportMSVCWksp(wxCommandEvent& event)
 {
-    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual C++ 6.0 workspace"), MSVC6_WORKSPACE_FILES_FILTER), false);
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual C++ 6.0 workspace"), FileFilters::GetFilterString(_T('.') + FileFilters::MSVC6_WORKSPACE_EXT)), false);
 }
 
 void MainFrame::OnProjectImportMSVS(wxCommandEvent& event)
 {
-    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual Studio 7.0+ project"), MSVC7_FILES_FILTER), false);
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual Studio 7.0+ project"), FileFilters::GetFilterString(_T('.') + FileFilters::MSVC7_EXT)), false);
 }
 
 void MainFrame::OnProjectImportMSVSWksp(wxCommandEvent& event)
 {
-    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual Studio 7.0+ solution"), MSVC7_WORKSPACE_FILES_FILTER), false);
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual Studio 7.0+ solution"), FileFilters::GetFilterString(_T('.') + FileFilters::MSVC7_WORKSPACE_EXT)), false);
 }
 
 void MainFrame::OnHelpAbout(wxCommandEvent& WXUNUSED(event))

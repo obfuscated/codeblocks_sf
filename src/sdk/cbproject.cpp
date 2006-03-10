@@ -55,6 +55,7 @@
 #include "projectlayoutloader.h"
 #include "selecttargetdlg.h"
 #include "filegroupsandmasks.h"
+#include "filefilters.h"
 #include "importers_globals.h"
 
 // class constructor
@@ -236,7 +237,7 @@ wxString cbProject::CreateUniqueFilename()
 			break;
         ++iter;
     }
-    return tmp << _T(".") << CODEBLOCKS_EXT;
+    return tmp << _T(".") << FileFilters::CODEBLOCKS_EXT;
 }
 
 void cbProject::ClearAllProperties()
@@ -319,7 +320,7 @@ void cbProject::Open()
             // actually import project file
             m_CurrentlyLoading = true;
             m_Loaded = loader->Open(m_Filename);
-            fname.SetExt(CODEBLOCKS_EXT);
+            fname.SetExt(FileFilters::CODEBLOCKS_EXT);
             m_Filename = fname.GetFullPath();
             SetModified(true);
             m_CurrentlyLoading = false;
@@ -407,7 +408,7 @@ bool cbProject::SaveAs()
                     _("Save file"),
                     fname.GetPath(),
                     fname.GetFullName(),
-                    CODEBLOCKS_FILES_FILTER,
+                    FileFilters::GetFilterString(_T('.') + FileFilters::CODEBLOCKS_EXT),
                     wxSAVE | wxOVERWRITE_PROMPT);
 
     PlaceWindow(&dlg);
@@ -421,8 +422,8 @@ bool cbProject::SaveAs()
     // in the filename, the part after it would be interpeted as extension
     // (and it might not be)
     // so we just append the correct extension
-    if (!fname.GetExt().Matches(CODEBLOCKS_EXT))
-        fname.Assign(m_Filename + _T('.') + CODEBLOCKS_EXT);
+    if (!fname.GetExt().Matches(FileFilters::CODEBLOCKS_EXT))
+        fname.Assign(m_Filename + _T('.') + FileFilters::CODEBLOCKS_EXT);
 
 //    Manager::Get()->GetProjectManager()->GetTree()->SetItemText(m_ProjectNode, fname.GetFullName());
     if (!m_Loaded)
@@ -593,10 +594,10 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 	FileType ft = FileTypeOf(filename);
 	fname = filename; //UnixFilename(filename);
 	ext = filename.AfterLast(_T('.')).Lower();
-	if (ext.Matches(C_EXT) || ext.Matches(CC_EXT))
+	if (ext.Matches(FileFilters::C_EXT) || ext.Matches(FileFilters::CC_EXT))
         f->compilerVar = _T("CC");
 #ifdef __WXMSW__
-	else if (ext.Matches(RESOURCE_EXT))
+	else if (ext.Matches(FileFilters::RESOURCE_EXT))
         f->compilerVar = _T("WINDRES");
 #endif
     else

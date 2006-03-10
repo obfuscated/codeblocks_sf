@@ -11,6 +11,7 @@
 #include "macrosmanager.h"
 #include "scriptingmanager.h"
 #include "scriptingcall.h"
+#include "filefilters.h"
 
 CompilerCommandGenerator::CompilerCommandGenerator()
 {
@@ -175,7 +176,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
         if (!object_unquoted.IsEmpty() && object_unquoted.GetChar(0) == '"')
             object_unquoted.Replace(_T("\""), _T(""));
         wxFileName fname(object_unquoted);
-        fname.SetExt(EXECUTABLE_EXT);
+        fname.SetExt(FileFilters::EXECUTABLE_EXT);
         wxString output = fname.GetFullPath();
         QuoteStringIfNeeded(output);
         macro.Replace(_T("$exe_output"), output);

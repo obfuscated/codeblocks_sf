@@ -18,6 +18,7 @@
 #include "compilercommandgenerator.h"
 #include "compilergcc.h"
 #include "cbexception.h"
+#include "filefilters.h"
 #include <depslib.h>
 
 DirectCommands::DirectCommands(CompilerGCC* compilerPlugin,
@@ -230,7 +231,7 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
     wxFileName fname(filename);
     fname.SetExt(m_pCompiler->GetSwitches().objectExtension);
     wxString o_filename = fname.GetFullPath();
-    fname.SetExt(EXECUTABLE_EXT);
+    fname.SetExt(FileFilters::EXECUTABLE_EXT);
     wxString exe_filename = fname.GetFullPath();
 
     wxString s_filename = filename;
@@ -304,7 +305,7 @@ wxArrayString DirectCommands::GetCleanSingleFileCommand(const wxString& filename
     wxFileName fname(filename);
     fname.SetExt(m_pCompiler->GetSwitches().objectExtension);
     wxString o_filename = fname.GetFullPath();
-    fname.SetExt(EXECUTABLE_EXT);
+    fname.SetExt(FileFilters::EXECUTABLE_EXT);
     wxString exe_filename = fname.GetFullPath();
 
     ret.Add(o_filename);

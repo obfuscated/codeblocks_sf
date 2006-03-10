@@ -25,6 +25,7 @@
 #include <wx/filename.h>
 #include "editmimetypesdlg.h"
 #include <globals.h>
+#include <filefilters.h>
 
 CB_IMPLEMENT_PLUGIN(DefaultMimeHandler, "Files extension handler");
 
@@ -203,7 +204,7 @@ wxString DefaultMimeHandler::ChooseExternalProgram()
                             _("Select program"),
                             wxEmptyString,
                             wxEmptyString,
-                            ALL_FILES_FILTER,
+                            FileFilters::GetFilterAll(),
                             wxOPEN);
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)

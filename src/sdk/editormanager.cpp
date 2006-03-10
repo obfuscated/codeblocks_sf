@@ -58,6 +58,7 @@
 #include "finddlg.h"
 #include "replacedlg.h"
 #include "confirmreplacedlg.h"
+#include "filefilters.h"
 #include "searchresultslog.h"
 
 #include <wxFlatNotebook.h>
@@ -1056,31 +1057,31 @@ bool EditorManager::SwapActiveHeaderSource()
         //Manager::Get()->GetMessageManager()->DebugLog("Looking for '%s'", fname.GetFullPath().c_str());
         if (ft == ftHeader)
         {
-            fname.SetExt(CPP_EXT);
+            fname.SetExt(FileFilters::CPP_EXT);
             if (fname.FileExists())
                 break;
-            fname.SetExt(C_EXT);
+            fname.SetExt(FileFilters::C_EXT);
             if (fname.FileExists())
                 break;
-            fname.SetExt(CC_EXT);
+            fname.SetExt(FileFilters::CC_EXT);
             if (fname.FileExists())
                 break;
-            fname.SetExt(CXX_EXT);
+            fname.SetExt(FileFilters::CXX_EXT);
             if (fname.FileExists())
                 break;
         }
         else if (ft == ftSource)
         {
-            fname.SetExt(HPP_EXT);
+            fname.SetExt(FileFilters::HPP_EXT);
             if (fname.FileExists())
                 break;
-            fname.SetExt(H_EXT);
+            fname.SetExt(FileFilters::H_EXT);
             if (fname.FileExists())
                 break;
-            fname.SetExt(HH_EXT);
+            fname.SetExt(FileFilters::HH_EXT);
             if (fname.FileExists())
                 break;
-            fname.SetExt(HXX_EXT);
+            fname.SetExt(FileFilters::HXX_EXT);
             if (fname.FileExists())
                 break;
         }

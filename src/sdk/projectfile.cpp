@@ -24,6 +24,7 @@
 #endif
 
 #include "projectfileoptionsdlg.h"
+#include "filefilters.h"
 
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(FilesList);
@@ -117,7 +118,7 @@ void ProjectFile::SetObjName(const wxString& name)
     wxFileName fname(name);
     FileType ft = FileTypeOf(name);
     if (ft == ftResource || ft == ftResourceBin)
-        fname.SetExt(RESOURCEBIN_EXT);
+        fname.SetExt(FileFilters::RESOURCEBIN_EXT);
     else if (ft == ftHeader) // support precompiled headers?
     {
         Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
