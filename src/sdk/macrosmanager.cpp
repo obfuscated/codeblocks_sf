@@ -167,6 +167,10 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
         macros[_T("PROJECT_DIRECTORY")] = wxEmptyString;
         macros[_T("PROJECTDIR")]  = wxEmptyString;
         macros[_T("PROJECTDIRECTORY")] = wxEmptyString;
+        macros[_T("PROJECT_TOPDIR")]  = wxEmptyString;
+        macros[_T("PROJECT_TOPDIRECTORY")] = wxEmptyString;
+        macros[_T("PROJECTTOPDIR")]  = wxEmptyString;
+        macros[_T("PROJECTTOPDIRECTORY")] = wxEmptyString;
         macros[_T("MAKEFILE")]   = wxEmptyString;
         macros[_T("ALL_PROJECT_FILES")] = wxEmptyString;
     }
@@ -178,6 +182,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
         m_ProjectFilename = UnixFilename(m_prjname.GetFullName());
         m_ProjectName = project->GetTitle();
         m_ProjectDir = UnixFilename(project->GetBasePath());
+        m_ProjectTopDir = UnixFilename(project->GetCommonTopLevelPath());
         m_Makefile = UnixFilename(project->GetMakefile());
         m_ProjectFiles = wxEmptyString;
         for (int i = 0; i < project->GetFilesCount(); ++i)
@@ -200,6 +205,10 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
         macros[_T("PROJECT_DIRECTORY")] = m_ProjectDir;
         macros[_T("PROJECTDIR")]  = m_ProjectDir;
         macros[_T("PROJECTDIRECTORY")] = m_ProjectDir;
+        macros[_T("PROJECT_TOPDIR")]  = m_ProjectTopDir;
+        macros[_T("PROJECT_TOPDIRECTORY")] = m_ProjectTopDir;
+        macros[_T("PROJECTTOPDIR")]  = m_ProjectTopDir;
+        macros[_T("PROJECTTOPDIRECTORY")] = m_ProjectTopDir;
         macros[_T("MAKEFILE")]   = m_Makefile;
         macros[_T("ALL_PROJECT_FILES")] = m_ProjectFiles;
 

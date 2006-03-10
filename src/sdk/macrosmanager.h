@@ -34,8 +34,8 @@ protected:
     EditorBase* m_lastEditor;
     wxFileName m_prjname;
     wxString m_AppPath, m_DataPath, m_Plugins, m_ActiveEditorFilename,
-    m_ProjectFilename, m_ProjectName, m_ProjectDir, m_ProjectFiles,
-    m_Makefile, m_TargetOutputDir, m_TargetName;
+    m_ProjectFilename, m_ProjectName, m_ProjectDir, m_ProjectTopDir,
+    m_ProjectFiles, m_Makefile, m_TargetOutputDir, m_TargetName;
 	MacrosMap macros;
     wxRegEx m_re;
     UserVariableManager *m_uVarMan;
