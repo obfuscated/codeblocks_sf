@@ -337,7 +337,7 @@ wxString MakefileGenerator::CreateSingleFileCompileCmd(const wxString& command,
     }
 #ifndef __WXMSW__
     // run the command in a shell, so backtick'd expressions can be evaluated
-    compilerCmd = m_Compiler->GetConsoleShell() + _T(" '") + compilerCmd + _T("'");
+//    compilerCmd = m_Compiler->GetConsoleShell() + _T(" '") + compilerCmd + _T("'");
 #endif
     return compilerCmd;
 }

@@ -1130,30 +1130,6 @@ or in any of the &quot;Additional paths&quot;...</label>
                                     <min>0</min>
                                   </object>
                                 </object>
-                                <object class="sizeritem">
-                                  <object class="wxStaticText">
-                                    <label>Shell to run compiler:</label>
-                                  </object>
-                                  <flag>wxTOP|wxRIGHT</flag>
-                                  <border>4</border>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxTextCtrl" name="txtConsoleShell"/>
-                                  <option>1</option>
-                                  <flag>wxGROW</flag>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxStaticText">
-                                    <label>Terminal to run console programs:</label>
-                                  </object>
-                                  <flag>wxTOP|wxRIGHT</flag>
-                                  <border>4</border>
-                                </object>
-                                <object class="sizeritem">
-                                  <object class="wxTextCtrl" name="txtConsoleTerm"/>
-                                  <option>1</option>
-                                  <flag>wxGROW</flag>
-                                </object>
                                 <vgap>8</vgap>
                                 <hgap>8</hgap>
                                 <growablecols>1</growablecols>

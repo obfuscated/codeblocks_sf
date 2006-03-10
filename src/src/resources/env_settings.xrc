@@ -135,6 +135,39 @@
                   <size>0,16</size>
                   <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                 </object>
+                <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
+                    <cols>2</cols>
+                    <rows>2</rows>
+                    <vgap>8</vgap>
+                    <hgap>8</hgap>
+                    <growablecols>1</growablecols>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Shell to run commands in:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtConsoleShell"/>
+                      <option>1</option>
+                      <flag>wxGROW</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Terminal to launch console programs:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtConsoleTerm"/>
+                      <option>1</option>
+                      <flag>wxGROW</flag>
+                    </object>
+                  </object>
+                  <flag>wxLEFT|wxTOP|wxGROW</flag>
+                  <border>8</border>
+                </object>
               </object>
             </object>
           </object>

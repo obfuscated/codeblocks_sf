@@ -86,8 +86,6 @@ class CompilerGCC : public cbCompilerPlugin
 
 		void SwitchCompiler(const wxString& id);
 		const wxString& GetCurrentCompilerID();
-		const wxString& GetConsoleShell(){ return m_ConsoleShell; }
-		const wxString& GetConsoleTerminal(){ return m_ConsoleTerm; }
 
 		// used to read from the external process
 		void OnIdle(wxIdleEvent& event);
@@ -225,9 +223,6 @@ class CompilerGCC : public cbCompilerPlugin
 		wxString m_OriginalPath;
 		wxString m_LastTempMakefile;
         bool m_DeleteTempMakefile;
-
-		wxString m_ConsoleTerm;
-		wxString m_ConsoleShell;
 
         DECLARE_EVENT_TABLE()
 };

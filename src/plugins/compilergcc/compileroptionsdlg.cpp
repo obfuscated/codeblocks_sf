@@ -307,29 +307,6 @@ void CompilerOptionsDlg::DoFillOthers()
     if (chk)
         chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_file_cwd"), false));
 
-    wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleTerm", wxTextCtrl);
-    if (txt)
-    {
-        txt->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM));
-#ifdef __WXMSW__
-        // under win32, this option is not needed, so disable it
-        txt->Enable(false);
-#endif
-    }
-    txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
-    if (txt)
-    {
-        txt->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL));
-        // because in previous versions the value for terminal
-        // used to be "console_shell" (incorrectly), double-check that
-        // the word "term" or "onsol" doesn't appear in "shell"
-        if (txt->GetValue().Contains(_T("term")) || txt->GetValue().Contains(_T("onsol")))
-            txt->SetValue(DEFAULT_CONSOLE_SHELL);
-#ifdef __WXMSW__
-        // under win32, this option is not needed, so disable it
-        txt->Enable(false);
-#endif
-    }
     wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
     if (spn)
     {
@@ -1725,12 +1702,6 @@ void CompilerOptionsDlg::OnApply()
     wxCheckBox* chk = XRCCTRL(*this, "chkIncludeFileCwd", wxCheckBox);
     if (chk)
         Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/include_file_cwd"), (bool)chk->IsChecked());
-    wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
-    if (txt)
-        Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/console_shell"), txt->GetValue());
-    txt = XRCCTRL(*this, "txtConsoleTerm", wxTextCtrl);
-    if (txt)
-        Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/console_terminal"), txt->GetValue());
     wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
     if (spn)
     {
@@ -1745,6 +1716,10 @@ void CompilerOptionsDlg::OnApply()
     spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
     if (spn)
         Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/max_reported_errors"), (int)spn->GetValue());
+
+    m_Compiler->SaveOptions();
+    m_Compiler->SetupEnvironment();
+    Manager::Get()->GetMacrosManager()->Reset();
 }
 
 void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
@@ -1791,10 +1766,4 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
         wxCommandEvent newevent(wxEVT_COMMAND_BUTTON_CLICKED,myid);
         this->ProcessEvent(newevent);
     }
-
-    m_Compiler->m_ConsoleTerm = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
-    m_Compiler->m_ConsoleShell = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
-    m_Compiler->SaveOptions();
-    m_Compiler->SetupEnvironment();
-    Manager::Get()->GetMacrosManager()->Reset();
 }

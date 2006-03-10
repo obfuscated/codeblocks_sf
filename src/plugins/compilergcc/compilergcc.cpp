@@ -228,16 +228,6 @@ CompilerGCC::CompilerGCC()
 
 	for (int i = 0; i < MAX_TARGETS; ++i)
 		idMenuSelectTargetOther[i] = wxNewId();
-#ifndef __WXMSW__
-	m_ConsoleTerm = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
-	m_ConsoleShell = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
-    // because in previous versions the value for terminal
-    // used to be "console_shell" (incorrectly), double-check that
-    // the word "term" or "onsol" doesn't appear in "shell"
-    if (m_ConsoleShell.Contains(_T("term")) || m_ConsoleShell.Contains(_T("onsol")))
-        m_ConsoleShell = DEFAULT_CONSOLE_SHELL;
-#endif
-
 	// register built-in compilers
 	CompilerFactory::RegisterCompiler(new CompilerMINGW);
 #ifdef __WXMSW__
@@ -386,8 +376,6 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
     PlaceWindow(&dlg);
     if(dlg.ShowModal() == wxID_OK)
     {
-        m_ConsoleTerm = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
-        m_ConsoleShell = Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
         SaveOptions();
 //        SetupEnvironment();
         Manager::Get()->GetMacrosManager()->Reset();
@@ -908,7 +896,8 @@ int CompilerGCC::DoRunQueue()
     {
     #ifndef __WXMSW__
         // run the command in a shell, so backtick'd expressions can be evaluated
-        cmd->command = GetConsoleShell() + _T(" '") + cmd->command + _T("'");
+        wxString shell = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
+        cmd->command = shell + _T(" '") + cmd->command + _T("'");
 //    #else
 //    // TODO (mandrav#1#): Check windows version and substitute cmd.exe with command.com if needed.
 //        cmd->command = _T("cmd /c ") + cmd->command;
@@ -1257,9 +1246,9 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
 
 #ifndef __WXMSW__
     // for non-win platforms, use m_ConsoleTerm to run the console app
-    wxString shell = m_ConsoleTerm;
-    shell.Replace(_T("$TITLE"), _T("'") + exe_filename + _T("'"));
-    cmd << shell << _T(" ");
+	wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
+    term.Replace(_T("$TITLE"), _T("'") + exe_filename + _T("'"));
+    cmd << term << _T(" ");
 #endif
     wxString baseDir = ConfigManager::GetExecutableFolder();
 #ifdef __WXMSW__
@@ -1365,9 +1354,9 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 	{
 #ifndef __WXMSW__
         // for non-win platforms, use m_ConsoleTerm to run the console app
-        wxString shell = m_ConsoleTerm;
-        shell.Replace(_T("$TITLE"), _T("'") + m_Project->GetTitle() + _T("'"));
-        cmd << shell << _T(" ");
+        wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
+        term.Replace(_T("$TITLE"), _T("'") + m_Project->GetTitle() + _T("'"));
+        cmd << term << _T(" ");
 #endif
         // should console runner be used?
         if (target->GetUseConsoleRunner())
