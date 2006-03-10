@@ -17,7 +17,7 @@ void FileFilters::AddDefaultFileFilters()
     Add(_("Code::Blocks project files"),               _T("*.cbp"));
     Add(_("Bloodshed Dev-C++ project files"),          _T("*.dev"));
     Add(_("MS Visual C++ 6.0 project files"),          _T("*.dsp"));
-    Add(_("MS Visual Studio 7.0+ project files)"),     _T("*.vcproj"));
+    Add(_("MS Visual Studio 7.0+ project files"),     _T("*.vcproj"));
     Add(_("MS Visual C++ 6.0 workspace files"),        _T("*.dsw"));
     Add(_("MS Visual Studio 7.0+ solution files"),     _T("*.sln"));
 }
