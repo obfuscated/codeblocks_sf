@@ -49,7 +49,8 @@
 #include <manager.h>
 #include <scriptingmanager.h>
 #include <wxFlatNotebook.h>
-#include "globals.h"
+#include <globals.h>
+#include "splashscreen.h"
 
 #ifndef __WXMSW__
     #include "prefix.h" // binreloc
@@ -566,17 +567,10 @@ void CodeBlocksApp::ShowSplashScreen()
 
 	if (!m_NoSplash && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/show_splash"), true) == true)
 	{
-		wxBitmap bitmap;
-		#ifdef __WXMSW__
-			const wxString splashImage = _T("/images/splash_new.png");
-		#else
-			const wxString splashImage = _T("/images/splash.png");
-		#endif
-		m_pSplash = new wxSplashScreen(LoadPNGWindows2000Hack(ConfigManager::ReadDataPath() + splashImage),
-                                        wxSPLASH_CENTRE_ON_SCREEN| wxSPLASH_NO_TIMEOUT,
-										6000, NULL, -1, wxDefaultPosition, wxDefaultSize,
-										wxBORDER_NONE | wxFRAME_NO_TASKBAR);
-		Manager::ProcessPendingEvents();
+        const wxString splashImage = _T("/images/splash_new.png");
+        wxBitmap bmp = LoadPNGWindows2000Hack(ConfigManager::ReadDataPath() + splashImage);
+		m_pSplash = new cbSplashScreen(bmp, -1, wxNO_BORDER | wxFRAME_NO_TASKBAR);
+		Manager::Yield();
 	}
 }
 

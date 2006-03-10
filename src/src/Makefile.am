@@ -28,6 +28,7 @@ codeblocks_SOURCES = app.cpp \
 			main.cpp \
 			prefix.cpp \
 			printdlg.cpp \
+			splashscreen.cpp \
 			startherepage.cpp
 
 noinst_HEADERS = app.h \
@@ -39,6 +40,7 @@ noinst_HEADERS = app.h \
 			main.h \
 			prefix.h \
 			printdlg.h \
+			splashscreen.h \
 			startherepage.h
 
 EXTRADIST = associations.cpp \

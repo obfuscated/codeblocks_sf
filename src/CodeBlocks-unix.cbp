@@ -1457,7 +1457,8 @@
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Debugger" />
-		</Unit>		<Unit filename="plugins/defaultmimehandler/defaultmimehandler.cpp">
+		</Unit>
+		<Unit filename="plugins/defaultmimehandler/defaultmimehandler.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Default MIME handler" />
 		</Unit>
@@ -4236,6 +4237,16 @@
 		</Unit>
 		<Unit filename="src/resources/start_here/www.png">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/splashscreen.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/splashscreen.h">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="src" />

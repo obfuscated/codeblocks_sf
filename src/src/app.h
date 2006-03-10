@@ -33,6 +33,8 @@
 #include "../sdk/manager.h"
 #include "main.h"
 
+class cbSplashScreen;
+
 class CodeBlocksApp : public wxApp
 {
     public:
@@ -81,7 +83,7 @@ class CodeBlocksApp : public wxApp
         int m_BatchExitCode;
         // batch jobs - end
 
-        wxSplashScreen* m_pSplash;
+        cbSplashScreen* m_pSplash;
 		wxSingleInstanceChecker* m_pSingleInstance;
         DECLARE_EVENT_TABLE()
 };

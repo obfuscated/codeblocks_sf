@@ -3811,6 +3811,16 @@
 			<Option objectName="src\resources\resources.res" />
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src\splashscreen.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\splashscreen.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src\startherepage.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="src" />
