@@ -31,6 +31,7 @@
     #include <wx/intl.h>
     #include <wx/textctrl.h>
     #include <wx/button.h>
+    #include <wx/checkbox.h>
     #include "toolsmanager.h"
     #include "globals.h"
     #include "cbexception.h"
@@ -57,6 +58,7 @@ EditToolDlg::EditToolDlg(wxWindow* parent, Tool* tool)
 	XRCCTRL(*this, "txtCommand", wxTextCtrl)->SetValue(m_Tool->command);
 	XRCCTRL(*this, "txtParams", wxTextCtrl)->SetValue(m_Tool->params);
 	XRCCTRL(*this, "txtDir", wxTextCtrl)->SetValue(m_Tool->workingDir);
+	XRCCTRL(*this, "chkCreateConsole", wxCheckBox)->SetValue(m_Tool->createConsole);
 }
 
 EditToolDlg::~EditToolDlg()
@@ -97,6 +99,7 @@ void EditToolDlg::EndModal(int retCode)
         m_Tool->command = XRCCTRL(*this, "txtCommand", wxTextCtrl)->GetValue();
         m_Tool->params = XRCCTRL(*this, "txtParams", wxTextCtrl)->GetValue();
         m_Tool->workingDir = XRCCTRL(*this, "txtDir", wxTextCtrl)->GetValue();
+        m_Tool->createConsole = XRCCTRL(*this, "chkCreateConsole", wxCheckBox)->GetValue();
     }
 
 	wxDialog::EndModal(retCode);

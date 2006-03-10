@@ -15,8 +15,6 @@
 #include <compilerfactory.h>
 
 #define MAX_TARGETS 64
-#define DEFAULT_CONSOLE_TERM _T("xterm -T $TITLE -e")
-#define DEFAULT_CONSOLE_SHELL _T("/bin/sh -c")
 
 enum CompilerOptionsType
 {

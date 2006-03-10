@@ -2,9 +2,11 @@
 #define TOOLSMANAGER_H
 
 #include <wx/event.h>
+#include <wx/timer.h>
 #include "settings.h"
 #include "manager.h"
 #include "menuitemsmanager.h"
+#include "sdk_events.h"
 #include "sanitycheck.h"
 
 class Tool
@@ -15,6 +17,7 @@ class Tool
 	wxString command;
 	wxString params;
 	wxString workingDir;
+	bool createConsole;
 	int menuId;
 };
 
@@ -24,6 +27,7 @@ WX_DECLARE_LIST(Tool, ToolsList);
 class wxMenuBar;
 class wxMenu;
 class wxMenuItem;
+class PipedProcess;
 
 class DLLIMPORT ToolsManager : public Mgr<ToolsManager>, public wxEvtHandler
 {
@@ -46,6 +50,11 @@ class DLLIMPORT ToolsManager : public Mgr<ToolsManager>, public wxEvtHandler
 		void LoadTools();
 		void SaveTools();
 		void OnToolClick(wxCommandEvent& event);
+		void OnProcessTimer(wxTimerEvent& event);
+		void OnIdle(wxIdleEvent& event);
+		void OnToolStdOutput(CodeBlocksEvent& event);
+		void OnToolErrOutput(CodeBlocksEvent& event);
+		void OnToolTerminated(CodeBlocksEvent& event);
 		void OnConfigure(wxCommandEvent& event);
 	protected:
 	private:
@@ -56,6 +65,9 @@ class DLLIMPORT ToolsManager : public Mgr<ToolsManager>, public wxEvtHandler
 		ToolsList m_Tools;
 		MenuItemsManager m_ItemsManager;
 		wxMenu* m_Menu;
+		PipedProcess* m_pProcess;
+		int m_Pid;
+		wxTimer m_Timer;
 
 		DECLARE_EVENT_TABLE()
 		DECLARE_SANITY_CHECK

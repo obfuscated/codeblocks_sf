@@ -46,6 +46,10 @@
 #include <wx/fontmap.h>
 #include <algorithm>
 
+const wxString DEFAULT_ARRAY_SEP        = _T(";");
+const wxString DEFAULT_CONSOLE_TERM     = _T("xterm -T $TITLE -e");
+const wxString DEFAULT_CONSOLE_SHELL    = _T("/bin/sh -c");
+
 wxString GetStringFromArray(const wxArrayString& array, const wxString& separator)
 {
     wxString out;

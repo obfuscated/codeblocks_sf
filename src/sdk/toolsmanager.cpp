@@ -36,6 +36,8 @@
     #include "macrosmanager.h"
     #include "configmanager.h"
     #include "messagemanager.h"
+    #include "configmanager.h"
+    #include "pipedprocess.h"
     #include "globals.h"
 #endif
 
@@ -45,16 +47,30 @@
 
 WX_DEFINE_LIST(ToolsList);
 
-int idToolsConfigure = wxNewId();
+const int idToolsConfigure = wxNewId();
+const int idTimerTool = wxNewId();
+const int idToolProcess = wxNewId();
 
 BEGIN_EVENT_TABLE(ToolsManager, wxEvtHandler)
 	EVT_MENU(idToolsConfigure, ToolsManager::OnConfigure)
+
+    EVT_IDLE(ToolsManager::OnIdle)
+	EVT_TIMER(idTimerTool, ToolsManager::OnProcessTimer)
+
+	EVT_PIPEDPROCESS_STDOUT(idToolProcess, ToolsManager::OnToolStdOutput)
+	EVT_PIPEDPROCESS_STDERR(idToolProcess, ToolsManager::OnToolErrOutput)
+	EVT_PIPEDPROCESS_TERMINATED(idToolProcess, ToolsManager::OnToolTerminated)
 END_EVENT_TABLE()
 
 ToolsManager::ToolsManager()
-	: m_Menu(0L)
+	: m_Menu(0L),
+	m_pProcess(0L),
+	m_Pid(0)
 {
     SC_CONSTRUCTOR_BEGIN
+
+    m_Timer.SetOwner(this, idTimerTool);
+
 	LoadTools();
 	Manager::Get()->GetAppWindow()->PushEventHandler(this);
 }
@@ -88,6 +104,15 @@ void ToolsManager::ReleaseMenu(wxMenuBar* menuBar)
 bool ToolsManager::Execute(Tool* tool)
 {
     SANITY_CHECK(false);
+
+    if (m_pProcess)
+    {
+        cbMessageBox(_("Another tool is currently executing.\n"
+                        "Please allow for it to finish before launching another tool..."),
+                        _("Error"), wxICON_ERROR);
+        return false;
+    }
+
 	if (!tool)
 		return false;
 
@@ -103,6 +128,22 @@ bool ToolsManager::Execute(Tool* tool)
 	Manager::Get()->GetMacrosManager()->ReplaceMacros(params);
 	Manager::Get()->GetMacrosManager()->ReplaceMacros(dir);
 
+    if (tool->createConsole)
+    {
+    #ifndef __WXMSW__
+        // for non-win platforms, use m_ConsoleTerm to run the console app
+        wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
+        term.Replace(_T("$TITLE"), _T("'") + m_Project->GetTitle() + _T("'"));
+        cmdline << term << _T(" ");
+        #define CONSOLE_RUNNER "console_runner"
+    #else
+        #define CONSOLE_RUNNER "console_runner.exe"
+    #endif
+        wxString baseDir = ConfigManager::GetExecutableFolder();
+        if (wxFileExists(baseDir + wxT("/" CONSOLE_RUNNER)))
+            cmdline << baseDir << wxT("/" CONSOLE_RUNNER " ");
+    }
+
 	cmdline << cmd << _T(" ") << params;
     SANITY_CHECK(false);
     if(!(Manager::Get()->GetMacrosManager()))
@@ -114,8 +155,30 @@ bool ToolsManager::Execute(Tool* tool)
     dir = wxGetCwd(); // read in the actual working dir
     Manager::Get()->GetMessageManager()->Log(_("Launching tool '%s': %s (in %s)"), tool->name.c_str(), cmdline.c_str(), dir.c_str());
 
-	wxProcess* process = new wxProcess();
-	return wxExecute(cmdline, wxEXEC_ASYNC, process);
+	bool pipe = true;
+	int flags = wxEXEC_ASYNC;
+	if (tool->createConsole)
+	{
+		pipe = false; // no need to pipe output channels...
+		flags |= wxEXEC_NOHIDE;
+	}
+
+    m_pProcess = new PipedProcess((void**)&m_pProcess, this, idToolProcess, pipe, dir);
+    m_Pid = wxExecute(cmdline, flags, m_pProcess);
+    if (!m_Pid)
+    {
+        cbMessageBox(_("Couldn't execute tool. Check the log for details."), _("Error"), wxICON_ERROR);
+        delete m_pProcess;
+        m_pProcess = 0;
+        m_Pid = 0;
+        return false;
+    }
+    else
+    {
+        m_Timer.Start(100);
+        Manager::Get()->GetMessageManager()->SwitchTo(0); // switch to default log
+    }
+	return true;
 }
 
 void ToolsManager::AddTool(const wxString& name, const wxString& command, const wxString& params, const wxString& workingDir, bool save)
@@ -229,6 +292,7 @@ void ToolsManager::LoadTools()
             continue;
 		tool.params = cfg->Read(_T("/") + list[i] + _T("/params"));
 		tool.workingDir = cfg->Read(_T("/") + list[i] + _T("/workingDir"));
+		tool.createConsole = cfg->ReadBool(_T("/") + list[i] + _T("/createConsole"));
 
 		AddTool(&tool, false);
 	}
@@ -260,6 +324,7 @@ void ToolsManager::SaveTools()
 		cfg->Write(elem + _T("command"), tool->command);
 		cfg->Write(elem + _T("params"), tool->params);
 		cfg->Write(elem + _T("workingDir"), tool->workingDir);
+		cfg->Write(elem + _T("createConsole"), (bool)tool->createConsole);
 	}
 }
 
@@ -319,4 +384,41 @@ void ToolsManager::OnToolClick(wxCommandEvent& event)
 	Tool* tool = GetToolById(event.GetId());
 	if (!Execute(tool))
 		cbMessageBox(_("Could not execute ") + tool->name);
+}
+
+void ToolsManager::OnProcessTimer(wxTimerEvent& event)
+{
+	wxWakeUpIdle();
+}
+
+void ToolsManager::OnIdle(wxIdleEvent& event)
+{
+    if (m_pProcess)
+    {
+        if (m_pProcess->HasInput())
+        {
+            event.RequestMore();
+        }
+    }
+	else
+		event.Skip();
+}
+
+void ToolsManager::OnToolStdOutput(CodeBlocksEvent& event)
+{
+    Manager::Get()->GetMessageManager()->Log(_T("stdout> %s"), event.GetString().c_str());
+}
+
+void ToolsManager::OnToolErrOutput(CodeBlocksEvent& event)
+{
+    Manager::Get()->GetMessageManager()->Log(_T("stderr> %s"), event.GetString().c_str());
+}
+
+void ToolsManager::OnToolTerminated(CodeBlocksEvent& event)
+{
+    m_Timer.Stop();
+    m_Pid = 0;
+    m_pProcess = 0;
+
+    Manager::Get()->GetMessageManager()->Log(_T("Tool execution terminated with status %d"), event.GetInt());
 }

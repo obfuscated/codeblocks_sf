@@ -78,7 +78,9 @@ enum FileVisualState
 };
 
 
-#define DEFAULT_ARRAY_SEP _T(";")
+extern const wxString DEFAULT_ARRAY_SEP;
+extern const wxString DEFAULT_CONSOLE_TERM;
+extern const wxString DEFAULT_CONSOLE_SHELL;
 
 // global helper funcs
 /// Reads a wxString from a non-unicode file. File must be open. File is closed automatically.

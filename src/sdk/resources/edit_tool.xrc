@@ -82,6 +82,14 @@
             <size>0,0</size>
           </object>
           <object class="sizeritem">
+            <object class="wxCheckBox" name="chkCreateConsole">
+              <label>Launch tool in a new console window and wait for a keypress when done</label>
+            </object>
+          </object>
+          <object class="spacer">
+            <size>0,0</size>
+          </object>
+          <object class="sizeritem">
             <object class="wxStaticText">
               <label>You can use the following macros:
 
