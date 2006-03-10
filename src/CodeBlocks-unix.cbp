@@ -2384,6 +2384,16 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/filefilters.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/filefilters.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/filegroupsandmasks.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />
@@ -3093,10 +3103,6 @@
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/settings.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/settings.h">
