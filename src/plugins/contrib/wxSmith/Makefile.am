@@ -115,8 +115,8 @@ wxsmith.zip:
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/wxsmith.zip *.xrc > /dev/null
 
 $(srcdir)/wxsheaders.h.gch: $(srcdir)/wxsheaders.h
-	-rm -f $(srcdir)/wxsheaders.h.gch
+	-rm -rf $(srcdir)/wxsheaders.h.gch
 	$(CXXCOMPILE) -o $(srcdir)/wxsheaders.h.gch -xc++-header $(srcdir)/wxsheaders.h
 
 clean-local:
-	-rm -f $(srcdir)/wxsheaders.h.gch
+	-rm -rf $(srcdir)/wxsheaders.h.gch
