@@ -75,7 +75,12 @@ cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, long style)
   Show(true);
   SetThemeEnabled(false); // seems to be useful by description
   SetBackgroundStyle(wxBG_STYLE_CUSTOM); // the trick for GTK+ (notice it's after Show())
+
+#if defined(__WXMSW__) || defined(__WXMAC__)
   Update();
+#else
+  wxYieldIfNeeded();
+#endif
 
   if (timeout != -1)
   {
