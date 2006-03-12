@@ -10,6 +10,7 @@
 #include <wx/string.h>
 #include <wx/filename.h>
 
+#include "globals.h"
 #include "settings.h"
 #include "sanitycheck.h"
 
@@ -37,15 +38,15 @@ class cbWorkspace
 
         /** @brief Destructor */
 		virtual ~cbWorkspace();
-		
+
 		/** @brief Save the workspace
 		  *
-		  * @param force If false (the default), the workspace will not be written to disk, 
+		  * @param force If false (the default), the workspace will not be written to disk,
 		  * if it is not marked as modified.
 		  * @return True if saving succeeded, false if not.
 		  */
         virtual bool Save(bool force = false);
-		
+
 		/** @brief Save the workspace under a different filename
 		  *
 		  * @param filename The name of the file to save.
@@ -61,7 +62,7 @@ class cbWorkspace
           */
 		virtual wxString GetFilename()
 		{ SANITY_CHECK(_T(""));
-          return m_Filename.GetFullPath(); 
+          return m_Filename.GetFullPath();
         }
 
         /** @brief Get the workspace's title
@@ -69,9 +70,9 @@ class cbWorkspace
           * @return The title of the workspace.
           */
 		virtual wxString GetTitle()
-		{ 
+		{
 		  SANITY_CHECK(_T(""));
-		  return m_Title; 
+		  return m_Title;
         }
 
         /** @brief Set the workspace's title
