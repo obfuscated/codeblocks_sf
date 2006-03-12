@@ -290,9 +290,10 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 
     // continue with the type
 	buffer << dlg.GetType() << _T(" ");
+	wxString priority = wxString::Format(_T("%d"), dlg.GetPriority()); // do it like this (wx bug with int and streams)
 
 	// now do the () part
-	buffer << _T("(") << dlg.GetUser() << _T("#") << dlg.GetPriority() << _T("#): ");
+	buffer << _T("(") << dlg.GetUser() << _T("#") << priority << _T("#): ");
 
     wxString text = dlg.GetText();
     if (CmtType != tdctC)
