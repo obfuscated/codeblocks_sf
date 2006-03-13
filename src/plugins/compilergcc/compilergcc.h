@@ -115,6 +115,8 @@ class CompilerGCC : public cbCompilerPlugin
     private:
         friend class CompilerOptionsDlg;
 
+        void Dispatcher(wxCommandEvent& event);
+
         bool ReAllocProcesses();
         void AllocProcesses();
         void FreeProcesses();

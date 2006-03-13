@@ -138,31 +138,31 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_IDLE(										CompilerGCC::OnIdle)
 	EVT_TIMER(idTimerPollCompiler,                  CompilerGCC::OnTimer)
 
-    EVT_MENU(idMenuRun,                             CompilerGCC::OnRun)
-    EVT_MENU(idMenuCompileAndRun,                   CompilerGCC::OnCompileAndRun)
-    EVT_MENU(idMenuCompile,                         CompilerGCC::OnCompile)
-    EVT_MENU(idMenuCompileFromProjectManager,       CompilerGCC::OnCompile)
-    EVT_MENU(idMenuCompileTargetFromProjectManager, CompilerGCC::OnCompile)
-    EVT_MENU(idMenuCompileFile,                     CompilerGCC::OnCompileFile)
-    EVT_MENU(idMenuCompileFileFromProjectManager,   CompilerGCC::OnCompileFile)
-    EVT_MENU(idMenuRebuild,                         CompilerGCC::OnRebuild)
-    EVT_MENU(idMenuRebuildFromProjectManager,       CompilerGCC::OnRebuild)
-    EVT_MENU(idMenuRebuildTargetFromProjectManager, CompilerGCC::OnRebuild)
-    EVT_MENU(idMenuCompileAll,                      CompilerGCC::OnCompileAll)
-    EVT_MENU(idMenuRebuildAll,                      CompilerGCC::OnRebuildAll)
-	EVT_MENU(idMenuProjectCompilerOptions,			CompilerGCC::OnProjectCompilerOptions)
-	EVT_MENU(idMenuTargetCompilerOptions,			CompilerGCC::OnTargetCompilerOptions)
-    EVT_MENU(idMenuClean,                           CompilerGCC::OnClean)
-    EVT_MENU(idMenuCleanAll,                        CompilerGCC::OnCleanAll)
-    EVT_MENU(idMenuCleanFromProjectManager,         CompilerGCC::OnClean)
-    EVT_MENU(idMenuCleanTargetFromProjectManager,   CompilerGCC::OnClean)
-    EVT_MENU(idMenuKillProcess,                     CompilerGCC::OnKillProcess)
-	EVT_MENU(idMenuSelectTargetAll,					CompilerGCC::OnSelectTarget)
-	EVT_MENU(idMenuNextError,						CompilerGCC::OnNextError)
-	EVT_MENU(idMenuPreviousError,					CompilerGCC::OnPreviousError)
-	EVT_MENU(idMenuClearErrors,						CompilerGCC::OnClearErrors)
-    EVT_MENU(idMenuExportMakefile,                  CompilerGCC::OnExportMakefile)
-    EVT_MENU(idMenuSettings,                        CompilerGCC::OnConfig)
+    EVT_MENU(idMenuRun,                             CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuCompileAndRun,                   CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuCompile,                         CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuCompileFromProjectManager,       CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuCompileTargetFromProjectManager, CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuCompileFile,                     CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuCompileFileFromProjectManager,   CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuRebuild,                         CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuRebuildFromProjectManager,       CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuRebuildTargetFromProjectManager, CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuCompileAll,                      CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuRebuildAll,                      CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuProjectCompilerOptions,          CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuTargetCompilerOptions,           CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuClean,                           CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuCleanAll,                        CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuCleanFromProjectManager,         CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuCleanTargetFromProjectManager,   CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuKillProcess,                     CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuSelectTargetAll,                 CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuNextError,                       CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuPreviousError,                   CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuClearErrors,                     CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuExportMakefile,                  CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuSettings,                        CompilerGCC::Dispatcher)
 
 	EVT_COMBOBOX(idToolTarget,						CompilerGCC::OnSelectTarget)
 
@@ -259,6 +259,97 @@ CompilerGCC::~CompilerGCC()
 	if (m_ToolTarget)
 		delete m_ToolTarget;
 	CompilerFactory::UnregisterCompilers();
+}
+
+void CompilerGCC::Dispatcher(wxCommandEvent& event)
+{
+    // Memorize the currently focused window
+
+    wxWindow* focused = wxWindow::FindFocus();
+
+    int eventId = event.GetId();
+
+//    Manager::Get()->GetMessageManager()->Log(wxT("Dispatcher"));
+
+    if (eventId == idMenuRun)
+        OnRun(event);
+
+    if (eventId == idMenuCompileAndRun)
+        OnCompileAndRun(event);
+
+    if (eventId == idMenuCompile)
+        OnCompile(event);
+
+    if (eventId == idMenuCompileFromProjectManager)
+        OnCompile(event);
+
+    if (eventId == idMenuCompileTargetFromProjectManager)
+        OnCompile(event);
+
+    if (eventId == idMenuCompileFile)
+        OnCompileFile(event);
+
+    if (eventId == idMenuCompileFileFromProjectManager)
+        OnCompileFile(event);
+
+    if (eventId == idMenuRebuild)
+        OnRebuild(event);
+
+    if (eventId == idMenuRebuildFromProjectManager)
+        OnRebuild(event);
+
+    if (eventId == idMenuRebuildTargetFromProjectManager)
+        OnRebuild(event);
+
+    if (eventId == idMenuCompileAll)
+        OnCompileAll(event);
+
+    if (eventId == idMenuRebuildAll)
+        OnRebuildAll(event);
+
+    if (eventId == idMenuProjectCompilerOptions)
+        OnProjectCompilerOptions(event);
+
+    if (eventId == idMenuTargetCompilerOptions)
+        OnTargetCompilerOptions(event);
+
+    if (eventId == idMenuClean)
+        OnClean(event);
+
+    if (eventId == idMenuCleanAll)
+        OnCleanAll(event);
+
+    if (eventId == idMenuCleanFromProjectManager)
+        OnClean(event);
+
+    if (eventId == idMenuCleanTargetFromProjectManager)
+        OnClean(event);
+
+    if (eventId == idMenuKillProcess)
+        OnKillProcess(event);
+
+    if (eventId == idMenuSelectTargetAll)
+        OnSelectTarget(event);
+
+    if (eventId == idMenuNextError)
+        OnNextError(event);
+
+    if (eventId == idMenuPreviousError)
+        OnPreviousError(event);
+
+    if (eventId == idMenuClearErrors)
+        OnClearErrors(event);
+
+    if (eventId == idMenuExportMakefile)
+        OnExportMakefile(event);
+
+    if (eventId == idMenuSettings)
+        OnConfig(event);
+
+    // Return focus to previously focused window
+
+    if (focused)
+        focused->SetFocus();
 }
 
 void CompilerGCC::AllocProcesses()
