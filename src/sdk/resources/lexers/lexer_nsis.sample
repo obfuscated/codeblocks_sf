@@ -19,6 +19,12 @@
     Name "Example"
     OutFile "setup.exe"
     InstallDir $PROGRAMFILES\Example
+    InstallDirRegKey HKLM "Software\Example" ""
+
+;----------------------------------------
+;Variables
+
+  Var STARTMENU_FOLDER
 
 ;-----------------------------------------
 ;Interface Settings
@@ -31,6 +37,10 @@
 
     !insertmacro MUI_PAGE_WELCOME
     !insertmacro MUI_PAGE_DIRECTORY
+    !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKLM"
+    !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\Example"
+    !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Example"
+    !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
     !insertmacro MUI_PAGE_INSTFILES
     !define MUI_FINISHPAGE_NOREBOOTSUPPORT
     !insertmacro MUI_PAGE_FINISH
@@ -49,23 +59,43 @@
 ;-----------------------------------------
 ;Installer Section
 
-    Section "Install"
+Section "Install"
 
-        !insertmacro MUI_STARTMENU_WRITE_END
+    WriteRegStr HKLM "Software\Example" "Install_Dir" $INSTDIR
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example" "DisplayIcon" $INSTDIR\uninstall.exe,0
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example" "DisplayName" "Example"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example" "InstallLocation" $INSTDIR
+    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example" "NoModify" 1
+    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example" "NoRepair" 1
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example" "UninstallString" $INSTDIR\uninstall.exe
 
-        SetOutPath "$INSTDIR"
+    !insertmacro MUI_STARTMENU_WRITE_BEGIN "Application"
 
-        WriteUninstaller "uninstall.exe"
+    CreateDirectory $SMPROGRAMS\$STARTMENU_FOLDER
+    CreateShortCut $SMPROGRAMS\$STARTMENU_FOLDER\Uninstall Example.lnk $INSTDIR\uninstall.exe
 
-    SectionEnd
+    !insertmacro MUI_STARTMENU_WRITE_END
+
+    SetOutPath $INSTDIR
+
+    WriteUninstaller "uninstall.exe"
+
+SectionEnd
 
 ;-----------------------------------------
 ;Uninstaller Section
 
-    Section "Uninstall"
+Section "Uninstall"
 
-        Delete "$INSTDIR\uninstall.exe"
+    DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Example"
+    DeleteRegKey HKLM "Software\Example"
 
-        RMDir "$INSTDIR"
+    !insertmacro MUI_STARTMENU_GETFOLDER "Application" $STARTMENU_FOLDER
 
-    SectionEnd
+    RMDir /r $SMPROGRAMS\$STARTMENU_FOLDER
+
+    Delete $INSTDIR\uninstall.exe
+
+    RMDir $INSTDIR
+
+SectionEnd

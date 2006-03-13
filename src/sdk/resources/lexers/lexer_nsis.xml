@@ -29,7 +29,7 @@
                         bold="1"/>
                 <Style name="Variable"
                         index="6"
-                        fg="158,0,0"/>
+                        fg="160,0,0"/>
                 <Style name="Label"
                         index="7"
                         fg="224,160,0"/>
