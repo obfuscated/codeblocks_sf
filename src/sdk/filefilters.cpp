@@ -27,7 +27,16 @@ bool FileFilters::Add(const wxString& name, const wxString& mask)
 {
     if (name.IsEmpty() || mask.IsEmpty())
         return false; // both must be valid
-    s_Filters[name] = mask;
+    if (mask.Index(_T(',')) != wxString::npos)
+    {
+        // replace commas with semicolons
+        wxString tmp = mask;
+        while (tmp.Replace(_T(","), _T(";")))
+            ;
+        s_Filters[name] = tmp;
+    }
+    else
+        s_Filters[name] = mask;
     return true;
 }
 
