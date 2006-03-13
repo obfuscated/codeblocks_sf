@@ -192,7 +192,7 @@ void CompilerFactory::LoadSettings()
     // auto-detect missing compilers
     if (needAutoDetection)
     {
-        AutoDetectCompilers adc(0L);
+        AutoDetectCompilers adc(Manager::Get()->GetAppWindow());
         PlaceWindow(&adc);
         adc.ShowModal();
     }

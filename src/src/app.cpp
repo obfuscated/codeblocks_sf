@@ -577,7 +577,10 @@ void CodeBlocksApp::ShowSplashScreen()
 void CodeBlocksApp::HideSplashScreen()
 {
     if (m_pSplash)
-        delete m_pSplash;
+    {
+        m_pSplash->Hide();
+        m_pSplash->Destroy();
+    }
     m_pSplash = 0;
 }
 
