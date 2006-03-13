@@ -66,16 +66,45 @@ void DebuggerState::SetupBreakpointIndices()
     }
 }
 
+// when the project file is in a subdir, breaking with full filenames
+// doesn't work.
+// so we check this here and use the file's relative filename if possible.
+wxString DebuggerState::ConvertToValidFilename(const wxString& filename)
+{
+    cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+    if (!prj)
+        return filename;
+
+    bool isAbsolute = false;
+#ifdef __WXMSW__
+    isAbsolute = (filename.GetChar(1) == _T(':')) ||
+                filename.GetChar(0) == _T('/') ||
+                filename.GetChar(0) == _T('\\');
+#else
+    isAbsolute = filename.GetChar(0) == _T('/') ||
+                filename.GetChar(0) == _T('~');
+#endif
+    if (isAbsolute)
+    {
+        ProjectFile* pf = prj->GetFileByFilename(UnixFilename(filename), false, true);
+        if (pf)
+            return pf->relativeFilename;
+    }
+    return filename;
+}
+
 int DebuggerState::AddBreakpoint(const wxString& file, int line, bool temp, const wxString& lineText)
 {
+    wxString bpfile = ConvertToValidFilename(file);
+
     // do we have a bp there?
-    int idx = HasBreakpoint(file, line);
+    int idx = HasBreakpoint(bpfile, line);
     // if yes, remove old breakpoint first
     if (idx != -1)
         RemoveBreakpoint(idx, true);
     // create new bp
     DebuggerBreakpoint* bp = new DebuggerBreakpoint;
-    bp->filename = file;
+    bp->filename = bpfile;
     bp->line = line;
     bp->temporary = temp;
     bp->lineText = lineText;
@@ -86,6 +115,10 @@ int DebuggerState::AddBreakpoint(DebuggerBreakpoint* bp)
 {
     if (!bp)
         return -1;
+
+    wxString bpfile = ConvertToValidFilename(bp->filename);
+    bp->filename = bpfile;
+
     bp->index = ++m_BpAutoIndex;
     m_Breakpoints.Add(bp);
 
@@ -97,7 +130,8 @@ int DebuggerState::AddBreakpoint(DebuggerBreakpoint* bp)
 
 DebuggerBreakpoint* DebuggerState::RemoveBreakpoint(const wxString& file, int line, bool deleteit)
 {
-    return RemoveBreakpoint(HasBreakpoint(file, line), deleteit);
+    wxString bpfile = ConvertToValidFilename(file);
+    return RemoveBreakpoint(HasBreakpoint(bpfile, line), deleteit);
 }
 
 DebuggerBreakpoint* DebuggerState::RemoveBreakpoint(int idx, bool deleteit)
@@ -123,13 +157,14 @@ DebuggerBreakpoint* DebuggerState::RemoveBreakpoint(int idx, bool deleteit)
 
 void DebuggerState::RemoveAllBreakpoints(const wxString& file, bool deleteit)
 {
-    bool fileonly = !file.IsEmpty();
+    wxString bpfile = ConvertToValidFilename(file);
+    bool fileonly = !bpfile.IsEmpty();
     for (int i = m_Breakpoints.GetCount() - 1; i >= 0; --i)
     {
         if (fileonly)
         {
             DebuggerBreakpoint* bp = m_Breakpoints[i];
-            if (bp->filename != file)
+            if (bp->filename != bpfile)
                 continue;
         }
         RemoveBreakpoint(i, deleteit);
@@ -138,15 +173,13 @@ void DebuggerState::RemoveAllBreakpoints(const wxString& file, bool deleteit)
 
 int DebuggerState::HasBreakpoint(const wxString& file, int line)
 {
-    m_pPlugin->Log(wxString::Format(_T("Looking for breakpoint at %s, line %d"), file.c_str(), line));
+    wxString bpfile = ConvertToValidFilename(file);
     for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
     {
         DebuggerBreakpoint* bp = m_Breakpoints[i];
-        m_pPlugin->Log(wxString::Format(_T("+ Checking %s, line %d"), bp->filename.c_str(), bp->line));
-        if (bp->filename == file && bp->line == line)
+        if (bp->filename == bpfile && bp->line == line)
             return i;
     }
-    m_pPlugin->Log(_T("+ Not found..."));
     return -1;
 }
 

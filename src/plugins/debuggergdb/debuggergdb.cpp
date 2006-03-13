@@ -859,10 +859,12 @@ int DebuggerGDB::Debug()
                 if (it == project)
                     continue;
                 AddSourceDir(it->GetBasePath());
+                AddSourceDir(it->GetCommonTopLevelPath());
             }
         }
         // lastly, add THE project as source dir
         AddSourceDir(project->GetBasePath());
+        AddSourceDir(project->GetCommonTopLevelPath());
 
         // switch to output dir
         wxString path = UnixFilename(target->GetWorkingDir());

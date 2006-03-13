@@ -32,6 +32,7 @@ class DebuggerState
         void ApplyBreakpoints();
     protected:
         void SetupBreakpointIndices();
+        wxString ConvertToValidFilename(const wxString& filename);
 
         DebuggerGDB* m_pPlugin;
         DebuggerDriver* m_pDriver;
