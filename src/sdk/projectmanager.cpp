@@ -1759,7 +1759,7 @@ void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
     if (!prj)
         return;
 
-    wxFileDialog dlg(m_pTree,
+    wxFileDialog dlg(Manager::Get()->GetAppWindow(),
                     _("Add files to project..."),
                     prj->GetBasePath(),
                     wxEmptyString,
