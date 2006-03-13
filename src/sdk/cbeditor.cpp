@@ -486,6 +486,9 @@ void cbEditor::CreateEditor()
     SetSizer(bs);
     SetAutoLayout(true);
 
+    wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxEmptyString);
+    m_pData->m_encoding = wxFontMapper::GetEncodingFromName(enc_name);
+
     // dynamic events
     Connect( m_ID,  -1, wxEVT_SCI_MARGINCLICK,
                   (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
