@@ -262,7 +262,7 @@ cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
                     msg.Printf(_("File %s already exists.\nDo you really want to overwrite this file?"), dst.c_str());
                     if (cbMessageBox(msg, _("Overwrite existing file?"), wxYES_NO | wxICON_WARNING) == wxID_YES)
                         break;
-                    wxFileDialog fdlg(0L,
+                    wxFileDialog fdlg(Manager::Get()->GetAppWindow(),
                                         _("Save file as..."),
                                         wxEmptyString,
                                         dst,

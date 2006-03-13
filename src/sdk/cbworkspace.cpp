@@ -136,7 +136,7 @@ bool cbWorkspace::Save(bool force)
 bool cbWorkspace::SaveAs(const wxString& filename)
 {
     SANITY_CHECK(false);
-    wxFileDialog* dlg = new wxFileDialog(0,
+    wxFileDialog* dlg = new wxFileDialog(Manager::Get()->GetAppWindow(),
                             _("Save workspace"),
                             m_Filename.GetPath(),
                             m_Filename.GetFullName(),
