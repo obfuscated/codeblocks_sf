@@ -5,7 +5,7 @@
 #include "projectbuildtarget.h"
 #include "cdb_driver.h"
 #include "gdb_driver.h"
-#include "Manager.h"
+#include "manager.h"
 #include "projectmanager.h"
 
 DebuggerState::DebuggerState(DebuggerGDB* plugin)
