@@ -2,6 +2,7 @@
 #include <wx/arrstr.h>
 #include <sdk_precomp.h>
 #include "filefilters.h"
+#include "globals.h"
 
 typedef std::map<wxString, wxString> FileFiltersMap;
 static FileFiltersMap s_Filters;
