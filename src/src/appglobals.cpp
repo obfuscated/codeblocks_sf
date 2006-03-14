@@ -49,7 +49,7 @@ const wxString g_DefaultBatchBuildArgs = _T("-na -nd -ns --batch-build-notify");
 operating_system_t __cb_get_os()
 {
 #if defined(__FreeBSD__)
-    return oxFreeBSD;
+    return osFreeBSD;
 #elif defined(__UNIX__)
     return osLinux;
 #elif defined(__WXMAC__)

@@ -28,7 +28,7 @@ osUnknownWindows,
 osWindows9598ME,
 osWindowsNT2000,
 osWindowsXP,
-oxFreeBSD,
+osFreeBSD,
 osLinux,
 osOS2,
 osOSX
