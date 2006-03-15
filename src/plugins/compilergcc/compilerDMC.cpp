@@ -171,7 +171,8 @@ void CompilerDMC::LoadDefaultRegExArray()
 {
     m_RegExes.Clear();
     m_RegExes.Add(RegExStruct(_("Linker error"), cltError, _T("([ \tA-Za-z0-9_:\\-\\+/\\.\\(\\)-]*)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)"), 2, 1));
-    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, _T("([ \tA-Za-z0-9_:\\-\\+/\\.-]+)\\(([0-9]+)\\) :[ \t](.*)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, _T("([ \tA-Za-z0-9_:\\-\\+/\\.-]+)\\(([0-9]+)\\)[ \t]*:[ \t]*[Ww][Aa][Rr][Nn][Ii][Nn][Gg][ \t]*(.*)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, _T("([ \tA-Za-z0-9_:\\-\\+/\\.-]+)\\(([0-9]+)\\)[ \t]*:[ \t]*(.*)"), 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, _T("Fatal error:[ \t](.*)"), 1));
 }
 
