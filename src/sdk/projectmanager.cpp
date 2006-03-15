@@ -928,6 +928,11 @@ void ProjectManager::MoveProjectUp(cbProject* project, bool warpAround)
     RebuildTree();
     if (m_pWorkspace)
         m_pWorkspace->SetModified(true);
+
+    // re-select the project
+    wxTreeItemId node = project->GetProjectNode();
+    cbAssert(node.IsOk());
+    m_pTree->SelectItem(node, true);
 }
 
 void ProjectManager::MoveProjectDown(cbProject* project, bool warpAround)
@@ -952,6 +957,11 @@ void ProjectManager::MoveProjectDown(cbProject* project, bool warpAround)
     RebuildTree();
     if (m_pWorkspace)
         m_pWorkspace->SetModified(true);
+
+    // re-select the project
+    wxTreeItemId node = project->GetProjectNode();
+    cbAssert(node.IsOk());
+    m_pTree->SelectItem(node, true);
 }
 
 cbWorkspace* ProjectManager::GetWorkspace()
