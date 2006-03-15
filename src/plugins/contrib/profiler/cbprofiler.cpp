@@ -10,6 +10,8 @@
 
 #include "cbprofiler.h"
 #include <configmanager.h>
+#include <manager.h>
+#include <macrosmanager.h>
 
 CB_IMPLEMENT_PLUGIN(CBProfiler, "Code profiler");
 
@@ -117,6 +119,7 @@ int CBProfiler::Execute()
 	if (target)
 	{
         exename = target->GetOutputFilename();
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(exename);
         wxFileName ename(exename);
         ename.Normalize(wxPATH_NORM_ALL, project->GetBasePath());
 		  exename = ename.GetFullPath();
