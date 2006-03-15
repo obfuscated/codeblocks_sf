@@ -578,10 +578,9 @@ void CodeBlocksApp::HideSplashScreen()
 {
     if (m_pSplash)
     {
-        m_pSplash->Hide();
         m_pSplash->Destroy();
+        m_pSplash = 0;
     }
-    m_pSplash = 0;
 }
 
 bool CodeBlocksApp::CheckResource(const wxString& res)
