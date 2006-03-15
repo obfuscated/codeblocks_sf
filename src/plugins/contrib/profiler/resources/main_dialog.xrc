@@ -1,655 +1,121 @@
 <?xml version="1.0" ?>
-
 <resource>
-
   <object class="wxDialog" name="dlgCBProfilerExec">
-
     <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
-
     <title>C::B Profiler Results</title>
-
     <centered>1</centered>
-
     <object class="wxBoxSizer">
-
       <orient>wxVERTICAL</orient>
-
       <object class="sizeritem">
-
         <flag>wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE</flag>
-
         <border>8</border>
-
         <object class="wxStaticText" name="stxtAbout">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           <font>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             <size>14</size>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             <weight>bold</weight>
-
-                        </font>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          </font>
           <label>Gprof's Output</label>
-
-                </object>
-
-            </object>
-
+        </object>
+      </object>
       <object class="sizeritem">
-
         <flag>wxGROW|wxALL</flag>
-
         <border>5</border>
-
         <object class="wxStaticLine" name="wxID_STATIC">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           <style>wxLI_VERTICAL</style>
-
-                </object>
-
-            </object>
-
+        </object>
+      </object>
       <object class="sizeritem">
-
         <object class="wxNotebook" name="tabs">
-
           <usenotebooksizer>1</usenotebooksizer>
-
           <object class="notebookpage">
-
             <label>Flat Profile</label>
-
             <object class="wxPanel" name="tabFlatProfile">
-
               <style>wxTAB_TRAVERSAL</style>
-
-              <object class="wxBoxSizer">
-
-                <orient>wxVERTICAL</orient>
-
+              <object class="wxGridSizer">
                 <object class="sizeritem">
-
                   <object class="wxListCtrl" name="lstFlatProfile">
-
-
-
-
-
-
-
-
-
-
-
                     <size>600,200</size>
-
-
-
-
-
-
-
-
-
-
-
                     <style>wxLC_REPORT</style>
-
                   </object>
-
-
-
                   <flag>wxALL|wxEXPAND</flag>
-
                 </object>
-
                 <object class="sizeritem">
-
                   <object class="wxTextCtrl" name="txtHelpFlatProfile">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     <size>600,150</size>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
-
                   </object>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                   <flag>wxALL|wxEXPAND</flag>
-
                 </object>
-
+                <cols>1</cols>
+                <rows>2</rows>
               </object>
-
             </object>
-
           </object>
-
           <object class="notebookpage">
-
             <label>Call Graph</label>
-
             <object class="wxPanel" name="tabCallGraph">
-
-              <object class="wxBoxSizer">
-
-                <orient>wxVERTICAL</orient>
-
+              <object class="wxGridSizer">
                 <object class="sizeritem">
-
                   <object class="wxListCtrl" name="lstCallGraph">
-
-
-
-
-
-
-
-
-
-
-
                     <size>600,200</size>
-
-
-
-
-
-
-
-
-
-
-
                     <style>wxLC_REPORT</style>
-
                   </object>
-
-
-
                   <flag>wxALL|wxEXPAND</flag>
-
                 </object>
-
                 <object class="sizeritem">
-
                   <object class="wxTextCtrl" name="txtHelpCallGraph">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     <size>600,150</size>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
-
                   </object>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                   <flag>wxALL|wxEXPAND</flag>
-
                 </object>
-
+                <cols>1</cols>
+                <rows>2</rows>
               </object>
-
               <style>wxTAB_TRAVERSAL</style>
-
             </object>
-
           </object>
-
           <object class="notebookpage">
-
             <label>Misc</label>
-
             <object class="wxPanel" name="tabMisc">
-
-              <object class="wxTextCtrl" name="txtMisc">
-
-
-
-
-
-
-
-                <size>600,400</size>
-
-
-
-
-
-
-
-                <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
-
-              </object>
-
-              <style>wxTAB_TRAVERSAL</style>
-
-            </object>
-
-          </object>
-
-        </object>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <option>1</option>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <flag>wxALL|wxEXPAND</flag>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <border>8</border>
-
-      </object>
-
-      <object class="sizeritem">
-
-        <object class="wxBoxSizer">
-
-          <orient>wxHORIZONTAL</orient>
-
-          <object class="sizeritem">
-
-            <border>8</border>
-
-            <object class="wxButton" name="wxID_OK">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              <label>&amp;Close</label>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              <default>1</default>
-
+              <object class="wxGridSizer">
+                <object class="sizeritem">
+                  <object class="wxTextCtrl" name="txtMisc">
+                    <size>600,400</size>
+                    <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
                 </object>
-
+                <cols>1</cols>
+                <rows>1</rows>
+              </object>
+              <style>wxTAB_TRAVERSAL</style>
             </object>
-
-          <object class="sizeritem">
-
-            <object class="wxButton" name="btnExport">
-
-
-
-              <label>Export to File</label>
-
-            </object>
-
           </object>
-
         </object>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        <option>1</option>
+        <flag>wxALL|wxEXPAND</flag>
         <border>8</border>
-
       </object>
-
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <border>8</border>
+            <object class="wxButton" name="wxID_OK">
+              <label>&amp;Close</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnExport">
+              <label>Export to File</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
     </object>
-
   </object>
-
 </resource>
