@@ -1146,14 +1146,14 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_CANCEL)
     {
-        delete dlg;
+        dlg->Destroy();
         return -2;
     }
 
     // Don't look for empty strings:
     if (dlg->GetFindString().empty())
     {
-        delete dlg;
+        dlg->Destroy();
         cbMessageBox(_("Can't look for an empty search criterion!"), _("Error"), wxOK | wxICON_EXCLAMATION, Manager::Get()->GetAppWindow());
         return -2;
     }
@@ -1180,7 +1180,7 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     m_LastFindReplaceData->hiddenSearch = dlg->GetHidden();
     m_LastFindReplaceData->initialreplacing = false;
 
-    delete dlg;
+    dlg->Destroy();
 
     if (!replace)
     {

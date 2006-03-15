@@ -2769,6 +2769,18 @@
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_OgreCompositor.sample">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\resources\lexers\lexer_OgreCompositor.xml">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk\resources\lexers\lexer_OgreMaterial.sample">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />

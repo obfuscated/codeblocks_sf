@@ -1084,7 +1084,7 @@ wxString MainFrame::ShowOpenFileDialog(const wxString& caption, const wxString& 
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
 		sel = dlg->GetPath();
-    delete dlg;
+    dlg->Destroy();
     return sel;
 }
 
@@ -1732,7 +1732,7 @@ void MainFrame::OnFileOpen(wxCommandEvent& event)
         OnDropFiles(0,0,files);
     }
 
-    delete dlg;
+    dlg->Destroy();
 }
 
 void MainFrame::OnFileReopenProject(wxCommandEvent& event)
@@ -1872,7 +1872,7 @@ void MainFrame::OnFileRunScript(wxCommandEvent& WXUNUSED(event))
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
         Manager::Get()->GetScriptingManager()->LoadScript(dlg->GetPath());
-    delete dlg;
+    dlg->Destroy();
 }
 
 void MainFrame::OnFileQuit(wxCommandEvent& WXUNUSED(event))
@@ -2472,7 +2472,7 @@ void MainFrame::OnProjectOpen(wxCommandEvent& event)
         OnDropFiles(0,0,files);
     }
 
-    delete dlg;
+    dlg->Destroy();
 }
 
 void MainFrame::OnProjectSaveProject(wxCommandEvent& event)
@@ -2558,7 +2558,7 @@ void MainFrame::OnHelpAbout(wxCommandEvent& WXUNUSED(event))
     dlgAbout* dlg = new dlgAbout(this);
     PlaceWindow(dlg, pdlHead);
     dlg->ShowModal();
-    delete dlg;
+    dlg->Destroy();
 }
 
 void MainFrame::OnHelpTips(wxCommandEvent& event)
