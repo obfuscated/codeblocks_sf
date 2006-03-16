@@ -29,6 +29,7 @@
 #include <wx/sizer.h>
 #include <configmanager.h>
 #include <manager.h>
+#include <globals.h>
 
 const wxEventType csdEVT_CCLIST_CODECOMPLETE = wxNewEventType();
 
@@ -72,6 +73,8 @@ CCList::CCList(wxEvtHandler* parent, cbStyledTextCtrl* editor, Parser* parser)
 {
 	m_StartPos = m_pEditor->GetCurrentPos();
 	PositionMe();
+    PlaceWindow(this, pdlConstrain);
+
 	int start = m_pEditor->WordStartPosition(m_StartPos, true);
 	wxString prefix = m_pEditor->GetTextRange(start, m_StartPos);
 
@@ -106,36 +109,7 @@ void CCList::PositionMe()
 	if (h > screenH)
 		h = screenH;
 
-//	 now we 're where we want to be, but check that the whole window is visible...
-//	 the main goal here is that the caret *should* be visible...
-
-//	 for the horizontal axis, easy stuff
-	if (pt.x + w > screenW)
-		pt.x = screenW - w;
-
-	// for the vertical axis, more work has to be done...
-	if (pt.y + h > screenH)
-	{
-		// it doesn't fit to the bottom of the screen
-		// check if it fits to the top
-		if (h < pt.y)
-			pt.y -= h + lineHeight; // fits
-		else
-		{
-			// we have to shrink the height...
-			// determine if pt.y is closer to top or bottom
-			if (pt.y <= screenH / 2)
-				h = screenH = pt.y; // to top
-			else
-			{
-				h = pt.y - lineHeight; // to bottom
-				pt.y = 0;
-			}
-		}
-	}
-	// we should be OK now
 	SetSize(pt.x, pt.y, w, h);
-//	PlaceWindow(this, pdlConstrain, true);
 }
 
 void CCList::SelectCurrent(wxChar ch)
@@ -270,6 +244,14 @@ void CCList::OnKeyDown(wxKeyEvent& event)
 		{
 			event.Skip();
 			Destroy();
+			break;
+		}
+
+		case WXK_SPACE:
+		{
+		    m_pList->AddChar(c);
+			Destroy();
+			event.Skip();
 			break;
 		}
 
