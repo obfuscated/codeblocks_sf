@@ -979,7 +979,7 @@ int CompilerGCC::DoRunQueue()
 		dir = m_CdRun;
     #ifndef __WXMSW__
         // setup dynamic linker path
-		wxSetEnv(_T("LD_LIBRARY_PATH"), dir + _T(":$LD_LIBRARY_PATH"));
+		wxSetEnv(_T("LD_LIBRARY_PATH"), _T(".:$LD_LIBRARY_PATH"));
     #endif
 	}
 
@@ -1448,7 +1448,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         // for non-win platforms, use m_ConsoleTerm to run the console app
         wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
         term.Replace(_T("$TITLE"), _T("'") + m_Project->GetTitle() + _T("'"));
-        cmd << term << _T(" ");
+        cmd << term << _T(" 'LD_LIBRARY_PATH=.$LD_LIBRARY_PATH ");
 #endif
         // should console runner be used?
         if (target->GetUseConsoleRunner())
@@ -1484,6 +1484,11 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 		cmd << f.GetFullPath();
 		cmd << _T("\" ");
 		cmd << target->GetExecutionParameters();
+#ifndef __WXMSW__
+        // closing single-quote for xterm command line
+        if (target->GetTargetType() == ttConsoleOnly)
+            cmd << _T("'");
+#endif
     }
     else
     {

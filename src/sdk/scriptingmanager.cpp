@@ -102,6 +102,10 @@ bool ScriptingManager::DoLoadScript(const wxString& filename, wxString& script)
 
 int ScriptingManager::LoadScript(const wxString& filename, const wxString& module, bool autorunMain)
 {
+    // scripting is not supported for 64bit processors yet...
+#ifdef _LP64
+    return 1;
+#endif
 //    wxString script;
     // try to load as-passed
 //    if (!DoLoadScript(filename, script))
