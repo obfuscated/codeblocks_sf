@@ -37,56 +37,57 @@
 
 #ifdef CB_PRECOMP
     // some common wxWidgets headers
-    #include <wx/socket.h>
-    #include <wx/notebook.h>
-    #include <wx/image.h>
-    #include <wx/frame.h>
-    #include <wx/panel.h>
-    #include <wx/dialog.h>
-    #include <wx/msgdlg.h>
-    #include <wx/fs_zip.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/intl.h>
-    #include <wx/font.h>
-    #include <wx/hashmap.h>
-    #include <wx/list.h>
-    #include <wx/thread.h>
-    #include <wx/menu.h>
-    #include <wx/imaglist.h>
-    #include <wx/process.h>
-    #include <wx/splitter.h>
-    #include <wx/sizer.h>
-    #include <wx/txtstrm.h>
-    #include <wx/timer.h>
+    #include <wx/arrstr.h>
+    #include <wx/button.h>
+    #include <wx/checkbox.h>
+    #include <wx/checklst.h>
+    #include <wx/colordlg.h>
+    #include <wx/combobox.h>
+    #include <wx/confbase.h>
     #include <wx/datetime.h>
-    #include <wx/print.h>
+    #include <wx/dialog.h>
+    #include <wx/dir.h>
     #include <wx/dynarray.h>
     #include <wx/event.h>
-    #include <wx/dynarray.h>
-    #include <wx/hashmap.h>
-    #include <wx/string.h>
-    #include <wx/filename.h>
-    #include <wx/confbase.h>
-    #include <wx/treectrl.h>
-    #include <wx/radiobut.h>
-    #include <wx/checkbox.h>
-    #include <wx/textctrl.h>
-    #include <wx/combobox.h>
-    #include <wx/spinctrl.h>
-    #include <wx/listctrl.h>
-    #include <wx/button.h>
-    #include <wx/stattext.h>
-    #include <wx/wxscintilla.h>
-    #include <wx/listbox.h>
-    #include <wx/radiobox.h>
-    #include <wx/colordlg.h>
-    #include <wx/regex.h>
-    #include <wx/log.h>
-    #include <wx/dir.h>
     #include <wx/file.h>
-    #include <wx/checklst.h>
+    #include <wx/filename.h>
+    #include <wx/font.h>
+    #include <wx/frame.h>
+    #include <wx/fs_zip.h>
+    #include <wx/hashmap.h>
+    #include <wx/image.h>
+    #include <wx/imaglist.h>
+    #include <wx/intl.h>
+    #include <wx/list.h>
     #include <wx/listbox.h>
+    #include <wx/listctrl.h>
+    #include <wx/log.h>
+    #include <wx/menu.h>
+    #include <wx/menuitem.h>
+    #include <wx/msgdlg.h>
+    #include <wx/notebook.h>
+    #include <wx/panel.h>
+    #include <wx/print.h>
+    #include <wx/process.h>
+    #include <wx/radiobox.h>
+    #include <wx/radiobut.h>
+    #include <wx/regex.h>
+    #include <wx/sizer.h>
+    #include <wx/socket.h>
+    #include <wx/spinctrl.h>
+    #include <wx/splitter.h>
+    #include <wx/stattext.h>
+    #include <wx/string.h>
+    #include <wx/textctrl.h>
+    #include <wx/thread.h>
+    #include <wx/timer.h>
+    #include <wx/toolbar.h>
+    #include <wx/treectrl.h>
+    #include <wx/txtstrm.h>
+    #include <wx/utils.h>
     #include <wx/wfstream.h>
+    #include <wx/wxscintilla.h>
+    #include <wx/xrc/xmlres.h>
 
     // basic headers
     #include <settings.h>
@@ -129,6 +130,7 @@
     #include <compilerfactory.h>
     #include <managedthread.h>
     #include <pipedprocess.h>
+    #include <projectfile.h>
     #include <simplelistlog.h>
     #include <simpletextlog.h>
     #include <workspaceloader.h>
