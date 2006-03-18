@@ -24,21 +24,23 @@
 * $HeadURL$
 */
 
+#ifdef CB_PRECOMP
 #include <sdk.h>
-#include "classwizarddlg.h"
-#include <wx/intl.h>
-#include <wx/filename.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/textctrl.h>
-#include <wx/button.h>
-#include <wx/combobox.h>
+#else
 #include <wx/checkbox.h>
+#include <wx/combobox.h>
+#include <wx/event.h>
 #include <wx/file.h>
-#include <wx/msgdlg.h>
+#include <wx/filename.h>
+#include <wx/intl.h>
 #include <wx/log.h>
-#include <globals.h>
-#include "../../sdk/manager.h"
-#include "../../sdk/configmanager.h"
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
+#include "configmanager.h"
+#include "globals.h"
+#include "manager.h"
+#endif
+#include "classwizarddlg.h"
 
 BEGIN_EVENT_TABLE(ClassWizardDlg, wxDialog)
 	EVT_UPDATE_UI(-1, ClassWizardDlg::OnUpdateUI)

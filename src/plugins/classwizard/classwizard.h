@@ -1,9 +1,7 @@
 #ifndef CLASSWIZARD_H
 #define CLASSWIZARD_H
 
-#include <settings.h> // SDK
-#include <cbplugin.h>
-#include <simpletextlog.h>
+#include "cbplugin.h"
 
 class ClassWizard : public cbToolPlugin
 {

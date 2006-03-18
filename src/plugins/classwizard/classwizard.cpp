@@ -24,23 +24,25 @@
 * $HeadURL$
 */
 
+#ifdef CB_PRECOMP
 #include <sdk.h>
-#include "classwizard.h"
-#include <wx/intl.h>
-#include <wx/filename.h>
-#include <wx/xrc/xmlres.h>
+#else
 #include <wx/fs_zip.h>
-#include <wx/mdi.h>
-#include <wx/msgdlg.h>
-#include <manager.h>
-#include <configmanager.h>
-#include <projectmanager.h>
-#include "classwizarddlg.h"
-#include <cbproject.h>
+#include <wx/intl.h>
+#include <wx/string.h>
+#include <wx/utils.h>
+#include <wx/xrc/xmlres.h>
+#include "cbproject.h"
+#include "configmanager.h"
 #include "globals.h"
+#include "manager.h"
+#include "projectmanager.h"
+#endif
+#include <wx/filesys.h>
+#include "classwizard.h"
+#include "classwizarddlg.h"
 
 CB_IMPLEMENT_PLUGIN(ClassWizard, "Class wizard");
-
 
 ClassWizard::ClassWizard()
 {
@@ -86,22 +88,16 @@ int ClassWizard::Execute()
 	{
 		if (!prj)
 		{
-			wxMessageDialog msg(Manager::Get()->GetAppWindow(),
-							_("The new class has been created."),
+			cbMessageBox(	_("The new class has been created."),
 							_("Information"),
-							wxOK | wxICON_INFORMATION);
-            PlaceWindow(&msg);
-			msg.ShowModal();
-			return 0;
+							wxOK | wxICON_INFORMATION,
+							Manager::Get()->GetAppWindow());
 		}
-
-		wxMessageDialog msg(Manager::Get()->GetAppWindow(),
-							_("The new class has been created.\n"
+		else if( cbMessageBox( _("The new class has been created.\n"
 							"Do you want to add it to the current project?"),
 							_("Add to project?"),
-							wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION);
-        PlaceWindow(&msg);
-		if (msg.ShowModal() == wxID_YES)
+							wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION,
+							Manager::Get()->GetAppWindow()) == wxID_YES)
 		{
             wxArrayInt targets;
 			prjMan->AddFileToProject(dlg.GetHeaderFilename(), prj, targets);
