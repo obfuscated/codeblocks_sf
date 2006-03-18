@@ -6,15 +6,22 @@
  * License:   wxWindows License
  **************************************************************/
 
-#include "copystrings.h"
-#include <licenses.h> // defines some common licenses (like the GPL)
+#ifdef CB_PRECOMP
+#include "sdk.h"
+#else
+#include <wx/intl.h>
+#include <wx/string.h>
+#include "cbeditor.h"
+#include "editormanager.h"
+#include "globals.h"
+#include "licenses.h" // defines some common licenses (like the GPL)
+#include "manager.h"
+#endif
 #include <wx/clipbrd.h>
-
-#include <manager.h>
-#include <editormanager.h>
-#include <cbeditor.h>
-#include <wx/msgdlg.h>
+#include <wx/dataobj.h>
+#include "copystrings.h"
 #include <map>
+
 using namespace std;
 
 // Implement the plugin's hooks
@@ -59,45 +66,16 @@ void copystrings::OnRelease(bool appShutDown)
 	// m_IsAttached will be FALSE...
 }
 
-int copystrings::Execute()
-{
-	//do your magic ;)
-
-//	NotImplemented(_T("copystrings::Execute()"));
-	EditorManager* man = Manager::Get()->GetEditorManager();
-	if(!man)
-        return -1;
-	cbEditor* myeditor = man->GetBuiltinActiveEditor();
-	if(!myeditor)
-        return -1;
-	cbStyledTextCtrl* ctrl = myeditor->GetControl();
-	if(ctrl)
+void GetStrings(const wxString& buffer,wxString& result)
 	{
-	    wxString result(_T(""));
-	    wxString input(_T(""));
-	    input = ctrl->GetText();
-	    GetStrings(input,result);
-        if (wxTheClipboard->Open())
-        {
-            wxTheClipboard->SetData( new wxTextDataObject(result));
-            wxTheClipboard->Close();
-        }
-        wxMessageBox(_T("Literal strings copied to clipboard."));
-	}
-	return -1;
-}
-
-typedef map<wxString, bool, less<wxString> > mymaptype;
-
-void copystrings::GetStrings(const wxString& buffer,wxString& result)
-{
+    typedef map<wxString, bool, less<wxString> > mymaptype;
     size_t i = 0;
     i = 0;
     int mode = 0;
     mymaptype mymap;
     wxString curstr;
     curstr.Clear();
-    for(i = 0; i < buffer.Length(); i++)
+    for(i = 0; i < buffer.Length(); ++i)
     {
         wxChar ch = buffer[i];
         switch(mode)
@@ -171,7 +149,7 @@ void copystrings::GetStrings(const wxString& buffer,wxString& result)
     }
     result.Clear();
     mymaptype::iterator it;
-    for(it = mymap.begin();it != mymap.end(); it++)
+    for(it = mymap.begin();it != mymap.end(); ++it)
     {
         result << it->first;
 #ifdef __WXMSW__
@@ -181,4 +159,31 @@ void copystrings::GetStrings(const wxString& buffer,wxString& result)
 #endif
     }
     return;
+}
+
+int copystrings::Execute()
+{
+	//do your magic ;)
+
+	EditorManager* man = Manager::Get()->GetEditorManager();
+	if(!man)
+        return -1;
+	cbEditor* myeditor = man->GetBuiltinActiveEditor();
+	if(!myeditor)
+        return -1;
+	cbStyledTextCtrl* ctrl = myeditor->GetControl();
+	if(ctrl)
+	{
+	    wxString result(_T(""));
+	    wxString input(_T(""));
+	    input = ctrl->GetText();
+	    GetStrings(input, result);
+        if (wxTheClipboard->Open())
+        {
+            wxTheClipboard->SetData( new wxTextDataObject(result));
+            wxTheClipboard->Close();
+        }
+        cbMessageBox(_T("Literal strings copied to clipboard."));
+	}
+	return -1;
 }
