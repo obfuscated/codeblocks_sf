@@ -6,9 +6,9 @@
  * License:   wxWindows License
  **************************************************************/
 
-#ifdef CB_PRECOMP
-#include "sdk.h"
-#else
+//#ifdef CB_PRECOMP
+//#include "sdk.h"
+//#else
 #include <wx/intl.h>
 #include <wx/string.h>
 #include "cbeditor.h"
@@ -16,7 +16,7 @@
 #include "globals.h"
 #include "licenses.h" // defines some common licenses (like the GPL)
 #include "manager.h"
-#endif
+//#endif
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
 #include "copystrings.h"
