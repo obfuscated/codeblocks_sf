@@ -12,7 +12,7 @@
 
 #include <wx/string.h>
 
-#define NB_FILETYPES  7  // Number of languages supported
+#define NB_FILETYPES_MAX  50  // Max number of languages supported
 
 class LanguageDef
 {

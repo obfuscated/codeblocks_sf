@@ -47,7 +47,6 @@ class CodeStat : public cbToolPlugin
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 	protected:
 	private:
-	   void LoadSettings(LanguageDef languages[NB_FILETYPES]);
       CodeStatExecDlg* dlg;
 };
 

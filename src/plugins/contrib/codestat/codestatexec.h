@@ -33,7 +33,7 @@ class CodeStatExecDlg : public wxDialog
 		CodeStatExecDlg(wxWindow* parent)
             : parent(parent){}
 		virtual ~CodeStatExecDlg();
-		int Execute(LanguageDef languages[NB_FILETYPES]);
+		int Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_languages);
 	protected:
       void EndModal(int retCode);
    private:

@@ -9,7 +9,7 @@
 
 #include "codestatexec.h"
 
-int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES])
+int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_languages)
 {
     int i, j, l, num_language;
    long int total_lines = 0;
@@ -38,7 +38,7 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES])
    	{
    		// Find the language associated to the file extension
    		num_language = -1;
-   		for (l=0; l<NB_FILETYPES; l++)
+   		for (l=0; l<nb_languages; l++)
    		{
    			for (j=0; j<(int)languages[l].ext.Count(); j++)
    			{
