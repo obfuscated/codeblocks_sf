@@ -7,6 +7,8 @@
  * License:   GPL
  **************************************************************/
 
+#include "manager.h"
+#include "configmanager.h"
 #include "codestatconfig.h"
 
 BEGIN_EVENT_TABLE (CodeStatConfigDlg, wxPanel)
