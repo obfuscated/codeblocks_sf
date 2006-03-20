@@ -513,6 +513,7 @@ void MessageManager::SetLogImage(int id, const wxBitmap& bitmap)
     {
         m_pNotebook->GetImageList()->push_back(bitmap);
         m_pNotebook->SetPageImageIndex(index, m_pNotebook->GetImageList()->size() - 1);
+        m_Logs[id]->bitmap = bitmap;
     }
 }
 
