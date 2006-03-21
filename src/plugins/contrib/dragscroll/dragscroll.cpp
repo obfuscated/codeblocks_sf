@@ -46,7 +46,7 @@ cbDragScroll::cbDragScroll()
 	//ctor
 	m_PluginInfo.name = _T("DragScroll");
 	m_PluginInfo.title = _("DragScroll");
-	m_PluginInfo.version = _T("v0.18 2/14/2006");
+	m_PluginInfo.version = _T("0.19 2006/03/21");
 	m_PluginInfo.description = _("Mouse Drag and Scroll\nUsing Right or Middle Mouse Key");
 	m_PluginInfo.author = _T("Pecan");
 	m_PluginInfo.authorEmail = _T("");
@@ -90,7 +90,7 @@ void cbDragScroll::OnAttach()
         pMyLog->GetFrame()->Move(20,20);
 	#endif
 
-    //names of windows to attach other than SCIwindows
+    //names of windows we're allowed to attach
     m_UsableWindows.Add(_T("text"));
     m_UsableWindows.Add(_T("listctrl"));
     m_UsableWindows.Add(_T("textctrl"));
@@ -188,12 +188,12 @@ void cbDragScroll::OnDialogDone(cbDragScrollCfg* pDlg)
     MouseDragSensitivity    = pDlg->GetMouseDragSensitivity();
     MouseToLineRatio        = pDlg->GetMouseToLineRatio();
 
-    LOGIT(_T("MouseDragScrollEnabled:%d"), MouseDragScrollEnabled);
+    LOGIT(_T("MouseDragScrollEnabled:%d"),  MouseDragScrollEnabled);
     LOGIT(_T("MouseEditorFocusEnabled:%d"), MouseEditorFocusEnabled);
-    LOGIT(_T("MouseDragDirection:%d"), MouseDragDirection);
-    LOGIT(_T("MouseDragKey:%d"), MouseDragKey);
-    LOGIT(_T("MouseDragSensitivity:%d"), MouseDragSensitivity);
-    LOGIT(_T("MouseToLineRatio:%d"), MouseToLineRatio);
+    LOGIT(_T("MouseDragDirection:%d"),      MouseDragDirection);
+    LOGIT(_T("MouseDragKey:%d"),            MouseDragKey);
+    LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity);
+    LOGIT(_T("MouseToLineRatio:%d"),        MouseToLineRatio);
     LOGIT(_T("-----------------------------"));
 
     // Post a pending request to later update the configuration requests
@@ -771,20 +771,25 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
     //remember window pointer
     m_pEvtObject = event.GetEventObject();
     cbDragScroll* pDS = cbDragScroll::pDragScroll;
-    m_MouseMoveToLineMoveRatio = pDS->GetMouseToLineRatio()/100.0;
+
     #ifdef LOGGING
      //LOGIT( _T("m_MouseMoveToLineMoveRatio %f"),m_MouseMoveToLineMoveRatio );
     #endif //LOGGING
 
     #if (RC3)
-    //+v0.6
      cbEditor* ed = 0;
      cbStyledTextCtrl* p_cbStyledTextCtrl = 0;
      ed  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
      if (ed) p_cbStyledTextCtrl = ed->GetControl();
+
+     // set focus to editor window if mouse is in it
+    if (event.GetEventType() eq wxEVT_ENTER_WINDOW)
+        if (pDS->GetMouseEditorFocusEnabled() )
+           if (p_cbStyledTextCtrl && (m_pEvtObject == p_cbStyledTextCtrl))
+                p_cbStyledTextCtrl->SetFocus();
+
     #endif
 
-    m_Direction = pDS->GetMouseDragDirection() ? 1 : -1 ; //v0.14
     int scrollx;
     int scrolly;
 
@@ -795,6 +800,9 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
     //--------- Key Down ------------------------------------------------------
     if (KeyDown(event))
      {
+        m_Direction = pDS->GetMouseDragDirection() ? 1 : -1 ; //v0.14
+        m_MouseMoveToLineMoveRatio = pDS->GetMouseToLineRatio()/100.0;
+
         // We tentatively start dragging, but wait for
         // mouse movement before dragging properly.
 
@@ -817,6 +825,13 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
         wxPoint mouseXY = ((wxWindow*)m_pEvtObject)->ScreenToClient(wxGetMousePosition());
         scrollx = abs(mouseXY.x - m_InitX) ;
         scrolly = abs(mouseXY.y - m_InitY) ;
+
+        // capture middle mouse key for immediate dragging
+        if ( (GetUserDragKey() eq wxMOUSE_BTN_MIDDLE ) && event.MiddleIsDown() )
+        {   m_DragMode = DRAG_START;
+            return;
+        }
+        else // wait for movement if right mouse key; might be context menu request
         if ( ( scrolly > 1) || (scrollx > 1) )
         {   m_DragMode = DRAG_START;
             LOGIT(_T("Down delta x:%d y:%d"), scrollx, scrolly );

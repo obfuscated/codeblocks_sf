@@ -105,12 +105,12 @@ class cbDragScroll : public cbPlugin
         wxWindow* winExists(wxWindow *parent);
         wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
 
-        wxString    m_CfgFilenameStr;
-        wxArrayString m_UsableWindows;
-        wxArrayPtrVoid m_EditorPtrs;
-        wxLogWindow* pMyLog;
-        bool m_bNotebooksAttached;
-        wxArrayPtrVoid m_EventHandlerArray;
+        wxString        m_CfgFilenameStr;
+        wxArrayString   m_UsableWindows;
+        wxArrayPtrVoid  m_EditorPtrs;
+        wxLogWindow*    pMyLog;
+        bool            m_bNotebooksAttached;
+        wxArrayPtrVoid  m_EventHandlerArray;
 
         bool MouseDragScrollEnabled ;   //Enable/Disable mouse event handler
         bool MouseEditorFocusEnabled;   //Enable/Disable mouse focus() editor
@@ -178,6 +178,8 @@ private:
             return event.RightUp();
             return event.MiddleUp();
         }
+    int GetUserDragKey()
+        { return ( cbDragScroll::pDragScroll->GetMouseDragKey() ? wxMOUSE_BTN_MIDDLE:wxMOUSE_BTN_RIGHT );}
 
     DECLARE_EVENT_TABLE()
 };
@@ -249,6 +251,12 @@ CB_DECLARE_PLUGIN();
 //  mod     2/14/2006 3
 //          Added "Mouse sets Editor Focus" configuration item
 //
+// ----------------------------------------------------------------------------
+//  commit  v0.19 committed 2006/03/21
+// ----------------------------------------------------------------------------
+//  mod     2/25/2006
+//          1.Added "Mouse sets Editor Focus" for GTK
+//          2.Capture GTK middle mouse key immediately when used for scrolling
 // ----------------------------------------------------------------------------
 
 
