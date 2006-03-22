@@ -1,6 +1,6 @@
 /***************************************************************
  * Name:      codestat.cpp
- * Purpose:   Code::Blocks plugin
+ * Purpose:   Code::Blocks CodeStat plugin: main functions
  * Author:    Zlika
  * Created:   11/09/2005
  * Copyright: (c) Zlika
@@ -53,6 +53,8 @@ void CodeStat::OnRelease(bool appShutDown)
     // m_IsAttached will be FALSE...
 }
 
+/** Open the plugin configuration panel.
+ */
 cbConfigurationPanel* CodeStat::GetConfigurationPanel(wxWindow* parent)
 {
     // if not attached, exit
@@ -63,6 +65,9 @@ cbConfigurationPanel* CodeStat::GetConfigurationPanel(wxWindow* parent)
     return dlg;
 }
 
+/** Main function: launch the counting process.
+ *  @see CodeStatExecDlg
+ */
 int CodeStat::Execute()
 {
     // if not attached, exit

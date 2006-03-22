@@ -1,6 +1,6 @@
 /***************************************************************
  * Name:      codestatexec.cpp
- * Purpose:   Code::Blocks Profiler plugin: main window
+ * Purpose:   Code::Blocks CodeStat plugin: main window
  * Author:    Zlika
  * Created:   11/09/2005
  * Copyright: (c) Zlika
@@ -9,9 +9,13 @@
 
 #include "codestatexec.h"
 
+/** Count the lines on all project's files and display the results.
+ *  @param languages Languages definitions
+ *  @param nb_languages Number of languages defined in the 'languages' array
+ */
 int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_languages)
 {
-    int i, j, l, num_language;
+   int i, j, l, num_language;
    long int total_lines = 0;
    long int code_lines = 0;
    long int empty_lines = 0;
@@ -20,10 +24,31 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_lan
    long int nb_files = 0;
    long int nb_skipped_files = 0;
    long int nb_files_not_found = 0;
+   bool     all_files_saved;
 
    cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
    nb_files = project->GetFilesCount();
    //wxMessageBox(wxString::Format(_T("Nb files: %ld"), nb_files), _("Error"), wxOK);
+
+   // Check if all files have been saved
+   all_files_saved = true;
+   for (i=0; i<nb_files; i++)
+      if (project->GetFile(i)->GetFileState() == fvsModified)
+         all_files_saved = false;
+   // If not, ask user if we can save them
+   if (!all_files_saved)
+   {
+       if (wxMessageBox(_T("Some files are not saved.\nDo you want to save them before running the plugin?"), _("Warning"), wxICON_EXCLAMATION | wxYES_NO) == wxYES)
+       {
+           for (i=0; i<nb_files; i++)
+           {
+              if (project->GetFile(i)->GetFileState() == fvsModified)
+                 Manager::Get()->GetEditorManager()->Save(project->GetFile(i)->file.GetFullPath());
+           }
+       }
+   }
+
+   // Count code statistics on each file
    wxProgressDialog progress(_("Code Statistics plugin"),_("Parsing project files. Please wait..."));
    for (i=0; i<nb_files; i++)
    {
@@ -79,6 +104,7 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_lan
    wxStaticText* txt_Total = XRCCTRL(*this, "txt_Total", wxStaticText);
    txt_Total->SetLabel(wxString::Format(_("%ld"), total_lines));
 
+   // If the project is not empty, display the main dialog box
    if(total_lines) // avoid division by zero on empty document
    {
 		int icode = static_cast<int>(round(static_cast<double>(100 * code_lines) / static_cast<double>(total_lines)));
@@ -104,9 +130,10 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_lan
 		Gauge_Empty->SetValue(iempty);
 		wxStaticText* txt_Gauge_Empty = XRCCTRL(*this, "txt_Gauge_Empty", wxStaticText);
 		txt_Gauge_Empty->SetLabel(wxString::Format(_("%3d%% Empty"), iempty));
-   }
 
-   ShowModal();
+        ShowModal();
+   }
+   else wxMessageBox(_("The project is empty!"), _("Warning"), wxICON_EXCLAMATION | wxOK);
 
    return 0;
 }
@@ -116,6 +143,8 @@ void CodeStatExecDlg::EndModal(int retCode)
     wxDialog::EndModal(retCode);
 }
 
+/** This function analyses a given source file and count the lines of code, comments etc...
+ */
 void CodeStatExecDlg::CountLines(wxFileName filename, LanguageDef &language,
                                  long int &code_lines, long int &codecomments_lines,
                                  long int &comment_lines, long int &empty_lines, long int &total_lines)
@@ -148,6 +177,10 @@ void CodeStatExecDlg::CountLines(wxFileName filename, LanguageDef &language,
 	}
 }
 
+/** This function determines the caracteristics of a given line (code line, comment line etc...).
+ *  It is called by the "CountLines" function.
+ *  @see CountLines
+ */
 void CodeStatExecDlg::AnalyseLine(LanguageDef &language, wxString line, bool &comment, bool &code, bool &multi_line_comment)
 {
    int first_single_line_comment, first_multi_line_comment_begin, first_multi_line_comment_end;

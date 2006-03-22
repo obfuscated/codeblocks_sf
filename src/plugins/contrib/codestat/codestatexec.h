@@ -1,6 +1,6 @@
 /***************************************************************
  * Name:      codestatexec.h
- * Purpose:   Code::Blocks Profiler plugin: main window
+ * Purpose:   Code::Blocks CodeStat plugin: main window
  * Author:    Zlika
  * Created:   11/09/2005
  * Copyright: (c) Zlika
@@ -27,16 +27,18 @@
 #include <messagemanager.h>
 #include "language_def.h"
 
+/** This class computes the statistics of the project's files and display them.
+ *  @see CodeStat, CodeStatConfigDlg, CodeStatExecDlg, LanguageDef
+ */
 class CodeStatExecDlg : public wxDialog
 {
 	public:
-		CodeStatExecDlg(wxWindow* parent)
-            : parent(parent){}
+		CodeStatExecDlg(wxWindow* parent) : parent(parent){}
 		virtual ~CodeStatExecDlg();
 		int Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_languages);
 	protected:
       void EndModal(int retCode);
-   private:
+    private:
       void CountLines(wxFileName filename, LanguageDef &language,
                       long int &code_lines, long int &codecomments_lines,
                       long int &comment_lines, long int &empty_lines, long int &total_lines);

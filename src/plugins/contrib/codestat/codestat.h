@@ -1,6 +1,6 @@
 /***************************************************************
  * Name:      codestat.h
- * Purpose:   Code::Blocks plugin
+ * Purpose:   Code::Blocks CodeStat plugin: main functions
  * Author:    Zlika
  * Created:   11/09/2005
  * Copyright: (c) Zlika
@@ -35,6 +35,9 @@
 #include "codestatconfig.h"
 #include "language_def.h"
 
+/** Main class for the Code Statistics plugin.
+ *  @see CodeStatConfigDlg, CodeStatExecDlg, LanguageDef
+ */
 class CodeStat : public cbToolPlugin
 {
 	public:

@@ -1,14 +1,12 @@
 /***************************************************************
  * Name:      codestatconfig.cpp
- * Purpose:   Code::Blocks plugin
+ * Purpose:   Code::Blocks CodeStat plugin: configuration window
  * Author:    Zlika
  * Created:   11/09/2005
  * Copyright: (c) Zlika
  * License:   GPL
  **************************************************************/
 
-#include "manager.h"
-#include "configmanager.h"
 #include "codestatconfig.h"
 
 BEGIN_EVENT_TABLE (CodeStatConfigDlg, wxPanel)
@@ -18,6 +16,8 @@ EVT_BUTTON(XRCID("btn_Remove"), CodeStatConfigDlg::Remove)
 EVT_BUTTON(XRCID("btn_Default"), CodeStatConfigDlg::RestoreDefault)
 END_EVENT_TABLE ()
 
+/** Load the language settings and display the configuration dialog.
+ */
 CodeStatConfigDlg::CodeStatConfigDlg(wxWindow* parent)
 {
     wxXmlResource::Get()->LoadPanel(this, parent, _("dlgCodeStatConfig"));
@@ -28,7 +28,8 @@ CodeStatConfigDlg::CodeStatConfigDlg(wxWindow* parent)
     ReInitDialog();
 }
 
-// Re-init the combobox and text fields
+/** Re-init the combobox and text fields of the configuration dialog.
+ */
 void CodeStatConfigDlg::ReInitDialog()
 {
     // Clear text fields and combobox
@@ -63,6 +64,8 @@ CodeStatConfigDlg::~CodeStatConfigDlg()
 {
 }
 
+/** Save all the languages settings.
+ */
 void CodeStatConfigDlg::SaveSettings()
 {
     ConfigManager* cfg;
@@ -90,14 +93,16 @@ void CodeStatConfigDlg::SaveSettings()
     }
 }
 
-// Save the current language settings and print the caracteristics for the language selected
+/** Save the current language settings and print the caracteristics for the language selected.
+ */
 void CodeStatConfigDlg::ComboBoxEvent(wxCommandEvent & event)
 {
     SaveCurrentLanguage();
 	PrintLanguageInfo(event.GetSelection());
 }
 
-// Save the current language settings
+/** Save the current language settings.
+ */
 void CodeStatConfigDlg::SaveCurrentLanguage()
 {
     if (selected_language >= 0)
@@ -115,7 +120,9 @@ void CodeStatConfigDlg::SaveCurrentLanguage()
     }
 }
 
-// Save the current language settings and print the caracteristics for the language number "id"
+/** Save the current language settings and print the caracteristics for the language number "id".
+ *  @param id Number of the language to display
+ */
 void CodeStatConfigDlg::PrintLanguageInfo(int id)
 {
     selected_language = id;
@@ -132,7 +139,8 @@ void CodeStatConfigDlg::PrintLanguageInfo(int id)
 	txt_MultiLineCommentEnd->SetLabel(languages[id].multiple_line_comment[1]);
 }
 
-// Add configuration for a new language
+/** Add configuration for a new language.
+ */
 void CodeStatConfigDlg::Add(wxCommandEvent& event)
 {
    wxTextEntryDialog dialog(this, _("Enter name of the new language:"), _("New language"), _T(""), wxOK|wxCANCEL);
@@ -160,7 +168,8 @@ void CodeStatConfigDlg::Add(wxCommandEvent& event)
    }
 }
 
-// Remove the selected language from the list
+/** Remove the selected language from the list.
+ */
 void CodeStatConfigDlg::Remove(wxCommandEvent& event)
 {
     if (nb_languages > 0)
@@ -178,13 +187,16 @@ void CodeStatConfigDlg::Remove(wxCommandEvent& event)
     }
 }
 
-// Restore the default settings
+/** Restore the default settings.
+ */
 void CodeStatConfigDlg::RestoreDefault(wxCommandEvent& event)
 {
     nb_languages = LoadDefaultSettings(languages);
     ReInitDialog();
 }
 
+/** Load the default languages settings.
+ */
 int LoadDefaultSettings(LanguageDef languages[NB_FILETYPES_MAX])
 {
     int nb_languages = 7;
@@ -250,7 +262,10 @@ int LoadDefaultSettings(LanguageDef languages[NB_FILETYPES_MAX])
     return nb_languages;
 }
 
-// Load the definition of the comments for each language
+/** Load the definition of the comments for each language.
+ *  @param languages Array of languages.
+ *  @see LanguageDef
+ */
 int LoadSettings(LanguageDef languages[NB_FILETYPES_MAX])
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("codestat"));

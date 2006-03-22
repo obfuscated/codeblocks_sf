@@ -1,6 +1,6 @@
 /***************************************************************
  * Name:      codestatconfig.h
- * Purpose:   Code::Blocks plugin
+ * Purpose:   Code::Blocks CodeStat plugin: configuration window
  * Author:    Zlika
  * Created:   11/09/2005
  * Copyright: (c) Zlika
@@ -19,10 +19,15 @@
 #include <wx/tokenzr.h>
 #include <wx/textdlg.h>
 #include "language_def.h"
+#include "manager.h"
+#include "configmanager.h"
 
 int LoadSettings(LanguageDef languages[NB_FILETYPES_MAX]);
 int LoadDefaultSettings(LanguageDef languages[NB_FILETYPES_MAX]);
 
+/** This class manages the plugin's settings and display them.
+ *  @see CodeStat, CodeStatExecDlg, LanguageDef
+ */
 class CodeStatConfigDlg : public cbConfigurationPanel
 {
 	public:
@@ -45,9 +50,9 @@ class CodeStatConfigDlg : public cbConfigurationPanel
       virtual void OnCancel(){}
 
 	private:
-	   LanguageDef languages[NB_FILETYPES_MAX];
-	   int nb_languages;
-	   int selected_language;
+	   LanguageDef languages[NB_FILETYPES_MAX]; /**< Languages settings. */
+	   int nb_languages;                        /**< Number of languages defined in 'languages'. */
+	   int selected_language;                   /**< Language currently selected in the combo-box. */
       DECLARE_EVENT_TABLE()
 };
 
