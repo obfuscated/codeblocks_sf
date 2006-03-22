@@ -101,6 +101,36 @@ bool ProjectLoader::Open(const wxString& filename)
                             _("Warning"),
                             wxICON_WARNING);
         }
+        else
+        {
+            // use one message for all changes
+            wxString msg;
+
+            // 1.3 -> 1.4: updated custom build command per-project file
+            if (major == 1 && minor == 3)
+            {
+                msg << _("1.3 to 1.4: changed the way custom file build commands are stored (no auto-conversion).\n");
+            }
+
+            if (!msg.IsEmpty())
+            {
+                m_Upgraded = true;
+                msg.Prepend(wxString::Format(_("Project file format is older (%d.%d) than the current format (%d.%d).\n"
+                                                "The file will automatically be upgraded on save.\n"
+                                                "But please read the following list of changes, as some of them "
+                                                "might not automatically convert existing (old) settings.\n"
+                                                "If you don't understand what a change means, you probably don't "
+                                                "use that feature so you don't have to worry about it.\n\n"
+                                                "List of changes:\n"),
+                                            major,
+                                            minor,
+                                            PROJECT_FILE_VERSION_MAJOR,
+                                            PROJECT_FILE_VERSION_MINOR));
+                wxMessageBox(msg,
+                            _("Project file format changed"),
+                            wxICON_WARNING);
+            }
+        }
     }
 
     DoProjectOptions(proj);

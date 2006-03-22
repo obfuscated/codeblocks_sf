@@ -5,7 +5,7 @@
 #include "ibaseloader.h"
 
 #define PROJECT_FILE_VERSION_MAJOR 1
-#define PROJECT_FILE_VERSION_MINOR 3
+#define PROJECT_FILE_VERSION_MINOR 4
 
 class cbProject;
 class ProjectBuildTarget;
