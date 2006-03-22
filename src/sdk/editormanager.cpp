@@ -100,6 +100,7 @@ static const int idNBTabCloseAll = wxNewId();
 static const int idNBTabCloseAllOthers = wxNewId();
 static const int idNBTabSave = wxNewId();
 static const int idNBTabSaveAll = wxNewId();
+static const int idNBSwapHeaderSource = wxNewId();
 static const int idNBTabTop = wxNewId();
 static const int idNBTabBottom = wxNewId();
 static const int idNB = wxNewId();
@@ -173,6 +174,7 @@ BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
     EVT_MENU(idNBTabCloseAllOthers, EditorManager::OnCloseAllOthers)
     EVT_MENU(idNBTabSave, EditorManager::OnSave)
     EVT_MENU(idNBTabSaveAll, EditorManager::OnSaveAll)
+    EVT_MENU(idNBSwapHeaderSource, EditorManager::OnSwapHeaderSource)
     EVT_MENU(idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles)
 #ifdef USE_OPENFILES_TREE
     EVT_UPDATE_UI(ID_EditorManager, EditorManager::OnUpdateUI)
@@ -1752,6 +1754,8 @@ void EditorManager::OnPageContextMenu(wxFlatNotebookEvent& event)
     pop->Append(idNBTabSave, _("Save"));
     pop->Append(idNBTabSaveAll, _("Save all"));
     pop->AppendSeparator();
+    pop->Append(idNBSwapHeaderSource, _("Swap header/source"));
+    pop->AppendSeparator();
     pop->Append(idNBTabTop, _("Tabs at top"));
     pop->Append(idNBTabBottom, _("Tabs at bottom"));
 
@@ -1797,6 +1801,11 @@ void EditorManager::OnSave(wxCommandEvent& event)
 void EditorManager::OnSaveAll(wxCommandEvent& event)
 {
     Manager::Get()->GetEditorManager()->SaveAll();
+}
+
+void EditorManager::OnSwapHeaderSource(wxCommandEvent& event)
+{
+    Manager::Get()->GetEditorManager()->SwapActiveHeaderSource();
 }
 
 void EditorManager::OnTabPosition(wxCommandEvent& event)

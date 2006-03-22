@@ -342,11 +342,12 @@ void MessageManager::ShowLog(MessageLog* log, bool show)
     if (show && !ls->visible)
     {
         // show
-        // InsertPage() suffers from the same bug Remove() suffered (split-window-like bug)
-//        m_pNotebook->InsertPage(id, log, ls->title, false);
-        m_pNotebook->AddPage(log, ls->title, false);
+        m_pNotebook->InsertPage(id, log, ls->title, false);
+
         SetLogImage(id, ls->bitmap);
         ls->visible = true;
+
+        log->Show(false);
 
         if (id == m_DebugLog)
             cfg->Write(_T("/has_debug_log"), (bool)true);

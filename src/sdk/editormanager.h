@@ -140,6 +140,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void OnCloseAllOthers(wxCommandEvent& event);
         void OnSave(wxCommandEvent& event);
         void OnSaveAll(wxCommandEvent& event);
+        void OnSwapHeaderSource(wxCommandEvent& event);
         void OnTabPosition(wxCommandEvent& event);
         void OnAppDoneStartup(wxCommandEvent& event);
         void OnAppStartShutdown(wxCommandEvent& event);

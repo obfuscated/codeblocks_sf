@@ -1595,6 +1595,43 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
     return 0;
 }
 
+int CompilerGCC::DistClean(const wxString& target)
+{
+    if (!CheckProject())
+        return -1;
+    return DistClean(m_Project->GetBuildTarget(target.IsEmpty() ? m_LastTargetName : target));
+}
+
+int CompilerGCC::DistClean(ProjectBuildTarget* target)
+{
+    // make sure all project files are saved
+    if (m_Project && !m_Project->SaveAllFiles())
+        Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
+
+	DoPrepareQueue();
+	if (!CompilerValid(target))
+		return -1;
+
+//	Manager::Get()->GetMacrosManager()->Reset();
+
+    if (m_Project)
+        wxSetWorkingDirectory(m_Project->GetBasePath());
+    CompilerFactory::GetCompiler(m_CompilerId)->Init(m_Project);
+
+    if (UseMake(target))
+    {
+        wxString cmd = GetMakeCommandFor(mcDistClean, target);
+        m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_Project, target));
+        return DoRunQueue();
+    }
+    else
+    {
+        NotImplemented(_T("CompilerGCC::Distclean() without a custom Makefile"));
+        return -1;
+    }
+    return 0;
+}
+
 void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
 {
     cbMessageBox(_("This functionality has been temporarily removed from Code::Blocks.\n"

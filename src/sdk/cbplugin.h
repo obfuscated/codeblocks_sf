@@ -234,6 +234,19 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
         /** Same as Clean(ProjectBuildTarget*) but with a wxString argument. */
         virtual int Clean(const wxString& target) = 0;
 
+		/** @brief DistClean the project/target.
+		  *
+		  * DistClean will typically remove any config files
+		  * and anything else that got created as part of
+		  * building a software package.
+		  *
+		  * @param target The specific build target to "distclean". If NULL, it
+		  * cleans all the build targets of the current project.
+		  */
+        virtual int DistClean(ProjectBuildTarget* target = 0L) = 0;
+        /** Same as DistClean(ProjectBuildTarget*) but with a wxString argument. */
+        virtual int DistClean(const wxString& target) = 0;
+
 		/** @brief Build the project/target.
 		  *
 		  * @param target The specific build target to build. If NULL, it
