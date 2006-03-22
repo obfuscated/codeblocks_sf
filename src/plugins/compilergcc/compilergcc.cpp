@@ -1632,7 +1632,7 @@ void CompilerGCC::InitBuildState(BuildJob job, const wxString& target)
     m_BuildJob = job;
     m_BuildStateTargetIsAll = ftgt.IsEmpty() || ftgt.Lower() == _("all");
     m_BuildState = bsNone;
-    m_NextBuildState = !m_BuildStateTargetIsAll ? bsTargetPreBuild : bsProjectPreBuild;
+    m_NextBuildState = bsProjectPreBuild;
     m_pBuildingProject = Manager::Get()->GetProjectManager()->GetActiveProject();
     m_pLastBuildingProject = 0;
     m_pLastBuildingTarget = 0;
