@@ -57,6 +57,7 @@
 #include "filegroupsandmasks.h"
 #include "filefilters.h"
 #include "importers_globals.h"
+#include "annoyingdialog.h"
 
 // class constructor
 cbProject::cbProject(const wxString& filename)
@@ -347,7 +348,12 @@ void cbProject::Open()
             wxString msg;
             msg.Printf(_("The project file of \"%s\" needs to be updated to the latest format.\n"
                         "This will happen automatically when you save the project."), m_Title.c_str());
-            cbMessageBox(msg, _("Information"), wxICON_INFORMATION);
+            AnnoyingDialog dlg(_("Project file format will be updated on save"),
+                                msg,
+                                wxART_INFORMATION,
+                                AnnoyingDialog::OK,
+                                wxID_OK);
+            dlg.ShowModal();
         }
 	}
 	else

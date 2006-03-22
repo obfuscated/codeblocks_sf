@@ -30,6 +30,7 @@
 
 #include "projectloader.h"
 #include "projectloader_hooks.h"
+#include "annoyingdialog.h"
 
 ProjectLoader::ProjectLoader(cbProject* project)
     : m_pProject(project),
@@ -96,10 +97,13 @@ bool ProjectLoader::Open(const wxString& filename)
         else if (major >= PROJECT_FILE_VERSION_MAJOR && minor > PROJECT_FILE_VERSION_MINOR)
         {
             pMsg->DebugLog(_T("Project version is > %d.%d. Trying to load..."), PROJECT_FILE_VERSION_MAJOR, PROJECT_FILE_VERSION_MINOR);
-            cbMessageBox(_("This project file was saved with a newer version of Code::Blocks.\n"
-                            "Will try to load, but you should make sure all the settings were loaded correctly..."),
-                            _("Warning"),
-                            wxICON_WARNING);
+            AnnoyingDialog dlg(_("Project file format is newer/unknown"),
+                                _("This project file was saved with a newer version of Code::Blocks.\n"
+                                "Will try to load, but you should make sure all the settings were loaded correctly..."),
+                                wxART_WARNING,
+                                AnnoyingDialog::OK,
+                                wxID_OK);
+            dlg.ShowModal();
         }
         else
         {
@@ -126,9 +130,12 @@ bool ProjectLoader::Open(const wxString& filename)
                                             minor,
                                             PROJECT_FILE_VERSION_MAJOR,
                                             PROJECT_FILE_VERSION_MINOR));
-                wxMessageBox(msg,
-                            _("Project file format changed"),
-                            wxICON_WARNING);
+                AnnoyingDialog dlg(_("Project file format changed"),
+                                    msg,
+                                    wxART_WARNING,
+                                    AnnoyingDialog::OK,
+                                    wxID_OK);
+                dlg.ShowModal();
             }
         }
     }
