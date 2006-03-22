@@ -325,10 +325,8 @@ void Register_ProjectFile(asIScriptEngine* engine)
     engine->RegisterObjectProperty("ProjectFile", "bool compile", offsetof(ProjectFile, compile));
     engine->RegisterObjectProperty("ProjectFile", "bool link", offsetof(ProjectFile, link));
     engine->RegisterObjectProperty("ProjectFile", "uint16 weight", offsetof(ProjectFile, weight));
-    engine->RegisterObjectProperty("ProjectFile", "wxString buildCommand", offsetof(ProjectFile, buildCommand));
-    engine->RegisterObjectProperty("ProjectFile", "bool useCustomBuildCommand", offsetof(ProjectFile, useCustomBuildCommand));
-    engine->RegisterObjectProperty("ProjectFile", "bool autoDeps", offsetof(ProjectFile, autoDeps));
-    engine->RegisterObjectProperty("ProjectFile", "wxString customDeps", offsetof(ProjectFile, customDeps));
+//    engine->RegisterObjectProperty("ProjectFile", "wxString buildCommand", offsetof(ProjectFile, buildCommand));
+//    engine->RegisterObjectProperty("ProjectFile", "bool useCustomBuildCommand", offsetof(ProjectFile, useCustomBuildCommand));
     engine->RegisterObjectProperty("ProjectFile", "wxString compilerVar", offsetof(ProjectFile, compilerVar));
 }
 

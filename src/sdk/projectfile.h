@@ -16,6 +16,14 @@ class pfDetails;
 
 WX_DECLARE_HASH_MAP(ProjectBuildTarget*, pfDetails*, wxPointerHash, wxPointerEqual, PFDMap);
 
+struct pfCustomBuild
+{
+    pfCustomBuild() : useCustomBuildCommand(false) {}
+    wxString buildCommand;
+    bool useCustomBuildCommand;
+};
+WX_DECLARE_HASH_MAP(wxString, pfCustomBuild, wxStringHash, wxStringEqual, pfCustomBuildMap);
+
 /** Represents a file in a Code::Blocks project. */
 class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
 {
@@ -114,17 +122,8 @@ class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
 		/** The position of the editor-tab for this file. */
 		int editorTabPos; // layout info
 
-        /** A custom build command for this file. @c useCustomBuildCommand must be true for this to be used. */
-        wxString buildCommand;
-
-        /** If true, @c buildCommand is used. */
-        bool useCustomBuildCommand;
-
-        /** DEPRECATED: A custom command to generate dependencies for this file. */
-        wxString customDeps;
-
-        /** DEPRECATED: If true, @c customDeps is used for dependencies generation. */
-        bool autoDeps;
+        /** A map for custom builds. Key is compiler ID, value is pfCustomBuild struct. */
+        pfCustomBuildMap customBuild;
 
         /** The compiler variable used for this file (e.g CPP, CC, etc). */
         wxString compilerVar;

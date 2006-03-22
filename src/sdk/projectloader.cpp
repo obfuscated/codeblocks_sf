@@ -707,29 +707,16 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
         if (node->QueryIntAttribute("weight", &tempval) == TIXML_SUCCESS)
             file->weight = tempval;
         //
-        if (node->QueryIntAttribute("useBuildCommand", &tempval) == TIXML_SUCCESS)
-            file->useCustomBuildCommand = tempval != 0;
-        //
-        if (node->Attribute("buildCommand"))
+        if (node->Attribute("buildCommand") && node->Attribute("compiler"))
         {
+            wxString cmp = cbC2U(node->Attribute("compiler"));
             wxString tmp = cbC2U(node->Attribute("buildCommand"));
-            if (!tmp.IsEmpty())
+            if (!cmp.IsEmpty() && !tmp.IsEmpty())
             {
                 tmp.Replace(_T("\\n"), _T("\n"));
-                file->buildCommand = tmp;
-            }
-        }
-        //
-        if (node->QueryIntAttribute("autoDeps", &tempval) == TIXML_SUCCESS)
-            file->autoDeps = tempval != 0;
-        //
-        if (node->Attribute("customDeps"))
-        {
-            wxString tmp = cbC2U(node->Attribute("customDeps"));
-            if (!tmp.IsEmpty())
-            {
-                tmp.Replace(_T("\\n"), _T("\n"));
-                file->customDeps = tmp;
+                file->customBuild[cmp].buildCommand = tmp;
+                if (node->QueryIntAttribute("use", &tempval) == TIXML_SUCCESS)
+                    file->customBuild[cmp].useCustomBuildCommand = tempval != 0;
             }
         }
         //
@@ -1014,20 +1001,21 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             AddElement(unitnode, "Option", "link", 0);
         if (f->weight != 50)
             AddElement(unitnode, "Option", "weight", f->weight);
-        if (f->useCustomBuildCommand)
-            AddElement(unitnode, "Option", "useBuildCommand", 1);
-        if (!f->buildCommand.IsEmpty())
+
+        // loop and save custom build commands
+        for (pfCustomBuildMap::iterator it = f->customBuild.begin(); it != f->customBuild.end(); ++it)
         {
-            f->buildCommand.Replace(_T("\n"), _T("\\n"));
-            AddElement(unitnode, "Option", "buildCommand", f->buildCommand);
+            pfCustomBuild& pfcb = it->second;
+            if (!pfcb.buildCommand.IsEmpty())
+            {
+                wxString tmp = pfcb.buildCommand;
+                tmp.Replace(_T("\n"), _T("\\n"));
+                TiXmlElement* elem = AddElement(unitnode, "Option", "compiler", it->first);
+                elem->SetAttribute("use", pfcb.useCustomBuildCommand ? "1" : "0");
+                elem->SetAttribute("buildCommand", cbU2C(tmp));
+            }
         }
-        if (!f->autoDeps)
-            AddElement(unitnode, "Option", "autoDeps", 0);
-        if (!f->customDeps.IsEmpty())
-        {
-            f->customDeps.Replace(_T("\n"), _T("\\n"));
-            AddElement(unitnode, "Option", "customDeps", f->customDeps);
-        }
+
         if (!f->GetObjName().IsEmpty())
         {
             wxFileName tmp(f->GetObjName());

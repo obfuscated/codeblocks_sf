@@ -587,8 +587,6 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 	f->editorOpen = false;
 	f->editorPos = 0;
 	f->editorTopLine = 0;
-	f->useCustomBuildCommand = false;
-	f->autoDeps = true;
     f->weight = weight;
 
 	FileType ft = FileTypeOf(filename);

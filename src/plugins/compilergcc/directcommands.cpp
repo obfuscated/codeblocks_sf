@@ -172,8 +172,9 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
     wxString compilerCmd;
     if (!isHeader || compiler->GetSwitches().supportsPCH)
     {
-        compilerCmd = pf->useCustomBuildCommand
-                        ? pf->buildCommand
+        pfCustomBuild& pcfb = pf->customBuild[compiler->GetID()];
+        compilerCmd = pcfb.useCustomBuildCommand
+                        ? pcfb.buildCommand
                         : compiler->GetCommand(isResource ? ctCompileResourceCmd : ctCompileObjectCmd);
         compiler->GenerateCommandLine(compilerCmd,
                                          target,
@@ -365,19 +366,8 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     {
         ProjectFile* pf = files[i];
         const pfDetails& pfd = pf->GetFileDetails(target);
-        bool doBuild = false;
 
-        if (pf->autoDeps)
-            doBuild = force || IsObjectOutdated(pfd);
-        else
-        {
-            wxString msg;
-            msg.Printf(_("File %s has custom dependencies set."
-                        "This feature only works when using GNU \"make\""
-                        "for the build process..."), pfd.source_file_native.c_str());
-            ret.Add(wxString(COMPILER_SIMPLE_LOG) + msg);
-        }
-        if (doBuild)
+        if (force || IsObjectOutdated(pfd))
         {
             // compile file
             wxArrayString filecmd = GetCompileFileCommand(target, pf);

@@ -1396,13 +1396,13 @@ void MakefileGenerator::DoAddMakefileTarget_Link(wxString& buffer)
         {
 			buffer << _T("$(") << target->GetTitle() << _T("_BIN) ");
             // add all custom-built files that do *not* link
-            int filesCount = (int)m_Files.GetCount();
-            for (int i = 0; i < filesCount; ++i)
-            {
-                ProjectFile* pf = m_Files[i];
-                if (pf->useCustomBuildCommand && !pf->link)
-                    buffer << pf->relativeFilename << _T(" ");
-            }
+//            int filesCount = (int)m_Files.GetCount();
+//            for (int i = 0; i < filesCount; ++i)
+//            {
+//                ProjectFile* pf = m_Files[i];
+//                if (pf->useCustomBuildCommand && !pf->link)
+//                    buffer << pf->relativeFilename << _T(" ");
+//            }
         }
 		buffer << target->GetTitle() << _T("-after") << _T('\n');
 		buffer << _T('\n');
@@ -1557,68 +1557,68 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                         depfiles.Index(d_file) == wxNOT_FOUND)
                     {
                         depfiles.Add(d_file);
-                        if (pf->autoDeps)
-                        {
-                            // depend rule
-                            buffer << d_file << _T(": ") << c_file << _T('\n');
-                            if (m_CompilerSet->GetSwitches().logging == clogSimple)
-                                buffer << _T('\t') << _T("@echo Calculating dependencies for \"") << pf->relativeFilename << _T("\"...") << _T('\n');
-                            // gather all object files generated from this source file (multiple targets case)
-                            wxString tmpdep;
-                            for (unsigned int i = 0; i < pf->buildTargets.GetCount(); ++i)
-                            {
-                                ProjectBuildTarget* tmptarget = m_Project->GetBuildTarget(pf->buildTargets[i]);
-                                if (tmptarget)
-                                    tmpdep << GetObjectFile(pf, tmptarget) << _T(',');
-                            }
-                            if (tmpdep.Last() == _T(','))
-                                tmpdep.RemoveLast();
-                            wxString compilerCmd = ReplaceCompilerMacros(ctGenDependenciesCmd, pf->compilerVar, target, c_file, tmpdep, d_file);
-                            if (!compilerCmd.IsEmpty())
-                                buffer << _T('\t') << m_Quiet << compilerCmd << _T('\n');
-                            buffer << _T('\n');
-                        }
-                        else if (!pf->customDeps.IsEmpty())
-                        {
-                            // custom depend rule
-                            wxString customDeps = pf->customDeps;
-                            ReplaceMacros(target, pf, customDeps);
-
-                            buffer << d_file << _T(": ") << c_file << _T('\n');
-                            if (m_CompilerSet->GetSwitches().logging == clogSimple)
-                                buffer << _T('\t') << _T("@echo Generating dependencies for \"") << pf->relativeFilename << _T("\"... (custom dependencies)") << _T('\n');
-                            buffer << _T('\t') << m_Quiet << customDeps << _T('\n');
-                            buffer << _T('\n');
-                        }
+//                        if (pf->autoDeps)
+//                        {
+//                            // depend rule
+//                            buffer << d_file << _T(": ") << c_file << _T('\n');
+//                            if (m_CompilerSet->GetSwitches().logging == clogSimple)
+//                                buffer << _T('\t') << _T("@echo Calculating dependencies for \"") << pf->relativeFilename << _T("\"...") << _T('\n');
+//                            // gather all object files generated from this source file (multiple targets case)
+//                            wxString tmpdep;
+//                            for (unsigned int i = 0; i < pf->buildTargets.GetCount(); ++i)
+//                            {
+//                                ProjectBuildTarget* tmptarget = m_Project->GetBuildTarget(pf->buildTargets[i]);
+//                                if (tmptarget)
+//                                    tmpdep << GetObjectFile(pf, tmptarget) << _T(',');
+//                            }
+//                            if (tmpdep.Last() == _T(','))
+//                                tmpdep.RemoveLast();
+//                            wxString compilerCmd = ReplaceCompilerMacros(ctGenDependenciesCmd, pf->compilerVar, target, c_file, tmpdep, d_file);
+//                            if (!compilerCmd.IsEmpty())
+//                                buffer << _T('\t') << m_Quiet << compilerCmd << _T('\n');
+//                            buffer << _T('\n');
+//                        }
+//                        else if (!pf->customDeps.IsEmpty())
+//                        {
+//                            // custom depend rule
+//                            wxString customDeps = pf->customDeps;
+//                            ReplaceMacros(target, pf, customDeps);
+//
+//                            buffer << d_file << _T(": ") << c_file << _T('\n');
+//                            if (m_CompilerSet->GetSwitches().logging == clogSimple)
+//                                buffer << _T('\t') << _T("@echo Generating dependencies for \"") << pf->relativeFilename << _T("\"... (custom dependencies)") << _T('\n');
+//                            buffer << _T('\t') << m_Quiet << customDeps << _T('\n');
+//                            buffer << _T('\n');
+//                        }
                     }
                     else
                         d_file = UnixFilename(pf->relativeFilename); // for compilers that don't need deps, use .cpp file
 
-					if (pf->useCustomBuildCommand)
-					{
-						// custom build command
-                        wxString customBuild = pf->buildCommand;
-                        ReplaceMacros(target, pf, customBuild);
-                        wxString obj_file = target->GetObjectOutput() + wxFILE_SEP_PATH + pf->GetObjName();
-                        ConvertToMakefileFriendly(obj_file);
-						buffer << obj_file << _T(": ") << d_file << _T('\n');
-                        if (m_CompilerSet->GetSwitches().logging == clogSimple)
-							buffer << _T('\t') << _T("@echo Compiling \"") << pf->relativeFilename << _T("\" (custom command)...") << _T('\n');
-						buffer << _T('\t') << m_Quiet << customBuild << _T('\n');
-						buffer << _T('\n');
-					}
-					else
-					{
-						// compile rule
-						buffer << o_file << _T(": ") << d_file << _T('\n');
-                        if (m_CompilerSet->GetSwitches().logging == clogSimple)
-							buffer << _T('\t') << _T("@echo Compiling \"") << pf->relativeFilename << _T("\"...") << _T('\n');
-//                        AddCreateSubdir(buffer, target->GetBasePath(), pf->GetObjName(), target->GetObjectOutput());
-						wxString compilerCmd = ReplaceCompilerMacros(ctCompileObjectCmd, pf->compilerVar, target, c_file, o_file, d_file);
-						if (!compilerCmd.IsEmpty())
-                            buffer << _T('\t') << m_Quiet << compilerCmd << _T('\n');
-						buffer << _T('\n');
-					}
+//					if (pf->useCustomBuildCommand)
+//					{
+//						// custom build command
+//                        wxString customBuild = pf->buildCommand;
+//                        ReplaceMacros(target, pf, customBuild);
+//                        wxString obj_file = target->GetObjectOutput() + wxFILE_SEP_PATH + pf->GetObjName();
+//                        ConvertToMakefileFriendly(obj_file);
+//						buffer << obj_file << _T(": ") << d_file << _T('\n');
+//                        if (m_CompilerSet->GetSwitches().logging == clogSimple)
+//							buffer << _T('\t') << _T("@echo Compiling \"") << pf->relativeFilename << _T("\" (custom command)...") << _T('\n');
+//						buffer << _T('\t') << m_Quiet << customBuild << _T('\n');
+//						buffer << _T('\n');
+//					}
+//					else
+//					{
+//						// compile rule
+//						buffer << o_file << _T(": ") << d_file << _T('\n');
+//                        if (m_CompilerSet->GetSwitches().logging == clogSimple)
+//							buffer << _T('\t') << _T("@echo Compiling \"") << pf->relativeFilename << _T("\"...") << _T('\n');
+////                        AddCreateSubdir(buffer, target->GetBasePath(), pf->GetObjName(), target->GetObjectOutput());
+//						wxString compilerCmd = ReplaceCompilerMacros(ctCompileObjectCmd, pf->compilerVar, target, c_file, o_file, d_file);
+//						if (!compilerCmd.IsEmpty())
+//                            buffer << _T('\t') << m_Quiet << compilerCmd << _T('\n');
+//						buffer << _T('\n');
+//					}
                 }
                 else
                 {

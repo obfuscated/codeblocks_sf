@@ -30,6 +30,7 @@
     #include "cbproject.h"
     #include <wx/xrc/xmlres.h>
     #include <wx/intl.h>
+    #include <wx/choice.h>
     #include <wx/checkbox.h>
     #include <wx/textctrl.h>
     #include <wx/button.h>
@@ -43,6 +44,7 @@
 #include <wx/textfile.h>
 
 BEGIN_EVENT_TABLE(ProjectFileOptionsDlg, wxDialog)
+	EVT_CHOICE(-1, ProjectFileOptionsDlg::OnCompilerCombo)
 	EVT_UPDATE_UI(-1, ProjectFileOptionsDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
@@ -148,9 +150,10 @@ void CountLines(wxFileName filename, const LanguageDef &language,
 
 
 ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
-	: m_ProjectFile(pf)
+	: m_ProjectFile(pf),
+	m_LastBuildStageCompilerSel(-1)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgProjectFileOptionsWRK"));
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgProjectFileOptions"));
 
 	if (pf)
 	{
@@ -217,8 +220,8 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 		XRCCTRL(*this, "chkLink", wxCheckBox)->SetValue(pf->link);
 		XRCCTRL(*this, "sliderWeight", wxSlider)->SetValue(pf->weight);
 		XRCCTRL(*this, "txtObjName", wxTextCtrl)->SetValue(pf->GetObjName());
-		XRCCTRL(*this, "chkBuildStage", wxCheckBox)->SetValue(pf->useCustomBuildCommand);
-		XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->SetValue(pf->buildCommand);
+        FillCompilers();
+        UpdateBuildCommand();
 
 		XRCCTRL(*this, "txtProject", wxTextCtrl)->SetValue(prj?(prj->GetTitle() + _T("\n") + prj->GetFilename()):_T("-"));
 		XRCCTRL(*this, "txtAbsName", wxTextCtrl)->SetValue(pf->file.GetFullPath());
@@ -234,6 +237,59 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 
 ProjectFileOptionsDlg::~ProjectFileOptionsDlg()
 {
+}
+
+void ProjectFileOptionsDlg::FillCompilers()
+{
+    // fill compilers combo
+    wxChoice* cmb = XRCCTRL(*this, "cmbBuildStageCompiler", wxChoice);
+    cmb->Clear();
+    for (unsigned int i = 0; i < CompilerFactory::GetCompilersCount(); ++i)
+    {
+        cmb->Append(CompilerFactory::GetCompiler(i)->GetName());
+    }
+    // select default compiler
+    m_LastBuildStageCompilerSel = CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompilerID());
+    cmb->SetSelection(m_LastBuildStageCompilerSel);
+}
+
+void ProjectFileOptionsDlg::UpdateBuildCommand()
+{
+    wxChoice* cmb = XRCCTRL(*this, "cmbBuildStageCompiler", wxChoice);
+    int idx = cmb->GetSelection();
+    Compiler* compiler = CompilerFactory::GetCompiler(idx);
+
+    FileType ft = FileTypeOf(m_ProjectFile->relativeFilename);
+    wxString cmd;
+    if (ft == ftResource)
+        cmd = compiler->GetCommand(ctCompileResourceCmd);
+    else if (ft == ftSource || ft == ftHeader)
+        cmd = compiler->GetCommand(ctCompileObjectCmd);
+    XRCCTRL(*this, "lblBuildCommand", wxStaticText)->SetLabel(_("Default: ") + cmd);
+    Layout();
+
+    XRCCTRL(*this, "chkBuildStage", wxCheckBox)->SetValue(m_ProjectFile->customBuild[compiler->GetID()].useCustomBuildCommand);
+    XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->SetValue(m_ProjectFile->customBuild[compiler->GetID()].buildCommand);
+}
+
+void ProjectFileOptionsDlg::SaveBuildCommandSelection()
+{
+    Compiler* compiler = CompilerFactory::GetCompiler(m_LastBuildStageCompilerSel);
+    m_ProjectFile->customBuild[compiler->GetID()].useCustomBuildCommand = XRCCTRL(*this, "chkBuildStage", wxCheckBox)->GetValue();
+    m_ProjectFile->customBuild[compiler->GetID()].buildCommand = XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->GetValue();
+}
+
+void ProjectFileOptionsDlg::OnCompilerCombo(wxCommandEvent& event)
+{
+    if (m_LastBuildStageCompilerSel != event.GetSelection())
+    {
+        // first save old selection
+        SaveBuildCommandSelection();
+        m_LastBuildStageCompilerSel = event.GetSelection();
+
+        // then load new selection
+        UpdateBuildCommand();
+    }
 }
 
 void ProjectFileOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
@@ -271,8 +327,7 @@ void ProjectFileOptionsDlg::EndModal(int retCode)
         m_ProjectFile->link = XRCCTRL(*this, "chkLink", wxCheckBox)->GetValue();
         m_ProjectFile->weight = XRCCTRL(*this, "sliderWeight", wxSlider)->GetValue();
     //	m_ProjectFile->SetObjName(XRCCTRL(*this, "txtObjName", wxTextCtrl)->GetValue());
-        m_ProjectFile->useCustomBuildCommand = XRCCTRL(*this, "chkBuildStage", wxCheckBox)->GetValue();
-        m_ProjectFile->buildCommand = XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->GetValue();
+        SaveBuildCommandSelection();
         m_ProjectFile->compilerVar = XRCCTRL(*this, "txtCompiler", wxTextCtrl)->GetValue();
 
         // make sure we have a compiler var, if the file is to be compiled

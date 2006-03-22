@@ -39,8 +39,6 @@ ProjectFile::ProjectFile(cbProject* prj)
     editorPos = 0;
     editorTopLine = 0;
     editorTabPos = 0;
-    useCustomBuildCommand = false;
-    autoDeps = true;
     m_VisualState = fvsNormal;
 }
 
