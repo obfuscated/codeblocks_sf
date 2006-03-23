@@ -46,6 +46,7 @@
     #include "xtra_classes.h"
     #include <wx/dir.h>
     #include "globals.h"
+	#include "cbexecption.h"  // for cbassert
 #endif
 
 #include <wx/utils.h>
