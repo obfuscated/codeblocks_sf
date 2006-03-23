@@ -1,0 +1,956 @@
+#include "wxswindoweditor.h"
+#include "wxsdrawingwindow.h"
+#include "wxswindowresdataobject.h"
+#include "../wxsitem.h"
+#include "../wxsparent.h"
+#include "../wxsproject.h"
+#include "../wxsresourcetree.h"
+#include "../wxsitemfactory.h"
+
+#include <wx/settings.h>
+#include <wx/intl.h>
+#include <wx/filename.h>
+#include <wx/clipbrd.h>
+#include <manager.h>
+#include <configmanager.h>
+
+
+class wxsWindowEditor::ContentManager: public wxsDrawingWindow
+{
+    public:
+
+        /** \brief Ctor */
+        ContentManager(wxsWindowEditor* _Parent): wxsDrawingWindow(_Parent,-1), Parent(_Parent) {}
+
+        /** \brief Dctor */
+        virtual ~ContentManager() {}
+
+        /** \brief Function refreshing current selection */
+        void RefreshSelection();
+
+    protected:
+
+        /** \brief painting additional stuff */
+        virtual void PaintExtra(wxDC* DC);
+
+    private:
+
+        /** \brief Size of boxes used to drag borders of widgets */
+        static const int DragBoxSize = 6;
+
+        /** \brief Minimal distace which must be done to apply dragging */
+        static const int MinDragDistance = 8;
+
+        /** \brief Enum type describing placement of drag box */
+        enum DragBoxType
+        {
+            LeftTop = 0,
+            Top,
+            RightTop,
+            Left,
+            Right,
+            LeftBtm,
+            Btm,
+            RightBtm,
+            /*************/
+            DragBoxTypeCnt
+        };
+
+        /** \brief Structure describing one dragging point */
+        struct DragPointData
+        {
+        	wxsItem* Item;                                  ///< \brief Associated item
+        	DragBoxType Type;                               ///< \brief Type of this drag box
+        	bool Inactive;                                  ///< \brief If true, this drag point will be drawn gray
+        	int PosX;                                       ///< \brief X position of this drag point
+        	int PosY;                                       ///< \brief Y position of this drag point
+        	int DragInitPosX;                               ///< \brief X position before dragging
+        	int DragInitPosY;                               ///< \brief Y position before dragging
+        	DragPointData* WidgetPoints[DragBoxTypeCnt];    ///< \brief Pointers to all drag points for this item
+        };
+
+        /** \brief Declaration of vector containing all drag points */
+        WX_DEFINE_ARRAY(DragPointData*,DragPointsT);
+
+        wxsWindowEditor* Parent;        ///< \brief Current window editor
+        DragPointsT DragPoints;         ///< \brief Array of visible drag points
+
+        /** \brief Initializing drag sequence */
+        void DragInit(DragPointData* NewDragPoint,wxsItem* NewDragItem,bool MultipleSel,int MouseX,int MouseY);
+
+        /** \brief Processing mouse while dragging */
+        void DragProcess(int MouseX,int MouseY,wxsItem* UnderCursor);
+
+        /** \brief Finalizing dragging sequence */
+        void DragFinish(wxsItem* UnderCursor);
+};
+
+void wxsWindowEditor::ContentManager::PaintExtra(wxDC* DC)
+{
+}
+
+void wxsWindowEditor::ContentManager::RefreshSelection()
+{
+
+}
+
+static const long wxsInsIntoId    = wxNewId();
+static const long wxsInsBeforeId  = wxNewId();
+static const long wxsInsAfterId   = wxNewId();
+static const long wxsDelId        = wxNewId();
+static const long wxsPreviewId    = wxNewId();
+static const long wxsQuickPropsId = wxNewId();
+
+wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsResource* Resource):
+    wxsEditor(parent,_T("x"),Resource),
+    QuickPropsOpen(false),
+    ResourceLockCnt(0)
+{
+    wxASSERT(Resource!=NULL);
+
+    InitializeImages();
+
+    VertSizer = new wxBoxSizer(wxVERTICAL);
+    WidgetsSet = new wxNotebook(this,-1);
+    BuildPalette(WidgetsSet);
+    HorizSizer = new wxBoxSizer(wxHORIZONTAL);
+    VertSizer->Add(HorizSizer,1,wxEXPAND);
+    VertSizer->Add(WidgetsSet,0,wxEXPAND);
+
+    Content = new ContentManager(this);
+    HorizSizer->Add(Content,1,wxEXPAND);
+
+    QPArea = new wxScrolledWindow(this,-1,wxDefaultPosition,wxDefaultSize,wxVSCROLL|wxSUNKEN_BORDER|wxALWAYS_SHOW_SB);
+    QPArea->SetScrollbars(0,5,0,0);
+    HorizSizer->Add(QPArea,0,wxEXPAND);
+    QPSizer = new wxBoxSizer(wxVERTICAL);
+    QPArea->SetSizer(QPSizer);
+
+    OpsSizer = new wxBoxSizer(wxVERTICAL);
+    HorizSizer->Add(OpsSizer,0,wxEXPAND);
+
+    OpsSizer->Add(InsIntoBtn   = new wxBitmapButton(this,wxsInsIntoId,InsIntoImg));
+    OpsSizer->Add(InsBeforeBtn = new wxBitmapButton(this,wxsInsBeforeId,InsBeforeImg));
+    OpsSizer->Add(InsAfterBtn  = new wxBitmapButton(this,wxsInsAfterId,InsAfterImg));
+    OpsSizer->Add(1,5);
+    OpsSizer->Add(DelBtn       = new wxBitmapButton(this,wxsDelId,DelImg));
+    OpsSizer->Add(PreviewBtn   = new wxBitmapButton(this,wxsPreviewId,PreviewImg));
+    OpsSizer->Add(1,5);
+    OpsSizer->Add(QuickPanelBtn = new wxBitmapButton(this,wxsQuickPropsId,QuickPropsImgOpen));
+    InsIntoBtn   ->SetToolTip(_("Insert new widgets into current selection"));
+    InsBeforeBtn ->SetToolTip(_("Insert new widgets before current selection"));
+    InsAfterBtn  ->SetToolTip(_("Insert new widgets after current selection"));
+    DelBtn       ->SetToolTip(_("Delete current selection"));
+    PreviewBtn   ->SetToolTip(_("Show preview"));
+    QuickPanelBtn->SetToolTip(_("Open / Close Quick Properties panel"));
+
+    SetSizer(VertSizer);
+
+    SetInsertionTypeMask(0);
+
+    if ( GetWinRes()->GetBasePropsFilter() == wxsFLFile )
+    {
+        InitFilename(GetWinRes()->GetXrcFile());
+        SetTitle(m_Shortname);
+    }
+    else
+    {
+        // TODO: Do not access project directly, add members inside wxsWindowRes class
+        wxString FileName = GetWinRes()->GetProject()->GetProjectFileName(GetWinRes()->GetWxsFile());
+        InitFilename(FileName);
+        SetTitle(m_Shortname);
+    }
+
+    UndoBuff = new wxsWinUndoBuffer(GetWinRes());
+    ToggleQuickPropsPanel(false);
+    AllEditors.insert(this);
+    BuildPreview();
+
+    SelectItemInternal(RootItem(),true);
+}
+
+wxsWindowEditor::~wxsWindowEditor()
+{
+    // Destroying also Quick Props panel which usually triggers it's
+    // Save() method when being destroyed
+    QPArea->SetSizer(NULL);
+    QPArea->DestroyChildren();
+
+	KillPreview();
+
+    // First we need to discard all changes,
+    // this operation will recreate unmodified code
+    // in source files
+    if ( GetModified() )
+    {
+        // Loading resource from disk - this will recreate sources
+        GetWinRes()->LoadResource();
+        // TODO: Recreate source code
+    }
+
+    // Now doing the rest
+	delete UndoBuff;
+	GetWinRes()->HidePreview();
+
+	AllEditors.erase(this);
+}
+
+void wxsWindowEditor::ReloadImages()
+{
+    ImagesLoaded = false;
+    InitializeImages();
+    for ( WindowSet::iterator i=AllEditors.begin(); i!=AllEditors.end(); ++i )
+    {
+        (*i)->RebuildIcons();
+    }
+}
+
+void wxsWindowEditor::BuildPreview()
+{
+    Content->SetSizer(NULL);
+    Freeze();
+
+    // Generating preview
+
+    wxsItem* TopItem = GetWinRes()->GetRootItem();
+    wxObject* TopPreviewObject = TopItem ? TopItem->BuildPreview(Content,false) : NULL;
+    wxWindow* TopPreview = wxDynamicCast(TopPreviewObject,wxWindow);
+    if ( !TopPreview )
+    {
+        delete TopPreviewObject;
+        Content->RefreshSelection();
+    }
+    else
+    {
+        wxSizer* NewSizer = new wxGridSizer(1);
+        NewSizer->Add(TopPreview,0,wxALL,10);
+        Content->SetVirtualSizeHints(1,1);
+        Content->SetSizer(NewSizer);
+        NewSizer->SetVirtualSizeHints(Content);
+        HorizSizer->Layout();
+        VertSizer->Layout();
+        Content->ContentChanged();
+        Content->RefreshSelection();
+    }
+
+    // TODO: Check if these are needed
+    Layout();
+    Thaw();
+    Refresh();
+}
+
+void wxsWindowEditor::KillPreview()
+{
+    if ( TopPreview )
+    {
+        Content->SetSizer(NULL);
+        GetWinRes()->GetRootItem()->InvalidatePreview();
+        delete TopPreview;
+        TopPreview = NULL;
+        Content->RefreshSelection();
+    }
+}
+
+bool wxsWindowEditor::Save()
+{
+    GetWinRes()->SaveResource();
+    UndoBuff->Saved();
+	return true;
+}
+
+bool wxsWindowEditor::GetModified()
+{
+	return GetWinRes()->GetModified();
+}
+
+void wxsWindowEditor::SetModified(bool modified)
+{
+    GetWinRes()->SetModified(modified);
+    if ( GetWinRes()->GetModified() )
+    {
+        SetTitle(_T("*") + GetShortName());
+    }
+    else
+    {
+        SetTitle(GetShortName());
+    }
+}
+
+bool wxsWindowEditor::CanUndo()
+{
+	return UndoBuff->CanUndo();
+}
+
+bool wxsWindowEditor::CanRedo()
+{
+	return UndoBuff->CanRedo();
+}
+
+void wxsWindowEditor::Undo()
+{
+    ResourceLock();
+    UndoBuff->Undo();
+    ResourceUnlock();
+	SetModified(UndoBuff->IsModified());
+}
+
+void wxsWindowEditor::Redo()
+{
+    ResourceLock();
+    UndoBuff->Redo();
+    ResourceUnlock();
+	SetModified(UndoBuff->IsModified());
+}
+
+bool wxsWindowEditor::HasSelection()
+{
+    return HasSelection(RootItem());
+}
+
+bool wxsWindowEditor::HasSelection(wxsItem* Item)
+{
+    if ( Item->GetIsSelected() ) return true;
+    wxsParent* Parent = Item->ToParent();
+    if ( !Parent ) return false;
+    for ( int i=0; i<Parent->GetChildCount(); ++i )
+    {
+        if ( HasSelection(Parent->GetChild(i)) ) return true;
+    }
+    return false;
+}
+
+bool wxsWindowEditor::CanPaste()
+{
+    if ( !wxTheClipboard->Open() ) return false;
+    bool Res = wxTheClipboard->IsSupported(wxsDF_WIDGET);
+    // FIXME (SpOoN#1#): Add support for text (XRC) data
+    wxTheClipboard->Close();
+    return Res;
+}
+
+void wxsWindowEditor::Cut()
+{
+    Copy();
+
+    // Removing items copied into clipboard
+    ResourceLock();
+    KillSelection(RootItem());
+    BuildPreview();
+}
+
+void wxsWindowEditor::KillSelection(wxsItem* Item)
+{
+    wxsParent* P = Item->ToParent();
+    if ( P )
+    {
+        for ( int i = P->GetChildCount(); i-->0; )
+        {
+            wxsItem* Child = P->GetChild(i);
+            if ( Child->GetIsSelected() )
+            {
+                 wxsTREE()->Delete(Child->GetLastTreeItemId());
+                 P->UnbindChild(Child);
+                 wxsKILL(Child);
+            }
+            else
+            {
+                KillSelection(Child);
+            }
+        }
+    }
+    CurrentSelection = NULL;
+}
+
+void wxsWindowEditor::Copy()
+{
+	// Almost all selected widgets will be added into clipboard
+	// but with one exception - widget won't be added if parent of this
+	// widget at any level is also selected
+
+	ItemArray Items;
+	GetSelectionNoChildren(Items,RootItem());
+
+    if ( !wxTheClipboard->Open() ) return;
+    wxsWindowResDataObject* Data = new wxsWindowResDataObject;
+    size_t Cnt = Items.Count();
+    for ( size_t i=0; i<Cnt; i++ )
+    {
+    	Data->AddItem(Items[i]);
+    }
+    wxTheClipboard->SetData(Data);
+    wxTheClipboard->Close();
+
+}
+
+void wxsWindowEditor::Paste()
+{
+    if ( !wxTheClipboard->Open() ) return;
+
+    wxsWindowResDataObject Data;
+    if ( wxTheClipboard->GetData(Data) )
+    {
+        wxsItem* RelativeTo = CurrentSelection;
+        int InsertionType = InsType;
+        if ( !RelativeTo )
+        {
+            InsertionType = itInto;
+            RelativeTo = GetWinRes()->GetRootItem();
+            wxsParent* Parent = RelativeTo->ToParent();
+            if ( Parent &&
+                 Parent->GetChildCount() == 1 &&
+                 Parent->GetChild(0)->GetType() == wxsTSizer )
+            {
+                RelativeTo = Parent->GetChild(0);
+            }
+        }
+
+        int Cnt = Data.GetItemCount();
+        if ( Cnt )
+        {
+            ResourceLock();
+            for ( int i=0; i<Cnt; i++ )
+            {
+                wxsItem* Insert = Data.BuildItem(GetWinRes(),i);
+                if ( Insert )
+                {
+                    switch ( InsertionType )
+                    {
+                        case itAfter:
+                            InsertAfter(Insert,RelativeTo);
+                            RelativeTo = Insert;
+                            break;
+
+                        case itBefore:
+                            InsertBefore(Insert,RelativeTo);
+                            break;
+
+                        case itInto:
+                            InsertInto(Insert,RelativeTo);
+                            break;
+                    }
+                }
+            }
+            ResourceUnlock();
+            // TODO: Update item variables and identifiers, recreate source code
+        }
+    }
+    wxTheClipboard->Close();
+}
+
+bool wxsWindowEditor::InsertBefore(wxsItem* New,wxsItem* Ref)
+{
+	if ( !Ref ) Ref = CurrentSelection;
+
+	if ( !Ref )
+	{
+		wxsKILL(New);
+		return false;
+	}
+
+    wxsParent* Parent = Ref->GetParent();
+    if ( !Parent )
+    {
+        wxsKILL(New);
+        return false;
+    }
+
+    int Index = Parent->GetChildIndex(Ref);
+    if ( Index<0 || !Parent->AddChild(New,Index) )
+    {
+        wxsKILL(New);
+        return false;
+    }
+
+    // Adding this new item into resource tree
+    New->BuildItemTree(wxsTREE(),Parent->GetLastTreeItemId(),Index);
+    return true;
+}
+
+bool wxsWindowEditor::InsertAfter(wxsItem* New,wxsItem* Ref)
+{
+	if ( !Ref ) Ref = CurrentSelection;
+
+	if ( !Ref )
+	{
+		wxsKILL(New);
+		return false;
+	}
+
+    wxsParent* Parent = Ref->GetParent();
+    if ( !Parent )
+    {
+        wxsKILL(New);
+        return false;
+    }
+
+    int Index = Parent->GetChildIndex(Ref);
+    if ( Index<0 || !Parent->AddChild(New,Index+1))
+    {
+        wxsKILL(New);
+        return false;
+    }
+
+    // Adding this new item into resource tree
+    New->BuildItemTree(wxsTREE(),Parent->GetLastTreeItemId(),Index+1);
+    return true;
+}
+
+bool wxsWindowEditor::InsertInto(wxsItem* New,wxsItem* Ref)
+{
+	if ( !Ref ) Ref = CurrentSelection;
+	if ( !Ref || !Ref->ToParent() )
+	{
+		wxsKILL(New);
+		return false;
+	}
+
+    wxsParent* P = Ref->ToParent();
+    if ( !P->AddChild(New) )
+    {
+        wxsKILL(New);
+        return false;
+    }
+
+    // Adding this new item into resource tree
+    New->BuildItemTree(wxsTREE(),P->GetLastTreeItemId());
+    return true;
+}
+
+void wxsWindowEditor::InitializeImages()
+{
+    if ( ImagesLoaded ) return;
+    wxString basePath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
+
+    static const wxString NormalNames[] =
+    {
+        _T("insertinto.png"),
+        _T("insertafter.png"),
+        _T("insertbefore.png"),
+        _T("deletewidget.png"),
+        _T("showpreview.png"),
+        _T("quickpropsopen.png"),
+        _T("quickpropsclose.png"),
+        _T("selected.png")
+    };
+
+    static const wxString SmallNames[] =
+    {
+        _T("insertinto16.png"),
+        _T("insertafter16.png"),
+        _T("insertbefore16.png"),
+        _T("deletewidget16.png"),
+        _T("showpreview16.png"),
+        _T("quickpropsopen16.png"),
+        _T("quickpropsclose16.png"),
+        _T("selected16.png")
+    };
+
+    const wxString* Array = ( wxsDWToolIconSize == 16L ) ? SmallNames : NormalNames;
+
+    InsIntoImg.LoadFile(basePath + Array[0]);
+    InsAfterImg.LoadFile(basePath + Array[1]);
+    InsBeforeImg.LoadFile(basePath + Array[2]);
+    DelImg.LoadFile(basePath + Array[3]);
+    PreviewImg.LoadFile(basePath + Array[4]);
+    QuickPropsImgOpen.LoadFile(basePath + Array[5]);
+    QuickPropsImgClose.LoadFile(basePath + Array[6]);
+    SelectedImg.LoadFile(basePath + Array[7]);
+
+    ImagesLoaded = true;
+}
+
+void wxsWindowEditor::BuildPalette(wxNotebook* Palette)
+{
+//    Palette->DeleteAllPages();
+//
+//    // First we need to split all widgets into groups
+//    // it will be done using multimap
+//
+//    WX_DEFINE_ARRAY(const wxsItemInfo*,ItemsT);
+//    WX_DECLARE_STRING_HASH_MAP(ItemsT,MapT);
+//    MapT Map;
+//
+//    for ( const wxsWidgetInfo* Info = wxsFACTORY()->GetFirstInfo(); Info; Info = wxsFACTORY()->GetNextInfo() )
+//        Map.insert(std::pair<const wxChar*,const wxsWidgetInfo*>(Info->Category,Info));
+//
+//    const wxChar* PreviousGroup = _T("");
+//
+//    wxScrolledWindow* CurrentPanel = NULL;
+//    wxSizer* RowSizer = NULL;
+//
+//    for ( MapI i = Map.begin(); i != Map.end(); ++i )
+//    {
+//        if ( !(*i).first || wxStricmp(PreviousGroup,(*i).first) )
+//        {
+//            if ( CurrentPanel )
+//            {
+//                CurrentPanel->SetSizer(RowSizer);
+//                RowSizer->SetVirtualSizeHints(CurrentPanel);
+//            }
+//            if ( (*i).first && (*i).first[0] )
+//            {
+//                // Need to create new tab
+//                PreviousGroup = (*i).first;
+//                CurrentPanel = new wxScrolledWindow(Palette,-1,wxDefaultPosition,wxDefaultSize,0/*wxALWAYS_SHOW_SB|wxHSCROLL*/);
+//                CurrentPanel->SetScrollRate(1,0);
+//                Palette->AddPage(CurrentPanel,PreviousGroup);
+//                RowSizer = new wxBoxSizer(wxHORIZONTAL);
+//            }
+//            else
+//            {
+//                CurrentPanel = NULL;
+//                RowSizer = NULL;
+//            }
+//        }
+//
+//        if ( CurrentPanel )
+//        {
+//            wxBitmap* Icon;
+//
+//            if ( wxsDWPalIconSize == 16L )
+//            {
+//                Icon = (*i).second->Icon16;
+//            }
+//            else
+//            {
+//                Icon = (*i).second->Icon;
+//            }
+//
+//            if ( Icon )
+//            {
+//                wxBitmapButton* Btn =
+//                    new wxBitmapButton(CurrentPanel,-1,*Icon,
+//                        wxDefaultPosition,wxDefaultSize,wxBU_AUTODRAW,
+//                        wxDefaultValidator, (*i).second->Name);
+//                RowSizer->Add(Btn,0,wxALIGN_CENTER);
+//                Btn->SetToolTip((*i).second->Name);
+//            }
+//            else
+//            {
+//                wxButton* Btn = new wxButton(CurrentPanel,-1,(*i).second->Name,
+//                    wxDefaultPosition,wxDefaultSize,0,
+//                    wxDefaultValidator,(*i).second->Name);
+//                RowSizer->Add(Btn,0,wxGROW);
+//                Btn->SetToolTip((*i).second->Name);
+//            }
+//        }
+//    }
+//
+//    if ( CurrentPanel )
+//    {
+//        CurrentPanel->SetSizer(RowSizer);
+//        RowSizer->SetVirtualSizeHints(CurrentPanel);
+//    }
+}
+
+void wxsWindowEditor::InsertRequest(const wxString& Name)
+{
+    if ( !CurrentSelection )
+    {
+        DBGLOG(_("wxSmith: No item selected - couldn't create new item"));
+        return;
+    }
+
+    if ( !InsType ) return;
+
+    wxsItem* New = wxsGEN(Name,GetWinRes());
+    if ( !New )
+    {
+        DBGLOG(_("wxSmith: Culdn't generate item inside factory"));
+        return;
+    }
+
+    ResourceLock();
+    switch ( InsType )
+    {
+        case itBefore:
+            InsertBefore(New,CurrentSelection);
+            break;
+
+        case itAfter:
+            InsertAfter(New,CurrentSelection);
+            break;
+
+        case itInto:
+            InsertInto(New,CurrentSelection);
+            break;
+
+        default:
+            wxsKILL(New);
+            DBGLOG(_T("wxSmith: Internal error"));
+            break;
+    }
+    ResourceUnlock();
+    // TODO: Recreate source code
+}
+
+void wxsWindowEditor::OnButton(wxCommandEvent& event)
+{
+    wxWindow* Btn = (wxWindow*)event.GetEventObject();
+    if ( Btn )
+    {
+//        InsertRequest(Btn->GetName());
+    }
+}
+
+void wxsWindowEditor::SetInsertionTypeMask(int Mask)
+{
+    InsTypeMask = Mask;
+    SetInsertionType(InsType);
+}
+
+void wxsWindowEditor::SetInsertionType(int Type)
+{
+    Type &= InsTypeMask;
+
+    if ( !Type ) Type = InsTypeMask;
+
+    if ( Type & itInto )
+    {
+        InsType = itInto;
+    }
+    else if ( Type & itAfter )
+    {
+        InsType = itAfter;
+    }
+    else if ( Type & itBefore )
+    {
+        InsType = itBefore;
+    }
+    else
+    {
+        InsType = 0;
+    }
+
+    RebuildInsTypeIcons();
+}
+
+void wxsWindowEditor::RebuildInsTypeIcons()
+{
+    BuildInsTypeIcon(InsIntoBtn,InsIntoImg,(InsType&itInto)!=0,(InsTypeMask&itInto)!=0);
+    BuildInsTypeIcon(InsBeforeBtn,InsBeforeImg,(InsType&itBefore)!=0,(InsTypeMask&itBefore)!=0);
+    BuildInsTypeIcon(InsAfterBtn,InsAfterImg,(InsType&itAfter)!=0,(InsTypeMask&itAfter)!=0);
+}
+
+void wxsWindowEditor::BuildInsTypeIcon(wxBitmapButton* Btn,const wxImage& Original,bool Selected,bool Enabled)
+{
+    if ( !Enabled || !Selected )
+    {
+        Btn->SetLabel(Original);
+    }
+    else
+    {
+        wxBitmap Copy = Original;
+        wxMemoryDC DC;
+        DC.SelectObject(Copy);
+        DC.DrawBitmap(SelectedImg,0,0);
+        Btn->SetLabel(Copy);
+    }
+
+    Btn->Enable(Enabled);
+    Btn->Refresh();
+}
+
+void wxsWindowEditor::RebuildQuickPropsIcon()
+{
+    QuickPanelBtn->SetLabel( QuickPropsOpen ? QuickPropsImgClose : QuickPropsImgOpen );
+}
+
+void wxsWindowEditor::RebuildIcons()
+{
+    RebuildInsTypeIcons();
+    RebuildQuickPropsIcon();
+    DelBtn->SetLabel(DelImg);
+    PreviewBtn->SetLabel(PreviewImg);
+    BuildPalette(WidgetsSet);
+    Layout();
+}
+
+void wxsWindowEditor::OnInsInto(wxCommandEvent& event)
+{
+    SetInsertionType(itInto);
+}
+
+void wxsWindowEditor::OnInsAfter(wxCommandEvent& event)
+{
+    SetInsertionType(itAfter);
+}
+
+void wxsWindowEditor::OnInsBefore(wxCommandEvent& event)
+{
+    SetInsertionType(itBefore);
+}
+
+void wxsWindowEditor::OnDelete(wxCommandEvent& event)
+{
+    if ( !CurrentSelection ) return;
+    ResourceLock();
+    KillSelection(RootItem());
+    ResourceUnlock();
+}
+
+void wxsWindowEditor::OnPreview(wxCommandEvent& event)
+{
+    if ( GetWinRes()->IsPreview() )
+    {
+        GetWinRes()->HidePreview();
+    }
+    else
+    {
+        GetWinRes()->ShowPreview();
+    }
+}
+
+void wxsWindowEditor::OnQuickProps(wxCommandEvent& event)
+{
+    QuickPropsOpen = !QuickPropsOpen;
+    RebuildQuickPropsIcon();
+    ToggleQuickPropsPanel(QuickPropsOpen);
+}
+
+void wxsWindowEditor::ToggleQuickPropsPanel(bool Open)
+{
+    HorizSizer->Show(QPArea,Open,true);
+    Layout();
+}
+
+void wxsWindowEditor::RebuildQuickProps(wxsItem* Selection)
+{
+    Freeze();
+
+    int QPx, QPy;
+
+    QPArea->GetViewStart(&QPx,&QPy);
+    QPArea->SetSizer(NULL);
+    QPArea->DestroyChildren();
+    QPSizer = new wxBoxSizer(wxVERTICAL);
+    QPArea->SetSizer(QPSizer);
+
+    if ( Selection )
+    {
+        wxWindow* QPPanel = Selection->BuildQuickPropertiesPanel(QPArea);
+        if ( QPPanel )
+        {
+            QPSizer->Add(QPPanel,0,wxEXPAND);
+        }
+    }
+    QPSizer->Layout();
+    QPSizer->Fit(QPArea);
+    Layout();
+    QPArea->Scroll(QPx,QPy);
+    Thaw();
+}
+
+void wxsWindowEditor::ResourceLock()
+{
+    if ( !ResourceLockCnt++ )
+    {
+        GetWinRes()->GetRootItem()->InvalidatePreview();
+    }
+}
+
+void wxsWindowEditor::ResourceUnlock()
+{
+    if ( ! --ResourceLockCnt )
+    {
+        Freeze();
+        KillPreview();
+        BuildPreview();
+        Thaw();
+        Content->ContentChanged();
+        Content->RefreshSelection();
+    }
+
+    wxASSERT_MSG(ResourceLockCnt>=0,
+        _T("wxsWindowEditor::ResourceUnlock() called without\n")
+        _T("corresponding wxsWindowEditor::ResourceLock()"));
+}
+
+void wxsWindowEditor::SelectItem(wxsItem* Item,bool AddToSelection)
+{
+    // Spreading this notification to all editors
+    for ( WindowSet::iterator i=AllEditors.begin(); i!=AllEditors.end(); ++i )
+    {
+        (*i)->SelectItemInternal(Item,AddToSelection);
+    }
+}
+
+void wxsWindowEditor::SelectItemInternal(wxsItem* Item,bool AddToSelection)
+{
+    // Checking if this item is in this editor
+    if ( Item->GetResource() != GetWinRes() ) return;
+
+    // Unselecting all other items
+    if ( !AddToSelection )
+    {
+        RootItem()->ClearSelection();
+    }
+
+    CurrentSelection = Item;
+    CurrentSelection->SetIsSelected(true);
+
+    // Updating insertion type mask
+
+    int itMask = 0;
+    if ( Item->GetParent() )
+    {
+        // When sizer is added into non-sizer parent, no other items can be added to
+        // this parent
+        if ( Item->GetType() != wxsTSizer ||
+             Item->GetParent()->GetType() == wxsTSizer )
+        {
+            itMask |= itBefore | itAfter;
+        }
+    }
+
+    if ( Item->ToParent() )
+    {
+        itMask |= itInto;
+    }
+
+    SetInsertionTypeMask(itMask);
+    RebuildQuickProps(Item);
+
+    // Refreshing selection items inside content window
+    Content->RefreshSelection();
+}
+
+void wxsWindowEditor::GetSelectionNoChildren(wxsWindowEditor::ItemArray& Array,wxsItem* Item)
+{
+    if ( Item->GetIsSelected() )
+    {
+        Array.Add(Item);
+    }
+    else
+    {
+        wxsParent* P = Item->ToParent();
+        if ( P )
+        {
+            for ( int i=0; i<P->GetChildCount(); i++ )
+            {
+                GetSelectionNoChildren(Array,P->GetChild(i));
+            }
+        }
+    }
+}
+
+wxImage wxsWindowEditor::InsIntoImg;
+wxImage wxsWindowEditor::InsBeforeImg;
+wxImage wxsWindowEditor::InsAfterImg;
+wxImage wxsWindowEditor::DelImg;
+wxImage wxsWindowEditor::PreviewImg;
+wxImage wxsWindowEditor::QuickPropsImgOpen;
+wxImage wxsWindowEditor::QuickPropsImgClose;
+wxImage wxsWindowEditor::SelectedImg;
+wxsWindowEditor::WindowSet wxsWindowEditor::AllEditors;
+bool wxsWindowEditor::ImagesLoaded = false;
+
+BEGIN_EVENT_TABLE(wxsWindowEditor,wxsEditor)
+    EVT_BUTTON(wxsInsIntoId,wxsWindowEditor::OnInsInto)
+    EVT_BUTTON(wxsInsBeforeId,wxsWindowEditor::OnInsBefore)
+    EVT_BUTTON(wxsInsAfterId,wxsWindowEditor::OnInsAfter)
+    EVT_BUTTON(wxsDelId,wxsWindowEditor::OnDelete)
+    EVT_BUTTON(wxsPreviewId,wxsWindowEditor::OnPreview)
+    EVT_BUTTON(wxsQuickPropsId,wxsWindowEditor::OnQuickProps)
+    EVT_BUTTON(-1,wxsWindowEditor::OnButton)
+END_EVENT_TABLE()
