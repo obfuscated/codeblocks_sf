@@ -6,7 +6,7 @@
  * Copyright: (c) Zlika
  * License:   GPL
  **************************************************************/
-
+#include "editormanager.h"
 #include "codestatexec.h"
 
 /** Count the lines on all project's files and display the results.
