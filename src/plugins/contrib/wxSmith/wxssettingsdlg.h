@@ -5,6 +5,8 @@
 
 //(*Headers(wxsSettingsDlg)
 #include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/choice.h>
 #include <wx/combobox.h>
 #include <wx/intl.h>
 #include <wx/notebook.h>
@@ -47,6 +49,23 @@ class wxsSettingsDlg: public cbConfigurationPanel
         wxStaticText* StaticText6;
         wxRadioButton* TIcons16;
         wxRadioButton* TIcons32;
+        wxPanel* Panel3;
+        wxStaticText* StaticText7;
+        wxSpinCtrl* spinProportion;
+        wxStaticText* StaticText8;
+        wxCheckBox* chkTop;
+        wxCheckBox* chkBottom;
+        wxCheckBox* chkLeft;
+        wxCheckBox* chkRight;
+        wxStaticText* StaticText9;
+        wxCheckBox* chkExpand;
+        wxStaticText* StaticText10;
+        wxCheckBox* chkShaped;
+        wxStaticText* StaticText12;
+        wxChoice* choicePlacement;
+        wxStaticText* StaticText13;
+        wxSpinCtrl* spinBorder;
+        wxCheckBox* chkAutoSelect;
         wxSpinCtrl* PrevFetchDelay;
         //*)
 

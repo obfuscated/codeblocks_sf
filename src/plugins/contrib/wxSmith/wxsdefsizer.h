@@ -1,6 +1,8 @@
 #ifndef WXSDEFSIZER_H
 #define WXSDEFSIZER_H
 
+#include <manager.h>
+#include <configmanager.h>
 #include "wxscontainer.h"
 #include "defwidgets/wxsstdmanager.h"
 #include <vector>
@@ -10,7 +12,7 @@ struct wxsSizerExtraParams
 {
     enum PlacementType              ///< Values used in Placement member
     {
-        LeftTop = 0,
+        LeftTop = 1,
         CenterTop,
         RightTop,
         LeftCenter,
@@ -27,7 +29,8 @@ struct wxsSizerExtraParams
         Top    = 1,
         Bottom = 2,
         Left   = 4,
-        Right  = 8
+        Right  = 8,
+        All    = Top | Bottom | Left | Right
     };
 
     int  Proportion;                ///< Proportion param (see wxW documentation for details)
@@ -38,15 +41,18 @@ struct wxsSizerExtraParams
     int  Placement;                 ///< Placement of this element
     int  Border;                    ///< Size of additional border (in pixels)
 
-    wxsSizerExtraParams():
-        Proportion(1),
-        BorderFlags(Top|Bottom|Left|Right),
-        Expand(false),
-        Shaped(false),
-        FixedMinSize(false),
-        Placement(Center),
-        Border(5)
-    {}
+    wxsSizerExtraParams()
+        : FixedMinSize(false)
+    {
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("wxsmith"));
+
+        Proportion = cfg->ReadInt(_T("/defsizer/proportion"), 0);
+        BorderFlags = (BorderFlagsValues)cfg->ReadInt(_T("/defsizer/borderflags"), All);
+        Expand = cfg->ReadBool(_T("/defsizer/expand"), false);
+        Shaped = cfg->ReadBool(_T("/defsizer/shaped"), false);
+        Placement = (PlacementType)cfg->ReadInt(_T("/defsizer/placement"), LeftTop);
+        Border = cfg->ReadInt(_T("/defsizer/border"), 0);
+    }
 };
 
 /** Macro starting declaration of sizer class */

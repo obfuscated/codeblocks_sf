@@ -5,6 +5,7 @@
 #include <wx/colordlg.h>
 #include "wxsglobals.h"
 #include "wxswindoweditor.h"
+#include "wxsdefsizer.h"
 
 BEGIN_EVENT_TABLE(wxsSettingsDlg,wxPanel)
 //(*EventTable(wxsSettingsDlg)
@@ -26,6 +27,23 @@ wxsSettingsDlg::wxsSettingsDlg(wxWindow* parent,wxWindowID id)
     StaticText6 = XRCCTRL(*this,"ID_STATICTEXT6",wxStaticText);
     TIcons16 = XRCCTRL(*this,"ID_RADIOBUTTON3",wxRadioButton);
     TIcons32 = XRCCTRL(*this,"ID_RADIOBUTTON4",wxRadioButton);
+    Panel3 = XRCCTRL(*this,"ID_PANEL3",wxPanel);
+    StaticText7 = XRCCTRL(*this,"ID_STATICTEXT7",wxStaticText);
+    spinProportion = XRCCTRL(*this,"ID_SPINCTRL2",wxSpinCtrl);
+    StaticText8 = XRCCTRL(*this,"ID_STATICTEXT8",wxStaticText);
+    chkTop = XRCCTRL(*this,"ID_CHECKBOX1",wxCheckBox);
+    chkBottom = XRCCTRL(*this,"ID_CHECKBOX2",wxCheckBox);
+    chkLeft = XRCCTRL(*this,"ID_CHECKBOX3",wxCheckBox);
+    chkRight = XRCCTRL(*this,"ID_CHECKBOX4",wxCheckBox);
+    StaticText9 = XRCCTRL(*this,"ID_STATICTEXT9",wxStaticText);
+    chkExpand = XRCCTRL(*this,"ID_CHECKBOX5",wxCheckBox);
+    StaticText10 = XRCCTRL(*this,"ID_STATICTEXT10",wxStaticText);
+    chkShaped = XRCCTRL(*this,"ID_CHECKBOX6",wxCheckBox);
+    StaticText12 = XRCCTRL(*this,"ID_STATICTEXT12",wxStaticText);
+    choicePlacement = XRCCTRL(*this,"ID_CHOICE1",wxChoice);
+    StaticText13 = XRCCTRL(*this,"ID_STATICTEXT13",wxStaticText);
+    spinBorder = XRCCTRL(*this,"ID_SPINCTRL3",wxSpinCtrl);
+    chkAutoSelect = XRCCTRL(*this,"ID_CHECKBOX7",wxCheckBox);
     PrevFetchDelay = XRCCTRL(*this,"ID_SPINCTRL1",wxSpinCtrl);
     //*)
 
@@ -40,6 +58,20 @@ wxsSettingsDlg::wxsSettingsDlg(wxWindow* parent,wxWindowID id)
     else                          Icons32->SetValue(true);
     if ( wxsDWToolIconSize == 16 ) TIcons16->SetValue(true);
     else                           TIcons32->SetValue(true);
+
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("wxsmith"));
+
+    spinProportion->SetValue(cfg->ReadInt(_T("/defsizer/proportion"), 0));
+    int borderFlags = cfg->ReadInt(_T("/defsizer/borderflags"), wxsSizerExtraParams::All);
+    chkLeft->SetValue(borderFlags & wxsSizerExtraParams::Left);
+    chkRight->SetValue(borderFlags & wxsSizerExtraParams::Right);
+    chkTop->SetValue(borderFlags & wxsSizerExtraParams::Top);
+    chkBottom->SetValue(borderFlags & wxsSizerExtraParams::Bottom);
+    chkExpand->SetValue(cfg->ReadBool(_T("/defsizer/expand"), false));
+    chkShaped->SetValue(cfg->ReadBool(_T("/defsizer/shaped"), false));
+    choicePlacement->SetSelection(cfg->ReadInt(_T("/defsizer/placement"), wxsSizerExtraParams::LeftTop) - 1);
+    spinBorder->SetValue(cfg->ReadInt(_T("/defsizer/border"), 0));
+    chkAutoSelect->SetValue(cfg->ReadBool(_T("/autoselectwidgets"), true));
 }
 
 wxsSettingsDlg::~wxsSettingsDlg()
@@ -59,6 +91,20 @@ void wxsSettingsDlg::OnApply()
     cfg->Write(_T("/backfetchdelay"),(int)PrevFetchDelay->GetValue());
     cfg->Write(_T("/paletteiconsize"),(int)(Icons16->GetValue()?16:32));
     cfg->Write(_T("/tooliconsize"),(int)(TIcons16->GetValue()?16:32));
+
+    int borderFlags =   (chkLeft->IsChecked()   ? wxsSizerExtraParams::Left   : 0) |
+                        (chkRight->IsChecked()  ? wxsSizerExtraParams::Right  : 0) |
+                        (chkTop->IsChecked()    ? wxsSizerExtraParams::Top    : 0) |
+                        (chkBottom->IsChecked() ? wxsSizerExtraParams::Bottom : 0);
+
+    cfg->Write(_T("/defsizer/proportion"), (int)spinProportion->GetValue());
+    cfg->Write(_T("/defsizer/borderflags"), (int)borderFlags);
+    cfg->Write(_T("/defsizer/expand"), (bool)chkExpand->IsChecked());
+    cfg->Write(_T("/defsizer/shaped"), (bool)chkShaped->IsChecked());
+    cfg->Write(_T("/defsizer/placement"), (int)choicePlacement->GetSelection() + 1);
+    cfg->Write(_T("/defsizer/border"), (int)spinBorder->GetValue());
+    cfg->Write(_T("/autoselectwidgets"), (bool)chkAutoSelect->GetValue());
+
     wxsWindowEditor::ReloadImages();
 }
 
