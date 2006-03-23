@@ -47,6 +47,7 @@
 
 #ifdef __WXMSW__
 #include <wx/msw/helpchm.h> //(MS HTML Help controller)
+#include <wx/thread.h>
 #endif
 
 #include <wx/generic/helpext.h> //(external HTML browser controller)
@@ -63,6 +64,35 @@ CB_IMPLEMENT_PLUGIN(HelpPlugin, "Help plugin");
 BEGIN_EVENT_TABLE(HelpPlugin, cbPlugin)
   // we hook the menus dynamically
 END_EVENT_TABLE()
+
+#ifdef __WXMSW__
+namespace
+{
+  // This little class helps to fix a problem when the help file is CHM and the
+  // keyword throws many results
+  class LaunchCHMThread : public wxThread
+  {
+    private:
+      wxCHMHelpController m_helpctl;
+      wxString m_keyword;
+
+    public:
+      LaunchCHMThread(const wxString &file, const wxString &keyword);
+      ExitCode Entry();
+  };
+
+  LaunchCHMThread::LaunchCHMThread(const wxString &file, const wxString &keyword)
+  :m_keyword(keyword)
+  {
+    m_helpctl.Initialize(file);
+  }
+
+  wxThread::ExitCode LaunchCHMThread::Entry()
+  {
+    m_helpctl.KeywordSearch(m_keyword);
+  }
+}
+#endif
 
 HelpPlugin::HelpPlugin()
 : m_pMenuBar(0), m_LastId(0)
@@ -292,9 +322,9 @@ void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
 
   	if (ext.CmpNoCase(_T("chm")) == 0)
   	{
-      wxCHMHelpController HelpCtl;
-      HelpCtl.Initialize(helpfile);
-      HelpCtl.KeywordSearch(keyword);
+      LaunchCHMThread *p_thread = new LaunchCHMThread(helpfile, keyword);
+      p_thread->Create();
+      p_thread->Run();
       return;
   	}
 #endif
