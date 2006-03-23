@@ -259,7 +259,7 @@ void wxsProject::SaveProject()
     TiXmlDocument* Doc = GenerateXml();
     if ( Doc )
     {
-        Doc->SaveFile(_C(WorkingPath.GetFullPath()));
+        Doc->SaveFile(cbU2C(WorkingPath.GetFullPath()));
         delete Doc;
     }
     Modified = false;

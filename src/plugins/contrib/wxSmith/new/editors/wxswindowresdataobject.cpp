@@ -114,10 +114,10 @@ bool wxsWindowResDataObject::SetXmlData(const wxString& Data)
 {
     XmlDoc.Clear();
     ItemCount = 0;
-	XmlDoc.Parse(_C(Data));
+	XmlDoc.Parse(cbU2C(Data));
     if ( XmlDoc.Error() )
     {
-        DBGLOG(_T("wxSmith: Error loading Xml data -> ") + _U(XmlDoc.ErrorDesc()));
+        DBGLOG(_T("wxSmith: Error loading Xml data -> ") + cbC2U(XmlDoc.ErrorDesc()));
     	Clear();
     	return false;
     }
@@ -144,10 +144,10 @@ wxString wxsWindowResDataObject::GetXmlData() const
     #ifdef TIXML_USE_STL
         std::ostringstream buffer;
         buffer << XmlDoc;
-        return _U(buffer.str().c_str());
+        return cbC2U(buffer.str().c_str());
     #else
         TiXmlOutStream buffer;
         buffer << XmlDoc;
-        return _U(buffer.c_str());
+        return cbC2U(buffer.c_str());
     #endif
 }

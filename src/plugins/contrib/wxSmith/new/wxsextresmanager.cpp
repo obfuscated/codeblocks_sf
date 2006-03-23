@@ -40,7 +40,7 @@ bool wxsExtResManager::Open(const wxString& FileName)
 bool wxsExtResManager::OpenXrc(const wxString& FileName)
 {
     TiXmlDocument Doc;
-    if ( !Doc.LoadFile(_C(FileName)) )
+    if ( !Doc.LoadFile(cbU2C(FileName)) )
     {
         wxMessageBox(_("Error occured while loading XRC file"));
         return false;
@@ -55,8 +55,8 @@ bool wxsExtResManager::OpenXrc(const wxString& FileName)
         return false;
     }
 
-    wxString Class = _U(Elem->Attribute("class"));
-    wxString Name = _U(Elem->Attribute("name"));
+    wxString Class = cbC2U(Elem->Attribute("class"));
+    wxString Name = cbC2U(Elem->Attribute("name"));
 
     wxsWindowRes* NewRes = NULL;
 
