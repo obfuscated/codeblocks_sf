@@ -38,22 +38,22 @@ const int EditorMaxSwitchTo = 255;
 const int idSwitchFile1 = wxNewId();
 const int idSwitchFileMax = editorbase_RegisterId(idSwitchFile1 + EditorMaxSwitchTo -1);
 
-//const int idCloseMe = wxNewId();
-//const int idCloseAll = wxNewId();
-//const int idCloseAllOthers = wxNewId();
-//const int idSaveMe = wxNewId();
-//const int idSaveAll = wxNewId();
+const int idCloseMe = wxNewId();
+const int idCloseAll = wxNewId();
+const int idCloseAllOthers = wxNewId();
+const int idSaveMe = wxNewId();
+const int idSaveAll = wxNewId();
 const int idSwitchTo = wxNewId();
 const int idGoogle = wxNewId();
 const int idMsdn = wxNewId();
 
 BEGIN_EVENT_TABLE(EditorBase, wxPanel)
     EVT_MENU_RANGE(idSwitchFile1, idSwitchFileMax,EditorBase::OnContextMenuEntry)
-//    EVT_MENU(idCloseMe, EditorBase::OnContextMenuEntry)
-//    EVT_MENU(idCloseAll, EditorBase::OnContextMenuEntry)
-//    EVT_MENU(idCloseAllOthers, EditorBase::OnContextMenuEntry)
-//    EVT_MENU(idSaveMe, EditorBase::OnContextMenuEntry)
-//    EVT_MENU(idSaveAll, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idCloseMe, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idCloseAll, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idCloseAllOthers, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idSaveMe, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idSaveAll, EditorBase::OnContextMenuEntry)
     EVT_MENU(idGoogle, EditorBase::OnContextMenuEntry)
     EVT_MENU(idMsdn, EditorBase::OnContextMenuEntry)
 END_EVENT_TABLE()
@@ -178,24 +178,25 @@ wxMenu* EditorBase::CreateContextSubMenu(int id) // For context menus
     return menu;
 }
 
-void EditorBase::BasicAddToContextMenu(wxMenu* popup,bool noeditor)
+void EditorBase::BasicAddToContextMenu(wxMenu* popup,ModuleType type)   //pecan 2006/03/22
 {
-    //NOTE: removed these, since they 've been added in eidtor tabs context menu
+    bool noeditor = (type != mtEditorManager);                          //pecan 2006/03/22
+    if (type == mtOpenFilesList)                                        //pecan 2006/03/22
+    {
+      popup->Append(idCloseMe, _("Close"));
+      popup->Append(idCloseAll, _("Close all"));
+      popup->Append(idCloseAllOthers, _("Close all others"));
+      popup->AppendSeparator();
+      popup->Append(idSaveMe, _("Save"));
+      popup->Append(idSaveAll, _("Save all"));
+      popup->AppendSeparator();
+      // enable/disable some items, based on state
+      popup->Enable(idSaveMe, GetModified());
 
-//  popup->Append(idCloseMe, _("Close"));
-//  popup->Append(idCloseAll, _("Close all"));
-//  popup->Append(idCloseAllOthers, _("Close all others"));
-//  popup->AppendSeparator();
-//  popup->Append(idSaveMe, _("Save"));
-//  popup->Append(idSaveAll, _("Save all"));
-//  popup->AppendSeparator();
-  // enable/disable some items, based on state
-//  popup->Enable(idSaveMe, GetModified());
-//
-//  bool hasOthers = ThereAreOthers();
-//  popup->Enable(idCloseAll, hasOthers);
-//  popup->Enable(idCloseAllOthers, hasOthers);
-
+      bool hasOthers = ThereAreOthers();
+      popup->Enable(idCloseAll, hasOthers);
+      popup->Enable(idCloseAllOthers, hasOthers);
+    }
     if(!noeditor)
     {
         wxMenu* switchto = CreateContextSubMenu(idSwitchTo);
@@ -204,14 +205,15 @@ void EditorBase::BasicAddToContextMenu(wxMenu* popup,bool noeditor)
     }
 }
 
-void EditorBase::DisplayContextMenu(const wxPoint& position, bool noeditor)
+void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)   //pecan 2006/03/22
 {
+    bool noeditor = (type != mtEditorManager);                                  //pecan 2006/03/22
     // noeditor:
     // True if context menu belongs to open files tree;
     // False if belongs to cbEditor
 
     // inform the editors we 're just about to create a context menu
-    if (!OnBeforeBuildContextMenu(position, noeditor))
+    if (!OnBeforeBuildContextMenu(position, type))              //pecan 2006/03/22
         return;
 
     wxMenu* popup = new wxMenu;
@@ -243,23 +245,23 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, bool noeditor)
     else
     {
         // Basic functions
-        BasicAddToContextMenu(popup,noeditor);
+        BasicAddToContextMenu(popup, type);         //pecan 2006/03/22
 
         // Extended functions, part 1 (virtual)
-        AddToContextMenu(popup,noeditor,false);
+        AddToContextMenu(popup, type, false);       //pecan 2006/03/22
 
         // ask other editors / plugins if they need to add any entries in this menu...
         FileTreeData* ftd = new FileTreeData(0, FileTreeData::ftdkUndefined);
         ftd->SetFolder(m_Filename);
-        Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtEditorManager, popup, ftd);
+        Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(type, popup, ftd);              //pecan 2006/03/22
         delete ftd;
 
         popup->AppendSeparator();
         // Extended functions, part 2 (virtual)
-        AddToContextMenu(popup,noeditor,true);
+        AddToContextMenu(popup, type, true);            //pecan 2006/03/22
     }
     // inform the editors we 're done creating a context menu (just about to show it)
-    OnAfterBuildContextMenu(noeditor);
+    OnAfterBuildContextMenu(type);              //pecan 2006/03/22
 
     // display menu
     wxPoint clientpos;
@@ -287,26 +289,27 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
 
     const int id = event.GetId();
 
-//    if (id == idCloseMe)
-//    {
-//        Manager::Get()->GetEditorManager()->Close(this);
-//    }
-//    else if (id == idCloseAll)
-//    {
-//        Manager::Get()->GetEditorManager()->CloseAll();
-//    }
-//    else if (id == idCloseAllOthers)
-//    {
-//        Manager::Get()->GetEditorManager()->CloseAllExcept(this);
-//    }
-//    else if (id == idSaveMe)
-//    {
-//        Save();
-//    }
-//    else if (id == idSaveAll)
-//    {
-//        Manager::Get()->GetEditorManager()->SaveAll();
-//    }
+    if (id == idCloseMe)
+    {
+        Manager::Get()->GetEditorManager()->Close(this);
+    }
+    else if (id == idCloseAll)
+    {
+        Manager::Get()->GetEditorManager()->CloseAll();
+    }
+    else if (id == idCloseAllOthers)
+    {
+        Manager::Get()->GetEditorManager()->CloseAllExcept(this);
+    }
+    else if (id == idSaveMe)
+    {
+        Save();
+    }
+    else if (id == idSaveAll)
+    {
+        Manager::Get()->GetEditorManager()->SaveAll();
+    }
+    else //pecan 2006/03/22
     if (id >= idSwitchFile1 && id <= idSwitchFileMax)
     {
         // "Switch to..." item

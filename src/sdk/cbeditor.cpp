@@ -89,7 +89,7 @@ void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
 	     */
 	    const bool is_right_click = event.GetPosition()!=wxDefaultPosition;
 	    const wxPoint mp(is_right_click ? event.GetPosition() : wxDefaultPosition);
-		reinterpret_cast<cbEditor*>(m_pParent)->DisplayContextMenu(mp);
+		reinterpret_cast<cbEditor*>(m_pParent)->DisplayContextMenu(mp,mtEditorManager); //pecan 2006/03/22
 	}
 }
 
@@ -1441,8 +1441,9 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
 }
 
 // Adds menu items to context menu (both before and after loading plugins' items)
-void cbEditor::AddToContextMenu(wxMenu* popup,bool noeditor,bool pluginsdone)
+void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone) //pecan 2006/03/22
 {
+    bool noeditor = (type != mtEditorManager);                              //pecan 2006/03/22
     if(!pluginsdone)
     {
         wxMenu *bookmarks = 0, *folding = 0, *editsubmenu = 0, *insert = 0;
@@ -1488,8 +1489,9 @@ void cbEditor::AddToContextMenu(wxMenu* popup,bool noeditor,bool pluginsdone)
     }
 }
 
-bool cbEditor::OnBeforeBuildContextMenu(const wxPoint& position, bool noeditor)
+bool cbEditor::OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type)   //pecan 2006/03/22
 {
+    bool noeditor = (type != mtEditorManager);                              //pecan 2006/03/22
     if (!noeditor && position!=wxDefaultPosition)
     {
         // right mouse click inside the editor
@@ -1550,10 +1552,10 @@ bool cbEditor::OnBeforeBuildContextMenu(const wxPoint& position, bool noeditor)
     }
 
     // follow default strategy
-    return EditorBase::OnBeforeBuildContextMenu(position, noeditor);
+    return EditorBase::OnBeforeBuildContextMenu(position, type);        //pecan 2006/03/22
 }
 
-void cbEditor::OnAfterBuildContextMenu(bool noeditor)
+void cbEditor::OnAfterBuildContextMenu(ModuleType type)                //pecan 2006/03/22
 {
     // we don't care
 }

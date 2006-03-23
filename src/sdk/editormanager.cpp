@@ -2227,7 +2227,7 @@ void EditorManager::OnTreeItemRightClick(wxTreeEvent &event)
     if(ed)
     {
         wxPoint pt = m_pTree->ClientToScreen(event.GetPoint());
-        ed->DisplayContextMenu(pt,true);
+        ed->DisplayContextMenu(pt,mtOpenFilesList); //pecan 2006/03/22
     }
 }
 

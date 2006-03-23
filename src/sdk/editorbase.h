@@ -53,7 +53,8 @@ class DLLIMPORT EditorBase : public wxPanel
         virtual bool ThereAreOthers();
 
 		/** Displays the editor's context menu (usually invoked by the user right-clicking in the editor) */
-		virtual void DisplayContextMenu(const wxPoint& position,bool noeditor = false);
+		//virtual void DisplayContextMenu(const wxPoint& position,bool noeditor = false);
+		virtual void DisplayContextMenu(const wxPoint& position,ModuleType type = mtUnknown);
 
         /** Should this kind of editor be visible from the open files tree? */
         virtual bool VisibleToTree() { return true; }
@@ -118,20 +119,20 @@ class DLLIMPORT EditorBase : public wxPanel
         virtual wxMenu* CreateContextSubMenu(int id); // For context menus
 
         /** Creates context menu items, both before and after creating plugins menu items */
-        virtual void AddToContextMenu(wxMenu* popup,bool noeditor,bool pluginsdone) {}
+        virtual void AddToContextMenu(wxMenu* popup, ModuleType type,bool pluginsdone) {}   //pecan 2006/03/22
         /** Creates unique filename when asking to save the file */
         virtual wxString CreateUniqueFilename();
         /** Informs the editor we 're just about to create a context menu.
           * Default implementation, just returns true.
-          * @param noeditor If true, this is an "OpenFilesList" popup menu.
+          * @param type specifies the "ModuleType" popup menu.
           * @return If the editor returns false, the context menu creation is aborted.
           */
-        virtual bool OnBeforeBuildContextMenu(const wxPoint& position, bool noeditor){ return true; }
+        virtual bool OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type){ return true; } //pecan 2006/03/22
         /** Informs the editor we 're done creating the context menu (just about to display it).
           * Default implementation does nothing.
-          * @param noeditor If true, this is an "OpenFilesList" popup menu.
+          * @param type specifies the "ModuleType" context popup menu.
           */
-        virtual void OnAfterBuildContextMenu(bool noeditor){}
+        virtual void OnAfterBuildContextMenu(ModuleType type){}     //pecan 2006/03/22
 
         bool m_IsBuiltinEditor; // do not mess with it!
 		wxString m_Shortname;
@@ -140,7 +141,7 @@ class DLLIMPORT EditorBase : public wxPanel
 
         /** one event handler for all popup menu entries */
         void OnContextMenuEntry(wxCommandEvent& event);
-        void BasicAddToContextMenu(wxMenu* popup,bool noeditor);
+        void BasicAddToContextMenu(wxMenu* popup, ModuleType type); //pecan 2006/03/22
         SwitchToMap m_SwitchTo;
         wxString m_WinTitle;
         wxString lastWord;

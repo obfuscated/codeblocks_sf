@@ -30,6 +30,7 @@ enum ModuleType
 	mtProjectManager = 1,
 	mtEditorManager,
 	mtMessageManager,
+	mtOpenFilesList,                //pecan 2006/03/22
 	mtUnknown
 };
 

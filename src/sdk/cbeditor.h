@@ -194,7 +194,7 @@ class DLLIMPORT cbEditor : public EditorBase
 
         // misc. functions
         virtual wxMenu* CreateContextSubMenu(long id);
-        virtual void AddToContextMenu(wxMenu* popup,bool noeditor,bool pluginsdone);
+        virtual void AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone);  //pecan 2006/03/22
 
         HighlightLanguage GetLanguage( ) { return m_lang; }
         void SetLanguage( HighlightLanguage lang = HL_AUTO );
@@ -237,8 +237,8 @@ class DLLIMPORT cbEditor : public EditorBase
 
 		// one event handler for all popup menu entries
 		void OnContextMenuEntry(wxCommandEvent& event);
-        bool OnBeforeBuildContextMenu(const wxPoint& position, bool noeditor);
-        void OnAfterBuildContextMenu(bool noeditor);
+        bool OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type);    //pecan 2006/03/22
+        void OnAfterBuildContextMenu(ModuleType type);                              //pecan 2006/03/22
 
         // variables
         bool m_IsOK;
