@@ -27,7 +27,7 @@ wxsItemInfo wxsComboBox::Info =
     _T(""),
     _T("www.wxwidgets.org"),
     _T("Standard"),
-    80,
+    70,
     _T("ComboBox"),
     2, 6,
     NULL,

@@ -560,88 +560,79 @@ void wxsWindowEditor::InitializeImages()
     ImagesLoaded = true;
 }
 
+
+namespace
+{
+    int PrioritySort(const wxsItemInfo** it1,const wxsItemInfo** it2)
+    {
+        return (*it1)->Priority - (*it2)->Priority;
+    }
+
+    WX_DEFINE_ARRAY(const wxsItemInfo*,ItemsT);
+    WX_DECLARE_STRING_HASH_MAP(ItemsT,MapT);
+}
+
 void wxsWindowEditor::BuildPalette(wxNotebook* Palette)
 {
-//    Palette->DeleteAllPages();
-//
-//    // First we need to split all widgets into groups
-//    // it will be done using multimap
-//
-//    WX_DEFINE_ARRAY(const wxsItemInfo*,ItemsT);
-//    WX_DECLARE_STRING_HASH_MAP(ItemsT,MapT);
-//    MapT Map;
-//
-//    for ( const wxsWidgetInfo* Info = wxsFACTORY()->GetFirstInfo(); Info; Info = wxsFACTORY()->GetNextInfo() )
-//        Map.insert(std::pair<const wxChar*,const wxsWidgetInfo*>(Info->Category,Info));
-//
-//    const wxChar* PreviousGroup = _T("");
-//
-//    wxScrolledWindow* CurrentPanel = NULL;
-//    wxSizer* RowSizer = NULL;
-//
-//    for ( MapI i = Map.begin(); i != Map.end(); ++i )
-//    {
-//        if ( !(*i).first || wxStricmp(PreviousGroup,(*i).first) )
-//        {
-//            if ( CurrentPanel )
-//            {
-//                CurrentPanel->SetSizer(RowSizer);
-//                RowSizer->SetVirtualSizeHints(CurrentPanel);
-//            }
-//            if ( (*i).first && (*i).first[0] )
-//            {
-//                // Need to create new tab
-//                PreviousGroup = (*i).first;
-//                CurrentPanel = new wxScrolledWindow(Palette,-1,wxDefaultPosition,wxDefaultSize,0/*wxALWAYS_SHOW_SB|wxHSCROLL*/);
-//                CurrentPanel->SetScrollRate(1,0);
-//                Palette->AddPage(CurrentPanel,PreviousGroup);
-//                RowSizer = new wxBoxSizer(wxHORIZONTAL);
-//            }
-//            else
-//            {
-//                CurrentPanel = NULL;
-//                RowSizer = NULL;
-//            }
-//        }
-//
-//        if ( CurrentPanel )
-//        {
-//            wxBitmap* Icon;
-//
-//            if ( wxsDWPalIconSize == 16L )
-//            {
-//                Icon = (*i).second->Icon16;
-//            }
-//            else
-//            {
-//                Icon = (*i).second->Icon;
-//            }
-//
-//            if ( Icon )
-//            {
-//                wxBitmapButton* Btn =
-//                    new wxBitmapButton(CurrentPanel,-1,*Icon,
-//                        wxDefaultPosition,wxDefaultSize,wxBU_AUTODRAW,
-//                        wxDefaultValidator, (*i).second->Name);
-//                RowSizer->Add(Btn,0,wxALIGN_CENTER);
-//                Btn->SetToolTip((*i).second->Name);
-//            }
-//            else
-//            {
-//                wxButton* Btn = new wxButton(CurrentPanel,-1,(*i).second->Name,
-//                    wxDefaultPosition,wxDefaultSize,0,
-//                    wxDefaultValidator,(*i).second->Name);
-//                RowSizer->Add(Btn,0,wxGROW);
-//                Btn->SetToolTip((*i).second->Name);
-//            }
-//        }
-//    }
-//
-//    if ( CurrentPanel )
-//    {
-//        CurrentPanel->SetSizer(RowSizer);
-//        RowSizer->SetVirtualSizeHints(CurrentPanel);
-//    }
+    Palette->DeleteAllPages();
+
+    // First we need to split all widgets into groups
+    // it will be done using multimap (map of arrays)
+
+    MapT Map;
+
+    for ( const wxsItemInfo* Info = wxsFACTORY()->GetFirstInfo(); Info; Info = wxsFACTORY()->GetNextInfo() )
+    {
+        if ( !Info->Category.empty() )
+        {
+            Map[Info->Category].Add(Info);
+        }
+    }
+
+    for ( MapT::iterator i = Map.begin(); i!=Map.end(); ++i )
+    {
+        wxScrolledWindow* CurrentPanel = new wxScrolledWindow(Palette,-1,wxDefaultPosition,wxDefaultSize,0/*wxALWAYS_SHOW_SB|wxHSCROLL*/);
+        CurrentPanel->SetScrollRate(1,0);
+        Palette->AddPage(CurrentPanel,i->first);
+        wxSizer* RowSizer = new wxBoxSizer(wxHORIZONTAL);
+
+        ItemsT& Items = i->second;
+        Items.Sort(PrioritySort);
+
+        for ( size_t j=Items.Count(); j-->0; )
+        {
+            const wxsItemInfo* Info = Items[j];
+            wxBitmap* Icon;
+            if ( wxsDWPalIconSize == 16L )
+            {
+                Icon = Info->Icon16;
+            }
+            else
+            {
+                Icon = Info->Icon32;
+            }
+
+            if ( Icon )
+            {
+                wxBitmapButton* Btn =
+                    new wxBitmapButton(CurrentPanel,-1,*Icon,
+                        wxDefaultPosition,wxDefaultSize,wxBU_AUTODRAW,
+                        wxDefaultValidator, Info->Name);
+                RowSizer->Add(Btn,0,wxALIGN_CENTER);
+                Btn->SetToolTip(Info->Name);
+            }
+            else
+            {
+                wxButton* Btn = new wxButton(CurrentPanel,-1,Info->Name,
+                    wxDefaultPosition,wxDefaultSize,0,
+                    wxDefaultValidator,Info->Name);
+                RowSizer->Add(Btn,0,wxGROW);
+                Btn->SetToolTip(Info->Name);
+            }
+        }
+        CurrentPanel->SetSizer(RowSizer);
+        RowSizer->SetVirtualSizeHints(CurrentPanel);
+    }
 }
 
 void wxsWindowEditor::InsertRequest(const wxString& Name)

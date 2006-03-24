@@ -48,7 +48,7 @@ wxsItemInfo wxsCalendarCtrl::Info =
     _T(""),                     // No default e-mail for standard widgets
     _T("www.wxwidgets.org"),    // Site
     _T("Standard"),             // Groud for widget, note that _T() instead of _() is used
-    80,                         // Button is one of most commonly used widgets - we give it high priority
+    30,                         // Button is one of most commonly used widgets - we give it high priority
     _T("CalendarCtrl"),         // Standard prefix for variable names and identifiers
     2, 6,                       // Widget version
     NULL,                       // Bitmaps will be loaded later in manager
