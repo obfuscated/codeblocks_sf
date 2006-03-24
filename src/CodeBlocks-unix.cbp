@@ -540,7 +540,16 @@
 			<Option link="0" />
 			<Option target="Code-completion" />
 		</Unit>
-		<Unit filename="plugins/codecompletion/codecompletion.cpp">
+		<Unit filename="plugins/codecompletion/classbrowserbuilderthread.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/classbrowserbuilderthread.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Code-completion" />
+		</Unit>		<Unit filename="plugins/codecompletion/codecompletion.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Code-completion" />
 		</Unit>

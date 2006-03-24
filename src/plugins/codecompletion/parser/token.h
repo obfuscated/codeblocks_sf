@@ -5,6 +5,7 @@
 #include <wx/dynarray.h>
 #include <wx/file.h>
 #include <wx/thread.h>
+#include <wx/stream.h>
 #include <settings.h>
 
 #include "blockallocated.h"

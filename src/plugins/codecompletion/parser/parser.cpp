@@ -33,6 +33,7 @@
 #include <wx/progdlg.h>
 #include "parser.h"
 #include "../classbrowser.h"
+#include "../classbrowserbuilderthread.h"
 #ifndef STANDALONE
 	#include <configmanager.h>
 	#include <messagemanager.h>
@@ -787,221 +788,29 @@ void Parser::BuildTree(wxTreeCtrl& tree)
 	if (!Done())
 		return;
 
-	tree.Freeze();
-    tree.DeleteAllItems();
-    TokenFilesSet currset;
-    currset.clear();
-    Token* token = 0;
-#ifndef STANDALONE
-	tree.SetImageList(m_pImageList);
-
     wxString fname(_T(""));
     EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (ed)
         fname = ed->GetFilename().BeforeLast(_T('.'));
 
-    // "mark" tokens based on scope
-    bool fnameEmpty = fname.IsEmpty();
-    fname.Append(_T('.'));
-    if(!fnameEmpty && !m_BrowserOptions.showAllSymbols)
-    {
-        for(size_t i = 1; i < m_pTokens->m_FilenamesMap.size(); ++i)
-        {
-            if(m_pTokens->m_FilenamesMap.GetString(i).StartsWith(fname))
-                currset.insert(i);
-        }
-    }
+	tree.SetImageList(m_pImageList);
 
-#endif
-
-	m_RootNode = tree.AddRoot(_("Symbols"), PARSER_IMG_SYMBOLS_FOLDER);
-	if (m_BrowserOptions.viewFlat)
-	{
-        TokenIdxSet::iterator it,it_end;
-        it = m_pTokens->m_GlobalNameSpace.begin();
-        it_end = m_pTokens->m_GlobalNameSpace.end();
-
-        for(;it != it_end;++it)
-        {
-            token = m_pTokens->at(*it);
-            if(!token || !token->m_IsLocal || token->m_ParentIndex!=-1 || !token->MatchesFiles(currset))
-                continue;
-            AddTreeNode(tree, m_RootNode, token);
-        }
-		tree.SortChildren(m_RootNode);
-	}
-	else
-	{
-        wxTreeItemId globalNS = tree.AppendItem(m_RootNode, _("Global namespace"), PARSER_IMG_NAMESPACE);
-        AddTreeNamespace(tree, globalNS, 0,currset);
-        BuildTreeNamespace(tree, m_RootNode, 0,currset);
-	}
-
-	tree.Expand(m_RootNode);
-	tree.Thaw();
-	// wxString memdump = m_pTokens->m_Tree.Serialize();
-	// Manager::Get()->GetMessageManager()->DebugLog(memdump);
-}
-
-void Parser::BuildTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent, const TokenFilesSet& currset)
-{
-	TokenIdxSet::iterator it,it_end;
-	int parentidx;
-	if(!parent)
-	{
-        it = m_pTokens->m_TopNameSpaces.begin();
-        it_end = m_pTokens->m_TopNameSpaces.end();
-        parentidx = -1;
-	}
-    else
-    {
-        it = parent->m_Children.begin();
-        it_end = parent->m_Children.end();
-        parentidx = parent->GetSelf();
-    }
-
-	for(;it != it_end; it++)
-	{
-	    Token* token = m_pTokens->at(*it);
-	    if(!token || /* !token->m_Bool || */ !token->m_IsLocal || token->m_TokenKind != tkNamespace)
-            continue;
-        if(currset.size() && !token->MatchesFiles(currset))
-            continue;
-        ClassTreeData* ctd = new ClassTreeData(token);
-        wxTreeItemId newNS = tree.AppendItem(parentNode, token->m_Name, PARSER_IMG_NAMESPACE, -1, ctd);
-        BuildTreeNamespace(tree, newNS, token, currset);
-        AddTreeNamespace(tree, newNS, token, currset);
-	}
-    tree.SortChildren(parentNode);
-}
-
-void Parser::AddTreeNamespace(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* parent,const TokenFilesSet& currset)
-{
-	TokenIdxSet::iterator it,it_end;
-	int parentidx;
-	if(!parent)
-	{
-        it = m_pTokens->m_GlobalNameSpace.begin();
-        it_end = m_pTokens->m_GlobalNameSpace.end();
-        parentidx = -1;
-	}
-    else
-    {
-        it = parent->m_Children.begin();
-        it_end = parent->m_Children.end();
-        parentidx = parent->GetSelf();
-    }
-
-	bool has_classes = false,has_enums = false,has_preprocessor = false,has_others = false;
-	wxTreeItemId node_classes;
-	wxTreeItemId node_enums;
-	wxTreeItemId node_preprocessor;
-	wxTreeItemId node_others;
-	wxTreeItemId* curnode = 0;
-
-	for(;it != it_end; it++)
-	{
-	    Token* token = m_pTokens->at(*it);
-	    if(!token || /* !token->m_Bool || */ !token->m_IsLocal)
-            continue;
-        if(currset.size() && !token->MatchesFiles(currset))
-            continue;
-
-        switch(token->m_TokenKind)
-        {
-            case tkClass:
-                    if(!has_classes)
-                    {
-                        has_classes = true;
-                        node_classes = tree.AppendItem(parentNode, _("Classes"), PARSER_IMG_CLASS_FOLDER);
-                    }
-                    curnode = &node_classes;
-                    break;
-            case tkEnum:
-                    if(!has_enums)
-                    {
-                        has_enums = true;
-                        node_enums = tree.AppendItem(parentNode, _("Enums"), PARSER_IMG_ENUMS_FOLDER);
-                    }
-                    curnode = &node_enums;
-                    break;
-            case tkPreprocessor:
-                    if(!has_preprocessor)
-                    {
-                        has_preprocessor = true;
-                        node_preprocessor = tree.AppendItem(parentNode, _("Preprocessor"), PARSER_IMG_PREPROC_FOLDER);
-                    }
-                    curnode = &node_preprocessor;
-                    break;
-            case tkEnumerator:
-            case tkFunction:
-            case tkVariable:
-            case tkUndefined:
-                    if(!has_others)
-                    {
-                        has_others = true;
-                        node_others = tree.AppendItem(parentNode, _("Others"), PARSER_IMG_OTHERS_FOLDER);
-                    }
-                    curnode = &node_others;
-                    break;
-            default:curnode = 0;
-        }
-        if(curnode)
-            AddTreeNode(tree, *curnode, token);
-	}
-    if(has_classes)
-        tree.SortChildren(node_classes);
-    if(has_enums)
-        tree.SortChildren(node_enums);
-    if(has_preprocessor)
-        tree.SortChildren(node_preprocessor);
-    if(has_others)
-        tree.SortChildren(node_others);
-}
-
-void Parser::AddTreeNode(wxTreeCtrl& tree, const wxTreeItemId& parentNode, Token* token, bool childrenOnly)
-{
-    if (!token)
-        return;
-	ClassTreeData* ctd = new ClassTreeData(token);
-	int image = -1;
-#ifndef STANDALONE
-	image = GetTokenKindImage(token);
-#endif
-	wxString str = token->m_Name + token->m_Args;
-	if (!token->m_ActualType.IsEmpty())
-		 str = str + _T(" : ") + token->m_ActualType;
-	wxTreeItemId node = childrenOnly ? parentNode : tree.AppendItem(parentNode, str, image, -1, ctd);
-
-	// add children
-	TokenIdxSet::iterator it;
-	for(it=token->m_Children.begin();it!=token->m_Children.end();++it)
-	{
-	    AddTreeNode(tree, node, m_pTokens->at(*it));
-	}
-
-	if (!m_BrowserOptions.showInheritance || (token->m_TokenKind != tkClass && token->m_TokenKind != tkNamespace))
-		return;
-	// add ancestor's children
-	for(it=token->m_Ancestors.begin();it!=token->m_Ancestors.end();++it)
-	{
-	    AddTreeNode(tree, node, m_pTokens->at(*it),true);
-	}
-
-    tree.SortChildren(node);
+    ClassBrowserBuilderThread* builder = new ClassBrowserBuilderThread(this, tree, fname, m_BrowserOptions, m_pTokens);
+    builder->Create();
+    builder->Run();
 }
 
 void Parser::AbortBuildingTree()
 {
-    if(m_TreeBuildingStatus == 2)
-    {
-        if(m_pClassBrowser && m_pClassBrowser->GetParserPtr() == this && m_pClassBrowser->GetTree())
-        {
-            m_pClassBrowser->GetTree()->DeleteAllItems();
-            m_pClassBrowser->GetTree()->Thaw();
-        }
-    }
-    m_TreeBuildingStatus = 0;
+//    if(m_TreeBuildingStatus == 2)
+//    {
+//        if(m_pClassBrowser && m_pClassBrowser->GetParserPtr() == this && m_pClassBrowser->GetTree())
+//        {
+//            m_pClassBrowser->GetTree()->DeleteAllItems();
+//            m_pClassBrowser->GetTree()->Thaw();
+//        }
+//    }
+//    m_TreeBuildingStatus = 0;
 }
 
 void Parser::StartStopWatch()
