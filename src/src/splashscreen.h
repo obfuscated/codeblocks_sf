@@ -25,15 +25,20 @@ class cbSplashScreen : public wxFrame
 
   public:
     // A value of -1 for timeout makes it stay forever (you need to close it manually)
-    cbSplashScreen(wxBitmap &label, long timeout, long style = wxNO_BORDER | wxFRAME_NO_TASKBAR);
+    cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, wxWindowID id, long style = wxSTAY_ON_TOP | wxNO_BORDER | wxFRAME_NO_TASKBAR);
+    ~cbSplashScreen();
 
   private:
     void DoPaint(wxDC &dc);
     void OnPaint(wxPaintEvent &);
     void OnEraseBackground(wxEraseEvent &);
     void OnTimer(wxTimerEvent &);
+    void OnCloseWindow(wxCloseEvent &);
+    void OnChar(wxKeyEvent &);
+    void OnMouseEvent(wxMouseEvent &event);
 
   DECLARE_EVENT_TABLE()
 };
 
 #endif // CBSPLASH_SCREEN_H
+

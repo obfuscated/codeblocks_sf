@@ -562,7 +562,7 @@ void CodeBlocksApp::ShowSplashScreen()
 	{
         const wxString splashImage = _T("/images/splash_new.png");
         wxBitmap bmp = LoadPNGWindows2000Hack(ConfigManager::ReadDataPath() + splashImage);
-		m_pSplash = new cbSplashScreen(bmp, -1, wxNO_BORDER | wxFRAME_NO_TASKBAR);
+		m_pSplash = new cbSplashScreen(bmp, -1l, 0, -1, wxNO_BORDER | wxFRAME_NO_TASKBAR);
 		Manager::Yield();
 	}
 }

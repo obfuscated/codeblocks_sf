@@ -44,12 +44,30 @@ void cbSplashScreen::OnEraseBackground(wxEraseEvent &event)
 
 void cbSplashScreen::OnTimer(wxTimerEvent &)
 {
-  Hide();
   Close(true);
 }
 
-cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, long style)
-: wxFrame(0, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, style),
+void cbSplashScreen::OnCloseWindow(wxCloseEvent &)
+{
+  m_timer.Stop();
+  this->Destroy();
+}
+
+void cbSplashScreen::OnChar(wxKeyEvent &)
+{
+  Close(true);
+}
+
+void cbSplashScreen::OnMouseEvent(wxMouseEvent &event)
+{
+  if (event.LeftDown() || event.RightDown())
+  {
+    Close(true);
+  }
+}
+
+cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, wxWindowID id, long style)
+: wxFrame(parent, id, wxEmptyString, wxPoint(0, 0), wxSize(100, 100), style),
   m_painted(false),
   m_timer(this, cbSplashScreen_timer_id)
 {
@@ -75,12 +93,13 @@ cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, long style)
   Show(true);
   SetThemeEnabled(false); // seems to be useful by description
   SetBackgroundStyle(wxBG_STYLE_CUSTOM); // the trick for GTK+ (notice it's after Show())
-
 #if defined(__WXMSW__) || defined(__WXMAC__)
   Update();
 #else
+
   wxYieldIfNeeded();
 #endif
+
 
   if (timeout != -1)
   {
@@ -88,8 +107,16 @@ cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, long style)
   }
 }
 
+cbSplashScreen::~cbSplashScreen()
+{
+  m_timer.Stop();
+}
+
 BEGIN_EVENT_TABLE(cbSplashScreen, wxFrame)
   EVT_PAINT(cbSplashScreen::OnPaint)
   EVT_TIMER(cbSplashScreen_timer_id, cbSplashScreen::OnTimer)
   EVT_ERASE_BACKGROUND(cbSplashScreen::OnEraseBackground)
+  EVT_CLOSE(cbSplashScreen::OnCloseWindow)
+  EVT_CHAR(cbSplashScreen::OnChar)
+  EVT_MOUSE_EVENTS(cbSplashScreen::OnMouseEvent)
 END_EVENT_TABLE()
