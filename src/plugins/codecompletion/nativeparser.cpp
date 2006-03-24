@@ -343,6 +343,7 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
 	}
 	if (!files.IsEmpty())
     {
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Passing list of files to parse"));
         parser->BatchParse(files);
     }
 }

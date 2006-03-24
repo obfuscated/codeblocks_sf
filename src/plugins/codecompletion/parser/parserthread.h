@@ -73,6 +73,11 @@ class ParserThread : public cbThreadPoolTask
 		wxString m_LastToken;
         ParserThreadOptions m_Options;
 		wxArrayString  m_EncounteredNamespaces; // for member funcs implementation
+
+        bool InitTokenizer();
+
+		bool m_IsBuffer;
+		wxString m_Buffer;
 };
 
 #endif // PARSERTHREAD_H

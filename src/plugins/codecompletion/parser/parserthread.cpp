@@ -114,21 +114,12 @@ ParserThread::ParserThread(Parser* parent,
 	m_pLastParent(0),
 	m_File(0),
 	m_IsLocal(isLocal),
-	m_Options(options)
+	m_Options(options),
+	m_IsBuffer(options.useBuffer),
+	m_Buffer(bufferOrFilename)
 {
 	//ctor
 	m_Tokenizer.m_Options.wantPreprocessor = options.wantPreprocessor;
-
-	if (!bufferOrFilename.IsEmpty())
-	{
-		if (!options.useBuffer)
-		{
-			m_Filename = bufferOrFilename;
-			m_Tokenizer.Init(m_Filename);
-		}
-		else
-			m_Tokenizer.InitFromBuffer(bufferOrFilename);
-	}
 	m_LastScope = tsUndefined;
 }
 
@@ -352,8 +343,26 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 	return true;
 }
 
+bool ParserThread::InitTokenizer()
+{
+    if (!m_Buffer.IsEmpty())
+	{
+		if (!m_IsBuffer)
+		{
+			m_Filename = m_Buffer;
+			return m_Tokenizer.Init(m_Filename);
+		}
+
+        return m_Tokenizer.InitFromBuffer(m_Buffer);
+	}
+	return false;
+}
+
 bool ParserThread::Parse()
 {
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("> parsing %s"),m_Filename.c_str());
+    if (!InitTokenizer())
+        return false;
     bool result = false;
 
     do

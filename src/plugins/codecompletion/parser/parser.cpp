@@ -1042,6 +1042,7 @@ void Parser::OnTimer(wxTimerEvent& event)
 void Parser::OnBatchTimer(wxTimerEvent& event)
 {
 #ifndef CODECOMPLETION_PROFILING
+    Manager::Get()->GetMessageManager()->DebugLog(_T("starting batch"));
     if(m_IsBatch)
     {
         m_IsBatch = false;
