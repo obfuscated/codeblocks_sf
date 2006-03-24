@@ -743,7 +743,7 @@ int wxBinderApp::FilterEvent(wxEvent &ev)
 
 		// pass this event to our keybinder
 		m_pGlobalBinder->OnChar((wxKeyEvent &)ev, client);
-		return ev.m_skipped;
+		return ev.GetSkipped();
 	}
 
 	return -1;
@@ -1061,7 +1061,7 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 
 		wxLogDebug(wxT("wxKeyBinder::OnChar - calling the Exec() function of the [%s] ")
 				wxT("wxCmd on the keycode [%d] (event timestamp: %ld)"),
-				p->GetName().c_str(), event.GetKeyCode(), event.m_timeStamp);
+				p->GetName().c_str(), event.GetKeyCode(), event.GetTimestamp());
 		wxLogDebug(wxT("wxKeyBinder::OnChar - window[%s][%p]"),
                 ((wxWindow*)event.GetEventObject())->GetName().GetData(),
                  event.GetEventObject() );
