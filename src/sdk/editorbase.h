@@ -4,6 +4,7 @@
 #include <wx/hashmap.h>
 #include <wx/frame.h>
 #include <wx/panel.h>
+#include "globals.h"
 #include "settings.h"
 
 class wxMenu;
