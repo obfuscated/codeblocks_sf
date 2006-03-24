@@ -884,7 +884,7 @@ wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, cons
 					{
 					    FileTreeData* ftd = new FileTreeData(*data);
 					    ftd->SetKind(FileTreeData::ftdkFolder);
-					    ftd->SetFolder(m_BasePath + GetRelativeFolderPath(tree, parent) + folder + wxFILE_SEP_PATH);
+					    ftd->SetFolder(m_CommonTopLevelPath + GetRelativeFolderPath(tree, parent) + folder + wxFILE_SEP_PATH);
 					    ftd->SetProjectFile(0);
 						newparent = tree->InsertItem(parent, lastChild, folder, fldIdx, fldIdx, ftd);
 						break;
@@ -894,7 +894,7 @@ wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, cons
 				{
                     FileTreeData* ftd = new FileTreeData(*data);
                     ftd->SetKind(FileTreeData::ftdkFolder);
-                    ftd->SetFolder(m_BasePath + GetRelativeFolderPath(tree, parent) + folder + wxFILE_SEP_PATH);
+                    ftd->SetFolder(m_CommonTopLevelPath + GetRelativeFolderPath(tree, parent) + folder + wxFILE_SEP_PATH);
                     ftd->SetProjectFile(0);
 					newparent = tree->PrependItem(parent, folder, fldIdx, fldIdx, ftd);
 					break;
@@ -906,7 +906,7 @@ wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree, const wxString& text, cons
 			{
                 FileTreeData* ftd = new FileTreeData(*data);
                 ftd->SetKind(FileTreeData::ftdkFolder);
-                ftd->SetFolder(m_BasePath + GetRelativeFolderPath(tree, parent) + folder + wxFILE_SEP_PATH);
+                ftd->SetFolder(m_CommonTopLevelPath + GetRelativeFolderPath(tree, parent) + folder + wxFILE_SEP_PATH);
                 ftd->SetProjectFile(0);
 				newparent = tree->AppendItem(parent, folder, fldIdx, fldIdx, ftd);
 			}
