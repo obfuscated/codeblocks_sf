@@ -1061,7 +1061,7 @@ void CompilerOptionsDlg::OnRemoveDirClick(wxCommandEvent& event)
 void CompilerOptionsDlg::OnClearDirClick(wxCommandEvent& event)
 {
     wxListBox* control = GetDirsListBox();
-    if (!control || control->GetSelection() < 0)
+    if (!control || control->GetCount() == 0)
         return;
 	if (cbMessageBox(_("Remove all directories from the list?"),
 					_("Confirmation"),
@@ -1163,15 +1163,15 @@ void CompilerOptionsDlg::OnClearVarClick(wxCommandEvent& event)
                    _("Confirmation"),
                    wxYES | wxNO | wxICON_QUESTION) == wxID_YES)
 	{
-    // Unset all variables of lstVars
-    for (int i=0; i<lstVars->GetCount(); i++)
-    {
-      wxString key = lstVars->GetString(i).BeforeFirst(_T('=')).Trim(true);
-      if (!key.IsEmpty())
-        base->UnsetVar(key);
-    }
+        // Unset all variables of lstVars
+        for (int i=0; i<lstVars->GetCount(); i++)
+        {
+          wxString key = lstVars->GetString(i).BeforeFirst(_T('=')).Trim(true);
+          if (!key.IsEmpty())
+            base->UnsetVar(key);
+        }
 
-    lstVars->Clear();
+        lstVars->Clear();
 	}
 }
 
@@ -1344,7 +1344,7 @@ void CompilerOptionsDlg::OnRemoveLibClick(wxCommandEvent& event)
 void CompilerOptionsDlg::OnClearLibClick(wxCommandEvent& event)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
-    if (!lstLibs || lstLibs->GetSelection() < 0)
+    if (!lstLibs || lstLibs->GetCount() == 0)
         return;
     if (cbMessageBox(_("Remove all libraries from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxID_OK)
         lstLibs->Clear();
