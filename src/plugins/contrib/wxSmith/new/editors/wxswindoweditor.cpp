@@ -103,6 +103,7 @@ static const long wxsQuickPropsId = wxNewId();
 
 wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsResource* Resource):
     wxsEditor(parent,_T("x"),Resource),
+    TopPreview(NULL),
     QuickPropsOpen(false),
     ResourceLockCnt(0)
 {
@@ -214,7 +215,7 @@ void wxsWindowEditor::BuildPreview()
 
     wxsItem* TopItem = GetWinRes()->GetRootItem();
     wxObject* TopPreviewObject = TopItem ? TopItem->BuildPreview(Content,false) : NULL;
-    wxWindow* TopPreview = wxDynamicCast(TopPreviewObject,wxWindow);
+    TopPreview = wxDynamicCast(TopPreviewObject,wxWindow);
     if ( !TopPreview )
     {
         delete TopPreviewObject;

@@ -89,7 +89,7 @@ void wxsPropertyContainer::PropStreamWrite(wxsPropertyStream* Stream)
 {
     wxMutexLocker Lock(Mutex);
     Flags = (GetPropertiesFlags() & ~(flPropGrid|flXml)) | flPropStream;
-    IsRead = true;
+    IsRead = false;
     CurrentStream = Stream;
     EnumProperties(Flags);
 
@@ -219,15 +219,17 @@ void wxsPropertyContainer::Property(wxsProperty& Prop,long PropertyFlags)
             wxMessageBox(_T("wxsPropertyContainer::Property() function has been\n")
                          _T("called manually. If You are the Developer,\n")
                          _T("please remove this code."));
+
     }
 }
 
 void wxsPropertyContainer::SubContainer(wxsPropertyContainer* Container,long NewFlags)
 {
     if ( !Container ) return;
-    NewFlags &= ~(flPropGrid|flXml|flPropStream);
-    NewFlags |= Flags & (flPropGrid|flXml|flPropStream);
-    Container->Flags = NewFlags;
+    long FlagsStore = Flags;
+    // Flags will be replaced using NewFlags but bits used internally by wxsPropertyContainer will be left untouched
+    Flags = ( Flags    &  (flPropGrid|flXml|flPropStream) ) |   // Leaving old part of data processing type
+            ( NewFlags & ~(flPropGrid|flXml|flPropStream) );    // Rest taken from new properties
     Container->EnumProperties(NewFlags);
-    Container->Flags = 0;
+    Flags = FlagsStore;
 }

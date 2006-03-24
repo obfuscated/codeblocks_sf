@@ -4,8 +4,9 @@
 #include <messagemanager.h>
 #include "properties/wxsproperties.h"
 #include "wxssizerparentqp.h"
+#include "wxsitemfactory.h"
 
-namespace 
+namespace
 {
     class wxsSizerPreview: public wxPanel
     {
@@ -45,17 +46,17 @@ wxsSizer::wxsSizer(wxsWindowRes* Resource): wxsParent(Resource)
 void wxsSizer::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
 {
     BuildSizerCreatingCode(Code,Language);
-    
+
     bool UnknownLang = false;
     int Count = GetChildCount();
     for ( int i=0; i<Count; i++ )
     {
         wxsItem* Child = GetChild(i);
         wxsSizerExtra* Extra = (wxsSizerExtra*)GetChildExtra(i);
-        
+
         // Using same parent as we got, sizer is not a parent window
         Child->BuildCreatingCode(Code,WindowParent,Language);
-        
+
         switch ( Child->GetType() )
         {
             case wxsTWidget:
@@ -73,23 +74,23 @@ void wxsSizer::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxs
                              << _T(");\n");
                         break;
                     }
-                    
+
                     default:
                     {
                         UnknownLang = true;
                     }
                 }
                 break;
-            
+
             case wxsTSpacer:
                 // Spacer added using wxSizer::Add(width,height,...)
                 // TODO: Code it when wxsSpacer is done
                 break;
-                
+
             default:;
         }
     }
-    
+
     if ( UnknownLang )
     {
         DBGLOG(_T("wxSmith: Unknown coding language (id: %d)"),Language);
@@ -99,24 +100,24 @@ void wxsSizer::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxs
 wxObject* wxsSizer::BuildPreview(wxWindow* Parent,bool Exact)
 {
     wxWindow* NewParent = Parent;
-    
+
     if ( !Exact )
     {
         NewParent = new wxsSizerPreview(Parent);
     }
-    
+
     wxSizer* Sizer = BuildSizerPreview();
     int Count = GetChildCount();
     for ( int i=0; i<Count; i++ )
     {
         wxsItem* Child = GetChild(i);
         wxsSizerExtra* Extra = (wxsSizerExtra*)GetChildExtra(i);
-        
+
         // We pass either Parent passed to current BuildPreview function
         // or pointer to additional parent currently created
         wxObject* ChildPreview = Child->BuildPreview(NewParent,Exact);
         if ( ChildPreview ) continue;
-        
+
         wxSizer*  ChildAsSizer = wxDynamicCast(ChildPreview,wxSizer);
         if ( ChildAsSizer )
         {
@@ -145,7 +146,7 @@ wxObject* wxsSizer::BuildPreview(wxWindow* Parent,bool Exact)
         Sizer->SetSizeHints(NewParent);
         return NewParent;
     }
-    
+
     return Sizer;
 }
 
@@ -162,4 +163,39 @@ void wxsSizer::AddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
     {
         QPP->Register(new wxsSizerParentQP(QPP,(wxsSizerExtra*)GetChildExtra(Index)),_("Sizer"));
     }
+}
+
+bool wxsSizer::XmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
+{
+    if ( cbC2U(Elem->Attribute("class")) == _T("spacer") )
+    {
+        wxsItem* Item = wxsGEN(_T("spacer"),GetResource());
+        if ( !AddChild(Item) )
+        {
+            delete Item;
+            return false;
+        }
+        RestoreExtraData(GetChildCount()-1,Elem);
+        return Item->XmlRead(Elem,IsXRC,IsExtra);
+    }
+
+    return wxsParent::XmlReadChild(Elem,IsXRC,IsExtra);
+}
+
+bool wxsSizer::XmlWriteChild(int Index,TiXmlElement* Elem,bool IsXRC,bool IsExtra)
+{
+    wxsItem* Child = GetChild(Index);
+    if ( Child->GetType() == wxsTSpacer )
+    {
+        Elem->SetAttribute("class","spacer");
+        StoreExtraData(Index,Elem);
+        return Child->XmlWrite(Elem,IsXRC,IsExtra);
+    }
+
+    return wxsParent::XmlWriteChild(Index,Elem,IsXRC,IsExtra);
+}
+
+wxString wxsSizer::XmlGetExtraObjectClass()
+{
+    return _T("sizeritem");
 }

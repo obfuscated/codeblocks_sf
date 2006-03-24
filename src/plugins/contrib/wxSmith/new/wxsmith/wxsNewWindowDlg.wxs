@@ -1,5 +1,6 @@
 <resource>
     <object class="wxDialog" name="wxsNewWindowDlg">
+        <style>wxDEFAULT_DIALOG_STYLE</style>
         <object class="wxBoxSizer" variable="BoxSizer1" member="yes">
             <orient>wxVERTICAL</orient>
             <object class="sizeritem">

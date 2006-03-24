@@ -116,9 +116,6 @@ class wxsProject
         wxFileName WorkingPath;         ///< \brief Directory where wxSmith's private data will be stored
         cbProject* Project;             ///< \brief Project associated with project
         wxTreeItemId TreeItem;          ///< \brief Tree item where project's resources are kept
-        wxTreeItemId DialogId;          ///< \brief Tree item for dialog resourcecs
-        wxTreeItemId FrameId;           ///< \brief Tree item for frame resources
-        wxTreeItemId PanelId;           ///< \brief Tree item for panel resources
 
         wxsProjectConfig Config;        ///< \brief Configuration of project
 
@@ -126,6 +123,10 @@ class wxsProject
 
         ResourcesT Resources;           ///< \brief Array of resources
         bool Modified;                  ///< \brief Set to true when there was any change inside wxSmith project
+
+        WX_DECLARE_STRING_HASH_MAP(wxTreeItemId,ResBrowserIdsT);
+        typedef ResBrowserIdsT::iterator ResBrowserIdsI;
+        ResBrowserIdsT ResBrowserIds;
 
         friend class wxsWindowRes;
 };

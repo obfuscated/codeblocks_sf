@@ -45,6 +45,12 @@ class wxsWindowRes : public wxsResource
          */
         virtual bool LoadConfiguration(TiXmlElement* Element);
 
+        /** \brief Generating new resource with given configuration
+          *
+          * \warning Does not check if new files do exist
+          */
+        bool CreateNewResource(TiXmlElement* Element);
+
         /** \brief Function storing configuration of this resource to given
          *         xml element
          */
@@ -152,12 +158,6 @@ class wxsWindowRes : public wxsResource
 
 		/** \brief Checking if file is used by this resource */
 		virtual bool UsingFile(const wxString& FileName);
-
-        /** \brief Generating empty source and header file.
-          *
-          * \warning Does not check if files does exist
-          */
-        bool GenerateEmptySources();
 
     protected:
 

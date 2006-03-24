@@ -78,17 +78,28 @@ class wxsSizer: public wxsParent
          */
          wxObject* BuildPreview(wxWindow* Parent,bool Exact);
 
-         /** \brief Funciton creating additional data
-          *
-          * There's additional data configuring widget inside sizer - it does
-          * define placement, borders and some other flags.
-          */
-         virtual wxsPropertyContainer* BuildExtra();
+        /** \brief Funciton creating additional data
+         *
+         * There's additional data configuring widget inside sizer - it does
+         * define placement, borders and some other flags.
+         */
+        virtual wxsPropertyContainer* BuildExtra();
 
-         /** \brief Function adding additional QPP child panel */
-         virtual void AddChildQPP(wxsItem* Child,wxsAdvQPP* QPP);
+        /** \brief Function adding additional QPP child panel */
+        virtual void AddChildQPP(wxsItem* Child,wxsAdvQPP* QPP);
 
 // TODO (SpOoN##): Add GetPropertiesFlags()
+
+    protected:
+
+        /** \brief Custom child loading function - needed to support Spacer exception */
+        virtual bool XmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra);
+
+        /** \brief Custom child writing function - needed to support Spacer exception */
+        virtual bool XmlWriteChild(int Index,TiXmlElement* Elem,bool IsXRC,bool IsExtra);
+
+        /** \brief Name of extra object node will be returned here */
+        virtual wxString XmlGetExtraObjectClass();
 };
 
 #endif

@@ -8,6 +8,7 @@
 #include "../wxsitemfactory.h"
 #include "../wxsextresmanager.h"
 #include "../wxseditor.h"
+#include "../editors/wxswindoweditor.h"
 #include <manager.h>
 #include <editormanager.h>
 #include <messagemanager.h>
@@ -157,7 +158,7 @@ bool wxsWindowRes::UsingXRC()
 wxsEditor* wxsWindowRes::CreateEditor()
 {
     // Loading resource
-    if ( !LoadResource() )
+    if ( !GetRootItem() && !LoadResource() )
     {
         wxMessageBox(_("Error while loading resource"));
         return NULL;
@@ -170,17 +171,13 @@ wxsEditor* wxsWindowRes::CreateEditor()
 	RootItem->BuildItemTree(wxsTREE(),GetTreeItemId());
 
 	// Creating new editor
-	// TODO: Uncomment when done
-    //wxsWindowEditor* Edit = new wxsWindowEditor(Manager::Get()->GetEditorManager()->GetNotebook(),this);
-    //return Edit;
-
-    return NULL;
+    wxsWindowEditor* Edit = new wxsWindowEditor(Manager::Get()->GetEditorManager()->GetNotebook(),this);
+    return Edit;
 }
 
 void wxsWindowRes::EditorClosed()
 {
     wxsTREE()->UnselectAll();
-    wxsTREE()->SelectItem(GetTreeItemId());
     wxsTREE()->DeleteChildren(GetTreeItemId());
     if ( RootItem )
     {
@@ -206,13 +203,14 @@ bool wxsWindowRes::LoadResource()
 	if ( RootItem )
 	{
 	    wxsKILL(RootItem);
-	    RootItem = BuildRootItem();
-	    if ( !RootItem )
-	    {
-            DBGLOG(_T("Internal wxSmith error: Did not create root resource item"));
-            return false;
-	    }
 	}
+
+	RootItem = BuildRootItem();
+    if ( !RootItem )
+    {
+        DBGLOG(_T("Internal wxSmith error: Did not create root resource item"));
+        return false;
+    }
 
     bool RequireUpdate = false;     // Will be set to true if convertin from old format (duplcated structure) to new one (separate structure and extra info)
 
@@ -368,6 +366,7 @@ bool wxsWindowRes::LoadResource()
 void wxsWindowRes::SaveResource()
 {
     if ( !GetModified() ) return;
+    if ( !RootItem ) return;
 
     wxString GlobalXRC = GetProject() ? GetProject()->GetProjectFileName(XrcFile) : XrcFile;
 	wxString GlobalWXS = GetProject() ? GetProject()->GetInternalFileName(WxsFile) : WxsFile;
@@ -550,9 +549,12 @@ void wxsWindowRes::NotifyPreviewClosed()
     Preview = NULL;
 }
 
-bool wxsWindowRes::GenerateEmptySources()
+bool wxsWindowRes::CreateNewResource(TiXmlElement* Element)
 {
     if ( !GetProject() ) return false;
+
+    // Forcing resource to load configuration
+    LoadConfiguration(Element);
 
     // Generating guard macro name
 
@@ -595,6 +597,9 @@ bool wxsWindowRes::GenerateEmptySources()
     if ( !File.IsOpened() ) return false;
     File.Write(Content);
     File.Close();
+
+    // Generating new root item
+    RootItem = BuildRootItem();
     return true;
 }
 

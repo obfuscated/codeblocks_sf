@@ -4,14 +4,15 @@
 	<Project>
 		<Option title="wxSmith" />
 		<Option pch_mode="0" />
-		<Option default_target="1" />
+		<Option default_target="-1" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxSmith">
 				<Option output="..\..\..\..\devel\share\CodeBlocks\plugins\wxsmith.dll" />
-				<Option working_dir="..\..\..\..\devel\share\CodeBlocks\plugins" />
+				<Option working_dir="..\..\..\..\devel" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option host_application="./codeblocks.exe" />
 				<Option includeInTargetAll="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
 				<Linker>

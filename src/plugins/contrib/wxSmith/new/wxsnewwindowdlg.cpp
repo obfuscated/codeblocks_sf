@@ -40,7 +40,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType):
     wxButton* Button1;
     wxButton* Button2;
 
-    Create(parent,id,_T(""),wxDefaultPosition,wxDefaultSize,0);
+    Create(parent,id,_T(""),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE);
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL,this,_("Options"));
     FlexGridSizer1 = new wxFlexGridSizer(0,2,5,5);
@@ -198,18 +198,11 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
         return;
     }
 
-    if ( !NewWindow->LoadConfiguration(&Config) )
+    if ( !NewWindow->CreateNewResource(&Config) )
     {
         delete NewWindow;
-        DBGLOG(_T("wxSmith: Outdated resource configuration when creating resource"));
+        DBGLOG(_T("wxSmith: Couldn't generate new resource"));
         Close();
-        return;
-    }
-
-    if ( !NewWindow->GenerateEmptySources() )
-    {
-        wxMessageBox(_("Couldn't generate sources"),_("Error"),wxOK|wxICON_ERROR);
-        delete NewWindow;
         return;
     }
 
@@ -241,7 +234,9 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     Manager::Get()->GetProjectManager()->RebuildTree();
 
     // Opening editor for this resource
-    NewWindow->EditOpen();
+
+    // TODO: Open editor for this resource
+    //NewWindow->EditOpen();
 
     Close();
 }

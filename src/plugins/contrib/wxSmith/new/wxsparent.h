@@ -68,6 +68,12 @@ class wxsParent: public wxsItem
         /** \brief Function setting up child's extra data from xml node */
         void RestoreExtraData(int Index,TiXmlElement* Element);
 
+        /** \brief Rewritten xml reading function - it will add support for children loading */
+        virtual bool XmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra);
+
+        /** \brief Rewritten xml writing function - it will add support for children saving */
+        virtual bool XmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
+
     protected:
 
         /** \brief Function checking if given item can be added to this one
@@ -109,6 +115,33 @@ class wxsParent: public wxsItem
 
         /** \brief Function getting extra data for given child */
         wxsPropertyContainer* GetChildExtra(int Index);
+
+        /** \brief Function loading child from given xml node
+         *
+         * This function will be called for each <object...> nodes inside
+         * parent. It must validate this node and add children if this can
+         * be done. By default, this function simply load new class, but some
+         * containers require extended objects (like sizeritem) to store
+         * additional data.
+         */
+        virtual bool XmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra);
+
+        /** \brief Function saving child to goven xml node
+         *
+         * This function will be called for each child. Element passed
+         * as param is pointer to newly created <object...> node where
+         * child should be stored.
+         */
+        virtual bool XmlWriteChild(int Index,TiXmlElement* Elem,bool IsXRC,bool IsExtra);
+
+        /** \brief Returning name of additional object created for child items
+         *
+         * This function affects behaviour of standard XmlReadChild and XmlWriteChild
+         * functions. If it returns non-empty string, child items will have
+         * additional <object...> xml node created and it will use StoreExtraData and
+         * RestoreExtraData to save extra informations.
+         */
+        virtual wxString XmlGetExtraObjectClass() { return wxEmptyString; }
 
     private:
 

@@ -77,7 +77,7 @@ wxsProject::wxsProject(cbProject* _Project):
 wxsProject::~wxsProject()
 {
     // Saving pending changes
-    SaveProject();
+    if ( Modified ) SaveProject();
 
     // Removing all resources
     size_t Count = Resources.Count();
@@ -98,21 +98,32 @@ wxsProject::~wxsProject()
 
 void wxsProject::BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd)
 {
-    DialogId = Tree->AppendItem(WhereToAdd,_("Dialog resources"));
-    FrameId  = Tree->AppendItem(WhereToAdd,_("Frame resources"));
-    PanelId  = Tree->AppendItem(WhereToAdd,_("Panel resources"));
+    int Cnt = wxsRESFACTORY()->GetResTypesCnt();
+    for ( int i=0; i<Cnt; i++ )
+    {
+        ResBrowserIds[wxsRESFACTORY()->GetResType(i)] =
+            Tree->AppendItem(WhereToAdd,wxsRESFACTORY()->GetResBrowserName(i));
+    }
+
     size_t Count = Resources.Count();
     for ( size_t i=0; i<Count; i++ )
     {
         wxString Type = Resources[i]->GetType();
-        if ( Type == _T("dialog") ) Resources[i]->BuildTree(Tree,DialogId); else
-        if ( Type == _T("frame")  ) Resources[i]->BuildTree(Tree,FrameId);  else
-        if ( Type == _T("panel")  ) Resources[i]->BuildTree(Tree,PanelId);  else
-                                    Resources[i]->BuildTree(Tree,WhereToAdd);
+
+        ResBrowserIdsI it = ResBrowserIds.find(Type);
+        if ( it != ResBrowserIds.end() )
+        {
+            Resources[i]->BuildTree(Tree,it->second);
+        }
+        else
+        {
+            Resources[i]->BuildTree(Tree,WhereToAdd);
+        }
     }
-    Tree->Expand(DialogId);
-    Tree->Expand(FrameId);
-    Tree->Expand(PanelId);
+    for ( ResBrowserIdsI i = ResBrowserIds.begin(); i!=ResBrowserIds.end(); ++i )
+    {
+        Tree->Expand(i->second);
+    }
     Tree->Expand(WhereToAdd);
     Tree->Refresh();
 }
@@ -128,6 +139,7 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
         wxsResource* Res = wxsRESFACTORY()->Build(Type,this);
         if ( !Res )
         {
+            DBGLOG(_T("wxSmith: Couldn't create resource of type %s"),Type.c_str());
             continue;
         }
 
@@ -187,13 +199,25 @@ bool wxsProject::LoadFromXml(TiXmlNode* MainNode)
 
 bool wxsProject::AddResource(wxsResource* Resource)
 {
-    // Validating type
-    wxString Type = Resource->GetType();
-    if ( Type == _T("dialog") ) { Resource->BuildTree(wxsTREE(),DialogId); Modified=true; Resources.Add(Resource); return true; }
-    if ( Type == _T("frame")  ) { Resource->BuildTree(wxsTREE(),FrameId);  Modified=true; Resources.Add(Resource); return true; }
-    if ( Type == _T("panel")  ) { Resource->BuildTree(wxsTREE(),PanelId);  Modified=true; Resources.Add(Resource); return true; }
+    if ( Resource == NULL )
+    {
+        return false;
+    }
 
-    return false;
+    wxString Type = Resource->GetType();
+    ResBrowserIdsI it = ResBrowserIds.find(Type);
+    if ( it != ResBrowserIds.end() )
+    {
+        Resource->BuildTree(wxsTREE(),it->second);
+    }
+    else
+    {
+        Resource->BuildTree(wxsTREE(),TreeItem);
+    }
+    Resources.Add(Resource);
+    Modified = true;
+
+    return true;
 }
 
 bool wxsProject::CheckProjFileExists(const wxString& FileName)
@@ -289,7 +313,7 @@ bool wxsProject::AddSmithConfig()
 
     if ( ! wxFileName::Mkdir(WorkingPath.GetPath(wxPATH_GET_VOLUME),0744,wxPATH_MKDIR_FULL) )
     {
-        wxMessageBox(_("Couldn't create wxsmith directory in main projet's path"),_("Error"),wxOK|wxICON_ERROR);
+        ::wxMessageBox(_("Couldn't create wxsmith directory in main projet's path"),_("Error"),wxOK|wxICON_ERROR);
         return false;
     }
 

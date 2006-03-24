@@ -10,7 +10,10 @@
 
 wxsItem::wxsItem(wxsWindowRes* _Resource):
     Parent(NULL),
-    Resource(_Resource)
+    Resource(_Resource),
+    IsMember(true),
+    Preview(NULL),
+    IsSelected(false)
 {
 }
 
@@ -95,8 +98,9 @@ bool wxsItem::XmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
     if ( IsExtra )
     {
         VarName = cbC2U(Element->Attribute("variable"));
-        IsMember = strcmp(Element->Attribute("member"),"yes") == 0;
-        Events.XmlSaveFunctions(Element);
+        const char* MbrText = Element->Attribute("member");
+        IsMember = !MbrText || !strcmp(MbrText,"yes");
+        Events.XmlLoadFunctions(Element);
     }
 
     // TODO: Check if all functions return false

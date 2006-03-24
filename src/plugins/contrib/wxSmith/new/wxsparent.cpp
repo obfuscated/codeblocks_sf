@@ -168,3 +168,87 @@ wxsPropertyContainer* wxsParent::GetChildExtra(int Index)
     if ( Index >= (int)Extra.Count() ) return NULL;
     return Extra[Index];
 }
+
+bool wxsParent::XmlRead(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
+{
+    bool Ret = wxsItem::XmlRead(Elem,IsXRC,IsExtra);
+    if ( IsXRC )
+    {
+        for ( TiXmlElement* Object = Elem->FirstChildElement(); Object; Object = Object->NextSiblingElement() )
+        {
+            if ( strcmp(Object->Value(),"object") ) continue;
+            if ( !XmlReadChild(Object,IsXRC,IsExtra) ) Ret = false;
+        }
+    }
+    return Ret;
+}
+
+bool wxsParent::XmlWrite(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
+{
+    bool Ret = wxsItem::XmlWrite(Elem,IsXRC,IsExtra);
+    if ( IsXRC )
+    {
+        for ( size_t i=0; i<Children.Count(); i++ )
+        {
+            TiXmlElement* Object = Elem->InsertEndChild(TiXmlElement("object"))->ToElement();
+            if ( !XmlWriteChild((int)i,Object,IsXRC,IsExtra) )
+            {
+                Elem->RemoveChild(Object);
+                Ret = false;
+            }
+        }
+    }
+    return Ret;
+}
+
+bool wxsParent::XmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
+{
+    wxString ExtraName = XmlGetExtraObjectClass();
+    TiXmlElement* RealElem = Elem;
+
+    // Finding out what's real node for item
+    if ( !ExtraName.empty() )
+    {
+        if ( cbC2U(Elem->Attribute("class")) != ExtraName ) return false;
+        RealElem = Elem->FirstChildElement("object");
+        if ( !RealElem ) return false;
+    }
+
+    // Creating new item from class name
+    // TODO: Add support for custom classes
+    wxsItem* NewItem = wxsGEN(cbC2U(RealElem->Attribute("class")),GetResource());
+    if ( !NewItem ) return false;
+
+    // Trying to add new item to this class
+    if ( !AddChild(NewItem) )
+    {
+        delete NewItem;
+        return false;
+    }
+
+    // Loading extra data
+    if ( !ExtraName.empty() )
+    {
+        RestoreExtraData(Children.Count()-1,Elem);
+    }
+
+    // Loading item
+    return NewItem->XmlRead(RealElem,IsXRC,IsExtra);
+}
+
+bool wxsParent::XmlWriteChild(int Index,TiXmlElement* Elem,bool IsXRC,bool IsExtra)
+{
+    wxString ExtraName = XmlGetExtraObjectClass();
+    TiXmlElement* RealElem = Elem;
+
+    // Storing extra data
+    if ( !ExtraName.empty() )
+    {
+        RealElem = Elem->InsertEndChild(TiXmlElement("object"))->ToElement();
+        StoreExtraData(Index,Elem);
+    }
+
+    // Saving child item
+    RealElem->SetAttribute("class",cbU2C(Children[Index]->GetInfo().Name));
+    return Children[Index]->XmlWrite(RealElem,IsXRC,IsExtra);
+}
