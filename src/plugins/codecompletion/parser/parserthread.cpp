@@ -679,9 +679,9 @@ Token* ParserThread::TokenExists(const wxString& name, Token* parent, short int 
         parentidx = -1;
     else
         parentidx = parent->GetSelf();
-    s_MutexProtection.Enter();
+    // no critical section needed here:
+    // all functions that call this, already entered a critical section.
     result = m_pTokens->at(m_pTokens->TokenExists(name, parentidx, kindMask));
-    s_MutexProtection.Leave();
     return result;
 }
 

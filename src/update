@@ -70,9 +70,9 @@ cp -f devel/codeblocks output > /dev/null
 cp -f devel/*.so output > /dev/null
 cp -f ${RESDIR}/plugins/*.so output/share/codeblocks/plugins > /dev/null
 echo Stripping debug info from output tree
-strip output/codeblocks
-strip output/*.so
-strip output/share/codeblocks/plugins/*.so
+#strip output/codeblocks
+#strip output/*.so
+#strip output/share/codeblocks/plugins/*.so
 
 echo Creating launch-scripts
 echo -e "#!/bin/sh\n" > output/run.sh

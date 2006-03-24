@@ -333,7 +333,9 @@ Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool us
     }
     if(!result && useInheritance)
     {
-        lock = new wxCriticalSectionLocker(s_MutexProtection);
+        // no reason for a critical section here:
+        // it will only recurse to itself.
+        // the critical section above is sufficient
         TokenIdxSet::iterator it;
         for(it = parent->m_Ancestors.begin();it != parent->m_Ancestors.end();++it)
         {
@@ -342,7 +344,6 @@ Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool us
             if(result)
                 break;
         }
-        delete lock;
     }
     return result;
 }
@@ -851,7 +852,7 @@ void Parser::OnTimer(wxTimerEvent& event)
 void Parser::OnBatchTimer(wxTimerEvent& event)
 {
 #ifndef CODECOMPLETION_PROFILING
-    Manager::Get()->GetMessageManager()->DebugLog(_T("starting batch"));
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Starting batch parsing"));
     if(m_IsBatch)
     {
         m_IsBatch = false;

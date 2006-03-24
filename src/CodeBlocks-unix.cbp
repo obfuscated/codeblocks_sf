@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="3" />
+	<FileVersion major="1" minor="4" />
 	<Project>
 		<Option title="Code::Blocks - Unix" />
 		<Option pch_mode="2" />
@@ -549,7 +549,8 @@
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Code-completion" />
-		</Unit>		<Unit filename="plugins/codecompletion/codecompletion.cpp">
+		</Unit>
+		<Unit filename="plugins/codecompletion/codecompletion.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Code-completion" />
 		</Unit>
