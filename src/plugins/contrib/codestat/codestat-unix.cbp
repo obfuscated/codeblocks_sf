@@ -20,7 +20,6 @@
 			<Add option="-g" />
 			<Add option="`wx-config --cflags`" />
 			<Add option="-Winvalid-pch" />
-			<Add option='-include &quot;sdk.h&quot;' />
 			<Add option="-fexceptions" />
 			<Add option="-fPIC" />
 			<Add option="-DCB_PRECOMP" />

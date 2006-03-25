@@ -6,14 +6,30 @@
  * Copyright: (c) Zlika
  * License:   GPL
   **************************************************************/
-
+#ifdef CB_PRECOMP
+#include "sdk.h"
+#else
+#include <wx/fs_zip.h>
+#include <wx/intl.h>
+#include <wx/string.h>
+#include <wx/xrc/xmlres.h>
+#include "cbproject.h"
+#include "configmanager.h"
+#include "licenses.h" // defines some common licenses (like the GPL)
+#include "manager.h"
+#include "messagemanager.h"
+#include "projectmanager.h"
+#endif
 #include "codestat.h"
+#include "codestatconfig.h"
+#include "codestatexec.h"
+#include "language_def.h"
 
 CB_IMPLEMENT_PLUGIN(CodeStat, "Code Statistics");
 
 CodeStat::CodeStat()
 {
-	 wxFileSystem::AddHandler(new wxZipFSHandler);
+	wxFileSystem::AddHandler(new wxZipFSHandler);
     wxXmlResource::Get()->InitAllHandlers();
     wxString resPath = ConfigManager::GetDataFolder();
     wxXmlResource::Get()->Load(resPath + _T("/codestat.zip#zip:*.xrc"));
@@ -74,12 +90,12 @@ int CodeStat::Execute()
     if (!m_IsAttached)
         return -1;
 
-   cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+   const cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
    // if no project open, exit
 	if (!project)
 	{
 		wxString msg = _("You need to open a project\nbefore using the plugin!");
-		wxMessageBox(msg, _("Error"), wxICON_ERROR | wxOK);
+		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
 		Manager::Get()->GetMessageManager()->DebugLog(msg);
 		return -1;
 	}
@@ -88,8 +104,7 @@ int CodeStat::Execute()
 
     // Load the language settings and launch the main function
     LanguageDef languages[NB_FILETYPES_MAX];
-    int nb_languages;
-    nb_languages = LoadSettings(languages);
+    int nb_languages = LoadSettings(languages);
     if(dlg->Execute(languages,nb_languages) != 0)
         return -1;
 

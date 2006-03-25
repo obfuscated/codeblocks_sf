@@ -11,6 +11,7 @@
 #define LANGUAGE_DEF_H
 
 #include <wx/string.h>
+#include <wx/arrstr.h>
 
 #define NB_FILETYPES_MAX  50  /**< Max number of languages supported. */
 
