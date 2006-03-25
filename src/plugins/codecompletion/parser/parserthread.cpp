@@ -890,33 +890,41 @@ void ParserThread::HandleDefines()
 void ParserThread::HandleNamespace()
 {
     wxString ns = m_Tokenizer.GetToken();
-    wxString next = m_Tokenizer.PeekToken();
 
-    if (next==ParserConsts::opbrace)
+    if (ns == ParserConsts::opbrace)
     {
-        // use the existing copy (if any)
-        Token* newToken = TokenExists(ns, 0, tkNamespace);
-        if (!newToken)
-            newToken = DoAddToken(tkNamespace, ns);
-        if (!newToken)
-            return;
-
-        m_Tokenizer.GetToken(); // eat {
-
-        Token* lastParent = m_pLastParent;
-        TokenScope lastScope = m_LastScope;
-
-        m_pLastParent = newToken;
-        // default scope is: public for namespaces (actually no, but emulate it)
-        m_LastScope = tsPublic;
-
+        // parse inside anonymous namespace
         DoParse();
-
-        m_pLastParent = lastParent;
-        m_LastScope = lastScope;
     }
     else
-        SkipToOneOfChars(ParserConsts::semicolonopbrace); // some kind of error in code ?
+    {
+        wxString next = m_Tokenizer.PeekToken(); // named namespace
+        if (next==ParserConsts::opbrace)
+        {
+            // use the existing copy (if any)
+            Token* newToken = TokenExists(ns, 0, tkNamespace);
+            if (!newToken)
+                newToken = DoAddToken(tkNamespace, ns);
+            if (!newToken)
+                return;
+
+            m_Tokenizer.GetToken(); // eat {
+
+            Token* lastParent = m_pLastParent;
+            TokenScope lastScope = m_LastScope;
+
+            m_pLastParent = newToken;
+            // default scope is: public for namespaces (actually no, but emulate it)
+            m_LastScope = tsPublic;
+
+            DoParse();
+
+            m_pLastParent = lastParent;
+            m_LastScope = lastScope;
+        }
+        else
+            SkipToOneOfChars(ParserConsts::semicolonopbrace); // some kind of error in code ?
+    }
 }
 
 void ParserThread::HandleClass(bool isClass)
