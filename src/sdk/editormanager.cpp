@@ -262,8 +262,16 @@ void EditorManager::ReleaseMenu(wxMenuBar* menuBar)
 void EditorManager::Configure()
 {
     SANITY_CHECK();
+
+    // editor lexers loading takes some time; better reflect this with a hourglass
+    wxBeginBusyCursor();
+
     EditorConfigurationDlg dlg(Manager::Get()->GetAppWindow());
     PlaceWindow(&dlg);
+
+    // done, restore pointer
+    wxEndBusyCursor();
+
     if (dlg.ShowModal() == wxID_OK)
     {
         // tell all open editors to re-create their styles
