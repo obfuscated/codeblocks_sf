@@ -631,6 +631,8 @@ wxMenu* ProjectManager::GetProjectMenu()
 cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt)
 {
     SANITY_CHECK(0L);
+    if (m_IsLoadingProject)
+		return 0L;
     cbProject* result = 0;
 
     // disallow application shutdown while opening files
