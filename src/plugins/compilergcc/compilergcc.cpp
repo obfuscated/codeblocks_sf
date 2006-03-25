@@ -1448,7 +1448,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         // for non-win platforms, use m_ConsoleTerm to run the console app
         wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
         term.Replace(_T("$TITLE"), _T("'") + m_Project->GetTitle() + _T("'"));
-        cmd << term << _T(" 'LD_LIBRARY_PATH=.$LD_LIBRARY_PATH ");
+        cmd << term << _T(" 'LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH ");
 #endif
         // should console runner be used?
         if (target->GetUseConsoleRunner())
