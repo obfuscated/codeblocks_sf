@@ -1333,6 +1333,11 @@ void DebuggerGDB::Stop()
 		}
 		else
 		{
+        #ifndef __WXMSW__
+            // non-windows gdb can interrupt the running process. yay!
+		    unsigned long pid = m_State.GetDriver()->GetChildPID();
+		    wxKill(pid, wxSIGINT);
+        #else
             m_pProcess->CloseOutput();
 			wxKillError err = m_pProcess->Kill(m_Pid, wxSIGKILL);
 			if (err == wxKILL_OK){
@@ -1341,6 +1346,7 @@ void DebuggerGDB::Stop()
 					_("Debug"), wxOK | wxICON_EXCLAMATION);
 */
 			}
+        #endif
 		}
 	}
 }
@@ -1378,6 +1384,9 @@ void DebuggerGDB::SyncEditor(const wxString& filename, int line, bool setMarker)
 {
     if (setMarker)
         ClearActiveMarkFromAllEditors();
+    FileType ft = FileTypeOf(filename);
+    if (ft == ftOther)
+        return; // don't try to open unknown files
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
 	ProjectFile* f = project ? project->GetFileByFilename(filename, false, true) : 0;
 	wxFileName fname(filename);

@@ -63,6 +63,8 @@ static wxRegEx reDisassembly(_T("(0x[0-9A-Za-z]+)[ \t]+<.*>:[ \t]+(.*)"));
 //  ebx at 0x22ff6c, ebp at 0x22ff78, esi at 0x22ff70, edi at 0x22ff74, eip at 0x22ff7c
 static wxRegEx reDisassemblyInit(_T("^Stack level [0-9]+, frame at (0x[A-Fa-f0-9]+):"));
 static wxRegEx reDisassemblyInitFunc(_T("eip = (0x[A-Fa-f0-9]+) in ([^;]*)"));
+// info program parsing child PID
+static wxRegEx reInfoProgram(_T("Using the running image of child process ([0-9]+)"));
 
 /**
   * Command to add a search directory for source files in debugger's paths.
@@ -385,6 +387,29 @@ class GdbCmd_InfoArguments : public DebuggerCmd
                 args << lines[i] << _T(',');
             args << _T("}") << _T('\n');
             m_pDTree->BuildTree(0, args, wsfGDB);
+        }
+};
+
+/**
+  * Command to get info about current program and state.
+  */
+class GdbCmd_InfoProgram : public DebuggerCmd
+{
+    public:
+        GdbCmd_InfoProgram(DebuggerDriver* driver)
+            : DebuggerCmd(driver)
+        {
+            m_Cmd << _T("info program");
+        }
+        void ParseOutput(const wxString& output)
+        {
+            if (reInfoProgram.Matches(output))
+            {
+                wxString pid_str = reInfoProgram.GetMatch(output, 1);
+                unsigned long pid;
+                if (pid_str.ToULong(&pid, 10))
+                    m_pDriver->SetChildPID(pid);
+            }
         }
 };
 

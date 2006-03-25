@@ -131,6 +131,10 @@ class DebuggerDriver
         virtual bool IsStopped(){ return m_ProgramIsStopped; }
         /** Get debugger cursor. */
         virtual const Cursor& GetCursor() const { return m_Cursor; }
+        /** Set child PID (debuggee's). Usually set by debugger commands. */
+        virtual void SetChildPID(unsigned long pid) { m_ChildPID = pid; }
+        /** Get the child's (debuggee's) PID. */
+        virtual unsigned long GetChildPID() const { return m_ChildPID; }
 
 		void QueueCommand(DebuggerCmd* dcmd, QueuePriority prio = Low); ///< add a command in the queue. The DebuggerCmd will be deleted automatically when finished.
 		DebuggerCmd* CurrentCommand(); ///< returns the currently executing command
@@ -154,6 +158,8 @@ class DebuggerDriver
         bool m_ProgramIsStopped;
         wxString m_LastCursorAddress;
         Cursor m_Cursor;
+
+        unsigned long m_ChildPID;
 
         // debugging windows pointers
         BacktraceDlg* m_pBacktrace;

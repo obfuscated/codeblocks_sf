@@ -5,6 +5,7 @@
 DebuggerDriver::DebuggerDriver(DebuggerGDB* plugin)
     : m_pDBG(plugin),
     m_ProgramIsStopped(true),
+    m_ChildPID(0),
     m_pBacktrace(0),
     m_pDisassembly(0),
     m_pExamineMemory(0),

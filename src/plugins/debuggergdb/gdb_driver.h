@@ -72,6 +72,8 @@ class GDB_driver : public DebuggerDriver
         void RegisterType(const wxString& name, const wxString& regex, const wxString& eval_func, const wxString& parse_func);
 
         TypesArray m_Types;
+        bool m_BreakOnEntry;
+        bool m_ManualBreakOnEntry;
 };
 
 #endif // GDB_DRIVER_H

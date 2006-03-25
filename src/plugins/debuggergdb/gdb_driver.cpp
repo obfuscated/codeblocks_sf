@@ -21,7 +21,9 @@ static wxRegEx reBreak2(_T("^(0x[A-z0-9]+) in (.*) from (.*)"));
 #endif
 
 GDB_driver::GDB_driver(DebuggerGDB* plugin)
-    : DebuggerDriver(plugin)
+    : DebuggerDriver(plugin),
+    m_BreakOnEntry(false),
+    m_ManualBreakOnEntry(false)
 {
     //ctor
 }
@@ -179,9 +181,12 @@ void GDB_driver::Prepare(bool isConsole)
 
 void GDB_driver::Start(bool breakOnEntry)
 {
+    m_BreakOnEntry = breakOnEntry;
+    m_ManualBreakOnEntry = true;
+
     // start the process
     ResetCursor();
-    QueueCommand(new DebuggerCmd(this, breakOnEntry ? _T("start") : _T("run")));
+    QueueCommand(new DebuggerCmd(this, _T("start")));
 }
 
 void GDB_driver::Stop()
@@ -423,7 +428,7 @@ void GDB_driver::ParseOutput(const wxString& output)
         }
 
         // signal
-        else if (lines[i].StartsWith(_T("Program received signal")))
+        else if (lines[i].StartsWith(_T("Program received signal SIGSEGV")))
         {
             Log(lines[i]);
             m_pDBG->BringAppToFront();
@@ -460,18 +465,28 @@ void GDB_driver::ParseOutput(const wxString& output)
             // C:/Devel/tmp/test_console_dbg/tmp/main.cpp:14:171:beg:0x401428
 			if ( reBreak.Matches(lines[i]) )
 			{
-			#ifdef __WXMSW__
-				m_Cursor.file = reBreak.GetMatch(lines[i], 1) + reBreak.GetMatch(lines[i], 2);
-				wxString lineStr = reBreak.GetMatch(lines[i], 3);
-				m_Cursor.address = reBreak.GetMatch(lines[i], 4);
-            #else
-				m_Cursor.file = reBreak.GetMatch(lines[i], 1);
-				wxString lineStr = reBreak.GetMatch(lines[i], 2);
-				m_Cursor.address = reBreak.GetMatch(lines[i], 3);
-            #endif
-				lineStr.ToLong(&m_Cursor.line);
-                m_Cursor.changed = true;
-                needsUpdate = true;
+			    if (m_ManualBreakOnEntry)
+			    {
+			        m_ManualBreakOnEntry = false;
+			        QueueCommand(new GdbCmd_InfoProgram(this), DebuggerDriver::High);
+			        if (!m_BreakOnEntry)
+                        Continue();
+			    }
+			    else
+			    {
+                #ifdef __WXMSW__
+                    m_Cursor.file = reBreak.GetMatch(lines[i], 1) + reBreak.GetMatch(lines[i], 2);
+                    wxString lineStr = reBreak.GetMatch(lines[i], 3);
+                    m_Cursor.address = reBreak.GetMatch(lines[i], 4);
+                #else
+                    m_Cursor.file = reBreak.GetMatch(lines[i], 1);
+                    wxString lineStr = reBreak.GetMatch(lines[i], 2);
+                    m_Cursor.address = reBreak.GetMatch(lines[i], 3);
+                #endif
+                    lineStr.ToLong(&m_Cursor.line);
+                    m_Cursor.changed = true;
+                    needsUpdate = true;
+			    }
 			}
         }
         else
