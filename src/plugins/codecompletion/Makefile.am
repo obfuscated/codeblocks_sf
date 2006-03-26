@@ -18,6 +18,7 @@ libcodecompletion_la_SOURCES = cclist.cpp \
 			ccoptionsdlg.cpp \
 			ccrenderer.cpp \
 			classbrowser.cpp \
+			classbrowserbuilderthread.cpp \
 			codecompletion.cpp \
 			insertclassmethoddlg.cpp \
 			nativeparser.cpp \
@@ -33,6 +34,7 @@ noinst_HEADERS = cclist.h \
 			ccoptionsdlg.h \
 			ccrenderer.h \
 			classbrowser.h \
+			classbrowserbuilderthread.h \
 			codecompletion.h \
 			insertclassmethoddlg.h \
 			nativeparser.h \
