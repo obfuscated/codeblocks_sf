@@ -55,6 +55,7 @@
 #include "editbreakpointdlg.h"
 #include "editwatchesdlg.h"
 #include "examinememorydlg.h"
+#include "threadsdlg.h"
 #include "editwatchdlg.h"
 #include "globals.h"
 
@@ -76,6 +77,7 @@ enum DebugCommandConst
     CMD_DISASSEMBLE,
     CMD_REGISTERS,
     CMD_MEMORYDUMP,
+    CMD_RUNNINGTHREADS,
 };
 
 const wxString g_EscapeChars = wxChar(26);
@@ -95,6 +97,7 @@ int idMenuCPU = XRCID("idDebuggerMenuCPU");
 int idMenuRegisters = XRCID("idDebuggerMenuRegisters");
 int idMenuWatches = XRCID("idDebuggerMenuWatches");
 int idMenuBacktrace = XRCID("idDebuggerMenuBacktrace");
+int idMenuThreads = XRCID("idDebuggerMenuThreads");
 int idMenuMemory = XRCID("idDebuggerMenuMemory");
 int idMenuBreakpoints = XRCID("idDebuggerMenuBreakpoints");
 int idMenuEditWatches = XRCID("idDebuggerMenuEditWatches");
@@ -109,7 +112,6 @@ int idMenuInfoDLL = XRCID("idDebuggerLoadedDLLs");
 int idMenuInfoFiles = XRCID("idDebuggerFiles");
 int idMenuInfoFPU = XRCID("idDebuggerFPU");
 int idMenuInfoSignals = XRCID("idDebuggerSignals");
-int idMenuInfoThreads = XRCID("idDebuggerThreads");
 
 int idGDBProcess = wxNewId();
 int idTimerPollDebugger = wxNewId();
@@ -150,6 +152,7 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	EVT_MENU(idMenuSendCommandToGDB, DebuggerGDB::OnSendCommandToGDB)
 	EVT_MENU(idMenuAddSymbolFile, DebuggerGDB::OnAddSymbolFile)
 	EVT_MENU(idMenuBacktrace, DebuggerGDB::OnBacktrace)
+	EVT_MENU(idMenuThreads, DebuggerGDB::OnRunningThreads)
 	EVT_MENU(idMenuMemory, DebuggerGDB::OnExamineMemory)
 	EVT_MENU(idMenuCPU, DebuggerGDB::OnDisassemble)
 	EVT_MENU(idMenuRegisters, DebuggerGDB::OnRegisters)
@@ -169,7 +172,6 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
     EVT_MENU(idMenuInfoFiles, DebuggerGDB::OnInfoFiles)
     EVT_MENU(idMenuInfoFPU, DebuggerGDB::OnInfoFPU)
     EVT_MENU(idMenuInfoSignals, DebuggerGDB::OnInfoSignals)
-    EVT_MENU(idMenuInfoThreads, DebuggerGDB::OnInfoThreads)
 
 	EVT_EDITOR_BREAKPOINT_ADD(DebuggerGDB::OnBreakpointAdd)
 	EVT_EDITOR_BREAKPOINT_EDIT(DebuggerGDB::OnBreakpointEdit)
@@ -213,7 +215,8 @@ DebuggerGDB::DebuggerGDB()
 	m_pCPURegisters(0),
 	m_pBacktrace(0),
 	m_pBreakpointsWindow(0),
-	m_pExamineMemoryDlg(0)
+	m_pExamineMemoryDlg(0),
+	m_pThreadsDlg(0)
 {
     Manager::Get()->Loadxrc(_T("/debugger_gdb.zip#zip:*.xrc"));
 
@@ -257,6 +260,7 @@ void DebuggerGDB::OnAttach()
     m_pBacktrace = new BacktraceDlg(Manager::Get()->GetAppWindow(), this);
     m_pBreakpointsWindow = new BreakpointsDlg(m_State);
     m_pExamineMemoryDlg = new ExamineMemoryDlg(Manager::Get()->GetAppWindow(), this);
+    m_pThreadsDlg = new ThreadsDlg(Manager::Get()->GetAppWindow(), this);
 
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
 
@@ -313,12 +317,30 @@ void DebuggerGDB::OnAttach()
     evt.floatingSize.Set(450, 250);
     evt.minimumSize.Set(350, 150);
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    evt.name = _T("ThreadsPane");
+    evt.title = _("Running threads");
+    evt.pWindow = m_pThreadsDlg;
+    evt.dockSide = CodeBlocksDockEvent::dsFloating;
+    evt.desiredSize.Set(350, 75);
+    evt.floatingSize.Set(450, 75);
+    evt.minimumSize.Set(250, 75);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 }
 
 void DebuggerGDB::OnRelease(bool appShutDown)
 {
     if (m_State.GetDriver())
-        m_State.GetDriver()->SetDebugWindows(0, 0, 0, 0);
+        m_State.GetDriver()->SetDebugWindows(0, 0, 0, 0, 0);
+
+    if (m_pThreadsDlg)
+    {
+        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+        evt.pWindow = m_pThreadsDlg;
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        m_pThreadsDlg->Destroy();
+    }
+    m_pThreadsDlg = 0;
 
     if (m_pExamineMemoryDlg)
     {
@@ -836,7 +858,11 @@ int DebuggerGDB::Debug()
         cbMessageBox(_T("Could not decide which debugger to use!"), _T("Error"), wxICON_ERROR);
         return -1;
     }
-    m_State.GetDriver()->SetDebugWindows(m_pBacktrace, m_pDisassembly, m_pCPURegisters, m_pExamineMemoryDlg);
+    m_State.GetDriver()->SetDebugWindows(m_pBacktrace,
+                                        m_pDisassembly,
+                                        m_pCPURegisters,
+                                        m_pExamineMemoryDlg,
+                                        m_pThreadsDlg);
 
 
     // create gdb launch command
@@ -1126,6 +1152,12 @@ void DebuggerGDB::RunCommand(int cmd)
                 m_State.GetDriver()->MemoryDump();
         }
 
+        case CMD_RUNNINGTHREADS:
+        {
+            if (m_State.GetDriver())
+                m_State.GetDriver()->RunningThreads();
+        }
+
         default: break;
     }
 }
@@ -1222,6 +1254,18 @@ void DebuggerGDB::MemoryDump()
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
     RunCommand(CMD_MEMORYDUMP);
+}
+
+void DebuggerGDB::RunningThreads()
+{
+    m_pThreadsDlg->Clear();
+
+    // show it
+    CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+    evt.pWindow = m_pThreadsDlg;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    RunCommand(CMD_RUNNINGTHREADS);
 }
 
 void DebuggerGDB::Continue()
@@ -1447,8 +1491,8 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
  		mbar->Enable(idMenuInfoFiles, m_pProcess && stopped);
  		mbar->Enable(idMenuInfoFPU, m_pProcess && stopped);
  		mbar->Enable(idMenuInfoSignals, m_pProcess && stopped);
- 		mbar->Enable(idMenuInfoThreads, m_pProcess && stopped);
 
+ 		mbar->Check(idMenuThreads, IsWindowReallyShown(m_pThreadsDlg));
  		mbar->Check(idMenuMemory, IsWindowReallyShown(m_pExamineMemoryDlg));
  		mbar->Check(idMenuBacktrace, IsWindowReallyShown(m_pBacktrace));
  		mbar->Check(idMenuCPU, IsWindowReallyShown(m_pDisassembly));
@@ -1617,6 +1661,17 @@ void DebuggerGDB::OnExamineMemory(wxCommandEvent& event)
         MemoryDump();
 }
 
+void DebuggerGDB::OnRunningThreads(wxCommandEvent& event)
+{
+    // show it
+    CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = m_pThreadsDlg;
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    if (event.IsChecked())
+        RunningThreads();
+}
+
 void DebuggerGDB::OnEditWatches(wxCommandEvent& event)
 {
 	WatchesArray watches = m_pTree->GetWatches();
@@ -1637,13 +1692,16 @@ void DebuggerGDB::OnDebugWindows(wxCommandEvent& event)
     m.AppendCheckItem(idMenuRegisters,      _("CPU Registers"));
     m.AppendCheckItem(idMenuCPU,            _("Disassembly"));
     m.AppendCheckItem(idMenuMemory,         _("Memory dump"));
+    m.AppendCheckItem(idMenuThreads,        _("Running threads"));
     m.AppendCheckItem(idMenuWatches,        _("Watches"));
 
     m.Check(idMenuBreakpoints,  IsWindowReallyShown(m_pBreakpointsWindow));
     m.Check(idMenuBacktrace,    IsWindowReallyShown(m_pBacktrace));
     m.Check(idMenuRegisters,    IsWindowReallyShown(m_pCPURegisters));
     m.Check(idMenuCPU,          IsWindowReallyShown(m_pDisassembly));
+    m.Check(idMenuCPU,          IsWindowReallyShown(m_pDisassembly));
     m.Check(idMenuMemory,       IsWindowReallyShown(m_pExamineMemoryDlg));
+    m.Check(idMenuThreads,      IsWindowReallyShown(m_pThreadsDlg));
     m.Check(idMenuWatches,      IsWindowReallyShown(m_pTree));
 
     Manager::Get()->GetAppWindow()->PopupMenu(&m);
@@ -1657,7 +1715,6 @@ void DebuggerGDB::OnToolInfo(wxCommandEvent& event)
     m.Append(idMenuInfoFiles,   _("Targets and files"));
     m.Append(idMenuInfoFPU,     _("FPU status"));
     m.Append(idMenuInfoSignals, _("Signal handling"));
-    m.Append(idMenuInfoThreads, _("Threads"));
     Manager::Get()->GetAppWindow()->PopupMenu(&m);
 }
 
@@ -1698,14 +1755,6 @@ void DebuggerGDB::OnInfoSignals(wxCommandEvent& event)
     if (m_State.GetDriver())
     {
         m_State.GetDriver()->InfoSignals();
-    }
-}
-
-void DebuggerGDB::OnInfoThreads(wxCommandEvent& event)
-{
-    if (m_State.GetDriver())
-    {
-        m_State.GetDriver()->InfoThreads();
     }
 }
 
@@ -1909,6 +1958,10 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& event)
             // update memory examiner
             if (IsWindowReallyShown(m_pExamineMemoryDlg))
                 MemoryDump();
+
+            // update running threads
+            if (IsWindowReallyShown(m_pThreadsDlg))
+                RunningThreads();
         }
     }
 }

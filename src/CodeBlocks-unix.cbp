@@ -1468,6 +1468,22 @@
 			<Option link="0" />
 			<Option target="Debugger" />
 		</Unit>
+		<Unit filename="plugins/debuggergdb/resources/threads.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins/debuggergdb/threadsdlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins/debuggergdb/threadsdlg.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debugger" />
+		</Unit>
 		<Unit filename="plugins/defaultmimehandler/defaultmimehandler.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Default MIME handler" />

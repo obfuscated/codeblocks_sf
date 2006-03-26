@@ -21,6 +21,7 @@
 #include "debuggertree.h"
 #include "backtracedlg.h"
 #include "examinememorydlg.h"
+#include "threadsdlg.h"
 
 static int GetScriptParserFuncID(const wxString& parseFunc)
 {
@@ -63,8 +64,13 @@ static wxRegEx reDisassembly(_T("(0x[0-9A-Za-z]+)[ \t]+<.*>:[ \t]+(.*)"));
 //  ebx at 0x22ff6c, ebp at 0x22ff78, esi at 0x22ff70, edi at 0x22ff74, eip at 0x22ff7c
 static wxRegEx reDisassemblyInit(_T("^Stack level [0-9]+, frame at (0x[A-Fa-f0-9]+):"));
 static wxRegEx reDisassemblyInitFunc(_T("eip = (0x[A-Fa-f0-9]+) in ([^;]*)"));
-// info program parsing child PID
-static wxRegEx reInfoProgram(_T("Using the running image of child process ([0-9]+)"));
+//	Using the running image of child Thread 46912568064384 (LWP 7051).
+static wxRegEx reInfoProgramThread(_T("\\(LWP[ \t]([0-9]+)\\)"));
+//	Using the running image of child process 10011.
+static wxRegEx reInfoProgramProcess(_T("child process ([0-9]+)"));
+//  2 Thread 1082132832 (LWP 8017)  0x00002aaaac5a2aca in pthread_cond_wait@@GLIBC_2.3.2 () from /lib/libpthread.so.0
+//* 1 Thread 46912568064384 (LWP 7926)  0x00002aaaac76e612 in poll () from /lib/libc.so.6
+static wxRegEx reInfoThreads(_T("(\\**)[ \t]*([0-9]+)[ \t](.*)[ \t]in"));
 
 /**
   * Command to add a search directory for source files in debugger's paths.
@@ -403,13 +409,51 @@ class GdbCmd_InfoProgram : public DebuggerCmd
         }
         void ParseOutput(const wxString& output)
         {
-            if (reInfoProgram.Matches(output))
+            wxString pid_str;
+            if (reInfoProgramThread.Matches(output))
+                pid_str = reInfoProgramThread.GetMatch(output, 1);
+            else if (reInfoProgramProcess.Matches(output))
+                pid_str = reInfoProgramProcess.GetMatch(output, 1);
+
+            if (!pid_str.IsEmpty())
             {
-                wxString pid_str = reInfoProgram.GetMatch(output, 1);
                 unsigned long pid;
-                if (pid_str.ToULong(&pid, 10))
+                if (pid_str.ToULong(&pid, 10) && pid != 0)
                     m_pDriver->SetChildPID(pid);
             }
+        }
+};
+
+/**
+  * Command to get info about running threads.
+  */
+class GdbCmd_Threads : public DebuggerCmd
+{
+        ThreadsDlg* m_pList;
+    public:
+        /** @param tree The tree to display the args. */
+        GdbCmd_Threads(DebuggerDriver* driver, ThreadsDlg* list)
+            : DebuggerCmd(driver),
+            m_pList(list)
+        {
+            m_Cmd << _T("info threads");
+        }
+        void ParseOutput(const wxString& output)
+        {
+            m_pList->Clear();
+            wxArrayString lines = GetArrayFromString(output, _T('\n'));
+    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
+    		{
+//    		    m_pDriver->Log(lines[i]);
+    		    if (reInfoThreads.Matches(lines[i]))
+    		    {
+//    		        m_pDriver->Log(_T("MATCH!"));
+    		        wxString active = reInfoThreads.GetMatch(lines[i], 1);
+    		        wxString num = reInfoThreads.GetMatch(lines[i], 2);
+    		        wxString info = reInfoThreads.GetMatch(lines[i], 3);
+                    m_pList->AddThread(active, num, info);
+    		    }
+    		}
         }
 };
 

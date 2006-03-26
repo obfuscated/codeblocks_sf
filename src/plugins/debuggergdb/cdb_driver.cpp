@@ -181,6 +181,11 @@ void CDB_driver::MemoryDump()
     NOT_IMPLEMENTED();
 }
 
+void CDB_driver::RunningThreads()
+{
+    NOT_IMPLEMENTED();
+}
+
 void CDB_driver::InfoFrame()
 {
     NOT_IMPLEMENTED();
@@ -202,11 +207,6 @@ void CDB_driver::InfoFPU()
 }
 
 void CDB_driver::InfoSignals()
-{
-    NOT_IMPLEMENTED();
-}
-
-void CDB_driver::InfoThreads()
 {
     NOT_IMPLEMENTED();
 }

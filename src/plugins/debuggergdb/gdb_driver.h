@@ -51,13 +51,15 @@ class GDB_driver : public DebuggerDriver
         virtual void SetVarValue(const wxString& var, const wxString& value);
         virtual void MemoryDump();
         virtual void Detach();
+        virtual void RunningThreads();
 
         void InfoFrame();
         void InfoDLL();
         void InfoFiles();
         void InfoFPU();
         void InfoSignals();
-        void InfoThreads();
+
+        virtual void SwitchThread(size_t threadIndex);
 
         virtual void AddBreakpoint(DebuggerBreakpoint* bp);
         virtual void RemoveBreakpoint(DebuggerBreakpoint* bp);

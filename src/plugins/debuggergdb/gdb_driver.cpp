@@ -13,12 +13,15 @@ WX_DEFINE_OBJARRAY(TypesArray);
 
 #define GDB_PROMPT _T("(gdb)")
 
-static wxRegEx reBreak2(_T("^(0x[A-z0-9]+) in (.*) from (.*)"));
+//[Switching to thread 2 (Thread 1082132832 (LWP 12298))]#0  0x00002aaaac5a2aca in pthread_cond_wait@@GLIBC_2.3.2 () from /lib/libpthread.so.0
+static wxRegEx reThreadSwitch(_T("^\\[Switching to thread .*\\]#0[ \t]+(0x[A-z0-9]+) in (.*) from (.*)"));
+static wxRegEx reThreadSwitch2(_T("^\\[Switching to thread .*\\]#0[ \t]+(0x[A-z0-9]+) in (.*) from (.*):([0-9]+)"));
 #ifdef __WXMSW__
     static wxRegEx reBreak(_T("([A-z]:)([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-z]+)"));
 #else
     static wxRegEx reBreak(_T("\032\032([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-z]+)"));
 #endif
+static wxRegEx reBreak2(_T("^(0x[A-z0-9]+) in (.*) from (.*)"));
 
 GDB_driver::GDB_driver(DebuggerGDB* plugin)
     : DebuggerDriver(plugin),
@@ -264,6 +267,11 @@ void GDB_driver::MemoryDump()
     QueueCommand(new GdbCmd_ExamineMemory(this, m_pExamineMemory));
 }
 
+void GDB_driver::RunningThreads()
+{
+    QueueCommand(new GdbCmd_Threads(this, m_pThreads));
+}
+
 void GDB_driver::InfoFrame()
 {
     QueueCommand(new DebuggerInfoCmd(this, _T("info frame"), _("Selected frame")));
@@ -289,9 +297,10 @@ void GDB_driver::InfoSignals()
     QueueCommand(new DebuggerInfoCmd(this, _T("info signals"), _("Signals handling")));
 }
 
-void GDB_driver::InfoThreads()
+void GDB_driver::SwitchThread(size_t threadIndex)
 {
-    QueueCommand(new DebuggerInfoCmd(this, _T("info threads"), _("Running threads")));
+    ResetCursor();
+    QueueCommand(new DebuggerCmd(this, wxString::Format(_T("thread %d"), threadIndex)));
 }
 
 void GDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
@@ -493,12 +502,28 @@ void GDB_driver::ParseOutput(const wxString& output)
         {
             // other break info, e.g.
             // 0x7c9507a8 in ntdll!KiIntSystemCall () from C:\WINDOWS\system32\ntdll.dll
+            wxRegEx* re = 0;
 			if ( reBreak2.Matches(lines[i]) )
+                re = &reBreak2;
+            else if (reThreadSwitch.Matches(lines[i]))
+                re = &reThreadSwitch;
+
+			if ( re )
 			{
-				m_Cursor.file = reBreak2.GetMatch(lines[i], 3);
-				m_Cursor.function = reBreak2.GetMatch(lines[i], 2);
+				m_Cursor.file = re->GetMatch(lines[i], 3);
+				m_Cursor.function = re->GetMatch(lines[i], 2);
 				wxString lineStr = _T("");
-				m_Cursor.address = reBreak2.GetMatch(lines[i], 1);
+				m_Cursor.address = re->GetMatch(lines[i], 1);
+				m_Cursor.line = -1;
+                m_Cursor.changed = true;
+                needsUpdate = true;
+			}
+			else if ( reThreadSwitch2.Matches(lines[i]) )
+			{
+				m_Cursor.file = reThreadSwitch2.GetMatch(lines[i], 3);
+				m_Cursor.function = reThreadSwitch2.GetMatch(lines[i], 2);
+				wxString lineStr = reThreadSwitch2.GetMatch(lines[i], 4);
+				m_Cursor.address = reThreadSwitch2.GetMatch(lines[i], 1);
 				m_Cursor.line = -1;
                 m_Cursor.changed = true;
                 needsUpdate = true;

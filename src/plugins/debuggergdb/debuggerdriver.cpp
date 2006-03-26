@@ -33,12 +33,14 @@ void DebuggerDriver::DebugLog(const wxString& msg)
 void DebuggerDriver::SetDebugWindows(BacktraceDlg* b,
                                     DisassemblyDlg* d,
                                     CPURegistersDlg* r,
-                                    ExamineMemoryDlg* m)
+                                    ExamineMemoryDlg* m,
+                                    ThreadsDlg* t)
 {
     m_pBacktrace = b;
     m_pDisassembly = d;
     m_pCPURegisters = r;
     m_pExamineMemory = m;
+    m_pThreads = t;
 }
 
 void DebuggerDriver::ClearDirectories()

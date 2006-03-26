@@ -14,6 +14,7 @@ class BacktraceDlg;
 class DisassemblyDlg;
 class CPURegistersDlg;
 class ExamineMemoryDlg;
+class ThreadsDlg;
 class Compiler;
 
 WX_DEFINE_ARRAY(DebuggerCmd*, DebuggerCommands);
@@ -45,7 +46,8 @@ class DebuggerDriver
         virtual void SetDebugWindows(BacktraceDlg* b,
                                     DisassemblyDlg* d,
                                     CPURegistersDlg* r,
-                                    ExamineMemoryDlg* m);
+                                    ExamineMemoryDlg* m,
+                                    ThreadsDlg* t);
 
         /** Add a directory in search list. */
         virtual void AddDirectory(const wxString& dir);
@@ -88,13 +90,13 @@ class DebuggerDriver
         virtual void SwitchToFrame(size_t number) = 0;
         virtual void SetVarValue(const wxString& var, const wxString& value) = 0;
         virtual void MemoryDump() = 0;
+        virtual void RunningThreads() = 0;
 
         virtual void InfoFrame() = 0;
         virtual void InfoDLL() = 0;
         virtual void InfoFiles() = 0;
         virtual void InfoFPU() = 0;
         virtual void InfoSignals() = 0;
-        virtual void InfoThreads() = 0;
 
         /** Add a breakpoint.
             @param bp The breakpoint to add.
@@ -135,6 +137,8 @@ class DebuggerDriver
         virtual void SetChildPID(unsigned long pid) { m_ChildPID = pid; }
         /** Get the child's (debuggee's) PID. */
         virtual unsigned long GetChildPID() const { return m_ChildPID; }
+        /** Request to switch to another thread. */
+        virtual void SwitchThread(size_t threadIndex) = 0;
 
 		void QueueCommand(DebuggerCmd* dcmd, QueuePriority prio = Low); ///< add a command in the queue. The DebuggerCmd will be deleted automatically when finished.
 		DebuggerCmd* CurrentCommand(); ///< returns the currently executing command
@@ -166,6 +170,7 @@ class DebuggerDriver
         DisassemblyDlg* m_pDisassembly;
         CPURegistersDlg* m_pCPURegisters;
         ExamineMemoryDlg* m_pExamineMemory;
+        ThreadsDlg* m_pThreads;
 
 		// commands
 		DebuggerCommands m_DCmds;

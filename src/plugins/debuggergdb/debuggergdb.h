@@ -15,6 +15,7 @@
 #include "disassemblydlg.h"
 #include "cpuregistersdlg.h"
 #include "breakpointsdlg.h"
+#include "threadsdlg.h"
 
 extern const wxString g_EscapeChars;
 
@@ -28,6 +29,7 @@ class CPURegistersDlg;
 class BacktraceDlg;
 class BreakpointsDlg;
 class ExamineMemoryDlg;
+class ThreadsDlg;
 
 class DebuggerGDB : public cbDebuggerPlugin
 {
@@ -50,6 +52,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void Registers();
 		void Backtrace();
 		void MemoryDump();
+		void RunningThreads();
 
 		bool AddBreakpoint(const wxString& file, int line);
 		bool AddBreakpoint(const wxString& functionSignature);
@@ -133,6 +136,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnDetach(wxCommandEvent& event);
         void OnSettings(wxCommandEvent& event);
         void OnExamineMemory(wxCommandEvent& event);
+        void OnRunningThreads(wxCommandEvent& event);
 
         void OnDebugWindows(wxCommandEvent& event);
         void OnToolInfo(wxCommandEvent& event);
@@ -142,7 +146,6 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnInfoFiles(wxCommandEvent& event);
         void OnInfoFPU(wxCommandEvent& event);
         void OnInfoSignals(wxCommandEvent& event);
-        void OnInfoThreads(wxCommandEvent& event);
 
 		wxMenu* m_pMenu;
         SimpleTextLog* m_pLog;
@@ -179,6 +182,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 		BacktraceDlg* m_pBacktrace;
         BreakpointsDlg* m_pBreakpointsWindow;
         ExamineMemoryDlg* m_pExamineMemoryDlg;
+        ThreadsDlg* m_pThreadsDlg;
 
 		DECLARE_EVENT_TABLE()
 };
