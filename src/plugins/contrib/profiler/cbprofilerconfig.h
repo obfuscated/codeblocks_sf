@@ -11,13 +11,12 @@
 #ifndef CBPROFILERCONFIG_H
 #define CBPROFILERCONFIG_H
 
-#include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
-#include <wx/font.h>
-#include <wx/checkbox.h>
-#include <wx/spinctrl.h>
-#include <wx/textctrl.h>
-#include <cbplugin.h>
+#include <wx/string.h>
+#include "configurationpanel.h"
+
+class wxCommandEvent;
+class wxWindow;
 
 class CBProfilerConfigDlg : public cbConfigurationPanel
 {
@@ -29,12 +28,12 @@ class CBProfilerConfigDlg : public cbConfigurationPanel
         wxString GetBitmapBaseName(){ return _T("profiler"); }
         void OnApply();
         void OnCancel(){}
-	protected:
+	private:
         void CheckBoxEvent(wxCommandEvent& event);
 
         void LoadSettings();
         void SaveSettings();
-	private:
+
         DECLARE_EVENT_TABLE()
 };
 

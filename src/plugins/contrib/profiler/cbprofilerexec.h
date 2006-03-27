@@ -11,31 +11,11 @@
 #ifndef CBPROFILEREXEC_H
 #define CBPROFILEREXEC_H
 
-#include <wx/xrc/xmlres.h>
-#include <wx/intl.h>
-#include <wx/font.h>
-#include <wx/checkbox.h>
-#include <wx/spinctrl.h>
-#include <wx/textctrl.h>
-#include <wx/listctrl.h>
-#include <wx/msgdlg.h>
-#include <wx/process.h>
-#include <wx/datstrm.h>
-#include <wx/progdlg.h>
-#include <wx/fs_zip.h>
-#include <wx/gdicmn.h>
-#include <wx/filedlg.h>
-#include <wx/ffile.h>
+#include <wx/arrstr.h>
 #include <wx/dialog.h>
 #include <wx/string.h>
 
-#include <cbproject.h>
-#include <manager.h>
-#include <projectmanager.h>
-#include <messagemanager.h>
-#include <pipedprocess.h>
-
-typedef struct
+struct struct_config
 {
 	bool chkAnnSource;
 	wxString txtAnnSource;
@@ -46,13 +26,19 @@ typedef struct
 	bool chkNoStatic;
 	bool chkSum;
 	wxString txtExtra;
-} struct_config;
+};
+
+class wxListCtrl;
+class wxTextCtrl;
+class wxProgressDialog;
+class wxWindow;
+class wxListEvent;
+class wxCommandEvent;
 
 class CBProfilerExecDlg : public wxDialog
 {
 	public:
-		CBProfilerExecDlg(wxWindow* parent)
-            : parent(parent){}
+		CBProfilerExecDlg(wxWindow* parent) : parent(parent){}
 		virtual ~CBProfilerExecDlg();
 
 		int Execute(wxString exename, wxString dataname, struct_config config);
@@ -60,12 +46,12 @@ class CBProfilerExecDlg : public wxDialog
 		wxListCtrl* GetoutputFlatProfileArea() {return outputFlatProfileArea;};
 		int GetsortColumn() {return sortColumn;};
 		int GetsortAscending() {return sortAscending;};
-	protected:
+	private:
       void EndModal(int retCode);
       void FindInCallGraph(wxListEvent& event);
       void WriteToFile(wxCommandEvent& event);
       void OnColumnClick(wxListEvent& event);
-    private:
+
       size_t ParseFlatProfile(wxArrayString msg, size_t begin, wxProgressDialog &progress);
       size_t ParseCallGraph(wxArrayString msg, size_t begin, wxProgressDialog &progress);
       wxWindow*   parent;

@@ -11,31 +11,11 @@
 #ifndef CBPROFILER_H
 #define CBPROFILER_H
 
-#include <wx/wxprec.h>
+#include "cbplugin.h" // the base class we 're inheriting
 
-#ifdef __BORLANDC__
-	#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-	#include <wx/wx.h>
-#endif
-
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/fs_zip.h>
-#include <wx/choicdlg.h>
-
-#include <cbplugin.h> // the base class we 're inheriting
-#include <settings.h> // needed to use the Code::Blocks SDK
-#include <licenses.h> // defines some common licenses (like the GPL)
-#include <manager.h>
-#include <cbproject.h>
-#include <projectmanager.h>
-#include <messagemanager.h>
-
-#include "cbprofilerexec.h"
-#include "cbprofilerconfig.h"
+class cbConfigurationPanel;
+class CBProfilerExecDlg;
+class wxWindow;
 
 /*
  * Save per pro config, or should I use exe path?
@@ -54,7 +34,6 @@ class CBProfiler : public cbToolPlugin
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 		//void ShowDialog();
-	protected:
 	private:
         CBProfilerExecDlg* dlg;
 };

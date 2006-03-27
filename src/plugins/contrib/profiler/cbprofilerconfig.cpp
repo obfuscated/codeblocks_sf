@@ -7,9 +7,18 @@
  * Thanks:    Yiannis Mandravellos and his Source code formatter (AStyle) sources
  * License:   GPL
  **************************************************************/
-
+#ifdef CB_PRECOMP
+#include "sdk.h"
+#else
+#include <wx/checkbox.h>
+#include <wx/event.h>
+#include <wx/spinctrl.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
+#include "manager.h"
+#include "configmanager.h"
+#endif
 #include "cbprofilerconfig.h"
-#include <configmanager.h>
 
 BEGIN_EVENT_TABLE(CBProfilerConfigDlg, wxPanel)
 EVT_CHECKBOX(XRCID("chkAnnSource"), CBProfilerConfigDlg::CheckBoxEvent)
@@ -20,9 +29,6 @@ CBProfilerConfigDlg::CBProfilerConfigDlg(wxWindow* parent)
 {
     //ctor
     wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgCBProfilerConfig"));
-    //wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
-    //XRCCTRL(*this, "txtSample", wxTextCtrl)->SetFont(font);
-
     LoadSettings();
 }
 
