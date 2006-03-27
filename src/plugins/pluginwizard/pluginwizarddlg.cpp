@@ -542,9 +542,9 @@ void PluginWizardDlg::CreateFiles()
 
     buffer << _T('\t') << _T('\t') << _T("int Configure()");
     DoAddHeaderOption(buffer, hasConfigure, _T(" 0"));
-    buffer << _T('\t') << _T('\t') << _T("int GetConfigurationPriority()");
+    buffer << _T('\t') << _T('\t') << _T("int GetConfigurationPriority() const");
     DoAddHeaderOption(buffer, false, _T(" 50"));
-    buffer << _T('\t') << _T('\t') << _T("int GetConfigurationGroup()");
+    buffer << _T('\t') << _T('\t') << _T("int GetConfigurationGroup() const");
     DoAddHeaderOption(buffer, false, _T(" cgUnknown"));
     buffer << _T('\t') << _T('\t') << _T("cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent)");
     DoAddHeaderOption(buffer, hasConfigure, _T(" 0"));

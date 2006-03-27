@@ -76,7 +76,7 @@ class cbKeyBinder : public cbPlugin
 	public:
 		cbKeyBinder();
 		~cbKeyBinder();
-		int GetConfigurationGroup(){ return cgEditor; }
+		int GetConfigurationGroup() const { return cgEditor; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 		void BuildMenu(wxMenuBar* menuBar);
 		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);

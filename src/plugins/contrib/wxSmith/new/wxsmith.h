@@ -35,22 +35,22 @@ class wxsProject;
 class wxsItem;
 class wxsResource;
 
-/** \brief Main plugin which will handle most of wxSmith's work 
+/** \brief Main plugin which will handle most of wxSmith's work
  *
  * This plugin is responsible for managing wxsProject classes - addition to
  * standard cbProject class and is used for global notifications like
  * selecting item.
  *
- * This class is a singleton, is registered in OnAttach and unregistered in 
+ * This class is a singleton, is registered in OnAttach and unregistered in
  * OnRelease.
  */
 class wxSmith : public cbPlugin
 {
 	public:
-	
+
         /** \brief Ctor */
 		wxSmith();
-		
+
 		/** \brief Dctor */
 		~wxSmith();
 
@@ -58,14 +58,14 @@ class wxSmith : public cbPlugin
 		static wxSmith* Get() { return Singleton; }
 
         /** \brief Getting group in configuration dialog */
-        int GetConfigurationGroup() { return cgEditor; }
-        
+        int GetConfigurationGroup()  const { return cgEditor; }
+
         /** \brief Creating configuration panel */
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
-        
+
         /** \brief This funciton will add enteries into menu */
 		void BuildMenu(wxMenuBar* menuBar);
-		
+
 		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
 		bool BuildToolBar(wxToolBar* toolBar);
 		void OnAttach();
@@ -73,13 +73,13 @@ class wxSmith : public cbPlugin
 
         /** \brief Global function notifying that given item has been selected */
         void SelectItem(wxsItem* Item);
-        
+
         /** \brief Global function notifying that given resource has been selected */
         void SelectResource(wxsResource* Resource);
 
         /** \brief Getting wxsProject addition for given cbPrject */
         wxsProject* GetSmithProject(cbProject* Proj);
-        
+
         /** \brief Getting cbProject class from wxsProject addition */
         cbProject* GetCBProject(wxsProject* Proj);
 

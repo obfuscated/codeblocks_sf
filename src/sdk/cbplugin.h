@@ -114,12 +114,12 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * in configuration dialogs. Lower numbers mean the plugin's
           * configuration is put higher in the list.
           */
-        virtual int GetConfigurationPriority(){ return 50; }
+        virtual int GetConfigurationPriority() const { return 50; }
         /** Return the configuration group for this plugin. Default is cgUnknown.
           * Notice that you can logically AND more than one configuration groups,
           * so you could set it, for example, as "cgCompiler | cgContribPlugin".
           */
-        virtual int GetConfigurationGroup(){ return cgUnknown; }
+        virtual int GetConfigurationGroup() const { return cgUnknown; }
 		/** Return plugin's configuration panel.
 		  * @param parent The parent window.
 		  * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.

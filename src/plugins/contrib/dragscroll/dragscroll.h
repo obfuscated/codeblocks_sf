@@ -68,7 +68,7 @@ class cbDragScroll : public cbPlugin
 	public:
 		cbDragScroll();
 		~cbDragScroll();
-        int GetConfigurationGroup(){ return cgEditor; }
+        int GetConfigurationGroup() const { return cgEditor; }
 		void BuildMenu(wxMenuBar* menuBar){ return; }
         void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data){ return; }
         bool BuildToolBar(wxToolBar* toolBar){ return false; }

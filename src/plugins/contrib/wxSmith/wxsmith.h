@@ -45,7 +45,7 @@ class wxSmith : public cbPlugin
 
 		static wxSmith* Get() { return Singleton; }
 
-        int GetConfigurationGroup(){ return cgEditor; }
+        int GetConfigurationGroup() const { return cgEditor; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 		void BuildMenu(wxMenuBar* menuBar);
 		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
