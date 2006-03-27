@@ -339,8 +339,10 @@ public:
 
 	//! Removes the n-th key shortcut associated to this command.
 	void RemoveShortcut(int n) {
-		for (int i=n; i < m_nShortcuts; i++)	// shift array left
-			m_keyShortcut[i] = m_keyShortcut[i+1];
+		//-for (int i=n; i < m_nShortcuts; i++)	// shift array left
+		//pecan 2006/03/25 fix next stmt, avoid array overflow
+		for (int i=n; i < (m_nShortcuts-1); i++)	// shift array left //pecan 2006/03/25
+                m_keyShortcut[i] = m_keyShortcut[i+1];
 		m_nShortcuts--;
 		Update();
 	}
