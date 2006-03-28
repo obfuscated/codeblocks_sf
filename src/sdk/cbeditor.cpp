@@ -1561,8 +1561,11 @@ void cbEditor::OnAfterBuildContextMenu(ModuleType type)                //pecan 2
 void cbEditor::Print(bool selectionOnly, PrintColorMode pcm, bool line_numbers)
 {
     // print line numbers?
+    m_pControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
     if (!line_numbers)
         m_pControl->SetMarginWidth(0, 0);
+    else
+        m_pControl->SetMarginWidth(0, 48);
     // never print the gutter line
     m_pControl->SetEdgeMode(wxSCI_EDGE_NONE);
 
