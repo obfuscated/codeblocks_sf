@@ -1192,10 +1192,22 @@ bool MainFrame::DoCloseCurrentWorkspace()
 void MainFrame::DoCreateStatusBar()
 {
 #if wxUSE_STATUSBAR
-    const int count = 6;
-    CreateStatusBar(count);
-    int statusWidths[count] = {-1, 96, 148, 64, 64, 96};
-    SetStatusWidths(count, statusWidths);
+    const int num = 6;
+    wxCoord width[num];
+    CreateStatusBar(num);
+
+    wxClientDC dc(this);
+    wxFont font = dc.GetFont();
+    int h;
+
+    width[0] = -1;
+    dc.GetTextExtent(_(" WINDOWS-1252 "), &width[1], &h);
+    dc.GetTextExtent(_(" Line 12345, Column 123 "), &width[2], &h);
+    dc.GetTextExtent(_(" Overwrite"),  &width[3], &h);
+    dc.GetTextExtent(_(" Modified"),   &width[4], &h);
+    dc.GetTextExtent(_(" Read/Write....."), &width[5], &h);
+
+    SetStatusWidths(num, width);
 #endif // wxUSE_STATUSBAR
 }
 
