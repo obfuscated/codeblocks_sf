@@ -2,17 +2,21 @@
 #define PLUGINWIZARDDLG_H
 
 #include <wx/dialog.h>
-#include <settings.h> // SDK
-#include <cbplugin.h>
+#include <wx/intl.h>
+#include <wx/string.h>
+#include "cbplugin.h"
+
+class wxCommandEvent;
+class wxUpdateUIEvent;
 
 class PluginWizardDlg : public wxDialog
 {
     public:
         PluginWizardDlg();
         ~PluginWizardDlg();
-		const wxString& GetHeaderFilename(){ return m_Header; }
-		const wxString& GetImplementationFilename(){ return m_Implementation; }
-		const PluginInfo& GetInfo(){ return m_Info; }
+		const wxString& GetHeaderFilename() const { return m_Header; }
+		const wxString& GetImplementationFilename() const { return m_Implementation; }
+		const PluginInfo& GetInfo() const { return m_Info; }
 		void CreateFiles();
 	private:
     	void OnUpdateUI(wxUpdateUIEvent& event);

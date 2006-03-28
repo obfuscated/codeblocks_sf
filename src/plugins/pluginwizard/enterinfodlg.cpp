@@ -23,15 +23,15 @@
 * $Id$
 * $HeadURL$
 */
-
-#include <sdk.h>
-#include "enterinfodlg.h"
+#if CB_PRECOMP
+#include "sdk.h"
+#else
 #include <wx/intl.h>
-#include <wx/mdi.h>
-#include <wx/filename.h>
-#include <wx/xrc/xmlres.h>
 #include <wx/textctrl.h>
-#include <manager.h>
+#include <wx/xrc/xmlres.h>
+#include "manager.h"
+#endif
+#include "enterinfodlg.h"
 
 BEGIN_EVENT_TABLE(EnterInfoDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnOK"), EnterInfoDlg::OnOKClick)
@@ -46,7 +46,6 @@ EnterInfoDlg::EnterInfoDlg(const PluginInfo& info)
 EnterInfoDlg::~EnterInfoDlg()
 {
 }
-
 // events
 
 void EnterInfoDlg::OnOKClick(wxCommandEvent& event)

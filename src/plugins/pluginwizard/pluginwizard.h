@@ -1,9 +1,7 @@
 #ifndef PLUGINWIZARD_H
 #define PLUGINWIZARD_H
 
-#include <settings.h> // SDK
-#include <cbplugin.h>
-#include <simpletextlog.h>
+#include "cbplugin.h"
 
 class PluginWizard : public cbToolPlugin
 {
@@ -11,10 +9,10 @@ class PluginWizard : public cbToolPlugin
         PluginWizard();
         ~PluginWizard();
 
-        virtual void OnAttach();
-        virtual void OnRelease(bool appShutDown);
-        virtual int Configure(){ return -1; }
-		virtual int Execute();
+        void OnAttach();
+        void OnRelease(bool appShutDown);
+        int Configure(){ return -1; }
+		int Execute();
 };
 
 CB_DECLARE_PLUGIN();
