@@ -136,6 +136,7 @@ class PrivateThread : public wxThread
 cbThreadPool::cbThreadPool(wxEvtHandler* owner, int id, int concurrentThreads)
     : m_pOwner(owner),
     m_ID(id),
+    m_ConcurrentThreads(0),
     m_Done(true),
     m_Batching(false),
     m_Counter(0),
