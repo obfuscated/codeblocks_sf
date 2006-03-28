@@ -134,7 +134,7 @@ class DLLIMPORT cbEditor : public EditorBase
           * @param selectionOnly Should the selected text be printed only?
           * @param pcm The color mode to use when printing
           */
-        void Print(bool selectionOnly, PrintColorMode pcm);
+        void Print(bool selectionOnly, PrintColorMode pcm, bool line_numbers);
         /** Try to auto-complete the current word.
           *
           * This has nothing to do with code-completion plugins. Editor auto-completion

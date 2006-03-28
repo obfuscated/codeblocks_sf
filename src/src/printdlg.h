@@ -12,8 +12,9 @@ class PrintDialog : public wxDialog
 
         virtual void EndModal(int retCode);
 
-		PrintScope GetPrintScope();
-		PrintColorMode GetPrintColorMode();
+		PrintScope GetPrintScope() const;
+		PrintColorMode GetPrintColorMode() const;
+		bool GetPrintLineNumbers() const;
 	protected:
 	private:
 };

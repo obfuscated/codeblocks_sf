@@ -19,6 +19,7 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/intl.h>
 #include <wx/radiobox.h>
+#include <wx/checkbox.h>
 
 PrintDialog::PrintDialog(wxWindow* parent)
 {
@@ -43,14 +44,19 @@ PrintDialog::~PrintDialog()
 	//dtor
 }
 
-PrintScope PrintDialog::GetPrintScope()
+PrintScope PrintDialog::GetPrintScope() const
 {
     return (PrintScope)XRCCTRL(*this, "rbScope", wxRadioBox)->GetSelection();
 }
 
-PrintColorMode PrintDialog::GetPrintColorMode()
+PrintColorMode PrintDialog::GetPrintColorMode() const
 {
     return (PrintColorMode)XRCCTRL(*this, "rbColorMode", wxRadioBox)->GetSelection();
+}
+
+bool PrintDialog::GetPrintLineNumbers() const
+{
+    return XRCCTRL(*this, "chkLineNumbers", wxCheckBox)->GetValue();
 }
 
 void PrintDialog::EndModal(int retCode)

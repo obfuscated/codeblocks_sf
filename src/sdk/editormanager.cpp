@@ -885,8 +885,7 @@ bool EditorManager::SaveAll()
     return true;
 }
 
-
-void EditorManager::Print(PrintScope ps, PrintColorMode pcm)
+void EditorManager::Print(PrintScope ps, PrintColorMode pcm, bool line_numbers)
 {
     switch (ps)
     {
@@ -896,7 +895,7 @@ void EditorManager::Print(PrintScope ps, PrintColorMode pcm)
             {
                 cbEditor* ed = InternalGetBuiltinEditor(i);
                 if (ed)
-                    ed->Print(false, pcm);
+                    ed->Print(false, pcm, line_numbers);
             }
             break;
         }
@@ -904,7 +903,7 @@ void EditorManager::Print(PrintScope ps, PrintColorMode pcm)
         {
             cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
             if (ed)
-                ed->Print(ps == psSelection, pcm);
+                ed->Print(ps == psSelection, pcm, line_numbers);
             break;
         }
     }

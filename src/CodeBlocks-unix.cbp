@@ -3095,6 +3095,12 @@
 			<Option weight="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/sdk_common.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/sdk_events.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />

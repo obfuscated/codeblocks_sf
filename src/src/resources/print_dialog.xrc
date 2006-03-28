@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxDialog" name="dlgPrint">
     <title>Print...</title>
@@ -40,6 +40,13 @@
           </object>
         </object>
         <option>1</option>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxCheckBox" name="chkLineNumbers">
+          <label>Print line numbers</label>
+        </object>
         <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
         <border>8</border>
       </object>

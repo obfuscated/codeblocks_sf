@@ -1322,7 +1322,7 @@
 			<Option link="0" />
 			<Option target="Debugger" />
 		</Unit>
-		<Unit filename="plugins\debuggergdb\resources/threads.xrc">
+		<Unit filename="plugins\debuggergdb\resources\threads.xrc">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -3039,6 +3039,12 @@
 			<Option link="0" />
 			<Option weight="0" />
 			<Option target="src" />
+		</Unit>
+		<Unit filename="sdk\sdk_common.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\sdk_events.cpp">
 			<Option compilerVar="CPP" />

@@ -568,11 +568,9 @@ void cbEditor::SetEditorStyle()
     m_pControl->SetTabWidth(mgr->ReadInt(_T("/tab_size"), 4));
 
     // line numbering
+    m_pControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
    	if (mgr->ReadBool(_T("/show_line_numbers"), true))
-    {
-	    m_pControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
     	m_pControl->SetMarginWidth(0, 48);
-    }
 	else
 		m_pControl->SetMarginWidth(0, 0);
 
@@ -1560,8 +1558,14 @@ void cbEditor::OnAfterBuildContextMenu(ModuleType type)                //pecan 2
     // we don't care
 }
 
-void cbEditor::Print(bool selectionOnly, PrintColorMode pcm)
+void cbEditor::Print(bool selectionOnly, PrintColorMode pcm, bool line_numbers)
 {
+    // print line numbers?
+    if (!line_numbers)
+        m_pControl->SetMarginWidth(0, 0);
+    // never print the gutter line
+    m_pControl->SetEdgeMode(wxSCI_EDGE_NONE);
+
     switch (pcm)
     {
         case pcmAsIs:
@@ -1594,6 +1598,14 @@ void cbEditor::Print(bool selectionOnly, PrintColorMode pcm)
     else
         *g_printData = printer.GetPrintDialogData().GetPrintData();
     delete printout;
+
+    // revert line numbers and gutter settings
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+    if (mgr->ReadBool(_T("/show_line_numbers"), true))
+        m_pControl->SetMarginWidth(0, 48);
+    else
+        m_pControl->SetMarginWidth(0, 0);
+    m_pControl->SetEdgeMode(mgr->ReadInt(_T("/gutter/mode"), 0));
 }
 
 // events

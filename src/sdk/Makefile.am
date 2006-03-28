@@ -193,6 +193,7 @@ noinst_HEADERS = annoyingdialog.h \
 				scriptingcall.h \
 				scriptingmanager.h \
 				sdk.h \
+				sdk_common.h \
 				sdk_precomp.h \
 				sdk_events.h \
 				searchresultslog.h \

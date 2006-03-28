@@ -1858,7 +1858,7 @@ void MainFrame::OnFilePrint(wxCommandEvent& event)
     PrintDialog dlg(this);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
-        Manager::Get()->GetEditorManager()->Print(dlg.GetPrintScope(), dlg.GetPrintColorMode());
+        Manager::Get()->GetEditorManager()->Print(dlg.GetPrintScope(), dlg.GetPrintColorMode(), dlg.GetPrintLineNumbers());
 }
 
 void MainFrame::OnFileRunScript(wxCommandEvent& WXUNUSED(event))
