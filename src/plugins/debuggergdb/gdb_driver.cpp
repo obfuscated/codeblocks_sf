@@ -184,12 +184,20 @@ void GDB_driver::Prepare(bool isConsole)
 
 void GDB_driver::Start(bool breakOnEntry)
 {
+    ResetCursor();
+
+    // under windows, 'start' segfaults with wx projects...
+#ifdef __WXMSW__
+    m_BreakOnEntry = false;
+    m_ManualBreakOnEntry = false;
+    // start the process
+    QueueCommand(new DebuggerCmd(this, _T("run")));
+#else
     m_BreakOnEntry = breakOnEntry;
     m_ManualBreakOnEntry = true;
-
     // start the process
-    ResetCursor();
     QueueCommand(new DebuggerCmd(this, _T("start")));
+#endif
 }
 
 void GDB_driver::Stop()
