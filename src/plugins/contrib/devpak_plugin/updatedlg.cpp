@@ -314,14 +314,15 @@ wxString UpdateDlg::GetConfFilename()
 {
     int server_hash = GetTextCRC32(GetCurrentServer().mb_str());
     wxString config;
-    config.Printf(_T("%s/webupdate-%x.conf"), wxGetHomeDir().c_str(), server_hash);
+    config = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH;
+    config.Printf(_T("%sdevpak_%x.conf"), config.c_str(), server_hash);
     return config;
 }
 
 wxString UpdateDlg::GetMirrorsFilename()
 {
     wxString config;
-    config << wxGetHomeDir() << _T("/mirrors.cfg");
+    config = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + _T("devpak_mirrors.cfg");
     return config;
 }
 
@@ -538,21 +539,20 @@ void UpdateDlg::CreateEntryFile(UpdateRec* rec, const wxString& filename, const 
 {
     wxString entry;
     entry << _T("[Setup]\n");
-    entry << _T("AppName=") << rec->name << '\n';
-    entry << _T("AppVersion=") << rec->version << '\n';
-//    entry << _T("Description=") << rec->name << '\n';
-    entry << _T('\n');
+    entry << _T("AppName=") << rec->name << _T("\n");
+    entry << _T("AppVersion=") << rec->version << _T("\n");
 
+    entry << _T("\n");
     entry << _T("[Files]\n");
     for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
-        entry << files[i] << _T('\n');
+        entry << files[i] << _T("\n");
     }
 
     wxFile f(filename, wxFile::write);
     if (f.IsOpened())
     {
-        f.Write(entry.c_str(), entry.Length());
+        f.Write(entry.mb_str(wxConvUTF8),entry.Length());
     }
 }
 
