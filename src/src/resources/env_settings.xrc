@@ -43,14 +43,6 @@
                 <object class="sizeritem">
                   <border>8</border>
                   <flag>wxLEFT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                  <object class="wxCheckBox" name="chkDDE">
-                    <label>Run DDE server (Windows only)</label>
-                    <checked>1</checked>
-                  </object>
-                </object>
-                <object class="sizeritem">
-                  <border>8</border>
-                  <flag>wxLEFT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                   <object class="wxCheckBox" name="chkSingleInstance">
                     <label>Allow only one running instance (needs application restart to take effect)</label>
                     <checked>1</checked>
