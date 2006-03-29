@@ -12,7 +12,7 @@
 class wxsEnumProperty: public wxsProperty
 {
 	public:
-		
+
         /** \brief Ctor
          *  \param PGName           name of property used in Property Grid
          *  \param DataName         name of property used in data structures
@@ -21,6 +21,7 @@ class wxsEnumProperty: public wxsProperty
          *  \param Names            array of names used for items in Values array, ending with NULL
          *  \param UpdateEnteries   posting true here notifies, that arrays may change
          *  \param Default          defaut value applied on read errors
+         *  \param UseNamesInXml    if true, names will be stored inside xml node instead of values
          */
 		wxsEnumProperty(
             const wxString& PGName,
@@ -29,10 +30,11 @@ class wxsEnumProperty: public wxsProperty
             const long* Values,
             const wxChar** Names,
             bool UpdateEnteries=false,
-            long Default=0);
-		
+            long Default=0,
+            bool UseNamesInXml=false);
+
     protected:
-    
+
         virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
         virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id, long Index);
         virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id, long Index);
@@ -47,6 +49,7 @@ class wxsEnumProperty: public wxsProperty
         bool UpdateEnteries;
         const long* Values;
         const wxChar** Names;
+        bool UseNamesInXml;
 };
 
 #endif

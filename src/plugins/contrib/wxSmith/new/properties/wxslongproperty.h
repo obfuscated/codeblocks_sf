@@ -8,19 +8,19 @@ class wxsLongProperty: public wxsProperty
 {
 	public:
 
-        /** \brief Ctor 
+        /** \brief Ctor
          *  \param PGName   name of property in Property Grid
          *  \param DataName name of property in data stuctures
          *  \param Offset   offset of value (returned from wxsOFFSET macro)
          *  \param Default  default value applied on read errors
          */
 		wxsLongProperty(const wxString& PGName,const wxString& DataName,long Offset,long Default=0);
-		
+
 		/** \brief Returning type name */
 		virtual const wxString GetTypeName() { return _T("long"); }
 
     protected:
-    
+
         virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
         virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
         virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
@@ -36,13 +36,13 @@ class wxsLongProperty: public wxsProperty
 
 /** \addtogroup properties_macros
  *  \{ */
- 
-/** \brief Macro automatically declaring long integer property 
+
+/** \brief Macro automatically declaring long integer property
  *  \param ClassName name of class holding this property
  *  \param VarName name of variable inside class
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property 
-           wxsPropertyContainer::Property \endlink for details, use 0 to always
-           use this property
+ *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
+ *         wxsPropertyContainer::Property \endlink for details, use 0 to always
+ *         use this property
  *  \param PGName name used in property grid
  *  \param DataName name used in Xml / Data Streams
  *  \param Default value applied on read errors / validation failures
@@ -50,7 +50,7 @@ class wxsLongProperty: public wxsProperty
 #define WXS_LONG(ClassName,VarName,Flags,PGName,DataName,Default) \
     static wxsLongProperty PropertyLong##ClassName##VarName(PGName,DataName,wxsOFFSET(ClassName,VarName),Default); \
     Property(PropertyLong##ClassName##VarName,Flags);
-    
+
 /** \} */
 
 #endif

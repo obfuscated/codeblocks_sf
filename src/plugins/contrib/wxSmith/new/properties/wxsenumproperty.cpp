@@ -3,13 +3,14 @@
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,long)
 
-wxsEnumProperty::wxsEnumProperty(const wxString& PGName, const wxString& DataName,long _Offset,const long* _Values,const wxChar** _Names,bool _UpdateEnteries,long _Default):
+wxsEnumProperty::wxsEnumProperty(const wxString& PGName, const wxString& DataName,long _Offset,const long* _Values,const wxChar** _Names,bool _UpdateEnteries,long _Default,bool _UseNamesInXml):
     wxsProperty(PGName,DataName),
     Offset(_Offset),
     Default(_Default),
     UpdateEnteries(_UpdateEnteries),
     Values(_Values),
-    Names(_Names)
+    Names(_Names),
+    UseNamesInXml(_UseNamesInXml)
 {}
 
 
@@ -37,18 +38,37 @@ bool wxsEnumProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager
 
 bool wxsEnumProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
-    if ( !Element ) 
+    if ( !Element )
     {
-        VALUE = Default; 
+        VALUE = Default;
         return false;
     }
     TiXmlText* Text = Element->FirstChild()->ToText();
-    if ( !Text ) 
+    if ( !Text )
     {
-        VALUE = Default; 
+        VALUE = Default;
         return false;
     }
-    VALUE = atoi(Text->Value());
+    if ( UseNamesInXml )
+    {
+        // Searching for node text in names
+        wxString TextS = cbC2U(Text->Value());
+        int i = 0;
+        for ( const wxChar** Ptr = Names; *Ptr; Ptr++, i++ )
+        {
+            if ( TextS == *Ptr )
+            {
+                VALUE = Values[i];
+                return true;
+            }
+        }
+        VALUE = Default;
+        return false;;
+    }
+    else
+    {
+        VALUE = atoi(Text->Value());
+    }
     return true;
 }
 
@@ -56,6 +76,22 @@ bool wxsEnumProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Elemen
 {
     if ( VALUE != Default )
     {
+        if ( UseNamesInXml )
+        {
+            // searching for name of this value
+            int i = 0;
+            for ( const wxChar** Ptr = Names; *Ptr; Ptr++, i++ )
+            {
+                if ( VALUE == Values[i] )
+                {
+                    Element->InsertEndChild(TiXmlElement(cbU2C(*Ptr)));
+                    return true;
+                }
+            }
+
+            // Did not found value, storing as integer
+        }
+
         char Buffer[0x40];  // Using char instead of wxChar because TiXml uses it
         Element->InsertEndChild(TiXmlText(ltoa(VALUE,Buffer,10)));
         return true;

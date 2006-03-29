@@ -3,6 +3,13 @@
 #include "wxsframe.h"
 #include "wxsdialog.h"
 #include "wxspanelr.h"
+
+#include "wxsboxsizer.h"
+#include "wxsflexgridsizer.h"
+#include "wxsgridsizer.h"
+#include "wxsstaticboxsizer.h"
+#include "wxsspacer.h"
+
 #include "wxsbutton.h"
 #include "wxscalendarctrl.h"
 #include "wxscheckbox.h"
@@ -43,7 +50,6 @@ namespace
     };
     static int InfosCnt = sizeof(Infos) / sizeof(Infos[0]);
 #undef ITEM
-
 
 // Creating enum type connecting item types with numbers
 #define ITEM(name) name##Number,
@@ -132,7 +138,6 @@ const wxsItemInfo& wxsStdManagerT::GetItemInfo(int Number)
 {
     return *Infos[Number];
 }
-
 
 wxsItem* wxsStdManagerT::ProduceItem(int Number,wxsWindowRes* Res)
 {

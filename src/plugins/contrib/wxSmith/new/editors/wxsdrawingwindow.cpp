@@ -162,10 +162,11 @@ void wxsDrawingWindow::OnFetchTimer(wxTimerEvent& event)
 
 void wxsDrawingWindow::OnRepaintTimer(wxTimerEvent& event)
 {
-    wxClientDC ClientDC(Panel);
-    wxBitmap BmpCopy(*Bitmap);
-    wxBufferedDC DC(&ClientDC,BmpCopy);
-    PaintExtra(&DC);
+    // FIXME: This caused some parts of window to be rendered with invalid content
+//    wxClientDC ClientDC(Panel);
+//    wxBitmap BmpCopy(*Bitmap);
+//    wxBufferedDC DC(&ClientDC,BmpCopy);
+//    PaintExtra(&DC);
 }
 
 void wxsDrawingWindow::OnSize(wxSizeEvent& event)

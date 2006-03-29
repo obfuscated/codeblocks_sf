@@ -52,14 +52,14 @@ class wxsSizer: public wxsParent
          * into sizer are handled automatically. Binding sizer into container
          * must be done in container.
          */
-        virtual wxSizer* BuildSizerPreview() = 0;
+        virtual wxSizer* BuildSizerPreview(wxWindow* Parent) = 0;
 
         /** \brief Function building code genearating sizer
          *
          * This function must append code generating sizer to the end of Code
          * param. Adding items into sizer is handled automatically.
          */
-        virtual void BuildSizerCreatingCode(wxString& Code,wxsCodingLang Language) = 0;
+        virtual void BuildSizerCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language) = 0;
 
         /** \brief Function building code
          *
@@ -76,7 +76,7 @@ class wxsSizer: public wxsParent
          * When there's no exact mode, there's additional panel on which
          * guidelines are drawn.
          */
-         wxObject* BuildPreview(wxWindow* Parent,bool Exact);
+         wxObject* DoBuildPreview(wxWindow* Parent,bool Exact);
 
         /** \brief Funciton creating additional data
          *
@@ -88,9 +88,13 @@ class wxsSizer: public wxsParent
         /** \brief Function adding additional QPP child panel */
         virtual void AddChildQPP(wxsItem* Child,wxsAdvQPP* QPP);
 
-// TODO (SpOoN##): Add GetPropertiesFlags()
+        /** \brief Disabling identifier in sizers */
+        virtual long GetPropertiesFlags() { return wxsItem::GetPropertiesFlags() & ~wxsFLId; }
 
-    protected:
+        /** \brief Default implementation of AddItemQPP - will do nothing */
+        virtual void AddItemQPP(wxsAdvQPP*) {}
+
+    private:
 
         /** \brief Custom child loading function - needed to support Spacer exception */
         virtual bool XmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra);
@@ -100,6 +104,7 @@ class wxsSizer: public wxsParent
 
         /** \brief Name of extra object node will be returned here */
         virtual wxString XmlGetExtraObjectClass();
+
 };
 
 #endif

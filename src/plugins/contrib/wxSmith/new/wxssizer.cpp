@@ -6,6 +6,9 @@
 #include "wxssizerparentqp.h"
 #include "wxsitemfactory.h"
 
+// TODO: Remove this after required code moved to wxsSpacer class
+#include "defwidgets/wxsspacer.h"
+
 namespace
 {
     class wxsSizerPreview: public wxPanel
@@ -45,7 +48,7 @@ wxsSizer::wxsSizer(wxsWindowRes* Resource): wxsParent(Resource)
 
 void wxsSizer::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
 {
-    BuildSizerCreatingCode(Code,Language);
+    BuildSizerCreatingCode(Code,WindowParent,Language);
 
     bool UnknownLang = false;
     int Count = GetChildCount();
@@ -83,11 +86,29 @@ void wxsSizer::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxs
                 break;
 
             case wxsTSpacer:
-                // Spacer added using wxSizer::Add(width,height,...)
-                // TODO: Code it when wxsSpacer is done
+                switch ( Language )
+                {
+                    case wxsCPP:
+                    {
+                        // TODO: Move this to wxsSpacer class
+                        Code << GetVarName() << _T("->Add(") << ((wxsSpacer*)Child)->GetSizeCode(WindowParent,wxsCPP)
+                             << wxString::Format(_T(",%d,"),Extra->Proportion)
+                             << wxsSizerFlagsProperty::GetString(Extra->Flags)
+                             << _T(",") << wxsDimensionProperty::GetPixelsCode(
+                                        Extra->Border,Extra->BorderInDU,WindowParent,wxsCPP)
+                             << _T(");\n");
+                        break;
+                    }
+
+                    default:
+                    {
+                        UnknownLang = true;
+                    }
+                }
                 break;
 
-            default:;
+            default:
+                break;
         }
     }
 
@@ -97,7 +118,7 @@ void wxsSizer::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxs
     }
 }
 
-wxObject* wxsSizer::BuildPreview(wxWindow* Parent,bool Exact)
+wxObject* wxsSizer::DoBuildPreview(wxWindow* Parent,bool Exact)
 {
     wxWindow* NewParent = Parent;
 
@@ -106,7 +127,7 @@ wxObject* wxsSizer::BuildPreview(wxWindow* Parent,bool Exact)
         NewParent = new wxsSizerPreview(Parent);
     }
 
-    wxSizer* Sizer = BuildSizerPreview();
+    wxSizer* Sizer = BuildSizerPreview(Parent);
     int Count = GetChildCount();
     for ( int i=0; i<Count; i++ )
     {
@@ -116,9 +137,22 @@ wxObject* wxsSizer::BuildPreview(wxWindow* Parent,bool Exact)
         // We pass either Parent passed to current BuildPreview function
         // or pointer to additional parent currently created
         wxObject* ChildPreview = Child->BuildPreview(NewParent,Exact);
-        if ( ChildPreview ) continue;
+        if ( !ChildPreview )
+        {
+            if ( (Child->GetType()==wxsTSpacer) && Exact )
+            {
+                // TODO: Move this into wxsSpacer class
+                wxSize Size = ((wxsSpacer*)Child)->GetSize(NewParent);
+                Sizer->Add(Size.GetWidth(),Size.GetHeight(),Extra->Proportion,
+                    wxsSizerFlagsProperty::GetWxFlags(Extra->Flags),
+                    wxsDimensionProperty::GetPixels(
+                        Extra->Border,Extra->BorderInDU,Parent));
+            }
 
-        wxSizer*  ChildAsSizer = wxDynamicCast(ChildPreview,wxSizer);
+            continue;
+        }
+
+        wxSizer* ChildAsSizer = wxDynamicCast(ChildPreview,wxSizer);
         if ( ChildAsSizer )
         {
             Sizer->Add(ChildAsSizer,Extra->Proportion,

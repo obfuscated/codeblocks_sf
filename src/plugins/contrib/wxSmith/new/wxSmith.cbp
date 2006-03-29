@@ -12,7 +12,7 @@
 				<Option working_dir="..\..\..\..\devel" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="./codeblocks.exe" />
+				<Option host_application=".\codeblocks.exe" />
 				<Option includeInTargetAll="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
 				<Linker>
@@ -78,6 +78,16 @@
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="defwidgets\list.inc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxSmith" />
+		</Unit>
+		<Unit filename="defwidgets\wxsboxsizer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxSmith" />
+		</Unit>
+		<Unit filename="defwidgets\wxsboxsizer.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -163,6 +173,16 @@
 			<Option link="0" />
 			<Option target="wxSmith" />
 		</Unit>
+		<Unit filename="defwidgets\wxsflexgridsizer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxSmith" />
+		</Unit>
+		<Unit filename="defwidgets\wxsflexgridsizer.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxSmith" />
+		</Unit>
 		<Unit filename="defwidgets\wxsframe.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="wxSmith" />
@@ -188,6 +208,16 @@
 			<Option target="wxSmith" />
 		</Unit>
 		<Unit filename="defwidgets\wxsgenericdirctrl.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxSmith" />
+		</Unit>
+		<Unit filename="defwidgets\wxsgridsizer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxSmith" />
+		</Unit>
+		<Unit filename="defwidgets\wxsgridsizer.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -263,6 +293,16 @@
 			<Option link="0" />
 			<Option target="wxSmith" />
 		</Unit>
+		<Unit filename="defwidgets\wxsspacer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxSmith" />
+		</Unit>
+		<Unit filename="defwidgets\wxsspacer.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxSmith" />
+		</Unit>
 		<Unit filename="defwidgets\wxsspinbutton.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="wxSmith" />
@@ -298,6 +338,16 @@
 			<Option target="wxSmith" />
 		</Unit>
 		<Unit filename="defwidgets\wxsstaticbox.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxSmith" />
+		</Unit>
+		<Unit filename="defwidgets\wxsstaticboxsizer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxSmith" />
+		</Unit>
+		<Unit filename="defwidgets\wxsstaticboxsizer.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

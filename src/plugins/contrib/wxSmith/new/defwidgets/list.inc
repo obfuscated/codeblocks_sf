@@ -1,6 +1,13 @@
 ITEM(wxsFrame)
 ITEM(wxsDialog)
 ITEM(wxsPanelr)
+
+ITEM(wxsBoxSizer)
+ITEM(wxsFlexGridSizer)
+ITEM(wxsGridSizer)
+ITEM(wxsStaticBoxSizer)
+ITEM(wxsSpacer)
+
 ITEM(wxsButton)
 ITEM(wxsCalendarCtrl)
 ITEM(wxsCheckBox)
