@@ -5,7 +5,7 @@
 
 /** \brief Class putting new code into proper files
  *
- * \warning Current implementation does not shedule coded upgrades which may 
+ * \warning Current implementation does not shedule coded upgrades which may
  *          cause bad results in performance.
  */
 class wxsCoder
@@ -21,9 +21,9 @@ class wxsCoder
 		 * \param Header Header beginning code block
 		 * \param End Sequence ending code block
 		 * \param Code new code
-		 * \param Immediately flag forcing immediate apply (currently not used 
+		 * \param Immediately flag forcing immediate apply (currently not used
 		 *        but may be aded in future when updates will be sheduled)
-		 * \param CodeHasHeader if true, heder will also be recreated 
+		 * \param CodeHasHeader if true, heder will also be recreated
 		 *        (new hwader should be placed at the beginning of Code)
 		 * \param CodeHasEnd if true, ending sequence will also be recreated
 		 *        (new ending sequence should be placed at the end of Code)
@@ -37,7 +37,7 @@ class wxsCoder
             bool CodeHasHeader=false,
             bool CodeHasEnd=false);
 
-		/** \brief Function reading block of code from given source file 
+		/** \brief Function reading block of code from given source file
 		 *
 		 * \param FileName Full path for processed file
 		 * \param Header Header beginning code block
@@ -45,7 +45,7 @@ class wxsCoder
 		 * \param IncludeHeader if true, returned code will also contain header
 		 * \param IncludeEnd if true, returned code will also contain ending sequence
 		 */
-		wxString GetCode(            
+		wxString GetCode(
             const wxString& FileName,
             const wxString& Header,
             const wxString& End,
@@ -65,7 +65,7 @@ class wxsCoder
             wxString Code,
             bool CodeHasHeader,
             bool CodeHasEnd);
-            
+
 
 		/** \brief Function applying changes to file which is not open inside editor */
 		bool ApplyChanges(
@@ -84,7 +84,7 @@ class wxsCoder
 
 		/** \brief Mutex for this object - added in case of multi-threading shedules */
 		wxMutex DataMutex;
-		
+
 		/** \brief Singleton object */
 		static wxsCoder* Singleton;
 };
@@ -99,7 +99,7 @@ class wxsCoder
  *                                  does all resource initialization (loading
  *                                  XRC, adding widgets etc.)
  * \li \c //(*Headers($CLASSNAME) - generated in class header file, this block
- *                                  contains set of #includes including required
+ *                                  contains set of #%includes including required
  *                                  header files for this resource
  * \li \c //(*Identifiers($CLASSNAME) - generated in class header file, this
  *                                  code generates identifiers for window
@@ -123,7 +123,7 @@ class wxsCoder
  * Blocks which will be added in future:
  *
  * \li \c //(*AppHeaders - declared in main application's source file.
- *                                 This block will contain set of #includes
+ *                                 This block will contain set of #%includes
  *                                 required by application.
  * \li \c //(*AppInitialize - declared in main application's source file.
  *                                 This block will automatically load resources

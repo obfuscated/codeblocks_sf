@@ -62,6 +62,7 @@ struct wxsStyle
 
 /** Adding new style with platform masks
  *
+ * \param name - style's name
  * \param Include - flags with included platforms (use wxsSFAll if excluding only)
  * \param Exclude - flags with excluded platforms (use 0 when including only)
  * \param InXRC - true if this style can be used when resource uses XRC files
@@ -73,6 +74,7 @@ struct wxsStyle
 
 /** Adding new extended style with platform masks
  *
+ * \param name - style's name
  * \param Include - flags with included platforms (use wxsSFAll if excluding only)
  * \param Exclude - flags with excluded platforms (use 0 when including only)
  * \param InXRC - true if this style can be used when resource uses XRC files

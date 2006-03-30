@@ -65,6 +65,7 @@ class wxsDimensionProperty: public wxsProperty
 		 *  \param Value value in dialog/pixel units
 		 *  \param DialogUnits true when Value is in dualog units, false if it's in pixels
 		 *  \param ParentName name of variable holding pointer to parent class
+		 *  \param Language language of generated code
          */
         static wxString GetPixelsCode(long Value,bool DialogUnits,wxString ParentName,wxsCodingLang Language);
 

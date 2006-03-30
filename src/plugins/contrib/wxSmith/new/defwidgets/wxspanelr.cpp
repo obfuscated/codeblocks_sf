@@ -66,6 +66,7 @@ wxObject* wxsPanelr::DoBuildPreview(wxWindow* Parent,bool Exact)
     wxWindow* NewItem = new wxPanel(
         Parent,GetId(),wxDefaultPosition,wxDefaultSize,
         Exact ? Style() : wxRAISED_BORDER);
+    SetupWindow(NewItem,Exact);
     AddChildrenPreview(NewItem,Exact);
     return NewItem;
 }

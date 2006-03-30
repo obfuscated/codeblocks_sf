@@ -45,6 +45,7 @@ class wxsItemManager
          * wxsItem::Create() function, but wxsItemFactory calls this function.
          *
          * \param Number zero-based item number in range ( 0 .. GetCount()-1 )
+         * \param Res resource owning item
          */
         virtual wxsItem* ProduceItem(int Number,wxsWindowRes* Res) = 0;
 

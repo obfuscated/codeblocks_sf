@@ -94,9 +94,6 @@ class wxsSizer: public wxsParent
         /** \brief Disabling identifier in sizers */
         virtual long GetPropertiesFlags() { return wxsItem::GetPropertiesFlags() & ~wxsFLId; }
 
-        /** \brief Default implementation of AddItemQPP - will do nothing */
-        virtual void AddItemQPP(wxsAdvQPP*) {}
-
     private:
 
         /** \brief Custom child loading function - needed to support Spacer exception */

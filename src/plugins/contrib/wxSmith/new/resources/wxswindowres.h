@@ -58,6 +58,7 @@ class wxsWindowRes : public wxsResource
 
         /** \brief Function binfing external resource for this class
          * \param FileName name of xrc file, MUST be absolute path
+         * \param ClassName name of resource class
          */
         void BindExternalResource(const wxString& FileName,const wxString& ClassName);
 

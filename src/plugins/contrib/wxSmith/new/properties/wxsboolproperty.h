@@ -7,20 +7,20 @@
 class wxsBoolProperty: public wxsProperty
 {
 	public:
-	
-        /** \brief Ctor 
+
+        /** \brief Ctor
          *  \param PGName   name of property in Property Grid
          *  \param DataName name of property in data stuctures
          *  \param Offset   offset of boolean (taken from wxsOFFSET macro)
          *  \param Default  default value applied on read errors
          */
 		wxsBoolProperty(const wxString& PGName,const wxString& DataName,long Offset,bool Default=0);
-		
+
         /** \brief Returning type name */
         virtual const wxString GetTypeName() { return _T("bool"); }
 
     protected:
-    
+
         virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
         virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
         virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
@@ -34,13 +34,13 @@ class wxsBoolProperty: public wxsProperty
         bool Default;
 };
 
-/** \addtogroup properties_macros Macros automatically dedfining standard properties
+/** \addtogroup properties_macros Macros automatically defining standard properties
  *  \{ */
- 
-/** \brief Macro automatically declaring boolean property 
+
+/** \brief Macro automatically declaring boolean property
  *  \param ClassName name of class holding this property
  *  \param VarName name of variable inside class
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property 
+ *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
            wxsPropertyContainer::Property \endlink for details, use 0 to always
            use this property
  *  \param PGName name used in property grid

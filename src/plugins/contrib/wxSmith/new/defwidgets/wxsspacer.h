@@ -14,12 +14,8 @@ class wxsSpacer: public wxsItem
     private:
 
         virtual const wxsItemInfo& GetInfo() { return Info; }
-
-        virtual void AddItemQPP(wxsAdvQPP* QPP) {}
-
         virtual void BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
         virtual void BuildDeclarationCode(wxString& Code,wxsCodingLang Language) {}
-
         virtual long GetPropertiesFlags();
 
         wxObject* DoBuildPreview(wxWindow* Parent,bool Exact);

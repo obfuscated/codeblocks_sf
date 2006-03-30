@@ -122,6 +122,7 @@ wxObject* wxsFrame::DoBuildPreview(wxWindow* Parent,bool Exact)
         NewItem = new wxPanel(Parent,GetId(),wxDefaultPosition,wxDefaultSize,wxRAISED_BORDER);
     }
 
+    SetupWindow(NewItem,Exact);
     AddChildrenPreview(NewItem,Exact);
 
     if ( Frm && Centered )

@@ -25,7 +25,7 @@ namespace
                 wxPaintDC DC(this);
                 int W, H;
                 GetSize(&W,&H);
-                DC.SetBrush(wxNullBrush);
+                DC.SetBrush(*wxTRANSPARENT_BRUSH);
                 DC.SetPen(*wxRED_PEN);
                 DC.DrawRectangle(0,0,W,H);
             }
@@ -159,9 +159,16 @@ wxObject* wxsSizer::DoBuildPreview(wxWindow* Parent,bool Exact)
         NewParent->SetSizer(Sizer);
         Sizer->Fit(NewParent);
         Sizer->SetSizeHints(NewParent);
+        wxSizer* OutSizer = new wxBoxSizer(wxHORIZONTAL);
+        OutSizer->Add(NewParent,1,wxEXPAND,0);
+        Parent->SetSizer(OutSizer);
+        // TODO: Find out if we should check flags like in xh_sizer.cpp
+        OutSizer->SetSizeHints(Parent);
         return NewParent;
     }
 
+    Parent->SetSizer(Sizer);
+    Sizer->SetSizeHints(Parent);
     return Sizer;
 }
 

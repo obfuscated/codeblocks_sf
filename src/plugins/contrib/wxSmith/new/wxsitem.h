@@ -81,7 +81,7 @@ class wxsItem: public wxsPropertyContainer
         inline wxString GetIdName() { return IdName; }
 
         /** \brief Checking if variable is member of class */
-        virtual bool GetIsMember() { return IsMember; }
+        inline bool GetIsMember() { return IsMember; }
 
         /** \brief Getting parent item */
         inline wxsParent* GetParent() { return Parent; }
@@ -117,7 +117,7 @@ class wxsItem: public wxsPropertyContainer
          *
          * \param QPP wxsAdvQPP class, root Quick properties panel
          */
-        virtual void AddItemQPP(wxsAdvQPP* QPP) = 0;
+        virtual void AddItemQPP(wxsAdvQPP* QPP) {}
 
         /** \brief Function generating code creating item in resource
          *
@@ -134,6 +134,7 @@ class wxsItem: public wxsPropertyContainer
          * \param WindowParent name of parent of class wxWindow* (this argument
          *        may be passed as parent in wxWidgets constructors. It will be
          *        empty string for root items.
+         * \param Language language of generated code
          */
         virtual void BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language) = 0;
 
@@ -171,6 +172,7 @@ class wxsItem: public wxsPropertyContainer
          * wxsPropertyContainer::XmlRead() function and loads extra data from
          * node passed as argument using defautl scheme.
          *
+         * \param Element element containing configuration for this item
          * \param IsXRC if true, this function should load XRC structure from
          *        this node and if it's parent, it should load all children.
          * \param IsExtra if true, this function should load Extra informations
@@ -185,6 +187,7 @@ class wxsItem: public wxsPropertyContainer
         /** \brief Function which should write this item and child items
          *         from xrc / wxs structure
          *
+         * \param Element here all item configuration should be stored
          * \param IsXRC if true, this function should write XRC structure to
          *        this node and if it's parent, it should write all children.
          * \param IsExtra if true, this function should write Extra informations
@@ -303,5 +306,27 @@ class wxsItem: public wxsPropertyContainer
 
         friend class wxsParent;
 };
+
+
+/** \page deriving_item deriving from item class - Guidelines
+ *
+ * Deriving from wxsItem class require overriding following members:
+ *  - \link wxsItem::GetInfo GetInfo \endlink - the best way is to create some static
+ *    item info as class member and return it here.
+ *  - \link wxsItem::BuildCreatingCode BuildCreatingCode \endlink - see doc for this function for details
+ *  - \link wxsItem::DoBuildPreview DoBuildPreview \endlink - same as above
+ *
+ * These functions does not need to be overridden but it's better to do it:
+ *  - \link wxsItem::GetEventArray GetEventArray \endlink - override this function to return list of used events
+ *  - \link wxsItem::EnumItemProperties EnumItemProperties \endlink - use this function to add extra properties.
+ *
+ * Additional functions which may be overridden to make change some extra behaviour:
+ *  - \link wxsItem::BuildDeclarationCode BuildDeclarationCode \endlink - You can change the declaration of item here
+ *  - \link wxsItem::GetPropertiesFlags GetPropertiesFlags \endlink - override this to exclude some default properties (identifier or variable name).
+ *    But remember to call original function and exclude some bits from it f.ex. \code wxsItem::GetPropertiesFlags() & ~wxsFLId \endcode
+ *  - \link wxsItem::AddItemQPP AddItemQPP \endlink - Inside this function you may add Your own panels to AdvQPP.
+ *  - \link wxsItem::XmlRead XmlRead \endlink - Override this function to add some extra data into xml, but always call original XmlRead inside
+ *  - \link wxsItem::XmlWrite XmlWrite \endlink - Override this function to add some extra data into xml, but always call original XmlRead inside
+ */
 
 #endif

@@ -95,6 +95,7 @@ class wxsEvents
 		 *
 		 * \param Code Reference to string with code. New code will be appended here.
 		 * \param UsingXrc if true,
+		 * \param Language language of generated code
 		 */
         void GenerateBindingCode(wxString& Code,bool UsingXrc,wxsCodingLang Language);
 

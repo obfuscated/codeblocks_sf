@@ -84,6 +84,7 @@ class wxsResource: public wxObject
          *
          * \param Code string where new code should be appended. Each line of
          *        added code should start with _T("\t")
+         * \param Language language of generated code
          */
         virtual void BuildShowingCode(wxString& Code,wxsCodingLang Language) { }
 
@@ -95,7 +96,7 @@ class wxsResource: public wxObject
         virtual wxString GetHeaderFile() { return wxEmptyString; }
 
         /** \brief Function checking if given file is used in this resource
-         *  \param FileName name of file given as absolute path
+         *  \param Name name of file given as absolute path
          */
         virtual bool UsingFile(const wxString& Name) { return false; }
 

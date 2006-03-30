@@ -126,18 +126,13 @@ void wxsContainer::AddChildrenPreview(wxWindow* This,bool Exact)
 {
     for ( int i=0; i<GetChildCount(); i++ )
     {
-        wxObject* Obj = GetChild(i)->BuildPreview(This,Exact);
-        wxSizer* Szr = wxDynamicCast(Obj,wxSizer);
-        if ( Szr != NULL )
-        {
-            This->SetSizer(Szr);
-            if ( BaseProps.Size.IsDefault )
-            {
-                Szr->Fit(This);
-            }
-            // TODO: Find out if we should check flags like in xh_sizer.cpp
-            Szr->SetSizeHints(This);
-        }
+        GetChild(i)->BuildPreview(This,Exact);
+    }
+
+    // TODO: Move this into child classes since it's not what this function should do
+    if ( BaseProps.Size.IsDefault )
+    {
+        This->Fit();
     }
 }
 

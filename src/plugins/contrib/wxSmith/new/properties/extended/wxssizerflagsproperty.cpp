@@ -24,7 +24,7 @@ void wxsSizerFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGrid
 {
     wxPGId ID1, ID2, ID3, ID4, ID5, ID6;
     // Creating border flags
-    
+
     if ( (FLAGS & BorderMask) == BorderMask )
     {
         FLAGS |= BorderAll | BorderPrevAll;
@@ -33,7 +33,7 @@ void wxsSizerFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGrid
     {
         FLAGS &= ~BorderAll & ~BorderPrevAll;
     }
-    
+
     wxPGConstants PGC;
     PGC.Add(_("Top"),BorderTop);
     PGC.Add(_("Bottom"),BorderBottom);
@@ -41,19 +41,19 @@ void wxsSizerFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGrid
     PGC.Add(_("Right"),BorderRight);
     PGC.Add(_("All"),BorderAll);
     PGRegister(Object,Grid,ID1 = Grid->AppendIn(Parent,wxFlagsProperty(_("Border"),wxPG_LABEL,PGC,FLAGS&(BorderMask|BorderAll))),BORDERIND);
-    
+
     wxPGConstants PGC2;
     PGC2.Add(_("Left"),AlignLeft);
     PGC2.Add(_("Center"),AlignCenterHorizontal);
     PGC2.Add(_("Right"),AlignRight);
     PGRegister(Object,Grid,ID2 = Grid->AppendIn(Parent,wxEnumProperty(_("Horizontal align"),wxPG_LABEL,PGC2,FLAGS&AlignHMask)),ALIGNHIND);
-    
+
     wxPGConstants PGC3;
     PGC3.Add(_("Top"),AlignTop);
     PGC3.Add(_("Center"),AlignCenterVertical);
     PGC3.Add(_("Bottom"),AlignBottom);
     PGRegister(Object,Grid,ID3 = Grid->AppendIn(Parent,wxEnumProperty(_("Vertical align"),wxPG_LABEL,PGC3,FLAGS&AlignVMask)),ALIGNHIND);
-    
+
     PGRegister(Object,Grid,ID4 = Grid->AppendIn(Parent,wxBoolProperty(_("Expand"),wxPG_LABEL,(FLAGS&Expand)!=0)),EXPANDIND);
     PGRegister(Object,Grid,ID5 = Grid->AppendIn(Parent,wxBoolProperty(_("Shaped"),wxPG_LABEL,(FLAGS&Shaped)!=0)),SHAPEDIND);
     PGRegister(Object,Grid,ID6 = Grid->AppendIn(Parent,wxBoolProperty(_("Fixed min size"),wxPG_LABEL,(FLAGS&FixedMinSize)!=0)),FIXEDIND);
@@ -91,7 +91,7 @@ bool wxsSizerFlagsProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridMa
                 {
                     NewVal &= BorderMask;
                     FLAGS &= ~BorderMask;
-                    FLAGS |= NewVal; 
+                    FLAGS |= NewVal;
                     if ( NewVal == BorderMask )
                     {
                         FLAGS |= BorderAll | BorderPrevAll;
@@ -103,17 +103,17 @@ bool wxsSizerFlagsProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridMa
                 }
             }
             break;
-            
+
         case ALIGNHIND:
             FLAGS &= AlignHMask;
             FLAGS |= Grid->GetPropertyValue(Id).GetLong() & AlignHMask;
             break;
-        
+
         case ALIGNVIND:
             FLAGS &= AlignVMask;
             FLAGS |= Grid->GetPropertyValue(Id).GetLong() & AlignVMask;
             break;
-            
+
         case EXPANDIND:
             if ( Grid->GetPropertyValue(Id).GetBool() )
             {
@@ -135,7 +135,7 @@ bool wxsSizerFlagsProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridMa
                 FLAGS &= ~Shaped;
             }
             break;
-            
+
         case FIXEDIND:
             if ( Grid->GetPropertyValue(Id).GetBool() )
             {
@@ -146,7 +146,7 @@ bool wxsSizerFlagsProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridMa
                 FLAGS &= ~FixedMinSize;
             }
             break;
-            
+
         default:
             return false;
     }
@@ -168,15 +168,15 @@ bool wxsSizerFlagsProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridM
             }
             Grid->SetPropertyValue(Id,FLAGS&(BorderMask|BorderAll));
             break;
-            
+
         case ALIGNHIND:
             Grid->SetPropertyValue(Id,FLAGS&AlignHMask);
             break;
-        
+
         case ALIGNVIND:
             Grid->SetPropertyValue(Id,FLAGS&AlignVMask);
             break;
-            
+
         case EXPANDIND:
             Grid->SetPropertyValue(Id,(FLAGS&Expand)!=0);
             break;
@@ -184,11 +184,11 @@ bool wxsSizerFlagsProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridM
         case SHAPEDIND:
             Grid->SetPropertyValue(Id,(FLAGS&Shaped)!=0);
             break;
-            
+
         case FIXEDIND:
             Grid->SetPropertyValue(Id,(FLAGS&FixedMinSize)!=0);
             break;
-            
+
         default:
             return false;
     }
@@ -202,7 +202,7 @@ bool wxsSizerFlagsProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* E
         FLAGS = AlignLeft | AlignTop;
         return false;
     }
-    
+
     TiXmlText* Text = Element->FirstChild()->ToText();
     wxString Str;
     if ( !Text )
@@ -211,7 +211,7 @@ bool wxsSizerFlagsProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* E
         return false;
     }
     FLAGS = ParseString(cbC2U(Text->Value()));
-    FixFlags(FLAGS);
+    FixFlags(FLAGS); // TODO: This is useless, remove it
     return true;
 }
 
@@ -239,25 +239,25 @@ bool wxsSizerFlagsProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsProp
 long wxsSizerFlagsProperty::ParseString(const wxString& String)
 {
     long Flags = 0;
-    wxStringTokenizer Tkn(String, wxT("| \t\n"), wxTOKEN_STRTOK);
+    wxStringTokenizer Tkn(String, _T("| \t\n"), wxTOKEN_STRTOK);
     while ( Tkn.HasMoreTokens() )
     {
         wxString Flag = Tkn.GetNextToken();
-             if ( Flag == wxTOP           ) Flags |= BorderTop;
-        else if ( Flag == wxBOTTOM        ) Flags |= BorderBottom;
-        else if ( Flag == wxLEFT          ) Flags |= BorderLeft;
-        else if ( Flag == wxRIGHT         ) Flags |= BorderRight;
-        else if ( Flag == wxALL           ) Flags |= BorderMask;
-        else if ( Flag == wxEXPAND        ) Flags |= Expand;
-        else if ( Flag == wxSHAPED        ) Flags |= Shaped;
-        else if ( Flag == wxFIXED_MINSIZE ) Flags |= FixedMinSize;
-        else if ( Flag == wxALIGN_CENTER  ) Flags |= AlignCenterHorizontal | AlignCenterVertical;
-        else if ( Flag == wxALIGN_LEFT    ) Flags |= AlignLeft;
-        else if ( Flag == wxALIGN_RIGHT   ) Flags |= AlignRight;
-        else if ( Flag == wxALIGN_TOP     ) Flags |= AlignTop;
-        else if ( Flag == wxALIGN_BOTTOM  ) Flags |= AlignBottom;
-        else if ( Flag == wxALIGN_CENTER_HORIZONTAL ) Flags |= AlignCenterHorizontal;
-        else if ( Flag == wxALIGN_CENTER_VERTICAL   ) Flags |= AlignCenterVertical;
+             if ( Flag == _T("wxTOP")           ) Flags |= BorderTop;
+        else if ( Flag == _T("wxBOTTOM")        ) Flags |= BorderBottom;
+        else if ( Flag == _T("wxLEFT")          ) Flags |= BorderLeft;
+        else if ( Flag == _T("wxRIGHT")         ) Flags |= BorderRight;
+        else if ( Flag == _T("wxALL")           ) Flags |= BorderMask;
+        else if ( Flag == _T("wxEXPAND")        ) Flags |= Expand;
+        else if ( Flag == _T("wxSHAPED")        ) Flags |= Shaped;
+        else if ( Flag == _T("wxFIXED_MINSIZE") ) Flags |= FixedMinSize;
+        else if ( Flag == _T("wxALIGN_CENTER")  ) Flags |= AlignCenterHorizontal | AlignCenterVertical;
+        else if ( Flag == _T("wxALIGN_LEFT")    ) Flags |= AlignLeft;
+        else if ( Flag == _T("wxALIGN_RIGHT")   ) Flags |= AlignRight;
+        else if ( Flag == _T("wxALIGN_TOP")     ) Flags |= AlignTop;
+        else if ( Flag == _T("wxALIGN_BOTTOM")  ) Flags |= AlignBottom;
+        else if ( Flag == _T("wxALIGN_CENTER_HORIZONTAL") ) Flags |= AlignCenterHorizontal;
+        else if ( Flag == _T("wxALIGN_CENTER_VERTICAL")   ) Flags |= AlignCenterVertical;
     }
     FixFlags(Flags);
     return Flags;
@@ -266,7 +266,7 @@ long wxsSizerFlagsProperty::ParseString(const wxString& String)
 wxString wxsSizerFlagsProperty::GetString(long Flags)
 {
     wxString Result;
-    
+
     if ( (Flags & BorderMask) == BorderMask )
     {
         Result = _T("wxALL|");
@@ -278,7 +278,7 @@ wxString wxsSizerFlagsProperty::GetString(long Flags)
         if ( Flags & BorderLeft   ) Result.Append(_T("wxLEFT|"));
         if ( Flags & BorderRight  ) Result.Append(_T("wxRIGHT|"));
     }
-    
+
     if ( Flags & Expand                 ) Result.Append(_T("wxEXPAND|"));
     if ( Flags & Shaped                 ) Result.Append(_T("wxSHAPED|"));
     if ( Flags & FixedMinSize           ) Result.Append(_T("wxFIXED_MINSIZE|"));
@@ -288,12 +288,12 @@ wxString wxsSizerFlagsProperty::GetString(long Flags)
     if ( Flags & AlignBottom            ) Result.Append(_T("wxALIGH_BOTTOM|"));
     if ( Flags & AlignCenterHorizontal  ) Result.Append(_T("wxALIGH_CENTER_HORIZONTAL|"));
     if ( Flags & AlignCenterVertical    ) Result.Append(_T("wxALIGH_CENTER_VERTICAL|"));
-    
+
     if ( Result.empty() )
     {
         return _T("0");
     }
-    
+
     Result.RemoveLast();
     return Result;
 }
@@ -301,7 +301,7 @@ wxString wxsSizerFlagsProperty::GetString(long Flags)
 long wxsSizerFlagsProperty::GetWxFlags(long Flags)
 {
     long Result = 0;
-    
+
     if ( Flags & BorderTop             ) Result |= wxTOP;
     if ( Flags & BorderBottom          ) Result |= wxBOTTOM;
     if ( Flags & BorderLeft            ) Result |= wxLEFT;
@@ -333,7 +333,7 @@ void wxsSizerFlagsProperty::FixFlags(long& Flags)
     {
         Flags |= AlignLeft;
     }
-    
+
     if ( Flags & AlignTop )
     {
         Flags &= ~(AlignCenterVertical|AlignBottom);
