@@ -472,6 +472,20 @@ void PluginManager::GetConfigurationPanels(int group, wxWindow* parent, Configur
     }
 }
 
+void PluginManager::GetProjectConfigurationPanels(wxWindow* parent, cbProject* project, ConfigurationPanelsArray& arrayToFill)
+{
+    for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
+    {
+        cbPlugin* plug = m_Plugins[i]->plugin;
+        if (plug && plug->IsAttached())
+        {
+            cbConfigurationPanel* pnl = plug->GetProjectConfigurationPanel(parent, project);
+            if (pnl)
+                arrayToFill.Add(pnl);
+        }
+    }
+}
+
 PluginsArray PluginManager::GetToolOffers()
 {
     return GetOffersFor(ptTool);

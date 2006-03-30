@@ -48,6 +48,7 @@ class ProjectOptionsDlg : public wxDialog
 		void OnScriptMoveDown(wxSpinEvent& event);
     private:
         void BuildScriptsTree();
+        void AddPluginPanels();
         void FillScripts();
         void FillBuildTargets();
         void DoTargetChange();

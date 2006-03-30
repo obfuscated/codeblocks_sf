@@ -30,6 +30,7 @@
     #include "manager.h"
     #include "pluginmanager.h"
     #include "projectmanager.h"
+    #include "pluginmanager.h"
     #include "scriptingmanager.h"
     #include "compilerfactory.h"
     #include "globals.h"
@@ -41,6 +42,7 @@
 #endif
 
 #include <wx/radiobox.h>
+#include <wx/notebook.h>
 
 #include "projectoptionsdlg.h" // class's header file
 #include "editarrayorderdlg.h"
@@ -115,6 +117,13 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
 
     // scripts
     BuildScriptsTree();
+
+    // other plugins configuration
+    AddPluginPanels();
+
+    // make sure everything is laid out properly
+    GetSizer()->SetSizeHints(this);
+    CenterOnParent();
 }
 
 // class destructor
@@ -137,6 +146,20 @@ void ProjectOptionsDlg::BuildScriptsTree()
     tc->Expand(root);
     tc->SelectItem(root);
     FillScripts();
+}
+
+void ProjectOptionsDlg::AddPluginPanels()
+{
+    wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
+
+    ConfigurationPanelsArray panels;
+    Manager::Get()->GetPluginManager()->GetProjectConfigurationPanels(nb, m_Project, panels);
+
+    for (size_t i = 0; i < panels.GetCount(); ++i)
+    {
+        cbConfigurationPanel* panel = panels[i];
+        nb->AddPage(panel, panel->GetTitle());
+    }
 }
 
 void ProjectOptionsDlg::FillScripts()

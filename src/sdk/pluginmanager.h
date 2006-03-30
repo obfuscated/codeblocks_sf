@@ -58,6 +58,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>
         void NotifyPlugins(CodeBlocksEvent& event);
         cbMimePlugin* GetMIMEHandlerForFile(const wxString& filename);
         void GetConfigurationPanels(int group, wxWindow* parent, ConfigurationPanelsArray& arrayToFill);
+        void GetProjectConfigurationPanels(wxWindow* parent, cbProject* project, ConfigurationPanelsArray& arrayToFill);
         int Configure();
 		void SetupLocaleDomain(const wxString& DomainName);
     private:
