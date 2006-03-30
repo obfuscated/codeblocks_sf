@@ -90,7 +90,7 @@ void wxsStaticBitmap::BuildCreatingCode(wxString& Code,const wxString& WindowPar
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating static bitmap (id: %d)"),Language);
+    wxsLANGMSG(wxsStaticBitmap::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

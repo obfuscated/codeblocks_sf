@@ -126,7 +126,7 @@ void wxsListCtrl::BuildCreatingCode(wxString& Code,const wxString& WindowParent,
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating list control (id: %d)"),Language);
+    wxsLANGMSG(wxsListCtrl::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

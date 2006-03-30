@@ -107,7 +107,7 @@ void wxsSpinCtrl::BuildCreatingCode(wxString& Code,const wxString& WindowParent,
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating spin control (id: %d)"),Language);
+    wxsLANGMSG(wxsSpinCtrl::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

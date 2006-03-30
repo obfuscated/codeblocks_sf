@@ -61,7 +61,8 @@ void wxsFlexGridSizer::BuildSizerCreatingCode(wxString& Code,const wxString& Win
 
             return;
     }
-    DBGLOG(_T("wxSmith: Unknown coding language when generating wxsFlexGridSizer (id: %d)"),Language);
+
+    wxsLANGMSG(wxsFlexGridSizer::BuildSizerCreatingCode,Language);
 }
 
 void wxsFlexGridSizer::EnumItemProperties(long Flags)

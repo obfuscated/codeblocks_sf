@@ -58,7 +58,7 @@ void wxsPanelr::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wx
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating button (id: %d)"),Language);
+    wxsLANGMSG(wxsPanelr::BuildCreatingCode,Language);
 }
 
 wxObject* wxsPanelr::DoBuildPreview(wxWindow* Parent,bool Exact)

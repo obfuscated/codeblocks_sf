@@ -60,7 +60,7 @@ void wxsBaseProperties::BuildSetupWindowCode(wxString& Code,const wxString& Wind
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when setting up base wxWindow properties (id: %d)"),Language);
+    wxsLANGMSG(wxsBaseProperties::BuildSetupWindowCode,Language);
 }
 
 void wxsBaseProperties::AddQPPChild(wxsAdvQPP* QPP,long Flags)

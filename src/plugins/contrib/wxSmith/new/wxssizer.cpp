@@ -6,9 +6,6 @@
 #include "wxssizerparentqp.h"
 #include "wxsitemfactory.h"
 
-// TODO: Remove this after required code moved to wxsSpacer class
-#include "defwidgets/wxsspacer.h"
-
 namespace
 {
     class wxsSizerPreview: public wxPanel
@@ -42,6 +39,20 @@ void wxsSizerExtra::EnumProperties(long Flags)
     WXS_LONG(wxsSizerExtra,Proportion,0,_("Proportion"),_T("option"),0);
 }
 
+wxString wxsSizerExtra::AllParamsCode(const wxString& WindowParent,wxsCodingLang Language)
+{
+    switch ( Language )
+    {
+        case wxsCPP:
+            return wxString::Format(_T("%d,"),Proportion) +
+                   wxsSizerFlagsProperty::GetString(Flags) +
+                   _T(",") << wxsDimensionProperty::GetPixelsCode(Border,BorderInDU,WindowParent,wxsCPP);
+    }
+
+    wxsLANGMSG(wxsSizerExtra::AllParamsCode,Language);
+    return wxEmptyString;
+}
+
 wxsSizer::wxsSizer(wxsWindowRes* Resource): wxsParent(Resource)
 {
 }
@@ -70,11 +81,7 @@ void wxsSizer::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxs
                     case wxsCPP:
                     {
                         Code << GetVarName() << _T("->Add(") << Child->GetVarName()
-                             << wxString::Format(_T(",%d,"),Extra->Proportion)
-                             << wxsSizerFlagsProperty::GetString(Extra->Flags)
-                             << _T(",") << wxsDimensionProperty::GetPixelsCode(
-                                        Extra->Border,Extra->BorderInDU,WindowParent,wxsCPP)
-                             << _T(");\n");
+                             << Extra->AllParamsCode(WindowParent,wxsCPP) << _T(");\n");
                         break;
                     }
 
@@ -86,25 +93,7 @@ void wxsSizer::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxs
                 break;
 
             case wxsTSpacer:
-                switch ( Language )
-                {
-                    case wxsCPP:
-                    {
-                        // TODO: Move this to wxsSpacer class
-                        Code << GetVarName() << _T("->Add(") << ((wxsSpacer*)Child)->GetSizeCode(WindowParent,wxsCPP)
-                             << wxString::Format(_T(",%d,"),Extra->Proportion)
-                             << wxsSizerFlagsProperty::GetString(Extra->Flags)
-                             << _T(",") << wxsDimensionProperty::GetPixelsCode(
-                                        Extra->Border,Extra->BorderInDU,WindowParent,wxsCPP)
-                             << _T(");\n");
-                        break;
-                    }
-
-                    default:
-                    {
-                        UnknownLang = true;
-                    }
-                }
+                // Spacer is responsible for adding itself into sizer
                 break;
 
             default:
@@ -114,7 +103,7 @@ void wxsSizer::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxs
 
     if ( UnknownLang )
     {
-        DBGLOG(_T("wxSmith: Unknown coding language (id: %d)"),Language);
+        wxsLANGMSG(wxsSizer::BuildCreatingCode,Language);
     }
 }
 
@@ -137,22 +126,11 @@ wxObject* wxsSizer::DoBuildPreview(wxWindow* Parent,bool Exact)
         // We pass either Parent passed to current BuildPreview function
         // or pointer to additional parent currently created
         wxObject* ChildPreview = Child->BuildPreview(NewParent,Exact);
-        if ( !ChildPreview )
-        {
-            if ( (Child->GetType()==wxsTSpacer) && Exact )
-            {
-                // TODO: Move this into wxsSpacer class
-                wxSize Size = ((wxsSpacer*)Child)->GetSize(NewParent);
-                Sizer->Add(Size.GetWidth(),Size.GetHeight(),Extra->Proportion,
-                    wxsSizerFlagsProperty::GetWxFlags(Extra->Flags),
-                    wxsDimensionProperty::GetPixels(
-                        Extra->Border,Extra->BorderInDU,Parent));
-            }
-
-            continue;
-        }
+        if ( !ChildPreview ) continue;
 
         wxSizer* ChildAsSizer = wxDynamicCast(ChildPreview,wxSizer);
+        wxWindow* ChildAsWindow = wxDynamicCast(ChildPreview,wxWindow);
+        wxSizerItem* ChildAsItem = wxDynamicCast(ChildPreview,wxSizerItem);
         if ( ChildAsSizer )
         {
             Sizer->Add(ChildAsSizer,Extra->Proportion,
@@ -160,16 +138,19 @@ wxObject* wxsSizer::DoBuildPreview(wxWindow* Parent,bool Exact)
                 wxsDimensionProperty::GetPixels(
                     Extra->Border,Extra->BorderInDU,Parent));
         }
-        else
+        else if ( ChildAsWindow )
         {
-            wxWindow* ChildAsWindow = wxDynamicCast(ChildPreview,wxWindow);
-            if ( ChildAsWindow )
-            {
-                Sizer->Add(ChildAsWindow,Extra->Proportion,
-                    wxsSizerFlagsProperty::GetWxFlags(Extra->Flags),
-                    wxsDimensionProperty::GetPixels(
-                        Extra->Border,Extra->BorderInDU,Parent));
-            }
+            Sizer->Add(ChildAsWindow,Extra->Proportion,
+                wxsSizerFlagsProperty::GetWxFlags(Extra->Flags),
+                wxsDimensionProperty::GetPixels(
+                    Extra->Border,Extra->BorderInDU,Parent));
+        }
+        else if ( ChildAsItem )
+        {
+            ChildAsItem->SetProportion(Extra->Proportion);
+            ChildAsItem->SetFlag(wxsSizerFlagsProperty::GetWxFlags(Extra->Flags));
+            ChildAsItem->SetBorder(wxsDimensionProperty::GetPixels(Extra->Border,Extra->BorderInDU,Parent));
+            Sizer->Add(ChildAsItem);
         }
     }
 

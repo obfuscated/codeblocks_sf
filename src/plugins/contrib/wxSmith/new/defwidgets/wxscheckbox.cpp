@@ -98,7 +98,7 @@ void wxsCheckBox::BuildCreatingCode(wxString& Code,const wxString& WindowParent,
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating checkbox (id: %d)"),Language);
+    wxsLANGMSG(wxsCheckBox::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

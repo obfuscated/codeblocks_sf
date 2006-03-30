@@ -116,8 +116,7 @@ void wxsListBox::BuildCreatingCode(wxString& Code,const wxString& WindowParent,w
         }
     }
 
-
-    DBGLOG(_T("wxSmith: Unknown coding language when generating list box (id: %d)"),Language);
+    wxsLANGMSG(wxsListBox::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

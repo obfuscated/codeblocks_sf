@@ -35,7 +35,8 @@ void wxsGridSizer::BuildSizerCreatingCode(wxString& Code,const wxString& WindowP
                  << wxsDimensionProperty::GetPixelsCode(HGap,HGapDU,WindowParent,wxsCPP) << _T(");\n");
             return;
     }
-    DBGLOG(_T("wxSmith: Unknown coding language when generating wxsGridSizer (id: %d)"),Language);
+
+    wxsLANGMSG(wxsGridSizer::BuildSizerCreatingCode,Language);
 }
 
 void wxsGridSizer::EnumItemProperties(long Flags)

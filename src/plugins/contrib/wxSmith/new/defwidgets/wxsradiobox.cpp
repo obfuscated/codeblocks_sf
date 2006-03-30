@@ -123,8 +123,7 @@ void wxsRadioBox::BuildCreatingCode(wxString& Code,const wxString& WindowParent,
         }
     }
 
-
-    DBGLOG(_T("wxSmith: Unknown coding language when generating radio box (id: %d)"),Language);
+    wxsLANGMSG(wxsRadioBox::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

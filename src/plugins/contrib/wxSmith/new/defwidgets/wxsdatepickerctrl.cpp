@@ -97,7 +97,7 @@ void wxsDatePickerCtrl::BuildCreatingCode(wxString& Code,const wxString& WindowP
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating date picker control (id: %d)"),Language);
+    wxsLANGMSG(wxsDatePickerCtrl::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

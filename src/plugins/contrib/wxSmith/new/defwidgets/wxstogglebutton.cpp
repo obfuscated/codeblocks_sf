@@ -96,7 +96,7 @@ void wxsToggleButton::BuildCreatingCode(wxString& Code,const wxString& WindowPar
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating toggle button (id: %d)"),Language);
+    wxsLANGMSG(wxsToggleButton::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

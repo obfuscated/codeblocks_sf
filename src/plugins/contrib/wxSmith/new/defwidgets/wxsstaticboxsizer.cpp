@@ -44,7 +44,8 @@ void wxsStaticBoxSizer::BuildSizerCreatingCode(wxString& Code,const wxString& Wi
             Code << _T(",") << WindowParent << _T(",") << wxsGetWxString(Label) << _T(");\n");
             return;
     }
-    DBGLOG(_T("wxSmith: Unknown coding language when generating wxsStaticBoxSizer (id: %d)"),Language);
+
+    wxsLANGMSG(wxsStaticBoxSizer::BuildSizerCreatingCode,Language);
 }
 
 void wxsStaticBoxSizer::EnumItemProperties(long Flags)

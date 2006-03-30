@@ -74,6 +74,9 @@ class wxsParent: public wxsItem
         /** \brief Rewritten xml writing function - it will add support for children saving */
         virtual bool XmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
 
+        /** \brief Function getting extra data for given child */
+        wxsPropertyContainer* GetChildExtra(int Index);
+
     protected:
 
         /** \brief Function checking if given item can be added to this one
@@ -112,9 +115,6 @@ class wxsParent: public wxsItem
          * should call Child->MyAddQPP(QPP) somewhere inside.
          */
         virtual void AddChildQPP(wxsItem* Child,wxsAdvQPP* QPP);
-
-        /** \brief Function getting extra data for given child */
-        wxsPropertyContainer* GetChildExtra(int Index);
 
         /** \brief Function loading child from given xml node
          *

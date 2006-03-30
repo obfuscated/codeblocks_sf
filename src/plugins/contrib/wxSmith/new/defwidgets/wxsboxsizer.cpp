@@ -44,7 +44,7 @@ void wxsBoxSizer::BuildSizerCreatingCode(wxString& Code,const wxString& WindowPa
             Code << _T(");\n");
             return;
     }
-    DBGLOG(_T("wxSmith: Unknown coding language when generating wxsBoxSizer (id: %d)"),Language);
+    wxsLANGMSG(wxsBoxSizer::BuildSizerCreatingCode,Language);
 }
 
 void wxsBoxSizer::EnumItemProperties(long Flags)

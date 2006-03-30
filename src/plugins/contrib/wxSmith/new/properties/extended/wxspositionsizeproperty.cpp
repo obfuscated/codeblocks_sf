@@ -1,5 +1,6 @@
 #include "wxspositionsizeproperty.h"
 
+#include "../../wxsglobals.h"
 #include <globals.h>
 #include <messagemanager.h>
 
@@ -27,8 +28,8 @@ wxString wxsPositionSizeData::GetPositionCode(const wxString& ParentName,wxsCodi
                     wxString::Format(_T("wxPoint(%d,%d)"),X,Y);
         }
     }
-    
-    DBGLOG(_T("wxSmith: Unknown coding language (id: %d)"),Language);
+
+    wxsLANGMSG(wxsPositionSizeData::GetPositionCode,Language);
     return wxEmptyString;
 }
 
@@ -45,13 +46,13 @@ wxString wxsPositionSizeData::GetSizeCode(const wxString& ParentName,wxsCodingLa
                     wxString::Format(_T("wxSize(%d,%d)"),X,Y);
         }
     }
-    
-    DBGLOG(_T("wxSmith: Unknown coding language (id: %d)"),Language);
+
+    wxsLANGMSG(wxsPositionSizeData::GetSizeCode,Language);
     return wxEmptyString;
 }
 
 
-wxsPositionSizeProperty::wxsPositionSizeProperty(            
+wxsPositionSizeProperty::wxsPositionSizeProperty(
     const wxString& PGUseDefName,
     const wxString& _PGXName,
     const wxString& _PGYName,
@@ -72,15 +73,15 @@ void wxsPositionSizeProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGr
     wxPGId XId = Grid->AppendIn(Parent,wxIntProperty(PGXName,wxPG_LABEL,XVALUE));
     wxPGId YId = Grid->AppendIn(Parent,wxIntProperty(PGYName,wxPG_LABEL,YVALUE));
     wxPGId DUId = Grid->AppendIn(Parent,wxBoolProperty(PGDUName,wxPG_LABEL,DUVALUE));
-    
+
     Grid->SetPropertyAttribute(DefId,wxPG_BOOL_USE_CHECKBOX,1L,wxRECURSE);
     Grid->SetPropertyAttribute(DUId,wxPG_BOOL_USE_CHECKBOX,1L,wxRECURSE);
-    
+
     PGRegister(Object,Grid,DefId,DEFIND);
     PGRegister(Object,Grid,XId,XIND);
     PGRegister(Object,Grid,YId,YIND);
     PGRegister(Object,Grid,DUId,DUIND);
-    
+
     if ( DEFVALUE )
     {
         Grid->DisableProperty(XId);
@@ -96,7 +97,7 @@ bool wxsPositionSizeProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGrid
         case DEFIND:
             DEFVALUE = Grid->GetPropertyValue(Id).GetBool();
             break;
-        
+
         case XIND:
             XVALUE = Grid->GetPropertyValue(Id).GetLong();
             break;
@@ -109,7 +110,7 @@ bool wxsPositionSizeProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGrid
             DUVALUE = Grid->GetPropertyValue(Id).GetBool();
             break;
     }
-    
+
     return true;
 }
 
@@ -120,7 +121,7 @@ bool wxsPositionSizeProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGri
         case DEFIND:
             Grid->SetPropertyValue(Id,DEFVALUE);
             break;
-            
+
         case XIND:
             if ( DEFVALUE )
             {
@@ -132,7 +133,7 @@ bool wxsPositionSizeProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGri
             }
             Grid->SetPropertyValue(Id,XVALUE);
             break;
-            
+
         case YIND:
             if ( DEFVALUE )
             {
@@ -144,7 +145,7 @@ bool wxsPositionSizeProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGri
             }
             Grid->SetPropertyValue(Id,YVALUE);
             break;
-            
+
         case DUIND:
             if ( DEFVALUE )
             {
@@ -170,11 +171,11 @@ bool wxsPositionSizeProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement*
         DUVALUE = false;
         return false;
     }
-    
+
     TiXmlText* Text = Element->FirstChild()->ToText();
-    
+
     // If no node or empty text, using default values
-    if ( !Text || !Text->Value()[0] ) 
+    if ( !Text || !Text->Value()[0] )
     {
         DEFVALUE = true;
         XVALUE = -1;
@@ -183,7 +184,7 @@ bool wxsPositionSizeProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement*
         return false;
     }
     wxString Str = cbC2U(Text->Value());
-    
+
     if ( Str[Str.Length()-1] == _T('d') )
     {
         DUVALUE = true;
@@ -193,7 +194,7 @@ bool wxsPositionSizeProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement*
     {
         DUVALUE = false;
     }
-    
+
     if ( !Str.BeforeFirst(_T(',')).ToLong(&XVALUE) ||
          !Str.AfterLast(_T(',')).ToLong(&YVALUE) )
     {
@@ -204,7 +205,7 @@ bool wxsPositionSizeProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement*
         return false;
     }
     DEFVALUE = false;
-    
+
     return true;
 }
 

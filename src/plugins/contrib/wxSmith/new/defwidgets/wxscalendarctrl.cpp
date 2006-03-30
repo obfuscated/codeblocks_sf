@@ -104,7 +104,7 @@ void wxsCalendarCtrl::BuildCreatingCode(wxString& Code,const wxString& WindowPar
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating calendar control (id: %d)"),Language);
+    wxsLANGMSG(wxsCalendarCtrl::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

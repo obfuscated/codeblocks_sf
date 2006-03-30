@@ -8,7 +8,7 @@
 // Helper macro for fetching variables
 #define STYLEBITS   wxsVARIABLE(Object,Offset,long)
 
-wxsStyleProperty::wxsStyleProperty(            
+wxsStyleProperty::wxsStyleProperty(
     const wxString&  StyleName,
     const wxString&  DataName,
     const wxsStyle* _StyleSet,
@@ -60,7 +60,7 @@ void wxsStyleProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManag
         {
             StyleConsts.Add(StyleNames,StyleBits);
         }
-        
+
         if ( StyleConsts.GetCount() )
         {
             wxPGId ID = Grid->AppendIn(Parent,wxFlagsProperty(GetPGName(),wxPG_LABEL,StyleConsts,STYLEBITS));
@@ -89,7 +89,7 @@ bool wxsStyleProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Elemen
         STYLEBITS = Default;
         return false;
     }
-    
+
     TiXmlText* Text = Element->FirstChild()->ToText();
     wxString Str;
     if ( Text )
@@ -152,12 +152,12 @@ wxString wxsStyleProperty::BitsToString(long Bits)
             Result.Append(_T('|'));
         }
     }
-    
+
     if ( Result.empty() )
     {
         return _T("0");
     }
-    
+
     Result.RemoveLast();
     return Result;
 }
@@ -165,7 +165,7 @@ wxString wxsStyleProperty::BitsToString(long Bits)
 void wxsStyleProperty::SetStyle(long& StyleBits,long Style,const wxsStyle* S,bool IsExtra)
 {
     long Bit = 1L;
-    
+
     for ( ; !S->Name.empty(); S++ )
     {
         if ( !S->IsCategory() && (S->IsExtra() == IsExtra) )
@@ -220,18 +220,18 @@ wxString wxsStyleProperty::GetString(long StyleBits,const wxsStyle* S,bool IsExt
                     }
                 }
             }
-            
-            if ( Result.empty() ) 
+
+            if ( Result.empty() )
             {
                 return _T("0");
             }
-            
+
             Result.RemoveLast();
             return Result;
         }
     }
-    
-    DBGLOG(_T("wxSmith: Unknown coding language when generating style (id: %d)"),Language);
+
+    wxsLANGMSG(wxsStyleProperty::GetString,Language);
     return wxEmptyString;
 }
 
@@ -253,6 +253,6 @@ long wxsStyleProperty::GetWxStyle(long StyleBits,const wxsStyle* S,bool IsExtra)
             }
         }
     }
-    
+
     return Result;
 }

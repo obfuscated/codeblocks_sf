@@ -66,5 +66,6 @@ void wxsWidget::SetupWindowCode(wxString& Code,wxsCodingLang Language)
             return;
         }
     }
-    DBGLOG(_T("wxSmith: Unknown coding language when generating widget (id: %d)"),Language);
+
+    wxsLANGMSG(wxsWidget::SetupWindowCode,Language);
 }

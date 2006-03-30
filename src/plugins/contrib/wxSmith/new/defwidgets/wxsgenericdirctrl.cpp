@@ -99,7 +99,7 @@ void wxsGenericDirCtrl::BuildCreatingCode(wxString& Code,const wxString& WindowP
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating generic directory control (id: %d)"),Language);
+    wxsLANGMSG(wxsGenericDirCtrl::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

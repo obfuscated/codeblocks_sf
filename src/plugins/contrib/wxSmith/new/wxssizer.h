@@ -15,6 +15,7 @@ class wxsSizerExtra: public wxsPropertyContainer
 //        wxSizeData Ratio;               ///< \brief Ratio
 
         wxsSizerExtra():
+            // TODO: Read defaults from configuration
             Proportion(1),
             Flags(wxsSizerFlagsProperty::AlignCenterHorizontal|
                   wxsSizerFlagsProperty::AlignCenterVertical|
@@ -25,6 +26,8 @@ class wxsSizerExtra: public wxsPropertyContainer
             Border(5),
             BorderInDU(false)
         {}
+
+        wxString AllParamsCode(const wxString& WindowParent,wxsCodingLang Language);
 
     protected:
         virtual void EnumProperties(long Flags);

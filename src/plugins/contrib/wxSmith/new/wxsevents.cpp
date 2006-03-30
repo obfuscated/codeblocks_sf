@@ -17,18 +17,18 @@ void wxsEvents::SetItem(wxsItem* _Item)
     Item = _Item;
     EventArray = Item ? Item->GetEventArray() : NULL;
     Count = 0;
-    
+
     // Counting number of events
     if ( EventArray )
     {
-        for ( const wxsEventDesc* Event = EventArray; 
+        for ( const wxsEventDesc* Event = EventArray;
               Event->ET != wxsEventDesc::EndOfList;
               Event++ )
         {
             Count++;
         }
     }
-    
+
     Functions.SetCount(Count);
 }
 
@@ -44,7 +44,7 @@ void wxsEvents::XmlLoadFunctions(TiXmlElement* Element)
 
         // There must be function name, otherwise this handler definition is useless
     	if ( !FunctionName ) continue;
-    	
+
     	if ( EntryName )
     	{
     	    // Function given by event entry
@@ -99,10 +99,10 @@ void wxsEvents::GenerateBindingCode(wxString& Code,bool UsingXrc,wxsCodingLang L
     {
         case wxsCPP:
         {
-            wxString RealId = UsingXrc ? 
+            wxString RealId = UsingXrc ?
                 ( _T("XRCID(") + Item->GetIdName() + _T(")") ) :
                 Item->GetIdName();
-            
+
             // First we have to check i
             for ( int i=0; i<Count; i++ )
             {
@@ -111,18 +111,18 @@ void wxsEvents::GenerateBindingCode(wxString& Code,bool UsingXrc,wxsCodingLang L
                     switch ( EventArray[i].ET )
                     {
                         case wxsEventDesc::Id:
-                            Code << _T("Connect(") << RealId << _T(",") 
-                                 << EventArray[i].Type << _T("(wxObjectEventFunction)") 
+                            Code << _T("Connect(") << RealId << _T(",")
+                                 << EventArray[i].Type << _T("(wxObjectEventFunction)")
                                  << Functions[i] << _T(");\n");
                             break;
-                            
+
                         case wxsEventDesc::NoId:
                             Code << Item->GetVarName() << _T("->Connect(") << RealId
-                                 << _T(",") << EventArray[i].Type 
-                                 << _T("(wxObjectEventFunction)") << Functions[i] 
+                                 << _T(",") << EventArray[i].Type
+                                 << _T("(wxObjectEventFunction)") << Functions[i]
                                  << _T(",NULL,this);\n");
                             break;
-                            
+
                         default:
                             break;
                     }
@@ -131,15 +131,15 @@ void wxsEvents::GenerateBindingCode(wxString& Code,bool UsingXrc,wxsCodingLang L
             return;
         }
     }
-    
-    DBGLOG(_T("wxSmith: Unknown coding language (id: %d)"),Language);
+
+    wxsLANGMSG(wxsEvents::GenerateBindingCode,Language);
 }
 
 bool wxsEvents::ForceVariable()
 {
     for ( int i=0; i<Count; i++ )
     {
-        if ( !Functions[i].empty() ) 
+        if ( !Functions[i].empty() )
         {
             return true;
         }

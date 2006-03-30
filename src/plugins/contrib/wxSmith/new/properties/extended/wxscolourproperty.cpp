@@ -1,5 +1,7 @@
 #include "wxscolourproperty.h"
 
+#include "../../wxsglobals.h"
+
 #include <wx/colordlg.h>
 #include <wx/intl.h>
 #include <wx/settings.h>
@@ -16,7 +18,7 @@ namespace
     class wxsMyColourPropertyClass : public wxEnumPropertyClass
     {
             WX_PG_DECLARE_PROPERTY_CLASS()
-            
+
         public:
 
             wxsMyColourPropertyClass(const wxString& label, const wxString& name,
@@ -68,7 +70,7 @@ namespace
         _("Selected menu item"),
         _("Menu bar")
     };
-    
+
     static const int wxsColourCount = sizeof(wxsColourLabels) / sizeof(wxsColourLabels[0]);
 
     static long wxsColourValues[] = {
@@ -221,7 +223,7 @@ namespace
         const wxRect& rect, wxPGPaintData& paintdata )
     {
         int value;
-        
+
         if ( paintdata.m_choiceItem >= 0 && paintdata.m_choiceItem < (int)(GetItemCount()) )
         {
             int index = paintdata.m_choiceItem;
@@ -246,7 +248,7 @@ namespace
             dc.DrawRectangle(rect);
             return;
         }
-        
+
         if ( value == wxPG_COLOUR_CUSTOM )
         {
             dc.SetBrush( m_value.m_colour );
@@ -320,11 +322,11 @@ void wxsColourProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridMana
 bool wxsColourProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
 {
     if ( ! Grid->IsPropertyValueType(Id,CLASSINFO(wxColourPropertyValue)) ) return false;
-    
+
     VALUE = *wxDynamicCast(
         Grid->GetPropertyValueAsWxObjectPtr(Id),
         wxColourPropertyValue);
-    
+
     return true;
 }
 
@@ -336,21 +338,21 @@ bool wxsColourProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManag
 
 bool wxsColourProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
-    if ( !Element ) 
+    if ( !Element )
     {
         VALUE.m_type = wxsCOLOUR_DEFAULT;
         VALUE.m_colour = wxColour(0,0,0);
         return false;
     }
-    
+
     wxString Str;
-    if ( !XmlGetString(Element,Str) || Str.empty() ) 
+    if ( !XmlGetString(Element,Str) || Str.empty() )
     {
         VALUE.m_type = wxsCOLOUR_DEFAULT;
         VALUE.m_colour = wxColour(0,0,0);
         return false;
     }
-    
+
     unsigned long tmp = 0;
     if ( Str.Length() == 7 && Str[0] == _T('#') && wxSscanf(Str.c_str(),_T("#%lX"),&tmp) == 1 )
     {
@@ -405,17 +407,17 @@ bool wxsColourProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Eleme
         }
         #undef SYSCLR
     }
-    
+
     return true;
 }
 
 bool wxsColourProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
-    if ( VALUE.m_type == wxsCOLOUR_DEFAULT ) 
+    if ( VALUE.m_type == wxsCOLOUR_DEFAULT )
     {
         return false;
     }
-    
+
     if ( VALUE.m_type == wxPG_COLOUR_CUSTOM )
     {
         XmlSetString(Element,
@@ -425,7 +427,7 @@ bool wxsColourProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Elem
                 (unsigned int)VALUE.m_colour.Blue()));
         return true;
     }
-    
+
     #define SYSCLR(N) if ( VALUE.m_type == N ) XmlSetString(Element,_T(#N)); else
     SYSCLR(wxSYS_COLOUR_SCROLLBAR)
     SYSCLR(wxSYS_COLOUR_BACKGROUND)
@@ -468,7 +470,7 @@ bool wxsColourProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Elem
         return false;
     }
     #undef SYSCLR
-    
+
     return true;
 }
 
@@ -505,14 +507,14 @@ bool wxsColourProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsProperty
         ( (unsigned int)VALUE.m_colour.Green() <<  8 ) |
         ( (unsigned int)VALUE.m_colour.Blue() );
     unsigned long Type = VALUE.m_type;
-        
+
     Stream->SubCategory(GetDataName());
-    
+
     if ( !Stream->PutULong(_T("type"),Type,wxsCOLOUR_DEFAULT) ) Ret = false;
     VALUE.m_type = Type;
-    
+
     if ( !Stream->PutLong(_T("value"),Colour,0) ) Ret = false;
-    
+
     if ( VALUE.m_type == wxsCOLOUR_DEFAULT )
     {
         VALUE.m_colour = wxColour(0,0,0);
@@ -525,7 +527,7 @@ bool wxsColourProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsProperty
     {
         VALUE.m_colour = wxSystemSettings::GetColour((wxSystemColour)VALUE.m_type);
     }
-    
+
     Stream->PopCategory();
     return Ret;
 }
@@ -536,12 +538,12 @@ wxColour wxsColourProperty::GetColour(const wxColourPropertyValue& value)
     {
         return wxColour();
     }
-    
+
     if ( value.m_type == wxPG_COLOUR_CUSTOM )
     {
         return value.m_colour;
     }
-    
+
     return wxSystemSettings::GetColour((wxSystemColour)value.m_type);
 }
 
@@ -551,7 +553,7 @@ wxString wxsColourProperty::GetColourCode(const wxColourPropertyValue& value,wxs
     {
         return wxEmptyString;
     }
-    
+
     switch ( Language )
     {
         case wxsCPP:
@@ -565,7 +567,7 @@ wxString wxsColourProperty::GetColourCode(const wxColourPropertyValue& value,wxs
             }
 
             wxString SysColName;
-            
+
             #define SYSCLR(N) if ( value.m_type == N ) SysColName = _T(#N); else
             SYSCLR(wxSYS_COLOUR_SCROLLBAR)
             SYSCLR(wxSYS_COLOUR_BACKGROUND)
@@ -606,16 +608,16 @@ wxString wxsColourProperty::GetColourCode(const wxColourPropertyValue& value,wxs
             SYSCLR(wxSYS_COLOUR_MENUBAR)
             {}
             #undef SYSCLR
-            
+
             if ( SysColName.empty() )
             {
                 return wxEmptyString;
             }
-            
+
             return _T("wxSystemSettings::GetColour(") + SysColName + _T(")");
         }
     }
-    
-    DBGLOG(_T("wxSmith: Unknown coding language when generating colour (id: %d)"),Language);
+
+    wxsLANGMSG(wxsColourProperty::GetColourCode,Language);
     return wxEmptyString;
 }

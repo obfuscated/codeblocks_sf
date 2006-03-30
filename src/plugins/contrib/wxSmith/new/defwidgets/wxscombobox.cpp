@@ -79,8 +79,7 @@ void wxsComboBox::BuildCreatingCode(wxString& Code,const wxString& WindowParent,
         }
     }
 
-
-    DBGLOG(_T("wxSmith: Unknown coding language when generating combo box (id: %d)"),Language);
+    wxsLANGMSG(wxsComboBox::BuildCreatingCode,Language);
 }
 
 wxObject* wxsComboBox::DoBuildPreview(wxWindow* Parent,bool Exact)

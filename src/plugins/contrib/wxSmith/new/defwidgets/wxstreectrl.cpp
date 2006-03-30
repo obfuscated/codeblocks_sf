@@ -127,7 +127,7 @@ void wxsTreeCtrl::BuildCreatingCode(wxString& Code,const wxString& WindowParent,
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating tree control (id: %d)"),Language);
+    wxsLANGMSG(wxsTreeCtrl::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

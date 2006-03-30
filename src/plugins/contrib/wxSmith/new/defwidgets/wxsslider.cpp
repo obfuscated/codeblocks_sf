@@ -161,7 +161,7 @@ void wxsSlider::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wx
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating slider (id: %d)"),Language);
+    wxsLANGMSG(wxsSlider::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

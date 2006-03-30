@@ -73,7 +73,7 @@ wxString wxsBitmapIconData::BuildCode(bool NoResize,const wxString& SizeCode,wxs
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating bitmap/icon (id: %d)"),Language);
+    wxsLANGMSG(wxsBitmapIconData::BuildCode,Language);
     return wxEmptyString;
 }
 

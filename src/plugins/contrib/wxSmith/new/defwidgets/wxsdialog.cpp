@@ -88,7 +88,7 @@ void wxsDialog::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wx
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating dialog (id: %d)"),Language);
+    wxsLANGMSG(wxsDialog::BuildCreatingCode,Language);
 }
 
 wxObject* wxsDialog::DoBuildPreview(wxWindow* Parent,bool Exact)

@@ -96,7 +96,7 @@ void wxsStaticText::BuildCreatingCode(wxString& Code,const wxString& WindowParen
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating static text (id: %d)"),Language);
+    wxsLANGMSG(wxsStaticText::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

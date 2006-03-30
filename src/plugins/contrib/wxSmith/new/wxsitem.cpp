@@ -84,7 +84,7 @@ void wxsItem::BuildDeclarationCode(wxString& Code,wxsCodingLang Language)
             return;
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language (id: %d)"),Language);
+    wxsLANGMSG(wxsItem::BuildDeclarationCode,Language);
 }
 
 bool wxsItem::XmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)

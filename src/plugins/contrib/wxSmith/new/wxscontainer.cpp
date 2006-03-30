@@ -119,7 +119,7 @@ void wxsContainer::SetupWindowCode(wxString& Code,wxsCodingLang Language)
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating container (id: %d)"),Language);
+    wxsLANGMSG(wxsContainer::SetupWindowCode,Language);
 }
 
 void wxsContainer::AddChildrenPreview(wxWindow* This,bool Exact)
@@ -173,5 +173,5 @@ void wxsContainer::AddChildrenCode(wxString& Code,wxsCodingLang Language)
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating container's children (id: %d)"),Language);
+    wxsLANGMSG(wxsContainer::AddChildrenCode,Language);
 }

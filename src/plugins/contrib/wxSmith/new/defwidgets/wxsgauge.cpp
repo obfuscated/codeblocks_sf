@@ -103,7 +103,7 @@ void wxsGauge::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxs
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating gauge (id: %d)"),Language);
+    wxsLANGMSG(wxsGauge::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

@@ -107,7 +107,7 @@ void wxsChoice::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wx
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating choices (id: %d)"),Language);
+    wxsLANGMSG(wxsChoice::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

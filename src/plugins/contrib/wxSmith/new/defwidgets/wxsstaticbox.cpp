@@ -97,7 +97,7 @@ void wxsStaticBox::BuildCreatingCode(wxString& Code,const wxString& WindowParent
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating button (id: %d)"),Language);
+    wxsLANGMSG(wxsStaticBox::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

@@ -97,7 +97,7 @@ void wxsFrame::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxs
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating frame (id: %d)"),Language);
+    wxsLANGMSG(wxsFrame::BuildCreatingCode,Language);
 }
 
 wxObject* wxsFrame::DoBuildPreview(wxWindow* Parent,bool Exact)

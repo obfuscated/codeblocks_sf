@@ -138,4 +138,8 @@ enum wxsDragAssistTypes
 #define wxsDWToolIconSize Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/tooliconsize"),32L)
 
 
+/** \brief Misc macro displaying error message for unknown language */
+#define wxsLANGMSG(Scope,Language) \
+    DBGLOG(_T("wxSmith: Unknown coding language in %s (id: %d)"),_T(#Scope),Language);
+
 #endif

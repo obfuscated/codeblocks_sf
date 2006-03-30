@@ -99,7 +99,7 @@ void wxsButton::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wx
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating button (id: %d)"),Language);
+    wxsLANGMSG(wxsButton::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */

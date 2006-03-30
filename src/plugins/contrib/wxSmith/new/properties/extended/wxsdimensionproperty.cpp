@@ -1,5 +1,6 @@
 #include "wxsdimensionproperty.h"
 
+#include "../../wxsglobals.h"
 #include <messagemanager.h>
 
 #define WXS_DIM_VALUE   1
@@ -9,7 +10,7 @@
 #define VALUE   wxsVARIABLE(Object,ValueOffset,long)
 #define UNITS   wxsVARIABLE(Object,DialogUnitsOffset,bool)
 
-wxsDimensionProperty::wxsDimensionProperty(            
+wxsDimensionProperty::wxsDimensionProperty(
     const wxString&  PGName,
     const wxString& _PGDUName,
     const wxString&  DataName,
@@ -36,7 +37,7 @@ wxString wxsDimensionProperty::GetPixelsCode(long Value,bool DialogUnits,wxStrin
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language (id: %d)"),Language);
+    wxsLANGMSG(wxsDimensionProperty::GetPixelsCode,Language);
     return wxEmptyString;
 }
 
@@ -52,11 +53,11 @@ void wxsDimensionProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridM
 bool wxsDimensionProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
 {
     switch ( Index )
-    { 
+    {
         case WXS_DIM_VALUE:
             VALUE = Grid->GetPropertyValue(Id).GetLong();
             return true;
-            
+
         case WXS_DIM_UNITS:
             UNITS = Grid->GetPropertyValue(Id).GetBool();
             return true;
@@ -71,7 +72,7 @@ bool wxsDimensionProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridMa
         case WXS_DIM_VALUE:
             Grid->SetPropertyValue(Id,VALUE);
             return true;
-        
+
         case WXS_DIM_UNITS:
             Grid->SetPropertyValue(Id,UNITS);
             return true;
@@ -83,19 +84,19 @@ bool wxsDimensionProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* El
 {
     if ( !Element )
     {
-        VALUE = Default; 
+        VALUE = Default;
         UNITS = DefaultDialogUnits;
         return false;
     }
     TiXmlText* Text = Element->FirstChild()->ToText();
-    if ( !Text ) 
+    if ( !Text )
     {
-        VALUE = Default; 
+        VALUE = Default;
         UNITS = DefaultDialogUnits;
         return false;
     }
     const char* Ptr = Text->Value();
-    
+
     // 'd' character at the end of string means this value is in dialog units
     if ( Ptr[0] && Ptr[strlen(Ptr)-1]=='d' )
     {
@@ -105,7 +106,7 @@ bool wxsDimensionProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* El
     {
         UNITS = false;
     }
-    
+
     // atoi should cut off 'd' at the end
     VALUE = atol(Text->Value());
     return true;
@@ -116,13 +117,13 @@ bool wxsDimensionProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* E
     if ( VALUE != Default || UNITS != DefaultDialogUnits )
     {
         char Buffer[0x40];  // Using char instead of wxChar because TiXml uses it
-        
+
         ltoa(VALUE,Buffer,10);
         if ( UNITS )
         {
             strcat(Buffer,"d");
         }
-        
+
         Element->InsertEndChild(TiXmlText(Buffer));
         return true;
     }

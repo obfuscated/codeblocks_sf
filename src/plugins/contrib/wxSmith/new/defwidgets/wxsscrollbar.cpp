@@ -115,7 +115,7 @@ void wxsScrollBar::BuildCreatingCode(wxString& Code,const wxString& WindowParent
         }
     }
 
-    DBGLOG(_T("wxSmith: Unknown coding language when generating scroll bar (id: %d)"),Language);
+    wxsLANGMSG(wxsScrollBar::BuildCreatingCode,Language);
 }
 
 /* ************************************************************************** */
