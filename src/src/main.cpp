@@ -697,6 +697,7 @@ void MainFrame::CreateToolbars()
     m_pToolbar = new wxToolBar(this, -1, wxDefaultPosition, size, wxTB_FLAT | wxTB_NODIVIDER);
     m_pToolbar->SetToolBitmapSize(size);
     Manager::Get()->AddonToolBar(m_pToolbar,xrcToolbarName);
+    m_pToolbar->SetBestFittingSize();
 
 	m_pToolbar->Realize();
 
@@ -1010,6 +1011,7 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
     if (plugin->BuildToolBar(tb))
     {
         SetToolBar(0);
+        tb->SetBestFittingSize();
 
         // add View->Toolbars menu item for toolbar
         wxMenu* viewToolbars = 0;
