@@ -65,6 +65,11 @@ Compiler::Compiler(const Compiler& other)
     m_pGenerator(0)
 {
     m_Name = _("Copy of ") + other.m_Name;
+    // generate unique ID
+    // note that this copy constructor is protected and can only be called
+    // by our friend CompilerFactory. It knows what it's doing ;)
+    wxDateTime now = wxDateTime::UNow();
+    m_ID = now.Format(_T("%c"), wxDateTime::CET);
     MakeValidID();
 
     m_MasterPath = other.m_MasterPath;

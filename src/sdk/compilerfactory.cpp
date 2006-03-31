@@ -104,6 +104,18 @@ Compiler* CompilerFactory::CreateCompilerCopy(Compiler* compiler, const wxString
 {
     if (!compiler)
         return 0;
+
+    // abort if an existing compiler with the same name exists
+    // this also avoids the possibility of throwing an exception
+    // in the compiler->CreateCopy() call below...
+    for (size_t i = 0; i < Compilers.GetCount(); ++i)
+    {
+        if (Compilers[i]->GetName() == newName)
+        {
+            return 0;
+        }
+    }
+
     Compiler* newC = compiler->CreateCopy();
     if (!newName.IsEmpty())
     {

@@ -1207,6 +1207,13 @@ void CompilerOptionsDlg::OnAddCompilerClick(wxCommandEvent& event)
             return;
         }
 
+        if (!newC)
+        {
+            cbMessageBox(_("The new compiler could not be created.\n(maybe a compiler with the same name already exists?)"),
+                        _("Error"), wxICON_ERROR);
+            return;
+        }
+
         int newIdx = CompilerFactory::GetCompilerIndex(newC);
 
         cmb->Append(value);
