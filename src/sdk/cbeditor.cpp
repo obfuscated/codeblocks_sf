@@ -547,6 +547,8 @@ void cbEditor::SetEditorStyle()
 
 	m_pControl->SetMouseDwellTime(1000);
 
+    m_pControl->SetCaretWidth(mgr->ReadInt(_T("/caret/width"), 1));
+    m_pControl->SetCaretForeground(GetOptionColour(_T("/caret/color"), *wxBLACK));
 	m_pControl->SetCaretLineVisible(mgr->ReadBool(_T("/highlight_caret_line"), false));
 	m_pControl->SetCaretLineBackground(GetOptionColour(_T("/highlight_caret_line_color"), wxColour(0xFF, 0xFF, 0x00)));
 

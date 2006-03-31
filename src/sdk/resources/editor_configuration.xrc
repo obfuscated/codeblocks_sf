@@ -415,61 +415,113 @@
             </object>
           </object>
           <object class="listbookpage">
-            <label>Gutter &amp; margins</label>
+            <label>Gutter, margins and caret</label>
             <object class="wxPanel" name="tabGutter">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
-                  <border>8</border>
-                  <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                  <object class="wxFlexGridSizer">
-                    <rows>0</rows>
-                    <cols>2</cols>
-                    <vgap>4</vgap>
-                    <hgap>8</hgap>
-                    <growablecols>1</growablecols>
+                  <object class="wxStaticBoxSizer">
+                    <label>Gutter &amp;&amp; margins</label>
+                    <orient>wxVERTICAL</orient>
                     <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxStaticText" name="ID_STATICTEXT4">
-                        <label>Mode:</label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxChoice" name="lstGutterMode">
-                        <selection>1</selection>
-                        <content>
-                          <item>None</item>
-                          <item>Visible line</item>
-                          <item>Highlight text beyond gutter</item>
-                        </content>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                      <object class="wxStaticText" name="ID_STATICTEXT5">
-                        <label>Color:</label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnGutterColor">
-                        <label></label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                      <object class="wxStaticText" name="ID_STATICTEXT6">
-                        <label>Column:</label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxSpinCtrl" name="spnGutterColumn">
-                        <value>80</value>
+                      <border>8</border>
+                      <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                      <object class="wxFlexGridSizer">
+                        <rows>0</rows>
+                        <cols>2</cols>
+                        <vgap>4</vgap>
+                        <hgap>8</hgap>
+                        <growablecols>1</growablecols>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                          <object class="wxStaticText" name="ID_STATICTEXT4">
+                            <label>Mode:</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                          <object class="wxChoice" name="lstGutterMode">
+                            <selection>1</selection>
+                            <content>
+                              <item>None</item>
+                              <item>Visible line</item>
+                              <item>Highlight text beyond gutter</item>
+                            </content>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                          <object class="wxStaticText" name="ID_STATICTEXT5">
+                            <label>Color:</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                          <object class="wxButton" name="btnGutterColor">
+                            <label></label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                          <object class="wxStaticText" name="ID_STATICTEXT6">
+                            <label>Column:</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                          <object class="wxSpinCtrl" name="spnGutterColumn">
+                            <value>80</value>
+                          </object>
+                        </object>
                       </object>
                     </object>
                   </object>
+                  <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Caret</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <border>8</border>
+                      <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                      <object class="wxFlexGridSizer">
+                        <rows>0</rows>
+                        <cols>2</cols>
+                        <vgap>4</vgap>
+                        <hgap>8</hgap>
+                        <growablecols>1</growablecols>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                          <object class="wxStaticText">
+                            <label>Width:</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                          <object class="wxSpinCtrl" name="spnCaretWidth">
+                            <value>1</value>
+                            <max>3</max>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                          <object class="wxStaticText">
+                            <label>Color:</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                          <object class="wxButton" name="btnCaretColor">
+                            <label></label>
+                          </object>
+                        </object>
+                      </object>
+                    </object>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                  <border>8</border>
                 </object>
               </object>
             </object>

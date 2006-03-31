@@ -410,8 +410,6 @@ void EditorColorSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
             if (i < 33 || i > 39)
                 DoApplyStyle(control, i, defaults);
         }
-        // also set the caret color, same as the default foreground
-        control->SetCaretForeground(defaults->fore);
     }
 	// for some strange reason, when switching styles, the line numbering changes color
 	// too, though we didn't ask it to...
