@@ -1832,15 +1832,31 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
     if (event.GetModificationType() & (wxSCI_MOD_INSERTTEXT | wxSCI_MOD_DELETETEXT)
         && linesAdded != 0)
     {
+        // get hold of debugger plugin
+        static cbDebuggerPlugin* debugger = 0;
+        // because the debugger plugin will *not* change throughout the
+        // program's lifetime, we can speed things up by keeping it in a static
+        // local variable...
+        if (!debugger)
+        {
+            PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
+            if (!arr.GetCount())
+                return;
+            debugger = (cbDebuggerPlugin*)arr[0];
+            if (!debugger)
+                return;
+        }
+
         // just added/removed lines
         int startline = m_pControl->LineFromPosition(event.GetPosition());
         int line = m_pControl->MarkerPrevious(m_pControl->GetLineCount(), 1 << BREAKPOINT_MARKER);
         while (line > startline)
         {
-            // add breakpoint
-            NotifyPlugins(cbEVT_EDITOR_BREAKPOINT_ADD, line, m_Filename);
-            // remove old breakpoint
-            NotifyPlugins(cbEVT_EDITOR_BREAKPOINT_DELETE, line - linesAdded, m_Filename);
+            // add breakpoint at new line
+            debugger->AddBreakpoint(m_Filename, line);
+            // remove breakpoint from old line
+            debugger->RemoveBreakpoint(m_Filename, line - linesAdded);
+
             line = m_pControl->MarkerPrevious(line - 1, 1 << BREAKPOINT_MARKER);
         }
     }
