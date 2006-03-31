@@ -151,6 +151,7 @@ void CompilerErrors::DoGotoError(const CompileError& error)
     if (error.line <= 0)
         return;
 	DoClearErrorMarkFromAllEditors();
+	cbEditor* ed = 0;
 	cbProject* project = error.project ? error.project : Manager::Get()->GetProjectManager()->GetActiveProject();
 	if (project && Manager::Get()->GetProjectManager()->IsProjectStillOpen(project))
 	{
@@ -161,14 +162,10 @@ void CompilerErrors::DoGotoError(const CompileError& error)
 	    ProjectFile* f = project->GetFileByFilename(error.filename, !isAbsolute, true);
     	if (f)
         {
-        	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
+        	ed = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
             if (ed)
 			{
 				ed->SetProjectFile(f);
-				ed->Activate();
-				ed->GotoLine(error.line - 1);
-				ed->SetErrorLine(error.line - 1);
-				ed->UnfoldBlockFromLine(error.line - 1);
 			}
         }
 		else
@@ -176,16 +173,23 @@ void CompilerErrors::DoGotoError(const CompileError& error)
 			if(!isAbsolute) // this is always the case, except for system headers
 				filename.Prepend(project->GetCommonTopLevelPath());
 
-			cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
-			if (ed)
-			{
-				ed->Activate();
-				ed->GotoLine(error.line - 1);
-				ed->SetErrorLine(error.line - 1);
-				ed->UnfoldBlockFromLine(error.line - 1);
-			}
+			ed = Manager::Get()->GetEditorManager()->Open(filename);
 		}
 	}
+
+	// if we reached here and ed is NULL, either the error file doesn't belong to a project,
+	// or can't be found for any other reason.
+	// check if we can open it directly...
+    if (!ed)
+        ed = Manager::Get()->GetEditorManager()->Open(error.filename);
+
+    if (ed)
+    {
+        ed->Activate();
+        ed->GotoLine(error.line - 1);
+        ed->SetErrorLine(error.line - 1);
+        ed->UnfoldBlockFromLine(error.line - 1);
+    }
 }
 
 void CompilerErrors::DoClearErrorMarkFromAllEditors()
