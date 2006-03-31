@@ -397,6 +397,8 @@ bool CodeBlocksApp::OnInit()
 
         if (m_Batch)
         {
+            s_Loading = false;
+            DelayLoadDdeFiles(frame);
             BatchJob();
             frame->Close();
             return false;
