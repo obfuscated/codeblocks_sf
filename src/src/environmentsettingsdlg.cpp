@@ -177,7 +177,6 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
 
     // disable some windows-only settings, in other platforms
 #ifndef __WXMSW__
-    XRCCTRL(*this, "chkDDE", wxCheckBox)->Enable(false);
     XRCCTRL(*this, "chkAssociations", wxCheckBox)->Enable(false);
     XRCCTRL(*this, "btnSetAssocs", wxButton)->Enable(false);
     XRCCTRL(*this, "btnManageAssocs", wxButton)->Enable(false);
