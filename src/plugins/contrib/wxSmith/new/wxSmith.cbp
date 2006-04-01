@@ -83,6 +83,16 @@
 			<Option link="0" />
 			<Option target="wxSmith" />
 		</Unit>
+		<Unit filename="defwidgets\wxsbitmapbutton.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxSmith" />
+		</Unit>
+		<Unit filename="defwidgets\wxsbitmapbutton.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxSmith" />
+		</Unit>
 		<Unit filename="defwidgets\wxsboxsizer.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="wxSmith" />
