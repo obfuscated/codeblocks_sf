@@ -521,7 +521,7 @@ void wxsWindowRes::ShowPreview()
     {
         Preview = BuildPreview();
     }
-    if ( Preview )
+    if ( !Preview )
     {
         return;
     }
