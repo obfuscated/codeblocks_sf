@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="cp1253"?>
+<resource>
+  <object class="wxPanel" name="pnlCB">
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxPanel">
+          <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+              <object class="wxFlexGridSizer">
+                <cols>2</cols>
+                <rows>2</rows>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>View:</label>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxChoice" name="cmbView">
+                    <content>
+                      <item>Current file's symbols only</item>
+                      <item>All workspace symbols</item>
+                    </content>
+                    <selection>1</selection>
+                  </object>
+                  <option>1</option>
+                  <flag>wxGROW</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Search:</label>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtSearch"/>
+                      <option>1</option>
+                      <flag>wxGROW</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnSearch">
+                        <label>&gt;</label>
+                      </object>
+                      <minsize>22,-1</minsize>
+                    </object>
+                  </object>
+                  <option>1</option>
+                  <flag>wxGROW</flag>
+                </object>
+                <vgap>4</vgap>
+                <hgap>4</hgap>
+                <growablecols>1</growablecols>
+              </object>
+              <flag>wxALL|wxGROW</flag>
+              <border>4</border>
+            </object>
+            <object class="sizeritem">
+              <object class="wxTreeCtrl" name="treeAll"/>
+              <option>1</option>
+              <flag>wxGROW</flag>
+            </object>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxGROW</flag>
+      </object>
+    </object>
+  </object>
+</resource>

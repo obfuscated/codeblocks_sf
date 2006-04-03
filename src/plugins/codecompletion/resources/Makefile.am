@@ -11,7 +11,10 @@ install-exec-local:
 uninstall-local:
 	rm -f $(DESTDIR)$(pkgdatadir)/images/codecompletion/*.png
 
-EXTRA_DIST = insert_class_method.xrc \
+EXTRA_DIST = classbrowser.xrc \
+	insert_class_method.xrc \
+	selectincludefile.xrc \
+	settings.xrc \
 	images/class_folder.png \
 	images/class.png \
 	images/ctor_private.png \

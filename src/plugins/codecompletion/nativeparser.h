@@ -88,6 +88,7 @@ class NativeParser : public wxEvtHandler
 		wxString m_CCItems;
 		wxArrayString m_CallTips;
     	ClassBrowser* m_pClassBrowser;
+    	bool m_ClassBrowserIsFloating; // docked to project manager notebook, or free floating?
 
         DECLARE_EVENT_TABLE()
 };

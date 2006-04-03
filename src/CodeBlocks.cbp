@@ -704,6 +704,12 @@
 			<Option link="0" />
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins\codecompletion\resources\classbrowser.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins\codecompletion\resources\insert_class_method.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />

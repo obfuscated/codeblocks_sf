@@ -227,7 +227,7 @@
                         <label>Class browser</label>
                         <object class="wxPanel" name="tabCB">
                             <object class="wxBoxSizer">
-                                <orient>wxHORIZONTAL</orient>
+                                <orient>wxVERTICAL</orient>
                                 <object class="sizeritem">
                                     <option>1</option>
                                     <border>8</border>
@@ -270,6 +270,13 @@
                                             <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                             <object class="wxCheckBox" name="chkInheritance">
                                                 <label>Show inherited members</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxCheckBox" name="chkFloatCB">
+                                                <label>Display as a free floating/docking window</label>
                                             </object>
                                         </object>
                                     </object>
