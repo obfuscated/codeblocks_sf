@@ -293,6 +293,9 @@ class wxsItem: public wxsPropertyContainer
          */
         virtual wxsQuickPropsPanel* CreateQuickProperties(wxWindow* Parent);
 
+        /** \brief Handler for change notifications */
+        virtual void PropertyChangedHandler();
+
         wxsEvents Events;           ///< \brief Object managing events
         wxsParent* Parent;          ///< \brief Parent class of this one
         wxsWindowRes* Resource;     ///< \brief Resource containing this item
@@ -321,10 +324,10 @@ class wxsItem: public wxsPropertyContainer
  *  - \link wxsItem::EnumItemProperties EnumItemProperties \endlink - use this function to add extra properties.
  *
  * Additional functions which may be overridden to make change some extra behaviour:
- *  - \link wxsItem::BuildDeclarationCode BuildDeclarationCode \endlink - You can change the declaration of item here
+ *  - \link wxsItem::BuildDeclarationCode BuildDeclarationCode \endlink - you can change the declaration of item here
  *  - \link wxsItem::GetPropertiesFlags GetPropertiesFlags \endlink - override this to exclude some default properties (identifier or variable name).
  *    But remember to call original function and exclude some bits from it f.ex. \code wxsItem::GetPropertiesFlags() & ~wxsFLId \endcode
- *  - \link wxsItem::AddItemQPP AddItemQPP \endlink - Inside this function you may add Your own panels to AdvQPP.
+ *  - \link wxsItem::AddItemQPP AddItemQPP \endlink - Inside this function you may add your own panels to AdvQPP.
  *  - \link wxsItem::XmlRead XmlRead \endlink - Override this function to add some extra data into xml, but always call original XmlRead inside
  *  - \link wxsItem::XmlWrite XmlWrite \endlink - Override this function to add some extra data into xml, but always call original XmlRead inside
  */

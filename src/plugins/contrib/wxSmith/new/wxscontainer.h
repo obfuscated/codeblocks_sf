@@ -78,7 +78,7 @@ class wxsContainer: public wxsParent
          *         container.
          *
          * This function calls internally AddContainerQPP to add any additional
-         * QPPChild panels. If You want to add panel for specified widget,
+         * QPPChild panels. If you want to add panel for specified widget,
          * use AddContainerQPP rather than AddItemQPP.
          */
         virtual void AddItemQPP(wxsAdvQPP* QPP);

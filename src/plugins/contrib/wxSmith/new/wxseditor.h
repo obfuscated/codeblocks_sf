@@ -29,11 +29,11 @@ class wxsEditor: public EditorBase
 		/** \brief Function called when resource is goingto change
 		 *
 		 * This function notifies editor that resource is going to change.
-		 * During the change, resource is considered as unstable, and won't 
-		 * be processed by editor. After the change You MUST call UnlockResource().
+		 * During the change, resource is considered as unstable, and won't
+		 * be processed by editor. After the change you MUST call UnlockResource().
 		 */
 		virtual void ResourceLock() = 0;
-		
+
 		/** \brief Function called when resource change is finished */
 		virtual void ResourceUnlock() = 0;
 

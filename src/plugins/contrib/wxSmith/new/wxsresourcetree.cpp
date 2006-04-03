@@ -2,7 +2,8 @@
 #include "wxsmith.h"
 #include "wxsproject.h"
 #include "wxsglobals.h"
-//#include "resources/wxswindowres.h"
+#include "wxsitem.h"
+#include "resources/wxswindowres.h"
 //#include "resources/wxswindowresdataobject.h"
 //#include "wxsevent.h"
 //#include "wxswidgetfactory.h"
@@ -12,7 +13,7 @@ wxsResourceTree* wxsResourceTree::Singleton = NULL;
 
 static const long wxsConfigureProjectId = wxNewId();
 
-wxsResourceTree::wxsResourceTree(wxWindow* Parent): wxTreeCtrl(Parent,-1), IsExt(false)
+wxsResourceTree::wxsResourceTree(wxWindow* Parent): wxTreeCtrl(Parent,-1), IsExt(false), BlockSelect(false)
 {
     Singleton = this;
 }
@@ -24,7 +25,6 @@ wxsResourceTree::~wxsResourceTree()
 
 wxTreeItemId wxsResourceTree::NewProjectItem(wxsProject* Project)
 {
-    // TODO: support for "external resources" node - add new item before that
     wxTreeItemId Id;
     if ( !IsExt )
     {
@@ -65,9 +65,8 @@ void wxsResourceTree::DeleteExternalResourcesId()
 
 void wxsResourceTree::OnSelectResource(wxTreeEvent& event)
 {
-    static bool Block = false;
-    if ( Block ) return;
-    Block = true;
+    if ( BlockSelect ) return;
+    BlockSelect = true;
 
     wxsResourceTreeData* Data = ((wxsResourceTreeData*)GetItemData(event.GetItem()));
     if ( Data )
@@ -76,13 +75,18 @@ void wxsResourceTree::OnSelectResource(wxTreeEvent& event)
         {
             case wxsResourceTreeData::tItem:
                 {
-                    wxsPLUGIN()->SelectItem(Data->Item);
+                    wxsItem* Item = Data->Item;
+                    wxsWindowRes* Res = Item->GetResource();
+                    Res->GetRootItem()->ClearSelection();
+                    Item->SetIsSelected(true);
+                    Res->SelectionChanged(Item);
                 }
                 break;
 
             case wxsResourceTreeData::tResource:
                 {
-                    wxsPLUGIN()->SelectResource(Data->Resource);
+                    wxsResource* Res = Data->Resource;
+                    Res->EditOpen();
                 }
                 break;
 
@@ -90,7 +94,7 @@ void wxsResourceTree::OnSelectResource(wxTreeEvent& event)
         }
     }
 
-    Block = false;
+    BlockSelect = false;
 }
 
 void wxsResourceTree::OnBeginDrag(wxTreeEvent& event)
@@ -198,6 +202,13 @@ void wxsResourceTree::OnConfigureProject(wxCommandEvent& event)
 //    }
 }
 
+
+void wxsResourceTree::SelectionChanged(wxsItem* RootItem)
+{
+    // TODO: Support for multiple selection
+    UnselectAll();
+    SelectItem(RootItem->GetLastTreeItemId());
+}
 
 BEGIN_EVENT_TABLE(wxsResourceTree,wxTreeCtrl)
     EVT_TREE_SEL_CHANGED(wxID_ANY,wxsResourceTree::OnSelectResource)

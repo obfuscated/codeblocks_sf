@@ -222,16 +222,6 @@ void wxSmith::SelectResource(wxsResource* Res)
     }
 }
 
-void wxSmith::SelectItem(wxsItem* Item)
-{
-    wxsResource* Res = (wxsResource*)Item->GetResource();
-    if ( Res )
-    {
-        Res->EditOpen();
-    }
-    wxsWindowEditor::SelectItem(Item,false);
-}
-
 cbProject* wxSmith::GetCBProject(wxsProject* Proj)
 {
     return Proj->GetCBProject();

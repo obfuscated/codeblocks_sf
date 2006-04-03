@@ -41,6 +41,7 @@ void wxsPropertyContainer::ShowInPropertyGrid()
     wxMutexLocker Lock(Mutex);
     if ( !wxsPGRID() ) return;      // We're not sure that PropertyGridManager has been created
     Flags = (GetPropertiesFlags() & ~(flXml|flPropStream)) | flPropGrid;
+    wxsPGRID()->SetTargetPage(0);
     wxsPGRID()->Freeze();
     wxsPGRID()->UnbindAll();
     EnumProperties(Flags);
@@ -217,7 +218,7 @@ void wxsPropertyContainer::Property(wxsProperty& Prop,long PropertyFlags)
 
             // This can not be done
             wxMessageBox(_T("wxsPropertyContainer::Property() function has been\n")
-                         _T("called manually. If You are the Developer,\n")
+                         _T("called manually. If you are the Developer,\n")
                          _T("please remove this code."));
 
     }

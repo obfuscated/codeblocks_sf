@@ -88,7 +88,7 @@ class wxsWidget: public wxsItem
          *         widget.
          *
          * This function calls internally AddWidgetQPP to add any additional
-         * QPPChild panels. If You want to add panel for specified widget,
+         * QPPChild panels. If you want to add panel for specified widget,
          * use AddWidgetQPP rather than AddItemQPP.
          */
         virtual void AddItemQPP(wxsAdvQPP* QPP);

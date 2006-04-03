@@ -34,6 +34,9 @@ class wxsResourceTree: public wxTreeCtrl
         /** \brief Getting singleton instance */
         static inline wxsResourceTree* Get() { return Singleton; }
 
+        /** \brief Notifying about selection change */
+        void SelectionChanged(wxsItem* RootItem);
+
     private:
 
         void OnSelectResource(wxTreeEvent& event);
@@ -46,6 +49,7 @@ class wxsResourceTree: public wxTreeCtrl
         wxsProject* SelectedProject;
         wxTreeItemId ExtId;
         bool IsExt;
+        bool BlockSelect;
 
         static wxsResourceTree* Singleton;
 

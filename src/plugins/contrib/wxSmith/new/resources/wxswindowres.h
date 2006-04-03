@@ -160,6 +160,32 @@ class wxsWindowRes : public wxsResource
 		/** \brief Checking if file is used by this resource */
 		virtual bool UsingFile(const wxString& FileName);
 
+		/** \brief Notifying about selection change
+		 *
+		 * This function must be called when selection does change in any
+		 * way. It notifies editor/resource browser about changed selection.
+		 *
+		 * \param ChangedItem item that has changed it's selection state (or one of
+		 *        items when changing selection in more than one items). When using
+		 *        NULL, one of currently selected items will be used as root selection.
+		 */
+		void SelectionChanged(wxsItem* ChangedItem);
+
+		/** \brief Getting root selection item */
+		inline wxsItem* GetRootSelection() { return RootSelection; }
+
+		/** \brief Notifying about content change
+		 *
+		 * This function validates content, recreates preview and
+		 * updates source code.
+		 */
+		void NotifyChange();
+
+        /** \brief Funnction regenerating all source code
+         *  \note Only content really changed will mark files as modified
+         */
+        void RebuildCode();
+
     protected:
 
         /** \brief Function building root item */
@@ -194,18 +220,9 @@ class wxsWindowRes : public wxsResource
         /** \brief Function collecting enteries of map id_name -> wxsItem* */
         void CollectIdMap(IdToItemMapT& Map,wxsItem* Item,bool WithRoot=true);
 
-//        /** \brief This will be used to notify about change of resource data.
-//         *
-//         * This function performs check of identifiers/variable names and
-//         * rebuilds source code.
-//         */
-//        void NotifyChange();
-//
-//
-//
-//        /** \brief Funnction regenerating all source code */
-//        void RebuildCode();
-//
+        /** \brief Function searching for first selected item */
+        void FindFirstSelection(wxsItem* Item);
+
 //
 //        /** \brief Setting default variable names and identifiers for widgets with empty ones */
 //        void UpdateWidgetsVarNameId();
@@ -299,6 +316,7 @@ class wxsWindowRes : public wxsResource
         wxString    HFile;
         wxString    XrcFile;
         wxsItem*    RootItem;
+        wxsItem*    RootSelection;
         wxWindow*   Preview;
         bool        Modified;
         long        BasePropsFilter;

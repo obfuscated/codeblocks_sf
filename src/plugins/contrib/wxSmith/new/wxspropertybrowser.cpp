@@ -12,7 +12,7 @@
 #define ADD_NEW_STR     _("-- Add new handler --")
 #define EVENTS_PAGE     1
 
-wxsPropertyBrowser::wxsPropertyBrowser(wxWindow* parent): wxsPropertyGridManager(parent,-1)
+wxsPropertyBrowser::wxsPropertyBrowser(wxWindow* parent): wxsPropertyGridManager(parent,-1,wxDefaultPosition,wxDefaultSize,wxPG_TOOLBAR|wxPGMAN_DEFAULT_STYLE)
 {
     // TODO: Add icons
     AddPage(_("Properties"));
@@ -60,11 +60,11 @@ void wxsPropertyBrowser::OnContainerChanged(wxsPropertyContainer* NewContainer)
 
 void wxsPropertyBrowser::OnPropertyChanged(wxPropertyGridEvent& event)
 {
-    if ( EventIds.Index(event.GetProperty()) )
+    if ( EventIds.Index(event.GetProperty()) != wxNOT_FOUND )
     {
         // Event property - updating events
         ReadEvents();
-        // TODO: Update source code
+        Res->RebuildCode();
     }
     else
     {
@@ -76,7 +76,7 @@ void wxsPropertyBrowser::OnPropertyChanged(wxPropertyGridEvent& event)
 void wxsPropertyBrowser::BuildEvents()
 {
     ClearPage(EVENTS_PAGE);
-    SelectPage(EVENTS_PAGE);
+    SetTargetPage(EVENTS_PAGE);
 
 	int Cnt = Events->GetCount();
 	for ( int i=0; i<Cnt; i++ )
@@ -301,8 +301,7 @@ bool wxsPropertyBrowser::CreateNewFunction(const wxsEventDesc* Event,const wxStr
 	Declarations << Event->ArgType << _T("& event);\n");
 	wxsADDCODE(HeaderFile,DeclarationsHeader,wxsBEnd(),Declarations);
 
-	// TODO: Update source code
-	// Res->UpdateEventTable();
+    Res->RebuildCode();
 
 	cbEditor* Editor = Manager::Get()->GetEditorManager()->Open(SourceFile);
 	if ( !Editor ) return false;

@@ -343,7 +343,7 @@ void wxsProject::Configure()
               "In this project, wxSmith does not manage source code for\n"
               "wxApp-derived class, there are no project options.\n"
               "\n"
-              "If You want wxSmith to manage Your application class,\n"
+              "If you want wxSmith to manage Your application class,\n"
               "it must be declared in following form:\n"
               "\n"
               "\t//(*AppHeaders\n"
@@ -366,11 +366,11 @@ void wxsProject::Configure()
               "\t\treturn wxsOK;\n"
               "\t}\n"
               "\n"
-              "If You have already changed Your application to this form,\n"
+              "If you have already changed Your application to this form,\n"
               "click Yes and choose source file with application class.\n"
               "\n"
-              "If You don't want wxSmith to manage Your application\n"
-              "(f.ex. You have Your own initialization system), click No.\n"),
+              "If you don't want wxSmith to manage Your application\n"
+              "(f.ex. you have your own initialization system), click No.\n"),
             _("Application not manager in wxSmith"),
             wxYES_NO | wxICON_INFORMATION );
 
@@ -383,7 +383,7 @@ void wxsProject::Configure()
         for(;;)
         {
             NewFileName = ::wxFileSelector(
-                _("Choose source file with Your application"),
+                _("Choose source file with your application"),
                 _T(""), _T("main.cpp"), _T("cpp"),
                 _("C++ source files (*.cpp)|*.cpp|"
                   "All files (*)|*"),

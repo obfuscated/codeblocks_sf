@@ -73,6 +73,7 @@ namespace
 wxsWindowRes::wxsWindowRes(wxsProject* Project):
     wxsResource(Project),
     RootItem(NULL),
+    RootSelection(NULL),
     Preview(NULL)
 {
 }
@@ -603,33 +604,28 @@ bool wxsWindowRes::CreateNewResource(TiXmlElement* Element)
     return true;
 }
 
-//void wxsWindowRes::NotifyChange()
-//{
-//    // Regenerating source code
+void wxsWindowRes::NotifyChange()
+{
+    // Regenerating source code
+    // TODO: Uncomment when done
 //	UpdateWidgetsVarNameId();
-//	RebuildCode();
-//
-//    // Applying modified state
-//    if ( GetEditor() )
-//    {
-//    	// Must process inside editor (updating titile)
-//    	GetEditor()->SetModified();
-//    }
-//    else
-//    {
-//        SetModified();
-//    }
-//
-//    // Storing change inside undo buffer
-//
-//    if ( GetEditor() )
-//    {
-//    	((wxsWindowEditor*)GetEditor())->GetUndoBuff()->StoreChange();
-//    }
-//}
-//
-//void wxsWindowRes::RebuildCode()
-//{
+	RebuildCode();
+
+    // Applying modified state
+    if ( GetEditor() )
+    {
+    	GetEditor()->ResourceLock();
+    	GetEditor()->ResourceUnlock();
+    }
+    else
+    {
+        SetModified();
+    }
+}
+
+void wxsWindowRes::RebuildCode()
+{
+    // TODO: Code it
 //    if ( !GetProject() ) return;
 //
 ////------------------------------
@@ -753,8 +749,8 @@ bool wxsWindowRes::CreateNewResource(TiXmlElement* Element)
 //	Code.Append(_T('\n'));
 //	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
 //	UpdateEventTable();
-//}
-//
+}
+
 //void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,bool& WasLocal)
 //{
 //	if ( !Widget ) return;
@@ -1361,4 +1357,56 @@ bool wxsWindowRes::UsingFile(const wxString& FileName)
     }
 
     return false;
+}
+
+void wxsWindowRes::SelectionChanged(wxsItem* ChangedItem)
+{
+    RootSelection = ChangedItem;
+
+    if ( !RootSelection || !RootSelection->GetIsSelected() )
+    {
+        RootSelection = NULL;
+
+        // Need to find other selection
+        FindFirstSelection(GetRootItem());
+
+        if ( !RootSelection )
+        {
+            // There's no selection at all, we just select root item
+            RootSelection = GetRootItem();
+            GetRootItem()->SetIsSelected(true);
+        }
+    }
+
+    // Notifying editor if there's one
+    if ( GetEditor() )
+    {
+        ((wxsWindowEditor*)GetEditor())->SelectionChanged();
+    }
+
+    // Notifying resource browser
+    wxsTREE()->SelectionChanged(RootSelection);
+
+    // Showing new selection in property browser
+    RootSelection->ShowInPropertyGrid();
+
+}
+
+void wxsWindowRes::FindFirstSelection(wxsItem* Item)
+{
+    if ( Item->GetIsSelected() )
+    {
+        RootSelection = Item;
+        return;
+    }
+
+    wxsParent* Parent = Item->ToParent();
+    if ( Parent )
+    {
+        for( int i=0; i<Parent->GetChildCount(); i++ )
+        {
+            FindFirstSelection(Parent->GetChild(i));
+            if ( RootSelection!=NULL ) return;
+        }
+    }
 }

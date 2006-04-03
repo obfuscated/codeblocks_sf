@@ -71,9 +71,6 @@ class wxSmith : public cbPlugin
 		void OnAttach();
 		void OnRelease(bool appShutDown);
 
-        /** \brief Global function notifying that given item has been selected */
-        void SelectItem(wxsItem* Item);
-
         /** \brief Global function notifying that given resource has been selected */
         void SelectResource(wxsResource* Resource);
 

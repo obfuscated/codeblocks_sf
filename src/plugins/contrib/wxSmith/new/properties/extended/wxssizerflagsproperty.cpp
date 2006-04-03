@@ -211,7 +211,6 @@ bool wxsSizerFlagsProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* E
         return false;
     }
     FLAGS = ParseString(cbC2U(Text->Value()));
-    FixFlags(FLAGS); // TODO: This is useless, remove it
     return true;
 }
 

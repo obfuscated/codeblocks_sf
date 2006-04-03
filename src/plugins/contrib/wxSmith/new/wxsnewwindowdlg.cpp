@@ -234,9 +234,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     Manager::Get()->GetProjectManager()->RebuildTree();
 
     // Opening editor for this resource
-
-    // TODO: Open editor for this resource
-    //NewWindow->EditOpen();
+    NewWindow->EditOpen();
 
     Close();
 }
