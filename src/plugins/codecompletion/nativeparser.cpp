@@ -135,6 +135,12 @@ void NativeParser::RereadParserOptions()
     {
         RemoveClassBrowser();
         CreateClassBrowser();
+        // force re-update
+        if (m_pClassBrowser)
+        {
+            m_pClassBrowser->SetParser(&m_Parser);
+            m_pClassBrowser->Update();
+        }
     }
 
     // reparse if settings changed

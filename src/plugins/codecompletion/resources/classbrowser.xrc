@@ -36,7 +36,7 @@
                   <object class="wxBoxSizer">
                     <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">
-                      <object class="wxTextCtrl" name="txtSearch"/>
+                      <object class="unknown" name="txtSearch"/>
                       <option>1</option>
                       <flag>wxGROW</flag>
                     </object>

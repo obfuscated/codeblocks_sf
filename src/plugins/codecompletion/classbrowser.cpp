@@ -44,6 +44,42 @@
 #include <cbeditor.h>
 #include <globals.h>
 
+class myTextCtrl : public wxTextCtrl
+{
+    public:
+        myTextCtrl(ClassBrowser* cb,
+                    wxWindow* parent,
+                    wxWindowID id,
+                    const wxString& value = wxEmptyString,
+                    const wxPoint& pos = wxDefaultPosition,
+                    const wxSize& size = wxDefaultSize,
+                    long style = wxTE_PROCESS_ENTER,
+                    const wxValidator& validator = wxDefaultValidator,
+                    const wxString& name = wxTextCtrlNameStr)
+            : wxTextCtrl(parent, id, value, pos, size, style, validator, name),
+            m_CB(cb)
+            {}
+        virtual ~myTextCtrl() {}
+    protected:
+        ClassBrowser* m_CB;
+
+        // Intercept key presses to handle Enter. */
+        void OnKey(wxKeyEvent& event)
+        {
+            if (event.GetKeyCode() == WXK_RETURN)
+            {
+                wxCommandEvent e;
+                m_CB->OnSearch(e);
+            }
+            else
+                event.Skip();
+        }
+        DECLARE_EVENT_TABLE()
+};
+BEGIN_EVENT_TABLE(myTextCtrl, wxTextCtrl)
+	EVT_KEY_DOWN(myTextCtrl::OnKey)
+END_EVENT_TABLE()
+
 int idMenuJumpToDeclaration = wxNewId();
 int idMenuJumpToImplementation = wxNewId();
 int idMenuRefreshTree = wxNewId();
@@ -74,12 +110,13 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
 	m_pParser(0L)
 {
 	wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlCB"));
+    m_Search = new myTextCtrl(this, parent, XRCID("txtSearch"));
+    wxXmlResource::Get()->AttachUnknownControl(_T("txtSearch"), m_Search);
+
+	m_Tree = XRCCTRL(*this, "treeAll", wxTreeCtrl);
 
     bool all = Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/show_all_symbols"), false);
     XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(all ? 1 : 0);
-
-    m_Search = XRCCTRL(*this, "txtSearch", wxTextCtrl);
-	m_Tree = XRCCTRL(*this, "treeAll", wxTreeCtrl);
 }
 
 // class destructor
