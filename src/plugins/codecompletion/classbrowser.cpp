@@ -368,21 +368,60 @@ void ClassBrowser::OnViewScope(wxCommandEvent& event)
 	}
 }
 
+bool ClassBrowser::FoundMatch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& item)
+{
+    ClassTreeData* ctd = static_cast<ClassTreeData*>(tree->GetItemData(item));
+    if (ctd && ctd->GetToken())
+    {
+        Token* token = ctd->GetToken();
+        if (token->m_Name.Lower().StartsWith(search) ||
+            token->m_Name.Lower().StartsWith(_T('~') + search))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+wxTreeItemId ClassBrowser::FindNext(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& start)
+{
+    wxTreeItemId ret;
+    if (!start.IsOk())
+        return ret;
+
+    // look at siblings
+    ret = tree->GetNextSibling(start);
+    if (ret.IsOk())
+        return ret;
+
+    // ascend one level now and recurse
+    return FindNext(search, tree, tree->GetItemParent(start));
+}
+
 bool ClassBrowser::RecursiveSearch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& parent, wxTreeItemId& result)
 {
+    if (!parent.IsOk())
+        return false;
+
+    // first check the parent item
+    if (FoundMatch(search, tree, parent))
+    {
+        result = parent;
+        return true;
+    }
+
     wxTreeItemIdValue cookie;
-	wxTreeItemId child = tree->GetFirstChild(parent, cookie);
+    wxTreeItemId child = tree->GetFirstChild(parent, cookie);
+
+    if (!child.IsOk())
+        return RecursiveSearch(search, tree, FindNext(search, tree, parent), result);
+
 	while (child.IsOk())
 	{
-        ClassTreeData* ctd = static_cast<ClassTreeData*>(tree->GetItemData(child));
-        if (ctd && ctd->GetToken())
+	    if (FoundMatch(search, tree, child))
         {
-            Token* token = ctd->GetToken();
-            if (token->m_Name.Lower().StartsWith(search))
-            {
-                result = child;
-                return true;
-            }
+            result = child;
+            return true;
         }
         if (tree->ItemHasChildren(child))
         {
@@ -391,12 +430,14 @@ bool ClassBrowser::RecursiveSearch(const wxString& search, wxTreeCtrl* tree, con
         }
         child = tree->GetNextChild(parent, cookie);
 	}
-	return false;
+
+    return RecursiveSearch(search, tree, FindNext(search, tree, parent), result);
 }
 
 void ClassBrowser::OnSearch(wxCommandEvent& event)
 {
-    if (m_Search->GetValue().IsEmpty())
+    wxString search = m_Search->GetValue().Lower();
+    if (search.IsEmpty())
         return;
 
     // search under the selected node
@@ -404,8 +445,24 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
     if (!start.IsOk()) // if it's not valid, search the whole tree
         start = m_Tree->GetRootItem();
 
+    // if the selection matches, skip it; the user already knows...
+    if (FoundMatch(search, m_Tree, start))
+    {
+        if (m_Tree->ItemHasChildren(start))
+        {
+            wxTreeItemIdValue cookie;
+            start = m_Tree->GetFirstChild(start, cookie);
+        }
+        else
+            start = FindNext(search, m_Tree, start);
+    }
+
+    // as a fallback, start from the root node
+    if (!start.IsOk())
+        start = m_Tree->GetRootItem();
+
     wxTreeItemId result;
-    if (RecursiveSearch(m_Search->GetValue().Lower(), m_Tree, start, result))
+    if (RecursiveSearch(search, m_Tree, start, result))
     {
         m_Tree->SelectItem(result);
         m_Tree->EnsureVisible(result);
