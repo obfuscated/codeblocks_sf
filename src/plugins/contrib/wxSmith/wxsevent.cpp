@@ -4,6 +4,8 @@
 #include "wxsmith.h"
 #include "wxsglobals.h"
 
+#include <messagemanager.h>
+
 const wxEventType wxEVT_SELECT_RES = wxNewEventType();
 const wxEventType wxEVT_UNSELECT_RES = wxNewEventType();
 const wxEventType wxEVT_SELECT_WIDGET = wxNewEventType();

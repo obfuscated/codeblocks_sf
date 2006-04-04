@@ -4,6 +4,8 @@
 #include <wx/string.h>
 #include <wx/settings.h>
 #include <wx/scrolwin.h>
+#include <wx/bitmap.h>
+#include <wx/dialog.h>
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/propdev.h>
 #include <wx/propgrid/advprops.h>

@@ -1,7 +1,7 @@
 #include "../wxsheaders.h"
 #include "wxslistctrl.h"
 
-#include <wx/listbox.h>
+#include <wx/listctrl.h>
 
 WXS_ST_BEGIN(wxsListCtrlStyles)
     WXS_ST_CATEGORY("wxListCtrl")

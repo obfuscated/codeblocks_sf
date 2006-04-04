@@ -1,6 +1,10 @@
 #ifndef WXSSTRINGLISTCHECKPROPERTY_H
 #define WXSSTRINGLISTCHECKPROPERTY_H
 
+#include <wx/scrolwin.h>
+#include <wx/bitmap.h>
+#include <wx/dialog.h>
+#include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/propdev.h>
 
 #include "../wxsproperties.h"
@@ -22,9 +26,9 @@ class wxsStringListCheckProperty : public wxsProperty
         virtual void UpdatePropGrid(wxPropertyGrid* Grid);
 
 	private:
-	
+
         static bool PropertyGridCallback(wxPropertyGrid* propGrid,wxPGProperty* property,wxPGCtrlClass* ctrl,int data);
-        
+
         bool EditValues(wxPropertyGrid* propGrid);
         void RebuildData(wxPropertyGrid* propGrid);
         bool IsSorted();

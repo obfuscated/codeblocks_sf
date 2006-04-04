@@ -2,7 +2,7 @@
 #define WXSFRAMEPREVIEWFRM_H
 
 //#include "closepreview.h"
-#include <wx/dialog.h>
+#include <wx/frame.h>
 
 class wxsResource;
 
