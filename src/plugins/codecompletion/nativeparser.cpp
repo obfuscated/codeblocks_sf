@@ -122,6 +122,20 @@ void NativeParser::RemoveClassBrowser(bool appShutDown)
     m_pClassBrowser = 0L;
 }
 
+void NativeParser::UpdateClassBrowser()
+{
+    if (m_Parser.Done())
+    {
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Updating class browser..."));
+        if (m_pClassBrowser)
+        {
+            m_pClassBrowser->SetParser(&m_Parser);
+            m_pClassBrowser->Update();
+        }
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Class browser updated."));
+    }
+}
+
 void NativeParser::RereadParserOptions()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
@@ -404,11 +418,13 @@ void NativeParser::RemoveParser(cbProject* project, bool useCache)
 {
     if (!project)
         return;
+	Manager::Get()->GetMessageManager()->DebugLog(_T("Removing project %s from parsed projects"), project->GetTitle().c_str());
     for (int i = 0; i < project->GetFilesCount(); ++i)
     {
         ProjectFile* pf = project->GetFile(i);
         m_Parser.RemoveFile(pf->file.GetFullPath());
     }
+    UpdateClassBrowser();
 }
 
 void NativeParser::AddFileToParser(cbProject* project, const wxString& filename)
@@ -1295,23 +1311,13 @@ void NativeParser::OnThreadEnd(wxCommandEvent& event)
 //	 nothing for now
 }
 
-
 void NativeParser::OnParserEnd(wxCommandEvent& event)
 {
 	Parser* parser = (Parser*)event.GetClientData();
 	if (parser)// && parser->Done())
 	{
         DisplayStatus(parser);
-		if (parser->Done())
-        {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Updating class browser..."));
-			if (m_pClassBrowser)
-			{
-				m_pClassBrowser->SetParser(parser);
-				m_pClassBrowser->Update();
-			}
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Class browser updated."));
-		}
+        UpdateClassBrowser();
 	}
 }
 

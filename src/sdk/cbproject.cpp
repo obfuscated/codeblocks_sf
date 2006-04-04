@@ -114,7 +114,10 @@ cbProject::cbProject(const wxString& filename)
 // class destructor
 cbProject::~cbProject()
 {
-	NotifyPlugins(cbEVT_PROJECT_CLOSE);
+    // moved to ProjectManager::CloseProject()
+    // see explanation there...
+//	NotifyPlugins(cbEVT_PROJECT_CLOSE);
+
 	ClearAllProperties();
 }
 

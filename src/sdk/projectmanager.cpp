@@ -828,9 +828,16 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
     if (m_pWorkspace)
         m_pWorkspace->SetModified(true);
 
-    project->CloseAllFiles(true);
     RemoveProjectFromAllDependencies(project);
     m_pProjects->Remove(project);
+
+    // moved here from cbProject's destructor, because by then
+    // the list of project files was already emptied...
+    CodeBlocksEvent event(cbEVT_PROJECT_CLOSE);
+    event.SetProject(project);
+    Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+
+    project->CloseAllFiles(true);
     if (refresh)
         m_pTree->Delete(project->GetProjectNode());
     if (wasActive && m_pProjects->GetCount())

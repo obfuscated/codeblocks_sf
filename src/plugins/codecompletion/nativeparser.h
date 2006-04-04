@@ -58,6 +58,7 @@ class NativeParser : public wxEvtHandler
 
 		void CreateClassBrowser();
 		void RemoveClassBrowser(bool appShutDown = false);
+		void UpdateClassBrowser();
 		void SetClassBrowserProject(cbProject* project);
 		void SetCBViewMode(const BrowserViewMode& mode);
 	protected:
