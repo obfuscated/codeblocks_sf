@@ -398,10 +398,28 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
 {
     if (m_Search->GetValue().IsEmpty())
         return;
+
+    // search under the selected node
+    wxTreeItemId start = m_Tree->GetSelection();
+    if (!start.IsOk()) // if it's not valid, search the whole tree
+        start = m_Tree->GetRootItem();
+
     wxTreeItemId result;
-    if (RecursiveSearch(m_Search->GetValue().Lower(), m_Tree, m_Tree->GetRootItem(), result))
+    if (RecursiveSearch(m_Search->GetValue().Lower(), m_Tree, start, result))
     {
         m_Tree->SelectItem(result);
         m_Tree->EnsureVisible(result);
+    }
+    else
+    {
+        // if the search failed and the start node wasn't the root, search again from the root
+        if (start != m_Tree->GetRootItem())
+        {
+            if (RecursiveSearch(m_Search->GetValue().Lower(), m_Tree, m_Tree->GetRootItem(), result))
+            {
+                m_Tree->SelectItem(result);
+                m_Tree->EnsureVisible(result);
+            }
+        }
     }
 }
