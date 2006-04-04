@@ -103,21 +103,22 @@ void NativeParser::CreateClassBrowser()
 
 void NativeParser::RemoveClassBrowser(bool appShutDown)
 {
-    if (!appShutDown && m_pClassBrowser)
+    if (m_pClassBrowser)
     {
-        if (!m_ClassBrowserIsFloating)
+        if (!appShutDown && !m_ClassBrowserIsFloating)
         {
             int idx = Manager::Get()->GetProjectManager()->GetNotebook()->GetPageIndex(m_pClassBrowser);
             if (idx != -1)
                 Manager::Get()->GetProjectManager()->GetNotebook()->RemovePage(idx);
+            m_pClassBrowser->Destroy();
         }
-        else
+        else if (m_ClassBrowserIsFloating)
         {
             CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
             evt.pWindow = m_pClassBrowser;
             Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+            m_pClassBrowser->Destroy();
         }
-        m_pClassBrowser->Destroy();
     }
     m_pClassBrowser = 0L;
 }
