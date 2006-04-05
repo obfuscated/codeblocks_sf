@@ -404,7 +404,7 @@ bool CodeBlocksApp::OnInit()
             DelayLoadDdeFiles(frame);
             BatchJob();
             frame->Close();
-            return false;
+            return true;
         }
 
         CheckVersion();
