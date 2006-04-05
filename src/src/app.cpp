@@ -661,13 +661,6 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 
         case 0:
             {
-                // batch jobs
-                m_BatchNotify = parser.Found(_T("batch-build-notify"));
-                m_BatchWindowAutoClose = !parser.Found(_T("no-batch-window-close"));
-                m_Build = parser.Found(_T("build"));
-                m_ReBuild = parser.Found(_T("rebuild"));
-                parser.Found(_T("target"), &m_BatchTarget);
-
                 if (handlerFrame)
                 {
                     int count = parser.GetParamCount();
@@ -716,6 +709,13 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     {
                         SetupPersonality(val);
                     }
+
+                    // batch jobs
+                    m_BatchNotify = parser.Found(_T("batch-build-notify"));
+                    m_BatchWindowAutoClose = !parser.Found(_T("no-batch-window-close"));
+                    m_Build = parser.Found(_T("build"));
+                    m_ReBuild = parser.Found(_T("rebuild"));
+                    parser.Found(_T("target"), &m_BatchTarget);
 
                     // initial setting for batch flag (will be reset when ParseCmdLine() is called again).
                     m_Batch = m_Build || m_ReBuild;
