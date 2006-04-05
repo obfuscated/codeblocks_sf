@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="cp1253"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxPanel" name="pnlCB">
     <object class="wxBoxSizer">
