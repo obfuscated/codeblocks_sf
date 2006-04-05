@@ -66,6 +66,7 @@ http://wiki.codeblocks.org/index.php?title=Personalities</label>
             </object>
           </object>
         </object>
+        <option>1</option>
         <flag>wxALL|wxEXPAND</flag>
         <border>8</border>
       </object>
@@ -94,5 +95,6 @@ http://wiki.codeblocks.org/index.php?title=Personalities</label>
         <border>8</border>
       </object>
     </object>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX|wxMAXIMIZE_BOX</style>
   </object>
 </resource>

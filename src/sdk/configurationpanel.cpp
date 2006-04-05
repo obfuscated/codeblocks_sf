@@ -17,7 +17,7 @@
 #include <wx/sizer.h>
 
 cbConfigurationDialog::cbConfigurationDialog(wxWindow* parent, int id, const wxString& title)
-    : wxDialog(parent, id, title, wxDefaultPosition, wxDefaultSize),
+    : wxDialog(parent, id, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX),
     m_pPanel(0)
 {
 }
