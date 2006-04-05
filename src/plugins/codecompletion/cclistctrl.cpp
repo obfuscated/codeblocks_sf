@@ -82,7 +82,7 @@ Token* CCListCtrl::GetSelectedToken()
 	return GetTokenAt(GetGridCursorRow());
 }
 
-void CCListCtrl::PrepareTokens()
+bool CCListCtrl::PrepareTokens()
 {
 	// don't do any GUI updates while we 're building the tokens list
 	Freeze();
@@ -113,21 +113,24 @@ void CCListCtrl::PrepareTokens()
 
 	// refresh list
 	ForceRefresh();
+
+	/* return whether there are tokens (to hide control if no possible tokens */
+	return (!m_CCTokens.empty());
 }
 
-void CCListCtrl::AddChar(const wxChar& ch)
+bool CCListCtrl::AddChar(const wxChar& ch)
 {
 	wxString s;
 	s << ch;
 	m_pEditor->InsertText(m_pEditor->GetCurrentPos(), s);
 	m_pEditor->GotoPos(m_pEditor->GetCurrentPos() + 1);
 	m_Initial << s;
-	PrepareTokens();
+	return PrepareTokens();
 }
 
-void CCListCtrl::RemoveLastChar()
+bool CCListCtrl::RemoveLastChar()
 {
 	m_Initial.RemoveLast();
 	m_pEditor->CmdKeyExecute(wxSCI_CMD_DELETEBACKNOTLINE);
-	PrepareTokens();
+	return PrepareTokens();
 }

@@ -88,7 +88,11 @@ CCList::~CCList()
 	Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/size/width"), GetSize().GetWidth());
 	Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/size/height"), GetSize().GetHeight());
 	m_pEditor->SetFocus();
-	delete m_pList;
+	if (m_pList)
+	{
+		delete m_pList;
+		m_pList = 0L;
+	}
 	g_CCList = 0L;
 }
 
@@ -114,6 +118,8 @@ void CCList::PositionMe()
 
 void CCList::SelectCurrent(wxChar ch)
 {
+	if (!m_pList)
+		return;
 	Token* token = m_pList->GetSelectedToken();
 	if (token)
 	{
@@ -188,6 +194,8 @@ void CCList::OnLeftClick(wxGridEvent& event)
 	event.Skip(); // let the event proceed, anyway
 	if (!m_IsCtrlPressed)
 		return;
+	if (!m_pList)
+		return;
 	Token* token = m_pList->GetTokenAt(event.GetRow());
 	if (token)
 	{
@@ -249,8 +257,8 @@ void CCList::OnKeyDown(wxKeyEvent& event)
 
 		case WXK_SPACE:
 		{
-		    m_pList->AddChar(c);
-			Destroy();
+			if (m_pList && !m_pList->AddChar(c))
+				Destroy();
 			event.Skip();
 			break;
 		}
@@ -282,7 +290,10 @@ void CCList::OnKeyDown(wxKeyEvent& event)
 			if (m_pEditor->GetCurrentPos() <= m_StartPos)
 				Destroy();
 			else
-				m_pList->RemoveLastChar();
+			{
+				if (m_pList && !m_pList->RemoveLastChar())
+					Destroy();
+			}
 			break;
 		}
 
@@ -293,21 +304,28 @@ void CCList::OnKeyDown(wxKeyEvent& event)
 		{
 			if (!event.ShiftDown())
 				c += 32;
-			m_pList->AddChar(c);
+			if (m_pList && !m_pList->AddChar(c))
+				Destroy();
 			break;
 		}
 
 		case '~':
 		{
 			if (event.ShiftDown())
-				m_pList->AddChar(c);
+			{
+				if (m_pList && !m_pList->AddChar(c))
+					Destroy();
+			}
 			break;
 		}
 
 		case '-':
 		{
 			if (event.ShiftDown())
-				m_pList->AddChar('_');
+			{
+				if (m_pList && !m_pList->AddChar('_'))
+					Destroy();
+			}
 			else
 				SelectCurrent(c);
 			break;
@@ -318,14 +336,20 @@ void CCList::OnKeyDown(wxKeyEvent& event)
 		case '8':
 		{
 			if (!event.ShiftDown())
-				m_pList->AddChar(c);
+			{
+				if (m_pList && !m_pList->AddChar(c))
+					Destroy();
+			}
 			break;
 		}
 
 		case '9':
 		{
 			if (!event.ShiftDown())
-				m_pList->AddChar(c);
+			{
+				if (m_pList && !m_pList->AddChar(c))
+					Destroy();
+			}
 			else
 				SelectCurrent('(');
 			break;

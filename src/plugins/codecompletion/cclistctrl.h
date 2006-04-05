@@ -15,12 +15,12 @@ class CCListCtrl : public wxGrid
 
 		Token* GetTokenAt(unsigned int pos);
 		Token* GetSelectedToken();
-		void AddChar(const wxChar& ch);
-		void RemoveLastChar();
+		bool AddChar(const wxChar& ch);
+		bool RemoveLastChar();
 	protected:
 		void OnChar(wxKeyEvent& event);
 
-		void PrepareTokens();
+		bool PrepareTokens();
 	private:
 		wxWindow* m_pParent;
 		Parser* m_pParser;
