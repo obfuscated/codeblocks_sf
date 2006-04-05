@@ -1,4 +1,5 @@
 #include "classbrowserbuilderthread.h"
+#include <globals.h>
 
 ClassBrowserBuilderThread::ClassBrowserBuilderThread(Parser* parser,
                                                     wxTreeCtrl& tree,
@@ -30,6 +31,11 @@ void ClassBrowserBuilderThread::BuildTree()
 {
     wxCriticalSectionLocker lock(s_MutexProtection);
 
+    wxArrayString treeState;
+    wxTreeItemId root = m_Tree.GetRootItem();
+    if (root.IsOk())
+        ::SaveTreeState(&m_Tree, root, treeState);
+
 	m_Tree.Freeze();
     m_Tree.DeleteAllItems();
     TokenFilesSet currset;
@@ -48,7 +54,7 @@ void ClassBrowserBuilderThread::BuildTree()
         }
     }
 
-	wxTreeItemId root = m_Tree.AddRoot(_("Symbols"), PARSER_IMG_SYMBOLS_FOLDER);
+	root = m_Tree.AddRoot(_("Symbols"), PARSER_IMG_SYMBOLS_FOLDER);
 	if (m_Options.viewFlat)
 	{
         TokenIdxSet::iterator it,it_end;
@@ -71,7 +77,12 @@ void ClassBrowserBuilderThread::BuildTree()
         BuildTreeNamespace(root, 0,currset);
 	}
 
-	m_Tree.Expand(root);
+    if (root.IsOk())
+    {
+        ::RestoreTreeState(&m_Tree, root, treeState);
+        if (!m_Tree.IsExpanded(root))
+            m_Tree.Expand(root);
+    }
 	m_Tree.Thaw();
 	// wxString memdump = m_pTokens->m_Tree.Serialize();
 	// Manager::Get()->GetMessageManager()->DebugLog(memdump);

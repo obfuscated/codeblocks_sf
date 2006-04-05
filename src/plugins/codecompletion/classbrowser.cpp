@@ -155,21 +155,8 @@ void ClassBrowser::UnlinkParser()
 
 void ClassBrowser::Update()
 {
-	if (m_pParser)
-	{
-		wxArrayString treeState;
-		wxTreeItemId root = m_Tree->GetRootItem();
-		if (root.IsOk())
-            ::SaveTreeState(m_Tree, root, treeState);
+	if (m_pParser && !Manager::isappShuttingDown())
 		m_pParser->BuildTree(*m_Tree);
-		root = m_Tree->GetRootItem();
-		if (root.IsOk())
-		{
-            ::RestoreTreeState(m_Tree, root, treeState);
-            if (!m_Tree->IsExpanded(root))
-                m_Tree->Expand(root);
-		}
-	}
 	else
 		m_Tree->DeleteAllItems();
 }

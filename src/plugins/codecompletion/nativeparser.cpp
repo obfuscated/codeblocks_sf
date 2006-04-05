@@ -130,7 +130,7 @@ void NativeParser::RemoveClassBrowser(bool appShutDown)
 
 void NativeParser::UpdateClassBrowser()
 {
-    if (m_Parser.Done())
+    if (m_Parser.Done() && !Manager::isappShuttingDown())
     {
         Manager::Get()->GetMessageManager()->DebugLog(_T("Updating class browser..."));
         if (m_pClassBrowser)
@@ -156,11 +156,7 @@ void NativeParser::RereadParserOptions()
         RemoveClassBrowser();
         CreateClassBrowser();
         // force re-update
-        if (m_pClassBrowser)
-        {
-            m_pClassBrowser->SetParser(&m_Parser);
-            m_pClassBrowser->Update();
-        }
+        UpdateClassBrowser();
     }
 
     // reparse if settings changed
@@ -202,14 +198,16 @@ void NativeParser::SetClassBrowserProject(cbProject* project)
 void NativeParser::SetCBViewMode(const BrowserViewMode& mode)
 {
     m_Parser.ClassBrowserOptions().showInheritance = mode == bvmInheritance;
-	if (m_pClassBrowser)
-		m_pClassBrowser->Update();
+	UpdateClassBrowser();
 }
 
 void NativeParser::ClearParsers()
 {
 	if (m_pClassBrowser)
+	{
 		m_pClassBrowser->SetParser(0L);
+		m_pClassBrowser->Update();
+	}
 //    ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
 //    for (size_t i = 0; i < projects->GetCount(); ++i)
 //    {
