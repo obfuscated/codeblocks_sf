@@ -25,6 +25,7 @@ class wxsSlider: public wxsWidget
         virtual void BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
 
     protected:
+
         /** \brief Function building preview */
         virtual wxObject* DoBuildPreview(wxWindow* Parent,bool Exact);
 
@@ -33,18 +34,20 @@ class wxsSlider: public wxsWidget
          */
         virtual void EnumWidgetProperties(long Flags);
 
+        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) {}
+
     private:
 
-    int Value;
-    int Min;
-    int Max;
-    int TickFrequency;
-    int PageSize;
-    int LineSize;
-    int ThumbLength;
-    int Tick;
-    int SelMin;
-    int SelMax;
+        int Value;
+        int Min;
+        int Max;
+        int TickFrequency;
+        int PageSize;
+        int LineSize;
+        int ThumbLength;
+        int Tick;
+        int SelMin;
+        int SelMax;
 };
 
 #endif

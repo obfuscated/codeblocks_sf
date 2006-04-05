@@ -4,7 +4,7 @@
 
 #include <wx/msgdlg.h>
 
-wxsResource::wxsResource(wxsProject* _Project): Editor(NULL), Project(_Project)
+wxsResource::wxsResource(wxsProject* _Project): Editor(NULL), Project(_Project), Language(wxsCPP)
 {
 }
 

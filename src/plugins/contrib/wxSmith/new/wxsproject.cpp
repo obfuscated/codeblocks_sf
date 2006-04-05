@@ -440,7 +440,10 @@ void wxsProject::RebuildAppCode()
         size_t Count = Resources.Count();
         for ( size_t i=0; i<Count; i++ )
         {
-            if ( CheckMainRes && (Config.MainResource==Resources[i]->GetResourceName()) )
+            // TODO: Support for other languages
+            if ( CheckMainRes &&
+                 (Config.MainResource==Resources[i]->GetResourceName()) &&
+                 Resources[i]->GetLanguage()==wxsCPP )
             {
                 MainResPtr = Resources[i];
             }
@@ -493,7 +496,7 @@ void wxsProject::RebuildAppCode()
     if ( MainResPtr )
     {
         // FIXME (SpOoN##): Use path relative to main file, not to cbp file
-        NewCode << _T("#include \"") << MainResPtr->GetHeaderFile() << _T("\"\n");
+        NewCode << _T("#include \"") << MainResPtr->GetDeclarationFile() << _T("\"\n");
     }
     if ( IsAnyXRC || Config.LoadedResources.Count() )
     {

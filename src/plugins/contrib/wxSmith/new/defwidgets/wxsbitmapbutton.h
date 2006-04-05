@@ -34,6 +34,8 @@ class wxsBitmapButton: public wxsWidget
          */
         virtual void EnumWidgetProperties(long Flags);
 
+        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) {}
+
     private:
         bool IsDefault;
         wxsBitmapData BitmapLabel;

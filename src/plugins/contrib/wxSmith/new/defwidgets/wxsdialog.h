@@ -26,6 +26,8 @@ class wxsDialog : public wxsContainer
         /** \brief Function enumerating properties specific for this item  */
         virtual void EnumContainerProperties(long Flags);
 
+        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) {}
+
     private:
 
         wxString Title;

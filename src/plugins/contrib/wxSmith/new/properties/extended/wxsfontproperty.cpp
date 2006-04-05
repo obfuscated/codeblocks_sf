@@ -124,8 +124,8 @@ wxString wxsFontData::BuildFontCode(const wxString& FontName,wxsCodingLang Langu
                 Code << _T("wxFontEncoding ") << FontName
                      << _T(" = wxFontMapper::Get()->CharsetToEncoding(")
                      << wxsGetWxString(Encoding) << _T(",false);\n");
-                Code << _T("if ( ") << EncodingVar << _T(" == wxFONTENCODING_SYSTEM )\n");
-                Code << _T("\t") << EncodingVar << _T(" = wxFONTENCODING_DEFAULT;\n");
+                Code << _T("if ( ") << EncodingVar << _T(" == wxFONTENCODING_SYSTEM ) ");
+                Code << EncodingVar << _T(" = wxFONTENCODING_DEFAULT;\n");
                 EncodingStr = EncodingVar;
             }
 

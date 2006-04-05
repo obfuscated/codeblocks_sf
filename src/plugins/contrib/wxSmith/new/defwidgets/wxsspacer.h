@@ -17,6 +17,7 @@ class wxsSpacer: public wxsItem
         virtual void BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
         virtual void BuildDeclarationCode(wxString& Code,wxsCodingLang Language) {}
         virtual long GetPropertiesFlags();
+        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) {}
 
         wxObject* DoBuildPreview(wxWindow* Parent,bool Exact);
 

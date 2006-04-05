@@ -42,3 +42,9 @@ wxWindow* wxsFrameRes::BuildPreview()
 
     return Frm;
 }
+
+wxString wxsFrameRes::BuildXrcLoadingCode()
+{
+    return _T("wxXmlResource::Get()->LoadFrame(this,parent,") +
+        wxsGetWxString(GetClassName()) + _T(");\n");
+}

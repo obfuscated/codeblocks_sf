@@ -25,9 +25,8 @@ class wxsStaticLine: public wxsWidget
         /** \brief Function building creating code */
         virtual void BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
 
-
-
     protected:
+
         /** \brief Function building preview */
         virtual wxObject* DoBuildPreview(wxWindow* Parent,bool Exact);
 
@@ -36,11 +35,7 @@ class wxsStaticLine: public wxsWidget
          */
         virtual void EnumWidgetProperties(long Flags);
 
-        /** \brief Function to allow widgets specified property update
-         *
-         */
-//        virtual bool MyPropertiesUpdated(bool Validate,bool Correct);
-    private:
+        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) {}
 
 };
 

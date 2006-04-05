@@ -88,17 +88,23 @@ class wxsResource: public wxObject
          */
         virtual void BuildShowingCode(wxString& Code,wxsCodingLang Language) { }
 
-        /** \brief Function returning name of header file for this resource.
+        /** \brief Function returning name of file with declaration for this resource.
          *
+         * This function should return declarating file specific for used coding
+         * language. For example, c++ should return *.h file with declaration
+         * of resource class.
          * This header file should be added into list of includes to allow
-         * using resource
+         * using resource.
          */
-        virtual wxString GetHeaderFile() { return wxEmptyString; }
+        virtual wxString GetDeclarationFile() { return wxEmptyString; }
 
         /** \brief Function checking if given file is used in this resource
          *  \param Name name of file given as absolute path
          */
         virtual bool UsingFile(const wxString& Name) { return false; }
+
+        /** \brief Function getting current coding language */
+        inline wxsCodingLang GetLanguage() { return Language; }
 
     protected:
 
@@ -119,6 +125,9 @@ class wxsResource: public wxObject
          */
         inline void SetTreeItemId(wxTreeItemId NewId) { ItemId = NewId; }
 
+        /** \brief Function setting coding language for given one */
+        inline void SetLanguage(wxsCodingLang NewLanguage) { Language=NewLanguage; }
+
     private:
 
         /** \brief Function called from wxsEditor class when it's closing */
@@ -127,6 +136,7 @@ class wxsResource: public wxObject
         wxsEditor* Editor;      ///< \brief Current editor or NULL if there's no opened yet
         wxsProject* Project;    ///< \brief Resource project
         wxTreeItemId ItemId;    ///< \brief Id of tree item in resource browser
+        wxsCodingLang Language; ///< \brief Coding language used in this resource
 
         friend class wxsEditor;
 

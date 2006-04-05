@@ -54,3 +54,12 @@ void wxsStaticBoxSizer::EnumItemProperties(long Flags)
     static OrientProp Prop(wxsOFFSET(wxsStaticBoxSizer,Orient));
     Property(Prop,0);
 }
+
+void wxsStaticBoxSizer::EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
+{
+    switch ( Language )
+    {
+        case wxsCPP: Decl.Add(_T("<wx/sizer.h>")); return;
+    }
+    wxsLANGMSG(wxsStaticBoxSizer::EnumDeclFiles,Language);
+}

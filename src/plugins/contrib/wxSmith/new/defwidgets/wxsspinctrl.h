@@ -26,6 +26,7 @@ class wxsSpinCtrl: public wxsWidget
 
 
     protected:
+
         /** \brief Function building preview */
         virtual wxObject* DoBuildPreview(wxWindow* Parent,bool Exact);
 
@@ -33,6 +34,8 @@ class wxsSpinCtrl: public wxsWidget
          *         only. Other properties are added automatically.
          */
         virtual void EnumWidgetProperties(long Flags);
+
+        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) {}
 
     private:
 

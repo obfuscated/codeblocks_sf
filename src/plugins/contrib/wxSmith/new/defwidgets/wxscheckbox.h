@@ -34,6 +34,8 @@ class wxsCheckBox: public wxsWidget
          */
         virtual void EnumWidgetProperties(long Flags);
 
+        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) {}
+
     private:
 
         wxString Label;

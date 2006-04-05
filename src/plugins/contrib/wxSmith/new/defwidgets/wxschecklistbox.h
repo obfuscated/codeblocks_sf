@@ -24,8 +24,6 @@ class wxsCheckListBox: public wxsWidget
         /** \brief Function building creating code */
         virtual void BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
 
-
-
     protected:
         /** \brief Function building preview */
         virtual wxObject* DoBuildPreview(wxWindow* Parent,bool Exact);
@@ -35,10 +33,12 @@ class wxsCheckListBox: public wxsWidget
          */
         virtual void EnumWidgetProperties(long Flags);
 
+        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) {}
+
     private:
 
-    wxArrayString ArrayChoices;
-    wxArrayBool ArrayChecks;
+        wxArrayString ArrayChoices;
+        wxArrayBool ArrayChecks;
 };
 
 #endif

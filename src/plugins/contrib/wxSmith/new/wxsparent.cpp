@@ -249,6 +249,7 @@ bool wxsParent::XmlWriteChild(int Index,TiXmlElement* Elem,bool IsXRC,bool IsExt
     if ( !ExtraName.empty() )
     {
         RealElem = Elem->InsertEndChild(TiXmlElement("object"))->ToElement();
+        Elem->SetAttribute("class",cbU2C(ExtraName));
         StoreExtraData(Index,Elem);
     }
 

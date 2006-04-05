@@ -65,12 +65,11 @@ class wxsWindowRes : public wxsResource
         /** \brief Function checking if this resource uses xrc files */
         virtual bool UsingXRC();
 
-        /** \brief Function returning name of header file for this resource.
-         *
-         * This header file should be added into list of includes to allow
-         * using resource
-         */
-        virtual wxString GetHeaderFile() { return HFile; }
+        /** \brief Function returning name of declaration file - same as header file */
+        virtual wxString GetDeclarationFile() { return HFile; }
+
+        /** \brief Function returning name of header file for this resource. */
+        inline wxString GetHeaderFile() { return HFile; }
 
 		/** \brief Getting name of class implementing this dialog */
 		inline const wxString& GetClassName() { return ClassName; }
@@ -201,6 +200,13 @@ class wxsWindowRes : public wxsResource
          */
         virtual wxWindow* BuildPreview() = 0;
 
+        /** \brief Function generating code which will load this resource
+         *         from xrc.
+         *
+         * It is used when generating source code.
+         */
+        virtual wxString BuildXrcLoadingCode() = 0;
+
     private:
 
         WX_DECLARE_STRING_HASH_MAP(wxsItem*,IdToItemMapT);
@@ -223,6 +229,28 @@ class wxsWindowRes : public wxsResource
         /** \brief Function searching for first selected item */
         void FindFirstSelection(wxsItem* Item);
 
+        /** \brief Function generating code with declarations
+         *
+         * \param RootItem root item (it's declaration will be skipped)
+         * \param Code string where declarations of local variables will be added
+         * \param GlobalCode string where declarations of global variables will be added
+         * \return true when there's at least one local declaration, false if there's none
+         *         (no matter what's number of global declarations)
+         */
+        bool BuildDeclarations(wxsItem* RootItem,wxString& Code,wxString& GlobalCode);
+
+        /** \brief Function collecting code connecting event handlers */
+        void AddEventHandlers(wxsItem* RootItem,wxString& Code);
+
+        /** \brief Function building array of identifiers used inside this resource */
+        void BuildIdsArray(wxsItem* RootItem,wxArrayString& Array);
+
+        /** \brief Function building array of declaration files used in this resource */
+        void BuildDeclArrays(wxsItem* RootItem,wxArrayString& DeclHeaders,wxArrayString& DefHeaders);
+
+        /** \brief Fetching pointers to items loaded from xrc file */
+        void FetchXmlBuiltItems(wxsItem* RootItem,wxString& Code);
+
 //
 //        /** \brief Setting default variable names and identifiers for widgets with empty ones */
 //        void UpdateWidgetsVarNameId();
@@ -230,48 +258,6 @@ class wxsWindowRes : public wxsResource
 //		/** \brief Function refreshing tree node associated with this resource */
 //		void RefreshResourceTree();
 //
-//		/** Building resource tree */
-//		void BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd,bool NoWidgets = false);
-//
-//		/** Changing root widget */
-//		bool ChangeRootWidget(wxsWidget* NewRoot,bool DeletePrevious=true);
-//
-//        /** Action when selecting this resource */
-//        virtual void OnSelect();
-//
-//    protected:
-//
-//        /** Creating editor object */
-//        virtual wxsEditor* CreateEditor();
-//
-//        /** Notifying that editor has just closed
-//         *
-//         * In this case, resource is reloaded from wxs file (all changes
-//         * should be now saved when closing editor)
-//         */
-//        virtual void EditorClosed();
-//
-//        /** Function initializing this class - it must be called in constructor
-//         *  of derived class since virtual functinos can be used from top
-//         *  constrructor only */
-//        void Initialize();
-//
-//        /** Function showing preview for this resource */
-//        virtual void ShowResource(wxXmlResource& Res) = 0;
-//
-//        /** Getting string added as constructor code for base widget */
-//        virtual wxString GetConstructor() = 0;
-//
-//        /** Helper function giving name of resource from current window type */
-//        virtual const wxChar* GetWidgetClass(bool UseRes = false) = 0;
-//
-//        /** Function generating code loading this resource from xrc file */
-//        virtual wxString GetXrcLoadingCode() = 0;
-//
-//        /** Pointer to window with current preview */
-//        wxWindow* Preview;
-//
-//	private:
 //
 //        /** Structure used for comparing strings */
 //        struct ltstr {  bool operator()(const wxChar* s1, const wxChar* s2) const { return wxStrcmp(s1, s2) < 0; } };
@@ -279,12 +265,6 @@ class wxsWindowRes : public wxsResource
 //        /** Map string->widget used when validating variable names and identifiers */
 //        typedef std::map<const wxChar*,wxsWidget*,ltstr> StrMap;
 //        typedef StrMap::iterator StrMapI;
-//
-//        /** Creating xml tree for current widget */
-//        TiXmlDocument* GenerateXml();
-//
-//        /** Adding declaration codes for locally stored widgets */
-//        void AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,bool& WasLocal);
 //
 //        /** Function used internally by SetNewWidgetsIdVarName */
 //        void UpdateWidgetsVarNameIdReq(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* Widget);
@@ -297,18 +277,6 @@ class wxsWindowRes : public wxsResource
 //
 //        /** Helper function used inside CkeckBaseProperties function */
 //        bool CheckBasePropertiesReq(wxsWidget* Widget,bool Correct,StrMap& NamesMap,StrMap& IdsMap);
-//
-//        /** Function building array of identifiers */
-//        void BuildIdsArray(wxsWidget* Widget,wxArrayString& Array);
-//
-//        /** Function building array of header files */
-//        void BuildHeadersArray(wxsWidget* Widget,wxArrayString& Array);
-//
-//        /** Fuunction collecting code for event table for given widget */
-//        static void CollectEventTableEnteries(wxString& Code,wxsWidget* Widget);
-//
-//        /** Function generating code fetching controls from xrc structure */
-//        static void GenXrcFetchingCode(wxString& Code,wxsWidget* Widget);
 //
         wxString    ClassName;
         wxString    WxsFile;

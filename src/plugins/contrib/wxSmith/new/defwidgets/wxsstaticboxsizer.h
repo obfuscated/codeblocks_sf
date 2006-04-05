@@ -18,6 +18,7 @@ class wxsStaticBoxSizer: public wxsSizer
         virtual wxSizer* BuildSizerPreview(wxWindow* Parent);
         virtual void BuildSizerCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
         virtual void EnumItemProperties(long Flags);
+        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language);
 
     private:
 

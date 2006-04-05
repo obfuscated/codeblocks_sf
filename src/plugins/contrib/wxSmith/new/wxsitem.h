@@ -151,6 +151,18 @@ class wxsItem: public wxsPropertyContainer
          */
         virtual void BuildDeclarationCode(wxString& Code,wxsCodingLang Language);
 
+        /** \brief Function enumerating required declaration files
+         *
+         * This function is called when generating source code. It must add
+         * required declaration files (f.ex. header files in case of c++) into
+         * given lists.
+         * There are two lists of files - one is list used for class declaration
+         * and one for class definition. The first one must contain header files required
+         * when creating class (f.ex. <wx/button.h>, second one when creating content
+         * of resource (f.ex. <wx/bitmap.h>). If You're unsure of type, use the first one.
+         */
+        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) = 0;
+
         /** \brief Function building preview for this item
          *
          * This function generates preview using DoBuildPreview
@@ -309,27 +321,5 @@ class wxsItem: public wxsPropertyContainer
 
         friend class wxsParent;
 };
-
-
-/** \page deriving_item deriving from item class - Guidelines
- *
- * Deriving from wxsItem class require overriding following members:
- *  - \link wxsItem::GetInfo GetInfo \endlink - the best way is to create some static
- *    item info as class member and return it here.
- *  - \link wxsItem::BuildCreatingCode BuildCreatingCode \endlink - see doc for this function for details
- *  - \link wxsItem::DoBuildPreview DoBuildPreview \endlink - same as above
- *
- * These functions does not need to be overridden but it's better to do it:
- *  - \link wxsItem::GetEventArray GetEventArray \endlink - override this function to return list of used events
- *  - \link wxsItem::EnumItemProperties EnumItemProperties \endlink - use this function to add extra properties.
- *
- * Additional functions which may be overridden to make change some extra behaviour:
- *  - \link wxsItem::BuildDeclarationCode BuildDeclarationCode \endlink - you can change the declaration of item here
- *  - \link wxsItem::GetPropertiesFlags GetPropertiesFlags \endlink - override this to exclude some default properties (identifier or variable name).
- *    But remember to call original function and exclude some bits from it f.ex. \code wxsItem::GetPropertiesFlags() & ~wxsFLId \endcode
- *  - \link wxsItem::AddItemQPP AddItemQPP \endlink - Inside this function you may add your own panels to AdvQPP.
- *  - \link wxsItem::XmlRead XmlRead \endlink - Override this function to add some extra data into xml, but always call original XmlRead inside
- *  - \link wxsItem::XmlWrite XmlWrite \endlink - Override this function to add some extra data into xml, but always call original XmlRead inside
- */
 
 #endif

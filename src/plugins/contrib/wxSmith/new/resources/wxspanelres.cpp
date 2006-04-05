@@ -48,3 +48,9 @@ wxWindow* wxsPanelRes::BuildPreview()
 
     return Dlg;
 }
+
+wxString wxsPanelRes::BuildXrcLoadingCode()
+{
+    return _T("wxXmlResource::Get()->LoadPanel(this,parent,") +
+        wxsGetWxString(GetClassName()) + _T(");\n");
+}

@@ -21,6 +21,9 @@ class wxsPanelRes : public wxsWindowRes
 
         /** \brief Function generating preview for this resouce */
         virtual wxWindow* BuildPreview();
+
+        /** \brief Generating xrc loading code */
+        virtual wxString BuildXrcLoadingCode();
 };
 
 #endif

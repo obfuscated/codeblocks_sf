@@ -24,9 +24,8 @@ class wxsGenericDirCtrl: public wxsWidget
         /** \brief Function building creating code */
         virtual void BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
 
-
-
     protected:
+
          /** \brief Function building preview */
         virtual wxObject* DoBuildPreview(wxWindow* Parent,bool Exact);
 
@@ -34,6 +33,8 @@ class wxsGenericDirCtrl: public wxsWidget
          *         only. Other properties are added automatically.
          */
         virtual void EnumWidgetProperties(long Flags);
+
+        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) {}
 
     private:
         wxString DefaultFolder;

@@ -42,3 +42,9 @@ wxWindow* wxsDialogRes::BuildPreview()
 
     return Dlg;
 }
+
+wxString wxsDialogRes::BuildXrcLoadingCode()
+{
+    return _T("wxXmlResource::Get()->LoadDialog(this,parent,") +
+        wxsGetWxString(GetClassName()) + _T(");\n");
+}

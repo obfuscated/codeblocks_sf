@@ -46,3 +46,12 @@ void wxsGridSizer::EnumItemProperties(long Flags)
     WXS_DIMENSION(wxsGridSizer,VGap,VGapDU,0,_("V-Gap"),_("V-Gap in dialog units"),_T("vgap"),0,false);
     WXS_DIMENSION(wxsGridSizer,HGap,HGapDU,0,_("H-Gap"),_("H,y-Gap in dialog units"),_T("hgap"),0,false);
 }
+
+void wxsGridSizer::EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
+{
+    switch ( Language )
+    {
+        case wxsCPP: Decl.Add(_T("<wx/sizer.h>")); return;
+    }
+    wxsLANGMSG(wxsGridSizer::EnumDeclFiles,Language);
+}

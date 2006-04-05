@@ -8,6 +8,8 @@
 #include "../wxsitemfactory.h"
 #include "../wxsextresmanager.h"
 #include "../wxseditor.h"
+#include "../wxscoder.h"
+#include "../wxspredefinedids.h"
 #include "../editors/wxswindoweditor.h"
 #include <manager.h>
 #include <editormanager.h>
@@ -625,160 +627,266 @@ void wxsWindowRes::NotifyChange()
 
 void wxsWindowRes::RebuildCode()
 {
-    // TODO: Code it
-//    if ( !GetProject() ) return;
-//
-////------------------------------
-//// Generating initializing code
-////------------------------------
-//
-//	wxString CodeHeader = wxString::Format(wxsBHeaderF("Initialize"),GetClassName().c_str());
-//	wxString Code = CodeHeader + _T("\n");
-//
-//	// Creating local and global declarations
-//	wxString GlobalCode;
-//	bool WasDeclaration = false;
-//	AddDeclarationsReq(RootWidget,Code,GlobalCode,WasDeclaration);
-//	if ( WasDeclaration )
-//	{
-//		Code.Append(_T('\n'));
-//	}
-//
-//	// Creating window-generating code
-//
-//    if ( GetEditMode() == wxsREMSource )
-//    {
-//        // Generating producing code
-//        wxsCodeGen Gen(RootWidget,false);
-//        Code.Append(Gen.GetCode());
-//    }
-//    else if ( GetEditMode() == wxsREMMixed )
-//    {
-//    	// Writing new Xrc file
-//        TiXmlDocument* Doc = GenerateXrc();
-//        if ( Doc )
-//        {
-//            Doc->SaveFile(_C(GetProject()->GetProjectFileName(XrcFile)));
-//            delete Doc;
-//        }
-//
-//        // No local variables - clearing the code
-//        Code = CodeHeader;
-//        Code.Append(_T('\n'));
-//        Code.Append(GetXrcLoadingCode());
-//        Code.Append(_T('\n'));
-//
-//    	// Loading all controls
-//    	GenXrcFetchingCode(Code,RootWidget);
-//    }
-//
-//	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(SrcFile),CodeHeader,Code);
-//
-////---------------------------------
-//// Generating variable declarations
-////---------------------------------
-//
-//	CodeHeader.Printf(wxsBHeaderF("Declarations"),GetClassName().c_str());
-//	Code = CodeHeader + _T("\n") + GlobalCode;
-//	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
-//
-////---------------------------------
-//// Generating Identifiers
-////---------------------------------
-//
-//    CodeHeader.Printf(wxsBHeaderF("Identifiers"),GetClassName().c_str());
-//    Code = CodeHeader;
-//    Code.Append(_T('\n'));
-//    if ( GetEditMode() == wxsREMSource )
-//    {
-//        wxArrayString IdsArray;
-//        BuildIdsArray(RootWidget,IdsArray);
-//        if ( IdsArray.Count() )
-//        {
-//            Code.Append(_T("enum Identifiers\n{"));
-//            IdsArray.Sort();
-//            wxString Previous = _T("");
-//            bool First = true;
-//            for ( size_t i = 0; i<IdsArray.Count(); ++i )
-//            {
-//                if ( IdsArray[i] != Previous )
-//                {
-//                    Previous = IdsArray[i];
-//                    Code.Append( _T("\n\t") );
-//                    Code.Append( Previous );
-//                    if ( First )
-//                    {
-//                        Code.Append( _T(" = 0x1000") );
-//                        First = false;
-//                    }
-//                    if ( i < IdsArray.Count() - 1 )
-//                    {
-//                        Code.Append( _T(',') );
-//                    }
-//                }
-//            }
-//            Code.Append( _T("\n};\n") );
-//        }
-//    }
-//    wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
-//
-////---------------------------------
-//// Generating Includes
-////---------------------------------
-//
-//	wxArrayString HeadersArray;
-//	BuildHeadersArray(RootWidget,HeadersArray);
-//	HeadersArray.Add(_T("<wx/intl.h>"));
-//	if ( GetEditMode() == wxsREMMixed )
-//	{
-//		HeadersArray.Add(_T("<wx/xrc/xmlres.h>"));
-//	}
-//	HeadersArray.Sort();
-//	CodeHeader.Printf(wxsBHeaderF("Headers"),GetClassName().c_str());
-//	Code = CodeHeader;
-//	wxString Previous = _T("");
-//	for ( size_t i = 0; i<HeadersArray.Count(); i++ )
-//	{
-//		if ( HeadersArray[i] != Previous )
-//        {
-//        	Previous = HeadersArray[i];
-//            Code.Append(_T("\n#include "));
-//            Code.Append(Previous);
-//        }
-//	}
-//	Code.Append(_T('\n'));
-//	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
-//	UpdateEventTable();
+    if ( !GetProject() ) return;
+
+    switch ( GetLanguage() )
+    {
+        case wxsCPP:
+        {
+
+        //------------------------------------------------------
+        // Generating initializing code and global declarations
+        //------------------------------------------------------
+
+            wxString CodeHeader = wxString::Format(wxsBHeaderF("Initialize"),GetClassName().c_str());
+            wxString Code = _T("\n");
+            wxString GlobalVarsCode = _T("\n");
+
+            // Creating local and global declarations
+            if ( BuildDeclarations(RootItem,Code,GlobalVarsCode) )
+            {
+                Code.Append(_T('\n'));
+            }
+
+            // Creating window-generating code
+            if ( GetBasePropsFilter() == wxsFLSource )
+            {
+                // Adding code building the structure
+                RootItem->BuildCreatingCode(Code,_T("parent"),wxsCPP);
+            }
+            else if ( GetBasePropsFilter() == wxsFLMixed )
+            {
+                // Removing all local declarations
+                Code = _T("\n");
+                Code << BuildXrcLoadingCode();
+
+                // Fetching items from built resource
+                FetchXmlBuiltItems(RootItem,Code);
+            }
+
+            // Adding code for event handlers
+            AddEventHandlers(RootItem,Code);
+
+            wxsADDCODE(
+                GetProject()->GetProjectFileName(SrcFile),
+                CodeHeader,
+                wxsBEnd(),
+                Code);
+
+            CodeHeader.Printf(wxsBHeaderF("Declarations"),GetClassName().c_str());
+            wxsADDCODE(
+                GetProject()->GetProjectFileName(HFile),
+                CodeHeader,
+                wxsBEnd(),
+                GlobalVarsCode);
+
+        //---------------------------------
+        // Generating Identifiers
+        //---------------------------------
+
+            CodeHeader.Printf(wxsBHeaderF("Identifiers"),GetClassName().c_str());
+            Code = _T('\n');
+            if ( GetBasePropsFilter() == wxsFLSource )
+            {
+                wxArrayString IdsArray;
+                BuildIdsArray(RootItem,IdsArray);
+                if ( IdsArray.Count() )
+                {
+                    Code.Append(_T("enum Identifiers\n{"));
+                    IdsArray.Sort();
+                    wxString Previous = _T("");
+                    bool First = true;
+                    for ( size_t i = 0; i<IdsArray.Count(); ++i )
+                    {
+                        if ( IdsArray[i] != Previous )
+                        {
+                            Previous = IdsArray[i];
+                            Code.Append( _T("\n\t") );
+                            Code.Append( Previous );
+                            if ( First )
+                            {
+                                Code.Append( _T(" = 0x1000") );
+                                First = false;
+                            }
+                            if ( i < IdsArray.Count() - 1 )
+                            {
+                                Code.Append( _T(',') );
+                            }
+                        }
+                    }
+                    Code.Append( _T("\n};\n") );
+                }
+            }
+
+            wxsADDCODE(
+                GetProject()->GetProjectFileName(HFile),
+                CodeHeader,
+                wxsBEnd(),
+                Code);
+
+        //---------------------------------
+        // Generating Includes
+        //---------------------------------
+
+            wxArrayString DeclHeaders;
+            wxArrayString DefHeaders;
+            BuildDeclArrays(RootItem,DeclHeaders,DefHeaders);
+            DefHeaders.Add(_T("<wx/intl.h>"));
+            if ( GetBasePropsFilter() == wxsFLMixed )
+            {
+                DefHeaders.Add(_T("<wx/xrc/xmlres.h>"));
+            }
+
+            // TODO: Split these and put into files separately
+            for ( size_t i = DefHeaders.Count(); i-->0; )
+            {
+                DeclHeaders.Add(DefHeaders[i]);
+            }
+
+            DeclHeaders.Sort();
+            CodeHeader.Printf(wxsBHeaderF("Headers"),GetClassName().c_str());
+            Code = _T("\n");
+            wxString Previous = _T("");
+            for ( size_t i = 0; i<DeclHeaders.Count(); i++ )
+            {
+                if ( DeclHeaders[i] != Previous )
+                {
+                    Previous = DeclHeaders[i];
+                    Code << _T("#include ") << Previous << _T("\n");
+                }
+            }
+
+            wxsADDCODE(
+                GetProject()->GetProjectFileName(HFile),
+                CodeHeader,
+                wxsBEnd(),
+                Code);
+
+
+        //---------------------------------
+        // Clearing outdated event array
+        //---------------------------------
+
+            CodeHeader.Printf(wxsBHeaderF("EventTable"),ClassName.c_str());
+            wxsADDCODE(
+                GetProject()->GetProjectFileName(SrcFile),
+                CodeHeader,
+                wxsBEnd(),
+                _T("\n"));
+
+            return;
+        }
+    }
+
+    wxsLANGMSG(wxsWindowRes::RebuildCode,GetLanguage());
+
 }
 
-//void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,bool& WasLocal)
-//{
-//	if ( !Widget ) return;
-//
-//	static wxsCodeParams Params;
-//
-//	int Count = Widget->GetChildCount();
-//	for ( int i=0; i<Count; i++ )
-//	{
-//		wxsWidget* Child = Widget->GetChild(i);
-//		if ( Child->GetBPType() & bptVariable )
-//        {
-//		    // Only VarName should be used when fetching declaration code
-//            Params.VarName = Child->BaseProperties.VarName;
-//            wxString Decl = Child->GetDeclarationCode(Params);
-//            if ( Decl.Length() )
-//            {
-//                bool Member = Child->BaseProperties.IsMember;
-//                wxString& Code = Member ? GlobalCode : LocalCode;
-//                Code.Append(Decl);
-//                Code.Append('\n');
-//                WasLocal |= !Member;
-//            }
-//		}
-//		AddDeclarationsReq(Child,LocalCode,GlobalCode,WasLocal);
-//	}
-//}
-//
+bool wxsWindowRes::BuildDeclarations(wxsItem* Item,wxString& Code,wxString& GlobalCode)
+{
+    wxsParent* Parent = Item->ToParent();
+    if ( !Parent ) return false;
+    bool Result = false;
+
+	int ChildCnt = Parent->GetChildCount();
+	for ( int i=0; i<ChildCnt; i++ )
+	{
+		wxsItem* Child = Parent->GetChild(i);
+
+		if ( Child->GetPropertiesFlags() & wxsFLVariable )
+        {
+            if ( Child->GetIsMember() )
+            {
+                Child->BuildDeclarationCode(GlobalCode,GetLanguage());
+            }
+            else
+            {
+                Result = true;
+                Child->BuildDeclarationCode(Code,GetLanguage());
+            }
+		}
+
+		if ( BuildDeclarations(Child,Code,GlobalCode) )
+		{
+		    Result = true;
+		}
+	}
+	return Result;
+}
+
+void wxsWindowRes::AddEventHandlers(wxsItem* Item,wxString& Code)
+{
+    wxsEvents& Events = Item->GetEvents();
+    Events.GenerateBindingCode(Code,UsingXRC(),GetLanguage());
+
+    wxsParent* Parent = Item->ToParent();
+    if ( Parent )
+    {
+        int Cnt = Parent->GetChildCount();
+        for ( int i=0; i<Cnt; i++ )
+        {
+            AddEventHandlers(Parent->GetChild(i),Code);
+        }
+    }
+}
+
+void wxsWindowRes::BuildIdsArray(wxsItem* Item,wxArrayString& Array)
+{
+    wxsParent* Parent = Item->ToParent();
+    if ( !Parent ) return;
+
+	int Cnt = Parent->GetChildCount();
+	for ( int i=0; i<Cnt; i++ )
+	{
+		wxsItem* Child = Parent->GetChild(i);
+		if ( Child->GetPropertiesFlags() & wxsFLId )
+		{
+		    const wxString& Name = Child->GetIdName();
+
+		    if ( !wxsPredefinedIDs::Check(Name) )
+		    {
+                Array.Add(Name);
+		    }
+		}
+		BuildIdsArray(Child,Array);
+	}
+}
+
+void wxsWindowRes::BuildDeclArrays(wxsItem* Item,wxArrayString& DeclHeaders,wxArrayString& DefHeaders)
+{
+    Item->EnumDeclFiles(DeclHeaders,DefHeaders,GetLanguage());
+
+    wxsParent* Parent = Item->ToParent();
+    if ( !Parent ) return;
+
+	int Cnt = Parent->GetChildCount();
+	for ( int i=0; i<Cnt; i++ )
+	{
+	    BuildDeclArrays(Parent->GetChild(i),DeclHeaders,DefHeaders);
+	}
+}
+
+void wxsWindowRes::FetchXmlBuiltItems(wxsItem* Item,wxString& Code)
+{
+    wxsParent* Parent = Item->ToParent();
+    if ( !Parent ) return;
+
+	int Cnt = Parent->GetChildCount();
+	for ( int i=0; i<Cnt; i++ )
+	{
+		wxsItem* Child = Parent->GetChild(i);
+		if ( (Child->GetPropertiesFlags() & (wxsFLVariable|wxsFLId)) == (wxsFLVariable|wxsFLId) && Child->GetIsMember() )
+		{
+		    const wxString& VarName = Child->GetVarName();
+		    const wxString& IdName = Child->GetIdName();
+
+            Code << VarName << _T(" = (") << Child->GetInfo().Name <<
+                    _T("*)FindWindow(XRCID(") + IdName + _T("));\n");
+		}
+		FetchXmlBuiltItems(Child,Code);
+	}
+}
+
 //void wxsWindowRes::UpdateWidgetsVarNameId()
 //{
 //    StrMap NamesMap;
@@ -1298,36 +1406,6 @@ void wxsWindowRes::SetModified(bool modified)
 {
     Modified = modified;
 }
-
-//bool wxsWindowRes::ChangeRootWidget(wxsWidget* NewRoot,bool DeletePrevious)
-//{
-//	if ( !NewRoot ) return false;
-//	// New root must be of the same type as current
-//	if ( RootWidget->GetInfo().Name != NewRoot->GetInfo().Name ) return false;
-//    wxsBlockSelectEvents();
-//	RootWidget->KillTree(wxsTREE());
-//	if ( GetEditor() )
-//	{
-//		((wxsWindowEditor*)GetEditor())->KillPreview();
-//	}
-//	if ( DeletePrevious ) wxsFACTORY()->Kill(RootWidget);
-//	RootWidget = NewRoot;
-//    wxTreeCtrl* Tree = wxsTREE();
-//    Tree->SelectItem(GetTreeItemId());
-//    if ( GetEditor() )
-//    {
-//        GetRootWidget()->BuildTree(Tree,GetTreeItemId());
-//        ((wxsWindowEditor*)GetEditor())->BuildPreview();
-//    }
-//    RebuildCode();
-//    wxsBlockSelectEvents(false);
-//	return true;
-//}
-//
-//void wxsWindowRes::OnSelect()
-//{
-//    wxsSelectWidget(GetRootWidget());
-//}
 
 wxString wxsWindowRes::GetType()
 {

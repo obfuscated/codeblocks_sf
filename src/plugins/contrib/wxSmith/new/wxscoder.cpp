@@ -18,7 +18,7 @@ void wxsCoder::AddCode(const wxString& FileName,const wxString& Header,const wxS
 	EditorManager* EM = Manager::Get()->GetEditorManager();
 	assert ( EM != NULL );
     cbEditor* Editor = EM->GetBuiltinEditor(FileName);
-    
+
     if ( Editor )
     {
         ApplyChanges(Editor,Header,End,Code,CodeHasHeader,CodeHasEnd);
@@ -89,7 +89,7 @@ bool wxsCoder::ApplyChanges(cbEditor* Editor,const wxString& Header,const wxStri
     Ctrl->SetTargetEnd(EndPosition);
     Ctrl->ReplaceTarget(Code);
     Editor->SetModified();
-    
+
     // TODO: Update fooldings
 
 	return true;
@@ -122,14 +122,15 @@ bool wxsCoder::ApplyChanges(const wxString& FileName,const wxString& Header,cons
 			FileName.c_str());
 		return false;
     }
-    
+
     // Skipping header if necessary
     int IndentPos = Position;
+    int IndentMax = Position;
     if ( !CodeHasHeader ) Position += Header.Length();
 
     wxString Result = Content.Left(Position);
     Content.Remove(0,Position);
-    
+
     int EndPosition = Content.First(End);
     if ( EndPosition == -1 )
     {
@@ -138,7 +139,7 @@ bool wxsCoder::ApplyChanges(const wxString& FileName,const wxString& Header,cons
             FileName.c_str());
         return false;
     }
-    
+
     // Including ending sequence if necessary
     if ( CodeHasEnd ) EndPosition += End.Length();
 
@@ -148,7 +149,7 @@ bool wxsCoder::ApplyChanges(const wxString& FileName,const wxString& Header,cons
         wxChar ch = Result.GetChar(IndentPos);
         if ( (ch == _T('\n')) || (ch == _T('\r')) ) break;
     }
-    while ( ++IndentPos < (int)Result.Length() )
+    while ( ++IndentPos < IndentMax )
     {
         wxChar ch = Result.GetChar(IndentPos);
         BaseIndentation.Append(
@@ -156,9 +157,9 @@ bool wxsCoder::ApplyChanges(const wxString& FileName,const wxString& Header,cons
     }
 
     RebuildCode(BaseIndentation,Code);
-    
+
     // Checking if code has really changed
-    if ( Content.Mid(0,EndPosition) == Code ) 
+    if ( Content.Mid(0,EndPosition) == Code )
     {
         return true;
     }
@@ -185,12 +186,12 @@ bool wxsCoder::ApplyChanges(const wxString& FileName,const wxString& Header,cons
 wxString wxsCoder::GetCode(const wxString& FileName,const wxString& Header,const wxString& End,bool IncludeHeader,bool IncludeEnd)
 {
     int TabSize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
-    
+
     // Checking if editor is opened
 	EditorManager* EM = Manager::Get()->GetEditorManager();
 	assert ( EM != NULL );
     cbEditor* Editor = EM->GetBuiltinEditor(FileName);
-    
+
     if ( Editor )
     {
         cbStyledTextCtrl* Ctrl = Editor->GetControl();
@@ -199,7 +200,7 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& Header,const
         Ctrl->SetTargetEnd(Ctrl->GetLength());
         int Position = Ctrl->SearchInTarget(Header);
         if ( Position == -1 ) return _T("");
-        
+
         // Counting number of indentation spaces which will be removed at
         // the beginning of each line
         int SpacesCut = 0;
@@ -216,7 +217,7 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& Header,const
         Ctrl->SetTargetEnd(Ctrl->GetLength());
         int EndPosition = Ctrl->SearchInTarget(End);
         if ( EndPosition == -1 ) return _T("");
-        
+
         // Fixing up positions to include / exclude header and/or ending sequence
         if ( !IncludeHeader ) Position += Header.Length();
         if ( IncludeEnd ) EndPosition += End.Length();

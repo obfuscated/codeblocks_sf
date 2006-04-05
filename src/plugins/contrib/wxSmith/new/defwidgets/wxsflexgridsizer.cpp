@@ -43,7 +43,7 @@ void wxsFlexGridSizer::BuildSizerCreatingCode(wxString& Code,const wxString& Win
     {
         case wxsCPP:
             Code << GetVarName() << _T(" = new wxFlexGridSizer(")
-                 << wxString::Format(_T("%d,%d,)"),Cols,Rows) << _T(",")
+                 << wxString::Format(_T("%d,%d,"),Cols,Rows) <<
                  << wxsDimensionProperty::GetPixelsCode(VGap,VGapDU,WindowParent,wxsCPP) << _T(",")
                  << wxsDimensionProperty::GetPixelsCode(HGap,HGapDU,WindowParent,wxsCPP) << _T(");\n");
 
@@ -116,4 +116,13 @@ bool wxsFlexGridSizer::FixupList(wxString& List)
 		}
 	}
 	return Ret;
+}
+
+void wxsFlexGridSizer::EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
+{
+    switch ( Language )
+    {
+        case wxsCPP: Decl.Add(_T("<wx/sizer.h>")); return;
+    }
+    wxsLANGMSG(wxsFlexGridSizer::EnumDeclFiles,Language);
 }

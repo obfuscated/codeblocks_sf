@@ -126,3 +126,17 @@ void wxsButton::EnumWidgetProperties(long Flags)
     WXS_STRING(wxsButton,Label,0,_("Label"),_T("label"),_T(""),true,false)
     WXS_BOOL  (wxsButton,IsDefault,0,_("Is default"),_("default"),false)
 }
+
+/* ************************************************************************** */
+/* Function enumerating all required declaration files (header files in case  */
+/* of c++)                                                                    */
+/* ************************************************************************** */
+void wxsButton::EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
+{
+    switch ( Language )
+    {
+        case wxsCPP: Decl.Add(_T("<wx/button.h>")); return;
+    }
+
+    wxsLANGMSG(wxsButton::EnumDeclFiles,Language);
+}
