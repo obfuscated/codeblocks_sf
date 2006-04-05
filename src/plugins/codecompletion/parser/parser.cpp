@@ -73,7 +73,8 @@ Parser::Parser(wxEvtHandler* parent)
     m_StopWatchRunning(false),
     m_LastStopWatchTime(0),
     m_IgnoreThreadEvents(false),
-    m_ShuttingDown(false)
+    m_ShuttingDown(false),
+    m_pClassBrowserBuilderThread(0)
 {
     m_pTokens = new TokensTree;
     m_pTempTokens = new TokensTree;
@@ -786,7 +787,7 @@ void Parser::OnParseFile(const wxString& filename,int flags)
 
 void Parser::BuildTree(wxTreeCtrl& tree)
 {
-	if (!Done())
+	if (!Done() || m_pClassBrowserBuilderThread)
 		return;
 
     wxString fname(_T(""));
@@ -796,22 +797,15 @@ void Parser::BuildTree(wxTreeCtrl& tree)
 
 	tree.SetImageList(m_pImageList);
 
-    ClassBrowserBuilderThread* builder = new ClassBrowserBuilderThread(this, tree, fname, m_BrowserOptions, m_pTokens);
-    builder->Create();
-    builder->Run();
+    m_pClassBrowserBuilderThread = new ClassBrowserBuilderThread(this, tree, fname, m_BrowserOptions, m_pTokens, &m_pClassBrowserBuilderThread);
+    m_pClassBrowserBuilderThread->Create();
+    m_pClassBrowserBuilderThread->Run();
 }
 
 void Parser::AbortBuildingTree()
 {
-//    if(m_TreeBuildingStatus == 2)
-//    {
-//        if(m_pClassBrowser && m_pClassBrowser->GetParserPtr() == this && m_pClassBrowser->GetTree())
-//        {
-//            m_pClassBrowser->GetTree()->DeleteAllItems();
-//            m_pClassBrowser->GetTree()->Thaw();
-//        }
-//    }
-//    m_TreeBuildingStatus = 0;
+    if (m_pClassBrowserBuilderThread)
+        m_pClassBrowserBuilderThread->Delete();
 }
 
 void Parser::StartStopWatch()

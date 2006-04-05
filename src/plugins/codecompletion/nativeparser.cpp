@@ -105,19 +105,14 @@ void NativeParser::RemoveClassBrowser(bool appShutDown)
 {
     if (m_pClassBrowser)
     {
-        if (!appShutDown && !m_ClassBrowserIsFloating)
+        if (!m_ClassBrowserIsFloating)
         {
             int idx = Manager::Get()->GetProjectManager()->GetNotebook()->GetPageIndex(m_pClassBrowser);
             if (idx != -1)
                 Manager::Get()->GetProjectManager()->GetNotebook()->RemovePage(idx);
             m_pClassBrowser->Destroy();
         }
-        else if (
-        #ifdef __WXMSW__
-            // in windows, we must not remove the dock when shutting down (timing issue?)
-            !appShutDown &&
-        #endif
-            m_ClassBrowserIsFloating)
+        else if (m_ClassBrowserIsFloating)
         {
             CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
             evt.pWindow = m_pClassBrowser;

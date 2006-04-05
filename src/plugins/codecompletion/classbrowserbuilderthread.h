@@ -14,7 +14,8 @@ class ClassBrowserBuilderThread : public wxThread
                                 wxTreeCtrl& tree,
                                 const wxString& active_filename,
                                 BrowserOptions options,
-                                TokensTree* pTokens);
+                                TokensTree* pTokens,
+                                ClassBrowserBuilderThread** threadVar);
         virtual ~ClassBrowserBuilderThread();
     protected:
         virtual void* Entry();
@@ -28,6 +29,7 @@ class ClassBrowserBuilderThread : public wxThread
         wxString m_ActiveFilename;
         BrowserOptions m_Options;
         TokensTree* m_pTokens;
+        ClassBrowserBuilderThread** m_ppThreadVar;
     private:
 };
 

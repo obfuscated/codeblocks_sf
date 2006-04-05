@@ -1,3 +1,4 @@
+#include <sdk.h>
 #include "classbrowserbuilderthread.h"
 #include <globals.h>
 
@@ -5,13 +6,15 @@ ClassBrowserBuilderThread::ClassBrowserBuilderThread(Parser* parser,
                                                     wxTreeCtrl& tree,
                                                     const wxString& active_filename,
                                                     BrowserOptions options,
-                                                    TokensTree* pTokens)
+                                                    TokensTree* pTokens,
+                                                    ClassBrowserBuilderThread** threadVar)
     : wxThread(wxTHREAD_DETACHED),
     m_pParser(parser),
     m_Tree(tree),
     m_ActiveFilename(active_filename),
     m_Options(options),
-    m_pTokens(pTokens)
+    m_pTokens(pTokens),
+    m_ppThreadVar(threadVar)
 {
     //ctor
 }
@@ -24,12 +27,17 @@ ClassBrowserBuilderThread::~ClassBrowserBuilderThread()
 void* ClassBrowserBuilderThread::Entry()
 {
     BuildTree();
+    if (m_ppThreadVar)
+        *m_ppThreadVar = 0;
     return 0;
 }
 
 void ClassBrowserBuilderThread::BuildTree()
 {
     wxCriticalSectionLocker lock(s_MutexProtection);
+
+    if (TestDestroy())
+        return;
 
     wxArrayString treeState;
     wxTreeItemId root = m_Tree.GetRootItem();
@@ -42,6 +50,12 @@ void ClassBrowserBuilderThread::BuildTree()
     currset.clear();
     Token* token = 0;
 
+    if (TestDestroy())
+    {
+        m_Tree.Thaw();
+        return;
+    }
+
     // "mark" tokens based on scope
     bool fnameEmpty = m_ActiveFilename.IsEmpty();
     m_ActiveFilename.Append(_T('.'));
@@ -52,6 +66,12 @@ void ClassBrowserBuilderThread::BuildTree()
             if(m_pTokens->m_FilenamesMap.GetString(i).StartsWith(m_ActiveFilename))
                 currset.insert(i);
         }
+    }
+
+    if (TestDestroy())
+    {
+        m_Tree.Thaw();
+        return;
     }
 
 	root = m_Tree.AddRoot(_("Symbols"), PARSER_IMG_SYMBOLS_FOLDER);
@@ -67,6 +87,12 @@ void ClassBrowserBuilderThread::BuildTree()
             if(!token || !token->m_IsLocal || token->m_ParentIndex!=-1 || !token->MatchesFiles(currset))
                 continue;
             AddTreeNode(root, token);
+
+            if (TestDestroy())
+            {
+                m_Tree.Thaw();
+                return;
+            }
         }
 		m_Tree.SortChildren(root);
 	}
@@ -74,7 +100,17 @@ void ClassBrowserBuilderThread::BuildTree()
 	{
         wxTreeItemId globalNS = m_Tree.AppendItem(root, _("Global namespace"), PARSER_IMG_NAMESPACE);
         AddTreeNamespace(globalNS, 0,currset);
+        if (TestDestroy())
+        {
+            m_Tree.Thaw();
+            return;
+        }
         BuildTreeNamespace(root, 0,currset);
+        if (TestDestroy())
+        {
+            m_Tree.Thaw();
+            return;
+        }
 	}
 
     if (root.IsOk())
@@ -116,6 +152,8 @@ void ClassBrowserBuilderThread::BuildTreeNamespace(const wxTreeItemId& parentNod
         wxTreeItemId newNS = m_Tree.AppendItem(parentNode, token->m_Name, PARSER_IMG_NAMESPACE, -1, ctd);
         BuildTreeNamespace(newNS, token, currset);
         AddTreeNamespace(newNS, token, currset);
+        if (TestDestroy())
+            return;
 	}
     m_Tree.SortChildren(parentNode);
 }
@@ -146,6 +184,9 @@ void ClassBrowserBuilderThread::AddTreeNamespace(const wxTreeItemId& parentNode,
 
 	for(;it != it_end; it++)
 	{
+        if (TestDestroy())
+            return;
+
 	    Token* token = m_pTokens->at(*it);
 	    if(!token || /* !token->m_Bool || */ !token->m_IsLocal)
             continue;
@@ -196,10 +237,16 @@ void ClassBrowserBuilderThread::AddTreeNamespace(const wxTreeItemId& parentNode,
 	}
     if(has_classes)
         m_Tree.SortChildren(node_classes);
+    if (TestDestroy())
+        return;
     if(has_enums)
         m_Tree.SortChildren(node_enums);
+    if (TestDestroy())
+        return;
     if(has_preprocessor)
         m_Tree.SortChildren(node_preprocessor);
+    if (TestDestroy())
+        return;
     if(has_others)
         m_Tree.SortChildren(node_others);
 }

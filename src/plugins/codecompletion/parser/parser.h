@@ -70,6 +70,7 @@ struct BrowserOptions
 };
 
 class ClassBrowser;
+class ClassBrowserBuilderThread;
 
 class Parser : public wxEvtHandler
 {
@@ -172,6 +173,8 @@ class Parser : public wxEvtHandler
         long m_LastStopWatchTime;
         bool m_IgnoreThreadEvents;
         bool m_ShuttingDown;
+
+        ClassBrowserBuilderThread* m_pClassBrowserBuilderThread;
 
 #endif // STANDALONE
 
