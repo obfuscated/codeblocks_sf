@@ -22,12 +22,16 @@ void cbSplashScreen::DoPaint(wxDC &dc)
 
 void cbSplashScreen::OnPaint(wxPaintEvent &)
 {
+    // an obscure statement in the wxWidgets book says to
+    // allocate the DC even if you don't paint to avoid
+    // a paint loop.    //pecan 2006/04/3
+  wxPaintDC paint_dc(this); //pecan 2006/04/3
   if (m_painted)
   {
     return;
   }
 
-  wxPaintDC paint_dc(this);
+  //-wxPaintDC paint_dc(this);
   DoPaint(paint_dc);
   m_painted = true; // paint once
 }

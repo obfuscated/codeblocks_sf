@@ -65,7 +65,7 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
         numButtons = 1;
         growableCol = -1;
         id1 = (style == OK ? wxID_OK : 1);
-        bTxt1 = b1.IsEmpty() ? wxString(_("OK")) : b1;
+        bTxt1 = b1.IsEmpty() ? wxString(_("&OK")) : b1;
     }
     else if(style == YES_NO || style == OK_CANCEL || style == TWO_BUTTONS)
     {
@@ -73,8 +73,8 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
         growableCol = -1;
         id1 = (style == YES_NO ? wxID_YES : (style == OK_CANCEL ? wxID_OK     : 1));
         id2 = (style == YES_NO ? wxID_NO  : (style == OK_CANCEL ? wxID_CANCEL : 2));
-        bTxt1 = b1.IsEmpty() ? (style == YES_NO ? wxString(_("Yes")) : wxString(_("OK")))     : b1;
-        bTxt2 = b2.IsEmpty() ? (style == YES_NO ? wxString(_("No"))  : wxString(_("Cancel"))) : b2;
+        bTxt1 = b1.IsEmpty() ? (style == YES_NO ? wxString(_("&Yes")) : wxString(_("&OK")))     : b1;
+        bTxt2 = b2.IsEmpty() ? (style == YES_NO ? wxString(_("&No"))  : wxString(_("&Cancel"))) : b2;
     }
     else if(style == YES_NO_CANCEL || style == THREE_BUTTONS)
     {
@@ -83,9 +83,9 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
         id1 = (style == YES_NO_CANCEL ? wxID_YES    : 1);
         id2 = (style == YES_NO_CANCEL ? wxID_NO     : 2);
         id3 = (style == YES_NO_CANCEL ? wxID_CANCEL : 3);
-        bTxt1 = b1.IsEmpty() ? wxString(_("Yes")) : b1;
-        bTxt2 = b2.IsEmpty() ? wxString(_("No")) : b2;
-        bTxt3 = b3.IsEmpty() ? wxString(_("Cancel")) : b3;
+        bTxt1 = b1.IsEmpty() ? wxString(_("&Yes")) : b1;
+        bTxt2 = b2.IsEmpty() ? wxString(_("&No")) : b2;
+        bTxt3 = b3.IsEmpty() ? wxString(_("&Cancel")) : b3;
     }
     else
         cbThrow(wxString(_T("Fatal error:\nUndefined style in dialog ")) << caption);

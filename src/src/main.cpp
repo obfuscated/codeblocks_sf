@@ -1205,8 +1205,14 @@ void MainFrame::DoCreateStatusBar()
     width[0] = -1;
     dc.GetTextExtent(_(" WINDOWS-1252 "), &width[1], &h);
     dc.GetTextExtent(_(" Line 12345, Column 123 "), &width[2], &h);
+    // GTK needs an addition space more than MSW    //pecan 2006/03/31
+  #ifdef __WXGTK__
+    dc.GetTextExtent(_(" Overwrite "),  &width[3], &h);
+    dc.GetTextExtent(_(" Modified "),   &width[4], &h);
+  #else
     dc.GetTextExtent(_(" Overwrite"),  &width[3], &h);
     dc.GetTextExtent(_(" Modified"),   &width[4], &h);
+  #endif
     dc.GetTextExtent(_(" Read/Write....."), &width[5], &h);
 
     SetStatusWidths(num, width);
