@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <legalnotice>
-    <title>Disclaimer</title>
+    <para>All rights reserved.</para>
+
+    <para>Redistribution and use in any form, with or without modification,
+        are permitted provided that the following conditions are met:</para>
+
+    <itemizedlist>
+        <listitem>
+            <para>Redistributions must retain the above copyright notice, this
+                list of conditions and the following disclaimer.</para>
+        </listitem>
+
+        <listitem>
+            <para>Neither the name of the &project-name; Documentation Project nor the
+                names of its contributors may be used to endorse or promote products
+                derived from this documentation without specific prior written
+                permission.</para>
+        </listitem>
+    </itemizedlist>
+    
     <para>Every effort has been made to ensure that the information compiled in this publication is
         accurate and correct. However, this does not guarantee complete accuracy. Neither
         the authors, nor translators shall be held liable for possible errors or

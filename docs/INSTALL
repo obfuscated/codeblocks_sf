@@ -2,7 +2,7 @@ Code::Blocks Documentation Conversion Tools Installation Instructions
 
 After downloading the sources of the documentation, there are some things that
 need to be set up on your computer if you want to convert the XML source into
-something easier to read (eg. HTML or TXT). If you are interested in this, then keep 
+something easier to read (eg. HTML). If you are interested in this, then keep 
 reading. You only need this when you want to recreate the docs youreself.
 
 
@@ -16,11 +16,10 @@ If you want to convert the XML to HTML, install the following:
   - docbook-xml
 * DocBook XSL Stylesheets
   - docbook-xsl
-* HTMLTidy
-  - tidy
+  
+To create the documentation, you can simply run make in the directory of the
+documentation you want. For example, when you want to create the documentation guide
+type the following:
 
-If you want to convert the XML to TXT, install the above items, and then install
-the following:
-
-* lynx
-  - lynx
+	cd docguide
+	make
