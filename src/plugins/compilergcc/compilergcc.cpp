@@ -2191,7 +2191,7 @@ int CompilerGCC::KillProcess()
     m_RunAfterCompile = false;
     if (!IsProcessRunning())
         return 0;
-    wxKillError ret;
+    wxKillError ret = wxKILL_OK;
 
     m_CommandQueue.Clear();
 
