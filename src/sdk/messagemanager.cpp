@@ -185,6 +185,8 @@ MessageManager::~MessageManager()
 
     delete m_pNotebook->GetImageList();
     m_pNotebook->Destroy();
+    for (LogsMap::iterator it = m_Logs.begin(); it != m_Logs.end(); ++it)
+               delete (*it).second;
 }
 
 void MessageManager::CreateMenu(wxMenuBar* menuBar)
@@ -314,6 +316,7 @@ void MessageManager::RemoveLog(MessageLog* log)
     {
         if (it->second->log == log)
         {
+               delete (*it).second;
             m_Logs.erase(it);
             break;
         }

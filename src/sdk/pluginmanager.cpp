@@ -357,6 +357,7 @@ void PluginManager::UnloadAllPlugins()
             m_Plugins[i]->freeProc(plug);
         else
             delete plug; // try to delete it ourselves...
+               delete m_Plugins[i];
     }
 }
 

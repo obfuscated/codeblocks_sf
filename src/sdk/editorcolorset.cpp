@@ -89,6 +89,11 @@ EditorColorSet::~EditorColorSet()
 
 void EditorColorSet::ClearAllOptionColors()
 {
+       for (OptionSetsMap::iterator map_it = m_Sets.begin();
+                                                       map_it != m_Sets.end(); ++map_it)
+        for (OptionColors::iterator vec_it = (*map_it).second.m_Colors.begin();
+                            vec_it != (*map_it).second.m_Colors.end(); ++vec_it)
+                       delete (*vec_it);
     m_Sets.clear();
 }
 
