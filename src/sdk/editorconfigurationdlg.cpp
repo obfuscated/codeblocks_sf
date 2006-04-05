@@ -529,7 +529,15 @@ void EditorConfigurationDlg::ChangeTheme()
 
     if (m_Theme)
         delete m_Theme;
-    m_Theme = new EditorColorSet(key);
+
+    // If the theme is the same one used by EditorManager,
+    // skip the creation of new EditorColorSet class to avoid lengthy loading times.
+    // Instead, use the copy constructor...
+    EditorColorSet* manSet = Manager::Get()->GetEditorManager()->GetColorSet();
+    if (manSet && key == manSet->GetName())
+        m_Theme = new EditorColorSet(*manSet);
+    else
+        m_Theme = new EditorColorSet(key);
 
    	XRCCTRL(*this, "btnKeywords", wxButton)->Enable(m_Theme);
    	XRCCTRL(*this, "btnFilemasks", wxButton)->Enable(m_Theme);
