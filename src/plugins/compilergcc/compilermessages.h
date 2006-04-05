@@ -15,6 +15,8 @@ class CompilerMessages : public SimpleListLog
 	protected:
         void OnClick(wxCommandEvent& event);
         void OnDoubleClick(wxCommandEvent& event);
+        void OnRightClick(wxCommandEvent& event);
+        void OnCopyToClipboard(wxCommandEvent& event);
         CompilerErrors* m_pErrors;
 	private:
         DECLARE_EVENT_TABLE()
