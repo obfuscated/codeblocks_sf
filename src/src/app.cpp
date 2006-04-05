@@ -570,7 +570,7 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
     else
         wxBell();
 
-    if (m_pBatchBuildDialog && m_BatchWindowAutoClose)
+    if (m_pBatchBuildDialog && m_BatchWindowAutoClose && (m_BatchExitCode == 0))
         m_pBatchBuildDialog->EndModal(wxID_OK);
 }
 

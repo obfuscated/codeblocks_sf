@@ -36,7 +36,7 @@ EditorLexerLoader::~EditorLexerLoader()
 
 void EditorLexerLoader::Load(const wxString& filename)
 {
-    LOGSTREAM << _("Loading ") << wxFileName(filename).GetFullName() << _T('\n');
+    DBGLOG(_("Loading ") + wxFileName(filename).GetFullName());
     TiXmlDocument doc(filename.mb_str());
     if (!doc.LoadFile())
     {
