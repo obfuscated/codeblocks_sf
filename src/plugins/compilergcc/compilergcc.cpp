@@ -2914,6 +2914,7 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
     if (!IsProcessRunning())
     {
         CodeBlocksEvent evt(cbEVT_COMPILER_FINISHED, 0, 0, 0, this);
+        evt.SetInt(m_LastExitCode);
         Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
     }
 }

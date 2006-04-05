@@ -83,6 +83,8 @@ class CodeBlocksApp : public wxApp
         bool m_Build;
         bool m_ReBuild;
         int m_BatchExitCode;
+        bool m_BatchWindowAutoClose; // default: true
+		wxDialog* m_pBatchBuildDialog;
         // batch jobs - end
 
         cbSplashScreen* m_pSplash;

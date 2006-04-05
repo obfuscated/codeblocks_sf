@@ -78,6 +78,7 @@ static const wxCmdLineEntryDesc cmdLineDesc[] =
     { wxCMD_LINE_SWITCH, _T(""), _T("rebuild"), _T("clean and then build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T(""), _T("build"), _T("just build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, _T(""), _T("target"),  _T("the target for the batch build"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_SWITCH, _T(""), _T("no-batch-window-close"),  _T("do not auto-close log window when batch build is done"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T(""), _T("batch-build-notify"),  _T("show message when batch build is done"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_PARAM, _T(""), _T(""),  _T("filename(s)"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
     { wxCMD_LINE_NONE }
@@ -330,6 +331,8 @@ bool CodeBlocksApp::OnInit()
     m_Build = false;
     m_ReBuild = false;
     m_BatchExitCode = 0;
+    m_BatchWindowAutoClose = true;
+    m_pBatchBuildDialog = 0;
 
 	wxTheClipboard->Flush();
 
@@ -531,11 +534,13 @@ int CodeBlocksApp::BatchJob()
     else if (m_Build)
         compiler->BuildWorkspace(m_BatchTarget);
 
-    wxDialog *dlg = Manager::Get()->GetMessageManager()->GetBatchBuildDialog();
-    PlaceWindow(dlg);
-    dlg->ShowModal();
+    m_pBatchBuildDialog = Manager::Get()->GetMessageManager()->GetBatchBuildDialog();
+    PlaceWindow(m_pBatchBuildDialog);
+    m_pBatchBuildDialog->ShowModal();
     tbIcon->RemoveIcon();
     delete tbIcon;
+    delete m_pBatchBuildDialog;
+    m_pBatchBuildDialog = 0;
 
     return 0;
 }
@@ -564,6 +569,9 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
     }
     else
         wxBell();
+
+    if (m_pBatchBuildDialog && m_BatchWindowAutoClose)
+        m_pBatchBuildDialog->EndModal(wxID_OK);
 }
 
 void CodeBlocksApp::ShowSplashScreen()
@@ -653,6 +661,13 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 
         case 0:
             {
+                // batch jobs
+                m_BatchNotify = parser.Found(_T("batch-build-notify"));
+                m_BatchWindowAutoClose = !parser.Found(_T("no-batch-window-close"));
+                m_Build = parser.Found(_T("build"));
+                m_ReBuild = parser.Found(_T("rebuild"));
+                parser.Found(_T("target"), &m_BatchTarget);
+
                 if (handlerFrame)
                 {
                     int count = parser.GetParamCount();
@@ -701,12 +716,6 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     {
                         SetupPersonality(val);
                     }
-
-                    // batch jobs
-                    m_BatchNotify = parser.Found(_T("batch-build-notify"));
-                    m_Build = parser.Found(_T("build"));
-                    m_ReBuild = parser.Found(_T("rebuild"));
-                    parser.Found(_T("target"), &m_BatchTarget);
 
                     // initial setting for batch flag (will be reset when ParseCmdLine() is called again).
                     m_Batch = m_Build || m_ReBuild;
