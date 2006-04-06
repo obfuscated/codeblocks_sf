@@ -57,6 +57,8 @@
     #define LOGIT wxLogMessage
     #define TRAP asm("int3")
 #endif
+
+
 // anchor to one and only DragScroll object
 class cbDragScrollCfg;
 
@@ -89,6 +91,7 @@ class cbDragScroll : public cbPlugin
         int  GetMouseDragSensitivity()   { return MouseDragSensitivity; }
         int  GetMouseToLineRatio()       { return MouseToLineRatio; }
 
+        wxWindow* m_pSearchResultsWindow;
 
 	private:
         void OnEditorOpen(CodeBlocksEvent& event);
@@ -118,7 +121,6 @@ class cbDragScroll : public cbPlugin
         int  MouseDragKey           ;   //Right or Middle mouse key
         int  MouseDragSensitivity   ;   //Adaptive speed sensitivity
         int  MouseToLineRatio       ;   //Percentage of mouse moves that make a line
-
 
     private:
 		DECLARE_EVENT_TABLE()
@@ -260,9 +262,16 @@ CB_DECLARE_PLUGIN();
 // ----------------------------------------------------------------------------
 //  commit  v0.20 2006/04/5
 // ----------------------------------------------------------------------------
-//  open    2006/04/5
+//  closed  2006/04/6 open    2006/04/5
 //          Conflict with Build messages context menu
 //          Removed events for ListCtrl windows
+// ----------------------------------------------------------------------------
+//  commit  v0.21 2006/04/6
+// ----------------------------------------------------------------------------
+//  closed  2006/04/6
+//          Resolution of above: event.Skip() on Right mouse Key down.
+//          Put back events for listctrl windows
+//          Catch address of Search Results window for scrolling.
 // ----------------------------------------------------------------------------
 
 #endif // DRAGSCROLL_H

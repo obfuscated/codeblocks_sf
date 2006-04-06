@@ -15,7 +15,6 @@
 #include <licenses.h> // defines some common licenses (like the GPL)
 #include <wx/utils.h>
 
-
 // Implement the plugin's hooks
 CB_IMPLEMENT_PLUGIN(cbDragScroll, "DragScroll" );
 
@@ -46,7 +45,7 @@ cbDragScroll::cbDragScroll()
 	//ctor
 	m_PluginInfo.name = _T("DragScroll");
 	m_PluginInfo.title = _("DragScroll");
-	m_PluginInfo.version = _T("0.20 2006/04/5");
+	m_PluginInfo.version = _T("0.21 2006/04/6");
 	m_PluginInfo.description = _("Mouse Drag and Scroll\nUsing Right or Middle Mouse Key");
 	m_PluginInfo.author = _T("Pecan");
 	m_PluginInfo.authorEmail = _T("");
@@ -90,9 +89,9 @@ void cbDragScroll::OnAttach()
         wxLogMessage(_T("Logging cbDragScroll version %s"),m_PluginInfo.version.c_str());
 	#endif
 
-    //names of windows we're allowed to attach
-    //m_UsableWindows.Add(_T("text"));
-    //m_UsableWindows.Add(_T("listctrl")); <== conflict with Build messages context menu
+    // names of windows we're allowed to attach
+    m_UsableWindows.Add(_T("text"));
+    m_UsableWindows.Add(_T("listctrl"));
     m_UsableWindows.Add(_T("textctrl"));
     m_UsableWindows.Add(_T("treectrl"));
     m_UsableWindows.Add(_T("sciwindow"));
@@ -136,6 +135,9 @@ void cbDragScroll::OnAttach()
         LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity ) ;
         LOGIT(_T("MouseToLineRatio:%d"),        MouseToLineRatio ) ;
     #endif //LOGGING
+
+    // Pointer to search Results Window (first listCtrl window)
+    m_pSearchResultsWindow = 0;
 
 	return ;
 }
@@ -263,13 +265,22 @@ void cbDragScroll::Attach(wxWindow *p)
     // eg., wxArrayString m_UsableWindows = "sciwindow notebook";
 
     wxString windowName = p->GetName().MakeLower();
+
+    // memorize Search Results Window address
+    if ( (not m_pSearchResultsWindow) && (windowName eq wxT("listctrl")) )
+    {   m_pSearchResultsWindow = p;
+        #ifdef LOGGING
+        LOGIT(wxT("SearchResultsWindow: %p"),p );
+        #endif
+    }
+
     if (wxNOT_FOUND == m_UsableWindows.Index(windowName,false))
      {
         LOGIT(wxT("cbDS::Attach skipping [%s]"), p->GetName().c_str());
         return;
      }
 
-	LOGIT(wxT("cbDS::Attach - attaching to [%s] %p"), p->GetName().c_str(),p);
+    	LOGIT(wxT("cbDS::Attach - attaching to [%s] %p"), p->GetName().c_str(),p);
 
     //add window to our array and push a mouse event handler
     m_EditorPtrs.Add(p);
@@ -395,6 +406,7 @@ void cbDragScroll::DetachAll()
     m_EventHandlerArray.Empty();
     // say no windows attached
     m_bNotebooksAttached = false;
+    m_pSearchResultsWindow = 0;
     return;
 
 }//DetachAll
@@ -648,9 +660,12 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
             m_DragMode = DRAG_START;
             m_DragStartPos = event.GetPosition();
             #if LOGGING
-            LOGIT(_T("Down"));
+             LOGIT(_T("Down X:%d Y:%d"), m_InitY, m_InitX);
             #endif
-            // +v0.7 return, don't yet show mousekeydown event to others
+            // If Search Results window, hide right mouse click
+            if (m_pEvtObject eq pDS->m_pSearchResultsWindow)
+                return;
+            event.Skip(); //v0.21
             return;
      }
 
@@ -733,7 +748,6 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
         #if (RC2)
          ((cbStyledTextCtrl*)m_pEvtObject)->LineScroll (scrollx,scrolly);
         #endif
-
         #if (RC3)
         // if editor window, use scintilla scroll
         if (p_cbStyledTextCtrl && (m_pEvtObject == p_cbStyledTextCtrl))
@@ -815,7 +829,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
         m_DragMode = DRAG_NONE;
         m_DragStartPos = event.GetPosition();
         #if LOGGING
-         LOGIT(_T("Down"));
+         LOGIT(_T("Down at  X:%d Y:%d"), m_InitX, m_InitY);
         #endif
 
         // 1/8 second wait for any mouse moves
@@ -823,6 +837,8 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
 
         //allow user some slop moves in case this is a context menu request
         wxPoint mouseXY = ((wxWindow*)m_pEvtObject)->ScreenToClient(wxGetMousePosition());
+        LOGIT(_T("Down MoveTo X:%d Y:%d"), mouseXY.x, mouseXY.y);
+
         scrollx = abs(mouseXY.x - m_InitX) ;
         scrolly = abs(mouseXY.y - m_InitY) ;
 
@@ -832,11 +848,25 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
             return;
         }
         else // wait for movement if right mouse key; might be context menu request
-        if ( ( scrolly > 1) || (scrollx > 1) )
-        {   m_DragMode = DRAG_START;
-            LOGIT(_T("Down delta x:%d y:%d"), scrollx, scrolly );
-            return;
-        }
+        {
+            #if LOGGING
+             LOGIT(_T("Down delta x:%d y:%d"), scrollx, scrolly );
+            #endif
+            if (p_cbStyledTextCtrl && (m_pEvtObject == p_cbStyledTextCtrl) //v0.21
+                && ( ( scrolly > 1) || (scrollx > 1) ))
+                {   m_DragMode = DRAG_START;
+                    return;
+                }
+            // Since scrolling other types of windows doesnt work on GTK
+            // just event.Skip()
+            //else {  // listctrl windows ALWAYS report 24 pixel y move
+            //        // when just hitting the mouse button.
+            //    if ( (scrolly > 24) || (scrollx > 1))
+            //    {   m_DragMode = DRAG_START;
+            //        return;
+            //    }
+            //}//endelse
+        }//else wait for movement
         //no mouse movements, so pass off to context menu processing
         event.Skip();
         return;
@@ -930,11 +960,13 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
                 p_cbStyledTextCtrl->LineScroll (scrollx,scrolly);
         }
         else //use control scrolling
-        {
+        {   //NONE of the following works on GTK
+            // ---------------------------------
             //use wxTextCtrl scroll for y scrolling
             if ( scrolly)
                 ((wxWindow*)m_pEvtObject)->ScrollLines(scrolly);
             else  // use listCtrl for x scrolling
+                //LOGIT(wxT("ScrollList x:%d y:%d"),scrollx, scrolly );
                 ((wxListCtrl*)m_pEvtObject)->ScrollList(scrollx,scrolly);
         }//esle
         #endif //(RC3)
