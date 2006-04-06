@@ -61,6 +61,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						editpairdlg.cpp \
 						editpathdlg.cpp \
 						edittooldlg.cpp \
+						encodingdetector.cpp \
 						externaldepsdlg.cpp \
 						filefilters.cpp \
 						filegroupsandmasks.cpp \
@@ -147,6 +148,7 @@ noinst_HEADERS = annoyingdialog.h \
 				editpairdlg.h \
 				editpathdlg.h \
 				edittooldlg.h \
+				encodingdetector.h \
 				externaldepsdlg.h \
 				filefilters.h \
 				filegroupsandmasks.h \

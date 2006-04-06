@@ -48,6 +48,7 @@
 #include "cbeditorprintout.h"
 #include "editor_hooks.h"
 #include "filefilters.h"
+#include "encodingdetector.h"
 
 const wxString g_EditorModified = _T("*");
 
@@ -751,46 +752,20 @@ void cbEditor::DetectEncoding( )
     if (!m_pData)
         return;
 
-    m_pData->m_useByteOrderMark = false;
-    // FIXME: Should this default to local encoding or latin-1? (IOW, implement proper encoding detection)
-    wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxLocale::GetSystemEncodingName());
-    m_pData->m_encoding = wxFontMapper::GetEncodingFromName(enc_name);
-//    m_pData->m_encoding = wxFONTENCODING_ISO8859_1;
-
-    // Simple BOM detection
-    wxFile file(m_Filename);
-    if (!file.IsOpened())
+    EncodingDetector detector(m_Filename);
+    if (!detector.IsOK())
         return;
 
-    // BOM is max 4 bytes
-    char buff[4] = {};
-    file.Read((void*)buff, 4);
-    file.Close();
+    m_pData->m_useByteOrderMark = detector.UsesBOM();
+    m_pData->m_encoding = detector.GetFontEncoding();
 
-    if (memcmp(buff, "\xEF\xBB\xBF", 3) == 0)
+    // FIXME: Should this default to local encoding or latin-1? (IOW, implement proper encoding detection)
+    if (m_pData->m_encoding == wxFONTENCODING_ISO8859_1)
     {
-        m_pData->m_useByteOrderMark = true;
-        m_pData->m_encoding = wxFONTENCODING_UTF8;
-    }
-    else if (memcmp(buff, "\xFE\xFF", 2) == 0)
-    {
-        m_pData->m_useByteOrderMark = true;
-        m_pData->m_encoding = wxFONTENCODING_UTF16BE;
-    }
-    else if (memcmp(buff, "\xFF\xFE", 2) == 0)
-    {
-        m_pData->m_useByteOrderMark = true;
-        m_pData->m_encoding = wxFONTENCODING_UTF16LE;
-    }
-    else if (memcmp(buff, "\x00\x00\xFE\xFF", 4) == 0)
-    {
-        m_pData->m_useByteOrderMark = true;
-        m_pData->m_encoding = wxFONTENCODING_UTF32BE;
-    }
-    else if (memcmp(buff, "\xFF\xFE\x00\x00", 4) == 0)
-    {
-        m_pData->m_useByteOrderMark = true;
-        m_pData->m_encoding = wxFONTENCODING_UTF32LE;
+        // if the encoding detector returned the default value,
+        // use the user's preference then
+        wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxLocale::GetSystemEncodingName());
+        m_pData->m_encoding = wxFontMapper::GetEncodingFromName(enc_name);
     }
 }
 

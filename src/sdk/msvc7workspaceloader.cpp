@@ -31,7 +31,7 @@
 
 #include "msvc7workspaceloader.h"
 #include "importers_globals.h"
-
+#include "encodingdetector.h"
 
 MSVC7WorkspaceLoader::MSVC7WorkspaceLoader()
 {
@@ -75,11 +75,23 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename)
     // read "header"
     if (!file.Eof())
     {
-        wxString line = input.ReadLine();
-        if (line.IsEmpty())
+        // skip unicode BOM, if present
+        EncodingDetector detector(filename);
+        if (detector.IsOK() && detector.UsesBOM())
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Unsupported format."));
-            return false;
+            int skipBytes = detector.GetBOMSizeInBytes();
+            for (int i = 0; i < skipBytes; ++i)
+            {
+                char c;
+                file.Read(&c, 1);
+            }
+        }
+
+        wxString line = input.ReadLine();
+        // skip initial empty lines (if any)
+        while (line.IsEmpty() && !file.Eof())
+        {
+            line = input.ReadLine();
         }
         comps = GetArrayFromString(line, _T(","));
         line = comps[0];
