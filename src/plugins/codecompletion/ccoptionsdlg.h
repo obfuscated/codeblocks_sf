@@ -18,7 +18,7 @@ class CCOptionsDlg : public cbConfigurationPanel
 		CCOptionsDlg(wxWindow* parent, NativeParser* np);
 		virtual ~CCOptionsDlg();
 
-        virtual wxString GetTitle(){ return _("Code-completion and class-browser"); }
+        virtual wxString GetTitle(){ return _("Code-completion and symbols browser"); }
         virtual wxString GetBitmapBaseName(){ return _T("generic-plugin"); }
         virtual void OnApply();
         virtual void OnCancel(){}

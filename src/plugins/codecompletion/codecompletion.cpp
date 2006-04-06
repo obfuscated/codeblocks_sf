@@ -59,6 +59,7 @@ CB_IMPLEMENT_PLUGIN(CodeCompletion, "Code completion");
 int idMenuCodeComplete = wxNewId();
 int idMenuShowCallTip = wxNewId();
 int idMenuGotoFunction = wxNewId();
+int idViewClassBrowser = wxNewId();
 int idEditorSubMenu = wxNewId();
 int idClassMethod = wxNewId();
 int idGotoDeclaration = wxNewId();
@@ -68,7 +69,7 @@ int idStartParsingProjects = wxNewId();
 int idCodeCompleteTimer = wxNewId();
 
 BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
-	EVT_UPDATE_UI_RANGE(idMenuCodeComplete, idMenuGotoFunction, CodeCompletion::OnUpdateUI)
+	EVT_UPDATE_UI_RANGE(idMenuCodeComplete, idViewClassBrowser, CodeCompletion::OnUpdateUI)
 
 	EVT_MENU(idMenuCodeComplete, CodeCompletion::OnCodeComplete)
 	EVT_MENU(idMenuShowCallTip, CodeCompletion::OnShowCallTip)
@@ -77,6 +78,8 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_MENU(idGotoDeclaration, CodeCompletion::OnGotoDeclaration)
 	EVT_MENU(idGotoImplementation, CodeCompletion::OnGotoDeclaration)
 	EVT_MENU(idOpenIncludeFile, CodeCompletion::OnOpenIncludeFile)
+
+	EVT_MENU(idViewClassBrowser, CodeCompletion::OnViewClassBrowser)
 
 	EVT_TIMER(idStartParsingProjects, CodeCompletion::OnStartParsingProjects)
 	EVT_TIMER(idCodeCompleteTimer, CodeCompletion::OnCodeCompleteTimer)
@@ -122,6 +125,7 @@ CodeCompletion::CodeCompletion() :
     m_InitDone = false;
     m_EditMenu = 0L;
 	m_SearchMenu = 0L;
+	m_ViewMenu = 0L;
 }
 
 CodeCompletion::~CodeCompletion()
@@ -171,6 +175,25 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
     }
     else
     	Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find Search menu!"));
+
+    // add the classbrowser window in the "View" menu
+    int idx = menuBar->FindMenu(_("View"));
+    if (idx != wxNOT_FOUND)
+    {
+        m_ViewMenu = menuBar->GetMenu(idx);
+        wxMenuItemList& items = m_ViewMenu->GetMenuItems();
+        // find the first separator and insert before it
+        for (size_t i = 0; i < items.GetCount(); ++i)
+        {
+            if (items[i]->IsSeparator())
+            {
+                m_ViewMenu->InsertCheckItem(i, idViewClassBrowser, _("Symbols browser"), _("Toggle displaying the symbols browser"));
+                return;
+            }
+        }
+        // not found, just append
+        m_ViewMenu->AppendCheckItem(idViewClassBrowser, _("Symbols browser"), _("Toggle displaying the symbols browser"));
+    }
 }
 
 void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
@@ -616,6 +639,13 @@ void CodeCompletion::DoInsertCodeCompleteToken(wxString tokName)
 
 // events
 
+void CodeCompletion::OnViewClassBrowser(wxCommandEvent& event)
+{
+    CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = (wxWindow*)m_NativeParsers.GetClassBrowser();
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+}
+
 void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent& event)
 {
     // Let the app startup before parsing
@@ -732,6 +762,12 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 	if (m_SearchMenu)
 	{
 	    m_SearchMenu->Enable(idMenuGotoFunction, hasEd);
+    }
+
+    if (m_ViewMenu)
+    {
+        bool isVis = IsWindowReallyShown((wxWindow*)m_NativeParsers.GetClassBrowser());
+        m_ViewMenu->Check(idViewClassBrowser, isVis);
     }
 
     // must do...

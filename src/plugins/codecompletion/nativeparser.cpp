@@ -86,15 +86,15 @@ void NativeParser::CreateClassBrowser()
             // make this a free floating/docking window
             CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
 
-            evt.name = _T("ClassBrowser");
-            evt.title = _("Class browser");
+            evt.name = _T("SymbolsBrowser");
+            evt.title = _("Symbols browser");
             evt.pWindow = m_pClassBrowser;
             evt.dockSide = CodeBlocksDockEvent::dsRight;
             evt.desiredSize.Set(200, 250);
             evt.floatingSize.Set(200, 250);
             evt.minimumSize.Set(150, 150);
             evt.shown = true;
-            evt.hideable = false;
+            evt.hideable = true;
             Manager::Get()->GetAppWindow()->ProcessEvent(evt);
         }
         m_ClassBrowserIsFloating = isFloating;

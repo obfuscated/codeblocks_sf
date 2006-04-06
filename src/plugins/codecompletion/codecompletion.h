@@ -34,6 +34,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         void EditorEventHook(cbEditor* editor, wxScintillaEvent& event);
 	private:
     	void OnUpdateUI(wxUpdateUIEvent& event);
+		void OnViewClassBrowser(wxCommandEvent& event);
 		void OnCodeComplete(wxCommandEvent& event);
 		void OnShowCallTip(wxCommandEvent& event);
 		void OnGotoFunction(wxCommandEvent& event);
@@ -63,6 +64,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
 
     	wxMenu* m_EditMenu;
     	wxMenu* m_SearchMenu;
+    	wxMenu* m_ViewMenu;
 		NativeParser m_NativeParsers;
 		ProjectBuildTarget* m_Target;
 		wxTimer m_timer;
