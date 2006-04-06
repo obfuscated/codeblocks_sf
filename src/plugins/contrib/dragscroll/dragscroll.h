@@ -258,7 +258,12 @@ CB_DECLARE_PLUGIN();
 //          1.Added "Mouse sets Editor Focus" for GTK
 //          2.Capture GTK middle mouse key immediately when used for scrolling
 // ----------------------------------------------------------------------------
-
+//  commit  v0.20 2006/04/5
+// ----------------------------------------------------------------------------
+//  open    2006/04/5
+//          Conflict with Build messages context menu
+//          Removed events for ListCtrl windows
+// ----------------------------------------------------------------------------
 
 #endif // DRAGSCROLL_H
 

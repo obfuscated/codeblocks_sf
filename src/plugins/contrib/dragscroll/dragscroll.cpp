@@ -46,7 +46,7 @@ cbDragScroll::cbDragScroll()
 	//ctor
 	m_PluginInfo.name = _T("DragScroll");
 	m_PluginInfo.title = _("DragScroll");
-	m_PluginInfo.version = _T("0.19 2006/03/21");
+	m_PluginInfo.version = _T("0.20 2006/04/5");
 	m_PluginInfo.description = _("Mouse Drag and Scroll\nUsing Right or Middle Mouse Key");
 	m_PluginInfo.author = _T("Pecan");
 	m_PluginInfo.authorEmail = _T("");
@@ -83,16 +83,16 @@ void cbDragScroll::OnAttach()
 
     #if LOGGING
         wxWindow* pcbWindow = Manager::Get()->GetAppWindow();
-        /*wxLogWindow**/ pMyLog = new wxLogWindow(pcbWindow,m_PluginInfo.name);
+        /*wxLogWindow**/ pMyLog = new wxLogWindow(pcbWindow, m_PluginInfo.name, true, false);
         wxLog::SetActiveTarget(pMyLog);
-        wxLogMessage(_T("Logging cbDragScroll version %s"),m_PluginInfo.version.c_str());
         pMyLog->Flush();
         pMyLog->GetFrame()->Move(20,20);
+        wxLogMessage(_T("Logging cbDragScroll version %s"),m_PluginInfo.version.c_str());
 	#endif
 
     //names of windows we're allowed to attach
-    m_UsableWindows.Add(_T("text"));
-    m_UsableWindows.Add(_T("listctrl"));
+    //m_UsableWindows.Add(_T("text"));
+    //m_UsableWindows.Add(_T("listctrl")); <== conflict with Build messages context menu
     m_UsableWindows.Add(_T("textctrl"));
     m_UsableWindows.Add(_T("treectrl"));
     m_UsableWindows.Add(_T("sciwindow"));
