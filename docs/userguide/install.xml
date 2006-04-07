@@ -19,7 +19,29 @@
 		Linux users who can't find a packages for a specific distribution.</para>
 	</section>
 	<section>
-		<title>Download</title>
-		<para>You can download Code::Blocks from the website <ulink url="http://codeblocks.org">codeblocks.org</ulink></para>
+		<title>Stable release</title>
+		<section>
+			<title>Download</title>
+			<para>You can download Code::Blocks from the website <ulink url="http://codeblocks.org">
+			codeblocks.org</ulink> There are two diffrent versions. One with and one without MinGW.</para>
+			<para>If you don't have any compiler installed, or just want to start quickly, you should
+			download the vesion with MinGW.</para>
+		</section>
+		<section>
+			<title>Install</title>
+		</section>
+	</section>
+	<section>
+		<title>Nightly build</title>
+		<section>
+			<title>Download</title>
+			<para>The nightly build is also available on the website of Code::Blocks. !!!link!!!</para>
+		</section>
+		<section>
+			<title>install</title>
+			<para>To install the nightly build you need to have 7-Zip, or another program that could handle
+			7-Zip files. The archive that is downloaded could be unpacked in any folder you like.</para>
+			
+		</section>
 	</section>
 </chapter>
