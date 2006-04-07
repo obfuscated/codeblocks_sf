@@ -7,6 +7,7 @@
 %cdo-C;
 
 <!ENTITY intro SYSTEM "intro.xml">
+<!ENTITY install SYSTEM "install.xml">
 ]>
 <book>
     <title>Code::Blocks User Guide</title>
