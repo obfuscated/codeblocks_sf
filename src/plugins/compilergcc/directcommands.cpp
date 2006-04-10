@@ -163,11 +163,18 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
 
     bool isResource = ft == ftResource;
     bool isHeader = ft == ftHeader;
-#ifndef __WXMSW__
-    // not supported under non-win32 platforms
-    if (isResource)
-        return ret;
-#endif
+
+    // allowed resources under all platforms: makes sense when cross-compiling for
+    // windows under linux.
+    // and anyway, if the user is dumb enough to try to compile resources without
+    // having a resource compiler, (s)he deserves the upcoming build error ;)
+
+//#ifndef __WXMSW__
+//    // not supported under non-win32 platforms
+//    if (isResource)
+//        return ret;
+//#endif
+
     Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
     wxString compilerCmd;
     if (!isHeader || compiler->GetSwitches().supportsPCH)

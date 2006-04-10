@@ -134,61 +134,61 @@ FileType FileTypeOf(const wxString& filename)
 {
     wxString ext = filename.AfterLast(_T('.')).Lower();
 
-    if (ext.Matches(FileFilters::CPP_EXT) ||
-            ext.Matches(FileFilters::C_EXT) ||
-            ext.Matches(FileFilters::CC_EXT) ||
-            ext.Matches(FileFilters::CXX_EXT) ||
-            ext.Matches(FileFilters::D_EXT)
+    if (ext.IsSameAs(FileFilters::CPP_EXT) ||
+            ext.IsSameAs(FileFilters::C_EXT) ||
+            ext.IsSameAs(FileFilters::CC_EXT) ||
+            ext.IsSameAs(FileFilters::CXX_EXT) ||
+            ext.IsSameAs(FileFilters::D_EXT)
        )
         return ftSource;
 
-    else if (ext.Matches(FileFilters::HPP_EXT) ||
-             ext.Matches(FileFilters::H_EXT) ||
-             ext.Matches(FileFilters::HH_EXT) ||
-             ext.Matches(FileFilters::HXX_EXT)
+    else if (ext.IsSameAs(FileFilters::HPP_EXT) ||
+             ext.IsSameAs(FileFilters::H_EXT) ||
+             ext.IsSameAs(FileFilters::HH_EXT) ||
+             ext.IsSameAs(FileFilters::HXX_EXT)
             )
         return ftHeader;
 
-    else if (ext.Matches(FileFilters::CODEBLOCKS_EXT))
+    else if (ext.IsSameAs(FileFilters::CODEBLOCKS_EXT))
         return ftCodeBlocksProject;
 
-    else if (ext.Matches(FileFilters::WORKSPACE_EXT))
+    else if (ext.IsSameAs(FileFilters::WORKSPACE_EXT))
         return ftCodeBlocksWorkspace;
 
-    else if (ext.Matches(FileFilters::DEVCPP_EXT))
+    else if (ext.IsSameAs(FileFilters::DEVCPP_EXT))
         return ftDevCppProject;
 
-    else if (ext.Matches(FileFilters::MSVC6_EXT))
+    else if (ext.IsSameAs(FileFilters::MSVC6_EXT))
         return ftMSVC6Project;
 
-    else if (ext.Matches(FileFilters::MSVC7_EXT))
+    else if (ext.IsSameAs(FileFilters::MSVC7_EXT))
         return ftMSVC7Project;
 
-    else if (ext.Matches(FileFilters::MSVC6_WORKSPACE_EXT))
+    else if (ext.IsSameAs(FileFilters::MSVC6_WORKSPACE_EXT))
         return ftMSVC6Workspace;
 
-    else if (ext.Matches(FileFilters::MSVC7_WORKSPACE_EXT))
+    else if (ext.IsSameAs(FileFilters::MSVC7_WORKSPACE_EXT))
         return ftMSVC7Workspace;
 
-    else if (ext.Matches(FileFilters::OBJECT_EXT))
+    else if (ext.IsSameAs(FileFilters::OBJECT_EXT))
         return ftObject;
 
-    else if (ext.Matches(FileFilters::XRCRESOURCE_EXT))
+    else if (ext.IsSameAs(FileFilters::XRCRESOURCE_EXT))
         return ftXRCResource;
 
-    else if (ext.Matches(FileFilters::RESOURCE_EXT))
+    else if (ext.IsSameAs(FileFilters::RESOURCE_EXT))
         return ftResource;
 
-    else if (ext.Matches(FileFilters::RESOURCEBIN_EXT))
+    else if (ext.IsSameAs(FileFilters::RESOURCEBIN_EXT))
         return ftResourceBin;
 
-    else if (ext.Matches(FileFilters::STATICLIB_EXT))
+    else if (ext.IsSameAs(FileFilters::STATICLIB_EXT))
         return ftStaticLib;
 
-    else if (ext.Matches(FileFilters::DYNAMICLIB_EXT))
+    else if (ext.IsSameAs(FileFilters::DYNAMICLIB_EXT))
         return ftDynamicLib;
 
-    else if (ext.Matches(FileFilters::EXECUTABLE_EXT))
+    else if (ext.IsSameAs(FileFilters::EXECUTABLE_EXT))
         return ftExecutable;
 
     return ftOther;
