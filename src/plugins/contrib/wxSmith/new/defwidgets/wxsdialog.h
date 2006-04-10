@@ -28,6 +28,7 @@ class wxsDialog : public wxsContainer
 
         /** \brief Enumerating header files */
         virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language){};
+        virtual long GetPropertiesFlags();
 
     private:
 

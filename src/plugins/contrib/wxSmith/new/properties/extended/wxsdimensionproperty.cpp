@@ -118,12 +118,7 @@ bool wxsDimensionProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* E
     {
         char Buffer[0x40];  // Using char instead of wxChar because TiXml uses it
 
-// ltoa is not ANSI :(
-#ifndef __GNUG__
         ltoa(VALUE,Buffer,10);
-#else
-        sprintf(Buffer, "%ld", VALUE);
-#endif
         if ( UNITS )
         {
             strcat(Buffer,"d");

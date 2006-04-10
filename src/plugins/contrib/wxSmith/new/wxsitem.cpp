@@ -194,5 +194,5 @@ void wxsItem::ClearSelection()
 
 void wxsItem::PropertyChangedHandler()
 {
-    GetResource()->NotifyChange();
+    GetResource()->NotifyChange(this);
 }

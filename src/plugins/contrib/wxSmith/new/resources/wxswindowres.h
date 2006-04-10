@@ -178,7 +178,7 @@ class wxsWindowRes : public wxsResource
 		 * This function validates content, recreates preview and
 		 * updates source code.
 		 */
-		void NotifyChange();
+		void NotifyChange(wxsItem* Chaged);
 
         /** \brief Funnction regenerating all source code
          *  \note Only content really changed will mark files as modified
@@ -210,7 +210,6 @@ class wxsWindowRes : public wxsResource
     private:
 
         WX_DECLARE_STRING_HASH_MAP(wxsItem*,IdToItemMapT);
-
         /** \brief Function which should create editor window. */
         virtual wxsEditor* CreateEditor();
 
@@ -251,33 +250,6 @@ class wxsWindowRes : public wxsResource
         /** \brief Fetching pointers to items loaded from xrc file */
         void FetchXmlBuiltItems(wxsItem* RootItem,wxString& Code);
 
-//
-//        /** \brief Setting default variable names and identifiers for widgets with empty ones */
-//        void UpdateWidgetsVarNameId();
-//
-//		/** \brief Function refreshing tree node associated with this resource */
-//		void RefreshResourceTree();
-//
-//
-//        /** Structure used for comparing strings */
-//        struct ltstr {  bool operator()(const wxChar* s1, const wxChar* s2) const { return wxStrcmp(s1, s2) < 0; } };
-//
-//        /** Map string->widget used when validating variable names and identifiers */
-//        typedef std::map<const wxChar*,wxsWidget*,ltstr> StrMap;
-//        typedef StrMap::iterator StrMapI;
-//
-//        /** Function used internally by SetNewWidgetsIdVarName */
-//        void UpdateWidgetsVarNameIdReq(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* Widget);
-//
-//        /** Function craeting set of used names and ids for this resource */
-//        void CreateSetsReq(StrMap& NamesMap, StrMap& IdsMap, wxsWidget* Widget, wxsWidget* Without = NULL);
-//
-//        /** Function checking and correcting base params for one widget */
-//        bool CorrectOneWidget(StrMap& NamesMap,StrMap& IdsMap,wxsWidget* Changed,bool Correct);
-//
-//        /** Helper function used inside CkeckBaseProperties function */
-//        bool CheckBasePropertiesReq(wxsWidget* Widget,bool Correct,StrMap& NamesMap,StrMap& IdsMap);
-//
         wxString    ClassName;
         wxString    WxsFile;
         wxString    SrcFile;

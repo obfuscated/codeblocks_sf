@@ -163,6 +163,7 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsResource* Resource):
     }
 
     UndoBuff = new wxsWinUndoBuffer(GetWinRes());
+    Corrector = new wxsCorrector(GetWinRes());
     ToggleQuickPropsPanel(false);
     AllEditors.insert(this);
     BuildPreview();
@@ -193,6 +194,7 @@ wxsWindowEditor::~wxsWindowEditor()
 
     // Now doing the rest
 	delete UndoBuff;
+	delete Corrector;
 	GetWinRes()->HidePreview();
 
 	AllEditors.erase(this);
@@ -292,6 +294,7 @@ void wxsWindowEditor::Undo()
 {
     ResourceLock();
     UndoBuff->Undo();
+    Corrector->ClearCache();
     ResourceUnlock();
 	SetModified(UndoBuff->IsModified());
 	// TODO: Restore selection
@@ -303,6 +306,7 @@ void wxsWindowEditor::Redo()
 {
     ResourceLock();
     UndoBuff->Redo();
+    Corrector->ClearCache();
     ResourceUnlock();
 	SetModified(UndoBuff->IsModified());
 	// TODO: Restore selection
@@ -343,6 +347,7 @@ void wxsWindowEditor::Cut()
     // Removing items copied into clipboard
     ResourceLock();
     KillSelection(RootItem());
+    Corrector->ClearCache();
     BuildPreview();
 
     // TODO: Select previous item / parent item etc
@@ -441,7 +446,6 @@ void wxsWindowEditor::Paste()
                 }
             }
             ResourceUnlock();
-            // TODO: Update item variables and identifiers
             GetWinRes()->RebuildCode();
         }
     }
@@ -469,12 +473,14 @@ bool wxsWindowEditor::InsertBefore(wxsItem* New,wxsItem* Ref)
         return false;
     }
 
+    Corrector->BeforePaste(New);
     int Index = Parent->GetChildIndex(Ref);
     if ( Index<0 || !Parent->AddChild(New,Index) )
     {
         wxsKILL(New);
         return false;
     }
+    Corrector->AfterPaste(New);
 
     // Adding this new item into resource tree
     New->BuildItemTree(wxsTREE(),Parent->GetLastTreeItemId(),Index);
@@ -501,12 +507,14 @@ bool wxsWindowEditor::InsertAfter(wxsItem* New,wxsItem* Ref)
         return false;
     }
 
+    Corrector->BeforePaste(New);
     int Index = Parent->GetChildIndex(Ref);
     if ( Index<0 || !Parent->AddChild(New,Index+1))
     {
         wxsKILL(New);
         return false;
     }
+    Corrector->AfterPaste(New);
 
     // Adding this new item into resource tree
     New->BuildItemTree(wxsTREE(),Parent->GetLastTreeItemId(),Index+1);
@@ -525,12 +533,14 @@ bool wxsWindowEditor::InsertInto(wxsItem* New,wxsItem* Ref)
 		return false;
 	}
 
+    Corrector->BeforePaste(New);
     wxsParent* P = Ref->ToParent();
     if ( !P->AddChild(New) )
     {
         wxsKILL(New);
         return false;
     }
+    Corrector->AfterPaste(New);
 
     // Adding this new item into resource tree
     New->BuildItemTree(wxsTREE(),P->GetLastTreeItemId());
@@ -918,6 +928,13 @@ void wxsWindowEditor::SelectionChanged()
     Content->RefreshSelection();
 
     // TODO: Refresh set of available items inside palette
+}
+
+void wxsWindowEditor::NotifyChange(wxsItem* Changed)
+{
+    ResourceLock();
+    Corrector->AfterChange(Changed);
+    ResourceUnlock();
 }
 
 void wxsWindowEditor::GetSelectionNoChildren(wxsWindowEditor::ItemArray& Array,wxsItem* Item)

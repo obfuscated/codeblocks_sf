@@ -130,3 +130,8 @@ void wxsDialog::EnumContainerProperties(long Flags)
     WXS_BOOL  (wxsDialog,Centered,0,_("Centered"),_T("centered"),false);
 }
 
+long wxsDialog::GetPropertiesFlags()
+{
+    // No identifier nor variable for root items
+    return wxsItem::GetPropertiesFlags() & ~(wxsFLVariable|wxsFLId);
+}

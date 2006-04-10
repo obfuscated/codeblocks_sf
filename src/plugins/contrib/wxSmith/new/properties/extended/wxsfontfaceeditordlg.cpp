@@ -47,15 +47,7 @@ wxsFontFaceEditorDlg::~wxsFontFaceEditorDlg()
 void wxsFontFaceEditorDlg::OnButton2Click(wxCommandEvent& event)
 {
     Face = FaceName->GetValue();
-// wxGTK & wxMAC do not have EndDialog function
-#ifdef __WXMSW__
-    EndDialog(wxID_OK);
-#else
-    if ( IsModal() )
-        EndModal(wxID_OK);
-    else
-        Hide();
-#endif
+    EndModal(wxID_OK);
 }
 
 void wxsFontFaceEditorDlg::OnButton1Click(wxCommandEvent& event)

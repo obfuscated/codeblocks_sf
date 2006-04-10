@@ -57,16 +57,7 @@ bool wxsFlagsProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Eleme
     if ( VALUE != Default )
     {
         char Buffer[0x40];  // Using char instead of wxChar because TiXml uses it
-
-// ltoa is not ANSI :(
-#ifndef __GNUG__
-        ltoa(VALUE,Buffer,10);
-#else
-        sprintf(Buffer, "%ld", VALUE);
-#endif
-
-        Element->InsertEndChild(TiXmlText(Buffer));
-//        Element->InsertEndChild(TiXmlText(ltoa(VALUE,Buffer,10)));
+        Element->InsertEndChild(TiXmlText(ltoa(VALUE,Buffer,10)));
         return true;
     }
     return false;

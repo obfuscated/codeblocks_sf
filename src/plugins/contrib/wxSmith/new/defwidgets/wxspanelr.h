@@ -28,6 +28,8 @@ class wxsPanelr : public wxsContainer
 
         virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) {}
 
+        virtual long GetPropertiesFlags();
+
 };
 
 #endif

@@ -4,6 +4,7 @@
 #include "../wxseditor.h"
 #include "../resources/wxswindowres.h"
 #include "wxswinundobuffer.h"
+#include "wxscorrector.h"
 #include <wx/hashset.h>
 #include <wx/scrolwin.h>
 #include <wx/notebook.h>
@@ -83,6 +84,9 @@ class wxsWindowEditor : public wxsEditor
          */
         void SelectionChanged();
 
+        /** \brief Function notifying that properties of given item has changed */
+        void NotifyChange(wxsItem* Changed);
+
     protected:
 
         /** \brief Getting wxsWindowRes pointer to currently edited resource */
@@ -135,7 +139,8 @@ class wxsWindowEditor : public wxsEditor
         static const int itAfter  = 0x02;
         static const int itInto   = 0x04;
 
-        wxsWinUndoBuffer* UndoBuff;    ///< \brief Undo buffer
+        wxsWinUndoBuffer* UndoBuff;     ///< \brief Undo buffer
+        wxsCorrector* Corrector;        ///< \brief Data corrector
 
 		/* Event handlers */
         void OnMouseClick(wxMouseEvent& event);

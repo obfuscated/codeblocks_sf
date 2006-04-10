@@ -72,4 +72,11 @@ wxObject* wxsPanelr::DoBuildPreview(wxWindow* Parent,bool Exact)
 }
 
 void wxsPanelr::EnumContainerProperties(long Flags)
-{}
+{
+}
+
+long wxsPanelr::GetPropertiesFlags()
+{
+    // No identifier nor variable for root items
+    return wxsItem::GetPropertiesFlags() & ~(wxsFLVariable|wxsFLId);
+}

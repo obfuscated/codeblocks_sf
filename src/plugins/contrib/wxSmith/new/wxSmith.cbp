@@ -423,6 +423,16 @@
 			<Option link="0" />
 			<Option target="wxSmith" />
 		</Unit>
+		<Unit filename="editors\wxscorrector.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxSmith" />
+		</Unit>
+		<Unit filename="editors\wxscorrector.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxSmith" />
+		</Unit>
 		<Unit filename="editors\wxsdrawingwindow.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="wxSmith" />

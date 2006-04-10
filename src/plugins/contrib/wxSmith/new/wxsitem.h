@@ -77,11 +77,20 @@ class wxsItem: public wxsPropertyContainer
          */
         inline wxString GetVarName() { return VarName; }
 
+        /** \brief Setting variabne name */
+        inline void SetVarName(const wxString& NewName) { VarName = NewName; }
+
         /** \brief Getting identifier */
         inline wxString GetIdName() { return IdName; }
 
+        /** \brief Setting identifier */
+        inline void SetIdName(const wxString& NewIdName) { IdName = NewIdName; }
+
         /** \brief Checking if variable is member of class */
         inline bool GetIsMember() { return IsMember; }
+
+        /** \brief Setting IsMember flag */
+        inline void SetIsMember(bool NewIsMember) { IsMember = NewIsMember; }
 
         /** \brief Getting parent item */
         inline wxsParent* GetParent() { return Parent; }
