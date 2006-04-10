@@ -237,7 +237,16 @@ void wxsBitmapIconEditorDlg::ReadData(wxsBitmapIconData& Data)
 void wxsBitmapIconEditorDlg::OnButton1Click(wxCommandEvent& event)
 {
     WriteData(Data);
+
+// wxGTK & wxMAC do not have EndDialog function
+#ifdef __WXMSW__
     EndDialog(wxID_OK);
+#else
+    if ( IsModal() )
+        EndModal(wxID_OK);
+    else
+        Hide();
+#endif
 }
 
 void wxsBitmapIconEditorDlg::OnFileNameText(wxCommandEvent& event)
