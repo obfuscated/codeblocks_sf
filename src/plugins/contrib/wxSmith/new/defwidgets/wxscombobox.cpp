@@ -103,3 +103,13 @@ void wxsComboBox::EnumWidgetProperties(long Flags)
       WXS_ARRAYSTRING(wxsComboBox,ArrayChoices,0,_("Choices"),_T("content"),_T("item"))
       WXS_LONG(wxsComboBox,DefaultSelection,0,_("Default"),_T("default"),0)
 }
+
+void wxsComboBox::EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
+{
+    switch ( Language )
+    {
+        case wxsCPP: Decl.Add(_T("<wx/combobox.h>")); return;
+    }
+
+    wxsLANGMSG(wxsComboBox::EnumDeclFiles,Language);
+}

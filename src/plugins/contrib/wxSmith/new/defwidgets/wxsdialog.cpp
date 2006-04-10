@@ -39,17 +39,17 @@ wxsItemInfo wxsDialog::Info =
 {
     _T("wxDialog"),
     wxsTContainer,
-    _("wxWidgets license"),     // License, any type
-    _("wxWidgets team"),        // Author
-    _T(""),                     // No default e-mail for standard widgets
-    _T("www.wxwidgets.org"),    // Site
-    _T(""),                     // Empty groupd - won't be added into palette
-    0,                          // Not in palette at all
-    _T("Dialog"),               // Standard prefix for variable names and identifiers
-    2, 6,                       // Widget version
-    NULL,                       // Bitmaps will be loaded later in manager
-    NULL,                       // --------------------''-------------------
-    0                           // --------------------''-------------------
+    _("wxWidgets license"),
+    _("wxWidgets team"),
+    _T(""),
+    _T("www.wxwidgets.org"),
+    _T(""),
+    0,
+    _T("Dialog"),
+    2, 6,
+    NULL,
+    NULL,
+    0
 };
 
 wxsDialog::wxsDialog(wxsWindowRes* Resource):
@@ -129,3 +129,4 @@ void wxsDialog::EnumContainerProperties(long Flags)
     WXS_STRING(wxsDialog,Title,0,_("Title"),_T("title"),_T(""),false,false)
     WXS_BOOL  (wxsDialog,Centered,0,_("Centered"),_T("centered"),false);
 }
+

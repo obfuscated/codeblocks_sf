@@ -3,10 +3,6 @@
 //#include <wx/textctrl.h>
 #include <messagemanager.h>
 
-/* ************************************************************************** */
-/* Styles are processed almost like in older code - using WXS_ST_BEGIN,       */
-/* WXS_ST_END, WXS_ST_CATEGORY, WXS_ST ...                                    */
-/* ************************************************************************** */
 
 WXS_ST_BEGIN(wxsTextCtrlStyles)
     WXS_ST_CATEGORY("wxTextCtrl")
@@ -41,10 +37,6 @@ WXS_ST_BEGIN(wxsTextCtrlStyles)
 WXS_ST_END()
 
 
-/* ************************************************************************** */
-/* Events have one additional argument - event type, these can be found       */
-/* in WX_DIR/include/event.h                                                  */
-/* ************************************************************************** */
 
 WXS_EV_BEGIN(wxsTextCtrlEvents)
     WXS_EVI(EVT_TEXT,wxEVT_COMMAND_TEXT_UPDATED,wxCommandEvent,Text)
@@ -54,51 +46,39 @@ WXS_EV_BEGIN(wxsTextCtrlEvents)
     WXS_EV_DEFAULTS()
 WXS_EV_END()
 
-/* ************************************************************************** */
-/* Widget info                                                                */
-/* ************************************************************************** */
 
 wxsItemInfo wxsTextCtrl::Info =
 {
-    _T("wxTextCtrl"),           // Name of class
-    wxsTWidget,                 // Type, always wxsTWidget for widget classes
-    _("wxWidgets license"),     // License, any type
-    _("wxWidgets team"),        // Author
-    _T(""),                     // No default e-mail for standard widgets
-    _T("www.wxwidgets.org"),    // Site
-    _T("Standard"),             // Groud for widget, note that _T() instead of _() is used
-    75,                         // Button is one of most commonly used widgets - we give it high priority
-    _T("TextCtrl"),             // Standard prefix for variable names and identifiers
-    2, 6,                       // Widget version
-    NULL,                       // Bitmaps will be loaded later in manager
-    NULL,                       // --------------------''-------------------
-    0                           // --------------------''-------------------
+    _T("wxTextCtrl"),
+    wxsTWidget,
+    _("wxWidgets license"),
+    _("wxWidgets team"),
+    _T(""),
+    _T("www.wxwidgets.org"),
+    _T("Standard"),
+    75,
+    _T("TextCtrl"),
+    2, 6,
+    NULL,
+    NULL,
+    0
 };
 
 
-/* ************************************************************************** */
-/* Constructur for wxsWidget need style set, event set and widget info, so    */
-/* these things should be created before ctor.                                */
-/* ************************************************************************** */
 
 wxsTextCtrl::wxsTextCtrl(wxsWindowRes* Resource):
     wxsWidget(
-        Resource,                   // Resource is passed to wxsItem's constructor
-        wxsBaseProperties::flAll,   // Using all base properties
-        &Info,                      // Taking local info
-        wxsTextCtrlEvents,          // Pointer to local events
-        wxsTextCtrlStyles,          // Pointer to local styles
-        _T("")),                     // Default style = 0
-        Text(_("Text")),            // Initializing widget with some default (but not necessarily clean) values,
-        MaxLength(0)                // these values will be used when creating new widgets
+        Resource,
+        wxsBaseProperties::flAll,
+        &Info,
+        wxsTextCtrlEvents,
+        wxsTextCtrlStyles,
+        _T("")),
+        Text(_("Text")),
+        MaxLength(0)
 {}
 
 
-/* ************************************************************************** */
-/* Function building code - it should append new code generating this widget  */
-/* to the end of prevous code. Currently it support only C++ langage but some */
-/* other languages may be added in future.                                    */
-/* ************************************************************************** */
 
 void wxsTextCtrl::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
 {
@@ -106,11 +86,6 @@ void wxsTextCtrl::BuildCreatingCode(wxString& Code,const wxString& WindowParent,
     {
         case wxsCPP:
         {
-            // Because c_str() may lead to unspecified behaviour
-            // it's better to use << operator instead of wxString::Format.
-            // But be carefull when using << to add integers and longs.
-            // Because of some wxWidgets bugs use '<< wxString::Format(_T("%d"),Value)'
-            // instead of '<< Value'
             Code<< GetVarName() << _T(" = new wxTextCtrl(")
                 << WindowParent << _T(",")
                 << GetIdName() << _T(",")
@@ -131,27 +106,27 @@ void wxsTextCtrl::BuildCreatingCode(wxString& Code,const wxString& WindowParent,
     wxsLANGMSG(wxsTextCtrl::BuildCreatingCode,Language);
 }
 
-/* ************************************************************************** */
-/* Function building preview item. This should simply return previewed object */
-/* with all properties set-up.                                                */
-/* ************************************************************************** */
 
 wxObject* wxsTextCtrl::DoBuildPreview(wxWindow* Parent,bool Exact)
 {
-    // Exact argument is not used here because button preview is
-    // exactly the same in editor and in preview window
     wxTextCtrl* Preview = new wxTextCtrl(Parent,GetId(),Text,Pos(Parent),Size(Parent),Style());
 
     return SetupWindow(Preview,Exact);
 }
 
 
-/* ************************************************************************** */
-/* Function enumerating all text control-specific properties.                       */
-/* ************************************************************************** */
-
 void wxsTextCtrl::EnumWidgetProperties(long Flags)
 {
     WXS_STRING(wxsTextCtrl,Text,0,_("Text"),_T("text"),_T(""),true,false)
     WXS_LONG(wxsTextCtrl,MaxLength,0x8,_("Max Length"),_T("max length"),0)
+}
+
+void wxsTextCtrl::EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
+{
+    switch ( Language )
+    {
+        case wxsCPP: Decl.Add(_T("<wx/textctrl.h>")); return;
+    }
+
+    wxsLANGMSG(wxsTextCtrl::EnumDeclFiles,Language);
 }

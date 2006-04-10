@@ -43,7 +43,7 @@ void wxsFlexGridSizer::BuildSizerCreatingCode(wxString& Code,const wxString& Win
     {
         case wxsCPP:
             Code << GetVarName() << _T(" = new wxFlexGridSizer(")
-                 << wxString::Format(_T("%d,%d,"),Cols,Rows) <<
+                 << wxString::Format(_T("%d,%d,"),Cols,Rows)
                  << wxsDimensionProperty::GetPixelsCode(VGap,VGapDU,WindowParent,wxsCPP) << _T(",")
                  << wxsDimensionProperty::GetPixelsCode(HGap,HGapDU,WindowParent,wxsCPP) << _T(");\n");
 

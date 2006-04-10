@@ -35,7 +35,9 @@ class wxsStaticLine: public wxsWidget
          */
         virtual void EnumWidgetProperties(long Flags);
 
-        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) {}
+        /** \brief Enumerating header files */
+        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language);
+
 
 };
 

@@ -139,3 +139,5 @@ void wxsFrame::EnumContainerProperties(long Flags)
     WXS_BOOL  (wxsFrame,Centered,0,_("Centered"),_T("centered"),false);
     WXS_ICON  (wxsFrame,Icon,0,_T("Icon"),_T("icon"),_T("wxART_FRAME_ICON"));
 }
+
+

@@ -3,10 +3,6 @@
 #include <wx/scrolbar.h>
 #include <messagemanager.h>
 
-/* ************************************************************************** */
-/* Styles are processed almost like in older code - using WXS_ST_BEGIN,       */
-/* WXS_ST_END, WXS_ST_CATEGORY, WXS_ST ...                                    */
-/* ************************************************************************** */
 
 WXS_ST_BEGIN(wxsScrollBarStyles)
     WXS_ST_CATEGORY("wxScrollBar")
@@ -15,14 +11,10 @@ WXS_ST_BEGIN(wxsScrollBarStyles)
 WXS_ST_END()
 
 
-/* ************************************************************************** */
-/* Events have one additional argument - event type, these can be found       */
-/* in WX_DIR/include/event.h                                                  */
-/* ************************************************************************** */
-
 WXS_EV_BEGIN(wxsScrollBarEvents)
- /* Extract from the Help
-  To process a scroll event, use these event handler macros to direct input to member functions that take a wxScrollEvent argument. You can use EVT_COMMAND_SCROLL... macros with window IDs for when intercepting scroll events from controls, or EVT_SCROLL... macros without window IDs for intercepting scroll events from the receiving window -- except for this, the macros behave exactly the same.
+/* Extract from the Help
+  To process a scroll event, use these event handler macros to direct input
+  to member functions that take a wxScrollEvent argument. You can use EVT_COMMAND_SCROLL... macros with window IDs for when intercepting scroll events from controls, or EVT_SCROLL... macros without window IDs for intercepting scroll events from the receiving window -- except for this, the macros behave exactly the same.
 */
     WXS_EVI(EVT_COMMAND_SCROLL,wxEVT_SCROLL_TOP|wxEVT_SCROLL_BOTTOM|wxEVT_SCROLL_LINEUP|wxEVT_SCROLL_LINEDOWN|wxEVT_SCROLL_PAGEUP|wxEVT_SCROLL_PAGEDOWN|wxEVT_SCROLL_THUMBTRACK|wxEVT_SCROLL_THUMBRELEASE|wxEVT_SCROLL_CHANGED,wxScrollEvent,Scroll)
     WXS_EVI(EVT_COMMAND_SCROLL_TOP,wxEVT_SCROLL_TOP,wxScrollEvent,ScrollTop)
@@ -41,50 +33,37 @@ WXS_EV_BEGIN(wxsScrollBarEvents)
 
 WXS_EV_END()
 
-/* ************************************************************************** */
-/* Widget info                                                                */
-/* ************************************************************************** */
 
 wxsItemInfo wxsScrollBar::Info =
 {
-    _T("wxScrollBar"),          // Name of class
-    wxsTWidget,                 // Type, always wxsTWidget for widget classes
-    _("wxWidgets license"),     // License, any type
-    _("wxWidgets team"),        // Author
-    _T(""),                     // No default e-mail for standard widgets
-    _T("www.wxwidgets.org"),    // Site
-    _T("Standard"),             // Groud for widget, note that _T() instead of _() is used
-    50,                         // Scroll bar is one of most commonly used widgets - we give it high priority
-    _T("ScrollBar"),            // Standard prefix for variable names and identifiers
-    2, 6,                       // Widget version
-    NULL,                       // Bitmaps will be loaded later in manager
-    NULL,                       // --------------------''-------------------
-    0                           // --------------------''-------------------
+    _T("wxScrollBar"),
+    wxsTWidget,
+    _("wxWidgets license"),
+    _("wxWidgets team"),
+    _T(""),
+    _T("www.wxwidgets.org"),
+    _T("Standard"),
+    50,
+    _T("ScrollBar"),
+    2, 6,
+    NULL,
+    NULL,
+    0
 };
 
 
-/* ************************************************************************** */
-/* Constructur for wxsWidget need style set, event set and widget info, so    */
-/* these things should be created before ctor.                                */
-/* ************************************************************************** */
-
 wxsScrollBar::wxsScrollBar(wxsWindowRes* Resource):
     wxsWidget(
-        Resource,                   // Resource is passed to wxsItem's constructor
-        wxsBaseProperties::flAll,   // Using all base properties
-        &Info,                      // Taking local info
-        wxsScrollBarEvents,         // Pointer to local events
-        wxsScrollBarStyles,         // Pointer to local styles
-        _T(""))                      // Default style = 0
+        Resource,
+        wxsBaseProperties::flAll,
+        &Info,
+        wxsScrollBarEvents,
+        wxsScrollBarStyles,
+        _T(""))
 
 {}
 
 
-/* ************************************************************************** */
-/* Function building code - it should append new code generating this widget  */
-/* to the end of prevous code. Currently it support only C++ langage but some */
-/* other languages may be added in future.                                    */
-/* ************************************************************************** */
 
 void wxsScrollBar::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
 {
@@ -92,11 +71,6 @@ void wxsScrollBar::BuildCreatingCode(wxString& Code,const wxString& WindowParent
     {
         case wxsCPP:
         {
-            // Because c_str() may lead to unspecified behaviour
-            // it's better to use << operator instead of wxString::Format.
-            // But be carefull when using << to add integers and longs.
-            // Because of some wxWidgets bugs use '<< wxString::Format(_T("%d"),Value)'
-            // instead of '<< Value'
             Code << GetVarName() << _T(" = new wxScrollBar(")
                  << WindowParent << _T(",")
                  << GetIdName() << _T(",")
@@ -118,15 +92,9 @@ void wxsScrollBar::BuildCreatingCode(wxString& Code,const wxString& WindowParent
     wxsLANGMSG(wxsScrollBar::BuildCreatingCode,Language);
 }
 
-/* ************************************************************************** */
-/* Function building preview item. This should simply return previewed object */
-/* with all properties set-up.                                                */
-/* ************************************************************************** */
 
 wxObject* wxsScrollBar::DoBuildPreview(wxWindow* Parent,bool Exact)
 {
-    // Exact argument is not used here because button preview is
-    // exactly the same in editor and in preview window
     wxScrollBar* Preview = new wxScrollBar(Parent,GetId(),Pos(Parent),Size(Parent),Style());
 
     Preview->SetScrollbar(Value,ThumbSize,Range,PageSize);
@@ -135,14 +103,20 @@ wxObject* wxsScrollBar::DoBuildPreview(wxWindow* Parent,bool Exact)
 }
 
 
-/* ************************************************************************** */
-/* Function enumerating all scroll bar-specific properties.                       */
-/* ************************************************************************** */
-
 void wxsScrollBar::EnumWidgetProperties(long Flags)
 {
    WXS_LONG(wxsScrollBar,Value,0,_("Value"),_T("Value"),0)
    WXS_LONG(wxsScrollBar,ThumbSize,0,_("ThumbSize"),_T("Thumb Size"),0)
    WXS_LONG(wxsScrollBar,Range,0,_("Range"),_T("Range"),0)
    WXS_LONG(wxsScrollBar,PageSize,0,_("PageSize"),_T("Page Size"),0)
+}
+
+void wxsScrollBar::EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
+{
+    switch ( Language )
+    {
+        case wxsCPP: Decl.Add(_T("<wx/scrollbar.h>")); return;
+    }
+
+    wxsLANGMSG(wxsScrollBar::EnumDeclFiles,Language);
 }

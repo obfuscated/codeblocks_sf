@@ -34,26 +34,14 @@ class wxsChoice: public wxsWidget
          */
         virtual void EnumWidgetProperties(long Flags);
 
-        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) {}
+        /** \brief Enumerating header files */
+        virtual void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language);
+
 
     private:
 
         wxArrayString ArrayChoices;
         int DefaultSelection;
 };
-/*
-class wxsChoice: public wxsChoiceBase
-{
-    public:
-        wxsChoice(wxsWindowRes* Resource):
-            wxsChoiceBase(Resource)
-        {}
-        virtual void BuildCreatingCode(wxString& Code,const wxString& WindowParent, wxsCodingLang, Language);
-
-    protected:
-        virtual wxObject* MyCreatePreview(wxWindow* Parent,bool Exact);
-
-};
-*/
 #endif
 

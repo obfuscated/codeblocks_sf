@@ -3,10 +3,6 @@
 #include <wx/slider.h>
 #include <messagemanager.h>
 
-/* ************************************************************************** */
-/* Styles are processed almost like in older code - using WXS_ST_BEGIN,       */
-/* WXS_ST_END, WXS_ST_CATEGORY, WXS_ST ...                                    */
-/* ************************************************************************** */
 
 WXS_ST_BEGIN(wxsSliderStyles)
     WXS_ST_CATEGORY("wxSlider")
@@ -39,22 +35,8 @@ WXS_ST_BEGIN(wxsSliderStyles)
 WXS_ST_END()
 
 
-/* ************************************************************************** */
-/* Events have one additional argument - event type, these can be found       */
-/* in WX_DIR/include/event.h                                                  */
-/* ************************************************************************** */
 
 WXS_EV_BEGIN(wxsSliderEvents)
-//    WXS_EV(EVT_SCROLL,wxScrollEvent,Scroll)
-//    WXS_EV(EVT_SCROLL_TOP,wxScrollEvent,ScrollTop)
-//    WXS_EV(EVT_SCROLL_BOTTOM,wxScrollEvent,ScrollBottom)
-//    WXS_EV(EVT_SCROLL_LINEUP,wxScrollEvent,ScrollLineUp)
-//    WXS_EV(EVT_SCROLL_LINEDOWN,wxScrollEvent,ScrollLineDown)
-//    WXS_EV(EVT_SCROLL_PAGEUP,wxScrollEvent,ScrollPageUp)
-//    WXS_EV(EVT_SCROLL_PAGEDOWN,wxScrollEvent,ScrollPageDown)
-//    WXS_EV(EVT_SCROLL_THUMBTRACK,wxScrollEvent,ScrollThumbTrack)
-//    WXS_EV(EVT_SCROLL_THUMBRELEASE,wxScrollEvent,ScrollThumbTrackRelease)
-//    WXS_EV(EVT_SCROLL_CHANGED,wxScrollEvent,ScrollChanged)
     WXS_EVI(EVT_COMMAND_SCROLL,wxEVT_SCROLL_TOP|wxEVT_SCROLL_BOTTOM|wxEVT_SCROLL_LINEUP|wxEVT_SCROLL_LINEDOWN|wxEVT_SCROLL_PAGEUP|wxEVT_SCROLL_PAGEDOWN|wxEVT_SCROLL_THUMBTRACK|wxEVT_SCROLL_THUMBRELEASE|wxEVT_SCROLL_CHANGED,wxScrollEvent,CmdScroll)
     WXS_EVI(EVT_COMMAND_SCROLL_TOP,wxEVT_SCROLL_TOP,wxScrollEvent,ScrollTop)
     WXS_EVI(EVT_COMMAND_SCROLL_BOTTOM,wxEVT_SCROLL_BOTTOM,wxScrollEvent,CmdScrollBottom)
@@ -71,53 +53,40 @@ WXS_EV_BEGIN(wxsSliderEvents)
 
 WXS_EV_END()
 
-/* ************************************************************************** */
-/* Widget info                                                                */
-/* ************************************************************************** */
 
 wxsItemInfo wxsSlider::Info =
 {
-    _T("wxSlider"),             // Name of class
-    wxsTWidget,                 // Type, always wxsTWidget for widget classes
-    _("wxWidgets license"),     // License, any type
-    _("wxWidgets team"),        // Author
-    _T(""),                     // No default e-mail for standard widgets
-    _T("www.wxwidgets.org"),    // Site
-    _T("Standard"),             // Groud for widget, note that _T() instead of _() is used
-    50,                         // Slider is commonly used widgets - we give it normal priority
-    _T("Slider"),               // Standard prefix for variable names and identifiers
-    2, 6,                       // Widget version
-    NULL,                       // Bitmaps will be loaded later in manager
-    NULL,                       // --------------------''-------------------
-    0                           // --------------------''-------------------
+    _T("wxSlider"),
+    wxsTWidget,
+    _("wxWidgets license"),
+    _("wxWidgets team"),
+    _T(""),
+    _T("www.wxwidgets.org"),
+    _T("Standard"),
+    50,
+    _T("Slider"),
+    2, 6,
+    NULL,
+    NULL,
+    0
 };
 
 
-/* ************************************************************************** */
-/* Constructur for wxsWidget need style set, event set and widget info, so    */
-/* these things should be created before ctor.                                */
-/* ************************************************************************** */
 
 wxsSlider::wxsSlider(wxsWindowRes* Resource):
     wxsWidget(
-        Resource,                   // Resource is passed to wxsItem's constructor
-        wxsBaseProperties::flAll,   // Using all base properties
-        &Info,                      // Taking local info
-        wxsSliderEvents,            // Pointer to local events
-        wxsSliderStyles,            // Pointer to local styles
-        _T("")),                     // Default style = 0
-        Value(0),                   // Initializing widget with some default (but not necessarily clean) values,
-        Min(0),                     // these values will be used when creating new widgets
+        Resource,
+        wxsBaseProperties::flAll,
+        &Info,
+        wxsSliderEvents,
+        wxsSliderStyles,
+        _T("")),
+        Value(0),
+        Min(0),
         Max(100)
 
 {}
 
-
-/* ************************************************************************** */
-/* Function building code - it should append new code generating this widget  */
-/* to the end of prevous code. Currently it support only C++ langage but some */
-/* other languages may be added in future.                                    */
-/* ************************************************************************** */
 
 void wxsSlider::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
 {
@@ -125,11 +94,6 @@ void wxsSlider::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wx
     {
         case wxsCPP:
         {
-            // Because c_str() may lead to unspecified behaviour
-            // it's better to use << operator instead of wxString::Format.
-            // But be carefull when using << to add integers and longs.
-            // Because of some wxWidgets bugs use '<< wxString::Format(_T("%d"),Value)'
-            // instead of '<< Value'
             Code<< GetVarName() << _T(" = new wxSlider(")
                 << WindowParent << _T(",")
                 << GetIdName() << _T(",")
@@ -164,15 +128,9 @@ void wxsSlider::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wx
     wxsLANGMSG(wxsSlider::BuildCreatingCode,Language);
 }
 
-/* ************************************************************************** */
-/* Function building preview item. This should simply return previewed object */
-/* with all properties set-up.                                                */
-/* ************************************************************************** */
 
 wxObject* wxsSlider::DoBuildPreview(wxWindow* Parent,bool Exact)
 {
-    // Exact argument is not used here because slider preview is
-    // exactly the same in editor and in preview window
     wxSlider* Preview = new wxSlider(Parent,GetId(),Value,Min,Max,Pos(Parent),Size(Parent),Style());
 
     if ( TickFrequency )    Preview->SetTickFreq(TickFrequency,0);
@@ -187,10 +145,6 @@ wxObject* wxsSlider::DoBuildPreview(wxWindow* Parent,bool Exact)
 }
 
 
-/* ************************************************************************** */
-/* Function enumerating all button-specific properties.                       */
-/* ************************************************************************** */
-
 void wxsSlider::EnumWidgetProperties(long Flags)
 {
    WXS_LONG(wxsSlider,Value,0,_("Value"),_T("Value"),0)
@@ -204,4 +158,14 @@ void wxsSlider::EnumWidgetProperties(long Flags)
    WXS_LONG(wxsSlider,Tick,0,_("Tick"),_T("Tick"),0)
    WXS_LONG(wxsSlider,TickFrequency,0,_("Tick Frequency"),_T("Tick Frequency"),0)
 
+}
+
+void wxsSlider::EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
+{
+    switch ( Language )
+    {
+        case wxsCPP: Decl.Add(_T("<wx/slider.h>")); return;
+    }
+
+    wxsLANGMSG(wxsSlider::EnumDeclFiles,Language);
 }
