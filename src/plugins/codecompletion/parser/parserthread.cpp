@@ -267,6 +267,14 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 		{
 			m_Str.Clear();
 		}
+		else if (token==ParserConsts::kw_namespace ||
+                token==ParserConsts::kw_struct ||
+                token==ParserConsts::kw_class)
+		{
+		    // do not skip namespace/struct/class blocks
+		    SkipToOneOfChars(_T("{;"), false);
+		    m_Str.Clear();
+		}
 		else if (token==ParserConsts::opbrace)
 		{
 			SkipBlock();
