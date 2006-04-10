@@ -59,7 +59,7 @@ BEGIN_EVENT_TABLE(FindDlg, wxDialog)
     EVT_ACTIVATE(                       FindDlg::OnActivate)
 END_EVENT_TABLE()
 
-FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, bool findInFilesOnly)
+FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, bool findInFilesOnly, bool findInFilesActive)
 	: FindReplaceBase(parent, initial, hasSelection),
 	m_Complete(!findInFilesOnly)
 {
@@ -115,6 +115,8 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
 
 	if (!m_Complete)
         XRCCTRL(*this, "nbFind", wxNotebook)->DeletePage(0); // no active editor, so only find-in-files
+	else if (findInFilesActive)
+		XRCCTRL(*this, "nbFind", wxNotebook)->SetSelection(1); // Search->Find in Files was selected
 }
 
 FindDlg::~FindDlg()

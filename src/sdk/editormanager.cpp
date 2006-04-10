@@ -1148,7 +1148,7 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
 
     FindReplaceBase* dlg;
     if (!replace)
-        dlg = new FindDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, explicitly_find_in_files || !ed);
+        dlg = new FindDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, !ed, explicitly_find_in_files);
     else
         dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection);
 
