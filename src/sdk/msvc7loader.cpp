@@ -183,9 +183,12 @@ bool MSVC7Loader::DoSelectConfiguration(TiXmlElement* root)
 
         // prepare the configuration name
         m_ConfigurationName = configurations[selected_indices[i]];
-        int pos = m_ConfigurationName.Find(_T('|'));
-        if (pos != wxNOT_FOUND)
-            m_ConfigurationName.Remove(pos);
+
+        // do not change the configuration name. we might have duplicates then...
+
+//        int pos = m_ConfigurationName.Find(_T('|'));
+//        if (pos != wxNOT_FOUND)
+//            m_ConfigurationName.Remove(pos);
 
         // parse the selected configuration
         success = success && DoImport(confs);
