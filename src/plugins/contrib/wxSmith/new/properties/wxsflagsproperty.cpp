@@ -37,15 +37,15 @@ bool wxsFlagsProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManage
 
 bool wxsFlagsProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
-    if ( !Element ) 
+    if ( !Element )
     {
-        VALUE = Default; 
+        VALUE = Default;
         return false;
     }
     TiXmlText* Text = Element->FirstChild()->ToText();
-    if ( !Text ) 
+    if ( !Text )
     {
-        VALUE = Default; 
+        VALUE = Default;
         return false;
     }
     VALUE = atol(Text->Value());
@@ -57,7 +57,16 @@ bool wxsFlagsProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Eleme
     if ( VALUE != Default )
     {
         char Buffer[0x40];  // Using char instead of wxChar because TiXml uses it
-        Element->InsertEndChild(TiXmlText(ltoa(VALUE,Buffer,10)));
+
+// ltoa is not ANSI :(
+#ifndef __GNUG__
+        ltoa(VALUE,Buffer,10);
+#else
+        sprintf(Buffer, "%ld", VALUE);
+#endif
+
+        Element->InsertEndChild(TiXmlText(Buffer));
+//        Element->InsertEndChild(TiXmlText(ltoa(VALUE,Buffer,10)));
         return true;
     }
     return false;
