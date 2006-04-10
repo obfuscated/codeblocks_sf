@@ -37,13 +37,13 @@ void CompilerCommandGenerator::Init(cbProject* project)
     m_RCFlags.clear();
     m_Backticks.clear();
 
+    // access the default compiler
+    Compiler* compiler = CompilerFactory::GetDefaultCompiler();
+    if (!compiler)
+        cbThrow(_T("Default compiler is invalid!"));
+
     if (!project)
     {
-        // access the default compiler
-        Compiler* compiler = CompilerFactory::GetDefaultCompiler();
-        if (!compiler)
-            cbThrow(_T("Compiler not valid"));
-
         m_DefOutput[0] = SetupOutputFilenames(compiler, 0);
         m_Inc[0] = SetupIncludeDirs(compiler, 0);
         m_Lib[0] = SetupLibrariesDirs(compiler, 0);
@@ -53,6 +53,15 @@ void CompilerCommandGenerator::Init(cbProject* project)
         m_LDAdd[0] = SetupLinkLibraries(compiler, 0);
         m_RCFlags[0] = SetupResourceCompilerOptions(compiler, 0);
         return;
+    }
+    else
+    {
+        m_PrjIncPath = project->GetCommonTopLevelPath();
+        if (!m_PrjIncPath.IsEmpty())
+        {
+            QuoteStringIfNeeded(m_PrjIncPath);
+            m_PrjIncPath.Prepend(compiler->GetSwitches().includeDirs);
+        }
     }
 
     // project pre-build scripts
@@ -85,9 +94,9 @@ void CompilerCommandGenerator::Init(cbProject* project)
         DoBuildScripts(target, _T("SetBuildOptions"));
 
         // access the compiler used for this target
-        Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
+        compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
         if (!compiler)
-            cbThrow(_T("Compiler not valid"));
+            cbThrow(_T("Compiler for target '") + target->GetTitle() + _T("' is invalid!"));
 
         m_DefOutput[target] = SetupOutputFilenames(compiler, target);
         m_Inc[target] = SetupIncludeDirs(compiler, target);
@@ -153,6 +162,16 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
             QuoteStringIfNeeded(fileInc);
             fileInc.Prepend(compiler->GetSwitches().includeDirs);
         }
+    }
+    if (Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_prj_cwd"), false))
+    {
+        // Because C::B doesn't compile each file by running in the same directory with it,
+        // it can cause some problems when the file #includes other files relative,
+        // e.g. #include "../a_lib/include/a.h"
+        //
+        // So here we add the project's top-level directory (common toplevel path) to the includes
+        // search dir so it works.
+        fileInc << _T(' ') << m_PrjIncPath;
     }
 
     macro.Replace(_T("$compiler"), compilerStr);

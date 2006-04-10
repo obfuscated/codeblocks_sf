@@ -1150,6 +1150,13 @@ or in any of the &quot;Additional paths&quot;...</label>
                               <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
                               <border>8</border>
                             </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkIncludePrjCwd">
+                                <label>Explicitely add project's top-level directory to compiler search dirs</label>
+                              </object>
+                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                              <border>8</border>
+                            </object>
                           </object>
                           <flag>wxALL|wxGROW</flag>
                           <border>8</border>
