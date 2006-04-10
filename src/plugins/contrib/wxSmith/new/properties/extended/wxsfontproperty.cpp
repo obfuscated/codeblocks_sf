@@ -132,12 +132,12 @@ wxString wxsFontData::BuildFontCode(const wxString& FontName,wxsCodingLang Langu
             wxString FamilyStr = _T("wxDEFAULT");
             if ( HasFamily )
             {
-                if ( Family = wxDECORATIVE ) FamilyStr = _T("wxDECORATIVE"); else
-                if ( Family = wxROMAN      ) FamilyStr = _T("wxROMAN");      else
-                if ( Family = wxSCRIPT     ) FamilyStr = _T("wxSCRIPT");     else
-                if ( Family = wxSWISS      ) FamilyStr = _T("wxSWISS");      else
-                if ( Family = wxMODERN     ) FamilyStr = _T("wxMODERN");     else
-                if ( Family = wxTELETYPE   ) FamilyStr = _T("wxTELETYPE");
+                if ( Family == wxDECORATIVE ) FamilyStr = _T("wxDECORATIVE"); else
+                if ( Family == wxROMAN      ) FamilyStr = _T("wxROMAN");      else
+                if ( Family == wxSCRIPT     ) FamilyStr = _T("wxSCRIPT");     else
+                if ( Family == wxSWISS      ) FamilyStr = _T("wxSWISS");      else
+                if ( Family == wxMODERN     ) FamilyStr = _T("wxMODERN");     else
+                if ( Family == wxTELETYPE   ) FamilyStr = _T("wxTELETYPE");
             }
 
             wxString StyleStr = _T("wxFONTSTYLE_NORMAL");
@@ -347,13 +347,13 @@ bool wxsFontProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Elemen
 
     if ( VALUE.HasFamily )
     {
-        if ( VALUE.Family = wxDECORATIVE ) XmlSetString(Element,_T("decorative"),_T("family")); else
-        if ( VALUE.Family = wxROMAN      ) XmlSetString(Element,_T("roman"),     _T("family")); else
-        if ( VALUE.Family = wxSCRIPT     ) XmlSetString(Element,_T("script"),    _T("family")); else
-        if ( VALUE.Family = wxSWISS      ) XmlSetString(Element,_T("swiss"),     _T("family")); else
-        if ( VALUE.Family = wxMODERN     ) XmlSetString(Element,_T("modern"),    _T("family")); else
-        if ( VALUE.Family = wxTELETYPE   ) XmlSetString(Element,_T("teletype"),  _T("family")); else
-        if ( VALUE.Family = wxDEFAULT    ) XmlSetString(Element,_T("default"),   _T("family"));
+        if ( VALUE.Family == wxDECORATIVE ) XmlSetString(Element,_T("decorative"),_T("family")); else
+        if ( VALUE.Family == wxROMAN      ) XmlSetString(Element,_T("roman"),     _T("family")); else
+        if ( VALUE.Family == wxSCRIPT     ) XmlSetString(Element,_T("script"),    _T("family")); else
+        if ( VALUE.Family == wxSWISS      ) XmlSetString(Element,_T("swiss"),     _T("family")); else
+        if ( VALUE.Family == wxMODERN     ) XmlSetString(Element,_T("modern"),    _T("family")); else
+        if ( VALUE.Family == wxTELETYPE   ) XmlSetString(Element,_T("teletype"),  _T("family")); else
+        if ( VALUE.Family == wxDEFAULT    ) XmlSetString(Element,_T("default"),   _T("family"));
     }
 
     wxString Faces;
