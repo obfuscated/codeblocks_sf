@@ -6,26 +6,31 @@
  * Copyright: (c) Yiannis Mandravellos
  * License:   GPL
  **************************************************************/
-
-#include <sdk.h>
-
-#include <wx/intl.h>
-#include <wx/textdlg.h>
-#include <wx/xrc/xmlres.h>
+#if CB_PRECOMP
+#include "sdk.h"
+#else
+#include <wx/event.h>
 #include <wx/fs_zip.h>
-#include <manager.h>
-#include <configmanager.h>
-#include <editormanager.h>
-#include <messagemanager.h>
-#include <projectmanager.h>
-#include <cbeditor.h>
-#include <cbproject.h>
-#include <licenses.h>
-#include "todolist.h"
+#include <wx/intl.h>
+#include <wx/menu.h>
+#include <wx/menuitem.h>
+#include <wx/string.h>
+#include <wx/utils.h>
+#include <wx/xrc/xmlres.h>
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "licenses.h"
+#include "manager.h"
+//#include "messagemanager.h"
+#include "sdk_events.h"
+#endif
+
 #include "addtododlg.h"
-#include "todosettingsdlg.h"
 #include "asktypedlg.h"
-#include <globals.h>
+#include "todolist.h"
+#include "todolistview.h"
+#include "todosettingsdlg.h"
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(ToDoItems);

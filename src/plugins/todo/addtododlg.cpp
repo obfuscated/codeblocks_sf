@@ -1,13 +1,16 @@
-#include <sdk.h>
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/textctrl.h>
+#if CB_PRECOMP
+#include "sdk.h"
+#else
+#include <wx/arrstr.h>
 #include <wx/combobox.h>
+#include <wx/intl.h>
 #include <wx/spinctrl.h>
-#include <wx/utils.h>
-#include <configmanager.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
+#include "manager.h"
+#include "configmanager.h"
+#endif
 #include "addtododlg.h"
-
 
 AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& types)
     : m_Types(types)
@@ -64,7 +67,7 @@ AddTodoDlg::~AddTodoDlg()
 	//dtor
 }
 
-void AddTodoDlg::LoadUsers()
+void AddTodoDlg::LoadUsers() const
 {
 	wxComboBox* cmb = XRCCTRL(*this, "cmbUser", wxComboBox);
 
@@ -79,7 +82,7 @@ void AddTodoDlg::LoadUsers()
 	cmb->SetSelection(0);
 }
 
-void AddTodoDlg::SaveUsers()
+void AddTodoDlg::SaveUsers() const
 {
 	wxComboBox* cmb = XRCCTRL(*this, "cmbUser", wxComboBox);
 	wxArrayString users;
@@ -91,17 +94,17 @@ void AddTodoDlg::SaveUsers()
 	Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("users"), users);
 }
 
-wxString AddTodoDlg::GetText()
+wxString AddTodoDlg::GetText() const
 {
     return XRCCTRL(*this, "txtText", wxTextCtrl)->GetValue();
 }
 
-wxString AddTodoDlg::GetUser()
+wxString AddTodoDlg::GetUser() const
 {
     return XRCCTRL(*this, "cmbUser", wxComboBox)->GetValue();
 }
 
-int AddTodoDlg::GetPriority()
+int AddTodoDlg::GetPriority() const
 {
     int prio = XRCCTRL(*this, "spnPriority", wxSpinCtrl)->GetValue();
     if (prio < 1)
@@ -111,17 +114,17 @@ int AddTodoDlg::GetPriority()
     return prio;
 }
 
-ToDoPosition AddTodoDlg::GetPosition()
+ToDoPosition AddTodoDlg::GetPosition() const
 {
     return (ToDoPosition)(XRCCTRL(*this, "cmbPosition", wxComboBox)->GetSelection());
 }
 
-wxString AddTodoDlg::GetType()
+wxString AddTodoDlg::GetType() const
 {
     return XRCCTRL(*this, "cmbType", wxComboBox)->GetValue();
 }
 
-ToDoCommentType AddTodoDlg::GetCommentType()
+ToDoCommentType AddTodoDlg::GetCommentType() const
 {
     return (ToDoCommentType)(XRCCTRL(*this, "cmbStyle", wxComboBox)->GetSelection());
 }

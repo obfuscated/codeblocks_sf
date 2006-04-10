@@ -1,5 +1,9 @@
-#include <wx/xrc/xmlres.h>
+#if CB_PRECOMP
+#include "sdk.h"
+#else
 #include <wx/combobox.h>
+#include <wx/xrc/xmlres.h>
+#endif
 #include "asktypedlg.h"
 
 
@@ -18,9 +22,3 @@ TypeCorrection AskTypeDlg::GetTypeCorrection() const
     return static_cast<TypeCorrection>(XRCCTRL(*this, "cmbCorrect", wxComboBox)->GetSelection());
 }
 
-#if 0
-void AskTypeDlg::EndModal(int retVal)
-{
-	wxDialog::EndModal(retVal);
-}
-#endif

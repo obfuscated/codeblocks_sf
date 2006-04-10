@@ -7,11 +7,9 @@ class ToDoSettingsDlg : public wxDialog
 {
 	public:
 		ToDoSettingsDlg();
-		virtual ~ToDoSettingsDlg();
-		
-		virtual void EndModal(int retCode);
-	protected:
-	private:
+		~ToDoSettingsDlg();
+
+		void EndModal(int retCode);
 };
 
 #endif // TODOSETTINGSDLG_H

@@ -10,24 +10,24 @@
 #ifndef TODOLIST_H
 #define TODOLIST_H
 
-// For compilers that support precompilation, includes <wx/wx.h>
-#include <wx/wxprec.h>
-
 #ifdef __BORLANDC__
 	#pragma hdrstop
 #endif
 
-#ifndef WX_PRECOMP
-	#include <wx/menu.h>
-	#include <wx/toolbar.h>
-#endif
+#include <wx/arrstr.h>
+#include "cbplugin.h" // the base class we 're inheriting
+#include "globals.h"
 
-#include <settings.h> // much of the SDK is here
-#include <sdk_events.h>
-#include <cbplugin.h> // the base class we 're inheriting
-#include <wx/dynarray.h>
+class wxMenuBar;
+class wxMenu;
+class wxToolBar;
+class FileTreeData;
+class wxCommandEvent;
+class wxUpdateUIEvent;
+class CodeBlocksEvent;
+class ToDoListView;
+class FileTreeData;
 
-#include "todolistview.h"
 
 class ToDoList : public cbPlugin
 {
@@ -40,12 +40,11 @@ class ToDoList : public cbPlugin
 		bool BuildToolBar(wxToolBar* toolBar);
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-	protected:
+	private:
 		void OnViewList(wxCommandEvent& event);
 		void OnAddItem(wxCommandEvent& event);
 		void OnReparse(CodeBlocksEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
-    private:
         void LoadTypes();
         void SaveTypes();
 		ToDoListView* m_pListLog;

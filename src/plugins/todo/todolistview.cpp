@@ -1,19 +1,28 @@
-#include <sdk.h>
-#include "todolistview.h"
+#if CB_PRECOMP
+#include "sdk.h"
+#else
+#include <wx/arrstr.h>
+#include <wx/button.h>
+#include <wx/combobox.h>
+#include <wx/event.h>
+#include <wx/file.h>
 #include <wx/intl.h>
-#include <manager.h>
-#include <editormanager.h>
-#include <messagemanager.h>
-#include <projectmanager.h>
-#include <cbeditor.h>
-#include <cbproject.h>
+#include <wx/listctrl.h>
+#include <wx/log.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
-#include <wx/file.h>
 #include <wx/utils.h>
 
-#define LOGIT Manager::Get()->GetMessageManager()->DebugLog
-#define TRAP asm("int3")
+#include "cbeditor.h"
+#include "cbproject.h"
+#include "editormanager.h"
+#include "globals.h"
+#include "manager.h"
+#include "projectfile.h"
+#include "projectmanager.h"
+//#include "messagemanager.h"
+#endif
+#include "todolistview.h"
 
 int idSource = wxNewId();
 int idUser = wxNewId();

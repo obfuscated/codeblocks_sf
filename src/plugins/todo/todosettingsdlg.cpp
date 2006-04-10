@@ -1,8 +1,12 @@
-#include <sdk.h>
-#include "todosettingsdlg.h"
-#include <wx/xrc/xmlres.h>
+#if CB_PRECOMP
+#include "sdk.h"
+#else
 #include <wx/checkbox.h>
-#include <configmanager.h>
+#include <wx/xrc/xmlres.h>
+#include "configmanager.h"
+#include "manager.h"
+#endif
+#include "todosettingsdlg.h"
 
 ToDoSettingsDlg::ToDoSettingsDlg()
 {

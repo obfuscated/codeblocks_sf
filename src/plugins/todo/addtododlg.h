@@ -2,6 +2,10 @@
 #define ADDTODODLG_H
 
 #include <wx/dialog.h>
+#include <wx/string.h>
+
+class wxArrayString;
+class wxWindow;
 
 enum ToDoPosition
 {
@@ -21,22 +25,21 @@ enum ToDoCommentType
 class AddTodoDlg : public wxDialog
 {
 	public:
-		AddTodoDlg(wxWindow* parent, wxArrayString& types);
-		virtual ~AddTodoDlg();
-        
-        wxString GetText();
-        wxString GetUser();
-        int GetPriority();
-        ToDoPosition GetPosition();
-        wxString GetType();
-        ToDoCommentType GetCommentType();
-		
-		virtual void EndModal(int retVal);
-	protected:
-		void LoadUsers();
-		void SaveUsers();
-		wxArrayString& m_Types;
+		AddTodoDlg(wxWindow* parent, wxArrayString& types); // make sure the types live as long (or longer) then this dialog
+		~AddTodoDlg();
+
+        wxString GetText() const;
+        wxString GetUser() const;
+        int GetPriority() const;
+        ToDoPosition GetPosition() const;
+        wxString GetType() const;
+        ToDoCommentType GetCommentType() const;
+
+		void EndModal(int retVal);
 	private:
+		void LoadUsers() const;
+		void SaveUsers() const;
+		wxArrayString& m_Types;
 };
 
 #endif // ADDTODODLG_H

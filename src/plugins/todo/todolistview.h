@@ -1,12 +1,15 @@
 #ifndef TODOLISTVIEW_H
 #define TODOLISTVIEW_H
 
-#include <simplelistlog.h>
-#include <wx/combobox.h>
-#include <wx/button.h>
-#include <wx/dynarray.h>
+#include <wx/string.h>
+#include "simplelistlog.h"
 
 class cbEditor;
+class wxArrayString;
+class wxCommandEvent;
+class wxListEvent;
+class wxComboBox;
+class wxButton;
 
 struct ToDoItem
 {
@@ -25,9 +28,9 @@ class ToDoListView : public SimpleListLog
 {
 	public:
 		ToDoListView(int numCols, int widths[], const wxArrayString& titles, const wxArrayString& types);
-		virtual ~ToDoListView();
+		~ToDoListView();
         void Parse();
-	protected:
+	private:
         void LoadUsers();
         void FillList();
 		void ParseEditor(cbEditor* pEditor);
@@ -46,7 +49,7 @@ class ToDoListView : public SimpleListLog
         wxComboBox* m_pUser;
         wxButton* m_pRefresh;
         const wxArrayString& m_Types;
-	private:
+
         DECLARE_EVENT_TABLE()
 };
 

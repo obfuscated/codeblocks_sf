@@ -17,7 +17,6 @@ class AskTypeDlg : public wxDialog
 		virtual ~AskTypeDlg();
 
 		TypeCorrection GetTypeCorrection() const;
-//		virtual void EndModal(int retVal);
 };
 
 #endif // ASKTYPEDLG_H
