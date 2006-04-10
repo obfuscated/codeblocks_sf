@@ -141,17 +141,22 @@ void ClassBrowserBuilderThread::BuildTreeNamespace(const wxTreeItemId& parentNod
         parentidx = parent->GetSelf();
     }
 
+    bool hasCurrset = currset.size() != 0;
 	for(;it != it_end; it++)
 	{
 	    Token* token = m_pTokens->at(*it);
-	    if(!token || /* !token->m_Bool || */ !token->m_IsLocal || token->m_TokenKind != tkNamespace)
+	    if(!token || /* !token->m_Bool || */ (!hasCurrset && !token->m_IsLocal) || token->m_TokenKind != tkNamespace)
             continue;
-        if(currset.size() && !token->MatchesFiles(currset))
-            continue;
+//        if(hasCurrset && !token->MatchesFiles(currset))
+//            continue;
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("  + Matching namespace: ") + token->m_Name);
         ClassTreeData* ctd = new ClassTreeData(token);
         wxTreeItemId newNS = m_Tree.AppendItem(parentNode, token->m_Name, PARSER_IMG_NAMESPACE, -1, ctd);
         BuildTreeNamespace(newNS, token, currset);
         AddTreeNamespace(newNS, token, currset);
+        // remove branch if empty
+        if (!m_Tree.ItemHasChildren(newNS))
+            m_Tree.Delete(newNS);
         if (TestDestroy())
             return;
 	}
@@ -182,13 +187,14 @@ void ClassBrowserBuilderThread::AddTreeNamespace(const wxTreeItemId& parentNode,
 	wxTreeItemId node_others;
 	wxTreeItemId* curnode = 0;
 
+    bool hasCurrset = currset.size() != 0;
 	for(;it != it_end; it++)
 	{
         if (TestDestroy())
             return;
 
 	    Token* token = m_pTokens->at(*it);
-	    if(!token || /* !token->m_Bool || */ !token->m_IsLocal)
+	    if(!token || /* !token->m_Bool || */ (!hasCurrset && !token->m_IsLocal))
             continue;
         if(currset.size() && !token->MatchesFiles(currset))
             continue;
