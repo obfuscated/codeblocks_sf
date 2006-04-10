@@ -1,4 +1,4 @@
-#include "wxsContainer.h"
+#include "wxscontainer.h"
 #include <messagemanager.h>
 
 wxsContainer::wxsContainer(
