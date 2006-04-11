@@ -45,7 +45,7 @@ cbDragScroll::cbDragScroll()
 	//ctor
 	m_PluginInfo.name = _T("DragScroll");
 	m_PluginInfo.title = _("DragScroll");
-	m_PluginInfo.version = _T("0.21 2006/04/6");
+	m_PluginInfo.version = _T("0.22 2006/04/8");
 	m_PluginInfo.description = _("Mouse Drag and Scroll\nUsing Right or Middle Mouse Key");
 	m_PluginInfo.author = _T("Pecan");
 	m_PluginInfo.authorEmail = _T("");
@@ -102,6 +102,7 @@ void cbDragScroll::OnAttach()
     MouseDragKey            = 0;
     MouseDragSensitivity    = 5;
     MouseToLineRatio        = 30;
+    MouseRightKeyCtrl       = 0 ;
 
     // Create filename like cbDragScroll.ini
     //memorize the key file name as {%HOME%}\cbDragScroll.ini
@@ -126,6 +127,7 @@ void cbDragScroll::OnAttach()
 	cfgFile.Read(_T("MouseDragKey"),            &MouseDragKey ) ;
 	cfgFile.Read(_T("MouseDragSensitivity"),    &MouseDragSensitivity ) ;
 	cfgFile.Read(_T("MouseToLineRatio"),        &MouseToLineRatio ) ;
+	cfgFile.Read(_T("MouseRightKeyCtrl"),       &MouseRightKeyCtrl) ;
 
     #ifdef LOGGING
         LOGIT(_T("MouseDragScrollEnabled:%d"),  MouseDragScrollEnabled ) ;
@@ -134,6 +136,7 @@ void cbDragScroll::OnAttach()
         LOGIT(_T("MouseDragKey:%d"),            MouseDragKey ) ;
         LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity ) ;
         LOGIT(_T("MouseToLineRatio:%d"),        MouseToLineRatio ) ;
+        LOGIT(_T("MouseRightKeyCtrl:%d"),       MouseRightKeyCtrl ) ;
     #endif //LOGGING
 
     // Pointer to search Results Window (first listCtrl window)
@@ -171,6 +174,7 @@ cbConfigurationPanel* cbDragScroll::GetConfigurationPanel(wxWindow* parent)
     pDlg->SetMouseDragKey ( MouseDragKey );
     pDlg->SetMouseDragSensitivity ( MouseDragSensitivity );
     pDlg->SetMouseToLineRatio ( MouseToLineRatio );
+    pDlg->SetMouseRightKeyCtrl ( MouseRightKeyCtrl );
 
 
     // when the configuration panel is closed with OK, OnDialogDone() will be called
@@ -189,6 +193,7 @@ void cbDragScroll::OnDialogDone(cbDragScrollCfg* pDlg)
     MouseDragKey            = pDlg->GetMouseDragKey();
     MouseDragSensitivity    = pDlg->GetMouseDragSensitivity();
     MouseToLineRatio        = pDlg->GetMouseToLineRatio();
+    MouseRightKeyCtrl       = pDlg->GetMouseRightKeyCtrl();
 
     LOGIT(_T("MouseDragScrollEnabled:%d"),  MouseDragScrollEnabled);
     LOGIT(_T("MouseEditorFocusEnabled:%d"), MouseEditorFocusEnabled);
@@ -196,6 +201,7 @@ void cbDragScroll::OnDialogDone(cbDragScrollCfg* pDlg)
     LOGIT(_T("MouseDragKey:%d"),            MouseDragKey);
     LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity);
     LOGIT(_T("MouseToLineRatio:%d"),        MouseToLineRatio);
+    LOGIT(_T("MouseRightKeyCtrl:%d"),       MouseRightKeyCtrl);
     LOGIT(_T("-----------------------------"));
 
     // Post a pending request to later update the configuration requests
@@ -241,6 +247,7 @@ void cbDragScroll::OnDoConfigRequests(wxUpdateUIEvent& event)
 	cfgFile.Write(_T("MouseDragKey"),            MouseDragKey ) ;
 	cfgFile.Write(_T("MouseDragSensitivity"),    MouseDragSensitivity ) ;
 	cfgFile.Write(_T("MouseToLineRatio"),        MouseToLineRatio ) ;
+	cfgFile.Write(_T("MouseRightKeyCtrl"),       MouseRightKeyCtrl ) ;
 
 }
 // ----------------------------------------------------------------------------
@@ -662,9 +669,11 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
             #if LOGGING
              LOGIT(_T("Down X:%d Y:%d"), m_InitY, m_InitX);
             #endif
-            // If Search Results window, hide right mouse click
-            if (m_pEvtObject eq pDS->m_pSearchResultsWindow)
-                return;
+            // If hiding Right mouse keydown from ListCtrls, return v0.22
+            if (pDS->GetMouseRightKeyCtrl()) return;
+            //- If Search Results window, hide right mouse click
+            //-if (m_pEvtObject eq pDS->m_pSearchResultsWindow)
+            //-    return;
             event.Skip(); //v0.21
             return;
      }

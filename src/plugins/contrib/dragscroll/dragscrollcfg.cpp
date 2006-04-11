@@ -28,8 +28,15 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 
     //Focus editor when mouse in editor window
 	EditorFocusEnabled = new wxCheckBox(this,ID_ENABLEDFOCUS,_("Auto Editor Focus Enabled"),wxPoint(-1,-1),wxDefaultSize,0);
-	EditorFocusEnabled->SetValue(true);
+	EditorFocusEnabled->SetValue(false);
 	EditorFocusEnabled->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
+
+    //Hide Right keydown events from ListCtrl windows
+	MouseRightKeyCtrl = new wxCheckBox(this,ID_ENABLEDFOCUS,_("Smooth Message List Scrolling"),wxPoint(-1,-1),wxDefaultSize,0);
+	MouseRightKeyCtrl->SetValue(false);
+	MouseRightKeyCtrl->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
+	StaticTextMRKC = new wxStaticText(this,ID_STATICTEXTMRKC,_("(Conflicts with some Context Menus)"),wxDefaultPosition,wxDefaultSize,0);
+	StaticTextMRKC->SetFont(wxFont(7,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
 
 	wxString wxRadioBoxChoices_ScrollDirection[2];
 	wxRadioBoxChoices_ScrollDirection[0] = _("With Mouse");
@@ -67,13 +74,15 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	if ( 1 ) MouseToLineRatio->SetTick(1);
 	if ( 10 || 100 ) MouseToLineRatio->SetSelection(10,100);
     //
-	//-DoneButton = new wxButton(this,ID_DONEBUTTON,_("Done"),wxDefaultPosition,wxDefaultSize,0);
-	//-if (true) DoneButton->SetDefault();
 	FlexGridSizer1->Add(StaticText1,1,wxALL|wxALIGN_CENTER,5);
-	FlexGridSizer1->Add(-1,-1,1);
+	//FlexGridSizer1->Add(-1,-1,1);
 	FlexGridSizer1->Add(ScrollEnabled,1,wxALL|wxALIGN_CENTER,5);
 
 	FlexGridSizer1->Add(EditorFocusEnabled,1,wxALL|wxALIGN_CENTER,5);
+
+	FlexGridSizer1->Add(MouseRightKeyCtrl,1,(wxALL&~wxBOTTOM)|wxALIGN_CENTER,5);
+	FlexGridSizer1->Add(StaticTextMRKC,1,(wxALL&~wxTOP)|wxALIGN_CENTER,0);
+
 
 	FlexGridSizer1->Add(ScrollDirection,1,wxALL|wxALIGN_CENTER,5);
 	FlexGridSizer1->Add(StaticText2,1,wxALL|wxALIGN_CENTER,5);
@@ -83,8 +92,6 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	FlexGridSizer1->Add(StaticText4,1,wxALL|wxALIGN_CENTER,5);
 	FlexGridSizer1->Add(MouseToLineRatio,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
 
-	//FlexGridSizer1->Add(-1,-1,1);
-	//-FlexGridSizer1->Add(DoneButton,1,wxALL|wxALIGN_CENTER,5);
 	this->SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);

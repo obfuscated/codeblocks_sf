@@ -90,6 +90,7 @@ class cbDragScroll : public cbPlugin
         int  GetMouseDragKey()           { return MouseDragKey; }
         int  GetMouseDragSensitivity()   { return MouseDragSensitivity; }
         int  GetMouseToLineRatio()       { return MouseToLineRatio; }
+        int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl; }
 
         wxWindow* m_pSearchResultsWindow;
 
@@ -121,6 +122,7 @@ class cbDragScroll : public cbPlugin
         int  MouseDragKey           ;   //Right or Middle mouse key
         int  MouseDragSensitivity   ;   //Adaptive speed sensitivity
         int  MouseToLineRatio       ;   //Percentage of mouse moves that make a line
+        bool MouseRightKeyCtrl      ;   //Hide Right mouse down from ListCtrl windows
 
     private:
 		DECLARE_EVENT_TABLE()
@@ -273,6 +275,14 @@ CB_DECLARE_PLUGIN();
 //          Put back events for listctrl windows
 //          Catch address of Search Results window for scrolling.
 // ----------------------------------------------------------------------------
-
+//  open    2006/04/8
+//          listCtrl windows activate on right mouse click. eg, Search and compiler
+//          error windows move the editor window on "right click". Very annoying.
+//          Suggest option to hide right mouse keydown from listCtrls
+//          Added config option []"Smooth Message List Scrolling"
+//                              "(Conflicts with some Context Menus)"
+//          Set the Editor focus and Smooth Scrolling to default=false
+// ----------------------------------------------------------------------------
+//  testing v0.22 2006/04/8 Capture ListCtrl Right Mouse Keydown
+// ----------------------------------------------------------------------------
 #endif // DRAGSCROLL_H
-

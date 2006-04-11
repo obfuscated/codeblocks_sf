@@ -57,7 +57,8 @@ class cbDragScrollCfg: public cbConfigurationPanel
 		    ID_STATICTEXT1,
 		    ID_STATICTEXT2,
 		    ID_STATICTEXT3,
-		    ID_STATICTEXT4
+		    ID_STATICTEXT4,
+		    ID_STATICTEXTMRKC
 		};
 		//*)
 
@@ -67,6 +68,7 @@ class cbDragScrollCfg: public cbConfigurationPanel
         int  GetMouseDragKey()           { return MouseKeyChoice->GetSelection(); }
         int  GetMouseDragSensitivity()   { return Sensitivity->GetValue(); }
         int  GetMouseToLineRatio()       { return MouseToLineRatio->GetValue(); }
+        int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl->GetValue(); }
 
 
         void SetMouseDragScrollEnabled(bool value)
@@ -81,6 +83,8 @@ class cbDragScrollCfg: public cbConfigurationPanel
                 { Sensitivity->SetValue(value); }
         void SetMouseToLineRatio(int value)
                 { MouseToLineRatio->SetValue(value); }
+        void SetMouseRightKeyCtrl(int value)
+                { MouseRightKeyCtrl->SetValue(value); }
 
 	protected:
 
@@ -93,6 +97,7 @@ class cbDragScrollCfg: public cbConfigurationPanel
 		wxStaticText* StaticText1;
 		wxCheckBox* ScrollEnabled;
 		wxCheckBox* EditorFocusEnabled;
+		wxCheckBox* MouseRightKeyCtrl;
 		wxRadioBox* ScrollDirection;
 		wxStaticText* StaticText2;
 		wxChoice* MouseKeyChoice;
@@ -101,6 +106,7 @@ class cbDragScrollCfg: public cbConfigurationPanel
         wxStaticText* StaticText4;
 		wxSlider* MouseToLineRatio;
 		wxButton* DoneButton;
+		wxStaticText* StaticTextMRKC;
 		//*)
 
 	private:
