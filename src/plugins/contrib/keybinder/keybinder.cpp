@@ -4,7 +4,6 @@
 // Author:      Aleksandras Gluchovas
 // Modified by: Francesco Montorsi
 // Created:     2000/02/10
-// RCS-ID:      $Id$
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1839,8 +1838,8 @@ wxKeyProfileArray wxKeyConfigPanel::GetProfiles() const
 // ----------------------------------------------------------------------------
 // wxKeyConfigPanel - UPDATE functions
 // ----------------------------------------------------------------------------
-
 void wxKeyConfigPanel::UpdateButtons()
+// ----------------------------------------------------------------------------
 {
 	wxLogDebug(wxT("wxKeyConfigPanel::UpdateButtons"));
 
@@ -2026,8 +2025,9 @@ void wxKeyConfigPanel::OnApplyChanges(wxCommandEvent &event)
     ApplyChanges();
 	event.Skip();		// let parent know that changes were applied
 }
-
+// ----------------------------------------------------------------------------
 void wxKeyConfigPanel::OnProfileEditing(wxCommandEvent &)
+// ----------------------------------------------------------------------------
 {
 	wxASSERT(m_nCurrentProf != -1);
 
@@ -2200,7 +2200,7 @@ void wxKeyConfigPanel::OnAssignKey(wxCommandEvent &)
 // ----------------------------------------------------------------------------
 {
 	// the new key combination should be valid because only when
-	// it's valid this button is enabled...
+	// it's valid is this Add button enabled...
 	wxASSERT(m_pKeyField->IsValidKeyComb());
 
 	wxCmd *sel = GetSelCmd();
@@ -2210,38 +2210,50 @@ void wxKeyConfigPanel::OnAssignKey(wxCommandEvent &)
         wxMessageBox(wxT("KeyBinding file corrupted. Please delete it.")); //+v0.4
         return;
      }
-	if (sel->GetShortcutCount() >= wxCMD_MAX_SHORTCUTS) {
 
-		// sorry...
-		wxMessageBox(wxString::Format(wxT("Cannot add more than %d shortcuts ")
-					wxT("to a single command..."), wxCMD_MAX_SHORTCUTS),
-					wxT("Cannot add another shortcut"));
-		return;
-	}
+    if (sel->GetShortcutCount() >= wxCMD_MAX_SHORTCUTS) {
 
-	// actually add the new shortcut key
-	// (if there are already the max. number of shortcuts for
-	// this command, the shortcut won't be added).
-	sel->AddShortcut(m_pKeyField->GetValue());
+        // sorry...
+        wxMessageBox(wxString::Format(wxT("Cannot add more than %d shortcuts ")
+                    wxT("to a single command..."), wxCMD_MAX_SHORTCUTS),
+                    wxT("Cannot add another shortcut"));
+        return;
+    }
 
-	// now the user has modified the currently selected profile...
-	m_bProfileHasBeenModified = TRUE;
+    // if the key bind was owned by other commands,
+    // remove it from the old commands...
+    wxCmd *p = 0;                                                   //pecan 2006/4/10
+    while (p = m_kBinder.GetCmdBindTo(m_pKeyField->GetValue()) )
+    {
+        // another command already owns this key bind...
+        wxKeyBind tmp(m_pKeyField->GetValue());
+        int n;
+        if (p->IsBindTo(tmp, &n))
+            p->RemoveShortcut(n);
+    }//endwhile
 
-	// if the just added key bind was owned by another command,
-	// remove it from the old command...
-	if (m_pCurrCmd) {
-		wxKeyBind tmp(m_pKeyField->GetValue());
-		int n;
+    // actually add the new shortcut key
+    // (if there are already the max. number of shortcuts for
+    // this command, the shortcut won't be added).
+    sel->AddShortcut(m_pKeyField->GetValue());
 
-		bool bind = m_pCurrCmd->IsBindTo(tmp, &n);     //pecan 2006/03/25
-#ifdef __WXDEBUG__
-		//-bool bind = m_pCurrCmd->IsBindTo(tmp, &n);  //pecan 2006/03/25
-		wxASSERT_MSG(bind, wxT("the m_pCurrCmd variable should be NULL then..."));
-#endif		// to avoid warnings in release mode
+    // now the user has modified the currently selected profile...
+    m_bProfileHasBeenModified = TRUE;
 
-		//m_pCurrCmd->RemoveShortcut(n);
-		if (bind) m_pCurrCmd->RemoveShortcut(n);        //pecan 2006/03/25
-	}
+////    // if the just added key bind was owned by another command,
+////    // remove it from the old command...
+////    if (m_pCurrCmd) {     //pecan 2006/4/10 testing
+////        wxKeyBind tmp(m_pKeyField->GetValue());
+////        int n;
+////        bool bind = m_pCurrCmd->IsBindTo(tmp, &n);     //pecan 2006/03/25
+////    #ifdef __WXDEBUG__
+////        //-bool bind = m_pCurrCmd->IsBindTo(tmp, &n);  //pecan 2006/03/25
+////        wxASSERT_MSG(bind, wxT("the m_pCurrCmd variable should be NULL then..."));
+////    #endif		// to avoid warnings in release mode
+////
+////        //m_pCurrCmd->RemoveShortcut(n);
+////        if (bind) m_pCurrCmd->RemoveShortcut(n);        //pecan 2006/03/25
+////    }
 
 	// and update the list of the key bindings
 	FillInBindings();

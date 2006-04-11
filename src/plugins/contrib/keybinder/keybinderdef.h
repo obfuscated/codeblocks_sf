@@ -3,7 +3,6 @@
 // Purpose:     shared build defines
 // Author:      Francesco Montorsi
 // Created:     2005/07/10
-// RCS-ID:      $Id$
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////

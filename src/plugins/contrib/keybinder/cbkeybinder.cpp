@@ -5,22 +5,7 @@
  * Copyright: (c) Pecan @ Mispent Intent
  * License:   GPL
  **************************************************************/
-//commit 12/14/2005 9:15 AM
-//commit 12/16/2005 8:54 PM
-//commit 12/31/2005 10:30 AM
-//commit 1/2/2006 7:38 PM
-//commit 1/7/2006 9:06 PM v0.4.4
-//commit 1/7/2006 9:06 PM v0.4.5
-//commit 1/9/2006 5 PM v0.4.6
-//commit 1/10/2006 6 PM v0.4.8
-//commit 1/11/2006 1 PM v0.4.9
-//commit 1/11/2006 3 PM v0.4.10
-//commit 1/17/2006 v0.4.11
-//commit 1/23/2006 v0.4.13
-//commit 2/9/2006 2 v0.4.15
-
-
-
+//
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
 
@@ -63,10 +48,18 @@ cbKeyBinder::cbKeyBinder()
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts configuration");
-	m_PluginInfo.version = _T("0.4.15");
-	m_PluginInfo.description <<_("Code::Blocks KeyBinder\n")
-                            << _("NOTE: Ctrl+Alt+{UP|DOWN} unsupported.\n")
-                            << _("2/9/2006.2\n");
+	m_PluginInfo.version = _T("0.4.16");
+	m_PluginInfo.description <<_("\nCode::Blocks KeyBinder  2006/04/10\n\n")
+                            << _("NOTE: Ctrl+Alt+{UP|DOWN} is unsupported.\n\n")
+                            << _("Mutiple occurances of a key definition ")
+                            << _("such as Ctrl-Shift-N in menu items \"File/New/Project...\" and ")
+                            << _("\"Project/New Project...\" cannot be over-ridden ")
+                            << _("unless the new key assignment occurs prior to the ")
+                            << _("second definition. \n\nFor example: Ctrl-Shift-N can only be ")
+                            << _("reassigned to a Menu item prior to \"Project/New Project\", ")
+                            << _("and it must be reassigned in the first position of the ")
+                            << _("three keys assignable to a menu item. ")
+                            << _("\n");
 	m_PluginInfo.author = _T("Pecan && Mispent Intent");
 	m_PluginInfo.authorEmail = _T("");
 	m_PluginInfo.authorWebsite = _T("");

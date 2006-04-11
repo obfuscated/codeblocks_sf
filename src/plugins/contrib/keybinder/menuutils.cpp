@@ -4,19 +4,9 @@
 //              wxMenuShortcutWalker...
 // Author:      Francesco Montorsi
 // Created:     2004/02/19
-// RCS-ID:      $Id$
 // Copyright:   (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
-//commit 12/14/2005 9:16 AM
-//commit 1/7/2006 9:04 PM v0.4.4
-//commit 1/8/2006 9:47 AM v0.4.5
-//commit 1/10/2006 5PM v0.4.8
-//commit 1/11/2006 1:22 PM v0.4.9
-//commit 1/11/2006 1:22 PM v0.4.10
-//commit 1/17/2006 v0.4.11
-
-
 
 #ifdef __GNUG__
 #pragma implementation "menuutils.h"

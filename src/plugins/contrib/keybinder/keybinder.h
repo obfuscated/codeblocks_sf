@@ -4,7 +4,6 @@
 // Author:      Aleksandras Gluchovas
 // Modified by: Francesco Montorsi (6/1/2004)
 // Created:     2000/02/10
-// RCS-ID:      $Id$
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////

@@ -3,7 +3,6 @@
 // Purpose:     Classes for binding keypresses to commands.
 // Author:      Francesco Montorsi
 // Created:     2004/02/19
-// RCS-ID:      $Id$
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
