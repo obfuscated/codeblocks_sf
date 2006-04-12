@@ -630,7 +630,7 @@ void EditorManager::RemoveEditorBase(EditorBase* eb, bool deleteObject)
 {
     //    LOGSTREAM << wxString::Format(_T("RemoveEditorBase(): ed=%p, title=%s\n"), eb, eb ? eb->GetFilename().c_str() : _T(""));
     int page = FindPageFromEditor(eb);
-    if (page != -1)
+   if (page != -1 && !Manager::isappShuttingDown())
         m_pNotebook->RemovePage(page, false);
 
 #ifdef USE_OPENFILES_TREE
