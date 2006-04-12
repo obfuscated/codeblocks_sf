@@ -15,7 +15,6 @@
 #include <wx/hashmap.h>
 #include <wx/menu.h>
 #include <wx/dialog.h>
-#include "sanitycheck.h"
 
 // convenience macros
 // (you have to #include manager.h and messagemanager.h to use these)
@@ -145,7 +144,6 @@ class DLLIMPORT MessageManager : public Mgr<MessageManager>, public wxEvtHandler
 		bool m_AutoHide; // auto-hide?
 
 		DECLARE_EVENT_TABLE();
-		DECLARE_SANITY_CHECK
 };
 
 #endif // MESSAGEMANAGER_H

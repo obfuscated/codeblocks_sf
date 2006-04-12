@@ -203,12 +203,12 @@ void CompilerErrors::DoClearErrorMarkFromAllEditors()
 	}
 }
 
-bool CompilerErrors::HasNextError()
+bool CompilerErrors::HasNextError() const
 {
 	return m_ErrorIndex < (int)m_Errors.GetCount();
 }
 
-bool CompilerErrors::HasPreviousError()
+bool CompilerErrors::HasPreviousError() const
 {
 	return m_ErrorIndex > 0;
 }

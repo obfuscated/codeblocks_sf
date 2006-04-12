@@ -44,7 +44,6 @@
 
 cbWorkspace::cbWorkspace(const wxString& filename)
 {
-	SC_CONSTRUCTOR_BEGIN
 	//ctor
     if (filename.Matches(DEFAULT_WORKSPACE))
 	{
@@ -67,14 +66,10 @@ cbWorkspace::cbWorkspace(const wxString& filename)
 
 cbWorkspace::~cbWorkspace()
 {
-	SC_DESTRUCTOR_BEGIN
-	//dtor
-	SC_DESTRUCTOR_END
 }
 
 void cbWorkspace::Load()
 {
-    SANITY_CHECK();
     wxString fname = m_Filename.GetFullPath();
     if (fname.IsEmpty())
         return;
@@ -104,11 +99,8 @@ void cbWorkspace::Load()
         default: break;
     }
 	m_IsOK = pWsp && (pWsp->Open(fname) || m_IsDefault);
-	SANITY_CHECK();
 	m_Title = pWsp ? pWsp->GetTitle() : wxString(wxEmptyString);
-	SANITY_CHECK();
 
-    SANITY_CHECK();
     m_Filename.SetExt(FileFilters::WORKSPACE_EXT);
     SetModified(modified);
 
@@ -118,8 +110,6 @@ void cbWorkspace::Load()
 
 bool cbWorkspace::Save(bool force)
 {
-    SANITY_CHECK(false);
-
     if (m_Filename.GetFullPath().IsEmpty())
         return SaveAs(_T(""));
 
@@ -135,7 +125,6 @@ bool cbWorkspace::Save(bool force)
 
 bool cbWorkspace::SaveAs(const wxString& filename)
 {
-    SANITY_CHECK(false);
     wxFileDialog* dlg = new wxFileDialog(Manager::Get()->GetAppWindow(),
                             _("Save workspace"),
                             m_Filename.GetPath(),
@@ -145,7 +134,6 @@ bool cbWorkspace::SaveAs(const wxString& filename)
     PlaceWindow(dlg);
     if (dlg->ShowModal() != wxID_OK)
         return false;
-    SANITY_CHECK(false);
     m_Filename = dlg->GetPath();
     m_IsDefault = false;
     return Save(true);
@@ -153,13 +141,11 @@ bool cbWorkspace::SaveAs(const wxString& filename)
 
 void cbWorkspace::SetTitle(const wxString& title)
 {
-    SANITY_CHECK();
     m_Title = title;
     SetModified(true);
 }
 
 void cbWorkspace::SetModified(bool modified)
 {
-    SANITY_CHECK();
     m_Modified = modified;
 }

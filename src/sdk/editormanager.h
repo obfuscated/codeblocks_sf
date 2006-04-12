@@ -7,7 +7,6 @@
 
 #include "settings.h"
 #include "manager.h"
-#include "sanitycheck.h"
 
 #include "openfilestree.h"
 
@@ -189,8 +188,6 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         EditorManagerInternalData* m_pData;
 
         DECLARE_EVENT_TABLE()
-        DECLARE_SANITY_CHECK
-
 };
 
 #endif // EDITORMANAGER_H

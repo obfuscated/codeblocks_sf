@@ -16,7 +16,7 @@ class CCList : public wxFrame
 		static CCList* Get(wxEvtHandler* parent, cbStyledTextCtrl* editor, Parser* parser);
 		static void Free();
 		void SelectCurrent(wxChar ch = _T('\0'));
-		int GetStartPos(){ return m_StartPos; }
+		int GetStartPos() const { return m_StartPos; }
 	protected:
 		CCList(wxEvtHandler* parent, cbStyledTextCtrl* editor, Parser* parser);
 		virtual ~CCList();

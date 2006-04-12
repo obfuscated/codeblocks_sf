@@ -55,30 +55,24 @@ static cbPlugin* s_LastKnownActivePlugin = 0;
 // class constructor
 PluginManager::PluginManager()
 {
-    SC_CONSTRUCTOR_BEGIN
 }
 
 // class destructor
 PluginManager::~PluginManager()
 {
-	SC_DESTRUCTOR_BEGIN
 	UnloadAllPlugins();
-	SC_DESTRUCTOR_END
 }
 
 void PluginManager::CreateMenu(wxMenuBar* menuBar)
 {
-    SANITY_CHECK();
 }
 
 void PluginManager::ReleaseMenu(wxMenuBar* menuBar)
 {
-    SANITY_CHECK();
 }
 
 int PluginManager::ScanForPlugins(const wxString& path)
 {
-    SANITY_CHECK(0);
 #ifdef __WXMSW__
 	#define PLUGINS_MASK _T("*.dll")
 #else
@@ -113,7 +107,6 @@ int PluginManager::ScanForPlugins(const wxString& path)
 
 bool PluginManager::LoadPlugin(const wxString& pluginName)
 {
-    SANITY_CHECK(false);
     wxLogNull zero; // no need for error messages; we check everything ourselves...
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
@@ -261,8 +254,6 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
 
 void PluginManager::LoadAllPlugins()
 {
-    SANITY_CHECK();
-
     // check if a plugin crashed the app last time
     wxString probPlugin = Manager::Get()->GetConfigManager(_T("plugins"))->Read(_T("/try_to_activate"), wxEmptyString);
     if (!probPlugin.IsEmpty())
@@ -325,8 +316,6 @@ void PluginManager::LoadAllPlugins()
 
 void PluginManager::UnloadAllPlugins()
 {
-    SANITY_CHECK_ADVANCED(); // don't use "normal" sanity check because
-                             // this function is called by the destructor
 //    Manager::Get()->GetMessageManager()->DebugLog("Count %d", m_Plugins.GetCount());
 
     s_LastKnownActivePlugin = 0;
@@ -363,7 +352,6 @@ void PluginManager::UnloadAllPlugins()
 
 cbPlugin* PluginManager::FindPluginByName(const wxString& pluginName)
 {
-    SANITY_CHECK(0L);
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
         PluginElement* plugElem = m_Plugins[i];
@@ -376,7 +364,6 @@ cbPlugin* PluginManager::FindPluginByName(const wxString& pluginName)
 
 cbPlugin* PluginManager::FindPluginByFileName(const wxString& pluginFileName)
 {
-    SANITY_CHECK(0L);
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
         PluginElement* plugElem = m_Plugins[i];
@@ -389,7 +376,6 @@ cbPlugin* PluginManager::FindPluginByFileName(const wxString& pluginFileName)
 
 const PluginInfo* PluginManager::GetPluginInfo(const wxString& pluginName)
 {
-    SANITY_CHECK(0L);
     cbPlugin* plug = FindPluginByName(pluginName);
     if (plug)
         return plug->GetInfo();
@@ -399,7 +385,6 @@ const PluginInfo* PluginManager::GetPluginInfo(const wxString& pluginName)
 
 int PluginManager::ExecutePlugin(const wxString& pluginName)
 {
-    SANITY_CHECK(0);
     cbPlugin* plug = FindPluginByName(pluginName);
     if (plug)
     {
@@ -426,7 +411,6 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
 
 int PluginManager::ConfigurePlugin(const wxString& pluginName)
 {
-    SANITY_CHECK(0);
     cbPlugin* plug = FindPluginByName(pluginName);
     if (plug)
     {
@@ -515,7 +499,6 @@ PluginsArray PluginManager::GetCodeCompletionOffers()
 PluginsArray PluginManager::GetOffersFor(PluginType type)
 {
     PluginsArray arr;
-    SANITY_CHECK(arr);
 
     // special case for MIME plugins
     // we 'll add the default MIME handler, last in the returned array
@@ -548,7 +531,6 @@ PluginsArray PluginManager::GetOffersFor(PluginType type)
 
 void PluginManager::AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
-    SANITY_CHECK();
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
         cbPlugin* plug = m_Plugins[i]->plugin;
@@ -568,8 +550,6 @@ void PluginManager::AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu,
 
 void PluginManager::NotifyPlugins(CodeBlocksEvent& event)
 {
-    SANITY_CHECK();
-
     /* Things are simpler than before.
      * Just ask the last active plugin to process this event.
      * Because plugins are linked to the main app's event handler,
@@ -595,7 +575,6 @@ cbMimePlugin* PluginManager::GetMIMEHandlerForFile(const wxString& filename)
 
 int PluginManager::Configure()
 {
-    SANITY_CHECK(wxID_CANCEL);
     PluginsConfigurationDlg dlg(Manager::Get()->GetAppWindow());
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_CANCEL)

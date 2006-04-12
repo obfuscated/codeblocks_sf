@@ -5,7 +5,6 @@
 #include "settings.h"
 #include "manager.h"
 #include "sdk_events.h"
-#include "sanitycheck.h"
 
 //forward decls
 struct PluginInfo;
@@ -65,7 +64,6 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>
 		PluginManager();
 		~PluginManager();
         PluginElementsArray m_Plugins;
-    DECLARE_SANITY_CHECK
 };
 
 #endif // PLUGINMANAGER_H

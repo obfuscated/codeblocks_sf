@@ -3028,12 +3028,6 @@
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
-		<Unit filename="sdk\sanitycheck.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk\scriptingcall.h">
 			<Option compilerVar="" />
 			<Option compile="0" />

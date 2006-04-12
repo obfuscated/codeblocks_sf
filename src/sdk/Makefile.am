@@ -191,7 +191,6 @@ noinst_HEADERS = annoyingdialog.h \
 				projectsfilemasksdlg.h \
 				projecttemplateloader.h \
 				replacedlg.h \
-				sanitycheck.h \
 				scriptingcall.h \
 				scriptingmanager.h \
 				sdk.h \

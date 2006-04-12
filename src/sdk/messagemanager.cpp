@@ -142,7 +142,6 @@ MessageManager::MessageManager()
     m_LockCounter(0),
     m_AutoHide(false)
 {
-    SC_CONSTRUCTOR_BEGIN
 
     m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), idNB);
     m_pNotebook->SetWindowStyleFlag(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/message_tabs_style"), wxFNB_BOTTOM | wxFNB_NO_X_BUTTON));
@@ -178,9 +177,6 @@ MessageManager::MessageManager()
 // class destructor
 MessageManager::~MessageManager()
 {
-    SC_DESTRUCTOR_BEGIN
-    SC_DESTRUCTOR_END
-
 //    delete m_BatchBuildLogWindow;
 
     delete m_pNotebook->GetImageList();
@@ -191,12 +187,10 @@ MessageManager::~MessageManager()
 
 void MessageManager::CreateMenu(wxMenuBar* menuBar)
 {
-    SANITY_CHECK();
 }
 
 void MessageManager::ReleaseMenu(wxMenuBar* menuBar)
 {
-    SANITY_CHECK();
 }
 
 bool MessageManager::CheckLogId(int id)
@@ -223,13 +217,11 @@ void MessageManager::LogToStdOut(const wxString& msg)
 
 void MessageManager::Log(const wxString& msg)
 {
-    SANITY_CHECK();
     m_Logs[m_AppLog]->log->AddLog(msg);
 }
 
 void MessageManager::Log(const wxChar* msg, ...)
 {
-    SANITY_CHECK();
     wxString tmp;
     va_list arg_list;
 
@@ -242,7 +234,6 @@ void MessageManager::Log(const wxChar* msg, ...)
 
 void MessageManager::DebugLog(const wxChar* msg, ...)
 {
-    SANITY_CHECK();
 	if (!CheckLogId(m_DebugLog))
 		return;
     wxString tmp;
@@ -262,7 +253,6 @@ void MessageManager::DebugLog(const wxChar* msg, ...)
 
 void MessageManager::DebugLogWarning(const wxChar* msg, ...)
 {
-    SANITY_CHECK();
     wxString tmp;
     va_list arg_list;
 
@@ -281,8 +271,6 @@ void MessageManager::DebugLogWarning(const wxChar* msg, ...)
 
 void MessageManager::DebugLogError(const wxChar* msg, ...)
 {
-    SANITY_CHECK();
-
     wxString tmp;
     va_list arg_list;
 
@@ -302,7 +290,6 @@ void MessageManager::DebugLogError(const wxChar* msg, ...)
 // add a new log page
 int MessageManager::AddLog(MessageLog* log, const wxString& title, const wxBitmap& bitmap)
 {
-    SANITY_CHECK(-1);
     return DoAddLog(log, title, bitmap);
 }
 
@@ -394,8 +381,6 @@ void MessageManager::SetBatchBuildLog(int log)
 // add a new log page
 int MessageManager::DoAddLog(MessageLog* log, const wxString& title, const wxBitmap& bitmap)
 {
-    SANITY_CHECK(-1);
-
     static int pageId = 0;
     int id = pageId++;
 
@@ -413,7 +398,6 @@ int MessageManager::DoAddLog(MessageLog* log, const wxString& title, const wxBit
 
 void MessageManager::Log(int id, const wxString& msg)
 {
-    SANITY_CHECK();
     if (!CheckLogId(id))
         return;
 
@@ -436,7 +420,6 @@ void MessageManager::Log(int id, const wxString& msg)
 
 void MessageManager::Log(int id, const wxChar* msg, ...)
 {
-    SANITY_CHECK();
     if (!CheckLogId(id))
         return;
 
@@ -466,7 +449,6 @@ void MessageManager::Log(int id, const wxChar* msg, ...)
 
 void MessageManager::AppendLog(const wxChar* msg, ...)
 {
-    SANITY_CHECK();
     wxString tmp;
     va_list arg_list;
 
@@ -479,7 +461,6 @@ void MessageManager::AppendLog(const wxChar* msg, ...)
 
 void MessageManager::AppendLog(int id, const wxChar* msg, ...)
 {
-    SANITY_CHECK();
     if (!CheckLogId(id))
         return;
 
@@ -496,8 +477,6 @@ void MessageManager::AppendLog(int id, const wxChar* msg, ...)
 // switch to log page
 void MessageManager::SwitchTo(int id)
 {
-    SANITY_CHECK();
-
     if (!CheckLogId(id))
         return;
     int index = m_pNotebook->GetPageIndex(m_Logs[id]->log);
@@ -506,7 +485,6 @@ void MessageManager::SwitchTo(int id)
 
 void MessageManager::SetLogImage(int id, const wxBitmap& bitmap)
 {
-    SANITY_CHECK();
     if (!CheckLogId(id))
         return;
 
@@ -523,7 +501,6 @@ void MessageManager::SetLogImage(int id, const wxBitmap& bitmap)
 
 void MessageManager::SetLogImage(MessageLog* log, const wxBitmap& bitmap)
 {
-    SANITY_CHECK();
     if (log)
         SetLogImage(log->GetPageId(), bitmap);
 }

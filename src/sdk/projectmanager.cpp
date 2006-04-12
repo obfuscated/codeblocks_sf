@@ -203,8 +203,6 @@ ProjectManager::ProjectManager()
 	m_IsLoadingWorkspace(false),
 	m_InitialDir(_T(""))
 {
-    SC_CONSTRUCTOR_BEGIN
-
     m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), idNB);
     m_pNotebook->SetWindowStyleFlag(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/project_tabs_style"), wxFNB_NO_X_BUTTON));
     m_pNotebook->SetImageList(new wxFlatNotebookImageList);
@@ -238,8 +236,6 @@ ProjectManager::ProjectManager()
 // class destructor
 ProjectManager::~ProjectManager()
 {
-    SC_DESTRUCTOR_BEGIN
-
     // this is a core manager, so it is removed when the app is shutting down.
     // in this case, the app has already un-hooked us, so no need to do it ourselves...
 //	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
@@ -263,13 +259,10 @@ ProjectManager::~ProjectManager()
 
     delete m_pNotebook->GetImageList();
     m_pNotebook->Destroy();
-
-	SC_DESTRUCTOR_END
 }
 
 void ProjectManager::InitPane()
 {
-    SANITY_CHECK();
     if(Manager::isappShuttingDown())
         return;
     if(m_pTree)
@@ -388,7 +381,6 @@ It is duplicated in ShowMenu() */
 
 void ProjectManager::ReleaseMenu(wxMenuBar* menuBar)
 {
-    SANITY_CHECK();
 }
 
 wxString ProjectManager::GetDefaultPath()
@@ -417,7 +409,6 @@ bool ProjectManager::IsProjectStillOpen(cbProject* project)
 
 void ProjectManager::SetProject(cbProject* project, bool refresh)
 {
-    SANITY_CHECK();
 	if (project != m_pActiveProject)
 	{
         if (m_pWorkspace)
@@ -446,7 +437,6 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
 
 void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 {
-    SANITY_CHECK();
     if ( !id.IsOk() )
         return;
 
@@ -586,7 +576,6 @@ it differs from the block currently in CreateMenu() by the following two IDs */
 
 cbProject* ProjectManager::IsOpen(const wxString& filename)
 {
-    SANITY_CHECK(0L);
 	if (filename.IsEmpty())
 		return 0L;
     int count = m_pProjects->GetCount();
@@ -612,7 +601,6 @@ cbProject* ProjectManager::IsOpen(const wxString& filename)
 
 wxMenu* ProjectManager::GetProjectMenu()
 {
-    SANITY_CHECK(0L);
     wxMenu* result = 0L;
     do
     {
@@ -630,7 +618,6 @@ wxMenu* ProjectManager::GetProjectMenu()
 
 cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt)
 {
-    SANITY_CHECK(0L);
     if (m_IsLoadingProject)
 		return 0L;
     cbProject* result = 0;
@@ -659,8 +646,7 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
 //            return 0;
         m_IsLoadingProject=true;
         project = new cbProject(filename);
-        if(!sanity_check())
-            break; // sanity check
+
         // We need to do this because creating cbProject allows the app to be
         // closed in the middle of the operation. So the class destructor gets
         // called in the middle of a method call.
@@ -670,9 +656,6 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
             delete project;
             break;
         }
-
-        if(!sanity_check())
-            break; // sanity check
 
         m_pProjects->Add(project);
 
@@ -692,13 +675,9 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
         if (activateIt)
             SetProject(project, !m_IsLoadingWorkspace);
 
-        if (!sanity_check())
-            break; // sanity check
-
         project->LoadLayout();
 //        project->SetModified(false);
-        if (!sanity_check())
-            break; // sanity check
+
         if (m_pWorkspace)
             m_pWorkspace->SetModified(true);
         // we 're done
@@ -736,7 +715,6 @@ cbProject* ProjectManager::NewProject(const wxString& filename)
 
 bool ProjectManager::QueryCloseAllProjects()
 {
-    SANITY_CHECK(true);
     unsigned int i;
 
     if (!Manager::Get()->GetEditorManager()->QueryCloseAll())
@@ -755,7 +733,6 @@ bool ProjectManager::QueryCloseAllProjects()
 
 bool ProjectManager::QueryCloseProject(cbProject *proj,bool dontsavefiles)
 {
-    SANITY_CHECK(true);
     if(!proj)
         return true;
     if(proj->GetCurrentlyCompilingTarget())
@@ -779,7 +756,6 @@ bool ProjectManager::QueryCloseProject(cbProject *proj,bool dontsavefiles)
 
 bool ProjectManager::CloseAllProjects(bool dontsave)
 {
-    SANITY_CHECK(true);
     if(!dontsave)
         if(!QueryCloseAllProjects())
             return false;
@@ -803,11 +779,8 @@ bool ProjectManager::CloseAllProjects(bool dontsave)
 
 bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refresh)
 {
-    SANITY_CHECK(false);
     if (!project)
         return true;
-    if(m_sanitycheck_shutdown) // if shutdown, don't ask.
-        dontsave = true;
     if(project->GetCurrentlyCompilingTarget())
         return false;
     if(!dontsave)
@@ -852,7 +825,6 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
 
 bool ProjectManager::CloseActiveProject(bool dontsave)
 {
-    SANITY_CHECK(false);
     if (!CloseProject(m_pActiveProject, dontsave))
         return false;
     if (m_pProjects->GetCount() > 0)
@@ -862,8 +834,6 @@ bool ProjectManager::CloseActiveProject(bool dontsave)
 
 bool ProjectManager::SaveProject(cbProject* project)
 {
-    SANITY_CHECK(false);
-
     if (!project)
         return false;
     if (project->Save())
@@ -876,7 +846,6 @@ bool ProjectManager::SaveProject(cbProject* project)
 
 bool ProjectManager::SaveProjectAs(cbProject* project)
 {
-    SANITY_CHECK(false);
     if (!project)
         return false;
 
@@ -890,19 +859,16 @@ bool ProjectManager::SaveProjectAs(cbProject* project)
 
 bool ProjectManager::SaveActiveProject()
 {
-    SANITY_CHECK(false);
     return SaveProject(m_pActiveProject);
 }
 
 bool ProjectManager::SaveActiveProjectAs()
 {
-    SANITY_CHECK(false);
     return SaveProjectAs(m_pActiveProject);
 }
 
 bool ProjectManager::SaveAllProjects()
 {
-    SANITY_CHECK(false);
     FreezeTree();
     int prjCount = m_pProjects->GetCount();
     int count = 0;
@@ -918,7 +884,6 @@ bool ProjectManager::SaveAllProjects()
 
 void ProjectManager::MoveProjectUp(cbProject* project, bool warpAround)
 {
-    SANITY_CHECK();
     if (!project)
         return;
 
@@ -947,7 +912,6 @@ void ProjectManager::MoveProjectUp(cbProject* project, bool warpAround)
 
 void ProjectManager::MoveProjectDown(cbProject* project, bool warpAround)
 {
-    SANITY_CHECK();
     if (!project)
         return;
 
@@ -976,7 +940,6 @@ void ProjectManager::MoveProjectDown(cbProject* project, bool warpAround)
 
 cbWorkspace* ProjectManager::GetWorkspace()
 {
-    SANITY_CHECK(0L);
     if (!m_pWorkspace)
     {
         m_pWorkspace = new cbWorkspace(_T(""));
@@ -988,19 +951,16 @@ cbWorkspace* ProjectManager::GetWorkspace()
 
 void ProjectManager::SetTopEditor(EditorBase* ed)
 {
-    SANITY_CHECK();
     m_pTopEditor = ed;
 }
 
-EditorBase* ProjectManager::GetTopEditor()
+EditorBase* ProjectManager::GetTopEditor() const
 {
-    SANITY_CHECK(0);
     return m_pTopEditor;
 }
 
 bool ProjectManager::LoadWorkspace(const wxString& filename)
 {
-    SANITY_CHECK(false);
     m_pTopEditor = 0;
     if (!CloseWorkspace())
         return false; // didn't close
@@ -1018,7 +978,6 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
         m_pTree->Expand(m_TreeRoot); // make sure the root node is open
         m_IsLoadingWorkspace=false;
         Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
-        SANITY_CHECK(false);
         m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
         if(m_pTopEditor)
             m_pTopEditor->Activate();
@@ -1040,7 +999,6 @@ bool ProjectManager::SaveWorkspaceAs(const wxString& filename)
 
 bool ProjectManager::QueryCloseWorkspace()
 {
-    SANITY_CHECK(true);
     if(!m_pWorkspace)
         return true;
 
@@ -1069,7 +1027,6 @@ bool ProjectManager::QueryCloseWorkspace()
 
 bool ProjectManager::CloseWorkspace()
 {
-    SANITY_CHECK(false);
     if (m_pWorkspace)
     {
         if(!QueryCloseWorkspace())
@@ -1088,13 +1045,11 @@ bool ProjectManager::CloseWorkspace()
 
 bool ProjectManager::IsLoading()
 {
-    SANITY_CHECK(false);
     return (m_IsLoadingProject || m_IsLoadingWorkspace);
 }
 
 void ProjectManager::FreezeTree()
 {
-    SANITY_CHECK();
     if (!m_pTree)
         return;
 // wx 2.5.x implement nested Freeze()/Thaw() calls correctly
@@ -1106,7 +1061,6 @@ void ProjectManager::FreezeTree()
 
 void ProjectManager::UnfreezeTree(bool force)
 {
-    SANITY_CHECK();
     if (!m_pTree)
         return;
 // wx 2.5.x implement nested Freeze()/Thaw() calls correctly
@@ -1127,7 +1081,6 @@ void ProjectManager::UnfreezeTree(bool force)
 
 void ProjectManager::RebuildTree()
 {
-    SANITY_CHECK();
     FreezeTree();
     int count = m_pProjects->GetCount();
     for (int i = 0; i < count; ++i)
@@ -1165,7 +1118,6 @@ void ProjectManager::RebuildTree()
 
 int ProjectManager::DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets)
 {
-    SANITY_CHECK(0);
 	if (!project)
 		return 0;
 
@@ -1190,7 +1142,6 @@ int ProjectManager::DoAddFileToProject(const wxString& filename, cbProject* proj
     fname.MakeRelativeTo(project->GetBasePath());
 
     // add the file to the first selected target
-    SANITY_CHECK(0);
     ProjectFile* pf = project->AddFile(targets[0], fname.GetFullPath());
     if (pf)
     {
@@ -1208,8 +1159,6 @@ int ProjectManager::DoAddFileToProject(const wxString& filename, cbProject* proj
 
 int ProjectManager::AddFileToProject(const wxString& filename, cbProject* project, int target)
 {
-    SANITY_CHECK(-1);
-
 	if (!project)
 		project = GetActiveProject();
 
@@ -1222,8 +1171,6 @@ int ProjectManager::AddFileToProject(const wxString& filename, cbProject* projec
 
 int ProjectManager::AddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets)
 {
-    SANITY_CHECK(0);
-
 	if (!project)
 		project = GetActiveProject();
 
@@ -1240,8 +1187,6 @@ int ProjectManager::AddFileToProject(const wxString& filename, cbProject* projec
 
 int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project, int target)
 {
-    SANITY_CHECK(-1);
-
 	if (!project)
 		project = GetActiveProject();
 
@@ -1254,8 +1199,6 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbP
 
 int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project, wxArrayInt& targets)
 {
-    SANITY_CHECK(0);
-
     wxProgressDialog progress(_("Project Manager"), _("Please wait while adding files to project..."), filelist.GetCount());
 
 	if (!project)
@@ -1284,7 +1227,6 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbP
 
 int ProjectManager::AskForBuildTargetIndex(cbProject* project)
 {
-    SANITY_CHECK(-1);
 	cbProject* prj = project;
 	if (!prj)
 		prj = GetActiveProject();
@@ -1304,7 +1246,6 @@ int ProjectManager::AskForBuildTargetIndex(cbProject* project)
 wxArrayInt ProjectManager::AskForMultiBuildTargetIndex(cbProject* project)
 {
     wxArrayInt indices;
-    SANITY_CHECK(indices);
 	cbProject* prj = project;
 	if (!prj)
 		prj = GetActiveProject();
@@ -1327,7 +1268,6 @@ wxArrayInt ProjectManager::AskForMultiBuildTargetIndex(cbProject* project)
 
 void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
 {
-    SANITY_CHECK();
 	FileType ft = FileTypeOf(filename);
 
 	if (ft == ftHeader || ft == ftSource)
@@ -1377,7 +1317,6 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
 
 void ProjectManager::DoOpenSelectedFile()
 {
-    SANITY_CHECK();
     wxTreeItemId sel = m_pTree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
 
@@ -1545,7 +1484,6 @@ void ProjectManager::OnTabPosition(wxCommandEvent& event)
 
 void ProjectManager::OnProjectFileActivated(wxTreeEvent& event)
 {
-    SANITY_CHECK();
     #ifdef USE_OPENFILES_TREE
     if(!MiscTreeItemData::OwnerCheck(event,m_pTree,this))
         return;
@@ -1555,7 +1493,6 @@ void ProjectManager::OnProjectFileActivated(wxTreeEvent& event)
 
 void ProjectManager::OnExecParameters(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     if (m_pActiveProject)
 		m_pActiveProject->SelectTarget(0, true);
 }
@@ -1563,7 +1500,6 @@ void ProjectManager::OnExecParameters(wxCommandEvent& event)
 void ProjectManager::OnRightClick(wxCommandEvent& event)
 {
     //Manager::Get()->GetMessageManager()->DebugLog("OnRightClick");
-    SANITY_CHECK();
 
     wxMenu menu;
 
@@ -1589,7 +1525,6 @@ void ProjectManager::OnRightClick(wxCommandEvent& event)
 
 void ProjectManager::OnTreeItemRightClick(wxTreeEvent& event)
 {
-    SANITY_CHECK();
     #ifdef USE_OPENFILES_TREE
     if(!MiscTreeItemData::OwnerCheck(event,m_pTree,this))
         return;
@@ -1607,7 +1542,6 @@ void ProjectManager::OnTreeItemRightClick(wxTreeEvent& event)
 
 void ProjectManager::OnRenameWorkspace(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     if (m_pWorkspace)
     {
         wxString text = wxGetTextFromUser(_("Please enter the new name for the workspace:"), _("Rename workspace"), m_pWorkspace->GetTitle());
@@ -1621,7 +1555,6 @@ void ProjectManager::OnRenameWorkspace(wxCommandEvent& event)
 
 void ProjectManager::OnSaveWorkspace(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     if (m_pWorkspace)
     {
         SaveWorkspace();
@@ -1630,7 +1563,6 @@ void ProjectManager::OnSaveWorkspace(wxCommandEvent& event)
 
 void ProjectManager::OnSaveAsWorkspace(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     if (m_pWorkspace)
     {
         SaveWorkspaceAs(_T(""));
@@ -1639,7 +1571,6 @@ void ProjectManager::OnSaveAsWorkspace(wxCommandEvent& event)
 
 void ProjectManager::OnCloseWorkspace(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     if (m_pWorkspace)
     {
         CloseWorkspace();
@@ -1648,7 +1579,6 @@ void ProjectManager::OnCloseWorkspace(wxCommandEvent& event)
 
 void ProjectManager::OnSetActiveProject(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     if (event.GetId() == idMenuSetActiveProject)
     {
         wxTreeItemId sel = m_pTree->GetSelection();
@@ -1696,7 +1626,6 @@ void ProjectManager::OnSetActiveProject(wxCommandEvent& event)
 
 void ProjectManager::OnAddFilesToProjectRecursively(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     cbProject* prj = 0;
     if (event.GetId() == idMenuAddFilesRecursively)
         prj = GetActiveProject();
@@ -1765,7 +1694,6 @@ void ProjectManager::OnAddFilesToProjectRecursively(wxCommandEvent& event)
 
 void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     cbProject* prj = 0;
     if (event.GetId() == idMenuAddFile)
         prj = GetActiveProject();
@@ -1804,7 +1732,6 @@ void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
 
 void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     wxTreeItemId sel = m_pTree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
     if (!ftd)
@@ -1911,7 +1838,6 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
 
 void ProjectManager::OnCloseProject(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     wxTreeItemId sel = m_pTree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
     cbProject *proj=NULL;
@@ -1933,7 +1859,6 @@ void ProjectManager::OnCloseProject(wxCommandEvent& event)
 
 void ProjectManager::OnCloseFile(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     wxTreeItemId sel = m_pTree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
 
@@ -1989,7 +1914,6 @@ void ProjectManager::OnOpenWith(wxCommandEvent& event)
 
 void ProjectManager::OnProperties(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     if (event.GetId() == idMenuProjectProperties)
     {
         wxString backupTitle = m_pActiveProject ? m_pActiveProject->GetTitle() : _T("");
@@ -2046,7 +1970,6 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
 
 void ProjectManager::OnGotoFile(wxCommandEvent& event)
 {
-    SANITY_CHECK();
 	if (!m_pActiveProject)
 	{
 		Manager::Get()->GetMessageManager()->DebugLog(_T("No active project!"));
@@ -2071,7 +1994,6 @@ void ProjectManager::OnGotoFile(wxCommandEvent& event)
 
 void ProjectManager::OnViewCategorize(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     m_TreeCategorize = event.IsChecked();
     Manager::Get()->GetAppWindow()->GetMenuBar()->Check(idMenuViewCategorize, m_TreeCategorize);
 	Manager::Get()->GetConfigManager(_T("project_manager"))->Write(_T("/categorize_tree"), m_TreeCategorize);
@@ -2080,7 +2002,6 @@ void ProjectManager::OnViewCategorize(wxCommandEvent& event)
 
 void ProjectManager::OnViewUseFolders(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     m_TreeUseFolders = event.IsChecked();
     Manager::Get()->GetAppWindow()->GetMenuBar()->Check(idMenuViewUseFolders, m_TreeUseFolders);
 	Manager::Get()->GetConfigManager(_T("project_manager"))->Write(_T("/use_folders"), m_TreeUseFolders);
@@ -2089,7 +2010,6 @@ void ProjectManager::OnViewUseFolders(wxCommandEvent& event)
 
 void ProjectManager::OnViewFileMasks(wxCommandEvent& event)
 {
-    SANITY_CHECK();
 	ProjectsFileMasksDlg dlg(Manager::Get()->GetAppWindow(), m_pFileGroups);
     PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_OK)
@@ -2106,7 +2026,6 @@ void ProjectManager::OnIdle(wxIdleEvent& event)
 
 void ProjectManager::OnRenameFile(wxCommandEvent& event)
 {
-    SANITY_CHECK();
     wxTreeItemId sel = m_pTree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
     if (!ftd)

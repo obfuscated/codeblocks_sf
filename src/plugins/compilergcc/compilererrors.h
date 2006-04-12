@@ -27,8 +27,8 @@ class CompilerErrors
 		void Next();
 		void Previous();
 		void Clear();
-		bool HasNextError();
-		bool HasPreviousError();
+		bool HasNextError() const;
+		bool HasPreviousError() const;
 		int GetCount(){ return m_Errors.GetCount(); }
 		wxString GetErrorString(int index);
 

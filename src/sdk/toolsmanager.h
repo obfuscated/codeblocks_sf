@@ -7,7 +7,6 @@
 #include "manager.h"
 #include "menuitemsmanager.h"
 #include "sdk_events.h"
-#include "sanitycheck.h"
 
 class Tool
 {
@@ -70,7 +69,6 @@ class DLLIMPORT ToolsManager : public Mgr<ToolsManager>, public wxEvtHandler
 		wxTimer m_Timer;
 
 		DECLARE_EVENT_TABLE()
-		DECLARE_SANITY_CHECK
 
 };
 

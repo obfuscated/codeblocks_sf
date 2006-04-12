@@ -3,7 +3,6 @@
 
 #include "settings.h"
 #include "manager.h"
-#include "sanitycheck.h"
 #include <wx/regex.h>
 #include <wx/filename.h>
 
@@ -44,7 +43,6 @@ public:
 private:
     MacrosManager();
     ~MacrosManager();
-    DECLARE_SANITY_CHECK
 };
 
 #endif // MACROSMANAGER_H

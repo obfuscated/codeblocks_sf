@@ -12,7 +12,6 @@
 
 #include "globals.h"
 #include "settings.h"
-#include "sanitycheck.h"
 
 /**
   * @brief A workspace class.
@@ -60,8 +59,8 @@ class cbWorkspace
           *
           * @return The name of the file this workspace was loaded from.
           */
-		virtual wxString GetFilename()
-		{ SANITY_CHECK(_T(""));
+		virtual wxString GetFilename() const
+		{
           return m_Filename.GetFullPath();
         }
 
@@ -69,9 +68,8 @@ class cbWorkspace
           *
           * @return The title of the workspace.
           */
-		virtual wxString GetTitle()
+		virtual wxString GetTitle() const
 		{
-		  SANITY_CHECK(_T(""));
 		  return m_Title;
         }
 
@@ -88,13 +86,13 @@ class cbWorkspace
           * constructor, and because we don't use exceptions, this is the only
           * way to know if loading succeeded.
           */
-		virtual bool IsOK(){ SANITY_CHECK(false);return m_IsOK; }
+		virtual bool IsOK() const { return m_IsOK; }
 
         /** @brief Is this workspace the Code::Blocks default?
           *
           * @return True if the workspace is the default, false if not.
           */
-		virtual bool IsDefault(){ SANITY_CHECK(false);return m_IsDefault; }
+		virtual bool IsDefault() const { return m_IsDefault; }
 
         /** @brief Is this workspace modified?
           *
@@ -103,7 +101,7 @@ class cbWorkspace
           * are added-to/removed-from it, when the project's order
           * is changed or when the active project is changed.
           */
-		virtual bool GetModified(){ SANITY_CHECK(false);return m_Modified; }
+		virtual bool GetModified() const { return m_Modified; }
 
         /** @brief Mark the workspace as modified or not
           *
@@ -119,7 +117,6 @@ class cbWorkspace
         wxString m_Title; // title
 	private:
         void Load(); // utility function
-    DECLARE_SANITY_CHECK
 };
 
 #endif // CBWORKSPACE_H

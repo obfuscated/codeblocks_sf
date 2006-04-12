@@ -93,7 +93,6 @@
     #include <globals.h>
     #include <licenses.h>
     #include <sdk_events.h>
-    #include <sanitycheck.h>
     #include <cbexception.h>
 
     // absolute base classes

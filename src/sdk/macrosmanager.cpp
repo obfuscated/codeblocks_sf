@@ -65,31 +65,23 @@
 
 MacrosManager::MacrosManager()
 {
-    //ctor
-    SC_CONSTRUCTOR_BEGIN
     Reset();
 }
 
 MacrosManager::~MacrosManager()
 {
-    //dtor
-    SC_DESTRUCTOR_BEGIN
-    SC_DESTRUCTOR_END
 }
 
 void MacrosManager::CreateMenu(wxMenuBar* menuBar)
 {
-    SANITY_CHECK();
 }
 
 void MacrosManager::ReleaseMenu(wxMenuBar* menuBar)
 {
-    SANITY_CHECK();
 }
 
 wxString MacrosManager::ReplaceMacros(const wxString& buffer, bool envVarsToo, ProjectBuildTarget* target)
 {
-    SANITY_CHECK(wxEmptyString);
     wxString tmp = buffer;
     ReplaceMacros(tmp, envVarsToo, target);
     return tmp;
@@ -97,7 +89,6 @@ wxString MacrosManager::ReplaceMacros(const wxString& buffer, bool envVarsToo, P
 
 void MacrosManager::Reset()
 {
-    SANITY_CHECK();
 //	Manager::Get()->GetMessageManager()->DebugLog(_T("reset"));
     m_lastProject = 0;
     m_lastTarget = 0;
@@ -114,7 +105,6 @@ void MacrosManager::Reset()
 
 void MacrosManager::ClearProjectKeys()
 {
-    SANITY_CHECK();
 //	Manager::Get()->GetMessageManager()->DebugLog(_T("clear"));
     macros.clear();
 
@@ -134,7 +124,6 @@ void MacrosManager::ClearProjectKeys()
 
 void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuildTarget* target)
 {
-    SANITY_CHECK();
 //	Manager::Get()->GetMessageManager()->DebugLog(wxString("recalc...  (project == ") << (int) project << _T("   editor == ") << (int)editor << _T("   target == ") << (int)target << ")");
     if(!editor)
     {
@@ -278,7 +267,6 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
 
 void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuildTarget* target)
 {
-    SANITY_CHECK();
 //	Manager::Get()->GetMessageManager()->DebugLog(wxString("ReplaceMacros(\"") << buffer << "\")");
     if (buffer.IsEmpty())
         return;

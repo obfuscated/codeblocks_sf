@@ -5,7 +5,6 @@
 #include <wx/dynarray.h>
 #include <wx/hashmap.h>
 #include <wx/treectrl.h>
-#include "sanitycheck.h"
 #include "settings.h"
 #include "manager.h"
 
@@ -342,7 +341,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 		/** Sets the Top Editor (the active editor from the last session) */
 		void SetTopEditor(EditorBase* ed);
 		/** @return The Top Editor */
-		EditorBase* GetTopEditor();
+		EditorBase* GetTopEditor() const;
 
 		/** @return The workspace icon index in the image list. */
 		int WorkspaceIconIndex();
@@ -403,7 +402,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         wxString m_InitialDir;
 
         DECLARE_EVENT_TABLE()
-        DECLARE_SANITY_CHECK
 };
 
 #endif // PROJECTMANAGER_H

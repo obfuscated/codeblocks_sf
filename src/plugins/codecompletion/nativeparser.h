@@ -48,8 +48,8 @@ class NativeParser : public wxEvtHandler
 		const wxString& GetCodeCompletionItems();
 		const wxArrayString& GetCallTips();
 
-		int GetEditorStartWord(){ return m_EditorStartWord; }
-		int GetEditorEndWord(){ return m_EditorEndWord; }
+		int GetEditorStartWord() const { return m_EditorStartWord; }
+		int GetEditorEndWord() const { return m_EditorEndWord; }
 
 		Parser* FindParserFromActiveEditor();
 		Parser* FindParserFromEditor(cbEditor* editor);
