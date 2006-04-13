@@ -281,12 +281,12 @@ wxString wxsSizerFlagsProperty::GetString(long Flags)
     if ( Flags & Expand                 ) Result.Append(_T("wxEXPAND|"));
     if ( Flags & Shaped                 ) Result.Append(_T("wxSHAPED|"));
     if ( Flags & FixedMinSize           ) Result.Append(_T("wxFIXED_MINSIZE|"));
-    if ( Flags & AlignLeft              ) Result.Append(_T("wxALIGH_LEFT|"));
-    if ( Flags & AlignRight             ) Result.Append(_T("wxALIGH_RIGHT|"));
-    if ( Flags & AlignTop               ) Result.Append(_T("wxALIGH_TOP|"));
-    if ( Flags & AlignBottom            ) Result.Append(_T("wxALIGH_BOTTOM|"));
-    if ( Flags & AlignCenterHorizontal  ) Result.Append(_T("wxALIGH_CENTER_HORIZONTAL|"));
-    if ( Flags & AlignCenterVertical    ) Result.Append(_T("wxALIGH_CENTER_VERTICAL|"));
+    if ( Flags & AlignLeft              ) Result.Append(_T("wxALIGN_LEFT|"));
+    if ( Flags & AlignRight             ) Result.Append(_T("wxALIGN_RIGHT|"));
+    if ( Flags & AlignTop               ) Result.Append(_T("wxALIGN_TOP|"));
+    if ( Flags & AlignBottom            ) Result.Append(_T("wxALIGN_BOTTOM|"));
+    if ( Flags & AlignCenterHorizontal  ) Result.Append(_T("wxALIGN_CENTER_HORIZONTAL|"));
+    if ( Flags & AlignCenterVertical    ) Result.Append(_T("wxALIGN_CENTER_VERTICAL|"));
 
     if ( Result.empty() )
     {
