@@ -80,7 +80,8 @@ void wxsSizer::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxs
                 {
                     case wxsCPP:
                     {
-                        Code << GetVarName() << _T("->Add(") << Child->GetVarName()
+                        // cyberkoa : Left out a comma after the GetVarName()
+                        Code << GetVarName() << _T("->Add(") << Child->GetVarName() << _T(",")
                              << Extra->AllParamsCode(WindowParent,wxsCPP) << _T(");\n");
                         break;
                     }
