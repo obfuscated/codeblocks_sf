@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resource>
+
+<object class="wxPanel" name="dlgAutosave">
+    <object class="wxBoxSizer">
+        <orient>wxVERTICAL</orient>
+        <object class="sizeritem">
+            <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+            <border>5</border>
+            <object class="wxFlexGridSizer">
+                <cols>3</cols>
+                <rows>0</rows>
+                <object class="sizeritem">
+                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                    <border>5</border>
+                    <object class="wxCheckBox" name="do_sources">
+                        <label>Automatically save source files every</label>
+                    </object>
+                </object>
+                <object class="sizeritem">
+                    <flag>wxALIGN_CENTER|wxALL</flag>
+                    <border>5</border>
+                    <object class="wxTextCtrl" name="source_mins">
+                        <size>40,-1</size>
+                        <value></value>
+                    </object>
+                </object>
+                <object class="sizeritem">
+                    <flag>wxALIGN_CENTER|wxALL</flag>
+                    <border>5</border>
+                    <object class="wxStaticText">
+                        <label>minutes</label>
+                    </object>
+                </object>
+                <object class="sizeritem">
+                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                    <border>5</border>
+                    <object class="wxCheckBox" name="do_project">
+                        <label>Automatically save projects every</label>
+                    </object>
+                </object>
+                <object class="sizeritem">
+                    <flag>wxALIGN_CENTER|wxALL</flag>
+                    <border>5</border>
+                    <object class="wxTextCtrl" name="project_mins">
+                        <size>40,-1</size>
+                        <value></value>
+                    </object>
+                </object>
+                <object class="sizeritem">
+                    <flag>wxALIGN_CENTER|wxALL</flag>
+                    <border>5</border>
+                    <object class="wxStaticText">
+                        <label>minutes</label>
+                    </object>
+                </object>
+            </object>
+        </object>
+        <object class="sizeritem">
+            <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+            <border>5</border>
+            <object class="wxFlexGridSizer">
+                <cols>2</cols>
+                <rows>0</rows>
+                <growablecols>1</growablecols>
+                <object class="sizeritem">
+                    <flag>wxALIGN_CENTER|wxALL</flag>
+                    <border>5</border>
+                    <object class="wxStaticText">
+                        <label>Method:</label>
+                    </object>
+                </object>
+                <object class="sizeritem">
+                    <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                    <border>5</border>
+                    <object class="wxChoice" name="method">
+                        <content>
+                            <item>Create backup and save to original file</item>
+                            <item>Save to orinigal file</item>
+                            <item>Save to .save file</item>
+                        </content>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</object>
+
+</resource>

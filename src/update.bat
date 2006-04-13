@@ -40,6 +40,7 @@ echo Packing plugins UI resources
 %ZIPCMD% -j9 %RESDIR%\debugger_gdb.zip plugins\debuggergdb\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\defaultmimehandler.zip plugins\defaultmimehandler\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\todo.zip plugins\todo\resources\*.xrc > nul
+%ZIPCMD% -j9 %RESDIR%\autosave.zip plugins\autosave\*.xrc > nul
 echo Packing core UI bitmaps
 cd src\resources
 %ZIPCMD% -0 -q ..\..\%RESDIR%\resources.zip images\*.png images\16x16\*.png > nul

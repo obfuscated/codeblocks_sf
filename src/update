@@ -32,6 +32,7 @@ ${ZIPCMD} -j9 ${RESDIR}/compiler_gcc.zip plugins/compilergcc/resources/*.xrc > /
 ${ZIPCMD} -j9 ${RESDIR}/defaultmimehandler.zip plugins/defaultmimehandler/resources/*.xrc > /dev/null
 ${ZIPCMD} -j9 ${RESDIR}/debugger_gdb.zip plugins/debuggergdb/resources/*.xrc > /dev/null
 ${ZIPCMD} -j9 ${RESDIR}/todo.zip plugins/todo/resources/*.xrc > /dev/null
+${ZIPCMD} -j9 ${RESDIR}/autosave.zip plugins/autosave/*.xrc > /dev/null
 echo Packing core UI bitmaps
 cd src/resources
 ${ZIPCMD} -0 ../../${RESDIR}/resources.zip images/*.png images/16x16/*.png > /dev/null

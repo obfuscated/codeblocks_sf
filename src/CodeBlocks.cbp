@@ -429,6 +429,26 @@
 					<Add directory="devel" />
 				</Linker>
 			</Target>
+			<Target title="Autosave plugin">
+				<Option output="devel\share\CodeBlocks\plugins\autosave.dll" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option object_output=".objs\2.6" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add directory="sdk" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add library="libcodeblocks.a" />
+					<Add library="libwxscintilla.a" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_CFG" value="" />
@@ -537,6 +557,16 @@
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\autosave\autosave.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Autosave plugin" />
+		</Unit>
+		<Unit filename="plugins\autosave\autosave.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Autosave plugin" />
 		</Unit>
 		<Unit filename="plugins\classwizard\classwizard.cpp">
 			<Option compilerVar="CPP" />
