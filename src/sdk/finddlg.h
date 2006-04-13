@@ -6,7 +6,7 @@
 class FindDlg : public FindReplaceBase
 {
 	public:
-		FindDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false, bool findInFilesOnly = false, bool findInFilesActive = false);
+		FindDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false, bool findInFilesOnly = false);
 		~FindDlg();
 		wxString GetFindString();
 		wxString GetReplaceString(){ return wxEmptyString; }
