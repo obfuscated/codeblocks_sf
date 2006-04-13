@@ -26,6 +26,7 @@ codeblocks_SOURCES = app.cpp \
 			dlgaboutplugin.cpp \
 			environmentsettingsdlg.cpp \
 			main.cpp \
+			crashhandler.cpp \
 			prefix.cpp \
 			printdlg.cpp \
 			splashscreen.cpp \

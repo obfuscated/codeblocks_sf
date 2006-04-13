@@ -52,6 +52,7 @@
 #include <globals.h>
 #include "splashscreen.h"
 #include <wx/arrstr.h>
+#include "crashhandler.h"
 
 #ifndef __WXMSW__
     #include "prefix.h" // binreloc
@@ -335,6 +336,8 @@ bool CodeBlocksApp::OnInit()
     m_pBatchBuildDialog = 0;
 
 	wxTheClipboard->Flush();
+
+    static CrashHandler crash_handler;
 
     try
     {
