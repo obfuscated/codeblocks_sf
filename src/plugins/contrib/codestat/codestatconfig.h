@@ -39,8 +39,8 @@ class CodeStatConfigDlg : public cbConfigurationPanel
       void SaveCurrentLanguage();
       void ReInitDialog();
 
-      virtual wxString GetTitle(){ return _("Code statistics settings"); }
-      virtual wxString GetBitmapBaseName(){ return _T("codestats"); }
+      virtual wxString GetTitle() const { return _("Code statistics settings"); }
+      virtual wxString GetBitmapBaseName() const { return _T("codestats"); }
       virtual void OnApply(){SaveSettings();};
       virtual void OnCancel(){}
 

@@ -117,7 +117,7 @@ void cbDragScrollCfg::OnDoneButtonClick(wxCommandEvent& event)
     LOGIT( _T("cbDragScrollCfg::OnDoneButtonClick erroniously called") );
 }
 // ----------------------------------------------------------------------------
-wxString cbDragScrollCfg::GetBitmapBaseName()
+wxString cbDragScrollCfg::GetBitmapBaseName() const
 {
     //probing
     //LOGIT( _T("Config:%s"),ConfigManager::GetConfigFolder().GetData()  );

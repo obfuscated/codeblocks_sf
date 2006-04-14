@@ -32,10 +32,8 @@ class cbDragScrollCfg: public cbConfigurationPanel
 		virtual ~cbDragScrollCfg();
     public:
         // virtual routines required by cbConfigurationPanel
-        wxString GetTitle(){ return _("Mouse Drag Scrolling"); }
-        //wxString GetBitmapBaseName(){ return _T("generic-plugin"); }
-        //wxString GetBitmapBaseName(){ return _T("dragscroll"); }
-        wxString GetBitmapBaseName();
+        wxString GetTitle() const { return _("Mouse Drag Scrolling"); }
+        wxString GetBitmapBaseName() const;
         void OnApply();
         void OnCancel(){}
 

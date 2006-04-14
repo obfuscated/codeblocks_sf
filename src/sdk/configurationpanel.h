@@ -7,6 +7,7 @@
 #include <wx/string.h>
 
 class wxButton;
+class wxWindow;
 
 /** @brief Base class for plugin configuration panels. */
 class DLLIMPORT cbConfigurationPanel : public wxPanel
@@ -16,9 +17,9 @@ class DLLIMPORT cbConfigurationPanel : public wxPanel
         virtual ~cbConfigurationPanel(){}
 
         /// @return the panel's title.
-        virtual wxString GetTitle() = 0;
+        virtual wxString GetTitle() const = 0;
         /// @return the panel's bitmap base name. You must supply two bitmaps: <basename>.png and <basename>-off.png...
-        virtual wxString GetBitmapBaseName() = 0;
+        virtual wxString GetBitmapBaseName() const = 0;
         /// Called when the user chooses to apply the configuration.
         virtual void OnApply() = 0;
         /// Called when the user chooses to cancel the configuration.

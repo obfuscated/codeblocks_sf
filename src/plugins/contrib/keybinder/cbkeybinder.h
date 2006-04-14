@@ -123,8 +123,8 @@ public:
 	~MyDialog();
 
 
-    wxString GetTitle(){ return _("Keyboard shortcuts"); }
-    wxString GetBitmapBaseName(){ return _T("onekeytobindthem"); }
+    wxString GetTitle() const { return _("Keyboard shortcuts"); }
+    wxString GetBitmapBaseName() const { return _T("onekeytobindthem"); }
 	void OnApply();
 	void OnCancel(){}
 

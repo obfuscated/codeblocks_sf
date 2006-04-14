@@ -24,8 +24,8 @@ class CBProfilerConfigDlg : public cbConfigurationPanel
 		CBProfilerConfigDlg(wxWindow* parent);
 		virtual ~CBProfilerConfigDlg();
 
-        wxString GetTitle(){ return _("Profiler settings"); }
-        wxString GetBitmapBaseName(){ return _T("profiler"); }
+        wxString GetTitle() const { return _("Profiler settings"); }
+        wxString GetBitmapBaseName() const { return _T("profiler"); }
         void OnApply();
         void OnCancel(){}
 	private:
