@@ -13,21 +13,13 @@ This file is part of Code::Blocks Studio, an open-source cross-platform IDE
 #ifndef AUTOSAVE_H
 #define AUTOSAVE_H
 
-// For compilers that support precompilation, includes <wx/wx.h>
-#include <wx/wxprec.h>
+#include <wx/intl.h>
+#include <wx/string.h>
 
-#ifdef __BORLANDC__
-	#pragma hdrstop
-#endif
+#include "cbplugin.h" // the base class we 're inheriting
 
-#ifndef WX_PRECOMP
-	#include <wx/wx.h>
-#endif
-
-#include <cbplugin.h> // the base class we 're inheriting
-#include <settings.h> // needed to use the Code::Blocks SDK
-
-
+class wxTimer;
+class wxTimerEvent;
 
 class Autosave : public cbPlugin
 {

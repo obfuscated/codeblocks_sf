@@ -10,13 +10,28 @@ This file is part of Code::Blocks Studio, an open-source cross-platform IDE
 * $HeadURL$
 */
 
-
-#include <sdk.h>
+#if CB_PRECOMP
+#include "sdk.h"
+#else
+#include <wx/checkbox.h>
+#include <wx/filefn.h>
+#include <wx/filename.h>
+#include <wx/textctrl.h>
+#include <wx/timer.h>
+#include <wx/xrc/xmlres.h>
+#include "cbeditor.h"
+#include "cbproject.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "globals.h"
+#include "licenses.h"
+#include "pluginmanager.h"
+#include "projectmanager.h"
+#include "manager.h"
+#endif
+#include <wx/choice.h>
+#include "projectloader.h"
 #include "autosave.h"
-#include <licenses.h>
-
-#include <projectloader.h>
-
 
 // Implement the plugin's hooks
 CB_IMPLEMENT_PLUGIN(Autosave, "Autosave");
