@@ -1508,7 +1508,7 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
                 filesList.Add(ed->GetFilename());
         }
     }
-    if (data->scope == 2) // find in custom search path and mask
+    else if (data->scope == 2) // find in custom search path and mask
     {
         // fill the search list with the files found under the search path
         int flags = wxDIR_FILES |
@@ -1524,6 +1524,36 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
             // wxDir::GetAllFiles() does *not* clear the array, so it suits us just fine ;)
             wxDir::GetAllFiles(data->searchPath, &filesList, masks[i], flags);
         }
+    }
+    else if (data->scope == 3) // find in workspace
+    {
+		// loop over all the projects in the workspace (they are contained in the ProjectManager)
+		const ProjectsArray* pProjects = Manager::Get()->GetProjectManager()->GetProjects();
+		if(pProjects)
+		{
+			int count = pProjects->GetCount();
+			for (int idxProject = 0; idxProject < count; ++idxProject)
+			{
+				cbProject* pProject = pProjects->Item(idxProject);
+				if(pProject)
+				{
+					wxString fullpath = _T("");
+					for (int idxFile = 0; idxFile < pProject->GetFilesCount(); ++idxFile)
+					{
+						ProjectFile* pf = pProject->GetFile(idxFile);
+						if (pf)
+						{
+							fullpath = pf->file.GetFullPath();
+							if (filesList.Index(fullpath) == -1) // avoid adding duplicates
+							{
+								if(wxFileExists(fullpath))  // Does the file exist?
+									filesList.Add(fullpath);
+							}
+						}
+					} // end for : idx : idxFile
+				}
+			} // end for : idx : idxProject
+		}
     }
 
     // if the list is empty, leave
