@@ -38,8 +38,8 @@ class Autosave : public cbPlugin
 		bool BuildToolBar(wxToolBar* toolBar){ return false; }
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-		virtual cbConfigurationPanel* Autosave::GetConfigurationPanel(wxWindow* parent);
-        void Autosave::OnTimer(wxTimerEvent& event);
+		virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+        void OnTimer(wxTimerEvent& event);
     DECLARE_EVENT_TABLE()
 };
 
