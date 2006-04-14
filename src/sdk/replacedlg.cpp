@@ -24,9 +24,9 @@
 * $HeadURL$
 */
 
-#include "sdk_precomp.h"
-
-#ifndef CB_PRECOMP
+#ifdef CB_PRECOMP
+    #include "sdk_precomp.h"
+#else
     #include "globals.h"
     #include "configmanager.h"
 
@@ -114,52 +114,52 @@ void ReplaceDlg::SaveComboValues(wxComboBox* combo, const wxString& configKey)
 	Manager::Get()->GetConfigManager(_T("editor"))->Write(configKey, last);
 }
 
-wxString ReplaceDlg::GetFindString()
+wxString ReplaceDlg::GetFindString() const
 {
 	return XRCCTRL(*this, "cmbFind", wxComboBox)->GetValue();
 }
 
-wxString ReplaceDlg::GetReplaceString()
+wxString ReplaceDlg::GetReplaceString() const
 {
 	return XRCCTRL(*this, "cmbReplace", wxComboBox)->GetValue();
 }
 
-bool ReplaceDlg::GetDeleteOldSearches()
+bool ReplaceDlg::GetDeleteOldSearches() const
 {
 	return true;
 }
 
-bool ReplaceDlg::GetMatchWord()
+bool ReplaceDlg::GetMatchWord() const
 {
 	return XRCCTRL(*this, "chkWholeWord", wxCheckBox)->GetValue();
 }
 
-bool ReplaceDlg::GetStartWord()
+bool ReplaceDlg::GetStartWord() const
 {
 	return XRCCTRL(*this, "chkStartWord", wxCheckBox)->GetValue();
 }
 
-bool ReplaceDlg::GetMatchCase()
+bool ReplaceDlg::GetMatchCase() const
 {
 	return XRCCTRL(*this, "chkMatchCase", wxCheckBox)->GetValue();
 }
 
-bool ReplaceDlg::GetRegEx()
+bool ReplaceDlg::GetRegEx() const
 {
 	return XRCCTRL(*this, "chkRegEx", wxCheckBox)->GetValue();
 }
 
-int ReplaceDlg::GetDirection()
+int ReplaceDlg::GetDirection() const
 {
 	return XRCCTRL(*this, "rbDirection", wxRadioBox)->GetSelection();
 }
 
-int ReplaceDlg::GetOrigin()
+int ReplaceDlg::GetOrigin() const
 {
 	return XRCCTRL(*this, "rbOrigin", wxRadioBox)->GetSelection();
 }
 
-int ReplaceDlg::GetScope()
+int ReplaceDlg::GetScope() const
 {
 	return XRCCTRL(*this, "rbScope", wxRadioBox)->GetSelection();
 }

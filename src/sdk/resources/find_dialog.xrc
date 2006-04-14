@@ -206,6 +206,7 @@
                                                     <item>&amp;Project files</item>
                                                     <item>&amp;Open files</item>
                                                     <item>Search path (below)</item>
+                                                    <item>Workspace files</item>
                                                 </content>
                                             </object>
                                         </object>

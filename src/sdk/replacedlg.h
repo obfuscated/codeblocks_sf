@@ -1,29 +1,30 @@
 #ifndef REPLACEDLG_H
 #define REPLACEDLG_H
 
-#include <wx/combobox.h>
 #include "findreplacebase.h"
+
+class wxComboBox;
 
 class ReplaceDlg : public FindReplaceBase
 {
 	public:
 		ReplaceDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false);
 		~ReplaceDlg();
-		wxString GetFindString();
-		wxString GetReplaceString();
-		bool IsFindInFiles(){ return false; }
-        bool GetDeleteOldSearches();
-		bool GetMatchWord();
-		bool GetStartWord();
-		bool GetMatchCase();
-		bool GetRegEx();
-		int GetDirection();
-		int GetOrigin();
-		int GetScope();
-		bool GetRecursive(){ return false; }
-		bool GetHidden(){ return false; }
-		wxString GetSearchPath(){ return wxEmptyString; }
-		wxString GetSearchMask(){ return wxEmptyString; }
+		wxString GetFindString() const;
+		wxString GetReplaceString() const;
+		bool IsFindInFiles() const { return false; }
+		bool GetDeleteOldSearches() const;
+		bool GetMatchWord() const;
+		bool GetStartWord() const;
+		bool GetMatchCase() const;
+		bool GetRegEx() const;
+		int GetDirection() const;
+		int GetOrigin() const;
+		int GetScope() const;
+		bool GetRecursive() const{ return false; }
+		bool GetHidden() const{ return false; }
+		wxString GetSearchPath() const{ return wxEmptyString; }
+		wxString GetSearchMask() const{ return wxEmptyString; }
 
 		void OnRegEx(wxCommandEvent& event);
 	private:
