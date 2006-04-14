@@ -1,6 +1,7 @@
 #ifndef HELPCONFIGDIALOG_H
 #define HELPCONFIGDIALOG_H
 
+#include <wx/intl.h>
 #include "configurationpanel.h"
 #include "help_common.h"
 
