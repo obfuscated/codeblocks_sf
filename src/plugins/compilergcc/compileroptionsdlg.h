@@ -1,6 +1,7 @@
 #ifndef COMPILEROPTIONSDLG_H
 #define COMPILEROPTIONSDLG_H
 
+#include <wx/intl.h>
 #include <settings.h>
 #include "configurationpanel.h"
 #include <wx/spinbutt.h>

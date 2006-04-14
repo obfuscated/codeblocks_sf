@@ -1,6 +1,7 @@
 #ifndef ASTYLECONFIGDLG_H
 #define ASTYLECONFIGDLG_H
 
+#include <wx/intl.h>
 #include "configurationpanel.h"
 
 enum AStylePredefinedStyle

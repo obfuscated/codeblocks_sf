@@ -9,6 +9,7 @@
 #ifndef DEBUGGEROPTIONSDLG_H
 #define DEBUGGEROPTIONSDLG_H
 
+#include <wx/intl.h>
 #include "configurationpanel.h"
 
 class DebuggerGDB;

@@ -10,6 +10,7 @@
 #ifndef EDITMIMETYPESDLG_H
 #define EDITMIMETYPESDLG_H
 
+#include <wx/intl.h>
 #include "configurationpanel.h"
 #include "mimetypesarray.h"
 

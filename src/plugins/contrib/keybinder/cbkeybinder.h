@@ -39,6 +39,7 @@
 #include "wx/fileconf.h"
 #include "wx/app.h"
 #include "wx/utils.h"
+#include <wx/intl.h>
 
 class MyDialog;
 
