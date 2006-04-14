@@ -1,7 +1,7 @@
 #ifndef CCOPTIONSDLG_H
 #define CCOPTIONSDLG_H
 
-#include <cbplugin.h>
+#include "configurationpanel.h"
 #include <settings.h>
 #include "nativeparser.h"
 #include "parser/parser.h"

@@ -1,7 +1,7 @@
 #ifndef ASTYLECONFIGDLG_H
 #define ASTYLECONFIGDLG_H
 
-#include <cbplugin.h>
+#include "configurationpanel.h"
 
 enum AStylePredefinedStyle
 {

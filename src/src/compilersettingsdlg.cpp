@@ -20,6 +20,7 @@
 #include <wx/listbook.h>
 #include <wx/listctrl.h>
 
+#include "configurationpanel.h"
 #include "compilersettingsdlg.h"
 #include "appglobals.h"
 #ifdef __WXMSW__

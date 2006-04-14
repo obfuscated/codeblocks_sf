@@ -19,7 +19,7 @@
 #include <wx/slider.h>
 #include <wx/stattext.h>
 //*)
-#include "cbplugin.h"
+#include "configurationpanel.h"
 #include <wx/settings.h>
 
 // ----------------------------------------------------------------------------

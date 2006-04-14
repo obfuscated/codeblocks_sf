@@ -9,7 +9,7 @@
 #ifndef DEBUGGEROPTIONSDLG_H
 #define DEBUGGEROPTIONSDLG_H
 
-#include <cbplugin.h>
+#include "configurationpanel.h"
 
 class DebuggerGDB;
 

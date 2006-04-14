@@ -30,6 +30,7 @@
 #include "../sdk/globals.h"
 #include "associations.h"
 
+#include "configurationpanel.h"
 #include "environmentsettingsdlg.h"
 #ifdef __WXMSW__
     #include "associations.h"

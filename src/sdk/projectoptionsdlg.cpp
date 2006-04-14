@@ -44,6 +44,7 @@
 #include <wx/radiobox.h>
 #include <wx/notebook.h>
 
+#include "configurationpanel.h"
 #include "projectoptionsdlg.h" // class's header file
 #include "editarrayorderdlg.h"
 #include "editarrayfiledlg.h"

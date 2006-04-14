@@ -1,7 +1,7 @@
 #ifndef HELPCONFIGDIALOG_H
 #define HELPCONFIGDIALOG_H
 
-#include <cbplugin.h>
+#include "configurationpanel.h"
 #include "help_common.h"
 
 class HelpPlugin;

@@ -10,7 +10,7 @@
 #ifndef EDITMIMETYPESDLG_H
 #define EDITMIMETYPESDLG_H
 
-#include <cbplugin.h>
+#include "configurationpanel.h"
 #include "mimetypesarray.h"
 
 class EditMimeTypesDlg : public cbConfigurationPanel

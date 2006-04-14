@@ -1,13 +1,13 @@
 #ifndef CBPLUGIN_H
 #define CBPLUGIN_H
 
-#include <wx/dynarray.h>
+#include <wx/arrstr.h>
 #include <wx/event.h>
-#include <wx/panel.h>
+#include <wx/intl.h>
+#include <wx/string.h>
 
 #include "settings.h" // build settings
 #include "globals.h"
-#include "configurationpanel.h"
 
 #ifdef __WXMSW__
 	#ifndef PLUGIN_EXPORT
@@ -28,7 +28,7 @@
 // this is the plugins SDK version number
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
-#define PLUGIN_SDK_VERSION_MINOR 6
+#define PLUGIN_SDK_VERSION_MINOR 7
 #define PLUGIN_SDK_VERSION_RELEASE 13
 
 // class decls
@@ -37,8 +37,10 @@ class wxMenuBar;
 class wxMenu;
 class wxToolBar;
 class wxPanel;
+class wxWindow;
 class cbProject;
 class FileTreeData;
+class cbConfigurationPanel;
 
 // Define basic groups for plugins' configuration.
 static const int cgCompiler         = 0x01; ///< Compiler related.

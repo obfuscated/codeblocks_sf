@@ -2,7 +2,7 @@
 #define COMPILEROPTIONSDLG_H
 
 #include <settings.h>
-#include <cbplugin.h>
+#include "configurationpanel.h"
 #include <wx/spinbutt.h>
 #include "compilergcc.h"
 #include <compileroptions.h>

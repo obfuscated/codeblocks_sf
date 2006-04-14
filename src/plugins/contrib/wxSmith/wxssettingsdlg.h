@@ -18,6 +18,8 @@
 #include <wx/xrc/xmlres.h>
 //*)
 
+#include "configurationpanel.h"
+
 class wxsSettingsDlg: public cbConfigurationPanel
 {
     public:

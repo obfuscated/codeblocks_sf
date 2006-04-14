@@ -50,6 +50,7 @@
 #include <wx/listbook.h>
 #include <wx/listctrl.h>
 
+#include "configurationpanel.h"
 #include "editorcolorset.h"
 #include "editorconfigurationdlg.h"
 #include "editkeywordsdlg.h"

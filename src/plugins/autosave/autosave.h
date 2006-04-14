@@ -17,6 +17,7 @@ This file is part of Code::Blocks Studio, an open-source cross-platform IDE
 #include <wx/string.h>
 
 #include "cbplugin.h" // the base class we 're inheriting
+#include "configurationpanel.h"
 
 class wxTimer;
 class wxTimerEvent;
