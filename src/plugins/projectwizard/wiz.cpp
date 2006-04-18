@@ -11,6 +11,7 @@
 #endif
 
 #include "wiz.h"
+#include <wx/dir.h>
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/wizard.h>
@@ -69,7 +70,7 @@ void Wiz::OnAttach()
 {
     // read configuration
     RegisterWizard();
-    
+
     // run main wizard script
     // this registers all available wizard scripts with us
     Manager::Get()->GetScriptingManager()->LoadScript(m_TemplatePath + _T("config.script"), _T("WizardMainModule"));
@@ -156,7 +157,7 @@ int Wiz::Launch(int index)
 
     // access the scripting engine core
     asIScriptEngine* engine = Manager::Get()->GetScriptingManager()->GetEngine();
-    
+
     engine->Discard("WizardModule");
     if (!Manager::Get()->GetScriptingManager()->LoadScript(commons, _T("WizardModule")) || // load common functions
         !Manager::Get()->GetScriptingManager()->LoadScript(script, _T("WizardModule")) || // load selected script
@@ -299,10 +300,10 @@ int Wiz::Launch(int index)
             for (size_t i = 0; i < tmpsrcdirs.GetCount(); ++i)
                 CopyFiles(theproject, prjdir, tmpsrcdirs[i]);
         }
-        
+
         if (srcdir.IsEmpty())
             cbMessageBox(_("The wizard didn't provide any files to copy!"), _("Warning"), wxICON_WARNING);
-        
+
         // save the project and...
         theproject->Save();
 
