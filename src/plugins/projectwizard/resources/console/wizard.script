@@ -1,0 +1,187 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: Console application
+// Author:  Yiannis Mandravellos
+//
+//
+// NOTE: This is a *very* simple wizard script, but it's fully commented so you
+// know what's going on :)
+//
+////////////////////////////////////////////////////////////////////////////////
+
+
+// There is one global variable implicitely defined (exported from Code::Blocks)
+// It is named "Wizard". It represents the wizard dialog object and contains
+// the following methods:
+//
+//    void AddIntroPage(const wxString& in)
+//    void AddProjectPathPage()
+//    void AddCompilerPage(const wxString& in)
+//    void AddPage(const wxString& in)
+//
+//    void SetTextControlValue(const wxString& in, const wxString& in)
+//    wxString GetTextControlValue(const wxString& in)
+//
+//    void CheckCheckbox(const wxString& in, bool)
+//    bool IsCheckboxChecked(const wxString& in)
+//    void FillComboboxWithCompilers(const wxString& in)
+//    wxString GetCompilerFromCombobox(const wxString& in)
+//    wxString GetComboboxStringSelection(const wxString& in)
+//    int GetComboboxSelection(const wxString& in)
+//    void SetComboboxSelection(const wxString& in,int)
+//
+//    int GetRadioboxSelection(const wxString& in)
+//    void SetRadioboxSelection(const wxString& in,int)
+//
+//    wxString& GetTemplatePath()
+//    wxString GetProjectPath()
+//    wxString GetProjectName()
+//    wxString GetCompilerID()
+//
+//    bool GetWantDebug()
+//    wxString GetDebugName()
+//    wxString GetDebugOutputDir()
+//    wxString GetDebugObjectOutputDir()
+//
+//    bool GetWantRelease()
+//    wxString GetReleaseName()
+//    wxString GetReleaseOutputDir()
+//    wxString GetReleaseObjectOutputDir()
+
+
+// Global variables declaration.
+//
+// Don't over-react about using global variables. This script will be discarded
+// once finished running, so no reason to panic ;)
+
+//bool IsCpp; // hold the source type for the new file (C or C++)
+
+// This is the very first script function that will be called by Code::Blocks.
+// The script should add all its wizard pages here.
+// Pages will appear in the order they 're added.
+void BeginWizard()
+{
+    // this is the text that will appear in the start (intro) page
+    wxString intro_msg = "Welcome to the new console application wizard!\n"
+                        "This wizard will guide you to create a new console application.\n\n"
+                        "When you 're ready to proceed, please click \"Next\"...";
+
+    // add builtin pages
+	Wizard.AddIntroPage(intro_msg); // intro
+	Wizard.AddProjectPathPage(); // select project name and path
+	Wizard.AddCompilerPage(""); // select compiler and configurations (the argument can be a compiler ID)
+	Wizard.AddLanguagePage("C;C++", 1); // select language
+
+    // add custom pages, present in the XRC (wizard.xrc)
+    // each page must exist as a wxPanel with the same name in the XRC.
+//	Wizard.AddPage("SourceType"); // select source file type (C or C++)
+
+	// nothing more needs to be done here
+}
+
+// There are three wizard events provided for custom pages (from XRC):
+//
+//  1) void OnEnter_<panel_name>(bool fwd)
+//      This is called when the wizard is about to display this page.
+//      The "fwd" argument is "true" if the page is displayed after the user pressed "Next",
+//      or it is "false" if the user pressed "Back".
+//
+//  2) bool OnLeave_<panel_name>(bool fwd)
+//      This is called when the wizard is about to display another page.
+//      The argument means the same as in OnEnter_<panel_name> above.
+//      If the script returns "false" from this function, then the page-change
+//      isn't allowed.
+//
+//  3) OnClick_<button_name>()
+//      This is called when a button with the same name is clicked.
+
+////////////////////////////////////////////////////////////////////////////////
+// Source type's page
+////////////////////////////////////////////////////////////////////////////////
+
+//bool OnLeave_SourceType(bool fwd)
+//{
+//	if (fwd)
+//	{
+//	    // if user pressed "Next", accept its source type settings
+//	    // and keep it in the global variable we defined earlier.
+//	    IsCpp = Wizard.GetRadioboxSelection("rbLang") == 0;
+//	}
+//	// allow changing this page
+//	return true;
+//}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// The following functions are called by Code::Blocks after the wizard has
+// finished running (user clicked "Finish").
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// Return the relative directory (to the templates path) that contains the files
+// for the new project.
+// This directory will be recursively scanned and every file and folder found
+// will be copied by the wizard to the destination folder and will be added
+// to the project.
+// Note that you can return multiple directories by semicolon-separating them,
+// e.g."console/common;console/cpp". This way you can keep common files together
+// and only separate different files based on the selected options.
+bool GetFilesDir(wxString& out result)
+{
+    // depending on the source type setting, return the appropriate value.
+    int lang = Wizard.GetLanguageIndex();
+    switch (lang)
+    {
+        case 0:
+            // C source file
+            result = "console/c";
+            break;
+
+        case 1:
+        default:
+            // C++ source file
+            result = "console/cpp";
+            break;
+    }
+    return true;
+}
+
+// Setup the already created project.
+// By now, the project has already been created and it's time to set it up.
+// The compiler ID has been already set, as well as the project title.
+// Also, the requested targets (configurations) have been created and set up.
+// Of course the script can now override anything ;)
+// The "project" argument represents the new project.
+bool SetupProject(Project@ project)
+{
+    // NOTE: Major compiler system drawback here.
+    // Until it is redesigned to allow easier compiler settings,
+    // we have to check the compiler's ID and set options for different compilers...
+
+    // enable compiler warnings (project-wide)
+    WarningsOn(Cast_CompileOptionsBase(project), Wizard.GetCompilerID());
+
+    // Debug build target
+    BuildTarget@ target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (target != null)
+    {
+        target.SetTargetType(ttConsoleOnly);
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable debugging symbols for this target
+        DebugSymbolsOn(Cast_CompileOptionsBase(target), Wizard.GetCompilerID());
+    }
+
+    // Release build target
+    @target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (target != null)
+    {
+        target.SetTargetType(ttConsoleOnly);
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable optimizations for this target
+        OptimizationsOn(Cast_CompileOptionsBase(target), Wizard.GetCompilerID());
+    }
+
+    return true;
+}

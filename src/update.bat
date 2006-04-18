@@ -11,6 +11,7 @@ if not exist output\share\CodeBlocks\images\16x16 md output\share\CodeBlocks\ima
 if not exist output\share\CodeBlocks\images\codecompletion md output\share\CodeBlocks\images\codecompletion\
 if not exist output\share\CodeBlocks\plugins md output\share\CodeBlocks\plugins\
 if not exist output\share\CodeBlocks\templates md output\share\CodeBlocks\templates\
+if not exist output\share\CodeBlocks\templates\wizard md output\share\CodeBlocks\templates\wizard\
 if not exist output\share\CodeBlocks\scripts md output\share\CodeBlocks\scripts\
 if not exist devel md devel\
 if not exist devel\share md devel\share\
@@ -22,6 +23,7 @@ if not exist devel\share\CodeBlocks\images\16x16 md devel\share\CodeBlocks\image
 if not exist devel\share\CodeBlocks\images\codecompletion md devel\share\CodeBlocks\images\codecompletion\
 if not exist devel\share\CodeBlocks\plugins md devel\share\CodeBlocks\plugins\
 if not exist devel\share\CodeBlocks\templates md devel\share\CodeBlocks\templates\
+if not exist devel\share\CodeBlocks\templates\wizard md devel\share\CodeBlocks\templates\wizard\
 if not exist devel\share\CodeBlocks\scripts md devel\share\CodeBlocks\scripts\
 
 set ZIPCMD=zip
@@ -71,6 +73,8 @@ copy /y src\resources\images\16x16\*.png %RESDIR%\images\16x16 > nul
 copy /y src\resources\images\16x16\*.png output\share\codeblocks\images\16x16 > nul
 copy /y plugins\codecompletion\resources\images\*.png %RESDIR%\images\codecompletion > nul
 copy /y plugins\codecompletion\resources\images\*.png output\share\codeblocks\images\codecompletion > nul
+xcopy /y /s plugins\projectwizard\resources\* %RESDIR%\templates\wizard > nul
+xcopy /y /s plugins\projectwizard\resources\* output\share\codeblocks\templates\wizard > nul
 copy /y templates\common\* output\share\codeblocks\templates > nul
 copy /y templates\win32\* output\share\codeblocks\templates > nul
 copy /y templates\common\* %RESDIR%\templates > nul

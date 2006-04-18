@@ -59,6 +59,8 @@ BEGIN_EVENT_TABLE(NewFromTemplateDlg, wxDialog)
 	EVT_COMBOBOX(XRCID("cmbOptions"), NewFromTemplateDlg::OnOptionChanged)
 	EVT_COMBOBOX(XRCID("cmbFileSets"), NewFromTemplateDlg::OnFilesetChanged)
 	EVT_COMBOBOX(XRCID("cmbCategories"), NewFromTemplateDlg::OnCategoryChanged)
+	EVT_CHECKBOX(XRCID("chkShowFileTemplates"), NewFromTemplateDlg::OnFilterChanged)
+	EVT_CHECKBOX(XRCID("chkShowWizardTemplates"), NewFromTemplateDlg::OnFilterChanged)
 END_EVENT_TABLE()
 
 NewFromTemplateDlg::NewFromTemplateDlg(const ProjectTemplateArray& templates, const wxArrayString& user_templates)
@@ -116,22 +118,51 @@ void NewFromTemplateDlg::BuildCategories()
 	wxComboBox* cat = XRCCTRL(*this, "cmbCategories", wxComboBox);
 	cat->Clear();
 	cat->Append(_("<All categories>"));
-	for (unsigned int i = 0; i < m_Templates.GetCount(); ++i)
+
+	// file-based templates
+	if (XRCCTRL(*this, "chkShowFileTemplates", wxCheckBox)->GetValue())
 	{
-		ProjectTemplateLoader* pt = m_Templates[i];
-		if (cat->FindString(pt->m_Category) == wxNOT_FOUND)
-			cat->Append(pt->m_Category);
+        for (unsigned int i = 0; i < m_Templates.GetCount(); ++i)
+        {
+            ProjectTemplateLoader* pt = m_Templates[i];
+            if (cat->FindString(pt->m_Category) == wxNOT_FOUND)
+                cat->Append(pt->m_Category);
+        }
 	}
-	for (unsigned int i = 0; i < m_Wizards.GetCount(); ++i)
+
+    // wizards
+	if (XRCCTRL(*this, "chkShowWizardTemplates", wxCheckBox)->GetValue())
 	{
-		cbProjectWizardPlugin* plugin = (cbProjectWizardPlugin*)m_Wizards[i];
-		for (int w = 0; w < plugin->GetCount(); ++w)
-		{
-            if (cat->FindString(plugin->GetCategory(w)) == wxNOT_FOUND)
-                cat->Append(plugin->GetCategory(w));
-		}
+        for (unsigned int i = 0; i < m_Wizards.GetCount(); ++i)
+        {
+            cbProjectWizardPlugin* plugin = (cbProjectWizardPlugin*)m_Wizards[i];
+            for (int w = 0; w < plugin->GetCount(); ++w)
+            {
+                if (cat->FindString(plugin->GetCategory(w)) == wxNOT_FOUND)
+                    cat->Append(plugin->GetCategory(w));
+            }
+        }
 	}
 	cat->SetSelection(0);
+}
+
+int wxCALLBACK SortTemplates(long item1, long item2, long sortData)
+{
+    ListItemData* data1 = reinterpret_cast<ListItemData*>(item1);
+    ListItemData* data2 = reinterpret_cast<ListItemData*>(item2);
+    
+    if (!data1 && data2)
+        return 1;
+    if (data1 && !data2)
+        return -1;
+    if (data1 && data2)
+    {
+        wxString name1 = data1->pt ? data1->pt->m_Title : data1->plugin->GetTitle(data1->wizPluginIndex);
+        wxString name2 = data2->pt ? data2->pt->m_Title : data2->plugin->GetTitle(data2->wizPluginIndex);
+        
+        return name1.CompareTo(name2);
+    }
+    return 0;
 }
 
 void NewFromTemplateDlg::BuildList()
@@ -142,44 +173,53 @@ void NewFromTemplateDlg::BuildList()
 	m_ImageList.RemoveAll();
 	list->SetImageList(&m_ImageList, wxIMAGE_LIST_NORMAL);
 
+    wxBitmap bmp;
+    bool all = cat->GetSelection() == 0;
+
 	// file-based templates
-	wxBitmap bmp;
-	bool all = cat->GetSelection() == 0;
-	wxString baseDir = ConfigManager::GetDataFolder();
-	baseDir << _T("/templates/");
-	for (unsigned int x = 0; x < m_Templates.GetCount(); ++x)
+	if (XRCCTRL(*this, "chkShowFileTemplates", wxCheckBox)->GetValue())
 	{
-		ProjectTemplateLoader* pt = m_Templates[x];
-		if (all || pt->m_Category.Matches(cat->GetStringSelection()))
-		{
-			int idx = -2;
-			if (wxFileExists(baseDir + pt->m_Bitmap))
-			{
-				bmp.LoadFile(baseDir + pt->m_Bitmap, wxBITMAP_TYPE_PNG);
-				idx = m_ImageList.Add(bmp);
-			}
-			int index = list->InsertItem(0, pt->m_Title, idx);
-			if (index != -1)
-				list->SetItemData(index, (long)(new ListItemData(pt)));
-		}
-	}
-
-	// wizards
-	for (unsigned int i = 0; i < m_Wizards.GetCount(); ++i)
-	{
-		cbProjectWizardPlugin* plugin = (cbProjectWizardPlugin*)m_Wizards[i];
-		for (int w = 0; w < plugin->GetCount(); ++w)
-		{
-            if (all || plugin->GetCategory(w).Matches(cat->GetStringSelection()))
+        wxString baseDir = ConfigManager::GetDataFolder();
+        baseDir << _T("/templates/");
+        for (unsigned int x = 0; x < m_Templates.GetCount(); ++x)
+        {
+            ProjectTemplateLoader* pt = m_Templates[x];
+            if (all || pt->m_Category.Matches(cat->GetStringSelection()))
             {
-                int idx = plugin->GetBitmap(w).Ok() ? m_ImageList.Add(plugin->GetBitmap(w)) : -2;
-                int index = list->InsertItem(0, plugin->GetTitle(w), idx);
+                int idx = -2;
+                if (wxFileExists(baseDir + pt->m_Bitmap))
+                {
+                    bmp.LoadFile(baseDir + pt->m_Bitmap, wxBITMAP_TYPE_PNG);
+                    idx = m_ImageList.Add(bmp);
+                }
+                int index = list->InsertItem(0, pt->m_Title, idx);
                 if (index != -1)
-                    list->SetItemData(index, (long)(new ListItemData(0, plugin, w)));
+                    list->SetItemData(index, (long)(new ListItemData(pt)));
             }
-		}
+        }
+	}
+	
+    // wizards
+	if (XRCCTRL(*this, "chkShowWizardTemplates", wxCheckBox)->GetValue())
+	{
+        for (unsigned int i = 0; i < m_Wizards.GetCount(); ++i)
+        {
+            cbProjectWizardPlugin* plugin = (cbProjectWizardPlugin*)m_Wizards[i];
+            for (int w = 0; w < plugin->GetCount(); ++w)
+            {
+                if (all || plugin->GetCategory(w).Matches(cat->GetStringSelection()))
+                {
+                    int idx = plugin->GetBitmap(w).Ok() ? m_ImageList.Add(plugin->GetBitmap(w)) : -2;
+                    int index = list->InsertItem(0, plugin->GetTitle(w), idx);
+                    if (index != -1)
+                        list->SetItemData(index, (long)(new ListItemData(0, plugin, w)));
+                }
+            }
+        }
 	}
 
+    list->SortItems(SortTemplates, 0);
+    
 	XRCCTRL(*this, "cmbOptions", wxComboBox)->Enable(false);
 	XRCCTRL(*this, "cmbFileSets", wxComboBox)->Enable(false);
 }
@@ -271,7 +311,7 @@ void NewFromTemplateDlg::OnListSelection(wxListEvent& event)
 	m_WizardIndex = data->wizPluginIndex;
 	FillTemplate(data->pt);
 	if (m_pWizard)
-        XRCCTRL(*this, "wxID_OK", wxButton)->SetLabel(_T("Sta&rt wizard..."));
+        XRCCTRL(*this, "wxID_OK", wxButton)->SetLabel(_T("Sta&rt wizard"));
     else
         XRCCTRL(*this, "wxID_OK", wxButton)->SetLabel(_T("C&reate"));
     XRCCTRL(*this, "wxID_OK", wxButton)->Layout();
@@ -292,6 +332,12 @@ void NewFromTemplateDlg::OnOptionChanged(wxCommandEvent& event)
 
 void NewFromTemplateDlg::OnFilesetChanged(wxCommandEvent& event)
 {
+}
+
+void NewFromTemplateDlg::OnFilterChanged(wxCommandEvent& event)
+{
+    BuildCategories();
+	BuildList();
 }
 
 void NewFromTemplateDlg::OnUpdateUI(wxUpdateUIEvent& event)

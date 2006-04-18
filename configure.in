@@ -137,6 +137,20 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/defaultmimehandler/resources/Makefile
 	src/plugins/pluginwizard/Makefile
 	src/plugins/pluginwizard/resources/Makefile
+	src/plugins/projectwizard/Makefile
+	src/plugins/projectwizard/resources/Makefile
+	src/plugins/projectwizard/resources/console/Makefile
+	src/plugins/projectwizard/resources/console/c/Makefile
+	src/plugins/projectwizard/resources/console/cpp/Makefile
+	src/plugins/projectwizard/resources/d/Makefile
+	src/plugins/projectwizard/resources/d/console/Makefile
+	src/plugins/projectwizard/resources/irrlicht/Makefile
+	src/plugins/projectwizard/resources/irrlicht/files/Makefile
+	src/plugins/projectwizard/resources/ogre/Makefile
+	src/plugins/projectwizard/resources/ogre/files/Makefile
+	src/plugins/projectwizard/resources/wxwidgets/Makefile
+	src/plugins/projectwizard/resources/wxwidgets/common/Makefile
+	src/plugins/projectwizard/resources/wxwidgets/pch/Makefile
 	src/plugins/todo/Makefile
 	src/plugins/todo/resources/Makefile
 	src/plugins/xpmanifest/Makefile

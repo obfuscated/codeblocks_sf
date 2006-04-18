@@ -308,6 +308,25 @@
 					<Add directory="devel" />
 				</Linker>
 			</Target>
+			<Target title="Project wizard">
+				<Option output="devel\share\CodeBlocks\plugins\libprojectwizard.so" />
+				<Option working_dir="devel\share\CodeBlocks\plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Option projectIncludeDirsRelation="2" />
+				<Option projectLibDirsRelation="2" />
+				<Compiler>
+					<Add directory="sdk" />
+				</Compiler>
+				<Linker>
+					<Add option="`wx-config --libs`" />
+					<Add library="codeblocks" />
+					<Add library="wxscintilla" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
 			<Target title="To-do">
 				<Option output="devel\share\codeblocks\plugins\libtodo.so" />
 				<Option working_dir="devel\share\codeblocks\plugins" />
@@ -1589,6 +1608,150 @@
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Plugin wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/compilerpanel.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/compilerpanel.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/intropanel.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/intropanel.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/languagepanel.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/languagepanel.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/projectpathpanel.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/projectpathpanel.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/resources/common_functions.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/resources/config.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/resources/console/wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/resources/d/wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/resources/irrlicht/wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/resources/irrlicht/wizard.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/resources/ogre/wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/resources/ogre/wizard.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/resources/wxwidgets/wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/resources/wxwidgets/wizard.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/wiz.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/wiz.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/wizpage.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/wizpage.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/wxsmith/CompilerPanel.wxs">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/wxsmith/IntroPanel.wxs">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/wxsmith/LanguagePanel.wxs">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins/projectwizard/wxsmith/ProjectPathPanel.wxs">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
 		</Unit>
 		<Unit filename="plugins\todo\addtododlg.cpp">
 			<Option compilerVar="CPP" />

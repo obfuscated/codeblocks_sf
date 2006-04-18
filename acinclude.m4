@@ -151,6 +151,17 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING(whether to build the project wizard plugin)
+prw_default="yes"
+AC_ARG_ENABLE(project-wizard, [AC_HELP_STRING([--enable-project-wizard], [build the project wizard plugin (default YES)])],,
+                       enable_prw=$prw_default)
+AM_CONDITIONAL([BUILD_PROJECTWIZARD], [test "x$enable_prw" = "xyes"])
+if test "x$enable_prw" = "xyes"; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING(whether to build the to-do plugin)
 todo_default="yes"
 AC_ARG_ENABLE(todo, [AC_HELP_STRING([--enable-todo], [build the to-do plugin (default YES)])],,

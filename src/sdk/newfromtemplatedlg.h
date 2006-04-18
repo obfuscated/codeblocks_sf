@@ -37,6 +37,7 @@ class NewFromTemplateDlg : public wxDialog
 		void OnCategoryChanged(wxCommandEvent& event);
 		void OnOptionChanged(wxCommandEvent& event);
 		void OnFilesetChanged(wxCommandEvent& event);
+		void OnFilterChanged(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
 	private:
 		ProjectTemplateLoader* m_Template;

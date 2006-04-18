@@ -24,9 +24,40 @@
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxComboBox" name="cmbCategories">
-                        <content/>
-                        <style>wxCB_SORT|wxCB_READONLY|wxCB_DROPDOWN</style>
+                      <object class="wxBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxComboBox" name="cmbCategories">
+                            <content/>
+                            <style>wxCB_SORT|wxCB_READONLY|wxCB_DROPDOWN</style>
+                          </object>
+                          <option>1</option>
+                          <flag>wxEXPAND</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkShowFileTemplates">
+                                <label>Show file-based templates</label>
+                                <checked>0</checked>
+                              </object>
+                            </object>
+                            <object class="spacer">
+                              <size>32,0</size>
+                              <option>1</option>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkShowWizardTemplates">
+                                <label>Show wizard-based templates</label>
+                                <checked>1</checked>
+                              </object>
+                              <flag></flag>
+                            </object>
+                          </object>
+                          <flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+                          <border>4</border>
+                        </object>
                       </object>
                       <option>1</option>
                       <flag>wxLEFT|wxEXPAND</flag>
@@ -43,7 +74,7 @@
                   <option>1</option>
                   <flag>wxALL|wxEXPAND</flag>
                   <border>8</border>
-                  <minsize>480,200</minsize>
+                  <minsize>320,160</minsize>
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticText" name="lblWarnCompiler">
@@ -219,7 +250,7 @@
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
             <object class="wxButton" name="wxID_OK">
-              <label>C&amp;reate</label>
+              <label>Sta&amp;rt wizard</label>
               <default>1</default>
             </object>
             <flag>wxRIGHT</flag>

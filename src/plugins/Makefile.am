@@ -26,6 +26,10 @@ if BUILD_PLUGINWIZARD
 MAYBE_PLUGINWIZARD=pluginwizard
 endif
 
+if BUILD_PROJECTWIZARD
+MAYBE_PROJECTWIZARD=projectwizard
+endif
+
 if BUILD_TODO
 MAYBE_TODO=todo
 endif
@@ -45,6 +49,7 @@ SUBDIRS=$(MAYBE_ASTYLE) \
 		$(MAYBE_DEBUGGER) \
 		$(MAYBE_MIMEHANDLER) \
 		$(MAYBE_PLUGINWIZARD) \
+		$(MAYBE_PROJECTWIZARD) \
 		$(MAYBE_TODO) \
 		$(MAYBE_MANIFEST) \
 		$(MAYBE_CONSTRIB)
@@ -56,6 +61,7 @@ DIST_SUBDIRS = astyle \
 		debuggergdb \
 		defaultmimehandler \
 		pluginwizard \
+		projectwizard \
 		todo \
 		xpmanifest \
 		contrib

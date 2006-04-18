@@ -1,0 +1,64 @@
+//
+// Common functions for all registered wizards
+//
+
+// Warnings On
+void WarningsOn(CompileOptionsBase@ base, const wxString& in compilerID)
+{
+    if (compilerID == "msvctk")
+    {
+        base.AddCompilerOption("/W3");
+    }
+    else
+    {
+        // GCC options are used as fallback
+        base.AddCompilerOption("-Wall");
+    }
+}
+
+// Debug symbols On
+void DebugSymbolsOn(CompileOptionsBase@ base, const wxString& in compilerID)
+{
+    if (compilerID == "msvctk")
+    {
+        base.AddCompilerOption("/Zi");
+        base.AddCompilerOption("/D_DEBUG");
+        base.AddLinkerOption("/DEBUG");
+    }
+    else
+    {
+        // GCC options are used as fallback
+        base.AddCompilerOption("-g");
+    }
+}
+
+// Optimizations On
+void OptimizationsOn(CompileOptionsBase@ base, const wxString& in compilerID)
+{
+    if (compilerID == "msvctk")
+    {
+        base.AddCompilerOption("/Og");
+        base.AddCompilerOption("/Ox");
+        base.AddCompilerOption("/DNDEBUG");
+    }
+    else
+    {
+        // GCC options are used as fallback
+        base.AddCompilerOption("-O2");
+        base.AddCompilerOption("-s");
+    }
+}
+
+// C++ Exceptions On
+void CppExceptionsOn(CompileOptionsBase@ base, const wxString& in compilerID)
+{
+    if (compilerID == "msvctk")
+    {
+        base.AddCompilerOption("/EHsc");
+    }
+    else
+    {
+        // GCC options are used as fallback
+        base.AddCompilerOption("-fexceptions");
+    }
+}
