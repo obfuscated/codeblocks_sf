@@ -125,8 +125,11 @@ void Wiz::Clear()
     m_pWizard = 0;
     m_Pages.Clear();
 
+// if the ABI is not sufficient, we 're in trouble the next time the wizard runs...
+#if wxABI_VERSION > 20601
     if (!m_LastXRC.IsEmpty())
         wxXmlResource::Get()->Unload(m_LastXRC);
+#endif
 
 	m_pWizProjectPathPanel = 0;
 	m_pWizCompilerPanel = 0;

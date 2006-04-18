@@ -3999,7 +3999,17 @@
 			<Option link="0" />
 			<Option target="src" />
 		</Unit>
-		<Unit filename="src\dlgabout.cpp">
+		<Unit filename="src/crashhandler.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/crashhandler.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/dlgabout.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="src" />
 		</Unit>

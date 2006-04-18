@@ -22,11 +22,11 @@ codeblocks_LDADD =  -LwxAUI -lwxaui \
 codeblocks_SOURCES = app.cpp \
 			appglobals.cpp \
 			compilersettingsdlg.cpp \
+			crashhandler.cpp \
 			dlgabout.cpp \
 			dlgaboutplugin.cpp \
 			environmentsettingsdlg.cpp \
 			main.cpp \
-			crashhandler.cpp \
 			prefix.cpp \
 			printdlg.cpp \
 			splashscreen.cpp \
@@ -35,6 +35,7 @@ codeblocks_SOURCES = app.cpp \
 noinst_HEADERS = app.h \
 			appglobals.h \
 			compilersettingsdlg.h \
+			crashhandler.h \
 			dlgabout.h \
 			dlgaboutplugin.h \
 			environmentsettingsdlg.h \

@@ -2,6 +2,7 @@
 #include <manager.h>
 #include <messagemanager.h>
 #include <configmanager.h>
+#include <projectmanager.h>
 #include <scriptingmanager.h>
 #include <scriptingcall.h>
 #include <compilerfactory.h>
