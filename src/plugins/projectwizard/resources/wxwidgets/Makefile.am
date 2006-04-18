@@ -1,6 +1,6 @@
 SUBDIRS = common pch
 
-pkgdatadir = $(datadir)/@PACKAGE@/templates/wxwidgets
+pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/wxwidgets
 
 dist_pkgdata_DATA = logo.png \
 					wizard.png \

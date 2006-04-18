@@ -1,6 +1,6 @@
 SUBDIRS = files
 
-pkgdatadir = $(datadir)/@PACKAGE@/templates/ogre
+pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/ogre
 
 dist_pkgdata_DATA = logo.png \
 					wizard.png \

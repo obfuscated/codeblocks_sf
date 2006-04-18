@@ -1,3 +1,3 @@
-pkgdatadir = $(datadir)/@PACKAGE@/templates/irrlicht/files
+pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/irrlicht/files
 
 dist_pkgdata_DATA = main.cpp

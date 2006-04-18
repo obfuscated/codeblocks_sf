@@ -1,6 +1,6 @@
 SUBDIRS = console d irrlicht ogre wxwidgets
 
-pkgdatadir = $(datadir)/@PACKAGE@/templates
+pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard
 
 dist_pkgdata_DATA = common_functions.script \
 					config.script
