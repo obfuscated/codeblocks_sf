@@ -39,6 +39,8 @@ namespace FileFilters
       */
     DLLIMPORT size_t GetIndexForFilterAll();
 
+    // file extension constants
+    // *just* the extension, e.g. "exe"
     extern const DLLIMPORT wxString WORKSPACE_EXT;
     extern const DLLIMPORT wxString CODEBLOCKS_EXT;
     extern const DLLIMPORT wxString DEVCPP_EXT;
@@ -46,7 +48,6 @@ namespace FileFilters
     extern const DLLIMPORT wxString MSVC6_WORKSPACE_EXT;
     extern const DLLIMPORT wxString MSVC7_EXT;
     extern const DLLIMPORT wxString MSVC7_WORKSPACE_EXT;
-
     extern const DLLIMPORT wxString D_EXT;
     extern const DLLIMPORT wxString CPP_EXT;
     extern const DLLIMPORT wxString C_EXT;
@@ -63,6 +64,31 @@ namespace FileFilters
     extern const DLLIMPORT wxString EXECUTABLE_EXT;
     extern const DLLIMPORT wxString RESOURCE_EXT;
     extern const DLLIMPORT wxString RESOURCEBIN_EXT;
+    
+    // a dot *and* the extension, e.g. ".exe"
+    extern const DLLIMPORT wxString WORKSPACE_DOT_EXT;
+    extern const DLLIMPORT wxString CODEBLOCKS_DOT_EXT;
+    extern const DLLIMPORT wxString DEVCPP_DOT_EXT;
+    extern const DLLIMPORT wxString MSVC6_DOT_EXT;
+    extern const DLLIMPORT wxString MSVC6_WORKSPACE_DOT_EXT;
+    extern const DLLIMPORT wxString MSVC7_DOT_EXT;
+    extern const DLLIMPORT wxString MSVC7_WORKSPACE_DOT_EXT;
+    extern const DLLIMPORT wxString D_DOT_EXT;
+    extern const DLLIMPORT wxString CPP_DOT_EXT;
+    extern const DLLIMPORT wxString C_DOT_EXT;
+    extern const DLLIMPORT wxString CC_DOT_EXT;
+    extern const DLLIMPORT wxString CXX_DOT_EXT;
+    extern const DLLIMPORT wxString HPP_DOT_EXT;
+    extern const DLLIMPORT wxString H_DOT_EXT;
+    extern const DLLIMPORT wxString HH_DOT_EXT;
+    extern const DLLIMPORT wxString HXX_DOT_EXT;
+    extern const DLLIMPORT wxString OBJECT_DOT_EXT;
+    extern const DLLIMPORT wxString XRCRESOURCE_DOT_EXT;
+    extern const DLLIMPORT wxString STATICLIB_DOT_EXT;
+    extern const DLLIMPORT wxString DYNAMICLIB_DOT_EXT;
+    extern const DLLIMPORT wxString EXECUTABLE_DOT_EXT;
+    extern const DLLIMPORT wxString RESOURCE_DOT_EXT;
+    extern const DLLIMPORT wxString RESOURCEBIN_DOT_EXT;
 };
 
 #endif // FILEFILTERS_H

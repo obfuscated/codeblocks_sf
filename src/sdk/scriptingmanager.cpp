@@ -92,31 +92,57 @@ wxString ScriptingManager::GetErrorDescription(int error)
     return _T("NeverHere");
 }
 
-bool ScriptingManager::DoLoadScript(const wxString& filename, wxString& script)
+int ScriptingManager::Compile(const wxString& module, bool autorunMain)
 {
-//    LOGSTREAM << _T("Trying to open script: ") << filename << '\n';
-    wxLogNull ln;
-    wxFile file(filename);
-    return cbRead(file, script);
-}
-
-int ScriptingManager::LoadScript(const wxString& filename, const wxString& module, bool autorunMain)
-{
-    // scripting is not supported for 64bit processors yet...
 #ifdef _LP64
+    // scripting is not supported for 64bit processors yet...
     return 1;
 #endif
-//    wxString script;
-    // try to load as-passed
-//    if (!DoLoadScript(filename, script))
-//    {
-//        // try in <data_path>/scripts/
-//        if (!DoLoadScript(ConfigManager::GetScriptsFolder() + _T("/") + filename, script))
-//        {
-////            wxMessageBox(_("Can't open script ") + filename, _("Error"), wxICON_ERROR);
-//            return -1;
-//        }
-//    }
+
+    int ret = m_pEngine->Build(cbU2C(module));
+    if (ret < 0)
+    {
+        cbMessageBox(wxString::Format(_("Error compiling script.\nError code: %d (%s)\n\nDetails:\n%s"), ret, GetErrorDescription(ret).c_str(), s_Errors.c_str()), _("Scripting error"), wxICON_ERROR);
+        return -1;
+    }
+
+    if (autorunMain)
+    {
+        // locate and run "int main()"
+        int funcID = FindFunctionByDeclaration(_T("int main()"), module);
+        if (funcID < 0)
+            Manager::Get()->GetMessageManager()->DebugLog(_T("No 'int main()' in module '%s': no autorun"), module.c_str());
+        Executor<int> exec(funcID);
+        ret = exec.Call();
+        if (!exec.Success())
+        {
+            cbMessageBox(_T("An exception has been raised from the script:\n\n") + exec.CreateErrorString(),
+                        _T("Script error"),
+                        wxICON_ERROR);
+//            if (cbMessageBox(_T("An exception has been raised from the script:\n\n") +
+//                            exec.CreateErrorString(),// +
+//                            _T("\n\nDo you want to open this script in the editor?"), 
+//                _T("Script error"),
+//                wxICON_ERROR | wxYES_NO) == wxID_YES)
+//            {
+//                cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname);
+//                if (ed && exec.GetLineNumber() != 0)
+//                {
+//                    ed->GotoLine(exec.GetLineNumber() - 1);
+//                    ed->GetControl()->SetFocus();
+//                }
+//            }
+        }
+	}
+	return ret;
+}
+
+bool ScriptingManager::LoadScript(const wxString& filename, const wxString& module)
+{
+#ifdef _LP64
+    // scripting is not supported for 64bit processors yet...
+    return false;
+#endif
 
     wxString fname = filename;
     FILE* fp = fopen(cbU2C(fname), "r");
@@ -127,7 +153,7 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
         if(!fp)
         {
             Manager::Get()->GetMessageManager()->DebugLog(_T("Can't open script %s"), filename.c_str());
-            return -1;
+            return false;
         }
     }
     fseek(fp, 0, SEEK_END);
@@ -140,88 +166,30 @@ int ScriptingManager::LoadScript(const wxString& filename, const wxString& modul
     fclose(fp);
 
     s_Errors.Clear();
-    int ret = 0;
 
     // build script
     int r;
 	r = m_pEngine->AddScriptSection(cbU2C(module),
                                     cbU2C(_T('[') + module + _T("] ") + wxFileName(filename).GetFullName()),
                                     script,
-                                    strlen(script),
-                                    0,
-                                    false);
-	if (r < 0)
-	{
-	    cbMessageBox(wxString::Format(_("Error returned from scripting AddScriptSection().\nError code: %d (%s)\n\nDetails:\n%s"), r, GetErrorDescription(r).c_str(), s_Errors.c_str()), _("Scripting error"), wxICON_ERROR);
-        delete[] script;
-        return -1;
-	}
-
-    r = m_pEngine->Build(cbU2C(module));
-    if (r < 0)
-    {
-        cbMessageBox(wxString::Format(_("Error returned from scripting Build().\nError code: %d (%s)\n\nDetails:\n%s"), r, GetErrorDescription(r).c_str(), s_Errors.c_str()), _("Scripting error"), wxICON_ERROR);
-        delete[] script;
-        return -1;
-    }
-
-    if (autorunMain)
-    {
-        // locate and run "int main()"
-        int funcID = FindFunctionByDeclaration(_T("int main()"), module);
-        if (funcID < 0)
-            Manager::Get()->GetMessageManager()->DebugLog(_T("No 'int main()' in '%s': no autorun"), filename.c_str());
-        Executor<int> exec(funcID);
-        ret = exec.Call();
-        if (!exec.Success())
-        {
-            if (cbMessageBox(_T("An exception has been raised from the script:\n\n") +
-                            exec.CreateErrorString() +
-                            _T("\n\nDo you want to open this script in the editor?"), _T("Script error"), wxICON_ERROR | wxYES_NO) == wxID_YES)
-            {
-                cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname);
-                if (ed && exec.GetLineNumber() != 0)
-                {
-                    ed->GotoLine(exec.GetLineNumber() - 1);
-                    ed->GetControl()->SetFocus();
-                }
-            }
-        }
-	}
-//
-//    // display errors (if any)
-//    if (!s_Errors.IsEmpty())
-//    {
-////        LOGSTREAM << s_Errors << '\n';
-//        cbMessageBox(s_Errors, _("Script compile error"), wxICON_ERROR);
-//
-//        // startup.script (6, 2) : Error   : Expected ';'
-//        wxRegEx re(_T("\\(([0-9]+), ([0-9]+)\\)[ \t]:[ \t][Ee]rror[ \t]+:[ \t](.*)"));
-//        if (re.Matches(s_Errors))
-//        {
-//            if (cbMessageBox(_T("Do you want to open this script in the editor?"), _("Debug script?"), wxICON_QUESTION | wxYES_NO) == wxYES)
-//            {
-//                cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname);
-//                if (ed)
-//                {
-//                    long line = 0;
-//                    long column = 0;
-//                    re.GetMatch(s_Errors, 1).ToLong(&line);
-//                    re.GetMatch(s_Errors, 2).ToLong(&column);
-//                    if (line != 0)
-//                    {
-//                        int pos = ed->GetControl()->PositionFromLine(line - 1);
-//                        ed->GotoLine(line - 1);
-//                        ed->GetControl()->GotoPos(pos + column - 1);
-//                        ed->GetControl()->SetFocus();
-//                    }
-//                }
-//            }
-//        }
-//    }
-
+                                    strlen(script));
     delete[] script;
-	return ret;
+	if (r < 0)
+	    cbMessageBox(wxString::Format(_("Error returned from scripting AddScriptSection().\n"
+                                        "Error code: %d (%s)\n\n"
+                                        "Details:\n%s"), 
+                                        r, GetErrorDescription(r).c_str(), 
+                                        s_Errors.c_str()), 
+                    _("Scripting error"), wxICON_ERROR);
+	
+	return r == 0;
+}
+
+int ScriptingManager::LoadAndRunScript(const wxString& filename, const wxString& module, bool autorunMain)
+{
+    if (!LoadScript(filename, module))
+        return -1;
+    return Compile(module, autorunMain);
 }
 
 int ScriptingManager::FindFunctionByDeclaration(const wxString& decl, const wxString& module)

@@ -241,7 +241,7 @@ void CompilerCommandGenerator::DoBuildScripts(CompileOptionsBase* base, const wx
     const wxArrayString& scripts = base->GetBuildScripts();
     for (size_t i = 0; i < scripts.GetCount(); ++i)
     {
-        Manager::Get()->GetScriptingManager()->LoadScript(scripts[i], module, false);
+        Manager::Get()->GetScriptingManager()->LoadAndRunScript(scripts[i], module, false);
 
         int funcID = Manager::Get()->GetScriptingManager()->FindFunctionByDeclaration(_T("void ") + funcName + _T("(CompileOptionsBase@ base)"), module);
         if (funcID < 0)

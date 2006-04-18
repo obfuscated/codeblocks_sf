@@ -1891,7 +1891,7 @@ void MainFrame::OnFileRunScript(wxCommandEvent& WXUNUSED(event))
                             wxOPEN);
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
-        Manager::Get()->GetScriptingManager()->LoadScript(dlg->GetPath());
+        Manager::Get()->GetScriptingManager()->LoadAndRunScript(dlg->GetPath());
     dlg->Destroy();
 }
 

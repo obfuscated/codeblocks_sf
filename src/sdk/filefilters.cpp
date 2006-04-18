@@ -115,14 +115,42 @@ const wxString FileFilters::HXX_EXT                      = _T("hxx");
 const wxString FileFilters::OBJECT_EXT                   = _T("o");
 const wxString FileFilters::XRCRESOURCE_EXT              = _T("xrc");
 const wxString FileFilters::STATICLIB_EXT                = _T("a");
+const wxString FileFilters::RESOURCE_EXT                 = _T("rc");
+const wxString FileFilters::RESOURCEBIN_EXT              = _T("res");
 #ifdef __WXMSW__
     const wxString FileFilters::DYNAMICLIB_EXT           = _T("dll");
     const wxString FileFilters::EXECUTABLE_EXT           = _T("exe");
-    const wxString FileFilters::RESOURCE_EXT             = _T("rc");
-    const wxString FileFilters::RESOURCEBIN_EXT          = _T("res");
 #else
-    const wxString FileFilters::DYNAMICLIB_EXT	        = _T("so");
-    const wxString FileFilters::EXECUTABLE_EXT	        = _T("");
-    const wxString FileFilters::RESOURCE_EXT             = _T("");
-    const wxString FileFilters::RESOURCEBIN_EXT          = _T("");
+    const wxString FileFilters::DYNAMICLIB_EXT	         = _T("so");
+    const wxString FileFilters::EXECUTABLE_EXT	         = _T("");
+#endif
+
+// dot.ext version
+const wxString FileFilters::WORKSPACE_DOT_EXT                = _T('.') + FileFilters::WORKSPACE_EXT;
+const wxString FileFilters::CODEBLOCKS_DOT_EXT               = _T('.') + FileFilters::CODEBLOCKS_EXT;
+const wxString FileFilters::DEVCPP_DOT_EXT                   = _T('.') + FileFilters::DEVCPP_EXT;
+const wxString FileFilters::MSVC6_DOT_EXT                    = _T('.') + FileFilters::MSVC6_EXT;
+const wxString FileFilters::MSVC7_DOT_EXT                    = _T('.') + FileFilters::MSVC7_EXT;
+const wxString FileFilters::MSVC6_WORKSPACE_DOT_EXT          = _T('.') + FileFilters::MSVC6_WORKSPACE_EXT;
+const wxString FileFilters::MSVC7_WORKSPACE_DOT_EXT          = _T('.') + FileFilters::MSVC7_WORKSPACE_EXT;
+const wxString FileFilters::CPP_DOT_EXT                      = _T('.') + FileFilters::CPP_EXT;
+const wxString FileFilters::D_DOT_EXT                        = _T('.') + FileFilters::D_EXT;
+const wxString FileFilters::C_DOT_EXT                        = _T('.') + FileFilters::C_EXT;
+const wxString FileFilters::CC_DOT_EXT                       = _T('.') + FileFilters::CC_EXT;
+const wxString FileFilters::CXX_DOT_EXT                      = _T('.') + FileFilters::CXX_EXT;
+const wxString FileFilters::HPP_DOT_EXT                      = _T('.') + FileFilters::HPP_EXT;
+const wxString FileFilters::H_DOT_EXT                        = _T('.') + FileFilters::H_EXT;
+const wxString FileFilters::HH_DOT_EXT                       = _T('.') + FileFilters::HH_EXT;
+const wxString FileFilters::HXX_DOT_EXT                      = _T('.') + FileFilters::HXX_EXT;
+const wxString FileFilters::OBJECT_DOT_EXT                   = _T('.') + FileFilters::OBJECT_EXT;
+const wxString FileFilters::XRCRESOURCE_DOT_EXT              = _T('.') + FileFilters::XRCRESOURCE_EXT;
+const wxString FileFilters::STATICLIB_DOT_EXT                = _T('.') + FileFilters::STATICLIB_EXT;
+const wxString FileFilters::RESOURCE_DOT_EXT                 = _T('.') + FileFilters::RESOURCE_EXT;
+const wxString FileFilters::RESOURCEBIN_DOT_EXT              = _T('.') + FileFilters::RESOURCEBIN_EXT;
+#ifdef __WXMSW__
+    const wxString FileFilters::DYNAMICLIB_DOT_EXT           = _T('.') + FileFilters::DYNAMICLIB_EXT;
+    const wxString FileFilters::EXECUTABLE_DOT_EXT           = _T('.') + FileFilters::EXECUTABLE_EXT;
+#else
+    const wxString FileFilters::DYNAMICLIB_DOT_EXT	         = _T('.') + FileFilters::DYNAMICLIB_EXT;
+    const wxString FileFilters::EXECUTABLE_DOT_EXT	         = EXECUTABLE_EXT; // no dot, since no extension
 #endif

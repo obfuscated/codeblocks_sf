@@ -65,7 +65,7 @@ void GDB_driver::InitializeScripting()
     }
 
     // run all scripts
-    Manager::Get()->GetScriptingManager()->LoadScript(script, module, false);
+    Manager::Get()->GetScriptingManager()->LoadAndRunScript(script, module, false);
 
     int funcID = Manager::Get()->GetScriptingManager()->FindFunctionByDeclaration(_T("void RegisterTypes(DebuggerDriver@ driver)"), module);
     if (funcID < 0)

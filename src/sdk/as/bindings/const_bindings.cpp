@@ -2,6 +2,7 @@
 #include <settings.h>
 #include <compiletargetbase.h>
 #include <cbproject.h>
+#include <filefilters.h>
 #include "const_bindings.h"
 
 // platform constants
@@ -15,6 +16,9 @@ static const int PLATFORM_UNKNOWN = 99;
 #else
     static const int PLATFORM = PLATFORM_UNKNOWN;
 #endif
+
+// path separator for filenames
+static const wxString SEP_PATH = wxFILE_SEP_PATH;
 
 // dialog buttons
 static const int scOK                   = wxOK;
@@ -111,4 +115,55 @@ void RegisterConstBindings(asIScriptEngine* engine)
     engine->RegisterGlobalProperty("const int pchSourceDir", (void*)&s_pchSourceDir);
     engine->RegisterGlobalProperty("const int pchObjectDir", (void*)&s_pchObjectDir);
     engine->RegisterGlobalProperty("const int pchSourceFile", (void*)&s_pchSourceFile);
+    
+    // path separator for filenames
+    engine->RegisterGlobalProperty("const wxString SEP_PATH", (void*)&SEP_PATH);
+    
+    // file extensions
+    engine->RegisterGlobalProperty("const wxString EXT_WORKSPACE", (void*)&FileFilters::WORKSPACE_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_CODEBLOCKS", (void*)&FileFilters::CODEBLOCKS_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_DEVCPP", (void*)&FileFilters::DEVCPP_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_MSVC6", (void*)&FileFilters::MSVC6_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_MSVC6_WORKSPACE", (void*)&FileFilters::MSVC6_WORKSPACE_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_MSVC7", (void*)&FileFilters::MSVC7_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_MSVC7_WORKSPACE", (void*)&FileFilters::MSVC7_WORKSPACE_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_D", (void*)&FileFilters::D_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_CPP", (void*)&FileFilters::CPP_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_C", (void*)&FileFilters::C_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_CC", (void*)&FileFilters::CC_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_CXX", (void*)&FileFilters::CXX_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_HPP", (void*)&FileFilters::HPP_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_H", (void*)&FileFilters::H_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_HH", (void*)&FileFilters::HH_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_HXX", (void*)&FileFilters::HXX_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_OBJECT", (void*)&FileFilters::OBJECT_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_XRCRESOURCE", (void*)&FileFilters::XRCRESOURCE_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_STATICLIB", (void*)&FileFilters::STATICLIB_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_DYNAMICLIB", (void*)&FileFilters::DYNAMICLIB_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_EXECUTABLE", (void*)&FileFilters::EXECUTABLE_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_RESOURCE", (void*)&FileFilters::RESOURCE_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_RESOURCEBIN", (void*)&FileFilters::RESOURCEBIN_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_WORKSPACE", (void*)&FileFilters::WORKSPACE_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_CODEBLOCKS", (void*)&FileFilters::CODEBLOCKS_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_DEVCPP", (void*)&FileFilters::DEVCPP_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_MSVC6", (void*)&FileFilters::MSVC6_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_MSVC6_WORKSPACE", (void*)&FileFilters::MSVC6_WORKSPACE_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_MSVC7", (void*)&FileFilters::MSVC7_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_MSVC7_WORKSPACE", (void*)&FileFilters::MSVC7_WORKSPACE_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_D", (void*)&FileFilters::D_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_CPP", (void*)&FileFilters::CPP_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_C", (void*)&FileFilters::C_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_CC", (void*)&FileFilters::CC_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_CXX", (void*)&FileFilters::CXX_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_HPP", (void*)&FileFilters::HPP_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_H", (void*)&FileFilters::H_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_HH", (void*)&FileFilters::HH_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_HXX", (void*)&FileFilters::HXX_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_OBJECT", (void*)&FileFilters::OBJECT_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_XRCRESOURCE", (void*)&FileFilters::XRCRESOURCE_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_STATICLIB", (void*)&FileFilters::STATICLIB_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_DYNAMICLIB", (void*)&FileFilters::DYNAMICLIB_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_EXECUTABLE", (void*)&FileFilters::EXECUTABLE_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_RESOURCE", (void*)&FileFilters::RESOURCE_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_RESOURCEBIN", (void*)&FileFilters::RESOURCEBIN_DOT_EXT);
 }

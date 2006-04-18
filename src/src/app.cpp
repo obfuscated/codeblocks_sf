@@ -417,7 +417,7 @@ bool CodeBlocksApp::OnInit()
         Manager::Get()->ProcessEvent(event);
 
         // run startup script
-        Manager::Get()->GetScriptingManager()->LoadScript(_T("startup.script"));
+        Manager::Get()->GetScriptingManager()->LoadAndRunScript(_T("startup.script"));
         Manager::ProcessPendingEvents();
 
         // finally, show the app

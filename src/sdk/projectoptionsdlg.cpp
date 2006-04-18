@@ -708,7 +708,7 @@ void ProjectOptionsDlg::OnScriptsOverviewSelChanged(wxTreeEvent& event)
 
 bool ProjectOptionsDlg::IsScriptValid(const wxString& script)
 {
-    int r = Manager::Get()->GetScriptingManager()->LoadScript(m_Project->GetBasePath() + wxFILE_SEP_PATH + script, _T("test_module"), false);
+    int r = Manager::Get()->GetScriptingManager()->LoadAndRunScript(m_Project->GetBasePath() + wxFILE_SEP_PATH + script, _T("test_module"), false);
     Manager::Get()->GetScriptingManager()->GetEngine()->Discard("test_module");
     return r == 0;
 }

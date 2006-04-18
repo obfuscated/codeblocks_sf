@@ -53,10 +53,17 @@ void gShowMessageWarn(const wxString& msg){ cbMessageBox(msg, _("Script message 
 void gShowMessageError(const wxString& msg){ cbMessageBox(msg, _("Script message (error)"), wxICON_ERROR); }
 void gShowMessageInfo(const wxString& msg){ cbMessageBox(msg, _("Script message (information)"), wxICON_INFORMATION); }
 void gDebugLog(const wxString& msg){ DBGLOG(msg); }
+
+// macros
 wxString gReplaceMacros(const wxString& buffer, bool envVarsToo)
 {
     return Manager::Get()->GetMacrosManager()->ReplaceMacros(buffer, envVarsToo);
 }
+
+// casts
+// (help scripts to cast to base types)
+CompileOptionsBase* gCastToCompileOptionsBase(cbProject* p){ return reinterpret_cast<CompileOptionsBase*>(p); }
+CompileOptionsBase* gCastToCompileOptionsBase(ProjectBuildTarget* p){ return reinterpret_cast<CompileOptionsBase*>(p); }
 
 //------------------------------------------------------------------------------
 // Actual registration
@@ -103,6 +110,8 @@ void RegisterBindings(asIScriptEngine* engine)
     engine->RegisterGlobalFunction("void ShowInfo(const wxString& in)", asFUNCTION(gShowMessageInfo), asCALL_CDECL);
     engine->RegisterGlobalFunction("void Log(const wxString& in)", asFUNCTION(gDebugLog), asCALL_CDECL);
     engine->RegisterGlobalFunction("wxString ReplaceMacros(const wxString& in, bool)", asFUNCTION(gReplaceMacros), asCALL_CDECL);
+    engine->RegisterGlobalFunction("CompileOptionsBase@ Cast_CompileOptionsBase(Project@)", asFUNCTIONPR(gCastToCompileOptionsBase, (cbProject*), CompileOptionsBase*), asCALL_CDECL);
+    engine->RegisterGlobalFunction("CompileOptionsBase@ Cast_CompileOptionsBase(BuildTarget@)", asFUNCTIONPR(gCastToCompileOptionsBase, (ProjectBuildTarget*), CompileOptionsBase*), asCALL_CDECL);
 
     // Register constants
     RegisterConstBindings(engine);

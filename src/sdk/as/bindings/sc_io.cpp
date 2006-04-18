@@ -1,4 +1,6 @@
 #include <sdk_precomp.h>
+#include <manager.h>
+#include <macrosmanager.h>
 #include "sc_io.h"
 #include <angelscript.h>
 
@@ -12,45 +14,48 @@ class IOLib
     public:
         bool CreateDirRecursively(const wxString& full_path, int perms)
         {
-            return ::CreateDirRecursively(full_path, perms);
+            return ::CreateDirRecursively(Manager::Get()->GetMacrosManager()->ReplaceMacros(full_path), perms);
         }
 
         wxString ChooseDir(const wxString& message, const wxString& initialPath, bool showCreateDirButton)
         {
-            return ChooseDirectory(0, message, initialPath, wxEmptyString, false, showCreateDirButton);
+            return ChooseDirectory(0, message, Manager::Get()->GetMacrosManager()->ReplaceMacros(initialPath), wxEmptyString, false, showCreateDirButton);
         }
 
         bool RemoveDir(const wxString& src)
         {
-            return wxRmdir(src);
+            return wxRmdir(Manager::Get()->GetMacrosManager()->ReplaceMacros(src));
         }
 
         bool DirectoryExists(const wxString& dir)
         {
-            return wxDirExists(dir);
+            return wxDirExists(Manager::Get()->GetMacrosManager()->ReplaceMacros(dir));
         }
 
         bool CopyFile(const wxString& src, const wxString& dst, bool overwrite)
         {
-            if (!wxFileExists(src)) return false;
-            return wxCopyFile(src, dst, overwrite);
+            if (!wxFileExists(Manager::Get()->GetMacrosManager()->ReplaceMacros(src))) return false;
+            return wxCopyFile(Manager::Get()->GetMacrosManager()->ReplaceMacros(src),
+                            Manager::Get()->GetMacrosManager()->ReplaceMacros(dst),
+                            overwrite);
         }
 
         bool RenameFile(const wxString& src, const wxString& dst)
         {
-            if (!wxFileExists(src)) return false;
-            return wxRenameFile(src, dst);
+            if (!wxFileExists(Manager::Get()->GetMacrosManager()->ReplaceMacros(src))) return false;
+            return wxRenameFile(Manager::Get()->GetMacrosManager()->ReplaceMacros(src),
+                                Manager::Get()->GetMacrosManager()->ReplaceMacros(dst));
         }
 
         bool RemoveFile(const wxString& src)
         {
-            if (!wxFileExists(src)) return false;
-            return wxRemoveFile(src);
+            if (!wxFileExists(Manager::Get()->GetMacrosManager()->ReplaceMacros(src))) return false;
+            return wxRemoveFile(Manager::Get()->GetMacrosManager()->ReplaceMacros(src));
         }
 
         bool FileExists(const wxString& file)
         {
-            return wxFileExists(file);
+            return wxFileExists(Manager::Get()->GetMacrosManager()->ReplaceMacros(file));
         }
 
         wxString ChooseFile(const wxString& title, const wxString& defaultFile, const wxString& filter)
@@ -58,7 +63,7 @@ class IOLib
             wxFileDialog dlg(0,
                             title,
                             wxEmptyString,
-                            defaultFile,
+                            Manager::Get()->GetMacrosManager()->ReplaceMacros(defaultFile),
                             filter,
                             wxOPEN);
             PlaceWindow(&dlg);
