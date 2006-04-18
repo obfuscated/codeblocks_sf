@@ -83,6 +83,7 @@ NewFromTemplateDlg::NewFromTemplateDlg(const ProjectTemplateArray& templates, co
         XRCCTRL(*this, "lstUser", wxListBox)->Append(user_templates[i]);
     }
 	XRCCTRL(*this, "txtPrjPath", wxTextCtrl)->SetValue(Manager::Get()->GetConfigManager(_T("template_manager"))->Read(_T("/projects_path")));
+	XRCCTRL(*this, "txtPrjName", wxTextCtrl)->SetFocus();
 	XRCCTRL(*this, "lblWarnCompiler", wxStaticText)->SetLabel(wxEmptyString);
 }
 
@@ -150,7 +151,7 @@ int wxCALLBACK SortTemplates(long item1, long item2, long sortData)
 {
     ListItemData* data1 = reinterpret_cast<ListItemData*>(item1);
     ListItemData* data2 = reinterpret_cast<ListItemData*>(item2);
-    
+
     if (!data1 && data2)
         return 1;
     if (data1 && !data2)
@@ -159,7 +160,7 @@ int wxCALLBACK SortTemplates(long item1, long item2, long sortData)
     {
         wxString name1 = data1->pt ? data1->pt->m_Title : data1->plugin->GetTitle(data1->wizPluginIndex);
         wxString name2 = data2->pt ? data2->pt->m_Title : data2->plugin->GetTitle(data2->wizPluginIndex);
-        
+
         return name1.CompareTo(name2);
     }
     return 0;
@@ -198,7 +199,7 @@ void NewFromTemplateDlg::BuildList()
             }
         }
 	}
-	
+
     // wizards
 	if (XRCCTRL(*this, "chkShowWizardTemplates", wxCheckBox)->GetValue())
 	{
@@ -219,7 +220,7 @@ void NewFromTemplateDlg::BuildList()
 	}
 
     list->SortItems(SortTemplates, 0);
-    
+
 	XRCCTRL(*this, "cmbOptions", wxComboBox)->Enable(false);
 	XRCCTRL(*this, "cmbFileSets", wxComboBox)->Enable(false);
 }
