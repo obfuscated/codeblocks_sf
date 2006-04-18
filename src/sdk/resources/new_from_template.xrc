@@ -74,7 +74,7 @@
                   <option>1</option>
                   <flag>wxALL|wxEXPAND</flag>
                   <border>8</border>
-                  <minsize>320,160</minsize>
+                  <minsize>480,160</minsize>
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticText" name="lblWarnCompiler">
