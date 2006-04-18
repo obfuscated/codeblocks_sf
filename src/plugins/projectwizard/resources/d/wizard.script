@@ -58,11 +58,3 @@ bool SetupProject(Project@ project)
 
     return true;
 }
-
-// finally, let's import some useful functions from config.script
-// (at least those that we use here).
-// we do it this way so we write the common functions in that script
-// but be able to use it here (and other wizard scripts of course).
-import void WarningsOn(CompileOptionsBase@, const wxString& in) from "WizardMainModule";
-import void DebugSymbolsOn(CompileOptionsBase@, const wxString& in) from "WizardMainModule";
-import void OptimizationsOn(CompileOptionsBase@, const wxString& in) from "WizardMainModule";
