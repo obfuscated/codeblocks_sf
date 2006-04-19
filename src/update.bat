@@ -73,8 +73,10 @@ copy /y src\resources\images\16x16\*.png %RESDIR%\images\16x16 > nul
 copy /y src\resources\images\16x16\*.png output\share\codeblocks\images\16x16 > nul
 copy /y plugins\codecompletion\resources\images\*.png %RESDIR%\images\codecompletion > nul
 copy /y plugins\codecompletion\resources\images\*.png output\share\codeblocks\images\codecompletion > nul
-xcopy /y /s plugins\projectwizard\resources\* %RESDIR%\templates\wizard > nul
-xcopy /y /s plugins\projectwizard\resources\* output\share\codeblocks\templates\wizard > nul
+echo Makefile.am > excludes.txt
+xcopy /y /s plugins\projectwizard\resources\* %RESDIR%\templates\wizard /EXCLUDE:excludes.txt >nul
+xcopy /y /s plugins\projectwizard\resources\* output\share\codeblocks\templates\wizard /EXCLUDE:excludes.txt >nul
+del excludes.txt
 copy /y templates\common\* output\share\codeblocks\templates > nul
 copy /y templates\win32\* output\share\codeblocks\templates > nul
 copy /y templates\common\* %RESDIR%\templates > nul

@@ -34,7 +34,8 @@ bool SetupProject(Project@ project)
                     "You 're on your own...");
 
     // enable compiler warnings (project-wide)
-    WarningsOn(Cast_CompileOptionsBase(project), Wizard.GetCompilerID());
+    if (Wizard.GetCompilerID() == "gdc")
+        WarningsOn(Cast_CompileOptionsBase(project), Wizard.GetCompilerID());
 
     // Debug build target
     BuildTarget@ target = project.GetBuildTarget(Wizard.GetDebugName());
