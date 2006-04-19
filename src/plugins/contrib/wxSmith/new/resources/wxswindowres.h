@@ -210,6 +210,7 @@ class wxsWindowRes : public wxsResource
     private:
 
         WX_DECLARE_STRING_HASH_MAP(wxsItem*,IdToItemMapT);
+
         /** \brief Function which should create editor window. */
         virtual wxsEditor* CreateEditor();
 
@@ -249,6 +250,9 @@ class wxsWindowRes : public wxsResource
 
         /** \brief Fetching pointers to items loaded from xrc file */
         void FetchXmlBuiltItems(wxsItem* RootItem,wxString& Code);
+
+        /** \brief Misc function used to reparse file names into unix format (cross-platform) */
+        inline wxString FixFileName(wxString FileName);
 
         wxString    ClassName;
         wxString    WxsFile;

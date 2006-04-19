@@ -495,8 +495,16 @@ void wxsProject::RebuildAppCode()
 
     if ( MainResPtr )
     {
-        // FIXME (SpOoN##): Use path relative to main file, not to cbp file
-        NewCode << _T("#include \"") << MainResPtr->GetDeclarationFile() << _T("\"\n");
+        wxString IncludeFile = MainResPtr->GetDeclarationFile();
+        wxFileName IncludeFileName(GetProjectFileName(IncludeFile));
+        if ( IncludeFileName.MakeRelativeTo(GetProjectFileName(GetConfig().AppFile)) )
+        {
+            // We will use unix path format since it's relative path
+            // Using this format will make sources more cross-platform
+            IncludeFile = IncludeFileName.GetFullPath(wxPATH_UNIX);
+        }
+
+        NewCode << _T("#include \"") << IncludeFile << _T("\"\n");
     }
     if ( IsAnyXRC || Config.LoadedResources.Count() )
     {

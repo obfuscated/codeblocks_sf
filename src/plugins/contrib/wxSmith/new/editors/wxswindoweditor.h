@@ -92,6 +92,9 @@ class wxsWindowEditor : public wxsEditor
         /** \brief Getting wxsWindowRes pointer to currently edited resource */
         inline wxsWindowRes* GetWinRes() { return (wxsWindowRes*)GetResource(); }
 
+        /** \brief Getting project class of current resource file */
+        inline wxsProject* GetProject() { return GetResource()->GetProject(); }
+
         /** \brief Getting current selection (main selected item) */
         inline wxsItem* GetCurrentSelection() { return GetWinRes()->GetRootSelection(); }
 

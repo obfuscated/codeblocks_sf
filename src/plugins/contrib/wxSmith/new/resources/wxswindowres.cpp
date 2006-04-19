@@ -104,11 +104,11 @@ bool wxsWindowRes::LoadConfiguration(TiXmlElement* Element)
     wxASSERT_MSG( GetProject() != NULL,
         _T("Can not call wxsWindowRes::LoadConfiguration when there's no project") );
 
-    ClassName = cbC2U(Element->Attribute("class"));
-    WxsFile   = cbC2U(Element->Attribute("wxs_file"));
-    SrcFile   = cbC2U(Element->Attribute("src_file"));
-    HFile     = cbC2U(Element->Attribute("header_file"));
-    XrcFile   = cbC2U(Element->Attribute("xrc_file"));
+    ClassName = FixFileName(cbC2U(Element->Attribute("class")));
+    WxsFile   = FixFileName(cbC2U(Element->Attribute("wxs_file")));
+    SrcFile   = FixFileName(cbC2U(Element->Attribute("src_file")));
+    HFile     = FixFileName(cbC2U(Element->Attribute("header_file")));
+    XrcFile   = FixFileName(cbC2U(Element->Attribute("xrc_file")));
 
     BasePropsFilter = !strcmp(Element->Attribute("edit_mode"),"Source") ?
             wxsFLSource : wxsFLMixed;
@@ -149,6 +149,7 @@ void wxsWindowRes::BindExternalResource(const wxString& FileName,const wxString&
     WxsFile = _T("");
     SrcFile = _T("");
     HFile = _T("");
+    // We do not fix file name since it's global path
     XrcFile = FileName;
     BasePropsFilter = wxsFLFile;
 }
@@ -579,7 +580,7 @@ bool wxsWindowRes::CreateNewResource(TiXmlElement* Element)
     wxFileName IncludeFN(GetProject()->GetProjectFileName(HFile));
     IncludeFN.MakeRelativeTo(
         wxFileName(GetProject()->GetProjectFileName(SrcFile)).GetPath() );
-    wxString Include = IncludeFN.GetFullPath();
+    wxString Include = IncludeFN.GetFullPath(wxPATH_UNIX);
 
     wxString Content = EmptyHeader;
     Content.Replace(_T("$(Guard)"),Guard,true);
@@ -907,14 +908,14 @@ bool wxsWindowRes::UsingFile(const wxString& FileName)
         wxFileName FN(FileName);
         if ( FN.MakeRelativeTo(GetProject()->GetProjectPath()) )
         {
-            if ( FN.GetFullPath() == XrcFile ) return true;
+            if ( FN.GetFullPath(wxPATH_UNIX) == XrcFile ) return true;
         }
     }
 
     wxFileName FN(FileName);
     if ( FN.MakeRelativeTo(GetProject()->GetInternalPath()) )
     {
-        if ( FN.GetFullPath() == WxsFile ) return true;
+        if ( FN.GetFullPath(wxPATH_UNIX) == WxsFile ) return true;
     }
 
     return false;
@@ -970,4 +971,12 @@ void wxsWindowRes::FindFirstSelection(wxsItem* Item)
             if ( RootSelection!=NULL ) return;
         }
     }
+}
+
+inline wxString wxsWindowRes::FixFileName(wxString FileName)
+{
+    if ( FileName.empty() ) return FileName;
+    wxFileName FN(FileName);
+    if ( FN.IsAbsolute() ) return FileName;
+    return FN.GetFullPath(wxPATH_UNIX);
 }

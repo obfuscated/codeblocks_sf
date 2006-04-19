@@ -87,6 +87,12 @@ class wxsWindowEditor::ContentManager: public wxsDrawingWindow
 
 void wxsWindowEditor::ContentManager::PaintExtra(wxDC* DC)
 {
+    /* NOTE (SpOoN#1#): Just some test, remove when no longer needed */
+    wxPen Pen(*wxBLACK_PEN);
+    Pen.SetWidth(3);
+    DC->SetPen(Pen);
+    DC->DrawLine(0,0,101,101);
+    DC->DrawLine(100,0,-1,101);
 }
 
 void wxsWindowEditor::ContentManager::RefreshSelection()
@@ -102,7 +108,7 @@ static const long wxsPreviewId    = wxNewId();
 static const long wxsQuickPropsId = wxNewId();
 
 wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsResource* Resource):
-    wxsEditor(parent,_T("x"),Resource),
+    wxsEditor(parent,wxEmptyString,Resource),
     TopPreview(NULL),
     QuickPropsOpen(false),
     ResourceLockCnt(0)
@@ -156,8 +162,8 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsResource* Resource):
     }
     else
     {
-        // TODO: Do not access project directly, add members inside wxsWindowRes class
-        wxString FileName = GetWinRes()->GetProject()->GetProjectFileName(GetWinRes()->GetWxsFile());
+        wxASSERT_MSG( GetProject() != NULL, _T("Only wxsFLFile mode may not have project associated") );
+        wxString FileName = GetProject()->GetProjectFileName(GetWinRes()->GetWxsFile());
         InitFilename(FileName);
         SetTitle(m_Shortname);
     }
@@ -187,7 +193,7 @@ wxsWindowEditor::~wxsWindowEditor()
     // in source files
     if ( GetModified() )
     {
-        // Loading resource from disk - this will recreate sources
+        // Loading resource from disk - this will recreate source code
         GetWinRes()->LoadResource();
         GetWinRes()->RebuildCode();
     }

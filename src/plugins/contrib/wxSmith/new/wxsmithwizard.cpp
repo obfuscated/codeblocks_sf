@@ -29,4 +29,5 @@ int wxSmithWizard::Launch(int Index)
 {
 //    wxsWizard Dlg(0L);
 //    return Dlg.ShowModal();
+    return 0;
 }
