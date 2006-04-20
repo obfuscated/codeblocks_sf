@@ -4,7 +4,7 @@
 // Author:      Benjamin I. Williams
 // Modified by:
 // Created:     2005-05-17
-// RCS-ID:      
+// RCS-ID:
 // Copyright:   (C) Copyright 2005, Kirix Corporation, All Rights Reserved.
 // Licence:     wxWindows Library Licence, Version 3.1
 ///////////////////////////////////////////////////////////////////////////////
@@ -101,7 +101,7 @@ extern wxPaneInfo wxNullPaneInfo;
 
 
 
-class WXDLLEXPORT wxPaneInfo
+class /*WXDLLEXPORT*/ wxPaneInfo
 {
 public:
 
@@ -120,7 +120,7 @@ public:
         min_size = wxDefaultSize;
         max_size = wxDefaultSize;
         dock_proportion = 0;
-        
+
         DefaultPane();
     }
 
@@ -188,7 +188,7 @@ public:
     bool HasMinimizeButton() const { return HasFlag(buttonMinimize); }
     bool HasPinButton() const { return HasFlag(buttonPin); }
     bool HasGripperTop() const { return HasFlag(optionGripperTop); }
-    
+
     wxPaneInfo& Window(wxWindow* w) { window = w; return *this; }
     wxPaneInfo& Name(const wxString& n) { name = n; return *this; }
     wxPaneInfo& Caption(const wxString& c) { caption = c; return *this; }
@@ -222,7 +222,7 @@ public:
     wxPaneInfo& PaneBorder(bool visible = true) { return SetFlag(optionPaneBorder, visible); }
     wxPaneInfo& Gripper(bool visible = true) { return SetFlag(optionGripper, visible); }
     wxPaneInfo& GripperTop(bool attop = true) { return SetFlag(optionGripperTop, attop); }
-    wxPaneInfo& CloseButton(bool visible = true) { return SetFlag(buttonClose, visible); }  
+    wxPaneInfo& CloseButton(bool visible = true) { return SetFlag(buttonClose, visible); }
     wxPaneInfo& MaximizeButton(bool visible = true) { return SetFlag(buttonMaximize, visible); }
     wxPaneInfo& MinimizeButton(bool visible = true) { return SetFlag(buttonMinimize, visible); }
     wxPaneInfo& PinButton(bool visible = true) { return SetFlag(buttonPin, visible); }
@@ -230,7 +230,7 @@ public:
     wxPaneInfo& TopDockable(bool b = true) { return SetFlag(optionTopDockable, b); }
     wxPaneInfo& BottomDockable(bool b = true) { return SetFlag(optionBottomDockable, b); }
     wxPaneInfo& LeftDockable(bool b = true) { return SetFlag(optionLeftDockable, b); }
-    wxPaneInfo& RightDockable(bool b = true) { return SetFlag(optionRightDockable, b); } 
+    wxPaneInfo& RightDockable(bool b = true) { return SetFlag(optionRightDockable, b); }
     wxPaneInfo& Floatable(bool b = true) { return SetFlag(optionFloatable, b); }
     wxPaneInfo& Movable(bool b = true) { return SetFlag(optionMovable, b); }
     wxPaneInfo& Dockable(bool b = true)
@@ -246,14 +246,14 @@ public:
                  optionCaption | optionPaneBorder | buttonClose;
         return *this;
     }
-    
+
     wxPaneInfo& CentrePane() { return CenterPane(); }
     wxPaneInfo& CenterPane()
     {
         state = 0;
         return Center().PaneBorder().Resizable();
     }
-     
+
     wxPaneInfo& ToolbarPane()
     {
         DefaultPane();
@@ -272,7 +272,7 @@ public:
             state &= ~flag;
         return *this;
     }
-    
+
     bool HasFlag(unsigned int flag) const
     {
         return (state & flag) ? true:false;
@@ -339,7 +339,7 @@ public:
 
 
 
-class WXDLLEXPORT wxFrameManager : public wxEvtHandler
+class /*WXDLLEXPORT*/ wxFrameManager : public wxEvtHandler
 {
 friend class wxFloatingPane;
 
@@ -349,13 +349,13 @@ public:
                    unsigned int flags = wxAUI_MGR_DEFAULT);
     virtual ~wxFrameManager();
     void UnInit();
-    
+
     void SetFlags(unsigned int flags);
     unsigned int GetFlags() const;
-    
+
     void SetFrame(wxFrame* frame);
     wxFrame* GetFrame() const;
-    
+
     void SetArtProvider(wxDockArt* art_provider);
     wxDockArt* GetArtProvider() const;
 
@@ -365,22 +365,22 @@ public:
 
     bool AddPane(wxWindow* window,
                  const wxPaneInfo& pane_info);
-                 
+
     bool AddPane(wxWindow* window,
                  int direction = wxLEFT,
                  const wxString& caption = wxEmptyString);
-                 
+
     bool InsertPane(wxWindow* window,
                  const wxPaneInfo& pane_info,
                  int insert_level = wxAUI_INSERT_PANE);
-                 
+
     bool DetachPane(wxWindow* window);
 
     wxString SavePerspective();
-    
+
     bool LoadPerspective(const wxString& perspective,
                  bool update = true);
-    
+
     void Update();
 
 private:
@@ -486,7 +486,7 @@ private:
     wxWindow* m_hint_wnd;        // transparent hint window (for now, only msw)
     wxTimer m_hint_fadetimer;    // transparent fade timer (for now, only msw)
     int m_hint_fadeamt;          // transparent fade amount (for now, only msw)
-    
+
     DECLARE_EVENT_TABLE()
 };
 
@@ -494,7 +494,7 @@ private:
 
 // event declarations/classes
 
-class WXDLLEXPORT wxFrameManagerEvent : public wxEvent
+class /*WXDLLEXPORT*/ wxFrameManagerEvent : public wxEvent
 {
 public:
     wxFrameManagerEvent(wxEventType type) : wxEvent(0, type)
@@ -543,7 +543,7 @@ public:
     virtual void SetColour(int id, const wxColor& colour) = 0;
     wxColor GetColor(int id) { return GetColour(id); }
     void SetColor(int id, const wxColor& color) { SetColour(id, color); }
-    
+
     virtual void DrawSash(wxDC& dc,
                           int orientation,
                           const wxRect& rect) = 0;
@@ -758,7 +758,7 @@ public:
 // spectrum of events will be implemented in the next incremental version
 
 BEGIN_DECLARE_EVENT_TYPES()
-    DECLARE_EVENT_TYPE(wxEVT_AUI_PANEBUTTON, 0)   
+    DECLARE_EVENT_TYPE(wxEVT_AUI_PANEBUTTON, 0)
 END_DECLARE_EVENT_TYPES()
 
 typedef void (wxEvtHandler::*wxFrameManagerEventFunction)(wxFrameManagerEvent&);
