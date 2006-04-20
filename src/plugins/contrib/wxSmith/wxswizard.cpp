@@ -343,7 +343,7 @@ _T("\tSetMenuBar(mbar);\n");
 
 static const wxChar wxsMainFrameCpp_8_status[] =
 _T("\n")
-_T("\tSetMenuBar(new wxStatusBar(this,-1));\n");
+_T("\tSetStatusBar(new wxStatusBar(this,-1));\n");
 
 static const wxChar wxsMainFrameCpp_9[] =
 _T("}\n")
