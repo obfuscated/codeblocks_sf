@@ -49,13 +49,13 @@ CodeStatConfigDlg::CodeStatConfigDlg(wxWindow* parent)
 void CodeStatConfigDlg::ReInitDialog()
 {
     // Clear text fields and combobox
-    wxStaticText* txt_FileTypes = XRCCTRL(*this, "txt_FileTypes", wxStaticText);
+    wxTextCtrl* txt_FileTypes = XRCCTRL(*this, "txt_FileTypes", wxTextCtrl);
     txt_FileTypes->SetLabel(_T(""));
-    wxStaticText* txt_SingleComment = XRCCTRL(*this, "txt_SingleComment", wxStaticText);
+    wxTextCtrl* txt_SingleComment = XRCCTRL(*this, "txt_SingleComment", wxTextCtrl);
     txt_SingleComment->SetLabel(_T(""));
-    wxStaticText* txt_MultiLineCommentBegin = XRCCTRL(*this, "txt_MultiLineCommentBegin", wxStaticText);
+    wxTextCtrl* txt_MultiLineCommentBegin = XRCCTRL(*this, "txt_MultiLineCommentBegin", wxTextCtrl);
     txt_MultiLineCommentBegin->SetLabel(_T(""));
-    wxStaticText* txt_MultiLineCommentEnd = XRCCTRL(*this, "txt_MultiLineCommentEnd", wxStaticText);
+    wxTextCtrl* txt_MultiLineCommentEnd = XRCCTRL(*this, "txt_MultiLineCommentEnd", wxTextCtrl);
     txt_MultiLineCommentEnd->SetLabel(_T(""));
     wxComboBox* combo_Names = XRCCTRL(*this, "combo_Names", wxComboBox);
     combo_Names->Clear();
@@ -144,18 +144,18 @@ void CodeStatConfigDlg::SaveCurrentLanguage()
 void CodeStatConfigDlg::PrintLanguageInfo(int id)
 {
     selected_language = id;
-	wxStaticText* txt_FileTypes = XRCCTRL(*this, "txt_FileTypes", wxStaticText);
+	wxTextCtrl* txt_FileTypes = XRCCTRL(*this, "txt_FileTypes", wxTextCtrl);
 	wxString ext_string = _T("");
 	for (unsigned int i=0; i<languages[id].ext.GetCount(); ++i)
 	{
 	   ext_string = ext_string + _T(" ") + languages[id].ext[i];
 	}
 	txt_FileTypes->SetLabel(ext_string);
-	wxStaticText* txt_SingleComment = XRCCTRL(*this, "txt_SingleComment", wxStaticText);
+	wxTextCtrl* txt_SingleComment = XRCCTRL(*this, "txt_SingleComment", wxTextCtrl);
 	txt_SingleComment->SetLabel(languages[id].single_line_comment);
-	wxStaticText* txt_MultiLineCommentBegin = XRCCTRL(*this, "txt_MultiLineCommentBegin", wxStaticText);
+	wxTextCtrl* txt_MultiLineCommentBegin = XRCCTRL(*this, "txt_MultiLineCommentBegin", wxTextCtrl);
 	txt_MultiLineCommentBegin->SetLabel(languages[id].multiple_line_comment[0]);
-	wxStaticText* txt_MultiLineCommentEnd = XRCCTRL(*this, "txt_MultiLineCommentEnd", wxStaticText);
+	wxTextCtrl* txt_MultiLineCommentEnd = XRCCTRL(*this, "txt_MultiLineCommentEnd", wxTextCtrl);
 	txt_MultiLineCommentEnd->SetLabel(languages[id].multiple_line_comment[1]);
 }
 
