@@ -50,14 +50,14 @@ BEGIN_EVENT_TABLE(ProjectFileOptionsDlg, wxDialog)
 END_EVENT_TABLE()
 
 // some help functions and type (copied and adapted from the codestat plug-in)
-struct LanguageDef
+struct SLanguageDef
 {
 	wxArrayString ext;
 	wxString single_line_comment;
 	wxString multiple_line_comment[2];
 };
 
-void AnalyseLine(const LanguageDef &language, wxString line, bool &comment, bool &code, bool &multi_line_comment)
+void AnalyseLine(const SLanguageDef &language, wxString line, bool &comment, bool &code, bool &multi_line_comment)
 {
 	int first_single_line_comment, first_multi_line_comment_begin, first_multi_line_comment_end;
 
@@ -118,7 +118,7 @@ void AnalyseLine(const LanguageDef &language, wxString line, bool &comment, bool
 	}
 }
 
-void CountLines(wxFileName filename, const LanguageDef &language,
+void CountLines(wxFileName filename, const SLanguageDef &language,
 				long int &code_lines, long int &codecomments_lines,
 				long int &comment_lines, long int &empty_lines, long int &total_lines)
 {
@@ -169,7 +169,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 		}
 
 		// count some statistics of the file (only c/c++ files for the moment)
-		LanguageDef langCPP;
+		SLanguageDef langCPP;
 		langCPP.ext.Add(_T("c"));
 		langCPP.ext.Add(_T("cpp"));
 		langCPP.ext.Add(_T("h"));
