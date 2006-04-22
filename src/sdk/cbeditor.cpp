@@ -322,6 +322,10 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
 	EVT_MENU(idBreakpointAdd, cbEditor::OnContextMenuEntry)
 	EVT_MENU(idBreakpointEdit, cbEditor::OnContextMenuEntry)
 	EVT_MENU(idBreakpointRemove, cbEditor::OnContextMenuEntry)
+
+    EVT_SCI_ZOOM(-1, cbEditor::OnZoom)
+    EVT_SCI_ZOOM(-1, cbEditor::OnZoom)
+
 END_EVENT_TABLE()
 
 // class constructor
@@ -515,6 +519,7 @@ void cbEditor::CreateEditor()
     Connect( m_ID,  -1, wxEVT_SCI_MODIFIED,
                   (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
                   &cbEditor::OnEditorModified );
+    m_pControl->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());
 }
 
 wxColour cbEditor::GetOptionColour(const wxString& option, const wxColour _default)
@@ -830,6 +835,8 @@ bool cbEditor::Open(bool detectEncoding)
 
     SetModified(false);
 	NotifyPlugins(cbEVT_EDITOR_OPEN);
+
+    m_pControl->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());
     return true;
 }
 
@@ -1859,3 +1866,9 @@ void cbEditor::DoUnIndent()
     if(m_pControl)
         m_pControl->SendMsg(2328); // wxSCI_CMD_BACKTAB
 }
+
+void cbEditor::OnZoom(wxScintillaEvent& event)
+{
+    Manager::Get()->GetEditorManager()->SetZoom(GetControl()->GetZoom());
+}
+

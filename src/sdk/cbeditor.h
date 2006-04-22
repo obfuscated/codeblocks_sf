@@ -234,6 +234,7 @@ class DLLIMPORT cbEditor : public EditorBase
 		void OnEditorModified(wxScintillaEvent& event);
 		void OnUserListSelection(wxScintillaEvent& event);
 		void OnClose(wxCloseEvent& event);
+		void OnZoom(wxScintillaEvent& event);
 
 		// one event handler for all popup menu entries
 		void OnContextMenuEntry(wxCommandEvent& event);
