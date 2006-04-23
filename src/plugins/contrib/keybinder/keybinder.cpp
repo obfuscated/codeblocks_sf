@@ -7,13 +7,6 @@
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
-//commit 12/14/2005 9:15 AM
-//commit 12/16/2005 8:54 PM
-//commit 1/2/2006 7:38 PM
-//commit 1/7/2006 9:05 PM v0.4.4
-//commit  1/10/2006 5 PM v0.4.8
-//commit 1/23/2006 v0.4.13
-//commit 2/9/2006 v0.4.15
 
 #define NOT !
 
@@ -384,10 +377,10 @@ wxString wxKeyBind::KeyCodeToString(int keyCode)
 		}
 	}//default
 
-    #if LOGGING
-     LOGIT(_T("KeyCodeToStringOUT:keyCode[%d]char[%c]Desc[%s]"),
-                keyCode, keyCode, res.GetData() );
-    #endif
+    //#if LOGGING
+    // LOGIT(_T("KeyCodeToStringOUT:keyCode[%d]char[%c]Desc[%s]"),
+    //            keyCode, keyCode, res.GetData() );
+    //#endif
 
 	return res;
 
@@ -781,6 +774,54 @@ bool wxBinderApp::IsChildOf(wxWindow *parent, wxWindow *child)
 	}
 
 	return FALSE;
+}
+// ----------------------------------------------------------------------------
+//  wxKeyBinder
+// ----------------------------------------------------------------------------
+void wxKeyBinder::UpdateAllCmd(wxMenuBar* pMnuBar) {     //v0.4.17
+// ----------------------------------------------------------------------------
+	//! Updates all the commands on the menu
+    if (m_arrHandlers.GetCount() == 0)
+        return;		// we are not attached to any window... we can skip
+                    // this update...
+
+    //v0.4.17 //pecan 2006/4/23
+    // This code used to update the menus using the keybinder array as the source
+    // But that missed duplicate menu items, so.. we update using the menus
+    // as the source and the array as a database
+
+    //for (int i=0; i < (int)m_arrCmd.GetCount(); i++)
+    //	m_arrCmd.Item(i)->Update();
+
+    //v 0.4.17 //pecan 2006/4/22
+    // Menu items used to be updated by referencing the keybinder array info as source.
+    // But this missed duplicate menu items, updating only the first duplicate.
+    // So.. search, referencing the menu items as source, and update.
+
+    size_t nMnuKnt = pMnuBar->GetMenuCount();
+    for (size_t i=0; i<nMnuKnt ;i++ )
+    {   wxMenu* pMnu = pMnuBar->GetMenu(i);
+           size_t nItemKnt = pMnu->GetMenuItemCount();
+           for (size_t j=0; j<nItemKnt; j++ )
+           {    wxMenuItem* pMnuItem = pMnu->FindItemByPosition(j);
+                int nMnuItemID = pMnuItem->GetId();
+                //Find item in array of keybinder commands
+                int k=0;
+                if ( -1 != (k=FindCmd(nMnuItemID)))
+                {
+                    #ifdef LOGGING
+                     LOGIT(wxT("UpdateAll:on:%d:%d:%p:%s"),j,k,pMnuItem,pMnuItem->GetText().GetData() );
+                    #endif
+                    m_arrCmd.Item(k)->Update(pMnuItem);
+                    // **pMnuItem will be invalid now if item was updated**
+                }
+                else{
+                    #ifdef LOGGING
+                     LOGIT(wxT("UpdateAll:Failed on:%d:%d:%p:%s"),j,k,pMnuItem,pMnuItem->GetText().GetData() );
+                    #endif
+                }
+           }//rof
+    }//rof
 }
 
 // ----------------------------------------------------------------------------
@@ -2223,7 +2264,7 @@ void wxKeyConfigPanel::OnAssignKey(wxCommandEvent &)
     // if the key bind was owned by other commands,
     // remove it from the old commands...
     wxCmd *p = 0;                                                   //pecan 2006/4/10
-    while (p = m_kBinder.GetCmdBindTo(m_pKeyField->GetValue()) )
+    while ((p = m_kBinder.GetCmdBindTo(m_pKeyField->GetValue()) ))
     {
         // another command already owns this key bind...
         wxKeyBind tmp(m_pKeyField->GetValue());

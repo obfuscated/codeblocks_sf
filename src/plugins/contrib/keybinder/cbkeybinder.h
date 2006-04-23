@@ -45,7 +45,6 @@ class MyDialog;
 
 // ----------------------------------------------------------------------------
 #include "debugging.h"
-#define RC3 1
 // ----------------------------------------------------------------------------
 //  cbKeyBinder class declaration
 // ----------------------------------------------------------------------------
@@ -260,7 +259,7 @@ CB_DECLARE_PLUGIN();
 //the menu code willy nilly turns off the "m_bOwnerDrawn" flag.
 //Bitmapped menuitems are not supported in WX, menu code, only OwnerDrawn.
 //
-//Reason: Looks like q Win98 thingie. But...
+//Reason: Looks like a Win98 thingie. But...
 //
 //The next time the menuitem is updated, ownerdrawn attributes, bitmaps
 //etc are clobbered because, of course, the owner drawn code is never called.
@@ -400,11 +399,20 @@ CB_DECLARE_PLUGIN();
 // ----------------------------------------------------------------------------
 //  fixed   possible array overflow and unitialized integer
 // ----------------------------------------------------------------------------
-//  open    2006/04/10
+//  closed  2006/04/23  open    2006/04/10 v0.4.16
 //          Ctrl-Shift-N cannot be overridden unless its the first accelerator set
 //          on a menu item.
 //          There are two NewProject menu items/accerators with the same id
 //          on the menu and keybinder never recorded the second.
 //          Removing the second definition of Ctrl-Shift-N from main_menu.xrc would
 //          solve the problem.
+// -----------------------------------------------------------------------------
+//  fixed   2006/04/22 v0.4.17
+//          Appease linux gcc 4.0.2 compiler by ptting extra ()'s
+//          around keybinder.cpp 2219 if(assignment statement)
+//          Removed RC2 code and references
+//          Fixed duplicate menu items not being updated by using the menu bar
+//          as the source to search the keybinder array rather than the reverse.
+// -----------------------------------------------------------------------------
+//  commit  2006/04/23 v0.4.17
 // -----------------------------------------------------------------------------

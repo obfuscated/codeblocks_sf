@@ -126,9 +126,9 @@ protected:
 	//! The 2nd, 3rd, 4th... shortcuts cannot be shown in the
 	//! menuitem label and they are thus not considered...
 	//! (but they do still work !!!)
-	void Update();
+	void Update(wxMenuItem* pMnuItem = 0);
 	#if defined( __WXMSW__ )
-	void RebuildMenuitem(); //+v0.4.6
+	wxMenuItem* RebuildMenuitem(wxMenuItem* pMnuItem); //+v0.4.6
 	#endif
 };
 

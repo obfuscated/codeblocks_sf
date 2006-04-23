@@ -47,23 +47,27 @@ cbKeyBinder::cbKeyBinder()
 {
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
-	m_PluginInfo.title = _("Keyboard shortcuts configuration");
-	m_PluginInfo.version = _T("0.4.16");
-	m_PluginInfo.description <<_("\nCode::Blocks KeyBinder  2006/04/10\n\n")
-                            << _("NOTE: Ctrl+Alt+{UP|DOWN} is unsupported.\n\n")
-                            << _("Mutiple occurances of a key definition ")
-                            << _("such as Ctrl-Shift-N in menu items \"File/New/Project...\" and ")
-                            << _("\"Project/New Project...\" cannot be over-ridden ")
-                            << _("unless the new key assignment occurs prior to the ")
-                            << _("second definition. \n\nFor example: Ctrl-Shift-N can only be ")
-                            << _("reassigned to a Menu item prior to \"Project/New Project\", ")
-                            << _("and it must be reassigned in the first position of the ")
-                            << _("three keys assignable to a menu item. ")
-                            << _("\n");
-	m_PluginInfo.author = _T("Pecan && Mispent Intent");
+	m_PluginInfo.title = _("Keyboard shortcuts");
+	m_PluginInfo.version = _T("0.4.17 (2006/04/23)");
+	m_PluginInfo.description <<_("\nCode::Blocks KeyBinder (2006/04/22)\n\n")
+                            << _("NOTE: Ctrl+Alt+{UP|DOWN} is unsupported.\n\n");
+////                            << _("Mutiple occurances of a key definition ")
+////                            << _("such as Ctrl-Shift-N in menu items \"File/New/Project...\" and ")
+////                            << _("\"Project/New Project...\" cannot be over-ridden ")
+////                            << _("unless the new key assignment occurs prior to the ")
+////                            << _("second definition. \n\nFor example: Ctrl-Shift-N can only be ")
+////                            << _("reassigned to a Menu item prior to \"Project/New Project\", ")
+////                            << _("and it must be reassigned in the first position of the ")
+////                            << _("three keys assignable to a menu item. ")
+////                            << _("\n");
+	m_PluginInfo.author = _T("Pecan Heber");
 	m_PluginInfo.authorEmail = _T("");
 	m_PluginInfo.authorWebsite = _T("");
-	m_PluginInfo.thanksTo = _("wxKeyBinder & CodeBlocks Developers");
+	m_PluginInfo.thanksTo << _("Thanks to...\n\n")
+                        <<_("wxKeyBinder authors:\n")
+                        <<_("Aleksandras Gluchovas,\nFrancesco Montorsi,\n")
+                        <<_("\tand \n")
+                        <<_("The Code::Blocks team");
 	m_PluginInfo.license = LICENSE_GPL;
 
 }
@@ -100,9 +104,9 @@ void cbKeyBinder::OnAttach()
         //  wxLogWindow* pMyLog;
         // #define LOGIT wxLogMessage
         /* wxLogWindow* */
-        pMyLog = new wxLogWindow(pcbWindow,m_PluginInfo.name);
+        pMyLog = new wxLogWindow(pcbWindow,m_PluginInfo.name,true,false);
         wxLog::SetActiveTarget(pMyLog);
-        LOGIT(_T("log message window open"));
+        LOGIT(_T("keybinder log open"));
         pMyLog->Flush();
         pMyLog->GetFrame()->Move(20,20);
     #endif
@@ -291,7 +295,8 @@ void cbKeyBinder::UpdateArr(wxKeyProfileArray &r)
         //                 added to the binder
 
         r.GetSelProfile()->AttachRecursively(Manager::Get()->GetAppWindow());
-        r.UpdateAllCmd();		// necessary //+v04.11
+        //-r.UpdateAllCmd();		// necessary //+v04.11
+        r.UpdateAllCmd(m_pMenuBar); //+v0.4.17
 
     #if LOGGING
       LOGIT(_T("UpdateArr::End"));
@@ -650,11 +655,6 @@ void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event)
          }
 
         //already bound, just add the editor window
-        #ifdef RC2
-         wxFrame* thisEditor = (wxFrame*)event.GetEditor()->GetControl();
-        #endif
-
-        #ifdef RC3
          wxWindow* thisWindow = event.GetEditor();
          wxWindow* thisEditor = thisWindow->FindWindowByName(_T("SCIwindow"),thisWindow);
 
@@ -666,7 +666,6 @@ void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event)
           {  ed = static_cast<cbEditor*>(eb);
              thisEditor = ed->GetControl();
           }
-        #endif
 
         //skip editors that we already have
         if ( thisEditor && (wxNOT_FOUND == m_EditorPtrs.Index(thisEditor)) )
@@ -689,11 +688,6 @@ void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
     if (m_IsAttached)
      {
 
-        #ifdef RC2
-         wxFrame* thisEditor = (wxFrame*)event.GetEditor()->GetControl();
-        #endif
-
-        #ifdef RC3
          wxWindow* thisWindow = event.GetEditor();
 
          // Cannot use GetBuiltinActiveEditor() because the active Editor is NOT the
@@ -713,7 +707,6 @@ void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
           {  ed = static_cast<cbEditor*>(eb);
              thisEditor = ed->GetControl();
           }
-         #endif
 
 
 

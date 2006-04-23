@@ -68,21 +68,31 @@ int wxFindMenuItem(wxMenuBar *p, const wxString &str)
 
 #ifdef __WXGTK__
 // ----------------------------------------------------------------------------
-void wxMenuCmd::Update() //for __WXGTK__
+void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
 // ----------------------------------------------------------------------------
 {
-    //+v0.4.11
+//    //+v0.4.11
+//    // verify menu item has not changed its id or disappeared
+//    if (m_pMenuBar->FindItem(m_nId) != m_pItem)
+//        return;
+    //v0.4.17
+    // Test if caller wants a different menu item than in keybinder array
+    wxMenuItem* pLclMnuItem = m_pItem;
+    if (pSpecificMenuItem) pLclMnuItem = pSpecificMenuItem;
+    //+v0.4
     // verify menu item has not changed its id or disappeared
-    if (m_pMenuBar->FindItem(m_nId) != m_pItem)
-        return;
+    if (not pSpecificMenuItem)
+        if (m_pMenuBar->FindItem(m_nId) != pLclMnuItem)
+            return;
+
 
     //+v0.4.11
     // leave numeric menu items alone. They get replaced by CodeBlocks
-    wxString strText = m_pItem->GetText();
+    wxString strText = pLclMnuItem->GetText();
     if (strText.Left(1).IsNumber())
       return;
 
-	wxString str = m_pItem->GetLabel();
+	wxString str = pLclMenuItem->GetLabel();
 
 	// on GTK, an optimization in wxMenu::SetText checks
 	// if the new label is identic to the old and in this
@@ -90,7 +100,7 @@ void wxMenuCmd::Update() //for __WXGTK__
 	// to solve the problem, a space is added or removed
 	// from the label to ovverride this optimization check
 	str.Trim();
-	if (str == m_pItem->GetLabel())
+	if (str == pLclMnuItem->GetLabel())
 		str += wxT(" ");
 
 	if (m_nShortcuts <= 0) {
@@ -99,7 +109,7 @@ void wxMenuCmd::Update() //for __WXGTK__
 
 		// no more shortcuts for this menuitem: SetText()
 		// will delete the hotkeys associated...
-		m_pItem->SetText(str);
+		pLclMenuItem->SetText(str);
 		return;
 	}
 
@@ -108,7 +118,7 @@ void wxMenuCmd::Update() //for __WXGTK__
 
 
 	// on GTK, the SetAccel() function doesn't have any effect...
-	m_pItem->SetText(newtext);
+	pLclMnuItem->SetText(newtext);
 
 #ifdef __WXGTK20__
 
@@ -121,26 +131,31 @@ void wxMenuCmd::Update() //for __WXGTK__
 
 #if defined( __WXMSW__ )
 // ----------------------------------------------------------------------------
-void wxMenuCmd::Update() // for __WXMSW__
+void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
 // ----------------------------------------------------------------------------
 { //v0.4.4 changes to use bitmapped menuitems
   //v0.4.6 Rebuild menuitems when bitmapped. Ownerdrawn were misaligned.
 
+    //v0.4.17
+    // Test if caller wants a different menu item than in keybinder array
+    wxMenuItem* pLclMnuItem = m_pItem;
+    if (pSpecificMenuItem) pLclMnuItem = pSpecificMenuItem;
     //+v0.4
     // verify menu item has not changed its id or disappeared
-    if (m_pMenuBar->FindItem(m_nId) != m_pItem)
-        return;
+    if (not pSpecificMenuItem)
+        if (m_pMenuBar->FindItem(m_nId) != pLclMnuItem)
+            return;
 
     //+v0.3
     // leave numeric menu items alone. They get replaced by CodeBlocks
-    wxString strText = m_pItem->GetText();
+    wxString strText = pLclMnuItem->GetText();
     if (strText.Left(1).IsNumber())
       return;
     //use full text to get label to preserve mnemonics
 	wxString strLabel = strText.BeforeFirst(_T('\t'));
     wxString newtext = strLabel; //no accel, contains mnemonic
 
-    wxAcceleratorEntry* pItemAccel = m_pItem->GetAccel();
+    wxAcceleratorEntry* pItemAccel = pLclMnuItem->GetAccel();
     // clearing previous shortcuts if none now assigned
 	if (m_nShortcuts <= 0) {
         if ( ! pItemAccel) return;
@@ -148,10 +163,10 @@ void wxMenuCmd::Update() // for __WXMSW__
 		 LOGIT(wxT("wxMenuCmd::Update - Removing shortcuts [%s] for [%s]"), strText.c_str(),newtext.c_str());
 		#endif
 		// set "non bitmapped" text to preserve menu width
-        m_pItem->SetText(newtext);
+        pLclMnuItem->SetText(newtext);
          //now rebuild the menuitem if bitmapped
-         if (m_pItem->GetBitmap().GetWidth())
-             RebuildMenuitem(); //+v0.4.6
+         if (pLclMnuItem->GetBitmap().GetWidth())
+             pLclMnuItem = RebuildMenuitem(pLclMnuItem); //+v0.4.6
         return;
     }
 
@@ -168,34 +183,36 @@ void wxMenuCmd::Update() // for __WXMSW__
     #if LOGGING
      LOGIT(wxT("wxMenuCmd::Update - Setting shortcuts for [%s]"), newtext.c_str());
     #endif
-    m_pItem->SetText(newtext);
+    pLclMnuItem->SetText(newtext);
     //now rebuild the menuitem if bitmapped
-    if (m_pItem->GetBitmap().GetWidth())
-        RebuildMenuitem(); //+v0.4.6
+    if (pLclMnuItem->GetBitmap().GetWidth())
+        pLclMnuItem = RebuildMenuitem(pLclMnuItem); //+v0.4.6
 
 }//Update
 // ----------------------------------------------------------------------------
 // RebuildMenuitem
 // ----------------------------------------------------------------------------
-void wxMenuCmd::RebuildMenuitem()
+wxMenuItem* wxMenuCmd::RebuildMenuitem(wxMenuItem* pMnuItem)
 {//+v0.4.6 WXMSW
 	// ---------------------------------------------------------------
 	//  Do it the slow/hard way, remove and delete the menu item
 	// ---------------------------------------------------------------
-    wxMenu* pMenu = m_pItem->GetMenu();
+    wxMenu* pMenu = pMnuItem->GetMenu();
     wxMenuItemList items = pMenu->GetMenuItems();
-    int pos = items.IndexOf(m_pItem);
+    int pos = items.IndexOf(pMnuItem);
    // rebuild the menuitem
-    wxMenuItem* pnewitem = new wxMenuItem(pMenu, m_nId, m_pItem->GetText(),
-                m_pItem->GetHelp(), m_pItem->GetKind(),
-                m_pItem->GetSubMenu() );
-    pnewitem->SetBitmap(m_pItem->GetBitmap() );
-    pnewitem->SetFont(m_pItem->GetFont() );
+    wxMenuItem* pnewitem = new wxMenuItem(pMenu, m_nId, pMnuItem->GetText(),
+                pMnuItem->GetHelp(), pMnuItem->GetKind(),
+                pMnuItem->GetSubMenu() );
+    pnewitem->SetBitmap(pMnuItem->GetBitmap() );
+    pnewitem->SetFont(pMnuItem->GetFont() );
     // remove the menuitem
-    pMenu->Destroy(m_pItem);
+    pMenu->Destroy(pMnuItem);
+    // update keybinder array menu item pointer
     m_pItem = pnewitem;
     // put the menuitem back on the menu
-    pMenu->Insert(pos, m_pItem);
+    pMenu->Insert(pos, pnewitem);
+    return pnewitem;
 
 }//RebuildMenuitem
 #endif //#if defined( __WXMSW__ )
