@@ -92,7 +92,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
     if (strText.Left(1).IsNumber())
       return;
 
-	wxString str = pLclMenuItem->GetLabel();
+	wxString str = pLclMnuItem->GetLabel();
 
 	// on GTK, an optimization in wxMenu::SetText checks
 	// if the new label is identic to the old and in this
@@ -109,7 +109,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
 
 		// no more shortcuts for this menuitem: SetText()
 		// will delete the hotkeys associated...
-		pLclMenuItem->SetText(str);
+		pLclMnuItem->SetText(str);
 		return;
 	}
 
