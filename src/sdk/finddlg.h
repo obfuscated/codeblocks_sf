@@ -10,7 +10,7 @@ class wxActivateEvent;
 class FindDlg : public FindReplaceBase
 {
 	public:
-		FindDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false, bool findInFilesOnly = false);
+		FindDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false, bool findInFilesOnly = false, bool findInFilesActive = false);
 		~FindDlg();
 		wxString GetFindString() const;
 		wxString GetReplaceString() const{ return wxEmptyString; }

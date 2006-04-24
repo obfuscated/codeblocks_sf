@@ -57,7 +57,7 @@ BEGIN_EVENT_TABLE(FindDlg, wxDialog)
     EVT_ACTIVATE(                       FindDlg::OnActivate)
 END_EVENT_TABLE()
 
-FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, bool findInFilesOnly)
+FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, bool findInFilesOnly, bool findInFilesActive)
 	: FindReplaceBase(parent, initial, hasSelection),
 	m_Complete(!findInFilesOnly)
 {
@@ -113,6 +113,11 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
 
 	if (!m_Complete)
         XRCCTRL(*this, "nbFind", wxNotebook)->DeletePage(0); // no active editor, so only find-in-files
+	else if (findInFilesActive)
+	{
+		XRCCTRL(*this, "nbFind", wxNotebook)->SetSelection(1); // Search->Find in Files was selected
+		XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
+	}
 }
 
 FindDlg::~FindDlg()
@@ -125,9 +130,11 @@ FindDlg::~FindDlg()
     cfg->Write(CONF_GROUP _T("/search_hidden"), XRCCTRL(*this, "chkSearchHidden", wxCheckBox)->GetValue());
 
 	// save last searches (up to 10)
-    wxComboBox* combo = XRCCTRL(*this, "cmbFind1", wxComboBox);
-	if (!m_Complete)
+    wxComboBox* combo;
+	if (IsFindInFiles())
         combo = XRCCTRL(*this, "cmbFind2", wxComboBox);
+	else
+		combo = XRCCTRL(*this, "cmbFind1", wxComboBox);
     wxArrayString previous;
     for (int i = 0; (i < combo->GetCount()) && (i < 10); ++i)
     {
@@ -311,11 +318,13 @@ void FindDlg::OnRadioBox(wxCommandEvent& event)
 
 void FindDlg::OnActivate(wxActivateEvent& event)
 {
-    if (!m_Complete && XRCCTRL(*this, "cmbFind2", wxComboBox))
-        XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
+    wxComboBox* cbp = 0;
+    if (IsFindInFiles())
+        cbp = XRCCTRL(*this, "cmbFind2", wxComboBox);
     else
-        XRCCTRL(*this, "cmbFind1", wxComboBox)->SetFocus();
+        cbp = XRCCTRL(*this, "cmbFind1", wxComboBox);
 
+    if (cbp != 0) cbp->SetFocus();
     event.Skip();
 }
 
