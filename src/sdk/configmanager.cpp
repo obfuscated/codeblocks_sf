@@ -268,6 +268,21 @@ ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
 }
 
 
+/*
+*  Hack to enable Turkish language. wxString::Upper will convert lowercase 'i' to \u0130 instead of \u0069 in Turkish locale,
+*  which will break the config file when used in a tag
+*/
+inline void to_upper(wxString& s)
+{
+wxChar *p = (wxChar*) s.c_str();
+size_t len = s.length()+1;
+for(;--len;++p)
+    {
+    wxChar q = *p;
+    if(q >= 'a' && q <= 'z')
+        *p = q - 32;
+    }
+};
 
 
 /* ------------------------------------------------------------------------------------------------------------------
@@ -471,7 +486,7 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
 
     if(!path.Contains(_T("/")))
     {
-        path.UpperCase();
+        to_upper(path);
         if(path[0] < _T('A') || path[0] > _T('Z'))
         {
             wxString s;
@@ -536,7 +551,7 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
     }
     while(path.Contains(_T("/")));
 
-    path.UpperCase();
+    to_upper(path);
     if(!path.IsEmpty() && (path[0] < _T('A') || path[0] > _T('Z')))
     {
         wxString s;
