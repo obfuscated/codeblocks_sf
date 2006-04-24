@@ -466,7 +466,9 @@ void EditorColorSet::Save()
 {
 	wxString key;
 	ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-	cfg->DeleteSubPath(_T("/color_sets/") + m_Name);
+
+    //FIXME: Commenting out the following line is no definite cure, but it hides the annoying disappearing colorset for now
+	//cfg->DeleteSubPath(_T("/color_sets/") + m_Name);
 
 	// write the theme name
 	cfg->Write(_T("/color_sets/") + m_Name + _T("/name"), m_Name);
