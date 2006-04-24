@@ -697,9 +697,9 @@ void MainFrame::CreateToolbars()
     m_pToolbar = new wxToolBar(this, -1, wxDefaultPosition, size, wxTB_FLAT | wxTB_NODIVIDER);
     m_pToolbar->SetToolBitmapSize(size);
     Manager::Get()->AddonToolBar(m_pToolbar,xrcToolbarName);
-    m_pToolbar->SetBestFittingSize();
 
 	m_pToolbar->Realize();
+    m_pToolbar->SetBestFittingSize();
 
     // add toolbars in docking system
     m_LayoutManager.AddPane(m_pToolbar, wxPaneInfo().
