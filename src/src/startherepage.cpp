@@ -107,15 +107,13 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
     delete fs;
 
 	#ifdef __GNUC__
-	revInfo.Printf(_T("Version %s (gcc %d.%d.%d %s/%s, build: %s %s)"),
-					g_AppActualVersionVerb.c_str(),
-					__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_AppPlatform.c_str(), g_AppWXAnsiUnicode.c_str(),
-					wxT(__DATE__), wxT(__TIME__));
+	revInfo.Printf(_T("Version %s, %s (gcc %d.%d.%d %s/%s)"),
+					g_AppActualVersionVerb.c_str(), ConfigManager::GetSvnDate().c_str(),
+					__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_AppPlatform.c_str(), g_AppWXAnsiUnicode.c_str());
 	#else
-	revInfo.Printf(_T("Version %s (%s/%s, build: %s %s)"),
-					g_AppActualVersionVerb.c_str(),
-					g_AppPlatform.c_str(), g_AppWXAnsiUnicode.c_str(),
-					wxT(__DATE__), wxT(__TIME__));
+	revInfo.Printf(_T("Version %s, %s (%s/%s)"),
+					g_AppActualVersionVerb.c_str(), ConfigManager::GetSvnDate().c_str(),
+					g_AppPlatform.c_str(), g_AppWXAnsiUnicode.c_str());
 	#endif
     // perform var substitution
     buf.Replace(_T("CB_VAR_REVISION_INFO"), revInfo);

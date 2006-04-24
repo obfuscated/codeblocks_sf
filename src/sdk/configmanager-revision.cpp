@@ -14,11 +14,16 @@
 
 wxString ConfigManager::GetRevisionString()
 {
-    return wxString(autorevision::svnRevision);
+    return wxString(wxT(SVN_REVISION));
 }
 
 unsigned int ConfigManager::GetRevisionNumber()
 {
     return autorevision::svn_revision;
+}
+
+wxString ConfigManager::GetSvnDate()
+{
+    return wxString(wxT(SVN_DATE));
 }
 
