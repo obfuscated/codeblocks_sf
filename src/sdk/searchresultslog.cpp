@@ -69,12 +69,19 @@ void SearchResultsLog::SyncEditor(int selIndex)
     m_pList->GetItem(li);
     long line = 0;
     li.m_text.ToLong(&line);
-
     cbEditor* ed = Manager::Get()->GetEditorManager()->Open(file);
-    if (!ed)
+    if (!line || !ed)
         return;
+
+    line -= 1;
     ed->Activate();
-    ed->GotoLine(line - 1);
+    ed->GotoLine(line);
+
+    cbStyledTextCtrl* control = 0;
+    control = ed->GetControl();
+    if (control) {
+        control->EnsureVisible(line);
+    }
 }
 
 void SearchResultsLog::OnClick(wxCommandEvent& event)
