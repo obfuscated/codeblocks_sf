@@ -45,7 +45,7 @@ cbDragScroll::cbDragScroll()
 	//ctor
 	m_PluginInfo.name = _T("DragScroll");
 	m_PluginInfo.title = _("DragScroll");
-	m_PluginInfo.version = _T("0.22 2006/04/8");
+	m_PluginInfo.version = _T("0.23 (2006/04/25)");
 	m_PluginInfo.description = _("Mouse Drag and Scroll\nUsing Right or Middle Mouse Key");
 	m_PluginInfo.author = _T("Pecan");
 	m_PluginInfo.authorEmail = _T("");
@@ -80,8 +80,9 @@ void cbDragScroll::OnAttach()
     pMyLog = NULL;
     m_bNotebooksAttached = false;
 
+    wxWindow* pcbWindow = Manager::Get()->GetAppWindow();
+    m_pMS_Window = pcbWindow;
     #if LOGGING
-        wxWindow* pcbWindow = Manager::Get()->GetAppWindow();
         /*wxLogWindow**/ pMyLog = new wxLogWindow(pcbWindow, m_PluginInfo.name, true, false);
         wxLog::SetActiveTarget(pMyLog);
         pMyLog->Flush();
@@ -615,15 +616,17 @@ MyMouseEvents::~MyMouseEvents()
 #ifdef __WXMSW__
 void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
 {
-    // For efficiency, skip wheel events right now
-    if ( event.GetEventType() eq wxEVT_MOUSEWHEEL)
-        { event.Skip(); return; }
-
     //remember event window pointer
     m_pEvtObject = event.GetEventObject();
     cbDragScroll* pDS = cbDragScroll::pDragScroll;
 
-    #if (RC3)
+    // Why is an event getting in here when this OS window doesnt have the focus
+    if (::wxGetActiveWindow() != pDS->m_pMS_Window)
+        {event.Skip(); return;}
+    // For efficiency, skip wheel events right now
+    if ( event.GetEventType() eq wxEVT_MOUSEWHEEL)
+        { event.Skip(); return; }
+
      cbEditor* ed = 0;
      cbStyledTextCtrl* p_cbStyledTextCtrl = 0;
      ed  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -639,7 +642,6 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
            if (p_cbStyledTextCtrl && (m_pEvtObject == p_cbStyledTextCtrl))
                 p_cbStyledTextCtrl->SetFocus();
 
-    #endif //RC3
 
     int scrollx;
     int scrolly;

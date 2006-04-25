@@ -92,6 +92,7 @@ class cbDragScroll : public cbPlugin
         int  GetMouseToLineRatio()       { return MouseToLineRatio; }
         int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl; }
 
+        wxWindow*       m_pMS_Window;
         wxWindow* m_pSearchResultsWindow;
 
 	private:
@@ -285,4 +286,11 @@ CB_DECLARE_PLUGIN();
 // ----------------------------------------------------------------------------
 //  testing v0.22 2006/04/8 Capture ListCtrl Right Mouse Keydown
 // ----------------------------------------------------------------------------
+//  fix     v0.23 2006/04/25
+//          Added MS windows test for main window because events were getting
+//          to mouse handler even though main window didnt have focus
+// ----------------------------------------------------------------------------
+//  commit  v0.23 2006/04/25
+// ----------------------------------------------------------------------------
 #endif // DRAGSCROLL_H
+
