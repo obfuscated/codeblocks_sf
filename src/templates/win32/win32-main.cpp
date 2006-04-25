@@ -9,7 +9,7 @@ char szClassName[ ] = "CodeBlocksWindowsApp";
 int WINAPI WinMain (HINSTANCE hThisInstance,
                      HINSTANCE hPrevInstance,
                      LPSTR lpszArgument,
-                     int nFunsterStil)
+                     int nCmdShow)
 {
     HWND hwnd;               /* This is the handle for our window */
     MSG messages;            /* Here messages to the application are saved */
@@ -53,7 +53,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
            );
 
     /* Make the window visible on the screen */
-    ShowWindow (hwnd, nFunsterStil);
+    ShowWindow (hwnd, nCmdShow);
 
     /* Run the message loop. It will run until GetMessage() returns 0 */
     while (GetMessage (&messages, NULL, 0, 0))
