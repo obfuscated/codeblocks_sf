@@ -601,6 +601,7 @@ bool CompilerGCC::BuildToolBar(wxToolBar* toolBar)
     m_ToolTarget = XRCCTRL(*toolBar, "idToolTarget", wxComboBox);
     #endif
     toolBar->Realize();
+    toolBar->SetBestFittingSize();
     DoRecreateTargetMenu(); // make sure the tool target combo is up-to-date
     return true;
 }

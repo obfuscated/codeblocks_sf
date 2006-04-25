@@ -528,6 +528,7 @@ bool DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
     wxString my_16x16=Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
     Manager::AddonToolBar(toolBar,wxString(_T("debugger_toolbar"))+my_16x16);
     toolBar->Realize();
+    toolBar->SetBestFittingSize();
     return true;
 #else
     return false;
