@@ -53,19 +53,20 @@ class wxsDrawingWindow: public wxScrolledWindow
         void PanelMouse(wxMouseEvent& event);
         void PanelKeyboard(wxKeyEvent& event);
         void StartFetchingSequence();
-        void OnFetchDelay(wxCommandEvent& event);
-        void OnFetchTimer(wxTimerEvent& event);
-        void OnRepaintTimer(wxTimerEvent& event);
+        void FetchScreen();
+
         void OnSize(wxSizeEvent& event);
+
 
         class DrawingPanel;
         DrawingPanel* Panel;
         bool PaintAfterFetch;
         bool IsBlockFetch;
-        int FetchCounter;
         wxBitmap* Bitmap;
+
+        // NOTE: Added temporarilly
         wxTimer RepaintTimer;
-        wxTimer FetchTimer;
+        void OnRepaintTimer(wxTimerEvent&);
 
         DECLARE_EVENT_TABLE()
 };

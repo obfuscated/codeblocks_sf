@@ -8,6 +8,7 @@
 #include <wx/dcbuffer.h>
 
 #define FETCH_EVENT_TICKS   0x10
+#define PENDING_EVENTS_CNT  0x10
 
 /** \brief Drawing panel
  *
@@ -47,9 +48,10 @@ DECLARE_EVENT_TYPE(wxEVT_FETCH_BACKGROUND_DELAY, -1)
 DEFINE_EVENT_TYPE(wxEVT_FETCH_BACKGROUND_DELAY)
 
 BEGIN_EVENT_TABLE(wxsDrawingWindow,wxScrolledWindow)
-    EVT_COMMAND(-1,wxEVT_FETCH_BACKGROUND_DELAY,wxsDrawingWindow::OnFetchDelay)
+//    EVT_COMMAND(-1,wxEVT_FETCH_BACKGROUND_DELAY,wxsDrawingWindow::OnFetchDelay)
     EVT_SIZE(wxsDrawingWindow::OnSize)
-    EVT_TIMER(1,wxsDrawingWindow::OnFetchTimer)
+//    EVT_TIMER(1,wxsDrawingWindow::OnFetchTimer)
+// NOTE: Added temporarilly
     EVT_TIMER(2,wxsDrawingWindow::OnRepaintTimer)
 END_EVENT_TABLE()
 
@@ -58,10 +60,10 @@ wxsDrawingWindow::wxsDrawingWindow(wxWindow* Parent,wxWindowID id):
     Panel(NULL),
     PaintAfterFetch(false),
     IsBlockFetch(false),
-    FetchCounter(0),
+//    FetchCounter(0),
     Bitmap(NULL),
-    RepaintTimer(this,2),
-    FetchTimer(this,1)
+    RepaintTimer(this,2)/*,
+    FetchTimer(this,1)*/
 {
     ContentChanged();
 }
@@ -120,26 +122,51 @@ void wxsDrawingWindow::PanelKeyboard(wxKeyEvent& event)
 
 void wxsDrawingWindow::StartFetchingSequence()
 {
+    // This function will be blocking
+    // If it has been executed and not yet finished,
+    // another calls (possibly called from Manager::ProcessPendingEvents())
+    // will not be executed
+    static bool Block = false;
+    if ( Block ) return;
+    Block = true;
+
     // Hiding panel to show content under it
     Panel->Hide();
 
-    // We will add FETCH_EVENT_TICKS ticks in event queue - this will
-    // allow processing all events left like repositioning and repainting
-    // stuff
-    FetchCounter = FETCH_EVENT_TICKS;
-    wxCommandEvent evt(wxEVT_FETCH_BACKGROUND_DELAY, GetId() );
-    AddPendingEvent(evt);
+    // Processing all pending events, it MUST be done
+    // to repaint the content of window
+    for ( int i=0; i<PENDING_EVENTS_CNT; i++ )
+    {
+        Manager::Yield();
+    }
+    FetchScreen();
+    PaintAfterFetch = true;
+    Panel->Show();
+    Panel->Raise();
+
+    // NOTE: Added temporarilly
+    RepaintTimer.Start(1000,true);
+
+    Block = false;
 }
 
-void wxsDrawingWindow::OnFetchDelay(wxCommandEvent& event)
-{
-    // Waiting till given number of ticks is done
-    if ( FetchCounter-- > 0 )
-    {
-        AddPendingEvent(event);
-        return;
-    }
+//void wxsDrawingWindow::OnFetchDelay(wxCommandEvent& event)
+//{
+//    // Waiting till given number of ticks is done
+//    if ( FetchCounter-- > 0 )
+//    {
+//        AddPendingEvent(event);
+//        return;
+//    }
+//
+//    FetchScreen();
+//
+//    // Now starting fetching timer
+//    FetchTimer.Start(100,true);
+//}
 
+void wxsDrawingWindow::FetchScreen()
+{
     // Fetching preview directly from screen
 	wxScreenDC DC;
 	wxMemoryDC DestDC;
@@ -147,26 +174,24 @@ void wxsDrawingWindow::OnFetchDelay(wxCommandEvent& event)
     ClientToScreen(&X,&Y);
     DestDC.SelectObject(*Bitmap);
     DestDC.Blit(0,0,GetSize().GetWidth(),GetSize().GetHeight(),&DC,X,Y);
-
-    // Now starting fetching timer
-    FetchTimer.Start(100,true);
 }
 
-void wxsDrawingWindow::OnFetchTimer(wxTimerEvent& event)
-{
-    // Showing panel and repainting using fetched bitmap
-    PaintAfterFetch = true;
-    Panel->Show();
-    RepaintTimer.Start(100,true);
-}
+//void wxsDrawingWindow::OnFetchTimer(wxTimerEvent& event)
+//{
+//    // Showing panel and repainting using fetched bitmap
+//    PaintAfterFetch = true;
+//    Panel->Show();
+//    RepaintTimer.Start(100,true);
+//}
+//
 
 void wxsDrawingWindow::OnRepaintTimer(wxTimerEvent& event)
 {
     // FIXME: This caused some parts of window to be rendered with invalid content
-//    wxClientDC ClientDC(Panel);
-//    wxBitmap BmpCopy(*Bitmap);
-//    wxBufferedDC DC(&ClientDC,BmpCopy);
-//    PaintExtra(&DC);
+    wxClientDC ClientDC(Panel);
+    wxBitmap BmpCopy(*Bitmap);
+    wxBufferedDC DC(&ClientDC,BmpCopy);
+    PaintExtra(&DC);
 }
 
 void wxsDrawingWindow::OnSize(wxSizeEvent& event)
