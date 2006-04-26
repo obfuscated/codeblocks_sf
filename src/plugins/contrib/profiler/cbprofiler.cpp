@@ -152,7 +152,7 @@ int CBProfiler::Execute()
         if (!ename.FileExists())
         {
             wxString msg = _("No executable found!\nYou either have not built the target or\njust cleaned the project\nTry to find profiling info?");
-            if (cbMessageBox(msg,_("Confirmation"),wxYES_NO | wxICON_QUESTION, Manager::Get()->GetAppWindow()) == wxNO)
+            if (cbMessageBox(msg,_("Confirmation"),wxYES_NO | wxICON_QUESTION, Manager::Get()->GetAppWindow()) == wxID_NO)
                 return -2;
         }
 
@@ -165,7 +165,7 @@ int CBProfiler::Execute()
         if (!dname.FileExists())
         {
             wxString msg = _("No profile data found!\nBe sure to enable \"Profile Code when executed\" for the current target.\nDo you want to search for the profile data file?");
-            if (cbMessageBox(msg, _("Cannot find gmon.out"), wxICON_QUESTION | wxYES_NO, Manager::Get()->GetAppWindow()) == wxNO)
+            if (cbMessageBox(msg, _("Cannot find gmon.out"), wxICON_QUESTION | wxYES_NO, Manager::Get()->GetAppWindow()) == wxID_NO)
                return -1;
             else
             {
@@ -187,7 +187,7 @@ int CBProfiler::Execute()
         if(exetime>datatime)
         {
             wxString msg = _("It seems like the profile data is older than the executable\nYou probably have not run the executable to update this data\nContinue anyway?");
-            if (cbMessageBox(msg,_("Confirmation"),wxYES_NO | wxICON_QUESTION, Manager::Get()->GetAppWindow()) == wxNO)
+            if (cbMessageBox(msg,_("Confirmation"),wxYES_NO | wxICON_QUESTION, Manager::Get()->GetAppWindow()) == wxID_NO)
                 return -2;
         }
 
