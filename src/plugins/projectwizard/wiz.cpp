@@ -204,12 +204,11 @@ int Wiz::Launch(int index)
     }
 
     // check if *mandatory* pages (i.e. used by the following code) were added
-    // currently, project path and compiler selection are the two mandatory pages...
-    if (!m_pWizProjectPathPanel || !m_pWizCompilerPanel)
+    // currently, project path is a mandatory page...
+    if (!m_pWizProjectPathPanel)
     {
-        cbMessageBox(_("This wizard is missing some or all of the following mandatory wizard pages:\n\n"
+        cbMessageBox(_("This wizard is missing the following mandatory wizard page:\n\n"
                         "Project path selection\n"
-                        "Compiler and targets selection\n\n"
                         "Execution aborted..."), _("Error"), wxICON_ERROR);
         Clear();
         return -1;
@@ -506,11 +505,11 @@ void Wiz::AddProjectPathPage()
     m_Pages.Add(m_pWizProjectPathPanel);
 }
 
-void Wiz::AddCompilerPage(const wxString& compilerID)
+void Wiz::AddCompilerPage(const wxString& compilerID, const wxString& validCompilerIDs, bool allowCompilerChange, bool allowConfigChange)
 {
     if (m_pWizCompilerPanel)
         return; // already added
-    m_pWizCompilerPanel = new WizCompilerPanel(compilerID, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG);
+    m_pWizCompilerPanel = new WizCompilerPanel(compilerID, validCompilerIDs, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG, allowCompilerChange, allowConfigChange);
     m_Pages.Add(m_pWizCompilerPanel);
 }
 
@@ -582,49 +581,63 @@ bool Wiz::GetWantDebug()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetWantDebug();
-    return true;
+    return false;
 }
 
 wxString Wiz::GetDebugName()
 {
-    return m_pWizCompilerPanel->GetDebugName();
+    if (m_pWizCompilerPanel)
+        return m_pWizCompilerPanel->GetDebugName();
+    return wxEmptyString;
 }
 
 wxString Wiz::GetDebugOutputDir()
 {
-    return m_pWizCompilerPanel->GetDebugOutputDir();
+    if (m_pWizCompilerPanel)
+        return m_pWizCompilerPanel->GetDebugOutputDir();
+    return wxEmptyString;
 }
 
 wxString Wiz::GetDebugObjectOutputDir()
 {
-    return m_pWizCompilerPanel->GetDebugObjectOutputDir();
+    if (m_pWizCompilerPanel)
+        return m_pWizCompilerPanel->GetDebugObjectOutputDir();
+    return wxEmptyString;
 }
 
 bool Wiz::GetWantRelease()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetWantRelease();
-    return true;
+    return false;
 }
 
 wxString Wiz::GetReleaseName()
 {
-    return m_pWizCompilerPanel->GetReleaseName();
+    if (m_pWizCompilerPanel)
+        return m_pWizCompilerPanel->GetReleaseName();
+    return wxEmptyString;
 }
 
 wxString Wiz::GetReleaseOutputDir()
 {
-    return m_pWizCompilerPanel->GetReleaseOutputDir();
+    if (m_pWizCompilerPanel)
+        return m_pWizCompilerPanel->GetReleaseOutputDir();
+    return wxEmptyString;
 }
 
 wxString Wiz::GetReleaseObjectOutputDir()
 {
-    return m_pWizCompilerPanel->GetReleaseObjectOutputDir();
+    if (m_pWizCompilerPanel)
+        return m_pWizCompilerPanel->GetReleaseObjectOutputDir();
+    return wxEmptyString;
 }
 
 int Wiz::GetLanguageIndex()
 {
-    return m_pWizLanguagePanel->GetLanguage();
+    if (m_pWizLanguagePanel)
+        return m_pWizLanguagePanel->GetLanguage();
+    return -1;
 }
 
 void Wiz::RegisterWizard()
@@ -636,7 +649,7 @@ void Wiz::RegisterWizard()
 
     engine->RegisterObjectMethod("Wiz", "void AddIntroPage(const wxString& in)", asMETHOD(Wiz, AddIntroPage), asCALL_THISCALL);
     engine->RegisterObjectMethod("Wiz", "void AddProjectPathPage()", asMETHOD(Wiz, AddProjectPathPage), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "void AddCompilerPage(const wxString& in)", asMETHOD(Wiz, AddCompilerPage), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Wiz", "void AddCompilerPage(const wxString& in, const wxString& in, bool, bool)", asMETHOD(Wiz, AddCompilerPage), asCALL_THISCALL);
     engine->RegisterObjectMethod("Wiz", "void AddLanguagePage(const wxString& in, int)", asMETHOD(Wiz, AddLanguagePage), asCALL_THISCALL);
     engine->RegisterObjectMethod("Wiz", "void AddPage(const wxString& in)", asMETHOD(Wiz, AddPage), asCALL_THISCALL);
 

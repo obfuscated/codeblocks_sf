@@ -25,6 +25,7 @@ class CompilerPanel: public wxPanel
 		virtual ~CompilerPanel();
 
         wxComboBox* GetCompilerCombo(){ return cmbCompiler; }
+        void EnableConfigurationTargets(bool en);
 
         void SetWantDebug(bool want){ chkConfDebug->SetValue(want); }
         bool GetWantDebug(){ return chkConfDebug->IsChecked(); }

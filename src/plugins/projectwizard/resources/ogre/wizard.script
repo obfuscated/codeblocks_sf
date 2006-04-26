@@ -19,7 +19,7 @@ void BeginWizard()
 	Wizard.AddIntroPage(intro_msg);
 	Wizard.AddProjectPathPage();
 	Wizard.AddPage("OgrePath");
-	Wizard.AddCompilerPage("");
+	Wizard.AddCompilerPage("", "*", true, true);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -102,7 +102,7 @@ class Wiz : public cbProjectWizardPlugin
         // pre-defined pages
         void AddIntroPage(const wxString& intro_msg);
         void AddProjectPathPage();
-        void AddCompilerPage(const wxString& compilerID);
+        void AddCompilerPage(const wxString& compilerID, const wxString& validCompilerIDs, bool allowCompilerChange = true, bool allowConfigChange = true);
         void AddLanguagePage(const wxString& langs, int defLang);
         // XRC pages
         void AddPage(const wxString& panelName);

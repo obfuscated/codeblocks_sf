@@ -50,6 +50,18 @@ Compiler* CompilerFactory::GetCompiler(const wxString& id)
     return 0;
 }
 
+Compiler* CompilerFactory::GetCompilerByName(const wxString& title)
+{
+    for (size_t i = 0; i < Compilers.GetCount(); ++i)
+    {
+        if (Compilers[i]->GetName().IsSameAs(title))
+        {
+            return Compilers[i];
+        }
+    }
+    return 0;
+}
+
 int CompilerFactory::GetCompilerIndex(const wxString& id)
 {
     const wxString lid = id.Lower();

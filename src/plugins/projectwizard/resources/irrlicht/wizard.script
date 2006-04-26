@@ -17,7 +17,7 @@ void BeginWizard()
 	Wizard.AddIntroPage(intro_msg);
 	Wizard.AddProjectPathPage();
 	Wizard.AddPage("IrrPath");
-	Wizard.AddCompilerPage("");
+	Wizard.AddCompilerPage("", "*", true, true);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

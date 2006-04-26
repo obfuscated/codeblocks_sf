@@ -54,7 +54,8 @@ class WizProjectPathPanel : public wxWizardPageSimple
 class WizCompilerPanel : public wxWizardPageSimple
 {
 	public:
-		WizCompilerPanel(const wxString& compilerID, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
+		WizCompilerPanel(const wxString& compilerID, const wxString& validCompilerIDs, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap,
+                        bool allowCompilerChange = true, bool allowConfigChange = true);
 		~WizCompilerPanel();
 
 		wxString GetCompilerID();

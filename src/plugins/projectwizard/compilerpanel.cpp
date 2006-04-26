@@ -108,3 +108,15 @@ void CompilerPanel::OnReleaseChange(wxCommandEvent& event)
     txtRelOut->Enable(event.IsChecked());
     txtRelObjOut->Enable(event.IsChecked());
 }
+
+void CompilerPanel::EnableConfigurationTargets(bool en)
+{
+    chkConfRelease->Enable(en);
+    txtRelName->Enable(en);
+    txtRelOut->Enable(en);
+    txtRelObjOut->Enable(en);
+    chkConfDebug->Enable(en);
+    txtDbgName->Enable(en);
+    txtDbgOut->Enable(en);
+    txtDbgObjOut->Enable(en);
+}

@@ -30,7 +30,7 @@ void BeginWizard()
 	Wizard.AddPage("WxPath");
 	// we need the compiler selection before wx settings, because we 'll have
 	// to validate the settings. To do this we must know the compiler beforehand...
-	Wizard.AddCompilerPage("");
+	Wizard.AddCompilerPage("", "*", true, true);
     if (PLATFORM == PLATFORM_MSW)
         Wizard.AddPage("WxConf"); // only for windows
 }

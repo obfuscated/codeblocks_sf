@@ -197,21 +197,35 @@ BEGIN_EVENT_TABLE(WizCompilerPanel, wxWizardPageSimple)
     EVT_WIZARD_PAGE_CHANGING(-1, WizCompilerPanel::OnPageChanging)
 END_EVENT_TABLE()
 
-WizCompilerPanel::WizCompilerPanel(const wxString& compilerID, wxWizard* parent, const wxBitmap& bitmap)
+WizCompilerPanel::WizCompilerPanel(const wxString& compilerID, const wxString& validCompilerIDs, wxWizard* parent, const wxBitmap& bitmap,
+                                    bool allowCompilerChange, bool allowConfigChange)
     : wxWizardPageSimple(parent, 0, 0, bitmap)
 {
     m_pCompilerPanel = new CompilerPanel(this);
 
+    wxArrayString valids = GetArrayFromString(validCompilerIDs, _T(";"), true);
+    wxString def = compilerID;
+    if (def.IsEmpty())
+        def = CompilerFactory::GetDefaultCompiler()->GetName();
+    int id = 0;
     wxComboBox* cmb = m_pCompilerPanel->GetCompilerCombo();
     cmb->Clear();
     for (size_t i = 0; i < CompilerFactory::GetCompilersCount(); ++i)
     {
-        cmb->Append(CompilerFactory::GetCompiler(i)->GetName());
+        for (size_t n = 0; n < valids.GetCount(); ++n)
+        {
+            if (CompilerFactory::GetCompiler(i)->GetID().Matches(valids[n]))
+            {
+                cmb->Append(CompilerFactory::GetCompiler(i)->GetName());
+                if (CompilerFactory::GetCompiler(i)->GetID().IsSameAs(def))
+                    id = cmb->GetCount();
+                break;
+            }
+        }
     }
-    int id = CompilerFactory::GetCompilerIndex(compilerID);
-    if (id == -1)
-        id = CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompiler());
     cmb->SetSelection(id);
+    cmb->Enable(allowCompilerChange);
+    m_pCompilerPanel->EnableConfigurationTargets(allowConfigChange);
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("scripts"));
 
@@ -234,8 +248,7 @@ WizCompilerPanel::~WizCompilerPanel()
 //------------------------------------------------------------------------------
 wxString WizCompilerPanel::GetCompilerID()
 {
-    int idx = m_pCompilerPanel->GetCompilerCombo()->GetSelection();
-    Compiler* compiler = CompilerFactory::GetCompiler(idx);
+    Compiler* compiler = CompilerFactory::GetCompilerByName(m_pCompilerPanel->GetCompilerCombo()->GetStringSelection());
     if (compiler)
         return compiler->GetID();
     return wxEmptyString;

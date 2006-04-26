@@ -17,7 +17,7 @@ void BeginWizard()
     // add builtin pages
 	Wizard.AddIntroPage(intro_msg); // intro
 	Wizard.AddProjectPathPage(); // select project name and path
-	Wizard.AddCompilerPage("dmd"); // select compiler and configurations (the argument can be a compiler ID)
+	Wizard.AddCompilerPage("", "dmd;gdc", true, true); // select compiler and configurations
 	// nothing more needs to be done here
 }
 
@@ -29,10 +29,6 @@ bool GetFilesDir(wxString& inout result)
 
 bool SetupProject(Project@ project)
 {
-    if (Wizard.GetCompilerID() != "dmd" && Wizard.GetCompilerID() != "gdc")
-        ShowWarning("You have selected a compiler which might not be able to compile D programs.\n"
-                    "You 're on your own...");
-
     // enable compiler warnings (project-wide)
     if (Wizard.GetCompilerID() == "gdc")
         WarningsOn(Cast_CompileOptionsBase(project), Wizard.GetCompilerID());
