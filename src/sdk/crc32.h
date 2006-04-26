@@ -4,6 +4,8 @@
 #include "settings.h"
 #include <wx/defs.h>
 
+class wxString;
+
 namespace wxCrc32
 {
     DLLIMPORT wxUint32 FromFile(const wxString& filename);

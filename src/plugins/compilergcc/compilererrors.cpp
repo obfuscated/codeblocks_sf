@@ -23,17 +23,19 @@
 * $Id$
 * $HeadURL$
 */
-
-#include <sdk.h>
+#ifdef CB_PRECOMP
+#include "sdk.h"
+#else
+#include "cbeditor.h"
+#include "cbproject.h"
+#include "editormanager.h"
+#include "manager.h"
+#include "projectfile.h"
+#include "projectmanager.h"
+#endif
 #include "compilererrors.h"
-#include <cbeditor.h>
-#include <cbproject.h>
-#include <projectmanager.h>
-#include <editormanager.h>
-#include <manager.h>
-#include <wx/regex.h>
-#include <wx/tipwin.h>
 #include <wx/arrimpl.cpp>
+
 WX_DEFINE_OBJARRAY(ErrorsArray);
 
 CompilerErrors::CompilerErrors()
@@ -135,7 +137,7 @@ void CompilerErrors::DoAddError(const CompileError& error)
 		m_Errors.Add(error);
 }
 
-int CompilerErrors::ErrorLineHasMore(const wxString& filename, long int line)
+int CompilerErrors::ErrorLineHasMore(const wxString& filename, long int line) const
 {
 	for (unsigned int i = 0; i < m_Errors.GetCount(); ++i)
 	{
@@ -224,7 +226,7 @@ wxString CompilerErrors::GetErrorString(int index)
     return error;
 }
 
-unsigned int CompilerErrors::GetErrorsCount()
+unsigned int CompilerErrors::GetErrorsCount() const
 {
     unsigned int count = 0;
 	for (unsigned int i = 0; i < m_Errors.GetCount(); ++i)
@@ -235,7 +237,7 @@ unsigned int CompilerErrors::GetErrorsCount()
 	return count;
 }
 
-unsigned int CompilerErrors::GetWarningsCount()
+unsigned int CompilerErrors::GetWarningsCount() const
 {
     unsigned int count = 0;
 	for (unsigned int i = 0; i < m_Errors.GetCount(); ++i)

@@ -9,9 +9,8 @@
     Yiannis Mandravellos <mandrav@codeblocks.org>
 */
 
+#include <wx/string.h>
 #include "crc32.h"
-#include <stdio.h>
-
 
 static wxUint32 *GetCRC32Table( wxUint32 *crc_table )
 {
@@ -25,13 +24,10 @@ static wxUint32 *GetCRC32Table( wxUint32 *crc_table )
         if ( crc_table )
         {
             // Generate the crc table
-            wxUint32 crc ;
-            unsigned int i, j ;
-
-            for(i = 0; i < 256; i++)
+            for(unsigned int i = 0; i < 256; ++i)
             {
-                crc = i;
-                for (j = 8; j > 0; j--)
+                wxUint32 crc = i;
+                for (unsigned int j = 8; j > 0; --j)
                 {
                     if (crc & 1) crc = (crc >> 1) ^ 0xEDB88320UL;
                     else         crc >>= 1;

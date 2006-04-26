@@ -18,12 +18,6 @@
 	*/
 	#pragma warning(disable:4190)
 
-	// Fix 'for loop scoping' for visual C++ 6
-	/// @todo Fix this version number...My SP5 VC++6 is version 1200, but what about
-	/// other SPs? (1-4,6)
-	#if _MSC_VER <= 1200
-		#define for if(0); else for
-	#endif
 #endif
 
 /*
@@ -49,16 +43,5 @@ from DLLs. Instead, we build "sdk" as a static library
 	#define DLLIMPORT
 	#define EVTIMPORT
 #endif
-
-#include <wx/string.h>
-#include <wx/dynarray.h>
-#if wxCHECK_VERSION(2, 5, 0)
-    #include <wx/arrstr.h>
-#endif
-
-#define DECLARE_CB_EVENT_TYPE(type) \
-	extern EVTIMPORT const wxEventType type;
-#define DEFINE_CB_EVENT_TYPE(type) \
-	const wxEventType type = wxNewEventType();
 
 #endif // SETTINGS_H

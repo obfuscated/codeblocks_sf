@@ -137,6 +137,9 @@ class EVTIMPORT CodeBlocksLayoutEvent : public wxEvent, public BlockAllocated<Co
 };
 typedef void (wxEvtHandler::*CodeBlocksLayoutEventFunction)(CodeBlocksLayoutEvent&);
 
+#define DECLARE_CB_EVENT_TYPE(type) \
+	extern EVTIMPORT const wxEventType type;
+
 // app events
 DECLARE_CB_EVENT_TYPE(cbEVT_APP_STARTUP_DONE)
 #define EVT_APP_STARTUP_DONE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_APP_STARTUP_DONE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),

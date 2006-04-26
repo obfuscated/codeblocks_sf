@@ -34,6 +34,9 @@
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksEvent, wxEvent)
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksDockEvent, wxEvent)
 
+#define DEFINE_CB_EVENT_TYPE(type) \
+	const wxEventType type = wxNewEventType();
+
 // app events
 DEFINE_CB_EVENT_TYPE(cbEVT_APP_STARTUP_DONE)
 DEFINE_CB_EVENT_TYPE(cbEVT_APP_START_SHUTDOWN)
