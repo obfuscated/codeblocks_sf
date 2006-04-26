@@ -24,13 +24,10 @@
 * $HeadURL$
 */
 
-#include "sdk_precomp.h"
-
-#ifndef CB_PRECOMP
-    #include "compileroptions.h"
-    #include "manager.h"
-    #include "messagemanager.h"
+#ifdef CB_PRECOMP
+	#include "sdk_precomp.h"
 #endif
+#include "compileroptions.h"
 
 CompilerOptions::CompilerOptions()
 {

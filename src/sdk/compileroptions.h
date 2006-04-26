@@ -1,8 +1,10 @@
 #ifndef COMPILEROPTIONS_H
 #define COMPILEROPTIONS_H
 
-#include "settings.h"
+#include <wx/dynarray.h>
 #include <wx/intl.h>
+#include <wx/string.h>
+#include "settings.h"
 
 struct CompOption
 {
@@ -35,7 +37,7 @@ class DLLIMPORT CompilerOptions
 						bool doChecks = false,
 						const wxString& checkAgainst = wxEmptyString,
 						const wxString& checkMessage = wxEmptyString);
-		unsigned int GetCount(){ return m_Options.GetCount(); }
+		unsigned int GetCount() const { return m_Options.GetCount(); }
 		CompOption* GetOption(int index){ return m_Options[index]; }
 		CompOption* GetOptionByName(const wxString& name);
 		CompOption* GetOptionByOption(const wxString& option);
