@@ -284,6 +284,18 @@ for(;--len;++p)
     }
 };
 
+inline void to_lower(wxString& s)
+{
+wxChar *p = (wxChar*) s.c_str();
+size_t len = s.length()+1;
+for(;--len;++p)
+    {
+    wxChar q = *p;
+    if(q >= 'A' && q <= 'Z')
+        *p = q + 32;
+    }
+};
+
 
 /* ------------------------------------------------------------------------------------------------------------------
 *  Functions to retrieve system paths and locate data files in a defined, consistent way.
@@ -507,7 +519,7 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
 
     TiXmlElement* e = pathNode ? pathNode : root;
 
-    path.LowerCase();
+    to_lower(path);
 
     wxString sub;
     do
@@ -1011,7 +1023,8 @@ void ConfigManager::DeleteSubPath(const wxString& thePath)
         doc->ClearError();
     }
 
-    wxString path(thePath.Lower());
+    wxString path(thePath);
+    to_lower(path);
 
 
     path.Replace(_T("\\"), _T("/"));
