@@ -113,18 +113,9 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
                     while((i = revision.find_first_of(lbreak)) != string::npos)
                         revision.erase(revision.length()-1);
             }
-            if(line.find("Last Changed Date:") != string::npos)
+            if(line.find("Last Changed Date: ") != string::npos)
             {
-                size_t start = line.find('(') + 1;
-                size_t end   = line.find(')', start);
-                if(start < end)
-                {
-                    date = line.substr(start, end - start);
-                    string lbreak("\r\n");
-                    size_t i;
-                    while((i = date.find_first_of(lbreak)) != string::npos)
-                        date.erase(revision.length()-1);
-                }
+                    date = line.substr(strlen("Last Changed Date: "), strlen("2006-01-01 12:34:56"));
             }
         }
     }
