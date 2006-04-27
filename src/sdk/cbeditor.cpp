@@ -882,12 +882,12 @@ bool cbEditor::SaveAs()
 {
     wxFileName fname;
     fname.Assign(m_Filename);
-    wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Save file"),
-                            fname.GetPath(),
-                            fname.GetFullName(),
-                            FileFilters::GetFilterString(),
-                            wxSAVE | wxOVERWRITE_PROMPT);
+    wxFileDialog* dlg = new wxFileDialog(Manager::Get()->GetAppWindow(),
+                                         _("Save file"),
+                                         fname.GetPath(),
+                                         fname.GetFullName(),
+                                         FileFilters::GetFilterString(),
+                                         wxSAVE | wxOVERWRITE_PROMPT);
 
     PlaceWindow(dlg);
     if (dlg->ShowModal() != wxID_OK)
@@ -901,6 +901,9 @@ bool cbEditor::SaveAs()
     m_IsOK = true;
     SetModified(true);
     SetLanguage( HL_AUTO );
+
+    dlg->Destroy();
+
     return Save();
 }
 
