@@ -87,12 +87,6 @@ class wxsWindowEditor::ContentManager: public wxsDrawingWindow
 
 void wxsWindowEditor::ContentManager::PaintExtra(wxDC* DC)
 {
-    /* NOTE (SpOoN#1#): Just some test, remove when no longer needed */
-    wxPen Pen(*wxBLACK_PEN);
-    Pen.SetWidth(3);
-    DC->SetPen(Pen);
-    DC->DrawLine(0,0,101,101);
-    DC->DrawLine(100,0,-1,101);
 }
 
 void wxsWindowEditor::ContentManager::RefreshSelection()

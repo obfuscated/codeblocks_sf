@@ -35,6 +35,18 @@ class wxsDrawingWindow: public wxScrolledWindow
          */
         void ContentChanged();
 
+        /** \brief Function repainting window
+         *
+         * Repainting window content may be done in two ways.
+         * First is by raising paint event (so by caling wxWindow::Refresh),
+         * in current implementation this require refetching bitmap from
+         * wndow area (just like calling ContentChanged). Second way is by
+         * calling this function. It does not raise any events if not needed
+         * and draws using wxClientDC object. It may be used when extra
+         * graphics has been changed only.
+         */
+        void FullRepaint();
+
         /** \brief Function (un)blocking background fetching */
         inline void BlockFetch(bool Block=true) { IsBlockFetch = Block; }
 
@@ -52,21 +64,24 @@ class wxsDrawingWindow: public wxScrolledWindow
         void PanelPaint(wxPaintEvent& event);
         void PanelMouse(wxMouseEvent& event);
         void PanelKeyboard(wxKeyEvent& event);
-        void StartFetchingSequence();
-        void FetchScreen();
-
         void OnSize(wxSizeEvent& event);
 
+        /** \brief Function stating sequence fetching editor's background
+         *
+         * This sequence may be splitted into few smaller events so it's not
+         * granted that after finishing StartFetchingSequence, the content of
+         * Bitmap is valid.
+         */
+        void StartFetchingSequence();
+
+        /** \brief Function copying screen data into bitmap */
+        void FetchScreen();
 
         class DrawingPanel;
         DrawingPanel* Panel;
         bool PaintAfterFetch;
         bool IsBlockFetch;
         wxBitmap* Bitmap;
-
-        // NOTE: Added temporarilly
-        wxTimer RepaintTimer;
-        void OnRepaintTimer(wxTimerEvent&);
 
         DECLARE_EVENT_TABLE()
 };
