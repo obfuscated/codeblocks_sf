@@ -92,7 +92,7 @@ void Autosave::OnTimer(wxTimerEvent& e)
         if(pm && pm->GetActiveProject())
         {
             cbProject * p = pm->GetActiveProject();
-            if(p)
+            if(p && p->GetModified())
             {
                 switch(method)
                 {
@@ -118,13 +118,14 @@ void Autosave::OnTimer(wxTimerEvent& e)
                     case 2:
                     {
                         if (p->IsLoaded() == false)
-                            return; // we should call AddDefaultBuildTarget() here and continue, but that's private...
+                            return;
                         ProjectLoader loader(p);
                         if(loader.Save(p->GetFilename() + _T(".save")))
                         {
                             CodeBlocksEvent e(cbEVT_PROJECT_SAVE);
                             plm->NotifyPlugins(e);
                         }
+                        p->SetModified(); // the actual project file is still not updated!
                         break;
                     }
                 }
@@ -141,7 +142,7 @@ else if(e.GetId() == 20000)
             for(int i = 0; i < em->GetEditorsCount(); ++i)
             {
                 cbEditor* ed = em->GetBuiltinEditor(em->GetEditor(i));
-                if(ed)
+                if(ed && ed->GetModified())
                 {
                     wxFileName fn(ed->GetFilename());
                     switch(method)
@@ -160,6 +161,7 @@ else if(e.GetId() == 20000)
                         case 2:
                         {
                             cbSaveToFile(fn.GetFullPath() + _T(".save"), ed->GetControl()->GetText(), ed->GetEncoding(), ed->GetUseBom());
+                            ed->SetModified(); // the "real" file has not been saved!
                             break;
                         }
                     }
