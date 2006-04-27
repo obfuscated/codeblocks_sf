@@ -115,7 +115,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
 		/** Mark the project as modified or not.
 		  * @param modified If true, the project is marked as modified. If false, as not-modified.
 		  */
-		void SetModified(bool modified);
+		void SetModified(bool modified = true);
 
         /** Access a file of the project.
           * @param index The index of the file. Must be greater or equal than zero and less than GetFilesCount().
