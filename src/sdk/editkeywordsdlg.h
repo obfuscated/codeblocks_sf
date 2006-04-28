@@ -15,9 +15,10 @@ class EditKeywordsDlg : public wxDialog
     protected:
         void OnSetChange(wxSpinEvent& event);
 
+        wxSpinCtrl* spnSet;
+    public:
         EditorColorSet* m_pTheme;
         HighlightLanguage m_Lang;
-        wxSpinCtrl* spnSet;
         wxTextCtrl* txtKeywords;
         int m_LastSet;
     private:

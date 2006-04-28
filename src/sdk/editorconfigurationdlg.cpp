@@ -635,6 +635,8 @@ void EditorConfigurationDlg::OnEditKeywords(wxCommandEvent& event)
 	    EditKeywordsDlg dlg(0, m_Theme, m_Lang);
         PlaceWindow(&dlg);
 	    dlg.ShowModal();
+
+        dlg.m_pTheme->SetKeywords(dlg.m_Lang, dlg.m_LastSet, dlg.txtKeywords->GetValue());
 	}
 }
 
