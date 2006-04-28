@@ -10,6 +10,7 @@
 
 class wxsWindowRes;
 class wxsParent;
+class wxsBaseProperties;
 
 /** \brief Base class for all items in resource
  *
@@ -239,6 +240,9 @@ class wxsItem: public wxsPropertyContainer
          *          derived from it
          */
         virtual wxsParent* ToParent() { return NULL; }
+
+        /** \brief Function returinng pointer to wxsBaseProperties class if item uses it. */
+        virtual wxsBaseProperties* GetBaseProps() { return NULL; }
 
         /** \brief Getting properties availability flags
          *

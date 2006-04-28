@@ -152,7 +152,7 @@ void wxsDrawingWindow::FetchScreen()
 void wxsDrawingWindow::FullRepaint()
 {
     wxClientDC ClientDC(Panel);
-    wxBitmap BmpCopy(*Bitmap);
+    wxBitmap BmpCopy = Bitmap->GetSubBitmap(wxRect(0,0,Bitmap->GetWidth(),Bitmap->GetHeight()));
     wxBufferedDC DC(&ClientDC,BmpCopy);
     PaintExtra(&DC);
 }

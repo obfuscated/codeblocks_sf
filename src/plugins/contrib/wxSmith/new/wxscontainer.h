@@ -33,7 +33,7 @@ class wxsContainer: public wxsParent
         /** \brief Function returning wxsBaseProperties object associated with
          *         this item.
          */
-        inline wxsBaseProperties& GetBaseProps() { return BaseProps; }
+        virtual wxsBaseProperties* GetBaseProps() { return &BaseProps; }
 
         /** \brief Function returning flags filtering base properties */
         inline long GetBasePropertiesFlags() { return BasePropertiesFlags; }
