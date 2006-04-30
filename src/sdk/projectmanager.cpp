@@ -620,6 +620,12 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
 {
     if (m_IsLoadingProject)
 		return 0L;
+
+    if(!Manager::Get()->GetPluginManager()->FindPluginByName(_T("Compiler")))
+    {
+        cbMessageBox(_("Deactivating the compiler plugin is most unwise.\n\nIf you intend to open a project, you have to re-activate the compiler plugin first."), _("Error"));
+        return 0;
+    }
     cbProject* result = 0;
 
     // disallow application shutdown while opening files
