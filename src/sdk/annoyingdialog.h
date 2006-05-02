@@ -1,8 +1,9 @@
 #include <settings.h>
 #include <wx/dialog.h>
-#include <wx/checkbox.h>
 #include <wx/string.h>
 #include <wx/artprov.h>
+
+class wxCheckBox;
 
 /**
 Dialog that contains a "Don't annoy me" checkbox.

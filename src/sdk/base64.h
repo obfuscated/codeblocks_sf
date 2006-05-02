@@ -1,6 +1,7 @@
 #ifndef CB_BASE64_H
 #define CB_BASE64_H
 
+#include <wx/defs.h>
 #include <wx/string.h>
 #include "settings.h"
 
