@@ -10,19 +10,7 @@
 #ifndef DEFAULTMIMEHANDLER_H
 #define DEFAULTMIMEHANDLER_H
 
-// For compilers that support precompilation, includes <wx/wx.h>
-#include <wx/wxprec.h>
-
-#ifdef __BORLANDC__
-	#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-	#include <wx/wx.h>
-#endif
-
-#include <cbplugin.h> // the base class we 're inheriting
-#include <settings.h> // needed to use the Code::Blocks SDK
+#include "cbplugin.h" // the base class we 're inheriting
 #include "mimetypesarray.h"
 
 class DefaultMimeHandler : public cbMimePlugin
@@ -38,12 +26,11 @@ class DefaultMimeHandler : public cbMimePlugin
 		int OpenFile(const wxString& filename);
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-	protected:
+	private:
         cbMimeType* FindMimeTypeFor(const wxString& filename);
         wxString ChooseExternalProgram();
 		int DoOpenFile(cbMimeType* mt, const wxString& filename);
         MimeTypesArray m_MimeTypes;
-	private:
 };
 
 CB_DECLARE_PLUGIN();

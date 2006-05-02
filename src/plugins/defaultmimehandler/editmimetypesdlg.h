@@ -24,7 +24,7 @@ class EditMimeTypesDlg : public cbConfigurationPanel
         virtual wxString GetBitmapBaseName() const { return _T("extensions"); }
         virtual void OnApply();
         virtual void OnCancel(){}
-	protected:
+	private:
         void FillList();
         void UpdateDisplay();
         void Save(int index);
@@ -37,7 +37,7 @@ class EditMimeTypesDlg : public cbConfigurationPanel
         MimeTypesArray& m_Array;
         int m_Selection;
         int m_LastSelection;
-	private:
+
         DECLARE_EVENT_TABLE();
 };
 

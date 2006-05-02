@@ -9,17 +9,20 @@
 * $Id$
 * $HeadURL$
 */
-
-#include <sdk.h>
-#include "printdlg.h"
-#include <manager.h>
-#include <configmanager.h>
-#include <editormanager.h>
-#include <cbeditor.h>
-#include <wx/xrc/xmlres.h>
+#ifdef CB_PRECOMP
+#include "sdk.h"
+#else
 #include <wx/intl.h>
-#include <wx/radiobox.h>
 #include <wx/checkbox.h>
+#include <wx/radiobox.h>
+#include <wx/string.h>
+#include <wx/xrc/xmlres.h>
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "manager.h"
+#endif
+#include "printdlg.h"
 
 PrintDialog::PrintDialog(wxWindow* parent)
 {

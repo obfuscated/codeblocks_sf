@@ -23,12 +23,24 @@
 * $Id$
 * $HeadURL$
 */
-
-#include <sdk.h>
-#include "dlgabout.h" // class's header file
+#ifdef CB_PRECOMP
+#include "sdk.h"
+#else
+#ifdef __WXMAC__
+#include <wx/font.h>
+#endif //__WXMAC__
+#include <wx/intl.h>
+#include <wx/stattext.h>
+#include <wx/string.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
+#include "licenses.h"
+#include "configmanager.h"
+#endif
+#include <wx/bitmap.h>
+#include <wx/statbmp.h>
 #include "appglobals.h"
-#include "../sdk/licenses.h"
-#include "../sdk/configmanager.h"
+#include "dlgabout.h" // class's header file
 
 // class constructor
 

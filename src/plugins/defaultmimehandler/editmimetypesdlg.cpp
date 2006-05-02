@@ -6,21 +6,21 @@
  * Copyright: (c) Yiannis An. Mandravellos
  * License:   GPL
  **************************************************************/
-
-#include <sdk.h>
-#include <settings.h>
-#include "editmimetypesdlg.h"
-#include <wx/xrc/xmlres.h>
-#include <wx/listbox.h>
-#include <wx/textctrl.h>
-#include <wx/radiobox.h>
-#include <wx/checkbox.h>
+#ifdef CB_PRECOMP
+#include "sdk.h"
+#else
 #include <wx/button.h>
-#include <wx/msgdlg.h>
+#include <wx/checkbox.h>
+#include <wx/listbox.h>
+#include <wx/radiobox.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
+#include "globals.h
+#endif
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>
-#include <globals.h>
-#include <filefilters.h>
+#include "filefilters.h"
+#include "editmimetypesdlg.h"
 
 BEGIN_EVENT_TABLE(EditMimeTypesDlg, wxPanel)
     EVT_BUTTON(XRCID("btnNew"), EditMimeTypesDlg::OnNew)

@@ -23,8 +23,17 @@
 * $Id$
 * $HeadURL$
 */
+#ifdef CB_PRECOMP
+#include "sdk.h"
+#else
+#include <wx/intl.h>
+#include <wx/stattext.h>
+#include <wx/string.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
+#endif
 
-#include <sdk.h>
+#include "cbplugin.h"
 #include "dlgaboutplugin.h" // class's header file
 
 // class constructor

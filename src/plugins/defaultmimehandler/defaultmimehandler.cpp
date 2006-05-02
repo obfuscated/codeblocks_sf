@@ -6,26 +6,26 @@
  * Copyright: (c) Yiannis An. Mandravellos
  * License:   GPL
  **************************************************************/
-
-#include <sdk.h>
-
-#include "defaultmimehandler.h"
-#include <manager.h>
-#include <editormanager.h>
-#include <configmanager.h>
-#include <cbeditor.h>
-#include <licenses.h> // defines some common licenses (like the GPL)
-
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/fs_zip.h>
-#include <wx/choicdlg.h>
-#include <wx/msgdlg.h>
-#include <wx/filedlg.h>
+#ifdef CB_PRECOMP
+#include "sdk.h"
+#else
 #include <wx/filename.h>
+#include <wx/fs_zip.h>
+#include "globals.h"
+#include <wx/intl.h>
+#include <wx/utils.h>
+#include <wx/xrc/xmlres.h>
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "licenses.h" // defines some common licenses (like the GPL)
+#include "manager.h"
+#endif
+#include <wx/choicdlg.h>
+#include <wx/filedlg.h>
+#include "defaultmimehandler.h"
 #include "editmimetypesdlg.h"
-#include <globals.h>
-#include <filefilters.h>
+#include "filefilters.h"
 
 CB_IMPLEMENT_PLUGIN(DefaultMimeHandler, "Files extension handler");
 
