@@ -15,7 +15,7 @@
 #include <wx/radiobox.h>
 #include <wx/textctrl.h>
 #include <wx/xrc/xmlres.h>
-#include "globals.h
+#include "globals.h"
 #endif
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>

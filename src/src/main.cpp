@@ -44,7 +44,7 @@
 #include <wx/dnd.h>
 #include <wx/sstream.h>
 #include <wx/fileconf.h>
-
+#include <wx/xrc/xmlres.h>
 #include <configmanager.h>
 #include <cbproject.h>
 #include <cbplugin.h>
