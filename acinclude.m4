@@ -85,6 +85,17 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING(whether to build the autosave plugin)
+autosave_default="yes"
+AC_ARG_ENABLE(autosave, [AC_HELP_STRING([--enable-autosave], [build the autosave plugin (default YES)])],,
+                       enable_autosave=$autosave_default)
+AM_CONDITIONAL([BUILD_AUTOSAVE], [test "x$enable_autosave" = "xyes"])
+if test "x$enable_autosave" = "xyes"; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING(whether to build the class wizard plugin)
 cw_default="yes"
 AC_ARG_ENABLE(class-wizard, [AC_HELP_STRING([--enable-class-wizard], [build the class wizard plugin (default YES)])],,
