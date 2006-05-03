@@ -10,6 +10,7 @@
 BEGIN_EVENT_TABLE(ExamineMemoryDlg, wxPanel)
     EVT_BUTTON(XRCID("btnGo"), ExamineMemoryDlg::OnGo)
     EVT_COMBOBOX(XRCID("cmbBytes"), ExamineMemoryDlg::OnGo)
+    EVT_TEXT_ENTER(XRCID("txtAddress"), ExamineMemoryDlg::OnGo)
 END_EVENT_TABLE()
 
 ExamineMemoryDlg::ExamineMemoryDlg(wxWindow* parent, DebuggerGDB* debugger)
