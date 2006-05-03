@@ -90,6 +90,8 @@ void ExamineMemoryDlg::AddHexByte(const wxString& addr, const wxString& hexbyte)
             m_pText->AppendText(_T('\n')); // prepend a newline
         long a;
         addr.ToLong(&a, 16);
+        a -= 8; // actually addr holds the start-address of the 2nd 8-bytes sequence,
+                // but we want the start-address of the previous 8-bytes sequence displayed
         m_pText->AppendText(wxString::Format(_T("0x%x: %s"), a, m_LineText));
         for (int i = 0; i < 67; ++i)
             m_LineText[i] = _T(' ');
