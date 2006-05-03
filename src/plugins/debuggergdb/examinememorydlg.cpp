@@ -14,7 +14,8 @@ BEGIN_EVENT_TABLE(ExamineMemoryDlg, wxPanel)
 END_EVENT_TABLE()
 
 ExamineMemoryDlg::ExamineMemoryDlg(wxWindow* parent, DebuggerGDB* debugger)
-    : m_pDbg(debugger)
+    : m_pDbg(debugger),
+    m_LastRowStartingAddress(0)
 {
 	//ctor
 	wxXmlResource::Get()->LoadPanel(this, parent, _T("MemoryDumpPanel"));
@@ -44,6 +45,7 @@ void ExamineMemoryDlg::End()
 void ExamineMemoryDlg::Clear()
 {
     m_pText->Clear();
+    m_LastRowStartingAddress = 0;
     m_ByteCounter = 0;
     for (int i = 0; i < 67; ++i)
         m_LineText[i] = _T(' ');
@@ -71,6 +73,17 @@ void ExamineMemoryDlg::AddHexByte(const wxString& addr, const wxString& hexbyte)
 //    m_pDbg->Log(_T("AddHexByte(") + addr + _T(", ") + hexbyte + _T(')'));
     int bcmod = m_ByteCounter % 16;
 
+    if (m_LastRowStartingAddress == 0)
+    {
+        // because we 'll be appending each row *after* we have consumed it
+        // and then "addr" will point to the next row's starting address,
+        // we 'll keep the current row's starting address in "m_LastRowStartingAddress".
+
+        // if it's zero (i.e this is the first row), keep "addr" as starting address for this row.
+        // m_LastRowStartingAddress will be set again when we 've consumed this row...
+        addr.ToLong(&m_LastRowStartingAddress, 16);
+    }
+
 #define HEX_OFFSET(a) (a*3)
 #define CHAR_OFFSET(a) (16*3 + 3 + a)
 
@@ -89,13 +102,15 @@ void ExamineMemoryDlg::AddHexByte(const wxString& addr, const wxString& hexbyte)
         // filled 16 bytes window; append text and reset accumulator array
         if (m_ByteCounter != 16) // after the first line,
             m_pText->AppendText(_T('\n')); // prepend a newline
+        m_LineText[23] = _T('|'); // put a "separator" in the middle (just to ease reading a bit)
+
         long a;
         addr.ToLong(&a, 16);
-        a -= 8; // actually addr holds the start-address of the 2nd 8-bytes sequence,
-                // but we want the start-address of the previous 8-bytes sequence displayed
-        m_pText->AppendText(wxString::Format(_T("0x%x: %s"), a, m_LineText));
+        m_pText->AppendText(wxString::Format(_T("0x%x: %s"), m_LastRowStartingAddress, m_LineText));
         for (int i = 0; i < 67; ++i)
             m_LineText[i] = _T(' ');
+        // update starting address for next row
+        m_LastRowStartingAddress = a;
     }
 }
 

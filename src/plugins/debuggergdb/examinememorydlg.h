@@ -27,6 +27,7 @@ class ExamineMemoryDlg : public wxPanel
         wxTextCtrl* m_pText;
         size_t m_ByteCounter;
         wxChar m_LineText[67]; // 16*3 "7F " + 3 "   " + 16 "."
+        long m_LastRowStartingAddress;
 	private:
         DECLARE_EVENT_TABLE()
 };
