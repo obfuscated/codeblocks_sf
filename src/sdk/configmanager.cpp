@@ -86,7 +86,7 @@ void CfgMgrBldr::SwitchTo(const wxString& absFileName)
     doc->ClearError();
 
     wxString loc = absFileName;
-    if (absFileName.IsEmpty())
+    if (::wxFileExists(absFileName) == false)
         loc = ConfigManager::LocateDataFile(_T("default.conf"));
 
     if(!wxFile::Access(loc, wxFile::read)) // no config file found
