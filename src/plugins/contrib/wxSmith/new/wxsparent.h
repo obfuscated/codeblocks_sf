@@ -77,14 +77,14 @@ class wxsParent: public wxsItem
         /** \brief Function getting extra data for given child */
         wxsPropertyContainer* GetChildExtra(int Index);
 
-    protected:
-
         /** \brief Function checking if given item can be added to this one
          * \param Item checked item
          * \param ShowMessage if true and item can not be added, show message
          *        explaining why it can not be done
          */
         virtual bool CanAddChild(wxsItem* Item,bool ShowMessage) { return true; }
+
+    protected:
 
         /** \brief Function building extra data block for item
          *

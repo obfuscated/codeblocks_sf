@@ -99,16 +99,6 @@ class wxsWindowEditor::ContentManager: public wxsDrawingWindow
         void OnMouseDraggingItem(wxMouseEvent& event);
         void OnMouseDraggingItemInit(wxMouseEvent& event);
 
-//        /** \brief Initializing drag sequence */
-//        void DragInit(DragPointData* NewDragPoint,wxsItem* NewDragItem,bool MultipleSel,int MouseX,int MouseY);
-//
-//        /** \brief Processing mouse while dragging */
-//        void DragProcess(int MouseX,int MouseY,wxsItem* UnderCursor);
-//
-//        /** \brief Finalizing dragging sequence */
-//        void DragFinish(wxsItem* UnderCursor);
-//
-
         inline wxsWindowRes* GetWinRes() { return (wxsWindowRes*)Parent->GetResource(); }
         inline wxsItem* RootItem()       { return ((wxsWindowRes*)Parent->GetResource())->GetRootItem();      }
         inline wxsItem* RootSelection()  { return ((wxsWindowRes*)Parent->GetResource())->GetRootSelection(); }
@@ -125,6 +115,9 @@ class wxsWindowEditor::ContentManager: public wxsDrawingWindow
         wxsItem* FindItemAtPos(int PosX,int PosY,wxsItem* SearchIn);
         DragPointData* FindDragPointAtPos(int PosX,int PosY);
         DragPointData* FindDragPointFromItem(wxsItem* Item);
+
+        /** \brief Searching for new parent item during item dragging mode */
+        bool FindDraggingItemTarget(int PosX,int PosY,wxsItem* Dragging,wxsParent*& NewParent,wxsItem*& AtCursor,bool& AddAfter);
 
         bool FindAbsoluteRect(wxsItem* Item,int& PosX,int& PosY,int& SizeX,int& SizeY);
 
@@ -534,10 +527,16 @@ void wxsWindowEditor::ContentManager::OnMouseDraggingPoint(wxMouseEvent& event)
 
             if ( Preview )
             {
-                // TODO (SpOoN#1#): Check if it's sizer. If yes, always set default position
                 if ( NewPosX!=OldPosX || NewPosY!=OldPosY )
                 {
-                    Props->Position.SetPosition(wxPoint(NewPosX,NewPosY),Preview->GetParent());
+                    if ( CurDragItem->GetParent() && (CurDragItem->GetParent()->GetType() == wxsTSizer) )
+                    {
+                        Props->Position.SetPosition(wxDefaultPosition,Preview->GetParent());
+                    }
+                    else
+                    {
+                        Props->Position.SetPosition(wxPoint(NewPosX,NewPosY),Preview->GetParent());
+                    }
                 }
 
                 if ( NewSizeX!=OldSizeX || NewSizeY!=OldSizeY )
@@ -668,7 +667,31 @@ void wxsWindowEditor::ContentManager::OnMouseDraggingItem(wxMouseEvent& event)
             if ( CurDragPoint->PosX != CurDragPoint->DragInitPosX ||
                  CurDragPoint->PosY != CurDragPoint->DragInitPosY )
             {
-                // TODO (SpOoN#1#): Reposition items
+                wxsParent* NewParent = NULL;
+                wxsItem* AtCursor = NULL;
+                bool AddAfter = true;
+                if ( FindDraggingItemTarget(event.GetX(),event.GetY(),CurDragItem,NewParent,AtCursor,AddAfter) )
+                {
+                    if ( (CurDragItem->GetParent() == NewParent) || NewParent->CanAddChild(CurDragItem,false) )
+                    {
+                        // TODO (SpOoN#1#): Store and restore additional parent properties like sizer flags
+                        // TODO (SpOoN#1#): Update resource tree after update
+                        // TODO (SpOoN#1#): Set new position
+                        // TODO (SpOoN#1#): When parent did not change and parent is not sizer, do not unbind, only change position
+
+                        CurDragItem->GetParent()->UnbindChild(CurDragItem);
+
+                        // Adding to new one
+                        int NewIndex = -1;
+                        if ( AtCursor )
+                        {
+                            NewIndex = NewParent->GetChildIndex(AtCursor);
+                            if ( AddAfter ) NewIndex++;
+                        }
+
+                        NewParent->AddChild(CurDragItem,NewIndex);
+                    }
+                }
             }
         }
         UpdateDragPoints(CurDragPoint);
@@ -688,6 +711,64 @@ void wxsWindowEditor::ContentManager::OnMouseDraggingItem(wxMouseEvent& event)
     }
 
     FullRepaint();
+}
+
+bool wxsWindowEditor::ContentManager::FindDraggingItemTarget(int PosX,int PosY,wxsItem* Dragging,wxsParent*& NewParent,wxsItem*& AtCursor,bool& AddAfter)
+{
+    // Searching for item at cursor position
+    wxsItem* Cursor = FindItemAtPos(PosX,PosY,RootItem());
+    if ( !Cursor ) Cursor = RootItem();
+
+    // Avoiding shifting into dragged item
+    wxsParent* DraggedAsParent = Dragging->ToParent();
+    if ( DraggedAsParent && DraggedAsParent->IsGrandChild(Cursor) )
+    {
+        return false;       // no move needed
+    }
+
+    NewParent = Cursor->ToParent();
+
+    if ( NewParent )
+    {
+        // TODO (SpOoN#1#): Some key (alt ?) should forbid jumping here
+
+        // Dragging over
+        AtCursor = NULL;
+        AddAfter = true;
+        return true;
+    }
+
+    NewParent = Cursor->GetParent();
+    if ( !NewParent )
+    {
+        // Should never be here, just in case
+        return false;
+    }
+
+    if ( NewParent->GetType() == wxsTSizer )
+    {
+        AtCursor = Cursor;
+        AddAfter = true;
+
+        int ItemPosX;
+        int ItemPosY;
+        int ItemSizeX;
+        int ItemSizeY;
+        if ( FindAbsoluteRect(Cursor,ItemPosX,ItemPosY,ItemSizeX,ItemSizeY) )
+        {
+            // If cursor is on the left side, changing AddAfter flag to false
+            if ( PosX < ItemPosX+(ItemSizeX/2) )
+            {
+                AddAfter = false;
+            }
+        }
+    }
+    else
+    {
+        AtCursor = NULL;
+        AddAfter = true;
+    }
+    return true;
 }
 
 static const long wxsInsIntoId    = wxNewId();
