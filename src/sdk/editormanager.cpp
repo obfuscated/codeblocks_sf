@@ -247,7 +247,6 @@ EditorManager::~EditorManager()
         m_pData = NULL;
     }
     Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("zoom"), m_zoom);
-    m_pNotebook->Destroy();
 }
 
 void EditorManager::CreateMenu(wxMenuBar* menuBar)
