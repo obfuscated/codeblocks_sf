@@ -120,8 +120,10 @@ wxString wxsFontData::BuildFontCode(const wxString& FontName,wxsCodingLang Langu
             wxString EncodingStr = _T("wxFONTENCODING_DEFAULT");
             if ( HasEncoding )
             {
+// TODO (cyberkoa#1#): Add declaration of <wx/fontmap.h> in the Code generated (in .cpp)
+
                 wxString EncodingVar = FontName + _T("Encoding");
-                Code << _T("wxFontEncoding ") << FontName
+                Code << _T("wxFontEncoding ") << EncodingVar
                      << _T(" = wxFontMapper::Get()->CharsetToEncoding(")
                      << wxsGetWxString(Encoding) << _T(",false);\n");
                 Code << _T("if ( ") << EncodingVar << _T(" == wxFONTENCODING_SYSTEM ) ");
