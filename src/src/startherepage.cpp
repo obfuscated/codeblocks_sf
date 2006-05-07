@@ -132,7 +132,7 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
 StartHerePage::~StartHerePage()
 {
 	//dtor
-	m_pWin->Destroy();
+	//m_pWin->Destroy();
 }
 
 void StartHerePage::Reload()
