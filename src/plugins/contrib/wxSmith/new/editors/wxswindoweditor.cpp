@@ -674,22 +674,64 @@ void wxsWindowEditor::ContentManager::OnMouseDraggingItem(wxMouseEvent& event)
                 {
                     if ( (CurDragItem->GetParent() == NewParent) || NewParent->CanAddChild(CurDragItem,false) )
                     {
-                        // TODO (SpOoN#1#): Store and restore additional parent properties like sizer flags
                         // TODO (SpOoN#1#): Update resource tree after update
-                        // TODO (SpOoN#1#): Set new position
-                        // TODO (SpOoN#1#): When parent did not change and parent is not sizer, do not unbind, only change position
 
-                        CurDragItem->GetParent()->UnbindChild(CurDragItem);
+                        wxsParent* CurParent = CurDragItem->GetParent();
 
-                        // Adding to new one
-                        int NewIndex = -1;
-                        if ( AtCursor )
+                        if ( CurParent != NewParent ||
+                             NewParent->GetType() == wxsTSizer )
                         {
-                            NewIndex = NewParent->GetChildIndex(AtCursor);
-                            if ( AddAfter ) NewIndex++;
+                            // Storing extra data
+                            int CurIndex = CurParent->GetChildIndex(CurDragItem);
+                            TiXmlElement ExtraData("extra");
+                            CurParent->StoreExtraData(CurIndex,&ExtraData);
+
+                            // Unbinding from old parent
+                            CurDragItem->GetParent()->UnbindChild(CurDragItem);
+
+                            // Adding to new one
+                            int NewIndex = -1;
+                            if ( AtCursor )
+                            {
+                                NewIndex = NewParent->GetChildIndex(AtCursor);
+                                if ( AddAfter ) NewIndex++;
+                            }
+
+                            NewParent->AddChild(CurDragItem,NewIndex);
+
+                            // Restoring extra data
+                            NewIndex = NewParent->GetChildIndex(CurDragItem);
+                            NewParent->RestoreExtraData(NewIndex,&ExtraData);
                         }
 
-                        NewParent->AddChild(CurDragItem,NewIndex);
+                        wxsBaseProperties* Props = CurDragItem->GetBaseProps();
+                        if ( Props )
+                        {
+                            if ( NewParent->GetType() == wxsTSizer )
+                            {
+                                Props->Position.SetPosition(wxDefaultPosition,NULL);
+                            }
+                            else
+                            {
+                                // Calculating new position
+                                int PosX;
+                                int PosY;
+                                int SizeX;
+                                int SizeY;
+                                if ( FindAbsoluteRect(CurDragItem,PosX,PosY,SizeX,SizeY) )
+                                {
+                                    PosX += CurDragPoint->PosX - CurDragPoint->DragInitPosX;
+                                    PosY += CurDragPoint->PosY - CurDragPoint->DragInitPosY;
+                                    ClientToScreen(&PosX,&PosY);
+                                    wxWindow* PreviewParent = wxDynamicCast(CurDragItem->GetPreview(),wxWindow)->GetParent();
+                                    if ( PreviewParent )
+                                    {
+                                        PreviewParent->ScreenToClient(&PosX,&PosY);
+                                        Props->Position.SetPosition(wxPoint(PosX,PosY),PreviewParent);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
