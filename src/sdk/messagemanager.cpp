@@ -332,7 +332,7 @@ void MessageManager::ShowLog(MessageLog* log, bool show)
     if (show && !ls->visible)
     {
         // show
-        m_pNotebook->InsertPage(id, log, ls->title, false);
+        m_pNotebook->InsertPage(id, log, ls->title, true);
 
         SetLogImage(id, ls->bitmap);
         ls->visible = true;

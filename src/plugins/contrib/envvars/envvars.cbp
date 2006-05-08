@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="4" />
+	<Project>
+		<Option title="EnvVars Plug-In for Code::Blocks" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\envvars.dll" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\envvars" />
+				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\envvars" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="Unicode" />
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-D__GNUWIN32__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="$(#CB)\sdk" />
+			<Add directory="$(#CB.INCLUDE)" />
+			<Add directory="$(#CB)\sdk\wxscintilla\include" />
+			<Add directory="$(#CB.INCLUDE)\wxscintilla\include" />
+			<Add directory="$(#WX.INCLUDE)" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add library="libcodeblocks.a" />
+			<Add library="wxmsw26$(WX_SUFFIX)" />
+			<Add directory="$(#CB)\devel" />
+			<Add directory="$(#CB.LIB)" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\envvars.zip *.xrc" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="envvars.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="envvars.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="envvars.xrc">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
