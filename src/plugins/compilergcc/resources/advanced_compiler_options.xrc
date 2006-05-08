@@ -85,14 +85,14 @@ Link libraries:
 Source file:
 Object file:
 Dependency result:
-All object files:
 All *linkable* object files:
 All *linkable* resource object files:
 Executable output file:
 Static library output file:
 Dynamic library output file:
 Dynamic library DEF output file:
-Resources output file:</label>
+Resources output file:
+Objects Output Dir:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
@@ -110,14 +110,14 @@ $$libs
 $$file
 $$object
 $$dep_object
-$$objects
 $$link_objects
 $$link_resobjects
 $$exe_output
 $$static_output
 $$exe_output
 $$def_output
-$$resource_output</label>
+$$resource_output
+$$objects_output_dir</label>
                       </object>
                     </object>
                   </object>

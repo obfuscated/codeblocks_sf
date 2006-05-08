@@ -56,7 +56,7 @@ class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
 
         // take as example the relative file sdk/cbProject.cpp
         /** @return The relative (to the project) filename without extension. */
-        wxString GetBaseName(); // returns sdk/cbProject
+        wxString GetBaseName() const; // returns sdk/cbProject
 
         /** @return The generated object filename. */
         const wxString& GetObjName(); // returns sdk/cbProject.o
@@ -82,7 +82,7 @@ class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
 		void SetFileState(FileVisualState state);
 
         /** @return The visual state (modified, read-only, etc). */
-		FileVisualState GetFileState();
+		FileVisualState GetFileState() const;
 
         /** The full filename of this file. Usually you need to read from it and never write to it.
           * @note If you set this anywhere in code,

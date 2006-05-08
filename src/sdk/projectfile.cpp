@@ -97,7 +97,7 @@ bool ProjectFile::ShowOptions(wxWindow* parent)
     return dlg.ShowModal() == wxID_OK;
 }
 
-wxString ProjectFile::GetBaseName()
+wxString ProjectFile::GetBaseName() const
 {
     wxFileName fname(relativeFilename);
     fname.SetExt(wxEmptyString);
@@ -195,7 +195,7 @@ const pfDetails& ProjectFile::GetFileDetails(ProjectBuildTarget* target)
     return *pfd;
 }
 
-FileVisualState ProjectFile::GetFileState()
+FileVisualState ProjectFile::GetFileState() const
 {
     return m_VisualState;
 }
