@@ -208,6 +208,11 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         XRCCTRL(*this, "txtMakeCmd_Compile", wxTextCtrl)->Enable(en);
         XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->Enable(en);
         XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->Enable(en);
+
+        // disable "Commands" elements, if project is using custom makefile
+        XRCCTRL(*this, "txtCmdBefore", wxTextCtrl)->Enable(!en);
+        XRCCTRL(*this, "txtCmdAfter", wxTextCtrl)->Enable(!en);
+        XRCCTRL(*this, "chkAlwaysRunPost", wxCheckBox)->Enable(!en);
     }
     sizer->Layout();
     Layout();
