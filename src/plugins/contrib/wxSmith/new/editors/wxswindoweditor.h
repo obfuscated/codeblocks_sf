@@ -11,6 +11,8 @@
 #include <wx/sizer.h>
 #include <wx/bmpbuttn.h>
 
+class wxsWindowEditorContent;
+
 /** \brief This is root class for editing wxWidgets window resources
  */
 class wxsWindowEditor : public wxsEditor
@@ -106,9 +108,7 @@ class wxsWindowEditor : public wxsEditor
         /** \brief Helper function for fetching root item */
         inline wxsItem* RootItem() { return GetWinRes()->GetRootItem(); }
 
-        class ContentManager;
-
-        ContentManager* Content;        ///< \brief Window with content area
+        wxsWindowEditorContent* Content;///< \brief Window with content area
         wxNotebook* WidgetsSet;         ///< \brief Notebook with all widgets inside
         wxBoxSizer* VertSizer;          ///< \brief Root sizer of this editor
         wxBoxSizer* HorizSizer;         ///< \brief Horizontal sizer managing items below palette
@@ -217,7 +217,7 @@ class wxsWindowEditor : public wxsEditor
          */
         void KillSelection(wxsItem* Item);
 
-        friend class ContentManager;
+        friend class wxsWindowEditorContent;
 
         DECLARE_EVENT_TABLE()
 };

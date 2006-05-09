@@ -56,6 +56,7 @@ wxsDrawingWindow::wxsDrawingWindow(wxWindow* Parent,wxWindowID id):
     Bitmap(NULL)
 {
     ContentChanged();
+    // TODO (SpOoN#1#): Setup scrollbars
 }
 
 wxsDrawingWindow::~wxsDrawingWindow()
