@@ -54,6 +54,7 @@
 // TODO (mandrav#1#): Find out which compilers exist for linux and adapt this
 #ifdef __WXMSW__
     #include "compilerMSVC.h"
+    #include "compilerMSVC8.h"
     #include "compilerBCC.h"
     #include "compilerDMC.h"
     #include "compilerOW.h"
@@ -236,6 +237,7 @@ CompilerGCC::CompilerGCC()
 	CompilerFactory::RegisterCompiler(new CompilerMINGW);
 #ifdef __WXMSW__
 	CompilerFactory::RegisterCompiler(new CompilerMSVC);
+	CompilerFactory::RegisterCompiler(new CompilerMSVC8);
 	CompilerFactory::RegisterCompiler(new CompilerBCC);
 	CompilerFactory::RegisterCompiler(new CompilerDMC);
 	CompilerFactory::RegisterCompiler(new CompilerOW);

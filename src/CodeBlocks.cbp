@@ -889,6 +889,16 @@
 			<Option link="0" />
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMSVC8.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerMSVC8.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins\compilergcc\compilerOW.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Compiler" />
