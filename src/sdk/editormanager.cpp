@@ -1722,13 +1722,13 @@ int EditorManager::FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindRep
     if(!data->findInFiles)
     {
         wxString phraseAtCursor = control->GetSelectedText();
-        // change findText to selected text (if any text is selected)
-        if (!phraseAtCursor.IsEmpty())
-        {
+        // NOTE (mandrav): it is not intuitive to change the search text
+        //                  just because there's a selection present...
+        // change findText to selected text (if any text is selected and no search text was set before)
+        if (!phraseAtCursor.IsEmpty() && data->findText.IsEmpty())
             data->findText = phraseAtCursor;
-            data->originEntireScope = false;  //search from cursor
-            data->scope = 0; // global ("selected text" is useful only from Find Dialog)
-        }
+        data->originEntireScope = false;  //search from cursor
+        data->scope = 0; // global ("selected text" is useful only from Find Dialog)
     }
 
     data->directionDown = goingDown;

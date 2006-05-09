@@ -1,2 +1,2 @@
-The file cb_wxfn130.patch contains the differences between the base wxFlatNotebook version used here and the required changes for use in Code::Blocks.
+The file cb_wxfn.patch contains the differences between the base wxFlatNotebook version used here and the required changes for use in Code::Blocks.
 wxFlatNotebook version used is 1.30.

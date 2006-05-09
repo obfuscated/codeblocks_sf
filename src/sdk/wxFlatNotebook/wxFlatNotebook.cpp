@@ -1485,7 +1485,9 @@ void wxPageContainerBase::AddPage(const wxString& caption, const bool selected, 
 	{
 		m_iActivePage = (int)m_pagesInfoVec.size();
 	}
-	m_pagesInfoVec.push_back(wxPageInfo(caption, imgindex));
+	wxPageInfo pg(caption, imgindex);
+	pg.SetPosition(wxPoint(1,1));
+	m_pagesInfoVec.push_back(pg);
 	Refresh();
 }
 
