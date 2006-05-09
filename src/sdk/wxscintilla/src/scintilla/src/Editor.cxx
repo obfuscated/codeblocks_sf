@@ -5,6 +5,18 @@
 // Copyright 1998-2004 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
+//Lines tagged //pecan 20060506 is a patch to avoid the GTK drag'n'drop hang bug.
+//GTK is not handling a mouse "moving buttonUp" event well. The keyUp event is completely missed
+// causing wxGTK to hang in the drag routine waiting for the up event.GTK has the mouse captured,
+// so no event will ever be seen by wxGTK.
+//This is aggravated by the manner in which scintilla coded the mouse doubleClick.
+// It treats it as two single ButtonDown clicks, entering DragNdrop over and over again.
+//This patch moves the initiation of the drag into the MouseMove code to avoid the double click
+// problem. It will not allow secondary drags until a subsequent mouse up event.
+//This patch does not cure the problem, it can still happen if the user quickly drags
+// and lifts the mouse key at the same time the mouse is moving. But it's much harder
+// to cause the hang. Pecan
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -442,6 +454,9 @@ Editor::Editor() {
 	hsEnd = -1;
 
 	llc.SetLevel(LineLayoutCache::llcCaret);
+	#ifdef __WXGTK__
+	m_mouseButtonDownCnt = 0;   //pecan 20060507
+	#endif
 }
 
 Editor::~Editor() {
@@ -1212,7 +1227,7 @@ This way, we favour the displaying of useful information: the begining of lines,
 where most code reside, and the lines after the caret, eg. the body of a function.
 
      |        |       |      |                                            |
-slop | strict | jumps | even | Caret can go to the margin                 | When reaching limitÝ(caret going out of
+slop | strict | jumps | even | Caret can go to the margin                 | When reaching limit (caret going out of
      |        |       |      |                                            | visibility or going into the UZ) display is...
 -----+--------+-------+------+--------------------------------------------+--------------------------------------------------------------
   0  |   0    |   0   |   0  | Yes                                        | moved to put caret on top/on right
@@ -5037,6 +5052,9 @@ void Editor::DwellEnd(bool mouseMoved) {
 
 void Editor::ButtonDown(Point pt, unsigned int curTime, bool shift, bool ctrl, bool alt) {
 	//Platform::DebugPrintf("Scintilla:ButtonDown %d %d = %d alt=%d\n", curTime, lastClickTime, curTime - lastClickTime, alt);
+	#ifdef __WXGTK__
+	m_mouseButtonDownCnt++;    //pecan 20060507
+	#endif
 	ptMouseLast = pt;
 	int newPos = PositionFromLocation(pt);
 	newPos = MovePositionOutsideChar(newPos, currentPos - newPos);
@@ -5124,12 +5142,18 @@ void Editor::ButtonDown(Point pt, unsigned int curTime, bool shift, bool ctrl, b
 			}
 			if (!shift) {
 				inDragDrop = PointInSelection(pt) && !SelectionEmpty();
+				#ifdef __WXGTK__
+				if (m_mouseButtonDownCnt>1)     //pecan 20060507
+                    inDragDrop = false;         //pecan 20060507
+                #endif
 			}
 			if (inDragDrop) {
+			    #ifndef __WXGTK__       //for GTK, code moved to ButtonMove() //pecan 20060507
 				SetMouseCapture(false);
 				SetDragPosition(newPos);
 				CopySelectionRange(&drag);
 				StartDrag();
+				#endif
 			} else {
 				SetDragPosition(invalidPosition);
 				SetMouseCapture(true);
@@ -5203,6 +5227,18 @@ void Editor::ButtonMove(Point pt) {
 	}
 	ptMouseLast = pt;
 	//Platform::DebugPrintf("Move %d %d\n", pt.x, pt.y);
+    #ifdef __WXGTK__        //pecan 20060507
+    // code moved here from ButtonDown to avoid GTK doubleClick/drag hang bug
+    if (inDragDrop) {
+        SetMouseCapture(false);
+        int newPos = PositionFromLocation(pt);
+        SetDragPosition(newPos);
+        CopySelectionRange(&drag);
+        m_mouseButtonDownCnt++; //don't do again until mouse ButtonUp //pecan 20060507
+        StartDrag();
+    }
+    #endif  //pecan 20060507
+
 	if (HaveMouseCapture()) {
 
 		// Slow down autoscrolling/selection
@@ -5289,7 +5325,10 @@ void Editor::ButtonMove(Point pt) {
 }
 
 void Editor::ButtonUp(Point pt, unsigned int curTime, bool ctrl) {
-	//Platform::DebugPrintf("ButtonUp %d\n", HaveMouseCapture());
+	//Platform::DebugPrintf("ButtonUp mouseCapture%d downCnt:%d", HaveMouseCapture(), m_mouseButtonDownCnt);
+	#ifdef __WXGTK__
+	m_mouseButtonDownCnt = 0;   //pecan 20060507
+	#endif
 	if (HaveMouseCapture()) {
 		if (PointInSelMargin(pt)) {
 			DisplayCursor(Window::cursorReverseArrow);

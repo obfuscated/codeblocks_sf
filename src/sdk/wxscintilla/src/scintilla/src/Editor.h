@@ -528,6 +528,8 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 
 	virtual sptr_t DefWndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) = 0;
 
+	int m_mouseButtonDownCnt;   //pecan 20060507
+
 public:
 	// Public so the COM thunks can access it.
 	bool IsUnicodeMode() const;
