@@ -20,5 +20,5 @@ EXTRA_DIST = envvars.cbp envvars-unix.cbp envvars.xrc
 
 CLEANFILES = $(pkgdata_DATA)
 
-codestat.zip:
+envvars.zip:
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/envvars.zip *.xrc > /dev/null
