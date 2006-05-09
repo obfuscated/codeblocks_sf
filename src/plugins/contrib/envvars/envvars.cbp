@@ -8,15 +8,13 @@
 		<Build>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\envvars.dll" />
-				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\envvars" />
-				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\envvars" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
-				<Variable name="WX_CFG" value="Unicode" />
+				<Variable name="WX_CFG" value="" />
 			</Environment>
 		</Build>
 		<Compiler>

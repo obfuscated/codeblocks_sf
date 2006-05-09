@@ -13,25 +13,17 @@
 #if CB_PRECOMP
   #include "sdk.h"
 #else
+  #include <wx/arrstr.h>
   #include <wx/button.h>
-  #include <wx/filefn.h>
-  #include <wx/filename.h>
-  #include <wx/stattext.h>
+  #include <wx/listbox.h>
+  #include <wx/utils.h>
   #include <wx/xrc/xmlres.h>
-  #include "cbeditor.h"
-  #include "cbproject.h"
   #include "configmanager.h"
-  #include "editormanager.h"
   #include "globals.h"
   #include "licenses.h"
-  #include "pluginmanager.h"
-  #include "projectmanager.h"
   #include "manager.h"
 #endif
-#include <wx/listbox.h>
-#include <wx/utils.h>
 #include "editpairdlg.h"
-#include "projectloader.h"
 #include "envvars.h"
 
 // Implement the plugin's hooks
@@ -60,13 +52,13 @@ EnvVars::EnvVars()
   //ctor
   m_PluginInfo.name = _T("EnvVars");
   m_PluginInfo.title = _("Environment variables");
-  m_PluginInfo.version = _T("0.9");
+  m_PluginInfo.version = _T("0.91");
   m_PluginInfo.description = _("Sets up environment variables within the focus of Code::Blocks.");
   m_PluginInfo.author = _T("Martin Halle");
   m_PluginInfo.authorEmail = _T("codeblocks@martin-halle.de");
   m_PluginInfo.authorWebsite = _T("");
   m_PluginInfo.thanksTo = _("Yiannis Mandravellos, Thomas Denk and the whole Code::Blocks team.");
-  m_PluginInfo.license = _T("GPL");
+  m_PluginInfo.license = LICENSE_GPL;
 }
 
 void EnvVars::OnAttach()
@@ -142,7 +134,7 @@ void EnvVarsConfigDlg::SaveSettings()
   if (!lstEnvVars)
     return;
 
-  for (int i=0; i<lstEnvVars->GetCount(); i++)
+  for (int i=0; i<lstEnvVars->GetCount(); ++i)
   {
     wxString key   = lstEnvVars->GetString(i).BeforeFirst(_T('=')).Trim(true);
     wxString value = lstEnvVars->GetString(i).AfterFirst(_T('=')).Trim(true).Trim(false);
@@ -250,7 +242,7 @@ void EnvVarsConfigDlg::OnClearEnvVarsClick(wxCommandEvent& WXUNUSED(event))
                    wxYES | wxNO | wxICON_QUESTION) == wxID_YES)
   {
     // Unset all variables of lstVars
-    for (int i=0; i<lstEnvVars->GetCount(); i++)
+    for (int i=0; i<lstEnvVars->GetCount(); ++i)
     {
       wxString key   = lstEnvVars->GetString(i).BeforeFirst(_T('=')).Trim(true);
       if (!key.IsEmpty())
@@ -276,10 +268,10 @@ void EnvVarsConfigDlg::OnSetEnvVarsClick(wxCommandEvent& WXUNUSED(event))
                    wxYES | wxNO | wxICON_QUESTION) == wxID_YES)
   {
     // Set all variables of lstEnvVars
-    for (int i=0; i<lstEnvVars->GetCount(); i++)
+    for (int i=0; i<lstEnvVars->GetCount(); ++i)
     {
-      wxString value = lstEnvVars->GetStringSelection().AfterFirst(_T('=')).Trim(true).Trim(false);
       wxString key   = lstEnvVars->GetString(i).BeforeFirst(_T('=')).Trim(true);
+      wxString value = lstEnvVars->GetString(i).AfterFirst(_T('=')).Trim(true).Trim(false);
       if (!key.IsEmpty())
       {
         wxSetEnv(key, value);
