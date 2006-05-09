@@ -337,7 +337,7 @@ void MessageManager::ShowLog(MessageLog* log, bool show)
         SetLogImage(id, ls->bitmap);
         ls->visible = true;
 
-        log->Show(false);
+        log->Show(true);
 
         if (id == m_DebugLog)
             cfg->Write(_T("/has_debug_log"), (bool)true);
