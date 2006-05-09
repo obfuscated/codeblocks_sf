@@ -13,6 +13,8 @@ dist_pkgdata_DATA = dll.cbp \
 		fltk.template \
 		fltk-main.cpp \
 		glfw-static.cbp \
+		glut.cbp \
+		glut.template \
 		gui.png \
 		irr_gcc.cbp \
 		irrlicht.template \
