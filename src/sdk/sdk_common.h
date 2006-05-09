@@ -11,11 +11,11 @@
  * not including every header file twice.
  * This also allows us to reliably shortcut some includes for compilers that *do* support precompilation.
  */
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(__APPLE__)
     #if ( (__GNUC__ < 3) || ( (__GNUC__ == 3) && (__GNUC_MINOR__ < 4) ) )
         #undef CB_PRECOMP
     #endif
-#endif
+#endif // __GNUC__ && !__APPLE__
 
 
 #if ( defined(CB_PRECOMP) && !defined(WX_PRECOMP) )
@@ -89,51 +89,51 @@
     #include <wx/xrc/xmlres.h>
 
     // basic headers
-    #include <settings.h>
-    #include <globals.h>
-    #include <licenses.h>
-    #include <sdk_events.h>
-    #include <cbexception.h>
+    #include "settings.h"
+    #include "globals.h"
+    #include "licenses.h"
+    #include "sdk_events.h"
+    #include "cbexception.h"
 
     // absolute base classes
-    #include <editorbase.h>
-    #include <compileoptionsbase.h>
-    #include <compiletargetbase.h>
-    #include <projectbuildtarget.h>
-    #include <openfilestree.h>
-    #include <cbeditor.h>
-    #include <cbplugin.h>
-    #include <cbproject.h>
-    #include <cbworkspace.h>
+    #include "editorbase.h"
+    #include "compileoptionsbase.h"
+    #include "compiletargetbase.h"
+    #include "projectbuildtarget.h"
+    #include "openfilestree.h"
+    #include "cbeditor.h"
+    #include "cbplugin.h"
+    #include "cbproject.h"
+    #include "cbworkspace.h"
 
     // managers
-    #include <manager.h>
-    #include <configmanager.h>
-    #include <editormanager.h>
-    #include <messagelog.h>
-    #include <messagemanager.h>
-    #include <projectmanager.h>
-    #include <menuitemsmanager.h>
-    #include <scriptingmanager.h>
-    #include <toolsmanager.h>
-    #include <templatemanager.h>
-    #include <macrosmanager.h>
-    #include <pluginmanager.h>
-    #include <personalitymanager.h>
-    #include <uservarmanager.h>
+    #include "manager.h"
+    #include "configmanager.h"
+    #include "editormanager.h"
+    #include "messagelog.h"
+    #include "messagemanager.h"
+    #include "projectmanager.h"
+    #include "menuitemsmanager.h"
+    #include "scriptingmanager.h"
+    #include "toolsmanager.h"
+    #include "templatemanager.h"
+    #include "macrosmanager.h"
+    #include "pluginmanager.h"
+    #include "personalitymanager.h"
+    #include "uservarmanager.h"
 
     // other base classes
-    #include <compileroptions.h>
-    #include <compiler.h>
-    #include <compilerfactory.h>
-    #include <managedthread.h>
-    #include <pipedprocess.h>
-    #include <projectfile.h>
-    #include <simplelistlog.h>
-    #include <simpletextlog.h>
-    #include <workspaceloader.h>
-    #include <xtra_classes.h>
-    #include <xtra_res.h>
+    #include "compileroptions.h"
+    #include "compiler.h"
+    #include "compilerfactory.h"
+    #include "managedthread.h"
+    #include "pipedprocess.h"
+    #include "projectfile.h"
+    #include "simplelistlog.h"
+    #include "simpletextlog.h"
+    #include "workspaceloader.h"
+    #include "xtra_classes.h"
+    #include "xtra_res.h"
 
 #endif // CB_PRECOMP
 
