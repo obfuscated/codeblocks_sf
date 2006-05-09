@@ -71,7 +71,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void SetActiveEditor(EditorBase* ed);
         EditorColorSet* GetColorSet(){ return (this==NULL) ? 0 : m_Theme; }
         void SetColorSet(EditorColorSet* theme);
-        cbEditor* New();
+        cbEditor* New(const wxString& newFileName = wxEmptyString);
 
         // these are used *only* for custom editors
         void AddCustomEditor(EditorBase* eb);

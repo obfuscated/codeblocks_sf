@@ -575,10 +575,10 @@ void EditorManager::SetActiveEditor(EditorBase* ed)
     }
 }
 
-cbEditor* EditorManager::New()
+cbEditor* EditorManager::New(const wxString& newFileName)
 {
     wxString old_title = Manager::Get()->GetAppWindow()->GetTitle(); // Fix for Bug #1389450
-    cbEditor* ed = new cbEditor(m_pNotebook, wxEmptyString);
+    cbEditor* ed = new cbEditor(m_pNotebook, newFileName);
     if (!ed->SaveAs())
     {
         //DeletePage(ed->GetPageIndex());
@@ -1067,6 +1067,41 @@ bool EditorManager::SwapActiveHeaderSource()
         //if (newEd)
         //    newEd->SetProjectFile(ed->GetProjectFile());
         return newEd;
+    }
+
+    // We couldn't find the file, maybe it does not exist. Ask the user if we
+    // should create it:
+    if (cbMessageBox(_("The file does not exist. Do you want to create it?"),
+				_("Error"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
+    {
+		cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+		if (project)
+			wxSetWorkingDirectory(project->GetBasePath());
+
+		// Create a suggestion for the new file name:
+        if (ft == ftHeader)
+			fn.SetExt(FileFilters::CPP_EXT);
+		else if (ft == ftSource)
+			fn.SetExt(FileFilters::H_EXT);
+		// else? Well, if the filename is not changed we could possibly
+		// overwrite an existing file with our suggestion.
+
+    	cbEditor* newEd = New(fn.GetFullPath());
+		if (cbMessageBox(_("Do you want to add this new file in the active project?"),
+					_("Add file to project"),
+					wxYES_NO | wxICON_QUESTION) == wxID_YES)
+		{
+			wxArrayInt targets;
+			if (Manager::Get()->GetProjectManager()->AddFileToProject(newEd->GetFilename(), project, targets) != 0)
+			{
+				ProjectFile* pf = project->GetFileByFilename(newEd->GetFilename(), false);
+				newEd->SetProjectFile(pf);
+				Manager::Get()->GetProjectManager()->RebuildTree();
+			}
+		}
+		// verify that the open files are still in sync
+		// the new file might have overwritten an existing one)
+		Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
     }
     return 0L;
 }
