@@ -146,6 +146,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     wxColour caretColor = cfg->ReadColour(_T("/caret/color"), *wxBLACK);
     XRCCTRL(*this, "spnCaretWidth", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/caret/width"), 1));
     XRCCTRL(*this, "btnCaretColor", wxButton)->SetBackgroundColour(caretColor);
+    XRCCTRL(*this, "slCaretPeriod", wxSlider)->SetValue(cfg->ReadInt(_T("/caret/period"), 500));
 
 	//folding
    	XRCCTRL(*this, "chkEnableFolding", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/show_folds"), true));
@@ -819,8 +820,9 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/auto_wrap_search"),     XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue());
 
         //caret
-        cfg->Write(_T("/caret/width"), XRCCTRL(*this, "spnCaretWidth", wxSpinCtrl)->GetValue());
-        cfg->Write(_T("/caret/color"), XRCCTRL(*this, "btnCaretColor", wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/caret/width"),  XRCCTRL(*this, "spnCaretWidth", wxSpinCtrl)->GetValue());
+        cfg->Write(_T("/caret/color"),  XRCCTRL(*this, "btnCaretColor", wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/caret/period"), XRCCTRL(*this, "slCaretPeriod", wxSlider)->GetValue());
 
         //folding
         cfg->Write(_T("/folding/show_folds"), 			XRCCTRL(*this, "chkEnableFolding", wxCheckBox)->GetValue());

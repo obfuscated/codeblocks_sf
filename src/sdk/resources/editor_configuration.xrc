@@ -517,6 +517,20 @@
                             <label></label>
                           </object>
                         </object>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                          <object class="wxStaticText">
+                            <label>Period (in milliseconds):</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                          <object class="wxSlider" name="slCaretPeriod">
+                            <value>500</value>
+                            <max>500</max>
+                            <style>wxSL_TOP|wxSL_LABELS</style>
+                          </object>
+                        </object>
                       </object>
                     </object>
                   </object>
