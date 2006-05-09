@@ -414,7 +414,7 @@ void EditorConfigurationDlg::ReadColors()
 			XRCCTRL(*this, "chkColorsItalics", wxCheckBox)->SetValue(opt->italics);
 			XRCCTRL(*this, "chkColorsUnderlined", wxCheckBox)->SetValue(opt->underlined);
 
-			XRCCTRL(*this, "btnColorsFore", wxButton)->Enable(opt->isStyle);
+//			XRCCTRL(*this, "btnColorsFore", wxButton)->Enable(opt->isStyle);
 			XRCCTRL(*this, "chkColorsBold", wxCheckBox)->Enable(opt->isStyle);
 			XRCCTRL(*this, "chkColorsItalics", wxCheckBox)->Enable(opt->isStyle);
 			XRCCTRL(*this, "chkColorsUnderlined", wxCheckBox)->Enable(opt->isStyle);

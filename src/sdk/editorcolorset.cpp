@@ -89,11 +89,15 @@ EditorColorSet::~EditorColorSet()
 
 void EditorColorSet::ClearAllOptionColors()
 {
-       for (OptionSetsMap::iterator map_it = m_Sets.begin();
-                                                       map_it != m_Sets.end(); ++map_it)
+   for (OptionSetsMap::iterator map_it = m_Sets.begin();
+                                                   map_it != m_Sets.end(); ++map_it)
+    {
         for (OptionColors::iterator vec_it = (*map_it).second.m_Colors.begin();
                             vec_it != (*map_it).second.m_Colors.end(); ++vec_it)
-                       delete (*vec_it);
+        {
+            delete (*vec_it);
+        }
+    }
     m_Sets.clear();
 }
 
@@ -442,10 +446,18 @@ void EditorColorSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
                 if (opt->back != wxNullColour)
                 {
                     control->SetSelBackground(true, opt->back);
-                    Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/selection_color"), opt->back);
+//                    Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/selection_color"), opt->back);
                 }
                 else
                     control->SetSelBackground(false, wxColour(0xC0, 0xC0, 0xC0));
+
+                if (opt->fore != wxNullColour)
+                {
+                    control->SetSelForeground(true, opt->fore);
+//                    Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/selection_fgcolor"), opt->fore);
+                }
+                else
+                    control->SetSelForeground(false, *wxBLACK);
             }
 //            else
 //            {
