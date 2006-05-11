@@ -29,6 +29,7 @@ class ProjectFile;
     Object file: $object
     Dependency result: $dep_object
     All *linkable* object files: $link_objects
+    All *linkable* flat object files: $link_flat_objects
     Exe output file: $exe_output
     Static lib output file: $static_output
     Dynamic lib output file: $dynamic_output
@@ -224,6 +225,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
                                         ProjectFile* pf,
                                         const wxString& file,
                                         const wxString& object,
+                                        const wxString& FlatObject,
                                         const wxString& deps);
 
         /** @brief Save settings */

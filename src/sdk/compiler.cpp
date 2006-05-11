@@ -159,11 +159,12 @@ void Compiler::GenerateCommandLine(wxString& macro,
                                     ProjectFile* pf,
                                     const wxString& file,
                                     const wxString& object,
+                                    const wxString& FlatObject,
                                     const wxString& deps)
 {
     if (!m_pGenerator)
         cbThrow(_T("Compiler::Init() not called or generator invalid!"));
-    m_pGenerator->GenerateCommandLine(macro, target, pf, file, object, deps);
+    m_pGenerator->GenerateCommandLine(macro, target, pf, file, object, FlatObject, deps);
 }
 
 void Compiler::SaveSettings(const wxString& baseKey)

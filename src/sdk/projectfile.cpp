@@ -294,9 +294,14 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
         }
     }
     else
+    {
         object_file_native = (target ? target->GetObjectOutput() : _T(".")) +
                               sep +
                               tmp.GetFullPath();
+        object_file_native_flat = (target ? target->GetObjectOutput() : _T(".")) +
+                              sep +
+                              tmp.GetName() + _T(".") + tmp.GetExt();
+    }
     wxFileName o_file(object_file_native);
     o_file.MakeAbsolute(prjbase.GetFullPath());
     object_dir_native = o_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
@@ -316,6 +321,9 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     object_file = UnixFilename(object_file_native);
     QuoteStringIfNeeded(object_file);
 
+    object_file_flat = UnixFilename(object_file_flat_native);
+    QuoteStringIfNeeded(object_file_flat);
+
     dep_file = UnixFilename(dep_file_native);
     QuoteStringIfNeeded(dep_file);
 
@@ -326,6 +334,7 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     QuoteStringIfNeeded(dep_dir);
 
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file_native);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file_flat_native);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_dir_native);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file_absolute_native);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_file_native);
@@ -335,5 +344,6 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_dir);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dep_file);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(object_file_flat);
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(source_file);
 }

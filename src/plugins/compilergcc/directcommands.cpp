@@ -188,6 +188,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
                                          pf,
                                          pfd.source_file,
                                          pfd.object_file,
+                                         pfd.object_file_flat,
                                          pfd.dep_file);
     }
 
@@ -253,12 +254,14 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
                                      0,
                                      s_filename,
                                      o_filename,
+                                     o_filename,
                                      wxEmptyString);
     wxString linkerCmd = compiler->GetCommand(ctLinkConsoleExeCmd);
     compiler->GenerateCommandLine(linkerCmd,
                                      0,
                                      0,
                                      wxEmptyString,
+                                     o_filename,
                                      o_filename,
                                      wxEmptyString);
 
@@ -406,7 +409,7 @@ wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
         wxArrayString tmp;
         for (size_t i = 0; i < buildcmds.GetCount(); ++i)
         {
-            compiler->GenerateCommandLine(buildcmds[i], target, 0, wxEmptyString, wxEmptyString, wxEmptyString);
+            compiler->GenerateCommandLine(buildcmds[i], target, 0, wxEmptyString, wxEmptyString, wxEmptyString, wxEmptyString);
             tmp.Add(wxString(COMPILER_SIMPLE_LOG) + buildcmds[i]);
             tmp.Add(buildcmds[i]);
         }
@@ -431,7 +434,7 @@ wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
         wxArrayString tmp;
         for (size_t i = 0; i < buildcmds.GetCount(); ++i)
         {
-            compiler->GenerateCommandLine(buildcmds[i], target, 0, wxEmptyString, wxEmptyString, wxEmptyString);
+            compiler->GenerateCommandLine(buildcmds[i], target, 0, wxEmptyString, wxEmptyString, wxEmptyString, wxEmptyString);
             tmp.Add(wxString(COMPILER_SIMPLE_LOG) + buildcmds[i]);
             tmp.Add(buildcmds[i]);
         }
@@ -477,6 +480,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
 
     wxFileName out = UnixFilename(output);
     wxString linkfiles;
+    wxString FlatLinkFiles;
     wxString resfiles;
 
     time_t outputtime;
@@ -517,7 +521,10 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         if (FileTypeOf(pf->relativeFilename) == ftResource)
             resfiles << pfd.object_file << _T(" ");
         else
+        {
             linkfiles << prependHack << pfd.object_file << _T(" "); // see QUICK HACK above (prependHack)
+            FlatLinkFiles << prependHack << pfd.object_file_flat << _T(" "); // see QUICK HACK above (prependHack)
+        }
 
         // timestamp check
         if (!force)
@@ -587,6 +594,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
                                              0,
                                              _T(""),
                                              linkfiles,
+                                             FlatLinkFiles,
                                              resfiles);
     if (!compilerCmd.IsEmpty())
     {

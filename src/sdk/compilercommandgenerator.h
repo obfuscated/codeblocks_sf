@@ -35,6 +35,7 @@ class DLLIMPORT CompilerCommandGenerator
                                         ProjectFile* pf,
                                         const wxString& file,
                                         const wxString& object,
+                                        const wxString& FlatObject,
                                         const wxString& deps);
     protected:
         virtual void DoBuildScripts(CompileOptionsBase* base, const wxString& funcName);

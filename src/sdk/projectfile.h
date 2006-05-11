@@ -157,6 +157,7 @@ class pfDetails : public BlockAllocated<pfDetails, 1000>
         wxString dep_file;
         wxString object_dir;
         wxString dep_dir;
+        wxString object_file_flat;
         // those below, have no UnixFilename() applied, nor QuoteStringIfNeeded()
         wxString source_file_native;
         wxString object_file_native;
@@ -166,6 +167,7 @@ class pfDetails : public BlockAllocated<pfDetails, 1000>
         wxString source_file_absolute_native;
         wxString object_file_absolute_native;
         wxString dep_file_absolute_native;
+        wxString object_file_flat_native;
 };
 
 #endif // PROJECTFILE_H

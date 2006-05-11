@@ -120,6 +120,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
                                                     ProjectFile* pf,
                                                     const wxString& file,
                                                     const wxString& object,
+                                                    const wxString& FlatObject,
                                                     const wxString& deps)
 {
     Compiler* compiler = target
@@ -211,6 +212,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     }
     macro.Replace(_T("$link_resobjects"), deps);
     macro.Replace(_T("$link_objects"), object);
+    macro.Replace(_T("$link_flat_objects"), FlatObject);
     // the following were added to support the QUICK HACK in compiler plugin:
     // DirectCommands::GetTargetLinkCommands()
     macro.Replace(_T("$+link_objects"), object);

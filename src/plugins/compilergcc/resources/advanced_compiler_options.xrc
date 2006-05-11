@@ -86,6 +86,7 @@ Source file:
 Object file:
 Dependency result:
 All *linkable* object files:
+All *linkable* flat object files:
 All *linkable* resource object files:
 Executable output file:
 Static library output file:
@@ -111,6 +112,7 @@ $$file
 $$object
 $$dep_object
 $$link_objects
+$$link_flat_objects
 $$link_resobjects
 $$exe_output
 $$static_output
