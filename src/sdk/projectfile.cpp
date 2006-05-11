@@ -298,7 +298,7 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
         object_file_native = (target ? target->GetObjectOutput() : _T(".")) +
                               sep +
                               tmp.GetFullPath();
-        object_file_native_flat = (target ? target->GetObjectOutput() : _T(".")) +
+        object_file_flat_native = (target ? target->GetObjectOutput() : _T(".")) +
                               sep +
                               tmp.GetName() + _T(".") + tmp.GetExt();
     }
