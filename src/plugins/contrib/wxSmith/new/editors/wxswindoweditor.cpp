@@ -810,7 +810,6 @@ void wxsWindowEditor::ResourceUnlock()
         Content->ContentChanged();
         Content->RefreshSelection();
         SetModified(true);
-// TODO (SpOoN#1#): Notify about data change
     }
 
     wxASSERT_MSG(ResourceLockCnt>=0,

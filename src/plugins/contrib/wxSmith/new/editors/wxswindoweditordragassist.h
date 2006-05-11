@@ -46,6 +46,7 @@ class wxsWindowEditorDragAssist
         inline wxColour TargetColour();
         inline wxColour ParentColour();
         void ColourMix(wxImage& Image,const wxColour& Colour);
+        void UpdateRect(wxRect& Rect,const wxBitmap& bmp);
 };
 
 #endif

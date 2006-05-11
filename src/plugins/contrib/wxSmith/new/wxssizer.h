@@ -15,7 +15,6 @@ class wxsSizerExtra: public wxsPropertyContainer
 //        wxSizeData Ratio;               ///< \brief Ratio
 
         wxsSizerExtra():
-            // TODO: Read defaults from configuration
             Proportion(1),
             Flags(wxsSizerFlagsProperty::AlignCenterHorizontal|
                   wxsSizerFlagsProperty::AlignCenterVertical|
@@ -25,7 +24,13 @@ class wxsSizerExtra: public wxsPropertyContainer
                   wxsSizerFlagsProperty::BorderRight),
             Border(5),
             BorderInDU(false)
-        {}
+        {
+            ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("wxsmith"));
+            Proportion = cfg->ReadInt  ( _T("/defsizer/proportion"), Proportion );
+            Flags      = cfg->ReadInt  ( _T("/defsizer/flags"),      Flags );
+            Border     = cfg->ReadInt  ( _T("/defsizer/border"),     Border );
+            BorderInDU = cfg->ReadBool ( _T("/defsizer/borderdu"),   BorderInDU );
+        }
 
         wxString AllParamsCode(const wxString& WindowParent,wxsCodingLang Language);
 

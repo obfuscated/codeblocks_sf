@@ -163,7 +163,6 @@ wxObject* wxsSizer::DoBuildPreview(wxWindow* Parent,bool Exact)
         wxSizer* OutSizer = new wxBoxSizer(wxHORIZONTAL);
         OutSizer->Add(NewParent,1,wxEXPAND,0);
         Parent->SetSizer(OutSizer);
-        // TODO: Find out if we should check flags like in xh_sizer.cpp
         OutSizer->SetSizeHints(Parent);
         return NewParent;
     }

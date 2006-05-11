@@ -103,7 +103,6 @@ bool wxsItem::XmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
         Events.XmlLoadFunctions(Element);
     }
 
-    // TODO: Check if all functions return false
     return true;
 }
 
@@ -128,7 +127,6 @@ bool wxsItem::XmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
         Events.XmlSaveFunctions(Element);
     }
 
-    // TODO: Check if all functions return false
     return true;
 }
 

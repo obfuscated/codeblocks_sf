@@ -448,8 +448,7 @@ void wxsWindowEditorContent::OnMouseDraggingPoint(wxMouseEvent& event)
 
         UpdateDragPoints(CurDragPoint);
         MouseState = msIdle;
-        ResourceLock();
-        ResourceUnlock();
+        CurDragItem->NotifyPropertyChange(true);
         return;
     }
 
@@ -586,27 +585,30 @@ void wxsWindowEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
                         if ( CurParent != NewParent ||
                              NewParent->GetType() == wxsTSizer )
                         {
-                            // Storing extra data
-                            int CurIndex = CurParent->GetChildIndex(CurDragItem);
-                            TiXmlElement ExtraData("extra");
-                            CurParent->StoreExtraData(CurIndex,&ExtraData);
-
-                            // Unbinding from old parent
-                            CurDragItem->GetParent()->UnbindChild(CurDragItem);
-
-                            // Adding to new one
-                            int NewIndex = -1;
-                            if ( AtCursor )
+                            if ( AtCursor != CurDragItem )
                             {
-                                NewIndex = NewParent->GetChildIndex(AtCursor);
-                                if ( AddAfter ) NewIndex++;
+                                // Storing extra data
+                                int CurIndex = CurParent->GetChildIndex(CurDragItem);
+                                TiXmlElement ExtraData("extra");
+                                CurParent->StoreExtraData(CurIndex,&ExtraData);
+
+                                // Unbinding from old parent
+                                CurDragItem->GetParent()->UnbindChild(CurDragItem);
+
+                                // Adding to new one
+                                int NewIndex = -1;
+                                if ( AtCursor )
+                                {
+                                    NewIndex = NewParent->GetChildIndex(AtCursor);
+                                    if ( AddAfter ) NewIndex++;
+                                }
+
+                                NewParent->AddChild(CurDragItem,NewIndex);
+
+                                // Restoring extra data
+                                NewIndex = NewParent->GetChildIndex(CurDragItem);
+                                NewParent->RestoreExtraData(NewIndex,&ExtraData);
                             }
-
-                            NewParent->AddChild(CurDragItem,NewIndex);
-
-                            // Restoring extra data
-                            NewIndex = NewParent->GetChildIndex(CurDragItem);
-                            NewParent->RestoreExtraData(NewIndex,&ExtraData);
                         }
 
                         wxsBaseProperties* Props = CurDragItem->GetBaseProps();
@@ -643,8 +645,7 @@ void wxsWindowEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
         }
         UpdateDragPoints(CurDragPoint);
         MouseState = msIdle;
-        ResourceLock();
-        ResourceUnlock();
+        CurDragItem->NotifyPropertyChange(true);
         AssistTarget = NULL;
         AssistParent = NULL;
         AssistAddAfter = false;
@@ -680,16 +681,14 @@ bool wxsWindowEditorContent::FindDraggingItemTarget(int PosX,int PosY,wxsItem* D
     wxsParent* DraggedAsParent = Dragging->ToParent();
     if ( DraggedAsParent && DraggedAsParent->IsGrandChild(Cursor) )
     {
-        return false;       // no move needed
+        // Can not drag into own child
+        return false;
     }
 
     NewParent = Cursor->ToParent();
 
-    if ( NewParent )
+    if ( NewParent && !::wxGetKeyState(WXK_ALT) )
     {
-        // TODO (SpOoN#1#): Some key (alt ?) should forbid jumping here
-
-        // Dragging over
         AtCursor = NULL;
         AddAfter = true;
         return true;

@@ -86,7 +86,10 @@ class wxsWindowEditor : public wxsEditor
          */
         void SelectionChanged();
 
-        /** \brief Function notifying that properties of given item has changed */
+        /** \brief Function notifying that properties of given item has changed
+         *  \note You should call wxsItem::NotifyPropertyChange rather than this
+         *        function.
+         */
         void NotifyChange(wxsItem* Changed);
 
     protected:

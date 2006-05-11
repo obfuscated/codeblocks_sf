@@ -116,7 +116,9 @@ void wxsWindowEditorDragAssist::RebuildParentAssist()
         {
             case wxsDTColourMix:
                 {
-                    wxImage ParentImg = Content->GetBitmap().GetSubBitmap(ParentRect).ConvertToImage();
+                    const wxBitmap& Bmp = Content->GetBitmap();
+                    UpdateRect(ParentRect,Bmp);
+                    wxImage ParentImg = Bmp.GetSubBitmap(ParentRect).ConvertToImage();
                     ColourMix(ParentImg,ParentColour());
                     ParentBitmap = new wxBitmap(ParentImg);
                 }
@@ -162,7 +164,9 @@ void wxsWindowEditorDragAssist::RebuildTargetAssist()
         {
             case wxsDTColourMix:
                 {
-                    wxImage TargetImg = Content->GetBitmap().GetSubBitmap(TargetRect).ConvertToImage();
+                    const wxBitmap& Bmp = Content->GetBitmap();
+                    UpdateRect(TargetRect,Bmp);
+                    wxImage TargetImg = Bmp.GetSubBitmap(TargetRect).ConvertToImage();
                     ColourMix(TargetImg,TargetColour());
                     TargetBitmap = new wxBitmap(TargetImg);
                 }
@@ -214,4 +218,28 @@ void wxsWindowEditorDragAssist::ColourMix(wxImage& Image,const wxColour& Col)
                 ((int)Image.GetGreen(x,y) + G ) / 2,
                 ((int)Image.GetBlue(x,y)  + B ) / 2);
         }
+}
+
+void wxsWindowEditorDragAssist::UpdateRect(wxRect& Rect,const wxBitmap& Bmp)
+{
+    if ( Rect.x < 0 )
+    {
+        Rect.width += Rect.x;
+        Rect.x = 0;
+    }
+    if ( Rect.y < 0 )
+    {
+        Rect.height += Rect.y;
+        Rect.y = 0;
+    }
+
+    if ( Rect.width > Bmp.GetWidth() )
+    {
+        Rect.width = Bmp.GetWidth();
+    }
+
+    if ( Rect.height > Bmp.GetHeight() )
+    {
+        Rect.height = Bmp.GetHeight();
+    }
 }
