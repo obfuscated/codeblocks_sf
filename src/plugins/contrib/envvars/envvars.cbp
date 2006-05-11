@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="4" />
 	<Project>
-		<Option title="EnvVars Plug-In for Code::Blocks" />
+		<Option title="EnvVars Plug-In" />
 		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
@@ -10,6 +10,7 @@
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\envvars.dll" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Option includeInTargetAll="1" />
 			</Target>
 			<Environment>
@@ -18,22 +19,34 @@
 			</Environment>
 		</Build>
 		<Compiler>
-			<Add option="-D__GNUWIN32__" />
-			<Add option="-DWXUSINGDLL" />
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-mthreads" />
+			<Add option="-fexceptions" />
+			<Add option='-include &quot;sdk.h&quot;' />
 			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DTIXML_USE_STL" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#CB)\sdk" />
 			<Add directory="$(#CB.INCLUDE)" />
 			<Add directory="$(#CB)\sdk\wxscintilla\include" />
 			<Add directory="$(#CB.INCLUDE)\wxscintilla\include" />
 			<Add directory="$(#WX.INCLUDE)" />
+			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
 		</ResourceCompiler>
 		<Linker>
-			<Add library="libcodeblocks.a" />
+			<Add library="codeblocks" />
 			<Add library="wxmsw26$(WX_SUFFIX)" />
 			<Add directory="$(#CB)\devel" />
 			<Add directory="$(#CB.LIB)" />

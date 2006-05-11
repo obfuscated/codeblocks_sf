@@ -71,6 +71,7 @@ public:
 
   void OnAddEnvVarClick   (wxCommandEvent& event);
   void OnEditEnvVarClick  (wxCommandEvent& event);
+  void OnToggleEnvVarClick(wxCommandEvent& event);
   void OnDeleteEnvVarClick(wxCommandEvent& event);
   void OnClearEnvVarsClick(wxCommandEvent& event);
   void OnSetEnvVarsClick  (wxCommandEvent& event);

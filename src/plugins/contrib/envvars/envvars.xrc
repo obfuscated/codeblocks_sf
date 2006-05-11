@@ -5,13 +5,13 @@
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
         <object class="wxStaticText">
-          <label>Setup environment variables:</label>
+          <label>Setup (toggle) environment variables:</label>
         </object>
         <flag>wxALL|wxEXPAND|wxALIGN_LEFT</flag>
         <border>8</border>
       </object>
       <object class="sizeritem">
-        <object class="wxListBox" name="lstEnvVars">
+        <object class="wxCheckListBox" name="lstEnvVars">
           <content/>
           <style>wxLB_SINGLE|wxLB_HSCROLL|wxLB_NEEDED_SB</style>
         </object>

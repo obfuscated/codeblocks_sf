@@ -15,7 +15,7 @@
 #else
   #include <wx/arrstr.h>
   #include <wx/button.h>
-  #include <wx/listbox.h>
+  #include <wx/checklst.h>
   #include <wx/utils.h>
   #include <wx/xrc/xmlres.h>
   #include "configmanager.h"
@@ -25,6 +25,9 @@
 #endif
 #include "editpairdlg.h"
 #include "envvars.h"
+
+// Uncomment this for tracing of method calls in C::B's DebugLog:
+//#define TRACE_ENVVARS
 
 // Implement the plugin's hooks
 CB_IMPLEMENT_PLUGIN(EnvVars, "EnvVars");
@@ -39,6 +42,7 @@ BEGIN_EVENT_TABLE(EnvVarsConfigDlg, wxPanel)
   EVT_UPDATE_UI     (XRCID("btnClearEnvVars"), EnvVarsConfigDlg::OnUpdateUI)
 
   EVT_LISTBOX_DCLICK(XRCID("lstEnvVars"),      EnvVarsConfigDlg::OnEditEnvVarClick)
+  EVT_CHECKLISTBOX  (XRCID("lstEnvVars"),      EnvVarsConfigDlg::OnToggleEnvVarClick)
 
   EVT_BUTTON        (XRCID("btnAddEnvVar"),    EnvVarsConfigDlg::OnAddEnvVarClick)
   EVT_BUTTON        (XRCID("btnEditEnvVar"),   EnvVarsConfigDlg::OnEditEnvVarClick)
@@ -46,6 +50,10 @@ BEGIN_EVENT_TABLE(EnvVarsConfigDlg, wxPanel)
   EVT_BUTTON        (XRCID("btnClearEnvVars"), EnvVarsConfigDlg::OnClearEnvVarsClick)
   EVT_BUTTON        (XRCID("btnSetEnvVars"),   EnvVarsConfigDlg::OnSetEnvVarsClick)
 END_EVENT_TABLE()
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+// Class EnvVars
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 EnvVars::EnvVars()
 {
@@ -59,16 +67,17 @@ EnvVars::EnvVars()
   m_PluginInfo.authorWebsite = _T("");
   m_PluginInfo.thanksTo = _("Yiannis Mandravellos, Thomas Denk and the whole Code::Blocks team.");
   m_PluginInfo.license = LICENSE_GPL;
-}
+}// EnvVars
 
 void EnvVars::OnAttach()
 {
   Manager::Get()->Loadxrc(_T("/envvars.zip#zip:envvars.xrc"));
-}
+}// OnAttach
 
 void EnvVars::OnRelease(bool appShutDown)
 {
-}
+  // Nothing to do (so far...)
+}// OnRelease
 
 cbConfigurationPanel* EnvVars::GetConfigurationPanel(wxWindow* parent)
 {
@@ -76,14 +85,17 @@ cbConfigurationPanel* EnvVars::GetConfigurationPanel(wxWindow* parent)
   // deleted by the caller
 
   return dlg;
-}
+}// GetConfigurationPanel
 
 
 int EnvVars::Configure()
 {
+  // Nothing to do (so far...) -> just return success
   return 0;
-}
+}// Configure
 
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+// Class EnvVarsConfigDlg
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 EnvVarsConfigDlg::EnvVarsConfigDlg(wxWindow* parent, EnvVars* plug) :
@@ -91,36 +103,58 @@ EnvVarsConfigDlg::EnvVarsConfigDlg(wxWindow* parent, EnvVars* plug) :
 {
   wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgEnvVars"));
   LoadSettings();
-}
+}// EnvVarsConfigDlg
 
 void EnvVarsConfigDlg::LoadSettings()
 {
-//	if (Manager::Get() && Manager::Get()->GetMessageManager());
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("LoadSettings"));
+#if TRACE_ENVVARS
+	if (Manager::Get() && Manager::Get()->GetMessageManager());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("LoadSettings"));
+#endif
+
+  wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
+  if (!lstEnvVars)
+    return;
 
   // load configuration
   ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));
   wxArrayString list = cfg->EnumerateKeys(_T("/"));
   for (unsigned int i = 0; i < list.GetCount(); ++i)
   {
+    // Format: [checked?];[key];[value]
     wxArrayString array = GetArrayFromString(cfg->Read(list[i]));
-    if (array.GetCount() == 2)
+    if (array.GetCount() == 3)
     {
-      wxString key   = array[0];
-      wxString value = array[1];
+      wxString check = array[0];
+      wxString key   = array[1];
+      wxString value = array[2];
 
+      bool bCheck = check.Trim(true).Trim(false).IsSameAs(_T("1"))?true:false;
       key.Trim(true).Trim(false);
       value.Trim(true).Trim(false);
-      wxSetEnv(key, value);
-      XRCCTRL(*this, "lstEnvVars", wxListBox)->Append(key + _T(" = ") + value);
+
+      int sel = lstEnvVars->Append(key + _T(" = ") + value);
+      lstEnvVars->Check(sel, bCheck);
+
+      if (bCheck)
+      {
+        if (!wxSetEnv(key, value))
+        {
+          Manager::Get()->GetMessageManager()->Log(_("Setting environment variable '%s' failed."),
+            key.c_str());
+          lstEnvVars->Check(sel, false); // Unset to visualise it's NOT set
+        }
+      }
     }
-	}
-}
+	}// for
+}// EnvVarsConfigDlg
 
 void EnvVarsConfigDlg::SaveSettings()
 {
-//	if (Manager::Get() && Manager::Get()->GetMessageManager());
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("SaveSettings"));
+#if TRACE_ENVVARS
+	if (Manager::Get() && Manager::Get()->GetMessageManager());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("SaveSettings"));
+#endif
 
   ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));
 
@@ -128,31 +162,39 @@ void EnvVarsConfigDlg::SaveSettings()
   for (unsigned int i=0; i<list.GetCount(); ++i)
   {
     cfg->UnSet(list[i]);
-  }
+  }// for
 
-  wxListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxListBox);
+  wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
   if (!lstEnvVars)
     return;
 
   for (int i=0; i<lstEnvVars->GetCount(); ++i)
   {
-    wxString key   = lstEnvVars->GetString(i).BeforeFirst(_T('=')).Trim(true);
+    // Format: [checked?];[key];[value]
+    wxString check = (lstEnvVars->IsChecked(i))?_T("1"):_T("0");
+    wxString key   = lstEnvVars->GetString(i).BeforeFirst(_T('=')).Trim(true).Trim(false);
     wxString value = lstEnvVars->GetString(i).AfterFirst(_T('=')).Trim(true).Trim(false);
 
     wxString txt;
-    txt << key << _T(";") << value;
+    txt << check << _T(";") << key << _T(";") << value;
 
     wxString cfg_key;
     cfg_key.Printf(_T("EnvVar%d"), i);
 		cfg->Write(cfg_key, txt);
-	}
+	}// for
 
   plugin->OnAttach();
-}
+}// SaveSettings
 
 void EnvVarsConfigDlg::OnAddEnvVarClick(wxCommandEvent& WXUNUSED(event))
 {
-//	Manager::Get()->GetMessageManager()->DebugLog(_T("OnAddEnvVarClick"));
+#if TRACE_ENVVARS
+	Manager::Get()->GetMessageManager()->DebugLog(_T("OnAddEnvVarClick"));
+#endif
+
+  wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
+  if (!lstEnvVars)
+    return;
 
   wxString key;
   wxString value;
@@ -163,16 +205,28 @@ void EnvVarsConfigDlg::OnAddEnvVarClick(wxCommandEvent& WXUNUSED(event))
   {
     key.Trim(true).Trim(false);
     value.Trim(true).Trim(false);
-    wxSetEnv(key, value);
-    XRCCTRL(*this, "lstEnvVars", wxListBox)->Append(key + _T(" = ") + value);
+    int sel = lstEnvVars->Append(key + _T(" = ") + value);
+
+    if (!wxSetEnv(key, value))
+    {
+      Manager::Get()->GetMessageManager()->Log(_("Setting environment variable '%s' failed."),
+        key.c_str());
+      lstEnvVars->Check(sel, false);
+    }
+    else
+    {
+      lstEnvVars->Check(sel, true);
+    }
   }
-}
+}// OnAddEnvVarClick
 
 void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
 {
-//	Manager::Get()->GetMessageManager()->DebugLog(_T("OnEditEnvVarClick"));
+#if TRACE_ENVVARS
+	Manager::Get()->GetMessageManager()->DebugLog(_T("OnEditEnvVarClick"));
+#endif
 
-  wxListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxListBox);
+  wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
   if (!lstEnvVars)
     return;
 
@@ -198,17 +252,59 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
 
     if (value != old_value)
     {
-      wxSetEnv(key, value);
+      if (!wxSetEnv(key, value))
+        Manager::Get()->GetMessageManager()->Log(_("Setting environment variable '%s' failed."),
+          key.c_str());
+
       lstEnvVars->SetString(sel, key + _T(" = ") + value);
     }
   }
-}
+}// OnEditEnvVarClick
+
+void EnvVarsConfigDlg::OnToggleEnvVarClick(wxCommandEvent& event)
+{
+#if TRACE_ENVVARS
+	Manager::Get()->GetMessageManager()->DebugLog(_T("OnToggleEnvVarClick"));
+#endif
+
+  wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
+  if (!lstEnvVars)
+    return;
+
+  int sel = event.GetInt();
+  if(sel < 0)
+    return;
+
+  bool bCheck = lstEnvVars->IsChecked(sel);
+
+  wxString key = lstEnvVars->GetString(sel).BeforeFirst(_T('=')).Trim(true).Trim(false);
+  if (key.IsEmpty())
+    return;
+
+  if (bCheck)
+  {
+    // Is has been toggled ON -> set environment variable now
+    wxString value = lstEnvVars->GetString(sel).AfterFirst(_T('=')).Trim(true).Trim(false);
+    if (!wxSetEnv(key, value))
+      Manager::Get()->GetMessageManager()->Log(_("Setting environment variable '%s' failed."),
+        key.c_str());
+  }
+  else
+  {
+    // Is has been toggled OFF -> unsset environment variable now
+    if (!wxUnsetEnv(key))
+      Manager::Get()->GetMessageManager()->Log(_("Unsetting environment variable '%s' failed."),
+        key.c_str());
+  }
+}// OnToggleEnvVarClick
 
 void EnvVarsConfigDlg::OnDeleteEnvVarClick(wxCommandEvent& WXUNUSED(event))
 {
-//	Manager::Get()->GetMessageManager()->DebugLog(_T("OnDeleteEnvVarClick"));
+#if TRACE_ENVVARS
+	Manager::Get()->GetMessageManager()->DebugLog(_T("OnDeleteEnvVarClick"));
+#endif
 
-  wxListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxListBox);
+  wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
   if (!lstEnvVars)
     return;
 
@@ -216,7 +312,7 @@ void EnvVarsConfigDlg::OnDeleteEnvVarClick(wxCommandEvent& WXUNUSED(event))
   if (sel == -1)
     return;
 
-  wxString key = lstEnvVars->GetStringSelection().BeforeFirst(_T('=')).Trim(true);
+  wxString key = lstEnvVars->GetStringSelection().BeforeFirst(_T('=')).Trim(true).Trim(false);
   if (key.IsEmpty())
     return;
 
@@ -224,16 +320,21 @@ void EnvVarsConfigDlg::OnDeleteEnvVarClick(wxCommandEvent& WXUNUSED(event))
                    _("Confirmation"),
                    wxYES_NO | wxICON_QUESTION) == wxID_YES)
   {
-    wxUnsetEnv(key);
+    if (!wxUnsetEnv(key))
+      Manager::Get()->GetMessageManager()->Log(_("Unsetting environment variable '%s' failed."),
+        key.c_str());
+
     lstEnvVars->Delete(sel);
   }
-}
+}// OnDeleteEnvVarClick
 
 void EnvVarsConfigDlg::OnClearEnvVarsClick(wxCommandEvent& WXUNUSED(event))
 {
-//	Manager::Get()->GetMessageManager()->DebugLog(_T("OnClearEnvVarsClick"));
+#if TRACE_ENVVARS
+	Manager::Get()->GetMessageManager()->DebugLog(_T("OnClearEnvVarsClick"));
+#endif
 
-  wxListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxListBox);
+  wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
   if (lstEnvVars->IsEmpty())
     return;
 
@@ -241,25 +342,49 @@ void EnvVarsConfigDlg::OnClearEnvVarsClick(wxCommandEvent& WXUNUSED(event))
                    _("Confirmation"),
                    wxYES | wxNO | wxICON_QUESTION) == wxID_YES)
   {
-    // Unset all variables of lstVars
+    wxString envsNotUnSet(wxEmptyString);
+
+    // Unset all (checked) variables of lstVars
     for (int i=0; i<lstEnvVars->GetCount(); ++i)
     {
-      wxString key   = lstEnvVars->GetString(i).BeforeFirst(_T('=')).Trim(true);
-      if (!key.IsEmpty())
+      // Note: It's better nnot to just clear all because wxUnsetEnv would
+      //       fail in case an environment variable is not set (not chekcd).
+      if (lstEnvVars->IsChecked(i))
       {
-        wxUnsetEnv(key);
+        wxString key = lstEnvVars->GetString(i).BeforeFirst(_T('=')).Trim(true).Trim(false);
+        if (!key.IsEmpty())
+        {
+          if (!wxUnsetEnv(key))
+          {
+            // Setting env.-variable failed. Remember this key to report later.
+            if (envsNotUnSet.IsEmpty())
+              envsNotUnSet << key;
+            else
+              envsNotUnSet << _T(";") << key;
+          }
+        }
       }
-    }
+    }// for
 
     lstEnvVars->Clear();
+
+    if (!envsNotUnSet.IsEmpty())
+    {
+      wxString msg;
+      msg.Printf( _("There was an error unsetting the following environment variables:\n%s"),
+                  envsNotUnSet.c_str() );
+      cbMessageBox(msg, _("Error"), wxOK | wxCENTRE | wxICON_ERROR);
+    }
   }
-}
+}// OnClearEnvVarsClick
 
 void EnvVarsConfigDlg::OnSetEnvVarsClick(wxCommandEvent& WXUNUSED(event))
 {
-//	Manager::Get()->GetMessageManager()->DebugLog(_T("OnSetEnvVarsClick"));
+#if TRACE_ENVVARS
+	Manager::Get()->GetMessageManager()->DebugLog(_T("OnSetEnvVarsClick"));
+#endif
 
-  wxListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxListBox);
+  wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
   if (lstEnvVars->IsEmpty())
     return;
 
@@ -267,29 +392,51 @@ void EnvVarsConfigDlg::OnSetEnvVarsClick(wxCommandEvent& WXUNUSED(event))
                    _("Confirmation"),
                    wxYES | wxNO | wxICON_QUESTION) == wxID_YES)
   {
-    // Set all variables of lstEnvVars
+    wxString envsNotSet(wxEmptyString);
+
+    // Set all (checked) variables of lstEnvVars
     for (int i=0; i<lstEnvVars->GetCount(); ++i)
     {
-      wxString key   = lstEnvVars->GetString(i).BeforeFirst(_T('=')).Trim(true);
-      wxString value = lstEnvVars->GetString(i).AfterFirst(_T('=')).Trim(true).Trim(false);
-      if (!key.IsEmpty())
+      if (lstEnvVars->IsChecked(i))
       {
-        wxSetEnv(key, value);
+        wxString key   = lstEnvVars->GetString(i).BeforeFirst(_T('=')).Trim(true).Trim(false);
+        wxString value = lstEnvVars->GetString(i).AfterFirst(_T('=')).Trim(true).Trim(false);
+        if (!key.IsEmpty())
+        {
+          if (!wxSetEnv(key, value))
+          {
+            // Setting env.-variable failed. Remember this key to report later.
+            if (envsNotSet.IsEmpty())
+              envsNotSet << key;
+            else
+              envsNotSet << _T(";") << key;
+          }
+        }
       }
+    }// for
+
+    if (!envsNotSet.IsEmpty())
+    {
+      wxString msg;
+      msg.Printf( _("There was an error setting the following environment variables:\n%s"),
+                  envsNotSet.c_str() );
+      cbMessageBox(msg, _("Error"), wxOK | wxCENTRE | wxICON_ERROR);
     }
   }
-}
+}// OnSetEnvVarsClick
 
 void EnvVarsConfigDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
 {
-//	if (Manager::Get() && Manager::Get()->GetMessageManager());
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("OnUpdateUI"));
+#if TRACE_ENVVARS
+	if (Manager::Get() && Manager::Get()->GetMessageManager());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("OnUpdateUI"));
+#endif
 
-  wxListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxListBox);
+  wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
   if (lstEnvVars->IsEmpty())
     return;
 
-  // add/edit/delete/clear env vars
+  // edit/delete/clear/set env vars
   bool en;
   en = ( lstEnvVars->GetSelection() >= 0 );
   XRCCTRL(*this, "btnEditEnvVar",   wxButton)->Enable(en);
@@ -298,4 +445,4 @@ void EnvVarsConfigDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
   en = ( lstEnvVars->GetCount() != 0 );
   XRCCTRL(*this, "btnClearEnvVars", wxButton)->Enable(en);
   XRCCTRL(*this, "btnSetEnvVars",   wxButton)->Enable(en);
-}
+}// OnUpdateUI
