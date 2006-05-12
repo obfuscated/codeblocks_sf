@@ -128,6 +128,9 @@ void RegisterConstBindings(asIScriptEngine* engine)
     engine->RegisterGlobalProperty("const wxString EXT_MSVC7", (void*)&FileFilters::MSVC7_EXT);
     engine->RegisterGlobalProperty("const wxString EXT_MSVC7_WORKSPACE", (void*)&FileFilters::MSVC7_WORKSPACE_EXT);
     engine->RegisterGlobalProperty("const wxString EXT_D", (void*)&FileFilters::D_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_F", (void*)&FileFilters::F_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_F77", (void*)&FileFilters::F77_EXT);
+    engine->RegisterGlobalProperty("const wxString EXT_F95", (void*)&FileFilters::F95_EXT);
     engine->RegisterGlobalProperty("const wxString EXT_CPP", (void*)&FileFilters::CPP_EXT);
     engine->RegisterGlobalProperty("const wxString EXT_C", (void*)&FileFilters::C_EXT);
     engine->RegisterGlobalProperty("const wxString EXT_CC", (void*)&FileFilters::CC_EXT);
@@ -151,6 +154,9 @@ void RegisterConstBindings(asIScriptEngine* engine)
     engine->RegisterGlobalProperty("const wxString DOT_EXT_MSVC7", (void*)&FileFilters::MSVC7_DOT_EXT);
     engine->RegisterGlobalProperty("const wxString DOT_EXT_MSVC7_WORKSPACE", (void*)&FileFilters::MSVC7_WORKSPACE_DOT_EXT);
     engine->RegisterGlobalProperty("const wxString DOT_EXT_D", (void*)&FileFilters::D_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_F", (void*)&FileFilters::F_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_F77", (void*)&FileFilters::F77_DOT_EXT);
+    engine->RegisterGlobalProperty("const wxString DOT_EXT_F95", (void*)&FileFilters::F95_DOT_EXT);
     engine->RegisterGlobalProperty("const wxString DOT_EXT_CPP", (void*)&FileFilters::CPP_DOT_EXT);
     engine->RegisterGlobalProperty("const wxString DOT_EXT_C", (void*)&FileFilters::C_DOT_EXT);
     engine->RegisterGlobalProperty("const wxString DOT_EXT_CC", (void*)&FileFilters::CC_DOT_EXT);

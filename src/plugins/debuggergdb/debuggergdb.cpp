@@ -1430,7 +1430,7 @@ void DebuggerGDB::SyncEditor(const wxString& filename, int line, bool setMarker)
     if (setMarker)
         ClearActiveMarkFromAllEditors();
     FileType ft = FileTypeOf(filename);
-    if (ft == ftOther)
+    if (ft != ftSource && ft != ftHeader && ft != ftResource)
         return; // don't try to open unknown files
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
 	ProjectFile* f = project ? project->GetFileByFilename(filename, false, true) : 0;

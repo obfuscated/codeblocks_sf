@@ -49,6 +49,9 @@ namespace FileFilters
     extern const DLLIMPORT wxString MSVC7_EXT;
     extern const DLLIMPORT wxString MSVC7_WORKSPACE_EXT;
     extern const DLLIMPORT wxString D_EXT;
+    extern const DLLIMPORT wxString F_EXT;
+    extern const DLLIMPORT wxString F77_EXT;
+    extern const DLLIMPORT wxString F95_EXT;
     extern const DLLIMPORT wxString CPP_EXT;
     extern const DLLIMPORT wxString C_EXT;
     extern const DLLIMPORT wxString CC_EXT;
@@ -74,6 +77,9 @@ namespace FileFilters
     extern const DLLIMPORT wxString MSVC7_DOT_EXT;
     extern const DLLIMPORT wxString MSVC7_WORKSPACE_DOT_EXT;
     extern const DLLIMPORT wxString D_DOT_EXT;
+    extern const DLLIMPORT wxString F_DOT_EXT;
+    extern const DLLIMPORT wxString F77_DOT_EXT;
+    extern const DLLIMPORT wxString F95_DOT_EXT;
     extern const DLLIMPORT wxString CPP_DOT_EXT;
     extern const DLLIMPORT wxString C_DOT_EXT;
     extern const DLLIMPORT wxString CC_DOT_EXT;

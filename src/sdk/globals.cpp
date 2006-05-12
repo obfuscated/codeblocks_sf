@@ -138,7 +138,10 @@ FileType FileTypeOf(const wxString& filename)
             ext.IsSameAs(FileFilters::C_EXT) ||
             ext.IsSameAs(FileFilters::CC_EXT) ||
             ext.IsSameAs(FileFilters::CXX_EXT) ||
-            ext.IsSameAs(FileFilters::D_EXT)
+            ext.IsSameAs(FileFilters::D_EXT) ||
+            ext.IsSameAs(FileFilters::F_EXT) ||
+            ext.IsSameAs(FileFilters::F77_EXT) ||
+            ext.IsSameAs(FileFilters::F95_EXT)
        )
         return ftSource;
 

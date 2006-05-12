@@ -33,11 +33,13 @@ const Associations::Assoc knownTypes[] =
     { FileFilters::HH_EXT,   _T("Header file"), 4 },
     { FileFilters::HXX_EXT,  _T("Header file"), 4 },
 
-    { _T("cg"),        _T("cg source file"),      5 },
-    { FileFilters::D_EXT,           _("D source file"),        6 },
+    { _T("cg"),                     _T("cg source file"),      5 },
+    { FileFilters::D_EXT,           _T("D source file"),       6 },
     { FileFilters::RESOURCE_EXT,    _T("resource file"),       8 },
     { FileFilters::XRCRESOURCE_EXT, _T("XRC resource file"),   8 },
-    { _T("F"),         _T("Fortran source file"), 7 },
+    { FileFilters::F_EXT,           _T("Fortran source file"), 7 },
+    { FileFilters::F77_EXT,         _T("Fortran source file"), 7 },
+    { FileFilters::F95_EXT,         _T("Fortran source file"), 7 },
 
 
     { FileFilters::DEVCPP_EXT,       _T("Dev-CPP project file"), 18 },
