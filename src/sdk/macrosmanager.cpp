@@ -249,7 +249,10 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     macros[_T("TARGET_OUTPUT_DIR")]   = m_TargetOutputDir;
     macros[_T("TARGET_NAME")]    = m_TargetName;
     macros[_T("ACTIVE_EDITOR_FILENAME")] = m_ActiveEditorFilename;
-
+    wxFileName fn(m_ActiveEditorFilename);
+    macros[_T("ACTIVE_EDITOR_DIRNAME")]  = fn.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    macros[_T("ACTIVE_EDITOR_STEM")]  = fn.GetName();
+    macros[_T("ACTIVE_EDITOR_EXT")]  = fn.GetExt();
 	wxDateTime now(wxDateTime::Now());
 	wxDateTime nowGMT(now.ToGMT());
 
