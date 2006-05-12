@@ -50,13 +50,13 @@ void CodeStatConfigDlg::ReInitDialog()
 {
     // Clear text fields and combobox
     wxTextCtrl* txt_FileTypes = XRCCTRL(*this, "txt_FileTypes", wxTextCtrl);
-    txt_FileTypes->SetLabel(_T(""));
+    txt_FileTypes->SetValue(_T(""));
     wxTextCtrl* txt_SingleComment = XRCCTRL(*this, "txt_SingleComment", wxTextCtrl);
-    txt_SingleComment->SetLabel(_T(""));
+    txt_SingleComment->SetValue(_T(""));
     wxTextCtrl* txt_MultiLineCommentBegin = XRCCTRL(*this, "txt_MultiLineCommentBegin", wxTextCtrl);
-    txt_MultiLineCommentBegin->SetLabel(_T(""));
+    txt_MultiLineCommentBegin->SetValue(_T(""));
     wxTextCtrl* txt_MultiLineCommentEnd = XRCCTRL(*this, "txt_MultiLineCommentEnd", wxTextCtrl);
-    txt_MultiLineCommentEnd->SetLabel(_T(""));
+    txt_MultiLineCommentEnd->SetValue(_T(""));
     wxComboBox* combo_Names = XRCCTRL(*this, "combo_Names", wxComboBox);
     combo_Names->Clear();
 
@@ -150,13 +150,13 @@ void CodeStatConfigDlg::PrintLanguageInfo(int id)
 	{
 	   ext_string = ext_string + _T(" ") + languages[id].ext[i];
 	}
-	txt_FileTypes->SetLabel(ext_string);
+	txt_FileTypes->SetValue(ext_string);
 	wxTextCtrl* txt_SingleComment = XRCCTRL(*this, "txt_SingleComment", wxTextCtrl);
-	txt_SingleComment->SetLabel(languages[id].single_line_comment);
+	txt_SingleComment->SetValue(languages[id].single_line_comment);
 	wxTextCtrl* txt_MultiLineCommentBegin = XRCCTRL(*this, "txt_MultiLineCommentBegin", wxTextCtrl);
-	txt_MultiLineCommentBegin->SetLabel(languages[id].multiple_line_comment[0]);
+	txt_MultiLineCommentBegin->SetValue(languages[id].multiple_line_comment[0]);
 	wxTextCtrl* txt_MultiLineCommentEnd = XRCCTRL(*this, "txt_MultiLineCommentEnd", wxTextCtrl);
-	txt_MultiLineCommentEnd->SetLabel(languages[id].multiple_line_comment[1]);
+	txt_MultiLineCommentEnd->SetValue(languages[id].multiple_line_comment[1]);
 }
 
 /** Add configuration for a new language.
