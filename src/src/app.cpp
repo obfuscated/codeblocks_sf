@@ -72,7 +72,6 @@ static const wxCmdLineEntryDesc cmdLineDesc[] =
 #endif
     { wxCMD_LINE_SWITCH, _T("ns"), _T("no-splash-screen"), _T("don't display a splash screen while loading"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T("d"), _T("debug-log"), _T("display application's debug log"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, _T(""), _T("clear-configuration"), _T("completely clear program's configuration"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, _T(""), _T("prefix"),  _T("the shared data dir prefix"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_OPTION, _T("p"), _T("personality"),  _T("the personality to use: \"ask\" or <personality-name>"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_OPTION, _T(""), _T("profile"),  _T("synonym to personality"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
@@ -198,23 +197,6 @@ void CodeBlocksApp::InitImageHandlers()
 	wxInitAllImageHandlers();
 }
 
-void CodeBlocksApp::ClearConf()
-{
-    int ret = cbMessageBox(_("Do you want to clear all Code::Blocks configuration settings?"), _("Clear configuration settings"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
-    if (ret == wxID_YES)
-    {
-        ret = cbMessageBox(_("Are you *really* sure you want to clear all Code::Blocks configuration settings?"), _("Clear configuration settings"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT);
-        if (ret == wxID_YES)
-        {
-//            OldConfigManager::Get()->DeleteAll(); // leave this for now
-            //Manager::Get()->GetConfigManager(_T("app"))->DeleteAll();
-            ret = cbMessageBox(_("Code::Blocks configuration settings cleared"), _("Information"), wxICON_INFORMATION);
-        }
-    }
-    // When using the --clear-configuration switch, the program doesn't run
-    // no matter what the answer is for the above questions.
-    // This switch is used by the uninstaller also...
-}
 
 bool CodeBlocksApp::InitXRCStuff()
 {
@@ -391,12 +373,6 @@ bool CodeBlocksApp::OnInit()
         }
 
         InitDebugConsole();
-        if(m_ClearConf)
-        {
-            ClearConf();
-            HideSplashScreen();
-            return false;
-        }
 
         Manager::SetBatchBuild(m_Batch);
         MainFrame* frame = InitFrame();
@@ -705,7 +681,6 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     m_NoAssocs = false;
 #endif
 					m_NoSplash = parser.Found(_T("no-splash-screen"));
-					m_ClearConf = parser.Found(_T("clear-configuration"));
 					m_HasDebugLog = parser.Found(_T("debug-log"));
 					if (parser.Found(_T("personality"), &val) ||
                         parser.Found(_T("profile"), &val))

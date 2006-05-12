@@ -53,7 +53,6 @@ class CodeBlocksApp : public wxApp
         void InitDebugConsole();
         void InitExceptionHandler();
         void InitImageHandlers();
-        void ClearConf();
         bool InitXRCStuff();
         MainFrame* InitFrame();
         void CheckVersion();
@@ -71,7 +70,6 @@ class CodeBlocksApp : public wxApp
 		bool m_NoAssocs; // no associations check
 		bool m_NoSplash; // no splash screen
 		bool m_HasDebugLog; // display debug log
-		bool m_ClearConf; // clear configuration
 		wxString m_Prefix; // --prefix switch
 #ifdef __WXMSW__
         HINSTANCE m_ExceptionHandlerLib;
