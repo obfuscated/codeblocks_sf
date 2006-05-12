@@ -685,7 +685,7 @@ void EditorColorSet::SetKeywords(HighlightLanguage lang, int idx, const wxString
         const wxChar *src = keywords.c_str();
         wxChar *dst = (wxChar *) tmp.c_str();
         wxChar c;
-        size_t len;
+        size_t len = 0;
 
         while(c = *src)
         {
