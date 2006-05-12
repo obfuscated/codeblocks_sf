@@ -77,7 +77,7 @@
                     <object class="wxChoice" name="method">
                         <content>
                             <item>Create backup and save to original file</item>
-                            <item>Save to orinigal file</item>
+                            <item>Save to original file</item>
                             <item>Save to .save file</item>
                         </content>
                     </object>
