@@ -22,18 +22,11 @@ void cbSplashScreen::DoPaint(wxDC &dc)
 
 void cbSplashScreen::OnPaint(wxPaintEvent &)
 {
-    // an obscure statement in the wxWidgets book says to
-    // allocate the DC even if you don't paint to avoid
-    // a paint loop.    //pecan 2006/04/3
-  wxPaintDC paint_dc(this); //pecan 2006/04/3
-  if (m_painted)
-  {
-    return;
-  }
-
-  //-wxPaintDC paint_dc(this);
+  // an obscure statement in the wxWidgets book says to
+  // allocate the DC even if you don't paint to avoid
+  // a paint loop.    //pecan 2006/04/3
+  wxPaintDC paint_dc(this);
   DoPaint(paint_dc);
-  m_painted = true; // paint once
 }
 
 void cbSplashScreen::OnEraseBackground(wxEraseEvent &event)
@@ -72,7 +65,6 @@ void cbSplashScreen::OnMouseEvent(wxMouseEvent &event)
 
 cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, wxWindowID id, long style)
 : wxFrame(parent, id, wxEmptyString, wxPoint(0, 0), wxSize(100, 100), style),
-  m_painted(false),
   m_timer(this, cbSplashScreen_timer_id)
 {
   int w = label.GetWidth();
@@ -100,10 +92,8 @@ cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, 
 #if defined(__WXMSW__) || defined(__WXMAC__)
   Update();
 #else
-
   wxYieldIfNeeded();
 #endif
-
 
   if (timeout != -1)
   {

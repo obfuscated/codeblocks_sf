@@ -20,7 +20,6 @@ class cbSplashScreen : public wxFrame
 {
   private:
     wxBitmap m_label;
-    bool m_painted;
     wxTimer m_timer;
 
   public:
