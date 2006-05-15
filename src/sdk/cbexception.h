@@ -47,12 +47,30 @@ class cbException
         #define DIE() kill(0, SIGTERM)
     #endif
 
+    #ifdef wxUSE_UNICODE
+        #define cbAssertMessage(expr) \
+            wxString err; \
+            err.Printf(_T("Assertion failed in %s at %s:%d.\n\n%s"), cbC2U(__PRETTY_FUNCTION__).c_str(), cbC2U(__FILE__).c_str(), __LINE__, cbC2U(#expr).c_str());
+    #else
+        #define cbAssertMessage(expr) \
+            wxString err; \
+            err.Printf(_T("Assertion failed in %s at %s:%d.\n\n%s"), __PRETTY_FUNCTION__.c_str(), __FILE__.c_str(), __LINE__, #expr.c_str());
+    #endif
+
+    // non-fatal assertion
+    #define cbAssertNonFatal(expr) \
+        if (!(expr)) \
+        { \
+            cbAssertMessage(expr); \
+            wxSafeShowMessage(_T("Assertion error"), err); \
+        }
+
+    // fatal assertion
     #define cbAssert(expr) \
         if (!(expr)) \
         { \
-            wxString err; \
-            err.Printf(_T("Assertion %s failed (%s:%d)"), #expr, cbC2U(__FILE__).c_str(), __LINE__); \
-            wxSafeShowMessage(_T("Assertion error"), err); \
+            cbAssertMessage(expr); \
+            wxSafeShowMessage(_T("Fatal assertion error"), err); \
             DIE(); \
         }
 #endif
