@@ -213,7 +213,7 @@ Manager::Get()->GetMessageManager()->DebugLog(_T("Initialize EditColorSet: done.
 
     CreateSearchLog();
     LoadAutoComplete();
-    m_zoom = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("zoom"));
+    m_zoom = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/zoom"));
 }
 
 // class destructor
@@ -246,7 +246,7 @@ EditorManager::~EditorManager()
         delete m_pData;
         m_pData = NULL;
     }
-    Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("zoom"), m_zoom);
+    Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/zoom"), m_zoom);
 }
 
 void EditorManager::CreateMenu(wxMenuBar* menuBar)
