@@ -240,8 +240,7 @@ ProjectManager::~ProjectManager()
     // in this case, the app has already un-hooked us, so no need to do it ourselves...
 //	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
 
-    if (m_pWorkspace)
-        delete m_pWorkspace;
+    delete m_pWorkspace;
     m_pWorkspace = 0;
 
     int count = m_pProjects->GetCount();
@@ -1042,7 +1041,8 @@ bool ProjectManager::CloseWorkspace()
 
         delete m_pWorkspace;
         m_pWorkspace = 0;
-        m_pTree->SetItemText(m_TreeRoot, _("Workspace"));
+        if(m_pTree)
+            m_pTree->SetItemText(m_TreeRoot, _("Workspace"));
     }
     else
         return CloseAllProjects(false);
