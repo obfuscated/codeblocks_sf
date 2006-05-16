@@ -73,6 +73,10 @@ NewFromTemplateDlg::NewFromTemplateDlg(const ProjectTemplateArray& templates, co
 	//ctor
 	wxXmlResource::Get()->LoadDialog(this, 0L, _T("dlgNewFromTemplate"));
 	m_Wizards = Manager::Get()->GetPluginManager()->GetOffersFor(ptProjectWizard);
+
+	XRCCTRL(*this, "chkShowFileTemplates", wxCheckBox)->SetValue(Manager::Get()->GetConfigManager(_T("template_manager"))->ReadBool(_T("/show_file_templates"), false));
+	XRCCTRL(*this, "chkShowWizardTemplates", wxCheckBox)->SetValue(Manager::Get()->GetConfigManager(_T("template_manager"))->ReadBool(_T("/show_wizard_templates"), true));
+
 	BuildCategories();
 	BuildList();
 
@@ -337,6 +341,9 @@ void NewFromTemplateDlg::OnFilesetChanged(wxCommandEvent& event)
 
 void NewFromTemplateDlg::OnFilterChanged(wxCommandEvent& event)
 {
+	Manager::Get()->GetConfigManager(_T("template_manager"))->Write(_T("/show_file_templates"), (bool)XRCCTRL(*this, "chkShowFileTemplates", wxCheckBox)->GetValue());
+	Manager::Get()->GetConfigManager(_T("template_manager"))->Write(_T("/show_wizard_templates"), (bool)XRCCTRL(*this, "chkShowWizardTemplates", wxCheckBox)->GetValue());
+
     BuildCategories();
 	BuildList();
 }
