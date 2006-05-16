@@ -1680,7 +1680,8 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         static_cast<SearchResultsLog*>(m_pSearchLog)->SetBasePath(data->searchPath);
         Manager::Get()->GetMessageManager()->ShowLog(m_SearchLogIndex);
         Manager::Get()->GetMessageManager()->SwitchTo(m_SearchLogIndex);
-        Manager::Get()->GetMessageManager()->Open();
+        if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_search"), true))
+            Manager::Get()->GetMessageManager()->Open();
         static_cast<SearchResultsLog*>(m_pSearchLog)->FocusEntry(oldcount);
     }
     else

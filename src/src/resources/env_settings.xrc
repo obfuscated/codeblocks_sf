@@ -178,15 +178,7 @@
                 </object>
                 <object class="sizeritem">
                   <border>8</border>
-                  <flag>wxLEFT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                  <object class="wxCheckBox" name="chkAutoHideMessages">
-                    <label>Auto-hide message pane</label>
-                    <checked>1</checked>
-                  </object>
-                </object>
-                <object class="sizeritem">
-                  <border>8</border>
-                  <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                  <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                   <object class="wxBoxSizer">
                     <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">
@@ -215,6 +207,88 @@
                 <object class="spacer">
                   <size>0,16</size>
                   <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                </object>
+                <object class="spacer">
+                  <size>0,16</size>
+                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                </object>
+                <object class="sizeritem">
+                  <border>8</border>
+                  <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                  <object class="wxCheckBox" name="chkDoPlace">
+                    <label>Enhanced multi-monitor dialog placement</label>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <border>25</border>
+                  <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                  <object class="wxCheckBox" name="chkPlaceHead">
+                    <label>Move to &quot;head up&quot; position</label>
+                  </object>
+                </object>
+                <object class="spacer">
+                  <size>0,8</size>
+                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                </object>
+                <object class="sizeritem">
+                  <border>8</border>
+                  <flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                  <object class="wxCheckBox" name="chkAutoHideMessages">
+                    <label>Auto-hide message pane</label>
+                    <checked>1</checked>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkAutoShowMessagesOnSearch">
+                        <label>Auto-show on search-in-files</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <border>4</border>
+                      <flag>wxTOP</flag>
+                      <object class="wxCheckBox" name="chkAutoShowMessagesOnWarn">
+                        <label>Auto-show on build warnings</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <border>4</border>
+                      <flag>wxTOP</flag>
+                      <object class="wxCheckBox" name="chkAutoShowMessagesOnErr">
+                        <label>Auto-show on build errors</label>
+                      </object>
+                    </object>
+                  </object>
+                  <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                  <border>25</border>
+                </object>
+                <object class="spacer">
+                  <size>0,16</size>
+                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                </object>
+                <object class="sizeritem">
+                  <border>8</border>
+                  <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                  <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                      <flag>wxALIGN_CENTRE</flag>
+                      <object class="wxStaticText" name="ID_STATICTEXT22">
+                        <label>Message logs' font size:</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <border>5</border>
+                      <flag>wxALIGN_CENTER</flag>
+                      <object class="wxSpinCtrl" name="spnLogFontSize">
+                        <value>8</value>
+                        <min>6</min>
+                        <max>32</max>
+                      </object>
+                    </object>
+                  </object>
                 </object>
                 <object class="sizeritem">
                   <border>8</border>
@@ -248,47 +322,6 @@
                         <style>wxRA_SPECIFY_COLS</style>
                       </object>
                     </object>
-                  </object>
-                </object>
-                <object class="spacer">
-                  <size>0,16</size>
-                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                </object>
-                <object class="sizeritem">
-                  <border>8</border>
-                  <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                  <object class="wxBoxSizer">
-                    <orient>wxHORIZONTAL</orient>
-                    <object class="sizeritem">
-                      <border>8</border>
-                      <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER</flag>
-                      <object class="wxStaticText" name="ID_STATICTEXT22">
-                        <label>Message logs' font size:</label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <border>5</border>
-                      <flag>wxALIGN_CENTER</flag>
-                      <object class="wxSpinCtrl" name="spnLogFontSize">
-                        <value>8</value>
-                        <min>6</min>
-                        <max>32</max>
-                      </object>
-                    </object>
-                  </object>
-                </object>
-                <object class="sizeritem">
-                  <border>8</border>
-                  <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                  <object class="wxCheckBox" name="chkDoPlace">
-                    <label>Enhanced multi-monitor dialog placement</label>
-                  </object>
-                </object>
-                <object class="sizeritem">
-                  <border>25</border>
-                  <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                  <object class="wxCheckBox" name="chkPlaceHead">
-                    <label>Move to &quot;head up&quot; position</label>
                   </object>
                 </object>
               </object>

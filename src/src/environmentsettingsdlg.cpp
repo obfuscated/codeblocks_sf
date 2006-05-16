@@ -69,6 +69,7 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
     EVT_BUTTON(XRCID("btnAuiInactiveCaptionTextColor"), EnvironmentSettingsDlg::OnChooseColor)
     EVT_CHECKBOX(XRCID("chkDoPlace"), EnvironmentSettingsDlg::OnPlaceCheck)
     EVT_CHECKBOX(XRCID("chkPlaceHead"), EnvironmentSettingsDlg::OnHeadCheck)
+    EVT_CHECKBOX(XRCID("chkAutoHideMessages"), EnvironmentSettingsDlg::OnAutoHide)
     EVT_CHECKBOX(XRCID("chkI18N"), EnvironmentSettingsDlg::OnI18NCheck)
     EVT_RADIOBOX(XRCID("rbSettingsIconsSize"), EnvironmentSettingsDlg::OnSettingsIconsSize)
 
@@ -114,18 +115,26 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     txt->Enable(false);
 #endif
 
+    // tab "View"
     bool do_place = cfg->ReadBool(_T("/dialog_placement/do_place"), false);
     XRCCTRL(*this, "chkDoPlace", wxCheckBox)->SetValue(do_place);
     XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->SetValue(cfg->ReadInt(_T("/dialog_placement/dialog_position"), 0) == pdlHead ? 1 : 0);
     XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(do_place);
 
-    // tab "View"
     XRCCTRL(*this, "rbProjectOpen", wxRadioBox)->SetSelection(pcfg->ReadInt(_T("/open_files"), 1));
     XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/toolbar_size"), true) ? 1 : 0);
     XRCCTRL(*this, "rbSettingsIconsSize", wxRadioBox)->SetSelection(cfg->ReadInt(_T("/environment/settings_size"), 0));
-    XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_hide"), false));
     XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/start_here_page"), true));
     XRCCTRL(*this, "spnLogFontSize", wxSpinCtrl)->SetValue(mcfg->ReadInt(_T("/log_font_size"), 8));
+
+    bool en = mcfg->ReadBool(_T("/auto_hide"), false);
+    XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->SetValue(en);
+    XRCCTRL(*this, "chkAutoShowMessagesOnSearch", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_show_search"), true));
+    XRCCTRL(*this, "chkAutoShowMessagesOnWarn", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_show_build_warnings"), true));
+    XRCCTRL(*this, "chkAutoShowMessagesOnErr", wxCheckBox)->SetValue(mcfg->ReadBool(_T("/auto_show_build_errors"), true));
+    XRCCTRL(*this, "chkAutoShowMessagesOnSearch", wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAutoShowMessagesOnWarn", wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAutoShowMessagesOnErr", wxCheckBox)->Enable(en);
 
 	bool i18n=cfg->ReadBool(_T("/environment/I18N"), false);
 		XRCCTRL(*this, "chkI18N", wxCheckBox)->SetValue(i18n);
@@ -301,6 +310,14 @@ void EnvironmentSettingsDlg::OnChooseColor(wxCommandEvent& event)
     }
 }
 
+void EnvironmentSettingsDlg::OnAutoHide(wxCommandEvent& event)
+{
+    bool en = XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->GetValue();
+    XRCCTRL(*this, "chkAutoShowMessagesOnSearch", wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAutoShowMessagesOnWarn", wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAutoShowMessagesOnErr", wxCheckBox)->Enable(en);
+}
+
 void EnvironmentSettingsDlg::OnPlaceCheck(wxCommandEvent& event)
 {
     XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(event.IsChecked());
@@ -344,8 +361,6 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         cfg->Write(_T("/environment/single_instance"),       (bool) XRCCTRL(*this, "chkSingleInstance", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/check_associations"),    (bool) XRCCTRL(*this, "chkAssociations", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/check_modified_files"),  (bool) XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->GetValue());
-        cfg->Write(_T("/dialog_placement/do_place"),         (bool) XRCCTRL(*this, "chkDoPlace", wxCheckBox)->GetValue());
-        cfg->Write(_T("/dialog_placement/dialog_position"),  (int)  XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->GetValue() ? pdlHead : pdlCentre);
         cfg->Write(_T("/console_shell"),                            XRCCTRL(*this, "txtConsoleShell", wxTextCtrl)->GetValue());
         cfg->Write(_T("/console_terminal"),                         XRCCTRL(*this, "txtConsoleTerm", wxTextCtrl)->GetValue());
 
@@ -355,10 +370,15 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         cfg->Write(_T("/environment/toolbar_size"),          (bool) XRCCTRL(*this, "rbToolbarSize", wxRadioBox)->GetSelection() == 1);
         cfg->Write(_T("/environment/settings_size"),         (int)  XRCCTRL(*this, "rbSettingsIconsSize", wxRadioBox)->GetSelection());
         mcfg->Write(_T("/auto_hide"),                        (bool) XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->GetValue());
+        mcfg->Write(_T("/auto_show_search"),                 (bool) XRCCTRL(*this, "chkAutoShowMessagesOnSearch", wxCheckBox)->GetValue());
+        mcfg->Write(_T("/auto_show_build_warnings"),         (bool) XRCCTRL(*this, "chkAutoShowMessagesOnWarn", wxCheckBox)->GetValue());
+        mcfg->Write(_T("/auto_show_build_errors"),           (bool) XRCCTRL(*this, "chkAutoShowMessagesOnErr", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/start_here_page"),       (bool) XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/I18N"),                  (bool) XRCCTRL(*this, "chkI18N", wxCheckBox)->GetValue());
         cfg->Write(_T("/locale/language"),                   (int)  XRCCTRL(*this, "cbxLanguage", wxComboBox)->GetSelection()-1);
         mcfg->Write(_T("/log_font_size"),                    (int)  XRCCTRL(*this, "spnLogFontSize", wxSpinCtrl)->GetValue());
+        cfg->Write(_T("/dialog_placement/do_place"),         (bool) XRCCTRL(*this, "chkDoPlace", wxCheckBox)->GetValue());
+        cfg->Write(_T("/dialog_placement/dialog_position"),  (int)  XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->GetValue() ? pdlHead : pdlCentre);
 
         // tab "Appearence"
         cfg->Write(_T("/environment/tabs_style"),           (int)XRCCTRL(*this, "cmbEditorTabs", wxComboBox)->GetSelection());

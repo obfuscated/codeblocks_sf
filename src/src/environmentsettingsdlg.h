@@ -23,6 +23,7 @@ class EnvironmentSettingsDlg : public wxDialog
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnPlaceCheck(wxCommandEvent& event);
         void OnHeadCheck(wxCommandEvent& event);
+        void OnAutoHide(wxCommandEvent& event);
         void OnI18NCheck(wxCommandEvent& event);
         void OnSettingsIconsSize(wxCommandEvent& event);
 	private:

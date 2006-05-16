@@ -2923,11 +2923,20 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 
         NotifyJobDone();
 
+        if (m_Errors.GetWarningsCount())
+        {
+            if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_warnings"), true))
+                Manager::Get()->GetMessageManager()->Open();
+            Manager::Get()->GetMessageManager()->SwitchTo(m_ListPageIndex);
+            m_pListLog->FocusError(m_Errors.GetFocusedError());
+        }
+
         if (m_Errors.GetErrorsCount())
         {
-            Manager::Get()->GetMessageManager()->Open();
+            if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_errors"), true))
+                Manager::Get()->GetMessageManager()->Open();
             Manager::Get()->GetMessageManager()->SwitchTo(m_ListPageIndex);
-            DoGotoNextError();
+            m_pListLog->FocusError(m_Errors.GetFocusedError());
         }
         else
         {
