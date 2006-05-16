@@ -7,16 +7,18 @@
 #include <wx/propgrid/propdev.h>
 #include <wx/propgrid/advprops.h>
 
-/** \brief Colour property - property used for handling wxColour property 
+#define wxsCOLOUR_DEFAULT   (wxPG_COLOUR_CUSTOM - 1)
+
+/** \brief Colour property - property used for handling wxColour property
  *
  *  This property uses wxColourPropertyValue to keep data
- * 
+ *
  */
 class wxsColourProperty: public wxsProperty
 {
 	public:
-	
-        /** \brief Ctor 
+
+        /** \brief Ctor
          *  \param PGName               name of property in Property Grid
          *  \param DataName             name of property in data stuctures
          *  \param ValueOffset          offset of wxColourPropertyValue member (taken from wxsOFFSET macro)
@@ -25,22 +27,22 @@ class wxsColourProperty: public wxsProperty
             const wxString& PGName,
             const wxString& DataName,
             long ValueOffset);
-		
+
 		/** \brief Returning type name */
 		virtual const wxString GetTypeName() { return _T("colour"); }
-		
+
 		/** \brief Getting wxColour object from wxColourPropertyValue
 		 *  \return wxColour class, if wxColour.Ok() will return false, default colour was used
 		 */
         static wxColour GetColour(const wxColourPropertyValue& value);
-        
+
         /** \brief Getting code building colour
          *  \return code with colour or empty string if there's default colour
          */
         static wxString GetColourCode(const wxColourPropertyValue& value,wxsCodingLang Language);
-		
+
     protected:
-    
+
         virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
         virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
         virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
@@ -55,11 +57,11 @@ class wxsColourProperty: public wxsProperty
 
 /** \addtogroup ext_properties_macros
  *  \{ */
- 
+
 /** \brief Macro automatically declaring colour property
  *  \param ClassName name of class holding this property
  *  \param VarName name of wxColourPropertyValue variable inside class
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property 
+ *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
            wxsPropertyContainer::Property \endlink for details, use 0 to always
            use this property
  *  \param PGName name used in property grid

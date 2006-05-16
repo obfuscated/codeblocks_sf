@@ -43,7 +43,10 @@ class wxsBaseProperties: public wxsPropertyContainer
             Enabled(true),
             Focused(false),
             Hidden(false),
-            ToolTip(_T(""))
+            Fg(wxsCOLOUR_DEFAULT),
+            Bg(wxsCOLOUR_DEFAULT),
+            ToolTip(wxEmptyString),
+            HelpText(wxEmptyString)
         {}
 
         /** \brief Function setting up created window using some of properties

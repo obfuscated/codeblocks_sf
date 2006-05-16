@@ -18,7 +18,10 @@ class wxsWindowEditorContent: public wxsDrawingWindow
         /** \brief Dctor */
         virtual ~wxsWindowEditorContent();
 
-        /** \brief Function refreshing current selection */
+        /** \brief Function which must be called when preview change */
+        void NewPreview();
+
+        /** \brief Function refreshing current selection (calculating new positions) */
         void RefreshSelection();
 
     protected:
@@ -69,9 +72,12 @@ class wxsWindowEditorContent: public wxsDrawingWindow
         /** \brief Declaration of vector containing all drag points */
         WX_DEFINE_ARRAY(DragPointData*,DragPointsT);
 
+        /** \brief Structure containing rect for each item */
+        WX_DECLARE_VOIDPTR_HASH_MAP(wxRect,ItemToRectT);
 
         wxsWindowEditor* Parent;                            ///< \brief Current window editor
         DragPointsT DragPoints;                             ///< \brief Array of visible drag points
+        ItemToRectT ItemToRect;                             ///< \brief Coordinates of each item stored here
         MouseStatesT MouseState;                            ///< \brief Current mouse state
         static const int DragBoxSize = 6;                   ///< \brief Size of boxes used to drag borders of widgets
         static const int MinDragDistance = 8;               ///< \brief Minimal distace which must be done to apply dragging
@@ -116,7 +122,12 @@ class wxsWindowEditorContent: public wxsDrawingWindow
         /** \brief Searching for new parent item during item dragging mode */
         bool FindDraggingItemTarget(int PosX,int PosY,wxsItem* Dragging,wxsParent*& NewParent,wxsItem*& AtCursor,bool& AddAfter);
 
+        /** \brief Getting bounding rect for given item */
         bool FindAbsoluteRect(wxsItem* Item,int& PosX,int& PosY,int& SizeX,int& SizeY);
+
+        /** \brief Function updating ItemToRect map */
+        void RecalculateRects();
+        void RecalculateRectsReq(wxsItem* Item);
 
         friend class wxsWindowEditorDragAssist;
 

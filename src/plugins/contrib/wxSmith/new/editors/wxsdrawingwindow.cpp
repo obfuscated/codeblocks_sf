@@ -48,6 +48,7 @@ wxsDrawingWindow::wxsDrawingWindow(wxWindow* Parent,wxWindowID id):
     wxScrolledWindow(Parent,id),
     Panel(NULL),
     PaintAfterFetch(false),
+    WaitTillHideChildren(false),
     IsBlockFetch(false),
     Bitmap(NULL)
 {
@@ -83,13 +84,16 @@ void wxsDrawingWindow::ContentChanged()
 
 void wxsDrawingWindow::PanelPaint(wxPaintEvent& event)
 {
-    if ( PaintAfterFetch || IsBlockFetch )
+    if ( PaintAfterFetch || WaitTillHideChildren ||  IsBlockFetch )
     {
         wxPaintDC PaintDC(Panel);
-        PaintAfterFetch = false;
         wxBitmap BmpCopy = Bitmap->GetSubBitmap(wxRect(0,0,Bitmap->GetWidth(),Bitmap->GetHeight()));
         wxBufferedDC DC(&PaintDC,BmpCopy);
         PaintExtra(&DC);
+        if ( !IsBlockFetch && !WaitTillHideChildren )
+        {
+            PaintAfterFetch = false;
+        }
     }
     else
     {
@@ -122,21 +126,24 @@ void wxsDrawingWindow::StartFetchingSequence()
     Block = true;
 
     // Hiding panel to show content under it
+    ShowChildren();
     Panel->Hide();
-    // TODO (SpOoN#1#): Show underlaying items because they could be hidden ealier (after fetching background)
 
     // Processing all pending events, it MUST be done
     // to repaint the content of window
     Manager::Yield();
     FetchScreen();
+    Manager::Yield();
+    WaitTillHideChildren = true;
+    HideChildren();
+    Manager::Yield();
+    WaitTillHideChildren = false;
     PaintAfterFetch = true;
     Manager::Yield();
     Panel->Raise();
     Manager::Yield();
     Panel->Show();
-    // TODO (SpOoN#1#): Hide underlaying items to prevent random repainting on windows
     Manager::Yield();
-    FullRepaint();
 
     Block = false;
 }
@@ -160,4 +167,28 @@ void wxsDrawingWindow::FullRepaint()
     wxBitmap BmpCopy = Bitmap->GetSubBitmap(wxRect(0,0,Bitmap->GetWidth(),Bitmap->GetHeight()));
     wxBufferedDC DC(&ClientDC,BmpCopy);
     PaintExtra(&DC);
+}
+
+void wxsDrawingWindow::ShowChildren()
+{
+    wxWindowList& Children = GetChildren();
+    for ( size_t i=0; i<Children.GetCount(); i++ )
+    {
+        if ( Children[i] != Panel )
+        {
+            Children[i]->Show();
+        }
+    }
+}
+
+void wxsDrawingWindow::HideChildren()
+{
+    wxWindowList& Children = GetChildren();
+    for ( size_t i=0; i<Children.GetCount(); i++ )
+    {
+        if ( Children[i] != Panel )
+        {
+            Children[i]->Hide();
+        }
+    }
 }

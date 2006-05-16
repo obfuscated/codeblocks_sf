@@ -145,7 +145,6 @@ void wxsWindowEditor::BuildPreview()
     if ( !TopPreview )
     {
         delete TopPreviewObject;
-        Content->RefreshSelection();
     }
     else
     {
@@ -157,14 +156,11 @@ void wxsWindowEditor::BuildPreview()
         NewSizer->FitInside(Content);
         HorizSizer->Layout();
         VertSizer->Layout();
-        Content->ContentChanged();
-        Content->RefreshSelection();
     }
 
-    // TODO: Check if these are needed
     Layout();
     Thaw();
-    Refresh();
+    Content->NewPreview();
 }
 
 void wxsWindowEditor::KillPreview()
@@ -218,6 +214,7 @@ void wxsWindowEditor::Undo()
     ResourceLock();
     UndoBuff->Undo();
     Corrector->ClearCache();
+    // FIXME (SpOoN#1#): ResourceUnlock will create new undo entry, need to avoid that
     ResourceUnlock();
 	SetModified(UndoBuff->IsModified());
 	// TODO: Restore selection
@@ -230,6 +227,7 @@ void wxsWindowEditor::Redo()
     ResourceLock();
     UndoBuff->Redo();
     Corrector->ClearCache();
+    // FIXME (SpOoN#1#): ResourceUnlock will create new undo entry, need to avoid that
     ResourceUnlock();
 	SetModified(UndoBuff->IsModified());
 	// TODO: Restore selection
@@ -271,7 +269,7 @@ void wxsWindowEditor::Cut()
     ResourceLock();
     KillSelection(RootItem());
     Corrector->ClearCache();
-    BuildPreview();
+    ResourceUnlock();
 
     // TODO: Select previous item / parent item etc
 	GetWinRes()->SelectionChanged(NULL);
@@ -808,8 +806,6 @@ void wxsWindowEditor::ResourceUnlock()
         KillPreview();
         BuildPreview();
         Thaw();
-        Content->ContentChanged();
-        Content->RefreshSelection();
         SetModified(true);
     }
 

@@ -180,18 +180,13 @@ void wxsWindowEditorContent::UpdateDragPoints(DragPointData* anyPoint)
 bool wxsWindowEditorContent::FindAbsoluteRect(wxsItem* Item,int& PosX,int& PosY,int& SizeX,int& SizeY)
 {
     if ( !Item ) return false;
-    if ( !Item->GetPreview() ) return false;
-    wxWindow* win = wxDynamicCast(Item->GetPreview(),wxWindow);
-    if ( !win ) return false;
-// TODO (SpOoN#1#): Add additional visibility check (query item's parent)
-    if ( !win->IsShown() ) return false;
-    PosX = 0;
-    PosY = 0;
-    win->GetPosition(&PosX,&PosY);
-    win->GetParent()->ClientToScreen(&PosX,&PosY);
-    ScreenToClient(&PosX,&PosY);
-    CalcUnscrolledPosition(PosX,PosY,&PosX,&PosY);
-    win->GetSize(&SizeX,&SizeY);
+    ItemToRectT::iterator i = ItemToRect.find(Item);
+    if ( i==ItemToRect.end() ) return false;
+    wxRect& Rect = (*i).second;
+    PosX = Rect.GetX();
+    PosY = Rect.GetY();
+    SizeX = Rect.GetWidth();
+    SizeY = Rect.GetHeight();
     return true;
 }
 
@@ -728,3 +723,50 @@ bool wxsWindowEditorContent::FindDraggingItemTarget(int PosX,int PosY,wxsItem* D
     return true;
 }
 
+void wxsWindowEditorContent::NewPreview()
+{
+    RecalculateRects();
+    RebuildDragPoints();
+    ContentChanged();
+}
+
+void wxsWindowEditorContent::RecalculateRects()
+{
+    ItemToRect.clear();
+    RecalculateRectsReq(RootItem());
+}
+
+void wxsWindowEditorContent::RecalculateRectsReq(wxsItem* Item)
+{
+    if ( Item->GetPreview() )
+    {
+        wxWindow* win = wxDynamicCast(Item->GetPreview(),wxWindow);
+        if ( win )
+        {
+            // TODO (SpOoN#1#): Add additional visibility check (query item's parent)
+            if ( win->IsShown() )
+            {
+                int PosX = 0;
+                int PosY = 0;
+                int SizeX = 0;
+                int SizeY = 0;
+                win->GetPosition(&PosX,&PosY);
+                win->GetParent()->ClientToScreen(&PosX,&PosY);
+                ScreenToClient(&PosX,&PosY);
+                CalcUnscrolledPosition(PosX,PosY,&PosX,&PosY);
+                win->GetSize(&SizeX,&SizeY);
+                ItemToRect[Item] = wxRect(PosX,PosY,SizeX,SizeY);
+
+                wxsParent* Parent = Item->ToParent();
+                if ( Parent )
+                {
+                    for ( int i=0; i<Parent->GetChildCount(); i++ )
+                    {
+                        RecalculateRectsReq(Parent->GetChild(i));
+                    }
+                }
+            }
+        }
+    }
+
+}

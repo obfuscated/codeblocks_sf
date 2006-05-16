@@ -8,13 +8,11 @@
 #include <wx/dc.h>
 #include <messagemanager.h>
 
-#define wxsCOLOUR_DEFAULT   (wxPG_COLOUR_CUSTOM - 1)
-
-
 // Creating custom colour property.
 // This is based on wxSystemColourProperty from propgrid
-namespace
-{
+
+//namespace
+//{
     class wxsMyColourPropertyClass : public wxEnumPropertyClass
     {
             WX_PG_DECLARE_PROPERTY_CLASS()
@@ -129,7 +127,7 @@ namespace
 
         if ( pval == (wxColourPropertyValue*) NULL )
         {
-            m_value.m_type = wxPG_COLOUR_CUSTOM;
+            m_value.m_type = wxsCOLOUR_DEFAULT;
             m_value.m_colour = *wxWHITE;
         }
         else if ( pval != &m_value )
@@ -140,6 +138,10 @@ namespace
         if ( m_value.m_type < wxPG_COLOUR_WEB_BASE )
         {
             m_value.m_colour = wxSystemSettings::GetColour((wxSystemColour)m_value.m_type);
+            wxEnumPropertyClass::DoSetValue((long)m_value.m_type);
+        }
+        else if ( m_value.m_type == wxsCOLOUR_DEFAULT )
+        {
             wxEnumPropertyClass::DoSetValue((long)m_value.m_type);
         }
     }
@@ -200,7 +202,7 @@ namespace
                 // Update text in combo box (so it is "(R,G,B)" not "Custom").
                 if ( primary )
                 {
-                    GetEditorClass()->SetControlStringValue(primary,GetValueAsString(0));
+                    GetEditorClass()->SetControlStringValue(primary,GetValueAsString(1));
                 }
 
                 return TRUE;
@@ -209,6 +211,13 @@ namespace
             {
                 m_value.m_type = wxsCOLOUR_DEFAULT;
                 m_value.m_colour = wxColour(0,0,0);
+
+                if ( primary )
+                {
+                    GetEditorClass()->SetControlStringValue(primary,GetValueAsString(0));
+                }
+
+                return TRUE;
             }
             else
             {
@@ -299,7 +308,7 @@ namespace
         }
         return FALSE;
     };
-};
+//}
 
 
 // Helper macros for fetching variables
