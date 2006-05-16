@@ -282,7 +282,7 @@ cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
                     continue;
                 wxCopyFile(baseDir + sep + fsf.source, dst);
                 for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
-                    prj->AddFile(i, fsf.destination);
+                    prj->AddFile(i, dst);
             }
         }
 
