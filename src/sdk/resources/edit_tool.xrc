@@ -82,8 +82,16 @@
             <size>0,0</size>
           </object>
           <object class="sizeritem">
-            <object class="wxCheckBox" name="chkCreateConsole">
-              <label>Launch tool in a new console window and wait for a keypress when done</label>
+            <object class="wxRadioBox" name="rbLaunchOptions">
+              <label>Launching options</label>
+              <content>
+                <item>Launch tool in a new console window and wait for a keypress when done</item>
+                <item>Launch tool hidden with standard output redirected</item>
+                <item>Launch tool visible (without output redirection)</item>
+              </content>
+              <selection>0</selection>
+              <dimension>1</dimension>
+              <style>wxRA_SPECIFY_COLS</style>
             </object>
           </object>
           <object class="spacer">

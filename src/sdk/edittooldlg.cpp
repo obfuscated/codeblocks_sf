@@ -58,7 +58,7 @@ EditToolDlg::EditToolDlg(wxWindow* parent, Tool* tool)
 	XRCCTRL(*this, "txtCommand", wxTextCtrl)->SetValue(m_Tool->command);
 	XRCCTRL(*this, "txtParams", wxTextCtrl)->SetValue(m_Tool->params);
 	XRCCTRL(*this, "txtDir", wxTextCtrl)->SetValue(m_Tool->workingDir);
-	XRCCTRL(*this, "chkCreateConsole", wxCheckBox)->SetValue(m_Tool->createConsole);
+	XRCCTRL(*this, "rbLaunchOptions", wxRadioBox)->SetSelection(static_cast<int>(m_Tool->launchOption));
 }
 
 EditToolDlg::~EditToolDlg()
@@ -99,7 +99,7 @@ void EditToolDlg::EndModal(int retCode)
         m_Tool->command = XRCCTRL(*this, "txtCommand", wxTextCtrl)->GetValue();
         m_Tool->params = XRCCTRL(*this, "txtParams", wxTextCtrl)->GetValue();
         m_Tool->workingDir = XRCCTRL(*this, "txtDir", wxTextCtrl)->GetValue();
-        m_Tool->createConsole = XRCCTRL(*this, "chkCreateConsole", wxCheckBox)->GetValue();
+        m_Tool->launchOption = static_cast<Tool::eLaunchOption>(XRCCTRL(*this, "rbLaunchOptions", wxRadioBox)->GetSelection());
     }
 
 	wxDialog::EndModal(retCode);

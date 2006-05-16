@@ -10,14 +10,16 @@
 
 class Tool
 {
-    public:
-	Tool(){ menuId = -1; }
-	wxString name;
-	wxString command;
-	wxString params;
-	wxString workingDir;
-	bool createConsole;
-	int menuId;
+  public:
+    enum eLaunchOption { LAUNCH_NEW_CONSOLE_WINDOW, LAUNCH_HIDDEN, LAUNCH_VISIBLE };
+
+    Tool() { menuId = -1; }
+    wxString name;
+    wxString command;
+    wxString params;
+    wxString workingDir;
+    eLaunchOption launchOption;
+    int menuId;
 };
 
 WX_DECLARE_LIST(Tool, ToolsList);

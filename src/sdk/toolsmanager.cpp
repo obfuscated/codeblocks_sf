@@ -54,7 +54,7 @@ const int idToolProcess = wxNewId();
 BEGIN_EVENT_TABLE(ToolsManager, wxEvtHandler)
 	EVT_MENU(idToolsConfigure, ToolsManager::OnConfigure)
 
-    EVT_IDLE(ToolsManager::OnIdle)
+  EVT_IDLE(ToolsManager::OnIdle)
 	EVT_TIMER(idTimerTool, ToolsManager::OnProcessTimer)
 
 	EVT_PIPEDPROCESS_STDOUT(idToolProcess, ToolsManager::OnToolStdOutput)
@@ -119,7 +119,7 @@ bool ToolsManager::Execute(Tool* tool)
 	Manager::Get()->GetMacrosManager()->ReplaceMacros(params);
 	Manager::Get()->GetMacrosManager()->ReplaceMacros(dir);
 
-    if (tool->createConsole)
+    if (tool->launchOption == Tool::LAUNCH_NEW_CONSOLE_WINDOW)
     {
     #ifndef __WXMSW__
         // for non-win platforms, use m_ConsoleTerm to run the console app
@@ -146,14 +146,26 @@ bool ToolsManager::Execute(Tool* tool)
     Manager::Get()->GetMessageManager()->Log(_("Launching tool '%s': %s (in %s)"), tool->name.c_str(), cmdline.c_str(), dir.c_str());
 
 	bool pipe = true;
-	int flags = wxEXEC_ASYNC | wxEXEC_NOHIDE;
-	if (tool->createConsole)
+	int flags = wxEXEC_ASYNC;
+
+	switch (tool->launchOption)
 	{
-		pipe = false; // no need to pipe output channels...
+	  case Tool::LAUNCH_NEW_CONSOLE_WINDOW:
+      pipe = false; // no need to pipe output channels...
+      break;
+
+    case Tool::LAUNCH_HIDDEN:
+      break; // use the default values of pipe and flags...
+
+    case Tool::LAUNCH_VISIBLE:
+      flags |= wxEXEC_NOHIDE;
+      pipe = false;
+      break;
 	}
 
     m_pProcess = new PipedProcess((void**)&m_pProcess, this, idToolProcess, pipe, dir);
     m_Pid = wxExecute(cmdline, flags, m_pProcess);
+
     if (!m_Pid)
     {
         cbMessageBox(_("Couldn't execute tool. Check the log for details."), _("Error"), wxICON_ERROR);
@@ -271,7 +283,7 @@ void ToolsManager::LoadTools()
             continue;
 		tool.params = cfg->Read(_T("/") + list[i] + _T("/params"));
 		tool.workingDir = cfg->Read(_T("/") + list[i] + _T("/workingDir"));
-		tool.createConsole = cfg->ReadBool(_T("/") + list[i] + _T("/createConsole"));
+		tool.launchOption = static_cast<Tool::eLaunchOption>(cfg->ReadInt(_T("/") + list[i] + _T("/launchOption")));
 
 		AddTool(&tool, false);
 	}
@@ -302,7 +314,7 @@ void ToolsManager::SaveTools()
 		cfg->Write(elem + _T("command"), tool->command);
 		cfg->Write(elem + _T("params"), tool->params);
 		cfg->Write(elem + _T("workingDir"), tool->workingDir);
-		cfg->Write(elem + _T("createConsole"), (bool)tool->createConsole);
+		cfg->Write(elem + _T("launchOption"), static_cast<int>(tool->launchOption));
 	}
 }
 
@@ -339,7 +351,7 @@ void ToolsManager::BuildToolsMenu(wxMenu* menu)
 int ToolsManager::Configure()
 {
 	ConfigureToolsDlg dlg(Manager::Get()->GetAppWindow());
-    PlaceWindow(&dlg);
+  PlaceWindow(&dlg);
 	dlg.ShowModal();
 	SaveTools();
 	BuildToolsMenu(m_Menu);
