@@ -39,6 +39,23 @@ namespace FileFilters
       */
     DLLIMPORT size_t GetIndexForFilterAll();
 
+
+    /** @brief Get the Filter name for the Index-th filter in the FiltersList
+      * @param FiltersList The list of Filters
+      * @param Filter Receives the name of the filter if found
+      * @param Index The index in the FiltersList of the filter we want to know the name of
+      * @return filter found : yes/no.
+      */
+	DLLIMPORT bool GetFilterNameFromIndex(const wxString& FiltersList, int Index, wxString& FilterName);
+
+    /** @brief Get the index of the filter 'FilterName' in the FiltersList
+      * @param FiltersList The list of Filters
+      * @param FilterName Name of the filter we want to know the index of
+      * @param Index Receives the index of the filter if found
+      * @return filter found : yes/no.
+      */
+	DLLIMPORT bool GetFilterIndexFromName(const wxString& FiltersList, const wxString& FilterName, int& Index);
+
     // file extension constants
     // *just* the extension, e.g. "exe"
     extern const DLLIMPORT wxString WORKSPACE_EXT;

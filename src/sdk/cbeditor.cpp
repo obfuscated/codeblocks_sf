@@ -883,13 +883,26 @@ bool cbEditor::SaveAs()
 {
     wxFileName fname;
     fname.Assign(m_Filename);
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("app"));
+    int StoredIndex = 0;
+    wxString Filters = FileFilters::GetFilterString();
+    wxString Path = fname.GetPath();
+    if(mgr)
+    {
+		wxString Filter = mgr->Read(_T("/file_dialogs/file_new_open/filter"), _T("C/C++ files"));
+		if(!Filter.IsEmpty())
+		{
+			FileFilters::GetFilterIndexFromName(Filters, Filter, StoredIndex);
+		}
+		Path = mgr->Read(_T("/file_dialogs/file_new_open/directory"), Path);
+    }
     wxFileDialog* dlg = new wxFileDialog(Manager::Get()->GetAppWindow(),
                                          _("Save file"),
-                                         fname.GetPath(),
-                                         fname.GetFullName(),
-                                         FileFilters::GetFilterString(),
+                                         Path,
+                                         fname.GetName(),
+                                         Filters,
                                          wxSAVE | wxOVERWRITE_PROMPT);
-
+    dlg->SetFilterIndex(StoredIndex);
     PlaceWindow(dlg);
     if (dlg->ShowModal() != wxID_OK)
         return false;
@@ -902,11 +915,21 @@ bool cbEditor::SaveAs()
     m_IsOK = true;
     SetModified(true);
     SetLanguage( HL_AUTO );
-
+    // store the last used filter and directory
+    if(mgr)
+    {
+		int Index = dlg->GetFilterIndex();
+		wxString Filter;
+		if(FileFilters::GetFilterNameFromIndex(Filters, Index, Filter))
+		{
+			mgr->Write(_T("/file_dialogs/file_new_open/filter"), Filter);
+		}
+		wxString Test = dlg->GetDirectory();
+		mgr->Write(_T("/file_dialogs/file_new_open/directory"), dlg->GetDirectory());
+    }
     dlg->Destroy();
-
     return Save();
-}
+} // end of SaveAs
 
 bool cbEditor::RenameTo(const wxString& filename, bool deleteOldFromDisk)
 {

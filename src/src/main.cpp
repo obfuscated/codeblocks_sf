@@ -1736,17 +1736,42 @@ bool MainFrame::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
 
 void MainFrame::OnFileOpen(wxCommandEvent& event)
 {
+    int StoredIndex = 0;
+    wxString Filters = FileFilters::GetFilterString();
+    wxString Path;
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("app"));
+    if(mgr)
+    {
+		wxString Filter = mgr->Read(_T("/file_dialogs/file_new_open/filter"), _T("C/C++ files"));
+		if(!Filter.IsEmpty())
+		{
+			FileFilters::GetFilterIndexFromName(Filters, Filter, StoredIndex);
+		}
+		Path = mgr->Read(_T("/file_dialogs/file_new_open/directory"), Path);
+    }
     wxFileDialog* dlg = new wxFileDialog(this,
                             _("Open file"),
+                            Path,
                             wxEmptyString,
-                            wxEmptyString,
-                            FileFilters::GetFilterString(),
+                            Filters,
                             wxOPEN | wxMULTIPLE);
-    dlg->SetFilterIndex(FileFilters::GetIndexForFilterAll());
+    dlg->SetFilterIndex(StoredIndex);
 
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
     {
+		// store the last used filter and directory
+		if(mgr)
+		{
+			int Index = dlg->GetFilterIndex();
+			wxString Filter;
+			if(FileFilters::GetFilterNameFromIndex(Filters, Index, Filter))
+			{
+				mgr->Write(_T("/file_dialogs/file_new_open/filter"), Filter);
+			}
+			wxString Test = dlg->GetDirectory();
+			mgr->Write(_T("/file_dialogs/file_new_open/directory"), dlg->GetDirectory());
+		}
         wxArrayString files;
         dlg->GetPaths(files);
         OnDropFiles(0,0,files);

@@ -94,6 +94,37 @@ size_t FileFilters::GetIndexForFilterAll()
     return s_LastFilterAllIndex;
 }
 
+bool FileFilters::GetFilterIndexFromName(const wxString& FiltersList, const wxString& FilterName, int& Index)
+{
+	bool bFound = false;
+	// the List will contain 2 entries per type (description, mask)
+	wxArrayString List = GetArrayFromString(FiltersList, _T("|"), true);
+	int LoopEnd = static_cast<int>(List.GetCount());
+	for(int idxList = 0; idxList < LoopEnd; idxList+=2)
+	{
+		if(List[idxList] == FilterName)
+		{
+			Index = idxList/2;
+			bFound = true;
+		}
+	} // end for : idx : idxList
+	return bFound;
+} // end of GetFilterIndexFromName
+
+bool FileFilters::GetFilterNameFromIndex(const wxString& FiltersList, int Index, wxString& FilterName)
+{	// we return the name (not the mask)
+	bool bFound = false;
+	// the List will contain 2 entries per type (description, mask)
+	wxArrayString List = GetArrayFromString(FiltersList, _T("|"), true);
+	int LoopEnd = static_cast<int>(List.GetCount());
+	if(2*Index < LoopEnd)
+	{
+		FilterName = List[2*Index];
+		bFound = true;
+	}
+	return bFound;
+} // end of GetFilterStringFromIndex
+
 // define some constants used throughout C::B
 
 const wxString FileFilters::WORKSPACE_EXT                = _T("workspace");
