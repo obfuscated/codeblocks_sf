@@ -159,7 +159,6 @@ class DebuggerGDB : public cbDebuggerPlugin
 		wxString m_Variable;
 		cbCompilerPlugin* m_pCompiler;
 		bool m_LastExitCode;
-		int m_TargetIndex;
 		int m_Pid;
 		int m_PidToAttach; // for "attach to process"
 		wxTipWindow* m_EvalWin;

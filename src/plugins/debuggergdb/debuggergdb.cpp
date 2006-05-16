@@ -201,7 +201,6 @@ DebuggerGDB::DebuggerGDB()
 	m_DbgPageIndex(-1),
 	m_pCompiler(0L),
 	m_LastExitCode(0),
-	m_TargetIndex(-1),
 	m_Pid(0),
 	m_PidToAttach(0),
 	m_EvalWin(0L),
@@ -745,18 +744,55 @@ int DebuggerGDB::Debug()
 	if (!project && m_PidToAttach == 0)
 		return 2;
 
+    // compile project/target (if not attaching to a PID)
+    if (m_PidToAttach == 0)
+    {
+        // make sure the target is compiled
+        PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
+        if (plugins.GetCount())
+            m_pCompiler = (cbCompilerPlugin*)plugins[0];
+        if (m_pCompiler)
+        {
+            // is the compiler already running?
+            if (m_pCompiler->IsRunning())
+            {
+                msgMan->Log(m_PageIndex, _("Compiler in use..."));
+                msgMan->Log(m_PageIndex, _("Aborting debugging session"));
+                cbMessageBox(_("The compiler is currently in use. Aborting debugging session..."), _("Compiler running"), wxICON_WARNING);
+                return -1;
+            }
+
+            msgMan->Log(m_PageIndex, _("Building to ensure sources are up-to-date"));
+            m_pCompiler->Build();
+            while (m_pCompiler->IsRunning())
+            {
+                wxMilliSleep(10);
+                Manager::Yield();
+            }
+            msgMan->SwitchTo(m_PageIndex);
+            if (m_pCompiler->GetExitCode() != 0)
+            {
+                msgMan->Log(m_PageIndex, _("Build failed..."));
+                msgMan->Log(m_PageIndex, _("Aborting debugging session"));
+                cbMessageBox(_("Build failed. Aborting debugging session..."), _("Build failed"), wxICON_WARNING);
+                return -1;
+            }
+            msgMan->Log(m_PageIndex, _("Build succeeded"));
+        }
+    }
+
     // select the build target to debug
     ProjectBuildTarget* target = 0;
     Compiler* actualCompiler = 0;
     if (m_PidToAttach == 0)
     {
-        m_TargetIndex = project->GetActiveBuildTarget();
+        int tgtIdx = project->GetActiveBuildTarget();
         msgMan->SwitchTo(m_PageIndex);
         msgMan->AppendLog(m_PageIndex, _("Selecting target: "));
-        if (m_TargetIndex == -1)
+        if (tgtIdx == -1)
         {
-            m_TargetIndex = project->SelectTarget(m_TargetIndex);
-            if (m_TargetIndex == -1)
+            tgtIdx = project->SelectTarget(tgtIdx);
+            if (tgtIdx == -1)
             {
                 msgMan->Log(m_PageIndex, _("canceled"));
                 return 3;
@@ -764,7 +800,7 @@ int DebuggerGDB::Debug()
         }
 
         // make sure it's not a commands-only target
-        target = project->GetBuildTarget(m_TargetIndex);
+        target = project->GetBuildTarget(tgtIdx);
         if (target->GetTargetType() == ttCommandsOnly)
         {
             cbMessageBox(_("The selected target is only running pre/post build step commands\n"
@@ -774,7 +810,7 @@ int DebuggerGDB::Debug()
         }
         msgMan->Log(m_PageIndex, target->GetTitle());
 
-        // find the target's compiler (to get gdb path and make sure the target is compiled already)
+        // find the target's compiler (to see which debugger to use)
         actualCompiler = CompilerFactory::GetCompiler(target ? target->GetCompilerID() : project->GetCompilerID());
     }
     else
@@ -815,40 +851,6 @@ int DebuggerGDB::Debug()
         msgMan->Log(m_PageIndex, _("Aborted"));
         return 4;
 	}
-
-    if (m_PidToAttach == 0)
-    {
-        // make sure the target is compiled
-        PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
-        if (plugins.GetCount())
-            m_pCompiler = (cbCompilerPlugin*)plugins[0];
-        if (m_pCompiler)
-        {
-            msgMan->AppendLog(m_PageIndex, _("Compiling: "));
-            // is the compiler already running?
-            if (m_pCompiler->IsRunning())
-            {
-                msgMan->Log(m_PageIndex, _("compiler in use..."));
-                msgMan->Log(m_PageIndex, _("Aborting debugging session"));
-                return -1;
-            }
-
-            m_pCompiler->Build(target);
-            while (m_pCompiler->IsRunning())
-            {
-                wxMilliSleep(10);
-                Manager::Yield();
-            }
-            msgMan->SwitchTo(m_PageIndex);
-            if (m_pCompiler->GetExitCode() != 0)
-            {
-                msgMan->Log(m_PageIndex, _("failed"));
-                msgMan->Log(m_PageIndex, _("Aborting debugging session"));
-                return -1;
-            }
-            msgMan->Log(m_PageIndex, _("done"));
-        }
-    }
 
     // switch to the user-defined layout for debugging
     DoSwitchLayout(_T("layout_start"));

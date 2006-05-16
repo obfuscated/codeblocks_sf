@@ -119,6 +119,8 @@ class CompilerGCC : public cbCompilerPlugin
 
         void Dispatcher(wxCommandEvent& event);
 
+        bool CheckDebuggerIsRunning();
+
         bool ReAllocProcesses();
         void AllocProcesses();
         void FreeProcesses();

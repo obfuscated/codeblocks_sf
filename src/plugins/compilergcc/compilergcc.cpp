@@ -727,6 +727,28 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
     }
 }
 
+bool CompilerGCC::CheckDebuggerIsRunning()
+{
+    PluginsArray plugins = Manager::Get()->GetPluginManager()->GetDebuggerOffers();
+    if (plugins.GetCount())
+    {
+        cbDebuggerPlugin* dbg = (cbDebuggerPlugin*)plugins[0];
+        if (dbg)
+        {
+            // is the debugger running?
+            if (dbg->IsRunning())
+            {
+                m_Log->GetTextControl()->Clear();
+                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Debugger is active"));
+                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Aborting build"));
+                cbMessageBox(_("The debugger is currently active. Aborting build..."), _("Debugger active"), wxICON_WARNING);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 void CompilerGCC::SaveOptions()
 {
 	// save compiler sets
@@ -2066,6 +2088,9 @@ void CompilerGCC::CalculateProjectDependencies(cbProject* prj)
 
 int CompilerGCC::Build(const wxString& target)
 {
+    if (CheckDebuggerIsRunning())
+        return -1;
+
     if (!CheckProject())
     {
         // no active project
@@ -2113,6 +2138,9 @@ int CompilerGCC::Rebuild(const wxString& target)
 
 int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 {
+    if (CheckDebuggerIsRunning())
+        return -1;
+
     // make sure all project files are saved
     if (m_Project && !m_Project->SaveAllFiles())
         Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
@@ -2142,6 +2170,9 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 
 int CompilerGCC::BuildWorkspace(const wxString& target)
 {
+    if (CheckDebuggerIsRunning())
+        return -1;
+
     DoPrepareQueue();
     ClearLog();
 
@@ -2169,6 +2200,9 @@ int CompilerGCC::BuildWorkspace(const wxString& target)
 
 int CompilerGCC::RebuildWorkspace(const wxString& target)
 {
+    if (CheckDebuggerIsRunning())
+        return -1;
+
     int ret = CleanWorkspace(target);
     if (ret != 0)
         return ret;
@@ -2178,6 +2212,9 @@ int CompilerGCC::RebuildWorkspace(const wxString& target)
 
 int CompilerGCC::CleanWorkspace(const wxString& target)
 {
+    if (CheckDebuggerIsRunning())
+        return -1;
+
     DoPrepareQueue();
     ClearLog();
 
