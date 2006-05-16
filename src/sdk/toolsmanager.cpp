@@ -146,11 +146,10 @@ bool ToolsManager::Execute(Tool* tool)
     Manager::Get()->GetMessageManager()->Log(_("Launching tool '%s': %s (in %s)"), tool->name.c_str(), cmdline.c_str(), dir.c_str());
 
 	bool pipe = true;
-	int flags = wxEXEC_ASYNC;
+	int flags = wxEXEC_ASYNC | wxEXEC_NOHIDE;
 	if (tool->createConsole)
 	{
 		pipe = false; // no need to pipe output channels...
-		flags |= wxEXEC_NOHIDE;
 	}
 
     m_pProcess = new PipedProcess((void**)&m_pProcess, this, idToolProcess, pipe, dir);
