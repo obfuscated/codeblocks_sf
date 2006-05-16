@@ -708,9 +708,6 @@ wxString DebuggerGDB::GetDebuggee(ProjectBuildTarget* target)
 
         default: break;
     }
-
-    if (!out.IsEmpty() && !target->GetExecutionParameters().IsEmpty())
-        out << _T(' ') << target->GetExecutionParameters();
     return out;
 }
 
@@ -908,6 +905,9 @@ int DebuggerGDB::Debug()
                 m_State.GetDriver()->SetWorkingDirectory(path);
             }
         }
+
+        if (target && !target->GetExecutionParameters().IsEmpty())
+            m_State.GetDriver()->SetArguments(target->GetExecutionParameters());
 
         // set the file to debug
         // (depends on the target type)

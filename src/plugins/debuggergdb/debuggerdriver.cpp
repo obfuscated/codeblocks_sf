@@ -59,6 +59,11 @@ void DebuggerDriver::SetWorkingDirectory(const wxString& dir)
     m_WorkingDir = dir;
 }
 
+void DebuggerDriver::SetArguments(const wxString& args)
+{
+    m_Args = args;
+}
+
 void DebuggerDriver::NotifyCursorChanged()
 {
     if (!m_Cursor.changed || m_LastCursorAddress == m_Cursor.address)

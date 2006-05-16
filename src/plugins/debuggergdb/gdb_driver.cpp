@@ -186,6 +186,10 @@ void GDB_driver::Prepare(bool isConsole)
     {
         QueueCommand(new GdbCmd_AddSourceDir(this, m_Dirs[i]));
     }
+
+    // set arguments
+    if (!m_Args.IsEmpty())
+        QueueCommand(new DebuggerCmd(this, _T("set args ") + m_Args));
 }
 
 void GDB_driver::Start(bool breakOnEntry)

@@ -58,6 +58,9 @@ class DebuggerDriver
         /** Set the working directory. */
         virtual void SetWorkingDirectory(const wxString& dir);
 
+        /** Set the execution arguments. */
+        virtual void SetArguments(const wxString& args);
+
         /** Get the command-line to launch the debugger. */
         virtual wxString GetCommandLine(const wxString& debugger, const wxString& debuggee) = 0;
 
@@ -157,6 +160,7 @@ class DebuggerDriver
         // convenience properties for starting up
         wxArrayString m_Dirs;
         wxString m_WorkingDir;
+        wxString m_Args;
 
         // cursor related
         bool m_ProgramIsStopped;
