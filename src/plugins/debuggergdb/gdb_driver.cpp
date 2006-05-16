@@ -11,7 +11,13 @@
 #include <wx/arrimpl.cpp> // this is a magic incantation which must be done!
 WX_DEFINE_OBJARRAY(TypesArray);
 
-#define GDB_PROMPT _T("(gdb)")
+// the ">>>>>>" is a hack: sometimes, especially when watching uninitialized char*
+// some random control codes in the stream (like 'delete') will mess-up our prompt and the debugger
+// will seem like frozen (only "stop" button available). Using this dummy prefix,
+// we allow for a few characters to be "eaten" this way and still get our
+// expected prompt back.
+#define GDB_PROMPT _T("cb_gdb:")
+#define FULL_GDB_PROMPT _T(">>>>>>") + GDB_PROMPT
 
 //[Switching to thread 2 (Thread 1082132832 (LWP 12298))]#0  0x00002aaaac5a2aca in pthread_cond_wait@@GLIBC_2.3.2 () from /lib/libpthread.so.0
 static wxRegEx reThreadSwitch(_T("^\\[Switching to thread .*\\]#0[ \t]+(0x[A-z0-9]+) in (.*) from (.*)"));
@@ -136,7 +142,7 @@ void GDB_driver::Prepare(bool isConsole)
     // default initialization
 
     // make sure we 're using the prompt that we know and trust ;)
-	QueueCommand(new DebuggerCmd(this, wxString(_T("set prompt ")) + GDB_PROMPT));
+	QueueCommand(new DebuggerCmd(this, wxString(_T("set prompt ")) + FULL_GDB_PROMPT));
 
     // send built-in init commands
 	QueueCommand(new DebuggerCmd(this, _T("set confirm off")));
@@ -401,6 +407,10 @@ void GDB_driver::ParseOutput(const wxString& output)
 //            Log(_T("Command parsing output: ") + buffer.Left(idx));
             RemoveTopCommand(false);
             buffer.Remove(idx);
+            // remove the '>>>>>>' part of the prompt (or what's left of it)
+            int cnt = 6; // max 6 '>'
+            while (buffer.Last() == _T('>') && cnt--)
+                buffer.RemoveLast();
             if (buffer.Last() == _T('\n'))
                 buffer.RemoveLast();
             cmd->ParseOutput(buffer.Left(idx));
