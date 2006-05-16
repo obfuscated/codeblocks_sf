@@ -60,8 +60,6 @@ class CodeBlocksApp : public wxApp
         int BatchJob();
         wxLocale m_locale; // locale we'll be using
     private:
-        void ShowSplashScreen();
-        void HideSplashScreen();
         bool CheckResource(const wxString& res);
         void SetupPersonality(const wxString& personality);
         void DelayLoadDdeFiles(MainFrame* frame);
@@ -85,7 +83,6 @@ class CodeBlocksApp : public wxApp
 		wxDialog* m_pBatchBuildDialog;
         // batch jobs - end
 
-        cbSplashScreen* m_pSplash;
 		wxSingleInstanceChecker* m_pSingleInstance;
 
         DECLARE_EVENT_TABLE()

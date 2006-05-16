@@ -62,6 +62,8 @@
 
 #include "appglobals.h"
 
+namespace
+{
 #if wxUSE_CMDLINE_PARSER
 static const wxCmdLineEntryDesc cmdLineDesc[] =
 {
@@ -92,6 +94,32 @@ DDEServer* g_DDEServer = 0L;
 // this list will be filled with DDE files to load after the app has started up
 wxArrayString s_DdeFilesToOpen;
 bool s_Loading = false;
+
+class Splash
+{
+    public:
+        Splash(const bool show) : m_pSplash(0)
+        {
+            if (show)
+            {
+                wxBitmap bmp = LoadPNGWindows2000Hack(ConfigManager::ReadDataPath() + _T("/images/splash_new.png"));
+                m_pSplash = new cbSplashScreen(bmp, -1, 0, -1, wxNO_BORDER | wxFRAME_NO_TASKBAR);
+                Manager::Yield();
+            }
+        }
+        ~Splash() { Hide(); }
+        void Hide()
+        {
+            if (m_pSplash)
+            {
+                m_pSplash->Destroy();
+                m_pSplash = 0;
+            }
+        }
+    private:
+        cbSplashScreen* m_pSplash;
+};
+}; // namespace
 
 IMPLEMENT_APP(CodeBlocksApp)
 
@@ -323,8 +351,6 @@ bool CodeBlocksApp::OnInit()
 
     try
     {
-        m_pSplash = 0;
-
     #if (wxUSE_ON_FATAL_EXCEPTION == 1)
         wxHandleFatalExceptions(true);
     #endif
@@ -342,8 +368,9 @@ bool CodeBlocksApp::OnInit()
             return false;
         }
 
-        if (!m_Batch)
-            ShowSplashScreen();
+        Splash splash(!m_Batch &&
+                      !m_NoSplash &&
+                      Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/show_splash"), true));
 
         InitLocale();
         m_pSingleInstance = 0;
@@ -366,7 +393,7 @@ bool CodeBlocksApp::OnInit()
             m_pSingleInstance = new wxSingleInstanceChecker(name, tempFolder);
             if (m_pSingleInstance->IsAnotherRunning())
             {
-                HideSplashScreen();
+                splash.Hide();
                 wxLogError(_("Another program instance is already running.\nCode::Blocks is currently configured to only allow one running instance.\n\nYou can access this Setting under the menu item 'Environment'."));
                 return false;
             }
@@ -397,7 +424,7 @@ bool CodeBlocksApp::OnInit()
         Manager::ProcessPendingEvents();
 
         // finally, show the app
-        HideSplashScreen();
+        splash.Hide();
         SetTopWindow(frame);
         frame->Show();
 
@@ -553,33 +580,10 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
         m_pBatchBuildDialog->EndModal(wxID_OK);
 }
 
-void CodeBlocksApp::ShowSplashScreen()
-{
-    HideSplashScreen();
-
-	if (!m_NoSplash && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/show_splash"), true) == true)
-	{
-        const wxString splashImage = _T("/images/splash_new.png");
-        wxBitmap bmp = LoadPNGWindows2000Hack(ConfigManager::ReadDataPath() + splashImage);
-		m_pSplash = new cbSplashScreen(bmp, -1l, 0, -1, wxNO_BORDER | wxFRAME_NO_TASKBAR);
-		Manager::Yield();
-	}
-}
-
-void CodeBlocksApp::HideSplashScreen()
-{
-    if (m_pSplash)
-    {
-        m_pSplash->Destroy();
-        m_pSplash = 0;
-    }
-}
-
 bool CodeBlocksApp::CheckResource(const wxString& res)
 {
     if (!wxFileExists(res))
     {
-        HideSplashScreen();
     	wxString msg;
     	msg.Printf(_T("Cannot find %s...\n"
     		"%s was configured to be installed in '%s'.\n"
