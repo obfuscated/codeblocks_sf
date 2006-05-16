@@ -64,7 +64,6 @@ class wxsDrawingWindow: public wxScrolledWindow
         void PanelPaint(wxPaintEvent& event);
         void PanelMouse(wxMouseEvent& event);
         void PanelKeyboard(wxKeyEvent& event);
-        void OnSize(wxSizeEvent& event);
 
         /** \brief Function stating sequence fetching editor's background
          *

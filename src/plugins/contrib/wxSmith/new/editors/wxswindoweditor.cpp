@@ -154,6 +154,7 @@ void wxsWindowEditor::BuildPreview()
         Content->SetVirtualSizeHints(1,1);
         Content->SetSizer(NewSizer);
         NewSizer->SetVirtualSizeHints(Content);
+        NewSizer->FitInside(Content);
         HorizSizer->Layout();
         VertSizer->Layout();
         Content->ContentChanged();

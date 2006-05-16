@@ -41,11 +41,7 @@ class wxsDrawingWindow::DrawingPanel: public wxPanel
 
 };
 
-DECLARE_EVENT_TYPE(wxEVT_FETCH_BACKGROUND_DELAY, -1)
-DEFINE_EVENT_TYPE(wxEVT_FETCH_BACKGROUND_DELAY)
-
 BEGIN_EVENT_TABLE(wxsDrawingWindow,wxScrolledWindow)
-    EVT_SIZE(wxsDrawingWindow::OnSize)
 END_EVENT_TABLE()
 
 wxsDrawingWindow::wxsDrawingWindow(wxWindow* Parent,wxWindowID id):
@@ -66,7 +62,7 @@ wxsDrawingWindow::~wxsDrawingWindow()
 
 void wxsDrawingWindow::ContentChanged()
 {
-    wxSize Size = GetClientSize();
+    wxSize Size = GetVirtualSize();
 
     // Generating new bitmap
     if ( Bitmap ) delete Bitmap;
@@ -78,7 +74,9 @@ void wxsDrawingWindow::ContentChanged()
     Panel->Raise();
 
     // Resizing panel to cover whole window
-    Panel->SetSize(0,0,Size.GetWidth(),Size.GetHeight());
+    int X, Y;
+    CalcScrolledPosition(0,0,&X,&Y);
+    Panel->SetSize(X,Y,Size.GetWidth(),Size.GetHeight());
 
     // Background will be fetched inside panel's internal routines when showing this window
 }
@@ -87,8 +85,10 @@ void wxsDrawingWindow::PanelPaint(wxPaintEvent& event)
 {
     if ( PaintAfterFetch || IsBlockFetch )
     {
-        wxPaintDC DC(Panel);
+        wxPaintDC PaintDC(Panel);
         PaintAfterFetch = false;
+        wxBitmap BmpCopy = Bitmap->GetSubBitmap(wxRect(0,0,Bitmap->GetWidth(),Bitmap->GetHeight()));
+        wxBufferedDC DC(&PaintDC,BmpCopy);
         PaintExtra(&DC);
     }
     else
@@ -115,7 +115,7 @@ void wxsDrawingWindow::StartFetchingSequence()
 {
     // This function will be blocking
     // If it has been executed and not yet finished,
-    // another calls (possibly called from Manager::ProcessPendingEvents())
+    // another calls (possibly called from Manager::Yield())
     // will not be executed
     static bool Block = false;
     if ( Block ) return;
@@ -147,9 +147,11 @@ void wxsDrawingWindow::FetchScreen()
 	wxScreenDC DC;
 	wxMemoryDC DestDC;
     int X = 0, Y = 0;
+    int DX = 0, DY = 0;
     ClientToScreen(&X,&Y);
+    CalcUnscrolledPosition(0,0,&DX,&DY);
     DestDC.SelectObject(*Bitmap);
-    DestDC.Blit(0,0,GetSize().GetWidth(),GetSize().GetHeight(),&DC,X,Y);
+    DestDC.Blit(DX,DY,GetSize().GetWidth(),GetSize().GetHeight(),&DC,X,Y);
 }
 
 void wxsDrawingWindow::FullRepaint()
@@ -158,10 +160,4 @@ void wxsDrawingWindow::FullRepaint()
     wxBitmap BmpCopy = Bitmap->GetSubBitmap(wxRect(0,0,Bitmap->GetWidth(),Bitmap->GetHeight()));
     wxBufferedDC DC(&ClientDC,BmpCopy);
     PaintExtra(&DC);
-}
-
-void wxsDrawingWindow::OnSize(wxSizeEvent& event)
-{
-    // After resizing we need to invalidate content
-    ContentChanged();
 }

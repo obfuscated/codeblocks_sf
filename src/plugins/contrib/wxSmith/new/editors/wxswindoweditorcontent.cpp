@@ -190,6 +190,7 @@ bool wxsWindowEditorContent::FindAbsoluteRect(wxsItem* Item,int& PosX,int& PosY,
     win->GetPosition(&PosX,&PosY);
     win->GetParent()->ClientToScreen(&PosX,&PosY);
     ScreenToClient(&PosX,&PosY);
+    CalcUnscrolledPosition(PosX,PosY,&PosX,&PosY);
     win->GetSize(&SizeX,&SizeY);
     return true;
 }
