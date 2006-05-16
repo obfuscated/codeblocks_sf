@@ -117,7 +117,8 @@ struct DebuggerBreakpoint
         address(0),
         alreadySet(false)
     {}
-    wxString filename; ///< The filename for the breakpoint.
+    wxString filename; ///< The filename for the breakpoint (kept as relative).
+    wxString filenameAsPassed; ///< The filename for the breakpoint as passed to the debugger (i.e. full filename).
 	int line; ///< The line for the breakpoint.
 	long int index; ///< The breakpoint number. Set automatically. *Don't* write to it.
 	bool temporary; ///< Is this a temporary (one-shot) breakpoint?

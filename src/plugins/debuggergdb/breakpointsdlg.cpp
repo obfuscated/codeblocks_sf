@@ -81,12 +81,17 @@ void BreakpointsDlg::FillBreakpoints()
 
 void BreakpointsDlg::RemoveBreakpoint(int sel)
 {
+    // if debugger is running and is not paused, return
+    if (m_State.GetDriver() && !m_State.GetDriver()->IsStopped())
+        return;
+    // if index is out of range, return
     if (sel < 0 || sel >= (int)m_State.GetBreakpoints().GetCount())
         return;
+    // if not valid breakpoint, return
     DebuggerBreakpoint* bp = m_State.GetBreakpoints()[sel];
     if (!bp)
         return;
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(bp->filename);
+    cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(bp->filenameAsPassed);
     if (ed)
         ed->RemoveBreakpoint(bp->line);
 }
@@ -101,14 +106,16 @@ void BreakpointsDlg::OnRemove(wxCommandEvent& event)
 
 void BreakpointsDlg::OnRemoveAll(wxCommandEvent& event)
 {
-    if (!m_State.GetDriver() || !m_State.GetDriver()->IsStopped())
+    // if debugger is running and is not paused, return
+    if (m_State.GetDriver() && !m_State.GetDriver()->IsStopped())
         return;
     while (m_State.GetBreakpoints().GetCount())
     {
+        // if not valid breakpoint, continue with the next one
         DebuggerBreakpoint* bp = m_State.GetBreakpoints()[0];
         if (!bp)
             continue;
-        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(bp->filename);
+        cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(bp->filenameAsPassed);
         if (ed)
             ed->RemoveBreakpoint(bp->line, false);
         m_State.RemoveBreakpoint(0);
