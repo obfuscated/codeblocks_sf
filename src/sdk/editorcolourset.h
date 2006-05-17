@@ -12,7 +12,7 @@ class cbStyledTextCtrl;
 
 #define COLORSET_DEFAULT	_T("default")
 
-struct OptionColor
+struct OptionColour
 {
 	wxString name;
 	int value;
@@ -30,12 +30,12 @@ struct OptionColor
 	bool originalunderlined;
 	bool originalisStyle;
 };
-WX_DEFINE_ARRAY(OptionColor*, OptionColors);
+WX_DEFINE_ARRAY(OptionColour*, OptionColours);
 
 struct OptionSet
 {
     wxString m_Langs;
-    OptionColors m_Colors;
+    OptionColours m_Colours;
     wxString m_Keywords[wxSCI_KEYWORDSET_MAX + 1]; // wxSCI_KEYWORDSET_MAX+1 keyword sets
     wxArrayString m_FileMasks;
     int m_Lexers;
@@ -53,12 +53,12 @@ typedef wxString HighlightLanguage;
 #define HL_AUTO _T(" ")
 #define HL_NONE _T("  ")
 
-class EditorColorSet
+class EditorColourSet
 {
 	public:
-		EditorColorSet(const wxString& setName = COLORSET_DEFAULT);
-		EditorColorSet(const EditorColorSet& other); // copy ctor
-		~EditorColorSet();
+		EditorColourSet(const wxString& setName = COLORSET_DEFAULT);
+		EditorColourSet(const EditorColourSet& other); // copy ctor
+		~EditorColourSet();
 
 		HighlightLanguage AddHighlightLanguage(int lexer, const wxString& name);
 		HighlightLanguage GetHighlightLanguage(int lexer); // from scintilla lexer (wxSCI_LEX_*)
@@ -74,11 +74,11 @@ class EditorColorSet
 						bool italics = false,
 						bool underlined = false,
 						bool isStyle = true);
-		bool AddOption(HighlightLanguage lang, OptionColor* option, bool checkIfExists = true);
-		OptionColor* GetOptionByName(HighlightLanguage lang, const wxString& name);
-		OptionColor* GetOptionByValue(HighlightLanguage lang, int value);
-		OptionColor* GetOptionByIndex(HighlightLanguage lang, int index);
-		void UpdateOptionsWithSameName(HighlightLanguage lang, OptionColor* base);
+		bool AddOption(HighlightLanguage lang, OptionColour* option, bool checkIfExists = true);
+		OptionColour* GetOptionByName(HighlightLanguage lang, const wxString& name);
+		OptionColour* GetOptionByValue(HighlightLanguage lang, int value);
+		OptionColour* GetOptionByIndex(HighlightLanguage lang, int index);
+		void UpdateOptionsWithSameName(HighlightLanguage lang, OptionColour* base);
 		int GetOptionCount(HighlightLanguage lang);
 		HighlightLanguage GetLanguageForFilename(const wxString& filename);
 		wxString GetLanguageName(HighlightLanguage lang);
@@ -96,10 +96,10 @@ class EditorColorSet
 		void SetSampleCode(HighlightLanguage lang, const wxString& sample, int breakLine, int debugLine, int errorLine);
 	protected:
 	private:
-		void DoApplyStyle(cbStyledTextCtrl* control, int value, OptionColor* option);
+		void DoApplyStyle(cbStyledTextCtrl* control, int value, OptionColour* option);
 		void LoadAvailableSets();
 		void Load();
-		void ClearAllOptionColors();
+		void ClearAllOptionColours();
 
 		wxString m_Name;
 		OptionSetsMap m_Sets;

@@ -10,7 +10,7 @@
 #include <wx/wfstream.h>
 #include <wx/fontutil.h>
 #include <globals.h>
-#include <editorcolorset.h>
+#include <editorcolourset.h>
 #include <manager.h>
 #include <editormanager.h>
 #include <configmanager.h>
@@ -55,7 +55,7 @@ DisassemblyDlg::DisassemblyDlg(wxWindow* parent, DebuggerGDB* debugger)
     }
     m_pCode->StyleSetFont(wxSCI_STYLE_DEFAULT, font);
 
-    EditorColorSet* set = Manager::Get()->GetEditorManager()->GetColorSet();
+    EditorColourSet* set = Manager::Get()->GetEditorManager()->GetColourSet();
     if (set)
     {
         HighlightLanguage lang = set->GetHighlightLanguage(wxSCI_LEX_ASM);

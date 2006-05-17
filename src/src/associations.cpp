@@ -312,7 +312,7 @@ ManageAssocsDialog::ManageAssocsDialog(wxWindow* parent)
         list->Check(i, Associations::DoCheckAssociation(knownTypes[i].ext, knownTypes[i].descr, exe, knownTypes[i].index));
     }
 
-    CenterOnParent();
+    CentreOnParent();
 }
 
 void ManageAssocsDialog::OnApply(wxCommandEvent& event)

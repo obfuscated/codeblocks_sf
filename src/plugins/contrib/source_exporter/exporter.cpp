@@ -11,7 +11,7 @@
 #include <manager.h>
 #include <cbeditor.h>
 #include <editormanager.h>
-#include <editorcolorset.h>
+#include <editorcolourset.h>
 #include <messagemanager.h>
 #include <cbexception.h>
 #include <licenses.h> // defines some common licenses (like the GPL)
@@ -199,7 +199,7 @@ void Exporter::ExportFile(BaseExporter *exp, const wxString &default_extension, 
 
   wxScintilla *ed = cb->GetControl();
   wxMemoryBuffer mb = ed->GetStyledText(0, ed->GetLength() - 1);
-  EditorColorSet *ecs = cb->GetColorSet();
+  EditorColourSet *ecs = cb->GetColourSet();
 
   exp->Export(filename, cb->GetFilename(), mb, ecs);
 }

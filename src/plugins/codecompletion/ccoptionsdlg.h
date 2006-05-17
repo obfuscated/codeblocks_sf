@@ -25,7 +25,7 @@ class CCOptionsDlg : public cbConfigurationPanel
         virtual void OnCancel(){}
 	protected:
 		void OnOK(wxCommandEvent& event);
-		void OnChooseColor(wxCommandEvent& event);
+		void OnChooseColour(wxCommandEvent& event);
 		void OnInheritanceToggle(wxCommandEvent& event);
 		void OnSliderScroll(wxScrollEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);

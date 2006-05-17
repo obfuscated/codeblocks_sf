@@ -51,18 +51,18 @@ void PDFExporter::PDFSetFont(wxPdfDocument &pdf)
   pdf.SetFontSize(pt);
 }
 
-void PDFExporter::PDFGetStyles(const EditorColorSet *c_color_set, HighlightLanguage lang)
+void PDFExporter::PDFGetStyles(const EditorColourSet *c_color_set, HighlightLanguage lang)
 {
   m_styles.clear(); // Be sure the styles are cleared
   defStyleIdx = -1; // No default style
 
   if (lang != HL_NONE)
   {
-    const int count = const_cast<EditorColorSet *>(c_color_set)->GetOptionCount(lang);
+    const int count = const_cast<EditorColourSet *>(c_color_set)->GetOptionCount(lang);
 
     for (int i = 0; i < count; ++i)
     {
-      OptionColor *optc = const_cast<EditorColorSet *>(c_color_set)->GetOptionByIndex(lang, i);
+      OptionColour *optc = const_cast<EditorColourSet *>(c_color_set)->GetOptionByIndex(lang, i);
 
       if (!optc->isStyle)
       {
@@ -221,10 +221,10 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
   PDFWriteText(pdf, text, fill);
 }
 
-void PDFExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set)
+void PDFExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set)
 {
   wxPdfDocument pdf;
-  HighlightLanguage lang = const_cast<EditorColorSet *>(color_set)->GetLanguageForFilename(title);
+  HighlightLanguage lang = const_cast<EditorColourSet *>(color_set)->GetLanguageForFilename(title);
 
   PDFSetFont(pdf);
   PDFGetStyles(color_set, lang);

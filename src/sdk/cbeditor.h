@@ -9,7 +9,7 @@
 #include "settings.h"
 #include "editorbase.h"
 #include "printing_types.h"
-#include "editorcolorset.h"
+#include "editorcolourset.h"
 
 extern const wxString g_EditorModified;
 
@@ -17,7 +17,7 @@ extern const wxString g_EditorModified;
 struct cbEditorInternalData; // this is the private data struct used by the editor.
 class cbEditor;
 class ProjectFile;
-class EditorColorSet;
+class EditorColourSet;
 
 class cbStyledTextCtrl : public wxScintilla
 {
@@ -49,11 +49,11 @@ class DLLIMPORT cbEditor : public EditorBase
 		  * @param parent the parent notebook - you should use EditorManager::Get()
 		  * @param filename the filename to open. If filename is empty, it creates a
 		  * new, empty, editor.
-		  * @param theme the initial color set to use\n
+		  * @param theme the initial colour set to use\n
 		  * <em>Note: you should not create a cbEditor object directly. Instead
 		  * use EditorManager's methods to do it...</em>
 		  */
-		cbEditor(wxWindow* parent, const wxString& filename, EditorColorSet* theme = 0L);
+		cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme = 0L);
 		/** cbEditor destructor. */
 		~cbEditor();
 
@@ -112,10 +112,10 @@ class DLLIMPORT cbEditor : public EditorBase
 		void UnfoldBlockFromLine(int line = -1);
 		/** Toggles folding of the block containing \c line. If \c line is -1, toggles folding of the block containing the caret. */
 		void ToggleFoldBlockFromLine(int line = -1);
-		/** Set the color set to use. */
-		void SetColorSet(EditorColorSet* theme);
-		/** Get the color set in use. */
-		EditorColorSet* GetColorSet(){ return m_pTheme; }
+		/** Set the colour set to use. */
+		void SetColourSet(EditorColourSet* theme);
+		/** Get the colour set in use. */
+		EditorColourSet* GetColourSet(){ return m_pTheme; }
 		/** Jumps to the matching brace (if there is one). */
 		void GotoMatchingBrace();
 		/** Highlights the brace pair (one of the braces must be under the cursor) */
@@ -132,9 +132,9 @@ class DLLIMPORT cbEditor : public EditorBase
         bool Reload(bool detectEncoding = true);
         /** Print the file.
           * @param selectionOnly Should the selected text be printed only?
-          * @param pcm The color mode to use when printing
+          * @param pcm The colour mode to use when printing
           */
-        void Print(bool selectionOnly, PrintColorMode pcm, bool line_numbers);
+        void Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers);
         /** Try to auto-complete the current word.
           *
           * This has nothing to do with code-completion plugins. Editor auto-completion
@@ -149,8 +149,8 @@ class DLLIMPORT cbEditor : public EditorBase
           */
 		void AutoComplete();
         /** Move the caret at the specified line.
-          * @param centerOnScreen If true (default), tries to bring the specified line to the center of the editor.*/
-        void GotoLine(int line, bool centerOnScreen = true);
+          * @param centreOnScreen If true (default), tries to bring the specified line to the centre of the editor.*/
+        void GotoLine(int line, bool centreOnScreen = true);
         /** Add debugger breakpoint at specified line. If @c line is -1, use current line. */
         bool AddBreakpoint(int line = -1, bool notifyDebugger = true);
         /** Remove debugger breakpoint at specified line. If @c line is -1, use current line. */
@@ -249,7 +249,7 @@ class DLLIMPORT cbEditor : public EditorBase
 		int m_Index;
         wxTimer m_timerWait;
 		ProjectFile* m_pProjectFile;
-		EditorColorSet* m_pTheme;
+		EditorColourSet* m_pTheme;
 		HighlightLanguage m_lang;
         wxDateTime m_LastModified; // to check if the file was modified outside the editor
 

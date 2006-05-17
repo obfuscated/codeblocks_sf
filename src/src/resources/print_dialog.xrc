@@ -23,12 +23,12 @@
             <border>8</border>
           </object>
           <object class="sizeritem">
-            <object class="wxRadioBox" name="rbColorMode">
-              <label>Color Mode</label>
+            <object class="wxRadioBox" name="rbColourMode">
+              <label>Colour Mode</label>
               <content>
                 <item>Black &amp;&amp; White</item>
-                <item>Color on white background</item>
-                <item>Invert colors</item>
+                <item>Colour on white background</item>
+                <item>Invert colours</item>
                 <item>As on screen</item>
               </content>
               <selection>1</selection>

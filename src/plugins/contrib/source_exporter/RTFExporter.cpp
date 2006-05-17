@@ -110,7 +110,7 @@ string RTFExporter::RTFFontTable(int &pt)
   return fonttbl;
 }
 
-string RTFExporter::RTFColorTable(const EditorColorSet *c_color_set, HighlightLanguage lang)
+string RTFExporter::RTFColorTable(const EditorColourSet *c_color_set, HighlightLanguage lang)
 {
   string colortbl("{\\colortbl");
   vector<wxColour> color_tbl; // We'll store fore and back colors here
@@ -120,11 +120,11 @@ string RTFExporter::RTFColorTable(const EditorColorSet *c_color_set, HighlightLa
 
   if (lang != HL_NONE)
   {
-    const int count = const_cast<EditorColorSet *>(c_color_set)->GetOptionCount(lang);
+    const int count = const_cast<EditorColourSet *>(c_color_set)->GetOptionCount(lang);
 
     for (int i = 0; i < count; ++i)
     {
-      OptionColor *optc = const_cast<EditorColorSet *>(c_color_set)->GetOptionByIndex(lang, i);
+      OptionColour *optc = const_cast<EditorColourSet *>(c_color_set)->GetOptionByIndex(lang, i);
 
       if (!optc->isStyle)
       {
@@ -363,10 +363,10 @@ string RTFExporter::RTFBody(const wxMemoryBuffer &styled_text, int pt)
 
 const char *RTFExporter::RTFEnd = "\n\\par }";
 
-void RTFExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set)
+void RTFExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set)
 {
   string rtf_code;
-  HighlightLanguage lang = const_cast<EditorColorSet *>(color_set)->GetLanguageForFilename(title);
+  HighlightLanguage lang = const_cast<EditorColourSet *>(color_set)->GetLanguageForFilename(title);
   int pt;
 
   rtf_code += RTFFontTable(pt);

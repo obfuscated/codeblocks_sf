@@ -24,14 +24,14 @@ class RTFExporter : public BaseExporter
     };
 
   public:
-    void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set);
+    void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set);
 
   private:
     vector<Style> m_styles;
     int defStyleIdx;
 
     static string RTFFontTable(int &pt);
-    string RTFColorTable(const EditorColorSet *c_color_set, HighlightLanguage lang);
+    string RTFColorTable(const EditorColourSet *c_color_set, HighlightLanguage lang);
     static const char *RTFInfo;
     static const char *RTFTitle;
     string RTFBody(const wxMemoryBuffer &styled_text, int pt);

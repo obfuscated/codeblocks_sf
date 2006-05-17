@@ -24,14 +24,14 @@ class PDFExporter : public BaseExporter
     };
 
   public:
-    void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set);
+    void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set);
 
   private:
     vector<Style> m_styles;
     int defStyleIdx;
 
     static void PDFSetFont(wxPdfDocument &pdf);
-    void PDFGetStyles(const EditorColorSet *c_color_set, HighlightLanguage lang);
+    void PDFGetStyles(const EditorColourSet *c_color_set, HighlightLanguage lang);
     void PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text);
 };
 

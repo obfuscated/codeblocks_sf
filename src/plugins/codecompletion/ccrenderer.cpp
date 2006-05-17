@@ -35,10 +35,10 @@ void CCRenderer::Draw(wxGrid& grid, wxGridCellAttr& attr, wxDC& dc, const wxRect
 	/*if (row == grid.GetGridCursorRow() && col == grid.GetGridCursorCol())
 	{
 		// selected cell
-		wxColour selColor(grid.GetGridLineColour());
-		dc.SetTextBackground(selColor);
-		dc.SetBrush(wxBrush(selColor, wxSOLID));
-		dc.SetPen(wxPen(selColor, 1, wxTRANSPARENT));
+		wxColour selColour(grid.GetGridLineColour());
+		dc.SetTextBackground(selColour);
+		dc.SetBrush(wxBrush(selColour, wxSOLID));
+		dc.SetPen(wxPen(selColour, 1, wxTRANSPARENT));
 		dc.DrawRectangle(rect);
 	}*/
 

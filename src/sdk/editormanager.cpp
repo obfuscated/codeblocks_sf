@@ -53,7 +53,7 @@
 #include <wx/bmpbuttn.h>
 #include <wx/progdlg.h>
 
-#include "editorcolorset.h"
+#include "editorcolourset.h"
 #include "editorconfigurationdlg.h"
 #include "finddlg.h"
 #include "replacedlg.h"
@@ -205,9 +205,9 @@ EditorManager::EditorManager()
     ShowOpenFilesTree(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/show_opened_files_tree"), true));
 #endif
 
-Manager::Get()->GetMessageManager()->DebugLog(_T("Initialize EditColorSet ....."));
-    m_Theme = new EditorColorSet(Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/color_sets/active_color_set"), COLORSET_DEFAULT));
-Manager::Get()->GetMessageManager()->DebugLog(_T("Initialize EditColorSet: done."));
+Manager::Get()->GetMessageManager()->DebugLog(_T("Initialize EditColourSet ....."));
+    m_Theme = new EditorColourSet(Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/colour_sets/active_colour_set"), COLORSET_DEFAULT));
+Manager::Get()->GetMessageManager()->DebugLog(_T("Initialize EditColourSet: done."));
 
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
 
@@ -445,19 +445,19 @@ EditorBase* EditorManager::GetEditor(int index)
     return InternalGetEditorBase(index);
 }
 
-void EditorManager::SetColorSet(EditorColorSet* theme)
+void EditorManager::SetColourSet(EditorColourSet* theme)
 {
     if (m_Theme)
         delete m_Theme;
 
     // copy locally
-    m_Theme = new EditorColorSet(*theme);
+    m_Theme = new EditorColourSet(*theme);
 
     for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         cbEditor* ed = InternalGetBuiltinEditor(i);
         if (ed)
-            ed->SetColorSet(m_Theme);
+            ed->SetColourSet(m_Theme);
     }
 }
 
@@ -593,7 +593,7 @@ cbEditor* EditorManager::New(const wxString& newFileName)
     wxString code = Manager::Get()->GetConfigManager(_T("editor"))->Read(key, wxEmptyString);
     ed->GetControl()->SetText(code);
 
-    ed->SetColorSet(m_Theme);
+    ed->SetColourSet(m_Theme);
     AddEditorBase(ed);
 #ifdef USE_OPENFILES_TREE
 
@@ -852,7 +852,7 @@ bool EditorManager::SaveAll()
     return true;
 }
 
-void EditorManager::Print(PrintScope ps, PrintColorMode pcm, bool line_numbers)
+void EditorManager::Print(PrintScope ps, PrintColourMode pcm, bool line_numbers)
 {
     switch (ps)
     {

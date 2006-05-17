@@ -373,7 +373,7 @@
                   <flag>wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP</flag>
                   <object class="wxStaticBoxSizer">
                     <orient>wxVERTICAL</orient>
-                    <label>Gradient style colors</label>
+                    <label>Gradient style colours</label>
                     <object class="sizeritem">
                       <border>4</border>
                       <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -385,7 +385,7 @@
                         <object class="sizeritem">
                           <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                           <object class="wxStaticText" name="ID_STATICTEXT2">
-                            <label>Border color:</label>
+                            <label>Border colour:</label>
                           </object>
                         </object>
                         <object class="sizeritem">
@@ -397,7 +397,7 @@
                         <object class="sizeritem">
                           <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                           <object class="wxStaticText" name="ID_STATICTEXT3">
-                            <label>From color:</label>
+                            <label>From colour:</label>
                           </object>
                         </object>
                         <object class="sizeritem">
@@ -409,7 +409,7 @@
                         <object class="sizeritem">
                           <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                           <object class="wxStaticText" name="ID_STATICTEXT4">
-                            <label>To color:</label>
+                            <label>To colour:</label>
                           </object>
                         </object>
                         <object class="sizeritem">
@@ -479,120 +479,120 @@
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                       <object class="wxStaticText" name="ID_STATICTEXT8">
-                        <label>Background color:</label>
+                        <label>Background colour:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnAuiBgColor">
+                      <object class="wxButton" name="btnAuiBgColour">
                         <label></label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                       <object class="wxStaticText" name="ID_STATICTEXT9">
-                        <label>Sash color:</label>
+                        <label>Sash colour:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnAuiSashColor">
+                      <object class="wxButton" name="btnAuiSashColour">
                         <label></label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                       <object class="wxStaticText" name="ID_STATICTEXT10">
-                        <label>Border color:</label>
+                        <label>Border colour:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnAuiBorderColor">
+                      <object class="wxButton" name="btnAuiBorderColour">
                         <label></label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                       <object class="wxStaticText" name="ID_STATICTEXT11">
-                        <label>Gripper color:</label>
+                        <label>Gripper colour:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnAuiGripperColor">
+                      <object class="wxButton" name="btnAuiGripperColour">
                         <label></label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                       <object class="wxStaticText" name="ID_STATICTEXT12">
-                        <label>Active caption color:</label>
+                        <label>Active caption colour:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnAuiActiveCaptionColor">
+                      <object class="wxButton" name="btnAuiActiveCaptionColour">
                         <label></label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                       <object class="wxStaticText" name="ID_STATICTEXT13">
-                        <label>Active caption gradient color:</label>
+                        <label>Active caption gradient colour:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnAuiActiveCaptionGradientColor">
+                      <object class="wxButton" name="btnAuiActiveCaptionGradientColour">
                         <label></label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                       <object class="wxStaticText" name="ID_STATICTEXT14">
-                        <label>Active caption text color:</label>
+                        <label>Active caption text colour:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnAuiActiveCaptionTextColor">
+                      <object class="wxButton" name="btnAuiActiveCaptionTextColour">
                         <label></label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                       <object class="wxStaticText" name="ID_STATICTEXT15">
-                        <label>Inactive caption color:</label>
+                        <label>Inactive caption colour:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnAuiInactiveCaptionColor">
+                      <object class="wxButton" name="btnAuiInactiveCaptionColour">
                         <label></label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                       <object class="wxStaticText" name="ID_STATICTEXT16">
-                        <label>Inactive caption gradient color:</label>
+                        <label>Inactive caption gradient colour:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnAuiInactiveCaptionGradientColor">
+                      <object class="wxButton" name="btnAuiInactiveCaptionGradientColour">
                         <label></label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                       <object class="wxStaticText" name="ID_STATICTEXT17">
-                        <label>Inactive caption text color:</label>
+                        <label>Inactive caption text colour:</label>
                       </object>
                     </object>
                     <object class="sizeritem">
                       <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnAuiInactiveCaptionTextColor">
+                      <object class="wxButton" name="btnAuiInactiveCaptionTextColour">
                         <label></label>
                       </object>
                     </object>

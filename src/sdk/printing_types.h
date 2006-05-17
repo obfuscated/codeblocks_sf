@@ -18,12 +18,12 @@ enum PrintScope
     psAllOpenEditors
 };
 
-// printing color mode
-enum PrintColorMode
+// printing colour mode
+enum PrintColourMode
 {
     pcmBlackAndWhite,
-    pcmColorOnWhite,
-    pcmInvertColors,
+    pcmColourOnWhite,
+    pcmInvertColours,
     pcmAsIs
 };
 

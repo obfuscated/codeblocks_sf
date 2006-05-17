@@ -2404,11 +2404,11 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk\editorcolorset.cpp">
+		<Unit filename="sdk\editorcolourset.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk\editorcolorset.h">
+		<Unit filename="sdk\editorcolourset.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />

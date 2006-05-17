@@ -207,7 +207,7 @@ class MainFrame : public wxFrame
         void DoUpdateStatusBar();
 		void DoUpdateAppTitle();
 		void DoUpdateLayout();
-        void DoUpdateLayoutColors();
+        void DoUpdateLayoutColours();
 		void DoUpdateEditorStyle();
 		void DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& prefix, long defaultStyle);
 

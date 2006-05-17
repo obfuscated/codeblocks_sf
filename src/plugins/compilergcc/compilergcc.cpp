@@ -2789,7 +2789,7 @@ void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 	AddOutputLine(msg);
 }
 
-void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
+void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
 {
     Manager::Get()->GetMessageManager()->LogToStdOut(output + _T('\n'));
 
@@ -2821,7 +2821,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
 			break;
 
         default:
-            if (forceErrorColor)
+            if (forceErrorColour)
                 m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON));
             else
                 m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
@@ -2837,7 +2837,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColor)
         m_pListLog->AddLog(errors);
         m_pListLog->GetListControl()->SetColumnWidth(2, wxLIST_AUTOSIZE);
 
-        // colorize the list output
+        // colourize the list output
 /* NOTE (mandrav#1#): For this to work under win32, one must use -D_WIN32_IE=0x300 when building wxWidgets
                       and probably edit wx/msw/treectrl.cpp and wx/listctrl.cpp (grep for _WIN32_IE) */
         m_pListLog->GetListControl()->SetItemTextColour(m_pListLog->GetListControl()->GetItemCount() - 1,

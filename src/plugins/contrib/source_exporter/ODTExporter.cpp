@@ -220,7 +220,7 @@ void ODTExporter::ODTCreateCommonFiles(wxZipOutputStream &zout)
   zout.Write(ODTSettingsFile, strlen(ODTSettingsFile));
 }
 
-void ODTExporter::ODTCreateStylesFile(wxZipOutputStream &zout, const EditorColorSet *color_set, HighlightLanguage lang)
+void ODTExporter::ODTCreateStylesFile(wxZipOutputStream &zout, const EditorColourSet *color_set, HighlightLanguage lang)
 {
   zout.PutNextEntry(_T("styles.xml"));
   zout.Write(ODTStylesFileBEG, strlen(ODTStylesFileBEG));
@@ -228,11 +228,11 @@ void ODTExporter::ODTCreateStylesFile(wxZipOutputStream &zout, const EditorColor
 
   if (lang != HL_NONE)
   {
-    const int count = const_cast<EditorColorSet *>(color_set)->GetOptionCount(lang);
+    const int count = const_cast<EditorColourSet *>(color_set)->GetOptionCount(lang);
 
     for (int i = 0; i < count; ++i)
     {
-      OptionColor *optc = const_cast<EditorColorSet *>(color_set)->GetOptionByIndex(lang, i);
+      OptionColour *optc = const_cast<EditorColourSet *>(color_set)->GetOptionByIndex(lang, i);
 
       if (!optc->isStyle)
       {
@@ -398,9 +398,9 @@ void ODTExporter::ODTCreateContentFile(wxZipOutputStream &zout, const wxMemoryBu
   zout.Write(ODTContentFileEND, strlen(ODTContentFileEND));
 }
 
-void ODTExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set)
+void ODTExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set)
 {
-  HighlightLanguage lang = const_cast<EditorColorSet *>(color_set)->GetLanguageForFilename(title);
+  HighlightLanguage lang = const_cast<EditorColourSet *>(color_set)->GetLanguageForFilename(title);
 
   wxFileOutputStream file(filename);
   wxZipOutputStream zout(file);

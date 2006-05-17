@@ -565,7 +565,7 @@ MyDialog::MyDialog(cbKeyBinder* binder, wxKeyProfileArray &prof,
 	// this is a little modification to make dlg look nicer
 	//wxSize sz(GetSizer()->GetMinSize());
 	//SetSize(-1, -1, (int)(sz.GetWidth()*1.3), (int)(sz.GetHeight()*1.1));
-	//CenterOnScreen();
+	//CentreOnScreen();
 }
 
 // ----------------------------------------------------------------------------

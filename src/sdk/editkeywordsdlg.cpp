@@ -26,7 +26,7 @@ BEGIN_EVENT_TABLE(EditKeywordsDlg, wxDialog)
     EVT_SPINCTRL(-1, EditKeywordsDlg::OnSetChange)
 END_EVENT_TABLE()
 
-EditKeywordsDlg::EditKeywordsDlg(wxWindow* parent, EditorColorSet* theme, HighlightLanguage lang)
+EditKeywordsDlg::EditKeywordsDlg(wxWindow* parent, EditorColourSet* theme, HighlightLanguage lang)
     : m_pTheme(theme),
     m_Lang(lang)
 {

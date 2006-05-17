@@ -124,7 +124,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
 
     // make sure everything is laid out properly
     GetSizer()->SetSizeHints(this);
-    CenterOnParent();
+    CentreOnParent();
 }
 
 // class destructor

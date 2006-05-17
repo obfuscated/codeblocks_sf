@@ -157,7 +157,7 @@ class CompilerGCC : public cbCompilerPlugin
 		void DoGotoPreviousError();
 		void DoClearErrors();
         wxString ProjectMakefile();
-        void AddOutputLine(const wxString& output, bool forceErrorColor = false);
+        void AddOutputLine(const wxString& output, bool forceErrorColour = false);
         void PrintBanner(cbProject* prj = 0, ProjectBuildTarget* target = 0);
         bool UseMake(ProjectBuildTarget* target = 0);
 		bool CompilerValid(ProjectBuildTarget* target = 0);

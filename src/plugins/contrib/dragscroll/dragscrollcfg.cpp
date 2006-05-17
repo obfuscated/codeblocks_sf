@@ -95,7 +95,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	this->SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
-	Center();
+	Centre();
 	//*)
 }
 // ----------------------------------------------------------------------------

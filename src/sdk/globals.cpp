@@ -698,7 +698,7 @@ void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
             int y1 = windowRect.y;
             int y2 = windowRect.y + windowRect.height;
 
-            if(windowRect.width > monitorWidth) // cannot place without clipping, so center it
+            if(windowRect.width > monitorWidth) // cannot place without clipping, so centre it
             {
                 x1 = r.left + (monitorWidth  - windowRect.width)/2;
                 x2 = x1 + windowRect.width;
@@ -709,7 +709,7 @@ void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
                 x1 = std::max(x2 - windowRect.width, (int) r.left);
                 x2 = x1 + windowRect.width;
             }
-            if(windowRect.height > monitorHeight) // cannot place without clipping, so center it
+            if(windowRect.height > monitorHeight) // cannot place without clipping, so centre it
             {
                 y1 = r.top + (monitorHeight  - windowRect.height)/2;
                 y2 = y1 + windowRect.height;

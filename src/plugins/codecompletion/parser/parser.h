@@ -103,7 +103,7 @@ class Parser : public wxEvtHandler
 #ifndef STANDALONE
 		int GetTokenKindImage(Token* token);
 		void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
-		void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColor);
+		void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColour);
 		void SetTokenKindImage(int kind, const wxIcon& icon);
 		wxImageList* GetImageList(){ return m_pImageList; }
 #endif // STANDALONE

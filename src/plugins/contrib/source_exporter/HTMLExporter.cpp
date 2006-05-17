@@ -45,11 +45,11 @@ const char *HTMLExporter::HTMLStyleBEG =
   "<style type=\"text/css\">\n"
   "<!--\n";
 
-string HTMLExporter::HTMLStyle(const EditorColorSet *c_color_set, HighlightLanguage lang)
+string HTMLExporter::HTMLStyle(const EditorColourSet *c_color_set, HighlightLanguage lang)
 {
   string style_list;
   string style_body("body { color: #000000; background-color: #FFFFFF; }\n");
-  EditorColorSet *color_set = const_cast<EditorColorSet *>(c_color_set);
+  EditorColourSet *color_set = const_cast<EditorColourSet *>(c_color_set);
 
   if (lang == HL_NONE)
   {
@@ -60,7 +60,7 @@ string HTMLExporter::HTMLStyle(const EditorColorSet *c_color_set, HighlightLangu
 
   for (int i = 0; i < count; ++i)
   {
-    OptionColor *optc = color_set->GetOptionByIndex(lang, i);
+    OptionColour *optc = color_set->GetOptionByIndex(lang, i);
 
     if (!optc->isStyle)
     {
@@ -226,10 +226,10 @@ const char *HTMLExporter::HTMLBodyEND =
   "</body>\n"
   "</html>\n";
 
-void HTMLExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set)
+void HTMLExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set)
 {
   string html_code;
-  HighlightLanguage lang = const_cast<EditorColorSet *>(color_set)->GetLanguageForFilename(title);
+  HighlightLanguage lang = const_cast<EditorColourSet *>(color_set)->GetLanguageForFilename(title);
 
   html_code += HTMLHeaderBEG;
   html_code += string("<title>") + string(cbU2C(title.c_str())) + string("</title>\n");

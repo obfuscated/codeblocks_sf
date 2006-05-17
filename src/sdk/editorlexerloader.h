@@ -4,12 +4,12 @@
 #include <wx/string.h>
 #include "tinyxml/tinyxml.h"
 
-class EditorColorSet;
+class EditorColourSet;
 
 class EditorLexerLoader
 {
 	public:
-		EditorLexerLoader(EditorColorSet* target);
+		EditorLexerLoader(EditorColourSet* target);
 		virtual ~EditorLexerLoader();
 
 		void Load(const wxString& filename);
@@ -19,7 +19,7 @@ class EditorLexerLoader
         void DoKeywords(HighlightLanguage language, TiXmlElement* node);
         void DoSingleKeywordNode(HighlightLanguage language, TiXmlElement* node, const wxString& nodename);
         void DoSampleCode(HighlightLanguage language, TiXmlElement* node);
-        EditorColorSet* m_pTarget;
+        EditorColourSet* m_pTarget;
 	private:
 };
 

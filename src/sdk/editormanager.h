@@ -21,7 +21,7 @@ class EditorBase;
 class wxFlatNotebook;
 class wxFlatNotebookEvent;
 class wxMenuBar;
-class EditorColorSet;
+class EditorColourSet;
 class cbProject;
 class ProjectFile;
 class cbEditor;
@@ -69,8 +69,8 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void ActivateNext();
         void ActivatePrevious();
         void SetActiveEditor(EditorBase* ed);
-        EditorColorSet* GetColorSet(){ return (this==NULL) ? 0 : m_Theme; }
-        void SetColorSet(EditorColorSet* theme);
+        EditorColourSet* GetColourSet(){ return (this==NULL) ? 0 : m_Theme; }
+        void SetColourSet(EditorColourSet* theme);
         cbEditor* New(const wxString& newFileName = wxEmptyString);
 
         // these are used *only* for custom editors
@@ -102,7 +102,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         int Replace(cbStyledTextCtrl* control, cbFindReplaceData* data);
         int FindNext(bool goingDown, cbStyledTextCtrl* control = 0, cbFindReplaceData* data = 0);
 
-        void Print(PrintScope ps, PrintColorMode pcm, bool line_numbers);
+        void Print(PrintScope ps, PrintColourMode pcm, bool line_numbers);
 
         /** Hides the editor notebook for layout purposes */
         void HideNotebook();
@@ -178,7 +178,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
 
         wxFlatNotebook* m_pNotebook;
         cbFindReplaceData* m_LastFindReplaceData;
-        EditorColorSet* m_Theme;
+        EditorColourSet* m_Theme;
         wxTreeCtrl* m_pTree;
         wxString m_LastActiveFile;
         bool m_LastModifiedflag;

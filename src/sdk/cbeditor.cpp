@@ -44,7 +44,7 @@
 
 #include <wx/fontutil.h>
 
-#include "editorcolorset.h"
+#include "editorcolourset.h"
 #include "cbeditorprintout.h"
 #include "editor_hooks.h"
 #include "filefilters.h"
@@ -329,7 +329,7 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
 END_EVENT_TABLE()
 
 // class constructor
-cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColorSet* theme)
+cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme)
     : EditorBase(parent, filename),
 	m_pControl(0L),
 	m_Modified(false),
@@ -554,10 +554,10 @@ void cbEditor::SetEditorStyle()
 	m_pControl->SetMouseDwellTime(1000);
 
     m_pControl->SetCaretWidth(mgr->ReadInt(_T("/caret/width"), 1));
-    m_pControl->SetCaretForeground(GetOptionColour(_T("/caret/color"), *wxBLACK));
+    m_pControl->SetCaretForeground(GetOptionColour(_T("/caret/colour"), *wxBLACK));
     m_pControl->SetCaretPeriod(mgr->ReadInt(_T("/caret/period"), 500));
 	m_pControl->SetCaretLineVisible(mgr->ReadBool(_T("/highlight_caret_line"), false));
-	m_pControl->SetCaretLineBackground(GetOptionColour(_T("/highlight_caret_line_color"), wxColour(0xFF, 0xFF, 0x00)));
+	m_pControl->SetCaretLineBackground(GetOptionColour(_T("/highlight_caret_line_colour"), wxColour(0xFF, 0xFF, 0x00)));
 
     m_pControl->SetUseTabs(mgr->ReadBool(_T("/use_tab"), false));
 	m_pControl->SetIndentationGuides(mgr->ReadBool(_T("/show_indent_guides"), false));
@@ -568,7 +568,7 @@ void cbEditor::SetEditorStyle()
     m_pControl->SetViewWhiteSpace(mgr->ReadInt(_T("/view_whitespace"), 0));
 	//gutter
     m_pControl->SetEdgeMode(mgr->ReadInt(_T("/gutter/mode"), 0));
-    m_pControl->SetEdgeColour(GetOptionColour(_T("/gutter/color"), *wxLIGHT_GREY));
+    m_pControl->SetEdgeColour(GetOptionColour(_T("/gutter/colour"), *wxLIGHT_GREY));
     m_pControl->SetEdgeColumn(mgr->ReadInt(_T("/gutter/column"), 80));
 
     m_pControl->StyleSetFont(wxSCI_STYLE_DEFAULT, font);
@@ -674,7 +674,7 @@ void cbEditor::SetEditorStyle()
 	SetLanguage( HL_AUTO );
 }
 
-void cbEditor::SetColorSet(EditorColorSet* theme)
+void cbEditor::SetColourSet(EditorColourSet* theme)
 {
 	m_pTheme = theme;
 	SetLanguage( m_lang );
@@ -820,7 +820,7 @@ bool cbEditor::Open(bool detectEncoding)
     // mark the file read-only, if applicable
     bool read_only = !wxFile::Access(m_Filename.c_str(), wxFile::write);
     m_pControl->SetReadOnly(read_only);
-    // if editor is read-only, override bg color for *all* styles...
+    // if editor is read-only, override bg colour for *all* styles...
     SetLanguage(HL_AUTO);
     if (read_only)
     {
@@ -1084,9 +1084,9 @@ void cbEditor::ToggleFoldBlockFromLine(int line)
 	DoFoldBlockFromLine(line, 2);
 }
 
-void cbEditor::GotoLine(int line, bool centerOnScreen)
+void cbEditor::GotoLine(int line, bool centreOnScreen)
 {
-    if (centerOnScreen)
+    if (centreOnScreen)
     {
         int onScreen = m_pControl->LinesOnScreen() >> 1;
         m_pControl->GotoLine(line - onScreen);
@@ -1569,7 +1569,7 @@ void cbEditor::OnAfterBuildContextMenu(ModuleType type)                //pecan 2
     // we don't care
 }
 
-void cbEditor::Print(bool selectionOnly, PrintColorMode pcm, bool line_numbers)
+void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
 {
     // print line numbers?
     m_pControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
@@ -1588,10 +1588,10 @@ void cbEditor::Print(bool selectionOnly, PrintColorMode pcm, bool line_numbers)
         case pcmBlackAndWhite:
             m_pControl->SetPrintColourMode(wxSCI_PRINT_BLACKONWHITE);
             break;
-        case pcmColorOnWhite:
+        case pcmColourOnWhite:
             m_pControl->SetPrintColourMode(wxSCI_PRINT_COLOURONWHITE);
             break;
-        case pcmInvertColors:
+        case pcmInvertColours:
             m_pControl->SetPrintColourMode(wxSCI_PRINT_INVERTLIGHT);
             break;
     }

@@ -246,11 +246,11 @@ void Parser::SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxBitmap&
 #endif
 }
 
-void Parser::SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColor)
+void Parser::SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColour)
 {
 	if (kind < PARSER_IMG_MIN || kind > PARSER_IMG_MAX)
 		return;
-	m_pImageList->Replace(kind, bitmap);//, maskColor);
+	m_pImageList->Replace(kind, bitmap);//, maskColour);
 }
 
 void Parser::SetTokenKindImage(int kind, const wxIcon& icon)

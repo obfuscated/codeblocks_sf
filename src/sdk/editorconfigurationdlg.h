@@ -8,7 +8,7 @@
 
 // forward decls
 class cbStyledTextCtrl;
-class EditorColorSet;
+class EditorColourSet;
 class wxListbookEvent;
 
 class EditorConfigurationDlg : public wxDialog
@@ -18,14 +18,14 @@ class EditorConfigurationDlg : public wxDialog
     	~EditorConfigurationDlg();
 
 		void OnChooseFont(wxCommandEvent& event);
-        void OnChooseColor(wxCommandEvent& event);
+        void OnChooseColour(wxCommandEvent& event);
         void OnBoldItalicUline(wxCommandEvent& event);
-		void OnColorTheme(wxCommandEvent& event);
-		void OnAddColorTheme(wxCommandEvent& event);
-		void OnDeleteColorTheme(wxCommandEvent& event);
-		void OnRenameColorTheme(wxCommandEvent& event);
-		void OnColorComponent(wxCommandEvent& event);
-		void OnColorsReset(wxCommandEvent& event);
+		void OnColourTheme(wxCommandEvent& event);
+		void OnAddColourTheme(wxCommandEvent& event);
+		void OnDeleteColourTheme(wxCommandEvent& event);
+		void OnRenameColourTheme(wxCommandEvent& event);
+		void OnColourComponent(wxCommandEvent& event);
+		void OnColoursReset(wxCommandEvent& event);
 		void OnEditKeywords(wxCommandEvent& event);
 		void OnEditFilemasks(wxCommandEvent& event);
 		void OnChangeLang(wxCommandEvent& event);
@@ -40,19 +40,19 @@ class EditorConfigurationDlg : public wxDialog
         void OnPageChanged(wxListbookEvent& event);
         void AddPluginPanels();
         void UpdateListbookImages();
-		void CreateColorsSample();
+		void CreateColoursSample();
 		void CreateAutoCompText();
 		void AutoCompUpdate(int index);
-		void ApplyColors();
-		void FillColorComponents();
-		void ReadColors();
-		void WriteColors();
+		void ApplyColours();
+		void FillColourComponents();
+		void ReadColours();
+		void WriteColours();
 		void LoadThemes();
 		void ChangeTheme();
 		bool AskToSaveTheme();
-		cbStyledTextCtrl* m_TextColorControl;
+		cbStyledTextCtrl* m_TextColourControl;
 		cbStyledTextCtrl* m_AutoCompTextControl;
-		EditorColorSet* m_Theme;
+		EditorColourSet* m_Theme;
 		HighlightLanguage m_Lang;
 		int m_DefCodeFileType;
 		wxArrayString m_DefaultCode;  //!< will store the default code during configuration for each type

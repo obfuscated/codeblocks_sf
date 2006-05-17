@@ -58,7 +58,7 @@
 #include <scriptingmanager.h>
 #include <cbexception.h>
 #include <annoyingdialog.h>
-#include <editorcolorset.h>
+#include <editorcolourset.h>
 
 #include "dlgaboutplugin.h"
 #include "dlgabout.h"
@@ -545,10 +545,10 @@ void MainFrame::CreateIDE()
 
     // editor manager
     m_LayoutManager.AddPane(m_pEdMan->GetNotebook(), wxPaneInfo().Name(wxT("MainPane")).
-                            CenterPane());
+                            CentrePane());
 
     DoUpdateLayout();
-    DoUpdateLayoutColors();
+    DoUpdateLayoutColours();
     DoUpdateEditorStyle();
 
     m_pEdMan->GetNotebook()->SetDropTarget(new wxMyFileDropTarget(this));
@@ -604,7 +604,7 @@ void MainFrame::CreateMenubar()
         mbar->FindItem(idEditHighlightModeText, &hl);
         if (hl)
         {
-            EditorColorSet* theme = Manager::Get()->GetEditorManager()->GetColorSet();
+            EditorColourSet* theme = Manager::Get()->GetEditorManager()->GetColourSet();
             if (theme)
             {
                 wxArrayString langs = theme->GetAllHighlightLanguages();
@@ -1291,7 +1291,7 @@ void MainFrame::DoUpdateEditorStyle()
     DoUpdateEditorStyle(fn, _T("project"), wxFNB_NO_X_BUTTON);
 }
 
-void MainFrame::DoUpdateLayoutColors()
+void MainFrame::DoUpdateLayoutColours()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
     wxDockArt* art = m_LayoutManager.GetArtProvider();
@@ -1300,16 +1300,16 @@ void MainFrame::DoUpdateLayoutColors()
     art->SetMetric(wxAUI_ART_PANE_BORDER_SIZE,   cfg->ReadInt(_T("/environment/aui/border_size"), art->GetMetric(wxAUI_ART_PANE_BORDER_SIZE)));
     art->SetMetric(wxAUI_ART_SASH_SIZE,          cfg->ReadInt(_T("/environment/aui/sash_size"), art->GetMetric(wxAUI_ART_SASH_SIZE)));
     art->SetMetric(wxAUI_ART_CAPTION_SIZE,       cfg->ReadInt(_T("/environment/aui/caption_size"), art->GetMetric(wxAUI_ART_CAPTION_SIZE)));
-    art->SetColor(wxAUI_ART_BACKGROUND_COLOUR,   cfg->ReadColour(_T("/environment/aui/bg_color"), art->GetColor(wxAUI_ART_BACKGROUND_COLOUR)));
-    art->SetColor(wxAUI_ART_SASH_COLOUR,         cfg->ReadColour(_T("/environment/aui/sash_color"), art->GetColor(wxAUI_ART_SASH_COLOUR)));
-    art->SetColor(wxAUI_ART_ACTIVE_CAPTION_COLOUR,              cfg->ReadColour(_T("/environment/aui/active_caption_color"), art->GetColor(wxAUI_ART_ACTIVE_CAPTION_COLOUR)));
-    art->SetColor(wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR,     cfg->ReadColour(_T("/environment/aui/active_caption_gradient_color"), art->GetColor(wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR)));
-    art->SetColor(wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR,         cfg->ReadColour(_T("/environment/aui/active_caption_text_color"), art->GetColor(wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR)));
-    art->SetColor(wxAUI_ART_INACTIVE_CAPTION_COLOUR,            cfg->ReadColour(_T("/environment/aui/inactive_caption_color"), art->GetColor(wxAUI_ART_INACTIVE_CAPTION_COLOUR)));
-    art->SetColor(wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR,   cfg->ReadColour(_T("/environment/aui/inactive_caption_gradient_color"), art->GetColor(wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR)));
-    art->SetColor(wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR,       cfg->ReadColour(_T("/environment/aui/inactive_caption_text_color"), art->GetColor(wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR)));
-    art->SetColor(wxAUI_ART_BORDER_COLOUR,       cfg->ReadColour(_T("/environment/aui/border_color"), art->GetColor(wxAUI_ART_BORDER_COLOUR)));
-    art->SetColor(wxAUI_ART_GRIPPER_COLOUR,      cfg->ReadColour(_T("/environment/aui/gripper_color"), art->GetColor(wxAUI_ART_GRIPPER_COLOUR)));
+    art->SetColour(wxAUI_ART_BACKGROUND_COLOUR,   cfg->ReadColour(_T("/environment/aui/bg_colour"), art->GetColour(wxAUI_ART_BACKGROUND_COLOUR)));
+    art->SetColour(wxAUI_ART_SASH_COLOUR,         cfg->ReadColour(_T("/environment/aui/sash_colour"), art->GetColour(wxAUI_ART_SASH_COLOUR)));
+    art->SetColour(wxAUI_ART_ACTIVE_CAPTION_COLOUR,              cfg->ReadColour(_T("/environment/aui/active_caption_colour"), art->GetColour(wxAUI_ART_ACTIVE_CAPTION_COLOUR)));
+    art->SetColour(wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR,     cfg->ReadColour(_T("/environment/aui/active_caption_gradient_colour"), art->GetColour(wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR)));
+    art->SetColour(wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR,         cfg->ReadColour(_T("/environment/aui/active_caption_text_colour"), art->GetColour(wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR)));
+    art->SetColour(wxAUI_ART_INACTIVE_CAPTION_COLOUR,            cfg->ReadColour(_T("/environment/aui/inactive_caption_colour"), art->GetColour(wxAUI_ART_INACTIVE_CAPTION_COLOUR)));
+    art->SetColour(wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR,   cfg->ReadColour(_T("/environment/aui/inactive_caption_gradient_colour"), art->GetColour(wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR)));
+    art->SetColour(wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR,       cfg->ReadColour(_T("/environment/aui/inactive_caption_text_colour"), art->GetColour(wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR)));
+    art->SetColour(wxAUI_ART_BORDER_COLOUR,       cfg->ReadColour(_T("/environment/aui/border_colour"), art->GetColour(wxAUI_ART_BORDER_COLOUR)));
+    art->SetColour(wxAUI_ART_GRIPPER_COLOUR,      cfg->ReadColour(_T("/environment/aui/gripper_colour"), art->GetColour(wxAUI_ART_GRIPPER_COLOUR)));
 
     DoUpdateLayout();
 }
@@ -1903,7 +1903,7 @@ void MainFrame::OnFilePrint(wxCommandEvent& event)
     PrintDialog dlg(this);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
-        Manager::Get()->GetEditorManager()->Print(dlg.GetPrintScope(), dlg.GetPrintColorMode(), dlg.GetPrintLineNumbers());
+        Manager::Get()->GetEditorManager()->Print(dlg.GetPrintScope(), dlg.GetPrintColourMode(), dlg.GetPrintLineNumbers());
 }
 
 void MainFrame::OnFileRunScript(wxCommandEvent& WXUNUSED(event))
@@ -2241,7 +2241,7 @@ void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
     {
-        EditorColorSet* theme = Manager::Get()->GetEditorManager()->GetColorSet();
+        EditorColourSet* theme = Manager::Get()->GetEditorManager()->GetColourSet();
         if (theme)
         {
             HighlightLanguage lang = theme->GetHighlightLanguage(_T(""));
@@ -2975,7 +2975,7 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
 	if (dlg.ShowModal() == wxID_OK)
 	{
         DoUpdateEditorStyle();
-        DoUpdateLayoutColors();
+        DoUpdateLayoutColours();
 
         m_SmallToolBar = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/toolbar_size"), true);
         needRestart = m_SmallToolBar != tbarsmall;

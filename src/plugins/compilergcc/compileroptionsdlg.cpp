@@ -219,7 +219,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
     GetSizer()->Layout();
     GetSizer()->SetSizeHints(this);
     this->SetSize(-1, -1, 0, 0);
-    this->CenterOnScreen();
+    this->CentreOnScreen();
 }
 
 CompilerOptionsDlg::~CompilerOptionsDlg()

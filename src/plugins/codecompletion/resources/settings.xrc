@@ -145,14 +145,14 @@
                                                     <border>4</border>
                                                     <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                                     <object class="wxStaticText" name="ID_STATICTEXT4">
-                                                        <label>List color (for custom list control):</label>
+                                                        <label>List colour (for custom list control):</label>
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">
                                                     <option>1</option>
                                                     <border>8</border>
                                                     <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                                    <object class="wxButton" name="btnColor">
+                                                    <object class="wxButton" name="btnColour">
                                                         <label></label>
                                                     </object>
                                                 </object>

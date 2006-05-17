@@ -9,13 +9,13 @@ using std::string;
 class HTMLExporter : public BaseExporter
 {
   public:
-    void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set);
+    void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set);
 
   private:
     static const char *HTMLHeaderBEG;
     static const char *HTMLMeta;
     static const char *HTMLStyleBEG;
-    static string HTMLStyle(const EditorColorSet *color_set, HighlightLanguage lang);
+    static string HTMLStyle(const EditorColourSet *color_set, HighlightLanguage lang);
     static const char *HTMLStyleEND;
     static const char *HTMLHeaderEND;
     static const char *HTMLBodyBEG;

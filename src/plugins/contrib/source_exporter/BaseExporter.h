@@ -3,13 +3,14 @@
 
 #include <wx/wx.h>
 #include <wx/wxscintilla.h>
-#include <editorcolorset.h>
+
+#include <editorcolourset.h>
 
 class BaseExporter
 {
   public:
     virtual ~BaseExporter() = 0;
-    virtual void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColorSet *color_set) = 0;
+    virtual void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set) = 0;
 };
 
 #endif // BASEEXPORTER_INCLUDED

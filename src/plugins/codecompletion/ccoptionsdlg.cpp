@@ -81,7 +81,7 @@ static const wxString g_SampleClasses =
 
 BEGIN_EVENT_TABLE(CCOptionsDlg, wxPanel)
     EVT_UPDATE_UI(-1, CCOptionsDlg::OnUpdateUI)
-	EVT_BUTTON(XRCID("btnColor"), CCOptionsDlg::OnChooseColor)
+	EVT_BUTTON(XRCID("btnColour"), CCOptionsDlg::OnChooseColour)
 	EVT_CHECKBOX(XRCID("chkInheritance"), CCOptionsDlg::OnInheritanceToggle)
 	EVT_COMBOBOX(XRCID("cmbCBView"), CCOptionsDlg::OnInheritanceToggle)
 	EVT_COMMAND_SCROLL(XRCID("sliderDelay"), CCOptionsDlg::OnSliderScroll)
@@ -117,8 +117,8 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np)
 	XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->Enable(false);
 	XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->Enable(false);
 
-    wxColour color = cfg->ReadColour(_T("/color"), *wxWHITE);
-    XRCCTRL(*this, "btnColor", wxButton)->SetBackgroundColour(color);
+    wxColour colour = cfg->ReadColour(_T("/colour"), *wxWHITE);
+    XRCCTRL(*this, "btnColour", wxButton)->SetBackgroundColour(colour);
 
 	int timerDelay = cfg->ReadInt(_T("/cc_delay"), 500);
 	XRCCTRL(*this, "sliderDelay", wxSlider)->SetValue(timerDelay / 100);
@@ -143,7 +143,7 @@ void CCOptionsDlg::UpdateSliderLabel()
 	XRCCTRL(*this, "lblDelay", wxStaticText)->SetLabel(lbl);
 }
 
-void CCOptionsDlg::OnChooseColor(wxCommandEvent& event)
+void CCOptionsDlg::OnChooseColour(wxCommandEvent& event)
 {
 	wxColourData data;
 	wxWindow* sender = FindWindowById(event.GetId());
@@ -153,8 +153,8 @@ void CCOptionsDlg::OnChooseColor(wxCommandEvent& event)
 	PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
-    	wxColour color = dlg.GetColourData().GetColour();
-	    sender->SetBackgroundColour(color);
+    	wxColour colour = dlg.GetColourData().GetColour();
+	    sender->SetBackgroundColour(colour);
     }
 }
 
@@ -195,7 +195,7 @@ void CCOptionsDlg::OnApply()
 	cfg->Write(_T("/update_cache_always"), (bool)XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->GetValue());
 	cfg->Write(_T("/show_cache_progress"), (bool)XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->GetValue());
 
-    cfg->Write(_T("/color"), XRCCTRL(*this, "btnColor", wxButton)->GetBackgroundColour());
+    cfg->Write(_T("/colour"), XRCCTRL(*this, "btnColour", wxButton)->GetBackgroundColour());
 
 	int timerDelay = XRCCTRL(*this, "sliderDelay", wxSlider)->GetValue() * 100;
 	cfg->Write(_T("/cc_delay"), (int)timerDelay);

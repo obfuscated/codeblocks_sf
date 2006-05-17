@@ -65,7 +65,7 @@ CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
 
     // make sure everything is laid out properly
     GetSizer()->SetSizeHints(this);
-    CenterOnParent();
+    CentreOnParent();
 }
 
 CompilerSettingsDlg::~CompilerSettingsDlg()
@@ -141,7 +141,7 @@ void CompilerSettingsDlg::UpdateListbookImages()
         lb->SetPageImage(i, (i * 2) + (sel == (int)i ? 0 : 1));
     }
 
-    // the selection color is ruining the on/off effect,
+    // the selection colour is ruining the on/off effect,
     // so make sure no item is selected ;)
     // (only if we have icons showing)
     if (GetSettingsIconsStyle(lb->GetListView()) != sisNoIcons)

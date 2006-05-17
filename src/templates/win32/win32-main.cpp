@@ -29,7 +29,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     wincl.lpszMenuName = NULL;                 /* No menu */
     wincl.cbClsExtra = 0;                      /* No extra bytes after the window class */
     wincl.cbWndExtra = 0;                      /* structure or the window instance */
-    /* Use Windows's default color as the background of the window */
+    /* Use Windows's default colour as the background of the window */
     wincl.hbrBackground = (HBRUSH) COLOR_BACKGROUND;
 
     /* Register the window class, and if it fails quit the program */

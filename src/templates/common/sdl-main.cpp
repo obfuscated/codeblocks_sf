@@ -34,7 +34,7 @@ int main ( int argc, char** argv )
         return 1;
     }
     
-    // center the bitmap on screen
+    // centre the bitmap on screen
     SDL_Rect dstrect;
     dstrect.x = (screen->w - bmp->w) / 2;
     dstrect.y = (screen->h - bmp->h) / 2;

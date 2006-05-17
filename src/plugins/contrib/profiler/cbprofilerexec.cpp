@@ -124,8 +124,8 @@ void CBProfilerExecDlg::ShowOutput(wxArrayString msg, bool error)
             output << msg[n] << _T("\n");
         }
         outputMiscArea->SetValue(output);
-        wxColour color(255,0,0);
-        outputMiscArea->SetForegroundColour(color);
+        wxColour colour(255,0,0);
+        outputMiscArea->SetForegroundColour(colour);
         XRCCTRL(*this, "tabs", wxNotebook)->SetSelection(2);
 	}
     ShowModal();

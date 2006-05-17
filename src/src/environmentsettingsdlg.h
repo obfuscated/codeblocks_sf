@@ -19,7 +19,7 @@ class EnvironmentSettingsDlg : public wxDialog
         void OnPageChanged(wxListbookEvent& event);
         void OnSetAssocs(wxCommandEvent& event);
         void OnManageAssocs(wxCommandEvent& event);
-        void OnChooseColor(wxCommandEvent& event);
+        void OnChooseColour(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnPlaceCheck(wxCommandEvent& event);
         void OnHeadCheck(wxCommandEvent& event);

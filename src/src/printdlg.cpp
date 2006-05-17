@@ -39,7 +39,7 @@ PrintDialog::PrintDialog(wxWindow* parent)
         XRCCTRL(*this, "rbScope", wxRadioBox)->SetSelection(1);
 
     int mode = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/print_mode"), 1);
-    XRCCTRL(*this, "rbColorMode", wxRadioBox)->SetSelection(mode);
+    XRCCTRL(*this, "rbColourMode", wxRadioBox)->SetSelection(mode);
 }
 
 PrintDialog::~PrintDialog()
@@ -52,9 +52,9 @@ PrintScope PrintDialog::GetPrintScope() const
     return (PrintScope)XRCCTRL(*this, "rbScope", wxRadioBox)->GetSelection();
 }
 
-PrintColorMode PrintDialog::GetPrintColorMode() const
+PrintColourMode PrintDialog::GetPrintColourMode() const
 {
-    return (PrintColorMode)XRCCTRL(*this, "rbColorMode", wxRadioBox)->GetSelection();
+    return (PrintColourMode)XRCCTRL(*this, "rbColourMode", wxRadioBox)->GetSelection();
 }
 
 bool PrintDialog::GetPrintLineNumbers() const
@@ -66,7 +66,7 @@ void PrintDialog::EndModal(int retCode)
 {
     if (retCode == wxID_OK)
     {
-        int mode = XRCCTRL(*this, "rbColorMode", wxRadioBox)->GetSelection();
+        int mode = XRCCTRL(*this, "rbColourMode", wxRadioBox)->GetSelection();
         Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/print_mode"), (int)mode);
     }
     return wxDialog::EndModal(retCode);
