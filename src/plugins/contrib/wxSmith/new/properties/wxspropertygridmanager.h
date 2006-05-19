@@ -41,6 +41,13 @@ class wxsPropertyGridManager: public wxPropertyGridManager
         /** \brief Getting singleton object */
         static inline wxsPropertyGridManager* Get() { return Singleton; }
 
+        /** \brief Getting main container
+         *
+         * Returned container is the one which was activated using
+         * ShowInPropertyGrid() method.
+         */
+        inline wxsPropertyContainer* GetContainer() { return MainContainer; }
+
     protected:
 
         /** \brief Function notifying about change of main wxsPropertyContainer
@@ -77,6 +84,9 @@ class wxsPropertyGridManager: public wxPropertyGridManager
          */
         long Register(wxsPropertyContainer* Container,wxsProperty* Property,wxPGId Id,long Index);
 
+        /** \brief Function setting new main property container */
+        void SetNewMainContainer(wxsPropertyContainer* Container);
+
         /** \brief Handler for roporting change event */
         void OnChange(wxPropertyGridEvent& event);
 
@@ -95,6 +105,8 @@ class wxsPropertyGridManager: public wxPropertyGridManager
         wxSetCont    PGContainersSet;           /// \brief Set of used containers, will be used to quickly determine if given container is used in manager
         wxsProperty* PreviousProperty;          /// \brief Previous property used in Register()
         long         PreviousIndex;             /// \brief Previous index used when automatically calculating property indexes
+
+        wxsPropertyContainer* MainContainer;    /// \brief Main container
 
         DECLARE_EVENT_TABLE()
 

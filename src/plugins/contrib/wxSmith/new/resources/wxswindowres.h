@@ -176,7 +176,8 @@ class wxsWindowRes : public wxsResource
 		/** \brief Notifying about content change
 		 *
 		 * This function validates content, recreates preview and
-		 * updates source code.
+		 * updates source code. It should be used in case of property change
+		 * outide editor.
 		 */
 		void NotifyChange(wxsItem* Chaged);
 

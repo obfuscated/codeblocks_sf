@@ -164,10 +164,19 @@ class wxsPropertyContainer
 
         /** \brief Function notifying that one of properties has changed
          *
-         * This function may be redefined in dedrived classes to get notified
+         * This function may be redefined in derived classes to get notified
          * about change of it's properties.
          */
         virtual void PropertyChangedHandler() {}
+
+        /** \brief Function notifying that one of properties in sub-containers has changed
+         *
+         * This function may be redefined in derived classes to get notified
+         * about change of sub-container property change.
+         * Sub-container is other container called in EnumProperties using
+         * SubContainer method.
+         */
+        virtual void SubPropertyChangedHandler(wxsPropertyContainer* SubContainer) {}
 
         /** \brief Flag set when operating on property grid */
         static const unsigned long flPropGrid   = 0x80000000;

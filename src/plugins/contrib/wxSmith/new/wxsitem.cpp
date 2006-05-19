@@ -194,3 +194,8 @@ void wxsItem::PropertyChangedHandler()
 {
     GetResource()->NotifyChange(this);
 }
+
+void wxsItem::SubPropertyChangedHandler(wxsPropertyContainer*)
+{
+    GetResource()->NotifyChange(this);
+}

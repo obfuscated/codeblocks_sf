@@ -25,7 +25,7 @@ wxsPropertyContainer::~wxsPropertyContainer()
     // Unbinding from grid if there's one associated
     if ( wxsPGRID() )
     {
-        wxsPGRID()->UnbindPropertyContainer(NULL);
+        wxsPGRID()->UnbindPropertyContainer(this);
     }
 
     // Unbinding prom quick properties if there's one
@@ -47,7 +47,7 @@ void wxsPropertyContainer::ShowInPropertyGrid()
     EnumProperties(Flags);
     wxsPGRID()->Thaw();
     Flags = 0;
-    wxsPGRID()->OnContainerChanged(this);
+    wxsPGRID()->SetNewMainContainer(this);
 }
 
 void wxsPropertyContainer::XmlRead(TiXmlElement* Element)

@@ -321,6 +321,9 @@ class wxsItem: public wxsPropertyContainer
         /** \brief Handler for change notifications */
         virtual void PropertyChangedHandler();
 
+        /** \brief Additional hangled for sub properties */
+        virtual void SubPropertyChangedHandler(wxsPropertyContainer*);
+
         wxsEvents Events;           ///< \brief Object managing events
         wxsParent* Parent;          ///< \brief Parent class of this one
         wxsWindowRes* Resource;     ///< \brief Resource containing this item

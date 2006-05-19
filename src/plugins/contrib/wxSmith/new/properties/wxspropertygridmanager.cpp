@@ -11,7 +11,8 @@ wxsPropertyGridManager::wxsPropertyGridManager(
     const wxSize& size,
     long style,
     const wxChar* name):
-        wxPropertyGridManager(parent,id,pos,size,style,name)
+        wxPropertyGridManager(parent,id,pos,size,style,name),
+        MainContainer(NULL)
 {
     Singleton = this;
 }
@@ -39,8 +40,17 @@ void wxsPropertyGridManager::OnChange(wxPropertyGridEvent& event)
     {
         if ( PGIDs[i] == ID )
         {
-            PGEnteries[i]->PGRead(PGContainers[i],this,ID,PGIndexes[i]);
-            PGContainers[i]->NotifyPropertyChangeFromPropertyGrid();
+            wxsPropertyContainer* Container = PGContainers[i];
+            PGEnteries[i]->PGRead(Container,this,ID,PGIndexes[i]);
+
+            // Notifying about property change
+            Container->NotifyPropertyChangeFromPropertyGrid();
+
+            // Notifying about sub property change
+            if ( Container!=MainContainer && MainContainer!=NULL )
+            {
+                MainContainer->SubPropertyChangedHandler(Container);
+            }
             break;
         }
     }
@@ -72,7 +82,7 @@ void wxsPropertyGridManager::UnbindAll()
     ClearPage(0);
     PreviousIndex = -1;
     PreviousProperty = NULL;
-    OnContainerChanged(NULL);
+    SetNewMainContainer(NULL);
 }
 
 void wxsPropertyGridManager::UnbindPropertyContainer(wxsPropertyContainer* PC)
@@ -80,6 +90,13 @@ void wxsPropertyGridManager::UnbindPropertyContainer(wxsPropertyContainer* PC)
     if ( PGContainersSet.find(PC) == PGContainersSet.end() )
     {
         // This container is not used here
+        return;
+    }
+
+    if ( PC == MainContainer )
+    {
+        // Main container unbinds all
+        UnbindAll();
         return;
     }
 
@@ -100,7 +117,7 @@ void wxsPropertyGridManager::UnbindPropertyContainer(wxsPropertyContainer* PC)
     // If there are no properties, we have unbinded main property container
     if ( !PGIDs.Count() )
     {
-        OnContainerChanged(NULL);
+        SetNewMainContainer(NULL);
     }
 }
 
@@ -124,6 +141,12 @@ long wxsPropertyGridManager::Register(wxsPropertyContainer* Container,wxsPropert
     PGContainers.Add(Container);
     PGContainersSet.insert(Container);
     return Index;
+}
+
+void wxsPropertyGridManager::SetNewMainContainer(wxsPropertyContainer* Container)
+{
+    MainContainer = Container;
+    OnContainerChanged(MainContainer);
 }
 
 wxsPropertyGridManager* wxsPropertyGridManager::Singleton = NULL;
