@@ -64,11 +64,11 @@ void wxsBitmapButton::BuildCreatingCode(wxString& Code,const wxString& WindowPar
                  << wxString::Format(_T("%d"),(BaseProps.Size.X > 2)? (BaseProps.Size.X - 2):BaseProps.Size.X) << _T(",")
                  << wxString::Format(_T("%d"),(BaseProps.Size.Y > 2)? (BaseProps.Size.Y - 2):BaseProps.Size.Y) << _T(");\n");
 
-            wxString BmpCode = BitmapLabel.BuildCode(BaseProps.Size.IsDefault,SizeName,wxsCPP,wxART_OTHER);
+            wxString BmpCode = BitmapLabel.BuildCode(BaseProps.Size.IsDefault,SizeName,wxsCPP,wxART_BUTTON);
             Code<< GetVarName() << _T(" = new wxBitmapButton(")
                 << WindowParent << _T(",")
                 << GetIdName() << _T(",")
-                << BmpCode.empty() ? _T("wxNullBitmap") : BmpCode << _T(",")
+                << (BmpCode.empty() ? _T("wxNullBitmap") : BmpCode) << _T(",")
                 << PosCode(WindowParent,wxsCPP) << _T(",")
                 << wxsGetWxString(_T("wxDefaultSize")) << _T(",")
                 << StyleCode(wxsCPP) << _T(");\n");
@@ -138,7 +138,8 @@ void wxsBitmapButton::EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCo
         {
             Decl.Add(_T("<wx/bitmap.h>"));
             Decl.Add(_T("<wx/wximage.h>"));
-            Decl.Add(_T("<wx/bmpbttn.h>"));
+            Decl.Add(_T("<wx/bmpbuttn.h>"));
+            Def.Add(_T("<wx/artprov.h>"));
             return;
         }
     }

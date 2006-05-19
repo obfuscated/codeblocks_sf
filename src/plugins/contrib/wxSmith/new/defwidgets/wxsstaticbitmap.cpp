@@ -57,7 +57,7 @@ void wxsStaticBitmap::BuildCreatingCode(wxString& Code,const wxString& WindowPar
             Code<< GetVarName() << _T(" = new wxStaticBitmap(")
                 << WindowParent << _T(",")
                 << GetIdName() << _T(",")
-                << BmpCode.empty() ? _T("wxNullBitmap") : BmpCode << _T(",")
+                << (BmpCode.empty() ? _T("wxNullBitmap") : BmpCode) << _T(",")
                 << PosCode(WindowParent,wxsCPP) << _T(",")
                 << SizeName << _T(",")
                 << StyleCode(wxsCPP) << _T(");\n");
@@ -92,7 +92,7 @@ void wxsStaticBitmap::EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCo
         {
             Decl.Add(_T("<wx/bitmap.h>"));
             Decl.Add(_T("<wx/image.h>"));
-            Decl.Add(_T("<wx/bmpbttn.h>"));
+            Def.Add(_T("<wx/artprov.h>"));
             return;
         }
     }
