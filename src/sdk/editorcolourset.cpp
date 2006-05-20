@@ -668,13 +668,35 @@ void EditorColourSet::SetKeywords(HighlightLanguage lang, int idx, const wxStrin
 {
     if (lang != HL_NONE && idx >=0 && idx <= wxSCI_KEYWORDSET_MAX)
     {
+        wxString tmp(_T(' '), keywords.length()); // faster than using Alloc()
+
+        const wxChar *src = keywords.c_str();
+        wxChar *dst = (wxChar *) tmp.c_str();
+        wxChar c;
+        size_t len = 0;
+
+        while(c = *src)
+        {
+            ++src;
+            if(c > _T(' '))
+            {
+                *dst = c;
+            }
+            else // white space
+            {
+                *dst = _T(' ');
+                while(*src && *src < _T(' '))
+                    ++src;
+            }
+
+            ++dst;
+            ++len;
+        }
+
+        tmp.Truncate(len);
+
         OptionSet& mset = m_Sets[lang];
-        mset.m_Keywords[idx] = keywords;
-        mset.m_Keywords[idx].Replace(_T("\r"), _T(" "));
-        mset.m_Keywords[idx].Replace(_T("\n"), _T(" "));
-        mset.m_Keywords[idx].Replace(_T("\t"), _T(" "));
-        while (mset.m_Keywords[idx].Replace(_T("  "), _T(" ")))
-            ;
+        mset.m_Keywords[idx] = tmp;
     }
 }
 
