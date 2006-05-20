@@ -121,6 +121,7 @@ noinst_HEADERS = annoyingdialog.h \
 				cbexception.h \
 				cbplugin.h \
 				cbproject.h \
+				cbthreadedtask.h \
 				cbthreadpool.h \
 				cbworkspace.h \
 				compileoptionsbase.h \
