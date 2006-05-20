@@ -73,6 +73,38 @@ class DLLIMPORT cbThreadPool
     void BatchEnd();
 
   private:
+    /// Josuttis' implementation of CountedPtr
+    template <typename T>
+    class CountedPtr
+    {
+      private:
+        T *ptr;
+        long *count;
+
+      public:
+        explicit CountedPtr(T *p = 0);
+        CountedPtr(const CountedPtr<T> &p) throw();
+        ~CountedPtr() throw();
+        CountedPtr<T> &operator = (const CountedPtr<T> &p) throw();
+        T &operator * () const throw();
+        T *operator -> () const throw();
+
+      private:
+        void dispose();
+    };
+
+    /// Struct to keep a condition and its mutex in one place
+    struct CondMutex
+    {
+      CondMutex();
+      void Signal();
+      void Broadcast();
+      wxCondError Wait();
+      operator wxMutex &();
+
+      wxMutex mutex;
+      wxCondition cond;
+    };
 
     /** A Worker Thread class.
       *
@@ -88,7 +120,7 @@ class DLLIMPORT cbThreadPool
           * @param cond Synchronisation mechanism between the Pool and the Thread
           * @param mutex Requiered to be used with the condition
           */
-        cbWorkerThread(cbThreadPool *pool, wxCondition &cond, wxMutex &mutex);
+        cbWorkerThread(cbThreadPool *pool, CountedPtr<CondMutex> &condMutex);
 
         /// Entry point of this thread. The magic happens here.
         ExitCode Entry();
@@ -108,8 +140,7 @@ class DLLIMPORT cbThreadPool
       private:
         bool m_abort;
         cbThreadPool *m_pPool;
-        wxCondition &m_cond;
-        wxMutex &m_mutex;
+        CountedPtr<CondMutex> m_condMutex;
         cbThreadedTask *m_pTask;
         wxMutex m_taskMutex;
     };
@@ -155,8 +186,7 @@ class DLLIMPORT cbThreadPool
 
     mutable wxMutex m_Mutex; // we better be safe
 
-    wxMutex m_condMutex; // used to synchronise the Worker Threads
-    wxCondition m_cond; // ibid
+    CountedPtr<CondMutex> m_condMutex; // used to synchronise the Worker Threads
 
     void _SetConcurrentThreads(int concurrentThreads); // like SetConcurrentThreads, but non-thread safe
 
@@ -196,7 +226,7 @@ inline cbThreadPool::cbThreadPool(wxEvtHandler *owner, int id, int concurrentThr
   m_concurrentThreads(-1),
   m_concurrentThreadsSchedule(0),
   m_workingThreads(0),
-  m_cond(m_condMutex)
+  m_condMutex(new CondMutex)
 {
   SetConcurrentThreads(concurrentThreads);
 }
@@ -217,6 +247,94 @@ inline void cbThreadPool::BatchBegin()
 {
   wxMutexLocker lock(m_Mutex);
   m_batching = true;
+}
+
+/* *** Josuttis' CountedPtr *** */
+
+template <typename T>
+inline cbThreadPool::CountedPtr<T>::CountedPtr(T *p)
+: ptr(p),
+  count(new long(1))
+{
+  // empty
+}
+
+template <typename T>
+inline cbThreadPool::CountedPtr<T>::CountedPtr(const CountedPtr<T> &p) throw()
+: ptr(p.ptr),
+  count(p.count)
+{
+  ++*count;
+}
+
+template <typename T>
+inline cbThreadPool::CountedPtr<T>::~CountedPtr() throw()
+{
+  dispose();
+}
+
+template <typename T>
+inline cbThreadPool::CountedPtr<T> &cbThreadPool::CountedPtr<T>::operator = (const CountedPtr<T> &p) throw()
+{
+  if (this != &p)
+  {
+    dispose();
+    ptr = p.ptr;
+    count = p.count;
+    ++*count;
+  }
+
+  return *this;
+}
+
+template <typename T>
+inline T &cbThreadPool::CountedPtr<T>::operator * () const throw()
+{
+  return *ptr;
+}
+
+template <typename T>
+inline T *cbThreadPool::CountedPtr<T>::operator -> () const throw()
+{
+  return ptr;
+}
+
+template <typename T>
+inline void cbThreadPool::CountedPtr<T>::dispose()
+{
+  if (--*count == 0)
+  {
+    delete count;
+    delete ptr;
+  }
+}
+
+/* *** CondMutex's helper functions *** */
+
+inline cbThreadPool::CondMutex::CondMutex()
+: cond(mutex)
+{
+  // empty
+}
+
+inline void cbThreadPool::CondMutex::Signal()
+{
+  cond.Signal();
+}
+
+inline void cbThreadPool::CondMutex::Broadcast()
+{
+  cond.Broadcast();
+}
+
+inline wxCondError cbThreadPool::CondMutex::Wait()
+{
+  return cond.Wait();
+}
+
+inline cbThreadPool::CondMutex::operator wxMutex &()
+{
+  return mutex;
 }
 
 #endif

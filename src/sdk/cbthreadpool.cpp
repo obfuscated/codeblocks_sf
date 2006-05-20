@@ -16,7 +16,7 @@ cbThreadPool::~cbThreadPool()
   wxMutexLocker lock(m_Mutex);
 
   std::for_each(m_threads.begin(), m_threads.end(), std::mem_fun(&cbWorkerThread::Abort));
-  m_cond.Broadcast(); // make every waiting thread realise it's time to die
+  m_condMutex->Broadcast(); // make every waiting thread realise it's time to die
 
   std::for_each(m_tasksQueue.begin(), m_tasksQueue.end(), std::mem_fun_ref(&cbThreadedTaskElement::Delete));
 }
@@ -48,15 +48,18 @@ void cbThreadPool::_SetConcurrentThreads(int concurrentThreads)
   if (!m_workingThreads)
   {
     std::for_each(m_threads.begin(), m_threads.end(), std::mem_fun(&cbWorkerThread::Abort));
-    m_cond.Broadcast();
+    m_condMutex->Broadcast();
     m_threads.clear();
+
+    // set a new CondMutex for the new threads
+    m_condMutex = CountedPtr<CondMutex>(new CondMutex);
 
     m_concurrentThreads = concurrentThreads;
     m_concurrentThreadsSchedule = 0;
 
     for (std::size_t i = 0; i < static_cast<std::size_t>(m_concurrentThreads); ++i)
     {
-      m_threads.push_back(new cbWorkerThread(this, m_cond, m_condMutex));
+      m_threads.push_back(new cbWorkerThread(this, m_condMutex));
       m_threads.back()->Create();
       m_threads.back()->Run();
     }
@@ -84,7 +87,7 @@ void cbThreadPool::AddTask(cbThreadedTask *task, bool autodelete)
   {
     for (std::size_t i = 0; i < static_cast<std::size_t>(m_concurrentThreads - m_workingThreads) && i < m_tasksQueue.size(); ++i)
     {
-      m_cond.Signal();
+      m_condMutex->Signal();
     }
   }
 }
@@ -105,7 +108,7 @@ void cbThreadPool::BatchEnd()
 
   for (std::size_t i = 0; i < static_cast<std::size_t>(m_concurrentThreads - m_workingThreads) && i < m_tasksQueue.size(); ++i)
   {
-    m_cond.Signal();
+    m_condMutex->Signal();
   }
 }
 
@@ -164,11 +167,10 @@ void cbThreadPool::TaskDone(cbWorkerThread *thread)
 /* ******** cbWorkerThread IMPLEMENTATION ******** */
 /* *********************************************** */
 
-cbThreadPool::cbWorkerThread::cbWorkerThread(cbThreadPool *pool, wxCondition &cond, wxMutex &mutex)
+cbThreadPool::cbWorkerThread::cbWorkerThread(cbThreadPool *pool, CountedPtr<CondMutex> &condMutex)
 : m_abort(false),
   m_pPool(pool),
-  m_cond(cond),
-  m_mutex(mutex),
+  m_condMutex(condMutex),
   m_pTask(0)
 {
   // empty
@@ -183,7 +185,7 @@ wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
   {
     if (must_wait)
     {
-      wxMutexLocker lock(m_mutex);
+      wxMutexLocker lock(*m_condMutex);
 
       if (workingThread)
       {
@@ -196,7 +198,7 @@ wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
         }
       }
 
-      m_cond.Wait(); // nothing to do... so just wait
+      m_condMutex->Wait(); // nothing to do... so just wait
     }
 
     if (Aborted())
