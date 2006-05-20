@@ -7,7 +7,7 @@
 #include <wx/dynarray.h>
 #include "tokenizer.h"
 #include "token.h"
-#include <cbthreadpool.h>
+#include <cbThreadPool.h>
 
 //extern int THREAD_START;
 //extern int THREAD_END;
@@ -30,7 +30,7 @@ struct ParserThreadOptions
 	bool followGlobalIncludes;
 };
 
-class ParserThread : public cbThreadPoolTask
+class ParserThread : public cbThreadedTask
 {
 	public:
 		ParserThread(Parser* parent,

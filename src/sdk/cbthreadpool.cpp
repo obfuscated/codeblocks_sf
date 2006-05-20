@@ -1,379 +1,270 @@
-/*
-* This file is part of Code::Blocks Studio, an open-source cross-platform IDE
-* Copyright (C) 2003  Yiannis An. Mandravellos
-*
-* This program is distributed under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
-*
-* $Revision$
-* $Id$
-* $HeadURL$
-*/
-
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "sdk_events.h"
-    #include "manager.h"
-    #include "messagemanager.h"
-    #include <wx/log.h>
+ #include "sdk_events.h"
+ #include "manager.h"
+ #include "messagemanager.h"
+ #include <wx/log.h>
 #endif
 
 #include "cbthreadpool.h"
-
-
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST(cbTaskList);
-
-/// Base thread class
-class PrivateThread : public wxThread
-{
-	public:
-        enum State
-        {
-            Idle,
-            Busy
-        };
-		PrivateThread(cbThreadPool* pool)
-        : wxThread(wxTHREAD_JOINABLE),
-          m_pPool(pool),
-          m_pTask(0),
-        m_Abort(false)
-        {
-//            Manager::Get()->GetMessageManager()->DebugLog(_T("Thread %p created"), this);
-        }
-		~PrivateThread()
-		{
-//            Manager::Get()->GetMessageManager()->DebugLog(_T("Thread %p destroyed"), this);
-		}
-
-		bool Aborted()
-		{
-		    if(m_Abort)
-                return true;
-		    if(TestDestroy()) // Thread::Delete has been called.
-		    {
-                Abort(); // Update the task's status.
-                return true;
-		    }
-		    return false;
-		}
-
-		void Abort()
-		{
-		    // m_pTask is accessed by more than one thread, hence the Critical Section
-		    m_pPool->m_CounterCriticalSection.Enter();
-		    if(m_pTask)
-                m_pTask->Abort();
-		    m_Abort = true;
-		    m_pPool->m_CounterCriticalSection.Leave();
-        }
-
-		virtual ExitCode Entry()
-        {
-            // continuous loop, until we abort
-            while(!Aborted())
-            {
-                m_pPool->m_CounterCriticalSection.Enter();
-                m_pTask = 0;
-                m_pPool->m_CounterCriticalSection.Leave();
-
-                // should we abort?
-                if (Aborted())
-                    break;
-
-                // wait for signal from pool
-                m_pPool->m_Semaphore.Wait();
-
-                // should we abort?
-                if (Aborted())
-                    break;
-
-                // this is our main iteration:
-                // if we have a task assigned, launch it
-                // else wait again for signal...
-                bool doneWork = false;
-                cbTaskElement elem;
-                m_pPool->GetNextElement(elem);
-                if (elem.task)
-                {
-                    // increment the "busy" counter
-                    m_pPool->m_CounterCriticalSection.Enter();
-                    ++m_pPool->m_Counter;
-                    m_pTask = elem.task;
-                    m_pPool->m_CounterCriticalSection.Leave();
-
-                    if (!Aborted())
-                        m_pTask->Execute();
-                    doneWork = true;
-
-                    // decrement the "busy" counter
-                    m_pPool->m_CounterCriticalSection.Enter();
-                    m_pTask = 0;
-                    --m_pPool->m_Counter;
-                    m_pPool->m_CounterCriticalSection.Leave();
-                }
-                if (elem.autoDelete)
-                    delete elem.task;
-
-                // tell the pool we 're done
-                if (doneWork)
-                    m_pPool->OnThreadTaskDone(this);
-            }
-            return 0;
-        }
-
-        cbThreadPool* m_pPool;
-        cbThreadPoolTask* m_pTask;
-		bool m_Abort;
-};
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-cbThreadPool::cbThreadPool(wxEvtHandler* owner, int id, int concurrentThreads)
-    : m_pOwner(owner),
-    m_ID(id),
-    m_ConcurrentThreads(0),
-    m_Done(true),
-    m_Batching(false),
-    m_Counter(0),
-    m_Aborting(false)
-{
-    m_Threads.Clear();
-    SetConcurrentThreads(concurrentThreads);
-}
+#include <algorithm>
+#include <functional>
 
 cbThreadPool::~cbThreadPool()
 {
-	m_Aborting = true;
-    ClearTaskQueue();
-	FreeThreads();
+  wxMutexLocker lock(m_Mutex);
+
+  std::for_each(m_threads.begin(), m_threads.end(), std::mem_fun(&cbWorkerThread::Abort));
+  m_cond.Broadcast(); // make every waiting thread realise it's time to die
+
+  std::for_each(m_tasksQueue.begin(), m_tasksQueue.end(), std::mem_fun_ref(&cbThreadedTaskElement::Delete));
 }
 
 void cbThreadPool::SetConcurrentThreads(int concurrentThreads)
 {
-    if (concurrentThreads <= 0 || concurrentThreads > 16)
-        concurrentThreads = -1;
-    if (concurrentThreads == m_ConcurrentThreads && concurrentThreads > 0)
-    {
-        m_ConcurrentThreadsSchedule = 0;
-        return;
-    }
+  if (concurrentThreads <= 0)
+  {
+    concurrentThreads = wxThread::GetCPUCount();
 
-    // if == -1, means auto i.e. same as number of CPUs
     if (concurrentThreads == -1)
-        m_ConcurrentThreadsSchedule = wxThread::GetCPUCount();
-    else
-        m_ConcurrentThreadsSchedule = concurrentThreads;
-
-    // if still == -1, something's wrong; reset to 1
-    if (m_ConcurrentThreadsSchedule == -1)
-        m_ConcurrentThreadsSchedule = 1;
-
-    if (Done())
     {
-        m_ConcurrentThreads = m_ConcurrentThreadsSchedule;
-        m_ConcurrentThreadsSchedule = 0; // no schedule
-
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Concurrent threads for pool set to %d"), m_ConcurrentThreads);
-
-        // alloc (or dealloc) based on new thread count
-        AllocThreads();
+      m_concurrentThreads = 1;
     }
-    // else it will be called when all threads are done
+  }
+
+  if (concurrentThreads == m_concurrentThreads)
+  {
+    m_concurrentThreadsSchedule = 0;
+    return;
+  }
+
+  wxMutexLocker lock(m_Mutex);
+  _SetConcurrentThreads(concurrentThreads);
 }
 
-// called by PrivateThread when it's done running a task
-void cbThreadPool::OnThreadTaskDone(PrivateThread* thread)
+void cbThreadPool::_SetConcurrentThreads(int concurrentThreads)
 {
-    m_CriticalSection.Enter();
+  if (!m_workingThreads)
+  {
+    std::for_each(m_threads.begin(), m_threads.end(), std::mem_fun(&cbWorkerThread::Abort));
+    m_cond.Broadcast();
+    m_threads.clear();
 
-    // notify the owner that the task has ended
-    CodeBlocksEvent evt(cbEVT_THREADTASK_ENDED, m_ID);
-    wxPostEvent(m_pOwner, evt);
+    m_concurrentThreads = concurrentThreads;
+    m_concurrentThreadsSchedule = 0;
 
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("Thread %p done"), thread);
-    if (m_TaskQueue.IsEmpty())
+    for (std::size_t i = 0; i < static_cast<std::size_t>(m_concurrentThreads); ++i)
     {
-        // check no running threads are busy
-        m_CounterCriticalSection.Enter();
-        bool reallyDone = m_Counter == 0;
-        m_CounterCriticalSection.Leave();
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("Live threads %d"), m_Counter);
-
-        if (reallyDone)
-        {
-            m_Done = true;
-
-            // notify the owner that all tasks are done
-            CodeBlocksEvent evt(cbEVT_THREADTASK_ALLDONE, m_ID);
-            wxPostEvent(m_pOwner, evt);
-
-            // change concurrent threads count now that we 're done
-            if (m_ConcurrentThreadsSchedule != 0)
-                SetConcurrentThreads(m_ConcurrentThreadsSchedule);
-        }
-    }
-    m_CriticalSection.Leave();
-
-    // make sure any waiting threads "wake-up"
-    m_Semaphore.Post();
-}
-
-void cbThreadPool::BatchBegin()
-{
-    m_Batching = true;
-}
-
-void cbThreadPool::BatchEnd()
-{
-    m_Batching = false;
-    // launch the thread (if there's room in the pool)
-    m_Semaphore.Post();
-//    RunThreads();
-}
-
-void cbThreadPool::RunThreads()
-{
-    m_CriticalSection.Enter();
-    size_t i;
-    for (i = 0; i < m_Threads.GetCount(); ++i)
-    {
-        PrivateThread* thread = m_Threads[i];
-        if(thread && !m_Aborting && !thread->IsRunning() && thread!=wxThread::This())
-            thread->Run();
-    }
-    m_CriticalSection.Leave();
-}
-
-bool cbThreadPool::AddTask(cbThreadPoolTask* task, bool autoDelete)
-{
-    if(m_Aborting)
-    {
-        if(autoDelete)
-            delete task;
-        return false;
-    }
-    // add task to the pool
-    cbTaskElement* elem = new cbTaskElement(task, autoDelete);
-
-    m_CriticalSection.Enter();
-    m_TaskQueue.Append(elem);
-    m_Done = false;
-    m_CriticalSection.Leave();
-
-    if (!m_Batching)
-    {
-        // launch the thread (if there's room in the pool)
-        m_Semaphore.Post();
-//        RunThreads();
+      m_threads.push_back(new cbWorkerThread(this, m_cond, m_condMutex));
+      m_threads.back()->Create();
+      m_threads.back()->Run();
     }
 
-    return true;
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Concurrent threads for pool set to %d"), m_concurrentThreads);
+  }
+  else
+  {
+    m_concurrentThreadsSchedule = concurrentThreads;
+  }
 }
 
-// called by the threads
-// picks the first waiting cbTaskElement and removes it from the queue
-void cbThreadPool::GetNextElement(cbTaskElement& element)
+void cbThreadPool::AddTask(cbThreadedTask *task, bool autodelete)
 {
-    m_CriticalSection.Enter();
-    element.task = 0;
-    cbTaskList::Node* node = m_TaskQueue.GetFirst();
-    if (node)
-    {
-        cbTaskElement* elem = node->GetData();
-        if (elem)
-            element = *elem;
-        m_TaskQueue.DeleteNode(node);
-    }
+  if (!task)
+  {
+    return;
+  }
 
-    m_CriticalSection.Leave();
+  wxMutexLocker lock(m_Mutex);
+
+  m_tasksQueue.push_back(cbThreadedTaskElement(task, autodelete));
+
+  if (!m_batching && m_workingThreads < m_concurrentThreads)
+  {
+    for (std::size_t i = 0; i < static_cast<std::size_t>(m_concurrentThreads - m_workingThreads) && i < m_tasksQueue.size(); ++i)
+    {
+      m_cond.Signal();
+    }
+  }
 }
 
 void cbThreadPool::AbortAllTasks()
 {
-    m_Aborting = true;
-    ClearTaskQueue();
-	FreeThreads();
-	AllocThreads();
-	m_Aborting = false;
+  wxMutexLocker lock(m_Mutex);
+
+  std::for_each(m_threads.begin(), m_threads.end(), std::mem_fun(&cbWorkerThread::AbortTask));
+  std::for_each(m_tasksQueue.begin(), m_tasksQueue.end(), std::mem_fun_ref(&cbThreadedTaskElement::Delete));
+  m_tasksQueue.clear();
 }
 
-void cbThreadPool::ClearTaskQueue()
+void cbThreadPool::BatchEnd()
 {
-    // delete all pending tasks set to autoDelete
-    m_CriticalSection.Enter();
-    for (cbTaskList::Node* node = m_TaskQueue.GetFirst(); node; node = node->GetNext())
-    {
-        cbTaskElement* elem = node->GetData();
-        if (elem->autoDelete)
-            delete elem->task;
-    }
-    m_TaskQueue.Clear();
-    m_CriticalSection.Leave();
+  wxMutexLocker lock(m_Mutex);
+  m_batching = false;
+
+  for (std::size_t i = 0; i < static_cast<std::size_t>(m_concurrentThreads - m_workingThreads) && i < m_tasksQueue.size(); ++i)
+  {
+    m_cond.Signal();
+  }
 }
 
-void cbThreadPool::AllocThreads()
+cbThreadPool::cbThreadedTaskElement cbThreadPool::GetNextTask()
 {
-    FreeThreads();
+  wxMutexLocker lock(m_Mutex);
 
-    for (int i = 0; i < m_ConcurrentThreads; ++i)
-    {
-        PrivateThread* thr = new PrivateThread(this);
-        thr->Create(); // Create the thread
-        m_Threads.Add(thr);
-        thr->Run();
-    }
+  if (m_tasksQueue.empty())
+  {
+    return cbThreadedTaskElement();
+  }
+
+  cbThreadedTaskElement element = m_tasksQueue.front();
+  m_tasksQueue.pop_front();
+
+  return element;
 }
 
-void cbThreadPool::FreeThreads()
+void cbThreadPool::WorkingThread()
 {
-    // delete allocated threads
-    unsigned int i;
-    for (i = 0; i < m_Threads.GetCount(); ++i)
+  wxMutexLocker lock(m_Mutex);
+  ++m_workingThreads;
+}
+
+bool cbThreadPool::WaitingThread()
+{
+  wxMutexLocker lock(m_Mutex);
+  --m_workingThreads;
+
+  if (!m_workingThreads)
+  {
+    // notify the owner that all tasks are done
+    CodeBlocksEvent evt = CodeBlocksEvent(cbEVT_THREADTASK_ALLDONE, m_ID);
+    wxPostEvent(m_pOwner, evt);
+
+    // The last active thread is now waiting and there's a pending new number of threads to assign...
+    if (m_concurrentThreadsSchedule)
     {
-        PrivateThread* thread = m_Threads[i];
-        thread->Abort();  // set m_Abort on *every* thread first
+      _SetConcurrentThreads(m_concurrentThreadsSchedule);
+
+      return false; // the thread must abort
     }
+  }
 
-    for (i = 0; i < m_Threads.GetCount(); ++i)
-        m_Semaphore.Post(); // now it does not matter which thread wakes up
+  return true;
+}
 
-    // actually give them CPU time to die, too
-#if wxCHECK_VERSION(2,6,0)
-    wxMilliSleep(21); // Wait 20 milliseconds so the threads will wake up
-#else
-    wxUsleep(21);
-#endif
+void cbThreadPool::TaskDone(cbWorkerThread *thread)
+{
+  // notify the owner that the task has ended
+  CodeBlocksEvent evt = CodeBlocksEvent(cbEVT_THREADTASK_ENDED, m_ID);
+  wxPostEvent(m_pOwner, evt);
+}
 
-    wxLogNull logNo;
-    for (i = 0; i < m_Threads.GetCount(); ++i)
+/* *********************************************** */
+/* ******** cbWorkerThread IMPLEMENTATION ******** */
+/* *********************************************** */
+
+cbThreadPool::cbWorkerThread::cbWorkerThread(cbThreadPool *pool, wxCondition &cond, wxMutex &mutex)
+: m_abort(false),
+  m_pPool(pool),
+  m_cond(cond),
+  m_mutex(mutex),
+  m_pTask(0)
+{
+  // empty
+}
+
+wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
+{
+  bool must_wait = true; // tricky way to keep the thread working
+  bool workingThread = false; // keeps the state of the thread so it knows better what to do
+
+  while (!Aborted())
+  {
+    if (must_wait)
     {
-        unsigned int count = 0;
+      wxMutexLocker lock(m_mutex);
 
-        PrivateThread* thread = m_Threads[i];
-        if(thread == wxThread::This())
-            continue;
-        count = 0;
-        while(thread->IsRunning())
+      if (workingThread)
+      {
+        workingThread = false;
+
+        // If a call to WaitingThread returns false, we must abort
+        if (!m_pPool->WaitingThread())
         {
-            thread->Abort();
-#if wxCHECK_VERSION(2,6,0)
-            wxMilliSleep(1);
-#else
-            wxUsleep(1);
-#endif
-            if(++count > 10)
-            {
-                if(thread->IsRunning())
-                    thread->Kill();
-                break;
-            }
+          break;
         }
+      }
+
+      m_cond.Wait(); // nothing to do... so just wait
     }
-    WX_CLEAR_ARRAY(m_Threads);
-    m_Threads.Clear();
+
+    if (Aborted())
+    {
+      break;
+    }
+
+    if (!workingThread)
+    {
+      m_pPool->WorkingThread(); // time to work!
+      workingThread = true;
+    }
+
+    cbThreadPool::cbThreadedTaskElement element = m_pPool->GetNextTask();
+
+    {
+      wxMutexLocker lock(m_taskMutex);
+      m_pTask = element.task;
+    }
+
+    // are we done with all tasks?
+    if (!m_pTask)
+    {
+      must_wait = true;
+      continue;
+    }
+
+    if (!Aborted())
+    {
+      m_pTask->Execute();
+
+      {
+        wxMutexLocker lock(m_taskMutex);
+        m_pTask = 0;
+        element.Delete();
+      }
+
+      m_pPool->TaskDone(this);
+    }
+
+    must_wait = false;
+  }
+
+  if (workingThread)
+  {
+    m_pPool->WaitingThread();
+  }
+
+  return 0;
+}
+
+void cbThreadPool::cbWorkerThread::Abort()
+{
+  m_abort = true;
+  AbortTask();
+}
+
+bool cbThreadPool::cbWorkerThread::Aborted() const
+{
+  return m_abort;
+}
+
+void cbThreadPool::cbWorkerThread::AbortTask()
+{
+  wxMutexLocker lock(m_taskMutex);
+
+  if (m_pTask)
+  {
+    m_pTask->Abort();
+  }
 }

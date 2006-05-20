@@ -2200,12 +2200,18 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk\cbthreadedtask.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk\cbthreadpool.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\cbthreadpool.h">
-			<Option compilerVar="" />
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="sdk" />
