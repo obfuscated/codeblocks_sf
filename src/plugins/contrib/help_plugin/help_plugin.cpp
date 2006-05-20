@@ -90,6 +90,8 @@ namespace
   wxThread::ExitCode LaunchCHMThread::Entry()
   {
     m_helpctl.KeywordSearch(m_keyword);
+
+    return 0;
   }
 }
 #endif
