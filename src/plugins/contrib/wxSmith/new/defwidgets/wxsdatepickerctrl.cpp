@@ -61,7 +61,7 @@ void wxsDatePickerCtrl::BuildCreatingCode(wxString& Code,const wxString& WindowP
             Code<< GetVarName() << _T(" = new wxDatePickerCtrl(")
                 << WindowParent << _T(",")
                 << GetIdName() << _T(",")
-                << _T("wxDefaultDateTime,")    // TODO find a way to get the wxDateTime in code
+                << _T("wxDefaultDateTime") << _T(",")   // TODO find a way to get the wxDateTime in code
                 << PosCode(WindowParent,wxsCPP) << _T(",")
                 << SizeCode(WindowParent,wxsCPP) << _T(",")
                 << StyleCode(wxsCPP) << _T(");\n");

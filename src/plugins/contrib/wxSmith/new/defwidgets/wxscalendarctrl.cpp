@@ -65,7 +65,7 @@ void wxsCalendarCtrl::BuildCreatingCode(wxString& Code,const wxString& WindowPar
             Code<< GetVarName() << _T(" = new wxCalendarCtrl(")
                 << WindowParent << _T(",")
                 << GetIdName() << _T(",")
-                << wxsGetWxString(_T("wxDefaultDateTime")) << _T(",")
+                << _T("wxDefaultDateTime") << _T(",")
                 << PosCode(WindowParent,wxsCPP) << _T(",")
                 << SizeCode(WindowParent,wxsCPP) << _T(",")
                 << StyleCode(wxsCPP) << _T(");\n");
