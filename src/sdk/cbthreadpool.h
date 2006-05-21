@@ -93,19 +93,6 @@ class DLLIMPORT cbThreadPool
         void dispose();
     };
 
-    /// Struct to keep a condition and its mutex in one place
-    struct CondMutex
-    {
-      CondMutex();
-      void Signal();
-      void Broadcast();
-      wxCondError Wait();
-      operator wxMutex &();
-
-      wxMutex mutex;
-      wxCondition cond;
-    };
-
     /** A Worker Thread class.
       *
       * These are the ones that execute the tasks.
@@ -120,7 +107,7 @@ class DLLIMPORT cbThreadPool
           * @param cond Synchronisation mechanism between the Pool and the Thread
           * @param mutex Requiered to be used with the condition
           */
-        cbWorkerThread(cbThreadPool *pool, CountedPtr<CondMutex> &condMutex);
+        cbWorkerThread(cbThreadPool *pool, CountedPtr<wxSemaphore> &semaphore);
 
         /// Entry point of this thread. The magic happens here.
         ExitCode Entry();
@@ -140,7 +127,7 @@ class DLLIMPORT cbThreadPool
       private:
         bool m_abort;
         cbThreadPool *m_pPool;
-        CountedPtr<CondMutex> m_condMutex;
+        CountedPtr<wxSemaphore> m_semaphore;
         cbThreadedTask *m_pTask;
         wxMutex m_taskMutex;
     };
@@ -186,9 +173,11 @@ class DLLIMPORT cbThreadPool
 
     mutable wxMutex m_Mutex; // we better be safe
 
-    CountedPtr<CondMutex> m_condMutex; // used to synchronise the Worker Threads
+    CountedPtr<wxSemaphore> m_semaphore; // used to synchronise the Worker Threads
 
     void _SetConcurrentThreads(int concurrentThreads); // like SetConcurrentThreads, but non-thread safe
+    void Broadcast(); // awakes all threads
+    void AwakeNeeded(); // awakes only a few threads
 
   protected:
     friend class cbWorkerThread;
@@ -226,7 +215,7 @@ inline cbThreadPool::cbThreadPool(wxEvtHandler *owner, int id, int concurrentThr
   m_concurrentThreads(-1),
   m_concurrentThreadsSchedule(0),
   m_workingThreads(0),
-  m_condMutex(new CondMutex)
+  m_semaphore(new wxSemaphore)
 {
   SetConcurrentThreads(concurrentThreads);
 }
@@ -247,6 +236,32 @@ inline void cbThreadPool::BatchBegin()
 {
   wxMutexLocker lock(m_Mutex);
   m_batching = true;
+}
+
+inline void cbThreadPool::Broadcast()
+{
+  if (m_concurrentThreads == -1)
+  {
+    return;
+  }
+
+  for (std::size_t i = 0; i < static_cast<std::size_t>(m_concurrentThreads - m_workingThreads); ++i)
+  {
+    m_semaphore->Post();
+  }
+}
+
+inline void cbThreadPool::AwakeNeeded()
+{
+  if (m_concurrentThreads == -1)
+  {
+    return;
+  }
+
+  for (std::size_t i = 0; i < m_tasksQueue.size(); ++i)
+  {
+    m_semaphore->Post();
+  }
 }
 
 /* *** Josuttis' CountedPtr *** */
@@ -307,34 +322,6 @@ inline void cbThreadPool::CountedPtr<T>::dispose()
     delete count;
     delete ptr;
   }
-}
-
-/* *** CondMutex's helper functions *** */
-
-inline cbThreadPool::CondMutex::CondMutex()
-: cond(mutex)
-{
-  // empty
-}
-
-inline void cbThreadPool::CondMutex::Signal()
-{
-  cond.Signal();
-}
-
-inline void cbThreadPool::CondMutex::Broadcast()
-{
-  cond.Broadcast();
-}
-
-inline wxCondError cbThreadPool::CondMutex::Wait()
-{
-  return cond.Wait();
-}
-
-inline cbThreadPool::CondMutex::operator wxMutex &()
-{
-  return mutex;
 }
 
 #endif

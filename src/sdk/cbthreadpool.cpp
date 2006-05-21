@@ -16,7 +16,7 @@ cbThreadPool::~cbThreadPool()
   wxMutexLocker lock(m_Mutex);
 
   std::for_each(m_threads.begin(), m_threads.end(), std::mem_fun(&cbWorkerThread::Abort));
-  m_condMutex->Broadcast(); // make every waiting thread realise it's time to die
+  Broadcast(); // make every waiting thread realise it's time to die
 
   std::for_each(m_tasksQueue.begin(), m_tasksQueue.end(), std::mem_fun_ref(&cbThreadedTaskElement::Delete));
 }
@@ -48,18 +48,18 @@ void cbThreadPool::_SetConcurrentThreads(int concurrentThreads)
   if (!m_workingThreads)
   {
     std::for_each(m_threads.begin(), m_threads.end(), std::mem_fun(&cbWorkerThread::Abort));
-    m_condMutex->Broadcast();
+    Broadcast();
     m_threads.clear();
 
-    // set a new CondMutex for the new threads
-    m_condMutex = CountedPtr<CondMutex>(new CondMutex);
+    // set a new Semaphore for the new threads
+    m_semaphore = CountedPtr<wxSemaphore>(new wxSemaphore);
 
     m_concurrentThreads = concurrentThreads;
     m_concurrentThreadsSchedule = 0;
 
     for (std::size_t i = 0; i < static_cast<std::size_t>(m_concurrentThreads); ++i)
     {
-      m_threads.push_back(new cbWorkerThread(this, m_condMutex));
+      m_threads.push_back(new cbWorkerThread(this, m_semaphore));
       m_threads.back()->Create();
       m_threads.back()->Run();
     }
@@ -85,10 +85,7 @@ void cbThreadPool::AddTask(cbThreadedTask *task, bool autodelete)
 
   if (!m_batching && m_workingThreads < m_concurrentThreads)
   {
-    for (std::size_t i = 0; i < static_cast<std::size_t>(m_concurrentThreads - m_workingThreads) && i < m_tasksQueue.size(); ++i)
-    {
-      m_condMutex->Signal();
-    }
+    AwakeNeeded();
   }
 }
 
@@ -106,10 +103,7 @@ void cbThreadPool::BatchEnd()
   wxMutexLocker lock(m_Mutex);
   m_batching = false;
 
-  for (std::size_t i = 0; i < static_cast<std::size_t>(m_concurrentThreads - m_workingThreads) && i < m_tasksQueue.size(); ++i)
-  {
-    m_condMutex->Signal();
-  }
+  AwakeNeeded();
 }
 
 cbThreadPool::cbThreadedTaskElement cbThreadPool::GetNextTask()
@@ -138,7 +132,7 @@ bool cbThreadPool::WaitingThread()
   wxMutexLocker lock(m_Mutex);
   --m_workingThreads;
 
-  if (!m_workingThreads)
+  if (!m_workingThreads && m_tasksQueue.empty())
   {
     // notify the owner that all tasks are done
     CodeBlocksEvent evt = CodeBlocksEvent(cbEVT_THREADTASK_ALLDONE, m_ID);
@@ -167,10 +161,10 @@ void cbThreadPool::TaskDone(cbWorkerThread *thread)
 /* ******** cbWorkerThread IMPLEMENTATION ******** */
 /* *********************************************** */
 
-cbThreadPool::cbWorkerThread::cbWorkerThread(cbThreadPool *pool, CountedPtr<CondMutex> &condMutex)
+cbThreadPool::cbWorkerThread::cbWorkerThread(cbThreadPool *pool, CountedPtr<wxSemaphore> &semaphore)
 : m_abort(false),
   m_pPool(pool),
-  m_condMutex(condMutex),
+  m_semaphore(semaphore),
   m_pTask(0)
 {
   // empty
@@ -178,27 +172,21 @@ cbThreadPool::cbWorkerThread::cbWorkerThread(cbThreadPool *pool, CountedPtr<Cond
 
 wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
 {
-  bool must_wait = true; // tricky way to keep the thread working
   bool workingThread = false; // keeps the state of the thread so it knows better what to do
 
   while (!Aborted())
   {
-    if (must_wait)
+    if (workingThread)
     {
-      wxMutexLocker lock(*m_condMutex);
+      workingThread = false;
 
-      if (workingThread)
+      // If a call to WaitingThread returns false, we must abort
+      if (!m_pPool->WaitingThread())
       {
-        workingThread = false;
-
-        // If a call to WaitingThread returns false, we must abort
-        if (!m_pPool->WaitingThread())
-        {
-          break;
-        }
+        break;
       }
 
-      m_condMutex->Wait(); // nothing to do... so just wait
+      m_semaphore->Wait(); // nothing to do... so just wait
     }
 
     if (Aborted())
@@ -222,7 +210,6 @@ wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
     // are we done with all tasks?
     if (!m_pTask)
     {
-      must_wait = true;
       continue;
     }
 
@@ -238,8 +225,6 @@ wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
 
       m_pPool->TaskDone(this);
     }
-
-    must_wait = false;
   }
 
   if (workingThread)
