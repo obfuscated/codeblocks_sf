@@ -307,7 +307,7 @@ void ToolsManager::SaveTools()
 
 		// prepend a 0-padded 2-digit number to keep ordering
 		wxString tmp;
-		tmp.Printf(_("tool%2.2d"), count++);
+		tmp.Printf(_T("tool%2.2d"), count++);
 
 		elem << _T("/") << tmp  << _T("/");
 		cfg->Write(elem + _T("name"), tool->name);
