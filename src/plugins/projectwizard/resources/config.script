@@ -8,6 +8,7 @@ int main()
     // add existing wizards
 
     RegisterWizard("console",       "Console application wizard",       "Console");
+    RegisterWizard("glfw",          "GLFW project wizard",              "2D/3D Graphics");
     RegisterWizard("irrlicht",      "Irrlicht project wizard",          "2D/3D Graphics");
     RegisterWizard("ogre",          "Ogre project wizard",              "2D/3D Graphics");
     RegisterWizard("wxwidgets",     "wxWidgets application wizard",     "GUI");

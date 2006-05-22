@@ -1,4 +1,4 @@
-SUBDIRS = console d irrlicht ogre wxwidgets
+SUBDIRS = console d glfw irrlicht ogre wxwidgets
 
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard
 

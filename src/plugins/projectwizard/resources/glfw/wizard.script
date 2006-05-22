@@ -1,0 +1,137 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// GLFW project wizard
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// globals
+wxString GlfwPath;
+
+void BeginWizard()
+{
+    wxString intro_msg = "Welcome to the new GLFW project wizard!\n\n"
+                         "This wizard will guide you to create a new project\n"
+                         "using the GLFW OpenGL extensions.\n\n"
+                         "When you 're ready to proceed, please click \"Next\"...";
+
+    Wizard.AddIntroPage(intro_msg);
+    Wizard.AddProjectPathPage();
+    Wizard.AddPage("GlfwPath");
+    Wizard.AddCompilerPage("", "*", true, true);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// GLFW's path page
+////////////////////////////////////////////////////////////////////////////////
+
+void OnEnter_GlfwPath(bool fwd)
+{
+    if (fwd)
+    {
+        wxString dir = Wizard.GetTextControlValue("txtGlfwPath");
+        if (dir.length() == 0)
+        {
+            // first time here, set default value
+            dir = ConfigManager.Read("/glfw_project_wizard/path", "");
+            if (dir.IsEmpty()) // try global var
+                dir = ReplaceMacros("$(#glfw)", true);
+            Wizard.SetTextControlValue("txtGlfwPath", dir);
+        }
+    }
+}
+
+bool OnLeave_GlfwPath(bool fwd)
+{
+    if (fwd)
+    {
+        wxString dir = Wizard.GetTextControlValue("txtGlfwPath");
+        if (!IO.DirectoryExists(dir))
+        {
+            ShowError("Please select a valid path to GLFW...");
+            return false;
+        }
+        if (!IO.FileExists(dir + "/include/GL/glfw.h"))
+        {
+            ShowError("The path you entered seems valid, but this wizard "
+                    "can't locate GLFW's files in it...");
+            return false;
+        }
+
+        // see if it matches the global var. if it does, use the var instead...
+        wxString gvar = ReplaceMacros("$(#glfw)", true);
+        if (gvar == dir)
+            dir = gvar;
+        GlfwPath = dir;
+        ConfigManager.Write("/glfw_project_wizard/path", dir, true);
+    }
+    return true;
+}
+
+void OnClick_btnGlfwPathBrowse()
+{
+    wxString dir = Wizard.GetTextControlValue("txtGlfwPath");
+    dir = IO.SelectDirectory("Please select GLFW's top-level folder", dir, false);
+
+    if (IO.DirectoryExists(dir))
+        Wizard.SetTextControlValue("txtGlfwPath", dir);
+}
+
+// return the files this project contains
+bool GetFilesDir(wxString& out result)
+{
+    result = "glfw/files";
+    return true;
+}
+
+// setup the already created project
+bool SetupProject(Project@ project)
+{
+    // set project options
+    
+    // set compiler/linker search paths
+    project.AddIncludeDir(GlfwPath + "/include");
+    project.AddLibDir(GlfwPath + "/lib");
+
+    // add link libraries
+    project.AddLinkLib("glfw");
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        project.AddLinkLib("opengl32");
+        project.AddLinkLib("glu32");
+        project.AddLinkLib("gdi32");
+    }
+    else
+    {
+        project.AddLinkLib("GL");
+        project.AddLinkLib("GLU");
+        project.AddLinkLib("pthread");
+        project.AddLinkLib("Xxf86vm");
+    }
+
+    // enable compiler warnings (project-wide)
+    WarningsOn(Cast_CompileOptionsBase(project), Wizard.GetCompilerID());
+
+    // Debug
+    BuildTarget@ target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (target != null)
+    {
+        target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        target.SetWorkingDir(GlfwPath + "/bin");
+        // enable generation of debugging symbols for target
+        DebugSymbolsOn(Cast_CompileOptionsBase(target), Wizard.GetCompilerID());
+    }
+
+    // Release
+    @target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (target != null)
+    {
+        target.SetTargetType(ttExecutable); // ttExecutable: no console
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        target.SetWorkingDir(GlfwPath + "/bin");
+        // enable optimizations for target
+        OptimizationsOn(Cast_CompileOptionsBase(target), Wizard.GetCompilerID());
+    }
+
+    return true;
+}
