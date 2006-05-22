@@ -1,0 +1,138 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// GLUT project wizard
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// globals
+wxString GlutPath;
+
+void BeginWizard()
+{
+    wxString intro_msg = "Welcome to the new GLUT project wizard!\n\n"
+                         "This wizard will guide you to create a new project\n"
+                         "using the GLUT OpenGL extensions.\n\n"
+                         "When you 're ready to proceed, please click \"Next\"...";
+
+    Wizard.AddIntroPage(intro_msg);
+    Wizard.AddProjectPathPage();
+    Wizard.AddPage("GlutPath");
+    Wizard.AddCompilerPage("", "*", true, true);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// GLUT's path page
+////////////////////////////////////////////////////////////////////////////////
+
+void OnEnter_GlutPath(bool fwd)
+{
+    if (fwd)
+    {
+        wxString dir = Wizard.GetTextControlValue("txtGlutPath");
+        if (dir.length() == 0)
+        {
+            // first time here, set default value
+            dir = ConfigManager.Read("/glut_project_wizard/path", "");
+            if (dir.IsEmpty()) // try global var
+                dir = ReplaceMacros("$(#glut)", true);
+            Wizard.SetTextControlValue("txtGlutPath", dir);
+        }
+    }
+}
+
+bool OnLeave_GlutPath(bool fwd)
+{
+    if (fwd)
+    {
+        wxString dir = Wizard.GetTextControlValue("txtGlutPath");
+        if (!IO.DirectoryExists(dir))
+        {
+            ShowError("Please select a valid path to GLUT...");
+            return false;
+        }
+        if (!IO.FileExists(dir + "/include/GL/glut.h"))
+        {
+            ShowError("The path you entered seems valid, but this wizard "
+                    "can't locate GLUT's files in it...");
+            return false;
+        }
+
+        // see if it matches the global var. if it does, use the var instead...
+        wxString gvar = ReplaceMacros("$(#glut)", true);
+        if (gvar == dir)
+            dir = gvar;
+        GlutPath = dir;
+        ConfigManager.Write("/glut_project_wizard/path", dir, true);
+    }
+    return true;
+}
+
+void OnClick_btnGlutPathBrowse()
+{
+    wxString dir = Wizard.GetTextControlValue("txtGlutPath");
+    dir = IO.SelectDirectory("Please select GLUT's top-level folder", dir, false);
+
+    if (IO.DirectoryExists(dir))
+        Wizard.SetTextControlValue("txtGlutPath", dir);
+}
+
+// return the files this project contains
+bool GetFilesDir(wxString& out result)
+{
+    result = "glut/files";
+    return true;
+}
+
+// setup the already created project
+bool SetupProject(Project@ project)
+{
+    // set project options
+    
+    // set compiler/linker search paths
+    project.AddIncludeDir(GlutPath + "/include");
+    project.AddLibDir(GlutPath + "/lib");
+
+    // add link libraries
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        project.AddLinkLib("glut32");
+        project.AddLinkLib("opengl32");
+        project.AddLinkLib("glu32");
+        project.AddLinkLib("winmm");
+        project.AddLinkLib("gdi32");
+    }
+    else
+    {
+        project.AddLinkLib("glut");
+        project.AddLinkLib("GL");
+        project.AddLinkLib("GLU");
+        project.AddLinkLib("Xxf86vm");
+    }
+
+    // enable compiler warnings (project-wide)
+    WarningsOn(Cast_CompileOptionsBase(project), Wizard.GetCompilerID());
+
+    // Debug
+    BuildTarget@ target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (target != null)
+    {
+        target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        target.SetWorkingDir(GlutPath + "/bin");
+        // enable generation of debugging symbols for target
+        DebugSymbolsOn(Cast_CompileOptionsBase(target), Wizard.GetCompilerID());
+    }
+
+    // Release
+    @target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (target != null)
+    {
+        target.SetTargetType(ttExecutable); // ttExecutable: no console
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        target.SetWorkingDir(GlutPath + "/bin");
+        // enable optimizations for target
+        OptimizationsOn(Cast_CompileOptionsBase(target), Wizard.GetCompilerID());
+    }
+
+    return true;
+}

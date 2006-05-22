@@ -1543,6 +1543,30 @@
 			<Option link="0" />
 			<Option target="Project wizard" />
 		</Unit>
+		<Unit filename="plugins\projectwizard\resources\glfw\wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins\projectwizard\resources\glfw\wizard.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins\projectwizard\resources\glut\wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins\projectwizard\resources\glut\wizard.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
 		<Unit filename="plugins\projectwizard\resources\irrlicht\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
