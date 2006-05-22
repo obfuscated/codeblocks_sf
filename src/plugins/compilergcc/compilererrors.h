@@ -4,6 +4,7 @@
 #include <wx/arrstr.h>
 #include <wx/dynarray.h>
 #include <wx/string.h>
+#include "compiler.h" // CompilerLineType
 
 class cbProject;
 
