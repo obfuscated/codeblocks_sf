@@ -2793,16 +2793,17 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
 {
     Manager::Get()->GetMessageManager()->LogToStdOut(output + _T('\n'));
 
+    // if max_errors reached, display a one-time message and do not log anymore
     size_t maxErrors = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/max_reported_errors"), 50);
     if (maxErrors > 0)
     {
-        if (m_Errors.GetErrorsCount() > maxErrors)
+        if (m_Errors.GetCount(cltError) > maxErrors)
             return;
-        else if (m_Errors.GetErrorsCount() == maxErrors)
+        else if (m_Errors.GetCount(cltError) == maxErrors)
         {
             // if we reached the max errors count, notify about it
-            m_Errors.AddError(0, _T(""), 0, _("More errors follow but not being shown."), false);
-            m_Errors.AddError(0, _T(""), 0, _("Edit the max errors limit in compiler options..."), false);
+            LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, _("More errors follow but not being shown."));
+            LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, _("Edit the max errors limit in compiler options..."));
             return;
         }
     }
@@ -2810,6 +2811,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
 	Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
 	CompilerLineType clt = compiler->CheckForWarningsAndErrors(output);
 
+    // log to build log
 	switch (clt)
 	{
         case cltWarning:
@@ -2828,30 +2830,54 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
 			break;
 	}
 
+    // log to build messages if warning/error
 	if (clt != cltNormal)
 	{
-        wxArrayString errors;
-        errors.Add(compiler->GetLastErrorFilename());
-        errors.Add(compiler->GetLastErrorLine());
-        errors.Add(compiler->GetLastError());
-        m_pListLog->AddLog(errors);
-        m_pListLog->GetListControl()->SetColumnWidth(2, wxLIST_AUTOSIZE);
-
-        // colourize the list output
-/* NOTE (mandrav#1#): For this to work under win32, one must use -D_WIN32_IE=0x300 when building wxWidgets
-                      and probably edit wx/msw/treectrl.cpp and wx/listctrl.cpp (grep for _WIN32_IE) */
-        m_pListLog->GetListControl()->SetItemTextColour(m_pListLog->GetListControl()->GetItemCount() - 1,
-                                                        clt == cltWarning ? COLOUR_NAVY : *wxRED);
-
-        m_Errors.AddError(m_pBuildingProject,
-                          compiler->GetLastErrorFilename(),
-                          !compiler->GetLastErrorLine().IsEmpty() ? atoi(compiler->GetLastErrorLine().mb_str()) : 0,
-                          compiler->GetLastError(),
-                          clt == cltWarning);
+	    // display current project/target "header" in build messages, if different since last warning/error
+	    static ProjectBuildTarget* last_bt = 0;
+	    if (last_bt != m_pLastBuildingTarget)
+	    {
+	        last_bt = m_pLastBuildingTarget;
+	        if (last_bt)
+	        {
+	            wxString msg;
+	            msg.Printf(_T("=== %s, %s ==="),
+                            last_bt->GetParentProject()->GetTitle().c_str(),
+                            last_bt->GetTitle().c_str());
+                LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, msg);
+	        }
+	    }
+        // actually log message
+        LogWarningOrError(clt, m_pBuildingProject, compiler->GetLastErrorFilename(), compiler->GetLastErrorLine(), compiler->GetLastError());
     }
 
 	if (!output.IsEmpty())
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, output.c_str());
+}
+
+void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const wxString& filename, const wxString& line, const wxString& msg)
+{
+    wxArrayString errors;
+
+    // add build message
+    errors.Add(filename);
+    errors.Add(line);
+    errors.Add(msg);
+    m_pListLog->AddLog(errors);
+    m_pListLog->GetListControl()->SetColumnWidth(2, wxLIST_AUTOSIZE);
+
+    // colourize the list output
+    wxColour c;
+    switch (lt)
+    {
+        case cltNormal: c = *wxBLACK; break;
+        case cltWarning: c = COLOUR_NAVY; break;
+        case cltError: c = *wxRED; break;
+    }
+    m_pListLog->GetListControl()->SetItemTextColour(m_pListLog->GetListControl()->GetItemCount() - 1, c);
+
+    // add to error keeping struct
+    m_Errors.AddError(lt, prj, filename, line.IsEmpty() ? 0 : atoi(line.mb_str()), msg);
 }
 
 void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
@@ -2907,9 +2933,10 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
         if (!m_CommandQueue.LastCommandWasRun())
         {
             m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
-            wxString msg = wxString::Format(_("%d errors, %d warnings"), m_Errors.GetErrorsCount(), m_Errors.GetWarningsCount());
+            wxString msg = wxString::Format(_("%d errors, %d warnings"), m_Errors.GetCount(cltError), m_Errors.GetCount(cltWarning));
             Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
             Manager::Get()->GetMessageManager()->LogToStdOut(msg + _T('\n'));
+            LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, wxString::Format(_("=== Build finished: %s ==="), msg.c_str()));
         }
         else
         {
@@ -2923,15 +2950,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 
         NotifyJobDone();
 
-        if (m_Errors.GetWarningsCount())
-        {
-            if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_warnings"), true))
-                Manager::Get()->GetMessageManager()->Open();
-            Manager::Get()->GetMessageManager()->SwitchTo(m_ListPageIndex);
-            m_pListLog->FocusError(m_Errors.GetFocusedError());
-        }
-
-        if (m_Errors.GetErrorsCount())
+        if (m_Errors.GetCount(cltError))
         {
             if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_errors"), true))
                 Manager::Get()->GetMessageManager()->Open();
@@ -2948,10 +2967,19 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             }
             else
             {
-                // if message manager is auto-hiding, this will unlock it
-                Manager::Get()->GetMessageManager()->Close(true);
+                // don't close the message manager (if auto-hiding), if warnings are required to keep it open
+                if (m_Errors.GetCount(cltWarning) &&
+                    (!Manager::Get()->GetMessageManager()->IsAutoHiding() ||
+                    Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_warnings"), true)))
+                {
+                    Manager::Get()->GetMessageManager()->Open();
+                    Manager::Get()->GetMessageManager()->SwitchTo(m_ListPageIndex);
+                }
+                else // if message manager is auto-hiding, unlock it (i.e. close it)
+                    Manager::Get()->GetMessageManager()->Close(true);
             }
         }
+
         m_RunAfterCompile = false;
     }
 }

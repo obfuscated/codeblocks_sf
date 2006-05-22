@@ -507,9 +507,12 @@ void MessageManager::SetLogImage(MessageLog* log, const wxBitmap& bitmap)
 
 void MessageManager::EnableAutoHide(bool enable)
 {
-    m_AutoHide = enable;
-    if (m_AutoHide)
+    m_AutoHide = true; // hack to force Open() and Close() to work
+    if (enable)
         Close();
+    else
+        Open();
+    m_AutoHide = enable;
 }
 
 bool MessageManager::IsAutoHiding()

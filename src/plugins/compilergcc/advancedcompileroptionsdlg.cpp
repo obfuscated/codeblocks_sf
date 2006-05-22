@@ -150,7 +150,7 @@ void AdvancedCompilerOptionsDlg::FillRegexDetails(int index)
 
     RegExStruct& rs = m_Regexes[index];
     XRCCTRL(*this, "txtRegexDesc", wxTextCtrl)->SetValue(rs.desc);
-    XRCCTRL(*this, "cmbRegexType", wxComboBox)->SetSelection(rs.lt == cltWarning ? 0 : 1);
+    XRCCTRL(*this, "cmbRegexType", wxComboBox)->SetSelection((int)rs.lt);
     XRCCTRL(*this, "txtRegex", wxTextCtrl)->SetValue(ControlCharsToString(rs.regex));
     XRCCTRL(*this, "spnRegexMsg1", wxSpinCtrl)->SetValue(rs.msg[0]);
     XRCCTRL(*this, "spnRegexMsg2", wxSpinCtrl)->SetValue(rs.msg[1]);
@@ -166,7 +166,7 @@ void AdvancedCompilerOptionsDlg::SaveRegexDetails(int index)
 
     RegExStruct& rs = m_Regexes[index];
     rs.desc = XRCCTRL(*this, "txtRegexDesc", wxTextCtrl)->GetValue();
-    rs.lt = XRCCTRL(*this, "cmbRegexType", wxComboBox)->GetSelection() == 0 ? cltWarning : cltError;
+    rs.lt = (CompilerLineType)XRCCTRL(*this, "cmbRegexType", wxComboBox)->GetSelection();
     rs.regex = StringToControlChars(XRCCTRL(*this, "txtRegex", wxTextCtrl)->GetValue());
     rs.msg[0] = XRCCTRL(*this, "spnRegexMsg1", wxSpinCtrl)->GetValue();
     rs.msg[1] = XRCCTRL(*this, "spnRegexMsg2", wxSpinCtrl)->GetValue();
@@ -282,7 +282,7 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& event)
                 "Filename: %s\n"
                 "Line number: %s\n"
                 "Message: %s"),
-                clt == cltNormal ? _("Normal") : (clt == cltError ? _("Error") : _("Warning")),
+                clt == cltNormal ? _("Info") : (clt == cltError ? _("Error") : _("Warning")),
                 compiler->GetLastErrorFilename().c_str(),
                 compiler->GetLastErrorLine().c_str(),
                 compiler->GetLastError().c_str()
