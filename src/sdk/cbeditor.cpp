@@ -579,7 +579,8 @@ void cbEditor::SetEditorStyle()
     // line numbering
     m_pControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
    	if (mgr->ReadBool(_T("/show_line_numbers"), true))
-    	m_pControl->SetMarginWidth(0, 48);
+    	m_pControl->SetMarginWidth(0, mgr->ReadInt(_T("/margin/width"), 48));
+
 	else
 		m_pControl->SetMarginWidth(0, 0);
 

@@ -433,9 +433,31 @@
                         <hgap>8</hgap>
                         <growablecols>1</growablecols>
                         <object class="sizeritem">
+                          <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                          <object class="wxStaticText">
+                            <label>Line number width:</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                          <object class="wxSpinCtrl" name="spnMarginWidth">
+                            <value>48</value>
+                          </object>
+                        </object>
+                            <object class="spacer">
+                                <flag>wxALIGN_CENTER</flag>
+                                <border>5</border>
+                                    <size>10,10</size>
+                            </object>
+                            <object class="spacer">
+                                <flag>wxALIGN_CENTER</flag>
+                                <border>5</border>
+                                    <size>10,10</size>
+                            </object>
+                        <object class="sizeritem">
                           <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <object class="wxStaticText" name="ID_STATICTEXT4">
-                            <label>Mode:</label>
+                            <label>Right margin hint:</label>
                           </object>
                         </object>
                         <object class="sizeritem">
@@ -445,7 +467,7 @@
                             <content>
                               <item>None</item>
                               <item>Visible line</item>
-                              <item>Highlight text beyond gutter</item>
+                              <item>Highlight text beyond margin</item>
                             </content>
                           </object>
                         </object>
@@ -464,7 +486,7 @@
                         <object class="sizeritem">
                           <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                           <object class="wxStaticText" name="ID_STATICTEXT6">
-                            <label>Column:</label>
+                            <label>Hint column:</label>
                           </object>
                         </object>
                         <object class="sizeritem">
