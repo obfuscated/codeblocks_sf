@@ -11,4 +11,4 @@ class wxsCustomWidgetXmlHandler : public wxXmlResourceHandler
         virtual bool CanHandle(wxXmlNode *node);
 };
 
-#endif // WXSCUSTOMWIDGETXMLHANDLER_H
+#endif

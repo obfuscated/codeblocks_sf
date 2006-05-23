@@ -75,9 +75,13 @@ class wxsWindowEditorContent: public wxsDrawingWindow
         /** \brief Structure containing rect for each item */
         WX_DECLARE_VOIDPTR_HASH_MAP(wxRect,ItemToRectT);
 
+        /** \brief Structure containing wxWindow for each item */
+        WX_DECLARE_VOIDPTR_HASH_MAP(wxWindow*,ItemToWindowT);
+
         wxsWindowEditor* Parent;                            ///< \brief Current window editor
         DragPointsT DragPoints;                             ///< \brief Array of visible drag points
         ItemToRectT ItemToRect;                             ///< \brief Coordinates of each item stored here
+        ItemToWindowT ItemToWindow;                         ///< \brief Window in editor area for each item is stored here
         MouseStatesT MouseState;                            ///< \brief Current mouse state
         static const int DragBoxSize = 6;                   ///< \brief Size of boxes used to drag borders of widgets
         static const int MinDragDistance = 8;               ///< \brief Minimal distace which must be done to apply dragging
@@ -125,9 +129,12 @@ class wxsWindowEditorContent: public wxsDrawingWindow
         /** \brief Getting bounding rect for given item */
         bool FindAbsoluteRect(wxsItem* Item,int& PosX,int& PosY,int& SizeX,int& SizeY);
 
-        /** \brief Function updating ItemToRect map */
-        void RecalculateRects();
-        void RecalculateRectsReq(wxsItem* Item);
+        /** \brief Getting preview window for given item */
+        wxWindow* GetPreviewWindow(wxsItem* Item);
+
+        /** \brief Function updating ItemToRect and ItemToWindow maps */
+        void RecalculateMaps();
+        void RecalculateMapsReq(wxsItem* Item);
 
         friend class wxsWindowEditorDragAssist;
 

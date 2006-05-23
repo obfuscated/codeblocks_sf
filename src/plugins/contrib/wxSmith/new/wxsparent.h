@@ -155,8 +155,8 @@ class wxsParent: public wxsItem
         WX_DEFINE_ARRAY(wxsItem*,wxArrayItem);
         WX_DEFINE_ARRAY(wxsPropertyContainer*,wxArrayExtra);
 
-        wxArrayItem  Children;   ///< Array of child items
-        wxArrayExtra Extra;      ///< Array of extra data stored in generic void pointer
+        wxArrayItem  Children;   ///< \brief Array of child items
+        wxArrayExtra Extra;      ///< \brief Array of extra data stored in generic void pointer
 
         friend class wxsItem;
 

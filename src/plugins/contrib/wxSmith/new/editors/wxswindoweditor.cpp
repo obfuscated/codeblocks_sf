@@ -90,6 +90,9 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsResource* Resource):
     AllEditors.insert(this);
     BuildPreview();
 
+    // Correcting data after loading it
+    Corrector->GlobalCheck();
+
     // Changing selection to root item
     RootItem()->ClearSelection();
     GetWinRes()->SelectionChanged(NULL);
@@ -161,6 +164,8 @@ void wxsWindowEditor::BuildPreview()
     Layout();
     Thaw();
     Content->NewPreview();
+    // Preview bindings are no longer needed
+    TopItem->InvalidatePreview();
 }
 
 void wxsWindowEditor::KillPreview()
@@ -168,7 +173,6 @@ void wxsWindowEditor::KillPreview()
     if ( TopPreview )
     {
         Content->SetSizer(NULL);
-        GetWinRes()->GetRootItem()->InvalidatePreview();
         delete TopPreview;
         TopPreview = NULL;
     }
@@ -791,10 +795,7 @@ void wxsWindowEditor::RebuildQuickProps(wxsItem* Selection)
 
 void wxsWindowEditor::ResourceLock()
 {
-    if ( !ResourceLockCnt++ )
-    {
-        GetWinRes()->GetRootItem()->InvalidatePreview();
-    }
+    ResourceLockCnt++;
 }
 
 void wxsWindowEditor::ResourceUnlock()

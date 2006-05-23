@@ -11,8 +11,7 @@
 
 static const wxWindowID SplitterId = wxNewId();
 
-wxsStoringSplitterWindow::wxsStoringSplitterWindow(wxWindow* Parent):
-    wxPanel(Parent)
+wxsStoringSplitterWindow::wxsStoringSplitterWindow(wxWindow* Parent): wxPanel(Parent)
 {
     wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
     Sizer->Add( Splitter = new wxSplitterWindow(this,SplitterId), 1, wxGROW|wxALL );
@@ -24,7 +23,6 @@ void wxsStoringSplitterWindow::Split(wxWindow* Top,wxWindow* Bottom,int SashPosi
 {
     if ( Top ) Top->SetParent(Splitter);
     if ( Bottom ) Bottom->SetParent(Splitter);
-
     if ( SashPosition ) SplitPosition = SashPosition;
     Splitter->SplitHorizontally(Top,Bottom,SplitterFixup(SplitPosition));
 }
