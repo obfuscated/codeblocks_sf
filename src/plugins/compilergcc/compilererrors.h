@@ -37,6 +37,7 @@ class CompilerErrors
 
 		unsigned int GetCount(CompilerLineType lt) const;
 
+        int GetFirstError() const;
         int GetFocusedError() const { return m_ErrorIndex; }
 	private:
 		void DoAddError(const CompileError& error);

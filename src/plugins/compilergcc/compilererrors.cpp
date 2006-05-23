@@ -226,6 +226,16 @@ wxString CompilerErrors::GetErrorString(int index)
     return error;
 }
 
+int CompilerErrors::GetFirstError() const
+{
+	for (unsigned int i = 0; i < m_Errors.GetCount(); ++i)
+	{
+        if (m_Errors[i].lineType == cltError)
+            return i;
+	}
+	return -1;
+}
+
 unsigned int CompilerErrors::GetCount(CompilerLineType lt) const
 {
     unsigned int count = 0;

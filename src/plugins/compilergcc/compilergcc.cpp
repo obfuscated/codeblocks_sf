@@ -2955,7 +2955,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_errors"), true))
                 Manager::Get()->GetMessageManager()->Open();
             Manager::Get()->GetMessageManager()->SwitchTo(m_ListPageIndex);
-            m_pListLog->FocusError(m_Errors.GetFocusedError());
+            m_pListLog->FocusError(m_Errors.GetFirstError());
         }
         else
         {
@@ -2981,6 +2981,11 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
         }
 
         m_RunAfterCompile = false;
+
+        // no matter what happened with the build, return the focus to the active editor
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor());
+        if (ed)
+            ed->GetControl()->SetFocus();
     }
 }
 
