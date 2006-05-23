@@ -73,7 +73,7 @@ CCList::CCList(wxEvtHandler* parent, cbStyledTextCtrl* editor, Parser* parser)
 {
 	m_StartPos = m_pEditor->GetCurrentPos();
 	PositionMe();
-    PlaceWindow(this, pdlConstrain);
+    PlaceWindow(this, pdlConstrain, true);
 
 	int start = m_pEditor->WordStartPosition(m_StartPos, true);
 	wxString prefix = m_pEditor->GetTextRange(start, m_StartPos);
