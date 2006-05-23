@@ -76,6 +76,10 @@ class GDB_driver : public DebuggerDriver
         TypesArray m_Types;
         bool m_BreakOnEntry;
         bool m_ManualBreakOnEntry;
+
+        // GDB version
+        long m_GDBVersionMajor;
+        long m_GDBVersionMinor;
 };
 
 #endif // GDB_DRIVER_H

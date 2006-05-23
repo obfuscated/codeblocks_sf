@@ -32,7 +32,9 @@ static wxRegEx reBreak2(_T("^(0x[A-z0-9]+) in (.*) from (.*)"));
 GDB_driver::GDB_driver(DebuggerGDB* plugin)
     : DebuggerDriver(plugin),
     m_BreakOnEntry(false),
-    m_ManualBreakOnEntry(false)
+    m_ManualBreakOnEntry(false),
+    m_GDBVersionMajor(0),
+    m_GDBVersionMinor(0)
 {
     //ctor
 }
@@ -123,6 +125,7 @@ wxString GDB_driver::GetCommandLine(const wxString& debugger, const wxString& de
     cmd << debugger;
     cmd << _T(" -nx");          // don't run .gdbinit
     cmd << _T(" -fullname ");   // report full-path filenames when breaking
+    cmd << _T(" -quiet");       // don't display version on startup
     cmd << _T(" -args ") << debuggee;
     return cmd;
 }
@@ -133,7 +136,8 @@ wxString GDB_driver::GetCommandLine(const wxString& debugger, int pid)
     cmd << debugger;
     cmd << _T(" -nx");          // don't run .gdbinit
     cmd << _T(" -fullname ");   // report full-path filenames when breaking
-    cmd << _T("-pid=") << wxString::Format(_T("%d"), pid);
+    cmd << _T(" -quiet");       // don't display version on startup
+    cmd << _T(" -pid=") << wxString::Format(_T("%d"), pid);
     return cmd;
 }
 
@@ -144,7 +148,9 @@ void GDB_driver::Prepare(bool isConsole)
     // make sure we 're using the prompt that we know and trust ;)
 	QueueCommand(new DebuggerCmd(this, wxString(_T("set prompt ")) + FULL_GDB_PROMPT));
 
-    // send built-in init commands
+    // debugger version
+	QueueCommand(new DebuggerCmd(this, _T("show version")));
+    // no confirmation
 	QueueCommand(new DebuggerCmd(this, _T("set confirm off")));
 	// no wrapping lines
     QueueCommand(new DebuggerCmd(this, _T("set width 0")));
@@ -442,6 +448,22 @@ void GDB_driver::ParseOutput(const wxString& output)
         {
             // it's the gdb banner. Just display the version and "eat" the rest
             m_pDBG->Log(_("Debugger name and version: ") + lines[i]);
+            // keep major and minor version numbers handy
+            wxString major = lines[i].Right(lines[i].Length() - 8);
+            wxString minor = major;
+            major = major.BeforeFirst(_T('.')); // 6.3.2 -> 6
+            minor = minor.AfterFirst(_T('.')); // 6.3.2 -> 3.2
+            minor = minor.BeforeFirst(_T('.')); // 3.2 -> 3
+            major.ToLong(&m_GDBVersionMajor);
+            minor.ToLong(&m_GDBVersionMinor);
+//            wxString log;
+//            log.Printf(_T("Line: %s\nMajor: %s (%d)\nMinor: %s (%d)"),
+//                        lines[i].c_str(),
+//                        major.c_str(),
+//                        m_GDBVersionMajor,
+//                        minor.c_str(),
+//                        m_GDBVersionMinor);
+//            m_pDBG->Log(log);
             break;
         }
 
