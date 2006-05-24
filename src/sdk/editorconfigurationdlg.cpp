@@ -163,6 +163,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 
     //margin
     XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/margin/width"), 48));
+    XRCCTRL(*this, "chkAddBPByLeftClick", wxCheckBox)->SetValue(cfg->ReadBool(_T("/margin_1_sensitive"), true));
 
 	// colour set
 	LoadThemes();
@@ -848,6 +849,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
 
         //margin
         cfg->Write(_T("/margin/width"), XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->GetValue());
+        cfg->Write(_T("/margin_1_sensitive"), (bool)XRCCTRL(*this, "chkAddBPByLeftClick", wxCheckBox)->GetValue());
 
 		// default code : first update what's in the current txtCtrl,
 		// and then write them all to the config file (even if unmodified)

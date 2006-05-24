@@ -415,13 +415,13 @@
             </object>
           </object>
           <object class="listbookpage">
-            <label>Gutter, margins and caret</label>
+            <label>Margins and caret</label>
             <object class="wxPanel" name="tabGutter">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxStaticBoxSizer">
-                    <label>Gutter &amp;&amp; margins</label>
+                    <label>Left margin</label>
                     <orient>wxVERTICAL</orient>
                     <object class="sizeritem">
                       <border>8</border>
@@ -435,7 +435,7 @@
                         <object class="sizeritem">
                           <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                           <object class="wxStaticText">
-                            <label>Line number width:</label>
+                            <label>Width for line numbers:</label>
                           </object>
                         </object>
                         <object class="sizeritem">
@@ -444,18 +444,34 @@
                             <value>48</value>
                           </object>
                         </object>
-                            <object class="spacer">
-                                <flag>wxALIGN_CENTER</flag>
-                                <border>5</border>
-                                    <size>10,10</size>
-                            </object>
-                            <object class="spacer">
-                                <flag>wxALIGN_CENTER</flag>
-                                <border>5</border>
-                                    <size>10,10</size>
-                            </object>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkAddBPByLeftClick">
+                        <label>Add/remove breakpoints by left-clicking</label>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxEXPAND</flag>
+                      <border>8</border>
+                    </object>
+                  </object>
+                  <flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Right margin</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <border>8</border>
+                      <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                      <object class="wxFlexGridSizer">
+                        <rows>0</rows>
+                        <cols>2</cols>
+                        <vgap>4</vgap>
+                        <hgap>8</hgap>
+                        <growablecols>1</growablecols>
                         <object class="sizeritem">
-                          <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                          <flag>wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL</flag>
                           <object class="wxStaticText" name="ID_STATICTEXT4">
                             <label>Right margin hint:</label>
                           </object>

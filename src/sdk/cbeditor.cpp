@@ -588,7 +588,7 @@ void cbEditor::SetEditorStyle()
 	// FIXME: how to display a mark with an offset???
 	m_pControl->SetMarginWidth(1, 16);
     m_pControl->SetMarginType(1, wxSCI_MARGIN_SYMBOL);
-    m_pControl->SetMarginSensitive(1, 1);
+    m_pControl->SetMarginSensitive(1, mgr->ReadBool(_T("/margin_1_sensitive"), true));
     m_pControl->SetMarginMask(1, (1 << BOOKMARK_MARKER) |
                                  (1 << BREAKPOINT_MARKER) |
                                  (1 << DEBUG_MARKER) |
