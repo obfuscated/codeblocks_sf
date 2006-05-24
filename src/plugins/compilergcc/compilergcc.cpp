@@ -2190,7 +2190,7 @@ int CompilerGCC::BuildWorkspace(const wxString& target)
 
     InitBuildState(bjWorkspace, target);
     CalculateWorkspaceDependencies();
-    if (m_BuildDepsIndex >= m_BuildDeps.GetCount())
+    if (m_BuildDepsIndex >= (int)m_BuildDeps.GetCount())
         return -1;
     m_BuildingProjectIdx = m_BuildDeps[m_BuildDepsIndex];
     m_pBuildingProject = Manager::Get()->GetProjectManager()->GetProjects()->Item(m_BuildingProjectIdx);
