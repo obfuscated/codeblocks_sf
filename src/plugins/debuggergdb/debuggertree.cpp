@@ -259,7 +259,8 @@ int DebuggerTree::FindCharOutsideQuotes(const wxString& str, wxChar ch)
     {
         if (!inQuotes && str.GetChar(i) == ch)
             return i;
-        else if (str.GetChar(i) == _T('"') && (i == 0 || (i > 0 && str.GetChar(i - 1) != _T('\\'))))
+        else if ((str.GetChar(i) == _T('"') || str.GetChar(i) == _T('\'')) &&
+                (i == 0 || (i > 0 && str.GetChar(i - 1) != _T('\\'))))
             inQuotes = !inQuotes;
         ++i;
     }
