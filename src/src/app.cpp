@@ -534,15 +534,18 @@ int CodeBlocksApp::BatchJob()
                 wxIcon(app),
             #endif // __WXMSW__
                 _("Building ") + wxFileNameFromPath(wxString(argv[argc-1])));
-
+    int ret = 0;
     if (m_ReBuild)
-        compiler->RebuildWorkspace(m_BatchTarget);
+        ret = compiler->RebuildWorkspace(m_BatchTarget);
     else if (m_Build)
-        compiler->BuildWorkspace(m_BatchTarget);
+        ret = compiler->BuildWorkspace(m_BatchTarget);
 
     m_pBatchBuildDialog = Manager::Get()->GetMessageManager()->GetBatchBuildDialog();
-    PlaceWindow(m_pBatchBuildDialog);
-    m_pBatchBuildDialog->ShowModal();
+    if (ret == 0)
+    {
+        PlaceWindow(m_pBatchBuildDialog);
+        m_pBatchBuildDialog->ShowModal();
+    }
     tbIcon->RemoveIcon();
     delete tbIcon;
     delete m_pBatchBuildDialog;
