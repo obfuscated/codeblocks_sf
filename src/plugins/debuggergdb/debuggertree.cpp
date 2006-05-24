@@ -254,14 +254,40 @@ int DebuggerTree::FindCharOutsideQuotes(const wxString& str, wxChar ch)
 {
     int len = str.Length();
     int i = 0;
-    bool inQuotes = false;
+    bool inSingleQuotes = false;
+    bool inDoubleQuotes = false;
+    wxChar lastChar = _T('\0');
     while (i < len)
     {
-        if (!inQuotes && str.GetChar(i) == ch)
+        wxChar currChar = str.GetChar(i);
+
+        // did we find the char outside of any quotes?
+        if (!inSingleQuotes && !inDoubleQuotes && currChar == ch)
             return i;
-        else if ((str.GetChar(i) == _T('"') || str.GetChar(i) == _T('\'')) &&
-                (i == 0 || (i > 0 && str.GetChar(i - 1) != _T('\\'))))
-            inQuotes = !inQuotes;
+
+        // double quotes (not escaped)
+        if (currChar == _T('"') && lastChar != _T('\\'))
+        {
+            // if not in single quotes, toggle the flag
+            if (!inSingleQuotes)
+                inDoubleQuotes = !inDoubleQuotes;
+        }
+        // single quotes (not escaped)
+        else if (currChar == _T('\'') && lastChar != _T('\\'))
+        {
+            // if not in double quotes, toggle the flag
+            if (!inDoubleQuotes)
+                inSingleQuotes = !inSingleQuotes;
+        }
+        // don't be fooled by double-escape
+        else if (currChar == _T('\\') && lastChar == _T('\\'))
+        {
+            // this will be assigned to lastChar
+            // so it's not an escape char
+            currChar = _T('\0');
+        }
+
+        lastChar = currChar;
         ++i;
     }
     return -1;
