@@ -4,7 +4,7 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxPanel">
+        <object class="wxPanel" name="MainPanel">
           <object class="wxBoxSizer">
             <orient>wxVERTICAL</orient>
             <object class="sizeritem">
@@ -63,6 +63,7 @@
               <flag>wxGROW</flag>
             </object>
           </object>
+          <style></style>
         </object>
         <option>1</option>
         <flag>wxGROW</flag>

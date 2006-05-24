@@ -117,6 +117,11 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
 
     bool all = Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/show_all_symbols"), false);
     XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(all ? 1 : 0);
+
+    // if the classbrowser is put under the control of a wxFlatNotebook,
+    // somehow the main panel is like "invisible" :/
+    // so we force the correct color for the panel here...
+    XRCCTRL(*this, "MainPanel", wxPanel)->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 }
 
 // class destructor
