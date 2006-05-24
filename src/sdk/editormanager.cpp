@@ -562,6 +562,8 @@ void EditorManager::ActivatePrevious()
 
 void EditorManager::SetActiveEditor(EditorBase* ed)
 {
+    if (!ed)
+        return;
     if (ed->IsBuiltinEditor())
         static_cast<cbEditor*>(ed)->GetControl()->SetFocus();
     int page = FindPageFromEditor(ed);
@@ -914,6 +916,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
             continue;
         }
 
+        ProjectFile* pf = ed->GetProjectFile();
         wxFileName fname(ed->GetFilename());
         wxDateTime last = fname.GetModificationTime();
 
@@ -921,13 +924,19 @@ void EditorManager::CheckForExternallyModifiedFiles()
         if (ed->GetControl()->GetReadOnly() &&
                 wxFile::Access(ed->GetFilename().c_str(), wxFile::write))
         {
-            b_modified = true;
+            b_modified = false;
+            ed->GetControl()->SetReadOnly(false);
+            if (pf)
+                pf->SetFileState(fvsNormal);
         }
         //File changed from RW -> RO?
         if (!ed->GetControl()->GetReadOnly() &&
                 !wxFile::Access(ed->GetFilename().c_str(), wxFile::write))
         {
-            b_modified = true;
+            b_modified = false;
+            ed->GetControl()->SetReadOnly(true);
+            if (pf)
+                pf->SetFileState(fvsReadOnly);
         }
         //File content changed?
         if (last.IsLaterThan(ed->GetLastModificationTime()))
@@ -959,6 +968,11 @@ void EditorManager::CheckForExternallyModifiedFiles()
                 ed->Touch();
         }
     }
+
+    // this will emmit a EVT_EDITOR_ACTIVATED event, which in turn will notify
+    // the app to update the currently active file's info
+    // (we 're interested in updating read-write state)
+    SetActiveEditor(GetActiveEditor());
 
     if (failedFiles.GetCount())
     {

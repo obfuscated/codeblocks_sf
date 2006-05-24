@@ -821,13 +821,7 @@ bool cbEditor::Open(bool detectEncoding)
     // mark the file read-only, if applicable
     bool read_only = !wxFile::Access(m_Filename.c_str(), wxFile::write);
     m_pControl->SetReadOnly(read_only);
-    // if editor is read-only, override bg colour for *all* styles...
     SetLanguage(HL_AUTO);
-    if (read_only)
-    {
-        for (int i = 0; i < wxSCI_STYLE_MAX; ++i)
-            m_pControl->StyleSetBackground(i, wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-    }
 
 	if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/fold_all_on_open"), false))
 		FoldAll();
