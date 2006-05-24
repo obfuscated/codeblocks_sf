@@ -81,7 +81,8 @@ bool ProjectLoader::Open(const wxString& filename)
 
     m_IsPre_1_2 = false; // flag for some changed defaults in version 1.2
     TiXmlElement* version = root->FirstChildElement("FileVersion");
-    if (version)
+    // don't show messages if we 're running a batch build (i.e. no gui)
+    if (!Manager::IsBatchBuild() && version)
     {
         int major = PROJECT_FILE_VERSION_MAJOR;
         int minor = PROJECT_FILE_VERSION_MINOR;

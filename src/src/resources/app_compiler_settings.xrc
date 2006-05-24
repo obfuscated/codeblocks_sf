@@ -44,19 +44,35 @@
                   <flag>wxLEFT|wxEXPAND</flag>
                   <border>8</border>
                 </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText" name="">
+                    <label>If you right-click a Code::Blocks project/workspace in explorer, you will see
+two extensions: &quot;Build&quot; and &quot;Rebuild (clean)&quot; (windows only).
+The arguments configured here, are used by those two extensions.
+You could specify, for example, a profile/personality to use for batch builds.
+
+The relevant command-line arguments are (all are optional):
+
+-na: don't perform any association checks
+-nd: don't start a DDE server
+-ns: don't display a splash screen while loading
+-p : the profile to use: &quot;ask&quot; or &lt;profile-name&gt;
+
+--target: work only on &lt;target&gt; for &quot;Build&quot; or &quot;Rebuild (clean)&quot;
+--no-batch-window-close: do not auto-close log window when batch build is done
+--batch-build-notify: show message when batch build is done</label>
+                  </object>
+                  <flag>wxLEFT|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
                 <object class="spacer">
                   <size>0,0</size>
                   <option>1</option>
                   <flag>wxGROW</flag>
                 </object>
                 <object class="sizeritem">
-                  <object class="wxStaticText" name="">
-                    <label>If you right-click a Code::Blocks project/workspace in explorer, you will see
-two extensions: &quot;Build&quot; and &quot;Rebuild (clean)&quot;.
-The arguments configured here, are used by those two extensions.
-You could specify, for example, a personality to use for batch builds.
-
-For more info on personalities, read the Code::Blocks WiKi at
+                  <object class="wxStaticText">
+                    <label>For more info on profiles/personalities, read the Code::Blocks WiKi at
 http://wiki.codeblocks.org/index.php?title=Personalities</label>
                   </object>
                   <flag>wxLEFT|wxEXPAND</flag>
