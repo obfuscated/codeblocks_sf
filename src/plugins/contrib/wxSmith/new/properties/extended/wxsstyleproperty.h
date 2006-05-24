@@ -29,14 +29,14 @@
 class wxsStyleProperty: public wxsProperty
 {
     public:
-    
+
         /** \brief Ctor
          *  \param StyleName    name of style property used in Property Grid
          *  \param DataName     name of style data
          *  \param StyleSet     pointer to array of wxsStyle classes defining available styles
          *  \param Offset       offset to bitfield for styles
          *  \param Default      default style set (as string - names of styles separated through |)
-         *  \param IsExtra      if true, this is extra style, false otherwise   
+         *  \param IsExtra      if true, this is extra style, false otherwise
          */
 		wxsStyleProperty(
             const wxString& StyleName,
@@ -45,24 +45,27 @@ class wxsStyleProperty: public wxsProperty
             long  Offset,
             const wxString& Default = wxEmptyString,
             bool  IsExtra = false);
-            
+
         /** \brief Returning type of this property */
         virtual const wxString GetTypeName() { return _T("Style"); }
-        
+
         /** \brief Function turning on bit for given style in style bits */
         static void SetStyle(long& StyleBits,long Style,const wxsStyle* StyleSet,bool IsExtra=false);
-        
+
         /** \brief Function turning off bit for given style in style bits */
         static void ResetStyle(long& StyleBits,long Style,const wxsStyle* StyleSet,bool IsExtra=false);
 
         /** \brief Converting style bits to it's string representatin */
         static wxString GetString(long StyleBits,const wxsStyle* StyleSet,bool IsExtra,wxsCodingLang Language);
-        
+
         /** \brief Converting style bits to value which can be used in wxWidgets */
         static long GetWxStyle(long StyleBits,const wxsStyle* StyleSet,bool IsExtra=false);
-        
+
+        /** \brief Setting up style bits from given string */
+        static void SetFromString(long& StyleBits,const wxString& String,const wxsStyle* StyleSet,bool IsExtra=false);
+
     protected:
-    
+
         virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
         virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
         virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
@@ -70,17 +73,17 @@ class wxsStyleProperty: public wxsProperty
         virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element);
         virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream);
-        
+
     private:
-    
+
         long ParseStringToBits(const wxString& Style);
         wxString BitsToString(long Bits);
-    
+
         const wxsStyle* StyleSet;
         long Offset;
         long Default;
         bool IsExtra;
-        
+
         wxArrayString StyleNames;
         wxArrayInt StyleBits;
         wxArrayLong StyleFlags;
@@ -88,11 +91,11 @@ class wxsStyleProperty: public wxsProperty
 
 /** \addtogroup ext_properties_macros
  *  \{ */
- 
+
 /** \brief Macro automatically declaring style property
  *  \param ClassName name of class holding this property
  *  \param VarName name of long integer variable inside class used to keep style bits
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property 
+ *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
  *         wxsPropertyContainer::Property \endlink for details, use 0 to always
  *         use this property
  *  \param PGName name used in property grid
@@ -107,7 +110,7 @@ class wxsStyleProperty: public wxsProperty
 /** \brief Macro automatically declaring extra style property
  *  \param ClassName name of class holding this property
  *  \param VarName name of long integer variable inside class used to keep style bits
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property 
+ *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
  *         wxsPropertyContainer::Property \endlink for details, use 0 to always
  *         use this property
  *  \param PGName name used in property grid

@@ -16,6 +16,14 @@ wxsWidget::wxsWidget(
         DefaultStyle(_DefaultStyle),
         BasePropertiesFlags(_BasePropertiesFlags)
 {
+    if ( StyleSet )
+    {
+        wxsStyleProperty::SetFromString(StyleBits,DefaultStyle,StyleSet,false);
+    }
+    else
+    {
+        StyleBits = 0;
+    }
 }
 
 void wxsWidget::EnumItemProperties(long Flags)

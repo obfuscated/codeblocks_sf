@@ -256,3 +256,8 @@ long wxsStyleProperty::GetWxStyle(long StyleBits,const wxsStyle* S,bool IsExtra)
 
     return Result;
 }
+
+void wxsStyleProperty::SetFromString(long& StyleBits,const wxString& String,const wxsStyle* StyleSet,bool IsExtra)
+{
+    StyleBits = wxsStyleProperty(_T(""),_T(""),StyleSet,0,String,IsExtra).Default;
+}
