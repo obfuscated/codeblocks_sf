@@ -534,21 +534,26 @@ int CodeBlocksApp::BatchJob()
                 wxIcon(app),
             #endif // __WXMSW__
                 _("Building ") + wxFileNameFromPath(wxString(argv[argc-1])));
-    int ret = 0;
-    if (m_ReBuild)
-        ret = compiler->RebuildWorkspace(m_BatchTarget);
-    else if (m_Build)
-        ret = compiler->BuildWorkspace(m_BatchTarget);
 
     m_pBatchBuildDialog = Manager::Get()->GetMessageManager()->GetBatchBuildDialog();
-    if (ret == 0)
-    {
-        PlaceWindow(m_pBatchBuildDialog);
+    PlaceWindow(m_pBatchBuildDialog);
+    m_pBatchBuildDialog->Show();
+
+    if (m_ReBuild)
+        compiler->RebuildWorkspace(m_BatchTarget);
+    else if (m_Build)
+        compiler->BuildWorkspace(m_BatchTarget);
+
+    // the batch build log might have been deleted in
+    // CodeBlocksApp::OnBatchBuildDone().
+    // if it hasn't, it's still compiling
+    if (m_pBatchBuildDialog)
         m_pBatchBuildDialog->ShowModal();
-    }
+
     tbIcon->RemoveIcon();
     delete tbIcon;
-    delete m_pBatchBuildDialog;
+    if (m_pBatchBuildDialog)
+        m_pBatchBuildDialog->Destroy();
     m_pBatchBuildDialog = 0;
 
     return 0;
@@ -580,7 +585,11 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
         wxBell();
 
     if (m_pBatchBuildDialog && m_BatchWindowAutoClose && (m_BatchExitCode == 0))
+    {
         m_pBatchBuildDialog->EndModal(wxID_OK);
+        m_pBatchBuildDialog->Destroy();
+        m_pBatchBuildDialog = 0;
+    }
 }
 
 bool CodeBlocksApp::CheckResource(const wxString& res)

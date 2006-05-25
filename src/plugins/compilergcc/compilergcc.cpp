@@ -2998,6 +2998,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 
 void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
 {
+    m_BuildJob = bjIdle;
     if (showNothingToBeDone)
     {
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
