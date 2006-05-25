@@ -785,8 +785,13 @@ void CompilerGCC::AskForActiveProject()
 bool CompilerGCC::CheckProject()
 {
     AskForActiveProject();
+    // switch compiler for the project (if needed)
     if (m_Project && m_Project->GetCompilerID() != m_CompilerId)
         SwitchCompiler(m_Project->GetCompilerID());
+    // switch compiler for single file (if needed)
+    else if (!m_Project && m_CompilerId != CompilerFactory::GetDefaultCompilerID())
+        SwitchCompiler(CompilerFactory::GetDefaultCompilerID());
+
     return m_Project;
 }
 
