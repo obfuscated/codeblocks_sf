@@ -1088,6 +1088,7 @@ void cbEditor::GotoLine(int line, bool centreOnScreen)
         m_pControl->GotoLine(line + onScreen);
     }
     m_pControl->GotoLine(line);
+    UnfoldBlockFromLine(line); // make sure it's visible (not folded)
 }
 
 bool cbEditor::AddBreakpoint(int line, bool notifyDebugger)
