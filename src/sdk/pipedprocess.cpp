@@ -40,7 +40,7 @@ class cbTextInputStream : public wxTextInputStream
         bool m_allowMBconversion;
     public:
 #if wxUSE_UNICODE
-        cbTextInputStream(wxInputStream& s, const wxString &sep=wxT(" \t"), wxMBConv& conv = wxConvUTF8 )
+        cbTextInputStream(wxInputStream& s, const wxString &sep=wxT(" \t"), wxMBConv& conv = wxConvLocal )
             : wxTextInputStream(s, sep, conv),
             m_allowMBconversion(true)
         {
@@ -174,7 +174,7 @@ bool PipedProcess::HasInput()
 
     if (IsErrorAvailable())
     {
-        cbTextInputStream serr(*GetErrorStream(), wxT(" \t"), wxConvLocal);
+        cbTextInputStream serr(*GetErrorStream());
 
         wxString msg;
         msg << serr.ReadLine();
@@ -189,7 +189,7 @@ bool PipedProcess::HasInput()
 
     if (IsInputAvailable())
     {
-        cbTextInputStream sout(*GetInputStream(), wxT(" \t"), wxConvLocal);
+        cbTextInputStream sout(*GetInputStream());
 
         wxString msg;
         msg << sout.ReadLine();
