@@ -124,6 +124,8 @@ class DebuggerGDB : public cbDebuggerPlugin
 		void OnBreakpointDelete(CodeBlocksEvent& event);
 		void OnValueTooltip(CodeBlocksEvent& event);
 		void OnEditorOpened(CodeBlocksEvent& event);
+		void OnProjectActivated(CodeBlocksEvent& event);
+		void OnProjectClosed(CodeBlocksEvent& event);
         void OnGDBOutput(wxCommandEvent& event);
         void OnGDBError(wxCommandEvent& event);
         void OnGDBTerminated(wxCommandEvent& event);
@@ -182,6 +184,8 @@ class DebuggerGDB : public cbDebuggerPlugin
         BreakpointsDlg* m_pBreakpointsWindow;
         ExamineMemoryDlg* m_pExamineMemoryDlg;
         ThreadsDlg* m_pThreadsDlg;
+
+        cbProject* m_pProject; // keep the currently debugged project handy
 
 		DECLARE_EVENT_TABLE()
 };

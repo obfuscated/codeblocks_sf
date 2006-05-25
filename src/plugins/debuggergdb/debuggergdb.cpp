@@ -179,6 +179,9 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 	EVT_EDITOR_TOOLTIP(DebuggerGDB::OnValueTooltip)
 	EVT_EDITOR_OPEN(DebuggerGDB::OnEditorOpened)
 
+	EVT_PROJECT_ACTIVATE(DebuggerGDB::OnProjectActivated)
+	EVT_PROJECT_CLOSE(DebuggerGDB::OnProjectClosed)
+
 	EVT_PIPEDPROCESS_STDOUT(idGDBProcess, DebuggerGDB::OnGDBOutput)
 	EVT_PIPEDPROCESS_STDERR(idGDBProcess, DebuggerGDB::OnGDBError)
 	EVT_PIPEDPROCESS_TERMINATED(idGDBProcess, DebuggerGDB::OnGDBTerminated)
@@ -215,7 +218,8 @@ DebuggerGDB::DebuggerGDB()
 	m_pBacktrace(0),
 	m_pBreakpointsWindow(0),
 	m_pExamineMemoryDlg(0),
-	m_pThreadsDlg(0)
+	m_pThreadsDlg(0),
+	m_pProject(0)
 {
     Manager::Get()->Loadxrc(_T("/debugger_gdb.zip#zip:*.xrc"));
 
@@ -722,6 +726,7 @@ int DebuggerGDB::Debug()
 	if (m_pProcess)
 		return 1;
 
+    m_pProject = 0;
     m_NoDebugInfo = false;
 
     // clear the debug log
@@ -740,6 +745,8 @@ int DebuggerGDB::Debug()
 	cbProject* project = prjMan->GetActiveProject();
 	if (!project && m_PidToAttach == 0)
 		return 2;
+
+    m_pProject = project;
 
     // compile project/target (if not attaching to a PID)
     if (m_PidToAttach == 0)
@@ -1902,6 +1909,54 @@ void DebuggerGDB::OnEditorOpened(CodeBlocksEvent& event)
         }
     }
     event.Skip(); // must do
+}
+
+void DebuggerGDB::OnProjectActivated(CodeBlocksEvent& event)
+{
+    // allow others to catch this
+    event.Skip();
+
+    // when a project is activated and it's not the actively debugged project,
+    // ask the user to end debugging or re-activate the debugged project.
+
+    if (!m_State.GetDriver() || !m_pProject)
+        return;
+
+    if (event.GetProject() != m_pProject)
+    {
+        wxString msg = _("You can't change the active project while you 're actively debugging another.\n"
+                        "Do you want to stop debugging?\n\n"
+                        "Click \"Yes\" to stop debugging now or click \"No\" to re-activate the debuggee.");
+        if (cbMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO) == wxID_YES)
+        {
+            Stop();
+        }
+        else
+        {
+            Manager::Get()->GetProjectManager()->SetProject(m_pProject);
+        }
+    }
+}
+
+void DebuggerGDB::OnProjectClosed(CodeBlocksEvent& event)
+{
+    // allow others to catch this
+    event.Skip();
+
+    // when a project closes, make sure it's not the actively debugged project.
+    // if so, end debugging immediately!
+
+    if (!m_State.GetDriver() || !m_pProject)
+        return;
+
+    if (event.GetProject() == m_pProject)
+    {
+        cbMessageBox(_("The project you were debugging has closed.\n"
+                        "The debugging session will terminate immediately."),
+                    _("Warning"),
+                    wxICON_WARNING);
+        Stop();
+    }
 }
 
 void DebuggerGDB::OnIdle(wxIdleEvent& event)
