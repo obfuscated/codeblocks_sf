@@ -1521,6 +1521,17 @@ void MainFrame::InitializeRecentFilesHistory()
 
 void MainFrame::AddToRecentFilesHistory(const wxString& filename)
 {
+#ifdef __WXMSW__
+    // for windows, look for case-insensitive matches
+    // if found, don't add it
+    wxString low = filename.Lower();
+    for (size_t i = 0; i < m_FilesHistory.GetCount(); ++i)
+    {
+        if (low == m_FilesHistory.GetHistoryFile(i).Lower())
+            return;
+    }
+#endif
+
     m_FilesHistory.AddFileToHistory(filename);
 
     // because we append "clear history" menu to the end of the list,
@@ -1565,6 +1576,17 @@ void MainFrame::AddToRecentFilesHistory(const wxString& filename)
 
 void MainFrame::AddToRecentProjectsHistory(const wxString& filename)
 {
+#ifdef __WXMSW__
+    // for windows, look for case-insensitive matches
+    // if found, don't add it
+    wxString low = filename.Lower();
+    for (size_t i = 0; i < m_ProjectsHistory.GetCount(); ++i)
+    {
+        if (low == m_ProjectsHistory.GetHistoryFile(i).Lower())
+            return;
+    }
+#endif
+
     m_ProjectsHistory.AddFileToHistory(filename);
 
     // because we append "clear history" menu to the end of the list,
