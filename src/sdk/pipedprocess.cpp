@@ -174,7 +174,7 @@ bool PipedProcess::HasInput()
 
     if (IsErrorAvailable())
     {
-        cbTextInputStream serr(*GetErrorStream());
+        cbTextInputStream serr(*GetErrorStream(), wxT(" \t"), wxConvLocal);
 
         wxString msg;
         msg << serr.ReadLine();
@@ -189,7 +189,7 @@ bool PipedProcess::HasInput()
 
     if (IsInputAvailable())
     {
-        cbTextInputStream sout(*GetInputStream());
+        cbTextInputStream sout(*GetInputStream(), wxT(" \t"), wxConvLocal);
 
         wxString msg;
         msg << sout.ReadLine();
