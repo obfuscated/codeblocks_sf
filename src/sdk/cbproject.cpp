@@ -635,26 +635,35 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 				ft == ftResourceBin ||
 				ft == ftStaticLib);
 
-    // optimization opportunity:
-    //
-    // filename is relative to the project's base path, so
-    // to get the absolute filename, we just prepend the project's base path...
-
     f->compile = localCompile;
     f->link = localLink;
 
+    wxString local_filename = filename;
+
 #ifdef __WXMSW__
     // for windows, make sure the filename is not on another drive...
-    if (filename.Length() > 1 && filename.GetChar(1) == _T(':'))
+    if (local_filename.Length() > 1 &&
+        local_filename.GetChar(1) == _T(':') && // quick test to avoid the costly wxFileName ctor below
+        fname.GetVolume() != wxFileName(m_Filename).GetVolume())
+    {
         fname.Assign(filename);
+    }
     else
 #endif
-        fname.Assign(GetBasePath() + wxFILE_SEP_PATH + filename);
+    {
+        // make sure the filename is relative to the project's base path
+        if (fname.IsAbsolute())
+        {
+            fname.MakeRelativeTo(GetBasePath());
+            local_filename = fname.GetFullPath();
+        }
+        fname.Assign(GetBasePath() + wxFILE_SEP_PATH + local_filename);
+    }
     NormalizePath(fname, GetBasePath());
 
     wxString fullFilename = fname.GetFullPath();
     f->file.Assign(fname);
-    f->relativeFilename = UnixFilename(filename);
+    f->relativeFilename = UnixFilename(local_filename);
 
     // now check if we have already added this file
     // if we have, return the existing file, but add the specified target
