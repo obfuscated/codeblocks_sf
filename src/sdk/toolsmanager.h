@@ -51,7 +51,6 @@ class DLLIMPORT ToolsManager : public Mgr<ToolsManager>, public wxEvtHandler
 		void LoadTools();
 		void SaveTools();
 		void OnToolClick(wxCommandEvent& event);
-		void OnProcessTimer(wxTimerEvent& event);
 		void OnIdle(wxIdleEvent& event);
 		void OnToolStdOutput(CodeBlocksEvent& event);
 		void OnToolErrOutput(CodeBlocksEvent& event);
@@ -68,7 +67,6 @@ class DLLIMPORT ToolsManager : public Mgr<ToolsManager>, public wxEvtHandler
 		wxMenu* m_Menu;
 		PipedProcess* m_pProcess;
 		int m_Pid;
-		wxTimer m_Timer;
 
 		DECLARE_EVENT_TABLE()
 

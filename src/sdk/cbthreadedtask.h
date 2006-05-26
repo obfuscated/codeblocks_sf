@@ -11,6 +11,9 @@ class cbThreadedTask
     /// cbThreadedTask ctor
     cbThreadedTask();
 
+    /// cbThreadedTask dtor
+    virtual ~cbThreadedTask() = 0;
+
     /// This function is called to tell the task to abort (check cbThreadPool::AbortAllTasks)
     void Abort();
 
@@ -35,6 +38,11 @@ class cbThreadedTask
 
 inline cbThreadedTask::cbThreadedTask()
 : m_abort(false)
+{
+  // empty
+}
+
+inline cbThreadedTask::~cbThreadedTask()
 {
   // empty
 }

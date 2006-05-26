@@ -48,14 +48,12 @@
 WX_DEFINE_LIST(ToolsList);
 
 const int idToolsConfigure = wxNewId();
-const int idTimerTool = wxNewId();
 const int idToolProcess = wxNewId();
 
 BEGIN_EVENT_TABLE(ToolsManager, wxEvtHandler)
 	EVT_MENU(idToolsConfigure, ToolsManager::OnConfigure)
 
   EVT_IDLE(ToolsManager::OnIdle)
-	EVT_TIMER(idTimerTool, ToolsManager::OnProcessTimer)
 
 	EVT_PIPEDPROCESS_STDOUT(idToolProcess, ToolsManager::OnToolStdOutput)
 	EVT_PIPEDPROCESS_STDERR(idToolProcess, ToolsManager::OnToolErrOutput)
@@ -67,8 +65,6 @@ ToolsManager::ToolsManager()
 	m_pProcess(0L),
 	m_Pid(0)
 {
-    m_Timer.SetOwner(this, idTimerTool);
-
 	LoadTools();
 	Manager::Get()->GetAppWindow()->PushEventHandler(this);
 }
@@ -176,7 +172,6 @@ bool ToolsManager::Execute(Tool* tool)
     }
     else
     {
-        m_Timer.Start(100);
         Manager::Get()->GetMessageManager()->SwitchTo(0); // switch to default log
     }
 	return true;
@@ -372,11 +367,6 @@ void ToolsManager::OnToolClick(wxCommandEvent& event)
 		cbMessageBox(_("Could not execute ") + tool->name);
 }
 
-void ToolsManager::OnProcessTimer(wxTimerEvent& event)
-{
-	wxWakeUpIdle();
-}
-
 void ToolsManager::OnIdle(wxIdleEvent& event)
 {
     if (m_pProcess)
@@ -402,7 +392,6 @@ void ToolsManager::OnToolErrOutput(CodeBlocksEvent& event)
 
 void ToolsManager::OnToolTerminated(CodeBlocksEvent& event)
 {
-    m_Timer.Stop();
     m_Pid = 0;
     m_pProcess = 0;
 
