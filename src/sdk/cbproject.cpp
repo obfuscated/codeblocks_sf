@@ -340,6 +340,8 @@ void cbProject::Open()
 		Manager::Get()->GetMessageManager()->Log(_("done"));
 		if (!m_Targets.GetCount())
 			AddDefaultBuildTarget();
+		// in case of batch build discard upgrade messages
+		fileUpgraded = fileUpgraded && !Manager::IsBatchBuild();
 		SetModified(ft != ftCodeBlocksProject || fileUpgraded || fileModified);
 
 		// moved to ProjectManager::LoadProject()
@@ -361,7 +363,7 @@ void cbProject::Open()
 	}
 	else
 		Manager::Get()->GetMessageManager()->Log(_("failed"));
-}
+} // end of Open
 
 void cbProject::CalculateCommonTopLevelPath()
 {

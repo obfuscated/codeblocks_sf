@@ -745,7 +745,7 @@ bool ProjectManager::QueryCloseProject(cbProject *proj,bool dontsavefiles)
     if(!dontsavefiles)
         if(!proj->QueryCloseAllFiles())
             return false;
-    if (proj->GetModified())
+    if (proj->GetModified() && !Manager::IsBatchBuild())
     {
         wxString msg;
         msg.Printf(_("Project '%s' is modified...\nDo you want to save the changes?"), proj->GetTitle().c_str());
@@ -757,7 +757,7 @@ bool ProjectManager::QueryCloseProject(cbProject *proj,bool dontsavefiles)
         }
     }
     return true;
-}
+} // end of QueryCloseProject
 
 bool ProjectManager::CloseAllProjects(bool dontsave)
 {
