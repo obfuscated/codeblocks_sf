@@ -89,7 +89,7 @@ wxString DebuggerState::ConvertToValidFilename(const wxString& filename)
     if (isAbsolute)
     {
         ProjectFile* pf = prj->GetFileByFilename(UnixFilename(filename), false, true);
-        if (pf)
+        if (pf && pf->relativeFilename.StartsWith(_T("..")))
             return pf->relativeFilename;
     }
     return filename;
@@ -105,6 +105,7 @@ int DebuggerState::AddBreakpoint(const wxString& file, int line, bool temp, cons
     if (idx != -1)
         RemoveBreakpoint(idx, true);
     // create new bp
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("add bp: file=%s, bpfile=%s"), file.c_str(), bpfile.c_str());
     DebuggerBreakpoint* bp = new DebuggerBreakpoint;
     bp->filename = bpfile;
     bp->filenameAsPassed = file;

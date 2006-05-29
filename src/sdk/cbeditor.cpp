@@ -1827,7 +1827,7 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
 //    if (flags & wxSCI_MOD_BEFOREDELETE) txt << _T("wxSCI_MOD_BEFOREDELETE, ");
 //    txt << _T("pos=")
 //        << wxString::Format(_T("%d"), event.GetPosition())
-//        << _T("line=")
+//        << _T(", line=")
 //        << wxString::Format(_T("%d"), event.GetLine())
 //        << _T(", linesAdded=")
 //        << wxString::Format(_T("%d"), event.GetLinesAdded());
@@ -1855,16 +1855,36 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
         }
 
         // just added/removed lines
+        // this is the line that was added/removed
         int startline = m_pControl->LineFromPosition(event.GetPosition());
-        int line = m_pControl->MarkerPrevious(m_pControl->GetLineCount(), 1 << BREAKPOINT_MARKER);
-        while (line > startline)
-        {
-            // add breakpoint at new line
-            debugger->AddBreakpoint(m_Filename, line);
-            // remove breakpoint from old line
-            debugger->RemoveBreakpoint(m_Filename, line - linesAdded);
+        // find the first breakpoint after it
+        startline = m_pControl->MarkerNext(startline, 1 << BREAKPOINT_MARKER);
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("Starting at line %d"), startline+1);
 
-            line = m_pControl->MarkerPrevious(line - 1, 1 << BREAKPOINT_MARKER);
+        // we 'll build an array containing all line numbers with breakpoints
+        // from startLine to the end of the document.
+        // at the same time we 'll be removing those breakpoints
+        wxArrayInt bps;
+        int line = startline;
+        while (line >= 0)// && line >= startline)
+        {
+            int oldline = line - linesAdded;
+            int newline = line;
+//            Manager::Get()->GetMessageManager()->DebugLog(_T("Removing bp at line %d (new=%d)"), oldline+1, newline+1);
+            // remove breakpoint from old line
+            debugger->RemoveBreakpoint(m_Filename, oldline);
+            // add in array the line that this breakpoint will now go to
+            bps.Add(newline);
+
+            line = m_pControl->MarkerNext(line + 1, 1 << BREAKPOINT_MARKER);
+//            Manager::Get()->GetMessageManager()->DebugLog(_T("Next bp at line %d"), line+1);
+        }
+        // now just loop through the array we created and set breakpoints
+        for (size_t i = 0; i < bps.GetCount(); ++i)
+        {
+//            Manager::Get()->GetMessageManager()->DebugLog(_T("Setting bp at line %d"), bps[i]+1);
+            // add breakpoint at new line
+            debugger->AddBreakpoint(m_Filename, bps[i]);
         }
     }
 }

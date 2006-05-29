@@ -1453,7 +1453,7 @@ void DebuggerGDB::SyncEditor(const wxString& filename, int line, bool setMarker)
     if (ed)
     {
         ed->Show(true);
-        if (f)
+        if (f && !ed->GetProjectFile())
             ed->SetProjectFile(f);
         ed->GotoLine(line - 1, false);
         if (setMarker)
