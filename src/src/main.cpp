@@ -2170,18 +2170,18 @@ void MainFrame::OnEditUncommentSelected(wxCommandEvent& event)
 			{
 				// For each line: if it is commented, uncomment.
 				strLine = stc->GetLine( startLine );
-				int commentPos = strLine.Strip( wxString::leading ).Find( _T( "//" ) );
-
+				wxString Comment = _T("//");
+				int commentPos = strLine.Strip( wxString::leading ).Find( Comment );
 				if( commentPos ==0 )
 				{
 					// Uncomment
-					strLine.Replace( _T( "//" ), _T( "" ), false );
+					strLine.Replace( Comment, _T( "" ), false );
 
 					// Update
 					int start = stc->PositionFromLine( startLine );
 					stc->SetTargetStart( start );
-					// The +2 is for the '//' we erased
-					stc->SetTargetEnd( start + strLine.Length() + 2 );
+					// adjust for the '//' we erased
+					stc->SetTargetEnd( start + strLine.Length() + Comment.Length() );
 					stc->ReplaceTarget( strLine );
 				}
 
@@ -2190,7 +2190,7 @@ void MainFrame::OnEditUncommentSelected(wxCommandEvent& event)
 		}
 		ed->GetControl()->EndUndoAction();
 	}
-}
+} // end of OnEditUncommentSelected
 
 void MainFrame::OnEditToggleCommentSelected(wxCommandEvent& event)
 {
@@ -2223,24 +2223,25 @@ void MainFrame::OnEditToggleCommentSelected(wxCommandEvent& event)
 			{
 				// For each line: If it's commented, uncomment. Otherwise, comment.
 				strLine = stc->GetLine( startLine );
-				int commentPos = strLine.Strip( wxString::leading ).Find( _T( "//" ) );
+				wxString Comment = _T("//");
+				int commentPos = strLine.Strip( wxString::leading ).Find( Comment );
 
 				if( -1 == commentPos || commentPos > 0 )
 				{
 					// Comment
 					/// @todo This should be language-dependent. We're currently assuming C++
-					stc->InsertText( stc->PositionFromLine( startLine ), _T( "//" ) );
+					stc->InsertText( stc->PositionFromLine( startLine ), Comment );
 				}
 				else
 				{
 					// Uncomment
-					strLine.Replace( _T( "//" ), _T( "" ), false );
+					strLine.Replace( Comment, _T( "" ), false );
 
 					// Update
 					int start = stc->PositionFromLine( startLine );
 					stc->SetTargetStart( start );
-					// The +2 is for the '//' we erased
-					stc->SetTargetEnd( start + strLine.Length() + 2 );
+					// adjust for the '//' we erased
+					stc->SetTargetEnd( start + strLine.Length() + Comment.Length() );
 					stc->ReplaceTarget( strLine );
 				}
 
@@ -2249,7 +2250,7 @@ void MainFrame::OnEditToggleCommentSelected(wxCommandEvent& event)
 		}
 		ed->GetControl()->EndUndoAction();
 	}
-}
+} // end of OnEditToggleCommentSelected
 
 void MainFrame::OnEditAutoComplete(wxCommandEvent& event)
 {
