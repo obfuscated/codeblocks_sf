@@ -120,6 +120,7 @@ class wxsWindowEditor : public wxsEditor
         wxBoxSizer* QPSizer;            ///< Sizer for quick properties
         wxBoxSizer* OpsSizer;           ///< Sizer for operations pane
         wxScrolledWindow* QPArea;       ///< Scrolled window containing all QuickProps sturr
+        wxScrolledWindow* OpsBackground;
         wxBitmapButton* InsIntoBtn;
         wxBitmapButton* InsBeforeBtn;
         wxBitmapButton* InsAfterBtn;
@@ -164,6 +165,8 @@ class wxsWindowEditor : public wxsEditor
         void OnDelete(wxCommandEvent& event);
         void OnPreview(wxCommandEvent& event);
         void OnQuickProps(wxCommandEvent& event);
+        void OnSize(wxSizeEvent& event);
+        void OnRelayout(wxCommandEvent& event);
 
         /** Flag for MultipleAddMode */
         bool InsideMultipleChange;

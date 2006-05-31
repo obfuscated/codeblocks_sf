@@ -1,7 +1,7 @@
 #include "../wxsheaders.h"
 #include "wxsnotebookparentqp.h"
 
-BEGIN_EVENT_TABLE(wxsNotebookParentQP,wxPanel)
+BEGIN_EVENT_TABLE(wxsNotebookParentQP,wxsQPPPanel)
     //(*EventTable(wxsNotebookParentQP)
     EVT_TEXT(ID_TEXTCTRL1,wxsNotebookParentQP::OnLabelText)
     EVT_CHECKBOX(ID_CHECKBOX1,wxsNotebookParentQP::OnSelectionChange)
@@ -11,6 +11,7 @@ BEGIN_EVENT_TABLE(wxsNotebookParentQP,wxPanel)
 END_EVENT_TABLE()
 
 wxsNotebookParentQP::wxsNotebookParentQP(wxWindow* parent,wxsWidget* Modified,wxsNotebookExtraParams* _Params,wxWindowID id):
+    wxsQPPPanel(Modified),
     WriteTimer(this,0),
     ReadTimer(this,1),
     Widget(Modified),
@@ -71,6 +72,7 @@ void wxsNotebookParentQP::OnWriteTimer(wxTimerEvent& event)
 
 void wxsNotebookParentQP::ReadData()
 {
+    if ( !Valid() ) return;
     if ( !Widget || !Params ) return;
 
     if ( Params->Label != Label->GetValue() )
@@ -86,6 +88,7 @@ void wxsNotebookParentQP::ReadData()
 
 void wxsNotebookParentQP::SaveData()
 {
+    if ( !Valid() ) return;
     if ( !Widget || !Params ) return;
 
     bool Updated = false;

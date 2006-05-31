@@ -39,7 +39,7 @@ wxsEventsEditor::~wxsEventsEditor()
 void wxsEventsEditor::OnPropertyChanged(wxPropertyGridEvent& event)
 {
 	ReadPropertyGrid();
-	Res->UpdateEventTable();
+	Res->UpdateEventTable(true);
 	Refresh();
 }
 
@@ -286,7 +286,7 @@ bool wxsEventsEditor::CreateNewFunction(wxsEventDesc* Event,const wxString& NewF
 	Declarations << _T("void ") << NewFunctionName << _T('(');
 	Declarations << Event->EventTypeName << _T("& event);\n");
 	wxsCoder::Get()->AddCode(HeaderFile,DeclarationsHeader,Declarations,true);
-	Res->UpdateEventTable();
+	Res->UpdateEventTable(true);
 	cbEditor* Editor = Manager::Get()->GetEditorManager()->Open(SourceFile);
 	if ( !Editor ) return false;
 	wxString NewFunctionCode;

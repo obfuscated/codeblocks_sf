@@ -12,7 +12,7 @@
 
 #include "wxslistbook.h"
 
-class wxsListbookParentQP: public wxPanel
+class wxsListbookParentQP: public wxsQPPPanel
 {
 	public:
 

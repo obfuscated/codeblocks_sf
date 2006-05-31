@@ -12,7 +12,7 @@
 
 #include "wxsnotebook.h"
 
-class wxsNotebookParentQP: public wxPanel
+class wxsNotebookParentQP: public wxsQPPPanel
 {
 	public:
 

@@ -2,7 +2,7 @@
 #include "wxssizerparentqp.h"
 #include "wxsdefsizer.h"
 
-BEGIN_EVENT_TABLE(wxsSizerParentQP,wxPanel)
+BEGIN_EVENT_TABLE(wxsSizerParentQP,wxsQPPPanel)
 //(*EventTable(wxsSizerParentQP)
     EVT_CHECKBOX(ID_CHECKBOX1,wxsSizerParentQP::OnBrdChange)
     EVT_CHECKBOX(ID_CHECKBOX2,wxsSizerParentQP::OnBrdChange)
@@ -26,6 +26,7 @@ BEGIN_EVENT_TABLE(wxsSizerParentQP,wxPanel)
 END_EVENT_TABLE()
 
 wxsSizerParentQP::wxsSizerParentQP(wxWindow* parent,wxsWidget* Modified,wxsSizerExtraParams* _Params,wxWindowID id):
+    wxsQPPPanel(Modified),
     Widget(Modified),
     Params(_Params),
     Timer(this)
@@ -145,6 +146,7 @@ void wxsSizerParentQP::OnProportionChange(wxSpinEvent& event)
 
 void wxsSizerParentQP::ReadData()
 {
+    if ( !Valid() ) return;
     if ( !Widget || !Params ) return;
 
     if ( GetBorderFlags() != Params->BorderFlags )
@@ -195,6 +197,7 @@ void wxsSizerParentQP::ReadData()
 
 void wxsSizerParentQP::SaveData()
 {
+    if ( !Valid() ) return;
     if ( !Widget || !Params ) return;
 
     bool Updated = false;

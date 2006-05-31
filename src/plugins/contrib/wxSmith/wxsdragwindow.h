@@ -51,6 +51,9 @@ class wxsDragWindow : public wxControl
 		/** Checking if given widget is inside current selection */
 		bool IsSelected(wxsWidget* Widget);
 
+		/** Changing to update mode */
+		void SetUpdateMode(bool IsUpdate);
+
 	private:
 
         /** Size of boxes used to drag borders of widgets */
@@ -249,6 +252,9 @@ class wxsDragWindow : public wxControl
 
         /** Flag blocking incomming widget select events */
         bool BlockWidgetSelect;
+
+        /** Flag set to true when content is being recreated now */
+        bool ContentDuringRecreate;
 
         /** Updated region - will be used to fetch background */
         wxRegion FetchArea;

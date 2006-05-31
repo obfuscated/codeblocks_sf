@@ -23,6 +23,24 @@ class wxsWidget;
 class wxsWidgetEvents;
 class wxsEventDesc;
 
+/** Class for quick properties */
+class wxsQPPPanel: public wxPanel
+{
+    public:
+
+        wxsQPPPanel(wxsWidget* _Owner);
+        virtual ~wxsQPPPanel();
+
+        static void NotifyWidgetDelete(wxsWidget* Widget);
+
+    protected:
+
+        bool Valid() { return Owner!=NULL; }
+
+    private:
+        wxsWidget* Owner;
+};
+
 /** Class representing one widget */
 class wxsWidget
 {
@@ -159,7 +177,7 @@ class wxsWidget
          */
         virtual wxWindow* BuildQuickPanel(wxWindow* Parent);
 
-        /** Getting window's style 
+        /** Getting window's style
          *
          * This fuunction is supplied here because styles stored
          * in base properties object are not directly mapped into
@@ -168,29 +186,29 @@ class wxsWidget
          */
         long GetStyle();
 
-        /** Setting window's style 
+        /** Setting window's style
          *
          * This function sets specified style in base proeprties object.
          * \param Style wxWidgets style
          */
         void SetStyle(long Style);
 
-        /** Getting window's extra style 
+        /** Getting window's extra style
          *
          * \see GetStyle
          */
         long GetExStyle();
 
-        /** Setting window's extra style 
+        /** Setting window's extra style
          *
          * \see SetStyle
          */
         void SetExStyle(long ExStyle);
 
-        /** Getting window's position 
+        /** Getting window's position
          *
          * This function returns wxPoint class with current position
-         * (may be wxDefaultPosition). It may be used directly when 
+         * (may be wxDefaultPosition). It may be used directly when
          * creating previews.
          */
         inline wxPoint GetPosition()
@@ -200,7 +218,7 @@ class wxsWidget
                 wxPoint(BaseProperties.PosX,BaseProperties.PosY);
         }
 
-        /** Getting window's size 
+        /** Getting window's size
          *
          * This functino returns wxSize class with current size
          * (may be wxDefaultSize). It may be used directly when
@@ -229,7 +247,7 @@ class wxsWidget
          * Default implementation updates previously created property grid
          */
         virtual void MyUpdatePropertiesWindow();
-        
+
         /** Function notifying about property change
          *
          * This functino is called when any property of this
@@ -248,7 +266,7 @@ class wxsWidget
          *  creating it's private properties to include all default ones.
          */
         virtual void MyCreateProperties();
-        
+
         /** Changing base properties used in given edit mode
          *
          * This function should be called once for each edit mode
@@ -264,7 +282,7 @@ class wxsWidget
 
         /** Base object used to handle properties */
         wxsProperties Properties;
-        
+
 /******************************************************************************/
 /* Code generation                                                            */
 /******************************************************************************/
@@ -290,13 +308,13 @@ class wxsWidget
          *  return empty string
          */
         virtual wxString GetDeclarationCode(const wxsCodeParams& Params);
-        
+
         /** Function building wxsCodeParams object for this widget.
          *
          *  UniqueNumber, IsDirectParent and ParentName are not filled.
          */
         void BuildCodeParams(wxsCodeParams& Params);
- 
+
 /**********************************************************************/
 /* Support for containers                                             */
 /**********************************************************************/

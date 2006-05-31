@@ -110,7 +110,7 @@ class wxsWindowRes : public wxsResource
         void UpdateWidgetsVarNameId();
 
         /** Function rebuilding definition of event table */
-        void UpdateEventTable();
+        void UpdateEventTable(bool NotifyChange);
 
         /** Generating Xml document compatible with XRC structure (without additional
          *  parameters */

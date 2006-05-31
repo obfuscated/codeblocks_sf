@@ -2,7 +2,7 @@
 #include "wxsstandardqp.h"
 #include "widget.h"
 
-BEGIN_EVENT_TABLE(wxsStandardQP,wxPanel)
+BEGIN_EVENT_TABLE(wxsStandardQP,wxsQPPPanel)
     //(*EventTable(wxsStandardQP)
     EVT_TEXT(ID_TEXTCTRL1,wxsStandardQP::OnTextChanged)
     EVT_CHECKBOX(ID_CHECKBOX1,wxsStandardQP::OnChange)
@@ -16,6 +16,7 @@ BEGIN_EVENT_TABLE(wxsStandardQP,wxPanel)
 END_EVENT_TABLE()
 
 wxsStandardQP::wxsStandardQP(wxWindow* parent,wxsWidget* _Widget,wxWindowID id):
+    wxsQPPPanel(_Widget),
     ReadTimer(this,0),
     WriteTimer(this,1),
     Widget(_Widget)
@@ -112,7 +113,7 @@ void wxsStandardQP::OnWriteTimer(wxTimerEvent& event)
 
 void wxsStandardQP::ReadData()
 {
-    if ( !Widget ) return;
+    if ( !Valid() ) return;
     wxsBaseProperties& Params = Widget->BaseProperties;
 
     if ( Widget->GetBPType() & bptVariable )
@@ -163,7 +164,7 @@ void wxsStandardQP::ReadData()
 
 void wxsStandardQP::SaveData()
 {
-    if ( !Widget ) return;
+    if ( !Valid() ) return;
 
     bool Updated = false;
     wxsBaseProperties& Params = Widget->BaseProperties;

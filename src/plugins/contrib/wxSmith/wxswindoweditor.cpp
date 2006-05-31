@@ -17,6 +17,11 @@
 #include "wxswidgetfactory.h"
 #include "wxsevent.h"
 
+DECLARE_EVENT_TYPE(wxsEVT_RELAYOUT, -1)
+DEFINE_EVENT_TYPE(wxsEVT_RELAYOUT)
+
+
+
 namespace {
 struct ltstr {  bool operator()(const wxChar* s1, const wxChar* s2) const { return wxStricmp(s1, s2) < 0; } };
 };
@@ -56,22 +61,27 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     QPArea->SetSizer(QPSizer);
 
     OpsSizer = new wxBoxSizer(wxVERTICAL);
-    HorizSizer->Add(OpsSizer,0,wxEXPAND);
+    OpsBackground = new wxScrolledWindow(this,-1);
+    OpsBackground->SetScrollbars(0,5,0,0);
+    HorizSizer->Add(OpsBackground,0,wxEXPAND);
+    OpsBackground->SetSizer(OpsSizer);
 
-    OpsSizer->Add(InsIntoBtn   = new wxBitmapButton(this,wxsInsIntoId,InsIntoImg));
-    OpsSizer->Add(InsBeforeBtn = new wxBitmapButton(this,wxsInsBeforeId,InsBeforeImg));
-    OpsSizer->Add(InsAfterBtn  = new wxBitmapButton(this,wxsInsAfterId,InsAfterImg));
+    OpsSizer->Add(InsIntoBtn   = new wxBitmapButton(OpsBackground,wxsInsIntoId,InsIntoImg));
+    OpsSizer->Add(InsBeforeBtn = new wxBitmapButton(OpsBackground,wxsInsBeforeId,InsBeforeImg));
+    OpsSizer->Add(InsAfterBtn  = new wxBitmapButton(OpsBackground,wxsInsAfterId,InsAfterImg));
     OpsSizer->Add(1,5);
-    OpsSizer->Add(DelBtn       = new wxBitmapButton(this,wxsDelId,DelImg));
-    OpsSizer->Add(PreviewBtn   = new wxBitmapButton(this,wxsPreviewId,PreviewImg));
+    OpsSizer->Add(DelBtn       = new wxBitmapButton(OpsBackground,wxsDelId,DelImg));
+    OpsSizer->Add(PreviewBtn   = new wxBitmapButton(OpsBackground,wxsPreviewId,PreviewImg));
     OpsSizer->Add(1,5);
-    OpsSizer->Add(QuickPanelBtn = new wxBitmapButton(this,wxsQuickPropsId,QuickPropsImgOpen));
+    OpsSizer->Add(QuickPanelBtn = new wxBitmapButton(OpsBackground,wxsQuickPropsId,QuickPropsImgOpen));
     InsIntoBtn   ->SetToolTip(_("Insert new widgets into current selection"));
     InsBeforeBtn ->SetToolTip(_("Insert new widgets before current selection"));
     InsAfterBtn  ->SetToolTip(_("Insert new widgets after current selection"));
     DelBtn       ->SetToolTip(_("Delete current selection"));
     PreviewBtn   ->SetToolTip(_("Show preview"));
     QuickPanelBtn->SetToolTip(_("Open / Close Quick Properties panel"));
+
+    OpsSizer->SetVirtualSizeHints(OpsBackground);
 
     SetSizer(VertSizer);
 
@@ -181,6 +191,7 @@ void wxsWindowEditor::BuildPreview()
         // Waiting to reposition and resize all widgets
 // FIXME (SpOoN#1#): Don't ever use wxYield, just add pending event and do all required stuff in it's handler
         Manager::Yield();
+        DragWnd->SetUpdateMode(false);
         DragWnd->SetSize(Drag);
         DragWnd->NotifySizeChange(Drag);
         DragWnd->SetWidget(TopWidget);
@@ -197,6 +208,7 @@ void wxsWindowEditor::KillPreview()
     Scroll->SetSizer(NULL);
     GetWinRes()->GetRootWidget()->KillPreview();
     DragWnd->Hide();
+    DragWnd->SetUpdateMode(true);
 }
 
 void wxsWindowEditor::OnMouseClick(wxMouseEvent& event)
@@ -284,6 +296,7 @@ bool wxsWindowEditor::CanRedo()
 
 void wxsWindowEditor::Undo()
 {
+    if ( !CanUndo() ) return;
 	wxsWidget* NewRoot = UndoBuff->Undo();
 	if ( !NewRoot ) return;
 	if ( !GetWinRes()->ChangeRootWidget(NewRoot) )
@@ -296,6 +309,7 @@ void wxsWindowEditor::Undo()
 
 void wxsWindowEditor::Redo()
 {
+    if ( !CanRedo() ) return;
 	wxsWidget* NewRoot = UndoBuff->Redo();
 	if ( !NewRoot ) return;
 	if ( !GetWinRes()->ChangeRootWidget(NewRoot) )
@@ -322,6 +336,8 @@ bool wxsWindowEditor::CanPaste()
 
 void wxsWindowEditor::Cut()
 {
+    if ( !HasSelection() ) return;
+
 	// Almost all selected widgets will be added into clipboard
 	// but with one exception - widget won't be added if parent of this
 	// widget at any level is also selected
@@ -355,6 +371,8 @@ void wxsWindowEditor::Cut()
 
 void wxsWindowEditor::Copy()
 {
+    if ( !HasSelection() ) return;
+
 	// Almost all selected widgets will be added into clipboard
 	// but with one exception - widget won't be added if parent of this
 	// widget at any level is also selected
@@ -376,6 +394,8 @@ void wxsWindowEditor::Copy()
 
 void wxsWindowEditor::Paste()
 {
+    if ( !CanPaste() ) return;
+
     if ( !wxTheClipboard->Open() ) return;
     wxsWindowResDataObject Data;
     if ( wxTheClipboard->GetData(Data) )
@@ -954,6 +974,20 @@ void wxsWindowEditor::SpreadEvent(wxEvent& event)
     }
 }
 
+void wxsWindowEditor::OnSize(wxSizeEvent& event)
+{
+    event.Skip();
+
+    wxCommandEvent event2(wxsEVT_RELAYOUT,GetId());
+    event2.SetEventObject(this);
+    AddPendingEvent(event2);
+}
+
+void wxsWindowEditor::OnRelayout(wxCommandEvent& event)
+{
+    Layout();
+}
+
 wxImage wxsWindowEditor::InsIntoImg;
 wxImage wxsWindowEditor::InsBeforeImg;
 wxImage wxsWindowEditor::InsAfterImg;
@@ -976,4 +1010,6 @@ BEGIN_EVENT_TABLE(wxsWindowEditor,wxsEditor)
     EVT_BUTTON(wxsPreviewId,wxsWindowEditor::OnPreview)
     EVT_BUTTON(wxsQuickPropsId,wxsWindowEditor::OnQuickProps)
     EVT_BUTTON(-1,wxsWindowEditor::OnButton)
+    EVT_SIZE(wxsWindowEditor::OnSize)
+    EVT_COMMAND(-1,wxsEVT_RELAYOUT,wxsWindowEditor::OnRelayout)
 END_EVENT_TABLE()

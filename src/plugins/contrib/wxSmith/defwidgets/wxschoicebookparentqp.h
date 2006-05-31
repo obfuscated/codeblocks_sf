@@ -12,7 +12,7 @@
 #include <wx/textctrl.h>
 //*)
 
-class wxsChoicebookParentQP: public wxPanel
+class wxsChoicebookParentQP: public wxsQPPPanel
 {
 	public:
 
@@ -47,7 +47,7 @@ class wxsChoicebookParentQP: public wxPanel
 		//*)
 
     private:
-    
+
         wxTimer WriteTimer;
         wxTimer ReadTimer;
 

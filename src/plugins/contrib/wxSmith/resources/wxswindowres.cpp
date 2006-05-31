@@ -444,7 +444,7 @@ void wxsWindowRes::RebuildCode()
 	}
 	Code.Append(_T('\n'));
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(HFile),CodeHeader,Code);
-	UpdateEventTable();
+	UpdateEventTable(false);
 }
 
 void wxsWindowRes::AddDeclarationsReq(wxsWidget* Widget,wxString& LocalCode,wxString& GlobalCode,bool& WasLocal)
@@ -921,7 +921,7 @@ void wxsWindowRes::BuildHeadersArray(wxsWidget* Widget,wxArrayString& Array)
 	}
 }
 
-void wxsWindowRes::UpdateEventTable()
+void wxsWindowRes::UpdateEventTable(bool NotifyChange)
 {
     if ( !GetProject() ) return;
 
@@ -931,6 +931,9 @@ void wxsWindowRes::UpdateEventTable()
 	Code.Append(_T('\n'));
 	CollectEventTableEnteries(Code,RootWidget);
 	wxsCoder::Get()->AddCode(GetProject()->GetProjectFileName(GetSourceFile()),CodeHeader,Code);
+
+	if ( !NotifyChange ) return;
+
     // Applying modified state
     if ( GetEditor() )
     {

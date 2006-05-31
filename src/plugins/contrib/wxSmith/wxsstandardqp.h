@@ -10,10 +10,9 @@
 #include <wx/textctrl.h>
 //*)
 #include <wx/timer.h>
+#include "widget.h"
 
-class wxsWidget;
-
-class wxsStandardQP: public wxPanel
+class wxsStandardQP: public wxsQPPPanel
 {
 	public:
 

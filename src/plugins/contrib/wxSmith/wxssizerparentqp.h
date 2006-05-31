@@ -13,11 +13,11 @@
 #include <wx/stattext.h>
 //*)
 #include <wx/timer.h>
+#include "widget.h"
 
-class wxsWidget;
 class wxsSizerExtraParams;
 
-class wxsSizerParentQP: public wxPanel
+class wxsSizerParentQP: public wxsQPPPanel
 {
 	public:
 

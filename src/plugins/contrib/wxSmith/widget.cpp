@@ -13,6 +13,34 @@
 #include <wx/tokenzr.h>
 #include <wx/list.h>
 
+namespace
+{
+    WX_DEFINE_ARRAY(wxsQPPPanel*,QPPPanelsT);
+    QPPPanelsT Panels;
+};
+
+wxsQPPPanel::wxsQPPPanel(wxsWidget* _Owner): Owner(_Owner)
+{
+    Panels.Add(this);
+}
+
+wxsQPPPanel::~wxsQPPPanel()
+{
+    Panels.Remove(this);
+}
+
+void wxsQPPPanel::NotifyWidgetDelete(wxsWidget* Widget)
+{
+    for ( size_t i=0; i<Panels.Count(); i++ )
+    {
+        if ( Panels[i]->Owner == Widget )
+        {
+            Panels[i]->Owner = NULL;
+        }
+    }
+}
+
+
 #define COLOUR_ENTRY(Name) { _T(#Name), Name },
 
 /** All system colours */
@@ -112,6 +140,8 @@ wxsWidget::~wxsWidget()
     	delete Events;
     	Events = NULL;
     }
+
+    wxsQPPPanel::NotifyWidgetDelete(this);
 }
 
 void wxsWidget::AddDefaultProperties(wxsBasePropertiesType pType)
@@ -267,10 +297,11 @@ void wxsWidget::PreviewApplyDefaults(wxWindow* Wnd)
 		Wnd->SetFocus();
 	}
 
-	if ( (pType & bptHidden) && BaseProperties.Hidden )
-	{
-		Wnd->Hide();
-	}
+    // We do not apply Hidden mast in edition mode
+//	if ( (pType & bptHidden) && BaseProperties.Hidden )
+//	{
+//		Wnd->Hide();
+//	}
 
 	if ( pType & bptColours )
 	{
