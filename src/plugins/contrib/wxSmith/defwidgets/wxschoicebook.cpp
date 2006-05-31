@@ -223,3 +223,8 @@ wxWindow* wxsChoicebook::BuildChildQuickPanel(wxWindow* Parent,int ChildPos)
     if ( !Widget || !Params ) return NULL;
     return new wxsChoicebookParentQP(Parent,Widget,Params);
 }
+
+bool wxsChoicebook::ChildReallyVisible(wxsWidget* Child)
+{
+    return Child == CurrentSelection;
+}

@@ -3,6 +3,6 @@ zip ../../../devel/share/codeblocks/wxsmith.zip *.xrc
 zip ../../../output/share/codeblocks/wxsmith.zip *.xrc
 mkdir -p ../../../devel/share/codeblocks/images/wxsmith > /dev/null 2> /dev/null
 mkdir -p ../../../output/share/codeblocks/images/wxsmith > /dev/null 2> /dev/null
-cp ./smithicons/* ../../../devel/share/codeblocks/images/wxsmith/ > /dev/null 2> /dev/null
-cp ./smithicons/* ../../../output/share/codeblocks/images/wxsmith/ > /dev/null 2> /dev/null
+cp ./smithicons/*.png ../../../devel/share/codeblocks/images/wxsmith/ > /dev/null 2> /dev/null
+cp ./smithicons/*.png ../../../output/share/codeblocks/images/wxsmith/ > /dev/null 2> /dev/null
 exit 0

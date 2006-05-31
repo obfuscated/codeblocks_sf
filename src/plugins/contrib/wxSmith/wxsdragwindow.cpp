@@ -1096,7 +1096,7 @@ bool wxsDragWindow::IsVisible(wxsWidget* Widget)
 	if ( !Widget ) return true;
 	if ( !Widget->GetPreview() ) return false;
 	if ( !Widget->GetPreview()->IsShown() ) return false;
-	return IsVisible(Widget->GetParent());
+	return Widget->ReallyVisible();
 }
 
 void wxsDragWindow::GetSelectionNoChildren(std::vector<wxsWidget*>& Vector)

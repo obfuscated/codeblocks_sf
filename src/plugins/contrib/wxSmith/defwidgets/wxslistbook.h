@@ -35,6 +35,7 @@ class wxsListbook : public wxsContainer
         virtual wxString GetFinalizingCode(const wxsCodeParams& Params);
         virtual void PreviewMouseEvent(wxMouseEvent& event);
         virtual void EnsurePreviewVisible(wxsWidget* Child);
+        virtual bool ChildReallyVisible(wxsWidget* Child);
         inline wxsListbookExtraParams* GetExtraParams(int Index) { return (wxsListbookExtraParams*)GetExtra(Index); }
         virtual wxWindow* BuildChildQuickPanel(wxWindow* Parent,int ChildPos);
 

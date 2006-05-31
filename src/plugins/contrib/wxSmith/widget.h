@@ -120,6 +120,12 @@ class wxsWidget
          */
         virtual void EnsurePreviewVisible(wxsWidget* Child) { if ( GetParent() ) GetParent()->EnsurePreviewVisible(this); }
 
+        /** Function checking if item is really visible */
+        virtual bool ReallyVisible();
+
+        /** Function checking if child item is realy visible */
+        virtual bool ChildReallyVisible(wxsWidget* Child) { return true; }
+
     protected:
 
         /** This function should create preview window for widget.

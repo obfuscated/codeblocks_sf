@@ -35,6 +35,7 @@ class wxsNotebook : public wxsContainer
         virtual wxString GetFinalizingCode(const wxsCodeParams& Params);
         virtual void PreviewMouseEvent(wxMouseEvent& event);
         virtual void EnsurePreviewVisible(wxsWidget* Child);
+        virtual bool ChildReallyVisible(wxsWidget* Child);
         inline wxsNotebookExtraParams* GetExtraParams(int Index) { return (wxsNotebookExtraParams*)GetExtra(Index); }
         virtual wxWindow* BuildChildQuickPanel(wxWindow* Parent,int ChildPos);
 

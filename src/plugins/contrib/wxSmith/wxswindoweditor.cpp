@@ -986,6 +986,7 @@ void wxsWindowEditor::OnSize(wxSizeEvent& event)
 void wxsWindowEditor::OnRelayout(wxCommandEvent& event)
 {
     Layout();
+    Refresh();
 }
 
 wxImage wxsWindowEditor::InsIntoImg;

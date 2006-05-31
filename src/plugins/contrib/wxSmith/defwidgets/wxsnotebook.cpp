@@ -228,3 +228,8 @@ wxWindow* wxsNotebook::BuildChildQuickPanel(wxWindow* Parent,int ChildPos)
     if ( !Widget || !Params ) return NULL;
     return new wxsNotebookParentQP(Parent,Widget,Params);
 }
+
+bool wxsNotebook::ChildReallyVisible(wxsWidget* Child)
+{
+    return Child == CurrentSelection;
+}

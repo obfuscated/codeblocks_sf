@@ -1449,3 +1449,28 @@ wxString wxsWidget::GetDeclarationCode(const wxsCodeParams& Params)
 {
     return wxString::Format(_T("%s* %s;"),GetInfo().Name.c_str(),Params.VarName.c_str());
 }
+
+bool wxsWidget::ReallyVisible()
+{
+    if ( GetBPType() & bptHidden )
+    {
+        if ( BaseProperties.Hidden ) return false;
+    }
+
+    if ( !GetParent() )
+    {
+        return true;
+    }
+
+    if ( !GetParent()->ChildReallyVisible(this) )
+    {
+        return false;
+    }
+
+    if ( !GetParent()->ReallyVisible() )
+    {
+        return false;
+    }
+
+    return true;
+}
