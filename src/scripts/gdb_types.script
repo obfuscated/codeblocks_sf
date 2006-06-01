@@ -91,11 +91,14 @@ void Parse_wxString(const wxString& in a_str, uint start, wxString& out result)
 
 void Evaluate_StlString(const wxString& in type, const wxString& in a_str, uint start, uint count, wxString& out result)
 {
-    result = "output " + a_str + ".c_str()[" + start + "]@";
+	wxString oper = ".";
+	if (type.Find('*', false) > 0)
+		oper = "->";
+    result = "output " + a_str + oper + "c_str()[" + start + "]@";
     if (count != 0)
         result += count;
     else
-        result += a_str + ".size()";
+        result += a_str + oper + "size()";
 }
 
 void Parse_StlString(const wxString& in a_str, uint start, wxString& out result)
