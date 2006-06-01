@@ -52,7 +52,7 @@ static wxRegEx reBT3(_T("\\)[ \t]+[atfrom]+[ \t]+(.*)"));
 // Breakpoint 1 at 0x4013d6: file main.cpp, line 8.
 static wxRegEx reBreakpoint(_T("Breakpoint ([0-9]+) at (0x[0-9A-Fa-f]+)"));
 // eax            0x40e66666       1088841318
-static wxRegEx reRegisters(_T("([A-z0-9]+)[ \t]+(0x[0-9A-z]+)"));
+static wxRegEx reRegisters(_T("([A-z0-9]+)[ \t]+(0x[0-9A-Fa-f]+)[ \t]+(.*)"));
 // 0x00401390 <main+0>:	push   ebp
 static wxRegEx reDisassembly(_T("(0x[0-9A-Za-z]+)[ \t]+<.*>:[ \t]+(.*)"));
 //Stack level 0, frame at 0x22ff80:
@@ -762,7 +762,7 @@ class GdbCmd_InfoRegisters : public DebuggerCmd
                 if (reRegisters.Matches(lines[i]))
                 {
                     long int addr;
-                    reRegisters.GetMatch(lines[i], 2).ToLong(&addr, 16);
+                    reRegisters.GetMatch(lines[i], 3).ToLong(&addr, 0);
                     m_pDlg->SetRegisterValue(reRegisters.GetMatch(lines[i], 1), addr);
                 }
     		}
