@@ -165,6 +165,7 @@ void wxsProjectConfigurationDlg::OnButton3Click(wxCommandEvent& event)
         Project->SetAutoLoadedResources(Array);
         Project->SetMainResource(MainRes->GetValue());
         Project->SetCallInitAll(InitAll->GetValue(),InitAllNecessary->GetValue());
+        Project->SetModified(true);
     }
     EndModal(0);
 }

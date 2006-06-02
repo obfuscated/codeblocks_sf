@@ -64,10 +64,10 @@ class wxsProject
         inline IntegrationState GetIntegration() { return Integration; }
 
         /** Connecting to existing project */
-        virtual IntegrationState BindProject(cbProject* Project);
+        virtual IntegrationState BindProject(cbProject* Project,TiXmlElement* Config);
 
-        /** Forcing project to save it's main configuration file */
-        virtual void SaveProject();
+//        /** Forcing project to save it's main configuration file */
+//        virtual void SaveProject();
 
         /** Getting C::B project */
         inline cbProject* GetCBProject() { return Project; }
@@ -106,7 +106,7 @@ class wxsProject
         void DeletePanel(wxsPanelRes* Resource);
 
         /** Getting modified state */
-        bool GetModified() { return Modified; }
+//        bool GetModified() { return Modified; }
 
         /** Displaying configuration dialog */
         void Configure();
@@ -156,13 +156,11 @@ class wxsProject
         /** checling if given file is insided current project */
         bool CheckProjFileExists(const wxString& FileName);
 
-    protected:
+        /** Storing wxSmith configuration to xml element */
+        void XmlStore(TiXmlNode* Node);
 
-        /** Function loading all data from xml source */
-        virtual bool LoadFromXml(TiXmlNode* MainNode);
-
-        /** Function generating xml data */
-        virtual TiXmlDocument* GenerateXml();
+        /** Changing modified state */
+        void SetModified(bool modified);
 
         /** Function loading dialog resource from xml tree */
         void AddDialogResource(
@@ -188,6 +186,15 @@ class wxsProject
             const wxString& HeaderName,
             const wxString& XrcName);
 
+    protected:
+
+        /** Function loading all data from xml source */
+        virtual bool LoadFromXml(TiXmlNode* MainNode);
+
+        /** Function generating xml data */
+        virtual TiXmlDocument* GenerateXml();
+
+
 	private:
 
         /** Adding resourcee of given type */
@@ -205,8 +212,6 @@ class wxsProject
         /** Function clearing project structures */
         inline void Clear();
 
-        /** Changing modified state */
-        inline void SetModified(bool modified) { Modified = modified; }
 
         /** Rebuilding application code */
         void RebuildAppCode();

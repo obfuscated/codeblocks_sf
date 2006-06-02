@@ -1,5 +1,5 @@
-#include <wx/filename.h>
 #include "../wxsheaders.h"
+#include <wx/filename.h>
 #include "wxsstaticbitmap.h"
 
 WXS_ST_BEGIN(wxsStaticBitmapStyles)

@@ -68,6 +68,9 @@ class wxSmith : public cbPlugin
         wxScrolledWindow* EventsPanel;
         wxsSplitterWindowEx* LeftSplitter;
 
+        void OnProjectHook(cbProject*,TiXmlElement*,bool);
+        int HookId;
+
         /* Here's bridge between current C::B project and wxSmith projects */
 
         typedef std::map<cbProject*,wxsProject*> ProjectMapT;

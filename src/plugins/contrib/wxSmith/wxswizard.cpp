@@ -796,7 +796,7 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
         !BuildFile(project,Dir,_T("wx_pch.h"),wxsWxPchH,flags,true,true,false,0) ||
         !BuildFile(project,Dir,_T("mainframe.h"),wxsMainFrameH,flags,true,false,false,50) ||
         !BuildFile(project,Dir,_T("mainframe.cpp"),wxsMainFrameCpp,flags,true,true,true,50) ||
-        !BuildFile(project,Dir,_T("wxsmith/wxsmith.cfg"),wxsWxSmithCfg,flags,false,false,false,50) ||
+//        !BuildFile(project,Dir,_T("wxsmith/wxsmith.cfg"),wxsWxSmithCfg,flags,false,false,false,50) ||
         !BuildFile(project,Dir,_T("wxsmith/MainFrame.wxs"),wxsMainFrameWxs,flags,true,false,false,50) ||
         !BuildFile(project,Dir,_T("mainframe.xrc"),wxsMainFrameXrc,flags,false,false,false,50)
         )
@@ -811,7 +811,18 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
         // Rebinding to load new resource configuration
         if ( wxsProj )
         {
-            wxsProj->BindProject(project);
+            wxsProj->AddDialogResource(_T("MainFrame.wxs"),_T("MainFrame"),_T("mainframe.cpp"),_T("mainframe.h"),
+                (flags&wxsSrcXrc)?_T("mainframe.xrc"):_T(""));
+            wxsProj->SetAppSourceFile(_T("app.cpp"));
+            wxsProj->SetMainResource(_T("MainFrame"));
+            wxsProj->SetCallInitAll(true,true);
+            if ( flags & wxsSrcXrc )
+            {
+                wxArrayString Resources;
+                Resources.Add(_T("mainframe.xrc"));
+                wxsProj->SetAutoLoadedResources(Resources);
+            }
+            wxsProj->SetModified(true);
         }
     }
     project->Save();
