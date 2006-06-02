@@ -5,15 +5,22 @@ noinst_LTLIBRARIES = libwxPdfDocument.la
 
 libwxPdfDocument_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libwxPdfDocument_la_SOURCES = src/pdfbarcode.cpp \
+libwxPdfDocument_la_SOURCES = src/pdfannotation.cpp \
+							src/pdfbarcode.cpp \
+							src/pdfcolor.cpp \
 							src/pdfdoc.cpp \
 							src/pdfencrypt.cpp \
 							src/pdffont.cpp \
-							src/pdfimage.cpp
+							src/pdfform.cpp \
+							src/pdfgraphics.cpp \
+							src/pdfimage.cpp \								src/pdfkernel.cpp \
+							src/pdfxml.cpp
 
 noinst_HEADERS = include/wx/pdfbarcode.h \
 				include/wx/pdfdoc.h \
 				include/wx/pdfdocdef.h \
 				include/wx/pdfencrypt.h \
 				include/wx/pdffont.h \
-				include/wx/pdfimage.h
+				include/wx/pdfform.h \
+				include/wx/pdfimage.h \
+				include/wx/pdfxml.h
