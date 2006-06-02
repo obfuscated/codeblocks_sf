@@ -21,155 +21,142 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
   switch(style)
   {
     case 0: // ansi
-      formatter.bracketIndent = false;
-      formatter.indentLength = 4;
-      formatter.indentString = "    ";
-      formatter.bracketFormatMode = astyle::BREAK_MODE;
-      formatter.classIndent = false;
-      formatter.switchIndent = false;
-      formatter.namespaceIndent = true;
-      formatter.blockIndent = false;
-      formatter.breakBlocks = false;
-      formatter.breakElseIfs = false;
-      formatter.padOperators = false;
-      formatter.padParen = false;
-      formatter.breakOneLineStatements = true;
-      formatter.breakOneLineBlocks = true;
+      formatter.setBracketIndent(false);
+      formatter.setTabIndentation(4);
+      formatter.setSpaceIndentation(4);
+      formatter.setBracketFormatMode(astyle::BREAK_MODE);
+      formatter.setClassIndent(false);
+      formatter.setSwitchIndent(false);
+      formatter.setNamespaceIndent(true);
+      formatter.setBlockIndent(false);
+      formatter.setBreakBlocksMode(false);
+      formatter.setBreakElseIfsMode(false);
+      formatter.setOperatorPaddingMode(false);
+      formatter.setParenthesisPaddingMode(false);
+      formatter.setSingleStatementsMode(true);
+      formatter.setBreakOneLineBlocksMode(true);
       break;
 
     case 1: // K&R
-      formatter.bracketIndent = false;
-      formatter.indentLength = 4;
-      formatter.indentString = "    ";
-      formatter.bracketFormatMode = astyle::ATTACH_MODE;
-      formatter.classIndent = false;
-      formatter.switchIndent = false;
-      formatter.namespaceIndent = true;
-      formatter.blockIndent = false;
-      formatter.breakBlocks = false;
-      formatter.breakElseIfs = false;
-      formatter.padOperators = false;
-      formatter.padParen = false;
-      formatter.breakOneLineStatements = true;
-      formatter.breakOneLineBlocks = true;
+      formatter.setBracketIndent(false);
+      formatter.setTabIndentation(4);
+      formatter.setSpaceIndentation(4);
+      formatter.setBracketFormatMode(astyle::ATTACH_MODE);
+      formatter.setClassIndent(false);
+      formatter.setSwitchIndent(false);
+      formatter.setNamespaceIndent(true);
+      formatter.setBlockIndent(false);
+      formatter.setBreakBlocksMode(false);
+      formatter.setBreakElseIfsMode(false);
+      formatter.setOperatorPaddingMode(false);
+      formatter.setParenthesisPaddingMode(false);
+      formatter.setSingleStatementsMode(true);
+      formatter.setBreakOneLineBlocksMode(true);
       break;
 
     case 2: // Linux
-      formatter.bracketIndent = false;
-      formatter.indentLength = 8;
-      formatter.indentString = "        ";
-      formatter.bracketFormatMode = astyle::BDAC_MODE;
-      formatter.classIndent = false;
-      formatter.switchIndent = false;
-      formatter.namespaceIndent = true;
-      formatter.blockIndent = false;
-      formatter.breakBlocks = false;
-      formatter.breakElseIfs = false;
-      formatter.padOperators = false;
-      formatter.padParen = false;
-      formatter.breakOneLineStatements = true;
-      formatter.breakOneLineBlocks = true;
+      formatter.setBracketIndent(false);
+      formatter.setTabIndentation(8);
+      formatter.setSpaceIndentation(8);
+      formatter.setBracketFormatMode(astyle::BDAC_MODE);
+      formatter.setClassIndent(false);
+      formatter.setSwitchIndent(false);
+      formatter.setNamespaceIndent(true);
+      formatter.setBlockIndent(false);
+      formatter.setBreakBlocksMode(false);
+      formatter.setBreakElseIfsMode(false);
+      formatter.setOperatorPaddingMode(false);
+      formatter.setParenthesisPaddingMode(false);
+      formatter.setSingleStatementsMode(true);
+      formatter.setBreakOneLineBlocksMode(true);
       break;
 
     case 3: // GNU
-      formatter.blockIndent = true;
-      formatter.bracketIndent = false;
-      formatter.indentLength = 2;
-      formatter.indentString = "  ";
-      formatter.bracketFormatMode = astyle::BREAK_MODE;
-      formatter.classIndent = false;
-      formatter.switchIndent = false;
-      formatter.namespaceIndent = false;
-      formatter.breakBlocks = false;
-      formatter.breakElseIfs = false;
-      formatter.padOperators = false;
-      formatter.padParen = false;
-      formatter.breakOneLineStatements = true;
-      formatter.breakOneLineBlocks = true;
+      formatter.setBracketIndent(false);
+      formatter.setTabIndentation(2);
+      formatter.setSpaceIndentation(2);
+      formatter.setBracketFormatMode(astyle::BREAK_MODE);
+      formatter.setClassIndent(false);
+      formatter.setSwitchIndent(false);
+      formatter.setNamespaceIndent(true);
+      formatter.setBlockIndent(true);
+      formatter.setBreakBlocksMode(false);
+      formatter.setBreakElseIfsMode(false);
+      formatter.setOperatorPaddingMode(false);
+      formatter.setParenthesisPaddingMode(false);
+      formatter.setSingleStatementsMode(true);
+      formatter.setBreakOneLineBlocksMode(true);
       break;
 
     case 4: // Java
-      formatter.sourceStyle = astyle::STYLE_JAVA;
-      formatter.modeSetManually = true;
-      formatter.bracketIndent = false;
-      formatter.indentLength = 4;
-      formatter.indentString = "    ";
-      formatter.bracketFormatMode = astyle::ATTACH_MODE;
-      formatter.switchIndent = false;
-      formatter.blockIndent = false;
-      formatter.breakBlocks = false;
-      formatter.breakElseIfs = false;
-      formatter.padOperators = false;
-      formatter.padParen = false;
-      formatter.breakOneLineStatements = true;
-      formatter.breakOneLineBlocks = true;
+      formatter.setJavaStyle();
+      //formatter.modeSetManually = true;
+      formatter.setBracketIndent(false);
+      formatter.setTabIndentation(4);
+      formatter.setSpaceIndentation(4);
+      formatter.setBracketFormatMode(astyle::ATTACH_MODE);
+      //formatter.setClassIndent(false);
+      formatter.setSwitchIndent(false);
+      //formatter.setNamespaceIndent(true);
+      formatter.setBlockIndent(false);
+      formatter.setBreakBlocksMode(false);
+      formatter.setBreakElseIfsMode(false);
+      formatter.setOperatorPaddingMode(false);
+      formatter.setParenthesisPaddingMode(false);
+      formatter.setSingleStatementsMode(true);
+      formatter.setBreakOneLineBlocksMode(true);
       break;
 
     default: // Custom
     {
-      bool value;
+      bool value = cfg->ReadBool(_T("/force_tabs"));
       int spaceNum = cfg->ReadInt(_T("/indentation"), 4);
-
-      formatter.modeSetManually = false;
-      formatter.indentLength = spaceNum;
 
       if (cfg->ReadBool(_T("/use_tabs")))
       {
-        formatter.indentString = '\t';
+        formatter.setTabIndentation(spaceNum, value);
       }
       else
       {
-        formatter.indentString = string(spaceNum, ' ');
+        formatter.setSpaceIndentation(spaceNum);
       }
 
-      value = cfg->ReadBool(_T("/force_tabs"));
-
-      if (value)
-      {
-        formatter.indentString = '\t';
-        formatter.forceTabIndent = true;
-      }
-      else
-      {
-        formatter.forceTabIndent = false;
-      }
-
-      formatter.convertTabs2Space = cfg->ReadBool(_T("/convert_tabs"));
-      formatter.emptyLineIndent = cfg->ReadBool(_T("/fill_empty_lines"));
-      formatter.classIndent = cfg->ReadBool(_T("/indent_classes"));
-      formatter.switchIndent = cfg->ReadBool(_T("/indent_switches"));
-      formatter.caseIndent = cfg->ReadBool(_T("/indent_case"));
-      formatter.bracketIndent = cfg->ReadBool(_T("/indent_brackets"));
-      formatter.blockIndent = cfg->ReadBool(_T("/indent_blocks"));
-      formatter.namespaceIndent = cfg->ReadBool(_T("/indent_namespaces"));
-      formatter.labelIndent = cfg->ReadBool(_T("/indent_labels"));
-      formatter.preprocessorIndent = cfg->ReadBool(_T("/indent_preprocessor"));
+      formatter.setTabSpaceConversionMode(cfg->ReadBool(_T("/convert_tabs")));
+      formatter.setEmptyLineFill(cfg->ReadBool(_T("/fill_empty_lines")));
+      formatter.setClassIndent(cfg->ReadBool(_T("/indent_classes")));
+      formatter.setSwitchIndent(cfg->ReadBool(_T("/indent_switches")));
+      formatter.setCaseIndent(cfg->ReadBool(_T("/indent_case")));
+      formatter.setBracketIndent(cfg->ReadBool(_T("/indent_brackets")));
+      formatter.setBlockIndent(cfg->ReadBool(_T("/indent_blocks")));
+      formatter.setNamespaceIndent(cfg->ReadBool(_T("/indent_namespaces")));
+      formatter.setLabelIndent(cfg->ReadBool(_T("/indent_labels")));
+      formatter.setPreprocessorIndent(cfg->ReadBool(_T("/indent_preprocessor")));
 
       wxString breakType = cfg->Read(_T("/break_type"));
 
       if (breakType == _T("Break"))
       {
-        formatter.bracketFormatMode = astyle::BREAK_MODE;
+        formatter.setBracketFormatMode(astyle::BREAK_MODE);
       }
       else if (breakType == _T("Attach"))
       {
-        formatter.bracketFormatMode = astyle::ATTACH_MODE;
+        formatter.setBracketFormatMode(astyle::ATTACH_MODE);
       }
       else if (breakType == _T("Linux"))
       {
-        formatter.bracketFormatMode = astyle::BDAC_MODE;
+        formatter.setBracketFormatMode(astyle::BDAC_MODE);
       }
       else
       {
-        formatter.bracketFormatMode = astyle::NONE_MODE;
+        formatter.setBracketFormatMode(astyle::NONE_MODE);
       }
 
-      formatter.breakBlocks = cfg->ReadBool(_T("/break_blocks"));
-      formatter.breakElseIfs = cfg->ReadBool(_T("/break_elseifs"));
-      formatter.padOperators = cfg->ReadBool(_T("/pad_operators"));
-      formatter.padParen = cfg->ReadBool(_T("/pad_parentheses"));
-      formatter.breakOneLineStatements = !cfg->ReadBool(_T("/keep_complex"));
-      formatter.breakOneLineBlocks = !cfg->ReadBool(_T("/keep_blocks"));
+      formatter.setBreakBlocksMode(cfg->ReadBool(_T("/break_blocks")));
+      formatter.setBreakElseIfsMode(cfg->ReadBool(_T("/break_elseifs")));
+      formatter.setOperatorPaddingMode(cfg->ReadBool(_T("/pad_operators")));
+      formatter.setParenthesisPaddingMode(cfg->ReadBool(_T("/pad_parentheses")));
+      formatter.setSingleStatementsMode(!cfg->ReadBool(_T("/keep_complex")));
+      formatter.setBreakOneLineBlocksMode(!cfg->ReadBool(_T("/keep_blocks")));
       break;
     }
   }

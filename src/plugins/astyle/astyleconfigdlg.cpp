@@ -10,6 +10,7 @@
 #include <wx/combobox.h>
 #include <wx/spinctrl.h>
 #include "dlgformattersettings.h"
+#include "asstreamiterator.h"
 #include <string>
 
 BEGIN_EVENT_TABLE(AstyleConfigDlg, wxPanel)
@@ -121,7 +122,7 @@ void AstyleConfigDlg::OnStyleChange(wxCommandEvent& event)
 
 void AstyleConfigDlg::OnPreview(wxCommandEvent& WXUNUSED(event))
 {
-  std::string text(XRCCTRL(*this, "txtSample", wxTextCtrl)->GetValue().mb_str());
+  wxString text(XRCCTRL(*this, "txtSample", wxTextCtrl)->GetValue());
   wxString formattedText;
 
   astyle::ASFormatter formatter;
@@ -130,13 +131,12 @@ void AstyleConfigDlg::OnPreview(wxCommandEvent& WXUNUSED(event))
   dlgFormatterSettings settings(this);
   settings.ApplyTo(formatter);
 
-  if (text.size() && *text.rbegin() != '\r' && *text.rbegin() != '\n')
+  if (text.size() && text.Last() != _T('\r') && text.Last() != _T('\n'))
   {
-    text += '\n';
+    text += _T('\n');
   }
 
-  istringstream iter(text);
-  formatter.init(iter);
+  formatter.init(new ASStreamIterator(text, _T('\n')));
 
   while (formatter.hasMoreLines())
   {

@@ -14,22 +14,26 @@ libastyle_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-
 libastyle_la_LIBADD = ../../sdk/libcodeblocks.la \
 				../../sdk/wxscintilla/libwxscintilla.la
 
-libastyle_la_SOURCES = astyleconfigdlg.cpp \
+libastyle_la_SOURCES = asstreamiterator.cpp \
+      astyleconfigdlg.cpp \
 			astyleplugin.cpp \
 			dlgformattersettings.cpp \
 			formattersettings.cpp \
 			astyle/ASBeautifier.cpp \
-			astyle/ASFormatter.cpp
+			astyle/ASFormatter.cpp \
+			astyle/ASEnhancer.cpp \
+			astyle/ASResource.cpp
 
-noinst_HEADERS = astyleconfigdlg.h \
+noinst_HEADERS = asstreamiterator.h \
+      astyleconfigdlg.h \
 			astyleplugin.h \
 			formattersettings.h \
 			dlgformattersettings.h \
-			astyle/astyle.h \
-			astyle/compiler_defines.h
+			astyle/astyle.h
 
 EXTRA_DIST = astyle/astyle.html \
 			astyle/astyle_main.cpp \
 			astyle/astyle_release_notes.html \
+      astyle/astyleX.html \
 			astyle/INSTALL.TXT \
 			astyle/license.html

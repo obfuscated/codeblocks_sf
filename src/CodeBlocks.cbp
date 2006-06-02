@@ -507,11 +507,29 @@
 			<Add directory="$(#WX.lib)\gcc_dll" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
+		<Unit filename="plugins\astyle\asstreamiterator.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\asstreamiterator.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="AStyle" />
+		</Unit>
 		<Unit filename="plugins\astyle\astyle\ASBeautifier.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="AStyle" />
 		</Unit>
+		<Unit filename="plugins\astyle\astyle\ASEnhancer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="AStyle" />
+		</Unit>
 		<Unit filename="plugins\astyle\astyle\ASFormatter.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\ASResource.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="AStyle" />
 		</Unit>
@@ -523,12 +541,6 @@
 		</Unit>
 		<Unit filename="plugins\astyle\astyle\astyle_main.cpp">
 			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AStyle" />
-		</Unit>
-		<Unit filename="plugins\astyle\astyle\compiler_defines.h">
-			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="AStyle" />

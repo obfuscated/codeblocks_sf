@@ -1,423 +1,202 @@
-// $Id$
-// --------------------------------------------------------------------------
-//
-// Copyright (C) 1998,1999,2000,2001,2002 Tal Davidson.
-// Copyright (C) 2004 Martin Baute.
-// All rights reserved.
-//
-// This file is a part of "Artistic Style" - an indentation and reformatting
-// tool for C, C++, C# and Java source files - http://astyle.sourceforge.net
-//
-// --------------------------------------------------------------------------
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-//
-// --------------------------------------------------------------------------
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ *   astyle_main.cpp
+ *
+ *   This file is a part of "Artistic Style" - an indentation and
+ *   reformatting tool for C, C++, C# and Java source files.
+ *   http://astyle.sourceforge.net
+ *
+ *   The "Artistic Style" project, including all files needed to compile
+ *   it, is free software; you can redistribute it and/or modify it
+ *   under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 2 of the License,
+ *   or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public
+ *   License along with this program; if not, write to the
+ *   Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ *   Boston, MA  02110-1301, USA.
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ */
 
 #include "astyle.h"
+//#include "ASEnhancer.h"
 
 #include <iostream>
 #include <fstream>
-#include <string>
-#include <iterator>
 #include <sstream>
-#include <stdio.h>
+
+//#include <stdio.h>
+
+// for G++ implementation of string.compare:
+// compare((str), (place), (length))  instead of  compare(place, length, str)
+#if defined(__GNUC__) && __GNUC__ < 3
+#error - Use GNU C compiler release 3 or higher
+#endif
+
+#ifdef _MSC_VER
+// disable secure version deprecation warnings for .NET 2005
+#pragma warning(disable: 4996)
+// for namespace problem in version 5.0
+#if _MSC_VER < 1200		// check for V6.0
+#error - Use Microsoft compiler version 6 or higher
+#endif
+#endif
+
+#ifdef _WIN32
+#define STDCALL __stdcall
+#define EXPORT  __declspec(dllexport)
+#else
+#define STDCALL
+#define EXPORT
+#endif
+
+#define IS_OPTION(arg,op)          ((arg).compare(op)==0)
+#define IS_OPTIONS(arg,a,b)        (IS_OPTION((arg),(a)) || IS_OPTION((arg),(b)))
+
+#define IS_PARAM_OPTION(arg,op)    ((arg).compare(0, strlen(op) , op)==0)
+#define IS_PARAM_OPTIONS(arg,a,b)  (IS_PARAM_OPTION((arg),(a)) || IS_PARAM_OPTION((arg),(b)))
+
+#define GET_PARAM(arg,op)          ((arg).substr(strlen(op)))
+#define GET_PARAMS(arg,a,b) (IS_PARAM_OPTION((arg),(a)) ? GET_PARAM((arg),(a)) : GET_PARAM((arg),(b)))
 
 using namespace std;
 using namespace astyle;
 
-// default options:
+const string _version = "1.17.0";
+
+// some compilers want this declared
+bool parseOption(ASFormatter &formatter, const string &arg, const string &errorInfo);
+
+#if defined(ASTYLE_GUI) || defined(ASTYLE_DLL)
+// GUI function pointers
+typedef void (STDCALL *fpError)(int, char*);       // pointer to callback error handler
+typedef char* (STDCALL *fpAlloc)(unsigned long);   // pointer to callback memory allocation
+// GUI variables
+stringstream *_err = NULL;
+#else
+// console variables
 ostream *_err = &cerr;
 string _suffix = ".orig";
-bool shouldBackupFile = true;
-ostringstream msg;
+#endif
+bool _modeManuallySet;
 
-const string _version = "1.17.0-dev";
 
-// --------------------------------------------------------------------------
-// Helper Functions
-// --------------------------------------------------------------------------
-
-bool parseOption(ASFormatter &formatter, const string &arg, const string &errorInfo)
+// typename will be istringstream for GUI and istream otherwise
+template<typename T>
+class ASStreamIterator :
+            public ASSourceIterator
 {
-    TRACE( INFO, "Parsing option '" << arg << "'." );
-    if ( ( arg == "n" ) || ( arg == "suffix=none" ) )
-    {
-        TRACE( INFO, "suffix=none" );
-        shouldBackupFile = false;
-    }
-    else if ( BEGINS_WITH(arg, "suffix=", 7) )
-    {
-        string suffixParam = arg.substr(strlen("suffix="));
-        TRACE( INFO, "suffix=" << suffixParam );
-        if (suffixParam.size() > 0)
-            _suffix = suffixParam;
-    }
-    else if ( arg == "style=ansi" )
-    {
-        TRACE( INFO, "style=ansi" );
-        formatter.bracketIndent = false;
-        formatter.indentLength = 4;
-        formatter.indentString = "    ";
-        if ( formatter.minConditionalIndent == INT_MIN )
-        {
-            formatter.minConditionalIndent = formatter.indentLength * 2;
-        }
-        formatter.bracketFormatMode = BREAK_MODE;
-        formatter.classIndent = false;
-        formatter.switchIndent = false;
-        formatter.namespaceIndent = false;
-    }
-    else if ( arg == "style=gnu" )
-    {
-        TRACE( INFO, "style=gnu" );
-        formatter.blockIndent = true;
-        formatter.bracketIndent = false;
-        formatter.indentLength = 2;
-        formatter.indentString = "  ";
-        if ( formatter.minConditionalIndent == INT_MIN )
-        {
-            formatter.minConditionalIndent = formatter.indentLength * 2;
-        }
-        formatter.bracketFormatMode = BREAK_MODE;
-        formatter.classIndent = false;
-        formatter.switchIndent = false;
-        formatter.namespaceIndent = false;
-    }
-    else if ( arg == "style=java" )
-    {
-        TRACE( INFO, "style=java" );
-        formatter.sourceStyle = STYLE_JAVA;
-        formatter.modeSetManually = true;
-        formatter.bracketIndent = false;
-        formatter.indentLength = 4;
-        formatter.indentString = "    ";
-        if ( formatter.minConditionalIndent == INT_MIN )
-        {
-            formatter.minConditionalIndent = formatter.indentLength * 2;
-        }
-        formatter.bracketFormatMode = ATTACH_MODE;
-        formatter.switchIndent = false;
-    }
-    else if ( arg == "style=kr" )
-    {
-        //formatter.sourceStyle = STYLE_C;
-        //formatter.modeSetManually = true;
-        TRACE( INFO, "style=kr" );
-        formatter.bracketIndent = false;
-        formatter.indentLength = 4;
-        formatter.indentString = "    ";
-        if ( formatter.minConditionalIndent == INT_MIN )
-        {
-            formatter.minConditionalIndent = formatter.indentLength * 2;
-        }
-        formatter.bracketFormatMode = ATTACH_MODE;
-        formatter.classIndent = false;
-        formatter.switchIndent = false;
-        formatter.namespaceIndent = false;
-    }
-    else if ( arg == "style=linux" )
-    {
-        TRACE( INFO, "style=linux" );
-        formatter.bracketIndent = false;
-        formatter.indentLength = 8;
-        formatter.indentString = "        ";
-        if ( formatter.minConditionalIndent == INT_MIN )
-        {
-            formatter.minConditionalIndent = formatter.indentLength * 2;
-        }
-        formatter.bracketFormatMode = BDAC_MODE;
-        formatter.classIndent = false;
-        formatter.switchIndent = false;
-        formatter.namespaceIndent = false;
-    }
-    else if ( (arg == "c") || (arg == "mode=c") )
-    {
-        TRACE( INFO, "mode=c" );
-        formatter.sourceStyle = STYLE_C;
-        formatter.modeSetManually = true;
-    }
-    else if ( (arg == "j") || (arg == "mode=java") )
-    {
-        TRACE( INFO, "mode=java" );
-        formatter.sourceStyle = STYLE_JAVA;
-        formatter.modeSetManually = true;
-    }
-    else if ( arg == "mode=csharp" )
-    {
-        TRACE( INFO, "mode=csharp" );
-        formatter.sourceStyle = STYLE_CSHARP;
-        formatter.modeSetManually = true;
-    }
-    else if ( ( arg == "w" ) || ( arg == "eol=win" ) )
-    {
-        TRACE( INFO, "eol=win" );
-        formatter.eolString = "\r\n"; // not yet implemented!
-    }
-    else if ( ( arg == "x" ) || ( arg == "eol=unix" ) )
-    {
-        TRACE( INFO, "eol=unix" );
-        formatter.eolString = "\n"; // not yet implemented!
-    }
-    else if ( arg == "eol=mac" )
-    {
-        TRACE( INFO, "eol=mac" );
-        formatter.eolString = "\r"; // not yet implemented!
-    }
-    else if ( arg == "indent=tab" )
-    {
-        TRACE( INFO, "indent=tab" );
-        formatter.indentString = "\t";
-        formatter.indentLength = 4;
-        formatter.forceTabIndent = false;
-        if ( formatter.minConditionalIndent == INT_MAX )
-        {
-            formatter.minConditionalIndent = formatter.indentLength * 2;
-        }
-    }
-    else if ( arg == "indent=spaces" )
-    {
-        TRACE( INFO, "indent=spaces" );
-        formatter.indentLength = 4;
-        formatter.indentString = "    ";
-        if ( formatter.minConditionalIndent == INT_MIN )
-        {
-            formatter.minConditionalIndent = formatter.indentLength * 2;
-        }
-    }
-    else if ( (arg == "B") || (arg == "indent-brackets") )
-    {
-        TRACE( INFO, "indent-brackets" );
-        formatter.bracketIndent = true;
-    }
-    else if ( (arg == "G") || (arg == "indent-blocks") )
-    {
-        TRACE( INFO, "indent-blocks" );
-        formatter.blockIndent = true;
-        formatter.bracketIndent = false;
-    }
-    else if ( (arg == "N") || (arg == "indent-namespaces") )
-    {
-        TRACE( INFO, "indent-namespaces" );
-        formatter.namespaceIndent = true;
-    }
-    else if ( (arg == "C") || (arg == "indent-classes") )
-    {
-        TRACE( INFO, "indent-classes" );
-        formatter.classIndent = true;
-    }
-    else if ( (arg == "S") || (arg == "indent-switches") )
-    {
-        TRACE( INFO, "indent-switches" );
-        formatter.switchIndent = true;
-    }
-    else if ( (arg == "K") || (arg == "indent-cases") )
-    {
-        TRACE( INFO, "indent-cases" );
-        formatter.caseIndent = true;
-    }
-    else if ( (arg == "L") || (arg == "indent-labels") )
-    {
-        TRACE( INFO, "indent-labels" );
-        formatter.labelIndent = true;
-    }
-    else if (arg == "indent-preprocessor")
-    {
-        TRACE( INFO, "indent-preprocessor" );
-        formatter.preprocessorIndent = true;
-    }
-    else if ( arg == "brackets=break-closing-headers" )
-    {
-        TRACE( INFO, "brackets=break-closing-headers" );
-        formatter.breakClosingHeaderBrackets = true;
-    }
-    else if ( (arg == "b") || (arg == "brackets=break") )
-    {
-        TRACE( INFO, "brackets=break" );
-        formatter.bracketFormatMode = BREAK_MODE;
-    }
-    else if ( (arg == "a") || (arg == "brackets=attach") )
-    {
-        TRACE( INFO, "brackets=attach" );
-        formatter.bracketFormatMode = ATTACH_MODE;
-    }
-    else if ( (arg == "l") || (arg == "brackets=linux") )
-    {
-        TRACE( INFO, "brackets=linux" );
-        formatter.bracketFormatMode = BDAC_MODE;
-    }
-    else if ( (arg == "O") || (arg == "one-line=keep-blocks") )
-    {
-        TRACE( INFO, "one-line=keep-blocks" );
-        formatter.breakOneLineBlocks = false;
-    }
-    else if ( (arg == "o") || (arg == "one-line=keep-statements") )
-    {
-        TRACE( INFO, "one-line=keep-statements" );
-        formatter.breakOneLineStatements = false;
-    }
-    else if ( arg == "pad=paren" )
-    {
-        TRACE( INFO, "pad=paren" );
-        formatter.padParen = true;
-    }
-    else if ( (arg == "P") || (arg == "pad=all") )
-    {
-        TRACE( INFO, "pad=all" );
-        formatter.padOperators = true;
-        formatter.padParen = true;
-    }
-    else if ( (arg == "p") || (arg == "pad=oper") )
-    {
-        TRACE( INFO, "pad=oper" );
-        formatter.padOperators = true;
-    }
-    else if ( (arg == "E") || (arg == "fill-empty-lines") )
-    {
-        TRACE( INFO, "fill-empty-lines" );
-        formatter.emptyLineIndent = true;
-    }
-    else if (arg == "convert-tabs")
-    {
-        TRACE( INFO, "convert-tabs" );
-        formatter.convertTabs2Space = true;
-    }
-    else if (arg == "break-blocks=all")
-    {
-        TRACE( INFO, "break-blocks=all" );
-        formatter.breakBlocks = true;
-        formatter.breakClosingHeaderBlocks = true;
-    }
-    else if (arg == "break-blocks")
-    {
-        TRACE( INFO, "break-blocks" );
-        formatter.breakBlocks = true;
-    }
-    else if (arg == "break-elseifs")
-    {
-        TRACE( INFO, "break-elseifs" );
-        formatter.breakElseIfs = true;
-    }
-    else if ( (arg == "X") || (arg == "errors-to-standard-output") )
-    {
-        TRACE( INFO, "errors-to-standard-output" );
-        _err = &cout;
-    }
-    else if ( (arg == "v") || (arg == "version") )
-    {
-        TRACE( INFO, "version" );
-        cout << "Artistic Style " << _version << endl;
-        exit(0);
-    }
-    // parameterized short options at the end of the else-if cascade, or
-    // they might be confused with long options starting with the same char
-    else if ( BEGINS_WITH( arg, "t", 1 ) || BEGINS_WITH( arg, "indent=tab=", 11 ) )
-    {
-        TRACE( ENTRY, "indent=tab=" );
-        int spaceNum = 4;
-        string spaceNumParam = (arg[0] == 't') ? arg.substr(1) : arg.substr(strlen("indent=tab="));
-        if (spaceNumParam.size() > 0)
-            spaceNum = atoi(spaceNumParam.c_str());
-        TRACE( EXIT, "indent=tab=" << spaceNum );
-        formatter.indentString = "\t";
-        formatter.indentLength = spaceNum;
-        formatter.forceTabIndent = false;
-        if ( formatter.minConditionalIndent == INT_MAX )
-        {
-            formatter.minConditionalIndent = formatter.indentLength * 2;
-        }
-    }
-    else if ( BEGINS_WITH( arg, "T", 1 ) || BEGINS_WITH( arg, "force-indent=tab=", 17 ) )
-    {
-        TRACE( ENTRY, "force-indent=tab=" );
-        int spaceNum = 4;
-        string spaceNumParam = (arg[0] == 'T') ? arg.substr(1) : arg.substr(strlen("force-indent=tab="));
-        if (spaceNumParam.size() > 0)
-            spaceNum = atoi(spaceNumParam.c_str());
-        TRACE( EXIT, "force-indent=tab=" << spaceNum );
-        formatter.indentString = "\t";
-        formatter.indentLength = spaceNum;
-        formatter.forceTabIndent = true;
-        if ( formatter.minConditionalIndent == INT_MIN )
-        {
-            formatter.minConditionalIndent = formatter.indentLength * 2;
-        }
-    }
-    else if ( BEGINS_WITH( arg, "s", 1 ) || BEGINS_WITH( arg, "indent=spaces=", 14 ) )
-    {
-        TRACE( ENTRY, "indent=spaces=" );
-        int spaceNum = 4;
-        string spaceNumParam = (arg[0] == 's') ? arg.substr(1) : arg.substr(strlen("indent=spaces="));
-        if (spaceNumParam.size() > 0)
-            spaceNum = atoi(spaceNumParam.c_str());
-        TRACE( EXIT, "indent=spaces=" << spaceNum );
-        formatter.indentLength = spaceNum;
-        formatter.indentString = string(spaceNum, ' ');
-        if ( formatter.minConditionalIndent == INT_MIN )
-        {
-            formatter.minConditionalIndent = formatter.indentLength * 2;
-        }
-    }
-    else if ( BEGINS_WITH( arg, "M", 1 ) || BEGINS_WITH( arg, "max-instatement-indent=", 23 ) )
-    {
-        TRACE( ENTRY, "max-instatement-indent=" );
-        int maxIndent = 40;
-        string maxIndentParam = (arg[0] == 'M') ? arg.substr(1) : arg.substr(strlen("max-instatement-indent="));
-        if (maxIndentParam.size() > 0)
-            maxIndent = atoi(maxIndentParam.c_str());
-        TRACE( EXIT, "max-instatement-indent=" << maxIndent );
-        formatter.maxInStatementIndent = maxIndent;
-    }
-    else if ( BEGINS_WITH( arg, "m", 1 ) || BEGINS_WITH( arg, "min-conditional-indent=", 23 ) )
-    {
-        TRACE( ENTRY, "min-conditional-indent=" );
-        int minIndent = 0;
-        string minIndentParam = (arg[0] == 'm') ? arg.substr(1) : arg.substr(strlen("min-conditional-indent="));
-        if (minIndentParam.size() > 0)
-            minIndent = atoi(minIndentParam.c_str());
-        TRACE( EXIT, "min-conditional-indent=" << minIndent );
-        formatter.minConditionalIndent = minIndent;
-    }
-    else
-    {
-        (*_err) << errorInfo << arg << endl;
-        return false; // unknown option
-    }
-    return true; //o.k.
+    public:
+        ASStreamIterator(T *in);
+        virtual ~ASStreamIterator();
+        bool hasMoreLines() const;
+        string nextLine();
+
+    private:
+        T * inStream;
+        string buffer;
+};
+
+template<typename T>
+ASStreamIterator<T>::ASStreamIterator(T *in)
+{
+    inStream = in;
+    buffer.reserve(200);
 }
 
 
-
-bool parseOptions(ASFormatter & formatter,
-                  vector<string>::iterator optionsBegin,
-                  vector<string>::iterator optionsEnd,
-                  const string & errorInfo)
+template<typename T>
+ASStreamIterator<T>::~ASStreamIterator()
 {
-    vector<string>::iterator option;
+// NEW operator has been removed
+//    delete inStream;
+}
+
+
+template<typename T>
+bool ASStreamIterator<T>::hasMoreLines() const
+{
+    if (*inStream)
+        return true;
+    else
+        return false;
+}
+
+
+/**
+ * read the input stream, delete any end of line characters,
+ *     and build a string that contains the input line.
+ *
+ * @return        string containing the next input line minus any end of line characters
+ */
+template<typename T>
+string ASStreamIterator<T>::nextLine()
+{
+    getline(*inStream, buffer);
+    size_t lineLength = buffer.length();
+
+    if (lineLength > 0 &&buffer[lineLength-1] == '\r')
+    {
+        eolWindows++;
+        buffer.erase(lineLength-1);
+    }
+    else
+        eolUnix++;
+
+    return string(buffer);
+}
+
+
+/*
+template<typename T>
+string ASStreamIterator<T>::nextLine()
+{
+    char *srcPtr;
+    char *filterPtr;
+
+    inStream->getline(buffer, 2047);
+    srcPtr = filterPtr = buffer;
+
+    while (*srcPtr != 0)
+    {
+        if (*srcPtr != '\r')
+            *filterPtr++ = *srcPtr;
+        srcPtr++;
+    }
+    *filterPtr = 0;
+
+    return string(buffer);
+}
+*/
+
+template<class ITER>
+bool parseOptions(ASFormatter &formatter,
+                  const ITER &optionsBegin,
+                  const ITER &optionsEnd,
+                  const string &errorInfo)
+{
+    ITER option;
     bool ok = true;
     string arg, subArg;
+
     for (option = optionsBegin; option != optionsEnd; ++option)
     {
-        arg = *option;
-        TRACE( INFO, "Parsing '" << arg << "'." );
+        arg = *option; //string(*option);
 
-        if (BEGINS_WITH(arg, "--", 2))
+        if (arg.compare(0, 2,"--") == 0)
             ok &= parseOption(formatter, arg.substr(2), errorInfo);
         else if (arg[0] == '-')
         {
-            for (unsigned i=1; i < arg.size(); ++i)
+            size_t i;
+
+            for (i=1; i < arg.length(); ++i)
             {
                 if (isalpha(arg[i]) && i > 1)
                 {
@@ -435,15 +214,391 @@ bool parseOptions(ASFormatter & formatter,
             subArg = "";
         }
     }
-
     return ok;
 }
 
 
+
+void manuallySetJavaStyle(ASFormatter &formatter)
+{
+    formatter.setJavaStyle();
+    _modeManuallySet = true;
+}
+
+void manuallySetCStyle(ASFormatter &formatter)
+{
+    formatter.setCStyle();
+    _modeManuallySet = true;
+}
+
+
+bool parseOption(ASFormatter &formatter, const string &arg, const string &errorInfo)
+{
+    if ( IS_OPTION(arg ,"style=ansi") )
+    {
+        formatter.setBracketIndent(false);
+        formatter.setSpaceIndentation(4);
+        formatter.setBracketFormatMode(BREAK_MODE);
+        formatter.setClassIndent(false);
+        formatter.setSwitchIndent(false);
+        formatter.setNamespaceIndent(false);
+    }
+    else if ( IS_OPTION(arg ,"style=gnu") )
+    {
+        formatter.setBlockIndent(true);
+        formatter.setSpaceIndentation(2);
+        formatter.setBracketFormatMode(BREAK_MODE);
+        formatter.setClassIndent(false);
+        formatter.setSwitchIndent(false);
+        formatter.setNamespaceIndent(false);
+    }
+    else if ( IS_OPTION(arg ,"style=java") )
+    {
+        manuallySetJavaStyle(formatter);
+        formatter.setBracketIndent(false);
+        formatter.setSpaceIndentation(4);
+        formatter.setBracketFormatMode(ATTACH_MODE);
+        formatter.setSwitchIndent(false);
+    }
+    else if ( IS_OPTION(arg ,"style=kr") )
+    {
+        //manuallySetCStyle(formatter);
+        formatter.setBracketIndent(false);
+        formatter.setSpaceIndentation(4);
+        formatter.setBracketFormatMode(ATTACH_MODE);
+        formatter.setClassIndent(false);
+        formatter.setSwitchIndent(false);
+        formatter.setNamespaceIndent(false);
+    }
+    else if ( IS_OPTION(arg ,"style=linux") )
+    {
+        formatter.setBracketIndent(false);
+        formatter.setSpaceIndentation(8);
+        formatter.setBracketFormatMode(BDAC_MODE);
+        formatter.setClassIndent(false);
+        formatter.setSwitchIndent(false);
+        formatter.setNamespaceIndent(false);
+    }
+    else if ( IS_OPTIONS(arg ,"c", "mode=c") )
+    {
+        manuallySetCStyle(formatter);
+    }
+    else if ( IS_OPTIONS(arg ,"j", "mode=java") )
+    {
+        manuallySetJavaStyle(formatter);
+    }
+    else if ( IS_PARAM_OPTIONS(arg, "t", "indent=tab=") )
+    {
+        int spaceNum = 4;
+        string spaceNumParam = GET_PARAMS(arg, "t", "indent=tab=");
+        if (spaceNumParam.length() > 0)
+            spaceNum = atoi(spaceNumParam.c_str());
+        formatter.setTabIndentation(spaceNum, false);
+    }
+    else if ( IS_PARAM_OPTIONS(arg, "T", "force-indent=tab=") )
+    {
+        int spaceNum = 4;
+        string spaceNumParam = GET_PARAMS(arg, "T", "force-indent=tab=");
+        if (spaceNumParam.length() > 0)
+            spaceNum = atoi(spaceNumParam.c_str());
+        formatter.setTabIndentation(spaceNum, true);
+    }
+    else if ( IS_OPTION(arg, "indent=tab") )
+    {
+        formatter.setTabIndentation(4);
+    }
+    else if ( IS_PARAM_OPTIONS(arg, "s", "indent=spaces=") )
+    {
+        int spaceNum = 4;
+        string spaceNumParam = GET_PARAMS(arg, "s", "indent=spaces=");
+        if (spaceNumParam.length() > 0)
+            spaceNum = atoi(spaceNumParam.c_str());
+        formatter.setSpaceIndentation(spaceNum);
+    }
+    else if ( IS_OPTION(arg, "indent=spaces") )
+    {
+        formatter.setSpaceIndentation(4);
+    }
+    else if ( IS_PARAM_OPTION(arg, "m") && arg.length() < 5 )
+    {
+        int minIndent = 0;
+        string minIndentParam = GET_PARAM(arg, "m");
+        if (minIndentParam.length() > 0)
+            minIndent = atoi(minIndentParam.c_str());
+        formatter.setMinConditionalIndentLength(minIndent);
+    }
+    else if ( IS_PARAM_OPTION(arg, "min-conditional-indent=") )
+    {
+        int minIndent = 0;
+        string minIndentParam = GET_PARAM(arg, "min-conditional-indent=");
+        if (minIndentParam.length() > 0)
+            minIndent = atoi(minIndentParam.c_str());
+        formatter.setMinConditionalIndentLength(minIndent);
+    }
+    else if ( IS_PARAM_OPTIONS(arg, "M", "max-instatement-indent=") )
+    {
+        int maxIndent = 40;
+        string maxIndentParam = GET_PARAMS(arg, "M", "max-instatement-indent=");
+        if (maxIndentParam.length() > 0)
+            maxIndent = atoi(maxIndentParam.c_str());
+        formatter.setMaxInStatementIndentLength(maxIndent);
+    }
+    else if ( IS_OPTIONS(arg, "B", "indent-brackets") )
+    {
+        formatter.setBracketIndent(true);
+    }
+    else if ( IS_OPTIONS(arg, "G", "indent-blocks") )
+    {
+        formatter.setBlockIndent(true);
+    }
+    else if ( IS_OPTIONS(arg, "N", "indent-namespaces") )
+    {
+        formatter.setNamespaceIndent(true);
+    }
+    else if ( IS_OPTIONS(arg, "C", "indent-classes") )
+    {
+        formatter.setClassIndent(true);
+    }
+    else if ( IS_OPTIONS(arg, "S", "indent-switches") )
+    {
+        formatter.setSwitchIndent(true);
+    }
+    else if ( IS_OPTIONS(arg, "K", "indent-cases") )
+    {
+        formatter.setCaseIndent(true);
+    }
+    else if ( IS_OPTIONS(arg, "L", "indent-labels") )
+    {
+        formatter.setLabelIndent(true);
+    }
+    else if ( IS_OPTION(arg, "brackets=break-closing-headers") )
+    {
+        formatter.setBreakClosingHeaderBracketsMode(true);
+    }
+    else if ( IS_OPTIONS(arg, "b", "brackets=break") )
+    {
+        formatter.setBracketFormatMode(BREAK_MODE);
+    }
+    else if ( IS_OPTIONS(arg, "a", "brackets=attach") )
+    {
+        formatter.setBracketFormatMode(ATTACH_MODE);
+    }
+    else if ( IS_OPTIONS(arg, "l", "brackets=linux") )
+    {
+        formatter.setBracketFormatMode(BDAC_MODE);
+    }
+    else if ( IS_OPTIONS(arg, "O", "one-line=keep-blocks") )
+    {
+        formatter.setBreakOneLineBlocksMode(false);
+    }
+    else if ( IS_OPTIONS(arg, "o", "one-line=keep-statements") )
+    {
+        formatter.setSingleStatementsMode(false);
+    }
+    else if ( IS_OPTION(arg, "pad=paren") )
+    {
+        formatter.setParenthesisPaddingMode(true);
+    }
+    else if ( IS_OPTIONS(arg, "P", "pad=all") )
+    {
+        formatter.setOperatorPaddingMode(true);
+        formatter.setParenthesisPaddingMode(true);
+    }
+    else if ( IS_OPTIONS(arg, "p", "pad=oper") )
+    {
+        formatter.setOperatorPaddingMode(true);
+    }
+    else if ( IS_OPTIONS(arg, "E", "fill-empty-lines") )
+    {
+        formatter.setEmptyLineFill(true);
+    }
+    else if (IS_OPTION(arg, "indent-preprocessor"))
+    {
+        formatter.setPreprocessorIndent(true);
+    }
+    else if (IS_OPTION(arg, "convert-tabs"))
+    {
+        formatter.setTabSpaceConversionMode(true);
+    }
+    else if (IS_OPTION(arg, "break-blocks=all"))
+    {
+        formatter.setBreakBlocksMode(true);
+        formatter.setBreakClosingHeaderBlocksMode(true);
+    }
+    else if (IS_OPTION(arg, "break-blocks"))
+    {
+        formatter.setBreakBlocksMode(true);
+    }
+    else if (IS_OPTION(arg, "break-elseifs"))
+    {
+        formatter.setBreakElseIfsMode(true);
+    }
+// Options used by GUI
+#if defined(ASTYLE_GUI) || defined(ASTYLE_DLL)
+    else
+    {
+        if (_err->str().length() == 0)
+            (*_err) << errorInfo << endl;
+        (*_err) << endl << arg;
+        return false; // unknown option
+    }
+// Options used by console
+#else
+    else if ( IS_PARAM_OPTION(arg, "suffix=") )
+    {
+        string suffixParam = GET_PARAM(arg, "suffix=");
+        if (suffixParam.length() > 0)
+            _suffix = suffixParam;
+    }
+    else if ( IS_OPTIONS(arg, "X", "errors-to-standard-output") )
+    {
+        _err = &cout;
+    }
+    else if ( IS_OPTIONS(arg ,"v", "version") )
+    {
+        (*_err) << "Artistic Style " << _version << endl;
+        exit(1);
+    }
+    else
+    {
+        (*_err) << errorInfo << arg << endl;
+        return false; // unknown option
+    }
+#endif
+// End of parseOption function
+    return true; //o.k.
+}
+
+
+#if defined(ASTYLE_GUI) || defined(ASTYLE_DLL)
+// *************************   GUI functions   *****************************************************
+/*
+ * IMPORTANT linker must have the command line parameter  /EXPORT:AStyleMain=_AStyleMain@16
+ * For Dll only - "warning C4702: unreachable code" in the <vector> header
+ *                is caused by using the Optimization options .
+ *                /O2   Maximize speed
+ *                /Og   Global optimizations
+ *                /Ob2  Any suitable inline expansion
+ *                This is a bug in the Microsoft compiler.  The program runs over twice as fast
+ *                with the options set.  There hasn't been any problem so far.
+*/
+extern "C" EXPORT char* STDCALL
+    AStyleMain(char*  lpTextIn,                // pointer to the data to be formatted
+               char*  lpOptions,               // pointer to AStyle options, separated by \n
+               fpError fpErrorHandler,         // pointer to error handler function
+               fpAlloc fpMemoryAlloc)          // pointer to memory allocation function
+{
+    if(fpErrorHandler == NULL)
+        return NULL;
+
+    if(lpTextIn == NULL)
+    {
+        fpErrorHandler (101, "No pointer to text input.\n- File will not be formatted.");
+        return NULL;
+    }
+    if(lpOptions == NULL)
+    {
+        fpErrorHandler (102, "No pointer to AStyle options.\n- File will not be formatted.");
+        return NULL;
+    }
+    if(fpMemoryAlloc == NULL)
+    {
+        fpErrorHandler (103, "No pointer to memory allocation function.\n- File will not be formatted.");
+        return NULL;
+    }
+
+    ASFormatter formatter;
+
+    string arg;
+    vector<string> optionsVector;
+    istringstream opt(lpOptions);
+    _err = new stringstream;
+
+    while(getline(opt, arg))
+        optionsVector.push_back(arg);
+
+    parseOptions(formatter,
+                 optionsVector.begin(),
+                 optionsVector.end(),
+                 "Unknown Artistic Style options!");
+
+    if (_err->str().length() > 0)
+    {
+        (*_err) << "\n\n- These options will not be processed.     ";
+        fpErrorHandler (201, (char*) _err->str().c_str());
+    }
+
+    delete _err;
+    _err = NULL;
+
+    istringstream in(lpTextIn);
+    ASStreamIterator<istringstream> streamIterator(&in);
+    ostringstream out;
+    formatter.init(&streamIterator);
+
+    while (formatter.hasMoreLines() )
+    {
+        out << formatter.nextLine();
+        if (streamIterator.eolWindows > streamIterator.eolUnix)
+            out << '\r';
+        out << endl;
+    }
+
+    unsigned long textSizeOut = out.str().length();
+    char* textOut = fpMemoryAlloc(textSizeOut + 1);     // call memory allocation function
+//    textOut = NULL;           // for testing
+    if (textOut == NULL)
+    {
+        fpErrorHandler(110, "Allocation failure on Artistic Style output.\n- File will not be formatted.");
+        return NULL;
+    }
+
+    strcpy (textOut, out.str().c_str());
+
+    return textOut;
+}
+
+#else
+
+void importOptions(istream &in, vector<string> &optionsVector)
+{
+    char ch;
+    string currentToken;
+
+    while (in)
+    {
+        currentToken = "";
+        do
+        {
+            in.get(ch);
+
+            // treat '#' as line comments
+            if (ch == '#')
+                while (in)
+                {
+                    in.get(ch);
+                    if (ch == '\n')
+                        break;
+                }
+
+            // break options on spaces, tabs or new-lines
+            if (ch == ' ' || ch == '\t' || ch == '\n')
+                break;
+            else
+                currentToken.append(1, ch);
+
+        }
+        while (in);
+
+        if (currentToken.length() != 0)
+            optionsVector.push_back(currentToken);
+    }
+}
+
 bool stringEndsWith(const string &str, const string &suffix)
 {
-    int strIndex = str.size() - 1;
-    int suffixIndex = suffix.size() - 1;
+    int strIndex = str.length() - 1;
+    int suffixIndex = suffix.length() - 1;
 
     while (strIndex >= 0 && suffixIndex >= 0)
     {
@@ -458,220 +613,210 @@ bool stringEndsWith(const string &str, const string &suffix)
 }
 
 
-bool isWriteable( char const * const filename )
+void error(const char *why, const char* what)
 {
-    std::ifstream in(filename);
-    if (!in)
-    {
-        (*_err) << "File '" << filename << "' does not exist." << endl;
-        return false;
-    }
-    in.close();
-    std::ofstream out(filename, std::ios_base::app);
-    if (!out)
-    {
-        (*_err) << "File '" << filename << "' is not writeable." << endl;
-        return false;
-    }
-    out.close();
-    return true;
+    (*_err) << why << ' ' << what <<'\n' << endl;
+    exit(1);
 }
 
 
 void printHelp()
 {
-    cout << endl
-    << "Artistic Style " << _version << "   (http://www.bigfoot.com/~davidsont/astyle)" << endl
-    << "                       (created by Tal Davidson, davidsont@bigfoot.com)" << endl
-    << "                       (maintained by Martin Baute, solar@rootdirectory.de)" << endl;
-    cout << endl
-    << "Usage  :  astyle [options] < Original > Beautified" << endl
-    << "          astyle [options] Foo.cpp Bar.cpp  [...]" << endl;
-    cout << endl
-    << "When indenting a specific file, the resulting indented file RETAINS the" << endl
-    << "original file-name. The original pre-indented file is renamed, with a" << endl
-    << "suffix of \".orig\" added to the original filename." << endl;
-    cout << endl
-    << "By default, astyle is set up to indent C/C++/C# files, with 4 spaces per" << endl
-    << "indent, a maximal indentation of 40 spaces inside continuous statements," << endl
-    << "and NO formatting." << endl;
-    cout << endl
-    << "Option's Format:" << endl
-    << "----------------" << endl;
-    cout << endl
-    << "    Long options (starting with '--') must be written one at a time." << endl
-    << "    Short options (starting with '-') may be appended together." << endl
-    << "    Thus, -bps4 is the same as -b -p -s4." << endl;
-    cout << endl
-    << "Predefined Styling options:" << endl
-    << "--------------------" << endl;
-    cout << endl
-    << "    --style=ansi" << endl
-    << "    ANSI style formatting/indenting." << endl;
-    cout << endl
-    << "    --style=kr" << endl
-    << "    Kernighan&Ritchie style formatting/indenting." << endl;
-    cout << endl
-    << "    --style=gnu" << endl
-    << "    GNU style formatting/indenting." << endl;
-    cout << endl
-    << "    --style=java" << endl
-    << "    Java mode, with standard java style formatting/indenting." << endl;
-    cout << endl
-    << "    --style=linux" << endl
-    << "    Linux mode (i.e. 8 spaces per indent, break definition-block" << endl
-    << "    brackets but attach command-block brackets." << endl;
-    cout << endl
-    << "Indentation options:" << endl
-    << "--------------------" << endl;
-    cout << endl
-    << "    -c\tOR\t--mode=c" << endl
-    << "    Indent a C, C++ or C# source file (default)" << endl;
-    cout << endl
-    << "    -j\tOR\t--mode=java" << endl
-    << "    Indent a Java(TM) source file" << endl;
-    cout << endl
-    << "    --mode=csharp" << endl
-    << "    Indent a C# source file" << endl;
-    cout << endl
-    << "    -s\tOR\t-s#\tOR\t--indent=spaces=#" << endl
-    << "    Indent using # spaces per indent. Not specifying #" << endl
-    << "    will result in a default of 4 spaces per indent." << endl;
-    cout << endl
-    << "    -t\tOR\t-t#\tOR\t--indent=tab=#" << endl
-    << "    Indent using tab characters, assuming that each" << endl
-    << "    tab is # spaces long. Not specifying # will result" << endl
-    << "    in a default assumption of 4 spaces per tab." << endl;
-    cout << endl
-    << "    -T#\tOR\t--force-indent=tab=#" << endl
-    << "    Indent using tab characters, assuming that each" << endl
-    << "    tab is # spaces long. Force tabs to be used in areas" << endl
-    << "    Astyle would prefer to use spaces." << endl;
-    cout << endl
-    << "    -C\tOR\t--indent-classes" << endl
-    << "    Indent 'class' blocks, so that the inner 'public:'," << endl
-    << "    'protected:' and 'private: headers are indented in" << endl
-    << "    relation to the class block." << endl;
-    cout << endl
-    << "    -S\tOR\t--indent-switches" << endl
-    << "    Indent 'switch' blocks, so that the inner 'case XXX:'" << endl
-    << "    headers are indented in relation to the switch block." << endl;
-    cout << endl
-    << "    -K\tOR\t--indent-cases" << endl
-    << "    Indent 'case XXX:' lines, so that they are flush with" << endl
-    << "    their bodies.." << endl;
-    cout << endl
-    << "    -N\tOR\t--indent-namespaces" << endl
-    << "    Indent the contents of namespace blocks." << endl;
-    cout << endl
-    << "    -B\tOR\t--indent-brackets" << endl
-    << "    Add extra indentation to '{' and '}' block brackets." << endl;
-    cout << endl
-    << "    -G\tOR\t--indent-blocks" << endl
-    << "    Add extra indentation entire blocks (including brackets)." << endl;
-    cout << endl
-    << "    -L\tOR\t--indent-labels" << endl
-    << "    Indent labels so that they appear one indent less than" << endl
-    << "    the current indentation level, rather than being" << endl
-    << "    flushed completely to the left (which is the default)." << endl;
-    cout << endl
-    << "    -m#\tOR\t--min-conditional-indent=#" << endl
-    << "    Indent a minimal # spaces in a continuous conditional" << endl
-    << "    belonging to a conditional header." << endl;
-    cout << endl
-    << "    -M#\tOR\t--max-instatement-indent=#" << endl
-    << "    Indent a maximal # spaces in a continuous statement," << endl
-    << "    relatively to the previous line." << endl;
-    cout << endl
-    << "    -E\tOR\t--fill-empty-lines" << endl
-    << "    Fill empty lines with the white space of their" << endl
-    << "    previous lines." << endl;
-    cout << endl
-    << "    --indent-preprocessor" << endl
-    << "    Indent multi-line #define statements" << endl;
-    cout << endl
-    << "Formatting options:" << endl
-    << "-------------------" << endl;
-    cout << endl
-    << "    -b\tOR\t--brackets=break" << endl
-    << "    Break brackets from pre-block code (i.e. ANSI C/C++ style)." << endl;
-    cout << endl
-    << "    -a\tOR\t--brackets=attach" << endl
-    << "    Attach brackets to pre-block code (i.e. Java/K&R style)." << endl;
-    cout << endl
-    << "    -l\tOR\t--brackets=linux" << endl
-    << "    Break definition-block brackets and attach command-block" << endl
-    << "    brackets." << endl;
-    cout << endl
-    << "    --brackets=break-closing-headers" << endl
-    << "    Break brackets before closing headers (e.g. 'else', 'catch', ..)." << endl
-    << "    Should be appended to --brackets=attach or --brackets=linux." << endl;
-    cout << endl
-    << "    -o\tOR\t--one-line=keep-statements" << endl
-    << "    Don't break lines containing multiple statements into" << endl
-    << "    multiple single-statement lines." << endl;
-    cout << endl
-    << "    -O\tOR\t--one-line=keep-blocks" << endl
-    << "    Don't break blocks residing completely on one line" << endl;
-    cout << endl
-    << "    -p\tOR\t--pad=oper" << endl
-    << "    Insert space paddings around operators only." << endl;
-    cout << endl
-    << "    --pad=paren" << endl
-    << "    Insert space paddings around parenthesies only." << endl;
-    cout << endl
-    << "    -P\tOR\t--pad=all" << endl
-    << "    Insert space paddings around operators AND parenthesies." << endl;
-    cout << endl
-    << "    --convert-tabs" << endl
-    << "    Convert tabs to spaces." << endl;
-    cout << endl
-    << "    --break-blocks" << endl
-    << "    Insert empty lines around unrelated blocks, labels, classes, ..." << endl;
-    cout << endl
-    << "    --break-blocks=all" << endl
-    << "    Like --break-blocks, except also insert empty lines " << endl
-    << "    around closing headers (e.g. 'else', 'catch', ...)." << endl;
-    cout << endl
-    << "    --break-elseifs" << endl
-    << "    Break 'else if()' statements into two different lines." << endl;
-    cout << endl
-    << "Other options:" << endl
-    << "-------------" << endl;
-    cout << endl
-    << "    --suffix=####" << endl
-    << "    Append the suffix #### instead of '.orig' to original filename." << endl;
-    cout << endl
-    << "    -n\tOR\t--suffix=none" << endl
-    << "    Tells Astyle not to keep backups of the original source files." << endl
-    << "    WARNING: Use this option with care, as Astyle comes with NO WARRANTY..." << endl;
-    cout << endl
-    << "    -X\tOR\t--errors-to-standard-output" << endl
-    << "    Print errors to standard-output rather than standard-error." << endl;
-    cout << endl
-    << "    -v\tOR\t--version" << endl
-    << "    Print version number" << endl;
-    cout << endl
-    << "    -h\tOR\t-?\tOR\t--help" << endl
-    << "    Print this help message" << endl;
-    cout << endl
-    << "Default options file:" << endl
-    << "---------------------" << endl;
-    cout << endl
-    << "    Artistic Style looks for a default options file in the" << endl
-    << "    following order:" << endl
-    << "    1. The contents of the ARTISTIC_STYLE_OPTIONS environment" << endl
-    << "       variable if it exists." << endl
-    << "    2. The file called .astylerc in the directory pointed to by the" << endl
-    << "       HOME environment variable ( i.e. $HOME/.astylerc )." << endl
-    << "    3. The file called .astylerc in the directory pointed to by the" << endl
-    << "       HOMEDRIVE and HOMEPATH environment variables ( i.e.," << endl
-    << "       %HOMEDRIVE%%HOMEPATH%\\.astylerc )." << endl
-    << "    If a default options file is found, the options in this file" << endl
-    << "    will be parsed BEFORE the command-line options." << endl
-    << "    Options within the default option file may be written without" << endl
-    << "    the preliminary '-' or '--'." << endl
-    << endl;
+    (*_err) << endl;
+    (*_err) << "           (http://www.bigfoot.com/~davidsont/astyle)\n";
+    (*_err) << "           (created by Tal Davidson, davidsont@bigfoot.com)\n";
+    (*_err) << endl;
+    (*_err) << "Usage  :  astyle [options] Source1.cpp Source2.cpp  [...]\n";
+    (*_err) << "          astyle [options] < Original > Beautified\n";
+    (*_err) << endl;
+    (*_err) << "When indenting a specific file, the resulting indented file RETAINS the\n";
+    (*_err) << "original file-name. The original pre-indented file is renamed, with a\n";
+    (*_err) << "suffix of \".orig\" added to the original filename.\n";
+    (*_err) << endl;
+    (*_err) << "By default, astyle is set up to indent C/C++/C# files, with 4 spaces per\n" ;
+    (*_err) << "indent, a maximal indentation of 40 spaces inside continuous statements,\n";
+    (*_err) << "and NO formatting.\n";
+    (*_err) << endl;
+    (*_err) << "Option's Format:\n";
+    (*_err) << "----------------\n";
+    (*_err) << "    Long options (starting with '--') must be written one at a time.\n";
+    (*_err) << "    Short options (starting with '-') may be appended together.\n";
+    (*_err) << "    Thus, -bps4 is the same as -b -p -s4.\n";
+    (*_err) << endl;
+    (*_err) << "Predefined Style Options:\n";
+    (*_err) << "-------------------------\n";
+    (*_err) << "    --style=ansi\n";
+    (*_err) << "    ANSI style formatting/indenting.\n";
+    (*_err) << endl;
+    (*_err) << "    --style=gnu\n";
+    (*_err) << "    GNU style formatting/indenting.\n";
+    (*_err) << endl;
+    (*_err) << "    --style=kr\n";
+    (*_err) << "    Kernighan&Ritchie style formatting/indenting.\n";
+    (*_err) << endl;
+    (*_err) << "    --style=linux\n";
+    (*_err) << "    Linux mode (8 spaces per indent, break definition-block\n";
+    (*_err) << "    brackets but attach command-block brackets).\n";
+    (*_err) << endl;
+    (*_err) << "    --style=java\n";
+    (*_err) << "    Java mode, with standard java style formatting/indenting.\n";
+    (*_err) << endl;
+    (*_err) << "Tab and Bracket Options:\n";
+    (*_err) << "------------------------\n";
+    (*_err) << "    default indent option\n";
+    (*_err) << "    If no indentation option is set,\n";
+    (*_err) << "    the default option of 4 spaces will be used.\n";
+    (*_err) << endl;
+    (*_err) << "    --indent=spaces=#   OR   -s#\n";
+    (*_err) << "    Indent using # spaces per indent. Not specifying #\n" ;
+    (*_err) << "    will result in a default of 4 spaces per indent.\n" ;
+    (*_err) << endl;
+    (*_err) << "    --indent=tab   OR   --indent=tab=#   OR   -t   OR   -t#\n";
+    (*_err) << "    Indent using tab characters, assuming that each\n";
+    (*_err) << "    tab is # spaces long. Not specifying # will result\n";
+    (*_err) << "    in a default assumption of 4 spaces per tab.\n" ;
+    (*_err) << endl;
+    (*_err) << "    --force-indent=tab=#   OR   -T#\n";
+    (*_err) << "    Indent using tab characters, assuming that each\n";
+    (*_err) << "    tab is # spaces long. Force tabs to be used in areas\n";
+    (*_err) << "    Astyle would prefer to use spaces.\n" ;
+    (*_err) << endl;
+    (*_err) << "    default brackets option\n";
+    (*_err) << "    If no brackets option is set,\n";
+    (*_err) << "    the brackets will not be changed.\n";
+    (*_err) << endl;
+    (*_err) << "    --brackets=break   OR   -b\n";
+    (*_err) << "    Break brackets from pre-block code (i.e. ANSI C/C++ style).\n";
+    (*_err) << endl;
+    (*_err) << "    --brackets=attach   OR   -a\n";
+    (*_err) << "    Attach brackets to pre-block code (i.e. Java/K&R style).\n";
+    (*_err) << endl;
+    (*_err) << "    --brackets=linux   OR   -l\n";
+    (*_err) << "    Break definition-block brackets and attach command-block\n";
+    (*_err) << "    brackets.\n";
+    (*_err) << endl;
+    (*_err) << "    --brackets=break-closing-headers\n";
+    (*_err) << "    Break brackets before closing headers (e.g. 'else', 'catch', ...).\n";
+    (*_err) << "    Should be appended to --brackets=attach or --brackets=linux.\n";
+    (*_err) << endl;
+    (*_err) << "Indentation options:\n";
+    (*_err) << "--------------------\n";
+    (*_err) << "    --indent-classes   OR   -C\n";
+    (*_err) << "    Indent 'class' blocks, so that the inner 'public:',\n";
+    (*_err) << "    'protected:' and 'private: headers are indented in\n";
+    (*_err) << "    relation to the class block.\n";
+    (*_err) << endl;
+    (*_err) << "    --indent-switches   OR   -S\n";
+    (*_err) << "    Indent 'switch' blocks, so that the inner 'case XXX:'\n";
+    (*_err) << "    headers are indented in relation to the switch block.\n";
+    (*_err) << endl;
+    (*_err) << "    --indent-cases   OR   -K\n";
+    (*_err) << "    Indent case blocks from the 'case XXX:' headers.\n";
+    (*_err) << "    Case statements not enclosed in blocks are NOT indented.\n";
+    (*_err) << endl;
+    (*_err) << "    --indent-brackets   OR   -B\n";
+    (*_err) << "    Add extra indentation to '{' and '}' block brackets.\n";
+    (*_err) << endl;
+    (*_err) << "    --indent-blocks   OR   -G\n";
+    (*_err) << "    Add extra indentation entire blocks (including brackets).\n";
+    (*_err) << endl;
+    (*_err) << "    --indent-namespaces   OR   -N\n";
+    (*_err) << "    Indent the contents of namespace blocks.\n";
+    (*_err) << endl;
+    (*_err) << "    --indent-labels   OR   -L\n";
+    (*_err) << "    Indent labels so that they appear one indent less than\n";
+    (*_err) << "    the current indentation level, rather than being\n";
+    (*_err) << "    flushed completely to the left (which is the default).\n";
+    (*_err) << endl;
+    (*_err) << "    --indent-preprocessor\n";
+    (*_err) << "    Indent multi-line #define statements.\n";
+    (*_err) << endl;
+    (*_err) << "    --max-instatement-indent=#   OR   -M#\n";
+    (*_err) << "    Indent a maximal # spaces in a continuous statement,\n";
+    (*_err) << "    relative to the previous line.\n";
+    (*_err) << endl;
+    (*_err) << "    --min-conditional-indent=#   OR   -m#\n";
+    (*_err) << "    Indent a minimal # spaces in a continuous conditional\n";
+    (*_err) << "    belonging to a conditional header.\n";
+    (*_err) << endl;
+    (*_err) << "Formatting options:\n";
+    (*_err) << "-------------------\n";
+    (*_err) << "    --break-blocks\n";
+    (*_err) << "    Insert empty lines around unrelated blocks, labels, classes, ...\n";
+    (*_err) << endl;
+    (*_err) << "    --break-blocks=all\n";
+    (*_err) << "    Like --break-blocks, except also insert empty lines \n";
+    (*_err) << "    around closing headers (e.g. 'else', 'catch', ...).\n";
+    (*_err) << endl;
+    (*_err) << "    --break-elseifs\n";
+    (*_err) << "    Break 'else if()' statements into two different lines.\n";
+    (*_err) << endl;
+    (*_err) << "    --pad=oper   OR   -p\n";
+    (*_err) << "    Insert space paddings around operators only.\n";
+    (*_err) << endl;
+    (*_err) << "    --pad=paren\n";
+    (*_err) << "    Insert space paddings around parenthesies only.\n";
+    (*_err) << endl;
+    (*_err) << "    --pad=all   OR   -P\n";
+    (*_err) << "    Insert space paddings around operators AND parenthesies.\n";
+    (*_err) << endl;
+    (*_err) << "    --one-line=keep-statements   OR   -o\n";
+    (*_err) << "    Don't break lines containing multiple statements into\n";
+    (*_err) << "    multiple single-statement lines.\n";
+    (*_err) << endl;
+    (*_err) << "    --one-line=keep-blocks   OR   -O\n";
+    (*_err) << "    Don't break blocks residing completely on one line.\n";
+    (*_err) << endl;
+    (*_err) << "    --convert-tabs\n";
+    (*_err) << "    Convert tabs to spaces.\n";
+    (*_err) << endl;
+    (*_err) << "    --fill-empty-lines   OR   -E\n";
+    (*_err) << "    Fill empty lines with the white space of their\n";
+    (*_err) << "    previous lines.\n";
+    (*_err) << endl;
+    (*_err) << "    --mode=c   OR   -c\n";
+    (*_err) << "    Indent a C, C++ or C# source file (this is the default).\n";
+    (*_err) << endl;
+    (*_err) << "    --mode=java   OR   -j\n";
+    (*_err) << "    Indent a Java(TM) source file.\n";
+    (*_err) << endl;
+    (*_err) << "Other options:\n";
+    (*_err) << "--------------\n";
+    (*_err) << "    --suffix=####\n";
+    (*_err) << "    Append the suffix #### instead of '.orig' to original filename.\n";
+    (*_err) << endl;
+    (*_err) << "    --options=####\n";
+    (*_err) << "    Specify an options file #### to read and use.\n";
+    (*_err) << endl;
+    (*_err) << "    --options=none\n";
+    (*_err) << "    Disable the default options file.\n";
+    (*_err) << "    Only the command-line parameters will be used.\n";
+    (*_err) << endl;
+    (*_err) << "    --errors-to-standard-output   OR   -X\n";
+    (*_err) << "    Print errors and help information to standard-output rather than\n";
+    (*_err) << "    to standard-error.\n";
+    (*_err) << endl;
+    (*_err) << "    --version   OR   -v\n";
+    (*_err) << "    Print version number.\n";
+    (*_err) << endl;
+    (*_err) << "    --help   OR   -h   OR   -?\n";
+    (*_err) << "    Print this help message.\n";
+    (*_err) << endl;
+    (*_err) << "Default options file:\n";
+    (*_err) << "---------------------\n";
+    (*_err) << "    Artistic Style looks for a default options file in the\n";
+    (*_err) << "    following order:\n";
+    (*_err) << "    1. The contents of the ARTISTIC_STYLE_OPTIONS environment\n";
+    (*_err) << "       variable if it exists.\n";
+    (*_err) << "    2. The file called .astylerc in the directory pointed to by the\n";
+    (*_err) << "       HOME environment variable ( i.e. $HOME/.astylerc ).\n";
+    (*_err) << "    3. The file called astylerc in the directory pointed to by the\n";
+    (*_err) << "       USERPROFILE environment variable ( i.e. %USERPROFILE%\\astylerc ).\n";
+    (*_err) << "    If a default options file is found, the options in this file\n";
+    (*_err) << "    will be parsed BEFORE the command-line options.\n";
+    (*_err) << "    Options within the default option file may be written without\n";
+    (*_err) << "    the preliminary '-' or '--'.\n";
+    (*_err) << endl;
 }
 
 int main(int argc, char *argv[])
@@ -685,35 +830,36 @@ int main(int argc, char *argv[])
     bool shouldPrintHelp = false;
     bool shouldParseOptionsFile = true;
 
+    _err = &cerr;
+    _suffix = ".orig";
+    _modeManuallySet = false;
+
+    (*_err) << "\nArtistic Style " << _version << endl;      // begin formatting
     // manage flags
     for (int i=1; i<argc; i++)
     {
         arg = string(argv[i]);
-        
-        if ( BEGINS_WITH(arg ,"--options=none", 14) )
+
+        if ( IS_PARAM_OPTION(arg ,"--options=none") )
         {
-            TRACE( INFO, "options=none" );
             shouldParseOptionsFile = false;
         }
-        else if ( BEGINS_WITH(arg ,"--options=", 10) )
+        else if ( IS_PARAM_OPTION(arg ,"--options=") )
         {
-            TRACE( ENTRY, "options=" );
-            optionsFileName = arg.substr(strlen("--options="));
-            TRACE( EXIT, "options=" << optionsFileName );
+            optionsFileName = GET_PARAM(arg, "--options=");
         }
-        else if ( (arg == "-h") || (arg == "--help") || (arg == "-?") )
+        else if ( IS_OPTION(arg, "-h")
+                  || IS_OPTION(arg, "--help")
+                  || IS_OPTION(arg, "-?") )
         {
-            TRACE( INFO, "help" );
             shouldPrintHelp = true;
         }
         else if (arg[0] == '-')
         {
-            TRACE( INFO, "option: " << arg );
             optionsVector.push_back(arg);
         }
         else // file-name
         {
-            TRACE( INFO, "source: " << arg );
             fileNameVector.push_back(arg);
         }
     }
@@ -721,65 +867,36 @@ int main(int argc, char *argv[])
     // parse options file
     if (shouldParseOptionsFile)
     {
-        TRACE( INFO, "Options file should be read..." );
-        if (optionsFileName.empty())
+        if (optionsFileName.compare("") == 0)
         {
             char* env = getenv("ARTISTIC_STYLE_OPTIONS");
             if (env != NULL)
                 optionsFileName = string(env);
-            TRACE( INFO, "Taken filename '" << optionsFileName << "' from $ARTISTIC_STYLE_OPTIONS." );
         }
-        if (optionsFileName.empty())
+        if (optionsFileName.compare("") == 0)
         {
             char* env = getenv("HOME");
             if (env != NULL)
                 optionsFileName = string(env) + string("/.astylerc");
-            TRACE( INFO, "Assembled filename '" << optionsFileName << "' from $HOME/.astylerc." );
         }
-        if (optionsFileName.empty())
+        if (optionsFileName.compare("") == 0)
         {
-            char* drive = getenv("HOMEDRIVE");
-            char* path = getenv("HOMEPATH");
-            if (path != NULL)
-                optionsFileName = string(drive) + string(path) + string("/.astylerc");
-            TRACE( INFO, "Assembled filename '" << optionsFileName << "' from %HOMEDRIVE%%HOMEPATH%/.astylerc." );
+            char* env = getenv("USERPROFILE");
+            if (env != NULL)
+                optionsFileName = string(env) + string("/astylerc");
         }
 
-        if (!optionsFileName.empty())
+        if (optionsFileName.compare("") != 0)
         {
             ifstream optionsIn(optionsFileName.c_str());
-            TRACE( INFO, "Reading options file " << optionsFileName );
             if (optionsIn)
             {
                 vector<string> fileOptionsVector;
-                // reading (whitespace seperated) strings from file into string vector
-                string buffer;
-                while (optionsIn)
-                {
-                    getline(optionsIn, buffer);
-                    TRACE( INFO, "Read line: '" << buffer << "'" );
-                    if (optionsIn.fail() || (buffer.size() == 0) || (buffer[0] == '#'))
-                    {
-                        TRACE( INFO, "Invalid line (EOF, empty line, or comment line)" );
-                        continue;
-                    }
-                    istringstream buf(buffer);
-                    copy(istream_iterator<string>(buf), istream_iterator<string>(), back_inserter(fileOptionsVector));
-                }
-                TRACE( ENTRY, "Options read:" );
-#ifndef NDEBUG
-                for ( unsigned int i = 0; i < fileOptionsVector.size(); ++i )
-                    TRACE( INFO, fileOptionsVector[i] );
-                TRACE( EXIT, "End of options." );
-#endif
+                importOptions(optionsIn, fileOptionsVector);
                 ok = parseOptions(formatter,
                                   fileOptionsVector.begin(),
                                   fileOptionsVector.end(),
-                                  "Unknown option in default options file: ");
-            }
-            else
-            {
-                TRACE( INFO, "Could not open options file " << optionsFileName );
+                                  string("Unknown option in default options file: "));
             }
 
             optionsIn.close();
@@ -789,33 +906,31 @@ int main(int argc, char *argv[])
             }
         }
     }
-    else
-    {
-        TRACE( INFO, "Options file disabled." );
-    }
 
     // parse options from command line
 
     ok = parseOptions(formatter,
                       optionsVector.begin(),
                       optionsVector.end(),
-                      "Unknown command line option: ");
+                      string("Unknown command line option: "));
     if (!ok)
     {
-        (*_err) << "For help on options, type 'astyle -h' " << endl;
+        (*_err) << "For help on options, type 'astyle -h' \n" << endl;
         exit(1);
     }
 
     if (shouldPrintHelp)
     {
         printHelp();
-        return 1;
+        exit(1);
     }
 
     // if no files have been given, use cin for input and cout for output
     if (fileNameVector.empty())
     {
-        formatter.init( cin );
+        ASStreamIterator<istream> streamIterator(&cin);
+
+        formatter.init(&streamIterator);
 
         while (formatter.hasMoreLines() )
         {
@@ -828,80 +943,67 @@ int main(int argc, char *argv[])
     else
     {
         // indent the given files
-        for (unsigned i=0; i<fileNameVector.size(); i++)
+        for (size_t i=0; i<fileNameVector.size(); i++)
         {
             string originalFileName = fileNameVector[i];
             string inFileName = originalFileName + _suffix;
 
-            if ( ! isWriteable(originalFileName.c_str()) )
-            {
-                (*_err) << "File '" << originalFileName << "' does not exist, or is read-only." << endl;
-                continue;
-            }
-
             remove(inFileName.c_str());
 
-            if ( rename(originalFileName.c_str(), inFileName.c_str()) < 0)
-            {
-                (*_err) << "Could not rename " << originalFileName << " to " << inFileName << endl;
-                exit(1);
-            }
+            // check if the file is present before rename
+            ifstream inCheck(originalFileName.c_str());
+            if (!inCheck)
+                error("Could not open input file", originalFileName.c_str());
+            else
+                inCheck.close();
 
-            TRACE( INFO, "Processing file " << originalFileName << "..." );
+            if ( rename(originalFileName.c_str(), inFileName.c_str()) < 0)
+                error("Could not rename ", string(originalFileName + " to " + inFileName).c_str());
+
             ifstream in(inFileName.c_str());
             if (!in)
-            {
-                (*_err) << "Could not open input file" << inFileName << endl;
-                exit(1);
-            }
+                error("Could not open input file", inFileName.c_str());
 
             ofstream out(originalFileName.c_str());
             if (!out)
-            {
-                (*_err) << "Could not open output file" << originalFileName << endl;
-                exit(1);
-            }
+                error("Could not open output file", originalFileName.c_str());
 
-            // Unless a specific language mode has been set, set the language mode
+            // Unless a specific language mode has been, set the language mode
             // according to the file's suffix.
-            if (!formatter.modeSetManually)
+            if (!_modeManuallySet)
             {
-                if (stringEndsWith(originalFileName, ".java"))
+                if (stringEndsWith(originalFileName, string(".java")))
                 {
-                    TRACE( INFO, "Setting style=java according to filename extension on " << originalFileName );
-                    formatter.sourceStyle = STYLE_JAVA;
-                }
-                else if (stringEndsWith(originalFileName, ".sc") || stringEndsWith(originalFileName, ".cs"))
-                {
-                    TRACE( INFO, "Setting style=csharp according to filename extension on " << originalFileName );
-                    formatter.sourceStyle = STYLE_CSHARP;
+                    formatter.setJavaStyle();
                 }
                 else
                 {
-                    TRACE( INFO, "Setting style=c according to non-java/csharp filename extension on " << originalFileName );
-                    formatter.sourceStyle = STYLE_C;
+                    formatter.setCStyle();
                 }
             }
+            ASStreamIterator<istream> streamIterator(&in);
+            formatter.init(&streamIterator);
 
-            formatter.init( in );
             while (formatter.hasMoreLines() )
             {
                 out << formatter.nextLine();
                 if (formatter.hasMoreLines())
+                {
+                    if (streamIterator.eolWindows > streamIterator.eolUnix)
+                        out << '\r';
                     out << endl;
+                }
             }
-
+            // display file formatted message
+            (*_err) << originalFileName.c_str() << " formatted" << endl;
             out.flush();
             out.close();
-
             in.close();
-            if ( ! shouldBackupFile )
-            {
-                TRACE( INFO, "Removing backup file as requested..." );
-                remove( inFileName.c_str() );
-            }
         }
+        (*_err) << endl;                    // all files formatted
     }
     return 0;
 }
 
+#endif
+// *************************   end of console functions   *****************************************

@@ -397,11 +397,29 @@
 			<Option link="0" />
 			<Option target="src" />
 		</Unit>
+		<Unit filename="plugins\astyle\asstreamiterator.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\asstreamiterator.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="AStyle" />
+		</Unit>
 		<Unit filename="plugins\astyle\astyle\ASBeautifier.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="AStyle" />
 		</Unit>
+		<Unit filename="plugins\astyle\astyle\ASEnhancer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="AStyle" />
+		</Unit>
 		<Unit filename="plugins\astyle\astyle\ASFormatter.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="AStyle" />
+		</Unit>
+		<Unit filename="plugins\astyle\astyle\ASResource.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="AStyle" />
 		</Unit>
@@ -436,12 +454,6 @@
 			<Option target="AStyle" />
 		</Unit>
 		<Unit filename="plugins\astyle\astyle\astyle_release_notes.html">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AStyle" />
-		</Unit>
-		<Unit filename="plugins\astyle\astyle\compiler_defines.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />

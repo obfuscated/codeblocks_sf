@@ -24,6 +24,7 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
 #include <wx/strconv.h>
+#include "asstreamiterator.h"
 
 using std::istringstream;
 using std::string;
@@ -40,8 +41,8 @@ AStylePlugin::AStylePlugin()
 
 	m_PluginInfo.name = _T("AStylePlugin");
 	m_PluginInfo.title = _T("Source code formatter (AStyle)");
-	m_PluginInfo.version = _T("1.1");
-	m_PluginInfo.description = _T("Uses AStyle 1.17.0-dev to reformat your sources. Useful when copying code from the net or if you just want to reformat your sources based on a specific style.");
+	m_PluginInfo.version = _T("1.2");
+	m_PluginInfo.description = _T("Uses AStyle 1.17 to reformat your sources. Useful when copying code from the net or if you just want to reformat your sources based on a specific style.");
 	m_PluginInfo.author = _T("Yiannis Mandravellos | Ceniza (maintainer)");
 	m_PluginInfo.authorEmail = _T("mandrav@codeblocks.org | ceniza@gda.utp.edu.co");
 	m_PluginInfo.authorWebsite = _T("http://www.codeblocks.org");
@@ -88,14 +89,14 @@ int AStylePlugin::Execute()
     return -1;
   }
 
-  cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+  cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
   if (!ed)
   {
     return 0;
   }
 
-  string edText(cbU2C(ed->GetControl()->GetText()));
+  wxString edText(ed->GetControl()->GetText());
   wxString formattedText;
 
   astyle::ASFormatter formatter;
@@ -113,13 +114,12 @@ int AStylePlugin::Execute()
     case wxSCI_EOL_LF: eolChars = _T("\n"); break;
   }
 
-  if (edText.size() && *edText.rbegin() != '\r' && *edText.rbegin() != '\n')
+  if (edText.size() && edText.Last() != _T('\r') && edText.Last() != _T('\n'))
   {
-    edText += eolChars.mb_str();
+    edText += eolChars;
   }
 
-  istringstream iter(edText);
-  formatter.init(iter);
+  formatter.init(new ASStreamIterator(edText, eolChars));
 
   wxSetCursor(*wxHOURGLASS_CURSOR);
 

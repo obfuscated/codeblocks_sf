@@ -1,23 +1,51 @@
-To compile under Linux / Unix / Cygwin:
----------------------------------------
+Welcome to Artistic Style!
 
-Simply type "make". This should create an executable file
-called "astyle" (or, under cygwin, "astyle.exe"). Use the
-executable as-is, or put it somewhere in your command path.
+Linux Version:
+================
+To compile under linux/unix/cygwin:
+-----------------------------------
 
-If you want an executable printing trace information on
-standard error and having debug information compiled in,
-type "make CXXFLAGS=-g".
+You must first have GCC (3.1 or better) installed.  Other C++ 
+compilers may work but will require tweaking the make file.
 
-To compile under VisualC++:
----------------------------
+To build astyle, use the makefile located in the astyle/src directory:
+	cd astyle/src
+	make
+	cd ../..
+    
+To clean the object files:
+	make clean
+    
+The Linux GCC compiler will automatically allow the use of wildcards 
+(such as "*.cpp") during execution.
 
-1. Create a project and import all the .cpp and .h files.
-2. In order to have Artistic Style expand wildcards (such as "*.cpp"),
-   insert "setargv.obj" to the list of files to link. (Thanks to
-   Nat for the info!)
-3. Compile as Release version.
 
-If you want an executable printing trace information on
-standard error, simply compile as Debug version.
+Windows Version:
+================
+Precompiled executable:
+-----------------------
+In addition to the sources the Windows version contains, 
+an astyle executable (AStyle.exe).
 
+The executable is compiled to allow wildcard use during execution.
+
+To compile under Windows:
+-------------------------
+
+1. Create a project under Visual C++ (or another compiler) and add
+   all the .cpp and .h files.
+   
+2. In order to use wildcards (such as "*.cpp") during execution:
+   With Visual C++, insert "setargv.obj" to the list of linker additional 
+   dependencies.
+   With the MinGW build of the GCC compiler, the use of wildcards is 
+   automatic.
+   With other compilers I don't know of a way to allow wildcards.  If 
+   anyone knows, I would appreciate the information.
+
+3. Compile...
+   It is usually best to optimize the program for speed.
+
+
+Enjoy!
+Jim Pattee
