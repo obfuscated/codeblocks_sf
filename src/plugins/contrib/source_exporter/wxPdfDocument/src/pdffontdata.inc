@@ -355,24 +355,25 @@ static const struct wxCoreFontDesc
   const wxChar* id;
   const wxChar* name;
   short*        cwArray;
+  const wxChar* bbox;
 }
 wxCoreFontTable[] =
 {
-  { wxT("courier"),      wxT("Courier"),               cwCourier              },
-  { wxT("courierB"),     wxT("Courier-Bold"),          cwCourier              },
-  { wxT("courierI"),     wxT("Courier-Oblique"),       cwCourier              },
-  { wxT("courierBI"),    wxT("Courier-BoldOblique"),   cwCourier              },
-  { wxT("helvetica"),    wxT("Helvetica"),             cwHelvetica            },
-  { wxT("helveticaB"),   wxT("Helvetica-Bold"),        cwHelveticaBold        },
-  { wxT("helveticaI"),   wxT("Helvetica-Oblique"),     cwHelveticaOblique     },
-  { wxT("helveticaBI"),  wxT("Helvetica-BoldOblique"), cwHelveticaBoldOblique },
-  { wxT("times"),        wxT("Times-Roman"),           cwTimesRoman           },
-  { wxT("timesB"),       wxT("Times-Bold"),            cwTimesBold            },
-  { wxT("timesI"),       wxT("Times-Italic"),          cwTimesItalic          },
-  { wxT("timesBI"),      wxT("Times-BoldItalic"),      cwTimesBoldItalic      },
-  { wxT("symbol"),       wxT("Symbol"),                cwSymbol               },
-  { wxT("zapfdingbats"), wxT("ZapfDingbats"),          cwZapfDingbats         },
+  { wxT("courier"),      wxT("Courier"),               cwCourier,              wxT("[-166 -225 1000 931]") },
+  { wxT("courierB"),     wxT("Courier-Bold"),          cwCourier,              wxT("[-170 -228 1003 962]") },
+  { wxT("courierI"),     wxT("Courier-Oblique"),       cwCourier,              wxT("[-170 -225 1116 931]") },
+  { wxT("courierBI"),    wxT("Courier-BoldOblique"),   cwCourier,              wxT("[-174 -228 1114 962]") },
+  { wxT("helvetica"),    wxT("Helvetica"),             cwHelvetica,            wxT("[-168 -218 1000 898]") },
+  { wxT("helveticaB"),   wxT("Helvetica-Bold"),        cwHelveticaBold,        wxT("[-168 -218 1000 935]") },
+  { wxT("helveticaI"),   wxT("Helvetica-Oblique"),     cwHelveticaOblique,     wxT("[-169 -217 1010 883]") },
+  { wxT("helveticaBI"),  wxT("Helvetica-BoldOblique"), cwHelveticaBoldOblique, wxT("[-200 -218 996 921]")  },
+  { wxT("times"),        wxT("Times-Roman"),           cwTimesRoman,           wxT("[-28 -250 628 805]")   },
+  { wxT("timesB"),       wxT("Times-Bold"),            cwTimesBold,            wxT("[-113 -250 749 801]")  },
+  { wxT("timesI"),       wxT("Times-Italic"),          cwTimesItalic,          wxT("[-28 -250 742 805]")   },
+  { wxT("timesBI"),      wxT("Times-BoldItalic"),      cwTimesBoldItalic,      wxT("[-56 -250 868 801]")   },
+  { wxT("symbol"),       wxT("Symbol"),                cwSymbol,               wxT("[-180 -293 1090 1010]")},
+  { wxT("zapfdingbats"), wxT("ZapfDingbats"),          cwZapfDingbats,         wxT("[-1 -143 981 820]")    },
 // Last dummy entry
-  { wxEmptyString,       wxEmptyString,                NULL                   }
+  { wxEmptyString,       wxEmptyString,                NULL,                   wxEmptyString               }
 };
 

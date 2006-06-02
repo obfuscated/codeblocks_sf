@@ -25,6 +25,8 @@
 #include "wx/wx.h"
 #endif
 
+#include "wx/tokenzr.h"
+
 #include "wx/pdfdoc.h"
 #include "wx/pdffont.h"
 
@@ -166,17 +168,18 @@ wxPdfFont::GetWinEncodingConv()
 // wxPdfFont: class 
 // ----------------------------------------------------------------------------
 
-wxPdfFont::wxPdfFont(int index, const wxString& name, short* cwArray)
+wxPdfFont::wxPdfFont(int index, const wxString& name, short* cwArray, const wxString& bbox)
 {
   m_index = index;
   m_name  = name;
   m_type  = _T("core");
-  m_up = 100;
+  m_up = -100;
   m_ut = 50;
+  m_desc.SetFontBBox(bbox);
 
   if (cwArray != NULL)
   {
-    m_cw = new CharWidthMap();
+    m_cw = new wxPdfCharWidthMap();
     int j;
     for (j = 0; j <256; j++)
     {
@@ -214,13 +217,30 @@ wxPdfFont::GetWidthsAsString()
   return s;
 }
 
+#if wxUSE_UNICODE
+wxMBConv*
+wxPdfFont::GetEncodingConv()
+{
+  wxMBConv* conv;
+  if (m_type == _T("core") && (m_name == _T("") || m_name == _T("")))
+  {
+    conv = &wxConvISO8859_1;
+  }
+  else
+  {
+    conv = GetWinEncodingConv();
+  }
+  return conv;
+}
+#endif
+
 double
 wxPdfFont::GetStringWidth(const wxString& s)
 {
   double w = 0;
   // Get width of a string in the current font
 #if wxUSE_UNICODE
-  wxCharBuffer wcb(s.mb_str(*GetWinEncodingConv()));
+  wxCharBuffer wcb(s.mb_str(*GetEncodingConv()));
   const char* str = (const char*) wcb;
 #else
   const char* str = s.c_str();
@@ -232,6 +252,23 @@ wxPdfFont::GetStringWidth(const wxString& s)
     w += (*m_cw)[(unsigned char) str[i]];
   }
   return w / 1000;
+}
+
+int
+wxPdfFont::GetBBoxTopPosition()
+{
+  long top = 1000;
+  wxString bBox = m_desc.GetFontBBox();
+  wxStringTokenizer tkz(bBox, _T(" []"), wxTOKEN_STRTOK);
+  if (tkz.CountTokens() >= 4)
+  {
+    tkz.GetNextToken();
+    tkz.GetNextToken();
+    tkz.GetNextToken();
+    wxString topToken = tkz.GetNextToken();
+    topToken.ToLong(&top);
+  }
+  return top;
 }
 
 // ----------------------------------------------------------------------------
@@ -327,7 +364,7 @@ wxPdfFontTrueType::LoadFontMetrics(wxXmlNode* root)
     else if (child->GetName() == wxT("widths"))
     {
       bWidth = true;
-      m_cw = new CharWidthMap();
+      m_cw = new wxPdfCharWidthMap();
       const wxXmlNode *charNode = child->GetChildren();
       while (charNode)
       {
@@ -379,11 +416,11 @@ wxPdfFontTrueType::GetStringWidth(const wxString& s)
   const char* str = s.c_str();
 #endif
 
-  CharWidthMap::iterator charIter;
+  wxPdfCharWidthMap::iterator charIter;
   size_t i;
   for (i = 0; i < s.Length(); i++)
   {
-    CharWidthMap::iterator charIter = (*m_cw).find((unsigned char) str[i]);
+    wxPdfCharWidthMap::iterator charIter = (*m_cw).find((unsigned char) str[i]);
     if (charIter != (*m_cw).end())
     {
       w += charIter->second;
@@ -503,7 +540,7 @@ wxPdfFontTrueTypeUnicode::LoadFontMetrics(wxXmlNode* root)
     else if (child->GetName() == wxT("widths"))
     {
       bWidth = true;
-      m_cw = new CharWidthMap();
+      m_cw = new wxPdfCharWidthMap();
       const wxXmlNode *charNode = child->GetChildren();
       while (charNode)
       {
@@ -535,7 +572,7 @@ wxString
 wxPdfFontTrueTypeUnicode::GetWidthsAsString()
 {
   wxString s = wxString(_T("["));
-  CharWidthMap::iterator charIter;
+  wxPdfCharWidthMap::iterator charIter;
   for (charIter = (*m_cw).begin(); charIter != (*m_cw).end(); charIter++)
   {
     // define a specific width for each individual CID
@@ -551,7 +588,7 @@ wxPdfFontTrueTypeUnicode::GetStringWidth(const wxString& s)
   // Get width of a string in the current font
   double w = 0;
 
-  CharWidthMap::iterator charIter;
+  wxPdfCharWidthMap::iterator charIter;
   size_t i;
   for (i = 0; i < s.Length(); i++)
   {
@@ -667,7 +704,7 @@ wxPdfFontType1::LoadFontMetrics(wxXmlNode* root)
     else if (child->GetName() == wxT("widths"))
     {
       bWidth = true;
-      m_cw = new CharWidthMap();
+      m_cw = new wxPdfCharWidthMap();
       const wxXmlNode *charNode = child->GetChildren();
       while (charNode)
       {
@@ -719,11 +756,11 @@ wxPdfFontType1::GetStringWidth(const wxString& s)
   const char* str = s.c_str();
 #endif
 
-  CharWidthMap::iterator charIter;
+  wxPdfCharWidthMap::iterator charIter;
   size_t i;
   for (i = 0; i < s.Length(); i++)
   {
-    CharWidthMap::iterator charIter = (*m_cw).find((unsigned char) str[i]);
+    wxPdfCharWidthMap::iterator charIter = (*m_cw).find((unsigned char) str[i]);
     if (charIter != (*m_cw).end())
     {
       w += charIter->second;
@@ -838,7 +875,7 @@ wxPdfFontType0::LoadFontMetrics(wxXmlNode* root)
     else if (child->GetName() == wxT("widths"))
     {
       bWidth = true;
-      m_cw = new CharWidthMap();
+      m_cw = new wxPdfCharWidthMap();
       const wxXmlNode *charNode = child->GetChildren();
       while (charNode)
       {
@@ -902,14 +939,14 @@ wxPdfFontType0::GetStringWidth(const wxString& s)
 {
   // Get width of a string in the current font
   double w = 0;
-  CharWidthMap::iterator charIter;
+  wxPdfCharWidthMap::iterator charIter;
   size_t i;
   for (i = 0; i < s.Length(); i++)
   {
     wxChar c = s[i];
     if (c >= 0 && c < 128)
     {
-      CharWidthMap::iterator charIter = (*m_cw).find(c);
+      wxPdfCharWidthMap::iterator charIter = (*m_cw).find(c);
       if (charIter != (*m_cw).end())
       {
         w += charIter->second;

@@ -296,7 +296,7 @@ wxPdfBarCodeCreator::EncodeCode39Ext(const wxString& code)
   static wxString encode[] = {
     _T("%U"), _T("$A"), _T("$B"), _T("$C"),
     _T("$D"), _T("$E"), _T("$F"), _T("$G"),
-    _T("$H"), _T("$I"), _T("$J"), _T("£K"),
+    _T("$H"), _T("$I"), _T("$J"), _T("$K"),
     _T("$L"), _T("$M"), _T("$N"), _T("$O"),
     _T("$P"), _T("$Q"), _T("$R"), _T("$S"),
     _T("$T"), _T("$U"), _T("$V"), _T("$W"),
@@ -465,100 +465,8 @@ wxPdfBarCodeCreator::PostNet(double x, double y, const wxString& zipcode)
   return true;
 }
 
-#if 0
-  // Reads from end of string and returns first matching valid
-  // zip code of form DDDDD or DDDDD-DDDD, in that order.
-  // Returns empty string if no zip code found.
-  function ParseZipCode($stringToParse)
-  {
-    // check if string is an array or object
-    if(is_array($stringToParse) || is_object($stringToParse))
-    {
-      return "";
-    }
-
-    // convert parameter to a string
-    $stringToParse = strval($stringToParse);
-
-    $lengthOfString = strlen($stringToParse);
-    if ( $lengthOfString < 5 ) {
-      return "";
-    }
-    
-    // parse the zip code backward
-    $zipcodeLength = 0;
-    $zipcode = "";
-    for ($i = $lengthOfString-1; $i >= 0; $i--)
-    {
-      // conditions to continue the zip code
-      switch($zipcodeLength)
-      {
-      case 0:
-      case 1:
-      case 2:
-      case 3:
-        if ( is_numeric($stringToParse{$i}) ) {
-          $zipcodeLength += 1;
-          $zipcode .= $stringToParse{$i};
-        } else {
-          $zipcodeLength = 0;
-          $zipcode = "";
-        }
-        break;
-      case 4:
-        if ( $stringToParse{$i} == "-" ) {
-          $zipcodeLength += 1;
-          $zipcode .= $stringToParse{$i};
-        } elseif ( is_numeric($stringToParse{$i}) ) {
-          $zipcodeLength += 1;
-          $zipcode .= $stringToParse{$i};
-          break 2;
-        } else {
-          $zipcodeLength = 0;
-          $zipcode = "";
-        }
-        break;
-      case 5:
-      case 6:
-      case 7:
-      case 8:
-        if ( is_numeric($stringToParse{$i}) ) {
-          $zipcodeLength = $zipcodeLength + 1;
-          $zipcode = $zipcode . $stringToParse{$i};
-        } else {
-          $zipcodeLength = 0;
-          $zipcode = "";
-        }
-        break;
-      case 9:
-        if ( is_numeric($stringToParse{$i}) ) {
-          $zipcodeLength = $zipcodeLength + 1;
-          $zipcode = $zipcode . $stringToParse{$i};
-          break;
-        } else {
-          $zipcodeLength = 0;
-          $zipcode = "";
-        }
-        break;
-      }
-    }
-
-    // return the parsed zip code if found
-    if ( $zipcodeLength == 5 || $zipcodeLength == 10 ) {
-      // reverse the zip code
-      return strrev($zipcode);
-    } else {
-      return "";
-    }
-
-  }
-#endif
-
-  // PRIVATE PROCEDURES
-
-  // triggers user error if the zip code is invalid
-  // valid zip codes are of the form DDDDD or DDDDD-DDDD
-  // where D is a digit from 0 to 9, returns the validated zip code
+// valid zip codes are of the form DDDDD or DDDDD-DDDD
+// where D is a digit from 0 to 9, returns the validated zip code
 bool
 wxPdfBarCodeCreator::ZipCodeValidate(const wxString& zipcode)
 {
@@ -582,8 +490,8 @@ wxPdfBarCodeCreator::ZipCodeValidate(const wxString& zipcode)
   return valid;
 }
 
-  // takes a validated zip code and 
-  // calculates the checksum for POSTNET
+// takes a validated zip code and 
+// calculates the checksum for POSTNET
 int
 wxPdfBarCodeCreator::ZipCodeCheckSumDigit(const wxString& zipcode)
 {
@@ -607,7 +515,7 @@ wxPdfBarCodeCreator::ZipCodeCheckSumDigit(const wxString& zipcode)
   return r;
 }
 
-  // Takes a digit and draws the corresponding POSTNET bars.
+// Takes a digit and draws the corresponding POSTNET bars.
 void
 wxPdfBarCodeCreator::ZipCodeDrawDigitBars(double x, double y, double barSpacing,
                                            double halfBarHeight, double fullBarHeight,
@@ -645,34 +553,4 @@ wxPdfBarCodeCreator::ZipCodeDrawDigitBars(double x, double y, double barSpacing,
     }
   }
 }
-
-#if 0 // Test
-
-$pdf->EAN13(80,40,'123456789012');
-
-$pdf->Code39(60, 30, 'Code 39'); // aus Datei "extended"
-
-$pdf->Code39(80,40,'CODE 39',1,10); // aus Datei "normal"
-
-$pdf->i25(90,40,'12345678');
-
-$pdf = new PDF_POSTNET("P","pt");
-$pdf->Open();
-$pdf->AddPage();
-$pdf->SetFont("Arial","",10);
-
-// ParseZipCode examples
-//$stringToParse = "Ann Arbor, MI 48109-110asdf"; // returns "48109"
-//$stringToParse = "Ann Arbor, MI 48109-110"; // returns "48109"
-//$stringToParse = "Ann Arbor, MI 481091109"; // returns "91109"
-//$stringToParse = "Ann Arbor, MI 48109-1109asdf"; // returns "48109-1109"
-//$stringToParse = "Cambridge, MA 0192"; // returns empty string
-//$stringToParse = "Cambridge, MA 02139"; // perfect, returns "01239"
-$stringToParse = "Ann Arbor, MI 48109-1109"; // perfect, returns "48109-1109"
-
-$zipcode = $pdf->ParseZipCode($stringToParse);
-$pdf->POSTNETBarCode(40,40,$zipcode);
-$pdf->Text(40,90,$zipcode);
-
-#endif
 

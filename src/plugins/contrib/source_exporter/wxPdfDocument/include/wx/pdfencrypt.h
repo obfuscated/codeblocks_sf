@@ -14,9 +14,9 @@
 #define _PDFENCRYPT_H_
 
 // optimization for GCC
-//#if defined(__GNUG__) && !defined(__APPLE__)
-//#pragma interface "pdfencrypt.h"
-//#endif
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma interface "pdfencrypt.h"
+#endif
 
 // wxWidgets headers
 #include "wx/pdfdocdef.h"

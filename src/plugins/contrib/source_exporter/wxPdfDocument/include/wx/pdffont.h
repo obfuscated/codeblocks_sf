@@ -91,14 +91,15 @@ private:
   int      m_missingWidth;  ///< Missing character width
 };
 
-WX_DECLARE_HASH_MAP(long, short, wxIntegerHash, wxIntegerEqual, CharWidthMap);
+WX_DECLARE_HASH_MAP(long, short, wxIntegerHash, wxIntegerEqual, wxPdfCharWidthMap);
 
 /// Base class for all fonts and for representing the core fonts. (For internal use only)
 class WXDLLIMPEXP_PDFDOC wxPdfFont
 {
 public:
   /// Font constructor
-  wxPdfFont(int index, const wxString& name = wxEmptyString, short* cwArray = NULL);
+  wxPdfFont(int index, const wxString& name = wxEmptyString, short* cwArray = NULL,
+            const wxString& bbox = wxEmptyString);
 
   /// Default destructor
   virtual ~wxPdfFont();
@@ -150,6 +151,9 @@ public:
 
   /// Get underline thickness
   int  GetUnderlineThickness() { return m_ut; }
+
+  /// Get bounding box top position
+  int GetBBoxTopPosition();
 
   /// Set encoding
   void SetEncoding(const wxString& enc) { m_enc = enc; }
@@ -206,10 +210,10 @@ public:
   wxString GetSupplement() { return m_supplement; }
 
   /// Set char width map
-  void SetCharWidthMap(CharWidthMap* cw) { m_cw = cw; }
+  void SetCharWidthMap(wxPdfCharWidthMap* cw) { m_cw = cw; }
 
   /// Set char width map
-  const CharWidthMap* GetCharWidthMap() { return m_cw; }
+  const wxPdfCharWidthMap* GetCharWidthMap() { return m_cw; }
 
   /// Get the character width array as string
   virtual wxString GetWidthsAsString();
@@ -228,7 +232,7 @@ public:
 
 #if wxUSE_UNICODE
   /// Get the associated encoding converter
-  virtual wxMBConv* GetEncodingConv() { return GetWinEncodingConv(); }
+  virtual wxMBConv* GetEncodingConv();
 #endif
 
   /// Get the default WinAnsi encoding converter
@@ -246,7 +250,7 @@ protected:
   int                  m_up;    ///< Underline position
   int                  m_ut;    ///< Underline thickness
 
-  CharWidthMap*        m_cw;    ///< Array with character widths
+  wxPdfCharWidthMap*   m_cw;    ///< Array with character widths
 
   wxPdfFontDescription m_desc;  ///< Font description
 

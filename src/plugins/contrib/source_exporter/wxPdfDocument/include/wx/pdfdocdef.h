@@ -31,8 +31,8 @@ FPDF web site are incorporated into wxPdfDocument. The main features are:
 - Automatic page break 
 - Automatic line break and text justification 
 - Image support (GIF, JPEG, PNG and WMF) 
-- Colors 
-- Links
+- Colors (Grayscale, RGB, CMYK, Spot colors)
+- Links (internal and external)
 - 14 Adobe standard fonts
 - TrueType and Type1 fonts (with or without embedding) and encoding support
 - TrueType Unicode and Type0 fonts (for Chinese, Japanese and Korean) support in the Unicode build
@@ -42,6 +42,9 @@ FPDF web site are incorporated into wxPdfDocument. The main features are:
 - Bookmarks for outlining the document 
 - Rotation
 - Protecting the document by passwords and/or access permissions
+- Text annotations
+- PDF forms (supported field types: text, combo box, check box, radio button, push button)
+- JavaScript
 
 The class can produce documents in many languages other than the Western European ones:
 Central European, Cyrillic, Greek, Baltic and Thai, provided you own TrueType or Type1
@@ -49,8 +52,9 @@ fonts with the desired character set. In the Unicode build Chinese, Japanese and
 are supported, too.
 
 A \ref overview showing all available methods in alphabetical order is provided.
-A sample application including more than 10 examples demonstrates the different features.
-A separate detailed description is available for the \ref makefont.
+A sample application including more than 20 examples demonstrates the different features.
+A separate detailed description is available for the \ref makefont. The chapter \ref writexml
+describes the supported tags of the simple XML markup language used by the method wxPdfDocument::WriteXml.
 
 wxPdfDocument is hosted as a component of <a href="http://wxcode.sourceforge.net"><b>wxCode</b></a>.
 For any remark, question or problem, you can leave a message on the appropriate \b wxCode
@@ -65,12 +69,34 @@ verified to function properly. This means: wxPdfDocument still needs intensive t
 <b>If you find bugs please report them to the author!</b>
 
 <dl>
+<dt><b>0.7</b> - <i>April 2006</i></dt>
+<dd>
+Added features:<br>
+- support for CMYK and spot colors
+- support for named colors (486 predefined names for RGB colors) (wxPdfColour)
+- support for color names in HTML notation (\#rrggbb) (wxPdfColour)
+- text annotations
+- additional font decorations: overline, strikeout
+- PDF forms
+- JavaScript at the document level
+- Simple XML markup language for styling and structuring text
+
+Added or modified methods:<br>
+- wxPdfDocument::LineCount, wxPdfDocument::TextBox and several getter methods were added for convenience
+- wxPdfDocument::MultiCell now respects a maximal line count
+- wxPdfDocument::WriteXml allows to print text containing simple XML markup
+</dd>
+
 <dt><b>0.6</b> - <i>November 2005</i></dt>
 <dd>
-Added features: gradients, transformations, barcodes<br>
-MakeFont utility<br>
+Added features:
+- gradients
+- transformations
+- barcodes<br>
+- \ref makefont<br>
+
 Changed API of graphics primitives: line style and fill color parameters deleted,
-line style and fill color have to be set using SetLineStyle and SetFillColor.
+line style and fill color have to be set using wxPdfDocument::SetLineStyle and wxPdfDocument::SetFillColor.
 </dd>
 
   <dt><b>0.5</b> - <i>September 2005</i></dt>
@@ -101,6 +127,8 @@ Planning and basic PDF features implemented
 
 \author Ulrich Telle (<a href="&#109;&#97;&#105;&#108;&#116;&#111;:&#117;&#108;&#114;&#105;&#99;&#104;&#46;&#116;&#101;&#108;&#108;&#101;&#64;&#103;&#109;&#120;&#46;&#100;&#101;">ulrich DOT telle AT gmx DOT de</a>)
 
+\section issues Known issues
+
 \section acknowledgement Acknowledgement
 
 Since wxPdfDocument is based on the great \b FPDF PHP class and several of the contributions to it
@@ -108,15 +136,17 @@ found on the <a href="http://www.fpdf.org"><b>FPDF website</b></a> I would like 
 
 - Olivier Plathey (FPDF, Barcodes, Bookmarks, Rotation),
 - Maxime Delorme (Sector)
+- Johannes Guentert (JavaScript)
 - Martin Hall-May (WMF images)
 - Emmanuel Havet (Code39 barcodes)
 - Shailesh Humbad (POSTNET barcodes)
-- Pierre Marletta (Diagrams)
 - Matthias Lau (i25 barcodes)
-- David Hernández Sanz (additional graphics primitives)
+- Pierre Marletta (Diagrams)
+- Laurent Passebecq (Labels)
+- David Hernandez Sanz (additional graphics primitives)
 - Klemen Vodopivec (Protection)
 - Moritz Wagner (Transformation)
-- Andreas Würmser (Clipping, Gradients, Transformation)
+- Andreas Wuermser (Clipping, Gradients, Transformation)
 
 */
 
@@ -129,20 +159,25 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::AcceptPageBreak - accept or not automatic page break
 \li wxPdfDocument::AddFont - add a new font
 \li wxPdfDocument::AddFontCJK - add a CJK (Chinese, Japanese or Korean) font
+\li wxPdfDocument::AppendJavascript - add document level JavaScript
 \li wxPdfDocument::AddLink - create an internal link
 \li wxPdfDocument::AddPage - add a new page
+\li wxPdfDocument::AddSpotColor - add a spot color
 \li wxPdfDocument::AliasNbPages - define an alias for number of pages
+\li wxPdfDocument::Annotate - add a text annotation
 \li wxPdfDocument::Arrow - draw an arrow
 
 \li wxPdfDocument::Bookmark - add a bookmark
 
 \li wxPdfDocument::Cell - print a cell
+\li wxPdfDocument::CheckBox - add a check box to a form
 \li wxPdfDocument::Circle - draw a circle
 \li wxPdfDocument::ClippingText - define text as clipping area
 \li wxPdfDocument::ClippingRect - define rectangle as clipping area
 \li wxPdfDocument::ClippingEllipse - define ellipse as clipping area
 \li wxPdfDocument::ClippedCell - print a clipped cell
 \li wxPdfDocument::Close - terminate the document
+\li wxPdfDocument::ComboBox - add a combo box to a form
 \li wxPdfDocument::Curve - draw a Bézier curve
 
 \li wxPdfDocument::Ellipse - draw an ellipse
@@ -151,6 +186,9 @@ of a specific method the following alphabetical list shows all available methods
 
 \li wxPdfDocument::GetBreakMargin - get the page break margin
 \li wxPdfDocument::GetCellMargin - get the cell margin
+\li wxPdfDocument::GetFontFamily - get current font family
+\li wxPdfDocument::GetFontSize - get current font size in points
+\li wxPdfDocument::GetFontStyle - get current font style
 \li wxPdfDocument::GetImageScale - get image scale
 \li wxPdfDocument::GetLeftMargin - get the left margin
 \li wxPdfDocument::GetPageWidth - get page width
@@ -165,9 +203,11 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::Header - page header
 
 \li wxPdfDocument::Image - output an image
+\li wxPdfDocument::IsInFooter - check whether footer output is in progress
 
 \li wxPdfDocument::Line - draw a line
 \li wxPdfDocument::LinearGradient - paint a linear gradient shading to rectangular area
+\li wxPdfDocument::LineCount - count the number of lines a text would occupy
 \li wxPdfDocument::Link - put a link
 \li wxPdfDocument::Ln - line break
 
@@ -180,8 +220,10 @@ of a specific method the following alphabetical list shows all available methods
 
 \li wxPdfDocument::PageNo - page number
 \li wxPdfDocument::Polygon - draw a polygon
+\li wxPdfDocument::PushButton - add a push button to a form
 
 \li wxPdfDocument::RadialGradient - paint a radial gradient shading to rectangular area
+\li wxPdfDocument::RadioButton - add a radio button to a form
 \li wxPdfDocument::Rect - draw a rectangle
 \li wxPdfDocument::RegularPolygon -  draw a regular polygon
 \li wxPdfDocument::Rotate - rotate around a given center
@@ -205,6 +247,8 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::SetFillColor - set filling color
 \li wxPdfDocument::SetFont - set font
 \li wxPdfDocument::SetFontSize - set font size
+\li wxPdfDocument::SetFormBorderStyle - set form field border style
+\li wxPdfDocument::SetFormColors - set form field colors (border, background, text)
 \li wxPdfDocument::SetImageScale - set image scale
 \li wxPdfDocument::SetKeywords - associate keywords with document
 \li wxPdfDocument::SetLeftMargin - set left margin
@@ -229,6 +273,8 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::StopTransform - end transformation
 
 \li wxPdfDocument::Text - print a string
+\li wxPdfDocument::TextBox - print a string horizontally and vertically aligned in a box
+\li wxPdfDocument::TextField - add a text field to a form
 \li wxPdfDocument::Translate - move the origin 
 \li wxPdfDocument::TranslateX - move the X origin only
 \li wxPdfDocument::TranslateY - move the Y origin only
@@ -237,6 +283,7 @@ of a specific method the following alphabetical list shows all available methods
 
 \li wxPdfDocument::Write - print flowing text
 \li wxPdfDocument::WriteCell - print flowing text with cell attributes
+\li wxPdfDocument::WriteXml - print flowing text containing simple XML markup
 
 \li wxPdfDocument::wxPdfDocument - constructor
 
@@ -247,7 +294,6 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfBarCodeCreator::UPC_A
 \li wxPdfBarCodeCreator::I25
 \li wxPdfBarCodeCreator::PostNet
-
 
 */
 
@@ -401,6 +447,309 @@ It is possible to go even further. If you are interested only in a subset of the
 encoding (you probably don't need all 217 characters), you can open the .map file
 and remove the lines you are not interested in. This will reduce the file size
 accordingly. 
+
+*/
+
+/** \page writexml Styling text using a simple markup language
+\section tagoverview Overview
+
+The method wxPdfDocument::WriteXML allows to write text to PDF using a simple markup language.
+This allows for example to change font attributes within a cell, which is not supported by
+methods like wxPdfDocument::WriteCell or wxPdfDocument::MultiCell. The supported markup
+language consists of a small subset of HTML. Although the subset might be extended in future
+versions of \b wxPdfDocument, it is not the goal of this method to allow to convert
+full fledged HTML pages to PDF. 
+
+\b Important! The XML dialect used is very strict. Each tag must have a corresponding closing tag
+and all attribute values must be enclosed in double quotes.
+
+Usually the current position should be at the left margin when calling wxPdfDocument::WriteXML.
+If the current position is \b not at left margin and the text passed to wxPdfDocument::WriteXML
+occupies more than a single line, you may get strange results. Until version \b 1.0 of wxPdfDocument
+will be released the behaviour of wxPdfDocument::WriteXML might change without prior notice.
+
+Currently there is only limited error handling. You will get strange results or no results at all
+if tags are incorrectly used. Unknown tags and all their content are silently ignored.
+
+\section tagref Reference of supported tags
+
+The following sections describe the tags supported by the wxPdfDocument markup language.
+
+\subsection simpletags Simple text markup
+
+There are several tags to influence the size and weight of the font used for displaying the text
+and the relative vertical position within a line:
+
+<table border="0">
+<tr bgcolor="#6699dd"><td><b>Tag</b></td><td><b>Description</b></td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;b&gt; ... &lt;/b&gt;</tt></td><td>bold text</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>&lt;i&gt; ... &lt;/i&gt;</tt></td><td>italic text</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;u&gt; ... &lt;/u&gt;</tt></td><td>underlined text</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>&lt;o&gt; ... &lt;/o&gt;</tt></td><td>overlined text</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;s&gt; ... &lt;/s&gt;</tt></td><td>strike-through text</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>&lt;strong&gt; ... &lt;/strong&gt;</tt></td><td>bold text (same as <tt>&lt;b&gt;</tt>)</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;em&gt; ... &lt;/em&gt;</tt></td><td>emphasized text (same as <tt>&lt;i&gt;</tt>)</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>&lt;small&gt; ... &lt;/small&gt;</tt></td><td>text with reduced font size</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;sup&gt; ... &lt;/sup&gt;</tt></td><td>superscripted text</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>&lt;sub&gt; ... &lt;/sub&gt;</tt></td><td>subscripted text</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;h1&gt; ... &lt;/h1&gt;</tt></td><td>headline level 1</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>&lt;h2&gt; ... &lt;/h2&gt;</tt></td><td>headline level 2</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;h3&gt; ... &lt;/h3&gt;</tt></td><td>headline level 3</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>&lt;h4&gt; ... &lt;/h4&gt;</tt></td><td>headline level 4</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;h5&gt; ... &lt;/h5&gt;</tt></td><td>headline level 5</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>&lt;h6&gt; ... &lt;/h6&gt;</tt></td><td>headline level 6</td></tr>
+</table>
+
+\subsection structtags Structuring text markup
+
+Some tags for structuring the text layout are available. Most of these tags have one or more
+attributes to change its properties. Click on the tag description to see a detailed description
+of the attributes.
+
+<table border="0">
+<tr bgcolor="#6699dd"><td><b>Tag</b></td><td><b>Description</b></td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;ul&gt; ... &lt;/ul&gt;</tt></td><td>\ref ulist</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>&lt;ol&gt; ... &lt;/ol&gt;</tt></td><td>\ref olist</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;li&gt; ... &lt;/li&gt;</tt></td><td><b>List item</b> of an ordered or unordered list</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>&lt;br /&gt;</tt></td><td><b>Line break</b>, positions the current position to the left margin of the next line</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;p&gt; ... &lt;/p&gt;</tt></td><td>\ref ptag</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>&lt;hr /&gt;</tt></td><td>\ref hrtag</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;a&gt; ... &lt;/a&gt;</tt></td><td>\ref atag</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>&lt;font&gt; ... &lt;/font&gt;</tt></td><td>\ref fonttag</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;table&gt; ... &lt;/table&gt;</tt></td><td>\ref tabletag</td></tr>
+</table>
+
+\subsection misctags Miscelleaneous text markup
+
+This section lists a few additional tags not fitting in any other category.
+Click on the tag description to see a detailed description of the attributes.
+
+<table border="0">
+<tr bgcolor="#6699dd"><td><b>Tag</b></td><td><b>Description</b></td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;msg&gt; ... &lt;/msg&gt;</tt></td><td>\ref msgtag</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>&lt;img ... /&gt;</tt></td><td>\ref imgtag</td></tr>
+</table>
+
+\subsection ulist Unordered lists
+
+Unordered lists start on a new line. Each list item is preceded by a list item marker and the content of the
+list item is indented.
+
+<table border="0">
+<tr bgcolor="#6699dd"><td colspan="2"><b>Tag</b></td></tr>
+<tr bgcolor="#eeeeee"><td colspan="2"><b>&lt;ul&gt;</b></td></tr>
+<tr bgcolor="#6699dd"><td><b>Attribute</b></td><td><b>Description</b></td></tr>
+<tr bgcolor="#eeeeee"><td valign="top"><tt>type="bullet|dash|<i>number</i>"</tt></td><td>Sets the type of the list item marker
+<p><tt><b>bullet</b></tt> displays a bullet character</p>
+<p><tt><b>dash</b></tt> displays a dash character</p>
+<p><tt><i>number</i></tt> has a value between 0 and 255. The corresponding character of the \b ZapfDingBats font
+is used as the list item marker</p></td></tr>
+</table>
+
+\subsection olist Ordered lists
+
+Ordered lists start on a new line. Each list item is preceded by a list item enumerator and the content of the
+list item is indented.
+
+<table border="0">
+<tr bgcolor="#6699dd"><td colspan="2"><b>Tag</b></td></tr>
+<tr bgcolor="#eeeeee"><td colspan="2"><b>&lt;ol&gt;</b></td></tr>
+<tr bgcolor="#6699dd"><td><b>Attribute</b></td><td><b>Description</b></td></tr>
+<tr bgcolor="#eeeeee"><td valign="top"><tt>type="1|a|A|i|I|z1|z2|z3|z4"</tt></td><td>Sets the type of the list item enumerator
+<p><tt><b>1</b></tt> displays a decimal number as the list item enumerator</p>
+<p><tt><b>a</b></tt> displays a lowercase alphabetic character as the list item enumerator</p>
+<p><tt><b>A</b></tt> displays a uppercase alphabetic character as the list item enumerator</p>
+<p><tt><b>i</b></tt> displays a lowercase roman number as the list item enumerator</p>
+<p><tt><b>I</b></tt> displays a uppercase roman number as the list item enumerator</p>
+<p><tt><b>z1|z2|z3|z4</b></tt> displays number symbols of one of the 4 number series in the \b ZapfDingBats font. This option should only be used for lists of at most 10 items.</p>
+</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>start="<i>number</i>"</tt></td><td><i>number</i> represents the enumerator value of the first list item</td></tr>
+</table>
+
+\subsection ptag Paragraph
+
+A paragraph starts on a new line and forces an empty line after the closing paragraph tag.
+
+<table border="0">
+<tr bgcolor="#6699dd"><td colspan="2"><b>Tag</b></td></tr>
+<tr bgcolor="#eeeeee"><td colspan="2"><b>&lt;p&gt;</b></td></tr>
+<tr bgcolor="#6699dd"><td><b>Attribute</b></td><td><b>Description</b></td></tr>
+<tr bgcolor="#eeeeee"><td valign="top"><tt>align="left|right|center|justify"</tt></td><td>As specified by this
+option the content of the paragraph will be \b left or \b right aligned, \b centered or \b justified.
+The default is \b left aligned.</td></tr>
+</table>
+
+\subsection hrtag Horizontal rule
+
+A horizontal rule is a line of specified width which is drawn on a separate line.
+
+<table border="0">
+<tr bgcolor="#6699dd"><td colspan="2"><b>Tag</b></td></tr>
+<tr bgcolor="#eeeeee"><td colspan="2"><b>&lt;hr&gt;</b></td></tr>
+<tr bgcolor="#6699dd"><td><b>Attribute</b></td><td><b>Description</b></td></tr>
+<tr bgcolor="#eeeeee"><td valign="top"><tt>width="<i>number</i>"</tt></td><td>The width of the horizontal rule
+is an integer <i>number</i> between 1 and 100 giving the width in percent of the available width (from left to right margin).
+The default value is 100.</td></tr>
+</table>
+
+\subsection atag External link
+
+An external link is displayed as blue underlined text. Clicking on the text opens a browser window
+loading the referenced URL.
+
+<table border="0">
+<tr bgcolor="#6699dd"><td colspan="2"><b>Tag</b></td></tr>
+<tr bgcolor="#eeeeee"><td colspan="2"><b>&lt;a&gt;</b></td></tr>
+<tr bgcolor="#6699dd"><td><b>Attribute</b></td><td><b>Description</b></td></tr>
+<tr bgcolor="#eeeeee"><td><tt>href="<i>url</i>"</tt></td><td><i>url</i> is an unified resource locator.</td></tr>
+</table>
+
+\subsection fonttag Font specification
+
+This tag allows to specify several font attributes for the embedded content. Font family,
+font size and color can be set. Attributes not given retain their previous value.
+
+<table border="0">
+<tr bgcolor="#6699dd"><td colspan="2"><b>Tag</b></td></tr>
+<tr bgcolor="#eeeeee"><td colspan="2"><b>&lt;font&gt;</b></td></tr>
+<tr bgcolor="#6699dd"><td><b>Attribute</b></td><td><b>Description</b></td></tr>
+<tr bgcolor="#eeeeee"><td valign="top"><tt>face="<i>fontfamily</i>"</tt></td><td>The name of the font family. It can be the name of one of the
+14 core fonts or the name of a font previously added by wxPdfDocument::AddFont.</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>size="<i>fontsize</i>"</tt></td><td>The font size in points</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>color="<i>fontcolor</i>"</tt></td><td>The font color in HTML notation, i.e. <b><i>\#rrggbb</i></b>,
+or as a named color, i.e. <b><i>red</i></b>.</td></tr>
+</table>
+
+\subsection msgtag Translatable text
+
+For international applications a simple mechanism is provided to pass a string to <b><code>wxGetTranslation</code></b>.
+
+<table border="0">
+<tr bgcolor="#6699dd"><td colspan="2"><b>Tag</b></td></tr>
+<tr bgcolor="#eeeeee"><td colspan="2"><b>&lt;msg&gt;</b></td></tr>
+</table>
+
+The text string included in the <b><tt>msg</tt></b> tag will be translated if a translation is available before it is written to PDF.
+
+<b>Note:</b> Within the <b><tt>msg</tt></b> tag additional markup is not allowed.
+
+\subsection imgtag Images
+
+In the current implementation output of an image always starts on a new line.
+
+<table border="0">
+<tr bgcolor="#6699dd"><td colspan="2"><b>Tag</b></td></tr>
+<tr bgcolor="#eeeeee"><td colspan="2"><b>&lt;img&gt;</b></td></tr>
+<tr bgcolor="#6699dd"><td><b>Attribute</b></td><td><b>Description</b></td></tr>
+<tr bgcolor="#eeeeee"><td valign="top"><tt>src="<i>imagefile</i>"</tt></td><td>The name of the image file.</td></tr>
+<tr bgcolor="#ddeeff"><td valign="top"><tt>width="<i>image width</i>"</tt></td><td>The width of the image measured in pixels.</td></tr>
+<tr bgcolor="#eeeeee"><td valign="top"><tt>height="<i>image height</i>"</tt></td><td>The height of the image measured in pixels.</td></tr>
+<tr bgcolor="#ddeeff"><td valign="top"><tt>align="left|right|center"</tt></td><td>As specified by this
+option the image will be \b left or \b right aligned, or \b centered.
+The default is \b left aligned.</td></tr>
+</table>
+
+\section tabletag Tables
+
+Very often information is presented in a tabular structure. This is also supported by the wxPdfDocument markup language
+by using a specific kind of HTML table syntax. The structure is as follows:
+<pre>
+    &lt;table&gt;
+      &lt;colgroup&gt;
+        &lt;col ... /&gt;
+        ...
+      &lt;/colgroup&gt;
+      &lt;thead&gt;
+        &lt;tr&gt;&lt;td&gt; ... &lt;/td&gt;&lt;/tr&gt;
+        ...      
+      &lt;/thead&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;&lt;td&gt; ... &lt;/td&gt;&lt;/tr&gt;
+        ...      
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+</pre>
+The <b><tt>colgroup</tt></b> tag and embedded <b><tt>col</tt></b> tags are always required since all column widths have to be specified
+a priori. <b><tt>width</tt></b> attributes are not interpreted when used in other table tags.
+
+The <b><tt>thead</tt></b> tag and embedded table rows and cells are allowed, but since the current implementation only supports
+tables fitting completely on one page, the rows are handled as ordinary rows. (A future release will support tables
+spanning more than one page. Header rows will be repeated on each page.)
+
+The use of the <b><tt>tbody</tt></b> tag is always required.
+
+Nested tables are supported.
+
+The <b><tt>table</tt></b> tag may have the following attributes:
+
+<table border="0">
+<tr bgcolor="#6699dd"><td colspan="2"><b>Tag</b></td></tr>
+<tr bgcolor="#eeeeee"><td colspan="2"><b>&lt;table&gt;</b></td></tr>
+<tr bgcolor="#6699dd"><td><b>Attribute</b></td><td><b>Description</b></td></tr>
+<tr bgcolor="#eeeeee"><td valign="top"><tt>border="<i>number</i>"</tt></td><td>Table cells may have borders on each side.
+This attribute specifies whether cells will have borders on every side or not. This may be overriden for each individual cell.
+The attribute value consists of the combination of up to 4 letters:
+<p>\b 0 - no borders<br>
+<b> &gt; 0</b> - borders on all sides of each cell<br>
+</td></tr>
+<tr bgcolor="#ddeeff"><td valign="top"><tt>align="left|right|center"</tt></td><td>Defines the horizontal alignment of the table. Default is the alignment of the surrounding context.</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>valign="top|middle|bottom"</tt></td><td>Defines the vertical alignment of the table. Default is <i>top</i>.</td></tr>
+<tr bgcolor="#ddeeff"><td valign="top"><tt>cellpadding="<i>number</i>"</tt></td><td><i>Number</i> defines the padding width on each side of a cell. Default is 0.</td></tr>
+</table>
+
+The supported tags and their attributes are shown in the following tables:
+
+<table border="0">
+<tr bgcolor="#6699dd"><td><b>Tag</b></td><td><b>Description</b></td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;table&gt; ... &lt;/table&gt;</tt></td><td>Groups the definitions of column widths. Contains one or more &lt;col&gt; tags.</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>&lt;colgroup&gt; ... &lt;/colgroup&gt;</tt></td><td>Groups the definitions of column widths. Contains one or more &lt;col&gt; tags.</td></tr>
+<tr bgcolor="#ddeeff"><td><tt>&lt;col width="<i>width</i>" span="<i>number</i>"&gt; ... &lt;/col&gt;</tt></td><td>
+Defines the <i>width</i> of one or more columns. <i>number</i> specifies for how many columns the width is specified, default is 1.
+</td></tr>
+<tr bgcolor="#eeeeee"><td valign="top"><tt>&lt;thead odd="<i>background color for odd numbered rows</i>" even="<i>background color for even numbered rows</i>"&gt; ... &lt;/thead&gt;</tt></td>
+<td>Defines a group of table header rows.
+Contains one or more &lt;tr&gt; tags. If a table does not fit on a single page these rows are repeated on each page.
+The attributes <b><tt>odd</tt></b> and <b><tt>even</tt></b> are optional.
+<p><b>Attention</b>: This feature is not implemented yet. The rows are handled as ordinary rows.</p>
+</td></tr>
+<tr bgcolor="#ddeeff"><td valign="top"><tt>&lt;tbody odd="<i>background color for odd numbered rows</i>" even="<i>background color for even numbered rows</i>"&gt; ... &lt;/tbody&gt;</tt></td>
+<td>Defines a group of table body rows. Contains one or more &lt;tr&gt; tags.
+The attributes <b><tt>odd</tt></b> and <b><tt>even</tt></b> are optional.
+</td></tr>
+<tr bgcolor="#eeeeee"><td valign="top"><tt>&lt;tr bgcolor="<i>background color</i>" height="<i>height</i>"&gt; ... &lt;/tr&gt;</tt></td>
+<td>Defines a table row. Contains one or more &lt;td&gt; tags.
+<p>The <i>background color</i> may be specified in HTML notation, i.e. <b><i>\#rrggbb</i></b>,
+or as a named color, i.e. <b><i>red</i></b>. If no background color is given the background is transparent.</p>
+<p>Usually the height of the highest cell in a row is used as the row height, but a minimal row <i>height</i> may be specified, too</p>
+</td></tr>
+<tr bgcolor="#ddeeff"><td valign="top"><tt>&lt;td&gt; ... &lt;/td&gt;</tt></td><td>Defines a table cell. 
+<p>The available attributes are described in section \ref tdtag.</p></td></tr>
+</table>
+
+\subsection tdtag Table cells
+
+A table cell can have several attributes:
+
+<table border="0">
+<tr bgcolor="#6699dd"><td colspan="2"><b>Tag</b></td></tr>
+<tr bgcolor="#eeeeee"><td colspan="2"><b>&lt;td&gt;</b></td></tr>
+<tr bgcolor="#6699dd"><td><b>Attribute</b></td><td><b>Description</b></td></tr>
+<tr bgcolor="#eeeeee"><td valign="top"><tt>border="LTBR"</tt></td><td>A cell may have a border on each side.
+This attribute overrides the border specification in the &lt;table&gt; tag. The attribute value consists of 
+the combination of up to 4 letters:
+<p>\b L - border on the left side of the cell<br>
+\b T - border on the top side of the cell<br>
+\b B - border on the bottom side of the cell<br>
+\b R - border on the right side of the cell</p>
+.</td></tr>
+<tr bgcolor="#ddeeff"><td valign="top"><tt>align="left|right|center"</tt></td><td>Defines the horizontal alignment of the cell content. Default is <i>left</i>.</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>valign="top|middle|bottom"</tt></td><td>Defines the vertical alignment of the cell content. Default is <i>top</i>.</td></tr>
+<tr bgcolor="#ddeeff"><td valign="top"><tt>bgcolor="<i>background color</i>"</tt></td><td>The background color of the cell in HTML notation, i.e. <b><i>\#rrggbb</i></b>,
+or as a named color, i.e. <b><i>red</i></b>. This attribute overrides the background color specification of the row.
+If neither a row nor a cell background color is specified the background is transparent.</td></tr>
+<tr bgcolor="#eeeeee"><td valign="top"><tt>rowspan="<i>number</i>"</tt></td><td><i>Number</i> of rows this cell should span. Default is 1.</td></tr>
+<tr bgcolor="#ddeeff"><td valign="top"><tt>colspan="<i>number</i>"</tt></td><td><i>Number</i> of columns this cell should span. Default is 1.</td></tr>
+</table>
 
 */
 

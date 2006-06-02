@@ -32,6 +32,9 @@ public:
   /// Constructor
   wxPdfImage(wxPdfDocument* document, int index, const wxString& name, const wxString& type);
 
+  /// Constructor
+  wxPdfImage(wxPdfDocument* document, int index, const wxString& name, const wxImage& image);
+
   /// Destructor
   virtual ~wxPdfImage();
 
@@ -108,6 +111,9 @@ public:
   bool Parse();
 
 protected:
+  /// Extract info from a wxImage
+  bool ConvertWxImage(const wxImage& image);
+
   /// Extract info from a JPEG file
   bool ParseJPG(wxInputStream* imageStream);
 
@@ -170,6 +176,9 @@ protected:
   bool           m_isFormObj; ///< Flag whether image must be treated as form object
   int            m_x;         ///< Offset in X direction
   int            m_y;         ///< Offset in Y direction
+
+  bool           m_fromWxImage;  ///< Flag whether image originated from wxImage
+  bool           m_validWxImage; ///< Flag whether wxImage conversion went ok
 
   static wxFileSystem* ms_fileSystem; ///< File system for accessing image files
 };

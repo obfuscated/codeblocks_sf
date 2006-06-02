@@ -164,13 +164,33 @@
 			<Option link="0" />
 			<Option target="wxPdfDocument" />
 		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfform.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxPdfDocument" />
+		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdfimage.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="wxPdfDocument" />
 		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfxml.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfannotation.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxPdfDocument" />
+		</Unit>
 		<Unit filename="wxPdfDocument\src\pdfbarcode.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfcolor.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="wxPdfDocument" />
 		</Unit>
@@ -192,7 +212,23 @@
 			<Option link="0" />
 			<Option target="wxPdfDocument" />
 		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfform.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfgraphics.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxPdfDocument" />
+		</Unit>
 		<Unit filename="wxPdfDocument\src\pdfimage.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfkernel.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdfxml.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="wxPdfDocument" />
 		</Unit>
