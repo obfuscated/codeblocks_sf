@@ -9,8 +9,6 @@ WXS_EV_DECLARE(wxsStaticBitmapEvents)
 
 wxsDWDeclareBegin(wxsStaticBitmapBase,wxsStaticBitmapId)
     wxString ImageFile;
-    wxString extension;
-    long ImageType;
 wxsDWDeclareEnd()
 
 class wxsStaticBitmap: public wxsStaticBitmapBase
@@ -19,12 +17,9 @@ class wxsStaticBitmap: public wxsStaticBitmapBase
         wxsStaticBitmap(wxsWidgetManager* Man,wxsWindowRes* Res);
 
     protected:
-        virtual bool MyPropertiesUpdated(bool Validate,bool Correct);
         virtual wxString GetProducingCode(const wxsCodeParams& Params);
         virtual wxWindow* MyCreatePreview(wxWindow* Parent);
-    private:
-        long GetBitmapType();
-        wxString GetBitmapTypeAsString();
+
 };
 
 #endif

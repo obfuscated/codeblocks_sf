@@ -232,7 +232,8 @@ static wxsWidgetInfo StdInfos[] =
     Entry2Headers(HtmlWindow,    "wx_wxhtmlwindow.html#wxhtmlwindow","<wx/html/htmlwin.h>","<wx/filesys.h>")
     Entry(Slider,        "wx_wxslider.html#wxslideer","<wx/slider.h>")
     Entry(CheckListBox,  "wx_wxchecklistbox.html#wxchecklistbox","<wx/checklst.h>")
-    Entry(StaticBitmap,  "wx_wxstaticbitmap.html#wxstaticbitmap","<wx/statbmp.h>")
+    Entry2Headers(StaticBitmap,  "wx_wxstaticbitmap.html#wxstaticbitmap","<wx/statbmp.h>","<wx/image.h>")
+    //Entry(StaticBitmap,  "wx_wxstaticbitmap.html#wxstaticbitmap","<wx/statbmp.h> \n <wx/image.h>")
     CustomEntry()
 
     WindowEntry(Dialog,"wx_wxdialog.html#wxdialog","<wx/dialog.h>")
