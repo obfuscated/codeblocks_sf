@@ -503,7 +503,7 @@ bool wxsWindowEditor::InsertBefore(wxsWidget* New,wxsWidget* Ref)
     {
     	wxsTREE()->Refresh();
     	BuildPreview();
-    	if (Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/autoselectwidgets"), true))
+    	if (Ret && Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/autoselectwidgets"), true))
             wxsPropertiesMan::Get()->SetActiveWidget(New);
     }
 
@@ -548,7 +548,7 @@ bool wxsWindowEditor::InsertAfter(wxsWidget* New,wxsWidget* Ref)
     {
     	wxsTREE()->Refresh();
     	BuildPreview();
-    	if (Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/autoselectwidgets"), true))
+    	if (Ret && Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/autoselectwidgets"), true))
             wxsPropertiesMan::Get()->SetActiveWidget(New);
     }
 
@@ -589,7 +589,7 @@ bool wxsWindowEditor::InsertInto(wxsWidget* New,wxsWidget* Ref)
     {
     	wxsTREE()->Refresh();
     	BuildPreview();
-    	if (Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/autoselectwidgets"), true))
+    	if (Ret && Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/autoselectwidgets"), true))
             wxsPropertiesMan::Get()->SetActiveWidget(New);
     }
     return Ret;

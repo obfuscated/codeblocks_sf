@@ -554,6 +554,19 @@ bool wxsProject::AddSmithConfig()
     Integration = Integrated;
 
     SetModified(true);
+
+    AnnoyingDialog dlg(_("wxSmith extensions added"),
+        _("wxSmith extensions were added to this project.\n"
+          "\n"
+          "Because main application code is not managed by\n"
+          "wxSmith, remember about proper wxWidgets initialization:\n"
+          " * call wxXmlResource::Get()->InitAllHandlers() before using any XRC files\n"
+          " * call wxInitAllImageHandlers() before using graphic files other than .bmp\n"),
+        wxART_INFORMATION,
+        AnnoyingDialog::OK,
+        wxID_OK);
+    dlg.ShowModal();
+
     //SaveProject();
 
     BuildTree(wxsTREE(),TreeItem);
@@ -767,6 +780,7 @@ void wxsProject::RebuildAppCode()
     wxString NewCode = CodeHeader;
 
     NewCode.Append(_T("\nbool wxsOK = true;\n"));
+    NewCode.Append(_T("::wxInitAllImageHandlers();\n"));
 
     if ( InitAllHandlers )
     {
@@ -811,6 +825,8 @@ void wxsProject::RebuildAppCode()
     {
         NewCode.Append(_T("#include <wx/xrc/xmlres.h>\n"));
     }
+
+    NewCode.Append(_T("#include <wx/image.h>\n"));
 
     wxsCoder::Get()->AddCode(GetProjectFileName(AppFile),CodeHeader,NewCode);
 }
