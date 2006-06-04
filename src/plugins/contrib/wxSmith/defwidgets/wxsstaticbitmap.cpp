@@ -28,7 +28,7 @@ wxsDWDefineEnd()
 wxsStaticBitmap::wxsStaticBitmap(wxsWidgetManager* Man,wxsWindowRes* Res):
     wxsStaticBitmapBase(Man,Res)
 {
-    BaseProperties.DefaultSize = false;
+    BaseProperties.DefaultSize = true;
 }
 
 
@@ -36,7 +36,7 @@ wxString wxsStaticBitmap::GetProducingCode(const wxsCodeParams& Params)
 {
     wxString SizeCode;
 
-    if(Params.Size==_T("wxSize(-1,-1)"))
+    if(BaseProperties.SizeX==-1 && BaseProperties.SizeY==-1)
       SizeCode = _T("");
     else
       SizeCode = _T(".Rescale") + Params.Size.Mid(6); // Get the "(x,y) from "wxSize(x,y)"
