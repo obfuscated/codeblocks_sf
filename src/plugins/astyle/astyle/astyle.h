@@ -414,7 +414,7 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
          * @return             whether sequence has been reached.
          * @param sequence     the sequence to be checked
          */
-        inline bool ASFormatter::isSequenceReached(const char *sequence) const {
+        inline bool isSequenceReached(const char *sequence) const {
             return currentLine.compare(charNum, strlen(sequence), sequence) == 0;
         }
 };
