@@ -27,21 +27,29 @@ public:
   { };
 
   int     Configure();
+
   int     GetConfigurationPriority() const
   { return 50; }
+
   int     GetConfigurationGroup() const
   { return  cgUnknown; }
+
   void    BuildMenu(wxMenuBar* menuBar)
-  { return ; }
+  { return; }
+
   void    BuildModuleMenu(const ModuleType type, wxMenu* menu,
                           const FileTreeData* data = 0)
-  { return ; }
+  { return; }
+
   bool    BuildToolBar(wxToolBar* toolBar)
   { return false; }
+
   // fires when the plugin is attached to the application:
   void    OnAttach();
+
   // fires when the plugin is released from the application:
   void    OnRelease(bool appShutDown);
+
   virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 
   DECLARE_EVENT_TABLE()
@@ -69,12 +77,12 @@ public:
   void LoadSettings();
   void SaveSettings();
 
-  void OnAddEnvVarClick   (wxCommandEvent& event);
-  void OnEditEnvVarClick  (wxCommandEvent& event);
-  void OnToggleEnvVarClick(wxCommandEvent& event);
-  void OnDeleteEnvVarClick(wxCommandEvent& event);
-  void OnClearEnvVarsClick(wxCommandEvent& event);
-  void OnSetEnvVarsClick  (wxCommandEvent& event);
+  void OnAddEnvVarClick   (wxCommandEvent&  event);
+  void OnEditEnvVarClick  (wxCommandEvent&  event);
+  void OnToggleEnvVarClick(wxCommandEvent&  event);
+  void OnDeleteEnvVarClick(wxCommandEvent&  event);
+  void OnClearEnvVarsClick(wxCommandEvent&  event);
+  void OnSetEnvVarsClick  (wxCommandEvent&  event);
 
   void OnUpdateUI         (wxUpdateUIEvent& event);
 

@@ -58,20 +58,56 @@ END_EVENT_TABLE()
 EnvVars::EnvVars()
 {
   //ctor
-  m_PluginInfo.name = _T("EnvVars");
-  m_PluginInfo.title = _("Environment variables");
-  m_PluginInfo.version = _T("0.91");
-  m_PluginInfo.description = _("Sets up environment variables within the focus of Code::Blocks.");
-  m_PluginInfo.author = _T("Martin Halle");
-  m_PluginInfo.authorEmail = _T("codeblocks@martin-halle.de");
+  m_PluginInfo.name          = _T("EnvVars");
+  m_PluginInfo.title         = _("Environment variables");
+  m_PluginInfo.version       = _T("0.92");
+  m_PluginInfo.description   = _("Sets up environment variables within the focus of Code::Blocks.");
+  m_PluginInfo.author        = _T("Martin Halle");
+  m_PluginInfo.authorEmail   = _T("codeblocks@martin-halle.de");
   m_PluginInfo.authorWebsite = _T("");
-  m_PluginInfo.thanksTo = _("Yiannis Mandravellos, Thomas Denk and the whole Code::Blocks team.");
-  m_PluginInfo.license = LICENSE_GPL;
+  m_PluginInfo.thanksTo      = _("Yiannis Mandravellos, Thomas Denk and the whole Code::Blocks team.");
+  m_PluginInfo.license       = LICENSE_GPL;
 }// EnvVars
 
 void EnvVars::OnAttach()
 {
+#if TRACE_ENVVARS
+	if (Manager::Get() && Manager::Get()->GetMessageManager());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("OnAttach"));
+#endif
+
   Manager::Get()->Loadxrc(_T("/envvars.zip#zip:envvars.xrc"));
+
+  // load and apply configuration (to application only)
+  ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));
+  if (!cfg)
+    return;
+
+  wxArrayString list = cfg->EnumerateKeys(_T("/"));
+  for (unsigned int i = 0; i < list.GetCount(); ++i)
+  {
+    // Format: [checked?];[key];[value]
+    wxArrayString array = GetArrayFromString(cfg->Read(list[i]));
+    if (array.GetCount() == 3)
+    {
+      wxString check = array[0];
+      wxString key   = array[1];
+      wxString value = array[2];
+
+      bool bCheck = check.Trim(true).Trim(false).IsSameAs(_T("1"))?true:false;
+      key.Trim(true).Trim(false);
+      value.Trim(true).Trim(false);
+
+      if (bCheck)
+      {
+        if (!wxSetEnv(key, value))
+        {
+          Manager::Get()->GetMessageManager()->Log(_("Setting environment variable '%s' failed."),
+            key.c_str());
+        }
+      }
+    }
+	}// for
 }// OnAttach
 
 void EnvVars::OnRelease(bool appShutDown)
@@ -90,6 +126,11 @@ cbConfigurationPanel* EnvVars::GetConfigurationPanel(wxWindow* parent)
 
 int EnvVars::Configure()
 {
+#if TRACE_ENVVARS
+	if (Manager::Get() && Manager::Get()->GetMessageManager());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Configure"));
+#endif
+
   // Nothing to do (so far...) -> just return success
   return 0;
 }// Configure
@@ -116,8 +157,11 @@ void EnvVarsConfigDlg::LoadSettings()
   if (!lstEnvVars)
     return;
 
-  // load configuration
+  // load and apply configuration (to application and GUI)
   ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));
+  if (!cfg)
+    return;
+
   wxArrayString list = cfg->EnumerateKeys(_T("/"));
   for (unsigned int i = 0; i < list.GetCount(); ++i)
   {
@@ -157,6 +201,8 @@ void EnvVarsConfigDlg::SaveSettings()
 #endif
 
   ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));
+  if (!cfg)
+    return;
 
   wxArrayString list = cfg->EnumerateKeys(_T("/"));
   for (unsigned int i=0; i<list.GetCount(); ++i)
