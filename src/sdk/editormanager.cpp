@@ -295,8 +295,8 @@ void EditorManager::CreateSearchLog()
     m_pSearchLog = new SearchResultsLog(3, widths, titles);
     m_SearchLogIndex = LOGGER->AddLog(m_pSearchLog, _("Search results"));
 
-    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
-    m_pSearchLog->GetListControl()->SetFont(font);
+    // Set search log font & size like all other logs         //pecan 2006/5/22
+    m_pSearchLog->ResetLogFont();
 
     // set log image
     wxBitmap bmp;
