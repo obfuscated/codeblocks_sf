@@ -2,7 +2,7 @@ Source: codeblocks
 Section: x11
 Priority: optional
 Maintainer: Yiannis Mandravellos <mandrav@codeblocks.org>
-Build-Depends: debhelper, autotools-dev, libc6-dev, libstdc++6-4.0-dev, libwxgtk2.6-dev, wx-common
+Build-Depends: debhelper, autotools-dev, libc6-dev, libstdc++6-4.0-dev, libwxgtk2.6-dev, wx-common, zip
 Standards-Version: 3.6.1
 
 Package: codeblocks
