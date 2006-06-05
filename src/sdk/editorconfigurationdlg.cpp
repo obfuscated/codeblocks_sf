@@ -93,6 +93,7 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxDialog)
 	EVT_LISTBOX(XRCID("lstAutoCompKeyword"),	EditorConfigurationDlg::OnAutoCompKeyword)
 	EVT_BUTTON(XRCID("btnAutoCompAdd"),	        EditorConfigurationDlg::OnAutoCompAdd)
 	EVT_BUTTON(XRCID("btnAutoCompDelete"),	    EditorConfigurationDlg::OnAutoCompDelete)
+	EVT_CHECKBOX(XRCID("chkDynamicWidth"),      EditorConfigurationDlg::OnDynamicCheck)
 
     EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EditorConfigurationDlg::OnPageChanged)
 END_EVENT_TABLE()
@@ -162,7 +163,9 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/gutter/column"), 80));
 
     //margin
-    XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/margin/width"), 48));
+    XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/margin/width_chars"), 6));
+    XRCCTRL(*this, "chkDynamicWidth", wxCheckBox)->SetValue(cfg->ReadBool(_T("/margin/dynamic_width"), false));
+    XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->Enable(!cfg->ReadBool(_T("/margin/dynamic_width"), false));
     XRCCTRL(*this, "chkAddBPByLeftClick", wxCheckBox)->SetValue(cfg->ReadBool(_T("/margin_1_sensitive"), true));
 
 	// colour set
@@ -801,6 +804,11 @@ void EditorConfigurationDlg::OnAutoCompKeyword(wxCommandEvent& event)
     m_LastAutoCompKeyword = lstKeyword->GetSelection();
 }
 
+void EditorConfigurationDlg::OnDynamicCheck(wxCommandEvent& event)
+{
+    XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->Enable(!event.IsChecked());
+}
+
 void EditorConfigurationDlg::EndModal(int retCode)
 {
     if (retCode == wxID_OK)
@@ -848,7 +856,8 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/gutter/column"), 		XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->GetValue());
 
         //margin
-        cfg->Write(_T("/margin/width"), XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->GetValue());
+        cfg->Write(_T("/margin/width_chars"), XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->GetValue());
+        cfg->Write(_T("margin/dynamic_width"), XRCCTRL(*this, "chkDynamicWidth", wxCheckBox)->GetValue());
         cfg->Write(_T("/margin_1_sensitive"), (bool)XRCCTRL(*this, "chkAddBPByLeftClick", wxCheckBox)->GetValue());
 
 		// default code : first update what's in the current txtCtrl,

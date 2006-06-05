@@ -33,6 +33,7 @@ class EditorConfigurationDlg : public wxDialog
 		void OnAutoCompKeyword(wxCommandEvent& event);
 		void OnAutoCompAdd(wxCommandEvent& event);
 		void OnAutoCompDelete(wxCommandEvent& event);
+		void OnDynamicCheck(wxCommandEvent& event);
 		void UpdateSampleFont(bool askForNewFont);
 
 		void EndModal(int retCode);

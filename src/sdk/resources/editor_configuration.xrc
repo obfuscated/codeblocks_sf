@@ -435,13 +435,26 @@
                         <object class="sizeritem">
                           <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                           <object class="wxStaticText">
-                            <label>Width for line numbers:</label>
+                            <label>Width for line numbers (in chars):</label>
                           </object>
                         </object>
                         <object class="sizeritem">
                           <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                          <object class="wxSpinCtrl" name="spnMarginWidth">
-                            <value>48</value>
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                              <object class="wxSpinCtrl" name="spnMarginWidth">
+                                <value>48</value>
+                              </object>
+                            </object>
+                            <object class="sizeritem">
+                              <border>10</border>
+                              <flag>wxLEFT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+                              <object class="wxCheckBox" name="chkDynamicWidth">
+                                <label>Dynamic setting</label>
+                              </object>
+                            </object>
                           </object>
                         </object>
                       </object>

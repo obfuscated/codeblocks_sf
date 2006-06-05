@@ -123,7 +123,8 @@ struct cbEditorInternalData
         m_ensure_consistent_line_ends(true),
         m_LastMarginMenuLine(-1),
         m_LastDebugLine(-1),
-        m_useByteOrderMark(false)
+        m_useByteOrderMark(false),
+        m_lineNumbersWidth(0)
     {
         m_encoding = wxLocale::GetSystemEncoding();
     }
@@ -248,6 +249,37 @@ struct cbEditorInternalData
     	control->ConvertEOLs(control->GetEOLMode());
     }
 
+    /** Set line number column width */
+    void SetLineNumberColWidth()
+    {
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+
+        int pixelWidth = m_pOwner->m_pControl->TextWidth(wxSCI_STYLE_LINENUMBER, _T("9"));
+
+        if(cfg->ReadBool(_T("/margin/dynamic_width"), false))
+        {
+            int lineNumWidth = 1;
+            int lineCount = m_pOwner->m_pControl->GetLineCount();
+
+            while (lineCount >= 10)
+            {
+                lineCount /= 10;
+                ++lineNumWidth;
+            }
+
+            if (lineNumWidth != m_lineNumbersWidth) {
+                m_pOwner->m_pControl->SetMarginWidth(0, 6 + lineNumWidth * pixelWidth);
+                m_lineNumbersWidth = lineNumWidth;
+            }
+        }
+        else
+        {
+            m_pOwner->m_pControl->SetMarginWidth(0, 6 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
+        }
+
+
+    }
+
     //vars
     bool m_strip_trailing_spaces;
     bool m_ensure_final_line_end;
@@ -258,6 +290,8 @@ struct cbEditorInternalData
 
     wxFontEncoding m_encoding;
     bool m_useByteOrderMark;
+
+    int m_lineNumbersWidth;
 
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -350,8 +384,8 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("ctor: Filename=%s\nShort=%s"), m_Filename.c_str(), m_Shortname.c_str());
 
 	CreateEditor();
-	SetEditorStyle();
 	m_IsOK = Open();
+	SetEditorStyle();
 
     // if !m_IsOK then it's a new file, so set the modified flag ON
     if (!m_IsOK && filename.IsEmpty())
@@ -579,7 +613,7 @@ void cbEditor::SetEditorStyle()
     // line numbering
     m_pControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
    	if (mgr->ReadBool(_T("/show_line_numbers"), true))
-    	m_pControl->SetMarginWidth(0, mgr->ReadInt(_T("/margin/width"), 48));
+    	m_pData->SetLineNumberColWidth();
 
 	else
 		m_pControl->SetMarginWidth(0, 0);
@@ -1886,6 +1920,8 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
             // add breakpoint at new line
             debugger->AddBreakpoint(m_Filename, bps[i]);
         }
+
+        m_pData->SetLineNumberColWidth();
     }
 }
 
