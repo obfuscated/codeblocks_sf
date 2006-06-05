@@ -175,6 +175,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/wxSmith/properties/Makefile
 	src/plugins/contrib/wxSmith/resources/Makefile
 	src/plugins/contrib/wxSmith/smithicons/Makefile
+	src/scripts/Makefile
 	src/tools/Makefile
 	src/tools/autorevision/Makefile
 	src/tools/ConsoleRunner/Makefile
