@@ -104,8 +104,7 @@ class DLLIMPORT cbThreadPool
         /** cbWorkerThread ctor
           *
           * @param pool Thread Pool this Worker Thread belongs to
-          * @param cond Synchronisation mechanism between the Pool and the Thread
-          * @param mutex Requiered to be used with the condition
+          * @param semaphore Used to synchronise the Worker Threads
           */
         cbWorkerThread(cbThreadPool *pool, CountedPtr<wxSemaphore> &semaphore);
 

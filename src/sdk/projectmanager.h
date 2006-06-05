@@ -89,6 +89,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         /** Load a project from disk. This function, internally, uses IsOpen()
           * so that the same project can't be loaded twice.
           * @param filename The project file's filename.
+          * @param activateIt Active the project after loading.
           * @return If the function succeeds, a pointer to the newly opened project
           * is returned. Else the return value is NULL.
           */
@@ -122,6 +123,8 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         bool SaveAllProjects();
         /** Close a project.
           * @param project A pointer to the project to close.
+          * @param dontsave Force not (!) saving the project on close.
+          * @param refresh Force a refresh of the project tree after closing a project.
           * @return True if project was closed, false if not.
           */
         bool CloseProject(cbProject* project, bool dontsave = false, bool refresh = true);

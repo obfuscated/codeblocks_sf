@@ -42,8 +42,8 @@ namespace FileFilters
 
     /** @brief Get the Filter name for the Index-th filter in the FiltersList
       * @param FiltersList The list of Filters
-      * @param Filter Receives the name of the filter if found
       * @param Index The index in the FiltersList of the filter we want to know the name of
+      * @param FilterName Receives the filters name if found
       * @return filter found : yes/no.
       */
 	DLLIMPORT bool GetFilterNameFromIndex(const wxString& FiltersList, int Index, wxString& FilterName);

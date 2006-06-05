@@ -60,7 +60,7 @@ namespace ProjectLoaderHooks
     extern DLLIMPORT int RegisterHook(HookFunctorBase* functor);
     /** Unregister a previously registered project loading/saving hook.
       * @param id The hook's ID. You should have the ID from when RegisterHook() was called.
-      * @param deleteHook. If true, the hook will be deleted (default). If not, it's
+      * @param deleteHook If true, the hook will be deleted (default). If not, it's
       * up to you to delete it.
       * @return The functor. If @c deleteHook was true, it always returns NULL.
       */

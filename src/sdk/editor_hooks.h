@@ -60,7 +60,7 @@ namespace EditorHooks
     extern DLLIMPORT int RegisterHook(HookFunctorBase* functor);
     /** Unregister a previously registered project loading/saving hook.
       * @param id The hook's ID. You should have the ID from when RegisterHook() was called.
-      * @param deleteHook. If true, the hook will be deleted (default). If not, it's
+      * @param deleteHook If true, the hook will be deleted (default). If not, it's
       * up to you to delete it.
       * @return The functor. If @c deleteHook was true, it always returns NULL.
       */
@@ -71,9 +71,8 @@ namespace EditorHooks
     extern DLLIMPORT bool HasRegisteredHooks();
     /** Call all registered hooks using the supplied parameters.
       * This is called by ProjectLoader.
-      * @param project The project in question.
-      * @param elem The XML element under which the called hook can read/write.
-      * @param isLoading True if the project is being loaded, false if being saved.
+      * @param editor The editor in question.
+      * @param event Paremeter (wxScintilla event) to provide to the registered hook
       */
     extern DLLIMPORT void CallHooks(cbEditor* editor, wxScintillaEvent& event);
 };

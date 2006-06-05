@@ -156,7 +156,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  * just do nothing ;)
 		  * @param type the module that's preparing a popup menu
 		  * @param menu pointer to the popup menu
-		  * @param arg a wxString argument. In the example above, it would contain the selected project file
+		  * @param data pointer to FileTreeData object (to access/modify the file tree)
 		  */
         virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0) = 0;
 		/** This method is called by Code::Blocks and is used by the plugin
@@ -508,6 +508,7 @@ typedef void(*FreePluginProc)(cbPlugin*);
 /** This is used to actually implement the plugin's hooks.
   * Implements and exports one plugin of class @c name.
   * @param name The plugin's name (class).
+  * @param title The plugin's title (string).
   */
 #define CB_IMPLEMENT_PLUGIN(name,title) \
     wxString PluginName(size_t index){ return _T(title); } \
@@ -524,6 +525,7 @@ typedef void(*FreePluginProc)(cbPlugin*);
 /** Synonym to CB_IMPLEMENT_PLUGIN.
   * Implements and exports ONE plugin of class @c name.
   * @param name The plugin's name (class).
+  * @param title The plugin's title (string).
   */
 #define CB_IMPLEMENT_PLUGINS_1(name,title) \
     wxString PluginName(size_t index){ return _T(title); } \
@@ -540,7 +542,9 @@ typedef void(*FreePluginProc)(cbPlugin*);
 /** Used to export more than one plugin from the same library.
   * Implements and exports TWO plugins of class @c name1 and @c name2.
   * @param name1 The first plugin's name (class).
+  * @param title1 The first plugin's title (string).
   * @param name2 The second plugin's name (class).
+  * @param title2 The second plugin's title (string).
   */
 #define CB_IMPLEMENT_PLUGINS_2(name1,title1,name2,title2) \
     wxString PluginName(size_t index) \
@@ -573,8 +577,11 @@ typedef void(*FreePluginProc)(cbPlugin*);
 /** Used to export more than one plugin from the same library.
   * Implements and exports THREE plugins of class @c name1, @c name2 and @c name3.
   * @param name1 The first plugin's name (class).
+  * @param title1 The first plugin's title (string).
   * @param name2 The second plugin's name (class).
+  * @param title2 The second plugin's title (string).
   * @param name3 The third plugin's name (class).
+  * @param title3 The third plugin's title (string).
   */
 #define CB_IMPLEMENT_PLUGINS_3(name1,title1,name2,title2,name3,title3) \
     wxString PluginName(size_t index) \

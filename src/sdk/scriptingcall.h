@@ -176,8 +176,6 @@ class VoidExecutor : public ScriptingCall
           * GetContext()->Release()...
           *
           * @param functionID The function's ID to call. You can get this by a call to GetFunctionIDByDecl().
-          * @param releaseContextWhenDone If this is true (default), the context will be released when
-          * done with it. If false, it is up to you to release it.
           */
         VoidExecutor(int functionID)
             : ScriptingCall(functionID)
@@ -273,7 +271,6 @@ class Executor : public ScriptingCall
           * If you don't use Call(), you should release the context yourself by calling
           * GetContext()->Release()...
           *
-          * @param The engine.
           * @param functionID The function's ID to call. You can get this by a call to GetFunctionIDByDecl().
           */
         Executor(int functionID)

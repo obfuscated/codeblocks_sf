@@ -125,6 +125,7 @@ class DLLIMPORT EditorBase : public wxPanel
         virtual wxString CreateUniqueFilename();
         /** Informs the editor we 're just about to create a context menu.
           * Default implementation, just returns true.
+          * @param position specifies the position of the popup menu.
           * @param type specifies the "ModuleType" popup menu.
           * @return If the editor returns false, the context menu creation is aborted.
           */

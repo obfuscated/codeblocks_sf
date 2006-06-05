@@ -191,7 +191,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
 
         /** Rename a build target.
           * @param oldTargetName The build target's old name.
-          * @param targetName The new name for the build target.
+          * @param newTargetName The new name for the build target.
           * @return True if @c oldTargetName was valid, false if not.
           */
         bool RenameBuildTarget(const wxString& oldTargetName, const wxString& newTargetName);

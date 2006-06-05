@@ -133,6 +133,7 @@ class DLLIMPORT cbEditor : public EditorBase
         /** Print the file.
           * @param selectionOnly Should the selected text be printed only?
           * @param pcm The colour mode to use when printing
+          * @param line_numbers Print the line numbers of file, too.
           */
         void Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers);
         /** Try to auto-complete the current word.
@@ -149,6 +150,7 @@ class DLLIMPORT cbEditor : public EditorBase
           */
 		void AutoComplete();
         /** Move the caret at the specified line.
+          * @param line Line to move caret to.
           * @param centreOnScreen If true (default), tries to bring the specified line to the centre of the editor.*/
         void GotoLine(int line, bool centreOnScreen = true);
         /** Add debugger breakpoint at specified line. If @c line is -1, use current line. */
