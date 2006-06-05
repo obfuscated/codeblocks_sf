@@ -79,7 +79,7 @@ class wxsProject
         virtual wxString GetProjectFileName(const wxString& FileName);
 
         /** Adding wxSmith configuration to this project */
-        virtual bool AddSmithConfig();
+        virtual bool AddSmithConfig(bool Silent=false);
 
         /** Searching for resource with given name */
         wxsResource* FindResource(const wxString& Name);
@@ -185,6 +185,8 @@ class wxsProject
             const wxString& SourceName,
             const wxString& HeaderName,
             const wxString& XrcName);
+
+        void RebuildTree();
 
     protected:
 

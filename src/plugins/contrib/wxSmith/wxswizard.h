@@ -43,10 +43,12 @@ class wxsWizard: public wxDialog
 		    ID_CHECKBOX4,
 		    ID_CHECKBOX5,
 		    ID_CHECKBOX6,
+		    ID_CHECKBOX7,
 		    ID_COMBOBOX1,
 		    ID_COMBOBOX2,
 		    ID_STATICTEXT1,
 		    ID_STATICTEXT2,
+		    ID_STATICTEXT3,
 		    ID_STATICTEXT4,
 		    ID_STATICTEXT5,
 		    ID_STATICTEXT6,
@@ -97,6 +99,8 @@ class wxsWizard: public wxDialog
 		wxTextCtrl* WxDir;
 		wxButton* WxDirChoose;
 		wxTextCtrl* WxConf;
+		wxStaticText* UseUnicodeLabel;
+		wxCheckBox* UseUnicode;
 		//*)
 
 	private:

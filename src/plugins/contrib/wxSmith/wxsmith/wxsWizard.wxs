@@ -291,7 +291,7 @@
                                     <object class="sizeritem">
                                         <option>1</option>
                                         <border>5</border>
-                                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                        <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxStaticText" name="ID_STATICTEXT7" variable="StaticText7" member="no">
                                             <label>Configuration:</label>
                                         </object>
@@ -303,6 +303,22 @@
                                         <object class="wxTextCtrl" name="ID_TEXTCTRL5" variable="WxConf" member="yes">
                                             <value></value>
                                             <enabled>0</enabled>
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                        <object class="wxStaticText" name="ID_STATICTEXT3" variable="UseUnicodeLabel" member="yes">
+                                            <label>Use unicode:</label>
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>4</border>
+                                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                                        <object class="wxCheckBox" name="ID_CHECKBOX7" variable="UseUnicode" member="yes">
+                                            <label></label>
                                         </object>
                                     </object>
                                 </object>

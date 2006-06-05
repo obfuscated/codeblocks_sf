@@ -210,14 +210,17 @@ void wxSmith::OnProjectClose(CodeBlocksEvent& event)
     cbProject* Proj = event.GetProject();
     ProjectMapI i = ProjectMap.find(Proj);
     if ( i != ProjectMap.end() )
-
-//    wxsProject* SmithProj = (*i).second;
+    {
         ProjectMap.erase(i);
-//    if ( SmithProj )
-//    {
+    }
+
+    wxsProject* SmithProj = (*i).second;
+
+    if ( SmithProj )
+    {
 //        SmithProj->SaveProject();
-//        delete SmithProj;
-//    }
+        delete SmithProj;
+    }
 
     event.Skip();
 }
@@ -227,6 +230,7 @@ void wxSmith::OnProjectOpen(CodeBlocksEvent& event)
     // Project should be loaded before using project loader hooks
     if ( !GetSmithProject(event.GetProject()) )
     {
+        DBGLOG(_T("wxSmith: There's something wrong with C::B project extensions support, no \"Extensions\" node ?"));
         // Strange situation, cbp file doesn't contain "Extensions" node
         wxsProject* NewProj = new wxsProject;
         NewProj->BindProject(event.GetProject(),NULL);

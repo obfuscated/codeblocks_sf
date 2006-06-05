@@ -397,7 +397,7 @@ void wxsProject::XmlStore(TiXmlNode* Node)
 {
     if ( Integration != Integrated ) return;
 
-    TiXmlNode* Elem = Node->InsertEndChild(TiXmlElement("wxsmith"));
+    TiXmlElement* Elem = Node->InsertEndChild(TiXmlElement("wxsmith"))->ToElement();
 
     for ( DialogListI i = Dialogs.begin(); i!=Dialogs.end(); ++i )
     {
@@ -541,13 +541,16 @@ wxString wxsProject::GetProjectFileName(const wxString& FileName)
     return Path.GetFullPath();
 }
 
-bool wxsProject::AddSmithConfig()
+bool wxsProject::AddSmithConfig(bool Silent)
 {
     if ( GetIntegration() != NotWxsProject ) return false;
 
     if ( ! wxFileName::Mkdir(WorkingPath.GetPath(wxPATH_GET_VOLUME),0744,wxPATH_MKDIR_FULL) )
     {
-        wxMessageBox(_("Couldn't create wxsmith directory in main projet's path"),_("Error"),wxOK|wxICON_ERROR);
+        if ( !Silent )
+        {
+            wxMessageBox(_("Couldn't create wxsmith directory in main projet's path"),_("Error"),wxOK|wxICON_ERROR);
+        }
         return false;
     }
 
@@ -555,17 +558,20 @@ bool wxsProject::AddSmithConfig()
 
     SetModified(true);
 
-    AnnoyingDialog dlg(_("wxSmith extensions added"),
-        _("wxSmith extensions were added to this project.\n"
-          "\n"
-          "Because main application code is not managed by\n"
-          "wxSmith, remember about proper wxWidgets initialization:\n"
-          " * call wxXmlResource::Get()->InitAllHandlers() before using any XRC files\n"
-          " * call wxInitAllImageHandlers() before using graphic files other than .bmp\n"),
-        wxART_INFORMATION,
-        AnnoyingDialog::OK,
-        wxID_OK);
-    dlg.ShowModal();
+    if ( !Silent )
+    {
+        AnnoyingDialog dlg(_("wxSmith extensions added"),
+            _("wxSmith extensions were added to this project.\n"
+              "\n"
+              "Because main application code is not managed by\n"
+              "wxSmith, remember about proper wxWidgets initialization:\n"
+              " * call wxXmlResource::Get()->InitAllHandlers() before using any XRC files\n"
+              " * call wxInitAllImageHandlers() before using graphic files other than .bmp\n"),
+            wxART_INFORMATION,
+            AnnoyingDialog::OK,
+            wxID_OK);
+        dlg.ShowModal();
+    }
 
     //SaveProject();
 
@@ -871,4 +877,10 @@ void wxsProject::SetModified(bool Modified)
 {
     if ( Modified )
         Project->SetModified(true);
+}
+
+void wxsProject::RebuildTree()
+{
+    wxsTREE()->DeleteChildren(TreeItem);
+    BuildTree(wxsTREE(),TreeItem);
 }
