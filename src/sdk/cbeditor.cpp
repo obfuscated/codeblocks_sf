@@ -1921,9 +1921,16 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
             debugger->AddBreakpoint(m_Filename, bps[i]);
         }
 
-        m_pData->SetLineNumberColWidth();
+        // in case of no line numbers to be shown no need to set
+        // NOTE : on every modification of the Editor we consult ConfigManager
+        // 			hopefully no to time consuming, otherwise we make a member out of it
+        ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+        if (mgr->ReadBool(_T("/show_line_numbers"), true))
+        {
+                m_pData->SetLineNumberColWidth();
+        }
     }
-}
+} // end of OnEditorModified
 
 void cbEditor::OnUserListSelection(wxScintillaEvent& event)
 {
