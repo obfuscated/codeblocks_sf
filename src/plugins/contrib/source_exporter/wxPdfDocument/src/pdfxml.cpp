@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfxml.cpp
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
 // Modified by:
 // Created:     2005-12-03
@@ -216,7 +216,7 @@ wxPdfTableCell::wxPdfTableCell(wxXmlNode* cell, int row, int col, int rows, int 
   m_col = col;
   m_rowSpan = rows;
   m_colSpan = cols;
-  
+
   SetBorder(wxPDF_BORDER_NONE);
   m_context = NULL;
   m_hasCellColor = false;
@@ -463,7 +463,7 @@ wxPdfTable::WriteRow(int row, double x, double y)
 
 void
 wxPdfTable::SetColumnWidth(int col, double width)
-{ 
+{
   m_colWidths[col] = width;
   m_totalWidth += width;
 }
@@ -523,7 +523,6 @@ wxPdfDocument::PrepareXmlTable(wxXmlNode* node, wxPdfCellContext& context)
     {
       wxString oddColor = (child->GetPropVal(_T("odd"), _T(""))).Lower();
       wxString evenColor = (child->GetPropVal(_T("even"), _T(""))).Lower();
-      bool isHeader = name == wxT("thead");
       wxXmlNode *rowChild = child->GetChildren();
       int rowCount = 0;
       while (rowChild)
@@ -781,15 +780,15 @@ wxPdfDocument::PrepareXmlCell(wxXmlNode* node, wxPdfCellContext& context)
       wxString type = child->GetPropVal(_T("type"), _T("1"));
       if (type.Length() > 0)
       {
-        if (type[0] == _T('a'))      
+        if (type[0] == _T('a'))
           indent = GetStringWidth(_T(" xx. "));
-        else if (type[0] == _T('A')) 
+        else if (type[0] == _T('A'))
           indent = GetStringWidth(_T(" XX. "));
-        else if (type[0] == _T('i')) 
+        else if (type[0] == _T('i'))
           indent = GetStringWidth(_T(" xxx. "));
-        else if (type[0] == _T('I')) 
+        else if (type[0] == _T('I'))
           indent = GetStringWidth(_T(" XXX. "));
-        else if (type[0] == _T('z') && 
+        else if (type[0] == _T('z') &&
                  type.Length() > 1 && type[1] >= _T('1') && type[1] <= _T('4'))
           indent = 1.1 * GetFontSize() / GetScaleFactor();
       }
@@ -868,7 +867,7 @@ wxPdfDocument::PrepareXmlCell(wxXmlNode* node, wxPdfCellContext& context)
       // --- Image
       wxString src = child->GetPropVal(_T("src"), _T(""));
       if (src.Length() > 0)
-      { 
+      {
 //        long width;
         long height;
 //        wxString strWidth = child->GetPropVal(_T("width"), _T("0"));
@@ -899,7 +898,7 @@ wxPdfDocument::PrepareXmlCell(wxXmlNode* node, wxPdfCellContext& context)
       PrepareXmlCell(child, context);
       SelectFont(saveFamily, saveStyle, saveSize, false);
     }
-    else if (name == wxT("h1") || name == wxT("h2") || name == wxT("h3") || 
+    else if (name == wxT("h1") || name == wxT("h2") || name == wxT("h3") ||
              name == wxT("h4") || name == wxT("h5") || name == wxT("h6"))
     {
       // --- Header
@@ -1238,7 +1237,7 @@ wxPdfDocument::WriteXmlCell(wxXmlNode* node, wxPdfCellContext& context)
           SetXY(leftMargin, GetY());
           WriteCell(GetLineHeight(), wxString(itemChar));
           SetLeftMargin(leftMargin+indent);
-          SetXY(leftMargin+indent, GetY()); 
+          SetXY(leftMargin+indent, GetY());
           SetFont(saveFont, saveStyle, saveSize);
           //Ln();
           newContext = context.GetCurrentContext();
@@ -1354,7 +1353,7 @@ wxPdfDocument::WriteXmlCell(wxXmlNode* node, wxPdfCellContext& context)
           }
 
           SetLeftMargin(leftMargin+indent);
-          SetXY(leftMargin+indent, GetY()); 
+          SetXY(leftMargin+indent, GetY());
           SetFont(saveFont, saveStyle, saveSize);
           listCount++;
           newContext = context.GetCurrentContext();
@@ -1441,7 +1440,7 @@ wxPdfDocument::WriteXmlCell(wxXmlNode* node, wxPdfCellContext& context)
       // --- Image
       wxString src = child->GetPropVal(_T("src"), _T(""));
       if (src.Length() > 0)
-      { 
+      {
         long width;
         long height;
         wxString strWidth = child->GetPropVal(_T("width"), _T("0"));
@@ -1503,7 +1502,7 @@ wxPdfDocument::WriteXmlCell(wxXmlNode* node, wxPdfCellContext& context)
       }
       SetFont(saveFamily, saveStyle, saveSize);
     }
-    else if (name == wxT("h1") || name == wxT("h2") || name == wxT("h3") || 
+    else if (name == wxT("h1") || name == wxT("h2") || name == wxT("h3") ||
              name == wxT("h4") || name == wxT("h5") || name == wxT("h6"))
     {
       // --- Header

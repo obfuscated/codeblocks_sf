@@ -83,7 +83,6 @@ wxPdfImage::wxPdfImage(wxPdfDocument* document, int index, const wxString& name,
   m_name     = name;
   m_isFormObj = false;
   m_fromWxImage = true;
-  false;
 
   m_width    = 0;
   m_height   = 0;
@@ -235,7 +234,7 @@ wxPdfImage::ParsePNG(wxInputStream* imageStream)
     wxLogDebug(_T("wxPdfImage::ParsePNG: Alpha channel not supported: '%s'."), m_name.c_str());
     return false;
   }
-  
+
   imageStream->Read(buffer,3);
   if (buffer[0] != 0)
   {
@@ -470,7 +469,7 @@ wxPdfImage::ParseJPG(wxInputStream* imageStream)
         marker = M_EOI;
         break;
       }
-    } 
+    }
     while (marker == 0xff);
 
     if (a < 2)
@@ -605,7 +604,7 @@ wxPdfImage::ParseGIF(wxInputStream* imageStream)
     m_trns[1] = m_pal[3*trns + 1];
     m_trns[2] = m_pal[3*trns + 2];
   }
-  
+
   m_dataSize = m_width * m_height;
   if (m_document->m_compress)
   {
@@ -1017,7 +1016,7 @@ wxPdfImage::ParseWMF(wxInputStream* imageStream)
             }
           }
 
-          if (polyFillMode == 1 && (op == _T("b") || op == _T("f"))) 
+          if (polyFillMode == 1 && (op == _T("b") || op == _T("f")))
           {
             op += _T("*");  // use even-odd fill rule
           }
