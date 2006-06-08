@@ -1870,8 +1870,9 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
     // whenever event.GetLinesAdded() != 0, we must re-set breakpoints for lines greater
     // than LineFromPosition(event.GetPosition())
     int linesAdded = event.GetLinesAdded();
-    if (event.GetModificationType() & (wxSCI_MOD_INSERTTEXT | wxSCI_MOD_DELETETEXT)
-        && linesAdded != 0)
+    bool isAdd = event.GetModificationType() & wxSCI_MOD_INSERTTEXT;
+    bool isDel = event.GetModificationType() & wxSCI_MOD_DELETETEXT;
+    if ((isAdd || isDel) && linesAdded != 0)
     {
         // get hold of debugger plugin
         static cbDebuggerPlugin* debugger = 0;
@@ -1890,10 +1891,28 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
 
         // just added/removed lines
         // this is the line that was added/removed
-        int startline = m_pControl->LineFromPosition(event.GetPosition());
-        // find the first breakpoint after it
-        startline = m_pControl->MarkerNext(startline, 1 << BREAKPOINT_MARKER);
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("Starting at line %d"), startline+1);
+        int origstartline = m_pControl->LineFromPosition(event.GetPosition());
+        int startline = origstartline;
+
+        // HACK, part1:
+        // ok, here's a hack for scintilla's bad behaviour with markers:
+        // if you press Enter on a line with a marker, scintilla doesn't move
+        // the marker at all. It starts moving markers from the next line downwards.
+        // If the cursor is at the start of the line though (or before the first char
+        // on that line for that matter), we want the breakpoint marker
+        // to "follow" the line that we pushed down. Here's where we do it...
+        // (look out for HACK part 2 below)
+        bool startLineHasBP = HasBreakpoint(startline);
+        int offset = 0;
+        wxString origlinetext = m_pControl->GetLine(startline);
+        bool isStartOfLine = startLineHasBP && origlinetext.Trim().IsEmpty(); // we know it's the start of the line, because it's now empty :)
+        if (isAdd)
+            offset = 1;
+
+        // find the first breakpoint after the start line
+        startline = m_pControl->MarkerNext(startline + offset, 1 << BREAKPOINT_MARKER);
+
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("Starting at line %d (from %d)"), startline+1, (origstartline + offset + 1));
 
         // we 'll build an array containing all line numbers with breakpoints
         // from startLine to the end of the document.
@@ -1919,6 +1938,15 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
 //            Manager::Get()->GetMessageManager()->DebugLog(_T("Setting bp at line %d"), bps[i]+1);
             // add breakpoint at new line
             debugger->AddBreakpoint(m_Filename, bps[i]);
+        }
+
+        // HACK, part 2: adjust the breakpoint on the start line
+        if (startLineHasBP && isStartOfLine && linesAdded > 0)
+        {
+//            Manager::Get()->GetMessageManager()->DebugLog(_T("HACK: Removing bp at line %d"), origstartline+1);
+            RemoveBreakpoint(origstartline, true);
+//            Manager::Get()->GetMessageManager()->DebugLog(_T("HACK: Setting bp at line %d"), origstartline + linesAdded+1);
+            AddBreakpoint(origstartline + linesAdded, true);
         }
 
         // in case of no line numbers to be shown no need to set
