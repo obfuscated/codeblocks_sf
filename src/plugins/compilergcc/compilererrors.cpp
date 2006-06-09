@@ -188,9 +188,9 @@ void CompilerErrors::DoGotoError(const CompileError& error)
     if (ed)
     {
         ed->Activate();
+        ed->UnfoldBlockFromLine(error.line - 1);
         ed->GotoLine(error.line - 1);
         ed->SetErrorLine(error.line - 1);
-        ed->UnfoldBlockFromLine(error.line - 1);
     }
 }
 

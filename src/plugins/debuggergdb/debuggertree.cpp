@@ -795,7 +795,7 @@ void DebuggerTree::OnChangeValue(wxCommandEvent& event)
         FixupVarNameForChange(itemtext);
         if (!itemtext.IsEmpty())
             var = itemtext;
-        while ((parent = m_pTree->GetItemParent(item)) && parent.IsOk())
+        while ((parent = m_pTree->GetItemParent(item)) && parent.IsOk() && parent != m_pTree->GetRootItem())
         {
             item = parent;
             wxString itemtext = m_pTree->GetItemText(item);

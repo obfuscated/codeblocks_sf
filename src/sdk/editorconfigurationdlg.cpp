@@ -837,7 +837,20 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/caret/period"), XRCCTRL(*this, "slCaretPeriod", wxSlider)->GetValue());
 
         //folding
-        cfg->Write(_T("/folding/show_folds"), 			XRCCTRL(*this, "chkEnableFolding", wxCheckBox)->GetValue());
+        bool enableFolding = XRCCTRL(*this, "chkEnableFolding", wxCheckBox)->GetValue();
+        if (!enableFolding)
+        {
+            //if the folding has been disabled, first unfold 
+            //all blocks in all editors
+            EditorManager *em = Manager::Get()->GetEditorManager();
+            for (int idx = 0; idx<em->GetEditorsCount(); ++idx)
+            {
+                cbEditor *ed = em->GetBuiltinEditor(em->GetEditor(idx));
+                ed->UnfoldAll();
+            }
+        }
+
+        cfg->Write(_T("/folding/show_folds"), 			enableFolding);
         cfg->Write(_T("/folding/fold_all_on_open"), 	XRCCTRL(*this, "chkFoldOnOpen", wxCheckBox)->GetValue());
         cfg->Write(_T("/folding/fold_preprocessor"), 	XRCCTRL(*this, "chkFoldPreprocessor", wxCheckBox)->GetValue());
         cfg->Write(_T("/folding/fold_comments"), 		XRCCTRL(*this, "chkFoldComments", wxCheckBox)->GetValue());
@@ -857,7 +870,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
 
         //margin
         cfg->Write(_T("/margin/width_chars"), XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->GetValue());
-        cfg->Write(_T("margin/dynamic_width"), XRCCTRL(*this, "chkDynamicWidth", wxCheckBox)->GetValue());
+        cfg->Write(_T("/margin/dynamic_width"), XRCCTRL(*this, "chkDynamicWidth", wxCheckBox)->GetValue());
         cfg->Write(_T("/margin_1_sensitive"), (bool)XRCCTRL(*this, "chkAddBPByLeftClick", wxCheckBox)->GetValue());
 
 		// default code : first update what's in the current txtCtrl,

@@ -125,9 +125,9 @@ void Compiler::MakeValidID()
     }
 
     // make sure it's not starting with a number.
-    // if it is, prepend an underscore
+    // if it is, prepend "cb"
     if (wxIsdigit(newID.GetChar(0)))
-        newID.Prepend(_T('_'));
+        newID.Prepend(_T("cb"));
 
     if (newID.IsEmpty())
     {

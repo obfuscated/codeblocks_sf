@@ -22,7 +22,7 @@
 				</Linker>
 			</Target>
 			<Target title="ConsoleRunner">
-				<Option output="tools\ConsoleRunner\console_runner" />
+				<Option output="tools\ConsoleRunner\cb_console_runner" />
 				<Option working_dir="tools\ConsoleRunner" />
 				<Option type="1" />
 				<Option compiler="gcc" />

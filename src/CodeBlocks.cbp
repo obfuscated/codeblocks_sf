@@ -20,7 +20,7 @@
 				</Linker>
 			</Target>
 			<Target title="ConsoleRunner">
-				<Option output="tools\ConsoleRunner\console_runner.exe" />
+				<Option output="tools\ConsoleRunner\cb_console_runner.exe" />
 				<Option working_dir="tools\ConsoleRunner" />
 				<Option object_output=".objs\2.6" />
 				<Option type="1" />

@@ -384,8 +384,10 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("ctor: Filename=%s\nShort=%s"), m_Filename.c_str(), m_Shortname.c_str());
 
 	CreateEditor();
+	
+	SetEditorStyleBeforeFileOpen();
 	m_IsOK = Open();
-	SetEditorStyle();
+	SetEditorStyleAfterFileOpen();
 
     // if !m_IsOK then it's a new file, so set the modified flag ON
     if (!m_IsOK && filename.IsEmpty())
@@ -563,6 +565,12 @@ wxColour cbEditor::GetOptionColour(const wxString& option, const wxColour _defau
 
 void cbEditor::SetEditorStyle()
 {
+    SetEditorStyleBeforeFileOpen();
+    SetEditorStyleAfterFileOpen();
+}
+
+void cbEditor::SetEditorStyleBeforeFileOpen()
+{
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
 
     wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
@@ -609,14 +617,6 @@ void cbEditor::SetEditorStyle()
     m_pControl->StyleClearAll();
 
     m_pControl->SetTabWidth(mgr->ReadInt(_T("/tab_size"), 4));
-
-    // line numbering
-    m_pControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
-   	if (mgr->ReadBool(_T("/show_line_numbers"), true))
-    	m_pData->SetLineNumberColWidth();
-
-	else
-		m_pControl->SetMarginWidth(0, 0);
 
     // margin for bookmarks, breakpoints etc.
 	// FIXME: how to display a mark with an offset???
@@ -707,6 +707,18 @@ void cbEditor::SetEditorStyle()
 		m_pControl->SetMarginWidth(2, 0);
 
 	SetLanguage( HL_AUTO );
+}
+
+void cbEditor::SetEditorStyleAfterFileOpen()
+{
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+    
+    // line numbering
+    m_pControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
+    if (mgr->ReadBool(_T("/show_line_numbers"), true))
+    	m_pData->SetLineNumberColWidth();
+	else
+		m_pControl->SetMarginWidth(0, 0);
 }
 
 void cbEditor::SetColourSet(EditorColourSet* theme)

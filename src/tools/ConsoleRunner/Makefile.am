@@ -1,2 +1,2 @@
-bin_PROGRAMS = console_runner
-console_runner_SOURCES = main.cpp
+bin_PROGRAMS = cb_console_runner
+cb_console_runner_SOURCES = main.cpp

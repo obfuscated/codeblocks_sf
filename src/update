@@ -69,8 +69,8 @@ cp -f scripts/*.script ${RESDIR}/scripts > /dev/null
 cp -f scripts/*.script output/share/codeblocks/scripts > /dev/null
 cp -f tips.txt devel/share/codeblocks > /dev/null
 cp -f tips.txt output/share/codeblocks > /dev/null
-cp -f tools/ConsoleRunner/console_runner output > /dev/null
-cp -f tools/ConsoleRunner/console_runner devel > /dev/null
+cp -f tools/ConsoleRunner/cb_console_runner output > /dev/null
+cp -f tools/ConsoleRunner/cb_console_runner devel > /dev/null
 cp -f devel/codeblocks output > /dev/null
 cp -f devel/*.so output > /dev/null
 cp -f ${RESDIR}/plugins/*.so output/share/codeblocks/plugins > /dev/null

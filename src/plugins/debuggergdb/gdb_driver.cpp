@@ -28,6 +28,7 @@ static wxRegEx reThreadSwitch2(_T("^\\[Switching to thread .*\\]#0[ \t]+(0x[A-z0
     static wxRegEx reBreak(_T("\032\032([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-z]+)"));
 #endif
 static wxRegEx reBreak2(_T("^(0x[A-z0-9]+) in (.*) from (.*)"));
+static wxRegEx reBreak3(_T("^(0x[A-z0-9]+) in (.*)"));
 
 GDB_driver::GDB_driver(DebuggerGDB* plugin)
     : DebuggerDriver(plugin),
@@ -481,7 +482,8 @@ void GDB_driver::ParseOutput(const wxString& output)
         }
 
         // signal
-        else if (lines[i].StartsWith(_T("Program received signal SIGSEGV")))
+        else if (lines[i].StartsWith(_T("Program received signal SIG")) &&
+        !( lines[i].StartsWith(_T("Program received signal SIGINT")) || lines[i].StartsWith(_T("Program received signal SIGTRAP"))) )
         {
             Log(lines[i]);
             m_pDBG->BringAppToFront();
@@ -571,6 +573,15 @@ void GDB_driver::ParseOutput(const wxString& output)
 				m_Cursor.line = -1;
                 m_Cursor.changed = true;
                 needsUpdate = true;
+			}
+			else if (reBreak3.Matches(lines[i]) )
+			{
+			    m_Cursor.file=_T("");
+			    m_Cursor.function= reBreak3.GetMatch(lines[i], 2);
+                           m_Cursor.address = reBreak3.GetMatch(lines[i], 1);
+                           m_Cursor.line = -1;
+                           m_Cursor.changed = true;
+                           needsUpdate = true;
 			}
         }
     }

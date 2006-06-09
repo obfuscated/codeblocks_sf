@@ -82,8 +82,8 @@ copy /y scripts\* %RESDIR%\scripts > nul
 copy /y scripts\* output\share\codeblocks\scripts > nul
 copy /y tips.txt devel\share\CodeBlocks > nul
 copy /y tips.txt output\share\CodeBlocks > nul
-copy /y tools\ConsoleRunner\console_runner*.exe output > nul
-copy /y tools\ConsoleRunner\console_runner*.exe devel > nul
+copy /y tools\ConsoleRunner\cb_console_runner*.exe output > nul
+copy /y tools\ConsoleRunner\cb_console_runner*.exe devel > nul
 copy /y devel\*.exe output > nul
 copy /y devel\*.dll output > nul
 copy /y %RESDIR%\plugins\*.dll output\share\codeblocks\plugins > nul

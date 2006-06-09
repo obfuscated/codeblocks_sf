@@ -201,6 +201,7 @@ CompilerGCC::CompilerGCC()
 	m_RunAfterCompile(false),
 	m_LastExitCode(0),
 	m_HasTargetAll(false),
+	m_NotifiedMaxErrors(false),
 	m_pBuildingProject(0),
 	m_BuildingProjectIdx(0),
 	m_BuildingTargetIdx(0),
@@ -1355,6 +1356,7 @@ void CompilerGCC::DoClearErrors()
 {
 	m_Errors.Clear();
 	m_pListLog->Clear();
+	m_NotifiedMaxErrors = false;
 }
 
 int CompilerGCC::RunSingleFile(const wxString& filename)
@@ -1380,9 +1382,9 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
 #endif
     wxString baseDir = ConfigManager::GetExecutableFolder();
 #ifdef __WXMSW__
-	#define CONSOLE_RUNNER "console_runner.exe"
+	#define CONSOLE_RUNNER "cb_console_runner.exe"
 #else
-	#define CONSOLE_RUNNER "console_runner"
+	#define CONSOLE_RUNNER "cb_console_runner"
 #endif
     if (wxFileExists(baseDir + wxT("/" CONSOLE_RUNNER)))
         cmd << baseDir << wxT("/" CONSOLE_RUNNER " ");
@@ -1491,9 +1493,9 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         {
             wxString baseDir = ConfigManager::GetExecutableFolder();
 #ifdef __WXMSW__
-	#define CONSOLE_RUNNER "console_runner.exe"
+	#define CONSOLE_RUNNER "cb_console_runner.exe"
 #else
-	#define CONSOLE_RUNNER "console_runner"
+	#define CONSOLE_RUNNER "cb_console_runner"
 #endif
             if (wxFileExists(baseDir + wxT("/" CONSOLE_RUNNER)))
                 cmd << baseDir << wxT("/" CONSOLE_RUNNER " ");
@@ -2802,17 +2804,17 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
 
     // if max_errors reached, display a one-time message and do not log anymore
     size_t maxErrors = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/max_reported_errors"), 50);
-    if (maxErrors > 0)
+    if (maxErrors > 0 && m_Errors.GetCount(cltError) == maxErrors)
     {
-        if (m_Errors.GetCount(cltError) > maxErrors)
-            return;
-        else if (m_Errors.GetCount(cltError) == maxErrors)
+        if (!m_NotifiedMaxErrors)
         {
+            m_NotifiedMaxErrors = true;
+
             // if we reached the max errors count, notify about it
             LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, _("More errors follow but not being shown."));
             LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, _("Edit the max errors limit in compiler options..."));
-            return;
         }
+        return;
     }
 
 	Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);

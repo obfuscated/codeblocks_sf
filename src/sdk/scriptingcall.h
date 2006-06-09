@@ -30,7 +30,7 @@ struct DummyOperand {};
 template <typename OP> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, OP op)
 {
     // default template treats it as 'void*'
-    ctx->SetArgObject(arg, op);
+    ctx->SetArgObject(arg, reinterpret_cast<void*>(op));
 }
 template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, DummyOperand op){ /* do nothing */ }
 template <> inline void ExecuteSetArg(asIScriptContext* ctx, int arg, asQWORD op){ ctx->SetArgQWord(arg, op); }

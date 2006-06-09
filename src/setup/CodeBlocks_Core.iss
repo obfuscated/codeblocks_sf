@@ -40,7 +40,7 @@ Source: mingwm10.dll; DestDir: {app}; Components: ProgramFiles
 Source: wxmsw26_gcc_cb.dll; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\exchndl.dll; DestDir: {app}; Components: ProgramFiles
 Source: ..\output\wxscintilla.dll; DestDir: {app}; Components: ProgramFiles
-Source: ..\output\console_runner.exe; DestDir: {app}; Components: ProgramFiles
+Source: ..\output\cb_console_runner.exe; DestDir: {app}; Components: ProgramFiles
 Source: ..\..\AUTHORS; DestDir: {app}; DestName: AUTHORS.txt; Components: ProgramFiles
 Source: ..\..\COPYING; DestDir: {app}; DestName: COPYING.txt; Components: ProgramFiles
 Source: ..\..\README; DestDir: {app}; DestName: README.txt; Components: ProgramFiles

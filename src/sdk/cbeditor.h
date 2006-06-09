@@ -220,6 +220,8 @@ class DLLIMPORT cbEditor : public EditorBase
 		bool DoFoldLine(int line, int fold); // 0=unfold, 1=fold, 2=toggle
         void CreateEditor();
         void SetEditorStyle();
+        void SetEditorStyleBeforeFileOpen();
+        void SetEditorStyleAfterFileOpen();
         void DetectEncoding();
         bool Open(bool detectEncoding = true);
         void DoAskForCodeCompletion(); // relevant to code-completion plugins
