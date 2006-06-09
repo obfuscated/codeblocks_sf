@@ -1,0 +1,11 @@
+# Section
+
+[foo]
+
+# Assignment operator
+
+x=y
+
+# Default value
+
+@foo
