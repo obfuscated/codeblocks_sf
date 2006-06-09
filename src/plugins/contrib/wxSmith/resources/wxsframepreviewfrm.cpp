@@ -7,8 +7,8 @@
 
 
 BEGIN_EVENT_TABLE(wxsFramePreviewFrm,wxFrame)
-    EVT_MOVE(wxsFramePreviewFrm::OnMove)
-    EVT_SIZE(wxsFramePreviewFrm::OnSize)
+//    EVT_MOVE(wxsFramePreviewFrm::OnMove)
+//    EVT_SIZE(wxsFramePreviewFrm::OnSize)
     EVT_CLOSE(wxsFramePreviewFrm::OnClose)
     EVT_MENU(wxID_EXIT,wxsFramePreviewFrm::OnEscape)
 END_EVENT_TABLE()

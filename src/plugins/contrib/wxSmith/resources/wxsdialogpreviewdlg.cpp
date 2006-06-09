@@ -7,8 +7,8 @@
 
 
 BEGIN_EVENT_TABLE(wxsDialogPreviewDlg,wxDialog)
-    EVT_MOVE(wxsDialogPreviewDlg::OnMove)
-    EVT_SIZE(wxsDialogPreviewDlg::OnSize)
+//    EVT_MOVE(wxsDialogPreviewDlg::OnMove)
+//    EVT_SIZE(wxsDialogPreviewDlg::OnSize)
     EVT_CLOSE(wxsDialogPreviewDlg::OnClose)
     EVT_MENU(wxID_EXIT,wxsDialogPreviewDlg::OnEscape)
 END_EVENT_TABLE()
