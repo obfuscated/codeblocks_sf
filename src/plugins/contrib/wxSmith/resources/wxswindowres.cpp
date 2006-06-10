@@ -1007,6 +1007,7 @@ void wxsWindowRes::SetModified(bool modified)
 
 void wxsWindowRes::EditorClosed()
 {
+    bool Old = wxsTREE()->SkipSelectionChange(true);
 	wxsBlockSelectEvents();
 	GetRootWidget()->KillTree(wxsTREE());
 	Clear();
@@ -1016,6 +1017,7 @@ void wxsWindowRes::EditorClosed()
 	}
 	Modified = false;
 	wxsBlockSelectEvents(false);
+	wxsTREE()->SkipSelectionChange(Old);
 }
 
 void wxsWindowRes::BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd,bool NoWidgets)
@@ -1026,6 +1028,15 @@ void wxsWindowRes::BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd,bool NoWid
             GetClassName(),
             -1,-1,
             new wxsResourceTreeData(this) ) );
+    if ( !NoWidgets )
+    {
+        GetRootWidget()->BuildTree(Tree,GetTreeItemId());
+    }
+}
+
+void wxsWindowRes::RebuildTree(wxTreeCtrl* Tree,bool NoWidgets)
+{
+    Tree->DeleteChildren(GetTreeItemId());
     if ( !NoWidgets )
     {
         GetRootWidget()->BuildTree(Tree,GetTreeItemId());

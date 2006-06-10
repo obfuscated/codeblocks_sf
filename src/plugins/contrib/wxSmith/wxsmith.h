@@ -33,6 +33,7 @@
 #include "wxsproject.h"
 #include "wxsevent.h"
 #include "wxssplitterwindow.h"
+#include "wxsresourcetree.h"
 
 class wxsProject;
 
@@ -57,13 +58,13 @@ class wxSmith : public cbPlugin
         void OnSelectResource(wxsResourceTreeData* Data);
 
         /* Getting current resourcec tree */
-        wxTreeCtrl* GetResourceTree() { return ResourceBrowser; }
+        wxsResourceTree* GetResourceTree() { return ResourceBrowser; }
 
         wxsProject* GetSmithProject(cbProject* Proj);
         cbProject* GetCBProject(wxsProject* Proj);
 
 	private:
-        wxTreeCtrl* ResourceBrowser;
+        wxsResourceTree* ResourceBrowser;
         wxScrolledWindow* PropertiesPanel;
         wxScrolledWindow* EventsPanel;
         wxsSplitterWindowEx* LeftSplitter;

@@ -75,8 +75,14 @@ int wxsNotebook::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
 {
 	if ( NewWidget->GetInfo().Sizer )
 	{
-		wxMessageBox(_("Can not add sizer into Notebook.\nAdd panels first"));
-		return -1;
+//		wxMessageBox(_("Can not add sizer into Notebook.\nAdd panels first"));
+//		return -1;
+
+        // Small fix - we will add extra panel in order to add sizer
+        CurrentSelection = wxsGEN(_T("wxPanel"),GetResource());
+        int RetVal = wxsContainer::AddChild(CurrentSelection,InsertBeforeThis);
+        CurrentSelection->AddChild(NewWidget,0);
+        return RetVal;
 	}
 
 	if ( NewWidget->GetInfo().Spacer )
@@ -90,7 +96,15 @@ int wxsNotebook::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
 
 wxWindow* wxsNotebook::MyCreatePreview(wxWindow* Parent)
 {
-	return new wxNotebook(Parent,-1,GetPosition(),GetSize(),GetStyle());
+	wxNotebook* Notebook = new wxNotebook(Parent,-1,GetPosition(),GetSize(),GetStyle());
+	if ( GetChildCount() == 0 )
+	{
+	    // Adding additional empty notebook
+	    Notebook->AddPage(
+            new wxPanel(Notebook,-1,wxDefaultPosition,wxSize(50,50)),
+            _("No pages"));
+	}
+	return Notebook;
 }
 
 void wxsNotebook::MyFinalUpdatePreview(wxWindow* Preview)

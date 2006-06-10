@@ -544,6 +544,26 @@ class wxsWidget
         /** Invalidating tree item id for this widget and all of it's children */
         void InvalidateTreeIds();
 
+/**********************************************************************/
+/* Extra functionality                                                */
+/**********************************************************************/
+
+    public:
+
+        /** Storing collapsed state in resource tree */
+        void StoreCollapsed();
+
+        /** Restoring collapsed state in resource tree */
+        void RestoreCollapsed();
+
+        /** Changing given widget to selected state. Other widgest are unselected */
+        void SetSelection(wxsWidget* Selection);
+
+        /** Checking if this widget is selected */
+        bool IsSelected() { return Selected; }
+
+    private:
+
         wxsWidgetManager* Manager;  ///< Widget's manager
         wxWindow* Preview;          ///< Currently opened preview window (NULL if there's no one)
         wxsWindowRes* Resource;     ///< Resource owning this widget
@@ -566,6 +586,10 @@ class wxsWidget
         bool AssignedToTree;        ///< True if this widget has it's entry inside resource tree
 
         wxsWidgetEvents* Events;    ///< Events used for this widget
+
+        bool Collapsed;
+        bool Selected;
+
 
         friend class wxsContainer;
 };

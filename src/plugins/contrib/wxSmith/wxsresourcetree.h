@@ -15,8 +15,11 @@ class wxsResourceTree: public wxTreeCtrl
     public:
 
         wxsResourceTree(wxWindow* Parent):
-            wxTreeCtrl(Parent,-1)
+            wxTreeCtrl(Parent,-1),
+            SkipSelBit(false)
         {}
+
+        bool SkipSelectionChange(bool Skip=true) { bool Old = SkipSelBit; SkipSelBit = Skip; return Old; }
 
     private:
 
@@ -28,6 +31,7 @@ class wxsResourceTree: public wxTreeCtrl
 
         wxsWidget* Dragged;
         wxsProject* SelectedProject;
+        bool SkipSelBit;
         DECLARE_EVENT_TABLE()
 };
 

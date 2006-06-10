@@ -70,8 +70,14 @@ int wxsListbook::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
 {
 	if ( NewWidget->GetInfo().Sizer )
 	{
-		wxMessageBox(_("Can not add sizer into Listbook.\nAdd panels first"));
-		return -1;
+//		wxMessageBox(_("Can not add sizer into Listbook.\nAdd panels first"));
+//		return -1;
+
+        // Small fix - we will add extra panel in order to add sizer
+        CurrentSelection = wxsGEN(_T("wxPanel"),GetResource());
+        int RetVal = wxsContainer::AddChild(CurrentSelection,InsertBeforeThis);
+        CurrentSelection->AddChild(NewWidget,0);
+        return RetVal;
 	}
 
 	if ( NewWidget->GetInfo().Spacer )
@@ -85,7 +91,15 @@ int wxsListbook::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
 
 wxWindow* wxsListbook::MyCreatePreview(wxWindow* Parent)
 {
-	return new wxListbook(Parent,-1,GetPosition(),GetSize(),GetStyle());
+	wxListbook* Listbook = new wxListbook(Parent,-1,GetPosition(),GetSize(),GetStyle());
+	if ( GetChildCount() == 0 )
+	{
+	    // Adding additional empty page
+	    Listbook->AddPage(
+            new wxPanel(Listbook,-1,wxDefaultPosition,wxSize(50,50)),
+            _("No pages"));
+	}
+	return Listbook;
 }
 
 void wxsListbook::MyFinalUpdatePreview(wxWindow* Preview)

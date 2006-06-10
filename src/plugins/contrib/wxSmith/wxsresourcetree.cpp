@@ -12,6 +12,7 @@ const long wxsConfigureProjectId = wxNewId();
 
 void wxsResourceTree::OnSelectResource(wxTreeEvent& event)
 {
+    if ( SkipSelBit ) return;
     wxsResourceTreeData* Data = ((wxsResourceTreeData*)GetItemData(event.GetItem()));
     if ( Data )
     {

@@ -456,6 +456,8 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
     {
         wxsWindowEditor* Editor = (wxsWindowEditor*)RootWidget->GetResource()->GetEditor();
 
+        RootWidget->StoreCollapsed();
+
         std::vector<wxsWidget*> AllToMove;
         GetSelectionNoChildren(AllToMove);
 
@@ -550,7 +552,7 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
                         Moved->KillTree(wxsTREE());
                         OldParent->ChangeChildPos(OldInSizerPos,NewInSizerPos);
                         NewInSizerPos = OldParent->FindChild(Moved);
-                        Moved->BuildTree(wxsTREE(),NewParent->GetTreeId(),NewInSizerPos);
+                        // Moved->BuildTree(wxsTREE(),NewParent->GetTreeId(),NewInSizerPos);
                     }
                 }
             }
@@ -559,8 +561,9 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
                 Moved->KillTree(wxsTREE());
                 OldParent->DelChildId(OldInSizerPos);
                 NewParent->AddChild(Moved,NewInSizerPos);
-                Moved->BuildTree(wxsTREE(),NewParent->GetTreeId(),NewInSizerPos);
+                //Moved->BuildTree(wxsTREE(),NewParent->GetTreeId(),NewInSizerPos);
             }
+            Moved->GetResource()->RebuildTree(wxsTREE());
 
             wxsBaseProperties& Params = Moved->BaseProperties;
             Params.DefaultPosition = NewParentIsSizer;
@@ -570,6 +573,10 @@ void wxsDragWindow::DragFinish(wxsWidget* UnderCursor)
             }
         }
 
+
+//        wxsSelectWidget(GetSelection());
+//        wxsTREE()->Expand(GetSelection()->GetTreeId());
+        RootWidget->RestoreCollapsed();
         wxsTREE()->Refresh();
         RootWidget->PropertiesChanged(false,false);
     }

@@ -10,6 +10,7 @@
 #include "wxswindoweditor.h"
 #include "wxswidgetevents.h"
 #include "wxsstandardqp.h"
+#include "wxsmith.h"
 #include <wx/tokenzr.h>
 #include <wx/list.h>
 
@@ -103,7 +104,9 @@ wxsWidget::wxsWidget(wxsWidgetManager* Man,wxsWindowRes* Res,wxsBasePropertiesTy
     PropertiesCreated(false),
     BPType(pType),
     AssignedToTree(false),
-    Events(NULL)
+    Events(NULL),
+    Collapsed(false),
+    Selected(false)
 {
 }
 
@@ -121,7 +124,9 @@ wxsWidget::wxsWidget(wxsWidgetManager* Man, wxsWindowRes* Res, bool ISwxWindow, 
     PropertiesCreated(false),
     BPType(pType),
     AssignedToTree(false),
-    Events(NULL)
+    Events(NULL),
+    Collapsed(false),
+    Selected(false)
 {
 }
 
@@ -1473,4 +1478,45 @@ bool wxsWidget::ReallyVisible()
     }
 
     return true;
+}
+
+void wxsWidget::StoreCollapsed()
+{
+    Collapsed = !wxsTREE()->IsExpanded(GetTreeId());
+    for ( int i=0; i<GetChildCount(); i++ )
+    {
+        GetChild(i)->StoreCollapsed();
+    }
+}
+
+void wxsWidget::RestoreCollapsed()
+{
+    for ( int i=0; i<GetChildCount(); i++ )
+    {
+        GetChild(i)->RestoreCollapsed();
+    }
+    if ( Collapsed )
+    {
+        wxsTREE()->Collapse(GetTreeId());
+    }
+    else
+    {
+        wxsTREE()->Expand(GetTreeId());
+    }
+
+    if ( Selected )
+    {
+        bool Old = wxsTREE()->SkipSelectionChange(true);
+        wxsTREE()->SelectItem(GetTreeId());
+        wxsTREE()->SkipSelectionChange(Old);
+    }
+}
+
+void wxsWidget::SetSelection(wxsWidget* Selection)
+{
+    Selected = Selection==this;
+    for ( int i=0; i<GetChildCount(); i++ )
+    {
+        GetChild(i)->SetSelection(Selection);
+    }
 }

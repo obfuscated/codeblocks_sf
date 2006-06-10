@@ -452,6 +452,7 @@ bool wxsWindowEditor::StartMultipleChange()
 {
 	if ( InsideMultipleChange ) return false;
 	InsideMultipleChange = true;
+    GetWinRes()->GetRootWidget()->StoreCollapsed();
 	KillPreview();
 	return true;
 }
@@ -461,6 +462,8 @@ bool wxsWindowEditor::EndMultipleChange()
 	if ( !InsideMultipleChange ) return false;
 	InsideMultipleChange = false;
 	BuildPreview();
+	GetWinRes()->RebuildTree(wxsTREE());
+    GetWinRes()->GetRootWidget()->RestoreCollapsed();
 	wxsTREE()->Refresh();
 	return true;
 }
@@ -480,6 +483,7 @@ bool wxsWindowEditor::InsertBefore(wxsWidget* New,wxsWidget* Ref)
 
 	if ( !InsideMultipleChange )
 	{
+		GetWinRes()->GetRootWidget()->StoreCollapsed();
 		KillPreview();
 	}
     wxsWidget* Parent = Ref->GetParent();
@@ -490,12 +494,12 @@ bool wxsWindowEditor::InsertBefore(wxsWidget* New,wxsWidget* Ref)
     if ( !Parent || (Index=Parent->FindChild(Ref)) < 0 || Parent->AddChild(New,Index) < 0 )
     {
         wxsKILL(New);
+        Parent->GetResource()->RebuildTree(wxsTREE());
         Ret = false;
     }
     else
     {
         // Adding this new item into resource tree
-        New->BuildTree(wxsTREE(),Parent->GetTreeId(),Index);
         Ret = true;
     }
 
@@ -505,6 +509,7 @@ bool wxsWindowEditor::InsertBefore(wxsWidget* New,wxsWidget* Ref)
     	BuildPreview();
     	if (Ret && Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/autoselectwidgets"), true))
             wxsPropertiesMan::Get()->SetActiveWidget(New);
+		GetWinRes()->GetRootWidget()->RestoreCollapsed();
     }
 
     return Ret;
@@ -525,6 +530,7 @@ bool wxsWindowEditor::InsertAfter(wxsWidget* New,wxsWidget* Ref)
 
 	if ( !InsideMultipleChange )
 	{
+		GetWinRes()->GetRootWidget()->StoreCollapsed();
 		KillPreview();
 	}
     wxsWidget* Parent = Ref->GetParent();
@@ -540,7 +546,7 @@ bool wxsWindowEditor::InsertAfter(wxsWidget* New,wxsWidget* Ref)
     else
     {
         // Adding this new item into resource tree
-        New->BuildTree(wxsTREE(),Parent->GetTreeId(),Index+1);
+        Parent->GetResource()->RebuildTree(wxsTREE());
         Ret = true;
     }
 
@@ -550,6 +556,7 @@ bool wxsWindowEditor::InsertAfter(wxsWidget* New,wxsWidget* Ref)
     	BuildPreview();
     	if (Ret && Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/autoselectwidgets"), true))
             wxsPropertiesMan::Get()->SetActiveWidget(New);
+		GetWinRes()->GetRootWidget()->RestoreCollapsed();
     }
 
     return Ret;
@@ -570,6 +577,7 @@ bool wxsWindowEditor::InsertInto(wxsWidget* New,wxsWidget* Ref)
 
 	if ( !InsideMultipleChange )
 	{
+		GetWinRes()->GetRootWidget()->StoreCollapsed();
 		KillPreview();
 	}
 
@@ -581,7 +589,7 @@ bool wxsWindowEditor::InsertInto(wxsWidget* New,wxsWidget* Ref)
     }
     else
     {
-        New->BuildTree(wxsTREE(),Ref->GetTreeId());
+        New->GetResource()->RebuildTree(wxsTREE());
         Ret = true;
     }
 
@@ -590,7 +598,10 @@ bool wxsWindowEditor::InsertInto(wxsWidget* New,wxsWidget* Ref)
     	wxsTREE()->Refresh();
     	BuildPreview();
     	if (Ret && Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/autoselectwidgets"), true))
+    	{
             wxsPropertiesMan::Get()->SetActiveWidget(New);
+    	}
+		GetWinRes()->GetRootWidget()->RestoreCollapsed();
     }
     return Ret;
 }

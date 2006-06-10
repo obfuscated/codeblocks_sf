@@ -132,6 +132,9 @@ class wxsWindowRes : public wxsResource
 		/** Building resource tree */
 		void BuildTree(wxTreeCtrl* Tree,wxTreeItemId WhereToAdd,bool NoWidgets = false);
 
+		/** Rebuilding resource tree */
+		void RebuildTree(wxTreeCtrl* Tree,bool NoWidgets = false);
+
 		/** Changing root widget */
 		bool ChangeRootWidget(wxsWidget* NewRoot,bool DeletePrevious=true);
 
