@@ -391,7 +391,8 @@ HighlightLanguage EditorColourSet::Apply(cbEditor* editor, HighlightLanguage lan
     if (lang == HL_AUTO)
         lang = GetLanguageForFilename(editor->GetFilename());
 
-	Apply(lang, editor->GetControl());
+	Apply(lang, editor->GetLeftSplitViewControl());
+	Apply(lang, editor->GetRightSplitViewControl());
 
 	return lang;
 }

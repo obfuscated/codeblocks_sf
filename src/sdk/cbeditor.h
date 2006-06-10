@@ -18,6 +18,7 @@ struct cbEditorInternalData; // this is the private data struct used by the edit
 class cbEditor;
 class ProjectFile;
 class EditorColourSet;
+class wxSplitterWindow;
 
 class cbStyledTextCtrl : public wxScintilla
 {
@@ -45,6 +46,12 @@ class DLLIMPORT cbEditor : public EditorBase
         DECLARE_EVENT_TABLE()
     	friend class EditorManager;
 	public:
+        enum SplitType
+        {
+            stHorizontal = 0,
+            stVertical
+        };
+
 		/** cbEditor constructor.
 		  * @param parent the parent notebook - you should use EditorManager::Get()
 		  * @param filename the filename to open. If filename is empty, it creates a
@@ -63,19 +70,31 @@ class DLLIMPORT cbEditor : public EditorBase
 		  * itself is the wxWindows implementation of Scintilla). If you want
 		  * to mess with the actual contents of an editor, this is the object
 		  * you want to get.
+		  * @remarks If the editor is split, this function returns the control
+		  * which currently has the keyboard focus. Don't save this pointer
+		  * because it might be invalid at any later time...
 		  */
-        cbStyledTextCtrl* GetControl(){ return m_pControl; }
+        cbStyledTextCtrl* GetControl() const;
+		/** Returns a pointer to the left (or top) split-view cbStyledTextCtrl.
+		  * This function always returns a valid pointer.
+		  */
+        cbStyledTextCtrl* GetLeftSplitViewControl() const { return m_pControl; }
+		/** Returns a pointer to the right (or bottom) split-view cbStyledTextCtrl.
+		  * This function may return NULL if the editor is not split.
+		  */
+        cbStyledTextCtrl* GetRightSplitViewControl() const { return m_pControl2; }
+
 		/** Returns true if editor is OK, i.e. constructor was called with a filename
 		  * parameter and file was opened succesfully. If it returns false, you
 		  * should delete the editor...
 		  */
-		bool IsOK(){ return m_IsOK; }
+		bool IsOK() const { return m_IsOK; }
 		/** Sets the editor title. For tabbed interface, it sets the corresponding
 		  * tab text, while for MDI interface it sets the MDI window title...
 		  */
 		void SetEditorTitle(const wxString& title);
 		/** Returns true if editor is modified, false otherwise */
-		bool GetModified();
+		bool GetModified() const;
 		/** Set the editor's modification state to \c modified. */
 		void SetModified(bool modified = true);
 		/** Set the ProjectFile pointer associated with this editor. All editors
@@ -86,7 +105,7 @@ class DLLIMPORT cbEditor : public EditorBase
 		/** Read the ProjectFile pointer associated with this editor. All editors
 		  * which belong to a project file, have this set. All others return NULL.
 		  */
-		ProjectFile* GetProjectFile(){ return m_pProjectFile; }
+		ProjectFile* GetProjectFile() const { return m_pProjectFile; }
 		/** Updates the associated ProjectFile object with the editor's caret
 		  * position, top visible line and its open state. Used in devProject
 		  * layout information, so that each time the user opens a project
@@ -115,7 +134,7 @@ class DLLIMPORT cbEditor : public EditorBase
 		/** Set the colour set to use. */
 		void SetColourSet(EditorColourSet* theme);
 		/** Get the colour set in use. */
-		EditorColourSet* GetColourSet(){ return m_pTheme; }
+		EditorColourSet* GetColourSet() const { return m_pTheme; }
 		/** Jumps to the matching brace (if there is one). */
 		void GotoMatchingBrace();
 		/** Highlights the brace pair (one of the braces must be under the cursor) */
@@ -177,6 +196,11 @@ class DLLIMPORT cbEditor : public EditorBase
         void SetDebugLine(int line);
         /** Highlight the specified line as error. */
         void SetErrorLine(int line);
+        /** Split the editor window.
+          * @param split The type of split: horizontal or vertical. */
+        void Split(SplitType split);
+        /** Unsplit the editor window. */
+        void Unsplit();
 
         // the following functions, although self-explanatory, are documented
         // in EditorBase.
@@ -218,10 +242,12 @@ class DLLIMPORT cbEditor : public EditorBase
 		void DoFoldAll(int fold); // 0=unfold, 1=fold, 2=toggle
 		void DoFoldBlockFromLine(int line, int fold); // 0=unfold, 1=fold, 2=toggle
 		bool DoFoldLine(int line, int fold); // 0=unfold, 1=fold, 2=toggle
-        void CreateEditor();
+        cbStyledTextCtrl* CreateEditor();
         void SetEditorStyle();
         void SetEditorStyleBeforeFileOpen();
         void SetEditorStyleAfterFileOpen();
+        void InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control);
+        void InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control);
         void DetectEncoding();
         bool Open(bool detectEncoding = true);
         void DoAskForCodeCompletion(); // relevant to code-completion plugins
@@ -245,9 +271,14 @@ class DLLIMPORT cbEditor : public EditorBase
         bool OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type);    //pecan 2006/03/22
         void OnAfterBuildContextMenu(ModuleType type);                              //pecan 2006/03/22
 
+        void DestroySplitView();
+
         // variables
         bool m_IsOK;
+        wxSplitterWindow* m_pSplitter;
+        wxBoxSizer* m_pSizer;
         cbStyledTextCtrl* m_pControl;
+        cbStyledTextCtrl* m_pControl2;
         int m_ID;
 		bool m_Modified;
 		int m_Index;
