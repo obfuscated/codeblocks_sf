@@ -132,7 +132,7 @@ struct cbEditorInternalData
         m_encoding = wxLocale::GetSystemEncoding();
     }
 
-    cbEditorInternalData::~cbEditorInternalData()
+    ~cbEditorInternalData()
     {
     }
 
