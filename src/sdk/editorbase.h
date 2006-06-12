@@ -29,7 +29,7 @@ class DLLIMPORT EditorBase : public wxPanel
 		  */
 		virtual const wxString& GetShortName(){ return m_Shortname; }
 		/** Returns true if editor is modified, false otherwise */
-		virtual bool GetModified() { return false; }
+		virtual bool GetModified() const { return false; }
 		/** Set the editor's modification state to \c modified. */
 		virtual void SetModified(bool modified = true) {}
 
