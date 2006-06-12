@@ -140,11 +140,11 @@ class DLLIMPORT cbEditor : public EditorBase
 		/** Highlights the brace pair (one of the braces must be under the cursor) */
 		void HighlightBraces();
         /** Returns the specified line's (0-based) indentation (whitespace) in spaces. If line is -1, it uses the current line */
-        int GetLineIndentInSpaces(int line = -1);
+        int GetLineIndentInSpaces(int line = -1) const;
         /** Returns the specified line's (0-based) indentation (whitespace) string. If line is -1, it uses the current line */
-        wxString GetLineIndentString(int line = -1);
+        wxString GetLineIndentString(int line = -1) const;
         /** Returns the last modification time for the file. Used to detect modifications outside the editor. */
-        wxDateTime GetLastModificationTime(){ return m_LastModified; }
+        wxDateTime GetLastModificationTime() const { return m_LastModified; }
         /** Sets the last modification time for the file to 'now'. Used to detect modifications outside the editor. */
         void Touch();
         /** Reloads the file from disk. @return True on success, False on failure. */
@@ -222,14 +222,14 @@ class DLLIMPORT cbEditor : public EditorBase
         virtual wxMenu* CreateContextSubMenu(long id);
         virtual void AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone);  //pecan 2006/03/22
 
-        HighlightLanguage GetLanguage( ) { return m_lang; }
+        HighlightLanguage GetLanguage( ) const { return m_lang; }
         void SetLanguage( HighlightLanguage lang = HL_AUTO );
 
-        wxFontEncoding GetEncoding( );
-        wxString GetEncodingName( );
+        wxFontEncoding GetEncoding( ) const;
+        wxString GetEncodingName( ) const;
         void SetEncoding( wxFontEncoding encoding );
 
-        bool GetUseBom( );
+        bool GetUseBom() const;
         void SetUseBom( bool bom );
     private:
         // functions

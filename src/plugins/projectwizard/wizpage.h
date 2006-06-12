@@ -81,7 +81,7 @@ class WizLanguagePanel : public wxWizardPageSimple
 		WizLanguagePanel(const wxArrayString& langs, int defLang, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
 		~WizLanguagePanel();
 
-        int GetLanguage();
+        int GetLanguage() const;
         void SetLanguage(int lang);
     protected:
         LanguagePanel* m_pLanguagePanel;

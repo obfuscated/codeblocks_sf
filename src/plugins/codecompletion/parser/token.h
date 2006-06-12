@@ -144,7 +144,7 @@ class TokensTree
         // Parsing related functions
 
         size_t GetFileIndex(const wxString& filename);
-        const wxString GetFilename(size_t idx);
+        const wxString GetFilename(size_t idx) const;
         size_t ReserveFileForParsing(const wxString& filename,bool preliminary = false);
         void FlagFileForReparsing(const wxString& filename);
         void FlagFileAsParsed(const wxString& filename);

@@ -103,26 +103,26 @@ class SearchTreeNode
         SearchTreeNode();
         SearchTreeNode(unsigned int depth,nSearchTreeNode parent,nSearchTreeLabel label, unsigned int labelstart, unsigned int labellen);
         virtual ~SearchTreeNode();
-        nSearchTreeNode GetParent() { return m_parent; }
+        nSearchTreeNode GetParent() const { return m_parent; }
         void SetParent(nSearchTreeNode newparent) { m_parent = newparent; }
         nSearchTreeNode GetChild(char ch);
         size_t GetItemNo(size_t depth);
         size_t AddItemNo(size_t depth,size_t itemno);
-        SearchTreeNode* GetParent(BasicSearchTree* tree);
+        SearchTreeNode* GetParent(const BasicSearchTree* tree) const;
         SearchTreeNode* GetChild(BasicSearchTree* tree,char ch);
-        string GetLabel(BasicSearchTree* tree);
-        char GetChar(BasicSearchTree* tree);
-        const string& GetActualLabel(BasicSearchTree* tree);
-        nSearchTreeLabel GetLabelNo() { return m_label; }
-        unsigned int GetLabelStart() { return m_labelstart; }
-        unsigned int GetLabelLen() { return m_labellen; }
+        string GetLabel(const BasicSearchTree* tree) const;
+        char GetChar(const BasicSearchTree* tree) const;
+        const string& GetActualLabel(const BasicSearchTree* tree) const;
+        nSearchTreeLabel GetLabelNo() const { return m_label; }
+        unsigned int GetLabelStart() const { return m_labelstart; }
+        unsigned int GetLabelLen() const { return m_labellen; }
         void SetLabel(nSearchTreeLabel label, unsigned int labelstart, unsigned int labellen);
-        unsigned int GetDepth() { return m_depth; }
+        unsigned int GetDepth() const { return m_depth; }
         void RecalcDepth(BasicSearchTree* tree); /// Updates the depth
         void UpdateItems(BasicSearchTree* tree); /// Updates items with parent
         /** Returns the depth of the start of the node's incoming label
             In other words, returns the (calculated) parent's depth */
-        unsigned int GetLabelStartDepth();
+        unsigned int GetLabelStartDepth() const;
         /// The label's depth is 0-based.
         bool IsLeaf() const { return m_Children.empty() && (m_depth != 0); }
 
@@ -174,7 +174,7 @@ class BasicSearchTree
         size_t GetItemNo(const string& s);
 
         /// Gets the key string for item n
-        const string GetString(size_t n);
+        const string GetString(size_t n) const;
 
         /** Finds items that match a given string.
             if is_prefix==true, it finds items that start with the string.
@@ -194,7 +194,7 @@ class BasicSearchTree
 
         /** Gets the string corresponding to the tree point 'nn'.
             If 'top' is specified, it gets the string that goes from node 'top' to point 'nn'. */
-        string GetString(const SearchTreePoint &nn,nSearchTreeNode top = 0);
+        string GetString(const SearchTreePoint &nn,nSearchTreeNode top = 0) const;
 
         /** Obtains the node with number n,NULL if n is invalid.
             If NullOnZero == true, returns NULL if n is 0. */

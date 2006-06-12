@@ -350,7 +350,7 @@ WizLanguagePanel::~WizLanguagePanel()
 {
 }
 
-int WizLanguagePanel::GetLanguage()
+int WizLanguagePanel::GetLanguage() const
 {
     return m_pLanguagePanel->GetLanguage();
 }

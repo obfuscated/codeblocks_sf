@@ -285,7 +285,7 @@ size_t SearchTreeNode::AddItemNo(size_t depth,size_t itemno)
     return itemno;
 }
 
-inline SearchTreeNode* SearchTreeNode::GetParent(BasicSearchTree* tree)
+inline SearchTreeNode* SearchTreeNode::GetParent(const BasicSearchTree* tree) const
 {
     if(!m_depth)
         return NULL;
@@ -298,14 +298,14 @@ inline SearchTreeNode* SearchTreeNode::GetChild(BasicSearchTree* tree,char ch)
     return tree->GetNode(child,true);
 }
 
-string SearchTreeNode::GetLabel(BasicSearchTree* tree)
+string SearchTreeNode::GetLabel(const BasicSearchTree* tree) const
 {
     if(!m_depth || m_label >= tree->m_Labels.size())
         return string(_T(""));
     return tree->m_Labels[m_label].substr(m_labelstart,m_labellen);
 }
 
-inline char SearchTreeNode::GetChar(BasicSearchTree* tree)
+inline char SearchTreeNode::GetChar(const BasicSearchTree* tree) const
 {
     if(!m_depth)
         return 0;
@@ -313,7 +313,7 @@ inline char SearchTreeNode::GetChar(BasicSearchTree* tree)
     return the_label[m_labelstart];
 }
 
-inline const string& SearchTreeNode::GetActualLabel(BasicSearchTree* tree)
+inline const string& SearchTreeNode::GetActualLabel(const BasicSearchTree* tree) const
 {
     return tree->m_Labels[m_label];
 }
@@ -325,7 +325,7 @@ inline void SearchTreeNode::SetLabel(nSearchTreeLabel label, unsigned int labels
     m_labellen = labellen;
 }
 
-inline unsigned int SearchTreeNode::GetLabelStartDepth()
+inline unsigned int SearchTreeNode::GetLabelStartDepth() const
 {
     if(!m_depth || m_labellen >= m_depth )
         return 0;
@@ -543,20 +543,20 @@ void BasicSearchTree::clear()
     CreateRootNode();
 }
 
-const string BasicSearchTree::GetString(size_t n)
+const string BasicSearchTree::GetString(size_t n) const
 {
     if(n >= m_Points.size())
         return _T("");
     return GetString(m_Points[n],0);
 }
 
-string BasicSearchTree::GetString(const SearchTreePoint &nn,nSearchTreeNode top)
+string BasicSearchTree::GetString(const SearchTreePoint &nn,nSearchTreeNode top) const
 {
     string result(_T(""));
     string tmplabel;
     if(!nn.n || nn.n==top)
         return result;
-    SearchTreeNode *curnode;
+    const SearchTreeNode *curnode;
     vector<wxString> the_strings;
     the_strings.clear();
     for(curnode = m_pNodes[nn.n];curnode && curnode->GetDepth();curnode = curnode->GetParent(this))

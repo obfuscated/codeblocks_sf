@@ -633,7 +633,7 @@ wxString Wiz::GetReleaseObjectOutputDir()
     return wxEmptyString;
 }
 
-int Wiz::GetLanguageIndex()
+int Wiz::GetLanguageIndex() const
 {
     if (m_pWizLanguagePanel)
         return m_pWizLanguagePanel->GetLanguage();

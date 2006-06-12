@@ -56,7 +56,7 @@ CompileTargetBase::~CompileTargetBase()
 	//dtor
 }
 
-const wxString& CompileTargetBase::GetFilename()
+const wxString& CompileTargetBase::GetFilename() const
 {
 	return m_Filename;
 }

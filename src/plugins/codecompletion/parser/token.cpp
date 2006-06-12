@@ -731,9 +731,8 @@ size_t TokensTree::GetFileIndex(const wxString& filename)
     return result;
 }
 
-const wxString TokensTree::GetFilename(size_t idx)
+const wxString TokensTree::GetFilename(size_t idx) const
 {
-
     wxString result = m_FilenamesMap.GetString(idx);
     return result;
 }

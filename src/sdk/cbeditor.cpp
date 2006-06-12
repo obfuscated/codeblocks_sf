@@ -879,14 +879,14 @@ void cbEditor::SetColourSet(EditorColourSet* theme)
 	SetLanguage( m_lang );
 }
 
-wxFontEncoding cbEditor::GetEncoding( )
+wxFontEncoding cbEditor::GetEncoding( ) const
 {
     if (!m_pData)
         return wxFONTENCODING_SYSTEM;
     return m_pData->m_encoding;
 }
 
-wxString cbEditor::GetEncodingName( )
+wxString cbEditor::GetEncodingName( ) const
 {
     return wxFontMapper::GetEncodingName(GetEncoding());
 }
@@ -912,7 +912,7 @@ void cbEditor::SetEncoding( wxFontEncoding encoding )
         SetModified(true);
 }
 
-bool cbEditor::GetUseBom( )
+bool cbEditor::GetUseBom() const
 {
     if (!m_pData)
         return false;
@@ -1557,7 +1557,7 @@ void cbEditor::HighlightBraces()
     control->Refresh(FALSE);
 }
 
-int cbEditor::GetLineIndentInSpaces(int line)
+int cbEditor::GetLineIndentInSpaces(int line) const
 {
     cbStyledTextCtrl* control = GetControl();
     int currLine = (line == -1)
@@ -1578,7 +1578,7 @@ int cbEditor::GetLineIndentInSpaces(int line)
     return spaceCount;
 }
 
-wxString cbEditor::GetLineIndentString(int line)
+wxString cbEditor::GetLineIndentString(int line) const
 {
     cbStyledTextCtrl* control = GetControl();
     int currLine = (line == -1)

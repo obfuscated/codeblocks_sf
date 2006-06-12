@@ -62,7 +62,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
 		CompileTargetBase();
 		virtual ~CompileTargetBase();
 
-        virtual const wxString& GetFilename();
+        virtual const wxString& GetFilename() const;
         virtual const wxString& GetTitle(); ///< Read the target's title
         virtual void SetTitle(const wxString& title); ///< Set the target's title
         virtual void SetOutputFilename(const wxString& filename); ///< Set the target's output filename

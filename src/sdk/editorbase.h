@@ -20,7 +20,7 @@ class DLLIMPORT EditorBase : public wxPanel
         EditorBase(wxWindow* parent, const wxString& filename);
         virtual ~EditorBase();
 
-		virtual const wxString& GetFilename(){ return m_Filename; }
+		virtual const wxString& GetFilename() const { return m_Filename; }
 		/** Sets the editor's filename */
 		virtual void SetFilename(const wxString& x){ m_Filename = x; }
 

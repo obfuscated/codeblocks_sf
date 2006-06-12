@@ -97,7 +97,7 @@ class Wiz : public cbProjectWizardPlugin
         wxString GetReleaseOutputDir();
         wxString GetReleaseObjectOutputDir();
 
-        int GetLanguageIndex();
+        int GetLanguageIndex() const;
 
         // pre-defined pages
         void AddIntroPage(const wxString& intro_msg);
