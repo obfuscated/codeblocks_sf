@@ -179,7 +179,7 @@ class DLLIMPORT cbEditor : public EditorBase
         /** Toggle debugger breakpoint at specified line. If @c line is -1, use current line. */
         void ToggleBreakpoint(int line = -1, bool notifyDebugger = true);
         /** Does @c line has debugger breakpoint? If @c line is -1, use current line. */
-        bool HasBreakpoint(int line);
+        bool HasBreakpoint(int line) const;
         /** Go to next debugger breakpoint. */
         void GotoNextBreakpoint();
         /** Go to previous debugger breakpoint. */
@@ -187,7 +187,7 @@ class DLLIMPORT cbEditor : public EditorBase
         /** Toggle bookmark at specified line. If @c line is -1, use current line. */
         void ToggleBookmark(int line = -1);
         /** Does @c line has bookmark? */
-        bool HasBookmark(int line);
+        bool HasBookmark(int line) const;
         /** Go to next bookmark. */
         void GotoNextBookmark();
         /** Go to previous bookmark. */
@@ -209,10 +209,10 @@ class DLLIMPORT cbEditor : public EditorBase
         void Cut();
         void Copy();
         void Paste();
-        bool CanUndo();
-        bool CanRedo();
-        bool HasSelection();
-        bool CanPaste();
+        bool CanUndo() const;
+        bool CanRedo() const;
+        bool HasSelection() const;
+        bool CanPaste() const;
 
 		// Workaround for shift-tab bug in wx2.4.2
 		void DoIndent(); /// Indents current line/block
@@ -233,7 +233,7 @@ class DLLIMPORT cbEditor : public EditorBase
         void SetUseBom( bool bom );
     private:
         // functions
-        bool LineHasMarker(int marker, int line = -1);
+        bool LineHasMarker(int marker, int line = -1) const;
         void MarkerToggle(int marker, int line = -1);
         void MarkerNext(int marker);
         void MarkerPrevious(int marker);

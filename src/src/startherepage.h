@@ -20,7 +20,7 @@ class StartHerePage : public EditorBase
 
 		bool LinkClicked(const wxHtmlLinkInfo& link);
 		void SetPageContent(const wxString& buffer); // set the HTML content
-        virtual bool VisibleToTree() { return false; }
+        virtual bool VisibleToTree() const { return false; }
         void Reload();
 	protected:
 

@@ -1366,7 +1366,7 @@ void cbEditor::ToggleBreakpoint(int line, bool notifyDebugger)
     }
 }
 
-bool cbEditor::HasBreakpoint(int line)
+bool cbEditor::HasBreakpoint(int line) const
 {
 	if (line == -1)
 		line = GetControl()->GetCurrentLine();
@@ -1388,7 +1388,7 @@ void cbEditor::ToggleBookmark(int line)
     MarkerToggle(BOOKMARK_MARKER, line);
 }
 
-bool cbEditor::HasBookmark(int line)
+bool cbEditor::HasBookmark(int line) const
 {
     return LineHasMarker(BOOKMARK_MARKER, line);
 }
@@ -1444,26 +1444,26 @@ void cbEditor::Paste()
     GetControl()->Paste();
 }
 
-bool cbEditor::CanUndo()
+bool cbEditor::CanUndo() const
 {
     wxASSERT(m_pControl);
     return m_pControl->CanUndo();
 }
 
-bool cbEditor::CanRedo()
+bool cbEditor::CanRedo() const
 {
     wxASSERT(m_pControl);
     return m_pControl->CanRedo();
 }
 
-bool cbEditor::HasSelection()
+bool cbEditor::HasSelection() const
 {
     wxASSERT(m_pControl);
     cbStyledTextCtrl* control = GetControl();
     return control->GetSelectionStart() != control->GetSelectionEnd();
 }
 
-bool cbEditor::CanPaste()
+bool cbEditor::CanPaste() const
 {
     wxASSERT(m_pControl);
 #ifdef __WXGTK__
@@ -1473,7 +1473,7 @@ bool cbEditor::CanPaste()
 #endif
 }
 
-bool cbEditor::LineHasMarker(int marker, int line)
+bool cbEditor::LineHasMarker(int marker, int line) const
 {
 	if (line == -1)
 		line = GetControl()->GetCurrentLine();
