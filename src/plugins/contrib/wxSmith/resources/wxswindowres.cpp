@@ -1016,6 +1016,7 @@ void wxsWindowRes::EditorClosed()
 	    wxsEXTRES()->ResClosed(this);
 	}
 	Modified = false;
+	Manager::Get()->Yield();
 	wxsBlockSelectEvents(false);
 	wxsTREE()->SkipSelectionChange(Old);
 }
