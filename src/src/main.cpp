@@ -1519,8 +1519,9 @@ void MainFrame::InitializeRecentFilesHistory()
     }
 }
 
-void MainFrame::AddToRecentFilesHistory(const wxString& filename)
+void MainFrame::AddToRecentFilesHistory(const wxString& FileName)
 {
+	wxString filename = FileName;
 #ifdef __WXMSW__
     // for windows, look for case-insensitive matches
     // if found, don't add it
@@ -1528,7 +1529,11 @@ void MainFrame::AddToRecentFilesHistory(const wxString& filename)
     for (size_t i = 0; i < m_FilesHistory.GetCount(); ++i)
     {
         if (low == m_FilesHistory.GetHistoryFile(i).Lower())
-            return;
+        {	// it exists, set filename to the existing name, so it can become
+        	// the most recent one
+            filename = m_FilesHistory.GetHistoryFile(i);
+            break;
+        }
     }
 #endif
 
@@ -1574,8 +1579,9 @@ void MainFrame::AddToRecentFilesHistory(const wxString& filename)
         ((StartHerePage*)sh)->Reload();
 }
 
-void MainFrame::AddToRecentProjectsHistory(const wxString& filename)
+void MainFrame::AddToRecentProjectsHistory(const wxString& FileName)
 {
+	wxString filename = FileName;
 #ifdef __WXMSW__
     // for windows, look for case-insensitive matches
     // if found, don't add it
@@ -1583,7 +1589,11 @@ void MainFrame::AddToRecentProjectsHistory(const wxString& filename)
     for (size_t i = 0; i < m_ProjectsHistory.GetCount(); ++i)
     {
         if (low == m_ProjectsHistory.GetHistoryFile(i).Lower())
-            return;
+        {	// it exists, set filename to the existing name, so it can become
+        	// the most recent one
+            filename = m_ProjectsHistory.GetHistoryFile(i);
+            break;
+        }
     }
 #endif
 
