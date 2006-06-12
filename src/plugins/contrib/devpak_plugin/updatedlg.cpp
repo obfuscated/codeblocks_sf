@@ -319,24 +319,24 @@ wxString UpdateDlg::GetConfFilename()
     return config;
 }
 
-wxString UpdateDlg::GetMirrorsFilename()
+wxString UpdateDlg::GetMirrorsFilename() const
 {
     wxString config;
     config = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + _T("devpak_mirrors.cfg");
     return config;
 }
 
-wxString UpdateDlg::GetCurrentServer()
+wxString UpdateDlg::GetCurrentServer() const
 {
     return m_Servers[XRCCTRL(*this, "cmbServer", wxComboBox)->GetSelection()];
 }
 
-wxString UpdateDlg::GetBasePath()
+wxString UpdateDlg::GetBasePath() const
 {
     return g_MasterPath + wxFILE_SEP_PATH;
 }
 
-wxString UpdateDlg::GetPackagePath()
+wxString UpdateDlg::GetPackagePath() const
 {
     return GetBasePath() + _T("Packages") + wxFILE_SEP_PATH;
 }

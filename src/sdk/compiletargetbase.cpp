@@ -164,7 +164,7 @@ wxString CompileTargetBase::GetWorkingDir()
     return m_WorkingDir;
 }
 
-wxString CompileTargetBase::GetObjectOutput()
+wxString CompileTargetBase::GetObjectOutput() const
 {
     if (m_TargetType == ttCommandsOnly)
         return wxEmptyString;
@@ -180,7 +180,7 @@ wxString CompileTargetBase::GetObjectOutput()
     return m_ObjectOutput;
 }
 
-wxString CompileTargetBase::GetDepsOutput()
+wxString CompileTargetBase::GetDepsOutput() const
 {
     if (m_TargetType == ttCommandsOnly)
         return wxEmptyString;
@@ -196,7 +196,7 @@ wxString CompileTargetBase::GetDepsOutput()
     return m_DepsOutput;
 }
 
-wxString CompileTargetBase::GetExecutableFilename()
+wxString CompileTargetBase::GetExecutableFilename() const
 {
     if (m_TargetType == ttCommandsOnly)
         return wxEmptyString;
@@ -262,7 +262,7 @@ wxString CompileTargetBase::GetStaticLibFilename()
     return fname.GetFullPath();
 }
 
-wxString CompileTargetBase::GetBasePath()
+wxString CompileTargetBase::GetBasePath() const
 {
     if (m_Filename.IsEmpty())
         return _T(".");
@@ -280,12 +280,12 @@ void CompileTargetBase::SetTargetType(const TargetType& pt)
 	SetModified(true);
 }
 
-const TargetType& CompileTargetBase::GetTargetType()
+const TargetType& CompileTargetBase::GetTargetType() const
 {
 	return m_TargetType;
 }
 
-const wxString& CompileTargetBase::GetExecutionParameters()
+const wxString& CompileTargetBase::GetExecutionParameters() const
 {
 	return m_ExecutionParameters;
 }
@@ -298,7 +298,7 @@ void CompileTargetBase::SetExecutionParameters(const wxString& params)
 	SetModified(true);
 }
 
-const wxString& CompileTargetBase::GetHostApplication()
+const wxString& CompileTargetBase::GetHostApplication() const
 {
 	return m_HostApplication;
 }

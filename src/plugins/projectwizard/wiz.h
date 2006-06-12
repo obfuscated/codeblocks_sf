@@ -83,19 +83,19 @@ class Wiz : public cbProjectWizardPlugin
         void SetTextControlValue(const wxString& name, const wxString& value);
         wxString GetTextControlValue(const wxString& name);
 
-        wxString GetProjectPath();
-        wxString GetProjectName();
-        wxString GetCompilerID();
+        wxString GetProjectPath() const;
+        wxString GetProjectName() const;
+        wxString GetCompilerID() const;
 
-        bool GetWantDebug();
-        wxString GetDebugName();
-        wxString GetDebugOutputDir();
-        wxString GetDebugObjectOutputDir();
+        bool GetWantDebug() const;
+        wxString GetDebugName() const;
+        wxString GetDebugOutputDir() const;
+        wxString GetDebugObjectOutputDir() const;
 
-        bool GetWantRelease();
-        wxString GetReleaseName();
-        wxString GetReleaseOutputDir();
-        wxString GetReleaseObjectOutputDir();
+        bool GetWantRelease() const;
+        wxString GetReleaseName() const;
+        wxString GetReleaseOutputDir() const;
+        wxString GetReleaseObjectOutputDir() const;
 
         int GetLanguageIndex() const;
 

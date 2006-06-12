@@ -12,7 +12,7 @@ class UpdateDlg : public wxDialog
 	public:
 		UpdateDlg(wxWindow* parent);
 		virtual ~UpdateDlg();
-		
+
 		void EndModal(int retCode);
 	protected:
         void OnFileSelected(wxListEvent& event);
@@ -52,10 +52,10 @@ class UpdateDlg : public wxDialog
         void SetListColumnText(int idx, int col, const wxString& text);
 
         wxString GetConfFilename();
-        wxString GetMirrorsFilename();
-        wxString GetCurrentServer();
-        wxString GetBasePath();
-        wxString GetPackagePath();
+        wxString GetMirrorsFilename() const;
+        wxString GetCurrentServer() const;
+        wxString GetBasePath() const;
+        wxString GetPackagePath() const;
         bool FilterRec(UpdateRec* rec);
         void ApplyFilter();
 

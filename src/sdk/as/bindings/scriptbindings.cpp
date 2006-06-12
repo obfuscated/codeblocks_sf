@@ -144,10 +144,10 @@ void Register_ConfigManager(asIScriptEngine* engine)
 //------------------------------------------------------------------------------
 template <class T> void Register_EditorBase(asIScriptEngine* engine, const wxString& classname)
 {
-    engine->RegisterObjectMethod(cbU2C(classname), "wxString& GetFilename()", asMETHOD(T, GetFilename), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "wxString& GetFilename() const", asMETHOD(T, GetFilename), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void SetFilename(const wxString& in)", asMETHOD(T, SetFilename), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "wxString& GetShortName()", asMETHOD(T, GetShortName), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "bool GetModified()", asMETHOD(T, GetModified), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "wxString& GetShortName() const", asMETHOD(T, GetShortName), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "bool GetModified() const", asMETHOD(T, GetModified), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void SetModified(bool)", asMETHOD(T, SetModified), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "wxString& GetTitle()", asMETHOD(T, GetTitle), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void SetTitle(const wxString& in)", asMETHOD(T, SetTitle), asCALL_THISCALL);
@@ -160,11 +160,11 @@ template <class T> void Register_EditorBase(asIScriptEngine* engine, const wxStr
     engine->RegisterObjectMethod(cbU2C(classname), "bool Close()", asMETHOD(T, Close), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void GotoLine(int,bool)", asMETHOD(T, GotoLine), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void ToggleBreakpoint(int,bool)", asMETHOD(T, ToggleBreakpoint), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "bool HasBreakpoint(int)", asMETHOD(T, HasBreakpoint), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "bool HasBreakpoint(int) const", asMETHOD(T, HasBreakpoint), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void GotoNextBreakpoint()", asMETHOD(T, GotoNextBreakpoint), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void GotoPreviousBreakpoint()", asMETHOD(T, GotoPreviousBreakpoint), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void ToggleBookmark(int)", asMETHOD(T, ToggleBookmark), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "bool HasBookmark(int)", asMETHOD(T, HasBookmark), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "bool HasBookmark(int) const", asMETHOD(T, HasBookmark), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void GotoNextBookmark()", asMETHOD(T, GotoNextBookmark), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void GotoPreviousBookmark()", asMETHOD(T, GotoPreviousBookmark), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void Undo()", asMETHOD(T, Undo), asCALL_THISCALL);
@@ -172,10 +172,10 @@ template <class T> void Register_EditorBase(asIScriptEngine* engine, const wxStr
     engine->RegisterObjectMethod(cbU2C(classname), "void Cut()", asMETHOD(T, Cut), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void Copy()", asMETHOD(T, Copy), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void Paste()", asMETHOD(T, Paste), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "bool CanUndo()", asMETHOD(T, CanUndo), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "bool CanRedo()", asMETHOD(T, CanRedo), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "bool CanPaste()", asMETHOD(T, CanPaste), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "bool HasSelection()", asMETHOD(T, HasSelection), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "bool CanUndo() const", asMETHOD(T, CanUndo), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "bool CanRedo() const", asMETHOD(T, CanRedo), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "bool CanPaste() const", asMETHOD(T, CanPaste), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "bool HasSelection() const", asMETHOD(T, HasSelection), asCALL_THISCALL);
 }
 
 //------------------------------------------------------------------------------
@@ -187,7 +187,7 @@ void Register_Editor(asIScriptEngine* engine)
     Register_EditorBase<cbEditor>(engine, _T("Editor"));
 
     engine->RegisterObjectMethod("Editor", "void SetEditorTitle(const wxString& in)", asMETHOD(cbEditor, SetEditorTitle), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Editor", "ProjectFile@ GetProjectFile()", asMETHOD(cbEditor, GetProjectFile), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Editor", "ProjectFile@ GetProjectFile() const", asMETHOD(cbEditor, GetProjectFile), asCALL_THISCALL);
     engine->RegisterObjectMethod("Editor", "bool Save()", asMETHOD(cbEditor, Save), asCALL_THISCALL);
     engine->RegisterObjectMethod("Editor", "bool SaveAs()", asMETHOD(cbEditor, SaveAs), asCALL_THISCALL);
     engine->RegisterObjectMethod("Editor", "void FoldAll()", asMETHOD(cbEditor, FoldAll), asCALL_THISCALL);
@@ -250,16 +250,16 @@ template <class T> void Register_CompileOptionsBase(asIScriptEngine* engine, con
     engine->RegisterObjectMethod(cbU2C(classname), "void SetLibDirs(const wxArrayString& in)", asMETHOD(T, SetLibDirs), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void SetCommandsBeforeBuild(const wxArrayString& in)", asMETHOD(T, SetCommandsBeforeBuild), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void SetCommandsAfterBuild(const wxArrayString& in)", asMETHOD(T, SetCommandsAfterBuild), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetLinkerOptions()", asMETHOD(T, GetLinkerOptions), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetLinkLibs()", asMETHOD(T, GetLinkLibs), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetCompilerOptions()", asMETHOD(T, GetCompilerOptions), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetIncludeDirs()", asMETHOD(T, GetIncludeDirs), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetResourceIncludeDirs()", asMETHOD(T, GetResourceIncludeDirs), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetLibDirs()", asMETHOD(T, GetLibDirs), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetCommandsBeforeBuild()", asMETHOD(T, GetCommandsBeforeBuild), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetCommandsAfterBuild()", asMETHOD(T, GetCommandsAfterBuild), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetLinkerOptions() const", asMETHOD(T, GetLinkerOptions), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetLinkLibs() const", asMETHOD(T, GetLinkLibs), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetCompilerOptions() const", asMETHOD(T, GetCompilerOptions), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetIncludeDirs() const", asMETHOD(T, GetIncludeDirs), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetResourceIncludeDirs() const", asMETHOD(T, GetResourceIncludeDirs), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetLibDirs() const", asMETHOD(T, GetLibDirs), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetCommandsBeforeBuild() const", asMETHOD(T, GetCommandsBeforeBuild), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "const wxArrayString& GetCommandsAfterBuild() const", asMETHOD(T, GetCommandsAfterBuild), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "bool GetModified()", asMETHOD(T, GetModified), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "void SetModified(bool)", asMETHOD(T, SetModified), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "void SetModified(bool) const", asMETHOD(T, SetModified), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void AddLinkerOption(const wxString& in)", asMETHOD(T, AddLinkerOption), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void AddLinkLib(const wxString& in)", asMETHOD(T, AddLinkLib), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void AddCompilerOption(const wxString& in)", asMETHOD(T, AddCompilerOption), asCALL_THISCALL);
@@ -276,7 +276,7 @@ template <class T> void Register_CompileOptionsBase(asIScriptEngine* engine, con
     engine->RegisterObjectMethod(cbU2C(classname), "void RemoveLibDir(const wxString& in)", asMETHOD(T, RemoveLibDir), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void RemoveCommandsBeforeBuild(const wxString& in)", asMETHOD(T, RemoveCommandsBeforeBuild), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void RemoveCommandsAfterBuild(const wxString& in)", asMETHOD(T, RemoveCommandsAfterBuild), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "bool GetAlwaysRunPostBuildSteps()", asMETHOD(T, GetAlwaysRunPostBuildSteps), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "bool GetAlwaysRunPostBuildSteps() const", asMETHOD(T, GetAlwaysRunPostBuildSteps), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void SetAlwaysRunPostBuildSteps(bool)", asMETHOD(T, SetAlwaysRunPostBuildSteps), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "bool SetVar(const wxString& in, const wxString& in, bool)", asMETHOD(T, SetVar), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "bool UnsetVar(const wxString& in)", asMETHOD(T, UnsetVar), asCALL_THISCALL);
@@ -292,7 +292,7 @@ template <class T> void Register_CompileTargetBase(asIScriptEngine* engine, cons
     // add CompileOptionsBase methods/properties
     Register_CompileOptionsBase<T>(engine, classname);
 
-    engine->RegisterObjectMethod(cbU2C(classname), "wxString& GetFilename()", asMETHOD(T, GetFilename), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "wxString& GetFilename() const", asMETHOD(T, GetFilename), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "wxString& GetTitle()", asMETHOD(T, GetTitle), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void SetTitle(const wxString& in)", asMETHOD(T, SetTitle), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void SetOutputFilename(const wxString& in)", asMETHOD(T, SetOutputFilename), asCALL_THISCALL);
@@ -302,19 +302,19 @@ template <class T> void Register_CompileTargetBase(asIScriptEngine* engine, cons
     engine->RegisterObjectMethod(cbU2C(classname), "int GetOptionRelation(int)", asMETHOD(T, GetOptionRelation), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void SetOptionRelation(int,int)", asMETHOD(T, SetOptionRelation), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "wxString GetWorkingDir()", asMETHOD(T, GetWorkingDir), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "wxString GetObjectOutput()", asMETHOD(T, GetObjectOutput), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "wxString GetObjectOutput() const", asMETHOD(T, GetObjectOutput), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "wxString GetDepsOutput()", asMETHOD(T, GetDepsOutput), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "wxString GetOutputFilename()", asMETHOD(T, GetOutputFilename), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "wxString SuggestOutputFilename()", asMETHOD(T, SuggestOutputFilename), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "wxString GetExecutableFilename()", asMETHOD(T, GetExecutableFilename), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "wxString GetExecutableFilename() const", asMETHOD(T, GetExecutableFilename), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "wxString GetDynamicLibFilename()", asMETHOD(T, GetDynamicLibFilename), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "wxString GetStaticLibFilename()", asMETHOD(T, GetStaticLibFilename), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "wxString GetBasePath()", asMETHOD(T, GetBasePath), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "wxString GetBasePath() const", asMETHOD(T, GetBasePath), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void SetTargetType(const int& in)", asMETHOD(T, SetTargetType), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "int& GetTargetType()", asMETHOD(T, GetTargetType), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "wxString& GetExecutionParameters()", asMETHOD(T, GetExecutionParameters), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "int& GetTargetType() const", asMETHOD(T, GetTargetType), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "wxString& GetExecutionParameters() const", asMETHOD(T, GetExecutionParameters), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void SetExecutionParameters(const wxString& in)", asMETHOD(T, SetExecutionParameters), asCALL_THISCALL);
-    engine->RegisterObjectMethod(cbU2C(classname), "wxString& GetHostApplication()", asMETHOD(T, GetHostApplication), asCALL_THISCALL);
+    engine->RegisterObjectMethod(cbU2C(classname), "wxString& GetHostApplication() const", asMETHOD(T, GetHostApplication), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void SetHostApplication(const wxString& in)", asMETHOD(T, SetHostApplication), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "void SetCompilerID(const wxString& in)", asMETHOD(T, SetCompilerID), asCALL_THISCALL);
     engine->RegisterObjectMethod(cbU2C(classname), "const wxString& GetCompilerID() const", asMETHOD(T, GetCompilerID), asCALL_THISCALL);

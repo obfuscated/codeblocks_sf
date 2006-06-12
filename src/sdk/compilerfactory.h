@@ -27,7 +27,7 @@ class DLLIMPORT CompilerFactory
 
         /// @return true if the specified compiler ID is valid, false if not.
         static bool IsValidCompilerID(const wxString& id){ return GetCompilerIndex(id) != -1; }
-        
+
         /// Register a supported (builtin) compiler.
         static void RegisterCompiler(Compiler* compiler);
         /// Register all user-defined compiler copies.

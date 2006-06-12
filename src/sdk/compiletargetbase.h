@@ -72,26 +72,26 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual OptionsRelation GetOptionRelation(OptionsRelationType type); ///< Read the target's options relation for \c type
         virtual void SetOptionRelation(OptionsRelationType type, OptionsRelation rel); ///< Set the target's options relation for \c type to \c rel
         virtual wxString GetWorkingDir(); ///< Read the target's working dir for execution (valid only for executable targets)
-        virtual wxString GetObjectOutput(); ///< Read the target's objects output dir
-        virtual wxString GetDepsOutput(); ///< Read the target's dependencies output dir
-        virtual wxString GetOutputFilename(); ///< Read the target's output filename
+        virtual wxString GetObjectOutput() const; ///< Read the target's objects output dir
+        virtual wxString GetDepsOutput() const; ///< Read the target's dependencies output dir
+        virtual wxString GetOutputFilename() ; ///< Read the target's output filename
         virtual wxString SuggestOutputFilename(); ///< Suggest a filename based on the target's type
-        virtual wxString GetExecutableFilename(); ///< Read the target's executable filename (produced if target type is ttExecutable)
+        virtual wxString GetExecutableFilename() const; ///< Read the target's executable filename (produced if target type is ttExecutable)
         virtual wxString GetDynamicLibFilename(); ///< Read the target's dynamic library filename (produced if target type is ttDynamicLib)
         virtual wxString GetDynamicLibDefFilename(); ///< Read the target's dynamic library definition file filename (produced if target type is ttDynamicLib)
         virtual wxString GetStaticLibFilename(); ///< Read the target's static library filename (produced if target type is ttStaticLib)
-        virtual wxString GetBasePath(); ///< Read the target's base path, e.g. if GetOutputFilename() returns "/usr/local/bin/xxx", base path will return "/usr/local/bin"
+        virtual wxString GetBasePath() const; ///< Read the target's base path, e.g. if GetOutputFilename() returns "/usr/local/bin/xxx", base path will return "/usr/local/bin"
         virtual void SetTargetType(const TargetType& pt); ///< Set the target's type to \c pt
-        virtual const TargetType& GetTargetType(); ///< Read the target's type
-        virtual const wxString& GetExecutionParameters(); ///< Read the target's execution parameters
+        virtual const TargetType& GetTargetType() const; ///< Read the target's type
+        virtual const wxString& GetExecutionParameters() const; ///< Read the target's execution parameters
         virtual void SetExecutionParameters(const wxString& params); ///< Set the target's execution parameters to \c params
-		virtual const wxString& GetHostApplication(); ///< Read the target's host application
+		virtual const wxString& GetHostApplication() const; ///< Read the target's host application
 		virtual void SetHostApplication(const wxString& app); ///< Set the target's host application to \c app
         virtual void SetCompilerID(const wxString& id); ///< Set the target's compiler
-        virtual const wxString& GetCompilerID(){ return m_CompilerId; } ///< Read the target's compiler
-        virtual wxString GetMakeCommandFor(MakeCommand cmd){ return m_MakeCommands[cmd]; } ///< Get the "make" command used for @c cmd
+        virtual const wxString& GetCompilerID() const { return m_CompilerId; } ///< Read the target's compiler
+        virtual wxString GetMakeCommandFor(MakeCommand cmd) const { return m_MakeCommands[cmd]; } ///< Get the "make" command used for @c cmd
         virtual void SetMakeCommandFor(MakeCommand cmd, const wxString& make); ///< Set the "make" command used for @c cmd
-        virtual bool MakeCommandsModified(){ return m_MakeCommandsModified; } ///< True if any of the "make" commands is modified.
+        virtual bool MakeCommandsModified() const { return m_MakeCommandsModified; } ///< True if any of the "make" commands is modified.
 	protected:
         friend class cbProject;
         wxString m_Filename;

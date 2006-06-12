@@ -39,8 +39,8 @@ class WizProjectPathPanel : public wxWizardPageSimple
 		WizProjectPathPanel(wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
 		~WizProjectPathPanel();
 
-		wxString GetPath();
-		wxString GetName();
+		wxString GetPath() const;
+		wxString GetName() const;
 
 	    void OnButton(wxCommandEvent& event);
 	    void OnPageChanging(wxWizardEvent& event);
@@ -58,15 +58,15 @@ class WizCompilerPanel : public wxWizardPageSimple
                         bool allowCompilerChange = true, bool allowConfigChange = true);
 		~WizCompilerPanel();
 
-		wxString GetCompilerID();
-		bool GetWantDebug();
-        wxString GetDebugName();
-        wxString GetDebugOutputDir();
-        wxString GetDebugObjectOutputDir();
-		bool GetWantRelease();
-        wxString GetReleaseName();
-        wxString GetReleaseOutputDir();
-        wxString GetReleaseObjectOutputDir();
+		wxString GetCompilerID() const;
+		bool GetWantDebug() const;
+        wxString GetDebugName() const;
+        wxString GetDebugOutputDir() const;
+        wxString GetDebugObjectOutputDir() const;
+		bool GetWantRelease() const;
+        wxString GetReleaseName() const;
+        wxString GetReleaseOutputDir() const;
+        wxString GetReleaseObjectOutputDir() const;
 
 	    void OnPageChanging(wxWizardEvent& event);
     protected:

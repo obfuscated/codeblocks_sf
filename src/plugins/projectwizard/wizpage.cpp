@@ -123,13 +123,13 @@ WizProjectPathPanel::~WizProjectPathPanel()
 }
 
 //------------------------------------------------------------------------------
-wxString WizProjectPathPanel::GetPath()
+wxString WizProjectPathPanel::GetPath() const
 {
     return AppendPathSepIfNeeded(m_pProjectPathPanel->GetPath());
 }
 
 //------------------------------------------------------------------------------
-wxString WizProjectPathPanel::GetName()
+wxString WizProjectPathPanel::GetName() const
 {
     return m_pProjectPathPanel->GetName();
 }
@@ -246,7 +246,7 @@ WizCompilerPanel::~WizCompilerPanel()
 }
 
 //------------------------------------------------------------------------------
-wxString WizCompilerPanel::GetCompilerID()
+wxString WizCompilerPanel::GetCompilerID() const
 {
     Compiler* compiler = CompilerFactory::GetCompilerByName(m_pCompilerPanel->GetCompilerCombo()->GetStringSelection());
     if (compiler)
@@ -255,49 +255,49 @@ wxString WizCompilerPanel::GetCompilerID()
 }
 
 //------------------------------------------------------------------------------
-bool WizCompilerPanel::GetWantDebug()
+bool WizCompilerPanel::GetWantDebug() const
 {
     return m_pCompilerPanel->GetWantDebug();
 }
 
 //------------------------------------------------------------------------------
-wxString WizCompilerPanel::GetDebugName()
+wxString WizCompilerPanel::GetDebugName() const
 {
     return m_pCompilerPanel->GetDebugName();
 }
 
 //------------------------------------------------------------------------------
-wxString WizCompilerPanel::GetDebugOutputDir()
+wxString WizCompilerPanel::GetDebugOutputDir() const
 {
     return AppendPathSepIfNeeded(m_pCompilerPanel->GetDebugOutputDir());
 }
 
 //------------------------------------------------------------------------------
-wxString WizCompilerPanel::GetDebugObjectOutputDir()
+wxString WizCompilerPanel::GetDebugObjectOutputDir() const
 {
     return AppendPathSepIfNeeded(m_pCompilerPanel->GetDebugObjectOutputDir());
 }
 
 //------------------------------------------------------------------------------
-bool WizCompilerPanel::GetWantRelease()
+bool WizCompilerPanel::GetWantRelease() const
 {
     return m_pCompilerPanel->GetWantRelease();
 }
 
 //------------------------------------------------------------------------------
-wxString WizCompilerPanel::GetReleaseName()
+wxString WizCompilerPanel::GetReleaseName() const
 {
     return m_pCompilerPanel->GetReleaseName();
 }
 
 //------------------------------------------------------------------------------
-wxString WizCompilerPanel::GetReleaseOutputDir()
+wxString WizCompilerPanel::GetReleaseOutputDir() const
 {
     return AppendPathSepIfNeeded(m_pCompilerPanel->GetReleaseOutputDir());
 }
 
 //------------------------------------------------------------------------------
-wxString WizCompilerPanel::GetReleaseObjectOutputDir()
+wxString WizCompilerPanel::GetReleaseObjectOutputDir() const
 {
     return AppendPathSepIfNeeded(m_pCompilerPanel->GetReleaseObjectOutputDir());
 }
