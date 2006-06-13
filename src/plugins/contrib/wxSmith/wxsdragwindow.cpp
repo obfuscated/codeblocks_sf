@@ -81,6 +81,8 @@ void wxsDragWindow::OnMouse(wxMouseEvent& event)
     wxsWidget* NewDragWidget = NULL;
     int MouseX = event.GetX();
     int MouseY = event.GetY();
+    bool LeftDown = event.LeftDown();
+    LeftDown = ! !LeftDown;
     wxsWidget* UnderCursor = FindWidgetAtPos(MouseX,MouseY,RootWidget);
 
     // If we're out of window
@@ -761,6 +763,10 @@ void wxsDragWindow::UpdateDragPointData(wxsWidget* Widget,DragPointData** Widget
         }
 
         WidgetPoints[i]->KillMe = false;
+    }
+
+    for ( int i=0; i<DragBoxTypeCnt; ++i )
+    {
         memcpy(WidgetPoints[i]->WidgetPoints,WidgetPoints,sizeof(WidgetPoints[0]->WidgetPoints));
     }
 }
@@ -850,14 +856,14 @@ wxsWidget* wxsDragWindow::FindWidgetAtPos(int PosX,int PosY,wxsWidget* Widget)
     ScreenToClient(&WdgX,&WdgY);
     Widget->GetPreview()->GetSize(&WdgSX,&WdgSY);
 
+    for ( int i=0; i<Widget->GetChildCount(); ++i )
+    {
+        wxsWidget* Wdg = FindWidgetAtPos(PosX,PosY,Widget->GetChild(i));
+        if ( Wdg ) return Wdg;
+    }
+
     if ( PosX >= WdgX && PosY >= WdgY && PosX < WdgX + WdgSX && PosY < WdgY + WdgSY )
     {
-        for ( int i=0; i<Widget->GetChildCount(); ++i )
-        {
-            wxsWidget* Wdg = FindWidgetAtPos(PosX,PosY,Widget->GetChild(i));
-            if ( Wdg ) return Wdg;
-        }
-
     	return Widget;
     }
 
