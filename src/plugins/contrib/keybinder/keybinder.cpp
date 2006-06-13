@@ -9,6 +9,9 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #define NOT !
+#if defined(kbLOGGING)
+    #include "debugging.h"
+#endif
 
 #ifdef __GNUG__
 #pragma implementation "keybinder.h"
@@ -796,7 +799,7 @@ void wxKeyBinder::UpdateAllCmd(wxMenuBar* pMnuBar) {     //v0.4.17
     //v 0.4.17 //pecan 2006/4/22
     // Menu items used to be updated by referencing the keybinder array info as source.
     // But this missed duplicate menu items, updating only the first duplicate.
-    // So.. search, referencing the menu items as source, and update.
+    // So.. search, referencing the menu items as source, and update.;
 
     size_t nMnuKnt = pMnuBar->GetMenuCount();
     for (size_t i=0; i<nMnuKnt ;i++ )
@@ -879,6 +882,7 @@ void wxKeyBinder::Attach(wxWindow *p)
 
 	// we need to update our commands...
 	//-UpdateAllCmd(); This loop is executed for every attach. Stop it!
+	//-UpdateAllCmd(wxMenuCmd::m_pMenuBar); //This loop is executed for every attach. Stop it!
 }
 
 // ----------------------------------------------------------------------------

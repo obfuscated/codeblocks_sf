@@ -48,24 +48,16 @@ cbKeyBinder::cbKeyBinder()
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts");
-	m_PluginInfo.version = _T("0.4.17 (2006/04/23)");
+	m_PluginInfo.version = _T("0.4.19 (2006/06/14)");
 	m_PluginInfo.description <<_("\nCode::Blocks KeyBinder (2006/04/22)\n\n")
                             << _("NOTE: Ctrl+Alt+{UP|DOWN} is unsupported.\n\n");
-////                            << _("Mutiple occurances of a key definition ")
-////                            << _("such as Ctrl-Shift-N in menu items \"File/New/Project...\" and ")
-////                            << _("\"Project/New Project...\" cannot be over-ridden ")
-////                            << _("unless the new key assignment occurs prior to the ")
-////                            << _("second definition. \n\nFor example: Ctrl-Shift-N can only be ")
-////                            << _("reassigned to a Menu item prior to \"Project/New Project\", ")
-////                            << _("and it must be reassigned in the first position of the ")
-////                            << _("three keys assignable to a menu item. ")
-////                            << _("\n");
 	m_PluginInfo.author = _T("Pecan Heber");
 	m_PluginInfo.authorEmail = _T("");
 	m_PluginInfo.authorWebsite = _T("");
 	m_PluginInfo.thanksTo << _("Thanks to...\n\n")
                         <<_("wxKeyBinder authors:\n")
                         <<_("Aleksandras Gluchovas,\nFrancesco Montorsi,\n")
+                        <<_("\twxWidgets, \n")
                         <<_("\tand \n")
                         <<_("The Code::Blocks team");
 	m_PluginInfo.license = LICENSE_GPL;
@@ -122,7 +114,7 @@ void cbKeyBinder::OnAttach()
     //wxKeyBinder::usableWindows.Add(_T("*"));                 //+v0.4.4
    #endif
     wxKeyBinder::usableWindows.Add(_T("sciwindow"));           //+v0.4.4
-    wxKeyBinder::usableWindows.Add(_T("flat notebook"));       //+v0.4.4
+    wxKeyBinder::usableWindows.Add(_T("flatnotebook"));       //+v0.4.4
     //wxKeyBinder::usableWindows.Add(_T("panel"));             //+v0.4.4
     //wxKeyBinder::usableWindows.Add(_T("list"));              //+v0.4.4
     //wxKeyBinder::usableWindows.Add(_T("listctrl"));          //+v0.4.4
@@ -643,12 +635,80 @@ void cbKeyBinder::OnProjectFileRemoved(CodeBlocksEvent& event)
     event.Skip();
 }
 // ----------------------------------------------------------------------------
+void cbKeyBinder::AttachEditor(wxWindow* pWindow)
+// ----------------------------------------------------------------------------
+{
+    if (m_IsAttached)
+     {
+         wxWindow* thisEditor = pWindow->FindWindowByName(_T("SCIwindow"),pWindow);
+
+         // find editor window the Code::Blocks way
+         // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
+//         cbEditor* ed = 0;
+//         EditorBase* eb = event.GetEditor();
+//         if (eb && eb->IsBuiltinEditor())
+//          {  ed = static_cast<cbEditor*>(eb);
+//             thisEditor = ed->GetControl();
+//          }
+
+        //skip editors that we already have
+        if ( thisEditor && (wxNOT_FOUND == m_EditorPtrs.Index(thisEditor)) )
+         {
+            //add editor to our array and push a keyBinder event handler
+            m_EditorPtrs.Add(thisEditor);
+            //Rebind keys to newly opened windows
+            m_pKeyProfArr->GetSelProfile()->Attach(thisEditor);
+            #if LOGGING
+             LOGIT(_T("cbKB:AttachEditor %s %p"), thisEditor->GetTitle().c_str(), thisEditor);
+            #endif
+         }
+     }
+}
+// ----------------------------------------------------------------------------
+void cbKeyBinder::DetachEditor(wxWindow* pWindow)
+// ----------------------------------------------------------------------------
+{
+    if (m_IsAttached)
+     {
+
+         wxWindow* thisWindow = pWindow;
+
+         // Cannot use GetBuiltinActiveEditor() because the active Editor is NOT the
+         // one being closed!!
+         // wxWindow* thisEditor
+         //  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
+
+         //find the cbStyledTextCtrl wxScintilla window
+         wxWindow*
+           thisEditor = thisWindow->FindWindowByName(_T("SCIwindow"), thisWindow);
+
+         // find editor window the Code::Blocks way
+         // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
+//         cbEditor* ed = 0;
+//         EditorBase* eb = event.GetEditor();
+//         if (eb && eb->IsBuiltinEditor())
+//          {  ed = static_cast<cbEditor*>(eb);
+//             thisEditor = ed->GetControl();
+//          }
+
+        if ( thisEditor && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND) )
+         {
+            m_pKeyProfArr->GetSelProfile()->Detach(thisEditor);
+            m_EditorPtrs.Remove(thisEditor);
+            #if LOGGING
+             LOGIT(_T("cbKB:DetachEditor %s %p"), thisEditor->GetTitle().c_str(), thisEditor);
+            #endif
+         }//if
+     }
+
+}//DetachEditor
+// ----------------------------------------------------------------------------
 void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
     if (m_IsAttached)
      {
-         LOGIT(_T("cbKB:OnEditorOpen()"));
+         //LOGIT(_T("cbKB:OnEditorOpen()"));
         if (!m_bBound)
          {
             OnLoad(); event.Skip(); return;
@@ -708,8 +768,6 @@ void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
              thisEditor = ed->GetControl();
           }
 
-
-
         if ( thisEditor && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND) )
          {
             m_pKeyProfArr->GetSelProfile()->Detach(thisEditor);
@@ -739,7 +797,77 @@ void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
          LOGIT(_T("cbKeyBinder:End initial Key Load"));
         #endif
      }
+    // Check creation of windows that have no notification (ie., wxSplitWindows)
+    Connect( wxEVT_CREATE,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &cbKeyBinder::OnWindowCreateEvent);
+
+    // Check Destroyed windows that have no notification (ie., wxSplitWindows)
+    Connect( wxEVT_DESTROY,
+        (wxObjectEventFunction) (wxEventFunction)
+        (wxCommandEventFunction) &cbKeyBinder::OnWindowDestroyEvent);
+
     event.Skip(); //+v0.4.1
     return;
 }//OnAppStartupDone
+// ----------------------------------------------------------------------------
+void cbKeyBinder::OnWindowCreateEvent(wxEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // wxEVT_CREATE entry
+    // Have to do this for split windows since CodeBlocks does not have
+    // events when opening/closing split windows
+
+    // Attach a split window (or any other window)
+    if ( m_bBound )
+    {
+        wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
+        cbEditor* ed = 0;
+        cbStyledTextCtrl* p_cbStyledTextCtrl = 0;
+        cbStyledTextCtrl* pLeftSplitWin = 0;
+        cbStyledTextCtrl* pRightSplitWin = 0;
+        ed  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        if (ed)
+        {   p_cbStyledTextCtrl = ed->GetControl();
+            pLeftSplitWin = ed->GetLeftSplitViewControl();
+            pRightSplitWin = ed->GetRightSplitViewControl();
+            //Has this window been split?
+            //**This is a temporary hack until some cbEvents are defined**
+            if ( pWindow && (pRightSplitWin eq 0) )
+            {
+                //-if (pRightSplitWin eq pWindow)
+                //-{    Attach(pRightSplitWin);
+                if (pWindow->GetParent() eq ed)
+                {    AttachEditor(pWindow);
+                    LOGIT( _T("OnWindowCreateEvent Attaching:%p"), pWindow );
+                }
+            }
+        }
+    }//if m_bBound...
+
+    event.Skip();
+}//OnWindowCreateEvent
+// ----------------------------------------------------------------------------
+void cbKeyBinder::OnWindowDestroyEvent(wxEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // wxEVT_DESTROY entry
+    // This routine simply clears the memorized Editor pointers
+    // that dont get cleared by OnEditorClose, which doesnt get
+    // entered for split windows. CodeBlocks doesnt yet have events
+    // when opening/closing split windows.
+
+    wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
+
+    //-Detach(pWindow); causes crash
+    if ( (pWindow) && (m_EditorPtrs.Index(pWindow) != wxNOT_FOUND))
+    {
+        m_EditorPtrs.Remove(pWindow);
+        //-DetachEditor(pWindow); causes crash
+        #ifdef LOGGING
+         LOGIT( _T("OnWindowDestroyEven Remove %p"), pWindow);
+        #endif //LOGGING
+    }
+    event.Skip();
+}//OnWindowClose
 // ----------------------------------------------------------------------------

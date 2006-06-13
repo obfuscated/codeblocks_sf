@@ -102,6 +102,10 @@ class cbKeyBinder : public cbPlugin
         void OnEditorOpen(CodeBlocksEvent& event);
         void OnEditorClose(CodeBlocksEvent& event);
         void OnAppStartupDone(CodeBlocksEvent& event);
+        void AttachEditor(wxWindow* pEditor);
+        void OnWindowCreateEvent(wxEvent& event);
+        void OnWindowDestroyEvent(wxEvent& event);
+        void DetachEditor(wxWindow* pWindow);
 
         wxWindow* pcbWindow;            //main app window
         wxArrayPtrVoid m_EditorPtrs;    //attached editor windows
@@ -408,11 +412,26 @@ CB_DECLARE_PLUGIN();
 //          solve the problem.
 // -----------------------------------------------------------------------------
 //  fixed   2006/04/22 v0.4.17
-//          Appease linux gcc 4.0.2 compiler by ptting extra ()'s
+//          Appease linux gcc 4.0.2 compiler by putting extra ()'s
 //          around keybinder.cpp 2219 if(assignment statement)
 //          Removed RC2 code and references
 //          Fixed duplicate menu items not being updated by using the menu bar
 //          as the source to search the keybinder array rather than the reverse.
 // -----------------------------------------------------------------------------
 //  commit  2006/04/23 v0.4.17
+// -----------------------------------------------------------------------------
+//  fixed   2006/06/12 v0.4.19
+//          Added EVT_CREATE & EVT_DESTROY to catch wxSplitterWindow activity.
+//          CodeBlocks provided no events for split/unsplit windows
+// -----------------------------------------------------------------------------
+//  closed  2006/06/12 opened    2006/06/12
+//          Duplicate key problem again. On restart, the second duplicate menu
+//          item takes on its default value. eg., File/New Project=Ctrl+Alt+5,
+//          but Project/New Project=Ctrl+Shift+N. I suspect because there is no
+//          entry in the key file for the duplicate menu item.
+//          A: Caused by misspelled "flatnotebook". We need at least one attach
+//          to take place for UpdateAllCmd(pMenuBar) to update the menu items.
+// -----------------------------------------------------------------------------
+//  commit  2006/06/14 v0.4.19
+// -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------

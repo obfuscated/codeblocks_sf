@@ -8,8 +8,10 @@
 #define neq !=
 
 
-#define LOGGING 0
-
+//#define LOGGING 0
+#if defined(kbLOGGING)
+    #define LOGGING 1
+#endif
 #define wxLogMessage wxLogDebug
 #define LOGIT wxLogDebug
 
