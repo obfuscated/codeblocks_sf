@@ -36,22 +36,22 @@ class wxsWindowEditor : public wxsEditor
 		virtual bool Save();
 
 		/** Returns true if resource is modified, false otherwise */
-		virtual bool GetModified();
+		virtual bool GetModified() const;
 
 		/** Set the resources's modification state to \c modified. */
 		virtual void SetModified(bool modified);
 
 		/** Checking if can Undo */
-		virtual bool CanUndo();
+		virtual bool CanUndo() const;
 
 		/** Ckecing if can Redo */
-		virtual bool CanRedo();
+		virtual bool CanRedo() const;
 
 		/** Checking if we can cut */
-		virtual bool HasSelection();
+		virtual bool HasSelection() const;
 
 		/** Checking if we can paste */
-		virtual bool CanPaste();
+		virtual bool CanPaste() const;
 
 		/** Undoing */
 		virtual void Undo();
@@ -102,6 +102,9 @@ class wxsWindowEditor : public wxsEditor
 
         /** Getting wxsWindowRes pointer to currently edited resource */
         inline wxsWindowRes* GetWinRes() { return (wxsWindowRes*)GetResource(); }
+
+        /** Getting const wxsWindowRes pointer to currently edited resource */
+        inline const wxsWindowRes* GetWinResConst() const { return (const wxsWindowRes*)GetResourceConst(); }
 
         /** Getting vector of selected widges. If any-level parent of widget
          *  is also selected, widget is skipped.

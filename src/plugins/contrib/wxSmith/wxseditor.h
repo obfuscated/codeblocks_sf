@@ -19,6 +19,9 @@ class wxsEditor : public EditorBase
 		/** Getting current resouce */
 		inline wxsResource* GetResource() { return Resource; }
 
+		/** Getting current resouce as const pointer */
+		inline const wxsResource* GetResourceConst() const { return Resource; }
+
 
     protected:
 

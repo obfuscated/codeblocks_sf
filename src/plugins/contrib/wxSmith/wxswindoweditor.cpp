@@ -266,9 +266,9 @@ bool wxsWindowEditor::Save()
 	return true;
 }
 
-bool wxsWindowEditor::GetModified()
+bool wxsWindowEditor::GetModified() const
 {
-	return GetWinRes()->GetModified();
+	return GetWinResConst()->GetModified();
 }
 
 void wxsWindowEditor::SetModified(bool modified)
@@ -284,12 +284,12 @@ void wxsWindowEditor::SetModified(bool modified)
     }
 }
 
-bool wxsWindowEditor::CanUndo()
+bool wxsWindowEditor::CanUndo() const
 {
 	return UndoBuff->CanUndo();
 }
 
-bool wxsWindowEditor::CanRedo()
+bool wxsWindowEditor::CanRedo() const
 {
 	return UndoBuff->CanRedo();
 }
@@ -320,12 +320,12 @@ void wxsWindowEditor::Redo()
 	SetModified(UndoBuff->IsModified());
 }
 
-bool wxsWindowEditor::HasSelection()
+bool wxsWindowEditor::HasSelection() const
 {
     return DragWnd && DragWnd->GetMultipleSelCount();
 }
 
-bool wxsWindowEditor::CanPaste()
+bool wxsWindowEditor::CanPaste() const
 {
     if ( !wxTheClipboard->Open() ) return false;
     bool Res = wxTheClipboard->IsSupported(wxsDF_WIDGET);

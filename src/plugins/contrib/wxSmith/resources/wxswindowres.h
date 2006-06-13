@@ -117,7 +117,7 @@ class wxsWindowRes : public wxsResource
         TiXmlDocument* GenerateXrc();
 
 		/** Returns true if resource is modified, false otherwise */
-		virtual bool GetModified() { return Modified; }
+		virtual bool GetModified() const { return Modified; }
 
 		/** Set the resources's modification state to \c modified.
 		 *
