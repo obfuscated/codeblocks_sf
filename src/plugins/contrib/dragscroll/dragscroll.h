@@ -38,18 +38,22 @@
 #include <wx/listctrl.h>
 #include <wx/event.h>
 #include <wx/fileconf.h>
+#include <wx/splitter.h>
 
 // ---------------------------------------------------------------------------
 //  Define RC2 for codeblocks V1.0RC2 or RC3 for HEAD
 // ---------------------------------------------------------------------------
-#define RC2 0
-#define RC3 1
+//#define RC2 0
+//#define RC3 1
 
 // ---------------------------------------------------------------------------
 //  Logging / debugging
 // ---------------------------------------------------------------------------
 #define eq ==
-#define LOGGING 0
+
+#if defined(dsLOGGING)
+    #define LOGGING 1
+#endif
 //debugging control
 #define LOGIT wxLogDebug
 #if LOGGING
@@ -81,6 +85,7 @@ class cbDragScroll : public cbPlugin
     static cbDragScroll* pDragScroll;
 	protected:
         cbConfigurationPanel* CreatecbCfgPanel(wxWindow* parent);
+
     public:
         void OnDialogDone(cbDragScrollCfg* pdlg);
 
@@ -104,11 +109,16 @@ class cbDragScroll : public cbPlugin
         void OnDoConfigRequests(wxUpdateUIEvent& event);
 
         bool IsAttachedTo(wxWindow* p);
-        void Attach(wxWindow *p);
+        //void Attach(wxWindow *p);
         void AttachRecursively(wxWindow *p);
+        void Detach(wxWindow* thisEditor);
         void DetachAll();
+        void Attach(wxWindow *p);
+
         wxWindow* winExists(wxWindow *parent);
         wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
+        void OnWindowOpen(wxEvent& event);
+        void OnWindowClose(wxEvent& event);
 
         wxString        m_CfgFilenameStr;
         wxArrayString   m_UsableWindows;
@@ -291,6 +301,15 @@ CB_DECLARE_PLUGIN();
 //          to mouse handler even though main window didnt have focus
 // ----------------------------------------------------------------------------
 //  commit  v0.23 2006/04/25
+// ----------------------------------------------------------------------------
+//  closed  opened    2006/06/11
+//          split windows are unrecognized because no event is issued
+//          that a split has taken place
+//          Had to add wxEVT_CREATE and wxEVT_DESTROY event sinks to catch
+//          split window open/close. wxWindows nor CodeBlocks has events
+//          usable for the purpose.
+// ----------------------------------------------------------------------------
+//  commit  v0.24   2006/06/
 // ----------------------------------------------------------------------------
 #endif // DRAGSCROLL_H
 
