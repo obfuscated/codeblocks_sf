@@ -66,33 +66,33 @@ const wxString g_EditorModified = _T("*");
 #define DEBUG_STYLE 		wxSCI_MARK_ARROW
 
 BEGIN_EVENT_TABLE(cbStyledTextCtrl, wxScintilla)
-	EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
+    EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
 END_EVENT_TABLE()
 
 cbStyledTextCtrl::cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos, const wxSize& size, long style)
-	: wxScintilla(pParent, id, pos, size, style),
-	m_pParent(pParent)
+    : wxScintilla(pParent, id, pos, size, style),
+    m_pParent(pParent)
 {
-	//ctor
+    //ctor
 }
 
 cbStyledTextCtrl::~cbStyledTextCtrl()
 {
-	//dtor
+    //dtor
 }
 
 // events
 
 void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
 {
-	if (m_pParent)
-	{
-	    /*  or use noeditor to handle "contect menu" key?
-	     */
-	    const bool is_right_click = event.GetPosition()!=wxDefaultPosition;
-	    const wxPoint mp(is_right_click ? event.GetPosition() : wxDefaultPosition);
-		reinterpret_cast<cbEditor*>(m_pParent)->DisplayContextMenu(mp,mtEditorManager); //pecan 2006/03/22
-	}
+    if (m_pParent)
+    {
+        /*  or use noeditor to handle "contect menu" key?
+         */
+        const bool is_right_click = event.GetPosition()!=wxDefaultPosition;
+        const wxPoint mp(is_right_click ? event.GetPosition() : wxDefaultPosition);
+        reinterpret_cast<cbEditor*>(m_pParent)->DisplayContextMenu(mp,mtEditorManager); //pecan 2006/03/22
+    }
 }
 
 /* This struct holds private data for the cbEditor class.
@@ -176,11 +176,11 @@ struct cbEditorInternalData
                             style == wxSCI_C_COMMENTLINEDOC;
             if (c == _T('\n'))
             {
-            	count++;
-            	foundlf = true;
+                count++;
+                foundlf = true;
             }
             else if (c == _T('\r') && !foundlf)
-            	count++;
+                count++;
             else
                 foundlf = false;
             if (count > 1) return 0; // Don't over-indent
@@ -218,7 +218,8 @@ struct cbEditorInternalData
         // The following code was adapted from the SciTE sourcecode
 
         int maxLines = control->GetLineCount();
-        for (int line = 0; line < maxLines; line++) {
+        for (int line = 0; line < maxLines; line++)
+        {
             int lineStart = control->PositionFromLine(line);
             int lineEnd = control->GetLineEndPosition(line);
             int i = lineEnd-1;
@@ -228,7 +229,8 @@ struct cbEditorInternalData
                 i--;
                 ch = (wxChar)(control->GetCharAt(i));
             }
-            if (i < (lineEnd-1)) {
+            if (i < (lineEnd-1))
+            {
                 control->SetTargetStart(i+1);
                 control->SetTargetEnd(lineEnd);
                 control->ReplaceTarget(_T(""));
@@ -239,7 +241,7 @@ struct cbEditorInternalData
     /** Add extra blank line to the file */
     void EnsureFinalLineEnd()
     {
-    	cbStyledTextCtrl* control = m_pOwner->GetControl();
+        cbStyledTextCtrl* control = m_pOwner->GetControl();
         // The following code was adapted from the SciTE sourcecode
         int maxLines = control->GetLineCount();
         int enddoc = control->PositionFromLine(maxLines);
@@ -250,9 +252,9 @@ struct cbEditorInternalData
     /** Make sure all the lines end with the same EOL mode */
     void EnsureConsistentLineEnds()
     {
-    	cbStyledTextCtrl* control = m_pOwner->GetControl();
+        cbStyledTextCtrl* control = m_pOwner->GetControl();
         // The following code was adapted from the SciTE sourcecode
-    	control->ConvertEOLs(control->GetEOLMode());
+        control->ConvertEOLs(control->GetEOLMode());
     }
 
     /** Set line number column width */
@@ -345,33 +347,33 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
     EVT_CLOSE(cbEditor::OnClose)
     // we got dynamic events; look in CreateEditor()
 
-	EVT_MENU(idUndo, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idRedo, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idCut, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idCopy, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idPaste, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idDelete, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idSelectAll, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idSwapHeaderSource, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idBookmarksToggle, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idBookmarksPrevious, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idBookmarksNext, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idFoldingFoldAll, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idFoldingUnfoldAll, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idFoldingToggleAll, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idFoldingFoldCurrent, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idFoldingUnfoldCurrent, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idFoldingToggleCurrent, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idConfigureEditor, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idProperties, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idBookmarkAdd, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idBookmarkRemove, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idBreakpointAdd, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idBreakpointEdit, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idBreakpointRemove, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idSplitHorz, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idSplitVert, cbEditor::OnContextMenuEntry)
-	EVT_MENU(idUnsplit, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idUndo, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idRedo, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idCut, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idCopy, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idPaste, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idDelete, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idSelectAll, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idSwapHeaderSource, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idBookmarksToggle, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idBookmarksPrevious, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idBookmarksNext, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idFoldingFoldAll, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idFoldingUnfoldAll, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idFoldingToggleAll, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idFoldingFoldCurrent, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idFoldingUnfoldCurrent, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idFoldingToggleCurrent, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idConfigureEditor, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idProperties, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idBookmarkAdd, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idBookmarkRemove, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idBreakpointAdd, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idBreakpointEdit, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idBreakpointRemove, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idSplitHorz, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idSplitVert, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idUnsplit, cbEditor::OnContextMenuEntry)
 
     EVT_SCI_ZOOM(-1, cbEditor::OnZoom)
     EVT_SCI_ZOOM(-1, cbEditor::OnZoom)
@@ -383,13 +385,13 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
     : EditorBase(parent, filename),
     m_pSplitter(0),
     m_pSizer(0),
-	m_pControl(0),
-	m_pControl2(0),
-	m_Modified(false),
-	m_Index(-1),
-	m_pProjectFile(0L),
-	m_pTheme(theme),
-	m_lang(HL_AUTO)
+    m_pControl(0),
+    m_pControl2(0),
+    m_Modified(false),
+    m_Index(-1),
+    m_pProjectFile(0L),
+    m_pTheme(theme),
+    m_lang(HL_AUTO)
 {
     // first thing to do!
     // if we add more constructors in the future, don't forget to set this!
@@ -405,18 +407,18 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
     // initialize left control (unsplit state)
     Freeze();
     m_pSizer = new wxBoxSizer(wxVERTICAL);
-	m_pControl = CreateEditor();
+    m_pControl = CreateEditor();
     m_pSizer->Add(m_pControl, 1, wxEXPAND);
     SetSizer(m_pSizer);
     SetAutoLayout(true);
-	m_pSizer->Fit(this);
-	m_pSizer->SetSizeHints(this);
+    m_pSizer->Fit(this);
+    m_pSizer->SetSizeHints(this);
     m_pControl->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());
     Thaw();
 
-	SetEditorStyleBeforeFileOpen();
-	m_IsOK = Open();
-	SetEditorStyleAfterFileOpen();
+    SetEditorStyleBeforeFileOpen();
+    m_IsOK = Open();
+    SetEditorStyleAfterFileOpen();
 
     // if !m_IsOK then it's a new file, so set the modified flag ON
     if (!m_IsOK && filename.IsEmpty())
@@ -429,31 +431,31 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
 cbEditor::~cbEditor()
 {
     SetSizer(0);
-	NotifyPlugins(cbEVT_EDITOR_CLOSE, 0, m_Filename);
-	UpdateProjectFile();
-	if (m_pControl)
-	{
-		if (m_pProjectFile)
-			m_pProjectFile->editorOpen = false;
+    NotifyPlugins(cbEVT_EDITOR_CLOSE, 0, m_Filename);
+    UpdateProjectFile();
+    if (m_pControl)
+    {
+        if (m_pProjectFile)
+            m_pProjectFile->editorOpen = false;
         m_pControl->Destroy();
         m_pControl = 0;
-	}
-	DestroySplitView();
-	delete m_pData;
+    }
+    DestroySplitView();
+    delete m_pData;
 }
 
 void cbEditor::NotifyPlugins(wxEventType type, int intArg, const wxString& strArg, int xArg, int yArg)
 {
     if (!Manager::Get()->GetPluginManager())
         return; // no plugin manager! app shuting down?
-	CodeBlocksEvent event(type);
-	event.SetEditor(this);
-	event.SetInt(intArg);
-	event.SetString(strArg);
-	event.SetX(xArg);
-	event.SetY(yArg);
-	//wxPostEvent(Manager::Get()->GetAppWindow(), event);
-	Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+    CodeBlocksEvent event(type);
+    event.SetEditor(this);
+    event.SetInt(intArg);
+    event.SetString(strArg);
+    event.SetX(xArg);
+    event.SetY(yArg);
+    //wxPostEvent(Manager::Get()->GetAppWindow(), event);
+    Manager::Get()->GetPluginManager()->NotifyPlugins(event);
 }
 
 void cbEditor::DestroySplitView()
@@ -496,8 +498,8 @@ void cbEditor::SetModified(bool modified)
         {
             m_pControl->SetSavePoint();
         }
-		SetEditorTitle(m_Shortname);
-		NotifyPlugins(cbEVT_EDITOR_MODIFIED);
+        SetEditorTitle(m_Shortname);
+        NotifyPlugins(cbEVT_EDITOR_MODIFIED);
         Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree();
     }
     // visual state
@@ -507,43 +509,43 @@ void cbEditor::SetModified(bool modified)
 
 void cbEditor::SetEditorTitle(const wxString& title)
 {
-	if(m_Modified)
-	{
-		SetTitle(g_EditorModified + title);
-	}
-	else
-	{
-		SetTitle(title);
-	}
+    if(m_Modified)
+    {
+        SetTitle(g_EditorModified + title);
+    }
+    else
+    {
+        SetTitle(title);
+    }
 }
 
 void cbEditor::SetProjectFile(ProjectFile* project_file, bool preserve_modified)
 {
-	if (m_pProjectFile == project_file)
-		return; // we 've been here before ;)
+    if (m_pProjectFile == project_file)
+        return; // we 've been here before ;)
 
-	bool wasmodified = false;
-	if(preserve_modified)
+    bool wasmodified = false;
+    if(preserve_modified)
         wasmodified = GetModified();
 
-	m_pProjectFile = project_file;
-	if (m_pProjectFile)
-	{
+    m_pProjectFile = project_file;
+    if (m_pProjectFile)
+    {
         // update our filename
         m_Filename = UnixFilename(project_file->file.GetFullPath());
 
-		m_pControl->GotoPos(m_pProjectFile->editorPos);
-		m_pControl->ScrollToLine(m_pProjectFile->editorTopLine);
-		m_pControl->ScrollToColumn(0);
+        m_pControl->GotoPos(m_pProjectFile->editorPos);
+        m_pControl->ScrollToLine(m_pProjectFile->editorTopLine);
+        m_pControl->ScrollToColumn(0);
 
-		m_pProjectFile->editorOpen = true;
+        m_pProjectFile->editorOpen = true;
 
-		if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/tab_text_relative"), true))
+        if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/tab_text_relative"), true))
             m_Shortname = m_pProjectFile->relativeToCommonTopLevelPath;
         else
             m_Shortname = m_pProjectFile->file.GetFullName();
-		SetEditorTitle(m_Shortname);
-	}
+        SetEditorTitle(m_Shortname);
+    }
 
     if (!wxFileExists(m_Filename))
         m_pProjectFile->SetFileState(fvsMissing);
@@ -551,13 +553,13 @@ void cbEditor::SetProjectFile(ProjectFile* project_file, bool preserve_modified)
         m_pProjectFile->SetFileState(fvsReadOnly);
 
 #if 0
-	wxString dbg;
-	dbg << _T("[ed] Filename: ") << GetFilename() << _T('\n');
-	dbg << _T("[ed] Short name: ") << GetShortName() << _T('\n');
-	dbg << _T("[ed] Modified: ") << GetModified() << _T('\n');
-	dbg << _T("[ed] Project: ") << ((m_pProjectFile && m_pProjectFile->project) ? m_pProjectFile->project->GetTitle() : _T("unknown")) << _T('\n');
-	dbg << _T("[ed] Project file: ") << (m_pProjectFile ? m_pProjectFile->relativeFilename : _T("unknown")) << _T('\n');
-	Manager::Get()->GetMessageManager()->DebugLog(dbg);
+    wxString dbg;
+    dbg << _T("[ed] Filename: ") << GetFilename() << _T('\n');
+    dbg << _T("[ed] Short name: ") << GetShortName() << _T('\n');
+    dbg << _T("[ed] Modified: ") << GetModified() << _T('\n');
+    dbg << _T("[ed] Project: ") << ((m_pProjectFile && m_pProjectFile->project) ? m_pProjectFile->project->GetTitle() : _T("unknown")) << _T('\n');
+    dbg << _T("[ed] Project file: ") << (m_pProjectFile ? m_pProjectFile->relativeFilename : _T("unknown")) << _T('\n');
+    Manager::Get()->GetMessageManager()->DebugLog(dbg);
 #endif
     if(preserve_modified)
         SetModified(wasmodified);
@@ -565,20 +567,20 @@ void cbEditor::SetProjectFile(ProjectFile* project_file, bool preserve_modified)
 
 void cbEditor::UpdateProjectFile()
 {
-	if (m_pControl && m_pProjectFile)
-	{
-		m_pProjectFile->editorPos = m_pControl->GetCurrentPos();
-		m_pProjectFile->editorTopLine = m_pControl->GetFirstVisibleLine();
-		m_pProjectFile->editorOpen = true;
-	}
+    if (m_pControl && m_pProjectFile)
+    {
+        m_pProjectFile->editorPos = m_pControl->GetCurrentPos();
+        m_pProjectFile->editorTopLine = m_pControl->GetFirstVisibleLine();
+        m_pProjectFile->editorOpen = true;
+    }
 }
 
 cbStyledTextCtrl* cbEditor::CreateEditor()
 {
-	m_ID = wxNewId();
+    m_ID = wxNewId();
 
     cbStyledTextCtrl* control = new cbStyledTextCtrl(this, m_ID, wxDefaultPosition, wxDefaultSize);
-	control->UsePopUp(false);
+    control->UsePopUp(false);
 
     wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxEmptyString);
     m_pData->m_encoding = wxFontMapper::GetEncodingFromName(enc_name);
@@ -640,7 +642,7 @@ void cbEditor::Split(cbEditor::SplitType split)
 
     // add the splitter in the sizer
     m_pSizer->Add(m_pSplitter, 1, wxEXPAND);
-	m_pSizer->Layout();
+    m_pSizer->Layout();
 
     // split as needed
     switch (split)
@@ -658,7 +660,7 @@ void cbEditor::Split(cbEditor::SplitType split)
     InternalSetEditorStyleBeforeFileOpen(m_pControl2);
     InternalSetEditorStyleAfterFileOpen(m_pControl2);
 
-	Thaw();
+    Thaw();
 }
 
 void cbEditor::Unsplit()
@@ -685,9 +687,9 @@ void cbEditor::Unsplit()
     // destroy the splitter and right control
     DestroySplitView();
     // and layout
-	m_pSizer->Layout();
+    m_pSizer->Layout();
 
-	Thaw();
+    Thaw();
 }
 
 wxColour cbEditor::GetOptionColour(const wxString& option, const wxColour _default)
@@ -735,29 +737,29 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     // update the tab text based on preferences
     if (m_pProjectFile)
     {
-		if (mgr->ReadBool(_T("/tab_text_relative"), true))
+        if (mgr->ReadBool(_T("/tab_text_relative"), true))
             m_Shortname = m_pProjectFile->relativeToCommonTopLevelPath;
         else
             m_Shortname = m_pProjectFile->file.GetFullName();
-		SetEditorTitle(m_Shortname);
+        SetEditorTitle(m_Shortname);
     }
 
-	control->SetMouseDwellTime(1000);
+    control->SetMouseDwellTime(1000);
 
     control->SetCaretWidth(mgr->ReadInt(_T("/caret/width"), 1));
     control->SetCaretForeground(GetOptionColour(_T("/caret/colour"), *wxBLACK));
     control->SetCaretPeriod(mgr->ReadInt(_T("/caret/period"), 500));
-	control->SetCaretLineVisible(mgr->ReadBool(_T("/highlight_caret_line"), false));
-	control->SetCaretLineBackground(GetOptionColour(_T("/highlight_caret_line_colour"), wxColour(0xFF, 0xFF, 0x00)));
+    control->SetCaretLineVisible(mgr->ReadBool(_T("/highlight_caret_line"), false));
+    control->SetCaretLineBackground(GetOptionColour(_T("/highlight_caret_line_colour"), wxColour(0xFF, 0xFF, 0x00)));
 
     control->SetUseTabs(mgr->ReadBool(_T("/use_tab"), false));
-	control->SetIndentationGuides(mgr->ReadBool(_T("/show_indent_guides"), false));
+    control->SetIndentationGuides(mgr->ReadBool(_T("/show_indent_guides"), false));
     control->SetTabIndents(mgr->ReadBool(_T("/tab_indents"), true));
     control->SetBackSpaceUnIndents(mgr->ReadBool(_T("/backspace_unindents"), true));
     control->SetWrapMode(mgr->ReadBool(_T("/word_wrap"), false));
     control->SetViewEOL(mgr->ReadBool(_T("/show_eol"), false));
     control->SetViewWhiteSpace(mgr->ReadInt(_T("/view_whitespace"), 0));
-	//gutter
+    //gutter
     control->SetEdgeMode(mgr->ReadInt(_T("/gutter/mode"), 0));
     control->SetEdgeColour(GetOptionColour(_T("/gutter/colour"), *wxLIGHT_GREY));
     control->SetEdgeColumn(mgr->ReadInt(_T("/gutter/column"), 80));
@@ -768,22 +770,22 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->SetTabWidth(mgr->ReadInt(_T("/tab_size"), 4));
 
     // margin for bookmarks, breakpoints etc.
-	// FIXME: how to display a mark with an offset???
-	control->SetMarginWidth(1, 16);
+    // FIXME: how to display a mark with an offset???
+    control->SetMarginWidth(1, 16);
     control->SetMarginType(1, wxSCI_MARGIN_SYMBOL);
     control->SetMarginSensitive(1, mgr->ReadBool(_T("/margin_1_sensitive"), true));
     control->SetMarginMask(1, (1 << BOOKMARK_MARKER) |
                                  (1 << BREAKPOINT_MARKER) |
                                  (1 << DEBUG_MARKER) |
                                  (1 << ERROR_MARKER));
-	control->MarkerDefine(BOOKMARK_MARKER, BOOKMARK_STYLE);
-	control->MarkerSetBackground(BOOKMARK_MARKER, wxColour(0xA0, 0xA0, 0xFF));
-	control->MarkerDefine(BREAKPOINT_MARKER, BREAKPOINT_STYLE);
-	control->MarkerSetBackground(BREAKPOINT_MARKER, wxColour(0xFF, 0x00, 0x00));
-	control->MarkerDefine(DEBUG_MARKER, DEBUG_STYLE);
-	control->MarkerSetBackground(DEBUG_MARKER, wxColour(0xFF, 0xFF, 0x00));
-	control->MarkerDefine(ERROR_MARKER, ERROR_STYLE);
-	control->MarkerSetBackground(ERROR_MARKER, wxColour(0xFF, 0x00, 0x00));
+    control->MarkerDefine(BOOKMARK_MARKER, BOOKMARK_STYLE);
+    control->MarkerSetBackground(BOOKMARK_MARKER, wxColour(0xA0, 0xA0, 0xFF));
+    control->MarkerDefine(BREAKPOINT_MARKER, BREAKPOINT_STYLE);
+    control->MarkerSetBackground(BREAKPOINT_MARKER, wxColour(0xFF, 0x00, 0x00));
+    control->MarkerDefine(DEBUG_MARKER, DEBUG_STYLE);
+    control->MarkerSetBackground(DEBUG_MARKER, wxColour(0xFF, 0xFF, 0x00));
+    control->MarkerDefine(ERROR_MARKER, ERROR_STYLE);
+    control->MarkerSetBackground(ERROR_MARKER, wxColour(0xFF, 0x00, 0x00));
 
     // EOL properties
     m_pData->m_strip_trailing_spaces = mgr->ReadBool(_T("/eol/strip_trailing_spaces"), true);
@@ -792,11 +794,11 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
 
 // NOTE: a same block of code is in editorconfigurationdlg.cpp (ctor)
 #if defined(__WXMSW__)
-	const int default_eol = 0; //CR&LF
+    const int default_eol = 0; //CR&LF
 #elif defined(__WXMAC__)
     const int default_eol = 1; //CR
 #elif defined(__UNIX__)
-	const int default_eol = 2; //LF
+    const int default_eol = 2; //LF
 #endif
 
     switch (mgr->ReadInt(_T("/eol/eolmode"), default_eol))
@@ -809,7 +811,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
             eolmode = wxSCI_EOL_LF;
             break;
 
-    	case 0:
+        case 0:
         default:
             eolmode = wxSCI_EOL_CRLF;
             break;
@@ -822,7 +824,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->SetProperty(_T("fold.comment"), mgr->ReadBool(_T("/folding/fold_comments"), false) ? _T("1") : _T("0"));
     control->SetProperty(_T("fold.compact"), _T("0"));
     control->SetProperty(_T("fold.preprocessor"), mgr->ReadBool(_T("/folding/fold_preprocessor"), false) ? _T("1") : _T("0"));
-   	if (mgr->ReadBool(_T("/folding/show_folds"), true))
+    if (mgr->ReadBool(_T("/folding/show_folds"), true))
     {
         control->SetFoldFlags(16);
         control->SetMarginType(2, wxSCI_MARGIN_SYMBOL);
@@ -851,11 +853,11 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         control->MarkerDefine(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER);
         control->MarkerSetForeground(wxSCI_MARKNUM_FOLDERMIDTAIL, wxColour(0xff, 0xff, 0xff));
         control->MarkerSetBackground(wxSCI_MARKNUM_FOLDERMIDTAIL, wxColour(0x80, 0x80, 0x80));
-	}
-	else
-		control->SetMarginWidth(2, 0);
+    }
+    else
+        control->SetMarginWidth(2, 0);
 
-	SetLanguage( HL_AUTO );
+    SetLanguage( HL_AUTO );
 }
 
 void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
@@ -868,15 +870,15 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
     // line numbering
     control->SetMarginType(0, wxSCI_MARGIN_NUMBER);
     if (mgr->ReadBool(_T("/show_line_numbers"), true))
-    	m_pData->SetLineNumberColWidth();
-	else
-		control->SetMarginWidth(0, 0);
+        m_pData->SetLineNumberColWidth();
+    else
+        control->SetMarginWidth(0, 0);
 }
 
 void cbEditor::SetColourSet(EditorColourSet* theme)
 {
-	m_pTheme = theme;
-	SetLanguage( m_lang );
+    m_pTheme = theme;
+    SetLanguage( m_lang );
 }
 
 wxFontEncoding cbEditor::GetEncoding( ) const
@@ -952,7 +954,7 @@ bool cbEditor::Reload(bool detectEncoding)
 
 void cbEditor::Touch()
 {
-	m_LastModified = wxDateTime::Now();
+    m_LastModified = wxDateTime::Now();
 }
 
 void cbEditor::DetectEncoding( )
@@ -1024,14 +1026,14 @@ bool cbEditor::Open(bool detectEncoding)
     m_pControl->SetReadOnly(read_only);
     SetLanguage(HL_AUTO);
 
-	if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/fold_all_on_open"), false))
-		FoldAll();
+    if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/fold_all_on_open"), false))
+        FoldAll();
 
     wxFileName fname(m_Filename);
     m_LastModified = fname.GetModificationTime();
 
     SetModified(false);
-	NotifyPlugins(cbEVT_EDITOR_OPEN);
+    NotifyPlugins(cbEVT_EDITOR_OPEN);
 
     m_pControl->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());
     if (m_pControl2)
@@ -1041,8 +1043,8 @@ bool cbEditor::Open(bool detectEncoding)
 
 bool cbEditor::Save()
 {
-	if (!GetModified())
-		return true;
+    if (!GetModified())
+        return true;
 
     // one undo action for all modifications in this context
     // (angled braces added for clarity)
@@ -1073,7 +1075,7 @@ bool cbEditor::Save()
     m_pControl->SetSavePoint();
     SetModified(false);
 
-	NotifyPlugins(cbEVT_EDITOR_SAVE);
+    NotifyPlugins(cbEVT_EDITOR_SAVE);
     return true;
 }
 
@@ -1087,12 +1089,12 @@ bool cbEditor::SaveAs()
     wxString Path = fname.GetPath();
     if(mgr)
     {
-		wxString Filter = mgr->Read(_T("/file_dialogs/file_new_open/filter"), _T("C/C++ files"));
-		if(!Filter.IsEmpty())
-		{
-			FileFilters::GetFilterIndexFromName(Filters, Filter, StoredIndex);
-		}
-		Path = mgr->Read(_T("/file_dialogs/file_new_open/directory"), Path);
+        wxString Filter = mgr->Read(_T("/file_dialogs/file_new_open/filter"), _T("C/C++ files"));
+        if(!Filter.IsEmpty())
+        {
+            FileFilters::GetFilterIndexFromName(Filters, Filter, StoredIndex);
+        }
+        Path = mgr->Read(_T("/file_dialogs/file_new_open/directory"), Path);
     }
     wxFileDialog* dlg = new wxFileDialog(Manager::Get()->GetAppWindow(),
                                          _("Save file"),
@@ -1108,7 +1110,7 @@ bool cbEditor::SaveAs()
     LOGSTREAM << m_Filename << _T('\n');
     fname.Assign(m_Filename);
     m_Shortname = fname.GetFullName();
-	SetEditorTitle(m_Shortname);
+    SetEditorTitle(m_Shortname);
     //Manager::Get()->GetMessageManager()->Log(mltDevDebug, "Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
     m_IsOK = true;
     SetModified(true);
@@ -1116,14 +1118,14 @@ bool cbEditor::SaveAs()
     // store the last used filter and directory
     if(mgr)
     {
-		int Index = dlg->GetFilterIndex();
-		wxString Filter;
-		if(FileFilters::GetFilterNameFromIndex(Filters, Index, Filter))
-		{
-			mgr->Write(_T("/file_dialogs/file_new_open/filter"), Filter);
-		}
-		wxString Test = dlg->GetDirectory();
-		mgr->Write(_T("/file_dialogs/file_new_open/directory"), dlg->GetDirectory());
+        int Index = dlg->GetFilterIndex();
+        wxString Filter;
+        if(FileFilters::GetFilterNameFromIndex(Filters, Index, Filter))
+        {
+            mgr->Write(_T("/file_dialogs/file_new_open/filter"), Filter);
+        }
+        wxString Test = dlg->GetDirectory();
+        mgr->Write(_T("/file_dialogs/file_new_open/directory"), dlg->GetDirectory());
     }
     dlg->Destroy();
     return Save();
@@ -1132,8 +1134,8 @@ bool cbEditor::SaveAs()
 bool cbEditor::RenameTo(const wxString& filename, bool deleteOldFromDisk)
 {
     wxLogWarning(_("Not implemented..."));
-	//NotifyPlugins(cbEVT_EDITOR_RENAME);
-	return false;
+    //NotifyPlugins(cbEVT_EDITOR_RENAME);
+    return false;
 }
 
 void cbEditor::AutoComplete()
@@ -1207,80 +1209,80 @@ void cbEditor::DoFoldAll(int fold)
     m_pControl->Colourise(0, -1); // the *most* important part!
     int count = m_pControl->GetLineCount();
     for (int i = 0; i < count; ++i)
-		DoFoldLine(i, fold);
+        DoFoldLine(i, fold);
 }
 
 void cbEditor::DoFoldBlockFromLine(int line, int fold)
 {
     m_pControl->Colourise(0, -1); // the *most* important part!
-	int i = line;
+    int i = line;
     while (i != 0)
     {
-		if (DoFoldLine(i, fold))
-			return;
-		--i;
+        if (DoFoldLine(i, fold))
+            return;
+        --i;
     }
 }
 
 bool cbEditor::DoFoldLine(int line, int fold)
 {
-	int level = m_pControl->GetFoldLevel(line);
-	if ((level & wxSCI_FOLDLEVELHEADERFLAG) &&
-		(wxSCI_FOLDLEVELBASE == (level & wxSCI_FOLDLEVELNUMBERMASK)))
-	{
-		bool expand = false;
-		int maxLine = m_pControl->GetLastChild(line, -1);
-		if (fold == 2) // toggle
-			expand = !m_pControl->GetFoldExpanded(line);
-		else
-			expand = fold == 0;
-		m_pControl->SetFoldExpanded(line, expand);
-		if (maxLine > line)
-		{
-			if (expand)
-				m_pControl->ShowLines(line + 1, maxLine);
-			else
-				m_pControl->HideLines(line + 1, maxLine);
-		}
-		return true;
-	}
-	return false;
+    int level = m_pControl->GetFoldLevel(line);
+    if ((level & wxSCI_FOLDLEVELHEADERFLAG) &&
+        (wxSCI_FOLDLEVELBASE == (level & wxSCI_FOLDLEVELNUMBERMASK)))
+    {
+        bool expand = false;
+        int maxLine = m_pControl->GetLastChild(line, -1);
+        if (fold == 2) // toggle
+            expand = !m_pControl->GetFoldExpanded(line);
+        else
+            expand = fold == 0;
+        m_pControl->SetFoldExpanded(line, expand);
+        if (maxLine > line)
+        {
+            if (expand)
+                m_pControl->ShowLines(line + 1, maxLine);
+            else
+                m_pControl->HideLines(line + 1, maxLine);
+        }
+        return true;
+    }
+    return false;
 }
 
 void cbEditor::FoldAll()
 {
-	DoFoldAll(1);
+    DoFoldAll(1);
 }
 
 void cbEditor::UnfoldAll()
 {
-	DoFoldAll(0);
+    DoFoldAll(0);
 }
 
 void cbEditor::ToggleAllFolds()
 {
-	DoFoldAll(2);
+    DoFoldAll(2);
 }
 
 void cbEditor::FoldBlockFromLine(int line)
 {
-	if (line == -1)
-		line = GetControl()->GetCurrentLine();
-	DoFoldBlockFromLine(line, 1);
+    if (line == -1)
+        line = GetControl()->GetCurrentLine();
+    DoFoldBlockFromLine(line, 1);
 }
 
 void cbEditor::UnfoldBlockFromLine(int line)
 {
-	if (line == -1)
-		line = GetControl()->GetCurrentLine();
-	DoFoldBlockFromLine(line, 0);
+    if (line == -1)
+        line = GetControl()->GetCurrentLine();
+    DoFoldBlockFromLine(line, 0);
 }
 
 void cbEditor::ToggleFoldBlockFromLine(int line)
 {
-	if (line == -1)
-		line = GetControl()->GetCurrentLine();
-	DoFoldBlockFromLine(line, 2);
+    if (line == -1)
+        line = GetControl()->GetCurrentLine();
+    DoFoldBlockFromLine(line, 2);
 }
 
 void cbEditor::GotoLine(int line, bool centreOnScreen)
@@ -1300,8 +1302,8 @@ bool cbEditor::AddBreakpoint(int line, bool notifyDebugger)
 {
     if (HasBreakpoint(line))
         return false;
-	if (line == -1)
-		line = GetControl()->GetCurrentLine();
+    if (line == -1)
+        line = GetControl()->GetCurrentLine();
 
     if (!notifyDebugger)
     {
@@ -1322,8 +1324,8 @@ bool cbEditor::RemoveBreakpoint(int line, bool notifyDebugger)
 {
     if (!HasBreakpoint(line))
         return false;
-	if (line == -1)
-		line = GetControl()->GetCurrentLine();
+    if (line == -1)
+        line = GetControl()->GetCurrentLine();
 
     if (!notifyDebugger)
     {
@@ -1342,8 +1344,8 @@ bool cbEditor::RemoveBreakpoint(int line, bool notifyDebugger)
 
 void cbEditor::ToggleBreakpoint(int line, bool notifyDebugger)
 {
-	if (line == -1)
-		line = GetControl()->GetCurrentLine();
+    if (line == -1)
+        line = GetControl()->GetCurrentLine();
     if (!notifyDebugger)
     {
         MarkerToggle(BREAKPOINT_MARKER, line);
@@ -1368,8 +1370,8 @@ void cbEditor::ToggleBreakpoint(int line, bool notifyDebugger)
 
 bool cbEditor::HasBreakpoint(int line) const
 {
-	if (line == -1)
-		line = GetControl()->GetCurrentLine();
+    if (line == -1)
+        line = GetControl()->GetCurrentLine();
     return LineHasMarker(BREAKPOINT_MARKER, line);
 }
 
@@ -1475,40 +1477,40 @@ bool cbEditor::CanPaste() const
 
 bool cbEditor::LineHasMarker(int marker, int line) const
 {
-	if (line == -1)
-		line = GetControl()->GetCurrentLine();
-	return m_pControl->MarkerGet(line) & (1 << marker);
+    if (line == -1)
+        line = GetControl()->GetCurrentLine();
+    return m_pControl->MarkerGet(line) & (1 << marker);
 }
 
 void cbEditor::MarkerToggle(int marker, int line)
 {
-	if (line == -1)
-		line = GetControl()->GetCurrentLine();
+    if (line == -1)
+        line = GetControl()->GetCurrentLine();
     if (LineHasMarker(marker, line))
-		m_pControl->MarkerDelete(line, marker);
-	else
-		m_pControl->MarkerAdd(line, marker);
+        m_pControl->MarkerDelete(line, marker);
+    else
+        m_pControl->MarkerAdd(line, marker);
 }
 
 void cbEditor::MarkerNext(int marker)
 {
-	int line = GetControl()->GetCurrentLine() + 1;
-	int newLine = m_pControl->MarkerNext(line, 1 << marker);
-	if (newLine != -1)
-		GotoLine(newLine);
+    int line = GetControl()->GetCurrentLine() + 1;
+    int newLine = m_pControl->MarkerNext(line, 1 << marker);
+    if (newLine != -1)
+        GotoLine(newLine);
 }
 
 void cbEditor::MarkerPrevious(int marker)
 {
-	int line = GetControl()->GetCurrentLine() - 1;
-	int newLine = m_pControl->MarkerPrevious(line, 1 << marker);
-	if (newLine != -1)
-		GotoLine(newLine);
+    int line = GetControl()->GetCurrentLine() - 1;
+    int newLine = m_pControl->MarkerPrevious(line, 1 << marker);
+    if (newLine != -1)
+        GotoLine(newLine);
 }
 
 void cbEditor::MarkLine(int marker, int line)
 {
-	if (line == -1)
+    if (line == -1)
         m_pControl->MarkerDeleteAll(marker);
     else
         m_pControl->MarkerAdd(line, marker);
@@ -1859,60 +1861,60 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
 {
     cbStyledTextCtrl* control = GetControl();
 
-	// we have a single event handler for all popup menu entries,
-	// so that we can add/remove options without the need to recompile
-	// the whole project (almost) but more importantly, to
-	// *not* break cbEditor's interface for such a trivial task...
-	const int id = event.GetId();
+    // we have a single event handler for all popup menu entries,
+    // so that we can add/remove options without the need to recompile
+    // the whole project (almost) but more importantly, to
+    // *not* break cbEditor's interface for such a trivial task...
+    const int id = event.GetId();
 
-	if (id == idUndo)
-		control->Undo();
-	else if (id == idRedo)
-		control->Redo();
-	else if (id == idCut)
-		control->Cut();
-	else if (id == idCopy)
-		control->Copy();
-	else if (id == idPaste)
-		control->Paste();
-	else if (id == idDelete)
-		control->ReplaceSelection(wxEmptyString);
-	else if (id == idSelectAll)
-		control->SelectAll();
-	else if (id == idSwapHeaderSource)
-		Manager::Get()->GetEditorManager()->SwapActiveHeaderSource();
-	else if (id == idBookmarkAdd)
-		control->MarkerAdd(m_pData->m_LastMarginMenuLine, BOOKMARK_MARKER);
-	else if (id == idBookmarkRemove)
-		control->MarkerDelete(m_pData->m_LastMarginMenuLine, BOOKMARK_MARKER);
-	else if (id == idBookmarksToggle)
-		MarkerToggle(BOOKMARK_MARKER);
-	else if (id == idBookmarksNext)
-		MarkerNext(BOOKMARK_MARKER);
-	else if (id == idBookmarksPrevious)
-		MarkerPrevious(BOOKMARK_MARKER);
-	else if (id == idFoldingFoldAll)
-		FoldAll();
-	else if (id == idFoldingUnfoldAll)
-		UnfoldAll();
-	else if (id == idFoldingToggleAll)
-		ToggleAllFolds();
-	else if (id == idFoldingFoldCurrent)
-		FoldBlockFromLine();
-	else if (id == idFoldingUnfoldCurrent)
-		UnfoldBlockFromLine();
-	else if (id == idFoldingToggleCurrent)
-		ToggleFoldBlockFromLine();
-	else if (id == idSplitHorz)
+    if (id == idUndo)
+        control->Undo();
+    else if (id == idRedo)
+        control->Redo();
+    else if (id == idCut)
+        control->Cut();
+    else if (id == idCopy)
+        control->Copy();
+    else if (id == idPaste)
+        control->Paste();
+    else if (id == idDelete)
+        control->ReplaceSelection(wxEmptyString);
+    else if (id == idSelectAll)
+        control->SelectAll();
+    else if (id == idSwapHeaderSource)
+        Manager::Get()->GetEditorManager()->SwapActiveHeaderSource();
+    else if (id == idBookmarkAdd)
+        control->MarkerAdd(m_pData->m_LastMarginMenuLine, BOOKMARK_MARKER);
+    else if (id == idBookmarkRemove)
+        control->MarkerDelete(m_pData->m_LastMarginMenuLine, BOOKMARK_MARKER);
+    else if (id == idBookmarksToggle)
+        MarkerToggle(BOOKMARK_MARKER);
+    else if (id == idBookmarksNext)
+        MarkerNext(BOOKMARK_MARKER);
+    else if (id == idBookmarksPrevious)
+        MarkerPrevious(BOOKMARK_MARKER);
+    else if (id == idFoldingFoldAll)
+        FoldAll();
+    else if (id == idFoldingUnfoldAll)
+        UnfoldAll();
+    else if (id == idFoldingToggleAll)
+        ToggleAllFolds();
+    else if (id == idFoldingFoldCurrent)
+        FoldBlockFromLine();
+    else if (id == idFoldingUnfoldCurrent)
+        UnfoldBlockFromLine();
+    else if (id == idFoldingToggleCurrent)
+        ToggleFoldBlockFromLine();
+    else if (id == idSplitHorz)
         Split(stHorizontal);
-	else if (id == idSplitVert)
+    else if (id == idSplitVert)
         Split(stVertical);
-	else if (id == idUnsplit)
+    else if (id == idUnsplit)
         Unsplit();
-	else if (id == idConfigureEditor)
-		Manager::Get()->GetEditorManager()->Configure();
-	else if (id == idProperties)
-	{
+    else if (id == idConfigureEditor)
+        Manager::Get()->GetEditorManager()->Configure();
+    else if (id == idProperties)
+    {
         if (m_pProjectFile)
             m_pProjectFile->ShowOptions(this);
     }
@@ -1924,38 +1926,38 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         RemoveBreakpoint(m_pData->m_LastMarginMenuLine);
     else
         event.Skip();
-	//Manager::Get()->GetMessageManager()->DebugLog(_T("Leaving OnContextMenuEntry"));
+    //Manager::Get()->GetMessageManager()->DebugLog(_T("Leaving OnContextMenuEntry"));
 }
 
 void cbEditor::OnMarginClick(wxScintillaEvent& event)
 {
     switch (event.GetMargin())
-	{
-		case 1: // bookmarks and breakpoints margin
-			{
-				int lineYpix = event.GetPosition();
-				int line = m_pControl->LineFromPosition(lineYpix);
+    {
+        case 1: // bookmarks and breakpoints margin
+        {
+            int lineYpix = event.GetPosition();
+            int line = m_pControl->LineFromPosition(lineYpix);
 
-				ToggleBreakpoint(line);
-				break;
-			}
-		case 2: // folding margin
-			{
-				int lineYpix = event.GetPosition();
-				int line = m_pControl->LineFromPosition(lineYpix);
+            ToggleBreakpoint(line);
+            break;
+        }
+        case 2: // folding margin
+        {
+            int lineYpix = event.GetPosition();
+            int line = m_pControl->LineFromPosition(lineYpix);
 
-				m_pControl->ToggleFold(line);
-				break;
-			}
-	}
+            m_pControl->ToggleFold(line);
+            break;
+        }
+    }
 }
 
 void cbEditor::OnEditorUpdateUI(wxScintillaEvent& event)
 {
-	if (Manager::Get()->GetEditorManager()->GetActiveEditor() == this)
-	{
+    if (Manager::Get()->GetEditorManager()->GetActiveEditor() == this)
+    {
         NotifyPlugins(cbEVT_EDITOR_UPDATE_UI);
-		HighlightBraces(); // brace highlighting
+        HighlightBraces(); // brace highlighting
     }
 }
 
@@ -1970,19 +1972,19 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
     Manager::Get()->GetMessageManager()->Close();
 
     cbStyledTextCtrl* control = GetControl();
-	int pos = control->GetCurrentPos();
-	wxChar ch = event.GetKey();
+    int pos = control->GetCurrentPos();
+    wxChar ch = event.GetKey();
 
-	// indent
-	if (ch == _T('\n'))
-	{
+    // indent
+    if (ch == _T('\n'))
+    {
         control->BeginUndoAction();
-		// new-line: adjust indentation
-		bool autoIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/auto_indent"), true);
-		bool smartIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/smart_indent"), true);
-		int currLine = control->LineFromPosition(pos);
-		if (autoIndent && currLine > 0)
-		{
+        // new-line: adjust indentation
+        bool autoIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/auto_indent"), true);
+        bool smartIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/smart_indent"), true);
+        int currLine = control->LineFromPosition(pos);
+        if (autoIndent && currLine > 0)
+        {
             wxString indent = GetLineIndentString(currLine - 1);
             if (smartIndent)
             {
@@ -1997,19 +1999,19 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                         indent << wxString(_T(' '), control->GetTabWidth()); // n spaces
                 }
             }
-			control->InsertText(pos, indent);
-			control->GotoPos(pos + indent.Length());
-			control->ChooseCaretX();
-		}
-		control->EndUndoAction();
-	}
+            control->InsertText(pos, indent);
+            control->GotoPos(pos + indent.Length());
+            control->ChooseCaretX();
+        }
+        control->EndUndoAction();
+    }
 
-	// unindent
-	else if (ch == _T('}'))
-	{
-		bool smartIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/smart_indent"), true);
-		if (smartIndent)
-		{
+    // unindent
+    else if (ch == _T('}'))
+    {
+        bool smartIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/smart_indent"), true);
+        if (smartIndent)
+        {
             control->BeginUndoAction();
             // undo block indentation, if needed
             wxString str = control->GetLine(control->GetCurrentLine());
@@ -2035,7 +2037,7 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
             }
             control->EndUndoAction();
         }
-	}
+    }
     else
     {
         // call any hooked functors
@@ -2049,14 +2051,14 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
 void cbEditor::OnEditorDwellStart(wxScintillaEvent& event)
 {
     cbStyledTextCtrl* control = GetControl();
-	int pos = control->PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
+    int pos = control->PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
     int style = control->GetStyleAt(pos);
     NotifyPlugins(cbEVT_EDITOR_TOOLTIP, style, wxEmptyString, event.GetX(), event.GetY());
 }
 
 void cbEditor::OnEditorDwellEnd(wxScintillaEvent& event)
 {
-	NotifyPlugins(cbEVT_EDITOR_TOOLTIP_CANCEL);
+    NotifyPlugins(cbEVT_EDITOR_TOOLTIP_CANCEL);
 }
 
 void cbEditor::OnEditorModified(wxScintillaEvent& event)
@@ -2143,6 +2145,7 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
             line = m_pControl->MarkerNext(line + 1, 1 << BREAKPOINT_MARKER);
 //            Manager::Get()->GetMessageManager()->DebugLog(_T("Next bp at line %d"), line+1);
         }
+
         // now just loop through the array we created and set breakpoints
         for (size_t i = 0; i < bps.GetCount(); ++i)
         {
@@ -2160,13 +2163,27 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
             AddBreakpoint(origstartline + linesAdded, true);
         }
 
+        // if lines have been removed make sure BP's after the new EOF are removed, too
+        // the markers are already lost so we can't use them to find additional BP's.
+        // TODO (Morten#): It's a better solution to provide a method like RemoveBreakpointsAfter(file, line)
+        //              because the debugger knows what other BP's are left and have to be removed.
+        if (isDel)
+        {
+          int lastline = m_pControl->GetLineCount();
+//          Manager::Get()->GetMessageManager()->DebugLog(_T("Removing possible breakpoints from %d to %d"), lastline+1, (lastline - linesAdded)+1);
+          for (int i=lastline; i<(lastline - linesAdded); i++) // linesAdded is negative
+          {
+              debugger->RemoveBreakpoint(m_Filename, i);
+          }
+        }
+
         // in case of no line numbers to be shown no need to set
         // NOTE : on every modification of the Editor we consult ConfigManager
-        // 			hopefully no to time consuming, otherwise we make a member out of it
+        //        hopefully not to time consuming, otherwise we make a member out of it
         ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
         if (mgr->ReadBool(_T("/show_line_numbers"), true))
         {
-                m_pData->SetLineNumberColWidth();
+            m_pData->SetLineNumberColWidth();
         }
     }
 } // end of OnEditorModified
@@ -2177,7 +2194,7 @@ void cbEditor::OnUserListSelection(wxScintillaEvent& event)
 
 void cbEditor::OnClose(wxCloseEvent& event)
 {
-	Manager::Get()->GetEditorManager()->Close(this);
+    Manager::Get()->GetEditorManager()->Close(this);
 }
 
 void cbEditor::DoIndent()
