@@ -276,20 +276,6 @@ int Wiz::Launch(int index)
             }
         }
 
-        // ask the script to setup the new project (edit targets, setup options, etc)
-        // call SetupProject()
-        Executor<bool, cbProject*> execSetupPrj(funcSetupPrj);
-        success = execSetupPrj.Call(theproject);
-        if (!success)
-        {
-            cbMessageBox(wxString::Format(_("Couldn't setup project options:\n%s\n\nScript error:\n%s"),
-                                        prjdir.c_str(),
-                                        execSetupPrj.CreateErrorString().c_str()),
-                        _("Error"), wxICON_ERROR);
-            Clear();
-            return -1;
-        }
-
         // add all the template files
         // first get the dirs with the files by calling GetFilesDir()
         wxString srcdir;
@@ -305,6 +291,20 @@ int Wiz::Launch(int index)
 
         if (srcdir.IsEmpty())
             cbMessageBox(_("The wizard didn't provide any files to copy!"), _("Warning"), wxICON_WARNING);
+
+        // ask the script to setup the new project (edit targets, setup options, etc)
+        // call SetupProject()
+        Executor<bool, cbProject*> execSetupPrj(funcSetupPrj);
+        success = execSetupPrj.Call(theproject);
+        if (!success)
+        {
+            cbMessageBox(wxString::Format(_("Couldn't setup project options:\n%s\n\nScript error:\n%s"),
+                                        prjdir.c_str(),
+                                        execSetupPrj.CreateErrorString().c_str()),
+                        _("Error"), wxICON_ERROR);
+            Clear();
+            return -1;
+        }
 
         // save the project and...
         theproject->Save();

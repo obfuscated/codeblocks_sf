@@ -69,7 +69,7 @@ cbProject::cbProject(const wxString& filename)
     m_Loaded(false),
     m_CurrentlyLoading(false),
     m_BasePath(_T("")),
-    m_PCHMode(pchObjectDir),
+    m_PCHMode(pchSourceFile),
     m_CurrentlyCompilingTarget(0)
 {
     SetCompilerID(CompilerFactory::GetDefaultCompilerID());

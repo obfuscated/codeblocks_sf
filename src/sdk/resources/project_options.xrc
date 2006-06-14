@@ -85,9 +85,10 @@
                         <label>Strategy</label>
                         <content>
                           <item>Generate PCH in a directory alongside original header</item>
-                          <item>Generate PCH in the object output dir (default)</item>
-                          <item>Generate PCH alongside original header</item>
+                          <item>Generate PCH in the object output dir</item>
+                          <item>Generate PCH alongside original header (default)</item>
                         </content>
+                        <selection>2</selection>
                         <dimension>1</dimension>
                         <style>wxRA_SPECIFY_COLS</style>
                       </object>

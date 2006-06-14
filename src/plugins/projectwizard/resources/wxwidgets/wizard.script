@@ -27,7 +27,8 @@ void BeginWizard()
 
 	Wizard.AddIntroPage(intro_msg);
 	Wizard.AddProjectPathPage();
-	Wizard.AddPage("WxPath");
+    if (PLATFORM == PLATFORM_MSW)
+        Wizard.AddPage("WxPath"); // only for windows
 	// we need the compiler selection before wx settings, because we 'll have
 	// to validate the settings. To do this we must know the compiler beforehand...
 	Wizard.AddCompilerPage("", "*", true, true);
@@ -48,8 +49,12 @@ void OnEnter_WxPath(bool fwd)
         {
             // first time here, set default value
             dir = ConfigManager.Read("/wx_project_wizard/path", "");
-            if (dir.IsEmpty()) // try global var
-                dir = ReplaceMacros("$(#wx)", true);
+            if (PLATFORM == PLATFORM_MSW)
+            {
+                // windows only
+                if (dir.IsEmpty()) // try global var
+                    dir = ReplaceMacros("$(#wx)", true);
+            }
             Wizard.SetTextControlValue("txtWxPath", dir);
         }
 	}
@@ -237,12 +242,20 @@ bool SetupProject(Project@ project)
                 project.AddCompilerOption("-DWXUSINGDLL");
             if (IsUnicode)
                 project.AddCompilerOption("-DwxUSE_UNICODE");
+
+            // enable PCH
             if (WantPCH)
             {
-                project.SetModeForPCH(pchSourceDir); // pch dir
-//                project.AddCompilerOption("-Winvalid-pch");
-                project.AddCompilerOption("-include wx_pch.h");
-                project.AddCompilerOption("-DUSE_PCH");
+                ProjectFile@ pchfile = project.GetFileByFilename("wx_pch.h", true, true);
+                if (pchfile != null)
+                {
+                    pchfile.compile = true;
+                    pchfile.link = false;
+                    pchfile.weight = 0;
+                    project.SetModeForPCH(pchSourceDir); // pch dir
+                    project.AddCompilerOption("-include wx_pch.h");
+                    project.AddCompilerOption("-DUSE_PCH");
+                }
             }
         }
     }
