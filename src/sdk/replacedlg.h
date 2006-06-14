@@ -8,11 +8,12 @@ class wxComboBox;
 class ReplaceDlg : public FindReplaceBase
 {
 	public:
-		ReplaceDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false);
+		ReplaceDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false, 
+            bool findInFilesOnly = false, bool replaceInFilesActive = false);
 		~ReplaceDlg();
 		wxString GetFindString() const;
 		wxString GetReplaceString() const;
-		bool IsFindInFiles() const { return false; }
+		bool IsFindInFiles() const;
 		bool GetDeleteOldSearches() const;
 		bool GetMatchWord() const;
 		bool GetStartWord() const;
@@ -26,8 +27,12 @@ class ReplaceDlg : public FindReplaceBase
 		wxString GetSearchPath() const{ return wxEmptyString; }
 		wxString GetSearchMask() const{ return wxEmptyString; }
 
+		void OnFindChange(wxNotebookEvent& event);
 		void OnRegEx(wxCommandEvent& event);
+		void OnActivate(wxActivateEvent& event);
+		
 	private:
+        bool m_Complete;
 		void FillComboWithLastValues(wxComboBox* combo, const wxString& configKey);
 		void SaveComboValues(wxComboBox* combo, const wxString& configKey);
 		DECLARE_EVENT_TABLE()

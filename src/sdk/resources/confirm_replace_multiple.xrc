@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxDialog" name="dlgConfirmReplaceMultiple">
+    <title>Confirm replace multiple</title>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxStaticText" name="lblMessage">
+          <label>Replace this occurrence?
+</label>
+        </object>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnYes">
+              <label>&amp;Yes</label>
+              <default>1</default>
+            </object>
+            <flag>wxRIGHT</flag>
+            <border>4</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnNo">
+              <label>&amp;No</label>
+            </object>
+            <flag>wxRIGHT</flag>
+            <border>4</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnAllInFile">
+              <label>&amp;All in this file</label>
+            </object>
+            <flag>wxRIGHT</flag>
+            <border>4</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnSkipFile">
+              <label>&amp;Skip this file</label>
+            </object>
+            <flag>wxRIGHT</flag>
+            <border>4</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnAll">
+              <label>&amp;All</label>
+            </object>
+            <flag>wxRIGHT</flag>
+            <border>4</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnCancel">
+              <label>&amp;Cancel</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+        <border>4</border>
+      </object>
+    </object>
+  </object>
+</resource>

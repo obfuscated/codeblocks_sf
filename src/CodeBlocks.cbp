@@ -3003,6 +3003,12 @@
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
+		<Unit filename="sdk\resources\confirm_replace_multiple.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk\resources\edit_array_order.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
@@ -4160,5 +4166,6 @@
 			<Option compilerVar="CPP" />
 			<Option target="AutoRevision" />
 		</Unit>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

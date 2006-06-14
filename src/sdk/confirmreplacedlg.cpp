@@ -34,15 +34,20 @@
 #include "confirmreplacedlg.h"
 
 BEGIN_EVENT_TABLE(ConfirmReplaceDlg, wxDialog)
-	EVT_BUTTON(XRCID("btnYes"), 	ConfirmReplaceDlg::OnYes)
-	EVT_BUTTON(XRCID("btnNo"), 		ConfirmReplaceDlg::OnNo)
-	EVT_BUTTON(XRCID("btnAll"), 	ConfirmReplaceDlg::OnAll)
-	EVT_BUTTON(XRCID("btnCancel"),	ConfirmReplaceDlg::OnCancel)
+	EVT_BUTTON(XRCID("btnYes"), 	    ConfirmReplaceDlg::OnYes)
+	EVT_BUTTON(XRCID("btnNo"), 		    ConfirmReplaceDlg::OnNo)
+	EVT_BUTTON(XRCID("btnAllInFile"),   ConfirmReplaceDlg::OnAllInFile)
+	EVT_BUTTON(XRCID("btnSkipFile"),    ConfirmReplaceDlg::OnSkipFile)
+	EVT_BUTTON(XRCID("btnAll"), 	    ConfirmReplaceDlg::OnAll)
+	EVT_BUTTON(XRCID("btnCancel"),	    ConfirmReplaceDlg::OnCancel)
 END_EVENT_TABLE()
 
-ConfirmReplaceDlg::ConfirmReplaceDlg(wxWindow* parent, const wxString& label)
+ConfirmReplaceDlg::ConfirmReplaceDlg(wxWindow* parent, bool replaceInFiles, const wxString& label)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgConfirmReplace"));
+    if (replaceInFiles)
+        wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgConfirmReplaceMultiple"));
+    else
+        wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgConfirmReplace"));
 	XRCCTRL(*this, "lblMessage", wxStaticText)->SetLabel(label);
 }
 
@@ -58,6 +63,16 @@ void ConfirmReplaceDlg::OnYes(wxCommandEvent& event)
 void ConfirmReplaceDlg::OnNo(wxCommandEvent& event)
 {
 	EndModal(crNo);
+}
+
+void ConfirmReplaceDlg::OnAllInFile(wxCommandEvent& event)
+{
+    EndModal(crAllInFile);
+}
+
+void ConfirmReplaceDlg::OnSkipFile(wxCommandEvent& event)
+{
+    EndModal(crSkipFile);
 }
 
 void ConfirmReplaceDlg::OnAll(wxCommandEvent& event)

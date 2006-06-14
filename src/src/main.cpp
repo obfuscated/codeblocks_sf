@@ -341,12 +341,12 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditUncommentSelected, MainFrame::OnEditUncommentSelected)
     EVT_MENU(idEditToggleCommentSelected, MainFrame::OnEditToggleCommentSelected)
 
-    EVT_MENU(idSearchFind,  MainFrame::OnSearchFind)
-    EVT_MENU(idSearchFindInFiles,  MainFrame::OnSearchFind)
-    EVT_MENU(idSearchFindNext,  MainFrame::OnSearchFindNext)
-    EVT_MENU(idSearchFindPrevious,  MainFrame::OnSearchFindNext)
-    EVT_MENU(idSearchReplace,  MainFrame::OnSearchReplace)
-    EVT_MENU(idSearchGotoLine,  MainFrame::OnSearchGotoLine)
+    EVT_MENU(idSearchFind, MainFrame::OnSearchFind)
+    EVT_MENU(idSearchFindInFiles, MainFrame::OnSearchFind)
+    EVT_MENU(idSearchFindNext, MainFrame::OnSearchFindNext)
+    EVT_MENU(idSearchFindPrevious, MainFrame::OnSearchFindNext)
+    EVT_MENU(idSearchReplace, MainFrame::OnSearchReplace)
+    EVT_MENU(idSearchGotoLine, MainFrame::OnSearchGotoLine)
 
     EVT_MENU(idViewLayoutSave, MainFrame::OnViewLayoutSave)
     EVT_MENU(idViewLayoutDelete, MainFrame::OnViewLayoutDelete)
@@ -2497,7 +2497,7 @@ void MainFrame::OnSearchFindNext(wxCommandEvent& event)
 
 void MainFrame::OnSearchReplace(wxCommandEvent& event)
 {
-	Manager::Get()->GetEditorManager()->ShowFindDialog(true);
+	Manager::Get()->GetEditorManager()->ShowFindDialog(true, !Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor());
 }
 
 void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
@@ -2844,17 +2844,16 @@ void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
     cbEditor* ed = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor()) : 0;
     wxMenuBar* mbar = GetMenuBar();
 
-    // 'Find' is always enabled for find-in-files
+    // 'Find' and 'Replace' are always enabled for (find|replace)-in-files
     mbar->Enable(idSearchFindNext, ed);
     mbar->Enable(idSearchFindPrevious, ed);
-    mbar->Enable(idSearchReplace, ed);
     mbar->Enable(idSearchGotoLine, ed);
 
-	if (m_pToolbar)
-	{
-		m_pToolbar->EnableTool(idSearchFind, ed);
-		m_pToolbar->EnableTool(idSearchReplace, ed);
-	}
+//	if (m_pToolbar)
+//	{
+//		m_pToolbar->EnableTool(idSearchFind, ed);
+//		m_pToolbar->EnableTool(idSearchReplace, ed);
+//	}
 
 	event.Skip();
 }

@@ -10,6 +10,8 @@ enum ConfirmResponse
 {
 	crYes = 0,
 	crNo,
+	crAllInFile,
+	crSkipFile,
 	crAll,
 	crCancel
 };
@@ -17,10 +19,13 @@ enum ConfirmResponse
 class ConfirmReplaceDlg : public wxDialog
 {
 	public:
-		ConfirmReplaceDlg(wxWindow* parent, const wxString& label = _("Replace this occurence?"));
+		ConfirmReplaceDlg(wxWindow* parent, bool replaceInFiles = false, 
+            const wxString& label = _("Replace this occurrence?"));
 		~ConfirmReplaceDlg();
 		void OnYes(wxCommandEvent& event);
 		void OnNo(wxCommandEvent& event);
+		void OnAllInFile(wxCommandEvent& event);
+		void OnSkipFile(wxCommandEvent& event);
 		void OnAll(wxCommandEvent& event);
 		void OnCancel(wxCommandEvent& event);
 		void CalcPosition(cbStyledTextCtrl* ed);

@@ -100,6 +100,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         int Find(cbStyledTextCtrl* control, cbFindReplaceData* data);
         int FindInFiles(cbFindReplaceData* data);
         int Replace(cbStyledTextCtrl* control, cbFindReplaceData* data);
+        int ReplaceInFiles(cbFindReplaceData* data);
         int FindNext(bool goingDown, cbStyledTextCtrl* control = 0, cbFindReplaceData* data = 0);
 
         void Print(PrintScope ps, PrintColourMode pcm, bool line_numbers);
@@ -174,7 +175,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
     private:
         EditorManager();
         ~EditorManager();
-        void CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFindReplaceData* data);
+        void CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFindReplaceData* data, bool replace = false);
         void OnCheckForModifiedFiles(wxCommandEvent& event);
 
         wxFlatNotebook* m_pNotebook;

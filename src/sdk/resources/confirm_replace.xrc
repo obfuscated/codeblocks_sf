@@ -6,7 +6,7 @@
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
         <object class="wxStaticText" name="lblMessage">
-          <label>Replace this occurence?
+          <label>Replace this occurrence?
 
 </label>
         </object>

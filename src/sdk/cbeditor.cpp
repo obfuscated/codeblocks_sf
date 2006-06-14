@@ -412,8 +412,6 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
     m_pSizer->Add(m_pControl, 1, wxEXPAND);
     SetSizer(m_pSizer);
     SetAutoLayout(true);
-    m_pSizer->Fit(this);
-    m_pSizer->SetSizeHints(this);
     m_pControl->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());
     Thaw();
 
@@ -580,7 +578,7 @@ cbStyledTextCtrl* cbEditor::CreateEditor()
 {
     m_ID = wxNewId();
 
-    cbStyledTextCtrl* control = new cbStyledTextCtrl(this, m_ID, wxDefaultPosition, wxDefaultSize);
+    cbStyledTextCtrl* control = new cbStyledTextCtrl(this, m_ID, wxPoint(0, 0), GetSize());
     control->UsePopUp(false);
 
     wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxEmptyString);

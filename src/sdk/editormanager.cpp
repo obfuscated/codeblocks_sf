@@ -52,6 +52,7 @@
 
 #include <wx/bmpbuttn.h>
 #include <wx/progdlg.h>
+#include <wx/fontutil.h>
 
 #include "editorcolourset.h"
 #include "editorconfigurationdlg.h"
@@ -957,7 +958,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
                 wxString msg;
                 msg.Printf(_("File %s is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"),
                            ed->GetFilename().c_str());
-                ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow(), msg);
+                ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow(), false, msg);
                 dlg.SetTitle(_("Reload file?"));
                 PlaceWindow(&dlg);
                 ret = dlg.ShowModal();
@@ -1167,7 +1168,7 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     if (!replace)
         dlg = new FindDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, !ed, explicitly_find_in_files);
     else
-        dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection);
+        dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, !ed, explicitly_find_in_files);
 
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_CANCEL)
@@ -1211,23 +1212,26 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     if (!replace)
     {
         if (m_LastFindReplaceData->findInFiles)
-        {
-            int ans = FindInFiles(m_LastFindReplaceData);
-            // FindInFiles() is done, default back to Find in Editor
-            m_LastFindReplaceData->findInFiles = false;
-            return ans;
-        }
+            return FindInFiles(m_LastFindReplaceData);
         else
             return Find(control, m_LastFindReplaceData);
     }
     else
     {
         m_LastFindReplaceData->initialreplacing = true;
-        return Replace(control, m_LastFindReplaceData);
+
+        if (m_LastFindReplaceData->findInFiles)
+            return ReplaceInFiles(m_LastFindReplaceData);
+        else
+            return Replace(control, m_LastFindReplaceData);
     }
+
+    //Default back to find or replace in Editor
+    if(m_LastFindReplaceData->findInFiles)
+        m_LastFindReplaceData->findInFiles = false;
 }
 
-void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFindReplaceData* data)
+void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFindReplaceData* data, bool replace)
 {
     if (!control || !data)
         return;
@@ -1276,7 +1280,8 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
     }
     else        // FindInFiles
     {           // searching direction down, entire scope
-        data->start = control->GetCurrentPos();
+        //Replace needs the entire scope, while find can wrap around.
+        data->start = ( replace ? 0 : control->GetCurrentPos() );
         data->end   = control->GetLength();
     }
 }
@@ -1427,6 +1432,304 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
     }
     control->EndUndoAction();
 
+    return pos;
+}
+
+int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
+{
+    if (!data) return 0;
+    if (data->findText.IsEmpty()) return 0;
+
+    // let's make a list of all the files to search in
+    wxArrayString filesList;
+
+    if (data->scope == 0) // find in project files
+    {
+        // fill the search list with all the project files
+        cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+        if (!prj)
+            return 0;
+
+        wxString fullpath = _T("");
+        for (int i = 0; i < prj->GetFilesCount(); ++i)
+        {
+            ProjectFile* pf = prj->GetFile(i);
+            if (pf)
+            {
+                fullpath = pf->file.GetFullPath();
+                if (filesList.Index(fullpath) == -1) // avoid adding duplicates
+                {
+                    if(wxFileExists(fullpath))  // Does the file exist?
+                        filesList.Add(fullpath);
+                }
+            }
+        }
+    }
+    else if (data->scope == 1) // find in open files
+    {
+        // fill the search list with the open files
+        for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+        {
+            cbEditor* ed = InternalGetBuiltinEditor(i);
+            if (ed)
+                filesList.Add(ed->GetFilename());
+        }
+    }
+    else if (data->scope == 2) // find in workspace
+    {
+		// loop over all the projects in the workspace (they are contained in the ProjectManager)
+		const ProjectsArray* pProjects = Manager::Get()->GetProjectManager()->GetProjects();
+		if(pProjects)
+		{
+			int count = pProjects->GetCount();
+			for (int idxProject = 0; idxProject < count; ++idxProject)
+			{
+				cbProject* pProject = pProjects->Item(idxProject);
+				if(pProject)
+				{
+					wxString fullpath = _T("");
+					for (int idxFile = 0; idxFile < pProject->GetFilesCount(); ++idxFile)
+					{
+						ProjectFile* pf = pProject->GetFile(idxFile);
+						if (pf)
+						{
+							fullpath = pf->file.GetFullPath();
+							if (filesList.Index(fullpath) == -1) // avoid adding duplicates
+							{
+								if(wxFileExists(fullpath))  // Does the file exist?
+									filesList.Add(fullpath);
+							}
+						}
+					} // end for : idx : idxFile
+				}
+			} // end for : idx : idxProject
+		}
+    }
+
+    // if the list is empty, leave
+    int filesCount = filesList.GetCount();
+    if (filesCount == 0)
+    {
+        cbMessageBox(_("No files to search in!"), _("Error"), wxICON_WARNING);
+        return 0;
+    }
+
+    int flags = 0;
+    if (data->matchWord)
+        flags |= wxSCI_FIND_WHOLEWORD;
+    if (data->startWord)
+        flags |= wxSCI_FIND_WORDSTART;
+    if (data->matchCase)
+        flags |= wxSCI_FIND_MATCHCASE;
+    if (data->regEx)
+        flags |= wxSCI_FIND_REGEXP;
+
+    bool replace = false;
+    bool confirm = true;
+    bool stop = false;
+    bool wholeFile = false;
+    bool all = false;
+    int pos = -1;
+
+    wxPoint LastDlgPosition;
+    bool HaveLastDlgPosition = false;
+
+    wxProgressDialog* progress = 0;
+    wxString fileContents;
+    wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxLocale::GetSystemEncodingName());
+    wxFontEncoding def_encoding = wxFontMapper::GetEncodingFromName(enc_name);
+
+    // keep a copy of the find struct
+    cbFindReplaceData dataCopy = *data;
+
+    for (int i = 0; i<filesCount || stop; ++i)
+    {
+        cbEditor *ed = NULL;
+        cbStyledTextCtrl *control = NULL;
+        bool fileWasNotOpen = false;
+
+        if (progress)
+        {
+            if (!progress->Update(i))
+            {
+                if (cbMessageBox(_("Are you sure you want to stop replacing in files?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
+                    break;
+                else
+                    progress->Resume();
+            }
+        }
+
+        //Check if this file is already open
+        EditorBase *eb = IsOpen(filesList[i]);
+        if (eb)
+        {
+            //File was already open
+            fileWasNotOpen = false;
+
+            ed = GetBuiltinEditor(eb);
+            if (ed) control = ed->GetControl();
+        }
+
+        //If it's still NULL, open a new editor
+        if (!control)
+        {
+            wxFile file(filesList[i]);
+            if (!file.IsOpened())
+                continue;
+            fileContents = cbReadFileContents(file, def_encoding);
+            if (fileContents.Find(data->findText) == -1)
+                continue;
+
+            //File was not open, i opened it.
+            fileWasNotOpen = true;
+
+            ed = Open(filesList[i]);
+            if (ed) control = ed->GetControl();
+        }
+        //Still NULL?
+        if (!control || !ed)
+            continue;
+
+        SetActiveEditor(ed);
+        control->BeginUndoAction(); //undo
+
+        *data = dataCopy;
+        CalculateFindReplaceStartEnd(control, data, true);
+
+        //reset bools
+        wholeFile = false;
+        if (!all) confirm = true;
+
+        //Replace in this file
+        while(!stop || wholeFile)
+        {
+            int lengthFound = 0;
+            pos = control->FindText(data->start, data->end, data->findText,
+                flags, &lengthFound);
+
+            if (pos == -1)
+                break;
+
+            if (confirm)
+            {
+                control->GotoPos(pos);
+                control->EnsureVisible(control->LineFromPosition(pos));
+            }
+            control->SetSelection(pos, pos + lengthFound);
+            data->start = pos;
+            data->initialreplacing = false;  // special treatment only necessary the first time
+
+            if (confirm)
+            {
+                ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow(), true);
+                // dlg.CalcPosition(control);
+                // TODO (thomas#1#): Check whether the existing code actually works with twin view
+                // else, we need something like:
+                // PlaceWindow(&dlg, pdlRelative);
+
+                // NOTE (Tiwag#1#): dlg.CalcPosition doesn't work for me with dual monitor setup,
+                //     workaround : remember last dialog position, user can position
+                //                  it outside of text where he wants
+                // Move dialog to last position if already available,
+                // else place it according to environments settings
+                if ( HaveLastDlgPosition )
+                    dlg.Move(LastDlgPosition);
+                else
+                    dlg.CalcPosition(control);
+
+                int ans = dlg.ShowModal();
+                LastDlgPosition = dlg.GetPosition();
+                HaveLastDlgPosition = true;
+                switch (ans)
+                {
+                    case crYes:
+                        replace = true;
+                        break;
+                    case crNo:
+                        replace = false;
+                        break;
+                    case crAllInFile:
+                        confirm = false;
+                        replace = true;
+                        wholeFile = true;
+                        break;
+                    case crSkipFile:
+                        confirm = false;
+                        replace = false;
+                        wholeFile = true;
+                        break;
+                    case crAll:
+                        replace = true;
+                        confirm = false;
+                        all = true;
+                        // let's create a progress dialog because it might take some time depending on the files count
+                        progress = new wxProgressDialog(_("Replace in files"),
+                                     _("Please wait while replacing in files..."),
+                                     filesCount,
+                                     Manager::Get()->GetAppWindow(),
+                                     wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
+                        PlaceWindow(progress);
+                        // now that we need no confirmation, freeze the app window
+                        Manager::Get()->GetAppWindow()->Freeze();
+                        break;
+                    case crCancel:
+                        stop = true;
+                        break;
+                }
+            }
+
+            if (!stop)
+            {
+                if (replace)
+                {
+                    int lengthReplace = data->replaceText.Length();
+                    if (data->regEx)
+                    {
+                        // set target same as selection
+                        control->SetTargetStart(control->GetSelectionStart());
+                        control->SetTargetEnd(control->GetSelectionEnd());
+                        // replace with regEx support
+                        lengthReplace = control->ReplaceTargetRE(data->replaceText);
+                        // reset target
+                        control->SetTargetStart(0);
+                        control->SetTargetEnd(0);
+                    }
+                    else
+                        control->ReplaceSelection(data->replaceText);
+
+                    data->start += lengthReplace;
+
+                    // adjust end pos by adding the length difference
+                    //between find and replace strings
+                    int diff = lengthReplace - lengthFound;
+                    if (data->directionDown)
+                        data->end += diff;
+                    else
+                        data->end -= diff;
+                }
+                else
+                {
+                    if (data->directionDown)
+                        data->start += lengthFound;
+                    else
+                        data->start -= lengthFound;
+                }
+            }
+        }
+
+        control->EndUndoAction(); // undo
+
+        //If i opened the file and no replacement was made,
+        //close the editor
+        if (!ed->GetModified() && fileWasNotOpen)
+            Close(ed, true);
+    }
+
+    // if we showed the progress, the app window is frozen; unfreeze it
+    if (progress)
+        Manager::Get()->GetAppWindow()->Thaw();
+
+    delete progress;
     return pos;
 }
 
@@ -1632,8 +1935,8 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
                                  wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
 
     PlaceWindow(progress);
-    // keep a copy of the find struct
 
+    // keep a copy of the find struct
     cbFindReplaceData localData = *data;
 
     if ( !data->delOldSearches )
