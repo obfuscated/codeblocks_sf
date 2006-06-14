@@ -429,6 +429,7 @@ void wxsWindowRes::RebuildCode()
 	{
 		HeadersArray.Add(_T("<wx/xrc/xmlres.h>"));
 	}
+	HeadersArray.Add(_T("<wx/settings.h>"));
 	HeadersArray.Sort();
 	CodeHeader.Printf(wxsBHeaderF("Headers"),GetClassName().c_str());
 	Code = CodeHeader;
