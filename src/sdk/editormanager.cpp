@@ -95,6 +95,9 @@ struct cbFindReplaceData
     bool hiddenSearch;
 };
 
+static const int idNBTabSplitHorz = wxNewId();
+static const int idNBTabSplitVert = wxNewId();
+static const int idNBTabUnsplit = wxNewId();
 static const int idNBTabClose = wxNewId();
 static const int idNBTabCloseAll = wxNewId();
 static const int idNBTabCloseAllOthers = wxNewId();
@@ -167,6 +170,9 @@ BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
     EVT_FLATNOTEBOOK_PAGE_CHANGING(ID_NBEditorManager, EditorManager::OnPageChanging)
     EVT_FLATNOTEBOOK_PAGE_CLOSING(ID_NBEditorManager, EditorManager::OnPageClosing)
     EVT_FLATNOTEBOOK_CONTEXT_MENU(ID_NBEditorManager, EditorManager::OnPageContextMenu)
+    EVT_MENU(idNBTabSplitHorz, EditorManager::OnGenericContextMenuHandler)
+    EVT_MENU(idNBTabSplitVert, EditorManager::OnGenericContextMenuHandler)
+    EVT_MENU(idNBTabUnsplit, EditorManager::OnGenericContextMenuHandler)
     EVT_MENU(idNBTabTop, EditorManager::OnTabPosition)
     EVT_MENU(idNBTabBottom, EditorManager::OnTabPosition)
     EVT_MENU(idNBTabClose, EditorManager::OnClose)
@@ -1750,6 +1756,20 @@ int EditorManager::FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindRep
     return Find(control, data);
 }
 
+void EditorManager::OnGenericContextMenuHandler(wxCommandEvent& event)
+{
+    EditorBase* eb = GetActiveEditor();
+    cbEditor* ed = GetBuiltinEditor(eb);
+    int id = event.GetId();
+
+    if (id == idNBTabSplitHorz && ed)
+        ed->Split(cbEditor::stHorizontal);
+    else if (id == idNBTabSplitVert && ed)
+        ed->Split(cbEditor::stVertical);
+    else if (id == idNBTabUnsplit && ed)
+        ed->Unsplit();
+}
+
 void EditorManager::OnPageChanged(wxFlatNotebookEvent& event)
 {
     EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(event.GetSelection()));
@@ -1803,6 +1823,22 @@ void EditorManager::OnPageContextMenu(wxFlatNotebookEvent& event)
     pop->AppendSeparator();
     pop->Append(idNBTabTop, _("Tabs at top"));
     pop->Append(idNBTabBottom, _("Tabs at bottom"));
+
+    cbEditor* ed = GetBuiltinEditor(event.GetSelection());
+    if (ed)
+    {
+        wxMenu* splitMenu = new wxMenu;
+        splitMenu->Append(idNBTabSplitHorz, _("Horizontally"));
+        splitMenu->Append(idNBTabSplitVert, _("Vertically"));
+        splitMenu->AppendSeparator();
+        splitMenu->Append(idNBTabUnsplit, _("Unsplit"));
+        splitMenu->Enable(idNBTabSplitHorz, ed->GetSplitType() != cbEditor::stHorizontal);
+        splitMenu->Enable(idNBTabSplitVert, ed->GetSplitType() != cbEditor::stVertical);
+        splitMenu->Enable(idNBTabUnsplit, ed->GetSplitType() != cbEditor::stNoSplit);
+
+        pop->AppendSeparator();
+        pop->Append(-1, _("Split view..."), splitMenu);
+    }
 
     bool any_modified = false;
 

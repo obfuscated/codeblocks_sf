@@ -48,7 +48,8 @@ class DLLIMPORT cbEditor : public EditorBase
 	public:
         enum SplitType
         {
-            stHorizontal = 0,
+            stNoSplit = 0,
+            stHorizontal,
             stVertical
         };
 
@@ -83,6 +84,8 @@ class DLLIMPORT cbEditor : public EditorBase
 		  * This function may return NULL if the editor is not split.
 		  */
         cbStyledTextCtrl* GetRightSplitViewControl() const { return m_pControl2; }
+        /** Returns the state of split-view for this editor. */
+        SplitType GetSplitType() const { return m_SplitType; }
 
 		/** Returns true if editor is OK, i.e. constructor was called with a filename
 		  * parameter and file was opened succesfully. If it returns false, you
@@ -279,6 +282,7 @@ class DLLIMPORT cbEditor : public EditorBase
         wxBoxSizer* m_pSizer;
         cbStyledTextCtrl* m_pControl;
         cbStyledTextCtrl* m_pControl2;
+        SplitType m_SplitType;
         int m_ID;
 		bool m_Modified;
 		int m_Index;

@@ -29,7 +29,7 @@
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
 #define PLUGIN_SDK_VERSION_MINOR 7
-#define PLUGIN_SDK_VERSION_RELEASE 16
+#define PLUGIN_SDK_VERSION_RELEASE 17
 
 // class decls
 class ProjectBuildTarget;

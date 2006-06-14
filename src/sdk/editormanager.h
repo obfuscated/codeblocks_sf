@@ -130,6 +130,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void RebuildOpenedFilesTree(wxTreeCtrl *tree = 0L);
         void RefreshOpenedFilesTree(bool force = false);
 
+        void OnGenericContextMenuHandler(wxCommandEvent& event);
         void OnPageChanged(wxFlatNotebookEvent& event);
         void OnPageChanging(wxFlatNotebookEvent& event);
         void OnPageClosing(wxFlatNotebookEvent& event);

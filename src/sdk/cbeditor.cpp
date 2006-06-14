@@ -387,6 +387,7 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
     m_pSizer(0),
     m_pControl(0),
     m_pControl2(0),
+    m_SplitType(stNoSplit),
     m_Modified(false),
     m_Index(-1),
     m_pProjectFile(0L),
@@ -664,6 +665,8 @@ void cbEditor::Split(cbEditor::SplitType split)
     m_pControl2->SetMarginWidth(0, m_pControl->GetMarginWidth(0));
 
     Thaw();
+
+    m_SplitType = split;
 }
 
 void cbEditor::Unsplit()
