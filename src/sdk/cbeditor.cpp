@@ -624,6 +624,8 @@ void cbEditor::Split(cbEditor::SplitType split)
         Unsplit();
         Manager::Yield();
     }
+    if (split == stNoSplit)
+        return;
 
     // remove the left control from the sizer
     m_pSizer->Detach(m_pControl);
@@ -654,6 +656,9 @@ void cbEditor::Split(cbEditor::SplitType split)
 
         case stVertical:
             m_pSplitter->SplitVertically(m_pControl, m_pControl2, 0);
+            break;
+
+        default:
             break;
     }
 
