@@ -660,6 +660,9 @@ void cbEditor::Split(cbEditor::SplitType split)
     InternalSetEditorStyleBeforeFileOpen(m_pControl2);
     InternalSetEditorStyleAfterFileOpen(m_pControl2);
 
+    // make sure the line numbers margin is correct for the new control
+    m_pControl2->SetMarginWidth(0, m_pControl->GetMarginWidth(0));
+
     Thaw();
 }
 
