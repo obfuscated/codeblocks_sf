@@ -975,7 +975,8 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     m_pTree->Expand(m_pTree->GetRootItem());
     UnfreezeTree();
     m_pWorkspace = new cbWorkspace(filename);
-    if (m_pWorkspace->IsOK())
+    bool success = m_pWorkspace->IsOK();
+    if (success)
     {
         RebuildTree();
         if (m_pActiveProject)
@@ -989,7 +990,12 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
         Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree(true);
         UnfreezeTree(true);
     }
-    return m_pWorkspace->IsOK();
+    else
+    {
+        m_IsLoadingWorkspace=false;
+        CloseWorkspace();
+    }
+    return success;
 }
 
 bool ProjectManager::SaveWorkspace()

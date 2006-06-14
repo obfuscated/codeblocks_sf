@@ -156,10 +156,14 @@ void StartHerePage::SetPageContent(const wxString& buffer)
 
 bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
 {
+    //If it's already loading something, stop here
+    if (Manager::Get()->GetProjectManager()->IsLoading())
+        return true;
     if (!m_pOwner)
         return true;
-
-    if (link.GetHref().StartsWith(_T("CB_CMD_")))
+    
+    wxString href = link.GetHref();
+    if (href.StartsWith(_T("CB_CMD_")))
     {
         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idStartHerePageLink);
         evt.SetString(link.GetHref());
@@ -167,19 +171,19 @@ bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
         return true;
     }
 
-    if(link.GetHref().IsSameAs(_T("http://www.codeblocks.org/"))
-    || link.GetHref().StartsWith(_T("http://developer.berlios.de/bugs/")))
-        {
+    if(href.IsSameAs(_T("http://www.codeblocks.org/"))
+    || href.StartsWith(_T("http://developer.berlios.de/bugs/")))
+    {
         wxTextDataObject *data = new wxTextDataObject(revInfo);
         wxTheClipboard->SetData(data);
-        }
+    }
 
-    if(link.GetHref().IsSameAs(_T("rev")))
-        {
+    if(href.IsSameAs(_T("rev")))
+    {
         wxTextDataObject *data = new wxTextDataObject(revInfo);
         wxTheClipboard->SetData(data);
         return true;
-        }
-
+    }
+    
     return false;
 }

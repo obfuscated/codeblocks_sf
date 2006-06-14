@@ -67,6 +67,10 @@
         <help>Save active project under a different name</help>
       </object>
       <object class="separator"/>
+      <object class="wxMenuItem" name="idFileOpenDefWorkspace">
+        <label>Open default workspace</label>
+        <help>Open the default workspace</help>
+      </object>
       <object class="wxMenuItem" name="idFileSaveWorkspace">
         <label>Save &amp;workspace</label>
         <help>Save current workspace</help>

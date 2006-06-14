@@ -107,6 +107,7 @@ int idFileSaveAs = XRCID("idFileSaveAs");
 int idFileSaveAllFiles = XRCID("idFileSaveAllFiles");
 int idFileSaveProject = XRCID("idFileSaveProject");
 int idFileSaveProjectAs = XRCID("idFileSaveProjectAs");
+int idFileOpenDefWorkspace = XRCID("idFileOpenDefWorkspace");
 int idFileSaveWorkspace = XRCID("idFileSaveWorkspace");
 int idFileSaveWorkspaceAs = XRCID("idFileSaveWorkspaceAs");
 int idFileCloseWorkspace = XRCID("idFileCloseWorkspace");
@@ -220,6 +221,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idFileSave, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveAs, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveAllFiles, MainFrame::OnFileMenuUpdateUI)
+    EVT_UPDATE_UI(idFileOpenDefWorkspace, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveWorkspace, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveWorkspaceAs, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileCloseWorkspace, MainFrame::OnFileMenuUpdateUI)
@@ -289,6 +291,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileSaveAllFiles,  MainFrame::OnFileSaveAllFiles)
     EVT_MENU(idFileSaveProject,  MainFrame::OnProjectSaveProject)
     EVT_MENU(idFileSaveProjectAs,  MainFrame::OnProjectSaveProjectAs)
+    EVT_MENU(idFileOpenDefWorkspace,  MainFrame::OnFileOpenDefWorkspace)
     EVT_MENU(idFileSaveWorkspace,  MainFrame::OnFileSaveWorkspace)
     EVT_MENU(idFileSaveWorkspaceAs,  MainFrame::OnFileSaveWorkspaceAs)
     EVT_MENU(idFileCloseWorkspace,  MainFrame::OnFileCloseWorkspace)
@@ -1440,29 +1443,34 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
 	wxString buf = event.GetString();
 	wxString links;
 
+    links << _T("<b>Recent projects</b><br>\n");
     if (m_ProjectsHistory.GetCount())
     {
-        links << _T("<b>Recent projects</b><br>\n");
         for (int i = 0; i < 9; ++i)
         {
             if (i >= (int)m_ProjectsHistory.GetCount())
                 break;
-            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%d\">%s</a><br>\n"),
+            links << wxString::Format(_T("&bull; <a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%d\">%s</a><br>\n"),
                                         i + 1, m_ProjectsHistory.GetHistoryFile(i).c_str());
         }
     }
+    else
+        links << _T("&nbsp;&nbsp;&nbsp;&nbsp;No recent projects<br>\n");
 
+    links << _T("<br><b>Recent files</b><br>\n");
     if (m_FilesHistory.GetCount())
     {
-        links << _T("<br><b>Recent files</b><br>\n");
         for (int i = 0; i < 9; ++i)
         {
             if (i >= (int)m_FilesHistory.GetCount())
                 break;
-            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_FILE_%d\">%s</a><br>\n"),
+            links << wxString::Format(_T("&bull; <a href=\"CB_CMD_OPEN_HISTORY_FILE_%d\">%s</a><br>\n"),
                                         i + 1, m_FilesHistory.GetHistoryFile(i).c_str());
         }
     }
+    else
+        links << _T("&nbsp;&nbsp;&nbsp;&nbsp;No recent files<br>\n");
+
 
     // update page
     buf.Replace(_T("CB_VAR_RECENT_FILES_AND_PROJECTS"), links);
@@ -1886,6 +1894,17 @@ void MainFrame::OnFileSaveAllFiles(wxCommandEvent& event)
 {
     Manager::Get()->GetEditorManager()->SaveAll();
     DoUpdateStatusBar();
+}
+
+void MainFrame::OnFileOpenDefWorkspace(wxCommandEvent& event)
+{
+    ProjectManager *pman = Manager::Get()->GetProjectManager();
+    if (!pman->GetWorkspace()->IsDefault() && !pman->LoadWorkspace())
+    {
+        // do not add the default workspace in recent projects list
+        // it's always one menu click away
+        cbMessageBox(_("Can't open default workspace (file exists?)"), _("Warning"), wxICON_WARNING);
+    }
 }
 
 void MainFrame::OnFileSaveWorkspace(wxCommandEvent& event)
@@ -2668,6 +2687,7 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idFileSaveAllFiles, ed);
     mbar->Enable(idFileSaveProject, prj && prj->GetModified() && canCloseProject);
     mbar->Enable(idFileSaveProjectAs, prj && canCloseProject);
+    mbar->Enable(idFileOpenDefWorkspace, !(Manager::Get()->GetProjectManager()->GetWorkspace()->IsDefault()) && canCloseProject);
     mbar->Enable(idFileSaveWorkspace, Manager::Get()->GetProjectManager() && canCloseProject);
     mbar->Enable(idFileSaveWorkspaceAs, Manager::Get()->GetProjectManager() && canCloseProject);
     mbar->Enable(idFileCloseWorkspace, Manager::Get()->GetProjectManager() && canCloseProject);
