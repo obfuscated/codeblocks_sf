@@ -2107,6 +2107,15 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
         int origstartline = m_pControl->LineFromPosition(event.GetPosition());
         int startline = origstartline;
 
+        // first remove any breakpoints that belong in deleted lines
+        if (isDel)
+        {
+            for (int line = startline; line < startline - linesAdded; ++line) // linesAdded is negative
+                debugger->RemoveBreakpoint(m_Filename, line);
+            // scintilla keeps one marker on the line that's left; remove this too
+            RemoveBreakpoint(startline, false);
+        }
+
         // HACK, part1:
         // ok, here's a hack for scintilla's bad behaviour with markers:
         // if you press Enter on a line with a marker, scintilla doesn't move
