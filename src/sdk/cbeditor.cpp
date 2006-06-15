@@ -411,11 +411,11 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
     m_pControl = CreateEditor();
     m_pSizer->Add(m_pControl, 1, wxEXPAND);
     SetSizer(m_pSizer);
-    SetAutoLayout(true);
     m_pSizer->Fit(this);
     m_pSizer->SetSizeHints(this);
-    m_pControl->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());
     Thaw();
+    m_pControl->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());
+    m_pSizer->SetItemMinSize(m_pControl, 32, 32);
 
     SetEditorStyleBeforeFileOpen();
     m_IsOK = Open();
@@ -580,7 +580,7 @@ cbStyledTextCtrl* cbEditor::CreateEditor()
 {
     m_ID = wxNewId();
 
-    cbStyledTextCtrl* control = new cbStyledTextCtrl(this, m_ID, wxDefaultPosition, wxDefaultSize);
+    cbStyledTextCtrl* control = new cbStyledTextCtrl(this, m_ID, wxDefaultPosition, m_pControl ? wxDefaultSize : GetSize());
     control->UsePopUp(false);
 
     wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxEmptyString);
@@ -624,18 +624,23 @@ void cbEditor::Split(cbEditor::SplitType split)
         Unsplit();
         Manager::Yield();
     }
-    if (split == stNoSplit)
+    m_SplitType = split;
+    if (m_SplitType == stNoSplit)
+    {
+        Thaw();
         return;
+    }
 
     // remove the left control from the sizer
     m_pSizer->Detach(m_pControl);
 
     // create the splitter window
-    m_pSplitter = new wxSplitterWindow(this, -1, wxDefaultPosition, wxDefaultSize, wxSP_3DSASH | wxSP_LIVE_UPDATE);
-    m_pSplitter->SetMinimumPaneSize(64);
+    m_pSplitter = new wxSplitterWindow(this, wxNewId(), wxDefaultPosition, wxDefaultSize, wxSP_NOBORDER | wxSP_LIVE_UPDATE);
+    m_pSplitter->SetMinimumPaneSize(32);
 
     // create the right control
     m_pControl2 = CreateEditor();
+
     // and make it a live copy of left control
     m_pControl2->SetDocPointer(m_pControl->GetDocPointer());
 
@@ -644,11 +649,12 @@ void cbEditor::Split(cbEditor::SplitType split)
     m_pControl2->Reparent(m_pSplitter);
 
     // add the splitter in the sizer
+    m_pSizer->SetDimension(0, 0, GetSize().x, GetSize().y);
     m_pSizer->Add(m_pSplitter, 1, wxEXPAND);
     m_pSizer->Layout();
 
     // split as needed
-    switch (split)
+    switch (m_SplitType)
     {
         case stHorizontal:
             m_pSplitter->SplitHorizontally(m_pControl, m_pControl2, 0);
@@ -670,8 +676,6 @@ void cbEditor::Split(cbEditor::SplitType split)
     m_pControl2->SetMarginWidth(0, m_pControl->GetMarginWidth(0));
 
     Thaw();
-
-    m_SplitType = split;
 }
 
 void cbEditor::Unsplit()
