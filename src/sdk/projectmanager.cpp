@@ -947,7 +947,7 @@ cbWorkspace* ProjectManager::GetWorkspace()
 {
     if (!m_pWorkspace)
     {
-        m_pWorkspace = new cbWorkspace(_T(""));
+        m_pWorkspace = new cbWorkspace();
         m_pWorkspace->SetTitle(_("Workspace"));
         m_pWorkspace->SetModified(false);
     }
