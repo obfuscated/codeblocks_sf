@@ -48,7 +48,7 @@ cbKeyBinder::cbKeyBinder()
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts");
-	m_PluginInfo.version = _T("0.4.19 (2006/06/14)");
+	m_PluginInfo.version = _T("0.4.20 (2006/06/15)");
 	m_PluginInfo.description <<_("\nCode::Blocks KeyBinder (2006/04/22)\n\n")
                             << _("NOTE: Ctrl+Alt+{UP|DOWN} is unsupported.\n\n");
 	m_PluginInfo.author = _T("Pecan Heber");
