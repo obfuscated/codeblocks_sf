@@ -179,6 +179,7 @@ int idSearchFindInFiles = XRCID("idSearchFindInFiles");
 int idSearchFindNext = XRCID("idSearchFindNext");
 int idSearchFindPrevious = XRCID("idSearchFindPrevious");
 int idSearchReplace = XRCID("idSearchReplace");
+int idSearchReplaceInFiles = XRCID("idSearchReplaceInFiles");
 int idSearchGotoLine = XRCID("idSearchGotoLine");
 
 int idProjectNew = XRCID("idProjectNew");
@@ -267,6 +268,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idSearchFindNext, MainFrame::OnSearchMenuUpdateUI)
     EVT_UPDATE_UI(idSearchFindPrevious, MainFrame::OnSearchMenuUpdateUI)
     EVT_UPDATE_UI(idSearchReplace, MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchReplaceInFiles, MainFrame::OnSearchMenuUpdateUI)
     EVT_UPDATE_UI(idSearchGotoLine, MainFrame::OnSearchMenuUpdateUI)
 
     EVT_UPDATE_UI(idViewToolMain, MainFrame::OnViewMenuUpdateUI)
@@ -346,6 +348,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idSearchFindNext, MainFrame::OnSearchFindNext)
     EVT_MENU(idSearchFindPrevious, MainFrame::OnSearchFindNext)
     EVT_MENU(idSearchReplace, MainFrame::OnSearchReplace)
+    EVT_MENU(idSearchReplaceInFiles, MainFrame::OnSearchReplace)
     EVT_MENU(idSearchGotoLine, MainFrame::OnSearchGotoLine)
 
     EVT_MENU(idViewLayoutSave, MainFrame::OnViewLayoutSave)
@@ -2484,21 +2487,29 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
 
 void MainFrame::OnSearchFind(wxCommandEvent& event)
 {
-	Manager::Get()->GetEditorManager()->ShowFindDialog(false, event.GetId() == idSearchFindInFiles);
-}
+	bool bDoMultipleFiles = (event.GetId() == idSearchFindInFiles);
+	if(!bDoMultipleFiles)
+	{
+		bDoMultipleFiles = !Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+	}
+	Manager::Get()->GetEditorManager()->ShowFindDialog(false, bDoMultipleFiles);
+}// end of OnSearchFind
 
 void MainFrame::OnSearchFindNext(wxCommandEvent& event)
 {
-	if (event.GetId() == idSearchFindPrevious)
-		Manager::Get()->GetEditorManager()->FindNext(false);
-	else
-		Manager::Get()->GetEditorManager()->FindNext(true);
-}
+	bool bNext = !(event.GetId() == idSearchFindPrevious);
+	Manager::Get()->GetEditorManager()->FindNext(bNext);
+} // end of OnSearchFindNext
 
 void MainFrame::OnSearchReplace(wxCommandEvent& event)
 {
-	Manager::Get()->GetEditorManager()->ShowFindDialog(true, !Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor());
-}
+	bool bDoMultipleFiles = (event.GetId() == idSearchReplaceInFiles);
+	if(!bDoMultipleFiles)
+	{
+		bDoMultipleFiles = !Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+	}
+	Manager::Get()->GetEditorManager()->ShowFindDialog(true, bDoMultipleFiles);
+} // end of OnSearchReplace
 
 void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
 {
