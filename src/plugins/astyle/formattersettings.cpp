@@ -32,7 +32,8 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
-      formatter.setParenthesisPaddingMode(false);
+      formatter.setParensOutsidePaddingMode(false);
+      formatter.setParensInsidePaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -49,7 +50,8 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
-      formatter.setParenthesisPaddingMode(false);
+      formatter.setParensInsidePaddingMode(false);
+      formatter.setParensOutsidePaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -66,7 +68,8 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
-      formatter.setParenthesisPaddingMode(false);
+      formatter.setParensOutsidePaddingMode(false);
+      formatter.setParensInsidePaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -83,7 +86,8 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
-      formatter.setParenthesisPaddingMode(false);
+      formatter.setParensOutsidePaddingMode(false);
+      formatter.setParensInsidePaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -102,7 +106,8 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
-      formatter.setParenthesisPaddingMode(false);
+      formatter.setParensOutsidePaddingMode(false);
+      formatter.setParensInsidePaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -154,7 +159,8 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setBreakBlocksMode(cfg->ReadBool(_T("/break_blocks")));
       formatter.setBreakElseIfsMode(cfg->ReadBool(_T("/break_elseifs")));
       formatter.setOperatorPaddingMode(cfg->ReadBool(_T("/pad_operators")));
-      formatter.setParenthesisPaddingMode(cfg->ReadBool(_T("/pad_parentheses")));
+      formatter.setParensOutsidePaddingMode(cfg->ReadBool(_T("/pad_parentheses_out")));
+      formatter.setParensInsidePaddingMode(cfg->ReadBool(_T("/pad_parentheses_in")));
       formatter.setSingleStatementsMode(!cfg->ReadBool(_T("/keep_complex")));
       formatter.setBreakOneLineBlocksMode(!cfg->ReadBool(_T("/keep_blocks")));
       break;

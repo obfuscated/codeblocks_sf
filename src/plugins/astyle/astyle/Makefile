@@ -27,4 +27,4 @@ all:
 	$(BIN)
 
 clean:
-	rm -f $(OBJ) $(BIN)
+	rm -f $(OBJ)

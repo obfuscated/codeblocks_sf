@@ -26,7 +26,6 @@
  */
 
 #include "astyle.h"
-//#include "ASEnhancer.h"
 
 #include <iostream>
 #include <fstream>
@@ -44,7 +43,7 @@
 // disable secure version deprecation warnings for .NET 2005
 #pragma warning(disable: 4996)
 // for namespace problem in version 5.0
-#if _MSC_VER < 1200		// check for V6.0
+#if _MSC_VER < 1200        // check for V6.0
 #error - Use Microsoft compiler version 6 or higher
 #endif
 #endif
@@ -60,16 +59,16 @@
 #define IS_OPTION(arg,op)          ((arg).compare(op)==0)
 #define IS_OPTIONS(arg,a,b)        (IS_OPTION((arg),(a)) || IS_OPTION((arg),(b)))
 
-#define IS_PARAM_OPTION(arg,op)    ((arg).compare(0, strlen(op) , op)==0)
-#define IS_PARAM_OPTIONS(arg,a,b)  (IS_PARAM_OPTION((arg),(a)) || IS_PARAM_OPTION((arg),(b)))
+//#define IS_PARAM_OPTION(arg,op)    ((arg).compare(0, strlen(op), op)==0)
+//#define IS_PARAM_OPTIONS(arg,a,b)  (IS_PARAM_OPTION((arg),(a)) || IS_PARAM_OPTION((arg),(b)))
 
 #define GET_PARAM(arg,op)          ((arg).substr(strlen(op)))
-#define GET_PARAMS(arg,a,b) (IS_PARAM_OPTION((arg),(a)) ? GET_PARAM((arg),(a)) : GET_PARAM((arg),(b)))
+#define GET_PARAMS(arg,a,b) (isParamOption((arg),(a)) ? GET_PARAM((arg),(a)) : GET_PARAM((arg),(b)))
 
 using namespace std;
 using namespace astyle;
 
-const string _version = "1.17.0";
+const string _version = "1.18";
 
 // some compilers want this declared
 bool parseOption(ASFormatter &formatter, const string &arg, const string &errorInfo);
@@ -142,10 +141,10 @@ string ASStreamIterator<T>::nextLine()
     getline(*inStream, buffer);
     size_t lineLength = buffer.length();
 
-    if (lineLength > 0 &&buffer[lineLength-1] == '\r')
+    if (lineLength > 0 && buffer[lineLength-1] == '\r')
     {
         eolWindows++;
-        buffer.erase(lineLength-1);
+        buffer.erase(lineLength - 1);
     }
     else
         eolUnix++;
@@ -160,10 +159,10 @@ string ASStreamIterator<T>::nextLine()
 {
     char *srcPtr;
     char *filterPtr;
-
+ 
     inStream->getline(buffer, 2047);
     srcPtr = filterPtr = buffer;
-
+ 
     while (*srcPtr != 0)
     {
         if (*srcPtr != '\r')
@@ -171,7 +170,7 @@ string ASStreamIterator<T>::nextLine()
         srcPtr++;
     }
     *filterPtr = 0;
-
+ 
     return string(buffer);
 }
 */
@@ -190,13 +189,13 @@ bool parseOptions(ASFormatter &formatter,
     {
         arg = *option; //string(*option);
 
-        if (arg.compare(0, 2,"--") == 0)
+        if (arg.compare(0, 2, "--") == 0)
             ok &= parseOption(formatter, arg.substr(2), errorInfo);
         else if (arg[0] == '-')
         {
             size_t i;
 
-            for (i=1; i < arg.length(); ++i)
+            for (i = 1; i < arg.length(); ++i)
             {
                 if (isalpha(arg[i]) && i > 1)
                 {
@@ -217,7 +216,20 @@ bool parseOptions(ASFormatter &formatter,
     return ok;
 }
 
+bool isParamOption(const string &arg, const char *option)
+{
+    bool retVal = arg.compare(0, strlen(option), option) == 0;
+    // if comparing for short option, 2nd char of arg must be numeric
+    if(retVal && strlen(option) == 1 && arg.length() > 1)
+        if(!isdigit(arg[1]))
+            retVal = false;
+    return retVal;
+}
 
+bool isParamOption(const string &arg, const char *option1, const char *option2)
+{
+    return isParamOption(arg, option1) || isParamOption(arg, option2);
+}
 
 void manuallySetJavaStyle(ASFormatter &formatter)
 {
@@ -234,7 +246,7 @@ void manuallySetCStyle(ASFormatter &formatter)
 
 bool parseOption(ASFormatter &formatter, const string &arg, const string &errorInfo)
 {
-    if ( IS_OPTION(arg ,"style=ansi") )
+    if ( IS_OPTION(arg, "style=ansi") )
     {
         formatter.setBracketIndent(false);
         formatter.setSpaceIndentation(4);
@@ -243,7 +255,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
         formatter.setSwitchIndent(false);
         formatter.setNamespaceIndent(false);
     }
-    else if ( IS_OPTION(arg ,"style=gnu") )
+    else if ( IS_OPTION(arg, "style=gnu") )
     {
         formatter.setBlockIndent(true);
         formatter.setSpaceIndentation(2);
@@ -252,7 +264,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
         formatter.setSwitchIndent(false);
         formatter.setNamespaceIndent(false);
     }
-    else if ( IS_OPTION(arg ,"style=java") )
+    else if ( IS_OPTION(arg, "style=java") )
     {
         manuallySetJavaStyle(formatter);
         formatter.setBracketIndent(false);
@@ -260,7 +272,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
         formatter.setBracketFormatMode(ATTACH_MODE);
         formatter.setSwitchIndent(false);
     }
-    else if ( IS_OPTION(arg ,"style=kr") )
+    else if ( IS_OPTION(arg, "style=kr") )
     {
         //manuallySetCStyle(formatter);
         formatter.setBracketIndent(false);
@@ -270,7 +282,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
         formatter.setSwitchIndent(false);
         formatter.setNamespaceIndent(false);
     }
-    else if ( IS_OPTION(arg ,"style=linux") )
+    else if ( IS_OPTION(arg, "style=linux") )
     {
         formatter.setBracketIndent(false);
         formatter.setSpaceIndentation(8);
@@ -279,69 +291,76 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
         formatter.setSwitchIndent(false);
         formatter.setNamespaceIndent(false);
     }
-    else if ( IS_OPTIONS(arg ,"c", "mode=c") )
+    else if ( IS_OPTIONS(arg, "c", "mode=c") )
     {
         manuallySetCStyle(formatter);
     }
-    else if ( IS_OPTIONS(arg ,"j", "mode=java") )
+    else if ( IS_OPTIONS(arg, "j", "mode=java") )
     {
         manuallySetJavaStyle(formatter);
     }
-    else if ( IS_PARAM_OPTIONS(arg, "t", "indent=tab=") )
+    else if ( isParamOption(arg, "t", "indent=tab=") )
     {
         int spaceNum = 4;
         string spaceNumParam = GET_PARAMS(arg, "t", "indent=tab=");
         if (spaceNumParam.length() > 0)
             spaceNum = atoi(spaceNumParam.c_str());
-        formatter.setTabIndentation(spaceNum, false);
+        if (spaceNum < 2 || spaceNum > 20)
+            (*_err) << "Error in param: " << arg << endl;
+        else
+            formatter.setTabIndentation(spaceNum, false);
     }
-    else if ( IS_PARAM_OPTIONS(arg, "T", "force-indent=tab=") )
+    else if ( isParamOption(arg, "T", "force-indent=tab=") )
     {
         int spaceNum = 4;
         string spaceNumParam = GET_PARAMS(arg, "T", "force-indent=tab=");
         if (spaceNumParam.length() > 0)
             spaceNum = atoi(spaceNumParam.c_str());
-        formatter.setTabIndentation(spaceNum, true);
+        if (spaceNum < 2 || spaceNum > 20)
+            (*_err) << "Error in param: " << arg << endl;
+        else
+            formatter.setTabIndentation(spaceNum, true);
     }
     else if ( IS_OPTION(arg, "indent=tab") )
     {
         formatter.setTabIndentation(4);
     }
-    else if ( IS_PARAM_OPTIONS(arg, "s", "indent=spaces=") )
+    else if ( isParamOption(arg, "s", "indent=spaces=") )
     {
         int spaceNum = 4;
         string spaceNumParam = GET_PARAMS(arg, "s", "indent=spaces=");
         if (spaceNumParam.length() > 0)
             spaceNum = atoi(spaceNumParam.c_str());
-        formatter.setSpaceIndentation(spaceNum);
+        if (spaceNum < 2 || spaceNum > 20)
+            (*_err) << "Error in param: " << arg << endl;
+        else
+            formatter.setSpaceIndentation(spaceNum);
     }
     else if ( IS_OPTION(arg, "indent=spaces") )
     {
         formatter.setSpaceIndentation(4);
     }
-    else if ( IS_PARAM_OPTION(arg, "m") && arg.length() < 5 )
+    else if ( isParamOption(arg, "m", "min-conditional-indent=") )
     {
-        int minIndent = 0;
-        string minIndentParam = GET_PARAM(arg, "m");
+        int minIndent = 8;
+        string minIndentParam = GET_PARAMS(arg, "m", "min-conditional-indent=");
         if (minIndentParam.length() > 0)
             minIndent = atoi(minIndentParam.c_str());
-        formatter.setMinConditionalIndentLength(minIndent);
+        if (minIndent > 40)
+            (*_err) << "Error in param: " << arg << endl;
+        else
+            formatter.setMinConditionalIndentLength(minIndent);
     }
-    else if ( IS_PARAM_OPTION(arg, "min-conditional-indent=") )
-    {
-        int minIndent = 0;
-        string minIndentParam = GET_PARAM(arg, "min-conditional-indent=");
-        if (minIndentParam.length() > 0)
-            minIndent = atoi(minIndentParam.c_str());
-        formatter.setMinConditionalIndentLength(minIndent);
-    }
-    else if ( IS_PARAM_OPTIONS(arg, "M", "max-instatement-indent=") )
+    else if ( isParamOption(arg, "M", "max-instatement-indent=") )
     {
         int maxIndent = 40;
         string maxIndentParam = GET_PARAMS(arg, "M", "max-instatement-indent=");
         if (maxIndentParam.length() > 0)
             maxIndent = atoi(maxIndentParam.c_str());
-        formatter.setMaxInStatementIndentLength(maxIndent);
+        if (maxIndent > 80)
+            (*_err) << "Error in param: " << arg << endl;
+        else
+            formatter.setMaxInStatementIndentLength(maxIndent);
     }
     else if ( IS_OPTIONS(arg, "B", "indent-brackets") )
     {
@@ -395,15 +414,24 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
     {
         formatter.setSingleStatementsMode(false);
     }
-    else if ( IS_OPTION(arg, "pad=paren") )
+    else if ( IS_OPTIONS(arg, "P", "pad=paren") )
     {
-        formatter.setParenthesisPaddingMode(true);
+        formatter.setParensOutsidePaddingMode(true);
+        formatter.setParensInsidePaddingMode(true);
     }
-    else if ( IS_OPTIONS(arg, "P", "pad=all") )
+    else if ( IS_OPTIONS(arg, "d", "pad=paren-out") )
     {
-        formatter.setOperatorPaddingMode(true);
-        formatter.setParenthesisPaddingMode(true);
+        formatter.setParensOutsidePaddingMode(true);
     }
+    else if ( IS_OPTIONS(arg, "D", "pad=paren-in") )
+    {
+        formatter.setParensInsidePaddingMode(true);
+    }
+    //else if ( IS_OPTIONS(arg, "P", "pad=all") )
+    //{
+    //    formatter.setOperatorPaddingMode(true);
+    //    formatter.setParenthesisPaddingMode(true);
+    //}
     else if ( IS_OPTIONS(arg, "p", "pad=oper") )
     {
         formatter.setOperatorPaddingMode(true);
@@ -416,7 +444,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
     {
         formatter.setPreprocessorIndent(true);
     }
-    else if (IS_OPTION(arg, "convert-tabs"))
+    else if (IS_OPTIONS(arg, "V", "convert-tabs"))
     {
         formatter.setTabSpaceConversionMode(true);
     }
@@ -444,7 +472,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
     }
 // Options used by console
 #else
-    else if ( IS_PARAM_OPTION(arg, "suffix=") )
+    else if ( isParamOption(arg, "suffix=") )
     {
         string suffixParam = GET_PARAM(arg, "suffix=");
         if (suffixParam.length() > 0)
@@ -454,7 +482,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
     {
         _err = &cout;
     }
-    else if ( IS_OPTIONS(arg ,"v", "version") )
+    else if ( IS_OPTIONS(arg, "v", "version") )
     {
         (*_err) << "Artistic Style " << _version << endl;
         exit(1);
@@ -571,7 +599,8 @@ void importOptions(istream &in, vector<string> &optionsVector)
         do
         {
             in.get(ch);
-
+            if (in.eof())
+                break;
             // treat '#' as line comments
             if (ch == '#')
                 while (in)
@@ -615,7 +644,7 @@ bool stringEndsWith(const string &str, const string &suffix)
 
 void error(const char *why, const char* what)
 {
-    (*_err) << why << ' ' << what <<'\n' << endl;
+    (*_err) << why << ' ' << what << '\n' << endl;
     exit(1);
 }
 
@@ -623,8 +652,9 @@ void error(const char *why, const char* what)
 void printHelp()
 {
     (*_err) << endl;
-    (*_err) << "           (http://www.bigfoot.com/~davidsont/astyle)\n";
-    (*_err) << "           (created by Tal Davidson, davidsont@bigfoot.com)\n";
+    (*_err) << "                            Artistic Style " << _version.c_str() << endl;
+    (*_err) << "                              by Tal Davidson\n";
+    (*_err) << "                               and Jim Pattee\n";
     (*_err) << endl;
     (*_err) << "Usage  :  astyle [options] Source1.cpp Source2.cpp  [...]\n";
     (*_err) << "          astyle [options] < Original > Beautified\n";
@@ -752,13 +782,17 @@ void printHelp()
     (*_err) << "    Break 'else if()' statements into two different lines.\n";
     (*_err) << endl;
     (*_err) << "    --pad=oper   OR   -p\n";
-    (*_err) << "    Insert space paddings around operators only.\n";
+    (*_err) << "    Insert space paddings around operators.\n";
     (*_err) << endl;
-    (*_err) << "    --pad=paren\n";
-    (*_err) << "    Insert space paddings around parenthesies only.\n";
+    (*_err) << "    --pad=paren   OR   -P\n";
+    (*_err) << "    Insert space padding around parenthesis on both the outside\n";
+    (*_err) << "    and the inside.\n";
     (*_err) << endl;
-    (*_err) << "    --pad=all   OR   -P\n";
-    (*_err) << "    Insert space paddings around operators AND parenthesies.\n";
+    (*_err) << "    --pad=paren-out   OR   -d\n";
+    (*_err) << "    Insert space padding around parenthesis on the outside only.\n";
+    (*_err) << endl;
+    (*_err) << "    --pad=paren-in   OR   -D\n";
+    (*_err) << "    Insert space padding around parenthesis on the inside only.\n";
     (*_err) << endl;
     (*_err) << "    --one-line=keep-statements   OR   -o\n";
     (*_err) << "    Don't break lines containing multiple statements into\n";
@@ -767,7 +801,7 @@ void printHelp()
     (*_err) << "    --one-line=keep-blocks   OR   -O\n";
     (*_err) << "    Don't break blocks residing completely on one line.\n";
     (*_err) << endl;
-    (*_err) << "    --convert-tabs\n";
+    (*_err) << "    --convert-tabs   OR   -V\n";
     (*_err) << "    Convert tabs to spaces.\n";
     (*_err) << endl;
     (*_err) << "    --fill-empty-lines   OR   -E\n";
@@ -814,8 +848,8 @@ void printHelp()
     (*_err) << "       USERPROFILE environment variable ( i.e. %USERPROFILE%\\astylerc ).\n";
     (*_err) << "    If a default options file is found, the options in this file\n";
     (*_err) << "    will be parsed BEFORE the command-line options.\n";
-    (*_err) << "    Options within the default option file may be written without\n";
-    (*_err) << "    the preliminary '-' or '--'.\n";
+    (*_err) << "    Long options within the default option file may be written without\n";
+    (*_err) << "    the preliminary '--'.\n";
     (*_err) << endl;
 }
 
@@ -836,15 +870,15 @@ int main(int argc, char *argv[])
 
     (*_err) << "\nArtistic Style " << _version << endl;      // begin formatting
     // manage flags
-    for (int i=1; i<argc; i++)
+    for (int i = 1; i < argc; i++)
     {
         arg = string(argv[i]);
 
-        if ( IS_PARAM_OPTION(arg ,"--options=none") )
+        if ( IS_OPTION(arg, "--options=none") )
         {
             shouldParseOptionsFile = false;
         }
-        else if ( IS_PARAM_OPTION(arg ,"--options=") )
+        else if ( isParamOption(arg, "--options=") )
         {
             optionsFileName = GET_PARAM(arg, "--options=");
         }
@@ -891,6 +925,7 @@ int main(int argc, char *argv[])
             ifstream optionsIn(optionsFileName.c_str());
             if (optionsIn)
             {
+                (*_err) << "Using default options file " << optionsFileName << endl;
                 vector<string> fileOptionsVector;
                 importOptions(optionsIn, fileOptionsVector);
                 ok = parseOptions(formatter,
@@ -939,11 +974,13 @@ int main(int argc, char *argv[])
                 cout << endl;
         }
         cout.flush();
+        // display file formatted message
+        (*_err) << "formatted cin " << endl << endl;
     }
     else
     {
         // indent the given files
-        for (size_t i=0; i<fileNameVector.size(); i++)
+        for (size_t i = 0; i < fileNameVector.size(); i++)
         {
             string originalFileName = fileNameVector[i];
             string inFileName = originalFileName + _suffix;
@@ -995,7 +1032,7 @@ int main(int argc, char *argv[])
                 }
             }
             // display file formatted message
-            (*_err) << originalFileName.c_str() << " formatted" << endl;
+            (*_err) << "formatted " << originalFileName.c_str() << endl;
             out.flush();
             out.close();
             in.close();

@@ -27,8 +27,6 @@
 
 #include "astyle.h"
 
-#include <vector>
-#include <string>
 #include <cctype>
 #include <algorithm>
 #include <iostream>
@@ -243,7 +241,7 @@ ASBeautifier::ASBeautifier(const ASBeautifier &other)
     isInComment = other.isInComment;
     isInCase = other.isInCase;
     isInQuestion = other.isInQuestion;
-    isInStatement =other. isInStatement;
+    isInStatement = other.isInStatement;
     isInHeader = other.isInHeader;
     isCStyle = other.isCStyle;
     isInOperator = other.isInOperator;
@@ -362,7 +360,7 @@ void ASBeautifier::init()
     isInConst = false;
     isInConditional = false;
     templateDepth = 0;
-    parenDepth=0;
+    parenDepth = 0;
     blockTabCount = 0;
     leadingWhiteSpaces = 0;
     prevNonSpaceCh = '{';
@@ -414,7 +412,7 @@ void ASBeautifier::setTabIndentation(int length, bool forceTabs)
  */
 void ASBeautifier::setSpaceIndentation(int length)
 {
-    indentString=string(length, ' ');
+    indentString = string(length, ' ');
     indentLength = length;
 
     if (!isMinimalConditinalIndentSet)
@@ -677,8 +675,8 @@ string ASBeautifier::beautify(const string &originalLine)
     else
     {
         int trimSize;
-        for (trimSize=0;
-                trimSize < (int) originalLine.length() && trimSize<leadingWhiteSpaces && originalLine[trimSize] <= 0x20 ;
+        for (trimSize = 0;
+                trimSize < (int) originalLine.length() && trimSize < leadingWhiteSpaces && originalLine[trimSize] <= 0x20 ;
                 trimSize++)
             ;
         line = originalLine.substr(trimSize);
@@ -829,11 +827,11 @@ string ASBeautifier::beautify(const string &originalLine)
         spaceTabCount = inStatementIndentStack->back();
 
 
-    for (i=0; i<headerStackSize; i++)
+    for (i = 0; i < headerStackSize; i++)
     {
         isInClass = false;
 
-        if (blockIndent || (!(i>0 && (*headerStack)[i-1] != &AS_OPEN_BRACKET
+        if (blockIndent || (!(i > 0 && (*headerStack)[i-1] != &AS_OPEN_BRACKET
                               && (*headerStack)[i] == &AS_OPEN_BRACKET)))
             ++tabCount;
 
@@ -868,7 +866,7 @@ string ASBeautifier::beautify(const string &originalLine)
             && isInClass
             && classIndent
             && headerStackSize >= 2
-            &&(*headerStack)[headerStackSize-2] == &AS_CLASS
+            && (*headerStack)[headerStackSize-2] == &AS_CLASS
             && (*headerStack)[headerStackSize-1] == &AS_OPEN_BRACKET
             && line[0] == '}')
         --tabCount;
@@ -896,7 +894,7 @@ string ASBeautifier::beautify(const string &originalLine)
 
     // parse characters in the current line.
 
-    for (i=0; i < (int) line.length(); i++)
+    for (i = 0; i < (int) line.length(); i++)
     {
         tempCh = line[i];
 
@@ -920,14 +918,14 @@ string ASBeautifier::beautify(const string &originalLine)
             i++;
             continue;
         }
-        if (!(isInComment || isInLineComment) && ch=='\\')
+        if (!(isInComment || isInLineComment) && ch == '\\')
         {
             isSpecialChar = true;
             continue;
         }
 
         // handle quotes (such as 'x' and "Hello Dolly")
-        if (!(isInComment || isInLineComment) && (ch=='"' || ch=='\''))
+        if (!(isInComment || isInLineComment) && (ch == '"' || ch == '\''))
             if (!isInQuote)
             {
                 quoteChar = ch;
@@ -966,7 +964,7 @@ string ASBeautifier::beautify(const string &originalLine)
             continue;
         }
 
-        if (isInComment||isInLineComment)
+        if (isInComment || isInLineComment)
             continue;
 
         // if we have reached this far then we are NOT in a comment or string of special character...
@@ -1121,7 +1119,7 @@ string ASBeautifier::beautify(const string &originalLine)
             isInClassHeader = false;
             if (!isBlockOpener && currentHeader != NULL)
             {
-                for (size_t n=0; n < nonParenHeaders.size(); n++)
+                for (size_t n = 0; n < nonParenHeaders.size(); n++)
                     if (currentHeader == nonParenHeaders[n])
                     {
                         isBlockOpener = true;
@@ -1157,7 +1155,7 @@ string ASBeautifier::beautify(const string &originalLine)
 
             inStatementIndentStackSizeStack->push_back(inStatementIndentStack->size());
 
-            blockTabCount += isInStatement? 1 : 0;
+            blockTabCount += isInStatement ? 1 : 0;
             parenDepth = 0;
             isInStatement = false;
 
@@ -1205,7 +1203,7 @@ string ASBeautifier::beautify(const string &originalLine)
                             // recreate the header list in headerStack up to the previous 'if'
                             // from the temporary snapshot stored in lastTempStack.
                             int restackSize = lastTempStack->size() - indexOfIf - 1;
-                            for (int r=0; r<restackSize; r++)
+                            for (int r = 0; r < restackSize; r++)
                             {
                                 headerStack->push_back(lastTempStack->back());
                                 lastTempStack->pop_back();
@@ -1232,7 +1230,7 @@ string ASBeautifier::beautify(const string &originalLine)
                             // recreate the header list in headerStack up to the previous 'do'
                             // from the temporary snapshot stored in lastTempStack.
                             int restackSize = lastTempStack->size() - indexOfDo - 1;
-                            for (int r=0; r<restackSize; r++)
+                            for (int r = 0; r < restackSize; r++)
                             {
                                 headerStack->push_back(lastTempStack->back());
                                 lastTempStack->pop_back();
@@ -1255,7 +1253,7 @@ string ASBeautifier::beautify(const string &originalLine)
                             // recreate the header list in headerStack up to the previous 'try'
                             // from the temporary snapshot stored in lastTempStack.
                             int restackSize = lastTempStack->size() - indexOfTry - 1;
-                            for (int r=0; r<restackSize; r++)
+                            for (int r = 0; r < restackSize; r++)
                             {
                                 headerStack->push_back(lastTempStack->back());
                                 lastTempStack->pop_back();
@@ -1372,7 +1370,7 @@ string ASBeautifier::beautify(const string &originalLine)
         // special handling of 'case' statements
         if (ch == ':')
         {
-            if ((int) line.length() > i+1 && line[i+1] == ':') // look for ::
+            if ((int) line.length() > i + 1 && line[i+1] == ':') // look for ::
             {
                 ++i;
                 outBuffer.append(1, ':');
@@ -1401,7 +1399,7 @@ string ASBeautifier::beautify(const string &originalLine)
             else if (isCStyle && prevNonSpaceCh == ')')
             {
                 isInClassHeader = true;
-                if (i==0)
+                if (i == 0)
                     tabCount += 2;
             }
             else
@@ -1427,8 +1425,8 @@ string ASBeautifier::beautify(const string &originalLine)
             }
         }
 
-        if ((ch == ';'  || (parenDepth>0 && ch == ','))  && !inStatementIndentStackSizeStack->empty())
-            while ((int) inStatementIndentStackSizeStack->back() + (parenDepth>0 ? 1 : 0)
+        if ((ch == ';'  || (parenDepth > 0 && ch == ','))  && !inStatementIndentStackSizeStack->empty())
+            while ((int) inStatementIndentStackSizeStack->back() + (parenDepth > 0 ? 1 : 0)
                     < (int) inStatementIndentStack->size())
                 inStatementIndentStack->pop_back();
 
@@ -1530,7 +1528,7 @@ string ASBeautifier::beautify(const string &originalLine)
             }
 
             if (parenDepth == 0 && ch == ';')
-                isInStatement=false;
+                isInStatement = false;
 
             isInClassHeader = false;
 
@@ -1661,22 +1659,22 @@ string ASBeautifier::beautify(const string &originalLine)
 
     if (!lineStartsInComment
             && !blockIndent
-            && outBuffer.length()>0
-            && outBuffer[0]=='{'
+            && outBuffer.length() > 0
+            && outBuffer[0] == '{'
             && !(lineOpeningBlocksNum > 0 && lineOpeningBlocksNum == lineClosingBlocksNum)
             && !(headerStack->size() > 1 && (*headerStack)[headerStack->size()-2] == &AS_OPEN_BRACKET)
             && shouldIndentBrackettedLine)
         --tabCount;
 
     else if (!lineStartsInComment
-             && outBuffer.length()>0
-             && outBuffer[0]=='}'
+             && outBuffer.length() > 0
+             && outBuffer[0] == '}'
              && shouldIndentBrackettedLine )
         --tabCount;
 
     // correctly indent one-line-blocks...
     else if (!lineStartsInComment
-             && outBuffer.length()>0
+             && outBuffer.length() > 0
              && lineOpeningBlocksNum > 0
              && lineOpeningBlocksNum == lineClosingBlocksNum
              && previousLastLineHeader != NULL
@@ -1687,8 +1685,8 @@ string ASBeautifier::beautify(const string &originalLine)
         tabCount = 0;
 
     // take care of extra bracket indentatation option...
-    if (bracketIndent && outBuffer.length()>0 && shouldIndentBrackettedLine)
-        if (outBuffer[0]=='{' || outBuffer[0]=='}')
+    if (bracketIndent && outBuffer.length() > 0 && shouldIndentBrackettedLine)
+        if (outBuffer[0] == '{' || outBuffer[0] == '}')
             tabCount++;
 
 
@@ -1718,19 +1716,20 @@ string ASBeautifier::beautify(const string &originalLine)
     if (tabCount < 0)
         tabCount = 0;
     if (lineCommentNoBeautify)                                      // **********************
-        tabCount=0;                                                 // **********************
+        tabCount = 0;                                                 // **********************
 
     // finally, insert indentations into begining of line
 
     prevFinalLineSpaceTabCount = spaceTabCount;
     prevFinalLineTabCount = tabCount;
 
-    if (shouldForceTabIndentation) {
+    if (shouldForceTabIndentation)
+    {
         tabCount += spaceTabCount / indentLength;
         spaceTabCount = spaceTabCount % indentLength;
     }
 
-    outBuffer = preLineWS(spaceTabCount,tabCount) + outBuffer;
+    outBuffer = preLineWS(spaceTabCount, tabCount) + outBuffer;
 
     if (lastLineHeader != NULL)
         previousLastLineHeader = lastLineHeader;
@@ -1743,7 +1742,7 @@ string ASBeautifier::preLineWS(int spaceTabCount, int tabCount)
 {
     string ws;
 
-    for (int i=0; i<tabCount; i++)
+    for (int i = 0; i < tabCount; i++)
         ws += indentString;
 
     while ((spaceTabCount--) > 0)
@@ -1778,7 +1777,7 @@ void ASBeautifier::registerInStatementIndent(const string &line, int i, int spac
     }
 
     if (updateParenStack)
-        parenIndentStack->push_back(i+spaceTabCount);
+        parenIndentStack->push_back(i + spaceTabCount);
 
     inStatementIndent = i + nextNonWSChar + spaceTabCount;
 
@@ -1786,7 +1785,7 @@ void ASBeautifier::registerInStatementIndent(const string &line, int i, int spac
         inStatementIndent = minIndent + spaceTabCount;
 
     if (i + nextNonWSChar > maxInStatementIndent)
-        inStatementIndent =  indentLength*2 + spaceTabCount;
+        inStatementIndent =  indentLength * 2 + spaceTabCount;
 
 
 
@@ -1848,7 +1847,7 @@ int ASBeautifier::getNextProgramCharDistance(const string &line, int i)
  */
 bool ASBeautifier::isLegalNameChar(char ch) const
 {
-    return (isalnum(ch) || ch=='.' || ch=='_' || (!isCStyle && ch=='$') || (isCStyle && ch=='~'));
+    return (isalnum(ch) || ch == '.' || ch == '_' || (!isCStyle && ch == '$') || (isCStyle && ch == '~'));
 }
 
 
@@ -1863,7 +1862,7 @@ const string *ASBeautifier::findHeader(const string &line, int i, const vector<c
     // const string *header = NULL;
     int p;
 
-    for (p=0; p < maxHeaders; p++)
+    for (p = 0; p < maxHeaders; p++)
     {
         const string *header = possibleHeaders[p];
 
@@ -1924,7 +1923,7 @@ int ASBeautifier::indexOf(vector<const string*> &container, const string *elemen
 {
     vector<const string*>::const_iterator where;
 
-    where= find(container.begin(), container.end(), element);
+    where = find(container.begin(), container.end(), element);
     if (where == container.end())
         return -1;
     else
@@ -1949,7 +1948,7 @@ string ASBeautifier::trim(const string &str)
     while (start <= end && isWhiteSpace(str[end]))
         end--;
 
-    string returnStr(str, start, end+1-start);
+    string returnStr(str, start, end + 1 - start);
     return returnStr;
 }
 

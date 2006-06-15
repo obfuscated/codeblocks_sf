@@ -27,8 +27,6 @@
 
 #include "astyle.h"
 
-#include <string>
-
 using namespace std;
 
 namespace astyle

@@ -267,8 +267,15 @@
                       <border>8</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkPadParens">
-                        <label>Insert space padding around parenthesies</label>
+                      <object class="wxCheckBox" name="chkPadParensOut">
+                        <label>Insert space padding around parenthesies on the outside</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkPadParensIn">
+                        <label>Insert space padding around parenthesies on the inside</label>
                       </object>
                       <flag>wxTOP</flag>
                       <border>8</border>

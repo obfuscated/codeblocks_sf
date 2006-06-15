@@ -1,7 +1,25 @@
 Welcome to Artistic Style!
 
+
+Download Versions:
+===================
+
+astyle_x.y_linux.tar.gz is the Linux version of astyle.  It contains 
+the source code, documentation, and a makefile for compiling the
+source code with GCC.  Refer to the Linux Version compile 
+instructions below.  Refer to the documentation for instructions on
+executing AStyle.exe.  GCC will automatically allow the use of 
+wildcards (such as "*.cpp") during execution.
+
+AStyle_x.y_windows.zip is the Windows version of astyle.  It
+contains the source code, documentation, and an executable,
+AStyle.exe.  Refer to the documentation for instructions on
+executing AStyle.exe.  It has been compiled to allow the use 
+of wildcards (such as "*.cpp") during execution.
+
+
 Linux Version:
-================
+===================
 To compile under linux/unix/cygwin:
 -----------------------------------
 
@@ -16,12 +34,14 @@ To build astyle, use the makefile located in the astyle/src directory:
 To clean the object files:
 	make clean
     
+The astyle executable will be in the 'src' folder.    
+    
 The Linux GCC compiler will automatically allow the use of wildcards 
 (such as "*.cpp") during execution.
 
 
 Windows Version:
-================
+===================
 Precompiled executable:
 -----------------------
 In addition to the sources the Windows version contains, 

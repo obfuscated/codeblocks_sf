@@ -229,7 +229,7 @@ class ASEnhancer
         // functions
         ASEnhancer();
         ~ASEnhancer();
-        void init(int, string, bool, bool, bool, bool, bool);
+        void init(int, string, bool, bool);
         void enhance(string &line);
 
     private:
@@ -238,9 +238,9 @@ class ASEnhancer
         bool   useTabs;
         bool   isCStyle;
         bool   caseIndent;
-        bool   emptyLineFill;
-        bool   shouldPadOperators;
-        bool   shouldPadParenthesies;
+//        bool   emptyLineFill;
+//        bool   shouldPadOperators;
+//        bool   shouldPadParenthesies;
 
         // parsing variables
         int  lineNumber;
@@ -269,7 +269,7 @@ class ASEnhancer
          * @param ch        the character to be checked.
          */
         inline bool isLegalNameCharX(char ch) const {
-            return (isalnum(ch) || ch=='.' || ch=='_' || (!isCStyle && ch=='$') || (isCStyle && ch=='~'));
+            return (isalnum(ch) || ch == '.' || ch == '_' || (!isCStyle && ch == '$') || (isCStyle && ch == '~'));
         }
         /**
          * check if a specific character is a whitespace character
@@ -294,7 +294,8 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
         void setBracketFormatMode(BracketMode mode);
         void setBreakClosingHeaderBracketsMode(bool state);
         void setOperatorPaddingMode(bool mode);
-        void setParenthesisPaddingMode(bool mode);
+        void setParensOutsidePaddingMode(bool mode);
+        void setParensInsidePaddingMode(bool mode);
         void setBreakOneLineBlocksMode(bool state);
         void setSingleStatementsMode(bool state);
         void setTabSpaceConversionMode(bool state);
@@ -317,11 +318,14 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
         bool isUnaryMinus() const;
         bool isInExponent() const;
         bool isOneLineBlockReached() const;
-        bool lineBeginsWith(const char charToCheck) const;            // **********************
+        bool isNextCharWhiteSpace() const;      // $$$$$$$$$$$$$$$$$$$$$
+//      bool isLastCharWhiteSpace() const;      // $$$$$$$$$$$$$$$$$$$$$
+        bool lineBeginsWith(char charToCheck) const;            // **********************
         void appendChar(char ch, bool canBreakLine = true);
 //        void appendCurrentChar(bool canBreakLine = true);
         void appendSequence(const string &sequence, bool canBreakLine = true);
         void appendSpacePad();
+        void appendSpaceAfter();
         void breakLine();
 //        inline bool isSequenceReached(const char *sequence) const;   // ***********************
         const string *findHeader(const vector<const string*> &headers, bool checkBoundry = true);
@@ -355,7 +359,8 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
         BracketMode bracketFormatMode;
         bool isVirgin;
         bool shouldPadOperators;
-        bool shouldPadParenthesies;
+        bool shouldPadParensOutside;
+        bool shouldPadParensInside;
         bool shouldConvertTabs;
         bool isInLineComment;
         bool isInComment;
@@ -363,6 +368,7 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
         bool isInTemplate;   // true both in template definitions (e.g. template<class A>) and template usage (e.g. F<int>).
         bool doesLineStartComment;
         bool isInQuote;
+        bool isInBlParen;
         bool isSpecialChar;
         bool isNonParenHeader;
         bool foundQuestionMark;

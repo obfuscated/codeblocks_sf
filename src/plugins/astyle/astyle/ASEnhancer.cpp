@@ -25,11 +25,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
 
-// need to comment out the following before production
-//#define TRACEswitch              // trace switches in unindent function
-//#define TRACEcase                // trace cases in unindent function
-//#define TRACEmisc                // trace misc fixes
-// it is an error if the above are defined for NDEBUG
+// it is an error if these are defined for NDEBUG
 #ifdef NDEBUG
 #if defined(TRACEswitch) || defined(TRACEcase) || defined(TRACEmisc)
 #error All test mode defines must be 0
@@ -37,7 +33,6 @@
 #endif
 
 #include "astyle.h"
-// #include "ASEnhancer.h"
 
 #include <iostream>
 #include <fstream>
@@ -113,10 +108,7 @@ ASEnhancer::~ASEnhancer()
 void ASEnhancer::init(int _indentLength,
                       string _indentString,
                       bool _isCStyle,
-                      bool _caseIndent,
-                      bool _emptyLineFill,
-                      bool _shouldPadOperators,
-                      bool _shouldPadParenthesies)
+                      bool _caseIndent)
 {
     // formatting variables from ASFormatter and ASBeautifier
     indentLength          = _indentLength;
@@ -126,9 +118,9 @@ void ASEnhancer::init(int _indentLength,
         useTabs = false;
     isCStyle              = _isCStyle;
     caseIndent            = _caseIndent;
-    emptyLineFill         = _emptyLineFill;
-    shouldPadOperators    = _shouldPadOperators;
-    shouldPadParenthesies = _shouldPadParenthesies;
+//    emptyLineFill         = _emptyLineFill;
+//    shouldPadOperators    = _shouldPadOperators;
+//    shouldPadParenthesies = _shouldPadParenthesies;
 
     // unindent variables
     lineNumber = 0;
@@ -167,7 +159,6 @@ struct switchVariables {
  * every line of source code in a source code file should be sent
  *     one after the other to this function.
  * unindents the case blocks
- * corrections for shouldPadOperators option
  *
  * @param line       the original formatted line will be updated if necessary.
  */
@@ -189,16 +180,16 @@ void ASEnhancer::enhance(string &line)
     // FIX **************************************
     // remove whitespace added at the end of some comments and some preprocessor statements
     // problem when shouldPadOperators is used
-    if(isWhiteSpaceX(line[lineLength-1]))
-    {
-        if((! emptyLineFill) || (line.find_first_not_of(" \t") != string::npos))
-        {
-            size_t end = line.find_last_not_of(" \t");
-            line.erase(end+1, lineLength);
-            lineLength = line.length();
-            TRmisc (" trim line ");
-        }
-    }
+    //if(isWhiteSpaceX(line[lineLength-1]))
+    //{
+    //    if((! emptyLineFill) || (line.find_first_not_of(" \t") != string::npos))
+    //    {
+    //        size_t end = line.find_last_not_of(" \t");
+    //        line.erase(end+1, lineLength);
+    //        lineLength = line.length();
+    //        TRmisc (" trim line ");
+    //    }
+    //}
 
 //    lineStartsInComment = isInComment;
 
@@ -213,7 +204,7 @@ void ASEnhancer::enhance(string &line)
 
     // parse characters in the current line.
 
-    for (size_t i=0; i<lineLength; i++)
+    for (size_t i = 0; i < lineLength; i++)
     {
         char ch = line[i];
 
@@ -232,14 +223,14 @@ void ASEnhancer::enhance(string &line)
             i++;
             continue;
         }
-        if (!(isInComment) && ch=='\\')
+        if (!(isInComment) && ch == '\\')
         {
             isSpecialChar = true;
             continue;
         }
 
         // handle quotes (such as 'x' and "Hello Dolly")
-        if (!(isInComment) && (ch=='"' || ch=='\''))
+        if (!(isInComment) && (ch == '"' || ch == '\''))
             if (!isInQuote)
             {
                 quoteChar = ch;
@@ -259,7 +250,7 @@ void ASEnhancer::enhance(string &line)
         if ( !(isInComment) && line.compare(i, 2, "//") == 0)
         {
             // check for windows line markers
-            if(line.compare(i+2, 1, "\xf0") > 0)
+            if(line.compare(i + 2, 1, "\xf0") > 0)
                 lineNumber--;
             break;                 // finished with the line
         }
@@ -290,15 +281,15 @@ void ASEnhancer::enhance(string &line)
         // FIX **************************************
         // remove whitespace added at (-1)
         // problem when shouldPadOperators is used
-        if(line[i] == '(' && shouldPadOperators && ! shouldPadParenthesies)
-        {
-            if(line[i+1] == ' ' && line[i+2] == '-')
-            {
-                line.erase(i+1, 1);
-                lineLength = line.length();
-                TRmisc (" fix paren minus ");
-            }
-        }
+        //if(line[i] == '(' && shouldPadOperators && ! shouldPadParenthesies)
+        //{
+        //    if(line[i+1] == ' ' && line[i+2] == '-')
+        //    {
+        //        line.erase(i+1, 1);
+        //        lineLength = line.length();
+        //        TRmisc (" fix paren minus ");
+        //    }
+        //}
 
         if(findHeaderX(line, i, "switch", true))            // if switch statement
         {
@@ -316,7 +307,7 @@ void ASEnhancer::enhance(string &line)
         if(caseIndent || switchDepth == 0)                  // from here just want switch statements
             continue;                                       // get next char
 
-        if(line[i] =='{')                                   // if open bracket
+        if(line[i] == '{')                                  // if open bracket
         {
             sw.switchBracketCount++;
             if(lookingForCaseBracket)                       // if 1st after case statement

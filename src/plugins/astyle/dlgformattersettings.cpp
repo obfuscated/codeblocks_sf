@@ -47,7 +47,8 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
-      formatter.setParenthesisPaddingMode(false);
+      formatter.setParensOutsidePaddingMode(false);
+      formatter.setParensInsidePaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -64,7 +65,8 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
-      formatter.setParenthesisPaddingMode(false);
+      formatter.setParensOutsidePaddingMode(false);
+      formatter.setParensInsidePaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -81,7 +83,8 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
-      formatter.setParenthesisPaddingMode(false);
+      formatter.setParensOutsidePaddingMode(false);
+      formatter.setParensInsidePaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -98,7 +101,8 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
-      formatter.setParenthesisPaddingMode(false);
+      formatter.setParensOutsidePaddingMode(false);
+      formatter.setParensInsidePaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -117,7 +121,8 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
-      formatter.setParenthesisPaddingMode(false);
+      formatter.setParensInsidePaddingMode(false);
+      formatter.setParensOutsidePaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -169,7 +174,8 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setBreakBlocksMode(XRCCTRL(*m_dlg, "chkBreakBlocks", wxCheckBox)->GetValue());
       formatter.setBreakElseIfsMode(XRCCTRL(*m_dlg, "chkBreakElseIfs", wxCheckBox)->GetValue());
       formatter.setOperatorPaddingMode(XRCCTRL(*m_dlg, "chkPadOperators", wxCheckBox)->GetValue());
-      formatter.setParenthesisPaddingMode(XRCCTRL(*m_dlg, "chkPadParens", wxCheckBox)->GetValue());
+      formatter.setParensOutsidePaddingMode(XRCCTRL(*m_dlg, "chkPadParensOut", wxCheckBox)->GetValue());
+      formatter.setParensInsidePaddingMode(XRCCTRL(*m_dlg, "chkPadParensIn", wxCheckBox)->GetValue());
       formatter.setSingleStatementsMode(!XRCCTRL(*m_dlg, "chkKeepComplex", wxCheckBox)->GetValue());
       formatter.setBreakOneLineBlocksMode(!XRCCTRL(*m_dlg, "chkKeepBlocks", wxCheckBox)->GetValue());
       break;

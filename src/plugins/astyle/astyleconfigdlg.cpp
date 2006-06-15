@@ -99,7 +99,8 @@ void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
   XRCCTRL(*this, "chkBreakBlocks", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkBreakElseIfs", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkPadOperators", wxCheckBox)->Enable(!en);
-  XRCCTRL(*this, "chkPadParens", wxCheckBox)->Enable(!en);
+  XRCCTRL(*this, "chkPadParensIn", wxCheckBox)->Enable(!en);
+  XRCCTRL(*this, "chkPadParensOut", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkKeepComplex", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkKeepBlocks", wxCheckBox)->Enable(!en);
 }
@@ -173,7 +174,8 @@ void AstyleConfigDlg::LoadSettings()
   XRCCTRL(*this, "chkBreakBlocks", wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_blocks"), false));
   XRCCTRL(*this, "chkBreakElseIfs", wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_elseifs"), false));
   XRCCTRL(*this, "chkPadOperators", wxCheckBox)->SetValue(cfg->ReadBool(_T("/pad_operators"), false));
-  XRCCTRL(*this, "chkPadParens", wxCheckBox)->SetValue(cfg->ReadBool(_T("/pad_parentheses"), false));
+  XRCCTRL(*this, "chkPadParensIn", wxCheckBox)->SetValue(cfg->ReadBool(_T("/pad_parentheses_in"), false));
+  XRCCTRL(*this, "chkPadParensOut", wxCheckBox)->SetValue(cfg->ReadBool(_T("/pad_parentheses_out"), false));
   XRCCTRL(*this, "chkKeepComplex", wxCheckBox)->SetValue(cfg->ReadBool(_T("/keep_complex"), false));
   XRCCTRL(*this, "chkKeepBlocks", wxCheckBox)->SetValue(cfg->ReadBool(_T("/keep_blocks"), false));
 
@@ -216,7 +218,8 @@ void AstyleConfigDlg::SaveSettings()
   cfg->Write(_T("/break_blocks"), XRCCTRL(*this, "chkBreakBlocks", wxCheckBox)->GetValue());
   cfg->Write(_T("/break_elseifs"), XRCCTRL(*this, "chkBreakElseIfs", wxCheckBox)->GetValue());
   cfg->Write(_T("/pad_operators"), XRCCTRL(*this, "chkPadOperators", wxCheckBox)->GetValue());
-  cfg->Write(_T("/pad_parentheses"), XRCCTRL(*this, "chkPadParens", wxCheckBox)->GetValue());
+  cfg->Write(_T("/pad_parentheses_in"), XRCCTRL(*this, "chkPadParensIn", wxCheckBox)->GetValue());
+  cfg->Write(_T("/pad_parentheses_out"), XRCCTRL(*this, "chkPadParensOut", wxCheckBox)->GetValue());
   cfg->Write(_T("/keep_complex"), XRCCTRL(*this, "chkKeepComplex", wxCheckBox)->GetValue());
   cfg->Write(_T("/keep_blocks"), XRCCTRL(*this, "chkKeepBlocks", wxCheckBox)->GetValue());
 }
