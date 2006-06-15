@@ -2698,7 +2698,7 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idFileSaveAllFiles, ed);
     mbar->Enable(idFileSaveProject, prj && prj->GetModified() && canCloseProject);
     mbar->Enable(idFileSaveProjectAs, prj && canCloseProject);
-    mbar->Enable(idFileOpenDefWorkspace, !(Manager::Get()->GetProjectManager()->GetWorkspace()->IsDefault()) && canCloseProject);
+    mbar->Enable(idFileOpenDefWorkspace, canCloseProject);
     mbar->Enable(idFileSaveWorkspace, Manager::Get()->GetProjectManager() && canCloseProject);
     mbar->Enable(idFileSaveWorkspaceAs, Manager::Get()->GetProjectManager() && canCloseProject);
     mbar->Enable(idFileCloseWorkspace, Manager::Get()->GetProjectManager() && canCloseProject);
