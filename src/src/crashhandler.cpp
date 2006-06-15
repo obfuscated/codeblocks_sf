@@ -1,9 +1,8 @@
+#include <sdk.h>
 #include "crashhandler.h"
 
 
-#if (__WXMSW__) && WINVER >= 0x0501
-#include <sdk_precomp.h>
-
+#if (__WXMSW__)
 
 LONG WINAPI CrashHandlerFunc(struct _EXCEPTION_POINTERS *ExceptionInfo)
 {
@@ -57,19 +56,23 @@ LONG WINAPI CrashHandlerFunc(struct _EXCEPTION_POINTERS *ExceptionInfo)
 };
 
 
-CrashHandler::CrashHandler()
+CrashHandler::CrashHandler() : handler(0)
 {
-    h = AddVectoredExceptionHandler(1, CrashHandlerFunc);
+        AddHandler_t AddHandler = (AddHandler_t) GetProcAddress(GetModuleHandle(_T("kernel32")), "AddVectoredExceptionHandler");
+
+        if (AddHandler)
+            handler = AddHandler(1, CrashHandlerFunc);
 }
+
 CrashHandler::~CrashHandler()
 {
-    RemoveVectoredExceptionHandler(h);
+    if(handler)
+    {
+        RemoveHandler_t RemoveHandler = (RemoveHandler_t) GetProcAddress(GetModuleHandle(_T("kernel32")), "RemoveVectoredExceptionHandler");
+        RemoveHandler(handler);
+    }
 }
 
-#else
-
-CrashHandler::CrashHandler(){}
-CrashHandler::~CrashHandler(){}
 
 #endif
 
