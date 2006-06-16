@@ -7,7 +7,7 @@ namespace
     class byoCBTrisEditor: public EditorBase
     {
         public:
-            byoCBTrisEditor(wxWindow* parent): EditorBase(parent,_("C::B-Tris"))
+            byoCBTrisEditor(wxWindow* parent): EditorBase(parent,_("C::B-Tris")), m_BackToWorkTimer(1)
             {
                 wxSizer* Sizer = new wxBoxSizer(wxHORIZONTAL);
                 m_Shortname = GetFilename();
@@ -28,6 +28,7 @@ namespace
 
         private:
             byoCBTrisContent* m_Content;
+            BackToWorkTimer m_BackToWorkTimer;
 
             DECLARE_EVENT_TABLE()
     };

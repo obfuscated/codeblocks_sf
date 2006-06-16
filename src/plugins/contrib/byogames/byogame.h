@@ -5,6 +5,22 @@
 #include <wx/dynarray.h>
 #include <wx/intl.h>
 
+/** \brief Generic "back-to-work" timer.
+ *
+ * By just creating an instance of this class, throught its lifetime
+ * it will popup a "back-to-work" message every some predefined minutes (default is 5).
+ */
+class BackToWorkTimer : public wxEvtHandler
+{
+        DECLARE_EVENT_TABLE();
+        size_t m_Timeout;
+        wxTimer m_Timer;
+
+        void OnTimer(wxTimerEvent& event);
+    public:
+        BackToWorkTimer(size_t minutes = 5);
+};
+
 /** \brief Generic interface for game.
  *
  * This class represents game type, not game instance.
