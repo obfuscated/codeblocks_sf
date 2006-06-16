@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="All contrib plugins">
+		<Project filename="plugins/contrib/byogames/byogames-unix.cbp" active="1" />
 		<Project filename="plugins/contrib/codestat/codestat-unix.cbp" />
 		<Project filename="plugins/contrib/copystrings/copystrings-unix.cbp" />
 		<Project filename="plugins/contrib/dragscroll/DragScroll-unix.cbp" />
-		<Project filename="plugins/contrib/envvars/envvars-unix.cbp" active="1" />
+		<Project filename="plugins/contrib/envvars/envvars-unix.cbp" />
 		<Project filename="plugins/contrib/help_plugin/help-plugin-unix.cbp" />
 		<Project filename="plugins/contrib/keybinder/keybinder-unix.cbp" />
 		<Project filename="plugins/contrib/profiler/cbprofiler.unix.cbp" />
