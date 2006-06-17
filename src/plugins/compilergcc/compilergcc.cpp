@@ -60,7 +60,7 @@
     #include "compilerOW.h"
     #include "compilerGDC.h"
     #include "compilerDMD.h"
-	#include "compilerGNUARM.h"
+    #include "compilerGNUARM.h"
 #endif
 #ifdef __WXMAC__
     #include "compilerGDC.h"
@@ -139,8 +139,8 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_UPDATE_UI(XRCID("idCompilerMenuCompileAndRun"), CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(XRCID("idCompilerMenuRun"), CompilerGCC::OnUpdateUI)
 
-    EVT_IDLE(										CompilerGCC::OnIdle)
-	EVT_TIMER(idTimerPollCompiler,                  CompilerGCC::OnTimer)
+    EVT_IDLE(                                        CompilerGCC::OnIdle)
+    EVT_TIMER(idTimerPollCompiler,                  CompilerGCC::OnTimer)
 
     EVT_MENU(idMenuRun,                             CompilerGCC::Dispatcher)
     EVT_MENU(idMenuCompileAndRun,                   CompilerGCC::Dispatcher)
@@ -168,52 +168,52 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_MENU(idMenuExportMakefile,                  CompilerGCC::Dispatcher)
     EVT_MENU(idMenuSettings,                        CompilerGCC::Dispatcher)
 
-	EVT_COMBOBOX(idToolTarget,						CompilerGCC::OnSelectTarget)
+    EVT_COMBOBOX(idToolTarget,                        CompilerGCC::OnSelectTarget)
 
-	EVT_PROJECT_ACTIVATE(CompilerGCC::OnProjectActivated)
-	EVT_PROJECT_OPEN(CompilerGCC::OnProjectLoaded)
-	//EVT_PROJECT_POPUP_MENU(CompilerGCC::OnProjectPopupMenu)
-	EVT_PROJECT_TARGETS_MODIFIED(CompilerGCC::OnProjectActivated)
+    EVT_PROJECT_ACTIVATE(CompilerGCC::OnProjectActivated)
+    EVT_PROJECT_OPEN(CompilerGCC::OnProjectLoaded)
+    //EVT_PROJECT_POPUP_MENU(CompilerGCC::OnProjectPopupMenu)
+    EVT_PROJECT_TARGETS_MODIFIED(CompilerGCC::OnProjectActivated)
 
-	EVT_PIPEDPROCESS_STDOUT_RANGE(idGCCProcess1, idGCCProcess16, CompilerGCC::OnGCCOutput)
-	EVT_PIPEDPROCESS_STDERR_RANGE(idGCCProcess1, idGCCProcess16, CompilerGCC::OnGCCError)
-	EVT_PIPEDPROCESS_TERMINATED_RANGE(idGCCProcess1, idGCCProcess16, CompilerGCC::OnGCCTerminated)
+    EVT_PIPEDPROCESS_STDOUT_RANGE(idGCCProcess1, idGCCProcess16, CompilerGCC::OnGCCOutput)
+    EVT_PIPEDPROCESS_STDERR_RANGE(idGCCProcess1, idGCCProcess16, CompilerGCC::OnGCCError)
+    EVT_PIPEDPROCESS_TERMINATED_RANGE(idGCCProcess1, idGCCProcess16, CompilerGCC::OnGCCTerminated)
 END_EVENT_TABLE()
 
 CompilerGCC::CompilerGCC()
     : m_BuildingWorkspace(false),
     m_PageIndex(-1),
-	m_ListPageIndex(-1),
+    m_ListPageIndex(-1),
     m_Menu(0L),
     m_TargetMenu(0L),
-	m_pToolbar(0L),
-	m_TargetIndex(-1),
-	m_ErrorsMenu(0L),
+    m_pToolbar(0L),
+    m_TargetIndex(-1),
+    m_ErrorsMenu(0L),
     m_Project(0L),
     m_Processes(0),
     m_ParallelProcessCount(1),
     m_pTbar(0L),
     m_Pid(0),
     m_Log(0L),
-	m_pListLog(0L),
-	m_ToolTarget(0L),
-	m_ToolTargetLabel(0L),
-	m_RunAfterCompile(false),
-	m_LastExitCode(0),
-	m_HasTargetAll(false),
-	m_NotifiedMaxErrors(false),
-	m_pBuildingProject(0),
-	m_BuildingProjectIdx(0),
-	m_BuildingTargetIdx(0),
-	m_BuildJob(bjIdle),
-	m_NextBuildState(bsNone),
-	m_BuildStateTargetIsAll(false),
-	m_pLastBuildingProject(0),
-	m_pLastBuildingTarget(0),
-	m_BuildDepsIndex(0),
-	m_RunTargetPostBuild(false),
-	m_RunProjectPostBuild(false),
-	m_DeleteTempMakefile(true)
+    m_pListLog(0L),
+    m_ToolTarget(0L),
+    m_ToolTargetLabel(0L),
+    m_RunAfterCompile(false),
+    m_LastExitCode(0),
+    m_HasTargetAll(false),
+    m_NotifiedMaxErrors(false),
+    m_pBuildingProject(0),
+    m_BuildingProjectIdx(0),
+    m_BuildingTargetIdx(0),
+    m_BuildJob(bjIdle),
+    m_NextBuildState(bsNone),
+    m_BuildStateTargetIsAll(false),
+    m_pLastBuildingProject(0),
+    m_pLastBuildingTarget(0),
+    m_BuildDepsIndex(0),
+    m_RunTargetPostBuild(false),
+    m_RunProjectPostBuild(false),
+    m_DeleteTempMakefile(true)
 {
     Manager::Get()->Loadxrc(_T("/compiler_gcc.zip#zip:*.xrc"));
 
@@ -232,30 +232,30 @@ CompilerGCC::CompilerGCC()
 
     m_timerIdleWakeUp.SetOwner(this, idTimerPollCompiler);
 
-	for (int i = 0; i < MAX_TARGETS; ++i)
-		idMenuSelectTargetOther[i] = wxNewId();
-	// register built-in compilers
-	CompilerFactory::RegisterCompiler(new CompilerMINGW);
+    for (int i = 0; i < MAX_TARGETS; ++i)
+        idMenuSelectTargetOther[i] = wxNewId();
+    // register built-in compilers
+    CompilerFactory::RegisterCompiler(new CompilerMINGW);
 #ifdef __WXMSW__
-	CompilerFactory::RegisterCompiler(new CompilerMSVC);
-	CompilerFactory::RegisterCompiler(new CompilerMSVC8);
-	CompilerFactory::RegisterCompiler(new CompilerBCC);
-	CompilerFactory::RegisterCompiler(new CompilerDMC);
-	CompilerFactory::RegisterCompiler(new CompilerOW);
+    CompilerFactory::RegisterCompiler(new CompilerMSVC);
+    CompilerFactory::RegisterCompiler(new CompilerMSVC8);
+    CompilerFactory::RegisterCompiler(new CompilerBCC);
+    CompilerFactory::RegisterCompiler(new CompilerDMC);
+    CompilerFactory::RegisterCompiler(new CompilerOW);
 #endif
-	CompilerFactory::RegisterCompiler(new CompilerICC);
-	CompilerFactory::RegisterCompiler(new CompilerSDCC);
+    CompilerFactory::RegisterCompiler(new CompilerICC);
+    CompilerFactory::RegisterCompiler(new CompilerSDCC);
 #ifdef __WXMSW__
-	CompilerFactory::RegisterCompiler(new CompilerGDC);
-	CompilerFactory::RegisterCompiler(new CompilerDMD);
-	CompilerFactory::RegisterCompiler(new CompilerGNUARM);
+    CompilerFactory::RegisterCompiler(new CompilerGDC);
+    CompilerFactory::RegisterCompiler(new CompilerDMD);
+    CompilerFactory::RegisterCompiler(new CompilerGNUARM);
 #endif
 #ifdef __WXMAC__
-	CompilerFactory::RegisterCompiler(new CompilerGDC);
+    CompilerFactory::RegisterCompiler(new CompilerGDC);
 #endif
 
-	// register (if any) user-copies of built-in compilers
-	CompilerFactory::RegisterUserCompilers();
+    // register (if any) user-copies of built-in compilers
+    CompilerFactory::RegisterUserCompilers();
 
     AllocProcesses();
 }
@@ -265,9 +265,9 @@ CompilerGCC::~CompilerGCC()
     FreeProcesses();
 
     DoDeleteTempMakefile();
-	if (m_ToolTarget)
-		delete m_ToolTarget;
-	CompilerFactory::UnregisterCompilers();
+    if (m_ToolTarget)
+        delete m_ToolTarget;
+    CompilerFactory::UnregisterCompilers();
 }
 
 void CompilerGCC::Dispatcher(wxCommandEvent& event)
@@ -363,15 +363,15 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
 
 void CompilerGCC::AllocProcesses()
 {
-	// create the parallel processes array
-	m_ParallelProcessCount = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 1);
-	m_Processes = (wxProcess**)malloc(m_ParallelProcessCount * sizeof(wxProcess*));
-	m_Pid = new long int[m_ParallelProcessCount];
-	for (size_t i = 0; i < m_ParallelProcessCount; ++i)
-	{
-	    m_Processes[i] = 0;
-	    m_Pid[i] = 0;
-	}
+    // create the parallel processes array
+    m_ParallelProcessCount = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 1);
+    m_Processes = (wxProcess**)malloc(m_ParallelProcessCount * sizeof(wxProcess*));
+    m_Pid = new long int[m_ParallelProcessCount];
+    for (size_t i = 0; i < m_ParallelProcessCount; ++i)
+    {
+        m_Processes[i] = 0;
+        m_Pid[i] = 0;
+    }
 }
 
 void CompilerGCC::FreeProcesses()
@@ -394,27 +394,27 @@ void CompilerGCC::OnAttach()
 {
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
-	// create compiler's log
+    // create compiler's log
     m_Log = new SimpleTextLog(true);
     m_PageIndex = msgMan->AddLog(m_Log, _("Build log"));
     msgMan->SetBatchBuildLog(m_PageIndex);
 
     // set log image
-	wxBitmap bmp;
-	wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
+    wxBitmap bmp;
+    wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
     bmp.LoadFile(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG);
     Manager::Get()->GetMessageManager()->SetLogImage(m_Log, bmp);
 
-	// create warnings/errors log
-	wxArrayString titles;
-	int widths[3] = {128, 48, 640};
-	titles.Add(_("File"));
-	titles.Add(_("Line"));
-	titles.Add(_("Message"));
+    // create warnings/errors log
+    wxArrayString titles;
+    int widths[3] = {128, 48, 640};
+    titles.Add(_("File"));
+    titles.Add(_("Line"));
+    titles.Add(_("Message"));
 
-	m_pListLog = new CompilerMessages(3, widths, titles);
-	m_pListLog->SetCompilerErrors(&m_Errors);
-	m_ListPageIndex = msgMan->AddLog(m_pListLog, _("Build messages"));
+    m_pListLog = new CompilerMessages(3, widths, titles);
+    m_pListLog->SetCompilerErrors(&m_Errors);
+    m_ListPageIndex = msgMan->AddLog(m_pListLog, _("Build messages"));
 
     // set log image
     bmp.LoadFile(prefix + _T("flag_16x16.png"), wxBITMAP_TYPE_PNG);
@@ -422,51 +422,51 @@ void CompilerGCC::OnAttach()
 
     // set default compiler for new projects
     CompilerFactory::SetDefaultCompiler(Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/default_compiler"), _T("gcc")));
-	LoadOptions();
-//	SetupEnvironment();
+    LoadOptions();
+//    SetupEnvironment();
 }
 
 void CompilerGCC::OnRelease(bool appShutDown)
 {
     DoDeleteTempMakefile();
-	SaveOptions();
+    SaveOptions();
     Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/default_compiler"), CompilerFactory::GetDefaultCompilerID());
-	if (Manager::Get()->GetMessageManager())
-	{
+    if (Manager::Get()->GetMessageManager())
+    {
         Manager::Get()->GetMessageManager()->RemoveLog(m_Log);
         Manager::Get()->GetMessageManager()->RemoveLog(m_pListLog);
     }
 
-	if (appShutDown)
-		return; // no need to continue if app is shutting down
+    if (appShutDown)
+        return; // no need to continue if app is shutting down
 
-	DoClearTargetMenu();
+    DoClearTargetMenu();
 
-//	if (m_Menu)
-//	{
-//		wxMenuBar* mBar = Manager::Get()->GetAppWindow()->GetMenuBar();
-//		int pos = mBar->FindMenu(_("&Build"));
-//		if (pos != wxNOT_FOUND)
-//			mBar->Remove(pos);
-//		delete m_Menu;
-//		m_Menu = 0L;
-//	}
+//    if (m_Menu)
+//    {
+//        wxMenuBar* mBar = Manager::Get()->GetAppWindow()->GetMenuBar();
+//        int pos = mBar->FindMenu(_("&Build"));
+//        if (pos != wxNOT_FOUND)
+//            mBar->Remove(pos);
+//        delete m_Menu;
+//        m_Menu = 0L;
+//    }
 
-	if (m_pToolbar)
-	{
-		m_pToolbar->DeleteTool(idMenuCompile);
-		m_pToolbar->DeleteTool(idMenuRun);
-		m_pToolbar->DeleteTool(idMenuCompileAndRun);
-		m_pToolbar->DeleteTool(idMenuRebuild);
+    if (m_pToolbar)
+    {
+        m_pToolbar->DeleteTool(idMenuCompile);
+        m_pToolbar->DeleteTool(idMenuRun);
+        m_pToolbar->DeleteTool(idMenuCompileAndRun);
+        m_pToolbar->DeleteTool(idMenuRebuild);
 
-		m_pToolbar->DeleteTool(idToolTarget);
-		delete m_ToolTarget;
-		m_ToolTarget = 0L;
+        m_pToolbar->DeleteTool(idToolTarget);
+        delete m_ToolTarget;
+        m_ToolTarget = 0L;
 
-		m_pToolbar->DeleteTool(idToolTargetLabel);
-		delete m_ToolTargetLabel;
-		m_ToolTargetLabel = 0L;
-	}
+        m_pToolbar->DeleteTool(idToolTargetLabel);
+        delete m_ToolTargetLabel;
+        m_ToolTargetLabel = 0L;
+    }
 }
 
 int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
@@ -498,40 +498,40 @@ void CompilerGCC::OnConfig(wxCommandEvent& event)
 
 void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
 {
-	if (!m_IsAttached)
-		return;
-	if (m_Menu)
-		return;
+    if (!m_IsAttached)
+        return;
+    if (m_Menu)
+        return;
 
     m_Menu=Manager::Get()->LoadMenu(_T("compiler_menu"),true);
 
-	// target selection menu
-	wxMenuItem *tmpitem=m_Menu->FindItem(idMenuSelectTarget,NULL);
+    // target selection menu
+    wxMenuItem *tmpitem=m_Menu->FindItem(idMenuSelectTarget,NULL);
     m_TargetMenu = tmpitem ? tmpitem->GetSubMenu() : new wxMenu(_T(""));
     DoRecreateTargetMenu();
-	//m_Menu->Append(idMenuSelectTarget, _("Select target..."), m_TargetMenu);
+    //m_Menu->Append(idMenuSelectTarget, _("Select target..."), m_TargetMenu);
 
-	// ok, now, where do we insert?
-	// three possibilities here:
-	// a) locate "Debug" menu and insert before it
-	// b) locate "Project" menu and insert after it
-	// c) if not found (?), insert at pos 5
-	int finalPos = 5;
-	int projMenuPos = menuBar->FindMenu(_("&Debug"));
-	if (projMenuPos != wxNOT_FOUND)
-		finalPos = projMenuPos;
-	else
-	{
-		projMenuPos = menuBar->FindMenu(_("&Project"));
-		if (projMenuPos != wxNOT_FOUND)
-			finalPos = projMenuPos + 1;
-	}
+    // ok, now, where do we insert?
+    // three possibilities here:
+    // a) locate "Debug" menu and insert before it
+    // b) locate "Project" menu and insert after it
+    // c) if not found (?), insert at pos 5
+    int finalPos = 5;
+    int projMenuPos = menuBar->FindMenu(_("&Debug"));
+    if (projMenuPos != wxNOT_FOUND)
+        finalPos = projMenuPos;
+    else
+    {
+        projMenuPos = menuBar->FindMenu(_("&Project"));
+        if (projMenuPos != wxNOT_FOUND)
+            finalPos = projMenuPos + 1;
+    }
     menuBar->Insert(finalPos, m_Menu, _("&Build"));
 
     // now add some entries in Project menu
-	projMenuPos = menuBar->FindMenu(_("&Project"));
-	if (projMenuPos != wxNOT_FOUND)
-	{
+    projMenuPos = menuBar->FindMenu(_("&Project"));
+    if (projMenuPos != wxNOT_FOUND)
+    {
         wxMenu* prj = menuBar->GetMenu(projMenuPos);
         // look if we have a "Properties" item. If yes, we 'll insert
         // before it, else we 'll just append...
@@ -553,14 +553,14 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
 
 void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
-	if (!m_IsAttached)
-		return;
+    if (!m_IsAttached)
+        return;
     // we 're only interested in project manager's menus
     if (type != mtProjectManager || !menu || IsRunning())
         return;
 
-	if (!CheckProject())
-		return;
+    if (!CheckProject())
+        return;
 
     if (!data || data->GetKind() == FileTreeData::ftdkUndefined)
     {
@@ -599,8 +599,8 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
 
 bool CompilerGCC::BuildToolBar(wxToolBar* toolBar)
 {
-	if (!m_IsAttached || !toolBar)
-		return false;
+    if (!m_IsAttached || !toolBar)
+        return false;
     m_pTbar = toolBar;
     wxString my_16x16=Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
     Manager::Get()->AddonToolBar(toolBar,_T("compiler_toolbar")+my_16x16);
@@ -622,26 +622,26 @@ void CompilerGCC::SetupEnvironment()
 
     m_EnvironmentMsg.Clear();
 
-	wxString path;
-//	Manager::Get()->GetMessageManager()->DebugLog(_T("Setting up compiler environment..."));
+    wxString path;
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Setting up compiler environment..."));
 
     // reset PATH to original value
     if (!m_OriginalPath.IsEmpty())
         wxSetEnv(_T("PATH"), m_OriginalPath);
 
     // look for valid compiler in path
-	if (wxGetEnv(_T("PATH"), &path))
-	{
+    if (wxGetEnv(_T("PATH"), &path))
+    {
         if (m_OriginalPath.IsEmpty())
             m_OriginalPath = path;
 
         SetEnvironmentForCompiler(m_CompilerId, path);
-	}
-	else
-		m_EnvironmentMsg = _("Could not read the PATH environment variable!\n"
-					"This can't be good. There may be problems running "
-					"system commands and the application might not behave "
-					"the way it was designed to...");
+    }
+    else
+        m_EnvironmentMsg = _("Could not read the PATH environment variable!\n"
+                    "This can't be good. There may be problems running "
+                    "system commands and the application might not behave "
+                    "the way it was designed to...");
 //    wxGetEnv("PATH", &path);
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "PATH set to: %s", path.c_str());
 }
@@ -752,7 +752,7 @@ bool CompilerGCC::CheckDebuggerIsRunning()
 
 void CompilerGCC::SaveOptions()
 {
-	// save compiler sets
+    // save compiler sets
     CompilerFactory::SaveSettings();
 }
 
@@ -814,8 +814,8 @@ void CompilerGCC::ClearLog()
 
 FileTreeData* CompilerGCC::DoSwitchProjectTemporarily()
 {
-	wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
-	wxTreeItemId sel = tree->GetSelection();
+    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
+    wxTreeItemId sel = tree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)tree->GetItemData(sel);
     if (!ftd)
         return 0L;
@@ -937,13 +937,13 @@ int CompilerGCC::DoRunQueue()
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
 //    msgMan->SwitchTo(m_PageIndex);
 
-	// leave if already running
-	int procIndex = GetNextAvailableProcessIndex();
-	if (procIndex == -1)
-	{
+    // leave if already running
+    int procIndex = GetNextAvailableProcessIndex();
+    if (procIndex == -1)
+    {
 //        msgMan->Log(m_PageIndex, _("(all processes running)"));
-		return -2;
-	}
+        return -2;
+    }
 
     // if next command is linking and compilation is still in progress, abort
     if (IsProcessRunning())
@@ -958,15 +958,15 @@ int CompilerGCC::DoRunQueue()
 
     CompilerCommand* cmd = m_CommandQueue.Next();
     if (!cmd)
-	{
+    {
         if (IsProcessRunning())
         {
             return 0;
         }
 
-	    while (1)
-	    {
-	        // keep switching build states until we have commands to run or reach end of states
+        while (1)
+        {
+            // keep switching build states until we have commands to run or reach end of states
             BuildStateManagement();
             cmd = m_CommandQueue.Next();
             if (!cmd && m_BuildState == bsNone && m_NextBuildState == bsNone)
@@ -984,10 +984,10 @@ int CompilerGCC::DoRunQueue()
 
             if (cmd)
                 break;
-	    }
-	}
+        }
+    }
 
-	m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+    m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
     wxString dir = cmd->dir;
 
     // if message manager is auto-hiding, this will lock it open
@@ -1007,18 +1007,18 @@ int CompilerGCC::DoRunQueue()
         return ret;
     }
 
-	bool pipe = true;
-	int flags = wxEXEC_ASYNC;
-	if (cmd->isRun)
-	{
-		pipe = false; // no need to pipe output channels...
-		flags |= wxEXEC_NOHIDE;
-		dir = m_CdRun;
+    bool pipe = true;
+    int flags = wxEXEC_ASYNC;
+    if (cmd->isRun)
+    {
+        pipe = false; // no need to pipe output channels...
+        flags |= wxEXEC_NOHIDE;
+        dir = m_CdRun;
     #ifndef __WXMSW__
         // setup dynamic linker path
-		wxSetEnv(_T("LD_LIBRARY_PATH"), _T(".:$LD_LIBRARY_PATH"));
+        wxSetEnv(_T("LD_LIBRARY_PATH"), _T(".:$LD_LIBRARY_PATH"));
     #endif
-	}
+    }
 
     // special shell used only for build commands
     if (!cmd->isRun)
@@ -1042,7 +1042,7 @@ int CompilerGCC::DoRunQueue()
         wxString err = wxString::Format(_("Execution of '%s' in '%s' failed."), cmd->command.c_str(), wxGetCwd().c_str());
         msgMan->Log(m_PageIndex, err);
         msgMan->LogToStdOut(err + _T('\n'));
-		m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         delete m_Processes[procIndex];
         m_Processes[procIndex] = 0;
         m_CommandQueue.Clear();
@@ -1058,33 +1058,33 @@ int CompilerGCC::DoRunQueue()
 void CompilerGCC::DoClearTargetMenu()
 {
     if (m_TargetMenu)
-	{
-		wxMenuItemList& items = m_TargetMenu->GetMenuItems();
-		while (wxMenuItemList::Node* node = items.GetFirst())
-		{
+    {
+        wxMenuItemList& items = m_TargetMenu->GetMenuItems();
+        while (wxMenuItemList::Node* node = items.GetFirst())
+        {
             if (node->GetData())
                 m_TargetMenu->Delete(node->GetData());
         }
 // mandrav: The following lines DO NOT clear the menu!
-//		wxMenuItemList& items = m_TargetMenu->GetMenuItems();
-//		bool olddelete=items.GetDeleteContents();
-//		items.DeleteContents(true);
-//		items.Clear();
-//		items.DeleteContents(olddelete);
-	}
-	m_HasTargetAll = false;
+//        wxMenuItemList& items = m_TargetMenu->GetMenuItems();
+//        bool olddelete=items.GetDeleteContents();
+//        items.DeleteContents(true);
+//        items.Clear();
+//        items.DeleteContents(olddelete);
+    }
+    m_HasTargetAll = false;
 }
 
 void CompilerGCC::DoRecreateTargetMenu()
 {
-	if (!m_IsAttached)
-		return;
+    if (!m_IsAttached)
+        return;
 
-	DoClearTargetMenu();
-	if (m_ToolTarget)
-		m_ToolTarget->Clear();
-	if (!CheckProject())
-		return;
+    DoClearTargetMenu();
+    if (m_ToolTarget)
+        m_ToolTarget->Clear();
+    if (!CheckProject())
+        return;
 
     if (m_Project->GetBuildTargetsCount() == 0)
         return;
@@ -1124,18 +1124,18 @@ void CompilerGCC::DoRecreateTargetMenu()
         if (!target)
             break;
 
-		wxString caption;
-		caption.Printf(_("Build target '%s' in current project"), target->GetTitle().c_str());
-		if (m_TargetMenu)
+        wxString caption;
+        caption.Printf(_("Build target '%s' in current project"), target->GetTitle().c_str());
+        if (m_TargetMenu)
             m_TargetMenu->AppendCheckItem(idMenuSelectTargetOther[x], target->GetTitle(), caption);
-		if (m_ToolTarget)
-			m_ToolTarget->Append(target->GetTitle());
-	}
-	Connect( idMenuSelectTargetOther[0],  idMenuSelectTargetOther[MAX_TARGETS - 1],
-			wxEVT_COMMAND_MENU_SELECTED,
-			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-			&CompilerGCC::OnSelectTarget );
-	DoUpdateTargetMenu();
+        if (m_ToolTarget)
+            m_ToolTarget->Append(target->GetTitle());
+    }
+    Connect( idMenuSelectTargetOther[0],  idMenuSelectTargetOther[MAX_TARGETS - 1],
+            wxEVT_COMMAND_MENU_SELECTED,
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &CompilerGCC::OnSelectTarget );
+    DoUpdateTargetMenu();
 
     SwitchCompiler(m_Project->GetCompilerID());
 }
@@ -1151,8 +1151,8 @@ void CompilerGCC::DoUpdateTargetMenu()
             m_LastTargetName = target->GetTitle();
     }
 
-	if (!m_TargetMenu)
-		return;
+    if (!m_TargetMenu)
+        return;
 
     if (!m_HasTargetAll && m_TargetIndex == -1)
         m_TargetIndex = 0;
@@ -1162,25 +1162,25 @@ void CompilerGCC::DoUpdateTargetMenu()
 
     if (m_HasTargetAll)
         m_TargetMenu->Check(idMenuSelectTargetAll, m_TargetIndex == -1);
-	for (int i = 0; i < MAX_TARGETS; ++i)
-	{
-	    wxMenuItem* item = m_TargetMenu->FindItem(idMenuSelectTargetOther[i]);
+    for (int i = 0; i < MAX_TARGETS; ++i)
+    {
+        wxMenuItem* item = m_TargetMenu->FindItem(idMenuSelectTargetOther[i]);
         if (!item || !item->IsCheckable())
             continue;
-		item->Check(i == m_TargetIndex);
-	}
-	if (m_ToolTarget)
-		m_ToolTarget->SetSelection(m_TargetIndex + (m_HasTargetAll ? 1 : 0));
+        item->Check(i == m_TargetIndex);
+    }
+    if (m_ToolTarget)
+        m_ToolTarget->SetSelection(m_TargetIndex + (m_HasTargetAll ? 1 : 0));
 }
 
 void CompilerGCC::DoPrepareQueue()
 {
-	if (m_CommandQueue.GetCount() == 0)
-	{
+    if (m_CommandQueue.GetCount() == 0)
+    {
         ClearLog();
         DoClearErrors();
-		wxStartTimer();
-	}
+        wxStartTimer();
+    }
     Manager::Yield();
 }
 
@@ -1189,7 +1189,7 @@ ProjectBuildTarget* CompilerGCC::DoAskForTarget()
     if (!CheckProject())
         return 0L;
 
-	return m_Project->GetBuildTarget(m_TargetIndex);
+    return m_Project->GetBuildTarget(m_TargetIndex);
 }
 
 int CompilerGCC::DoGUIAskForTarget()
@@ -1197,7 +1197,7 @@ int CompilerGCC::DoGUIAskForTarget()
     if (!CheckProject())
         return -1;
 
-	return m_Project->SelectTarget(m_TargetIndex);
+    return m_Project->SelectTarget(m_TargetIndex);
 }
 
 void CompilerGCC::DoDeleteTempMakefile()
@@ -1246,15 +1246,15 @@ bool CompilerGCC::UseMake(ProjectBuildTarget* target)
 
 bool CompilerGCC::CompilerValid(ProjectBuildTarget* target)
 {
-	wxString idx = target ? target->GetCompilerID() : (m_Project ? m_Project->GetCompilerID() : CompilerFactory::GetDefaultCompilerID());
-	bool ret = CompilerFactory::GetCompiler(idx);
-	if (!ret)
-	{
-		wxString msg;
-		msg.Printf(_("This %s is configured to use an invalid compiler.\nThe operation failed..."), target ? _("target") : _("project"));
-		cbMessageBox(msg, _("Error"), wxICON_ERROR);
-	}
-	return ret;
+    wxString idx = target ? target->GetCompilerID() : (m_Project ? m_Project->GetCompilerID() : CompilerFactory::GetDefaultCompilerID());
+    bool ret = CompilerFactory::GetCompiler(idx);
+    if (!ret)
+    {
+        wxString msg;
+        msg.Printf(_("This %s is configured to use an invalid compiler.\nThe operation failed..."), target ? _("target") : _("project"));
+        cbMessageBox(msg, _("Error"), wxICON_ERROR);
+    }
+    return ret;
 }
 
 bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
@@ -1262,13 +1262,13 @@ bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
     DoDeleteTempMakefile();
 
     // display error about incorrect compile environment
-	if (!m_EnvironmentMsg.IsEmpty())
-	{
-		cbMessageBox(m_EnvironmentMsg, _("Error"), wxICON_ERROR);
-		m_EnvironmentMsg.Clear(); // once is enough, per session...
-	}
+    if (!m_EnvironmentMsg.IsEmpty())
+    {
+        cbMessageBox(m_EnvironmentMsg, _("Error"), wxICON_ERROR);
+        m_EnvironmentMsg.Clear(); // once is enough, per session...
+    }
 
-	// verify current project
+    // verify current project
     AskForActiveProject();
     if (!m_Project)
         return false;
@@ -1299,7 +1299,7 @@ bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
     }
 
     PrintBanner();
-	wxSetWorkingDirectory(m_Project->GetBasePath());
+    wxSetWorkingDirectory(m_Project->GetBasePath());
 
     if (UseMake())
     {
@@ -1342,21 +1342,21 @@ void CompilerGCC::PrintBanner(cbProject* prj, ProjectBuildTarget* target)
 
 void CompilerGCC::DoGotoNextError()
 {
-	m_Errors.Next();
+    m_Errors.Next();
     m_pListLog->FocusError(m_Errors.GetFocusedError());
 }
 
 void CompilerGCC::DoGotoPreviousError()
 {
-	m_Errors.Previous();
+    m_Errors.Previous();
     m_pListLog->FocusError(m_Errors.GetFocusedError());
 }
 
 void CompilerGCC::DoClearErrors()
 {
-	m_Errors.Clear();
-	m_pListLog->Clear();
-	m_NotifiedMaxErrors = false;
+    m_Errors.Clear();
+    m_pListLog->Clear();
+    m_NotifiedMaxErrors = false;
 }
 
 int CompilerGCC::RunSingleFile(const wxString& filename)
@@ -1376,15 +1376,15 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
 
 #ifndef __WXMSW__
     // for non-win platforms, use m_ConsoleTerm to run the console app
-	wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
+    wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
     term.Replace(_T("$TITLE"), _T("'") + exe_filename + _T("'"));
     cmd << term << _T(" ");
 #endif
     wxString baseDir = ConfigManager::GetExecutableFolder();
 #ifdef __WXMSW__
-	#define CONSOLE_RUNNER "cb_console_runner.exe"
+    #define CONSOLE_RUNNER "cb_console_runner.exe"
 #else
-	#define CONSOLE_RUNNER "cb_console_runner"
+    #define CONSOLE_RUNNER "cb_console_runner"
 #endif
     if (wxFileExists(baseDir + wxT("/" CONSOLE_RUNNER)))
         cmd << baseDir << wxT("/" CONSOLE_RUNNER " ");
@@ -1396,18 +1396,18 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), exe_filename.c_str());
     if (!wxFileExists(exe_filename))
     {
-    	int ret = cbMessageBox(_("It seems that this file has not been built yet.\n"
+        int ret = cbMessageBox(_("It seems that this file has not been built yet.\n"
                                 "Do you want to build it now?"),
                                 _("Information"),
                                 wxYES_NO | wxCANCEL | wxICON_QUESTION);
         switch (ret)
         {
-        	case wxID_YES:
-        	{
-        	    m_RunAfterCompile = true;
-        		Build(wxEmptyString);
-        		return -1;
-        	}
+            case wxID_YES:
+            {
+                m_RunAfterCompile = true;
+                Build(wxEmptyString);
+                return -1;
+            }
             case wxID_NO:
                 break;
             default:
@@ -1436,31 +1436,31 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
             return RunSingleFile(Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename());
         return -1;
     }
-	DoPrepareQueue();
-	if (!CompilerValid(target))
-		return -1;
-
-	if (!target)
-	{
-		if (m_TargetIndex == -1) // only ask for target if target 'all' is selected
-		{
-			int idx = -1;
-			int bak = m_TargetIndex;
-			if (m_Project->GetBuildTargetsCount() == 1)
-				idx = 0;
-			else
-				idx = DoGUIAskForTarget();
-
-			m_TargetIndex = idx;
-			target = DoAskForTarget();
-			m_TargetIndex = bak;
-		}
-		else
-			target = DoAskForTarget();
-	}
+    DoPrepareQueue();
+    if (!CompilerValid(target))
+        return -1;
 
     if (!target)
-		return -1;
+    {
+        if (m_TargetIndex == -1) // only ask for target if target 'all' is selected
+        {
+            int idx = -1;
+            int bak = m_TargetIndex;
+            if (m_Project->GetBuildTargetsCount() == 1)
+                idx = 0;
+            else
+                idx = DoGUIAskForTarget();
+
+            m_TargetIndex = idx;
+            target = DoAskForTarget();
+            m_TargetIndex = bak;
+        }
+        else
+            target = DoAskForTarget();
+    }
+
+    if (!target)
+        return -1;
 
     m_Project->SetCurrentlyCompilingTarget(target); // help macros manager
 
@@ -1480,8 +1480,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 
     // for console projects, use helper app to wait for a key after
     // execution ends...
-	if (target->GetTargetType() == ttConsoleOnly)
-	{
+    if (target->GetTargetType() == ttConsoleOnly)
+    {
 #ifndef __WXMSW__
         // for non-win platforms, use m_ConsoleTerm to run the console app
         wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
@@ -1493,35 +1493,35 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         {
             wxString baseDir = ConfigManager::GetExecutableFolder();
 #ifdef __WXMSW__
-	#define CONSOLE_RUNNER "cb_console_runner.exe"
+    #define CONSOLE_RUNNER "cb_console_runner.exe"
 #else
-	#define CONSOLE_RUNNER "cb_console_runner"
+    #define CONSOLE_RUNNER "cb_console_runner"
 #endif
             if (wxFileExists(baseDir + wxT("/" CONSOLE_RUNNER)))
                 cmd << baseDir << wxT("/" CONSOLE_RUNNER " ");
         }
     }
 
-	if (target->GetTargetType() == ttDynamicLib ||
-		target->GetTargetType() == ttStaticLib)
-	{
-		// check for hostapp
-		if (target->GetHostApplication().IsEmpty())
-		{
-			cbMessageBox(_("You must select a host application to \"run\" a library..."));
+    if (target->GetTargetType() == ttDynamicLib ||
+        target->GetTargetType() == ttStaticLib)
+    {
+        // check for hostapp
+        if (target->GetHostApplication().IsEmpty())
+        {
+            cbMessageBox(_("You must select a host application to \"run\" a library..."));
             m_Project->SetCurrentlyCompilingTarget(0);
-			return -1;
-		}
-		wxString tmp = target->GetHostApplication();
+            return -1;
+        }
+        wxString tmp = target->GetHostApplication();
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(tmp);
-		cmd << _T("\"") << tmp << _T("\" ") << target->GetExecutionParameters();
-	}
-	else if (target->GetTargetType() != ttCommandsOnly)
+        cmd << _T("\"") << tmp << _T("\" ") << target->GetExecutionParameters();
+    }
+    else if (target->GetTargetType() != ttCommandsOnly)
     {
         cmd << _T("\"");
-		cmd << f.GetFullPath();
-		cmd << _T("\" ");
-		cmd << target->GetExecutionParameters();
+        cmd << f.GetFullPath();
+        cmd << _T("\" ");
+        cmd << target->GetExecutionParameters();
 #ifndef __WXMSW__
         // closing single-quote for xterm command line
         if (target->GetTargetType() == ttConsoleOnly)
@@ -1539,19 +1539,19 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), f.GetFullPath().c_str());
     if (!wxFileExists(f.GetFullPath()))
     {
-    	int ret = cbMessageBox(_("It seems that this project has not been built yet.\n"
+        int ret = cbMessageBox(_("It seems that this project has not been built yet.\n"
                                 "Do you want to build it now?"),
                                 _("Information"),
                                 wxYES_NO | wxCANCEL | wxICON_QUESTION);
         switch (ret)
         {
-        	case wxID_YES:
-        	{
+            case wxID_YES:
+            {
                 m_Project->SetCurrentlyCompilingTarget(0);
-        	    m_RunAfterCompile = true;
-        		Build(target);
-        		return -1;
-        	}
+                m_RunAfterCompile = true;
+                Build(target);
+                return -1;
+            }
             case wxID_NO:
                 break;
             default:
@@ -1592,11 +1592,11 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
     if (m_Project && !m_Project->SaveAllFiles())
         Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
 
-	DoPrepareQueue();
-	if (!CompilerValid(target))
-		return -1;
+    DoPrepareQueue();
+    if (!CompilerValid(target))
+        return -1;
 
-//	Manager::Get()->GetMacrosManager()->Reset();
+//    Manager::Get()->GetMacrosManager()->Reset();
 
     if (m_Project)
         wxSetWorkingDirectory(m_Project->GetBasePath());
@@ -1646,11 +1646,11 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
     if (m_Project && !m_Project->SaveAllFiles())
         Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
 
-	DoPrepareQueue();
-	if (!CompilerValid(target))
-		return -1;
+    DoPrepareQueue();
+    if (!CompilerValid(target))
+        return -1;
 
-//	Manager::Get()->GetMacrosManager()->Reset();
+//    Manager::Get()->GetMacrosManager()->Reset();
 
     if (m_Project)
         wxSetWorkingDirectory(m_Project->GetBasePath());
@@ -1680,11 +1680,11 @@ void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
                     wxICON_WARNING);
     return;
 
-	if (!CompilerValid())
-		return;
-	wxString makefile = wxGetTextFromUser(_("Please enter the \"Makefile\" name:"), _("Export Makefile"), ProjectMakefile());
-	if (makefile.IsEmpty())
-		return;
+    if (!CompilerValid())
+        return;
+    wxString makefile = wxGetTextFromUser(_("Please enter the \"Makefile\" name:"), _("Export Makefile"), ProjectMakefile());
+    if (makefile.IsEmpty())
+        return;
 
     wxSetWorkingDirectory(m_Project->GetBasePath());
     if (UseMake())
@@ -1966,7 +1966,7 @@ void CompilerGCC::BuildStateManagement()
 
 int CompilerGCC::DoBuild(cbProject* prj)
 {
-	if (!prj)
+    if (!prj)
         return -2;
 
     // make sure all project files are saved
@@ -2016,7 +2016,7 @@ int CompilerGCC::DoBuild(cbProject* prj)
     if (!bt || !CompilerValid(bt))
         return -2;
 
-//	Manager::Get()->GetMacrosManager()->Reset();
+//    Manager::Get()->GetMacrosManager()->Reset();
 
     wxString cmd;
     if (UseMake(bt))
@@ -2106,7 +2106,7 @@ int CompilerGCC::Build(const wxString& target)
         return -1;
     }
     DoClearErrors();
-	DoPrepareQueue();
+    DoPrepareQueue();
 
     ProjectBuildTarget* bt = m_Project->GetBuildTarget(target);
     if (UseMake(bt))
@@ -2152,11 +2152,11 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
     if (m_Project && !m_Project->SaveAllFiles())
         Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
 
-	DoPrepareQueue();
-	if (!CompilerValid(target))
-		return -1;
+    DoPrepareQueue();
+    if (!CompilerValid(target))
+        return -1;
 
-//	Manager::Get()->GetMacrosManager()->Reset();
+//    Manager::Get()->GetMacrosManager()->Reset();
 
     CompilerFactory::GetCompiler(m_CompilerId)->Init(m_Project);
 
@@ -2320,9 +2320,9 @@ ProjectBuildTarget* CompilerGCC::GetBuildTargetForFile(const wxString& file)
 
 int CompilerGCC::CompileFile(const wxString& file)
 {
-	DoPrepareQueue();
-	if (!CompilerValid())
-		return -1;
+    DoPrepareQueue();
+    if (!CompilerValid())
+        return -1;
 
     if (m_Project)
         wxSetWorkingDirectory(m_Project->GetBasePath());
@@ -2339,7 +2339,7 @@ int CompilerGCC::CompileFile(const wxString& file)
         // switch to the default compiler
         SwitchCompiler(CompilerFactory::GetDefaultCompilerID());
 //        Manager::Get()->GetMessageManager()->DebugLog("-----CompileFile [if(!pf)]-----");
-		Manager::Get()->GetMacrosManager()->Reset();
+        Manager::Get()->GetMacrosManager()->Reset();
         CompilerFactory::GetCompiler(m_CompilerId)->Init(0);
 
         if (useMake)
@@ -2369,7 +2369,7 @@ int CompilerGCC::CompileFile(const wxString& file)
         MakefileGenerator mg(this, 0, _T(""), 0);
         mg.ConvertToMakefileFriendly(fname, true);
 
-		Manager::Get()->GetMacrosManager()->Reset();
+        Manager::Get()->GetMacrosManager()->Reset();
 
         wxString cmd = GetMakeCommandFor(mcCompileFile, bt);
         cmd.Replace(_T("$file"), fname);
@@ -2401,19 +2401,19 @@ void CompilerGCC::OnIdle(wxIdleEvent& event)
             }
         }
     }
-	else
-		event.Skip();
+    else
+        event.Skip();
 }
 
 void CompilerGCC::OnTimer(wxTimerEvent& event)
 {
-	wxWakeUpIdle();
+    wxWakeUpIdle();
 }
 
 void CompilerGCC::OnRun(wxCommandEvent& event)
 {
-	if (Run() == 0)
-		DoRunQueue();
+    if (Run() == 0)
+        DoRunQueue();
 }
 
 void CompilerGCC::OnCompileAndRun(wxCommandEvent& event)
@@ -2428,45 +2428,45 @@ void CompilerGCC::OnCompileAndRun(wxCommandEvent& event)
 
 void CompilerGCC::OnCompile(wxCommandEvent& event)
 {
-	int bak = m_TargetIndex;
+    int bak = m_TargetIndex;
     if (event.GetId() == idMenuCompileTargetFromProjectManager)
-	{
-    	// we 're called from a menu in ProjectManager
-		int idx = DoGUIAskForTarget();
-		if (idx == -1)
-			return;
-		else
-			m_TargetIndex = idx;
+    {
+        // we 're called from a menu in ProjectManager
+        int idx = DoGUIAskForTarget();
+        if (idx == -1)
+            return;
+        else
+            m_TargetIndex = idx;
 
-    	// let's check the selected project...
-    	DoSwitchProjectTemporarily();
-	}
+        // let's check the selected project...
+        DoSwitchProjectTemporarily();
+    }
     else if (event.GetId() == idMenuCompileFromProjectManager)
     {
-    	// we 're called from a menu in ProjectManager
-    	// let's check the selected project...
-    	DoSwitchProjectTemporarily();
+        // we 're called from a menu in ProjectManager
+        // let's check the selected project...
+        DoSwitchProjectTemporarily();
     }
     ProjectBuildTarget* target = DoAskForTarget();
     Build(target);
-	m_TargetIndex = bak;
+    m_TargetIndex = bak;
 }
 
 void CompilerGCC::OnCompileFile(wxCommandEvent& event)
 {
- 	wxFileName file;
+     wxFileName file;
     if (event.GetId() == idMenuCompileFileFromProjectManager)
     {
-    	// we 're called from a menu in ProjectManager
-    	// let's check the selected project...
-    	FileTreeData* ftd = DoSwitchProjectTemporarily();
-    	ProjectFile* pf = m_Project->GetFile(ftd->GetFileIndex());
-    	if (!pf)
-    	{
+        // we 're called from a menu in ProjectManager
+        // let's check the selected project...
+        FileTreeData* ftd = DoSwitchProjectTemporarily();
+        ProjectFile* pf = m_Project->GetFile(ftd->GetFileIndex());
+        if (!pf)
+        {
 //            wxLogError("File index=%d", ftd->GetFileIndex());
             return;
         }
-    	file = pf->file;
+        file = pf->file;
     }
     else
     {
@@ -2481,14 +2481,14 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
 
     if (m_Project)
     {
-    	if(!m_Project->SaveAllFiles())
-    	{
-			Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
-    	}
+        if(!m_Project->SaveAllFiles())
+        {
+            Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
+        }
         file.MakeRelativeTo(m_Project->GetBasePath());
     }
 #ifdef ALWAYS_USE_MAKEFILE
-	file.SetExt(OBJECT_EXT);
+    file.SetExt(OBJECT_EXT);
 #endif
     wxString fname = file.GetFullPath();
     if (!fname.IsEmpty())
@@ -2505,36 +2505,36 @@ void CompilerGCC::OnRebuild(wxCommandEvent& event)
                         "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
                         "Are you sure you want to rebuild the entire project?"),
-					wxART_QUESTION,
-					AnnoyingDialog::YES_NO,
-					wxID_YES);
+                    wxART_QUESTION,
+                    AnnoyingDialog::YES_NO,
+                    wxID_YES);
     if (m_Project && dlg.ShowModal() == wxID_NO)
     {
         return;
     }
 
-	int bak = m_TargetIndex;
+    int bak = m_TargetIndex;
     if (event.GetId() == idMenuRebuildTargetFromProjectManager)
-	{
-    	// we 're called from a menu in ProjectManager
-		int idx = DoGUIAskForTarget();
-		if (idx == -1)
-			return;
-		else
-			m_TargetIndex = idx;
+    {
+        // we 're called from a menu in ProjectManager
+        int idx = DoGUIAskForTarget();
+        if (idx == -1)
+            return;
+        else
+            m_TargetIndex = idx;
 
-    	// let's check the selected project...
-    	DoSwitchProjectTemporarily();
-	}
+        // let's check the selected project...
+        DoSwitchProjectTemporarily();
+    }
     else if (event.GetId() == idMenuRebuildFromProjectManager)
     {
-    	// we 're called from a menu in ProjectManager
-    	// let's check the selected project...
-    	DoSwitchProjectTemporarily();
+        // we 're called from a menu in ProjectManager
+        // let's check the selected project...
+        DoSwitchProjectTemporarily();
     }
     ProjectBuildTarget* target = DoAskForTarget();
     Rebuild(target);
-	m_TargetIndex = bak;
+    m_TargetIndex = bak;
 }
 
 void CompilerGCC::OnCompileAll(wxCommandEvent& event)
@@ -2551,10 +2551,10 @@ void CompilerGCC::OnRebuildAll(wxCommandEvent& event)
                         "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
                         "Are you sure you want to rebuild ALL the projects?"),
-					wxART_QUESTION,
-					AnnoyingDialog::YES_NO,
-					wxID_YES);
-	if (dlg.ShowModal() == wxID_NO)
+                    wxART_QUESTION,
+                    AnnoyingDialog::YES_NO,
+                    wxID_YES);
+    if (dlg.ShowModal() == wxID_NO)
     {
         return;
     }
@@ -2563,17 +2563,19 @@ void CompilerGCC::OnRebuildAll(wxCommandEvent& event)
 
 void CompilerGCC::OnCleanAll(wxCommandEvent& event)
 {
-    AnnoyingDialog dlg(_("Clean workspace"),
-                        _("Cleaning ALL the open projects will cause the deletion of all "
-                        "object files and building them from scratch.\nThis action "
+    AnnoyingDialog dlg(_("Clean project"),
+                        _("Cleaning ALL the open projects will cause the deletion "
+                        "of all relevant object files.\nThis means that you will "
+                        "have to build ALL your projects from scratch next time you "
+                        "'ll want to build them.\nThat action "
                         "might take a while, especially if your projects contain "
                         "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
-                        "Are you sure you want to clean ALL the projects?"),
-					wxART_QUESTION,
-					AnnoyingDialog::YES_NO,
-					wxID_YES);
-	if (dlg.ShowModal() == wxID_NO)
+                        "Are you sure you want to proceed to cleaning?"),
+                    wxART_QUESTION,
+                    AnnoyingDialog::YES_NO,
+                    wxID_YES);
+    if (dlg.ShowModal() == wxID_NO)
     {
         return;
     }
@@ -2592,42 +2594,42 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
                         "more than a few files.\nAnother factor is your CPU "
                         "and the available system memory.\n\n"
                         "Are you sure you want to proceed to cleaning?"),
-					wxART_QUESTION,
-					AnnoyingDialog::YES_NO,
-					wxID_YES);
-	if (m_Project && dlg.ShowModal() == wxID_NO)
+                    wxART_QUESTION,
+                    AnnoyingDialog::YES_NO,
+                    wxID_YES);
+    if (m_Project && dlg.ShowModal() == wxID_NO)
     {
         return;
     }
 
-	int bak = m_TargetIndex;
+    int bak = m_TargetIndex;
     if (event.GetId() == idMenuCleanTargetFromProjectManager)
-	{
-    	// we 're called from a menu in ProjectManager
-		int idx = DoGUIAskForTarget();
-		if (idx == -1)
-			return;
-		else
-			m_TargetIndex = idx;
+    {
+        // we 're called from a menu in ProjectManager
+        int idx = DoGUIAskForTarget();
+        if (idx == -1)
+            return;
+        else
+            m_TargetIndex = idx;
 
-    	// let's check the selected project...
-    	DoSwitchProjectTemporarily();
-	}
+        // let's check the selected project...
+        DoSwitchProjectTemporarily();
+    }
     else if (event.GetId() == idMenuCleanFromProjectManager)
     {
-    	// we 're called from a menu in ProjectManager
-    	// let's check the selected project...
-    	DoSwitchProjectTemporarily();
+        // we 're called from a menu in ProjectManager
+        // let's check the selected project...
+        DoSwitchProjectTemporarily();
     }
     ProjectBuildTarget* target = DoAskForTarget();
     Clean(target);
-	m_TargetIndex = bak;
+    m_TargetIndex = bak;
 }
 
 void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& event)
 {
-	wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
-	wxTreeItemId sel = tree->GetSelection();
+    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
+    wxTreeItemId sel = tree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)tree->GetItemData(sel);
     if (ftd)
     {
@@ -2650,19 +2652,19 @@ void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& event)
 
 void CompilerGCC::OnTargetCompilerOptions(wxCommandEvent& event)
 {
-	int bak = m_TargetIndex;
-	// we 're called from a menu in ProjectManager
-	int idx = DoGUIAskForTarget();
-	if (idx == -1)
-		return;
-	else
-		m_TargetIndex = idx;
-   	// let's check the selected project...
-   	DoSwitchProjectTemporarily();
+    int bak = m_TargetIndex;
+    // we 're called from a menu in ProjectManager
+    int idx = DoGUIAskForTarget();
+    if (idx == -1)
+        return;
+    else
+        m_TargetIndex = idx;
+       // let's check the selected project...
+       DoSwitchProjectTemporarily();
 
     ProjectBuildTarget* target = DoAskForTarget();
-	m_TargetIndex = bak;
-	Configure(m_Project, target);
+    m_TargetIndex = bak;
+    Configure(m_Project, target);
 }
 
 void CompilerGCC::OnKillProcess(wxCommandEvent& event)
@@ -2672,46 +2674,46 @@ void CompilerGCC::OnKillProcess(wxCommandEvent& event)
 
 void CompilerGCC::OnSelectTarget(wxCommandEvent& event)
 {
- 	if (event.GetId() == idMenuSelectTargetAll)
-		m_TargetIndex = -1;
-	else if (event.GetId() == idToolTarget)
+     if (event.GetId() == idMenuSelectTargetAll)
+        m_TargetIndex = -1;
+    else if (event.GetId() == idToolTarget)
 #if wxCHECK_VERSION(2, 6, 2)
-		m_TargetIndex = m_ToolTarget->GetCurrentSelection() - (m_HasTargetAll ? 1 : 0);
+        m_TargetIndex = m_ToolTarget->GetCurrentSelection() - (m_HasTargetAll ? 1 : 0);
 #else
-		m_TargetIndex = m_ToolTarget->GetSelection() - (m_HasTargetAll ? 1 : 0);
+        m_TargetIndex = m_ToolTarget->GetSelection() - (m_HasTargetAll ? 1 : 0);
 #endif
-	else
-	{
-		for (int i = 0; i < MAX_TARGETS; ++i)
-		{
-			if (event.GetId() == idMenuSelectTargetOther[i])
-			{
-				m_TargetIndex = i;
-				break;
-			}
-		}
-	}
-	DoUpdateTargetMenu();
+    else
+    {
+        for (int i = 0; i < MAX_TARGETS; ++i)
+        {
+            if (event.GetId() == idMenuSelectTargetOther[i])
+            {
+                m_TargetIndex = i;
+                break;
+            }
+        }
+    }
+    DoUpdateTargetMenu();
 }
 
 void CompilerGCC::OnNextError(wxCommandEvent& event)
 {
-	DoGotoNextError();
+    DoGotoNextError();
 }
 
 void CompilerGCC::OnPreviousError(wxCommandEvent& event)
 {
-	DoGotoPreviousError();
+    DoGotoPreviousError();
 }
 
 void CompilerGCC::OnClearErrors(wxCommandEvent& event)
 {
-	DoClearErrors();
+    DoClearErrors();
 }
 
 void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
 {
-	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+    cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
     bool running = IsRunning();
@@ -2746,10 +2748,10 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuProjectCompilerOptions, !running && prj);
     }
 
-	// enable/disable compiler toolbar buttons
-	wxToolBar* tbar = m_pTbar;//Manager::Get()->GetAppWindow()->GetToolBar();
-	if (tbar)
-	{
+    // enable/disable compiler toolbar buttons
+    wxToolBar* tbar = m_pTbar;//Manager::Get()->GetAppWindow()->GetToolBar();
+    if (tbar)
+    {
         tbar->EnableTool(idMenuCompile, !running && (prj || ed));
         tbar->EnableTool(idMenuRun, !running && (prj || ed));
         tbar->EnableTool(idMenuCompileAndRun, !running && (prj || ed));
@@ -2768,34 +2770,34 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
 
 void CompilerGCC::OnProjectActivated(CodeBlocksEvent& event)
 {   //NOTE: this function is also called on PROJECT_TARGETS_MODIFIED events to keep the combobox in sync
-	DoRecreateTargetMenu();
-	event.Skip(); // *very* important! don't forget it...
+    DoRecreateTargetMenu();
+    event.Skip(); // *very* important! don't forget it...
 }
 
 void CompilerGCC::OnProjectLoaded(CodeBlocksEvent& event)
 {
-	DoRecreateTargetMenu();
-	event.Skip(); // *very* important! don't forget it...
+    DoRecreateTargetMenu();
+    event.Skip(); // *very* important! don't forget it...
 }
 
 void CompilerGCC::OnGCCOutput(CodeBlocksEvent& event)
 {
-	wxString msg = event.GetString();
-	if (!msg.IsEmpty() &&
+    wxString msg = event.GetString();
+    if (!msg.IsEmpty() &&
         !msg.Matches(_T("# ??*")))  // gcc 3.4 started displaying a line like this filter
                                 // when calculating dependencies. Until I check out
                                 // why this happens (and if there is a switch to
                                 // turn it off), I put this condition here to avoid
                                 // displaying it...
-	{
+    {
         AddOutputLine(msg);
-	}
+    }
 }
 
 void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 {
-	wxString msg = event.GetString();
-	AddOutputLine(msg);
+    wxString msg = event.GetString();
+    AddOutputLine(msg);
 }
 
 void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
@@ -2817,50 +2819,50 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
         return;
     }
 
-	Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
-	CompilerLineType clt = compiler->CheckForWarningsAndErrors(output);
+    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+    CompilerLineType clt = compiler->CheckForWarningsAndErrors(output);
 
     // log to build log
-	switch (clt)
-	{
+    switch (clt)
+    {
         case cltWarning:
-			m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
-			break;
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
+            break;
 
         case cltError:
-			m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
-			break;
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
+            break;
 
         default:
             if (forceErrorColour)
                 m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON));
             else
                 m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
-			break;
-	}
+            break;
+    }
 
     // log to build messages if warning/error
-	if (clt != cltNormal)
-	{
-	    // display current project/target "header" in build messages, if different since last warning/error
-	    static ProjectBuildTarget* last_bt = 0;
-	    if (last_bt != m_pLastBuildingTarget)
-	    {
-	        last_bt = m_pLastBuildingTarget;
-	        if (last_bt)
-	        {
-	            wxString msg;
-	            msg.Printf(_T("=== %s, %s ==="),
+    if (clt != cltNormal)
+    {
+        // display current project/target "header" in build messages, if different since last warning/error
+        static ProjectBuildTarget* last_bt = 0;
+        if (last_bt != m_pLastBuildingTarget)
+        {
+            last_bt = m_pLastBuildingTarget;
+            if (last_bt)
+            {
+                wxString msg;
+                msg.Printf(_T("=== %s, %s ==="),
                             last_bt->GetParentProject()->GetTitle().c_str(),
                             last_bt->GetTitle().c_str());
                 LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, msg);
-	        }
-	    }
+            }
+        }
         // actually log message
         LogWarningOrError(clt, m_pBuildingProject, compiler->GetLastErrorFilename(), compiler->GetLastErrorLine(), compiler->GetLastError());
     }
 
-	if (!output.IsEmpty())
+    if (!output.IsEmpty())
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, output.c_str());
 }
 
@@ -2891,7 +2893,7 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
 
 void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
 {
-	OnJobEnd(event.GetId() - idGCCProcess1, event.GetInt());
+    OnJobEnd(event.GetId() - idGCCProcess1, event.GetInt());
 }
 
 void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)

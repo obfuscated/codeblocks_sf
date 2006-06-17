@@ -65,8 +65,8 @@ class CompilerGCC : public cbCompilerPlugin
         virtual int Run(ProjectBuildTarget* target = 0L);
         virtual int Run(const wxString& target);
         virtual int RunSingleFile(const wxString& filename);
-        virtual int Clean(ProjectBuildTarget* target = 0L);
         virtual int Clean(const wxString& target);
+        virtual int Clean(ProjectBuildTarget* target = 0L);
         virtual int DistClean(ProjectBuildTarget* target = 0L);
         virtual int DistClean(const wxString& target);
         virtual int Build(ProjectBuildTarget* target = 0L);
