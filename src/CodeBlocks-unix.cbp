@@ -4195,6 +4195,18 @@
 			<Option link="0" />
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src\resources\images\16x16\filefindnext.png">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\images\16x16\filefindprev.png">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src\resources\images\16x16\filenew.png">
 			<Option compilerVar="" />
 			<Option compile="0" />
@@ -4244,6 +4256,12 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src\resources\images\16x16\searchreplace.png">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\resources\images\16x16\searchreplacef.png">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />

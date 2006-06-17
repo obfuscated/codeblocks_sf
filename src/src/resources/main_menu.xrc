@@ -480,11 +480,13 @@
       </object>
       <object class="wxMenuItem" name="idSearchFindNext">
         <label>Find &amp;next</label>
+        <bitmap>images\16x16\filefindnext.png</bitmap>
         <accel>F3</accel>
         <help>Repeat the last search in the same direction</help>
       </object>
       <object class="wxMenuItem" name="idSearchFindPrevious">
         <label>Find &amp;previous</label>
+        <bitmap>images\16x16\filefindprev.png</bitmap>
         <accel>Shift-F3</accel>
         <help>Repeat the last search in the opposite direction</help>
       </object>
@@ -497,7 +499,7 @@
       </object>
       <object class="wxMenuItem" name="idSearchReplaceInFiles">
         <label>&amp;Replace in Files</label>
-        <bitmap>images\16x16\searchreplace.png</bitmap>
+        <bitmap>images\16x16\searchreplacef.png</bitmap>
         <accel>Ctrl-Shift-R</accel>
         <help>Find and replace text</help>
       </object>
