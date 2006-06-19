@@ -67,21 +67,21 @@
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="byocbtriscontent.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="byocbtriscontent.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
 		<Unit filename="byogame.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="byogame.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="byogamebase.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="byogamebase.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

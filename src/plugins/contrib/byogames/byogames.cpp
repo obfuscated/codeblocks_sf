@@ -15,12 +15,15 @@
 #include <stdlib.h>
 #include <time.h>
 
+BEGIN_EVENT_TABLE(BYOGames,cbToolPlugin)
+    EVT_TIMER(1,BYOGames::OnTimer)
+END_EVENT_TABLE()
+
 // Implement the plugin's hooks
 CB_IMPLEMENT_PLUGIN(BYOGames, "BYO Games");
 
-BYOGames::BYOGames()
+BYOGames::BYOGames(): SecondTick(this,1)
 {
-	//ctor
 	m_PluginInfo.name = _T("BYOGames");
 	m_PluginInfo.title = _("BYO Games");
 	m_PluginInfo.version = _T("1.0");
@@ -30,6 +33,8 @@ BYOGames::BYOGames()
 	m_PluginInfo.authorWebsite = _T("");
 	m_PluginInfo.thanksTo = _("");
 	m_PluginInfo.license = LICENSE_GPL;
+
+	SecondTick.Start(1000,true);
 }
 
 BYOGames::~BYOGames()
@@ -48,8 +53,8 @@ void BYOGames::OnRelease(bool appShutDown)
 int BYOGames::Execute()
 {
     int gameNum = SelectGame();
-    if ( gameNum<0 || gameNum>=byoGame::GetGamesCount() ) return 0;
-    byoGame::PlayGame(gameNum);
+    if ( gameNum<0 || gameNum>=byoGameLauncher::GetGamesCount() ) return 0;
+    byoGameLauncher::PlayGame(gameNum);
     return 0;
 }
 
@@ -57,4 +62,10 @@ int BYOGames::SelectGame()
 {
     byoGameSelect Select(NULL);
     return Select.ShowModal();
+}
+
+void BYOGames::OnTimer(wxTimerEvent& event)
+{
+    byoGameBase::BackToWorkTimer();
+    SecondTick.Start(-1,true);
 }

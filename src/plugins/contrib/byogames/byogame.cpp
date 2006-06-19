@@ -1,49 +1,49 @@
 #include <sdk.h> // PCH support
 #include <annoyingdialog.h>
+#include <manager.h>
+#include <editormanager.h>
 #include "byogame.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// BackToWorkTimer - START
-
-static const int idTimer = wxNewId();
-
-BEGIN_EVENT_TABLE(BackToWorkTimer, wxEvtHandler)
-    EVT_TIMER(idTimer, BackToWorkTimer::OnTimer)
-END_EVENT_TABLE()
-
-BackToWorkTimer::BackToWorkTimer(size_t minutes)
-    : m_Timeout(minutes * 60 * 1000),
-    m_Timer(this, idTimer)
-{
-    m_Timer.Start(m_Timeout, wxTIMER_ONE_SHOT);
-}
-
-void BackToWorkTimer::OnTimer(wxTimerEvent& event)
-{
-    AnnoyingDialog dlg(_("Work reminder (stop playing games!)"),
-                        _("Don't you think you had enough already?\nGet back to work, NOW!"),
-                        wxART_WARNING,
-                        AnnoyingDialog::OK,
-                        wxID_OK);
-    dlg.ShowModal();
-    m_Timer.Start(m_Timeout, wxTIMER_ONE_SHOT);
-}
-
-// BackToWorkTimer - END
-////////////////////////////////////////////////////////////////////////////////
-
-byoGame::GamesT& byoGame::GetGames()
+byoGameLauncher::GamesT& byoGameLauncher::GetGames()
 {
     static GamesT m_Games;
     return m_Games;
 }
 
-byoGame::byoGame(const wxString& Name): m_Name(Name)
+byoGameLauncher::byoGameLauncher(const wxString& Name): m_Name(Name)
 {
     GetGames().Add(this);
 }
 
-byoGame::~byoGame()
+byoGameLauncher::~byoGameLauncher()
 {
     GetGames().Remove(this);
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+BEGIN_EVENT_TABLE(byoEditorBase,EditorBase)
+    EVT_SET_FOCUS(byoEditorBase::OnSetFocus)
+END_EVENT_TABLE()
+
+byoEditorBase::byoEditorBase(const wxString& GameName):
+    EditorBase((wxWindow*)Manager::Get()->GetEditorManager()->GetNotebook(),GameName)
+{
+}
+
+byoEditorBase::~byoEditorBase()
+{
+}
+
+void byoEditorBase::AddGameContent(byoGameBase* base)
+{
+    wxSizer* Sizer = new wxBoxSizer(wxHORIZONTAL);
+    m_Shortname = GetFilename();
+    SetTitle(GetFilename());
+    m_Content = base;
+    Sizer->Add(m_Content,1,wxEXPAND);
+    SetSizer(Sizer);
+    Layout();
+    m_Content->SetFocus();
+}
+

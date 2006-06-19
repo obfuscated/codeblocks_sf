@@ -50,9 +50,9 @@ byoGameSelect::byoGameSelect(wxWindow* parent,wxWindowID id)
 	Center();
 	//*)
 
-	for ( int i=0; i<byoGame::GetGamesCount(); i++ )
+	for ( int i=0; i<byoGameLauncher::GetGamesCount(); i++ )
 	{
-	    m_GamesList->Append(byoGame::GetGameName(i));
+	    m_GamesList->Append(byoGameLauncher::GetGameName(i));
 	}
 
 	m_GamesList->SetSelection(0);
