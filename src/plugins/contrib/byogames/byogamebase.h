@@ -41,6 +41,9 @@ class byoGameBase: public wxWindow
         /** \brief Function drawing brick using grid ans size */
         void DrawBrick(wxDC* DC,int cellX,int cellY,const wxColour& base);
 
+        /** \brief Function drawing the columns guidelines */
+        void DrawGuidelines(wxDC* DC, int offset, int columns, int rows, const wxColour& base);
+
         /** \brief Getting one of standard colours used in game */
         const wxColour& GetColour(int index);
 

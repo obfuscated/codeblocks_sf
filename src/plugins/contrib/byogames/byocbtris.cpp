@@ -77,7 +77,8 @@ byoCBTris::byoCBTris(wxWindow* parent,const wxString& Name):
     m_IsRight(false),
     m_IsUp(false),
     m_IsDown(false),
-    m_TotalRemovedLines(0)
+    m_TotalRemovedLines(0),
+    m_Guidelines(false)
 {
 	m_Font = wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT);
 	LeftRightTimer.Start(100);
@@ -139,6 +140,10 @@ void byoCBTris::OnKeyDown(wxKeyEvent& event)
         StartTimerNow(DownTimer);
     }
 
+    if ( event.GetKeyCode() == 'g' || event.GetKeyCode() == 'G' )
+    {
+        m_Guidelines = !m_Guidelines;
+    }
 }
 
 void byoCBTris::OnKeyUp(wxKeyEvent& event)
@@ -215,6 +220,9 @@ void byoCBTris::DrawBrickField(wxDC* DC)
     {
         DrawBrick(DC,x,bricksVert,Border);
     }
+
+    static const wxColour Guideline(0x70,0x70,0x70);
+    if(m_Guidelines) DrawGuidelines(DC,bricksMargin,bricksHoriz,bricksVert,Guideline);
 }
 
 void byoCBTris::DrawCurrentChunk(wxDC* DC)
@@ -367,7 +375,7 @@ bool byoCBTris::ChunkDown()
             for ( int x=0; x<4; x++ )
                 if ( m_CurrentChunk[x+4*y] )
                     m_Content[x+m_ChunkPosX][y+m_ChunkPosY] = m_CurrentChunk[x+4*y];
-        m_Score += 10;
+        m_Score += GetScoreScale();
         return false;
     }
 
@@ -411,7 +419,7 @@ void byoCBTris::RemoveFullLines()
         copyToY--;
     }
 
-    m_Score += 100 * count*count;
+    m_Score += 10 * count*count * GetScoreScale();
     AddRemovedLines(count);
 }
 
@@ -450,11 +458,16 @@ void byoCBTris::UpdateChunkPosLeftRight()
 
 void byoCBTris::UpdateChunkPosUp()
 {
+    bool IsShift = ::wxGetKeyState(WXK_SHIFT);
+
     if ( m_IsUp )
     {
         ChunkConfig newChunk;
-        RotateChunkLeft(m_CurrentChunk,newChunk);
-             if ( !CheckChunkColision(newChunk,m_ChunkPosX,m_ChunkPosY) ) memcpy(m_CurrentChunk,newChunk,sizeof(newChunk));
+        if (IsShift)
+            RotateChunkLeft(m_CurrentChunk,newChunk);
+        else
+            RotateChunkRight(m_CurrentChunk,newChunk);
+        if ( !CheckChunkColision(newChunk,m_ChunkPosX,m_ChunkPosY) ) memcpy(m_CurrentChunk,newChunk,sizeof(newChunk));
         else if ( !CheckChunkColision(newChunk,m_ChunkPosX-1,m_ChunkPosY) )
         {
             memcpy(m_CurrentChunk,newChunk,sizeof(newChunk));
@@ -520,6 +533,11 @@ void byoCBTris::StartTimerNow(wxTimer& timer)
 {
     timer.Notify();
     timer.Start();
+}
+
+int byoCBTris::GetScoreScale()
+{
+    return m_Guidelines ? 5 : 10;
 }
 
 BYO_REGISTER_GAME(byoCBTris,"C::B-Tris")

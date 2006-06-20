@@ -49,6 +49,7 @@ class byoCBTris: public byoGameBase
         void DrawStats(wxDC* DC);
         void AddRemovedLines(int removed);
         void StartTimerNow(wxTimer& timer);
+        int GetScoreScale();
 
         wxTimer SpeedTimer;
         wxTimer LeftRightTimer;
@@ -63,6 +64,8 @@ class byoCBTris: public byoGameBase
         bool m_IsUp;
         bool m_IsDown;
         int m_TotalRemovedLines;
+
+        bool m_Guidelines;
 
         // Font used inside game
         wxFont m_Font;

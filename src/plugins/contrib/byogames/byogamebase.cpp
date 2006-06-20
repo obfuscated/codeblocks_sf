@@ -53,6 +53,7 @@ byoGameBase::byoGameBase(wxWindow* parent,const wxString& GameName):
 
 byoGameBase::~byoGameBase()
 {
+    SetPause(true);
     AllGames.Remove(this);
 }
 
@@ -181,6 +182,19 @@ void byoGameBase::DrawBrick(wxDC* DC,int cellX,int cellY,const wxColour& base)
     int posX=0, posY=0;
     GetCellAbsolutePos(cellX,cellY,posX,posY);
     DrawBrickAbsolute(DC,posX,posY,m_CellSize,m_CellSize,base);
+}
+
+void byoGameBase::DrawGuidelines(wxDC* DC, int offset, int columns, int rows, const wxColour& base)
+{
+    for ( int x=offset+1; x<=offset+columns-1; x++ )
+    {
+        DC->SetPen(base);
+        DC->DrawLine(
+            m_FirstCellXPos + x * m_CellSize,
+            m_FirstCellYPos + 4 * m_CellSize,
+            m_FirstCellXPos + x * m_CellSize,
+            m_FirstCellYPos + rows * m_CellSize );
+    }
 }
 
 const wxColour& byoGameBase::GetColour(int index)
