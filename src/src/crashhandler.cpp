@@ -6,6 +6,11 @@
 
 LONG WINAPI CrashHandlerFunc(struct _EXCEPTION_POINTERS *ExceptionInfo)
 {
+    DWORD code = ExceptionInfo->ExceptionRecord->ExceptionCode;
+
+    if(code != EXCEPTION_ACCESS_VIOLATION && code != EXCEPTION_ILLEGAL_INSTRUCTION)
+        return EXCEPTION_CONTINUE_SEARCH;
+
     wxLogNull nl;
     wxString path(ConfigManager::GetHomeFolder() + _T("cb-crash-recover"));
     wxMkdir(ConfigManager::GetHomeFolder() + _T("cb-crash-recover"));
@@ -28,7 +33,7 @@ LONG WINAPI CrashHandlerFunc(struct _EXCEPTION_POINTERS *ExceptionInfo)
     }
 
     wxString buf;
-    buf.Printf(_T("The application caused an access violation from address %u.\n\n"
+    buf.Printf(_T("The application encountered a crash at address %u.\n\n"
                   "A snapshot of the present state of Code::Blocks has been saved to the directory cb-crash-recover inside your 'My Files' folder. Hopefully, this will prevent you from losing recent modifications.\n\n"
                   "You now have three options:\n"
                   "1. Press 'Abort' to pass control back to the system. This will normally display the standard 'application error' message and kill the program.\n"
