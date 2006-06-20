@@ -7,22 +7,23 @@
  * Thanks:    Yiannis Mandravellos and his Source code formatter (AStyle) sources
  * License:   GPL
  **************************************************************/
+
 #ifdef CB_PRECOMP
-#include "sdk.h"
+    #include "sdk.h"
 #else
-#include <wx/checkbox.h>
-#include <wx/event.h>
-#include <wx/spinctrl.h>
-#include <wx/textctrl.h>
-#include <wx/xrc/xmlres.h>
-#include "manager.h"
-#include "configmanager.h"
+    #include <wx/checkbox.h>
+    #include <wx/event.h>
+    #include <wx/spinctrl.h>
+    #include <wx/textctrl.h>
+    #include <wx/xrc/xmlres.h>
+    #include "manager.h"
+    #include "configmanager.h"
 #endif
 #include "cbprofilerconfig.h"
 
 BEGIN_EVENT_TABLE(CBProfilerConfigDlg, wxPanel)
-EVT_CHECKBOX(XRCID("chkAnnSource"), CBProfilerConfigDlg::CheckBoxEvent)
-EVT_CHECKBOX(XRCID("chkMinCount"), CBProfilerConfigDlg::CheckBoxEvent)
+    EVT_CHECKBOX(XRCID("chkAnnSource"), CBProfilerConfigDlg::CheckBoxEvent)
+    EVT_CHECKBOX(XRCID("chkMinCount"),  CBProfilerConfigDlg::CheckBoxEvent)
 END_EVENT_TABLE()
 
 CBProfilerConfigDlg::CBProfilerConfigDlg(wxWindow* parent)

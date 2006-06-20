@@ -7,24 +7,25 @@
  * Thanks:    Yiannis Mandravellos and his Source code formatter (AStyle) sources
  * License:   GPL
  **************************************************************/
+
 #ifdef CB_PRECOMP
-#include "sdk.h"
+    #include "sdk.h"
 #else
-#include <wx/datetime.h>
-#include <wx/filename.h>
-#include <wx/fs_zip.h>
-#include <wx/intl.h>
-#include <wx/string.h>
-#include <wx/xrc/xmlres.h>
-#include "cbproject.h"
-#include "configmanager.h"
-#include "globals.h"
-#include "licenses.h" // defines some common licenses (like the GPL)
-#include "macrosmanager.h"
-#include "manager.h"
-#include "messagemanager.h"
-#include "projectbuildtarget.h"
-#include "projectmanager.h"
+    #include <wx/datetime.h>
+    #include <wx/filename.h>
+    #include <wx/fs_zip.h>
+    #include <wx/intl.h>
+    #include <wx/string.h>
+    #include <wx/xrc/xmlres.h>
+    #include "cbproject.h"
+    #include "configmanager.h"
+    #include "globals.h"
+    #include "licenses.h" // defines some common licenses (like the GPL)
+    #include "macrosmanager.h"
+    #include "manager.h"
+    #include "messagemanager.h"
+    #include "projectbuildtarget.h"
+    #include "projectmanager.h"
 #endif
 #include <wx/choicdlg.h>
 #include <wx/filedlg.h>
@@ -43,15 +44,15 @@ CBProfiler::CBProfiler()
     wxString resPath = ConfigManager::GetDataFolder();
     wxXmlResource::Get()->Load(resPath + _T("/profiler.zip#zip:*.xrc"));
 
-    m_PluginInfo.name = _T("CBProfiler");
-    m_PluginInfo.title = _("Code profiler");
-    m_PluginInfo.version = _("1.0RC2");
-    m_PluginInfo.description = _("A simple graphical interface to the GNU GProf Profiler\n\nGNU GProf Online Reference:\nhttp://www.gnu.org/software/binutils/manual/gprof-2.9.1/html_mono/gprof.html");
-    m_PluginInfo.author = _("Dark Lord & Zlika");
-    m_PluginInfo.authorEmail = _("");
+    m_PluginInfo.name          = _T("CBProfiler");
+    m_PluginInfo.title         = _("Code profiler");
+    m_PluginInfo.version       = _("1.0RC2");
+    m_PluginInfo.description   = _("A simple graphical interface to the GNU GProf Profiler\n\nGNU GProf Online Reference:\nhttp://www.gnu.org/software/binutils/manual/gprof-2.9.1/html_mono/gprof.html");
+    m_PluginInfo.author        = _("Dark Lord & Zlika");
+    m_PluginInfo.authorEmail   = _("");
     m_PluginInfo.authorWebsite = _("");
-    m_PluginInfo.thanksTo = _("Mandrav, for the n00b intro to profiling\nand the sources of his Source code\nformatter (AStyle) Plugin, whose clean\ncode structure served as a basis for this\nplugin\n:)");
-    m_PluginInfo.license = LICENSE_GPL;
+    m_PluginInfo.thanksTo      = _("Mandrav, for the n00b intro to profiling\nand the sources of his Source code\nformatter (AStyle) Plugin, whose clean\ncode structure served as a basis for this\nplugin\n:)");
+    m_PluginInfo.license       = LICENSE_GPL;
 }
 CBProfiler::~CBProfiler()
 {
@@ -89,130 +90,163 @@ int CBProfiler::Execute()
     if (!m_IsAttached)
         return -1;
 
-   cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
-   // if no project open, exit
-	if (!project)
-	{
-		wxString msg = _("You need to open a project\nbefore using the plugin!\nC::B Profiler could not complete the operation");
-		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
-		Manager::Get()->GetMessageManager()->DebugLog(msg);
-		return -1;
-	}
+    cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+    // if no project open, exit
+    if (!project)
+    {
+        wxString msg = _("You need to open a project\nbefore using the plugin!\n"
+                         "C::B Profiler could not complete the operation.");
+        cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
+        Manager::Get()->GetMessageManager()->DebugLog(msg);
+        return -1;
+    }
 
-	ProjectBuildTarget* target = 0L;
-	if (project->GetBuildTargetsCount() > 1)
-	{
-		// more than one executable target? ask...
-		wxString choices[project->GetBuildTargetsCount()];
-		for (int i=0; i<project->GetBuildTargetsCount(); ++i)
-		{
-		   choices[i] = project->GetBuildTarget(i)->GetTitle();
-		}
-		wxSingleChoiceDialog dialog(Manager::Get()->GetAppWindow(),_("Select the target you want to profile"),
-                                 _("Select Target"),project->GetBuildTargetsCount(),choices);
-		dialog.SetSelection(0);
-		if (dialog.ShowModal() != wxID_OK)
-		   return -1;
-		int targetIndex = dialog.GetSelection();
+    ProjectBuildTarget* target = 0L;
+    if (project->GetBuildTargetsCount() > 1)
+    {
+        // more than one executable target? ask...
+        wxString choices[project->GetBuildTargetsCount()];
+        for (int i=0; i<project->GetBuildTargetsCount(); ++i)
+        {
+            choices[i] = project->GetBuildTarget(i)->GetTitle();
+        }
+        wxSingleChoiceDialog dialog(Manager::Get()->GetAppWindow(),
+                                    _("Select the target you want to profile"),
+                                    _("Select Target"),project->GetBuildTargetsCount(),choices);
+        dialog.SetSelection(0);
+        if (dialog.ShowModal() != wxID_OK)
+            return -1;
+        int targetIndex = dialog.GetSelection();
         target = project->GetBuildTarget(targetIndex);
-	}
-	else if (project->GetBuildTargetsCount() == 1)
-	   target = project->GetBuildTarget(0);
-	else
-	{
-		// not even one executable target...
-		wxString msg = _("No executable targets found in project!\nC::B Profiler could not complete the operation");
-		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
-		Manager::Get()->GetMessageManager()->DebugLog(msg);
-		return -1;
-	}
+    }
+    else if (project->GetBuildTargetsCount() == 1)
+        target = project->GetBuildTarget(0);
+    else
+    {
+        // not even one executable target...
+        wxString msg = _("No executable targets found in project!\n"
+                         "C::B Profiler could not complete the operation.");
+        cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
+        Manager::Get()->GetMessageManager()->DebugLog(msg);
+        return -1;
+    }
 
-	if ((target->GetTargetType() != ttExecutable) && (target->GetTargetType() != ttConsoleOnly))
-	{
-		wxString msg = _("The target is not executable!");
-		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
-		Manager::Get()->GetMessageManager()->DebugLog(msg);
-		return -1;
-	}
+    if ((target->GetTargetType() != ttExecutable) && (target->GetTargetType() != ttConsoleOnly))
+    {
+        wxString msg = _("The target is not executable!");
+        cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
+        Manager::Get()->GetMessageManager()->DebugLog(msg);
+        return -1;
+    }
 
-	// Scope...
-	wxString exename,dataname;
+    // Scope...
+    wxString exename,dataname,workname;
 
-	if (target)
-	{
+    if (target)
+    {
         exename = target->GetOutputFilename();
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(exename);
         wxFileName ename(exename);
         ename.Normalize(wxPATH_NORM_ALL, project->GetBasePath());
-		exename = ename.GetFullPath();
+        exename = ename.GetFullPath();
 
-		wxChar separator = wxFileName::GetPathSeparator();
+        wxChar separator = wxFileName::GetPathSeparator();
 
         // The user either hasn't built the target yet or cleaned the project
         if (!ename.FileExists())
         {
-            wxString msg = _("No executable found!\nYou either have not built the target or\njust cleaned the project\nTry to find profiling info?");
-            if (cbMessageBox(msg,_("Confirmation"),wxYES_NO | wxICON_QUESTION, Manager::Get()->GetAppWindow()) == wxID_NO)
+            wxString msg = _("No executable found!\n"
+                             "You either have not built the target or\n"
+                             "just cleaned the project.\n"
+                             "Try to find profiling info anyway?");
+            if (cbMessageBox(msg,_("Confirmation"),wxYES_NO | wxICON_QUESTION,
+                             Manager::Get()->GetAppWindow()) == wxID_NO)
                 return -2;
         }
 
-        // We locate gmon.out
+        // We locate gmon.out. First: look for gmon.out in the folder of the executable
         dataname=exename.BeforeLast(separator);
         dataname+=separator;
         dataname+=_T("gmon.out");
         wxFileName dname(dataname);
-        // The gmon.out file doesn't exist?
+
+        // The gmon.out file doesn't exist in the executable's directory.
         if (!dname.FileExists())
         {
-            wxString msg = _("No profile data found!\nBe sure to enable \"Profile Code when executed\" for the current target.\nDo you want to search for the profile data file?");
-            if (cbMessageBox(msg, _("Cannot find gmon.out"), wxICON_QUESTION | wxYES_NO, Manager::Get()->GetAppWindow()) == wxID_NO)
-               return -1;
-            else
+            // Second: look for gmon.out in the working directory of the project
+            workname = target->GetWorkingDir();
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(workname);
+            wxFileName wname(workname);
+            wname.Normalize(wxPATH_NORM_ALL, project->GetBasePath());
+            workname = wname.GetFullPath();
+
+            dataname=workname.BeforeLast(separator);
+            dataname+=separator;
+            dataname+=_T("gmon.out");
+            dname = wxFileName(dataname);
+
+            // The gmon.out file doesn't exist in the working directory.
+            if (!dname.FileExists())
             {
-            	wxFileDialog filedialog(Manager::Get()->GetAppWindow(), _("Locate profile information"),_T(""),_T("gmon.out"),_T("*.*"),wxOPEN|wxFILE_MUST_EXIST);
-            	if (filedialog.ShowModal() == wxID_OK)
-            	{
-					dataname = filedialog.GetPath();
-					dname = wxFileName(dataname);
-            	}
-            	else return -1;
+                wxString msg = _("No profile data found!\n"
+                                 "Be sure to enable \"Profile Code when executed\" for the current target.\n"
+                                 "The target must have been run at least one time after that.\n"
+                                 "Do you want to search for the profile data file?");
+                if (cbMessageBox(msg, _("Cannot find gmon.out."), wxICON_QUESTION | wxYES_NO, Manager::Get()->GetAppWindow()) == wxID_NO)
+                    return -1;
+                else
+                {
+                    wxFileDialog filedialog(Manager::Get()->GetAppWindow(), _("Locate profile information"),
+                                            _T(""),_T("gmon.out"),_T("*.*"),wxOPEN|wxFILE_MUST_EXIST);
+                    if (filedialog.ShowModal() == wxID_OK)
+                    {
+                        dataname = filedialog.GetPath();
+                        dname = wxFileName(dataname);
+                    }
+                    else return -1;
+                }
             }
         }
 
+        Manager::Get()->GetMessageManager()->DebugLog(_("Using executable file from: %s."), exename.c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_("Using gmon.out   file from: %s."), dataname.c_str());
+
         // If we got so far, it means both the executable and the profile data exist
-        wxDateTime exetime=ename.GetModificationTime();
-        wxDateTime datatime=dname.GetModificationTime();
+        wxDateTime exetime  = ename.GetModificationTime();
+        wxDateTime datatime = dname.GetModificationTime();
 
         // Profile data might be old...
-        if(exetime>datatime)
+        if (exetime>datatime)
         {
-            wxString msg = _("It seems like the profile data is older than the executable\nYou probably have not run the executable to update this data\nContinue anyway?");
-            if (cbMessageBox(msg,_("Confirmation"),wxYES_NO | wxICON_QUESTION, Manager::Get()->GetAppWindow()) == wxID_NO)
+            wxString msg = _("It seems like the profile data is older than the executable.\n"
+                             "You probably have not run the executable to update this data.\n"
+                             "Continue anyway?");
+            if (cbMessageBox(msg,_("Confirmation"),wxYES_NO | wxICON_QUESTION,
+                             Manager::Get()->GetAppWindow()) == wxID_NO)
                 return -2;
         }
-
-	}
+    }
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("cbprofiler"));
 
-	// Loading configuration
-	struct_config config;
-	config.chkAnnSource = cfg->ReadBool(_T("/ann_source_chk"), false);
-	config.txtAnnSource = cfg->Read(_T("/ann_source_txt"), wxEmptyString);
-	config.chkMinCount = cfg->ReadBool(_T("/min_count_chk"), false);
-	config.spnMinCount = cfg->ReadInt(_T("/min_count_spn"), 0);
-	config.chkBrief = cfg->ReadBool(_T("/brief"), false);
-	config.chkFileInfo = cfg->ReadBool(_T("/file_info"), false);
-	config.chkNoStatic = cfg->ReadBool(_T("/no_static"), false);
-	config.chkMinCount = cfg->ReadBool(_T("/min_count_chk"), false);
-	config.chkSum = cfg->ReadBool(_T("/sum"), false);
-	config.txtExtra = cfg->Read(_T("/extra_txt"), wxEmptyString);
+    // Loading configuration
+    struct_config config;
+    config.chkAnnSource = cfg->ReadBool(_T("/ann_source_chk"), false);
+    config.txtAnnSource = cfg->Read(_T("/ann_source_txt"), wxEmptyString);
+    config.chkMinCount  = cfg->ReadBool(_T("/min_count_chk"), false);
+    config.spnMinCount  = cfg->ReadInt(_T("/min_count_spn"), 0);
+    config.chkBrief     = cfg->ReadBool(_T("/brief"), false);
+    config.chkFileInfo  = cfg->ReadBool(_T("/file_info"), false);
+    config.chkNoStatic  = cfg->ReadBool(_T("/no_static"), false);
+    config.chkMinCount  = cfg->ReadBool(_T("/min_count_chk"), false);
+    config.chkSum       = cfg->ReadBool(_T("/sum"), false);
+    config.txtExtra     = cfg->Read(_T("/extra_txt"), wxEmptyString);
 
     // If we got this far, all is left is to call gprof!!!
     dlg = new CBProfilerExecDlg(Manager::Get()->GetAppWindow());
 
     // Do we need to show the dialog (process succesful)?
-    if(dlg->Execute(exename, dataname, config) != 0)
+    if (dlg->Execute(exename, dataname, config) != 0)
         return -1;
 
     return 0;
