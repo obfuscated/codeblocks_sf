@@ -2,6 +2,9 @@
 #include "byocbtris.h"
 #include <wx/dcbuffer.h>
 
+#define LOCK_START() static bool _lock = false; if ( _lock ) return; _lock = true;
+#define LOCK_END() _lock = false;
+
 namespace
 {
     const int Chunks[][16] =
@@ -43,35 +46,38 @@ namespace
     };
 
     const int ChunkTypes = sizeof(Chunks)/sizeof(Chunks[0]);
+
+    const int SpeedTimerId = wxNewId();
+    const int LeftRightTimerId = wxNewId();
+    const int UpTimerId = wxNewId();
+    const int DownTimerId = wxNewId();
 }
 
 
 BEGIN_EVENT_TABLE(byoCBTris,byoGameBase)
     EVT_PAINT(byoCBTris::OnPaint)
-    EVT_CHAR(byoCBTris::OnChar)
-    EVT_TIMER(1,byoCBTris::OnSpeedTimer)
-    EVT_TIMER(2,byoCBTris::OnLeftRightTimer)
-    EVT_TIMER(3,byoCBTris::OnUpTimer)
-    EVT_TIMER(4,byoCBTris::OnDownTimer)
+    EVT_KEY_DOWN(byoCBTris::OnKeyDown)
+    EVT_KEY_UP(byoCBTris::OnKeyUp)
+    EVT_TIMER(SpeedTimerId,    byoCBTris::OnSpeedTimer)
+    EVT_TIMER(LeftRightTimerId,byoCBTris::OnLeftRightTimer)
+    EVT_TIMER(UpTimerId,       byoCBTris::OnUpTimer)
+    EVT_TIMER(DownTimerId,     byoCBTris::OnDownTimer)
     EVT_ERASE_BACKGROUND(byoCBTris::OnEraseBack)
 END_EVENT_TABLE()
 
 byoCBTris::byoCBTris(wxWindow* parent,const wxString& Name):
     byoGameBase(parent,Name),
-    SpeedTimer(this,1),
-    LeftRightTimer(this,2),
-    UpTimer(this,3),
-    DownTimer(this,4),
+    SpeedTimer(this,SpeedTimerId),
+    LeftRightTimer(this,LeftRightTimerId),
+    UpTimer(this,UpTimerId),
+    DownTimer(this,DownTimerId),
     m_Level(1),
     m_Score(0),
-    m_LeftRightCnt(0),
-    m_UpCnt(0),
-    m_DownCnt(0),
-    m_WasLeft(false),
-    m_WasRight(false),
-    m_WasUp(false),
-    m_WasDown(false),
-    totalRemovedLines(0)
+    m_IsLeft(false),
+    m_IsRight(false),
+    m_IsUp(false),
+    m_IsDown(false),
+    m_TotalRemovedLines(0)
 {
 	m_Font = wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT);
 	LeftRightTimer.Start(100);
@@ -99,7 +105,7 @@ void byoCBTris::OnPaint(wxPaintEvent& event)
     DrawStats(&DC);
 }
 
-void byoCBTris::OnChar(wxKeyEvent& event)
+void byoCBTris::OnKeyDown(wxKeyEvent& event)
 {
     if ( event.GetKeyCode() == 'p' || event.GetKeyCode() == 'P' )
     {
@@ -109,71 +115,71 @@ void byoCBTris::OnChar(wxKeyEvent& event)
 
     if ( IsPaused() ) return;
 
-    if ( ::wxGetKeyState(WXK_LEFT) && !m_WasLeft )
+    if ( event.GetKeyCode() == WXK_LEFT && !m_IsLeft )
     {
-        m_WasLeft = true;
-        m_LeftRightCnt++;
-        UpdateChunkPos();
-        Refresh();
-        LeftRightTimer.Start();
+        m_IsLeft = true;
+        StartTimerNow(LeftRightTimer);
     }
 
-    if ( ::wxGetKeyState(WXK_RIGHT) && !m_WasRight )
+    if ( event.GetKeyCode() == WXK_RIGHT && !m_IsRight )
     {
-        m_WasRight = true;
-        m_LeftRightCnt++;
-        UpdateChunkPos();
-        Refresh();
-        LeftRightTimer.Start();
+        m_IsRight = true;
+        StartTimerNow(LeftRightTimer);
     }
 
-    if ( ::wxGetKeyState(WXK_UP) && !m_WasUp )
+    if ( event.GetKeyCode() == WXK_UP && !m_IsUp )
     {
-        m_WasUp = true;
-        m_UpCnt++;
-        UpdateChunkPos();
-        Refresh();
-        UpTimer.Start();
+        m_IsUp = true;
+        StartTimerNow(UpTimer);
     }
 
-    if ( ::wxGetKeyState(WXK_DOWN) && !m_WasDown )
+    if ( event.GetKeyCode() == WXK_DOWN && !m_IsDown )
     {
-        m_WasDown = true;
-        m_UpCnt++;
-        UpdateChunkPos();
-        Refresh();
-        DownTimer.Start();
+        m_IsDown = true;
+        StartTimerNow(DownTimer);
     }
 
+}
+
+void byoCBTris::OnKeyUp(wxKeyEvent& event)
+{
+    if ( event.GetKeyCode() == WXK_LEFT  ) m_IsLeft = false;
+    if ( event.GetKeyCode() == WXK_RIGHT ) m_IsRight = false;
+    if ( event.GetKeyCode() == WXK_UP    ) m_IsUp = false;
+    if ( event.GetKeyCode() == WXK_DOWN  ) m_IsDown = false;
 }
 
 void byoCBTris::OnLeftRightTimer(wxTimerEvent& event)
 {
     if ( IsPaused() ) return;
-    m_LeftRightCnt++;
-    UpdateChunkPos();
+    LOCK_START();
+    UpdateChunkPosLeftRight();
     Refresh();
+    LOCK_END();
 }
 
 void byoCBTris::OnUpTimer(wxTimerEvent& event)
 {
     if ( IsPaused() ) return;
-    m_UpCnt++;
-    UpdateChunkPos();
+    LOCK_START();
+    UpdateChunkPosUp();
     Refresh();
+    LOCK_END();
 }
 
 void byoCBTris::OnDownTimer(wxTimerEvent& event)
 {
     if ( IsPaused() ) return;
-    m_DownCnt++;
-    UpdateChunkPos();
+    LOCK_START();
+    UpdateChunkPosDown();
     Refresh();
+    LOCK_END();
 }
 
 void byoCBTris::OnSpeedTimer(wxTimerEvent& event)
 {
     if ( IsPaused() ) return;
+    LOCK_START();
     if ( !ChunkDown() )
     {
         RemoveFullLines();
@@ -183,6 +189,7 @@ void byoCBTris::OnSpeedTimer(wxTimerEvent& event)
         }
     }
     Refresh();
+    LOCK_END();
 }
 
 void byoCBTris::OnEraseBack(wxEraseEvent& event)
@@ -429,23 +436,21 @@ void byoCBTris::GameOver()
     wxMessageBox(_("Game over"));
 }
 
-void byoCBTris::UpdateChunkPos()
+void byoCBTris::UpdateChunkPosLeftRight()
 {
-    bool IsLeft  = ::wxGetKeyState(WXK_LEFT);
-    bool IsRight = ::wxGetKeyState(WXK_RIGHT);
-    bool IsUp    = ::wxGetKeyState(WXK_UP);
-    bool IsDown  = ::wxGetKeyState(WXK_DOWN);
-
-    if ( IsLeft && !IsRight && m_LeftRightCnt)
+    if ( m_IsLeft && !m_IsRight )
     {
         if ( !CheckChunkColision(m_CurrentChunk,m_ChunkPosX-1,m_ChunkPosY) ) m_ChunkPosX--;
     }
-    if ( !IsLeft && IsRight && m_LeftRightCnt)
+    if ( !m_IsLeft && m_IsRight )
     {
         if ( !CheckChunkColision(m_CurrentChunk,m_ChunkPosX+1,m_ChunkPosY) ) m_ChunkPosX++;
     }
+}
 
-    if ( IsUp && m_UpCnt )
+void byoCBTris::UpdateChunkPosUp()
+{
+    if ( m_IsUp )
     {
         ChunkConfig newChunk;
         RotateChunkLeft(m_CurrentChunk,newChunk);
@@ -461,29 +466,23 @@ void byoCBTris::UpdateChunkPos()
             m_ChunkPosX++;
         }
     }
+}
 
-    if ( IsDown && m_DownCnt )
+void byoCBTris::UpdateChunkPosDown()
+{
+    if ( m_IsDown )
     {
         if ( CheckChunkColision(m_CurrentChunk,m_ChunkPosX,m_ChunkPosY+1) )
         {
             // Raising speed timer little bit faster
-            wxTimerEvent event;
-            OnSpeedTimer(event);
-            SpeedTimer.Start();
+            StartTimerNow(SpeedTimer);
         }
         else
         {
             m_ChunkPosY++;
+            SpeedTimer.Start();
         }
     }
-
-    m_LeftRightCnt = 0;
-    m_UpCnt = 0;
-    m_DownCnt = 0;
-    m_WasLeft = IsLeft;
-    m_WasRight = IsRight;
-    m_WasUp = IsUp;
-    m_WasDown = IsDown;
 }
 
 void byoCBTris::DrawStats(wxDC* DC)
@@ -507,9 +506,9 @@ void byoCBTris::DrawStats(wxDC* DC)
 
 void byoCBTris::AddRemovedLines(int removed)
 {
-    totalRemovedLines += removed;
+    m_TotalRemovedLines += removed;
 
-    int shouldBeLevel = (totalRemovedLines/20) + 1;
+    int shouldBeLevel = (m_TotalRemovedLines/20) + 1;
     if ( shouldBeLevel != m_Level )
     {
         m_Level = shouldBeLevel;
@@ -517,5 +516,10 @@ void byoCBTris::AddRemovedLines(int removed)
     }
 }
 
-BYO_REGISTER_GAME(byoCBTris,"C::B-Tris")
+void byoCBTris::StartTimerNow(wxTimer& timer)
+{
+    timer.Notify();
+    timer.Start();
+}
 
+BYO_REGISTER_GAME(byoCBTris,"C::B-Tris")

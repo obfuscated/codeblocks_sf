@@ -21,7 +21,8 @@ class byoCBTris: public byoGameBase
         typedef int ChunkConfig[16];
 
         void OnPaint(wxPaintEvent& event);
-        void OnChar(wxKeyEvent& event);
+        void OnKeyDown(wxKeyEvent& event);
+        void OnKeyUp(wxKeyEvent& event);
         void OnSpeedTimer(wxTimerEvent& event);
         void OnLeftRightTimer(wxTimerEvent& event);
         void OnUpTimer(wxTimerEvent& event);
@@ -42,9 +43,12 @@ class byoCBTris: public byoGameBase
         void RemoveFullLines();
         bool GenerateNewChunk();
         void GameOver();
-        void UpdateChunkPos();
+        void UpdateChunkPosLeftRight();
+        void UpdateChunkPosUp();
+        void UpdateChunkPosDown();
         void DrawStats(wxDC* DC);
         void AddRemovedLines(int removed);
+        void StartTimerNow(wxTimer& timer);
 
         wxTimer SpeedTimer;
         wxTimer LeftRightTimer;
@@ -54,14 +58,11 @@ class byoCBTris: public byoGameBase
         int m_Level;
         int m_Score;
 
-        int m_LeftRightCnt;
-        int m_UpCnt;
-        int m_DownCnt;
-        bool m_WasLeft;
-        bool m_WasRight;
-        bool m_WasUp;
-        bool m_WasDown;
-        int totalRemovedLines;
+        bool m_IsLeft;
+        bool m_IsRight;
+        bool m_IsUp;
+        bool m_IsDown;
+        int m_TotalRemovedLines;
 
         // Font used inside game
         wxFont m_Font;
