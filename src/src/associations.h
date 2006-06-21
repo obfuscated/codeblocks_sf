@@ -2,6 +2,8 @@
 #define ASSOCIATIONS_H
 
 #include <wx/intl.h>
+#include <wx/dialog.h>
+#include <wx/string.h>
 #ifdef __WXMSW__
 	#include <wx/msw/registry.h>
 	#include <shlobj.h> // for SHChangeNotify()
@@ -14,6 +16,8 @@
 	#endif
 #endif
 class wxCheckListBox;
+class wxWindow;
+class wxCommandEvent;
 
 namespace Associations
 {

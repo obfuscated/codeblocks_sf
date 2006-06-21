@@ -7,6 +7,7 @@
 #include <wx/listbox.h>
 #include <wx/radiobox.h>
 #include <wx/spinctrl.h>
+#include <wx/textdlg.h>
 
 BEGIN_EVENT_TABLE(EditWatchesDlg, wxDialog)
     EVT_BUTTON(XRCID("btnAdd"), EditWatchesDlg::OnAdd)

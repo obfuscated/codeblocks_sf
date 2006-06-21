@@ -2,6 +2,7 @@
 #define COMPILER_DEFS_H
 
 #include <wx/string.h>
+#include <wx/list.h>    // WX_DECLARE_LIST
 
 class cbProject;
 class ProjectBuildTarget;

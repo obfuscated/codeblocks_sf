@@ -5,6 +5,9 @@
 
 #include <wx/window.h>
 #include <wx/font.h>
+#include <wx/timer.h>
+
+class wxTimerEvent;
 
 class byoCBTris: public byoGameBase
 {

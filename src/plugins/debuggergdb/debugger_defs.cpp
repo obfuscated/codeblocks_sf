@@ -6,6 +6,7 @@
 
 #include <wx/dialog.h>
 #include <wx/font.h>
+#include <wx/sizer.h>
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(WatchesArray);

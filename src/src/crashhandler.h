@@ -3,6 +3,8 @@
 
 #if (__WXMSW__)
 
+#include <winnt.h>
+
 class CrashHandler
 {
 //    typedef PVOID  (*AddHandler_t)(ULONG, PVECTORED_EXCEPTION_HANDLER);

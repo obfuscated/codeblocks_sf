@@ -27,6 +27,7 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/app.h>         // wxWakeUpIdle
     #include "pipedprocess.h" // class' header file
     #include "sdk_events.h"
 #endif

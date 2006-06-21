@@ -1,6 +1,9 @@
 #include <sdk.h>
 #include "byocbtris.h"
 #include <wx/dcbuffer.h>
+#include <wx/settings.h>
+#include <wx/bitmap.h>
+#include <wx/image.h>
 
 #define LOCK_START() static bool _lock = false; if ( _lock ) return; _lock = true;
 #define LOCK_END() _lock = false;

@@ -7,6 +7,7 @@
 #ifndef CB_PRECOMP
     #include <globals.h>
     #include <wx/string.h>
+    #include <wx/filedlg.h>
 #endif
 
 class IOLib

@@ -11,6 +11,9 @@
 */
 
 #include <sdk.h>
+#ifndef CB_PRECOMP
+#include <wx/xrc/xmlres.h>
+#endif
 #include "associations.h"
 #include "appglobals.h"
 #include <manager.h>

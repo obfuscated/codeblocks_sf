@@ -1,4 +1,5 @@
-#include <sdk.h>
+#include "sdk.h"
+#include <wx/settings.h>
 #include "byogameselect.h"
 #include "byogame.h"
 

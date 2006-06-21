@@ -13,6 +13,7 @@
 #include "compilererrors.h"
 #include "compiler_defs.h"
 #include <compilerfactory.h>
+#include <wx/timer.h>
 
 #define MAX_TARGETS 64
 
@@ -49,6 +50,10 @@ enum BuildState
     bsProjectPostBuild,
     bsProjectDone
 };
+
+class wxTimerEvent;
+class wxComboBox;
+class wxStaticText;
 
 class CompilerGCC : public cbCompilerPlugin
 {

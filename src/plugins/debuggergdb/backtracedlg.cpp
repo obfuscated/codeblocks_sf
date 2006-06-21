@@ -1,4 +1,7 @@
 #include <sdk.h>
+#ifndef CB_PRECOMP
+#include <wx/filedlg.h>
+#endif
 #include "backtracedlg.h"
 #include "debuggergdb.h"
 #include "debuggerdriver.h"

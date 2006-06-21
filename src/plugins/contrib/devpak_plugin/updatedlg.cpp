@@ -15,6 +15,7 @@
 
 #include <manager.h>
 #include <messagemanager.h>
+#include "configmanager.h"
 #include <globals.h>
 
 int idNet = wxNewId();

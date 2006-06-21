@@ -1,4 +1,7 @@
 #include <sdk.h> // PCH support
+#ifndef CB_PRECOMP
+#include <wx/sizer.h>
+#endif
 #include <annoyingdialog.h>
 #include <manager.h>
 #include <editormanager.h>

@@ -22,16 +22,16 @@
     #define WX_PRECOMP
 #endif // CB_PRECOMP
 
-// basic wxWidgets headers
+// basic wxWidgets headers : this one itself will check for precompiled headers
+// and if so will include a list of wx headers, at the bottom we add some more headers
+// in the case of precompilation (note : some headers are in both lists)
+// so even if NO CB_PRECOMP we can still have WX_PRECOMP turned on in this "wxprec" header
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 	#pragma hdrstop
 #endif
 
-#ifndef WX_PRECOMP
-	#include <wx/wx.h>
-#endif
 
 #ifdef CB_PRECOMP
 

@@ -19,6 +19,7 @@
     #include <wx/filename.h>
     #include <wx/msgdlg.h>
     #include <wx/log.h>
+    #include <wx/stopwatch.h>
     #include "manager.h"
     #include "projectmanager.h"
     #include "messagemanager.h"

@@ -38,6 +38,7 @@
     #include <wx/filename.h>
     #include <wx/file.h>
     #include <wx/checklst.h>
+    #include <wx/stattext.h>
 #endif
 
 #include "projectfileoptionsdlg.h"
