@@ -15,14 +15,16 @@ libbyogames_la_SOURCES = byocbtris.cpp \
             byogame.cpp \
             byogameselect.cpp \
             byogames.cpp \
-            byogamebase.cpp
+            byogamebase.cpp \
+            byoconf.cpp
 
 
 noinst_HEADERS = byogameselect.h \
             byocbtris.h \
             byogame.h \
             byogames.h \
-            byogamebase.h
+            byogamebase.h \
+            byoconf.h
 
 EXTRA_DIST = wxsmith/byoGameSelect.wxs \
             byogames.cbp \

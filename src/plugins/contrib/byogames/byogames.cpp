@@ -6,11 +6,13 @@
  * License:   GPL
  **************************************************************/
 
-#include <sdk.h> // PCH support
+#include <sdk.h>
 #include "byogames.h"
 #include "byogame.h"
+#include "byogamebase.h"
 #include "byogameselect.h"
-#include <licenses.h> // defines some common licenses (like the GPL)
+#include "byoconf.h"
+#include <licenses.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -44,6 +46,7 @@ BYOGames::~BYOGames()
 void BYOGames::OnAttach()
 {
     srand( time(NULL) );
+    byoGameBase::ReloadFromConfig();
 }
 
 void BYOGames::OnRelease(bool appShutDown)
@@ -68,4 +71,9 @@ void BYOGames::OnTimer(wxTimerEvent& event)
 {
     byoGameBase::BackToWorkTimer();
     SecondTick.Start(-1,true);
+}
+
+cbConfigurationPanel* BYOGames::GetConfigurationPanel(wxWindow* parent)
+{
+    return new byoConf(parent);
 }

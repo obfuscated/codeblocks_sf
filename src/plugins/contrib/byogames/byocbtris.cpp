@@ -18,6 +18,7 @@ namespace
           0,0,0,0 },
 
         { 1,1,0,0,
+
           1,1,0,0,
           0,0,0,0,
           0,0,0,0 },
@@ -65,6 +66,7 @@ BEGIN_EVENT_TABLE(byoCBTris,byoGameBase)
     EVT_TIMER(LeftRightTimerId,byoCBTris::OnLeftRightTimer)
     EVT_TIMER(UpTimerId,       byoCBTris::OnUpTimer)
     EVT_TIMER(DownTimerId,     byoCBTris::OnDownTimer)
+    EVT_KILL_FOCUS(byoCBTris::OnKillFocus)
     EVT_ERASE_BACKGROUND(byoCBTris::OnEraseBack)
 END_EVENT_TABLE()
 
@@ -541,6 +543,15 @@ void byoCBTris::StartTimerNow(wxTimer& timer)
 int byoCBTris::GetScoreScale()
 {
     return m_Guidelines ? 5 : 10;
+}
+
+void byoCBTris::OnKillFocus(wxFocusEvent& event)
+{
+    m_IsLeft = false;
+    m_IsRight = false;
+    m_IsUp = false;
+    m_IsDown = false;
+    event.Skip();
 }
 
 BYO_REGISTER_GAME(byoCBTris,"C::B-Tris")

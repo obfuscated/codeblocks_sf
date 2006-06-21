@@ -66,6 +66,16 @@
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
+		<Unit filename="byoconf.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="byoconf.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
 		<Unit filename="byogame.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
@@ -109,6 +119,7 @@
 		<Extensions>
 <wxsmith>
 	<dialog wxs_file="byoGameSelect.wxs" class="byoGameSelect" src_file="byogameselect.cpp" header_file="byogameselect.h" xrc_file="" edit_mode="Source" />
+	<panel wxs_file="byoConf.wxs" class="byoConf" src_file="byoconf.cpp" header_file="byoconf.h" xrc_file="E:\codeblocks\src\plugins\contrib\byogames\wxsmith\byoConf.wxs" edit_mode="Source" />
 	<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
 </wxsmith>
 		</Extensions>

@@ -31,6 +31,7 @@ class byoCBTris: public byoGameBase
         void OnUpTimer(wxTimerEvent& event);
         void OnDownTimer(wxTimerEvent& event);
         void OnEraseBack(wxEraseEvent& event);
+        void OnKillFocus(wxFocusEvent& event);
 
         void DrawBrickField(wxDC* DC);
         void DrawCurrentChunk(wxDC* DC);

@@ -7,11 +7,11 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../devel/share/codeblocks/plugins/libbyogames.so" />
+				<Option output="..\..\..\devel\share\codeblocks\plugins\libbyogames.so" />
 				<Option object_output="." />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="../../../devel/codeblocks" />
+				<Option host_application="..\..\..\devel\codeblocks" />
 				<Option includeInTargetAll="1" />
 			</Target>
 		</Build>
@@ -25,19 +25,29 @@
 			<Add option="-fPIC" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DcbDEBUG" />
-			<Add directory="../../../sdk" />
-			<Add directory="../../../sdk/wxscintilla" />
+			<Add directory="..\..\..\sdk" />
+			<Add directory="..\..\..\sdk\wxscintilla" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="libcodeblocks.a" />
-			<Add directory="../../../devel" />
+			<Add directory="..\..\..\devel" />
 		</Linker>
 		<Unit filename="byocbtris.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="byocbtris.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="byoconf.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="byoconf.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -86,6 +96,7 @@
 		<Extensions>
 <wxsmith>
 	<dialog wxs_file="byoGameSelect.wxs" class="byoGameSelect" src_file="byogameselect.cpp" header_file="byogameselect.h" xrc_file="" edit_mode="Source" />
+	<panel wxs_file="byoConf.wxs" class="byoConf" src_file="byoconf.cpp" header_file="byoconf.h" xrc_file="E:\codeblocks\src\plugins\contrib\byogames\wxsmith\byoConf.wxs" edit_mode="Source" />
 	<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
 </wxsmith>
 		</Extensions>

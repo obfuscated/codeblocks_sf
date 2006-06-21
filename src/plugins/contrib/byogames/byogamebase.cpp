@@ -10,7 +10,7 @@ byoGameBase::GamesListT byoGameBase::AllGames;
 
 namespace
 {
-    const wxColour colours[] =
+    wxColour colours[] =
     {
         wxColour(0xFF,0,0),
         wxColour(0,0xFF,0),
@@ -27,8 +27,11 @@ namespace
     bool PlayBlocked = false;
     int  PlayingCount = 0;
 
+    bool IsMaxPlayTime = true;
     int  MaxPlayTime = 10*60;
+    bool IsMinWorkTime = true;
     int  MinWorkTime = 60*60;
+    bool IsMaxWorkTime = true;
     int  MaxWorkTime = 3*60*60;
 }
 
@@ -59,37 +62,69 @@ byoGameBase::~byoGameBase()
 
 void byoGameBase::ReloadFromConfig()
 {
-    // TODO: Load colours etc.
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("byogames"));
+
+    colours[0] = cfg->ReadColour(_T("/col01"),wxColour(0xFF,0,0));
+    colours[1] = cfg->ReadColour(_T("/col02"),wxColour(0,0xFF,0));
+    colours[2] = cfg->ReadColour(_T("/col03"),wxColour(0,0,0xFF));
+    colours[3] = cfg->ReadColour(_T("/col04"),wxColour(0xFF,0xFF,0));
+    colours[4] = cfg->ReadColour(_T("/col05"),wxColour(0xFF,0,0xFF));
+    colours[5] = cfg->ReadColour(_T("/col06"),wxColour(0,0xFF,0xFF));
+
+    IsMaxPlayTime = cfg->ReadBool(_T("/ismaxplaytime"),true);
+    MaxPlayTime = cfg->ReadInt(_T("/maxplaytime"),60*10);
+    IsMinWorkTime = cfg->ReadBool(_T("/isminworktime"),true);
+    MinWorkTime = cfg->ReadInt(_T("/minworktime"),60*60);
+    IsMaxWorkTime = cfg->ReadBool(_T("/isoverworktime"),true);
+    MaxWorkTime = cfg->ReadInt(_T("/overworktime"),3*60*60);
 }
 
 void byoGameBase::BackToWorkTimer()
 {
     if ( PlayingCount > 0 )
     {
-        PlayingTicks++;
-        if ( PlayingTicks >= MaxPlayTime )
+        if ( IsMaxPlayTime )
         {
-            // Played to much
-
-            PlayBlocked = true;
-            for ( size_t i=0; i<AllGames.Count(); i++ )
+            PlayingTicks++;
+            if ( PlayingTicks >= MaxPlayTime )
             {
-                AllGames[i]->SetPause(true);
-            }
-            WorkingTicks = 0;
+                // Played to much
 
-            AnnoyingDialog dlg(_("Work reminder (stop playing games!)"),
-                               _("Don't you think you had enough already?\nGet back to work, NOW!"),
-                               wxART_WARNING,
-                               AnnoyingDialog::OK,
-                               wxID_OK);
-            dlg.ShowModal();
+                for ( size_t i=0; i<AllGames.Count(); i++ )
+                {
+                    AllGames[i]->SetPause(true);
+                }
+                AnnoyingDialog dlg(_("Work reminder (stop playing games!)"),
+                                   _("Don't you think you had enough already?\nGet back to work, NOW!"),
+                                   wxART_WARNING,
+                                   AnnoyingDialog::OK,
+                                   wxID_OK);
+                dlg.ShowModal();
+
+                if ( IsMinWorkTime )
+                {
+                    PlayBlocked = true;
+                    WorkingTicks = 0;
+                }
+                else
+                {
+                    PlayingTicks = 0;
+                }
+            }
         }
     }
     else if ( PlayBlocked )
     {
-        WorkingTicks++;
-        if ( WorkingTicks >= MinWorkTime )
+        if ( IsMinWorkTime )
+        {
+            WorkingTicks++;
+            if ( WorkingTicks >= MinWorkTime )
+            {
+                PlayBlocked = false;
+                PlayingTicks = 0;
+            }
+        }
+        else
         {
             PlayBlocked = false;
             PlayingTicks = 0;
@@ -97,21 +132,24 @@ void byoGameBase::BackToWorkTimer()
     }
     else
     {
-        WorkingTicks++;
-        if ( WorkingTicks >= MaxWorkTime )
+        if ( IsMaxWorkTime )
         {
+            WorkingTicks++;
+            if ( WorkingTicks >= MaxWorkTime )
+            {
 
-            AnnoyingDialog dlg(_("Repose reminder"),
-                               _("You've been working for a long time.\n"
-                                 "Please stand up, take small walk,\n"
-                                 "make tea or cofee, smile to your neighbours :)\n"
-                                 "\n"
-                                 "I'm watching you, do not cheat\n"),
-                               wxART_WARNING,
-                               AnnoyingDialog::OK,
-                               wxID_OK);
-            dlg.ShowModal();
-            WorkingTicks = 0;
+                AnnoyingDialog dlg(_("Repose reminder"),
+                                   _("You've been working for a long time.\n"
+                                     "Please stand up, take small walk,\n"
+                                     "make tea or cofee, smile to your neighbours :)\n"
+                                     "\n"
+                                     "I'm watching you, do not cheat\n"),
+                                   wxART_WARNING,
+                                   AnnoyingDialog::OK,
+                                   wxID_OK);
+                dlg.ShowModal();
+                WorkingTicks = 0;
+            }
         }
     }
 

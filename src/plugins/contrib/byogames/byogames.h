@@ -30,12 +30,13 @@ class BYOGames : public cbToolPlugin
 		BYOGames();
 		~BYOGames();
 		int Configure(){ return  0; }
-		int GetConfigurationPriority() const{ return  50; }
-		int GetConfigurationGroup() const{ return  cgUnknown; }
-		cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent){ return  0; }
+		int GetConfigurationPriority() const{ return  25; }
+		int GetConfigurationGroup() const { return cgContribPlugin; }
+		cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 		int Execute();
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+
 	private:
 
         wxTimer SecondTick;
