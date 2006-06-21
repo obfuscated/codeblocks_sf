@@ -190,9 +190,9 @@ void byoGameBase::DrawGuidelines(wxDC* DC, int offset, int columns, int rows, co
     {
         DC->SetPen(base);
         DC->DrawLine(
-            m_FirstCellXPos + x * m_CellSize,
+            m_FirstCellXPos + x * m_CellSize -1,
             m_FirstCellYPos + 4 * m_CellSize,
-            m_FirstCellXPos + x * m_CellSize,
+            m_FirstCellXPos + x * m_CellSize -1,
             m_FirstCellYPos + rows * m_CellSize );
     }
 }
