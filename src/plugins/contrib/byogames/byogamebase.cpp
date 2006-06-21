@@ -3,6 +3,7 @@
 
 #include <annoyingdialog.h>
 #include <wx/artprov.h>
+#include <configmanager.h>
 #include <messagemanager.h>
 
 

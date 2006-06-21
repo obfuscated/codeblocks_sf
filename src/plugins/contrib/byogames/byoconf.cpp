@@ -1,4 +1,6 @@
 #include <sdk.h>
+#include <configmanager.h>
+#include <wx/colordlg.h>
 #include "byoconf.h"
 #include "byogamebase.h"
 
