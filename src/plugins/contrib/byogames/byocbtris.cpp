@@ -98,7 +98,7 @@ byoCBTris::byoCBTris(wxWindow* parent,const wxString& Name):
 
 void byoCBTris::OnPaint(wxPaintEvent& event)
 {
-    wxBitmap buffer(GetClientSize().GetWidth(),GetClientSize().GetHeight());
+    wxBitmap buffer(wxImage(GetClientSize().GetWidth(),GetClientSize().GetHeight()));
     wxBufferedPaintDC DC(this,buffer);
     DrawBrickField(&DC);
     DrawCurrentChunk(&DC);
