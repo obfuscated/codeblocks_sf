@@ -116,6 +116,16 @@
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
+		<Unit filename="byosnake.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="byosnake.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
 		<Extensions>
 <wxsmith>
 	<dialog wxs_file="byoGameSelect.wxs" class="byoGameSelect" src_file="byogameselect.cpp" header_file="byogameselect.h" xrc_file="" edit_mode="Source" />
