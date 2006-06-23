@@ -1,9 +1,14 @@
-#include <sdk.h>
-#include "byocbtris.h"
+#include "sdk.h"
+#ifndef CB_PRECOMP
+#include <wx/event.h>
+#include <wx/image.h>
+#endif
+#include <wx/bitmap.h>
+#include <wx/dc.h>
 #include <wx/dcbuffer.h>
 #include <wx/settings.h>
-#include <wx/bitmap.h>
-#include <wx/image.h>
+#include "byocbtris.h"
+#include "byogame.h"
 
 #define LOCK_START() static bool _lock = false; if ( _lock ) return; _lock = true;
 #define LOCK_END() _lock = false;
@@ -540,7 +545,7 @@ void byoCBTris::StartTimerNow(wxTimer& timer)
     timer.Start();
 }
 
-int byoCBTris::GetScoreScale()
+int byoCBTris::GetScoreScale() const
 {
     return m_Guidelines ? 5 : 10;
 }

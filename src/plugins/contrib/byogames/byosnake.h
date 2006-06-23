@@ -1,7 +1,13 @@
 #ifndef BYOSNAKE_H
 #define BYOSNAKE_H
 
+#include <wx/font.h>
+#include <wx/timer.h>
 #include "byogamebase.h"
+
+class wxPaintEvent;
+class wxTimerEvent;
+class wxEraseEvent;
 
 /** \brief Game with traditional snake eating something */
 class byoSnake : public byoGameBase

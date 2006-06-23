@@ -1,22 +1,16 @@
 #ifndef BYOGAMESELECT_H
 #define BYOGAMESELECT_H
 
-#include <wx/wxprec.h>
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
-
-//(*Headers(byoGameSelect)
-#include <wx/button.h>
 #include <wx/dialog.h>
-#include <wx/intl.h>
-#include <wx/listbox.h>
-#include <wx/panel.h>
-#include <wx/sizer.h>
-#include <wx/statline.h>
-#include <wx/stattext.h>
-//*)
+
+class wxBoxSizer;
+class wxStaticText;
+class wxPanel;
+class wxStaticBoxSizer;
+class wxListBox;
+class wxButton;
+class wxStaticLine;
+class wxCommandEvent;
 
 class byoGameSelect: public wxDialog
 {
@@ -61,4 +55,4 @@ class byoGameSelect: public wxDialog
 		DECLARE_EVENT_TABLE()
 };
 
-#endif
+#endif // BYOGAMESELECT_H

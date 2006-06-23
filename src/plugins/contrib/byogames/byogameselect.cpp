@@ -1,5 +1,15 @@
 #include "sdk.h"
+#ifdef CB_PRECOMP
+#include <wx/button.h>
+#include <wx/intl.h>
+#include <wx/listbox.h>
+#include <wx/panel.h>
+#include <wx/stattext.h>
+#include <wx/sizer.h>
+#include <wx/string.h>
+#endif
 #include <wx/settings.h>
+#include <wx/statline.h>
 #include "byogameselect.h"
 #include "byogame.h"
 
@@ -51,7 +61,7 @@ byoGameSelect::byoGameSelect(wxWindow* parent,wxWindowID id)
 	Center();
 	//*)
 
-	for ( int i=0; i<byoGameLauncher::GetGamesCount(); i++ )
+	for ( int i=0; i<byoGameLauncher::GetGamesCount(); ++i )
 	{
 	    m_GamesList->Append(byoGameLauncher::GetGameName(i));
 	}

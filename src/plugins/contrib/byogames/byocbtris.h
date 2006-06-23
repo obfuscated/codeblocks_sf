@@ -1,13 +1,14 @@
 #ifndef BYOCBTRIS_H
 #define BYOCBTRIS_H
 
-#include "byogame.h"
-
-#include <wx/window.h>
 #include <wx/font.h>
 #include <wx/timer.h>
+#include "byogamebase.h"
 
+class wxPaintEvent;
 class wxTimerEvent;
+class wxEraseEvent;
+class wxKeyEvent;
 
 class byoCBTris: public byoGameBase
 {
@@ -53,7 +54,7 @@ class byoCBTris: public byoGameBase
         void DrawStats(wxDC* DC);
         void AddRemovedLines(int removed);
         void StartTimerNow(wxTimer& timer);
-        int GetScoreScale();
+        int GetScoreScale() const;
 
         wxTimer SpeedTimer;
         wxTimer LeftRightTimer;

@@ -5,17 +5,21 @@
  * Copyright: (c) BYO
  * License:   GPL
  **************************************************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
-#include <sdk.h>
+#include "sdk.h"
+#ifndef CB_PRECOMP
+#include <wx/intl.h>
+#include <wx/string.h>
+#include "licenses.h"
+#endif
 #include "byogames.h"
 #include "byogame.h"
 #include "byogamebase.h"
 #include "byogameselect.h"
 #include "byoconf.h"
-#include <licenses.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 
 BEGIN_EVENT_TABLE(BYOGames,cbToolPlugin)
     EVT_TIMER(1,BYOGames::OnTimer)

@@ -1,8 +1,13 @@
-#include <sdk.h>
+#include "sdk.h"
+#ifndef CB_PRECOMP
+#include <wx/event.h>
+#include <wx/image.h>
+#endif
+#include <wx/bitmap.h>
+#include <wx/dc.h>
+#include <wx/dcbuffer.h>
 #include "byosnake.h"
 #include "byogame.h"
-#include <wx/dcbuffer.h>
-#include <wx/image.h>
 
 BEGIN_EVENT_TABLE(byoSnake,byoGameBase)
     EVT_KEY_DOWN(byoSnake::OnKeyDown)

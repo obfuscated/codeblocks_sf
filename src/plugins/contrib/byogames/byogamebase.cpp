@@ -1,10 +1,13 @@
-#include <sdk.h>
-#include "byogamebase.h"
-
-#include <annoyingdialog.h>
+#include "sdk.h"
+#ifndef CB_PRECOMP
+#include "configmanager.h"
+#include "messagemanager.h"
+#endif
 #include <wx/artprov.h>
-#include <configmanager.h>
-#include <messagemanager.h>
+#include <wx/colour.h>
+#include <wx/dc.h>
+#include "annoyingdialog.h"
+#include "byogamebase.h"
 
 
 byoGameBase::GamesListT byoGameBase::AllGames;
@@ -91,7 +94,7 @@ void byoGameBase::BackToWorkTimer()
             {
                 // Played to much
 
-                for ( size_t i=0; i<AllGames.Count(); i++ )
+                for ( size_t i=0; i<AllGames.Count(); ++i )
                 {
                     AllGames[i]->SetPause(true);
                 }
@@ -187,7 +190,7 @@ void byoGameBase::RecalculateSizeHints(int minStepsHoriz,int minStepsVert)
 
 }
 
-void byoGameBase::GetCellAbsolutePos(int cellX,int cellY,int& posX,int& posY)
+void byoGameBase::GetCellAbsolutePos(int cellX,int cellY,int& posX,int& posY) const
 {
     posX = m_FirstCellXPos + cellX * m_CellSize;
     posY = m_FirstCellYPos + cellY * m_CellSize;
@@ -236,7 +239,7 @@ void byoGameBase::DrawGuidelines(wxDC* DC, int offset, int columns, int rows, co
     }
 }
 
-const wxColour& byoGameBase::GetColour(int index)
+const wxColour& byoGameBase::GetColour(int index) const
 {
     return colours[index%coloursCount];
 }
@@ -257,7 +260,7 @@ bool byoGameBase::SetPause(bool pause)
     return m_Paused;
 }
 
-wxString byoGameBase::GetBackToWorkString()
+wxString byoGameBase::GetBackToWorkString() const
 {
     if ( !PlayBlocked ) return wxEmptyString;
     int left = MinWorkTime - WorkingTicks;

@@ -1,18 +1,16 @@
 #ifndef BYOCONF_H
 #define BYOCONF_H
 
-#include <configurationpanel.h>
-
-//(*Headers(byoConf)
-#include <wx/button.h>
-#include <wx/checkbox.h>
 #include <wx/intl.h>
-#include <wx/panel.h>
-#include <wx/settings.h>
-#include <wx/sizer.h>
-#include <wx/spinctrl.h>
-#include <wx/stattext.h>
-//*)
+#include "configurationpanel.h"
+
+class wxCommandEvent;
+class wxFlexGridSizer;
+class wxStaticBoxSizer;
+class wxCheckBox;
+class wxSpinCtrl;
+class wxStaticText;
+class wxButton;
 
 class byoConf: public cbConfigurationPanel
 {
@@ -86,4 +84,4 @@ class byoConf: public cbConfigurationPanel
 		DECLARE_EVENT_TABLE()
 };
 
-#endif
+#endif // BYOCONF_H

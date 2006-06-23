@@ -2,7 +2,12 @@
 #define BYOGAMEBASE_H
 
 #include <wx/window.h>
-#include <wx/dc.h>
+#include <wx/string.h>
+
+class wxDC;
+class wxColour;
+class wxFocusEvent;
+class wxSizeEvent;
 
 class byoGameBase: public wxWindow
 {
@@ -15,7 +20,7 @@ class byoGameBase: public wxWindow
         virtual ~byoGameBase();
 
         /** \brief Getting name of the game */
-        inline const wxString& GetName() { return m_GameName; }
+        inline const wxString& GetGameName() const { return m_GameName; }
 
         /** \brief Causing this class to reload all configuration stuff */
         static void ReloadFromConfig();
@@ -33,7 +38,7 @@ class byoGameBase: public wxWindow
         void RecalculateSizeHints(int minStepsHoriz,int minStepsVert);
 
         /** \brief Getting abrolute position of given cell */
-        void GetCellAbsolutePos(int cellX,int cellY,int& posX,int& posY);
+        void GetCellAbsolutePos(int cellX,int cellY,int& posX,int& posY) const;
 
         /** \brief Function drawing brick in given absolute position */
         void DrawBrickAbsolute(wxDC* DC,int posX,int posY,int width,int height,const wxColour& base);
@@ -45,7 +50,7 @@ class byoGameBase: public wxWindow
         void DrawGuidelines(wxDC* DC, int offset, int columns, int rows, const wxColour& base);
 
         /** \brief Getting one of standard colours used in game */
-        const wxColour& GetColour(int index);
+        const wxColour& GetColour(int index) const;
 
         /** \brief Function changing paused state
          *  \return state really set
@@ -54,10 +59,10 @@ class byoGameBase: public wxWindow
         bool SetPause(bool pause=true);
 
         /** \brief Getting paused state */
-        inline bool IsPaused() { return m_Paused; }
+        inline bool IsPaused() const { return m_Paused; }
 
         /** \brief Getting string informing about Back-To-Work mode */
-        wxString GetBackToWorkString();
+        wxString GetBackToWorkString() const;
 
     private:
 

@@ -1,6 +1,15 @@
-#include <sdk.h>
-#include <configmanager.h>
+#include "sdk.h"
+#ifndef CB_PRECOMP
+#include <wx/button.h>
+#include <wx/checkbox.h>
 #include <wx/colordlg.h>
+#include <wx/sizer.h>
+#include <wx/spinctrl.h>
+#include <wx/stattext.h>
+#include "configmanager.h"
+#endif
+
+#include <wx/settings.h>
 #include "byoconf.h"
 #include "byogamebase.h"
 
