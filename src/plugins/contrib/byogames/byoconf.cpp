@@ -97,7 +97,7 @@ byoConf::byoConf(wxWindow* parent,wxWindowID id)
     m_MaxPlaytimeSpn->SetValue(cfg->ReadInt(_T("/maxplaytime"),60*10));
     m_MinWorkChk->SetValue(cfg->ReadBool(_T("/isminworktime"),true));
     m_MinWorkSpn->SetValue(cfg->ReadInt(_T("/minworktime"),60*60));
-    m_OverworkChk->SetValue(cfg->ReadBool(_T("/isoverworktime"),true));
+    m_OverworkChk->SetValue(cfg->ReadBool(_T("/isoverworktime"),false));
     m_OverworkSpn->SetValue(cfg->ReadInt(_T("/overworktime"),3*60*60));
 
     m_Col1->SetBackgroundColour(cfg->ReadColour(_T("/col01"),wxColour(0xFF,0,0)));

@@ -76,7 +76,7 @@ void byoGameBase::ReloadFromConfig()
     MaxPlayTime = cfg->ReadInt(_T("/maxplaytime"),60*10);
     IsMinWorkTime = cfg->ReadBool(_T("/isminworktime"),true);
     MinWorkTime = cfg->ReadInt(_T("/minworktime"),60*60);
-    IsMaxWorkTime = cfg->ReadBool(_T("/isoverworktime"),true);
+    IsMaxWorkTime = cfg->ReadBool(_T("/isoverworktime"),false);
     MaxWorkTime = cfg->ReadInt(_T("/overworktime"),3*60*60);
 }
 
