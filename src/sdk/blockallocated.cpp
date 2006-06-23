@@ -10,12 +10,13 @@
 * $HeadURL$
 */
 
-#include <sdk_precomp.h>
+#include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "blockallocated.h"
-    #include "wx/regex.h"
+    #include <wx/log.h>
+    #include <wx/regex.h>
 #endif
+#include "blockallocated.h"
 
 namespace BlkAllc
 {
@@ -41,6 +42,6 @@ void DebugLog(wxString cn, int blockSize, int poolSize, int max_refs, int total_
             max_refs, total_refs, ref_count, (ref_count == 0 ? _T("") : _T("(memory leak)")));
 
             wxSafeShowMessage(_T("Block Allocator"), s);
-		}
+		} // end of DebugLog
 };
 
