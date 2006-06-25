@@ -94,6 +94,9 @@ struct cbFindReplaceData
     wxString searchMask;
     bool recursiveSearch;
     bool hiddenSearch;
+    bool NewSearch;     //!< only true when a new search has been started
+    int SearchInSelectionStart; //!< keep track of the start of a 'search' selection
+    int SearchInSelectionEnd;  //!< keep track of the end of a 'search' selection
 };
 
 static const int idNBTabSplitHorz = wxNewId();
@@ -236,25 +239,12 @@ EditorManager::~EditorManager()
         m_pTree->Destroy();
     }
 
-    if (m_Theme)
-        delete m_Theme;
-
-    if (m_LastFindReplaceData)
-        delete m_LastFindReplaceData;
-
-    if (m_pData->m_pImages)
-    {
-        delete m_pData->m_pImages;
-        m_pData->m_pImages = NULL;
-    }
-
-    if (m_pData)
-    {
-        delete m_pData;
-        m_pData = NULL;
-    }
+    delete m_Theme;
+    delete m_LastFindReplaceData;
+    delete m_pData->m_pImages;
+    delete m_pData;
     Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/zoom"), m_zoom);
-}
+} // end of destructor
 
 void EditorManager::CreateMenu(wxMenuBar* menuBar)
 {
@@ -1129,7 +1119,6 @@ bool EditorManager::SwapActiveHeaderSource()
 
 int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
 {
-    wxString wordAtCursor;
     wxString phraseAtCursor;
     bool hasSelection = false;
     cbStyledTextCtrl* control = 0;
@@ -1142,7 +1131,7 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
         hasSelection = control->GetSelectionStart() != control->GetSelectionEnd();
         int wordStart = control->WordStartPosition(control->GetCurrentPos(), true);
         int wordEnd = control->WordEndPosition(control->GetCurrentPos(), true);
-        wordAtCursor = control->GetTextRange(wordStart, wordEnd);
+        wxString wordAtCursor = control->GetTextRange(wordStart, wordEnd);
         phraseAtCursor = control->GetSelectedText();
         // if selected text is the last searched text, don't suggest "search in selection"
         if ((m_LastFindReplaceData &&
@@ -1206,30 +1195,41 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     m_LastFindReplaceData->recursiveSearch = dlg->GetRecursive();
     m_LastFindReplaceData->hiddenSearch = dlg->GetHidden();
     m_LastFindReplaceData->initialreplacing = false;
-
+    m_LastFindReplaceData->NewSearch = true;
+    if(control)
+    {   // if editor : store the selection start/end
+        // only use this in case of !findInFiles and scope==1 (search in selection)
+        m_LastFindReplaceData->SearchInSelectionStart = control->GetSelectionStart();
+        m_LastFindReplaceData->SearchInSelectionEnd = control->GetSelectionEnd();
+    }
     dlg->Destroy();
 
+    int ReturnValue = 0;
     if (!replace)
     {
         if (m_LastFindReplaceData->findInFiles)
-            return FindInFiles(m_LastFindReplaceData);
+            ReturnValue = FindInFiles(m_LastFindReplaceData);
         else
-            return Find(control, m_LastFindReplaceData);
+            ReturnValue = Find(control, m_LastFindReplaceData);
     }
     else
     {
         m_LastFindReplaceData->initialreplacing = true;
 
         if (m_LastFindReplaceData->findInFiles)
-            return ReplaceInFiles(m_LastFindReplaceData);
+            ReturnValue = ReplaceInFiles(m_LastFindReplaceData);
         else
-            return Replace(control, m_LastFindReplaceData);
+            ReturnValue = Replace(control, m_LastFindReplaceData);
     }
+    m_LastFindReplaceData->NewSearch = false; // we have searched, so no longer new search
 
     //Default back to find or replace in Editor
     if(m_LastFindReplaceData->findInFiles)
+    {
         m_LastFindReplaceData->findInFiles = false;
-}
+    }
+    return ReturnValue;
+} // end of ShowFindDialog
 
 void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFindReplaceData* data, bool replace)
 {
@@ -1246,7 +1246,7 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
         data->start = 0;
         data->end   = clen;
 
-        if (!data->originEntireScope)   // from pos
+        if (!data->originEntireScope || !data->NewSearch)   // from pos or next/prev search
         {
             if (!data->directionDown)   // up
                 // initial replacing mode - include selection end : normal mode - skip until selection start
@@ -1266,15 +1266,34 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
 
         if (data->scope == 1) // selected text
         {
-            if (!data->directionDown)   // up
+            if(data->NewSearch)
             {
-                data->start = std::max(ssta, send);
-                data->end   = std::min(ssta, send);
+                if (!data->directionDown)   // up
+                {
+                    data->start = std::max(ssta, send);
+                    data->end   = std::min(ssta, send);
+                }
+                else // down
+                {
+                    data->start = std::min(ssta, send);
+                    data->end   = std::max(ssta, send);
+                }
             }
-            else // down
-            {
-                data->start = std::min(ssta, send);
-                data->end   = std::max(ssta, send);
+            else
+            {   // this is the result of a next/previous search
+                // rebase depending on the cursor position
+                ssta = data->SearchInSelectionStart;
+                send = data->SearchInSelectionEnd;
+                if(cpos < ssta || cpos > send)
+                {   // regular reset (this also provide some sort of wrap around) (other editors also did it like that)
+                    data->start = ssta;
+                    data->end = send;
+                }
+                else
+                {
+                    data->start = cpos;
+                    data->end = (data->directionDown)?send:ssta;
+                }
             }
         }
     }
@@ -1284,7 +1303,7 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
         data->start = ( replace ? 0 : control->GetCurrentPos() );
         data->end   = control->GetLength();
     }
-}
+} // end of CalculateFindReplaceStartEnd
 
 int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
 {
@@ -1768,32 +1787,57 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         }
         else if (!wrapAround && !data->findInFiles) // for "find in files" we don't want to show messages
         {
-            if (!data->scope == 1 &&
+            if (
                     ((data->directionDown && data->start != 0) ||
                      (!data->directionDown && data->start != control->GetLength())))
             {
                 wxString msg;
-                if (data->directionDown)
-                    msg = _("Text not found.\nSearch from the start of the document?");
+                if(!data->scope == 1)
+                {
+                    if (data->directionDown)
+                        msg = _("Text not found.\nSearch from the start of the document?");
+                    else
+                        msg = _("Text not found.\nSearch from the end of the document?");
+                }
                 else
-                    msg = _("Text not found.\nSearch from the end of the document?");
+                {
+                    if (data->directionDown)
+                        msg = _("Text not found.\nSearch from the start of the selection?");
+                    else
+                        msg = _("Text not found.\nSearch from the end of the selection?");
+                }
 
                 bool auto_wrap_around = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/auto_wrap_search"), true);
                 if (auto_wrap_around)
                     wxBell();
                 if (auto_wrap_around || cbMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
                 {
-                    if (data->directionDown)
+                    wrapAround = true; // signal the wrap-around
+                    if(!data->scope == 1)
                     {
-                        data->start = 0;
-                        data->end = control->GetLength();
-                        wrapAround = true; // signal the wrap-around
+                        if (data->directionDown)
+                        {
+                            data->start = 0;
+                            data->end = control->GetLength();
+                        }
+                        else
+                        {
+                            data->start = control->GetLength();
+                            data->end = 0;
+                        }
                     }
                     else
                     {
-                        data->start = control->GetLength();
-                        data->end = 0;
-                        wrapAround = true; // signal the wrap-around
+                        if (data->directionDown)
+                        {
+                            data->start = data->SearchInSelectionStart;
+                            data->end = data->SearchInSelectionEnd;
+                        }
+                        else
+                        {
+                            data->start = data->SearchInSelectionEnd;
+                            data->end = data->SearchInSelectionStart;
+                        }
                     }
                 }
                 else
@@ -2051,8 +2095,6 @@ int EditorManager::FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindRep
         // change findText to selected text (if any text is selected and no search text was set before)
         if (!phraseAtCursor.IsEmpty() && data->findText.IsEmpty())
             data->findText = phraseAtCursor;
-        data->originEntireScope = false;  //search from cursor
-        data->scope = 0; // global ("selected text" is useful only from Find Dialog)
     }
 
     data->directionDown = goingDown;
@@ -2264,7 +2306,7 @@ void EditorManager::ShowOpenFilesTree(bool show)
     Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/show_opened_files_tree"), show);
 }
 
-bool EditorManager::IsOpenFilesTreeVisible()
+bool EditorManager::IsOpenFilesTreeVisible() const
 {
     return m_pTree && m_pTree->IsShown();
 }
@@ -2625,3 +2667,4 @@ int EditorManager::GetZoom() const
 {
     return m_zoom;
 }
+

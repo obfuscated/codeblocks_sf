@@ -97,10 +97,6 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         bool SaveActiveAs();
         bool SaveAll();
         int ShowFindDialog(bool replace,  bool explicitly_find_in_files = false);
-        int Find(cbStyledTextCtrl* control, cbFindReplaceData* data);
-        int FindInFiles(cbFindReplaceData* data);
-        int Replace(cbStyledTextCtrl* control, cbFindReplaceData* data);
-        int ReplaceInFiles(cbFindReplaceData* data);
         int FindNext(bool goingDown, cbStyledTextCtrl* control = 0, cbFindReplaceData* data = 0);
 
         void Print(PrintScope ps, PrintColourMode pcm, bool line_numbers);
@@ -120,7 +116,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         /// Refresh the open files tree
         void RefreshOpenFilesTree();
         /// Return true if opened files tree is visible, false if not
-        bool IsOpenFilesTreeVisible();
+        bool IsOpenFilesTreeVisible() const;
 
         /** Builds Opened Files tree in the Projects tab
           */
@@ -177,6 +173,10 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         ~EditorManager();
         void CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFindReplaceData* data, bool replace = false);
         void OnCheckForModifiedFiles(wxCommandEvent& event);
+        int Find(cbStyledTextCtrl* control, cbFindReplaceData* data);
+        int FindInFiles(cbFindReplaceData* data);
+        int Replace(cbStyledTextCtrl* control, cbFindReplaceData* data);
+        int ReplaceInFiles(cbFindReplaceData* data);
 
         wxFlatNotebook* m_pNotebook;
         cbFindReplaceData* m_LastFindReplaceData;
