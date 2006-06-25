@@ -7,4 +7,5 @@ You can change the colours of the editor by either using "Settings/Editor/Colour
 You can create a duplicate of the line the caret is on, by pressing Ctrl+D
 You can indent / unindent blocks of text using the TAB and SHIFT-TAB keys
 You can press F2 and Shift-F2 to hide the messages and manager pane respectively
+You can easily find/open files as you type in the project tree by pressing ALT-G. (similar to desktop-search)
 You can close all open files by pressing Ctrl-Shift-F4
