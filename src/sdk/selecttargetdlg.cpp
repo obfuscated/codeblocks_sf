@@ -61,6 +61,7 @@ SelectTargetDlg::SelectTargetDlg(wxWindow* parent, cbProject* project, int selec
 	list->SetSelection(m_pProject->GetDefaultExecuteTargetIndex());
 
 	UpdateSelected();
+	XRCCTRL(*this, "wxID_OK", wxButton)->MoveBeforeInTabOrder (XRCCTRL(*this, "lstItems", wxListBox));
 }
 
 SelectTargetDlg::~SelectTargetDlg()
