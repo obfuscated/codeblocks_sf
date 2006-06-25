@@ -280,8 +280,15 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
     extraDir = sep + _T("Ia32");// Intel also provides compiler for Itanium processors
 
     if (m_MasterPath.IsEmpty())
+    {
         // just a guess the default installation dir
-        m_MasterPath = _T("C:\\Program Files\\Intel\\Compiler\\C++\\9.0");
+        wxString Programs = _T("C:\\Program Files");
+        // what's the "Program Files" location
+        // TO DO : support 64 bit ->    32 bit apps are in "ProgramFiles(x86)"
+        //                              64 bit apps are in "ProgramFiles"
+        wxGetEnv(_T("ProgramFiles"), &Programs);
+        m_MasterPath = Programs + _T("\\Intel\\Compiler\\C++\\9.0");
+    }
 #else
     m_MasterPath = _T("/opt/intel/cc/9.0");
 #endif

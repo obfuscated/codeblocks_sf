@@ -136,9 +136,15 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
     wxGetEnv(_T("VCToolkitInstallDir"), &m_MasterPath);
 
     if (m_MasterPath.IsEmpty())
+    {
         // just a guess; the default installation dir
-        m_MasterPath = _T("C:\\Program Files\\Microsoft Visual C++ Toolkit 2003");
-
+        wxString Programs = _T("C:\\Program Files");
+        // what's the "Program Files" location
+        // TO DO : support 64 bit ->    32 bit apps are in "ProgramFiles(x86)"
+        //                              64 bit apps are in "ProgramFiles"
+        wxGetEnv(_T("ProgramFiles"), &Programs);
+        m_MasterPath = Programs + _T("\\Microsoft Visual C++ Toolkit 2003");
+    }
     if (!m_MasterPath.IsEmpty())
     {
         AddIncludeDir(m_MasterPath + sep + _T("include"));

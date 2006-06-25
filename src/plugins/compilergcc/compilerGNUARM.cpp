@@ -190,10 +190,20 @@ AutoDetectResult CompilerGNUARM::AutoDetectInstallationDir()
 	// Search for GNUARM installation dir
 	wxString windir = wxGetOSDirectory();
 	wxFileConfig ini(_T(""), _T(""), windir + _T("/GnuARM.ini"), _T(""), wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
-	m_MasterPath = ini.Read(_T("/InstallSettings/InstallPath"), _T("C:\\Program Files\\GNUARM"));
+	// need it as const , so correct overloaded method will be selected
+	wxString Programs = _T("C:\\Program Files");
+	// what's the "Program Files" location
+	// TO DO : support 64 bit ->    32 bit apps are in "ProgramFiles(x86)"
+	//                              64 bit apps are in "ProgramFiles"
+	wxGetEnv(_T("ProgramFiles"), &Programs);
+	// need it as const , so correct overloaded method will be selected
+	const wxString ProgramsConst = Programs + _T("\\GNUARM");
+	m_MasterPath = ini.Read(_T("/InstallSettings/InstallPath"), ProgramsConst);
 
 	if (wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C))
+	{
 		m_Programs.MAKE = _T("make.exe"); // we distribute "make" not "mingw32-make"
+	}
 #else
 	m_MasterPath = _T("/usr");
 #endif

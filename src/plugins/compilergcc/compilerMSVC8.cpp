@@ -185,8 +185,13 @@ AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
     if (m_MasterPath.IsEmpty())\
     {
         // just a guess; the default installation dir
-        m_MasterPath = _T("C:\\Program Files\\Microsoft Visual Studio 8\\VC");
-        idepath = _T("C:\\Program Files\\Microsoft Visual Studio 8\\Common7\\IDE");
+        wxString Programs = _T("C:\\Program Files");
+        // what's the "Program Files" location
+        // TO DO : support 64 bit ->    32 bit apps are in "ProgramFiles(x86)"
+        //                              64 bit apps are in "ProgramFiles"
+        wxGetEnv(_T("ProgramFiles"), &Programs);
+        m_MasterPath = Programs + _T("\\Microsoft Visual Studio 8\\VC");
+        idepath = Programs + _T("\\Microsoft Visual Studio 8\\Common7\\IDE");
     }
     else
     {
