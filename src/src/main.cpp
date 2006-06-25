@@ -1449,27 +1449,31 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
     links << _T("<b>Recent projects</b><br>\n");
     if (m_ProjectsHistory.GetCount())
     {
+        links << _T("<ul>");
         for (int i = 0; i < 9; ++i)
         {
             if (i >= (int)m_ProjectsHistory.GetCount())
                 break;
-            links << wxString::Format(_T("&bull; <a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%d\">%s</a><br>\n"),
+            links << wxString::Format(_T("<li><a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%d\">%s</a></li>"),
                                         i + 1, m_ProjectsHistory.GetHistoryFile(i).c_str());
         }
+        links << _T("</ul><br>");
     }
     else
         links << _T("&nbsp;&nbsp;&nbsp;&nbsp;No recent projects<br>\n");
-
+    
     links << _T("<br><b>Recent files</b><br>\n");
     if (m_FilesHistory.GetCount())
     {
+        links << _T("<ul>");
         for (int i = 0; i < 9; ++i)
         {
             if (i >= (int)m_FilesHistory.GetCount())
                 break;
-            links << wxString::Format(_T("&bull; <a href=\"CB_CMD_OPEN_HISTORY_FILE_%d\">%s</a><br>\n"),
+            links << wxString::Format(_T("<li><a href=\"CB_CMD_OPEN_HISTORY_FILE_%d\">%s</a></li>"),
                                         i + 1, m_FilesHistory.GetHistoryFile(i).c_str());
         }
+        links << _T("</ul>");
     }
     else
         links << _T("&nbsp;&nbsp;&nbsp;&nbsp;No recent files<br>\n");
