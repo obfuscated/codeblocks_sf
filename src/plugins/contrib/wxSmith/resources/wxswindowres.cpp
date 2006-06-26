@@ -251,47 +251,52 @@ const wxString& wxsWindowRes::GetResourceName()
     return GetClassName();
 }
 
-bool wxsWindowRes::GenerateEmptySources()
+bool wxsWindowRes::GenerateEmptySources(bool Header,bool Source)
 {
     if ( !GetProject() ) return false;
 
     // Generating file variables
 
-    wxString FName = wxFileName(HFile).GetFullName();
-    FName.MakeUpper();
-    wxString Guard;
-
-    for ( int i=0; i<(int)FName.Length(); i++ )
+    if ( Header )
     {
-        wxChar ch = FName.GetChar(i);
-        if ( ( ch < _T('A') || ch > _T('Z') ) &&
-             ( ch < _T('0') || ch > _T('9') ) ) Guard.Append(_T('_'));
-        else Guard.Append(ch);
+        wxString FName = wxFileName(HFile).GetFullName();
+        FName.MakeUpper();
+        wxString Guard;
+
+        for ( int i=0; i<(int)FName.Length(); i++ )
+        {
+            wxChar ch = FName.GetChar(i);
+            if ( ( ch < _T('A') || ch > _T('Z') ) &&
+                 ( ch < _T('0') || ch > _T('9') ) ) Guard.Append(_T('_'));
+            else Guard.Append(ch);
+        }
+
+        FILE* Fl = fopen(cbU2C(GetProject()->GetProjectFileName(HFile)),"wt");
+        if ( !Fl ) return false;
+        wxString Content = EmptyHeader;
+        Content.Replace(_T("$(Guard)"),Guard,true);
+        Content.Replace(_T("$(ClassName)"),ClassName,true);
+        Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
+        fprintf(Fl,"%s",(const char*)cbU2C(Content));
+        fclose(Fl);
     }
 
-    wxFileName IncludeFN(GetProject()->GetProjectFileName(HFile));
-    IncludeFN.MakeRelativeTo(
-        wxFileName(GetProject()->GetProjectFileName(SrcFile)).GetPath() );
-    wxString Include = IncludeFN.GetFullPath();
+    if ( Source )
+    {
+        wxFileName IncludeFN(GetProject()->GetProjectFileName(HFile));
+        IncludeFN.MakeRelativeTo(
+            wxFileName(GetProject()->GetProjectFileName(SrcFile)).GetPath() );
+        wxString Include = IncludeFN.GetFullPath();
 
-
-    FILE* Fl = fopen(cbU2C(GetProject()->GetProjectFileName(HFile)),"wt");
-    if ( !Fl ) return false;
-    wxString Content = EmptyHeader;
-    Content.Replace(_T("$(Guard)"),Guard,true);
-    Content.Replace(_T("$(ClassName)"),ClassName,true);
-    Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
-    fprintf(Fl,"%s",(const char*)cbU2C(Content));
-    fclose(Fl);
-
-    Fl = fopen(cbU2C(GetProject()->GetProjectFileName(SrcFile)),"wt");
-    if ( !Fl ) return false;
-    Content = EmptySource;
-    Content.Replace(_T("$(Include)"),Include,true);
-    Content.Replace(_T("$(ClassName)"),ClassName,true);
-    Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
-    fprintf(Fl,"%s",(const char*)cbU2C(Content));
-    fclose(Fl);
+        FILE* Fl = fopen(cbU2C(GetProject()->GetProjectFileName(SrcFile)),"wt");
+        if ( !Fl ) return false;
+        wxString Content = EmptySource;
+        Content.Replace(_T("$(Include)"),Include,true);
+        Content.Replace(_T("$(ClassName)"),ClassName,true);
+        Content.Replace(_T("$(BaseClassName)"),GetWidgetClass(),true);
+        fprintf(Fl,"%s",(const char*)cbU2C(Content));
+        fclose(Fl);
+    }
     return true;
 }
 

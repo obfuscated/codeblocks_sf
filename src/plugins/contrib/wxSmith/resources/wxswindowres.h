@@ -92,7 +92,7 @@ class wxsWindowRes : public wxsResource
           *
           * WARNING: Not checking if files exist
           */
-        bool GenerateEmptySources();
+        bool GenerateEmptySources(bool Header,bool Source);
 
         /** Function which should check and (if necessary) correct widget's base properties */
         bool CheckBaseProperties(bool Correct,wxsWidget* Changed=NULL);

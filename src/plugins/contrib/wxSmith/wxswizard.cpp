@@ -753,6 +753,10 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
                 project->AddCompilerOption(_T("-D__GNUWIN32__"));
                 project->AddCompilerOption(_T("-D__WXMSW__"));
                 project->AddCompilerOption(_T("-DHAVE_W32API_H"));
+                if ( UseUnicode->GetValue() )
+                {
+                    project->AddCompilerOption(_T("-DwxUSE_UNICODE"));
+                }
 
                 project->AddLinkLib(_T("wxmsw26$(WX_CFG)"));
 

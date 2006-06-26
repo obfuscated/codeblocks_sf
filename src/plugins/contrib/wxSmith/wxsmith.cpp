@@ -209,19 +209,10 @@ void wxSmith::OnProjectClose(CodeBlocksEvent& event)
 {
     cbProject* Proj = event.GetProject();
     ProjectMapI i = ProjectMap.find(Proj);
-    if ( i != ProjectMap.end() )
-    {
-        ProjectMap.erase(i);
-    }
-
+    if ( i == ProjectMap.end() ) return;
     wxsProject* SmithProj = (*i).second;
-
-    if ( SmithProj )
-    {
-//        SmithProj->SaveProject();
-        delete SmithProj;
-    }
-
+    ProjectMap.erase(i);
+    delete SmithProj;
     event.Skip();
 }
 

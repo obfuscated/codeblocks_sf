@@ -9,10 +9,9 @@
 		<Build>
 			<Target title="wxSmith">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\wxsmith.dll" />
-				<Option working_dir="..\..\..\devel" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application=".\codeblocks.exe" />
+				<Option host_application="../../../devel/codeblocks.exe" />
 				<Option includeInTargetAll="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
