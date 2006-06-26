@@ -1772,6 +1772,13 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
     int pos = -1;
     // avoid infinite loop when wrapping search around, eventually crashing WinLogon O.O
     bool wrapAround = false;
+    int StartPos = 0;
+    int EndPos = control->GetLength();
+    if(data->scope == 1)
+    {
+        StartPos = data->SearchInSelectionStart;
+        EndPos = data->SearchInSelectionEnd;
+    }
     while (true) // loop while not found and user selects to start again from the top
     {
         int lengthFound = 0;
@@ -1787,9 +1794,8 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         }
         else if (!wrapAround && !data->findInFiles) // for "find in files" we don't want to show messages
         {
-            if (
-                    ((data->directionDown && data->start != 0) ||
-                     (!data->directionDown && data->start != control->GetLength())))
+            if (     (data->directionDown && data->start != StartPos) ||
+                     (!data->directionDown && data->start != EndPos)     )
             {
                 wxString msg;
                 if(!data->scope == 1)
