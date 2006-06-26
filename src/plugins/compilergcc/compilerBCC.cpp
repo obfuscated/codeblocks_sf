@@ -163,9 +163,8 @@ AutoDetectResult CompilerBCC::AutoDetectInstallationDir()
     m_MasterPath = _T("C:\\Borland\\BCC55");
 
     // try to detect Installation dir
-    wxRegKey key; // defaults to HKCR
-    key.SetName(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Borland\\C++Builder\\5.0"));
-    if (key.Open())
+    wxRegKey key(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Borland\\C++Builder\\5.0"));
+    if(key.Exists() && key.Open(wxRegKey::Read))
     {
         wxString dir;
         key.QueryValue(_T("RootDir"), dir);
