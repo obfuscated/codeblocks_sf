@@ -8,6 +8,23 @@
 #include <list>
 #include "settings.h"
 
+// -------------------------------------------------------------------
+//  Determine if a GNU compiler with version less than 3.4 is being used
+// -------------------------------------------------------------------
+#ifdef __GNUC__
+    #if ( (__GNUC__ < 3) || ( (__GNUC__ == 3) && (__GNUC_MINOR__ < 4) ) )
+        #define GCC_LT_34
+    #endif
+#endif // __GNUC__
+
+#ifdef GCC_LT_34
+class cbThreadPool;
+#include "cbthreadpool_extras.h"
+#define QUALIFY_IF_GCC_GE_34(x)
+#else
+#define QUALIFY_IF_GCC_GE_34(x) x
+#endif
+
 /// A Thread Pool implementation
 class DLLIMPORT cbThreadPool
 {
@@ -73,64 +90,9 @@ class DLLIMPORT cbThreadPool
     void BatchEnd();
 
   private:
-    /// Josuttis' implementation of CountedPtr
-    template <typename T>
-    class CountedPtr
-    {
-      private:
-        T *ptr;
-        long *count;
-
-      public:
-        explicit CountedPtr(T *p = 0);
-        CountedPtr(const CountedPtr<T> &p) throw();
-        ~CountedPtr() throw();
-        CountedPtr<T> &operator = (const CountedPtr<T> &p) throw();
-        T &operator * () const throw();
-        T *operator -> () const throw();
-
-      private:
-        void dispose();
-    };
-
-    /** A Worker Thread class.
-      *
-      * These are the ones that execute the tasks.
-      * You shouldn't worry about it since it's for "private" purposes of the Pool.
-      */
-    class cbWorkerThread : public wxThread
-    {
-      public:
-        /** cbWorkerThread ctor
-          *
-          * @param pool Thread Pool this Worker Thread belongs to
-          * @param semaphore Used to synchronise the Worker Threads
-          */
-        cbWorkerThread(cbThreadPool *pool, CountedPtr<wxSemaphore> &semaphore);
-
-        /// Entry point of this thread. The magic happens here.
-        ExitCode Entry();
-
-        /// Tell the thread to abort. It will also tell the task to abort (if any)
-        void Abort();
-
-        /** Tells whether we should abort or not
-          *
-          * @return true if we should abort
-          */
-        bool Aborted() const;
-
-        /// Aborts the running task (if any)
-        void AbortTask();
-
-      private:
-        bool m_abort;
-        cbThreadPool *m_pPool;
-        CountedPtr<wxSemaphore> m_semaphore;
-        cbThreadedTask *m_pTask;
-        wxMutex m_taskMutex;
-    };
-
+    #ifndef GCC_LT_34
+    #include "cbthreadpool_extras.h"
+    #endif
     typedef std::vector<cbWorkerThread *> WorkerThreadsArray;
 
     /// All tasks are added to one of these. It'll also save the autodelete value
@@ -266,7 +228,7 @@ inline void cbThreadPool::AwakeNeeded()
 /* *** Josuttis' CountedPtr *** */
 
 template <typename T>
-inline cbThreadPool::CountedPtr<T>::CountedPtr(T *p)
+inline QUALIFY_IF_GCC_GE_34(cbThreadPool::)CountedPtr<T>::CountedPtr(T *p)
 : ptr(p),
   count(new long(1))
 {
@@ -274,7 +236,7 @@ inline cbThreadPool::CountedPtr<T>::CountedPtr(T *p)
 }
 
 template <typename T>
-inline cbThreadPool::CountedPtr<T>::CountedPtr(const CountedPtr<T> &p) throw()
+inline QUALIFY_IF_GCC_GE_34(cbThreadPool::)CountedPtr<T>::CountedPtr(const CountedPtr<T> &p) throw()
 : ptr(p.ptr),
   count(p.count)
 {
@@ -282,13 +244,13 @@ inline cbThreadPool::CountedPtr<T>::CountedPtr(const CountedPtr<T> &p) throw()
 }
 
 template <typename T>
-inline cbThreadPool::CountedPtr<T>::~CountedPtr() throw()
+inline QUALIFY_IF_GCC_GE_34(cbThreadPool::)CountedPtr<T>::~CountedPtr() throw()
 {
   dispose();
 }
 
 template <typename T>
-inline cbThreadPool::CountedPtr<T> &cbThreadPool::CountedPtr<T>::operator = (const CountedPtr<T> &p) throw()
+inline QUALIFY_IF_GCC_GE_34(cbThreadPool::)CountedPtr<T> &QUALIFY_IF_GCC_GE_34(cbThreadPool::)CountedPtr<T>::operator = (const CountedPtr<T> &p) throw()
 {
   if (this != &p)
   {
@@ -302,19 +264,19 @@ inline cbThreadPool::CountedPtr<T> &cbThreadPool::CountedPtr<T>::operator = (con
 }
 
 template <typename T>
-inline T &cbThreadPool::CountedPtr<T>::operator * () const throw()
+inline T &QUALIFY_IF_GCC_GE_34(cbThreadPool::)CountedPtr<T>::operator * () const throw()
 {
   return *ptr;
 }
 
 template <typename T>
-inline T *cbThreadPool::CountedPtr<T>::operator -> () const throw()
+inline T *QUALIFY_IF_GCC_GE_34(cbThreadPool::)CountedPtr<T>::operator -> () const throw()
 {
   return ptr;
 }
 
 template <typename T>
-inline void cbThreadPool::CountedPtr<T>::dispose()
+inline void QUALIFY_IF_GCC_GE_34(cbThreadPool::)CountedPtr<T>::dispose()
 {
   if (--*count == 0)
   {
@@ -323,4 +285,4 @@ inline void cbThreadPool::CountedPtr<T>::dispose()
   }
 }
 
-#endif
+#endif  //CBTHREADPOOL_H
