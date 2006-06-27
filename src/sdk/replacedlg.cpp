@@ -223,17 +223,17 @@ int ReplaceDlg::GetDirection() const
 int ReplaceDlg::GetOrigin() const
 {
     if (IsFindInFiles())
-		return 1;
-	else
-        return XRCCTRL(*this, "rbOrigin", wxCheckBox)->GetValue();
+        return 1;
+    else
+        return XRCCTRL(*this, "rbOrigin", wxRadioBox)->GetSelection();
 }
 
 int ReplaceDlg::GetScope() const
 {
     if (IsFindInFiles())
-		return XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection();
-	else
-        return XRCCTRL(*this, "rbScope1", wxCheckBox)->GetValue();
+        return XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection();
+    else
+        return XRCCTRL(*this, "rbScope1", wxRadioBox)->GetSelection();
 }
 
 // events
