@@ -88,6 +88,7 @@
                 <item>Launch tool in a new console window and wait for a keypress when done</item>
                 <item>Launch tool hidden with standard output redirected</item>
                 <item>Launch tool visible (without output redirection)</item>
+                <item>Launch tool visible detached (without output redirection)</item>
               </content>
               <selection>0</selection>
               <dimension>1</dimension>
