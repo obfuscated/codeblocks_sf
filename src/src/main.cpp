@@ -1461,7 +1461,7 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
     }
     else
         links << _T("&nbsp;&nbsp;&nbsp;&nbsp;No recent projects<br>\n");
-    
+
     links << _T("<br><b>Recent files</b><br>\n");
     if (m_FilesHistory.GetCount())
     {
@@ -2133,17 +2133,15 @@ void MainFrame::OnEditSelectAll(wxCommandEvent& event)
  */
 void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-	if( ed )
+	cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+	if (ed)
 	{
-        ed->GetControl()->BeginUndoAction();
-		cbStyledTextCtrl *stc = ed->GetControl();
+		cbStyledTextCtrl* stc = ed->GetControl();
+		stc->BeginUndoAction();
 		if( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
 		{
 			int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
 			int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
-			wxString strLine, str;
-
             /**
                 Fix a glitch: when selecting multiple lines and the caret
                 is at the start of the line after the last line selected,
@@ -2161,104 +2159,92 @@ void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
 			while( startLine <= endLine )
 			{
 				// For each line: comment.
-				strLine = stc->GetLine( startLine );
-
-                // Comment
                 /// @todo This should be language-dependent. We're currently assuming C++
                 stc->InsertText( stc->PositionFromLine( startLine ), _T( "//" ) );
-
-				startLine++;
-			}
+				++startLine;
+			} // end while
 		}
-		ed->GetControl()->EndUndoAction();
+		stc->EndUndoAction();
 	}
-}
+} // end of OnEditCommentSelecteds
 
 /* See above (OnEditCommentSelected) for details. */
 void MainFrame::OnEditUncommentSelected(wxCommandEvent& event)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-	if( ed )
+	cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+	if (ed)
 	{
-        ed->GetControl()->BeginUndoAction();
-		cbStyledTextCtrl *stc = ed->GetControl();
+		cbStyledTextCtrl* stc = ed->GetControl();
+		stc->BeginUndoAction();
 		if( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
 		{
 			int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
 			int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
-			wxString strLine, str;
-
             /**
                 Fix a glitch: when selecting multiple lines and the caret
                 is at the start of the line after the last line selected,
                 the code would, wrongly, (un)comment that line too.
                 This fixes it.
             */
-            if (startLine != endLine && // selection is more than one line
-                stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
-            {
-                // don't take into account the line the caret is on,
-                // because it contains no selection (caret_column == 0)...
-                --endLine;
-            }
+			if (startLine != endLine && // selection is more than one line
+			stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
+			{
+				// don't take into account the line the caret is on,
+				// because it contains no selection (caret_column == 0)...
+				--endLine;
+			}
 
 			while( startLine <= endLine )
 			{
 				// For each line: if it is commented, uncomment.
-				strLine = stc->GetLine( startLine );
+				wxString strLine = stc->GetLine( startLine );
 				wxString Comment = _T("//");
 				int commentPos = strLine.Strip( wxString::leading ).Find( Comment );
-				if( commentPos ==0 )
-				{
-					// Uncomment
-					strLine.Replace( Comment, _T( "" ), false );
-
-					// Update
-					int start = stc->PositionFromLine( startLine );
+				if( commentPos == 0 )
+				{      // we know the comment is there (maybe preceded by white space)
+					int Pos = strLine.Find(Comment);
+					int start = stc->PositionFromLine( startLine ) + Pos;
+					int end = start + Comment.Length();
 					stc->SetTargetStart( start );
-					// adjust for the '//' we erased
-					stc->SetTargetEnd( start + strLine.Length() + Comment.Length() );
-					stc->ReplaceTarget( strLine );
+					stc->SetTargetEnd( end );
+					stc->ReplaceTarget( wxEmptyString );
 				}
-
-				startLine++;
-			}
+				++startLine;
+			} // end while
 		}
-		ed->GetControl()->EndUndoAction();
+		stc->EndUndoAction();
 	}
 } // end of OnEditUncommentSelected
 
 void MainFrame::OnEditToggleCommentSelected(wxCommandEvent& event)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-	if( ed )
+	cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+	if (ed)
 	{
-        ed->GetControl()->BeginUndoAction();
-		cbStyledTextCtrl *stc = ed->GetControl();
+		cbStyledTextCtrl* stc = ed->GetControl();
+		stc->BeginUndoAction();
 		if( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
 		{
 			int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
 			int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
-			wxString strLine, str;
-
             /**
                 Fix a glitch: when selecting multiple lines and the caret
                 is at the start of the line after the last line selected,
                 the code would, wrongly, (un)comment that line too.
                 This fixes it.
             */
-            if (startLine != endLine && // selection is more than one line
-                stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
-            {
-                // don't take into account the line the caret is on,
-                // because it contains no selection (caret_column == 0)...
-                --endLine;
-            }
+			if (startLine != endLine && // selection is more than one line
+			stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
+			{
+				// don't take into account the line the caret is on,
+				// because it contains no selection (caret_column == 0)...
+				--endLine;
+			}
 
 			while( startLine <= endLine )
 			{
 				// For each line: If it's commented, uncomment. Otherwise, comment.
-				strLine = stc->GetLine( startLine );
+				wxString strLine = stc->GetLine( startLine );
 				wxString Comment = _T("//");
 				int commentPos = strLine.Strip( wxString::leading ).Find( Comment );
 
@@ -2269,22 +2255,18 @@ void MainFrame::OnEditToggleCommentSelected(wxCommandEvent& event)
 					stc->InsertText( stc->PositionFromLine( startLine ), Comment );
 				}
 				else
-				{
-					// Uncomment
-					strLine.Replace( Comment, _T( "" ), false );
-
-					// Update
-					int start = stc->PositionFromLine( startLine );
+				{      // we know the comment is there (maybe preceded by white space)
+					int Pos = strLine.Find(Comment);
+					int start = stc->PositionFromLine( startLine ) + Pos;
+					int end = start + Comment.Length();
 					stc->SetTargetStart( start );
-					// adjust for the '//' we erased
-					stc->SetTargetEnd( start + strLine.Length() + Comment.Length() );
-					stc->ReplaceTarget( strLine );
+					stc->SetTargetEnd( end );
+					stc->ReplaceTarget( wxEmptyString );
 				}
-
-				startLine++;
+				++startLine;
 			}
 		}
-		ed->GetControl()->EndUndoAction();
+		stc->EndUndoAction();
 	}
 } // end of OnEditToggleCommentSelected
 
