@@ -424,7 +424,7 @@ void wxsProject::XmlStore(TiXmlNode* Node)
         Frm.SetAttribute(XML_CNAME_STR,cbU2C(Sett->GetClassName()));
         Frm.SetAttribute(XML_SFILE_STR,cbU2C(Sett->GetSourceFile()));
         Frm.SetAttribute(XML_HFILE_STR,cbU2C(Sett->GetHeaderFile()));
-        Frm.SetAttribute(XML_XRCFILE_STR,cbU2C(Sett->GetWxsFile()));
+        Frm.SetAttribute(XML_XRCFILE_STR,cbU2C(Sett->GetXrcFile()));
         Frm.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsREMSource?"Source":"Xrc");
         Elem->InsertEndChild(Frm);
     }
@@ -439,7 +439,7 @@ void wxsProject::XmlStore(TiXmlNode* Node)
         Pan.SetAttribute(XML_CNAME_STR,cbU2C(Sett->GetClassName()));
         Pan.SetAttribute(XML_SFILE_STR,cbU2C(Sett->GetSourceFile()));
         Pan.SetAttribute(XML_HFILE_STR,cbU2C(Sett->GetHeaderFile()));
-        Pan.SetAttribute(XML_XRCFILE_STR,cbU2C(Sett->GetWxsFile()));
+        Pan.SetAttribute(XML_XRCFILE_STR,cbU2C(Sett->GetXrcFile()));
         Pan.SetAttribute(XML_EDITMODE_STR,Sett->GetEditMode()==wxsREMSource?"Source":"Xrc");
         Elem->InsertEndChild(Pan);
     }
