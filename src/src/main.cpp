@@ -2166,7 +2166,7 @@ void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
 		}
 		stc->EndUndoAction();
 	}
-} // end of OnEditCommentSelecteds
+} // end of OnEditCommentSelected
 
 /* See above (OnEditCommentSelected) for details. */
 void MainFrame::OnEditUncommentSelected(wxCommandEvent& event)
