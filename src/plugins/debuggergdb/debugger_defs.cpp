@@ -1,12 +1,14 @@
-#include <sdk.h>
-#include "debugger_defs.h"
-#include "debuggerdriver.h"
-#include "debuggertree.h"
-#include "manager.h"
-
+#include "sdk.h"
+#ifndef CB_PRECOMP
 #include <wx/dialog.h>
 #include <wx/font.h>
 #include <wx/sizer.h>
+#include <wx/textctrl.h>
+#include "manager.h"
+#endif
+#include "debugger_defs.h"
+#include "debuggerdriver.h"
+#include "debuggertree.h"
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(WatchesArray);

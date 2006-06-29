@@ -1,5 +1,5 @@
 #include "sdk.h"
-#ifdef CB_PRECOMP
+#ifndef CB_PRECOMP
 #include <wx/button.h>
 #include <wx/intl.h>
 #include <wx/listbox.h>

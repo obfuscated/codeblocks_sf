@@ -77,7 +77,8 @@ void byoSnake::OnKeyDown(wxKeyEvent& event)
 
 void byoSnake::OnPaint(wxPaintEvent& event)
 {
-    wxBitmap buffer(wxImage(GetClientSize().GetWidth(),GetClientSize().GetHeight()));
+    wxSize size = GetClientSize();
+    wxBitmap buffer(wxImage(size.GetWidth(),size.GetHeight()));
     wxBufferedPaintDC DC(this,buffer);
     DrawBorder(&DC);
     DrawSnake(&DC);
