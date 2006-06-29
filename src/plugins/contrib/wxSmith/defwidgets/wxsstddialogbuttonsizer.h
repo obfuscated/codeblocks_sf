@@ -27,6 +27,12 @@ wxsDSDeclareBegin(StdDialogButtonSizer,wxsStdDialogButtonSizerId)
     wxID_HELP
     wxID_CONTEXT_HELP
 */
+
+    virtual bool XmlLoadChildren() { return true; }
+    virtual bool XmlSaveChildren() { return true; }
+    virtual bool CanAddChild(wxsWidget* NewWidget,int InsertBeforeThis=-1) { return false; }
+    virtual int AddChild(wxsWidget* NewWidget,int InsertBeforeThis=-1) { return -1; }
+
     bool chkOK;
     bool chkYES;
     bool chkSAVE;
@@ -35,8 +41,17 @@ wxsDSDeclareBegin(StdDialogButtonSizer,wxsStdDialogButtonSizerId)
     bool chkCANCEL;
     bool chkHELP;
     bool chkCONTEXT_HELP;
+    wxString strOK;
+    wxString strYES;
+    wxString strSAVE;
+    wxString strAPPLY;
+    wxString strNO;
+    wxString strCANCEL;
+    wxString strHELP;
+    wxString strCONTEXT_HELP;
+
+    wxString GetLabel(TiXmlElement* button);
+    void AddButton(wxString Id,wxString Label);
 wxsDSDeclareEnd()
-
-
 
 #endif // WXSSTDDIALOGBUTTONSIZER_H
