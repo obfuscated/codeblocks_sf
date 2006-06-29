@@ -12,9 +12,9 @@ BEGIN_EVENT_TABLE(wxsProjectConfigurationDlg,wxDialog)
     EVT_BUTTON(XRCID("ID_BUTTON1"),wxsProjectConfigurationDlg::OnButton1Click)
     EVT_BUTTON(XRCID("ID_BUTTON2"),wxsProjectConfigurationDlg::OnButton2Click)
     EVT_CHECKBOX(XRCID("ID_CHECKBOX2"),wxsProjectConfigurationDlg::OnInitAllChange)
-    EVT_BUTTON(XRCID("ID_BUTTON3"),wxsProjectConfigurationDlg::OnButton3Click)
-    EVT_BUTTON(XRCID("ID_BUTTON4"),wxsProjectConfigurationDlg::OnButton4Click)
     //*)
+    EVT_BUTTON(wxID_OK,wxsProjectConfigurationDlg::OnButton3Click)
+    EVT_BUTTON(wxID_CANCEL,wxsProjectConfigurationDlg::OnButton4Click)
 END_EVENT_TABLE()
 
 wxsProjectConfigurationDlg::wxsProjectConfigurationDlg(wxWindow* parent,wxsProject* _Project,wxWindowID id):
@@ -30,8 +30,6 @@ wxsProjectConfigurationDlg::wxsProjectConfigurationDlg(wxWindow* parent,wxsProje
 	StaticText2 = XRCCTRL(*this,"ID_STATICTEXT2",wxStaticText);
 	InitAll = XRCCTRL(*this,"ID_CHECKBOX2",wxCheckBox);
 	InitAllNecessary = XRCCTRL(*this,"ID_CHECKBOX1",wxCheckBox);
-	Button3 = XRCCTRL(*this,"ID_BUTTON3",wxButton);
-	Button4 = XRCCTRL(*this,"ID_BUTTON4",wxButton);
 	//*)
 }
 

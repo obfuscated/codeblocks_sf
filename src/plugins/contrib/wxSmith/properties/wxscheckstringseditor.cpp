@@ -8,13 +8,12 @@ BEGIN_EVENT_TABLE(wxsCheckStringsEditor,wxDialog)
 	EVT_BUTTON(ID_BUTTON4,wxsCheckStringsEditor::OnButton4Click)
 	EVT_BUTTON(ID_BUTTON3,wxsCheckStringsEditor::OnButton3Click)
 	EVT_BUTTON(ID_BUTTON5,wxsCheckStringsEditor::OnButton5Click)
-	EVT_BUTTON(ID_BUTTON6,wxsCheckStringsEditor::OnButton6Click)
-	EVT_BUTTON(ID_BUTTON7,wxsCheckStringsEditor::OnButton7Click)
-	EVT_LISTBOX(ID_CHECKLISTBOX1,wxsCheckStringsEditor::OnListClick)
 	//*)
+	EVT_BUTTON(wxID_OK,wxsCheckStringsEditor::OnButton6Click)
+	EVT_BUTTON(wxID_CANCEL,wxsCheckStringsEditor::OnButton7Click)
 END_EVENT_TABLE()
 
-wxsCheckStringsEditor::wxsCheckStringsEditor(            
+wxsCheckStringsEditor::wxsCheckStringsEditor(
     wxWindow* parent,
     const wxArrayString& _Strings,
     const wxsArrayBool& _Bools,
@@ -53,26 +52,23 @@ wxsCheckStringsEditor::wxsCheckStringsEditor(
 	BoxSizer3->Add(StringList,1,wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
 	BoxSizer3->Add(BoxSizer4,0,wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP,0);
 	StaticLine2 = new wxStaticLine(this,ID_STATICLINE2,wxDefaultPosition,wxSize(10,-1),0);
-	BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-	Button6 = new wxButton(this,ID_BUTTON6,_("OK"),wxDefaultPosition,wxDefaultSize,0);
-	if (false) Button6->SetDefault();
-	Button7 = new wxButton(this,ID_BUTTON7,_("Cancel"),wxDefaultPosition,wxDefaultSize,0);
-	if (false) Button7->SetDefault();
-	BoxSizer5->Add(Button6,1,wxALL|wxALIGN_CENTER,5);
-	BoxSizer5->Add(Button7,1,wxALL|wxALIGN_CENTER,5);
+	StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
+	StdDialogButtonSizer1->AddButton(new wxButton(this,wxID_OK,_T("")));
+	StdDialogButtonSizer1->AddButton(new wxButton(this,wxID_CANCEL,_T("")));
+	StdDialogButtonSizer1->Realize();
 	BoxSizer1->Add(BoxSizer2,0,wxALIGN_CENTER|wxEXPAND,0);
 	BoxSizer1->Add(StaticLine1,0,wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND,5);
 	BoxSizer1->Add(BoxSizer3,1,wxALIGN_CENTER|wxEXPAND,0);
 	BoxSizer1->Add(StaticLine2,0,wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND,5);
-	BoxSizer1->Add(BoxSizer5,0,wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL,0);
+	BoxSizer1->Add(StdDialogButtonSizer1,0,wxALL|wxALIGN_CENTER|wxEXPAND,4);
 	this->SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
 	Center();
 	//*)
-	
+
 	if ( Sorted ) InitialRemapBools();
-	
+
 	for ( size_t i = 0; i<Strings.Count(); i++ )
 	{
 	    StringList->Append(Strings[i]);
@@ -159,17 +155,17 @@ void wxsCheckStringsEditor::InitialRemapBools()
     // checked attribs are relative to sorted strings, not
     // the order in xrc file (surely XRC bug but we will keep
     // standards)
-   
+
     SortArray Sort;
     for ( size_t i = 0; i<Strings.Count(); ++i )
     {
         Sort.Add(new SortItem(Strings[i],i) );
     }
     Sort.Sort(SortCmpFunc);
-    
+
     wxsArrayBool NewBools;
     NewBools.Add(false,Bools.Count());
-    
+
     for ( size_t i = 0; i<Sort.Count(); ++i )
     {
         NewBools[Sort[i]->InitialIndex] = Bools[i];
@@ -193,13 +189,13 @@ void wxsCheckStringsEditor::FinalRemapBools()
 
     wxsArrayBool NewBools;
     NewBools.Add(false,Bools.Count());
-    
+
     for ( size_t i = 0; i<Sort.Count(); ++i )
     {
         NewBools[i] = Bools[Sort[i]->InitialIndex];
     }
     Bools = NewBools;
-    
+
     for ( size_t i = 0; i<Sort.Count(); ++i )
     {
         delete Sort[i];

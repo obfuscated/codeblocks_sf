@@ -6,6 +6,7 @@
 #include <wx/checkbox.h>
 #include <wx/dialog.h>
 #include <wx/intl.h>
+#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>

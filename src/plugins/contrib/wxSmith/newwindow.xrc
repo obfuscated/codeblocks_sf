@@ -20,14 +20,14 @@
                             <object class="sizeritem">
                                 <border>5</border>
                                 <flag>wxALIGN_CENTER</flag>
-                                <object class="wxStaticText" name="ID_STATICTEXT1">
+                                <object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="no">
                                     <label>Class Name:</label>
                                 </object>
                             </object>
                             <object class="sizeritem">
                                 <border>5</border>
                                 <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                <object class="wxTextCtrl" name="ID_TEXTCTRL1">
+                                <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="Class" member="yes">
                                     <value></value>
                                     <size>80,-1</size>
                                 </object>
@@ -35,14 +35,14 @@
                             <object class="sizeritem">
                                 <border>5</border>
                                 <flag>wxALIGN_CENTER</flag>
-                                <object class="wxStaticText" name="ID_STATICTEXT2">
+                                <object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="no">
                                     <label>Header file:</label>
                                 </object>
                             </object>
                             <object class="sizeritem">
                                 <border>5</border>
                                 <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                                <object class="wxTextCtrl" name="ID_TEXTCTRL2">
+                                <object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="Header" member="yes">
                                     <value></value>
                                     <size>80,-1</size>
                                 </object>
@@ -50,14 +50,14 @@
                             <object class="sizeritem">
                                 <border>5</border>
                                 <flag>wxALIGN_CENTER</flag>
-                                <object class="wxStaticText" name="ID_STATICTEXT3">
+                                <object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="no">
                                     <label>Source file:</label>
                                 </object>
                             </object>
                             <object class="sizeritem">
                                 <border>5</border>
                                 <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                                <object class="wxTextCtrl" name="ID_TEXTCTRL3">
+                                <object class="wxTextCtrl" name="ID_TEXTCTRL3" variable="Source" member="yes">
                                     <value></value>
                                     <size>80,-1</size>
                                 </object>
@@ -65,14 +65,14 @@
                             <object class="sizeritem">
                                 <border>5</border>
                                 <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                                <object class="wxCheckBox" name="ID_CHECKBOX1">
+                                <object class="wxCheckBox" name="ID_CHECKBOX1" variable="UseXrc" member="yes">
                                     <label>Xrc File:</label>
                                 </object>
                             </object>
                             <object class="sizeritem">
                                 <border>5</border>
                                 <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                                <object class="wxTextCtrl" name="ID_TEXTCTRL4">
+                                <object class="wxTextCtrl" name="ID_TEXTCTRL4" variable="Xrc" member="yes">
                                     <value></value>
                                     <size>80,-1</size>
                                 </object>
@@ -83,7 +83,7 @@
                         <option>1</option>
                         <border>5</border>
                         <flag>wxALL|wxALIGN_CENTER</flag>
-                        <object class="wxStaticText" name="ID_STATICTEXT4">
+                        <object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="no">
                             <label>Warning:&#x0A;When adding resource in Xrc mode,&#x0A;this resource must be manually loaded.&#x0A;For details see wxXmlResource::Load()&#x0A;and wxXmlResource::Get().</label>
                             <style>wxALIGN_CENTRE</style>
                         </object>
@@ -91,24 +91,17 @@
                 </object>
             </object>
             <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_CENTER</flag>
-                <object class="wxBoxSizer">
-                    <orient>wxHORIZONTAL</orient>
-                    <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxALL|wxALIGN_CENTER</flag>
-                        <object class="wxButton" name="ID_BUTTON1">
-                            <label>Cancel</label>
+                <option>1</option>
+                <border>8</border>
+                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER</flag>
+                <object class="wxStdDialogButtonSizer">
+                    <object class="button">
+                        <object class="wxButton" name="wxID_OK">
+                            <label>Create</label>
                         </object>
                     </object>
-                    <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxALL|wxALIGN_CENTER</flag>
-                        <object class="wxButton" name="ID_BUTTON2">
-                            <label>Create</label>
-                            <default>1</default>
-                        </object>
+                    <object class="button">
+                        <object class="wxButton" name="wxID_CANCEL" />
                     </object>
                 </object>
             </object>

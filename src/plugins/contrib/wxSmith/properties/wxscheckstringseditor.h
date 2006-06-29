@@ -8,6 +8,7 @@
 #include <wx/checklst.h>
 #include <wx/dialog.h>
 #include <wx/intl.h>
+#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/statline.h>
 #include <wx/textctrl.h>
@@ -34,8 +35,6 @@ class wxsCheckStringsEditor: public wxDialog
 		    ID_BUTTON3,
 		    ID_BUTTON4,
 		    ID_BUTTON5,
-		    ID_BUTTON6,
-		    ID_BUTTON7,
 		    ID_CHECKLISTBOX1,
 		    ID_STATICLINE1,
 		    ID_STATICLINE2,
@@ -74,9 +73,7 @@ class wxsCheckStringsEditor: public wxDialog
 		wxButton* Button3;
 		wxButton* Button5;
 		wxStaticLine* StaticLine2;
-		wxBoxSizer* BoxSizer5;
-		wxButton* Button6;
-		wxButton* Button7;
+		wxStdDialogButtonSizer* StdDialogButtonSizer1;
 		//*)
 
 	private:

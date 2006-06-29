@@ -138,7 +138,7 @@ static const wxString DefSizerCat    = _("Layout");
         wxsWidgetInfo::exNone                           \
     },
 
-#define SizerEntry(Name,Link,Header)                            \
+#define SizerEntry2Headers(Name,Link,Header1,Header2)           \
     {   _T("wx") _T(#Name),                                     \
         DefLicence,                                             \
         DefAuthor,                                              \
@@ -158,10 +158,14 @@ static const wxString DefSizerCat    = _("Layout");
         0,                                                      \
         NULL,                                                   \
         NULL,                                                   \
-        _T(Header),                                             \
-        _T(""),                                                 \
+        _T(Header1),                                            \
+        _T(Header2),                                            \
         wxsWidgetInfo::exNone                                   \
     },
+
+#define SizerEntry(Name,Link,Header)                            \
+    SizerEntry2Headers(Name,Link,Header,"")
+
 
 #define CustomEntry()                                   \
     {   _T("Custom"),                                   \
@@ -199,7 +203,7 @@ static wxsWidgetInfo StdInfos[] =
     SizerEntry(BoxSizer,"wx_wxboxsizer.html#wxboxsizer","<wx/sizer.h>")
     SizerEntry(StaticBoxSizer,"wx_wxstaticboxsizer.html#wxstaticboxsizer","<wx/sizer.h>")
     SizerEntry(FlexGridSizer,"wx_wxflexgridsizer.html#wxflexgridsizer","<wx/sizer.h>")
-    SizerEntry(StdDialogButtonSizer,"wx_wxstddialogbuttonsizer.html#wxstddialogbuttonsizer","<wx/sizer.h>")
+    SizerEntry2Headers(StdDialogButtonSizer,"wx_wxstddialogbuttonsizer.html#wxstddialogbuttonsizer","<wx/sizer.h>","<wx/button.h>")
     SpacerEntry()
 
     Entry(Button,      "wx_wxbutton.htm#wxbutton","<wx/button.h>")

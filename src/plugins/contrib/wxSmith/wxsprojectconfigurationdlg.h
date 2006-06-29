@@ -7,6 +7,7 @@
 #include <wx/combobox.h>
 #include <wx/dialog.h>
 #include <wx/intl.h>
+#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -47,8 +48,6 @@ class wxsProjectConfigurationDlg: public wxDialog
 		wxStaticText* StaticText2;
 		wxCheckBox* InitAll;
 		wxCheckBox* InitAllNecessary;
-		wxButton* Button3;
-		wxButton* Button4;
 		//*)
 
 	private:

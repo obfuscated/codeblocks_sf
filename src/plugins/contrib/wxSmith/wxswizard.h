@@ -13,6 +13,7 @@
 #include <wx/combobox.h>
 #include <wx/dialog.h>
 #include <wx/intl.h>
+#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -32,9 +33,7 @@ class wxsWizard: public wxDialog
 		//(*Identifiers(wxsWizard)
 		enum Identifiers
 		{
-		    ID_BUTTON1 = 0x1000,
-		    ID_BUTTON2,
-		    ID_BUTTON3,
+		    ID_BUTTON3 = 0x1000,
 		    ID_BUTTON4,
 		    ID_BUTTON5,
 		    ID_CHECKBOX1,
@@ -101,6 +100,7 @@ class wxsWizard: public wxDialog
 		wxTextCtrl* WxConf;
 		wxStaticText* UseUnicodeLabel;
 		wxCheckBox* UseUnicode;
+		wxStdDialogButtonSizer* StdDialogButtonSizer1;
 		//*)
 
 	private:

@@ -146,28 +146,14 @@
                 </object>
             </object>
             <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_CENTER</flag>
-                <object class="wxBoxSizer">
-                    <orient>wxHORIZONTAL</orient>
-                    <object class="sizeritem">
-                        <option>1</option>
-                        <border>5</border>
-                        <flag>wxALL|wxALIGN_CENTER</flag>
-                        <object class="wxButton" name="ID_BUTTON3" variable="Button3" member="yes">
-                            <label>OK</label>
-                            <default>1</default>
-                            <handler entry="EVT_BUTTON" function="OnButton3Click" />
-                        </object>
+                <border>8</border>
+                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER</flag>
+                <object class="wxStdDialogButtonSizer">
+                    <object class="button">
+                        <object class="wxButton" name="wxID_OK" />
                     </object>
-                    <object class="sizeritem">
-                        <option>1</option>
-                        <border>5</border>
-                        <flag>wxALL|wxALIGN_CENTER</flag>
-                        <object class="wxButton" name="ID_BUTTON4" variable="Button4" member="yes">
-                            <label>Cancel</label>
-                            <handler entry="EVT_BUTTON" function="OnButton4Click" />
-                        </object>
+                    <object class="button">
+                        <object class="wxButton" name="wxID_CANCEL" />
                     </object>
                 </object>
             </object>

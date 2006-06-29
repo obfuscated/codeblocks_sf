@@ -14,9 +14,9 @@ BEGIN_EVENT_TABLE(wxsNewWindowDlg,wxDialog)
     EVT_TEXT(XRCID("ID_TEXTCTRL3"),wxsNewWindowDlg::OnSourceChanged)
     EVT_CHECKBOX(XRCID("ID_CHECKBOX1"),wxsNewWindowDlg::OnUseXrcChange)
     EVT_TEXT(XRCID("ID_TEXTCTRL4"),wxsNewWindowDlg::OnXrcChanged)
-    EVT_BUTTON(XRCID("ID_BUTTON1"),wxsNewWindowDlg::OnCancel)
-    EVT_BUTTON(XRCID("ID_BUTTON2"),wxsNewWindowDlg::OnCreate)
     //*)
+    EVT_BUTTON(wxID_CANCEL,wxsNewWindowDlg::OnCancel)
+    EVT_BUTTON(wxID_OK,wxsNewWindowDlg::OnCreate)
 END_EVENT_TABLE()
 
 wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType):
@@ -59,7 +59,7 @@ wxsNewWindowDlg::~wxsNewWindowDlg()
 
 void wxsNewWindowDlg::OnCancel(wxCommandEvent& event)
 {
-    Close();
+    EndModal(wxID_CANCEL);
 }
 
 void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
@@ -206,7 +206,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     }
 
     wxsSelectRes(NewWindow);
-    Close();
+    EndModal(wxID_OK);
 }
 
 void wxsNewWindowDlg::OnClassChanged(wxCommandEvent& event)

@@ -490,9 +490,9 @@ BEGIN_EVENT_TABLE(wxsWizard,wxDialog)
 	EVT_BUTTON(ID_BUTTON3,wxsWizard::OnDirChooseClick)
 	EVT_COMBOBOX(ID_COMBOBOX2,wxsWizard::OnConfModeSelect)
 	EVT_BUTTON(ID_BUTTON4,wxsWizard::OnwxDirChooseClick)
-	EVT_BUTTON(ID_BUTTON1,wxsWizard::OnButton1Click)
-	EVT_BUTTON(ID_BUTTON2,wxsWizard::OnButton2Click)
 	//*)
+	EVT_BUTTON(wxID_OK,wxsWizard::OnButton2Click)
+	EVT_BUTTON(wxID_CANCEL,wxsWizard::OnButton1Click)
 END_EVENT_TABLE()
 
 wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id):
@@ -512,10 +512,7 @@ wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id):
 	wxStaticText* StaticText6;
 	wxBoxSizer* BoxSizer4;
 	wxStaticText* StaticText7;
-	wxBoxSizer* BoxSizer1;
-	wxButton* Button1;
-	wxButton* Button2;
-
+	
 	Create(parent,id,_("wxSmith project wizzard"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE);
 	MainSizer = new wxFlexGridSizer(0,1,0,0);
 	FlexGridSizer2 = new wxFlexGridSizer(0,1,0,0);
@@ -622,15 +619,12 @@ wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id):
 	FlexGridSizer2->Add(StaticBoxSizer1,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
 	FlexGridSizer2->Add(335,0,1);
 	FlexGridSizer2->Add(wxWidgetsConfig,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
-	BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
-	Button1 = new wxButton(this,ID_BUTTON1,_("Cancel"),wxDefaultPosition,wxDefaultSize,0);
-	if (false) Button1->SetDefault();
-	Button2 = new wxButton(this,ID_BUTTON2,_("Create"),wxDefaultPosition,wxDefaultSize,0);
-	if (false) Button2->SetDefault();
-	BoxSizer1->Add(Button1,1,wxALL|wxALIGN_CENTER,5);
-	BoxSizer1->Add(Button2,1,wxALL|wxALIGN_CENTER,5);
-	MainSizer->Add(FlexGridSizer2,1,wxALIGN_CENTER|wxEXPAND,0);
-	MainSizer->Add(BoxSizer1,1,wxALIGN_CENTER,0);
+	StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
+	StdDialogButtonSizer1->AddButton(new wxButton(this,wxID_OK,_T("")));
+	StdDialogButtonSizer1->AddButton(new wxButton(this,wxID_CANCEL,_T("")));
+	StdDialogButtonSizer1->Realize();
+	MainSizer->Add(FlexGridSizer2,1,wxBOTTOM|wxALIGN_CENTER|wxEXPAND,4);
+	MainSizer->Add(StdDialogButtonSizer1,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER,8);
 	this->SetSizer(MainSizer);
 	MainSizer->Fit(this);
 	MainSizer->SetSizeHints(this);
@@ -661,6 +655,9 @@ void wxsWizard::OnButton1Click(wxCommandEvent& event)
 
 void wxsWizard::OnButton2Click(wxCommandEvent& event)
 {
+    static bool Block = false;
+    if ( Block ) return;
+    Block = true;
     wxString Dir = PrjDir->GetValue();
     wxString Name = PrjName->GetValue();
 
