@@ -117,10 +117,20 @@ void SelectTargetDlg::EndModal(int retCode)
         ProjectBuildTarget* target = m_pProject->GetBuildTarget(m_Selected);
         if (target)
         {
-            target->SetExecutionParameters(XRCCTRL(*this, "txtParams", wxTextCtrl)->GetValue());
+            // Search all '\n' in the program-parameters and replace them by
+            // ' '. This is necessary because a multiline text control may add
+            // '\n' to the text but these characters must not be part of the
+            // parameters when executing the program.
+            wxString execution_parameters = XRCCTRL(*this, "txtParams", wxTextCtrl)->GetValue();
+            wxString::size_type pos = 0;
+
+            while ((pos = execution_parameters.find('\n', pos)) != wxString::npos)
+            {
+                execution_parameters[pos] = ' ';
+            }
+            target->SetExecutionParameters(execution_parameters);
             target->SetHostApplication(XRCCTRL(*this, "txtHostApp", wxTextCtrl)->GetValue());
         }
     }
-
 	wxDialog::EndModal(retCode);
-}
+} // end of EndModal

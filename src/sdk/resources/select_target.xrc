@@ -30,9 +30,12 @@
         <border>8</border>
       </object>
       <object class="sizeritem">
-        <object class="wxTextCtrl" name="txtParams"/>
+        <object class="wxTextCtrl" name="txtParams">
+          <style>wxTE_MULTILINE</style>
+        </object>
         <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
         <border>8</border>
+        <minsize>240,70</minsize>
       </object>
       <object class="sizeritem">
         <object class="wxStaticText">
