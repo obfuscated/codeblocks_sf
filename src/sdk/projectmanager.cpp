@@ -1440,13 +1440,22 @@ void ProjectManager::RemoveProjectFromAllDependencies(cbProject* base)
 {
     if (!base)
         return;
-    DepsMap::iterator it = m_ProjectDeps.find(base);
+    DepsMap::iterator it = m_ProjectDeps.begin();
     while (it != m_ProjectDeps.end())
     {
+        if (it->first == base)
+        {
+            ++it;
+            continue;
+        }
+
         ProjectsArray* arr = it->second;
         // only check projects that do have a dependencies array
         if (!arr)
+        {
+            ++it;
             continue;
+        }
 
         arr->Remove(base);
         if (m_pWorkspace)
