@@ -21,9 +21,20 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-g" />
-			<Add option="-D__GNUWIN32__" />
-			<Add option="-DWXUSINGDLL" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option='-include &quot;sdk.h&quot;' />
 			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DTIXML_USE_STL" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />

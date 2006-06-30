@@ -23,6 +23,7 @@
 	#include <wx/wx.h>
 #endif
 
+#include <sdk.h>      // world headers
 #include <cbplugin.h> // the base class we 're inheriting
 #include <settings.h> // needed to use the Code::Blocks SDK
 
@@ -64,6 +65,7 @@
 
 
 // anchor to one and only DragScroll object
+class MyMouseEvents;
 class cbDragScrollCfg;
 
 // ----------------------------------------------------------------------------
@@ -114,6 +116,7 @@ class cbDragScroll : public cbPlugin
         void Detach(wxWindow* thisEditor);
         void DetachAll();
         void Attach(wxWindow *p);
+        void DisconnectEvtHandler(MyMouseEvents* thisEvtHandler);
 
         wxWindow* winExists(wxWindow *parent);
         wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
@@ -309,7 +312,31 @@ CB_DECLARE_PLUGIN();
 //          split window open/close. wxWindows nor CodeBlocks has events
 //          usable for the purpose.
 // ----------------------------------------------------------------------------
-//  commit  v0.24   2006/06/
+//  commit  v0.24   2006/06/14
 // ----------------------------------------------------------------------------
+//  closed  2006/06/16 open    2006/06/15
+//          MyMouseEvents are being leaked because of split windows. When the
+//          windows close, no event is sent to allow cleanup before Destroy()
+//          Deleting an eventHandler during Destroy() causes wxWidgets to crash.
+//
+//          Switched to runtime Connect/Disconnect/EVT_CREATE/EVT_DESTROY
+//          in order to stop leaks on split windows & pushed event handlers.
+// ----------------------------------------------------------------------------
+//  fixed   v 0.26 2006/06/29
+//          Broken by change in plugin interface 1.80
+//          Had to add the following to the project file
+//          Compile Options         #defines
+//          -Winvalid-pch           BUILDING_PLUGIN
+//          -pipe                   CB_PRECOMP
+//          -mthreads               WX_PRECOMP
+//          -fmessage-length=0      HAVE_W32API_H
+//          -fexceptions            __WXMSW__
+//          -include "sdk.h"        WXUSINGDLL
+//                                  cbDEBUG
+//                                  TIXML_USE_STL
+//                                  wxUSE_UNICODE
+// ----------------------------------------------------------------------------
+
+
 #endif // DRAGSCROLL_H
 
