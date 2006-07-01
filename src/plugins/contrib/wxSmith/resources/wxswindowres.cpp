@@ -191,11 +191,11 @@ bool wxsWindowRes::Load()
 
 void wxsWindowRes::Save()
 {
-    if ( !GetEditor() )
-    {
-        DBGLOG(_("wxSmith ERROR !!! Resource can be saved only when editor is opened"));
-    }
-
+//    if ( !GetEditor() )
+//    {
+//        DBGLOG(_("wxSmith ERROR !!! Resource can be saved only when editor is opened"));
+//    }
+//
     TiXmlDocument* Doc = GenerateXml();
 
     if ( Doc )

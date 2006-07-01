@@ -1,6 +1,6 @@
 <resource>
     <object class="wxDialog" name="wxsWizard">
-        <title>wxSmith project wizzard</title>
+        <title>wxSmith project wizard</title>
         <centered>1</centered>
         <style>wxDEFAULT_DIALOG_STYLE</style>
         <object class="wxFlexGridSizer" variable="MainSizer" member="yes">
@@ -149,7 +149,7 @@
                                         <border>5</border>
                                         <flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxCheckBox" name="ID_CHECKBOX1" variable="AddMenu" member="yes">
-                                            <label>Add simple menu</label>
+                                            <label>Add a simple menu</label>
                                             <checked>1</checked>
                                         </object>
                                     </object>
@@ -158,7 +158,7 @@
                                         <border>5</border>
                                         <flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxCheckBox" name="ID_CHECKBOX2" variable="AddStatus" member="yes">
-                                            <label>Add status bar</label>
+                                            <label>Add a status bar</label>
                                             <checked>1</checked>
                                         </object>
                                     </object>
@@ -176,7 +176,7 @@
                                         <border>5</border>
                                         <flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxCheckBox" name="ID_CHECKBOX4" variable="UseXrc" member="yes">
-                                            <label>Use XRC files</label>
+                                            <label>Create XRC resources</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
@@ -202,7 +202,7 @@
                         <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
                         <object class="wxStaticBoxSizer" variable="wxWidgetsConfig" member="yes">
                             <orient>wxVERTICAL</orient>
-                            <label>wxWigets library options</label>
+                            <label>wxWidgets library options</label>
                             <object class="sizeritem">
                                 <option>1</option>
                                 <flag>wxALIGN_CENTER|wxEXPAND</flag>
@@ -259,7 +259,7 @@
                                         <border>5</border>
                                         <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="no">
-                                            <label>wxWidgest dir:</label>
+                                            <label>wxWidgets dir:</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">

@@ -19,6 +19,9 @@ class wxsFrame : public wxsWindow
         /** Getting title */
         inline const wxString& GetTitle() { return Title; }
 
+        /** Setting title */
+        inline void SetTitle(const wxString& title) { Title = title; }
+
         /** Checking if it's centered */
         inline bool GetCentered() { return Centered; }
 

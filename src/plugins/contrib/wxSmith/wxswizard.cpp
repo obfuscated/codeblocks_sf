@@ -9,6 +9,8 @@
 #include <messagemanager.h>
 #include <annoyingdialog.h>
 #include "wxsmith.h"
+#include "resources/wxswindowres.h"
+#include "defwidgets/wxsframe.h"
 
 /* ************************************************************************** */
 /*  Flags for source file parts                                               */
@@ -512,8 +514,8 @@ wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id):
 	wxStaticText* StaticText6;
 	wxBoxSizer* BoxSizer4;
 	wxStaticText* StaticText7;
-	
-	Create(parent,id,_("wxSmith project wizzard"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE);
+
+	Create(parent,id,_("wxSmith project wizard"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE);
 	MainSizer = new wxFlexGridSizer(0,1,0,0);
 	FlexGridSizer2 = new wxFlexGridSizer(0,1,0,0);
 	FlexGridSizer2->AddGrowableCol(0);
@@ -556,14 +558,14 @@ wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id):
 	FlexGridSizer3->Add(UseCustomPrjDir,1,wxALL|wxALIGN_CENTER,5);
 	FlexGridSizer3->Add(BoxSizer2,1,wxALIGN_CENTER|wxEXPAND,0);
 	BoxSizer3 = new wxBoxSizer(wxVERTICAL);
-	AddMenu = new wxCheckBox(this,ID_CHECKBOX1,_("Add simple menu"),wxDefaultPosition,wxDefaultSize,0);
+	AddMenu = new wxCheckBox(this,ID_CHECKBOX1,_("Add a simple menu"),wxDefaultPosition,wxDefaultSize,0);
 	AddMenu->SetValue(true);
-	AddStatus = new wxCheckBox(this,ID_CHECKBOX2,_("Add status bar"),wxDefaultPosition,wxDefaultSize,0);
+	AddStatus = new wxCheckBox(this,ID_CHECKBOX2,_("Add a status bar"),wxDefaultPosition,wxDefaultSize,0);
 	AddStatus->SetValue(true);
 	AddAbout = new wxCheckBox(this,ID_CHECKBOX3,_("Create About dialog"),wxDefaultPosition,wxDefaultSize,0);
 	AddAbout->SetValue(false);
 	AddAbout->Hide();
-	UseXrc = new wxCheckBox(this,ID_CHECKBOX4,_("Use XRC files"),wxDefaultPosition,wxDefaultSize,0);
+	UseXrc = new wxCheckBox(this,ID_CHECKBOX4,_("Create XRC resources"),wxDefaultPosition,wxDefaultSize,0);
 	UseXrc->SetValue(false);
 	AddDesc = new wxCheckBox(this,ID_CHECKBOX5,_("Insert additional comments describing wxSmith\'s code"),wxDefaultPosition,wxDefaultSize,0);
 	AddDesc->SetValue(false);
@@ -574,7 +576,7 @@ wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id):
 	BoxSizer3->Add(AddDesc,1,wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
 	StaticBoxSizer1->Add(FlexGridSizer3,1,wxALIGN_CENTER|wxEXPAND,5);
 	StaticBoxSizer1->Add(BoxSizer3,0,wxTOP|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
-	wxWidgetsConfig = new wxStaticBoxSizer(wxVERTICAL,this,_("wxWigets library options"));
+	wxWidgetsConfig = new wxStaticBoxSizer(wxVERTICAL,this,_("wxWidgets library options"));
 	FlexGridSizer4 = new wxFlexGridSizer(0,2,0,0);
 	FlexGridSizer4->AddGrowableCol(1);
 	StaticText5 = new wxStaticText(this,ID_STATICTEXT5,_("Configuration mode:"),wxDefaultPosition,wxDefaultSize,0);
@@ -588,7 +590,7 @@ wxsWizard::wxsWizard(wxWindow* parent,wxWindowID id):
 	LibType->Append(_("DLL"));
 	LibType->Append(_("Static"));
 	LibType->SetSelection(0);
-	StaticText6 = new wxStaticText(this,ID_STATICTEXT6,_("wxWidgest dir:"),wxDefaultPosition,wxDefaultSize,0);
+	StaticText6 = new wxStaticText(this,ID_STATICTEXT6,_("wxWidgets dir:"),wxDefaultPosition,wxDefaultSize,0);
 	BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
 	WxDir = new wxTextCtrl(this,ID_TEXTCTRL4,_T(""),wxDefaultPosition,wxDefaultSize,0);
 	if ( 0 ) WxDir->SetMaxLength(0);
@@ -679,7 +681,7 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
         return;
     }
 
-    if ( !wxFileName::Mkdir(Dir,0777,wxPATH_MKDIR_FULL ) )
+    if ( !wxFileName::Mkdir(Dir,0755,wxPATH_MKDIR_FULL ) )
     {
         wxMessageBox(_("Couldn't create main project directory"));
         return;
@@ -832,6 +834,18 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
                 Resources.Add(_T("mainframe.xrc"));
                 wxsProj->SetAutoLoadedResources(Resources);
             }
+            wxsFrameRes* frameRes = (wxsFrameRes*)wxsProj->FindResource(_T("MainFrame"));
+            if ( frameRes )
+            {
+                frameRes->Load();
+                wxsFrame* frame = (wxsFrame*)frameRes->GetRootWidget();
+                if ( frame )
+                {
+                    frame->SetTitle(FrmTitle->GetValue());
+                }
+                frameRes->RebuildCode();
+                frameRes->Save();
+            }
             wxsProj->SetModified(true);
             wxsProj->RebuildTree();
         }
@@ -847,6 +861,7 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
             AnnoyingDialog::OK);
         dlg.ShowModal();
     }
+    Block = false;
     EndModal(0);
 }
 
