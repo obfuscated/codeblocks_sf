@@ -40,11 +40,15 @@ void RegisterTypes(DebuggerDriver@ driver)
 // result must contain the debugger's command when it returns.
 void Evaluate_wxString(const wxString& in type, const wxString& in a_str, uint start, uint count, wxString& out result)
 {
-    result = "output /c " + a_str + ".c_str()[" + start + "]@";
+    wxString oper = ".";
+    if (type.Find('*', false) > 0)
+        oper = "->";
+
+    result = "output /c " + a_str + oper + "c_str()[" + start + "]@";
     if (count != 0)
         result += count;
     else
-        result += a_str + ".size()";
+        result += a_str + oper + "size()";
 }
 
 // This function parses driver's output.
@@ -91,9 +95,10 @@ void Parse_wxString(const wxString& in a_str, uint start, wxString& out result)
 
 void Evaluate_StlString(const wxString& in type, const wxString& in a_str, uint start, uint count, wxString& out result)
 {
-	wxString oper = ".";
-	if (type.Find('*', false) > 0)
-		oper = "->";
+    wxString oper = ".";
+    if (type.Find('*', false) > 0)
+        oper = "->";
+
     result = "output " + a_str + oper + "c_str()[" + start + "]@";
     if (count != 0)
         result += count;
@@ -113,12 +118,16 @@ void Parse_StlString(const wxString& in a_str, uint start, wxString& out result)
 
 void Evaluate_StlVector(const wxString& in type, const wxString& in a_str, uint start, uint count, wxString& out result)
 {
+    wxString oper = ".";
+    if (type.Find('*', false) > 0)
+        oper = "->";
+
     wxString t = type.AfterFirst('<').BeforeFirst(',');
-    result = "output ((" + t + "*)" + a_str + ".begin())[" + start + "]@";
+    result = "output ((" + t + "*)" + a_str + oper + "begin())[" + start + "]@";
     if (count != 0)
         result += count;
     else
-        result += a_str + ".size() - " + start;
+        result += a_str + oper + "size() - " + start;
 }
 
 void Parse_StlVector(const wxString& in a_str, uint start, wxString& out result)
