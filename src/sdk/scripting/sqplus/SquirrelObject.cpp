@@ -92,6 +92,7 @@ BOOL SquirrelObject::SetDelegate(SquirrelObject &obj)
 					if(SQ_SUCCEEDED(sq_setdelegate(SquirrelVM::_VM,-2)))
 						return TRUE;
 					break;
+                default: break;
 			}
 		}
 	return FALSE;
@@ -362,7 +363,7 @@ BOOL SquirrelObject::GetSlot(INT key) const
 	if(SQ_SUCCEEDED(sq_get(SquirrelVM::_VM,-2))) {
 		return TRUE;
 	}
-	
+
 	return FALSE;
 }
 
@@ -441,7 +442,7 @@ BOOL SquirrelObject::GetSlot(const SQChar *name) const
 	if(SQ_SUCCEEDED(sq_get(SquirrelVM::_VM,-2))) {
 		return TRUE;
 	}
-	
+
 	return FALSE;
 }
 

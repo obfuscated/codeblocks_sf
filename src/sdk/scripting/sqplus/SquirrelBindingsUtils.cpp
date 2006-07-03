@@ -29,6 +29,7 @@ BOOL CreateStaticNamespace(HSQUIRRELVM v,ScriptNamespaceDecl *sn)
 		case OT_STRING: sq_pushstring(v,c->val.s,-1);break;
 		case OT_INTEGER: sq_pushinteger(v,c->val.i);break;
 		case OT_FLOAT: sq_pushfloat(v,c->val.f);break;
+		default: break;
 		}
 		sq_createslot(v,-3);
 		n++;
@@ -50,7 +51,7 @@ BOOL CreateStaticNamespace(HSQUIRRELVM v,ScriptNamespaceDecl *sn)
 	}
 	sq_createslot(v,-3);
 	sq_pop(v,1);
-	
+
 	return TRUE;
 }
 
@@ -72,7 +73,7 @@ BOOL CreateClass(HSQUIRRELVM v,SquirrelClassDecl *cd)
 		return FALSE;
 	}
 //  sq_settypetag(v,-1,(unsigned int)cd);
-#ifdef _WIN32
+#if defined(_WIN32) && defined(_MSC_VER)
 #pragma warning(disable : 4311)
 #endif
 	sq_settypetag(v,-1,reinterpret_cast<SQUserPointer>(cd));

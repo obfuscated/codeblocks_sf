@@ -93,7 +93,7 @@ static int setVar(StackHandler & sa,VarRef * vr,void * data) {
     break;
   } // case
   case VAR_TYPE_INSTANCE: {
-    HSQUIRRELVM v = sa.GetVMPtr();
+    //HSQUIRRELVM v = sa.GetVMPtr();
     // vr->copyFunc is the LHS variable type: the RHS var's type is ClassType<>::type() (both point to ClassType<>::copy()).
     // src will be null if the LHS and RHS types don't match.
     SQUserPointer src = sa.GetInstanceUp(3,(SQUserPointer)vr->copyFunc); // Effectively performs: ClassType<>::type() == ClassType<>getCopyFunc().
@@ -127,6 +127,7 @@ static int setVar(StackHandler & sa,VarRef * vr,void * data) {
     } // if
     break;
   } // case
+  default: break;
   } // switch
   return SQ_ERROR;
 } // setVar
@@ -198,6 +199,7 @@ static int getVar(StackHandler & sa,VarRef * vr,void * data) {
     } // if
     break;
   } // case
+  default: break;
   } // switch
   return SQ_ERROR;
 } // getVar
@@ -255,7 +257,7 @@ SQInteger getInstanceVarFunc(HSQUIRRELVM v) {
 // === Classes ===
 
 BOOL CreateClass(HSQUIRRELVM v,SquirrelObject & newClass,SQUserPointer classType,const SQChar * name,const SQChar * baseName) {
-  int n = 0;
+  //int n = 0;
   int oldtop = sq_gettop(v);
   sq_pushroottable(v);
   sq_pushstring(v,name,-1);
