@@ -24,7 +24,7 @@ WXS_EV_END(wxsSpinCtrlEvents)
 
 
 wxsDWDefineBegin(wxsSpinCtrl,wxSpinCtrl,
-        WXS_THIS = new wxSpinCtrl(WXS_PARENT,WXS_ID,value,WXS_POS,WXS_SIZE,WXS_STYLE,min,max);
+        WXS_THIS = new wxSpinCtrl(WXS_PARENT,WXS_ID,value,WXS_POS,WXS_SIZE,WXS_STYLE,min,max,0,WXS_NAME);
     )
     wxsDWDefStr(value,"Default:","0");
     wxsDWDefInt(min,"Min:",0)

@@ -47,6 +47,6 @@ WXS_EV_BEGIN(wxsListCtrlEvents)
 WXS_EV_END(wxsListCtrlEvents)
 
 wxsDWDefineBegin(wxsListCtrl,wxListCtrl,
-        WXS_THIS = new wxListCtrl(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,WXS_STYLE);
+        WXS_THIS = new wxListCtrl(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,WXS_STYLE,wxDefaultValidator,WXS_NAME);
     )
 wxsDWDefineEnd()

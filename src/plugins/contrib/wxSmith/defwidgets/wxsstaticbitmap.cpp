@@ -15,12 +15,12 @@ WXS_EV_END(wxsStaticBitmapEvents)
 wxsDWDefineBegin(wxsStaticBitmapBase,wxStaticBitmap,
         if(BaseProperties.SizeX==-1&&BaseProperties.SizeY==-1){
          if(ImageFile.IsEmpty())
-           WXS_THIS = new wxStaticBitmap(WXS_PARENT,WXS_ID,wxBitmap(wxNullBitmap),WXS_POS,WXS_SIZE,WXS_STYLE);
+           WXS_THIS = new wxStaticBitmap(WXS_PARENT,WXS_ID,wxBitmap(wxNullBitmap),WXS_POS,WXS_SIZE,WXS_STYLE,WXS_NAME);
          else
-           WXS_THIS = new wxStaticBitmap(WXS_PARENT,WXS_ID,wxBitmap(wxImage(ImageFile)),WXS_POS,WXS_SIZE,WXS_STYLE);
+           WXS_THIS = new wxStaticBitmap(WXS_PARENT,WXS_ID,wxBitmap(wxImage(ImageFile)),WXS_POS,WXS_SIZE,WXS_STYLE,WXS_NAME);
         }
         else
-           WXS_THIS = new wxStaticBitmap(WXS_PARENT,WXS_ID,wxBitmap(wxImage(ImageFile).Rescale(BaseProperties.SizeX,BaseProperties.SizeY)),WXS_POS,WXS_SIZE,WXS_STYLE);
+           WXS_THIS = new wxStaticBitmap(WXS_PARENT,WXS_ID,wxBitmap(wxImage(ImageFile).Rescale(BaseProperties.SizeX,BaseProperties.SizeY)),WXS_POS,WXS_SIZE,WXS_STYLE,WXS_NAME);
         )
     wxsDWDefAdvImageX(ImageFile, "bitmap","Image", "");
 wxsDWDefineEnd()
@@ -44,16 +44,17 @@ wxString wxsStaticBitmap::GetProducingCode(const wxsCodeParams& Params)
     wxString Code;
 
     if(ImageFile.IsEmpty())
-        Code.Printf(_T("%s = new wxStaticBitmap(%s,%s,wxNullBitmap,%s,%s,%s);\n"),
+        Code.Printf(_T("%s = new wxStaticBitmap(%s,%s,wxNullBitmap,%s,%s,%s,%s);\n"),
             Params.VarName.c_str(),
             Params.ParentName.c_str(),
             Params.IdName.c_str(),
             Params.Pos.c_str(),
             Params.Size.c_str(),
-            Params.Style.c_str());
+            Params.Style.c_str(),
+            Params.Name.c_str());
 
     else
-    Code.Printf(_T("%s = new wxStaticBitmap(%s,%s,wxBitmap(wxImage(%s)%s),%s,%s,%s);\n"),
+    Code.Printf(_T("%s = new wxStaticBitmap(%s,%s,wxBitmap(wxImage(%s)%s),%s,%s,%s,%s);\n"),
             Params.VarName.c_str(),
             Params.ParentName.c_str(),
             Params.IdName.c_str(),
@@ -61,7 +62,8 @@ wxString wxsStaticBitmap::GetProducingCode(const wxsCodeParams& Params)
             SizeCode.c_str(),
             Params.Pos.c_str(),
             Params.Size.c_str(),
-            Params.Style.c_str());
+            Params.Style.c_str(),
+            Params.Name.c_str());
 
     Code << Params.InitCode;
 
@@ -73,11 +75,11 @@ wxWindow* wxsStaticBitmap::MyCreatePreview(wxWindow* Parent)
     wxStaticBitmap* StaticBitmap;
 
     if(ImageFile.IsEmpty())
-        StaticBitmap = new wxStaticBitmap(Parent,-1,wxBitmap(wxNullBitmap),GetPosition(),GetSize(),GetStyle());
+        StaticBitmap = new wxStaticBitmap(Parent,GetId(),wxBitmap(wxNullBitmap),GetPosition(),GetSize(),GetStyle(),GetName());
     else if(BaseProperties.SizeX==-1 && BaseProperties.SizeY==-1)
-        StaticBitmap = new wxStaticBitmap(Parent,-1,wxBitmap(wxImage(ImageFile)),GetPosition(),GetSize(),GetStyle());
+        StaticBitmap = new wxStaticBitmap(Parent,GetId(),wxBitmap(wxImage(ImageFile)),GetPosition(),GetSize(),GetStyle(),GetName());
     else
-        StaticBitmap = new wxStaticBitmap(Parent,-1,wxBitmap(wxImage(ImageFile).Rescale(BaseProperties.SizeX,BaseProperties.SizeY)),GetPosition(),GetSize(),GetStyle());
+        StaticBitmap = new wxStaticBitmap(Parent,GetId(),wxBitmap(wxImage(ImageFile).Rescale(BaseProperties.SizeX,BaseProperties.SizeY)),GetPosition(),GetSize(),GetStyle(),GetName());
 
     PreviewApplyDefaults(StaticBitmap);
     return StaticBitmap;

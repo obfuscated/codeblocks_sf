@@ -15,7 +15,7 @@ WXS_EV_BEGIN(wxsGaugeEvents)
 WXS_EV_END(wxsGaugeEvents)
 
 wxsDWDefineBegin(wxsGauge,wxGauge,
-    WXS_THIS = new wxGauge(WXS_PARENT,WXS_ID,range,WXS_POS,WXS_SIZE,WXS_STYLE);
+    WXS_THIS = new wxGauge(WXS_PARENT,WXS_ID,range,WXS_POS,WXS_SIZE,WXS_STYLE,wxDefaultValidator,WXS_NAME);
     if ( value ) WXS_THIS->SetValue(value);
     if ( shadow ) WXS_THIS->SetShadowWidth(shadow);
     if ( bezel ) WXS_THIS->SetBezelFace(bezel);

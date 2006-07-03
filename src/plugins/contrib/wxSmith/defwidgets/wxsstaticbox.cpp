@@ -27,7 +27,7 @@ WXS_EV_BEGIN(wxsStaticBoxEvents)
 WXS_EV_END(wxsStaticBoxEvents)
 
 wxsDWDefineBegin(wxsStaticBox,wxStaticBox,
-    WXS_THIS = new wxStaticBox(WXS_PARENT,WXS_ID,label,WXS_POS,WXS_SIZE,WXS_STYLE);
+    WXS_THIS = new wxStaticBox(WXS_PARENT,WXS_ID,label,WXS_POS,WXS_SIZE,WXS_STYLE,WXS_NAME);
     )
     wxsDWDefLongStr(label,"Label:","Label");
 wxsDWDefineEnd()

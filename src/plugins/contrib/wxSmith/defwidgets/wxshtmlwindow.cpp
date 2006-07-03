@@ -18,7 +18,7 @@ WXS_EV_BEGIN(wxsHtmlWindowEvents)
 WXS_EV_END(wxsHtmlWindowEvents)
 
 wxsDWDefineBegin(wxsHtmlWindowBase,wxHtmlWindow,
-    WXS_THIS = new wxHtmlWindow(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,WXS_STYLE);
+    WXS_THIS = new wxHtmlWindow(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,WXS_STYLE,WXS_NAME);
     )
     wxsDWDefInt(borders,"Borders:",0);
     wxsDWDefStr(url,"Url:","");
@@ -43,7 +43,7 @@ wxWindow* wxsHtmlWindow::MyCreatePreview(wxWindow* Parent)
     {
         Wnd->SetPage(htmlcode);
     }
-    
+
     return Wnd;
 }
 
@@ -73,7 +73,7 @@ bool wxsHtmlWindow::MyXmlSave()
 wxString wxsHtmlWindow::GetProducingCode(const wxsCodeParams& Params)
 {
     wxString Code;
-    
+
     Code.Printf(_T("%s = new wxHtmlWindow(%s,%s,%s,%s,%s);\n"),
         Params.VarName.c_str(),
         Params.ParentName.c_str(),
@@ -81,7 +81,7 @@ wxString wxsHtmlWindow::GetProducingCode(const wxsCodeParams& Params)
         Params.Pos.c_str(),
         Params.Size.c_str(),
         Params.Style.c_str());
-        
+
     if ( borders )
     {
         Code << wxString::Format(_T("%s->SetBorders(%d);\n"),
@@ -100,8 +100,8 @@ wxString wxsHtmlWindow::GetProducingCode(const wxsCodeParams& Params)
                 Params.VarName.c_str(),
                 wxsGetWxString(htmlcode).c_str());
     }
-    
+
     Code << Params.InitCode;
-    
+
     return Code;
 }

@@ -51,6 +51,7 @@ wxString wxsDefWidget::GetProducingCode(const wxsCodeParams& Params)
     wxsCodeReplace(CodeResult,_T("WXS_ID"),Params.IdName);
     wxsCodeReplace(CodeResult,_T("WXS_THIS"),Params.VarName);
     wxsCodeReplace(CodeResult,_T("WXS_PARENT"),Params.ParentName);
+    wxsCodeReplace(CodeResult,_T("WXS_NAME"),Params.Name);
 
     // Applying default initializing code
 

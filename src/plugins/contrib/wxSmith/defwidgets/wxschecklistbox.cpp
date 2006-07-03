@@ -28,13 +28,14 @@ wxsDWDefineEnd()
 wxString wxsCheckListBox::GetProducingCode(const wxsCodeParams& Params)
 {
     wxString Code;
-    Code.Printf(_T("%s = new wxCheckListBox(%s,%s,%s,%s,0,NULL,%s);\n"),
+    Code.Printf(_T("%s = new wxCheckListBox(%s,%s,%s,%s,0,NULL,%s,wxDefaultValidator,%s);\n"),
         Params.VarName.c_str(),
         Params.ParentName.c_str(),
         Params.IdName.c_str(),
         Params.Pos.c_str(),
         Params.Size.c_str(),
-        Params.Style.c_str());
+        Params.Style.c_str(),
+        Params.Name.c_str());
 
     for ( size_t i = 0; i < arrayChoices.Count(); ++i )
     {
@@ -58,7 +59,7 @@ wxString wxsCheckListBox::GetProducingCode(const wxsCodeParams& Params)
 wxWindow* wxsCheckListBox::MyCreatePreview(wxWindow* Parent)
 {
     wxCheckListBox* Wnd = new wxCheckListBox(
-        Parent,-1L,GetPosition(),GetSize(),0,NULL,GetStyle());
+        Parent,-1L,GetPosition(),GetSize(),0,NULL,GetStyle(),wxDefaultValidator,GetName());
 
     for ( size_t i = 0; i < arrayChoices.Count(); ++i )
     {

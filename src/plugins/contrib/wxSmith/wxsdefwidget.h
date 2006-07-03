@@ -55,10 +55,11 @@
     wxWindow* Name::MyCreatePreview(wxWindow* WXS_PARENT)                   \
     {                                                                       \
         WidgetName* WXS_THIS;                                               \
-        wxWindowID WXS_ID = -1;                                             \
+        wxWindowID WXS_ID = GetId();                                        \
         wxPoint WXS_POS = GetPosition();                                    \
         wxSize WXS_SIZE = GetSize();                                        \
         long WXS_STYLE = GetStyle();                                        \
+        wxString WXS_NAME = GetName();                                      \
         Code;                                                               \
         PreviewApplyDefaults(WXS_THIS);                                     \
         return WXS_THIS;                                                    \

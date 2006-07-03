@@ -1,5 +1,6 @@
 #include "wxsheaders.h"
 #include "widget.h"
+#include "wxspredefinedids.h"
 
 #include "properties/wxsstyleproperty.h"
 #include "properties/wxscolourproperty.h"
@@ -913,6 +914,7 @@ void wxsWidget::BuildCodeParams(wxsCodeParams& Params)
 {
     Params.VarName = BaseProperties.VarName;
     Params.IdName = BaseProperties.IdName;
+    Params.Name = wxsGetWxString(GetName());
 
     Params.Style = _T("");
     Params.InitCode = _T("");
@@ -1519,4 +1521,16 @@ void wxsWidget::SetSelection(wxsWidget* Selection)
     {
         GetChild(i)->SetSelection(Selection);
     }
+}
+
+int wxsWidget::GetId()
+{
+    for ( int i=0; i<wxsPredefinedIdsCount; i++ )
+    {
+        if ( BaseProperties.IdName == wxsPredefinedIds[i] )
+        {
+            return wxsPredefinedIdsValues[i];
+        }
+    }
+    return -1;
 }

@@ -13,7 +13,7 @@ WXS_EV_BEGIN(wxsChoiceEvents)
 WXS_EV_END(wxsChoiceEvents)
 
 wxsDWDefineBegin(wxsChoiceBase,wxChoice,
-        WXS_THIS = new wxChoice(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,0,0,WXS_STYLE);
+        WXS_THIS = new wxChoice(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,0,0,WXS_STYLE,wxDefaultValidator,WXS_NAME);
 	)
 
     wxsDWDefIntX(defaultChoice,"selection","",-1)
@@ -23,7 +23,7 @@ wxsDWDefineEnd()
 
 wxWindow* wxsChoice::MyCreatePreview(wxWindow* Parent)
 {
-    wxChoice* Combo = new wxChoice(Parent,-1,GetPosition(),GetSize(),arrayChoices,GetStyle());
+    wxChoice* Combo = new wxChoice(Parent,GetId(),GetPosition(),GetSize(),arrayChoices,GetStyle(),wxDefaultValidator,GetName());
     if ( defaultChoice >= 0 && defaultChoice < (int)arrayChoices.Count() )
     {
         Combo->SetSelection(defaultChoice);
@@ -35,13 +35,14 @@ wxWindow* wxsChoice::MyCreatePreview(wxWindow* Parent)
 wxString wxsChoice::GetProducingCode(const wxsCodeParams& Params)
 {
     wxString Code;
-    Code.Printf(_T("%s = new wxChoice(%s,%s,%s,%s,0,NULL,%s);\n"),
+    Code.Printf(_T("%s = new wxChoice(%s,%s,%s,%s,0,NULL,%s,wxDefaultValidator,%s);\n"),
             Params.VarName.c_str(),
             Params.ParentName.c_str(),
             Params.IdName.c_str(),
             Params.Pos.c_str(),
             Params.Size.c_str(),
-            Params.Style.c_str());
+            Params.Style.c_str(),
+            Params.Name.c_str());
     for ( size_t i = 0; i <  arrayChoices.Count(); ++i )
     {
         Code << wxString::Format(_T("%s->Append(%s);\n"),

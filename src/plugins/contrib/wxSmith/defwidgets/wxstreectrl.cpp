@@ -55,7 +55,7 @@ WXS_EV_END(wxsTreeCtrlEvents)
 
 wxsDWDefineBegin(wxsTreeCtrl,wxTreeCtrl,
 
-    WXS_THIS = new wxTreeCtrl(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,WXS_STYLE);
+    WXS_THIS = new wxTreeCtrl(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,WXS_STYLE,wxDefaultValidator,WXS_NAME);
     )
 
 wxsDWDefineEnd()

@@ -24,7 +24,7 @@ WXS_EV_END(wxsComboBoxEvents)
 
 
 wxsDWDefineBegin(wxsComboBoxBase,wxComboBox,
-        WXS_THIS = new wxComboBox(WXS_PARENT,WXS_ID,_T(""),WXS_POS,WXS_SIZE,0,0,WXS_STYLE);
+        WXS_THIS = new wxComboBox(WXS_PARENT,WXS_ID,_T(""),WXS_POS,WXS_SIZE,0,0,WXS_STYLE,wxDefaultValidator,WXS_NAME);
 	)
 
     wxsDWDefIntX(defaultChoice,"selection","",-1)
@@ -34,7 +34,7 @@ wxsDWDefineEnd()
 
 wxWindow* wxsComboBox::MyCreatePreview(wxWindow* Parent)
 {
-    wxComboBox* Combo = new wxComboBox(Parent,-1,_T(""),GetPosition(),GetSize(),arrayChoices,GetStyle());
+    wxComboBox* Combo = new wxComboBox(Parent,-1,_T(""),GetPosition(),GetSize(),arrayChoices,GetStyle(),wxDefaultValidator,GetName());
     if ( defaultChoice >= 0 && defaultChoice < (int)arrayChoices.Count() )
     {
         Combo->SetSelection(defaultChoice);
@@ -46,13 +46,14 @@ wxWindow* wxsComboBox::MyCreatePreview(wxWindow* Parent)
 wxString wxsComboBox::GetProducingCode(const wxsCodeParams& Params)
 {
     wxString Code;
-    Code.Printf(_T("%s = new wxComboBox(%s,%s,_T(\"\"),%s,%s,0,NULL,%s);\n"),
+    Code.Printf(_T("%s = new wxComboBox(%s,%s,_T(\"\"),%s,%s,0,NULL,%s,wxDefaultValidator,%s);\n"),
             Params.VarName.c_str(),
             Params.ParentName.c_str(),
             Params.IdName.c_str(),
             Params.Pos.c_str(),
             Params.Size.c_str(),
-            Params.Style.c_str());
+            Params.Style.c_str(),
+            Params.Name.c_str());
     for ( size_t i = 0; i <  arrayChoices.Count(); ++i )
     {
         Code << wxString::Format(_T("%s->Append(%s);\n"),

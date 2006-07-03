@@ -42,7 +42,7 @@ WXS_EV_BEGIN(wxsSliderEvents)
 //    WXS_EV(EVT_SCROLL_THUMBTRACK,wxScrollEvent,ScrollThumbTrack)
 //    WXS_EV(EVT_SCROLL_THUMBRELEASE,wxScrollEvent,ScrollThumbTrackRelease)
 //    WXS_EV(EVT_SCROLL_CHANGED,wxScrollEvent,ScrollChanged)
-    WXS_EVI(EVT_COMMAND_SCROLL,wxScrollEvent,CmdScroll) 
+    WXS_EVI(EVT_COMMAND_SCROLL,wxScrollEvent,CmdScroll)
     WXS_EVI(EVT_COMMAND_SCROLL_TOP,wxScrollEvent,CmdScrollTop)
     WXS_EVI(EVT_COMMAND_SCROLL_BOTTOM,wxScrollEvent,CmdScrollBottom)
     WXS_EVI(EVT_COMMAND_SCROLL_LINEUP,wxScrollEvent,CmdScrollLineUp)
@@ -56,7 +56,7 @@ WXS_EV_BEGIN(wxsSliderEvents)
 WXS_EV_END(wxsSliderEvents)
 
 wxsDWDefineBegin(wxsSlider,wxSlider,
-    WXS_THIS = new wxSlider(WXS_PARENT,WXS_ID,value,min,max,WXS_POS,WXS_SIZE,WXS_STYLE);
+    WXS_THIS = new wxSlider(WXS_PARENT,WXS_ID,value,min,max,WXS_POS,WXS_SIZE,WXS_STYLE,wxDefaultValidator,WXS_NAME);
     if ( tickfreq ) WXS_THIS->SetTickFreq(tickfreq,0);
     if ( pagesize ) WXS_THIS->SetPageSize(pagesize);
     if ( linesize ) WXS_THIS->SetLineSize(linesize);

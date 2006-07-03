@@ -37,13 +37,14 @@ const wxsWidgetInfo& wxsPanel::GetInfo()
 
 wxString wxsPanel::GetProducingCode(const wxsCodeParams& Params)
 {
-    return wxString::Format(_T("%s = new wxPanel(%s,%s,%s,%s,%s);\n%s"),
+    return wxString::Format(_T("%s = new wxPanel(%s,%s,%s,%s,%s,%s);\n%s"),
         Params.VarName.c_str(),
         Params.ParentName.c_str(),
         Params.IdName.c_str(),
         Params.Pos.c_str(),
         Params.Size.c_str(),
         Params.Style.c_str(),
+        Params.Name.c_str(),
         Params.InitCode.c_str()
         );
 }
@@ -76,7 +77,8 @@ const wxsWidgetInfo& wxsPanelr::GetInfo()
 
 wxString wxsPanelr::GetProducingCode(const wxsCodeParams& Params)
 {
-    return wxString::Format(_T("Create(parent,id,%s,%s,%s);%s"),
+    return wxString::Format(_T("Create(parent,id,%s,%s,%s,%s);%s"),
         Params.Pos.c_str(),Params.Size.c_str(),
-        Params.Style.c_str(),Params.InitCode.c_str());
+        Params.Style.c_str(),Params.Name.c_str(),
+        Params.InitCode.c_str());
 }

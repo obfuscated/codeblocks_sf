@@ -91,7 +91,7 @@ int wxsChoicebook::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
 
 wxWindow* wxsChoicebook::MyCreatePreview(wxWindow* Parent)
 {
-	wxChoicebook* Choicebook = new wxChoicebook(Parent,-1,GetPosition(),GetSize(),GetStyle());
+	wxChoicebook* Choicebook = new wxChoicebook(Parent,-1,GetPosition(),GetSize(),GetStyle(),GetName());
 	if ( GetChildCount() == 0 )
 	{
 	    // Adding additional empty page
@@ -116,13 +116,14 @@ void wxsChoicebook::MyFinalUpdatePreview(wxWindow* Preview)
 wxString wxsChoicebook::GetProducingCode(const wxsCodeParams& Params)
 {
 	return wxString::Format(
-        _T("%s = new wxChoicebook(%s,%s,%s,%s,%s);"),
+        _T("%s = new wxChoicebook(%s,%s,%s,%s,%s,%s);"),
             Params.VarName.c_str(),
             Params.ParentName.c_str(),
             Params.IdName.c_str(),
             Params.Pos.c_str(),
             Params.Size.c_str(),
-            Params.Style.c_str());
+            Params.Style.c_str(),
+            Params.Name.c_str());
 }
 
 wxString wxsChoicebook::GetFinalizingCode(const wxsCodeParams& Params)

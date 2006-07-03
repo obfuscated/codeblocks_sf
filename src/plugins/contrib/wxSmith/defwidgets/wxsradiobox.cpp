@@ -23,7 +23,7 @@ WXS_EV_END(wxsRadioBoxEvents)
 //wxRadioBox(wxWindow* parent, wxWindowID id, const wxString& label, const wxPoint& point = wxDefaultPosition, const wxSize& size = wxDefaultSize, int n = 0, const wxString choices[] = NULL, int majorDimension = 0, long style = wxRA_SPECIFY_COLS, const wxValidator& validator = wxDefaultValidator, const wxString& name = "radioBox")
 
 wxsDWDefineBegin(wxsRadioBoxBase,wxRadioBox,
-    WXS_THIS = new wxRadioBox(WXS_PARENT,WXS_ID,_T(""),WXS_POS,WXS_SIZE,0,NULL,1,WXS_STYLE);
+    WXS_THIS = new wxRadioBox(WXS_PARENT,WXS_ID,_T(""),WXS_POS,WXS_SIZE,0,NULL,1,WXS_STYLE,wxDefaultValidator,WXS_NAME);
     )
 
     wxsDWDefStr(label,"Label:","");
@@ -35,7 +35,7 @@ wxsDWDefineEnd()
 wxWindow* wxsRadioBox::MyCreatePreview(wxWindow* Parent)
 {
 	if ( dimension < 1 ) dimension = 1;
-    wxRadioBox* Preview =  new wxRadioBox(Parent,-1,label,
+    wxRadioBox* Preview =  new wxRadioBox(Parent,GetId(),label,
         GetPosition(),GetSize(),arrayChoices,dimension,GetStyle());
 	if ( defaultChoice >= 0 ) Preview->SetSelection(defaultChoice);
 	PreviewApplyDefaults(Preview);
@@ -47,7 +47,7 @@ wxString wxsRadioBox::GetProducingCode(const wxsCodeParams& Params)
 	if ( dimension < 1 ) dimension = 1;
 	if ( arrayChoices.Count() == 0 )
 	{
-		return wxString::Format(_T("%s = new wxRadioBox(%s,%s,%s,%s,%s,0,NULL,%d,%s);"),
+		return wxString::Format(_T("%s = new wxRadioBox(%s,%s,%s,%s,%s,0,NULL,%d,%s,%s);"),
             Params.VarName.c_str(),
             Params.ParentName.c_str(),
             Params.IdName.c_str(),
@@ -55,7 +55,8 @@ wxString wxsRadioBox::GetProducingCode(const wxsCodeParams& Params)
             Params.Pos.c_str(),
             Params.Size.c_str(),
             dimension,
-            Params.Style.c_str());
+            Params.Style.c_str(),
+            Params.Name.c_str());
 	}
 
 	wxString Code;

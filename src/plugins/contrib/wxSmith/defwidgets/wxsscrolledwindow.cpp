@@ -40,13 +40,14 @@ const wxsWidgetInfo& wxsScrolledWindow::GetInfo()
 
 wxString wxsScrolledWindow::GetProducingCode(const wxsCodeParams& Params)
 {
-    return wxString::Format(_T("%s = new wxScrolledWindow(%s,%s,%s,%s,%s);\n%s"),
+    return wxString::Format(_T("%s = new wxScrolledWindow(%s,%s,%s,%s,%s,%s);\n%s"),
         Params.VarName.c_str(),
         Params.ParentName.c_str(),
         Params.IdName.c_str(),
         Params.Pos.c_str(),
         Params.Size.c_str(),
         Params.Style.c_str(),
+        Params.Name.c_str(),
         Params.InitCode.c_str()
         );
 }

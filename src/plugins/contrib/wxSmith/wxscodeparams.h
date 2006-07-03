@@ -11,7 +11,8 @@ struct wxsCodeParams
     wxString Size;                  ///< Widget's size (usually in form "wxSize(x,y)" but may be "wxDefaultSize")
     wxString InitCode;              ///< Code initializing Enabled / Focused / Hidden flags, Colours, ToolTip and Font, should be added at the end of standard initialization
     wxString ParentName;            ///< Name of parent widget (the one which may be passed to widget constructor)
-    
+    wxString Name;                  ///< Name (used as name in constructor)
+
     bool IsDirectParent;            ///< False when parent item in resource tree is sizer or something that's not real widget
     int UniqueNumber;               ///< Unique number, it's granted that it will be different for any resource item (in one resource)
 };

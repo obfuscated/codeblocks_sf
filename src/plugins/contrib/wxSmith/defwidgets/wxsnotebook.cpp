@@ -121,13 +121,14 @@ void wxsNotebook::MyFinalUpdatePreview(wxWindow* Preview)
 wxString wxsNotebook::GetProducingCode(const wxsCodeParams& Params)
 {
 	return wxString::Format(
-        _T("%s = new wxNotebook(%s,%s,%s,%s,%s);"),
+        _T("%s = new wxNotebook(%s,%s,%s,%s,%s,%s);"),
         Params.VarName.c_str(),
         Params.ParentName.c_str(),
         Params.IdName.c_str(),
         Params.Pos.c_str(),
         Params.Size.c_str(),
-        Params.Style.c_str());
+        Params.Style.c_str(),
+        Params.Name.c_str());
 }
 
 wxString wxsNotebook::GetFinalizingCode(const wxsCodeParams& Params)

@@ -23,7 +23,7 @@ WXS_EV_END(wxsDatePickerCtrlEvents)
 
 wxsDWDefineBegin(wxsDatePickerCtrl,wxDatePickerCtrl,
 
-    WXS_THIS = new wxDatePickerCtrl(WXS_PARENT,WXS_ID,wxDefaultDateTime,WXS_POS,WXS_SIZE,WXS_STYLE);
+    WXS_THIS = new wxDatePickerCtrl(WXS_PARENT,WXS_ID,wxDefaultDateTime,WXS_POS,WXS_SIZE,WXS_STYLE,wxDefaultValidator,WXS_NAME);
     )
   // Temporary Commented for further action
   // wxsDWDefDate(label,"Label:","");

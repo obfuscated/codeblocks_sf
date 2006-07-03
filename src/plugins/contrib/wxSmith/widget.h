@@ -237,6 +237,12 @@ class wxsWidget
                 wxSize(BaseProperties.SizeX,BaseProperties.SizeY);
         }
 
+        /** Getting window identifier */
+        int GetId();
+
+        /** Getting name (used in constructor) */
+        inline const wxString& GetName() { return BaseProperties.IdName; }
+
     protected:
 
         /** This function should create properties editor for this widget

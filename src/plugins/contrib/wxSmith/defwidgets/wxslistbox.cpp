@@ -28,7 +28,7 @@ WXS_EV_END(wxsListBoxEvents)
 
 
 wxsDWDefineBegin(wxsListBox,wxListBox,
-        WXS_THIS = new wxListBox(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,0,0,WXS_STYLE);
+        WXS_THIS = new wxListBox(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,0,0,WXS_STYLE,wxDefaultValidator,WXS_NAME);
         wxsDWAddStrings(arrayChoices,WXS_THIS);
         wxsDWSelectString(arrayChoices,defaultChoice,WXS_THIS);
     )

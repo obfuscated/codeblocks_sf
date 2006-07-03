@@ -13,7 +13,7 @@ WXS_EV_BEGIN(wxsToggleButtonEvents)
 WXS_EV_END(wxsToggleButtonEvents)
 
 wxsDWDefineBegin(wxsToggleButton,wxToggleButton,
-    WXS_THIS = new wxToggleButton(WXS_PARENT,WXS_ID,label,WXS_POS,WXS_SIZE,WXS_STYLE);
+    WXS_THIS = new wxToggleButton(WXS_PARENT,WXS_ID,label,WXS_POS,WXS_SIZE,WXS_STYLE,wxDefaultValidator,WXS_NAME);
     WXS_THIS->SetValue(checked);
     )
     wxsDWDefLongStr(label,"Label:","Label");

@@ -15,7 +15,7 @@ WXS_EV_END(wxsStaticLineEvents)
 
 
 wxsDWDefineBegin(wxsStaticLineBase,wxStaticLine,
-     WXS_THIS = new wxStaticLine(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,WXS_STYLE);
+     WXS_THIS = new wxStaticLine(WXS_PARENT,WXS_ID,WXS_POS,WXS_SIZE,WXS_STYLE,WXS_NAME);
     )
 wxsDWDefineEnd()
 

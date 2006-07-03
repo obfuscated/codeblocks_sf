@@ -17,7 +17,7 @@ wxsCustomWidget::wxsCustomWidget(wxsWidgetManager* Man,wxsWindowRes* Res):
     ChangeBPT(wxsREMFile,propCustomF);
     ChangeBPT(wxsREMMixed,propCustomM);
     ClassName = _("CustomClass");
-    CreatingCode = _T("$(THIS) = new $(CLASS)($(PARENT),$(ID),$(POS),$(SIZE),$(STYLE));");
+    CreatingCode = _T("$(THIS) = new $(CLASS)($(PARENT),$(ID),$(POS),$(SIZE),$(STYLE),wxDefaultValidator,$(NAME));");
     Style = _T("0");
 }
 
@@ -38,6 +38,7 @@ wxString wxsCustomWidget::GetProducingCode(const wxsCodeParams& Params)
     wxsCodeReplace(Result,_T("$(ID)"),Params.IdName);
     wxsCodeReplace(Result,_T("$(THIS)"),Params.VarName);
     wxsCodeReplace(Result,_T("$(PARENT)"),Params.ParentName);
+    wxsCodeReplace(Result,_T("$(NAME)"),Params.Name);
     wxsCodeReplace(Result,_T("$(CLASS)"),ClassName);
     Result << Params.InitCode;
     return Result;

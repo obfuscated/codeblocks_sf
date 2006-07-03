@@ -25,6 +25,6 @@ WXS_EV_BEGIN(wxsCalendarCtrlEvents)
 WXS_EV_END(wxsCalendarCtrlEvents)
 
 wxsDWDefineBegin(wxsCalendarCtrl,wxCalendarCtrl,
-    WXS_THIS = new wxCalendarCtrl(WXS_PARENT,WXS_ID,wxDefaultDateTime,WXS_POS,WXS_SIZE,WXS_STYLE);
+    WXS_THIS = new wxCalendarCtrl(WXS_PARENT,WXS_ID,wxDefaultDateTime,WXS_POS,WXS_SIZE,WXS_STYLE,WXS_NAME);
     )
 wxsDWDefineEnd()

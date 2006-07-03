@@ -42,7 +42,7 @@ WXS_EV_BEGIN(wxsTextCtrlEvents)
 WXS_EV_END(wxsTextCtrlEvents)
 
 wxsDWDefineBegin(wxsTextCtrl,wxTextCtrl,
-    WXS_THIS = new wxTextCtrl(WXS_PARENT,WXS_ID,value,WXS_POS,WXS_SIZE,WXS_STYLE);
+    WXS_THIS = new wxTextCtrl(WXS_PARENT,WXS_ID,value,WXS_POS,WXS_SIZE,WXS_STYLE,wxDefaultValidator,WXS_NAME);
     if ( maxlength ) WXS_THIS->SetMaxLength(maxlength);
     )
     wxsDWDefLongStr(value,"Value:","Text");

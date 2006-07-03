@@ -65,7 +65,7 @@ int wxsSplitterWindow::AddChild(wxsWidget* NewWidget,int InsertBeforeThis)
 
 wxWindow* wxsSplitterWindow::MyCreatePreview(wxWindow* Parent)
 {
-	return new wxSplitterWindow(Parent,-1,GetPosition(),GetSize(),GetStyle());
+	return new wxSplitterWindow(Parent,GetId(),GetPosition(),GetSize(),GetStyle(),GetName());
 }
 
 void wxsSplitterWindow::MyFinalUpdatePreview(wxWindow* Preview)
@@ -92,13 +92,15 @@ void wxsSplitterWindow::MyFinalUpdatePreview(wxWindow* Preview)
 wxString wxsSplitterWindow::GetProducingCode(const wxsCodeParams& Params)
 {
 	return wxString::Format(
-        _T("%s = new wxSplitterWindow(%s,%s,%s,%s,%s);"),
+        _T("%s = new wxSplitterWindow(%s,%s,%s,%s,%s,%s);%s"),
         Params.VarName.c_str(),
         Params.ParentName.c_str(),
         Params.IdName.c_str(),
         Params.Pos.c_str(),
         Params.Size.c_str(),
-        Params.Style.c_str());
+        Params.Style.c_str(),
+        Params.Name.c_str(),
+        Params.InitCode.c_str());
 }
 
 wxString wxsSplitterWindow::GetFinalizingCode(const wxsCodeParams& Params)

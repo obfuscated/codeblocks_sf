@@ -116,13 +116,14 @@ void wxsListbook::MyFinalUpdatePreview(wxWindow* Preview)
 wxString wxsListbook::GetProducingCode(const wxsCodeParams& Params)
 {
 	return wxString::Format(
-        _T("%s = new wxListbook(%s,%s,%s,%s,%s);"),
+        _T("%s = new wxListbook(%s,%s,%s,%s,%s,%s);"),
         Params.VarName.c_str(),
         Params.ParentName.c_str(),
         Params.IdName.c_str(),
         Params.Pos.c_str(),
         Params.Size.c_str(),
-        Params.Style.c_str());
+        Params.Style.c_str(),
+        Params.Name.c_str());
 }
 
 wxString wxsListbook::GetFinalizingCode(const wxsCodeParams& Params)
