@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxPanel" name="dlgCompilerOptions">
     <object class="wxBoxSizer">
@@ -145,9 +145,8 @@
                                     <border>8</border>
                                   </object>
                                   <object class="sizeritem">
-                                    <object class="wxComboBox" name="cmbCategory">
+                                    <object class="wxChoice" name="cmbCategory">
                                       <content/>
-                                      <style>wxCB_SORT|wxCB_READONLY|wxCB_DROPDOWN</style>
                                     </object>
                                     <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
                                     <border>8</border>

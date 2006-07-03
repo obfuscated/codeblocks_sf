@@ -39,6 +39,7 @@
 #include "editpathdlg.h"
 #include "editpairdlg.h"
 #include <globals.h>
+#include <wx/choice.h>
 
 BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_UPDATE_UI(			XRCID("btnEditDir"),	    CompilerOptionsDlg::OnUpdateUI)
@@ -86,7 +87,8 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     //
 	EVT_TREE_SEL_CHANGED(	XRCID("tcScope"),			CompilerOptionsDlg::OnTreeSelectionChange)
 	EVT_TREE_SEL_CHANGING(	XRCID("tcScope"),			CompilerOptionsDlg::OnTreeSelectionChanging)
-	EVT_COMBOBOX(			XRCID("cmbCategory"), 		CompilerOptionsDlg::OnCategoryChanged)
+//	EVT_COMBOBOX(			XRCID("cmbCategory"), 		CompilerOptionsDlg::OnCategoryChanged)
+	EVT_CHOICE(			XRCID("cmbCategory"), 		CompilerOptionsDlg::OnCategoryChanged)
 	EVT_COMBOBOX(			XRCID("cmbCompiler"), 		CompilerOptionsDlg::OnCompilerChanged)
 	EVT_LISTBOX_DCLICK(		XRCID("lstVars"),			CompilerOptionsDlg::OnEditVarClick)
 	EVT_BUTTON(				XRCID("btnSetDefaultCompiler"),	CompilerOptionsDlg::OnSetDefaultCompilerClick)
@@ -375,7 +377,8 @@ void CompilerOptionsDlg::DoFillTree(cbProject* focusProject, ProjectBuildTarget*
 
 void CompilerOptionsDlg::DoFillCategories()
 {
-	wxComboBox* cmb = XRCCTRL(*this, "cmbCategory", wxComboBox);
+//	wxComboBox* cmb = XRCCTRL(*this, "cmbCategory", wxComboBox);
+	wxChoice* cmb = XRCCTRL(*this, "cmbCategory", wxChoice);
 	cmb->Clear();
 	cmb->Append(_("<All categories>"));
 
@@ -395,8 +398,10 @@ void CompilerOptionsDlg::DoFillOptions()
 			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			&CompilerOptionsDlg::OnOptionToggled);
 
-	wxComboBox* cmb = XRCCTRL(*this, "cmbCategory", wxComboBox);
-	wxString cat = cmb->GetValue();
+//	wxComboBox* cmb = XRCCTRL(*this, "cmbCategory", wxComboBox);
+	wxChoice* cmb = XRCCTRL(*this, "cmbCategory", wxChoice);
+//	wxString cat = cmb->GetValue();
+    wxString cat = cmb->GetStringSelection();
 	bool isAll = cmb->GetSelection() == 0;
 	wxCheckListBox* list = XRCCTRL(*this, "lstCompilerOptions", wxCheckListBox);
 	list->Clear();
