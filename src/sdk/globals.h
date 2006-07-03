@@ -20,7 +20,7 @@ enum PluginType
     ptCompiler,
     ptDebugger,
 	ptCodeCompletion,
-	ptProjectWizard,
+	ptWizard,
     ptOther
 };
 

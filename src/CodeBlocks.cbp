@@ -4,7 +4,7 @@
 	<Project>
 		<Option title="Code::Blocks" />
 		<Option pch_mode="2" />
-		<Option default_target="9" />
+		<Option default_target="11" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="AutoRevision">
@@ -46,8 +46,8 @@
 					<Add option="-DEXPORT_LIB" />
 				</Compiler>
 			</Target>
-			<Target title="AngelScript">
-				<Option output="sdk\as\libangelscript.a" />
+			<Target title="Squirrel">
+				<Option output="sdk\scripting\lib\libsquirrel.a" />
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
@@ -56,6 +56,37 @@
 				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-fno-inline" />
+					<Add directory="sdk\scripting\include" />
+					<Add directory="sdk\scripting\squirrel" />
+				</Compiler>
+			</Target>
+			<Target title="Squirrel std lib">
+				<Option output="sdk\scripting\lib\libsqstdlib.a" />
+				<Option working_dir="" />
+				<Option object_output=".objs\2.6" />
+				<Option external_deps="sdk\scripting\lib\libsquirrel.a;" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-fno-inline" />
+					<Add directory="sdk\scripting\include" />
+				</Compiler>
+			</Target>
+			<Target title="SqPlus">
+				<Option output="sdk\scripting\lib\libsqplus.a" />
+				<Option working_dir="" />
+				<Option object_output=".objs\2.6" />
+				<Option external_deps="sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option projectResourceIncludeDirsRelation="0" />
+				<Compiler>
+					<Add option="-fno-inline" />
+					<Add directory="sdk\scripting\include" />
+					<Add directory="sdk\scripting\sqplus" />
 				</Compiler>
 			</Target>
 			<Target title="scintilla">
@@ -110,7 +141,7 @@
 				<Option output="devel\codeblocks.dll" />
 				<Option working_dir="devel" />
 				<Option object_output=".objs\2.6" />
-				<Option external_deps="sdk\tinyxml\libtxml.a;sdk\as\libangelscript.a;sdk\propgrid\libpropgrid.a;sdk\wxFlatNotebook\libwxflatnotebook.a;devel\libwxscintilla.a;" />
+				<Option external_deps="sdk\tinyxml\libtxml.a;sdk\propgrid\libpropgrid.a;sdk\wxFlatNotebook\libwxflatnotebook.a;devel\libwxscintilla.a;sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;sdk\scripting\lib\libsqplus.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations" />
@@ -122,8 +153,8 @@
 					<Add option="-DEXPORT_LIB" />
 					<Add option="-DEXPORT_EVENTS" />
 					<Add directory="sdk" />
-					<Add directory="sdk\as\include" />
-					<Add directory="sdk\as\source" />
+					<Add directory="sdk\scripting\include" />
+					<Add directory="sdk\scripting\sqplus" />
 					<Add directory="sdk\wxFlatNotebook" />
 				</Compiler>
 				<Linker>
@@ -132,12 +163,14 @@
 					<Add option="-Wl,--add-stdcall-alias" />
 					<Add library="libshfolder.a" />
 					<Add library="libtxml.a" />
-					<Add library="libangelscript.a" />
 					<Add library="libwxscintilla.a" />
 					<Add library="propgrid" />
 					<Add library="wxflatnotebook" />
+					<Add library="sqplus" />
+					<Add library="sqstdlib" />
+					<Add library="squirrel" />
 					<Add directory="devel" />
-					<Add directory="sdk\as" />
+					<Add directory="sdk\scripting\lib" />
 					<Add directory="sdk\propgrid" />
 					<Add directory="sdk\wxFlatNotebook" />
 				</Linker>
@@ -178,6 +211,8 @@
 					<Add directory="sdk" />
 					<Add directory="src\wxAUI" />
 					<Add directory="sdk\wxFlatNotebook" />
+					<Add directory="sdk\scripting\include" />
+					<Add directory="sdk\scripting\sqplus" />
 				</Compiler>
 				<Linker>
 					<Add library="libcodeblocks.a" />
@@ -280,7 +315,8 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="sdk" />
-					<Add directory="sdk\as\include" />
+					<Add directory="sdk\scripting\include" />
+					<Add directory="sdk\scripting\sqplus" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
@@ -288,7 +324,6 @@
 					<Add library="libcodeblocks.a" />
 					<Add library="libwxscintilla.a" />
 					<Add library="wxmsw26$(WX_SUFFIX)" />
-					<Add library="libangelscript.a" />
 					<Add directory="devel" />
 					<Add directory="sdk\as" />
 				</Linker>
@@ -400,6 +435,8 @@
 					<Add option="-include sdk.h" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="sdk" />
+					<Add directory="sdk\scripting\include" />
+					<Add directory="sdk\scripting\sqplus" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
@@ -1491,11 +1528,41 @@
 			<Option link="0" />
 			<Option target="Plugin wizard" />
 		</Unit>
+		<Unit filename="plugins\projectwizard\buildtargetpanel.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins\projectwizard\buildtargetpanel.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
 		<Unit filename="plugins\projectwizard\compilerpanel.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Project wizard" />
 		</Unit>
 		<Unit filename="plugins\projectwizard\compilerpanel.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins\projectwizard\filepathpanel.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins\projectwizard\filepathpanel.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins\projectwizard\genericselectpath.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins\projectwizard\genericselectpath.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -1531,6 +1598,12 @@
 			<Option link="0" />
 			<Option target="Project wizard" />
 		</Unit>
+		<Unit filename="plugins\projectwizard\resources\c_file\wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
 		<Unit filename="plugins\projectwizard\resources\common_functions.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
@@ -1550,6 +1623,18 @@
 			<Option target="Project wizard" />
 		</Unit>
 		<Unit filename="plugins\projectwizard\resources\d\wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins\projectwizard\resources\empty\wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins\projectwizard\resources\fltk\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -1579,6 +1664,12 @@
 			<Option link="0" />
 			<Option target="Project wizard" />
 		</Unit>
+		<Unit filename="plugins\projectwizard\resources\h_file\wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
 		<Unit filename="plugins\projectwizard\resources\irrlicht\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
@@ -1598,6 +1689,12 @@
 			<Option target="Project wizard" />
 		</Unit>
 		<Unit filename="plugins\projectwizard\resources\ogre\wizard.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins\projectwizard\resources\smartwin\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -1635,7 +1732,25 @@
 			<Option link="0" />
 			<Option target="Project wizard" />
 		</Unit>
+		<Unit filename="plugins\projectwizard\wxsmith\BuildTargetPanel.wxs">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
 		<Unit filename="plugins\projectwizard\wxsmith\CompilerPanel.wxs">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins\projectwizard\wxsmith\FilePathPanel.wxs">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
+		<Unit filename="plugins\projectwizard\wxsmith\GenericSelectPath.wxs">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -1757,404 +1872,6 @@
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\as\bindings\const_bindings.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\as\bindings\const_bindings.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\as\bindings\sc_io.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\as\bindings\sc_io.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\as\bindings\sc_wxarraystring.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\as\bindings\sc_wxarraystring.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\as\bindings\sc_wxstring.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\as\bindings\sc_wxstring.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\as\bindings\scriptbindings.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\as\bindings\scriptbindings.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\as\include\angelscript.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_anyobject.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_anyobject.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_array.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_arrayobject.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_arrayobject.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_builder.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_builder.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_bytecode.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_bytecode.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_bytecodedef.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_c.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_callfunc.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_callfunc.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_callfunc_sh4.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_callfunc_x86.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_compiler.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_compiler.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_config.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_configgroup.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_configgroup.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_context.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_context.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_datatype.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_datatype.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_debug.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_gcobject.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_gcobject.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_generic.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_generic.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_map.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_module.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_module.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_objecttype.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_objecttype.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_outputbuffer.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_outputbuffer.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_parser.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_parser.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_property.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_restore.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_restore.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_scriptcode.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_scriptcode.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_scriptengine.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_scriptengine.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_scriptfunction.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_scriptfunction.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_scriptnode.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_scriptnode.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_scriptstruct.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_scriptstruct.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_string.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_string.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_string_util.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_string_util.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_structs.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_texts.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_thread.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_thread.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_tokendef.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_tokenizer.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_tokenizer.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_typeinfo.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_typeinfo.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_types.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_variablescope.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AngelScript" />
-		</Unit>
-		<Unit filename="sdk\as\source\as_variablescope.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="AngelScript" />
 		</Unit>
 		<Unit filename="sdk\autodetectcompilers.cpp">
 			<Option compilerVar="CPP" />
@@ -3287,11 +3004,341 @@
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
-		<Unit filename="sdk\scriptingcall.h">
-			<Option compilerVar="" />
+		<Unit filename="sdk\scripting\bindings\sc_base_types.h">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_consts.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_globals.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_io.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_wxtypes.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\scriptbindings.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\scriptbindings.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\include\sqdbgserver.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\include\sqrdbg.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\include\sqstdaux.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\include\sqstdblob.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\include\sqstdio.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\include\sqstdmath.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\include\sqstdstring.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\include\sqstdsystem.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\include\squirrel.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SqPlus.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SqPlusConst.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SquirrelBindingsUtils.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SquirrelBindingsUtils.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SquirrelBindingsUtilsWin32.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SquirrelBindingsUtilsWin32.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SquirrelObject.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SquirrelObject.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SquirrelVM.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\SquirrelVM.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\sqplus.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqplus\sqplusWin32.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="SqPlus" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdaux.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdblob.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdblobimpl.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdio.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdmath.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdrex.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdstream.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdstream.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdstring.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\sqstdlib\sqstdsystem.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel std lib" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqapi.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqarray.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqbaselib.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqclass.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqclass.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqclosure.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqcompiler.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqcompiler.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqdebug.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqfuncproto.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqfuncstate.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqfuncstate.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqlexer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqlexer.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqmem.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqobject.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqobject.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqopcodes.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqpcheader.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqstate.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqstate.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqstring.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqtable.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqtable.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\squserdata.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\squtils.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqvm.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Squirrel" />
+		</Unit>
+		<Unit filename="sdk\scripting\squirrel\sqvm.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Squirrel" />
 		</Unit>
 		<Unit filename="sdk\scriptingmanager.cpp">
 			<Option compilerVar="CPP" />

@@ -31,8 +31,9 @@ class IntroPanel: public wxPanel
         void SetIntroText(const wxString& intro_msg)
         {
             lblIntro->SetLabel(intro_msg);
-            GetSizer()->Layout();
-            Layout();
+
+            GetSizer()->Fit(this);
+            GetSizer()->SetSizeHints(this);
         }
 	protected:
 

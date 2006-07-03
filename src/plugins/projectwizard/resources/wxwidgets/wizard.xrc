@@ -5,19 +5,25 @@
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
         <object class="wxStaticText">
+          
           <label>Please select the location of wxWidgets on your computer.
 This is the top-level folder where wxWidgets was unpacked.
 To help you, this folder must contain the subfolders
 &quot;include&quot; and &quot;lib&quot;.</label>
         </object>
+        
         <flag>wxALL|wxGROW</flag>
+        
         <border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxStaticText">
+          
           <label>wxWidgets' location:</label>
         </object>
+        
         <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+        
         <border>8</border>
       </object>
       <object class="sizeritem">
@@ -25,17 +31,23 @@ To help you, this folder must contain the subfolders
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
             <object class="wxTextCtrl" name="txtWxPath"/>
+            
             <option>1</option>
           </object>
           <object class="sizeritem">
             <object class="wxButton" name="btnWxPathBrowse">
+              
               <label>...</label>
             </object>
+            
             <flag></flag>
+            
             <minsize>22,22</minsize>
           </object>
         </object>
+        
         <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+        
         <border>8</border>
       </object>
     </object>
@@ -45,16 +57,20 @@ To help you, this folder must contain the subfolders
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
         <object class="wxStaticText">
+          
           <label>Please select various configuration options. What you select
 here, must match the installed wxWidgets library's settings.</label>
         </object>
+        
         <flag>wxALL|wxGROW</flag>
+        
         <border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxFlexGridSizer">
           <object class="sizeritem">
             <object class="wxCheckBox" name="chkWxConfDLL">
+              
               <label>Use wxWidgets DLL</label>
             </object>
           </object>
@@ -63,17 +79,20 @@ here, must match the installed wxWidgets library's settings.</label>
           <hgap>8</hgap>
           <object class="sizeritem">
             <object class="wxCheckBox" name="chkWxConfMono">
+              
               <label>wxWidgets is built as a monolithic library</label>
             </object>
           </object>
           <growablecols>0</growablecols>
           <object class="sizeritem">
             <object class="wxCheckBox" name="chkWxConfUni">
+              
               <label>Enable unicode</label>
             </object>
           </object>
           <object class="sizeritem">
             <object class="wxCheckBox" name="chkWxConfDebug">
+              
               <label>Use the debugging libraries</label>
             </object>
           </object>
@@ -82,30 +101,73 @@ here, must match the installed wxWidgets library's settings.</label>
               <orient>wxHORIZONTAL</orient>
               <object class="sizeritem">
                 <object class="wxStaticText">
+                  
                   <label>Configuration:</label>
                 </object>
+                
                 <flag>wxALIGN_CENTRE_VERTICAL</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxTextCtrl" name="txtWxConfConfig"/>
+                
                 <option>1</option>
+                
                 <flag>wxLEFT|wxGROW</flag>
+                
                 <border>8</border>
               </object>
             </object>
+            
             <option>1</option>
+            
             <flag>wxGROW</flag>
           </object>
         </object>
+        
         <flag>wxALL|wxGROW</flag>
+        
         <border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxCheckBox" name="chkWxConfPCH">
+          
           <label>Create and use precompiled header (PCH)</label>
+          
           <checked>1</checked>
         </object>
+        
         <flag>wxALL|wxGROW</flag>
+        
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+  <object class="wxPanel" name="WxConfUnix">
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxStaticText">
+          
+          <label>Please select whether you want this project to use a
+precompiled header (PCH).
+Note that if your compiler doesn't support them, this option 
+will be ignored...</label>
+        </object>
+        
+        <flag>wxALL|wxGROW</flag>
+        
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxCheckBox" name="chkWxConfPCH">
+          
+          <label>Create and use precompiled header (PCH)</label>
+          
+          <checked>1</checked>
+        </object>
+        
+        <flag>wxALL|wxGROW</flag>
+        
         <border>8</border>
       </object>
     </object>

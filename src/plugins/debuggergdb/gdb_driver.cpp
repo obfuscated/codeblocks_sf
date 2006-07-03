@@ -4,8 +4,6 @@
 #include <manager.h>
 #include <configmanager.h>
 #include <scriptingmanager.h>
-#include <scriptingcall.h>
-#include <angelscript.h>
 #include <globals.h>
 
 #include <wx/arrimpl.cpp> // this is a magic incantation which must be done!
@@ -30,6 +28,9 @@ static wxRegEx reThreadSwitch2(_T("^\\[Switching to thread .*\\]#0[ \t]+(0x[A-z0
 static wxRegEx reBreak2(_T("^(0x[A-z0-9]+) in (.*) from (.*)"));
 static wxRegEx reBreak3(_T("^(0x[A-z0-9]+) in (.*)"));
 
+// scripting support
+DECLARE_INSTANCE_TYPE(GDB_driver);
+
 GDB_driver::GDB_driver(DebuggerGDB* plugin)
     : DebuggerDriver(plugin),
     m_BreakOnEntry(false),
@@ -45,43 +46,33 @@ GDB_driver::~GDB_driver()
     //dtor
 }
 
-void DummyAddRef(DebuggerDriver& p){}
-void DummyRelease(DebuggerDriver& p){}
-
 void GDB_driver::InitializeScripting()
 {
     // get a pointer to scripting engine
-    asIScriptEngine* engine = Manager::Get()->GetScriptingManager()->GetEngine();
-    if (!engine)
+    if (!SquirrelVM::GetVMPtr())
     {
         m_pDBG->Log(_("Scripting engine not running. Debugger scripts disabled..."));
         return; // no scripting support...
     }
 
-    const wxString module = _T("debugger-scripts");
-    const wxString script = _T("gdb_types.script");
-
-    // discard any old instance
-    int r = engine->Discard(cbU2C(module));
-
-    if (r != 0)
-    {
-        // create a new object type for scripts, named DebuggerDriver
-        engine->RegisterObjectType("DebuggerDriver", 0, asOBJ_CLASS);
-        engine->RegisterObjectBehaviour("DebuggerDriver", asBEHAVE_ADDREF, "void f()", asFUNCTION(DummyAddRef), asCALL_CDECL_OBJLAST);
-        engine->RegisterObjectBehaviour("DebuggerDriver", asBEHAVE_RELEASE, "void f()", asFUNCTION(DummyRelease), asCALL_CDECL_OBJLAST);
-        engine->RegisterObjectMethod("DebuggerDriver", "void RegisterType(const wxString& in,const wxString& in,const wxString& in,const wxString& in)", asMETHOD(GDB_driver, RegisterType), asCALL_THISCALL);
-    }
+    // create a new object type for scripts, named DebuggerDriver
+    SqPlus::SQClassDef<GDB_driver>("GDB_driver").
+            func(&GDB_driver::RegisterType, "RegisterType");
 
     // run all scripts
-    Manager::Get()->GetScriptingManager()->LoadAndRunScript(script, module, false);
-
-    int funcID = Manager::Get()->GetScriptingManager()->FindFunctionByDeclaration(_T("void RegisterTypes(DebuggerDriver@ driver)"), module);
-    if (funcID < 0)
+    wxString script = _T("gdb_types.script");
+    Manager::Get()->GetScriptingManager()->LoadScript(script);
+    try
+    {
+        SqPlus::SquirrelFunction<void>("RegisterTypes")(this);
+    }
+    catch (SquirrelError e)
+    {
         m_pDBG->Log(wxString::Format(_T("Invalid debugger script: '%s'"), script.c_str()));
+        m_pDBG->Log(cbC2U(e.desc));
 
-    VoidExecutor<DebuggerDriver*> exec(funcID);
-    exec.Call(this);
+        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+    }
 }
 
 void GDB_driver::RegisterType(const wxString& name, const wxString& regex, const wxString& eval_func, const wxString& parse_func)

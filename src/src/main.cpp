@@ -1396,7 +1396,7 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
     wxCommandEvent evt;
     wxString link = event.GetString();
     if(link.IsSameAs(_T("CB_CMD_NEW_PROJECT")))
-        TemplateManager::Get()->NewProject();
+        OnProjectNew(evt);
     else if(link.IsSameAs(_T("CB_CMD_OPEN_PROJECT")))
         OnProjectOpen(evt);
 //    else if (link.IsSameAs(_T("CB_CMD_CONF_ENVIRONMENT")))
@@ -1966,15 +1966,20 @@ void MainFrame::OnFilePrint(wxCommandEvent& event)
 
 void MainFrame::OnFileRunScript(wxCommandEvent& WXUNUSED(event))
 {
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("app"));
+    wxString path = mgr->Read(_T("/file_dialogs/file_run_script/directory"), path);
     wxFileDialog* dlg = new wxFileDialog(this,
                             _("Run script"),
-                            wxEmptyString,
+                            path,
                             wxEmptyString,
                             _T("Script files (*.script)|*.script"),
                             wxOPEN);
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
-        Manager::Get()->GetScriptingManager()->LoadAndRunScript(dlg->GetPath());
+    {
+        mgr->Write(_T("/file_dialogs/file_run_script/directory"), dlg->GetDirectory());
+        Manager::Get()->GetScriptingManager()->LoadScript(dlg->GetPath());
+    }
     dlg->Destroy();
 }
 

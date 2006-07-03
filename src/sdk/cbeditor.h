@@ -65,6 +65,9 @@ class DLLIMPORT cbEditor : public EditorBase
 		/** cbEditor destructor. */
 		~cbEditor();
 
+        cbEditor(const cbEditor& rhs) : EditorBase(rhs) { cbThrow(_T("Can't call cbEditor's copy ctor!!!")); }
+        virtual void operator=(const cbEditor& rhs){ cbThrow(_T("Can't assign an cbEditor* !!!")); }
+
 		// properties
 
 		/** Returns a pointer to the underlying cbStyledTextCtrl object (which

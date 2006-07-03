@@ -7,7 +7,8 @@
 //
 //
 // NOTE: This is a *very* simple wizard script, but it's fully commented so you
-// know what's going on :)
+// know what's going on. It even contains commented code for functionality that
+// is not needed for this wizard :)
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -16,108 +17,160 @@
 // It is named "Wizard". It represents the wizard dialog object and contains
 // the following methods:
 //
-//    void AddIntroPage(const wxString& in)
+//    void AddIntroPage(string)
 //    void AddProjectPathPage()
-//    void AddCompilerPage(const wxString& in)
-//    void AddPage(const wxString& in)
+//    void AddFilePathPage(bool)
+//    void AddCompilerPage(string)
+//    void AddLanguagePage(string,int)
+//    void AddPage(string)
 //
-//    void SetTextControlValue(const wxString& in, const wxString& in)
-//    wxString GetTextControlValue(const wxString& in)
+//    void SetTextControlValue(string, string)
+//    string GetTextControlValue(string)
 //
-//    void CheckCheckbox(const wxString& in, bool)
-//    bool IsCheckboxChecked(const wxString& in)
-//    void FillComboboxWithCompilers(const wxString& in)
-//    wxString GetCompilerFromCombobox(const wxString& in)
-//    wxString GetComboboxStringSelection(const wxString& in)
-//    int GetComboboxSelection(const wxString& in)
-//    void SetComboboxSelection(const wxString& in,int)
+//    void CheckCheckbox(string, bool)
+//    bool IsCheckboxChecked(string)
+//    void FillComboboxWithCompilers(string)
+//    string GetCompilerFromCombobox(string)
+//    string GetComboboxStringSelection(string)
+//    int GetComboboxSelection(string)
+//    void SetComboboxSelection(string,int)
 //
-//    int GetRadioboxSelection(const wxString& in)
-//    void SetRadioboxSelection(const wxString& in,int)
+//    int GetRadioboxSelection(string)
+//    void SetRadioboxSelection(string,int)
 //
-//    wxString& GetTemplatePath()
-//    wxString GetProjectPath()
-//    wxString GetProjectName()
-//    wxString GetCompilerID()
+//    string& GetTemplatePath()
+//    string GetProjectPath()
+//    string GetProjectName()
+//    string GetCompilerID()
 //
 //    bool GetWantDebug()
-//    wxString GetDebugName()
-//    wxString GetDebugOutputDir()
-//    wxString GetDebugObjectOutputDir()
+//    string GetDebugName()
+//    string GetDebugOutputDir()
+//    string GetDebugObjectOutputDir()
 //
 //    bool GetWantRelease()
-//    wxString GetReleaseName()
-//    wxString GetReleaseOutputDir()
-//    wxString GetReleaseObjectOutputDir()
-
+//    string GetReleaseName()
+//    string GetReleaseOutputDir()
+//    string GetReleaseObjectOutputDir()
+//
+//    string GetFileName()
+//    string GetFileHeaderGuard()
+//    bool GetFileAddToProject()
+//    int GetFileTargetIndex()
+//    void SetFilePathSelectionFilter()
 
 // Global variables declaration.
 //
 // Don't over-react about using global variables. This script will be discarded
 // once finished running, so no reason to panic ;)
 
-//bool IsCpp; // hold the source type for the new file (C or C++)
+// IsCpp <- false; // '=' wouldn't work here
+
+
+
 
 // This is the very first script function that will be called by Code::Blocks.
 // The script should add all its wizard pages here.
 // Pages will appear in the order they 're added.
-void BeginWizard()
+function BeginWizard()
 {
-    // this is the text that will appear in the start (intro) page
-    wxString intro_msg = "Welcome to the new console application wizard!\n"
-                        "This wizard will guide you to create a new console application.\n\n"
-                        "When you 're ready to proceed, please click \"Next\"...";
+    local wiz_type = Wizard.GetWizardType();
 
-    // add builtin pages
-	
-	// intro
-	Wizard.AddIntroPage(intro_msg);
-	// select project name and path
-	Wizard.AddProjectPathPage();
-	// select compiler and configurations
-	// args:
-	//  1) string: which compiler ID will be pre-selected (empty means default)
-	//  2) string: semi-colon separated list of allowed compiler ids. Use "*" for all. * and ? wildcards allowed.
-	//  3) boolean: if false, the compiler selection will be disabled
-	//  4) boolean: if false, the config targets will be disabled
-	Wizard.AddCompilerPage("", "*", true, true);
-	// select language
-	Wizard.AddLanguagePage("C;C++", 1);
+    if (wiz_type == wizProject)
+    {
+        // this is the text that will appear in the start (intro) page
+        local intro_msg = _T("Welcome to the new console application wizard!\n" +
+                            "This wizard will guide you to create a new console application.\n\n" +
+                            "When you 're ready to proceed, please click \"Next\"...");
 
-    // add custom pages, present in the XRC (wizard.xrc)
-    // each page must exist as a wxPanel with the same name in the XRC.
-//	Wizard.AddPage("SourceType"); // select source file type (C or C++)
+        // add builtin pages
 
-	// nothing more needs to be done here
+        // intro
+        Wizard.AddIntroPage(intro_msg);
+        // select project name and path
+        Wizard.AddProjectPathPage();
+        // select compiler and configurations
+        // args:
+        //  1) string: which compiler ID will be pre-selected (empty means default)
+        //  2) string: semi-colon separated list of allowed compiler ids. Use _T("*") for all. * and ? wildcards allowed.
+        //  3) boolean: if false, the compiler selection will be disabled
+        //  4) boolean: if false, the config targets will be disabled
+        Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+        // select language
+        Wizard.AddLanguagePage(_T("C;C++"), 1);
+
+        // add custom pages, present in the XRC (wizard.xrc)
+        // each page must exist as a wxPanel with the same name in the XRC.
+        // Wizard.AddPage(_T("SourceType")); // select source file type (C or C++)
+
+        // another builtin page is AddFilePathPage. It allows:
+        // *) selection of a single filename
+        // *) optional header guard word setting (use it for header files)
+        // and
+        // *) option to add it to the active project (with target selection)
+        //
+        // the boolean parameter shows or hides the header guard word controls
+        // i.e. for header files set it to true, false otherwise.
+        //
+        // Wizard.AddFilePathPage(false);
+    }
+    else if (wiz_type == wizTarget)
+    {
+        local intro_msg = _T("Welcome to the new console build target wizard!\n" +
+                            "This wizard will guide you to create a new console build target.\n\n" +
+                            "When you 're ready to proceed, please click \"Next\"...");
+        Wizard.AddIntroPage(intro_msg);
+        Wizard.AddBuildTargetPage(_T(""), false, false, _T(""), _T("*"), true);
+    }
+    else
+        print(wiz_type);
 }
 
-// There are three wizard events provided for custom pages (from XRC):
+// There are three wizard events provided. Two of them are for all pages (custom and builtin)
+// and the third is only for custom pages (from XRC):
 //
-//  1) void OnEnter_<panel_name>(bool fwd)
+//  1) [all pages] function OnEnter_<panel_name>(bool fwd)
 //      This is called when the wizard is about to display this page.
-//      The "fwd" argument is "true" if the page is displayed after the user pressed "Next",
-//      or it is "false" if the user pressed "Back".
+//      The _T("fwd") argument is _T("true") if the page is displayed after the user pressed _T("Next"),
+//      or it is _T("false") if the user pressed _T("Back").
 //
-//  2) bool OnLeave_<panel_name>(bool fwd)
+//  2) [all pages] bool OnLeave_<panel_name>(bool fwd)
 //      This is called when the wizard is about to display another page.
 //      The argument means the same as in OnEnter_<panel_name> above.
-//      If the script returns "false" from this function, then the page-change
+//      If the script returns _T("false") from this function, then the page-change
 //      isn't allowed.
 //
-//  3) OnClick_<button_name>()
+//  3) [custom pages only] OnClick_<button_name>()
 //      This is called when a button with the same name is clicked.
+//
+// Regarding the first two events (for all pages), as panel_name use the actual panel name
+// for XRC pages or one of the following for the relevant builtin pages:
+//
+//  *) IntroPage
+//  *) ProjectPathPage
+//  *) FilePathPage
+//  *) CompilerPage
+//  *) LanguagePage
+//
+// So, to be notified when the wizard enters the language selection page (for example), you
+// would define the following function in script:
+//
+// function OnEnter_LanguagePage(fwd)
+// {
+// }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Source type's page
+// Example: Source type's page
+//          a page read from XRC (panel named "SourceType" in XRC)
 ////////////////////////////////////////////////////////////////////////////////
 
-//bool OnLeave_SourceType(bool fwd)
+//function OnLeave_SourceType(fwd)
 //{
 //	if (fwd)
 //	{
 //	    // if user pressed "Next", accept its source type settings
 //	    // and keep it in the global variable we defined earlier.
-//	    IsCpp = Wizard.GetRadioboxSelection("rbLang") == 0;
+//	    IsCpp = Wizard.GetRadioboxSelection(_T("rbLang")) == 0;
 //	}
 //	// allow changing this page
 //	return true;
@@ -136,62 +189,101 @@ void BeginWizard()
 // will be copied by the wizard to the destination folder and will be added
 // to the project.
 // Note that you can return multiple directories by semicolon-separating them,
-// e.g."console/common;console/cpp". This way you can keep common files together
+// e.g._T("console/common;console/cpp"). This way you can keep common files together
 // and only separate different files based on the selected options.
-bool GetFilesDir(wxString& out result)
+function GetFilesDir()
 {
-    // depending on the source type setting, return the appropriate value.
-    int lang = Wizard.GetLanguageIndex();
-    switch (lang)
-    {
-        case 0:
-            // C source file
-            result = "console/c";
-            break;
+    local result;
 
-        case 1:
-        default:
-            // C++ source file
-            result = "console/cpp";
-            break;
-    }
-    return true;
+    // depending on the source type setting, return the appropriate value.
+    if (Wizard.GetLanguageIndex() == 0) // C source file
+        result = _T("console/c");
+    else // C++ source file
+        result = _T("console/cpp");
+
+    return result;
 }
 
+// This function is called for wizards registered as wizProject type.
+//
 // Setup the already created project.
 // By now, the project has already been created and it's time to set it up.
 // The compiler ID has been already set, as well as the project title.
 // Also, the requested targets (configurations) have been created and set up.
 // Of course the script can now override anything ;)
 // The "project" argument represents the new project.
-bool SetupProject(Project@ project)
+function SetupProject(project)
 {
     // NOTE: Major compiler system drawback here.
     // Until it is redesigned to allow easier compiler settings,
     // we have to check the compiler's ID and set options for different compilers...
+    // We make things easier for scripts, by providing a few predefined functions
+    // to setup common settings like "debug", "warnings", etc.
+    // These functions are located in <templates_path>/common_functions.script.
+    // If you add other commonly used functions or bug-fix anything in that file,
+    // please share it with us :)
 
     // enable compiler warnings (project-wide)
-    WarningsOn(Cast_CompileOptionsBase(project), Wizard.GetCompilerID());
+    WarningsOn(project, Wizard.GetCompilerID());
+
+    // We setup the targets using SetupTarget() which is conveniently called by Code::Blocks
+    // if we register this wizard as wizTarget type :)
+    // This means that this very wizard can be used both as wizProject *and* as wizTarget ;)
 
     // Debug build target
-    BuildTarget@ target = project.GetBuildTarget(Wizard.GetDebugName());
-    if (target != null)
-    {
-        target.SetTargetType(ttConsoleOnly);
-        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
-        // enable debugging symbols for this target
-        DebugSymbolsOn(Cast_CompileOptionsBase(target), Wizard.GetCompilerID());
-    }
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+        SetupTarget(target, true);
 
     // Release build target
-    @target = project.GetBuildTarget(Wizard.GetReleaseName());
-    if (target != null)
-    {
-        target.SetTargetType(ttConsoleOnly);
-        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
-        // enable optimizations for this target
-        OptimizationsOn(Cast_CompileOptionsBase(target), Wizard.GetCompilerID());
-    }
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+        SetupTarget(target, false);
 
+    // all done!
     return true;
 }
+
+// This function is called for wizards registered as wizTarget type.
+//
+// By now, the target has just been created. Customize it as needed...
+// @param target: the build target
+// @param is_debug: if true, setup target with debugging symbols
+function SetupTarget(target,is_debug)
+{
+    if (IsNull(target))
+        return false;
+
+    target.SetTargetType(ttConsoleOnly);
+    target.SetOutputFilename(target.GetWorkingDir() + wxFILE_SEP_PATH + target.SuggestOutputFilename());
+
+    if (is_debug)
+    {
+        // enable debugging symbols for this target
+        DebugSymbolsOn(target, Wizard.GetTargetCompilerID());
+    }
+    else
+    {
+        // enable optimizations for this target
+        OptimizationsOn(target, Wizard.GetTargetCompilerID());
+    }
+
+    // all done!
+    return true;
+}
+
+// This function is called for wizards registered as wizFiles type.
+//
+// Create the file(s)...
+//function CreateFiles()
+//{
+//  return true;
+//}
+
+// This function is called for wizards registered as wizCustom type.
+//
+// The wizard has just finished. Do whatever this wizard needs to do...
+//function SetupCustom()
+//{
+//  return true;
+//}

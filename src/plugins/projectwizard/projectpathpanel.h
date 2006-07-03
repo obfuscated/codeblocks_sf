@@ -11,6 +11,7 @@
 #include <wx/button.h>
 #include <wx/intl.h>
 #include <wx/panel.h>
+#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -26,12 +27,14 @@ class ProjectPathPanel: public wxPanel
 		void SetPath(const wxString& path)
 		{ 
 		    txtPrjPath->SetValue(path); 
-		    if (!path.IsEmpty())
-                txtPrjName->SetFocus();
+//		    if (!path.IsEmpty())
+//                txtPrjName->SetFocus();
             Update();
         }
 		wxString GetPath(){ return txtPrjPath->GetValue(); }
 		wxString GetName(){ return txtPrjName->GetValue(); }
+		wxString GetFullFileName(){ return txtFinalDir->GetValue(); }
+		wxString GetTitle(){ return txtPrjTitle->GetValue(); }
 
 		//(*Identifiers(ProjectPathPanel)
 		enum Identifiers
@@ -43,25 +46,32 @@ class ProjectPathPanel: public wxPanel
 		    ID_STATICTEXT4,
 		    ID_STATICTEXT5,
 		    ID_TEXTCTRL1,
-		    ID_TEXTCTRL2
+		    ID_TEXTCTRL2,
+		    ID_TEXTCTRL3,
+		    ID_TEXTCTRL4
 		};
 		//*)
 
 	protected:
 
         void Update();
+        void UpdateFromResulting();
+        bool m_LockUpdates;
         
 		//(*Handlers(ProjectPathPanel)
 		void OnFullPathChanged(wxCommandEvent& event);
+		void OntxtFinalDirText(wxCommandEvent& event);
+		void OntxtPrjTitleText(wxCommandEvent& event);
 		//*)
 
 		//(*Declarations(ProjectPathPanel)
 		wxBoxSizer* BoxSizer1;
+		wxTextCtrl* txtPrjTitle;
 		wxBoxSizer* BoxSizer2;
 		wxTextCtrl* txtPrjPath;
 		wxButton* btnPrjPathBrowse;
 		wxTextCtrl* txtPrjName;
-		wxStaticText* lblFinalDir;
+		wxTextCtrl* txtFinalDir;
 		//*)
 
 	private:

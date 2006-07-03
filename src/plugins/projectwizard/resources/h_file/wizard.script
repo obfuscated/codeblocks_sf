@@ -1,0 +1,61 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new file wizard script
+//
+// Project: C/C++ header file
+// Author:  Yiannis Mandravellos
+//
+////////////////////////////////////////////////////////////////////////////////
+
+header_contents <- @"#ifndef GUARD
+#define GUARD
+
+
+
+#endif // GUARD
+";
+
+function BeginWizard()
+{
+    // this is the text that will appear in the start (intro) page
+    local intro_msg = _T("Welcome to the new C/C++ header file wizard!\n" +
+                        "This wizard will guide you to create a new C/C++ header file.\n\n" +
+                        "When you 're ready to proceed, please click \"Next\"...");
+
+    // add builtin pages
+	Wizard.AddIntroPage(intro_msg); // intro
+	Wizard.AddFilePathPage(true); // select filename (header guard required for header files)
+
+    Wizard.SetFilePathSelectionFilter(_T("C/C++ header files (*.h;*.hpp;*.hxx;*.hh)|*.h;*.hpp;*.hxx;*.hh"));
+}
+
+function CreateFiles()
+{
+    local ed = GetEditorManager().New(Wizard.GetFileName());
+    if (!IsNull(ed))
+    {
+        // succeeded
+
+        // add header guard
+        local guard = Wizard.GetFileHeaderGuard();
+        local text = _T(header_contents);
+        text.Replace(_T("GUARD"), guard);
+        ed.SetText(text);
+
+        // add file to project if needed
+        if (Wizard.GetFileAddToProject())
+        {
+            local tgtidx = Wizard.GetFileTargetIndex();
+            if (tgtidx != -1)
+            {
+                local prj = GetProjectManager().GetActiveProject();
+                if (!IsNull(prj))
+                {
+                    prj.AddFile(tgtidx, Wizard.GetFileName());
+                    GetProjectManager().RebuildTree(); // make sure our view is current
+                }
+            }
+        }
+    }
+    return true;
+}

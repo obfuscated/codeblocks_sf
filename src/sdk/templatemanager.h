@@ -3,13 +3,13 @@
 
 #include "settings.h"
 #include "manager.h"
-#include "newfromtemplatedlg.h"
 #include <wx/event.h>
 
 //forward decls
 class wxMenuBar;
 class wxMenu;
 class cbProject;
+class NewFromTemplateDlg;
 
 class DLLIMPORT TemplateManager : public Mgr<TemplateManager>, public wxEvtHandler
 {
@@ -25,15 +25,10 @@ class DLLIMPORT TemplateManager : public Mgr<TemplateManager>, public wxEvtHandl
 		void LoadUserTemplates();
 		cbProject* NewProjectFromTemplate(NewFromTemplateDlg& dlg);
 		cbProject* NewProjectFromUserTemplate(NewFromTemplateDlg& dlg);
-		void OnNew(wxCommandEvent& event);
-		ProjectTemplateArray m_Templates;
 		wxArrayString m_UserTemplates;
 	private:
 		TemplateManager();
 		virtual ~TemplateManager();
-
-		DECLARE_EVENT_TABLE();
 };
 
 #endif // TEMPLATEMANAGER_H
-

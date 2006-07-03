@@ -28,17 +28,18 @@
 // this is the plugins SDK version number
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
-#define PLUGIN_SDK_VERSION_MINOR 7
-#define PLUGIN_SDK_VERSION_RELEASE 18
+#define PLUGIN_SDK_VERSION_MINOR 8
+#define PLUGIN_SDK_VERSION_RELEASE 0
 
 // class decls
-class ProjectBuildTarget;
 class wxMenuBar;
 class wxMenu;
 class wxToolBar;
 class wxPanel;
 class wxWindow;
 class cbProject;
+class ProjectBuildTarget;
+class CompileTargetBase;
 class FileTreeData;
 class cbConfigurationPanel;
 
@@ -455,29 +456,45 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
 /** @brief Base class for wizard plugins
   *
   * Wizard plugins are called by Code::Blocks when the user selects
-  * "New project" on a template provided by the plugin.
+  * "File->New...".
   *
-  * A plugin of this type can support more than one wizards. The @c index
-  * used as a parameter to most of the functions, denotes 0-based index
+  * A plugin of this type can support more than one wizard. Additionally,
+  * each wizard can support new workspaces, new projects, new targets or new files.
+  * The @c index used as a parameter to most of the functions, denotes 0-based index
   * of the project wizard to run.
   */
-class PLUGIN_EXPORT cbProjectWizardPlugin : public cbPlugin
+class PLUGIN_EXPORT cbWizardPlugin : public cbPlugin
 {
     public:
-        cbProjectWizardPlugin();
+        /** Wizard output types */
+        enum OutputType
+        {
+            otProject = 0, ///< outputs a new project
+            otTarget, ///< outputs a new target in a project
+            otFiles, ///< outputs a new file (or files)
+            otCustom ///< custom output (entirely up to the wizard)
+        };
 
-        /// @return the number of template wizards this plugin contains
+        cbWizardPlugin();
+
+        /** @return the number of template wizards this plugin contains */
         virtual int GetCount() const = 0;
-        /// @return the template's title
+        /** @return the output type of the specified wizard at @c index */
+        virtual OutputType GetOutputType(int index) const = 0;
+        /** @return the template's title */
         virtual wxString GetTitle(int index) const = 0;
-        /// @return the template's description
+        /** @return the template's description */
         virtual wxString GetDescription(int index) const = 0;
-        /// @return the template's category (GUI, Console, etc; free-form text)
+        /** @return the template's category (GUI, Console, etc; free-form text). Try to adhere to standard category names... */
         virtual wxString GetCategory(int index) const = 0;
-        /// @return the template's bitmap
+        /** @return the template's bitmap */
         virtual const wxBitmap& GetBitmap(int index) const = 0;
-        /// When this is called, the wizard must get to work ;)
-        virtual int Launch(int index) = 0; // do your work ;)
+        /** @return this wizard's script filename. */
+        virtual wxString GetScriptFilename(int index) const = 0;
+        /** When this is called, the wizard must get to work ;).
+          * @return a pointer to the generated cbProject or ProjectBuildTarget. NULL for everything else (failure too).
+          * You should dynamic-cast this to the correct type based on GetOutputType() 's value. */
+        virtual CompileTargetBase* Launch(int index) = 0; // do your work ;)
     private:
         // "Hide" some virtual members, that are not needed in cbCreateWizardPlugin
         void BuildMenu(wxMenuBar* menuBar){}

@@ -32,6 +32,7 @@
     #include <wx/menu.h>
 
     #include "manager.h" // class's header file
+    #include "sdk_events.h"
     #include "cbexception.h"
     #include "projectmanager.h"
     #include "editormanager.h"

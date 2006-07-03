@@ -12,6 +12,7 @@
 
 #include "dragscroll.h"
 #include "dragscrollcfg.h"
+#include "sdk_events.h" // EVT_EDITOR_OPEN
 #include <licenses.h> // defines some common licenses (like the GPL)
 #include <wx/utils.h>
 #include <wx/event.h>

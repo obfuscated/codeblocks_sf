@@ -51,7 +51,7 @@ wxString FileFilters::GetFilterString(const wxString& ext)
         {
             // filter based on parameter
             bool match = false;
-            wxArrayString array = GetArrayFromString(it->second, _T(","), true);
+            wxArrayString array = GetArrayFromString(it->second, _T(";"), true);
             for (size_t i = 0; i < array.GetCount(); ++i)
             {
                 if (ext.Matches(array[i]))

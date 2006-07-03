@@ -3,7 +3,7 @@
 <CodeBlocks_lexer_properties>
 		<Lexer name="AngelScript"
 				index="3"
-				filemasks="*.script">
+				filemasks="*.as">
 				<Style name="Default"
 						index="0"
 						fg="0,0,0"
@@ -69,8 +69,6 @@
 								value="and bits bits8 bits16 bits32 bool break case const continue default
 								do double else false float for if import in inout int int8 int16 int32 not
 								null or out return struct switch true uint uint8 uint16 uint32 void while xor"/>
-						<User index="1"
-								value="Log Project ProjectManager SetAcceleratorFor ShowMessage wxString"/>
 						<Documentation index="2"
 								value="a addindex addtogroup anchor arg attention
 								author b brief bug c class code date def defgroup deprecated dontinclude

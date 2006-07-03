@@ -25,8 +25,9 @@ wxSmithWizard::~wxSmithWizard()
 {
 }
 
-int wxSmithWizard::Launch(int Index)
+CompileTargetBase* wxSmithWizard::Launch(int Index)
 {
     wxsWizard Dlg(0L);
-    return Dlg.ShowModal();
+    Dlg.ShowModal();
+    return 0;
 }

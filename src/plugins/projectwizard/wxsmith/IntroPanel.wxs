@@ -8,7 +8,8 @@
                 <border>8</border>
                 <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                 <object class="wxStaticText" name="ID_STATICTEXT1" variable="lblIntro" member="yes">
-                    <label>Welcome to the new console application wizard!&#x0A;&#x0A;This wizard will guide you to create a new console&#x0A;application.&#x0A;&#x0A;When you &apos;re ready to proceed, please click &quot;Next&quot;...</label>
+                    <style>wxST_NO_AUTORESIZE</style>
+                    <label>Welcome to the new console application wizard!&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;</label>
                 </object>
             </object>
         </object>

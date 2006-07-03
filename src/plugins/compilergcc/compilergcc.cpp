@@ -1365,7 +1365,7 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
 
     if (fname.GetExt() == _T("script"))
     {
-        Manager::Get()->GetScriptingManager()->LoadAndRunScript(filename);
+        Manager::Get()->GetScriptingManager()->LoadScript(filename);
         return 0;
     }
 

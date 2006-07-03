@@ -7,6 +7,7 @@
 #include <wx/treectrl.h>
 #include "settings.h"
 #include "manager.h"
+#include "cbexception.h"
 
 // forward decls
 class wxMenuBar;
@@ -41,6 +42,9 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 	public:
         friend class Mgr<ProjectManager>;
         friend class Manager; // give Manager access to our private members
+
+        ProjectManager(const ProjectManager& rhs) { cbThrow(_T("Can't call ProjectManager's copy ctor!!!")); }
+        virtual void operator=(const ProjectManager& rhs){ cbThrow(_T("Can't assign an ProjectManager* !!!")); }
 
 		wxFlatNotebook* GetNotebook() { return m_pNotebook; }
 

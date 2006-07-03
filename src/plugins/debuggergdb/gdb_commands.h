@@ -14,7 +14,7 @@
 #include <globals.h>
 #include <manager.h>
 #include <scriptingmanager.h>
-#include <scriptingcall.h>
+#include <sqplus.h>
 #include "debugger_defs.h"
 #include "debuggergdb.h"
 #include "gdb_driver.h"
@@ -100,23 +100,6 @@ namespace
   }
 }
 
-static int GetScriptParserFuncID(const wxString& parseFunc)
-{
-    static std::map<wxString, int> scriptParserFuncs;
-
-    // add it in the cache, if not exists
-    int funcID = -1;
-    std::map<wxString, int>::iterator it = scriptParserFuncs.find(parseFunc);
-    if (it == scriptParserFuncs.end())
-    {
-        funcID = Manager::Get()->GetScriptingManager()->FindFunctionByName(parseFunc, _T("debugger-scripts"));
-        scriptParserFuncs[parseFunc] = funcID;
-    }
-    else
-        funcID = it->second;
-    return funcID;
-}
-
 //#0 wxEntry () at main.cpp:5
 //#8  0x77d48734 in USER32!GetDC () from C:\WINDOWS\system32\user32.dll
 //#9  0x001b04fe in ?? ()
@@ -148,6 +131,8 @@ static wxRegEx reInfoProgramProcess(_T("child process ([0-9]+)"));
 //  2 Thread 1082132832 (LWP 8017)  0x00002aaaac5a2aca in pthread_cond_wait@@GLIBC_2.3.2 () from /lib/libpthread.so.0
 //* 1 Thread 46912568064384 (LWP 7926)  0x00002aaaac76e612 in poll () from /lib/libc.so.6
 static wxRegEx reInfoThreads(_T("(\\**)[ \t]*([0-9]+)[ \t](.*)[ \t]in"));
+
+DECLARE_INSTANCE_TYPE(wxString);
 
 /**
   * Command to add a search directory for source files in debugger's paths.
@@ -566,13 +551,13 @@ class GdbCmd_Watch : public DebuggerCmd
             }
             else
             {
-                int funcID = GetScriptParserFuncID(m_Cmd);
-                if (funcID >= 0)
+                try
                 {
-                    wxString r;
-                    VoidExecutor<const wxString&, const wxString&, unsigned int, unsigned int, wxString&> exec(funcID);
-                    exec.Call(w_type, m_pWatch->keyword, watch->array_start, watch->array_count, r);
-                    m_Cmd = r;
+                    m_Cmd = SqPlus::SquirrelFunction<wxString&>(cbU2C(m_Cmd))(w_type, m_pWatch->keyword, watch->array_start, watch->array_count);
+                }
+                catch (SquirrelError e)
+                {
+                    m_Cmd = cbC2U(e.desc);
                 }
             }
         }
@@ -582,13 +567,13 @@ class GdbCmd_Watch : public DebuggerCmd
     		w << m_pWatch->keyword << _T(" = ");
             if (!m_ParseFunc.IsEmpty())
             {
-                int funcID = GetScriptParserFuncID(m_ParseFunc);
-                if (funcID >= 0)
+                try
                 {
-                    wxString r;
-                    VoidExecutor<const wxString&, unsigned int, wxString&> exec(funcID);
-                    exec.Call(output, m_pWatch->array_start, r);
-                    w << r;
+                    w << SqPlus::SquirrelFunction<wxString&>(cbU2C(m_ParseFunc))(output, m_pWatch->array_start);
+                }
+                catch (SquirrelError e)
+                {
+                    w << cbC2U(e.desc);
                 }
             }
             else
@@ -663,13 +648,14 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
             }
             else
             {
-                int funcID = GetScriptParserFuncID(m_Cmd);
-                if (funcID >= 0)
+                try
                 {
-                    wxString r;
-                    VoidExecutor<const wxString&, const wxString&, unsigned int, unsigned int, wxString&> exec(funcID);
-                    exec.Call(w_type, what, 0, 0, r);
-                    m_Cmd = r;
+                    m_Cmd = SqPlus::SquirrelFunction<wxString&>(cbU2C(m_Cmd))(w_type, what, 0, 0);
+                }
+                catch (SquirrelError e)
+                {
+                    m_Cmd = cbC2U(e.desc);
+                    m_pDriver->DebugLog(_T("Script exception: ") + m_Cmd);
                 }
             }
         }
@@ -683,13 +669,15 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
                 tip = m_What + _T("=");
     		    if (!m_ParseFunc.IsEmpty())
     		    {
-    		        int funcID = GetScriptParserFuncID(m_ParseFunc);
-                    if (funcID >= 0)
+    		        try
+    		        {
+                        tip << SqPlus::SquirrelFunction<wxString&>(cbU2C(m_ParseFunc))(output, 0);
+//                        tip << SqPlus::SquirrelFunction<wxString>(cbU2C(m_ParseFunc))(output, 0);
+                    }
+                    catch (SquirrelError e)
                     {
-                        wxString r;
-                        VoidExecutor<const wxString&, unsigned int, wxString&> exec(funcID);
-                        exec.Call(output, 0, r);
-                        tip << r;
+                        tip << cbC2U(e.desc);
+                        m_pDriver->DebugLog(_T("Script exception: ") + tip);
                     }
     		    }
                 else

@@ -10,8 +10,9 @@
 #include "messagemanager.h"
 #include "macrosmanager.h"
 #include "scriptingmanager.h"
-#include "scriptingcall.h"
 #include "filefilters.h"
+
+#include <sqplus.h>
 
 CompilerCommandGenerator::CompilerCommandGenerator()
 {
@@ -246,17 +247,18 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
 /// Apply pre-build scripts for @c base.
 void CompilerCommandGenerator::DoBuildScripts(CompileOptionsBase* base, const wxString& funcName)
 {
-    const wxString module = _T("build-scripts");
     const wxArrayString& scripts = base->GetBuildScripts();
     for (size_t i = 0; i < scripts.GetCount(); ++i)
     {
-        Manager::Get()->GetScriptingManager()->LoadAndRunScript(scripts[i], module, false);
-
-        int funcID = Manager::Get()->GetScriptingManager()->FindFunctionByDeclaration(_T("void ") + funcName + _T("(CompileOptionsBase@ base)"), module);
-        if (funcID < 0)
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Invalid build script: '%s'"), scripts[i].c_str());
-        VoidExecutor<CompileOptionsBase*> exec(funcID);
-        exec.Call(base);
+        Manager::Get()->GetScriptingManager()->LoadScript(scripts[i]);
+        try
+        {
+            SqPlus::SquirrelFunction<void>(cbU2C(funcName))(base);
+        }
+        catch (SquirrelError& e)
+        {
+            Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        }
     }
 }
 

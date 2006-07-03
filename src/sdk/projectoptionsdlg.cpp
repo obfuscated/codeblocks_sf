@@ -57,7 +57,6 @@
 #include "editarrayfiledlg.h"
 #include "externaldepsdlg.h"
 #include "annoyingdialog.h"
-#include "angelscript.h"
 #include "filefilters.h"
 
 BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
@@ -715,9 +714,9 @@ void ProjectOptionsDlg::OnScriptsOverviewSelChanged(wxTreeEvent& event)
 
 bool ProjectOptionsDlg::IsScriptValid(const wxString& script)
 {
-    int r = Manager::Get()->GetScriptingManager()->LoadAndRunScript(m_Project->GetBasePath() + wxFILE_SEP_PATH + script, _T("test_module"), false);
-    Manager::Get()->GetScriptingManager()->GetEngine()->Discard("test_module");
-    return r == 0;
+//    int r = Manager::Get()->GetScriptingManager()->LoadAndRunScript(m_Project->GetBasePath() + wxFILE_SEP_PATH + script, false);
+//    Manager::Get()->GetScriptingManager()->GetEngine()->Discard("test_module");
+    return true;
 }
 
 bool ProjectOptionsDlg::DoCheckScripts(CompileTargetBase* base)

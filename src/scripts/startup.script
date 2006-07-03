@@ -1,7 +1,5 @@
-int main()
+function main()
 {
-	Log("Running startup script");
-    // ShowMessage("Hello world!");
-
-	return 0;
+	Log(_T("Running startup script"));
+    // ShowMessage(_T("Hello world!"));
 }

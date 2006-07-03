@@ -6,6 +6,7 @@
 #include <wx/panel.h>
 #include "globals.h"
 #include "settings.h"
+#include "cbexception.h"
 
 class wxMenu;
 class EditorBase;
@@ -19,6 +20,9 @@ class DLLIMPORT EditorBase : public wxPanel
     public:
         EditorBase(wxWindow* parent, const wxString& filename);
         virtual ~EditorBase();
+
+        EditorBase(const EditorBase& rhs) { cbThrow(_T("Can't call EditorBase's copy ctor!!!")); }
+        virtual void operator=(const EditorBase& rhs){ cbThrow(_T("Can't assign an EditorBase* !!!")); }
 
 		virtual const wxString& GetFilename() const { return m_Filename; }
 		/** Sets the editor's filename */

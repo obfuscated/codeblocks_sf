@@ -715,6 +715,13 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
 
 cbProject* ProjectManager::NewProject(const wxString& filename)
 {
+    if (!filename.IsEmpty() && wxFileExists(filename))
+    {
+        if (cbMessageBox(_("Project file already exists.\nAre you really sure you want to OVERWRITE it?"), _("Confirmation"), wxYES_NO | wxICON_QUESTION) == wxID_YES)
+            wxRemoveFile(filename);
+        else
+            return 0;
+    }
     return LoadProject(filename);
 }
 

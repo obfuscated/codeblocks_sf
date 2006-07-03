@@ -159,10 +159,10 @@ cbCodeCompletionPlugin::cbCodeCompletionPlugin()
 }
 
 /////
-///// cbProjectWizardPlugin
+///// cbWizardPlugin
 /////
 
-cbProjectWizardPlugin::cbProjectWizardPlugin()
+cbWizardPlugin::cbWizardPlugin()
 {
-    m_Type = ptProjectWizard;
+    m_Type = ptWizard;
 }

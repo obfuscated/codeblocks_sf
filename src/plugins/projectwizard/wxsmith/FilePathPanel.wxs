@@ -1,0 +1,93 @@
+<resource>
+    <object class="wxPanel" name="FilePathPanel">
+        <style>wxTAB_TRAVERSAL</style>
+        <object class="wxBoxSizer" variable="BoxSizer1" member="no">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="no">
+                    <label>Please enter the file&apos;s name and whether to add it&#x0A;to the active project.</label>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="no">
+                    <label>Filename:</label>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxBoxSizer" variable="BoxSizer2" member="yes">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="txtFilename" member="yes">
+                            <value>Text</value>
+                            <handler entry="EVT_TEXT" function="OntxtFilenameText" />
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <object class="wxButton" name="ID_BUTTON1" variable="btnBrowse" member="yes">
+                            <label>...</label>
+                            <handler entry="EVT_BUTTON" function="OnbtnBrowseClick" />
+                            <size>22,22</size>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxStaticText" name="ID_STATICTEXT3" variable="lblGuard" member="yes">
+                    <label>Header guard word:</label>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="txtGuard" member="yes">
+                    <value>Text</value>
+                </object>
+            </object>
+            <object class="spacer">
+                <option>1</option>
+                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+            </object>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxCheckBox" name="ID_CHECKBOX1" variable="chkAddToProject" member="yes">
+                    <label>Add file to active project</label>
+                    <handler entry="EVT_CHECKBOX" function="OnchkAddToProjectChange" />
+                </object>
+            </object>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxBoxSizer" variable="BoxSizer3" member="yes">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="spacer">
+                        <size>16,16</size>
+                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALL|wxALIGN_CENTER</flag>
+                        <object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="no">
+                            <label>In build target:</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <object class="wxChoice" name="ID_CHOICE1" variable="cmbTargets" member="yes" />
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

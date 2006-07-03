@@ -1,31 +1,31 @@
 // Registers new types with driver
-void RegisterTypes(DebuggerDriver@ driver)
+function RegisterTypes(driver)
 {
 //    signature:
 //    driver.RegisterType(type_name, regex, eval_func, parse_func);
 
     // wxString
     driver.RegisterType(
-        "wxString",
-        "[^[:alnum:]_]*wxString[^[:alnum:]_]*",
-        "Evaluate_wxString",
-        "Parse_wxString"
+        _T("wxString"),
+        _T("[^[:alnum:]_]*wxString[^[:alnum:]_]*"),
+        _T("Evaluate_wxString"),
+        _T("Parse_wxString")
     );
 
     // STL String
     driver.RegisterType(
-        "STL String",
-        "[^[:alnum:]_]+string[^[:alnum:]_]*",
-        "Evaluate_StlString",
-        "Parse_StlString"
+        _T("STL String"),
+        _T("[^[:alnum:]_]+string[^[:alnum:]_]*"),
+        _T("Evaluate_StlString"),
+        _T("Parse_StlString")
     );
 
     // STL Vector
     driver.RegisterType(
-        "STL Vector",
-        "[^[:alnum:]_]*vector<.*",
-        "Evaluate_StlVector",
-        "Parse_StlVector"
+        _T("STL Vector"),
+        _T("[^[:alnum:]_]*vector<.*"),
+        _T("Evaluate_StlVector"),
+        _T("Parse_StlVector")
     );
 }
 
@@ -38,45 +38,47 @@ void RegisterTypes(DebuggerDriver@ driver)
 // start contains the starting position. Useful for arrays.
 // count contains the count of evaluation. Useful for arrays. If 0, evaluate from start (variable) to end of array.
 // result must contain the debugger's command when it returns.
-void Evaluate_wxString(const wxString& in type, const wxString& in a_str, uint start, uint count, wxString& out result)
+function Evaluate_wxString(type, a_str, start, count)
 {
-    wxString oper = ".";
-    if (type.Find('*', false) > 0)
-        oper = "->";
+    local oper = _T(".");
 
-    result = "output /c " + a_str + oper + "c_str()[" + start + "]@";
+    if (type.Find(_T("*"), false) > 0)
+        oper = _T("->");
+
+    local result = _T("output /c ") + a_str + oper + _T("c_str()[") + start + _T("]@");
     if (count != 0)
-        result += count;
+        result = result + count;
     else
-        result += a_str + oper + "size()";
+        result = result + a_str + oper + _T("size()");
+    return result;
 }
 
 // This function parses driver's output.
-// When it returns, the "result" argument contains the parsing result.
-void Parse_wxString(const wxString& in a_str, uint start, wxString& out result)
+// When it returns, the _T("result") argument contains the parsing result.
+function Parse_wxString(a_str, start)
 {
-    result = "\"";
-    uint len = a_str.length();
-    uint c = 0;
+    local result = _T("\"");
+    local len = a_str.length();
+    local c = 0;
     while (c < len)
     {
-        switch (a_str[c])
+        switch (a_str.GetChar(c))
         {
             case '\'':
                 ++c;
                 while (c < len)
                 {
-                    switch (a_str[c])
+                    switch (a_str.GetChar(c))
                     {
                         case '\\':
-                            result += a_str[c++];
-                            result += a_str[c++];
+                            result.AddChar(a_str.GetChar(c++));
+                            result.AddChar(a_str.GetChar(c++));
                             break;
                         default:
-                            result += a_str[c++];
+                            result.AddChar(a_str.GetChar(c++));
                             break;
                     }
-                    if (a_str[c] == '\'')
+                    if (a_str.GetChar(c) == '\'')
                         break;
                 }
                 break;
@@ -86,67 +88,75 @@ void Parse_wxString(const wxString& in a_str, uint start, wxString& out result)
         }
         ++c;
     }
-    result += "\"";
+    result = result + _T("\"");
+    return result;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // STL String
 ////////////////////////////////////////////////////////////////////////////////
 
-void Evaluate_StlString(const wxString& in type, const wxString& in a_str, uint start, uint count, wxString& out result)
+function Evaluate_StlString(type, a_str, start, count)
 {
-    wxString oper = ".";
-    if (type.Find('*', false) > 0)
-        oper = "->";
+    local oper = _T(".");
 
-    result = "output " + a_str + oper + "c_str()[" + start + "]@";
+    if (type.Find(_T("*"), false) > 0)
+        oper = _T("->");
+
+    local result = _T("output ") + a_str + oper + _T("c_str()[") + start + _T("]@");
     if (count != 0)
-        result += count;
+        result = result + count;
     else
-        result += a_str + oper + "size()";
+        result = result + a_str + oper + _T("size()");
+    return result;
 }
 
-void Parse_StlString(const wxString& in a_str, uint start, wxString& out result)
+function Parse_StlString(a_str, start)
 {
     // nothing needs to be done
-    result = a_str;
+    return a_str;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // STL Vector
 ////////////////////////////////////////////////////////////////////////////////
 
-void Evaluate_StlVector(const wxString& in type, const wxString& in a_str, uint start, uint count, wxString& out result)
+function Evaluate_StlVector(type, a_str, start, count)
 {
-    wxString oper = ".";
-    if (type.Find('*', false) > 0)
-        oper = "->";
+    local oper = _T(".");
 
-    wxString t = type.AfterFirst('<').BeforeFirst(',');
-    result = "output ((" + t + "*)" + a_str + oper + "begin())[" + start + "]@";
+    if (type.Find(_T("*"), false) > 0)
+        oper = _T("->");
+
+    local t = type.AfterFirst('<').BeforeFirst(',');
+    local result = _T("output ((") + t + _T("*)") + a_str + oper + _T("begin())[") + start + _T("]@");
     if (count != 0)
-        result += count;
+        result = result + count;
     else
-        result += a_str + oper + "size() - " + start;
+        result = result + a_str + oper + _T("size() - ") + start;
+    return result;
 }
 
-void Parse_StlVector(const wxString& in a_str, uint start, wxString& out result)
+function Parse_StlVector(a_str, start)
 {
     // add [] indexes in front of each value
-    int len = a_str.length();
-    int c = 0;
-    int index = start;
+    local len = a_str.length();
+    local c = 0;
+    local index = start;
+    local result = _T("");
     while (c < len)
     {
-        result += a_str[c];
-        switch (a_str[c])
+        local char = a_str.GetChar(c);
+        result.AddChar(char);
+        switch (char)
         {
             case '{':
             case ',':
-                result += "[" + index++ + "] = ";
+                result = result + _T("[") + (index++) + _T("] = ");
                 break;
             default: break;
         }
         ++c;
     }
+    return result;
 }

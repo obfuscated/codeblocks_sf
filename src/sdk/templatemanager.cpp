@@ -44,16 +44,10 @@
     #include <wx/dir.h>
 #endif
 
-#include <wx/mdi.h>
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>
 #include "filefilters.h"
-
-int idMenuNewFromTemplate = wxNewId();
-
-BEGIN_EVENT_TABLE(TemplateManager, wxEvtHandler)
-	EVT_MENU(idMenuNewFromTemplate, TemplateManager::OnNew)
-END_EVENT_TABLE()
+#include "newfromtemplatedlg.h"
 
 TemplateManager::TemplateManager()
 {
@@ -67,8 +61,6 @@ TemplateManager::~TemplateManager()
     // this is a core manager, so it is removed when the app is shutting down.
     // in this case, the app has already un-hooked us, so no need to do it ourselves...
 //	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
-
-	WX_CLEAR_ARRAY(m_Templates);
 }
 
 void TemplateManager::CreateMenu(wxMenuBar* menuBar)
@@ -81,36 +73,6 @@ void TemplateManager::ReleaseMenu(wxMenuBar* menuBar)
 
 void TemplateManager::BuildToolsMenu(wxMenu* menu)
 {
-	if (menu)
-		menu->Append(idMenuNewFromTemplate, _("&From template..."));
-}
-
-void TemplateManager::LoadTemplates()
-{
-    wxLogNull zero; // disable error logging
-
-    wxString baseDir = ConfigManager::GetDataFolder();
-	baseDir << _T("/templates");
-
-    wxDir dir(baseDir);
-
-    if (!dir.IsOpened())
-        return;
-
-	WX_CLEAR_ARRAY(m_Templates);
-    wxString filename;
-    bool ok = dir.GetFirst(&filename, _T("*.template"), wxDIR_FILES);
-    while (ok)
-    {
-        ProjectTemplateLoader* pt = new ProjectTemplateLoader();
-		if (pt->Open(baseDir + _T("/") + filename))
-			m_Templates.Add(pt);
-		else
-			delete pt;
-
-        ok = dir.GetNext(&filename);
-    }
-	Manager::Get()->GetMessageManager()->DebugLog(_T("%d templates loaded"), m_Templates.GetCount());
 }
 
 void TemplateManager::LoadUserTemplates()
@@ -139,22 +101,9 @@ void TemplateManager::LoadUserTemplates()
 cbProject* TemplateManager::NewProject()
 {
 	cbProject* prj = NULL;
-	// one-time warning message
-    if (Manager::Get()->GetConfigManager(_T("template_manager"))->ReadBool(_T("/notification"), true))
-    {
-    	cbMessageBox(_("These templates are only provided for your convenience.\n"
-                        "Many of the available templates need extra libraries "
-                        "in order to be compiled successfully.\n\n"
-                        "Extra libraries which Code::Blocks does *NOT* provide..."),
-                    _("One-time information"),
-                    wxICON_INFORMATION);
-    	// don't warn the user again
-        Manager::Get()->GetConfigManager(_T("template_manager"))->Write(_T("/notification"), false);
-    }
 
-	LoadTemplates();
 	LoadUserTemplates();
-	NewFromTemplateDlg dlg(m_Templates, m_UserTemplates);
+	NewFromTemplateDlg dlg(m_UserTemplates);
     PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_OK)
 	{
@@ -169,134 +118,16 @@ cbProject* TemplateManager::NewProject()
 cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
 {
 	cbProject* prj = NULL;
-	// is it a wizard or a template?
-    cbProjectWizardPlugin* wiz = dlg.GetWizard();
+    cbWizardPlugin* wiz = dlg.GetWizard();
 	if (wiz)
 	{
 		// wizard, too easy ;)
-		wiz->Launch(dlg.GetWizardIndex());
-        // TODO (rickg22#1#): Mandrav: Please add some way to return the project from the wizard
-        //                             so the project can be added to the history
-		return NULL;
-    }
-
-	// else it's a template
-    ProjectTemplateLoader* pt = dlg.GetTemplate();
-    if (!pt)
-    {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Templates dialog returned OK but no template was selected ?!?"));
-        return NULL;
-    }
-    int optidx = dlg.GetOptionIndex();
-    int filesetidx = dlg.GetFileSetIndex();
-    TemplateOption& option = pt->m_TemplateOptions[optidx];
-    FileSet& fileset = pt->m_FileSets[filesetidx];
-    wxString ProjectPath = dlg.GetProjectPath();
-    if(ProjectPath.Mid(ProjectPath.Length() - 1) == wxFILE_SEP_PATH)
-    {
-        ProjectPath.RemoveLast();
-    }
-
-    if (!wxDirExists(ProjectPath + wxFILE_SEP_PATH))
-    {
-        if (cbMessageBox(wxString::Format(_("The directory %s does not exist. Are you sure you want to create it?"), ProjectPath.c_str()), _("Confirmation"), wxICON_QUESTION | wxYES_NO) != wxID_YES)
-            return NULL;
-    }
-    if (wxDirExists(ProjectPath + wxFILE_SEP_PATH + dlg.GetProjectName() + wxFILE_SEP_PATH))
-    {
-        if (cbMessageBox(wxString::Format(_("The directory %s already exists. Are you sure you want to create the new project there?"), wxString(ProjectPath + wxFILE_SEP_PATH + dlg.GetProjectName()).c_str()), _("Confirmation"), wxICON_QUESTION | wxYES_NO) != wxID_YES)
-            return NULL;
-    }
-
-    wxFileName fname;
-    fname.Assign(ProjectPath + wxFILE_SEP_PATH +
-                dlg.GetProjectName() + wxFILE_SEP_PATH +
-                dlg.GetProjectName() + _T(".") + FileFilters::CODEBLOCKS_EXT);
-    LOGSTREAM << _T("Creating ") << fname.GetPath() << _T('\n');
-    if (!CreateDirRecursively(fname.GetPath() + wxFILE_SEP_PATH))
-    {
-        cbMessageBox(_("Failed to create directory ") + fname.GetPath(), _("Error"), wxICON_ERROR);
-        return NULL;
-    }
-
-    if (ProjectPath != Manager::Get()->GetConfigManager(_T("template_manager"))->Read(_T("/projects_path")))
-    {
-        if (cbMessageBox(wxString::Format(_("Do you want to set %s as the default directory for new projects?"), ProjectPath.c_str()), _("Question"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
-            Manager::Get()->GetConfigManager(_T("template_manager"))->Write(_T("/projects_path"), ProjectPath);
-    }
-
-    wxString path = fname.GetPath(wxPATH_GET_VOLUME);
-    wxString filename = fname.GetFullPath();
-    wxString sep = wxFILE_SEP_PATH;
-
-    wxString baseDir = ConfigManager::GetDataFolder();
-    baseDir << sep << _T("templates");
-    wxCopyFile(baseDir + sep + option.file, filename);
-
-    prj = Manager::Get()->GetProjectManager()->LoadProject(filename);
-    if (prj)
-    {
-        prj->SetTitle(dlg.GetProjectName());
-        if (option.useDefaultCompiler)
-        {
-            // we must update the project (and the targets) to use the default compiler
-            wxString compilerId = CompilerFactory::GetDefaultCompilerID();
-            prj->SetCompilerID(compilerId);
-            for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
-            {
-                ProjectBuildTarget* bt = prj->GetBuildTarget(i);
-                bt->SetCompilerID(compilerId);
-            }
-        }
-
-        if (!dlg.DoNotCreateFiles())
-        {
-            for (unsigned int i = 0; i < fileset.files.GetCount(); ++i)
-            {
-                FileSetFile& fsf = fileset.files[i];
-                wxString dst = path + sep + fsf.destination;
-                bool skipped = false;
-                while (wxFileExists(dst))
-                {
-                    wxString msg;
-                    msg.Printf(_("File %s already exists.\nDo you really want to overwrite this file?"), dst.c_str());
-                    if (cbMessageBox(msg, _("Overwrite existing file?"), wxYES_NO | wxICON_WARNING) == wxID_YES)
-                        break;
-                    wxFileDialog fdlg(Manager::Get()->GetAppWindow(),
-                                        _("Save file as..."),
-                                        wxEmptyString,
-                                        dst,
-                                        FileFilters::GetFilterString(dst.c_str()),
-                                        wxSAVE);
-                    PlaceWindow(&fdlg);
-                    if (fdlg.ShowModal() == wxID_CANCEL)
-                    {
-                        msg.Printf(_("File %s is skipped..."), dst.c_str());
-                        cbMessageBox(msg, _("File skipped"), wxICON_ERROR);
-                        skipped = true;
-                        break;
-                    }
-                    dst = fdlg.GetPath();
-                }
-                if (skipped)
-                    continue;
-                wxCopyFile(baseDir + sep + fsf.source, dst);
-                for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
-                    prj->AddFile(i, dst);
-            }
-        }
-
-        for (unsigned int i = 0; i < option.extraCFlags.GetCount(); ++i)
-            prj->AddCompilerOption(option.extraCFlags[i]);
-        for (unsigned int i = 0; i < option.extraLDFlags.GetCount(); ++i)
-            prj->AddLinkerOption(option.extraLDFlags[i]);
-
-        Manager::Get()->GetProjectManager()->RebuildTree();
-
-        if (!pt->m_Notice.IsEmpty())
-            cbMessageBox(pt->m_Notice, _("Notice"), pt->m_NoticeMsgType);
-        if (!option.notice.IsEmpty())
-            cbMessageBox(option.notice, _("Notice"), option.noticeMsgType);
+		CompileTargetBase *ret = wiz->Launch(dlg.GetWizardIndex());
+		switch (wiz->GetOutputType(dlg.GetWizardIndex()))
+		{
+		    case cbWizardPlugin::otProject: prj = dynamic_cast<cbProject*>(ret); break;
+		    default: break;
+		}
     }
     return prj;
 }
@@ -477,11 +308,4 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
         cbMessageBox(_("User-template saved succesfuly"), _("Information"), wxICON_INFORMATION | wxOK);
     else
         cbMessageBox(_("Some files could not be saved with the template..."), _("Error"), wxICON_ERROR);
-}
-
-// events
-
-void TemplateManager::OnNew(wxCommandEvent& event)
-{
-	NewProject();
 }

@@ -577,8 +577,16 @@ void EditorManager::SetActiveEditor(EditorBase* ed)
 cbEditor* EditorManager::New(const wxString& newFileName)
 {
     wxString old_title = Manager::Get()->GetAppWindow()->GetTitle(); // Fix for Bug #1389450
+    // create a dummy file
+    if (!newFileName.IsEmpty() && !wxFileExists(newFileName) && wxDirExists(wxPathOnly(newFileName)))
+    {
+        wxLogNull ln; // we don't care if this fails...
+        wxFile f(newFileName, wxFile::write);
+        if (!f.IsOpened())
+            return 0;
+    }
     cbEditor* ed = new cbEditor(m_pNotebook, newFileName);
-    if (!ed->SaveAs())
+    if ((newFileName.IsEmpty() && !ed->SaveAs()) || !ed->Save())
     {
         //DeletePage(ed->GetPageIndex());
         ed->Destroy();
@@ -594,8 +602,8 @@ cbEditor* EditorManager::New(const wxString& newFileName)
 
     ed->SetColourSet(m_Theme);
     AddEditorBase(ed);
-#ifdef USE_OPENFILES_TREE
 
+#ifdef USE_OPENFILES_TREE
     AddFiletoTree(ed);
 #endif
 

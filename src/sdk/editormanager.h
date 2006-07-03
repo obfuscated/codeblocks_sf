@@ -7,6 +7,7 @@
 
 #include "settings.h"
 #include "manager.h"
+#include "cbexception.h" // cbThrow
 
 #include "openfilestree.h"
 
@@ -44,6 +45,10 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
     public:
         friend class Manager; // give Manager access to our private members
         static bool CanShutdown(){ return s_CanShutdown; }
+
+        EditorManager(const EditorManager& rhs) { cbThrow(_T("Can't call EditorManager's copy ctor!!!")); }
+        virtual void operator=(const EditorManager& rhs){ cbThrow(_T("Can't assign an EditorManager* !!!")); }
+
         wxFlatNotebook* GetNotebook(){ return m_pNotebook; }
         void CreateMenu(wxMenuBar* menuBar);
         void ReleaseMenu(wxMenuBar* menuBar);

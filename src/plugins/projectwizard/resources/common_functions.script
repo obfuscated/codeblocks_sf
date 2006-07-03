@@ -3,62 +3,62 @@
 //
 
 // Warnings On
-void WarningsOn(CompileOptionsBase@ base, const wxString& in compilerID)
+function WarningsOn(base, compilerID)
 {
-    if (compilerID == "msvctk")
+    if (compilerID == _T("msvctk"))
     {
-        base.AddCompilerOption("/W3");
+        base.AddCompilerOption(_T("/W3"));
     }
     else
     {
         // GCC options are used as fallback
-        base.AddCompilerOption("-Wall");
+        base.AddCompilerOption(_T("-Wall"));
     }
 }
 
 // Debug symbols On
-void DebugSymbolsOn(CompileOptionsBase@ base, const wxString& in compilerID)
+function DebugSymbolsOn(base, compilerID)
 {
-    if (compilerID == "msvctk")
+    if (compilerID == _T("msvctk"))
     {
-        base.AddCompilerOption("/Zi");
-        base.AddCompilerOption("/D_DEBUG");
-        base.AddLinkerOption("/DEBUG");
+        base.AddCompilerOption(_T("/Zi"));
+        base.AddCompilerOption(_T("/D_DEBUG"));
+        base.AddLinkerOption(_T("/DEBUG"));
     }
     else
     {
         // GCC options are used as fallback
-        base.AddCompilerOption("-g");
+        base.AddCompilerOption(_T("-g"));
     }
 }
 
 // Optimizations On
-void OptimizationsOn(CompileOptionsBase@ base, const wxString& in compilerID)
+function OptimizationsOn(base, compilerID)
 {
-    if (compilerID == "msvctk")
+    if (compilerID == _T("msvctk"))
     {
-        base.AddCompilerOption("/Og");
-        base.AddCompilerOption("/Ox");
-        base.AddCompilerOption("/DNDEBUG");
+        base.AddCompilerOption(_T("/Og"));
+        base.AddCompilerOption(_T("/Ox"));
+        base.AddCompilerOption(_T("/DNDEBUG"));
     }
     else
     {
         // GCC options are used as fallback
-        base.AddCompilerOption("-O2");
-        base.AddCompilerOption("-s");
+        base.AddCompilerOption(_T("-O2"));
+        base.AddCompilerOption(_T("-s"));
     }
 }
 
 // C++ Exceptions On
-void CppExceptionsOn(CompileOptionsBase@ base, const wxString& in compilerID)
+function CppExceptionsOn(base, compilerID)
 {
-    if (compilerID == "msvctk")
+    if (compilerID == _T("msvctk"))
     {
-        base.AddCompilerOption("/EHsc");
+        base.AddCompilerOption(_T("/EHsc"));
     }
     else
     {
         // GCC options are used as fallback
-        base.AddCompilerOption("-fexceptions");
+        base.AddCompilerOption(_T("-fexceptions"));
     }
 }

@@ -10,7 +10,6 @@
 #include "messagemanager.h"
 #include "macrosmanager.h"
 #include "scriptingmanager.h"
-#include "scriptingcall.h"
 
 CompilerMINGWGenerator::CompilerMINGWGenerator()
 {

@@ -28,22 +28,22 @@ class CompilerPanel: public wxPanel
         void EnableConfigurationTargets(bool en);
 
         void SetWantDebug(bool want){ chkConfDebug->SetValue(want); }
-        bool GetWantDebug() const { return chkConfDebug->IsChecked(); }
+        bool GetWantDebug(){ return chkConfDebug->IsChecked(); }
         void SetDebugName(const wxString& name){ txtDbgName->SetValue(name); }
-        wxString GetDebugName() const { return txtDbgName->GetValue(); }
+        wxString GetDebugName(){ return txtDbgName->GetValue(); }
         void SetDebugOutputDir(const wxString& dir){ txtDbgOut->SetValue(dir); }
-        wxString GetDebugOutputDir() const { return txtDbgOut->GetValue(); }
+        wxString GetDebugOutputDir(){ return txtDbgOut->GetValue(); }
         void SetDebugObjectOutputDir(const wxString& dir){ txtDbgObjOut->SetValue(dir); }
-        wxString GetDebugObjectOutputDir() const { return txtDbgObjOut->GetValue(); }
+        wxString GetDebugObjectOutputDir(){ return txtDbgObjOut->GetValue(); }
 
         void SetWantRelease(bool want){ chkConfRelease->SetValue(want); }
-        bool GetWantRelease() const { return chkConfRelease->IsChecked(); }
+        bool GetWantRelease(){ return chkConfRelease->IsChecked(); }
         void SetReleaseName(const wxString& name){ txtRelName->SetValue(name); }
-        wxString GetReleaseName() const { return txtRelName->GetValue(); }
+        wxString GetReleaseName(){ return txtRelName->GetValue(); }
         void SetReleaseOutputDir(const wxString& dir){ txtRelOut->SetValue(dir); }
-        wxString GetReleaseOutputDir() const { return txtRelOut->GetValue(); }
+        wxString GetReleaseOutputDir(){ return txtRelOut->GetValue(); }
         void SetReleaseObjectOutputDir(const wxString& dir){ txtRelObjOut->SetValue(dir); }
-        wxString GetReleaseObjectOutputDir() const { return txtRelObjOut->GetValue(); }
+        wxString GetReleaseObjectOutputDir(){ return txtRelObjOut->GetValue(); }
 
 		//(*Identifiers(CompilerPanel)
 		enum Identifiers

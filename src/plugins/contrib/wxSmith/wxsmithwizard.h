@@ -2,9 +2,10 @@
 #define WXSMITHWIZARD_H
 
 #include <cbplugin.h>
+#include <compiletargetbase.h>
 #include <wx/bitmap.h>
 
-class wxSmithWizard : public cbProjectWizardPlugin
+class wxSmithWizard : public cbWizardPlugin
 {
     public:
         wxSmithWizard();
@@ -26,8 +27,13 @@ class wxSmithWizard : public cbProjectWizardPlugin
         virtual const wxBitmap& GetBitmap(int index) const
         { return Bitmap; }
 
-        virtual int Launch(int index);
+        virtual CompileTargetBase* Launch(int index);
 
+        virtual wxString GetScriptFilename(int index) const
+        { return wxEmptyString; }
+
+        virtual cbWizardPlugin::OutputType GetOutputType(int index) const
+        { return cbWizardPlugin::otProject; }
     private:
         wxBitmap Bitmap;
 };

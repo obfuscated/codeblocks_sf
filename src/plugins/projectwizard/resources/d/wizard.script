@@ -7,50 +7,49 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-void BeginWizard()
+function BeginWizard()
 {
     // this is the text that will appear in the start (intro) page
-    wxString intro_msg = "Welcome to the new D application wizard!\n"
-                        "This wizard will guide you to create a new D application.\n\n"
-                        "When you 're ready to proceed, please click \"Next\"...";
+    local intro_msg = _T("Welcome to the new D application wizard!\n" +
+                        "This wizard will guide you to create a new D application.\n\n" +
+                        "When you 're ready to proceed, please click \"Next\"...");
 
     // add builtin pages
 	Wizard.AddIntroPage(intro_msg); // intro
 	Wizard.AddProjectPathPage(); // select project name and path
-	Wizard.AddCompilerPage("", "dmd;gdc", true, true); // select compiler and configurations
+	Wizard.AddCompilerPage(_T(""), _T("dmd;gdc"), true, true); // select compiler and configurations
 	// nothing more needs to be done here
 }
 
-bool GetFilesDir(wxString& inout result)
+function GetFilesDir()
 {
-    result = "d/console";
-    return true;
+    return _T("d/console");
 }
 
-bool SetupProject(Project@ project)
+function SetupProject(project)
 {
     // enable compiler warnings (project-wide)
-    if (Wizard.GetCompilerID() == "gdc")
-        WarningsOn(Cast_CompileOptionsBase(project), Wizard.GetCompilerID());
+    if (Wizard.GetCompilerID().Matches(_T("gdc")))
+        WarningsOn(project, Wizard.GetCompilerID());
 
     // Debug build target
-    BuildTarget@ target = project.GetBuildTarget(Wizard.GetDebugName());
-    if (target != null)
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
     {
         target.SetTargetType(ttConsoleOnly);
         target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
         // enable generation of debugging symbols for target
-        DebugSymbolsOn(Cast_CompileOptionsBase(target), Wizard.GetCompilerID());
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
     }
 
     // Release build target
-    @target = project.GetBuildTarget(Wizard.GetReleaseName());
-    if (target != null)
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
     {
         target.SetTargetType(ttConsoleOnly);
         target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
         // enable optimizations for target
-        OptimizationsOn(Cast_CompileOptionsBase(target), Wizard.GetCompilerID());
+        OptimizationsOn(target, Wizard.GetCompilerID());
     }
 
     return true;

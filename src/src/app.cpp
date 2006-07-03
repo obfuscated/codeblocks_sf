@@ -54,6 +54,8 @@
 #include <wx/arrstr.h>
 #include "crashhandler.h"
 
+#include <sqplus.h>
+
 #ifndef __WXMSW__
     #include "prefix.h" // binreloc
 #else
@@ -420,7 +422,15 @@ bool CodeBlocksApp::OnInit()
         Manager::Get()->ProcessEvent(event);
 
         // run startup script
-        Manager::Get()->GetScriptingManager()->LoadAndRunScript(_T("startup.script"));
+        try
+        {
+            Manager::Get()->GetScriptingManager()->LoadScript(_T("startup.script"));
+            SqPlus::SquirrelFunction<void>("main")();
+        }
+        catch (SquirrelError& exception)
+        {
+            Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
+        }
         Manager::ProcessPendingEvents();
 
         // finally, show the app
@@ -439,6 +449,10 @@ bool CodeBlocksApp::OnInit()
     catch (cbException& exception)
     {
         exception.ShowErrorMessage();
+    }
+    catch (SquirrelError& exception)
+    {
+        Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
     }
     catch (const char* message)
     {
@@ -478,6 +492,10 @@ int CodeBlocksApp::OnRun()
     catch (cbException& exception)
     {
         exception.ShowErrorMessage();
+    }
+    catch (SquirrelError& exception)
+    {
+        Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
     }
     catch (const char* message)
     {

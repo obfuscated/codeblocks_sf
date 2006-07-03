@@ -27,11 +27,12 @@
 #include <configmanager.h>
 #include <projectmanager.h>
 #include <scriptingmanager.h>
-#include <scriptingcall.h>
 #include <compilerfactory.h>
 #include <projectbuildtarget.h>
 #include <filefilters.h>
 #include <licenses.h> // defines some common licenses (like the GPL)
+
+#include <scripting/bindings/sc_base_types.h>
 
 #include "wizpage.h"
 
@@ -41,10 +42,15 @@ WX_DEFINE_OBJARRAY(Wizards);
 // Implement the plugin's hooks
 CB_IMPLEMENT_PLUGIN(Wiz, "Generic wizard");
 
+// scripting support
+DECLARE_INSTANCE_TYPE(Wiz);
+
 Wiz::Wiz()
     : m_pWizard(0),
     m_pWizProjectPathPanel(0),
+    m_pWizFilePathPanel(0),
     m_pWizCompilerPanel(0),
+    m_pWizBuildTargetPanel(0),
     m_pWizLanguagePanel(0)
 {
 	//ctor
@@ -68,20 +74,43 @@ Wiz::~Wiz()
 
 void Wiz::OnAttach()
 {
+    // make sure the VM is initialized
+    Manager::Get()->GetScriptingManager();
+
+    if (!SquirrelVM::GetVMPtr())
+    {
+        cbMessageBox(_("Project wizard disabled: scripting not initialized"), _("Error"), wxICON_ERROR);
+        return;
+    }
+
     // read configuration
     RegisterWizard();
 
     // run main wizard script
     // this registers all available wizard scripts with us
-    Manager::Get()->GetScriptingManager()->LoadScript(m_TemplatePath + _T("config.script"), _T("WizardMainModule"));
-    Manager::Get()->GetScriptingManager()->Compile(_T("WizardMainModule"), true);
-    Manager::Get()->GetScriptingManager()->GetEngine()->Discard("WizardModule");
+    Manager::Get()->GetScriptingManager()->LoadScript(m_TemplatePath + _T("config.script"));
+    try
+    {
+        SqPlus::SquirrelFunction<void>("RegisterWizards")();
+    }
+    catch (SquirrelError& e)
+    {
+        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+    }
 }
 
 int Wiz::GetCount() const
 {
     // return the number of template wizards contained in this plugin
     return m_Wizards.GetCount();
+}
+
+cbWizardPlugin::OutputType Wiz::GetOutputType(int index) const
+{
+	//return this wizard's output type
+	//make sure you set this!
+	cbAssert(index >= 0 && index < GetCount());
+	return m_Wizards[index].output_type;
 }
 
 wxString Wiz::GetTitle(int index) const
@@ -118,6 +147,13 @@ const wxBitmap& Wiz::GetBitmap(int index) const
 	return m_Wizards[index].templatePNG;
 }
 
+wxString Wiz::GetScriptFilename(int index) const
+{
+	//return this wizard's script filename
+	cbAssert(index >= 0 && index < GetCount());
+	return m_Wizards[index].script;
+}
+
 void Wiz::Clear()
 {
     if (m_pWizard)
@@ -133,12 +169,23 @@ void Wiz::Clear()
 
 	m_pWizProjectPathPanel = 0;
 	m_pWizCompilerPanel = 0;
+	m_pWizBuildTargetPanel = 0;
 	m_pWizLanguagePanel = 0;
+	m_pWizFilePathPanel = 0;
 }
 
-int Wiz::Launch(int index)
+CompileTargetBase* Wiz::Launch(int index)
 {
 	cbAssert(index >= 0 && index < GetCount());
+
+	// early check: build target wizards need an active project
+	if (m_Wizards[index].output_type == cbWizardPlugin::otTarget &&
+        !Manager::Get()->GetProjectManager()->GetActiveProject())
+    {
+        cbMessageBox(_("You need to open (or create) a project first!"), _("Error"), wxICON_ERROR);
+        return 0;
+    }
+
 	m_LaunchIndex = index;
 
     wxString script = m_TemplatePath + m_Wizards[index].script;
@@ -158,129 +205,128 @@ int Wiz::Launch(int index)
                     wxDefaultPosition,
                     wxDEFAULT_DIALOG_STYLE);
 
-    // access the scripting engine core
-    asIScriptEngine* engine = Manager::Get()->GetScriptingManager()->GetEngine();
-
-    engine->Discard("WizardModule");
-    if (!Manager::Get()->GetScriptingManager()->LoadScript(commons, _T("WizardModule")) || // load common functions
-        !Manager::Get()->GetScriptingManager()->LoadScript(script, _T("WizardModule")) || // load selected script
-        Manager::Get()->GetScriptingManager()->Compile(_T("WizardModule"), false) != 0) // build and run scripts
+    if (!Manager::Get()->GetScriptingManager()->LoadScript(commons) || // load common functions
+        !Manager::Get()->GetScriptingManager()->LoadScript(script)) // build and run script
     {
         // any errors have been displayed by ScriptingManager
         Clear();
-        return -1;
-    }
-
-    // get the IDs of all the mandatory functions
-    int funcBeginWizard = Manager::Get()->GetScriptingManager()->FindFunctionByDeclaration(_T("void BeginWizard()"), _T("WizardModule"));
-    int funcSetupPrj = Manager::Get()->GetScriptingManager()->FindFunctionByDeclaration(_T("bool SetupProject(Project@)"), _T("WizardModule"));
-    int funcGetFiles = Manager::Get()->GetScriptingManager()->FindFunctionByDeclaration(_T("bool GetFilesDir(wxString& out)"), _T("WizardModule"));
-    if (funcBeginWizard <= 0 ||
-        funcSetupPrj <= 0 ||
-        funcGetFiles <= 0)
-    {
-        wxString msg = _("At least one of the following mandatory script functions is missing or didn't compile:\n\n");
-        cbMessageBox(msg +
-                    _T(
-                        "void BeginWizard()\n"
-                        "bool SetupProject(Project@)\n"
-                        "bool GetFilesDir(wxString& out)\n"
-                    ),
-                    _("Error"), wxICON_ERROR);
-        Clear();
-        return -1;
+        return 0;
     }
 
     // call BeginWizard()
-    VoidExecutor<> vexec(funcBeginWizard);
-    vexec.Call();
+    try
+    {
+        SqPlus::SquirrelFunction<void>("BeginWizard")();
+    }
+    catch (SquirrelError& e)
+    {
+        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        Clear();
+        return 0;
+    }
 
     // check if *any* pages were added
     if (m_Pages.GetCount() == 0)
     {
         cbMessageBox(m_Wizards[index].title + _(" has failed to run..."), _("Error"), wxICON_ERROR);
         Clear();
-        return -1;
+        return 0;
     }
 
     // check if *mandatory* pages (i.e. used by the following code) were added
-    // currently, project path is a mandatory page...
-    if (!m_pWizProjectPathPanel)
+    // currently, project path is a mandatory page for new projects...
+    if (m_Wizards[index].output_type == cbWizardPlugin::otProject && !m_pWizProjectPathPanel)
     {
         cbMessageBox(_("This wizard is missing the following mandatory wizard page:\n\n"
                         "Project path selection\n"
                         "Execution aborted..."), _("Error"), wxICON_ERROR);
         Clear();
-        return -1;
+        return 0;
     }
 
     // build the wizard pages
     Finalize();
 
     // run wizard
-    bool success = false;
+    CompileTargetBase* base = 0; // ret value
     if (m_pWizard->RunWizard(m_Pages[0]))
     {
         // ok, wizard done
-
-        // first construct the project filename
-        wxString prjname = GetProjectPath() + wxFILE_SEP_PATH +
-                            GetProjectName() + wxFILE_SEP_PATH +
-                            GetProjectName() + _T('.') + FileFilters::CODEBLOCKS_EXT;
-
-        // create the dir for the project
-        wxFileName fname(prjname);
-        wxString prjdir = fname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-        if (!CreateDirRecursively(prjdir))
+        switch (m_Wizards[index].output_type)
         {
-            cbMessageBox(_("Couldn't create the project directory:\n") + prjdir, _("Error"), wxICON_ERROR);
-            Clear();
-            return -1;
+            case cbWizardPlugin::otProject:     base = RunProjectWizard(); break;
+            case cbWizardPlugin::otTarget:      base = RunTargetWizard(); break;
+            case cbWizardPlugin::otFiles:       base = RunFilesWizard(); break;
+            case cbWizardPlugin::otCustom:   base = RunCustomWizard(); break;
+            default: break;
         }
+    }
+    Clear();
+    return base;
+}
 
-        // now create the project
-        cbProject* theproject = Manager::Get()->GetProjectManager()->NewProject(prjname);
-        if (!theproject)
+CompileTargetBase* Wiz::RunProjectWizard()
+{
+    cbProject* theproject = 0;
+
+    // first get the project filename
+    wxString prjname = GetProjectFullFilename();
+
+    // create the dir for the project
+    wxFileName fname(prjname);
+    wxString prjdir = fname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    if (!CreateDirRecursively(prjdir))
+    {
+        cbMessageBox(_("Couldn't create the project directory:\n") + prjdir, _("Error"), wxICON_ERROR);
+        Clear();
+        return 0;
+    }
+
+    // now create the project
+    theproject = Manager::Get()->GetProjectManager()->NewProject(prjname);
+    if (!theproject)
+    {
+        cbMessageBox(_("Couldn't create the new project:\n") + prjdir, _("Error"), wxICON_ERROR);
+        Clear();
+        return 0;
+    }
+
+    // set the project title and project-wide compiler
+    theproject->SetTitle(GetProjectTitle());
+    theproject->SetCompilerID(GetCompilerID());
+
+    // create the targets
+    if (GetWantDebug())
+    {
+        ProjectBuildTarget* target = theproject->AddBuildTarget(GetDebugName());
+        if (target)
         {
-            cbMessageBox(_("Couldn't create the new project:\n") + prjdir, _("Error"), wxICON_ERROR);
-            Clear();
-            return -1;
-        }
-
-        // set the project title and project-wide compiler
-        theproject->SetTitle(GetProjectName());
-        theproject->SetCompilerID(GetCompilerID());
-
-        // create the targets
-        if (GetWantDebug())
-        {
-            ProjectBuildTarget* target = theproject->AddBuildTarget(GetDebugName());
-            if (target)
-            {
-                target->SetCompilerID(GetCompilerID());
-                target->SetIncludeInTargetAll(false);
+            target->SetCompilerID(GetCompilerID());
+            target->SetIncludeInTargetAll(false);
 //                target->SetOutputFilename(GetDebugOutputDir() + wxFILE_SEP_PATH + GetProjectName() + ext);
-                target->SetObjectOutput(GetDebugObjectOutputDir());
-            }
+            target->SetObjectOutput(GetDebugObjectOutputDir());
         }
+    }
 
-        if (GetWantRelease())
+    if (GetWantRelease())
+    {
+        ProjectBuildTarget* target = theproject->AddBuildTarget(GetReleaseName());
+        if (target)
         {
-            ProjectBuildTarget* target = theproject->AddBuildTarget(GetReleaseName());
-            if (target)
-            {
-                target->SetCompilerID(GetCompilerID());
-                target->SetIncludeInTargetAll(false);
+            target->SetCompilerID(GetCompilerID());
+            target->SetIncludeInTargetAll(false);
 //                target->SetOutputFilename(GetReleaseOutputDir() + wxFILE_SEP_PATH + GetProjectName() + ext);
-                target->SetObjectOutput(GetReleaseObjectOutputDir());
-            }
+            target->SetObjectOutput(GetReleaseObjectOutputDir());
         }
+    }
 
-        // add all the template files
-        // first get the dirs with the files by calling GetFilesDir()
-        wxString srcdir;
-        Executor<bool, wxString&> execFiles(funcGetFiles);
-        if (execFiles.Call(srcdir))
+    // add all the template files
+    // first get the dirs with the files by calling GetFilesDir()
+    wxString srcdir;
+    try
+    {
+        srcdir = SqPlus::SquirrelFunction<wxString&>("GetFilesDir")();
+        if (!srcdir.IsEmpty())
         {
             // now break them up (remember: semicolon-separated list of dirs)
             wxArrayString tmpsrcdirs = GetArrayFromString(srcdir, _T(";"), true);
@@ -288,34 +334,134 @@ int Wiz::Launch(int index)
             for (size_t i = 0; i < tmpsrcdirs.GetCount(); ++i)
                 CopyFiles(theproject, prjdir, tmpsrcdirs[i]);
         }
+    }
+    catch (SquirrelError& e)
+    {
+        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        Clear();
+        return 0;
+    }
 
-        if (srcdir.IsEmpty())
-            cbMessageBox(_("The wizard didn't provide any files to copy!"), _("Warning"), wxICON_WARNING);
+//    if (srcdir.IsEmpty())
+//        cbMessageBox(_("The wizard didn't provide any files to copy!"), _("Warning"), wxICON_WARNING);
 
-        // ask the script to setup the new project (edit targets, setup options, etc)
-        // call SetupProject()
-        Executor<bool, cbProject*> execSetupPrj(funcSetupPrj);
-        success = execSetupPrj.Call(theproject);
-        if (!success)
+    // ask the script to setup the new project (edit targets, setup options, etc)
+    // call SetupProject()
+    try
+    {
+        if (!SqPlus::SquirrelFunction<bool>("SetupProject")(theproject))
         {
-            cbMessageBox(wxString::Format(_("Couldn't setup project options:\n%s\n\nScript error:\n%s"),
-                                        prjdir.c_str(),
-                                        execSetupPrj.CreateErrorString().c_str()),
+            cbMessageBox(wxString::Format(_("Couldn't setup project options:\n%s"),
+                                        prjdir.c_str()),
                         _("Error"), wxICON_ERROR);
             Clear();
-            return -1;
+            return 0;
         }
+    }
+    catch (SquirrelError& e)
+    {
+        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        Clear();
+        return 0;
+    }
 
-        // save the project and...
-        theproject->Save();
+    // save the project and...
+    theproject->Save();
 
-        // finally, make sure everything looks ok
-        Manager::Get()->GetProjectManager()->RebuildTree();
-        Manager::Get()->GetProjectManager()->GetTree()->Expand(theproject->GetProjectNode());
-        success = true;
+    // finally, make sure everything looks ok
+    Manager::Get()->GetProjectManager()->RebuildTree();
+    Manager::Get()->GetProjectManager()->GetTree()->Expand(theproject->GetProjectNode());
+    return theproject;
+}
+
+CompileTargetBase* Wiz::RunTargetWizard()
+{
+    cbProject* theproject = Manager::Get()->GetProjectManager()->GetActiveProject(); // can't fail; if no project, the wizard didn't even run
+    ProjectBuildTarget* target = theproject->AddBuildTarget(GetTargetName());
+    if (!target)
+    {
+        cbMessageBox(_("Failed to create build target!"), _("Error"), wxICON_ERROR);
+        Clear();
+        return 0;
+    }
+
+    // setup the target
+    target->SetCompilerID(GetTargetCompilerID());
+    target->SetIncludeInTargetAll(false);
+    target->SetObjectOutput(GetTargetObjectOutputDir());
+    target->SetWorkingDir(GetTargetOutputDir());
+
+    // add all the template files (if any)
+    // first get the dirs with the files by calling GetFilesDir()
+//    wxString srcdir;
+//    try
+//    {
+//        srcdir = SqPlus::SquirrelFunction<wxString&>("GetFilesDir")();
+//        if (!srcdir.IsEmpty())
+//        {
+//            // now break them up (remember: semicolon-separated list of dirs)
+//            wxArrayString tmpsrcdirs = GetArrayFromString(srcdir, _T(";"), true);
+//            // and copy files from each source dir we got
+//            for (size_t i = 0; i < tmpsrcdirs.GetCount(); ++i)
+//                CopyFiles(theproject, prjdir, tmpsrcdirs[i]);
+//        }
+//    }
+//    catch (SquirrelError& e)
+//    {
+//        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+//        Clear();
+//        return 0;
+//    }
+
+    // ask the script to setup the new target (setup options, etc)
+    // call SetupTarget()
+    try
+    {
+        if (!SqPlus::SquirrelFunction<bool>("SetupTarget")(target, GetTargetEnableDebug()))
+        {
+            cbMessageBox(_("Couldn't setup target options:"), _("Error"), wxICON_ERROR);
+            Clear();
+            return 0;
+        }
+    }
+    catch (SquirrelError& e)
+    {
+        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        Clear();
+        return 0;
+    }
+
+    return target;
+}
+
+CompileTargetBase* Wiz::RunFilesWizard()
+{
+    try
+    {
+        if (!SqPlus::SquirrelFunction<bool>("CreateFiles")())
+            cbMessageBox(_("Wizard failed..."), _("Error"), wxICON_ERROR);
+    }
+    catch (SquirrelError& e)
+    {
+        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
     }
     Clear();
-    return success ? 0 : -1;
+    return 0;
+}
+
+CompileTargetBase* Wiz::RunCustomWizard()
+{
+    try
+    {
+        if (!SqPlus::SquirrelFunction<bool>("SetupCustom")())
+            cbMessageBox(_("Wizard failed..."), _("Error"), wxICON_ERROR);
+    }
+    catch (SquirrelError& e)
+    {
+        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+    }
+    Clear();
+    return 0;
 }
 
 void Wiz::CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxString& srcdir)
@@ -360,6 +506,12 @@ void Wiz::CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxStri
 ////////////////////////
 // Scripting - BEGIN
 ////////////////////////
+
+cbWizardPlugin::OutputType Wiz::GetWizardType()
+{
+    cbAssert(m_LaunchIndex >= 0 && m_LaunchIndex < GetCount());
+    return m_Wizards[m_LaunchIndex].output_type;
+}
 
 void Wiz::FillComboboxWithCompilers(const wxString& name)
 {
@@ -497,6 +649,14 @@ void Wiz::AddIntroPage(const wxString& intro_msg)
     m_Pages.Add(page);
 }
 
+void Wiz::AddFilePathPage(bool showHeaderGuard)
+{
+    if (m_pWizFilePathPanel)
+        return; // already added
+    m_pWizFilePathPanel = new WizFilePathPanel(showHeaderGuard, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG);
+    m_Pages.Add(m_pWizFilePathPanel);
+}
+
 void Wiz::AddProjectPathPage()
 {
     if (m_pWizProjectPathPanel)
@@ -513,12 +673,26 @@ void Wiz::AddCompilerPage(const wxString& compilerID, const wxString& validCompi
     m_Pages.Add(m_pWizCompilerPanel);
 }
 
+void Wiz::AddBuildTargetPage(const wxString& targetName, bool isDebug, bool showCompiler, const wxString& compilerID, const wxString& validCompilerIDs, bool allowCompilerChange)
+{
+    if (m_pWizBuildTargetPanel)
+        return; // already added
+    m_pWizBuildTargetPanel = new WizBuildTargetPanel(targetName, isDebug, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG, showCompiler, compilerID, validCompilerIDs, allowCompilerChange);
+    m_Pages.Add(m_pWizBuildTargetPanel);
+}
+
 void Wiz::AddLanguagePage(const wxString& langs, int defLang)
 {
     if (m_pWizLanguagePanel)
         return; // already added
     m_pWizLanguagePanel = new WizLanguagePanel(GetArrayFromString(langs, _T(";")), defLang, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG);
     m_Pages.Add(m_pWizLanguagePanel);
+}
+
+void Wiz::AddGenericSelectPathPage(const wxString& pageId, const wxString& descr, const wxString& label)
+{
+    // we don't track this; can add more than one
+    m_Pages.Add(new WizGenericSelectPathPanel(pageId, descr, label, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG));
 }
 
 void Wiz::AddPage(const wxString& panelName)
@@ -536,9 +710,12 @@ void Wiz::Finalize()
     // allow the wizard to size itself around the pages
     for (size_t i = 1; i < m_Pages.GetCount(); ++i)
         m_pWizard->GetPageAreaSizer()->Add(m_Pages[i]);
+
+    m_pWizard->Fit();
 }
 
-void Wiz::AddWizard(const wxString& title,
+void Wiz::AddWizard(cbWizardPlugin::OutputType otype,
+                    const wxString& title,
                     const wxString& cat,
                     const wxString& script,
                     const wxString& templatePNG,
@@ -546,6 +723,7 @@ void Wiz::AddWizard(const wxString& title,
                     const wxString& xrc)
 {
     WizardInfo info;
+    info.output_type = otype;
     info.title = title;
     info.cat = cat;
     info.script = script;
@@ -553,138 +731,248 @@ void Wiz::AddWizard(const wxString& title,
     info.wizardPNG.LoadFile(m_TemplatePath + wizardPNG, wxBITMAP_TYPE_PNG);
     info.xrc = xrc;
     m_Wizards.Add(info);
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Project wizard added for '%s'"), title.c_str());
+
+    wxString typS;
+    switch (otype)
+    {
+        case cbWizardPlugin::otProject: typS = _T("Project"); break;
+        case cbWizardPlugin::otTarget: typS = _T("Build-target"); break;
+        case cbWizardPlugin::otFiles: typS = _T("File(s)"); break;
+        case cbWizardPlugin::otCustom: typS = _T("Custom"); break;
+    }
+
+    Manager::Get()->GetMessageManager()->DebugLog(typS + _T(" wizard added for '%s'"), title.c_str());
 }
 
-wxString Wiz::GetProjectPath() const
+wxString Wiz::GetProjectPath()
 {
     if (m_pWizProjectPathPanel)
         return m_pWizProjectPathPanel->GetPath();
     return wxEmptyString;
 }
 
-wxString Wiz::GetProjectName() const
+wxString Wiz::GetProjectName()
 {
     if (m_pWizProjectPathPanel)
         return m_pWizProjectPathPanel->GetName();
     return wxEmptyString;
 }
 
-wxString Wiz::GetCompilerID() const
+wxString Wiz::GetProjectFullFilename()
+{
+    if (m_pWizProjectPathPanel)
+        return m_pWizProjectPathPanel->GetFullFileName();
+    return wxEmptyString;
+}
+
+wxString Wiz::GetProjectTitle()
+{
+    if (m_pWizProjectPathPanel)
+        return m_pWizProjectPathPanel->GetTitle();
+    return wxEmptyString;
+}
+
+wxString Wiz::GetCompilerID()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetCompilerID();
     return wxEmptyString;
 }
 
-bool Wiz::GetWantDebug() const
+bool Wiz::GetWantDebug()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetWantDebug();
     return false;
 }
 
-wxString Wiz::GetDebugName() const
+wxString Wiz::GetDebugName()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetDebugName();
     return wxEmptyString;
 }
 
-wxString Wiz::GetDebugOutputDir() const
+wxString Wiz::GetDebugOutputDir()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetDebugOutputDir();
     return wxEmptyString;
 }
 
-wxString Wiz::GetDebugObjectOutputDir() const
+wxString Wiz::GetDebugObjectOutputDir()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetDebugObjectOutputDir();
     return wxEmptyString;
 }
 
-bool Wiz::GetWantRelease() const
+bool Wiz::GetWantRelease()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetWantRelease();
     return false;
 }
 
-wxString Wiz::GetReleaseName() const
+wxString Wiz::GetReleaseName()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetReleaseName();
     return wxEmptyString;
 }
 
-wxString Wiz::GetReleaseOutputDir() const
+wxString Wiz::GetReleaseOutputDir()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetReleaseOutputDir();
     return wxEmptyString;
 }
 
-wxString Wiz::GetReleaseObjectOutputDir() const
+wxString Wiz::GetReleaseObjectOutputDir()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetReleaseObjectOutputDir();
     return wxEmptyString;
 }
 
-int Wiz::GetLanguageIndex() const
+wxString Wiz::GetTargetCompilerID()
+{
+    if (m_pWizBuildTargetPanel)
+        return m_pWizBuildTargetPanel->GetCompilerID();
+    return wxEmptyString;
+}
+
+bool Wiz::GetTargetEnableDebug()
+{
+    if (m_pWizBuildTargetPanel)
+        return m_pWizBuildTargetPanel->GetEnableDebug();
+    return false;
+}
+
+wxString Wiz::GetTargetName()
+{
+    if (m_pWizBuildTargetPanel)
+        return m_pWizBuildTargetPanel->GetTargetName();
+    return wxEmptyString;
+}
+
+wxString Wiz::GetTargetOutputDir()
+{
+    if (m_pWizBuildTargetPanel)
+        return m_pWizBuildTargetPanel->GetTargetOutputDir();
+    return wxEmptyString;
+}
+
+wxString Wiz::GetTargetObjectOutputDir()
+{
+    if (m_pWizBuildTargetPanel)
+        return m_pWizBuildTargetPanel->GetTargetObjectOutputDir();
+    return wxEmptyString;
+}
+
+int Wiz::GetLanguageIndex()
 {
     if (m_pWizLanguagePanel)
         return m_pWizLanguagePanel->GetLanguage();
     return -1;
 }
 
+wxString Wiz::GetFileName()
+{
+    if (m_pWizFilePathPanel)
+        return m_pWizFilePathPanel->GetFilename();
+    return wxEmptyString;
+}
+
+wxString Wiz::GetFileHeaderGuard()
+{
+    if (m_pWizFilePathPanel)
+        return m_pWizFilePathPanel->GetHeaderGuard();
+    return wxEmptyString;
+}
+
+bool Wiz::GetFileAddToProject()
+{
+    if (m_pWizFilePathPanel)
+        return m_pWizFilePathPanel->GetAddToProject();
+    return false;
+}
+
+int Wiz::GetFileTargetIndex()
+{
+    if (m_pWizFilePathPanel)
+        return m_pWizFilePathPanel->GetTargetIndex();
+    return -1;
+}
+
+void Wiz::SetFilePathSelectionFilter(const wxString& filter)
+{
+    if (m_pWizFilePathPanel)
+        m_pWizFilePathPanel->SetFilePathSelectionFilter(filter);
+}
+
 void Wiz::RegisterWizard()
 {
-    asIScriptEngine* engine = Manager::Get()->GetScriptingManager()->GetEngine();
-    engine->RegisterObjectType("Wiz", 0, asOBJ_CLASS);
+    SqPlus::SQClassDef<Wiz>("Wiz").
+            // register new wizards
+            func(&Wiz::AddWizard, "AddWizard").
+            // add wizard pages
+            func(&Wiz::AddIntroPage, "AddIntroPage").
+            func(&Wiz::AddProjectPathPage, "AddProjectPathPage").
+            func(&Wiz::AddFilePathPage, "AddFilePathPage").
+            func(&Wiz::AddCompilerPage, "AddCompilerPage").
+            func(&Wiz::AddBuildTargetPage, "AddBuildTargetPage").
+            func(&Wiz::AddLanguagePage, "AddLanguagePage").
+            func(&Wiz::AddGenericSelectPathPage, "AddGenericSelectPathPage").
+            func(&Wiz::AddPage, "AddPage").
+            // GUI controls
+            func(&Wiz::SetTextControlValue, "SetTextControlValue").
+            func(&Wiz::GetTextControlValue, "GetTextControlValue").
+            func(&Wiz::CheckCheckbox, "CheckCheckbox").
+            func(&Wiz::IsCheckboxChecked, "IsCheckboxChecked").
+            func(&Wiz::FillComboboxWithCompilers, "FillComboboxWithCompilers").
+            func(&Wiz::GetCompilerFromCombobox, "GetCompilerFromCombobox").
+            func(&Wiz::GetComboboxStringSelection, "GetComboboxStringSelection").
+            func(&Wiz::GetComboboxSelection, "GetComboboxSelection").
+            func(&Wiz::SetComboboxSelection, "SetComboboxSelection").
+            func(&Wiz::GetRadioboxSelection, "GetRadioboxSelection").
+            func(&Wiz::SetRadioboxSelection, "SetRadioboxSelection").
+            // get various common info
+            func(&Wiz::GetWizardType, "GetWizardType").
+            func(&Wiz::GetTemplatePath, "GetTemplatePath").
+            // project path page
+            func(&Wiz::GetProjectPath, "GetProjectPath").
+            func(&Wiz::GetProjectName, "GetProjectName").
+            func(&Wiz::GetProjectFullFilename, "GetProjectFullFilename").
+            func(&Wiz::GetProjectTitle, "GetProjectTitle").
+            // compiler page
+            func(&Wiz::GetCompilerID, "GetCompilerID").
+            // + debug target
+            func(&Wiz::GetWantDebug, "GetWantDebug").
+            func(&Wiz::GetDebugName, "GetDebugName").
+            func(&Wiz::GetDebugOutputDir, "GetDebugOutputDir").
+            func(&Wiz::GetDebugObjectOutputDir, "GetDebugObjectOutputDir").
+            // + release target
+            func(&Wiz::GetWantRelease, "GetWantRelease").
+            func(&Wiz::GetReleaseName, "GetReleaseName").
+            func(&Wiz::GetReleaseOutputDir, "GetReleaseOutputDir").
+            func(&Wiz::GetReleaseObjectOutputDir, "GetReleaseObjectOutputDir").
+            // build target page
+            func(&Wiz::GetTargetCompilerID, "GetTargetCompilerID").
+            func(&Wiz::GetTargetEnableDebug, "GetTargetEnableDebug").
+            func(&Wiz::GetTargetName, "GetTargetName").
+            func(&Wiz::GetTargetOutputDir, "GetTargetOutputDir").
+            func(&Wiz::GetTargetObjectOutputDir, "GetTargetObjectOutputDir").
+            // language page
+            func(&Wiz::GetLanguageIndex, "GetLanguageIndex").
+            // file path page
+            func(&Wiz::GetFileName, "GetFileName").
+            func(&Wiz::GetFileHeaderGuard, "GetFileHeaderGuard").
+            func(&Wiz::GetFileAddToProject, "GetFileAddToProject").
+            func(&Wiz::GetFileTargetIndex, "GetFileTargetIndex").
+            func(&Wiz::SetFilePathSelectionFilter, "SetFilePathSelectionFilter");
 
-    engine->RegisterObjectMethod("Wiz", "void AddWizard(const wxString& in,const wxString& in,const wxString& in,const wxString& in,const wxString& in,const wxString& in)", asMETHOD(Wiz, AddWizard), asCALL_THISCALL);
-
-    engine->RegisterObjectMethod("Wiz", "void AddIntroPage(const wxString& in)", asMETHOD(Wiz, AddIntroPage), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "void AddProjectPathPage()", asMETHOD(Wiz, AddProjectPathPage), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "void AddCompilerPage(const wxString& in, const wxString& in, bool, bool)", asMETHOD(Wiz, AddCompilerPage), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "void AddLanguagePage(const wxString& in, int)", asMETHOD(Wiz, AddLanguagePage), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "void AddPage(const wxString& in)", asMETHOD(Wiz, AddPage), asCALL_THISCALL);
-
-    engine->RegisterObjectMethod("Wiz", "void SetTextControlValue(const wxString& in, const wxString& in)", asMETHOD(Wiz, SetTextControlValue), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "wxString GetTextControlValue(const wxString& in)", asMETHOD(Wiz, GetTextControlValue), asCALL_THISCALL);
-
-    engine->RegisterObjectMethod("Wiz", "void CheckCheckbox(const wxString& in, bool)", asMETHOD(Wiz, CheckCheckbox), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "bool IsCheckboxChecked(const wxString& in)", asMETHOD(Wiz, IsCheckboxChecked), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "void FillComboboxWithCompilers(const wxString& in)", asMETHOD(Wiz, FillComboboxWithCompilers), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "wxString GetCompilerFromCombobox(const wxString& in)", asMETHOD(Wiz, GetCompilerFromCombobox), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "wxString GetComboboxStringSelection(const wxString& in)", asMETHOD(Wiz, GetComboboxStringSelection), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "int GetComboboxSelection(const wxString& in)", asMETHOD(Wiz, GetComboboxSelection), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "void SetComboboxSelection(const wxString& in,int)", asMETHOD(Wiz, SetComboboxSelection), asCALL_THISCALL);
-
-    engine->RegisterObjectMethod("Wiz", "int GetRadioboxSelection(const wxString& in)", asMETHOD(Wiz, GetRadioboxSelection), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "void SetRadioboxSelection(const wxString& in,int)", asMETHOD(Wiz, SetRadioboxSelection), asCALL_THISCALL);
-
-    engine->RegisterObjectMethod("Wiz", "wxString& GetTemplatePath()", asMETHOD(Wiz, GetTemplatePath), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "wxString GetProjectPath() const", asMETHOD(Wiz, GetProjectPath), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "wxString GetProjectName() const", asMETHOD(Wiz, GetProjectName), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "wxString GetCompilerID() const", asMETHOD(Wiz, GetCompilerID), asCALL_THISCALL);
-
-    engine->RegisterObjectMethod("Wiz", "bool GetWantDebug() const", asMETHOD(Wiz, GetWantDebug), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "wxString GetDebugName() const", asMETHOD(Wiz, GetDebugName), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "wxString GetDebugOutputDir() const", asMETHOD(Wiz, GetDebugOutputDir), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "wxString GetDebugObjectOutputDir() const", asMETHOD(Wiz, GetDebugObjectOutputDir), asCALL_THISCALL);
-
-    engine->RegisterObjectMethod("Wiz", "bool GetWantRelease() const", asMETHOD(Wiz, GetWantRelease), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "wxString GetReleaseName() const", asMETHOD(Wiz, GetReleaseName), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "wxString GetReleaseOutputDir() const", asMETHOD(Wiz, GetReleaseOutputDir), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Wiz", "wxString GetReleaseObjectOutputDir() const", asMETHOD(Wiz, GetReleaseObjectOutputDir), asCALL_THISCALL);
-
-    engine->RegisterObjectMethod("Wiz", "int GetLanguageIndex() const", asMETHOD(Wiz, GetLanguageIndex), asCALL_THISCALL);
-
-    engine->RegisterGlobalProperty("Wiz Wizard", this);
+    SqPlus::BindVariable(this, "Wizard", SqPlus::VAR_ACCESS_READ_ONLY);
 }
 
 ////////////////////////

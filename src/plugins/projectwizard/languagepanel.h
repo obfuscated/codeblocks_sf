@@ -25,7 +25,7 @@ class LanguagePanel: public wxPanel
 		virtual ~LanguagePanel();
 
         void SetChoices(const wxArrayString& langs, int defLang);
-        int GetLanguage() const { return lstLanguages->GetSelection(); }
+        int GetLanguage(){ return lstLanguages->GetSelection(); }
         void SetLanguage(int lang){ lstLanguages->SetSelection(lang); }
 
 		//(*Identifiers(LanguagePanel)
