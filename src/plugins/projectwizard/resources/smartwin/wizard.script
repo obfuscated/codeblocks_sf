@@ -14,11 +14,10 @@ function BeginWizard()
                          "using the Smartwin GUI C++ library.\n\n" +
                          "When you 're ready to proceed, please click \"Next\"...");
 
-
     local swpath_descr = _T("Please select the location of SmartWin on your computer.\n" +
-                                "This is the top-level folder where SmartWin was installed\n(unpacked).\n" +
-                                "To help you, this folder must contain the subfolders\n" +
-                                "\"include\" and \"lib\".");
+                            "This is the top-level folder where SmartWin was installed (unpacked).\n" +
+                            "To help you, this folder must contain the subfolders\n" +
+                            "\"include\" and \"lib\".");
 
     Wizard.AddIntroPage(intro_msg);
     Wizard.AddProjectPathPage();
@@ -34,7 +33,7 @@ function OnLeave_SmartwinPath(fwd)
 {
     if (fwd)
     {
-        local dir = Wizard.GetTextControlValue(_T("txtFolder"));
+        local dir = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
         if (!IO.FileExists(dir + _T("/include/SmartWin.h")))
         {
             ShowError(_T("The path you entered seems valid, but this wizard " +
@@ -42,13 +41,6 @@ function OnLeave_SmartwinPath(fwd)
             return false;
         }
 
-        // see if it matches the global var. if it does, use the var instead...
-        if (GetUserVariableManager().Exists(_T("#sw")))
-        {
-            local gvar = ReplaceMacros(_T("$(#sw)"), true);
-            if (gvar.Matches(dir))
-                dir = gvar;
-        }
         SmartwinPath = dir;
     }
     return true;
@@ -64,10 +56,21 @@ function GetFilesDir()
 function SetupProject(project)
 {
     // set project options
-
+    local gvar = ReplaceMacros(_T("$(#sw)"), true);
+    
     // set compiler/linker search paths
-    project.AddIncludeDir(SmartwinPath + _T("/include"));
-    project.AddLibDir(SmartwinPath + _T("/lib"));
+    // see if the Smartwin SDK matches the global var. if it does, use the var instead...
+    if (gvar.Matches(SmartwinPath))
+    {
+        project.AddIncludeDir(_T("$(#sw.include)"));
+        project.AddLibDir(_T("$(#sw.lib)"));
+    }
+    else
+    {
+        project.AddIncludeDir(SmartwinPath + _T("/include"));
+        project.AddLibDir(SmartwinPath + _T("/lib"));
+    }
+
 
     // add link libraries
     project.AddLinkLib(_T("smartwin"));
@@ -86,7 +89,7 @@ function SetupProject(project)
     {
         target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
         target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
-        if (Wizard.GetCompilerID() == _T("gcc"))
+        if (Wizard.GetCompilerID().Matches(_T("gcc")))
         {
             // enable generation of debugging symbols for target
             // Note: DebugSymbolsOn() won't work because -Wall produces far too many warnings
@@ -100,7 +103,7 @@ function SetupProject(project)
     {
         target.SetTargetType(ttExecutable); // ttExecutable: no console
         target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
-        if (Wizard.GetCompilerID() == _T("gcc"))
+        if (Wizard.GetCompilerID().Matches(_T("gcc")))
         {
             // enable optimizations for target.
             // Note: OptimizationsOn() won't work because of -I-!

@@ -15,9 +15,9 @@ function BeginWizard()
                          "When you 're ready to proceed, please click \"Next\"...");
 
     local fltkpath_descr = _T("Please select the location of FLTK on your computer.\n" +
-                                "This is the top-level folder where FLTK was installed (unpacked).\n" +
-                                "To help you, this folder must contain the subfolders\n" +
-                                "\"include\" and \"lib\".");
+                              "This is the top-level folder where FLTK was installed (unpacked).\n" +
+                              "To help you, this folder must contain the subfolders\n" +
+                              "\"include\" and \"lib\".");
 
     Wizard.AddIntroPage(intro_msg);
     Wizard.AddProjectPathPage();
@@ -28,7 +28,6 @@ function BeginWizard()
 ////////////////////////////////////////////////////////////////////////////////
 // FLTK's path page
 ////////////////////////////////////////////////////////////////////////////////
-
 
 function OnLeave_FltkPath(fwd)
 {
@@ -42,13 +41,6 @@ function OnLeave_FltkPath(fwd)
             return false;
         }
 
-        // see if it matches the global var. if it does, use the var instead...
-        if (GetUserVariableManager().Exists(_T("#fltk")))
-        {
-            local gvar = ReplaceMacros(_T("$(#fltk)"), true);
-            if (gvar.Matches(dir))
-                dir = gvar;
-        }
         FltkPath = dir;
     }
     return true;
@@ -64,10 +56,20 @@ function GetFilesDir()
 function SetupProject(project)
 {
     // set project options
-
+    local gvar = ReplaceMacros(_T("$(#fl"), true);
+    
     // set compiler/linker search paths
-    project.AddIncludeDir(FltkPath + _T("/include"));
-    project.AddLibDir(FltkPath + _T("/lib"));
+    // see if the FLTK SDK matches the global var. if it does, use the var instead...
+    if (gvar.Matches(FltkPath))
+    {
+        project.AddIncludeDir(_T("$(#fl.include)"));
+        project.AddLibDir(_T("$(#fl.lib)"));
+    }
+    else
+    {
+        project.AddIncludeDir(FltkPath + _T("/include"));
+        project.AddLibDir(FltkPath + _T("/lib"));
+    }
 
     // add link libraries
     project.AddLinkLib(_T("fltk"));
@@ -89,7 +91,7 @@ function SetupProject(project)
     {
         target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
         target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
-        if (Wizard.GetCompilerID() == _T("gcc"))
+        if (Wizard.GetCompilerID().Matches(_T("gcc")))
         {
             // enable generation of debugging symbols for target
             // Note: DebugSymbolsOn() won't work because -Wall produces far too many warnings
@@ -103,7 +105,7 @@ function SetupProject(project)
     {
         target.SetTargetType(ttExecutable); // ttExecutable: no console
         target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
-        if (Wizard.GetCompilerID() == _T("gcc"))
+        if (Wizard.GetCompilerID().Matches(_T("gcc")))
         {
             // enable optimizations for target.
             // Note: OptimizationsOn() won't work because of -I-!

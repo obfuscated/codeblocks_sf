@@ -5,7 +5,7 @@
 // Warnings On
 function WarningsOn(base, compilerID)
 {
-    if (compilerID.Matches(T("msvctk")))
+    if (compilerID.Matches(_T("msvctk")))
     {
         base.AddCompilerOption(_T("/W3"));
     }

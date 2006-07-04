@@ -12,6 +12,8 @@ function RegisterWizards()
     RegisterWizard(wizProject, _T("console"),   _T("Console application"),   _T("Console"));
     RegisterWizard(wizProject, _T("d"),         _T("D application"),         _T("D language"));
     if (PLATFORM == PLATFORM_MSW)
+        RegisterWizard(wizProject, _T("directx"),   _T("Direct/X application"),  _T("2D/3D Graphics"));
+    if (PLATFORM == PLATFORM_MSW)
         RegisterWizard(wizProject, _T("fltk"),      _T("FLTK project"),          _T("GUI"));
     RegisterWizard(wizProject, _T("glfw"),      _T("GLFW project"),          _T("2D/3D Graphics"));
     RegisterWizard(wizProject, _T("glut"),      _T("GLUT project"),          _T("2D/3D Graphics"));
@@ -21,9 +23,9 @@ function RegisterWizards()
         RegisterWizard(wizProject, _T("smartwin"),  _T("SmartWin project"),      _T("GUI"));
     RegisterWizard(wizProject, _T("wxwidgets"), _T("wxWidgets application"), _T("GUI"));
 
-	//
-	// build target wizards
-	//
+    //
+    // build target wizards
+    //
     RegisterWizard(wizTarget, _T("console"),   _T("Console"),   _T("Console"));
 
     //
@@ -39,10 +41,10 @@ function RegisterWizard(type, folder, title, category)
     // AddWizard(type, title, category, script, template_png, wizard_png, xrc)
 
     Wizard.AddWizard(type,
-					title,
-                    category,
-                    folder + _T("/wizard.script"),
-                    folder + _T("/logo.png"),
-                    folder + _T("/wizard.png"),
-                    folder + _T("/wizard.xrc"));
+                     title,
+                     category,
+                     folder + _T("/wizard.script"),
+                     folder + _T("/logo.png"),
+                     folder + _T("/wizard.png"),
+                     folder + _T("/wizard.xrc"));
 }

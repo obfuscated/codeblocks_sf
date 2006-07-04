@@ -14,14 +14,14 @@ function BeginWizard()
                          "using the GLUT OpenGL extensions.\n\n" +
                          "When you 're ready to proceed, please click \"Next\"...");
 
-    local glut_msg = _T("Please select the location of GLUT on your computer.\n" +
-                        "This is the top-level folder where GLUT was unpacked.\n" +
-                        "To help you, this folder must contain the subfolders\n" +
-                        "\"include\" and \"lib\".");
+    local glutpath_descr = _T("Please select the location of GLUT on your computer.\n" +
+                              "This is the top-level folder where GLUT was installed (unpacked).\n" +
+                              "To help you, this folder must contain the subfolders\n" +
+                              "\"include\" and \"lib\".");
 
     Wizard.AddIntroPage(intro_msg);
     Wizard.AddProjectPathPage();
-    Wizard.AddGenericSelectPathPage(_T("GlutPath"), glut_msg, _T("GLUT's location:"), _T("$(#glut)"));
+    Wizard.AddGenericSelectPathPage(_T("GlutPath"), glutpath_descr, _T("Please select GLUT's location:"), _T("$(#glut)"));
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
@@ -33,7 +33,7 @@ function OnLeave_GlutPath(fwd)
 {
     if (fwd)
     {
-        local dir = Wizard.GetTextControlValue(_T("txtFolder"));
+        local dir = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
         if (!IO.FileExists(dir + _T("/include/GL/glut.h")))
         {
             ShowError(_T("The path you entered seems valid, but this wizard " +
@@ -41,13 +41,6 @@ function OnLeave_GlutPath(fwd)
             return false;
         }
 
-        // see if it matches the global var. if it does, use the var instead...
-        if (GetUserVariableManager().Exists(_T("#glut")))
-        {
-            local gvar = ReplaceMacros(_T("$(#glut)"), true);
-            if (gvar.Matches(dir))
-                dir = gvar;
-        }
         GlutPath = dir;
     }
     return true;
@@ -63,10 +56,20 @@ function GetFilesDir()
 function SetupProject(project)
 {
     // set project options
-
+    local gvar = ReplaceMacros(_T("$(#glut)"), true);
+    
     // set compiler/linker search paths
-    project.AddIncludeDir(GlutPath + _T("/include"));
-    project.AddLibDir(GlutPath + _T("/lib"));
+    // see if the GLUT SDK matches the global var. if it does, use the var instead...
+    if (gvar.Matches(GlutPath))
+    {
+        project.AddIncludeDir(_T("$(#glut.include)"));
+        project.AddLibDir(_T("$(#glut.lib)"));
+    }
+    else
+    {
+        project.AddIncludeDir(GlutPath + _T("/include"));
+        project.AddLibDir(GlutPath + _T("/lib"));
+    }
 
     // add link libraries
     if (PLATFORM == PLATFORM_MSW)

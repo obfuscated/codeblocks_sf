@@ -1,4 +1,4 @@
-SUBDIRS = console d fltk glfw glut irrlicht ogre smartwin wxwidgets
+SUBDIRS = console d directx fltk glfw glut irrlicht ogre smartwin wxwidgets
 
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard
 

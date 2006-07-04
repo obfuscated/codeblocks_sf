@@ -16,14 +16,17 @@ function BeginWizard()
                         "using the OGRE 3D rendering engine.\n\n" +
                         "When you 're ready to proceed, please click \"Next\"...");
 
-    local ogre_msg = _T("Please select the location of OGRE SDK on your computer.\n" +
-                        "If you have setup an environment variable named\n" +
-                        "OGRE_HOME, it 'll automatically be used below.");
+    local ogrepath_descr = _T("Please select the location of OGRE on your computer.\n" +
+                              "This is the top-level folder where OGRE was installed (unpacked).\n" +
+                              "To help you, this folder must contain the subfolders\n" +
+                              "\"include\" and \"lib\".\n" +
+                              "If you have setup an environment variable named\n" +
+                              "OGRE_HOME, it 'll automatically be used below.");
 
-	Wizard.AddIntroPage(intro_msg);
-	Wizard.AddProjectPathPage();
-    Wizard.AddGenericSelectPathPage(_T("OgrePath"), ogre_msg, _T("OGRE SDK location:"), _T("$(OGRE_HOME)"));
-	Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+    Wizard.AddIntroPage(intro_msg);
+    Wizard.AddProjectPathPage();
+    Wizard.AddGenericSelectPathPage(_T("OgrePath"), ogrepath_descr, _T("Please select OGRE's location:"), _T("$(OGRE_HOME)"));
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -32,19 +35,20 @@ function BeginWizard()
 
 function OnLeave_OgrePath(fwd)
 {
-	if (fwd)
-	{
-	    local dir = Wizard.GetTextControlValue(_T("txtFolder"));
-	    dir = ReplaceMacros(dir, true);
+    if (fwd)
+    {
+        local dir = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
+        dir = ReplaceMacros(dir, true);
         if (!IO.FileExists(dir + _T("/include/OGRE.h")))
         {
             ShowError(_T("The path you entered seems valid, but this wizard " +
                     "can't locate OGRE's files in it..."));
             return false;
         }
+
         OgrePath = dir;
-	}
-	return true;
+    }
+    return true;
 }
 
 // return the files this project contains
@@ -122,5 +126,6 @@ function SetupProject(project)
         // enable optimizations for target
         OptimizationsOn(target, Wizard.GetCompilerID());
     }
+
     return true;
 }
