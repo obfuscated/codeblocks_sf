@@ -165,10 +165,22 @@ wxString UserVariableManager::Replace(const wxString& variable)
 
 void UserVariableManager::Preempt(const wxString& variable)
 {
+    if(variable.find(_T('#')) == wxString::npos)
+        return;
+
     wxString member(variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).MakeLower());
 
     if(!cfg->Exists(cSets + activeSet + _T('/') + member + _T("/base")))
         preempted.Add(member);
+}
+
+bool UserVariableManager::Exists(const wxString& variable) const
+{
+    if(variable.find(_T('#')) == wxString::npos)
+        return false;
+
+    wxString member(variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).MakeLower());
+    return !cfg->Exists(cSets + activeSet + _T('/') + member + _T("/base"));
 }
 
 void UserVariableManager::Arrogate()

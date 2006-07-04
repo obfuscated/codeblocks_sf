@@ -20,6 +20,7 @@ class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
 
         void Preempt(const wxString& variable);
         void Arrogate();
+        bool Exists(const wxString& variable) const;
 
         void Configure();
         void Migrate();
