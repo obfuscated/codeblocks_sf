@@ -1,4 +1,4 @@
-SUBDIRS = as tinyxml wxscintilla resources propgrid wxFlatNotebook
+SUBDIRS = scripting tinyxml wxscintilla resources propgrid wxFlatNotebook
 
 if PRECOMPILE_HEADERS
 BUILT_SOURCES = $(srcdir)/sdk.h.gch
@@ -9,7 +9,8 @@ endif
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			-I$(top_srcdir)/src/sdk/tinyxml \
-			-I$(top_srcdir)/src/sdk/as/include \
+			-I$(top_srcdir)/src/sdk/scripting/include \
+			-I$(top_srcdir)/src/sdk/scripting/sqplus \
 			-I$(top_srcdir)/src/sdk/wxFlatNotebook \
 			-I$(top_srcdir)/src/sdk/propgrid/include
 
@@ -18,7 +19,10 @@ lib_LTLIBRARIES = libcodeblocks.la
 libcodeblocks_la_LDFLAGS = -version-info @CODEBLOCKS_VERSION_INFO@
 
 libcodeblocks_la_LIBADD =  $(WX_LIBS) \
-			as/libangelscript.la \
+			scripting/bindings/libsqbindings.la \
+			scripting/sqplus/libsqplus.la \
+			scripting/sqstdlib/libsqstdlib.la \
+			scripting/squirrel/libsquirrel.la \
 			tinyxml/libtinyxml.la \
 			wxscintilla/libwxscintilla.la \
 			wxFlatNotebook/libwxflatnotebook.la \
@@ -65,10 +69,12 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						externaldepsdlg.cpp \
 						filefilters.cpp \
 						filegroupsandmasks.cpp \
+						filemanager.cpp \
 						finddlg.cpp \
 						globals.cpp \
 						importers_globals.cpp \
 						incrementalselectlistdlg.cpp \
+						infowindow.cpp \
 						macrosmanager.cpp \
 						managedthread.cpp \
 						manager.cpp \
@@ -114,6 +120,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 
 noinst_HEADERS = annoyingdialog.h \
 				autodetectcompilers.h \
+				backgroundthread.h \
 				base64.h \
 				blockallocated.h \
 				cbeditor.h \
@@ -153,13 +160,16 @@ noinst_HEADERS = annoyingdialog.h \
 				externaldepsdlg.h \
 				filefilters.h \
 				filegroupsandmasks.h \
+				filemanager.h \
 				finddlg.h \
 				findreplacebase.h \
 				globals.h \
 				ibaseloader.h \
 				ibaseworkspaceloader.h \
+				id.h \
 				importers_globals.h \
 				incrementalselectlistdlg.h \
+				infowindow.h \
 				licenses.h \
 				macrosmanager.h \
 				managedthread.h \
@@ -192,7 +202,7 @@ noinst_HEADERS = annoyingdialog.h \
 				projectsfilemasksdlg.h \
 				projecttemplateloader.h \
 				replacedlg.h \
-				scriptingcall.h \
+				safedelete.h \
 				scriptingmanager.h \
 				sdk.h \
 				sdk_common.h \

@@ -3,7 +3,8 @@ SUBDIRS = resources
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/sdk \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		-I$(top_srcdir)/src/sdk/as/include
+		-I$(top_srcdir)/src/sdk/scripting/include \
+    	-I$(top_srcdir)/src/sdk/scripting/sqplus
 
 libdir = $(pkgdatadir)/plugins
 

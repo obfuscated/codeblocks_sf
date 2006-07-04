@@ -3,6 +3,8 @@ SUBDIRS = wxAUI resources
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			-I$(top_srcdir)/src/sdk \
+			-I$(top_srcdir)/src/sdk/scripting/include \
+			-I$(top_srcdir)/src/sdk/scripting/sqplus \
 			-I$(top_srcdir)/src/sdk/wxFlatNotebook \
 			-I$(top_srcdir)/src/src/wxAUI
 

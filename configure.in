@@ -106,7 +106,12 @@ AC_MSG_NOTICE([Configuring Code::Blocks...])
 AC_CONFIG_FILES([Makefile
 	src/Makefile
 	src/sdk/Makefile
-	src/sdk/as/Makefile
+	src/sdk/scripting/Makefile
+	src/sdk/scripting/bindings/Makefile
+	src/sdk/scripting/squirrel/Makefile
+	src/sdk/scripting/sqstdlib/Makefile
+	src/sdk/scripting/sqplus/Makefile
+	src/sdk/scripting/include/Makefile
 	src/sdk/tinyxml/Makefile
 	src/sdk/wxscintilla/Makefile
 	src/sdk/wxFlatNotebook/Makefile
@@ -140,19 +145,30 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/pluginwizard/resources/Makefile
 	src/plugins/projectwizard/Makefile
 	src/plugins/projectwizard/resources/Makefile
+	src/plugins/projectwizard/resources/c_file/Makefile
 	src/plugins/projectwizard/resources/console/Makefile
 	src/plugins/projectwizard/resources/console/c/Makefile
 	src/plugins/projectwizard/resources/console/cpp/Makefile
 	src/plugins/projectwizard/resources/d/Makefile
 	src/plugins/projectwizard/resources/d/console/Makefile
+	src/plugins/projectwizard/resources/directx/Makefile
+	src/plugins/projectwizard/resources/directx/files/Makefile
+	src/plugins/projectwizard/resources/dll/Makefile
+	src/plugins/projectwizard/resources/dll/files/Makefile
+	src/plugins/projectwizard/resources/empty/Makefile
+	src/plugins/projectwizard/resources/fltk/Makefile
+	src/plugins/projectwizard/resources/fltk/files/Makefile
 	src/plugins/projectwizard/resources/glfw/Makefile
 	src/plugins/projectwizard/resources/glfw/files/Makefile
 	src/plugins/projectwizard/resources/glut/Makefile
 	src/plugins/projectwizard/resources/glut/files/Makefile
+	src/plugins/projectwizard/resources/h_file/Makefile
 	src/plugins/projectwizard/resources/irrlicht/Makefile
 	src/plugins/projectwizard/resources/irrlicht/files/Makefile
 	src/plugins/projectwizard/resources/ogre/Makefile
 	src/plugins/projectwizard/resources/ogre/files/Makefile
+	src/plugins/projectwizard/resources/smartwin/Makefile
+	src/plugins/projectwizard/resources/smartwin/files/Makefile
 	src/plugins/projectwizard/resources/wxwidgets/Makefile
 	src/plugins/projectwizard/resources/wxwidgets/common/Makefile
 	src/plugins/projectwizard/resources/wxwidgets/pch/Makefile
