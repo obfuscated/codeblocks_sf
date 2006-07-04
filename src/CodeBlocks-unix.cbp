@@ -1997,6 +1997,12 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/backgroundthread.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/base64.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />
@@ -2387,6 +2393,16 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/filemanager.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/filemanager.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/finddlg.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />
@@ -2425,6 +2441,12 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/id.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/importers_globals.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />
@@ -2441,6 +2463,16 @@
 		</Unit>
 		<Unit filename="sdk/incrementalselectlistdlg.h">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/infowindow.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/infowindow.h">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="sdk" />
@@ -2897,8 +2929,8 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/resources/global_user_vars.xrc">
-			<Option compilerVar="" />
+		<Unit filename="sdk/resources/global_uservars.xrc">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="sdk" />
@@ -3019,6 +3051,12 @@
 		</Unit>
 		<Unit filename="sdk/resources/select_target.xrc">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/safedelete.h">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="sdk" />
@@ -3453,6 +3491,16 @@
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="sdk/tinyxml/tinywxuni.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/tinyxml/tinywxuni.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/tinyxml/tinyxml.cpp">
 			<Option compilerVar="CPP" />

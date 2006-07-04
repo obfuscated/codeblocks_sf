@@ -23,7 +23,6 @@
 	#include <wx/wx.h>
 #endif
 
-#include <sdk.h>      // world headers
 #include <cbplugin.h> // the base class we 're inheriting
 #include <settings.h> // needed to use the Code::Blocks SDK
 

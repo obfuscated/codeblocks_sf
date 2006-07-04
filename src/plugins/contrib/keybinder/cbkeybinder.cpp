@@ -9,6 +9,8 @@
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
 
+#include <sdk.h>
+
 #if defined(__GNUG__) && !defined(__APPLE__)
 	#pragma implementation "cbkeybinder.h"
 #endif

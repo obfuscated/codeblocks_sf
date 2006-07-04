@@ -7,8 +7,8 @@ EVT_LEFT_DOWN(InfoWindow::OnClick)
 EVT_RIGHT_DOWN(InfoWindow::OnClick)
 END_EVENT_TABLE()
 
-const wxColour titleBackground(96,96,96);
-const wxColour textBackground(245,245,245);
+const wxColour titleBackground(96,96,96); // dark grey
+const wxColour textBackground(255,255,160); // yellowish
 
 
 const char *iBitmap[] = {
@@ -75,9 +75,24 @@ const char *iBitmap[] = {
 
 
 Stacker InfoWindow::stacker;
-int InfoWindow::screenWidth = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
-int InfoWindow::screenHeight = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
 
+// in wxGTK this initialization raises an assertion (makes sense too)
+// so initialize them to -1 and we 'll set them up correctly in InfoWindow's ctor the first time
+int InfoWindow::screenWidth = -1;//wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
+int InfoWindow::screenHeight = -1;//wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
+
+namespace // anonumous
+{
+    // while in windows world, sleep(1) takes anywhere between 20-50 milliseconds,
+    // in linux sleep(1) means sleep 1 millisecond.
+    // so we need conditional compilation here in order for the scrolling effect to be
+    // visible under non-windows platforms :)
+#ifdef __WXMSW__
+    static const int scroll_millis = 1;
+#else
+    static const int scroll_millis = 20;
+#endif
+} // anonumous namespace
 
 class ForwardingTextControl : public wxStaticText
 {
@@ -98,11 +113,24 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
     {
         wxBoxSizer *bs = new wxBoxSizer(wxVERTICAL);
 
+        wxWindow* o = 0;
+#ifdef __WXGTK__
+        wxBoxSizer *pbs = new wxBoxSizer(wxVERTICAL);
+        wxPanel* pnl = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
+        pnl->SetBackgroundColour(titleBackground);
+        ForwardingTextControl *titleC = new ForwardingTextControl(pnl, -1, title, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
+        pbs->Add(titleC, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+        pnl->SetSizer(pbs);
+        pbs->SetSizeHints(pnl);
+        o = pnl;
+#else
         ForwardingTextControl *titleC = new ForwardingTextControl(this, -1, title, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
-        titleC->SetForegroundColour(*wxWHITE);
         titleC->SetBackgroundColour(titleBackground);
+        o = titleC;
+#endif
+        titleC->SetForegroundColour(*wxWHITE);
         titleC->SetFont(wxFont(11, wxSWISS, wxNORMAL, wxBOLD));
-        bs->Add(titleC, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5);
+        bs->Add(o, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5);
 
         ForwardingTextControl *text = new ForwardingTextControl(this, -1, message, wxDefaultPosition, wxDefaultSize, 0);
         text->SetBackgroundColour(textBackground);
@@ -112,12 +140,20 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
         bs->SetSizeHints(this);
         Layout();
 
-        new wxStaticBitmap(this, -1, wxBitmap(iBitmap), wxPoint(4, titleC->GetRect().GetBottom() - 9));
-
+#ifndef __WXGTK__
+        // since we used a panel, no more bitmap :(
+        new wxStaticBitmap(this, -1, wxBitmap(iBitmap), wxPoint(4, o->GetRect().GetBottom() - 9));
+#endif
         wxCoord w, h;
         GetClientSize(&w, &h);
 
         pos = stacker.StackMe(w);
+
+        // setup variables first time we enter here
+        if (screenWidth == -1)
+            screenWidth = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
+        if (screenHeight == -1)
+            screenHeight = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
 
         left = screenWidth - pos;
         hMin = screenHeight - h;
@@ -142,7 +178,7 @@ void InfoWindow::OnTimer(wxTimerEvent& e)
     {
     case 0:
         status = 1;
-        m_timer->Start(1, false);
+        m_timer->Start(scroll_millis, false);
         break;
     case 1:
         top -= 2;
@@ -155,7 +191,7 @@ void InfoWindow::OnTimer(wxTimerEvent& e)
         break;
     case 2:
         status = 3;
-        m_timer->Start(1, false);
+        m_timer->Start(scroll_millis, false);
         break;
     case 3:
         top += ks;
@@ -179,6 +215,6 @@ void InfoWindow::OnClick(wxMouseEvent& e)
 {
     ks = 6;
     status = 3;
-    m_timer->Start(1, false);
+    m_timer->Start(scroll_millis, false);
 }
 

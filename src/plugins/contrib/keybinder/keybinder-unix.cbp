@@ -15,7 +15,6 @@
 				<Option host_application="../../../devel/codeblocks" />
 				<Option includeInTargetAll="1" />
 				<Compiler>
-					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="../../../sdk" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
@@ -33,6 +32,8 @@
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fPIC" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
@@ -87,5 +88,6 @@
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />
 		</Unit>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
