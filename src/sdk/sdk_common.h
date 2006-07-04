@@ -136,6 +136,11 @@
     #include "xtra_classes.h"
     #include "xtra_res.h"
 
+    #include "safedelete.h"
+    #include "backgroundthread.h"
+    #include "filemanager.h"
+    #include "infowindow.h"
+
 #endif // CB_PRECOMP
 
 #endif // SDK_COMMON_H

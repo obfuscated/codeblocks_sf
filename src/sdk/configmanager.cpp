@@ -36,6 +36,7 @@
 #include <string>
 #endif
 
+#include <tinyxml/tinywxuni.h>
 
 wxString ConfigManager::app_path = wxEmptyString;
 wxString ConfigManager::data_path = wxEmptyString;
@@ -47,17 +48,37 @@ namespace CfgMgrConsts
 {
     const wxString app_path(_T("app_path"));
     const wxString data_path(_T("data_path"));
-    const wxString rootTag(_T("CodeBlocksConfig"));
+    const wxString dotDot(_T(".."));
     const int version = 1;
 }
 
+inline void ConfigManager::Collapse(wxString& str) const
+{
+    const wxChar *src = str.c_str();
+    wxChar *dst = (wxChar*) src;
+    wxChar c;
+    size_t len = 0;
+
+    while(c = *src)
+    {
+        ++src;
+
+        *dst = c;
+        ++dst;
+        ++len;
+
+        if(c == _T('/'))
+        while(*src == _T('/'))
+            ++src;
+    }
+    str.Truncate(len);
+};
 
 ISerializable::ISerializable()
 {}
 
 ISerializable::~ISerializable()
 {}
-
 
 
 
@@ -70,66 +91,94 @@ CfgMgrBldr::CfgMgrBldr() : doc(0), volatile_doc(0), r(false)
 {
     TiXmlBase::SetCondenseWhiteSpace(false);
     wxString personality(Manager::Get()->GetPersonalityManager()->GetPersonality());
+
     if(personality.StartsWith(_T("http://")))
+    {
         SwitchToR(personality);
-    else
-        SwitchTo(ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + personality + _T(".conf"));
+        return;
+    }
+
+    cfg = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + personality + _T(".conf");
+
+    if(::wxFileExists(cfg) == false)
+    {
+    cfg = ConfigManager::LocateDataFile(wxFileName(cfg).GetFullName(), false, true);
+    if(cfg.IsEmpty())
+        {
+            cfg = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + personality + _T(".conf");
+            doc = new TiXmlDocument();
+            doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
+            doc->InsertEndChild(TiXmlElement("CodeBlocksConfig"));
+            doc->FirstChildElement("CodeBlocksConfig")->SetAttribute("version", CfgMgrConsts::version);
+            return;
+        }
+    }
+    SwitchTo(cfg);
 }
 
-void CfgMgrBldr::SwitchTo(const wxString& absFileName)
+void CfgMgrBldr::SwitchTo(const wxString& fileName)
 {
     Close();
 
-    if(doc)
-        delete doc;
     doc = new TiXmlDocument();
-    doc->ClearError();
 
-    wxString loc = absFileName;
-    if (::wxFileExists(absFileName) == false)
-        loc = ConfigManager::LocateDataFile(_T("default.conf"));
-
-    if(!wxFile::Access(loc, wxFile::read)) // no config file found
-    {
-        cfg = absFileName;
-        doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
-        doc->InsertEndChild(TiXmlElement(cbU2C(CfgMgrConsts::rootTag)));
-        doc->FirstChildElement(cbU2C(CfgMgrConsts::rootTag))->SetAttribute("version", CfgMgrConsts::version);
-    }
-    else
-    {
-        cfg = loc;
-        wxFile file(loc);
-        char *input = new char[file.Length()];
-        file.Read(input, file.Length());
-        doc->Parse(input);
-        delete[] input;
-    }
+    if(!TinyXML::LoadDocument(fileName, doc))
+            cbThrow(wxString(_T("Error accessing file.")));
 
     if(doc->ErrorId())
-        cbMessageBox(wxString(_T("TinyXML error:\n")) << cbC2U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
+        cbThrow(wxString(_T("TinyXML error:\n")) << cbC2U(doc->ErrorDesc()));
 
-    TiXmlElement* docroot = doc->FirstChildElement(cbU2C(CfgMgrConsts::rootTag));
-    if(!docroot)
-    {
-        wxString s;
-        s.Printf(_("Fatal error parsing configuration. The file %s is not a valid Code::Blocks config file."),
-#if wxUSE_UNICODE
-                 cbC2U(doc->Value()).c_str());
-#else
-                 doc->Value());
-#endif
-        cbThrow(s);
-    }
+    TiXmlElement* docroot = doc->FirstChildElement("CodeBlocksConfig");
 
     if(doc->ErrorId())
-        cbMessageBox(wxString(_T("TinyXML error:\n")) << cbC2U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
+        cbThrow(wxString(_T("TinyXML error:\n")) << cbC2U(doc->ErrorDesc()));
 
     const char *vers = docroot->Attribute("version");
     if(!vers || atoi(vers) != 1)
         cbMessageBox(_("ConfigManager encountered an unknown config file version. Continuing happily."), _("Warning"), wxICON_WARNING);
 
     doc->ClearError();
+
+    wxString info;
+#ifndef __GNUC__
+
+    info.Printf(_T( " application info:\n"
+                    "\t svn_revision:\t%d\n"
+                    "\t build_date:\t%s, %s "), ConfigManager::GetRevisionNumber(), wxT(__DATE__), wxT(__TIME__));
+#else
+
+    info.Printf(_T( " application info:\n"
+                    "\t svn_revision:\t%d\n"
+                    "\t build_date:\t%s, %s\n"
+                    "\t gcc_version:\t%d.%d.%d "), ConfigManager::GetRevisionNumber(), wxT(__DATE__), wxT(__TIME__),
+                __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+#endif
+
+    if(ConfigManager::Linux())
+        info.append(_T("\n\t Linux "));
+    if(ConfigManager::Windows())
+        info.append(_T("\n\t Windows "));
+    if(ConfigManager::MacOS())
+        info.append(_T("\n\t MacOS "));
+    if(ConfigManager::Unix())
+        info.append(_T("\n\t Unix "));
+
+    info.append(ConfigManager::Unicode() ? _T("Unicode ") : _T("ANSI "));
+
+    TiXmlComment c;
+    c.SetValue((const char*) info.mb_str());
+
+    TiXmlNode *firstchild = docroot->FirstChild();
+    if(firstchild && firstchild->ToComment())
+    {
+        docroot->RemoveChild(firstchild);
+        firstchild = docroot->FirstChild();
+    }
+
+    if(firstchild)
+        docroot->InsertBeforeChild(firstchild, c);
+    else
+        docroot->InsertEndChild(c);
 }
 
 void CfgMgrBldr::SwitchToR(const wxString& absFileName)
@@ -195,7 +244,7 @@ void CfgMgrBldr::Close()
     {
         if(!cfg.StartsWith(_T("http://")))
         {
-            if (!cbSaveTinyXMLDocument(doc, cfg))
+            if (!TinyXML::SaveDocument(cfg, doc))
             {
                 wxSafeShowMessage(_T("Could not save config file..."), _("Warning"));
                 // TODO (thomas#1#): add "retry" option
@@ -234,14 +283,14 @@ ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
         if(!volatile_doc)
         {
             volatile_doc = new TiXmlDocument();
-            volatile_doc->InsertEndChild(TiXmlElement(cbU2C(CfgMgrConsts::rootTag)));
+            volatile_doc->InsertEndChild(TiXmlElement("CodeBlocksConfig"));
             volatile_doc->SetCondenseWhiteSpace(false);
         }
-        docroot = volatile_doc->FirstChildElement(cbU2C(CfgMgrConsts::rootTag));
+        docroot = volatile_doc->FirstChildElement("CodeBlocksConfig");
     }
     else
     {
-        docroot = doc->FirstChildElement(cbU2C(CfgMgrConsts::rootTag));
+        docroot = doc->FirstChildElement("CodeBlocksConfig");
         if(!docroot)
         {
             wxString err(_("Fatal error parsing supplied configuration file.\nParser error message:\n"));
@@ -274,25 +323,25 @@ ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
 */
 inline void to_upper(wxString& s)
 {
-wxChar *p = (wxChar*) s.c_str();
-size_t len = s.length()+1;
-for(;--len;++p)
+    wxChar *p = (wxChar*) s.c_str();
+    size_t len = s.length()+1;
+    for(;--len;++p)
     {
-    wxChar q = *p;
-    if(q >= 'a' && q <= 'z')
-        *p = q - 32;
+        wxChar q = *p;
+        if(q >= 'a' && q <= 'z')
+            *p = q - 32;
     }
 };
 
 inline void to_lower(wxString& s)
 {
-wxChar *p = (wxChar*) s.c_str();
-size_t len = s.length()+1;
-for(;--len;++p)
+    wxChar *p = (wxChar*) s.c_str();
+    size_t len = s.length()+1;
+    for(;--len;++p)
     {
-    wxChar q = *p;
-    if(q >= 'A' && q <= 'Z')
-        *p = q + 32;
+        wxChar q = *p;
+        if(q >= 'A' && q <= 'Z')
+            *p = q + 32;
     }
 };
 
@@ -307,6 +356,24 @@ for(;--len;++p)
 wxString ConfigManager::GetProxy()
 {
     return Manager::Get()->GetConfigManager(_T("app"))->Read(_T("network_proxy"));
+}
+
+
+wxString ConfigManager::GetTempFolder()
+{
+    static bool once = true;
+    static wxString tempFolder;
+
+    if(once)
+    {
+        once = false;
+
+        wxString tempFile = wxFileName::CreateTempFileName(wxEmptyString);
+        tempFolder = wxFileName(tempFile).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+        ::wxRemoveFile(tempFile);
+    }
+    return tempFolder;
 }
 
 wxString ConfigManager::GetExecutableFolder()
@@ -375,23 +442,27 @@ wxString ConfigManager::GetDataFolder()
     return ConfigManager::data_path;
 }
 
-wxString ConfigManager::LocateDataFile(const wxString& filename)
+wxString ConfigManager::LocateDataFile(const wxString& filename, bool search_path, bool search_conf)
 {
     wxPathList searchPaths;
-    searchPaths.Add(GetConfigFolder());
+
+    if(search_conf)
+        searchPaths.Add(GetConfigFolder());
+
     searchPaths.Add(GetDataFolder());
     searchPaths.Add(GetExecutableFolder());
     searchPaths.Add(GetHomeFolder());
-    searchPaths.AddEnvList(_T("PATH"));
-#ifdef __WXMSW__
 
-    searchPaths.Add(_T("C:\\"));
-#endif
+    if(search_path)
+    {
+        searchPaths.AddEnvList(_T("PATH"));
+        searchPaths.Add(_T("C:\\"));
+    }
 
     return searchPaths.FindValidPath(filename);
 }
 
-#else
+#else // __WXMSW__
 
 
 wxString ConfigManager::GetConfigFolder()
@@ -421,13 +492,22 @@ wxString ConfigManager::GetDataFolder()
     return ConfigManager::data_path;
 }
 
-wxString ConfigManager::LocateDataFile(const wxString& filename)
+wxString ConfigManager::LocateDataFile(const wxString& filename, bool search_path, bool search_conf)
 {
     wxPathList searchPaths;
-    searchPaths.Add(GetDataFolder());
+
+    if(search_conf)
+        searchPaths.Add(GetConfigFolder());
+
     searchPaths.Add(GetHomeFolder());
-    searchPaths.AddEnvList(_T("PATH"));
-    searchPaths.Add(_T("/usr/share/"));
+    searchPaths.Add(GetDataFolder());
+
+    if(search_path)
+    {
+        searchPaths.AddEnvList(_T("PATH"));
+        searchPaths.Add(_T("/usr/share/"));
+    }
+
     return searchPaths.FindValidPath(filename);
 }
 
@@ -465,45 +545,53 @@ wxString ConfigManager::GetPath() const
     ret = cbC2U(e->Value());
     while((e = e->Parent()->ToElement()) && e != root)
     {
-        ret.Prepend(_T("/"));
+        ret.Prepend(_T('/'));
         ret.Prepend(cbC2U(e->Value()));
     }
-    ret.Prepend(_T("/"));
+    ret.Prepend(_T('/'));
     return ret;
 };
 
 void ConfigManager::SetPath(const wxString& path)
 {
-    wxString p(path + _T("/"));
+    wxString p(path + _T('/'));
     pathNode = AssertPath(p);
 }
 
 
 TiXmlElement* ConfigManager::AssertPath(wxString& path)
 {
-    if(doc->ErrorId())
-    {
-        cbMessageBox(wxString(_T("TinyXML error:\n")) << cbC2U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
-        doc->ClearError();
-    }
+    Collapse(path);
 
-    path.Replace(_T("\\"), _T("/"));
-    path.Replace(_T("///"), _T("/"));
-    path.Replace(_T("//"),  _T("/"));
-
-    wxString illegal(_T(" -:.,;!\"$%&()[]<>{}?*+|#"));
-    size_t i;
-    while((i = path.find_first_of(illegal)) != wxString::npos)
+    wxString illegal(_T(" -:.\"$&()[]<>+#"));
+    size_t i = 0;
+    while((i = path.find_first_of(illegal, i)) != wxString::npos)
         path[i] = _T('_');
 
-    if(!path.Contains(_T("/")))
+    pathNode = pathNode ? pathNode : root;
+
+    if(path.GetChar(0) == '/')  // absolute path
     {
-        to_upper(path);
-        if(path[0] < _T('A') || path[0] > _T('Z'))
+        pathNode = root;
+        path = path.Mid(1);
+    }
+
+    if(path.find(_T('/')) != wxString::npos) // need for path walking
+        to_lower(path);
+
+    wxString sub;
+
+    while(path.find(_T('/')) != wxString::npos)
+    {
+        sub = path.BeforeFirst(_T('/'));
+        path = path.AfterFirst(_T('/'));
+
+        if(pathNode != root && sub.IsSameAs(CfgMgrConsts::dotDot))
+            pathNode = pathNode->Parent()->ToElement();
+        else if(sub.GetChar(0) < _T('a') || sub.GetChar(0) > _T('z'))
         {
             wxString s;
-            s.Printf(_("The Configuration key %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for variable naming.\nVariables names are required to start with a letter."),
-                     path.c_str(),
+            s.Printf(_T("The subpath %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for path naming.\nPaths and subpaths are required to start with a letter."), sub.c_str(),
 #if wxUSE_UNICODE
                      cbC2U(pathNode->Value()).c_str(),
                      cbC2U(root->Value()).c_str());
@@ -514,60 +602,29 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
 #endif
             cbThrow(s);
         }
-        return pathNode;
-    }
-
-    TiXmlElement* e = pathNode ? pathNode : root;
-
-    to_lower(path);
-
-    wxString sub;
-    do
-    {
-        sub = path.BeforeFirst(_T('/'));
-        path = path.AfterFirst(_T('/'));
-
-        if(sub.IsEmpty())
-            e = root;
-        else if(sub.IsSameAs(_T(".")))
-            ;
-        else if(e != root && sub.IsSameAs(_T("..")))
-            e = e->Parent()->ToElement();
-        else if(sub[0] < _T('a') || sub[0] > _T('z'))
-        {
-            wxString s;
-            s.Printf(_("The subpath %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for path naming.\nPaths and subpaths are required to start with a letter."), sub.c_str(),
-#if wxUSE_UNICODE
-                     cbC2U(e->Value()).c_str(),
-                     cbC2U(root->Value()).c_str());
-#else
-
-                     e->Value(),
-                     root->Value());
-#endif
-            cbThrow(s);
-        }
         else
         {
-            TiXmlElement* n = e->FirstChildElement(cbU2C(sub));
+            TiXmlElement* n = pathNode->FirstChildElement(cbU2C(sub));
             if(n)
-                e = n;
+                pathNode = n;
             else
-                e = (TiXmlElement*) e->InsertEndChild(TiXmlElement(cbU2C(sub)));
+                pathNode = (TiXmlElement*) pathNode->InsertEndChild(TiXmlElement(cbU2C(sub)));
         }
-        if(doc->Error())
+#ifdef cbDEBUG_EXTRA
+        if(doc->Error()) // this can actually never happen, as we're not parsing any moreF
         {
-            cbMessageBox(wxString(_T("TinyXML error:\n")) << cbC2U(doc->ErrorDesc()), _("Warning"), wxICON_WARNING);
+            cbMessageBox(wxString(_T("TinyXML error:\n")) << cbC2U(doc->ErrorDesc()), _T("Warning"), wxICON_WARNING);
             doc->ClearError();
         }
+#endif
+
     }
-    while(path.Contains(_T("/")));
 
     to_upper(path);
-    if(!path.IsEmpty() && (path[0] < _T('A') || path[0] > _T('Z')))
+    if(!path.IsEmpty() && (path.GetChar(0) < _T('A') || path.GetChar(0) > _T('Z')))
     {
         wxString s;
-        s.Printf(_("The Configuration key %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for variable naming.\nVariables names are required to start with a letter."),
+        s.Printf(_T("The Configuration key %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for variable naming.\nVariables names are required to start with a letter."),
                  path.c_str(),
 #if wxUSE_UNICODE
                  cbC2U(pathNode->Value()).c_str(),
@@ -579,7 +636,7 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
 #endif
         cbThrow(s);
     }
-    return e;
+    return pathNode;
 }
 
 
@@ -998,7 +1055,7 @@ wxString ConfigManager::ReadBinary(const wxString& name)
 
 wxArrayString ConfigManager::EnumerateSubPaths(const wxString& path)
 {
-    wxString key(path + _T("/")); // the trailing slash hack is required because AssertPath expects a key name
+    wxString key(path + _T('/')); // the trailing slash hack is required because AssertPath expects a key name
     TiXmlNode* e = AssertPath(key);
     wxArrayString ret;
 
@@ -1027,9 +1084,7 @@ void ConfigManager::DeleteSubPath(const wxString& thePath)
     to_lower(path);
 
 
-    path.Replace(_T("\\"), _T("/"));
-    path.Replace(_T("///"), _T("/"));
-    path.Replace(_T("//"),  _T("/"));
+    Collapse(path);
 
     wxString illegal(_T(" :.,;!\"$%&()[]<>{}?*+-|#"));
     size_t i;
@@ -1044,7 +1099,7 @@ void ConfigManager::DeleteSubPath(const wxString& thePath)
 
     TiXmlElement* parent = pathNode ? pathNode : root;
 
-    if(path.Contains(_T("/")))
+    if(path.find(_T('/')) != wxString::npos)
     {
         wxString sub;
         do
@@ -1067,7 +1122,7 @@ void ConfigManager::DeleteSubPath(const wxString& thePath)
                     return;
             }
         }
-        while(path.Contains(_T("/")));
+        while(path.find(_T('/')) != wxString::npos);
     }
 
     if(!path.IsEmpty())
@@ -1083,7 +1138,7 @@ void ConfigManager::DeleteSubPath(const wxString& thePath)
 
 wxArrayString ConfigManager::EnumerateKeys(const wxString& path)
 {
-    wxString key(path + _T("/")); // the trailing slash hack is required because AssertPath expects a key name
+    wxString key(path + _T('/')); // the trailing slash hack is required because AssertPath expects a key name
     TiXmlNode* e = AssertPath(key);
     wxArrayString ret;
 
@@ -1293,21 +1348,61 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::Se
 
 
 #if wxUSE_UNICODE
-bool ConfigManager::Unicode() {return true;}
+bool ConfigManager::Unicode()
+{
+    return true;
+}
 #else
-bool ConfigManager::Unicode() {return false;};
+bool ConfigManager::Unicode()
+{
+    return false;
+}
 #endif
 
 #ifdef __WIN32__
-bool ConfigManager::Windows() {return true;};
-bool ConfigManager::Unix() {return false;};
+bool ConfigManager::Windows()
+{
+    return true;
+}
+bool ConfigManager::Unix()
+{
+    return false;
+}
 #endif
 
 #ifdef __WXGTK__
-bool ConfigManager::Windows() {return false;};
-bool ConfigManager::Unix() {return true;};
+bool ConfigManager::Windows()
+{
+    return false;
+}
+bool ConfigManager::Unix()
+{
+    return true;
+}
 #endif
 
-bool ConfigManager::Linux() {return Unix();};
+#ifdef __WXMAC__
+bool ConfigManager::MacOS()
+{
+    return true;
+}
+#else
+bool ConfigManager::MacOS()
+{
+    return false;
+}
+#endif
+
+#ifdef __linux__
+bool ConfigManager::Linux()
+{
+    return true;
+}
+#else
+bool ConfigManager::Linux()
+{
+    return false;
+}
+#endif
 
 

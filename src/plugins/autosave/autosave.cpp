@@ -1,5 +1,5 @@
 /*
-This file is part of Code::Blocks Studio, an open-source cross-platform IDE
+* This file is part of Code::Blocks Studio, an open-source cross-platform IDE
 * Copyright (C) 2003  Yiannis An. Mandravellos
 *
 * This program is distributed under the terms of the GNU General Public License as published by

@@ -89,17 +89,21 @@ EditorColourSet::~EditorColourSet()
 
 void EditorColourSet::ClearAllOptionColours()
 {
-       for (OptionSetsMap::iterator map_it = m_Sets.begin();
-                                                       map_it != m_Sets.end(); ++map_it)
+   for (OptionSetsMap::iterator map_it = m_Sets.begin();
+                                                   map_it != m_Sets.end(); ++map_it)
+    {
         for (OptionColours::iterator vec_it = (*map_it).second.m_Colours.begin();
                             vec_it != (*map_it).second.m_Colours.end(); ++vec_it)
-                       delete (*vec_it);
+        {
+            delete (*vec_it);
+        }
+    }
     m_Sets.clear();
 }
 
 void EditorColourSet::LoadAvailableSets()
 {
-	wxString path = ConfigManager::GetDataFolder() + _T("/lexers");
+	wxString path = ConfigManager::GetDataFolder() + _T("/lexers/");
     wxDir dir(path);
 
     if (!dir.IsOpened())
@@ -107,12 +111,22 @@ void EditorColourSet::LoadAvailableSets()
 
 	EditorLexerLoader lex(this);
     wxString filename;
+
+    FileManager *fm = FileManager::Get();
+    std::list<LoaderBase*> loaders;
+
     bool ok = dir.GetFirst(&filename, _T("lexer_*.xml"), wxDIR_FILES);
-    while (ok)
+    while(ok)
     {
-        lex.Load(path + _T("/") + filename);
+        loaders.push_back(fm->Load(path + filename));
         ok = dir.GetNext(&filename);
     }
+
+    for(std::list<LoaderBase*>::iterator it = loaders.begin(); it != loaders.end(); ++it)
+        lex.Load(*it);
+
+    ::Delete(loaders);
+
 
 	for (OptionSetsMap::iterator it = m_Sets.begin(); it != m_Sets.end(); ++it)
 	{
@@ -391,8 +405,7 @@ HighlightLanguage EditorColourSet::Apply(cbEditor* editor, HighlightLanguage lan
     if (lang == HL_AUTO)
         lang = GetLanguageForFilename(editor->GetFilename());
 
-	Apply(lang, editor->GetLeftSplitViewControl());
-	Apply(lang, editor->GetRightSplitViewControl());
+	Apply(lang, editor->GetControl());
 
 	return lang;
 }
@@ -443,10 +456,18 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
                 if (opt->back != wxNullColour)
                 {
                     control->SetSelBackground(true, opt->back);
-                    Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/selection_colour"), opt->back);
+//                    Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/selection_colour"), opt->back);
                 }
                 else
                     control->SetSelBackground(false, wxColour(0xC0, 0xC0, 0xC0));
+
+                if (opt->fore != wxNullColour)
+                {
+                    control->SetSelForeground(true, opt->fore);
+//                    Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/selection_fgcolour"), opt->fore);
+                }
+                else
+                    control->SetSelForeground(false, *wxBLACK);
             }
 //            else
 //            {

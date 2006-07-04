@@ -27,6 +27,7 @@ class wxToolBar;
 class UserVariableManager;
 class ScriptingManager;
 class ConfigManager;
+class FileManager;
 class CodeBlocksEvent;
 
 
@@ -62,7 +63,8 @@ public:
 
     wxFrame* GetAppWindow() const;
 
-    static bool isappShuttingDown();
+    static bool IsAppShuttingDown();
+    static bool isappShuttingDown(){return Manager::IsAppShuttingDown();};
 
     /** Functions returning pointers to the respective sub-manager instances.
      * During application startup as well as during runtime, these functions will always return a valid pointer.
@@ -94,6 +96,7 @@ public:
     UserVariableManager* GetUserVariableManager() const;
     ScriptingManager* GetScriptingManager() const;
     ConfigManager* GetConfigManager(const wxString& name_space) const;
+    FileManager* GetFileManager() const;
 
 
 

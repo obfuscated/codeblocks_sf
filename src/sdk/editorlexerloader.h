@@ -12,7 +12,7 @@ class EditorLexerLoader
 		EditorLexerLoader(EditorColourSet* target);
 		virtual ~EditorLexerLoader();
 
-		void Load(const wxString& filename);
+		void Load(LoaderBase *loader);
 	protected:
         void DoLexer(TiXmlElement* node);
         void DoStyles(HighlightLanguage language, TiXmlElement* node);

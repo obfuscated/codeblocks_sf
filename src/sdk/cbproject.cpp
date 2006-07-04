@@ -350,15 +350,13 @@ void cbProject::Open()
 
 		if (fileUpgraded)
 		{
-            wxString msg;
-            msg.Printf(_("The project file of \"%s\" needs to be updated to the latest format.\n"
-                        "This will happen automatically when you save the project."), m_Title.c_str());
-            AnnoyingDialog dlg(_("Project file format will be updated on save"),
-                                msg,
-                                wxART_INFORMATION,
-                                AnnoyingDialog::OK,
-                                wxID_OK);
-            dlg.ShowModal();
+            InfoWindow::Display(m_Title,
+              _("This project file was generated\n"
+                "with an older version of Code::Blocks.\n\n"
+                "Code::Blocks can import older project files,\n"
+                "but will always save in the current format.\n\n"
+                "If you save this project, Code::Blocks will\n"
+                "upgrade it to the current version."), 12000, 2000);
         }
 	}
 	else

@@ -22,6 +22,7 @@
 
 #include "editorcolourset.h"
 #include "editorlexerloader.h"
+#include "filemanager.h"
 
 EditorLexerLoader::EditorLexerLoader(EditorColourSet* target)
     : m_pTarget(target)
@@ -34,17 +35,20 @@ EditorLexerLoader::~EditorLexerLoader()
 	//dtor
 }
 
-void EditorLexerLoader::Load(const wxString& filename)
+void EditorLexerLoader::Load(LoaderBase* loader)
 {
-    DBGLOG(_("Loading ") + wxFileName(filename).GetFullName());
-    TiXmlDocument doc(filename.mb_str());
-    if (!doc.LoadFile())
+    DBGLOG(wxString(_("Loading ")) << wxFileName(loader->FileName()).GetName());
+
+    TiXmlDocument doc;
+    doc.Parse(loader->GetData());
+
+    if (doc.Error())
     {
-        LOGSTREAM << _("Failed loading ") << filename << _T('\n');
+        LOGSTREAM << _("--> failed.\n\n");
+        LOGSTREAM << _("TinyXML error: ") << cbC2U(doc.ErrorDesc()) << _T("\n\n");
         return;
     }
 
-//    LOGSTREAM << "Parsing lexer file...\n";
     TiXmlElement* root;
     TiXmlElement* lexer;
 
