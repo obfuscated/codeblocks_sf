@@ -14,9 +14,14 @@ function BeginWizard()
                          "using the GLFW OpenGL extensions.\n\n" +
                          "When you 're ready to proceed, please click \"Next\"...");
 
+    local glfw_msg = _T("Please select the location of GLFW on your computer.\n" +
+                        "This is the top-level folder where GLFW was unpacked.\n" +
+                        "To help you, this folder must contain the subfolders\n" +
+                        "\"include\" and \"lib\".");
+
     Wizard.AddIntroPage(intro_msg);
     Wizard.AddProjectPathPage();
-    Wizard.AddPage(_T("GlfwPath"));
+    Wizard.AddGenericSelectPathPage(_T("GlfwPath"), glfw_msg, _T("GLFW's location:"), _T("$(#glfw)"));
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
@@ -24,32 +29,11 @@ function BeginWizard()
 // GLFW's path page
 ////////////////////////////////////////////////////////////////////////////////
 
-function OnEnter_GlfwPath(fwd)
-{
-    if (fwd)
-    {
-        local dir = Wizard.GetTextControlValue(_T("txtGlfwPath"));
-        if (dir.length() == 0)
-        {
-            // first time here, set default value
-            dir = ConfigManager.Read(_T("/glfw_project_wizard/path"), _T(""));
-            if (dir.IsEmpty() && GetUserVariableManager().Exists(_T("#glfw"))) // try global var
-                dir = ReplaceMacros(_T("$(#glfw)"), true);
-            Wizard.SetTextControlValue(_T("txtGlfwPath"), dir);
-        }
-    }
-}
-
 function OnLeave_GlfwPath(fwd)
 {
     if (fwd)
     {
-        local dir = Wizard.GetTextControlValue(_T("txtGlfwPath"));
-        if (!IO.DirectoryExists(dir))
-        {
-            ShowError(_T("Please select a valid path to GLFW..."));
-            return false;
-        }
+        local dir = Wizard.GetTextControlValue(_T("txtFolder"));
         if (!IO.FileExists(dir + _T("/include/GL/glfw.h")))
         {
             ShowError(_T("The path you entered seems valid, but this wizard " +
@@ -65,18 +49,8 @@ function OnLeave_GlfwPath(fwd)
                 dir = gvar;
         }
         GlfwPath = dir;
-        ConfigManager.Write(_T("/glfw_project_wizard/path"), dir, true);
     }
     return true;
-}
-
-function OnClick_btnGlfwPathBrowse()
-{
-    local dir = Wizard.GetTextControlValue(_T("txtGlfwPath"));
-    dir = IO.SelectDirectory(_T("Please select GLFW's top-level folder"), dir, false);
-
-    if (IO.DirectoryExists(dir))
-        Wizard.SetTextControlValue(_T("txtGlfwPath"), dir);
 }
 
 // return the files this project contains

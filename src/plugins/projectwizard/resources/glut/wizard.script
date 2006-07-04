@@ -14,9 +14,14 @@ function BeginWizard()
                          "using the GLUT OpenGL extensions.\n\n" +
                          "When you 're ready to proceed, please click \"Next\"...");
 
+    local glut_msg = _T("Please select the location of GLUT on your computer.\n" +
+                        "This is the top-level folder where GLUT was unpacked.\n" +
+                        "To help you, this folder must contain the subfolders\n" +
+                        "\"include\" and \"lib\".");
+
     Wizard.AddIntroPage(intro_msg);
     Wizard.AddProjectPathPage();
-    Wizard.AddPage(_T("GlutPath"));
+    Wizard.AddGenericSelectPathPage(_T("GlutPath"), glut_msg, _T("GLUT's location:"), _T("$(#glut)"));
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
@@ -24,32 +29,11 @@ function BeginWizard()
 // GLUT's path page
 ////////////////////////////////////////////////////////////////////////////////
 
-function OnEnter_GlutPath(fwd)
-{
-    if (fwd)
-    {
-        local dir = Wizard.GetTextControlValue(_T("txtGlutPath"));
-        if (dir.length() == 0)
-        {
-            // first time here, set default value
-            dir = ConfigManager.Read(_T("/glut_project_wizard/path"), _T(""));
-            if (dir.IsEmpty() && GetUserVariableManager().Exists(_T("#glut"))) // try global var
-                dir = ReplaceMacros(_T("$(#glut)"), true);
-            Wizard.SetTextControlValue(_T("txtGlutPath"), dir);
-        }
-    }
-}
-
 function OnLeave_GlutPath(fwd)
 {
     if (fwd)
     {
-        local dir = Wizard.GetTextControlValue(_T("txtGlutPath"));
-        if (!IO.DirectoryExists(dir))
-        {
-            ShowError(_T("Please select a valid path to GLUT..."));
-            return false;
-        }
+        local dir = Wizard.GetTextControlValue(_T("txtFolder"));
         if (!IO.FileExists(dir + _T("/include/GL/glut.h")))
         {
             ShowError(_T("The path you entered seems valid, but this wizard " +
@@ -65,18 +49,8 @@ function OnLeave_GlutPath(fwd)
                 dir = gvar;
         }
         GlutPath = dir;
-        ConfigManager.Write(_T("/glut_project_wizard/path"), dir, true);
     }
     return true;
-}
-
-function OnClick_btnGlutPathBrowse()
-{
-    local dir = Wizard.GetTextControlValue(_T("txtGlutPath"));
-    dir = IO.SelectDirectory(_T("Please select GLUT's top-level folder"), dir, false);
-
-    if (IO.DirectoryExists(dir))
-        Wizard.SetTextControlValue(_T("txtGlutPath"), dir);
 }
 
 // return the files this project contains

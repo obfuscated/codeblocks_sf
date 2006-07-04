@@ -16,9 +16,13 @@ function BeginWizard()
                         "using the OGRE 3D rendering engine.\n\n" +
                         "When you 're ready to proceed, please click \"Next\"...");
 
+    local ogre_msg = _T("Please select the location of OGRE SDK on your computer.\n" +
+                        "If you have setup an environment variable named\n" +
+                        "OGRE_HOME, it 'll automatically be used below.");
+
 	Wizard.AddIntroPage(intro_msg);
 	Wizard.AddProjectPathPage();
-	Wizard.AddPage(_T("OgrePath"));
+    Wizard.AddGenericSelectPathPage(_T("OgrePath"), ogre_msg, _T("OGRE SDK location:"), _T("$(OGRE_HOME)"));
 	Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
@@ -26,32 +30,12 @@ function BeginWizard()
 // OGRE's path page
 ////////////////////////////////////////////////////////////////////////////////
 
-function OnEnter_OgrePath(fwd)
-{
-	if (fwd)
-	{
-        local dir = Wizard.GetTextControlValue(_T("txtOgrePath"));
-        if (dir.IsEmpty())
-        {
-            // first time here, set default value
-            dir = ConfigManager.Read(_T("/ogre_project_wizard/path"), _T(""));
-            if (dir.IsEmpty()) // try env var
-                dir = ReplaceMacros(_T("$(OGRE_HOME)"), true);
-            Wizard.SetTextControlValue(_T("txtOgrePath"), dir);
-        }
-	}
-}
-
 function OnLeave_OgrePath(fwd)
 {
 	if (fwd)
 	{
-	    local dir = Wizard.GetTextControlValue(_T("txtOgrePath"));
-		if (!IO.DirectoryExists(dir))
-		{
-            ShowError(_T("Please select a valid path to OGRE..."));
-            return false;
-		}
+	    local dir = Wizard.GetTextControlValue(_T("txtFolder"));
+	    dir = ReplaceMacros(dir, true);
         if (!IO.FileExists(dir + _T("/include/OGRE.h")))
         {
             ShowError(_T("The path you entered seems valid, but this wizard " +
@@ -59,18 +43,8 @@ function OnLeave_OgrePath(fwd)
             return false;
         }
         OgrePath = dir;
-        ConfigManager.Write(_T("/ogre_project_wizard/path"), dir, true);
 	}
 	return true;
-}
-
-function OnClick_btnOgrePathBrowse()
-{
-    local dir = Wizard.GetTextControlValue(_T("txtOgrePath"));
-    dir = IO.SelectDirectory(_T("Please select the OGRE SDK folder"), dir, false);
-
-    if (IO.DirectoryExists(dir))
-        Wizard.SetTextControlValue(_T("txtOgrePath"), dir);
 }
 
 // return the files this project contains

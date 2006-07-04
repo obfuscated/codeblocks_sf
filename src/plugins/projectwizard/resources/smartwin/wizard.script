@@ -16,13 +16,13 @@ function BeginWizard()
 
 
     local swpath_descr = _T("Please select the location of SmartWin on your computer.\n" +
-                                "This is the top-level folder where SmartWin was installed (unpacked).\n" +
+                                "This is the top-level folder where SmartWin was installed\n(unpacked).\n" +
                                 "To help you, this folder must contain the subfolders\n" +
                                 "\"include\" and \"lib\".");
 
     Wizard.AddIntroPage(intro_msg);
     Wizard.AddProjectPathPage();
-    Wizard.AddGenericSelectPathPage(_T("SmartwinPath"), swpath_descr, _T("Please select SmartWin's location:"));
+    Wizard.AddGenericSelectPathPage(_T("SmartwinPath"), swpath_descr, _T("Please select SmartWin's location:"), _T("$(#sw)"));
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 

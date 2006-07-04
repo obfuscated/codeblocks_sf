@@ -143,7 +143,7 @@ class Wiz : public cbWizardPlugin
         void AddCompilerPage(const wxString& compilerID, const wxString& validCompilerIDs, bool allowCompilerChange = true, bool allowConfigChange = true);
         void AddBuildTargetPage(const wxString& targetName, bool isDebug, bool showCompiler = false, const wxString& compilerID = wxEmptyString, const wxString& validCompilerIDs = _T("*"), bool allowCompilerChange = true);
         void AddLanguagePage(const wxString& langs, int defLang);
-        void AddGenericSelectPathPage(const wxString& pageId, const wxString& descr, const wxString& label);
+        void AddGenericSelectPathPage(const wxString& pageId, const wxString& descr, const wxString& label, const wxString& defValue);
         // XRC pages
         void AddPage(const wxString& panelName);
 

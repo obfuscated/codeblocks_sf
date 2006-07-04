@@ -689,10 +689,10 @@ void Wiz::AddLanguagePage(const wxString& langs, int defLang)
     m_Pages.Add(m_pWizLanguagePanel);
 }
 
-void Wiz::AddGenericSelectPathPage(const wxString& pageId, const wxString& descr, const wxString& label)
+void Wiz::AddGenericSelectPathPage(const wxString& pageId, const wxString& descr, const wxString& label, const wxString& defValue)
 {
     // we don't track this; can add more than one
-    m_Pages.Add(new WizGenericSelectPathPanel(pageId, descr, label, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG));
+    m_Pages.Add(new WizGenericSelectPathPanel(pageId, descr, label, defValue, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG));
 }
 
 void Wiz::AddPage(const wxString& panelName)

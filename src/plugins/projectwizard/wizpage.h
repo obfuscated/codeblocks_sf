@@ -91,7 +91,7 @@ class WizProjectPathPanel : public WizPageBase
 class WizGenericSelectPathPanel : public WizPageBase
 {
 	public:
-		WizGenericSelectPathPanel(const wxString& pageId, const wxString& descr, const wxString& label,
+		WizGenericSelectPathPanel(const wxString& pageId, const wxString& descr, const wxString& label, const wxString& defValue,
                             wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
 		~WizGenericSelectPathPanel();
 

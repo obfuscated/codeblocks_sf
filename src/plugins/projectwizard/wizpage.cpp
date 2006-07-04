@@ -306,12 +306,16 @@ BEGIN_EVENT_TABLE(WizGenericSelectPathPanel, WizPageBase)
     EVT_BUTTON(-1, WizGenericSelectPathPanel::OnButton)
 END_EVENT_TABLE()
 
-WizGenericSelectPathPanel::WizGenericSelectPathPanel(const wxString& pageId, const wxString& descr, const wxString& label,
+WizGenericSelectPathPanel::WizGenericSelectPathPanel(const wxString& pageId, const wxString& descr, const wxString& label, const wxString& defValue,
                                             wxWizard* parent, const wxBitmap& bitmap)
     : WizPageBase(pageId, parent, bitmap)
 {
+    wxString savedValue = Manager::Get()->GetConfigManager(_T("project_wizard"))->Read(_T("/generic_paths/") + pageId);
+    if (savedValue.IsEmpty())
+        savedValue = defValue;
+
     m_pGenericSelectPath = new GenericSelectPath(this);
-    m_pGenericSelectPath->txtFolder->SetValue(Manager::Get()->GetConfigManager(_T("project_wizard"))->Read(_T("/generic_paths/") + pageId));
+    m_pGenericSelectPath->txtFolder->SetValue(savedValue);
     m_pGenericSelectPath->SetDescription(descr);
     m_pGenericSelectPath->lblLabel->SetLabel(label);
 }
@@ -324,7 +328,7 @@ WizGenericSelectPathPanel::~WizGenericSelectPathPanel()
 //------------------------------------------------------------------------------
 void WizGenericSelectPathPanel::OnButton(wxCommandEvent& event)
 {
-    wxString dir = m_pGenericSelectPath->txtFolder->GetValue();
+    wxString dir = Manager::Get()->GetMacrosManager()->ReplaceMacros(m_pGenericSelectPath->txtFolder->GetValue(), true);
     dir = ChooseDirectory(0, _("Please select location"), dir, wxEmptyString, false, true);
     if (!dir.IsEmpty() && wxDirExists(dir))
         m_pGenericSelectPath->txtFolder->SetValue(dir);
@@ -335,7 +339,7 @@ void WizGenericSelectPathPanel::OnPageChanging(wxWizardEvent& event)
 {
     if (event.GetDirection() != 0) // !=0 forward, ==0 backward
 	{
-	    wxString dir = m_pGenericSelectPath->txtFolder->GetValue();
+	    wxString dir = Manager::Get()->GetMacrosManager()->ReplaceMacros(m_pGenericSelectPath->txtFolder->GetValue(), true);
 		if (!wxDirExists(dir))
 		{
             cbMessageBox(_("Please select a valid location..."), _("Error"), wxICON_ERROR);

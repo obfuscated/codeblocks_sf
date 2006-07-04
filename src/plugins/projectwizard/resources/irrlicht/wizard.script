@@ -14,9 +14,14 @@ function BeginWizard()
                         "using the Irrlicht 3D real-time engine.\n\n" +
                         "When you 're ready to proceed, please click \"Next\"...");
 
+    local irr_msg = _T("Please select the location of Irrlicht on your computer.\n" +
+                        "This is the top-level folder where Irrlicht was unpacked.\n" +
+                        "To help you, this folder must contain the subfolders\n" +
+                        "\"include\" and \"lib\".");
+
 	Wizard.AddIntroPage(intro_msg);
 	Wizard.AddProjectPathPage();
-	Wizard.AddPage(_T("IrrPath"));
+    Wizard.AddGenericSelectPathPage(_T("IrrPath"), irr_msg, _T("Irrlicht's location:"), _T("$(#irr)"));
 	Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
@@ -24,32 +29,11 @@ function BeginWizard()
 // Irrlicht's path page
 ////////////////////////////////////////////////////////////////////////////////
 
-function OnEnter_IrrPath(fwd)
-{
-	if (fwd)
-	{
-        local dir = Wizard.GetTextControlValue(_T("txtIrrPath"));
-        if (dir.length() == 0)
-        {
-            // first time here, set default value
-            dir = ConfigManager.Read(_T("/irrlicht_project_wizard/path"), _T(""));
-            if (dir.IsEmpty() && GetUserVariableManager().Exists(_T("#irr"))) // try global var
-                dir = ReplaceMacros(_T("$(#irr)"), true);
-            Wizard.SetTextControlValue(_T("txtIrrPath"), dir);
-        }
-	}
-}
-
 function OnLeave_IrrPath(fwd)
 {
 	if (fwd)
 	{
-	    local dir = Wizard.GetTextControlValue(_T("txtIrrPath"));
-		if (!IO.DirectoryExists(dir))
-		{
-            ShowError(_T("Please select a valid path to Irrlicht..."));
-            return false;
-		}
+	    local dir = Wizard.GetTextControlValue(_T("txtFolder"));
         if (!IO.FileExists(dir + _T("/include/irrlicht.h")))
         {
             ShowError(_T("The path you entered seems valid, but this wizard " +
@@ -57,18 +41,8 @@ function OnLeave_IrrPath(fwd)
             return false;
         }
         IrrlichtPath = dir;
-        ConfigManager.Write(_T("/irrlicht_project_wizard/path"), dir, true);
 	}
 	return true;
-}
-
-function OnClick_btnIrrPathBrowse()
-{
-    local dir = Wizard.GetTextControlValue(_T("txtIrrPath"));
-    dir = IO.SelectDirectory(_T("Please select Irrlicht's top-level folder"), dir, false);
-
-    if (IO.DirectoryExists(dir))
-        Wizard.SetTextControlValue(_T("txtIrrPath"), dir);
 }
 
 // return the files this project contains

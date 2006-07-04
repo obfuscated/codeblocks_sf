@@ -22,10 +22,15 @@ function BeginWizard()
                         "using the wxWidgets cross-platform GUI library.\n\n" +
                         "When you 're ready to proceed, please click \"Next\"...");
 
+    local wxpath_msg = _T("Please select the location of wxWidgets on your computer.\n" +
+                            "This is the top-level folder where wxWidgets was unpacked.\n" +
+                            "To help you, this folder must contain the subfolders\n" +
+                            "\"include\" and \"lib\".");
+
 	Wizard.AddIntroPage(intro_msg);
 	Wizard.AddProjectPathPage();
     if (PLATFORM == PLATFORM_MSW)
-        Wizard.AddPage(_T("WxPath")); // only for windows
+        Wizard.AddGenericSelectPathPage(_T("WxPath"), wxpath_msg, _T("wxWidgets' location:"), _T("$(#wx)"));
 	// we need the compiler selection before wx settings, because we 'll have
 	// to validate the settings. To do this we must know the compiler beforehand...
 	Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
@@ -39,36 +44,11 @@ function BeginWizard()
 // wxWidgets' path page
 ////////////////////////////////////////////////////////////////////////////////
 
-function OnEnter_WxPath(fwd)
-{
-	if (fwd)
-	{
-        local dir = Wizard.GetTextControlValue(_T("txtWxPath"));
-        if (dir.length() == 0)
-        {
-            // first time here, set default value
-            dir = ConfigManager.Read(_T("/wx_project_wizard/path"), _T(""));
-            if (PLATFORM == PLATFORM_MSW)
-            {
-                // windows only
-                if (dir.IsEmpty() && GetUserVariableManager().Exists(_T("#wx"))) // try global var
-                    dir = ReplaceMacros(_T("$(#wx)"), true);
-            }
-            Wizard.SetTextControlValue(_T("txtWxPath"), dir);
-        }
-	}
-}
-
 function OnLeave_WxPath(fwd)
 {
 	if (fwd)
 	{
-	    local dir = Wizard.GetTextControlValue(_T("txtWxPath"));
-		if (!IO.DirectoryExists(dir))
-		{
-            ShowError(_T("Please select a valid path to wxWidgets..."));
-            return false;
-		}
+	    local dir = Wizard.GetTextControlValue(_T("txtFolder"));
         if (!IO.FileExists(dir + _T("/include/wx/wx.h")))
         {
             ShowError(_T("The path you entered seems valid, but this wizard " +
@@ -84,18 +64,8 @@ function OnLeave_WxPath(fwd)
                 dir = gvar;
         }
         WxPath = dir;
-        ConfigManager.Write(_T("/wx_project_wizard/path"), dir, true);
 	}
 	return true;
-}
-
-function OnClick_btnWxPathBrowse()
-{
-    local dir = Wizard.GetTextControlValue(_T("txtWxPath"));
-    dir = IO.SelectDirectory(_T("Please select wxWidgets' top-level folder"), dir, false);
-
-    if (IO.DirectoryExists(dir))
-        Wizard.SetTextControlValue(_T("txtWxPath"), dir);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
