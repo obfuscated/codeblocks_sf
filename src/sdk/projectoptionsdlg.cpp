@@ -51,6 +51,8 @@
 #include <wx/radiobox.h>
 #include <wx/notebook.h>
 
+#include <sqplus.h>
+
 #include "configurationpanel.h"
 #include "projectoptionsdlg.h" // class's header file
 #include "editarrayorderdlg.h"
@@ -714,9 +716,21 @@ void ProjectOptionsDlg::OnScriptsOverviewSelChanged(wxTreeEvent& event)
 
 bool ProjectOptionsDlg::IsScriptValid(const wxString& script)
 {
-//    int r = Manager::Get()->GetScriptingManager()->LoadAndRunScript(m_Project->GetBasePath() + wxFILE_SEP_PATH + script, false);
-//    Manager::Get()->GetScriptingManager()->GetEngine()->Discard("test_module");
-    return true;
+    try
+    {
+        Manager::Get()->GetScriptingManager()->LoadScript(m_Project->GetBasePath() + wxFILE_SEP_PATH + script);
+        SqPlus::SquirrelFunction<void> setopts("SetBuildOptions");
+        SqPlus::SquirrelFunction<void> unsetopts("UnsetBuildOptions");
+        // scripts must provide both functions
+        if (setopts.func.IsNull() || unsetopts.func.IsNull())
+            return false;
+        return true;
+    }
+    catch (SquirrelError& e)
+    {
+        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        return false;
+    }
 }
 
 bool ProjectOptionsDlg::DoCheckScripts(CompileTargetBase* base)
