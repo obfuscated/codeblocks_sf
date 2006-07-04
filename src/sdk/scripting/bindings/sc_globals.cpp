@@ -48,6 +48,10 @@ namespace ScriptBindings
         static CompilerFactory cf; // all its members are static functions anyway
         return &cf;
     }
+    UserVariableManager* getUVM()
+    {
+        return Manager::Get()->GetUserVariableManager();
+    }
 
     void Register_Globals()
     {
@@ -63,6 +67,7 @@ namespace ScriptBindings
         SqPlus::RegisterGlobal(getPM, "GetProjectManager");
         SqPlus::RegisterGlobal(getEM, "GetEditorManager");
         SqPlus::RegisterGlobal(getCM, "GetConfigManager");
+        SqPlus::RegisterGlobal(getUVM, "GetUserVariableManager");
         SqPlus::RegisterGlobal(getCF, "GetCompilerFactory");
 
         SquirrelVM::CreateFunctionGlobal(IsNull, "IsNull", "*");

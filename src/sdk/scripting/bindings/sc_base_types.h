@@ -10,6 +10,7 @@
 #include <editormanager.h>
 #include <projectmanager.h>
 #include <macrosmanager.h>
+#include <uservarmanager.h>
 #include <compilerfactory.h>
 #include <cbproject.h>
 #include <cbeditor.h>
@@ -20,6 +21,7 @@ DECLARE_INSTANCE_TYPE(wxString);
 DECLARE_INSTANCE_TYPE(wxArrayString);
 DECLARE_INSTANCE_TYPE(ConfigManager);
 DECLARE_INSTANCE_TYPE(EditorManager);
+DECLARE_INSTANCE_TYPE(UserVariableManager);
 DECLARE_INSTANCE_TYPE(EditorBase);
 DECLARE_INSTANCE_TYPE(cbEditor);
 DECLARE_INSTANCE_TYPE(CompileOptionsBase);

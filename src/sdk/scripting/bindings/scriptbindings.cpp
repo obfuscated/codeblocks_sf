@@ -552,5 +552,8 @@ namespace ScriptBindings
                 func(&EditorManager::SaveActiveAs, "SaveActiveAs").
                 func(&EditorManager::SaveAll, "SaveAll").
                 func(&EditorManager::ShowFindDialog, "ShowFindDialog");
+
+        SqPlus::SQClassDef<UserVariableManager>("UserVariableManager").
+                func(&UserVariableManager::Exists, "Exists");
     }
 } // namespace ScriptBindings

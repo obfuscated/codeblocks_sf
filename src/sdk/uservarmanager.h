@@ -4,6 +4,7 @@
 #include "settings.h"
 #include "manager.h"
 #include "macrosmanager.h"
+#include "cbexception.h"
 
 class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
 {
@@ -16,6 +17,10 @@ class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
 
     public:
         UserVariableManager();
+
+        UserVariableManager(const UserVariableManager& rhs) { cbThrow(_T("Can't call UserVariableManager's copy ctor!!!")); }
+        virtual void operator=(const UserVariableManager& rhs){ cbThrow(_T("Can't assign an UserVariableManager* !!!")); }
+
         wxString Replace(const wxString& variable);
 
         void Preempt(const wxString& variable);

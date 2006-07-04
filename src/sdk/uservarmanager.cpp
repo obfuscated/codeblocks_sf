@@ -18,6 +18,7 @@
 #include "uservarmanager.h"
 #include "configmanager.h"
 #include "messagemanager.h"
+#include "projectmanager.h"
 #include "manager.h"
 #include "cbexception.h"
 #include "globals.h"
@@ -128,6 +129,15 @@ void UserVariableManager::Configure()
 
 wxString UserVariableManager::Replace(const wxString& variable)
 {
+    if (Manager::Get()->GetProjectManager()->IsLoading())
+    {
+        // a project/workspace is being loaded.
+        // no need to bug the user now about global vars.
+        // just preempt it; ProjectManager will call Arrogate() when it's done.
+        Preempt(variable);
+        return variable;
+    }
+
     wxString package = variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).MakeLower();
     wxString member = variable.AfterFirst(wxT('.')).MakeLower();
 
@@ -168,10 +178,13 @@ void UserVariableManager::Preempt(const wxString& variable)
     if(variable.find(_T('#')) == wxString::npos)
         return;
 
-    wxString member(variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).MakeLower());
+    wxString member(variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).BeforeFirst(wxT(')')).MakeLower());
 
-    if(!cfg->Exists(cSets + activeSet + _T('/') + member + _T("/base")))
+    if(!cfg->Exists(cSets + activeSet + _T('/') + member + _T("/base")) &&
+        preempted.Index(member) == wxNOT_FOUND)
+    {
         preempted.Add(member);
+    }
 }
 
 bool UserVariableManager::Exists(const wxString& variable) const
@@ -179,7 +192,7 @@ bool UserVariableManager::Exists(const wxString& variable) const
     if(variable.find(_T('#')) == wxString::npos)
         return false;
 
-    wxString member(variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).MakeLower());
+    wxString member(variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).BeforeFirst(wxT(')')).MakeLower());
     return !cfg->Exists(cSets + activeSet + _T('/') + member + _T("/base"));
 }
 

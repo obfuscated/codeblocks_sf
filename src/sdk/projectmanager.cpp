@@ -40,6 +40,7 @@
     #include "messagemanager.h"
     #include "pluginmanager.h"
     #include "editormanager.h"
+    #include "uservarmanager.h"
     #include "workspaceloader.h"
     #include "cbworkspace.h"
     #include "cbeditor.h"
@@ -709,6 +710,11 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
 	// if(mywin)
     //    mywin->Show();
 
+    // sort out any global user vars that need to be defined now (in a batch) :)
+    // but only if not loading workspace (else LoadWorkspace() will handle this)
+    if (!m_IsLoadingWorkspace)
+        Manager::Get()->GetUserVariableManager()->Arrogate();
+
     s_CanShutdown = true;
     return result;
 }
@@ -996,6 +1002,8 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
             m_pTopEditor->Activate();
         Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree(true);
         UnfreezeTree(true);
+        // sort out any global user vars that need to be defined now (in a batch) :)
+        Manager::Get()->GetUserVariableManager()->Arrogate();
     }
     else
     {
