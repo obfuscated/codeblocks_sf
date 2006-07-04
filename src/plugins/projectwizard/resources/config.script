@@ -8,31 +8,35 @@ function RegisterWizards()
     //
     // project wizards
     //
-    RegisterWizard(wizProject, _T("empty"),     _T("Empty project"),   		_T("Console"));
-    RegisterWizard(wizProject, _T("console"),   _T("Console application"),   _T("Console"));
-    RegisterWizard(wizProject, _T("d"),         _T("D application"),         _T("D language"));
+    RegisterWizard(wizProject,     _T("empty"),        _T("Empty project"),   		  _T("Console"));
+    RegisterWizard(wizProject,     _T("console"),      _T("Console application"),   _T("Console"));
+    RegisterWizard(wizProject,     _T("d"),            _T("D application"),         _T("D language"));
     if (PLATFORM == PLATFORM_MSW)
-        RegisterWizard(wizProject, _T("directx"),   _T("Direct/X application"),  _T("2D/3D Graphics"));
+        RegisterWizard(wizProject, _T("directx"),      _T("Direct/X application"),  _T("2D/3D Graphics"));
     if (PLATFORM == PLATFORM_MSW)
-        RegisterWizard(wizProject, _T("fltk"),      _T("FLTK project"),          _T("GUI"));
-    RegisterWizard(wizProject, _T("glfw"),      _T("GLFW project"),          _T("2D/3D Graphics"));
-    RegisterWizard(wizProject, _T("glut"),      _T("GLUT project"),          _T("2D/3D Graphics"));
-    RegisterWizard(wizProject, _T("irrlicht"),  _T("Irrlicht project"),      _T("2D/3D Graphics"));
-    RegisterWizard(wizProject, _T("ogre"),      _T("Ogre project"),          _T("2D/3D Graphics"));
+        RegisterWizard(wizProject, _T("dll"),          _T("Dynamic Link Library"),  _T("Console"));
     if (PLATFORM == PLATFORM_MSW)
-        RegisterWizard(wizProject, _T("smartwin"),  _T("SmartWin project"),      _T("GUI"));
-    RegisterWizard(wizProject, _T("wxwidgets"), _T("wxWidgets application"), _T("GUI"));
+        RegisterWizard(wizProject, _T("fltk"),         _T("FLTK project"),          _T("GUI"));
+    RegisterWizard(wizProject,     _T("glfw"),         _T("GLFW project"),          _T("2D/3D Graphics"));
+    RegisterWizard(wizProject,     _T("glut"),         _T("GLUT project"),          _T("2D/3D Graphics"));
+    RegisterWizard(wizProject,     _T("irrlicht"),     _T("Irrlicht project"),      _T("2D/3D Graphics"));
+    RegisterWizard(wizProject,     _T("ogre"),         _T("Ogre project"),          _T("2D/3D Graphics"));
+    if (PLATFORM == PLATFORM_MSW)
+        RegisterWizard(wizProject, _T("smartwin"),     _T("SmartWin project"),      _T("GUI"));
+    RegisterWizard(wizProject,     _T("wxwidgets"),    _T("wxWidgets application"), _T("GUI"));
 
     //
     // build target wizards
     //
-    RegisterWizard(wizTarget, _T("console"),   _T("Console"),   _T("Console"));
+    RegisterWizard(wizTarget,      _T("console"),      _T("Console"),               _T("Console"));
+    if (PLATFORM == PLATFORM_MSW)
+        RegisterWizard(wizTarget,  _T("dll"),          _T("Dynamic Link Library"),  _T("Console"));
 
     //
     // file wizards
     //
-    RegisterWizard(wizFiles, _T("c_file"), _T("C/C++ source"), _T("C/C++"));
-    RegisterWizard(wizFiles, _T("h_file"), _T("C/C++ header"), _T("C/C++"));
+    RegisterWizard(wizFiles,       _T("c_file"),       _T("C/C++ source"),          _T("C/C++"));
+    RegisterWizard(wizFiles,       _T("h_file"),       _T("C/C++ header"),          _T("C/C++"));
 }
 
 function RegisterWizard(type, folder, title, category)

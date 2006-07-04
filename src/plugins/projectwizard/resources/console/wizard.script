@@ -255,7 +255,7 @@ function SetupTarget(target,is_debug)
         return false;
 
     target.SetTargetType(ttConsoleOnly);
-    target.SetOutputFilename(target.GetWorkingDir() + wxFILE_SEP_PATH + target.SuggestOutputFilename());
+    target.SetOutputFilename(target.GetWorkingDir() + _T("/") + target.SuggestOutputFilename());
 
     if (is_debug)
     {
