@@ -2,14 +2,12 @@
 #define NEWFROMTEMPLATEDLG_H
 
 #include <wx/dialog.h>
-#include <wx/listctrl.h>
-#include <wx/combobox.h>
-#include <wx/imaglist.h>
-#include "projecttemplateloader.h"
-#include "settings.h"
 #include "pluginmanager.h"
+#include "cbplugin.h"
 
-WX_DEFINE_ARRAY(ProjectTemplateLoader*, ProjectTemplateArray);
+class wxChoice;
+class wxListCtrl;
+class ProjectTemplateLoader;
 
 class NewFromTemplateDlg : public wxDialog
 {
@@ -19,18 +17,18 @@ class NewFromTemplateDlg : public wxDialog
 
 		ProjectTemplateLoader* GetTemplate(){ return m_Template; }
 		cbWizardPlugin* GetWizard(){ return m_pWizard; }
-		int GetWizardIndex(){ return m_WizardIndex; }
+		int GetWizardIndex() const { return m_WizardIndex; }
 		cbWizardPlugin* NewFromTemplateDlg::GetSelectedTemplate();
-		bool SelectedUserTemplate();
-		wxString GetSelectedUserTemplate();
+		bool SelectedUserTemplate() const;
+		wxString GetSelectedUserTemplate() const;
 
 		void EndModal(int retCode);
 	protected:
 		void FillTemplate(ProjectTemplateLoader* pt);
 		void BuildCategories();
-		void BuildCategoriesFor(cbWizardPlugin::OutputType otype, wxComboBox* cat);
+		void BuildCategoriesFor(cbWizardPlugin::OutputType otype, wxChoice* cat);
 		void BuildList();
-		void BuildListFor(cbWizardPlugin::OutputType otype, wxListCtrl* list, wxComboBox* cat);
+		void BuildListFor(cbWizardPlugin::OutputType otype, wxListCtrl* list, const wxChoice* cat);
 		void ClearList();
 		void ClearListFor(wxListCtrl* list);
 		void OnListRightClick(wxListEvent& event);
@@ -41,8 +39,8 @@ class NewFromTemplateDlg : public wxDialog
 
 		void EditScript(const wxString& relativeFilename);
 		wxListCtrl* GetVisibleListCtrl();
-		wxComboBox* GetVisibleCategory();
-		cbWizardPlugin::OutputType GetVisibleOutputType();
+		wxChoice* GetVisibleCategory();
+		cbWizardPlugin::OutputType GetVisibleOutputType() const;
 	private:
 		ProjectTemplateLoader* m_Template;
 		cbWizardPlugin* m_pWizard;
@@ -52,4 +50,3 @@ class NewFromTemplateDlg : public wxDialog
 };
 
 #endif // NEWFROMTEMPLATEDLG_H
-

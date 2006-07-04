@@ -25,9 +25,8 @@
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
-                          <object class="wxComboBox" name="cmbProjectCategories">
+                          <object class="wxChoice" name="cmbProjectCategories">
                             <content/>
-                            <style>wxCB_SORT|wxCB_READONLY|wxCB_DROPDOWN</style>
                           </object>
                           <option>1</option>
                           <flag>wxEXPAND</flag>
@@ -70,9 +69,8 @@
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
-                          <object class="wxComboBox" name="cmbTargetCategories">
+                          <object class="wxChoice" name="cmbTargetCategories">
                             <content/>
-                            <style>wxCB_SORT|wxCB_READONLY|wxCB_DROPDOWN</style>
                           </object>
                           <option>1</option>
                           <flag>wxEXPAND</flag>
@@ -115,9 +113,8 @@
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
-                          <object class="wxComboBox" name="cmbFileCategories">
+                          <object class="wxChoice" name="cmbFileCategories">
                             <content/>
-                            <style>wxCB_SORT|wxCB_READONLY|wxCB_DROPDOWN</style>
                           </object>
                           <option>1</option>
                           <flag>wxEXPAND</flag>
@@ -160,9 +157,8 @@
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
-                          <object class="wxComboBox" name="cmbCustomCategories">
+                          <object class="wxChoice" name="cmbCustomCategories">
                             <content/>
-                            <style>wxCB_SORT|wxCB_READONLY|wxCB_DROPDOWN</style>
                           </object>
                           <option>1</option>
                           <flag>wxEXPAND</flag>

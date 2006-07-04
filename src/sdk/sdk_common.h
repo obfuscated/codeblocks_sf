@@ -40,6 +40,7 @@
     #include <wx/button.h>
     #include <wx/checkbox.h>
     #include <wx/checklst.h>
+    #include <wx/choice.h>
     #include <wx/colordlg.h>
     #include <wx/combobox.h>
     #include <wx/confbase.h>

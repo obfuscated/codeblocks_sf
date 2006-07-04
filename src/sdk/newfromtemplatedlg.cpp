@@ -27,20 +27,24 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/choice.h>
+    #include <wx/imaglist.h>
     #include <wx/intl.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/combobox.h>
-    #include <wx/checkbox.h>
-    #include <wx/button.h>
-    #include <wx/textctrl.h>
-    #include <wx/notebook.h>
     #include <wx/listbox.h>
-    #include "manager.h"
+    #include <wx/listctrl.h>
+    #include <wx/menu.h>
+    #include <wx/string.h>
+    #include <wx/xrc/xmlres.h>
+    #include "cbeditor.h"
     #include "configmanager.h"
+    #include "editormanager.h"
+    #include "globals.h"
+    #include "manager.h"
 #endif
 
 #include <wx/listbook.h>
 #include "newfromtemplatedlg.h"
+#include "projecttemplateloader.h"
 
 struct ListItemData
 {
@@ -59,19 +63,19 @@ BEGIN_EVENT_TABLE(NewFromTemplateDlg, wxDialog)
 
     // projects
 	EVT_LIST_ITEM_RIGHT_CLICK(XRCID("listProjects"), NewFromTemplateDlg::OnListRightClick)
-	EVT_COMBOBOX(XRCID("cmbProjectCategories"), NewFromTemplateDlg::OnCategoryChanged)
+	EVT_CHOICE(XRCID("cmbProjectCategories"), NewFromTemplateDlg::OnCategoryChanged)
 
     // targets
 	EVT_LIST_ITEM_RIGHT_CLICK(XRCID("listTargets"), NewFromTemplateDlg::OnListRightClick)
-	EVT_COMBOBOX(XRCID("cmbTargetCategories"), NewFromTemplateDlg::OnCategoryChanged)
+	EVT_CHOICE(XRCID("cmbTargetCategories"), NewFromTemplateDlg::OnCategoryChanged)
 
     // files
 	EVT_LIST_ITEM_RIGHT_CLICK(XRCID("listFiles"), NewFromTemplateDlg::OnListRightClick)
-	EVT_COMBOBOX(XRCID("cmbFileCategories"), NewFromTemplateDlg::OnCategoryChanged)
+	EVT_CHOICE(XRCID("cmbFileCategories"), NewFromTemplateDlg::OnCategoryChanged)
 
     // workspaces
 	EVT_LIST_ITEM_RIGHT_CLICK(XRCID("listCustoms"), NewFromTemplateDlg::OnListRightClick)
-	EVT_COMBOBOX(XRCID("cmbCustomCategories"), NewFromTemplateDlg::OnCategoryChanged)
+	EVT_CHOICE(XRCID("cmbCustomCategories"), NewFromTemplateDlg::OnCategoryChanged)
 
     // context menu for wizard scripts
 	EVT_MENU(idEditWizardScript, NewFromTemplateDlg::OnEditScript)
@@ -145,13 +149,13 @@ void NewFromTemplateDlg::ClearListFor(wxListCtrl* list)
 
 void NewFromTemplateDlg::BuildCategories()
 {
-	BuildCategoriesFor(cbWizardPlugin::otProject, XRCCTRL(*this, "cmbProjectCategories", wxComboBox));
-	BuildCategoriesFor(cbWizardPlugin::otTarget, XRCCTRL(*this, "cmbTargetCategories", wxComboBox));
-	BuildCategoriesFor(cbWizardPlugin::otFiles, XRCCTRL(*this, "cmbFileCategories", wxComboBox));
-	BuildCategoriesFor(cbWizardPlugin::otCustom, XRCCTRL(*this, "cmbCustomCategories", wxComboBox));
+	BuildCategoriesFor(cbWizardPlugin::otProject, XRCCTRL(*this, "cmbProjectCategories", wxChoice));
+	BuildCategoriesFor(cbWizardPlugin::otTarget, XRCCTRL(*this, "cmbTargetCategories", wxChoice));
+	BuildCategoriesFor(cbWizardPlugin::otFiles, XRCCTRL(*this, "cmbFileCategories", wxChoice));
+	BuildCategoriesFor(cbWizardPlugin::otCustom, XRCCTRL(*this, "cmbCustomCategories", wxChoice));
 }
 
-void NewFromTemplateDlg::BuildCategoriesFor(cbWizardPlugin::OutputType otype, wxComboBox* cat)
+void NewFromTemplateDlg::BuildCategoriesFor(cbWizardPlugin::OutputType otype, wxChoice* cat)
 {
     if (!cat)
         return;
@@ -195,13 +199,13 @@ int wxCALLBACK SortTemplates(long item1, long item2, long sortData)
 
 void NewFromTemplateDlg::BuildList()
 {
-	BuildListFor(cbWizardPlugin::otProject, XRCCTRL(*this, "listProjects", wxListCtrl), XRCCTRL(*this, "cmbProjectCategories", wxComboBox));
-	BuildListFor(cbWizardPlugin::otTarget, XRCCTRL(*this, "listTargets", wxListCtrl), XRCCTRL(*this, "cmbTargetCategories", wxComboBox));
-	BuildListFor(cbWizardPlugin::otFiles, XRCCTRL(*this, "listFiles", wxListCtrl), XRCCTRL(*this, "cmbFileCategories", wxComboBox));
-	BuildListFor(cbWizardPlugin::otCustom, XRCCTRL(*this, "listCustoms", wxListCtrl), XRCCTRL(*this, "cmbCustomCategories", wxComboBox));
+	BuildListFor(cbWizardPlugin::otProject, XRCCTRL(*this, "listProjects", wxListCtrl), XRCCTRL(*this, "cmbProjectCategories", wxChoice));
+	BuildListFor(cbWizardPlugin::otTarget, XRCCTRL(*this, "listTargets", wxListCtrl), XRCCTRL(*this, "cmbTargetCategories", wxChoice));
+	BuildListFor(cbWizardPlugin::otFiles, XRCCTRL(*this, "listFiles", wxListCtrl), XRCCTRL(*this, "cmbFileCategories", wxChoice));
+	BuildListFor(cbWizardPlugin::otCustom, XRCCTRL(*this, "listCustoms", wxListCtrl), XRCCTRL(*this, "cmbCustomCategories", wxChoice));
 }
 
-void NewFromTemplateDlg::BuildListFor(cbWizardPlugin::OutputType otype, wxListCtrl* list, wxComboBox* cat)
+void NewFromTemplateDlg::BuildListFor(cbWizardPlugin::OutputType otype, wxListCtrl* list, const wxChoice* cat)
 {
     if (!list || !cat)
         return;
@@ -248,22 +252,22 @@ wxListCtrl* NewFromTemplateDlg::GetVisibleListCtrl()
     }
 }
 
-wxComboBox* NewFromTemplateDlg::GetVisibleCategory()
+wxChoice* NewFromTemplateDlg::GetVisibleCategory()
 {
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     size_t page = lb->GetSelection();
 
     switch (page)
     {
-        case 0: return XRCCTRL(*this, "cmbProjectCategories", wxComboBox); // projects
-        case 1: return XRCCTRL(*this, "cmbTargetCategories", wxComboBox); // targets
-        case 2: return XRCCTRL(*this, "cmbFileCategories", wxComboBox); // files
-        case 3: return XRCCTRL(*this, "cmbCustomCategories", wxComboBox); // workspaces
+        case 0: return XRCCTRL(*this, "cmbProjectCategories", wxChoice); // projects
+        case 1: return XRCCTRL(*this, "cmbTargetCategories", wxChoice); // targets
+        case 2: return XRCCTRL(*this, "cmbFileCategories", wxChoice); // files
+        case 3: return XRCCTRL(*this, "cmbCustomCategories", wxChoice); // workspaces
         default: return 0;
     }
 }
 
-cbWizardPlugin::OutputType NewFromTemplateDlg::GetVisibleOutputType()
+cbWizardPlugin::OutputType NewFromTemplateDlg::GetVisibleOutputType() const
 {
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     size_t page = lb->GetSelection();
@@ -294,7 +298,7 @@ cbWizardPlugin* NewFromTemplateDlg::GetSelectedTemplate()
     return m_pWizard;
 }
 
-bool NewFromTemplateDlg::SelectedUserTemplate()
+bool NewFromTemplateDlg::SelectedUserTemplate() const
 {
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     size_t page = lb->GetSelection();
@@ -302,7 +306,7 @@ bool NewFromTemplateDlg::SelectedUserTemplate()
             XRCCTRL(*this, "lstUser", wxListBox)->GetSelection() != -1;
 }
 
-wxString NewFromTemplateDlg::GetSelectedUserTemplate()
+wxString NewFromTemplateDlg::GetSelectedUserTemplate() const
 {
     int sel = XRCCTRL(*this, "lstUser", wxListBox)->GetSelection();
     return sel != -1 ? XRCCTRL(*this, "lstUser", wxListBox)->GetString(sel) : _T("");
