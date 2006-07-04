@@ -1,6 +1,7 @@
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/sdk \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include
+		-I$(top_srcdir)/src/sdk/wxscintilla/include \
+		-include "sdk.h"
 
 libdir = $(pkgdatadir)/plugins
 
