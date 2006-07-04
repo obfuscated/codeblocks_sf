@@ -161,6 +161,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "lstGutterMode", wxChoice)->SetSelection(cfg->ReadInt(_T("/gutter/mode"), 0));
     XRCCTRL(*this, "btnGutterColour", wxButton)->SetBackgroundColour(gutterColour);
     XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/gutter/column"), 80));
+    XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->SetRange(1, 500);
 
     //margin
     XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/margin/width_chars"), 6));
@@ -840,7 +841,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
         bool enableFolding = XRCCTRL(*this, "chkEnableFolding", wxCheckBox)->GetValue();
         if (!enableFolding)
         {
-            //if the folding has been disabled, first unfold 
+            //if the folding has been disabled, first unfold
             //all blocks in all editors
             EditorManager *em = Manager::Get()->GetEditorManager();
             for (int idx = 0; idx<em->GetEditorsCount(); ++idx)
