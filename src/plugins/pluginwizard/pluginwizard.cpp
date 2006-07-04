@@ -37,6 +37,8 @@
 #include "projectbuildtarget.h"
 #include "projectmanager.h"
 #endif
+#include "infowindow.h"
+
 #include <wx/filefn.h>
 #include <wx/filesys.h>
 #include "filefilters.h"
@@ -160,12 +162,9 @@ int PluginWizard::Execute()
     Manager::Get()->GetProjectManager()->RebuildTree();
 
 #ifdef __WXMSW__
-    cbMessageBox ( _("The new plugin project has been created.\n"
-                    "You should now update the project's custom variables, to adjust "
-                    "for your environment..."),
-                    _("Information"),
-                    wxOK | wxICON_INFORMATION,
-                    Manager::Get()->GetAppWindow());
+        InfoWindow::Display(_("Plugin Wizard"), _("The new plugin project has been created.\n"
+                    "You should now update the project's custom variables\nto adapt "
+                    "to your environment.") , 10000);
 #endif
     return 0;
 }
