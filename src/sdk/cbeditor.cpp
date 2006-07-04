@@ -442,6 +442,9 @@ cbEditor::~cbEditor()
         m_pControl = 0;
     }
     DestroySplitView();
+    ProjectManager *pm = Manager::Get()->GetProjectManager();
+    if(pm)
+        pm->SetTopEditor(0);
     delete m_pData;
 }
 
