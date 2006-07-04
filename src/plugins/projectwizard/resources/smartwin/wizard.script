@@ -43,9 +43,12 @@ function OnLeave_SmartwinPath(fwd)
         }
 
         // see if it matches the global var. if it does, use the var instead...
-        local gvar = ReplaceMacros(_T("$(#sw)"), true);
-        if (gvar.Matches(dir))
-            dir = gvar;
+        if (GetUserVariableManager().Exists(_T("#sw")))
+        {
+            local gvar = ReplaceMacros(_T("$(#sw)"), true);
+            if (gvar.Matches(dir))
+                dir = gvar;
+        }
         SmartwinPath = dir;
     }
     return true;

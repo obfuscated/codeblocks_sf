@@ -2809,10 +2809,11 @@
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
-		<Unit filename="sdk\resources\global_user_vars.xrc">
-			<Option compilerVar="" />
+		<Unit filename="sdk\resources\global_uservars.xrc">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
+			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\resources\incremental_select_list.xrc">
 			<Option compilerVar="" />

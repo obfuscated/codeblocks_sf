@@ -43,9 +43,12 @@ function OnLeave_FltkPath(fwd)
         }
 
         // see if it matches the global var. if it does, use the var instead...
-        local gvar = ReplaceMacros(_T("$(#fltk)"), true);
-        if (gvar.Matches(dir))
-            dir = gvar;
+        if (GetUserVariableManager().Exists(_T("#fltk")))
+        {
+            local gvar = ReplaceMacros(_T("$(#fltk)"), true);
+            if (gvar.Matches(dir))
+                dir = gvar;
+        }
         FltkPath = dir;
     }
     return true;

@@ -33,7 +33,7 @@ function OnEnter_GlutPath(fwd)
         {
             // first time here, set default value
             dir = ConfigManager.Read(_T("/glut_project_wizard/path"), _T(""));
-            if (dir.IsEmpty()) // try global var
+            if (dir.IsEmpty() && GetUserVariableManager().Exists(_T("#glut"))) // try global var
                 dir = ReplaceMacros(_T("$(#glut)"), true);
             Wizard.SetTextControlValue(_T("txtGlutPath"), dir);
         }
@@ -58,9 +58,12 @@ function OnLeave_GlutPath(fwd)
         }
 
         // see if it matches the global var. if it does, use the var instead...
-        local gvar = ReplaceMacros(_T("$(#glut)"), true);
-        if (gvar.Matches(dir))
-            dir = gvar;
+        if (GetUserVariableManager().Exists(_T("#glut")))
+        {
+            local gvar = ReplaceMacros(_T("$(#glut)"), true);
+            if (gvar.Matches(dir))
+                dir = gvar;
+        }
         GlutPath = dir;
         ConfigManager.Write(_T("/glut_project_wizard/path"), dir, true);
     }
@@ -86,7 +89,7 @@ function GetFilesDir()
 function SetupProject(project)
 {
     // set project options
-    
+
     // set compiler/linker search paths
     project.AddIncludeDir(GlutPath + _T("/include"));
     project.AddLibDir(GlutPath + _T("/lib"));

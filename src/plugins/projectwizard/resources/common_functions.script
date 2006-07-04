@@ -5,7 +5,7 @@
 // Warnings On
 function WarningsOn(base, compilerID)
 {
-    if (compilerID == _T("msvctk"))
+    if (compilerID.Matches(T("msvctk")))
     {
         base.AddCompilerOption(_T("/W3"));
     }
@@ -19,7 +19,7 @@ function WarningsOn(base, compilerID)
 // Debug symbols On
 function DebugSymbolsOn(base, compilerID)
 {
-    if (compilerID == _T("msvctk"))
+    if (compilerID.Matches(_T("msvctk")))
     {
         base.AddCompilerOption(_T("/Zi"));
         base.AddCompilerOption(_T("/D_DEBUG"));
@@ -35,7 +35,7 @@ function DebugSymbolsOn(base, compilerID)
 // Optimizations On
 function OptimizationsOn(base, compilerID)
 {
-    if (compilerID == _T("msvctk"))
+    if (compilerID.Matches(_T("msvctk")))
     {
         base.AddCompilerOption(_T("/Og"));
         base.AddCompilerOption(_T("/Ox"));
@@ -52,7 +52,7 @@ function OptimizationsOn(base, compilerID)
 // C++ Exceptions On
 function CppExceptionsOn(base, compilerID)
 {
-    if (compilerID == _T("msvctk"))
+    if (compilerID.Matches(_T("msvctk")))
     {
         base.AddCompilerOption(_T("/EHsc"));
     }

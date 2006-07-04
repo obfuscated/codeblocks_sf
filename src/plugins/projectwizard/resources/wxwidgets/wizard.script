@@ -51,7 +51,7 @@ function OnEnter_WxPath(fwd)
             if (PLATFORM == PLATFORM_MSW)
             {
                 // windows only
-                if (dir.IsEmpty()) // try global var
+                if (dir.IsEmpty() && GetUserVariableManager().Exists(_T("#wx"))) // try global var
                     dir = ReplaceMacros(_T("$(#wx)"), true);
             }
             Wizard.SetTextControlValue(_T("txtWxPath"), dir);
@@ -77,9 +77,12 @@ function OnLeave_WxPath(fwd)
         }
 
         // see if it matches the global var. if it does, use the var instead...
-        local gvar = ReplaceMacros(_T("$(#wx)"), true);
-        if (gvar.Matches(dir))
-            dir = gvar;
+        if (GetUserVariableManager().Exists(_T("#wx")))
+        {
+            local gvar = ReplaceMacros(_T("$(#wx)"), true);
+            if (gvar.Matches(dir))
+                dir = gvar;
+        }
         WxPath = dir;
         ConfigManager.Write(_T("/wx_project_wizard/path"), dir, true);
 	}

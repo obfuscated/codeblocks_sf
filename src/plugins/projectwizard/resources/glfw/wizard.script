@@ -33,7 +33,7 @@ function OnEnter_GlfwPath(fwd)
         {
             // first time here, set default value
             dir = ConfigManager.Read(_T("/glfw_project_wizard/path"), _T(""));
-            if (dir.IsEmpty()) // try global var
+            if (dir.IsEmpty() && GetUserVariableManager().Exists(_T("#glfw"))) // try global var
                 dir = ReplaceMacros(_T("$(#glfw)"), true);
             Wizard.SetTextControlValue(_T("txtGlfwPath"), dir);
         }
@@ -58,9 +58,12 @@ function OnLeave_GlfwPath(fwd)
         }
 
         // see if it matches the global var. if it does, use the var instead...
-        local gvar = ReplaceMacros(_T("$(#glfw)"), true);
-        if (gvar.Matches(dir))
-            dir = gvar;
+        if (GetUserVariableManager().Exists(_T("#glfw")))
+        {
+            local gvar = ReplaceMacros(_T("$(#glfw)"), true);
+            if (gvar.Matches(dir))
+                dir = gvar;
+        }
         GlfwPath = dir;
         ConfigManager.Write(_T("/glfw_project_wizard/path"), dir, true);
     }
@@ -86,7 +89,7 @@ function GetFilesDir()
 function SetupProject(project)
 {
     // set project options
-    
+
     // set compiler/linker search paths
     project.AddIncludeDir(GlfwPath + _T("/include"));
     project.AddLibDir(GlfwPath + _T("/lib"));

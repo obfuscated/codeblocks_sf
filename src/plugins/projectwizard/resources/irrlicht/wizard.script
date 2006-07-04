@@ -33,7 +33,7 @@ function OnEnter_IrrPath(fwd)
         {
             // first time here, set default value
             dir = ConfigManager.Read(_T("/irrlicht_project_wizard/path"), _T(""));
-            if (dir.IsEmpty()) // try global var
+            if (dir.IsEmpty() && GetUserVariableManager().Exists(_T("#irr"))) // try global var
                 dir = ReplaceMacros(_T("$(#irr)"), true);
             Wizard.SetTextControlValue(_T("txtIrrPath"), dir);
         }
@@ -81,7 +81,7 @@ function GetFilesDir()
 function SetupProject(project)
 {
     // set project options
-    
+
     // calculate the final lib directory, based on current platform and compiler
     local IrrlichtLibDir;
     if (PLATFORM == PLATFORM_MSW)
