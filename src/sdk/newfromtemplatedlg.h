@@ -18,7 +18,7 @@ class NewFromTemplateDlg : public wxDialog
 		ProjectTemplateLoader* GetTemplate(){ return m_Template; }
 		cbWizardPlugin* GetWizard(){ return m_pWizard; }
 		int GetWizardIndex() const { return m_WizardIndex; }
-		cbWizardPlugin* NewFromTemplateDlg::GetSelectedTemplate();
+		cbWizardPlugin* GetSelectedTemplate();
 		bool SelectedUserTemplate() const;
 		wxString GetSelectedUserTemplate() const;
 
