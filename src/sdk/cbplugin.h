@@ -29,7 +29,7 @@
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
 #define PLUGIN_SDK_VERSION_MINOR 8
-#define PLUGIN_SDK_VERSION_RELEASE 1
+#define PLUGIN_SDK_VERSION_RELEASE 2
 
 // class decls
 class wxMenuBar;
@@ -37,6 +37,7 @@ class wxMenu;
 class wxToolBar;
 class wxPanel;
 class wxWindow;
+class cbEditor;
 class cbProject;
 class ProjectBuildTarget;
 class CompileTargetBase;
@@ -355,6 +356,15 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
 		  * @return True if succeeded, false if not.
 		  */
 		virtual bool RemoveAllBreakpoints(const wxString& file = wxEmptyString) = 0;
+		/** @brief Notify the debugger that lines were added or removed in an editor.
+		  * This causes the debugger to keep the breakpoints list in-sync with the
+		  * editors (i.e. what the user sees).
+		  * @param editor The editor in question.
+		  * @param startline The starting line this change took place.
+		  * @param lines The number of lines added or removed. If it's a positive number,
+		  *              lines were added. If it's a negative number, lines were removed.
+		  */
+		virtual void EditorLinesAddedOrRemoved(cbEditor* editor, int startline, int lines) = 0;
 		/** @brief Start a new debugging process. */
 		virtual int Debug() = 0;
 		/** @brief Continue running the debugged program. */

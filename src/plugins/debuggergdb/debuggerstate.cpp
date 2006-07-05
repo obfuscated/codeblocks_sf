@@ -168,10 +168,45 @@ void DebuggerState::RemoveAllBreakpoints(const wxString& file, bool deleteit)
         if (fileonly)
         {
             DebuggerBreakpoint* bp = m_Breakpoints[i];
-            if (bp->filename != bpfile  && bp->filenameAsPassed != file)
+            if (bp->filename != bpfile && bp->filenameAsPassed != file)
                 continue;
         }
         RemoveBreakpoint(i, deleteit);
+    }
+}
+
+int DebuggerState::RemoveBreakpointsRange(const wxString& file, int startline, int endline)
+{
+    int ret = 0;
+    wxString bpfile = ConvertToValidFilename(file);
+    for (int i = m_Breakpoints.GetCount() - 1; i >= 0; --i)
+    {
+        DebuggerBreakpoint* bp = m_Breakpoints[i];
+        if (bp->line >= startline && bp->line <= endline && (bp->filename == bpfile || bp->filenameAsPassed == file))
+        {
+            ++ret;
+            RemoveBreakpoint(i, true);
+        }
+    }
+    return ret;
+}
+
+void DebuggerState::ShiftBreakpoints(const wxString& file, int startline, int nroflines)
+{
+    wxString bpfile = ConvertToValidFilename(file);
+    for (int i = m_Breakpoints.GetCount() - 1; i >= 0; --i)
+    {
+        DebuggerBreakpoint* bp = m_Breakpoints[i];
+        if (bp->line >= startline && (bp->filename == bpfile || bp->filenameAsPassed == file))
+        {
+            // notify driver if it is active
+            if (m_pDriver)
+                m_pDriver->RemoveBreakpoint(bp);
+            bp->line += nroflines;
+            // notify driver if it is active
+            if (m_pDriver)
+                m_pDriver->AddBreakpoint(bp);
+        }
     }
 }
 

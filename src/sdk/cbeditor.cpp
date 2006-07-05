@@ -1328,10 +1328,18 @@ bool cbEditor::AddBreakpoint(int line, bool notifyDebugger)
         return false;
     }
 
-    PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
-    if (!arr.GetCount())
-        return false;
-    cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[0];
+    // set this once; the debugger won't change without a restart
+    static cbDebuggerPlugin* debugger = 0;
+    if (!debugger)
+    {
+        PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
+        if (!arr.GetCount())
+            return false;
+        debugger = (cbDebuggerPlugin*)arr[0];
+        if (!debugger)
+            return false;
+    }
+
     if (debugger->AddBreakpoint(m_Filename, line))
         MarkerToggle(BREAKPOINT_MARKER, line);
     return true;
@@ -1350,10 +1358,18 @@ bool cbEditor::RemoveBreakpoint(int line, bool notifyDebugger)
         return false;
     }
 
-    PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
-    if (!arr.GetCount())
-        return false;
-    cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[0];
+    // set this once; the debugger won't change without a restart
+    static cbDebuggerPlugin* debugger = 0;
+    if (!debugger)
+    {
+        PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
+        if (!arr.GetCount())
+            return false;
+        debugger = (cbDebuggerPlugin*)arr[0];
+        if (!debugger)
+            return false;
+    }
+
     if (debugger->RemoveBreakpoint(m_Filename, line))
         MarkerToggle(BREAKPOINT_MARKER, line);
     return true;
@@ -2104,6 +2120,15 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
     bool isDel = event.GetModificationType() & wxSCI_MOD_DELETETEXT;
     if ((isAdd || isDel) && linesAdded != 0)
     {
+        // in case of no line numbers to be shown no need to set
+        // NOTE : on every modification of the Editor we consult ConfigManager
+        //        hopefully not to time consuming, otherwise we make a member out of it
+        ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+        if (mgr->ReadBool(_T("/show_line_numbers"), true))
+        {
+            m_pData->SetLineNumberColWidth();
+        }
+
         // get hold of debugger plugin
         static cbDebuggerPlugin* debugger = 0;
         // because the debugger plugin will *not* change throughout the
@@ -2112,104 +2137,14 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
         if (!debugger)
         {
             PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
-            if (!arr.GetCount())
-                return;
-            debugger = (cbDebuggerPlugin*)arr[0];
-            if (!debugger)
-                return;
+            if (arr.GetCount())
+                debugger = (cbDebuggerPlugin*)arr[0];
         }
 
-        // just added/removed lines
-        // this is the line that was added/removed
-        int origstartline = m_pControl->LineFromPosition(event.GetPosition());
-        int startline = origstartline;
-
-        // first remove any breakpoints that belong in deleted lines
-        if (isDel)
+        if (debugger)
         {
-            for (int line = startline; line < startline - linesAdded; ++line) // linesAdded is negative
-                debugger->RemoveBreakpoint(m_Filename, line);
-            // scintilla keeps one marker on the line that's left; remove this too
-            RemoveBreakpoint(startline, false);
-        }
-
-        // HACK, part1:
-        // ok, here's a hack for scintilla's bad behaviour with markers:
-        // if you press Enter on a line with a marker, scintilla doesn't move
-        // the marker at all. It starts moving markers from the next line downwards.
-        // If the cursor is at the start of the line though (or before the first char
-        // on that line for that matter), we want the breakpoint marker
-        // to "follow" the line that we pushed down. Here's where we do it...
-        // (look out for HACK part 2 below)
-        bool startLineHasBP = HasBreakpoint(startline);
-        int offset = 0;
-        wxString origlinetext = m_pControl->GetLine(startline);
-        bool isStartOfLine = startLineHasBP && origlinetext.Trim().IsEmpty(); // we know it's the start of the line, because it's now empty :)
-        if (isAdd)
-            offset = 1;
-
-        // find the first breakpoint after the start line
-        startline = m_pControl->MarkerNext(startline + offset, 1 << BREAKPOINT_MARKER);
-
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("Starting at line %d (from %d)"), startline+1, (origstartline + offset + 1));
-
-        // we 'll build an array containing all line numbers with breakpoints
-        // from startLine to the end of the document.
-        // at the same time we 'll be removing those breakpoints
-        wxArrayInt bps;
-        int line = startline;
-        while (line >= 0)// && line >= startline)
-        {
-            int oldline = line - linesAdded;
-            int newline = line;
-//            Manager::Get()->GetMessageManager()->DebugLog(_T("Removing bp at line %d (new=%d)"), oldline+1, newline+1);
-            // remove breakpoint from old line
-            debugger->RemoveBreakpoint(m_Filename, oldline);
-            // add in array the line that this breakpoint will now go to
-            bps.Add(newline);
-
-            line = m_pControl->MarkerNext(line + 1, 1 << BREAKPOINT_MARKER);
-//            Manager::Get()->GetMessageManager()->DebugLog(_T("Next bp at line %d"), line+1);
-        }
-
-        // now just loop through the array we created and set breakpoints
-        for (size_t i = 0; i < bps.GetCount(); ++i)
-        {
-//            Manager::Get()->GetMessageManager()->DebugLog(_T("Setting bp at line %d"), bps[i]+1);
-            // add breakpoint at new line
-            debugger->AddBreakpoint(m_Filename, bps[i]);
-        }
-
-        // HACK, part 2: adjust the breakpoint on the start line
-        if (startLineHasBP && isStartOfLine && linesAdded > 0)
-        {
-//            Manager::Get()->GetMessageManager()->DebugLog(_T("HACK: Removing bp at line %d"), origstartline+1);
-            RemoveBreakpoint(origstartline, true);
-//            Manager::Get()->GetMessageManager()->DebugLog(_T("HACK: Setting bp at line %d"), origstartline + linesAdded+1);
-            AddBreakpoint(origstartline + linesAdded, true);
-        }
-
-        // if lines have been removed make sure BP's after the new EOF are removed, too
-        // the markers are already lost so we can't use them to find additional BP's.
-        // TODO (Morten#): It's a better solution to provide a method like RemoveBreakpointsAfter(file, line)
-        //              because the debugger knows what other BP's are left and have to be removed.
-        if (isDel)
-        {
-          int lastline = m_pControl->GetLineCount();
-//          Manager::Get()->GetMessageManager()->DebugLog(_T("Removing possible breakpoints from %d to %d"), lastline+1, (lastline - linesAdded)+1);
-          for (int i=lastline; i<(lastline - linesAdded); i++) // linesAdded is negative
-          {
-              debugger->RemoveBreakpoint(m_Filename, i);
-          }
-        }
-
-        // in case of no line numbers to be shown no need to set
-        // NOTE : on every modification of the Editor we consult ConfigManager
-        //        hopefully not to time consuming, otherwise we make a member out of it
-        ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
-        if (mgr->ReadBool(_T("/show_line_numbers"), true))
-        {
-            m_pData->SetLineNumberColWidth();
+            int startline = m_pControl->LineFromPosition(event.GetPosition());
+            debugger->EditorLinesAddedOrRemoved(this, startline, linesAdded);
         }
     }
 } // end of OnEditorModified

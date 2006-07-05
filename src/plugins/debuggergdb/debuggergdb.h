@@ -60,6 +60,8 @@ class DebuggerGDB : public cbDebuggerPlugin
 		bool RemoveBreakpoint(const wxString& functionSignature);
 		bool RemoveAllBreakpoints(const wxString& file = wxEmptyString);
 
+		void EditorLinesAddedOrRemoved(cbEditor* editor, int startline, int lines);
+
 		int Debug();
 		void Continue();
 		void Next();

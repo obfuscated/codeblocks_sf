@@ -1222,6 +1222,51 @@ bool DebuggerGDB::RemoveAllBreakpoints(const wxString& file)
     return true;
 }
 
+void DebuggerGDB::EditorLinesAddedOrRemoved(cbEditor* editor, int startline, int lines)
+{
+    // here we keep the breakpoints in sync with the editors
+    // (whenever lines are added or removed)
+
+    if (!editor || lines == 0)
+        return;
+
+    if (lines < 0)
+    {
+        // removed lines
+        // make "lines" positive, for easier reading below
+        lines = -lines;
+
+        int endline = startline + lines - 1;
+        // remove file's breakpoints in deleted range
+        m_State.RemoveBreakpointsRange(editor->GetFilename(), startline, endline);
+
+        // shift the rest of file's breakpoints up by "lines"
+        m_State.ShiftBreakpoints(editor->GetFilename(), endline + 1, -lines);
+
+        // special case:
+        // when deleting a block of lines, if these lines contain at least one marker,
+        // one marker is retained at the cursor position.
+        // In our case here, this means that all breakpoints will be deleted in the range
+        // but one "orphan" breakpoint (i.e. editor mark only, no actual breakpoint behind it)
+        // will be visible on the line with the cursor.
+        //
+        // If we really have an "orphan", we remove it.
+        bool is_orphan = m_State.HasBreakpoint(editor->GetFilename(), endline - lines + 1) == -1;
+        if (is_orphan)
+            editor->RemoveBreakpoint(endline - lines + 1, false);
+    }
+    else
+    {
+        // mimic scintilla's behaviour regarding moving a marker (starts from the next line)
+        startline += 1;
+        // just shift file's breakpoints down by "lines"
+        m_State.ShiftBreakpoints(editor->GetFilename(), startline, lines);
+    }
+
+    if (m_pBreakpointsWindow)
+        m_pBreakpointsWindow->Refresh();
+}
+
 void DebuggerGDB::Registers()
 {
     // show it
