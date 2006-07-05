@@ -202,6 +202,7 @@ AC_CONFIG_FILES([Makefile
 	src/templates/common/Makefile
 	src/templates/unix/Makefile
 	src/templates/win32/Makefile
+	src/wxsmith/Makefile
 	codeblocks.pc
 ])
 

@@ -4619,6 +4619,16 @@
 			<Option link="0" />
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/scriptconsole.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/scriptconsole.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/splashscreen.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="src" />
@@ -4663,6 +4673,17 @@
 			<Option compilerVar="CPP" />
 			<Option target="AutoRevision" />
 		</Unit>
-		<Extensions />
+		<Unit filename="wxsmith/ScriptConsole.wxs">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="src" />
+		</Unit>
+		<Extensions>
+		<wxsmith>
+			<panel wxs_file="ScriptConsole.wxs" class="ScriptConsole" src_file="src/scriptconsole.cpp" header_file="src/scriptconsole.h" xrc_file="" edit_mode="Source" />
+			<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
+		</wxsmith>
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

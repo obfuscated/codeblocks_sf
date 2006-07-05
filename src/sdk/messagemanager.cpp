@@ -195,7 +195,7 @@ void MessageManager::ReleaseMenu(wxMenuBar* menuBar)
 
 bool MessageManager::CheckLogId(int id)
 {
-    return id >= 0 && id < (int)m_Logs.size() && (m_Logs[id] != 0L);
+    return m_Logs[id] != 0L;
 }
 
 void MessageManager::LogToStdOut(const wxChar* msg, ...)
@@ -295,19 +295,26 @@ int MessageManager::AddLog(MessageLog* log, const wxString& title, const wxBitma
 
 void MessageManager::RemoveLog(MessageLog* log)
 {
-    int id = m_pNotebook->GetPageIndex(log);
-//    cbMessageBox(wxString::Format(_T("Removing %d"), id));
-    if (id != -1)
-        m_pNotebook->RemovePage(id);
+    int idx = m_pNotebook->GetPageIndex(log);
+    m_pNotebook->RemovePage(idx);
+
+    // find it and remove it from the map
     for (LogsMap::iterator it = m_Logs.begin(); it != m_Logs.end(); ++it)
     {
         if (it->second->log == log)
         {
-               delete (*it).second;
+            delete (*it).second;
             m_Logs.erase(it);
             break;
         }
     }
+}
+
+void MessageManager::RemoveLog(int id)
+{
+    if (!CheckLogId(id))
+        return;
+    RemoveLog(m_Logs[id]->log);
 }
 
 void MessageManager::ShowLog(MessageLog* log, bool show)

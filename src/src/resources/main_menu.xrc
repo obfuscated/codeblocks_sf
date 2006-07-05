@@ -105,11 +105,6 @@
         <bitmap>images\16x16\fileprint.png</bitmap>
       </object>
       <object class="separator"/>
-      <object class="wxMenuItem" name="idFileRunScript">
-        <label>Run script...</label>
-        <bitmap>images\16x16\run.png</bitmap>
-      </object>
-      <object class="separator"/>
       <object class="wxMenuItem" name="idFileExit">
         <label>&amp;Quit</label>
         <bitmap>images\16x16\exit.png</bitmap>
@@ -235,138 +230,66 @@
       <object class="wxMenu" name="idEditEncoding">
         <label>File encoding</label>
         <object class="wxMenuItem" name="idEditEncodingDefault">
-
-
           <label>System default</label>
-
-
           <help>Use the system default encoding</help>
-
-
           <checkable>1</checkable>
         </object>
         <object class="wxMenuItem" name="idEditEncodingUseBom">
-
-
           <label>Save byte-order-mark (BOM)</label>
-
-
           <help>Save the Unicode encoding in a BOM</help>
-
-
           <checkable>1</checkable>
         </object>
         <object class="separator"/>
         <object class="wxMenuItem" name="idEditEncodingAscii">
-
-
           <label>ASCII (ISO-8859-1)</label>
-
-
           <help>Use the ISO-8859-1 character encoding</help>
-
-
           <checkable>1</checkable>
         </object>
         <object class="wxMenuItem" name="idEditEncodingUtf7">
-
-
           <label>UTF-7</label>
-
-
           <help>Use the UTF-7 character encoding</help>
-
-
           <checkable>1</checkable>
         </object>
         <object class="wxMenuItem" name="idEditEncodingUtf8">
-
-
           <label>UTF-8</label>
-
-
           <help>Use the UTF-8 character encoding</help>
-
-
           <checkable>1</checkable>
         </object>
         <object class="separator"/>
         <object class="wxMenuItem" name="idEditEncodingUnicode">
-
-
           <label>Unicode default</label>
-
-
           <help>Use the system default Unicode character encoding</help>
-
-
           <checkable>1</checkable>
         </object>
         <object class="wxMenuItem" name="idEditEncodingUtf16">
-
-
           <label>Native UTF-16</label>
-
-
           <help>Use the native UTF-16 character encoding</help>
-
-
           <checkable>1</checkable>
         </object>
         <object class="wxMenuItem" name="idEditEncodingUtf32">
-
-
           <label>Native UTF-32</label>
-
-
           <help>Use the native UTF-32 character encoding</help>
-
-
           <checkable>1</checkable>
         </object>
         <object class="separator"/>
         <object class="wxMenuItem" name="idEditEncodingUnicode16BE">
-
-
           <label>Unicode 16-bit big-endian</label>
-
-
           <help>Use the Unicode 16-bit big-endian multi-byte encoding</help>
-
-
           <checkable>1</checkable>
         </object>
         <object class="wxMenuItem" name="idEditEncodingUnicode16LE">
-
-
           <label>Unicode 16-bit little-endian</label>
-
-
           <help>Use the Unicode 16-bit little-endian multi-byte encoding</help>
-
-
           <checkable>1</checkable>
         </object>
         <object class="wxMenuItem" name="idEditEncodingUnicode32BE">
-
-
           <label>Unicode 32-bit big-endian</label>
-
-
           <help>Use the Unicode 32-bit big-endian multi-byte encoding</help>
-
-
           <checkable>1</checkable>
         </object>
         <object class="wxMenuItem" name="idEditEncodingUnicode32LE">
-
-
           <label>Unicode 32-bit little-endian</label>
-
-
           <help>Use the Unicode 32-bit little-endian multi-byte encoding</help>
-
-
           <checkable>1</checkable>
         </object>
       </object>
@@ -441,6 +364,12 @@
         <label>Messa&amp;ges</label>
         <accel>F2</accel>
         <help>Show/hide messages</help>
+        <checkable>1</checkable>
+        <enabled>1</enabled>
+      </object>
+      <object class="wxMenuItem" name="idViewScriptConsole">
+        <label>S&amp;cript console</label>
+        <help>Show/hide the script console</help>
         <checkable>1</checkable>
         <enabled>1</enabled>
       </object>

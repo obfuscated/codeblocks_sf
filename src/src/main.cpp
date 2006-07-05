@@ -63,6 +63,7 @@
 #include "dlgaboutplugin.h"
 #include "dlgabout.h"
 #include "startherepage.h"
+#include "scriptconsole.h"
 #include "printdlg.h"
 #include <wx/printdlg.h>
 #include <wx/filename.h>
@@ -115,7 +116,6 @@ int idFileClose = XRCID("idFileClose");
 int idFileCloseAll = XRCID("idFileCloseAll");
 int idFilePrintSetup = XRCID("idFilePrintSetup");
 int idFilePrint = XRCID("idFilePrint");
-int idFileRunScript = XRCID("idFileRunScript");
 int idFileExit = XRCID("idFileExit");
 int idFileNext = wxNewId();
 int idFilePrev = wxNewId();
@@ -171,6 +171,7 @@ int idViewManager = XRCID("idViewManager");
 int idViewOpenFilesTree = XRCID("idViewOpenFilesTree");
 int idViewMessageManager = XRCID("idViewMessageManager");
 int idViewStatusbar = XRCID("idViewStatusbar");
+int idViewScriptConsole = XRCID("idViewScriptConsole");
 int idViewFocusEditor = XRCID("idViewFocusEditor");
 int idViewFullScreen = XRCID("idViewFullScreen");
 
@@ -275,6 +276,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idViewMessageManager, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewManager, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewStatusbar, MainFrame::OnViewMenuUpdateUI)
+    EVT_UPDATE_UI(idViewScriptConsole, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFocusEditor, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFullScreen, MainFrame::OnViewMenuUpdateUI)
 
@@ -300,7 +302,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileClose,  MainFrame::OnFileClose)
     EVT_MENU(idFileCloseAll,  MainFrame::OnFileCloseAll)
     EVT_MENU(idFilePrint,  MainFrame::OnFilePrint)
-    EVT_MENU(idFileRunScript,  MainFrame::OnFileRunScript)
     EVT_MENU(idFileExit,  MainFrame::OnFileQuit)
     EVT_MENU(idFileNext,  MainFrame::OnFileNext)
     EVT_MENU(idFilePrev,  MainFrame::OnFilePrev)
@@ -358,6 +359,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idViewManager, MainFrame::OnToggleBar)
     EVT_MENU(idViewOpenFilesTree, MainFrame::OnToggleOpenFilesTree)
     EVT_MENU(idViewStatusbar, MainFrame::OnToggleStatusBar)
+    EVT_MENU(idViewScriptConsole, MainFrame::OnViewScriptConsole)
     EVT_MENU(idViewFocusEditor, MainFrame::OnFocusEditor)
     EVT_MENU(idViewFullScreen, MainFrame::OnToggleFullScreen)
 
@@ -429,7 +431,8 @@ MainFrame::MainFrame(wxWindow* parent)
        m_HelpPluginsMenu(0L),
        m_ReconfiguringPlugins(false),
        m_StartupDone(false), // one-time flag
-       m_InitiatedShutdown(false)
+       m_InitiatedShutdown(false),
+       m_ScriptConsoleID(-1)
 {
     // tell wxFrameManager to manage this frame
     m_LayoutManager.SetFrame(this);
@@ -487,6 +490,9 @@ MainFrame::MainFrame(wxWindow* parent)
     LoadWindowState();
 
     ShowHideStartPage();
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/show_script_console"), false))
+        ShowHideScriptConsole();
+
     m_StartupDone = true;
     DoUpdateLayout();
 }
@@ -1391,6 +1397,22 @@ void MainFrame::ShowHideStartPage(bool forceHasProject)
         sh->Destroy();
 }
 
+void MainFrame::ShowHideScriptConsole()
+{
+    if (m_ScriptConsoleID == -1)
+    {
+        // create console
+        m_ScriptConsoleID = Manager::Get()->GetMessageManager()->AddLog(new ScriptConsoleLog(), _("Script console"));
+    }
+    else
+    {
+        // remove console
+        Manager::Get()->GetMessageManager()->RemoveLog(m_ScriptConsoleID);
+        m_ScriptConsoleID = -1;
+    }
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/show_script_console"), m_ScriptConsoleID != -1);
+}
+
 void MainFrame::OnStartHereLink(wxCommandEvent& event)
 {
     wxCommandEvent evt;
@@ -1964,25 +1986,6 @@ void MainFrame::OnFilePrint(wxCommandEvent& event)
         Manager::Get()->GetEditorManager()->Print(dlg.GetPrintScope(), dlg.GetPrintColourMode(), dlg.GetPrintLineNumbers());
 }
 
-void MainFrame::OnFileRunScript(wxCommandEvent& WXUNUSED(event))
-{
-    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("app"));
-    wxString path = mgr->Read(_T("/file_dialogs/file_run_script/directory"), path);
-    wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Run script"),
-                            path,
-                            wxEmptyString,
-                            _T("Script files (*.script)|*.script"),
-                            wxOPEN);
-    PlaceWindow(dlg);
-    if (dlg->ShowModal() == wxID_OK)
-    {
-        mgr->Write(_T("/file_dialogs/file_run_script/directory"), dlg->GetDirectory());
-        Manager::Get()->GetScriptingManager()->LoadScript(dlg->GetPath());
-    }
-    dlg->Destroy();
-}
-
 void MainFrame::OnFileQuit(wxCommandEvent& WXUNUSED(event))
 {
     Close(true);
@@ -2476,6 +2479,13 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
     }
 }
 
+void MainFrame::OnViewScriptConsole(wxCommandEvent& event)
+{
+    ShowHideScriptConsole();
+    if (m_ScriptConsoleID != -1)
+        Manager::Get()->GetMessageManager()->SwitchTo(m_ScriptConsoleID);
+}
+
 void MainFrame::OnSearchFind(wxCommandEvent& event)
 {
 	bool bDoMultipleFiles = (event.GetId() == idSearchFindInFiles);
@@ -2811,6 +2821,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idViewOpenFilesTree, m_pEdMan);
     mbar->Check(idViewMessageManager, m_LayoutManager.GetPane(Manager::Get()->GetMessageManager()->GetNotebook()).IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
+    mbar->Check(idViewScriptConsole, m_ScriptConsoleID != -1);
     mbar->Check(idViewFullScreen, IsFullScreen());
     mbar->Enable(idViewFocusEditor, ed);
 

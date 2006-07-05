@@ -57,12 +57,37 @@ class DLLIMPORT MessageManager : public Mgr<MessageManager>, public wxEvtHandler
 		void CreateMenu(wxMenuBar* menuBar);
 		void ReleaseMenu(wxMenuBar* menuBar);
 
+        /** @return the wxFlatNotebook control that MessageManager controls. */
 		wxFlatNotebook* GetNotebook() { return m_pNotebook; }
 
+        /** @brief Add a new log window.
+          * @param log The log window to add.
+          * @param title The log's title.
+          * @param bitmap The optional bitmap to use.
+          * @return An identifier for this log window, to be used when calling other MessageManager functions.
+          */
         int AddLog(MessageLog* log, const wxString& title, const wxBitmap& bitmap = wxNullBitmap);
+        /** Remove a log window.
+          * @param log The window to remove.
+          */
         void RemoveLog(MessageLog* log);
+        /** Remove a log window.
+          * @param log The ID of the window to remove.
+          */
+        void RemoveLog(int id);
+        /** Show/hide a log window.
+          * Hiding it doesn't remove it from MessageManager.
+          * @param log The window to show/hide.
+          * @param show If true, show the window else hide it.
+          */
         void ShowLog(MessageLog* log, bool show = true);
+        /** Show/hide a log window.
+          * Hiding it doesn't remove it from MessageManager.
+          * @param log The ID of the window to show/hide.
+          * @param show If true, show the window else hide it.
+          */
         void ShowLog(int id, bool show = true);
+
         void ResetLogFont();
 
         void SetBatchBuildLog(int log);

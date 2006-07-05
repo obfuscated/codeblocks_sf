@@ -31,6 +31,7 @@ codeblocks_SOURCES = app.cpp \
 			main.cpp \
 			prefix.cpp \
 			printdlg.cpp \
+			scriptconsole.cpp \
 			splashscreen.cpp \
 			startherepage.cpp
 
@@ -44,6 +45,7 @@ noinst_HEADERS = app.h \
 			main.h \
 			prefix.h \
 			printdlg.h \
+			scriptconsole.h \
 			splashscreen.h \
 			startherepage.h
 

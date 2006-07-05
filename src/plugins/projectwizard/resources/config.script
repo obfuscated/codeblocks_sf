@@ -8,7 +8,7 @@ function RegisterWizards()
     //
     // project wizards
     //
-    RegisterWizard(wizProject,     _T("empty"),        _T("Empty project"),   		  _T("Console"));
+    RegisterWizard(wizProject,     _T("empty"),        _T("Empty project"),   		_T("Console"));
     RegisterWizard(wizProject,     _T("console"),      _T("Console application"),   _T("Console"));
     RegisterWizard(wizProject,     _T("d"),            _T("D application"),         _T("D language"));
     if (PLATFORM == PLATFORM_MSW)

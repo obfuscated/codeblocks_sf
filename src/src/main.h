@@ -62,7 +62,6 @@ class MainFrame : public wxFrame
         void OnFileCloseAll(wxCommandEvent& event);
         void OnFilePrintSetup(wxCommandEvent& event);
         void OnFilePrint(wxCommandEvent& event);
-        void OnFileRunScript(wxCommandEvent& event);
         void OnFileQuit(wxCommandEvent& event);
         void OnFileNext(wxCommandEvent& event);
         void OnFilePrev(wxCommandEvent& event);
@@ -96,6 +95,7 @@ class MainFrame : public wxFrame
         void OnViewLayout(wxCommandEvent& event);
         void OnViewLayoutSave(wxCommandEvent& event);
         void OnViewLayoutDelete(wxCommandEvent& event);
+        void OnViewScriptConsole(wxCommandEvent& event);
 
         void OnSearchFind(wxCommandEvent& event);
         void OnSearchFindNext(wxCommandEvent& event);
@@ -213,6 +213,7 @@ class MainFrame : public wxFrame
 		void DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& prefix, long defaultStyle);
 
         void ShowHideStartPage(bool forceHasProject = false);
+        void ShowHideScriptConsole();
 
         void LoadWindowState();
         void SaveWindowState();
@@ -247,6 +248,8 @@ class MainFrame : public wxFrame
 
         wxString m_LastLayoutName;
         wxString m_LastLayoutData;
+
+        int m_ScriptConsoleID;
 
         DECLARE_EVENT_TABLE()
 };

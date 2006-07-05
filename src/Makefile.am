@@ -1,4 +1,4 @@
-SUBDIRS = tools sdk src plugins setup templates scripts
+SUBDIRS = tools sdk src plugins setup templates scripts wxsmith
 
 dist_pkgdata_DATA = tips.txt
 

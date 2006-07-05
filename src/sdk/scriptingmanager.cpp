@@ -76,18 +76,22 @@ bool ScriptingManager::LoadScript(const wxString& filename)
     }
     // read file
     wxString contents = cbReadFileContents(f);
+    return LoadBuffer(contents, filename);
+}
 
+bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugName)
+{
     s_ScriptErrors.Clear();
 
     // compile script
     SquirrelObject script;
     try
     {
-        script = SquirrelVM::CompileBuffer(cbU2C(contents), cbU2C(filename));
+        script = SquirrelVM::CompileBuffer(cbU2C(buffer), cbU2C(debugName));
     }
     catch (SquirrelError e)
     {
-        cbMessageBox(wxString::Format(_T("Filename: %s\nError: %s"), filename.c_str(), cbC2U(e.desc).c_str(), s_ScriptErrors.c_str()), _("Script error"), wxICON_ERROR);
+        cbMessageBox(wxString::Format(_T("Filename: %s\nError: %s"), debugName.c_str(), cbC2U(e.desc).c_str(), s_ScriptErrors.c_str()), _("Script compile error"), wxICON_ERROR);
         return false;
     }
 
@@ -98,7 +102,7 @@ bool ScriptingManager::LoadScript(const wxString& filename)
     }
     catch (SquirrelError e)
     {
-        cbMessageBox(wxString::Format(_T("Filename: %s\nError: %s\nDetails: %s"), filename.c_str(), cbC2U(e.desc).c_str(), s_ScriptErrors.c_str()), _("Script error"), wxICON_ERROR);
+        cbMessageBox(wxString::Format(_T("Filename: %s\nError: %s\nDetails: %s"), debugName.c_str(), cbC2U(e.desc).c_str(), s_ScriptErrors.c_str()), _("Script run error"), wxICON_ERROR);
         return false;
     }
     return true;
@@ -122,4 +126,9 @@ void ScriptingManager::DisplayErrors(SquirrelError* exception, bool clearErrors)
     wxString msg = GetErrorString(exception, clearErrors);
     if (!msg.IsEmpty())
         cbMessageBox(msg, _("Script errors"), wxICON_ERROR);
+}
+
+void ScriptingManager::InjectScriptOutput(const wxString& output)
+{
+    s_ScriptErrors << output;
 }
