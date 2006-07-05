@@ -558,6 +558,22 @@ void ConfigManager::SetPath(const wxString& path)
     pathNode = AssertPath(p);
 }
 
+wxString ConfigManager::InvalidNameMessage(const wxString& what, const wxString& sub, TiXmlElement *localPath) const
+{
+    wxString s;
+    s.Printf(_T("The %s %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for path naming (must start with a letter)."),
+    what.c_str(),
+    sub.c_str(),
+    #if wxUSE_UNICODE
+    cbC2U(localPath->Value()).c_str(),
+    cbC2U(root->Value()).c_str());
+    #else
+    localPath->Value(),
+    root->Value());
+    #endif
+    return s;
+}
+
 
 TiXmlElement* ConfigManager::AssertPath(wxString& path)
 {
@@ -590,17 +606,7 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
             localPath = localPath->Parent()->ToElement();
         else if(sub.GetChar(0) < _T('a') || sub.GetChar(0) > _T('z'))
         {
-            wxString s;
-            s.Printf(_T("The subpath %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for path naming.\nPaths and subpaths are required to start with a letter."), sub.c_str(),
-#if wxUSE_UNICODE
-                     cbC2U(localPath->Value()).c_str(),
-                     cbC2U(root->Value()).c_str());
-#else
-
-                     localPath->Value(),
-                     root->Value());
-#endif
-            cbThrow(s);
+            cbThrow(InvalidNameMessage(_T("subpath"), sub, localPath));
         }
         else
         {
@@ -610,32 +616,13 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
             else
                 localPath = (TiXmlElement*) localPath->InsertEndChild(TiXmlElement(cbU2C(sub)));
         }
-#ifdef cbDEBUG_EXTRA
-        if(doc->Error()) // this can actually never happen, as we're not parsing any moreF
-        {
-            cbMessageBox(wxString(_T("TinyXML error:\n")) << cbC2U(doc->ErrorDesc()), _T("Warning"), wxICON_WARNING);
-            doc->ClearError();
-        }
-#endif
-
     }
 
     to_upper(path);
-    if(!path.IsEmpty() && (path.GetChar(0) < _T('A') || path.GetChar(0) > _T('Z')))
-    {
-        wxString s;
-        s.Printf(_T("The Configuration key %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for variable naming.\nVariables names are required to start with a letter."),
-                 path.c_str(),
-#if wxUSE_UNICODE
-                 cbC2U(localPath->Value()).c_str(),
-                 cbC2U(root->Value()).c_str());
-#else
 
-                 localPath->Value(),
-                 root->Value());
-#endif
-        cbThrow(s);
-    }
+    if(!path.IsEmpty() && (path.GetChar(0) < _T('A') || path.GetChar(0) > _T('Z')))
+        cbThrow(InvalidNameMessage(_T("key"), path, localPath));
+
     return localPath;
 }
 

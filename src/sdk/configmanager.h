@@ -78,6 +78,8 @@ class DLLIMPORT ConfigManager
     TiXmlElement* GetUniqElement(TiXmlElement* p, const wxString& q);
     void SetNodeText(TiXmlElement *n, const TiXmlText& t);
     inline void Collapse(wxString& str) const;
+    wxString InvalidNameMessage(const wxString& what, const wxString& sub, TiXmlElement *localPath) const;
+
 
 public:
 
