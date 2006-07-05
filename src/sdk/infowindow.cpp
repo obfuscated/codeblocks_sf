@@ -90,7 +90,7 @@ namespace // anonumous
 #ifdef __WXMSW__
     static const int scroll_millis = 1;
 #else
-    static const int scroll_millis = 20;
+    static const int scroll_millis = 5;
 #endif
 } // anonumous namespace
 
@@ -119,7 +119,7 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
         wxPanel* pnl = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
         pnl->SetBackgroundColour(titleBackground);
         ForwardingTextControl *titleC = new ForwardingTextControl(pnl, -1, title, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
-        pbs->Add(titleC, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+        pbs->Add(titleC, 0, wxALL|wxALIGN_CENTER, 5);
         pnl->SetSizer(pbs);
         pbs->SetSizeHints(pnl);
         o = pnl;
