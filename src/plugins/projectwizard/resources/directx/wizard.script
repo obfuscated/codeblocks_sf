@@ -13,7 +13,7 @@ function BeginWizard()
                          "This wizard will guide you to create a new project\n" +
                          "using the Direct/X extensions.\n\n" +
                          "This wizard expects the global variable \"dx\" to point\n" +
-		                     "to the appropriate DirectX SDK.\n" +
+                         "to the appropriate DirectX SDK.\n" +
                          "This is the MS DirectX SDK for a Visual C++ Toolkit 2003 project\n" +
                          "and e.g. the DevPack folder for a GCC project.\n\n" +
                          "For a Visual C++ Toolkit 2003 project in addition the global variable\n" +
@@ -31,7 +31,7 @@ function BeginWizard()
     Wizard.AddIntroPage(intro_msg);
     Wizard.AddProjectPathPage();
     Wizard.AddCompilerPage(_T(""), _T("gcc;msvctk"), true, true);
-    Wizard.AddGenericSelectPathPage(_T("DirectXPath"), dxpath_descr, _T("Please select Direct/X's location:"));
+    Wizard.AddGenericSelectPathPage(_T("DirectXPath"), dxpath_descr, _T("Please select Direct/X's location:"), _T("$(#dx)"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -43,6 +43,7 @@ function OnLeave_DirectXPath(fwd)
     if (fwd)
     {
         local dir = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
+        dir = ReplaceMacros(dir, true);
         if (!IO.FileExists(dir + _T("/include/d3d.h")))
         {
             ShowError(_T("The path you entered seems valid, but this wizard " +
@@ -83,7 +84,7 @@ function SetupProject(project)
 {
     // set project options
     local gvar = ReplaceMacros(_T("$(#dx)"), true);
-    
+
     // set compiler/linker search paths
     // see if the Direct/X SDK matches the global var. if it does, use the var instead...
     if (gvar.Matches(DirectXPath))
@@ -96,7 +97,7 @@ function SetupProject(project)
         project.AddIncludeDir(DirectXPath + _T("/include"));
         project.AddLibDir(DirectXPath + _T("/lib/x86"));
     }
-    
+
     // set compiler options
     project.AddCompilerOption(_T("-DWIN32"));
     project.AddCompilerOption(_T("-DNDEBUG"));
