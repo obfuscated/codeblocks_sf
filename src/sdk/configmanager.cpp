@@ -568,11 +568,11 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
     while((i = path.find_first_of(illegal, i)) != wxString::npos)
         path[i] = _T('_');
 
-    pathNode = pathNode ? pathNode : root;
+    TiXmlElement *localPath = pathNode ? pathNode : root;
 
     if(path.GetChar(0) == '/')  // absolute path
     {
-        pathNode = root;
+        localPath = root;
         path = path.Mid(1);
     }
 
@@ -586,29 +586,29 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
         sub = path.BeforeFirst(_T('/'));
         path = path.AfterFirst(_T('/'));
 
-        if(pathNode != root && sub.IsSameAs(CfgMgrConsts::dotDot))
-            pathNode = pathNode->Parent()->ToElement();
+        if(localPath != root && sub.IsSameAs(CfgMgrConsts::dotDot))
+            localPath = localPath->Parent()->ToElement();
         else if(sub.GetChar(0) < _T('a') || sub.GetChar(0) > _T('z'))
         {
             wxString s;
             s.Printf(_T("The subpath %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for path naming.\nPaths and subpaths are required to start with a letter."), sub.c_str(),
 #if wxUSE_UNICODE
-                     cbC2U(pathNode->Value()).c_str(),
+                     cbC2U(localPath->Value()).c_str(),
                      cbC2U(root->Value()).c_str());
 #else
 
-                     pathNode->Value(),
+                     localPath->Value(),
                      root->Value());
 #endif
             cbThrow(s);
         }
         else
         {
-            TiXmlElement* n = pathNode->FirstChildElement(cbU2C(sub));
+            TiXmlElement* n = localPath->FirstChildElement(cbU2C(sub));
             if(n)
-                pathNode = n;
+                localPath = n;
             else
-                pathNode = (TiXmlElement*) pathNode->InsertEndChild(TiXmlElement(cbU2C(sub)));
+                localPath = (TiXmlElement*) localPath->InsertEndChild(TiXmlElement(cbU2C(sub)));
         }
 #ifdef cbDEBUG_EXTRA
         if(doc->Error()) // this can actually never happen, as we're not parsing any moreF
@@ -627,16 +627,16 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
         s.Printf(_T("The Configuration key %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for variable naming.\nVariables names are required to start with a letter."),
                  path.c_str(),
 #if wxUSE_UNICODE
-                 cbC2U(pathNode->Value()).c_str(),
+                 cbC2U(localPath->Value()).c_str(),
                  cbC2U(root->Value()).c_str());
 #else
 
-                 pathNode->Value(),
+                 localPath->Value(),
                  root->Value());
 #endif
         cbThrow(s);
     }
-    return pathNode;
+    return localPath;
 }
 
 
