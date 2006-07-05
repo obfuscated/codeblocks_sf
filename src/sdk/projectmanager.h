@@ -399,7 +399,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         ProjectsArray* m_pProjects;
         DepsMap m_ProjectDeps;
         cbWorkspace* m_pWorkspace;
-        EditorBase* m_pTopEditor;
         bool m_TreeCategorize;
         bool m_TreeUseFolders;
 		FilesGroupsAndMasks* m_pFileGroups;

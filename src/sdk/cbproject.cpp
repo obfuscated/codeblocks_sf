@@ -530,10 +530,7 @@ bool cbProject::LoadLayout()
                     Manager::Get()->GetMessageManager()->DebugLog(_T("Top Editor: %s"),f->file.GetFullPath().c_str());
                     EditorBase* eb = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
                     if(eb)
-                    {
-                        Manager::Get()->GetProjectManager()->SetTopEditor(eb);
                         eb->Activate();
-                    }
                 }
 //                Manager::Get()->GetAppWindow()->Thaw();
             }

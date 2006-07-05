@@ -196,7 +196,6 @@ END_EVENT_TABLE()
 ProjectManager::ProjectManager()
 	: m_pTree(0),
     m_pWorkspace(0),
-	m_pTopEditor(0),
     m_TreeCategorize(false),
     m_TreeUseFolders(true),
     m_TreeFreezeCounter(0),
@@ -967,19 +966,9 @@ cbWorkspace* ProjectManager::GetWorkspace()
     return m_pWorkspace;
 }
 
-void ProjectManager::SetTopEditor(EditorBase* ed)
-{
-    m_pTopEditor = ed;
-}
-
-EditorBase* ProjectManager::GetTopEditor() const
-{
-    return m_pTopEditor;
-}
 
 bool ProjectManager::LoadWorkspace(const wxString& filename)
 {
-    m_pTopEditor = 0;
     if (!CloseWorkspace())
         return false; // didn't close
     m_IsLoadingWorkspace=true;
@@ -998,8 +987,7 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
         m_IsLoadingWorkspace=false;
         Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
         m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
-        if(m_pTopEditor)
-            m_pTopEditor->Activate();
+
         Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree(true);
         UnfreezeTree(true);
         // sort out any global user vars that need to be defined now (in a batch) :)
