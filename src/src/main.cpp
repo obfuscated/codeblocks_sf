@@ -2038,7 +2038,8 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
         return;
     }
 
-    SaveWindowState();
+    if (Manager::IsBatchBuild() == false)
+        SaveWindowState();
 
     m_LayoutManager.DetachPane(Manager::Get()->GetProjectManager()->GetNotebook());
     m_LayoutManager.DetachPane(Manager::Get()->GetMessageManager()->GetNotebook());
