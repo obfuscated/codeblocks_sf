@@ -12,7 +12,7 @@
 #endif
 #include "crashhandler.h"
 
-LONG WINAPI CrashHandlerFunc(struct _EXCEPTION_POINTERS *ExceptionInfo)
+LONG WINAPI CrashHandlerFunc(PEXCEPTION_POINTERS ExceptionInfo)
 {
     DWORD code = ExceptionInfo->ExceptionRecord->ExceptionCode;
 
