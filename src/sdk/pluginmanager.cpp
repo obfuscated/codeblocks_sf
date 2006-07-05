@@ -34,6 +34,7 @@
     #include "pluginmanager.h"
     #include "cbexception.h"
     #include "cbplugin.h"
+    #include "infowindow.h"
     #include "messagemanager.h"
     #include "manager.h"
     #include "editormanager.h"
@@ -94,12 +95,20 @@ int PluginManager::ScanForPlugins(const wxString& path)
         if (LoadPlugin(path + _T('/') + filename))
             ++count;
 		else
-			failed << filename << _T(" ");
+			failed << _T('\n') << filename;
         ok = dir.GetNext(&filename);
     }
     Manager::Get()->GetMessageManager()->Log(_("Found %d plugins"), count);
 	if (!failed.IsEmpty())
-		Manager::Get()->GetMessageManager()->Log(_("Plugins that failed to load: %s"), failed.c_str());
+	{
+        InfoWindow::Display(_("Warning"),
+                            _("One or more plugins were not loaded.\n"
+                            "This usually happens when a plugin is built for\n"
+                            "a different version of the Code::Blocks SDK.\n"
+                            "Check the application log for more info.\n\n"
+                            "List of failed plugins list:\n") + failed,
+                            15000, 3000);
+	}
     return count;
 
 #undef PLUGINS_MASK
@@ -149,11 +158,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
 	{
 		// in this case, inform the user...
 		wxString fmt;
-		fmt.Printf(_("A plugin failed to load because it was built "
-                    "with a different Code::Blocks SDK version.\n\n"
-					"Plugin: %s\n"
-					"Plugin's SDK version: %d.%d.%d\n"
-					"Your SDK version: %d.%d.%d"),
+		fmt.Printf(_("SDK version mismatch for %s (%d.%d.%d). Expecting %d.%d.%d"),
 					pluginName.c_str(),
 					major,
 					minor,
@@ -161,12 +166,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
 					PLUGIN_SDK_VERSION_MAJOR,
 					PLUGIN_SDK_VERSION_MINOR,
 					PLUGIN_SDK_VERSION_RELEASE);
-        AnnoyingDialog dlg(_("Plugin loading error"),
-                            fmt,
-                            wxART_WARNING,
-                            AnnoyingDialog::OK,
-                            wxID_OK);
-        dlg.ShowModal();
+        Manager::Get()->GetMessageManager()->Log(fmt);
         lib->Unload();
         delete lib;
         return false;
