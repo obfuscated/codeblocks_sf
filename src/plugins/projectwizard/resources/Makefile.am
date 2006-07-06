@@ -1,4 +1,4 @@
-SUBDIRS = c_file console d directx dll empty fltk glfw glut h_file irrlicht ogre smartwin wxwidgets
+SUBDIRS = c_file console d directx dll empty fltk glfw glut h_file irrlicht ogre smartwin win32gui wxwidgets
 
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard
 

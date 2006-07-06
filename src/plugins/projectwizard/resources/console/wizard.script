@@ -129,12 +129,12 @@ function BeginWizard()
 // There are three wizard events provided. Two of them are for all pages (custom and builtin)
 // and the third is only for custom pages (from XRC):
 //
-//  1) [all pages] function OnEnter_<panel_name>(bool fwd)
+//  1) [all pages] function OnEnter_<panel_name>(fwd)
 //      This is called when the wizard is about to display this page.
 //      The _T("fwd") argument is _T("true") if the page is displayed after the user pressed _T("Next"),
 //      or it is _T("false") if the user pressed _T("Back").
 //
-//  2) [all pages] bool OnLeave_<panel_name>(bool fwd)
+//  2) [all pages] function OnLeave_<panel_name>(fwd)
 //      This is called when the wizard is about to display another page.
 //      The argument means the same as in OnEnter_<panel_name> above.
 //      If the script returns _T("false") from this function, then the page-change

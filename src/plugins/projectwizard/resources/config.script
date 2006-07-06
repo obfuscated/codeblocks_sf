@@ -8,7 +8,7 @@ function RegisterWizards()
     //
     // project wizards
     //
-    RegisterWizard(wizProject,     _T("empty"),        _T("Empty project"),   		_T("Console"));
+    RegisterWizard(wizProject,     _T("empty"),        _T("Empty project"),         _T("Console"));
     RegisterWizard(wizProject,     _T("console"),      _T("Console application"),   _T("Console"));
     RegisterWizard(wizProject,     _T("d"),            _T("D application"),         _T("D language"));
     if (PLATFORM == PLATFORM_MSW)
@@ -22,7 +22,10 @@ function RegisterWizards()
     RegisterWizard(wizProject,     _T("irrlicht"),     _T("Irrlicht project"),      _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("ogre"),         _T("Ogre project"),          _T("2D/3D Graphics"));
     if (PLATFORM == PLATFORM_MSW)
+    {
         RegisterWizard(wizProject, _T("smartwin"),     _T("SmartWin project"),      _T("GUI"));
+        RegisterWizard(wizProject, _T("win32gui"),     _T("Win32 GUI project"),     _T("GUI"));
+    }
     RegisterWizard(wizProject,     _T("wxwidgets"),    _T("wxWidgets application"), _T("GUI"));
 
     //

@@ -1,0 +1,86 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// PSDK project wizard
+//
+////////////////////////////////////////////////////////////////////////////////
+
+function BeginWizard()
+{
+    local intro_msg = _T("Welcome to the new Win32 GUI project wizard!\n\n" +
+                         "This wizard will guide you to create a new Win32 GUI project.\n\n" +
+                         "When you 're ready to proceed, please click \"Next\"...");
+
+    Wizard.AddIntroPage(intro_msg);
+    Wizard.AddProjectPathPage();
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+}
+
+function OnLeave_CompilerPage(fwd)
+{
+    if (fwd)
+    {
+        // check for selectino of MS VC++ Toolkit
+        if (Wizard.GetCompilerID().Matches(_T("msvctk")))
+        {
+            // see if psdk global variable exists which is required for this compiler
+            if (GetUserVariableManager().Exists(_T("#psdk")))
+            {
+                ShowError(_T("You have selected the MS VC++ Toolkit for compilation.\n" + 
+                             "For this compiler the global variable \"psdk\" pointing to\n" +
+                             "the path of the MS platform SDK has to be setup.\n\n" +
+                             "Unfortunately this wizard could not detect this\n" +
+                             "variable and cannot continue."));
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+// return the files this project contains
+function GetFilesDir()
+{
+    return _T("win32gui/files");
+}
+
+// setup the already created project
+function SetupProject(project)
+{
+    // add link libraries
+    project.AddLinkLib(_T("gdi32"));
+    project.AddLinkLib(_T("user32"));
+    project.AddLinkLib(_T("kernel32"));
+
+    // set additional path's for MS VC++ Toolkit
+    if (Wizard.GetCompilerID().Matches(_T("msvctk")))
+    {
+        // set project options for MS Visual C++ Toolkit
+        project.AddIncludeDir(_T("$(#psdk.include)"));
+        project.AddLibDir(_T("$(#psdk.lib)"));
+    }
+
+    // enable compiler warnings (project-wide)
+    WarningsOn(project, Wizard.GetCompilerID());
+
+    // Debug
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable generation of debugging symbols for target
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    }
+
+    // Release
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttExecutable); // ttExecutable: no console
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable optimizations for target
+        OptimizationsOn(target, Wizard.GetCompilerID());
+    }
+
+    return true;
+}

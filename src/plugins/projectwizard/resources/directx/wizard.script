@@ -63,7 +63,7 @@ function OnLeave_DirectXPath(fwd)
             if (!IO.DirectoryExists(psdk))
             {
                 ShowError(_T("The path to the platform SDK seems not to be valid.\n" +
-                             "This setup requires at the MS platform SDK..."));
+                             "This setup requires the MS platform SDK..."));
                 return false;
             }
         }
