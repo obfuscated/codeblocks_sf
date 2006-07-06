@@ -15,6 +15,8 @@
 
 namespace ScriptBindings
 {
+    wxString s_PathSep = wxFILE_SEP_PATH;
+
     void Register_Constants()
     {
         // platform constants
@@ -30,8 +32,7 @@ namespace ScriptBindings
         #endif
 
         // path separator for filenames
-        wxString pathSep = wxFILE_SEP_PATH;
-        BIND_WXSTR_CONSTANT_NAMED(pathSep, "wxFILE_SEP_PATH");
+        BIND_WXSTR_CONSTANT_NAMED(s_PathSep, "wxFILE_SEP_PATH");
 
         // dialog buttons
         BIND_INT_CONSTANT(wxOK);

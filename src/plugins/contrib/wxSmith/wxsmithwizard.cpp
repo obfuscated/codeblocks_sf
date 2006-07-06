@@ -25,7 +25,7 @@ wxSmithWizard::~wxSmithWizard()
 {
 }
 
-CompileTargetBase* wxSmithWizard::Launch(int Index)
+CompileTargetBase* wxSmithWizard::Launch(int Index, wxString* pFilename)
 {
     wxsWizard Dlg(0L);
     Dlg.ShowModal();

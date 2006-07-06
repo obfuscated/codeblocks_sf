@@ -27,13 +27,13 @@ class wxSmithWizard : public cbWizardPlugin
         virtual const wxBitmap& GetBitmap(int index) const
         { return Bitmap; }
 
-        virtual CompileTargetBase* Launch(int index);
+        virtual CompileTargetBase* Launch(int index, wxString* pFilename = 0);
 
         virtual wxString GetScriptFilename(int index) const
         { return wxEmptyString; }
 
-        virtual cbWizardPlugin::OutputType GetOutputType(int index) const
-        { return cbWizardPlugin::otProject; }
+        virtual TemplateOutputType GetOutputType(int index) const
+        { return totProject; }
     private:
         wxBitmap Bitmap;
 };
