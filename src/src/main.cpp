@@ -1093,7 +1093,7 @@ wxString MainFrame::ShowOpenFileDialog(const wxString& caption, const wxString& 
                             wxEmptyString,
                             wxEmptyString,
                             filter,
-                            wxOPEN);
+                            wxOPEN | wxHIDE_READONLY);
     wxString sel;
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
@@ -1823,7 +1823,7 @@ void MainFrame::OnFileOpen(wxCommandEvent& event)
                             Path,
                             wxEmptyString,
                             Filters,
-                            wxOPEN | wxMULTIPLE);
+                            wxOPEN | wxMULTIPLE | wxHIDE_READONLY);
     dlg->SetFilterIndex(StoredIndex);
 
     PlaceWindow(dlg);
@@ -2572,7 +2572,7 @@ void MainFrame::OnProjectOpen(wxCommandEvent& event)
                             wxEmptyString,
                             wxEmptyString,
                             FileFilters::GetFilterString(_T('.') + FileFilters::CODEBLOCKS_EXT),
-                            wxOPEN | wxMULTIPLE);
+                            wxOPEN | wxMULTIPLE | wxHIDE_READONLY);
 
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)

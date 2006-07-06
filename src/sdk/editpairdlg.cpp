@@ -62,7 +62,7 @@ void EditPairDlg::OnBrowse(wxCommandEvent& event)
                             XRCCTRL(*this, "txtValue", wxTextCtrl)->GetValue(),
                             _T(""),
                             FileFilters::GetFilterAll(),
-                            wxOPEN);
+                            wxOPEN | wxHIDE_READONLY);
             PlaceWindow(&dlg);
             if (dlg.ShowModal() == wxID_OK)
                 XRCCTRL(*this, "txtValue", wxTextCtrl)->SetValue(dlg.GetPath());

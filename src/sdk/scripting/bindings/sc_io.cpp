@@ -66,7 +66,7 @@ namespace ScriptBindings
                             wxEmptyString,
                             Manager::Get()->GetMacrosManager()->ReplaceMacros(defaultFile),
                             filter,
-                            wxOPEN);
+                            wxOPEN | wxHIDE_READONLY);
             PlaceWindow(&dlg);
             if (dlg.ShowModal() == wxID_OK)
                 return dlg.GetPath();

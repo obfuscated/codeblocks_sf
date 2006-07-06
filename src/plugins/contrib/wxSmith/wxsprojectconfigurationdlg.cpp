@@ -94,7 +94,7 @@ void wxsProjectConfigurationDlg::OnInit(wxInitDialogEvent& event)
                 _T(""), _T("main.cpp"), _T("cpp"),
                 _("C++ source files (*.cpp)|*.cpp|"
                   "All files (*)|*"),
-                wxOPEN|wxFILE_MUST_EXIST);
+                wxOPEN|wxFILE_MUST_EXIST|wxHIDE_READONLY);
             if ( NewFileName.empty() )
             {
                 EndModal(1);
@@ -176,7 +176,7 @@ void wxsProjectConfigurationDlg::OnButton1Click(wxCommandEvent& event)
         _("XRC files (*.xrc)|*.xrc|"
           "Zipped files (*.zip)|*.zip|"
           "All files (*)|*"),
-        wxOPEN|wxFILE_MUST_EXIST);
+        wxOPEN|wxFILE_MUST_EXIST|wxHIDE_READONLY);
 
     if ( !FileName.empty() )
     {

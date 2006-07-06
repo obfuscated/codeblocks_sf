@@ -627,7 +627,7 @@ void DebuggerTree::OnLoadWatchFile(wxCommandEvent& event)
                     _T(""),
                     _T(""),
                     _T("Watch files (*.watch)|*.watch|Any file (*)|*"),
-                    wxOPEN | wxFILE_MUST_EXIST | wxCHANGE_DIR);
+                    wxOPEN | wxFILE_MUST_EXIST | wxCHANGE_DIR | wxHIDE_READONLY);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;

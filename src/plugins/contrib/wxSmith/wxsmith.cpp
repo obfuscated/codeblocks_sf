@@ -303,7 +303,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
         _T(""),
         _T("xrc"),
         _("XRC files (*.xrc)|*.xrc"),
-        wxOPEN|wxFILE_MUST_EXIST);
+        wxOPEN|wxFILE_MUST_EXIST|wxHIDE_READONLY);
 
     if ( FileName.empty() ) return;
 
