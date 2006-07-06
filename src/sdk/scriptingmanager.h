@@ -31,13 +31,13 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>
         friend class Mgr<ScriptingManager>;
     public:
         /** Loads a script.
-          * @param script The script to run.
+          * @param filename The filename of the script to run.
           * @return True if the script loaded and compiled, false if not.
           */
         bool LoadScript(const wxString& filename);
 
         /** Loads a string buffer.
-          * @param script The script buffer to compile and run.
+          * @param buffer The script buffer to compile and run.
           * @param debugName A debug name. This will appear in any errors displayed.
           * @return True if the script compiled, false if not.
           */

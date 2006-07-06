@@ -480,26 +480,26 @@ class PLUGIN_EXPORT cbWizardPlugin : public cbPlugin
 
         /** @return the number of template wizards this plugin contains */
         virtual int GetCount() const = 0;
-        /** @param the wizard index.
+        /** @param index the wizard index.
           * @return the output type of the specified wizard at @c index */
         virtual TemplateOutputType GetOutputType(int index) const = 0;
-        /** @param the wizard index.
+        /** @param index the wizard index.
           * @return the template's title */
         virtual wxString GetTitle(int index) const = 0;
-        /** @param the wizard index.
+        /** @param index the wizard index.
           * @return the template's description */
         virtual wxString GetDescription(int index) const = 0;
-        /** @param the wizard index.
+        /** @param index the wizard index.
           * @return the template's category (GUI, Console, etc; free-form text). Try to adhere to standard category names... */
         virtual wxString GetCategory(int index) const = 0;
-        /** @param the wizard index.
+        /** @param index the wizard index.
           * @return the template's bitmap */
         virtual const wxBitmap& GetBitmap(int index) const = 0;
-        /** @param the wizard index.
+        /** @param index the wizard index.
           * @return this wizard's script filename (if this wizard is scripted). */
         virtual wxString GetScriptFilename(int index) const = 0;
         /** When this is called, the wizard must get to work ;).
-          * @param the wizard index.
+          * @param index the wizard index.
           * @param createdFilename if provided, on return it should contain the main filename
           *                         this wizard created. If the user created a project, that
           *                         would be the project's filename.

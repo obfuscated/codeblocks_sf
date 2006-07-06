@@ -72,7 +72,7 @@ class DLLIMPORT MessageManager : public Mgr<MessageManager>, public wxEvtHandler
           */
         void RemoveLog(MessageLog* log);
         /** Remove a log window.
-          * @param log The ID of the window to remove.
+          * @param id The ID of the window to remove.
           */
         void RemoveLog(int id);
         /** Show/hide a log window.
@@ -83,7 +83,7 @@ class DLLIMPORT MessageManager : public Mgr<MessageManager>, public wxEvtHandler
         void ShowLog(MessageLog* log, bool show = true);
         /** Show/hide a log window.
           * Hiding it doesn't remove it from MessageManager.
-          * @param log The ID of the window to show/hide.
+          * @param id The ID of the window to show/hide.
           * @param show If true, show the window else hide it.
           */
         void ShowLog(int id, bool show = true);
