@@ -26,7 +26,9 @@ CompilerMSVC8::~CompilerMSVC8()
 
 Compiler * CompilerMSVC8::CreateCopy()
 {
-    return new CompilerMSVC8(*this);
+    Compiler* c = new CompilerMSVC8(*this);
+    c->SetExtraPaths(m_ExtraPaths); // wxArrayString doesn't seem to be copied with the default copy ctor...
+    return c;
 }
 
 void CompilerMSVC8::Reset()

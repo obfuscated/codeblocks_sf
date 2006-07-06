@@ -24,7 +24,7 @@ bool DebuggerState::StartDriver(ProjectBuildTarget* target)
     StopDriver();
     SetupBreakpointIndices();
     wxString idx = target ? target->GetCompilerID() : CompilerFactory::GetDefaultCompilerID();
-    if (idx == _T("msvctk")) // MSVC // TODO: do not hardcode these
+    if (CompilerFactory::CompilerInheritsFrom(idx, _T("msvc*"))) // MSVC
         m_pDriver = new CDB_driver(m_pPlugin);
     else
         m_pDriver = new GDB_driver(m_pPlugin);

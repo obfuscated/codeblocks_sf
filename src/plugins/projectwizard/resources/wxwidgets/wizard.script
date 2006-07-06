@@ -101,13 +101,13 @@ function OnLeave_WxConf(fwd)
 	    local lib_prefix;
 	    local lib_suffix;
 	    local lib = WxPath + _T("/lib/");
-	    if (Wizard.GetCompilerID().Matches(_T("gcc")))
+	    if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
 	    {
             lib = lib + _T("gcc_");
             lib_prefix = _T("lib");
             lib_suffix = _T(".a");
 	    }
-	    else if (Wizard.GetCompilerID().Matches(_T("msvctk")))
+	    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
 	    {
             lib = lib + _T("vc_");
             lib_prefix = _T("");
@@ -156,7 +156,7 @@ function OnLeave_WxConf(fwd)
         }
 	}
 
-    if (!Wizard.GetCompilerID().Matches(_T("gcc")) && WantPCH)
+    if (!GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")) && WantPCH)
     {
         ShowWarning(_T("Precompiled headers currently only work for GNU GCC.\n" +
                     "They are disabled for all other compilers."));
@@ -186,7 +186,7 @@ function OnLeave_WxConfUnix(fwd)
 	    WantPCH = Wizard.IsCheckboxChecked(_T("chkWxConfPCH"));
 	}
 
-    if (!Wizard.GetCompilerID().Matches(_T("gcc")) && WantPCH)
+    if (!GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")) && WantPCH)
     {
         ShowWarning(_T("Precompiled headers currently only work for GNU GCC.\n" +
                     "They are disabled for all other compilers."));
@@ -227,7 +227,7 @@ function SetupProject(project)
         project.AddLibDir(LibPath);
         project.AddLinkLib(LibName);
         project.AddLinkLib(_T("gdi32"));
-        if (Wizard.GetCompilerID().Matches(_T("msvctk")))
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
         {
             project.AddCompilerOption(_T("/D__WXMSW__"));
             if (IsDLL)

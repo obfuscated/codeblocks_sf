@@ -27,7 +27,9 @@ CompilerGNUARM::~CompilerGNUARM()
 
 Compiler * CompilerGNUARM::CreateCopy()
 {
-	return new CompilerGNUARM(*this);
+    Compiler* c = new CompilerGNUARM(*this);
+    c->SetExtraPaths(m_ExtraPaths); // wxArrayString doesn't seem to be copied with the default copy ctor...
+    return c;
 }
 
 void CompilerGNUARM::Reset()

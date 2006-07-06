@@ -40,7 +40,9 @@ CompilerGDC::~CompilerGDC()
 
 Compiler * CompilerGDC::CreateCopy()
 {
-    return new CompilerGDC(*this);
+    Compiler* c = new CompilerGDC(*this);
+    c->SetExtraPaths(m_ExtraPaths); // wxArrayString doesn't seem to be copied with the default copy ctor...
+    return c;
 }
 
 void CompilerGDC::Reset()

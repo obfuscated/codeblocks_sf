@@ -255,14 +255,6 @@ namespace ScriptBindings
         }
         return sa.ThrowError("Invalid arguments to \"ProjectManager::AddFileToProject\"");
     }
-    SQInteger CompilerFactory_GetCompilerIndex(HSQUIRRELVM v)
-    {
-        StackHandler sa(v);
-        int paramCount = sa.GetParamCount();
-        if (paramCount == 2)
-            return sa.Return((SQInteger)CompilerFactory::GetCompilerIndex(*SqPlus::GetInstance<wxString>(v, 2)));
-        return sa.ThrowError("Invalid arguments to \"CompilerFactory::GetCompilerIndex\"");
-    }
     SQInteger cbEditor_SetText(HSQUIRRELVM v)
     {
         StackHandler sa(v);
@@ -294,6 +286,14 @@ namespace ScriptBindings
             return sa.ThrowError("'this' is NULL!?! (type of cbEditor*)");
         }
         return sa.ThrowError("Invalid arguments to \"cbEditor::GetText\"");
+    }
+    SQInteger CompilerFactory_GetCompilerIndex(HSQUIRRELVM v)
+    {
+        StackHandler sa(v);
+        int paramCount = sa.GetParamCount();
+        if (paramCount == 2)
+            return sa.Return((SQInteger)CompilerFactory::GetCompilerIndex(*SqPlus::GetInstance<wxString>(v, 2)));
+        return sa.ThrowError("Invalid arguments to \"CompilerFactory::GetCompilerIndex\"");
     }
 
     void RegisterBindings()
@@ -471,12 +471,6 @@ namespace ScriptBindings
                 func(&ProjectManager::AskForBuildTargetIndex, "AskForBuildTargetIndex").
                 func(&ProjectManager::RebuildTree, "RebuildTree");
 
-        SqPlus::SQClassDef<CompilerFactory>("CompilerFactory").
-                staticFunc(&CompilerFactory::IsValidCompilerID, "IsValidCompilerID").
-                staticFuncVarArgs(&CompilerFactory_GetCompilerIndex, "GetCompilerIndex", "*").
-                staticFunc(&CompilerFactory::GetDefaultCompilerID, "GetDefaultCompilerID");
-
-        // register types
         SqPlus::SQClassDef<EditorBase>("EditorBase").
                 func(&EditorBase::GetFilename, "GetFilename").
                 func(&EditorBase::SetFilename, "SetFilename").
@@ -555,5 +549,13 @@ namespace ScriptBindings
 
         SqPlus::SQClassDef<UserVariableManager>("UserVariableManager").
                 func(&UserVariableManager::Exists, "Exists");
+
+        typedef bool(*CF_INHERITSFROM)(const wxString&, const wxString&); // CompilerInheritsFrom
+
+        SqPlus::SQClassDef<CompilerFactory>("CompilerFactory").
+                staticFunc(&CompilerFactory::IsValidCompilerID, "IsValidCompilerID").
+                staticFuncVarArgs(&CompilerFactory_GetCompilerIndex, "GetCompilerIndex", "*").
+                staticFunc(&CompilerFactory::GetDefaultCompilerID, "GetDefaultCompilerID").
+                staticFunc<CF_INHERITSFROM>(&CompilerFactory::CompilerInheritsFrom, "CompilerInheritsFrom");
     }
 } // namespace ScriptBindings

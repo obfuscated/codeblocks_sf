@@ -26,7 +26,9 @@ CompilerMSVC::~CompilerMSVC()
 
 Compiler * CompilerMSVC::CreateCopy()
 {
-    return new CompilerMSVC(*this);
+    Compiler* c = new CompilerMSVC(*this);
+    c->SetExtraPaths(m_ExtraPaths); // wxArrayString doesn't seem to be copied with the default copy ctor...
+    return c;
 }
 
 void CompilerMSVC::Reset()

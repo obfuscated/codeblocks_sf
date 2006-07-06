@@ -36,7 +36,9 @@ CompilerSDCC::~CompilerSDCC()
 
 Compiler * CompilerSDCC::CreateCopy()
 {
-    return new CompilerSDCC(*this);
+    Compiler* c = new CompilerSDCC(*this);
+    c->SetExtraPaths(m_ExtraPaths); // wxArrayString doesn't seem to be copied with the default copy ctor...
+    return c;
 }
 
 void CompilerSDCC::Reset()

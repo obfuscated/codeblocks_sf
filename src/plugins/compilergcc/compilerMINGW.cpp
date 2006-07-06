@@ -41,7 +41,9 @@ CompilerMINGW::~CompilerMINGW()
 
 Compiler * CompilerMINGW::CreateCopy()
 {
-    return new CompilerMINGW(*this);
+    Compiler* c = new CompilerMINGW(*this);
+    c->SetExtraPaths(m_ExtraPaths); // wxArrayString doesn't seem to be copied with the default copy ctor...
+    return c;
 }
 
 CompilerCommandGenerator* CompilerMINGW::GetCommandGenerator()

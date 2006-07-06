@@ -25,7 +25,9 @@ CompilerDMD::~CompilerDMD()
 
 Compiler * CompilerDMD::CreateCopy()
 {
-    return new CompilerDMD(*this);
+    Compiler* c = new CompilerDMD(*this);
+    c->SetExtraPaths(m_ExtraPaths); // wxArrayString doesn't seem to be copied with the default copy ctor...
+    return c;
 }
 
 void CompilerDMD::Reset()

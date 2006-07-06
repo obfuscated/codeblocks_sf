@@ -32,7 +32,9 @@ CompilerOW::~CompilerOW()
 
 Compiler * CompilerOW::CreateCopy()
 {
-    return new CompilerOW(*this);
+    Compiler* c = new CompilerOW(*this);
+    c->SetExtraPaths(m_ExtraPaths); // wxArrayString doesn't seem to be copied with the default copy ctor...
+    return c;
 }
 
 void CompilerOW::Reset()

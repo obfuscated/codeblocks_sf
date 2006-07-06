@@ -20,7 +20,9 @@ CompilerBCC::~CompilerBCC()
 
 Compiler * CompilerBCC::CreateCopy()
 {
-    return new CompilerBCC(*this);
+    Compiler* c = new CompilerBCC(*this);
+    c->SetExtraPaths(m_ExtraPaths); // wxArrayString doesn't seem to be copied with the default copy ctor...
+    return c;
 }
 
 void CompilerBCC::Reset()

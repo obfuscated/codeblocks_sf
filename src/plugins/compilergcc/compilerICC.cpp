@@ -28,7 +28,9 @@ CompilerICC::~CompilerICC()
 
 Compiler * CompilerICC::CreateCopy()
 {
-    return new CompilerICC(*this);
+    Compiler* c = new CompilerICC(*this);
+    c->SetExtraPaths(m_ExtraPaths); // wxArrayString doesn't seem to be copied with the default copy ctor...
+    return c;
 }
 
 void CompilerICC::Reset()

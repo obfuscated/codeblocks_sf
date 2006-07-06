@@ -25,7 +25,9 @@ CompilerDMC::~CompilerDMC()
 
 Compiler * CompilerDMC::CreateCopy()
 {
-    return new CompilerDMC(*this);
+    Compiler* c = new CompilerDMC(*this);
+    c->SetExtraPaths(m_ExtraPaths); // wxArrayString doesn't seem to be copied with the default copy ctor...
+    return c;
 }
 
 void CompilerDMC::Reset()

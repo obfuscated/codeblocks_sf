@@ -28,6 +28,11 @@ class DLLIMPORT CompilerFactory
         /// @return true if the specified compiler ID is valid, false if not.
         static bool IsValidCompilerID(const wxString& id){ return GetCompilerIndex(id) != -1; }
 
+        /// @return true if compiler ID @c id inherits, directly or indirectly, from compiler ID @c from_id.
+        static bool CompilerInheritsFrom(const wxString& id, const wxString& from_id);
+        /// @return true if @c compiler inherits, directly or indirectly, from compiler ID @c from_id.
+        static bool CompilerInheritsFrom(Compiler* compiler, const wxString& from_id);
+
         /// Register a supported (builtin) compiler.
         static void RegisterCompiler(Compiler* compiler);
         /// Register all user-defined compiler copies.

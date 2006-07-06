@@ -87,6 +87,38 @@ int CompilerFactory::GetCompilerIndex(Compiler* compiler)
     return -1;
 }
 
+bool CompilerFactory::CompilerInheritsFrom(const wxString& id, const wxString& from_id)
+{
+    return CompilerInheritsFrom(GetCompiler(id), from_id);
+}
+
+bool CompilerFactory::CompilerInheritsFrom(Compiler* compiler, const wxString& from_id)
+{
+    if (!compiler)
+        return false;
+
+    wxString id = compiler->GetID();
+    if (id.Matches(from_id))
+        return true;
+
+    while (compiler)
+    {
+        wxString id = compiler->GetParentID();
+        if (id.Matches(from_id))
+            return true;
+
+        // traverse up the chain
+        Compiler* newcompiler = GetCompiler(id);
+        if (compiler == newcompiler)
+        {
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Compiler circular dependency detected?!?!?"));
+            break;
+        }
+        compiler = newcompiler;
+    }
+    return false;
+}
+
 void CompilerFactory::RegisterCompiler(Compiler* compiler)
 {
     CompilerFactory::Compilers.Add(compiler);
@@ -150,6 +182,8 @@ void CompilerFactory::RemoveCompiler(Compiler* compiler)
 
     Compilers.Remove(compiler);
     Manager::Get()->GetMessageManager()->DebugLog(_T("Compiler \"%s\" removed"), compiler->GetName().c_str());
+
+    Compiler::m_CompilerIDs.Remove(compiler->GetID());
     delete compiler;
 
     SaveSettings();
