@@ -61,9 +61,9 @@ function SetupProject(project)
     local IrrlichtLibDir;
     if (PLATFORM == PLATFORM_MSW)
     {
-        if (Wizard.GetCompilerID().Matches(_T("msvctk")))
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
             IrrlichtLibDir = _T("Win32-VisualStudio");
-        else if (Wizard.GetCompilerID().Matches(_T("gcc")))
+        else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
             IrrlichtLibDir = _T("Win32-gcc");
         else
         {

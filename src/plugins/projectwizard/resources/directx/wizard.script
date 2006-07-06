@@ -57,7 +57,7 @@ function OnLeave_DirectXPath(fwd)
             return false;
         }
 
-        if (Wizard.GetCompilerID().Matches(_T("msvctk")))
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
         {
             local psdk = ReplaceMacros(_T("$(#psdk)"), true);
             if (!IO.DirectoryExists(psdk))
@@ -120,7 +120,7 @@ function SetupProject(project)
     project.AddLinkLib(_T("d3d8"));
 
     // set additional path's for MS VC++ Toolkit
-    if (Wizard.GetCompilerID().Matches(_T("msvctk")))
+    if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
     {
         // set project options for MS Visual C++ Toolkit
         project.AddIncludeDir(_T("$(#psdk.include)"));

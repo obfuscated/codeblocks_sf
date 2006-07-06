@@ -20,7 +20,7 @@ function OnLeave_CompilerPage(fwd)
     if (fwd)
     {
         // check for selectino of MS VC++ Toolkit
-        if (Wizard.GetCompilerID().Matches(_T("msvctk")))
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
         {
             // see if psdk global variable exists which is required for this compiler
             if (GetUserVariableManager().Exists(_T("#psdk")))
@@ -52,7 +52,7 @@ function SetupProject(project)
     project.AddLinkLib(_T("kernel32"));
 
     // set additional path's for MS VC++ Toolkit
-    if (Wizard.GetCompilerID().Matches(_T("msvctk")))
+    if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
     {
         // set project options for MS Visual C++ Toolkit
         project.AddIncludeDir(_T("$(#psdk.include)"));
