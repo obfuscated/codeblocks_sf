@@ -39,27 +39,39 @@ class MainFrame : public wxFrame
         bool OpenGeneric(const wxString& filename, bool addToHistory = true);
 
         // event handlers
+
         void OnEraseBackground(wxEraseEvent& event);
         void OnSize(wxSizeEvent& event);
         void OnApplicationClose(wxCloseEvent& event);
         void OnStartHereLink(wxCommandEvent& event);
         void OnStartHereVarSubst(wxCommandEvent& event);
 
-        void OnFileNewEmpty(wxCommandEvent& event);
+        void OnFileNew(wxCommandEvent& event); // new from template
         void OnFileOpen(wxCommandEvent& event);
         void OnFileReopenProject(wxCommandEvent& event);
         void OnFileOpenRecentProjectClearHistory(wxCommandEvent& event);
         void OnFileReopen(wxCommandEvent& event);
         void OnFileOpenRecentClearHistory(wxCommandEvent& event);
+		void OnFileImportProjectDevCpp(wxCommandEvent& event);
+		void OnFileImportProjectMSVC(wxCommandEvent& event);
+		void OnFileImportProjectMSVCWksp(wxCommandEvent& event);
+		void OnFileImportProjectMSVS(wxCommandEvent& event);
+		void OnFileImportProjectMSVSWksp(wxCommandEvent& event);
         void OnFileSave(wxCommandEvent& event);
         void OnFileSaveAs(wxCommandEvent& event);
         void OnFileSaveAllFiles(wxCommandEvent& event);
+        void OnFileSaveProject(wxCommandEvent& event);
+        void OnFileSaveProjectAs(wxCommandEvent& event);
+        void OnFileSaveProjectTemplate(wxCommandEvent& event);
+        void OnFileSaveProjectAllProjects(wxCommandEvent& event);
         void OnFileOpenDefWorkspace(wxCommandEvent& event);
         void OnFileSaveWorkspace(wxCommandEvent& event);
         void OnFileSaveWorkspaceAs(wxCommandEvent& event);
         void OnFileCloseWorkspace(wxCommandEvent& event);
         void OnFileClose(wxCommandEvent& event);
         void OnFileCloseAll(wxCommandEvent& event);
+        void OnFileCloseProject(wxCommandEvent& event);
+        void OnFileCloseProjectAllProjects(wxCommandEvent& event);
         void OnFilePrintSetup(wxCommandEvent& event);
         void OnFilePrint(wxCommandEvent& event);
         void OnFileQuit(wxCommandEvent& event);
@@ -101,21 +113,6 @@ class MainFrame : public wxFrame
         void OnSearchFindNext(wxCommandEvent& event);
         void OnSearchReplace(wxCommandEvent& event);
 		void OnSearchGotoLine(wxCommandEvent& event);
-
-        void OnProjectNew(wxCommandEvent& event);
-        void OnProjectNewEmpty(wxCommandEvent& event);
-        void OnProjectOpen(wxCommandEvent& event);
-        void OnProjectSaveProject(wxCommandEvent& event);
-        void OnProjectSaveProjectAs(wxCommandEvent& event);
-        void OnProjectSaveAllProjects(wxCommandEvent& event);
-        void OnProjectSaveTemplate(wxCommandEvent& event);
-        void OnProjectCloseProject(wxCommandEvent& event);
-        void OnProjectCloseAllProjects(wxCommandEvent& event);
-		void OnProjectImportDevCpp(wxCommandEvent& event);
-		void OnProjectImportMSVC(wxCommandEvent& event);
-		void OnProjectImportMSVCWksp(wxCommandEvent& event);
-		void OnProjectImportMSVS(wxCommandEvent& event);
-		void OnProjectImportMSVSWksp(wxCommandEvent& event);
 
         void OnPluginsExecuteMenu(wxCommandEvent& event);
 

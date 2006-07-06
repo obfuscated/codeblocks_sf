@@ -347,7 +347,8 @@ void ProjectManager::CreateMenu(wxMenuBar* menuBar)
 		menu = menuBar->GetMenu(pos);
 		if (menu)
         {
-            menu->AppendSeparator();
+            if (menu->GetMenuItemCount())
+                menu->AppendSeparator();
             menu->Append(idMenuAddFile, _("Add files..."), _("Add files to the project"));
             menu->Append(idMenuAddFilesRecursively, _("Add files recursively..."), _("Add files recursively to the project"));
             menu->Append(idMenuRemoveFile, _("Remove files..."), _("Remove files from the project"));

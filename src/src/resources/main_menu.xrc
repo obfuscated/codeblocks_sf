@@ -4,16 +4,10 @@
     <object class="wxMenu" name="file_menu">
       <label>&amp;File</label>
       <object class="wxMenuItem" name="idFileNew">
-        <label>New file</label>
+        <label>New...</label>
         <bitmap>images\16x16\filenew.png</bitmap>
         <accel>Ctrl-N</accel>
-        <help>Create a new source file</help>
-      </object>
-      <object class="wxMenuItem" name="idProjectNew">
-        <label>New pro&amp;ject...</label>
-        <bitmap>images\16x16\newproject.png</bitmap>
-        <accel>Ctrl-Shift-N</accel>
-        <help>Create a new project based on a template</help>
+        <help>Create a new project/file/target/other (wizard)</help>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileOpen">
@@ -21,6 +15,10 @@
         <bitmap>images\16x16\fileopen.png</bitmap>
         <accel>Ctrl-O</accel>
         <help>Open a file or project</help>
+      </object>
+      <object class="wxMenuItem" name="idFileOpenDefWorkspace">
+        <label>Open default workspace</label>
+        <help>Open the default workspace</help>
       </object>
       <object class="wxMenu" name="idFileReopenProject">
         <label>&amp;Recent projects</label>
@@ -38,6 +36,32 @@
           <label>&amp;Clear history</label>
           <bitmap>images\16x16\history_clear.png</bitmap>
           <help>Clear the recent files list</help>
+        </object>
+      </object>
+      <object class="separator"/>
+      <object class="wxMenu" name="idFileImportProject">
+        <label>&amp;Import project</label>
+        <object class="wxMenuItem" name="idFileImportProjectDevCpp">
+          <label>Dev-C++ project</label>
+          <help>Import an existing Dev-C++ project</help>
+        </object>
+        <object class="separator"/>
+        <object class="wxMenuItem" name="idFileImportProjectMSVC">
+          <label>MS Visual C++ project</label>
+          <help>Import an existing MS Visual C++ project</help>
+        </object>
+        <object class="wxMenuItem" name="idFileImportProjectMSVCWksp">
+          <label>MS Visual C++ workspace</label>
+          <help>Import an existing MS Visual C++ workspace</help>
+        </object>
+        <object class="separator"/>
+        <object class="wxMenuItem" name="idFileImportProjectMSVS">
+          <label>MS Visual Studio project</label>
+          <help>Import an existing MS Visual Studio project</help>
+        </object>
+        <object class="wxMenuItem" name="idFileImportProjectMSVSWksp">
+          <label>MS Visual Studio solution</label>
+          <help>Import an existing MS Visual Studio solution</help>
         </object>
       </object>
       <object class="separator"/>
@@ -66,11 +90,15 @@
         <label>Sa&amp;ve project as...</label>
         <help>Save active project under a different name</help>
       </object>
-      <object class="separator"/>
-      <object class="wxMenuItem" name="idFileOpenDefWorkspace">
-        <label>Open default workspace</label>
-        <help>Open the default workspace</help>
+      <object class="wxMenuItem" name="idFileSaveProjectTemplate">
+        <label>&amp;Save project as user-template</label>
+        <help>Keep this project as a user-template to base new projects on</help>
       </object>
+      <object class="wxMenuItem" name="idFileSaveProjectAllProjects">
+        <label>Save a&amp;ll projects</label>
+        <help>Save all modified projects</help>
+      </object>
+      <object class="separator"/>
       <object class="wxMenuItem" name="idFileSaveWorkspace">
         <label>Save &amp;workspace</label>
         <help>Save current workspace</help>
@@ -85,19 +113,23 @@
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileClose">
-        <label>&amp;Close</label>
+        <label>&amp;Close file</label>
         <bitmap>images\16x16\fileclose.png</bitmap>
         <accel>Ctrl-W</accel>
         <help>Close the active file</help>
       </object>
       <object class="wxMenuItem" name="idFileCloseAll">
-        <label>Close all</label>
+        <label>Close all files</label>
         <accel>Ctrl-Shift-W</accel>
         <help>Close all open files</help>
       </object>
       <object class="wxMenuItem" name="idProjectCloseProject">
         <label>Close project</label>
         <help>Close active project</help>
+      </object>
+      <object class="wxMenuItem" name="idProjectCloseAllProjects">
+        <label>Close all projects</label>
+        <help>Close all opened projects</help>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFilePrint">
@@ -299,6 +331,7 @@
         <accel>Ctrl-A</accel>
         <help>Selects the entire text range</help>
       </object>
+      <object class="separator"/>
       <object class="wxMenuItem" name="idEditCommentSelected">
         <label>Comme&amp;nt</label>
         <accel>Shift-Ctrl-C</accel>
@@ -313,6 +346,7 @@
         <label>Toggle comme&amp;nt</label>
         <help>Toggles the commentation of the selected block of code</help>
       </object>
+      <object class="separator"/>
       <object class="wxMenuItem" name="idEditAutoComplete">
         <label>Auto-complete</label>
         <accel>Ctrl-J</accel>
@@ -442,77 +476,6 @@
     </object>
     <object class="wxMenu" name="menu_project">
       <label>&amp;Project</label>
-      <object class="wxMenuItem" name="idProjectNew">
-        <label>&amp;New project...</label>
-        <bitmap>images\16x16\newproject.png</bitmap>
-        <accel>Ctrl-Shift-N</accel>
-        <help>Create a new project based on a template</help>
-      </object>
-      <object class="wxMenuItem" name="idProjectNewEmptyProject">
-        <label>New &amp;empty project</label>
-        <help>Create a new empty project</help>
-      </object>
-      <object class="separator"/>
-      <object class="wxMenuItem" name="idProjectOpen">
-        <label>&amp;Open project</label>
-        <bitmap>images\16x16\folder_open.png</bitmap>
-        <help>Open an existing project</help>
-      </object>
-      <object class="wxMenu" name="idProjectImport">
-        <label>&amp;Import</label>
-        <object class="wxMenuItem" name="idProjectImportDevCpp">
-          <label>Dev-C++ project</label>
-          <help>Import an existing Dev-C++ project</help>
-        </object>
-        <object class="separator"/>
-        <object class="wxMenuItem" name="idProjectImportMSVC">
-          <label>MS Visual C++ project</label>
-          <help>Import an existing MS Visual C++ project</help>
-        </object>
-        <object class="wxMenuItem" name="idProjectImportMSVCWksp">
-          <label>MS Visual C++ workspace</label>
-          <help>Import an existing MS Visual C++ workspace</help>
-        </object>
-        <object class="separator"/>
-        <object class="wxMenuItem" name="idProjectImportMSVS">
-          <label>MS Visual Studio project</label>
-          <help>Import an existing MS Visual Studio project</help>
-        </object>
-        <object class="wxMenuItem" name="idProjectImportMSVSWksp">
-          <label>MS Visual Studio solution</label>
-          <help>Import an existing MS Visual Studio solution</help>
-        </object>
-      </object>
-      <object class="separator"/>
-      <object class="wxMenuItem" name="idProjectSaveProject">
-        <label>&amp;Save project</label>
-        <bitmap>images\16x16\filesave.png</bitmap>
-        <help>Save active project</help>
-      </object>
-      <object class="wxMenuItem" name="idProjectSaveProjectAs">
-        <label>Save project &amp;as...</label>
-        <bitmap>images\16x16\filesaveas.png</bitmap>
-        <help>Save active project under a different name</help>
-      </object>
-      <object class="wxMenuItem" name="idProjectSaveAllProjects">
-        <label>Save a&amp;ll projects</label>
-        <help>Save all modified projects</help>
-      </object>
-      <object class="separator"/>
-      <object class="wxMenuItem" name="idProjectSaveTemplate">
-        <label>&amp;Save project as user-template</label>
-        <help>Keep this project as a user-template to base new projects on</help>
-      </object>
-      <object class="separator"/>
-      <object class="wxMenuItem" name="idProjectCloseProject">
-        <label>&amp;Close project</label>
-        <bitmap>images\16x16\fileclose.png</bitmap>
-        <help>Close active project</help>
-      </object>
-      <object class="wxMenuItem" name="idProjectCloseAllProjects">
-        <label>Close all projects</label>
-        <help>Close all opened projects</help>
-      </object>
     </object>
     <object class="wxMenu" name="menu_tools">
       <label>&amp;Tools</label>

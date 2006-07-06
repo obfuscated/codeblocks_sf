@@ -29,7 +29,7 @@
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
 #define PLUGIN_SDK_VERSION_MINOR 8
-#define PLUGIN_SDK_VERSION_RELEASE 2
+#define PLUGIN_SDK_VERSION_RELEASE 3
 
 // class decls
 class wxMenuBar;
@@ -476,35 +476,38 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
 class PLUGIN_EXPORT cbWizardPlugin : public cbPlugin
 {
     public:
-        /** Wizard output types */
-        enum OutputType
-        {
-            otProject = 0, ///< outputs a new project
-            otTarget, ///< outputs a new target in a project
-            otFiles, ///< outputs a new file (or files)
-            otCustom ///< custom output (entirely up to the wizard)
-        };
-
         cbWizardPlugin();
 
         /** @return the number of template wizards this plugin contains */
         virtual int GetCount() const = 0;
-        /** @return the output type of the specified wizard at @c index */
-        virtual OutputType GetOutputType(int index) const = 0;
-        /** @return the template's title */
+        /** @param the wizard index.
+          * @return the output type of the specified wizard at @c index */
+        virtual TemplateOutputType GetOutputType(int index) const = 0;
+        /** @param the wizard index.
+          * @return the template's title */
         virtual wxString GetTitle(int index) const = 0;
-        /** @return the template's description */
+        /** @param the wizard index.
+          * @return the template's description */
         virtual wxString GetDescription(int index) const = 0;
-        /** @return the template's category (GUI, Console, etc; free-form text). Try to adhere to standard category names... */
+        /** @param the wizard index.
+          * @return the template's category (GUI, Console, etc; free-form text). Try to adhere to standard category names... */
         virtual wxString GetCategory(int index) const = 0;
-        /** @return the template's bitmap */
+        /** @param the wizard index.
+          * @return the template's bitmap */
         virtual const wxBitmap& GetBitmap(int index) const = 0;
-        /** @return this wizard's script filename. */
+        /** @param the wizard index.
+          * @return this wizard's script filename (if this wizard is scripted). */
         virtual wxString GetScriptFilename(int index) const = 0;
         /** When this is called, the wizard must get to work ;).
+          * @param the wizard index.
+          * @param createdFilename if provided, on return it should contain the main filename
+          *                         this wizard created. If the user created a project, that
+          *                         would be the project's filename.
+          *                         If the wizard created a build target, that would be an empty string.
+          *                         If the wizard created a file, that would be the file's name.
           * @return a pointer to the generated cbProject or ProjectBuildTarget. NULL for everything else (failure too).
           * You should dynamic-cast this to the correct type based on GetOutputType() 's value. */
-        virtual CompileTargetBase* Launch(int index) = 0; // do your work ;)
+        virtual CompileTargetBase* Launch(int index, wxString* createdFilename = 0) = 0; // do your work ;)
     private:
         // "Hide" some virtual members, that are not needed in cbCreateWizardPlugin
         void BuildMenu(wxMenuBar* menuBar){}

@@ -3,17 +3,11 @@
 <object class="wxToolBarAddOn" name="main_toolbar_16x16">
 <bitmapsize>16,16</bitmapsize>
 <style>wxTB_HORIZONTAL</style>
- <object class="tool" name="idProjectNew">
-  <tooltip>New project</tooltip>
-  <longhelp>Create a new project</longhelp>
-  <bitmap>images/16x16/newproject.png</bitmap>
- </object>
  <object class="tool" name="idFileNew">
   <tooltip>New file</tooltip>
   <longhelp>Create a new source file</longhelp>
   <bitmap>images/16x16/filenew.png</bitmap>
  </object>
- <object class="separator"/>
  <object class="tool" name="idFileOpen">
   <tooltip>Open</tooltip>
   <longhelp>Open an existing file</longhelp>

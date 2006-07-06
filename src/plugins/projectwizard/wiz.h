@@ -39,7 +39,7 @@ class WizGenericSelectPathPanel;
 
 struct WizardInfo
 {
-    cbWizardPlugin::OutputType output_type;
+    TemplateOutputType output_type;
     wxString title;
     wxString cat;
     wxString script;
@@ -62,21 +62,21 @@ class Wiz : public cbWizardPlugin
 
 		int Configure(){ return 0; }
 		int GetCount() const;
-        cbWizardPlugin::OutputType GetOutputType(int index) const;
+        TemplateOutputType GetOutputType(int index) const;
 		wxString GetTitle(int index) const;
 		wxString GetDescription(int index) const;
 		wxString GetCategory(int index) const;
 		const wxBitmap& GetBitmap(int index) const;
         wxString GetScriptFilename(int index) const;
-		CompileTargetBase* Launch(int index);
+		CompileTargetBase* Launch(int index, wxString* pFilename = 0);
 
-		CompileTargetBase* RunProjectWizard(); // called by Launch() for otProject wizards
-		CompileTargetBase* RunTargetWizard(); // called by Launch() for otTarget wizards (always returns NULL)
-		CompileTargetBase* RunFilesWizard(); // called by Launch() for otFiles wizards (always returns NULL)
-		CompileTargetBase* RunCustomWizard(); // called by Launch() for otCustom wizards (always returns NULL)
+		CompileTargetBase* RunProjectWizard(wxString* pFilename); // called by Launch() for otProject wizards
+		CompileTargetBase* RunTargetWizard(wxString* pFilename); // called by Launch() for otTarget wizards (always returns NULL)
+		CompileTargetBase* RunFilesWizard(wxString* pFilename); // called by Launch() for otFiles wizards (always returns NULL)
+		CompileTargetBase* RunCustomWizard(wxString* pFilename); // called by Launch() for otCustom wizards (always returns NULL)
 
         // Scripting support
-        void AddWizard(cbWizardPlugin::OutputType otype,
+        void AddWizard(TemplateOutputType otype,
                         const wxString& title,
                         const wxString& cat,
                         const wxString& script,
@@ -84,7 +84,7 @@ class Wiz : public cbWizardPlugin
                         const wxString& wizardPNG,
                         const wxString& xrc);
 
-        cbWizardPlugin::OutputType GetWizardType();
+        TemplateOutputType GetWizardType();
 
         void CheckCheckbox(const wxString& name, bool check);
         bool IsCheckboxChecked(const wxString& name);

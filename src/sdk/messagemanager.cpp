@@ -298,6 +298,9 @@ void MessageManager::RemoveLog(MessageLog* log)
     int idx = m_pNotebook->GetPageIndex(log);
     m_pNotebook->RemovePage(idx);
 
+    log->Hide();
+    log->Reparent(Manager::Get()->GetAppWindow());
+
     // find it and remove it from the map
     for (LogsMap::iterator it = m_Logs.begin(); it != m_Logs.end(); ++it)
     {

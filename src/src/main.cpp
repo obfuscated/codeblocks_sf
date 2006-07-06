@@ -103,17 +103,26 @@ int idFileOpen = XRCID("idFileOpen");
 int idFileReopen = XRCID("idFileReopen");
 int idFileOpenRecentFileClearHistory = XRCID("idFileOpenRecentFileClearHistory");
 int idFileOpenRecentProjectClearHistory = XRCID("idFileOpenRecentProjectClearHistory");
+int idFileImportProjectDevCpp = XRCID("idFileImportProjectDevCpp");
+int idFileImportProjectMSVC = XRCID("idFileImportProjectMSVC");
+int idFileImportProjectMSVCWksp = XRCID("idFileImportProjectMSVCWksp");
+int idFileImportProjectMSVS = XRCID("idFileImportProjectMSVS");
+int idFileImportProjectMSVSWksp = XRCID("idFileImportProjectMSVSWksp");
 int idFileSave = XRCID("idFileSave");
 int idFileSaveAs = XRCID("idFileSaveAs");
 int idFileSaveAllFiles = XRCID("idFileSaveAllFiles");
 int idFileSaveProject = XRCID("idFileSaveProject");
 int idFileSaveProjectAs = XRCID("idFileSaveProjectAs");
+int idFileSaveProjectAllProjects = XRCID("idFileSaveProjectAllProjects");
+int idFileSaveProjectTemplate = XRCID("idFileSaveProjectTemplate");
 int idFileOpenDefWorkspace = XRCID("idFileOpenDefWorkspace");
 int idFileSaveWorkspace = XRCID("idFileSaveWorkspace");
 int idFileSaveWorkspaceAs = XRCID("idFileSaveWorkspaceAs");
 int idFileCloseWorkspace = XRCID("idFileCloseWorkspace");
 int idFileClose = XRCID("idFileClose");
 int idFileCloseAll = XRCID("idFileCloseAll");
+int idFileCloseProject = XRCID("idFileCloseProject");
+int idFileCloseProjectAllProjects = XRCID("idFileCloseProjectAllProjects");
 int idFilePrintSetup = XRCID("idFilePrintSetup");
 int idFilePrint = XRCID("idFilePrint");
 int idFileExit = XRCID("idFileExit");
@@ -183,22 +192,6 @@ int idSearchReplace = XRCID("idSearchReplace");
 int idSearchReplaceInFiles = XRCID("idSearchReplaceInFiles");
 int idSearchGotoLine = XRCID("idSearchGotoLine");
 
-int idProjectNew = XRCID("idProjectNew");
-int idProjectNewEmptyProject = XRCID("idProjectNewEmptyProject");
-int idProjectOpen = XRCID("idProjectOpen");
-int idProjectSaveProject = XRCID("idProjectSaveProject");
-int idProjectSaveProjectAs = XRCID("idProjectSaveProjectAs");
-int idProjectSaveAllProjects = XRCID("idProjectSaveAllProjects");
-int idProjectSaveTemplate = XRCID("idProjectSaveTemplate");
-int idProjectCloseProject = XRCID("idProjectCloseProject");
-int idProjectCloseAllProjects = XRCID("idProjectCloseAllProjects");
-int idProjectImport = XRCID("idProjectImport");
-int idProjectImportDevCpp = XRCID("idProjectImportDevCpp");
-int idProjectImportMSVC = XRCID("idProjectImportMSVC");
-int idProjectImportMSVCWksp = XRCID("idProjectImportMSVCWksp");
-int idProjectImportMSVS = XRCID("idProjectImportMSVS");
-int idProjectImportMSVSWksp = XRCID("idProjectImportMSVSWksp");
-
 int idSettingsEnvironment = XRCID("idSettingsEnvironment");
 int idSettingsGlobalUserVars = XRCID("idSettingsGlobalUserVars");
 int idSettingsEditor = XRCID("idSettingsEditor");
@@ -231,12 +224,12 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idFileCloseAll, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFilePrintSetup, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFilePrint, MainFrame::OnFileMenuUpdateUI)
-    EVT_UPDATE_UI(idProjectSaveProject, MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idProjectSaveProjectAs, MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idProjectSaveAllProjects, MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idProjectSaveTemplate, MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idProjectCloseProject, MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idProjectCloseAllProjects, MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveProject, MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveProjectAs, MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveProjectAllProjects, MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveProjectTemplate, MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileCloseProject, MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileCloseProjectAllProjects, MainFrame::OnProjectMenuUpdateUI)
 
     EVT_UPDATE_UI(idEditUndo, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditRedo, MainFrame::OnEditMenuUpdateUI)
@@ -284,23 +277,32 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_PLUGIN_ATTACHED(MainFrame::OnPluginLoaded)
     // EVT_PLUGIN_RELEASED(MainFrame::OnPluginUnloaded)
 
-    EVT_MENU(idFileNew, MainFrame::OnFileNewEmpty)
+    EVT_MENU(idFileNew, MainFrame::OnFileNew)
     EVT_MENU(idFileOpen,  MainFrame::OnFileOpen)
     EVT_MENU(idFileOpenRecentProjectClearHistory, MainFrame::OnFileOpenRecentProjectClearHistory)
     EVT_MENU(idFileOpenRecentFileClearHistory, MainFrame::OnFileOpenRecentClearHistory)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrame::OnFileReopen)
     EVT_MENU_RANGE(wxID_FILE10, wxID_FILE19, MainFrame::OnFileReopenProject)
+    EVT_MENU(idFileImportProjectDevCpp,  MainFrame::OnFileImportProjectDevCpp)
+    EVT_MENU(idFileImportProjectMSVC,  MainFrame::OnFileImportProjectMSVC)
+    EVT_MENU(idFileImportProjectMSVCWksp,  MainFrame::OnFileImportProjectMSVCWksp)
+    EVT_MENU(idFileImportProjectMSVS,  MainFrame::OnFileImportProjectMSVS)
+    EVT_MENU(idFileImportProjectMSVSWksp,  MainFrame::OnFileImportProjectMSVSWksp)
     EVT_MENU(idFileSave,  MainFrame::OnFileSave)
     EVT_MENU(idFileSaveAs,  MainFrame::OnFileSaveAs)
     EVT_MENU(idFileSaveAllFiles,  MainFrame::OnFileSaveAllFiles)
-    EVT_MENU(idFileSaveProject,  MainFrame::OnProjectSaveProject)
-    EVT_MENU(idFileSaveProjectAs,  MainFrame::OnProjectSaveProjectAs)
+    EVT_MENU(idFileSaveProject,  MainFrame::OnFileSaveProject)
+    EVT_MENU(idFileSaveProjectAs,  MainFrame::OnFileSaveProjectAs)
+    EVT_MENU(idFileSaveProjectTemplate,  MainFrame::OnFileSaveProjectTemplate)
+    EVT_MENU(idFileSaveProjectAllProjects,  MainFrame::OnFileSaveProjectAllProjects)
     EVT_MENU(idFileOpenDefWorkspace,  MainFrame::OnFileOpenDefWorkspace)
     EVT_MENU(idFileSaveWorkspace,  MainFrame::OnFileSaveWorkspace)
     EVT_MENU(idFileSaveWorkspaceAs,  MainFrame::OnFileSaveWorkspaceAs)
     EVT_MENU(idFileCloseWorkspace,  MainFrame::OnFileCloseWorkspace)
     EVT_MENU(idFileClose,  MainFrame::OnFileClose)
     EVT_MENU(idFileCloseAll,  MainFrame::OnFileCloseAll)
+    EVT_MENU(idFileCloseProject,  MainFrame::OnFileCloseProject)
+    EVT_MENU(idFileCloseProjectAllProjects,  MainFrame::OnFileCloseProjectAllProjects)
     EVT_MENU(idFilePrint,  MainFrame::OnFilePrint)
     EVT_MENU(idFileExit,  MainFrame::OnFileQuit)
     EVT_MENU(idFileNext,  MainFrame::OnFileNext)
@@ -362,21 +364,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idViewScriptConsole, MainFrame::OnViewScriptConsole)
     EVT_MENU(idViewFocusEditor, MainFrame::OnFocusEditor)
     EVT_MENU(idViewFullScreen, MainFrame::OnToggleFullScreen)
-
-    EVT_MENU(idProjectNewEmptyProject, MainFrame::OnProjectNewEmpty)
-    EVT_MENU(idProjectNew, MainFrame::OnProjectNew)
-    EVT_MENU(idProjectOpen,  MainFrame::OnProjectOpen)
-    EVT_MENU(idProjectSaveProject,  MainFrame::OnProjectSaveProject)
-    EVT_MENU(idProjectSaveProjectAs,  MainFrame::OnProjectSaveProjectAs)
-    EVT_MENU(idProjectSaveAllProjects,  MainFrame::OnProjectSaveAllProjects)
-    EVT_MENU(idProjectSaveTemplate,  MainFrame::OnProjectSaveTemplate)
-    EVT_MENU(idProjectCloseProject,  MainFrame::OnProjectCloseProject)
-    EVT_MENU(idProjectCloseAllProjects,  MainFrame::OnProjectCloseAllProjects)
-    EVT_MENU(idProjectImportDevCpp,  MainFrame::OnProjectImportDevCpp)
-    EVT_MENU(idProjectImportMSVC,  MainFrame::OnProjectImportMSVC)
-    EVT_MENU(idProjectImportMSVCWksp,  MainFrame::OnProjectImportMSVCWksp)
-    EVT_MENU(idProjectImportMSVS,  MainFrame::OnProjectImportMSVS)
-    EVT_MENU(idProjectImportMSVSWksp,  MainFrame::OnProjectImportMSVSWksp)
 
 	EVT_MENU(idSettingsEnvironment, MainFrame::OnSettingsEnvironment)
 	EVT_MENU(idSettingsGlobalUserVars, MainFrame::OnGlobalUserVars)
@@ -1418,9 +1405,9 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
     wxCommandEvent evt;
     wxString link = event.GetString();
     if(link.IsSameAs(_T("CB_CMD_NEW_PROJECT")))
-        OnProjectNew(evt);
+        OnFileNew(evt);
     else if(link.IsSameAs(_T("CB_CMD_OPEN_PROJECT")))
-        OnProjectOpen(evt);
+        OnFileOpen(evt);
 //    else if (link.IsSameAs(_T("CB_CMD_CONF_ENVIRONMENT")))
 //        OnSettingsEnvironment(evt);
 //    else if (link.IsSameAs(_T("CB_CMD_CONF_EDITOR")))
@@ -1707,7 +1694,9 @@ void MainFrame::TerminateRecentFilesHistory()
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
 // event handlers
+////////////////////////////////////////////////////////////////////////////////
 
 void MainFrame::OnPluginsExecuteMenu(wxCommandEvent& event)
 {
@@ -1746,37 +1735,6 @@ void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
         Manager::Get()->GetMessageManager()->DebugLog(_T("No plugin found for ID %d"), event.GetId());
 }
 
-void MainFrame::OnFileNewEmpty(wxCommandEvent& event)
-{
-	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
-	if (project)
-        wxSetWorkingDirectory(project->GetBasePath());
-    cbEditor* ed = Manager::Get()->GetEditorManager()->New();
-    if(ed)
-    {
-        AddToRecentFilesHistory(ed->GetFilename());
-    }
-
-	if (!ed || !project)
-		return;
-
-	if (cbMessageBox(_("Do you want to add this new file in the active project?"),
-					_("Add file to project"),
-					wxYES_NO | wxICON_QUESTION) == wxID_YES)
-	{
-        wxArrayInt targets;
-		if (Manager::Get()->GetProjectManager()->AddFileToProject(ed->GetFilename(), project, targets) != 0)
-		{
-            ProjectFile* pf = project->GetFileByFilename(ed->GetFilename(), false);
-			ed->SetProjectFile(pf);
-			Manager::Get()->GetProjectManager()->RebuildTree();
-		}
-	}
-	// verify that the open files are still in sync
-	// the new file might have overwritten an existing one)
-	Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
-}
-
 bool MainFrame::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
 {
     // first check to see if a workspace is passed. If so, only this will be loaded
@@ -1803,6 +1761,28 @@ bool MainFrame::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
     return true;
 }
 
+void MainFrame::OnFileNew(wxCommandEvent& event) // new from template
+{
+    wxString filename;
+    cbProject* prj = TemplateManager::Get()->New(totProject, &filename);
+	// verify that the open files are still in sync
+	// the new file might have overwritten an existing one)
+	Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
+	if(prj)
+	{
+	    prj->Save();
+	    prj->SaveAllFiles();
+	}
+
+    if (!filename.IsEmpty())
+    {
+        if (prj)
+            AddToRecentProjectsHistory(filename);
+        else
+            AddToRecentFilesHistory(filename);
+    }
+}
+
 void MainFrame::OnFileOpen(wxCommandEvent& event)
 {
     int StoredIndex = 0;
@@ -1811,7 +1791,7 @@ void MainFrame::OnFileOpen(wxCommandEvent& event)
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("app"));
     if(mgr)
     {
-		wxString Filter = mgr->Read(_T("/file_dialogs/file_new_open/filter"), _T("C/C++ files"));
+		wxString Filter = mgr->Read(_T("/file_dialogs/file_new_open/filter"));
 		if(!Filter.IsEmpty())
 		{
 			FileFilters::GetFilterIndexFromName(Filters, Filter, StoredIndex);
@@ -1923,6 +1903,84 @@ void MainFrame::OnFileSaveAllFiles(wxCommandEvent& event)
 {
     Manager::Get()->GetEditorManager()->SaveAll();
     DoUpdateStatusBar();
+}
+
+void MainFrame::OnFileSaveProject(wxCommandEvent& event)
+{
+    if (Manager::Get()->GetProjectManager()->SaveActiveProject() ||
+        Manager::Get()->GetProjectManager()->SaveActiveProjectAs())
+        AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetActiveProject()->GetFilename());
+    DoUpdateStatusBar();
+    DoUpdateAppTitle();
+}
+
+void MainFrame::OnFileSaveProjectAs(wxCommandEvent& event)
+{
+    if (Manager::Get()->GetProjectManager()->SaveActiveProjectAs())
+        AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetActiveProject()->GetFilename());
+    DoUpdateStatusBar();
+    DoUpdateAppTitle();
+}
+
+void MainFrame::OnFileSaveProjectAllProjects(wxCommandEvent& event)
+{
+    Manager::Get()->GetProjectManager()->SaveAllProjects();
+    DoUpdateStatusBar();
+    DoUpdateAppTitle();
+}
+
+void MainFrame::OnFileSaveProjectTemplate(wxCommandEvent& event)
+{
+    TemplateManager::Get()->SaveUserTemplate(Manager::Get()->GetProjectManager()->GetActiveProject());
+}
+
+void MainFrame::OnFileCloseProject(wxCommandEvent& event)
+{
+    // we 're not actually shutting down here, but we want to check if the
+    // active project is still opening files (still busy)
+    if (!ProjectManager::CanShutdown() || !EditorManager::CanShutdown())
+    {
+        wxBell();
+        return;
+    }
+    Manager::Get()->GetProjectManager()->CloseActiveProject();
+    DoUpdateStatusBar();
+}
+
+void MainFrame::OnFileCloseProjectAllProjects(wxCommandEvent& event)
+{
+    if (!ProjectManager::CanShutdown() || !EditorManager::CanShutdown())
+    {
+        wxBell();
+        return;
+    }
+    Manager::Get()->GetProjectManager()->CloseWorkspace();
+    DoUpdateStatusBar();
+}
+
+void MainFrame::OnFileImportProjectDevCpp(wxCommandEvent& event)
+{
+    OpenGeneric(ShowOpenFileDialog(_("Import Dev-C++ project"), FileFilters::GetFilterString(_T('.') + FileFilters::DEVCPP_EXT)), false);
+}
+
+void MainFrame::OnFileImportProjectMSVC(wxCommandEvent& event)
+{
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual C++ 6.0 project"), FileFilters::GetFilterString(_T('.') + FileFilters::MSVC6_EXT)), false);
+}
+
+void MainFrame::OnFileImportProjectMSVCWksp(wxCommandEvent& event)
+{
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual C++ 6.0 workspace"), FileFilters::GetFilterString(_T('.') + FileFilters::MSVC6_WORKSPACE_EXT)), false);
+}
+
+void MainFrame::OnFileImportProjectMSVS(wxCommandEvent& event)
+{
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual Studio 7.0+ project"), FileFilters::GetFilterString(_T('.') + FileFilters::MSVC7_EXT)), false);
+}
+
+void MainFrame::OnFileImportProjectMSVSWksp(wxCommandEvent& event)
+{
+    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual Studio 7.0+ solution"), FileFilters::GetFilterString(_T('.') + FileFilters::MSVC7_WORKSPACE_EXT)), false);
 }
 
 void MainFrame::OnFileOpenDefWorkspace(wxCommandEvent& event)
@@ -2541,128 +2599,6 @@ void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
 	}
 }
 
-void MainFrame::OnProjectNewEmpty(wxCommandEvent& event)
-{
-    cbProject* prj = Manager::Get()->GetProjectManager()->NewProject();
-	// verify that the open files are still in sync
-	// the new file might have overwritten an existing one)
-	Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
-	if(prj)
-	    AddToRecentProjectsHistory(prj->GetFilename());
-}
-
-void MainFrame::OnProjectNew(wxCommandEvent& event)
-{
-    cbProject* prj = TemplateManager::Get()->NewProject();
-	// verify that the open files are still in sync
-	// the new file might have overwritten an existing one)
-	Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
-	if(prj)
-	{
-	    prj->Save();
-	    prj->SaveAllFiles();
-	    AddToRecentProjectsHistory(prj->GetFilename());
-	}
-}
-
-void MainFrame::OnProjectOpen(wxCommandEvent& event)
-{
-    wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Open project"),
-                            wxEmptyString,
-                            wxEmptyString,
-                            FileFilters::GetFilterString(_T('.') + FileFilters::CODEBLOCKS_EXT),
-                            wxOPEN | wxMULTIPLE | wxHIDE_READONLY);
-
-    PlaceWindow(dlg);
-    if (dlg->ShowModal() == wxID_OK)
-    {
-        wxArrayString files;
-        dlg->GetPaths(files);
-        OnDropFiles(0,0,files);
-    }
-
-    dlg->Destroy();
-}
-
-void MainFrame::OnProjectSaveProject(wxCommandEvent& event)
-{
-    if (Manager::Get()->GetProjectManager()->SaveActiveProject() ||
-        Manager::Get()->GetProjectManager()->SaveActiveProjectAs())
-        AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetActiveProject()->GetFilename());
-    DoUpdateStatusBar();
-    DoUpdateAppTitle();
-}
-
-void MainFrame::OnProjectSaveProjectAs(wxCommandEvent& event)
-{
-    if (Manager::Get()->GetProjectManager()->SaveActiveProjectAs())
-        AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetActiveProject()->GetFilename());
-    DoUpdateStatusBar();
-    DoUpdateAppTitle();
-}
-
-void MainFrame::OnProjectSaveAllProjects(wxCommandEvent& event)
-{
-    Manager::Get()->GetProjectManager()->SaveAllProjects();
-    DoUpdateStatusBar();
-    DoUpdateAppTitle();
-}
-
-void MainFrame::OnProjectSaveTemplate(wxCommandEvent& event)
-{
-    TemplateManager::Get()->SaveUserTemplate(Manager::Get()->GetProjectManager()->GetActiveProject());
-}
-
-void MainFrame::OnProjectCloseProject(wxCommandEvent& event)
-{
-    // we 're not actually shutting down here, but we want to check if the
-    // active project is still opening files (still busy)
-    if (!ProjectManager::CanShutdown() || !EditorManager::CanShutdown())
-    {
-        wxBell();
-        return;
-    }
-    Manager::Get()->GetProjectManager()->CloseActiveProject();
-    DoUpdateStatusBar();
-}
-
-void MainFrame::OnProjectCloseAllProjects(wxCommandEvent& event)
-{
-    if (!ProjectManager::CanShutdown() || !EditorManager::CanShutdown())
-    {
-        wxBell();
-        return;
-    }
-    Manager::Get()->GetProjectManager()->CloseWorkspace();
-    DoUpdateStatusBar();
-}
-
-void MainFrame::OnProjectImportDevCpp(wxCommandEvent& event)
-{
-    OpenGeneric(ShowOpenFileDialog(_("Import Dev-C++ project"), FileFilters::GetFilterString(_T('.') + FileFilters::DEVCPP_EXT)), false);
-}
-
-void MainFrame::OnProjectImportMSVC(wxCommandEvent& event)
-{
-    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual C++ 6.0 project"), FileFilters::GetFilterString(_T('.') + FileFilters::MSVC6_EXT)), false);
-}
-
-void MainFrame::OnProjectImportMSVCWksp(wxCommandEvent& event)
-{
-    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual C++ 6.0 workspace"), FileFilters::GetFilterString(_T('.') + FileFilters::MSVC6_WORKSPACE_EXT)), false);
-}
-
-void MainFrame::OnProjectImportMSVS(wxCommandEvent& event)
-{
-    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual Studio 7.0+ project"), FileFilters::GetFilterString(_T('.') + FileFilters::MSVC7_EXT)), false);
-}
-
-void MainFrame::OnProjectImportMSVSWksp(wxCommandEvent& event)
-{
-    OpenGeneric(ShowOpenFileDialog(_("Import MS Visual Studio 7.0+ solution"), FileFilters::GetFilterString(_T('.') + FileFilters::MSVC7_WORKSPACE_EXT)), false);
-}
-
 void MainFrame::OnHelpAbout(wxCommandEvent& WXUNUSED(event))
 {
     dlgAbout* dlg = new dlgAbout(this);
@@ -2690,7 +2626,7 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
     if(prj && prj->GetCurrentlyCompilingTarget())
         canCloseProject = false;
-    mbar->Enable(idProjectCloseProject,canCloseProject);
+    mbar->Enable(idFileCloseProject,canCloseProject);
     mbar->Enable(idFileOpenRecentFileClearHistory, m_FilesHistory.GetCount());
     mbar->Enable(idFileOpenRecentProjectClearHistory, m_ProjectsHistory.GetCount());
     mbar->Enable(idFileClose, ed);
@@ -2883,12 +2819,12 @@ void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
     wxMenuBar* mbar = GetMenuBar();
 
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
-	mbar->Enable(idProjectCloseProject, prj && canCloseProject);
-    mbar->Enable(idProjectCloseAllProjects, prj && canCloseProject);
-    mbar->Enable(idProjectSaveProject, prj && prj->GetModified() && canCloseProject);
-    mbar->Enable(idProjectSaveProjectAs, prj && canCloseProject);
-    mbar->Enable(idProjectSaveAllProjects, prj && canCloseProject);
-    mbar->Enable(idProjectSaveTemplate, prj && canCloseProject);
+	mbar->Enable(idFileCloseProject, prj && canCloseProject);
+    mbar->Enable(idFileCloseProjectAllProjects, prj && canCloseProject);
+    mbar->Enable(idFileSaveProject, prj && prj->GetModified() && canCloseProject);
+    mbar->Enable(idFileSaveProjectAs, prj && canCloseProject);
+    mbar->Enable(idFileSaveProjectAllProjects, prj && canCloseProject);
+    mbar->Enable(idFileSaveProjectTemplate, prj && canCloseProject);
 
 	event.Skip();
 }

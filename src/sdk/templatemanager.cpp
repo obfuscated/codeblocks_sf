@@ -98,41 +98,41 @@ void TemplateManager::LoadUserTemplates()
 	Manager::Get()->GetMessageManager()->DebugLog(_T("%d user templates loaded"), m_UserTemplates.GetCount());
 }
 
-cbProject* TemplateManager::NewProject()
+cbProject* TemplateManager::New(TemplateOutputType initial, wxString* pFilename)
 {
 	cbProject* prj = NULL;
 
 	LoadUserTemplates();
-	NewFromTemplateDlg dlg(m_UserTemplates);
+	NewFromTemplateDlg dlg(initial, m_UserTemplates);
     PlaceWindow(&dlg);
 	if (dlg.ShowModal() == wxID_OK)
 	{
         if (dlg.SelectedUserTemplate())
-            prj = NewProjectFromUserTemplate(dlg);
+            prj = NewProjectFromUserTemplate(dlg, pFilename);
         else
-            prj = NewProjectFromTemplate(dlg);
+            prj = NewFromTemplate(dlg, pFilename);
 	}
 	return prj;
 }
 
-cbProject* TemplateManager::NewProjectFromTemplate(NewFromTemplateDlg& dlg)
+cbProject* TemplateManager::NewFromTemplate(NewFromTemplateDlg& dlg, wxString* pFilename)
 {
 	cbProject* prj = NULL;
     cbWizardPlugin* wiz = dlg.GetWizard();
 	if (wiz)
 	{
 		// wizard, too easy ;)
-		CompileTargetBase *ret = wiz->Launch(dlg.GetWizardIndex());
+		CompileTargetBase* ret = wiz->Launch(dlg.GetWizardIndex(), pFilename);
 		switch (wiz->GetOutputType(dlg.GetWizardIndex()))
 		{
-		    case cbWizardPlugin::otProject: prj = dynamic_cast<cbProject*>(ret); break;
+		    case totProject: prj = dynamic_cast<cbProject*>(ret); break;
 		    default: break;
 		}
     }
     return prj;
 }
 
-cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
+cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, wxString* pFilename)
 {
     cbProject* prj = NULL;
     if (!dlg.SelectedUserTemplate())
@@ -210,12 +210,14 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg)
             prj = Manager::Get()->GetProjectManager()->LoadProject(project_filename);
             if(prj && !newname.IsEmpty())
             {
-		prj->SetTitle(newname);
-		Manager::Get()->GetProjectManager()->RebuildTree(); // so the tree shows the new name
-		// TO DO : title update of window --> ??how ; throw an acitivate or opened event ??
+                prj->SetTitle(newname);
+                Manager::Get()->GetProjectManager()->RebuildTree(); // so the tree shows the new name
+                // TODO : title update of window --> ??how ; throw an acitivate or opened event ??
             }
         }
     }
+    if (prj && pFilename)
+        *pFilename = prj->GetFilename();
     return prj;
 }
 

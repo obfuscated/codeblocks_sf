@@ -3,6 +3,7 @@
 
 #include "settings.h"
 #include "manager.h"
+#include "cbplugin.h"
 #include <wx/event.h>
 
 //forward decls
@@ -18,13 +19,15 @@ class DLLIMPORT TemplateManager : public Mgr<TemplateManager>, public wxEvtHandl
 		void CreateMenu(wxMenuBar* menuBar);
 		void ReleaseMenu(wxMenuBar* menuBar);
 		void BuildToolsMenu(wxMenu* menu);
-		cbProject* NewProject();
+
+		cbProject* New(TemplateOutputType initial = totProject, wxString* pFilename = 0);
+		wxString GetLastCreatedFilename() const;
 		void SaveUserTemplate(cbProject* prj);
 	protected:
 		void LoadTemplates();
 		void LoadUserTemplates();
-		cbProject* NewProjectFromTemplate(NewFromTemplateDlg& dlg);
-		cbProject* NewProjectFromUserTemplate(NewFromTemplateDlg& dlg);
+		cbProject* NewFromTemplate(NewFromTemplateDlg& dlg, wxString* pFilename = 0);
+		cbProject* NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, wxString* pFilename = 0);
 		wxArrayString m_UserTemplates;
 	private:
 		TemplateManager();

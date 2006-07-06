@@ -2,6 +2,7 @@
 #define NEWFROMTEMPLATEDLG_H
 
 #include <wx/dialog.h>
+#include "globals.h"
 #include "pluginmanager.h"
 #include "cbplugin.h"
 
@@ -12,7 +13,7 @@ class ProjectTemplateLoader;
 class NewFromTemplateDlg : public wxDialog
 {
 	public:
-		NewFromTemplateDlg(const wxArrayString& user_templates);
+		NewFromTemplateDlg(TemplateOutputType initial, const wxArrayString& user_templates);
 		virtual ~NewFromTemplateDlg();
 
 		ProjectTemplateLoader* GetTemplate(){ return m_Template; }
@@ -26,9 +27,9 @@ class NewFromTemplateDlg : public wxDialog
 	protected:
 		void FillTemplate(ProjectTemplateLoader* pt);
 		void BuildCategories();
-		void BuildCategoriesFor(cbWizardPlugin::OutputType otype, wxChoice* cat);
+		void BuildCategoriesFor(TemplateOutputType otype, wxChoice* cat);
 		void BuildList();
-		void BuildListFor(cbWizardPlugin::OutputType otype, wxListCtrl* list, const wxChoice* cat);
+		void BuildListFor(TemplateOutputType otype, wxListCtrl* list, const wxChoice* cat);
 		void ClearList();
 		void ClearListFor(wxListCtrl* list);
 		void OnListRightClick(wxListEvent& event);
@@ -40,7 +41,7 @@ class NewFromTemplateDlg : public wxDialog
 		void EditScript(const wxString& relativeFilename);
 		wxListCtrl* GetVisibleListCtrl();
 		wxChoice* GetVisibleCategory();
-		cbWizardPlugin::OutputType GetVisibleOutputType() const;
+		TemplateOutputType GetVisibleOutputType() const;
 	private:
 		ProjectTemplateLoader* m_Template;
 		cbWizardPlugin* m_pWizard;

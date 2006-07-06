@@ -105,7 +105,7 @@ int Wiz::GetCount() const
     return m_Wizards.GetCount();
 }
 
-cbWizardPlugin::OutputType Wiz::GetOutputType(int index) const
+TemplateOutputType Wiz::GetOutputType(int index) const
 {
 	//return this wizard's output type
 	//make sure you set this!
@@ -174,12 +174,14 @@ void Wiz::Clear()
 	m_pWizFilePathPanel = 0;
 }
 
-CompileTargetBase* Wiz::Launch(int index)
+CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
 {
+    // TODO: pFilename is not used
+
 	cbAssert(index >= 0 && index < GetCount());
 
 	// early check: build target wizards need an active project
-	if (m_Wizards[index].output_type == cbWizardPlugin::otTarget &&
+	if (m_Wizards[index].output_type == totTarget &&
         !Manager::Get()->GetProjectManager()->GetActiveProject())
     {
         cbMessageBox(_("You need to open (or create) a project first!"), _("Error"), wxICON_ERROR);
@@ -235,7 +237,7 @@ CompileTargetBase* Wiz::Launch(int index)
 
     // check if *mandatory* pages (i.e. used by the following code) were added
     // currently, project path is a mandatory page for new projects...
-    if (m_Wizards[index].output_type == cbWizardPlugin::otProject && !m_pWizProjectPathPanel)
+    if (m_Wizards[index].output_type == totProject && !m_pWizProjectPathPanel)
     {
         cbMessageBox(_("This wizard is missing the following mandatory wizard page:\n\n"
                         "Project path selection\n"
@@ -254,10 +256,10 @@ CompileTargetBase* Wiz::Launch(int index)
         // ok, wizard done
         switch (m_Wizards[index].output_type)
         {
-            case cbWizardPlugin::otProject:     base = RunProjectWizard(); break;
-            case cbWizardPlugin::otTarget:      base = RunTargetWizard(); break;
-            case cbWizardPlugin::otFiles:       base = RunFilesWizard(); break;
-            case cbWizardPlugin::otCustom:   base = RunCustomWizard(); break;
+            case totProject:     base = RunProjectWizard(pFilename); break;
+            case totTarget:      base = RunTargetWizard(pFilename); break;
+            case totFiles:       base = RunFilesWizard(pFilename); break;
+            case totCustom:      base = RunCustomWizard(pFilename); break;
             default: break;
         }
     }
@@ -265,7 +267,7 @@ CompileTargetBase* Wiz::Launch(int index)
     return base;
 }
 
-CompileTargetBase* Wiz::RunProjectWizard()
+CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
 {
     cbProject* theproject = 0;
 
@@ -368,13 +370,16 @@ CompileTargetBase* Wiz::RunProjectWizard()
     // save the project and...
     theproject->Save();
 
+    if (pFilename)
+        *pFilename = theproject->GetFilename();
+
     // finally, make sure everything looks ok
     Manager::Get()->GetProjectManager()->RebuildTree();
     Manager::Get()->GetProjectManager()->GetTree()->Expand(theproject->GetProjectNode());
     return theproject;
 }
 
-CompileTargetBase* Wiz::RunTargetWizard()
+CompileTargetBase* Wiz::RunTargetWizard(wxString* pFilename)
 {
     cbProject* theproject = Manager::Get()->GetProjectManager()->GetActiveProject(); // can't fail; if no project, the wizard didn't even run
     ProjectBuildTarget* target = theproject->AddBuildTarget(GetTargetName());
@@ -434,12 +439,18 @@ CompileTargetBase* Wiz::RunTargetWizard()
     return target;
 }
 
-CompileTargetBase* Wiz::RunFilesWizard()
+CompileTargetBase* Wiz::RunFilesWizard(wxString* pFilename)
 {
     try
     {
-        if (!SqPlus::SquirrelFunction<bool>("CreateFiles")())
+        wxString files = SqPlus::SquirrelFunction<wxString&>("CreateFiles")();
+        if (files.IsEmpty())
             cbMessageBox(_("Wizard failed..."), _("Error"), wxICON_ERROR);
+        else
+        {
+            if (pFilename)
+                *pFilename = files.BeforeFirst(_T(';'));
+        }
     }
     catch (SquirrelError& e)
     {
@@ -449,7 +460,7 @@ CompileTargetBase* Wiz::RunFilesWizard()
     return 0;
 }
 
-CompileTargetBase* Wiz::RunCustomWizard()
+CompileTargetBase* Wiz::RunCustomWizard(wxString* pFilename)
 {
     try
     {
@@ -507,7 +518,7 @@ void Wiz::CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxStri
 // Scripting - BEGIN
 ////////////////////////
 
-cbWizardPlugin::OutputType Wiz::GetWizardType()
+TemplateOutputType Wiz::GetWizardType()
 {
     cbAssert(m_LaunchIndex >= 0 && m_LaunchIndex < GetCount());
     return m_Wizards[m_LaunchIndex].output_type;
@@ -714,7 +725,7 @@ void Wiz::Finalize()
     m_pWizard->Fit();
 }
 
-void Wiz::AddWizard(cbWizardPlugin::OutputType otype,
+void Wiz::AddWizard(TemplateOutputType otype,
                     const wxString& title,
                     const wxString& cat,
                     const wxString& script,
@@ -735,10 +746,11 @@ void Wiz::AddWizard(cbWizardPlugin::OutputType otype,
     wxString typS;
     switch (otype)
     {
-        case cbWizardPlugin::otProject: typS = _T("Project"); break;
-        case cbWizardPlugin::otTarget: typS = _T("Build-target"); break;
-        case cbWizardPlugin::otFiles: typS = _T("File(s)"); break;
-        case cbWizardPlugin::otCustom: typS = _T("Custom"); break;
+        case totProject: typS = _T("Project"); break;
+        case totTarget: typS = _T("Build-target"); break;
+        case totFiles: typS = _T("File(s)"); break;
+        case totCustom: typS = _T("Custom"); break;
+        default: break;
     }
 
     Manager::Get()->GetMessageManager()->DebugLog(typS + _T(" wizard added for '%s'"), title.c_str());

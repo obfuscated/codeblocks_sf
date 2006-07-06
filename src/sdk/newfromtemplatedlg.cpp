@@ -82,7 +82,7 @@ BEGIN_EVENT_TABLE(NewFromTemplateDlg, wxDialog)
 	EVT_MENU(idEditGlobalWizardScript, NewFromTemplateDlg::OnEditGlobalScript)
 END_EVENT_TABLE()
 
-NewFromTemplateDlg::NewFromTemplateDlg(const wxArrayString& user_templates)
+NewFromTemplateDlg::NewFromTemplateDlg(TemplateOutputType initial, const wxArrayString& user_templates)
 	: m_Template(0L),
 	m_pWizard(0L),
 	m_WizardIndex(-1)
@@ -109,6 +109,8 @@ NewFromTemplateDlg::NewFromTemplateDlg(const wxArrayString& user_templates)
     {
         XRCCTRL(*this, "lstUser", wxListBox)->Append(user_templates[i]);
     }
+
+    lb->SetSelection((int)initial);
 }
 
 NewFromTemplateDlg::~NewFromTemplateDlg()
@@ -149,13 +151,13 @@ void NewFromTemplateDlg::ClearListFor(wxListCtrl* list)
 
 void NewFromTemplateDlg::BuildCategories()
 {
-	BuildCategoriesFor(cbWizardPlugin::otProject, XRCCTRL(*this, "cmbProjectCategories", wxChoice));
-	BuildCategoriesFor(cbWizardPlugin::otTarget, XRCCTRL(*this, "cmbTargetCategories", wxChoice));
-	BuildCategoriesFor(cbWizardPlugin::otFiles, XRCCTRL(*this, "cmbFileCategories", wxChoice));
-	BuildCategoriesFor(cbWizardPlugin::otCustom, XRCCTRL(*this, "cmbCustomCategories", wxChoice));
+	BuildCategoriesFor(totProject, XRCCTRL(*this, "cmbProjectCategories", wxChoice));
+	BuildCategoriesFor(totTarget, XRCCTRL(*this, "cmbTargetCategories", wxChoice));
+	BuildCategoriesFor(totFiles, XRCCTRL(*this, "cmbFileCategories", wxChoice));
+	BuildCategoriesFor(totCustom, XRCCTRL(*this, "cmbCustomCategories", wxChoice));
 }
 
-void NewFromTemplateDlg::BuildCategoriesFor(cbWizardPlugin::OutputType otype, wxChoice* cat)
+void NewFromTemplateDlg::BuildCategoriesFor(TemplateOutputType otype, wxChoice* cat)
 {
     if (!cat)
         return;
@@ -199,13 +201,13 @@ int wxCALLBACK SortTemplates(long item1, long item2, long sortData)
 
 void NewFromTemplateDlg::BuildList()
 {
-	BuildListFor(cbWizardPlugin::otProject, XRCCTRL(*this, "listProjects", wxListCtrl), XRCCTRL(*this, "cmbProjectCategories", wxChoice));
-	BuildListFor(cbWizardPlugin::otTarget, XRCCTRL(*this, "listTargets", wxListCtrl), XRCCTRL(*this, "cmbTargetCategories", wxChoice));
-	BuildListFor(cbWizardPlugin::otFiles, XRCCTRL(*this, "listFiles", wxListCtrl), XRCCTRL(*this, "cmbFileCategories", wxChoice));
-	BuildListFor(cbWizardPlugin::otCustom, XRCCTRL(*this, "listCustoms", wxListCtrl), XRCCTRL(*this, "cmbCustomCategories", wxChoice));
+	BuildListFor(totProject, XRCCTRL(*this, "listProjects", wxListCtrl), XRCCTRL(*this, "cmbProjectCategories", wxChoice));
+	BuildListFor(totTarget, XRCCTRL(*this, "listTargets", wxListCtrl), XRCCTRL(*this, "cmbTargetCategories", wxChoice));
+	BuildListFor(totFiles, XRCCTRL(*this, "listFiles", wxListCtrl), XRCCTRL(*this, "cmbFileCategories", wxChoice));
+	BuildListFor(totCustom, XRCCTRL(*this, "listCustoms", wxListCtrl), XRCCTRL(*this, "cmbCustomCategories", wxChoice));
 }
 
-void NewFromTemplateDlg::BuildListFor(cbWizardPlugin::OutputType otype, wxListCtrl* list, const wxChoice* cat)
+void NewFromTemplateDlg::BuildListFor(TemplateOutputType otype, wxListCtrl* list, const wxChoice* cat)
 {
     if (!list || !cat)
         return;
@@ -267,18 +269,18 @@ wxChoice* NewFromTemplateDlg::GetVisibleCategory()
     }
 }
 
-cbWizardPlugin::OutputType NewFromTemplateDlg::GetVisibleOutputType() const
+TemplateOutputType NewFromTemplateDlg::GetVisibleOutputType() const
 {
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     size_t page = lb->GetSelection();
 
     switch (page)
     {
-        case 0: return cbWizardPlugin::otProject;
-        case 1: return cbWizardPlugin::otTarget;
-        case 2: return cbWizardPlugin::otFiles;
-        case 3: return cbWizardPlugin::otCustom;
-        default: return cbWizardPlugin::otProject;
+        case 0: return totProject;
+        case 1: return totTarget;
+        case 2: return totFiles;
+        case 3: return totCustom;
+        default: return totProject;
     }
 }
 

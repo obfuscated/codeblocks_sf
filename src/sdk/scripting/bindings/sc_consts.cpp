@@ -88,11 +88,11 @@ namespace ScriptBindings
         BIND_INT_CONSTANT(pcmInvertColours);
         BIND_INT_CONSTANT(pcmAsIs);
 
-        // cbWizardPlugin::OutputType
-        BIND_INT_CONSTANT_NAMED(cbWizardPlugin::otProject, "wizProject");
-        BIND_INT_CONSTANT_NAMED(cbWizardPlugin::otTarget, "wizTarget");
-        BIND_INT_CONSTANT_NAMED(cbWizardPlugin::otFiles, "wizFiles");
-        BIND_INT_CONSTANT_NAMED(cbWizardPlugin::otCustom, "wizCustom");
+        // TemplateOutputType
+        BIND_INT_CONSTANT_NAMED(totProject, "wizProject");
+        BIND_INT_CONSTANT_NAMED(totTarget, "wizTarget");
+        BIND_INT_CONSTANT_NAMED(totFiles, "wizFiles");
+        BIND_INT_CONSTANT_NAMED(totCustom, "wizCustom");
 
         // file extensions
         BIND_WXSTR_CONSTANT_NAMED(FileFilters::WORKSPACE_EXT, "EXT_WORKSPACE");

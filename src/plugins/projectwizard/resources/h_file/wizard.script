@@ -31,7 +31,8 @@ function BeginWizard()
 
 function CreateFiles()
 {
-    local ed = GetEditorManager().New(Wizard.GetFileName());
+    local fname = Wizard.GetFileName();
+    local ed = GetEditorManager().New(fname);
     if (!IsNull(ed))
     {
         // succeeded
@@ -51,11 +52,11 @@ function CreateFiles()
                 local prj = GetProjectManager().GetActiveProject();
                 if (!IsNull(prj))
                 {
-                    prj.AddFile(tgtidx, Wizard.GetFileName());
+                    prj.AddFile(tgtidx, fname);
                     GetProjectManager().RebuildTree(); // make sure our view is current
                 }
             }
         }
     }
-    return true;
+    return fname;
 }

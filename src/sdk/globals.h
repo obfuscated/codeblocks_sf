@@ -78,6 +78,16 @@ enum FileVisualState
     fvsLast
 };
 
+/** Template output types. */
+enum TemplateOutputType
+{
+    totProject = 0, ///< template outputs a new project
+    totTarget, ///< template adds a new target in a project
+    totFiles, ///< template outputs a new file (or files)
+    totCustom, ///< template produces custom output (entirely up to the wizard used)
+    totUser ///< template is a user-saved project template
+};
+
 extern DLLIMPORT const wxString DEFAULT_WORKSPACE;
 extern DLLIMPORT const wxString DEFAULT_ARRAY_SEP;
 extern DLLIMPORT const wxString DEFAULT_CONSOLE_TERM;
