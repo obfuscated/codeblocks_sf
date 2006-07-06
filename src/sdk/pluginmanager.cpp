@@ -86,12 +86,18 @@ int PluginManager::ScanForPlugins(const wxString& path)
     if (!dir.IsOpened())
         return count;
 
+    bool batch = Manager::IsBatchBuild();
+
     wxString filename;
 	wxString failed;
     bool ok = dir.GetFirst(&filename, PLUGINS_MASK, wxDIR_FILES);
     while (ok)
     {
-//		Manager::Get()->GetMessageManager()->AppendDebugLog(_T("Trying %s: "), filename.c_str());
+        if(batch && filename.Matches(_T("*compiler*")) == false)
+        {
+            ok = dir.GetNext(&filename);
+            continue;
+        }
         if (LoadPlugin(path + _T('/') + filename))
             ++count;
 		else
