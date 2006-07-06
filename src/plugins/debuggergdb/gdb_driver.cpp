@@ -152,6 +152,8 @@ void GDB_driver::Prepare(bool isConsole)
     QueueCommand(new DebuggerCmd(this, _T("set breakpoint pending on")));
     // show pretty function names in disassembly
     QueueCommand(new DebuggerCmd(this, _T("set print asm-demangle on")));
+    // unwind stack on signal
+    QueueCommand(new DebuggerCmd(this, _T("set unwindonsignal on")));
 #ifndef __WXMSW__
     QueueCommand(new DebuggerCmd(this, _T("set disassembly-flavor att")));
 #else
