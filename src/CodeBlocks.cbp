@@ -1688,6 +1688,12 @@
 			<Option link="0" />
 			<Option target="Project wizard" />
 		</Unit>
+		<Unit filename="plugins\projectwizard\resources\win32gui\wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
 		<Unit filename="plugins\projectwizard\resources\wxwidgets\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
