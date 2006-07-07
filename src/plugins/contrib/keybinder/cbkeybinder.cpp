@@ -18,6 +18,10 @@
 #include "cbkeybinder.h"
 #include <licenses.h> // defines some common licenses (like the GPL)
 
+#ifndef CB_PRECOMP
+    #include "sdk_events.h"
+#endif
+
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
