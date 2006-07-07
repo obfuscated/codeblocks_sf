@@ -1,0 +1,81 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: Static Library
+// Author:  Yiannis Mandravellos
+//
+////////////////////////////////////////////////////////////////////////////////
+
+
+function BeginWizard()
+{
+    local wiz_type = Wizard.GetWizardType();
+
+    if (wiz_type == wizProject)
+    {
+        local intro_msg = _T("Welcome to the new static library wizard!\n" +
+                             "This wizard will guide you to create a new static library.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+
+        Wizard.AddIntroPage(intro_msg);
+        Wizard.AddProjectPathPage();
+        Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+    }
+    else if (wiz_type == wizTarget)
+    {
+        local intro_msg = _T("Welcome to the new static library build target wizard!\n" +
+                             "This wizard will guide you to create a new static library build target.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+        Wizard.AddIntroPage(intro_msg);
+        Wizard.AddBuildTargetPage(_T(""), false, false, _T(""), _T("*"), true);
+    }
+    else
+        print(wiz_type);
+}
+
+function GetFilesDir()
+{
+    local result = _T("staticlib/files");
+    return result;
+}
+
+function SetupProject(project)
+{
+    // enable compiler warnings (project-wide)
+    WarningsOn(project, Wizard.GetCompilerID());
+
+    // Debug build target
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+        SetupTarget(target, true);
+
+    // Release build target
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+        SetupTarget(target, false);
+
+    return true;
+}
+
+function SetupTarget(target, is_debug)
+{
+    if (IsNull(target))
+        return false;
+
+    target.SetTargetType(ttStaticLib);
+    target.SetOutputFilename(target.GetWorkingDir() + _T("/") + target.SuggestOutputFilename());
+
+    if (is_debug)
+    {
+        // enable debugging symbols for this target
+        DebugSymbolsOn(target, Wizard.GetTargetCompilerID());
+    }
+    else
+    {
+        // enable optimizations for this target
+        OptimizationsOn(target, Wizard.GetTargetCompilerID());
+    }
+
+    return true;
+}
