@@ -288,11 +288,12 @@ void CodeBlocksApp::InitLocale()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
 
-
     bool i18n=cfg->ReadBool(_T("/environment/I18N"),LOCALIZE);
-	int lng =-1;	// -1 = Don't use locale; the default is 0 = Use locale
-	if(i18n)
-		lng = cfg->ReadInt(_T("/locale/language"),(int)0);
+
+	if(!i18n)
+        return; // Localisation turned off? Skip the rest!
+
+    int lng = cfg->ReadInt(_T("/locale/language"),(int)0);
 
 	int catalogNum = cfg->ReadInt(_T("/locale/catalogNum"), (int)0);
 	if (catalogNum == 0)
@@ -323,8 +324,10 @@ void CodeBlocksApp::InitLocale()
 
     }
 	cfg->Write(_T("/locale/catalogNum"), (int)catalogNum);
-	cfg->Write(_T("/environment/I18N"),  (bool)i18n);
-    cfg->Write(_T("/locale/language"), (int)lng);
+    //these don't ever change in this function, no need to write them out
+    //if non-existent, defaults will be used, which is just as good
+	//cfg->Write(_T("/environment/I18N"),  (bool)i18n);
+    //cfg->Write(_T("/locale/language"), (int)lng);
 }
 
 bool CodeBlocksApp::OnInit()
