@@ -37,6 +37,8 @@
     #include <wx/image.h>
     #include <wx/listctrl.h>
     #include "cbexception.h"
+    #include "manager.h"
+    #include "configmanager.h" // ReadBool
 #endif
 
 #include "tinyxml/tinyxml.h"

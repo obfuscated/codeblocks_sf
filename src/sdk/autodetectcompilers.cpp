@@ -14,6 +14,7 @@
 #include "autodetectcompilers.h"
 
 #ifndef CB_PRECOMP
+    #include "compiler.h"
     #include "compilerfactory.h"
     #include <wx/xrc/xmlres.h>
     #include <wx/intl.h>

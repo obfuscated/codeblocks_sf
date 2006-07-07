@@ -40,6 +40,7 @@
     #include "messagelog.h"
     #include "simpletextlog.h"
     #include "globals.h"
+    #include "sdk_events.h"
 #endif
 
 #include <wx/laywin.h>

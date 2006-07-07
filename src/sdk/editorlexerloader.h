@@ -1,6 +1,10 @@
 #ifndef EDITORLEXERLOADER_H
 #define EDITORLEXERLOADER_H
 
+#ifndef CB_PRECOMP
+    #include "filemanager.h" // LoaderBase
+#endif
+
 #include <wx/string.h>
 #include "tinyxml/tinyxml.h"
 

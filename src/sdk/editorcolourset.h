@@ -6,6 +6,10 @@
 #include <wx/intl.h>
 #include "settings.h"
 
+#ifndef CB_PRECOMP
+    #include "globals.h" // HighlightLanguage
+#endif
+
 // forward decls
 class cbEditor;
 class cbStyledTextCtrl;

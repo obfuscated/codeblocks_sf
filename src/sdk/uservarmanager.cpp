@@ -22,7 +22,7 @@
     #include "macrosmanager.h"
     #include "manager.h"
     #include "cbexception.h"
-    #include "globals.h"
+    #include "infowindow.h"
 
     #include <wx/dialog.h>
     #include <wx/intl.h>

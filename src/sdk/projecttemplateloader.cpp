@@ -15,6 +15,7 @@
 #ifndef CB_PRECOMP
     #include "manager.h"
     #include "messagemanager.h"
+    #include "globals.h"
 #endif
 
 #include "projecttemplateloader.h"

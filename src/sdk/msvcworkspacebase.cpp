@@ -18,6 +18,7 @@
     #include "projectmanager.h"
     #include "compilerfactory.h"
     #include "compiler.h"
+    #include "cbproject.h"
 #endif
 
 #include "msvcworkspacebase.h"

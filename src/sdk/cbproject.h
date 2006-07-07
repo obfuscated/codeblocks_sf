@@ -10,6 +10,10 @@
 #include "compiletargetbase.h"
 #include "cbplugin.h"
 
+#ifndef CB_PRECOMP
+    #include "projectbuildtarget.h"
+#endif
+
 // forward decl
 class cbProject;
 class ProjectBuildTarget;

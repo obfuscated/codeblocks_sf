@@ -1,6 +1,10 @@
 #ifndef PROJECTMANAGER_H
 #define PROJECTMANAGER_H
 
+#ifndef CB_PRECOMP
+    #include "globals.h" // DEFAULT_WORKSPACE
+#endif
+
 #include <wx/event.h>
 #include <wx/dynarray.h>
 #include <wx/hashmap.h>

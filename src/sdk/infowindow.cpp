@@ -1,5 +1,13 @@
 #include "sdk_precomp.h"
 
+#ifndef CB_PRECOMP
+    #include <wx/stattext.h>
+    #include <wx/sizer.h>
+    #include <wx/settings.h>
+    #include "infowindow.h"
+    #include "manager.h"
+#endif
+
 BEGIN_EVENT_TABLE(InfoWindow, wxPopupWindow)
 EVT_TIMER(-1, InfoWindow::OnTimer)
 EVT_MOTION(InfoWindow::OnMove)

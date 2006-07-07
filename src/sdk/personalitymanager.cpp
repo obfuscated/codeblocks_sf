@@ -32,6 +32,7 @@
     #include "configmanager.h"
     #include <wx/intl.h>
     #include <wx/dir.h>
+    #include <wx/filename.h>
 #endif
 
 #include <wx/arrstr.h>

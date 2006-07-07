@@ -3,6 +3,8 @@
 #ifndef CB_PRECOMP
     #include "filemanager.h"
     #include "safedelete.h"
+    #include "cbeditor.h"
+    #include "editormanager.h"
 #endif
 
 #include <wx/url.h>

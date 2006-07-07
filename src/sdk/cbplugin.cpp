@@ -27,8 +27,10 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/frame.h> // wxFrame
     #include <wx/menu.h>
     #include "cbplugin.h"
+    #include "compiler.h" // GetSwitches
     #include "sdk_events.h"
     #include "manager.h"
     #include "licenses.h" // license macros

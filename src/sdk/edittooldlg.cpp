@@ -32,6 +32,7 @@
     #include <wx/textctrl.h>
     #include <wx/button.h>
     #include <wx/checkbox.h>
+    #include <wx/radiobox.h>
     #include "toolsmanager.h"
     #include "globals.h"
     #include "cbexception.h"

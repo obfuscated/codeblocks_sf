@@ -34,6 +34,7 @@
 
 #ifndef CB_PRECOMP
     #include "cbproject.h" // class's header file
+    #include "compiler.h" // GetSwitches
     #include "sdk_events.h"
     #include "manager.h"
     #include "cbeditor.h"
@@ -46,6 +47,7 @@
     #include "compilerfactory.h"
     #include "projectbuildtarget.h"
     #include "projectfile.h"
+    #include "infowindow.h"
 #endif
 
 #include <map>

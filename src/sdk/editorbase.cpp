@@ -21,6 +21,7 @@
     #include "cbeditor.h"
     #include "editormanager.h"
     #include "pluginmanager.h"
+    #include "cbproject.h" // FileTreeData
     #include <wx/wfstream.h>
 #endif
 

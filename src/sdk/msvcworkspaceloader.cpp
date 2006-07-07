@@ -17,13 +17,14 @@
     #include <wx/dynarray.h>
     #include <wx/filename.h>
     #include <wx/msgdlg.h>
+    #include <wx/wfstream.h>
     #include "globals.h"
     #include "manager.h"
     #include "messagemanager.h"
     #include "projectmanager.h"
     #include "compilerfactory.h"
     #include "compiler.h"
-    #include <wx/wfstream.h>
+    #include "cbproject.h"
 #endif
 
 #include <wx/stream.h>

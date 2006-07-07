@@ -36,6 +36,7 @@
     #include "globals.h"
     #include "cbproject.h"
     #include "cbplugin.h"
+    #include "sdk_events.h"
 
     #include <wx/xrc/xmlres.h>
     #include <wx/treectrl.h>

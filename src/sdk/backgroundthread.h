@@ -9,6 +9,11 @@
 #include <list>
 #include <algorithm>
 
+#ifndef CB_PRECOMP
+    #include <wx/timer.h> // wxMilliSleep
+    #include "manager.h"
+#endif
+
 /*
 * BackgroundThread is a lightweight single background worker thread implementation for situations in which
 * you simply want to do one or several things in another thread, and using a thread pool is overkill.
