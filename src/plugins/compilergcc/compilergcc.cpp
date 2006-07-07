@@ -215,7 +215,10 @@ CompilerGCC::CompilerGCC()
     m_RunProjectPostBuild(false),
     m_DeleteTempMakefile(true)
 {
-    Manager::Get()->Loadxrc(_T("/compiler_gcc.zip#zip:*.xrc"));
+    if(!Manager::LoadResource(_T("compiler_gcc.zip")))
+    {
+        NotifyMissingFile(_T("compiler_gcc.zip"));
+    }
 
     m_Type = ptCompiler;
     m_PluginInfo.name = _T("Compiler");

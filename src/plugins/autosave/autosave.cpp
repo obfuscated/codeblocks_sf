@@ -65,8 +65,15 @@ Autosave::~Autosave()
 
 void Autosave::OnAttach()
 {
-    Manager::Get()->Loadxrc(_T("/autosave.zip#zip:autosave.xrc"));
+    if(!Manager::LoadResource(_T("autosave.zip")))
+    {
+        NotifyMissingFile(_T("autosave.zip"));
+    }
+    Start();
+}
 
+void Autosave::Start()
+{
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("autosave"));
     if(cfg->ReadBool(_T("do_project")))
         timer1->Start(60 * 1000 * cfg->ReadInt(_T("project_mins")));
@@ -225,7 +232,7 @@ void AutosaveConfigDlg::SaveSettings()
 
     cfg->Write(_T("method"), XRCCTRL(*this, "method", wxChoice)->GetSelection());
 
-    plugin->OnAttach();
+    plugin->Start();
 }
 
 

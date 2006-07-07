@@ -195,4 +195,11 @@ inline int cbMessageBox(const wxString& message, const wxString& caption = wxEmp
     return dlg.ShowModal();
 };
 
+inline void NotifyMissingFile(const wxString &name)
+{
+    wxString msg;
+    msg.Printf(_T("The file %s could not be found.\nPlease check your installation."), name.c_str());
+    cbMessageBox(msg);
+};
+
 #endif // SDK_GLOBALS_H

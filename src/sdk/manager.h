@@ -105,6 +105,8 @@ public:
     static void Initxrc(bool force=false);
     /// Loads XRC file(s) using data_path
     static void Loadxrc(wxString relpath);
+    static bool LoadResource(const wxString& file);
+
     /// Loads Menubar from XRC
     static wxMenuBar* LoadMenuBar(wxString resid,bool createonfailure=false);
     /// Loads Menu from XRC

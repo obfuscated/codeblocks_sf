@@ -55,9 +55,10 @@ END_EVENT_TABLE()
 ToDoList::ToDoList()
 {
 	//ctor
-    wxFileSystem::AddHandler(new wxZipFSHandler);
-    wxXmlResource::Get()->InitAllHandlers();
-    wxXmlResource::Get()->Load(ConfigManager::ReadDataPath() + _T("/todo.zip#zip:*.xrc"));
+    if(!Manager::LoadResource(_T("todo.zip")))
+    {
+        NotifyMissingFile(_T("todo.zip"));
+    }
 
 	m_PluginInfo.name = _T("ToDoList");
 	m_PluginInfo.title = _("To-Do List");

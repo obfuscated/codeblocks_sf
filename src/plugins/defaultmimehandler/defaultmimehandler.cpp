@@ -42,10 +42,10 @@ DefaultMimeHandler::DefaultMimeHandler()
 	m_PluginInfo.thanksTo = _T("Code::Blocks");
 	m_PluginInfo.license = LICENSE_GPL;
 
-    wxFileSystem::AddHandler(new wxZipFSHandler);
-    wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::GetDataFolder();
-    wxXmlResource::Get()->Load(resPath + _T("/defaultmimehandler.zip#zip:*.xrc"));
+    if(!Manager::LoadResource(_T("defaultmimehandler.zip")))
+    {
+        NotifyMissingFile(_T("defaultmimehandler.zip"));
+    }
 }
 
 DefaultMimeHandler::~DefaultMimeHandler()

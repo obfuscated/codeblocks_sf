@@ -34,10 +34,11 @@ CB_IMPLEMENT_PLUGIN(AStylePlugin, "Source code formatter (AStyle)");
 AStylePlugin::AStylePlugin()
 {
 	//ctor
-  wxFileSystem::AddHandler(new wxZipFSHandler);
-  wxXmlResource::Get()->InitAllHandlers();
-  wxString resPath = ConfigManager::GetDataFolder();
-  wxXmlResource::Get()->Load(resPath + _T("/astyle.zip#zip:*.xrc"));
+
+    if(!Manager::LoadResource(_T("astyle.zip")))
+    {
+        NotifyMissingFile(_T("astyle.zip"));
+    }
 
 	m_PluginInfo.name = _T("AStylePlugin");
 	m_PluginInfo.title = _T("Source code formatter (AStyle)");

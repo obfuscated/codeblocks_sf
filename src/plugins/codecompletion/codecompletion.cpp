@@ -105,10 +105,10 @@ CodeCompletion::CodeCompletion() :
     m_ActiveCalltipsNest(0),
     m_IsAutoPopup(false)
 {
-    wxFileSystem::AddHandler(new wxZipFSHandler);
-    wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::GetDataFolder();
-    wxXmlResource::Get()->Load(resPath + _T("/code_completion.zip#zip:*.xrc"));
+    if(!Manager::LoadResource(_T("code_completion.zip")))
+    {
+        NotifyMissingFile(_T("code_completion.zip"));
+    }
 
     m_PluginInfo.name = _T("CodeCompletion");
     m_PluginInfo.title = _("Code completion");

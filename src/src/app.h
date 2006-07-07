@@ -52,7 +52,6 @@ class CodeBlocksApp : public wxApp
         void InitAssociations(MainFrame* frame);
         void InitDebugConsole();
         void InitExceptionHandler();
-        void InitImageHandlers();
         bool InitXRCStuff();
         MainFrame* InitFrame();
         void CheckVersion();
@@ -60,7 +59,7 @@ class CodeBlocksApp : public wxApp
         int BatchJob();
         wxLocale m_locale; // locale we'll be using
     private:
-        bool CheckResource(const wxString& res);
+        void ComplainBadInstall();
         void SetupPersonality(const wxString& personality);
         void DelayLoadDdeFiles(MainFrame* frame);
 

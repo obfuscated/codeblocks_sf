@@ -221,7 +221,10 @@ DebuggerGDB::DebuggerGDB()
 	m_pThreadsDlg(0),
 	m_pProject(0)
 {
-    Manager::Get()->Loadxrc(_T("/debugger_gdb.zip#zip:*.xrc"));
+    if(!Manager::LoadResource(_T("debugger_gdb.zip")))
+    {
+        NotifyMissingFile(_T("debugger_gdb.zip"));
+    }
 
 	m_PluginInfo.name = _T("Debugger");
 	m_PluginInfo.title = _("Debugger");

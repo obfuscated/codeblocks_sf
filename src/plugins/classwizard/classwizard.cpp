@@ -46,10 +46,10 @@ CB_IMPLEMENT_PLUGIN(ClassWizard, "Class wizard");
 
 ClassWizard::ClassWizard()
 {
-    wxFileSystem::AddHandler(new wxZipFSHandler);
-    wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::GetDataFolder();
-    wxXmlResource::Get()->Load(resPath + _T("/class_wizard.zip#zip:*.xrc"));
+    if(!Manager::LoadResource(_T("class_wizard.zip")))
+    {
+        NotifyMissingFile(_T("class_wizard.zip"));
+    }
 
     m_PluginInfo.name = _T("ClassWizard");
     m_PluginInfo.title = _("Class wizard");

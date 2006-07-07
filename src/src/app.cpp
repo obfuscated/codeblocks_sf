@@ -27,6 +27,7 @@
 #include <sdk.h>
 #include "app.h"
 #include <wx/fs_zip.h>
+#include <wx/fs_mem.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/cmdline.h>
 #include <wx/regex.h>
@@ -222,24 +223,14 @@ void CodeBlocksApp::InitExceptionHandler()
 #endif
 }
 
-void CodeBlocksApp::InitImageHandlers()
-{
-	wxInitAllImageHandlers();
-}
-
 
 bool CodeBlocksApp::InitXRCStuff()
 {
-    // load all application-resources
-    wxFileSystem::AddHandler(new wxZipFSHandler);
-    wxXmlResource::Get()->InitAllHandlers();
-
-    wxString res = ConfigManager::ReadDataPath() + _T("/resources.zip");
-
-    if (!CheckResource(res))
-    	return false;
-    /// @todo Checkout why it doesn't work with VC++ unless "#zip:*.xrc" appended
-	wxXmlResource::Get()->Load(res+_T("#zip:*.xrc"));
+    if (!Manager::LoadResource(_T("resources.zip")))
+        {
+            ComplainBadInstall();
+            return false;
+        }
 	return true;
 }
 
@@ -351,20 +342,25 @@ bool CodeBlocksApp::OnInit()
 
     static CrashHandler crash_handler;
 
+    // we'll do this once and for all at startup
+    wxFileSystem::AddHandler(new wxZipFSHandler);
+    wxFileSystem::AddHandler(new wxMemoryFSHandler);
+    wxXmlResource::Get()->InsertHandler(new wxToolBarAddOnXmlHandler);
+    wxInitAllImageHandlers();
+    wxXmlResource::Get()->InitAllHandlers();
+
     try
     {
     #if (wxUSE_ON_FATAL_EXCEPTION == 1)
         wxHandleFatalExceptions(true);
     #endif
-        InitExceptionHandler();
 
+        InitExceptionHandler();
 
         if(!LoadConfig())
             return false;
 
-        InitImageHandlers();
-
-        if(!InitXRCStuff())
+        if(!m_Batch && !InitXRCStuff())
         {
            // wsSafeShowMessage(_T("Fatal error"), _T("Initialisation of resources failed."));
             return false;
@@ -376,7 +372,7 @@ bool CodeBlocksApp::OnInit()
 
         InitLocale();
         m_pSingleInstance = 0;
-        if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/single_instance"), true))
+        if(Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/single_instance"), true))
         {
             const wxString name = wxString::Format(_T("Code::Blocks-%s"), wxGetUserId().c_str());
 
@@ -598,26 +594,19 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
     }
 }
 
-bool CodeBlocksApp::CheckResource(const wxString& res)
+void CodeBlocksApp::ComplainBadInstall()
 {
-    if (!wxFileExists(res))
-    {
-    	wxString msg;
-    	msg.Printf(_T("Cannot find %s...\n"
-    		"%s was configured to be installed in '%s'.\n"
-    		"Please use the command-line switch '--prefix' or "
-            "set the CODEBLOCKS_DATA_DIR environment variable "
-    		"to point where %s is installed,\n"
-    		"or try re-installing the application..."),
-    		res.c_str(),
-    		g_AppName.c_str(),
-    		ConfigManager::ReadDataPath().c_str(),
-    		g_AppName.c_str());
-    	cbMessageBox(msg);
-    	return false;
-    }
-
-    return true;
+    wxString msg;
+    msg.Printf(_T("Cannot find resources...\n"
+        "%s was configured to be installed in '%s'.\n"
+        "Please use the command-line switch '--prefix' or "
+        "set the CODEBLOCKS_DATA_DIR environment variable "
+        "to point where %s is installed,\n"
+        "or try re-installing the application..."),
+        g_AppName.c_str(),
+        ConfigManager::ReadDataPath().c_str(),
+        g_AppName.c_str());
+    cbMessageBox(msg);
 }
 
 wxString CodeBlocksApp::GetAppPath() const

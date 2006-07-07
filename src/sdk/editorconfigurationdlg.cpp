@@ -847,7 +847,8 @@ void EditorConfigurationDlg::EndModal(int retCode)
             for (int idx = 0; idx<em->GetEditorsCount(); ++idx)
             {
                 cbEditor *ed = em->GetBuiltinEditor(em->GetEditor(idx));
-                ed->UnfoldAll();
+                if(ed)
+                    ed->UnfoldAll();
             }
         }
 

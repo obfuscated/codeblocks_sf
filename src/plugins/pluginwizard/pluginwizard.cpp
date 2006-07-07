@@ -50,10 +50,10 @@ CB_IMPLEMENT_PLUGIN(PluginWizard, "Plugin wizard");
 
 PluginWizard::PluginWizard()
 {
-    wxFileSystem::AddHandler(new wxZipFSHandler);
-    wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::GetDataFolder();
-    wxXmlResource::Get()->Load(resPath + _T("/plugin_wizard.zip#zip:*.xrc"));
+    if(!Manager::LoadResource(_T("plugin_wizard.zip")))
+    {
+        NotifyMissingFile(_T("plugin_wizard.zip"));
+    }
 
     m_PluginInfo.name = _T("PluginWizard");
     m_PluginInfo.title = _("Plugin wizard");

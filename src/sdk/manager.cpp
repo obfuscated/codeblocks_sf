@@ -51,6 +51,7 @@
 #endif
 
 #include <wx/toolbar.h>
+#include <wx/fs_mem.h>
 
 //    #include "buildsystem/buildsystemmanager.h"
 
@@ -78,8 +79,7 @@ Manager* Manager::Get(wxFrame *appWindow)
         else
         {
             Get()->m_pAppWindow = appWindow;
-            Initxrc(true);
-            Loadxrc(_T("/manager_resources.zip#zip:*.xrc"));
+            LoadResource(_T("manager_resources.zip"));
             Get()->GetMessageManager()->Log(_("Manager initialized"));
         }
     }
@@ -175,9 +175,7 @@ void Manager::Initxrc(bool force)
 
 void Manager::Loadxrc(wxString relpath)
 {
-    Manager::Initxrc();
-    wxString resPath = ConfigManager::GetDataFolder();
-    wxXmlResource::Get()->Load(resPath + relpath);
+    LoadResource(relpath);
 }
 
 wxMenuBar *Manager::LoadMenuBar(wxString resid,bool createonfailure)
@@ -292,6 +290,34 @@ FileManager* Manager::GetFileManager() const
 {
     return FileManager::Get();
 }
+
+bool Manager::LoadResource(const wxString& file)
+{
+    static wxString resDir = ConfigManager::ReadDataPath() + _T("/");
+
+    if(wxFile::Access(resDir + file, wxFile::read) == false)
+        return false;
+
+    wxFile f(resDir + file, wxFile::read);
+    char *buf = 0;
+
+    try
+    {
+        size_t len = f.Length();
+        buf = new char[len];
+        f.Read(buf, len);
+        wxMemoryFSHandler::AddFile(file, buf, len);
+        wxXmlResource::Get()->Load(_T("memory:") + file );
+        delete buf;
+        return true;
+    }
+    catch (...)
+    {
+        delete buf;
+        return false;
+    }
+}
+
 
 bool Manager::appShuttingDown = false;
 bool Manager::blockYields = false;
