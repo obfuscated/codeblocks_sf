@@ -44,6 +44,10 @@
 #include <cbeditor.h>
 #include <globals.h>
 
+#ifndef CB_PRECOMP
+    #include "cbproject.h"
+#endif
+
 class myTextCtrl : public wxTextCtrl
 {
     public:

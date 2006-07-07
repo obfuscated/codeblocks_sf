@@ -689,7 +689,7 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
 
             if (*m_pWin)
                 (*m_pWin)->Destroy();
-            *m_pWin = new wxTipWindow(Manager::Get()->GetAppWindow(), tip, 640, m_pWin, &m_WinRect);
+            *m_pWin = new wxTipWindow((wxWindow*)Manager::Get()->GetAppWindow(), tip, 640, m_pWin, &m_WinRect);
 //            m_pDriver->DebugLog(output);
         }
 };

@@ -42,6 +42,10 @@
 	#include <globals.h>
 #endif // STANDALONE
 
+#ifndef CB_PRECOMP
+	  #include "editorbase.h"
+#endif
+
 static const char CACHE_MAGIC[] = "CCCACHE_1_3";
 static const int batch_timer_delay = 500;
 static const int reparse_timer_delay = 250;

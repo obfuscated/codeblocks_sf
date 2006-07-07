@@ -13,6 +13,10 @@
 #include "asstreamiterator.h"
 #include <string>
 
+#ifndef CB_PRECOMP
+    #include "globals.h"
+#endif
+
 BEGIN_EVENT_TABLE(AstyleConfigDlg, wxPanel)
   EVT_RADIOBUTTON(XRCID("rbAnsi"), AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbKr"), AstyleConfigDlg::OnStyleChange)

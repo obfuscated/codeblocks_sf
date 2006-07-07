@@ -11,24 +11,26 @@
 */
 
 #if CB_PRECOMP
-#include "sdk.h"
+    #include "sdk.h"
 #else
-#include <wx/checkbox.h>
-#include <wx/filefn.h>
-#include <wx/filename.h>
-#include <wx/textctrl.h>
-#include <wx/timer.h>
-#include <wx/xrc/xmlres.h>
-#include "cbeditor.h"
-#include "cbproject.h"
-#include "configmanager.h"
-#include "editormanager.h"
-#include "globals.h"
-#include "licenses.h"
-#include "pluginmanager.h"
-#include "projectmanager.h"
-#include "manager.h"
+    #include <wx/checkbox.h>
+    #include <wx/filefn.h>
+    #include <wx/filename.h>
+    #include <wx/textctrl.h>
+    #include <wx/timer.h>
+    #include <wx/xrc/xmlres.h>
+    #include "cbeditor.h"
+    #include "cbproject.h"
+    #include "configmanager.h"
+    #include "editormanager.h"
+    #include "globals.h"
+    #include "licenses.h"
+    #include "pluginmanager.h"
+    #include "projectmanager.h"
+    #include "manager.h"
+    #include "sdk_events.h"
 #endif
+
 #include <wx/choice.h>
 #include "projectloader.h"
 #include "autosave.h"

@@ -63,6 +63,10 @@
     #include <winbase.h> //For GetShortPathName()...only for windows systems
 #endif
 
+#ifndef CB_PRECOMP
+    #include "cbproject.h"
+#endif
+
 #define implement_debugger_toolbar
 
 // valid debugger command constants

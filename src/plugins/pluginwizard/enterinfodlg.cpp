@@ -24,13 +24,14 @@
 * $HeadURL$
 */
 #if CB_PRECOMP
-#include "sdk.h"
+    #include "sdk.h"
 #else
-#include <wx/intl.h>
-#include <wx/textctrl.h>
-#include <wx/xrc/xmlres.h>
-#include "manager.h"
+    #include <wx/intl.h>
+    #include <wx/textctrl.h>
+    #include <wx/xrc/xmlres.h>
+    #include "manager.h"
 #endif
+
 #include "enterinfodlg.h"
 
 BEGIN_EVENT_TABLE(EnterInfoDlg, wxDialog)
@@ -40,7 +41,7 @@ END_EVENT_TABLE()
 EnterInfoDlg::EnterInfoDlg(const PluginInfo& info)
 {
 	m_Info = info;
-	wxXmlResource::Get()->LoadDialog(this, Manager::Get()->GetAppWindow(), _T("dlgPluginInfo"));
+	wxXmlResource::Get()->LoadDialog(this, (wxWindow*)Manager::Get()->GetAppWindow(), _T("dlgPluginInfo"));
 }
 
 EnterInfoDlg::~EnterInfoDlg()

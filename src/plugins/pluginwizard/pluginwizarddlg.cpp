@@ -48,7 +48,7 @@ END_EVENT_TABLE()
 
 PluginWizardDlg::PluginWizardDlg()
 {
-	wxXmlResource::Get()->LoadDialog(this, Manager::Get()->GetAppWindow(), _T("dlgNewPlugin"));
+	wxXmlResource::Get()->LoadDialog(this, (wxWindow*)Manager::Get()->GetAppWindow(), _T("dlgNewPlugin"));
 }
 
 PluginWizardDlg::~PluginWizardDlg()

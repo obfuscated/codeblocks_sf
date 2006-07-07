@@ -7,6 +7,8 @@
     #include <scriptingmanager.h>
     #include <compilerfactory.h>
     #include <compiler.h>
+    #include <macrosmanager.h>
+    #include <cbproject.h>
 #endif
 #include <sqplus.h>
 

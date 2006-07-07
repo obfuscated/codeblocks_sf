@@ -8,6 +8,10 @@
 #include "manager.h"
 #include "projectmanager.h"
 
+#ifndef CB_PRECOMP
+    #include "cbproject.h"
+#endif
+
 DebuggerState::DebuggerState(DebuggerGDB* plugin)
     : m_pPlugin(plugin),
     m_pDriver(0),
