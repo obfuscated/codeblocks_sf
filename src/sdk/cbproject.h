@@ -9,10 +9,7 @@
 #include "openfilestree.h"
 #include "compiletargetbase.h"
 #include "cbplugin.h"
-
-#ifndef CB_PRECOMP
-    #include "projectbuildtarget.h"
-#endif
+#include "projectbuildtarget.h"
 
 // forward decl
 class cbProject;

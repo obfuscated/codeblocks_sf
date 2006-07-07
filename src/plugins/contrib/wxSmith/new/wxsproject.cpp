@@ -387,7 +387,7 @@ void wxsProject::Configure()
                 _T(""), _T("main.cpp"), _T("cpp"),
                 _("C++ source files (*.cpp)|*.cpp|"
                   "All files (*)|*"),
-                wxOPEN|wxFILE_MUST_EXIST);
+                wxOPEN|wxFILE_MUST_EXIST|wxHIDE_READONLY);
             if ( NewFileName.empty() )
             {
                 return;

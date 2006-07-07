@@ -145,7 +145,7 @@ void wxsProjectConfigurationDlg::OnButton1Click(wxCommandEvent& event)
         _("XRC files (*.xrc)|*.xrc|"
           "Zipped files (*.zip)|*.zip|"
           "All files (*)|*"),
-        wxOPEN|wxFILE_MUST_EXIST);
+        wxOPEN|wxFILE_MUST_EXIST|wxHIDE_READONLY);
 
     if ( !FileName.empty() )
     {
