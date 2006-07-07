@@ -412,7 +412,8 @@ bool CodeBlocksApp::OnInit()
         try
         {
             Manager::Get()->GetScriptingManager()->LoadScript(_T("startup.script"));
-            SqPlus::SquirrelFunction<void>("main")();
+            SqPlus::SquirrelFunction<void> f("main");
+            f();
         }
         catch (SquirrelError& exception)
         {

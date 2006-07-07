@@ -18,6 +18,7 @@
     #include <wx/spinctrl.h>
     #include <wx/textctrl.h>
     #include <wx/wxscintilla.h>
+    #include "editorcolourset.h"
 #endif
 
 #include "editkeywordsdlg.h"

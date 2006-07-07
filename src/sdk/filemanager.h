@@ -1,7 +1,12 @@
 #ifndef FILEMANAGER_H
 #define FILEMANAGER_H
 
-#include <sdk_precomp.h>
+#include <wx/thread.h>
+#include <wx/string.h>
+#include <wx/log.h>
+
+#include "backgroundthread.h"
+
 #undef new
 #include <deque>
 #include <memory>

@@ -39,6 +39,7 @@
     #include "configmanager.h"
     #include "pipedprocess.h"
     #include "globals.h"
+    #include "sdk_events.h"
 #endif
 
 #include <wx/mdi.h>

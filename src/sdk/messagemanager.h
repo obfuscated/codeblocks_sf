@@ -11,7 +11,6 @@
 
 #include "settings.h"
 #include "manager.h"
-#include "messagelog.h"
 #include <wx/hashmap.h>
 #include <wx/menu.h>
 #include <wx/dialog.h>
@@ -29,6 +28,8 @@
 // DBGLOG("This is a test %s", "hi!")
 // LOGGER->SwitchTo(m_PageIndex)
 // LOGSTREAM << "Logged to standard log (debug)\n"
+
+class MessageLog;
 
 struct LogStruct
 {

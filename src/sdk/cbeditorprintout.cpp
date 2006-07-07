@@ -13,8 +13,9 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <manager.h>
-    #include <messagemanager.h>
+    #include "manager.h"
+    #include "messagemanager.h"
+    #include "cbeditor.h"
 #endif
 
 #include "cbeditorprintout.h"

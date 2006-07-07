@@ -28,6 +28,9 @@
 
 #ifndef CB_PRECOMP
     #include "sdk_events.h"
+    #include "cbproject.h"
+    #include "editorbase.h"
+    #include "cbplugin.h"
 #endif
 
 

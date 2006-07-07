@@ -4,7 +4,8 @@
 #include <wx/dialog.h>
 #include <wx/intl.h>
 #include "settings.h"
-#include "cbeditor.h"
+
+class cbStyledTextCtrl;
 
 enum ConfirmResponse
 {
@@ -19,7 +20,7 @@ enum ConfirmResponse
 class ConfirmReplaceDlg : public wxDialog
 {
 	public:
-		ConfirmReplaceDlg(wxWindow* parent, bool replaceInFiles = false, 
+		ConfirmReplaceDlg(wxWindow* parent, bool replaceInFiles = false,
             const wxString& label = _("Replace this occurrence?"));
 		~ConfirmReplaceDlg();
 		void OnYes(wxCommandEvent& event);
@@ -29,7 +30,7 @@ class ConfirmReplaceDlg : public wxDialog
 		void OnAll(wxCommandEvent& event);
 		void OnCancel(wxCommandEvent& event);
 		void CalcPosition(cbStyledTextCtrl* ed);
-		
+
 	private:
 		DECLARE_EVENT_TABLE()
 };

@@ -1,10 +1,10 @@
 #ifndef COMPILERCOMMANDGENERATOR_H
 #define COMPILERCOMMANDGENERATOR_H
 
-#include "settings.h"
 #include <wx/string.h>
 #include <wx/hashmap.h>
-#include <compiletargetbase.h>
+#include "settings.h"
+#include "compiletargetbase.h"
 
 class cbProject;
 class ProjectBuildTarget;

@@ -2,7 +2,7 @@
 #define EDITPATHDLG_H
 
 #include <wx/dialog.h>
-#include "globals.h"
+#include <wx/intl.h>
 
 class EditPathDlg : public wxDialog
 {

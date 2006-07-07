@@ -15,18 +15,19 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-#include "uservarmanager.h"
-#include "configmanager.h"
-#include "messagemanager.h"
-#include "projectmanager.h"
-#include "manager.h"
-#include "cbexception.h"
-#include "globals.h"
+    #include "uservarmanager.h"
+    #include "configmanager.h"
+    #include "messagemanager.h"
+    #include "projectmanager.h"
+    #include "macrosmanager.h"
+    #include "manager.h"
+    #include "cbexception.h"
+    #include "globals.h"
 
-#include <wx/dialog.h>
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/textctrl.h>
+    #include <wx/dialog.h>
+    #include <wx/intl.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/textctrl.h>
 #endif
 
 #include "annoyingdialog.h"

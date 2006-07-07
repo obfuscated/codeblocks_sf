@@ -34,6 +34,8 @@
     #include "scriptingmanager.h"
     #include "compilerfactory.h"
     #include "globals.h"
+    #include "cbproject.h"
+    #include "cbplugin.h"
 
     #include <wx/xrc/xmlres.h>
     #include <wx/treectrl.h>
@@ -51,7 +53,7 @@
 #include <wx/radiobox.h>
 #include <wx/notebook.h>
 
-#include <sqplus.h>
+#include "scripting/sqplus/sqplus.h"
 
 #include "configurationpanel.h"
 #include "projectoptionsdlg.h" // class's header file

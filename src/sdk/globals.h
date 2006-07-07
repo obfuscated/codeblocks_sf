@@ -88,6 +88,10 @@ enum TemplateOutputType
     totUser ///< template is a user-saved project template
 };
 
+typedef wxString HighlightLanguage;
+#define HL_AUTO _T(" ")
+#define HL_NONE _T("  ")
+
 extern DLLIMPORT const wxString DEFAULT_WORKSPACE;
 extern DLLIMPORT const wxString DEFAULT_ARRAY_SEP;
 extern DLLIMPORT const wxString DEFAULT_CONSOLE_TERM;

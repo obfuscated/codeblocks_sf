@@ -3,7 +3,6 @@
 
 #include "settings.h"
 #include "manager.h"
-#include "cbplugin.h"
 #include <wx/event.h>
 
 //forward decls

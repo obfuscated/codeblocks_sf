@@ -1,7 +1,7 @@
 #ifndef PLUGINSCONFIGURATIONDLG_H
 #define PLUGINSCONFIGURATIONDLG_H
 
-#include  "settings.h"
+#include "settings.h"
 #include <wx/dialog.h>
 
 /*

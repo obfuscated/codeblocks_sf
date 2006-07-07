@@ -36,7 +36,7 @@
 #include <string>
 #endif
 
-#include <tinyxml/tinywxuni.h>
+#include "tinyxml/tinywxuni.h"
 
 wxString ConfigManager::app_path = wxEmptyString;
 wxString ConfigManager::data_path = wxEmptyString;

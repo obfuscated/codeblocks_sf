@@ -6,7 +6,6 @@
 #include "settings.h"
 #include "manager.h"
 #include "menuitemsmanager.h"
-#include "sdk_events.h"
 
 class Tool
 {
@@ -35,6 +34,7 @@ class wxMenuBar;
 class wxMenu;
 class wxMenuItem;
 class PipedProcess;
+class CodeBlocksEvent;
 
 class DLLIMPORT ToolsManager : public Mgr<ToolsManager>, public wxEvtHandler
 {

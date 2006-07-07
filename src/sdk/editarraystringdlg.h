@@ -2,6 +2,7 @@
 #define EDITARRAYSTRINGDLG_H
 
 #include <wx/dialog.h>
+#include <wx/arrstr.h>
 #include "settings.h"
 
 class DLLIMPORT EditArrayStringDlg : public wxDialog

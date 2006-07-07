@@ -12,7 +12,8 @@
 #include "scriptingmanager.h"
 #include "filefilters.h"
 
-#include <sqplus.h>
+#include "scripting/bindings/sc_base_types.h"
+#include "scripting/sqplus/sqplus.h"
 
 CompilerCommandGenerator::CompilerCommandGenerator()
 {
@@ -255,7 +256,8 @@ void CompilerCommandGenerator::DoBuildScripts(CompileOptionsBase* base, const wx
         Manager::Get()->GetScriptingManager()->LoadScript(scripts[i]);
         try
         {
-            SqPlus::SquirrelFunction<void>(cbU2C(funcName))(base);
+            SqPlus::SquirrelFunction<void> f(cbU2C(funcName));
+            f(base);
         }
         catch (SquirrelError& e)
         {

@@ -44,6 +44,8 @@
     #include "editormanager.h"
     #include "configmanager.h"
     #include "compilerfactory.h"
+    #include "projectbuildtarget.h"
+    #include "projectfile.h"
 #endif
 
 #include <map>

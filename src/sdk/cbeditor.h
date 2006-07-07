@@ -1,15 +1,14 @@
 #ifndef CBEDITOR_H
 #define CBEDITOR_H
 
-#include <wx/wxscintilla.h>
 #include <wx/hashmap.h>
 #include <wx/datetime.h>
 #include <wx/fontmap.h>
 
+#include "wx/wxscintilla.h"
 #include "settings.h"
 #include "editorbase.h"
 #include "printing_types.h"
-#include "editorcolourset.h"
 
 extern const wxString g_EditorModified;
 
@@ -34,12 +33,14 @@ class cbStyledTextCtrl : public wxScintilla
 
 /** @brief A file editor
   *
-  * This class represents one editor in Code::Blocks. It holds all the necessary
+  * This class represents one builtin editor in Code::Blocks. It holds all the necessary
   * information about an editor. When you want to access a Code::Blocks editor,
   * this is the class you want to get at ;)\n
+  *
   * To do this, use Manager::Get()->GetEditorManager() functions.
-  * @note This class descends from wxPanel, so it provides all wxPanel methods
-  * as well...
+  *
+  * The actual editor component used is Scintilla and it can be accessed through
+  * the member function GetControl().
   */
 class DLLIMPORT cbEditor : public EditorBase
 {
@@ -65,7 +66,9 @@ class DLLIMPORT cbEditor : public EditorBase
 		/** cbEditor destructor. */
 		~cbEditor();
 
+        /** Don't use this. It throws an exception if you do. */
         cbEditor(const cbEditor& rhs) : EditorBase(rhs) { cbThrow(_T("Can't call cbEditor's copy ctor!!!")); }
+        /** Don't use this. It throws an exception if you do. */
         virtual void operator=(const cbEditor& rhs){ cbThrow(_T("Can't assign an cbEditor* !!!")); }
 
 		// properties
@@ -79,14 +82,17 @@ class DLLIMPORT cbEditor : public EditorBase
 		  * because it might be invalid at any later time...
 		  */
         cbStyledTextCtrl* GetControl() const;
+
 		/** Returns a pointer to the left (or top) split-view cbStyledTextCtrl.
 		  * This function always returns a valid pointer.
 		  */
         cbStyledTextCtrl* GetLeftSplitViewControl() const { return m_pControl; }
+
 		/** Returns a pointer to the right (or bottom) split-view cbStyledTextCtrl.
 		  * This function may return NULL if the editor is not split.
 		  */
         cbStyledTextCtrl* GetRightSplitViewControl() const { return m_pControl2; }
+
         /** Returns the state of split-view for this editor. */
         SplitType GetSplitType() const { return m_SplitType; }
 
@@ -95,23 +101,29 @@ class DLLIMPORT cbEditor : public EditorBase
 		  * should delete the editor...
 		  */
 		bool IsOK() const { return m_IsOK; }
+
 		/** Sets the editor title. For tabbed interface, it sets the corresponding
 		  * tab text, while for MDI interface it sets the MDI window title...
 		  */
 		void SetEditorTitle(const wxString& title);
+
 		/** Returns true if editor is modified, false otherwise */
 		bool GetModified() const;
+
 		/** Set the editor's modification state to \c modified. */
 		void SetModified(bool modified = true);
+
 		/** Set the ProjectFile pointer associated with this editor. All editors
 		  * which belong to a project file, should have this set. All others should return NULL.
 		  * Optionally you can preserve the "modified" flag of the file.
 		  */
 		void SetProjectFile(ProjectFile* project_file,bool preserve_modified = false);
+
 		/** Read the ProjectFile pointer associated with this editor. All editors
 		  * which belong to a project file, have this set. All others return NULL.
 		  */
 		ProjectFile* GetProjectFile() const { return m_pProjectFile; }
+
 		/** Updates the associated ProjectFile object with the editor's caret
 		  * position, top visible line and its open state. Used in devProject
 		  * layout information, so that each time the user opens a project
@@ -119,48 +131,68 @@ class DLLIMPORT cbEditor : public EditorBase
 		  * closed.
 		  */
 		void UpdateProjectFile();
+
 		/** Save editor contents. Returns true on success, false otherwise. */
 		bool Save();
+
 		/** Save editor contents under a different filename. Returns true on success, false otherwise. */
 		bool SaveAs();
+
 		/** Unimplemented */
 		bool RenameTo(const wxString& filename, bool deleteOldFromDisk = false);
+
 		/** Fold all editor folds (hides blocks of code). */
 		void FoldAll();
+
 		/** Unfold all editor folds (shows blocks of code). */
 		void UnfoldAll();
+
 		/** Toggle all editor folds (inverts the show/hide state of blocks of code). */
 		void ToggleAllFolds();
+
 		/** Folds the block containing \c line. If \c line is -1, folds the block containing the caret. */
 		void FoldBlockFromLine(int line = -1);
+
 		/** Unfolds the block containing \c line. If \c line is -1, unfolds the block containing the caret. */
 		void UnfoldBlockFromLine(int line = -1);
+
 		/** Toggles folding of the block containing \c line. If \c line is -1, toggles folding of the block containing the caret. */
 		void ToggleFoldBlockFromLine(int line = -1);
+
 		/** Set the colour set to use. */
 		void SetColourSet(EditorColourSet* theme);
+
 		/** Get the colour set in use. */
 		EditorColourSet* GetColourSet() const { return m_pTheme; }
+
 		/** Jumps to the matching brace (if there is one). */
 		void GotoMatchingBrace();
+
 		/** Highlights the brace pair (one of the braces must be under the cursor) */
 		void HighlightBraces();
+
         /** Returns the specified line's (0-based) indentation (whitespace) in spaces. If line is -1, it uses the current line */
         int GetLineIndentInSpaces(int line = -1) const;
+
         /** Returns the specified line's (0-based) indentation (whitespace) string. If line is -1, it uses the current line */
         wxString GetLineIndentString(int line = -1) const;
+
         /** Returns the last modification time for the file. Used to detect modifications outside the editor. */
         wxDateTime GetLastModificationTime() const { return m_LastModified; }
+
         /** Sets the last modification time for the file to 'now'. Used to detect modifications outside the editor. */
         void Touch();
+
         /** Reloads the file from disk. @return True on success, False on failure. */
         bool Reload(bool detectEncoding = true);
+
         /** Print the file.
           * @param selectionOnly Should the selected text be printed only?
           * @param pcm The colour mode to use when printing
           * @param line_numbers Print the line numbers of file, too.
           */
         void Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers);
+
         /** Try to auto-complete the current word.
           *
           * This has nothing to do with code-completion plugins. Editor auto-completion
@@ -174,37 +206,52 @@ class DLLIMPORT cbEditor : public EditorBase
           * dialog.
           */
 		void AutoComplete();
+
         /** Move the caret at the specified line.
           * @param line Line to move caret to.
           * @param centreOnScreen If true (default), tries to bring the specified line to the centre of the editor.*/
         void GotoLine(int line, bool centreOnScreen = true);
+
         /** Add debugger breakpoint at specified line. If @c line is -1, use current line. */
         bool AddBreakpoint(int line = -1, bool notifyDebugger = true);
+
         /** Remove debugger breakpoint at specified line. If @c line is -1, use current line. */
         bool RemoveBreakpoint(int line = -1, bool notifyDebugger = true);
+
         /** Toggle debugger breakpoint at specified line. If @c line is -1, use current line. */
         void ToggleBreakpoint(int line = -1, bool notifyDebugger = true);
+
         /** Does @c line has debugger breakpoint? If @c line is -1, use current line. */
         bool HasBreakpoint(int line) const;
+
         /** Go to next debugger breakpoint. */
         void GotoNextBreakpoint();
+
         /** Go to previous debugger breakpoint. */
         void GotoPreviousBreakpoint();
+
         /** Toggle bookmark at specified line. If @c line is -1, use current line. */
         void ToggleBookmark(int line = -1);
+
         /** Does @c line has bookmark? */
         bool HasBookmark(int line) const;
+
         /** Go to next bookmark. */
         void GotoNextBookmark();
+
         /** Go to previous bookmark. */
         void GotoPreviousBookmark();
+
         /** Highlight the line the debugger will execute next. */
         void SetDebugLine(int line);
+
         /** Highlight the specified line as error. */
         void SetErrorLine(int line);
+
         /** Split the editor window.
           * @param split The type of split: horizontal or vertical. */
         void Split(SplitType split);
+
         /** Unsplit the editor window. */
         void Unsplit();
 

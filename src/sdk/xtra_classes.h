@@ -8,7 +8,7 @@
   * This file is distributed under the wxWindows license
   */
 
-#include <settings.h>
+#include "settings.h"
 #include <wx/panel.h>
 #include <wx/splitter.h>
 #include <wx/sizer.h>

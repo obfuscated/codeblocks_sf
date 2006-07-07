@@ -2,13 +2,12 @@
 #define PROJECTOPTIONSDLG_H
 
 #include "settings.h"
-#include "cbproject.h"
-#include "cbplugin.h"
-
 #include <wx/dialog.h>
 
 class wxTreeEvent;
 class wxSpinEvent;
+class cbProject;
+class cbCompilerPlugin;
 
 /*
  * No description

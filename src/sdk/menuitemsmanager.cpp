@@ -11,10 +11,7 @@
 */
 
 #include "sdk_precomp.h"
-
-#ifndef CB_PRECOMP
-    #include "menuitemsmanager.h"
-#endif
+#include "menuitemsmanager.h"
 
 
 MenuItemsManager::MenuItemsManager()

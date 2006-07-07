@@ -5,6 +5,6 @@
 #ifndef SDK_H
 #define SDK_H
 
-#include <sdk_common.h>
+#include "sdk_common.h"
 
 #endif // SDK_H

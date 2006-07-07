@@ -32,6 +32,7 @@
     #include <wx/filename.h>
     #include <wx/msgdlg.h>
     #include <wx/log.h>
+    #include <wx/dir.h>
 
     #include "templatemanager.h"
     #include "manager.h"
@@ -41,7 +42,7 @@
     #include "cbproject.h"
     #include "globals.h"
     #include "compilerfactory.h"
-    #include <wx/dir.h>
+    #include "cbplugin.h"
 #endif
 
 #include <wx/filedlg.h>

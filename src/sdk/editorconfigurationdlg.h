@@ -4,7 +4,6 @@
 #include <wx/dialog.h>
 #include <wx/arrstr.h>
 #include "settings.h"
-#include "editormanager.h"
 
 // forward decls
 class cbStyledTextCtrl;

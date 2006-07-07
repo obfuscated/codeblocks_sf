@@ -18,7 +18,7 @@
     #include <wx/button.h>
     #include <wx/msgdlg.h>
     #include <wx/listbox.h>
-    #include <globals.h>
+    #include "globals.h"
 #endif
 
 #include "editarraystringdlg.h"

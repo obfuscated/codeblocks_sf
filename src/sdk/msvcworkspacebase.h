@@ -2,9 +2,7 @@
 #define MSVCWORKSPACEBASE_H
 
 #include <wx/version.h>
-#if wxCHECK_VERSION(2, 5, 0)
-    #include <wx/arrstr.h>
-#endif
+#include <wx/arrstr.h>
 #include <wx/hashmap.h>
 
 class cbProject;

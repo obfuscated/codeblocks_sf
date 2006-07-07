@@ -91,7 +91,8 @@ void Wiz::OnAttach()
     Manager::Get()->GetScriptingManager()->LoadScript(m_TemplatePath + _T("config.script"));
     try
     {
-        SqPlus::SquirrelFunction<void>("RegisterWizards")();
+        SqPlus::SquirrelFunction<void> f("RegisterWizards");
+        f();
     }
     catch (SquirrelError& e)
     {
@@ -218,7 +219,8 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
     // call BeginWizard()
     try
     {
-        SqPlus::SquirrelFunction<void>("BeginWizard")();
+        SqPlus::SquirrelFunction<void> f("BeginWizard");
+        f();
     }
     catch (SquirrelError& e)
     {
@@ -327,7 +329,8 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
     wxString srcdir;
     try
     {
-        srcdir = SqPlus::SquirrelFunction<wxString&>("GetFilesDir")();
+        SqPlus::SquirrelFunction<wxString&> f("GetFilesDir");
+        srcdir = f();
         if (!srcdir.IsEmpty())
         {
             // now break them up (remember: semicolon-separated list of dirs)
@@ -351,7 +354,8 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
     // call SetupProject()
     try
     {
-        if (!SqPlus::SquirrelFunction<bool>("SetupProject")(theproject))
+        SqPlus::SquirrelFunction<bool> f("SetupProject");
+        if (!f(theproject))
         {
             cbMessageBox(wxString::Format(_("Couldn't setup project options:\n%s"),
                                         prjdir.c_str()),
@@ -401,7 +405,8 @@ CompileTargetBase* Wiz::RunTargetWizard(wxString* pFilename)
 //    wxString srcdir;
 //    try
 //    {
-//        srcdir = SqPlus::SquirrelFunction<wxString&>("GetFilesDir")();
+//        SqPlus::SquirrelFunction<wxString&> f("GetFilesDir");
+//        srcdir = f();
 //        if (!srcdir.IsEmpty())
 //        {
 //            // now break them up (remember: semicolon-separated list of dirs)
@@ -422,7 +427,8 @@ CompileTargetBase* Wiz::RunTargetWizard(wxString* pFilename)
     // call SetupTarget()
     try
     {
-        if (!SqPlus::SquirrelFunction<bool>("SetupTarget")(target, GetTargetEnableDebug()))
+        SqPlus::SquirrelFunction<bool> f("SetupTarget");
+        if (!f(target, GetTargetEnableDebug()))
         {
             cbMessageBox(_("Couldn't setup target options:"), _("Error"), wxICON_ERROR);
             Clear();
@@ -443,7 +449,8 @@ CompileTargetBase* Wiz::RunFilesWizard(wxString* pFilename)
 {
     try
     {
-        wxString files = SqPlus::SquirrelFunction<wxString&>("CreateFiles")();
+        SqPlus::SquirrelFunction<wxString&> f("CreateFiles");
+        wxString files = f();
         if (files.IsEmpty())
             cbMessageBox(_("Wizard failed..."), _("Error"), wxICON_ERROR);
         else
@@ -464,7 +471,8 @@ CompileTargetBase* Wiz::RunCustomWizard(wxString* pFilename)
 {
     try
     {
-        if (!SqPlus::SquirrelFunction<bool>("SetupCustom")())
+        SqPlus::SquirrelFunction<bool> f("SetupCustom");
+        if (!f())
             cbMessageBox(_("Wizard failed..."), _("Error"), wxICON_ERROR);
     }
     catch (SquirrelError& e)

@@ -13,7 +13,7 @@
 #include "sdk_precomp.h"
 #include "editor_hooks.h"
 #include "cbeditor.h"
-#include <wx/wxscintilla.h>
+#include "wx/wxscintilla.h"
 
 #include <map>
 

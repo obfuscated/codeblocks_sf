@@ -24,7 +24,7 @@
     #include <wx/wfstream.h>
 #endif
 
-#include <wxFlatNotebook.h>
+#include "wxFlatNotebook/wxFlatNotebook.h"
 
 // needed for initialization of variables
 int editorbase_RegisterId(int id)
@@ -132,12 +132,12 @@ bool EditorBase::Close()
     return true;
 }
 
-bool EditorBase::IsBuiltinEditor()
+bool EditorBase::IsBuiltinEditor() const
 {
     return m_IsBuiltinEditor;
 }
 
-bool EditorBase::ThereAreOthers()
+bool EditorBase::ThereAreOthers() const
 {
     bool hasOthers = false;
     hasOthers = Manager::Get()->GetEditorManager()->GetEditorsCount() > 1;

@@ -92,26 +92,32 @@
     // basic headers
     #include "settings.h"
     #include "globals.h"
-    #include "licenses.h"
     #include "sdk_events.h"
     #include "cbexception.h"
 
     // absolute base classes
     #include "editorbase.h"
+    #include "cbeditor.h"
     #include "compileoptionsbase.h"
     #include "compiletargetbase.h"
     #include "projectbuildtarget.h"
-    #include "openfilestree.h"
-    #include "cbeditor.h"
+    #include "projectfile.h"
     #include "cbplugin.h"
     #include "cbproject.h"
     #include "cbworkspace.h"
+    #include "messagelog.h"
+    #include "simpletextlog.h"
+    #include "simplelistlog.h"
+    #include "compilerfactory.h"
+    #include "compiler.h"
+    #include "workspaceloader.h"
+    #include "editorcolourset.h"
+    #include "pipedprocess.h"
 
     // managers
     #include "manager.h"
     #include "configmanager.h"
     #include "editormanager.h"
-    #include "messagelog.h"
     #include "messagemanager.h"
     #include "projectmanager.h"
     #include "menuitemsmanager.h"
@@ -122,24 +128,14 @@
     #include "pluginmanager.h"
     #include "personalitymanager.h"
     #include "uservarmanager.h"
+    #include "filemanager.h"
 
-    // other base classes
-    #include "compileroptions.h"
-    #include "compiler.h"
-    #include "compilerfactory.h"
-    #include "managedthread.h"
-    #include "pipedprocess.h"
-    #include "projectfile.h"
-    #include "simplelistlog.h"
-    #include "simpletextlog.h"
-    #include "workspaceloader.h"
+    // other base files
     #include "xtra_classes.h"
     #include "xtra_res.h"
-
     #include "safedelete.h"
-    #include "backgroundthread.h"
-    #include "filemanager.h"
     #include "infowindow.h"
+    #include "licenses.h"
 
 #endif // CB_PRECOMP
 

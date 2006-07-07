@@ -41,6 +41,7 @@
     #include "configmanager.h"
     #include "personalitymanager.h"
     #include "globals.h"
+    #include "sdk_events.h"
     #include <wx/dir.h>
 #endif
 

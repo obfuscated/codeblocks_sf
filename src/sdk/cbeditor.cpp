@@ -28,24 +28,26 @@
 
 #ifndef CB_PRECOMP
     #include <wx/filename.h>
+    #include <wx/notebook.h>
+    #include <wx/wfstream.h>
+
     #include "cbeditor.h" // class's header file
     #include "globals.h"
     #include "sdk_events.h"
-    #include "projectbuildtarget.h" // for ProjectFile*
+    #include "projectfile.h"
+    #include "projectbuildtarget.h"
+    #include "editorcolourset.h"
     #include "manager.h"
     #include "configmanager.h"
     #include "pluginmanager.h"
     #include "editormanager.h"
     #include "messagemanager.h"
     #include "cbplugin.h"
-    #include <wx/notebook.h>
-    #include <wx/wfstream.h>
 #endif
 
 #include <wx/fontutil.h>
 #include <wx/splitter.h>
 
-#include "editorcolourset.h"
 #include "cbeditorprintout.h"
 #include "editor_hooks.h"
 #include "filefilters.h"

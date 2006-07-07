@@ -34,6 +34,9 @@
     #include <wx/button.h>
     #include <wx/textctrl.h>
     #include <wx/listbox.h>
+
+    #include "projectbuildtarget.h"
+    #include "cbproject.h"
 #endif
 
 #include "selecttargetdlg.h"
@@ -91,6 +94,11 @@ void SelectTargetDlg::UpdateSelected()
 	else
 		XRCCTRL(*this, "btnOK", wxButton)->Enable(false);
 #endif
+}
+
+ProjectBuildTarget* SelectTargetDlg::GetSelectionTarget()
+{
+    return m_pProject->GetBuildTarget(m_Selected);
 }
 
 // events

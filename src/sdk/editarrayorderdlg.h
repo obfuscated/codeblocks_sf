@@ -2,6 +2,7 @@
 #define EDITARRAYORDERDLG_H
 
 #include <wx/dialog.h>
+#include <wx/arrstr.h>
 #include "settings.h"
 
 /*

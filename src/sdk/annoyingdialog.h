@@ -1,4 +1,4 @@
-#include <settings.h>
+#include "settings.h"
 #include <wx/dialog.h>
 #include <wx/string.h>
 #include <wx/artprov.h>

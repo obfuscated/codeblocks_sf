@@ -49,10 +49,6 @@ struct OptionSet
 };
 WX_DECLARE_STRING_HASH_MAP(OptionSet, OptionSetsMap);
 
-typedef wxString HighlightLanguage;
-#define HL_AUTO _T(" ")
-#define HL_NONE _T("  ")
-
 class EditorColourSet
 {
 	public:

@@ -3,7 +3,6 @@
 
 #include "settings.h"
 #include "manager.h"
-#include "macrosmanager.h"
 #include "cbexception.h"
 
 class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>

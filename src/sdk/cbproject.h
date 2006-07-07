@@ -9,11 +9,11 @@
 #include "openfilestree.h"
 #include "compiletargetbase.h"
 #include "cbplugin.h"
-#include "projectbuildtarget.h"
-#include "projectfile.h"
 
 // forward decl
 class cbProject;
+class ProjectBuildTarget;
+class ProjectFile;
 class FilesGroupsAndMasks;
 
 // hashmap for fast searches in cbProject::GetFileByFilename()
@@ -71,7 +71,7 @@ enum PCHMode
     pchSourceFile,      /// In a file alongside the source header (with .gch appended).
 };
 
-/** Represents a Code::Blocks project.
+/** @brief Represents a Code::Blocks project.
   *
   * A project is a collection of build targets and files.
   * Each project can contain any number of build targets and files.

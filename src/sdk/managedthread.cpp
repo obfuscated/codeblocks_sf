@@ -6,10 +6,7 @@
   */
 
 #include "sdk_precomp.h"
-
-#ifndef CB_PRECOMP
-    #include "managedthread.h"
-#endif
+#include "managedthread.h"
 
 #include <wx/utils.h>
 /// Keeps count of running threads

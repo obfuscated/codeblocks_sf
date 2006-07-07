@@ -1,10 +1,10 @@
 #ifndef MSVCLOADER_H
 #define MSVCLOADER_H
 
-#include "ibaseloader.h"
 #include <wx/dynarray.h>
 #include <wx/filename.h>
 #include <wx/hashmap.h>
+#include "ibaseloader.h"
 #include "compiletargetbase.h" // for target type
 
 // forward decls

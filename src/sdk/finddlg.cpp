@@ -24,9 +24,9 @@
 * $HeadURL$
 */
 
-#ifdef CB_PRECOMP
-    #include "sdk_precomp.h"
-#else
+#include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
     #include "globals.h"
     #include "configmanager.h"
     #include "manager.h"

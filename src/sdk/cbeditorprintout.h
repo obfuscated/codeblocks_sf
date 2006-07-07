@@ -2,7 +2,8 @@
 #define CBEDITORPRINTOUT_H
 
 #include <wx/print.h>
-#include "cbeditor.h"
+
+class cbStyledTextCtrl;
 
 class cbEditorPrintout : public wxPrintout
 {

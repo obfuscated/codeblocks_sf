@@ -37,6 +37,7 @@
     #include "configmanager.h"
     #include "pluginmanager.h"
     #include "cbplugin.h"
+    #include "messagelog.h"
     #include "simpletextlog.h"
     #include "globals.h"
 #endif
@@ -47,7 +48,7 @@
 #include <wx/utils.h>
 #include <wx/filedlg.h>
 
-#include <wxFlatNotebook.h>
+#include "wxFlatNotebook/wxFlatNotebook.h"
 
 // Custom window to shutdown the app when closed.
 // used for batch builds only.

@@ -17,7 +17,7 @@
     #include <wx/regex.h>
 #endif
 
-#include <sqplus.h>
+#include "scripting/sqplus/sqplus.h"
 #include "scripting/bindings/scriptbindings.h"
 
 static wxString s_ScriptErrors;

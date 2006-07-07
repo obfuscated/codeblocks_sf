@@ -1,4 +1,4 @@
-#include <sdk_precomp.h>
+#include "sdk_precomp.h"
 #include <wx/file.h>
 #include "encodingdetector.h"
 

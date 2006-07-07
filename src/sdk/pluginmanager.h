@@ -4,7 +4,6 @@
 #include <wx/dynarray.h>
 #include "settings.h"
 #include "manager.h"
-#include "sdk_events.h"
 
 //forward decls
 struct PluginInfo;
@@ -13,6 +12,7 @@ class cbConfigurationPanel;
 class wxDynamicLibrary;
 class wxMenuBar;
 class wxMenu;
+class CodeBlocksEvent;
 
 struct PluginElement
 {

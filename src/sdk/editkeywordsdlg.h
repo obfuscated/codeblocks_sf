@@ -2,10 +2,11 @@
 #define EDITKEYWORDSDLG_H
 
 #include <wx/dialog.h>
-#include "editorcolourset.h"
+#include "globals.h"
 
 class wxSpinCtrl;
 class wxTextCtrl;
+class EditorColourSet;
 
 class EditKeywordsDlg : public wxDialog
 {

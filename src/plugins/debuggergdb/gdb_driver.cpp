@@ -64,7 +64,8 @@ void GDB_driver::InitializeScripting()
     Manager::Get()->GetScriptingManager()->LoadScript(script);
     try
     {
-        SqPlus::SquirrelFunction<void>("RegisterTypes")(this);
+        SqPlus::SquirrelFunction<void> f("RegisterTypes");
+        f(this);
     }
     catch (SquirrelError e)
     {

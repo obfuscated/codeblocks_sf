@@ -14,15 +14,15 @@ class WXDLLEXPORT wxXmlResourceHandler;
 
 class wxToolBarAddOnXmlHandler : public wxXmlResourceHandler
 {
-public:
-    wxToolBarAddOnXmlHandler();
-    virtual wxObject *DoCreateResource();
-    virtual bool CanHandle(wxXmlNode *node);
+    public:
+        wxToolBarAddOnXmlHandler();
+        virtual wxObject *DoCreateResource();
+        virtual bool CanHandle(wxXmlNode *node);
 
-protected:
-    bool m_isInside;
-    bool m_isAddon;
-    wxToolBar *m_toolbar;
+    protected:
+        bool m_isInside;
+        bool m_isAddon;
+        wxToolBar *m_toolbar;
 };
 
 #endif

@@ -1,7 +1,7 @@
 #ifndef ENCODINGDETECTOR_H
 #define ENCODINGDETECTOR_H
 
-#include <settings.h>
+#include "settings.h"
 #include <wx/string.h>
 #include <wx/fontmap.h>
 

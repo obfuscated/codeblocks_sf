@@ -2,7 +2,7 @@
 #define BACKGROUNDTHREAD_H
 
 #include "sdk_precomp.h"
-#include <safedelete.h>
+#include "safedelete.h"
 
 #undef new
 #include <deque>

@@ -1,11 +1,8 @@
 #ifndef CBEXCEPTION_H
 #define CBEXCEPTION_H
 
-#include <wx/intl.h> // for _() and _T()
+#include <wx/string.h>
 #include <wx/log.h> // for wxSafeShowMessage()
-#include <globals.h>
-
-#include "configmanager.h"
 
 /**
 @brief Code::Blocks error handling unit.
@@ -15,17 +12,23 @@ cbThrow() and cbAssert().
 @note cbAssert() does nothing in release mode. For debug mode, compile with -DcbDEBUG
 */
 
+/** @brief The base Code::Blocks exception object. */
 class cbException
 {
 	public:
 		cbException(const wxString& msg, const wxString& file, int line);
 		virtual ~cbException();
+
+		/** @brief Display exception error message.
+		  * @param safe If true, wxSafeShowMessage will be used to display the error,
+          *             else a normal message box will be used.
+          */
 		void ShowErrorMessage(bool safe = true);
 
         // public members
-		wxString Message;
-		wxString File;
-		int Line;
+		wxString Message; ///< The exception's error message.
+		wxString File; ///< The file where the exception was raised.
+		int Line; ///< The line in the file where the exception was raised.
 };
 
 #ifdef wxUSE_UNICODE

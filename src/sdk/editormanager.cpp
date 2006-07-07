@@ -62,7 +62,7 @@
 #include "filefilters.h"
 #include "searchresultslog.h"
 
-#include <wxFlatNotebook.h>
+#include "wxFlatNotebook/wxFlatNotebook.h"
 
 
 //#define DONT_USE_OPENFILES_TREE

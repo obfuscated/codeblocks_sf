@@ -17,6 +17,7 @@
     #include "manager.h"
     #include "messagemanager.h"
     #include "configmanager.h"
+    #include "compiler.h"
 #endif
 
 #include "autodetectcompilers.h"

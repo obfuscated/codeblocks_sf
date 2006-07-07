@@ -553,7 +553,8 @@ class GdbCmd_Watch : public DebuggerCmd
             {
                 try
                 {
-                    m_Cmd = SqPlus::SquirrelFunction<wxString&>(cbU2C(m_Cmd))(w_type, m_pWatch->keyword, watch->array_start, watch->array_count);
+                    SqPlus::SquirrelFunction<wxString&> f(cbU2C(m_Cmd));
+                    m_Cmd = f(w_type, m_pWatch->keyword, watch->array_start, watch->array_count);
                 }
                 catch (SquirrelError e)
                 {
@@ -569,7 +570,8 @@ class GdbCmd_Watch : public DebuggerCmd
             {
                 try
                 {
-                    w << SqPlus::SquirrelFunction<wxString&>(cbU2C(m_ParseFunc))(output, m_pWatch->array_start);
+                    SqPlus::SquirrelFunction<wxString&> f(cbU2C(m_ParseFunc));
+                    w << f(output, m_pWatch->array_start);
                 }
                 catch (SquirrelError e)
                 {
@@ -650,7 +652,8 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
             {
                 try
                 {
-                    m_Cmd = SqPlus::SquirrelFunction<wxString&>(cbU2C(m_Cmd))(w_type, what, 0, 0);
+                    SqPlus::SquirrelFunction<wxString&> f(cbU2C(m_Cmd));
+                    m_Cmd = f(w_type, what, 0, 0);
                 }
                 catch (SquirrelError e)
                 {
@@ -671,8 +674,8 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
     		    {
     		        try
     		        {
-                        tip << SqPlus::SquirrelFunction<wxString&>(cbU2C(m_ParseFunc))(output, 0);
-//                        tip << SqPlus::SquirrelFunction<wxString>(cbU2C(m_ParseFunc))(output, 0);
+                        SqPlus::SquirrelFunction<wxString&> f(cbU2C(m_ParseFunc));
+                        tip << f(output, 0);
                     }
                     catch (SquirrelError e)
                     {

@@ -3,9 +3,11 @@
 
 #include <wx/event.h>
 #include "settings.h"
-#include "cbproject.h"
-#include "editorbase.h"
-#include "cbplugin.h"
+#include "blockallocated.h"
+
+class cbProject;
+class EditorBase;
+class cbPlugin;
 
 /** A generic Code::Blocks event. */
 class EVTIMPORT CodeBlocksEvent : public wxCommandEvent, public BlockAllocated<CodeBlocksEvent, 75>

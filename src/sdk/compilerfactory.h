@@ -2,7 +2,8 @@
 #define COMPILERFACTORY_H
 
 #include "settings.h"
-#include "compiler.h"
+
+class Compiler;
 
 // Well, not really a factory ;)
 

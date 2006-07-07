@@ -1,11 +1,12 @@
 #ifndef CBTHREADPOOL_H
 #define CBTHREADPOOL_H
 
-#include "cbthreadedtask.h"
 #include <wx/thread.h>
 #include <wx/event.h>
 #include <vector>
 #include <list>
+
+#include "cbthreadedtask.h"
 #include "settings.h"
 
 // -------------------------------------------------------------------

@@ -14,9 +14,11 @@
 
 #ifndef CB_PRECOMP
     #include "cbexception.h"
+    #include "globals.h"
+    #include "configmanager.h"
 #endif
 
-
+#include <wx/intl.h>
 
 cbException::cbException(const wxString& msg, const wxString& file, int line)
         : Message(msg),
