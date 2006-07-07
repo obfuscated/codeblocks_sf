@@ -65,6 +65,10 @@
 
 #include "appglobals.h"
 
+#ifndef CB_PRECOMP
+    #include "xtra_res.h"
+#endif
+
 namespace
 {
 #if wxUSE_CMDLINE_PARSER

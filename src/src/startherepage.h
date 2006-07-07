@@ -1,7 +1,9 @@
 #ifndef STARTHEREPAGE_H
 #define STARTHEREPAGE_H
 
-//#include "editorbase.h"
+#ifndef CB_PRECOMP
+    #include <editorbase.h>
+#endif
 
 extern const wxString g_StartHereTitle;
 extern int idStartHerePageLink; // used to message the main frame

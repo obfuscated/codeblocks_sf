@@ -1,13 +1,16 @@
+#include <wx/filedlg.h>
+
 #include <sdk.h>
+#include <sqplus.h>
+
+#include "scriptconsole.h"
+
 #ifndef CB_PRECOMP
     #include <globals.h>
     #include <manager.h>
     #include <configmanager.h>
+    #include <scriptingmanager.h>
 #endif
-#include <wx/filedlg.h>
-#include <sqplus.h>
-
-#include "scriptconsole.h"
 
 static ScriptConsole* s_Console = 0;
 static SQPRINTFUNCTION s_OldPrintFunc = 0;
