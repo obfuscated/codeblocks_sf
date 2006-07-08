@@ -698,7 +698,7 @@ void EditorColourSet::SetKeywords(HighlightLanguage lang, int idx, const wxStrin
         wxChar c;
         size_t len = 0;
 
-        while(c = *src)
+        while((c = *src))
         {
             ++src;
             if(c > _T(' '))

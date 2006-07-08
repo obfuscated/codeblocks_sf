@@ -79,7 +79,7 @@ void URLLoader::operator()()
     char tmp[8192];
     size_t chunk = 0;
 
-    while(chunk = stream->Read(tmp, sizeof(tmp)).LastRead())
+    while((chunk = stream->Read(tmp, sizeof(tmp)).LastRead()))
         buffer.Append(tmp, chunk);
 
     data = buffer.Data();

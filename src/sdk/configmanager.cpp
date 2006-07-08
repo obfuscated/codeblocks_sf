@@ -59,7 +59,7 @@ inline void ConfigManager::Collapse(wxString& str) const
     wxChar c;
     size_t len = 0;
 
-    while(c = *src)
+    while((c = *src))
     {
         ++src;
 
