@@ -1569,7 +1569,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
     // keep a copy of the find struct
     cbFindReplaceData dataCopy = *data;
 
-    for (int i = 0; i<filesCount || stop; ++i)
+    for (int i = 0; i<filesCount && !stop; ++i)
     {
         cbEditor *ed = NULL;
         cbStyledTextCtrl *control = NULL;
