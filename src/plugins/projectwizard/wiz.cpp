@@ -28,6 +28,7 @@
 #include <projectmanager.h>
 #include <scriptingmanager.h>
 #include <compilerfactory.h>
+#include <compiler.h>
 #include <projectbuildtarget.h>
 #include <filefilters.h>
 #include <licenses.h> // defines some common licenses (like the GPL)

@@ -6,6 +6,7 @@
 #include <wx/hashset.h>
 
 #include "settings.h"
+#include "globals.h"
 
 #include "tinyxml/tinystr.h"
 #include "tinyxml/tinyxml.h"
