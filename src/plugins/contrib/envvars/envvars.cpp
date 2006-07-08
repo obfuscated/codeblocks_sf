@@ -75,8 +75,10 @@ void EnvVars::OnAttach()
 	if (Manager::Get() && Manager::Get()->GetMessageManager());
     Manager::Get()->GetMessageManager()->DebugLog(_T("OnAttach"));
 #endif
-
-  Manager::Get()->Loadxrc(_T("/envvars.zip#zip:envvars.xrc"));
+    if(!Manager::LoadResource(_T("envvars.zip")))
+    {
+        NotifyMissingFile(_T("envvars.zip"));
+    }
 
   // load and apply configuration (to application only)
   ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));

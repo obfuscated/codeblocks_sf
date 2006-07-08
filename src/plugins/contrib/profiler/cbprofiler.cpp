@@ -39,10 +39,10 @@ CB_IMPLEMENT_PLUGIN(CBProfiler, "Code profiler");
 CBProfiler::CBProfiler()
 {
     //ctor
-    wxFileSystem::AddHandler(new wxZipFSHandler);
-    wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::GetDataFolder();
-    wxXmlResource::Get()->Load(resPath + _T("/profiler.zip#zip:*.xrc"));
+    if(!Manager::LoadResource(_T("profiler.zip")))
+    {
+        NotifyMissingFile(_T("profiler.zip"));
+    }
 
     m_PluginInfo.name          = _T("CBProfiler");
     m_PluginInfo.title         = _("Code profiler");

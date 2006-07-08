@@ -147,8 +147,10 @@ HelpPlugin::HelpPlugin()
 : m_pMenuBar(0), m_LastId(0)
 {
   //ctor
-  wxString resPath = ConfigManager::GetDataFolder();
-  wxXmlResource::Get()->Load(resPath + _T("/help_plugin.zip#zip:*.xrc"));
+    if(!Manager::LoadResource(_T("help_plugin.zip")))
+    {
+        NotifyMissingFile(_T("help_plugin.zip"));
+    }
 
   m_PluginInfo.name = _T("HelpPlugin");
   m_PluginInfo.title = _T("Help plugin");

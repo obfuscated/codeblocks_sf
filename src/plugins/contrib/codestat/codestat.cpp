@@ -29,10 +29,10 @@ CB_IMPLEMENT_PLUGIN(CodeStat, "Code Statistics");
 
 CodeStat::CodeStat()
 {
-	wxFileSystem::AddHandler(new wxZipFSHandler);
-    wxXmlResource::Get()->InitAllHandlers();
-    wxString resPath = ConfigManager::GetDataFolder();
-    wxXmlResource::Get()->Load(resPath + _T("/codestat.zip#zip:*.xrc"));
+    if(!Manager::LoadResource(_T("codestat.zip")))
+    {
+        NotifyMissingFile(_T("codestat.zip"));
+    }
 
     m_PluginInfo.name = _T("CodeStatistics");
     m_PluginInfo.title = _("Code Statistics");

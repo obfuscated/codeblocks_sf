@@ -39,7 +39,10 @@ DevPakUpdater::DevPakUpdater()
                             "\tAll rights reserved.");
 	m_PluginInfo.license = LICENSE_GPL;
 
-    Manager::Get()->Loadxrc(_T("/devpakupdater.zip#zip:*.xrc"));
+    if(!Manager::LoadResource(_T("devpakupdater.zip")))
+    {
+        NotifyMissingFile(_T("devpakupdater.zip"));
+    }
     g_MasterPath = Manager::Get()->GetConfigManager(_T("devpak_plugin"))->Read(_T("/master_path"));
 }
 

@@ -128,7 +128,10 @@ void wxSmith::OnAttach()
 
         LeftSplitter->Split(ResourcesContainer,PropertiesContainer);
 
-        Manager::Get()->Loadxrc(_T("/wxsmith.zip#zip:*"));
+        if(!Manager::LoadResource(_T("wxsmith.zip")))
+        {
+            NotifyMissingFile(_T("wxsmith.zip"));
+        }
 
         // Initializing standard manager
 
