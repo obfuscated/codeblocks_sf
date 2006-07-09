@@ -75,10 +75,11 @@ void EnvVars::OnAttach()
 	if (Manager::Get() && Manager::Get()->GetMessageManager());
     Manager::Get()->GetMessageManager()->DebugLog(_T("OnAttach"));
 #endif
-    if(!Manager::LoadResource(_T("envvars.zip")))
-    {
-        NotifyMissingFile(_T("envvars.zip"));
-    }
+
+  if(!Manager::LoadResource(_T("envvars.zip")))
+  {
+    NotifyMissingFile(_T("envvars.zip"));
+  }
 
   // load and apply configuration (to application only)
   ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));
@@ -230,8 +231,6 @@ void EnvVarsConfigDlg::SaveSettings()
     cfg_key.Printf(_T("EnvVar%d"), i);
 		cfg->Write(cfg_key, txt);
 	}// for
-
-  plugin->OnAttach();
 }// SaveSettings
 
 void EnvVarsConfigDlg::OnAddEnvVarClick(wxCommandEvent& WXUNUSED(event))
