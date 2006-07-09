@@ -14,7 +14,6 @@ lib_LTLIBRARIES = libcompiler.la
 libcompiler_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
 libcompiler_la_LIBADD = ../../sdk/libcodeblocks.la \
-				../../sdk/wxscintilla/libwxscintilla.la \
 				depslib/src/libdepslib.la
 
 libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \

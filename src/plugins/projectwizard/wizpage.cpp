@@ -10,16 +10,17 @@
     #include <macrosmanager.h>
     #include <cbproject.h>
 #endif
-#include <sqplus.h>
+
+#include <scripting/bindings/sc_base_types.h>
 
 #include "wizpage.h"
 #include "intropanel.h"
 #include "projectpathpanel.h"
 #include "compilerpanel.h"
 #include "buildtargetpanel.h"
-#include "languagepanel.h"
 #include "filepathpanel.h"
 #include "genericselectpath.h"
+#include "genericsinglechoicelist.h"
 
 // utility function to append a path separator to the
 // string parameter, if needed.
@@ -30,12 +31,15 @@ wxString AppendPathSepIfNeeded(const wxString& path)
     return path + wxFILE_SEP_PATH;
 }
 
+// static
+PagesByName WizPageBase::s_PagesByName;
+
 ////////////////////////////////////////////////////////////////////////////////
 // WizPage
 ////////////////////////////////////////////////////////////////////////////////
 
 BEGIN_EVENT_TABLE(WizPageBase, wxWizardPageSimple)
-    EVT_WIZARD_PAGE_CHANGING(-1, WizPageBase::OnPageChanging)
+//    EVT_WIZARD_PAGE_CHANGING(-1, WizPageBase::OnPageChanging)
     EVT_WIZARD_PAGE_CHANGED(-1, WizPageBase::OnPageChanged)
 END_EVENT_TABLE()
 
@@ -43,14 +47,61 @@ WizPageBase::WizPageBase(const wxString& pageName, wxWizard* parent, const wxBit
     : wxWizardPageSimple(parent, 0, 0, bitmap),
     m_PageName(pageName)
 {
+    // register this to the static pages map
+    s_PagesByName[m_PageName] = this;
 }
 
 //------------------------------------------------------------------------------
 WizPageBase::~WizPageBase()
 {
+    // unregister this from the static pages map
+    s_PagesByName[m_PageName] = 0;
 }
 
 //------------------------------------------------------------------------------
+
+wxWizardPage* WizPageBase::GetPrev() const
+{
+    try
+    {
+        wxString sig = _T("OnGetPrevPage_") + m_PageName;
+        SqPlus::SquirrelFunction<wxString&> cb(cbU2C(sig));
+        if (cb.func.IsNull())
+            return wxWizardPageSimple::GetPrev();
+        wxString prev = cb();
+        if (prev.IsEmpty())
+            return 0;
+        return s_PagesByName[prev];
+    }
+    catch (SquirrelError& e)
+    {
+        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+    }
+    return wxWizardPageSimple::GetPrev();
+}
+
+//------------------------------------------------------------------------------
+
+wxWizardPage* WizPageBase::GetNext() const
+{
+    try
+    {
+        wxString sig = _T("OnGetNextPage_") + m_PageName;
+        SqPlus::SquirrelFunction<wxString&> cb(cbU2C(sig));
+        if (cb.func.IsNull())
+            return wxWizardPageSimple::GetNext();
+        wxString next = cb();
+        if (next.IsEmpty())
+            return 0;
+        return s_PagesByName[next];
+    }
+    catch (SquirrelError& e)
+    {
+        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+    }
+    return wxWizardPageSimple::GetNext();
+}
+
 void WizPageBase::OnPageChanging(wxWizardEvent& event)
 {
     try
@@ -607,27 +658,46 @@ void WizBuildTargetPanel::OnPageChanging(wxWizardEvent& event)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// WizLanguagePanel
+// WizGenericSingleChoiceList
 ////////////////////////////////////////////////////////////////////////////////
 
-WizLanguagePanel::WizLanguagePanel(const wxArrayString& langs, int defLang, wxWizard* parent, const wxBitmap& bitmap)
-    : WizPageBase(_T("LanguagePage"), parent, bitmap)
+WizGenericSingleChoiceList::WizGenericSingleChoiceList(const wxString& pageId, const wxString& descr, const wxArrayString& choices, int defChoice, wxWizard* parent, const wxBitmap& bitmap)
+    : WizPageBase(pageId, parent, bitmap)
 {
-    m_pLanguagePanel = new LanguagePanel(this);
-    m_pLanguagePanel->SetChoices(langs, defLang);
+    int savedValue = Manager::Get()->GetConfigManager(_T("project_wizard"))->ReadInt(_T("/generic_single_choices/") + pageId, -1);
+    if (savedValue == -1)
+        savedValue = defChoice;
+
+    m_pGenericSingleChoiceList = new GenericSingleChoiceList(this);
+    m_pGenericSingleChoiceList->SetDescription(descr);
+    m_pGenericSingleChoiceList->SetChoices(choices, savedValue);
 }
 
 //------------------------------------------------------------------------------
-WizLanguagePanel::~WizLanguagePanel()
+WizGenericSingleChoiceList::~WizGenericSingleChoiceList()
 {
 }
 
-int WizLanguagePanel::GetLanguage()
+//------------------------------------------------------------------------------
+int WizGenericSingleChoiceList::GetChoice()
 {
-    return m_pLanguagePanel->GetLanguage();
+    return m_pGenericSingleChoiceList->GetChoice();
 }
 
-void WizLanguagePanel::SetLanguage(int lang)
+//------------------------------------------------------------------------------
+void WizGenericSingleChoiceList::SetChoice(int choice)
 {
-    m_pLanguagePanel->SetLanguage(lang);
+    m_pGenericSingleChoiceList->SetChoice(choice);
+}
+
+//------------------------------------------------------------------------------
+void WizGenericSingleChoiceList::OnPageChanging(wxWizardEvent& event)
+{
+    WizPageBase::OnPageChanging(event); // let the base class handle it too
+
+    // save selection value
+    if (event.GetDirection() != 0 && event.IsAllowed())
+    {
+        Manager::Get()->GetConfigManager(_T("project_wizard"))->Write(_T("/generic_single_choices/") + m_PageName, (int)m_pGenericSingleChoiceList->GetChoice());
+    }
 }

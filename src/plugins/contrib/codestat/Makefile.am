@@ -10,8 +10,7 @@ lib_LTLIBRARIES = libcodestat.la
 
 libcodestat_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libcodestat_la_LIBADD = ../../../sdk/libcodeblocks.la \
-				../../../sdk/wxscintilla/libwxscintilla.la
+libcodestat_la_LIBADD = ../../../sdk/libcodeblocks.la
 
 libcodestat_la_SOURCES = codestatconfig.cpp \
 			codestat.cpp \

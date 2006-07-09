@@ -11,8 +11,7 @@ lib_LTLIBRARIES = libastyle.la
 
 libastyle_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libastyle_la_LIBADD = ../../sdk/libcodeblocks.la \
-				../../sdk/wxscintilla/libwxscintilla.la
+libastyle_la_LIBADD = ../../sdk/libcodeblocks.la
 
 libastyle_la_SOURCES = asstreamiterator.cpp \
       astyleconfigdlg.cpp \

@@ -1568,21 +1568,21 @@
 			<Option link="0" />
 			<Option target="Project wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\intropanel.cpp">
+		<Unit filename="plugins\projectwizard\genericsinglechoicelist.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Project wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\intropanel.h">
+		<Unit filename="plugins\projectwizard\genericsinglechoicelist.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Project wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\languagepanel.cpp">
+		<Unit filename="plugins\projectwizard\intropanel.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Project wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\languagepanel.h">
+		<Unit filename="plugins\projectwizard\intropanel.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -1756,13 +1756,13 @@
 			<Option link="0" />
 			<Option target="Project wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\wxsmith\IntroPanel.wxs">
+		<Unit filename="plugins\projectwizard\wxsmith\GenericSingleChoiceList.wxs">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Project wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\wxsmith\LanguagePanel.wxs">
+		<Unit filename="plugins\projectwizard\wxsmith\IntroPanel.wxs">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

@@ -18,8 +18,7 @@ codeblocks_LDFLAGS =
 
 codeblocks_LDADD =  -LwxAUI -lwxaui \
 			-L../sdk -lcodeblocks \
-			$(WX_LIBS) \
-			$(WX_XRC)
+			$(WX_LIBS)
 
 codeblocks_SOURCES = app.cpp \
 			appglobals.cpp \
@@ -49,5 +48,5 @@ noinst_HEADERS = app.h \
 			splashscreen.h \
 			startherepage.h
 
-EXTRADIST = associations.cpp \
+EXTRA_DIST = associations.cpp \
             associations.h

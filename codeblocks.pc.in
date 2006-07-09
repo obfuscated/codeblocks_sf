@@ -8,5 +8,5 @@ sharedir=@datadir@
 Name: codeblocks
 Description: Code::Blocks IDE
 Version: @VERSION@
-Libs: -L${libdir} -lcodeblocks -lwxscintilla
-Cflags: -I${includedir}/@PACKAGE@ @codeblocks_PCH_FLAGS@
+Libs: -L${libdir} -lcodeblocks
+Cflags: -I${includedir}/@PACKAGE@ 

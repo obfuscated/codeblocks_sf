@@ -7,8 +7,7 @@ noinst_LTLIBRARIES = libwxsmith_properties.la
 
 libwxsmith_properties_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libwxsmith_properties_la_LIBADD = ../../../../sdk/libcodeblocks.la \
-				../../../../sdk/wxscintilla/libwxscintilla.la
+libwxsmith_properties_la_LIBADD = ../../../../sdk/libcodeblocks.la
 
 libwxsmith_properties_la_SOURCES = wxs2intproperty.cpp \
 wxsadvimageproperty.cpp \

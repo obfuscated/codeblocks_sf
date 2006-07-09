@@ -2,12 +2,12 @@ INCLUDES = $(WX_CXXFLAGS) \
 			-I$(srcdir)/include \
 			-I$(srcdir)/src/scintilla/include \
 			-I$(srcdir)/src/scintilla/src
+			
+sdkdir=$(includedir)/codeblocks/wxscintilla/include/wx
 
 AM_CPPFLAGS = -DSCI_LEXER -DLINK_LEXERS -DGTK
 
-lib_LTLIBRARIES = libwxscintilla.la
-
-libwxscintilla_la_LDFLAGS = -version-info @CODEBLOCKS_VERSION_INFO@
+noinst_LTLIBRARIES = libwxscintilla.la
 
 libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 src/ScintillaWX.cpp \
@@ -89,8 +89,7 @@ src/scintilla/src/ViewStyle.cxx \
 src/scintilla/src/WindowAccessor.cxx \
 src/scintilla/src/XPM.cxx
 
-noinst_HEADERS = include/wx/wxscintilla.h \
-src/scintilla/include/Accessor.h \
+noinst_HEADERS = src/scintilla/include/Accessor.h \
 src/scintilla/include/KeyWords.h \
 src/scintilla/include/Platform.h \
 src/scintilla/include/PropSet.h \
@@ -120,6 +119,8 @@ src/scintilla/src/ViewStyle.h \
 src/scintilla/src/XPM.h \
 src/PlatWX.h \
 src/ScintillaWX.h
+
+sdk_HEADERS = include/wx/wxscintilla.h
 
 EXTRA_DIST = $(srcdir)/Readme \
 	$(srcdir)/build/BuildInfo.txt \

@@ -6,6 +6,8 @@ else
 BUILT_SOURCES = 
 endif
 
+sdkdir=$(includedir)/codeblocks
+
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			-I$(top_srcdir)/src/sdk/tinyxml \
@@ -118,7 +120,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						xtra_classes.cpp \
 						xtra_res.cpp
 
-noinst_HEADERS = annoyingdialog.h \
+ALLHEADERS = annoyingdialog.h \
 				autodetectcompilers.h \
 				backgroundthread.h \
 				base64.h \
@@ -130,6 +132,7 @@ noinst_HEADERS = annoyingdialog.h \
 				cbproject.h \
 				cbthreadedtask.h \
 				cbthreadpool.h \
+				cbthreadpool_extras.h \
 				cbworkspace.h \
 				compileoptionsbase.h \
 				compiler.h \
@@ -220,7 +223,9 @@ noinst_HEADERS = annoyingdialog.h \
 				xtra_classes.h \
 				xtra_res.h
 
-$(srcdir)/sdk.h.gch: $(srcdir)/sdk.h
+sdk_HEADERS = $(ALLHEADERS)
+
+$(srcdir)/sdk.h.gch: $(ALLHEADERS)
 	-rm -f $(srcdir)/sdk.h.gch
 	$(CXXCOMPILE) -o $(srcdir)/sdk.h.gch -xc++-header $(srcdir)/sdk.h
 

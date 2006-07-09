@@ -1,6 +1,8 @@
 #ifndef WIZPAGE_H
 #define WIZPAGE_H
 
+#include <map>
+
 #include <wx/string.h>
 #include <wx/wizard.h>
 #include <wx/panel.h>
@@ -9,9 +11,12 @@
 class ProjectPathPanel;
 class CompilerPanel;
 class BuildTargetPanel;
-class LanguagePanel;
+class GenericSingleChoiceList;
 class FilePathPanel;
 class GenericSelectPath;
+class WizPageBase;
+
+typedef std::map<wxString, WizPageBase*> PagesByName;
 
 class WizPageBase : public wxWizardPageSimple
 {
@@ -20,7 +25,11 @@ class WizPageBase : public wxWizardPageSimple
 		~WizPageBase();
 	    virtual void OnPageChanging(wxWizardEvent& event);
 	    virtual void OnPageChanged(wxWizardEvent& event);
+
+        virtual wxWizardPage* GetPrev() const;
+        virtual wxWizardPage* GetNext() const;
     protected:
+        static PagesByName s_PagesByName;
         wxString m_PageName;
     private:
 		DECLARE_EVENT_TABLE()
@@ -148,16 +157,18 @@ class WizBuildTargetPanel : public WizPageBase
     private:
 };
 
-class WizLanguagePanel : public WizPageBase
+class WizGenericSingleChoiceList : public WizPageBase
 {
 	public:
-		WizLanguagePanel(const wxArrayString& langs, int defLang, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
-		~WizLanguagePanel();
+		WizGenericSingleChoiceList(const wxString& pageId, const wxString& descr, const wxArrayString& choices, int defChoice, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
+		~WizGenericSingleChoiceList();
 
-        int GetLanguage();
-        void SetLanguage(int lang);
+        int GetChoice();
+        void SetChoice(int choice);
+
+        void OnPageChanging(wxWizardEvent& event);
     protected:
-        LanguagePanel* m_pLanguagePanel;
+        GenericSingleChoiceList* m_pGenericSingleChoiceList;
     private:
 };
 

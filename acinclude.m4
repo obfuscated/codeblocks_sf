@@ -241,7 +241,7 @@ if test "x$enable_pch" = "x" -o "x$enable_pch" = "xyes" ; then
             [
                 AC_MSG_RESULT([yes])
                 GCC_PCH=1
-                PCH_FLAGS="-DCB_PRECOMP -Winvalid-pch -fPIC -DPIC"
+                PCH_FLAGS="-DCB_PRECOMP -Winvalid-pch"
             ],
             [
                 AC_MSG_RESULT([no])

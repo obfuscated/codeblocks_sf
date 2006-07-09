@@ -10,8 +10,7 @@ lib_LTLIBRARIES = libpluginwizard.la
 
 libpluginwizard_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libpluginwizard_la_LIBADD = ../../sdk/libcodeblocks.la \
-				../../sdk/wxscintilla/libwxscintilla.la
+libpluginwizard_la_LIBADD = ../../sdk/libcodeblocks.la
 
 libpluginwizard_la_SOURCES = enterinfodlg.cpp \
 			pluginwizard.cpp \

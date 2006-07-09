@@ -51,8 +51,7 @@ Wiz::Wiz()
     m_pWizProjectPathPanel(0),
     m_pWizFilePathPanel(0),
     m_pWizCompilerPanel(0),
-    m_pWizBuildTargetPanel(0),
-    m_pWizLanguagePanel(0)
+    m_pWizBuildTargetPanel(0)
 {
 	//ctor
 	m_PluginInfo.name = _T("Wizard");
@@ -172,7 +171,6 @@ void Wiz::Clear()
 	m_pWizProjectPathPanel = 0;
 	m_pWizCompilerPanel = 0;
 	m_pWizBuildTargetPanel = 0;
-	m_pWizLanguagePanel = 0;
 	m_pWizFilePathPanel = 0;
 }
 
@@ -617,6 +615,30 @@ void Wiz::SetRadioboxSelection(const wxString& name, int sel)
     }
 }
 
+int Wiz::GetListboxSelection(const wxString& name)
+{
+    wxWizardPage* page = m_pWizard->GetCurrentPage();
+    if (page)
+    {
+        wxListBox* win = dynamic_cast<wxListBox*>(page->FindWindowByName(name, page));
+        if (win)
+            return win->GetSelection();
+    }
+    return -1;
+}
+
+
+void Wiz::SetListboxSelection(const wxString& name, int sel)
+{
+    wxWizardPage* page = m_pWizard->GetCurrentPage();
+    if (page)
+    {
+        wxListBox* win = dynamic_cast<wxListBox*>(page->FindWindowByName(name, page));
+        if (win)
+            win->SetSelection(sel);
+    }
+}
+
 void Wiz::CheckCheckbox(const wxString& name, bool check)
 {
     wxWizardPage* page = m_pWizard->GetCurrentPage();
@@ -701,12 +723,10 @@ void Wiz::AddBuildTargetPage(const wxString& targetName, bool isDebug, bool show
     m_Pages.Add(m_pWizBuildTargetPanel);
 }
 
-void Wiz::AddLanguagePage(const wxString& langs, int defLang)
+void Wiz::AddGenericSingleChoiceListPage(const wxString& pageName, const wxString& descr, const wxString& choices, int defChoice)
 {
-    if (m_pWizLanguagePanel)
-        return; // already added
-    m_pWizLanguagePanel = new WizLanguagePanel(GetArrayFromString(langs, _T(";")), defLang, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG);
-    m_Pages.Add(m_pWizLanguagePanel);
+    // we don't track this; can add more than one
+    m_Pages.Add(new WizGenericSingleChoiceList(pageName, descr, GetArrayFromString(choices, _T(";")), defChoice, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG));
 }
 
 void Wiz::AddGenericSelectPathPage(const wxString& pageId, const wxString& descr, const wxString& label, const wxString& defValue)
@@ -891,13 +911,6 @@ wxString Wiz::GetTargetObjectOutputDir()
     return wxEmptyString;
 }
 
-int Wiz::GetLanguageIndex()
-{
-    if (m_pWizLanguagePanel)
-        return m_pWizLanguagePanel->GetLanguage();
-    return -1;
-}
-
 wxString Wiz::GetFileName()
 {
     if (m_pWizFilePathPanel)
@@ -943,7 +956,7 @@ void Wiz::RegisterWizard()
             func(&Wiz::AddFilePathPage, "AddFilePathPage").
             func(&Wiz::AddCompilerPage, "AddCompilerPage").
             func(&Wiz::AddBuildTargetPage, "AddBuildTargetPage").
-            func(&Wiz::AddLanguagePage, "AddLanguagePage").
+            func(&Wiz::AddGenericSingleChoiceListPage, "AddGenericSingleChoiceListPage").
             func(&Wiz::AddGenericSelectPathPage, "AddGenericSelectPathPage").
             func(&Wiz::AddPage, "AddPage").
             // GUI controls
@@ -958,6 +971,8 @@ void Wiz::RegisterWizard()
             func(&Wiz::SetComboboxSelection, "SetComboboxSelection").
             func(&Wiz::GetRadioboxSelection, "GetRadioboxSelection").
             func(&Wiz::SetRadioboxSelection, "SetRadioboxSelection").
+            func(&Wiz::GetListboxSelection, "GetListboxSelection").
+            func(&Wiz::SetListboxSelection, "SetListboxSelection").
             // get various common info
             func(&Wiz::GetWizardType, "GetWizardType").
             func(&Wiz::GetTemplatePath, "GetTemplatePath").
@@ -984,8 +999,6 @@ void Wiz::RegisterWizard()
             func(&Wiz::GetTargetName, "GetTargetName").
             func(&Wiz::GetTargetOutputDir, "GetTargetOutputDir").
             func(&Wiz::GetTargetObjectOutputDir, "GetTargetObjectOutputDir").
-            // language page
-            func(&Wiz::GetLanguageIndex, "GetLanguageIndex").
             // file path page
             func(&Wiz::GetFileName, "GetFileName").
             func(&Wiz::GetFileHeaderGuard, "GetFileHeaderGuard").

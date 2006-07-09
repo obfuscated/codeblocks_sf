@@ -132,8 +132,9 @@ bool ParseFile(const string& docFile, string& revision, string &date)
     ifstream inFile(docFile.c_str());
     if (!inFile)
     {
-        puts("Error: could not open input file.\nThis does not seem to be a revision controlled project.");
-        return false;
+        puts("Warning: could not open input file.\nThis does not seem to be a revision controlled project.\nRevision set to 0.");
+        revision = "0";
+        return true;
     }
     else
         while(!inFile.eof())

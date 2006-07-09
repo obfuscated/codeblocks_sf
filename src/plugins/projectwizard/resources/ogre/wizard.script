@@ -8,6 +8,11 @@
 
 // globals
 OgrePath <- _T("");
+// we have two possible types of OGRE SDK installation:
+// 1) Source distribution
+// 2) Pre-made SDK
+// This var is true for 1, false for 2.
+OgreIsSource <- false;
 
 function BeginWizard()
 {
@@ -17,16 +22,56 @@ function BeginWizard()
                         "When you 're ready to proceed, please click \"Next\"...");
 
     local ogrepath_descr = _T("Please select the location of OGRE on your computer.\n" +
-                              "This is the top-level folder where OGRE was installed (unpacked).\n" +
+                              "This is the top-level folder where OGRE was installed\n(unpacked).\n" +
                               "To help you, this folder must contain the subfolders\n" +
                               "\"include\" and \"lib\".\n" +
                               "If you have setup an environment variable named\n" +
                               "OGRE_HOME, it 'll automatically be used below.");
 
+    local sdk_descr = _T("OGRE might exist on your system as a source package\n" +
+                        "(you built it yourself), or as a pre-made SDK which you installed.\n\n" +
+                        "It is important for this wizard to know which SDK type is\n" +
+                        "installed so that it can setup your project properly.");
+
+    local sdk_choices =  _T("I have a folder with the OGRE source code;" +
+                            "I have installed a pre-made OGRE SDK");
+
+    local compilers = PLATFORM == PLATFORM_MSW
+                        ? _T("gcc*;msv*")
+                        : _T("gcc*");
+
     Wizard.AddIntroPage(intro_msg);
     Wizard.AddProjectPathPage();
+    Wizard.AddGenericSingleChoiceListPage(_T("SDKType"), sdk_descr, sdk_choices, OgreIsSource ? 0 : 1);
     Wizard.AddGenericSelectPathPage(_T("OgrePath"), ogrepath_descr, _T("Please select OGRE's location:"), _T("$(OGRE_HOME)"));
-    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+    Wizard.AddCompilerPage(_T(""), compilers, true, true);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// OGRE SDK's type
+////////////////////////////////////////////////////////////////////////////////
+
+// for pre-made SDK under linux, skip OGRE path selection
+// we will use pkg-config for this ;)
+function OnGetNextPage_SDKType()
+{
+    OgreIsSource = Wizard.GetListboxSelection(_T("lstSelections")) == 0;
+    if (PLATFORM != PLATFORM_MSW && !OgreIsSource)
+        return _T("CompilerPage");
+    return _T("OgrePath");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// OGRE's compiler
+////////////////////////////////////////////////////////////////////////////////
+
+// for pre-made SDK under linux, skip OGRE path selection
+// we will use pkg-config for this ;)
+function OnGetPrevPage_CompilerPage()
+{
+    if (PLATFORM != PLATFORM_MSW && !OgreIsSource)
+        return _T("SDKType");
+    return _T("OgrePath");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -39,7 +84,7 @@ function OnLeave_OgrePath(fwd)
     {
         local dir = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
         dir = ReplaceMacros(dir, true);
-        if (!IO.FileExists(dir + _T("/include/OGRE.h")))
+        if (!IO.FileExists(dir + _T("/include/Ogre.h")))
         {
             ShowError(_T("The path you entered seems valid, but this wizard " +
                     "can't locate OGRE's files in it..."));

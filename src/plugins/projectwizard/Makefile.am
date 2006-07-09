@@ -12,8 +12,7 @@ lib_LTLIBRARIES = libprojectwizard.la
 
 libprojectwizard_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libprojectwizard_la_LIBADD = ../../sdk/libcodeblocks.la \
-				../../sdk/wxscintilla/libwxscintilla.la
+libprojectwizard_la_LIBADD = ../../sdk/libcodeblocks.la
 
 libprojectwizard_la_SOURCES = buildtargetpanel.cpp \
                                 compilerpanel.cpp \

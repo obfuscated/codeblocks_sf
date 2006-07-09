@@ -8,8 +8,7 @@ noinst_LTLIBRARIES = libwxsmith_resources.la
 
 libwxsmith_resources_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libwxsmith_resources_la_LIBADD = ../../../../sdk/libcodeblocks.la \
-				../../../../sdk/wxscintilla/libwxscintilla.la
+libwxsmith_resources_la_LIBADD = ../../../../sdk/libcodeblocks.la
 
 libwxsmith_resources_la_SOURCES = wxswindowres.cpp \
 wxswindowresdataobject.cpp \

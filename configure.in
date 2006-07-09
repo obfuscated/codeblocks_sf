@@ -1,10 +1,10 @@
 AC_PREREQ(2.50)
 
-AC_INIT([codeblocks], [1.0HEAD])
+AC_INIT([codeblocks], [0-98+1.0r2713])
 
 AC_CANONICAL_TARGET
 
-AM_INIT_AUTOMAKE([codeblocks], 1.0HEAD)
+AM_INIT_AUTOMAKE([codeblocks], 0-98+1.0r2713)
 AC_CONFIG_HEADER([src/sdk/config.h])
 
 dnl Checks for programs.
@@ -72,27 +72,17 @@ AM_PATH_WXCONFIG(2.6.0, wxWin=1)
                 ])
         fi
 
-		CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
-		CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
-		CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
-		LIBS="$LIBS $WX_LIBS"
+dnl		CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
+dnl		CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
+dnl		CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
+dnl		LIBS="$LIBS $WX_LIBS"
 
-		wx_config_minor_version=`echo $WX_VERSION | \
-           sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
-
-        if test "$wx_config_minor_version" -gt "4"; then
-		WX_XRC=
-	else
-		WX_XRC=-l`wx-config --basename`_xrc-`wx-config --release`
-	fi
-
-AC_SUBST(WX_XRC)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(CFLAGS)
 AC_SUBST(LIBS)
 
-CXXFLAGS="$CXXFLAGS $PCH_FLAGS"
+CXXFLAGS="$CXXFLAGS $PCH_FLAGS -fPIC -DPIC"
 AC_SUBST(codeblocks_PCH_FLAGS, "$PCH_FLAGS")
 
 dnl AM_PATH_GTK(1.2.7, ,

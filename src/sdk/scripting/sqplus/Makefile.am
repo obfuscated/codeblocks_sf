@@ -1,5 +1,7 @@
 INCLUDES = -I$(top_srcdir)/src/sdk/scripting/include
 
+sdkdir=$(includedir)/codeblocks/scripting/sqplus
+
 noinst_LTLIBRARIES = libsqplus.la
 
 libsqplus_la_SOURCES = SqPlus.cpp \
@@ -7,7 +9,7 @@ libsqplus_la_SOURCES = SqPlus.cpp \
                         SquirrelBindingsUtils.cpp \
                         SquirrelObject.cpp
                         
-noinst_HEADERS = SqPlusConst.h \
+sdk_HEADERS = SqPlusConst.h \
                 SquirrelBindingsUtils.h \
                 SquirrelVM.h \
                 sqplus.h \

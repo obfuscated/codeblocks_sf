@@ -1,6 +1,8 @@
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/sdk/propgrid/include
 
+sdkdir=$(includedir)/codeblocks/propgrid/include/wx/propgrid
+
 noinst_LTLIBRARIES = libpropgrid.la
 
 libpropgrid_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
@@ -11,7 +13,7 @@ libpropgrid_la_SOURCES = ./src/propgrid/advprops.cpp \
 			./src/propgrid/odcombo.cpp \
 			./src/propgrid/propgrid.cpp
 
-noinst_HEADERS = ./include/wx/propgrid/advprops.h \
+sdk_HEADERS = ./include/wx/propgrid/advprops.h \
 			./include/wx/propgrid/custctrl.h \
 			./include/wx/propgrid/manager.h \
 			./include/wx/propgrid/odcombo.h \

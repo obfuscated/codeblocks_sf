@@ -7,8 +7,7 @@ noinst_LTLIBRARIES = libwxsmith_defwidgets.la
 
 libwxsmith_defwidgets_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libwxsmith_defwidgets_la_LIBADD = ../../../../sdk/libcodeblocks.la \
-				../../../../sdk/wxscintilla/libwxscintilla.la
+libwxsmith_defwidgets_la_LIBADD = ../../../../sdk/libcodeblocks.la
 
 libwxsmith_defwidgets_la_SOURCES = wxsboxsizer.cpp \
 wxsbutton.cpp \

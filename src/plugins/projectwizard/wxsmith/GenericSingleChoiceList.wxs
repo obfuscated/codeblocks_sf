@@ -1,0 +1,29 @@
+<resource>
+    <object class="wxPanel" name="GenericSingleChoiceList">
+        <style>wxTAB_TRAVERSAL</style>
+        <object class="wxBoxSizer" variable="BoxSizer1" member="no">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxStaticText" name="ID_STATICTEXT1" variable="lblDescr" member="yes">
+                    <label>Description</label>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <border>8</border>
+                <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
+                    <orient>wxVERTICAL</orient>
+                    <label>Please make a selection</label>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>4</border>
+                        <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxListBox" name="ID_LISTBOX1" variable="lstSelections" member="yes" />
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

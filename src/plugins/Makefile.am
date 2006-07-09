@@ -60,6 +60,7 @@ SUBDIRS=$(MAYBE_ASTYLE) \
 		$(MAYBE_CONSTRIB)
 
 DIST_SUBDIRS = astyle \
+		autosave \
 		classwizard \
 		codecompletion \
 		compilergcc \

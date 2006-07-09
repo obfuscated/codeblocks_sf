@@ -34,7 +34,7 @@ class WizProjectPathPanel;
 class WizFilePathPanel;
 class WizCompilerPanel;
 class WizBuildTargetPanel;
-class WizLanguagePanel;
+class WizGenericSingleChoiceList;
 class WizGenericSelectPathPanel;
 
 struct WizardInfo
@@ -99,6 +99,9 @@ class Wiz : public cbWizardPlugin
         int GetRadioboxSelection(const wxString& name);
         void SetRadioboxSelection(const wxString& name, int sel);
 
+        int GetListboxSelection(const wxString& name);
+        void SetListboxSelection(const wxString& name, int sel);
+
         void SetTextControlValue(const wxString& name, const wxString& value);
         wxString GetTextControlValue(const wxString& name);
 
@@ -126,9 +129,6 @@ class Wiz : public cbWizardPlugin
         wxString GetTargetOutputDir();
         wxString GetTargetObjectOutputDir();
 
-        // language page
-        int GetLanguageIndex();
-
         // file path page
         wxString GetFileName();
         wxString GetFileHeaderGuard();
@@ -142,7 +142,7 @@ class Wiz : public cbWizardPlugin
         void AddProjectPathPage();
         void AddCompilerPage(const wxString& compilerID, const wxString& validCompilerIDs, bool allowCompilerChange = true, bool allowConfigChange = true);
         void AddBuildTargetPage(const wxString& targetName, bool isDebug, bool showCompiler = false, const wxString& compilerID = wxEmptyString, const wxString& validCompilerIDs = _T("*"), bool allowCompilerChange = true);
-        void AddLanguagePage(const wxString& langs, int defLang);
+        void AddGenericSingleChoiceListPage(const wxString& pageName, const wxString& descr, const wxString& choices, int defChoice);
         void AddGenericSelectPathPage(const wxString& pageId, const wxString& descr, const wxString& label, const wxString& defValue);
         // XRC pages
         void AddPage(const wxString& panelName);
@@ -162,7 +162,6 @@ class Wiz : public cbWizardPlugin
         WizFilePathPanel* m_pWizFilePathPanel;
         WizCompilerPanel* m_pWizCompilerPanel;
         WizBuildTargetPanel* m_pWizBuildTargetPanel;
-        WizLanguagePanel* m_pWizLanguagePanel;
         int m_LaunchIndex;
         wxString m_TemplatePath;
         wxString m_LastXRC;
