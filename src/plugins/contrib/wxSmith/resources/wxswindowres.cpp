@@ -397,16 +397,13 @@ void wxsWindowRes::RebuildCode()
         if ( IdsArray.Count() )
         {
             Code.Append(_T("enum Identifiers\n{"));
-            IdsArray.Sort();
-            wxString Previous = _T("");
             bool First = true;
             for ( size_t i = 0; i<IdsArray.Count(); ++i )
             {
-                if ( IdsArray[i] != Previous )
+                if ( IdsArray.Index(IdsArray[i]) >= (int)i )
                 {
-                    Previous = IdsArray[i];
                     Code.Append( _T("\n\t") );
-                    Code.Append( Previous );
+                    Code.Append( IdsArray[i] );
                     if ( First )
                     {
                         Code.Append( _T(" = 0x1000") );
