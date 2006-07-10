@@ -154,8 +154,30 @@ HelpPlugin::HelpPlugin()
 
   m_PluginInfo.name = _T("HelpPlugin");
   m_PluginInfo.title = _T("Help plugin");
-  m_PluginInfo.version = _T("0.1");
-  m_PluginInfo.description = _T("Code::Blocks Help plugin");
+  m_PluginInfo.version = _T("1.0");
+  m_PluginInfo.description = _T("This plugin is used to add a list of help files to the Help menu ")
+                             _T("so you can have them handy to launch.\n")
+                             _T("\n")
+                             _T("You can also set one of the help files as the \"default help file\" ")
+                             _T("and that way it'll be launched when you press F1.\n")
+                             _T("NOTE: you can add any file you want and it'll be launched with the ")
+                             _T("associated application.\n")
+                             _T("\n")
+                             _T("It'll also integrate in the context menu of the editor (right click) ")
+                             _T("enabling you to search the word under the cursor in any of the help ")
+                             _T("files.\n")
+                             _T("NOTE: it's only meaningful under Windows for help files with extension ")
+                             _T("hlp or chm. It's also meaningul for any platform when the help file is ")
+                             _T("an URL (read below).\n")
+                             _T("\n")
+                             _T("A recent addition allows you to add an URL as a help file. To do that ")
+                             _T("Add a new help file BUT when prompted for the location of the file ")
+                             _T("dismiss the file dialog, be sure the new help file is selected and ")
+                             _T("enter the URL in the text entry (the one followed by the ... button).\n")
+                             _T("\n")
+                             _T("For URLs you can add $(keyword) in any place of the address, any ")
+                             _T("number of times, and it'll get replaced by the word you selected to ")
+                             _T("locate in that help file.");
   m_PluginInfo.author = _T("Bourricot | Ceniza (maintainer)");
   m_PluginInfo.authorEmail = _T("titi37fr@yahoo.fr | ceniza@gda.utp.edu.co");
   m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
@@ -371,6 +393,18 @@ wxString HelpPlugin::HelpFileFromId(int id)
 
 void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
 {
+  const static wxString http_prefix(_T("http://"));
+
+  if (helpfile.Mid(0, http_prefix.size()).CmpNoCase(http_prefix) == 0)
+  {
+    wxString the_url = helpfile;
+    the_url.Replace(_T("$(keyword)"), keyword);
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Launching %s"), the_url.c_str());
+
+    wxLaunchDefaultBrowser(the_url);
+    return;
+  }
+
   wxString ext = wxFileName(helpfile).GetExt();
   Manager::Get()->GetMessageManager()->DebugLog(_T("Help File is %s"), helpfile.c_str());
 
