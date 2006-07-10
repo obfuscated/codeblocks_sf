@@ -123,11 +123,11 @@
         <accel>Ctrl-Shift-W</accel>
         <help>Close all open files</help>
       </object>
-      <object class="wxMenuItem" name="idProjectCloseProject">
+      <object class="wxMenuItem" name="idFileCloseProject">
         <label>Close project</label>
         <help>Close active project</help>
       </object>
-      <object class="wxMenuItem" name="idProjectCloseAllProjects">
+      <object class="wxMenuItem" name="idFileCloseAllProjects">
         <label>Close all projects</label>
         <help>Close all opened projects</help>
       </object>
