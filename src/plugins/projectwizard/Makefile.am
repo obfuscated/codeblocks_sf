@@ -19,6 +19,7 @@ libprojectwizard_la_SOURCES = buildtargetpanel.cpp \
                                 filepathpanel.cpp \
                                 genericselectpath.cpp \
 								intropanel.cpp \
+								genericsinglechoicelist.cpp \
 								projectpathpanel.cpp \
 								wiz.cpp \
 								wizpage.cpp
@@ -28,6 +29,7 @@ noinst_HEADERS = buildtargetpanel.h \
                     filepathpanel.h \
                     genericselectpath.h \
 					intropanel.h \
+					genericsinglechoicelist.h \
 					projectpathpanel.h \
 					wiz.h \
 					wizpage.h
