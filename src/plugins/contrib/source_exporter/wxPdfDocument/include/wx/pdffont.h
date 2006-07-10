@@ -13,9 +13,9 @@
 #ifndef _PDFFONT_H_
 #define _PDFFONT_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "pdffont.h"
-#endif
+//#if defined(__GNUG__) && !defined(__APPLE__)
+//    #pragma interface "pdffont.h"
+//#endif
 
 #include "wx/strconv.h"
 #include "wx/xml/xml.h"

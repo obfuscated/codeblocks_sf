@@ -13,9 +13,9 @@
 #ifndef _PDFIMAGE_H_
 #define _PDFIMAGE_H_
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "pdfimage.h"
-#endif
+//#if defined(__GNUG__) && !defined(__APPLE__)
+//    #pragma interface "pdfimage.h"
+//#endif
 
 #include <wx/filesys.h>
 
