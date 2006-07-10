@@ -39,7 +39,7 @@ PagesByName WizPageBase::s_PagesByName;
 ////////////////////////////////////////////////////////////////////////////////
 
 BEGIN_EVENT_TABLE(WizPageBase, wxWizardPageSimple)
-//    EVT_WIZARD_PAGE_CHANGING(-1, WizPageBase::OnPageChanging)
+    EVT_WIZARD_PAGE_CHANGING(-1, WizPageBase::OnPageChanging)
     EVT_WIZARD_PAGE_CHANGED(-1, WizPageBase::OnPageChanged)
 END_EVENT_TABLE()
 
@@ -427,12 +427,14 @@ WizCompilerPanel::WizCompilerPanel(const wxString& compilerID, const wxString& v
     cmb->Clear();
     for (size_t i = 0; i < CompilerFactory::GetCompilersCount(); ++i)
     {
+        Compiler* compiler = CompilerFactory::GetCompiler(i);
         for (size_t n = 0; n < valids.GetCount(); ++n)
         {
-            if (CompilerFactory::GetCompiler(i)->GetID().Matches(valids[n]))
+            // match not only if IDs match, but if ID inherits from it too
+            if (CompilerFactory::CompilerInheritsFrom(compiler, valids[n]))
             {
-                cmb->Append(CompilerFactory::GetCompiler(i)->GetName());
-                if (CompilerFactory::GetCompiler(i)->GetID().IsSameAs(def))
+                cmb->Append(compiler->GetName());
+                if (compiler->GetID().IsSameAs(def))
                     id = cmb->GetCount();
                 break;
             }
