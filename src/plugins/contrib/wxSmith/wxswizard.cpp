@@ -660,6 +660,15 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
     static bool Block = false;
     if ( Block ) return;
     Block = true;
+
+    // Disabling everything in this window
+    Disable();
+    wxWindowList List = GetChildren();
+    for ( size_t i=0; i<List.GetCount(); i++ )
+    {
+        List[i]->Disable();
+    }
+
     wxString Dir = PrjDir->GetValue();
     wxString Name = PrjName->GetValue();
 
