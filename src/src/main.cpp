@@ -122,7 +122,7 @@ int idFileCloseWorkspace = XRCID("idFileCloseWorkspace");
 int idFileClose = XRCID("idFileClose");
 int idFileCloseAll = XRCID("idFileCloseAll");
 int idFileCloseProject = XRCID("idFileCloseProject");
-int idFileCloseProjectAllProjects = XRCID("idFileCloseProjectAllProjects");
+int idFileCloseAllProjects = XRCID("idFileCloseAllProjects");
 int idFilePrintSetup = XRCID("idFilePrintSetup");
 int idFilePrint = XRCID("idFilePrint");
 int idFileExit = XRCID("idFileExit");
@@ -229,7 +229,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idFileSaveProjectAllProjects, MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveProjectTemplate, MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idFileCloseProject, MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idFileCloseProjectAllProjects, MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileCloseAllProjects, MainFrame::OnProjectMenuUpdateUI)
 
     EVT_UPDATE_UI(idEditUndo, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditRedo, MainFrame::OnEditMenuUpdateUI)
@@ -302,7 +302,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileClose,  MainFrame::OnFileClose)
     EVT_MENU(idFileCloseAll,  MainFrame::OnFileCloseAll)
     EVT_MENU(idFileCloseProject,  MainFrame::OnFileCloseProject)
-    EVT_MENU(idFileCloseProjectAllProjects,  MainFrame::OnFileCloseProjectAllProjects)
+    EVT_MENU(idFileCloseAllProjects,  MainFrame::OnFileCloseAllProjects)
     EVT_MENU(idFilePrint,  MainFrame::OnFilePrint)
     EVT_MENU(idFileExit,  MainFrame::OnFileQuit)
     EVT_MENU(idFileNext,  MainFrame::OnFileNext)
@@ -1947,7 +1947,7 @@ void MainFrame::OnFileCloseProject(wxCommandEvent& event)
     DoUpdateStatusBar();
 }
 
-void MainFrame::OnFileCloseProjectAllProjects(wxCommandEvent& event)
+void MainFrame::OnFileCloseAllProjects(wxCommandEvent& event)
 {
     if (!ProjectManager::CanShutdown() || !EditorManager::CanShutdown())
     {
@@ -2820,7 +2820,7 @@ void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
 
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
 	mbar->Enable(idFileCloseProject, prj && canCloseProject);
-    mbar->Enable(idFileCloseProjectAllProjects, prj && canCloseProject);
+    mbar->Enable(idFileCloseAllProjects, prj && canCloseProject);
     mbar->Enable(idFileSaveProject, prj && prj->GetModified() && canCloseProject);
     mbar->Enable(idFileSaveProjectAs, prj && canCloseProject);
     mbar->Enable(idFileSaveProjectAllProjects, prj && canCloseProject);

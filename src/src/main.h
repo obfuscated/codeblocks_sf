@@ -71,7 +71,7 @@ class MainFrame : public wxFrame
         void OnFileClose(wxCommandEvent& event);
         void OnFileCloseAll(wxCommandEvent& event);
         void OnFileCloseProject(wxCommandEvent& event);
-        void OnFileCloseProjectAllProjects(wxCommandEvent& event);
+        void OnFileCloseAllProjects(wxCommandEvent& event);
         void OnFilePrintSetup(wxCommandEvent& event);
         void OnFilePrint(wxCommandEvent& event);
         void OnFileQuit(wxCommandEvent& event);
