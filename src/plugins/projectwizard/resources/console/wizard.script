@@ -5,73 +5,17 @@
 // Project: Console application
 // Author:  Yiannis Mandravellos
 //
-//
-// NOTE: This is a *very* simple wizard script, but it's fully commented so you
-// know what's going on. It even contains commented code for functionality that
-// is not needed for this wizard :)
+// Wizard scripts documentation can be found at:
+// http://wiki.codeblocks.org/index.php?title=Wizard_scripts
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 
-// There is one global variable implicitely defined (exported from Code::Blocks)
-// It is named "Wizard". It represents the wizard dialog object and contains
-// the following methods:
-//
-//    void AddIntroPage(string)
-//    void AddProjectPathPage()
-//    void AddFilePathPage(bool)
-//    void AddCompilerPage(string)
-//    void AddLanguagePage(string,int)
-//    void AddPage(string)
-//
-//    void SetTextControlValue(string, string)
-//    string GetTextControlValue(string)
-//
-//    void CheckCheckbox(string, bool)
-//    bool IsCheckboxChecked(string)
-//    void FillComboboxWithCompilers(string)
-//    string GetCompilerFromCombobox(string)
-//    string GetComboboxStringSelection(string)
-//    int GetComboboxSelection(string)
-//    void SetComboboxSelection(string,int)
-//
-//    int GetRadioboxSelection(string)
-//    void SetRadioboxSelection(string,int)
-//
-//    string& GetTemplatePath()
-//    string GetProjectPath()
-//    string GetProjectName()
-//    string GetCompilerID()
-//
-//    bool GetWantDebug()
-//    string GetDebugName()
-//    string GetDebugOutputDir()
-//    string GetDebugObjectOutputDir()
-//
-//    bool GetWantRelease()
-//    string GetReleaseName()
-//    string GetReleaseOutputDir()
-//    string GetReleaseObjectOutputDir()
-//
-//    string GetFileName()
-//    string GetFileHeaderGuard()
-//    bool GetFileAddToProject()
-//    int GetFileTargetIndex()
-//    void SetFilePathSelectionFilter()
+ConsoleLang <- 1; // default to C++
 
-// Global variables declaration.
 //
-// Don't over-react about using global variables. This script will be discarded
-// once finished running, so no reason to panic ;)
-
-// IsCpp <- false; // '=' wouldn't work here
-
-
-
-
-// This is the very first script function that will be called by Code::Blocks.
-// The script should add all its wizard pages here.
-// Pages will appear in the order they 're added.
+//------------------------------------------------------------------------------
+//
 function BeginWizard()
 {
     local wiz_type = Wizard.GetWizardType();
@@ -83,36 +27,14 @@ function BeginWizard()
                             "This wizard will guide you to create a new console application.\n\n" +
                             "When you 're ready to proceed, please click \"Next\"...");
 
-        // add builtin pages
-
         // intro
         Wizard.AddIntroPage(intro_msg);
         // select project name and path
         Wizard.AddProjectPathPage();
         // select compiler and configurations
-        // args:
-        //  1) string: which compiler ID will be pre-selected (empty means default)
-        //  2) string: semi-colon separated list of allowed compiler ids. Use _T("*") for all. * and ? wildcards allowed.
-        //  3) boolean: if false, the compiler selection will be disabled
-        //  4) boolean: if false, the config targets will be disabled
         Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
         // select language
-        Wizard.AddGenericSingleChoiceListPage(_T("LanguagePage"), _T("Please select language for the source file."), _T("C;C++"), 1);
-
-        // add custom pages, present in the XRC (wizard.xrc)
-        // each page must exist as a wxPanel with the same name in the XRC.
-        // Wizard.AddPage(_T("SourceType")); // select source file type (C or C++)
-
-        // another builtin page is AddFilePathPage. It allows:
-        // *) selection of a single filename
-        // *) optional header guard word setting (use it for header files)
-        // and
-        // *) option to add it to the active project (with target selection)
-        //
-        // the boolean parameter shows or hides the header guard word controls
-        // i.e. for header files set it to true, false otherwise.
-        //
-        // Wizard.AddFilePathPage(false);
+        Wizard.AddGenericSingleChoiceListPage(_T("ConsoleLanguagePage"), _T("Please select the language you want to use."), _T("C;C++"), ConsoleLang); // select language
     }
     else if (wiz_type == wizTarget)
     {
@@ -125,93 +47,35 @@ function BeginWizard()
     else
         print(wiz_type);
 }
-
-// There are three wizard events provided. Two of them are for all pages (custom and builtin)
-// and the third is only for custom pages (from XRC):
 //
-//  1) [all pages] function OnEnter_<panel_name>(fwd)
-//      This is called when the wizard is about to display this page.
-//      The _T("fwd") argument is _T("true") if the page is displayed after the user pressed _T("Next"),
-//      or it is _T("false") if the user pressed _T("Back").
+//------------------------------------------------------------------------------
 //
-//  2) [all pages] function OnLeave_<panel_name>(fwd)
-//      This is called when the wizard is about to display another page.
-//      The argument means the same as in OnEnter_<panel_name> above.
-//      If the script returns _T("false") from this function, then the page-change
-//      isn't allowed.
+function OnLeave_ConsoleLanguagePage(fwd)
+{
+    if (fwd)
+    {
+        ConsoleLang = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}
 //
-//  3) [custom pages only] OnClick_<button_name>()
-//      This is called when a button with the same name is clicked.
+//------------------------------------------------------------------------------
 //
-// Regarding the first two events (for all pages), as panel_name use the actual panel name
-// for XRC pages or one of the following for the relevant builtin pages:
-//
-//  *) IntroPage
-//  *) ProjectPathPage
-//  *) FilePathPage
-//  *) CompilerPage
-//  *) LanguagePage
-//
-// So, to be notified when the wizard enters the language selection page (for example), you
-// would define the following function in script:
-//
-// function OnEnter_LanguagePage(fwd)
-// {
-// }
-
-////////////////////////////////////////////////////////////////////////////////
-// Example: Source type's page
-//          a page read from XRC (panel named "SourceType" in XRC)
-////////////////////////////////////////////////////////////////////////////////
-
-//function OnLeave_SourceType(fwd)
-//{
-//    if (fwd)
-//    {
-//        // if user pressed "Next", accept its source type settings
-//        // and keep it in the global variable we defined earlier.
-//        IsCpp = Wizard.GetRadioboxSelection(_T("rbLang")) == 0;
-//    }
-//    // allow changing this page
-//    return true;
-//}
-
-////////////////////////////////////////////////////////////////////////////////
-//
-// The following functions are called by Code::Blocks after the wizard has
-// finished running (user clicked "Finish").
-//
-////////////////////////////////////////////////////////////////////////////////
-
-// Return the relative directory (to the templates path) that contains the files
-// for the new project.
-// This directory will be recursively scanned and every file and folder found
-// will be copied by the wizard to the destination folder and will be added
-// to the project.
-// Note that you can return multiple directories by semicolon-separating them,
-// e.g._T("console/common;console/cpp"). This way you can keep common files together
-// and only separate different files based on the selected options.
 function GetFilesDir()
 {
     local result;
 
     // depending on the source type setting, return the appropriate value.
-    if (Wizard.GetListboxSelection(_T("lstSelection")) == 0) // C source file
+    if (ConsoleLang == 0) // C source file
         result = _T("console/c");
     else // C++ source file
         result = _T("console/cpp");
 
     return result;
 }
-
-// This function is called for wizards registered as wizProject type.
 //
-// Setup the already created project.
-// By now, the project has already been created and it's time to set it up.
-// The compiler ID has been already set, as well as the project title.
-// Also, the requested targets (configurations) have been created and set up.
-// Of course the script can now override anything ;)
-// The "project" argument represents the new project.
+//------------------------------------------------------------------------------
+//
 function SetupProject(project)
 {
     // NOTE: Major compiler system drawback here.
@@ -243,12 +107,9 @@ function SetupProject(project)
     // all done!
     return true;
 }
-
-// This function is called for wizards registered as wizTarget type.
 //
-// By now, the target has just been created. Customize it as needed...
-// @param target: the build target
-// @param is_debug: if true, setup target with debugging symbols
+//------------------------------------------------------------------------------
+//
 function SetupTarget(target,is_debug)
 {
     if (IsNull(target))
@@ -274,19 +135,3 @@ function SetupTarget(target,is_debug)
     // all done!
     return true;
 }
-
-// This function is called for wizards registered as wizFiles type.
-//
-// Create the file(s)...
-//function CreateFiles()
-//{
-//  return true;
-//}
-
-// This function is called for wizards registered as wizCustom type.
-//
-// The wizard has just finished. Do whatever this wizard needs to do...
-//function SetupCustom()
-//{
-//  return true;
-//}

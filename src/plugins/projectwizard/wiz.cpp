@@ -329,7 +329,8 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
     try
     {
         SqPlus::SquirrelFunction<wxString&> f("GetFilesDir");
-        srcdir = f();
+        if (!f.func.IsNull())
+            srcdir = f();
         if (!srcdir.IsEmpty())
         {
             // now break them up (remember: semicolon-separated list of dirs)
@@ -337,6 +338,62 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
             // and copy files from each source dir we got
             for (size_t i = 0; i < tmpsrcdirs.GetCount(); ++i)
                 CopyFiles(theproject, prjdir, tmpsrcdirs[i]);
+        }
+    }
+    catch (SquirrelError& e)
+    {
+        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        Clear();
+        return 0;
+    }
+
+    // add generated files
+    try
+    {
+        SqPlus::SquirrelFunction<wxString&> f("GetGeneratedFile");
+        if (!f.func.IsNull())
+        {
+            wxArrayString files;
+            wxArrayString contents;
+            int idx = 0;
+            // safety limit to avoid infinite loops because of badly written scripts: 50 files
+            while (idx < 50)
+            {
+                wxString fileAndContents = f(idx++);
+                if (fileAndContents.IsEmpty())
+                    break;
+                wxString tmpFile = fileAndContents.BeforeFirst(_T(';'));
+                wxString tmpContents = fileAndContents.AfterFirst(_T(';'));
+                tmpFile.Trim();
+                tmpContents.Trim();
+                if (tmpFile.IsEmpty() || tmpContents.IsEmpty())
+                    break;
+                files.Add(tmpFile);
+                contents.Add(tmpContents);
+            };
+
+            if (files.GetCount() != 0 && contents.GetCount() == files.GetCount())
+            {
+                // ok, we have to generate some files here
+                size_t count = files.GetCount();
+                for (size_t i = 0; i < count; ++i)
+                {
+                    // GenerateFile() performs sanity and security checks
+                    wxString actual = GenerateFile(theproject->GetBasePath(), files[i], contents[i]);
+
+                    if (!actual.IsEmpty())
+                    {
+                        DBGLOG(_T("Generated file %s"), actual.c_str());
+                        // add it to the project
+                        ProjectFile* pf = theproject->AddFile(0, actual);
+                        // to all targets...
+                        for (int x = 1; x < theproject->GetBuildTargetsCount(); ++x)
+                        {
+                            pf->AddBuildTarget(theproject->GetBuildTarget(x)->GetTitle());
+                        }
+                    }
+                }
+            }
         }
     }
     catch (SquirrelError& e)
@@ -482,6 +539,49 @@ CompileTargetBase* Wiz::RunCustomWizard(wxString* pFilename)
     return 0;
 }
 
+wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, const wxString& contents)
+{
+    wxFileName fname(filename);
+
+    // extension sanity check
+    FileType ft = FileTypeOf(fname.GetFullPath());
+    switch (ft)
+    {
+        case ftCodeBlocksProject:
+        case ftCodeBlocksWorkspace:
+        case ftExecutable:
+        case ftDynamicLib:
+        case ftStaticLib:
+        case ftResourceBin:
+        case ftObject:
+        case ftOther:
+            DBGLOG(_T("Attempt to generate a file with forbidden extension!\nFile: %s"), fname.GetFullPath().c_str());
+            return wxEmptyString;
+        default: break;
+    }
+
+    // make sure filename is relative
+    if (!fname.IsRelative())
+        fname.MakeRelativeTo(basePath);
+
+    // make sure filename is located inside the project path (should already be)
+    if (fname.GetFullPath().StartsWith(_T("..")))
+    {
+        // attempt to create file outside the project dir
+        // remove any path info from the filename
+        fname = fname.GetFullName();
+        DBGLOG(_T("Attempt to generate a file outside the project base dir:\nOriginal: %s\nConverted to:%s"), filename.c_str(), fname.GetFullPath().c_str());
+    }
+
+    fname = basePath + wxFILE_SEP_PATH + fname.GetFullName();
+
+    // create the file with the passed contents
+    wxFile f(fname.GetFullPath(), wxFile::write);
+    if (cbWrite(f, contents + _T('\n')))
+        return fname.GetFullPath(); // success
+    return wxEmptyString; // failed
+}
+
 void Wiz::CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxString& srcdir)
 {
     // first get the dir with the files
@@ -545,6 +645,17 @@ void Wiz::FillComboboxWithCompilers(const wxString& name)
             }
             win->SetSelection(win->FindString(CompilerFactory::GetDefaultCompiler()->GetName()));
         }
+    }
+}
+
+void Wiz::EnableWindow(const wxString& name, bool enable)
+{
+    wxWizardPage* page = m_pWizard->GetCurrentPage();
+    if (page)
+    {
+        wxWindow* win = page->FindWindowByName(name, page);
+        if (win)
+            win->Enable(enable);
     }
 }
 
@@ -960,6 +1071,7 @@ void Wiz::RegisterWizard()
             func(&Wiz::AddGenericSelectPathPage, "AddGenericSelectPathPage").
             func(&Wiz::AddPage, "AddPage").
             // GUI controls
+            func(&Wiz::EnableWindow, "EnableWindow").
             func(&Wiz::SetTextControlValue, "SetTextControlValue").
             func(&Wiz::GetTextControlValue, "GetTextControlValue").
             func(&Wiz::CheckCheckbox, "CheckCheckbox").

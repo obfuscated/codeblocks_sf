@@ -72,19 +72,26 @@ namespace ScriptBindings
                 return dlg.GetPath();
             return wxEmptyString;
         }
+
+        wxString ReadFileContents(const wxString& filename)
+        {
+            wxFile f(filename);
+            return cbReadFileContents(f);
+        }
     } // namespace IOLib
 } // namespace ScriptBindings
 
 namespace ScriptBindings
 {
     struct IONamespace {};
-    
+
     void Register_IO()
     {
         SqPlus::SQClassDef<IONamespace>("IO").
                 staticFunc(&IOLib::DirectoryExists, "DirectoryExists").
                 staticFunc(&IOLib::ChooseDir, "SelectDirectory").
                 staticFunc(&IOLib::FileExists, "FileExists").
-                staticFunc(&IOLib::ChooseFile, "SelectFile");
+                staticFunc(&IOLib::ChooseFile, "SelectFile").
+                staticFunc(&IOLib::ReadFileContents, "ReadFileContents");
     }
 } // namespace ScriptBindings

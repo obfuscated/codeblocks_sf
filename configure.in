@@ -157,6 +157,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/projectwizard/resources/irrlicht/files/Makefile
 	src/plugins/projectwizard/resources/ogre/Makefile
 	src/plugins/projectwizard/resources/ogre/files/Makefile
+	src/plugins/projectwizard/resources/plugins/Makefile
+	src/plugins/projectwizard/resources/plugins/templates/Makefile
 	src/plugins/projectwizard/resources/smartwin/Makefile
 	src/plugins/projectwizard/resources/smartwin/files/Makefile
 	src/plugins/projectwizard/resources/staticlib/Makefile

@@ -86,6 +86,8 @@ class Wiz : public cbWizardPlugin
 
         TemplateOutputType GetWizardType();
 
+        void EnableWindow(const wxString& name, bool enable);
+
         void CheckCheckbox(const wxString& name, bool check);
         bool IsCheckboxChecked(const wxString& name);
 
@@ -154,6 +156,7 @@ class Wiz : public cbWizardPlugin
         void OnAttach();
         void Clear();
         void CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxString& srcdir);
+        wxString GenerateFile(const wxString& basePath, const wxString& filename, const wxString& contents);
 
         Wizards m_Wizards;
         wxWizard* m_pWizard;

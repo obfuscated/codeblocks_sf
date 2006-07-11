@@ -26,8 +26,8 @@ class GenericSingleChoiceList: public wxPanel
 		virtual ~GenericSingleChoiceList();
 
         void SetChoices(const wxArrayString& choices, int defChoice);
-        int GetChoice(){ return lstSelections->GetSelection(); }
-        void SetChoice(int choice){ lstSelections->SetSelection(choice); }
+        int GetChoice(){ return GenericChoiceList->GetSelection(); }
+        void SetChoice(int choice){ GenericChoiceList->SetSelection(choice); }
         void SetDescription(const wxString& descr)
         {
             lblDescr->SetLabel(descr);
@@ -51,7 +51,7 @@ class GenericSingleChoiceList: public wxPanel
 
 		//(*Declarations(GenericSingleChoiceList)
 		wxStaticText* lblDescr;
-		wxListBox* lstSelections;
+		wxListBox* GenericChoiceList;
 		//*)
 
 	private:

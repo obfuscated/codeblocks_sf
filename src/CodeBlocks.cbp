@@ -1682,6 +1682,12 @@
 			<Option link="0" />
 			<Option target="Project wizard" />
 		</Unit>
+		<Unit filename="plugins\projectwizard\resources\plugins\wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Project wizard" />
+		</Unit>
 		<Unit filename="plugins\projectwizard\resources\smartwin\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />

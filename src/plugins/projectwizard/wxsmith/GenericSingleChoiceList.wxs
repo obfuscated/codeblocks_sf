@@ -20,7 +20,7 @@
                         <option>1</option>
                         <border>4</border>
                         <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
-                        <object class="wxListBox" name="ID_LISTBOX1" variable="lstSelections" member="yes" />
+                        <object class="wxListBox" name="ID_LISTBOX1" variable="GenericChoiceList" member="yes" />
                     </object>
                 </object>
             </object>

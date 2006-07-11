@@ -15,9 +15,9 @@ GenericSingleChoiceList::GenericSingleChoiceList(wxWindow* parent,wxWindowID id)
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	lblDescr = new wxStaticText(this,ID_STATICTEXT1,_("Description"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT1"));
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL,this,_("Please make a selection"));
-	lstSelections = new wxListBox(this,ID_LISTBOX1,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_("ID_LISTBOX1"));
-	lstSelections->SetSelection(-1);
-	StaticBoxSizer1->Add(lstSelections,1,wxALL|wxALIGN_CENTER|wxEXPAND,4);
+	GenericChoiceList = new wxListBox(this,ID_LISTBOX1,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_("ID_LISTBOX1"));
+	GenericChoiceList->SetSelection(-1);
+	StaticBoxSizer1->Add(GenericChoiceList,1,wxALL|wxALIGN_CENTER|wxEXPAND,4);
 	BoxSizer1->Add(lblDescr,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,8);
 	BoxSizer1->Add(StaticBoxSizer1,0,wxALL|wxALIGN_CENTER|wxEXPAND,8);
 	this->SetSizer(BoxSizer1);
@@ -25,7 +25,7 @@ GenericSingleChoiceList::GenericSingleChoiceList(wxWindow* parent,wxWindowID id)
 	BoxSizer1->SetSizeHints(this);
 	//*)
 
-	lstSelections->SetName(_T("lstSelections"));
+	GenericChoiceList->SetName(_T("GenericChoiceList"));
 }
 
 GenericSingleChoiceList::~GenericSingleChoiceList()
@@ -34,10 +34,10 @@ GenericSingleChoiceList::~GenericSingleChoiceList()
 
 void GenericSingleChoiceList::SetChoices(const wxArrayString& choices, int defChoice)
 {
-    lstSelections->Clear();
+    GenericChoiceList->Clear();
     for (size_t i = 0; i < choices.GetCount(); ++i)
     {
-        lstSelections->Append(choices[i]);
+        GenericChoiceList->Append(choices[i]);
     }
-    lstSelections->SetSelection(defChoice);
+    GenericChoiceList->SetSelection(defChoice);
 }

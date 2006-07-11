@@ -10,6 +10,9 @@ function RegisterWizards()
     //
     RegisterWizard(wizProject,     _T("empty"),        _T("Empty project"),         _T("Console"));
 
+    if (PLATFORM == PLATFORM_MSW)
+        RegisterWizard(wizProject, _T("plugins"),      _T("Code::Blocks plugin"),   _T("Code::Blocks"));
+
     RegisterWizard(wizProject,     _T("console"),      _T("Console application"),   _T("Console"));
     RegisterWizard(wizProject,     _T("d"),            _T("D application"),         _T("D language"));
     if (PLATFORM == PLATFORM_MSW)

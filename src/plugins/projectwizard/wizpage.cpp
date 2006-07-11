@@ -142,6 +142,11 @@ void WizPageBase::OnPageChanged(wxWizardEvent& event)
 ////////////////////////////////////////////////////////////////////////////////
 
 BEGIN_EVENT_TABLE(WizPage, WizPageBase)
+    EVT_CHOICE(-1, WizPage::OnButton)
+    EVT_COMBOBOX(-1, WizPage::OnButton)
+    EVT_CHECKBOX(-1, WizPage::OnButton)
+    EVT_LISTBOX(-1, WizPage::OnButton)
+    EVT_RADIOBOX(-1, WizPage::OnButton)
     EVT_BUTTON(-1, WizPage::OnButton)
 END_EVENT_TABLE()
 
