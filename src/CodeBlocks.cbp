@@ -399,32 +399,8 @@
 					<Add directory="devel" />
 				</Linker>
 			</Target>
-			<Target title="Plugin wizard">
-				<Option output="devel\share\CodeBlocks\plugins\pluginwizard.dll" />
-				<Option working_dir="devel\share\CodeBlocks\plugins" />
-				<Option object_output=".objs\2.6" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
-				<Option projectLinkerOptionsRelation="1" />
-				<Option projectIncludeDirsRelation="2" />
-				<Option projectResourceIncludeDirsRelation="0" />
-				<Option projectLibDirsRelation="2" />
-				<Compiler>
-					<Add option="-DBUILDING_PLUGIN" />
-					<Add directory="sdk" />
-				</Compiler>
-				<Linker>
-					<Add option="-Wl,--enable-auto-image-base" />
-					<Add option="-Wl,--add-stdcall-alias" />
-					<Add library="libcodeblocks.a" />
-					<Add library="libwxscintilla.a" />
-					<Add library="wxmsw26$(WX_SUFFIX)" />
-					<Add directory="devel" />
-				</Linker>
-			</Target>
-			<Target title="Project wizard">
-				<Option output="devel\share\CodeBlocks\plugins\projectwizard.dll" />
+			<Target title="Scripted wizard">
+				<Option output="devel\share\CodeBlocks\plugins\scriptedwizard.dll" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
@@ -1486,299 +1462,257 @@
 			<Option link="0" />
 			<Option target="Default MIME handler" />
 		</Unit>
-		<Unit filename="plugins\pluginwizard\enterinfodlg.cpp">
+		<Unit filename="plugins\scriptedwizard\buildtargetpanel.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="Plugin wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\pluginwizard\enterinfodlg.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Plugin wizard" />
-		</Unit>
-		<Unit filename="plugins\pluginwizard\pluginwizard.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Plugin wizard" />
-		</Unit>
-		<Unit filename="plugins\pluginwizard\pluginwizard.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Plugin wizard" />
-		</Unit>
-		<Unit filename="plugins\pluginwizard\pluginwizarddlg.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Plugin wizard" />
-		</Unit>
-		<Unit filename="plugins\pluginwizard\pluginwizarddlg.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Plugin wizard" />
-		</Unit>
-		<Unit filename="plugins\pluginwizard\resources\new_plugin.xrc">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Plugin wizard" />
-		</Unit>
-		<Unit filename="plugins\pluginwizard\resources\plugin_info.xrc">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Plugin wizard" />
-		</Unit>
-		<Unit filename="plugins\projectwizard\buildtargetpanel.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Project wizard" />
-		</Unit>
-		<Unit filename="plugins\projectwizard\buildtargetpanel.h">
+		<Unit filename="plugins\scriptedwizard\buildtargetpanel.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\compilerpanel.cpp">
+		<Unit filename="plugins\scriptedwizard\compilerpanel.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\compilerpanel.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Project wizard" />
-		</Unit>
-		<Unit filename="plugins\projectwizard\filepathpanel.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Project wizard" />
-		</Unit>
-		<Unit filename="plugins\projectwizard\filepathpanel.h">
+		<Unit filename="plugins\scriptedwizard\compilerpanel.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\genericselectpath.cpp">
+		<Unit filename="plugins\scriptedwizard\filepathpanel.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\genericselectpath.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Project wizard" />
-		</Unit>
-		<Unit filename="plugins\projectwizard\genericsinglechoicelist.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Project wizard" />
-		</Unit>
-		<Unit filename="plugins\projectwizard\genericsinglechoicelist.h">
+		<Unit filename="plugins\scriptedwizard\filepathpanel.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\intropanel.cpp">
+		<Unit filename="plugins\scriptedwizard\genericselectpath.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\intropanel.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Project wizard" />
-		</Unit>
-		<Unit filename="plugins\projectwizard\projectpathpanel.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Project wizard" />
-		</Unit>
-		<Unit filename="plugins\projectwizard\projectpathpanel.h">
+		<Unit filename="plugins\scriptedwizard\genericselectpath.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\c_file\wizard.script">
+		<Unit filename="plugins\scriptedwizard\genericsinglechoicelist.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\genericsinglechoicelist.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\common_functions.script">
+		<Unit filename="plugins\scriptedwizard\intropanel.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\intropanel.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\config.script">
+		<Unit filename="plugins\scriptedwizard\projectpathpanel.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\projectpathpanel.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\console\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\c_file\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\d\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\common_functions.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\directx\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\config.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\dll\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\console\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\empty\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\d\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\fltk\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\directx\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\glfw\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\dll\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\glut\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\empty\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\h_file\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\fltk\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\irrlicht\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\glfw\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\ogre\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\glut\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\plugins\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\h_file\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\smartwin\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\irrlicht\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\staticlib\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\ogre\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\win32gui\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\plugins\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\wxwidgets\wizard.script">
+		<Unit filename="plugins\scriptedwizard\resources\smartwin\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\resources\wxwidgets\wizard.xrc">
+		<Unit filename="plugins\scriptedwizard\resources\staticlib\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\wiz.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Project wizard" />
-		</Unit>
-		<Unit filename="plugins\projectwizard\wiz.h">
+		<Unit filename="plugins\scriptedwizard\resources\win32gui\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\wizpage.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Project wizard" />
-		</Unit>
-		<Unit filename="plugins\projectwizard\wizpage.h">
+		<Unit filename="plugins\scriptedwizard\resources\wxwidgets\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\wxsmith\BuildTargetPanel.wxs">
+		<Unit filename="plugins\scriptedwizard\resources\wxwidgets\wizard.xrc">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\wxsmith\CompilerPanel.wxs">
+		<Unit filename="plugins\scriptedwizard\wiz.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\wiz.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\wxsmith\FilePathPanel.wxs">
+		<Unit filename="plugins\scriptedwizard\wizpage.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\wizpage.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\wxsmith\GenericSelectPath.wxs">
+		<Unit filename="plugins\scriptedwizard\wxsmith\BuildTargetPanel.wxs">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\wxsmith\GenericSingleChoiceList.wxs">
+		<Unit filename="plugins\scriptedwizard\wxsmith\CompilerPanel.wxs">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\wxsmith\IntroPanel.wxs">
+		<Unit filename="plugins\scriptedwizard\wxsmith\FilePathPanel.wxs">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\projectwizard\wxsmith\ProjectPathPanel.wxs">
+		<Unit filename="plugins\scriptedwizard\wxsmith\GenericSelectPath.wxs">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="Project wizard" />
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\wxsmith\GenericSingleChoiceList.wxs">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\wxsmith\IntroPanel.wxs">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\wxsmith\ProjectPathPanel.wxs">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins\todo\addtododlg.cpp">
 			<Option compilerVar="CPP" />

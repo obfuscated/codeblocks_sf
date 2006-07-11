@@ -41,7 +41,7 @@
 WX_DEFINE_OBJARRAY(Wizards);
 
 // Implement the plugin's hooks
-CB_IMPLEMENT_PLUGIN(Wiz, "Generic wizard");
+CB_IMPLEMENT_PLUGIN(Wiz, "Scripted wizard");
 
 // scripting support
 DECLARE_INSTANCE_TYPE(Wiz);
@@ -54,13 +54,13 @@ Wiz::Wiz()
     m_pWizBuildTargetPanel(0)
 {
 	//ctor
-	m_PluginInfo.name = _T("Wizard");
-	m_PluginInfo.title = _("Generic wizard");
-	m_PluginInfo.version = _T("0.1a");
+	m_PluginInfo.name = _T("ScriptedWizard");
+	m_PluginInfo.title = _("Scripted wizard");
+	m_PluginInfo.version = _T("0.9");
 	m_PluginInfo.description = _("A generic scripted wizard");
-	m_PluginInfo.author = _T("");
-	m_PluginInfo.authorEmail = _T("");
-	m_PluginInfo.authorWebsite = _T("");
+	m_PluginInfo.author = _T("Yiannis Mandravellos");
+	m_PluginInfo.authorEmail = _T("mandrav@codeblocks.org");
+	m_PluginInfo.authorWebsite = _T("http://www.codeblocks.org");
 	m_PluginInfo.thanksTo = _("");
 	m_PluginInfo.license = LICENSE_GPL;
 

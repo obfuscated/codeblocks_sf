@@ -151,22 +151,11 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-AC_MSG_CHECKING(whether to build the plugin wizard plugin)
-pw_default="yes"
-AC_ARG_ENABLE(plugin-wizard, [AC_HELP_STRING([--enable-plugin-wizard], [build the plugin wizard plugin (default YES)])],,
-                       enable_pw=$pw_default)
-AM_CONDITIONAL([BUILD_PLUGINWIZARD], [test "x$enable_pw" = "xyes"])
-if test "x$enable_pw" = "xyes"; then
-	AC_MSG_RESULT(yes)
-else
-	AC_MSG_RESULT(no)
-fi
-
-AC_MSG_CHECKING(whether to build the project wizard plugin)
+AC_MSG_CHECKING(whether to build the scripted wizard plugin)
 prw_default="yes"
-AC_ARG_ENABLE(project-wizard, [AC_HELP_STRING([--enable-project-wizard], [build the project wizard plugin (default YES)])],,
+AC_ARG_ENABLE(project-wizard, [AC_HELP_STRING([--enable-scripted-wizard], [build the scripted wizard plugin (default YES)])],,
                        enable_prw=$prw_default)
-AM_CONDITIONAL([BUILD_PROJECTWIZARD], [test "x$enable_prw" = "xyes"])
+AM_CONDITIONAL([BUILD_SCRIPTEDWIZARD], [test "x$enable_prw" = "xyes"])
 if test "x$enable_prw" = "xyes"; then
 	AC_MSG_RESULT(yes)
 else
