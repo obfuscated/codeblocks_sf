@@ -283,7 +283,7 @@ void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
 
 void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const FileTreeData* data)
 {
-  if (!menu || !m_IsAttached)
+  if (!menu || !m_IsAttached || !m_Vector.size())
   {
     return;
   }
@@ -298,11 +298,17 @@ void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const File
     // add entries in popup menu
     int counter = 0;
     HelpCommon::HelpFilesVector::iterator it;
+    wxMenu *sub_menu = new wxMenu;
 
     for (it = m_Vector.begin(); it != m_Vector.end(); ++it)
     {
-      AddToPopupMenu(menu, idPopupMenus[counter++], it->first);
+      AddToPopupMenu(sub_menu, idPopupMenus[counter++], it->first);
     }
+
+    wxMenuItem *locate_in_menu = new wxMenuItem(0, wxID_ANY, _("&Locate in"), _(""), wxITEM_NORMAL);
+    locate_in_menu->SetSubMenu(sub_menu);
+
+    menu->Append(locate_in_menu);
   }
 }
 
