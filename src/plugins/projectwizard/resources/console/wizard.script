@@ -97,7 +97,7 @@ function BeginWizard()
         //  4) boolean: if false, the config targets will be disabled
         Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
         // select language
-        Wizard.AddLanguagePage(_T("C;C++"), 1);
+        Wizard.AddGenericSingleChoiceListPage(_T("LanguagePage"), _T("Please select language for the source file."), _T("C;C++"), 1);
 
         // add custom pages, present in the XRC (wizard.xrc)
         // each page must exist as a wxPanel with the same name in the XRC.
@@ -166,14 +166,14 @@ function BeginWizard()
 
 //function OnLeave_SourceType(fwd)
 //{
-//	if (fwd)
-//	{
-//	    // if user pressed "Next", accept its source type settings
-//	    // and keep it in the global variable we defined earlier.
-//	    IsCpp = Wizard.GetRadioboxSelection(_T("rbLang")) == 0;
-//	}
-//	// allow changing this page
-//	return true;
+//    if (fwd)
+//    {
+//        // if user pressed "Next", accept its source type settings
+//        // and keep it in the global variable we defined earlier.
+//        IsCpp = Wizard.GetRadioboxSelection(_T("rbLang")) == 0;
+//    }
+//    // allow changing this page
+//    return true;
 //}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -196,7 +196,7 @@ function GetFilesDir()
     local result;
 
     // depending on the source type setting, return the appropriate value.
-    if (Wizard.GetLanguageIndex() == 0) // C source file
+    if (Wizard.GetListboxSelection(_T("lstSelection")) == 0) // C source file
         result = _T("console/c");
     else // C++ source file
         result = _T("console/cpp");

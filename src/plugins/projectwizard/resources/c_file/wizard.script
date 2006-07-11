@@ -19,16 +19,16 @@ function BeginWizard()
                         "When you 're ready to proceed, please click \"Next\"...");
 
     // add builtin pages
-	Wizard.AddIntroPage(intro_msg); // intro
-	Wizard.AddLanguagePage(_T("C;C++"), 1); // select language
-	Wizard.AddFilePathPage(false); // select filename (no header guard for source files)
+    Wizard.AddIntroPage(intro_msg); // intro
+    Wizard.AddGenericSingleChoiceListPage(_T("LanguagePage"), _T("Please select language for the source file."), _T("C;C++"), 1);
+    Wizard.AddFilePathPage(false); // select filename (no header guard for source files)
 }
 
 function OnLeave_LanguagePage(fwd)
 {
     if (fwd)
     {
-        if (Wizard.GetLanguageIndex() == 0)
+        if (Wizard.GetListboxSelection(_T("lstSelection")) == 0)
             Wizard.SetFilePathSelectionFilter(_T("C files (*.c;*.C)|*.c;*.C")); // C
         else
             Wizard.SetFilePathSelectionFilter(_T("C++ files (*.cpp;*.cxx;*.cc)|*.cpp;*.cxx;*.cc")); // C++
