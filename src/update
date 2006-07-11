@@ -27,7 +27,6 @@ ${ZIPCMD} -j9 ${RESDIR}/manager_resources.zip sdk/resources/*.xrc sdk/resources/
 ${ZIPCMD} -j9 ${RESDIR}/start_here.zip src/resources/start_here/* > /dev/null
 echo Compressing plugins UI resources
 ${ZIPCMD} -j9 ${RESDIR}/astyle.zip plugins/astyle/resources/*.xrc > /dev/null
-${ZIPCMD} -j9 ${RESDIR}/plugin_wizard.zip plugins/pluginwizard/resources/*.xrc > /dev/null
 ${ZIPCMD} -j9 ${RESDIR}/class_wizard.zip plugins/classwizard/resources/*.xrc > /dev/null
 ${ZIPCMD} -j9 ${RESDIR}/code_completion.zip plugins/codecompletion/resources/*.xrc > /dev/null
 ${ZIPCMD} -j9 ${RESDIR}/compiler_gcc.zip plugins/compilergcc/resources/*.xrc > /dev/null
@@ -59,8 +58,8 @@ cp -f src/resources/images/16x16/*.png ${RESDIR}/images/16x16 > /dev/null
 cp -f src/resources/images/16x16/*.png output/share/codeblocks/images/16x16 > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png ${RESDIR}/images/codecompletion > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png output/share/codeblocks/images/codecompletion > /dev/null
-cp -rf plugins/projectwizard/resources/* ${RESDIR}/templates/wizard > /dev/null
-cp -rf plugins/projectwizard/resources/* output/share/codeblocks/templates/wizard > /dev/null
+cp -rf plugins/scriptedwizard/resources/* ${RESDIR}/templates/wizard > /dev/null
+cp -rf plugins/scriptedwizard/resources/* output/share/codeblocks/templates/wizard > /dev/null
 cp -f templates/common/* output/share/codeblocks/templates > /dev/null
 cp -f templates/unix/* output/share/codeblocks/templates > /dev/null
 cp -f templates/common/* ${RESDIR}/templates > /dev/null

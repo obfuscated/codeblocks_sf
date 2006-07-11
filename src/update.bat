@@ -35,7 +35,6 @@ echo Packing core UI resources
 %ZIPCMD% -j9 %RESDIR%\start_here.zip src\resources\start_here\*.* > nul
 echo Packing plugins UI resources
 %ZIPCMD% -j9 %RESDIR%\astyle.zip plugins\astyle\resources\*.xrc > nul
-%ZIPCMD% -j9 %RESDIR%\plugin_wizard.zip plugins\pluginwizard\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\class_wizard.zip plugins\classwizard\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\code_completion.zip plugins\codecompletion\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\compiler_gcc.zip plugins\compilergcc\resources\*.xrc > nul
@@ -71,8 +70,8 @@ copy /y src\resources\images\16x16\*.png output\share\codeblocks\images\16x16 > 
 copy /y plugins\codecompletion\resources\images\*.png %RESDIR%\images\codecompletion > nul
 copy /y plugins\codecompletion\resources\images\*.png output\share\codeblocks\images\codecompletion > nul
 echo Makefile.am > excludes.txt
-xcopy /y /s plugins\projectwizard\resources\* %RESDIR%\templates\wizard /EXCLUDE:excludes.txt >nul
-xcopy /y /s plugins\projectwizard\resources\* output\share\codeblocks\templates\wizard /EXCLUDE:excludes.txt >nul
+xcopy /y /s plugins\scriptedwizard\resources\* %RESDIR%\templates\wizard /EXCLUDE:excludes.txt >nul
+xcopy /y /s plugins\scriptedwizard\resources\* output\share\codeblocks\templates\wizard /EXCLUDE:excludes.txt >nul
 del excludes.txt
 copy /y templates\common\* output\share\codeblocks\templates > nul
 copy /y templates\win32\* output\share\codeblocks\templates > nul
