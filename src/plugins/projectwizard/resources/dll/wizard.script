@@ -64,7 +64,10 @@ function SetupTarget(target, is_debug)
         return false;
 
     target.SetTargetType(ttDynamicLib);
-    target.SetOutputFilename(target.GetWorkingDir() + _T("/") + target.SuggestOutputFilename());
+    if (target.GetWorkingDir().Matches(_T("")))
+        target.SetOutputFilename(target.SuggestOutputFilename());
+    else
+        target.SetOutputFilename(target.GetWorkingDir() + wxFILE_SEP_PATH + target.SuggestOutputFilename());
 
     if (is_debug)
     {

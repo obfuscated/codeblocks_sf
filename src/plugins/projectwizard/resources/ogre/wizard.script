@@ -178,7 +178,10 @@ function SetupProject(project)
             target.SetWorkingDir(OgrePath + _T("/bin/Debug"));
         // TODO: linux package contains samples?
 
-        target.SetOutputFilename(target.GetWorkingDir() + wxFILE_SEP_PATH + target.SuggestOutputFilename());
+        if (target.GetWorkingDir().Matches(_T("")))
+            target.SetOutputFilename(target.SuggestOutputFilename());
+        else
+            target.SetOutputFilename(target.GetWorkingDir() + wxFILE_SEP_PATH + target.SuggestOutputFilename());
 //        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
 
         if (PLATFORM == PLATFORM_MSW)
@@ -211,7 +214,10 @@ function SetupProject(project)
             target.SetWorkingDir(OgrePath + _T("/bin/Release"));
         // TODO: linux package contains samples?
 
-        target.SetOutputFilename(target.GetWorkingDir() + wxFILE_SEP_PATH + target.SuggestOutputFilename());
+        if (target.GetWorkingDir().Matches(_T("")))
+            target.SetOutputFilename(target.SuggestOutputFilename());
+        else
+            target.SetOutputFilename(target.GetWorkingDir() + wxFILE_SEP_PATH + target.SuggestOutputFilename());
 //        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
 
         if (PLATFORM == PLATFORM_MSW)
