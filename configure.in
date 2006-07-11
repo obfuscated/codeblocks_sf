@@ -1,10 +1,12 @@
 AC_PREREQ(2.50)
 
-AC_INIT([codeblocks], [0-98+1.0r2713])
+m4_include([revision.m4])
+
+AC_INIT([codeblocks], SVN_REVISION)
 
 AC_CANONICAL_TARGET
 
-AM_INIT_AUTOMAKE([codeblocks], 0-98+1.0r2713)
+AM_INIT_AUTOMAKE
 AC_CONFIG_HEADER([src/sdk/config.h])
 
 dnl Checks for programs.
@@ -198,6 +200,7 @@ AC_CONFIG_FILES([Makefile
 	src/templates/win32/Makefile
 	src/wxsmith/Makefile
 	codeblocks.pc
+	codeblocks.spec
 ])
 
 AC_OUTPUT

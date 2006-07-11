@@ -8,6 +8,13 @@
 #  - automake 1.7+
 #  - libtool 1.4+
 
+# Touch revision.m4
+if [ -f ./update_revision.sh ]; then
+	./update_revision.sh;
+elif [ ! -f ./revision.m4 ]; then
+	echo "m4_define([SVN_REVISION], trunk-r0)" > ./revision.m4;
+fi
+
 # Deal with some gentoo-specific issues
 export WANT_AUTOMAKE='1.7'
 export WANT_AUTOCONF='2.5'

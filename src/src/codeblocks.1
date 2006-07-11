@@ -1,0 +1,68 @@
+.\" Code::Blocks IDE man page. 
+.\" Contact admin@codeblocks.org to correct errors or omissions. 
+.TH man 1 "10 July 2006" "1.0" "Code::Blocks IDE man page"
+.SH NAME
+Code::Blocks \- The open-source, cross-platform IDE
+.SH SYNOPSIS
+.\" Syntax goes here. 
+.B codeblocks [-h] [-ns] [-d] [--prefix <str>] [-p <str>] [--profile <str>]
+.B [--rebuild] [--build] [--target <str>] [--no-batch-window-close]
+.B [--batch-build-notify]
+.I [filename(s)...]
+.SH DESCRIPTION
+.B codeblocks
+launches the Code::Blocks IDE. Its various command-line arguments are listed 
+below.
+.SH OPTIONS
+.TP 8
+.B "\-h, \-\-help"
+Displays the list of accepted command-line arguments.
+.TP 8
+.B "\-ns"
+Do not display a splash screen on startup. The splash screen can be completely 
+disabled in the program's environment options.
+.TP 8
+.B "\-d"
+Enable the debugging log.
+.TP 8
+.B "\--prefix"
+Specify an alternate path for Code::Blocks to find its shared files.
+.TP 8
+.B "\-p, \-\-profile"
+Set which profile to use. If you set the profile to 
+.B ask
+, Code::Blocks will display a list with all the known profiles to choose from.
+.TP 8
+.B "\-\-rebuild"
+Start a batch rebuild (i.e. "clean" and "build") job on the filenames passed as
+arguments. The filenames can be either projects or workspaces.
+.TP 8
+.B "\-\-build"
+Start a batch build (i.e. no "clean") job on the filenames passed as arguments.
+The filenames can be either projects or workspaces.
+.TP 8
+.B "\-\-target"
+Specify a single build target to build in the batch build (or rebuild) job.
+.TP 8
+.B "\-\-no\-batch\-window\-close"
+When the batch job ends, the log window closes too. This option keeps it open
+until you manually close it.
+.TP 8
+.B "\-\-batch\-build\-notify"
+Display a message when the batch job finishes.
+
+.SH EXAMPLES
+Batch build myproject.cpp, only the "Debug" target and keep the batch job window
+open when finished:
+.nf
+codeblocks \-\-build \-\-target="Debug" \-\-no\-batch\-window\-close myproject.cbp
+
+Batch rebuild everything in myproject.cpp:
+.nf
+codeblocks \-\-rebuild myproject.cbp
+.SH AUTHOR
+.nf
+Yiannis "mandrav" Mandravellos (mandrav@codeblocks.org)
+.fi
+.SH HISTORY
+2006 \- Initial version

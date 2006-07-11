@@ -227,6 +227,12 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
         Clear();
         return 0;
     }
+    catch (cbException& e)
+    {
+        e.ShowErrorMessage(false);
+        Clear();
+        return 0;
+    }
 
     // check if *any* pages were added
     if (m_Pages.GetCount() == 0)
@@ -873,6 +879,18 @@ void Wiz::AddWizard(TemplateOutputType otype,
                     const wxString& wizardPNG,
                     const wxString& xrc)
 {
+    // check that this isn't registered already
+    // keys are otype and title
+    for (size_t i = 0; i < m_Wizards.GetCount(); ++i)
+    {
+        WizardInfo& info = m_Wizards[i];
+        if (info.output_type == otype && info.title == title)
+        {
+            DBGLOG(_T("Wizard already registered. Skipping... (%s)"), title.c_str());
+            return;
+        }
+    }
+
     WizardInfo info;
     info.output_type = otype;
     info.title = title;

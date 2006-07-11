@@ -26,7 +26,13 @@ endif
 
 config.status: configure
 	dh_testdir
+	
 	# Add here commands to configure the package.
+	if [ -f ./update_revision.sh ]; then
+		./update_revision.sh;
+	elif [ ! -f ./revision.m4 ]; then
+		echo "m4_define([SVN_REVISION], trunk-r0)" > ./revision.m4;
+	fi
 	CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-contrib
 
 
@@ -37,6 +43,7 @@ build-stamp:  config.status
 
 	# Add here commands to compile the package.
 	$(MAKE)
+
 	#docbook-to-man debian/codeblocks.sgml > codeblocks.1
 
 	touch build-stamp

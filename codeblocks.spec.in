@@ -1,0 +1,216 @@
+%define _svnrev     @VERSION@
+%define req_wxgtk	2.6.0
+%define _fedora		%(if [ -f /etc/fedora-release ]; then echo 1; else echo 0; fi)
+%define _suse           %(if [ -f /etc/SuSE-release ]; then echo 1; else echo 0; fi)
+%define _mandriva       %(if [ -f /etc/mandrake-release ]; then echo 1; else echo 0; fi)
+%define _version        1.0_0.svn.%{_svnrev}
+%define _rel		0
+%define _release	%{_rel}	
+
+
+%if %_suse
+%define _suse_version	%(grep VERSION /etc/SuSE-release|cut -f3 -d" ")
+%define _suse_vernum	%(echo "%{_suse_version}"|tr -d '.')
+%define _release	%{_rel}.suse%{_suse_vernum}
+%define _distribution	SuSE Linux %{_suse_version}
+%define _prefix		/opt/gnome
+%define _sysconfdir	/etc%{_prefix}
+%endif
+%if %_mandriva
+%define _mandriva_version   %(cat /etc/mandriva-release|cut -f4 -d" ")
+%define _mandriva_vernum    %(echo "%_{mandriva_version}"|tr -d '.')
+%define _release            %{_rel}.mdk%{_mandriva_vernum}
+%define _distribution       %(cat /etc/mandrake-release|cut -f1-4 -d" ")
+%endif
+%if %_fedora
+%define _fedora_vernum      %(cat /etc/fedora-release | cut -f4 -d" ")
+%define _release            %{_rel}.fc%{_fedora_vernum}
+%define _distribution       %(cat /etc/fedora-release|cut -f1-4 -d" ")
+%endif
+
+%if %_suse
+%if %suse_version >= 930
+%define debugrpm	    1
+%endif
+%endif
+
+%if %_mandriva
+%define debugrpm            1
+%endif
+
+
+Name:			codeblocks
+Version:		%{_version}
+Release:		%{_release}
+Summary:		OpenSource Cross Platform Free C++ IDE
+Group:			Development/Tools/IDE
+License:		GPL
+URL:			http://www.codeblocks.org/
+Packager:		Daniel Orb <danielorb2000@googlemail.com>
+Source:			%{name}-%{version}.tgz
+BuildRoot:		%{_tmppath}/%{name}-%{version}-buildroot
+Provides:		codeblocks
+
+%if ! %_mandriva
+Requires:               wxGTK >= %{req_wxgtk}
+BuildRequires:  	wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
+%else
+Requires:               wxGTK2.6 >= %{req_wxgtk}
+BuildRequires:          wxGTK2.6 >= %{req_wxgtk}, wxgtku-devel >= %{req_wxgtk}
+%endif
+
+BuildRequires:          intltool, gcc-c++, make, gettext, autoconf >= 2.5, automake >= 1.7, libtool >= 1.4, m4
+BuildRequires:  	libstdc++, libstdc++-devel
+BuildRequires:  	zip, subversion
+
+%if %_suse
+BuildRequires:		update-desktop-files
+%endif
+
+%{?_distribution:Distribution:%_distribution}
+
+%define pkgdata		%{_datadir}/%{name}
+
+%description
+Code::Blocks is a free C++ IDE built specifically to meet the most demanding needs of its users. It was designed, right from the start, to be extensible and configurable.
+
+%package contrib
+Summary:                        Code::Blocks contrib plugins
+Group:                  Development/Tools/IDE
+Requires:               codeblocks = %{version}
+
+%description contrib
+Additional Code::Blocks plugins
+
+
+%package devel
+Summary:                        Code::Blocks SDK
+Group:                  Development/Tools/IDE
+Requires:               codeblocks = %{version}
+
+%description devel
+Code::Blocks SDK to develop your own plugins.
+
+%{?debugrpm:%debug_package}
+
+%prep
+
+%setup -n codeblocks
+
+%{?suse_update_libdir:%{suse_update_libdir}}
+%{?suse_update_config:%{suse_update_config -f}}
+
+%build
+ ./bootstrap
+  %configure \
+    --enable-contrib
+  %__make
+
+%install
+  %__rm -rf $RPM_BUILD_ROOT
+  %__make DESTDIR=$RPM_BUILD_ROOT install
+
+%post
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database "%{_datadir}/mime"
+fi
+test -x /sbin/ldconfig && /sbin/ldconfig
+
+%preun
+if [ -x /usr/bin/update-mime-database ]; then
+   /usr/bin/update-mime-database "%{_datadir}/mime"
+fi
+
+%clean
+  test -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != "/" && %{__rm} -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root)
+%doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+
+%{_bindir}/codeblocks
+%{_bindir}/cb_console_runner
+%{_libdir}/libcodeblocks.so.*
+%{_datadir}/application-registry/codeblocks.applications
+%{_datadir}/applications/codeblocks.desktop
+%{_datadir}/icons/gnome/48x48/mimetypes/*
+%{_datadir}/mime-info/*
+%{_datadir}/mime/packages/codeblocks.xml
+%{_datadir}/pixmaps/codeblocks.png
+%{pkgdata}/astyle.zip
+%{pkgdata}/autosave.zip
+%{pkgdata}/class_wizard.zip
+%{pkgdata}/code_completion.zip
+%{pkgdata}/compiler_gcc.zip
+%{pkgdata}/debugger_gdb.zip
+%{pkgdata}/defaultmimehandler.zip
+%{pkgdata}/manager_resources.zip
+%{pkgdata}/resources.zip
+%{pkgdata}/start_here.zip
+%{pkgdata}/tips.txt
+%{pkgdata}/todo.zip
+%{pkgdata}/icons/*
+%{pkgdata}/images/*.png
+%{pkgdata}/images/16x16/*
+%{pkgdata}/images/codecompletion/*
+%{pkgdata}/images/settings/*
+%{pkgdata}/lexers/*
+%{pkgdata}/plugins/libastyle.*
+%{pkgdata}/plugins/libautosave.*
+%{pkgdata}/plugins/libclasswizard.*
+%{pkgdata}/plugins/libcodecompletion.*
+%{pkgdata}/plugins/libcompiler.*
+%{pkgdata}/plugins/libdebuggergdb.*
+%{pkgdata}/plugins/libdefaultmimehandler.*
+%{pkgdata}/plugins/libscriptedwizard.*
+%{pkgdata}/plugins/libtodo.*
+%{pkgdata}/scripts/*
+%{pkgdata}/templates/*
+
+%files contrib
+%defattr(-,root,root)
+%{pkgdata}/codestat.zip
+%{pkgdata}/envvars.zip
+%{pkgdata}/help_plugin.zip
+%{pkgdata}/profiler.zip
+%{pkgdata}/wxsmith.zip
+%{pkgdata}/images/wxsmith/*
+%{pkgdata}/plugins/libbyogames.*
+%{pkgdata}/plugins/libcodestat.*
+%{pkgdata}/plugins/libdragscroll.*
+%{pkgdata}/plugins/libenvvars.*
+%{pkgdata}/plugins/libexporter.*
+%{pkgdata}/plugins/libhelp_plugin.*
+%{pkgdata}/plugins/libkeybinder.*
+%{pkgdata}/plugins/libprofiler.*
+%{pkgdata}/plugins/libwxsmith.*
+
+%files devel
+%defattr(-,root,root)
+%{_libdir}/libcodeblocks.so
+%{_libdir}/libcodeblocks.la
+%{_libdir}/pkgconfig/codeblocks.pc
+%{_includedir}/%{name}/*
+
+%changelog
+* Tue Jul 11 2006 Daniel Orb <mandrav@codeblocks.org>
+- removed pluginwizard files
+- replaced libprojectwizard by libscriptedwizard (renamed)
+* Tue Jul 11 2006 Daniel Orb <danielorb2000@googlemail.com>
+- removed libwxscintilla from filelist
+* Mon Jul 10 2006 Daniel Orb <danielorb2000@googlemail.com>
+- fixed wrong path of fedora-release file
+- fixed mixed cases in one description macro call
+- removed and added finally again libwxscintilla from/to filelist
+- added versions to some buildrequires
+- added byogames plugin to filelist
+* Sun Mar  5 2006 Daniel Orb <danielorb2000@googlemail.com>
+- rewrite of release tag setting
+* Mon Jan  5 2006 Daniel Orb <danielorb2000@googlemail.com>
+- had to add Mandriva specific requires
+* Mon Jan  2 2006 Daniel Orb <danielorb2000@googlemail.com>
+- simplified the changes made before
+* Sun Jan  1 2006 Daniel Orb <danielorb2000@googlemail.com>
+- added distribution check (SuSE, Fedora, Mandriva/Mandrake)
+- added distribution specific Requires and BuildRequires
+- added run of update-mime-database if installed

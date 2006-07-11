@@ -9,6 +9,7 @@
     #include <compiler.h>
     #include <macrosmanager.h>
     #include <cbproject.h>
+    #include <cbexception.h>
 #endif
 
 #include <scripting/bindings/sc_base_types.h>
@@ -47,6 +48,10 @@ WizPageBase::WizPageBase(const wxString& pageName, wxWizard* parent, const wxBit
     : wxWizardPageSimple(parent, 0, 0, bitmap),
     m_PageName(pageName)
 {
+    // duplicate pageIDs are not allowed
+    if (s_PagesByName[m_PageName])
+        cbThrow(_T("Page ID in use:") + pageName);
+
     // register this to the static pages map
     s_PagesByName[m_PageName] = this;
 }
