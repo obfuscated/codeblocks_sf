@@ -3,11 +3,34 @@
   <object class="wxMenuBar" name="main_menu_bar">
     <object class="wxMenu" name="file_menu">
       <label>&amp;File</label>
-      <object class="wxMenuItem" name="idFileNew">
-        <label>New...</label>
-        <bitmap>images\16x16\filenew.png</bitmap>
-        <accel>Ctrl-N</accel>
+      <object class="wxMenu" name="idFileNew">
+        <label>New</label>
         <help>Create a new project/file/target/other (wizard)</help>
+        <object class="wxMenuItem" name="idFileNewProject">
+          <label>Project</label>
+          <help>Create a new project</help>
+        </object>
+        <object class="wxMenuItem" name="idFileNewTarget">
+          <label>Build target</label>
+          <help>Create a new build target for the active project</help>
+        </object>
+        <object class="wxMenuItem" name="idFileNewFile">
+          <label>File</label>
+          <help>Create a new file</help>
+        </object>
+        <object class="wxMenuItem" name="idFileNewCustom">
+          <label>Custom</label>
+          <help>Create a new custom something :-)</help>
+        </object>
+        <object class="wxMenuItem" name="idFileNewUser">
+          <label>From user template</label>
+          <help>Create a new project based on a previously saved user template</help>
+        </object>
+        <object class="separator"/>
+        <object class="wxMenuItem" name="idFileNewEmpty">
+          <label>Empty file</label>
+          <help>Quickly create a new empty file</help>
+        </object>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileOpen">

@@ -98,7 +98,14 @@ int wxID_FILE17 = wxNewId();
 int wxID_FILE18 = wxNewId();
 int wxID_FILE19 = wxNewId();
 
+int idToolNew = XRCID("idToolNew");
 int idFileNew = XRCID("idFileNew");
+int idFileNewEmpty = XRCID("idFileNewEmpty");
+int idFileNewProject = XRCID("idFileNewProject");
+int idFileNewTarget = XRCID("idFileNewTarget");
+int idFileNewFile = XRCID("idFileNewFile");
+int idFileNewCustom = XRCID("idFileNewCustom");
+int idFileNewUser = XRCID("idFileNewUser");
 int idFileOpen = XRCID("idFileOpen");
 int idFileReopen = XRCID("idFileReopen");
 int idFileOpenRecentFileClearHistory = XRCID("idFileOpenRecentFileClearHistory");
@@ -277,7 +284,14 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_PLUGIN_ATTACHED(MainFrame::OnPluginLoaded)
     // EVT_PLUGIN_RELEASED(MainFrame::OnPluginUnloaded)
 
-    EVT_MENU(idFileNew, MainFrame::OnFileNew)
+    EVT_MENU(idFileNewEmpty, MainFrame::OnFileNewWhat)
+    EVT_MENU(idFileNewProject, MainFrame::OnFileNewWhat)
+    EVT_MENU(idFileNewTarget, MainFrame::OnFileNewWhat)
+    EVT_MENU(idFileNewFile, MainFrame::OnFileNewWhat)
+    EVT_MENU(idFileNewCustom, MainFrame::OnFileNewWhat)
+    EVT_MENU(idFileNewUser, MainFrame::OnFileNewWhat)
+
+    EVT_MENU(idToolNew, MainFrame::OnFileNew)
     EVT_MENU(idFileOpen,  MainFrame::OnFileOpen)
     EVT_MENU(idFileOpenRecentProjectClearHistory, MainFrame::OnFileOpenRecentProjectClearHistory)
     EVT_MENU(idFileOpenRecentFileClearHistory, MainFrame::OnFileOpenRecentClearHistory)
@@ -1735,6 +1749,74 @@ void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
         Manager::Get()->GetMessageManager()->DebugLog(_T("No plugin found for ID %d"), event.GetId());
 }
 
+void MainFrame::OnFileNewWhat(wxCommandEvent& event)
+{
+    int id = event.GetId();
+    if (id != idFileNewEmpty)
+    {
+        // wizard-based
+
+        TemplateOutputType tot = totProject;
+        if (id == idFileNewProject) tot = totProject;
+        else if (id == idFileNewTarget) tot = totTarget;
+        else if (id == idFileNewFile) tot = totFiles;
+        else if (id == idFileNewCustom) tot = totCustom;
+        else if (id == idFileNewUser) tot = totUser;
+        else
+            return;
+
+        wxString filename;
+        cbProject* prj = TemplateManager::Get()->New(tot, &filename);
+        // verify that the open files are still in sync
+        // the new file might have overwritten an existing one)
+        Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
+        if(prj)
+        {
+            prj->Save();
+            prj->SaveAllFiles();
+        }
+
+        if (!filename.IsEmpty())
+        {
+            if (prj)
+                AddToRecentProjectsHistory(filename);
+            else
+                AddToRecentFilesHistory(filename);
+        }
+        return;
+    }
+
+    // new empty file quick shortcut code below
+
+	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+	if (project)
+        wxSetWorkingDirectory(project->GetBasePath());
+    cbEditor* ed = Manager::Get()->GetEditorManager()->New();
+    if(ed)
+    {
+        AddToRecentFilesHistory(ed->GetFilename());
+    }
+
+	if (!ed || !project)
+		return;
+
+	if (cbMessageBox(_("Do you want to add this new file in the active project?"),
+					_("Add file to project"),
+					wxYES_NO | wxICON_QUESTION) == wxID_YES)
+	{
+        wxArrayInt targets;
+		if (Manager::Get()->GetProjectManager()->AddFileToProject(ed->GetFilename(), project, targets) != 0)
+		{
+            ProjectFile* pf = project->GetFileByFilename(ed->GetFilename(), false);
+			ed->SetProjectFile(pf);
+			Manager::Get()->GetProjectManager()->RebuildTree();
+		}
+	}
+	// verify that the open files are still in sync
+	// the new file might have overwritten an existing one)
+	Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
+}
+
 bool MainFrame::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
 {
     // first check to see if a workspace is passed. If so, only this will be loaded
@@ -1761,26 +1843,16 @@ bool MainFrame::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
     return true;
 }
 
-void MainFrame::OnFileNew(wxCommandEvent& event) // new from template
+void MainFrame::OnFileNew(wxCommandEvent& event)
 {
-    wxString filename;
-    cbProject* prj = TemplateManager::Get()->New(totProject, &filename);
-	// verify that the open files are still in sync
-	// the new file might have overwritten an existing one)
-	Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
-	if(prj)
-	{
-	    prj->Save();
-	    prj->SaveAllFiles();
-	}
+    wxMenu* popup = 0;
+    wxMenuBar* bar = GetMenuBar();
+    if (!bar)
+        return;
 
-    if (!filename.IsEmpty())
-    {
-        if (prj)
-            AddToRecentProjectsHistory(filename);
-        else
-            AddToRecentFilesHistory(filename);
-    }
+    bar->FindItem(idFileNewProject, &popup);
+    if (popup)
+        PopupMenu(popup); // this will lead us in OnFileNewWhat() - the meat is there ;)
 }
 
 void MainFrame::OnFileOpen(wxCommandEvent& event)

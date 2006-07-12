@@ -46,7 +46,10 @@ class MainFrame : public wxFrame
         void OnStartHereLink(wxCommandEvent& event);
         void OnStartHereVarSubst(wxCommandEvent& event);
 
-        void OnFileNew(wxCommandEvent& event); // new from template
+        // File->New submenu entries handler
+        void OnFileNewWhat(wxCommandEvent& event);
+
+        void OnFileNew(wxCommandEvent& event);
         void OnFileOpen(wxCommandEvent& event);
         void OnFileReopenProject(wxCommandEvent& event);
         void OnFileOpenRecentProjectClearHistory(wxCommandEvent& event);

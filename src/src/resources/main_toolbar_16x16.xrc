@@ -3,7 +3,7 @@
 <object class="wxToolBarAddOn" name="main_toolbar_16x16">
 <bitmapsize>16,16</bitmapsize>
 <style>wxTB_HORIZONTAL</style>
- <object class="tool" name="idFileNew">
+ <object class="tool" name="idToolNew">
   <tooltip>New file</tooltip>
   <longhelp>Create a new source file</longhelp>
   <bitmap>images/16x16/filenew.png</bitmap>
