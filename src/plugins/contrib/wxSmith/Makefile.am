@@ -30,6 +30,7 @@ libwxsmith_la_SOURCES = ./widget.cpp \
 ./wxsdefsizer.cpp \
 ./wxsdefwidget.cpp \
 ./wxsdragwindow.cpp \
+./wxsdrawingwindow.cpp \
 ./wxseditor.cpp \
 ./wxsevent.cpp \
 ./wxseventseditor.cpp \
@@ -68,6 +69,7 @@ noinst_HEADERS = ./widget.h \
 ./wxsdefsizer.h \
 ./wxsdefwidget.h \
 ./wxsdragwindow.h \
+./wxsdrawingwindow.h \
 ./wxseditor.h \
 ./wxsevent.h \
 ./wxseventseditor.h \

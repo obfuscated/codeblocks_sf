@@ -240,8 +240,13 @@ void wxSmith::OnProjectActivated(CodeBlocksEvent& event)
 
 void wxSmith::OnSpreadEvent(wxsEvent& event)
 {
+    // Adding blocking flag to prevent ping-pong spreads
+    static bool Block = false;
+    if ( Block ) return;
+    Block = true;
     wxsPropertiesMan::Get()->ProcessEvent(event);
     wxsWindowEditor::SpreadEvent(event);
+    Block = false;
 }
 
 void wxSmith::OnSelectRes(wxsEvent& event)

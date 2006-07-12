@@ -116,7 +116,7 @@ class wxsWindowEditor : public wxsEditor
 
 	private:
 
-        wxScrolledWindow* Scroll;       ///< Scrolled window, parent for preview
+//        wxScrolledWindow* Scroll;       ///< Scrolled window, parent for preview
         wxNotebook* WidgetsSet;         ///< Notebook with all widgets inside
         wxBoxSizer* VertSizer;          ///< Root sizer of this editor
         wxBoxSizer* HorizSizer;         ///< Horizontal sizer managing items below palette
@@ -170,6 +170,8 @@ class wxsWindowEditor : public wxsEditor
         void OnQuickProps(wxCommandEvent& event);
         void OnSize(wxSizeEvent& event);
         void OnRelayout(wxCommandEvent& event);
+//        void OnContentScroll(wxScrollEvent& event);
+//        void OnContentSize(wxSizeEvent& event);
 
         /** Flag for MultipleAddMode */
         bool InsideMultipleChange;

@@ -5,7 +5,7 @@
 #include <compiletargetbase.h>
 #include <wx/bitmap.h>
 
-class wxSmithWizard : public cbWizardPlugin
+class wxSmithWizard: public cbWizardPlugin
 {
     public:
         wxSmithWizard();

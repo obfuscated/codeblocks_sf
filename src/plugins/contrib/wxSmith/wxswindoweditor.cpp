@@ -32,6 +32,7 @@ static const long wxsInsAfterId   = wxNewId();
 static const long wxsDelId        = wxNewId();
 static const long wxsPreviewId    = wxNewId();
 static const long wxsQuickPropsId = wxNewId();
+static const long wxsScrollId     = wxNewId();
 
 
 wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
@@ -49,10 +50,21 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     VertSizer->Add(HorizSizer,1,wxEXPAND);
     VertSizer->Add(WidgetsSet,0,wxEXPAND);
 
-    Scroll = new wxScrolledWindow(this);
-    Scroll->SetScrollRate(4,4);
-    Scroll->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
-    HorizSizer->Add(Scroll,1,wxEXPAND);
+//    Scroll = new wxScrolledWindow(this,wxsScrollId);
+//    Scroll->SetScrollRate(4,4);
+//    Scroll->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
+//    Scroll->Connect(-1,wxEVT_SIZE,(wxObjectEventFunction)&wxsWindowEditor::OnContentSize,NULL,this);
+//    Scroll->Connect(-1,wxEVT_SCROLL_TOP,(wxObjectEventFunction)&wxsWindowEditor::OnContentScroll,NULL,this);
+//    Scroll->Connect(-1,wxEVT_SCROLL_BOTTOM,(wxObjectEventFunction)&wxsWindowEditor::OnContentScroll,NULL,this);
+//    Scroll->Connect(-1,wxEVT_SCROLL_LINEUP,(wxObjectEventFunction)&wxsWindowEditor::OnContentScroll,NULL,this);
+//    Scroll->Connect(-1,wxEVT_SCROLL_LINEDOWN,(wxObjectEventFunction)&wxsWindowEditor::OnContentScroll,NULL,this);
+//    Scroll->Connect(-1,wxEVT_SCROLL_PAGEUP,(wxObjectEventFunction)&wxsWindowEditor::OnContentScroll,NULL,this);
+//    Scroll->Connect(-1,wxEVT_SCROLL_PAGEDOWN,(wxObjectEventFunction)&wxsWindowEditor::OnContentScroll,NULL,this);
+//    Scroll->Connect(-1,wxEVT_SCROLL_THUMBTRACK,(wxObjectEventFunction)&wxsWindowEditor::OnContentScroll,NULL,this);
+//    Scroll->Connect(-1,wxEVT_SCROLL_THUMBRELEASE,(wxObjectEventFunction)&wxsWindowEditor::OnContentScroll,NULL,this);
+//    Scroll->Connect(-1,wxEVT_SCROLL_CHANGED,(wxObjectEventFunction)&wxsWindowEditor::OnContentScroll,NULL,this);
+    DragWnd = new wxsDragWindow(this,NULL);
+    HorizSizer->Add(DragWnd,1,wxEXPAND);
 
     QPArea = new wxScrolledWindow(this,-1,wxDefaultPosition,wxDefaultSize,wxVSCROLL|wxSUNKEN_BORDER|wxALWAYS_SHOW_SB);
     QPArea->SetScrollbars(0,5,0,0);
@@ -87,8 +99,8 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
 
     SetInsertionTypeMask(0);
 
-    DragWnd = new wxsDragWindow(Scroll,NULL,Scroll->GetSize());
-    DragWnd->Hide();
+//    DragWnd = new wxsDragWindow(Scroll,NULL,Scroll->GetSize());
+//    DragWnd->Hide();
     wxFileName Name(Resource->GetWxsFile());
     SetTitle(Name.GetFullName());
 
@@ -99,7 +111,6 @@ wxsWindowEditor::wxsWindowEditor(wxWindow* parent,wxsWindowRes* Resource):
     ToggleQuickPropsPanel(false);
 
     AllEditors.insert(this);
-
     BuildPreview();
 
     wxsSelectWidget(GetWinRes()->GetRootWidget());
@@ -165,7 +176,7 @@ static void WidgetRefreshReq(wxWindow* Wnd)
 
 void wxsWindowEditor::BuildPreview()
 {
-    Scroll->SetSizer(NULL);
+    DragWnd->SetSizer(NULL);
     Freeze();
 
     KillPreview();
@@ -173,42 +184,43 @@ void wxsWindowEditor::BuildPreview()
     // Creating new sizer
 
     wxsWidget* TopWidget = GetWinRes()->GetRootWidget();
-    wxWindow* TopPreviewWindow = TopWidget ? TopWidget->CreatePreview(Scroll,this) : NULL;
+    wxWindow* TopPreviewWindow = TopWidget ? TopWidget->CreatePreview(DragWnd,this) : NULL;
 
     if ( TopPreviewWindow )
     {
         wxSizer* NewSizer = new wxGridSizer(1);
+        DragWnd->Show();
         NewSizer->Add(TopPreviewWindow,0,/*wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL|*/wxALL,10);
-        Scroll->SetVirtualSizeHints(1,1);
-        Scroll->SetSizer(NewSizer);
-        NewSizer->SetVirtualSizeHints(Scroll);
+        DragWnd->SetVirtualSizeHints(1,1);
+        DragWnd->SetSizer(NewSizer);
+        NewSizer->SetVirtualSizeHints(DragWnd);
         HorizSizer->Layout();
         VertSizer->Layout();
-        wxSize Virtual = Scroll->GetVirtualSize();
-        wxSize Real = Scroll->GetSize();
+        wxSize Virtual = DragWnd->GetVirtualSize();
+        wxSize Real = DragWnd->GetSize();
         wxSize Drag(Virtual.GetWidth() > Real.GetWidth() ? Virtual.GetWidth() : Real.GetWidth(),
                     Virtual.GetHeight() > Real.GetHeight() ? Virtual.GetHeight() : Real.GetHeight());
-        // Waiting to reposition and resize all widgets
-// FIXME (SpOoN#1#): Don't ever use wxYield, just add pending event and do all required stuff in it's handler
-        Manager::Yield();
-        DragWnd->SetUpdateMode(false);
-        DragWnd->SetSize(Drag);
-        DragWnd->NotifySizeChange(Drag);
-        DragWnd->SetWidget(TopWidget);
-        DragWnd->Show();
-    }
-    Layout();
 
-    Thaw();
+        // Waiting to reposition and resize all widgets
+        Thaw();
+        Layout();
+        Manager::Yield();
+        DragWnd->SetWidget(TopWidget);
+        DragWnd->ContentChanged();
+    }
+    else
+    {
+        Thaw();
+    }
     Refresh();
 }
 
 void wxsWindowEditor::KillPreview()
 {
-    Scroll->SetSizer(NULL);
+    DragWnd->SetSizer(NULL);
     GetWinRes()->GetRootWidget()->KillPreview();
     DragWnd->Hide();
-    DragWnd->SetUpdateMode(true);
+//    DragWnd->SetUpdateMode(true);
 }
 
 void wxsWindowEditor::OnMouseClick(wxMouseEvent& event)
@@ -1000,6 +1012,26 @@ void wxsWindowEditor::OnRelayout(wxCommandEvent& event)
     Refresh();
 }
 
+//void wxsWindowEditor::OnContentScroll(wxScrollEvent& event)
+//{
+//    if ( DragWnd )
+//    {
+//        DragWnd->RebuildBackground();
+//        DragWnd->Refresh();
+//    }
+//    event.Skip();
+//}
+//
+//void wxsWindowEditor::OnContentSize(wxSizeEvent& event)
+//{
+//    if ( DragWnd )
+//    {
+//        DragWnd->RebuildBackground();
+////        DragWnd->Refresh();
+//    }
+//    event.Skip();
+//}
+//
 wxImage wxsWindowEditor::InsIntoImg;
 wxImage wxsWindowEditor::InsBeforeImg;
 wxImage wxsWindowEditor::InsAfterImg;
@@ -1024,4 +1056,5 @@ BEGIN_EVENT_TABLE(wxsWindowEditor,wxsEditor)
     EVT_BUTTON(-1,wxsWindowEditor::OnButton)
     EVT_SIZE(wxsWindowEditor::OnSize)
     EVT_COMMAND(-1,wxsEVT_RELAYOUT,wxsWindowEditor::OnRelayout)
+//    EVT_COMMAND_SCROLL(wxsScrollId,wxsWindowEditor::OnContentScroll)
 END_EVENT_TABLE()

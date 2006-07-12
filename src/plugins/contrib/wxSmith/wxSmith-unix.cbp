@@ -1183,6 +1183,16 @@
 			<Option link="0" />
 			<Option target="wxSmith" />
 		</Unit>
+		<Unit filename="wxsdrawingwindow.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxSmith" />
+		</Unit>
+		<Unit filename="wxsdrawingwindow.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxSmith" />
+		</Unit>
 		<Unit filename="wxseditor.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="wxSmith" />
@@ -1532,11 +1542,11 @@
 	<dialog wxs_file="wxsWizard.wxs" class="wxsWizard" src_file="wxswizard.cpp" header_file="wxswizard.h" xrc_file="" edit_mode="Source" />
 	<dialog wxs_file="wxsCheckStringsEditor.wxs" class="wxsCheckStringsEditor" src_file="properties/wxscheckstringseditor.cpp" header_file="properties/wxscheckstringseditor.h" xrc_file="" edit_mode="Source" />
 	<panel wxs_file="wxsSettingsDlg.wxs" class="wxsSettingsDlg" src_file="wxssettingsdlg.cpp" header_file="wxssettingsdlg.h" xrc_file="E:\codeblocks\src\plugins\contrib\wxSmith\wxsmith\wxsSettingsDlg.wxs" edit_mode="Xrc" />
-	<panel wxs_file="wxsSizerParentQP.wxs" class="wxsSizerParentQP" src_file="wxssizerparentqp.cpp" header_file="wxssizerparentqp.h" xrc_file="E:\codeblocks\src\plugins\contrib\wxSmith\wxsmith\wxsSizerParentQP.wxs" edit_mode="Source" />
-	<panel wxs_file="wxsNotebookParentQP.wxs" class="wxsNotebookParentQP" src_file="defwidgets/wxsnotebookparentqp.cpp" header_file="defwidgets/wxsnotebookparentqp.h" xrc_file="E:\codeblocks\src\plugins\contrib\wxSmith\wxsmith\wxsNotebookParentQP.wxs" edit_mode="Source" />
-	<panel wxs_file="wxsStandardQP.wxs" class="wxsStandardQP" src_file="wxsstandardqp.cpp" header_file="wxsstandardqp.h" xrc_file="E:\codeblocks\src\plugins\contrib\wxSmith\wxsmith\wxsStandardQP.wxs" edit_mode="Source" />
-	<panel wxs_file="wxsListbookParentQP.wxs" class="wxsListbookParentQP" src_file="defwidgets/wxslistbookparentqp.cpp" header_file="defwidgets/wxslistbookparentqp.h" xrc_file="E:\codeblocks\src\plugins\contrib\wxSmith\wxsmith\wxsListbookParentQP.wxs" edit_mode="Source" />
-	<panel wxs_file="wxsChoicebookParentQP.wxs" class="wxsChoicebookParentQP" src_file="defwidgets\wxschoicebookparentqp.cpp" header_file="defwidgets/wxschoicebookparentqp.h" xrc_file="E:\codeblocks\src\plugins\contrib\wxSmith\wxsmith\wxsChoicebookParentQP.wxs" edit_mode="Source" />
+	<panel wxs_file="wxsSizerParentQP.wxs" class="wxsSizerParentQP" src_file="wxssizerparentqp.cpp" header_file="wxssizerparentqp.h" xrc_file="" edit_mode="Source" />
+	<panel wxs_file="wxsNotebookParentQP.wxs" class="wxsNotebookParentQP" src_file="defwidgets/wxsnotebookparentqp.cpp" header_file="defwidgets/wxsnotebookparentqp.h" xrc_file="" edit_mode="Source" />
+	<panel wxs_file="wxsStandardQP.wxs" class="wxsStandardQP" src_file="wxsstandardqp.cpp" header_file="wxsstandardqp.h" xrc_file="" edit_mode="Source" />
+	<panel wxs_file="wxsListbookParentQP.wxs" class="wxsListbookParentQP" src_file="defwidgets/wxslistbookparentqp.cpp" header_file="defwidgets/wxslistbookparentqp.h" xrc_file="" edit_mode="Source" />
+	<panel wxs_file="wxsChoicebookParentQP.wxs" class="wxsChoicebookParentQP" src_file="defwidgets\wxschoicebookparentqp.cpp" header_file="defwidgets/wxschoicebookparentqp.h" xrc_file="" edit_mode="Source" />
 	<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
 </wxsmith>
 		</Extensions>
