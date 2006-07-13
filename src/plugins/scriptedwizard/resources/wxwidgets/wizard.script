@@ -27,7 +27,7 @@ function BeginWizard()
                             "To help you, this folder must contain the subfolders\n" +
                             "\"include\" and \"lib\".");
 
-	Wizard.AddIntroPage(intro_msg);
+	Wizard.AddInfoPage(_T("WxIntro"), intro_msg);
 	Wizard.AddProjectPathPage();
     if (PLATFORM == PLATFORM_MSW)
         Wizard.AddGenericSelectPathPage(_T("WxPath"), wxpath_msg, _T("wxWidgets' location:"), _T("$(#wx)"));

@@ -18,7 +18,7 @@ function BeginWizard()
                              "This wizard will guide you to create a new DLL.\n\n" +
                              "When you 're ready to proceed, please click \"Next\"...");
 
-        Wizard.AddIntroPage(intro_msg);
+        Wizard.AddInfoPage(_T("DllIntro"), intro_msg);
         Wizard.AddProjectPathPage();
         Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
     }
@@ -27,7 +27,7 @@ function BeginWizard()
         local intro_msg = _T("Welcome to the new DLL build target wizard!\n" +
                              "This wizard will guide you to create a new DLL build target.\n\n" +
                              "When you 're ready to proceed, please click \"Next\"...");
-        Wizard.AddIntroPage(intro_msg);
+        Wizard.AddInfoPage(_T("DllIntro"), intro_msg);
         Wizard.AddBuildTargetPage(_T(""), false, false, _T(""), _T("*"), true);
     }
     else

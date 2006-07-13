@@ -1,5 +1,5 @@
-#ifndef INTROPANEL_H
-#define INTROPANEL_H
+#ifndef INFOPANEL_H
+#define INFOPANEL_H
 
 #include <wx/wxprec.h>
 
@@ -7,24 +7,27 @@
     #pragma hdrstop
 #endif
 
-//(*Headers(IntroPanel)
+//(*Headers(InfoPanel)
+#include <wx/checkbox.h>
 #include <wx/intl.h>
 #include <wx/panel.h>
+#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 //*)
 
-class IntroPanel: public wxPanel
+class InfoPanel: public wxPanel
 {
 	public:
 
-		IntroPanel(wxWindow* parent,wxWindowID id = -1);
-		virtual ~IntroPanel();
+		InfoPanel(wxWindow* parent,wxWindowID id = -1);
+		virtual ~InfoPanel();
 
-		//(*Identifiers(IntroPanel)
+		//(*Identifiers(InfoPanel)
 		enum Identifiers
 		{
-		    ID_STATICTEXT1 = 0x1000
+		    ID_CHECKBOX1 = 0x1000,
+		    ID_STATICTEXT1
 		};
 		//*)
 
@@ -35,14 +38,15 @@ class IntroPanel: public wxPanel
             GetSizer()->Fit(this);
             GetSizer()->SetSizeHints(this);
         }
-	protected:
+//	protected:
 
-		//(*Handlers(IntroPanel)
+		//(*Handlers(InfoPanel)
 		//*)
 
-		//(*Declarations(IntroPanel)
+		//(*Declarations(InfoPanel)
 		wxBoxSizer* BoxSizer1;
 		wxStaticText* lblIntro;
+		wxCheckBox* chkSkip;
 		//*)
 
 	private:

@@ -139,7 +139,7 @@ class Wiz : public cbWizardPlugin
         void SetFilePathSelectionFilter(const wxString& filter);
 
         // pre-defined pages
-        void AddIntroPage(const wxString& intro_msg);
+        void AddInfoPage(const wxString& pageId, const wxString& intro_msg);
         void AddFilePathPage(bool showHeaderGuard);
         void AddProjectPathPage();
         void AddCompilerPage(const wxString& compilerID, const wxString& validCompilerIDs, bool allowCompilerChange = true, bool allowConfigChange = true);

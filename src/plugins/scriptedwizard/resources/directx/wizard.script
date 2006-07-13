@@ -28,7 +28,7 @@ function BeginWizard()
                             "To help you, this folder must contain the subfolders\n" +
                             "\"include\" and \"lib\".");
 
-    Wizard.AddIntroPage(intro_msg);
+    Wizard.AddInfoPage(_T("DirectXIntro"), intro_msg);
     Wizard.AddProjectPathPage();
     Wizard.AddCompilerPage(_T(""), _T("gcc;msvctk"), true, true);
     Wizard.AddGenericSelectPathPage(_T("DirectXPath"), dxpath_descr, _T("Please select Direct/X's location:"), _T("$(#dx)"));

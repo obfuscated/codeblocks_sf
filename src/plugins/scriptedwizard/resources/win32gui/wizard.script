@@ -10,7 +10,7 @@ function BeginWizard()
                          "This wizard will guide you to create a new Win32 GUI project.\n\n" +
                          "When you 're ready to proceed, please click \"Next\"...");
 
-    Wizard.AddIntroPage(intro_msg);
+    Wizard.AddInfoPage(_T("Win32Intro"), intro_msg);
     Wizard.AddProjectPathPage();
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
@@ -25,7 +25,7 @@ function OnLeave_CompilerPage(fwd)
             // see if psdk global variable exists which is required for this compiler
             if (GetUserVariableManager().Exists(_T("#psdk")))
             {
-                ShowError(_T("You have selected the MS VC++ Toolkit for compilation.\n" + 
+                ShowError(_T("You have selected the MS VC++ Toolkit for compilation.\n" +
                              "For this compiler the global variable \"psdk\" pointing to\n" +
                              "the path of the MS platform SDK has to be setup.\n\n" +
                              "Unfortunately this wizard could not detect this\n" +

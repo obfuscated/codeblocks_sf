@@ -8,17 +8,17 @@ INCLUDES = $(WX_CXXFLAGS) \
 
 libdir = $(pkgdatadir)/plugins
 
-lib_LTLIBRARIES = libprojectwizard.la
+lib_LTLIBRARIES = libscriptedwizard.la
 
-libprojectwizard_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libscriptedwizard_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libprojectwizard_la_LIBADD = ../../sdk/libcodeblocks.la
+libscriptedwizard_la_LIBADD = ../../sdk/libcodeblocks.la
 
-libprojectwizard_la_SOURCES = buildtargetpanel.cpp \
+libscriptedwizard_la_SOURCES = buildtargetpanel.cpp \
                                 compilerpanel.cpp \
                                 filepathpanel.cpp \
                                 genericselectpath.cpp \
-								intropanel.cpp \
+								infopanel.cpp \
 								genericsinglechoicelist.cpp \
 								projectpathpanel.cpp \
 								wiz.cpp \
@@ -28,7 +28,7 @@ noinst_HEADERS = buildtargetpanel.h \
                     compilerpanel.h \
                     filepathpanel.h \
                     genericselectpath.h \
-					intropanel.h \
+					infopanel.h \
 					genericsinglechoicelist.h \
 					projectpathpanel.h \
 					wiz.h \

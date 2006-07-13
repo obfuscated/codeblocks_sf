@@ -19,7 +19,7 @@ function BeginWizard()
                              "To help you, this folder must contain the subfolders\n" +
                              "\"include\" and \"lib\".");
 
-    Wizard.AddIntroPage(intro_msg);
+    Wizard.AddInfoPage(_T("IrrIntro"), intro_msg);
     Wizard.AddProjectPathPage();
     Wizard.AddGenericSelectPathPage(_T("IrrPath"), irrpath_descr, _T("Please select Irrlicht's location:"), _T("$(#irr)"));
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
@@ -56,7 +56,7 @@ function GetFilesDir()
 function SetupProject(project)
 {
     // set project options
-    
+
     // calculate the final lib directory, based on current platform and compiler
     local IrrlichtLibDir;
     if (PLATFORM == PLATFORM_MSW)

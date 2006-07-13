@@ -1417,9 +1417,10 @@ void MainFrame::ShowHideScriptConsole()
 void MainFrame::OnStartHereLink(wxCommandEvent& event)
 {
     wxCommandEvent evt;
+    evt.SetId(idFileNewProject);
     wxString link = event.GetString();
     if(link.IsSameAs(_T("CB_CMD_NEW_PROJECT")))
-        OnFileNew(evt);
+        OnFileNewWhat(evt);
     else if(link.IsSameAs(_T("CB_CMD_OPEN_PROJECT")))
         OnFileOpen(evt);
 //    else if (link.IsSameAs(_T("CB_CMD_CONF_ENVIRONMENT")))

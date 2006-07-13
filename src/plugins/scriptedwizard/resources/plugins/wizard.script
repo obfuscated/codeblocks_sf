@@ -38,7 +38,7 @@ function BeginWizard()
     }
     intro_msg += _T("When you 're ready to proceed, please click \"Next\"...");
 
-	Wizard.AddIntroPage(intro_msg);
+	Wizard.AddInfoPage(_T("PluginIntro"), intro_msg);
 	Wizard.AddProjectPathPage();
 	Wizard.AddPage(_T("PluginOptions"));
 	Wizard.AddPage(_T("PluginInfo"));

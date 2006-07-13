@@ -19,7 +19,7 @@ function BeginWizard()
                               "To help you, this folder must contain the subfolders\n" +
                               "\"include\" and \"lib\".");
 
-    Wizard.AddIntroPage(intro_msg);
+    Wizard.AddInfoPage(_T("GlfwIntro"), intro_msg);
     Wizard.AddProjectPathPage();
     Wizard.AddGenericSelectPathPage(_T("GlfwPath"), glfwpath_descr, _T("Please select GLFW's location:"), _T("$(#glfw)"));
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
@@ -57,7 +57,7 @@ function SetupProject(project)
 {
     // set project options
     local gvar = ReplaceMacros(_T("$(#glfw"), true);
-    
+
     // set compiler/linker search paths
     // see if the GLFW SDK matches the global var. if it does, use the var instead...
     if (gvar.Matches(GlfwPath))

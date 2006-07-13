@@ -48,9 +48,9 @@ function BeginWizard()
                         ? _T("gcc*;msv*")
                         : _T("gcc*");
 
-    Wizard.AddIntroPage(intro_msg);
+    Wizard.AddInfoPage(_T("OgreIntro"), intro_msg);
     Wizard.AddProjectPathPage();
-    Wizard.AddGenericSingleChoiceListPage(_T("SDKType"), sdk_descr, sdk_choices, OgreIsSource ? 0 : 1);
+    Wizard.AddGenericSingleChoiceListPage(_T("OgreSDKType"), sdk_descr, sdk_choices, OgreIsSource ? 0 : 1);
     Wizard.AddGenericSelectPathPage(_T("OgrePath"), ogrepath_descr, _T("Please select OGRE's location:"), _T("$(OGRE_HOME)"));
     Wizard.AddCompilerPage(_T(""), compilers, true, true);
 }
@@ -59,7 +59,7 @@ function BeginWizard()
 // OGRE SDK's type
 ////////////////////////////////////////////////////////////////////////////////
 
-function OnGetNextPage_SDKType()
+function OnGetNextPage_OgreSDKType()
 {
     // for pre-made SDK under linux, skip OGRE path selection
     // we will use pkg-config for this ;)
@@ -79,7 +79,7 @@ function OnGetPrevPage_CompilerPage()
     // for pre-made SDK under linux, skip OGRE path selection
     // we will use pkg-config for this ;)
     if (PLATFORM != PLATFORM_MSW && !OgreIsSource)
-        return _T("SDKType");
+        return _T("OgreSDKType");
 
     return _T("OgrePath");
 }

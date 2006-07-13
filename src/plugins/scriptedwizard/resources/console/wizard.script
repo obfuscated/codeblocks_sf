@@ -28,7 +28,7 @@ function BeginWizard()
                             "When you 're ready to proceed, please click \"Next\"...");
 
         // intro
-        Wizard.AddIntroPage(intro_msg);
+        Wizard.AddInfoPage(_T("ConsoleIntro"), intro_msg);
         // select project name and path
         Wizard.AddProjectPathPage();
         // select compiler and configurations
@@ -41,7 +41,7 @@ function BeginWizard()
         local intro_msg = _T("Welcome to the new console build target wizard!\n" +
                             "This wizard will guide you to create a new console build target.\n\n" +
                             "When you 're ready to proceed, please click \"Next\"...");
-        Wizard.AddIntroPage(intro_msg);
+        Wizard.AddInfoPage(_T("ConsoleIntro"), intro_msg);
         Wizard.AddBuildTargetPage(_T(""), false, false, _T(""), _T("*"), true);
     }
     else

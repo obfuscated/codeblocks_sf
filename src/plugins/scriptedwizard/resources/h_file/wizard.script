@@ -23,7 +23,7 @@ function BeginWizard()
                         "When you 're ready to proceed, please click \"Next\"...");
 
     // add builtin pages
-	Wizard.AddIntroPage(intro_msg); // intro
+	Wizard.AddInfoPage(_T("HFileIntro"), intro_msg); // intro
 	Wizard.AddFilePathPage(true); // select filename (header guard required for header files)
 
     Wizard.SetFilePathSelectionFilter(_T("C/C++ header files (*.h;*.hpp;*.hxx;*.hh)|*.h;*.hpp;*.hxx;*.hh"));

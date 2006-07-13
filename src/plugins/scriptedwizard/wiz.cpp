@@ -802,10 +802,14 @@ wxString Wiz::GetTextControlValue(const wxString& name)
     return wxEmptyString;
 }
 
-void Wiz::AddIntroPage(const wxString& intro_msg)
+void Wiz::AddInfoPage(const wxString& pageId, const wxString& intro_msg)
 {
-    WizIntroPanel* page = new WizIntroPanel(intro_msg, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG);
-    m_Pages.Add(page);
+    // we don't track this; can add more than one
+    WizPageBase* page = new WizInfoPanel(pageId, intro_msg, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG);
+    if (!page->SkipPage())
+        m_Pages.Add(page);
+    else
+        delete page;
 }
 
 void Wiz::AddFilePathPage(bool showHeaderGuard)
@@ -813,7 +817,13 @@ void Wiz::AddFilePathPage(bool showHeaderGuard)
     if (m_pWizFilePathPanel)
         return; // already added
     m_pWizFilePathPanel = new WizFilePathPanel(showHeaderGuard, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG);
-    m_Pages.Add(m_pWizFilePathPanel);
+    if (!m_pWizFilePathPanel->SkipPage())
+        m_Pages.Add(m_pWizFilePathPanel);
+    else
+    {
+        delete m_pWizFilePathPanel;
+        m_pWizFilePathPanel = 0;
+    }
 }
 
 void Wiz::AddProjectPathPage()
@@ -821,7 +831,13 @@ void Wiz::AddProjectPathPage()
     if (m_pWizProjectPathPanel)
         return; // already added
     m_pWizProjectPathPanel = new WizProjectPathPanel(m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG);
-    m_Pages.Add(m_pWizProjectPathPanel);
+    if (!m_pWizProjectPathPanel->SkipPage())
+        m_Pages.Add(m_pWizProjectPathPanel);
+    else
+    {
+        delete m_pWizProjectPathPanel;
+        m_pWizProjectPathPanel = 0;
+    }
 }
 
 void Wiz::AddCompilerPage(const wxString& compilerID, const wxString& validCompilerIDs, bool allowCompilerChange, bool allowConfigChange)
@@ -829,7 +845,13 @@ void Wiz::AddCompilerPage(const wxString& compilerID, const wxString& validCompi
     if (m_pWizCompilerPanel)
         return; // already added
     m_pWizCompilerPanel = new WizCompilerPanel(compilerID, validCompilerIDs, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG, allowCompilerChange, allowConfigChange);
-    m_Pages.Add(m_pWizCompilerPanel);
+    if (!m_pWizCompilerPanel->SkipPage())
+        m_Pages.Add(m_pWizCompilerPanel);
+    else
+    {
+        delete m_pWizCompilerPanel;
+        m_pWizCompilerPanel = 0;
+    }
 }
 
 void Wiz::AddBuildTargetPage(const wxString& targetName, bool isDebug, bool showCompiler, const wxString& compilerID, const wxString& validCompilerIDs, bool allowCompilerChange)
@@ -837,25 +859,42 @@ void Wiz::AddBuildTargetPage(const wxString& targetName, bool isDebug, bool show
     if (m_pWizBuildTargetPanel)
         return; // already added
     m_pWizBuildTargetPanel = new WizBuildTargetPanel(targetName, isDebug, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG, showCompiler, compilerID, validCompilerIDs, allowCompilerChange);
-    m_Pages.Add(m_pWizBuildTargetPanel);
+    if (!m_pWizBuildTargetPanel->SkipPage())
+        m_Pages.Add(m_pWizBuildTargetPanel);
+    else
+    {
+        delete m_pWizBuildTargetPanel;
+        m_pWizBuildTargetPanel = 0;
+    }
 }
 
 void Wiz::AddGenericSingleChoiceListPage(const wxString& pageName, const wxString& descr, const wxString& choices, int defChoice)
 {
     // we don't track this; can add more than one
-    m_Pages.Add(new WizGenericSingleChoiceList(pageName, descr, GetArrayFromString(choices, _T(";")), defChoice, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG));
+    WizPageBase* page = new WizGenericSingleChoiceList(pageName, descr, GetArrayFromString(choices, _T(";")), defChoice, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG);
+    if (!page->SkipPage())
+        m_Pages.Add(page);
+    else
+        delete page;
 }
 
 void Wiz::AddGenericSelectPathPage(const wxString& pageId, const wxString& descr, const wxString& label, const wxString& defValue)
 {
     // we don't track this; can add more than one
-    m_Pages.Add(new WizGenericSelectPathPanel(pageId, descr, label, defValue, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG));
+    WizPageBase* page = new WizGenericSelectPathPanel(pageId, descr, label, defValue, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG);
+    if (!page->SkipPage())
+        m_Pages.Add(page);
+    else
+        delete page;
 }
 
 void Wiz::AddPage(const wxString& panelName)
 {
     WizPage* page = new WizPage(panelName, m_pWizard, m_Wizards[m_LaunchIndex].wizardPNG);
-    m_Pages.Add(page);
+    if (!page->SkipPage())
+        m_Pages.Add(page);
+    else
+        delete page;
 }
 
 void Wiz::Finalize()
@@ -865,8 +904,11 @@ void Wiz::Finalize()
         wxWizardPageSimple::Chain(m_Pages[i - 1], m_Pages[i]);
 
     // allow the wizard to size itself around the pages
-    for (size_t i = 1; i < m_Pages.GetCount(); ++i)
-        m_pWizard->GetPageAreaSizer()->Add(m_Pages[i]);
+    // for (size_t i = 1; i < m_Pages.GetCount(); ++i)
+    //
+    // wx docs say that it's enough to add the first page only
+    if (m_Pages[0])
+        m_pWizard->GetPageAreaSizer()->Add(m_Pages[0]);
 
     m_pWizard->Fit();
 }
@@ -1080,7 +1122,7 @@ void Wiz::RegisterWizard()
             // register new wizards
             func(&Wiz::AddWizard, "AddWizard").
             // add wizard pages
-            func(&Wiz::AddIntroPage, "AddIntroPage").
+            func(&Wiz::AddInfoPage, "AddInfoPage").
             func(&Wiz::AddProjectPathPage, "AddProjectPathPage").
             func(&Wiz::AddFilePathPage, "AddFilePathPage").
             func(&Wiz::AddCompilerPage, "AddCompilerPage").

@@ -15,6 +15,7 @@ class GenericSingleChoiceList;
 class FilePathPanel;
 class GenericSelectPath;
 class WizPageBase;
+class InfoPanel;
 
 typedef std::map<wxString, WizPageBase*> PagesByName;
 
@@ -23,6 +24,9 @@ class WizPageBase : public wxWizardPageSimple
 	public:
 		WizPageBase(const wxString& pageName, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
 		~WizPageBase();
+
+		virtual bool SkipPage(){ return m_SkipPage; } // default: false
+
 	    virtual void OnPageChanging(wxWizardEvent& event);
 	    virtual void OnPageChanged(wxWizardEvent& event);
 
@@ -31,6 +35,7 @@ class WizPageBase : public wxWizardPageSimple
     protected:
         static PagesByName s_PagesByName;
         wxString m_PageName;
+        bool m_SkipPage;
     private:
 		DECLARE_EVENT_TABLE()
 };
@@ -46,12 +51,15 @@ class WizPage : public WizPageBase
 		DECLARE_EVENT_TABLE()
 };
 
-class WizIntroPanel : public WizPageBase
+class WizInfoPanel : public WizPageBase
 {
 	public:
-		WizIntroPanel(const wxString& intro_msg, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
-		~WizIntroPanel();
+		WizInfoPanel(const wxString& pageId, const wxString& intro_msg, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
+		~WizInfoPanel();
+
+	    virtual void OnPageChanging(wxWizardEvent& event);
     protected:
+        InfoPanel* m_InfoPanel;
     private:
 };
 

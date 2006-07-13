@@ -19,7 +19,7 @@ function BeginWizard()
                               "To help you, this folder must contain the subfolders\n" +
                               "\"include\" and \"lib\".");
 
-    Wizard.AddIntroPage(intro_msg);
+    Wizard.AddInfoPage(_T("FltkIntro"), intro_msg);
     Wizard.AddProjectPathPage();
     Wizard.AddGenericSelectPathPage(_T("FltkPath"), fltkpath_descr, _T("Please select FLTK's location:"), _T("$(#fltk)"));
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
@@ -57,7 +57,7 @@ function SetupProject(project)
 {
     // set project options
     local gvar = ReplaceMacros(_T("$(#fl"), true);
-    
+
     // set compiler/linker search paths
     // see if the FLTK SDK matches the global var. if it does, use the var instead...
     if (gvar.Matches(FltkPath))

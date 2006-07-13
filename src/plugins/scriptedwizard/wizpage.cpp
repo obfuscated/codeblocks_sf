@@ -15,7 +15,7 @@
 #include <scripting/bindings/sc_base_types.h>
 
 #include "wizpage.h"
-#include "intropanel.h"
+#include "infopanel.h"
 #include "projectpathpanel.h"
 #include "compilerpanel.h"
 #include "buildtargetpanel.h"
@@ -54,6 +54,9 @@ WizPageBase::WizPageBase(const wxString& pageName, wxWizard* parent, const wxBit
 
     // register this to the static pages map
     s_PagesByName[m_PageName] = this;
+
+    // if this is true, the page won't be added to the wizard
+    m_SkipPage = Manager::Get()->GetConfigManager(_T("scripts"))->ReadBool(_T("/generic_wizard/") + m_PageName + _T("/skip"), false);
 }
 
 //------------------------------------------------------------------------------
@@ -109,6 +112,8 @@ wxWizardPage* WizPageBase::GetNext() const
 
 void WizPageBase::OnPageChanging(wxWizardEvent& event)
 {
+    Manager::Get()->GetConfigManager(_T("scripts"))->Write(_T("/generic_wizard/") + m_PageName + _T("/skip"), (bool)m_SkipPage);
+
     try
     {
         wxString sig = _T("OnLeave_") + m_PageName;
@@ -190,19 +195,29 @@ void WizPage::OnButton(wxCommandEvent& event)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// WizIntroPanel
+// WizInfoPanel
 ////////////////////////////////////////////////////////////////////////////////
 
-WizIntroPanel::WizIntroPanel(const wxString& intro_msg, wxWizard* parent, const wxBitmap& bitmap)
-    : WizPageBase(_T("IntroPage"), parent, bitmap)
+WizInfoPanel::WizInfoPanel(const wxString& pageId, const wxString& intro_msg, wxWizard* parent, const wxBitmap& bitmap)
+    : WizPageBase(pageId, parent, bitmap)
 {
-    IntroPanel* pnl = new IntroPanel(this);
-    pnl->SetIntroText(intro_msg);
+    m_InfoPanel = new InfoPanel(this);
+    m_InfoPanel->SetIntroText(intro_msg);
 }
 
 //------------------------------------------------------------------------------
-WizIntroPanel::~WizIntroPanel()
+WizInfoPanel::~WizInfoPanel()
 {
+}
+
+void WizInfoPanel::OnPageChanging(wxWizardEvent& event)
+{
+    if (!m_SkipPage && event.GetDirection() != 0) // !=0 forward, ==0 backward
+    {
+        m_SkipPage = m_InfoPanel->chkSkip->GetValue();
+    }
+
+    WizPageBase::OnPageChanging(event);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -1627,11 +1627,11 @@
 			<Option link="0" />
 			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins/scriptedwizard/intropanel.cpp">
+		<Unit filename="plugins/scriptedwizard/infopanel.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins/scriptedwizard/intropanel.h">
+		<Unit filename="plugins/scriptedwizard/infopanel.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -1805,7 +1805,7 @@
 			<Option link="0" />
 			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins/scriptedwizard/wxsmith/IntroPanel.wxs">
+		<Unit filename="plugins/scriptedwizard/wxsmith/InfoPanel.wxs">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

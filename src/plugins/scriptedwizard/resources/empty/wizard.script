@@ -15,7 +15,7 @@ function BeginWizard()
                         "When you 're ready to proceed, please click \"Next\"...");
 
 	// intro
-	Wizard.AddIntroPage(intro_msg);
+	Wizard.AddInfoPage(_T("EmptyProjectIntro"), intro_msg);
 	// select project name and path
 	Wizard.AddProjectPathPage();
 	// select compiler and configurations
