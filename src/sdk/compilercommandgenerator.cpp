@@ -577,7 +577,7 @@ wxString CompilerCommandGenerator::SetupResourceCompilerOptions(Compiler* compil
   * Depending on the order defined for the build target, it concatenates
   * @c project_options with @c target_options and returns the result.
   */
-wxString CompilerCommandGenerator::GetOrderedOptions(ProjectBuildTarget* target, OptionsRelationType rel, const wxString& project_options, const wxString& target_options)
+wxString CompilerCommandGenerator::GetOrderedOptions(const ProjectBuildTarget* target, OptionsRelationType rel, const wxString& project_options, const wxString& target_options)
 {
     wxString result;
     OptionsRelation relation = target->GetOptionRelation(rel);
