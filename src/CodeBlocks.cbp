@@ -289,6 +289,8 @@
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="sdk" />
 					<Add directory="plugins\compilergcc\depslib\src" />
+					<Add directory="sdk\scripting\include" />
+					<Add directory="sdk\scripting\sqplus" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />

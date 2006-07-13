@@ -233,6 +233,8 @@
 				<Compiler>
 					<Add directory="sdk" />
 					<Add directory="plugins/compilergcc/depslib/src" />
+					<Add directory="sdk/scripting/include" />
+					<Add directory="sdk/scripting/sqplus" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />

@@ -68,6 +68,19 @@
 #include "compilerICC.h"
 #include "compilerSDCC.h"
 
+#include <scripting/bindings/sc_base_types.h>
+
+namespace ScriptBindings
+{
+    static int gBuildLogId = -1;
+
+    // global funcs
+    void gBuildLog(const wxString& msg)
+    {
+        Manager::Get()->GetMessageManager()->Log(gBuildLogId, msg);
+    }
+};
+
 #define COLOUR_MAROON wxColour(0xa0, 0x00, 0x00)
 #define COLOUR_NAVY   wxColour(0x00, 0x00, 0xa0)
 
@@ -427,10 +440,24 @@ void CompilerGCC::OnAttach()
     CompilerFactory::SetDefaultCompiler(Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/default_compiler"), _T("gcc")));
     LoadOptions();
 //    SetupEnvironment();
+
+    // register compiler's script functions
+    // make sure the VM is initialized
+    Manager::Get()->GetScriptingManager();
+    if (SquirrelVM::GetVMPtr())
+    {
+        ScriptBindings::gBuildLogId = m_PageIndex;
+        SqPlus::RegisterGlobal(ScriptBindings::gBuildLog, "LogBuild");
+    }
+    else
+        ScriptBindings::gBuildLogId = -1;
 }
 
 void CompilerGCC::OnRelease(bool appShutDown)
 {
+    // disable script functions
+    ScriptBindings::gBuildLogId = -1;
+
     DoDeleteTempMakefile();
     SaveOptions();
     Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/default_compiler"), CompilerFactory::GetDefaultCompilerID());
