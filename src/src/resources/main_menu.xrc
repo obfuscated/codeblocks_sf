@@ -6,6 +6,12 @@
       <object class="wxMenu" name="idFileNew">
         <label>New</label>
         <help>Create a new project/file/target/other (wizard)</help>
+        <object class="wxMenuItem" name="idFileNewEmpty">
+          <label>Empty file</label>
+          <accel>Ctrl-Shift-N</accel>
+          <help>Quickly create a new empty file</help>
+        </object>
+        <object class="separator"/>
         <object class="wxMenuItem" name="idFileNewProject">
           <label>Project</label>
           <help>Create a new project</help>
@@ -25,11 +31,6 @@
         <object class="wxMenuItem" name="idFileNewUser">
           <label>From user template</label>
           <help>Create a new project based on a previously saved user template</help>
-        </object>
-        <object class="separator"/>
-        <object class="wxMenuItem" name="idFileNewEmpty">
-          <label>Empty file</label>
-          <help>Quickly create a new empty file</help>
         </object>
       </object>
       <object class="separator"/>

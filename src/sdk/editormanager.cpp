@@ -586,13 +586,13 @@ cbEditor* EditorManager::New(const wxString& newFileName)
             return 0;
     }
     cbEditor* ed = new cbEditor(m_pNotebook, newFileName);
-    if ((newFileName.IsEmpty() && !ed->SaveAs()) || !ed->Save())
-    {
-        //DeletePage(ed->GetPageIndex());
-        ed->Destroy();
-        Manager::Get()->GetAppWindow()->SetTitle(old_title); // Though I can't reproduce the bug, this does no harm
-        return 0L;
-    }
+//    if ((newFileName.IsEmpty() && !ed->SaveAs()) || !ed->Save())
+//    {
+//        //DeletePage(ed->GetPageIndex());
+//        ed->Destroy();
+//        Manager::Get()->GetAppWindow()->SetTitle(old_title); // Though I can't reproduce the bug, this does no harm
+//        return 0L;
+//    }
 
     // add default text
     wxString key;

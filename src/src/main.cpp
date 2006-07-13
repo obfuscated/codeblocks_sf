@@ -1792,7 +1792,7 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
 	if (project)
         wxSetWorkingDirectory(project->GetBasePath());
     cbEditor* ed = Manager::Get()->GetEditorManager()->New();
-    if(ed)
+    if (ed && ed->IsOK())
     {
         AddToRecentFilesHistory(ed->GetFilename());
     }
@@ -1800,7 +1800,8 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
 	if (!ed || !project)
 		return;
 
-	if (cbMessageBox(_("Do you want to add this new file in the active project?"),
+	if (ed->IsOK() &&
+        cbMessageBox(_("Do you want to add this new file in the active project?"),
 					_("Add file to project"),
 					wxYES_NO | wxICON_QUESTION) == wxID_YES)
 	{

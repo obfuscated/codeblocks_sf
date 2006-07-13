@@ -34,11 +34,13 @@
     #include "cbeditor.h" // class's header file
     #include "globals.h"
     #include "sdk_events.h"
+    #include "cbproject.h"
     #include "projectfile.h"
     #include "projectbuildtarget.h"
     #include "editorcolourset.h"
     #include "manager.h"
     #include "configmanager.h"
+    #include "projectmanager.h"
     #include "pluginmanager.h"
     #include "editormanager.h"
     #include "messagemanager.h"
@@ -401,10 +403,25 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
     m_pData = new cbEditorInternalData(this);
     m_IsBuiltinEditor = true;
 
-    InitFilename(filename);
-    wxFileName fname(m_Filename);
-    NormalizePath(fname, wxEmptyString);
-    m_Filename = fname.GetFullPath();
+    if (!filename.IsEmpty())
+    {
+        InitFilename(filename);
+        wxFileName fname(m_Filename);
+        NormalizePath(fname, wxEmptyString);
+        m_Filename = fname.GetFullPath();
+    }
+    else
+    {
+        static int untitledCounter = 1;
+        wxString f;
+        cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+        if (prj)
+            f.Printf(_("%sUntitled%d"), prj->GetBasePath().c_str(), untitledCounter++);
+        else
+            f.Printf(_("Untitled%d"), untitledCounter++);
+
+        InitFilename(f);
+    }
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("ctor: Filename=%s\nShort=%s"), m_Filename.c_str(), m_Shortname.c_str());
 
     // initialize left control (unsplit state)
@@ -424,9 +441,10 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
     SetEditorStyleAfterFileOpen();
 
     // if !m_IsOK then it's a new file, so set the modified flag ON
-    if (!m_IsOK && filename.IsEmpty())
+    if (!m_IsOK || filename.IsEmpty())
     {
         SetModified(true);
+        m_IsOK = false;
     }
 }
 
@@ -1108,12 +1126,13 @@ bool cbEditor::SaveAs()
     wxString Path = fname.GetPath();
     if(mgr)
     {
-        wxString Filter = mgr->Read(_T("/file_dialogs/file_new_open/filter"), _T("C/C++ files"));
+        wxString Filter = mgr->Read(_T("/file_dialogs/save_file_as/filter"), _T("C/C++ files"));
         if(!Filter.IsEmpty())
         {
             FileFilters::GetFilterIndexFromName(Filters, Filter, StoredIndex);
         }
-        Path = mgr->Read(_T("/file_dialogs/file_new_open/directory"), Path);
+        if (Path.IsEmpty())
+            Path = mgr->Read(_T("/file_dialogs/save_file_as/directory"), Path);
     }
     wxFileDialog* dlg = new wxFileDialog(Manager::Get()->GetAppWindow(),
                                          _("Save file"),
