@@ -554,11 +554,17 @@ wxString CompilerCommandGenerator::SetupLinkLibraries(Compiler* compiler, Projec
     }
 
     // compiler link libraries
-    result << GetStringFromArray(compiler->GetLinkLibs(), _T(' '));
+    wxString cstr;
+    const wxArrayString& carr = compiler->GetLinkLibs();
+    for (unsigned int x = 0; x < carr.GetCount(); ++x)
+    {
+    	cstr << FixupLinkLibraries(compiler, carr[x]) << _T(' ');
+    }
+    result << cstr;
 
     // add in array
     return result;
-}
+} // end of SetupLinkLibraries
 
 /// Setup resource compiler flags for build target.
 wxString CompilerCommandGenerator::SetupResourceCompilerOptions(Compiler* compiler, ProjectBuildTarget* target)

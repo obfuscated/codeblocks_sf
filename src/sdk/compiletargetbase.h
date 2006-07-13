@@ -69,7 +69,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual void SetWorkingDir(const wxString& dirname); ///< Set the target's working dir on execution (valid only for executable targets)
         virtual void SetObjectOutput(const wxString& dirname); ///< Set the target's objects output dir
         virtual void SetDepsOutput(const wxString& dirname); ///< Set the target's dependencies output dir
-        virtual OptionsRelation GetOptionRelation(OptionsRelationType type); ///< Read the target's options relation for \c type
+        virtual OptionsRelation GetOptionRelation(OptionsRelationType type) const; ///< Read the target's options relation for \c type
         virtual void SetOptionRelation(OptionsRelationType type, OptionsRelation rel); ///< Set the target's options relation for \c type to \c rel
         virtual wxString GetWorkingDir(); ///< Read the target's working dir for execution (valid only for executable targets)
         virtual wxString GetObjectOutput() const; ///< Read the target's objects output dir

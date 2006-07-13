@@ -112,7 +112,7 @@ void CompileTargetBase::SetDepsOutput(const wxString& dirname)
 	SetModified(true);
 }
 
-OptionsRelation CompileTargetBase::GetOptionRelation(OptionsRelationType type)
+OptionsRelation CompileTargetBase::GetOptionRelation(OptionsRelationType type) const
 {
 	return m_OptionsRelation[type];
 }
