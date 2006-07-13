@@ -661,14 +661,6 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
     if ( Block ) return;
     Block = true;
 
-    // Disabling everything in this window
-    Disable();
-    wxWindowList List = GetChildren();
-    for ( size_t i=0; i<List.GetCount(); i++ )
-    {
-        List[i]->Disable();
-    }
-
     wxString Dir = PrjDir->GetValue();
     wxString Name = PrjName->GetValue();
 
@@ -704,6 +696,13 @@ void wxsWizard::OnButton2Click(wxCommandEvent& event)
     {
         wxMessageBox(_("Couldn't create new project file"));
         return;
+    }
+
+    // Disabling everything in this window
+    wxWindowList List = GetChildren();
+    for ( size_t i=0; i<List.GetCount(); i++ )
+    {
+        List[i]->Disable();
     }
 
     bool addedVars = false;
