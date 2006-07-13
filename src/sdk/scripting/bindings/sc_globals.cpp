@@ -15,7 +15,10 @@
 namespace ScriptBindings
 {
     // global funcs
-    void gDebugLog(const wxString& msg){ DBGLOG(msg); }
+    void gDebugLog(const wxString& msg){ Manager::Get()->GetMessageManager()->DebugLog(msg); }
+    void gErrorLog(const wxString& msg){ Manager::Get()->GetMessageManager()->DebugLogError(msg); }
+    void gWarningLog(const wxString& msg){ Manager::Get()->GetMessageManager()->DebugLogWarning(msg); }
+    void gLog(const wxString& msg){ Manager::Get()->GetMessageManager()->Log(msg); }
     int gMessage(const wxString& msg, const wxString& caption, int buttons){ return cbMessageBox(msg, caption, buttons); }
     void gShowMessage(const wxString& msg){ cbMessageBox(msg, _("Script message")); }
     void gShowMessageWarn(const wxString& msg){ cbMessageBox(msg, _("Script warning"), wxICON_WARNING); }
@@ -56,7 +59,11 @@ namespace ScriptBindings
     void Register_Globals()
     {
         // global funcs
-        SqPlus::RegisterGlobal(gDebugLog, "Log");
+        SqPlus::RegisterGlobal(gLog, "Log");
+        SqPlus::RegisterGlobal(gDebugLog, "LogDebug");
+        SqPlus::RegisterGlobal(gWarningLog, "LogWarning");
+        SqPlus::RegisterGlobal(gErrorLog, "LogError");
+
         SqPlus::RegisterGlobal(gMessage, "Message");
         SqPlus::RegisterGlobal(gShowMessage, "ShowMessage");
         SqPlus::RegisterGlobal(gShowMessageWarn, "ShowWarning");
