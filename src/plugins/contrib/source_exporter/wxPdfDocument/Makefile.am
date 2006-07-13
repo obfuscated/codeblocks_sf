@@ -26,5 +26,5 @@ noinst_HEADERS = include/wx/pdfbarcode.h \
 				include/wx/pdfimage.h \
 				include/wx/pdfxml.h
 
-EXTRA_DIST = pdfcolordata.inc \
-			pdffontdata.inc
+EXTRA_DIST = src/pdfcolordata.inc \
+			src/pdffontdata.inc

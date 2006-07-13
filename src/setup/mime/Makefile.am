@@ -31,6 +31,8 @@ install-data-local: install-mimexmlDATA
 	if [ -f $(DESTDIR)$(datadir)/mime/packages/freedesktop.org.xml ] ; then \
 	  if which update-mime-database>/dev/null 2>&1; then \
 	    update-mime-database $(DESTDIR)$(datadir)/mime; \
+	  fi; \
+	  if which update-desktop-database>/dev/null 2>&1; then \
 		update-desktop-database; \
 	  fi \
 	fi
@@ -39,6 +41,8 @@ uninstall-local:
 	if [ -f $(DESTDIR)$(datadir)/mime/packages/freedesktop.org.xml ] ; then \
 	  if which update-mime-database>/dev/null 2>&1; then \
 	    update-mime-database $(DESTDIR)$(datadir)/mime; \
+	  fi; \
+	  if which update-desktop-database>/dev/null 2>&1; then \
 		update-desktop-database; \
 	  fi \
 	fi
