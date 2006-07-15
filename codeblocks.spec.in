@@ -166,6 +166,7 @@ fi
 %{pkgdata}/plugins/libtodo.*
 %{pkgdata}/scripts/*
 %{pkgdata}/templates/*
+%{_mandir}/*
 
 %files contrib
 %defattr(-,root,root)
@@ -193,7 +194,9 @@ fi
 %{_includedir}/%{name}/*
 
 %changelog
-* Tue Jul 11 2006 Daniel Orb <mandrav@codeblocks.org>
+* Fri Jul 14 2006 Daniel Orb <danielorb2000@googlemail.com>
+- added man pages to filelist
+* Tue Jul 11 2006 Yiannis Mandravellos <mandrav@codeblocks.org>
 - removed pluginwizard files
 - replaced libprojectwizard by libscriptedwizard (renamed)
 * Tue Jul 11 2006 Daniel Orb <danielorb2000@googlemail.com>
