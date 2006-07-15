@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="4" />
 	<Project>
@@ -123,7 +123,7 @@
 			<Target title="sdk">
 				<Option output="devel/libcodeblocks.so" />
 				<Option working_dir="devel" />
-				<Option external_deps="sdk/tinyxml/libtxml.a;sdk/propgrid/libpropgrid.a;sdk/wxFlatNotebook/libwxflatnotebook.a;sdk/as/libangelscript.a;" />
+				<Option external_deps="sdk/tinyxml/libtxml.a;sdk/propgrid/libpropgrid.a;sdk/wxFlatNotebook/libwxflatnotebook.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations" />
@@ -264,7 +264,6 @@
 					<Add library="codeblocks" />
 					<Add library="wxscintilla" />
 					<Add directory="devel" />
-					<Add directory="sdk/as" />
 				</Linker>
 			</Target>
 			<Target title="Code-completion">
