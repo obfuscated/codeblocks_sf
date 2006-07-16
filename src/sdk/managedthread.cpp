@@ -64,17 +64,10 @@ void ManagedThread::abort_all()
         ManagedThread::s_abort_all = true;
         while(count_running() > 0)
         {
-            #if wxVERSION_NUMBER < 2500
-                wxUsleep(5);
-            #else
-                wxMilliSleep(5);
-            #endif
+            wxMilliSleep(5);
         }
-		#if wxVERSION_NUMBER < 2500
-            wxUsleep(50);
-        #else
-            wxMilliSleep(50);
-        #endif
+        wxMilliSleep(50);
+
         // (there's a tiny delay between the thread disminishing the count
         // and the thread actually stopping)
         // 50 ms should be more than enough
@@ -110,11 +103,7 @@ void ManagedThread::abort(bool* flag,bool delete_thread)
     if(count_running() > 0)
     {
         *flag = true;
-		#if wxVERSION_NUMBER < 2500
-            wxUsleep(50); // Wait for threads to terminate
-        #else
-            wxMilliSleep(50);
-        #endif
+        wxMilliSleep(50);
     }
 
     // 2) Delete thread objects
