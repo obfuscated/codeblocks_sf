@@ -177,7 +177,10 @@ HelpPlugin::HelpPlugin()
                              _T("\n")
                              _T("For URLs you can add $(keyword) in any place of the address, any ")
                              _T("number of times, and it'll get replaced by the word you selected to ")
-                             _T("locate in that help file.");
+                             _T("locate in that help file.\n")
+                             _T("\n")
+                             _T("The configuration dialog for this plugin can be found clicking on ")
+                             _T("Settings -> Environment (Help files).");
   m_PluginInfo.author = _T("Bourricot | Ceniza (maintainer)");
   m_PluginInfo.authorEmail = _T("titi37fr@yahoo.fr | ceniza@gda.utp.edu.co");
   m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
