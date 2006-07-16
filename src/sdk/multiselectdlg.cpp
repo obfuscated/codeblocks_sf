@@ -13,13 +13,13 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/xrc/xmlres.h>
-    #include <wx/msgdlg.h>
-    #include "globals.h"
     #include <wx/checklst.h>
+    #include <wx/msgdlg.h>
+    #include <wx/stattext.h>
+    #include <wx/xrc/xmlres.h>
+    #include "globals.h"
 #endif
 
-#include <wx/stattext.h>
 #include <wx/textdlg.h>
 
 #include "multiselectdlg.h"
@@ -122,18 +122,25 @@ void MultiSelectDlg::SelectWildCard(const wxString& wild, bool select, bool clea
 		if (clearOld || !lst->IsChecked(i))
 		{
             wxString entry = lst->GetString(i).Lower();
+            bool MatchesWildCard = false;
 			for (unsigned int x = 0; x < wilds.GetCount(); ++x)
 			{
 				if (entry.Matches(wilds[x]))
 				{
                     lst->Check(i, select);
+                    MatchesWildCard = true;
                     break;
 				}
+			}
+			if(!MatchesWildCard && clearOld && lst->IsChecked(i))
+			{   // did not match the wildcard and was selected ( == in the old list)
+			    // and we want those to be removed (clearOld) -> uncheck
+                lst->Check(i, false);
 			}
 		}
 	}
 	UpdateStatus();
-}
+} // end of SelectWildCard
 
 void MultiSelectDlg::OnWildcard(wxCommandEvent& event)
 {
