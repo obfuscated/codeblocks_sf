@@ -21,8 +21,8 @@ class MultiSelectDlg : public wxDialog
                         const wxString& title = _("Multiple selection"));
 		virtual ~MultiSelectDlg();
 		
-		wxArrayString GetSelectedStrings();
-		wxArrayInt GetSelectedIndices();
+		wxArrayString GetSelectedStrings() const;
+		wxArrayInt GetSelectedIndices() const;
 		
 		void SelectWildCard(const wxString& wild, bool select = true, bool clearOld = false);
 	protected:
@@ -30,6 +30,8 @@ class MultiSelectDlg : public wxDialog
         void UpdateStatus();
         void OnWildcard(wxCommandEvent& event);
         void OnToggle(wxCommandEvent& event);
+        void OnSelectAll(wxCommandEvent& event);
+        void OnDeselectAll(wxCommandEvent& event);
         void OnItemToggle(wxCommandEvent& event);
 	private:
         DECLARE_EVENT_TABLE();

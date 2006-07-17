@@ -39,6 +39,18 @@
                 <flag>wxGROW</flag>
               </object>
               <object class="sizeritem">
+                <object class="wxButton" name="btnSelectAll">
+                  <label>Select All</label>
+                </object>
+                <flag>wxGROW</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnDeselectAll">
+                  <label>Deselect All</label>
+                </object>
+                <flag>wxGROW</flag>
+              </object>
+              <object class="sizeritem">
                 <object class="wxStaticText" name="lblStatus">
                   <label>Selected: 0</label>
                 </object>

@@ -28,6 +28,8 @@ BEGIN_EVENT_TABLE(MultiSelectDlg, wxDialog)
     EVT_CHECKLISTBOX(XRCID("lstItems"), MultiSelectDlg::OnItemToggle)
     EVT_BUTTON(XRCID("btnSelectWild"), MultiSelectDlg::OnWildcard)
     EVT_BUTTON(XRCID("btnToggle"), MultiSelectDlg::OnToggle)
+    EVT_BUTTON(XRCID("btnSelectAll"), MultiSelectDlg::OnSelectAll)
+    EVT_BUTTON(XRCID("btnDeselectAll"), MultiSelectDlg::OnDeselectAll)
 END_EVENT_TABLE()
 
 MultiSelectDlg::MultiSelectDlg(wxWindow* parent,
@@ -71,7 +73,7 @@ void MultiSelectDlg::Init(const wxArrayString& items, const wxString& wildcard)
         lst->Append(items[i]);
 	}
 	SelectWildCard(wildcard);
-}
+} // end of Init
 
 void MultiSelectDlg::UpdateStatus()
 {
@@ -85,9 +87,9 @@ void MultiSelectDlg::UpdateStatus()
 	wxString msg;
 	msg << _("Selected: ") << wxString::Format(_T("%d"), count);
 	XRCCTRL(*this, "lblStatus", wxStaticText)->SetLabel(msg);
-}
+} // end of UpdateStatus
 
-wxArrayString MultiSelectDlg::GetSelectedStrings()
+wxArrayString MultiSelectDlg::GetSelectedStrings() const
 {
     wxArrayString ret;
     wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
@@ -97,9 +99,9 @@ wxArrayString MultiSelectDlg::GetSelectedStrings()
             ret.Add(lst->GetString(i));
 	}
 	return ret;
-}
+} // end of GetSelectedStrings
 
-wxArrayInt MultiSelectDlg::GetSelectedIndices()
+wxArrayInt MultiSelectDlg::GetSelectedIndices() const
 {
     wxArrayInt ret;
     wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
@@ -109,7 +111,7 @@ wxArrayInt MultiSelectDlg::GetSelectedIndices()
             ret.Add(i);
 	}
 	return ret;
-}
+} // end of GetSelectedIndices
 
 void MultiSelectDlg::SelectWildCard(const wxString& wild, bool select, bool clearOld)
 {
@@ -155,12 +157,12 @@ void MultiSelectDlg::OnWildcard(wxCommandEvent& event)
                             _("Question"),
                             wxICON_QUESTION | wxYES_NO) == wxID_YES;
     SelectWildCard(wild, true, clear);
-}
+} // end of OnWildcard
 
 void MultiSelectDlg::OnItemToggle(wxCommandEvent& event)
 {
 	UpdateStatus();
-}
+} // end of OnItemToggle
 
 void MultiSelectDlg::OnToggle(wxCommandEvent& event)
 {
@@ -170,4 +172,24 @@ void MultiSelectDlg::OnToggle(wxCommandEvent& event)
         lst->Check(i, !lst->IsChecked(i));
 	}
 	UpdateStatus();
+} // end of OnToggle
+
+void MultiSelectDlg::OnSelectAll(wxCommandEvent& event)
+{
+    wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
+	for (int i = 0; i < lst->GetCount(); ++i)
+	{
+        lst->Check(i, true);
+	}
+	UpdateStatus();
+} // end of OnSelectAll
+
+void MultiSelectDlg::OnDeselectAll(wxCommandEvent& event)
+{
+    wxCheckListBox* lst = XRCCTRL(*this, "lstItems", wxCheckListBox);
+	for (int i = 0; i < lst->GetCount(); ++i)
+	{
+        lst->Check(i, false);
 }
+	UpdateStatus();
+} // end of OnDeselectAll
