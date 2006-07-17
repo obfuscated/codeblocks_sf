@@ -39,9 +39,13 @@
     #include "uservarmanager.h"
     #include "configmanager.h"
     #include "globals.h"
+    #include "compilerfactory.h"
+    #include "compiler.h"
 #endif
 
-#include <stdlib.h>
+#include <cstdlib>
+
+using namespace std;
 
 /*
     standard macros are:
@@ -217,7 +221,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
 
     if(target)
     {
-        Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
+        const Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
         if(compiler)
         {
             const StringHash& v = compiler->GetAllVars();
