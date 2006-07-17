@@ -21,7 +21,7 @@ export WANT_AUTOCONF='2.5'
 
 ## Using prereq in autoconf rather than here, mostly for the debian systems at
 ## this point
-if test -z "`autoconf --version 2>&1|head -n 1|egrep '2.5'`"; then
+if test -n "`autoconf --version 2>&1|head -n 1|egrep '1.*|2.[0-4]'`"; then
 	echo "Autoconf 2.50 or above is required. Aborting build...";
     exit 1;
 fi
