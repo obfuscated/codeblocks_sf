@@ -215,6 +215,19 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
         m_lastProject = project;
     }
 
+    if(target)
+    {
+        Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
+        if(compiler)
+        {
+            const StringHash& v = compiler->GetAllVars();
+            for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
+            {
+                macros[it->first.Upper()] = it->second;
+            }
+        }
+    }
+
 	if(project)
 	{
         const StringHash& v = project->GetAllVars();
