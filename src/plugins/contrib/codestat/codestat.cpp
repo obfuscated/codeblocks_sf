@@ -105,8 +105,11 @@ int CodeStat::Execute()
     // Load the language settings and launch the main function
     LanguageDef languages[NB_FILETYPES_MAX];
     int nb_languages = LoadSettings(languages);
+    int dlgReturnCode = 0;
     if(dlg->Execute(languages,nb_languages) != 0)
-        return -1;
-
-    return 0;
-}
+    {
+        dlgReturnCode = -1;
+    }
+    dlg->Destroy();
+    return dlgReturnCode;
+} // end of Execute
