@@ -15,10 +15,10 @@ function BeginWizard()
                         "When you 're ready to proceed, please click \"Next\"...");
 
     // add builtin pages
-	Wizard.AddInfoPage(_T("DIntro"), intro_msg); // intro
-	Wizard.AddProjectPathPage(); // select project name and path
-	Wizard.AddCompilerPage(_T(""), _T("dmd;gdc"), true, true); // select compiler and configurations
-	// nothing more needs to be done here
+    Wizard.AddInfoPage(_T("DIntro"), intro_msg); // intro
+    Wizard.AddProjectPathPage(); // select project name and path
+    Wizard.AddCompilerPage(_T(""), _T("dmd;gdc"), true, true); // select compiler and configurations
+    // nothing more needs to be done here
 }
 
 function GetFilesDir()

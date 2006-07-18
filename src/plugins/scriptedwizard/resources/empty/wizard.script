@@ -14,17 +14,17 @@ function BeginWizard()
                         "This wizard will guide you to create a new empty project.\n\n" +
                         "When you 're ready to proceed, please click \"Next\"...");
 
-	// intro
-	Wizard.AddInfoPage(_T("EmptyProjectIntro"), intro_msg);
-	// select project name and path
-	Wizard.AddProjectPathPage();
-	// select compiler and configurations
-	// args:
-	//  1) string: which compiler ID will be pre-selected (empty means default)
-	//  2) string: semi-colon separated list of allowed compiler ids. Use _T("*") for all. * and ? wildcards allowed.
-	//  3) boolean: if false, the compiler selection will be disabled
-	//  4) boolean: if false, the config targets will be disabled
-	Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+    // intro
+    Wizard.AddInfoPage(_T("EmptyProjectIntro"), intro_msg);
+    // select project name and path
+    Wizard.AddProjectPathPage();
+    // select compiler and configurations
+    // args:
+    //  1) string: which compiler ID will be pre-selected (empty means default)
+    //  2) string: semi-colon separated list of allowed compiler ids. Use _T("*") for all. * and ? wildcards allowed.
+    //  3) boolean: if false, the compiler selection will be disabled
+    //  4) boolean: if false, the config targets will be disabled
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
 function GetFilesDir()

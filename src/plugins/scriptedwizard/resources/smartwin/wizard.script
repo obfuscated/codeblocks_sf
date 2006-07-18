@@ -5,7 +5,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // globals
-SmartwinPath <- _T("");
+SmartwinPathDefault    <- _T("$(#sw)");
+SmartwinPathDefaultInc <- _T("$(#sw.include)");
+SmartwinPathDefaultLib <- _T("$(#sw.lib)");
+SmartwinPath           <- _T("");
 
 function BeginWizard()
 {
@@ -21,7 +24,7 @@ function BeginWizard()
 
     Wizard.AddInfoPage(_T("SmartwinIntro"), intro_msg);
     Wizard.AddProjectPathPage();
-    Wizard.AddGenericSelectPathPage(_T("SmartwinPath"), swpath_descr, _T("Please select SmartWin's location:"), _T("$(#sw)"));
+    Wizard.AddGenericSelectPathPage(_T("SmartwinPath"), swpath_descr, _T("Please select SmartWin's location:"), SmartwinPathDefault);
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
@@ -34,14 +37,43 @@ function OnLeave_SmartwinPath(fwd)
     if (fwd)
     {
         local dir = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
-        if (!IO.FileExists(dir + _T("/include/SmartWin.h")))
-        {
-            ShowError(_T("The path you entered seems valid, but this wizard " +
-                         "can't locate Smartwin's files in it..."));
+        local dir_nomacro = VerifyDirectory(dir);
+
+        if (dir_nomacro.IsEmpty())
             return false;
+
+        // verify include dependencies
+        local dir_nomacro_inc = GetCompilerIncludeDir(dir, SmartwinPathDefault, SmartwinPathDefaultInc);
+        if (dir_nomacro_inc.IsEmpty())
+            return false;
+        if (!VerifyFile(dir_nomacro_inc, _T("SmartWin.h"), _T("Smartwin's include"))) return false;
+
+        // verify library dependencies
+        local dir_nomacro_lib = GetCompilerLibDir(dir, SmartwinPathDefault, SmartwinPathDefaultLib);
+        if (dir_nomacro_lib.IsEmpty())
+            return false;
+        if (!VerifyFile(dir_nomacro_lib, _T("libsmartwin.a"), _T("Smartwin's library"))) return false;
+
+
+        SmartwinPath = dir; // Remember the original selection.
+
+        local is_macro = _T("");
+
+        // try to resolve the include directory as macro
+        is_macro = GetCompilerIncludeMacro(dir, SmartwinPathDefault, SmartwinPathDefaultInc);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real inc path we had computed instead
+            SmartwinPathDefaultInc = dir_nomacro_inc;
         }
 
-        SmartwinPath = dir;
+        // try to resolve the library directory as macro
+        is_macro = GetCompilerLibMacro(dir, SmartwinPathDefault, SmartwinPathDefaultLib);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real lib path we had computed instead
+            SmartwinPathDefaultLib = dir_nomacro_lib;
+        }
     }
     return true;
 }
@@ -56,20 +88,8 @@ function GetFilesDir()
 function SetupProject(project)
 {
     // set project options
-    local gvar = ReplaceMacros(_T("$(#sw)"), true);
-
-    // set compiler/linker search paths
-    // see if the Smartwin SDK matches the global var. if it does, use the var instead...
-    if (gvar.Matches(SmartwinPath))
-    {
-        project.AddIncludeDir(_T("$(#sw.include)"));
-        project.AddLibDir(_T("$(#sw.lib)"));
-    }
-    else
-    {
-        project.AddIncludeDir(SmartwinPath + _T("/include"));
-        project.AddLibDir(SmartwinPath + _T("/lib"));
-    }
+    project.AddIncludeDir(SmartwinPathDefaultInc);
+    project.AddLibDir(SmartwinPathDefaultLib);
 
 
     // add link libraries

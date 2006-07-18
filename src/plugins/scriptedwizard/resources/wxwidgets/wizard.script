@@ -27,13 +27,13 @@ function BeginWizard()
                             "To help you, this folder must contain the subfolders\n" +
                             "\"include\" and \"lib\".");
 
-	Wizard.AddInfoPage(_T("WxIntro"), intro_msg);
-	Wizard.AddProjectPathPage();
+    Wizard.AddInfoPage(_T("WxIntro"), intro_msg);
+    Wizard.AddProjectPathPage();
     if (PLATFORM == PLATFORM_MSW)
         Wizard.AddGenericSelectPathPage(_T("WxPath"), wxpath_msg, _T("wxWidgets' location:"), _T("$(#wx)"));
-	// we need the compiler selection before wx settings, because we 'll have
-	// to validate the settings. To do this we must know the compiler beforehand...
-	Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+    // we need the compiler selection before wx settings, because we 'll have
+    // to validate the settings. To do this we must know the compiler beforehand...
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
     if (PLATFORM == PLATFORM_MSW)
         Wizard.AddPage(_T("WxConf")); // only for windows
     else
@@ -46,10 +46,11 @@ function BeginWizard()
 
 function OnLeave_WxPath(fwd)
 {
-	if (fwd)
-	{
-	    local dir = Wizard.GetTextControlValue(_T("txtFolder"));
-        if (!IO.FileExists(dir + _T("/include/wx/wx.h")))
+    if (fwd)
+    {
+        local dir = Wizard.GetTextControlValue(_T("txtFolder"));
+        dir_nomacro = ReplaceMacros(dir, true);
+        if (!IO.FileExists(dir_nomacro + _T("/include/wx/wx.h")))
         {
             ShowError(_T("The path you entered seems valid, but this wizard " +
                     "can't locate wxWidgets' files in it..."));
@@ -60,12 +61,12 @@ function OnLeave_WxPath(fwd)
         if (GetUserVariableManager().Exists(_T("#wx")))
         {
             local gvar = ReplaceMacros(_T("$(#wx)"), true);
-            if (gvar.Matches(dir))
+            if (gvar.Matches(dir_nomacro))
                 dir = gvar;
         }
         WxPath = dir;
-	}
-	return true;
+    }
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,45 +75,45 @@ function OnLeave_WxPath(fwd)
 
 function OnEnter_WxConf(fwd)
 {
-	if (fwd)
-	{
-	    Wizard.CheckCheckbox(_T("chkWxConfDLL"), ConfigManager.Read(_T("/wx_project_wizard/dll"), true));
-	    Wizard.CheckCheckbox(_T("chkWxConfMono"), ConfigManager.Read(_T("/wx_project_wizard/monolithic"), true));
-	    Wizard.CheckCheckbox(_T("chkWxConfUni"), ConfigManager.Read(_T("/wx_project_wizard/unicode"), true));
-	    Wizard.CheckCheckbox(_T("chkWxConfDebug"), ConfigManager.Read(_T("/wx_project_wizard/debug"), false));
-	    Wizard.CheckCheckbox(_T("chkWxConfPCH"), ConfigManager.Read(_T("/wx_project_wizard/pch"), true));
-	    Wizard.SetTextControlValue(_T("txtWxConfConfig"), ConfigManager.Read(_T("/wx_project_wizard/configuration"), _T("")));
-	}
-	return true;
+    if (fwd)
+    {
+        Wizard.CheckCheckbox(_T("chkWxConfDLL"), ConfigManager.Read(_T("/wx_project_wizard/dll"), true));
+        Wizard.CheckCheckbox(_T("chkWxConfMono"), ConfigManager.Read(_T("/wx_project_wizard/monolithic"), true));
+        Wizard.CheckCheckbox(_T("chkWxConfUni"), ConfigManager.Read(_T("/wx_project_wizard/unicode"), true));
+        Wizard.CheckCheckbox(_T("chkWxConfDebug"), ConfigManager.Read(_T("/wx_project_wizard/debug"), false));
+        Wizard.CheckCheckbox(_T("chkWxConfPCH"), ConfigManager.Read(_T("/wx_project_wizard/pch"), true));
+        Wizard.SetTextControlValue(_T("txtWxConfConfig"), ConfigManager.Read(_T("/wx_project_wizard/configuration"), _T("")));
+    }
+    return true;
 }
 
 function OnLeave_WxConf(fwd)
 {
-	if (fwd)
-	{
-	    IsDLL = Wizard.IsCheckboxChecked(_T("chkWxConfDLL"));
-	    IsMonolithic = Wizard.IsCheckboxChecked(_T("chkWxConfMono"));
-	    IsUnicode = Wizard.IsCheckboxChecked(_T("chkWxConfUni"));
-	    IsDebug = Wizard.IsCheckboxChecked(_T("chkWxConfDebug"));
-	    WantPCH = Wizard.IsCheckboxChecked(_T("chkWxConfPCH"));
+    if (fwd)
+    {
+        IsDLL = Wizard.IsCheckboxChecked(_T("chkWxConfDLL"));
+        IsMonolithic = Wizard.IsCheckboxChecked(_T("chkWxConfMono"));
+        IsUnicode = Wizard.IsCheckboxChecked(_T("chkWxConfUni"));
+        IsDebug = Wizard.IsCheckboxChecked(_T("chkWxConfDebug"));
+        WantPCH = Wizard.IsCheckboxChecked(_T("chkWxConfPCH"));
         Configuration = Wizard.GetTextControlValue(_T("txtWxConfConfig"));
 
-	    // validate settings
-	    local lib_prefix;
-	    local lib_suffix;
-	    local lib = WxPath + _T("/lib/");
-	    if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
-	    {
+        // validate settings
+        local lib_prefix;
+        local lib_suffix;
+        local lib = WxPath + _T("/lib/");
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
+        {
             lib = lib + _T("gcc_");
             lib_prefix = _T("lib");
             lib_suffix = _T(".a");
-	    }
-	    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
-	    {
+        }
+        else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
+        {
             lib = lib + _T("vc_");
             lib_prefix = _T("");
             lib_suffix = _T(".lib");
-	    }
+        }
 
         if (IsDLL)
             lib = lib + _T("dll");
@@ -154,7 +155,7 @@ function OnLeave_WxConf(fwd)
                 return false;
             }
         }
-	}
+    }
 
     if (!GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")) && WantPCH)
     {
@@ -163,7 +164,7 @@ function OnLeave_WxConf(fwd)
         WantPCH = false;
         Wizard.CheckCheckbox(_T("chkConfPCH"), false);
     }
-	return true;
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,19 +173,19 @@ function OnLeave_WxConf(fwd)
 
 function OnEnter_WxConfUnix(fwd)
 {
-	if (fwd)
-	{
-	    Wizard.CheckCheckbox(_T("chkWxConfPCH"), ConfigManager.Read(_T("/wx_project_wizard/pch"), true));
-	}
-	return true;
+    if (fwd)
+    {
+        Wizard.CheckCheckbox(_T("chkWxConfPCH"), ConfigManager.Read(_T("/wx_project_wizard/pch"), true));
+    }
+    return true;
 }
 
 function OnLeave_WxConfUnix(fwd)
 {
-	if (fwd)
-	{
-	    WantPCH = Wizard.IsCheckboxChecked(_T("chkWxConfPCH"));
-	}
+    if (fwd)
+    {
+        WantPCH = Wizard.IsCheckboxChecked(_T("chkWxConfPCH"));
+    }
 
     if (!GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")) && WantPCH)
     {
@@ -193,7 +194,7 @@ function OnLeave_WxConfUnix(fwd)
         WantPCH = false;
         Wizard.CheckCheckbox(_T("chkConfPCH"), false);
     }
-	return true;
+    return true;
 }
 
 // return the files this project contains

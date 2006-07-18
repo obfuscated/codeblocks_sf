@@ -23,26 +23,26 @@ function BeginWizard()
 {
     local wiz_type = Wizard.GetWizardType();
 
-	local intro_msg = _T("Welcome to the new Code::Blocks plugin wizard!\n" +
-						"This wizard will guide you to create a new Code::Blocks plugin.\n\n");
+    local intro_msg = _T("Welcome to the new Code::Blocks plugin wizard!\n" +
+                         "This wizard will guide you to create a new Code::Blocks plugin.\n\n");
     if (PLATFORM == PLATFORM_MSW)
     {
         intro_msg += _T("\nVERY IMPORTANT NOTE:\n\n" +
-						"Code::Blocks is built with the GNU GCC compiler and links to\n" +
-						"the monolithic unicode wxWidgets DLL.\n" +
-						"This means that you must have exactly this setup to be able to\n" +
-						"build the generated plugin.\n" +
-						"You must also have defined two global variables:\n" +
-						"   1. $(#cb) pointing to Code::Blocks base dir (where CodeBlocks.cbp is)\n" +
-						"   2. $(#wx) pointing to wxWidgets base directory\n\n\n");
+                        "Code::Blocks is built with the GNU GCC compiler and links to\n" +
+                        "the monolithic unicode wxWidgets DLL.\n" +
+                        "This means that you must have exactly this setup to be able to\n" +
+                        "build the generated plugin.\n" +
+                        "You must also have defined two global variables:\n" +
+                        "   1. $(#cb) pointing to Code::Blocks base dir (where CodeBlocks.cbp is)\n" +
+                        "   2. $(#wx) pointing to wxWidgets base directory\n\n\n");
     }
     intro_msg += _T("When you 're ready to proceed, please click \"Next\"...");
 
-	Wizard.AddInfoPage(_T("PluginIntro"), intro_msg);
-	Wizard.AddProjectPathPage();
-	Wizard.AddPage(_T("PluginOptions"));
-	Wizard.AddPage(_T("PluginInfo"));
-	Wizard.AddCompilerPage(_T(""), _T("gcc*"), true, false);
+    Wizard.AddInfoPage(_T("PluginIntro"), intro_msg);
+    Wizard.AddProjectPathPage();
+    Wizard.AddPage(_T("PluginOptions"));
+    Wizard.AddPage(_T("PluginInfo"));
+    Wizard.AddCompilerPage(_T(""), _T("gcc*"), true, false);
 }
 
 // -----------------------------------------------------------------------------
@@ -59,13 +59,13 @@ function OnClick_cmbPluginType()
 {
     PluginSettings.Type = Wizard.GetComboboxSelection(_T("cmbPluginType"));
 
-	local isTool = PluginSettings.Type == 1;
-	local isMime = PluginSettings.Type == 2;
+    local isTool = PluginSettings.Type == 1;
+    local isMime = PluginSettings.Type == 2;
     local isWizard = PluginSettings.Type == 3;
-	Wizard.EnableWindow(_T("chkHasConfig"), !isWizard);
-	Wizard.EnableWindow(_T("chkHasMenu"), !isTool && !isMime && !isWizard);
-	Wizard.EnableWindow(_T("chkHasModuleMenu"), !isTool && !isMime && !isWizard);
-	Wizard.EnableWindow(_T("chkHasToolbar"), !isTool && !isMime && !isWizard);
+    Wizard.EnableWindow(_T("chkHasConfig"), !isWizard);
+    Wizard.EnableWindow(_T("chkHasMenu"), !isTool && !isMime && !isWizard);
+    Wizard.EnableWindow(_T("chkHasModuleMenu"), !isTool && !isMime && !isWizard);
+    Wizard.EnableWindow(_T("chkHasToolbar"), !isTool && !isMime && !isWizard);
 }
 
 // -----------------------------------------------------------------------------
@@ -215,7 +215,7 @@ function SetupTarget(target,is_debug)
     }
 
     if (is_debug)
-        DebuggingSymbolsOn(target, Wizard.GetCompilerID());
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
 
     target.SetTargetType(ttDynamicLib);
     target.SetOutputFilename(target.GetWorkingDir() + wxFILE_SEP_PATH + target.SuggestOutputFilename());

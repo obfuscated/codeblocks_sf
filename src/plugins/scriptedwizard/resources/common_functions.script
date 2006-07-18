@@ -45,7 +45,7 @@ function OptimizationsOn(base, compilerID)
     {
         // GCC options are used as fallback
         base.AddCompilerOption(_T("-O2"));
-        base.AddCompilerOption(_T("-s"));
+        base.AddLinkerOption(_T("-s"));
     }
 }
 
@@ -61,4 +61,246 @@ function CppExceptionsOn(base, compilerID)
         // GCC options are used as fallback
         base.AddCompilerOption(_T("-fexceptions"));
     }
+}
+
+function VerifyDirectory(dir_or_macro)
+{
+    // try to make it a real path and verify it's existense
+    local dir = ReplaceMacros(dir_or_macro, true);
+
+    if (!IO.DirectoryExists(dir))
+    {
+        ShowError(_T("The directory you entered seems not to be valid.\n" +
+                     "This wizard cannot continue."));
+        return (_T(""));
+    }
+
+    return dir;
+}
+                         
+function VerifyMacro(macro)
+{
+    // try to make it a real path and verify it's existense
+    local dir = ReplaceMacros(macro, true);
+
+    // verify if there are macros used at all...
+    if (macro.Matches(dir))
+    {
+        return (_T("")); // no macros used -> return empty
+    }
+
+    return dir;
+}
+                         
+// Get compiler include directory (taking GV's into account)
+// selection        - the original directory selection the user has made
+// defaultSelection - the default directory proposed by the wizard (using a macro)
+// defaultSelection - the default include directory proposed by the wizard (using a macro)
+// Returns: The include directory (which maybe translated from a macro)
+function GetCompilerIncludeDir(selection, defaultSelection, defaultIncludeMacro)
+{
+
+    // make it a real path and verify it's existense
+    local selection_nomacro = VerifyMacro(selection);
+
+    // verify if there are macros used at all...
+    if (selection_nomacro.IsEmpty())
+    {
+        // no macros used, direct path
+        if (!IO.DirectoryExists(selection + wxFILE_SEP_PATH + _T("include")))
+        {
+            ShowError(_T("The path you entered seems valid, but the wizard " +
+                         "can't locate the include directory.\n" +
+                         "This wizard cannot continue."));
+            return (_T(""));
+        }
+        return (selection + wxFILE_SEP_PATH + _T("include"));
+    }
+
+    // macros used
+
+    if (selection.Matches(defaultSelection))
+    {
+        // default macro used
+
+        // default include macro is usually: $(#GV.include)
+        local defaultInclude_nomacro = ReplaceMacros(defaultIncludeMacro, true);
+        if (!IO.DirectoryExists(defaultInclude_nomacro))
+        {
+            ShowError(_T("The macro you entered seems valid, but this wizard can't\n" +
+                         "locate the include directory based on this macro.\n" +
+                         "This wizard cannot continue."));
+            return (_T(""));
+        }
+
+        // default include macro used
+        return (defaultInclude_nomacro);
+    }
+
+    // non-default macro used
+
+    if (!IO.DirectoryExists(selection_nomacro + wxFILE_SEP_PATH + _T("include")))
+    {
+        ShowError(_T("The macro you entered seems valid, but this wizard can't\n" +
+                     "compute the include directory based on this macro.\n" +
+                     "This wizard cannot continue."));
+        return (_T(""));
+    }
+
+    return (selection_nomacro + wxFILE_SEP_PATH + _T("include"));
+}
+
+// Get compiler include macro (if possible and a GV has been provided)
+// selection        - the original directory selection the user has made
+// defaultSelection - the default directory proposed by the wizard (using a macro)
+// defaultSelection - the default include directory proposed by the wizard (using a macro)
+// Returns: The include macro (if possible), empty if not able to use a macro.
+function GetCompilerIncludeMacro(selection, defaultSelection, defaultIncludeMacro)
+{
+
+    // make it a real path and verify it's existense
+    local selection_nomacro = VerifyMacro(selection);
+
+    // verify if there are macros used at all...
+    if (!selection_nomacro.IsEmpty())
+    {
+        if (selection.Matches(defaultSelection))
+        {
+            // default macro used
+
+            // default include macro is usually: $(#GV.include)
+            local defaultInclude_nomacro = ReplaceMacros(defaultIncludeMacro, true);
+            if (IO.DirectoryExists(defaultInclude_nomacro))
+            {
+                // default include macro used
+                return (defaultInclude_nomacro);
+            }
+        }
+
+        // non-default macro used
+
+        if (IO.DirectoryExists(selection_nomacro + wxFILE_SEP_PATH + _T("include")))
+        {
+            return (selection_nomacro + wxFILE_SEP_PATH + _T("include"));
+        }
+    }
+
+    // in all other cases no macro or is used or
+    // the include macro cannot be computed
+    return (_T(""));
+}
+
+// Get compiler library directory (taking GV's into account)
+// selection        - the original directory selection the user has made
+// defaultSelection - the default directory proposed by the wizard (using a macro)
+// defaultSelection - the default library directory proposed by the wizard (using a macro)
+// Returns: The library directory (which maybe translated from a macro)
+function GetCompilerLibDir(selection, defaultSelection, defaultLibMacro)
+{
+
+    // make it a real path and verify it's existense
+    local selection_nomacro = VerifyMacro(selection);
+
+    // verify if there are macros used at all...
+    if (selection_nomacro.IsEmpty())
+    {
+        // no macros used, direct path
+        if (!IO.DirectoryExists(selection + wxFILE_SEP_PATH + _T("lib")))
+        {
+            ShowError(_T("The path you entered seems valid, but the wizard " +
+                         "can't locate the library directory.\n" +
+                         "This wizard cannot continue."));
+            return (_T(""));
+        }
+        return (selection + wxFILE_SEP_PATH + _T("lib"));
+    }
+
+    // macros used
+
+    if (selection.Matches(defaultSelection))
+    {
+        // default macro used
+
+        // default lib macro is usually: $(#GV.lib)
+        local defaultInclude_nomacro = ReplaceMacros(defaultLibMacro, true);
+        if (!IO.DirectoryExists(defaultInclude_nomacro))
+        {
+            ShowError(_T("The macro you entered seems valid, but this wizard can't\n" +
+                         "locate the library directory based on this macro.\n" +
+                         "This wizard cannot continue."));
+            return (_T(""));
+        }
+
+        // default lib macro used
+        return (defaultInclude_nomacro);
+    }
+
+    // non-default macro used
+
+    if (!IO.DirectoryExists(selection_nomacro + wxFILE_SEP_PATH + _T("lib")))
+    {
+        ShowError(_T("The macro you entered seems valid, but this wizard can't\n" +
+                     "compute the library directory based on this macro.\n" +
+                     "This wizard cannot continue."));
+        return (_T(""));
+    }
+
+    return (selection_nomacro + wxFILE_SEP_PATH + _T("lib"));
+}
+
+// Get compiler library macro (if possible and a GV has been provided)
+// selection        - the original directory selection the user has made
+// defaultSelection - the default directory proposed by the wizard (using a macro)
+// defaultSelection - the default library directory proposed by the wizard (using a macro)
+// Returns: The library macro (if possible), empty if not able to use a macro.
+function GetCompilerLibMacro(selection, defaultSelection, defaultLibMacro)
+{
+
+    // make it a real path and verify it's existense
+    local selection_nomacro = VerifyMacro(selection);
+
+    // verify if there are macros used at all...
+    if (!selection_nomacro.IsEmpty())
+    {
+        if (selection.Matches(defaultSelection))
+        {
+            // default macro used
+
+            // default library macro is usually: $(#GV.lib)
+            local defaultLib_nomacro = ReplaceMacros(defaultLibMacro, true);
+            if (IO.DirectoryExists(defaultLib_nomacro))
+            {
+                // default library macro used
+                return (defaultLib_nomacro);
+            }
+        }
+
+        // non-default macro used
+
+        if (IO.DirectoryExists(selection_nomacro + wxFILE_SEP_PATH + _T("lib")))
+        {
+            return (selection_nomacro + wxFILE_SEP_PATH + _T("lib"));
+        }
+    }
+
+    // in all other cases no macro or is used or
+    // the library macro cannot be computed
+    return (_T(""));
+}
+
+// verify the existence of a file of specific type
+// dir  = the directory the file is expected in
+// file = name of the file to look for
+// type = descriptive name of the file to show in the error message
+// Returns: true, if the file exists, false otherwise
+function VerifyFile(dir, file, type)
+{
+    if (!IO.FileExists(dir + wxFILE_SEP_PATH + file))
+    {
+        ShowError(_T("The path you entered seems valid, but this wizard\n" +
+                     "can't locate the following ") + type + _T(" file:\n") + 
+                     file + _T(" in it."));
+        return false;
+    }
+    return true;
 }

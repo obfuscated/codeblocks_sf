@@ -93,9 +93,9 @@ function OnLeave_OgrePath(fwd)
     if (fwd)
     {
         local dir = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
-        dir = ReplaceMacros(dir, true);
-        if ((OgreIsSource && !IO.FileExists(dir + _T("/OgreMain/include/Ogre.h"))) ||
-            (!OgreIsSource && !IO.FileExists(dir + _T("/include/Ogre.h"))))
+        dir_nomacro = ReplaceMacros(dir, true);
+        if ((OgreIsSource && !IO.FileExists(dir_nomacro + _T("/OgreMain/include/Ogre.h"))) ||
+            (!OgreIsSource && !IO.FileExists(dir_nomacro + _T("/include/Ogre.h"))))
         {
             ShowError(_T("The path you entered seems valid, but this wizard " +
                     "can't locate OGRE's files in it..."));

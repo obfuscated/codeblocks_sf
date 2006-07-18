@@ -15,13 +15,13 @@ function BeginWizard()
 {
     // this is the text that will appear in the start (intro) page
     local intro_msg = _T("Welcome to the new C/C++ source file wizard!\n" +
-                        "This wizard will guide you to create a new C/C++ source file.\n\n" +
-                        "When you 're ready to proceed, please click \"Next\"...");
+                         "This wizard will guide you to create a new C/C++ source file.\n\n" +
+                         "When you 're ready to proceed, please click \"Next\"...");
 
     // add builtin pages
-	Wizard.AddInfoPage(_T("CFileIntro"), intro_msg); // intro
-	Wizard.AddGenericSingleChoiceListPage(_T("CFileLanguagePage"), _T("Please select the language for the file."), _T("C;C++"), 1); // select language
-	Wizard.AddFilePathPage(false); // select filename (no header guard for source files)
+    Wizard.AddInfoPage(_T("CFileIntro"), intro_msg); // intro
+    Wizard.AddGenericSingleChoiceListPage(_T("CFileLanguagePage"), _T("Please select the language for the file."), _T("C;C++"), 1); // select language
+    Wizard.AddFilePathPage(false); // select filename (no header guard for source files)
 }
 
 function OnLeave_CFileLanguagePage(fwd)
@@ -39,21 +39,34 @@ function OnLeave_CFileLanguagePage(fwd)
 function CreateFiles()
 {
     local fname = Wizard.GetFileName();
-    local ed = GetEditorManager().New(fname);
-    if (!IsNull(ed))
+    local ed    = GetEditorManager();
+    if (IsNull(ed))
     {
-        // succeeded
-        // add file to project if needed
-        if (Wizard.GetFileAddToProject())
+        ShowError(_T("The wizard could not locate the editor manager."));
+    }
+    else
+    {
+        local ed_new = ed.New(fname);
+        if (IsNull(ed_new))
         {
-            local tgtidx = Wizard.GetFileTargetIndex();
-            if (tgtidx != -1)
+            ShowError(_T("The wizard could not create a new file.\n" +
+                         "Maybe the destination folder is write-protected?"));
+        }
+        else
+        {
+            // succeeded
+            // add file to project if needed
+            if (Wizard.GetFileAddToProject())
             {
-                local prj = GetProjectManager().GetActiveProject();
-                if (!IsNull(prj))
+                local tgtidx = Wizard.GetFileTargetIndex();
+                if (tgtidx != -1)
                 {
-                    prj.AddFile(tgtidx, fname);
-                    GetProjectManager().RebuildTree(); // make sure our view is current
+                    local prj = GetProjectManager().GetActiveProject();
+                    if (!IsNull(prj))
+                    {
+                        prj.AddFile(tgtidx, fname);
+                        GetProjectManager().RebuildTree(); // make sure our view is current
+                    }
                 }
             }
         }
