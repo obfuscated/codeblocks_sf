@@ -6,10 +6,6 @@
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
-//commit 12/14/2005 9:16 AM
-//commit 12/16/2005 8:54 PM
-//commit 1/11/2006 1:22 PM v0.4.9
-//commit 1/11/2006 3 PM v0.4.10
 
 
 #ifndef __WX_MENUUTILS_H__
@@ -304,7 +300,10 @@ public:
 //! which is "walked".
 //! The wxExComboItemData associated with these items contains the
 //! list of the wxMenuItem contained into the relative wxMenu.
-class /*-lf-WXDLLIMPEXP_KEYBINDER*/ wxMenuComboListWalker : public wxMenuWalker
+//class WXDLLIMPEXP_KEYBINDER wxMenuComboListWalker : public wxMenuWalker
+// ----------------------------------------------------------------------------
+class wxMenuComboListWalker : public wxMenuWalker
+// ----------------------------------------------------------------------------
 {
 	wxComboBox *m_pCategories;
 	wxString m_strAcc;
@@ -325,13 +324,16 @@ protected:
 };
 
 
-
+// ----------------------------------------------------------------------------
 //! An helper class which is used by wxKeyBinder to import the
 //! wxMenuCmd associated to a menu bar.
 //! This function uses the wxMenuWalker algorithm to create a
 //! plain list of wxMenuCmd (without any hierarchical structure)
 //! in the given array of wxCmd*.
-class /*-lf-WXDLLIMPEXP_KEYBINDER*/ wxMenuShortcutWalker : public wxMenuWalker
+//class WXDLLIMPEXP_KEYBINDER wxMenuShortcutWalker : public wxMenuWalker
+// ----------------------------------------------------------------------------
+class  wxMenuShortcutWalker : public wxMenuWalker
+// ----------------------------------------------------------------------------
 {
 	wxCmdArray *m_pArr;
 

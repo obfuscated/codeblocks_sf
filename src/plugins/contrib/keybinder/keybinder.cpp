@@ -52,7 +52,11 @@ BEGIN_EVENT_TABLE(wxBinderEvtHandler, wxEvtHandler)
 	// want to intercept wxEVT_KEY_UP because we don't need them:
 	// a command must be immediately executed when one of its shortcuts
 	// is sent to the window.
-	EVT_KEY_DOWN(wxBinderEvtHandler::OnChar)
+
+	//(pecan 2006/7/11)
+	// Removed EVT_KEY_DOWN in favor of Connect(cf. wxBinderEvtHandler ctor)
+	// to avoid Delete(eventHandler) crashes in EVT_DESTROY
+	//-EVT_KEY_DOWN(wxBinderEvtHandler::OnChar)
 
 	// if we intercept also these events, then we would have some problems
 	// with the ENTER keypresses: the wxBinderEvtHandler would be called
@@ -687,10 +691,6 @@ void wxCmdArray::Clear()
 	m_arr.Clear();
 }
 
-
-
-
-
 // ----------------------------------------------------------------------------
 // wxBinderEvtHandler
 // ----------------------------------------------------------------------------
@@ -701,12 +701,12 @@ void wxBinderEvtHandler::OnChar(wxKeyEvent &p)
 	// to execute the command on the next handler in the chain...
 	// we do this because only wxKeyBinder holds the array of
 	// commands & command-shortcuts...
-	m_pBinder->OnChar(p, GetNextHandler());
+
+	//-(pecan 2006/7/12) GetNextHandler is not returning valid pointer
+	//  for Connect()ed events
+	//- m_pBinder->OnChar(p, GetNextHandler());
+	m_pBinder->OnChar(p, this);
 }
-
-
-
-
 
 // ----------------------------------------------------------------------------
 // wxBinderApp
@@ -781,7 +781,40 @@ bool wxBinderApp::IsChildOf(wxWindow *parent, wxWindow *child)
 // ----------------------------------------------------------------------------
 //  wxKeyBinder
 // ----------------------------------------------------------------------------
-void wxKeyBinder::UpdateAllCmd(wxMenuBar* pMnuBar) {     //v0.4.17
+void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //(pecan 2006/7/15)
+// ----------------------------------------------------------------------------
+{
+    // Recursively update hotkeys for sub menu items
+
+    size_t itemKnt = pMenu->GetMenuItemCount();
+    for (size_t j=0; j<itemKnt; j++ )
+    {
+        // check each item on this subMenu
+        wxMenuItem* pMenuItem = pMenu->FindItemByPosition(j);
+        // recursively walk down to deepest submenu
+        if ( pMenuItem->GetSubMenu() )
+            UpdateSubMenu( pMenuItem->GetSubMenu() );
+        // Now at deepest menu items
+        int nMenuItemID = pMenuItem->GetId();
+        // Find item in array of keybinder commands
+        int k=0;
+        if ( -1 != (k=FindCmd(nMenuItemID)))
+        {
+            #ifdef LOGGING
+             LOGIT(wxT("Update:on:%d:%d:%p:%s"),j,k,pMenuItem,pMenuItem->GetText().GetData() );
+            #endif
+            m_arrCmd.Item(k)->Update(pMenuItem);
+            // ** pMenuItem will be invalid now if item was updated **
+        }
+        else{
+            #ifdef LOGGING
+             LOGIT(wxT("Update:Failed on:%d:%d:%p:%s"),j,k,pMenuItem,pMenuItem->GetText().GetData() );
+            #endif
+        }
+    }//rof
+}//updateSubmenu
+// ----------------------------------------------------------------------------
+void wxKeyBinder::UpdateAllCmd(wxMenuBar* pMenuBar) {     //v0.4.17
 // ----------------------------------------------------------------------------
 	//! Updates all the commands on the menu
     if (m_arrHandlers.GetCount() == 0)
@@ -801,32 +834,14 @@ void wxKeyBinder::UpdateAllCmd(wxMenuBar* pMnuBar) {     //v0.4.17
     // But this missed duplicate menu items, updating only the first duplicate.
     // So.. search, referencing the menu items as source, and update.;
 
-    size_t nMnuKnt = pMnuBar->GetMenuCount();
-    for (size_t i=0; i<nMnuKnt ;i++ )
-    {   wxMenu* pMnu = pMnuBar->GetMenu(i);
-           size_t nItemKnt = pMnu->GetMenuItemCount();
-           for (size_t j=0; j<nItemKnt; j++ )
-           {    wxMenuItem* pMnuItem = pMnu->FindItemByPosition(j);
-                int nMnuItemID = pMnuItem->GetId();
-                //Find item in array of keybinder commands
-                int k=0;
-                if ( -1 != (k=FindCmd(nMnuItemID)))
-                {
-                    #ifdef LOGGING
-                     LOGIT(wxT("UpdateAll:on:%d:%d:%p:%s"),j,k,pMnuItem,pMnuItem->GetText().GetData() );
-                    #endif
-                    m_arrCmd.Item(k)->Update(pMnuItem);
-                    // **pMnuItem will be invalid now if item was updated**
-                }
-                else{
-                    #ifdef LOGGING
-                     LOGIT(wxT("UpdateAll:Failed on:%d:%d:%p:%s"),j,k,pMnuItem,pMnuItem->GetText().GetData() );
-                    #endif
-                }
-           }//rof
+   //menu bar item count (level 1)
+    size_t nLevel1Knt = pMenuBar->GetMenuCount();
+    for (size_t i=0; i < nLevel1Knt ;i++ )
+    {
+        wxMenu* pMenu = pMenuBar->GetMenu(i);
+        UpdateSubMenu(pMenu);
     }//rof
 }
-
 // ----------------------------------------------------------------------------
 // wxKeyBinder FindHandlerFor
 // ----------------------------------------------------------------------------
@@ -872,13 +887,15 @@ void wxKeyBinder::Attach(wxWindow *p)
         return;
      }
 
-	wxLogDebug(wxT("wxKeyBinder::Attach - attaching to [%s] %p"), p->GetName().c_str(),p);
-
 	// create a new event handler for this window
 	wxEvtHandler *h = new wxBinderEvtHandler(this, p);
 
 	// add the handler to our lists
 	m_arrHandlers.Add((void*)h);
+	m_arrAttachedWnd.Add((void*)p); //+(pecan 2006/7/11)
+	int idx = FindHandlerIdxFor(p); //+(pecan 2006/7/11)
+    wxLogDebug(wxT("wxKeyBinder::Attach Name[%s] Window[%p] Handlr[%p] Index[%d]"),
+            p->GetName().c_str(), p, h, idx);
 
 	// we need to update our commands...
 	//-UpdateAllCmd(); This loop is executed for every attach. Stop it!
@@ -965,17 +982,17 @@ wxWindow* wxKeyBinder::winExists(wxWindow *parent)
 
     return NULL;
 }
-// ----------------------------------------------------------------------------
-//  wxKeyBinder OnWinClosed
-// ----------------------------------------------------------------------------
-void wxKeyBinder::OnWinClosed(wxCloseEvent& event)
-{ //+v0.4.7
-    //make sure OnChar eventHandlers arn't orphaned
-    wxWindow* pwin = (wxWindow*)event.GetEventObject();
-    Detach( pwin);
-    event.Skip();
-    return;
-}//OnWinClosed
+//// ----------------------------------------------------------------------------
+////  wxKeyBinder OnWinClosed
+//// ----------------------------------------------------------------------------
+//void wxKeyBinder::OnWinClosed(wxCloseEvent& event)
+//{ //+v0.4.7
+//    //make sure OnChar eventHandlers arn't orphaned
+//    wxWindow* pwin = (wxWindow*)event.GetEventObject();
+//    Detach( pwin);
+//    event.Skip();
+//    return;
+//}//OnWinClosed
 // ----------------------------------------------------------------------------
 //  wxKeyBinder Detach
 // ----------------------------------------------------------------------------
@@ -984,12 +1001,13 @@ void wxKeyBinder::Detach(wxWindow *p)
 	if (!p || !IsAttachedTo(p))
 		return;		// this is not attached...
 
-    wxLogDebug(wxT("wxKeyBinder::Detach - detaching from [%s] %p"), p->GetName().c_str(),p);
-
 	// remove the event handler
 	int idx = FindHandlerIdxFor(p);
 	wxBinderEvtHandler *toremove = (wxBinderEvtHandler*)m_arrHandlers.Item(idx);
+    wxLogDebug(wxT("wxKeyBinder::Detach Name[%s] Window[%p] Handlr[%p] Index[%d]"),
+            p->GetName().c_str(), p, toremove, idx);
 	m_arrHandlers.RemoveAt(idx, 1);
+	m_arrAttachedWnd.Remove(p); //+(pecan 2006/7/11)
 
 	// the wxBinderEvtHandler will remove itself from p's event handlers
 	delete toremove;
@@ -1001,31 +1019,42 @@ void wxKeyBinder::DetachAll()
 {
     wxWindow* pwin;
 	wxLogDebug(wxT("wxKeyBinder::DetachAll - detaching from all my [%d] targets"), GetAttachedWndCount());
+	// wxKeyBinder dtor also calls  DetachAll(). So you'll see the above message with "[0] targets"
 
 	//- delete all handlers (they will automatically remove themselves from
 	//- event handler chains)
+
     //-	for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
     //-		delete (wxBinderEvtHandler*)m_arrHandlers.Item(i);
 
-	for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
-	 {
-        wxBinderEvtHandler* pHdlr = (wxBinderEvtHandler*)m_arrHandlers.Item(i);
+	//-for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
+	// Don't do the above. Detach is modifying the array
+	// Do while(GetCount()) instead.
+
+    while ((int)m_arrHandlers.GetCount())
+    {
+        wxBinderEvtHandler* pHdlr = (wxBinderEvtHandler*)m_arrHandlers.Item(0);
         pwin = pHdlr->GetTargetWnd();     //+v0.4
         if  ( NOT winExists( pwin ) )
         {   //+v0.4.9
-            // tell dtor not to crash by using RemoveEventHander()
+            // tell dtor not to crash by using Disconnect or RemoveEventHander()
             pHdlr->SetWndInvalid(0);
             wxLogDebug( _T("WxKeyBinder:DetachAll:window NOT found %p <----------"), pwin); //+v0.4.6
+            #if LOGGING
+             if (pHdlr->GetTargetWnd())
+               wxLogDebug( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for [%s] %p"), pwin->GetLabel().GetData(), pwin);     //+v0.4
+            #endif
+            delete pHdlr;
         }
-        #if LOGGING
-         if (pHdlr->GetTargetWnd())
-           wxLogDebug( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for [%s] %p"), pwin->GetLabel().GetData(), pwin);     //+v0.4
-        #endif
-        delete pHdlr;
-	 }
+        //delete pHdlr;
+        else //window exists, do regular detach
+        {    Detach(pwin);
+        }
+    }
 
 	// and clear the array
 	m_arrHandlers.Clear();
+	m_arrAttachedWnd.Clear();
 
 }
 // ----------------------------------------------------------------------------
@@ -1063,30 +1092,30 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 		return;
 	}
 
-#if 0
-	// for some reason we need to avoid processing also of the ENTER keypresses...
-	if (p && p->IsBindTo(wxKeyBind(wxT("ENTER")))) {
-
-		wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring an ENTER event [%d]"),
-					event.GetKeyCode());
-        //-wxLogDebug("\n");
-
-		event.Skip();
-		return;
-	}
-#endif
+//#if 0
+//	// for some reason we need to avoid processing also of the ENTER keypresses...
+//	if (p && p->IsBindTo(wxKeyBind(wxT("ENTER")))) {
+//
+//		wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring an ENTER event [%d]"),
+//					event.GetKeyCode());
+//        //-wxLogDebug("\n");
+//
+//		event.Skip();
+//		return;
+//	}
+//#endif
 
 	// if the given event is not a shortcut key...
 	if (p == NULL) {
-
-//		wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring this keyevent [%d]"),
-//					event.GetKeyCode());
-
+		//wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring this keyevent [%d]"),
+		//			event.GetKeyCode());
 		event.Skip();		// ... skip it
 
 	} else {
 
-		wxEvtHandler *client = next;//this->GetNextHandler();
+		//-(pecan 2006/7/12) Connect()ed handlers do not return correct "next" pointers
+		//- wxEvtHandler *client = next;//this->GetNextHandler();
+		wxEvtHandler* client = NULL;
 		/*if (client == NULL) {
 
 			//int found = -1;
@@ -1094,16 +1123,23 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 				if (((wxWindow*)m_arrAttachedWnd.Item(i)) == event.GetEventObject())//->GetId() == event.GetId())
 					client = (wxWindow*)m_arrAttachedWnd.Item(i);
 		}*/
+		if (client == NULL) {
+
+			//int found = -1;
+			for (int i=0; i < (int)m_arrAttachedWnd.GetCount(); i++)
+				if (((wxWindow*)m_arrAttachedWnd.Item(i)) == event.GetEventObject())//->GetId() == event.GetId())
+					client = (wxWindow*)m_arrAttachedWnd.Item(i);
+		}
 
 		if (client == NULL) {
 
-			wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring this keyevent [%d] because I'm not ")
-				wxT("attached to the window which generated the keypress..."), event.GetKeyCode());
+			wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring keyevent [%d] Not ")
+				wxT("attached to window generating the keypress..."), event.GetKeyCode());
 			event.Skip();		// ... skip it
 			return;
 		}
 
-		wxLogDebug(wxT("wxKeyBinder::OnChar - calling the Exec() function of the [%s] ")
+		wxLogDebug(wxT("wxKeyBinder::OnChar - calling Exec() function of the [%s] ")
 				wxT("wxCmd on the keycode [%d] (event timestamp: %ld)"),
 				p->GetName().c_str(), event.GetKeyCode(), event.GetTimestamp());
 		wxLogDebug(wxT("wxKeyBinder::OnChar - window[%s][%p]"),
@@ -2252,7 +2288,12 @@ void wxKeyConfigPanel::OnAssignKey(wxCommandEvent &)
     if (!sel)
      {  //got null sel
         wxLogDebug(wxT("GetSelCmd() error in OnAssignKey()"));
-        wxMessageBox(wxT("KeyBinding file corrupted. Please delete it.")); //+v0.4
+        wxMessageBox(
+            wxT("KeyBinding file corrupted or out of synch with menu.\n")
+            wxT("Please delete Filename: cbKeyBinder*.ini in\n")
+            wxT("Unix:     ~/.codeblocks\n")
+            wxT("Windows: \\Documents and Settings\\<user>\\Application Data\\codeblocks")
+        ); //+v0.4
         return;
      }
 

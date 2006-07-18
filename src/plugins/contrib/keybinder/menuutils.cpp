@@ -232,7 +232,7 @@ void wxMenuCmd::Exec(wxObject *origin, wxEvtHandler *client)
 //// ----------------------------------------------------------------------------
 //wxCmd *wxMenuCmd::CreateNew(int id)
 //// ----------------------------------------------------------------------------
-//{-v0.3
+//{-v0.3c
 //	if (!m_pMenuBar) return NULL;
 //
 //	// search the menuitem which is tied to the given ID
@@ -253,7 +253,7 @@ wxCmd *wxMenuCmd::CreateNew(wxString cmdName, int id)
 	//-v0.3 if (!p) return NULL;
 
 	// CodeBlocks has dynamic (shifty) menu item id's
-	// so the file loaded item may have a differenct item id
+	// so the file loaded item may have a different item id
 	// search for a matching menu item
 
 
@@ -568,8 +568,8 @@ void wxMenuComboListWalker::DeleteData(void *)
 // ----------------------------------------------------------------------------
 // wxMenuShortcutWalker
 // ----------------------------------------------------------------------------
-
 void *wxMenuShortcutWalker::OnMenuItemWalk(wxMenuBar *, wxMenuItem *m, void *)
+// ----------------------------------------------------------------------------
 {
 	wxASSERT(m);
 
@@ -593,6 +593,7 @@ void *wxMenuShortcutWalker::OnMenuItemWalk(wxMenuBar *, wxMenuItem *m, void *)
 
 // ----------------------------------------------------------------------------
 void wxMenuShortcutWalker::DeleteData(void *
+// ----------------------------------------------------------------------------
 #ifdef __WXDEBUG__
 									  data
 #endif	// to avoid warnings about unused arg

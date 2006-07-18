@@ -95,13 +95,13 @@ class cbKeyBinder : public cbPlugin
         wxADD_KEYBINDER_SUPPORT();
 
     private:
-        void OnProjectOpened(CodeBlocksEvent& event);
-        void OnProjectActivated(CodeBlocksEvent& event);
-        void OnProjectClosed(CodeBlocksEvent& event);
-        void OnProjectFileAdded(CodeBlocksEvent& event);
-        void OnProjectFileRemoved(CodeBlocksEvent& event);
-        void OnEditorOpen(CodeBlocksEvent& event);
-        void OnEditorClose(CodeBlocksEvent& event);
+        //void OnProjectOpened(CodeBlocksEvent& event);
+        //void OnProjectActivated(CodeBlocksEvent& event);
+        //void OnProjectClosed(CodeBlocksEvent& event);
+        //void OnProjectFileAdded(CodeBlocksEvent& event);
+        //void OnProjectFileRemoved(CodeBlocksEvent& event);
+        //void OnEditorOpen(CodeBlocksEvent& event);
+        //void OnEditorClose(CodeBlocksEvent& event);
         void OnAppStartupDone(CodeBlocksEvent& event);
         void AttachEditor(wxWindow* pEditor);
         void OnWindowCreateEvent(wxEvent& event);
@@ -439,3 +439,23 @@ CB_DECLARE_PLUGIN();
 // -----------------------------------------------------------------------------
 //  commit  2006/06/15 v0.4.20
 // -----------------------------------------------------------------------------
+//  closed  2006/07/12 open    2006/07/11
+//          Remove dependency on CodeBlocks editor open/close events
+//          in order to avoid leaks on splitWindows.
+//          Solution: removed pushed evenHandlers and used Connect()/Disconnect()
+// -----------------------------------------------------------------------------
+//  closed  2006/07/12 open 2006/07/12
+//          Secondary profiles are not being recorded. Getting
+//          "DialogDone: NO key changes" message, the Primary is then set
+//          Resolution: cbKeyBinder::OnKeybindingsDialogDone compare function not
+//          taking into account multiple keyprofiles in the keyBinderProfileArray.
+// -----------------------------------------------------------------------------
+//  closed  2006/07/15 open    2006/07/15
+//          keybinder not clearing previous profile keys when loading other
+//          profiles.
+//          Resolution: Code not updating deep menu items. Walk down to deepest menu
+//          items in wxKeyBinder::UpdateAllCmd via new UpdateSubMenu recursion.
+// -----------------------------------------------------------------------------
+//  commit  v0.4.21 2006/07/17
+// -----------------------------------------------------------------------------
+
