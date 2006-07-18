@@ -26,12 +26,12 @@ if test -n "`autoconf --version 2>&1|head -n 1|egrep '1.*|2.[0-4]'`"; then
     exit 1;
 fi
 
-if test -z "`automake --version 2>&1|head -n 1|egrep '1.[7-9]'`"; then
+if test -n "`automake --version 2>&1|head -n 1|egrep '1.[0-6]'`"; then
 	echo "Automake 1.7 or above is required. Aborting build...";
 	exit 1;
 fi
 
-if test -z "`libtool --version 2>&1|head -n 1|egrep '1.[4-5]'`"; then
+if test -n "`libtool --version 2>&1|head -n 1|cut -f 4 -d ' '|egrep '1.[0-3]'`"; then
 	echo "Libtool 1.4 or above is required. Aborting build...";
 	exit 1;
 fi
