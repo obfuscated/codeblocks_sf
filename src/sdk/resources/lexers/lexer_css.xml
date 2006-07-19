@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <!DOCTYPE CodeBlocks_lexer_properties>
 <CodeBlocks_lexer_properties>
         <Lexer name="CSS"
@@ -38,7 +38,7 @@
                         fg="128,0,128"/>
                 <Style name="Comment"
                         index="9"
-                        fg="0,128,0"/>
+                        fg="160,160,160"/>
                 <Style name="ID selector"
                         index="10"
                         fg="0,128,128"/>
