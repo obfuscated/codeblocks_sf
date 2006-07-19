@@ -36,7 +36,7 @@ function OnLeave_SmartwinPath(fwd)
 {
     if (fwd)
     {
-        local dir = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
+        local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
         local dir_nomacro = VerifyDirectory(dir);
 
         if (dir_nomacro.IsEmpty())

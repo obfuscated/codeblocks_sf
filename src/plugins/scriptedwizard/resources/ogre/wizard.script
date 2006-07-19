@@ -92,8 +92,8 @@ function OnLeave_OgrePath(fwd)
 {
     if (fwd)
     {
-        local dir = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
-        dir_nomacro = ReplaceMacros(dir, true);
+        local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
+        local dir_nomacro = ReplaceMacros(dir, true);
         if ((OgreIsSource && !IO.FileExists(dir_nomacro + _T("/OgreMain/include/Ogre.h"))) ||
             (!OgreIsSource && !IO.FileExists(dir_nomacro + _T("/include/Ogre.h"))))
         {
