@@ -52,7 +52,7 @@ function OnLeave_SmartwinPath(fwd)
         local dir_nomacro_lib = GetCompilerLibDir(dir, SmartwinPathDefault, SmartwinPathDefaultLib);
         if (dir_nomacro_lib.IsEmpty())
             return false;
-        if (!VerifyFile(dir_nomacro_lib, _T("libsmartwin.a"), _T("Smartwin's library"))) return false;
+        if (!VerifyLibFile(dir_nomacro_lib, _T("smartwin"), _T("Smartwin's library"))) return false;
 
 
         SmartwinPath = dir; // Remember the original selection.

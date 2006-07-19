@@ -77,7 +77,7 @@ function VerifyDirectory(dir_or_macro)
 
     return dir;
 }
-                         
+
 function VerifyMacro(macro)
 {
     // try to make it a real path and verify it's existense
@@ -91,7 +91,7 @@ function VerifyMacro(macro)
 
     return dir;
 }
-                         
+
 // Get compiler include directory (taking GV's into account)
 // selection        - the original directory selection the user has made
 // defaultSelection - the default directory proposed by the wizard (using a macro)
@@ -298,8 +298,32 @@ function VerifyFile(dir, file, type)
     if (!IO.FileExists(dir + wxFILE_SEP_PATH + file))
     {
         ShowError(_T("The path you entered seems valid, but this wizard\n" +
-                     "can't locate the following ") + type + _T(" file:\n") + 
+                     "can't locate the following ") + type + _T(" file:\n") +
                      file + _T(" in it."));
+        return false;
+    }
+    return true;
+}
+
+// verify the existence of a file of library type (add prefix lib, postfix .a and .lib)
+// dir  = the directory the library is expected in
+// file = name of the libryry to look for (usually for e.g. "libGL.a" providing "GL" is enough.
+// type = descriptive name of the library to show in the error message
+// Returns: true, if the library exists, false otherwise
+function VerifyLibFile(dir, file, type)
+{
+    if (   (!IO.FileExists(dir + wxFILE_SEP_PATH + file))
+        && (!IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".a")))
+        && (!IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".lib")))
+        && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file))
+        && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".a")))
+        && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".lib"))) )
+
+    {
+        ShowError(_T("The path you entered seems valid, but this wizard\n" +
+                     "can't locate the following ") + type + _T(" library file:\n") +
+                     file + _T(" in it.\n" +
+                     "(Also tried prepending lib and appending .a and .lib)."));
         return false;
     }
     return true;

@@ -5,6 +5,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // globals
+FltkPathDefault    <- _T("$(#fl)");
+FltkPathDefaultInc <- _T("$(#fl.include)");
+FltkPathDefaultLib <- _T("$(#fl.lib)");
 FltkPath <- _T("");
 
 function BeginWizard()
@@ -21,7 +24,7 @@ function BeginWizard()
 
     Wizard.AddInfoPage(_T("FltkIntro"), intro_msg);
     Wizard.AddProjectPathPage();
-    Wizard.AddGenericSelectPathPage(_T("FltkPath"), fltkpath_descr, _T("Please select FLTK's location:"), _T("$(#fltk)"));
+    Wizard.AddGenericSelectPathPage(_T("FltkPath"), fltkpath_descr, _T("Please select FLTK's location:"), FltkPathDefault);
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
@@ -34,15 +37,43 @@ function OnLeave_FltkPath(fwd)
     if (fwd)
     {
         local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
-        local dir_nomacro = ReplaceMacros(dir, true);
-        if (!IO.FileExists(dir_nomacro + _T("/include/FL/Fl.H")))
-        {
-            ShowError(_T("The path you entered seems valid, but this wizard " +
-                         "can't locate FLTK's files in it..."));
+        local dir_nomacro = VerifyDirectory(dir);
+
+        if (dir_nomacro.IsEmpty())
             return false;
+
+        // verify include dependencies
+        local dir_nomacro_inc = GetCompilerIncludeDir(dir, FltkPathDefault, FltkPathDefaultInc);
+        if (dir_nomacro_inc.IsEmpty())
+            return false;
+        if (!VerifyFile(dir_nomacro_inc + wxFILE_SEP_PATH + _T("FL"), _T("Fl.h"), _T("FLTK's include"))) return false;
+
+        // verify library dependencies
+        local dir_nomacro_lib = GetCompilerLibDir(dir, FltkPathDefault, FltkPathDefaultLib);
+        if (dir_nomacro_lib.IsEmpty())
+            return false;
+        if (!VerifyLibFile(dir_nomacro_lib, _T("fltk"), _T("FLTK's"))) return false;
+
+
+        FltkPath = dir; // Remember the original selection.
+
+        local is_macro = _T("");
+
+        // try to resolve the include directory as macro
+        is_macro = GetCompilerIncludeMacro(dir, FltkPathDefault, FltkPathDefaultInc);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real inc path we had computed instead
+            FltkPathDefaultInc = dir_nomacro_inc;
         }
 
-        FltkPath = dir;
+        // try to resolve the library directory as macro
+        is_macro = GetCompilerLibMacro(dir, FltkPathDefault, FltkPathDefaultLib);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real lib path we had computed instead
+            FltkPathDefaultLib = dir_nomacro_lib;
+        }
     }
     return true;
 }
@@ -57,20 +88,8 @@ function GetFilesDir()
 function SetupProject(project)
 {
     // set project options
-    local gvar = ReplaceMacros(_T("$(#fl"), true);
-
-    // set compiler/linker search paths
-    // see if the FLTK SDK matches the global var. if it does, use the var instead...
-    if (gvar.Matches(FltkPath))
-    {
-        project.AddIncludeDir(_T("$(#fl.include)"));
-        project.AddLibDir(_T("$(#fl.lib)"));
-    }
-    else
-    {
-        project.AddIncludeDir(FltkPath + _T("/include"));
-        project.AddLibDir(FltkPath + _T("/lib"));
-    }
+    project.AddIncludeDir(FltkPathDefaultInc);
+    project.AddLibDir(FltkPathDefaultLib);
 
     // add link libraries
     project.AddLinkLib(_T("fltk"));

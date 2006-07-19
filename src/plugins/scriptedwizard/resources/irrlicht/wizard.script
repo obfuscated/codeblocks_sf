@@ -5,6 +5,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // globals
+IrrlichtPathDefault    <- _T("$(#irr)");
+IrrlichtPathDefaultInc <- _T("$(#irr.include)");
+IrrlichtPathDefaultLib <- _T("$(#irr.lib)");
 IrrlichtPath <- _T("");
 
 function BeginWizard()
@@ -21,7 +24,7 @@ function BeginWizard()
 
     Wizard.AddInfoPage(_T("IrrIntro"), intro_msg);
     Wizard.AddProjectPathPage();
-    Wizard.AddGenericSelectPathPage(_T("IrrPath"), irrpath_descr, _T("Please select Irrlicht's location:"), _T("$(#irr)"));
+    Wizard.AddGenericSelectPathPage(_T("IrrPath"), irrpath_descr, _T("Please select Irrlicht's location:"), IrrlichtPathDefault);
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
@@ -34,15 +37,67 @@ function OnLeave_IrrPath(fwd)
     if (fwd)
     {
         local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
-        local dir_nomacro = ReplaceMacros(dir, true);
-        if (!IO.FileExists(dir_nomacro + _T("/include/irrlicht.h")))
-        {
-            ShowError(_T("The path you entered seems valid, but this wizard " +
-                         "can't locate Irrlicht's files in it..."));
+        local dir_nomacro = VerifyDirectory(dir);
+
+        if (dir_nomacro.IsEmpty())
             return false;
+
+        // verify include dependencies
+        local dir_nomacro_inc = GetCompilerIncludeDir(dir, IrrlichtPathDefault, IrrlichtPathDefaultInc);
+        if (dir_nomacro_inc.IsEmpty())
+            return false;
+        if (!VerifyFile(dir_nomacro_inc, _T("irrlicht.h"), _T("Irrlicht's include"))) return false;
+
+        // verify library dependencies
+        local dir_nomacro_lib = GetCompilerLibDir(dir, IrrlichtPathDefault, IrrlichtPathDefaultLib);
+        if (dir_nomacro_lib.IsEmpty())
+            return false;
+
+        local lib_dir = dir_nomacro_lib + wxFILE_SEP_PATH;
+        if (PLATFORM == PLATFORM_MSW)
+        {
+            if (   (!IO.FileExists(lib_dir + _T("Irrlicht.a")))
+                && (!IO.FileExists(lib_dir + _T("Win32-gcc") + wxFILE_SEP_PATH + _T("Irrlicht.a")))
+                && (!IO.FileExists(lib_dir + _T("Win32-visualstudio") + wxFILE_SEP_PATH + _T("Irrlicht.lib"))) )
+
+            {
+                ShowError(_T("The path you entered seems valid, but this wizard\n" +
+                             "can't locate the Irrlicht's library file in it.\n"));
+                return false;
+            }
+
+        }
+        else
+        {
+            if (   (!IO.FileExists(lib_dir + _T("Irrlicht.a")))
+                && (!IO.FileExists(lib_dir + _T("Linux") + wxFILE_SEP_PATH + _T("Irrlicht.a"))) )
+
+            {
+                ShowError(_T("The path you entered seems valid, but this wizard\n" +
+                             "can't locate the Irrlicht's library file in it.\n"));
+                return false;
+            }
         }
 
-        IrrlichtPath = dir;
+        IrrlichtPath = dir; // Remember the original selection.
+
+        local is_macro = _T("");
+
+        // try to resolve the include directory as macro
+        is_macro = GetCompilerIncludeMacro(dir, IrrlichtPathDefault, IrrlichtPathDefaultInc);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real inc path we had computed instead
+            IrrlichtPathDefaultInc = dir_nomacro_inc;
+        }
+
+        // try to resolve the library directory as macro
+        is_macro = GetCompilerLibMacro(dir, IrrlichtPathDefault, IrrlichtPathDefaultLib);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real lib path we had computed instead
+            IrrlichtPathDefaultLib = dir_nomacro_lib;
+        }
     }
     return true;
 }
@@ -77,8 +132,8 @@ function SetupProject(project)
         IrrlichtLibDir = _T("Linux");
 
     // set compiler/linker search paths
-    project.AddIncludeDir(IrrlichtPath + _T("/include"));
-    project.AddLibDir(IrrlichtPath + _T("/lib/") + IrrlichtLibDir);
+    project.AddIncludeDir(IrrlichtPathDefaultInc);
+    project.AddLibDir(IrrlichtPathDefaultLib + wxFILE_SEP_PATH + IrrlichtLibDir);
 
     // add link libraries
     project.AddLinkLib(_T("Irrlicht"));

@@ -25,6 +25,7 @@ function RegisterWizards()
     RegisterWizard(wizProject,     _T("glut"),         _T("GLUT project"),          _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("irrlicht"),     _T("Irrlicht project"),      _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("ogre"),         _T("Ogre project"),          _T("2D/3D Graphics"));
+    RegisterWizard(wizProject,     _T("qt4"),          _T("QT4 project"),           _T("GUI"));
     if (PLATFORM == PLATFORM_MSW)
         RegisterWizard(wizProject, _T("smartwin"),     _T("SmartWin project"),      _T("GUI"));
     RegisterWizard(wizProject,     _T("staticlib"),    _T("Static library"),        _T("Console"));
