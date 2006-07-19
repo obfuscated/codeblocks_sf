@@ -458,4 +458,17 @@ CB_DECLARE_PLUGIN();
 // -----------------------------------------------------------------------------
 //  commit  v0.4.21 2006/07/17
 // -----------------------------------------------------------------------------
+//  open    2006/07/19
+//          Allowing secondary key definitions on "Quit" causes CB to crash
+//          during termination. A hack ignores these keys in wxKeyBinder::OnChar.
+//          But this needs to be fixed.
+//  open    2006/07/19
+//          I experienced again that the menus did not show redefinitions that
+//          actually were working and showed correctly in the dialog. As if updateAll
+//          was screwed up again.
+// -----------------------------------------------------------------------------
+//  commit  2006/07/19 v0.22
+//          Temporary hack to ignore "Quit" menu redefinitions to avoid
+//          crashes during CB termination.
+// -----------------------------------------------------------------------------
 

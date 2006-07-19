@@ -362,7 +362,7 @@ public:
 	}
 
 	//! Returns TRUE if this command is bind to a wxKeyBind object
-	//! identic to the given one.
+	//! identical to the given one.
 	//! If "n" is not NULL, it is set to the index of the entry
 	//! which contains the given shortcut key (if there is such
 	//! a shortcut registered in this class); otherwise it is
@@ -585,7 +585,7 @@ public:
 
 private:
 	DECLARE_CLASS(wxBinderEvtHandler)
-	DECLARE_EVENT_TABLE()
+	//DECLARE_EVENT_TABLE()
 };
 
 

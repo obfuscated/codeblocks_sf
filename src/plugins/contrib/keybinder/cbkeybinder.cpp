@@ -55,15 +55,18 @@ cbKeyBinder::cbKeyBinder()
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts");
-	m_PluginInfo.version = _T("0.4.21 (2006/07/17)");
+	m_PluginInfo.version = _T("0.4.22 (2006/07/19)");
 	m_PluginInfo.description <<_("\nCode::Blocks KeyBinder\n\n")
                             << _("Modify any menu key with up to three key\n")
                             << _("combinations. Multiple sets of key profiles\n")
                             << _("can be stored and selected. \n\n")
-                            << _("NOTE: Ctrl+Alt+{UP|DOWN} is unsupported.\n\n");
+                            << _("NOTES:\n")
+                            << _("  1.Ctrl+Alt+{UP|DOWN} keys are unsupported.\n")
+                            << _("  2.Redefinition of the \"Quit\" Menu key is ignored.\n\n")
+                            ;
 	m_PluginInfo.author = _T("Pecan Heber");
-	m_PluginInfo.authorEmail = _T("");
-	m_PluginInfo.authorWebsite = _T("");
+	m_PluginInfo.authorEmail = _T("pecan at users.berlios.de");
+	m_PluginInfo.authorWebsite = _T("CodeBlocks.org");
 	m_PluginInfo.thanksTo << _("Thanks to...\n\n")
                         <<_("wxKeyBinder authors:\n")
                         <<_("Aleksandras Gluchovas,\nFrancesco Montorsi,\n\n")
@@ -123,7 +126,7 @@ void cbKeyBinder::OnAttach()
     //wxKeyBinder::usableWindows.Add(_T("*"));                 //+v0.4.4
    #endif
     wxKeyBinder::usableWindows.Add(_T("sciwindow"));           //+v0.4.4
-    wxKeyBinder::usableWindows.Add(_T("flatnotebook"));       //+v0.4.4
+    //wxKeyBinder::usableWindows.Add(_T("flatnotebook"));       //+v0.4.4
     //wxKeyBinder::usableWindows.Add(_T("panel"));             //+v0.4.4
     //wxKeyBinder::usableWindows.Add(_T("list"));              //+v0.4.4
     //wxKeyBinder::usableWindows.Add(_T("listctrl"));          //+v0.4.4
@@ -144,6 +147,9 @@ void cbKeyBinder::OnRelease(bool appShutDown)
 	// m_IsAttached will be FALSE...
 
     // remove keyboard and window close event //+v0.4.7
+    #ifdef LOGGING
+     LOGIT( _T("cbKeyBinder::OnRelease() called.") );
+    #endif //LOGGING
 	m_pKeyProfArr->DetachAll();
 }
 // ----------------------------------------------------------------------------

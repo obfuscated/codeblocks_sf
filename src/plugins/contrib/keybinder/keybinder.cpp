@@ -46,39 +46,39 @@ IMPLEMENT_CLASS(wxKeyProfile, wxKeyBinder)
 IMPLEMENT_CLASS(wxKeyBinder, wxObject)
 
 IMPLEMENT_CLASS(wxBinderEvtHandler, wxEvtHandler)
-BEGIN_EVENT_TABLE(wxBinderEvtHandler, wxEvtHandler)
-
-	// this is obviously the most important event handler; we don't
-	// want to intercept wxEVT_KEY_UP because we don't need them:
-	// a command must be immediately executed when one of its shortcuts
-	// is sent to the window.
-
-	//(pecan 2006/7/11)
-	// Removed EVT_KEY_DOWN in favor of Connect(cf. wxBinderEvtHandler ctor)
-	// to avoid Delete(eventHandler) crashes in EVT_DESTROY
-	//-EVT_KEY_DOWN(wxBinderEvtHandler::OnChar)
-
-	// if we intercept also these events, then we would have some problems
-	// with the ENTER keypresses: the wxBinderEvtHandler would be called
-	// three times with three different events which would then generate
-	// three command executions
-#if 0
-	EVT_KEY_UP(wxBinderEvtHandler::OnChar)
-	EVT_CHAR(wxBinderEvtHandler::OnChar)
-#endif
-
-#if defined( __WXMSW__	)		// supported only on Win32
-#if wxUSE_HOTKEY                // enabled?
-#if wxCHECK_VERSION(2, 5, 1)	// and from wxWidgets 2.5.1
-
-	// I don't think this is needed because wxEVT_HOTKEY are generated
-	// only in some special cases...
-	EVT_HOTKEY(wxID_ANY, wxBinderEvtHandler::OnChar)
-#endif
-#endif
-#endif
-
-END_EVENT_TABLE()
+//BEGIN_EVENT_TABLE(wxBinderEvtHandler, wxEvtHandler)
+//
+//	// this is obviously the most important event handler; we don't
+//	// want to intercept wxEVT_KEY_UP because we don't need them:
+//	// a command must be immediately executed when one of its shortcuts
+//	// is sent to the window.
+//
+//	//(pecan 2006/7/11)
+//	// Removed EVT_KEY_DOWN in favor of Connect(cf. wxBinderEvtHandler ctor)
+//	// to avoid Delete(eventHandler) crashes in EVT_DESTROY
+//	//-EVT_KEY_DOWN(wxBinderEvtHandler::OnChar)
+//
+//	// if we intercept also these events, then we would have some problems
+//	// with the ENTER keypresses: the wxBinderEvtHandler would be called
+//	// three times with three different events which would then generate
+//	// three command executions
+////#if 0
+////	EVT_KEY_UP(wxBinderEvtHandler::OnChar)
+////	EVT_CHAR(wxBinderEvtHandler::OnChar)
+////#endif
+//
+//#if defined( __WXMSW__	)		// supported only on Win32
+//#if wxUSE_HOTKEY                // enabled?
+//#if wxCHECK_VERSION(2, 5, 1)	// and from wxWidgets 2.5.1
+//
+//	// I don't think this is needed because wxEVT_HOTKEY are generated
+//	// only in some special cases...
+//	EVT_HOTKEY(wxID_ANY, wxBinderEvtHandler::OnChar)
+//#endif
+//#endif
+//#endif
+//
+//END_EVENT_TABLE()
 
 
 
@@ -705,6 +705,7 @@ void wxBinderEvtHandler::OnChar(wxKeyEvent &p)
 	//-(pecan 2006/7/12) GetNextHandler is not returning valid pointer
 	//  for Connect()ed events
 	//- m_pBinder->OnChar(p, GetNextHandler());
+
 	m_pBinder->OnChar(p, this);
 }
 
@@ -1079,15 +1080,25 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 	// exec the command associated with that shortcut...
 	wxCmd *p = GetMatchingCmd(event);
 
+    // Allowing secondary key definitions on Quit causes crashes //(pecan v0.22)
+    // during termination. Looks like stack/heap problems.
+    // But we really need to figure this bug out.
+    if ( p && p->m_strName eq wxT("Quit") ) {
+        #ifdef LOGGING
+         wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring a 'Quit' event [%d]"),
+                    event.GetKeyCode());
+        #endif //LOGGING
+        event.Skip(); return;
+    }
 
 	// AVOID TO INTERCEPT Alt+F4 KEYPRESSES !!!
 	// For some reasons on wxMSW 2.5.2 (at least) this provokes a crash
 	// which is really difficult to spot... better leave it...
 	if (p && p->IsBindTo(wxKeyBind(wxT("Alt+F4")))) {
-
-		wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring an Alt+F4 event [%d]"),
+        #ifdef LOGGING
+		 wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring an Alt+F4 event [%d]"),
 					event.GetKeyCode());
-        //-wxLogDebug("\n");
+        #endif //LOGGING
 		event.Skip();
 		return;
 	}
@@ -1124,7 +1135,6 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 					client = (wxWindow*)m_arrAttachedWnd.Item(i);
 		}*/
 		if (client == NULL) {
-
 			//int found = -1;
 			for (int i=0; i < (int)m_arrAttachedWnd.GetCount(); i++)
 				if (((wxWindow*)m_arrAttachedWnd.Item(i)) == event.GetEventObject())//->GetId() == event.GetId())
@@ -1132,7 +1142,6 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 		}
 
 		if (client == NULL) {
-
 			wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring keyevent [%d] Not ")
 				wxT("attached to window generating the keypress..."), event.GetKeyCode());
 			event.Skip();		// ... skip it
