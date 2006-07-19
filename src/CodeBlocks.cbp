@@ -1581,6 +1581,12 @@
 			<Option link="0" />
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\empty_file\wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\fltk\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
@@ -1618,6 +1624,12 @@
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\plugins\wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\qt4\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -1703,7 +1715,7 @@
 			<Option link="0" />
 			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\scriptedwizard\wxsmith\IntroPanel.wxs">
+		<Unit filename="plugins\scriptedwizard\wxsmith\InfoPanel.wxs">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
