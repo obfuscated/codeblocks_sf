@@ -456,8 +456,31 @@ CompileTargetBase* Wiz::RunTargetWizard(wxString* pFilename)
         return 0;
     }
 
+	// check the compiler Id
+	wxString CompilerId = GetTargetCompilerID();
+	if(CompilerId == wxEmptyString)
+	{	// no compiler had been specified
+		// fall back 1 : the poject one
+		CompilerId = theproject->GetCompilerID();
+		if(CompilerId == wxEmptyString)
+		{	// even the project does not have one
+			// fall back 2 : CB default
+			CompilerId = CompilerFactory::GetDefaultCompilerID();
+			cbMessageBox(	_("No compiler had been specified. The new target will use the default compiler."),
+				_("Fallback compiler selected"),
+				wxOK | wxICON_INFORMATION,
+				Manager::Get()->GetAppWindow());
+		}
+		else
+		{
+			cbMessageBox(	_("No compiler had been specified. The new target will use the same compiler as the project."),
+				_("Fallback compiler selected"),
+				wxOK | wxICON_INFORMATION,
+				Manager::Get()->GetAppWindow());
+		}
+	}
     // setup the target
-    target->SetCompilerID(GetTargetCompilerID());
+    target->SetCompilerID(CompilerId);
     target->SetIncludeInTargetAll(false);
     target->SetObjectOutput(GetTargetObjectOutputDir());
     target->SetWorkingDir(GetTargetOutputDir());
