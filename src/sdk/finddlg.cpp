@@ -289,9 +289,15 @@ void FindDlg::OnFindChange(wxNotebookEvent& event)
     if (cmbFind1 && cmbFind2)
     {
         if (XRCCTRL(*this, "nbFind", wxNotebook)->GetSelection() == 1)
+        {
             cmbFind2->SetValue(cmbFind1->GetValue());
+            cmbFind2->SetFocus();
+        }
         else
+        {
             cmbFind1->SetValue(cmbFind2->GetValue());
+            cmbFind1->SetFocus();
+        }
     }
     event.Skip();
 }
