@@ -24,7 +24,7 @@ struct PluginElement
     wxString fileName;
     wxDynamicLibrary* library;
     FreePluginProc freeProc;
-	cbPlugin* plugin;
+    cbPlugin* plugin;
 };
 
 WX_DEFINE_ARRAY(PluginElement*, PluginElementsArray);
@@ -36,12 +36,12 @@ WX_DEFINE_ARRAY(cbConfigurationPanel*, ConfigurationPanelsArray);
  */
 class DLLIMPORT PluginManager : public Mgr<PluginManager>
 {
-	public:
+    public:
         friend class Mgr<PluginManager>;
         friend class Manager; // give Manager access to our private members
-		void CreateMenu(wxMenuBar* menuBar);
-		void ReleaseMenu(wxMenuBar* menuBar);
-		int ScanForPlugins(const wxString& path);
+        void CreateMenu(wxMenuBar* menuBar);
+        void ReleaseMenu(wxMenuBar* menuBar);
+        int ScanForPlugins(const wxString& path);
         bool LoadPlugin(const wxString& pluginName);
         void LoadAllPlugins();
         void UnloadAllPlugins();
@@ -63,12 +63,11 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>
         void GetConfigurationPanels(int group, wxWindow* parent, ConfigurationPanelsArray& arrayToFill);
         void GetProjectConfigurationPanels(wxWindow* parent, cbProject* project, ConfigurationPanelsArray& arrayToFill);
         int Configure();
-		void SetupLocaleDomain(const wxString& DomainName);
+        void SetupLocaleDomain(const wxString& DomainName);
     private:
-		PluginManager();
-		~PluginManager();
+        PluginManager();
+        ~PluginManager();
         PluginElementsArray m_Plugins;
 };
 
 #endif // PLUGINMANAGER_H
-

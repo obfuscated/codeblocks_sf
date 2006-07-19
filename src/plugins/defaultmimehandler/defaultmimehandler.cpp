@@ -31,16 +31,16 @@ CB_IMPLEMENT_PLUGIN(DefaultMimeHandler, "Files extension handler");
 
 DefaultMimeHandler::DefaultMimeHandler()
 {
-	//ctor
-	m_PluginInfo.name = _T("FilesExtensionHandler");
-	m_PluginInfo.title = _("Files extension handler");
-	m_PluginInfo.version = _T("1.0");
-	m_PluginInfo.description = _("This is the default files extension handler for Code::Blocks");
-	m_PluginInfo.author = _T("Yiannis An. Mandravellos");
-	m_PluginInfo.authorEmail = _T("mandrav@codeblocks.org");
-	m_PluginInfo.authorWebsite = _("http://www.codeblocks.org");
-	m_PluginInfo.thanksTo = _T("Code::Blocks");
-	m_PluginInfo.license = LICENSE_GPL;
+    //ctor
+    m_PluginInfo.name = _T("FilesExtensionHandler");
+    m_PluginInfo.title = _("Files extension handler");
+    m_PluginInfo.version = _T("1.0");
+    m_PluginInfo.description = _("This is the default files extension handler for Code::Blocks");
+    m_PluginInfo.author = _T("Yiannis An. Mandravellos");
+    m_PluginInfo.authorEmail = _T("mandrav@codeblocks.org");
+    m_PluginInfo.authorWebsite = _("http://www.codeblocks.org");
+    m_PluginInfo.thanksTo = _T("Code::Blocks");
+    m_PluginInfo.license = LICENSE_GPL;
 
     if(!Manager::LoadResource(_T("defaultmimehandler.zip")))
     {
@@ -50,7 +50,7 @@ DefaultMimeHandler::DefaultMimeHandler()
 
 DefaultMimeHandler::~DefaultMimeHandler()
 {
-	//dtor
+    //dtor
 }
 
 void DefaultMimeHandler::OnAttach()
@@ -76,7 +76,7 @@ void DefaultMimeHandler::OnAttach()
             else
                 m_MimeTypes.Add(mt);
         }
-	}
+    }
 }
 
 
@@ -89,8 +89,8 @@ void DefaultMimeHandler::OnRelease(bool appShutDown)
     {
         conf->UnSet(list[i]);
     }
-	for (unsigned int i = 0; i < m_MimeTypes.GetCount(); ++i)
-	{
+    for (unsigned int i = 0; i < m_MimeTypes.GetCount(); ++i)
+    {
         cbMimeType* mt = m_MimeTypes[i];
         wxString txt;
         txt << (mt->useEditor ? _T("true") : _T("false")) << _T(";");
@@ -99,8 +99,8 @@ void DefaultMimeHandler::OnRelease(bool appShutDown)
         txt << mt->program;
         wxString key;
         key.Printf(_T("MimeType%d"), i);
-		conf->Write(key, txt);
-	}
+        conf->Write(key, txt);
+    }
     WX_CLEAR_ARRAY(m_MimeTypes);
 }
 
@@ -120,13 +120,17 @@ bool DefaultMimeHandler::CanHandleFile(const wxString& filename) const
     // always return true
     // even if we don't know how to handle the file,
     // we 'll ask the user what to do when we are requested to open it...
-	return true;
+    return true;
 }
 
 int DefaultMimeHandler::OpenFile(const wxString& filename)
 {
-	cbMimeType* mt = FindMimeTypeFor(filename);
-	if (mt)
+    wxFileName the_file(filename);
+    if (!the_file.FileExists())
+        return -1;
+
+    cbMimeType* mt = FindMimeTypeFor(filename);
+    if (mt)
         return DoOpenFile(mt, filename);
     else
     {
@@ -135,7 +139,7 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
                                _("Open it inside the Code::Blocks editor.")};
         wxSingleChoiceDialog dlg(0,
                                 _("Code::Blocks does not yet know how to open this kind of file.\n"
-                                "Please select what you want to do with it:"),
+                                  "Please select what you want to do with it:"),
                                 _("What to do?"),
                                 sizeof(choices) / sizeof(choices[0]),
                                 choices);
@@ -143,9 +147,9 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
         PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_OK)
         {
-            wxString ext = wxFileName(filename).GetExt().Lower();
+            wxString ext = the_file.GetExt().Lower();
             wxString wild = ext.IsEmpty()
-                            ? wxFileName(filename).GetName().Lower()
+                            ? the_file.GetName().Lower()
                             : wxString(_T("*.")) + ext;
             switch (dlg.GetSelection())
             {
@@ -181,7 +185,7 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
             return -1;
         }
     }
-	return -1;
+    return -1;
 }
 
 cbMimeType* DefaultMimeHandler::FindMimeTypeFor(const wxString& filename)
@@ -220,13 +224,13 @@ int DefaultMimeHandler::DoOpenFile(cbMimeType* mt, const wxString& filename)
     if (mt->useEditor)
     {
         // easy. use internal editor.
-		cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
-		if (ed)
-		{
-//			ed->SetProjectFile(pf);
-			ed->Show(true);
-			return 0;
-		}
+        cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
+        if (ed)
+        {
+//            ed->SetProjectFile(pf);
+            ed->Show(true);
+            return 0;
+        }
     }
     else
     {

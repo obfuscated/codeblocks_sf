@@ -35,15 +35,15 @@ EditMimeTypesDlg::EditMimeTypesDlg(wxWindow* parent, MimeTypesArray& array)
     m_Selection(-1),
     m_LastSelection(-1)
 {
-	//ctor
-	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgEditFilesHandling"));
-	FillList();
-	UpdateDisplay();
+    //ctor
+    wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgEditFilesHandling"));
+    FillList();
+    UpdateDisplay();
 }
 
 EditMimeTypesDlg::~EditMimeTypesDlg()
 {
-	//dtor
+    //dtor
 }
 
 void EditMimeTypesDlg::FillList()

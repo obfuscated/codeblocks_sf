@@ -33,8 +33,8 @@ FilePathPanel::FilePathPanel(wxWindow* parent,wxWindowID id)
 
 	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL);
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Please enter the file\'s name and whether to add it\nto the active project."),wxDefaultPosition,wxDefaultSize,0);
-	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Filename:"),wxDefaultPosition,wxDefaultSize,0);
+	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Please enter the file\'s location and name and\nwhether to add it to the active project."),wxDefaultPosition,wxDefaultSize,0);
+	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Filename with full path:"),wxDefaultPosition,wxDefaultSize,0);
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
 	txtFilename = new wxTextCtrl(this,ID_TEXTCTRL1,_("Text"),wxDefaultPosition,wxDefaultSize,0);
 	if ( 0 ) txtFilename->SetMaxLength(0);

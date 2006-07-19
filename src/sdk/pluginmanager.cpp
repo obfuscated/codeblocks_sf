@@ -62,7 +62,7 @@ PluginManager::PluginManager()
 // class destructor
 PluginManager::~PluginManager()
 {
-	UnloadAllPlugins();
+    UnloadAllPlugins();
 }
 
 void PluginManager::CreateMenu(wxMenuBar* menuBar)
@@ -76,9 +76,9 @@ void PluginManager::ReleaseMenu(wxMenuBar* menuBar)
 int PluginManager::ScanForPlugins(const wxString& path)
 {
 #ifdef __WXMSW__
-	#define PLUGINS_MASK _T("*.dll")
+    #define PLUGINS_MASK _T("*.dll")
 #else
-	#define PLUGINS_MASK _T("*.so")
+    #define PLUGINS_MASK _T("*.so")
 #endif
 
     int count = 0;
@@ -90,7 +90,7 @@ int PluginManager::ScanForPlugins(const wxString& path)
     bool batch = Manager::IsBatchBuild();
 
     wxString filename;
-	wxString failed;
+    wxString failed;
     bool ok = dir.GetFirst(&filename, PLUGINS_MASK, wxDIR_FILES);
     while (ok)
     {
@@ -101,21 +101,21 @@ int PluginManager::ScanForPlugins(const wxString& path)
         }
         if (LoadPlugin(path + _T('/') + filename))
             ++count;
-		else
-			failed << _T('\n') << filename;
+        else
+            failed << _T('\n') << filename;
         ok = dir.GetNext(&filename);
     }
     Manager::Get()->GetMessageManager()->Log(_("Found %d plugins"), count);
-	if (!failed.IsEmpty())
-	{
+    if (!failed.IsEmpty())
+    {
         InfoWindow::Display(_("Warning"),
                             _("One or more plugins were not loaded.\n"
                             "This usually happens when a plugin is built for\n"
                             "a different version of the Code::Blocks SDK.\n"
                             "Check the application log for more info.\n\n"
-                            "List of failed plugins list:\n") + failed,
+                            "List of failed plugins:\n") + failed,
                             15000, 3000);
-	}
+    }
     return count;
 
 #undef PLUGINS_MASK
@@ -157,27 +157,27 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
         return false;
     }
 
-	// check if it is the correct SDK version
-	versionproc(&major, &minor, &release);
-	if (major != PLUGIN_SDK_VERSION_MAJOR ||
-		minor != PLUGIN_SDK_VERSION_MINOR ||
-		release != PLUGIN_SDK_VERSION_RELEASE)
-	{
-		// in this case, inform the user...
-		wxString fmt;
-		fmt.Printf(_("SDK version mismatch for %s (%d.%d.%d). Expecting %d.%d.%d"),
-					pluginName.c_str(),
-					major,
-					minor,
-					release,
-					PLUGIN_SDK_VERSION_MAJOR,
-					PLUGIN_SDK_VERSION_MINOR,
-					PLUGIN_SDK_VERSION_RELEASE);
+    // check if it is the correct SDK version
+    versionproc(&major, &minor, &release);
+    if (major != PLUGIN_SDK_VERSION_MAJOR ||
+        minor != PLUGIN_SDK_VERSION_MINOR ||
+        release != PLUGIN_SDK_VERSION_RELEASE)
+    {
+        // in this case, inform the user...
+        wxString fmt;
+        fmt.Printf(_("SDK version mismatch for %s (%d.%d.%d). Expecting %d.%d.%d"),
+                    pluginName.c_str(),
+                    major,
+                    minor,
+                    release,
+                    PLUGIN_SDK_VERSION_MAJOR,
+                    PLUGIN_SDK_VERSION_MINOR,
+                    PLUGIN_SDK_VERSION_RELEASE);
         Manager::Get()->GetMessageManager()->Log(fmt);
         lib->Unload();
         delete lib;
         return false;
-	}
+    }
 
     // get the plugin's count inside this library
     GetPluginsCountProc countproc = (GetPluginsCountProc)lib->GetSymbol(_T("GetPluginsCount"));
@@ -293,9 +293,9 @@ void PluginManager::LoadAllPlugins()
         }
 
         if (loadIt && !plug->IsAttached())
-		{
+        {
             Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), plug->GetInfo()->title);
-			Manager::Get()->GetMessageManager()->AppendLog(_("%s "), m_Plugins[i]->name.c_str());
+            Manager::Get()->GetMessageManager()->AppendLog(_("%s "), m_Plugins[i]->name.c_str());
             try
             {
                 plug->Attach();
@@ -313,9 +313,9 @@ void PluginManager::LoadAllPlugins()
                 if (cbMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO) == wxID_YES)
                     Manager::Get()->GetConfigManager(_T("plugins"))->Write(baseKey, false);
             }
-		}
+        }
     }
-	Manager::Get()->GetMessageManager()->Log(_T(""));
+    Manager::Get()->GetMessageManager()->Log(_T(""));
 
     wxLogNull ln;
     Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), wxEmptyString, false);
@@ -328,14 +328,14 @@ void PluginManager::UnloadAllPlugins()
     s_LastKnownActivePlugin = 0;
 
     // first loop to release all plugins
-	unsigned int i = m_Plugins.GetCount();
+    unsigned int i = m_Plugins.GetCount();
     while (i > 0)
     {
-		--i;
-//		Manager::Get()->GetMessageManager()->DebugLog(_T("At %d"), i);
+        --i;
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("At %d"), i);
         cbPlugin* plug = m_Plugins[i]->plugin;
-		if (!plug)
-			continue;
+        if (!plug)
+            continue;
 //        Manager::Get()->GetMessageManager()->DebugLog(_T("Doing '%s'"), m_Plugins[i]->name.c_str());
         plug->Release(true);
         //it->first->library->Unload();
@@ -344,10 +344,10 @@ void PluginManager::UnloadAllPlugins()
     }
 
     // second loop to delete all plugins from memory
-	i = m_Plugins.GetCount();
+    i = m_Plugins.GetCount();
     while (i > 0)
     {
-		--i;
+        --i;
         cbPlugin* plug = m_Plugins[i]->plugin;
         if (m_Plugins[i]->freeProc)
             m_Plugins[i]->freeProc(plug);
@@ -413,7 +413,7 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
         }
     }
 
-	return 0;
+    return 0;
 }
 
 int PluginManager::ConfigurePlugin(const wxString& pluginName)
@@ -430,7 +430,7 @@ int PluginManager::ConfigurePlugin(const wxString& pluginName)
             exception.ShowErrorMessage(false);
         }
     }
-	return 0;
+    return 0;
 }
 
 int SortByConfigurationPriority(cbPlugin** first, cbPlugin** second)
@@ -500,7 +500,7 @@ PluginsArray PluginManager::GetDebuggerOffers()
 
 PluginsArray PluginManager::GetCodeCompletionOffers()
 {
-	return GetOffersFor(ptCodeCompletion);
+    return GetOffersFor(ptCodeCompletion);
 }
 
 PluginsArray PluginManager::GetOffersFor(PluginType type)

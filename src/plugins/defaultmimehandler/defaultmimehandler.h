@@ -15,21 +15,21 @@
 
 class DefaultMimeHandler : public cbMimePlugin
 {
-	public:
-		DefaultMimeHandler();
-		~DefaultMimeHandler();
-		int Configure();
-		int GetConfigurationGroup() const { return cgCorePlugin; }
+    public:
+        DefaultMimeHandler();
+        ~DefaultMimeHandler();
+        int Configure();
+        int GetConfigurationGroup() const { return cgCorePlugin; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
         bool HandlesEverything() const { return true; }
-		bool CanHandleFile(const wxString& filename) const;
-		int OpenFile(const wxString& filename);
-		void OnAttach(); // fires when the plugin is attached to the application
-		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-	private:
+        bool CanHandleFile(const wxString& filename) const;
+        int OpenFile(const wxString& filename);
+        void OnAttach(); // fires when the plugin is attached to the application
+        void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+    private:
         cbMimeType* FindMimeTypeFor(const wxString& filename);
         wxString ChooseExternalProgram();
-		int DoOpenFile(cbMimeType* mt, const wxString& filename);
+        int DoOpenFile(cbMimeType* mt, const wxString& filename);
         MimeTypesArray m_MimeTypes;
 };
 
