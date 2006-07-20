@@ -266,7 +266,7 @@ void DebuggerState::ApplyBreakpoints()
     }
 
     m_pPlugin->Log(_("Setting breakpoints"));
-	m_pDriver->RemoveBreakpoint(0); // clear all breakpoints
+    m_pDriver->RemoveBreakpoint(0); // clear all breakpoints
 
     i = (int)m_Breakpoints.GetCount() - 1;
     while (i >= 0)
@@ -274,5 +274,5 @@ void DebuggerState::ApplyBreakpoints()
         DebuggerBreakpoint* bp = m_Breakpoints[i];
         m_pDriver->AddBreakpoint(bp);
         --i;
-	}
+    }
 }

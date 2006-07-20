@@ -70,7 +70,7 @@ void DebuggerDriver::NotifyCursorChanged()
         return;
     m_LastCursorAddress = m_Cursor.address;
     wxCommandEvent event(DEBUGGER_CURSOR_CHANGED);
-	m_pDBG->ProcessEvent(event);
+    m_pDBG->ProcessEvent(event);
 }
 
 void DebuggerDriver::ResetCursor()

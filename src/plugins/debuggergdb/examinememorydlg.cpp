@@ -17,11 +17,11 @@ ExamineMemoryDlg::ExamineMemoryDlg(wxWindow* parent, DebuggerGDB* debugger)
     : m_pDbg(debugger),
     m_LastRowStartingAddress(0)
 {
-	//ctor
-	wxXmlResource::Get()->LoadPanel(this, parent, _T("MemoryDumpPanel"));
-	m_pText = XRCCTRL(*this, "txtDump", wxTextCtrl);
+    //ctor
+    wxXmlResource::Get()->LoadPanel(this, parent, _T("MemoryDumpPanel"));
+    m_pText = XRCCTRL(*this, "txtDump", wxTextCtrl);
 
-	wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
     m_pText->SetFont(font);
 
     Clear();
@@ -29,7 +29,7 @@ ExamineMemoryDlg::ExamineMemoryDlg(wxWindow* parent, DebuggerGDB* debugger)
 
 ExamineMemoryDlg::~ExamineMemoryDlg()
 {
-	//dtor
+    //dtor
 }
 
 void ExamineMemoryDlg::Begin()

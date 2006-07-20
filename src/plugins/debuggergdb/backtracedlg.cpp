@@ -28,34 +28,34 @@ END_EVENT_TABLE()
 BacktraceDlg::BacktraceDlg(wxWindow* parent, DebuggerGDB* debugger)
     : m_pDbg(debugger)
 {
-	//ctor
-	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgBacktrace"));
-//	SetWindowStyle(GetWindowStyle() | wxFRAME_FLOAT_ON_PARENT);
+    //ctor
+    wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgBacktrace"));
+//    SetWindowStyle(GetWindowStyle() | wxFRAME_FLOAT_ON_PARENT);
 
     wxListCtrl* lst = XRCCTRL(*this, "lstTrace", wxListCtrl);
 
-	wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
     lst->SetFont(font);
     Clear();
 }
 
 BacktraceDlg::~BacktraceDlg()
 {
-	//dtor
+    //dtor
 }
 
 void BacktraceDlg::Clear()
 {
     wxListCtrl* lst = XRCCTRL(*this, "lstTrace", wxListCtrl);
     lst->ClearAll();
-	lst->Freeze();
-	lst->DeleteAllItems();
+    lst->Freeze();
+    lst->DeleteAllItems();
     lst->InsertColumn(0, _("Nr"), wxLIST_FORMAT_RIGHT);
     lst->InsertColumn(1, _("Address"), wxLIST_FORMAT_LEFT);
     lst->InsertColumn(2, _("Function"), wxLIST_FORMAT_LEFT);
     lst->InsertColumn(3, _("File"), wxLIST_FORMAT_LEFT, 128);
     lst->InsertColumn(4, _("Line"), wxLIST_FORMAT_RIGHT, 64);
-	lst->Thaw();
+    lst->Thaw();
 }
 
 void BacktraceDlg::AddFrame(const StackFrame& frame)
@@ -70,20 +70,20 @@ void BacktraceDlg::AddFrame(const StackFrame& frame)
     if (frame.valid)
         num.Printf(_T("%ld"), frame.number);
 
-	lst->Freeze();
-	lst->InsertItem(lst->GetItemCount(), num);
-	int idx = lst->GetItemCount() - 1;
+    lst->Freeze();
+    lst->InsertItem(lst->GetItemCount(), num);
+    int idx = lst->GetItemCount() - 1;
     lst->SetItem(idx, 1, addr);
     lst->SetItem(idx, 2, frame.valid ? frame.function : _T("??"));
     lst->SetItem(idx, 3, frame.valid ? frame.file : _T("??"));
     lst->SetItem(idx, 4, frame.valid ? frame.line : _T("??"));
-	lst->Thaw();
+    lst->Thaw();
 
     lst->SetColumnWidth(0, 32);
-	for (int i = 1; i < 3; ++i)
-	{
+    for (int i = 1; i < 3; ++i)
+    {
         lst->SetColumnWidth(i, wxLIST_AUTOSIZE);
-	}
+    }
 }
 
 void BacktraceDlg::OnListRightClick(wxListEvent& event)

@@ -48,7 +48,7 @@ BreakpointsDlg::BreakpointsDlg(DebuggerState& state)
             (wxObjectEventFunction) (wxEventFunction) (wxListEventFunction)
             &BreakpointsDlg::OnRightClick);
 
-	FillBreakpoints();
+    FillBreakpoints();
 }
 
 BreakpointsDlg::~BreakpointsDlg()

@@ -103,7 +103,9 @@ void CDB_driver::Start(bool breakOnEntry)
     QueueCommand(new DebuggerCmd(this, _T("l+t"))); // source mode
     QueueCommand(new DebuggerCmd(this, _T("l+s"))); // show source lines
     QueueCommand(new DebuggerCmd(this, _T("l+o"))); // only source lines
-    QueueCommand(new DebuggerCmd(this, _T("g")));
+
+    if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("do_not_run"), false))
+        QueueCommand(new DebuggerCmd(this, _T("g")));
 }
 
 void CDB_driver::Stop()
@@ -213,12 +215,12 @@ void CDB_driver::InfoSignals()
 
 void CDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
 {
-	QueueCommand(new CdbCmd_AddBreakpoint(this, bp));
+    QueueCommand(new CdbCmd_AddBreakpoint(this, bp));
 }
 
 void CDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp)
 {
-	QueueCommand(new CdbCmd_RemoveBreakpoint(this, bp));
+    QueueCommand(new CdbCmd_RemoveBreakpoint(this, bp));
 }
 
 void CDB_driver::EvaluateSymbol(const wxString& symbol, wxTipWindow** tipWin, const wxRect& tipRect)
@@ -255,9 +257,9 @@ void CDB_driver::ParseOutput(const wxString& output)
 {
     m_Cursor.changed = false;
     static wxString buffer;
-	buffer << output << _T('\n');
+    buffer << output << _T('\n');
 
-	m_pDBG->DebugLog(output);
+    m_pDBG->DebugLog(output);
 
     int idx = buffer.First(CDB_PROMPT);
     if (idx != wxNOT_FOUND)

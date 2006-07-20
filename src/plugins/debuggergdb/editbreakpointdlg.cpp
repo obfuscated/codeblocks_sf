@@ -16,7 +16,7 @@ EditBreakpointDlg::EditBreakpointDlg(DebuggerBreakpoint* bp, wxWindow* parent)
     : m_Bp(bp)
 {
     //ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditBreakpoint"));
+    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditBreakpoint"));
 
     XRCCTRL(*this, "chkEnabled", wxCheckBox)->SetValue(bp->enabled);
     XRCCTRL(*this, "chkIgnore", wxCheckBox)->SetValue(bp->useIgnoreCount);

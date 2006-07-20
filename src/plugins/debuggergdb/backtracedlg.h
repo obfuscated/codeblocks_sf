@@ -9,21 +9,21 @@ struct StackFrame;
 
 class BacktraceDlg : public wxPanel
 {
-	public:
-		BacktraceDlg(wxWindow* parent, DebuggerGDB* debugger);
-		virtual ~BacktraceDlg();
+    public:
+        BacktraceDlg(wxWindow* parent, DebuggerGDB* debugger);
+        virtual ~BacktraceDlg();
 
         void Clear();
-		void AddFrame(const StackFrame& frame);
-	protected:
-		void OnListRightClick(wxListEvent& event);
+        void AddFrame(const StackFrame& frame);
+    protected:
+        void OnListRightClick(wxListEvent& event);
         void OnJump(wxCommandEvent& event);
         void OnDblClick(wxListEvent& event);
         void OnSave(wxCommandEvent& event);
         void OnSwitchFrame(wxCommandEvent& event);
 
         DebuggerGDB* m_pDbg;
-	private:
+    private:
         DECLARE_EVENT_TABLE();
 };
 

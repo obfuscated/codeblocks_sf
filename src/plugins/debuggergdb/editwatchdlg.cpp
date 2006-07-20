@@ -10,7 +10,7 @@ EditWatchDlg::EditWatchDlg(Watch* w, wxWindow* parent)
     : m_Watch(_T(""))
 {
     //ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditWatch"));
+    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditWatch"));
 
     if (w)
         m_Watch = *w;

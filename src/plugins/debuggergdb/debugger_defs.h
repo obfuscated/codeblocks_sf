@@ -119,19 +119,19 @@ struct DebuggerBreakpoint
     {}
     wxString filename; ///< The filename for the breakpoint (kept as relative).
     wxString filenameAsPassed; ///< The filename for the breakpoint as passed to the debugger (i.e. full filename).
-	int line; ///< The line for the breakpoint.
-	long int index; ///< The breakpoint number. Set automatically. *Don't* write to it.
-	bool temporary; ///< Is this a temporary (one-shot) breakpoint?
-	bool enabled; ///< Is the breakpoint enabled?
-	bool active; ///< Is the breakpoint active? (currently unused)
-	bool useIgnoreCount; ///< Should this breakpoint be ignored for the first X passes? (@c x == @c ignoreCount)
-	int ignoreCount; ///< The number of passes before this breakpoint should hit. @c useIgnoreCount must be true.
-	bool useCondition; ///< Should this breakpoint hit only if a specific condition is met?
-	wxString condition; ///< The condition that must be met for the breakpoint to hit. @c useCondition must be true.
-	wxString func; ///< The function to set the breakpoint. If this is set, it is preferred over the filename/line combination.
-	unsigned long int address; ///< The actual breakpoint address. This is read back from the debugger. *Don't* write to it.
-	bool alreadySet; ///< Is this already set? Used to mark temporary breakpoints for removal.
-	wxString lineText; ///< Optionally, the breakpoint line's text (used by GDB for setting breapoints on ctors/dtors).
+    int line; ///< The line for the breakpoint.
+    long int index; ///< The breakpoint number. Set automatically. *Don't* write to it.
+    bool temporary; ///< Is this a temporary (one-shot) breakpoint?
+    bool enabled; ///< Is the breakpoint enabled?
+    bool active; ///< Is the breakpoint active? (currently unused)
+    bool useIgnoreCount; ///< Should this breakpoint be ignored for the first X passes? (@c x == @c ignoreCount)
+    int ignoreCount; ///< The number of passes before this breakpoint should hit. @c useIgnoreCount must be true.
+    bool useCondition; ///< Should this breakpoint hit only if a specific condition is met?
+    wxString condition; ///< The condition that must be met for the breakpoint to hit. @c useCondition must be true.
+    wxString func; ///< The function to set the breakpoint. If this is set, it is preferred over the filename/line combination.
+    unsigned long int address; ///< The actual breakpoint address. This is read back from the debugger. *Don't* write to it.
+    bool alreadySet; ///< Is this already set? Used to mark temporary breakpoints for removal.
+    wxString lineText; ///< Optionally, the breakpoint line's text (used by GDB for setting breapoints on ctors/dtors).
 };
 WX_DEFINE_ARRAY(DebuggerBreakpoint*, BreakpointsList);
 

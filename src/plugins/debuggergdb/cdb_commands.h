@@ -134,8 +134,8 @@ class CdbCmd_AttachToProcess : public DebuggerCmd
             // or,
             // Can't attach to process.
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
-    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
-    		{
+            for (unsigned int i = 0; i < lines.GetCount(); ++i)
+            {
                 if (lines[i].StartsWith(_T("Attaching")))
                     m_pDriver->Log(lines[i]);
                 else if (lines[i].StartsWith(_T("Can't ")))
@@ -145,7 +145,7 @@ class CdbCmd_AttachToProcess : public DebuggerCmd
                     m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, _T("quit")));
                 }
 //                m_pDriver->DebugLog(lines[i]);
-    		}
+            }
         }
 };
 
@@ -203,7 +203,7 @@ class CdbCmd_AddBreakpoint : public DebuggerCmd
             // *** ERROR: Symbol file could not be found.  Defaulted to export symbols for C:\WINDOWS\system32\USER32.dll -
             // *** ERROR: Symbol file could not be found.  Defaulted to export symbols for C:\WINDOWS\system32\GDI32.dll -
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
-    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
+            for (unsigned int i = 0; i < lines.GetCount(); ++i)
             {
                 if (lines[i].StartsWith(_T("*** ")))
                     m_pDriver->Log(lines[i]);
@@ -397,24 +397,24 @@ class CdbCmd_Backtrace : public DebuggerCmd
             if (!lines.GetCount() || !lines[0].Contains(_T("ChildEBP")))
                 return;
             // start from line 1
-    		for (unsigned int i = 1; i < lines.GetCount(); ++i)
-    		{
-    		    if (reBT1.Matches(lines[i]))
-    		    {
+            for (unsigned int i = 1; i < lines.GetCount(); ++i)
+            {
+                if (reBT1.Matches(lines[i]))
+                {
                     StackFrame sf;
                     sf.valid = true;
-    		        reBT1.GetMatch(lines[i], 1).ToLong(&sf.number);
-    		        reBT1.GetMatch(lines[i], 2).ToULong(&sf.address, 16); // match 2 or 3 ???
-    		        sf.function = reBT1.GetMatch(lines[i], 4);
-    		        // do we have file/line info?
+                    reBT1.GetMatch(lines[i], 1).ToLong(&sf.number);
+                    reBT1.GetMatch(lines[i], 2).ToULong(&sf.address, 16); // match 2 or 3 ???
+                    sf.function = reBT1.GetMatch(lines[i], 4);
+                    // do we have file/line info?
                     if (reBT2.Matches(lines[i]))
                     {
                         sf.file = reBT2.GetMatch(lines[i], 1) + reBT2.GetMatch(lines[i], 2);
                         sf.line = reBT2.GetMatch(lines[i], 3);
                     }
                     m_pDlg->AddFrame(sf);
-    		    }
-    		}
+                }
+            }
 //            m_pDriver->DebugLog(output);
         }
 };
@@ -448,8 +448,8 @@ class CdbCmd_InfoRegisters : public DebuggerCmd
             while (tmp.Replace(_T("\n"), _T(" ")))
                 ;
             wxArrayString lines = GetArrayFromString(tmp, _T(' '));
-    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
-    		{
+            for (unsigned int i = 0; i < lines.GetCount(); ++i)
+            {
                 wxString reg = lines[i].BeforeFirst(_T('='));
                 wxString addr = lines[i].AfterFirst(_T('='));
                 if (!reg.IsEmpty() && !addr.IsEmpty())
@@ -458,7 +458,7 @@ class CdbCmd_InfoRegisters : public DebuggerCmd
                     addr.ToLong(&addrL, 16);
                     m_pDlg->SetRegisterValue(reg, addrL);
                 }
-    		}
+            }
 //            m_pDlg->Show(true);
 //            m_pDriver->DebugLog(output);
         }
@@ -490,15 +490,15 @@ class CdbCmd_Disassembly : public DebuggerCmd
                 return;
 
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
-    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
-    		{
+            for (unsigned int i = 0; i < lines.GetCount(); ++i)
+            {
                 if (reDisassembly.Matches(lines[i]))
                 {
                     long int addr;
                     reDisassembly.GetMatch(lines[i], 1).ToLong(&addr, 16);
                     m_pDlg->AddAssemblerLine(addr, reDisassembly.GetMatch(lines[i], 2));
                 }
-    		}
+            }
 //            m_pDlg->Show(true);
 //            m_pDriver->DebugLog(output);
         }
@@ -526,8 +526,8 @@ class CdbCmd_DisassemblyInit : public DebuggerCmd
 
             long int offset = 0;
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
-    		for (unsigned int i = 0; i < lines.GetCount(); ++i)
-    		{
+            for (unsigned int i = 0; i < lines.GetCount(); ++i)
+            {
                 if (lines[i].Contains(_T("ChildEBP")))
                 {
                     if (reDisassemblyFile.Matches(lines[i + 1]))
@@ -562,7 +562,7 @@ class CdbCmd_DisassemblyInit : public DebuggerCmd
                         m_pDlg->SetActiveAddress(start + offset);
                     }
                 }
-    		}
+            }
         }
 };
 wxString CdbCmd_DisassemblyInit::LastAddr;

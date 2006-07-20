@@ -143,11 +143,11 @@ class DebuggerDriver
         /** Request to switch to another thread. */
         virtual void SwitchThread(size_t threadIndex) = 0;
 
-		void QueueCommand(DebuggerCmd* dcmd, QueuePriority prio = Low); ///< add a command in the queue. The DebuggerCmd will be deleted automatically when finished.
-		DebuggerCmd* CurrentCommand(); ///< returns the currently executing command
-		void RunQueue(); ///< runs the next command in the queue, if it is idle
-		void RemoveTopCommand(bool deleteIt = true); ///< removes the top command (it has finished)
-		void ClearQueue(); ///< clears the queue
+        void QueueCommand(DebuggerCmd* dcmd, QueuePriority prio = Low); ///< add a command in the queue. The DebuggerCmd will be deleted automatically when finished.
+        DebuggerCmd* CurrentCommand(); ///< returns the currently executing command
+        void RunQueue(); ///< runs the next command in the queue, if it is idle
+        void RemoveTopCommand(bool deleteIt = true); ///< removes the top command (it has finished)
+        void ClearQueue(); ///< clears the queue
     protected:
         /** Called by implementations to reset the cursor. */
         virtual void ResetCursor();
@@ -176,9 +176,9 @@ class DebuggerDriver
         ExamineMemoryDlg* m_pExamineMemory;
         ThreadsDlg* m_pThreads;
 
-		// commands
-		DebuggerCommands m_DCmds;
-		bool m_QueueBusy;
+        // commands
+        DebuggerCommands m_DCmds;
+        bool m_QueueBusy;
     private:
 };
 

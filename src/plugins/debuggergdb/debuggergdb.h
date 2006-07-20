@@ -34,107 +34,107 @@ class ThreadsDlg;
 class DebuggerGDB : public cbDebuggerPlugin
 {
         DebuggerState m_State;
-	public:
-		DebuggerGDB();
-		~DebuggerGDB();
-		int Configure();
-		int GetConfigurationPriority() const { return 0; }
-		int GetConfigurationGroup() const { return cgDebugger; }
+    public:
+        DebuggerGDB();
+        ~DebuggerGDB();
+        int Configure();
+        int GetConfigurationPriority() const { return 0; }
+        int GetConfigurationGroup() const { return cgDebugger; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
-		void BuildMenu(wxMenuBar* menuBar);
-		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
-		bool BuildToolBar(wxToolBar* toolBar);
-		void OnAttach(); // fires when the plugin is attached to the application
-		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+        void BuildMenu(wxMenuBar* menuBar);
+        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
+        bool BuildToolBar(wxToolBar* toolBar);
+        void OnAttach(); // fires when the plugin is attached to the application
+        void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 
-		void RunCommand(int cmd);
-		void Disassemble();
-		void Registers();
-		void Backtrace();
-		void MemoryDump();
-		void RunningThreads();
+        void RunCommand(int cmd);
+        void Disassemble();
+        void Registers();
+        void Backtrace();
+        void MemoryDump();
+        void RunningThreads();
 
-		bool AddBreakpoint(const wxString& file, int line);
-		bool AddBreakpoint(const wxString& functionSignature);
-		bool RemoveBreakpoint(const wxString& file, int line);
-		bool RemoveBreakpoint(const wxString& functionSignature);
-		bool RemoveAllBreakpoints(const wxString& file = wxEmptyString);
+        bool AddBreakpoint(const wxString& file, int line);
+        bool AddBreakpoint(const wxString& functionSignature);
+        bool RemoveBreakpoint(const wxString& file, int line);
+        bool RemoveBreakpoint(const wxString& functionSignature);
+        bool RemoveAllBreakpoints(const wxString& file = wxEmptyString);
 
-		void EditorLinesAddedOrRemoved(cbEditor* editor, int startline, int lines);
+        void EditorLinesAddedOrRemoved(cbEditor* editor, int startline, int lines);
 
-		int Debug();
-		void Continue();
-		void Next();
-		void NextInstr();
-		void Step();
-		void StepOut();
-		void RunToCursor();
-		void ToggleBreakpoint();
-		void Stop();
-		bool Validate(const wxString& line, const char cb);
-		bool IsRunning() const { return m_pProcess; }
-		int GetExitCode() const { return m_LastExitCode; }
+        int Debug();
+        void Continue();
+        void Next();
+        void NextInstr();
+        void Step();
+        void StepOut();
+        void RunToCursor();
+        void ToggleBreakpoint();
+        void Stop();
+        bool Validate(const wxString& line, const char cb);
+        bool IsRunning() const { return m_pProcess; }
+        int GetExitCode() const { return m_LastExitCode; }
 
-		void SyncEditor(const wxString& filename, int line, bool setMarker = true);
+        void SyncEditor(const wxString& filename, int line, bool setMarker = true);
 
-		void Log(const wxString& msg);
-		void DebugLog(const wxString& msg);
-		void SendCommand(const wxString& cmd);
+        void Log(const wxString& msg);
+        void DebugLog(const wxString& msg);
+        void SendCommand(const wxString& cmd);
 
-		DebuggerState& GetState(){ return m_State; }
+        DebuggerState& GetState(){ return m_State; }
 
-		void BringAppToFront();
-		void RefreshConfiguration();
+        void BringAppToFront();
+        void RefreshConfiguration();
 
         static void ConvertToGDBFriendly(wxString& str);
         static void ConvertToGDBFile(wxString& str);
         static void ConvertToGDBDirectory(wxString& str, wxString base = _T(""), bool relative = true);
         static void StripQuotes(wxString& str);
-	protected:
+    protected:
         void AddSourceDir(const wxString& dir);
-	private:
+    private:
         void DoSwitchLayout(const wxString& config_key);
-		void ParseOutput(const wxString& output);
-		void ClearActiveMarkFromAllEditors();
-		void DoWatches();
+        void ParseOutput(const wxString& output);
+        void ClearActiveMarkFromAllEditors();
+        void DoWatches();
         wxString GetEditorWordAtCaret();
         wxString FindDebuggerExecutable(Compiler* compiler);
         int LaunchProcess(const wxString& cmd, const wxString& cwd);
         wxString GetDebuggee(ProjectBuildTarget* target);
         bool IsStopped();
 
-		void OnUpdateUI(wxUpdateUIEvent& event);
-		void OnDebug(wxCommandEvent& event);
-		void OnStop(wxCommandEvent& event);
-		void OnSendCommandToGDB(wxCommandEvent& event);
-		void OnAddSymbolFile(wxCommandEvent& event);
-		void OnBacktrace(wxCommandEvent& event);
-		void OnDisassemble(wxCommandEvent& event);
-		void OnRegisters(wxCommandEvent& event);
-		void OnViewWatches(wxCommandEvent& event);
-		void OnBreakpoints(wxCommandEvent& event);
-		void OnEditWatches(wxCommandEvent& event);
-		void OnContinue(wxCommandEvent& event);
-		void OnNext(wxCommandEvent& event);
-		void OnNextInstr(wxCommandEvent& event);
-		void OnStep(wxCommandEvent& event);
-		void OnStepOut(wxCommandEvent& event);
-		void OnToggleBreakpoint(wxCommandEvent& event);
-		void OnRunToCursor(wxCommandEvent& event);
-		void OnBreakpointAdd(CodeBlocksEvent& event);
-		void OnBreakpointEdit(CodeBlocksEvent& event);
-		void OnBreakpointDelete(CodeBlocksEvent& event);
-		void OnValueTooltip(CodeBlocksEvent& event);
-		void OnEditorOpened(CodeBlocksEvent& event);
-		void OnProjectActivated(CodeBlocksEvent& event);
-		void OnProjectClosed(CodeBlocksEvent& event);
+        void OnUpdateUI(wxUpdateUIEvent& event);
+        void OnDebug(wxCommandEvent& event);
+        void OnStop(wxCommandEvent& event);
+        void OnSendCommandToGDB(wxCommandEvent& event);
+        void OnAddSymbolFile(wxCommandEvent& event);
+        void OnBacktrace(wxCommandEvent& event);
+        void OnDisassemble(wxCommandEvent& event);
+        void OnRegisters(wxCommandEvent& event);
+        void OnViewWatches(wxCommandEvent& event);
+        void OnBreakpoints(wxCommandEvent& event);
+        void OnEditWatches(wxCommandEvent& event);
+        void OnContinue(wxCommandEvent& event);
+        void OnNext(wxCommandEvent& event);
+        void OnNextInstr(wxCommandEvent& event);
+        void OnStep(wxCommandEvent& event);
+        void OnStepOut(wxCommandEvent& event);
+        void OnToggleBreakpoint(wxCommandEvent& event);
+        void OnRunToCursor(wxCommandEvent& event);
+        void OnBreakpointAdd(CodeBlocksEvent& event);
+        void OnBreakpointEdit(CodeBlocksEvent& event);
+        void OnBreakpointDelete(CodeBlocksEvent& event);
+        void OnValueTooltip(CodeBlocksEvent& event);
+        void OnEditorOpened(CodeBlocksEvent& event);
+        void OnProjectActivated(CodeBlocksEvent& event);
+        void OnProjectClosed(CodeBlocksEvent& event);
         void OnGDBOutput(wxCommandEvent& event);
         void OnGDBError(wxCommandEvent& event);
         void OnGDBTerminated(wxCommandEvent& event);
         void OnIdle(wxIdleEvent& event);
-		void OnTimer(wxTimerEvent& event);
-		void OnWatchesChanged(wxCommandEvent& event);
-		void OnCursorChanged(wxCommandEvent& event);
+        void OnTimer(wxTimerEvent& event);
+        void OnWatchesChanged(wxCommandEvent& event);
+        void OnCursorChanged(wxCommandEvent& event);
         void OnAddWatch(wxCommandEvent& event);
         void OnAttachToProcess(wxCommandEvent& event);
         void OnDetach(wxCommandEvent& event);
@@ -151,45 +151,45 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnInfoFPU(wxCommandEvent& event);
         void OnInfoSignals(wxCommandEvent& event);
 
-		wxMenu* m_pMenu;
+        wxMenu* m_pMenu;
         SimpleTextLog* m_pLog;
         SimpleTextLog* m_pDbgLog;
-		PipedProcess* m_pProcess;
-		wxToolBar* m_pTbar;
+        PipedProcess* m_pProcess;
+        wxToolBar* m_pTbar;
         int m_PageIndex;
         int m_DbgPageIndex;
-		wxRegEx reSource;
-		wxString m_LastCmd;
-		wxString m_Variable;
-		cbCompilerPlugin* m_pCompiler;
-		bool m_LastExitCode;
-		int m_Pid;
-		int m_PidToAttach; // for "attach to process"
-		wxTipWindow* m_EvalWin;
-		wxString m_LastEval;
-		wxRect m_EvalRect;
-		wxTimer m_TimerPollDebugger;
-		bool m_NoDebugInfo;
-		bool m_BreakOnEntry;
-		int m_HaltAtLine;
-		bool m_HasDebugLog;
-		bool m_StoppedOnSignal;
+        wxRegEx reSource;
+        wxString m_LastCmd;
+        wxString m_Variable;
+        cbCompilerPlugin* m_pCompiler;
+        bool m_LastExitCode;
+        int m_Pid;
+        int m_PidToAttach; // for "attach to process"
+        wxTipWindow* m_EvalWin;
+        wxString m_LastEval;
+        wxRect m_EvalRect;
+        wxTimer m_TimerPollDebugger;
+        bool m_NoDebugInfo;
+        bool m_BreakOnEntry;
+        int m_HaltAtLine;
+        bool m_HasDebugLog;
+        bool m_StoppedOnSignal;
 
-		// current frame info
-		StackFrame m_CurrentFrame;
+        // current frame info
+        StackFrame m_CurrentFrame;
 
-		// extra dialogs
-		DebuggerTree* m_pTree;
-		DisassemblyDlg* m_pDisassembly;
-		CPURegistersDlg* m_pCPURegisters;
-		BacktraceDlg* m_pBacktrace;
+        // extra dialogs
+        DebuggerTree* m_pTree;
+        DisassemblyDlg* m_pDisassembly;
+        CPURegistersDlg* m_pCPURegisters;
+        BacktraceDlg* m_pBacktrace;
         BreakpointsDlg* m_pBreakpointsWindow;
         ExamineMemoryDlg* m_pExamineMemoryDlg;
         ThreadsDlg* m_pThreadsDlg;
 
         cbProject* m_pProject; // keep the currently debugged project handy
 
-		DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 CB_DECLARE_PLUGIN();

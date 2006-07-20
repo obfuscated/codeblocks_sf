@@ -17,46 +17,46 @@ END_EVENT_TABLE()
 ThreadsDlg::ThreadsDlg(wxWindow* parent, DebuggerGDB* debugger)
     : m_pDbg(debugger)
 {
-	//ctor
-	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgThreads"));
-//	SetWindowStyle(GetWindowStyle() | wxFRAME_FLOAT_ON_PARENT);
+    //ctor
+    wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgThreads"));
+//    SetWindowStyle(GetWindowStyle() | wxFRAME_FLOAT_ON_PARENT);
 
     wxListCtrl* lst = XRCCTRL(*this, "lstThreads", wxListCtrl);
 
-	wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
     lst->SetFont(font);
     Clear();
 }
 
 ThreadsDlg::~ThreadsDlg()
 {
-	//dtor
+    //dtor
 }
 
 void ThreadsDlg::Clear()
 {
     wxListCtrl* lst = XRCCTRL(*this, "lstThreads", wxListCtrl);
     lst->ClearAll();
-	lst->Freeze();
-	lst->DeleteAllItems();
+    lst->Freeze();
+    lst->DeleteAllItems();
     lst->InsertColumn(0, _("Active"), wxLIST_FORMAT_LEFT, 64);
     lst->InsertColumn(1, _("Number"), wxLIST_FORMAT_RIGHT, 64);
     lst->InsertColumn(2, _("Info"), wxLIST_FORMAT_LEFT);
-	lst->Thaw();
+    lst->Thaw();
 }
 
 void ThreadsDlg::AddThread(const wxString& active_mark, const wxString& thread_num, const wxString& thread_info)
 {
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("Add: mark=%s, num=%s, info=%s"), active_mark.c_str(), thread_num.c_str(), thread_info.c_str());
     wxListCtrl* lst = XRCCTRL(*this, "lstThreads", wxListCtrl);
-	lst->Freeze();
-	lst->InsertItem(lst->GetItemCount(), active_mark);
-	int idx = lst->GetItemCount() - 1;
+    lst->Freeze();
+    lst->InsertItem(lst->GetItemCount(), active_mark);
+    int idx = lst->GetItemCount() - 1;
     lst->SetItem(idx, 1, thread_num);
     lst->SetItem(idx, 2, thread_info);
 
     lst->SetColumnWidth(2, wxLIST_AUTOSIZE);
-	lst->Thaw();
+    lst->Thaw();
 }
 
 void ThreadsDlg::OnListRightClick(wxListEvent& event)

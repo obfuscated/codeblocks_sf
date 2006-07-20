@@ -31,63 +31,63 @@ int idChangeValue = wxNewId();
 
 #ifndef __WXMSW__
 /*
-	Under wxGTK, I have noticed that wxTreeCtrl is not sending a EVT_COMMAND_RIGHT_CLICK
-	event when right-clicking on the client area.
-	This is a "proxy" wxTreeCtrl descendant that handles this for us...
+    Under wxGTK, I have noticed that wxTreeCtrl is not sending a EVT_COMMAND_RIGHT_CLICK
+    event when right-clicking on the client area.
+    This is a "proxy" wxTreeCtrl descendant that handles this for us...
 */
 class WatchTree : public wxTreeCtrl
 {
-	public:
-		WatchTree(wxWindow* parent, int id)
+    public:
+        WatchTree(wxWindow* parent, int id)
             : wxTreeCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT)
         {}
-	protected:
-		void OnRightClick(wxMouseEvent& event)
-		{
-		    //Manager::Get()->GetMessageManager()->DebugLog("OnRightClick");
-		    int flags;
-		    HitTest(wxPoint(event.GetX(), event.GetY()), flags);
-		    if (flags & (wxTREE_HITTEST_ABOVE | wxTREE_HITTEST_BELOW | wxTREE_HITTEST_NOWHERE))
-		    {
-		    	// "proxy" the call
-			    wxCommandEvent e(wxEVT_COMMAND_RIGHT_CLICK, idTree);
-				wxPostEvent(GetParent(), e);
-			}
-			else
-		    	event.Skip();
-		}
-		DECLARE_EVENT_TABLE();
+    protected:
+        void OnRightClick(wxMouseEvent& event)
+        {
+            //Manager::Get()->GetMessageManager()->DebugLog("OnRightClick");
+            int flags;
+            HitTest(wxPoint(event.GetX(), event.GetY()), flags);
+            if (flags & (wxTREE_HITTEST_ABOVE | wxTREE_HITTEST_BELOW | wxTREE_HITTEST_NOWHERE))
+            {
+                // "proxy" the call
+                wxCommandEvent e(wxEVT_COMMAND_RIGHT_CLICK, idTree);
+                wxPostEvent(GetParent(), e);
+            }
+            else
+                event.Skip();
+        }
+        DECLARE_EVENT_TABLE();
 };
 
 BEGIN_EVENT_TABLE(WatchTree, wxTreeCtrl)
-	EVT_RIGHT_DOWN(WatchTree::OnRightClick)
+    EVT_RIGHT_DOWN(WatchTree::OnRightClick)
 END_EVENT_TABLE()
 #endif // !__WXMSW__
 
 BEGIN_EVENT_TABLE(DebuggerTree, wxPanel)
     EVT_TREE_ITEM_RIGHT_CLICK(idTree, DebuggerTree::OnTreeRightClick)
     EVT_COMMAND_RIGHT_CLICK(idTree, DebuggerTree::OnRightClick)
-	EVT_MENU(idAddWatch, DebuggerTree::OnAddWatch)
-	EVT_MENU(idLoadWatchFile, DebuggerTree::OnLoadWatchFile)
-	EVT_MENU(idSaveWatchFile, DebuggerTree::OnSaveWatchFile)
-	EVT_MENU(idEditWatch, DebuggerTree::OnEditWatch)
-	EVT_MENU(idDeleteWatch, DebuggerTree::OnDeleteWatch)
-	EVT_MENU(idDeleteAllWatches, DebuggerTree::OnDeleteAllWatches)
-	EVT_MENU(idDereferenceValue, DebuggerTree::OnDereferencePointer)
-	EVT_MENU(idWatchThis, DebuggerTree::OnWatchThis)
-	EVT_MENU(idChangeValue, DebuggerTree::OnChangeValue)
+    EVT_MENU(idAddWatch, DebuggerTree::OnAddWatch)
+    EVT_MENU(idLoadWatchFile, DebuggerTree::OnLoadWatchFile)
+    EVT_MENU(idSaveWatchFile, DebuggerTree::OnSaveWatchFile)
+    EVT_MENU(idEditWatch, DebuggerTree::OnEditWatch)
+    EVT_MENU(idDeleteWatch, DebuggerTree::OnDeleteWatch)
+    EVT_MENU(idDeleteAllWatches, DebuggerTree::OnDeleteAllWatches)
+    EVT_MENU(idDereferenceValue, DebuggerTree::OnDereferencePointer)
+    EVT_MENU(idWatchThis, DebuggerTree::OnWatchThis)
+    EVT_MENU(idChangeValue, DebuggerTree::OnChangeValue)
 END_EVENT_TABLE()
 
 DebuggerTree::DebuggerTree(wxWindow* parent, DebuggerGDB* debugger)
     : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN),
-	m_pDebugger(debugger),
-	m_InUpdateBlock(false)
+    m_pDebugger(debugger),
+    m_InUpdateBlock(false)
 {
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
 #ifndef __WXMSW__
-	m_pTree = new WatchTree(this, idTree);
+    m_pTree = new WatchTree(this, idTree);
 #else
-	m_pTree = new wxTreeCtrl(this, idTree, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT);
+    m_pTree = new wxTreeCtrl(this, idTree, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT);
 #endif
     bs->Add(m_pTree, 1, wxEXPAND | wxALL);
     SetAutoLayout(TRUE);
@@ -99,8 +99,8 @@ DebuggerTree::DebuggerTree(wxWindow* parent, DebuggerGDB* debugger)
 
 DebuggerTree::~DebuggerTree()
 {
-	//dtor
-//	m_pParent->RemovePage(m_PageIndex);
+    //dtor
+//    m_pParent->RemovePage(m_PageIndex);
 }
 
 void DebuggerTree::BeginUpdateTree()
@@ -113,13 +113,13 @@ void DebuggerTree::BeginUpdateTree()
 
 //    if (m_pTree->IsExpanded(m_pTree->GetRootItem()))
 //        ::SaveTreeState(m_pTree, m_pTree->GetRootItem(), m_TreeState);
-//	m_pTree->Freeze();
+//    m_pTree->Freeze();
 
-//	m_pTree->DeleteAllItems();
+//    m_pTree->DeleteAllItems();
     if (!m_pTree->GetRootItem())
         m_pTree->AddRoot(_("Watches"));
     MarkAllNodes(m_pTree->GetRootItem(), false);
-	m_InUpdateBlock = true;
+    m_InUpdateBlock = true;
 }
 
 void DebuggerTree::BuildTree(Watch* watch, const wxString& infoText, WatchStringFormat fmt)
@@ -357,67 +357,67 @@ void DebuggerTree::ParseEntry(Watch* watch, wxTreeItemId& parent, wxString& text
     if (text.IsEmpty())
         return;
 //    Manager::Get()->GetMessageManager()->DebugLog("DebuggerTree::ParseEntry(): Parsing '%s' (itemId=%p)", text.c_str(), &parent);
-	while (1)
-	{
-		// trim the string from left and right
-		text.Trim(true);
-		text.Trim(false);
+    while (1)
+    {
+        // trim the string from left and right
+        text.Trim(true);
+        text.Trim(false);
 
-		// find position of '{', '}' and ',' ***outside*** of any quotes.
-		// decide which is nearer to the start
-		int braceOpenPos = FindCharOutsideQuotes(text, _T('{'));
-		if (braceOpenPos == -1)	braceOpenPos = 0xFFFFFE;
-		int braceClosePos = FindCharOutsideQuotes(text, _T('}'));
-		if (braceClosePos == -1) braceClosePos = 0xFFFFFE;
+        // find position of '{', '}' and ',' ***outside*** of any quotes.
+        // decide which is nearer to the start
+        int braceOpenPos = FindCharOutsideQuotes(text, _T('{'));
+        if (braceOpenPos == -1)    braceOpenPos = 0xFFFFFE;
+        int braceClosePos = FindCharOutsideQuotes(text, _T('}'));
+        if (braceClosePos == -1) braceClosePos = 0xFFFFFE;
         int commaPos = FindCommaPos(text);
-		if (commaPos == -1) commaPos = 0xFFFFFE;
-		int pos = MIN(commaPos, MIN(braceOpenPos, braceClosePos));
+        if (commaPos == -1) commaPos = 0xFFFFFE;
+        int pos = MIN(commaPos, MIN(braceOpenPos, braceClosePos));
 
-		if (pos == 0xFFFFFE)
-		{
-			if (text.Right(3).Matches(_T(" = ")))
-				text.Truncate(text.Length() - 3);
-			if (!text.IsEmpty())
-			{
-			    AddItem(parent, text, watch);
-				text.Clear();
+        if (pos == 0xFFFFFE)
+        {
+            if (text.Right(3).Matches(_T(" = ")))
+                text.Truncate(text.Length() - 3);
+            if (!text.IsEmpty())
+            {
+                AddItem(parent, text, watch);
+                text.Clear();
             }
-			break;
-		}
-		else
-		{
-			wxTreeItemId newParent = parent;
-			wxString tmp = text.Left(pos);
-			bool newlyAdded = false;
+            break;
+        }
+        else
+        {
+            wxTreeItemId newParent = parent;
+            wxString tmp = text.Left(pos);
+            bool newlyAdded = false;
 
-			if (tmp.Right(3).Matches(_T(" = ")))
-				tmp.Truncate(tmp.Length() - 3); // remove " = " if last in string
-			if (!tmp.IsEmpty())
+            if (tmp.Right(3).Matches(_T(" = ")))
+                tmp.Truncate(tmp.Length() - 3); // remove " = " if last in string
+            if (!tmp.IsEmpty())
                 newParent = AddItem(parent, tmp, watch, &newlyAdded); // add entry
-			text.Remove(0, pos + 1);
+            text.Remove(0, pos + 1);
 
-			if (pos == braceOpenPos)
-			{
-				ParseEntry(watch, newParent, text); // proceed one level deeper
-				if (newlyAdded)
+            if (pos == braceOpenPos)
+            {
+                ParseEntry(watch, newParent, text); // proceed one level deeper
+                if (newlyAdded)
                     m_pTree->Expand(newParent);
-			}
-			else if (pos == braceClosePos)
-				break; // return one level up
-		}
-	}
+            }
+            else if (pos == braceClosePos)
+                break; // return one level up
+        }
+    }
 #undef MIN
 }
 
 void DebuggerTree::BuildTreeGDB(Watch* watch, const wxString& infoText)
 {
 //    Manager::Get()->GetMessageManager()->DebugLog("DebuggerTree::BuildTree(): Parsing '%s'", infoText.c_str());
-	wxString buffer = infoText;
-	// remove CRLFs (except if inside quotes)
-	int len = buffer.Length();
-	bool inQuotes = false;
-	for (int i = 0; i < len; ++i)
-	{
+    wxString buffer = infoText;
+    // remove CRLFs (except if inside quotes)
+    int len = buffer.Length();
+    bool inQuotes = false;
+    for (int i = 0; i < len; ++i)
+    {
         if (buffer.GetChar(i) == _T('"') && (i == 0 || (i > 0 && buffer.GetChar(i - 1) != _T('\\'))))
             inQuotes = !inQuotes;
         if (!inQuotes)
@@ -427,9 +427,9 @@ void DebuggerTree::BuildTreeGDB(Watch* watch, const wxString& infoText)
             else if (buffer.GetChar(i) == _T('\n'))
                 buffer.SetChar(i, _T(','));
         }
-	}
-	wxTreeItemId id = m_pTree->GetRootItem();
-	ParseEntry(watch, id, buffer);
+    }
+    wxTreeItemId id = m_pTree->GetRootItem();
+    ParseEntry(watch, id, buffer);
 }
 
 void DebuggerTree::BuildTreeCDB(Watch* watch, const wxString& infoText)
@@ -474,8 +474,8 @@ void DebuggerTree::BuildTreeCDB(Watch* watch, const wxString& infoText)
 
 void DebuggerTree::ClearWatches()
 {
-	m_Watches.Clear();
-	NotifyForChangedWatches();
+    m_Watches.Clear();
+    NotifyForChangedWatches();
 }
 
 int SortWatchesByName(Watch** first, Watch** second)
@@ -487,28 +487,28 @@ void DebuggerTree::AddWatch(const wxString& watch, WatchFormat format, bool noti
 {
     if (FindWatchIndex(watch, format) != wxNOT_FOUND)
         return; // already there
-	m_Watches.Add(Watch(watch, format));
-	m_Watches.Sort(SortWatchesByName);
+    m_Watches.Add(Watch(watch, format));
+    m_Watches.Sort(SortWatchesByName);
 
-	if (notify)
+    if (notify)
         NotifyForChangedWatches();
 }
 
 void DebuggerTree::SetWatches(const WatchesArray& watches)
 {
-	m_Watches = watches;
-	NotifyForChangedWatches();
+    m_Watches = watches;
+    NotifyForChangedWatches();
 }
 
 void DebuggerTree::NotifyForChangedWatches()
 {
-	wxCommandEvent event(cbCustom_WATCHES_CHANGED);
-	wxPostEvent(m_pDebugger, event);
+    wxCommandEvent event(cbCustom_WATCHES_CHANGED);
+    wxPostEvent(m_pDebugger, event);
 }
 
 const WatchesArray& DebuggerTree::GetWatches()
 {
-	return m_Watches;
+    return m_Watches;
 }
 
 void DebuggerTree::DeleteWatch(Watch* watch, bool notify)
@@ -531,7 +531,7 @@ void DebuggerTree::DeleteAllWatches()
 {
     m_pTree->DeleteAllItems();
     m_Watches.Clear();
-	NotifyForChangedWatches();
+    NotifyForChangedWatches();
 }
 
 Watch* DebuggerTree::FindWatch(const wxString& watch, WatchFormat format)
@@ -558,7 +558,7 @@ int DebuggerTree::FindWatchIndex(const wxString& watch, WatchFormat format)
 
 void DebuggerTree::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 {
-	wxString caption;
+    wxString caption;
     wxMenu menu(wxEmptyString);
 
     // if we right-clicked on a pointer, add a "dereference pointer" entry
@@ -569,34 +569,34 @@ void DebuggerTree::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         menu.AppendSeparator();
     }
 
-	// add watch always visible
-	menu.Append(idAddWatch, _("&Add watch"));
-	menu.Append(idWatchThis, _("Watch '*&this'"));
+    // add watch always visible
+    menu.Append(idAddWatch, _("&Add watch"));
+    menu.Append(idWatchThis, _("Watch '*&this'"));
 
-	// we have to have a valid id for the following to be enabled
+    // we have to have a valid id for the following to be enabled
     WatchTreeData* data = dynamic_cast<WatchTreeData*>(m_pTree->GetItemData(id));
     if (id.IsOk() && // valid item
         data && data->m_pWatch) // *is* a watch
     {
         menu.Append(idEditWatch, _("&Edit watch"));
         menu.Append(idDeleteWatch, _("&Delete watch"));
-	}
+    }
     menu.AppendSeparator();
     menu.Append(idChangeValue, _("&Change value..."));
     menu.AppendSeparator();
-	menu.Append(idLoadWatchFile, _("&Load watch file"));
-	menu.Append(idSaveWatchFile, _("&Save watch file"));
+    menu.Append(idLoadWatchFile, _("&Load watch file"));
+    menu.Append(idSaveWatchFile, _("&Save watch file"));
     menu.AppendSeparator();
     menu.Append(idDeleteAllWatches, _("Delete all watches"));
 
-	PopupMenu(&menu, pt);
+    PopupMenu(&menu, pt);
 }
 
 // events
 
 void DebuggerTree::OnTreeRightClick(wxTreeEvent& event)
 {
-	m_pTree->SelectItem(event.GetItem());
+    m_pTree->SelectItem(event.GetItem());
     ShowMenu(event.GetItem(), event.GetPoint());
 }
 

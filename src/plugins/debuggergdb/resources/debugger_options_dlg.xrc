@@ -107,8 +107,48 @@
               <tooltip>If enabled, the other open projects' paths will be added in the debugger's search list</tooltip>
             </object>
           </object>
+          <object class="sizeritem">
+            <object class="wxCheckBox" name="chkDoNotRun">
+              <label>Do *not* run the debugee</label>
+            </object>
+          </object>
         </object>
-        <option>1</option>
+        <flag>wxLEFT|wxTOP|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticBoxSizer">
+          <label>Choose disassembly flavor (GDB only):</label>
+          <orient>wxVERTICAL</orient>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              <object class="sizeritem">
+                <object class="wxChoice" name="choDisassemblyFlavor">
+                  <content>
+                    <item>System default</item>
+                    <item>AT&amp;T</item>
+                    <item>Intel</item>
+                    <item>Custom (specify instruction-set:)</item>
+                  </content>
+                </object>
+                <flag>wxALIGN_CENTRE_VERTICAL</flag>
+              </object>
+              <object class="spacer">
+                <size>5,0</size>
+              </object>
+              <object class="sizeritem">
+                <object class="wxTextCtrl" name="txtInstructionSet">
+                  <style></style>
+                </object>
+                <option>1</option>
+                <flag>wxGROW</flag>
+              </object>
+            </object>
+            <flag>wxALL|wxGROW</flag>
+            <border>4</border>
+          </object>
+        </object>
         <flag>wxLEFT|wxTOP|wxGROW</flag>
         <border>8</border>
       </object>

@@ -139,13 +139,13 @@ void GDB_driver::Prepare(bool isConsole)
     // default initialization
 
     // make sure we 're using the prompt that we know and trust ;)
-	QueueCommand(new DebuggerCmd(this, wxString(_T("set prompt ")) + FULL_GDB_PROMPT));
+    QueueCommand(new DebuggerCmd(this, wxString(_T("set prompt ")) + FULL_GDB_PROMPT));
 
     // debugger version
-	QueueCommand(new DebuggerCmd(this, _T("show version")));
+    QueueCommand(new DebuggerCmd(this, _T("show version")));
     // no confirmation
-	QueueCommand(new DebuggerCmd(this, _T("set confirm off")));
-	// no wrapping lines
+    QueueCommand(new DebuggerCmd(this, _T("set confirm off")));
+    // no wrapping lines
     QueueCommand(new DebuggerCmd(this, _T("set width 0")));
     // no pagination
     QueueCommand(new DebuggerCmd(this, _T("set height 0")));
@@ -155,13 +155,45 @@ void GDB_driver::Prepare(bool isConsole)
     QueueCommand(new DebuggerCmd(this, _T("set print asm-demangle on")));
     // unwind stack on signal
     QueueCommand(new DebuggerCmd(this, _T("set unwindonsignal on")));
+
+    int disassembly_flavour = Manager::Get()->GetConfigManager(_T("debugger"))
+                              ->ReadInt(_T("disassembly_flavor"), 0);
+
+//    Manager::Get()->GetMessageManager()->Log(_("Flavor is: %d"), disassembly_flavour);
+
+    wxString flavour = _T("set disassembly-flavor ");
+    switch (disassembly_flavour)
+    {
+        case 1: // AT & T
+        {
+            flavour << _T("att");
+            break;
+        }
+        case 2: // Intel
+        {
+            flavour << _T("intel");
+            break;
+        }
+        case 3: // Custom
+        {
+            wxString instruction_set = Manager::Get()->GetConfigManager(_T("debugger"))
+                                       ->Read(_T("instruction_set"), wxEmptyString);
+            flavour << instruction_set;
+            break;
+        }
+        default: // including case 0: // System default
 #ifndef __WXMSW__
-    QueueCommand(new DebuggerCmd(this, _T("set disassembly-flavor att")));
+            flavour << _T("att");
 #else
-	if (isConsole)
-        QueueCommand(new DebuggerCmd(this, _T("set new-console on")));
-    QueueCommand(new DebuggerCmd(this, _T("set disassembly-flavor intel")));
+            flavour << _T("intel");
 #endif
+    }// switch
+
+#ifdef __WXMSW__
+    if (isConsole)
+        QueueCommand(new DebuggerCmd(this, _T("set new-console on")));
+#endif
+    QueueCommand(new DebuggerCmd(this, flavour));
 
     // define all scripted types
     m_Types.Clear();
@@ -201,13 +233,17 @@ void GDB_driver::Start(bool breakOnEntry)
 #ifdef __WXMSW__
     m_BreakOnEntry = false;
     m_ManualBreakOnEntry = false;
-    // start the process
-    QueueCommand(new DebuggerCmd(this, _T("run")));
+
+    if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("do_not_run"), false))
+        // start the process
+        QueueCommand(new DebuggerCmd(this, _T("run")));
 #else
     m_BreakOnEntry = breakOnEntry;
     m_ManualBreakOnEntry = true;
-    // start the process
-    QueueCommand(new DebuggerCmd(this, _T("start")));
+
+    if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("do_not_run"), false))
+        // start the process
+        QueueCommand(new DebuggerCmd(this, _T("start")));
 #endif
 }
 
@@ -347,12 +383,12 @@ void GDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
     }
     //end GDB workaround
 
-	QueueCommand(new GdbCmd_AddBreakpoint(this, bp));
+    QueueCommand(new GdbCmd_AddBreakpoint(this, bp));
 }
 
 void GDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp)
 {
-	QueueCommand(new GdbCmd_RemoveBreakpoint(this, bp));
+    QueueCommand(new GdbCmd_RemoveBreakpoint(this, bp));
 }
 
 void GDB_driver::EvaluateSymbol(const wxString& symbol, wxTipWindow** tipWin, const wxRect& tipRect)
@@ -397,9 +433,9 @@ void GDB_driver::ParseOutput(const wxString& output)
         return;
     }
     static wxString buffer;
-	buffer << output << _T('\n');
+    buffer << output << _T('\n');
 
-	m_pDBG->DebugLog(output);
+    m_pDBG->DebugLog(output);
 
     int idx = buffer.First(GDB_PROMPT);
     if (idx != wxNOT_FOUND)
@@ -512,17 +548,17 @@ void GDB_driver::ParseOutput(const wxString& output)
         {
             // breakpoint, e.g.
             // C:/Devel/tmp/test_console_dbg/tmp/main.cpp:14:171:beg:0x401428
-			if ( reBreak.Matches(lines[i]) )
-			{
-			    if (m_ManualBreakOnEntry)
-			    {
-			        m_ManualBreakOnEntry = false;
-			        QueueCommand(new GdbCmd_InfoProgram(this), DebuggerDriver::High);
-			        if (!m_BreakOnEntry)
+            if ( reBreak.Matches(lines[i]) )
+            {
+                if (m_ManualBreakOnEntry)
+                {
+                    m_ManualBreakOnEntry = false;
+                    QueueCommand(new GdbCmd_InfoProgram(this), DebuggerDriver::High);
+                    if (!m_BreakOnEntry)
                         Continue();
-			    }
-			    else
-			    {
+                }
+                else
+                {
                 #ifdef __WXMSW__
                     m_Cursor.file = reBreak.GetMatch(lines[i], 1) + reBreak.GetMatch(lines[i], 2);
                     wxString lineStr = reBreak.GetMatch(lines[i], 3);
@@ -535,48 +571,48 @@ void GDB_driver::ParseOutput(const wxString& output)
                     lineStr.ToLong(&m_Cursor.line);
                     m_Cursor.changed = true;
                     needsUpdate = true;
-			    }
-			}
+                }
+            }
         }
         else
         {
             // other break info, e.g.
             // 0x7c9507a8 in ntdll!KiIntSystemCall () from C:\WINDOWS\system32\ntdll.dll
             wxRegEx* re = 0;
-			if ( reBreak2.Matches(lines[i]) )
+            if ( reBreak2.Matches(lines[i]) )
                 re = &reBreak2;
             else if (reThreadSwitch.Matches(lines[i]))
                 re = &reThreadSwitch;
 
-			if ( re )
-			{
-				m_Cursor.file = re->GetMatch(lines[i], 3);
-				m_Cursor.function = re->GetMatch(lines[i], 2);
-				wxString lineStr = _T("");
-				m_Cursor.address = re->GetMatch(lines[i], 1);
-				m_Cursor.line = -1;
+            if ( re )
+            {
+                m_Cursor.file = re->GetMatch(lines[i], 3);
+                m_Cursor.function = re->GetMatch(lines[i], 2);
+                wxString lineStr = _T("");
+                m_Cursor.address = re->GetMatch(lines[i], 1);
+                m_Cursor.line = -1;
                 m_Cursor.changed = true;
                 needsUpdate = true;
-			}
-			else if ( reThreadSwitch2.Matches(lines[i]) )
-			{
-				m_Cursor.file = reThreadSwitch2.GetMatch(lines[i], 3);
-				m_Cursor.function = reThreadSwitch2.GetMatch(lines[i], 2);
-				wxString lineStr = reThreadSwitch2.GetMatch(lines[i], 4);
-				m_Cursor.address = reThreadSwitch2.GetMatch(lines[i], 1);
-				m_Cursor.line = -1;
+            }
+            else if ( reThreadSwitch2.Matches(lines[i]) )
+            {
+                m_Cursor.file = reThreadSwitch2.GetMatch(lines[i], 3);
+                m_Cursor.function = reThreadSwitch2.GetMatch(lines[i], 2);
+                wxString lineStr = reThreadSwitch2.GetMatch(lines[i], 4);
+                m_Cursor.address = reThreadSwitch2.GetMatch(lines[i], 1);
+                m_Cursor.line = -1;
                 m_Cursor.changed = true;
                 needsUpdate = true;
-			}
-			else if (reBreak3.Matches(lines[i]) )
-			{
-			    m_Cursor.file=_T("");
-			    m_Cursor.function= reBreak3.GetMatch(lines[i], 2);
+            }
+            else if (reBreak3.Matches(lines[i]) )
+            {
+                m_Cursor.file=_T("");
+                m_Cursor.function= reBreak3.GetMatch(lines[i], 2);
                            m_Cursor.address = reBreak3.GetMatch(lines[i], 1);
                            m_Cursor.line = -1;
                            m_Cursor.changed = true;
                            needsUpdate = true;
-			}
+            }
         }
     }
     buffer.Clear();
