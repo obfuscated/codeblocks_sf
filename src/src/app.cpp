@@ -479,7 +479,9 @@ int CodeBlocksApp::OnRun()
 {
     try
     {
-        return wxApp::OnRun();
+        int retval = wxApp::OnRun();
+        // wx 2.6.3 docs says that OnRun() function's return value is used as exit code
+        return m_Batch ? m_BatchExitCode : retval;
     }
     catch (cbException& exception)
     {
