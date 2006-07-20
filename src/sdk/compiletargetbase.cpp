@@ -40,8 +40,10 @@ CompileTargetBase::CompileTargetBase()
     : m_TargetType(ttExecutable)
 {
 	//ctor
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < static_cast<int>(ortLast); ++i)
+    {
         m_OptionsRelation[i] = orAppendToParentOptions;
+    }
 
     // default "make" commands
     m_MakeCommands[mcBuild] =       _T("$make -f $makefile $target");

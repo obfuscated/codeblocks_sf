@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <!DOCTYPE CodeBlocks_project_file>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="1"/>
@@ -19,7 +19,6 @@
 				<Option type="0"/>
 				<Option compiler="0"/>
 				<Option includeInTargetAll="0"/>
-				<Option projectResourceIncludeDirsRelation="0"/>
 				<Compiler>
 					<Add option="-O2"/>
 					<Add option="-fexceptions"/>

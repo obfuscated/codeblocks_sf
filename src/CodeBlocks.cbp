@@ -14,7 +14,6 @@
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Linker>
 					<Add option="-s" />
 				</Linker>
@@ -29,7 +28,6 @@
 				<Option projectCompilerOptionsRelation="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-Os" />
 				</Compiler>
@@ -41,7 +39,6 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-DEXPORT_LIB" />
 				</Compiler>
@@ -53,7 +50,6 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-fno-inline" />
 					<Add directory="sdk\scripting\include" />
@@ -68,7 +64,6 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-fno-inline" />
 					<Add directory="sdk\scripting\include" />
@@ -82,7 +77,6 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-fno-inline" />
 					<Add directory="sdk\scripting\include" />
@@ -97,7 +91,6 @@
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option createStaticLib="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-D__WX__" />
 					<Add option="-DWINVER=0x0400" />
@@ -123,7 +116,6 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 			</Target>
 			<Target title="wxFlatNotebook">
 				<Option output="sdk\wxFlatNotebook\libwxflatnotebook.a" />
@@ -132,7 +124,6 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add directory="sdk\wxFlatNotebook" />
 				</Compiler>
@@ -148,7 +139,6 @@
 				<Option includeInTargetAll="1" />
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-DEXPORT_LIB" />
 					<Add option="-DEXPORT_EVENTS" />
@@ -185,7 +175,6 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-D__GNUWIN32__" />
 					<Add option="-DWIN32" />
@@ -204,7 +193,6 @@
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Option projectIncludeDirsRelation="2" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
@@ -246,7 +234,6 @@
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="sdk" />
@@ -268,7 +255,6 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-DDEPSLIB_WINDOWS" />
 				</Compiler>
@@ -283,7 +269,6 @@
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
@@ -312,7 +297,6 @@
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
@@ -338,7 +322,6 @@
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
@@ -362,7 +345,6 @@
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
@@ -386,7 +368,6 @@
 				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
@@ -407,7 +388,6 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-include sdk.h" />
 					<Add option="-DBUILDING_PLUGIN" />
@@ -430,7 +410,6 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="sdk" />
@@ -450,7 +429,6 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="sdk" />
@@ -471,7 +449,6 @@
 				<Option compiler="gcc" />
 				<Option includeInTargetAll="1" />
 				<Option projectIncludeDirsRelation="2" />
-				<Option projectResourceIncludeDirsRelation="0" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />

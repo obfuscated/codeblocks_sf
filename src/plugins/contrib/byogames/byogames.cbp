@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="4" />
 	<Project>
@@ -11,7 +11,6 @@
 				<Option compiler="gcc" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Option includeInTargetAll="1" />
-				<Option projectResourceIncludeDirsRelation="0" />
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
