@@ -282,13 +282,14 @@ void HelpConfigDialog::OnCheckbox(wxCommandEvent &event)
 void HelpConfigDialog::UpdateUI(wxUpdateUIEvent &event)
 {
   int sel = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
+  int count = XRCCTRL(*this, "lstHelp", wxListBox)->GetCount();
   XRCCTRL(*this, "btnRename", wxButton)->Enable(sel != -1);
   XRCCTRL(*this, "btnDelete", wxButton)->Enable(sel != -1);
   XRCCTRL(*this, "btnBrowse", wxButton)->Enable(sel != -1);
   XRCCTRL(*this, "txtHelp", wxTextCtrl)->Enable(sel != -1);
   XRCCTRL(*this, "chkDefault", wxCheckBox)->Enable(sel != -1);
-
-  if (sel == -1)
+  
+  if (sel == -1 || count == 1)
   {
   	XRCCTRL(*this, "btnUp", wxButton)->Disable();
   	XRCCTRL(*this, "btnDown", wxButton)->Disable();
@@ -298,7 +299,7 @@ void HelpConfigDialog::UpdateUI(wxUpdateUIEvent &event)
   	XRCCTRL(*this, "btnUp", wxButton)->Disable();
   	XRCCTRL(*this, "btnDown", wxButton)->Enable();
   }
-  else if (sel == XRCCTRL(*this, "lstHelp", wxListBox)->GetCount() - 1)
+  else if (sel == count - 1)
   {
   	XRCCTRL(*this, "btnUp", wxButton)->Enable();
   	XRCCTRL(*this, "btnDown", wxButton)->Disable();
