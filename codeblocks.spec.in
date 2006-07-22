@@ -1,4 +1,4 @@
-%define _svnrev     @VERSION@
+%define _svnrev		%(echo @VERSION@ | cut -c 8-)
 %define req_wxgtk	2.6.0
 %define _fedora		%(if [ -f /etc/fedora-release ]; then echo 1; else echo 0; fi)
 %define _suse           %(if [ -f /etc/SuSE-release ]; then echo 1; else echo 0; fi)
@@ -47,7 +47,7 @@ Group:			Development/Tools/IDE
 License:		GPL
 URL:			http://www.codeblocks.org/
 Packager:		Daniel Orb <danielorb2000@googlemail.com>
-Source:			%{name}-%{version}.tgz
+Source:			%{name}-@VERSION@.tar.gz
 BuildRoot:		%{_tmppath}/%{name}-%{version}-buildroot
 Provides:		codeblocks
 
@@ -95,7 +95,7 @@ Code::Blocks SDK to develop your own plugins.
 
 %prep
 
-%setup -n codeblocks
+%setup -n codeblocks-@VERSION@
 
 %{?suse_update_libdir:%{suse_update_libdir}}
 %{?suse_update_config:%{suse_update_config -f}}
@@ -194,6 +194,8 @@ fi
 %{_includedir}/%{name}/*
 
 %changelog
+* Sat Jul 22 2006 Daniel Orb <danielorb2000@googlemail.com>
+- adapted versioning to autotools
 * Fri Jul 14 2006 Daniel Orb <danielorb2000@googlemail.com>
 - added man pages to filelist
 * Tue Jul 11 2006 Yiannis Mandravellos <mandrav@codeblocks.org>
