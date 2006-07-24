@@ -91,7 +91,7 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
     }
     catch (SquirrelError e)
     {
-        cbMessageBox(wxString::Format(_T("Filename: %s\nError: %s"), debugName.c_str(), cbC2U(e.desc).c_str(), s_ScriptErrors.c_str()), _("Script compile error"), wxICON_ERROR);
+        cbMessageBox(wxString::Format(_T("Filename: %s\nError: %s\nDetails: %s"), debugName.c_str(), cbC2U(e.desc).c_str(), s_ScriptErrors.c_str()), _("Script compile error"), wxICON_ERROR);
         return false;
     }
 
