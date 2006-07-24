@@ -27,7 +27,6 @@ class HelpPlugin : public cbPlugin
 
   protected:
     void OnFindItem(wxCommandEvent &event);
-    void OnHelp(wxCommandEvent &event);
     void AddToPopupMenu(wxMenu *menu, int id, const wxString &help);
     void AddToHelpMenu(int id, const wxString &help);
     void RemoveFromHelpMenu(int id, const wxString &help);

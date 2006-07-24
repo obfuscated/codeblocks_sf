@@ -57,7 +57,6 @@
 #define MAX_HELP_ITEMS 32
 
 int idHelpMenus[MAX_HELP_ITEMS];
-int idPopupMenus[MAX_HELP_ITEMS];
 
 CB_IMPLEMENT_PLUGIN(HelpPlugin, "Help plugin");
 
@@ -191,13 +190,9 @@ HelpPlugin::HelpPlugin()
   for (int i = 0; i < MAX_HELP_ITEMS; ++i)
   {
     idHelpMenus[i] = wxNewId();
-    idPopupMenus[i] = wxNewId();
 
     // dynamically connect the events
     Connect(idHelpMenus[i], -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &HelpPlugin::OnHelp);
-    Connect(idPopupMenus[i], -1, wxEVT_COMMAND_MENU_SELECTED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &HelpPlugin::OnFindItem);
   }
@@ -305,7 +300,7 @@ void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const File
 
     for (it = m_Vector.begin(); it != m_Vector.end(); ++it)
     {
-      AddToPopupMenu(sub_menu, idPopupMenus[counter++], it->first);
+      AddToPopupMenu(sub_menu, idHelpMenus[counter++], it->first);
     }
 
     wxMenuItem *locate_in_menu = new wxMenuItem(0, wxID_ANY, _("&Locate in"), _(""), wxITEM_NORMAL);
@@ -391,7 +386,7 @@ wxString HelpPlugin::HelpFileFromId(int id)
 
   for (it = m_Vector.begin(); it != m_Vector.end(); ++it, ++counter)
   {
-    if (idHelpMenus[counter] == id || idPopupMenus[counter] == id)
+    if (idHelpMenus[counter] == id)
     {
       return it->second;
     }
@@ -449,14 +444,6 @@ void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
 
   wxExecute(filetype->GetOpenCommand(helpfile));
   delete filetype;
-}
-
-// events
-void HelpPlugin::OnHelp(wxCommandEvent &event)
-{
-  int id = event.GetId();
-  wxString help = HelpFileFromId(id);
-  LaunchHelp(help);
 }
 
 void HelpPlugin::OnFindItem(wxCommandEvent &event)
