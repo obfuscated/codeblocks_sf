@@ -1,17 +1,10 @@
 #ifndef CBWORKSPACE_H
 #define CBWORKSPACE_H
 
-#include <wx/wxprec.h>
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
-
 #include <wx/string.h>
 #include <wx/filename.h>
 
 #include "globals.h"
-#include "settings.h"
 
 /**
   * @brief A workspace class.
@@ -109,13 +102,13 @@ class cbWorkspace
           * false, the workspace will be marked as unmodified.
           */
 		virtual void SetModified(bool modified);
-	protected:
+	private:
         bool m_IsOK; // succeeded loading?
         bool m_IsDefault; // is this the Code::Blocks default workspace?
         bool m_Modified; // is it modified?
         wxFileName m_Filename; // filename
         wxString m_Title; // title
-	private:
+
         void Load(); // utility function
 };
 

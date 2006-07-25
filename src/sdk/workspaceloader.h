@@ -3,18 +3,14 @@
 
 #include "ibaseworkspaceloader.h"
 
-class cbProject;
-
 class WorkspaceLoader : public IBaseWorkspaceLoader
 {
 	public:
 		WorkspaceLoader();
 		virtual ~WorkspaceLoader();
 
-        bool Open(const wxString& filename);
+        bool Open(const wxString& filename, wxString& Title);
         bool Save(const wxString& title, const wxString& filename);
-	protected:
-	private:
 };
 
 #endif // WORKSPACELOADER_H

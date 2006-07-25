@@ -10,7 +10,7 @@ class MSVCWorkspaceLoader : public IBaseWorkspaceLoader, public MSVCWorkspaceBas
 		MSVCWorkspaceLoader();
 		virtual ~MSVCWorkspaceLoader();
 
-        bool Open(const wxString& filename);
+        bool Open(const wxString& filename, wxString& Title);
         bool Save(const wxString& title, const wxString& filename);
 };
 

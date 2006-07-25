@@ -2029,7 +2029,7 @@ void MainFrame::OnFileCloseAllProjects(wxCommandEvent& event)
         wxBell();
         return;
     }
-    Manager::Get()->GetProjectManager()->CloseWorkspace();
+    DoCloseCurrentWorkspace();
     DoUpdateStatusBar();
 }
 
@@ -2083,7 +2083,7 @@ void MainFrame::OnFileSaveWorkspaceAs(wxCommandEvent& event)
 
 void MainFrame::OnFileCloseWorkspace(wxCommandEvent& event)
 {
-    Manager::Get()->GetProjectManager()->CloseWorkspace();
+    DoCloseCurrentWorkspace();
 }
 
 void MainFrame::OnFileClose(wxCommandEvent& WXUNUSED(event))

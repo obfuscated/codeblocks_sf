@@ -254,7 +254,7 @@ MainFrame* CodeBlocksApp::InitFrame()
     if (ParseCmdLine(frame) == 0)
     {
         if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == false)
-            Manager::Get()->GetProjectManager()->LoadWorkspace(DEFAULT_WORKSPACE);
+            Manager::Get()->GetProjectManager()->LoadWorkspace();
     }
 
     if (!m_Batch)

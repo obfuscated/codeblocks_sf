@@ -42,7 +42,7 @@
 #include <wx/filedlg.h>
 #include "filefilters.h"
 
-cbWorkspace::cbWorkspace(const wxString& filename)
+cbWorkspace::cbWorkspace(const wxString& filename) : m_Title(_("Default workspace"))
 {
 	//ctor
     if (filename.Matches(DEFAULT_WORKSPACE))
@@ -61,6 +61,8 @@ cbWorkspace::cbWorkspace(const wxString& filename)
         m_Filename = filename;
         m_IsDefault = false;
     }
+    m_IsOK = false;
+    m_Modified = false;
     Load();
 }
 
@@ -83,10 +85,10 @@ void cbWorkspace::Load()
             wxString msg;
             msg.Printf(_("Workspace '%s' does not exist..."), fname.c_str());
             cbMessageBox(msg, _("Error"), wxOK | wxCENTRE | wxICON_ERROR);
+            // workspace wasn't loaded succesfully
+            m_IsOK = false;
+            return;
 		}
-		// workspace wasn't loaded succesfully
-		m_IsOK = false;
-		return;
 	}
 
 	bool modified = false;
@@ -98,14 +100,17 @@ void cbWorkspace::Load()
         case ftMSVC7Workspace: pWsp = new MSVC7WorkspaceLoader; modified = true; break;
         default: break;
     }
-	m_IsOK = pWsp && (pWsp->Open(fname) || m_IsDefault);
-	m_Title = pWsp ? pWsp->GetTitle() : wxString(wxEmptyString);
+    wxString Title;
+    m_IsOK = pWsp && (pWsp->Open(fname, Title) || m_IsDefault);
+    if(!Title.IsEmpty())
+    {
+        m_Title = Title;
+    }
 
     m_Filename.SetExt(FileFilters::WORKSPACE_EXT);
     SetModified(modified);
 
-    if (pWsp)
-        delete pWsp;
+    delete pWsp;
 }
 
 bool cbWorkspace::Save(bool force)

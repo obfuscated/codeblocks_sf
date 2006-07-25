@@ -17,6 +17,7 @@
     #include <wx/fileconf.h>
     #include <wx/intl.h>
     #include <wx/log.h>
+    #include <wx/string.h>
 
     #include "manager.h"
     #include "projectmanager.h"
@@ -43,7 +44,7 @@ WorkspaceLoader::~WorkspaceLoader()
 inline ProjectManager* GetpMan() { return Manager::Get()->GetProjectManager(); }
 inline MessageManager* GetpMsg() { return Manager::Get()->GetMessageManager(); }
 
-bool WorkspaceLoader::Open(const wxString& filename)
+bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
 {
     TiXmlDocument doc(filename.mb_str());
     if (!doc.LoadFile())
@@ -63,13 +64,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
     // (constructors, destructors and static functions excempted from this)
     // This way, we'll use the *manager::Get() functions to check for nulls.
 
-    TiXmlElement* root;
-    TiXmlElement* wksp;
-    TiXmlElement* proj;
-    wxString projectFilename;
-    wxFileName wfname(filename);
-
-    root = doc.FirstChildElement("CodeBlocks_workspace_file");
+    TiXmlElement* root = doc.FirstChildElement("CodeBlocks_workspace_file");
     if (!root)
     {
         // old tag
@@ -80,18 +75,16 @@ bool WorkspaceLoader::Open(const wxString& filename)
             return false;
         }
     }
-    wksp = root->FirstChildElement("Workspace");
+    TiXmlElement* wksp = root->FirstChildElement("Workspace");
     if (!wksp)
     {
         GetpMsg()->DebugLog(_T("No 'Workspace' element in file..."));
         return false;
     }
 
-    m_Title = cbC2U(wksp->Attribute("title")); // Conversion to unicode is automatic (see wxString::operator= )
-    if (m_Title.IsEmpty())
-        m_Title = _("Default workspace");
+    Title = cbC2U(wksp->Attribute("title")); // Conversion to unicode is automatic (see wxString::operator= )
 
-    proj = wksp->FirstChildElement("Project");
+    TiXmlElement* proj = wksp->FirstChildElement("Project");
     if (!proj)
     {
         GetpMsg()->DebugLog(_T("Workspace file contains no projects..."));
@@ -103,7 +96,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
     {
         if(Manager::isappShuttingDown() || !GetpMan() || !GetpMsg())
             return false;
-        projectFilename = UnixFilename(cbC2U(proj->Attribute("filename")));
+        wxString projectFilename = UnixFilename(cbC2U(proj->Attribute("filename")));
         if (projectFilename.IsEmpty())
         {
             GetpMsg()->DebugLog(_T("'Project' node exists, but no filename?!?"));
@@ -111,6 +104,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
         else
         {
             wxFileName fname(projectFilename);
+            wxFileName wfname(filename);
             fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
             int active = 0;
             int ret = proj->QueryIntAttribute("active", &active);
@@ -149,7 +143,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
     while (proj)
     {
         cbProject* thisprj = 0;
-        projectFilename = UnixFilename(cbC2U(proj->Attribute("filename")));
+        wxString projectFilename = UnixFilename(cbC2U(proj->Attribute("filename")));
         if (projectFilename.IsEmpty())
         {
             GetpMsg()->DebugLog(_T("'Project' node exists, but no filename?!?"));
@@ -158,6 +152,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
         else
         {
             wxFileName fname(projectFilename);
+            wxFileName wfname(filename);
             fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
             thisprj = Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath());
         }
@@ -168,6 +163,7 @@ bool WorkspaceLoader::Open(const wxString& filename)
             while (dep)
             {
                 wxFileName fname(UnixFilename(cbC2U(dep->Attribute("filename"))));
+                wxFileName wfname(filename);
                 fname.MakeAbsolute(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
                 cbProject* depprj = Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath());
                 if (depprj)

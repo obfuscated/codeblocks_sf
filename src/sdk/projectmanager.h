@@ -159,15 +159,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           */
         bool QueryCloseProject(cbProject *proj,bool dontsavefiles=false);
 
-        /** Asks user to save the workspace, projects and files
-          * (Yes/No/cancel). If user pressed Yes, it saves accordingly.
-          * @return False if the user pressed cancel; true otherwise.
-          * After this function is called and returns true, it
-          * is safe to close the workspace, all files and projects
-          * without asking the user later.
-          */
-        bool QueryCloseWorkspace();
-
         /** Move a project up in the project manager tree. This effectively
           * re-orders the projects build order.
           * @param project The project to move up.
@@ -363,6 +354,15 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
     private:
 		ProjectManager();
 		~ProjectManager();
+
+        /** Asks user to save the workspace, projects and files
+          * (Yes/No/cancel). If user pressed Yes, it saves accordingly.
+          * @return False if the user pressed cancel; true otherwise.
+          * After this function is called and returns true, it
+          * is safe to close the workspace, all files and projects
+          * without asking the user later.
+          */
+        bool QueryCloseWorkspace();
 
 		void InitPane();
 		void BuildTree();

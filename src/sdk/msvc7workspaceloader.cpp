@@ -13,6 +13,8 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/string.h>
+    #include <wx/intl.h>
     #include <wx/txtstrm.h>
     #include <wx/dynarray.h>
     #include <wx/filename.h>
@@ -43,7 +45,7 @@ MSVC7WorkspaceLoader::~MSVC7WorkspaceLoader()
 	//dtor
 }
 
-bool MSVC7WorkspaceLoader::Open(const wxString& filename)
+bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
 {
     bool askForCompiler = false;
     bool askForTargets = false;
@@ -105,7 +107,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename)
         line = comps.GetCount() > 1 ? comps[1] : wxString(wxEmptyString);
         line.Trim(true);
         line.Trim(false);
-        _version = line.AfterLast(' '); // want the version number
+        wxString _version = line.AfterLast(' '); // want the version number
         if ((_version != _T("7.00")) && (_version != _T("8.00")))
             Manager::Get()->GetMessageManager()->DebugLog(_T("Version not recognized. Will try to parse though..."));
     }
@@ -233,11 +235,11 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename)
     updateProjects();
     ImportersGlobals::ResetDefaults();
 
-    m_Title = wxFileName(filename).GetName() + _(" workspace");
+    Title = wxFileName(filename).GetName() + _(" workspace");
     return count != 0;
 }
 
-bool MSVC7WorkspaceLoader::Save(const wxString& title, const wxString& filename)
+bool MSVC7WorkspaceLoader::Save(const wxString& /*title*/, const wxString& /*filename*/)
 {
     // no support for saving solution files (.sln) yet
     return false;
