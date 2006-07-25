@@ -145,7 +145,9 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
                                 choices);
         dlg.SetSelection(0);
         PlaceWindow(&dlg);
-        if (dlg.ShowModal() == wxID_OK)
+        int answer = dlg.ShowModal();
+
+        if (answer == wxID_OK)
         {
             wxString ext = the_file.GetExt().Lower();
             wxString wild = ext.IsEmpty()
@@ -179,6 +181,10 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
                 }
                 default: break;
             }
+        }
+        else if (answer == wxID_CANCEL)
+        {
+            return 0; // Cancel is interpreted as success, too
         }
         else
         {
