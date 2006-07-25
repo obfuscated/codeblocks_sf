@@ -7,7 +7,7 @@
  **************************************************************/
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma implementation "wiz.h"
+    #pragma implementation "wiz.h"
 #endif
 
 #include "wiz.h"
@@ -53,23 +53,23 @@ Wiz::Wiz()
     m_pWizCompilerPanel(0),
     m_pWizBuildTargetPanel(0)
 {
-	//ctor
-	m_PluginInfo.name = _T("ScriptedWizard");
-	m_PluginInfo.title = _("Scripted wizard");
-	m_PluginInfo.version = _T("0.9");
-	m_PluginInfo.description = _("A generic scripted wizard");
-	m_PluginInfo.author = _T("Yiannis Mandravellos");
-	m_PluginInfo.authorEmail = _T("mandrav@codeblocks.org");
-	m_PluginInfo.authorWebsite = _T("http://www.codeblocks.org");
-	m_PluginInfo.thanksTo = _("");
-	m_PluginInfo.license = LICENSE_GPL;
+    //ctor
+    m_PluginInfo.name = _T("ScriptedWizard");
+    m_PluginInfo.title = _("Scripted wizard");
+    m_PluginInfo.version = _T("0.9");
+    m_PluginInfo.description = _("A generic scripted wizard");
+    m_PluginInfo.author = _T("Yiannis Mandravellos");
+    m_PluginInfo.authorEmail = _T("mandrav@codeblocks.org");
+    m_PluginInfo.authorWebsite = _T("http://www.codeblocks.org");
+    m_PluginInfo.thanksTo = _("");
+    m_PluginInfo.license = LICENSE_GPL;
 
-	m_TemplatePath = ConfigManager::GetDataFolder() + _T("/templates/wizard/");
+    m_TemplatePath = ConfigManager::GetDataFolder() + _T("/templates/wizard/");
 }
 
 Wiz::~Wiz()
 {
-	//dtor
+    //dtor
 }
 
 void Wiz::OnAttach()
@@ -108,51 +108,51 @@ int Wiz::GetCount() const
 
 TemplateOutputType Wiz::GetOutputType(int index) const
 {
-	//return this wizard's output type
-	//make sure you set this!
-	cbAssert(index >= 0 && index < GetCount());
-	return m_Wizards[index].output_type;
+    //return this wizard's output type
+    //make sure you set this!
+    cbAssert(index >= 0 && index < GetCount());
+    return m_Wizards[index].output_type;
 }
 
 wxString Wiz::GetTitle(int index) const
 {
-	//return this wizard's title
-	//this will appear in the new-project dialog
-	//make sure you set this!
-	cbAssert(index >= 0 && index < GetCount());
-	return m_Wizards[index].title;
+    //return this wizard's title
+    //this will appear in the new-project dialog
+    //make sure you set this!
+    cbAssert(index >= 0 && index < GetCount());
+    return m_Wizards[index].title;
 }
 
 wxString Wiz::GetDescription(int index) const
 {
-	//return this wizard's description
-	//make sure you set this!
-	cbAssert(index >= 0 && index < GetCount());
-	return m_PluginInfo.description;
+    //return this wizard's description
+    //make sure you set this!
+    cbAssert(index >= 0 && index < GetCount());
+    return m_PluginInfo.description;
 }
 
 wxString Wiz::GetCategory(int index) const
 {
-	//return this wizard's category
-	//try to match an existing category
-	//make sure you change this!
-	cbAssert(index >= 0 && index < GetCount());
-	return m_Wizards[index].cat;
+    //return this wizard's category
+    //try to match an existing category
+    //make sure you change this!
+    cbAssert(index >= 0 && index < GetCount());
+    return m_Wizards[index].cat;
 }
 
 const wxBitmap& Wiz::GetBitmap(int index) const
 {
-	//return this wizard's bitmap
-	//this will appear in the new-project dialog
-	cbAssert(index >= 0 && index < GetCount());
-	return m_Wizards[index].templatePNG;
+    //return this wizard's bitmap
+    //this will appear in the new-project dialog
+    cbAssert(index >= 0 && index < GetCount());
+    return m_Wizards[index].templatePNG;
 }
 
 wxString Wiz::GetScriptFilename(int index) const
 {
-	//return this wizard's script filename
-	cbAssert(index >= 0 && index < GetCount());
-	return m_Wizards[index].script;
+    //return this wizard's script filename
+    cbAssert(index >= 0 && index < GetCount());
+    return m_Wizards[index].script;
 }
 
 void Wiz::Clear()
@@ -168,40 +168,40 @@ void Wiz::Clear()
         wxXmlResource::Get()->Unload(m_LastXRC);
 #endif
 
-	m_pWizProjectPathPanel = 0;
-	m_pWizCompilerPanel = 0;
-	m_pWizBuildTargetPanel = 0;
-	m_pWizFilePathPanel = 0;
+    m_pWizProjectPathPanel = 0;
+    m_pWizCompilerPanel = 0;
+    m_pWizBuildTargetPanel = 0;
+    m_pWizFilePathPanel = 0;
 }
 
 CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
 {
     // TODO: pFilename is not used
 
-	cbAssert(index >= 0 && index < GetCount());
+    cbAssert(index >= 0 && index < GetCount());
 
-	// early check: build target wizards need an active project
-	if (m_Wizards[index].output_type == totTarget &&
+    // early check: build target wizards need an active project
+    if (m_Wizards[index].output_type == totTarget &&
         !Manager::Get()->GetProjectManager()->GetActiveProject())
     {
         cbMessageBox(_("You need to open (or create) a project first!"), _("Error"), wxICON_ERROR);
         return 0;
     }
 
-	m_LaunchIndex = index;
+    m_LaunchIndex = index;
 
     wxString script = m_TemplatePath + m_Wizards[index].script;
     wxString commons = m_TemplatePath + _T("common_functions.script");
 
-	m_LastXRC = m_TemplatePath + m_Wizards[index].xrc;
-	if (wxFileExists(m_LastXRC))
+    m_LastXRC = m_TemplatePath + m_Wizards[index].xrc;
+    if (wxFileExists(m_LastXRC))
         wxXmlResource::Get()->Load(m_LastXRC);
     else
         m_LastXRC.Clear();
 
-	// create wizard
+    // create wizard
     m_pWizard = new wxWizard;
-	m_pWizard->Create(Manager::Get()->GetAppWindow(), wxID_ANY,
+    m_pWizard->Create(Manager::Get()->GetAppWindow(), wxID_ANY,
                     m_Wizards[index].title,
                     m_Wizards[index].wizardPNG,
                     wxDefaultPosition,
@@ -456,29 +456,29 @@ CompileTargetBase* Wiz::RunTargetWizard(wxString* pFilename)
         return 0;
     }
 
-	// check the compiler Id
-	wxString CompilerId = GetTargetCompilerID();
-	if(CompilerId == wxEmptyString)
-	{	// no compiler had been specified
-		// fall back 1 : the poject one
-		CompilerId = theproject->GetCompilerID();
-		if(CompilerId == wxEmptyString)
-		{	// even the project does not have one
-			// fall back 2 : CB default
-			CompilerId = CompilerFactory::GetDefaultCompilerID();
-			cbMessageBox(	_("No compiler had been specified. The new target will use the default compiler."),
-				_("Fallback compiler selected"),
-				wxOK | wxICON_INFORMATION,
-				Manager::Get()->GetAppWindow());
-		}
-		else
-		{
-			cbMessageBox(	_("No compiler had been specified. The new target will use the same compiler as the project."),
-				_("Fallback compiler selected"),
-				wxOK | wxICON_INFORMATION,
-				Manager::Get()->GetAppWindow());
-		}
-	}
+    // check the compiler Id
+    wxString CompilerId = GetTargetCompilerID();
+    if(CompilerId == wxEmptyString)
+    {    // no compiler had been specified
+        // fall back 1 : the poject one
+        CompilerId = theproject->GetCompilerID();
+        if(CompilerId == wxEmptyString)
+        {    // even the project does not have one
+            // fall back 2 : CB default
+            CompilerId = CompilerFactory::GetDefaultCompilerID();
+            cbMessageBox(    _("No compiler had been specified. The new target will use the default compiler."),
+                _("Fallback compiler selected"),
+                wxOK | wxICON_INFORMATION,
+                Manager::Get()->GetAppWindow());
+        }
+        else
+        {
+            cbMessageBox(    _("No compiler had been specified. The new target will use the same compiler as the project."),
+                _("Fallback compiler selected"),
+                wxOK | wxICON_INFORMATION,
+                Manager::Get()->GetAppWindow());
+        }
+    }
     // setup the target
     target->SetCompilerID(CompilerId);
     target->SetIncludeInTargetAll(false);

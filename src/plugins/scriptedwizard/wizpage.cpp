@@ -226,8 +226,7 @@ void WizInfoPanel::OnPageChanging(wxWizardEvent& event)
 
 WizFilePathPanel::WizFilePathPanel(bool showHeaderGuard, wxWizard* parent, const wxBitmap& bitmap)
     : WizPageBase(_T("FilePathPage"), parent, bitmap),
-    m_AddToProject(false),
-    m_TargetIndex(0)
+    m_AddToProject(false)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("scripts"));
     m_pFilePathPanel = new FilePathPanel(this);
@@ -239,6 +238,13 @@ WizFilePathPanel::WizFilePathPanel(bool showHeaderGuard, wxWizard* parent, const
 //------------------------------------------------------------------------------
 WizFilePathPanel::~WizFilePathPanel()
 {
+}
+
+int WizFilePathPanel::GetTargetIndex()
+{
+    if (m_pFilePathPanel)
+        return m_pFilePathPanel->GetTargetIndex();
+    return -1;
 }
 
 void WizFilePathPanel::SetFilePathSelectionFilter(const wxString& filter)
@@ -253,11 +259,10 @@ void WizFilePathPanel::OnPageChanging(wxWizardEvent& event)
         m_Filename = m_pFilePathPanel->GetFilename();
         m_HeaderGuard = m_pFilePathPanel->GetHeaderGuard();
         m_AddToProject = m_pFilePathPanel->GetAddToProject();
-        m_TargetIndex = m_pFilePathPanel->GetTargetIndex();
 
         if (m_Filename.IsEmpty() || !wxDirExists(wxPathOnly(m_Filename)))
         {
-            cbMessageBox(_("Please select a filename for your new file..."), _("Error"), wxICON_ERROR);
+            cbMessageBox(_("Please select a filename with full path for your new file..."), _("Error"), wxICON_ERROR);
             event.Veto();
             return;
         }
@@ -324,31 +329,31 @@ void WizProjectPathPanel::OnButton(wxCommandEvent& event)
 void WizProjectPathPanel::OnPageChanging(wxWizardEvent& event)
 {
     if (event.GetDirection() != 0) // !=0 forward, ==0 backward
-	{
-	    wxString dir = m_pProjectPathPanel->GetPath();
-	    wxString name = m_pProjectPathPanel->GetName();
-	    wxString fullname = m_pProjectPathPanel->GetFullFileName();
-	    wxString title = m_pProjectPathPanel->GetTitle();
-//		if (!wxDirExists(dir))
-//		{
+    {
+        wxString dir = m_pProjectPathPanel->GetPath();
+        wxString name = m_pProjectPathPanel->GetName();
+        wxString fullname = m_pProjectPathPanel->GetFullFileName();
+        wxString title = m_pProjectPathPanel->GetTitle();
+//        if (!wxDirExists(dir))
+//        {
 //            cbMessageBox(_("Please select a valid path to create your project..."), _("Error"), wxICON_ERROR);
 //            event.Veto();
 //            return;
-//		}
-		if (title.IsEmpty())
-		{
+//        }
+        if (title.IsEmpty())
+        {
             cbMessageBox(_("Please select a title for your project..."), _("Error"), wxICON_ERROR);
             event.Veto();
             return;
-		}
-		if (name.IsEmpty())
-		{
+        }
+        if (name.IsEmpty())
+        {
             cbMessageBox(_("Please select a name for your project..."), _("Error"), wxICON_ERROR);
             event.Veto();
             return;
-		}
-		if (wxFileExists(fullname))
-		{
+        }
+        if (wxFileExists(fullname))
+        {
             if (cbMessageBox(_("A project with the same name already exists in the project folder.\n"
                         "Are you sure you want to use this directory (files may be OVERWRITTEN)?"),
                         _("Confirmation"),
@@ -359,9 +364,9 @@ void WizProjectPathPanel::OnPageChanging(wxWizardEvent& event)
                 event.Veto();
                 return;
             }
-		}
+        }
         Manager::Get()->GetProjectManager()->SetDefaultPath(dir);
-	}
+    }
     WizPageBase::OnPageChanging(event); // let the base class handle it too
 }
 
@@ -416,15 +421,15 @@ void WizGenericSelectPathPanel::OnButton(wxCommandEvent& event)
 void WizGenericSelectPathPanel::OnPageChanging(wxWizardEvent& event)
 {
     if (event.GetDirection() != 0) // !=0 forward, ==0 backward
-	{
-	    wxString dir = Manager::Get()->GetMacrosManager()->ReplaceMacros(m_pGenericSelectPath->txtFolder->GetValue(), true);
-		if (!wxDirExists(dir))
-		{
+    {
+        wxString dir = Manager::Get()->GetMacrosManager()->ReplaceMacros(m_pGenericSelectPath->txtFolder->GetValue(), true);
+        if (!wxDirExists(dir))
+        {
             cbMessageBox(_("Please select a valid location..."), _("Error"), wxICON_ERROR);
             event.Veto();
             return;
-		}
-	}
+        }
+    }
     WizPageBase::OnPageChanging(event); // let the base class handle it too
 
     if (event.GetDirection() != 0 && event.IsAllowed())
@@ -548,7 +553,7 @@ wxString WizCompilerPanel::GetReleaseObjectOutputDir()
 void WizCompilerPanel::OnPageChanging(wxWizardEvent& event)
 {
     if (event.GetDirection() != 0) // !=0 forward, ==0 backward
-	{
+    {
         if (GetCompilerID().IsEmpty())
         {
             wxMessageBox(_("You must select a compiler for your project..."), _("Error"), wxICON_ERROR);
@@ -573,7 +578,7 @@ void WizCompilerPanel::OnPageChanging(wxWizardEvent& event)
         cfg->Write(_T("/generic_wizard/release_name"), GetReleaseName());
         cfg->Write(_T("/generic_wizard/release_output"), GetReleaseOutputDir());
         cfg->Write(_T("/generic_wizard/release_objects_output"), GetReleaseObjectOutputDir());
-	}
+    }
     WizPageBase::OnPageChanging(event); // let the base class handle it too
 }
 
@@ -665,7 +670,7 @@ wxString WizBuildTargetPanel::GetTargetObjectOutputDir()
 void WizBuildTargetPanel::OnPageChanging(wxWizardEvent& event)
 {
     if (event.GetDirection() != 0) // !=0 forward, ==0 backward
-	{
+    {
         if (m_pBuildTargetPanel->GetCompilerCombo()->IsShown() && GetCompilerID().IsEmpty())
         {
             wxMessageBox(_("You must select a compiler for your build target..."), _("Error"), wxICON_ERROR);
@@ -680,7 +685,7 @@ void WizBuildTargetPanel::OnPageChanging(wxWizardEvent& event)
             event.Veto();
             return;
         }
-	}
+    }
     WizPageBase::OnPageChanging(event); // let the base class handle it too
 }
 

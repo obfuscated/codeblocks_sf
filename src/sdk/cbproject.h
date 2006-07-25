@@ -80,11 +80,11 @@ enum PCHMode
   */
 class DLLIMPORT cbProject : public CompileTargetBase
 {
- 	public:
-		/// Constructor
-		cbProject(const wxString& filename = wxEmptyString);
-		/// Destructor
-		~cbProject();
+     public:
+        /// Constructor
+        cbProject(const wxString& filename = wxEmptyString);
+        /// Destructor
+        ~cbProject();
 
         /** @return True if the project fully loaded, false if not. */
         bool IsLoaded(){ return m_Loaded; }
@@ -111,12 +111,12 @@ class DLLIMPORT cbProject : public CompileTargetBase
         wxString GetCommonTopLevelPath();
 
         /** @return True if the project is modified in any way. */
-		bool GetModified();
+        bool GetModified();
 
-		/** Mark the project as modified or not.
-		  * @param modified If true, the project is marked as modified. If false, as not-modified.
-		  */
-		void SetModified(bool modified = true);
+        /** Mark the project as modified or not.
+          * @param modified If true, the project is marked as modified. If false, as not-modified.
+          */
+        void SetModified(bool modified = true);
 
         /** Access a file of the project.
           * @param index The index of the file. Must be greater or equal than zero and less than GetFilesCount().
@@ -256,10 +256,10 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * @param index The build target index to set as active.
           * @return True if @c index was valid, false if not.
           */
-		bool SetActiveBuildTarget(int index);
+        bool SetActiveBuildTarget(int index);
 
-		/** @return The active build target index. */
-		int GetActiveBuildTarget();
+        /** @return The active build target index. */
+        int GetActiveBuildTarget();
 
         /** @return The mode precompiled headers are handled. */
         PCHMode GetModeForPCH(){ return m_PCHMode; }
@@ -308,13 +308,13 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * where the cursor is located on each one of those, etc.
           * @return True if succesfull, false otherwise.
           */
-		bool SaveLayout();
+        bool SaveLayout();
 
         /** Load the project's layout.
           * @see SaveLayout() for info.
           * @return True if succesfull, false otherwise.
           */
-		bool LoadLayout();
+        bool LoadLayout();
 
         /** Add a file to the project.
           * This variation, takes a target name as first parameter.
@@ -358,13 +358,13 @@ class DLLIMPORT cbProject : public CompileTargetBase
         /** Convenience function for remembering the project's tree state when refreshing it.
           * @return An array of strings containing the tree-path names of expanded nodes.
           */
-		const wxArrayString& ExpandedNodes(){ return m_ExpandedNodes; }
+        const wxArrayString& ExpandedNodes(){ return m_ExpandedNodes; }
 
         /** Convenience function for remembering the project's tree state when refreshing it.
           * Adds an expanded node in this internal list.
           * @param path The tree-path to add.
           */
-		void AddExpandedNode(const wxString& path){ m_ExpandedNodes.Add(path); }
+        void AddExpandedNode(const wxString& path){ m_ExpandedNodes.Add(path); }
 
         /** Convenience function for remembering the project's tree state when refreshing it.
           * @param tree The tree control to save its expanded state.
@@ -385,12 +385,12 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * The default behaviour is to not show the dialog if the project has only one target.
           * @return The target's index that the user selected or -1 if the dialog was cancelled.
           */
-		int SelectTarget(int initial = -1, bool evenIfOne = false);
+        int SelectTarget(int initial = -1, bool evenIfOne = false);
 
-		/** Rename the project's title in the tree.
-		  * @param newname The new title for the project.
-		  * @note This does *not* actually alter the project's title. It just changes it on the tree.
-		  */
+        /** Rename the project's title in the tree.
+          * @param newname The new title for the project.
+          * @note This does *not* actually alter the project's title. It just changes it on the tree.
+          */
         void RenameInTree(const wxString &newname);
 
         /** Get a pointer to the currently compiling target.

@@ -10,9 +10,10 @@
 //(*Headers(FilePathPanel)
 #include <wx/button.h>
 #include <wx/checkbox.h>
-#include <wx/choice.h>
+#include <wx/checklst.h>
 #include <wx/intl.h>
 #include <wx/panel.h>
+#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -29,7 +30,7 @@ class FilePathPanel: public wxPanel
         wxString GetHeaderGuard(){ return txtGuard->IsShown() ? txtGuard->GetValue() : _T(""); }
         bool GetAddToProject(){ return chkAddToProject->GetValue(); }
         void SetAddToProject(bool add);
-        int GetTargetIndex(){ return cmbTargets->GetSelection(); }
+        int GetTargetIndex();
         void SetFilePathSelectionFilter(const wxString& filter){ m_ExtFilter = filter; }
         void ShowHeaderGuard(bool show)
         {
@@ -40,15 +41,17 @@ class FilePathPanel: public wxPanel
 		//(*Identifiers(FilePathPanel)
 		enum Identifiers
 		{
-		    ID_BUTTON1 = 0x1000,
-		    ID_CHECKBOX1,
-		    ID_CHOICE1,
-		    ID_STATICTEXT1,
-		    ID_STATICTEXT2,
-		    ID_STATICTEXT3,
-		    ID_STATICTEXT4,
-		    ID_TEXTCTRL1,
-		    ID_TEXTCTRL2
+		  ID_STATICTEXT1 = 0x1000,
+		  ID_STATICTEXT2,
+		  ID_TEXTCTRL1,
+		  ID_BUTTON1,
+		  ID_STATICTEXT3,
+		  ID_TEXTCTRL2,
+		  ID_CHECKBOX1,
+		  ID_STATICTEXT4,
+		  ID_CHECKLISTBOX2,
+		  ID_BUTTON2,
+		  ID_BUTTON3
 		};
 		//*)
 
@@ -58,6 +61,8 @@ class FilePathPanel: public wxPanel
 		void OntxtFilenameText(wxCommandEvent& event);
 		void OnbtnBrowseClick(wxCommandEvent& event);
 		void OnchkAddToProjectChange(wxCommandEvent& event);
+		void OnbtnAllClick(wxCommandEvent& event);
+		void OnbtnNoneClick(wxCommandEvent& event);
 		//*)
 
 		//(*Declarations(FilePathPanel)
@@ -68,12 +73,19 @@ class FilePathPanel: public wxPanel
 		wxTextCtrl* txtGuard;
 		wxCheckBox* chkAddToProject;
 		wxBoxSizer* BoxSizer3;
-		wxChoice* cmbTargets;
+		wxBoxSizer* BoxSizer4;
+		wxBoxSizer* BoxSizer5;
+		wxCheckListBox* clbTargets;
+		wxBoxSizer* BoxSizer6;
+		wxButton* btnAll;
+		wxButton* btnNone;
 		//*)
 
 		wxString m_ExtFilter;
+		int m_Selection;
 
 	private:
+		void ToggleVisibility(bool on);
 
 		DECLARE_EVENT_TABLE()
 };

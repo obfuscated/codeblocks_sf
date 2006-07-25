@@ -328,3 +328,39 @@ function VerifyLibFile(dir, file, type)
     }
     return true;
 }
+
+// Add a file to a selection of target(s).
+// Thus the wizard must have had a FilePathPanel for the selection of these.
+// the_wiz  = a reference to the wizard (to access the targets indexes)
+// the_file = name of the file (including fuill path) that shall be added
+function AddFileToTargets(the_wiz, the_file)
+{
+    // get the first selected target to add the file to
+    local tgtidx = the_wiz.GetFileTargetIndex();
+    if (tgtidx != -1)
+    {
+        // obtain the currently active project to add the file to
+        local prj = GetProjectManager().GetActiveProject();
+        if (!IsNull(prj))
+        {
+            // add the file to the first selected target
+            local pf = prj.AddFile(tgtidx, the_file);
+            GetProjectManager().RebuildTree(); // make sure our view is current
+
+            // if the file was added succesfully, (...)
+            if (!IsNull(pf))
+            {
+                // add to this file the rest of the selected targets...
+                tgtidx = the_wiz.GetFileTargetIndex();
+                while (tgtidx != -1)
+                {
+                    local tgt = prj.GetBuildTarget(tgtidx);
+                    if (!IsNull(tgt))
+                        pf.AddBuildTarget(tgt.GetTitle());
+
+                    tgtidx = the_wiz.GetFileTargetIndex();
+                }
+            }
+        }
+    }
+}

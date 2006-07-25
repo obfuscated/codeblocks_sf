@@ -35,20 +35,10 @@ function CreateFiles()
     }
     else
     {
-        // succeeded
-        // add file to project if needed
+        // succeeded -> add file to project if needed
         if (Wizard.GetFileAddToProject())
         {
-            local tgtidx = Wizard.GetFileTargetIndex();
-            if (tgtidx != -1)
-            {
-                local prj = GetProjectManager().GetActiveProject();
-                if (!IsNull(prj))
-                {
-                    prj.AddFile(tgtidx, fname);
-                    GetProjectManager().RebuildTree(); // make sure our view is current
-                }
-            }
+            AddFileToTargets(Wizard, fname);
         }
     }
     return fname;

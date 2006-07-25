@@ -7,10 +7,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-// Strings that start with @ (like below) are so-called verbatim strings.
-// These contain everything as typed. To write a double-quote inside verbatim string
-// type two double-quotes ("")
-
 function BeginWizard()
 {
     // this is the text that will appear in the start (intro) page
@@ -44,31 +40,19 @@ function CreateFiles()
     {
         ShowError(_T("The wizard could not locate the editor manager."));
     }
+
+    local ed_new = ed.New(fname);
+    if (IsNull(ed_new))
+    {
+        ShowError(_T("The wizard could not create a new file.\n" +
+                     "Maybe the target folder is write-protected?"));
+    }
     else
     {
-        local ed_new = ed.New(fname);
-        if (IsNull(ed_new))
+        // succeeded -> add file to project if needed
+        if (Wizard.GetFileAddToProject())
         {
-            ShowError(_T("The wizard could not create a new file.\n" +
-                         "Maybe the destination folder is write-protected?"));
-        }
-        else
-        {
-            // succeeded
-            // add file to project if needed
-            if (Wizard.GetFileAddToProject())
-            {
-                local tgtidx = Wizard.GetFileTargetIndex();
-                if (tgtidx != -1)
-                {
-                    local prj = GetProjectManager().GetActiveProject();
-                    if (!IsNull(prj))
-                    {
-                        prj.AddFile(tgtidx, fname);
-                        GetProjectManager().RebuildTree(); // make sure our view is current
-                    }
-                }
-            }
+            AddFileToTargets(Wizard, fname);
         }
     }
     return fname;

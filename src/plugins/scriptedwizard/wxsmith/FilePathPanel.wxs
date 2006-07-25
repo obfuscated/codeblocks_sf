@@ -70,21 +70,65 @@
                 <border>8</border>
                 <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                 <object class="wxBoxSizer" variable="BoxSizer3" member="yes">
-                    <orient>wxHORIZONTAL</orient>
-                    <object class="spacer">
-                        <size>16,16</size>
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                    </object>
+                    <orient>wxVERTICAL</orient>
                     <object class="sizeritem">
-                        <flag>wxALL|wxALIGN_CENTER</flag>
-                        <object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="no">
-                            <label>In build target:</label>
+                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                        <object class="wxBoxSizer" variable="BoxSizer4" member="yes">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="spacer">
+                                <size>16,16</size>
+                                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                <object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="no">
+                                    <label>In build target(s):</label>
+                                </object>
+                            </object>
                         </object>
                     </object>
                     <object class="sizeritem">
-                        <option>1</option>
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                        <object class="wxChoice" name="ID_CHOICE1" variable="cmbTargets" member="yes" />
+                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                        <object class="wxBoxSizer" variable="BoxSizer5" member="yes">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="spacer">
+                                <size>16,16</size>
+                                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                <object class="wxCheckListBox" name="ID_CHECKLISTBOX2" variable="clbTargets" member="yes">
+                                    <content />
+                                    <enabled>0</enabled>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                        <object class="wxBoxSizer" variable="BoxSizer6" member="yes">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="spacer">
+                                <size>16,16</size>
+                                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+                                <object class="wxButton" name="ID_BUTTON2" variable="btnAll" member="yes">
+                                    <label>All</label>
+                                    <handler entry="EVT_BUTTON" function="OnbtnAllClick" />
+                                    <enabled>0</enabled>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+                                <object class="wxButton" name="ID_BUTTON3" variable="btnNone" member="yes">
+                                    <label>None</label>
+                                    <handler entry="EVT_BUTTON" function="OnbtnNoneClick" />
+                                    <enabled>0</enabled>
+                                </object>
+                            </object>
+                        </object>
                     </object>
                 </object>
             </object>
