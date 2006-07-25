@@ -123,15 +123,19 @@ function SetupProject(project)
     {
         if (!OgreIsSource) // SDK
         {
+            project.AddIncludeDir(OgrePath + _T("/stlport/stlport"));
             project.AddIncludeDir(OgrePath + _T("/include"));
             project.AddIncludeDir(OgrePath + _T("/samples/include"));
             project.AddIncludeDir(OgrePath + _T("/samples/refapp/include"));
             project.AddLibDir(OgrePath + _T("/lib"));
-
             project.AddCompilerOption(_T("-D_STLP_NO_CUSTOM_IO"));
             project.AddCompilerOption(_T("-D_STLP_USE_DYNAMIC_LIB"));
         }
 
+        project.AddCompilerOption(_T("-mthreads"));
+        project.AddCompilerOption(_T("-fmessage-length=0"));
+        project.AddCompilerOption(_T("-fexceptions"));
+        project.AddCompilerOption(_T("-fident"));
         project.AddCompilerOption(_T("-DWIN32"));
         project.AddCompilerOption(_T("-D_WINDOWS"));
         project.AddLinkLib(_T("opengl32"));
@@ -176,6 +180,7 @@ function SetupProject(project)
             target.SetWorkingDir(OgrePath + _T("/Samples/Common/bin/Debug"));
         else if (PLATFORM == PLATFORM_MSW)
             target.SetWorkingDir(OgrePath + _T("/bin/Debug"));
+        project.AddLibDir(OgrePath + _T("/bin/Debug"));
         // TODO: linux package contains samples?
 
         if (target.GetWorkingDir().Matches(_T("")))
@@ -184,6 +189,7 @@ function SetupProject(project)
             target.SetOutputFilename(target.GetWorkingDir() + wxFILE_SEP_PATH + target.SuggestOutputFilename());
 //        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
 
+        target.AddLinkLib(_T("OgreMain_d"));
         if (PLATFORM == PLATFORM_MSW)
         {
             target.AddCompilerOption(_T("-D_DEBUG"));
@@ -191,12 +197,11 @@ function SetupProject(project)
             if (!OgreIsSource)
             {
                 target.AddCompilerOption(_T("-D_STLP_DEBUG"));
-                target.AddLinkLib(_T("stlportstlg.5.0.dll"));
+                target.AddLinkLib(_T("stlportstlg.5.0"));
             }
         }
         if (OgreIsSource)
             target.AddLibDir(OgrePath + _T("/OgreMain/lib/Debug"));
-        target.AddLinkLib(_T("OgreMain_d"));
 
         // enable generation of debugging symbols for target
         DebugSymbolsOn(target, Wizard.GetCompilerID());
@@ -212,6 +217,7 @@ function SetupProject(project)
             target.SetWorkingDir(OgrePath + _T("/Samples/Common/bin/Release"));
         else if (PLATFORM == PLATFORM_MSW)
             target.SetWorkingDir(OgrePath + _T("/bin/Release"));
+        project.AddLibDir(OgrePath + _T("/bin/Release"));
         // TODO: linux package contains samples?
 
         if (target.GetWorkingDir().Matches(_T("")))
@@ -220,16 +226,16 @@ function SetupProject(project)
             target.SetOutputFilename(target.GetWorkingDir() + wxFILE_SEP_PATH + target.SuggestOutputFilename());
 //        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
 
+        target.AddLinkLib(_T("OgreMain"));
         if (PLATFORM == PLATFORM_MSW)
         {
             target.AddCompilerOption(_T("-DNDEBUG"));
             // windows SDK uses STLport
             if (!OgreIsSource)
-                target.AddLinkLib(_T("stlport.5.0.dll"));
+                target.AddLinkLib(_T("stlport.5.0"));
         }
         if (OgreIsSource)
             target.AddLibDir(OgrePath + _T("/OgreMain/lib/Release"));
-        target.AddLinkLib(_T("OgreMain"));
 
         // enable optimizations for target
         OptimizationsOn(target, Wizard.GetCompilerID());
