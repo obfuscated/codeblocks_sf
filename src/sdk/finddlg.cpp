@@ -277,7 +277,9 @@ void FindDlg::UpdateUI()
     XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->Enable(on);
     XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->Enable(on);
     XRCCTRL(*this, "btnBrowsePath", wxButton)->Enable(on);
-}
+    XRCCTRL(*this, "chkSearchRecursively", wxCheckBox)->Enable(on);
+    XRCCTRL(*this, "chkSearchHidden", wxCheckBox)->Enable(on);
+} // end of UpdateUI
 
 // events
 
