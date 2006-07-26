@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <section>
 	<title>Wish list</title>
 
@@ -38,7 +38,7 @@
 		<listitem>
 			<para>Code::Blocks Plugin Development Guide</para>
 
-			<para>How could users easily develop theire own
+			<para>How could users easily develop their own
 			Plugins.</para>
 		</listitem>
 	</itemizedlist>
