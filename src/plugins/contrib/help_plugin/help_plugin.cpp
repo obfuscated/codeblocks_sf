@@ -448,22 +448,21 @@ void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
 
 void HelpPlugin::OnFindItem(wxCommandEvent &event)
 {
+  wxString text; // save here the word to lookup... if any
   cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
-  if (!ed)
+  if (ed)
   {
-    return;
-  }
+    cbStyledTextCtrl *control = ed->GetControl();
+    text = control->GetSelectedText();
 
-  cbStyledTextCtrl *control = ed->GetControl();
-  wxString text = control->GetSelectedText();
-
-  if (text.IsEmpty())
-  {
-    int origPos = control->GetCurrentPos();
-    int start = control->WordStartPosition(origPos, true);
-    int end = control->WordEndPosition(origPos, true);
-    text = control->GetTextRange(start, end);
+    if (text.IsEmpty())
+    {
+      int origPos = control->GetCurrentPos();
+      int start = control->WordStartPosition(origPos, true);
+      int end = control->WordEndPosition(origPos, true);
+      text = control->GetTextRange(start, end);
+    }
   }
 
   int id = event.GetId();
