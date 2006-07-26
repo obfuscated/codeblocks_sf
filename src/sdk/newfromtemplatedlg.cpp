@@ -63,18 +63,22 @@ BEGIN_EVENT_TABLE(NewFromTemplateDlg, wxDialog)
 
     // projects
 	EVT_LIST_ITEM_RIGHT_CLICK(XRCID("listProjects"), NewFromTemplateDlg::OnListRightClick)
+	EVT_LIST_ITEM_ACTIVATED(XRCID("listProjects"), NewFromTemplateDlg::OnListActivate)
 	EVT_CHOICE(XRCID("cmbProjectCategories"), NewFromTemplateDlg::OnCategoryChanged)
 
     // targets
 	EVT_LIST_ITEM_RIGHT_CLICK(XRCID("listTargets"), NewFromTemplateDlg::OnListRightClick)
+	EVT_LIST_ITEM_ACTIVATED(XRCID("listTargets"), NewFromTemplateDlg::OnListActivate)
 	EVT_CHOICE(XRCID("cmbTargetCategories"), NewFromTemplateDlg::OnCategoryChanged)
 
     // files
 	EVT_LIST_ITEM_RIGHT_CLICK(XRCID("listFiles"), NewFromTemplateDlg::OnListRightClick)
+	EVT_LIST_ITEM_ACTIVATED(XRCID("listFiles"), NewFromTemplateDlg::OnListActivate)
 	EVT_CHOICE(XRCID("cmbFileCategories"), NewFromTemplateDlg::OnCategoryChanged)
 
     // workspaces
 	EVT_LIST_ITEM_RIGHT_CLICK(XRCID("listCustoms"), NewFromTemplateDlg::OnListRightClick)
+	EVT_LIST_ITEM_ACTIVATED(XRCID("listCustoms"), NewFromTemplateDlg::OnListActivate)
 	EVT_CHOICE(XRCID("cmbCustomCategories"), NewFromTemplateDlg::OnCategoryChanged)
 
     // context menu for wizard scripts
@@ -345,6 +349,11 @@ void NewFromTemplateDlg::OnListRightClick(wxListEvent& event)
     menu->Append(idEditGlobalWizardScript, _("Edit global registration script"));
 	list->PopupMenu(menu);
 	delete menu;
+}
+
+void NewFromTemplateDlg::OnListActivate(wxListEvent& /*event*/)
+{
+	EndModal(wxID_OK);
 }
 
 void NewFromTemplateDlg::OnCategoryChanged(wxCommandEvent& event)

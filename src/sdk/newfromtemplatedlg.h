@@ -33,6 +33,7 @@ class NewFromTemplateDlg : public wxDialog
 		void ClearList();
 		void ClearListFor(wxListCtrl* list);
 		void OnListRightClick(wxListEvent& event);
+		void OnListActivate(wxListEvent& event);
 		void OnCategoryChanged(wxCommandEvent& event);
 		void OnEditScript(wxCommandEvent& event);
 		void OnEditGlobalScript(wxCommandEvent& event);
