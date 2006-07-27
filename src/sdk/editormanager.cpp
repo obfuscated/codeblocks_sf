@@ -677,7 +677,8 @@ bool EditorManager::UpdateProjectFiles(cbProject* project)
 
 bool EditorManager::CloseAll(bool dontsave)
 {
-    return CloseAllExcept(0L,dontsave);
+    //return CloseAllExcept(0L,dontsave);
+    return CloseAllExcept(GetEditor(_("Start here")), dontsave);
 }
 
 bool EditorManager::QueryCloseAll()
