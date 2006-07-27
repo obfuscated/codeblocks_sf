@@ -1121,6 +1121,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
             if (filename != Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename() &&
                 DoCloseCurrentWorkspace())
             {
+                wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
                 bool ret = Manager::Get()->GetProjectManager()->LoadWorkspace(filename);
                 if (ret && addToHistory)
                     AddToRecentProjectsHistory(filename);
@@ -1140,7 +1141,10 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
         case ftMSVC6Project:
             // fallthrough
         case ftMSVC7Project:
-            return DoOpenProject(filename, addToHistory);
+            {
+                wxBusyCursor wait; // loading a project can take some time -> showhourglass
+                return DoOpenProject(filename, addToHistory);
+            }
 
         //
         // Source files
