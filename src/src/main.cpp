@@ -1837,10 +1837,14 @@ bool MainFrame::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
         OpenGeneric(foundWorkspace);
     else
     {
+        wxBusyCursor useless;
+        wxPaintEvent e;
+        ProcessEvent(e);
+
+        Freeze();
         for (unsigned int i = 0; i < files.GetCount(); ++i)
-        {
             OpenGeneric(files[i]);
-        }
+        Thaw();
     }
     return true;
 }
