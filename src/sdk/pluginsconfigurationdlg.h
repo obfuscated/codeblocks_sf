@@ -1,11 +1,10 @@
 #ifndef PLUGINSCONFIGURATIONDLG_H
 #define PLUGINSCONFIGURATIONDLG_H
 
-#include "settings.h"
 #include <wx/dialog.h>
 
 /*
- * No description
+ * Dialog for Enabling/Disabling the plug-in.
  */
 class PluginsConfigurationDlg : public wxDialog
 {

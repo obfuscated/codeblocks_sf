@@ -5,10 +5,6 @@
 #include "settings.h"
 #include "manager.h"
 
-#ifndef CB_PRECOMP
-    #include "cbplugin.h"
-#endif
-
 //forward decls
 struct PluginInfo;
 class cbPlugin;

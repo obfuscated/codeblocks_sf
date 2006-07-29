@@ -366,7 +366,7 @@ cbPlugin* PluginManager::FindPluginByName(const wxString& pluginName)
             return m_Plugins[i]->plugin;
     }
 
-    return NULL;
+    return 0;
 }
 
 cbPlugin* PluginManager::FindPluginByFileName(const wxString& pluginFileName)
@@ -378,16 +378,16 @@ cbPlugin* PluginManager::FindPluginByFileName(const wxString& pluginFileName)
             return m_Plugins[i]->plugin;
     }
 
-    return NULL;
+    return 0;
 }
 
 const PluginInfo* PluginManager::GetPluginInfo(const wxString& pluginName)
 {
-    cbPlugin* plug = FindPluginByName(pluginName);
+    const cbPlugin* plug = FindPluginByName(pluginName);
     if (plug)
         return plug->GetInfo();
 
-    return NULL;
+    return 0;
 }
 
 int PluginManager::ExecutePlugin(const wxString& pluginName)
