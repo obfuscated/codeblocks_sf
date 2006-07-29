@@ -95,13 +95,13 @@ class cbKeyBinder : public cbPlugin
         wxADD_KEYBINDER_SUPPORT();
 
     private:
-        //void OnProjectOpened(CodeBlocksEvent& event);
-        //void OnProjectActivated(CodeBlocksEvent& event);
-        //void OnProjectClosed(CodeBlocksEvent& event);
-        //void OnProjectFileAdded(CodeBlocksEvent& event);
-        //void OnProjectFileRemoved(CodeBlocksEvent& event);
-        //void OnEditorOpen(CodeBlocksEvent& event);
-        //void OnEditorClose(CodeBlocksEvent& event);
+        void OnProjectOpened(CodeBlocksEvent& event);
+        void OnProjectActivated(CodeBlocksEvent& event);
+        void OnProjectClosed(CodeBlocksEvent& event);
+        void OnProjectFileAdded(CodeBlocksEvent& event);
+        void OnProjectFileRemoved(CodeBlocksEvent& event);
+        void OnEditorOpen(CodeBlocksEvent& event);
+        void OnEditorClose(CodeBlocksEvent& event);
         void OnAppStartupDone(CodeBlocksEvent& event);
         void AttachEditor(wxWindow* pEditor);
         void OnWindowCreateEvent(wxEvent& event);
@@ -439,36 +439,51 @@ CB_DECLARE_PLUGIN();
 // -----------------------------------------------------------------------------
 //  commit  2006/06/15 v0.4.20
 // -----------------------------------------------------------------------------
-//  closed  2006/07/12 open    2006/07/11
+//  closed  2006/07/12 open    2006/07/11 reverted
 //          Remove dependency on CodeBlocks editor open/close events
 //          in order to avoid leaks on splitWindows.
 //          Solution: removed pushed evenHandlers and used Connect()/Disconnect()
 // -----------------------------------------------------------------------------
-//  closed  2006/07/12 open 2006/07/12
+//  closed  2006/07/12 open 2006/07/12 reverted
 //          Secondary profiles are not being recorded. Getting
 //          "DialogDone: NO key changes" message, the Primary is then set
 //          Resolution: cbKeyBinder::OnKeybindingsDialogDone compare function not
 //          taking into account multiple keyprofiles in the keyBinderProfileArray.
 // -----------------------------------------------------------------------------
-//  closed  2006/07/15 open    2006/07/15
+//  closed  2006/07/15 open    2006/07/15 reverted
 //          keybinder not clearing previous profile keys when loading other
 //          profiles.
 //          Resolution: Code not updating deep menu items. Walk down to deepest menu
 //          items in wxKeyBinder::UpdateAllCmd via new UpdateSubMenu recursion.
 // -----------------------------------------------------------------------------
-//  commit  v0.4.21 2006/07/17
+//  commit  v0.4.21 2006/07/17 reverted
 // -----------------------------------------------------------------------------
-//  open    2006/07/19
+//  closed  open    2006/07/19 v0.4.23a reverted
 //          Allowing secondary key definitions on "Quit" causes CB to crash
 //          during termination. A hack ignores these keys in wxKeyBinder::OnChar.
 //          But this needs to be fixed.
+//          Tried: Sending the quit keys to the main application window does not
+//          solve the crashes.
 //  open    2006/07/19
-//          I experienced again that the menus did not show redefinitions that
+//          I experienced again that the menus did not show key redefinitions that
 //          actually were working and showed correctly in the dialog. As if updateAll
 //          was screwed up again.
 // -----------------------------------------------------------------------------
-//  commit  2006/07/19 v0.22
+//  commit  2006/07/19 v0.22 reverted
 //          Temporary hack to ignore "Quit" menu redefinitions to avoid
 //          crashes during CB termination.
 // -----------------------------------------------------------------------------
+//  open    2006/07/19 reverted
+//          Secondary keys do not work from the main html window.
+//          Even hooking all windows does not allow seconary keys to work at htmlWindow.
+//          Primary keys work ok.
+//          The following does *not* solve the problem
+//          if ( pcbWindow->GetName() eq _T("frame") )
+//              pcbWindow->SetName(_T("Code::Blocks"));
+// -----------------------------------------------------------------------------
+//  commit  2006/07/29 v0.4.23
+//          reverted  2006/07/29 to v0.4.20 CB 2761
+//          crashes during CB exit
+// -----------------------------------------------------------------------------
+
 

@@ -362,7 +362,7 @@ public:
 	}
 
 	//! Returns TRUE if this command is bind to a wxKeyBind object
-	//! identical to the given one.
+	//! identic to the given one.
 	//! If "n" is not NULL, it is set to the index of the entry
 	//! which contains the given shortcut key (if there is such
 	//! a shortcut registered in this class); otherwise it is
@@ -528,40 +528,14 @@ public:
 	//! The given keybinder will be called on each keyevent.
 	wxBinderEvtHandler(wxKeyBinder *p, wxWindow *tg)
 		: m_pBinder(p), m_pTarget(tg)
-    //(pecan 2006/7/11)
-
-	// Removed PushEventHandler in favor of Connect(cf. wxBinderEvtHandler ctor)
-	// to avoid Delete(eventHandler) crashes in EVT_DESTROY
-    //-{ m_pTarget->PushEventHandler(this);}
-    {
-        tg->Connect(wxEVT_KEY_DOWN,
-                (wxObjectEventFunction)(wxEventFunction)
-                (wxCharEventFunction)&wxBinderEvtHandler::OnChar,
-                 NULL, this);
-        //tg->Connect(wxEVT_KEY_UP,
-        //        (wxObjectEventFunction)(wxEventFunction)
-        //        (wxCharEventFunction)&wxBinderEvtHandler::OnChar,
-        //         NULL, this);
-        //tg->Connect(wxEVT_CHAR,
-        //        (wxObjectEventFunction)(wxEventFunction)
-        //        (wxCharEventFunction)&wxBinderEvtHandler::OnChar,
-        //         NULL, this);
-     }
-
+    { m_pTarget->PushEventHandler(this);}
 
 	//! Removes this event handler from the window you specified
 	//! during construction (the target window).
 	virtual ~wxBinderEvtHandler()
-		{   //(pecan 2006/7/11)
-            // Removed RemoveEventHandler in favor of Disconnect(cf. wxBinderEvtHandler ctor)
-            // to avoid Delete(eventHandler) crashes in EVT_DESTROY
-            //-if ( m_pTarget ) //+v0.4.9
-            //-    m_pTarget->RemoveEventHandler(this);
-            if (m_pTarget)
-                m_pTarget->Disconnect(wxEVT_KEY_DOWN,
-                                (wxObjectEventFunction)(wxEventFunction)
-                                (wxCharEventFunction)&wxBinderEvtHandler::OnChar,
-                                 NULL, this);
+		{
+            if ( m_pTarget ) //+v0.4.9
+                m_pTarget->RemoveEventHandler(this);
         }
 
 
@@ -585,7 +559,7 @@ public:
 
 private:
 	DECLARE_CLASS(wxBinderEvtHandler)
-	//DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE()
 };
 
 
@@ -693,8 +667,7 @@ protected:
 	//! done in future (like global shortcuts: command events sent
 	//! to all attached windows even if the command shortcut comes
 	//! from one of the attached windows only)...
-
-	wxArrayPtrVoid m_arrAttachedWnd;        //+(pecan 2006/7/11)
+	//wxArrayPtrVoid m_arrAttachedWnd;
 	//wxWindowList m_lstAttachedWnd;		// I don't like wxList...
 
 	//! The array of wxBinderEvtHandler which is hold by this keybinder.
@@ -772,8 +745,6 @@ public:		// miscellaneous
 		m_arrCmd.Clear();
 	}
 
-    // Recursively update sub menu items        //(pecan 2006/7/15)
-    void UpdateSubMenu(wxMenu* pMenu);
 	//! Updates all the commands contained.
 	void UpdateAllCmd(wxMenuBar* pMnuBar);      //v0.4.17
 
@@ -910,7 +881,7 @@ public:		// miscellaneous
     wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
 
 private:
-//    void OnWinClosed(wxCloseEvent& event); //+v0.4.7
+    void OnWinClosed(wxCloseEvent& event); //+v0.4.7
 	DECLARE_CLASS(wxKeyBinder)
 };//wxKeyBinder
 // ----------------------------------------------------------------------------

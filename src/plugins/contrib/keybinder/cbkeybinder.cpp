@@ -1,8 +1,8 @@
 /***************************************************************
  * Name:      cbkeybinder.cpp
  * Purpose:   Code::Blocks plugin
- * Author:    Pecan@users.berlios.de
- * Copyright: (c) Pecan
+ * Author:    Pecan @ Mispent Intent
+ * Copyright: (c) Pecan @ Mispent Intent
  * License:   GPL
  **************************************************************/
 //
@@ -32,12 +32,11 @@ CB_IMPLEMENT_PLUGIN(cbKeyBinder, "Keyboard shortcuts configuration");
 // ----------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(cbKeyBinder, cbPlugin)
 	// add events here...
-    // Removed dependency on Codeblocks editor events in order to handle
-    // split windows.
-	//EVT_PROJECT_CLOSE(cbKeyBinder::OnProjectClosed)
-	//EVT_EDITOR_OPEN(cbKeyBinder::OnEditorOpen)
-	//EVT_EDITOR_CLOSE(cbKeyBinder::OnEditorClose)
-	//EVT_PROJECT_OPEN(cbKeyBinder::OnProjectOpened)
+
+	EVT_PROJECT_CLOSE(cbKeyBinder::OnProjectClosed)
+	EVT_EDITOR_OPEN(cbKeyBinder::OnEditorOpen)
+	EVT_EDITOR_CLOSE(cbKeyBinder::OnEditorClose)
+	EVT_PROJECT_OPEN(cbKeyBinder::OnProjectOpened)
 	EVT_APP_STARTUP_DONE(cbKeyBinder::OnAppStartupDone)
 
 END_EVENT_TABLE()
@@ -55,22 +54,18 @@ cbKeyBinder::cbKeyBinder()
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts");
-	m_PluginInfo.version = _T("0.4.22 (2006/07/19)");
-	m_PluginInfo.description <<_("\nCode::Blocks KeyBinder\n\n")
-                            << _("Modify any menu key with up to three key\n")
-                            << _("combinations. Multiple sets of key profiles\n")
-                            << _("can be stored and selected. \n\n")
-                            << _("NOTES:\n")
-                            << _("  1.Ctrl+Alt+{UP|DOWN} keys are unsupported.\n")
-                            << _("  2.Redefinition of the \"Quit\" Menu key is ignored.\n\n")
-                            ;
+	m_PluginInfo.version = _T("0.4.23 (2006/07/29)");
+                            //\nReverted to 0.4.20 (2006/06/15)");
+	m_PluginInfo.description <<_("\nCode::Blocks KeyBinder (2006/07/29)\n\n")
+                            << _("NOTE: Ctrl+Alt+{UP|DOWN} is unsupported.\n\n");
 	m_PluginInfo.author = _T("Pecan Heber");
-	m_PluginInfo.authorEmail = _T("pecan at users.berlios.de");
-	m_PluginInfo.authorWebsite = _T("CodeBlocks.org");
+	m_PluginInfo.authorEmail = _T("");
+	m_PluginInfo.authorWebsite = _T("");
 	m_PluginInfo.thanksTo << _("Thanks to...\n\n")
                         <<_("wxKeyBinder authors:\n")
-                        <<_("Aleksandras Gluchovas,\nFrancesco Montorsi,\n\n")
-                        <<_("wxWidgets, and\n")
+                        <<_("Aleksandras Gluchovas,\nFrancesco Montorsi,\n")
+                        <<_("\twxWidgets, \n")
+                        <<_("\tand \n")
                         <<_("The Code::Blocks team");
 	m_PluginInfo.license = LICENSE_GPL;
 
@@ -126,7 +121,7 @@ void cbKeyBinder::OnAttach()
     //wxKeyBinder::usableWindows.Add(_T("*"));                 //+v0.4.4
    #endif
     wxKeyBinder::usableWindows.Add(_T("sciwindow"));           //+v0.4.4
-    //wxKeyBinder::usableWindows.Add(_T("flatnotebook"));       //+v0.4.4
+    wxKeyBinder::usableWindows.Add(_T("flatnotebook"));       //+v0.4.4
     //wxKeyBinder::usableWindows.Add(_T("panel"));             //+v0.4.4
     //wxKeyBinder::usableWindows.Add(_T("list"));              //+v0.4.4
     //wxKeyBinder::usableWindows.Add(_T("listctrl"));          //+v0.4.4
@@ -147,9 +142,6 @@ void cbKeyBinder::OnRelease(bool appShutDown)
 	// m_IsAttached will be FALSE...
 
     // remove keyboard and window close event //+v0.4.7
-    #ifdef LOGGING
-     LOGIT( _T("cbKeyBinder::OnRelease() called.") );
-    #endif //LOGGING
 	m_pKeyProfArr->DetachAll();
 }
 // ----------------------------------------------------------------------------
@@ -365,24 +357,18 @@ void cbKeyBinder::OnKeybindingsDialogDone(MyDialog* dlg)
     dlg->m_p->ApplyChanges();
 
     // check if any key modifications //v0.4.13
-    wxKeyProfileArray* pNewKBA = new wxKeyProfileArray;
-    *pNewKBA = dlg->m_p->GetProfiles();
-    int newSel = pNewKBA->GetSelProfileIdx();
-    int oldSel = m_pKeyProfArr->GetSelProfileIdx();
+    wxKeyProfileArray* pKBA = new wxKeyProfileArray;
+    *pKBA = dlg->m_p->GetProfiles();
 
-    if ( ( newSel == oldSel )
-        && ( *(pNewKBA->Item(newSel)) == *(m_pKeyProfArr->Item(oldSel)) ) )
-    {
-        LOGIT(_T("DialogDone: NO key changes NewIdx[%d] OldIdx[%d]"),
-                newSel, oldSel);
-    }
+    if (*pKBA == *m_pKeyProfArr)
+        LOGIT(_T("DialogDone: NO key changes"));
     else
     {   // update our array (we gave a copy of it to MyDialog)
         modified = true;
         *m_pKeyProfArr = dlg->m_p->GetProfiles();
         LOGIT(_T("DialogDone keys MODIFIED"));
     }
-    delete pNewKBA;
+    delete pKBA;
     // don't delete dlg; CodeBlocks will destory it
 
     //update Windows/EventHanders from changed wxKeyProfile
@@ -592,94 +578,69 @@ void MyDialog::OnApply()
     m_pBinder->OnKeybindingsDialogDone(this);
 }
 // ----------------------------------------------------------------------------
-//#if 0
-//// ----------------------------------------------------------------------------
-//void cbKeyBinder::OnProjectOpened(CodeBlocksEvent& event)
-//// ----------------------------------------------------------------------------
-//{
-//    //////////////////////////////////////////////////////////////////////
-//    //*Deprecated*Unused*Deprecated*Unused*Deprecated*Unused*Deprecated*//
-//    //////////////////////////////////////////////////////////////////////
-//
-//    if (m_IsAttached)
-//     {
-//        #if LOGGING
-//          LOGIT(_T("cbKB:ProjectOpened"));
-//        #endif
-//     }
-//    event.Skip();
-//}
-//// ----------------------------------------------------------------------------
-//void cbKeyBinder::OnProjectActivated(CodeBlocksEvent& event)
-//// ----------------------------------------------------------------------------
-//{
-//    //////////////////////////////////////////////////////////////////////
-//    //*Deprecated*Unused*Deprecated*Unused*Deprecated*Unused*Deprecated*//
-//    //////////////////////////////////////////////////////////////////////
-//
-//    if (m_IsAttached)
-//     {
-//        #if LOGGING
-//          LOGIT(_T("cbKB:ProjectActivated"));
-//        #endif
-//     }
-//    event.Skip();
-//}
-//// ----------------------------------------------------------------------------
-//void cbKeyBinder::OnProjectClosed(CodeBlocksEvent& event)
-//// ----------------------------------------------------------------------------
-//{
-//    //////////////////////////////////////////////////////////////////////
-//    //*Deprecated*Unused*Deprecated*Unused*Deprecated*Unused*Deprecated*//
-//    //////////////////////////////////////////////////////////////////////
-//
-//    if (m_IsAttached)
-//     {
-//        #if LOGGING
-//          LOGIT(_T("cbKB:ProjectClosed"));
-//        #endif
-//
-//        //get rid of unused editor ptr space
-//        m_EditorPtrs.Shrink();
-//    }
-//    event.Skip();
-//}
-//// ----------------------------------------------------------------------------
-//void cbKeyBinder::OnProjectFileAdded(CodeBlocksEvent& event)
-//// ----------------------------------------------------------------------------
-//{
-//    //////////////////////////////////////////////////////////////////////
-//    //*Deprecated*Unused*Deprecated*Unused*Deprecated*Unused*Deprecated*//
-//    //////////////////////////////////////////////////////////////////////
-//
-//    if (m_IsAttached)
-//     {
-//        #if LOGGING
-//          LOGIT(_T("cbKB:ProjectFileAdded"));
-//        #endif
-//     }
-//    event.Skip();
-//}
-//// ----------------------------------------------------------------------------
-//void cbKeyBinder::OnProjectFileRemoved(CodeBlocksEvent& event)
-//// ----------------------------------------------------------------------------
-//{
-//    //////////////////////////////////////////////////////////////////////
-//    //*Deprecated*Unused*Deprecated*Unused*Deprecated*Unused*Deprecated*//
-//    //////////////////////////////////////////////////////////////////////
-//
-//    if (m_IsAttached)
-//     {
-//       #if LOGGING
-//        LOGIT(_T("cbKB:ProjectFileRemoved"));
-//       #endif
-//     }
-//    event.Skip();
-//}
-//// ----------------------------------------------------------------------------
-//#endif //if 0
+void cbKeyBinder::OnProjectOpened(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
+{
+    if (m_IsAttached)
+     {
+        #if LOGGING
+          LOGIT(_T("cbKB:ProjectOpened"));
+        #endif
+     }
+    event.Skip();
+}
 
+// ----------------------------------------------------------------------------
+void cbKeyBinder::OnProjectActivated(CodeBlocksEvent& event)
+// ----------------------------------------------------------------------------
+{
+    if (m_IsAttached)
+     {
+        #if LOGGING
+          LOGIT(_T("cbKB:ProjectActivated"));
+        #endif
+     }
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
+void cbKeyBinder::OnProjectClosed(CodeBlocksEvent& event)
+// ----------------------------------------------------------------------------
+{
+    if (m_IsAttached)
+     {
+        #if LOGGING
+          LOGIT(_T("cbKB:ProjectClosed"));
+        #endif
+
+        //get rid of unused editor ptr space
+        m_EditorPtrs.Shrink();
+    }
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
+void cbKeyBinder::OnProjectFileAdded(CodeBlocksEvent& event)
+// ----------------------------------------------------------------------------
+{
+    if (m_IsAttached)
+     {
+        #if LOGGING
+          LOGIT(_T("cbKB:ProjectFileAdded"));
+        #endif
+     }
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
+void cbKeyBinder::OnProjectFileRemoved(CodeBlocksEvent& event)
+// ----------------------------------------------------------------------------
+{
+    if (m_IsAttached)
+     {
+       #if LOGGING
+        LOGIT(_T("cbKB:ProjectFileRemoved"));
+       #endif
+     }
+    event.Skip();
+}
 // ----------------------------------------------------------------------------
 void cbKeyBinder::AttachEditor(wxWindow* pWindow)
 // ----------------------------------------------------------------------------
@@ -717,7 +678,7 @@ void cbKeyBinder::DetachEditor(wxWindow* pWindow)
     if (m_IsAttached)
      {
 
-         //wxWindow* thisWindow = pWindow;
+         wxWindow* thisWindow = pWindow;
 
          // Cannot use GetBuiltinActiveEditor() because the active Editor is NOT the
          // one being closed!!
@@ -725,118 +686,106 @@ void cbKeyBinder::DetachEditor(wxWindow* pWindow)
          //  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
 
          //find the cbStyledTextCtrl wxScintilla window
-         //wxWindow*
-         //  thisEditor = thisWindow->FindWindowByName(_T("SCIwindow"), thisWindow);
+         wxWindow*
+           thisEditor = thisWindow->FindWindowByName(_T("SCIwindow"), thisWindow);
 
          // find editor window the Code::Blocks way
          // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
-         //cbEditor* ed = 0;
-         //EditorBase* eb = event.GetEditor();
-         //if (eb && eb->IsBuiltinEditor())
-         // {  ed = static_cast<cbEditor*>(eb);
-         //    thisEditor = ed->GetControl();
-         // }
+//         cbEditor* ed = 0;
+//         EditorBase* eb = event.GetEditor();
+//         if (eb && eb->IsBuiltinEditor())
+//          {  ed = static_cast<cbEditor*>(eb);
+//             thisEditor = ed->GetControl();
+//          }
 
-        if ( pWindow && (m_EditorPtrs.Index(pWindow) != wxNOT_FOUND) )
+        if ( thisEditor && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND) )
          {
+            m_pKeyProfArr->GetSelProfile()->Detach(thisEditor);
+            m_EditorPtrs.Remove(thisEditor);
             #if LOGGING
-             LOGIT(_T("cbKB:DetachEditor %s %p"), pWindow->GetTitle().c_str(), pWindow);
+             LOGIT(_T("cbKB:DetachEditor %s %p"), thisEditor->GetTitle().c_str(), thisEditor);
             #endif
-            m_pKeyProfArr->GetSelProfile()->Detach(pWindow);
-            m_EditorPtrs.Remove(pWindow);
          }//if
      }
 
 }//DetachEditor
 // ----------------------------------------------------------------------------
-//#if 0
-//// ----------------------------------------------------------------------------
-//void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event)
-//// ----------------------------------------------------------------------------
-//{
-//    //////////////////////////////////////////////////////////////////////
-//    //*Deprecated*Unused*Deprecated*Unused*Deprecated*Unused*Deprecated*//
-//    //////////////////////////////////////////////////////////////////////
-//
-//    if (m_IsAttached)
-//     {
-//         //LOGIT(_T("cbKB:OnEditorOpen()"));
-//        if (!m_bBound)
-//         {
-//            OnLoad(); event.Skip(); return;
-//         }
-//
-//        //already bound, just add the editor window
-//         wxWindow* thisWindow = event.GetEditor();
-//         wxWindow* thisEditor = thisWindow->FindWindowByName(_T("SCIwindow"),thisWindow);
-//
-//         // find editor window the Code::Blocks way
-//         // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
-//         cbEditor* ed = 0;
-//         EditorBase* eb = event.GetEditor();
-//         if (eb && eb->IsBuiltinEditor())
-//          {  ed = static_cast<cbEditor*>(eb);
-//             thisEditor = ed->GetControl();
-//          }
-//
-//        //skip editors that we already have
-//        if ( thisEditor && (wxNOT_FOUND == m_EditorPtrs.Index(thisEditor)) )
-//         {
-//            //add editor to our array and push a keyBinder event handler
-//            m_EditorPtrs.Add(thisEditor);
-//            //Rebind keys to newly opened windows
-//            m_pKeyProfArr->GetSelProfile()->Attach(thisEditor);
-//            #if LOGGING
-//             LOGIT(_T("cbKB:OnEditorOpen/Attach %s %p"), thisEditor->GetTitle().c_str(), thisEditor);
-//            #endif
-//         }
-//     }
-//     event.Skip();
-//}
-//// ----------------------------------------------------------------------------
-//void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
-//// ----------------------------------------------------------------------------
-//{
-//    //////////////////////////////////////////////////////////////////////
-//    //*Deprecated*Unused*Deprecated*Unused*Deprecated*Unused*Deprecated*//
-//    //////////////////////////////////////////////////////////////////////
-//
-//    if (m_IsAttached)
-//     {
-//
-//         wxWindow* thisWindow = event.GetEditor();
-//
-//         // Cannot use GetBuiltinActiveEditor() because the active Editor is NOT the
-//         // one being closed!!
-//         // wxWindow* thisEditor
-//         //  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
-//
-//         //find the cbStyledTextCtrl wxScintilla window
-//         wxWindow*
-//           thisEditor = thisWindow->FindWindowByName(_T("SCIwindow"), thisWindow);
-//
-//         // find editor window the Code::Blocks way
-//         // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
-//         cbEditor* ed = 0;
-//         EditorBase* eb = event.GetEditor();
-//         if (eb && eb->IsBuiltinEditor())
-//          {  ed = static_cast<cbEditor*>(eb);
-//             thisEditor = ed->GetControl();
-//          }
-//
-//        if ( thisEditor && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND) )
-//         {
-//            m_pKeyProfArr->GetSelProfile()->Detach(thisEditor);
-//            m_EditorPtrs.Remove(thisEditor);
-//            #if LOGGING
-//             LOGIT(_T("cbKB:OnEditorClose/Detach %s %p"), thisEditor->GetTitle().c_str(), thisEditor);
-//            #endif
-//         }//if
-//     }
-//    event.Skip();
-//}//OnEditorClose
-//// ----------------------------------------------------------------------------
-//#endif //if 0
+void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event)
+// ----------------------------------------------------------------------------
+{
+    if (m_IsAttached)
+     {
+         //LOGIT(_T("cbKB:OnEditorOpen()"));
+        if (!m_bBound)
+         {
+            OnLoad(); event.Skip(); return;
+         }
+
+        //already bound, just add the editor window
+         wxWindow* thisWindow = event.GetEditor();
+         wxWindow* thisEditor = thisWindow->FindWindowByName(_T("SCIwindow"),thisWindow);
+
+         // find editor window the Code::Blocks way
+         // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
+         cbEditor* ed = 0;
+         EditorBase* eb = event.GetEditor();
+         if (eb && eb->IsBuiltinEditor())
+          {  ed = static_cast<cbEditor*>(eb);
+             thisEditor = ed->GetControl();
+          }
+
+        //skip editors that we already have
+        if ( thisEditor && (wxNOT_FOUND == m_EditorPtrs.Index(thisEditor)) )
+         {
+            //add editor to our array and push a keyBinder event handler
+            m_EditorPtrs.Add(thisEditor);
+            //Rebind keys to newly opened windows
+            m_pKeyProfArr->GetSelProfile()->Attach(thisEditor);
+            #if LOGGING
+             LOGIT(_T("cbKB:OnEditorOpen/Attach %s %p"), thisEditor->GetTitle().c_str(), thisEditor);
+            #endif
+         }
+     }
+     event.Skip();
+}
+// ----------------------------------------------------------------------------
+void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
+// ----------------------------------------------------------------------------
+{
+    if (m_IsAttached)
+     {
+
+         wxWindow* thisWindow = event.GetEditor();
+
+         // Cannot use GetBuiltinActiveEditor() because the active Editor is NOT the
+         // one being closed!!
+         // wxWindow* thisEditor
+         //  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
+
+         //find the cbStyledTextCtrl wxScintilla window
+         wxWindow*
+           thisEditor = thisWindow->FindWindowByName(_T("SCIwindow"), thisWindow);
+
+         // find editor window the Code::Blocks way
+         // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
+         cbEditor* ed = 0;
+         EditorBase* eb = event.GetEditor();
+         if (eb && eb->IsBuiltinEditor())
+          {  ed = static_cast<cbEditor*>(eb);
+             thisEditor = ed->GetControl();
+          }
+
+        if ( thisEditor && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND) )
+         {
+            m_pKeyProfArr->GetSelProfile()->Detach(thisEditor);
+            m_EditorPtrs.Remove(thisEditor);
+            #if LOGGING
+             LOGIT(_T("cbKB:OnEditorClose/Detach %s %p"), thisEditor->GetTitle().c_str(), thisEditor);
+            #endif
+         }//if
+     }
+    event.Skip();
+}//OnEditorClose
 // ----------------------------------------------------------------------------
 void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
@@ -914,15 +863,16 @@ void cbKeyBinder::OnWindowDestroyEvent(wxEvent& event)
     // that dont get cleared by OnEditorClose, which doesnt get
     // entered for split windows. CodeBlocks doesnt yet have events
     // when opening/closing split windows.
-    if (not m_IsAttached){event.Skip(); return; };
 
     wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
 
+    //-Detach(pWindow); causes crash
     if ( (pWindow) && (m_EditorPtrs.Index(pWindow) != wxNOT_FOUND))
     {
-        DetachEditor(pWindow);
+        m_EditorPtrs.Remove(pWindow);
+        //-DetachEditor(pWindow); causes crash
         #ifdef LOGGING
-         LOGIT( _T("OnWindowDestroyEvent Remove %p"), pWindow);
+         LOGIT( _T("OnWindowDestroyEven Remove %p"), pWindow);
         #endif //LOGGING
     }
     event.Skip();
