@@ -3090,12 +3090,6 @@ void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
     if (Manager::Get()->GetPluginManager()->Configure() == wxID_OK)
     {
         // mandrav: disabled on-the-fly plugins enabling/disabling (still has glitches)
-        cbMessageBox(_("Changes will take effect on the next startup."),
-                    _("Information"),
-                    wxICON_INFORMATION);
-//        wxBusyCursor busy;
-//        CreateMenubar();
-//        CreateToolbars();
     }
     m_ReconfiguringPlugins = false;
 }

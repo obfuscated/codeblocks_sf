@@ -30,7 +30,7 @@
       </object>
       <object class="sizeritem">
         <object class="wxStaticText">
-          <label>Note that the plugins will be loaded/unloaded when you press &quot;OK&quot;.</label>
+          <label>Changes will take effect after restarting Code::Blocks.</label>
         </object>
         <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
         <border>8</border>
