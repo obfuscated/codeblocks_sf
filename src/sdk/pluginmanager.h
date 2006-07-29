@@ -4,6 +4,7 @@
 #include <wx/dynarray.h>
 #include "settings.h"
 #include "manager.h"
+#include "cbplugin.h" // for FreePluginProc
 
 //forward decls
 struct PluginInfo;
