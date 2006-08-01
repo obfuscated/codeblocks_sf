@@ -844,7 +844,7 @@ int DebuggerGDB::Debug()
     {
         msgMan->AppendLog(m_PageIndex,_("ERROR: You need to specify a debugger program in the compiler's settings."));
         #ifdef __WXMSW__
-        msgMan->Log(m_PageIndex,_("\n(For MINGW compilers, it's 'gdb.exe' (without the quotes))"));
+        msgMan->Log(m_PageIndex,_("\n(For MinGW compilers, it's 'gdb.exe' (without the quotes))"));
         msgMan->Log(m_PageIndex,_("\n(For MSVC compilers, it's 'cdb.exe' (without the quotes))"));
         #else
         msgMan->Log(m_PageIndex,_("\n(For GCC compilers, it's 'gdb' (without the quotes))"));
@@ -857,8 +857,8 @@ int DebuggerGDB::Debug()
     if (cmdexe.IsEmpty())
     {
         cbMessageBox(_("The debugger executable is not set.\n"
-                    "To set it, go to \"Settings/Configure plugins/Compiler\", switch to the \"Programs\" tab\n"
-                    "and select the debugger program."), _("Error"), wxICON_ERROR);
+                       "To set it, go to \"Settings/Compiler and debugger\", switch to the \"Programs\" tab,\n"
+                       "and select the debugger program."), _("Error"), wxICON_ERROR);
         msgMan->Log(m_PageIndex, _("Aborted"));
         return 4;
     }
