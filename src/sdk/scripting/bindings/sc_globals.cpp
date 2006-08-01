@@ -77,6 +77,9 @@ namespace ScriptBindings
         SqPlus::RegisterGlobal(getUVM, "GetUserVariableManager");
         SqPlus::RegisterGlobal(getCF, "GetCompilerFactory");
 
+        SqPlus::RegisterGlobal(ConfigManager::GetFolder, "GetFolder");
+        SqPlus::RegisterGlobal(ConfigManager::LocateDataFile, "LocateDataFile");
+
         SquirrelVM::CreateFunctionGlobal(IsNull, "IsNull", "*");
     }
 }

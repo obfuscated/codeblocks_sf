@@ -37,9 +37,12 @@ class NewFromTemplateDlg : public wxDialog
 		void OnCategoryChanged(wxCommandEvent& event);
 		void OnEditScript(wxCommandEvent& event);
 		void OnEditGlobalScript(wxCommandEvent& event);
+		void OnViewChange(wxCommandEvent& event);
+		void OnHelp(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
 
-		void EditScript(const wxString& relativeFilename);
+		void ChangeView();
+		void EditScript(const wxString& filename);
 		wxListCtrl* GetVisibleListCtrl();
 		wxChoice* GetVisibleCategory();
 		TemplateOutputType GetVisibleOutputType() const;

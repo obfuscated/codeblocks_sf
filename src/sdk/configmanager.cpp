@@ -39,7 +39,8 @@
 #include "tinyxml/tinywxuni.h"
 
 wxString ConfigManager::app_path = wxEmptyString;
-wxString ConfigManager::data_path = wxEmptyString;
+wxString ConfigManager::data_path_global = wxEmptyString;
+wxString ConfigManager::data_path_user = wxEmptyString;
 wxString ConfigManager::config_folder = wxEmptyString;
 wxString ConfigManager::home_folder = wxEmptyString;
 
@@ -102,7 +103,7 @@ CfgMgrBldr::CfgMgrBldr() : doc(0), volatile_doc(0), r(false)
 
     if(::wxFileExists(cfg) == false)
     {
-    cfg = ConfigManager::LocateDataFile(wxFileName(cfg).GetFullName(), false, true);
+    cfg = ConfigManager::LocateDataFile(wxFileName(cfg).GetFullName(), sdBase | sdConfig | sdCurrent);
     if(cfg.IsEmpty())
         {
             cfg = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + personality + _T(".conf");
@@ -359,160 +360,177 @@ wxString ConfigManager::GetProxy()
 }
 
 
-wxString ConfigManager::GetTempFolder()
+wxString ConfigManager::GetFolder(SearchDirs dir)
 {
-    static bool once = true;
-    static wxString tempFolder;
-
-    if(once)
-    {
-        once = false;
-
-        wxString tempFile = wxFileName::CreateTempFileName(wxEmptyString);
-        tempFolder = wxFileName(tempFile).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-
-        ::wxRemoveFile(tempFile);
-    }
-    return tempFolder;
-}
-
-wxString ConfigManager::GetExecutableFolder()
-{
-    if(!ConfigManager::app_path.IsEmpty())
-        return ConfigManager::app_path;
-
-#ifdef __WXMSW__
-
-    wxChar name[MAX_PATH];
-    GetModuleFileName(0L, name, MAX_PATH);
-    wxFileName fname(name);
-    ConfigManager::app_path = fname.GetPath(wxPATH_GET_VOLUME);
-#else
-
-    //    ConfigManager::app_path = wxString(SELFPATH,wxConvUTF8);
-    //    ConfigManager::app_path = wxFileName(base).GetPath();
-    //    if (ConfigManager::app_path.IsEmpty())
-    ConfigManager::app_path = _T(".");
-#endif
-
-    return ConfigManager::app_path;
-}
-
-wxString ConfigManager::GetHomeFolder()
-{
+    // cache home_folder
     if(ConfigManager::home_folder.IsEmpty())
     {
         wxFileName f;
         f.AssignHomeDir();
         ConfigManager::home_folder = f.GetFullPath();
     }
-    return ConfigManager::home_folder;
-}
 
-#ifdef __WXMSW__
+    // cache app_path
+    if (ConfigManager::app_path.IsEmpty())
+    {
+        #ifdef __WXMSW__
+        wxChar name[MAX_PATH];
+        GetModuleFileName(0L, name, MAX_PATH);
+        wxFileName fname(name);
+        ConfigManager::app_path = fname.GetPath(wxPATH_GET_VOLUME);
+        #else
 
-wxString ConfigManager::GetConfigFolder()
-{
+        //    ConfigManager::app_path = wxString(SELFPATH,wxConvUTF8);
+        //    ConfigManager::app_path = wxFileName(base).GetPath();
+        //    if (ConfigManager::app_path.IsEmpty())
+        ConfigManager::app_path = _T(".");
+        #endif
+    }
+
+    // cache config_folder
     if(ConfigManager::config_folder.IsEmpty())
     {
+        #ifdef __WXMSW__
         TCHAR szPath[MAX_PATH];
         SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, szPath);
         ConfigManager::config_folder = wxString(szPath) + _T("\\codeblocks");
+        #else
+        ConfigManager::config_folder = ConfigManager::home_folder + _T("/.codeblocks");
+        #endif
     }
-    if(!wxDirExists(ConfigManager::config_folder))
-        wxMkdir(ConfigManager::config_folder);
 
-    return ConfigManager::config_folder;
+    // cache data_path_global
+    if(ConfigManager::data_path_global.IsEmpty())
+    {
+        #ifdef __WXMSW__
+        ConfigManager::data_path_global = ConfigManager::app_path + _T("/share/codeblocks");
+        #else
+        ConfigManager::data_path_global = _T("/usr/share/codeblocks"); // wildguess
+        #endif
+    }
+
+    // cache data_path_user
+    if(ConfigManager::data_path_user.IsEmpty())
+        ConfigManager::data_path_user = ConfigManager::config_folder + _T("/share/codeblocks");
+
+    switch (dir)
+    {
+        case sdHome:
+            return ConfigManager::home_folder;
+
+        case sdBase:
+            return ConfigManager::app_path;
+
+        case sdTemp:
+        {
+            static bool once = true;
+            static wxString tempFolder;
+
+            if(once)
+            {
+                once = false;
+
+                wxString tempFile = wxFileName::CreateTempFileName(wxEmptyString);
+                tempFolder = wxFileName(tempFile).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+                ::wxRemoveFile(tempFile);
+            }
+            return tempFolder;
+        }
+
+        case sdConfig:
+            if(!wxDirExists(ConfigManager::config_folder))
+                CreateDirRecursively(ConfigManager::config_folder);
+            return ConfigManager::config_folder;
+
+        case sdCurrent:
+            return ::wxGetCwd();
+
+        case sdPluginsGlobal:
+        {
+            wxString p = ConfigManager::data_path_global + _T("/plugins/");
+            if(!wxDirExists(p))
+                CreateDirRecursively(p);
+            return p;
+        }
+
+        case sdPluginsUser:
+        {
+            wxString p = ConfigManager::data_path_user + _T("/plugins/");
+            if(!wxDirExists(p))
+                CreateDirRecursively(p);
+            return p;
+        }
+
+        case sdScriptsGlobal:
+        {
+            wxString p = ConfigManager::data_path_global + _T("/scripts/");
+            if(!wxDirExists(p))
+                CreateDirRecursively(p);
+            return p;
+        }
+
+        case sdScriptsUser:
+        {
+            wxString p = ConfigManager::data_path_user + _T("/scripts/");
+            if(!wxDirExists(p))
+                CreateDirRecursively(p);
+            return p;
+        }
+
+        case sdDataGlobal:
+            if(!wxDirExists(ConfigManager::data_path_global))
+                CreateDirRecursively(ConfigManager::data_path_global);
+            return ConfigManager::data_path_global;
+
+        case sdDataUser:
+            if(!wxDirExists(ConfigManager::data_path_user))
+                CreateDirRecursively(ConfigManager::data_path_user);
+            return ConfigManager::data_path_user;
+
+        default:
+            return wxEmptyString;
+    }
 }
 
-wxString ConfigManager::GetPluginsFolder()
-{
-    return GetDataFolder() + _T("/plugins");
-}
-
-wxString ConfigManager::GetScriptsFolder()
-{
-    return GetDataFolder() + _T("/scripts");
-}
-
-wxString ConfigManager::GetDataFolder()
-{
-    if(ConfigManager::data_path.IsEmpty())
-        ConfigManager::data_path = GetExecutableFolder() + _T("/share/codeblocks");
-    return ConfigManager::data_path;
-}
-
-wxString ConfigManager::LocateDataFile(const wxString& filename, bool search_path, bool search_conf)
+wxString ConfigManager::LocateDataFile(const wxString& filename, int search_dirs)
 {
     wxPathList searchPaths;
 
-    if(search_conf)
+    // user dirs have precedence
+    if (search_dirs & sdPluginsUser)
+        searchPaths.Add(GetPluginsFolder(false));
+    if (search_dirs & sdScriptsUser)
+        searchPaths.Add(GetScriptsFolder(false));
+    if (search_dirs & sdDataUser)
+        searchPaths.Add(GetDataFolder(false));
+
+    // then we have global dirs
+    if (search_dirs & sdPluginsGlobal)
+        searchPaths.Add(GetPluginsFolder(true));
+    if (search_dirs & sdScriptsGlobal)
+        searchPaths.Add(GetScriptsFolder(true));
+    if (search_dirs & sdDataGlobal)
+        searchPaths.Add(GetDataFolder(true));
+
+    // rest of the dirs
+    if (search_dirs & sdCurrent)
+        searchPaths.Add(::wxGetCwd());
+    if (search_dirs & sdConfig)
         searchPaths.Add(GetConfigFolder());
+    if (search_dirs & sdHome)
+        searchPaths.Add(GetHomeFolder());
+    if (search_dirs & sdBase)
+        searchPaths.Add(GetExecutableFolder());
+    if (search_dirs & sdTemp)
+        searchPaths.Add(GetTempFolder());
 
-    searchPaths.Add(GetDataFolder());
-    searchPaths.Add(GetExecutableFolder());
-    searchPaths.Add(GetHomeFolder());
-
-    if(search_path)
-    {
+    // PATH env. var
+    if (search_dirs & sdPath)
         searchPaths.AddEnvList(_T("PATH"));
-        searchPaths.Add(_T("C:\\"));
-    }
 
     return searchPaths.FindValidPath(filename);
 }
-
-#else // __WXMSW__
-
-
-wxString ConfigManager::GetConfigFolder()
-{
-    if(ConfigManager::config_folder.IsEmpty())
-        ConfigManager::config_folder = GetHomeFolder() + _T("/.codeblocks");
-    if(!wxDir::Exists(ConfigManager::config_folder))
-        wxMkdir(ConfigManager::config_folder);
-
-    return ConfigManager::config_folder;
-}
-
-wxString ConfigManager::GetPluginsFolder()
-{
-    return GetDataFolder() + _T("/plugins");
-}
-
-wxString ConfigManager::GetScriptsFolder()
-{
-    return GetDataFolder() + _T("/scripts");
-}
-
-wxString ConfigManager::GetDataFolder()
-{
-    if(ConfigManager::data_path.IsEmpty())
-        ConfigManager::data_path = _T("/usr/share/codeblocks");
-    return ConfigManager::data_path;
-}
-
-wxString ConfigManager::LocateDataFile(const wxString& filename, bool search_path, bool search_conf)
-{
-    wxPathList searchPaths;
-
-    if(search_conf)
-        searchPaths.Add(GetConfigFolder());
-
-    searchPaths.Add(GetHomeFolder());
-    searchPaths.Add(GetDataFolder());
-
-    if(search_path)
-    {
-        searchPaths.AddEnvList(_T("PATH"));
-        searchPaths.Add(_T("/usr/share/"));
-    }
-
-    return searchPaths.FindValidPath(filename);
-}
-
-#endif
-
 
 
 
@@ -710,7 +728,7 @@ void ConfigManager::Write(const wxString& name,  const wxString& value, bool ign
     }
     else if(name.IsSameAs(CfgMgrConsts::data_path))
     {
-        ConfigManager::data_path = value;
+        ConfigManager::data_path_global = value;
         return;
     }
     if(ignoreEmpty && value.IsEmpty())
@@ -740,7 +758,7 @@ wxString ConfigManager::Read(const wxString& name, const wxString& defaultVal)
     if(name.IsSameAs(CfgMgrConsts::app_path))
         return ConfigManager::app_path;
     else if(name.IsSameAs(CfgMgrConsts::data_path))
-        return ConfigManager::data_path;
+        return ConfigManager::data_path_global;
 
     wxString ret;
 
@@ -759,7 +777,7 @@ bool ConfigManager::Read(const wxString& name, wxString* str)
     }
     else if(name.IsSameAs(CfgMgrConsts::data_path))
     {
-        str->assign(ConfigManager::data_path);
+        str->assign(ConfigManager::data_path_global);
         return true;
     }
 

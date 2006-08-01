@@ -57,6 +57,31 @@ namespace ConfigManagerContainer
 };
 
 
+/* ------------------------------------------------------------------------------------------------------------------*/
+/** Search dirs values. Used as a bitmask in ConfigManager::LocateDataFile() and friends.*/
+enum SearchDirs
+{
+    sdHome            = 0x0001, ///< User's home directory
+    sdBase            = 0x0002, ///< Code::Blocks' installation base
+    sdTemp            = 0x0004, ///< System-wide temp folder
+    sdPath            = 0x0008, ///< All dirs in the PATH environment variable
+    sdConfig          = 0x0010, ///< Config folder
+    sdCurrent         = 0x0020, ///< Current working folder
+
+    sdPluginsUser     = 0x0100, ///< Plugins folder in user's dir
+    sdScriptsUser     = 0x0200, ///< Scripts folder in user's dir
+    sdDataUser        = 0x0400, ///< Data folder in user's dir
+
+    sdAllUser         = 0x0f00, ///< Convenience value meaning "all sd*User values"
+
+    sdPluginsGlobal   = 0x1000, ///< Plugins folder in base dir
+    sdScriptsGlobal   = 0x2000, ///< Scripts folder in base dir
+    sdDataGlobal      = 0x4000, ///< Data folder in base dir
+
+    sdAllGlobal       = 0xf000, ///< Convenience value meaning "all sd*Global values"
+
+    sdAllKnown        = 0xffff, ///< All known dirs (i.e. all of the above)
+};
 
 /* ------------------------------------------------------------------------------------------------------------------
 *  ConfigManager class
@@ -70,7 +95,8 @@ class DLLIMPORT ConfigManager
     TiXmlElement* pathNode;
 
     static wxString app_path;
-    static wxString data_path;
+    static wxString data_path_global;
+    static wxString data_path_user;
     static wxString config_folder;
     static wxString home_folder;
 
@@ -84,44 +110,48 @@ class DLLIMPORT ConfigManager
 
 public:
 
-
     /* -----------------------------------------------------------------------------------------------------
     *  Utility functions for accessing files/folders in a system-wide, consistent way
-    *
-    *
-    * Locate a file in an installation- and platform-independent way. You should always use this function
-    * if you are looking for "some arbitrary file that belongs to Code::Blocks", as it works across platforms
-    * without any additional effort from your side, and it has some builtin redundancy.
-    *
-    *    If search_path is true, the directories in the PATH variable will be added to the search list.
-    *    If search_conf_folder is true, the location where Code::Blocks keeps its config files is added (normally not needed).
-    *
-    * Under Windows, the following locations are searched in the listed order:
-    *    1. [if specified] config folder
-    *    2. Code::Blocks data folder (usually located inside Code::Blocks executable folder)
-    *    3. Code::Blocks executable folder
-    *    4. User's home folder
-    *    5. [if specified, as by default] PATH, C:
-    *
-    * Under Linux (resp. all other platforms), the following locations are searched in the listed order:
-    *    1. [if specified] config folder
-    *    2. Code::Blocks data folder
-    *    3. User's home folder
-    *    4. [if specified, as by default] PATH, /usr/share/
-    */
-    static wxString LocateDataFile(const wxString& filename, bool search_path = true, bool search_conf_folder = false);
+    * -----------------------------------------------------------------------------------------------------*/
 
-    /*
+
+    /** @brief Locate a file in an installation- and platform-independent way.
+    *
+    * You should always use this function if you are looking for "some arbitrary file that belongs to Code::Blocks",
+    * as it works across platforms without any additional effort from your side, and it has some builtin redundancy.
+    * @par
+    * So, code that looked like this in the old days:
+    * @code
+    * wxString some_file = ConfigManager::GetScriptsFolder() + wxFILE_SEP_PATH + _T("startup.script");
+    * @endcode
+    * should be converted to this:
+    * @code
+    * wxString some_file = ConfigManager::LocateDataFile(_T("startup.script"), sdScriptsUser | sdScriptsGlobal);
+    * @endcode
+    * This would try to locate the file named "startup.script" in the global and also in the user's scripts folders.
+    * @note User's dirs @b always have precedence over global dirs.
+    *
+    * @param search_dirs A bit-mask of the folders to include in the search.
+    */
+    static wxString LocateDataFile(const wxString& filename, int search_dirs = sdAllKnown);
+
+    /** @brief Access one of Code::Blocks' folders.
+      * @param dir The directory to return.
+      */
+    static wxString GetFolder(SearchDirs dir);
+
+    /* Backwards compatible functions. For new code, please use GetFolder() instead.
+    *
     * Query "standard" paths that work across platforms.
     * NEVER harcode a path like "C:\CodeBlocks\share\data". Always use one of the following functions to compose a path.
     */
-    static wxString GetHomeFolder();
-    static wxString GetConfigFolder();
-    static wxString GetPluginsFolder();
-    static wxString GetScriptsFolder();
-    static wxString GetDataFolder();
-    static wxString GetExecutableFolder();
-    static wxString GetTempFolder();
+    static wxString GetHomeFolder(){ return GetFolder(sdHome); }
+    static wxString GetConfigFolder(){ return GetFolder(sdConfig); }
+    static wxString GetPluginsFolder(bool global = true){ return GetFolder(global ? sdPluginsGlobal : sdPluginsUser); }
+    static wxString GetScriptsFolder(bool global = true){ return GetFolder(global ? sdScriptsGlobal : sdScriptsUser); }
+    static wxString GetDataFolder(bool global = true){ return GetFolder(global ? sdDataGlobal : sdDataUser); }
+    static wxString GetExecutableFolder(){ return GetFolder(sdBase); }
+    static wxString GetTempFolder(){ return GetFolder(sdTemp); }
 
     /*
     *  Network proxy for HTTP/FTP transfers
@@ -135,8 +165,8 @@ public:
     static unsigned int GetRevisionNumber();
     static wxString GetSvnDate();
 
-    static inline wxString ReadDataPath(){return GetDataFolder();};      // use instead of cfg->Read("data_path");
-    static inline wxString ReadAppPath(){return GetExecutableFolder();}; // use instead of cfg->Read("app_path");
+    static inline wxString ReadDataPath(){return GetDataFolder();}      // use instead of cfg->Read("data_path");
+    static inline wxString ReadAppPath(){return GetExecutableFolder();} // use instead of cfg->Read("app_path");
 
 
 

@@ -239,7 +239,7 @@ function SetupTarget(target,is_debug)
 // return the header contents string
 function GenerateHeader()
 {
-    local path = Wizard.GetTemplatePath() + GetTemplateFile(DOT_EXT_H);
+    local path = Wizard.FindTemplateFile(GetTemplateFile(DOT_EXT_H));
     local buffer = IO.ReadFileContents(path);
 
     // create header guard word
@@ -256,7 +256,7 @@ function GenerateHeader()
 // return the implementation contents string
 function GenerateSource()
 {
-    local path = Wizard.GetTemplatePath() + GetTemplateFile(DOT_EXT_CPP);
+    local path = Wizard.FindTemplateFile(GetTemplateFile(DOT_EXT_CPP));
     local buffer = IO.ReadFileContents(path);
 
     return SubstituteMacros(buffer);

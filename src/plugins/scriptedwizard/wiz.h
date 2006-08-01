@@ -151,7 +151,7 @@ class Wiz : public cbWizardPlugin
 
         void Finalize();
         void RegisterWizard();
-        const wxString& GetTemplatePath() { return m_TemplatePath; }
+        wxString FindTemplateFile(const wxString& filename);
 	protected:
         void OnAttach();
         void Clear();
@@ -166,7 +166,6 @@ class Wiz : public cbWizardPlugin
         WizCompilerPanel* m_pWizCompilerPanel;
         WizBuildTargetPanel* m_pWizBuildTargetPanel;
         int m_LaunchIndex;
-        wxString m_TemplatePath;
         wxString m_LastXRC;
 	private:
 };

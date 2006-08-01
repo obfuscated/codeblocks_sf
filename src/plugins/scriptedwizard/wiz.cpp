@@ -31,6 +31,7 @@
 #include <compiler.h>
 #include <projectbuildtarget.h>
 #include <filefilters.h>
+#include <infowindow.h>
 #include <licenses.h> // defines some common licenses (like the GPL)
 
 #include <scripting/bindings/sc_base_types.h>
@@ -63,8 +64,6 @@ Wiz::Wiz()
     m_PluginInfo.authorWebsite = _T("http://www.codeblocks.org");
     m_PluginInfo.thanksTo = _("");
     m_PluginInfo.license = LICENSE_GPL;
-
-    m_TemplatePath = ConfigManager::GetDataFolder() + _T("/templates/wizard/");
 }
 
 Wiz::~Wiz()
@@ -88,15 +87,41 @@ void Wiz::OnAttach()
 
     // run main wizard script
     // this registers all available wizard scripts with us
-    Manager::Get()->GetScriptingManager()->LoadScript(m_TemplatePath + _T("config.script"));
-    try
+
+    // user script first
+    wxString templatePath = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/");
+    wxString script = templatePath + _T("/config.script");
+    if (wxFileExists(script))
     {
-        SqPlus::SquirrelFunction<void> f("RegisterWizards");
-        f();
+        Manager::Get()->GetScriptingManager()->LoadScript(script);
+        try
+        {
+            SqPlus::SquirrelFunction<void> f("RegisterWizards");
+            f();
+        }
+        catch (SquirrelError& e)
+        {
+            Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        }
     }
-    catch (SquirrelError& e)
+    else
     {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        // global script next
+        templatePath = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/");
+        script = templatePath + _T("/config.script");
+        if (wxFileExists(script))
+        {
+            Manager::Get()->GetScriptingManager()->LoadScript(script);
+            try
+            {
+                SqPlus::SquirrelFunction<void> f("RegisterWizards");
+                f();
+            }
+            catch (SquirrelError& e)
+            {
+                Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+            }
+        }
     }
 }
 
@@ -150,7 +175,7 @@ const wxBitmap& Wiz::GetBitmap(int index) const
 
 wxString Wiz::GetScriptFilename(int index) const
 {
-    //return this wizard's script filename
+    //return this wizard's script relative filename
     cbAssert(index >= 0 && index < GetCount());
     return m_Wizards[index].script;
 }
@@ -176,8 +201,6 @@ void Wiz::Clear()
 
 CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
 {
-    // TODO: pFilename is not used
-
     cbAssert(index >= 0 && index < GetCount());
 
     // early check: build target wizards need an active project
@@ -190,10 +213,10 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
 
     m_LaunchIndex = index;
 
-    wxString script = m_TemplatePath + m_Wizards[index].script;
-    wxString commons = m_TemplatePath + _T("common_functions.script");
+    wxString global_commons = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/common_functions.script");
+    wxString user_commons = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/common_functions.script");
 
-    m_LastXRC = m_TemplatePath + m_Wizards[index].xrc;
+    m_LastXRC = m_Wizards[index].xrc;
     if (wxFileExists(m_LastXRC))
         wxXmlResource::Get()->Load(m_LastXRC);
     else
@@ -207,11 +230,25 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
                     wxDefaultPosition,
                     wxDEFAULT_DIALOG_STYLE);
 
-    if (!Manager::Get()->GetScriptingManager()->LoadScript(commons) || // load common functions
-        !Manager::Get()->GetScriptingManager()->LoadScript(script)) // build and run script
+    if (!Manager::Get()->GetScriptingManager()->LoadScript(global_commons) && // load global common functions
+        !Manager::Get()->GetScriptingManager()->LoadScript(user_commons)) // and/or load user common functions
     {
         // any errors have been displayed by ScriptingManager
         Clear();
+        InfoWindow::Display(_("Error"), _("Failed to load the common functions script.\nPlease check the debug log for details..."));
+        return 0;
+    }
+
+    // locate the script
+    wxString script = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + m_Wizards[index].script;
+    if (!wxFileExists(script))
+        script = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/") + m_Wizards[index].script;
+
+    if (!Manager::Get()->GetScriptingManager()->LoadScript(script)) // build and run script
+    {
+        // any errors have been displayed by ScriptingManager
+        Clear();
+        InfoWindow::Display(_("Error"), _("Failed to load the wizard's script.\nPlease check the debug log for details..."));
         return 0;
     }
 
@@ -615,7 +652,9 @@ void Wiz::CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxStri
 {
     // first get the dir with the files
     wxArrayString filesList;
-    wxString enumdirs = GetTemplatePath() + srcdir;
+    wxString enumdirs = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + srcdir;
+    if (!wxDirExists(enumdirs + _T("/")))
+        enumdirs = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/") + srcdir;
     wxString basepath = wxFileName(enumdirs).GetFullPath();
 
     // recursively enumerate all files under srcdir
@@ -653,6 +692,14 @@ void Wiz::CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxStri
 ////////////////////////
 // Scripting - BEGIN
 ////////////////////////
+
+wxString Wiz::FindTemplateFile(const wxString& filename)
+{
+    wxString f = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + filename;
+    if (!wxFileExists(f))
+        f = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/") + filename;
+    return f;
+}
 
 TemplateOutputType Wiz::GetWizardType()
 {
@@ -956,14 +1003,25 @@ void Wiz::AddWizard(TemplateOutputType otype,
         }
     }
 
+    // locate the images and XRC
+    wxString tpng = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + templatePNG;
+    if (!wxFileExists(tpng))
+        tpng = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/") + templatePNG;
+    wxString wpng = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + wizardPNG;
+    if (!wxFileExists(wpng))
+        wpng = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/") + wizardPNG;
+    wxString _xrc = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + xrc;
+    if (!wxFileExists(_xrc))
+        _xrc = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/") + xrc;
+
     WizardInfo info;
     info.output_type = otype;
     info.title = title;
     info.cat = cat;
     info.script = script;
-    info.templatePNG.LoadFile(m_TemplatePath + templatePNG, wxBITMAP_TYPE_PNG);
-    info.wizardPNG.LoadFile(m_TemplatePath + wizardPNG, wxBITMAP_TYPE_PNG);
-    info.xrc = xrc;
+    info.templatePNG.LoadFile(tpng, wxBITMAP_TYPE_PNG);
+    info.wizardPNG.LoadFile(wpng, wxBITMAP_TYPE_PNG);
+    info.xrc = _xrc;
     m_Wizards.Add(info);
 
     wxString typS;
@@ -1170,7 +1228,7 @@ void Wiz::RegisterWizard()
             func(&Wiz::SetListboxSelection, "SetListboxSelection").
             // get various common info
             func(&Wiz::GetWizardType, "GetWizardType").
-            func(&Wiz::GetTemplatePath, "GetTemplatePath").
+            func(&Wiz::FindTemplateFile, "FindTemplateFile").
             // project path page
             func(&Wiz::GetProjectPath, "GetProjectPath").
             func(&Wiz::GetProjectName, "GetProjectName").

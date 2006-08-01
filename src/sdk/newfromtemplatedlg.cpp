@@ -43,6 +43,8 @@
 #endif
 
 #include <wx/listbook.h>
+#include <wx/radiobox.h>
+
 #include "newfromtemplatedlg.h"
 #include "projecttemplateloader.h"
 
@@ -84,6 +86,9 @@ BEGIN_EVENT_TABLE(NewFromTemplateDlg, wxDialog)
     // context menu for wizard scripts
 	EVT_MENU(idEditWizardScript, NewFromTemplateDlg::OnEditScript)
 	EVT_MENU(idEditGlobalWizardScript, NewFromTemplateDlg::OnEditGlobalScript)
+
+	EVT_RADIOBOX(XRCID("rbView"), NewFromTemplateDlg::OnViewChange)
+	EVT_BUTTON(XRCID("btnHelp"), NewFromTemplateDlg::OnHelp)
 END_EVENT_TABLE()
 
 NewFromTemplateDlg::NewFromTemplateDlg(TemplateOutputType initial, const wxArrayString& user_templates)
@@ -100,9 +105,17 @@ NewFromTemplateDlg::NewFromTemplateDlg(TemplateOutputType initial, const wxArray
 
     // create image lists
     XRCCTRL(*this, "listProjects", wxListCtrl)->SetImageList(new wxImageList(32, 32), wxIMAGE_LIST_NORMAL);
+    XRCCTRL(*this, "listProjects", wxListCtrl)->SetImageList(new wxImageList(32, 32), wxIMAGE_LIST_SMALL);
     XRCCTRL(*this, "listTargets", wxListCtrl)->SetImageList(new wxImageList(32, 32), wxIMAGE_LIST_NORMAL);
+    XRCCTRL(*this, "listTargets", wxListCtrl)->SetImageList(new wxImageList(32, 32), wxIMAGE_LIST_SMALL);
     XRCCTRL(*this, "listFiles", wxListCtrl)->SetImageList(new wxImageList(32, 32), wxIMAGE_LIST_NORMAL);
+    XRCCTRL(*this, "listFiles", wxListCtrl)->SetImageList(new wxImageList(32, 32), wxIMAGE_LIST_SMALL);
     XRCCTRL(*this, "listCustoms", wxListCtrl)->SetImageList(new wxImageList(32, 32), wxIMAGE_LIST_NORMAL);
+    XRCCTRL(*this, "listCustoms", wxListCtrl)->SetImageList(new wxImageList(32, 32), wxIMAGE_LIST_SMALL);
+
+    // load view prefs
+    XRCCTRL(*this, "rbView", wxRadioBox)->SetSelection(Manager::Get()->GetConfigManager(_T("new_from_template"))->ReadInt(_T("/view"), 0));
+    ChangeView();
 
 	BuildCategories();
 	BuildList();
@@ -126,9 +139,13 @@ NewFromTemplateDlg::~NewFromTemplateDlg()
     delete XRCCTRL(*this, "listCustoms", wxListCtrl)->GetImageList(wxIMAGE_LIST_NORMAL);
 
     XRCCTRL(*this, "listProjects", wxListCtrl)->SetImageList(0, wxIMAGE_LIST_NORMAL);
+    XRCCTRL(*this, "listProjects", wxListCtrl)->SetImageList(0, wxIMAGE_LIST_SMALL);
     XRCCTRL(*this, "listTargets", wxListCtrl)->SetImageList(0, wxIMAGE_LIST_NORMAL);
+    XRCCTRL(*this, "listTargets", wxListCtrl)->SetImageList(0, wxIMAGE_LIST_SMALL);
     XRCCTRL(*this, "listFiles", wxListCtrl)->SetImageList(0, wxIMAGE_LIST_NORMAL);
+    XRCCTRL(*this, "listFiles", wxListCtrl)->SetImageList(0, wxIMAGE_LIST_SMALL);
     XRCCTRL(*this, "listCustoms", wxListCtrl)->SetImageList(0, wxIMAGE_LIST_NORMAL);
+    XRCCTRL(*this, "listCustoms", wxListCtrl)->SetImageList(0, wxIMAGE_LIST_SMALL);
 
 	ClearList();
 }
@@ -217,6 +234,7 @@ void NewFromTemplateDlg::BuildListFor(TemplateOutputType otype, wxListCtrl* list
         return;
 	ClearListFor(list);
 	list->GetImageList(wxIMAGE_LIST_NORMAL)->RemoveAll();
+	list->GetImageList(wxIMAGE_LIST_SMALL)->RemoveAll();
 
     wxBitmap bmp;
     bool all = cat->GetSelection() == 0;
@@ -233,9 +251,19 @@ void NewFromTemplateDlg::BuildListFor(TemplateOutputType otype, wxListCtrl* list
             if (all || plugin->GetCategory(w).Matches(cat->GetStringSelection()))
             {
                 int idx = plugin->GetBitmap(w).Ok() ? list->GetImageList(wxIMAGE_LIST_NORMAL)->Add(plugin->GetBitmap(w)) : -2;
+                if (plugin->GetBitmap(w).Ok())
+                    list->GetImageList(wxIMAGE_LIST_SMALL)->Add(plugin->GetBitmap(w));
                 int index = list->InsertItem(0, plugin->GetTitle(w), idx);
                 if (index != -1)
+                {
                     list->SetItemData(index, (long)(new ListItemData(0, plugin, w)));
+                    // if the script exists in the user's configuration, mark that it's been customized
+                    wxString script = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + plugin->GetScriptFilename(w);
+                    if (wxFileExists(script))
+                    {
+                        list->SetItemTextColour(index, *wxRED);
+                    }
+                }
             }
         }
     }
@@ -318,20 +346,47 @@ wxString NewFromTemplateDlg::GetSelectedUserTemplate() const
     return sel != -1 ? XRCCTRL(*this, "lstUser", wxListBox)->GetString(sel) : _T("");
 }
 
-void NewFromTemplateDlg::EditScript(const wxString& relativeFilename)
+void NewFromTemplateDlg::EditScript(const wxString& filename)
 {
-    if (relativeFilename.IsEmpty())
+    if (filename.IsEmpty())
         return;
-    wxString script = ConfigManager::GetDataFolder() + _T("/templates/wizard/");
-    script += relativeFilename;
+
+    // edited before?
+    bool first_time = false;
+    wxString script = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + filename;
+    if (!wxFileExists(script))
+    {
+        first_time = true;
+        script = ConfigManager::GetFolder(sdDataGlobal) + _T("/templates/wizard/") + filename;
+    }
+
     cbEditor* ed = Manager::Get()->GetEditorManager()->Open(script);
     if (ed)
     {
         ed->GetControl()->SetFocus();
+        if (first_time)
+        {
+            // first time editing this script; change the filename to point to the user's dir
+            ed->SetFilename(ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + filename);
+            ed->SetModified(true);
+            // also make sure the destination directory exists
+            CreateDirRecursively(ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + filename);
+        }
         EndModal(wxID_CANCEL);
         return;
     }
     cbMessageBox(_("Couldn't open script:\n") + script, _("Error"), wxICON_ERROR);
+}
+
+void NewFromTemplateDlg::ChangeView()
+{
+    int sel = XRCCTRL(*this, "rbView", wxRadioBox)->GetSelection();
+    int style = sel == 0 ? wxLC_ICON : wxLC_LIST;
+
+    XRCCTRL(*this, "listProjects", wxListCtrl)->SetSingleStyle(style);
+    XRCCTRL(*this, "listTargets", wxListCtrl)->SetSingleStyle(style);
+    XRCCTRL(*this, "listFiles", wxListCtrl)->SetSingleStyle(style);
+    XRCCTRL(*this, "listCustoms", wxListCtrl)->SetSingleStyle(style);
 }
 
 void NewFromTemplateDlg::OnListRightClick(wxListEvent& event)
@@ -371,7 +426,7 @@ void NewFromTemplateDlg::OnEditScript(wxCommandEvent& event)
         return;
 	ListItemData* data = (ListItemData*)list->GetItemData(index);
     cbWizardPlugin* wiz = data->plugin;
-    EditScript(wiz->GetScriptFilename(data->wizPluginIndex)); // script's filename is always relative to the above path
+    EditScript(wiz->GetScriptFilename(data->wizPluginIndex));
 }
 
 void NewFromTemplateDlg::OnEditGlobalScript(wxCommandEvent& event)
@@ -380,6 +435,29 @@ void NewFromTemplateDlg::OnEditGlobalScript(wxCommandEvent& event)
                     "take effect after you restart Code::Blocks."),
                     _("Information"), wxICON_INFORMATION);
     EditScript(_T("config.script"));
+}
+
+void NewFromTemplateDlg::OnViewChange(wxCommandEvent& event)
+{
+    ChangeView();
+}
+
+void NewFromTemplateDlg::OnHelp(wxCommandEvent& event)
+{
+    cbMessageBox(_("When you edit a wizard's script, you actually edit a copy of it which "
+                    "is automatically placed inside your user configuration directory.\n"
+                    "This means that if a new version of the script is released, Code::Blocks "
+                    "will still use your customized script, not the globally installed version.\n\n"
+                    "These customized wizard scripts are coloured red just to remind you "
+                    "that they are exactly that: customized scripts.\n"
+                    "So, if you update your Code::Blocks copy and find that an updated wizard's "
+                    "behaviour doesn't change, check if you have customized it. If you have, "
+                    "the only way to re-enable the globally installed script is to remove "
+                    "the customized one.\n\n"
+                    "On this computer, the customized scripts are located under:\n") +
+                    ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/"),
+                    _("Help"),
+                    wxICON_INFORMATION);
 }
 
 void NewFromTemplateDlg::OnUpdateUI(wxUpdateUIEvent& event)
@@ -392,6 +470,10 @@ void NewFromTemplateDlg::OnUpdateUI(wxUpdateUIEvent& event)
 
 void NewFromTemplateDlg::EndModal(int retCode)
 {
+    // save view prefs
+    int sel = XRCCTRL(*this, "rbView", wxRadioBox)->GetSelection();
+    Manager::Get()->GetConfigManager(_T("new_from_template"))->Write(_T("/view"), (int)sel);
+
     GetSelectedTemplate();
     wxDialog::EndModal(retCode);
 }

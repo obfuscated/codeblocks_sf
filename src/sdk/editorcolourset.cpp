@@ -103,23 +103,44 @@ void EditorColourSet::ClearAllOptionColours()
 
 void EditorColourSet::LoadAvailableSets()
 {
-	wxString path = ConfigManager::GetDataFolder() + _T("/lexers/");
-    wxDir dir(path);
-
-    if (!dir.IsOpened())
-        return;
-
 	EditorLexerLoader lex(this);
+    wxDir dir;
     wxString filename;
-
     FileManager *fm = FileManager::Get();
     std::list<LoaderBase*> loaders;
+    int count = 0;
 
-    bool ok = dir.GetFirst(&filename, _T("lexer_*.xml"), wxDIR_FILES);
-    while(ok)
+    // user paths first
+	wxString path = ConfigManager::GetFolder(sdDataUser) + _T("/lexers/");
+    if (dir.Open(path))
     {
-        loaders.push_back(fm->Load(path + filename));
-        ok = dir.GetNext(&filename);
+        wxLogNull ln;
+        Manager::Get()->GetMessageManager()->Log(_("Scanning for lexers in %s..."), path.c_str());
+        bool ok = dir.GetFirst(&filename, _T("lexer_*.xml"), wxDIR_FILES);
+        while(ok)
+        {
+            loaders.push_back(fm->Load(path + filename));
+            ok = dir.GetNext(&filename);
+            ++count;
+        }
+        Manager::Get()->GetMessageManager()->Log(_("Found %d lexers"), count);
+        count = 0;
+    }
+
+    // global paths next
+	path = ConfigManager::GetFolder(sdDataGlobal) + _T("/lexers/");
+    if (dir.Open(path))
+    {
+        wxLogNull ln;
+        Manager::Get()->GetMessageManager()->Log(_("Scanning for lexers in %s..."), path.c_str());
+        bool ok = dir.GetFirst(&filename, _T("lexer_*.xml"), wxDIR_FILES);
+        while(ok)
+        {
+            loaders.push_back(fm->Load(path + filename));
+            ok = dir.GetNext(&filename);
+            ++count;
+        }
+        Manager::Get()->GetMessageManager()->Log(_("Found %d lexers"), count);
     }
 
     for(std::list<LoaderBase*>::iterator it = loaders.begin(); it != loaders.end(); ++it)

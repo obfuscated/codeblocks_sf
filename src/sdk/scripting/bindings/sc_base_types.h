@@ -47,6 +47,7 @@ DECLARE_ENUM_TYPE(OptionsRelationType);
 DECLARE_ENUM_TYPE(TargetType);
 DECLARE_ENUM_TYPE(PCHMode);
 DECLARE_ENUM_TYPE(TemplateOutputType);
+DECLARE_ENUM_TYPE(SearchDirs);
 
 namespace SqPlus
 {

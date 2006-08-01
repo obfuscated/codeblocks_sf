@@ -95,6 +95,23 @@ namespace ScriptBindings
         BIND_INT_CONSTANT_NAMED(totFiles, "wizFiles");
         BIND_INT_CONSTANT_NAMED(totCustom, "wizCustom");
 
+        // SearchDirs
+        BIND_INT_CONSTANT(sdHome);
+        BIND_INT_CONSTANT(sdBase);
+        BIND_INT_CONSTANT(sdTemp);
+        BIND_INT_CONSTANT(sdPath);
+        BIND_INT_CONSTANT(sdConfig);
+        BIND_INT_CONSTANT(sdCurrent);
+        BIND_INT_CONSTANT(sdPluginsUser);
+        BIND_INT_CONSTANT(sdScriptsUser);
+        BIND_INT_CONSTANT(sdDataUser);
+        BIND_INT_CONSTANT(sdAllUser);
+        BIND_INT_CONSTANT(sdPluginsGlobal);
+        BIND_INT_CONSTANT(sdScriptsGlobal);
+        BIND_INT_CONSTANT(sdDataGlobal);
+        BIND_INT_CONSTANT(sdAllGlobal);
+        BIND_INT_CONSTANT(sdAllKnown);
+
         // file extensions
         BIND_WXSTR_CONSTANT_NAMED(FileFilters::WORKSPACE_EXT, "EXT_WORKSPACE");
         BIND_WXSTR_CONSTANT_NAMED(FileFilters::CODEBLOCKS_EXT, "EXT_CODEBLOCKS");

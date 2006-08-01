@@ -59,20 +59,23 @@ void GDB_driver::InitializeScripting()
     SqPlus::SQClassDef<GDB_driver>("GDB_driver").
             func(&GDB_driver::RegisterType, "RegisterType");
 
-    // run all scripts
-    wxString script = _T("gdb_types.script");
-    Manager::Get()->GetScriptingManager()->LoadScript(script);
-    try
+    // run extensions script
+    wxString script = ConfigManager::LocateDataFile(_T("gdb_types.script"), sdScriptsUser | sdScriptsGlobal);
+    if (!script.IsEmpty())
     {
-        SqPlus::SquirrelFunction<void> f("RegisterTypes");
-        f(this);
-    }
-    catch (SquirrelError e)
-    {
-        m_pDBG->Log(wxString::Format(_T("Invalid debugger script: '%s'"), script.c_str()));
-        m_pDBG->Log(cbC2U(e.desc));
+        Manager::Get()->GetScriptingManager()->LoadScript(script);
+        try
+        {
+            SqPlus::SquirrelFunction<void> f("RegisterTypes");
+            f(this);
+        }
+        catch (SquirrelError e)
+        {
+            m_pDBG->Log(wxString::Format(_T("Invalid debugger script: '%s'"), script.c_str()));
+            m_pDBG->Log(cbC2U(e.desc));
 
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+            Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        }
     }
 }
 

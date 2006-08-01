@@ -415,9 +415,13 @@ bool CodeBlocksApp::OnInit()
         // run startup script
         try
         {
-            Manager::Get()->GetScriptingManager()->LoadScript(_T("startup.script"));
-            SqPlus::SquirrelFunction<void> f("main");
-            f();
+            wxString startup = ConfigManager::LocateDataFile(_T("startup.script"), sdScriptsUser | sdScriptsGlobal);
+            if (!startup.IsEmpty())
+            {
+                Manager::Get()->GetScriptingManager()->LoadScript(startup);
+                SqPlus::SquirrelFunction<void> f("main");
+                f();
+            }
         }
         catch (SquirrelError& exception)
         {
