@@ -368,6 +368,9 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
         wxFileName f;
         f.AssignHomeDir();
         ConfigManager::home_folder = f.GetFullPath();
+        // remove trailing path separator to be consistent with the rest of the dirs
+        if (ConfigManager::home_folder.Last() == wxFILE_SEP_PATH)
+            ConfigManager::home_folder.RemoveLast();
     }
 
     // cache app_path
@@ -397,6 +400,8 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
         #else
         ConfigManager::config_folder = ConfigManager::home_folder + _T("/.codeblocks");
         #endif
+        if(!wxDirExists(ConfigManager::config_folder))
+            CreateDirRecursively(ConfigManager::config_folder);
     }
 
     // cache data_path_global
@@ -407,11 +412,17 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
         #else
         ConfigManager::data_path_global = _T("/usr/share/codeblocks"); // wildguess
         #endif
+        if(!wxDirExists(ConfigManager::data_path_global))
+            CreateDirRecursively(ConfigManager::data_path_global);
     }
 
     // cache data_path_user
     if(ConfigManager::data_path_user.IsEmpty())
+    {
         ConfigManager::data_path_user = ConfigManager::config_folder + _T("/share/codeblocks");
+        if(!wxDirExists(ConfigManager::data_path_user))
+            CreateDirRecursively(ConfigManager::data_path_user);
+    }
 
     switch (dir)
     {
@@ -439,8 +450,6 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
         }
 
         case sdConfig:
-            if(!wxDirExists(ConfigManager::config_folder))
-                CreateDirRecursively(ConfigManager::config_folder);
             return ConfigManager::config_folder;
 
         case sdCurrent:
@@ -448,7 +457,7 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
 
         case sdPluginsGlobal:
         {
-            wxString p = ConfigManager::data_path_global + _T("/plugins/");
+            wxString p = ConfigManager::data_path_global + _T("/plugins");
             if(!wxDirExists(p))
                 CreateDirRecursively(p);
             return p;
@@ -456,7 +465,7 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
 
         case sdPluginsUser:
         {
-            wxString p = ConfigManager::data_path_user + _T("/plugins/");
+            wxString p = ConfigManager::data_path_user + _T("/plugins");
             if(!wxDirExists(p))
                 CreateDirRecursively(p);
             return p;
@@ -464,7 +473,7 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
 
         case sdScriptsGlobal:
         {
-            wxString p = ConfigManager::data_path_global + _T("/scripts/");
+            wxString p = ConfigManager::data_path_global + _T("/scripts");
             if(!wxDirExists(p))
                 CreateDirRecursively(p);
             return p;
@@ -472,20 +481,16 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
 
         case sdScriptsUser:
         {
-            wxString p = ConfigManager::data_path_user + _T("/scripts/");
+            wxString p = ConfigManager::data_path_user + _T("/scripts");
             if(!wxDirExists(p))
                 CreateDirRecursively(p);
             return p;
         }
 
         case sdDataGlobal:
-            if(!wxDirExists(ConfigManager::data_path_global))
-                CreateDirRecursively(ConfigManager::data_path_global);
             return ConfigManager::data_path_global;
 
         case sdDataUser:
-            if(!wxDirExists(ConfigManager::data_path_user))
-                CreateDirRecursively(ConfigManager::data_path_user);
             return ConfigManager::data_path_user;
 
         default:

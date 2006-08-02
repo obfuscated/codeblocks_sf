@@ -469,6 +469,7 @@ void GDB_driver::ParseOutput(const wxString& output)
     }
 
     bool needsUpdate = false;
+    bool forceUpdate = false;
 
     // non-command messages (e.g. breakpoint hits)
     // break them up in lines
@@ -532,10 +533,19 @@ void GDB_driver::ParseOutput(const wxString& output)
                 CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
                 evt.pWindow = m_pBacktrace;
                 Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+                forceUpdate = true;
             }
             needsUpdate = true;
             // the backtrace will be generated when NotifyPlugins() is called
             // and only if the backtrace window is shown
+        }
+
+        // general errors
+        // we don't deal with them, just relay them back to the user
+        else if (lines[i].StartsWith(_T("Error ")) ||
+                lines[i].StartsWith(_T("Cannot evaluate")))
+        {
+            m_pDBG->Log(lines[i]);
         }
 
         // pending breakpoint resolved?
@@ -611,10 +621,10 @@ void GDB_driver::ParseOutput(const wxString& output)
             {
                 m_Cursor.file=_T("");
                 m_Cursor.function= reBreak3.GetMatch(lines[i], 2);
-                           m_Cursor.address = reBreak3.GetMatch(lines[i], 1);
-                           m_Cursor.line = -1;
-                           m_Cursor.changed = true;
-                           needsUpdate = true;
+                m_Cursor.address = reBreak3.GetMatch(lines[i], 1);
+                m_Cursor.line = -1;
+                m_Cursor.changed = true;
+                needsUpdate = true;
             }
         }
     }
@@ -623,7 +633,7 @@ void GDB_driver::ParseOutput(const wxString& output)
     // if program is stopped, update various states
     if (needsUpdate)
     {
-        if (m_Cursor.changed)
+        if (m_Cursor.changed || forceUpdate)
             NotifyCursorChanged();
     }
 }

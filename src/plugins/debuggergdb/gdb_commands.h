@@ -287,10 +287,53 @@ class GdbCmd_Detach : public DebuggerCmd
 };
 
 /**
+  * Utility command to set a breakpoint condition.
+  * Catches errors when setting an invalid condition and responds.
+  *
+  * (called by GdbCmd_AddBreakpoint)
+  */
+class GdbCmd_AddBreakpointCondition : public DebuggerCmd
+{
+        DebuggerBreakpoint* m_BP;
+    public:
+        /** @param bp The breakpoint to set its condition. */
+        GdbCmd_AddBreakpointCondition(DebuggerDriver* driver, DebuggerBreakpoint* bp)
+            : DebuggerCmd(driver),
+            m_BP(bp)
+        {
+            m_Cmd << _T("condition ") << wxString::Format(_T("%d"), (int) m_BP->index);
+            if (m_BP->useCondition)
+                m_Cmd << _T(" ") << m_BP->condition;
+        }
+        void ParseOutput(const wxString& output)
+        {
+            if (output.StartsWith(_T("No symbol ")))
+            {
+                wxString s = wxString::Format(_("While setting up custom conditions for breakpoint %d (%s, line %d),\n"
+                                                "the debugger responded with the following error:\n"
+                                                "\nError: %s\n\n"
+                                                "Do you want to make this an un-conditional breakpoint?"),
+                                                m_BP->index,
+                                                m_BP->filename.c_str(),
+                                                m_BP->line + 1,
+                                                output.c_str());
+                if (cbMessageBox(s, _("Warning"), wxICON_WARNING | wxYES_NO) == wxID_YES)
+                {
+                    // re-run this command but without a condition
+                    m_BP->useCondition = false;
+                    m_pDriver->QueueCommand(new GdbCmd_AddBreakpointCondition(m_pDriver, m_BP), DebuggerDriver::High);
+                }
+            }
+
+        }
+};
+
+/**
   * Command to add a breakpoint.
   */
 class GdbCmd_AddBreakpoint : public DebuggerCmd
 {
+        DebuggerBreakpoint* m_BP;
     public:
         /** @param bp The breakpoint to set. */
         GdbCmd_AddBreakpoint(DebuggerDriver* driver, DebuggerBreakpoint* bp)
@@ -348,9 +391,7 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                 // conditional breakpoint
                 if (m_BP->useCondition && !m_BP->condition.IsEmpty())
                 {
-                    wxString cmd;
-                    cmd << _T("condition ") << wxString::Format(_T("%d"), (int) m_BP->index) << _T(" ") << m_BP->condition;
-                    m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, cmd), DebuggerDriver::High);
+                    m_pDriver->QueueCommand(new GdbCmd_AddBreakpointCondition(m_pDriver, m_BP), DebuggerDriver::High);
                 }
 
                 // ignore count
@@ -364,8 +405,6 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
             else
                 m_pDriver->Log(output); // one of the error responses
         }
-
-        DebuggerBreakpoint* m_BP;
 };
 
 /**
@@ -630,6 +669,7 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
         wxTipWindow** m_pWin;
         wxRect m_WinRect;
         wxString m_What;
+        wxString m_Type;
         wxString m_ParseFunc;
     public:
         /** @param what The variable to evaluate.
@@ -640,13 +680,24 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
             : DebuggerCmd(driver),
             m_pWin(win),
             m_WinRect(tiprect),
-            m_What(what)
+            m_What(what),
+            m_Type(w_type)
         {
             m_Cmd = static_cast<GDB_driver*>(m_pDriver)->GetScriptedTypeCommand(w_type, m_ParseFunc);
             if (m_Cmd.IsEmpty())
             {
+                // if it's a pointer, automatically dereference it
+                wxString deref;
+                if (w_type.Length() > 2 && // at least 2 chars
+                    w_type.Last() == _T('*') && // last is *
+                    w_type.GetChar(w_type.Length() - 2) != _T('*') && // second last is not * (i.e. doesn't end with **)
+                    !w_type.Contains(_T("char "))) // not char* (special case)
+                {
+                    deref = _T("*");
+                }
+
                 m_Cmd << _T("output ");
-                m_Cmd << what;
+                m_Cmd << deref << what;
             }
             else
             {
@@ -669,7 +720,8 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
                 tip = output;
             else
             {
-                tip = m_What + _T("=");
+                tip << _("Symbol: ") << _T("(") << m_Type << _T(") ") << m_What << _T('\n');
+                tip << _("Contents: ");
                 if (!m_ParseFunc.IsEmpty())
                 {
                     try
@@ -722,7 +774,8 @@ class GdbCmd_FindTooltipType : public DebuggerCmd
             // type = bool
 
             wxString tmp = output.AfterFirst(_T('='));
-            // actually add this watch with high priority
+
+            // add the actual evaluation command with high priority
             m_pDriver->QueueCommand(new GdbCmd_TooltipEvaluation(m_pDriver, m_What, m_pWin, m_WinRect, tmp), DebuggerDriver::High);
         }
 };
