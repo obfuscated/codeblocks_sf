@@ -458,32 +458,32 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
         case sdPluginsGlobal:
         {
             wxString p = ConfigManager::data_path_global + _T("/plugins");
-            if(!wxDirExists(p))
-                CreateDirRecursively(p);
+            if(!wxDirExists(p + wxFILE_SEP_PATH))
+                CreateDirRecursively(p + wxFILE_SEP_PATH);
             return p;
         }
 
         case sdPluginsUser:
         {
             wxString p = ConfigManager::data_path_user + _T("/plugins");
-            if(!wxDirExists(p))
-                CreateDirRecursively(p);
+            if(!wxDirExists(p + wxFILE_SEP_PATH))
+                CreateDirRecursively(p + wxFILE_SEP_PATH);
             return p;
         }
 
         case sdScriptsGlobal:
         {
             wxString p = ConfigManager::data_path_global + _T("/scripts");
-            if(!wxDirExists(p))
-                CreateDirRecursively(p);
+            if(!wxDirExists(p + wxFILE_SEP_PATH))
+                CreateDirRecursively(p + wxFILE_SEP_PATH);
             return p;
         }
 
         case sdScriptsUser:
         {
             wxString p = ConfigManager::data_path_user + _T("/scripts");
-            if(!wxDirExists(p))
-                CreateDirRecursively(p);
+            if(!wxDirExists(p + wxFILE_SEP_PATH))
+                CreateDirRecursively(p + wxFILE_SEP_PATH);
             return p;
         }
 

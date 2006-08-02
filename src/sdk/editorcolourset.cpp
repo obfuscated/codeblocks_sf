@@ -103,6 +103,7 @@ void EditorColourSet::ClearAllOptionColours()
 
 void EditorColourSet::LoadAvailableSets()
 {
+    wxLogNull ln;
 	EditorLexerLoader lex(this);
     wxDir dir;
     wxString filename;
@@ -114,7 +115,6 @@ void EditorColourSet::LoadAvailableSets()
 	wxString path = ConfigManager::GetFolder(sdDataUser) + _T("/lexers/");
     if (dir.Open(path))
     {
-        wxLogNull ln;
         Manager::Get()->GetMessageManager()->Log(_("Scanning for lexers in %s..."), path.c_str());
         bool ok = dir.GetFirst(&filename, _T("lexer_*.xml"), wxDIR_FILES);
         while(ok)
@@ -131,7 +131,6 @@ void EditorColourSet::LoadAvailableSets()
 	path = ConfigManager::GetFolder(sdDataGlobal) + _T("/lexers/");
     if (dir.Open(path))
     {
-        wxLogNull ln;
         Manager::Get()->GetMessageManager()->Log(_("Scanning for lexers in %s..."), path.c_str());
         bool ok = dir.GetFirst(&filename, _T("lexer_*.xml"), wxDIR_FILES);
         while(ok)
