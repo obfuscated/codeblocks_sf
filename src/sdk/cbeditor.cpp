@@ -1323,10 +1323,10 @@ void cbEditor::ToggleFoldBlockFromLine(int line)
     DoFoldBlockFromLine(line, 2);
 }
 
-void cbEditor::GotoLine(int line, bool centreOnScreen)
+void cbEditor::GotoLine(int line, bool centerOnScreen)
 {
     cbStyledTextCtrl* control = GetControl();
-    if (centreOnScreen)
+    if (centerOnScreen)
     {
         int onScreen = control->LinesOnScreen() >> 1;
         control->GotoLine(line - onScreen);

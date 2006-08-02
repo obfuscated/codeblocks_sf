@@ -131,6 +131,7 @@ public:
     * This would try to locate the file named "startup.script" in the global and also in the user's scripts folders.
     * @note User's dirs @b always have precedence over global dirs.
     *
+    * @param filename name of the file to search for
     * @param search_dirs A bit-mask of the folders to include in the search.
     */
     static wxString LocateDataFile(const wxString& filename, int search_dirs = sdAllKnown);
@@ -285,11 +286,11 @@ public:
             }
     };
 
-	static inline bool Windows();
-	static inline bool Unix();
-	static inline bool Linux();
-	static inline bool MacOS();
-	static inline bool Unicode();
+    static inline bool Windows();
+    static inline bool Unix();
+    static inline bool Linux();
+    static inline bool MacOS();
+    static inline bool Unicode();
 };
 
 

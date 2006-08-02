@@ -209,8 +209,8 @@ class DLLIMPORT cbEditor : public EditorBase
 
         /** Move the caret at the specified line.
           * @param line Line to move caret to.
-          * @param centreOnScreen If true (default), tries to bring the specified line to the centre of the editor.*/
-        void GotoLine(int line, bool centreOnScreen = true);
+          * @param centerOnScreen If true (default), tries to bring the specified line to the centre of the editor.*/
+        void GotoLine(int line, bool centerOnScreen = true);
 
         /** Add debugger breakpoint at specified line. If @c line is -1, use current line. */
         bool AddBreakpoint(int line = -1, bool notifyDebugger = true);

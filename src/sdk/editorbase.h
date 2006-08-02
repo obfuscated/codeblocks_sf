@@ -35,75 +35,75 @@ class DLLIMPORT EditorBase : public wxPanel
           *
           * @return The editor's filename.
           */
-		virtual const wxString& GetFilename() const { return m_Filename; }
+        virtual const wxString& GetFilename() const { return m_Filename; }
 
-		/** @brief Sets the editor's filename.
-		  * @param filename The filename to set.
-		  */
-		virtual void SetFilename(const wxString& filename){ m_Filename = filename; }
+        /** @brief Sets the editor's filename.
+          * @param filename The filename to set.
+          */
+        virtual void SetFilename(const wxString& filename){ m_Filename = filename; }
 
-		/** @brief Returns the editor's short name.
-		  *
-		  * This is the name displayed on the editor's tab...
-		  *
-		  * Synonym to GetTitle().
-		  */
-		virtual const wxString& GetShortName() const { return m_Shortname; }
+        /** @brief Returns the editor's short name.
+          *
+          * This is the name displayed on the editor's tab...
+          *
+          * Synonym to GetTitle().
+          */
+        virtual const wxString& GetShortName() const { return m_Shortname; }
 
-		/** @brief Is it modified?
-		  *
-		  * @return true If editor is modified, false otherwise.
-		  * @note This function should always be overriden by implementations
-		  *       because the default implementation in EditorBase always
-		  *       returns false.
-		  */
-		virtual bool GetModified() const { return false; }
+        /** @brief Is it modified?
+          *
+          * @return true If editor is modified, false otherwise.
+          * @note This function should always be overriden by implementations
+          *       because the default implementation in EditorBase always
+          *       returns false.
+          */
+        virtual bool GetModified() const { return false; }
 
-		/** @brief Set the modification status.
-		  *
-		  * @param modified If true, mark as modified. If false, mark as clean (unmodified).
-		  */
-		virtual void SetModified(bool modified = true) {}
+        /** @brief Set the modification status.
+          *
+          * @param modified If true, mark as modified. If false, mark as clean (unmodified).
+          */
+        virtual void SetModified(bool modified = true) {}
 
         /** @brief The editor's title.
           *
           * @return The editor's title.
           */
-		virtual const wxString& GetTitle();
+        virtual const wxString& GetTitle();
 
-		/** @brief Set the editor's title.
-		  *
-		  * @param newTitle The new title to set.
-		  */
-		virtual void SetTitle(const wxString& newTitle);
+        /** @brief Set the editor's title.
+          *
+          * @param newTitle The new title to set.
+          */
+        virtual void SetTitle(const wxString& newTitle);
 
         /** @brief Activate this editor.
           *
           * Causes this editor to be activated, i.e. brought to front.
           */
-		virtual void Activate();
+        virtual void Activate();
 
-		/** @brief Can this be closed (destroyed)?
-		  *
-		  * This is used internally and queries the editor if it is safe to
-		  * close it (i.e. it is not modified).
-		  * @return True if this editor can be closed.
-		  */
-		virtual bool QueryClose(){ return true; }
+        /** @brief Can this be closed (destroyed)?
+          *
+          * This is used internally and queries the editor if it is safe to
+          * close it (i.e. it is not modified).
+          * @return True if this editor can be closed.
+          */
+        virtual bool QueryClose(){ return true; }
 
-		/** @brief Close this editor.
-		  *
-		  * The default implementation closes (destroys) the editor and returns true.
-		  * @return True if editor closed succesfully
-		  */
-		virtual bool Close();
+        /** @brief Close this editor.
+          *
+          * The default implementation closes (destroys) the editor and returns true.
+          * @return True if editor closed succesfully
+          */
+        virtual bool Close();
 
-		/** @brief Save contents.
-		  *
-		  * Save the editor's contents. The default implementation does nothing
-		  * and returns true.
-		  * @return True on success, false otherwise. */
-		virtual bool Save() { return true; }
+        /** @brief Save contents.
+          *
+          * Save the editor's contents. The default implementation does nothing
+          * and returns true.
+          * @return True on success, false otherwise. */
+        virtual bool Save() { return true; }
 
         /** @brief Is this a built-in editor?
           *
@@ -117,14 +117,14 @@ class DLLIMPORT EditorBase : public wxPanel
           */
         virtual bool ThereAreOthers() const;
 
-		/** @brief Display context menu.
-		  *
-		  * Displays the editor's context menu. This is called automatically
-		  * if the user right-clicks in the editor area.
-		  * @param position The position to popup the context menu.
-		  * @param type The module's type.
-		  */
-		virtual void DisplayContextMenu(const wxPoint& position, ModuleType type = mtUnknown);
+        /** @brief Display context menu.
+          *
+          * Displays the editor's context menu. This is called automatically
+          * if the user right-clicks in the editor area.
+          * @param position The position to popup the context menu.
+          * @param type The module's type.
+          */
+        virtual void DisplayContextMenu(const wxPoint& position, ModuleType type = mtUnknown);
 
         /** Should this kind of editor be visible in the open files tree?
           *
@@ -143,7 +143,7 @@ class DLLIMPORT EditorBase : public wxPanel
           *                       of the editor's area (if possible). If false,
           *                       it will be just made visible.
           */
-        virtual void GotoLine(int line, bool centreOnScreen = true){}
+        virtual void GotoLine(int line, bool centerOnScreen = true){}
 
         /** Toggle breakpoint at specified line.
           * @param line The line to toggle the breakpoint on. If @c line is -1,
@@ -274,8 +274,8 @@ class DLLIMPORT EditorBase : public wxPanel
         virtual void OnAfterBuildContextMenu(ModuleType type){}
 
         bool m_IsBuiltinEditor; // do not mess with it!
-		wxString m_Shortname;
-		wxString m_Filename;
+        wxString m_Shortname;
+        wxString m_Filename;
     private:
 
         /** one event handler for all popup menu entries */
