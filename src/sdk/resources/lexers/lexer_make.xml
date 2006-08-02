@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <!DOCTYPE CodeBlocks_lexer_properties>
 <CodeBlocks_lexer_properties>
         <Lexer name="Make"
@@ -29,6 +29,6 @@
                 <Style name="Error"
                         index="4"
                         fg="255,0,0"/>
-                <SampleCode value="lexer_makefile.sample"/>
+                <SampleCode value="lexer_make.sample"/>
         </Lexer>
 </CodeBlocks_lexer_properties>
