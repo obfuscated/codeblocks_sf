@@ -233,7 +233,7 @@ void GDB_driver::Start(bool breakOnEntry)
     ResetCursor();
 
     // under windows, 'start' segfaults with wx projects...
-#ifdef __WXMSW__
+#if (defined( __WXMSW__) || defined(__WXMAC__))
     m_BreakOnEntry = false;
     m_ManualBreakOnEntry = false;
 

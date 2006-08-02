@@ -1380,7 +1380,7 @@ bool ConfigManager::Unix()
 }
 #endif
 
-#ifdef __WXGTK__
+#if (defined(__WXGTK__)  || defined(__WXMAC__))
 bool ConfigManager::Windows()
 {
     return false;

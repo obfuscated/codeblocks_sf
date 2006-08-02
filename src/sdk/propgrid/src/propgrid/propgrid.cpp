@@ -5898,9 +5898,8 @@ bool wxPropertyGrid::SetFont ( const wxFont& font )
     {
         wxLogDebug(wxT("WARNING: propgrid.cpp: wxPropertyGrid::SetFont has been disabled on wxMac since there has been crash reported in it. If you are willing to debug the cause, replace line '#if !defined(__WXMAC__)' with line '#if 1' in wxPropertyGrid::SetFont."));
     }
-    return false;
+    bool res = false;
 #endif
-
     return res;
 }
 
