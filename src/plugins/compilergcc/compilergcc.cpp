@@ -2287,6 +2287,7 @@ int CompilerGCC::KillProcess()
 
         // Close input pipe
         m_Processes[i]->CloseOutput();
+        ((PipedProcess*) m_Processes[i])->ForfeitStreams();
 
         ret = wxProcess::Kill(m_Pid[i], wxSIGTERM);
         if(ret != wxKILL_OK)

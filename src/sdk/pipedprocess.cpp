@@ -169,6 +169,23 @@ void PipedProcess::SendString(const wxString& text)
 	}
 }
 
+void PipedProcess::ForfeitStreams()
+{
+    char buf[4096];
+    if (IsErrorAvailable())
+    {
+        wxInputStream *in = GetErrorStream();
+        while(in->Read(&buf, sizeof(buf)).LastRead())
+            ;
+    }
+    if (IsInputAvailable())
+    {
+        wxInputStream *in = GetErrorStream();
+        while(in->Read(&buf, sizeof(buf)).LastRead())
+            ;
+    }
+}
+
 bool PipedProcess::HasInput()
 {
     bool hasInput = false;

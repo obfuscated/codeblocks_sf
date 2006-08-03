@@ -20,6 +20,7 @@ class DLLIMPORT PipedProcess : public wxProcess
 		virtual void SendString(const wxString& text);
         virtual bool HasInput();
 		virtual int GetPid(){ return m_Pid; }
+		void ForfeitStreams();
     protected:
          virtual void OnTerminate(int pid, int status);
 		virtual void OnTimer(wxTimerEvent& event);
