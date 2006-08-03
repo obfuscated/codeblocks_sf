@@ -395,15 +395,15 @@ wxString GDBTipWindowView::AdjustContents(const wxString& contents)
             ret << indent << *p;
         }
 
-        // template depth add
-        else if (*p == _T('<'))
+        // template/function depth add
+        else if (*p == _T('<') || *p == _T('('))
         {
             ret << *p;
             ++template_depth;
         }
 
-        // template depth remove
-        else if (*p == _T('>'))
+        // template/function depth remove
+        else if (*p == _T('>') || *p == _T(')'))
         {
             ret << *p;
             --template_depth;
