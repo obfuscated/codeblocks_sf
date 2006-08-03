@@ -223,9 +223,9 @@ void CDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp)
     QueueCommand(new CdbCmd_RemoveBreakpoint(this, bp));
 }
 
-void CDB_driver::EvaluateSymbol(const wxString& symbol, wxTipWindow** tipWin, const wxRect& tipRect)
+void CDB_driver::EvaluateSymbol(const wxString& symbol, const wxRect& tipRect)
 {
-    QueueCommand(new CdbCmd_TooltipEvaluation(this, symbol, tipWin, tipRect));
+    QueueCommand(new CdbCmd_TooltipEvaluation(this, symbol, tipRect));
 }
 
 void CDB_driver::UpdateWatches(bool doLocals, bool doArgs, DebuggerTree* tree)

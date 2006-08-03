@@ -210,7 +210,6 @@ DebuggerGDB::DebuggerGDB()
     m_LastExitCode(0),
     m_Pid(0),
     m_PidToAttach(0),
-    m_EvalWin(0L),
     m_NoDebugInfo(false),
     m_BreakOnEntry(false),
     m_HaltAtLine(0),
@@ -1942,7 +1941,7 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
         m_EvalRect.width = pt.x - m_EvalRect.x;
         m_EvalRect.height = (pt.y + ed->GetControl()->GetCharHeight()) - m_EvalRect.y;
         m_LastEval = token;
-        m_State.GetDriver()->EvaluateSymbol(token, &m_EvalWin, m_EvalRect);
+        m_State.GetDriver()->EvaluateSymbol(token, m_EvalRect);
     }
 }
 

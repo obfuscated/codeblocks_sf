@@ -110,7 +110,8 @@ void ExamineMemoryDlg::AddHexByte(const wxString& addr, const wxString& hexbyte)
         for (int i = 0; i < 67; ++i)
             m_LineText[i] = _T(' ');
         // update starting address for next row
-        m_LastRowStartingAddress = a;
+        // add 8 bytes: addr is the start address of the second 8-byte chunk of this line, so next line is +8
+        m_LastRowStartingAddress = a + 8;
     }
 }
 

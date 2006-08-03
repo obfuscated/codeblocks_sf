@@ -7,7 +7,6 @@
 #include <simpletextlog.h>
 #include <pipedprocess.h>
 #include <wx/regex.h>
-#include <wx/tipwin.h>
 
 #include "debuggerstate.h"
 #include "debugger_defs.h"
@@ -165,7 +164,6 @@ class DebuggerGDB : public cbDebuggerPlugin
         bool m_LastExitCode;
         int m_Pid;
         int m_PidToAttach; // for "attach to process"
-        wxTipWindow* m_EvalWin;
         wxString m_LastEval;
         wxRect m_EvalRect;
         wxTimer m_TimerPollDebugger;

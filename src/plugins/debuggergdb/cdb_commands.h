@@ -323,7 +323,7 @@ class CdbCmd_Watch : public DebuggerCmd
   */
 class CdbCmd_TooltipEvaluation : public DebuggerCmd
 {
-        wxTipWindow** m_pWin;
+        wxTipWindow* m_pWin;
         wxRect m_WinRect;
         wxString m_What;
     public:
@@ -331,9 +331,9 @@ class CdbCmd_TooltipEvaluation : public DebuggerCmd
             @param win A pointer to the tip window pointer.
             @param tiprect The tip window's rect.
         */
-        CdbCmd_TooltipEvaluation(DebuggerDriver* driver, const wxString& what, wxTipWindow** win, const wxRect& tiprect)
+        CdbCmd_TooltipEvaluation(DebuggerDriver* driver, const wxString& what, const wxRect& tiprect)
             : DebuggerCmd(driver),
-            m_pWin(win),
+            m_pWin(0),
             m_WinRect(tiprect),
             m_What(what)
         {
@@ -361,9 +361,9 @@ class CdbCmd_TooltipEvaluation : public DebuggerCmd
 //             "CodeBlocksWindowsApp"
             wxString tip = m_What + _T("=") + output;
 
-            if (*m_pWin)
-                (*m_pWin)->Destroy();
-            *m_pWin = new wxTipWindow((wxWindow*)Manager::Get()->GetAppWindow(), tip, 640, m_pWin, &m_WinRect);
+            if (m_pWin)
+                (m_pWin)->Destroy();
+            m_pWin = new wxTipWindow((wxWindow*)Manager::Get()->GetAppWindow(), tip, 640, &m_pWin, &m_WinRect);
 //            m_pDriver->DebugLog(output);
         }
 };

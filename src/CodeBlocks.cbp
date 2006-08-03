@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="4" />
 	<Project>
@@ -1334,6 +1334,16 @@
 		</Unit>
 		<Unit filename="plugins\debuggergdb\gdb_driver.h">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\gdb_tipwindow.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\gdb_tipwindow.h">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Debugger" />

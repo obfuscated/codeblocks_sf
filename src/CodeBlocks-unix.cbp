@@ -1410,6 +1410,16 @@
 			<Option link="0" />
 			<Option target="Debugger" />
 		</Unit>
+		<Unit filename="plugins/debuggergdb/gdb_tipwindow.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins/debuggergdb/gdb_tipwindow.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debugger" />
+		</Unit>
 		<Unit filename="plugins/debuggergdb/resources/backtrace.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />

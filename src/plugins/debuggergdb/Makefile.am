@@ -30,6 +30,7 @@ libdebuggergdb_la_SOURCES = backtracedlg.cpp \
 			editwatchesdlg.cpp \
 			examinememorydlg.cpp \
 			gdb_driver.cpp \
+			gdb_tipwindow.cpp \
 			threadsdlg.cpp
 
 noinst_HEADERS = backtracedlg.h \
@@ -50,4 +51,5 @@ noinst_HEADERS = backtracedlg.h \
 			examinememorydlg.h \
 			gdb_commands.h \
 			gdb_driver.h \
+			gdb_tipwindow.h \
 			threadsdlg.h

@@ -39,7 +39,7 @@ class CDB_driver : public DebuggerDriver
 
         virtual void AddBreakpoint(DebuggerBreakpoint* bp);
         virtual void RemoveBreakpoint(DebuggerBreakpoint* bp);
-        virtual void EvaluateSymbol(const wxString& symbol, wxTipWindow** tipWin, const wxRect& tipRect);
+        virtual void EvaluateSymbol(const wxString& symbol, const wxRect& tipRect);
         virtual void UpdateWatches(bool doLocals, bool doArgs, DebuggerTree* tree);
         virtual void ParseOutput(const wxString& output);
     protected:

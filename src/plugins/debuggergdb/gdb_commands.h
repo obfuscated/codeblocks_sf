@@ -22,6 +22,7 @@
 #include "backtracedlg.h"
 #include "examinememorydlg.h"
 #include "threadsdlg.h"
+#include "gdb_tipwindow.h"
 
 namespace
 {
@@ -666,7 +667,7 @@ class GdbCmd_FindWatchType : public DebuggerCmd
   */
 class GdbCmd_TooltipEvaluation : public DebuggerCmd
 {
-        wxTipWindow** m_pWin;
+        GDBTipWindow* m_pWin;
         wxRect m_WinRect;
         wxString m_What;
         wxString m_Type;
@@ -676,9 +677,9 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
             @param win A pointer to the tip window pointer.
             @param tiprect The tip window's rect.
         */
-        GdbCmd_TooltipEvaluation(DebuggerDriver* driver, const wxString& what, wxTipWindow** win, const wxRect& tiprect, const wxString& w_type = wxEmptyString)
+        GdbCmd_TooltipEvaluation(DebuggerDriver* driver, const wxString& what, const wxRect& tiprect, const wxString& w_type = wxEmptyString)
             : DebuggerCmd(driver),
-            m_pWin(win),
+            m_pWin(0),
             m_WinRect(tiprect),
             m_What(what),
             m_Type(w_type)
@@ -715,33 +716,34 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
         }
         void ParseOutput(const wxString& output)
         {
-            wxString tip;
+            wxString contents;
             if (output.StartsWith(_T("No symbol ")) || output.StartsWith(_T("Attempt to ")))
-                tip = output;
+            {
+                m_What = _("Error");
+                contents = output;
+            }
             else
             {
-                tip << _("Symbol: ") << _T("(") << m_Type << _T(") ") << m_What << _T('\n');
-                tip << _("Contents: ");
                 if (!m_ParseFunc.IsEmpty())
                 {
                     try
                     {
                         SqPlus::SquirrelFunction<wxString&> f(cbU2C(m_ParseFunc));
-                        tip << f(output, 0);
+                        contents << f(output, 0);
                     }
                     catch (SquirrelError e)
                     {
-                        tip << cbC2U(e.desc);
-                        m_pDriver->DebugLog(_T("Script exception: ") + tip);
+                        contents << cbC2U(e.desc);
+                        m_pDriver->DebugLog(_T("Script exception: ") + contents);
                     }
                 }
                 else
-                    tip << output;
+                    contents << output;
             }
 
-            if (*m_pWin)
-                (*m_pWin)->Destroy();
-            *m_pWin = new wxTipWindow((wxWindow*)Manager::Get()->GetAppWindow(), tip, 640, m_pWin, &m_WinRect);
+            if (m_pWin)
+                (m_pWin)->Destroy();
+            m_pWin = new GDBTipWindow((wxWindow*)Manager::Get()->GetAppWindow(), m_What, m_Type, contents, 640, &m_pWin, &m_WinRect);
 //            m_pDriver->DebugLog(output);
         }
 };
@@ -751,14 +753,12 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
   */
 class GdbCmd_FindTooltipType : public DebuggerCmd
 {
-        wxTipWindow** m_pWin;
         wxRect m_WinRect;
         wxString m_What;
     public:
         /** @param tree The tree to display the watch. */
-        GdbCmd_FindTooltipType(DebuggerDriver* driver, const wxString& what, wxTipWindow** win, const wxRect& tiprect)
+        GdbCmd_FindTooltipType(DebuggerDriver* driver, const wxString& what, const wxRect& tiprect)
             : DebuggerCmd(driver),
-            m_pWin(win),
             m_WinRect(tiprect),
             m_What(what)
         {
@@ -776,7 +776,7 @@ class GdbCmd_FindTooltipType : public DebuggerCmd
             wxString tmp = output.AfterFirst(_T('='));
 
             // add the actual evaluation command with high priority
-            m_pDriver->QueueCommand(new GdbCmd_TooltipEvaluation(m_pDriver, m_What, m_pWin, m_WinRect, tmp), DebuggerDriver::High);
+            m_pDriver->QueueCommand(new GdbCmd_TooltipEvaluation(m_pDriver, m_What, m_WinRect, tmp), DebuggerDriver::High);
         }
 };
 
