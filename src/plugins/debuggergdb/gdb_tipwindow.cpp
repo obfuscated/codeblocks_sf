@@ -375,6 +375,7 @@ wxString GDBTipWindowView::AdjustContents(const wxString& contents)
     }
     wxString ret;
     wxString indent;
+    int template_depth = 0;
     for (const wxChar* p = tmp.c_str(); p && *p; ++p)
     {
         // indent
@@ -391,11 +392,25 @@ wxString GDBTipWindowView::AdjustContents(const wxString& contents)
             ret << _T('\n');
             indent.RemoveLast();
             indent.RemoveLast();
-            ret << indent << *p << _T('\n');
+            ret << indent << *p;
         }
 
-        // commas = newlines
-        else if (*p == _T(','))
+        // template depth add
+        else if (*p == _T('<'))
+        {
+            ret << *p;
+            ++template_depth;
+        }
+
+        // template depth remove
+        else if (*p == _T('>'))
+        {
+            ret << *p;
+            --template_depth;
+        }
+
+        // commas = newlines (except for templates)
+        else if (*p == _T(',') && template_depth <= 0)
         {
             ret << *p << _T('\n') << indent;
             // skip whitespace so indentation doesn't break
