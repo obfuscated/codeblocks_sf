@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="4" />
 	<Project>
@@ -255,12 +255,14 @@
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
+					<Add option="`pkg-config --cflags gtk+-2.0`" />
 					<Add directory="sdk" />
 					<Add directory="sdk/scripting/include" />
 					<Add directory="sdk/scripting/sqplus" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
+					<Add option="`pkg-config --libs gtk+-2.0`" />
 					<Add library="codeblocks" />
 					<Add library="wxscintilla" />
 					<Add directory="devel" />

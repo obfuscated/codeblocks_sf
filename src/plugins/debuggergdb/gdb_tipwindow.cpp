@@ -346,7 +346,7 @@ wxSize GDBTipWindowView::GetTextSize(wxArrayString& array, const wxString& text,
 
     wxSize ret;
     ret.x = widthMax;
-    ret.y = wx_truncate_cast(wxCoord, array.GetCount())*m_parent->m_heightLine;
+    ret.y = array.GetCount() * m_parent->m_heightLine;
     return ret;
 }
 

@@ -1,6 +1,7 @@
 SUBDIRS = resources
 
 INCLUDES = $(WX_CXXFLAGS) \
+		`pkg-config --cflags gtk+-2.0` \
 		-I$(top_srcdir)/src/sdk \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(top_srcdir)/src/sdk/scripting/include \
@@ -12,7 +13,8 @@ lib_LTLIBRARIES = libdebuggergdb.la
 
 libdebuggergdb_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libdebuggergdb_la_LIBADD = ../../sdk/libcodeblocks.la
+libdebuggergdb_la_LIBADD = ../../sdk/libcodeblocks.la \
+							`pkg-config --libs gtk+-2.0`
 
 libdebuggergdb_la_SOURCES = backtracedlg.cpp \
 			breakpointsdlg.cpp \
