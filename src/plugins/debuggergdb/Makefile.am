@@ -11,10 +11,9 @@ libdir = $(pkgdatadir)/plugins
 
 lib_LTLIBRARIES = libdebuggergdb.la
 
-libdebuggergdb_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libdebuggergdb_la_LDFLAGS = `pkg-config --libs gtk+-2.0` -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libdebuggergdb_la_LIBADD = ../../sdk/libcodeblocks.la \
-							`pkg-config --libs gtk+-2.0`
+libdebuggergdb_la_LIBADD = ../../sdk/libcodeblocks.la
 
 libdebuggergdb_la_SOURCES = backtracedlg.cpp \
 			breakpointsdlg.cpp \
