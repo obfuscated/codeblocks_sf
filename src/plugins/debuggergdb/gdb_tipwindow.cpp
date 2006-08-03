@@ -18,7 +18,7 @@
 // headers
 // ----------------------------------------------------------------------------
 
-//#include <sdk.h> // C::B sdk PCH
+#include <sdk.h> // C::B sdk PCH
 
 #include <algorithm> // std::max
 
