@@ -602,7 +602,7 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
 {
     Collapse(path);
 
-    wxString illegal(_T(" -:.\"$&()[]<>+#"));
+    wxString illegal(_T(" -:.\"\'$&()[]<>+#"));
     size_t i = 0;
     while((i = path.find_first_of(illegal, i)) != wxString::npos)
         path[i] = _T('_');
@@ -1093,10 +1093,9 @@ void ConfigManager::DeleteSubPath(const wxString& thePath)
     wxString path(thePath);
     to_lower(path);
 
-
     Collapse(path);
 
-    wxString illegal(_T(" :.,;!\"$%&()[]<>{}?*+-|#"));
+    wxString illegal(_T(" :.,;!\"\'$%&()[]<>{}?*+-|#"));
     size_t i;
     while((i = path.find_first_of(illegal)) != wxString::npos)
         path[i] = _T('_');
