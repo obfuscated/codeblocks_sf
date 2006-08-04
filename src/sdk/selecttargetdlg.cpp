@@ -25,26 +25,26 @@
 */
 
 #include "sdk_precomp.h"
-
-
 #ifndef CB_PRECOMP
-    #include <wx/xrc/xmlres.h>
-    #include <wx/intl.h>
-    #include <wx/checkbox.h>
     #include <wx/button.h>
-    #include <wx/textctrl.h>
+    #include <wx/checkbox.h>
+    #include <wx/filename.h>
+    #include <wx/intl.h>
     #include <wx/listbox.h>
+    #include <wx/textctrl.h>
+    #include <wx/xrc/xmlres.h>
 
     #include "projectbuildtarget.h"
     #include "cbproject.h"
 #endif
-
+#include <wx/filedlg.h>
 #include "selecttargetdlg.h"
 
 BEGIN_EVENT_TABLE(SelectTargetDlg, wxDialog)
 	EVT_CHECKBOX(XRCID("chkSetAsDefaultExec"), SelectTargetDlg::OnCheckboxSelection)
 	EVT_LISTBOX(XRCID("lstItems"), SelectTargetDlg::OnListboxSelection)
 	EVT_LISTBOX_DCLICK(XRCID("lstItems"), SelectTargetDlg::OnOK)
+	EVT_BUTTON(XRCID("btnHostApplication"),	SelectTargetDlg::OnHostApplicationButtonClick)
 END_EVENT_TABLE()
 
 SelectTargetDlg::SelectTargetDlg(wxWindow* parent, cbProject* project, int selected)
@@ -81,20 +81,8 @@ void SelectTargetDlg::UpdateSelected()
         XRCCTRL(*this, "chkSetAsDefaultExec", wxCheckBox)->SetValue(idx == m_pProject->GetDefaultExecuteTargetIndex());
 		XRCCTRL(*this, "txtParams", wxTextCtrl)->SetValue(target->GetExecutionParameters());
 		XRCCTRL(*this, "txtHostApp", wxTextCtrl)->SetValue(target->GetHostApplication());
-#if 0
-		bool en = target->GetTargetType() == ttExecutable ||
-				target->GetTargetType() == ttConsoleOnly ||
-				((target->GetTargetType() == ttDynamicLib ||
-					target->GetTargetType() == ttStaticLib) &&
-					!target->GetHostApplication().IsEmpty());
-		XRCCTRL(*this, "btnOK", wxButton)->Enable(en);
-#endif
 	}
-#if 0
-	else
-		XRCCTRL(*this, "btnOK", wxButton)->Enable(false);
-#endif
-}
+} // end of UpdateSelected
 
 ProjectBuildTarget* SelectTargetDlg::GetSelectionTarget()
 {
@@ -103,19 +91,42 @@ ProjectBuildTarget* SelectTargetDlg::GetSelectionTarget()
 
 // events
 
-void SelectTargetDlg::OnListboxSelection(wxCommandEvent& event)
+void SelectTargetDlg::OnListboxSelection(wxCommandEvent& /*event*/)
 {
 	UpdateSelected();
-}
+} // end of OnListboxSelection
 
-void SelectTargetDlg::OnCheckboxSelection(wxCommandEvent& event)
+void SelectTargetDlg::OnCheckboxSelection(wxCommandEvent& /*event*/)
 {
     if (XRCCTRL(*this, "chkSetAsDefaultExec", wxCheckBox)->GetValue())
     {
         int idx = XRCCTRL(*this, "lstItems", wxListBox)->GetSelection();
         m_pProject->SetDefaultExecuteTargetIndex(idx);
     }
-}
+} // end of OnCheckboxSelection
+
+void SelectTargetDlg::OnHostApplicationButtonClick(wxCommandEvent& /*event*/)
+{
+    if(wxTextCtrl* obj = XRCCTRL(*this, "txtHostApp", wxTextCtrl))
+    {
+        wxFileDialog* dlg = new wxFileDialog(this,
+                            _("Select host application"),
+                            _(""),
+                            obj->GetValue(),
+                            #ifdef __WXMSW__
+                            _("Executable files (*.exe)|*.exe"),
+                            #else
+                            _("All files (*)|*"),
+                            #endif
+                            wxOPEN | wxFILE_MUST_EXIST | wxHIDE_READONLY);
+        dlg->SetFilterIndex(0);
+        PlaceWindow(dlg);
+        if (dlg->ShowModal() != wxID_OK)
+            return;
+        wxFileName fname(dlg->GetPath());
+        obj->SetValue(fname.GetFullName());
+    }
+} // end of OnHostApplicationButtonClick
 
 void SelectTargetDlg::EndModal(int retCode)
 {

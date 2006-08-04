@@ -13,12 +13,12 @@ class SelectTargetDlg : public wxDialog
 		~SelectTargetDlg();
 
 		void EndModal(int retCode);
-		int GetSelection(){ return m_Selected; }
+		int GetSelection() const { return m_Selected; }
 		ProjectBuildTarget* GetSelectionTarget();
-	protected:
 	private:
 		void OnListboxSelection(wxCommandEvent& event);
         void OnCheckboxSelection(wxCommandEvent& event);
+        void OnHostApplicationButtonClick(wxCommandEvent& event);
 		void UpdateSelected();
 		cbProject* m_pProject;
 		int m_Selected;

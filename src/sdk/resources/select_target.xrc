@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxDialog" name="dlgSelectTarget">
     <title>Select target</title>
@@ -45,9 +45,23 @@
         <border>8</border>
       </object>
       <object class="sizeritem">
-        <object class="wxTextCtrl" name="txtHostApp"/>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-        <border>8</border>
+	<object class="wxBoxSizer">
+	  <orient>wxHORIZONTAL</orient>
+	  <object class="sizeritem">
+	    <object class="wxTextCtrl" name="txtHostApp"/>
+	    <option>1</option>
+	    <flag>wxEXPAND</flag>
+	    <border>8</border>
+	  </object>
+	  <object class="sizeritem">
+	    <object class="wxButton" name="btnHostApplication">
+	      <label>...</label>
+	      <size>20,20</size>
+	    </object>
+	  </object>
+	</object>
+	<flag>wxTOP|wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND</flag>
+	<border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxStaticLine"/>
