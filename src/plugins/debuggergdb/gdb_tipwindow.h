@@ -51,6 +51,7 @@ public:
     GDBTipWindow(wxWindow *parent,
                 const wxString& symbol,
                 const wxString& typ,
+                const wxString& addr,
                 const wxString& contents,
                 wxCoord maxLength = 240,
                 GDBTipWindow** windowPtr = NULL,
@@ -91,6 +92,7 @@ private:
 
     wxString m_symbol;
     wxString m_type;
+    wxString m_address;
     wxString m_contents;
 
     GDBTipWindowView *m_view;

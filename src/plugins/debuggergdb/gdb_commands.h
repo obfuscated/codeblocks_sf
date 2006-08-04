@@ -132,6 +132,7 @@ static wxRegEx reInfoProgramProcess(_T("child process ([0-9]+)"));
 //  2 Thread 1082132832 (LWP 8017)  0x00002aaaac5a2aca in pthread_cond_wait@@GLIBC_2.3.2 () from /lib/libpthread.so.0
 //* 1 Thread 46912568064384 (LWP 7926)  0x00002aaaac76e612 in poll () from /lib/libc.so.6
 static wxRegEx reInfoThreads(_T("(\\**)[ \t]*([0-9]+)[ \t](.*)[ \t]in"));
+static wxRegEx reGenericHexAddress(_T("(0x[A-Fa-f0-9]+)"));
 
 DECLARE_INSTANCE_TYPE(wxString);
 
@@ -671,18 +672,20 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
         wxRect m_WinRect;
         wxString m_What;
         wxString m_Type;
+        wxString m_Address;
         wxString m_ParseFunc;
     public:
         /** @param what The variable to evaluate.
             @param win A pointer to the tip window pointer.
             @param tiprect The tip window's rect.
         */
-        GdbCmd_TooltipEvaluation(DebuggerDriver* driver, const wxString& what, const wxRect& tiprect, const wxString& w_type = wxEmptyString)
+        GdbCmd_TooltipEvaluation(DebuggerDriver* driver, const wxString& what, const wxRect& tiprect, const wxString& w_type = wxEmptyString, const wxString& address = wxEmptyString)
             : DebuggerCmd(driver),
             m_pWin(0),
             m_WinRect(tiprect),
             m_What(what),
-            m_Type(w_type)
+            m_Type(w_type),
+            m_Address(address)
         {
             m_Cmd = static_cast<GDB_driver*>(m_pDriver)->GetScriptedTypeCommand(w_type, m_ParseFunc);
             if (m_Cmd.IsEmpty())
@@ -738,13 +741,63 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
                     }
                 }
                 else
+                {
                     contents << output;
+                    if (reGenericHexAddress.Matches(output))
+                    {
+                        contents.Replace(reGenericHexAddress.GetMatch(output, 1), _T(""));
+                        contents.Trim(false);
+                    }
+                }
             }
 
             if (m_pWin)
                 (m_pWin)->Destroy();
-            m_pWin = new GDBTipWindow((wxWindow*)Manager::Get()->GetAppWindow(), m_What, m_Type, contents, 640, &m_pWin, &m_WinRect);
+            m_pWin = new GDBTipWindow((wxWindow*)Manager::Get()->GetAppWindow(), m_What, m_Type, m_Address, contents, 640, &m_pWin, &m_WinRect);
 //            m_pDriver->DebugLog(output);
+        }
+};
+
+/**
+  * Command to get a symbol's type and use it for tooltip evaluation.
+  */
+class GdbCmd_FindTooltipAddress : public DebuggerCmd
+{
+        wxRect m_WinRect;
+        wxString m_What;
+        wxString m_Type;
+    public:
+        /** @param tree The tree to display the watch. */
+        GdbCmd_FindTooltipAddress(DebuggerDriver* driver, const wxString& what, const wxRect& tiprect, const wxString& w_type = wxEmptyString)
+            : DebuggerCmd(driver),
+            m_WinRect(tiprect),
+            m_What(what),
+            m_Type(w_type)
+        {
+            if (m_Type.IsEmpty())
+            {
+                m_pDriver->QueueCommand(new GdbCmd_TooltipEvaluation(m_pDriver, m_What, m_WinRect, m_Type), DebuggerDriver::High);
+                return;
+            }
+            m_Cmd << _T("output ");
+            if (m_Type.Last() != _T('*'))
+                m_Cmd << _T('&');
+            m_Cmd << m_What;
+        }
+        void ParseOutput(const wxString& output)
+        {
+            // examples:
+            // type = wxString
+            // type = const wxChar
+            // type = Action *
+            // type = bool
+
+            wxString tmp;
+            if (reGenericHexAddress.Matches(output))
+                tmp = reGenericHexAddress.GetMatch(output, 1);
+
+            // add the actual evaluation command with high priority
+            m_pDriver->QueueCommand(new GdbCmd_TooltipEvaluation(m_pDriver, m_What, m_WinRect, m_Type, tmp), DebuggerDriver::High);
         }
 };
 
@@ -774,9 +827,10 @@ class GdbCmd_FindTooltipType : public DebuggerCmd
             // type = bool
 
             wxString tmp = output.AfterFirst(_T('='));
+            tmp.Trim(false);
 
             // add the actual evaluation command with high priority
-            m_pDriver->QueueCommand(new GdbCmd_TooltipEvaluation(m_pDriver, m_What, m_WinRect, tmp), DebuggerDriver::High);
+            m_pDriver->QueueCommand(new GdbCmd_FindTooltipAddress(m_pDriver, m_What, m_WinRect, tmp), DebuggerDriver::High);
         }
 };
 

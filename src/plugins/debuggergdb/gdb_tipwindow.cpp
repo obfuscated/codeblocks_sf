@@ -73,7 +73,7 @@ public:
 #endif // wxUSE_POPUPWIN
 
     // calculate the client rect we need to display the text
-    void Adjust(const wxString& symbol, const wxString& typ, const wxString& contents, wxCoord maxLength);
+    void Adjust(const wxString& symbol, const wxString& typ, const wxString& addr, const wxString& contents, wxCoord maxLength);
 
 private:
     wxSize GetTextSize(wxArrayString& array, const wxString& text, wxCoord maxLength, int indentationAfterFirstLine = 0);
@@ -85,6 +85,7 @@ private:
 
     wxString m_symbol;
     wxString m_type;
+    wxString m_address;
     wxString m_contents;
 
 #if !wxUSE_POPUPWIN
@@ -135,6 +136,7 @@ END_EVENT_TABLE()
 GDBTipWindow::GDBTipWindow(wxWindow *parent,
                          const wxString& symbol,
                          const wxString& typ,
+                         const wxString& addr,
                          const wxString& contents,
                          wxCoord maxLength,
                          GDBTipWindow** windowPtr,
@@ -148,6 +150,7 @@ GDBTipWindow::GDBTipWindow(wxWindow *parent,
 #endif
             m_symbol(symbol),
             m_type(typ),
+            m_address(addr),
             m_contents(contents)
 {
 //    int size = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/log_font_size"), 8);
@@ -166,7 +169,7 @@ GDBTipWindow::GDBTipWindow(wxWindow *parent,
 
     // set size, position and show it
     m_view = new GDBTipWindowView(this);
-    m_view->Adjust(symbol, typ, contents, maxLength);
+    m_view->Adjust(symbol, typ, addr, contents, maxLength);
     m_view->SetFocus();
 
     int x, y;
@@ -430,19 +433,28 @@ wxString GDBTipWindowView::AdjustContents(const wxString& contents)
     return ret;
 }
 
-void GDBTipWindowView::Adjust(const wxString& symbol, const wxString& typ, const wxString& contents, wxCoord maxLength)
+void GDBTipWindowView::Adjust(const wxString& symbol, const wxString& typ, const wxString& addr, const wxString& contents, wxCoord maxLength)
 {
     wxString text;
+    wxString tmp;
 
-    text << symbol << _T(" : ") << typ << _T('\n');
-    wxSize size1 = GetTextSize(m_parent->m_symbolLines, text, maxLength, (symbol + _T(" : ")).Length());
-    m_headerHeight = size1.y;
+    tmp << _("Symbol  : ") << symbol << _T(" (") << typ << _T(')');
+    text = tmp;
+    wxSize size0 = GetTextSize(m_parent->m_symbolLines, text, maxLength, (_("Symbol  :") + symbol + _T(" ")).Length());
+
+    text.Clear();
+    text << _("Address : ") << addr;
+    wxSize size1 = GetTextSize(m_parent->m_symbolLines, text, maxLength, (_("Address : ") + addr).Length());
+
+    size1.x = std::max(size0.x, size1.x);
 
     text = AdjustContents(contents);
     wxSize size2 = GetTextSize(m_parent->m_textLines, text, std::max(maxLength, size1.x));
 
+    m_headerHeight = TEXT_MARGIN_Y + (m_parent->m_heightLine * m_parent->m_symbolLines.GetCount());
+
     // take into account the border size and the margins
-    wxSize size(std::max(size1.x, size2.x), size1.y + size2.y);
+    wxSize size(std::max(size1.x, size2.x), m_headerHeight + size2.y);
     size.x += 2*(TEXT_MARGIN_X + 1);
     size.y += 2*(TEXT_MARGIN_Y + 1);
 
@@ -451,6 +463,7 @@ void GDBTipWindowView::Adjust(const wxString& symbol, const wxString& typ, const
 
     m_symbol = symbol;
     m_type = typ;
+    m_address = addr;
     m_contents = contents;
 }
 
@@ -485,6 +498,7 @@ void GDBTipWindowView::OnPaint(wxPaintEvent& WXUNUSED(event))
     pt.y = TEXT_MARGIN_Y;
 
     PrintArray(dc, pt, m_parent->m_symbolLines);
+    pt.y += 2;
     PrintArray(dc, pt, m_parent->m_textLines);
 }
 

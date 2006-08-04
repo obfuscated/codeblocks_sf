@@ -15,7 +15,7 @@ function RegisterTypes(driver)
     // STL String
     driver.RegisterType(
         _T("STL String"),
-        _T("[^[:alnum:]_]+string[^[:alnum:]_]*"),
+        _T("[^[:alnum:]_]*string[^[:alnum:]_]*"),
         _T("Evaluate_StlString"),
         _T("Parse_StlString")
     );
