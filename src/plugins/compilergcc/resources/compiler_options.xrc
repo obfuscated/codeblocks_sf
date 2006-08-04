@@ -109,14 +109,13 @@
                               <border>4</border>
                             </object>
                             <object class="sizeritem">
-                              <object class="wxComboBox" name="cmbCompilerPolicy">
+                              <object class="wxChoice" name="cmbCompilerPolicy">
                                 <content>
                                   <item>Use project options only</item>
                                   <item>Use target options only</item>
                                   <item>Prepend target options to project options</item>
                                   <item>Append target options to project options</item>
                                 </content>
-                                <style>wxCB_READONLY|wxCB_DROPDOWN</style>
                               </object>
                             </object>
                           </object>
@@ -224,14 +223,13 @@
                               <border>4</border>
                             </object>
                             <object class="sizeritem">
-                              <object class="wxComboBox" name="cmbLinkerPolicy">
+                              <object class="wxChoice" name="cmbLinkerPolicy">
                                 <content>
                                   <item>Use project options only</item>
                                   <item>Use target options only</item>
                                   <item>Prepend target options to project options</item>
                                   <item>Append target options to project options</item>
                                 </content>
-                                <style>wxCB_READONLY|wxCB_DROPDOWN</style>
                               </object>
                             </object>
                           </object>
@@ -367,14 +365,13 @@
                                             <border>4</border>
                                           </object>
                                           <object class="sizeritem">
-                                            <object class="wxComboBox" name="cmbIncludesPolicy">
+                                            <object class="wxChoice" name="cmbIncludesPolicy">
                                               <content>
                                                 <item>Use project options only</item>
                                                 <item>Use target options only</item>
                                                 <item>Prepend target options to project options</item>
                                                 <item>Append target options to project options</item>
                                               </content>
-                                              <style>wxCB_READONLY|wxCB_DROPDOWN</style>
                                             </object>
                                           </object>
                                         </object>
@@ -418,14 +415,13 @@
                                             <border>4</border>
                                           </object>
                                           <object class="sizeritem">
-                                            <object class="wxComboBox" name="cmbLibDirsPolicy">
+                                            <object class="wxChoice" name="cmbLibDirsPolicy">
                                               <content>
                                                 <item>Use project options only</item>
                                                 <item>Use target options only</item>
                                                 <item>Prepend target options to project options</item>
                                                 <item>Append target options to project options</item>
                                               </content>
-                                              <style>wxCB_READONLY|wxCB_DROPDOWN</style>
                                             </object>
                                           </object>
                                         </object>
@@ -469,14 +465,13 @@
                                             <border>4</border>
                                           </object>
                                           <object class="sizeritem">
-                                            <object class="wxComboBox" name="cmbResDirsPolicy">
+                                            <object class="wxChoice" name="cmbResDirsPolicy">
                                               <content>
                                                 <item>Use project options only</item>
                                                 <item>Use target options only</item>
                                                 <item>Prepend target options to project options</item>
                                                 <item>Append target options to project options</item>
                                               </content>
-                                              <style>wxCB_READONLY|wxCB_DROPDOWN</style>
                                             </object>
                                           </object>
                                         </object>
@@ -1056,14 +1051,13 @@ or in any of the &quot;Additional paths&quot;...</label>
                               <border>4</border>
                             </object>
                             <object class="sizeritem">
-                              <object class="wxComboBox" name="cmbLogging">
+                              <object class="wxChoice" name="cmbLogging">
                                 <content>
                                   <item>Full command line</item>
                                   <item>Task description (e.g. &quot;Compiling &lt;file&gt;...&quot;)</item>
                                   <item>No logging (just what the compiler outputs, if anything)</item>
                                 </content>
                                 <selection>0</selection>
-                                <style>wxCB_READONLY</style>
                               </object>
                               <option>1</option>
                               <flag>wxGROW</flag>
@@ -1079,13 +1073,12 @@ or in any of the &quot;Additional paths&quot;...</label>
                               <border>4</border>
                             </object>
                             <object class="sizeritem">
-                              <object class="wxComboBox" name="cmbBuildMethod">
+                              <object class="wxChoice" name="cmbBuildMethod">
                                 <content>
                                   <item>Work with Makefiles (GNU &quot;make&quot; is required)</item>
                                   <item>Invoke compiler directly</item>
                                 </content>
                                 <selection>0</selection>
-                                <style>wxCB_READONLY</style>
                               </object>
                               <option>1</option>
                               <flag>wxGROW</flag>

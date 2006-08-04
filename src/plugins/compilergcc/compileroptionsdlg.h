@@ -1,29 +1,17 @@
 #ifndef COMPILEROPTIONSDLG_H
 #define COMPILEROPTIONSDLG_H
 
+#include <vector>
 #include <wx/intl.h>
-#include <settings.h>
+#include <wx/string.h>
 #include "configurationpanel.h"
-#include <wx/spinbutt.h>
-#include "compilergcc.h"
-#include <compileroptions.h>
-#include <cbproject.h>
+#include "compileroptions.h"
 
 class wxListBox;
-
-class DLLIMPORT ScopeTreeData : public wxTreeItemData
-{
-    public:
-        ScopeTreeData(cbProject* project, ProjectBuildTarget* target){ m_Project = project; m_Target = target; }
-        cbProject* GetProject(){ return m_Project; }
-        void SetProject(cbProject* project){ m_Project = project; }
-		ProjectBuildTarget* GetTarget(){ return m_Target; }
-		void SetTarget(ProjectBuildTarget* target){ m_Target = target; }
-    private:
-        cbProject* m_Project;
-		ProjectBuildTarget* m_Target;
-};
-
+class ScopeTreeData;
+class cbProject;
+class ProjectBuildTarget;
+class CompilerGCC;
 
 class CompilerOptionsDlg : public cbConfigurationPanel
 {
@@ -35,31 +23,43 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         virtual wxString GetBitmapBaseName() const { return _T("compiler"); }
         virtual void OnApply();
         virtual void OnCancel(){}
-	protected:
 	private:
+        enum CustomVarActionType
+        {
+            CVA_Add,
+            CVA_Edit,
+            CVA_Remove
+        };
+
+        struct CustomVarAction
+        {
+            CustomVarActionType m_Action;
+            wxString            m_Key;
+            wxString            m_KeyValue;
+        };
 		void TextToOptions();
 		void OptionsToText();
 		void DoFillCompilerSets();
 		void DoFillCompilerPrograms();
-		void DoFillVars(const StringHash* vars = 0);
+		void DoFillVars();
 		void DoFillOthers();
 		void DoFillCategories();
 		void DoFillOptions();
-		void DoFillTree(cbProject* focusProject = 0L, ProjectBuildTarget* focusTarget = 0L);
-        void DoFillCompileOptions(const wxArrayString& array, wxTextCtrl* control);
-        void DoFillCompileDirs(const wxArrayString& array, wxListBox* control);
-        void DoGetCompileOptions(wxArrayString& array, wxTextCtrl* control);
-        void DoGetCompileDirs(wxArrayString& array, wxListBox* control);
-		void DoSaveOptions(int compilerIdx, ScopeTreeData* data = 0L);
-		void DoLoadOptions(int compilerIdx, ScopeTreeData* data = 0L);
-		void DoMakeRelative(wxFileName& path);
-		void DoSaveCompilerPrograms(int compilerIdx);
-		void CompilerChanged(ScopeTreeData* data);
+		void DoFillCompilerDependentSettings();
+		void DoSaveCompilerDependentSettings();
+		void DoFillTree();
+		void DoSaveOptions();
+		void DoLoadOptions();
+		void DoSaveCompilerPrograms();
+		void DoSaveVars();
+		void CompilerChanged();
 		void UpdateCompilerForTargets(int compilerIdx);
 		void AutoDetectCompiler();
 		wxListBox* GetDirsListBox();
         CompileOptionsBase* GetVarsOwner();
+        void ProjectTargetCompilerAdjust(); //!< checks if compiler changed for project/target and takes actions accordingly
 
+		void OnRealApply(); // user clicked the "Apply" button (so not the Ok button !!!)
 		void OnTreeSelectionChange(wxTreeEvent& event);
 		void OnTreeSelectionChanging(wxTreeEvent& event);
 		void OnCompilerChanged(wxCommandEvent& event);
@@ -95,6 +95,7 @@ class CompilerOptionsDlg : public cbConfigurationPanel
 		void OnRemoveExtraPathClick(wxCommandEvent& event);
 		void OnClearExtraPathClick(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
+		void OnDirty(wxCommandEvent& event); // some controls who change their value -> dirty
 		void OnMyCharHook(wxKeyEvent& event);
 
 		CompilerGCC* m_Compiler;
@@ -102,18 +103,14 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         wxArrayString m_LinkerOptions;
         wxArrayString m_LinkLibs;
         wxArrayString m_CompilerOptions;
-        wxArrayString m_IncludeDirs;
-        wxArrayString m_LibDirs;
-        wxArrayString m_ResDirs;
-		wxArrayString m_CommandsBeforeBuild;
-		wxArrayString m_CommandsAfterBuild;
-		bool m_AlwaysUsePost;
-		int m_LastCompilerIdx;
-		int m_InitialCompilerIdx;
+		int m_CurrentCompilerIdx;
 		cbProject* m_pProject;
 		ProjectBuildTarget* m_pTarget;
+		bool m_bDirty;					//!< true if a setting has changed since last save
+		std::vector<CustomVarAction>    m_CustomVarActions; //!< the actions carried out on the custom vars that need to be saved/applied
+		wxString m_NewProjectOrTargetCompilerId; //!< keeps track of the changes of compiler of the selected project/target
 
-		bool m_BuildingTree; // flag to ignore tree changing events while building it
+		bool m_BuildingTree; //!< flag to ignore tree changing events while building it
 
 		DECLARE_EVENT_TABLE()
 };

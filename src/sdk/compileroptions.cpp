@@ -24,9 +24,8 @@
 * $HeadURL$
 */
 
-#ifdef CB_PRECOMP
-	#include "sdk_precomp.h"
-#endif
+#include "sdk_precomp.h"
+
 #include "compileroptions.h"
 
 CompilerOptions::CompilerOptions()
