@@ -12,6 +12,11 @@ class ScopeTreeData;
 class cbProject;
 class ProjectBuildTarget;
 class CompilerGCC;
+class wxSpinEvent;
+class wxTreeEvent;
+class wxCommandEvent;
+class wxKeyEvent;
+class wxUpdateUIEvent;
 
 class CompilerOptionsDlg : public cbConfigurationPanel
 {
