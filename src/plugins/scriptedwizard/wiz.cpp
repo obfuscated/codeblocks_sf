@@ -203,6 +203,16 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
 {
     cbAssert(index >= 0 && index < GetCount());
 
+    // clear previous script's context
+    static const wxString clearout_wizscripts =  _T("function BeginWizard(){};"
+                                                    "function SetupProject(project){return false;};"
+                                                    "function SetupTarget(target,is_debug){return false;};"
+                                                    "function SetupCustom(){return false;};"
+                                                    "function CreateFiles(){return _T("");};"
+                                                    "function GetFilesDir(){return _T("");};"
+                                                    "function GetGeneratedFile(index)(){return _T("");};");
+    Manager::Get()->GetScriptingManager()->LoadScript(clearout_wizscripts);
+
     // early check: build target wizards need an active project
     if (m_Wizards[index].output_type == totTarget &&
         !Manager::Get()->GetProjectManager()->GetActiveProject())
