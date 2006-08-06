@@ -45,6 +45,7 @@
 
 #include "wx/timer.h"
 #include "wx/settings.h"
+#include "wx/intl.h"
 
 // ----------------------------------------------------------------------------
 // constants
