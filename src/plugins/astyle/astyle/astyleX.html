@@ -13,29 +13,24 @@
         <blockquote><blockquote>
                 <h1>Artistic Style Supplemental Documentation</h1>
                 <hr>
-                <h3><a name="_pad_operators"></a>Problems with Pad Operators</h3>
-                <p>
-                    All known problems with pad operators (<code><strong>--pad=oper / -p</strong></code>
-                    ) have been fixed.</p>
-                <hr>
                 <h3><a name="_break_blocks"></a>Problems with Break Header Blocks, Break All Blocks</h3>
-                The following are known problems with the break header blocks and break all 
-                blocks options (<code><strong>--break-blocks, --break-blocks=all</strong></code>).
+                <p>The following are known problems with the break header blocks and break all 
+                blocks options (<code><strong>--break-blocks, --break-blocks=all</strong></code>).</p>
                 <ul>
                     <li>
-                        If a statement is NOT part of a block, the following statements are all double 
-                        spaced. Statements enclosed in a block are formatted correctly. <blockquote> This:
-                            <pre>
-visStatusHeight = rcStatus.bottom - rcStatus.top;
+                        <p>If a statement is NOT part of a block, the following statements are all double 
+                        spaced. Statements enclosed in a block are formatted correctly.</p>
+                        <blockquote> 
+                            <p>This:</p>
+                            <pre>visStatusHeight = rcStatus.bottom - rcStatus.top;
 if(!opt.bViewStatus)
     visStatusHeight = 0;
 GetClientRect(hwnd, &amp;rcEdit);
 iEditLeft = rcEdit.left;
 iEditRight = rcEdit.right - iEditLeft;
 </pre>
-                            Becomes this (with extra lines added where they shouldn't be):
-                            <pre>
-visStatusHeight = rcStatus.bottom - rcStatus.top;
+                            <p>Becomes this (with extra lines added where they shouldn't be):</p>
+                            <pre>visStatusHeight = rcStatus.bottom - rcStatus.top;
 
 if (!opt.bViewStatus) 
     visStatusHeight = 0;
@@ -49,15 +44,15 @@ iEditRight = rcEdit.right - iEditLeft;
 </pre>
                         </blockquote>
                     <li>
-                        Comments are broken from the block. <blockquote> This:
-                            <pre>
-// line numbers and select must be done after SCI_STYLECLEARALL
+                        <p>Comments are broken from the block.</p>
+                        <blockquote> 
+                            <p>This:</p>
+                            <pre>// line numbers and select must be done after SCI_STYLECLEARALL
 if(setDialog)
     skip = true;
 </pre>
-                            Becomes this (with a line added after the comment):
-                            <pre>
-// line numbers and select must be done after SCI_STYLECLEARALL
+                            <p>Becomes this (with a line added after the comment):</p>
+                            <pre>// line numbers and select must be done after SCI_STYLECLEARALL
 
 if(setDialog)
     skip = true;
@@ -65,10 +60,8 @@ if(setDialog)
                         </blockquote>
                     </li>
                 </ul>
-                <br>
-                <br>
-                <br>
-                <br>
+
+
             </blockquote></blockquote>
     </body>
 </html>

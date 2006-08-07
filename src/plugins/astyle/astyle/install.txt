@@ -1,0 +1,76 @@
+Welcome to Artistic Style!
+
+
+Download Versions:
+===================
+
+astyle_x.y_linux.tar.gz is the Linux version of astyle.  It contains 
+the source code, documentation, and a makefile for compiling the
+source code with GCC.  Refer to the Linux Version compile 
+instructions below.  Refer to the documentation for instructions on
+executing AStyle.exe.  GCC will automatically allow the use of 
+wildcards (such as "*.cpp") during execution.
+
+AStyle_x.y_windows.zip is the Windows version of astyle.  It
+contains the source code, documentation, and an executable,
+AStyle.exe.  Refer to the documentation for instructions on
+executing AStyle.exe.  It has been compiled to allow the use 
+of wildcards (such as "*.cpp") during execution.
+
+
+Linux Version:
+===================
+To compile under linux/unix/cygwin:
+-----------------------------------
+
+You must first have GCC (3.1 or better) installed.  Other C++ 
+compilers may work but will require tweaking the make file.
+
+To build astyle, use the makefile located in the astyle/src directory:
+	cd astyle/src
+	make
+	cd ../..
+    
+To clean the object files:
+	make clean
+    
+The astyle executable will be in the astyle/src directory.    
+
+To use a compiler other than g++ set the variable CC (e.g.):
+    make CC=g++-4.0
+To compile with debug information define DEBUG (e.g.):
+    make DEBUG=1
+
+The Linux GCC compiler will automatically allow the use of wildcards 
+(such as "*.cpp") during execution.
+
+
+Windows Version:
+===================
+Precompiled executable:
+-----------------------
+In addition to the sources the Windows version contains, 
+an astyle executable (AStyle.exe).
+
+The executable is compiled to allow wildcard use during execution.
+
+To compile under Windows:
+-------------------------
+
+1. Create a project under Visual C++ (or another compiler) and add
+   all the .cpp and .h files.
+   
+2. In order to use wildcards (such as "*.cpp") during execution:
+   With Visual C++, insert "setargv.obj" to the list of linker additional 
+   dependencies.
+   With the MinGW build of the GCC compiler, the use of wildcards is 
+   automatic.
+   With other compilers I don't know of a way to allow wildcards.  If 
+   anyone knows, I would appreciate the information.
+
+3. Compile...
+   It is usually best to optimize the program for speed.
+
+
+Enjoy!
+Jim Pattee

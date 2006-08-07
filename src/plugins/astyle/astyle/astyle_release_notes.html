@@ -3,20 +3,47 @@
         <TITLE>Artistic Style - Release Notes</TITLE>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
         <meta name="CREATED" content="19981123;1064600">
-        <meta name="CHANGEDBY" content="Tal Davidson">
+        <meta name="CHANGEDBY" content="Jim Pattee">
         <meta name="CHANGED" content="19981123;1091900">
         <meta name="GENERATOR" content="Microsoft FrontPage 6.0">
         <style> <!-- h1 {color:#0000A0; text-align:center; font-style:italic; font-size:200%;}
 	h2 {color:#0000A0;}
 	h3 {color:#0000A0;}
-	h4 {font-size:105%}
 	code {color:#0000A0; font-size:larger;}
 	--></style>
     </head>
     <body>
-        <H1>Artistic Style&nbsp;Release Notes</H1>
+        <H1>Artistic Style Release Notes</H1>
         <P>&nbsp;</P>
         <blockquote>
+        
+            <H3>Artistic Style 1.19 (July 2006)</H3>
+            <UL>
+                <LI>
+				Add unpad=paren option.<LI>
+				Always pad paren headers (e.g. 
+				'if', 'for', 'while').<LI>
+				Fix problem of pad=oper working different if pad=paren is 
+				declared.<LI>
+				Add 
+				additional tests to distinguish the multiplication 
+				operator from pointers.<LI>
+				Fix padding parens before a member access pointer (-&gt;).<LI>If space padding has changed, 
+				move end-of-line comments to the original column, if possible.<LI>Move potential 
+				calculation decision to outside of operator padding function.<LI>Fix duplication of last line of source if a final endline is not present.
+				<LI>Fix class initializer not indented on last line if bracket is attached.<LI>Fix identification of templates contained in parens.<LI>Fix one line block occurring before end of class.<LI>Fix line added after one line block with bracketFormatMode = 
+				NONE_MODE.<LI>Add needed variables to ASBeautifier copy constructor.<LI>Trim end of line for multi-line comments.<LI>Add a breakLine before paren checks (needed for unpad=paren 
+				option).<LI>Add trace file to ASFormatter.<LI>Move formatting 
+				message from end to beginning of formatting.<LI>Move the building 
+				of vectors to ASResource.&nbsp; Vectors for classes ASBeautifier 
+				and ASFormatter should now have the same values.<LI>Move 
+				debugging variable inLineNumber from ASFormatter to 
+				ASBeautifier.<LI>Bypass char processing for UTF8 characters in 
+				ASBeautifier.<LI>Move switchVariables struct from ASEnhancer to the header file.
+				<LI>Remove preprocessorHeader vector (not used).<LI>Remove variable isInConst 
+				(not used).<LI>Remove commented-out 
+				code.</UL>
+        
             <H3>Artistic Style 1.18 (June 2006)</H3>
             <UL>
                 <LI>
@@ -38,7 +65,8 @@
                             Does <STRONG>not</STRONG>
                         add a space to the end of preprocessor directives.
                         <LI>
-                            Will <STRONG>not</STRONG> pad operators inside brackets [].</LI>
+                            Will <STRONG>not</STRONG> pad operators inside block 
+							parens [].</LI>
                     </UL>
                 <LI>
                     The following changes were made for the option pad=paren:
@@ -55,7 +83,7 @@
                         Inside of closing paren is padded correctly.
                         <LI>
                             Does <strong>not</strong>
-                        pad brackets [].
+                        pad block parens [].
                         <LI>
                             Added short option P, previously used for pad=all.</LI>
                     </UL>
@@ -742,13 +770,10 @@
                 (ASFormatter.cpp) around the indentation layer (ASBeautifier.cpp).
                 <li style="MARGIN-BOTTOM: 0cm">
                 As a result, the following formatting capabilities have been added:
-                <li>
-                    <ul>
-                        <li style="MARGIN-BOTTOM: 0cm">
-                        Bracket ('{' and '}') placement in either ANSI C style or Java style.
-                        <li style="MARGIN-BOTTOM: 0cm">
-                            Space padding around operators, i.e. (1+2)*3-4 becomes ( 1 + 2 ) * 3 - 4 .</li>
-                    </ul>
+                <ul>
+					<li style="MARGIN-BOTTOM: 0cm">Bracket ('{' and '}') placement in either ANSI C style or Java style.
+                    <li style="MARGIN-BOTTOM: 0cm">Space padding around operators, i.e. (1+2)*3-4 becomes ( 1 + 2 ) * 3 - 4 .</li>
+				</ul>
                 <li style="MARGIN-BOTTOM: 0cm">
                 Fixed the 'tab' elimination bug introduced in ASBeautifier 0.8.2 .
                 <li>

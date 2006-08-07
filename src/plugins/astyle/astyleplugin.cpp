@@ -43,7 +43,7 @@ AStylePlugin::AStylePlugin()
 	m_PluginInfo.name = _T("AStylePlugin");
 	m_PluginInfo.title = _T("Source code formatter (AStyle)");
 	m_PluginInfo.version = _T("1.2");
-	m_PluginInfo.description =  _T("Uses AStyle 1.18 to reformat your sources. Useful when copying ")
+	m_PluginInfo.description =  _T("Uses AStyle 1.19 to reformat your sources. Useful when copying ")
                               _T("code from the net or if you just want to reformat your sources ")
                               _T("based on a specific style.\n")
                               _T("\n")
