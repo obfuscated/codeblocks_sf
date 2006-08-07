@@ -130,15 +130,6 @@ void UserVariableManager::Configure()
 
 wxString UserVariableManager::Replace(const wxString& variable)
 {
-    if (Manager::Get()->GetProjectManager()->IsLoading())
-    {
-        // a project/workspace is being loaded.
-        // no need to bug the user now about global vars.
-        // just preempt it; ProjectManager will call Arrogate() when it's done.
-        Preempt(variable);
-        return variable;
-    }
-
     wxString package = variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).MakeLower();
     wxString member = variable.AfterFirst(wxT('.')).MakeLower();
 
@@ -148,13 +139,24 @@ wxString UserVariableManager::Replace(const wxString& variable)
 
     if(base.IsEmpty())
     {
-        wxString msg;
-        msg.Printf(_("In the currently active Set, Code::Blocks does not know\nthe global compiler variable \"%s\".\n\nPlease define it."), package.c_str());
-        InfoWindow::Display(_("Global Compiler Variables"), msg , 8000, 1000);
-        UsrGlblMgrEditDialog d;
-        d.AddVar(package);
-        PlaceWindow(&d);
-        d.ShowModal();
+        if (Manager::Get()->GetProjectManager()->IsLoading())
+        {
+            // a project/workspace is being loaded.
+            // no need to bug the user now about global vars.
+            // just preempt it; ProjectManager will call Arrogate() when it's done.
+            Preempt(variable);
+            return variable;
+        }
+        else
+        {
+            wxString msg;
+            msg.Printf(_("In the currently active Set, Code::Blocks does not know\nthe global compiler variable \"%s\".\n\nPlease define it."), package.c_str());
+            InfoWindow::Display(_("Global Compiler Variables"), msg , 8000, 1000);
+            UsrGlblMgrEditDialog d;
+            d.AddVar(package);
+            PlaceWindow(&d);
+            d.ShowModal();
+        }
     }
 
     if(member.IsEmpty() || member.IsSameAs(cBase))
