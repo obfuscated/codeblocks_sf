@@ -427,6 +427,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
                 break;
         }
 
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("Creating task for: %s"), buffOrFile.c_str());
         ParserThread* thread = new ParserThread(this,
                                                 buffOrFile,
                                                 isLocal,

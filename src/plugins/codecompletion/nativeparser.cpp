@@ -217,7 +217,8 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 	if (!parser)
 		return;
 
-    parser->ClearIncludeDirs();
+    // do not clean include dirs: we use a single parser for the whole workspace
+//    parser->ClearIncludeDirs();
     wxString base = project->GetBasePath();
     parser->AddIncludeDir(base); // add project's base path
 
@@ -227,12 +228,12 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
     for (unsigned int i = 0; i < project->GetIncludeDirs().GetCount(); ++i)
     {
     	wxString out = project->GetIncludeDirs()[i];
-    	Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
+    	Manager::Get()->GetMacrosManager()->ReplaceMacros(out, true);
         wxFileName dir(out);
         if(NormalizePath(dir,base))
         {
             parser->AddIncludeDir(dir.GetFullPath());
-//            Manager::Get()->GetMessageManager()->DebugLog("Parser prj dir: " + dir.GetFullPath());
+//            Manager::Get()->GetMessageManager()->DebugLog(_T("Parser prj dir: ") + dir.GetFullPath());
         }
         else
             Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());
@@ -256,13 +257,13 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             for (unsigned int ti = 0; ti < target->GetIncludeDirs().GetCount(); ++ti)
             {
                 wxString out = target->GetIncludeDirs()[ti];
-                Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
+                Manager::Get()->GetMacrosManager()->ReplaceMacros(out, true);
                 wxFileName dir(out);
                 wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
                 if(NormalizePath(dir,base))
                 {
                     parser->AddIncludeDir(dir.GetFullPath());
-//                    Manager::Get()->GetMessageManager()->DebugLog("Parser tgt dir: " + dir.GetFullPath());
+//                    Manager::Get()->GetMessageManager()->DebugLog(_T("Parser tgt dir: ") + dir.GetFullPath());
                 }
                 else
                     Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());
@@ -292,7 +293,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 		{
 			//Manager::Get()->GetMessageManager()->Log(mltDevDebug, "Adding %s", dirs[i].c_str());
             wxString out = dirs[i];
-            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(out, true);
             wxFileName dir(out);
             wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
             if (NormalizePath(dir,base))
@@ -342,7 +343,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 					}
 					else if (bStart)
 					{
-						// Manager::Get()->GetMessageManager()->DebugLog("include dir " + Errors[idxCount]);
+//						 Manager::Get()->GetMessageManager()->DebugLog("include dir " + Errors[idxCount]);
 						// get rid of the leading space (more general : any whitespace)in front
 						wxRegEx reg(_T("^[ \t]*(.*)"));
 						if(reg.Matches(Errors[idxCount]))
@@ -753,15 +754,18 @@ unsigned int NativeParser::FindCCTokenStart(const wxString& line)
 
         if (repeat)
         {
-            // check for function/cast ()
-            if (x >= 0 && line.GetChar(x) == ')')
+            // check for function/array/cast ()
+            if (x >= 0 && (line.GetChar(x) == ')' || line.GetChar(x) == ']'))
             {
                 ++nest;
                 while (--x >= 0 && nest != 0)
                 {
                     switch (line.GetChar(x))
                     {
+                        case ']':
                         case ')': ++nest; break;
+
+                        case '[':
                         case '(': --nest; break;
                     }
                 }
@@ -800,7 +804,7 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
         }
     }
 
-    //Manager::Get()->GetMessageManager()->DebugLog("at %d (%c): res=%s", startAt, line.GetChar(startAt), res.c_str());
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str());
     while (startAt < line.Length() && (isalnum(line.GetChar(startAt)) || line.GetChar(startAt) == '_'))
     {
         res << line.GetChar(startAt);
@@ -815,7 +819,7 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
     }
     //Manager::Get()->GetMessageManager()->DebugLog("Done nest: at %d (%c): res=%s", startAt, line.GetChar(startAt), res.c_str());
 
-    if (startAt < line.Length() && line.GetChar(startAt) == '(')
+    if (startAt < line.Length() && (line.GetChar(startAt) == '(' || line.GetChar(startAt) == '['))
     {
         ++nest;
         while (startAt < line.Length() - 1 && nest != 0)
@@ -823,7 +827,10 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
             ++startAt;
             switch (line.GetChar(startAt))
             {
+                case ']':
                 case ')': --nest; break;
+
+                case '[':
                 case '(': ++nest; break;
             }
         }
@@ -850,7 +857,7 @@ wxString NativeParser::GetCCToken(wxString& line, ParserTokenType& tokenType)
 	// we 'll return "m_SomeVar" and modify line (again) to become:
 	// SomeMeth
 	// and so on and so forth until we return an empty string...
-	// NOTE: if we find () args in our way, we skip them...
+	// NOTE: if we find () args or [] arrays in our way, we skip them (done in GetNextCCToken)...
 
 	tokenType = pttSearchText;
 	if (line.IsEmpty())

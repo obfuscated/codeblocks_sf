@@ -52,7 +52,7 @@ void cbThreadPool::_SetConcurrentThreads(int concurrentThreads)
     m_threads.clear();
 
     // set a new Semaphore for the new threads
-    m_semaphore = CountedPtr<wxSemaphore>(new wxSemaphore);
+    m_semaphore = CountedPtr<wxSemaphore>(new wxSemaphore(0, concurrentThreads));
 
     m_concurrentThreads = concurrentThreads;
     m_concurrentThreadsSchedule = 0;
@@ -132,7 +132,7 @@ bool cbThreadPool::WaitingThread()
   wxMutexLocker lock(m_Mutex);
   --m_workingThreads;
 
-  if (!m_workingThreads && m_tasksQueue.empty())
+  if (m_workingThreads <= 0 && m_tasksQueue.empty())
   {
     // notify the owner that all tasks are done
     CodeBlocksEvent evt = CodeBlocksEvent(cbEVT_THREADTASK_ALLDONE, m_ID);
@@ -146,6 +146,8 @@ bool cbThreadPool::WaitingThread()
       return false; // the thread must abort
     }
   }
+  else
+    m_semaphore->Post();
 
   return true;
 }
