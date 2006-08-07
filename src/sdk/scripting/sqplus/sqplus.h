@@ -590,78 +590,6 @@ T * GetInstance(HSQUIRRELVM v,SQInteger idx) {
 //////////// END Generalized Class/Struct Instance Support ///////////////
 //////////////////////////////////////////////////////////////////////////
 
-// === BEGIN Function Call Handlers ===
-
-inline void Push(HSQUIRRELVM v,char value)           { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,unsigned char value)  { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,short value)          { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,unsigned short value) { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,int value)            { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,unsigned int value)   { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,long value)           { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,unsigned long value)  { sq_pushinteger(v,value); }
-inline void Push(HSQUIRRELVM v,double value)         { sq_pushfloat(v,(FLOAT)value); }
-inline void Push(HSQUIRRELVM v,float value)          { sq_pushfloat(v,(FLOAT)value); }
-inline void Push(HSQUIRRELVM v,const SQChar * value) { sq_pushstring(v,value,-1); }
-inline void Push(HSQUIRRELVM v,const SquirrelNull &) { sq_pushnull(v); }
-inline void Push(HSQUIRRELVM v,SQFUNCTION value)     { sq_pushuserpointer(v,(void*)value); }
-inline void Push(HSQUIRRELVM v,SQAnythingPtr value)  { sq_pushuserpointer(v,(void*)value); } // Cast to SQAnythingPtr instead of void * if USE_ARGUMENT_DEPENDANT_OVERLOADS can't be used by your compiler.
-inline void Push(HSQUIRRELVM v,SquirrelObject & so)  { sq_pushobject(v,so.GetObjectHandle()); }
-
-
-#define USE_ARGUMENT_DEPENDANT_OVERLOADS
-#ifdef USE_ARGUMENT_DEPENDANT_OVERLOADS
-#ifdef _MSC_VER
-#pragma warning (disable:4675) // Disable warning: "resolved overload was found by argument-dependent lookup" when class/struct pointers are used as function arguments.
-#endif
-// === BEGIN Argument Dependent Overloads ===
-inline void Push(HSQUIRRELVM v,bool value)                  { sq_pushbool(v,value); }               // Pass bool as int if USE_ARGUMENT_DEPENDANT_OVERLOADS can't be used by your compiler.
-inline void Push(HSQUIRRELVM v,const void * value)          { sq_pushuserpointer(v,(void*)value); } // Pass SQAnythingPtr instead of void * "                                             "
-inline void Push(HSQUIRRELVM v,const SQUserPointer & value) { sq_pushuserpointer(v,(void*)value); }
-// === END Argument Dependent Overloads ===
-#endif
-
-#define SQPLUS_CHECK_GET(res) if (!SQ_SUCCEEDED(res)) throw SquirrelError(sqT("sq_get*() failed (type error)"))
-
-inline bool	Match(TypeWrapper<bool>,HSQUIRRELVM v,int idx)           { return sq_gettype(v,idx) == OT_BOOL; }
-inline bool	Match(TypeWrapper<char>,HSQUIRRELVM v,int idx)           { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<unsigned char>,HSQUIRRELVM v, int idx) { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<short>,HSQUIRRELVM v,int idx)          { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<unsigned short>,HSQUIRRELVM v,int idx) { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<int>,HSQUIRRELVM v,int idx)            { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<unsigned int>,HSQUIRRELVM v,int idx)   { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<long>,HSQUIRRELVM v,int idx)           { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<unsigned long>,HSQUIRRELVM v,int idx)  { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<float>,HSQUIRRELVM v,int idx)          { int type = sq_gettype(v,idx); return type == OT_FLOAT; }
-inline bool	Match(TypeWrapper<double>,HSQUIRRELVM v,int idx)         { int type = sq_gettype(v,idx); return type == OT_FLOAT; }
-inline bool	Match(TypeWrapper<const SQChar *>,HSQUIRRELVM v,int idx) { return sq_gettype(v,idx) == OT_STRING; }
-inline bool	Match(TypeWrapper<HSQUIRRELVM>,HSQUIRRELVM v,int idx)    { return true; } // See Get() for HSQUIRRELVM below (v is always present).
-inline bool	Match(TypeWrapper<void*>,HSQUIRRELVM v,int idx)          { return sq_gettype(v,idx) == OT_USERPOINTER; }
-inline bool	Match(TypeWrapper<SquirrelObject>,HSQUIRRELVM v,int idx) { return true; } // See sq_getstackobj(): always returns true.
-
-inline void           Get(TypeWrapper<void>,HSQUIRRELVM v,int)                {}
-inline bool           Get(TypeWrapper<bool>,HSQUIRRELVM v,int idx)            { SQBool b; SQPLUS_CHECK_GET(sq_getbool(v,idx,&b)); return b != 0; }
-inline char           Get(TypeWrapper<char>,HSQUIRRELVM v,int idx)            { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<char>(i); }
-inline unsigned char  Get(TypeWrapper<unsigned char>,HSQUIRRELVM v,int idx)   { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned char>(i); }
-inline short          Get(TypeWrapper<short>,HSQUIRRELVM v,int idx)           { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<short>(i); }
-inline unsigned short	Get(TypeWrapper<unsigned short>,HSQUIRRELVM v,int idx)  { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned short>(i); }
-inline int            Get(TypeWrapper<int>,HSQUIRRELVM v,int idx)             { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return i; }
-inline unsigned int   Get(TypeWrapper<unsigned int>,HSQUIRRELVM v,int idx)    { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned int>(i); }
-inline long           Get(TypeWrapper<long>,HSQUIRRELVM v,int idx)            { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<long>(i); }
-inline unsigned long  Get(TypeWrapper<unsigned long>,HSQUIRRELVM v,int idx)   { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned long>(i); }
-inline float          Get(TypeWrapper<float>,HSQUIRRELVM v,int idx)           { FLOAT f; SQPLUS_CHECK_GET(sq_getfloat(v,idx,&f)); return f; }
-inline double         Get(TypeWrapper<double>,HSQUIRRELVM v,int idx)          { FLOAT f; SQPLUS_CHECK_GET(sq_getfloat(v,idx,&f)); return static_cast<double>(f); }
-inline const SQChar * Get(TypeWrapper<const SQChar *>,HSQUIRRELVM v,int idx)  { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return s; }
-inline SquirrelNull   Get(TypeWrapper<SquirrelNull>,HSQUIRRELVM v,int idx)    { (void)v, (void)idx; return SquirrelNull();  }
-inline void *         Get(TypeWrapper<void *>,HSQUIRRELVM v,int idx)          { SQUserPointer p; SQPLUS_CHECK_GET(sq_getuserpointer(v,idx,&p)); return p; }
-inline HSQUIRRELVM    Get(TypeWrapper<HSQUIRRELVM>,HSQUIRRELVM v,int /*idx*/) { sq_poptop(v); return v; } // sq_poptop(v): remove UserData from stack so GetParamCount() matches normal behavior.
-inline SquirrelObject Get(TypeWrapper<SquirrelObject>,HSQUIRRELVM v,int idx)  { HSQOBJECT o; SQPLUS_CHECK_GET(sq_getstackobj(v,idx,&o)); return SquirrelObject(o); }
-
-#ifdef SQPLUS_SUPPORT_STD_STRING
-inline void Push(HSQUIRRELVM v,const std::string& value) { sq_pushstring(v,value.c_str(),-1); }
-inline bool Match(TypeWrapper<const std::string&>, HSQUIRRELVM v, int idx) { return sq_gettype(v,idx) == OT_STRING; }
-inline std::string Get(TypeWrapper<const std::string&>,HSQUIRRELVM v,int idx) { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return std::string(s); }
-#endif
 
 // GetRet() restores the stack for SquirrelFunction<>() calls.
 template<typename RT>
@@ -927,6 +855,7 @@ struct ReturnSpecialization {
 #include "SqPlusConst.h"
 #endif
 };
+
 
 // === No return value variants ===
 
@@ -1908,6 +1837,79 @@ struct SQClassDef {
   } // enumInt
 
 };
+
+// === BEGIN Function Call Handlers ===
+
+inline void Push(HSQUIRRELVM v,char value)           { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,unsigned char value)  { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,short value)          { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,unsigned short value) { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,int value)            { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,unsigned int value)   { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,long value)           { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,unsigned long value)  { sq_pushinteger(v,value); }
+inline void Push(HSQUIRRELVM v,double value)         { sq_pushfloat(v,(FLOAT)value); }
+inline void Push(HSQUIRRELVM v,float value)          { sq_pushfloat(v,(FLOAT)value); }
+inline void Push(HSQUIRRELVM v,const SQChar * value) { sq_pushstring(v,value,-1); }
+inline void Push(HSQUIRRELVM v,const SquirrelNull &) { sq_pushnull(v); }
+inline void Push(HSQUIRRELVM v,SQFUNCTION value)     { sq_pushuserpointer(v,(void*)value); }
+inline void Push(HSQUIRRELVM v,SQAnythingPtr value)  { sq_pushuserpointer(v,(void*)value); } // Cast to SQAnythingPtr instead of void * if USE_ARGUMENT_DEPENDANT_OVERLOADS can't be used by your compiler.
+inline void Push(HSQUIRRELVM v,SquirrelObject & so)  { sq_pushobject(v,so.GetObjectHandle()); }
+
+
+#define USE_ARGUMENT_DEPENDANT_OVERLOADS
+#ifdef USE_ARGUMENT_DEPENDANT_OVERLOADS
+#ifdef _MSC_VER
+#pragma warning (disable:4675) // Disable warning: "resolved overload was found by argument-dependent lookup" when class/struct pointers are used as function arguments.
+#endif
+// === BEGIN Argument Dependent Overloads ===
+inline void Push(HSQUIRRELVM v,bool value)                  { sq_pushbool(v,value); }               // Pass bool as int if USE_ARGUMENT_DEPENDANT_OVERLOADS can't be used by your compiler.
+inline void Push(HSQUIRRELVM v,const void * value)          { sq_pushuserpointer(v,(void*)value); } // Pass SQAnythingPtr instead of void * "                                             "
+inline void Push(HSQUIRRELVM v,const SQUserPointer & value) { sq_pushuserpointer(v,(void*)value); }
+// === END Argument Dependent Overloads ===
+#endif
+
+#define SQPLUS_CHECK_GET(res) if (!SQ_SUCCEEDED(res)) throw SquirrelError(sqT("sq_get*() failed (type error)"))
+
+inline bool	Match(TypeWrapper<bool>,HSQUIRRELVM v,int idx)           { return sq_gettype(v,idx) == OT_BOOL; }
+inline bool	Match(TypeWrapper<char>,HSQUIRRELVM v,int idx)           { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<unsigned char>,HSQUIRRELVM v, int idx) { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<short>,HSQUIRRELVM v,int idx)          { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<unsigned short>,HSQUIRRELVM v,int idx) { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<int>,HSQUIRRELVM v,int idx)            { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<unsigned int>,HSQUIRRELVM v,int idx)   { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<long>,HSQUIRRELVM v,int idx)           { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<unsigned long>,HSQUIRRELVM v,int idx)  { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<float>,HSQUIRRELVM v,int idx)          { int type = sq_gettype(v,idx); return type == OT_FLOAT; }
+inline bool	Match(TypeWrapper<double>,HSQUIRRELVM v,int idx)         { int type = sq_gettype(v,idx); return type == OT_FLOAT; }
+inline bool	Match(TypeWrapper<const SQChar *>,HSQUIRRELVM v,int idx) { return sq_gettype(v,idx) == OT_STRING; }
+inline bool	Match(TypeWrapper<HSQUIRRELVM>,HSQUIRRELVM v,int idx)    { return true; } // See Get() for HSQUIRRELVM below (v is always present).
+inline bool	Match(TypeWrapper<void*>,HSQUIRRELVM v,int idx)          { return sq_gettype(v,idx) == OT_USERPOINTER; }
+inline bool	Match(TypeWrapper<SquirrelObject>,HSQUIRRELVM v,int idx) { return true; } // See sq_getstackobj(): always returns true.
+
+inline void           Get(TypeWrapper<void>,HSQUIRRELVM v,int)                {}
+inline bool           Get(TypeWrapper<bool>,HSQUIRRELVM v,int idx)            { SQBool b; SQPLUS_CHECK_GET(sq_getbool(v,idx,&b)); return b != 0; }
+inline char           Get(TypeWrapper<char>,HSQUIRRELVM v,int idx)            { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<char>(i); }
+inline unsigned char  Get(TypeWrapper<unsigned char>,HSQUIRRELVM v,int idx)   { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned char>(i); }
+inline short          Get(TypeWrapper<short>,HSQUIRRELVM v,int idx)           { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<short>(i); }
+inline unsigned short	Get(TypeWrapper<unsigned short>,HSQUIRRELVM v,int idx)  { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned short>(i); }
+inline int            Get(TypeWrapper<int>,HSQUIRRELVM v,int idx)             { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return i; }
+inline unsigned int   Get(TypeWrapper<unsigned int>,HSQUIRRELVM v,int idx)    { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned int>(i); }
+inline long           Get(TypeWrapper<long>,HSQUIRRELVM v,int idx)            { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<long>(i); }
+inline unsigned long  Get(TypeWrapper<unsigned long>,HSQUIRRELVM v,int idx)   { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned long>(i); }
+inline float          Get(TypeWrapper<float>,HSQUIRRELVM v,int idx)           { FLOAT f; SQPLUS_CHECK_GET(sq_getfloat(v,idx,&f)); return f; }
+inline double         Get(TypeWrapper<double>,HSQUIRRELVM v,int idx)          { FLOAT f; SQPLUS_CHECK_GET(sq_getfloat(v,idx,&f)); return static_cast<double>(f); }
+inline const SQChar * Get(TypeWrapper<const SQChar *>,HSQUIRRELVM v,int idx)  { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return s; }
+inline SquirrelNull   Get(TypeWrapper<SquirrelNull>,HSQUIRRELVM v,int idx)    { (void)v, (void)idx; return SquirrelNull();  }
+inline void *         Get(TypeWrapper<void *>,HSQUIRRELVM v,int idx)          { SQUserPointer p; SQPLUS_CHECK_GET(sq_getuserpointer(v,idx,&p)); return p; }
+inline HSQUIRRELVM    Get(TypeWrapper<HSQUIRRELVM>,HSQUIRRELVM v,int /*idx*/) { sq_poptop(v); return v; } // sq_poptop(v): remove UserData from stack so GetParamCount() matches normal behavior.
+inline SquirrelObject Get(TypeWrapper<SquirrelObject>,HSQUIRRELVM v,int idx)  { HSQOBJECT o; SQPLUS_CHECK_GET(sq_getstackobj(v,idx,&o)); return SquirrelObject(o); }
+
+#ifdef SQPLUS_SUPPORT_STD_STRING
+inline void Push(HSQUIRRELVM v,const std::string& value) { sq_pushstring(v,value.c_str(),-1); }
+inline bool Match(TypeWrapper<const std::string&>, HSQUIRRELVM v, int idx) { return sq_gettype(v,idx) == OT_STRING; }
+inline std::string Get(TypeWrapper<const std::string&>,HSQUIRRELVM v,int idx) { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return std::string(s); }
+#endif
 
 // === Example SQClassDef usage (see testSqPlus2.cpp): ===
 
