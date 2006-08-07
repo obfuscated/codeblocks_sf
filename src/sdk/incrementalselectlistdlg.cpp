@@ -115,16 +115,21 @@ int IncrementalSelectListDlg::GetSelection()
 
 void IncrementalSelectListDlg::FillList()
 {
+    Freeze();
 	wxString search = m_Text->GetValue().Lower();
+	wxArrayString result;
 	//Manager::Get()->GetMessageManager()->Log(mltDevDebug, "FillList(): '%s'", search.c_str());
 	m_List->Clear();
 	for (unsigned int i = 0; i < m_Items.GetCount(); ++i)
 	{
 		if (search.IsEmpty() || m_Items[i].Lower().Find(search) != wxNOT_FOUND)
-			m_List->Append(m_Items[i]);
+			result.Add(m_Items[i]);
+//			m_List->Append(m_Items[i]);
 	}
+	m_List->Set(result);
 	if (m_List->GetCount())
 		m_List->SetSelection(0);
+    Thaw();
 }
 
 // events
