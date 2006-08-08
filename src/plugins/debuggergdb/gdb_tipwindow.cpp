@@ -256,6 +256,8 @@ void GDBTipWindow::Close()
     }
 
 #if wxUSE_POPUPWIN
+    CaptureMouse(); // bug in wxWidgets?
+                    // without this, it crashes in wxWindowBase::ReleaseMouse() in the following Show() call...
     Show(false);
     #ifdef __WXGTK__
         if (GTK_WIDGET_HAS_GRAB(m_widget))
