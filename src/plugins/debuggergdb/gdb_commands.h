@@ -668,7 +668,7 @@ class GdbCmd_FindWatchType : public DebuggerCmd
   */
 class GdbCmd_TooltipEvaluation : public DebuggerCmd
 {
-        GDBTipWindow* m_pWin;
+        static GDBTipWindow* s_pWin;
         wxRect m_WinRect;
         wxString m_What;
         wxString m_Type;
@@ -681,7 +681,6 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
         */
         GdbCmd_TooltipEvaluation(DebuggerDriver* driver, const wxString& what, const wxRect& tiprect, const wxString& w_type = wxEmptyString, const wxString& address = wxEmptyString)
             : DebuggerCmd(driver),
-            m_pWin(0),
             m_WinRect(tiprect),
             m_What(what),
             m_Type(w_type),
@@ -751,12 +750,14 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
                 }
             }
 
-            if (m_pWin)
-                (m_pWin)->Destroy();
-            m_pWin = new GDBTipWindow((wxWindow*)Manager::Get()->GetAppWindow(), m_What, m_Type, m_Address, contents, 640, &m_pWin, &m_WinRect);
+            if (s_pWin)
+                (s_pWin)->Close();
+            s_pWin = new GDBTipWindow((wxWindow*)Manager::Get()->GetAppWindow(), m_What, m_Type, m_Address, contents, 640, &s_pWin, &m_WinRect);
 //            m_pDriver->DebugLog(output);
         }
 };
+// static
+GDBTipWindow* GdbCmd_TooltipEvaluation::s_pWin = 0;
 
 /**
   * Command to get a symbol's type and use it for tooltip evaluation.
