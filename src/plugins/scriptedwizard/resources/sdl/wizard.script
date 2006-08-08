@@ -4,7 +4,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-// globals
+// globals (used under windows only)
 SDLPathDefault    <- _T("$(#sdl)");
 SDLPathDefaultInc <- _T("$(#sdl.include)");
 SDLPathDefaultLib <- _T("$(#sdl.lib)");
@@ -22,9 +22,10 @@ function BeginWizard()
                              "To help you, this folder must contain the subfolders\n" +
                              "\"include\" and \"lib\".");
 
-    Wizard.AddInfoPage(_T("SDLnIntro"), intro_msg);
+    Wizard.AddInfoPage(_T("SDLIntro"), intro_msg);
     Wizard.AddProjectPathPage();
-    Wizard.AddGenericSelectPathPage(_T("SDLPath"), sdlpath_descr, _T("Please select SDL's location:"), SDLPathDefault);
+    if (PLATFORM == PLATFORM_MSW)
+        Wizard.AddGenericSelectPathPage(_T("SDLPath"), sdlpath_descr, _T("Please select SDL's location:"), SDLPathDefault);
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
@@ -92,18 +93,26 @@ function GetFilesDir()
 // setup the already created project
 function SetupProject(project)
 {
-    project.AddIncludeDir(SDLPathDefaultInc);
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        project.AddIncludeDir(SDLPathDefaultInc);
+        project.AddLibDir(SDLPathDefaultLib);
 
-    project.AddLibDir(SDLPathDefaultLib);
-
-    // add link libraries
-    project.AddLinkLib(_T("mingw32"));
-    project.AddLinkLib(_T("SDLmain"));
-    project.AddLinkLib(_T("SDL.dll"));
-    project.AddLinkLib(_T("user32"));
-    project.AddLinkLib(_T("gdi32"));
-    project.AddLinkLib(_T("winmm"));
-    project.AddLinkLib(_T("dxguid"));
+        // add link libraries
+        project.AddLinkLib(_T("mingw32"));
+        project.AddLinkLib(_T("SDLmain"));
+        project.AddLinkLib(_T("SDL.dll"));
+        project.AddLinkLib(_T("user32"));
+        project.AddLinkLib(_T("gdi32"));
+        project.AddLinkLib(_T("winmm"));
+        project.AddLinkLib(_T("dxguid"));
+    }
+    else
+    {
+        // unix way
+        project.AddCompilerOption(_T("`sdl-config --cflags`"));
+        project.AddLinkerOption(_T("`sdl-config --libs`"));
+    }
 
     // enable compiler warnings (project-wide)
     WarningsOn(project, Wizard.GetCompilerID());

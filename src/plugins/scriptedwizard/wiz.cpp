@@ -984,11 +984,8 @@ void Wiz::Finalize()
         wxWizardPageSimple::Chain(m_Pages[i - 1], m_Pages[i]);
 
     // allow the wizard to size itself around the pages
-    // for (size_t i = 1; i < m_Pages.GetCount(); ++i)
-    //
-    // wx docs say that it's enough to add the first page only
-    if (m_Pages[0])
-        m_pWizard->GetPageAreaSizer()->Add(m_Pages[0]);
+    for (size_t i = 1; i < m_Pages.GetCount(); ++i)
+        m_pWizard->GetPageAreaSizer()->Add(m_Pages[i]);
 
     m_pWizard->Fit();
 }
