@@ -72,13 +72,15 @@ int main(int argc, char** argv)
 
     string docFile(workingDir);
     docFile.append("/.svn/entries");
+    string docFile2(workingDir);
+    docFile2.append("/_svn/entries");
 
     string revision;
     string date;
     string comment;
     string old;
 
-    if(!QuerySvn(workingDir, revision, date) && !ParseFile(docFile, revision, date))
+    if(!QuerySvn(workingDir, revision, date) && !ParseFile(docFile, revision, date) && !ParseFile(docFile2, revision, date))
     {
         puts("Error: failed retrieving version information.");
         return -1;
