@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="4" />
+	<Project>
+		<Option title="C::B Koders Query" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\cb_koders.dll" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\cb_koders" />
+				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\ReplaceInFiles" />
+				<Option external_deps="..\..\..\devel\libcodeblocks.a;..\..\..\devel\libwxscintilla.a;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option projectResourceIncludeDirsRelation="0" />
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="Unicode" />
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="-pipe" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-mthreads" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DTIXML_USE_STL" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add directory="$(#WX.include)" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX)\contrib\include" />
+			<Add directory="$(#CB.include)" />
+			<Add directory="$(#CB.include)\tinyxml" />
+			<Add directory="$(#CB.include)\wxscintilla\include" />
+			<Add directory="$(#CB)\sdk" />
+			<Add directory="$(#CB)\sdk\tinyxml" />
+			<Add directory="$(#CB)\sdk\wxscintilla\include" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add library="wxmsw26$(WX_SUFFIX)" />
+			<Add library="codeblocks" />
+			<Add library="wxscintilla" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="$(#CB.lib)" />
+			<Add directory="$(#CB)\devel" />
+			<Add directory="$(#CB)\sdk\tinyxml" />
+		</Linker>
+		<Unit filename="cb_koders.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="cb_koders.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="kodersdialog.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="kodersdialog.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Extensions>
+<wxsmith>
+	<dialog wxs_file="KodersDialog.wxs" class="KodersDialog" src_file="kodersdialog.cpp" header_file="kodersdialog.h" xrc_file="" edit_mode="Source" />
+	<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
+</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

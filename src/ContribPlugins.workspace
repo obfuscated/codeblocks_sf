@@ -2,6 +2,7 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="All contrib plugins">
 		<Project filename="plugins\contrib\byogames\byogames.cbp" active="1" />
+		<Project filename="plugins\contrib\cb_koders\cb_koders.cbp" />
 		<Project filename="plugins\contrib\codestat\codestat.cbp" />
 		<Project filename="plugins\contrib\copystrings\copystrings.cbp" />
 		<Project filename="plugins\contrib\devpak_plugin\DevPakPlugin.cbp" />

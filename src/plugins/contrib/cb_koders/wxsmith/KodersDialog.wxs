@@ -1,0 +1,131 @@
+<resource>
+    <object class="wxDialog" name="KodersDialog">
+        <title>Koders query</title>
+        <centered>1</centered>
+        <style>wxDEFAULT_DIALOG_STYLE</style>
+        <object class="wxBoxSizer" variable="bszMain" member="yes">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxBoxSizer" variable="bszIntro" member="yes">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <border>5</border>
+                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                        <object class="wxStaticText" name="ID_LBL_INTRO" variable="lblIntro" member="yes">
+                            <label>Specify search to query the Koders webpage:</label>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxBoxSizer" variable="bszSearch" member="yes">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                        <object class="wxTextCtrl" name="ID_TXT_SEARCH" variable="txtSearch" member="yes">
+                            <value></value>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <border>5</border>
+                        <flag>wxALL|wxALIGN_RIGHT|wxALIGN_TOP</flag>
+                        <object class="wxButton" name="ID_BTN_SEARCH" variable="btnSearch" member="yes">
+                            <label>Search</label>
+                            <default>1</default>
+                            <handler entry="EVT_BUTTON" function="OnBtnSearchClick" />
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                <object class="wxBoxSizer" variable="bszFilter" member="yes">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <border>5</border>
+                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                        <object class="wxStaticText" name="ID_LBL_FILTER" variable="lblFilter" member="yes">
+                            <label>Filter:</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <border>5</border>
+                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                        <object class="wxComboBox" name="ID_CBO_LANGUAGES" variable="cboLanguages" member="yes">
+                            <selection>0</selection>
+                            <content>
+                                <item>All Languages</item>
+                                <item>Ada</item>
+                                <item>ASP</item>
+                                <item>Assembler</item>
+                                <item>C</item>
+                                <item>C#</item>
+                                <item>Cpp</item>
+                                <item>ColdFusion</item>
+                                <item>Delphi</item>
+                                <item>Eiffel</item>
+                                <item>Erlang</item>
+                                <item>Fortran</item>
+                                <item>Java</item>
+                                <item>JavaScript</item>
+                                <item>JSP</item>
+                                <item>Lisp</item>
+                                <item>Lua</item>
+                                <item>Mathematica</item>
+                                <item>Matlab</item>
+                                <item>ObjectiveC</item>
+                                <item>Perl</item>
+                                <item>PHP</item>
+                                <item>Prolog</item>
+                                <item>Python</item>
+                                <item>Ruby</item>
+                                <item>Scheme</item>
+                                <item>Smalltalk</item>
+                                <item>SQL</item>
+                                <item>Tcl</item>
+                                <item>VB</item>
+                                <item>VB.NET</item>
+                            </content>
+                            <style>wxCB_READONLY</style>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <border>5</border>
+                        <flag>wxALL|wxALIGN_RIGHT|wxALIGN_TOP|wxEXPAND</flag>
+                        <object class="wxComboBox" name="ID_CBO_LICENSES" variable="cboLicenses" member="yes">
+                            <selection>0</selection>
+                            <content>
+                                <item>All Licenses</item>
+                                <item>AFL</item>
+                                <item>AL20</item>
+                                <item>ASL</item>
+                                <item>APSL</item>
+                                <item>BSD</item>
+                                <item>CPL</item>
+                                <item>GPL</item>
+                                <item>LGPL</item>
+                                <item>IBMPL</item>
+                                <item>IOSL</item>
+                                <item>MPL10</item>
+                                <item>MPL11</item>
+                                <item>NPL10</item>
+                                <item>NPL11</item>
+                                <item>OSL</item>
+                                <item>PSFL</item>
+                                <item>SPL</item>
+                                <item>W3C</item>
+                                <item>ZLL</item>
+                                <item>ZPL</item>
+                            </content>
+                            <style>wxCB_READONLY</style>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>
