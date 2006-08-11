@@ -38,7 +38,7 @@ KodersDialog::KodersDialog(wxWindow* parent,wxWindowID id)
 	bszSearch->Add(btnSearch,0,wxALL|wxALIGN_RIGHT|wxALIGN_TOP,5);
 	bszFilter = new wxBoxSizer(wxHORIZONTAL);
 	lblFilter = new wxStaticText(this,ID_LBL_FILTER,_("Filter:"),wxDefaultPosition,wxDefaultSize,0,_("ID_LBL_FILTER"));
-	cboLanguages = new wxChoice(this,ID_CBO_LANGUAGES,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_("ID_CBO_LANGUAGES"));
+	cboLanguages = new wxChoice(this,ID_CBO_LANGUAGES,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_("ID_CBO_LANGUAGES"));
 	cboLanguages->Append(_("All Languages"));
 	cboLanguages->Append(_("Ada"));
 	cboLanguages->Append(_("ASP"));
@@ -72,7 +72,7 @@ KodersDialog::KodersDialog(wxWindow* parent,wxWindowID id)
 	cboLanguages->Append(_("VB.NET"));
 	cboLanguages->SetSelection(0);
 	cboLanguages->SetToolTip(_("Specify a language filter (limits search)..."));
-	cboLicenses = new wxChoice(this,ID_CBO_LICENSES,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_("ID_CBO_LICENSES"));
+	cboLicenses = new wxChoice(this,ID_CBO_LICENSES,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_("ID_CBO_LICENSES"));
 	cboLicenses->Append(_("All Licenses"));
 	cboLicenses->Append(_("AFL"));
 	cboLicenses->Append(_("AL20"));
@@ -127,8 +127,8 @@ wxString KodersDialog::GetLanguage() const
 {
   wxString language(_("*"));
 
-  if (cboLanguages && (cboLanguages->GetValue() != _("All Languages")))
-    language = cboLanguages->GetValue();
+  if (cboLanguages && (cboLanguages->GetStringSelection() != _("All Languages")))
+    language = cboLanguages->GetStringSelection();
 
   return language;
 }
@@ -137,8 +137,8 @@ wxString KodersDialog::GetLicense() const
 {
   wxString license(_("*"));
 
-  if (cboLicenses && (cboLicenses->GetValue() != _("All Licenses")))
-    license = cboLicenses->GetValue();
+  if (cboLicenses && (cboLicenses->GetStringSelection() != _("All Licenses")))
+    license = cboLicenses->GetStringSelection();
 
   return license;
 }
