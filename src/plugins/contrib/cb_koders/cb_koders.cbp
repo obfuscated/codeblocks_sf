@@ -9,7 +9,7 @@
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\cb_koders.dll" />
 				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\cb_koders" />
-				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\ReplaceInFiles" />
+				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\cb_koders" />
 				<Option external_deps="..\..\..\devel\libcodeblocks.a;..\..\..\devel\libwxscintilla.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -18,7 +18,7 @@
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
-				<Variable name="WX_CFG" value="Unicode" />
+				<Variable name="WX_CFG" value="" />
 			</Environment>
 		</Build>
 		<Compiler>
