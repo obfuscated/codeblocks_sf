@@ -1,14 +1,20 @@
 #ifndef KODERSDIALOG_H
 #define KODERSDIALOG_H
 
+#include <wx/wxprec.h>
 
+#ifndef CB_PRECOMP
+//(*Headers(KodersDialog)
+#include <wx/button.h>
+#include <wx/choice.h>
 #include <wx/dialog.h>
-
-class wxBoxSizer;
-class wxButton;
-class wxChoice;
-class wxStaticText;
-class wxTextCtrl;
+#include <wx/intl.h>
+#include <wx/settings.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+//*)
+#endif
 
 class KodersDialog: public wxDialog
 {
@@ -28,8 +34,8 @@ class KodersDialog: public wxDialog
 		  ID_TXT_SEARCH,
 		  ID_BTN_SEARCH,
 		  ID_LBL_FILTER,
-		  ID_CBO_LANGUAGES,
-		  ID_CBO_LICENSES
+		  ID_CHO_LANGUAGES,
+		  ID_CHO_LICENSES
 		};
 		//*)
 
@@ -48,8 +54,8 @@ class KodersDialog: public wxDialog
 		wxButton* btnSearch;
 		wxBoxSizer* bszFilter;
 		wxStaticText* lblFilter;
-		wxChoice* cboLanguages;
-		wxChoice* cboLicenses;
+		wxChoice* choLanguages;
+		wxChoice* choLicenses;
 		//*)
 
 	private:

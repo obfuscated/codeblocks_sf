@@ -1,16 +1,3 @@
-
-#include "sdk.h"
-#ifndef CB_PRECOMP
-#include <wx/button.h>
-#include <wx/choice.h>
-#include <wx/intl.h>
-#include <wx/settings.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/string.h>
-#include <wx/textctrl.h>
-#endif
-
 #include "kodersdialog.h"
 
 BEGIN_EVENT_TABLE(KodersDialog,wxDialog)
@@ -38,67 +25,67 @@ KodersDialog::KodersDialog(wxWindow* parent,wxWindowID id)
 	bszSearch->Add(btnSearch,0,wxALL|wxALIGN_RIGHT|wxALIGN_TOP,5);
 	bszFilter = new wxBoxSizer(wxHORIZONTAL);
 	lblFilter = new wxStaticText(this,ID_LBL_FILTER,_("Filter:"),wxDefaultPosition,wxDefaultSize,0,_("ID_LBL_FILTER"));
-	cboLanguages = new wxChoice(this,ID_CBO_LANGUAGES,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_("ID_CBO_LANGUAGES"));
-	cboLanguages->Append(_("All Languages"));
-	cboLanguages->Append(_("Ada"));
-	cboLanguages->Append(_("ASP"));
-	cboLanguages->Append(_("Assembler"));
-	cboLanguages->Append(_("C"));
-	cboLanguages->Append(_("C#"));
-	cboLanguages->Append(_("Cpp"));
-	cboLanguages->Append(_("ColdFusion"));
-	cboLanguages->Append(_("Delphi"));
-	cboLanguages->Append(_("Eiffel"));
-	cboLanguages->Append(_("Erlang"));
-	cboLanguages->Append(_("Fortran"));
-	cboLanguages->Append(_("Java"));
-	cboLanguages->Append(_("JavaScript"));
-	cboLanguages->Append(_("JSP"));
-	cboLanguages->Append(_("Lisp"));
-	cboLanguages->Append(_("Lua"));
-	cboLanguages->Append(_("Mathematica"));
-	cboLanguages->Append(_("Matlab"));
-	cboLanguages->Append(_("ObjectiveC"));
-	cboLanguages->Append(_("Perl"));
-	cboLanguages->Append(_("PHP"));
-	cboLanguages->Append(_("Prolog"));
-	cboLanguages->Append(_("Python"));
-	cboLanguages->Append(_("Ruby"));
-	cboLanguages->Append(_("Scheme"));
-	cboLanguages->Append(_("Smalltalk"));
-	cboLanguages->Append(_("SQL"));
-	cboLanguages->Append(_("Tcl"));
-	cboLanguages->Append(_("VB"));
-	cboLanguages->Append(_("VB.NET"));
-	cboLanguages->SetSelection(0);
-	cboLanguages->SetToolTip(_("Specify a language filter (limits search)..."));
-	cboLicenses = new wxChoice(this,ID_CBO_LICENSES,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_("ID_CBO_LICENSES"));
-	cboLicenses->Append(_("All Licenses"));
-	cboLicenses->Append(_("AFL"));
-	cboLicenses->Append(_("AL20"));
-	cboLicenses->Append(_("ASL"));
-	cboLicenses->Append(_("APSL"));
-	cboLicenses->Append(_("BSD"));
-	cboLicenses->Append(_("CPL"));
-	cboLicenses->Append(_("GPL"));
-	cboLicenses->Append(_("LGPL"));
-	cboLicenses->Append(_("IBMPL"));
-	cboLicenses->Append(_("IOSL"));
-	cboLicenses->Append(_("MPL10"));
-	cboLicenses->Append(_("MPL11"));
-	cboLicenses->Append(_("NPL10"));
-	cboLicenses->Append(_("NPL11"));
-	cboLicenses->Append(_("OSL"));
-	cboLicenses->Append(_("PSFL"));
-	cboLicenses->Append(_("SPL"));
-	cboLicenses->Append(_("W3C"));
-	cboLicenses->Append(_("ZLL"));
-	cboLicenses->Append(_("ZPL"));
-	cboLicenses->SetSelection(0);
-	cboLicenses->SetToolTip(_("Specify a license filter (limits search)..."));
+	choLanguages = new wxChoice(this,ID_CHO_LANGUAGES,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_("ID_CHO_LANGUAGES"));
+	choLanguages->Append(_("All Languages"));
+	choLanguages->Append(_("Ada"));
+	choLanguages->Append(_("ASP"));
+	choLanguages->Append(_("Assembler"));
+	choLanguages->Append(_("C"));
+	choLanguages->Append(_("C#"));
+	choLanguages->Append(_("Cpp"));
+	choLanguages->Append(_("ColdFusion"));
+	choLanguages->Append(_("Delphi"));
+	choLanguages->Append(_("Eiffel"));
+	choLanguages->Append(_("Erlang"));
+	choLanguages->Append(_("Fortran"));
+	choLanguages->Append(_("Java"));
+	choLanguages->Append(_("JavaScript"));
+	choLanguages->Append(_("JSP"));
+	choLanguages->Append(_("Lisp"));
+	choLanguages->Append(_("Lua"));
+	choLanguages->Append(_("Mathematica"));
+	choLanguages->Append(_("Matlab"));
+	choLanguages->Append(_("ObjectiveC"));
+	choLanguages->Append(_("Perl"));
+	choLanguages->Append(_("PHP"));
+	choLanguages->Append(_("Prolog"));
+	choLanguages->Append(_("Python"));
+	choLanguages->Append(_("Ruby"));
+	choLanguages->Append(_("Scheme"));
+	choLanguages->Append(_("Smalltalk"));
+	choLanguages->Append(_("SQL"));
+	choLanguages->Append(_("Tcl"));
+	choLanguages->Append(_("VB"));
+	choLanguages->Append(_("VB.NET"));
+	choLanguages->SetSelection(0);
+	choLanguages->SetToolTip(_("Specify a language filter (limits search)..."));
+	choLicenses = new wxChoice(this,ID_CHO_LICENSES,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_("ID_CHO_LICENSES"));
+	choLicenses->Append(_("All Licenses"));
+	choLicenses->Append(_("AFL"));
+	choLicenses->Append(_("AL20"));
+	choLicenses->Append(_("ASL"));
+	choLicenses->Append(_("APSL"));
+	choLicenses->Append(_("BSD"));
+	choLicenses->Append(_("CPL"));
+	choLicenses->Append(_("GPL"));
+	choLicenses->Append(_("LGPL"));
+	choLicenses->Append(_("IBMPL"));
+	choLicenses->Append(_("IOSL"));
+	choLicenses->Append(_("MPL10"));
+	choLicenses->Append(_("MPL11"));
+	choLicenses->Append(_("NPL10"));
+	choLicenses->Append(_("NPL11"));
+	choLicenses->Append(_("OSL"));
+	choLicenses->Append(_("PSFL"));
+	choLicenses->Append(_("SPL"));
+	choLicenses->Append(_("W3C"));
+	choLicenses->Append(_("ZLL"));
+	choLicenses->Append(_("ZPL"));
+	choLicenses->SetSelection(0);
+	choLicenses->SetToolTip(_("Specify a license filter (limits search)..."));
 	bszFilter->Add(lblFilter,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
-	bszFilter->Add(cboLanguages,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
-	bszFilter->Add(cboLicenses,0,wxALL|wxALIGN_RIGHT|wxALIGN_TOP|wxEXPAND,5);
+	bszFilter->Add(choLanguages,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
+	bszFilter->Add(choLicenses,0,wxALL|wxALIGN_RIGHT|wxALIGN_TOP|wxEXPAND,5);
 	bszMain->Add(bszIntro,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,0);
 	bszMain->Add(bszSearch,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,0);
 	bszMain->Add(bszFilter,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,0);
@@ -127,8 +114,8 @@ wxString KodersDialog::GetLanguage() const
 {
   wxString language(_("*"));
 
-  if (cboLanguages && (cboLanguages->GetStringSelection() != _("All Languages")))
-    language = cboLanguages->GetStringSelection();
+  if (choLanguages && (choLanguages->GetStringSelection() != _("All Languages")))
+    language = choLanguages->GetStringSelection();
 
   return language;
 }
@@ -137,13 +124,13 @@ wxString KodersDialog::GetLicense() const
 {
   wxString license(_("*"));
 
-  if (cboLicenses && (cboLicenses->GetStringSelection() != _("All Licenses")))
-    license = cboLicenses->GetStringSelection();
+  if (choLicenses && (choLicenses->GetStringSelection() != _("All Licenses")))
+    license = choLicenses->GetStringSelection();
 
   return license;
 }
 
-void KodersDialog::OnBtnSearchClick(wxCommandEvent& /*event*/)
+void KodersDialog::OnBtnSearchClick(wxCommandEvent& event)
 {
   EndModal(wxID_OK);
 }

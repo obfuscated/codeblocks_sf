@@ -55,7 +55,7 @@
                     <object class="sizeritem">
                         <border>5</border>
                         <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                        <object class="wxComboBox" name="ID_CBO_LANGUAGES" variable="cboLanguages" member="yes">
+                        <object class="wxChoice" name="ID_CHO_LANGUAGES" variable="choLanguages" member="yes">
                             <selection>0</selection>
                             <content>
                                 <item>All Languages</item>
@@ -90,13 +90,12 @@
                                 <item>VB</item>
                                 <item>VB.NET</item>
                             </content>
-                            <style>wxCB_READONLY</style>
                         </object>
                     </object>
                     <object class="sizeritem">
                         <border>5</border>
                         <flag>wxALL|wxALIGN_RIGHT|wxALIGN_TOP|wxEXPAND</flag>
-                        <object class="wxComboBox" name="ID_CBO_LICENSES" variable="cboLicenses" member="yes">
+                        <object class="wxChoice" name="ID_CHO_LICENSES" variable="choLicenses" member="yes">
                             <selection>0</selection>
                             <content>
                                 <item>All Licenses</item>
@@ -121,7 +120,6 @@
                                 <item>ZLL</item>
                                 <item>ZPL</item>
                             </content>
-                            <style>wxCB_READONLY</style>
                         </object>
                     </object>
                 </object>

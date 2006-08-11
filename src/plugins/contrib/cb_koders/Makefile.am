@@ -1,5 +1,3 @@
-SUBDIRS = resources
-
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/sdk \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include
@@ -16,7 +14,7 @@ libcb_koders_la_SOURCES = kodersdialog.cpp \
 			cb_koders.cpp
 
 noinst_HEADERS = kodersdialog.h \
-			cb_kodersexec.h
+			cb_koders.h
 
 EXTRA_DIST = wxsmith/KodersDialog.wxs \
 			cb_koders.cbp
