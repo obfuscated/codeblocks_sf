@@ -1,7 +1,15 @@
+#include "sdk.h" // Code::Blocks SDK
+#ifndef CB_PRECOMP
+#include <wx/intl.h>
+#include <wx/string.h>
 #include <wx/utils.h> // wxLaunchDefaultBrowser
+#include "globals.h"
+#include "licenses.h"
+#include "manager.h"
+#endif
 
-#include <sdk.h> // Code::Blocks SDK
 #include "cb_koders.h"
+#include "kodersdialog.h"
 
 // Implement the plugin's hooks
 CB_IMPLEMENT_PLUGIN(CB_Koders, "Code::Blocks Koders connectivity");
@@ -25,7 +33,7 @@ CB_Koders::CB_Koders() :
 CB_Koders::~CB_Koders()
 {
 	if (TheDialog)
-    TheDialog->Destroy();
+		TheDialog->Destroy();
 }
 
 void CB_Koders::OnAttach()
@@ -57,15 +65,15 @@ int CB_Koders::Execute()
 
   if(TheDialog && TheDialog->ShowModal()==wxID_OK)
   {
-    wxString search = TheDialog->GetSearch();
+    const wxString search = TheDialog->GetSearch();
     if (search.IsEmpty())
     {
       cbMessageBox(_("Cannot search for an empty expession."), _("Error"), wxICON_ERROR);
     }
     else
     {
-      wxString language = TheDialog->GetLanguage();
-      wxString license  = TheDialog->GetLicense();
+      const wxString language = TheDialog->GetLanguage();
+      const wxString license  = TheDialog->GetLicense();
 
       wxString query;
       query.Printf(_("http://www.koders.com/?S=%s&btnSearch=Search&la=%s&li=%s"),

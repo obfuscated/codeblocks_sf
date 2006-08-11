@@ -1,3 +1,16 @@
+
+#include "sdk.h"
+#ifndef CB_PRECOMP
+#include <wx/button.h>
+#include <wx/choice.h>
+#include <wx/intl.h>
+#include <wx/settings.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/string.h>
+#include <wx/textctrl.h>
+#endif
+
 #include "kodersdialog.h"
 
 BEGIN_EVENT_TABLE(KodersDialog,wxDialog)
@@ -17,7 +30,7 @@ KodersDialog::KodersDialog(wxWindow* parent,wxWindowID id)
 	bszSearch = new wxBoxSizer(wxHORIZONTAL);
 	txtSearch = new wxTextCtrl(this,ID_TXT_SEARCH,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_TXT_SEARCH"));
 	if ( 0 ) txtSearch->SetMaxLength(0);
-	txtSearch->SetToolTip(_("Enter the search phrase to query the Koers webpage for..."));
+	txtSearch->SetToolTip(_("Enter the search phrase to query the Koders webpage for..."));
 	btnSearch = new wxButton(this,ID_BTN_SEARCH,_("Search"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_BTN_SEARCH"));
 	if (true) btnSearch->SetDefault();
 	btnSearch->SetToolTip(_("Click to query the search phrase on the Koders webpage..."));
@@ -25,7 +38,7 @@ KodersDialog::KodersDialog(wxWindow* parent,wxWindowID id)
 	bszSearch->Add(btnSearch,0,wxALL|wxALIGN_RIGHT|wxALIGN_TOP,5);
 	bszFilter = new wxBoxSizer(wxHORIZONTAL);
 	lblFilter = new wxStaticText(this,ID_LBL_FILTER,_("Filter:"),wxDefaultPosition,wxDefaultSize,0,_("ID_LBL_FILTER"));
-	cboLanguages = new wxComboBox(this,ID_CBO_LANGUAGES,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_("ID_CBO_LANGUAGES"));
+	cboLanguages = new wxChoice(this,ID_CBO_LANGUAGES,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_("ID_CBO_LANGUAGES"));
 	cboLanguages->Append(_("All Languages"));
 	cboLanguages->Append(_("Ada"));
 	cboLanguages->Append(_("ASP"));
@@ -59,7 +72,7 @@ KodersDialog::KodersDialog(wxWindow* parent,wxWindowID id)
 	cboLanguages->Append(_("VB.NET"));
 	cboLanguages->SetSelection(0);
 	cboLanguages->SetToolTip(_("Specify a language filter (limits search)..."));
-	cboLicenses = new wxComboBox(this,ID_CBO_LICENSES,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_("ID_CBO_LICENSES"));
+	cboLicenses = new wxChoice(this,ID_CBO_LICENSES,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_("ID_CBO_LICENSES"));
 	cboLicenses->Append(_("All Licenses"));
 	cboLicenses->Append(_("AFL"));
 	cboLicenses->Append(_("AL20"));
@@ -100,7 +113,7 @@ KodersDialog::~KodersDialog()
 {
 }
 
-wxString KodersDialog::GetSearch()
+wxString KodersDialog::GetSearch() const
 {
   wxString search(_(""));
 
@@ -110,7 +123,7 @@ wxString KodersDialog::GetSearch()
   return search;
 }
 
-wxString KodersDialog::GetLanguage()
+wxString KodersDialog::GetLanguage() const
 {
   wxString language(_("*"));
 
@@ -120,7 +133,7 @@ wxString KodersDialog::GetLanguage()
   return language;
 }
 
-wxString KodersDialog::GetLicense()
+wxString KodersDialog::GetLicense() const
 {
   wxString license(_("*"));
 
@@ -130,7 +143,7 @@ wxString KodersDialog::GetLicense()
   return license;
 }
 
-void KodersDialog::OnBtnSearchClick(wxCommandEvent& event)
+void KodersDialog::OnBtnSearchClick(wxCommandEvent& /*event*/)
 {
   EndModal(wxID_OK);
 }

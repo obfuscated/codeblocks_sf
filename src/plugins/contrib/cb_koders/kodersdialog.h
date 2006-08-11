@@ -1,22 +1,14 @@
 #ifndef KODERSDIALOG_H
 #define KODERSDIALOG_H
 
-#include <wx/wxprec.h>
 
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
-
-//(*Headers(KodersDialog)
-#include <wx/button.h>
-#include <wx/combobox.h>
 #include <wx/dialog.h>
-#include <wx/intl.h>
-#include <wx/settings.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-//*)
+
+class wxBoxSizer;
+class wxButton;
+class wxChoice;
+class wxStaticText;
+class wxTextCtrl;
 
 class KodersDialog: public wxDialog
 {
@@ -25,9 +17,9 @@ class KodersDialog: public wxDialog
 		KodersDialog(wxWindow* parent,wxWindowID id = -1);
 		virtual ~KodersDialog();
 
-    wxString GetSearch();
-    wxString GetLanguage();
-    wxString GetLicense();
+		wxString GetSearch() const;
+		wxString GetLanguage() const;
+		wxString GetLicense() const;
 
 		//(*Identifiers(KodersDialog)
 		enum Identifiers
@@ -56,8 +48,8 @@ class KodersDialog: public wxDialog
 		wxButton* btnSearch;
 		wxBoxSizer* bszFilter;
 		wxStaticText* lblFilter;
-		wxComboBox* cboLanguages;
-		wxComboBox* cboLicenses;
+		wxChoice* cboLanguages;
+		wxChoice* cboLicenses;
 		//*)
 
 	private:
@@ -65,4 +57,4 @@ class KodersDialog: public wxDialog
 		DECLARE_EVENT_TABLE()
 };
 
-#endif
+#endif // KODERSDIALOG_H

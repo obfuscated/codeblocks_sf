@@ -10,16 +10,9 @@
 #ifndef CB_KODERS_H_INCLUDED
 #define CB_KODERS_H_INCLUDED
 
-// For compilers that support precompilation, includes <wx/wx.h>
-#include <wx/wxprec.h>
+#include "cbplugin.h" // for "class cbToolPlugin"
 
-#ifndef WX_PRECOMP
-	#include <wx/wx.h>
-	#include <wx/string.h>
-#endif
-
-#include <cbplugin.h> // for "class cbToolPlugin"
-#include "kodersdialog.h"
+class KodersDialog;
 
 class CB_Koders : public cbToolPlugin
 {

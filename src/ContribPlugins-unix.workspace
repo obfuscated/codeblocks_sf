@@ -1,7 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="All contrib plugins">
 		<Project filename="plugins/contrib/byogames/byogames-unix.cbp" active="1" />
+		<Project filename="plugins/contrib/cb_koders/cb_koders.cbp" />
 		<Project filename="plugins/contrib/codestat/codestat-unix.cbp" />
 		<Project filename="plugins/contrib/copystrings/copystrings-unix.cbp" />
 		<Project filename="plugins/contrib/dragscroll/DragScroll-unix.cbp" />
