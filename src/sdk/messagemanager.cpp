@@ -255,6 +255,8 @@ void MessageManager::DebugLog(const wxChar* msg, ...)
 
 void MessageManager::DebugLogWarning(const wxChar* msg, ...)
 {
+    if (!CheckLogId(m_DebugLog))
+        return;
     wxString tmp;
     va_list arg_list;
 
@@ -263,9 +265,7 @@ void MessageManager::DebugLogWarning(const wxChar* msg, ...)
     va_end(arg_list);
 
     wxString typ = _("WARNING");
-    wxSafeShowMessage(typ, typ + _T(":\n\n") + tmp);
-    if (!CheckLogId(m_DebugLog))
-        return;
+//    wxSafeShowMessage(typ, typ + _T(":\n\n") + tmp);
     ((SimpleTextLog*)m_Logs[m_DebugLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE));
     DebugLog(typ + _T(": ") + tmp);
     ((SimpleTextLog*)m_Logs[m_DebugLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
@@ -273,6 +273,8 @@ void MessageManager::DebugLogWarning(const wxChar* msg, ...)
 
 void MessageManager::DebugLogError(const wxChar* msg, ...)
 {
+    if (!CheckLogId(m_DebugLog))
+        return;
     wxString tmp;
     va_list arg_list;
 
@@ -281,9 +283,7 @@ void MessageManager::DebugLogError(const wxChar* msg, ...)
     va_end(arg_list);
 
     wxString typ = _("ERROR");
-    wxSafeShowMessage(typ, typ + _T(":\n\n") + tmp);
-    if (!CheckLogId(m_DebugLog))
-        return;
+//    wxSafeShowMessage(typ, typ + _T(":\n\n") + tmp);
     ((SimpleTextLog*)m_Logs[m_DebugLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
     DebugLog(typ + _T(": ") + tmp);
     ((SimpleTextLog*)m_Logs[m_DebugLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));

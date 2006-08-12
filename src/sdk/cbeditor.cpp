@@ -71,6 +71,7 @@ const wxString g_EditorModified = _T("*");
 
 BEGIN_EVENT_TABLE(cbStyledTextCtrl, wxScintilla)
     EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
+    EVT_KILL_FOCUS(cbStyledTextCtrl::OnKillFocus)
 END_EVENT_TABLE()
 
 cbStyledTextCtrl::cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos, const wxSize& size, long style)
@@ -86,6 +87,15 @@ cbStyledTextCtrl::~cbStyledTextCtrl()
 }
 
 // events
+
+void cbStyledTextCtrl::OnKillFocus(wxFocusEvent& event)
+{
+    // cancel auto-completion list when losing focus
+    if (AutoCompActive())
+        AutoCompCancel();
+    if (CallTipActive())
+        CallTipCancel();
+}
 
 void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
 {

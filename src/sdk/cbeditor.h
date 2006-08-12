@@ -26,6 +26,7 @@ class cbStyledTextCtrl : public wxScintilla
 		virtual ~cbStyledTextCtrl();
 	protected:
 		void OnContextMenu(wxContextMenuEvent& event);
+		void OnKillFocus(wxFocusEvent& event);
 	private:
 		wxWindow* m_pParent;
 		DECLARE_EVENT_TABLE()
