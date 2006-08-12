@@ -3,7 +3,6 @@
 
 #include <wx/wxprec.h>
 
-#ifndef CB_PRECOMP
 //(*Headers(KodersDialog)
 #include <wx/button.h>
 #include <wx/choice.h>
@@ -14,7 +13,6 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 //*)
-#endif
 
 class KodersDialog: public wxDialog
 {
