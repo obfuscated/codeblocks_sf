@@ -1,3 +1,5 @@
+
+#include <wx/string.h>
 #include "kodersdialog.h"
 
 BEGIN_EVENT_TABLE(KodersDialog,wxDialog)
