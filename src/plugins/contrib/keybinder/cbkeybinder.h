@@ -464,7 +464,7 @@ CB_DECLARE_PLUGIN();
 //          But this needs to be fixed.
 //          Tried: Sending the quit keys to the main application window does not
 //          solve the crashes.
-//  open    2006/07/19
+//  closed  2006/08/11 open    2006/07/19
 //          I experienced again that the menus did not show key redefinitions that
 //          actually were working and showed correctly in the dialog. As if updateAll
 //          was screwed up again.
@@ -484,6 +484,16 @@ CB_DECLARE_PLUGIN();
 //  commit  2006/07/29 v0.4.23
 //          reverted  2006/07/29 to v0.4.20 CB 2761
 //          crashes during CB exit
+// -----------------------------------------------------------------------------
+//  fixed   2006/08/11 v0.4.24
+//          Reapplied recursive UpdateAll() to update sub menus and catch
+//          duplicate key definitions. Had been removed by reverting to v0.4.20
+// -----------------------------------------------------------------------------
+//  fixed   2006/08/11 v0.4.24
+//          Reapplied fix for multiple key profiles to compare arrays and update
+//          key definitions. Had been removed by reverting to v0.4.20
+// -----------------------------------------------------------------------------
+//  commit  2006/08/13 v0.4.24
 // -----------------------------------------------------------------------------
 
 

@@ -54,15 +54,14 @@ cbKeyBinder::cbKeyBinder()
 	//ctor
 	m_PluginInfo.name = _T("cbKeyBinder");
 	m_PluginInfo.title = _("Keyboard shortcuts");
-	m_PluginInfo.version = _T("0.4.23 (2006/07/29)");
-                            //\nReverted to 0.4.20 (2006/06/15)");
+	m_PluginInfo.version = _T("0.4.24 (2006/08/13)");
 	m_PluginInfo.description <<_("\nCode::Blocks KeyBinder (2006/07/29)\n\n")
                             << _("NOTE: Ctrl+Alt+{UP|DOWN} is unsupported.\n\n");
 	m_PluginInfo.author = _T("Pecan Heber");
 	m_PluginInfo.authorEmail = _T("");
 	m_PluginInfo.authorWebsite = _T("");
 	m_PluginInfo.thanksTo << _("Thanks to...\n\n")
-                        <<_("wxKeyBinder authors:\n")
+                        <<_("Original wxKeyBinder authors:\n")
                         <<_("Aleksandras Gluchovas,\nFrancesco Montorsi,\n")
                         <<_("\twxWidgets, \n")
                         <<_("\tand \n")
@@ -357,18 +356,24 @@ void cbKeyBinder::OnKeybindingsDialogDone(MyDialog* dlg)
     dlg->m_p->ApplyChanges();
 
     // check if any key modifications //v0.4.13
-    wxKeyProfileArray* pKBA = new wxKeyProfileArray;
-    *pKBA = dlg->m_p->GetProfiles();
+    wxKeyProfileArray* pNewKBA = new wxKeyProfileArray;
+    *pNewKBA = dlg->m_p->GetProfiles();
+    int newSel = pNewKBA->GetSelProfileIdx();               //+v0.4.24
+    int oldSel = m_pKeyProfArr->GetSelProfileIdx();         //+v0.4.24
 
-    if (*pKBA == *m_pKeyProfArr)
-        LOGIT(_T("DialogDone: NO key changes"));
+    if ( ( newSel == oldSel )                               //+v0.4.24
+        && ( *(pNewKBA->Item(newSel)) == *(m_pKeyProfArr->Item(oldSel)) ) )
+    {
+        LOGIT(_T("DialogDone: NO key changes NewIdx[%d] OldIdx[%d]"),
+                newSel, oldSel);
+    }
     else
     {   // update our array (we gave a copy of it to MyDialog)
         modified = true;
         *m_pKeyProfArr = dlg->m_p->GetProfiles();
         LOGIT(_T("DialogDone keys MODIFIED"));
     }
-    delete pKBA;
+    delete pNewKBA;
     // don't delete dlg; CodeBlocks will destory it
 
     //update Windows/EventHanders from changed wxKeyProfile

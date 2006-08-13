@@ -781,7 +781,40 @@ bool wxBinderApp::IsChildOf(wxWindow *parent, wxWindow *child)
 // ----------------------------------------------------------------------------
 //  wxKeyBinder
 // ----------------------------------------------------------------------------
-void wxKeyBinder::UpdateAllCmd(wxMenuBar* pMnuBar) {     //v0.4.17
+void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
+// ----------------------------------------------------------------------------
+{
+    // Recursively update hotkeys for sub menu items
+
+    size_t itemKnt = pMenu->GetMenuItemCount();
+    for (size_t j=0; j<itemKnt; j++ )
+    {
+        // check each item on this subMenu
+        wxMenuItem* pMenuItem = pMenu->FindItemByPosition(j);
+        // recursively walk down to deepest submenu
+        if ( pMenuItem->GetSubMenu() )
+            UpdateSubMenu( pMenuItem->GetSubMenu() );
+        // Now at deepest menu items
+        int nMenuItemID = pMenuItem->GetId();
+        // Find item in array of keybinder commands
+        int k=0;
+        if ( -1 != (k=FindCmd(nMenuItemID)))
+        {
+            #ifdef LOGGING
+             LOGIT(wxT("Update:on:%d:%d:%p:%s"),j,k,pMenuItem,pMenuItem->GetText().GetData() );
+            #endif
+            m_arrCmd.Item(k)->Update(pMenuItem);
+            // ** pMenuItem will be invalid now if item was updated **
+        }
+        else{
+            #ifdef LOGGING
+             LOGIT(wxT("Update:Failed on:%d:%d:%p:%s"),j,k,pMenuItem,pMenuItem->GetText().GetData() );
+            #endif
+        }
+    }//rof
+}//updateSubmenu
+// ----------------------------------------------------------------------------
+void wxKeyBinder::UpdateAllCmd(wxMenuBar* pMenuBar) {     //v0.4.17
 // ----------------------------------------------------------------------------
 	//! Updates all the commands on the menu
     if (m_arrHandlers.GetCount() == 0)
@@ -801,32 +834,14 @@ void wxKeyBinder::UpdateAllCmd(wxMenuBar* pMnuBar) {     //v0.4.17
     // But this missed duplicate menu items, updating only the first duplicate.
     // So.. search, referencing the menu items as source, and update.;
 
-    size_t nMnuKnt = pMnuBar->GetMenuCount();
-    for (size_t i=0; i<nMnuKnt ;i++ )
-    {   wxMenu* pMnu = pMnuBar->GetMenu(i);
-           size_t nItemKnt = pMnu->GetMenuItemCount();
-           for (size_t j=0; j<nItemKnt; j++ )
-           {    wxMenuItem* pMnuItem = pMnu->FindItemByPosition(j);
-                int nMnuItemID = pMnuItem->GetId();
-                //Find item in array of keybinder commands
-                int k=0;
-                if ( -1 != (k=FindCmd(nMnuItemID)))
-                {
-                    #ifdef LOGGING
-                     LOGIT(wxT("UpdateAll:on:%d:%d:%p:%s"),j,k,pMnuItem,pMnuItem->GetText().GetData() );
-                    #endif
-                    m_arrCmd.Item(k)->Update(pMnuItem);
-                    // **pMnuItem will be invalid now if item was updated**
-                }
-                else{
-                    #ifdef LOGGING
-                     LOGIT(wxT("UpdateAll:Failed on:%d:%d:%p:%s"),j,k,pMnuItem,pMnuItem->GetText().GetData() );
-                    #endif
-                }
-           }//rof
+   //menu bar item count (level 1)
+    size_t nLevel1Knt = pMenuBar->GetMenuCount();
+    for (size_t i=0; i < nLevel1Knt ;i++ )
+    {
+        wxMenu* pMenu = pMenuBar->GetMenu(i);
+        UpdateSubMenu(pMenu);
     }//rof
 }
-
 // ----------------------------------------------------------------------------
 // wxKeyBinder FindHandlerFor
 // ----------------------------------------------------------------------------

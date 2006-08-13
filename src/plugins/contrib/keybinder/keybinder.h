@@ -744,7 +744,8 @@ public:		// miscellaneous
 	void Reset() {
 		m_arrCmd.Clear();
 	}
-
+    // Recursively update sub menu items        //+v0.4.24
+    void UpdateSubMenu(wxMenu* pMenu);
 	//! Updates all the commands contained.
 	void UpdateAllCmd(wxMenuBar* pMnuBar);      //v0.4.17
 
