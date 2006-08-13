@@ -16,7 +16,8 @@
         <object class="wxBoxSizer">
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
-            <object class="wxCheckList" name="lstItems">
+            <object class="wxCheckListBox" name="lstItems">
+              <style>wxLB_HSCROLL</style>
               <content/>
             </object>
             <option>1</option>
