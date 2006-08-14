@@ -121,7 +121,7 @@ bool ToolsManager::Execute(const cbTool* tool)
 #ifndef __WXMSW__
         // for non-win platforms, use m_ConsoleTerm to run the console app
         wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
-        term.Replace(_T("$TITLE"), _T("'") + tool->name + _T("'"));
+        term.Replace(_T("$TITLE"), _T("'") + tool->GetName() + _T("'"));
         cmdline << term << _T(" ");
         #define CONSOLE_RUNNER "cb_console_runner"
 #else
