@@ -91,7 +91,7 @@ void ToolsManager::ReleaseMenu(wxMenuBar* menuBar)
 {
 }
 
-bool ToolsManager::Execute(Tool* tool)
+bool ToolsManager::Execute(const cbTool* tool)
 {
     if (m_pProcess)
     {
@@ -105,9 +105,9 @@ bool ToolsManager::Execute(Tool* tool)
         return false;
 
     wxString cmdline;
-    wxString cmd = tool->command;
-    wxString params = tool->params;
-    wxString dir = tool->workingDir;
+    wxString cmd = tool->GetCommand();
+    wxString params = tool->GetParams();
+    wxString dir = tool->GetWorkingDir();
 
     // hack to force-update macros
     Manager::Get()->GetMacrosManager()->RecalcVars(0, 0, 0);
@@ -116,7 +116,7 @@ bool ToolsManager::Execute(Tool* tool)
     Manager::Get()->GetMacrosManager()->ReplaceMacros(params);
     Manager::Get()->GetMacrosManager()->ReplaceMacros(dir);
 
-    if (tool->launchOption == Tool::LAUNCH_NEW_CONSOLE_WINDOW)
+    if (tool->GetLaunchOption() == cbTool::LAUNCH_NEW_CONSOLE_WINDOW)
     {
 #ifndef __WXMSW__
         // for non-win platforms, use m_ConsoleTerm to run the console app
@@ -140,28 +140,28 @@ bool ToolsManager::Execute(Tool* tool)
 
     // log info so user can troubleshoot
     dir = wxGetCwd(); // read in the actual working dir
-    Manager::Get()->GetMessageManager()->Log(_("Launching tool '%s': %s (in %s)"), tool->name.c_str(), cmdline.c_str(), dir.c_str());
+    Manager::Get()->GetMessageManager()->Log(_("Launching tool '%s': %s (in %s)"), tool->GetName().c_str(), cmdline.c_str(), dir.c_str());
 
     bool pipe = true;
     int flags = wxEXEC_ASYNC;
 
-    switch (tool->launchOption)
+    switch (tool->GetLaunchOption())
     {
-        case Tool::LAUNCH_NEW_CONSOLE_WINDOW:
+        case cbTool::LAUNCH_NEW_CONSOLE_WINDOW:
             pipe = false; // no need to pipe output channels...
             break;
 
-        case Tool::LAUNCH_HIDDEN:
+        case cbTool::LAUNCH_HIDDEN:
             break; // use the default values of pipe and flags...
 
-        case Tool::LAUNCH_VISIBLE:
-        case Tool::LAUNCH_VISIBLE_DETACHED:
+        case cbTool::LAUNCH_VISIBLE:
+        case cbTool::LAUNCH_VISIBLE_DETACHED:
             flags |= wxEXEC_NOHIDE;
             pipe = false;
             break;
     }
 
-    if (tool->launchOption == Tool::LAUNCH_VISIBLE_DETACHED)
+    if (tool->GetLaunchOption() == cbTool::LAUNCH_VISIBLE_DETACHED)
     {
         int pid = wxExecute(cmdline, flags);
 
@@ -197,26 +197,15 @@ bool ToolsManager::Execute(Tool* tool)
     return true;
 }
 
-void ToolsManager::AddTool(const wxString& name, const wxString& command, const wxString& params, const wxString& workingDir, bool save)
-{
-    Tool tool;
-    tool.name = name;
-    tool.command = command;
-    tool.params = params;
-    tool.workingDir = workingDir;
-    InsertTool(m_Tools.GetCount(), &tool, save);
-}
-
-void ToolsManager::AddTool(Tool* tool, bool save)
+void ToolsManager::AddTool(const cbTool* tool, bool save)
 {
     if (tool)
         InsertTool(m_Tools.GetCount(), tool, save);
 }
 
-void ToolsManager::InsertTool(int position, Tool* tool, bool save)
+void ToolsManager::InsertTool(int position, const cbTool* tool, bool save)
 {
-    //Manager::Get()->GetMessageManager()->DebugLog("Creating tool: %s", tool->name.c_str());
-    m_Tools.Insert(position, new Tool(*tool));
+    m_Tools.Insert(position, new cbTool(*tool));
     if (save)
         SaveTools();
 }
@@ -235,47 +224,34 @@ void ToolsManager::RemoveToolByIndex(int index)
     }
 }
 
-void ToolsManager::RemoveToolByName(const wxString& name)
-{
-    for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
-    {
-        Tool* tool = node->GetData();
-        if (name.Matches(tool->name))
-        {
-            DoRemoveTool(node);
-            return;
-        }
-    }
-}
-
 void ToolsManager::DoRemoveTool(ToolsList::Node* node)
 {
     if (node)
     {
-        if (node->GetData()->menuId != -1)
-            m_Menu->Delete(node->GetData()->menuId);
+        if (node->GetData()->GetMenuId() != -1)
+            m_Menu->Delete(node->GetData()->GetMenuId());
         m_Tools.DeleteNode(node);
         SaveTools();
     }
 }
 
-Tool* ToolsManager::GetToolById(int id)
+cbTool* ToolsManager::GetToolByMenuId(int id)
 {
     for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
     {
-        Tool* tool = node->GetData();
-        if (tool->menuId == id)
+        cbTool* tool = node->GetData();
+        if (tool->GetMenuId() == id)
             return tool;
     }
     return 0L;
 }
 
-Tool* ToolsManager::GetToolByIndex(int index)
+cbTool* ToolsManager::GetToolByIndex(int index)
 {
     int idx = 0;
     for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
     {
-        Tool* tool = node->GetData();
+        cbTool* tool = node->GetData();
         if (idx == index)
             return tool;
         ++idx;
@@ -289,16 +265,16 @@ void ToolsManager::LoadTools()
     wxArrayString list = cfg->EnumerateSubPaths(_("/"));
     for (unsigned int i = 0; i < list.GetCount(); ++i)
     {
-        Tool tool;
-        tool.name = cfg->Read(_T("/") + list[i] + _T("/name"));
-        if (tool.name.IsEmpty())
+        cbTool tool;
+        tool.SetName( cfg->Read(_T("/") + list[i] + _T("/name")));
+        if (tool.GetName().IsEmpty())
             continue;
-        tool.command = cfg->Read(_T("/") + list[i] + _T("/command"));
-        if (tool.command.IsEmpty())
+        tool.SetCommand(cfg->Read(_T("/") + list[i] + _T("/command")));
+        if (tool.GetCommand().IsEmpty())
             continue;
-        tool.params = cfg->Read(_T("/") + list[i] + _T("/params"));
-        tool.workingDir = cfg->Read(_T("/") + list[i] + _T("/workingDir"));
-        tool.launchOption = static_cast<Tool::eLaunchOption>(cfg->ReadInt(_T("/") + list[i] + _T("/launchOption")));
+        tool.SetParams(cfg->Read(_T("/") + list[i] + _T("/params")));
+        tool.SetWorkingDir(cfg->Read(_T("/") + list[i] + _T("/workingDir")));
+        tool.SetLaunchOption(static_cast<cbTool::eLaunchOption>(cfg->ReadInt(_T("/") + list[i] + _T("/launchOption"))));
 
         AddTool(&tool, false);
     }
@@ -317,7 +293,7 @@ void ToolsManager::SaveTools()
     int count = 0;
     for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
     {
-        Tool* tool = node->GetData();
+        cbTool* tool = node->GetData();
         wxString elem;
 
         // prepend a 0-padded 2-digit number to keep ordering
@@ -325,11 +301,11 @@ void ToolsManager::SaveTools()
         tmp.Printf(_T("tool%2.2d"), count++);
 
         elem << _T("/") << tmp  << _T("/");
-        cfg->Write(elem + _T("name"), tool->name);
-        cfg->Write(elem + _T("command"), tool->command);
-        cfg->Write(elem + _T("params"), tool->params);
-        cfg->Write(elem + _T("workingDir"), tool->workingDir);
-        cfg->Write(elem + _T("launchOption"), static_cast<int>(tool->launchOption));
+        cfg->Write(elem + _T("name"), tool->GetName());
+        cfg->Write(elem + _T("command"), tool->GetCommand());
+        cfg->Write(elem + _T("params"), tool->GetParams());
+        cfg->Write(elem + _T("workingDir"), tool->GetWorkingDir());
+        cfg->Write(elem + _T("launchOption"), static_cast<int>(tool->GetLaunchOption()));
     }
 }
 
@@ -347,11 +323,13 @@ void ToolsManager::BuildToolsMenu(wxMenu* menu)
 
     for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
     {
-        Tool* tool = node->GetData();
-        if (tool->menuId == -1)
-            tool->menuId = wxNewId();
-        m_ItemsManager.Add(menu, tool->menuId, tool->name, tool->name);
-        Connect(tool->menuId, -1, wxEVT_COMMAND_MENU_SELECTED,
+        cbTool* tool = node->GetData();
+        if (tool->GetMenuId() == -1)
+        {
+            tool->SetMenuId(wxNewId());
+        }
+        m_ItemsManager.Add(menu, tool->GetMenuId(), tool->GetName(), tool->GetName());
+        Connect(tool->GetMenuId(), -1, wxEVT_COMMAND_MENU_SELECTED,
                 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                 &ToolsManager::OnToolClick);
     }
@@ -366,12 +344,12 @@ void ToolsManager::BuildToolsMenu(wxMenu* menu)
 int ToolsManager::Configure()
 {
     ConfigureToolsDlg dlg(Manager::Get()->GetAppWindow());
-  PlaceWindow(&dlg);
+    PlaceWindow(&dlg);
     dlg.ShowModal();
     SaveTools();
     BuildToolsMenu(m_Menu);
     return 0;
-}
+} // end of Configure
 
 // events
 
@@ -382,9 +360,9 @@ void ToolsManager::OnConfigure(wxCommandEvent& event)
 
 void ToolsManager::OnToolClick(wxCommandEvent& event)
 {
-    Tool* tool = GetToolById(event.GetId());
+    cbTool* tool = GetToolByMenuId(event.GetId());
     if (!Execute(tool))
-        cbMessageBox(_("Could not execute ") + tool->name);
+        cbMessageBox(_("Could not execute ") + tool->GetName());
 }
 
 void ToolsManager::OnIdle(wxIdleEvent& event)

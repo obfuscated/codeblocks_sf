@@ -3,27 +3,26 @@
 
 #include <wx/dialog.h>
 
-#include "settings.h"
-
 // forward decls
-struct Tool;
+class cbTool;
+class wxCommandEvent;
+class wxUpdateUIEvent;
 
 class ConfigureToolsDlg : public wxDialog
 {
 	public:
 		ConfigureToolsDlg(wxWindow* parent);
 		~ConfigureToolsDlg();
-	protected:
 	private:
 		void DoFillList();
-		bool DoEditTool(Tool* tool);
+		bool DoEditTool(cbTool* tool);
 		void OnAdd(wxCommandEvent& event);
 		void OnEdit(wxCommandEvent& event);
 		void OnRemove(wxCommandEvent& event);
 		void OnUp(wxCommandEvent& event);
 		void OnDown(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
-		
+
 		DECLARE_EVENT_TABLE()
 };
 

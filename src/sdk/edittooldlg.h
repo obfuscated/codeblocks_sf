@@ -2,24 +2,23 @@
 #define EDITTOOLDLG_H
 
 #include <wx/dialog.h>
-#include "settings.h"
 
-class Tool;
+class cbTool;
+class wxCommandEvent;
+class wxUpdateUIEvent;
 
 class EditToolDlg : public wxDialog
 {
 	public:
-		EditToolDlg(wxWindow* parent, Tool* tool);
+		EditToolDlg(wxWindow* parent, cbTool* tool);
 		~EditToolDlg();
-
 		void EndModal(int retCode);
-	protected:
 	private:
 		void OnUpdateUI(wxUpdateUIEvent& event);
 		void OnBrowseCommand(wxCommandEvent& event);
 		void OnBrowseDir(wxCommandEvent& event);
 
-		Tool* m_Tool;
+		cbTool* m_Tool;   //!< the tool we are editing (setting up)
 
 		DECLARE_EVENT_TABLE()
 };

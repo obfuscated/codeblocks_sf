@@ -27,17 +27,17 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/intl.h>
-    #include <wx/xrc/xmlres.h>
     #include <wx/button.h>
-    #include <wx/msgdlg.h>
+    #include <wx/intl.h>
     #include <wx/listbox.h>
+    #include <wx/string.h>
+    #include <wx/xrc/xmlres.h>
 
     #include "manager.h"
+    #include "cbtool.h"
     #include "toolsmanager.h"
     #include "globals.h"
 #endif
-
 
 #include "configuretoolsdlg.h"
 #include "edittooldlg.h"
@@ -55,7 +55,7 @@ ConfigureToolsDlg::ConfigureToolsDlg(wxWindow* parent)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgConfigureTools"));
 	DoFillList();
-}
+} // end of constructor
 
 ConfigureToolsDlg::~ConfigureToolsDlg()
 {
@@ -69,27 +69,27 @@ void ConfigureToolsDlg::DoFillList()
 	int count = toolMan->GetToolsCount();
 	for (int i = 0; i < count; ++i)
 	{
-		Tool* tool = toolMan->GetToolByIndex(i);
-		if (tool)
-			list->Append(tool->name);
+		if(const cbTool* tool = toolMan->GetToolByIndex(i))
+		{
+			list->Append(tool->GetName());
+		}
 	}
-}
+} // end of DoFillList
 
-bool ConfigureToolsDlg::DoEditTool(Tool* tool)
+bool ConfigureToolsDlg::DoEditTool(cbTool* tool)
 {
 	if (!tool)
 		return false;
 	EditToolDlg dlg(this, tool);
-	DoFillList();
     PlaceWindow(&dlg);
 	return dlg.ShowModal() == wxID_OK;
-}
+} // end of DoEditTool
 
 // events
 
-void ConfigureToolsDlg::OnUpdateUI(wxUpdateUIEvent& event)
+void ConfigureToolsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 {
-	wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
+	const wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
 	bool hasSel = list->GetSelection() != -1;
 	bool notFirst = list->GetSelection() > 0;
 	bool notLast = (list->GetSelection() < list->GetCount() -1) && hasSel;
@@ -98,29 +98,29 @@ void ConfigureToolsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 	XRCCTRL(*this, "btnRemove", wxButton)->Enable(hasSel);
 	XRCCTRL(*this, "btnUp", wxButton)->Enable(notFirst);
 	XRCCTRL(*this, "btnDown", wxButton)->Enable(notLast);
-}
+} // end of OnUpdateUI
 
-void ConfigureToolsDlg::OnAdd(wxCommandEvent& event)
+void ConfigureToolsDlg::OnAdd(wxCommandEvent& /*event*/)
 {
-	Tool tool;
+	cbTool tool;
 	if (DoEditTool(&tool))
 	{
 		Manager::Get()->GetToolsManager()->AddTool(&tool);
 		DoFillList();
 	}
-}
+} // end of OnAdd
 
-void ConfigureToolsDlg::OnEdit(wxCommandEvent& event)
+void ConfigureToolsDlg::OnEdit(wxCommandEvent& /*event*/)
 {
-	wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
-	Tool* tool = Manager::Get()->GetToolsManager()->GetToolByIndex(list->GetSelection());
+	const wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
+	cbTool* tool = Manager::Get()->GetToolsManager()->GetToolByIndex(list->GetSelection());
 	DoEditTool(tool);
 	DoFillList();
-}
+} // end of OnEdit
 
-void ConfigureToolsDlg::OnRemove(wxCommandEvent& event)
+void ConfigureToolsDlg::OnRemove(wxCommandEvent& /*event*/)
 {
-	wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
+	const wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
 	int sel = list->GetSelection();
 	if (cbMessageBox(_("Are you sure you want to remove this tool?"),
 					_("Remove tool?"),
@@ -129,28 +129,28 @@ void ConfigureToolsDlg::OnRemove(wxCommandEvent& event)
 		Manager::Get()->GetToolsManager()->RemoveToolByIndex(sel);
 		DoFillList();
 	}
-}
+} // end of OnRemove
 
-void ConfigureToolsDlg::OnUp(wxCommandEvent& event)
+void ConfigureToolsDlg::OnUp(wxCommandEvent& /*event*/)
 {
 	wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
 	int sel = list->GetSelection();
 
-	Tool tool(*(Manager::Get()->GetToolsManager()->GetToolByIndex(sel)));
+	cbTool tool(*(Manager::Get()->GetToolsManager()->GetToolByIndex(sel)));
 	Manager::Get()->GetToolsManager()->RemoveToolByIndex(sel);
 	Manager::Get()->GetToolsManager()->InsertTool(sel - 1, &tool);
 	DoFillList();
 	list->SetSelection(sel - 1);
-}
+} // end of OnUp
 
-void ConfigureToolsDlg::OnDown(wxCommandEvent& event)
+void ConfigureToolsDlg::OnDown(wxCommandEvent& /*event*/)
 {
 	wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
 	int sel = list->GetSelection();
 
-	Tool tool(*(Manager::Get()->GetToolsManager()->GetToolByIndex(sel)));
+	cbTool tool(*(Manager::Get()->GetToolsManager()->GetToolByIndex(sel)));
 	Manager::Get()->GetToolsManager()->RemoveToolByIndex(sel);
 	Manager::Get()->GetToolsManager()->InsertTool(sel + 1, &tool);
 	DoFillList();
 	list->SetSelection(sel + 1);
-}
+}// end of OnDown
