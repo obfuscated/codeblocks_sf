@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="4" />
+	<Project>
+		<Option title="C::B Koders Query" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="../../../devel/share/CodeBlocks/plugins/cb_koders.dll" />
+				<Option object_output="../../../.objs/2.6/plugins/contrib/cb_koders" />
+				<Option deps_output="../../../.deps/2.6/plugins/contrib/cb_koders" />
+				<Option external_deps="../../../devel/libcodeblocks.a;../../../devel/libwxscintilla.a;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option projectResourceIncludeDirsRelation="0" />
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="Unicode" />
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-g" />
+			<Add option="`wx-config --cflags`" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-fPIC" />
+			<Add option="-DcbDEBUG" />
+			<Add directory="../../../sdk" />
+			<Add directory="../../../sdk/wxscintilla" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="`wx-config --libs`" />
+			<Add library="libcodeblocks.a" />
+			<Add directory="../../../devel" />
+		</Linker>
+		<Unit filename="cb_koders.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="cb_koders.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="kodersdialog.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="kodersdialog.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Extensions>
+			<wxsmith>
+				<dialog wxs_file="KodersDialog.wxs" class="KodersDialog" src_file="kodersdialog.cpp" header_file="kodersdialog.h" xrc_file="" edit_mode="Source" />
+				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
+			</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
