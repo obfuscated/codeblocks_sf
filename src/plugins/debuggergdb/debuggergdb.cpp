@@ -1901,6 +1901,7 @@ void DebuggerGDB::OnBreakpointDelete(CodeBlocksEvent& event)
 
 void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
 {
+    event.Skip();
     if (!m_pProcess || !IsStopped())
         return;
     if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("eval_tooltip"), false))

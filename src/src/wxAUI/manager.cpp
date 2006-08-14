@@ -1544,6 +1544,9 @@ bool wxFrameManager::DetachPane(wxWindow* window)
                 // reparent to m_frame and destroy the pane
                 p.window->Reparent(m_frame);
                 p.frame->SetSizer(NULL);
+                // Set m_action_window to NULL if its pointing to this frame
+                if ( m_action_window == p.frame )
+                    m_action_window = NULL;
                 p.frame->Destroy();
                 p.frame = NULL;
             }
@@ -1764,7 +1767,7 @@ bool wxFrameManager::LoadPerspective(const wxString& layout, bool update)
         {
             // the pane window couldn't be found
             // in the existing layout
-            return false;
+            continue;
         }
 
         pane.window = p.window;
@@ -2572,6 +2575,9 @@ void wxFrameManager::Update()
             // reparent to m_frame and destroy the pane
             p.window->Reparent(m_frame);
             p.frame->SetSizer(NULL);
+            // Set m_action_window to NULL if its pointing to this frame
+            if ( m_action_window == p.frame )
+                m_action_window = NULL;
             p.frame->Destroy();
             p.frame = NULL;
         }
@@ -4161,9 +4167,13 @@ void wxFrameManager::OnMotion(wxMouseEvent& event)
     }
      else if (m_action == actionDragFloatingPane)
     {
-        wxPoint pt = m_frame->ClientToScreen(event.GetPosition());
-        m_action_window->Move(pt.x - m_action_offset.x,
-                             pt.y - m_action_offset.y);
+        // m_action_window might have gone away already
+        if ( m_action_window )
+        {
+            wxPoint pt = m_frame->ClientToScreen(event.GetPosition());
+            m_action_window->Move(pt.x - m_action_offset.x,
+                                 pt.y - m_action_offset.y);
+        }
     }
      else if (m_action == actionDragToolbarPane)
     {

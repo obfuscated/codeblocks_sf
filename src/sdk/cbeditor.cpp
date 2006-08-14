@@ -642,6 +642,53 @@ cbStyledTextCtrl* cbEditor::CreateEditor()
     Connect( m_ID,  -1, wxEVT_SCI_MODIFIED,
                   (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
                   &cbEditor::OnEditorModified );
+
+    // Now bind all *other* scintilla events to a common function so that editor hooks
+    // can be informed for them too.
+    // If you implement one of these events using a different function, do the following:
+    //  * comment it out here,
+    //  * "connect" it in the above block
+    //  * and make sure you call OnScintillaEvent() from your new handler function
+    // This will make sure that all editor hooks will be called when needed.
+    int scintilla_events[] =
+    {
+//        wxEVT_SCI_CHANGE,
+        wxEVT_SCI_STYLENEEDED,
+//        wxEVT_SCI_CHARADDED,
+        wxEVT_SCI_SAVEPOINTREACHED,
+        wxEVT_SCI_SAVEPOINTLEFT,
+        wxEVT_SCI_ROMODIFYATTEMPT,
+        wxEVT_SCI_KEY,
+        wxEVT_SCI_DOUBLECLICK,
+//        wxEVT_SCI_UPDATEUI,
+//        wxEVT_SCI_MODIFIED,
+        wxEVT_SCI_MACRORECORD,
+//        wxEVT_SCI_MARGINCLICK,
+        wxEVT_SCI_NEEDSHOWN,
+        wxEVT_SCI_PAINTED,
+//        wxEVT_SCI_USERLISTSELECTION,
+        wxEVT_SCI_URIDROPPED,
+//        wxEVT_SCI_DWELLSTART,
+//        wxEVT_SCI_DWELLEND,
+        wxEVT_SCI_START_DRAG,
+        wxEVT_SCI_DRAG_OVER,
+        wxEVT_SCI_DO_DROP,
+        wxEVT_SCI_ZOOM,
+        wxEVT_SCI_HOTSPOT_CLICK,
+        wxEVT_SCI_HOTSPOT_DCLICK,
+        wxEVT_SCI_CALLTIP_CLICK,
+
+        -1 // to help enumeration of this array
+    };
+    int i = 0;
+    while (scintilla_events[i] != -1)
+    {
+        Connect( m_ID,  -1, scintilla_events[i],
+                      (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction)
+                      &cbEditor::OnScintillaEvent );
+        ++i;
+    }
+
     return control;
 }
 
@@ -2014,6 +2061,7 @@ void cbEditor::OnMarginClick(wxScintillaEvent& event)
             break;
         }
     }
+    OnScintillaEvent(event);
 }
 
 void cbEditor::OnEditorUpdateUI(wxScintillaEvent& event)
@@ -2023,11 +2071,13 @@ void cbEditor::OnEditorUpdateUI(wxScintillaEvent& event)
         NotifyPlugins(cbEVT_EDITOR_UPDATE_UI);
         HighlightBraces(); // brace highlighting
     }
+    OnScintillaEvent(event);
 }
 
 void cbEditor::OnEditorChange(wxScintillaEvent& event)
 {
     SetModified(m_pControl->GetModify());
+    OnScintillaEvent(event);
 }
 
 void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
@@ -2102,14 +2152,8 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
             control->EndUndoAction();
         }
     }
-    else
-    {
-        // call any hooked functors
-        if (EditorHooks::HasRegisteredHooks())
-        {
-            EditorHooks::CallHooks(this, event);
-        }
-    }
+
+    OnScintillaEvent(event);
 }
 
 void cbEditor::OnEditorDwellStart(wxScintillaEvent& event)
@@ -2118,11 +2162,13 @@ void cbEditor::OnEditorDwellStart(wxScintillaEvent& event)
     int pos = control->PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
     int style = control->GetStyleAt(pos);
     NotifyPlugins(cbEVT_EDITOR_TOOLTIP, style, wxEmptyString, event.GetX(), event.GetY());
+    OnScintillaEvent(event);
 }
 
 void cbEditor::OnEditorDwellEnd(wxScintillaEvent& event)
 {
     NotifyPlugins(cbEVT_EDITOR_TOOLTIP_CANCEL);
+    OnScintillaEvent(event);
 }
 
 void cbEditor::OnEditorModified(wxScintillaEvent& event)
@@ -2178,10 +2224,13 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
             debugger->EditorLinesAddedOrRemoved(this, startline, linesAdded);
         }
     }
+
+    OnScintillaEvent(event);
 } // end of OnEditorModified
 
 void cbEditor::OnUserListSelection(wxScintillaEvent& event)
 {
+    OnScintillaEvent(event);
 }
 
 void cbEditor::OnClose(wxCloseEvent& event)
@@ -2206,5 +2255,15 @@ void cbEditor::DoUnIndent()
 void cbEditor::OnZoom(wxScintillaEvent& event)
 {
     Manager::Get()->GetEditorManager()->SetZoom(GetControl()->GetZoom());
+    OnScintillaEvent(event);
 }
 
+// generic scintilla event handler
+void cbEditor::OnScintillaEvent(wxScintillaEvent& event)
+{
+    // call any hooked functors
+    if (EditorHooks::HasRegisteredHooks())
+    {
+        EditorHooks::CallHooks(this, event);
+    }
+}
