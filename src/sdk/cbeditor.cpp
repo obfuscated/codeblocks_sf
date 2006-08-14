@@ -95,6 +95,7 @@ void cbStyledTextCtrl::OnKillFocus(wxFocusEvent& event)
         AutoCompCancel();
     if (CallTipActive())
         CallTipCancel();
+    event.Skip();
 }
 
 void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
