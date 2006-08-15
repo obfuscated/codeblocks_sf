@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<title>Code Snippets Plugin</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<h1>Code Snippets Plugin</h1>
+
+<p>Arto Jonsson<br />
+<a href="http://ajonsson.kapsi.fi/">http://ajonsson.kapsi.fi/</a></p>
+
+<h3>Table of contents</h3>
+<ul>
+	<li>1. <a href="#installing">Installing</a>
+	<ul>
+		<li>1.1. <a href="#installing-win">Windows</a></li>
+		<li>1.2. <a href="#installing-nix">*nix</a></li>
+	</ul>
+	</li>
+	<li>2. <a href="#about">About</a>
+	<ul>
+		<li>2.1. <a href="#newsnippet">Creating a new snippet</a></li>
+		<li>2.2. <a href="#applysnippet">Applying a snippet</a></li>
+		<li>2.3. <a href="#newcategory">Creating a new category</a></li>
+		<li>2.4. <a href="#searching">Searching</a></li>
+	</ul>
+	</li>
+	<li>3. <a href="#development">Development</a>
+	<ul>
+		<li>3.1. <a href="#todo">Todo</a></li>
+		<li>3.2. <a href="#thecode">About the code</a></li>
+		<li>3.3. <a href="#fileformat">File format</a></li>
+	</ul>
+	</li>
+</ul>
+
+<hr />
+
+<h2><a id="installing"></a>1. Installing</h2>
+
+<h3><a id="installing-win"></a>1.1. Windows</h3>
+
+<blockquote><p><strong>NOTE:</strong> I'm unable to build the Windows version
+of this plugin because of linking errors described in this forum topic:
+<a href="http://forums.codeblocks.org/index.php?topic=3804.0">
+http://forums.codeblocks.org/index.php?topic=3804.0</a>.</p>
+<p>If you can come with a solution be sure to notify me.</p></blockquote>
+
+<ol>
+	<li>Open the Windows project file, <tt>codesnippets.cbp</tt>, in
+	Code::Blocks and build it.</li>
+	<li>Copy the generated <tt>codesnippets.dll</tt> to the pluing
+	directory (<tt>CB_INSTALL_DIR\share\CodeBlocks\plugins</tt>).</li>
+	<li>Copy the images from <tt>resources\</tt> to the resources directory
+	under <tt>images\codesnippets\ </tt>
+	(<tt>CB_INSTALL_DIR\share\CodeBlocks\images\codesnippets\</tt>).</li>
+</ol>
+
+<h3><a id="installing-nix"></a>1.2. *nix</h3>
+
+<ol>
+	<li>Open the *nix project file, <tt>codesnippets-unix.cbp</tt>, in
+	Code::Blocks and build it.</li>
+	<li>Copy the generated <tt>libcodeblocks.so</tt> to the plugin
+	directory (in the global or in
+	<tt>~/.codeblocks/share/codeblocks/plugins/</tt>).</li>
+	<li>Copy the images from <tt>resources/</tt> to the global shared
+	resources directory under <tt>images/codesnippets/</tt>.</li>
+</ol>
+
+<h2><a id="about"></a>2. About</h2>
+
+<p>Code snippets plugin is a simple snippets management plugin for
+Code::Blocks. It integrates with the interface by creating a floating
+docking window which show all the snippets. Snippets can be assigned to
+categories or they can be in the global category called
+<em>All snippets</em>.</p>
+
+<h3><a id="newsnippet"></a>2.1. Creating a new snippet</h3>
+
+<p>To create a snippet you must first write the code. The plugin does not
+use any dialogs (currently no message boxes either) so you have to write
+the code in the editor. Select your code and and drag it to a category,
+either in the <em>All snippets</em> or in other category you may have
+created.</p>
+
+<p>You might noticed that the code you wrote is gone, this is how the drag
+and drop works; you move by default. If you want to copy the code and then
+create a new snippet, hold <strong>Ctrl</strong> and then drag it.</p>
+
+<p>To assign a piece of code to a existing snippet you simply drag and drop
+the code to that snippet.</p>
+
+<h3><a id="applysnippet"></a>2.2. Applying a snippet</h3>
+
+<p>To apply a snippet, double click it and it will be applied to the
+currently active editor. You can alternatively right click on the snippet
+and select <em>Apply</em>.</p>
+
+<h3><a id="newcategory"></a>2.3. Creating a new category</h3>
+
+<p>Snippets can be added to categories. Each snippet can be at one category
+at a time. The number of categories and sub-categories is not limited
+however.</p>
+
+<p>Each user created category has a parent category, the categories created
+in root have the <em>All snippets</em> category as parent. So if you want
+to create a category to the root, right click <em>All snippets</em> and
+select <em>Add subcategory</em>.</p>
+
+<h3><a id="searching"></a>2.4. Searching</h3>
+
+<p>Snippets can be searched by typing words to the text edit control at the
+top of the docking window. Searching is performed by find-as-you-type method
+so you don't have to press any search buttons or Enter key. Searching by
+default includes categories.</p>
+
+<p>Searching at the current state can be considered unoptimized. I haven't
+tested it yet with hundreds of items but I'm pretty sure it's slow. The search
+could by optimized by saving the search state when the firs item is found
+and then later use it as the starting point if the user wants to specify
+more specific search terms.</p>
+
+<p>Searching is case-sensitive so <em>C++</em> and <em>c++</em> are
+seen as different search terms.</p>
+
+<h2><a id="development"></a>3. Development</h2>
+
+<h3><a id="todo"></a>3.1. Todo</h3>
+
+<p>A list of things to be done.</p>
+
+<ul>
+	<li>Drag and drop within the tree.</li>
+	<li>Configuration dialog.</li>
+	<li>More visual feedback if no search results was found.</li>
+</ul>
+
+<h3><a id="thecode"></a>3.2. About the code</h3>
+
+<p>Short description of each class used in plugin.</p>
+
+<h4>CodeSnippets</h4>
+
+<p><em>CodeSnippets</em> is the main class, subclass of <em>cbPlugin</em>.
+Most of the functionality is not in this class but in
+<em>CodeSnippetsWindow</em>.</p>
+
+<h4>SnippetItemData</h4>
+
+<p><em>SnippetItemData</em> is the class which is used in the tree control.
+It holds information about the item type and the actual snippet. The
+class is derived from <em>wxTreeItemData</em>.</p>
+
+<h4>SnippetsItemTreeCtrl</h4>
+
+<p><em>SnippetsItemTreeCtrl</em> is the tree control used in the docking
+window. It's subclass of <em>wxTreeCtrl</em> and overloads the OnCompare
+method. The overloaded compare method uses extra checks for category and
+snippet sorting: categories are first in the tree, sorted A-Z and then
+the snippets, sorted A-Z.</p>
+
+<p>In case you're wondering why the control uses wxWidget's dynamic class
+macros: classes derived from wxTreeCtrl must use these macros so that the
+overloaded <em>OnCompare</em> method is called, see the wxWidgets
+tree control example for more info.</p>
+
+<h4>CodeSnippetsWindow</h4>
+
+<p><em>CodeSnippetsWindow</em> is the docking window class and it holds
+most of the functionality of the plugin.</p>
+
+<h3><a id="fileformat"></a>3.3. File format</h3>
+
+<p>Code snippets plugin uses XML (UTF-8 encoded) file to save all code
+snippets.</p>
+
+<p>The XML file starts with root item, <em>snippets</em>, which holds all
+the categories and code snippets. Code snippets and categories use the same
+element called <em>item</em>. The item's attributes tell what type of item
+it is, category or code snippet.</p>
+
+<p><em>snippets</em></p>
+<ul>
+	<li>Attributes: none</li>
+	<li>Subelements: all code snippets and categories</li>
+</ul>
+
+<p><em>item</em></p>
+<ul>
+	<li>Attributes:
+	<ul>
+		<li>Name -- Name of the element</li>
+		<li>Type -- Type of the element, either "snippet" or
+		"category".</li>
+	</ul>
+	</li>
+	<li>Subelements:
+	<ul>
+		<li>Snippet -- The actual code snippet (only if the item is type
+		"snippet").</li>
+		<li>Subitems and categories (only if the item is type
+		"category").</li>
+	</ul>
+	</li>
+</ul>
+
+<h4>Example file</h4>
+
+<blockquote>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8" standalone="yes" ?&gt;
+&lt;snippets&gt;
+	&lt;item name="Test category" type="category" /&gt;
+		&lt;item name="Test item 1" type="snippet" /&gt;
+			&lt;snippet&gt;// Test 1&lt;/snippets&gt;
+		&lt;/item&gt;	
+	&lt;/item&gt;
+	&lt;item name="Test item 2" type="snippet" /&gt;
+		&lt;snippet&gt;// Test 2&lt;/snippets&gt;
+	&lt;item&gt;
+&lt;/snippets&gt;
+</pre>
+</blockquote>
+
+<p>The file would create the following structure to the tree control:</p>
+
+<blockquote>
+<pre>
+All snippets
+|
+|- Test category
+|  |
+|  |- Test item 1
+|
+|- Test item 2
+</pre>
+</blockquote>
+
+</body>
+</html>

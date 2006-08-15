@@ -1,0 +1,6 @@
+#!/bin/bash
+mkdir -p ../../../devel/share/codeblocks/images/codesnippets > /dev/null 2> /dev/null
+mkdir -p ../../../output/share/codeblocks/images/codesnippets > /dev/null 2> /dev/null
+cp ./resources/*.png ../../../devel/share/codeblocks/images/codesnippets/ > /dev/null 2> /dev/null
+cp ./resources/*.png ../../../output/share/codeblocks/images/codesnippets/ > /dev/null 2> /dev/null
+exit 0

@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="4" />
+	<Project>
+		<Option title="Code Snippets Plugin (unix)" />
+		<Option pch_mode="2" />
+		<Option default_target="-1" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug - Unix">
+				<Option output="../../../devel/share/codeblocks/plugins/libcodesnippets.so" />
+				<Option object_output="obj/Debug/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="`pkg-config --cflags codeblocks`" />
+					<Add option="`wx-config --cflags`" />
+					<Add option="-fexceptions" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-fPIC" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DcbDEBUG" />
+					<Add directory="$(#cb)/sdk/wxscintilla/include" />
+				</Compiler>
+				<Linker>
+					<Add option="`pkg-config --libs codeblocks`" />
+					<Add option="`wx-config --libs`" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="codesnippets.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug - Unix" />
+		</Unit>
+		<Unit filename="codesnippets.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug - Unix" />
+		</Unit>
+		<Unit filename="codesnippetstreectrl.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug - Unix" />
+		</Unit>
+		<Unit filename="codesnippetstreectrl.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug - Unix" />
+		</Unit>
+		<Unit filename="codesnippetswindow.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug - Unix" />
+		</Unit>
+		<Unit filename="codesnippetswindow.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug - Unix" />
+		</Unit>
+		<Unit filename="snippetitemdata.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug - Unix" />
+		</Unit>
+		<Unit filename="snippetitemdata.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug - Unix" />
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

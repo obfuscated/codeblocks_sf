@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="4" />
+	<Project>
+		<Option title="Code Snippets Plugin" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug - Win32">
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codesnippets.dll" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\codesnippets" />
+				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\codesnippets" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release - Win32">
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codesnippets.dll" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\codesnippets" />
+				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\codesnippets" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DTIXML_USE_STL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="$(#cb)\sdk" />
+			<Add directory="$(#cb)\sdk\wxscintilla\include" />
+			<Add directory="$(#wx.include)" />
+			<Add directory="$(#wx.lib)\gcc_dll\mswu" />
+			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+		</Compiler>
+		<Linker>
+			<Add library="wxmsw26$(WX_SUFFIX)" />
+			<Add library="wxscintilla" />
+			<Add library="txml" />
+			<Add library="codeblocks" />
+			<Add directory="$(#cb)\devel" />
+			<Add directory="$(#cb)\sdk\tinyxml" />
+			<Add directory="$(#wx.lib)\gcc_dll" />
+			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="update.bat" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="codesnippets.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug - Win32" />
+			<Option target="Release - Win32" />
+		</Unit>
+		<Unit filename="codesnippets.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug - Win32" />
+			<Option target="Release - Win32" />
+		</Unit>
+		<Unit filename="codesnippetstreectrl.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug - Win32" />
+			<Option target="Release - Win32" />
+		</Unit>
+		<Unit filename="codesnippetstreectrl.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug - Win32" />
+			<Option target="Release - Win32" />
+		</Unit>
+		<Unit filename="codesnippetswindow.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug - Win32" />
+			<Option target="Release - Win32" />
+		</Unit>
+		<Unit filename="codesnippetswindow.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug - Win32" />
+			<Option target="Release - Win32" />
+		</Unit>
+		<Unit filename="snippetitemdata.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug - Win32" />
+			<Option target="Release - Win32" />
+		</Unit>
+		<Unit filename="snippetitemdata.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug - Win32" />
+			<Option target="Release - Win32" />
+		</Unit>
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>
