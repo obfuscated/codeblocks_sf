@@ -285,8 +285,8 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
   if (key.IsEmpty())
     return;
 
-  wxString old_key   = key;
   wxString value     = lstEnvVars->GetStringSelection().AfterFirst(_T('=')).Trim(true).Trim(false);
+  wxString old_key   = key;
   wxString old_value = value;
 
   EditPairDlg dlg(this, key, value, _("Edit variable"),
@@ -297,14 +297,36 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
     key.Trim(true).Trim(false);
     value.Trim(true).Trim(false);
 
-    if (value != old_value)
+    // filter illegal environment variables with no key
+    if (key.IsEmpty())
     {
+      cbMessageBox(_("Cannot set an empty environment variable key."),
+                   _("Error"), wxOK | wxCENTRE | wxICON_ERROR);
+      return;
+    }
+
+    // is this environment variable to be set?
+    bool bSet = (   ((key != old_key) || (value != old_value))
+                 && lstEnvVars->IsChecked(sel) );
+
+    if (bSet)
+    {
+      // unset the old environment variable if it's key name has changed
+      if (key != old_key)
+      {
+        if (!wxUnsetEnv(old_key))
+          Manager::Get()->GetMessageManager()->Log(_("Unsetting environment variable '%s' failed."),
+            old_key.c_str());
+      }
+
+      // set the new environment
       if (!wxSetEnv(key, value))
         Manager::Get()->GetMessageManager()->Log(_("Setting environment variable '%s' failed."),
           key.c_str());
-
-      lstEnvVars->SetString(sel, key + _T(" = ") + value);
     }
+
+    // update the GUI to the (new/updated/same) key/value pair anyway
+    lstEnvVars->SetString(sel, key + _T(" = ") + value);
   }
 }// OnEditEnvVarClick
 
