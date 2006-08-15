@@ -30,6 +30,10 @@
 				</Linker>
 			</Target>
 		</Build>
+		<ExtraCommands>
+			<Add after="./update" />
+			<Mode after="always" />
+		</ExtraCommands>
 		<Unit filename="codesnippets.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Debug - Unix" />
