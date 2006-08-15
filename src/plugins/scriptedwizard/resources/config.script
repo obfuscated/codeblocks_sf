@@ -24,6 +24,7 @@ function RegisterWizards()
     RegisterWizard(wizProject,     _T("glfw"),         _T("GLFW project"),          _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("glut"),         _T("GLUT project"),          _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("irrlicht"),     _T("Irrlicht project"),      _T("2D/3D Graphics"));
+    RegisterWizard(wizProject,     _T("opengl"),       _T("OpenGL project"),        _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("ogre"),         _T("Ogre project"),          _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("qt4"),          _T("QT4 project"),           _T("GUI"));
     RegisterWizard(wizProject,     _T("sdl"),          _T("SDL project"),           _T("2D/3D Graphics"));
