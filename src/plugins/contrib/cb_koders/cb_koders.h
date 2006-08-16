@@ -29,6 +29,24 @@ public:
     * menu.
     */
   virtual int Execute();
+
+  /** This method is called by Code::Blocks core modules (EditorManager,
+    * ProjectManager etc) and is used by the plugin to add any menu
+    * items it needs in the module's popup menu. For example, when
+    * the user right-clicks on a project file in the project tree,
+    * ProjectManager prepares a popup menu to display with context
+    * sensitive options for that file. Before it displays this popup
+    * menu, it asks all attached plugins (by asking PluginManager to call
+    * this method), if they need to add any entries
+    * in that menu. This method is called.\n
+    * If the plugin does not need to add items in the menu,
+    * just do nothing ;)
+    * @param type the module that's preparing a popup menu
+    * @param menu pointer to the popup menu
+    * @param data pointer to FileTreeData object (to access/modify the file tree)
+    */
+  void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
+
 protected:
   /** Any descendent plugin should override this virtual method and
     * perform any necessary initialization. This method is called by
@@ -54,7 +72,12 @@ protected:
   virtual void OnRelease(bool appShutDown);
 
 private:
+  bool IsReady();
+  void OnSearchKoders(wxCommandEvent& event);
+
   KodersDialog* TheDialog;
+
+  DECLARE_EVENT_TABLE()
 };
 
 

@@ -21,6 +21,7 @@ class KodersDialog: public wxDialog
 		KodersDialog(wxWindow* parent,wxWindowID id = -1);
 		virtual ~KodersDialog();
 
+		void     SetSearch(const wxString &search);
 		wxString GetSearch() const;
 		wxString GetLanguage() const;
 		wxString GetLicense() const;

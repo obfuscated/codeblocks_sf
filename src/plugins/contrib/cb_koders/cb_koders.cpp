@@ -1,11 +1,13 @@
 #include "sdk.h" // Code::Blocks SDK
 #ifndef CB_PRECOMP
-#include <wx/intl.h>
-#include <wx/string.h>
-#include <wx/utils.h> // wxLaunchDefaultBrowser
-#include "globals.h"
-#include "licenses.h"
-#include "manager.h"
+  #include <wx/intl.h>
+  #include <wx/string.h>
+  #include <wx/utils.h> // wxLaunchDefaultBrowser
+  #include "globals.h"
+  #include "licenses.h"
+  #include "manager.h"
+  #include "editormanager.h"
+  #include "cbeditor.h"
 #endif
 
 #include "cb_koders.h"
@@ -13,6 +15,12 @@
 
 // Implement the plugin's hooks
 CB_IMPLEMENT_PLUGIN(CB_Koders, "Code::Blocks Koders connectivity");
+
+const int idSearchKoders = wxNewId();
+
+BEGIN_EVENT_TABLE(CB_Koders, cbToolPlugin)
+  EVT_MENU(idSearchKoders, CB_Koders::OnSearchKoders)
+END_EVENT_TABLE()
 
 // constructor
 CB_Koders::CB_Koders() :
@@ -32,8 +40,8 @@ CB_Koders::CB_Koders() :
 // destructor
 CB_Koders::~CB_Koders()
 {
-	if (TheDialog)
-		TheDialog->Destroy();
+  if (TheDialog)
+    TheDialog->Destroy();
 }
 
 void CB_Koders::OnAttach()
@@ -57,13 +65,7 @@ void CB_Koders::OnRelease(bool appShutDown)
 
 int CB_Koders::Execute()
 {
-  if (!IsAttached())
-    return -1;
-
-  if (!TheDialog)
-    TheDialog = new KodersDialog(Manager::Get()->GetAppWindow());
-
-  if(TheDialog && TheDialog->ShowModal()==wxID_OK)
+  if (IsReady() && TheDialog->ShowModal()==wxID_OK)
   {
     const wxString search = TheDialog->GetSearch();
     if (search.IsEmpty())
@@ -84,4 +86,60 @@ int CB_Koders::Execute()
   }
 
 	return 0;
+}
+
+void CB_Koders::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
+{
+	if (!menu || !IsAttached())
+		return;
+
+	if (type == mtEditorManager)
+	{
+		menu->AppendSeparator();
+		menu->Append(idSearchKoders, _("Search at Koders..."), _("Search keyword at Koders webpage..."));
+	}
+}
+
+bool CB_Koders::IsReady()
+{
+  if (!IsAttached())
+    return false;
+
+  if (!TheDialog)
+    TheDialog = new KodersDialog(Manager::Get()->GetAppWindow());
+
+  if (TheDialog)
+    return true;
+  else
+    cbMessageBox(_("Could not initialise CB_Koders plugin."), _("Error"), wxICON_ERROR);
+
+  return false;
+}
+
+void CB_Koders::OnSearchKoders(wxCommandEvent& event)
+{
+  if (IsReady())
+  {
+    wxString search(_("")); // the word to search for (if any)
+    cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+
+    if (ed)
+    {
+      // check if there is any text selected
+      cbStyledTextCtrl *control = ed->GetControl();
+      search = control->GetSelectedText();
+
+      // if no selection, take the word under the cursor
+      if (search.IsEmpty())
+      {
+        int origPos = control->GetCurrentPos();
+        int start = control->WordStartPosition(origPos, true);
+        int end = control->WordEndPosition(origPos, true);
+        search = control->GetTextRange(start, end);
+      }
+    }
+
+    TheDialog->SetSearch(search);
+    Execute();
+  }
 }

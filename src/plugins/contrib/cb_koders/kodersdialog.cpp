@@ -102,6 +102,12 @@ KodersDialog::~KodersDialog()
 {
 }
 
+void KodersDialog::SetSearch(const wxString &search)
+{
+  if (txtSearch)
+    txtSearch->SetValue(search);
+}
+
 wxString KodersDialog::GetSearch() const
 {
   wxString search(_(""));
