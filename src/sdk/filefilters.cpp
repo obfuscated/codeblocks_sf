@@ -1,6 +1,6 @@
+#include "sdk_precomp.h"
 #include <map>
 #include <wx/arrstr.h>
-#include "sdk_precomp.h"
 #include "filefilters.h"
 #include "globals.h"
 
