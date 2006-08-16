@@ -28,7 +28,7 @@ enum FileParsingStatus
 
 WX_DEFINE_ARRAY(Token*, TokensArray);
 
-typedef deque<Token*> TokenList;
+typedef vector<Token*> TokenList;
 
 typedef deque<int> TokenIdxList;
 typedef set<int, less<int> > TokenIdxSet;
@@ -137,6 +137,7 @@ class TokensTree
         void RecalcData();
         int TokenExists(const wxString& name, int parent, short int kindMask);
         size_t FindMatches(const wxString& s,TokenIdxSet& result,bool caseSensitive,bool is_prefix);
+        size_t FindTokensInFile(const wxString& file, TokenIdxSet& result, short int kindMask);
         void RemoveFile(const wxString& filename);
         void RemoveFile(int index);
         virtual ~TokensTree();
@@ -174,6 +175,8 @@ class TokensTree
 
         int AddTokenToList(Token* newToken,int forceidx = -1);
         void RemoveTokenFromList(int idx);
+
+        void RecalcFullInheritance(int parentIdx, TokenIdxSet& result); // called by RecalcData
 };
 
 

@@ -12,10 +12,8 @@ libcodecompletion_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined
 
 libcodecompletion_la_LIBADD = ../../sdk/libcodeblocks.la
 
-libcodecompletion_la_SOURCES = cclist.cpp \
-			cclistctrl.cpp \
+libcodecompletion_la_SOURCES = ccdebuginfo.cpp \
 			ccoptionsdlg.cpp \
-			ccrenderer.cpp \
 			classbrowser.cpp \
 			classbrowserbuilderthread.cpp \
 			codecompletion.cpp \
@@ -28,10 +26,8 @@ libcodecompletion_la_SOURCES = cclist.cpp \
 			parser/tokenizer.cpp \
 			parser/searchtree.cpp
 
-noinst_HEADERS = cclist.h \
-			cclistctrl.h \
+noinst_HEADERS = ccdebuginfo.h \
 			ccoptionsdlg.h \
-			ccrenderer.h \
 			classbrowser.h \
 			classbrowserbuilderthread.h \
 			codecompletion.h \

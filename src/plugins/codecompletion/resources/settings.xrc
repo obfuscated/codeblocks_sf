@@ -47,24 +47,38 @@
                                             </object>
                                         </object>
                                         <object class="sizeritem">
-                                            <option>1</option>
                                             <border>8</border>
-                                            <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                            <object class="wxBoxSizer">
-                                                <orient>wxHORIZONTAL</orient>
+                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxFlexGridSizer">
+                                                <rows>0</rows>
+                                                <cols>2</cols>
+                                                <vgap>8</vgap>
+                                                <hgap>8</hgap>
                                                 <object class="sizeritem">
-                                                    <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                                    <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                                                     <object class="wxCheckBox" name="chkAutoLaunch">
                                                         <label>Automatically launch when typed # letters:</label>
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">
-                                                    <border>4</border>
-                                                    <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                                    <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                                     <object class="wxSpinCtrl" name="spnAutoLaunchChars">
                                                         <value>4</value>
                                                         <min>2</min>
                                                         <max>8</max>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                                    <object class="wxStaticText" name="ID_STATICTEXT8">
+                                                        <label>Maximum allowed code-completion matches:</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                                    <object class="wxSpinCtrl" name="spnMaxMatches">
+                                                        <value>16384</value>
+                                                        <max>100000</max>
                                                     </object>
                                                 </object>
                                             </object>
@@ -117,43 +131,6 @@
                                                     <flag>wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                                     <object class="wxStaticText" name="ID_STATICTEXT3">
                                                         <label>2.5 sec</label>
-                                                    </object>
-                                                </object>
-                                            </object>
-                                        </object>
-                                    </object>
-                                </object>
-                                <object class="sizeritem">
-                                    <border>8</border>
-                                    <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                    <object class="wxStaticBoxSizer">
-                                        <orient>wxVERTICAL</orient>
-                                        <label>List control</label>
-                                        <object class="sizeritem">
-                                            <border>8</border>
-                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                            <object class="wxCheckBox" name="chkCustomList">
-                                                <label>Use custom control for code-completion list</label>
-                                            </object>
-                                        </object>
-                                        <object class="sizeritem">
-                                            <border>8</border>
-                                            <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                            <object class="wxBoxSizer">
-                                                <orient>wxHORIZONTAL</orient>
-                                                <object class="sizeritem">
-                                                    <border>4</border>
-                                                    <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                                    <object class="wxStaticText" name="ID_STATICTEXT4">
-                                                        <label>List colour (for custom list control):</label>
-                                                    </object>
-                                                </object>
-                                                <object class="sizeritem">
-                                                    <option>1</option>
-                                                    <border>8</border>
-                                                    <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                                    <object class="wxButton" name="btnColour">
-                                                        <label></label>
                                                     </object>
                                                 </object>
                                             </object>

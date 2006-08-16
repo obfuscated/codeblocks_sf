@@ -1,9 +1,13 @@
 #ifndef NATIVEPARSER_H
 #define NATIVEPARSER_H
 
+#include <queue>
+
 #include <wx/event.h>
 #include <wx/hashmap.h>
 #include "parser/parser.h"
+
+//#define DEBUG_CC_AI
 
 // forward decls
 class cbEditor;
@@ -20,13 +24,20 @@ enum ParserTokenType
 {
 	pttSearchText = 0,
 	pttClass,
-	pttNamespace
+	pttNamespace,
+	pttFunction
 };
 
 enum BrowserViewMode
 {
 	bvmRaw = 0,
 	bvmInheritance
+};
+
+struct ParserComponent
+{
+    wxString component;
+    ParserTokenType token_type;
 };
 
 class NativeParser : public wxEvtHandler
@@ -43,10 +54,13 @@ class NativeParser : public wxEvtHandler
 		void RemoveFileFromParser(cbProject* project, const wxString& filename);
 		void ForceReparseActiveProject();
 
-		int MarkItemsByAI(bool reallyUseAI = true);
+		int MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI = true);
 
 		const wxString& GetCodeCompletionItems();
 		const wxArrayString& GetCallTips();
+		int GetCallTipCommas(){ return m_CallTipCommas; }
+        int CountCommas(const wxString& calltip, int start);
+		void GetCallTipHighlight(const wxString& calltip, int* start, int* end);
 
 		int GetEditorStartWord() const { return m_EditorStartWord; }
 		int GetEditorEndWord() const { return m_EditorEndWord; }
@@ -65,9 +79,15 @@ class NativeParser : public wxEvtHandler
 	protected:
 	private:
         friend class CodeCompletion;
-		int AI(cbEditor* editor, Parser* parser, const wxString& lineText = wxEmptyString, bool noPartialMatch = false, bool caseSensitive = false);
+		int AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, const wxString& lineText = wxEmptyString, bool noPartialMatch = false, bool caseSensitive = false);
+
+		int FindAIMatches(Parser* parser, std::queue<ParserComponent> components, TokenIdxSet& result, int parentTokenIdx = -1, bool noPartialMatch = false, bool caseSensitive = false, bool use_inheritance = true, short int kindMask = 0xFFFF);
+        int BreakUpComponents(Parser* parser, const wxString& actual, std::queue<ParserComponent>& components);
+        bool BelongsToParentOrItsAncestors(TokensTree* tree, Token* token, int parentIdx, bool use_inheritance = true);
+        size_t GenerateResultSet(TokensTree* tree, const wxString& search, int parentIdx, TokenIdxSet& result, bool caseSens = true, bool isPrefix = false, short int kindMask = 0xFFFF);
+
 		unsigned int FindCCTokenStart(const wxString& line);
-		wxString GetNextCCToken(const wxString& line, unsigned int& startAt);
+		wxString GetNextCCToken(const wxString& line, unsigned int& startAt, bool& is_function);
 		wxString GetCCToken(wxString& line, ParserTokenType& tokenType);
 		bool FindFunctionNamespace(cbEditor* editor, wxString* nameSpace = 0L, wxString* procName = 0L);
 		int FindCurrentBlockStart(cbEditor* editor);
@@ -89,6 +109,7 @@ class NativeParser : public wxEvtHandler
 		int m_EditorEndWord;
 		wxString m_CCItems;
 		wxArrayString m_CallTips;
+		int m_CallTipCommas;
     	ClassBrowser* m_pClassBrowser;
     	bool m_ClassBrowserIsFloating; // docked to project manager notebook, or free floating?
 

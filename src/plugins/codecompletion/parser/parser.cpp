@@ -752,7 +752,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
     if(m_IgnoreThreadEvents)
         return;
     EndStopWatch();
-    LinkInheritance(false);
+//    LinkInheritance(false);
     wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, PARSER_END);
     evt.SetClientData(this);
 	wxPostEvent(m_pParent, evt);

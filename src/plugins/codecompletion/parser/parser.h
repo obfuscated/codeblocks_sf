@@ -125,6 +125,7 @@ class Parser : public wxEvtHandler
 		unsigned int GetFilesCount();
 
 		bool Done();
+		void LinkInheritance(bool tempsOnly = false);
 
 		unsigned int GetMaxThreads()const { return m_Pool.GetConcurrentThreads(); }
 		void SetMaxThreads(unsigned int max){ m_Pool.SetConcurrentThreads(max); }
@@ -143,7 +144,6 @@ class Parser : public wxEvtHandler
         void ConnectEvents();
         void DisconnectEvents();
 
-		void LinkInheritance(bool tempsOnly = false);
 		ParserOptions m_Options;
 		BrowserOptions m_BrowserOptions;
 		SearchTree<wxString> m_GlobalIncludes;

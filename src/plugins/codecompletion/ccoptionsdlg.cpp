@@ -104,7 +104,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np)
 	XRCCTRL(*this, "chkAutoSelectOne", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_select_one"), false));
 	XRCCTRL(*this, "chkAutoLaunch", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_launch"), true));
 	XRCCTRL(*this, "spnAutoLaunchChars", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/auto_launch"), 4));
-	XRCCTRL(*this, "chkCustomList", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_custom_control"), USE_CUST_CTRL));
+	XRCCTRL(*this, "spnMaxMatches", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_matches"), 16384));
 	XRCCTRL(*this, "chkInheritance", wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().showInheritance);
 	XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_threads"), 1));
 	XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->Enable(false);
@@ -116,9 +116,6 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np)
 	XRCCTRL(*this, "chkUseCache", wxCheckBox)->Enable(false);
 	XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->Enable(false);
 	XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->Enable(false);
-
-    wxColour colour = cfg->ReadColour(_T("/colour"), *wxWHITE);
-    XRCCTRL(*this, "btnColour", wxButton)->SetBackgroundColour(colour);
 
 	int timerDelay = cfg->ReadInt(_T("/cc_delay"), 500);
 	XRCCTRL(*this, "sliderDelay", wxSlider)->SetValue(timerDelay / 100);
@@ -188,14 +185,11 @@ void CCOptionsDlg::OnApply()
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
     // force parser to read its options that we write in the config
-	cfg->Write(_T("/use_custom_control"), (bool)XRCCTRL(*this, "chkCustomList", wxCheckBox)->GetValue());
 	cfg->Write(_T("/use_code_completion"), (bool)!XRCCTRL(*this, "chkNoCC", wxCheckBox)->GetValue());
 	cfg->Write(_T("/max_threads"), (int)XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->GetValue());
 	cfg->Write(_T("/use_cache"), (bool)XRCCTRL(*this, "chkUseCache", wxCheckBox)->GetValue());
 	cfg->Write(_T("/update_cache_always"), (bool)XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->GetValue());
 	cfg->Write(_T("/show_cache_progress"), (bool)XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->GetValue());
-
-    cfg->Write(_T("/colour"), XRCCTRL(*this, "btnColour", wxButton)->GetBackgroundColour());
 
 	int timerDelay = XRCCTRL(*this, "sliderDelay", wxSlider)->GetValue() * 100;
 	cfg->Write(_T("/cc_delay"), (int)timerDelay);
@@ -208,6 +202,7 @@ void CCOptionsDlg::OnApply()
 	cfg->Write(_T("/auto_select_one"), (bool)XRCCTRL(*this, "chkAutoSelectOne", wxCheckBox)->GetValue());
 	cfg->Write(_T("/auto_launch"), (bool)XRCCTRL(*this, "chkAutoLaunch", wxCheckBox)->GetValue());
 	cfg->Write(_T("/auto_launch"), (int)XRCCTRL(*this, "spnAutoLaunchChars", wxSpinCtrl)->GetValue());
+	cfg->Write(_T("/max_matches"), (int)XRCCTRL(*this, "spnMaxMatches", wxSpinCtrl)->GetValue());
 	m_Parser.Options().caseSensitive = XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->GetValue();
 	m_Parser.Options().useSmartSense = !XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->GetValue();
 	m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();

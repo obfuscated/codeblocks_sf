@@ -618,22 +618,12 @@
 			<Option link="0" />
 			<Option target="Class wizard" />
 		</Unit>
-		<Unit filename="plugins\codecompletion\cclist.cpp">
+		<Unit filename="plugins\codecompletion\ccdebuginfo.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Code-completion" />
 		</Unit>
-		<Unit filename="plugins\codecompletion\cclist.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins\codecompletion\cclistctrl.cpp">
+		<Unit filename="plugins\codecompletion\ccdebuginfo.h">
 			<Option compilerVar="CPP" />
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins\codecompletion\cclistctrl.h">
-			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Code-completion" />
@@ -643,16 +633,6 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins\codecompletion\ccoptionsdlg.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins\codecompletion\ccrenderer.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins\codecompletion\ccrenderer.h">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -4218,6 +4198,12 @@
 			<Option compilerVar="CPP" />
 			<Option target="AutoRevision" />
 		</Unit>
+		<Unit filename="wxsmith\CCDebugInfo.wxs">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="wxsmith\ScriptConsole.wxs">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
@@ -4226,6 +4212,7 @@
 		</Unit>
 		<Extensions>
 <wxsmith>
+	<dialog wxs_file="CCDebugInfo.wxs" class="CCDebugInfo" src_file="plugins\codecompletion\ccdebuginfo.cpp" header_file="plugins\codecompletion\ccdebuginfo.h" xrc_file="" edit_mode="Source" />
 	<panel wxs_file="ScriptConsole.wxs" class="ScriptConsole" src_file="src\scriptconsole.cpp" header_file="src\scriptconsole.h" xrc_file="" edit_mode="Source" />
 	<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
 </wxsmith>

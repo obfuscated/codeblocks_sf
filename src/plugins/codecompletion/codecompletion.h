@@ -8,8 +8,12 @@
 #include <sdk_events.h>
 #include "nativeparser.h"
 
+#include <wx/timer.h>
+#include <map>
+
 class cbEditor;
 class wxScintillaEvent;
+class wxChoice;
 
 class CodeCompletion : public cbCodeCompletionPlugin
 {
@@ -52,9 +56,12 @@ class CodeCompletion : public cbCodeCompletionPlugin
 		void OnUserListSelection(CodeBlocksEvent& event);
 		void OnReparseActiveEditor(CodeBlocksEvent& event);
 		void OnEditorActivated(CodeBlocksEvent& event);
+        void OnParserEnd(wxCommandEvent& event);
+		void OnValueTooltip(CodeBlocksEvent& event);
 		void DoCodeComplete();
 		void DoInsertCodeCompleteToken(wxString tokName);
         int DoClassMethodDeclImpl();
+
         int m_PageIndex;
         bool m_InitDone;
 

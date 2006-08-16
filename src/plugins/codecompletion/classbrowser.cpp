@@ -48,6 +48,8 @@
     #include "cbproject.h"
 #endif
 
+#include "ccdebuginfo.h"
+
 class myTextCtrl : public wxTextCtrl
 {
     public:
@@ -278,6 +280,13 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
 	ClassTreeData* ctd = (ClassTreeData*)tree->GetItemData(id);
     if (ctd)
     {
+        if (wxGetKeyState(WXK_CONTROL) && wxGetKeyState(WXK_SHIFT))
+        {
+            CCDebugInfo info(tree, m_pParser, ctd->GetToken());
+            info.ShowModal();
+            return;
+        }
+
         cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
         if (prj)
         {

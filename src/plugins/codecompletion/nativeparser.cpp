@@ -54,6 +54,7 @@ END_EVENT_TABLE()
 
 NativeParser::NativeParser()
 	: m_Parser(this),
+	m_CallTipCommas(0),
 	m_ClassBrowserIsFloating(true)
 {
 	//ctor
@@ -416,6 +417,11 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
 
 void NativeParser::RemoveParser(cbProject* project, bool useCache)
 {
+    if (Manager::Get()->GetProjectManager()->GetProjects()->GetCount() == 0)
+    {
+        m_Parser.Clear();
+        return;
+    }
     if (!project)
         return;
 	Manager::Get()->GetMessageManager()->DebugLog(_T("Removing project %s from parsed projects"), project->GetTitle().c_str());
@@ -551,7 +557,7 @@ void NativeParser::DisplayStatus(Parser* parser)
                     tim % 1000);
 }
 
-int NativeParser::MarkItemsByAI(bool reallyUseAI)
+int NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
@@ -589,8 +595,10 @@ int NativeParser::MarkItemsByAI(bool reallyUseAI)
 				}
 			}
 		}
+#ifdef DEBUG_CC_AI
 		else
 			Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find current function's namespace..."));
+#endif
 
 		// parse current code block
 		int blockStart = FindCurrentBlockStart(ed);
@@ -603,27 +611,28 @@ int NativeParser::MarkItemsByAI(bool reallyUseAI)
 				Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR parsing block:\n%s"), buffer.c_str());
 			sort = true;
 		}
+#ifdef DEBUG_CC_AI
 		else
 			Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find current block start..."));
+#endif
 
 //		if (sort)
 //			parser->SortAllTokens();
 
-		// clear previously marked tokens
-		TokensTree* tokens = parser->GetTokens();
-		for (unsigned int i = 0; i < tokens->size(); ++i)
-		{
-			Token* token = tokens->at(i);
-			if(!token)
-                continue;
-			token->m_Bool = !reallyUseAI;
-		}
+        result.clear();
 
         if (!reallyUseAI)
-            return tokens->size();
+        {
+            // all tokens
+            TokensTree* tokens = parser->GetTokens();
+            for (size_t i = 0; i < tokens->size(); ++i)
+                result.insert(i);
+        }
 
-        // AI will mark (m_Bool == true) every token we should include in list
-        return AI(ed, parser);
+#ifdef DEBUG_CC_AI
+        Manager::Get()->GetMessageManager()->DebugLog(_T("MarkItemsByAI"));
+#endif
+        return AI(result, ed, parser);
 	}
 	return 0;
 }
@@ -636,18 +645,16 @@ const wxString& NativeParser::GetCodeCompletionItems()
 	if (!parser)
 		return m_CCItems;
 
-	int count = MarkItemsByAI();
+    TokenIdxSet result;
+	int count = MarkItemsByAI(result);
 	if (count)
 	{
-		TokensTree* tokens = parser->GetTokens();
-		for (unsigned int i = 0; i < tokens->size(); ++i)
+	    TokensTree* tokens = parser->GetTokens();
+		for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
 		{
-			Token* token = tokens->at(i);
+			Token* token = tokens->at(*it);
 			if(!token)
                 continue;
-			if (!token->m_Bool)
-				continue; // not marked by AI
-			token->m_Bool = false; // reset flag for next run
 			if (!m_CCItems.IsEmpty())
 				 m_CCItems << _T(";");
 			m_CCItems << token->m_Name << token->m_Args;//" " << token->m_Filename << ":" << token->m_Line;
@@ -657,11 +664,74 @@ const wxString& NativeParser::GetCodeCompletionItems()
 	return m_CCItems;
 }
 
+// count commas in lineText (nesting parentheses)
+int NativeParser::CountCommas(const wxString& lineText, int start)
+{
+    int commas = 0;
+    int nest = 0;
+    while (true)
+    {
+        wxChar c = lineText.GetChar(start++);
+        if (c == '\0')
+            break;
+        else if (c == '(')
+            ++nest;
+        else if (c == ')')
+            --nest;
+        else if (c == ',' && nest == 0)
+            ++commas;
+    }
+    return commas;
+}
+
+// set start and end to the calltip highlight region, based on m_CallTipCommas (calculated in GetCallTips())
+void NativeParser::GetCallTipHighlight(const wxString& calltip, int* start, int* end)
+{
+    int pos = 1; // skip opening parenthesis
+    int nest = 0;
+    int commas = 0;
+    *start = 0;
+    *end = 0;
+    while (true)
+    {
+        wxChar c = calltip.GetChar(pos++);
+        if (c == '\0')
+            break;
+        else if (c == '(')
+            ++nest;
+        else if (c == ')')
+            --nest;
+        else if (c == ',' && nest == 0)
+        {
+            ++commas;
+            if (commas == m_CallTipCommas)
+            {
+                if (m_CallTipCommas == 0)
+                {
+                    *start = 1;
+                    *end = pos - 1;
+                    break;
+                }
+                else
+                    *start = pos;
+            }
+            else if (commas == m_CallTipCommas + 1)
+            {
+                *end = pos; // already incremented
+                break;
+            }
+        }
+    }
+    if (*end == 0)
+        *end = calltip.Length() - 1;
+}
+
 const wxArrayString& NativeParser::GetCallTips()
 {
     m_CallTips.Clear();
     Parser* parser = 0;
     int end = 0;
+    int commas = 0;
     wxString lineText = _T("");
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     wxCriticalSectionLocker* lock = 0;
@@ -686,42 +756,38 @@ const wxArrayString& NativeParser::GetCallTips()
             else if (lineText.GetChar(end) == '(')
             {
                 ++nest;
-                if (nest != 0)
+                if (nest > 0)
+                {
+                    // count commas (nesting parentheses again) to see how far we 're in arguments
+                    commas = CountCommas(lineText, end + 1);
                     break;
+                }
             }
         }
         if (!end)
             break;
         lineText.Remove(end);
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Sending \"%s\" for call-tip"), lineText.c_str());
-        // clear previously marked tokens
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("Sending \"%s\" for call-tip"), lineText.c_str());
+
         TokensTree* tokens = parser->GetTokens();
+        TokenIdxSet result;
         lock = new wxCriticalSectionLocker(s_MutexProtection);
 
-        for (unsigned int i = 0; i < tokens->size(); ++i)
-        {
-            Token* token = tokens->at(i);
-            if(token)
-                token->m_Bool = false;
-        }
-
-        // AI will mark (m_Bool == true) every token we should include in list
-        if (!AI(ed, parser, lineText, true, true))
+        if (!AI(result, ed, parser, lineText, true, true))
             break;
-        for (size_t i = 0; i < tokens->size(); ++i)
+		for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
-            Token* token = tokens->at(i);
+            Token* token = tokens->at(*it);
             if(!token)
                 continue;
-            if (token->m_Bool && token->m_Args != _T("()"))
-            {
+            if (token->m_Args != _T("()"))
                 m_CallTips.Add(token->m_Args);
-                token->m_Bool = false; // reset flag for next run
-            }
         }
     }while(false);
     if(lock)
         delete lock;
+    m_CallTipCommas = commas;
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("m_CallTipCommas=%d"), m_CallTipCommas);
 	return m_CallTips;
 }
 
@@ -754,6 +820,11 @@ unsigned int NativeParser::FindCCTokenStart(const wxString& line)
 
         if (repeat)
         {
+            // now we 're just before the "." or "->" or "::"
+            // skip any whitespace
+            while (x >= 0 && (line.GetChar(x) == ' ' || line.GetChar(x) == '\t'))
+                --x;
+
             // check for function/array/cast ()
             if (x >= 0 && (line.GetChar(x) == ')' || line.GetChar(x) == ']'))
             {
@@ -786,7 +857,7 @@ unsigned int NativeParser::FindCCTokenStart(const wxString& line)
 	return x;
 }
 
-wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startAt)
+wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startAt, bool& is_function)
 {
 	wxString res;
 	int nest = 0;
@@ -821,6 +892,8 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
 
     if (startAt < line.Length() && (line.GetChar(startAt) == '(' || line.GetChar(startAt) == '['))
     {
+        is_function = line.GetChar(startAt) == '(';
+
         ++nest;
         while (startAt < line.Length() - 1 && nest != 0)
         {
@@ -863,16 +936,20 @@ wxString NativeParser::GetCCToken(wxString& line, ParserTokenType& tokenType)
 	if (line.IsEmpty())
 		return wxEmptyString;
 
+    bool is_function = false;
 	unsigned int x = FindCCTokenStart(line);
-	wxString res = GetNextCCToken(line, x);
-	//Manager::Get()->GetMessageManager()->DebugLog("FindCCTokenStart returned %d \"%s\"", x, line.c_str());
-	//Manager::Get()->GetMessageManager()->DebugLog("GetNextCCToken returned %d \"%s\"", x, res.c_str());
+	wxString res = GetNextCCToken(line, x, is_function);
+//	Manager::Get()->GetMessageManager()->DebugLog(_T("FindCCTokenStart returned %d \"%s\""), x, line.c_str());
+//	Manager::Get()->GetMessageManager()->DebugLog(_T("GetNextCCToken returned %d \"%s\""), x, res.c_str());
 
 	if (x == line.Length())
 		line.Clear();
 	else
 	{
-		//Manager::Get()->GetMessageManager()->DebugLog("Left \"%s\"", line.Mid(x).c_str());
+        // skip whitespace
+        while (line.GetChar(x) == ' ' || line.GetChar(x) == '\t')
+            ++x;
+
 		if (line.GetChar(x) == '.')
 		{
 			tokenType = pttClass;
@@ -890,12 +967,17 @@ wxString NativeParser::GetCCToken(wxString& line, ParserTokenType& tokenType)
 		else
 			line.Clear();
 	}
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Left \"%s\""), line.c_str());
+
+	if (is_function)
+        tokenType = pttFunction;
 	return res;
 }
 
-int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText, bool noPartialMatch, bool caseSensitive)
+// Start an Artificial Intelligence (!) sequence to gather all the matching tokens..
+// The actual AI is in FindAIMatches() below...
+int NativeParser::AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, const wxString& lineText, bool noPartialMatch, bool caseSensitive)
 {
-	int count = 0;
     int pos = editor->GetControl()->GetCurrentPos();
 	m_EditorStartWord = editor->GetControl()->WordStartPosition(pos, true);
 	m_EditorEndWord = pos;//editor->GetControl()->WordEndPosition(pos, true);
@@ -907,8 +989,7 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
     TokensTree* tree = parser->GetTokens();
     if(!tree)
         return 0;
-	Token* parentToken = 0L;
-	ParserTokenType tokenType;
+//	Token* parentToken = 0L;
 	wxString actual;
 	int col;
 	wxString tabwidth;
@@ -927,214 +1008,335 @@ int NativeParser::AI(cbEditor* editor, Parser* parser, const wxString& lineText,
 		actual = lineText;
 		col = actual.Length() - 1;
 	}
+
+	static cbEditor* cached_editor = 0;
+	static int cached_editor_start_word = 0;
+	static wxString cached_search;
+	static size_t cached_results_count = 0;
+
+    // early-out opportunity
+    // if the user starts typing a token that in our last search had 0 results,
+    // and we see that he's continuing typing for that same token,
+    // don't even bother to search
+	if (cached_editor == editor &&
+        cached_editor_start_word == m_EditorStartWord &&
+        cached_results_count == 0 &&
+        actual.StartsWith(cached_search))
+    {
+#ifdef DEBUG_CC_AI
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Aborting search: last attempt returned 0 results"));
+#endif
+        return 0;
+    }
+
+#ifdef DEBUG_CC_AI
+	Manager::Get()->GetMessageManager()->DebugLog(_T("========================================================="));
 	Manager::Get()->GetMessageManager()->DebugLog(_T("Doing AI for '%s':"), actual.c_str());
+#endif
 
-	// find current function's namespace
-	wxString procName;
-	wxString scopeName;
-	FindFunctionNamespace(editor, &scopeName, &procName);
-	Token* scopeToken = 0L;
-	if (!scopeName.IsEmpty())
-		scopeToken = parser->FindTokenByName(scopeName, false, tkNamespace | tkClass);
+	// find current function's namespace so we can include local scope's tokens
+    TokenIdxSet scope_result;
+    wxString procName;
+    wxString scopeName;
+    FindFunctionNamespace(editor, &scopeName, &procName);
+    // add current scope
+    if (!scopeName.IsEmpty())
+        parser->GetTokens()->FindMatches(scopeName, scope_result, true, false);
 
-	while (1)
+    // always add scope -1 (i.e. global namespace)
+    scope_result.insert(-1);
+
+    // find all other matches
+    std::queue<ParserComponent> components;
+    BreakUpComponents(parser, actual, components);
+
+    // actually find all matches in selected namespaces
+    for (TokenIdxSet::iterator it = scope_result.begin(); it != scope_result.end(); ++it)
+    {
+#ifdef DEBUG_CC_AI
+        Token* scopeToken = tree->at(*it);
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Parent scope: %s'"), scopeToken ? scopeToken->m_Name.c_str() : _T("Global namespace"));
+#endif
+        FindAIMatches(parser, components, result, *it, noPartialMatch, caseSensitive);
+    }
+
+    cached_editor = editor;
+    cached_editor_start_word = m_EditorStartWord;
+    cached_search = actual;
+    cached_results_count = result.size();
+
+    return result.size();
+}
+
+// Breaks up the phrase for code-completion.
+// Suppose the user has invokde code-completion in this piece of code:
+//
+//   Ogre::Root::getSingleton().|
+//
+// This function will break this up into an std::queue (FIFO) containing
+// the following items (top is first-out):
+//
+// Ogre             [pttNamespace]
+// Root             [pttClass]
+// getSingleton     [pttFunction]
+// (empty space)    [pttSearchText]
+//
+// It also classifies each component as a pttClass, pttNamespace, pttFunction, pttSearchText
+int NativeParser::BreakUpComponents(Parser* parser, const wxString& actual, std::queue<ParserComponent>& components)
+{
+	ParserTokenType tokenType;
+	wxString tmp = actual;
+
+    // break up components of phrase
+	while (true)
 	{
-//		wxString bef = actual;
-		wxString tok = GetCCToken(actual, tokenType);
-//		wxString aft = actual;
-//		Manager::Get()->GetMessageManager()->DebugLog("before='%s', token='%s', after='%s', namespace=%d", bef.c_str(), tok.c_str(), aft.c_str(), tokenType);
-		Manager::Get()->GetMessageManager()->DebugLog(_T("tok='%s'"), tok.c_str());
-		if (tok.IsEmpty())
-			break;
-		if (actual.IsEmpty() && tokenType == pttSearchText)
-		{
-			searchtext = tok;
-			break;
-		}
+		wxString tok = GetCCToken(tmp, tokenType);
 
-		if (tokenType == pttNamespace)
-		{
-			//parentToken = parser->FindTokenByName(tok);
-			parentToken = parser->FindChildTokenByName(parentToken, tok, true);
-			if (!parentToken)
-				parentToken = parser->FindChildTokenByName(scopeToken, tok, true); // try local scope
-			Manager::Get()->GetMessageManager()->DebugLog(_T("Namespace '%s'"), parentToken ? parentToken->m_Name.c_str() : _("unknown"));
-			if (!parentToken)
-			{
-				Manager::Get()->GetMessageManager()->DebugLog(_T("Bailing out: namespace not found"));
-				return 0; // fail deliberately
-			}
-		}
-		else
-		{
-			Token* token = 0L;
-			// try #1 - special case
-			if (tok==_T("this")) // <-- special case
-			{
-                token = scopeToken;
-                parentToken = scopeToken;
-			}
-			// try #2 - function's class member
-			if (!token)
-			{
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Looking for %s under %s"), tok.c_str(), scopeToken ? scopeToken->m_Name.c_str() : _("Unknown"));
-				token = parser->FindChildTokenByName(scopeToken, tok, true); // try local scope
-            }
-            // try #3 - everything else
-            if (!token)
+        ParserComponent pc;
+        pc.component = tok;
+        pc.token_type = tokenType;
+        components.push(pc);
+
+		if (tokenType == pttSearchText)
+			break;
+    }
+
+    return 0;
+}
+
+// Here's the meat of code-completion :)
+// This function decides most of what gets included in the auto-completion list
+// presented to the user.
+// It's called recursively for each component of the std::queue argument.
+int NativeParser::FindAIMatches(Parser* parser,
+                                std::queue<ParserComponent> components,
+                                TokenIdxSet& result,
+                                int parentTokenIdx,
+                                bool noPartialMatch,
+                                bool caseSensitive,
+                                bool use_inheritance,
+                                short int kindMask)
+{
+    // TODO: handle special keyword 'this'
+
+#ifdef DEBUG_CC_AI
+    Manager::Get()->GetMessageManager()->DebugLog(_T("FindAIMatches - enter"));
+#endif
+    TokensTree* tree = parser->GetTokens();
+
+    // pop top component
+    ParserComponent parser_component = components.front();
+    components.pop();
+
+    // we 'll only add tokens in the result set if we get matches for the last token
+    bool is_last = components.empty();
+    wxString searchtext = parser_component.component;
+#ifdef DEBUG_CC_AI
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Search for '%s'"), searchtext.c_str());
+#endif
+
+    // get a set of matches for the current token
+    TokenIdxSet local_result;
+    GenerateResultSet(tree, searchtext, parentTokenIdx, local_result, caseSensitive || !is_last, is_last && !noPartialMatch, kindMask);
+//    tree->FindMatches(searchtext, local_result, caseSensitive || !is_last, is_last && !noPartialMatch);
+#ifdef DEBUG_CC_AI
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Looping %d results"), local_result.size());
+#endif
+
+    // loop all matches, and recurse
+    for (TokenIdxSet::iterator it = local_result.begin(); it != local_result.end(); it++)
+    {
+        int id = *it;
+        Token* token = tree->at(id);
+
+        // sanity check
+        if (!token)
+            continue;
+        // ignore operators
+        if (token->m_IsOperator)
+            continue;
+        // enums children (enumerators), are added by default
+        if (token->m_TokenKind == tkEnum)
+        {
+            // insert enum type
+            result.insert(id);
+            // insert enumerators
+            for (TokenIdxSet::iterator it2 = token->m_Children.begin(); it2 != token->m_Children.end(); it2++)
+                result.insert(*it2);
+            continue; // done with this token
+        }
+
+#ifdef DEBUG_CC_AI
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Match: '%s' (%d) : '%s'"), token->m_Name.c_str(), id, token->m_ActualType.c_str());
+#endif
+
+        // is the token a function or variable (i.e. is not a type)
+        if (!searchtext.IsEmpty() && parser_component.token_type != pttSearchText && !token->m_ActualType.IsEmpty())
+        {
+            // the token is not a type
+            // find its type's ID and use this as parent instead of (*it)
+            TokenIdxSet type_result;
+            std::queue<ParserComponent> type_components;
+            wxString actual = token->m_ActualType;
+            // TODO: ignore builtin types (void, int, etc)
+            BreakUpComponents(parser, actual, type_components);
+            // the parent to search under is a bit troubling, because of namespaces
+            // what we 'll do is search under current parent and traverse up the parentship
+            // until we find a result, or reach -1...
+#ifdef DEBUG_CC_AI
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Looking for type: '%s' (%d components)"), actual.c_str(), type_components.size());
+#endif
+            Token* parent = tree->at(parentTokenIdx);
+            do
             {
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Looking for %s under %s"), tok.c_str(), parentToken ? parentToken->m_Name.c_str() : _("Unknown"));
-                token = parser->FindChildTokenByName(parentToken, tok, true);
-            }
-            // NOTE: Now that #2 is checked before #3, class member supersedes similarly named
-            //       function argument (if any). But if we put #3 before #2, we 'll be checking
-            //       global tokens first, which is not what we want...
-
-			if (token)
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Token found %s, type '%s'"), token->m_Name.c_str(), token->m_ActualType.c_str());
-			if (token && !token->m_ActualType.IsEmpty())
-			{
-				Manager::Get()->GetMessageManager()->DebugLog(_T("actual type is %s"), token->m_ActualType.c_str());
-                wxString srch = token->m_ActualType;
-				int colon = srch.Find(_T("::"));
-				if (colon != -1)
-				{
-                    // type has namespace; break it down and search for it
-                    while (!srch.IsEmpty())
+                // types are searched as whole words, case-sensitive and only classes/namespaces
+                if (FindAIMatches(parser, type_components, type_result, parent ? parent->GetSelf() : -1, true, false, false, tkClass | tkNamespace) != 0)
+                    break;
+                if (!parent)
+                    break;
+                parent = tree->at(parent->m_ParentIndex);
+            } while (true);
+            // we got all possible types (hopefully should be just one)
+            // for now, just pick the first...
+            if (!type_result.empty())
+            {
+                // this is the first result
+                id = *(type_result.begin());
+                if (type_result.size() > 1)
+                {
+                    // if we have more than one result, recurse for all of them
+                    TokenIdxSet::iterator it = type_result.begin();
+                    ++it;
+                    while (it != type_result.end())
                     {
-                        parentToken = parser->FindChildTokenByName(parentToken, srch.Left(colon), true);
-                        if (!parentToken)
-                            break;
-                        Manager::Get()->GetMessageManager()->DebugLog(_T("searching under %s"), parentToken->DisplayName().c_str());
-                        srch.Remove(0, colon + 2); // plus two to compensate for "::"
-                        colon = srch.Find(_T("::"));
-                        if (colon == -1)
-                            colon = wxSTRING_MAXLEN;
+                        std::queue<ParserComponent> lcomp = components;
+                        FindAIMatches(parser, lcomp, result, *it, noPartialMatch, caseSensitive, kindMask);
+                        ++it;
                     }
-				}
-				else
-				{
-                    Manager::Get()->GetMessageManager()->DebugLog(_T("Locating %s"), token->m_ActualType.c_str());
-                    parentToken = parser->FindTokenByName(token->m_ActualType, true, tkClass | tkNamespace | tkEnum);
-                    if (!parentToken) // one more, global, try (might be under a namespace)
-                        parentToken = parser->FindTokenByName(token->m_ActualType, false, tkClass | tkNamespace | tkEnum);
                 }
-			}
-			Manager::Get()->GetMessageManager()->DebugLog(_T("Class '%s'"), parentToken ? parentToken->m_Name.c_str() : _("unknown"));
+#ifdef DEBUG_CC_AI
+                Manager::Get()->GetMessageManager()->DebugLog(_T("Type: '%s' (%d)"), tree->at(id)->m_Name.c_str(), id);
+                if (type_result.size() > 1)
+                    Manager::Get()->GetMessageManager()->DebugLog(_T("Multiple types matched for '%s': %d results"), token->m_ActualType.c_str(), type_result.size());
+#endif
+            }
+        }
 
-			if (!parentToken)
-			{
-				Manager::Get()->GetMessageManager()->DebugLog(_T("Bailing out: class not found"));
-				return 0; // fail deliberately
-			}
-		}
-		//Manager::Get()->GetMessageManager()->Log(mltDevDebug, "parentToken=0x%8.8x", parentToken);
-	}
+        // if no more components, add to result set
+        if (is_last)
+            result.insert(id);
+        // else recurse this function using id as a parent
+        else
+            FindAIMatches(parser, components, result, id, noPartialMatch, caseSensitive, kindMask);
+    }
+#ifdef DEBUG_CC_AI
+    Manager::Get()->GetMessageManager()->DebugLog(_T("FindAIMatches - leave"));
+#endif
+    return result.size();
+}
 
-    if (noPartialMatch && searchtext.IsEmpty())
+inline bool MatchText(const wxString& text, const wxString& search, bool caseSens, bool isPrefix)
+{
+    if (isPrefix && search.IsEmpty())
+        return true;
+    if (!isPrefix)
+        return text.CompareTo(search, caseSens ? wxString::exact : wxString::ignoreCase) == 0;
+    // isPrefix == true
+    if (caseSens)
+        return text.StartsWith(search);
+    return text.Upper().StartsWith(search.Upper());
+}
+
+inline bool MatchType(TokenKind kind, short int kindMask)
+{
+    return kind & kindMask;
+}
+
+size_t NativeParser::GenerateResultSet(TokensTree* tree,
+                                        const wxString& search,
+                                        int parentIdx,
+                                        TokenIdxSet& result,
+                                        bool caseSens,
+                                        bool isPrefix,
+                                        short int kindMask)
+{
+    if (!tree)
         return 0;
 
-	bool bCaseSensitive = parser->Options().caseSensitive || caseSensitive;
-	if (!bCaseSensitive)
-		searchtext.MakeLower();
-
-	Manager::Get()->GetMessageManager()->DebugLog(_T("Scope='%s'"), scopeToken ? scopeToken->m_Name.c_str() : _("Unknown"));
-    TokenIdxSet::iterator it,it2;
-    Token *token,*ctok;
-	if (parentToken)
-	{
-		Manager::Get()->GetMessageManager()->DebugLog(_T("Final parent: '%s' (count=%d, search=%s)"), parentToken->m_Name.c_str(), parentToken->m_Children.size(), searchtext.c_str());
-		for (it = parentToken->m_Children.begin();it != parentToken->m_Children.end();it++)
-		{
-            token = tree->at(*it);
-            if (!token)
+    Token* parent = tree->at(parentIdx);
+#ifdef DEBUG_CC_AI
+    Manager::Get()->GetMessageManager()->DebugLog(_T("GenerateResultSet: search '%s', parent='%s'"), search.c_str(), parent ? parent->m_Name.c_str() : _T("Global namespace"));
+#endif
+    if (parent)
+    {
+        // we got a parent; add its children
+        for (TokenIdxSet::iterator it = parent->m_Children.begin(); it != parent->m_Children.end(); ++it)
+        {
+            Token* token = tree->at(*it);
+            if (token && MatchType(token->m_TokenKind, kindMask) && MatchText(token->m_Name, search, caseSens, isPrefix))
+                result.insert(*it);
+            else if (token && token->m_TokenKind == tkEnum) // check enumerators for match too
+                GenerateResultSet(tree, search, *it, result, caseSens, isPrefix, kindMask);
+        }
+        // now go up the inheritance chain and add all ancestors' children too
+        for (TokenIdxSet::iterator it = parent->m_Ancestors.begin(); it != parent->m_Ancestors.end(); ++it)
+        {
+            Token* ancestor = tree->at(*it);
+            if (!ancestor)
                 continue;
-			if (token->m_IsOperator)
-				continue; // ignore operators
-
-			wxString name = token->m_Name;
-			if (!bCaseSensitive)
-				name.MakeLower();
-
-			bool textCondition;
-            if (noPartialMatch)
-                textCondition = searchtext.IsEmpty() ? false : name.Matches(searchtext);
-            else
+            for (TokenIdxSet::iterator it2 = ancestor->m_Children.begin(); it2 != ancestor->m_Children.end(); ++it2)
             {
-                if (lineText.IsEmpty())
-                    textCondition = searchtext.IsEmpty() ? true : name.StartsWith(searchtext);
-                else
-                    textCondition = searchtext.IsEmpty() ? true : name.Matches(searchtext);
+                Token* token = tree->at(*it2);
+                if (token && MatchType(token->m_TokenKind, kindMask) && MatchText(token->m_Name, search, caseSens, isPrefix))
+                    result.insert(*it2);
+                else if (token && token->m_TokenKind == tkEnum) // check enumerators for match too
+                    GenerateResultSet(tree, search, *it2, result, caseSens, isPrefix, kindMask);
             }
-
-            if (token->m_TokenKind == tkEnum)
+        }
+    }
+    else
+    {
+        // all global tokens
+        for (TokenList::iterator it = tree->m_Tokens.begin(); it != tree->m_Tokens.end(); ++it)
+        {
+            Token* token = *it;
+            if (token && token->m_ParentIndex == -1)
             {
-                // enums children (enumerators), are added by default
-
-                for (it2 = token->m_Children.begin();it2 != token->m_Children.end();it2++)
-                {
-                    ctok = tree->at(*it2);
-                    if (!ctok)
-                        continue;
-                    ctok->m_Bool = true;
-                    ++count;
-                }
+                if (MatchType(token->m_TokenKind, kindMask) && MatchText(token->m_Name, search, caseSens, isPrefix))
+                    result.insert(token->GetSelf());
+                else if (token && token->m_TokenKind == tkEnum) // check enumerators for match too
+                    GenerateResultSet(tree, search, token->GetSelf(), result, caseSens, isPrefix, kindMask);
             }
+        }
+    }
 
-			// scope-based member access :)
-			// display public members
-			// private/protected are displayed only if in same scope...
-			bool scopeCondition =
-						// we can access public members
-						token->m_Scope == tsPublic ||
-						// we can access private/protected members of current scope only
-						scopeToken == parentToken;
+    // done
+    return result.size();
+}
 
-			token->m_Bool = textCondition && scopeCondition;// &&
-//							token->m_TokenKind != tkConstructor && // ignore constructors
-//							token->m_TokenKind != tkDestructor; // and destructors too
-			if (token->m_Bool)
-				++count;
-		}
-		// look for inheritance
-		count += DoInheritanceAI(parentToken, scopeToken, searchtext, bCaseSensitive);
-	}
-	else
-	{
-		//Manager::Get()->GetMessageManager()->Log(mltDevDebug, "no token");
-		// just globals and current function's parent class members here...
-		Manager::Get()->GetMessageManager()->DebugLog(_T("Procedure of class '%s' (0x%8.8x), name='%s'"), scopeName.c_str(), scopeToken, procName.c_str());
+// Decides if the token belongs to its parent or one of its ancestors
+bool NativeParser::BelongsToParentOrItsAncestors(TokensTree* tree, Token* token, int parentIdx, bool use_inheritance)
+{
+    // sanity check
+    if (!tree || !token)
+        return false;
 
-		for (unsigned int i = 0; i < tree->size(); ++i)
-		{
-			Token* token = tree->at(i);
-			if(!token)
-                continue;
-			if (token->m_IsOperator)
-				continue; // ignore operators
+    if (token->m_ParentIndex == parentIdx)
+        return true; // direct child of parent (matches globals too)
 
-			wxString name = token->m_Name;
-			if (!bCaseSensitive)
-				name.MakeLower();
+    if (token->m_ParentIndex == -1)
+        return false; // global
 
-			bool textCondition;
-			if (!noPartialMatch && lineText.IsEmpty())
-				textCondition = searchtext.IsEmpty() ? true : name.StartsWith(searchtext);
-			else
-				textCondition = searchtext.IsEmpty() ? false : name.Matches(searchtext);
+    if (!use_inheritance)
+        return false;
 
-			token->m_Bool = textCondition &&
-							(!token->GetParentToken() || // globals
-							token->m_TokenKind == tkEnumerator || // enumerators
-							token->GetParentToken() == scopeToken || // child of procToken
-							!lineText.IsEmpty()); // locals too
-			if (token->m_Bool)
-				++count;
-		}
-		// look for inheritance
-		count += DoInheritanceAI(scopeToken, scopeToken, searchtext, bCaseSensitive);
-	}
-	return count;
+    // no parent token? no ancestors...
+    Token* parentToken = tree->at(parentIdx);
+    if (!parentToken)
+        return false;
+
+    // now search up the ancestors list
+    return parentToken->m_Ancestors.find(token->m_ParentIndex) != parentToken->m_Ancestors.end();
 }
 
 int NativeParser::DoInheritanceAI(Token* parentToken, Token* scopeToken, const wxString& searchText, bool caseSensitive)
@@ -1281,7 +1483,7 @@ bool NativeParser::FindFunctionNamespace(cbEditor* editor, wxString* nameSpace, 
 			if (done || ch == '}' || ch == ';')
 				break;
 		}
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Pos=%d"), posOf);
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("Pos=%d"), posOf);
 		if (done)
 		{
 			if (procName)
@@ -1296,12 +1498,16 @@ bool NativeParser::FindFunctionNamespace(cbEditor* editor, wxString* nameSpace, 
 				int scopeStart = editor->GetControl()->WordStartPosition(posOf, true);
 				*nameSpace = editor->GetControl()->GetTextRange(scopeStart, posOf + 1);
 			}
-            Manager::Get()->GetMessageManager()->DebugLog(_T("NS: '%s', PROC: '%s'"), nameSpace ? nameSpace->c_str() : _T(""), procName ? procName->c_str() : _T(""));
+#ifdef DEBUG_CC_AI
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Namespace: '%s', function: '%s'"), nameSpace ? nameSpace->c_str() : _T(""), procName ? procName->c_str() : _T(""));
+#endif
 			return true;
 		}
 	}
+#ifdef DEBUG_CC_AI
 	else
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Can't find block start."));
+        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("Can't find block start."));
+#endif
 	return false;
 }
 
@@ -1322,9 +1528,12 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 	Parser* parser = (Parser*)event.GetClientData();
 	if (parser)// && parser->Done())
 	{
+        parser->LinkInheritance(false);
         DisplayStatus(parser);
         UpdateClassBrowser();
 	}
+
+	event.Skip();
 }
 
 void NativeParser::OnEditorActivated(EditorBase* editor)

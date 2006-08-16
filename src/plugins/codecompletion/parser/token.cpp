@@ -114,10 +114,11 @@ const wxString Token::GetParentName()
 
 const wxString Token::DisplayName()
 {
-    wxString result(_T(""));
-    wxString parentname = GetParentName();
-    if (!parentname.IsEmpty())
-        result << parentname << _T("::");
+//    wxString result(_T(""));
+//    wxString parentname = GetParentName();
+//    if (!parentname.IsEmpty())
+//        result << parentname << _T("::");
+    wxString result = GetNamespace();
     result << m_Name << m_Args;
     if (!m_Type.IsEmpty())
         result << _T(" : ") << m_Type;
@@ -476,6 +477,31 @@ size_t TokensTree::FindMatches(const wxString& s,TokenIdxSet& result,bool caseSe
     return result.size();
 }
 
+size_t TokensTree::FindTokensInFile(const wxString& file, TokenIdxSet& result, short int kindMask)
+{
+    result.clear();
+
+    // get file idx
+    if (!m_FilenamesMap.HasItem(file))
+        return 0;
+    int idx = m_FilenamesMap.GetItemNo(file);
+
+    // now get the tokens set matching this file idx
+    TokenFilesMap::iterator itf = m_FilesMap.find(idx);
+    if (itf == m_FilesMap.end())
+        return 0;
+    TokenIdxSet& tokens = itf->second;
+
+    // loop all results and add to final result set after filtering on token kind
+    for (TokenIdxSet::iterator it = tokens.begin(); it != tokens.end(); ++it)
+    {
+        Token* token = at(*it);
+        if (kindMask & token->m_TokenKind)
+            result.insert(*it);
+    }
+    return result.size();
+}
+
 int TokensTree::AddToken(Token* newToken,int forceidx)
 {
     if(!newToken)
@@ -656,7 +682,30 @@ void TokensTree::RemoveFile(int index)
         Token* the_token = at(idx);
         if(!the_token)
             continue;
-        RemoveToken(the_token);
+
+        // do not remove token lightly...
+        // only if both its decl filename and impl filename are either empty or match this file
+        // if one of those filenames do not match the above criteria
+        // just clear the relevant info, leaving the token where it is...
+
+        bool match1 = the_token->m_File == 0 || (int)the_token->m_File == index;
+        bool match2 = the_token->m_ImplFile == 0 || (int)the_token->m_ImplFile == index;
+        if (match1 && match2)
+            RemoveToken(the_token); // safe to remove the token
+        else
+        {
+            // do not remove token, just clear the matching info
+            if (match1)
+            {
+                the_token->m_File = 0;
+                the_token->m_Line = 0;
+            }
+            else if (match2)
+            {
+                the_token->m_ImplFile = 0;
+                the_token->m_ImplLine = 0;
+            }
+        }
     }
     the_list.clear();
 }
@@ -674,7 +723,9 @@ void TokensTree::RecalcFreeList()
 
 void TokensTree::RecalcData()
 {
-    //Manager::Get()->GetMessageManager()->DebugLog("Linking inheritance...");
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Calculating full inheritance tree"));
+
+    // first loop to convert ancestors string to token indices for each token
     for (size_t i = 0; i < size(); ++i)
     {
         Token* token = at(i);
@@ -686,10 +737,11 @@ void TokensTree::RecalcData()
         if (token->m_AncestorsString.IsEmpty())
             continue;
         // only local symbols might change inheritance
-        if (!token->m_IsLocal)
-            continue;
+//        if (!token->m_IsLocal)
+//            continue;
 
         token->m_Ancestors.clear();
+//        Manager::Get()->GetMessageManager()->DebugLog(_T(" : '%s'"), token->m_Name.c_str());
 
         //Manager::Get()->GetMessageManager()->DebugLog("Token %s, Ancestors %s", token->m_Name.c_str(), token->m_AncestorsString.c_str());
         wxStringTokenizer tkz(token->m_AncestorsString, _T(","));
@@ -698,21 +750,123 @@ void TokensTree::RecalcData()
             wxString ancestor = tkz.GetNextToken();
             if (ancestor.IsEmpty() || ancestor == token->m_Name)
                 continue;
-            //Manager::Get()->GetMessageManager()->DebugLog("Ancestor %s", ancestor.c_str());
-            int ancestorIdx = TokenExists(ancestor, -1, tkClass);
-            Token* ancestorToken = at(ancestorIdx);
-            //Manager::Get()->GetMessageManager()->DebugLog(ancestorToken ? "Found" : "not Found");
-            if (ancestorToken)
+//            Manager::Get()->GetMessageManager()->DebugLog(_T("Ancestor %s"), ancestor.c_str());
+            // ancestors might contain namespaces, e.g. NS::Ancestor
+            if (ancestor.Find(_T("::")) != wxNOT_FOUND)
             {
-                //Manager::Get()->GetMessageManager()->DebugLog("Adding ancestor %s to %s", ancestorToken->m_Name.c_str(), token->m_Name.c_str());
-                token->m_Ancestors.insert(ancestorIdx);
-                ancestorToken->m_Descendants.insert(i);
+                Token* ancestorToken = 0;
+                wxStringTokenizer anctkz(ancestor, _T("::"));
+                while (anctkz.HasMoreTokens())
+                {
+                    wxString ns = anctkz.GetNextToken();
+                    if (!ns.IsEmpty())
+                    {
+                        int ancestorIdx = TokenExists(ns, ancestorToken ? ancestorToken->GetSelf() : -1, tkNamespace | tkClass);
+                        ancestorToken = at(ancestorIdx);
+//                        ancestorToken = token->HasChildToken(ns, tkNamespace | tkClass);
+                        if (!ancestorToken) // unresolved
+                            break;
+                    }
+                }
+                if (ancestorToken)
+                {
+//                    Manager::Get()->GetMessageManager()->DebugLog(_T("Resolved to %s"), ancestorToken->m_Name.c_str());
+                    token->m_Ancestors.insert(ancestorToken->GetSelf());
+                    ancestorToken->m_Descendants.insert(i);
+//                    Manager::Get()->GetMessageManager()->DebugLog(_T("   + '%s'"), ancestorToken->m_Name.c_str());
+                }
+//                else
+//                    Manager::Get()->GetMessageManager()->DebugLog(_T("   ! '%s' (unresolved)"), ancestor.c_str());
+            }
+            else // no namespaces in ancestor
+            {
+                // accept multiple matches for inheritance
+                TokenIdxSet result;
+                FindMatches(ancestor, result, true, false);
+                for (TokenIdxSet::iterator it = result.begin(); it != result.end(); it++)
+                {
+                    Token* ancestorToken = at(*it);
+                    if (ancestorToken && ancestorToken->m_TokenKind == tkClass) // only classes take part in inheritance
+                    {
+                        token->m_Ancestors.insert(*it);
+                        ancestorToken->m_Descendants.insert(i);
+//                        Manager::Get()->GetMessageManager()->DebugLog(_T("   + '%s'"), ancestorToken->m_Name.c_str());
+                    }
+                }
+//                if (result.empty())
+//                    Manager::Get()->GetMessageManager()->DebugLog(_T("   ! '%s' (unresolved)"), ancestor.c_str());
             }
         }
+
         if (!token->m_IsLocal) // global symbols are linked once
         {
             //Manager::Get()->GetMessageManager()->DebugLog("Removing ancestor string from %s", token->m_Name.c_str(), token->m_Name.c_str());
             token->m_AncestorsString.Clear();
+        }
+    }
+
+    // second loop to calculate full inheritance for each token
+    for (size_t i = 0; i < size(); ++i)
+    {
+        Token* token = at(i);
+        if (!token)
+            continue;
+
+        if (token->m_TokenKind != tkClass)
+            continue;
+
+        // recalc
+        TokenIdxSet result;
+        for (TokenIdxSet::iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); it++)
+            RecalcFullInheritance(*it, result);
+
+        // now, add the resulting set to ancestors set
+        for (TokenIdxSet::iterator it = result.begin(); it != result.end(); it++)
+        {
+            Token* ancestor = at(*it);
+            if (ancestor)
+            {
+                token->m_Ancestors.insert(*it);
+                ancestor->m_Descendants.insert(i);
+            }
+        }
+
+//        // debug loop
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("Ancestors for %s:"),token->m_Name.c_str());
+//        for (TokenIdxSet::iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); it++)
+//            Manager::Get()->GetMessageManager()->DebugLog(_T(" + %s"), at(*it)->m_Name.c_str());
+    }
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Full inheritance calculated."));
+}
+
+// caches the inheritance info for each token (recursive function)
+void TokensTree::RecalcFullInheritance(int parentIdx, TokenIdxSet& result)
+{
+    // no parent token? no ancestors...
+    if (parentIdx == -1)
+        return;
+
+    // no parent token? no ancestors...
+    Token* ancestor = at(parentIdx);
+    if (!ancestor)
+        return;
+
+    // only classes take part in inheritance
+    if (ancestor->m_TokenKind != tkClass)
+        return;
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Anc: '%s'"), ancestor->m_Name.c_str());
+
+    // for all its ancestors
+    for (TokenIdxSet::iterator it = ancestor->m_Ancestors.begin(); it != ancestor->m_Ancestors.end(); it++)
+    {
+        if (*it != -1 && // not global scope
+            *it != parentIdx && // not the same token (avoid infinite loop)
+            result.find(*it) == result.end()) // not already in the set (avoid infinite loop)
+        {
+            // add it to the set
+            result.insert(*it);
+            // and recurse for its ancestors
+            RecalcFullInheritance(*it, result);
         }
     }
 }

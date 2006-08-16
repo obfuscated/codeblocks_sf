@@ -7,8 +7,6 @@
 #include "nativeparser.h"
 #include "parser/parser.h"
 
-#define USE_CUST_CTRL false
-
 class CCOptionsDlg : public cbConfigurationPanel
 {
 	public:
