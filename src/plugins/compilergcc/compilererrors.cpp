@@ -23,9 +23,8 @@
 * $Id$
 * $HeadURL$
 */
-#ifdef CB_PRECOMP
 #include "sdk.h"
-#else
+#ifndef CB_PRECOMP
 #include "cbeditor.h"
 #include "cbproject.h"
 #include "editormanager.h"

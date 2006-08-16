@@ -6,9 +6,8 @@
  * License:   wxWindows License
  **************************************************************/
 
-#ifdef CB_PRECOMP
 #include "sdk.h"
-#else
+#ifndef CB_PRECOMP
 #include <wx/intl.h>
 #include <wx/string.h>
 #include "cbeditor.h"
@@ -21,6 +20,7 @@
 #include <wx/dataobj.h>
 #include "copystrings.h"
 #include <map>
+#include <iterator>
 
 using namespace std;
 
@@ -67,15 +67,13 @@ void copystrings::OnRelease(bool appShutDown)
 }
 
 void GetStrings(const wxString& buffer,wxString& result)
-	{
+{
     typedef map<wxString, bool, less<wxString> > mymaptype;
-    size_t i = 0;
-    i = 0;
     int mode = 0;
     mymaptype mymap;
     wxString curstr;
     curstr.Clear();
-    for(i = 0; i < buffer.Length(); ++i)
+    for(size_t i = 0; i < buffer.Length(); ++i)
     {
         wxChar ch = buffer[i];
         switch(mode)
@@ -146,10 +144,9 @@ void GetStrings(const wxString& buffer,wxString& result)
                     mode = 8;
             break;
         }
-    }
+    } // end for : idx : i
     result.Clear();
-    mymaptype::iterator it;
-    for(it = mymap.begin();it != mymap.end(); ++it)
+    for(mymaptype::iterator it = mymap.begin();it != mymap.end(); ++it)
     {
         result << it->first;
 #ifdef __WXMSW__
@@ -159,7 +156,7 @@ void GetStrings(const wxString& buffer,wxString& result)
 #endif
     }
     return;
-}
+} // end of GetStrings
 
 int copystrings::Execute()
 {
@@ -171,8 +168,7 @@ int copystrings::Execute()
 	cbEditor* myeditor = man->GetBuiltinActiveEditor();
 	if(!myeditor)
         return -1;
-	cbStyledTextCtrl* ctrl = myeditor->GetControl();
-	if(ctrl)
+	if(cbStyledTextCtrl* ctrl = myeditor->GetControl())
 	{
 	    wxString result(_T(""));
 	    wxString input(_T(""));

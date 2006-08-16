@@ -8,9 +8,8 @@
  * License:   GPL
  **************************************************************/
 
-#ifdef CB_PRECOMP
     #include "sdk.h"
-#else
+#ifndef CB_PRECOMP
     #include <wx/checkbox.h>
     #include <wx/event.h>
     #include <wx/spinctrl.h>

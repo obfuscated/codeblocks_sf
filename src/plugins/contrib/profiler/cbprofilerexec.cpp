@@ -8,9 +8,8 @@
  * License:   GPL
  **************************************************************/
 
-#ifdef CB_PRECOMP
     #include "sdk.h"
-#else
+#ifndef CB_PRECOMP
     #include <wx/event.h>
     #include <wx/font.h>
     #include <wx/intl.h>

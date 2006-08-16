@@ -10,9 +10,8 @@
 * $HeadURL$
 */
 
-#ifdef CB_PRECOMP
 #include "sdk_precomp.h"
-#else
+#ifndef CB_PRECOMP
 #include <wx/button.h>
 #include <wx/checkbox.h>
 #include <wx/intl.h>

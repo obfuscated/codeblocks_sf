@@ -23,9 +23,8 @@
 * $Id$
 * $HeadURL$
 */
-#ifdef CB_PRECOMP
 #include "sdk.h"
-#else
+#ifndef CB_PRECOMP
 #include <wx/intl.h>
 #include <wx/stattext.h>
 #include <wx/string.h>

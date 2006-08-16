@@ -23,9 +23,8 @@
 * $Id$
 * $HeadURL$
 */
-#ifdef CB_PRECOMP
 #include "sdk.h"
-#else
+#ifndef CB_PRECOMP
 #ifdef __WXMAC__
 #include <wx/font.h>
 #endif //__WXMAC__

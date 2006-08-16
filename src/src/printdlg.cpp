@@ -9,9 +9,8 @@
 * $Id$
 * $HeadURL$
 */
-#ifdef CB_PRECOMP
 #include "sdk.h"
-#else
+#ifndef CB_PRECOMP
 #include <wx/intl.h>
 #include <wx/checkbox.h>
 #include <wx/radiobox.h>

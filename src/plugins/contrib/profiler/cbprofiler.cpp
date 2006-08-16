@@ -8,9 +8,8 @@
  * License:   GPL
  **************************************************************/
 
-#ifdef CB_PRECOMP
     #include "sdk.h"
-#else
+#ifndef CB_PRECOMP
     #include <wx/datetime.h>
     #include <wx/filename.h>
     #include <wx/fs_zip.h>
