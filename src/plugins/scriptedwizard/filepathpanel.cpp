@@ -103,7 +103,7 @@ FilePathPanel::FilePathPanel(wxWindow* parent,wxWindowID id) :
             if (bt)
                 clbTargets->Append(bt->GetTitle());
         }
-        clbTargets->SetSelection(prj->GetActiveBuildTarget());
+        clbTargets->SetSelection(clbTargets->FindString(prj->GetActiveBuildTarget()));
         chkAddToProject->SetValue(true);
         ToggleVisibility(true);
     }

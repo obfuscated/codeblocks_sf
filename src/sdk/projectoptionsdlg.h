@@ -31,6 +31,7 @@ class ProjectOptionsDlg : public wxDialog
 		void OnRemoveBuildTargetClick(wxCommandEvent& event);
 		void OnBrowseOutputFilenameClick(wxCommandEvent& event);
 		void OnBrowseDirClick(wxCommandEvent& event);
+		void OnVirtualTargets(wxCommandEvent& event);
 		void OnEditDepsClick(wxCommandEvent& event);
 		void OnExportTargetClick(wxCommandEvent& event);
 		void OnBuildOrderClick(wxCommandEvent& event);
@@ -54,6 +55,7 @@ class ProjectOptionsDlg : public wxDialog
         void DoBeforeTargetChange(bool force = false);
         bool DoCheckScripts(CompileTargetBase* base);
         bool IsScriptValid(const wxString& script);
+        bool ValidateTargetName(const wxString& name);
         cbProject* m_Project;
         int m_Current_Sel; // current target selection (when selection changes it is the old selection - handy, eh?)
     	cbCompilerPlugin* m_pCompiler;

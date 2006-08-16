@@ -466,6 +466,11 @@
 				<Variable name="WX_CFG" value="" />
 			</Environment>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="AutoRevision;ConsoleRunner;tinyXML;Squirrel;Squirrel std lib;SqPlus;scintilla;wxPropertyGrid;wxFlatNotebook;sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;Autosave plugin;XP look &amp; feel;" />
+			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;Autosave plugin;XP look &amp; feel;" />
+			<Add alias="Third-party libs" targets="AutoRevision;ConsoleRunner;tinyXML;Squirrel;Squirrel std lib;SqPlus;scintilla;wxPropertyGrid;wxFlatNotebook;wxAUI;Compiler depslib;" />
+		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-g" />
@@ -3451,6 +3456,16 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk\virtualbuildtargetsdlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\virtualbuildtargetsdlg.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk\workspaceloader.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />
@@ -4210,12 +4225,19 @@
 			<Option link="0" />
 			<Option target="src" />
 		</Unit>
+		<Unit filename="wxsmith\VirtualBuildTargetsDlg.wxs">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Extensions>
-<wxsmith>
-	<dialog wxs_file="CCDebugInfo.wxs" class="CCDebugInfo" src_file="plugins\codecompletion\ccdebuginfo.cpp" header_file="plugins\codecompletion\ccdebuginfo.h" xrc_file="" edit_mode="Source" />
-	<panel wxs_file="ScriptConsole.wxs" class="ScriptConsole" src_file="src\scriptconsole.cpp" header_file="src\scriptconsole.h" xrc_file="" edit_mode="Source" />
-	<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
-</wxsmith>
+			<wxsmith>
+				<dialog wxs_file="CCDebugInfo.wxs" class="CCDebugInfo" src_file="plugins\codecompletion\ccdebuginfo.cpp" header_file="plugins\codecompletion\ccdebuginfo.h" xrc_file="" edit_mode="Source" />
+				<panel wxs_file="ScriptConsole.wxs" class="ScriptConsole" src_file="src\scriptconsole.cpp" header_file="src\scriptconsole.h" xrc_file="" edit_mode="Source" />
+				<dialog wxs_file="VirtualBuildTargetsDlg.wxs" class="VirtualBuildTargetsDlg" src_file="sdk\virtualbuildtargetsdlg.cpp" header_file="sdk\virtualbuildtargetsdlg.h" xrc_file="" edit_mode="Source" />
+				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
+			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

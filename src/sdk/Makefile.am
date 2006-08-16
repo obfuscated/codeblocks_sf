@@ -116,6 +116,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						templatemanager.cpp \
 						toolsmanager.cpp \
 						uservarmanager.cpp \
+						virtualbuildtargetsdlg.cpp \
 						workspaceloader.cpp \
 						xtra_classes.cpp \
 						xtra_res.cpp
@@ -219,6 +220,7 @@ ALLHEADERS = annoyingdialog.h \
 				templatemanager.h \
 				toolsmanager.h \
 				uservarmanager.h \
+				virtualbuildtargetsdlg.h \
 				workspaceloader.h \
 				xtra_classes.h \
 				xtra_res.h

@@ -796,21 +796,23 @@ int DebuggerGDB::Debug()
     Compiler* actualCompiler = 0;
     if (m_PidToAttach == 0)
     {
-        int tgtIdx = project->GetActiveBuildTarget();
+        wxString tgt = project->GetActiveBuildTarget();
         msgMan->SwitchTo(m_PageIndex);
         msgMan->AppendLog(m_PageIndex, _("Selecting target: "));
-        if (tgtIdx == -1)
+        if (!project->BuildTargetValid(tgt, false))
         {
-            tgtIdx = project->SelectTarget(tgtIdx);
+            int tgtIdx = project->SelectTarget(tgtIdx);
             if (tgtIdx == -1)
             {
                 msgMan->Log(m_PageIndex, _("canceled"));
                 return 3;
             }
+            target = project->GetBuildTarget(tgtIdx);
         }
+        else
+            target = project->GetBuildTarget(tgt);
 
         // make sure it's not a commands-only target
-        target = project->GetBuildTarget(tgtIdx);
         if (target->GetTargetType() == ttCommandsOnly)
         {
             cbMessageBox(_("The selected target is only running pre/post build step commands\n"

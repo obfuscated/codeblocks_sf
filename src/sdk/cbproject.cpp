@@ -65,14 +65,9 @@
 
 // class constructor
 cbProject::cbProject(const wxString& filename)
-    : m_ActiveTarget(-1),
-    m_LastSavedActiveTarget(-1),
-    m_DefaultExecuteTarget(-1),
-    m_Makefile(_T("")),
-    m_CustomMakefile(false),
+    : m_CustomMakefile(false),
     m_Loaded(false),
     m_CurrentlyLoading(false),
-    m_BasePath(_T("")),
     m_PCHMode(pchSourceFile),
     m_CurrentlyCompilingTarget(0)
 {
@@ -175,10 +170,6 @@ bool cbProject::GetModified()
     // check base options
     if (CompileOptionsBase::GetModified())
         return true;
-
-    // check active target
-//    if (m_LastSavedActiveTarget != m_ActiveTarget)
-//        return true;
 
     // check targets
     for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
@@ -1112,6 +1103,13 @@ ProjectBuildTarget* cbProject::AddBuildTarget(const wxString& targetName)
     target->SetDepsOutput(_T(".deps"));
     m_Targets.Add(target);
 
+    // remove any virtual targets with the same name
+    if (HasVirtualBuildTarget(targetName))
+    {
+        RemoveVirtualBuildTarget(targetName);
+        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("Deleted existing virtual target '%s' because real target was added with the same name"), targetName.c_str());
+    }
+
     SetModified(true);
 
     NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
@@ -1232,7 +1230,7 @@ bool cbProject::RemoveBuildTarget(const wxString& targetName)
     return RemoveBuildTarget(IndexOfBuildTargetName(targetName));
 }
 
-int cbProject::IndexOfBuildTargetName(const wxString& targetName)
+int cbProject::IndexOfBuildTargetName(const wxString& targetName) const
 {
     for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
     {
@@ -1243,48 +1241,56 @@ int cbProject::IndexOfBuildTargetName(const wxString& targetName)
     return -1;
 }
 
-bool cbProject::SetActiveBuildTarget(int index)
+bool cbProject::BuildTargetValid(const wxString& name, bool virtuals_too) const
 {
-    if (index < -1 || index >= GetBuildTargetsCount())
-        return false;
-    if (index == m_ActiveTarget)
+    if (virtuals_too && HasVirtualBuildTarget(name))
         return true;
-    m_ActiveTarget = index;
-    return true;
+    else if (IndexOfBuildTargetName(name) != -1)
+        return true;
+    return false;
 }
 
-int cbProject::GetActiveBuildTarget()
+wxString cbProject::GetFirstValidBuildTargetName(bool virtuals_too) const
 {
-    if (m_ActiveTarget < -1 || m_ActiveTarget >= (int)m_Targets.GetCount())
-        m_ActiveTarget = -1;
+    if (virtuals_too && !m_VirtualTargets.empty())
+        return m_VirtualTargets.begin()->first;
+    else if (m_Targets.GetCount() && m_Targets[0])
+        return m_Targets[0]->GetTitle();
+
+    return wxEmptyString;
+}
+
+bool cbProject::SetActiveBuildTarget(const wxString& name)
+{
+    if (name == m_ActiveTarget)
+        return true;
+    m_ActiveTarget = name;
+
+    if (BuildTargetValid(name))
+        return true;
+
+    // no target (virtual or real) by that name
+
+    m_ActiveTarget = GetFirstValidBuildTargetName();
+    return false;
+}
+
+const wxString& cbProject::GetActiveBuildTarget() const
+{
     return m_ActiveTarget;
 }
 
-void cbProject::SetDefaultExecuteTargetIndex(int index)
+void cbProject::SetDefaultExecuteTarget(const wxString& name)
 {
-    if (m_DefaultExecuteTarget != index)
-    {
-        m_DefaultExecuteTarget = index;
-        SetModified(true);
-    }
+    if (name == m_DefaultExecuteTarget)
+        return;
+
+    m_DefaultExecuteTarget = name;
+    SetModified(true);
 }
 
-int cbProject::GetDefaultExecuteTargetIndex()
+const wxString& cbProject::GetDefaultExecuteTarget() const
 {
-    if (m_DefaultExecuteTarget == -1)
-    {
-        // first-time: find the first target that provides executable...
-        for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
-        {
-            ProjectBuildTarget* target = m_Targets[i];
-            if (target->GetTargetType() == ttExecutable ||
-                target->GetTargetType() == ttConsoleOnly)
-            {
-                m_DefaultExecuteTarget = i;
-                break;
-            }
-        }
-    }
     return m_DefaultExecuteTarget;
 }
 
@@ -1328,6 +1334,120 @@ void cbProject::ReOrderTargets(const wxArrayString& nameOrder)
 void cbProject::SetCurrentlyCompilingTarget(ProjectBuildTarget* bt)
 {
     m_CurrentlyCompilingTarget = bt;
+}
+
+bool cbProject::DefineVirtualBuildTarget(const wxString& alias, const wxArrayString& targets)
+{
+    if (targets.GetCount() == 0)
+    {
+        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("Can't define virtual build target '%s': Group of build targets is empty!"), alias.c_str());
+        return false;
+    }
+
+    ProjectBuildTarget* existing = GetBuildTarget(alias);
+    if (existing)
+    {
+        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("Can't define virtual build target '%s': Real build target exists with that name!"), alias.c_str());
+        return false;
+    }
+
+    m_VirtualTargets[alias] = targets;
+    SetModified(true);
+    NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
+    return true;
+}
+
+bool cbProject::HasVirtualBuildTarget(const wxString& alias) const
+{
+    return m_VirtualTargets.find(alias) != m_VirtualTargets.end();
+}
+
+bool cbProject::RemoveVirtualBuildTarget(const wxString& alias)
+{
+    VirtualBuildTargetsMap::iterator it = m_VirtualTargets.find(alias);
+    if (it == m_VirtualTargets.end())
+        return false;
+
+    m_VirtualTargets.erase(it);
+    SetModified(true);
+    NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
+    return true;
+}
+
+wxArrayString cbProject::GetVirtualBuildTargets() const
+{
+    wxArrayString result;
+    for (VirtualBuildTargetsMap::const_iterator it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
+        result.Add(it->first);
+    return result;
+}
+
+const wxArrayString& cbProject::GetVirtualBuildTargetGroup(const wxString& alias) const
+{
+    static wxArrayString resultIfError;
+
+    VirtualBuildTargetsMap::const_iterator it = m_VirtualTargets.find(alias);
+    if (it == m_VirtualTargets.end())
+        return resultIfError;
+    return it->second;
+}
+
+wxArrayString cbProject::GetExpandedVirtualBuildTargetGroup(const wxString& alias) const
+{
+    wxArrayString result;
+
+    VirtualBuildTargetsMap::const_iterator it = m_VirtualTargets.find(alias);
+    if (it == m_VirtualTargets.end())
+        return result;
+
+    ExpandVirtualBuildTargetGroup(alias, result);
+    return result;
+}
+
+bool cbProject::CanAddToVirtualBuildTarget(const wxString& alias, const wxString& target)
+{
+    // virtual not there?
+    if (!HasVirtualBuildTarget(alias))
+        return false;
+
+    // real targets can be added safely (as long as they 're unique)
+    if (!HasVirtualBuildTarget(target))
+        return true;
+
+    // virtual targets are checked in two ways:
+    // 1) it is checked if it contains alias
+    // 2) all its virtual targets are recursively checked if they contain alias
+    const wxArrayString& group = GetVirtualBuildTargetGroup(target);
+    if (group.Index(alias) != wxNOT_FOUND)
+        return false;
+
+    for (size_t i = 0; i < group.GetCount(); ++i)
+    {
+        // only virtuals
+        if (HasVirtualBuildTarget(group[i]))
+        {
+            if (!CanAddToVirtualBuildTarget(group[i], alias))
+                return false;
+        }
+    }
+    return true;
+}
+
+void cbProject::ExpandVirtualBuildTargetGroup(const wxString& alias, wxArrayString& result) const
+{
+    const wxArrayString& group = GetVirtualBuildTargetGroup(alias);
+    for (size_t i = 0; i < group.GetCount(); ++i)
+    {
+        // real targets get added
+        if (IndexOfBuildTargetName(group[i]) != -1)
+        {
+            if (result.Index(group[i]) == wxNOT_FOUND)
+                result.Add(group[i]);
+        }
+        // virtual targets recurse
+        else
+            ExpandVirtualBuildTargetGroup(group[i], result);
+    }
 }
 
 #ifdef USE_OPENFILES_TREE

@@ -11,6 +11,8 @@
 #include "cbplugin.h"
 #include "projectbuildtarget.h"
 
+#include <map>
+
 // forward decl
 class cbProject;
 class ProjectBuildTarget;
@@ -19,6 +21,8 @@ class FilesGroupsAndMasks;
 
 // hashmap for fast searches in cbProject::GetFileByFilename()
 WX_DECLARE_STRING_HASH_MAP(ProjectFile*, ProjectFiles);
+
+typedef std::map<wxString, wxArrayString> VirtualBuildTargetsMap;
 
 class DLLIMPORT FileTreeData : public MiscTreeItemData
 {
@@ -152,15 +156,24 @@ class DLLIMPORT cbProject : public CompileTargetBase
         /** @return True if the project is using a custom Makefile for compilation, false if not. */
         bool IsMakefileCustom(){ return m_CustomMakefile; }
 
+        /** Is there a build target (virtual or real) by @c name?
+          * @param name The build target's name.
+          * @return True if exists a build target (virtual or real) by that name, false if not.
+          */
+        bool BuildTargetValid(const wxString& name, bool virtuals_too = true) const;
+
+        /** @return The first valid (virtual or real) build target. */
+        wxString GetFirstValidBuildTargetName(bool virtuals_too = true) const;
+
         /** @return The build target index which will be pre-selected when the "Select target"
           * dialog appears when running the project. Valid only for multi-target projects. */
-        int GetDefaultExecuteTargetIndex();
+        const wxString& GetDefaultExecuteTarget() const;
 
         /** Set the build target index which will be pre-selected when the "Select target"
           * dialog appears when running the project.
           * @param index The build target index. Must be equal or greater than zero and less than GetBuildTargetsCount().
           */
-        void SetDefaultExecuteTargetIndex(int index);
+        void SetDefaultExecuteTarget(const wxString& name);
 
         /** @return The number of build targets this project contains. */
         int GetBuildTargetsCount(){ return m_Targets.GetCount(); }
@@ -253,16 +266,18 @@ class DLLIMPORT cbProject : public CompileTargetBase
         void ReOrderTargets(const wxArrayString& nameOrder);
 
         /** Set the active build target. Mainly used by the compiler.
-          * @param index The build target index to set as active.
-          * @return True if @c index was valid, false if not.
+          * @param name The build target name to set as active. If @c name does
+          *             not exist, then the first virtual target is set
+          *             or the first real target, depending which is valid.
+          * @return True if @c name was valid, false if not.
           */
-        bool SetActiveBuildTarget(int index);
+        bool SetActiveBuildTarget(const wxString& name);
 
-        /** @return The active build target index. */
-        int GetActiveBuildTarget();
+        /** @return The active build target name. Note that this might be a virtual target. */
+        const wxString& GetActiveBuildTarget() const;
 
         /** @return The mode precompiled headers are handled. */
-        PCHMode GetModeForPCH(){ return m_PCHMode; }
+        PCHMode GetModeForPCH() const { return m_PCHMode; }
 
         /** Set the mode to handle precompiled headers.
           * @param mode The desired PCH mode.
@@ -405,19 +420,85 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * @param bt The build target that is currently building.
           */
         void SetCurrentlyCompilingTarget(ProjectBuildTarget* bt);
+
+        /** Define a new virtual build target.
+          *
+          * A virtual build target is not really a build target itself but it is an alias
+          * for a group of other build targets, real or virtual.
+          * An example is the "All" virtual build target which means "all build targets".
+          *
+          * @param alias The virtual build target's name.
+          * @param targets A list of build target names to include in this virtual build target.
+          *                They can be real or other virtual build targets.
+          * @return True for success, false for failure. The only reason for this function
+          *         to return false is if a *real* build target exists with the same name as @c alias
+          *         (or if you pass an empty @c targets array).
+          * @note Every time you call this function with the same @c alias parameter, the virtual
+          *       build target is re-defined. In other words, it's not an error if @c alias is already
+          *       defined.
+          */
+        bool DefineVirtualBuildTarget(const wxString& alias, const wxArrayString& targets);
+
+        /** Does a virtual build target exist?
+          *
+          * @param alias The virtual build target's name.
+          * @return True if the virtual build target exists, false if not.
+          */
+        bool HasVirtualBuildTarget(const wxString& alias) const;
+
+        /** Remove a virtual build target.
+          *
+          * @param alias The virtual build target's name.
+          * @return True if the virtual build target was removed, false if not.
+          */
+        bool RemoveVirtualBuildTarget(const wxString& alias);
+
+        /** Get a list of all defined virtual build targets.
+          *
+          * @return A list of all defined virtual build targets.
+          */
+        wxArrayString GetVirtualBuildTargets() const;
+
+        /** Access a virtual build target's group of build targets.
+          *
+          * @param alias The virtual build target's name.
+          * @return The list of all build targets under the alias @c alias.
+          */
+        const wxArrayString& GetVirtualBuildTargetGroup(const wxString& alias) const;
+
+        /** Access a virtual build target's expanded group of build targets.
+          *
+          * The difference from GetVirtualBuildTargetGroup() lies in that this function
+          * returns the full list of real build targets in this group (by recursively
+          * expanding virtual build targets in the group).
+          * @param alias The virtual build target's name.
+          * @return The expanded list of all real build targets under the alias @c alias.
+          */
+        wxArrayString GetExpandedVirtualBuildTargetGroup(const wxString& alias) const;
+
+        /** Checks if a build target (virtual or real) can be added to a virtual build target,
+          * without causing a circular-reference.
+          *
+          * @param alias The "parent" virtual build target to add the build target in.
+          * @param target The build target to add in the @c alias virtual build target.
+          * @return True if a circular reference is not detected, false if it is.
+          */
+        bool CanAddToVirtualBuildTarget(const wxString& alias, const wxString& target);
     private:
         void Open();
+        void ExpandVirtualBuildTargetGroup(const wxString& alias, wxArrayString& result) const;
         wxTreeItemId AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTreeItemId& parent, bool useFolders, bool compiles, int image, FileTreeData* data = 0L);
         ProjectBuildTarget* AddDefaultBuildTarget();
-        int IndexOfBuildTargetName(const wxString& targetName);
+        int IndexOfBuildTargetName(const wxString& targetName) const;
         wxString CreateUniqueFilename();
         void NotifyPlugins(wxEventType type);
 
         // properties
+        VirtualBuildTargetsMap m_VirtualTargets;
         BuildTargets m_Targets;
-        int m_ActiveTarget;
-        int m_LastSavedActiveTarget;
-        int m_DefaultExecuteTarget;
+        wxString m_ActiveTarget;
+        wxString  m_LastSavedActiveTarget;
+        wxString m_DefaultExecuteTarget;
         wxString m_Makefile;
         bool m_CustomMakefile;
 

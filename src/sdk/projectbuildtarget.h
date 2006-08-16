@@ -57,10 +57,12 @@ class DLLIMPORT ProjectBuildTarget : public BlockAllocated<ProjectBuildTarget, 1
           */
         virtual void SetAdditionalOutputFiles(const wxString& files);
 
-        /** @return True if this target should be built when the virtual target "All" is selected, false if not. */
+        /** Deprecated, do not use at all!
+          * @return True if this target should be built when the virtual target "All" is selected, false if not. */
         virtual bool GetIncludeInTargetAll();
 
-        /** Set if this target should be built when the virtual target "All" is selected.
+        /** Deprecated, do not use at all!
+          * Set if this target should be built when the virtual target "All" is selected.
           * @param buildIt If true, the target will be built with "All" else it won't. */
         virtual void SetIncludeInTargetAll(bool buildIt);
 
@@ -117,7 +119,7 @@ class DLLIMPORT ProjectBuildTarget : public BlockAllocated<ProjectBuildTarget, 1
         wxString m_AdditionalOutputFiles;
         BuildTargets m_TargetDeps;
         FilesList m_Files;
-        bool m_BuildWithAll;
+        bool m_BuildWithAll; // obsolete: left just to convert old projects to use virtual targets
         bool m_CreateStaticLib;
         bool m_CreateDefFile;
         bool m_UseConsoleRunner;

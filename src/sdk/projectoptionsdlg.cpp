@@ -63,6 +63,7 @@
 #include "externaldepsdlg.h"
 #include "annoyingdialog.h"
 #include "filefilters.h"
+#include "virtualbuildtargetsdlg.h"
 
 BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
     EVT_UPDATE_UI( -1,                                 ProjectOptionsDlg::OnUpdateUI)
@@ -78,6 +79,7 @@ BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
 	EVT_BUTTON(    XRCID("btnBrowseOutputFilename"),   ProjectOptionsDlg::OnBrowseOutputFilenameClick)
 	EVT_BUTTON(    XRCID("btnBrowseWorkingDir"),       ProjectOptionsDlg::OnBrowseDirClick)
 	EVT_BUTTON(    XRCID("btnBrowseObjectDir"),        ProjectOptionsDlg::OnBrowseDirClick)
+	EVT_BUTTON(    XRCID("btnVirtualBuildTargets"),    ProjectOptionsDlg::OnVirtualTargets)
 	EVT_BUTTON(    XRCID("btnExternalDeps"),           ProjectOptionsDlg::OnEditDepsClick)
 	EVT_BUTTON(    XRCID("btnExportTarget"),           ProjectOptionsDlg::OnExportTargetClick)
 	EVT_LISTBOX_DCLICK(XRCID("lstFiles"),              ProjectOptionsDlg::OnFileOptionsClick)
@@ -486,15 +488,8 @@ void ProjectOptionsDlg::OnAddBuildTargetClick(wxCommandEvent& event)
 {
     wxString targetName = wxGetTextFromUser(_("Enter the new build target name:"),
                                             _("New build target"));
-    if (targetName.IsEmpty())
+    if (!ValidateTargetName(targetName))
         return;
-    if (m_Project->GetBuildTarget(targetName))
-    {
-        wxMessageDialog(this, _("A target with this name already exists in this project!"),
-                                _("Error"),
-                                wxOK | wxCENTRE | wxICON_ERROR);
-        return;
-    }
 
     ProjectBuildTarget* target = m_Project->AddBuildTarget(targetName);
     if (!target)
@@ -533,8 +528,9 @@ void ProjectOptionsDlg::OnEditBuildTargetClick(wxCommandEvent& event)
     wxString newTargetName = wxGetTextFromUser(_("Change the build target name:"),
                                                _("Rename build target"),
                                               oldTargetName);
-    if (newTargetName.IsEmpty())
+    if (newTargetName == oldTargetName || !ValidateTargetName(newTargetName))
         return;
+
     m_Project->RenameBuildTarget(targetIdx, newTargetName);
     lstTargets->SetString(targetIdx, newTargetName);
     lstTargets->SetSelection(targetIdx);
@@ -560,7 +556,7 @@ void ProjectOptionsDlg::OnCopyBuildTargetClick(wxCommandEvent& event)
     wxString newTargetName = wxGetTextFromUser(_("Enter the duplicated build target's name:"),
                                                _("Duplicate build target"),
                                               _("Copy of ") + target->GetTitle());
-    if (newTargetName.IsEmpty())
+    if (!ValidateTargetName(newTargetName))
         return;
     if (!m_Project->DuplicateBuildTarget(targetIdx, newTargetName))
     {
@@ -601,6 +597,12 @@ void ProjectOptionsDlg::OnRemoveBuildTargetClick(wxCommandEvent& event)
     BuildScriptsTree();
     CodeBlocksEvent e(cbEVT_PROJECT_TARGETS_MODIFIED);
     Manager::Get()->GetPluginManager()->NotifyPlugins(e);
+}
+
+void ProjectOptionsDlg::OnVirtualTargets(wxCommandEvent& event)
+{
+    VirtualBuildTargetsDlg dlg(this, -1, m_Project);
+    dlg.ShowModal();
 }
 
 void ProjectOptionsDlg::OnEditDepsClick(wxCommandEvent& event)
@@ -734,6 +736,39 @@ bool ProjectOptionsDlg::IsScriptValid(const wxString& script)
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
         return false;
     }
+}
+
+bool ProjectOptionsDlg::ValidateTargetName(const wxString& name)
+{
+    if (name.IsEmpty())
+        return false;
+
+    if (m_Project->GetBuildTarget(name))
+    {
+        cbMessageBox(_("A target with this name already exists in this project!"),
+                        _("Error"),
+                        wxOK | wxCENTRE | wxICON_ERROR);
+        return false;
+    }
+
+    if (m_Project->HasVirtualBuildTarget(name))
+    {
+        cbMessageBox(_("A virtual target with this name already exists in this project!"),
+                        _("Error"),
+                        wxOK | wxCENTRE | wxICON_ERROR);
+        return false;
+    }
+
+    const wxString forbidden = _T(";,!@#$%^&*\"':`~=?\\><");
+    if (name.find_first_of(forbidden, 0) != wxString::npos)
+    {
+        cbMessageBox(_("The name contains at least one invalid character:\n\n") + forbidden,
+                        _("Error"),
+                        wxOK | wxCENTRE | wxICON_ERROR);
+        return false;
+    }
+
+    return true;
 }
 
 bool ProjectOptionsDlg::DoCheckScripts(CompileTargetBase* base)

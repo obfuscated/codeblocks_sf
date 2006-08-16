@@ -15,7 +15,7 @@
 #include <compilerfactory.h>
 #include <wx/timer.h>
 
-#define MAX_TARGETS 64
+#define MAX_TARGETS 128
 
 enum CompilerOptionsType
 {
@@ -151,7 +151,7 @@ class CompilerGCC : public cbCompilerPlugin
         void DoDeleteTempMakefile();
 		void DoClearTargetMenu();
 		void DoRecreateTargetMenu();
-		void DoUpdateTargetMenu();
+		void DoUpdateTargetMenu(int targetIndex);
         FileTreeData* DoSwitchProjectTemporarily();
         ProjectBuildTarget* DoAskForTarget();
         int DoGUIAskForTarget();
@@ -181,6 +181,15 @@ class CompilerGCC : public cbCompilerPlugin
 
         // wxArrayString from DirectCommands
         void AddToCommandQueue(const wxArrayString& commands);
+
+        int GetTargetIndexFromName(cbProject* prj, const wxString& name);
+        void UpdateSelectedTargets(int selection = -1);
+        void DoClean(const wxArrayString& commands);
+
+        wxArrayString m_SelectedTargets;
+        wxArrayString m_BuildSelectedTargets;
+        int m_RealTargetsStartIndex;
+        int m_RealTargetIndex;
 
         CompilerQueue m_CommandQueue;
         bool m_BuildingWorkspace;
@@ -212,7 +221,6 @@ class CompilerGCC : public cbCompilerPlugin
 		wxString m_RunCmd;
 		int m_LastExitCode;
 		CompilerErrors m_Errors;
-		bool m_HasTargetAll;
 		wxString m_LastTargetName;
         bool m_NotifiedMaxErrors;
 

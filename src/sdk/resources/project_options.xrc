@@ -196,10 +196,17 @@
                               <flag>wxGROW</flag>
                             </object>
                             <object class="sizeritem">
+                              <object class="wxButton" name="btnVirtualBuildTargets">
+                                <label>Virtual targets...</label>
+                              </object>
+                              <flag>wxGROW</flag>
+                            </object>
+                            <object class="sizeritem">
                               <object class="wxButton" name="btnExternalDeps">
                                 <label>Dependencies...</label>
                               </object>
-                              <flag>wxEXPAND</flag>
+                              <flag>wxTOP|wxGROW</flag>
+                              <border>4</border>
                             </object>
                             <object class="sizeritem">
                               <object class="wxButton" name="btnBuildOrder">
@@ -365,6 +372,7 @@ from target...</label>
                             <object class="sizeritem">
                               <object class="wxCheckBox" name="chkBuildThisTarget">
                                 <label>Build this target with &quot;All&quot;</label>
+                                <hidden>1</hidden>
                                 <tooltip>Build this target when building the whole project.\nIf no target is marked to be built, the targets resemble MSVC configurations.</tooltip>
                               </object>
                               <flag>wxEXPAND</flag>

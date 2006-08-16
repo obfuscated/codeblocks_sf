@@ -61,7 +61,7 @@ SelectTargetDlg::SelectTargetDlg(wxWindow* parent, cbProject* project, int selec
 		ProjectBuildTarget* target = m_pProject->GetBuildTarget(i);
 		list->Append(target->GetTitle());
 	}
-	list->SetSelection(m_pProject->GetDefaultExecuteTargetIndex());
+	list->SetSelection(list->FindString(m_pProject->GetDefaultExecuteTarget()));
 
 	UpdateSelected();
 	XRCCTRL(*this, "wxID_OK", wxButton)->MoveBeforeInTabOrder (XRCCTRL(*this, "lstItems", wxListBox));
@@ -74,14 +74,15 @@ SelectTargetDlg::~SelectTargetDlg()
 
 void SelectTargetDlg::UpdateSelected()
 {
-    int idx = XRCCTRL(*this, "lstItems", wxListBox)->GetSelection();
-	ProjectBuildTarget* target = m_pProject->GetBuildTarget(idx);
+    wxString name = XRCCTRL(*this, "lstItems", wxListBox)->GetStringSelection();
+	ProjectBuildTarget* target = m_pProject->GetBuildTarget(name);
 	if (target)
 	{
-        XRCCTRL(*this, "chkSetAsDefaultExec", wxCheckBox)->SetValue(idx == m_pProject->GetDefaultExecuteTargetIndex());
+        XRCCTRL(*this, "chkSetAsDefaultExec", wxCheckBox)->SetValue(name == m_pProject->GetDefaultExecuteTarget());
 		XRCCTRL(*this, "txtParams", wxTextCtrl)->SetValue(target->GetExecutionParameters());
 		XRCCTRL(*this, "txtHostApp", wxTextCtrl)->SetValue(target->GetHostApplication());
 	}
+	XRCCTRL(*this, "wxID_OK", wxButton)->Enable(target);
 } // end of UpdateSelected
 
 ProjectBuildTarget* SelectTargetDlg::GetSelectionTarget()
@@ -100,8 +101,8 @@ void SelectTargetDlg::OnCheckboxSelection(wxCommandEvent& /*event*/)
 {
     if (XRCCTRL(*this, "chkSetAsDefaultExec", wxCheckBox)->GetValue())
     {
-        int idx = XRCCTRL(*this, "lstItems", wxListBox)->GetSelection();
-        m_pProject->SetDefaultExecuteTargetIndex(idx);
+        wxString name = XRCCTRL(*this, "lstItems", wxListBox)->GetStringSelection();
+        m_pProject->SetDefaultExecuteTarget(name);
     }
 } // end of OnCheckboxSelection
 

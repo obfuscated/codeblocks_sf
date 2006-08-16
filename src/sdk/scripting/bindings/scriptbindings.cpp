@@ -439,6 +439,10 @@ namespace ScriptBindings
                 staticFuncVarArgs(&cbProject_DuplicateBuildTarget, "DuplicateBuildTarget", "*").
                 staticFuncVarArgs(&cbProject_RemoveBuildTarget, "RemoveBuildTarget", "*").
                 staticFuncVarArgs(&cbProject_ExportTargetAsProject, "ExportTargetAsProject", "*").
+                func(&cbProject::BuildTargetValid, "BuildTargetValid").
+                func(&cbProject::GetFirstValidBuildTargetName, "GetFirstValidBuildTargetName").
+                func(&cbProject::SetDefaultExecuteTarget, "SetDefaultExecuteTarget").
+                func(&cbProject::GetDefaultExecuteTarget, "GetDefaultExecuteTarget").
                 func(&cbProject::SetActiveBuildTarget, "SetActiveBuildTarget").
                 func(&cbProject::GetActiveBuildTarget, "GetActiveBuildTarget").
                 func(&cbProject::SelectTarget, "SelectTarget").

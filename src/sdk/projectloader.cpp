@@ -36,7 +36,8 @@
 ProjectLoader::ProjectLoader(cbProject* project)
     : m_pProject(project),
     m_Upgraded(false),
-    m_OpenDirty(false)
+    m_OpenDirty(false),
+    m_1_4_to_1_5_deftarget(-1)
 {
 	//ctor
 }
@@ -113,6 +114,12 @@ bool ProjectLoader::Open(const wxString& filename)
             wxString msg;
 
             // 1.3 -> 1.4: updated custom build command per-project file
+            if (major == 1 && minor == 4)
+            {
+                msg << _("1.4 to 1.5: added virtual build targets.\n");
+            }
+
+            // 1.3 -> 1.4: updated custom build command per-project file
             if (major == 1 && minor == 3)
             {
                 msg << _("1.3 to 1.4: changed the way custom file build commands are stored (no auto-conversion).\n");
@@ -151,6 +158,32 @@ bool ProjectLoader::Open(const wxString& filename)
     DoLibsOptions(proj);
     DoExtraCommands(proj);
     DoUnits(proj);
+
+    // if targets still use the "build with all" flag,
+    // it's time for conversion
+    if (!m_pProject->HasVirtualBuildTarget(_T("All")))
+    {
+        wxArrayString all;
+        for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
+        {
+            ProjectBuildTarget* bt = m_pProject->GetBuildTarget(i);
+            if (bt && bt->GetIncludeInTargetAll())
+                all.Add(bt->GetTitle());
+        }
+        if (all.GetCount())
+        {
+            m_pProject->DefineVirtualBuildTarget(_T("All"), all);
+            m_Upgraded = true;
+        }
+    }
+
+    // convert old deftarget int to string
+    if (m_1_4_to_1_5_deftarget != -1)
+    {
+        ProjectBuildTarget* bt = m_pProject->GetBuildTarget(m_1_4_to_1_5_deftarget);
+        if (bt)
+            m_pProject->SetDefaultExecuteTarget(bt->GetTitle());
+    }
 
     // as a last step, run all hooked callbacks
     TiXmlElement* node = proj->FirstChildElement("Extensions");
@@ -264,6 +297,30 @@ void ProjectLoader::DoMakeCommands(TiXmlElement* parentNode, CompileTargetBase* 
         target->SetMakeCommandFor(mcDistClean, cbC2U(node->Attribute("command")));
 }
 
+void ProjectLoader::DoVirtualTargets(TiXmlElement* parentNode)
+{
+    if (!parentNode)
+        return;
+
+    TiXmlElement* node = parentNode->FirstChildElement("Add");
+    if (!node)
+        return; // no virtual targets
+
+    while (node)
+    {
+        if (node->Attribute("alias") && node->Attribute("targets"))
+        {
+            wxString alias = cbC2U(node->Attribute("alias"));
+            wxString targets = cbC2U(node->Attribute("targets"));
+            wxArrayString arr = GetArrayFromString(targets, _T(";"), true);
+
+            m_pProject->DefineVirtualBuildTarget(alias, arr);
+        }
+
+        node = node->NextSiblingElement("Add");
+    }
+}
+
 void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
 {
     TiXmlElement* node = parentNode->FirstChildElement("Option");
@@ -273,8 +330,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     wxString title;
     wxString makefile;
     bool makefile_custom = false;
-    int defaultTarget = 0;
-    int activeTarget = -1;
+    wxString defaultTarget;
     wxString compilerId = _T("gcc");
     PCHMode pch_mode = m_IsPre_1_2 ? pchSourceDir : pchObjectDir;
 
@@ -290,8 +346,14 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
         else if (node->Attribute("makefile_is_custom"))
             makefile_custom = strncmp(node->Attribute("makefile_is_custom"), "1", 1) == 0;
 
+        // old default_target (int) node
+        else if (node->QueryIntAttribute("default_target", &m_1_4_to_1_5_deftarget) == TIXML_SUCCESS)
+        {
+            // we read the value
+        }
+
         else if (node->Attribute("default_target"))
-            defaultTarget = atoi(node->Attribute("default_target"));
+            defaultTarget = cbC2U(node->Attribute("default_target"));
 
         else if (node->Attribute("compiler"))
             compilerId = GetValidCompilerID(cbC2U(node->Attribute("compiler")), _T("the project"));
@@ -305,12 +367,12 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     m_pProject->SetTitle(title);
     m_pProject->SetMakefile(makefile);
     m_pProject->SetMakefileCustom(makefile_custom);
-    m_pProject->SetDefaultExecuteTargetIndex(defaultTarget);
-    m_pProject->SetActiveBuildTarget(activeTarget);
+    m_pProject->SetDefaultExecuteTarget(defaultTarget);
     m_pProject->SetCompilerID(compilerId);
     m_pProject->SetModeForPCH(pch_mode);
 
     DoMakeCommands(parentNode->FirstChildElement("MakeCommands"), m_pProject);
+    DoVirtualTargets(parentNode->FirstChildElement("VirtualTargets"));
 }
 
 void ProjectLoader::DoBuild(TiXmlElement* parentNode)
@@ -424,6 +486,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
         else if (node->Attribute("host_application"))
             hostApplication = UnixFilename(cbC2U(node->Attribute("host_application")));
 
+        // used in versions prior to 1.5
         else if (node->Attribute("includeInTargetAll"))
             includeInTargetAll = atoi(node->Attribute("includeInTargetAll")) != 0;
 
@@ -482,7 +545,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
         target->SetCompilerID(compilerId);
         target->SetExecutionParameters(parameters);
         target->SetHostApplication(hostApplication);
-        target->SetIncludeInTargetAll(includeInTargetAll);
+        target->SetIncludeInTargetAll(includeInTargetAll); // used in versions prior to 1.5
         target->SetCreateDefFile(createDefFile);
         target->SetCreateStaticLib(createStaticLib);
         target->SetOptionRelation(ortCompilerOptions, (OptionsRelation)projectCompilerOptionsRelation);
@@ -871,8 +934,8 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         AddElement(prjnode, "Option", "makefile_is_custom", 1);
     if (m_pProject->GetModeForPCH() != pchObjectDir)
         AddElement(prjnode, "Option", "pch_mode", (int)m_pProject->GetModeForPCH());
-    if (m_pProject->GetDefaultExecuteTargetIndex() != 0)
-        AddElement(prjnode, "Option", "default_target", m_pProject->GetDefaultExecuteTargetIndex());
+    if (m_pProject->GetDefaultExecuteTarget() != m_pProject->GetFirstValidBuildTargetName())
+        AddElement(prjnode, "Option", "default_target", m_pProject->GetDefaultExecuteTarget());
     AddElement(prjnode, "Option", "compiler", m_pProject->GetCompilerID());
 
     if (m_pProject->MakeCommandsModified())
@@ -929,8 +992,9 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             AddElement(tgtnode, "Option", "parameters", target->GetExecutionParameters());
         if (!target->GetHostApplication().IsEmpty())
             AddElement(tgtnode, "Option", "host_application", target->GetHostApplication());
-        if (target->GetIncludeInTargetAll())
-            AddElement(tgtnode, "Option", "includeInTargetAll", 1);
+        // used in versions prior to 1.5
+//        if (target->GetIncludeInTargetAll())
+//            AddElement(tgtnode, "Option", "includeInTargetAll", 1);
         if ((target->GetTargetType() == ttStaticLib || target->GetTargetType() == ttDynamicLib) && target->GetCreateDefFile())
             AddElement(tgtnode, "Option", "createDefFile", 1);
         if (target->GetTargetType() == ttDynamicLib && target->GetCreateStaticLib())
@@ -990,6 +1054,25 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             AddElement(makenode, "Clean", "command", target->GetMakeCommandFor(mcClean));
             AddElement(makenode, "DistClean", "command", target->GetMakeCommandFor(mcDistClean));
         }
+    }
+
+    // virtuals only for whole project
+    if (onlyTarget.IsEmpty())
+    {
+        TiXmlElement* virtnode = AddElement(prjnode, "VirtualTargets", 0, 0);
+        wxArrayString virtuals = m_pProject->GetVirtualBuildTargets();
+        for (size_t i = 0; i < virtuals.GetCount(); ++i)
+        {
+            const wxArrayString& group = m_pProject->GetVirtualBuildTargetGroup(virtuals[i]);
+            wxString groupStr = GetStringFromArray(group, _T(";"));
+            if (!groupStr.IsEmpty())
+            {
+                TiXmlElement* elem = AddElement(virtnode, "Add", "alias", virtuals[i]);
+                elem->SetAttribute("targets", cbU2C(groupStr));
+            }
+        }
+        if (virtnode->NoChildren())
+            prjnode->RemoveChild(virtnode);
     }
 
     SaveEnvironment(buildnode, m_pProject);

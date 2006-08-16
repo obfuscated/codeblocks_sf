@@ -548,11 +548,11 @@
 			<Option link="0" />
 			<Option target="Class wizard" />
 		</Unit>
-		<Unit filename="plugins\codecompletion\ccdebuginfo.cpp">
+		<Unit filename="plugins/codecompletion/ccdebuginfo.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Code-completion" />
 		</Unit>
-		<Unit filename="plugins\codecompletion\ccdebuginfo.h">
+		<Unit filename="plugins/codecompletion/ccdebuginfo.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -3460,6 +3460,16 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/virtualbuildtargetsdlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/virtualbuildtargetsdlg.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/workspaceloader.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />
@@ -4597,6 +4607,7 @@
 			<wxsmith>
 				<dialog wxs_file="CCDebugInfo.wxs" class="CCDebugInfo" src_file="plugins/codecompletion/ccdebuginfo.cpp" header_file="plugins/codecompletion/ccdebuginfo.h" xrc_file="" edit_mode="Source" />
 				<panel wxs_file="ScriptConsole.wxs" class="ScriptConsole" src_file="src/scriptconsole.cpp" header_file="src/scriptconsole.h" xrc_file="" edit_mode="Source" />
+				<dialog wxs_file="VirtualBuildTargetsDlg.wxs" class="VirtualBuildTargetsDlg" src_file="sdk/virtualbuildtargetsdlg.cpp" header_file="sdk/virtualbuildtargetsdlg.h" xrc_file="" edit_mode="Source" />
 				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
 			</wxsmith>
 		</Extensions>
