@@ -24,8 +24,8 @@
 * $HeadURL$
 */
 
-#include <globals.h>
 #include <sdk.h>
+#include <globals.h>
 #include "token.h"
 #include <wx/intl.h>
 #include <wx/tokenzr.h>
