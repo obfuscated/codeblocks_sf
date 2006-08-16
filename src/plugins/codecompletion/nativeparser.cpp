@@ -420,6 +420,7 @@ void NativeParser::RemoveParser(cbProject* project, bool useCache)
     if (Manager::Get()->GetProjectManager()->GetProjects()->GetCount() == 0)
     {
         m_Parser.Clear();
+        UpdateClassBrowser();
         return;
     }
     if (!project)
