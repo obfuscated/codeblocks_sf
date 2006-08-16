@@ -6,9 +6,8 @@
  * Copyright: (c) Yiannis Mandravellos
  * License:   GPL
  **************************************************************/
-#if CB_PRECOMP
 #include "sdk.h"
-#else
+#ifndef CB_PRECOMP
 #include <wx/event.h>
 #include <wx/fs_zip.h>
 #include <wx/intl.h>

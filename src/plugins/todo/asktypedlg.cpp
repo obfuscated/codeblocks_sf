@@ -1,6 +1,5 @@
-#if CB_PRECOMP
 #include "sdk.h"
-#else
+#ifndef CB_PRECOMP
 #include <wx/combobox.h>
 #include <wx/xrc/xmlres.h>
 #endif

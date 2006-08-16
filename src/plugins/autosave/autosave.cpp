@@ -10,10 +10,10 @@
 * $HeadURL$
 */
 
-#if CB_PRECOMP
-    #include "sdk.h"
-#else
+#include "sdk.h"
+#ifndef CB_PRECOMP
     #include <wx/checkbox.h>
+    #include <wx/choice.h>
     #include <wx/filefn.h>
     #include <wx/filename.h>
     #include <wx/textctrl.h>
@@ -31,7 +31,6 @@
     #include "sdk_events.h"
 #endif
 
-#include <wx/choice.h>
 #include "projectloader.h"
 #include "autosave.h"
 
