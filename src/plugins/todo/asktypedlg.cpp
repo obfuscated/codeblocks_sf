@@ -1,6 +1,8 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/combobox.h>
+#include <wx/choice.h>
+#include <wx/intl.h>
+#include <wx/string.h>
 #include <wx/xrc/xmlres.h>
 #endif
 #include "asktypedlg.h"
@@ -18,6 +20,6 @@ AskTypeDlg::~AskTypeDlg()
 
 TypeCorrection AskTypeDlg::GetTypeCorrection() const
 {
-    return static_cast<TypeCorrection>(XRCCTRL(*this, "cmbCorrect", wxComboBox)->GetSelection());
+    return static_cast<TypeCorrection>(XRCCTRL(*this, "chcCorrect", wxChoice)->GetSelection());
 }
 

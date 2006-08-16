@@ -1,7 +1,7 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
 #include <wx/arrstr.h>
-#include <wx/combobox.h>
+#include <wx/choice.h>
 #include <wx/intl.h>
 #include <wx/spinctrl.h>
 #include <wx/textctrl.h>
@@ -18,7 +18,7 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& types)
 	LoadUsers();
 
     // load types
-    wxComboBox* cmb = XRCCTRL(*this, "cmbType", wxComboBox);
+    wxChoice* cmb = XRCCTRL(*this, "chcType", wxChoice);
     cmb->Clear();
     for (unsigned int i = 0; i < m_Types.GetCount(); ++i)
     {
@@ -44,7 +44,7 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& types)
         cmb->SetSelection(0);
 
 
-    cmb = XRCCTRL(*this, "cmbStyle", wxComboBox);
+    cmb = XRCCTRL(*this, "chcStyle", wxChoice);
     if (!lastStyle.IsEmpty())
     {
         int sel = cmb->FindString(lastStyle);
@@ -52,7 +52,7 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& types)
             cmb->SetSelection(sel);
     }
 
-    cmb = XRCCTRL(*this, "cmbPosition", wxComboBox);
+    cmb = XRCCTRL(*this, "chcPosition", wxChoice);
     if (!lastPos.IsEmpty())
     {
         int sel = cmb->FindString(lastPos);
@@ -68,7 +68,7 @@ AddTodoDlg::~AddTodoDlg()
 
 void AddTodoDlg::LoadUsers() const
 {
-	wxComboBox* cmb = XRCCTRL(*this, "cmbUser", wxComboBox);
+	wxChoice* cmb = XRCCTRL(*this, "chcUser", wxChoice);
 
 	wxArrayString users;
 	Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("users"), &users);
@@ -83,7 +83,7 @@ void AddTodoDlg::LoadUsers() const
 
 void AddTodoDlg::SaveUsers() const
 {
-	wxComboBox* cmb = XRCCTRL(*this, "cmbUser", wxComboBox);
+	wxChoice* cmb = XRCCTRL(*this, "chcUser", wxChoice);
 	wxArrayString users;
 
 	for (int i = 0; i < cmb->GetCount(); ++i)
@@ -100,7 +100,7 @@ wxString AddTodoDlg::GetText() const
 
 wxString AddTodoDlg::GetUser() const
 {
-    return XRCCTRL(*this, "cmbUser", wxComboBox)->GetValue();
+    return XRCCTRL(*this, "chcUser", wxChoice)->GetStringSelection();
 }
 
 int AddTodoDlg::GetPriority() const
@@ -115,17 +115,17 @@ int AddTodoDlg::GetPriority() const
 
 ToDoPosition AddTodoDlg::GetPosition() const
 {
-    return (ToDoPosition)(XRCCTRL(*this, "cmbPosition", wxComboBox)->GetSelection());
+    return (ToDoPosition)(XRCCTRL(*this, "chcPosition", wxChoice)->GetSelection());
 }
 
 wxString AddTodoDlg::GetType() const
 {
-    return XRCCTRL(*this, "cmbType", wxComboBox)->GetValue();
+    return XRCCTRL(*this, "chcType", wxChoice)->GetStringSelection();
 }
 
 ToDoCommentType AddTodoDlg::GetCommentType() const
 {
-    return (ToDoCommentType)(XRCCTRL(*this, "cmbStyle", wxComboBox)->GetSelection());
+    return (ToDoCommentType)(XRCCTRL(*this, "chcStyle", wxChoice)->GetSelection());
 }
 
 void AddTodoDlg::EndModal(int retVal)
@@ -135,20 +135,20 @@ void AddTodoDlg::EndModal(int retVal)
 		SaveUsers();
 
         // "save" types
-        wxComboBox* cmb = XRCCTRL(*this, "cmbType", wxComboBox);
+        wxChoice* cmb = XRCCTRL(*this, "chcType", wxChoice);
         m_Types.Clear();
-        if (cmb->FindString(cmb->GetValue()) == wxNOT_FOUND)
-            m_Types.Add(cmb->GetValue());
+        if (cmb->FindString(cmb->GetStringSelection()) == wxNOT_FOUND)
+            m_Types.Add(cmb->GetStringSelection());
         for (int i = 0; i < cmb->GetCount(); ++i)
         {
             m_Types.Add(cmb->GetString(i));
         }
 
-        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_type"), cmb->GetValue());
-        cmb = XRCCTRL(*this, "cmbStyle", wxComboBox);
-        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_style"), cmb->GetValue());
-        cmb = XRCCTRL(*this, "cmbPosition", wxComboBox);
-        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_position"), cmb->GetValue());
+        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_type"), cmb->GetStringSelection());
+        cmb = XRCCTRL(*this, "chcStyle", wxChoice);
+        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_style"), cmb->GetStringSelection());
+        cmb = XRCCTRL(*this, "chcPosition", wxChoice);
+        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_position"), cmb->GetStringSelection());
 	}
 
 	wxDialog::EndModal(retVal);

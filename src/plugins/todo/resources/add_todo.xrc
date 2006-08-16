@@ -35,7 +35,7 @@
             </object>
           </object>
           <object class="sizeritem">
-            <object class="wxComboBox" name="cmbUser">
+            <object class="wxChoice" name="chcUser">
               <content/>
             </object>
             <flag>wxBOTTOM|wxEXPAND</flag>
@@ -62,14 +62,14 @@
             </object>
           </object>
           <object class="sizeritem">
-            <object class="wxComboBox" name="cmbType">
+            <object class="wxChoice" name="chcType">
               <content/>
             </object>
             <flag>wxBOTTOM|wxEXPAND</flag>
             <border>8</border>
           </object>
           <object class="sizeritem">
-            <object class="wxComboBox" name="cmbStyle">
+            <object class="wxChoice" name="chcStyle">
               <content>
                 <item>C++ style comment</item>
                 <item>C style comment</item>
@@ -77,7 +77,6 @@
                 <item>Compiler error</item>
               </content>
               <selection>0</selection>
-              <style>wxCB_READONLY</style>
             </object>
             <flag>wxBOTTOM|wxEXPAND</flag>
             <border>8</border>
@@ -94,14 +93,13 @@
             </object>
           </object>
           <object class="sizeritem">
-            <object class="wxComboBox" name="cmbPosition">
+            <object class="wxChoice" name="chcPosition">
               <content>
                 <item>New line above current line</item>
                 <item>Exactly where caret is now</item>
                 <item>New line below current line</item>
               </content>
               <selection>0</selection>
-              <style>wxCB_READONLY</style>
             </object>
             <flag>wxBOTTOM|wxEXPAND</flag>
             <border>8</border>

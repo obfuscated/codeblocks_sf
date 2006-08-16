@@ -22,14 +22,13 @@
                     <object class="sizeritem">
                         <border>8</border>
                         <flag>wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                        <object class="wxComboBox" name="cmbCorrect">
+                        <object class="wxChoice" name="chcCorrect">
                             <selection>0</selection>
                             <content>
                                 <item>keep C++ style comment and move it to the end of the line</item>
                                 <item>keep C++ style comment at the current position</item>
                                 <item>switch to C style comment(/* ...*/)</item>
                             </content>
-                            <style>wxCB_READONLY</style>
                         </object>
                     </object>
                 </object>
