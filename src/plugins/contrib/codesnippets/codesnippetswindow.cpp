@@ -19,7 +19,7 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-	#include <wx/button.h"
+	#include <wx/button.h>
 	#include <wx/imaglist.h>
 	#include <wx/intl.h>
 	#include <wx/sizer.h>

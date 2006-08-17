@@ -2,6 +2,7 @@
 #include "ccdebuginfo.h"
 #include "parser/parser.h"
 #include <wx/utils.h>
+#include <wx/choicdlg.h> // wxGetSingleChoiceIndex
 
 BEGIN_EVENT_TABLE(CCDebugInfo,wxDialog)
 	//(*EventTable(CCDebugInfo)

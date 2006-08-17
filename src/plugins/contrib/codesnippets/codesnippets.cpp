@@ -20,6 +20,7 @@
 #include "sdk.h"
 #ifndef CB_PRECOMB
 	#include <wx/event.h>
+	#include <wx/frame.h> // Manager::Get()->GetAppWindow()
 	#include <wx/intl.h>
 	#include <wx/menu.h>
 	#include <wx/menuitem.h>
