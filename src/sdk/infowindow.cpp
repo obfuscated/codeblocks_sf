@@ -88,6 +88,7 @@ Stacker InfoWindow::stacker;
 // so initialize them to -1 and we 'll set them up correctly in InfoWindow's ctor the first time
 int InfoWindow::screenWidth = -1;//wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
 int InfoWindow::screenHeight = -1;//wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
+std::list<wxString> InfoWindow::active_messages;
 
 namespace // anonumous
 {
@@ -119,6 +120,8 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
             : wxPopupWindow(Manager::Get()->GetAppWindow(), wxSIMPLE_BORDER | wxWS_EX_TRANSIENT | wxCLIP_CHILDREN),
               m_timer(new wxTimer(this, 0)), status(0), m_delay(delay), ks(2)
     {
+        my_message_iterator = active_messages.insert(active_messages.begin(), message);
+
         wxBoxSizer *bs = new wxBoxSizer(wxVERTICAL);
 
         wxWindow* o = 0;
@@ -175,10 +178,12 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
 
 
 InfoWindow::~InfoWindow()
-    {
-        delete m_timer;
-        stacker.ReleaseMe(pos);
-    };
+{
+    delete m_timer;
+    stacker.ReleaseMe(pos);
+
+    active_messages.erase(my_message_iterator);
+};
 
 void InfoWindow::OnTimer(wxTimerEvent& e)
 {
@@ -226,3 +231,15 @@ void InfoWindow::OnClick(wxMouseEvent& e)
     m_timer->Start(scroll_millis, false);
 }
 
+// static
+void InfoWindow::Display(const wxString& title, const wxString& message, unsigned int delay, unsigned int hysteresis)
+{
+    if (std::find(active_messages.begin(), active_messages.end(), message) != active_messages.end())
+    {
+        const wxString dups = _("Multiple information windows with the same\nmessage have been suppressed.");
+        if (std::find(active_messages.begin(), active_messages.end(), dups) == active_messages.end())
+            Display(_("Info"), dups, delay);
+        return; // currently displaying already
+    }
+    new InfoWindow(title, message, delay, hysteresis);
+}
