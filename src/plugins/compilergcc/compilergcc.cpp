@@ -1175,8 +1175,6 @@ void CompilerGCC::DoUpdateTargetMenu(int targetIndex)
         m_RealTargetIndex = m_TargetIndex - m_RealTargetsStartIndex;
         if (m_RealTargetIndex < 0)
             m_RealTargetIndex = -1;
-
-        UpdateSelectedTargets();
     }
     else
         m_RealTargetIndex = -1;
@@ -1199,6 +1197,7 @@ void CompilerGCC::DoUpdateTargetMenu(int targetIndex)
     }
     if (m_ToolTarget)
         m_ToolTarget->SetSelection(m_TargetIndex);
+    UpdateSelectedTargets();
 //    DBGLOG(_T("m_TargetIndex=%d, m_ToolTarget->GetCurrentSelection()=%d, m_RealTargetsStartIndex=%d"), m_TargetIndex, m_ToolTarget->GetCurrentSelection(), m_RealTargetsStartIndex);
 }
 
@@ -1208,9 +1207,14 @@ void CompilerGCC::UpdateSelectedTargets(int selection)
     m_SelectedTargets.Clear();
     if (prj && m_ToolTarget)
     {
+#if wxCHECK_VERSION(2,6,2)
+        int sel = m_ToolTarget->GetCurrentSelection();
+#else
+        int sel = m_ToolTarget->GetSelection();
+#endif
         if (selection == -1)
-            selection = m_RealTargetIndex;
-        wxString tgtName = m_ToolTarget->GetString(selection >= 0 ? selection : m_ToolTarget->GetSelection());
+            selection = m_TargetIndex;
+        wxString tgtName = m_ToolTarget->GetString(selection >= 0 ? selection : sel);
 
         ProjectBuildTarget* bt =  prj->GetBuildTarget(tgtName);
         if (bt)
@@ -2750,8 +2754,14 @@ void CompilerGCC::OnKillProcess(wxCommandEvent& event)
 
 void CompilerGCC::OnSelectTarget(wxCommandEvent& event)
 {
+#if wxCHECK_VERSION(2,6,2)
+    int sel = m_ToolTarget->GetCurrentSelection();
+#else
+    int sel = m_ToolTarget->GetSelection();
+#endif
+
     if (event.GetId() == idToolTarget)
-        DoUpdateTargetMenu(m_ToolTarget->GetCurrentSelection());
+        DoUpdateTargetMenu(sel);
     else
         DoUpdateTargetMenu(event.GetId() - idMenuSelectTargetOther[0]);
 }
