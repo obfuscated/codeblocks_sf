@@ -429,7 +429,7 @@ int CodeCompletion::CodeComplete()
             ed->GetControl()->AutoCompShow(pos - start, final);
             return 0;
         }
-        else
+        else if (!ed->GetControl()->CallTipActive())
         {
             wxString msg = _("Too many results.Please edit results' limit in code-completion options,\n"
                             "or type at least one more character to narrow the scope down...");
@@ -437,12 +437,16 @@ int CodeCompletion::CodeComplete()
             return -2;
         }
     }
-    else
+    else if (!ed->GetControl()->CallTipActive())
     {
 #ifdef DEBUG_CC_AI
 		Manager::Get()->GetMessageManager()->DebugLog(_T("0 results"));
 #endif
-        wxString msg = _("No matches");
+        wxString msg;
+        if (!parser->Done())
+            msg = _("C++ Parser is still parsing files...");
+        else
+            msg = _("No matches");
         ed->GetControl()->CallTipShow(ed->GetControl()->GetCurrentPos(), msg);
     }
 	return -5;

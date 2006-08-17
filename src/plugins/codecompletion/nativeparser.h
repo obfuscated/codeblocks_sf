@@ -90,8 +90,8 @@ class NativeParser : public wxEvtHandler
 		wxString GetNextCCToken(const wxString& line, unsigned int& startAt, bool& is_function);
 		wxString GetCCToken(wxString& line, ParserTokenType& tokenType);
 		bool FindFunctionNamespace(cbEditor* editor, wxString* nameSpace = 0L, wxString* procName = 0L);
-		int FindCurrentBlockStart(cbEditor* editor);
-		int DoInheritanceAI(Token* parentToken, Token* scopeToken, const wxString& searchText = wxEmptyString, bool caseSensitive = true);
+		int FindCurrentFunctionStart(cbEditor* editor);
+		bool IsFunctionSignature(cbEditor* editor, int pos, bool* is_member_initialiser = 0);
 		void AddCompilerDirs(Parser* parser, cbProject* project);
 		bool LoadCachedData(Parser* parser, cbProject* project);
 		bool SaveCachedData(Parser* parser, const wxString& projectFilename);

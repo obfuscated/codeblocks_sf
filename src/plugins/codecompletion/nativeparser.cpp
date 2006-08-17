@@ -589,9 +589,16 @@ int NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI)
 					buffer.RemoveLast(); // remove )
 					buffer.Replace(_T(","), _T(";")); // replace commas with semi-colons
 					buffer << _T(';'); // aid parser ;)
+					buffer.Trim();
+#ifdef DEBUG_CC_AI
 					Manager::Get()->GetMessageManager()->DebugLog(_T("Parsing arguments: \"%s\""), buffer.c_str());
-					if (!parser->ParseBuffer(buffer, false))
+#endif
+					if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false))
+					{
+#ifdef DEBUG_CC_AI
 						Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR parsing block:\n%s"), buffer.c_str());
+#endif
+                    }
 //					sort = true;
 				}
 			}
@@ -602,14 +609,19 @@ int NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI)
 #endif
 
 		// parse current code block
-		int blockStart = FindCurrentBlockStart(ed);
+		int blockStart = FindCurrentFunctionStart(ed);
 		if (blockStart != -1)
 		{
 			++blockStart; // skip {
 			int blockEnd = ed->GetControl()->GetCurrentPos();
 			wxString buffer = ed->GetControl()->GetTextRange(blockStart, blockEnd);
-			if (!parser->ParseBuffer(buffer, false))
+			buffer.Trim();
+			if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false))
+			{
+#ifdef DEBUG_CC_AI
 				Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR parsing block:\n%s"), buffer.c_str());
+#endif
+			}
 			sort = true;
 		}
 #ifdef DEBUG_CC_AI
@@ -1043,6 +1055,34 @@ int NativeParser::AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, cons
     // add current scope
     if (!scopeName.IsEmpty())
         parser->GetTokens()->FindMatches(scopeName, scope_result, true, false);
+    else if (!procName.IsEmpty())
+    {
+        // we got no scope but we got a function
+        // this happens for global functions (don't care - they are handled below)
+        // and for class/namespace member functions implemented in the header file
+        // (or with "using namespace")
+        //
+        // for this case, we 'll get all procName matches and add all the non-global
+        // parent namespaces/classes in the search scope
+        // better to propose some invalid scopes than none...
+        TokenIdxSet proc_result;
+        parser->GetTokens()->FindMatches(procName, proc_result, true, false);
+        for (TokenIdxSet::iterator it = proc_result.begin(); it != proc_result.end(); ++it)
+        {
+            Token* procToken = tree->at(*it);
+            if (procToken &&
+                procToken->m_ParentIndex != -1 &&
+                (procToken->m_TokenKind == tkFunction || procToken->m_TokenKind == tkConstructor || procToken->m_TokenKind == tkDestructor))
+            {
+#ifdef DEBUG_CC_AI
+                Token* parentToken = tree->at(procToken->m_ParentIndex);
+                DBGLOG(_T("Adding non-global scope '%s' for member function '%s'"),
+                        parentToken->DisplayName().c_str(), procToken->DisplayName().c_str());
+#endif
+                scope_result.insert(procToken->m_ParentIndex);
+            }
+        }
+    }
 
     // always add scope -1 (i.e. global namespace)
     scope_result.insert(-1);
@@ -1340,46 +1380,6 @@ bool NativeParser::BelongsToParentOrItsAncestors(TokensTree* tree, Token* token,
     return parentToken->m_Ancestors.find(token->m_ParentIndex) != parentToken->m_Ancestors.end();
 }
 
-int NativeParser::DoInheritanceAI(Token* parentToken, Token* scopeToken, const wxString& searchText, bool caseSensitive)
-{
-	int count = 0;
-	if (!parentToken)
-		return 0;
-	TokensTree* tree = parentToken->GetTree();
-	if(!tree)
-        return 0;
-	Manager::Get()->GetMessageManager()->DebugLog(_T("Checking inheritance of %s"), parentToken->m_Name.c_str());
-	Manager::Get()->GetMessageManager()->DebugLog(_T("- Has %d ancestor(s)"), parentToken->m_Ancestors.size());
-	TokenIdxSet::iterator it,x;
-	for (it = parentToken->m_Ancestors.begin();it != parentToken->m_Ancestors.end(); it++)
-	{
-		int ancestor_idx = *it;
-		Token* ancestor = tree->at(ancestor_idx);
-		if(!ancestor)
-            continue;
-		Manager::Get()->GetMessageManager()->DebugLog(_T("- Checking ancestor %s"), ancestor->m_Name.c_str());
-		int bak = count;
-		for (x = ancestor->m_Children.begin(); x != ancestor->m_Children.end(); x++)
-		{
-			Token* token = tree->at(*x);
-			if(!token)
-                continue;
-			wxString name = token->m_Name;
-			if (!caseSensitive)
-				name.MakeLower();
-			bool textCondition = searchText.IsEmpty() ? true : name.StartsWith(searchText);
-			//Manager::Get()->GetMessageManager()->DebugLog("- [%s] %s: %s", searchText.c_str(), name.c_str(), textCondition ? "match" : "no match");
-			token->m_Bool = textCondition &&
-							(token->m_Scope == tsPublic || (scopeToken && scopeToken->InheritsFrom(ancestor_idx)));
-			if (token->m_Bool)
-				count++;
-		}
-		Manager::Get()->GetMessageManager()->DebugLog(_T("- %d matches"), count - bak);
-		count += DoInheritanceAI(ancestor, scopeToken, searchText, caseSensitive);
-	}
-	return count;
-}
-
 bool NativeParser::SkipWhitespaceForward(cbEditor* editor, int& pos)
 {
     if (!editor)
@@ -1415,28 +1415,171 @@ bool NativeParser::SkipWhitespaceBackward(cbEditor* editor, int& pos)
     return false;
 }
 
-int NativeParser::FindCurrentBlockStart(cbEditor* editor)
+int NativeParser::FindCurrentFunctionStart(cbEditor* editor)
 {
-	int pos = -1;
-	int line = editor->GetControl()->GetCurrentLine();
-	while (line >= 0)
+    cbStyledTextCtrl* control = editor->GetControl();
+    if (!control)
+        return -1;
+
+    wxString keywords;
+    EditorColourSet* theme = editor->GetColourSet();
+    if (theme)
+        keywords = theme->GetKeywords(theme->GetHighlightLanguage(wxSCI_LEX_CPP), 0);
+
+    int brace_nest = 0;
+	int pos = control->GetCurrentPos();
+	bool is_member_initialiser = false;
+	if (control->GetCharAt(pos) == '}')
+        pos--;
+	while (pos >= 0)
 	{
-		int level = editor->GetControl()->GetFoldLevel(line);
-		if ((level & wxSCI_FOLDLEVELHEADERFLAG) &&
-			(wxSCI_FOLDLEVELBASE == (level & wxSCI_FOLDLEVELNUMBERMASK)))
-		{
-			// we 're at block start (maybe '{')
-			wxString lineStr = editor->GetControl()->GetLine(line);
-			pos = lineStr.Find(_T("{"));
-			if (pos != wxNOT_FOUND)
-			{
-				pos += editor->GetControl()->PositionFromLine(line);
-				break;
-			}
-		}
-		--line;
+        SkipWhitespaceBackward(editor, pos);
+        if (pos < 0)
+            break;
+
+        wxChar ch = control->GetCharAt(pos);
+        switch (ch)
+        {
+            case '}':
+                brace_nest++;
+                break;
+
+            case '{':
+                brace_nest--;
+                if (brace_nest < 0)
+                {
+                    // now we 're talking :)
+                    int blockPos = pos;
+                    pos--;
+                    SkipWhitespaceBackward(editor, pos);
+                    if (pos >= 0 && control->GetCharAt(pos) == ')')
+                    {
+                        if (IsFunctionSignature(editor, pos, &is_member_initialiser))
+                            return blockPos;
+                        if (is_member_initialiser)
+                        {
+                            // reach for ':'
+                            int paren_nest = 0;
+                            while (pos >= 0)
+                            {
+                                ch = control->GetCharAt(pos);
+                                if (ch == ')') paren_nest++;
+                                else if (ch == '(') paren_nest--;
+                                if (paren_nest == 0 && ch == ':')
+                                    break;
+                                pos--;
+                                SkipWhitespaceBackward(editor, pos);
+                            }
+                            --pos;
+                            if (IsFunctionSignature(editor, pos, &is_member_initialiser))
+                                return blockPos;
+                        }
+                    }
+                }
+                brace_nest = 0; // keep going up, ignoring complete {} blocks
+                break;
+        }
+
+		--pos;
 	}
 	return pos;
+}
+
+// expects pos to be at the closing parenthesis
+bool NativeParser::IsFunctionSignature(cbEditor* editor, int pos, bool* is_member_initialiser)
+{
+    if (is_member_initialiser)
+        *is_member_initialiser = false;
+
+    cbStyledTextCtrl* control = editor->GetControl();
+    if (!control)
+        return false;
+
+    wxString keywords;
+    EditorColourSet* theme = editor->GetColourSet();
+    if (theme)
+        keywords = theme->GetKeywords(theme->GetHighlightLanguage(wxSCI_LEX_CPP), 0);
+
+	if (pos == -1)
+        pos = control->GetCurrentPos();
+
+    SkipWhitespaceBackward(editor, pos);
+    if (pos >= 0 && control->GetCharAt(pos) == ')')
+    {
+        // ok! skip parentheses but use a clever trick:
+        // if we don't find at least two words inside the
+        // parentheses (*not* separated by comma), then it's
+        // not a function signature (but a function call)
+        // Clever, ain't it? :D
+        //
+        // ofcourse there is a case where this doesn't work:
+        // argument-less functions...
+        int paren_nest = 0;
+        wxChar last_char;
+        bool is_sig = false;
+        while (pos >= 0)
+        {
+            wxChar ch = control->GetCharAt(pos);
+            switch (ch)
+            {
+                case ')': paren_nest++; break;
+
+                case '(': paren_nest--; break;
+
+                case '\r': // fallthrough
+                case '\n': // fallthrough
+                case '\t': // fallthrough
+                case ' ':
+                    if (paren_nest == 1) // still inside the args
+                    {
+                        SkipWhitespaceBackward(editor, pos);
+                        ch = control->GetCharAt(pos);
+                        if (ch != ',' && ch != ';' && (wxIsalnum(last_char) || last_char == '_'))
+                            is_sig = true; // yes!
+                    }
+                    break;
+
+                default: // other character
+                    break;
+            }
+            --pos;
+
+            // reached here;
+            if (is_sig || (paren_nest == 0 && pos >= 0))
+            {
+                // check word before: if it's a C++ keyword, return false else true
+                SkipWhitespaceBackward(editor, pos);
+                int start = control->WordStartPosition(pos, true);
+                int end = control->WordEndPosition(pos, true);
+                wxString w = control->GetTextRange(start, end);
+                if (!keywords.Contains(w + _T(' ')))
+                {
+                    if (is_sig)
+                        return true; // we are certain :)
+
+                    // one last check for constructor initialiser lists
+                    // XYZ::XYZ() : member_var(init), other_member(1) {
+                    // without this check, other_member will be taken for function
+                    start--;
+                    SkipWhitespaceBackward(editor, start);
+                    bool is_sig = start >= 0 &&
+                                control->GetCharAt(start) != ',' &&
+                                (control->GetCharAt(start) != ':' ||
+                                control->GetCharAt(start - 1) == ':');
+                    if (is_member_initialiser)
+                        *is_member_initialiser = !is_sig;
+#ifdef DEBUG_CC_AI
+                    DBGLOG(_T("%s: is_member_initialiser=%d"), w.c_str(), *is_member_initialiser ? 1 : 0);
+#endif
+                    return is_sig;
+                }
+                else
+                    return false; // keyword
+            }
+            last_char = ch;
+        }
+    }
+    return false;
 }
 
 bool NativeParser::FindFunctionNamespace(cbEditor* editor, wxString* nameSpace, wxString* procName)
@@ -1444,7 +1587,7 @@ bool NativeParser::FindFunctionNamespace(cbEditor* editor, wxString* nameSpace, 
 	if (!nameSpace && !procName)
 		return false;
 
-	int posOf = FindCurrentBlockStart(editor);
+	int posOf = FindCurrentFunctionStart(editor);
 	if (posOf != wxNOT_FOUND)
 	{
 		// look for :: right before procname and procargs
@@ -1456,7 +1599,7 @@ bool NativeParser::FindFunctionNamespace(cbEditor* editor, wxString* nameSpace, 
 		while (posOf > 0)
 		{
 			--posOf;
-			char ch = editor->GetControl()->GetCharAt(posOf);
+			wxChar ch = editor->GetControl()->GetCharAt(posOf);
 			switch (ch)
 			{
 				case ')' : --nest; passedArgs = false; break;
@@ -1476,9 +1619,19 @@ bool NativeParser::FindFunctionNamespace(cbEditor* editor, wxString* nameSpace, 
                 {
                     int bkp = posOf;
                     SkipWhitespaceBackward(editor, posOf);
-                    done = true;
-                    hasNS = ch == ':' && editor->GetControl()->GetCharAt(posOf - 1) == ':';
-                    posOf = bkp;
+                    wxChar nch = editor->GetControl()->GetCharAt(posOf);
+                    wxChar prev_ch = editor->GetControl()->GetCharAt(posOf - 1);
+                    if (nch == ',' || (nch == ':' && prev_ch != ':'))
+                    {
+                        // don't be fooled by member initialisers
+                        passedArgs = false;
+                    }
+                    else
+                    {
+                        done = true;
+                        hasNS = ch == ':' && prev_ch == ':';
+                        posOf = bkp;
+                    }
                 }
             }
 			if (done || ch == '}' || ch == ';')
