@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="copystrings" />
+		<Option default_target="" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\copystrings.dll" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_CFG" value="" />
 			</Environment>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-g" />
@@ -62,5 +65,6 @@
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

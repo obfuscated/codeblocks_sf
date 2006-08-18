@@ -1,8 +1,9 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="C::B Games" />
+		<Option default_target="" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
@@ -10,12 +11,14 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
-				<Option includeInTargetAll="1" />
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
 			</Environment>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-g" />
@@ -128,7 +131,7 @@
 		<Extensions>
 <wxsmith>
 	<dialog wxs_file="byoGameSelect.wxs" class="byoGameSelect" src_file="byogameselect.cpp" header_file="byogameselect.h" xrc_file="" edit_mode="Source" />
-	<panel wxs_file="byoConf.wxs" class="byoConf" src_file="byoconf.cpp" header_file="byoconf.h" xrc_file="E:\codeblocks\src\plugins\contrib\byogames\wxsmith\byoConf.wxs" edit_mode="Source" />
+	<panel wxs_file="byoConf.wxs" class="byoConf" src_file="byoconf.cpp" header_file="byoconf.h" xrc_file="" edit_mode="Source" />
 	<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
 </wxsmith>
 		</Extensions>

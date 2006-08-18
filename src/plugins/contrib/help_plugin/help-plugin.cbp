@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="Help Plugin (wx2.6)" />
 		<Option pch_mode="0" />
+		<Option default_target="" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="help_plugin">
@@ -11,7 +12,6 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
-				<Option includeInTargetAll="1" />
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
@@ -61,6 +61,9 @@
 				<Variable name="WX_CFG" value="" />
 			</Environment>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="help_plugin;" />
+		</VirtualTargets>
 		<Unit filename="HelpConfigDialog.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="help_plugin" />
@@ -97,5 +100,6 @@
 			<Option link="0" />
 			<Option target="help_plugin" />
 		</Unit>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

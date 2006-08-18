@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="Dev-C++ DevPak updater/installer (wx2.6)" />
 		<Option pch_mode="0" />
-		<Option default_target="1" />
+		<Option default_target="default" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="libbz2">
@@ -12,7 +12,6 @@
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 			</Target>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\devpakupdater.dll" />
@@ -20,7 +19,6 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
-				<Option includeInTargetAll="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
 				<Compiler>
 					<Add option="-Wall" />
@@ -55,6 +53,9 @@
 				<Variable name="WX_CFG" value="" />
 			</Environment>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="libbz2;default;" />
+		</VirtualTargets>
 		<Compiler>
 			<Add directory="bzip2" />
 			<Add directory="$(#WX.include)" />
@@ -196,5 +197,6 @@
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
