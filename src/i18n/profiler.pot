@@ -1,0 +1,162 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-18 18:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:47
+msgid "Code profiler"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:48
+msgid "1.0RC2"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:49
+msgid ""
+"A simple graphical interface to the GNU GProf Profiler\n"
+"\n"
+"GNU GProf Online Reference:\n"
+"http://www.gnu.org/software/binutils/manual/gprof-2.9.1/html_mono/gprof.html"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:50
+msgid "Dark Lord & Zlika"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:53
+msgid ""
+"Mandrav, for the n00b intro to profiling\n"
+"and the sources of his Source code\n"
+"formatter (AStyle) Plugin, whose clean\n"
+"code structure served as a basis for this\n"
+"plugin\n"
+":)"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:96
+msgid ""
+"You need to open a project\n"
+"before using the plugin!\n"
+"C::B Profiler could not complete the operation."
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:98
+#: ../plugins/contrib/profiler/cbprofiler.cpp:128
+#: ../plugins/contrib/profiler/cbprofiler.cpp:136
+#: ../plugins/contrib/profiler/cbprofilerexec.cpp:64
+msgid "Error"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:113
+msgid "Select the target you want to profile"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:114
+msgid "Select Target"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:126
+msgid ""
+"No executable targets found in project!\n"
+"C::B Profiler could not complete the operation."
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:135
+msgid "The target is not executable!"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:157
+msgid ""
+"No executable found!\n"
+"You either have not built the target or\n"
+"just cleaned the project.\n"
+"Try to find profiling info anyway?"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:161
+#: ../plugins/contrib/profiler/cbprofiler.cpp:223
+msgid "Confirmation"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:190
+msgid ""
+"No profile data found!\n"
+"Be sure to enable \"Profile Code when executed\" for the current target.\n"
+"The target must have been run at least one time after that.\n"
+"Do you want to search for the profile data file?"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:194
+msgid "Cannot find gmon.out."
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:198
+msgid "Locate profile information"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:210
+#, possible-c-format
+msgid "Using executable file from: %s."
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:211
+#, possible-c-format
+msgid "Using gmon.out   file from: %s."
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofiler.cpp:220
+msgid ""
+"It seems like the profile data is older than the executable.\n"
+"You probably have not run the executable to update this data.\n"
+"Continue anyway?"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofilerconfig.h:27
+msgid "Profiler settings"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofilerexec.cpp:57
+#: ../plugins/contrib/profiler/cbprofilerexec.cpp:100
+msgid "C::B Profiler plugin"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofilerexec.cpp:57
+msgid "Launching gprof. Please wait..."
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofilerexec.cpp:63
+msgid ""
+"Unable to execute Gprof\n"
+"Be sure it is in the OS global path\n"
+"C::B Profiler could not complete the operation"
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofilerexec.cpp:100
+#: ../plugins/contrib/profiler/cbprofilerexec.cpp:111
+msgid "Parsing profile information. Please wait..."
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofilerexec.cpp:164
+msgid "Parsing Call Graph information. Please wait..."
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofilerexec.cpp:244
+msgid "Parsing Flat Profile information. Please wait..."
+msgstr ""
+
+#: ../plugins/contrib/profiler/cbprofilerexec.cpp:290
+msgid "Save gprof output to file"
+msgstr ""

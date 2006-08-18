@@ -1,0 +1,330 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-18 18:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../plugins/contrib/cb_koders/cb_koders.cpp:30
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:14
+msgid "Koders query"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/cb_koders.cpp:32
+msgid "This plugin queries the Koders webpage for keywords"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/cb_koders.cpp:36
+msgid ""
+"Yiannis Mandravellos, Thomas Denk and all the other C::B developers and "
+"contributers for a great piece of software."
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/cb_koders.cpp:73
+msgid "Cannot search for an empty expession."
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/cb_koders.cpp:73
+#: ../plugins/contrib/cb_koders/cb_koders.cpp:84
+#: ../plugins/contrib/cb_koders/cb_koders.cpp:114
+msgid "Error"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/cb_koders.cpp:81
+#, possible-c-format
+msgid "http://www.koders.com/?S=%s&btnSearch=Search&la=%s&li=%s"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/cb_koders.cpp:84
+msgid "Could not launch the default browser of your system."
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/cb_koders.cpp:99
+msgid "Search at Koders..."
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/cb_koders.cpp:99
+msgid "Search keyword at Koders webpage..."
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/cb_koders.cpp:114
+msgid "Could not initialise CB_Koders plugin."
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:17
+msgid "Specify search to query the Koders webpage:"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:17
+msgid "ID_LBL_INTRO"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:20
+msgid "ID_TXT_SEARCH"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:22
+msgid "Enter the search phrase to query the Koders webpage for..."
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:23
+msgid "Search"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:23
+msgid "ID_BTN_SEARCH"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:25
+msgid "Click to query the search phrase on the Koders webpage..."
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:29
+msgid "Filter:"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:29
+msgid "ID_LBL_FILTER"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:30
+msgid "ID_CHO_LANGUAGES"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:31
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:125
+msgid "All Languages"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:32
+msgid "Ada"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:33
+msgid "ASP"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:34
+msgid "Assembler"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:35
+msgid "C"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:36
+msgid "C#"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:37
+msgid "Cpp"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:38
+msgid "ColdFusion"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:39
+msgid "Delphi"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:40
+msgid "Eiffel"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:41
+msgid "Erlang"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:42
+msgid "Fortran"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:43
+msgid "Java"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:44
+msgid "JavaScript"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:45
+msgid "JSP"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:46
+msgid "Lisp"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:47
+msgid "Lua"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:48
+msgid "Mathematica"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:49
+msgid "Matlab"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:50
+msgid "ObjectiveC"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:51
+msgid "Perl"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:52
+msgid "PHP"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:53
+msgid "Prolog"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:54
+msgid "Python"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:55
+msgid "Ruby"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:56
+msgid "Scheme"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:57
+msgid "Smalltalk"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:58
+msgid "SQL"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:59
+msgid "Tcl"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:60
+msgid "VB"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:61
+msgid "VB.NET"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:63
+msgid "Specify a language filter (limits search)..."
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:64
+msgid "ID_CHO_LICENSES"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:65
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:135
+msgid "All Licenses"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:66
+msgid "AFL"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:67
+msgid "AL20"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:68
+msgid "ASL"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:69
+msgid "APSL"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:70
+msgid "BSD"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:71
+msgid "CPL"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:72
+msgid "GPL"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:73
+msgid "LGPL"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:74
+msgid "IBMPL"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:75
+msgid "IOSL"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:76
+msgid "MPL10"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:77
+msgid "MPL11"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:78
+msgid "NPL10"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:79
+msgid "NPL11"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:80
+msgid "OSL"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:81
+msgid "PSFL"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:82
+msgid "SPL"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:83
+msgid "W3C"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:84
+msgid "ZLL"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:85
+msgid "ZPL"
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:87
+msgid "Specify a license filter (limits search)..."
+msgstr ""
+
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:123
+#: ../plugins/contrib/cb_koders/kodersdialog.cpp:133
+msgid "*"
+msgstr ""

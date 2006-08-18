@@ -1,0 +1,80 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-18 18:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.cpp:137
+msgid "Please enter new help file title:"
+msgstr ""
+
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.cpp:137
+msgid "Add title"
+msgstr ""
+
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.cpp:145
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.cpp:177
+msgid "This title is already in use"
+msgstr ""
+
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.cpp:145
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.cpp:151
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.cpp:177
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.cpp:183
+#: ../plugins/contrib/help_plugin/help_plugin.cpp:441
+msgid "Warning"
+msgstr ""
+
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.cpp:151
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.cpp:183
+msgid "Slashes and backslashes cannot be used to name a help file"
+msgstr ""
+
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.cpp:169
+msgid "Rename this help file title:"
+msgstr ""
+
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.cpp:169
+msgid "Rename title"
+msgstr ""
+
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.cpp:194
+msgid "Are you sure you want to remove this help file?"
+msgstr ""
+
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.cpp:194
+msgid "Remove"
+msgstr ""
+
+#: ../plugins/contrib/help_plugin/HelpConfigDialog.h:20
+msgid "Help files"
+msgstr ""
+
+#: ../plugins/contrib/help_plugin/help_plugin.cpp:306
+msgid "&Locate in"
+msgstr ""
+
+#: ../plugins/contrib/help_plugin/help_plugin.cpp:325
+#: ../plugins/contrib/help_plugin/help_plugin.cpp:347
+msgid "Help"
+msgstr ""
+
+#: ../plugins/contrib/help_plugin/help_plugin.cpp:376
+msgid "Locate in "
+msgstr ""
+
+#: ../plugins/contrib/help_plugin/help_plugin.cpp:441
+msgid "Couldn't find an associated program to open "
+msgstr ""
