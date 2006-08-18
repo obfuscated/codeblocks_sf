@@ -112,7 +112,7 @@ void SelectTargetDlg::OnHostApplicationButtonClick(wxCommandEvent& /*event*/)
     {
         wxFileDialog* dlg = new wxFileDialog(this,
                             _("Select host application"),
-                            _(""),
+                            _T(""),
                             obj->GetValue(),
                             #ifdef __WXMSW__
                             _("Executable files (*.exe)|*.exe"),

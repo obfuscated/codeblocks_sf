@@ -51,7 +51,7 @@ Autosave::Autosave()
     m_PluginInfo.author = _T("Thomas Denk");
     m_PluginInfo.authorEmail = _T("");
     m_PluginInfo.authorWebsite = _T("");
-    m_PluginInfo.thanksTo = _("");
+    m_PluginInfo.thanksTo = _T("");
     m_PluginInfo.license = _T("GPL");
 
     timer1 = new wxTimer(this, 10000);

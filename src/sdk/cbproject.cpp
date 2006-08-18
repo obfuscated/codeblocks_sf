@@ -346,12 +346,10 @@ void cbProject::Open()
         if (fileUpgraded)
         {
             InfoWindow::Display(m_Title,
-              _("This project file was generated\n"
+              _("The loaded project file was generated\n"
                 "with an older version of Code::Blocks.\n\n"
                 "Code::Blocks can import older project files,\n"
-                "but will always save in the current format.\n\n"
-                "If you save this project, Code::Blocks will\n"
-                "upgrade it to the current version."), 12000, 2000);
+                "but will always save in the current format."), 12000, 2000);
         }
     }
     else

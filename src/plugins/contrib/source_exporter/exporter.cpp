@@ -114,7 +114,7 @@ void Exporter::BuildMenu(wxMenuBar *menuBar)
   export_submenu->Append(idFileExportODT, _("As &ODT..."), _("Exports the current file to ODT"));
   export_submenu->Append(idFileExportPDF, _("As &PDF..."), _("Exports the current file to PDF"));
 
-  wxMenuItem *export_menu = new wxMenuItem(0, idFileExport, _("&Export"), _(""), wxITEM_NORMAL);
+  wxMenuItem *export_menu = new wxMenuItem(0, idFileExport, _("&Export"), _T(""), wxITEM_NORMAL);
   export_menu->SetSubMenu(export_submenu);
 
   file->Insert(printPos, export_menu);

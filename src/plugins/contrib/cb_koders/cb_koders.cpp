@@ -120,7 +120,7 @@ void CB_Koders::OnSearchKoders(wxCommandEvent& event)
 {
   if (IsReady())
   {
-    wxString search(_("")); // the word to search for (if any)
+    wxString search(_T("")); // the word to search for (if any)
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
     if (ed)

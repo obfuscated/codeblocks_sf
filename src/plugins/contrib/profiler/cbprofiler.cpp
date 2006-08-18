@@ -48,8 +48,8 @@ CBProfiler::CBProfiler()
     m_PluginInfo.version       = _("1.0RC2");
     m_PluginInfo.description   = _("A simple graphical interface to the GNU GProf Profiler\n\nGNU GProf Online Reference:\nhttp://www.gnu.org/software/binutils/manual/gprof-2.9.1/html_mono/gprof.html");
     m_PluginInfo.author        = _("Dark Lord & Zlika");
-    m_PluginInfo.authorEmail   = _("");
-    m_PluginInfo.authorWebsite = _("");
+    m_PluginInfo.authorEmail   = _T("");
+    m_PluginInfo.authorWebsite = _T("");
     m_PluginInfo.thanksTo      = _("Mandrav, for the n00b intro to profiling\nand the sources of his Source code\nformatter (AStyle) Plugin, whose clean\ncode structure served as a basis for this\nplugin\n:)");
     m_PluginInfo.license       = LICENSE_GPL;
 }

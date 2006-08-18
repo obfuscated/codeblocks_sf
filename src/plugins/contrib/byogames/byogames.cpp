@@ -37,7 +37,7 @@ BYOGames::BYOGames(): SecondTick(this,1)
 	m_PluginInfo.author = _T("BYO");
 	m_PluginInfo.authorEmail = _T("byo.spoon@gmail.com");
 	m_PluginInfo.authorWebsite = _T("");
-	m_PluginInfo.thanksTo = _("");
+	m_PluginInfo.thanksTo = _T("");
 	m_PluginInfo.license = LICENSE_GPL;
 
 	SecondTick.Start(1000,true);

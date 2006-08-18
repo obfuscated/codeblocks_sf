@@ -71,7 +71,7 @@ wxSmith::wxSmith()
 	m_PluginInfo.description = _("RAD tool used to create wxWidgets forms");
 	m_PluginInfo.author = _("BYO");
 	m_PluginInfo.authorEmail = _("byo.spoon@gmail.com");
-	m_PluginInfo.authorWebsite = _("");
+	m_PluginInfo.authorWebsite = _T("");
 	m_PluginInfo.thanksTo =
         _("Ann for Being\n"
           "Anha for Smile\n"

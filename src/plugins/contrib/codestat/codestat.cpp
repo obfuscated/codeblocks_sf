@@ -38,8 +38,8 @@ CodeStat::CodeStat()
     m_PluginInfo.version = _("0.5");
     m_PluginInfo.description = _("A simple plugin for counting code, comments and empty lines of a project.");
     m_PluginInfo.author = _("Zlika");
-    m_PluginInfo.authorEmail = _("");
-    m_PluginInfo.authorWebsite = _("");
+    m_PluginInfo.authorEmail = _T("");
+    m_PluginInfo.authorWebsite = _T("");
     m_PluginInfo.thanksTo = _("All the Code::Blocks team!");
     m_PluginInfo.license = LICENSE_GPL;
 }

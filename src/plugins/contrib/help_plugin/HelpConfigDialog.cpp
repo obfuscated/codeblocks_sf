@@ -155,7 +155,7 @@ void HelpConfigDialog::Add(wxCommandEvent &event)
     lst->Append(text);
     lst->SetSelection(lst->GetCount() - 1);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
-    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(_(""));
+    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(_T(""));
     ChooseFile();
     UpdateEntry(lst->GetSelection());
     m_LastSel = lst->GetSelection();
@@ -212,7 +212,7 @@ void HelpConfigDialog::Delete(wxCommandEvent &event)
   }
   else
   {
-    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(_(""));
+    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(_T(""));
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
   }
 

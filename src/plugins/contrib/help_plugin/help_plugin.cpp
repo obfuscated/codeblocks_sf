@@ -303,7 +303,7 @@ void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const File
       AddToPopupMenu(sub_menu, idHelpMenus[counter++], it->first);
     }
 
-    wxMenuItem *locate_in_menu = new wxMenuItem(0, wxID_ANY, _("&Locate in"), _(""), wxITEM_NORMAL);
+    wxMenuItem *locate_in_menu = new wxMenuItem(0, wxID_ANY, _("&Locate in"), _T(""), wxITEM_NORMAL);
     locate_in_menu->SetSubMenu(sub_menu);
 
     menu->Append(locate_in_menu);

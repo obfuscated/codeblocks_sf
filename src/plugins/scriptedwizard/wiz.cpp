@@ -62,7 +62,7 @@ Wiz::Wiz()
     m_PluginInfo.author = _T("Yiannis Mandravellos");
     m_PluginInfo.authorEmail = _T("mandrav@codeblocks.org");
     m_PluginInfo.authorWebsite = _T("http://www.codeblocks.org");
-    m_PluginInfo.thanksTo = _("");
+    m_PluginInfo.thanksTo = _T("");
     m_PluginInfo.license = LICENSE_GPL;
 }
 
