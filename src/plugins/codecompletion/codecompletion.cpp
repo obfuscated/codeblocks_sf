@@ -122,10 +122,10 @@ CodeCompletion::CodeCompletion() :
 
     m_PluginInfo.name = _T("CodeCompletion");
     m_PluginInfo.title = _("Code completion");
-    m_PluginInfo.version = _T("0.1");
-    m_PluginInfo.description = _("This plugin provides a class browser for your projects "
-                               "and code-completion inside the editor\n\n"
-                               "Note: Only C/C++ language is supported by this plugin...");
+    m_PluginInfo.version = _T("0.7");
+    m_PluginInfo.description = _("This plugin provides a symbols browser for your projects "
+                               "and code-completion inside the editor.\n\n"
+                               "Note: Only C/C++ language is supported by this plugin (currently)...");
     m_PluginInfo.author = _T("Yiannis An. Mandravellos");
     m_PluginInfo.authorEmail = _T("info@codeblocks.org");
     m_PluginInfo.authorWebsite = _T("www.codeblocks.org");

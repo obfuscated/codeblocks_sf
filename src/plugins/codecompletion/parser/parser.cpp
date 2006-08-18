@@ -40,6 +40,7 @@
 	#include <editormanager.h>
 	#include <manager.h>
 	#include <globals.h>
+	#include <infowindow.h>
 #endif // STANDALONE
 
 #ifndef CB_PRECOMP
@@ -190,12 +191,30 @@ void Parser::ReadOptions()
 	m_BrowserOptions.showAllSymbols = false;
 #else // !STANDALONE
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+
+    // one-time default settings change: upgrade everyone
+    bool force_all_on = !cfg->ReadBool(_T("/parser_defaults_changed"), false);
+    if (force_all_on)
+    {
+        cfg->Write(_T("/parser_defaults_changed"), (bool)true);
+
+        cfg->Write(_T("/parser_follow_local_includes"), true);
+        cfg->Write(_T("/parser_follow_global_includes"), true);
+        cfg->Write(_T("/want_preprocessor"), true);
+
+        InfoWindow::Display(_("Code-completion"),
+                            _("The default options for the code-completion parser\n"
+                            "have changed and your settings have been updated.\n\n"
+                            "You can review them by going to \"Settings->Editor->\n"
+                            "Code-completion and symbols browser\"."));
+    }
+
 	//m_Pool.SetConcurrentThreads(cfg->ReadInt(_T("/max_threads"), 1)); // Ignore it in the meanwhile
-	m_Options.followLocalIncludes = cfg->ReadBool(_T("/parser_follow_local_includes"), false);
-	m_Options.followGlobalIncludes = cfg->ReadBool(_T("/parser_follow_global_includes"), false);
+	m_Options.followLocalIncludes = cfg->ReadBool(_T("/parser_follow_local_includes"), true);
+	m_Options.followGlobalIncludes = cfg->ReadBool(_T("/parser_follow_global_includes"), true);
 	m_Options.caseSensitive = cfg->ReadBool(_T("/case_sensitive"), false);
 	m_Options.useSmartSense = cfg->ReadBool(_T("/use_SmartSense"), true);
-	m_Options.wantPreprocessor = cfg->ReadBool(_T("/want_preprocessor"), false);
+	m_Options.wantPreprocessor = cfg->ReadBool(_T("/want_preprocessor"), true);
 	m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"), false);
 	m_BrowserOptions.viewFlat = cfg->ReadBool(_T("/browser_view_flat"), false);
 	m_BrowserOptions.showAllSymbols = cfg->ReadBool(_T("/show_all_symbols"), false);
@@ -206,6 +225,7 @@ void Parser::WriteOptions()
 {
 #ifndef STANDALONE
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+
 	cfg->Write(_T("/max_threads"), (int)GetMaxThreads());
 	cfg->Write(_T("/parser_follow_local_includes"), m_Options.followLocalIncludes);
 	cfg->Write(_T("/parser_follow_global_includes"), m_Options.followGlobalIncludes);
