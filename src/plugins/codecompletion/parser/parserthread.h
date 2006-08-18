@@ -67,6 +67,7 @@ class ParserThread : public cbThreadedTask
 		void HandleClass(bool isClass = true);
 		void HandleFunction(const wxString& name, bool isOperator = false);
 		void HandleEnum();
+		void HandleTypedef();
 		Token* DoAddToken(TokenKind kind, const wxString& name, int line, const wxString& args = wxEmptyString, bool isOperator = false, bool isImpl = false);
 		wxString GetActualTokenType();
 	private:

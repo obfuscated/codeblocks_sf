@@ -34,6 +34,8 @@ EXTRA_DIST = classbrowser.xrc \
 	images/preproc_folder.png \
 	images/preproc.png \
 	images/symbols_folder.png \
+	images/typedef.png \
+	images/typedefs_folder.png \
 	images/var_private.png \
 	images/var_protected.png \
 	images/var_public.png

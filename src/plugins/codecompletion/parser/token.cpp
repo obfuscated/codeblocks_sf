@@ -74,6 +74,7 @@ Token::Token()
 	m_Line(0),
 	m_IsOperator(false),
 	m_IsTemp(false),
+	m_IsTypedef(false),
 	m_ParentIndex(-1),
 	m_Bool(false),
 	m_pTree(0),
@@ -204,15 +205,15 @@ wxString Token::GetTokenKindString() const
 {
 	switch (m_TokenKind)
 	{
-		case tkClass: return _("class");
-		case tkNamespace: return _("namespace");
-		case tkEnum: return _("enum");
-		case tkEnumerator: return _("enumerator");
-		case tkFunction: return _("function");
-		case tkConstructor: return _("constructor");
-		case tkDestructor: return _("destructor");
-		case tkPreprocessor: return _("preprocessor");
-		case tkVariable: return _("variable");
+		case tkClass: return m_IsTypedef ? _T("typedef") : _T("class");
+		case tkNamespace: return _T("namespace");
+		case tkEnum: return _T("enum");
+		case tkEnumerator: return _T("enumerator");
+		case tkFunction: return _T("function");
+		case tkConstructor: return _T("constructor");
+		case tkDestructor: return _T("destructor");
+		case tkPreprocessor: return _T("preprocessor");
+		case tkVariable: return _T("variable");
 		default: return wxEmptyString; // tkUndefined
 	}
 }
@@ -221,9 +222,9 @@ wxString Token::GetTokenScopeString() const
 {
 	switch (m_Scope)
 	{
-		case tsPrivate: return _("private");
-		case tsProtected: return _("protected");
-		case tsPublic: return _("public");
+		case tsPrivate: return _T("private");
+		case tsProtected: return _T("protected");
+		case tsPublic: return _T("public");
 		default: return wxEmptyString;
 	}
 }

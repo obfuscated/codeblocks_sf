@@ -101,6 +101,7 @@ class Token  : public BlockAllocated<Token, 10000>
 		bool m_IsOperator;
 		bool m_IsLocal; // found in a local file?
 		bool m_IsTemp; // if true, the tree deletes it in FreeTemporaries()
+		bool m_IsTypedef; // typedefs are stored as classes inheriting from the typedef'd type. This flag tells if the token is a typedef.
 
         int m_ParentIndex;
         TokenIdxSet m_Children;

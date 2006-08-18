@@ -55,7 +55,8 @@ END_EVENT_TABLE()
 NativeParser::NativeParser()
 	: m_Parser(this),
 	m_CallTipCommas(0),
-	m_ClassBrowserIsFloating(true)
+	m_ClassBrowserIsFloating(true),
+	m_GettingCalltips(false)
 {
 	//ctor
     m_pClassBrowser = 0L;
@@ -849,6 +850,11 @@ const wxArrayString& NativeParser::GetCallTips()
         TokenIdxSet result;
         lock = new wxCriticalSectionLocker(s_MutexProtection);
 
+        tokens->FreeTemporaries();
+        ParseFunctionArguments(ed);
+        ParseLocalBlock(ed);
+
+        m_GettingCalltips = true;
         if (!AI(result, ed, parser, lineText, true, true))
             break;
 		for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
@@ -858,10 +864,13 @@ const wxArrayString& NativeParser::GetCallTips()
                 continue;
             if (token->m_Args != _T("()"))
                 m_CallTips.Add(token->m_Args);
+            else if (token->m_IsTypedef && token->m_ActualType.Contains(_T("(")))
+                m_CallTips.Add(token->m_ActualType); // typedef'd function pointer
         }
     }while(false);
     if(lock)
         delete lock;
+    m_GettingCalltips = false;
     m_CallTipCommas = commas;
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("m_CallTipCommas=%d"), m_CallTipCommas);
 	return m_CallTips;
@@ -1223,6 +1232,9 @@ size_t NativeParser::FindAIMatches(Parser* parser,
 {
     // TODO: handle special keyword 'this'
 
+    if (components.empty())
+        return 0;
+
 #ifdef DEBUG_CC_AI
     Manager::Get()->GetMessageManager()->DebugLog(_T("FindAIMatches - enter"));
 #endif
@@ -1275,7 +1287,10 @@ size_t NativeParser::FindAIMatches(Parser* parser,
 #endif
 
         // is the token a function or variable (i.e. is not a type)
-        if (!searchtext.IsEmpty() && parser_component.token_type != pttSearchText && !token->m_ActualType.IsEmpty())
+        if (!searchtext.IsEmpty() &&
+            (parser_component.token_type != pttSearchText ||
+            m_GettingCalltips) && // this allows calltips for typedef'd function pointers
+            !token->m_ActualType.IsEmpty())
         {
             // the token is not a type
             // find its type's ID and use this as parent instead of (*it)

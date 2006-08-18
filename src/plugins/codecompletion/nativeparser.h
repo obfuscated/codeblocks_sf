@@ -115,6 +115,7 @@ class NativeParser : public wxEvtHandler
 		int m_CallTipCommas;
     	ClassBrowser* m_pClassBrowser;
     	bool m_ClassBrowserIsFloating; // docked to project manager notebook, or free floating?
+    	bool m_GettingCalltips; // flag while getting calltips
 
         DECLARE_EVENT_TABLE()
 };

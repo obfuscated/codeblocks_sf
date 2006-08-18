@@ -34,6 +34,7 @@
 #include <globals.h>
 
 #include <cctype>
+#include <queue>
 
 int THREAD_START = wxNewId();
 int THREAD_END = wxNewId();
@@ -487,8 +488,12 @@ void ParserThread::DoParse()
 				m_Tokenizer.GetToken(); //skip args
 			m_Str.Clear();
 		}
-		else if (token==ParserConsts::kw_typedef ||
-			token==ParserConsts::kw_return ||
+		else if (token==ParserConsts::kw_typedef)
+		{
+		    HandleTypedef();
+		    m_Str.Clear();
+		}
+		else if (token==ParserConsts::kw_return ||
 			token==ParserConsts::colon)
 		{
 			SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
@@ -1270,4 +1275,138 @@ void ParserThread::HandleEnum()
 	}
 //	// skip to ;
 //	SkipToOneOfChars(ParserConsts::semicolon);
+}
+
+void ParserThread::HandleTypedef()
+{
+    // we will store typedefs as tkClass and put the typedef'd type as the class's
+    // ancestor. this way, it will work through inheritance.
+    // function pointers are a different beast and are handled differently.
+
+    // this is going to be tough :(
+    // let's see some examples:
+    //
+    // relatively easy:
+    // typedef unsigned int uint32;
+    // typedef std::map<String, StringVector> AnimableDictionaryMap;
+    //
+    // harder:
+    // typedef void dMessageFunction (int errnum, const char *msg, va_list ap);
+    //
+    // even harder:
+    // typedef void (*dMessageFunction)(int errnum, const char *msg, va_list ap);
+
+	size_t lineNr = m_Tokenizer.GetLineNumber();
+	bool is_function_pointer = false;
+	std::queue<wxString> components;
+	// get everything on the same line
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Typedef start"));
+    wxString args;
+    wxString token;
+    wxString peek;
+	while (true)
+	{
+	    token = m_Tokenizer.GetToken();
+	    peek = m_Tokenizer.PeekToken();
+	    if (token.IsEmpty() || token == ParserConsts::semicolon)
+            break;
+
+	    if (token == ParserConsts::kw_class ||
+            token == ParserConsts::kw_struct ||
+            token == ParserConsts::kw_enum)
+	    {
+	        // "typedef struct" is not supported
+	        // "typedef class" is not supported
+	        // "typedef enum" is not supported
+	        SkipToOneOfChars(ParserConsts::semicolon, true);
+            break;
+	    }
+
+        // skip templates <>
+        if (peek == ParserConsts::lt)
+        {
+            SkipAngleBraces();
+            continue;
+        }
+
+        // keep namespaces together
+        while (peek == ParserConsts::dcolon)
+        {
+            token << peek;
+            m_Tokenizer.GetToken(); // eat it
+            token << m_Tokenizer.GetToken(); // get what's next
+            peek = m_Tokenizer.PeekToken();
+
+            if (peek == ParserConsts::lt)
+                m_Tokenizer.UngetToken(); // or else templates check above will fail
+        }
+
+        if (token.GetChar(0) == '(')
+        {
+            // function pointer (probably)
+            is_function_pointer = true;
+            if (peek.GetChar(0) == '(')
+            {
+                // typedef void (*dMessageFunction)(int errnum, const char *msg, va_list ap);
+
+                // remove parentheses and any dereferencing symbols
+                token.RemoveLast();
+                size_t pos = 1;
+                while (pos < token.Length() && token.GetChar(pos) != '*')
+                    pos++;
+                while (token.GetChar(pos) == '*')
+                    pos++;
+                if (pos < token.Length())
+                    token.Remove(0, pos); // remove up to *
+                else
+                    token.Remove(0, 1); // remove opening parenthesis
+                args = peek;
+                components.push(token);
+            }
+            else
+            {
+                // typedef void dMessageFunction (int errnum, const char *msg, va_list ap);
+
+                // last component is already the name and this is the args
+                args = token;
+            }
+            break;
+        }
+
+        components.push(token);
+//        Manager::Get()->GetMessageManager()->DebugLog(_T(" + '%s'"), token.c_str());
+	}
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Typedef done"));
+
+    if (!is_function_pointer && components.size() <= 1)
+            return; // invalid typedef
+
+    // now get the type
+    wxString ancestor;
+    while (components.size() > 1)
+    {
+        wxString token = components.front();
+        components.pop();
+
+        if (!ancestor.IsEmpty())
+            ancestor << _T(' ');
+        ancestor << token;
+    }
+
+    // no return type
+    m_Str.Clear();
+
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Adding typedef: name '%s', ancestor: '%s'"), components.front().c_str(), ancestor.c_str());
+    Token* tdef = DoAddToken(tkClass, components.front(), lineNr, args);
+    if (tdef)
+    {
+        tdef->m_IsTypedef = true;
+        if (!is_function_pointer)
+        {
+            tdef->m_AncestorsString = ancestor;
+            tdef->m_ActualType = ancestor;
+        }
+        else
+            tdef->m_ActualType = ancestor + args;
+    }
 }

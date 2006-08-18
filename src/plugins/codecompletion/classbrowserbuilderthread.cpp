@@ -180,7 +180,8 @@ void ClassBrowserBuilderThread::AddTreeNamespace(const wxTreeItemId& parentNode,
         parentidx = parent->GetSelf();
     }
 
-	bool has_classes = false,has_enums = false,has_preprocessor = false,has_others = false;
+	bool has_typedefs = false,has_classes = false,has_enums = false,has_preprocessor = false,has_others = false;
+	wxTreeItemId node_typedefs;
 	wxTreeItemId node_classes;
 	wxTreeItemId node_enums;
 	wxTreeItemId node_preprocessor;
@@ -202,12 +203,24 @@ void ClassBrowserBuilderThread::AddTreeNamespace(const wxTreeItemId& parentNode,
         switch(token->m_TokenKind)
         {
             case tkClass:
-                    if(!has_classes)
+                    if(token->m_IsTypedef)
                     {
-                        has_classes = true;
-                        node_classes = m_Tree.AppendItem(parentNode, _("Classes"), PARSER_IMG_CLASS_FOLDER);
+                        if (!has_typedefs)
+                        {
+                            has_typedefs = true;
+                            node_typedefs = m_Tree.AppendItem(parentNode, _("Typedefs"), PARSER_IMG_TYPEDEF_FOLDER);
+                        }
+                        curnode = &node_typedefs;
                     }
-                    curnode = &node_classes;
+                    else
+                    {
+                        if(!has_classes)
+                        {
+                            has_classes = true;
+                            node_classes = m_Tree.AppendItem(parentNode, _("Classes"), PARSER_IMG_CLASS_FOLDER);
+                        }
+                        curnode = &node_classes;
+                    }
                     break;
             case tkEnum:
                     if(!has_enums)
@@ -266,7 +279,9 @@ void ClassBrowserBuilderThread::AddTreeNode(const wxTreeItemId& parentNode, Toke
 
 	image = m_pParser->GetTokenKindImage(token);
 
-	wxString str = token->m_Name + token->m_Args;
+	wxString str = token->m_Name;
+	if (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor)
+        str << token->m_Args;
 	if (!token->m_ActualType.IsEmpty())
 		 str = str + _T(" : ") + token->m_ActualType;
 	wxTreeItemId node = childrenOnly ? parentNode : m_Tree.AppendItem(parentNode, str, image, -1, ctd);

@@ -128,6 +128,8 @@ Parser::Parser(wxEvtHandler* parent)
     m_pImageList->Add(bmp); // PARSER_IMG_ENUMERATOR
     bmp.LoadFile(prefix + _T("namespace.png"), wxBITMAP_TYPE_PNG);
     m_pImageList->Add(bmp); // PARSER_IMG_NAMESPACE
+    bmp.LoadFile(prefix + _T("typedef.png"), wxBITMAP_TYPE_PNG);
+    m_pImageList->Add(bmp); // PARSER_IMG_TYPEDEF
     bmp.LoadFile(prefix + _T("symbols_folder.png"), wxBITMAP_TYPE_PNG);
     m_pImageList->Add(bmp); // PARSER_IMG_SYMBOLS_FOLDER
     bmp.LoadFile(prefix + _T("enums_folder.png"), wxBITMAP_TYPE_PNG);
@@ -136,6 +138,8 @@ Parser::Parser(wxEvtHandler* parent)
     m_pImageList->Add(bmp); // PARSER_IMG_PREPROC_FOLDER
     bmp.LoadFile(prefix + _T("others_folder.png"), wxBITMAP_TYPE_PNG);
     m_pImageList->Add(bmp); // PARSER_IMG_OTHERS_FOLDER
+    bmp.LoadFile(prefix + _T("typedefs_folder.png"), wxBITMAP_TYPE_PNG);
+    m_pImageList->Add(bmp); // PARSER_IMG_TYPEDEF_FOLDER
 #endif // STANDALONE
     ConnectEvents();
 }
@@ -297,7 +301,7 @@ int Parser::GetTokenKindImage(Token* token)
 
 		case tkEnumerator: return PARSER_IMG_ENUMERATOR;
 
-		case tkClass: return PARSER_IMG_CLASS;
+		case tkClass: return token->m_IsTypedef ? PARSER_IMG_TYPEDEF : PARSER_IMG_CLASS;
 
 		case tkNamespace: return PARSER_IMG_NAMESPACE;
 
