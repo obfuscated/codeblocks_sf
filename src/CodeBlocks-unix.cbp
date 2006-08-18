@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="Code::Blocks - Unix" />
 		<Option pch_mode="2" />
-		<Option default_target="11" />
+		<Option default_target="src" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="AutoRevision">
@@ -382,6 +382,11 @@
 				<Variable name="WX_CFG" value="NonUnicode" />
 			</Environment>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="AutoRevision;ConsoleRunner;tinyXML;Squirrel;Squirrel std lib;SqPlus;scintilla;wxPropertyGrid;wxFlatNotebook;sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;Autosave plugin;XP look &amp; feel;" />
+			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;Autosave plugin;XP look &amp; feel;" />
+			<Add alias="Third-party libs" targets="AutoRevision;ConsoleRunner;tinyXML;Squirrel;Squirrel std lib;SqPlus;scintilla;wxPropertyGrid;wxFlatNotebook;wxAUI;Compiler depslib;" />
+		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-g" />

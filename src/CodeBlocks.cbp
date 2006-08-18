@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="Code::Blocks" />
 		<Option pch_mode="2" />
-		<Option default_target="11" />
+		<Option default_target="src" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="AutoRevision">
@@ -12,7 +12,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Linker>
 					<Add option="-s" />
@@ -24,7 +23,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Option projectCompilerOptionsRelation="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
@@ -38,7 +36,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Compiler>
 					<Add option="-DEXPORT_LIB" />
 				</Compiler>
@@ -49,7 +46,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Compiler>
 					<Add option="-fno-inline" />
 					<Add directory="sdk\scripting\include" />
@@ -63,7 +59,6 @@
 				<Option external_deps="sdk\scripting\lib\libsquirrel.a;" />
 				<Option type="2" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Compiler>
 					<Add option="-fno-inline" />
 					<Add directory="sdk\scripting\include" />
@@ -76,7 +71,6 @@
 				<Option external_deps="sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;" />
 				<Option type="2" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Compiler>
 					<Add option="-fno-inline" />
 					<Add directory="sdk\scripting\include" />
@@ -89,7 +83,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-D__WX__" />
@@ -115,7 +108,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 			</Target>
 			<Target title="wxFlatNotebook">
 				<Option output="sdk\wxFlatNotebook\libwxflatnotebook.a" />
@@ -123,7 +115,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Compiler>
 					<Add directory="sdk\wxFlatNotebook" />
 				</Compiler>
@@ -136,7 +127,6 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations" />
-				<Option includeInTargetAll="1" />
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
@@ -174,7 +164,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Compiler>
 					<Add option="-D__GNUWIN32__" />
 					<Add option="-DWIN32" />
@@ -190,7 +179,6 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations -ns" />
-				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />
@@ -232,7 +220,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
@@ -254,7 +241,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Compiler>
 					<Add option="-DDEPSLIB_WINDOWS" />
 				</Compiler>
@@ -266,7 +252,6 @@
 				<Option external_deps="plugins\compilergcc\depslib\libdepslib.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />
@@ -294,7 +279,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />
@@ -319,7 +303,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />
@@ -342,7 +325,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />
@@ -365,7 +347,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />
@@ -387,7 +368,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Compiler>
 					<Add option="-include sdk.h" />
 					<Add option="-DBUILDING_PLUGIN" />
@@ -409,7 +389,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="sdk" />
@@ -428,7 +407,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="sdk" />
@@ -447,7 +425,6 @@
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
@@ -4232,12 +4209,12 @@
 			<Option target="sdk" />
 		</Unit>
 		<Extensions>
-			<wxsmith>
-				<dialog wxs_file="CCDebugInfo.wxs" class="CCDebugInfo" src_file="plugins\codecompletion\ccdebuginfo.cpp" header_file="plugins\codecompletion\ccdebuginfo.h" xrc_file="" edit_mode="Source" />
-				<panel wxs_file="ScriptConsole.wxs" class="ScriptConsole" src_file="src\scriptconsole.cpp" header_file="src\scriptconsole.h" xrc_file="" edit_mode="Source" />
-				<dialog wxs_file="VirtualBuildTargetsDlg.wxs" class="VirtualBuildTargetsDlg" src_file="sdk\virtualbuildtargetsdlg.cpp" header_file="sdk\virtualbuildtargetsdlg.h" xrc_file="" edit_mode="Source" />
-				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
-			</wxsmith>
+<wxsmith>
+	<dialog wxs_file="CCDebugInfo.wxs" class="CCDebugInfo" src_file="plugins\codecompletion\ccdebuginfo.cpp" header_file="plugins\codecompletion\ccdebuginfo.h" xrc_file="" edit_mode="Source" />
+	<dialog wxs_file="VirtualBuildTargetsDlg.wxs" class="VirtualBuildTargetsDlg" src_file="sdk\virtualbuildtargetsdlg.cpp" header_file="sdk\virtualbuildtargetsdlg.h" xrc_file="" edit_mode="Source" />
+	<panel wxs_file="ScriptConsole.wxs" class="ScriptConsole" src_file="src\scriptconsole.cpp" header_file="src\scriptconsole.h" xrc_file="" edit_mode="Source" />
+	<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
+</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
