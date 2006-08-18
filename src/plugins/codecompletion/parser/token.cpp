@@ -73,6 +73,7 @@ Token::Token()
 	m_File(0),
 	m_Line(0),
 	m_IsOperator(false),
+	m_IsTemp(false),
 	m_ParentIndex(-1),
 	m_Bool(false),
 	m_pTree(0),
@@ -708,6 +709,17 @@ void TokensTree::RemoveFile(int index)
         }
     }
     the_list.clear();
+}
+
+void TokensTree::FreeTemporaries()
+{
+    int i;
+    for(i = m_Tokens.size() -1;i >= 0;i--)
+    {
+        Token* token = m_Tokens[i];
+        if (token && token->m_IsTemp)
+            RemoveToken(token);
+    }
 }
 
 void TokensTree::RecalcFreeList()

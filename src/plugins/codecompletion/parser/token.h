@@ -100,6 +100,7 @@ class Token  : public BlockAllocated<Token, 10000>
 		TokenKind m_TokenKind;
 		bool m_IsOperator;
 		bool m_IsLocal; // found in a local file?
+		bool m_IsTemp; // if true, the tree deletes it in FreeTemporaries()
 
         int m_ParentIndex;
         TokenIdxSet m_Children;
@@ -140,6 +141,7 @@ class TokensTree
         size_t FindTokensInFile(const wxString& file, TokenIdxSet& result, short int kindMask);
         void RemoveFile(const wxString& filename);
         void RemoveFile(int index);
+        void FreeTemporaries();
         virtual ~TokensTree();
 
         // Parsing related functions

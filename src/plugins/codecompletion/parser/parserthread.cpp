@@ -819,8 +819,6 @@ Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, 
 
 Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, const wxString& args, bool isOperator, bool isImpl)
 {
-    // TODO: add linenumber argument; by the time we are here, we 're not on the token's line anymore...
-
     if(TestDestroy())
         return 0;
 	if (m_Options.useBuffer && TokenExists(name, m_pLastParent, kind))
@@ -879,6 +877,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
         newToken->m_Scope = m_LastScope;
         newToken->m_TokenKind = kind;
         newToken->m_IsLocal = m_IsLocal;
+        newToken->m_IsTemp = m_Options.isTemp;
         newToken->m_ParentIndex = finalParent ? finalParent->GetSelf() : -1;
         newToken->m_IsOperator = isOperator;
     //    Log("Added token " +name+ ", type '" +newToken->m_Type+ "', actual '" +newToken->m_ActualType+ "'");

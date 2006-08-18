@@ -21,6 +21,14 @@ static wxCriticalSection s_mutexListProtection;
 
 struct ParserThreadOptions
 {
+    ParserThreadOptions()
+        : useBuffer(false),
+        bufferSkipBlocks(false),
+        wantPreprocessor(true),
+        followLocalIncludes(true),
+        followGlobalIncludes(true),
+        isTemp(false)
+        {}
     /** useBuffer specifies that we're not parsing a file,  but a temporary
       * buffer. The resulting tokens will be temporary, too,
       * and will be deleted when the next file is parsed.
@@ -30,6 +38,7 @@ struct ParserThreadOptions
 	bool wantPreprocessor;
 	bool followLocalIncludes;
 	bool followGlobalIncludes;
+	bool isTemp;
 };
 
 class ParserThread : public cbThreadedTask

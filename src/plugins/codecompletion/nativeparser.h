@@ -54,7 +54,7 @@ class NativeParser : public wxEvtHandler
 		void RemoveFileFromParser(cbProject* project, const wxString& filename);
 		void ForceReparseActiveProject();
 
-		int MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI = true);
+		size_t MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI = true);
 
 		const wxString& GetCodeCompletionItems();
 		const wxArrayString& GetCallTips();
@@ -79,12 +79,15 @@ class NativeParser : public wxEvtHandler
 	protected:
 	private:
         friend class CodeCompletion;
-		int AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, const wxString& lineText = wxEmptyString, bool noPartialMatch = false, bool caseSensitive = false);
+		size_t AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, const wxString& lineText = wxEmptyString, bool noPartialMatch = false, bool caseSensitive = false);
 
-		int FindAIMatches(Parser* parser, std::queue<ParserComponent> components, TokenIdxSet& result, int parentTokenIdx = -1, bool noPartialMatch = false, bool caseSensitive = false, bool use_inheritance = true, short int kindMask = 0xFFFF);
-        int BreakUpComponents(Parser* parser, const wxString& actual, std::queue<ParserComponent>& components);
+		size_t FindAIMatches(Parser* parser, std::queue<ParserComponent> components, TokenIdxSet& result, int parentTokenIdx = -1, bool noPartialMatch = false, bool caseSensitive = false, bool use_inheritance = true, short int kindMask = 0xFFFF);
+        size_t BreakUpComponents(Parser* parser, const wxString& actual, std::queue<ParserComponent>& components);
         bool BelongsToParentOrItsAncestors(TokensTree* tree, Token* token, int parentIdx, bool use_inheritance = true);
         size_t GenerateResultSet(TokensTree* tree, const wxString& search, int parentIdx, TokenIdxSet& result, bool caseSens = true, bool isPrefix = false, short int kindMask = 0xFFFF);
+
+		bool ParseFunctionArguments(cbEditor* ed);
+		bool ParseLocalBlock(cbEditor* ed); // parses from the start of function up to the cursor
 
 		unsigned int FindCCTokenStart(const wxString& line);
 		wxString GetNextCCToken(const wxString& line, unsigned int& startAt, bool& is_function);

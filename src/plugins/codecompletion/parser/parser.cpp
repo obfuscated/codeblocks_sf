@@ -377,13 +377,14 @@ void Parser::LinkInheritance(bool tempsOnly)
 	(tempsOnly ? m_pTempTokens :  m_pTokens)->RecalcData();
 }
 
-bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks)
+bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks, bool isTemp)
 {
 	ParserThreadOptions opts;
 	opts.wantPreprocessor = m_Options.wantPreprocessor;
 	opts.followLocalIncludes = m_Options.followLocalIncludes;
 	opts.followGlobalIncludes = m_Options.followGlobalIncludes;
 	opts.useBuffer = true;
+	opts.isTemp = isTemp;
 	opts.bufferSkipBlocks = bufferSkipBlocks;
 	return Parse(buffer, isLocal, opts);
 }

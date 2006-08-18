@@ -558,8 +558,126 @@ void NativeParser::DisplayStatus(Parser* parser)
                     tim % 1000);
 }
 
-int NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI)
+bool NativeParser::ParseFunctionArguments(cbEditor* ed)
 {
+	if (!ed)
+		return false;
+
+	Parser* parser = FindParserFromEditor(ed);
+	if (!parser)
+		return false;
+
+	if (!parser->Done())
+		return false;
+
+#ifdef DEBUG_CC_AI
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Parse function arguments"));
+#endif
+
+    wxString _namespace;
+    wxString _procedure;
+    if (FindFunctionNamespace(ed, &_namespace, &_procedure))
+    {
+        TokenIdxSet scope_result;
+        TokenIdxSet proc_result;
+        if (!_namespace.IsEmpty())
+        {
+            // search for namespace
+            // NOTE: this will fail if _namespace contains more than one namespace (which *will* happen in the future)
+            parser->GetTokens()->FindMatches(_namespace, scope_result, true, false);
+        }
+        if (scope_result.empty()) // no namespace found?
+            scope_result.insert(-1); // search globals
+
+        // get all function matches
+        for (TokenIdxSet::iterator it = scope_result.begin(); it != scope_result.end(); ++it)
+        {
+            int idx = *it;
+            if (idx != -1)
+            {
+                Token* parentToken = parser->GetTokens()->at(idx);
+                if (parentToken && parentToken->m_TokenKind != tkNamespace && parentToken->m_TokenKind != tkClass)
+                    continue;
+            }
+            GenerateResultSet(parser->GetTokens(), _procedure, idx, proc_result, true, false, tkFunction | tkConstructor | tkDestructor);
+        }
+
+        // loop all matching functions
+        for (TokenIdxSet::iterator it = proc_result.begin(); it != proc_result.end(); ++it)
+        {
+            Token* token = parser->GetTokens()->at(*it);
+            if (token && !token->m_Args.IsEmpty() && !token->m_Args.Matches(_T("()")))
+            {
+                wxString buffer = token->m_Args;
+                buffer.Remove(0, 1); // remove (
+                buffer.RemoveLast(); // remove )
+                buffer.Replace(_T(","), _T(";")); // replace commas with semi-colons
+                buffer << _T(';'); // aid parser ;)
+                buffer.Trim();
+#ifdef DEBUG_CC_AI
+                Manager::Get()->GetMessageManager()->DebugLog(_T("Parsing arguments: \"%s\""), buffer.c_str());
+#endif
+                if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false, false, true))
+                {
+#ifdef DEBUG_CC_AI
+                    Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR parsing block:\n%s"), buffer.c_str());
+#endif
+                }
+                else
+                    return true;
+            }
+        }
+    }
+#ifdef DEBUG_CC_AI
+    else
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Could not determine current function's namespace..."));
+#endif
+    return false;
+}
+
+bool NativeParser::ParseLocalBlock(cbEditor* ed)
+{
+	if (!ed)
+		return false;
+
+	Parser* parser = FindParserFromEditor(ed);
+	if (!parser)
+		return false;
+
+	if (!parser->Done())
+		return false;
+
+#ifdef DEBUG_CC_AI
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Parse local block"));
+#endif
+
+    int blockStart = FindCurrentFunctionStart(ed);
+    if (blockStart != -1)
+    {
+        ++blockStart; // skip {
+        int blockEnd = ed->GetControl()->GetCurrentPos();
+        wxString buffer = ed->GetControl()->GetTextRange(blockStart, blockEnd);
+        buffer.Trim();
+        if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false, false, true))
+        {
+#ifdef DEBUG_CC_AI
+            Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR parsing block:\n%s"), buffer.c_str());
+#endif
+        }
+        else
+            return true;
+    }
+#ifdef DEBUG_CC_AI
+    else
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Could not determine current block start..."));
+#endif
+    return false;
+}
+
+size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI)
+{
+    result.clear();
+
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	if (!ed)
 		return 0;
@@ -572,79 +690,24 @@ int NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI)
 		Manager::Get()->GetMessageManager()->DebugLog(_T("C++ Parser is still parsing files..."));
 	else
 	{
-		bool sort = false;
+	    // remove old temporaries
+	    parser->GetTokens()->FreeTemporaries();
 
 		// parse function's arguments
-		wxString _namespace;
-		wxString _procedure;
-		if (FindFunctionNamespace(ed, &_namespace, &_procedure))
-		{
-			Token* token = parser->FindTokenByName(_procedure, false, tkFunction);
-			if (token)
-			{
-				 if (!token->m_Args.IsEmpty() && !token->m_Args.Matches(_T("()")))
-				{
-					wxString buffer = token->m_Args;
-					buffer.Remove(0, 1); // remove (
-					buffer.RemoveLast(); // remove )
-					buffer.Replace(_T(","), _T(";")); // replace commas with semi-colons
-					buffer << _T(';'); // aid parser ;)
-					buffer.Trim();
-#ifdef DEBUG_CC_AI
-					Manager::Get()->GetMessageManager()->DebugLog(_T("Parsing arguments: \"%s\""), buffer.c_str());
-#endif
-					if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false))
-					{
-#ifdef DEBUG_CC_AI
-						Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR parsing block:\n%s"), buffer.c_str());
-#endif
-                    }
-//					sort = true;
-				}
-			}
-		}
-#ifdef DEBUG_CC_AI
-		else
-			Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find current function's namespace..."));
-#endif
+		ParseFunctionArguments(ed);
 
-		// parse current code block
-		int blockStart = FindCurrentFunctionStart(ed);
-		if (blockStart != -1)
-		{
-			++blockStart; // skip {
-			int blockEnd = ed->GetControl()->GetCurrentPos();
-			wxString buffer = ed->GetControl()->GetTextRange(blockStart, blockEnd);
-			buffer.Trim();
-			if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false))
-			{
-#ifdef DEBUG_CC_AI
-				Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR parsing block:\n%s"), buffer.c_str());
-#endif
-			}
-			sort = true;
-		}
-#ifdef DEBUG_CC_AI
-		else
-			Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find current block start..."));
-#endif
-
-//		if (sort)
-//			parser->SortAllTokens();
-
-        result.clear();
+		// parse current code block (from the start of function up to the cursor)
+		ParseLocalBlock(ed);
 
         if (!reallyUseAI)
         {
-            // all tokens
+            // all tokens, no AI whatsoever
             TokensTree* tokens = parser->GetTokens();
             for (size_t i = 0; i < tokens->size(); ++i)
                 result.insert(i);
+            return result.size();
         }
 
-#ifdef DEBUG_CC_AI
-        Manager::Get()->GetMessageManager()->DebugLog(_T("MarkItemsByAI"));
-#endif
         return AI(result, ed, parser);
 	}
 	return 0;
@@ -989,7 +1052,7 @@ wxString NativeParser::GetCCToken(wxString& line, ParserTokenType& tokenType)
 
 // Start an Artificial Intelligence (!) sequence to gather all the matching tokens..
 // The actual AI is in FindAIMatches() below...
-int NativeParser::AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, const wxString& lineText, bool noPartialMatch, bool caseSensitive)
+size_t NativeParser::AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, const wxString& lineText, bool noPartialMatch, bool caseSensitive)
 {
     int pos = editor->GetControl()->GetCurrentPos();
 	m_EditorStartWord = editor->GetControl()->WordStartPosition(pos, true);
@@ -1123,7 +1186,7 @@ int NativeParser::AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, cons
 // (empty space)    [pttSearchText]
 //
 // It also classifies each component as a pttClass, pttNamespace, pttFunction, pttSearchText
-int NativeParser::BreakUpComponents(Parser* parser, const wxString& actual, std::queue<ParserComponent>& components)
+size_t NativeParser::BreakUpComponents(Parser* parser, const wxString& actual, std::queue<ParserComponent>& components)
 {
 	ParserTokenType tokenType;
 	wxString tmp = actual;
@@ -1149,7 +1212,7 @@ int NativeParser::BreakUpComponents(Parser* parser, const wxString& actual, std:
 // This function decides most of what gets included in the auto-completion list
 // presented to the user.
 // It's called recursively for each component of the std::queue argument.
-int NativeParser::FindAIMatches(Parser* parser,
+size_t NativeParser::FindAIMatches(Parser* parser,
                                 std::queue<ParserComponent> components,
                                 TokenIdxSet& result,
                                 int parentTokenIdx,
