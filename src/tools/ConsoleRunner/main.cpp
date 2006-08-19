@@ -9,6 +9,10 @@
 #endif
 #include <string.h>
 
+#ifdef __MINGW32__
+int _CRT_glob = 0;
+#endif
+
 bool hasSpaces(const char* str)
 {
 	char last = 0;
