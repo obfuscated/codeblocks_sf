@@ -666,7 +666,19 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed)
 #endif
         }
         else
+        {
+#ifdef DEBUG_CC_AI
+            DBGLOG(_T("Block:\n%s"), buffer.c_str());
+            DBGLOG(_T("Local tokens:"));
+            for (size_t i = 0; i < parser->GetTokens()->size(); ++i)
+            {
+                Token* t = parser->GetTokens()->at(i);
+                if (t && t->m_IsTemp)
+                    DBGLOG(_T(" + %s"), t->DisplayName().c_str());
+            }
+#endif
             return true;
+        }
     }
 #ifdef DEBUG_CC_AI
     else
@@ -1564,7 +1576,7 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor)
 }
 
 // expects pos to be at the closing parenthesis
-bool NativeParser::IsFunctionSignature(cbEditor* editor, int pos, bool* is_member_initialiser)
+bool NativeParser::IsFunctionSignature(cbEditor* editor, int& pos, bool* is_member_initialiser)
 {
     if (is_member_initialiser)
         *is_member_initialiser = false;
@@ -1576,7 +1588,10 @@ bool NativeParser::IsFunctionSignature(cbEditor* editor, int pos, bool* is_membe
     wxString keywords;
     EditorColourSet* theme = editor->GetColourSet();
     if (theme)
-        keywords = theme->GetKeywords(theme->GetHighlightLanguage(wxSCI_LEX_CPP), 0);
+    {
+        HighlightLanguage lang = theme->GetLanguageForFilename(_T(".cpp")); // C++ keywords
+        keywords = _T(' ') + theme->GetKeywords(lang, 0) + _T(' ');
+    }
 
 	if (pos == -1)
         pos = control->GetCurrentPos();
@@ -1623,14 +1638,17 @@ bool NativeParser::IsFunctionSignature(cbEditor* editor, int pos, bool* is_membe
             --pos;
 
             // reached here;
-            if (is_sig || (paren_nest == 0 && pos >= 0))
+            if (paren_nest == 0 && pos >= 0)
             {
                 // check word before: if it's a C++ keyword, return false else true
                 SkipWhitespaceBackward(editor, pos);
                 int start = control->WordStartPosition(pos, true);
                 int end = control->WordEndPosition(pos, true);
                 wxString w = control->GetTextRange(start, end);
-                if (!keywords.Contains(w + _T(' ')))
+#ifdef DEBUG_CC_AI
+                DBGLOG(_T("possible function name: '%s'"), w.c_str());
+#endif
+                if (!keywords.Contains(_T(' ') + w + _T(' ')))
                 {
                     if (is_sig)
                         return true; // we are certain :)
