@@ -176,7 +176,10 @@ fi
 %{pkgdata}/profiler.zip
 %{pkgdata}/wxsmith.zip
 %{pkgdata}/images/wxsmith/*
+%{pkgdata}/images/codesnippets/*
 %{pkgdata}/plugins/libbyogames.*
+%{pkgdata}/plugins/libcb_koders.*
+%{pkgdata}/plugins/libcodesnippets.*
 %{pkgdata}/plugins/libcodestat.*
 %{pkgdata}/plugins/libdragscroll.*
 %{pkgdata}/plugins/libenvvars.*
@@ -194,6 +197,8 @@ fi
 %{_includedir}/%{name}/*
 
 %changelog
+* Sun Aug 20 2006 Daniel Orb <danielorb2000@googlemail.com>
+- Added missing files to filelist
 * Sat Jul 22 2006 Daniel Orb <danielorb2000@googlemail.com>
 - adapted versioning to autotools
 * Fri Jul 14 2006 Daniel Orb <danielorb2000@googlemail.com>
