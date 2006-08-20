@@ -326,7 +326,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuil
         if (var.GetChar(0) == _T('#'))
         {
             replace = UnixFilename(m_uVarMan->Replace(var));
-			QuoteStringIfNeeded(replace);
+//			QuoteStringIfNeeded(replace);
         }
         else
         {
@@ -369,7 +369,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuil
             break; // avoid infinite loop when macro is invalid
         }
     }
-	QuoteStringIfNeeded(replace);
+//	QuoteStringIfNeeded(replace);
 
 //	Manager::Get()->GetMessageManager()->DebugLog(wxString("ReplaceMacros() ---> return: ") << buffer);
 }

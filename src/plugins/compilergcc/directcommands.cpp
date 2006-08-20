@@ -688,7 +688,7 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
         if (deps[i].IsEmpty())
             continue;
 
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(deps[i]);
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(deps[i], true);
         time_t timeSrc;
         depsTimeStamp(deps[i].mb_str(), &timeSrc);
         // if external dep doesn't exist, no need to relink
@@ -701,7 +701,7 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
         	if (files[i].IsEmpty())
                 continue;
 
-            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(files[i]);
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(files[i], true);
             time_t addT;
             depsTimeStamp(files[i].mb_str(), &addT);
             // if additional file doesn't exist, we can skip it
@@ -722,7 +722,7 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
         // it would return before we had a chance to check the
         // additional output files (above)
         wxString output = buildOutput;
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(output);
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(output, true);
         time_t timeExe;
         depsTimeStamp(output.mb_str(), &timeExe);
         // if build output doesn't exist, relink
