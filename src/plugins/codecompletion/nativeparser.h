@@ -79,13 +79,14 @@ class NativeParser : public wxEvtHandler
 	protected:
 	private:
         friend class CodeCompletion;
-		size_t AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, const wxString& lineText = wxEmptyString, bool noPartialMatch = false, bool caseSensitive = false);
+		size_t AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, const wxString& lineText = wxEmptyString, bool noPartialMatch = false, bool caseSensitive = false, TokenIdxSet* search_scope = 0);
 
 		size_t FindAIMatches(Parser* parser, std::queue<ParserComponent> components, TokenIdxSet& result, int parentTokenIdx = -1, bool noPartialMatch = false, bool caseSensitive = false, bool use_inheritance = true, short int kindMask = 0xFFFF);
         size_t BreakUpComponents(Parser* parser, const wxString& actual, std::queue<ParserComponent>& components);
         bool BelongsToParentOrItsAncestors(TokensTree* tree, Token* token, int parentIdx, bool use_inheritance = true);
         size_t GenerateResultSet(TokensTree* tree, const wxString& search, int parentIdx, TokenIdxSet& result, bool caseSens = true, bool isPrefix = false, short int kindMask = 0xFFFF);
 
+		bool ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope);
 		bool ParseFunctionArguments(cbEditor* ed);
 		bool ParseLocalBlock(cbEditor* ed); // parses from the start of function up to the cursor
 

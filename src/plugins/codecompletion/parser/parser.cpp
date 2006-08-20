@@ -507,6 +507,20 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
 	return thread->ParseBufferForFunctions(buffer);
 }
 
+bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
+{
+	ParserThreadOptions opts;
+//	opts.wantPreprocessor = m_Options.wantPreprocessor; // ignored
+//	opts.useBuffer = false; // ignored
+//	opts.bufferSkipBlocks = false; // ignored
+	ParserThread* thread = new ParserThread(this,
+											wxEmptyString,
+											false,
+											opts,
+											m_pTempTokens);
+	return thread->ParseBufferForUsingNamespace(buffer, result);
+}
+
 bool Parser::RemoveFile(const wxString& filename)
 {
 	if(!Done())

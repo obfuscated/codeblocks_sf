@@ -87,6 +87,7 @@ class Parser : public wxEvtHandler
 		bool Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadOptions& opts);
 		bool ParseBuffer(const wxString& buffer, bool isLocal = true, bool bufferSkipBlocks = false, bool isTemp = false);
 		bool ParseBufferForFunctions(const wxString& buffer);
+		bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
 		bool Reparse(const wxString& filename, bool isLocal = true);
         bool ReparseModifiedFiles();
 		bool RemoveFile(const wxString& filename);

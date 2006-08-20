@@ -654,6 +654,56 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed)
     return false;
 }
 
+bool NativeParser::ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope)
+{
+	if (!ed)
+		return false;
+
+	Parser* parser = FindParserFromEditor(ed);
+	if (!parser)
+		return false;
+    TokensTree* tree = parser->GetTokens();
+
+#ifdef DEBUG_CC_AI
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Parse file scope for \"using namespace\""));
+#endif
+
+    wxArrayString ns;
+    wxString buffer = ed->GetControl()->GetTextRange(0, ed->GetControl()->GetCurrentPos());
+    parser->ParseBufferForUsingNamespace(buffer, ns);
+
+    for (size_t i = 0; i < ns.GetCount(); ++i)
+    {
+        std::queue<ParserComponent> components;
+        BreakUpComponents(parser, ns[i], components);
+
+        int parentIdx = -1;
+        while (!components.empty())
+        {
+            ParserComponent pc = components.front();
+            components.pop();
+
+            int id = tree->TokenExists(pc.component, parentIdx, tkNamespace);
+            if (id == -1)
+            {
+                parentIdx = -1;
+                break;
+            }
+            parentIdx = id;
+        }
+#ifdef DEBUG_CC_AI
+        if (parentIdx != -1)
+        {
+            Token* token = tree->at(parentIdx);
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Found %s%s"), token->GetNamespace().c_str(), token->m_Name.c_str());
+        }
+#endif
+        search_scope.insert(parentIdx);
+    }
+
+    return true;
+}
+
 size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI)
 {
     result.clear();
@@ -662,7 +712,7 @@ size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI)
 	if (!ed)
 		return 0;
 
-	Parser* parser = FindParserFromActiveEditor();
+	Parser* parser = FindParserFromEditor(ed);
 	if (!parser)
 		return 0;
 
@@ -672,6 +722,10 @@ size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI)
 	{
 	    // remove old temporaries
 	    parser->GetTokens()->FreeTemporaries();
+
+		// find "using namespace" directives in the file
+	    TokenIdxSet search_scope;
+		ParseUsingNamespace(ed, search_scope);
 
 		// parse function's arguments
 		ParseFunctionArguments(ed);
@@ -688,7 +742,7 @@ size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI)
             return result.size();
         }
 
-        return AI(result, ed, parser);
+        return AI(result, ed, parser, wxEmptyString, false, false, &search_scope);
 	}
 	return 0;
 }
@@ -830,11 +884,14 @@ const wxArrayString& NativeParser::GetCallTips()
         lock = new wxCriticalSectionLocker(s_MutexProtection);
 
         tokens->FreeTemporaries();
+
+	    TokenIdxSet search_scope;
+		ParseUsingNamespace(ed, search_scope);
         ParseFunctionArguments(ed);
         ParseLocalBlock(ed);
 
         m_GettingCalltips = true;
-        if (!AI(result, ed, parser, lineText, true, true))
+        if (!AI(result, ed, parser, lineText, true, true, &search_scope))
             break;
 		for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
@@ -1040,7 +1097,13 @@ wxString NativeParser::GetCCToken(wxString& line, ParserTokenType& tokenType)
 
 // Start an Artificial Intelligence (!) sequence to gather all the matching tokens..
 // The actual AI is in FindAIMatches() below...
-size_t NativeParser::AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, const wxString& lineText, bool noPartialMatch, bool caseSensitive)
+size_t NativeParser::AI(TokenIdxSet& result,
+                        cbEditor* editor,
+                        Parser* parser,
+                        const wxString& lineText,
+                        bool noPartialMatch,
+                        bool caseSensitive,
+                        TokenIdxSet* search_scope)
 {
     int pos = editor->GetControl()->GetCurrentPos();
 	m_EditorStartWord = editor->GetControl()->WordStartPosition(pos, true);
@@ -1105,7 +1168,7 @@ size_t NativeParser::AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, c
     FindFunctionNamespace(editor, &scopeName, &procName);
     // add current scope
     if (!scopeName.IsEmpty())
-        parser->GetTokens()->FindMatches(scopeName, scope_result, true, false);
+        tree->FindMatches(scopeName, scope_result, true, false);
     else if (!procName.IsEmpty())
     {
         // we got no scope but we got a function
@@ -1117,7 +1180,7 @@ size_t NativeParser::AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, c
         // parent namespaces/classes in the search scope
         // better to propose some invalid scopes than none...
         TokenIdxSet proc_result;
-        parser->GetTokens()->FindMatches(procName, proc_result, true, false);
+        tree->FindMatches(procName, proc_result, true, false);
         for (TokenIdxSet::iterator it = proc_result.begin(); it != proc_result.end(); ++it)
         {
             Token* procToken = tree->at(*it);
@@ -1135,19 +1198,43 @@ size_t NativeParser::AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, c
         }
     }
 
+    if (!search_scope)
+        search_scope = &scope_result;
+    else
+    {
+        // add scopes
+        for (TokenIdxSet::iterator it = scope_result.begin(); it != scope_result.end(); ++it)
+            search_scope->insert(*it);
+    }
+
+    // remove non-namespace/class tokens
+    TokenIdxSet::iterator it = search_scope->begin();
+    while (it != search_scope->end())
+    {
+        Token* token = tree->at(*it);
+        if (!token || (token->m_TokenKind != tkNamespace && token->m_TokenKind != tkClass))
+        {
+            TokenIdxSet::iterator it2 = it;
+            ++it;
+            search_scope->erase(it2);
+        }
+        else
+            ++it;
+    }
+
     // always add scope -1 (i.e. global namespace)
-    scope_result.insert(-1);
+    search_scope->insert(-1);
 
     // find all other matches
     std::queue<ParserComponent> components;
     BreakUpComponents(parser, actual, components);
 
     // actually find all matches in selected namespaces
-    for (TokenIdxSet::iterator it = scope_result.begin(); it != scope_result.end(); ++it)
+    for (TokenIdxSet::iterator it = search_scope->begin(); it != search_scope->end(); ++it)
     {
 #ifdef DEBUG_CC_AI
         Token* scopeToken = tree->at(*it);
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Parent scope: %s'"), scopeToken ? scopeToken->m_Name.c_str() : _T("Global namespace"));
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Parent scope: '%s' (%d)"), scopeToken ? scopeToken->m_Name.c_str() : _T("Global namespace"), *it);
 #endif
         FindAIMatches(parser, components, result, *it, noPartialMatch, caseSensitive);
     }

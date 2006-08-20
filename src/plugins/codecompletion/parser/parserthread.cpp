@@ -365,6 +365,63 @@ bool ParserThread::ParseBufferForFunctions(const wxString& buffer)
 	return true;
 }
 
+bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
+{
+    if(TestDestroy())
+        return false;
+
+	m_Tokenizer.InitFromBuffer(buffer);
+	if (!m_Tokenizer.IsOK())
+		return false;
+
+    result.Clear();
+	m_Str.Clear();
+	while (!m_EncounteredNamespaces.empty())
+        m_EncounteredNamespaces.pop();
+
+	while (1)
+	{
+        if (!m_pTokens || TestDestroy())
+            return false;
+
+		wxString token = m_Tokenizer.GetToken();
+		if (token.IsEmpty())
+			break;
+
+		if (token==ParserConsts::kw_namespace)
+		{
+		    SkipToOneOfChars(ParserConsts::opbrace);
+		}
+		else if (token==ParserConsts::opbrace)
+		{
+		    SkipBlock();
+		}
+		else if (token==ParserConsts::kw_using)
+		{
+		    wxString peek = m_Tokenizer.PeekToken();
+		    if (peek == ParserConsts::kw_namespace)
+		    {
+		        // ok
+		        m_Tokenizer.GetToken(); // eat namespace
+		        while (true) // support full namespaces
+		        {
+                    m_Str << m_Tokenizer.GetToken();
+                    if (m_Tokenizer.PeekToken() == ParserConsts::dcolon)
+                        m_Str << m_Tokenizer.GetToken();
+                    else
+                        break;
+		        }
+		        if (!m_Str.IsEmpty())
+                    result.Add(m_Str);
+                m_Str.Clear();
+		    }
+		    else
+                SkipToOneOfChars(ParserConsts::semicolonclbrace);
+		}
+	}
+	return true;
+}
+
 bool ParserThread::InitTokenizer()
 {
     if (!m_Buffer.IsEmpty())

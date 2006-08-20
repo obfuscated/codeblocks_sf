@@ -53,6 +53,7 @@ class ParserThread : public cbThreadedTask
 		int Execute(){ return Parse() ? 0 : 1; }
 		bool Parse();
 		bool ParseBufferForFunctions(const wxString& buffer);
+		bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
 		virtual void* DoRun();
         virtual void SetTokens(TokensTree* tokens);
 		const wxString& GetFilename() const { return m_Filename; }
