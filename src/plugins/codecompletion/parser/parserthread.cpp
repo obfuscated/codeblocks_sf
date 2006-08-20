@@ -895,7 +895,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
     if (isImpl)
     {
         newToken->m_ImplFile = m_File;
-        newToken->m_ImplLine = m_Tokenizer.GetLineNumber();
+        newToken->m_ImplLine = line;
         m_pTokens->m_FilesMap[newToken->m_ImplFile].insert(newToken->GetSelf());
     }
 

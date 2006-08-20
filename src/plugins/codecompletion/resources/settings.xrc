@@ -258,13 +258,6 @@
                                         </object>
                                     </object>
                                 </object>
-                                <object class="sizeritem">
-                                    <border>8</border>
-                                    <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                    <object class="wxCheckBox" name="chkFloatCB">
-                                        <label>Display as a free floating/docking window</label>
-                                    </object>
-                                </object>
                             </object>
                         </object>
                     </object>

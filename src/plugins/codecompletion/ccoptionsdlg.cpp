@@ -109,7 +109,6 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np)
 	XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_threads"), 1));
 	XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->Enable(false);
 	XRCCTRL(*this, "cmbCBView", wxComboBox)->SetSelection(m_Parser.ClassBrowserOptions().viewFlat ? 0 : 1);
-	XRCCTRL(*this, "chkFloatCB", wxCheckBox)->SetValue(cfg->ReadBool(_T("/as_floating_window"), false));
 //	XRCCTRL(*this, "chkUseCache", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_cache"), false));
 //	XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->SetValue(cfg->ReadBool(_T("/update_cache_always"), false));
 //	XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_cache_progress"), true));
@@ -207,7 +206,6 @@ void CCOptionsDlg::OnApply()
 	m_Parser.Options().useSmartSense = !XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->GetValue();
 	m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
 	m_Parser.ClassBrowserOptions().viewFlat = XRCCTRL(*this, "cmbCBView", wxComboBox)->GetSelection() == 0;
-	cfg->Write(_T("/as_floating_window"), (bool)XRCCTRL(*this, "chkFloatCB", wxCheckBox)->GetValue());
 	m_Parser.WriteOptions();
 
     m_pNativeParsers->RereadParserOptions();

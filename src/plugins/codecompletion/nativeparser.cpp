@@ -55,7 +55,6 @@ END_EVENT_TABLE()
 NativeParser::NativeParser()
 	: m_Parser(this),
 	m_CallTipCommas(0),
-	m_ClassBrowserIsFloating(true),
 	m_GettingCalltips(false)
 {
 	//ctor
@@ -72,34 +71,21 @@ void NativeParser::CreateClassBrowser()
 {
 	if (!m_pClassBrowser)
 	{
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
-        bool isFloating = cfg->ReadBool(_T("/as_floating_window"), false);
+        m_pClassBrowser = new ClassBrowser(Manager::Get()->GetAppWindow(), this);
 
-        if (!isFloating)
-        {
-            // make this a tab in projectmanager notebook
-            m_pClassBrowser = new ClassBrowser(Manager::Get()->GetProjectManager()->GetNotebook(), this);
-            Manager::Get()->GetProjectManager()->GetNotebook()->AddPage(m_pClassBrowser, _("Symbols"));
-        }
-        else
-        {
-            m_pClassBrowser = new ClassBrowser(Manager::Get()->GetAppWindow(), this);
+        // make this a free floating/docking window
+        CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
 
-            // make this a free floating/docking window
-            CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
-
-            evt.name = _T("SymbolsBrowser");
-            evt.title = _("Symbols browser");
-            evt.pWindow = m_pClassBrowser;
-            evt.dockSide = CodeBlocksDockEvent::dsRight;
-            evt.desiredSize.Set(200, 250);
-            evt.floatingSize.Set(200, 250);
-            evt.minimumSize.Set(150, 150);
-            evt.shown = true;
-            evt.hideable = true;
-            Manager::Get()->GetAppWindow()->ProcessEvent(evt);
-        }
-        m_ClassBrowserIsFloating = isFloating;
+        evt.name = _T("SymbolsBrowser");
+        evt.title = _("Symbols browser");
+        evt.pWindow = m_pClassBrowser;
+        evt.dockSide = CodeBlocksDockEvent::dsRight;
+        evt.desiredSize.Set(200, 250);
+        evt.floatingSize.Set(200, 250);
+        evt.minimumSize.Set(150, 150);
+        evt.shown = true;
+        evt.hideable = true;
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 	}
 }
 
@@ -107,20 +93,10 @@ void NativeParser::RemoveClassBrowser(bool appShutDown)
 {
     if (m_pClassBrowser)
     {
-        if (!m_ClassBrowserIsFloating)
-        {
-            int idx = Manager::Get()->GetProjectManager()->GetNotebook()->GetPageIndex(m_pClassBrowser);
-            if (idx != -1)
-                Manager::Get()->GetProjectManager()->GetNotebook()->RemovePage(idx);
-            m_pClassBrowser->Destroy();
-        }
-        else if (m_ClassBrowserIsFloating)
-        {
-            CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
-            evt.pWindow = m_pClassBrowser;
-            Manager::Get()->GetAppWindow()->ProcessEvent(evt);
-            m_pClassBrowser->Destroy();
-        }
+        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+        evt.pWindow = m_pClassBrowser;
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        m_pClassBrowser->Destroy();
     }
     m_pClassBrowser = 0L;
 }
@@ -141,21 +117,12 @@ void NativeParser::UpdateClassBrowser()
 
 void NativeParser::RereadParserOptions()
 {
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 	bool needsReparsing = false;
 
     ParserOptions opts = m_Parser.Options();
     m_Parser.ReadOptions();
 
     // change class-browser docking settings
-    if (m_ClassBrowserIsFloating != cfg->ReadBool(_T("/as_floating_window"), false))
-    {
-        RemoveClassBrowser();
-        CreateClassBrowser();
-        // force re-update
-        UpdateClassBrowser();
-    }
-
     // reparse if settings changed
     if (opts.followLocalIncludes != m_Parser.Options().followLocalIncludes ||
         opts.followGlobalIncludes != m_Parser.Options().followGlobalIncludes ||
@@ -165,7 +132,7 @@ void NativeParser::RereadParserOptions()
         needsReparsing = true;
     }
 
-	if (needsReparsing)
+	if (needsReparsing && m_Parser.GetTokens()->size() > 0)
 	{
 		if (cbMessageBox(_("You changed some class parser options. Do you want to "
 						"reparse your projects now, using the new options?"),
