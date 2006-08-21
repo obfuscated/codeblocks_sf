@@ -1,6 +1,7 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/intl.h>
     #include <wx/stattext.h>
     #include <wx/sizer.h>
     #include <wx/settings.h>
@@ -236,9 +237,9 @@ void InfoWindow::Display(const wxString& title, const wxString& message, unsigne
 {
     if (std::find(active_messages.begin(), active_messages.end(), message) != active_messages.end())
     {
-        const wxString dups = _("Multiple information windows with the same\nmessage have been suppressed.");
+        const wxString dups = _T("Multiple information windows with the same\nmessage have been suppressed.");
         if (std::find(active_messages.begin(), active_messages.end(), dups) == active_messages.end())
-            Display(_("Info"), dups, delay);
+            Display(_T("Info"), dups, delay);
         return; // currently displaying already
     }
     new InfoWindow(title, message, delay, hysteresis);
