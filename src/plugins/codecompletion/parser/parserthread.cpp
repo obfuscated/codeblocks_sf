@@ -390,7 +390,12 @@ bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayS
 
 		if (token==ParserConsts::kw_namespace)
 		{
+		    // need this too
+		    token = m_Tokenizer.GetToken();
 		    SkipToOneOfChars(ParserConsts::opbrace);
+
+		    if (!token.IsEmpty())
+                result.Add(token);
 		}
 		else if (token==ParserConsts::opbrace)
 		{

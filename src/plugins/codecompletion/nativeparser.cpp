@@ -1236,7 +1236,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
         Token* scopeToken = tree->at(*it);
         Manager::Get()->GetMessageManager()->DebugLog(_T("Parent scope: '%s' (%d)"), scopeToken ? scopeToken->m_Name.c_str() : _T("Global namespace"), *it);
 #endif
-        FindAIMatches(parser, components, result, *it, noPartialMatch, caseSensitive);
+        FindAIMatches(parser, components, result, *it, noPartialMatch, caseSensitive, true, 0xffff, search_scope);
     }
 
     cached_editor = editor;
@@ -1294,7 +1294,8 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                                 bool noPartialMatch,
                                 bool caseSensitive,
                                 bool use_inheritance,
-                                short int kindMask)
+                                short int kindMask,
+                                TokenIdxSet* search_scope)
 {
     // TODO: handle special keyword 'this'
 
@@ -1371,18 +1372,30 @@ size_t NativeParser::FindAIMatches(Parser* parser,
 #ifdef DEBUG_CC_AI
             Manager::Get()->GetMessageManager()->DebugLog(_T("Looking for type: '%s' (%d components)"), actual.c_str(), type_components.size());
 #endif
-            Token* parent = tree->at(parentTokenIdx);
-            do
+            // search under all search-scope namespaces too
+            TokenIdxSet::iterator itsearch;
+            if (search_scope)
+                itsearch = search_scope->begin();
+            while (itsearch == 0 || itsearch != search_scope->end())
             {
-                // types are searched as whole words, case-sensitive and only classes/namespaces
-                if (FindAIMatches(parser, type_components, type_result, parent ? parent->GetSelf() : -1, true, false, false, tkClass | tkNamespace) != 0)
+                Token* parent = tree->at(itsearch != 0 ? *itsearch : parentTokenIdx);
+#ifdef DEBUG_CC_AI
+                Manager::Get()->GetMessageManager()->DebugLog(_T(" : looking under '%s'"), parent ? parent->m_Name.c_str() : _T("Global namespace"));
+#endif
+                do
+                {
+                    // types are searched as whole words, case-sensitive and only classes/namespaces
+                    if (FindAIMatches(parser, type_components, type_result, parent ? parent->GetSelf() : -1, true, false, false, tkClass | tkNamespace | tkEnum, search_scope) != 0)
+                        break;
+                    if (!parent)
+                        break;
+                    parent = tree->at(parent->m_ParentIndex);
+                } while (true);
+                if (itsearch == 0)
                     break;
-                if (!parent)
-                    break;
-                parent = tree->at(parent->m_ParentIndex);
-            } while (true);
+                ++itsearch;
+            }
             // we got all possible types (hopefully should be just one)
-            // for now, just pick the first...
             if (!type_result.empty())
             {
                 // this is the first result
