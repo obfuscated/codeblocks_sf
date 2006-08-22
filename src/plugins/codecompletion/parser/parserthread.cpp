@@ -888,7 +888,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
 {
     if(TestDestroy())
         return 0;
-	if (m_Options.useBuffer && TokenExists(name, m_pLastParent, kind))
+	if (!m_Options.useBuffer && TokenExists(name, m_pLastParent, kind))
 		return 0;
     s_MutexProtection.Enter();
 	Token* newToken = 0;
