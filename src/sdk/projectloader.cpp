@@ -809,6 +809,11 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
         if (node->QueryIntAttribute("weight", &tempval) == TIXML_SUCCESS)
             file->weight = tempval;
         //
+        if (node->Attribute("virtualFolder"))
+        {
+            file->virtual_path = cbC2U(node->Attribute("virtualFolder"));
+        }
+        //
         if (node->Attribute("buildCommand") && node->Attribute("compiler"))
         {
             wxString cmp = cbC2U(node->Attribute("compiler"));
@@ -1123,6 +1128,8 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             AddElement(unitnode, "Option", "link", 0);
         if (f->weight != 50)
             AddElement(unitnode, "Option", "weight", f->weight);
+        if (!f->virtual_path.IsEmpty())
+            AddElement(unitnode, "Option", "virtualFolder", f->virtual_path);
 
         // loop and save custom build commands
         for (pfCustomBuildMap::iterator it = f->customBuild.begin(); it != f->customBuild.end(); ++it)

@@ -111,6 +111,8 @@ int idMenuTreeRenameWorkspace = wxNewId();
 int idMenuTreeSaveWorkspace = wxNewId();
 int idMenuTreeSaveAsWorkspace = wxNewId();
 int idMenuTreeCloseWorkspace = wxNewId();
+int idMenuAddVirtualFolder = wxNewId();
+int idMenuDeleteVirtualFolder = wxNewId();
 
 static const int idNB = wxNewId();
 static const int idNB_TabTop = wxNewId();
@@ -126,7 +128,7 @@ static const int idNB_TabBottom = wxNewId();
 class PrjTree : public wxTreeCtrl
 {
     public:
-        PrjTree(wxWindow* parent, int id) : wxTreeCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxNO_BORDER) {}
+        PrjTree(wxWindow* parent, int id) : wxTreeCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxTR_EDIT_LABELS | wxTR_DEFAULT_STYLE | wxNO_BORDER) {}
     protected:
         void OnRightClick(wxMouseEvent& event)
         {
@@ -151,9 +153,16 @@ END_EVENT_TABLE()
 #endif // !__WXMSW__
 
 BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
+    EVT_TREE_BEGIN_DRAG(ID_ProjectManager, ProjectManager::OnTreeBeginDrag)
+    EVT_TREE_END_DRAG(ID_ProjectManager, ProjectManager::OnTreeEndDrag)
+
+    EVT_TREE_BEGIN_LABEL_EDIT(ID_ProjectManager, ProjectManager::OnBeginEditNode)
+    EVT_TREE_END_LABEL_EDIT(ID_ProjectManager, ProjectManager::OnEndEditNode)
+
     EVT_TREE_ITEM_ACTIVATED(ID_ProjectManager, ProjectManager::OnProjectFileActivated)
     EVT_TREE_ITEM_RIGHT_CLICK(ID_ProjectManager, ProjectManager::OnTreeItemRightClick)
     EVT_COMMAND_RIGHT_CLICK(ID_ProjectManager, ProjectManager::OnRightClick)
+
     EVT_MENU_RANGE(idOpenWith[0], idOpenWith[MAX_OPEN_WITH_ITEMS - 1], ProjectManager::OnOpenWith)
     EVT_MENU(idOpenWithInternal, ProjectManager::OnOpenWith)
     EVT_MENU(idNB_TabTop, ProjectManager::OnTabPosition)
@@ -167,6 +176,8 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuTreeSaveWorkspace, ProjectManager::OnSaveWorkspace)
     EVT_MENU(idMenuTreeSaveAsWorkspace, ProjectManager::OnSaveAsWorkspace)
     EVT_MENU(idMenuTreeCloseWorkspace, ProjectManager::OnCloseWorkspace)
+    EVT_MENU(idMenuAddVirtualFolder, ProjectManager::OnAddVirtualFolder)
+    EVT_MENU(idMenuDeleteVirtualFolder, ProjectManager::OnDeleteVirtualFolder)
     EVT_MENU(idMenuAddFile, ProjectManager::OnAddFileToProject)
     EVT_MENU(idMenuAddFilesRecursively, ProjectManager::OnAddFilesToProjectRecursively)
     EVT_MENU(idMenuRemoveFile, ProjectManager::OnRemoveFileFromProject)
@@ -285,12 +296,17 @@ int ProjectManager::FolderIconIndex()
     return (int)fvsLast + 2;
 }
 
+int ProjectManager::VirtualFolderIconIndex()
+{
+    return (int)fvsLast + 3;
+}
+
 void ProjectManager::BuildTree()
 {
     #ifndef __WXMSW__
         m_pTree = new PrjTree(m_pNotebook, ID_ProjectManager);
     #else
-        m_pTree = new wxTreeCtrl(m_pNotebook, ID_ProjectManager, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxNO_BORDER);
+        m_pTree = new wxTreeCtrl(m_pNotebook, ID_ProjectManager, wxDefaultPosition, wxDefaultSize, wxTR_EDIT_LABELS | wxTR_DEFAULT_STYLE | wxNO_BORDER);
     #endif
 
     static const wxString imgs[] = {
@@ -308,16 +324,21 @@ void ProjectManager::BuildTree()
         _T("gohome.png"),
         _T("codeblocks.png"),
         _T("folder_open.png"),
+        _T("vfolder_open.png"),
+
+        wxEmptyString
     };
     wxBitmap bmp;
     m_pImages = new wxImageList(16, 16);
     wxString prefix = ConfigManager::ReadDataPath() + _T("/images/");
 
-    for (int i = 0; i < 14; ++i)
+    int i = 0;
+    while (!imgs[i].IsEmpty())
     {
 //        cbMessageBox(wxString::Format(_T("%d: %s"), i, wxString(prefix + imgs[i]).c_str()));
         bmp.LoadFile(prefix + imgs[i], wxBITMAP_TYPE_PNG); // workspace
         m_pImages->Add(bmp);
+        ++i;
     }
     m_pTree->SetImageList(m_pImages);
 
@@ -458,6 +479,9 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.Append(idMenuAddFilePopup, _("Add files..."));
             menu.Append(idMenuAddFilesRecursivelyPopup, _("Add files recursively..."));
             menu.Append(idMenuRemoveFile, _("Remove files..."));
+            menu.AppendSeparator();
+            menu.Append(idMenuAddVirtualFolder, _("Add new virtual folder"));
+            menu.Append(idMenuDeleteVirtualFolder, _("Delete this virtual folder"));
         }
 
         // if it is a file...
@@ -519,6 +543,13 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             wxFileName f(ftd->GetFolder());
             f.MakeRelativeTo(ftd->GetProject()->GetBasePath());
             menu.Append(idMenuRemoveFolderFilesPopup, wxString::Format(_("Remove %s*"), f.GetFullPath().c_str()));
+        }
+
+        // if it is a virtual folder
+        else if (ftd->GetKind() == FileTreeData::ftdkVirtualFolder)
+        {
+            menu.Append(idMenuAddVirtualFolder, _("Add new virtual folder"));
+            menu.Append(idMenuDeleteVirtualFolder, _("Delete this virtual folder"));
         }
 
         // ask any plugins to add items in this menu
@@ -1517,6 +1548,68 @@ void ProjectManager::OnTabPosition(wxCommandEvent& event)
     Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/project_tabs_bottom"), (bool)(style & wxFNB_BOTTOM));
 }
 
+void ProjectManager::OnTreeBeginDrag(wxTreeEvent& event)
+{
+//    wxString text = m_pTree->GetItemText(event.GetItem());
+//    DBGLOG(_T("BeginDrag: %s"), text.c_str());
+
+    // what item do we start dragging?
+    wxTreeItemId id = event.GetItem();
+    if (!id.IsOk())
+        return;
+
+    // if no data associated with it, disallow
+    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(id);
+    if (!ftd)
+        return;
+
+    // if no project, disallow
+    cbProject* prj = ftd->GetProject();
+    if (!prj)
+        return;
+
+    // allow only if the project approves
+    if (!prj->CanDragNode(m_pTree, id))
+        return;
+
+    // allowed
+    m_DraggingItem = id;
+    event.Allow();
+}
+
+void ProjectManager::OnTreeEndDrag(wxTreeEvent& event)
+{
+//    wxString text = m_pTree->GetItemText(event.GetItem());
+//    wxString oldtext = m_pTree->GetItemText(m_DraggingItem);
+//    DBGLOG(_T("EndDrag: %s to %s"), oldtext.c_str(), text.c_str());
+
+    wxTreeItemId from = m_DraggingItem;
+    wxTreeItemId to = event.GetItem();
+    m_DraggingItem.Unset();
+
+    // are both items valid?
+    if (!from.IsOk() || !to.IsOk())
+        return;
+
+    // if no data associated with any of them, disallow
+    FileTreeData* ftd1 = (FileTreeData*)m_pTree->GetItemData(from);
+    FileTreeData* ftd2 = (FileTreeData*)m_pTree->GetItemData(to);
+    if (!ftd1 || !ftd2)
+        return;
+
+    // if no project or different projects, disallow
+    cbProject* prj1 = ftd1->GetProject();
+    cbProject* prj2 = ftd2->GetProject();
+    if (!prj1 || prj1 != prj2)
+        return;
+
+    // allow only if the project approves
+    if (!prj1->NodeDragged(m_pTree, from, to))
+        return;
+
+    event.Allow();
+}
+
 void ProjectManager::OnProjectFileActivated(wxTreeEvent& event)
 {
     #ifdef USE_OPENFILES_TREE
@@ -2052,6 +2145,86 @@ void ProjectManager::OnViewFileMasks(wxCommandEvent& event)
         m_pFileGroups->Save();
         RebuildTree();
     }
+}
+
+void ProjectManager::OnAddVirtualFolder(wxCommandEvent& event)
+{
+    wxString fld = wxGetTextFromUser(_("Please enter the new virtual folder path:"), _("New virtual folder"));
+    if (fld.IsEmpty())
+        return;
+
+    wxTreeItemId sel = m_pTree->GetSelection();
+    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+    if (!ftd)
+        return;
+    cbProject* prj = ftd->GetProject();
+    if (!prj)
+        return;
+
+    prj->VirtualFolderAdded(m_pTree, sel, fld);
+//    RebuildTree();
+}
+
+void ProjectManager::OnDeleteVirtualFolder(wxCommandEvent& event)
+{
+    wxTreeItemId sel = m_pTree->GetSelection();
+    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+    if (!ftd)
+        return;
+    cbProject* prj = ftd->GetProject();
+    if (!prj)
+        return;
+
+    prj->VirtualFolderDeleted(m_pTree, sel);
+    RebuildTree();
+}
+
+void ProjectManager::OnBeginEditNode(wxTreeEvent& event)
+{
+    // what item do we start editing?
+    wxTreeItemId id = event.GetItem();
+    if (!id.IsOk())
+    {
+        event.Veto();
+        return;
+    }
+
+    // if no data associated with it, disallow
+    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(id);
+    if (!ftd)
+    {
+        event.Veto();
+        return;
+    }
+
+    // only allow editing virtual folders
+    if (ftd->GetKind() != FileTreeData::ftdkVirtualFolder)
+        event.Veto();
+}
+
+void ProjectManager::OnEndEditNode(wxTreeEvent& event)
+{
+    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(event.GetItem());
+    if (!ftd)
+    {
+        event.Veto();
+        return;
+    }
+    cbProject* prj = ftd->GetProject();
+    if (!prj)
+    {
+        event.Veto();
+        return;
+    }
+
+    if (!prj->VirtualFolderRenamed(m_pTree, event.GetItem(), event.GetLabel()))
+        event.Veto();
+//    RebuildTree();
+}
+
+void ProjectManager::OnUpdateUI(wxUpdateUIEvent& event)
+{
+    event.Skip();
 }
 
 void ProjectManager::OnIdle(wxIdleEvent& event)

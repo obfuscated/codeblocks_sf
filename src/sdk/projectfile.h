@@ -130,6 +130,11 @@ class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
 
         /** An array of strings, containing the names of all the build targets this file belongs to. */
         wxArrayString buildTargets;
+
+        /** A string that represents the virtual folder this file will appear in.
+          * This is a relative path which doesn't have to exist in the filesystem
+          * hierarchy. */
+        wxString virtual_path;
     protected:
         friend class cbProject;
         void DoUpdateFileDetails(ProjectBuildTarget* target);

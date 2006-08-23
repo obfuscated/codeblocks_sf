@@ -351,6 +351,8 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 		int ProjectIconIndex();
 		/** @return The folder icon index in the image list. */
 		int FolderIconIndex();
+		/** @return The virtual folder icon index in the image list. */
+		int VirtualFolderIconIndex();
     private:
 		ProjectManager();
 		~ProjectManager();
@@ -371,6 +373,8 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void OnProjectFileActivated(wxTreeEvent& event);
         void OnExecParameters(wxCommandEvent& event);
         void OnTreeItemRightClick(wxTreeEvent& event);
+        void OnTreeBeginDrag(wxTreeEvent& event);
+        void OnTreeEndDrag(wxTreeEvent& event);
         void OnRightClick(wxCommandEvent& event);
         void OnRenameWorkspace(wxCommandEvent& event);
         void OnSaveWorkspace(wxCommandEvent& event);
@@ -390,6 +394,11 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void OnViewCategorize(wxCommandEvent& event);
         void OnViewUseFolders(wxCommandEvent& event);
         void OnViewFileMasks(wxCommandEvent& event);
+        void OnBeginEditNode(wxTreeEvent& event);
+        void OnEndEditNode(wxTreeEvent& event);
+        void OnAddVirtualFolder(wxCommandEvent& event);
+        void OnDeleteVirtualFolder(wxCommandEvent& event);
+        void OnUpdateUI(wxUpdateUIEvent& event);
         void OnIdle(wxIdleEvent& event);
         void DoOpenSelectedFile();
 		void DoOpenFile(ProjectFile* pf, const wxString& filename);
@@ -410,6 +419,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 		bool m_IsLoadingProject;
 		bool m_IsLoadingWorkspace;
         wxString m_InitialDir;
+        wxTreeItemId m_DraggingItem;
 
         DECLARE_EVENT_TABLE()
 };

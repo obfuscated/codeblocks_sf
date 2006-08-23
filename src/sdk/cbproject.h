@@ -34,7 +34,8 @@ class DLLIMPORT FileTreeData : public MiscTreeItemData
             ftdkProject,
             ftdkFolder,
             ftdkFile,
-            ftdkVirtualGroup
+            ftdkVirtualGroup, // wilcard matching
+            ftdkVirtualFolder
         };
 
         FileTreeData(cbProject* project, FileTreeDataKind kind = ftdkUndefined)
@@ -484,10 +485,36 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * @return True if a circular reference is not detected, false if it is.
           */
         bool CanAddToVirtualBuildTarget(const wxString& alias, const wxString& target);
+
+        /** Request if a specific tree node can be dragged.
+          *
+          * @note Called by ProjectManager.
+          * @return True if it is allowed to drag this node, false not.
+          */
+        bool CanDragNode(wxTreeCtrl* tree, wxTreeItemId node);
+
+        /** Notify that a specific tree node has been dragged.
+          *
+          * @note Called by ProjectManager.
+          * @return True if succeeded, false if not.
+          */
+        bool NodeDragged(wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to);
+
+        /** Notify that a virtual folder has been added.
+          * @return True if it is allowed, false if not. */
+        bool VirtualFolderAdded(wxTreeCtrl* tree, wxTreeItemId parent_node, const wxString& virtual_folder);
+
+        /** Notify that a virtual folder has been deleted. */
+        void VirtualFolderDeleted(wxTreeCtrl* tree, wxTreeItemId node);
+
+        /** Notify that a virtual folder has been renamed.
+          * @return True if the renaming is allowed, false if not. */
+        bool VirtualFolderRenamed(wxTreeCtrl* tree, wxTreeItemId node, const wxString& new_name);
     private:
         void Open();
         void ExpandVirtualBuildTargetGroup(const wxString& alias, wxArrayString& result) const;
-        wxTreeItemId AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTreeItemId& parent, bool useFolders, bool compiles, int image, FileTreeData* data = 0L);
+        wxTreeItemId AddTreeNode(wxTreeCtrl* tree, const wxString& text, const wxTreeItemId& parent, bool useFolders, FileTreeData::FileTreeDataKind folders_kind, bool compiles, int image, FileTreeData* data = 0L);
+        wxTreeItemId FindNodeToInsertAfter(wxTreeCtrl* tree, const wxString& text, const wxTreeItemId& parent, bool in_folders); // alphabetical sorting
         ProjectBuildTarget* AddDefaultBuildTarget();
         int IndexOfBuildTargetName(const wxString& targetName) const;
         wxString CreateUniqueFilename();
@@ -506,6 +533,8 @@ class DLLIMPORT cbProject : public CompileTargetBase
         wxArrayString m_ExpandedNodes;
         bool m_Loaded;
         wxTreeItemId m_ProjectNode;
+
+        wxArrayString m_VirtualFolders; // not saved, just used throughout cbProject's lifetime
 
         bool m_CurrentlyLoading;
         wxString m_CommonTopLevelPath;
