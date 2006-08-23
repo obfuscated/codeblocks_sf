@@ -533,7 +533,19 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
     }
 #ifdef USE_OPENFILES_TREE
     if(can_updateui)
-        AddFiletoTree(ed);
+    {
+        // If this file is already in the tree we have to call
+        // RefreshOpenedFilesTree because AddFiletoTree would not do anything
+        // and the file would not be selected.
+        if (eb)
+        {
+            RefreshOpenedFilesTree();
+        }
+        else
+        {
+            AddFiletoTree(ed);
+        }
+    }
 #endif
 
     // we 're done
