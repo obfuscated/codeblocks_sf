@@ -189,7 +189,7 @@ bool Token::InheritsFrom(int idx) const
     if(!token)
         return false;
 
-	for (TokenIdxSet::iterator it = m_Ancestors.begin(); it != m_Ancestors.end(); it++)
+	for (TokenIdxSet::iterator it = m_DirectAncestors.begin(); it != m_DirectAncestors.end(); it++)
 	{
 		int idx2 = *it;
 		Token* ancestor = m_pTree->at(idx2);
@@ -563,7 +563,7 @@ void TokensTree::RemoveToken(Token* oldToken)
     TokenIdxSet::iterator it;
 
     // Step 2: Detach token from its ancestors
-    nodes = (oldToken->m_Ancestors);
+    nodes = (oldToken->m_DirectAncestors);
     for(it = nodes.begin();it!=nodes.end(); it++)
     {
         int ancestoridx = *it;
@@ -574,6 +574,7 @@ void TokensTree::RemoveToken(Token* oldToken)
             ancestor->m_Descendants.erase(idx);
     }
     oldToken->m_Ancestors.clear();
+    oldToken->m_DirectAncestors.clear();
 
     // Step 3: Remove children
     nodes = (oldToken->m_Children); // Copy the list to avoid interference
@@ -753,6 +754,7 @@ void TokensTree::RecalcData()
 //        if (!token->m_IsLocal)
 //            continue;
 
+        token->m_DirectAncestors.clear();
         token->m_Ancestors.clear();
 //        Manager::Get()->GetMessageManager()->DebugLog(_T(" : '%s'"), token->m_Name.c_str());
 
@@ -810,6 +812,8 @@ void TokensTree::RecalcData()
 //                    Manager::Get()->GetMessageManager()->DebugLog(_T("   ! '%s' (unresolved)"), ancestor.c_str());
             }
         }
+
+        token->m_DirectAncestors = token->m_Ancestors;
 
         if (!token->m_IsLocal) // global symbols are linked once
         {

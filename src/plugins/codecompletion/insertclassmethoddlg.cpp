@@ -154,7 +154,7 @@ void InsertClassMethodDlg::DoFillMethodsFor(wxCheckListBox* clb,
     }
 
     // inheritance
-	for (it = parentToken->m_Ancestors.begin();it!=parentToken->m_Ancestors.end();it++)
+	for (it = parentToken->m_DirectAncestors.begin();it!=parentToken->m_DirectAncestors.end();it++)
     {
         idx = *it;
         token = tree->at(idx);

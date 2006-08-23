@@ -219,7 +219,7 @@ void Parser::ReadOptions()
 	m_Options.caseSensitive = cfg->ReadBool(_T("/case_sensitive"), false);
 	m_Options.useSmartSense = cfg->ReadBool(_T("/use_SmartSense"), true);
 	m_Options.wantPreprocessor = cfg->ReadBool(_T("/want_preprocessor"), true);
-	m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"), false);
+//	m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"), false);  // does not work currently
 	m_BrowserOptions.viewFlat = cfg->ReadBool(_T("/browser_view_flat"), false);
 	m_BrowserOptions.showAllSymbols = cfg->ReadBool(_T("/show_all_symbols"), false);
 #endif // STANDALONE
@@ -366,7 +366,7 @@ Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool us
         // it will only recurse to itself.
         // the critical section above is sufficient
         TokenIdxSet::iterator it;
-        for(it = parent->m_Ancestors.begin();it != parent->m_Ancestors.end();++it)
+        for(it = parent->m_DirectAncestors.begin();it != parent->m_DirectAncestors.end();++it)
         {
             Token* ancestor = m_pTokens->at(*it);
             result = FindChildTokenByName(ancestor, name, true, kindMask);

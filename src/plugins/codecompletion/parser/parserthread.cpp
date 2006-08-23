@@ -83,6 +83,10 @@ namespace ParserConsts
     const wxString kw_for(_T("for"));
     const wxString kw_friend(_T("friend"));
     const wxString kw_if(_T("if"));
+    const wxString kw_ifdef(_T("ifdef"));
+    const wxString kw_ifndef(_T("ifndef"));
+    const wxString kw_elif(_T("elif"));
+    const wxString kw_endif(_T("endif"));
     const wxString kw_include(_T("include"));
     const wxString kw_inline(_T("inline"));
     const wxString kw_namespace(_T("namespace"));
@@ -617,15 +621,20 @@ void ParserThread::DoParse()
                 SkipAngleBraces();
 //			SkipToOneOfChars(ParserConsts::gtsemicolon, true);
 		}
+		else if (token==ParserConsts::kw_friend)
+		{
+            SkipToOneOfChars(ParserConsts::semicolon);
+            m_Str.Clear();
+		}
 		else if (token==ParserConsts::kw_class)
 		{
-			m_Str.Clear();
-			HandleClass();
+            m_Str.Clear();
+            HandleClass();
 		}
 		else if (token==ParserConsts::kw_struct)
 		{
-			m_Str.Clear();
-			HandleClass(false);
+            m_Str.Clear();
+            HandleClass(false);
 		}
 		else if (token==ParserConsts::kw_enum)
 		{
@@ -1110,6 +1119,7 @@ void ParserThread::HandleClass(bool isClass)
 	{
 		wxString current = m_Tokenizer.GetToken(); // class name
 		wxString next = m_Tokenizer.PeekToken();
+
 		if (!current.IsEmpty() && !next.IsEmpty())
 		{
 			if (next==ParserConsts::lt) // template specialization

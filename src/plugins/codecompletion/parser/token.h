@@ -106,6 +106,7 @@ class Token  : public BlockAllocated<Token, 10000>
         int m_ParentIndex;
         TokenIdxSet m_Children;
         TokenIdxSet m_Ancestors;
+        TokenIdxSet m_DirectAncestors;
         TokenIdxSet m_Descendants;
 
 		bool m_Bool; // custom bool value

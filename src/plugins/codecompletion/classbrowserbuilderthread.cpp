@@ -274,7 +274,6 @@ void ClassBrowserBuilderThread::AddTreeNode(const wxTreeItemId& parentNode, Toke
 {
     if (!token)
         return;
-	ClassTreeData* ctd = new ClassTreeData(token);
 	int image = -1;
 
 	image = m_pParser->GetTokenKindImage(token);
@@ -284,7 +283,14 @@ void ClassBrowserBuilderThread::AddTreeNode(const wxTreeItemId& parentNode, Toke
         str << token->m_Args;
 	if (!token->m_ActualType.IsEmpty())
 		 str = str + _T(" : ") + token->m_ActualType;
-	wxTreeItemId node = childrenOnly ? parentNode : m_Tree.AppendItem(parentNode, str, image, -1, ctd);
+	wxTreeItemId node;
+	if (childrenOnly)
+        node = parentNode;
+    else
+    {
+        ClassTreeData* ctd = new ClassTreeData(token);
+        node = m_Tree.AppendItem(parentNode, str, image, -1, ctd);
+    }
 
 	// add children
 	TokenIdxSet::iterator it;
@@ -293,13 +299,21 @@ void ClassBrowserBuilderThread::AddTreeNode(const wxTreeItemId& parentNode, Toke
 	    AddTreeNode(node, m_pTokens->at(*it));
 	}
 
-	if (!m_Options.showInheritance || (token->m_TokenKind != tkClass && token->m_TokenKind != tkNamespace))
+	if (!m_Options.showInheritance || token->m_TokenKind != tkClass)
 		return;
-	// add ancestor's children
-	for(it=token->m_Ancestors.begin();it!=token->m_Ancestors.end();++it)
-	{
-	    AddTreeNode(node, m_pTokens->at(*it),true);
-	}
+
+// DOES NOT WORK (crashes in some big projects)
+// TODO: find out what's wrong with inheritance (sometimes)
+
+//	// add ancestor's children
+//	for(it=token->m_DirectAncestors.begin();it!=token->m_DirectAncestors.end();++it)
+//	{
+//	    Token* ancestor = m_pTokens->at(*it);
+//	    if (ancestor && ancestor != token)
+//	    {
+//            AddTreeNode(node, ancestor, true);
+//	    }
+//	}
 
     m_Tree.SortChildren(node);
 }
