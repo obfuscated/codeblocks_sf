@@ -888,7 +888,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
 {
     if(TestDestroy())
         return 0;
-	if (!m_Options.useBuffer && TokenExists(name, m_pLastParent, kind))
+	if (!m_Options.isTemp && TokenExists(name, m_pLastParent, kind))
 		return 0;
     s_MutexProtection.Enter();
 	Token* newToken = 0;
@@ -922,7 +922,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
             newToken = TokenExists(newname, localParent);
     }
 
-    if(newToken)
+    if (newToken && newToken->m_TokenKind == kind)
     {
         m_pTokens->m_modified = true;
     }
