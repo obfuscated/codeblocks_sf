@@ -1298,8 +1298,6 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                                 short int kindMask,
                                 TokenIdxSet* search_scope)
 {
-    // TODO: handle special keyword 'this'
-
     if (components.empty())
         return 0;
 
@@ -1311,6 +1309,15 @@ size_t NativeParser::FindAIMatches(Parser* parser,
     // pop top component
     ParserComponent parser_component = components.front();
     components.pop();
+
+    // handle the special keyword "this".
+    if (parentTokenIdx != -1 && parser_component.component == _T("this"))
+    {
+		// this will make the AI behave like it's the previous scope (or the current if no previous scope)
+
+        // move on please, nothing to see here...
+        return FindAIMatches(parser, components, result, parentTokenIdx, noPartialMatch, caseSensitive, use_inheritance, kindMask, search_scope);
+    }
 
     // we 'll only add tokens in the result set if we get matches for the last token
     bool is_last = components.empty();
