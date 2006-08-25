@@ -68,6 +68,8 @@ class CCDebugInfo: public wxDialog
 		    ID_STATICTEXT14,
 		    ID_STATICTEXT15,
 		    ID_STATICTEXT16,
+		    ID_STATICTEXT32,
+		    ID_STATICTEXT33,
 		    ID_STATICTEXT19,
 		    ID_STATICTEXT20,
 		    ID_STATICTEXT22,
@@ -131,6 +133,8 @@ class CCDebugInfo: public wxDialog
 		wxStaticText* txtIsOp;
 		wxStaticText* StaticText15;
 		wxStaticText* txtIsLocal;
+		wxStaticText* StaticText32;
+		wxStaticText* txtIsTemp;
 		wxStaticText* StaticText19;
 		wxStaticText* txtNamespace;
 		wxStaticText* StaticText22;

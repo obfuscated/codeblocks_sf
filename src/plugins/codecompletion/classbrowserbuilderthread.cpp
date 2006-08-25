@@ -299,21 +299,18 @@ void ClassBrowserBuilderThread::AddTreeNode(const wxTreeItemId& parentNode, Toke
 	    AddTreeNode(node, m_pTokens->at(*it));
 	}
 
-	if (!m_Options.showInheritance || token->m_TokenKind != tkClass)
+	if (!m_Options.showInheritance || token->m_TokenKind != tkClass || token->m_IsTypedef)
 		return;
 
-// DOES NOT WORK (crashes in some big projects)
-// TODO: find out what's wrong with inheritance (sometimes)
-
-//	// add ancestor's children
-//	for(it=token->m_DirectAncestors.begin();it!=token->m_DirectAncestors.end();++it)
-//	{
-//	    Token* ancestor = m_pTokens->at(*it);
-//	    if (ancestor && ancestor != token)
-//	    {
-//            AddTreeNode(node, ancestor, true);
-//	    }
-//	}
+	// add ancestor's children
+	for(it=token->m_DirectAncestors.begin();it!=token->m_DirectAncestors.end();++it)
+	{
+	    Token* ancestor = m_pTokens->at(*it);
+	    if (ancestor && ancestor != token)
+	    {
+            AddTreeNode(node, ancestor, true);
+	    }
+	}
 
     m_Tree.SortChildren(node);
 }

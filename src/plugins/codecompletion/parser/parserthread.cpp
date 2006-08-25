@@ -497,11 +497,11 @@ void ParserThread::DoParse()
 			break;
 #if 0
 	if (!m_Str.IsEmpty())
-		Log(m_Str);
+		DBGLOG(m_Str);
 #endif
 #if 0
 	if (!token.IsEmpty())
-		Log(token);
+		DBGLOG(token);
 #endif
 
 		if (token==ParserConsts::semicolon)
@@ -602,6 +602,16 @@ void ParserThread::DoParse()
 				HandleIncludes();
 			else if (token==ParserConsts::kw_define)
 				HandleDefines();
+            else if (token.StartsWith(ParserConsts::kw_if)) // #if, #ifdef, #ifndef
+            {
+                // TODO: handle special case "#if 0"
+                token = m_Tokenizer.GetToken();
+            }
+            else if (token==ParserConsts::kw_else || token==ParserConsts::kw_elif) // #else, #elif
+            {
+                while (!token.IsEmpty() && token != ParserConsts::kw_endif)
+                    token = m_Tokenizer.GetToken();
+            }
 			m_Str.Clear();
 		}
 		else if (token==ParserConsts::kw_using) // using namespace ?
@@ -897,7 +907,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
 {
     if(TestDestroy())
         return 0;
-	if (!m_Options.useBuffer && TokenExists(name, m_pLastParent, kind))
+	if (m_Options.useBuffer && TokenExists(name, m_pLastParent, kind))
 		return 0;
     s_MutexProtection.Enter();
 	Token* newToken = 0;
@@ -915,7 +925,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
 
     // preserve m_EncounteredTypeNamespaces; needed further down this function
     std::queue<wxString> q = m_EncounteredTypeNamespaces;
-	if (kind == tkDestructor || kind == tkConstructor && !q.empty())
+	if ((kind == tkDestructor || kind == tkConstructor) && !q.empty())
 	{
 	    // look in m_EncounteredTypeNamespaces
         localParent = FindTokenFromQueue(q, 0, true);
@@ -931,7 +941,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
             newToken = TokenExists(newname, localParent);
     }
 
-    if (newToken)// && newToken->m_TokenKind == kind) : WATCH OUT: breaks a lot of things!
+    if (newToken && newToken->m_TokenKind == kind)
     {
         m_pTokens->m_modified = true;
     }
@@ -957,8 +967,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
         newToken->m_ParentIndex = finalParent ? finalParent->GetSelf() : -1;
         newToken->m_IsOperator = isOperator;
     //    Log("Added token " +name+ ", type '" +newToken->m_Type+ "', actual '" +newToken->m_ActualType+ "'");
-        int newidx = -1;
-        newidx=m_pTokens->insert(newToken);
+        int newidx = m_pTokens->insert(newToken);
         if (finalParent)
             finalParent->AddChild(newidx);
     }

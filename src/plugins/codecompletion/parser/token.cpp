@@ -72,7 +72,10 @@ Token::Token()
 	:
 	m_File(0),
 	m_Line(0),
+	m_ImplFile(0),
+	m_ImplLine(0),
 	m_IsOperator(false),
+	m_IsLocal(false),
 	m_IsTemp(false),
 	m_IsTypedef(false),
 	m_ParentIndex(-1),
@@ -86,7 +89,12 @@ Token::Token(const wxString& name, unsigned int file, unsigned int line)
 	: m_Name(name),
 	m_File(file),
 	m_Line(line),
+	m_ImplFile(0),
+	m_ImplLine(0),
 	m_IsOperator(false),
+	m_IsLocal(false),
+	m_IsTemp(false),
+	m_IsTypedef(false),
 	m_ParentIndex(-1),
 	m_Bool(false),
 	m_pTree(0),
@@ -783,7 +791,7 @@ void TokensTree::RecalcData()
                             break;
                     }
                 }
-                if (ancestorToken)
+                if (ancestorToken && ancestorToken != token && ancestorToken->m_TokenKind == tkClass && !ancestorToken->m_IsTypedef)
                 {
 //                    Manager::Get()->GetMessageManager()->DebugLog(_T("Resolved to %s"), ancestorToken->m_Name.c_str());
                     token->m_Ancestors.insert(ancestorToken->GetSelf());
@@ -801,7 +809,8 @@ void TokensTree::RecalcData()
                 for (TokenIdxSet::iterator it = result.begin(); it != result.end(); it++)
                 {
                     Token* ancestorToken = at(*it);
-                    if (ancestorToken && ancestorToken->m_TokenKind == tkClass) // only classes take part in inheritance
+                    // only classes take part in inheritance
+                    if (ancestorToken && ancestorToken != token && ancestorToken->m_TokenKind == tkClass && !ancestorToken->m_IsTypedef)
                     {
                         token->m_Ancestors.insert(*it);
                         ancestorToken->m_Descendants.insert(i);

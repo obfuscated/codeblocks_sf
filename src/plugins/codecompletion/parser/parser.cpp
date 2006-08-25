@@ -43,6 +43,8 @@
 	#include <infowindow.h>
 #endif // STANDALONE
 
+#include <queue>
+
 #ifndef CB_PRECOMP
 	  #include "editorbase.h"
 #endif
@@ -219,7 +221,7 @@ void Parser::ReadOptions()
 	m_Options.caseSensitive = cfg->ReadBool(_T("/case_sensitive"), false);
 	m_Options.useSmartSense = cfg->ReadBool(_T("/use_SmartSense"), true);
 	m_Options.wantPreprocessor = cfg->ReadBool(_T("/want_preprocessor"), true);
-//	m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"), false);  // does not work currently
+	m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"), false);
 	m_BrowserOptions.viewFlat = cfg->ReadBool(_T("/browser_view_flat"), false);
 	m_BrowserOptions.showAllSymbols = cfg->ReadBool(_T("/show_all_symbols"), false);
 #endif // STANDALONE
@@ -914,23 +916,37 @@ bool Parser::ReparseModifiedFiles()
         return false;
     Manager::Get()->GetMessageManager()->DebugLog(_T("Reparsing saved files..."));
     m_NeedsReparse = false;
-    int numfiles = 0;
-    vector<wxString> files_list;
+    std::queue<wxString> files_list;
     {
         wxCriticalSectionLocker lock(s_MutexProtection);
         TokenFilesSet::iterator it;
+
+        // loop two times so that we reparse modified *header* files first
+        // because they usually hold definitions which need to exist
+        // when we parse the normal source files...
         for(it = m_pTokens->m_FilesToBeReparsed.begin(); it != m_pTokens->m_FilesToBeReparsed.end(); ++it)
         {
             m_pTokens->RemoveFile(*it);
-            files_list.push_back(m_pTokens->m_FilenamesMap.GetString(*it));
-            ++numfiles;
+            wxString filename = m_pTokens->m_FilenamesMap.GetString(*it);
+            if (FileTypeOf(filename) == ftSource) // ignore source files (*.cpp etc)
+                continue;
+            files_list.push(filename);
+        }
+        for(it = m_pTokens->m_FilesToBeReparsed.begin(); it != m_pTokens->m_FilesToBeReparsed.end(); ++it)
+        {
+            m_pTokens->RemoveFile(*it);
+            wxString filename = m_pTokens->m_FilenamesMap.GetString(*it);
+            if (FileTypeOf(filename) != ftSource) // ignore non-source files (*.h etc)
+                continue;
+            files_list.push(filename);
         }
     }
-    if(!numfiles)
-        return true;
-    for(size_t i = 0; i < files_list.size();++i)
+
+    while (!files_list.empty())
     {
-        Parse(files_list[i],m_LocalFiles.count(files_list[i]));
+        wxString& filename = files_list.front();
+        Parse(filename, m_LocalFiles.count(filename));
+        files_list.pop();
     }
     return true;
 }

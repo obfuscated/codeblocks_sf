@@ -116,8 +116,6 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np)
 	XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->Enable(false);
 	XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->Enable(false);
 
-    XRCCTRL(*this, "chkInheritance", wxCheckBox)->Enable(false); // does not work currently
-
 	int timerDelay = cfg->ReadInt(_T("/cc_delay"), 500);
 	XRCCTRL(*this, "sliderDelay", wxSlider)->SetValue(timerDelay / 100);
 	UpdateSliderLabel();
@@ -206,7 +204,7 @@ void CCOptionsDlg::OnApply()
 	cfg->Write(_T("/max_matches"), (int)XRCCTRL(*this, "spnMaxMatches", wxSpinCtrl)->GetValue());
 	m_Parser.Options().caseSensitive = XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->GetValue();
 	m_Parser.Options().useSmartSense = !XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->GetValue();
-//	m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();  // does not work currently
+	m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
 	m_Parser.ClassBrowserOptions().viewFlat = XRCCTRL(*this, "cmbCBView", wxComboBox)->GetSelection() == 0;
 	m_Parser.WriteOptions();
 

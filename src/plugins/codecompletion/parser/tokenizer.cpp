@@ -327,6 +327,9 @@ bool Tokenizer::SkipUnwanted()
 			MoveToNextChar();
 			SkipWhiteSpace();
 			if ((CurrentChar() == 'i' && NextChar() == 'n') || // in(clude)
+				(CurrentChar() == 'i' && NextChar() == 'f') || // if(|def|ndef)
+				(CurrentChar() == 'e' && NextChar() == 'l') || // el(se|if)
+				(CurrentChar() == 'e' && NextChar() == 'n') || // en(dif)
 				(m_Options.wantPreprocessor && CurrentChar() == 'd' && NextChar() == 'e')) // de(fine)
 			{
 				// ok, we have something like #in(clude)

@@ -59,6 +59,8 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token)
 	txtIsOp = new wxStaticText(Panel1,ID_STATICTEXT14,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT14"));
 	StaticText15 = new wxStaticText(Panel1,ID_STATICTEXT15,_("Is local\?"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT15"));
 	txtIsLocal = new wxStaticText(Panel1,ID_STATICTEXT16,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT16"));
+	StaticText32 = new wxStaticText(Panel1,ID_STATICTEXT32,_("Is temp\?"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT32"));
+	txtIsTemp = new wxStaticText(Panel1,ID_STATICTEXT33,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT33"));
 	StaticText19 = new wxStaticText(Panel1,ID_STATICTEXT19,_("Namespace:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT19"));
 	txtNamespace = new wxStaticText(Panel1,ID_STATICTEXT20,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT20"));
 	StaticText22 = new wxStaticText(Panel1,ID_STATICTEXT22,_("Parent:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT22"));
@@ -111,6 +113,8 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token)
 	FlexGridSizer1->Add(txtIsOp,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
 	FlexGridSizer1->Add(StaticText15,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
 	FlexGridSizer1->Add(txtIsLocal,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	FlexGridSizer1->Add(StaticText32,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	FlexGridSizer1->Add(txtIsTemp,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
 	FlexGridSizer1->Add(StaticText19,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
 	FlexGridSizer1->Add(txtNamespace,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
 	FlexGridSizer1->Add(StaticText22,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
@@ -220,6 +224,7 @@ void CCDebugInfo::DisplayTokenInfo()
     txtArgs->SetLabel(args);
     txtIsOp->SetLabel(m_pToken->m_IsOperator ? _T("Yes") : _T("No"));
     txtIsLocal->SetLabel(m_pToken->m_IsLocal ? _T("Yes") : _T("No"));
+    txtIsTemp->SetLabel(m_pToken->m_IsTemp ? _T("Yes") : _T("No"));
     txtNamespace->SetLabel(m_pToken->GetNamespace());
     txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.c_str() : _T("<Global namespace>"), m_pToken->m_ParentIndex));
     FillChildren();

@@ -722,6 +722,7 @@ size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI)
 	{
 	    // remove old temporaries
 	    parser->GetTokens()->FreeTemporaries();
+	    parser->GetTempTokens()->Clear();
 
 		// find "using namespace" directives in the file
 	    TokenIdxSet search_scope;

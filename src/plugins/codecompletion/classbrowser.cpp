@@ -214,7 +214,6 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt
     sub->AppendSeparator();
     sub->AppendRadioItem(idCBViewModeFlat, _("Flat"));
     sub->AppendRadioItem(idCBViewModeStructured, _("Structured"));
-    sub->Enable(idCBViewInheritance, false); // does not work currently
 
     menu->Append(wxNewId(), _("&View options"), sub);
     menu->Append(idMenuRefreshTree, _("&Refresh tree"));
