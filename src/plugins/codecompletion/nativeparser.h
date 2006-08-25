@@ -86,6 +86,9 @@ class NativeParser : public wxEvtHandler
         bool BelongsToParentOrItsAncestors(TokensTree* tree, Token* token, int parentIdx, bool use_inheritance = true);
         size_t GenerateResultSet(TokensTree* tree, const wxString& search, int parentIdx, TokenIdxSet& result, bool caseSens = true, bool isPrefix = false, short int kindMask = 0xFFFF);
 
+        bool LastAISearchWasGlobal() const { return m_LastAISearchWasGlobal; }
+        const wxString& LastAIGlobalSearch() const { return m_LastAIGlobalSearch; }
+
 		bool ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope);
 		bool ParseFunctionArguments(cbEditor* ed);
 		bool ParseLocalBlock(cbEditor* ed); // parses from the start of function up to the cursor
@@ -116,6 +119,9 @@ class NativeParser : public wxEvtHandler
 		int m_CallTipCommas;
     	ClassBrowser* m_pClassBrowser;
     	bool m_GettingCalltips; // flag while getting calltips
+
+    	bool m_LastAISearchWasGlobal; // true if the phrase for code-completion is empty or partial text (i.e. no . -> or :: operators)
+    	wxString m_LastAIGlobalSearch; // same case like above, it holds the search string
 
         DECLARE_EVENT_TABLE()
 };

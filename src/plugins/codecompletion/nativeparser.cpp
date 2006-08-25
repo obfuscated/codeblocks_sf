@@ -55,7 +55,8 @@ END_EVENT_TABLE()
 NativeParser::NativeParser()
 	: m_Parser(this),
 	m_CallTipCommas(0),
-	m_GettingCalltips(false)
+	m_GettingCalltips(false),
+	m_LastAISearchWasGlobal(false)
 {
 	//ctor
     m_pClassBrowser = 0L;
@@ -1106,6 +1107,9 @@ size_t NativeParser::AI(TokenIdxSet& result,
                         bool caseSensitive,
                         TokenIdxSet* search_scope)
 {
+    m_LastAISearchWasGlobal = false;
+    m_LastAIGlobalSearch.Clear();
+
     int pos = editor->GetControl()->GetCurrentPos();
 	m_EditorStartWord = editor->GetControl()->WordStartPosition(pos, true);
 	m_EditorEndWord = pos;//editor->GetControl()->WordEndPosition(pos, true);
@@ -1154,6 +1158,12 @@ size_t NativeParser::AI(TokenIdxSet& result,
 #ifdef DEBUG_CC_AI
         Manager::Get()->GetMessageManager()->DebugLog(_T("Aborting search: last attempt returned 0 results"));
 #endif
+        // but set m_LastAISearchWasGlobal correctly so C++ keywords can be shown
+        std::queue<ParserComponent> components;
+        BreakUpComponents(parser, actual, components);
+        m_LastAISearchWasGlobal = components.size() <= 1;
+        if (!components.empty())
+            m_LastAIGlobalSearch = components.front().component;
         return 0;
     }
 
@@ -1229,6 +1239,10 @@ size_t NativeParser::AI(TokenIdxSet& result,
     // find all other matches
     std::queue<ParserComponent> components;
     BreakUpComponents(parser, actual, components);
+
+    m_LastAISearchWasGlobal = components.size() <= 1;
+    if (!components.empty())
+        m_LastAIGlobalSearch = components.front().component;
 
     // actually find all matches in selected namespaces
     for (TokenIdxSet::iterator it = search_scope->begin(); it != search_scope->end(); ++it)
@@ -1585,11 +1599,6 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor)
     cbStyledTextCtrl* control = editor->GetControl();
     if (!control)
         return -1;
-
-    wxString keywords;
-    EditorColourSet* theme = editor->GetColourSet();
-    if (theme)
-        keywords = theme->GetKeywords(theme->GetHighlightLanguage(wxSCI_LEX_CPP), 0);
 
     int brace_nest = 0;
 	int pos = control->GetCurrentPos();

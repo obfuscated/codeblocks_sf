@@ -40,6 +40,7 @@
 #include <messagemanager.h>
 #include <projectmanager.h>
 #include <editormanager.h>
+#include <editorcolourset.h>
 #include <sdk_events.h>
 #include <incrementalselectlistdlg.h>
 #include "insertclassmethoddlg.h"
@@ -52,10 +53,34 @@
 #include "cbeditor.h"
 #include <wx/wxscintilla.h>
 #include <wx/tipwin.h>
+#include <wx/tokenzr.h>
 
 #include <set> // for handling unique items in some places
 
 CB_IMPLEMENT_PLUGIN(CodeCompletion, "Code completion");
+
+// empty bitmap for use as C++ keywords icon in code-completion list
+/* XPM */
+static char * cpp_keyword_xpm[] = {
+"16 16 2 1",
+" 	c None",
+".	c #04049B",
+"                ",
+"  .......       ",
+" .........      ",
+" ..     ..      ",
+"..              ",
+"..   ..     ..  ",
+"..   ..     ..  ",
+".. ...... ......",
+".. ...... ......",
+"..   ..     ..  ",
+"..   ..     ..  ",
+"..      ..      ",
+"...     ..      ",
+" .........      ",
+"  .......       ",
+"                "};
 
 // menu IDS
 // just because we don't know other plugins' used identifiers,
@@ -370,7 +395,8 @@ int CodeCompletion::CodeComplete()
     wxBusyCursor busy;
 
     TokenIdxSet result;
-    if (m_NativeParsers.MarkItemsByAI(result, parser->Options().useSmartSense))
+    if (m_NativeParsers.MarkItemsByAI(result, parser->Options().useSmartSense) > 0 ||
+        m_NativeParsers.LastAISearchWasGlobal()) // enter even if no match (code-complete C++ keywords)
     {
 #ifdef DEBUG_CC_AI
 		Manager::Get()->GetMessageManager()->DebugLog(_T("%d results"), result.size());
@@ -411,6 +437,30 @@ int CodeCompletion::CodeComplete()
                 items.Add(tmp);
             }
 
+            if (m_NativeParsers.LastAISearchWasGlobal())
+            {
+                // empty or partial search phrase: add C++ keywords in search list
+#ifdef DEBUG_CC_AI
+                DBGLOG(_T("Last AI search was global: adding C++ keywords in list"));
+#endif
+                EditorColourSet* theme = ed->GetColourSet();
+                if (theme)
+                {
+                    wxString lastSearch = m_NativeParsers.LastAIGlobalSearch().Lower();
+                    int iidx = ilist->GetImageCount();
+                    ed->GetControl()->RegisterImage(iidx, wxBitmap(cpp_keyword_xpm));
+                    HighlightLanguage lang = theme->GetLanguageForFilename(_T(".cpp")); // C++ keywords
+                    wxString keywords = theme->GetKeywords(lang, 0);
+                    wxStringTokenizer tkz(keywords, _T(" \t\r\n"), wxTOKEN_STRTOK);
+                    while (tkz.HasMoreTokens())
+                    {
+                        wxString kw = tkz.GetNextToken() + wxString::Format(_T("?%d"), iidx);
+                        if (kw.Lower().StartsWith(lastSearch))
+                            items.Add(kw);
+                    }
+                }
+            }
+
             if (caseSens)
                 items.Sort();
             else
@@ -442,12 +492,11 @@ int CodeCompletion::CodeComplete()
 #ifdef DEBUG_CC_AI
 		Manager::Get()->GetMessageManager()->DebugLog(_T("0 results"));
 #endif
-        wxString msg;
         if (!parser->Done())
-            msg = _("C++ Parser is still parsing files...");
-        else
-            msg = _("No matches");
-        ed->GetControl()->CallTipShow(ed->GetControl()->GetCurrentPos(), msg);
+        {
+            wxString msg = _("C++ Parser is still parsing files...");
+            ed->GetControl()->CallTipShow(ed->GetControl()->GetCurrentPos(), msg);
+        }
     }
 	return -5;
 }
