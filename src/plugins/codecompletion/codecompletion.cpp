@@ -461,6 +461,12 @@ int CodeCompletion::CodeComplete()
                 }
             }
 
+#ifdef DEBUG_CC_AI
+            Manager::Get()->GetMessageManager()->DebugLog(_T("0 results"));
+#endif
+            if (items.GetCount() == 0)
+                return -2;
+
             if (caseSens)
                 items.Sort();
             else
