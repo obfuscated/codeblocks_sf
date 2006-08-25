@@ -556,7 +556,8 @@ void ParserThread::DoParse()
 		}
 		else if (token==ParserConsts::kw_typedef)
 		{
-		    HandleTypedef();
+//		    HandleTypedef(); // disabled until its function is refined
+			SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
 		    m_Str.Clear();
 		}
 		else if (token==ParserConsts::kw_return ||
@@ -1459,6 +1460,9 @@ void ParserThread::HandleTypedef()
 	}
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("Typedef done"));
 
+    if (components.empty())
+        return; // invalid typedef
+        
     if (!is_function_pointer && components.size() <= 1)
             return; // invalid typedef
 
