@@ -173,6 +173,18 @@
                                         </object>
                                         <object class="sizeritem">
                                             <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxStaticText" name="ID_STATICTEXT32" variable="StaticText32" member="yes">
+                                                <label>Is temp?</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxStaticText" name="ID_STATICTEXT33" variable="txtIsTemp" member="yes">
+                                                <label></label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                             <object class="wxStaticText" name="ID_STATICTEXT19" variable="StaticText19" member="yes">
                                                 <label>Namespace:</label>
                                             </object>
