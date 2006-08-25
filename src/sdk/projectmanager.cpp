@@ -465,6 +465,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     wxMenu menu;
 
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(id);
+    bool is_vfolder = ftd && ftd->GetKind() == FileTreeData::ftdkVirtualFolder;
 
     // if it is not the workspace, add some more options
     if (ftd)
@@ -481,7 +482,8 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.Append(idMenuRemoveFile, _("Remove files..."));
             menu.AppendSeparator();
             menu.Append(idMenuAddVirtualFolder, _("Add new virtual folder"));
-            menu.Append(idMenuDeleteVirtualFolder, _("Delete this virtual folder"));
+            if (is_vfolder)
+                menu.Append(idMenuDeleteVirtualFolder, _("Delete this virtual folder"));
         }
 
         // if it is a file...
@@ -546,7 +548,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         }
 
         // if it is a virtual folder
-        else if (ftd->GetKind() == FileTreeData::ftdkVirtualFolder)
+        else if (is_vfolder)
         {
             menu.Append(idMenuAddVirtualFolder, _("Add new virtual folder"));
             menu.Append(idMenuDeleteVirtualFolder, _("Delete this virtual folder"));

@@ -332,6 +332,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     bool makefile_custom = false;
     wxString defaultTarget;
     wxString compilerId = _T("gcc");
+    wxArrayString vfolders;
     PCHMode pch_mode = m_IsPre_1_2 ? pchSourceDir : pchObjectDir;
 
     // loop through all options
@@ -361,6 +362,9 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
         else if (node->Attribute("pch_mode"))
             pch_mode = (PCHMode)atoi(node->Attribute("pch_mode"));
 
+        else if (node->Attribute("virtualFolders"))
+            vfolders = GetArrayFromString(cbC2U(node->Attribute("virtualFolders")), _T(";"));
+
         node = node->NextSiblingElement("Option");
     }
 
@@ -370,6 +374,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     m_pProject->SetDefaultExecuteTarget(defaultTarget);
     m_pProject->SetCompilerID(compilerId);
     m_pProject->SetModeForPCH(pch_mode);
+    m_pProject->SetVirtualFolders(vfolders);
 
     DoMakeCommands(parentNode->FirstChildElement("MakeCommands"), m_pProject);
     DoVirtualTargets(parentNode->FirstChildElement("VirtualTargets"));
@@ -942,6 +947,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
     if (m_pProject->GetDefaultExecuteTarget() != m_pProject->GetFirstValidBuildTargetName())
         AddElement(prjnode, "Option", "default_target", m_pProject->GetDefaultExecuteTarget());
     AddElement(prjnode, "Option", "compiler", m_pProject->GetCompilerID());
+    AddElement(prjnode, "Option", "virtualFolders", GetStringFromArray(m_pProject->GetVirtualFolders(), _T(";")));
 
     if (m_pProject->MakeCommandsModified())
     {

@@ -510,6 +510,12 @@ class DLLIMPORT cbProject : public CompileTargetBase
         /** Notify that a virtual folder has been renamed.
           * @return True if the renaming is allowed, false if not. */
         bool VirtualFolderRenamed(wxTreeCtrl* tree, wxTreeItemId node, const wxString& new_name);
+
+        /** Get a list of the virtual folders. Normally used by the project loader only.*/
+        const wxArrayString& GetVirtualFolders() const;
+
+        /** Set the virtual folders list. Normally used by the project loader only. */
+        void SetVirtualFolders(const wxArrayString& folders);
     private:
         void Open();
         void ExpandVirtualBuildTargetGroup(const wxString& alias, wxArrayString& result) const;
@@ -519,6 +525,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         int IndexOfBuildTargetName(const wxString& targetName) const;
         wxString CreateUniqueFilename();
         void NotifyPlugins(wxEventType type);
+        void CopyTreeNodeRecursively(wxTreeCtrl* tree, const wxTreeItemId& item, const wxTreeItemId& new_parent);
 
         // properties
         VirtualBuildTargetsMap m_VirtualTargets;
