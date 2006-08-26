@@ -993,8 +993,8 @@ class GdbCmd_Disassembly : public DebuggerCmd
 class GdbCmd_DisassemblyInit : public DebuggerCmd
 {
         DisassemblyDlg* m_pDlg;
-        static wxString LastAddr;
     public:
+        static wxString LastAddr;
         /** @param dlg The disassembly dialog. */
         GdbCmd_DisassemblyInit(DebuggerDriver* driver, DisassemblyDlg* dlg)
             : DebuggerCmd(driver),

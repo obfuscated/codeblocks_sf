@@ -231,6 +231,14 @@ void GDB_driver::Prepare(bool isConsole)
 void GDB_driver::Start(bool breakOnEntry)
 {
     ResetCursor();
+    
+    // reset other states
+    GdbCmd_DisassemblyInit::LastAddr.Clear();
+    if (m_pDisassembly)
+    {
+        StackFrame sf;
+        m_pDisassembly->Clear(sf);
+    }
 
     // under windows, 'start' segfaults with wx projects...
 #if (defined( __WXMSW__) || defined(__WXMAC__))
