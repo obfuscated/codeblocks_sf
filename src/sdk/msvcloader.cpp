@@ -342,12 +342,24 @@ bool MSVCLoader::ParseSourceFiles()
         line.Trim(true);
         line.Trim(false);
 
-        ProjectFile* pf = m_pProject->AddFile(0, RemoveQuotes(line));
-        if (pf)
+        wxString fname (RemoveQuotes(line));
+
+        if ((!fname.IsEmpty()) && (fname != _T(".\\")))
         {
-            // add it to all configurations, not just the first
-            for (int i = 1; i < m_pProject->GetBuildTargetsCount(); ++i)
-                pf->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
+            if (fname.StartsWith(_T(".\\")))
+                fname.erase(0, 2);
+
+            #ifndef __WXMSW__
+            fname.Replace(_T("\\"), _T("/"), true);
+            #endif
+
+            ProjectFile* pf = m_pProject->AddFile(0, fname);
+            if (pf)
+            {
+                // add it to all configurations, not just the first
+                for (int i = 1; i < m_pProject->GetBuildTargetsCount(); ++i)
+                    pf->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
+            }
         }
     }
     return true;

@@ -527,6 +527,10 @@ bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
             {
             	if (fname.StartsWith(_T(".\\")))
 					fname.erase(0, 2);
+
+                #ifndef __WXMSW__
+                fname.Replace(_T("\\"), _T("/"), true);
+                #endif
                 ProjectFile* pf = m_pProject->AddFile(0, fname);
                 if (pf)
                 {
