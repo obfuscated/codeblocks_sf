@@ -24,6 +24,8 @@ class DisassemblyDlg : public wxPanel
         wxScintilla* m_pCode;
         unsigned long int m_LastActiveAddr;
         bool m_HasActiveAddr;
+        wxString m_FrameFunction;
+        wxString m_FrameAddress;
         bool m_ClearFlag;
     private:
         DECLARE_EVENT_TABLE();

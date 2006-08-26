@@ -14,6 +14,8 @@
 #include <manager.h>
 #include <editormanager.h>
 #include <configmanager.h>
+#include <projectmanager.h>
+#include <cbproject.h>
 #include <filefilters.h>
 
 #define DEBUG_MARKER        4
@@ -73,11 +75,13 @@ DisassemblyDlg::~DisassemblyDlg()
 
 void DisassemblyDlg::Clear(const StackFrame& frame)
 {
-    XRCCTRL(*this, "lblFunction", wxStaticText)->SetLabel(frame.valid ? frame.function : _T("??"));
-    wxString addr = _T("??");
+    m_FrameFunction = frame.valid ? frame.function : _T("??");
+    m_FrameAddress = _T("??");
     if (frame.valid)
-        addr.Printf(_T("%p"), (void*)frame.address);
-    XRCCTRL(*this, "lblAddress", wxStaticText)->SetLabel(addr);
+        m_FrameAddress.Printf(_T("0x%p"), (void*)frame.address);
+
+    XRCCTRL(*this, "lblFunction", wxStaticText)->SetLabel(m_FrameFunction);
+    XRCCTRL(*this, "lblAddress", wxStaticText)->SetLabel(m_FrameAddress);
 
     m_HasActiveAddr = false;
 
@@ -139,34 +143,29 @@ void DisassemblyDlg::OnSave(wxCommandEvent& event)
 {
     wxFileDialog dlg(this,
                      _("Save as text file"),
-                     wxEmptyString,
+                     _T("assembly_dump.txt"),
                      wxEmptyString,
                      FileFilters::GetFilterAll(),
                      wxSAVE | wxOVERWRITE_PROMPT);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
-
-    wxFFileOutputStream output(dlg.GetPath());
-    if (!output.Ok())
+        
+    wxString output;
+    cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+    if (prj)
     {
-        cbMessageBox(_("Could not open file for saving..."), _("Result"), wxICON_ERROR);
-        return;
+        output << _("Project title : ") << prj->GetTitle() << _T('\n');
+        output << _("Project path  : ") << prj->GetBasePath() << _T('\n') << _T('\n');
     }
-    wxTextOutputStream text(output);
+    
+    output << _("Frame function: ") << m_FrameFunction << _T('\n');
+    output << _("Frame address : ") << m_FrameAddress << _T('\n');
+    output << wxString(_T('-'), 80) << _T('\n');
+    output << m_pCode->GetText();
 
-//    wxListCtrl* lc = XRCCTRL(*this, "lcCode", wxListCtrl);
-//    for (int i = 0; i < lc->GetItemCount(); ++i)
-//    {
-//        wxListItem info;
-//        info.m_itemId = i;
-//        info.m_col = 1;
-//        info.m_mask = wxLIST_MASK_TEXT;
-//        wxString instr = lc->GetItem(info) && !info.m_text.IsEmpty() ? info.m_text : _T("??");
-//
-//        text << lc->GetItemText(i) << _T(": ") << instr << _T('\n');
-//    }
-    cbMessageBox(_("File saved"), _("Result"), wxICON_INFORMATION);
+    if (!cbSaveToFile(dlg.GetPath(), output))
+        cbMessageBox(_("Could not save file..."), _("Error"), wxICON_ERROR);
 }
 
 void DisassemblyDlg::OnRefresh(wxCommandEvent& event)
