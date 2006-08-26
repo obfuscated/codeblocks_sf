@@ -904,7 +904,6 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
             {
                 wxString s;
                 BreakUpInLines(s, token->m_Args, chars_per_line);
-                DBGLOG(s);
                 m_CallTips.Add(s);
             }
             else if (token->m_IsTypedef && token->m_ActualType.Contains(_T("(")))
