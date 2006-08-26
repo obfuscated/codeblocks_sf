@@ -1398,9 +1398,9 @@ size_t NativeParser::FindAIMatches(Parser* parser,
             TokenIdxSet::iterator itsearch;
             if (search_scope)
                 itsearch = search_scope->begin();
-            while (itsearch == 0 || itsearch != search_scope->end())
+            while (!search_scope || itsearch != search_scope->end())
             {
-                Token* parent = tree->at(itsearch != 0 ? *itsearch : parentTokenIdx);
+                Token* parent = tree->at(search_scope ? *itsearch : parentTokenIdx);
 #ifdef DEBUG_CC_AI
                 Manager::Get()->GetMessageManager()->DebugLog(_T(" : looking under '%s'"), parent ? parent->m_Name.c_str() : _T("Global namespace"));
 #endif
@@ -1413,7 +1413,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                         break;
                     parent = tree->at(parent->m_ParentIndex);
                 } while (true);
-                if (itsearch == 0)
+                if (!search_scope)
                     break;
                 ++itsearch;
             }
