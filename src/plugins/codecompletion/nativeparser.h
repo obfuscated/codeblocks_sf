@@ -57,7 +57,7 @@ class NativeParser : public wxEvtHandler
 		size_t MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI = true);
 
 		const wxString& GetCodeCompletionItems();
-		const wxArrayString& GetCallTips();
+		const wxArrayString& GetCallTips(int chars_per_line);
 		int GetCallTipCommas(){ return m_CallTipCommas; }
         int CountCommas(const wxString& calltip, int start);
 		void GetCallTipHighlight(const wxString& calltip, int* start, int* end);
@@ -99,6 +99,7 @@ class NativeParser : public wxEvtHandler
 		bool FindFunctionNamespace(cbEditor* editor, wxString* nameSpace = 0L, wxString* procName = 0L);
 		int FindCurrentFunctionStart(cbEditor* editor);
 		bool IsFunctionSignature(cbEditor* editor, int& pos, bool* is_member_initialiser = 0);
+		void BreakUpInLines(wxString& str, const wxString& original_str, int chars_per_line = -1);
 		void AddCompilerDirs(Parser* parser, cbProject* project);
 		bool LoadCachedData(Parser* parser, cbProject* project);
 		bool SaveCachedData(Parser* parser, const wxString& projectFilename);

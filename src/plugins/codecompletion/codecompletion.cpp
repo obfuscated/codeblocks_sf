@@ -592,7 +592,7 @@ wxArrayString CodeCompletion::GetCallTips()
 		wxArrayString items;
 		return items;
 	}
-	return m_NativeParsers.GetCallTips();
+	return m_NativeParsers.GetCallTips(-1);
 }
 
 void CodeCompletion::ShowCallTip()
@@ -607,11 +607,29 @@ void CodeCompletion::ShowCallTip()
 	if (!ed)
 		return;
 
+    // calculate the size of the calltips window
+    int pos = ed->GetControl()->GetCurrentPos();
+    wxPoint p = ed->GetControl()->PointFromPosition(pos); // relative point
+    int pixelWidthPerChar = ed->GetControl()->TextWidth(wxSCI_STYLE_LINENUMBER, _T("W"));
+    int maxCalltipLineSizeInChars = (ed->GetSize().x - p.x) / pixelWidthPerChar;
+    if (maxCalltipLineSizeInChars < 64)
+    {
+        // if less than a threshold in chars, recalculate the starting position (instead of shrinking it even more)
+        p.x -= (64 - maxCalltipLineSizeInChars) * pixelWidthPerChar;
+        // but if it goes out of range, continue shrinking
+        if (p.x >= 0)
+        {
+            maxCalltipLineSizeInChars = 64;
+            pos = ed->GetControl()->PositionFromPoint(p);
+        }
+        // else, out of range
+    }
+    
     int start = 0;
     int end = 0;
     int count = 0;
     int commas = m_NativeParsers.GetCallTipCommas(); // how many commas has the user typed so far?
-	wxArrayString items = GetCallTips();
+	wxArrayString items = m_NativeParsers.GetCallTips(maxCalltipLineSizeInChars);
     std::set< wxString, std::less<wxString> > unique_tips; // check against this before inserting a new tip in the list
 	wxString definition;
 	for (unsigned int i = 0; i < items.GetCount(); ++i)
@@ -630,7 +648,7 @@ void CodeCompletion::ShowCallTip()
 		}
 	}
 	if (!definition.IsEmpty())
-		ed->GetControl()->CallTipShow(ed->GetControl()->GetCurrentPos(), definition);
+		ed->GetControl()->CallTipShow(pos, definition);
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("start=%d, end=%d"), start, end);
     // only highlight current argument if only one calltip (scintilla doesn't support multiple highlighting ranges in calltips)
     ed->GetControl()->CallTipSetHighlight(count == 1 ? start : 0, count == 1 ? end : 0);

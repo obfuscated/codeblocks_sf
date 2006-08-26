@@ -838,7 +838,7 @@ void NativeParser::GetCallTipHighlight(const wxString& calltip, int* start, int*
         *end = calltip.Length() - 1;
 }
 
-const wxArrayString& NativeParser::GetCallTips()
+const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
 {
     m_CallTips.Clear();
     Parser* parser = 0;
@@ -901,7 +901,12 @@ const wxArrayString& NativeParser::GetCallTips()
             if(!token)
                 continue;
             if (token->m_Args != _T("()"))
-                m_CallTips.Add(token->m_Args);
+            {
+                wxString s;
+                BreakUpInLines(s, token->m_Args, chars_per_line);
+                DBGLOG(s);
+                m_CallTips.Add(s);
+            }
             else if (token->m_IsTypedef && token->m_ActualType.Contains(_T("(")))
                 m_CallTips.Add(token->m_ActualType); // typedef'd function pointer
         }
@@ -915,6 +920,40 @@ const wxArrayString& NativeParser::GetCallTips()
 }
 
 // helper funcs
+
+void NativeParser::BreakUpInLines(wxString& str, const wxString& original_str, int chars_per_line)
+{
+    if (chars_per_line == -1 || original_str.Length() <= (size_t)chars_per_line)
+    {
+        str = original_str;
+        return;
+    }
+
+    // break it up in lines
+    size_t pos = 0;
+    size_t copy_start = 0;
+    int last_comma = -1;
+    int last_space = -1;
+    while (pos < original_str.Length())
+    {
+        wxChar c = original_str.GetChar(pos);
+
+        if (c == _T(','))
+            last_comma = pos;
+        else if (c == _T(' ') || c == _T('\t'))
+            last_space = pos;
+        
+        if (pos % chars_per_line == 0 && last_comma != -1)
+        {
+            str << original_str.Mid(copy_start, last_comma - copy_start + 1);
+            str << _T('\n');
+            copy_start = last_comma + 1;
+        }
+        else if (pos == original_str.Length() - 1)
+            str << original_str.Mid(copy_start); // rest of the string
+        ++pos;
+    }
+}
 
 unsigned int NativeParser::FindCCTokenStart(const wxString& line)
 {
