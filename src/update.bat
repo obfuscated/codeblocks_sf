@@ -1,4 +1,8 @@
 @echo off
+
+REM SETLOCAL assures environment variables created in a batch file are not exported to its calling environment
+setlocal
+
 echo Creating output directory tree
 
 if not exist output md output\
@@ -91,6 +95,3 @@ echo Stripping debug info from output tree
 strip output\*.exe
 strip output\*.dll
 strip output\share\CodeBlocks\plugins\*.dll
-
-set ZIPCMD=
-set RESDIR=
