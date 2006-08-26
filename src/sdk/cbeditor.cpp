@@ -819,7 +819,12 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
 
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
 
+#ifdef __WXMAC__
+    // 8 point is not readable on Mac OS X, increase font size:
+    wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
+#else
     wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+#endif
     wxString fontstring = mgr->Read(_T("/font"), wxEmptyString);
     int eolmode = wxSCI_EOL_CRLF;
     if (!fontstring.IsEmpty())

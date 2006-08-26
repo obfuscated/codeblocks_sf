@@ -135,6 +135,26 @@ BEGIN_EVENT_TABLE(CodeBlocksApp, wxApp)
 	EVT_COMPILER_FINISHED(CodeBlocksApp::OnBatchBuildDone)
 END_EVENT_TABLE()
 
+#ifdef __WXMAC__
+#include "wx/mac/corefoundation/cfstring.h"
+#include "wx/intl.h"
+
+#include <CoreFoundation/CFBundle.h>
+#include <CoreFoundation/CFURL.h>
+
+// returns e.g. "/Applications/appname.app/Contents/Resources" if application is bundled,
+// or the directory of the binary, e.g. "/usr/local/bin/appname", if it is *not* bundled.
+static wxString GetResourcesDir()
+{
+    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
+    CFURLRef absoluteURL = CFURLCopyAbsoluteURL(resourcesURL); // relative -> absolute
+    CFRelease(resourcesURL);
+    CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL,kCFURLPOSIXPathStyle);
+    CFRelease(absoluteURL);
+    return wxMacCFStringHolder(cfStrPath).AsString(wxLocale::GetSystemEncoding());
+}
+#endif
+
 bool CodeBlocksApp::LoadConfig()
 {
     if (ParseCmdLine(0L) != 0)
@@ -147,6 +167,8 @@ bool CodeBlocksApp::LoadConfig()
     // find out about data path
 #ifdef __WXMSW__
     wxString data = GetAppPath(); // under windows it is under the exe dir
+#elif defined(__WXMAC__)
+    wxString data = GetResourcesDir(); // CodeBlocks.app/Contents/Resources
 #else
     #ifdef APP_PREFIX
         wxString data = wxT(APP_PREFIX); // under linux, get the preprocessor value
@@ -155,7 +177,12 @@ bool CodeBlocksApp::LoadConfig()
     #endif
 #endif
     wxString actualData = _T("/share/codeblocks");
+#ifdef __WXMAC__
+    if (!data.Contains(wxString(_T("/Resources"))))
+        data << _T("/..") << actualData; // not a bundle, use relative path
+#else
     data << actualData;
+#endif
     // check if the user has passed --prefix in the command line
     if (!m_Prefix.IsEmpty())
         data = m_Prefix + actualData;

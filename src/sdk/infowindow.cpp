@@ -9,7 +9,7 @@
     #include "manager.h"
 #endif
 
-BEGIN_EVENT_TABLE(InfoWindow, wxPopupWindow)
+BEGIN_EVENT_TABLE(InfoWindow, wxInfoWindowBase)
 EVT_TIMER(-1, InfoWindow::OnTimer)
 EVT_MOTION(InfoWindow::OnMove)
 EVT_LEFT_DOWN(InfoWindow::OnClick)
@@ -118,7 +118,11 @@ END_EVENT_TABLE()
 
 
 InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned int delay, unsigned int hysteresis)
-            : wxPopupWindow(Manager::Get()->GetAppWindow(), wxSIMPLE_BORDER | wxWS_EX_TRANSIENT | wxCLIP_CHILDREN),
+            : wxInfoWindowBase(Manager::Get()->GetAppWindow(),
+#if !wxUSE_POPUPWIN
+              wxID_ANY, wxEmptyString, wxPoint(-21,-21), wxSize(20,20),
+#endif
+              wxSIMPLE_BORDER | wxWS_EX_TRANSIENT | wxCLIP_CHILDREN),
               m_timer(new wxTimer(this, 0)), status(0), m_delay(delay), ks(2)
     {
         my_message_iterator = active_messages.insert(active_messages.begin(), message);
