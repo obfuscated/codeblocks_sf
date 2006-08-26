@@ -8,6 +8,9 @@
  * are clearly marked.
  *
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
+ * 
+ * Modifications:
+ * - D support (search for "D support")
  */
 #include "jam.h"
 #include "hash.h"
@@ -39,6 +42,12 @@ const char *search(const char *source, const char *_header, time_t *time)
 	char buf3[MAXJPATH];
 	int system = (_header[0] == '<');
 	LIST *list = searchdirs->next;
+	
+	//D support
+	int dMode=0;
+	int fnlen=strlen(source);
+	if(source[fnlen-2]=='.' && source[fnlen-1]=='d')
+		dMode=1;
 
 	/* <foo.h> --> foo.h */
 	strcpy(header, _header + 1);
@@ -131,33 +140,37 @@ strcpy(buf, buf2);
 			return newstr(buf);
 	}
 
-#if 1
-#ifdef SEARCH_OPTIM
-	// remember that this file could not be found
+	if(!dMode)
 	{
-		char key[MAXJPATH] = "";
-		SEARCH search, *s = &search;
-		if (!system)
+#ifdef SEARCH_OPTIM
+		// remember that this file could not be found
 		{
-			strcpy(key, buf3);
-			strcat(key, ",");
+			char key[MAXJPATH] = "";
+			SEARCH search, *s = &search;
+			if (!system)
+			{
+				strcpy(key, buf3);
+				strcat(key, ",");
+			}
+			strcat(key, _header);
+			s->key = newstr(key);
+			s->time = 0;
+			s->path = NULL;
+			(void) hashenter(searchhash, (HASHDATA **)&s);
 		}
-		strcat(key, _header);
-		s->key = newstr(key);
-		s->time = 0;
-		s->path = NULL;
-		(void) hashenter(searchhash, (HASHDATA **)&s);
-	}
 #endif
 
-	/* C compilers do *not* look in the current directory for #include files */
-	*time = 0;
-	return NULL;
-#else
-	f->f_root.ptr = 0;
-	f->f_root.len = 0;
+		/* C compilers do *not* look in the current directory for #include files */
+		*time = 0;
+		return NULL;
+	}
+	//D support (look in current directory)
+	else
+	{
+		f->f_root.ptr = 0;
+		f->f_root.len = 0;
 
-	path_build( f, buf, 1 );
+		path_build( f, buf, 1 );
 
 {
 PATHSPLIT f;
@@ -168,13 +181,54 @@ path_tostring(&f, buf2);
 strcpy(buf, buf2);
 }
 
-	if( DEBUG_SEARCH )
-	    printf( "search %s: %s\n", _header, buf );
+		if( DEBUG_SEARCH )
+			printf( "search %s: %s\n", _header, buf );
 
-	timestamp( buf, time );
+		timestamp( buf, time );
 
-	return newstr( buf );
+
+#ifdef SEARCH_OPTIM
+		if (*time)
+		{
+			char key[MAXJPATH] = "";
+			SEARCH search, *s = &search;
+			if (!system)
+			{
+				strcpy(key, buf3);
+				strcat(key, ",");
+			}
+			strcat(key, _header);
+			s->key = newstr(key);
+			s->time = *time;
+			s->path = newstr(buf);
+			(void) hashenter(searchhash, (HASHDATA **)&s);
+		}
 #endif
+
+		if (*time)
+			return newstr(buf);
+		
+#ifdef SEARCH_OPTIM
+		// remember that this file could not be found
+		{
+			char key[MAXJPATH] = "";
+			SEARCH search, *s = &search;
+			if (!system)
+			{
+				strcpy(key, buf3);
+				strcat(key, ",");
+			}
+			strcat(key, _header);
+			s->key = newstr(key);
+			s->time = 0;
+			s->path = NULL;
+			(void) hashenter(searchhash, (HASHDATA **)&s);
+		}
+#endif
+
+		*time = 0;
+		return NULL;
+	}
 }
 
 void search_adddir(const char *path)
