@@ -47,8 +47,6 @@ namespace ParserConsts
     const wxString spaced_colon(_T(" : "));
     const wxString empty(_T(""));
     const wxString hash(_T("#"));
-    const wxString x_event_table(_T("*_EVENT_TABLE"));
-    const wxString x_event_table_x(_T("*_EVENT_TABLE*"));
     const wxString plus(_T("+"));
     const wxString comma(_T(","));
     const wxString commaclbrace(_T(",}"));
@@ -62,13 +60,7 @@ namespace ParserConsts
     const wxString lt(_T("<"));
     const wxString gt(_T(">"));
     const wxString gtsemicolon(_T(">;"));
-    const wxString begin_event_table(_T("BEGIN_EVENT_TABLE"));
-    const wxString end_event_table(_T("END_EVENT_TABLE"));
-    const wxString implement_x(_T("IMPLEMENT_*"));
     const wxString unnamed(_T("Un-named"));
-    const wxString declare_x(_T("DECLARE_*"));
-    const wxString wx_declare_x(_T("WX_DECLARE_*"));
-    const wxString wx_define_x(_T("WX_DEFINE_*"));
     const wxString quot(_T("\""));
     const wxString kw_C(_T("\"C\""));
     const wxString kw__asm(_T("__asm"));
@@ -922,7 +914,7 @@ void ParserThread::HandleDefines()
 {
 	wxString filename;
 	int lineNr = m_Tokenizer.GetLineNumber();
-	wxString token = m_Tokenizer.GetToken();
+	wxString token = m_Tokenizer.GetToken(); // read the token after #define
 	m_Str.Clear();
 	// now token holds something like:
 	// BLAH_BLAH
@@ -933,6 +925,9 @@ void ParserThread::HandleDefines()
         m_pLastParent = 0L;
 		DoAddToken(tkPreprocessor, token, lineNr);
         m_pLastParent = oldParent;
+        
+        // skip the rest of the #define
+        m_Tokenizer.SkipToEOL();
 	}
 }
 
