@@ -552,6 +552,9 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         {
             menu.Append(idMenuAddVirtualFolder, _("Add new virtual folder"));
             menu.Append(idMenuDeleteVirtualFolder, _("Delete this virtual folder"));
+            menu.AppendSeparator();
+            menu.Append(idMenuRemoveFile, _("Remove files..."));
+            menu.Append(idMenuRemoveFolderFilesPopup, wxString::Format(_("Remove %s*"), ftd->GetFolder().c_str()));
         }
 
         // ask any plugins to add items in this menu
@@ -1941,12 +1944,14 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
             return;
         }
         int i = 0;
+        bool is_virtual = ftd->GetKind() == FileTreeData::ftdkVirtualFolder;
         while (i >= 0 && i < prj->GetFilesCount())
         {
             ProjectFile* pf = prj->GetFile(i);
             // ftd->GetFolder() ends with the path separator, so it is
             // safe to just compare the two strings...
-            if (pf->file.GetFullPath().StartsWith(ftd->GetFolder()))
+            if ((is_virtual && pf->virtual_path.StartsWith(ftd->GetFolder())) || // vfolder-based
+                pf->file.GetFullPath().StartsWith(ftd->GetFolder())) // filesystem-based
             {
                 wxString filename = pf->file.GetFullPath();
                 prj->RemoveFile(pf);
