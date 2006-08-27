@@ -235,7 +235,7 @@ void CCDebugInfo::DisplayTokenInfo()
     else
         txtDeclFile->SetLabel(wxEmptyString);
     if (!m_pToken->GetImplFilename().IsEmpty())
-        txtImplFile->SetLabel(wxString::Format(_T("%s : %d"), m_pToken->GetImplFilename().c_str(), m_pToken->m_ImplLine));
+        txtImplFile->SetLabel(wxString::Format(_T("%s : %d (code lines: %d to %d)"), m_pToken->GetImplFilename().c_str(), m_pToken->m_ImplLine, m_pToken->m_ImplLineStart, m_pToken->m_ImplLineEnd));
     else
         txtImplFile->SetLabel(wxEmptyString);
 }

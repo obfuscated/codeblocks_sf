@@ -64,7 +64,7 @@ void cbThreadPool::_SetConcurrentThreads(int concurrentThreads)
       m_threads.back()->Run();
     }
 
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Concurrent threads for pool set to %d"), m_concurrentThreads);
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Concurrent threads for pool set to %d"), m_concurrentThreads);
   }
   else
   {

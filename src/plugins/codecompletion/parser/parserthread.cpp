@@ -204,7 +204,7 @@ void ParserThread::SkipBlock()
 		wxString token = m_Tokenizer.GetToken();
 		if (token.IsEmpty())
 			break; // eof
-
+            
 		// if we reach the initial nesting level, we are done
 		if (level == m_Tokenizer.GetNestingLevel())
 			break;
@@ -763,7 +763,7 @@ Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, 
     return result;
 }
 
-Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, const wxString& args, bool isOperator, bool isImpl)
+Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, int implLineStart, int implLineEnd, const wxString& args, bool isOperator, bool isImpl)
 {
     if(TestDestroy())
         return 0;
@@ -836,6 +836,8 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
     {
         newToken->m_ImplFile = m_File;
         newToken->m_ImplLine = line;
+        newToken->m_ImplLineStart = implLineStart;
+        newToken->m_ImplLineEnd = implLineEnd;
         m_pTokens->m_FilesMap[newToken->m_ImplFile].insert(newToken->GetSelf());
     }
 
@@ -1085,6 +1087,8 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 {
 //    DBGLOG(_T("Adding function '")+name+_T("': m_Str='")+m_Str+_T("'"));
     int lineNr = m_Tokenizer.GetLineNumber();
+    int lineStart = 0;
+    int lineEnd = 0;
 	wxString args = m_Tokenizer.GetToken();
     wxString peek = m_Tokenizer.PeekToken();
 	if (!m_Str.StartsWith(ParserConsts::kw_friend))
@@ -1119,11 +1123,18 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 		bool isImpl = false;
 		while (!peek.IsEmpty()) // !eof
 		{
-            if (peek == ParserConsts::opbrace || // normal function
-                peek == ParserConsts::colon) // probably a ctor with member initializers
+            if (peek == ParserConsts::colon) // probably a ctor with member initializers
+            {
+                SkipToOneOfChars(ParserConsts::opbrace, false);
+                m_Tokenizer.UngetToken(); // leave brace there
+            }
+            else if (peek == ParserConsts::opbrace)// function implementation
             {
                 isImpl = true;
-                SkipToOneOfChars(ParserConsts::semicolonclbrace,true);
+                m_Tokenizer.GetToken(); // eat {
+                lineStart = m_Tokenizer.GetLineNumber();
+                SkipBlock(); // skip  to matching }
+                lineEnd = m_Tokenizer.GetLineNumber();
                 break;
             }
             else if (peek == ParserConsts::clbrace || peek == ParserConsts::semicolon)
@@ -1135,7 +1146,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
             m_Tokenizer.GetToken();
 		    peek = m_Tokenizer.PeekToken();
 		}
-		DoAddToken(kind, name, lineNr, args, isOperator, isImpl);
+		DoAddToken(kind, name, lineNr, lineStart, lineEnd, args, isOperator, isImpl);
 	}
 }
 
@@ -1339,7 +1350,7 @@ void ParserThread::HandleTypedef()
     m_Str.Clear();
 
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("Adding typedef: name '%s', ancestor: '%s'"), components.front().c_str(), ancestor.c_str());
-    Token* tdef = DoAddToken(tkClass, components.front(), lineNr, args);
+    Token* tdef = DoAddToken(tkClass, components.front(), lineNr, 0, 0, args);
     if (tdef)
     {
         tdef->m_IsTypedef = true;

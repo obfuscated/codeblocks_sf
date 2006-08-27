@@ -48,6 +48,7 @@ protected:
     bool SkipToOneOfChars(const char* chars, bool supportNesting = false);
     bool SkipBlock(const wxChar& ch);
     bool SkipUnwanted(); // skips comments, assignments, preprocessor etc.
+    bool SkipComment();
 
     bool IsEOF() const
     {

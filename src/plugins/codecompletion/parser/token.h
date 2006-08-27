@@ -95,7 +95,9 @@ class Token  : public BlockAllocated<Token, 10000>
 		unsigned int m_File;
 		unsigned int m_Line;
 		unsigned int m_ImplFile;
-		unsigned int m_ImplLine;
+		unsigned int m_ImplLine; // where the token was met
+		unsigned int m_ImplLineStart; // if token is impl, opening brace line
+		unsigned int m_ImplLineEnd; // if token is impl, closing brace line
 		TokenScope m_Scope;
 		TokenKind m_TokenKind;
 		bool m_IsOperator;

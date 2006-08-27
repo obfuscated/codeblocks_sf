@@ -253,6 +253,9 @@ bool Tokenizer::SkipBlock(const wxChar& ch)
 	int count = 1; // counter for nested blocks (xxx())
 	while (NotEOF())
 	{
+	    if (CurrentChar() == '/')
+            SkipComment(); // this will decide if it is a comment
+	    
 		if (CurrentChar() == '"' || CurrentChar() == '\'')
 		{
 			// this is the case that match is inside a string!
@@ -274,6 +277,47 @@ bool Tokenizer::SkipBlock(const wxChar& ch)
 	return true;
 }
 
+bool Tokenizer::SkipComment()
+{
+    // C/C++ style comments
+    bool is_comment = CurrentChar() == '/' && (NextChar() == '/' || NextChar() == '*');
+    if (!is_comment)
+        return true;
+
+    bool cstyle = NextChar() == '*';
+    MoveToNextChar(2);
+    //MoveToNextChar();
+    while (1)
+    {
+        if (!cstyle)
+        {
+            if (!SkipToEOL())
+                return false;
+            MoveToNextChar();
+            break;
+        }
+        else
+        {
+            if (SkipToChar('/'))
+            {
+                if (PreviousChar() == '*')
+                {
+                    MoveToNextChar();
+                    break;
+                }
+                MoveToNextChar();
+            }
+            else
+                return false;
+        }
+    }
+    if (IsEOF())
+        return false;
+    if (!SkipWhiteSpace())
+        return false;
+    return true;
+}
+
 bool Tokenizer::SkipUnwanted()
 {
 	while (CurrentChar() == '#' ||
@@ -287,33 +331,7 @@ bool Tokenizer::SkipUnwanted()
 				m_Buffer.Mid(m_TokenIndex, 2) == _T("/*"))
 		{
 			// C/C++ style comments
-			bool cstyle = NextChar() == '*';
-			MoveToNextChar(2);
-			//MoveToNextChar();
-			while (1)
-			{
-				if (!cstyle)
-				{
-					if (!SkipToEOL())
-						return false;
-					MoveToNextChar();
-					break;
-				}
-				else
-				{
-					if (SkipToChar('/'))
-					{
-						if (PreviousChar() == '*')
-						{
-							MoveToNextChar();
-							break;
-						}
-						MoveToNextChar();
-					}
-					else
-						return false;
-				}
-			}
+			SkipComment();
 			if (IsEOF())
 				return false;
 			if (!SkipWhiteSpace())

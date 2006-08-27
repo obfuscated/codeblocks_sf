@@ -566,15 +566,15 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
 void Parser::Clear()
 {
     DisconnectEvents();
-	if(m_ShuttingDown)
-	{
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Terminating threads..."));
-	}
+//	if(m_ShuttingDown)
+//	{
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("Terminating threads..."));
+//	}
 	TerminateAllThreads(); //
-	if(m_ShuttingDown)
-	{
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Done."));
-	}
+//	if(m_ShuttingDown)
+//	{
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("Done."));
+//	}
 
     Manager::ProcessPendingEvents();
 

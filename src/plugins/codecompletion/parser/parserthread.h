@@ -70,7 +70,7 @@ class ParserThread : public cbThreadedTask
 		void HandleFunction(const wxString& name, bool isOperator = false);
 		void HandleEnum();
 		void HandleTypedef();
-		Token* DoAddToken(TokenKind kind, const wxString& name, int line, const wxString& args = wxEmptyString, bool isOperator = false, bool isImpl = false);
+		Token* DoAddToken(TokenKind kind, const wxString& name, int line, int implLineStart = 0, int implLineEnd = 0, const wxString& args = wxEmptyString, bool isOperator = false, bool isImpl = false);
 		wxString GetActualTokenType();
 	private:
 		void Log(const wxString& log);

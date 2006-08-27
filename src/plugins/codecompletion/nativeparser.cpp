@@ -1638,168 +1638,44 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor)
     if (!control)
         return -1;
 
-    int brace_nest = 0;
-	int pos = control->GetCurrentPos();
-	bool is_member_initialiser = false;
-	if (control->GetCharAt(pos) == '}')
-        pos--;
-	while (pos >= 0)
+    static cbEditor* s_LastEditor = 0;
+    static int s_LastLine = -1;
+    static int s_LastResult = -1;
+    
+    // cache last result for optimization
+    int pos = control->GetCurrentPos();
+    int line = control->GetCurrentLine() + 1;
+    if (line == s_LastLine && editor == s_LastEditor)
+        return s_LastResult;
+    s_LastEditor = editor;
+    s_LastLine = line;
+
+	Parser parser(this);
+	parser.ParseBufferForFunctions(control->GetTextRange(0, pos));
+
+	wxArrayString funcs;
+	TokensTree* tmptree = parser.GetTempTokens();
+
+    // look for implementation functions that enclose our current line number
+	for(size_t i = 0; i < tmptree->size();i++)
 	{
-        SkipWhitespaceBackward(editor, pos);
-        if (pos < 0)
-            break;
-
-        wxChar ch = control->GetCharAt(pos);
-        switch (ch)
-        {
-            case '}':
-                brace_nest++;
-                break;
-
-            case '{':
-                brace_nest--;
-                if (brace_nest < 0)
-                {
-                    // now we 're talking :)
-                    int blockPos = pos;
-                    pos--;
-                    SkipWhitespaceBackward(editor, pos);
-                    if (pos >= 0 && control->GetCharAt(pos) == ')')
-                    {
-                        if (IsFunctionSignature(editor, pos, &is_member_initialiser))
-                            return blockPos;
-                        if (is_member_initialiser)
-                        {
-                            // reach for ':'
-                            int paren_nest = 0;
-                            while (pos >= 0)
-                            {
-                                ch = control->GetCharAt(pos);
-                                if (ch == ')') paren_nest++;
-                                else if (ch == '(') paren_nest--;
-                                if (paren_nest == 0 && ch == ':')
-                                    break;
-                                pos--;
-                                SkipWhitespaceBackward(editor, pos);
-                            }
-                            --pos;
-                            if (IsFunctionSignature(editor, pos, &is_member_initialiser))
-                                return blockPos;
-                        }
-                    }
-                }
-                brace_nest = 0; // keep going up, ignoring complete {} blocks
-                break;
-        }
-
-		--pos;
+	    Token* token = tmptree->at(i);
+	    if (token && (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor))
+	    {
+	        // found a function; check its bounds
+	        if (token->m_ImplLineStart <= (size_t)line && token->m_ImplLineEnd >= (size_t)line)
+	        {
+	            // got it :)
+                s_LastResult = control->PositionFromLine(token->m_ImplLineStart);
+                return s_LastResult;
+	        }
+	    }
 	}
-	return pos;
+	s_LastResult = -1;
+	return -1;
 }
 
-// expects pos to be at the closing parenthesis
-bool NativeParser::IsFunctionSignature(cbEditor* editor, int& pos, bool* is_member_initialiser)
-{
-    if (is_member_initialiser)
-        *is_member_initialiser = false;
-
-    cbStyledTextCtrl* control = editor->GetControl();
-    if (!control)
-        return false;
-
-    wxString keywords;
-    EditorColourSet* theme = editor->GetColourSet();
-    if (theme)
-    {
-        HighlightLanguage lang = theme->GetLanguageForFilename(_T(".cpp")); // C++ keywords
-        keywords = _T(' ') + theme->GetKeywords(lang, 0) + _T(' ');
-    }
-
-	if (pos == -1)
-        pos = control->GetCurrentPos();
-
-    SkipWhitespaceBackward(editor, pos);
-    if (pos >= 0 && control->GetCharAt(pos) == ')')
-    {
-        // ok! skip parentheses but use a clever trick:
-        // if we don't find at least two words inside the
-        // parentheses (*not* separated by comma), then it's
-        // not a function signature (but a function call)
-        // Clever, ain't it? :D
-        //
-        // ofcourse there is a case where this doesn't work:
-        // argument-less functions...
-        int paren_nest = 0;
-        wxChar last_char;
-        bool is_sig = false;
-        while (pos >= 0)
-        {
-            wxChar ch = control->GetCharAt(pos);
-            switch (ch)
-            {
-                case ')': paren_nest++; break;
-
-                case '(': paren_nest--; break;
-
-                case '\r': // fallthrough
-                case '\n': // fallthrough
-                case '\t': // fallthrough
-                case ' ':
-                    if (paren_nest == 1) // still inside the args
-                    {
-                        SkipWhitespaceBackward(editor, pos);
-                        ch = control->GetCharAt(pos);
-                        if (ch != ',' && ch != ';' && (wxIsalnum(last_char) || last_char == '_'))
-                            is_sig = true; // yes!
-                    }
-                    break;
-
-                default: // other character
-                    break;
-            }
-            --pos;
-
-            // reached here;
-            if (paren_nest == 0 && pos >= 0)
-            {
-                // check word before: if it's a C++ keyword, return false else true
-                SkipWhitespaceBackward(editor, pos);
-                int start = control->WordStartPosition(pos, true);
-                int end = control->WordEndPosition(pos, true);
-                wxString w = control->GetTextRange(start, end);
-#ifdef DEBUG_CC_AI
-                DBGLOG(_T("possible function name: '%s'"), w.c_str());
-#endif
-                if (!keywords.Contains(_T(' ') + w + _T(' ')))
-                {
-                    if (is_sig)
-                        return true; // we are certain :)
-
-                    // one last check for constructor initialiser lists
-                    // XYZ::XYZ() : member_var(init), other_member(1) {
-                    // without this check, other_member will be taken for function
-                    start--;
-                    SkipWhitespaceBackward(editor, start);
-                    bool is_sig = start >= 0 &&
-                                control->GetCharAt(start) != ',' &&
-                                (control->GetCharAt(start) != ':' ||
-                                control->GetCharAt(start - 1) == ':');
-                    if (is_member_initialiser)
-                        *is_member_initialiser = !is_sig;
-#ifdef DEBUG_CC_AI
-                    DBGLOG(_T("%s: is_member_initialiser=%d"), w.c_str(), *is_member_initialiser ? 1 : 0);
-#endif
-                    return is_sig;
-                }
-                else
-                    return false; // keyword
-            }
-            last_char = ch;
-        }
-    }
-    return false;
-}
-
+// TODO: replace this function by using FindCurrentFunction()
 bool NativeParser::FindFunctionNamespace(cbEditor* editor, wxString* nameSpace, wxString* procName)
 {
 	if (!nameSpace && !procName)
