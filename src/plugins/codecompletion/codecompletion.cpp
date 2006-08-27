@@ -1011,7 +1011,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 	for(size_t i = 0; i < tmptree->size();i++)
 	{
 	    Token* token = tmptree->at(i);
-	    if(token)
+	    if (token && (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor))
 	    {
             tokens.Add(token->DisplayName());
             tmpsearch.AddItem(token->DisplayName(),token);

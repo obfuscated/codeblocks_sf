@@ -39,6 +39,7 @@ const wxString colon(_T(":"));
 const wxString colon_colon(_T("::"));
 const wxString operator_str(_T("operator"));
 const wxString include_str(_T("#include"));
+const wxString if_str(_T("#if"));
 const wxString hash(_T("#"));
 const wxString tabcrlf(_T("\t\n\r"));
 };
@@ -327,9 +328,9 @@ bool Tokenizer::SkipUnwanted()
 			MoveToNextChar();
 			SkipWhiteSpace();
 			if ((CurrentChar() == 'i' && NextChar() == 'n') || // in(clude)
-				(CurrentChar() == 'i' && NextChar() == 'f') || // if(|def|ndef)
-				(CurrentChar() == 'e' && NextChar() == 'l') || // el(se|if)
-				(CurrentChar() == 'e' && NextChar() == 'n') || // en(dif)
+                (CurrentChar() == 'i' && NextChar() == 'f') || // if(|def|ndef)
+                (CurrentChar() == 'e' && NextChar() == 'l') || // el(se|if)
+                (CurrentChar() == 'e' && NextChar() == 'n') || // en(dif)
 				(m_Options.wantPreprocessor && CurrentChar() == 'd' && NextChar() == 'e')) // de(fine)
 			{
 				// ok, we have something like #in(clude)
@@ -570,16 +571,16 @@ wxString Tokenizer::DoGetToken()
 	{
 		if (!m_LastPreprocessor.IsSameAs(TokenizerConsts::include_str))
 		{
-			// except for #include, all other preprocessor directives need only
+			// except for #include and #if[[n]def], all other preprocessor directives need only
 			// one word exactly after the directive, e.g. #define THIS_WORD
 			SkipToEOL();
 		}
-		m_LastWasPreprocessor = false;
 		m_LastPreprocessor.Clear();
 	}
 
 	if (m_LastWasPreprocessor)
 		m_LastPreprocessor << m_Str;
+    m_LastWasPreprocessor = false;
 
 	return m_Str;
 }

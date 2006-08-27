@@ -37,6 +37,8 @@ public:
         return m_IsOK;
     };
     TokenizerOptions m_Options;
+
+    bool SkipToEOL(); // use with care outside this class!
 protected:
     void BaseInit();
     wxString DoGetToken();
@@ -44,7 +46,6 @@ protected:
     bool SkipWhiteSpace();
     bool SkipToChar(const wxChar& ch);
     bool SkipToOneOfChars(const char* chars, bool supportNesting = false);
-    bool SkipToEOL();
     bool SkipBlock(const wxChar& ch);
     bool SkipUnwanted(); // skips comments, assignments, preprocessor etc.
 

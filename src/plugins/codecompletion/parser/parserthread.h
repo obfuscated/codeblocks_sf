@@ -27,7 +27,8 @@ struct ParserThreadOptions
         wantPreprocessor(true),
         followLocalIncludes(true),
         followGlobalIncludes(true),
-        isTemp(false)
+        isTemp(false),
+        handleFunctions(true)
         {}
     /** useBuffer specifies that we're not parsing a file,  but a temporary
       * buffer. The resulting tokens will be temporary, too,
@@ -39,6 +40,7 @@ struct ParserThreadOptions
 	bool followLocalIncludes;
 	bool followGlobalIncludes;
 	bool isTemp;
+	bool handleFunctions;
 };
 
 class ParserThread : public cbThreadedTask
@@ -52,7 +54,6 @@ class ParserThread : public cbThreadedTask
 		virtual ~ParserThread();
 		int Execute(){ return Parse() ? 0 : 1; }
 		bool Parse();
-		bool ParseBufferForFunctions(const wxString& buffer);
 		bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
 		virtual void* DoRun();
         virtual void SetTokens(TokensTree* tokens);

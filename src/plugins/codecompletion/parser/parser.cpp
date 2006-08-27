@@ -412,6 +412,7 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
 	opts.useBuffer = true;
 	opts.isTemp = isTemp;
 	opts.bufferSkipBlocks = bufferSkipBlocks;
+	opts.handleFunctions = false;
 	return Parse(buffer, isLocal, opts);
 }
 
@@ -499,14 +500,15 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
 {
 	ParserThreadOptions opts;
 	opts.wantPreprocessor = m_Options.wantPreprocessor;
-	opts.useBuffer = false;
-	opts.bufferSkipBlocks = false;
+	opts.useBuffer = true;
+	opts.bufferSkipBlocks = true;
+	opts.handleFunctions = true;
 	ParserThread* thread = new ParserThread(this,
-											wxEmptyString,
+											buffer,
 											false,
 											opts,
 											m_pTempTokens);
-	return thread->ParseBufferForFunctions(buffer);
+    return thread->Parse();
 }
 
 bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
