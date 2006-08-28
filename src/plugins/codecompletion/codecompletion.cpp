@@ -119,6 +119,7 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_TIMER(idCodeCompleteTimer, CodeCompletion::OnCodeCompleteTimer)
 
 	EVT_EDITOR_SAVE(CodeCompletion::OnReparseActiveEditor)
+	EVT_EDITOR_OPEN(CodeCompletion::OnEditorActivated)
 	EVT_EDITOR_ACTIVATED(CodeCompletion::OnEditorActivated)
     EVT_EDITOR_TOOLTIP(CodeCompletion::OnValueTooltip)
 
@@ -853,7 +854,7 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
 void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 {
     // TODO: this doesn't seem to fire when using Ctrl-Tab...
-    static EditorBase* lastActiveEditor = event.GetEditor();
+    static EditorBase* lastActiveEditor = 0;
     EditorBase* eb = event.GetEditor();
     if (m_IsAttached && m_InitDone && lastActiveEditor != eb)
     {

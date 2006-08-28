@@ -95,6 +95,8 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token)
 	txtDeclFile = new wxStaticText(Panel1,ID_STATICTEXT26,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT26"));
 	StaticText27 = new wxStaticText(Panel1,ID_STATICTEXT27,_("Impl. filename:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT27"));
 	txtImplFile = new wxStaticText(Panel1,ID_STATICTEXT28,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT28"));
+	StaticText34 = new wxStaticText(Panel1,ID_STATICTEXT34,_("User data:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT34"));
+	txtUserData = new wxStaticText(Panel1,ID_STATICTEXT35,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT35"));
 	FlexGridSizer1->Add(StaticText17,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
 	FlexGridSizer1->Add(txtID,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
 	FlexGridSizer1->Add(StaticText1,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
@@ -129,6 +131,8 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token)
 	FlexGridSizer1->Add(txtDeclFile,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
 	FlexGridSizer1->Add(StaticText27,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
 	FlexGridSizer1->Add(txtImplFile,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	FlexGridSizer1->Add(StaticText34,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	FlexGridSizer1->Add(txtUserData,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
 	BoxSizer2->Add(BoxSizer4,0,wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
 	BoxSizer2->Add(StaticLine1,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
 	BoxSizer2->Add(FlexGridSizer1,0,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
@@ -238,6 +242,7 @@ void CCDebugInfo::DisplayTokenInfo()
         txtImplFile->SetLabel(wxString::Format(_T("%s : %d (code lines: %d to %d)"), m_pToken->GetImplFilename().c_str(), m_pToken->m_ImplLine, m_pToken->m_ImplLineStart, m_pToken->m_ImplLineEnd));
     else
         txtImplFile->SetLabel(wxEmptyString);
+    txtUserData->SetLabel(wxString::Format(_T("0x%p"), m_pToken->m_pUserData));
 }
 
 void CCDebugInfo::FillChildren()

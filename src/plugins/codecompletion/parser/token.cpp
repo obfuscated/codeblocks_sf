@@ -81,7 +81,7 @@ Token::Token()
 	m_IsTemp(false),
 	m_IsTypedef(false),
 	m_ParentIndex(-1),
-	m_Bool(false),
+	m_pUserData(0),
 	m_pTree(0),
 	m_Self(-1)
 {
@@ -100,7 +100,7 @@ Token::Token(const wxString& name, unsigned int file, unsigned int line)
 	m_IsTemp(false),
 	m_IsTypedef(false),
 	m_ParentIndex(-1),
-	m_Bool(false),
+	m_pUserData(0),
 	m_pTree(0),
 	m_Self(-1)
 {
@@ -929,6 +929,28 @@ bool TokensTree::IsFileParsed(const wxString& filename)
                   !m_FilesToBeReparsed.count(index)
                   );
     return parsed;
+}
+
+void TokensTree::MarkFileTokensAsLocal(const wxString& filename, bool local, void* userData)
+{
+    MarkFileTokensAsLocal(GetFileIndex(filename), local, userData);
+}
+
+void TokensTree::MarkFileTokensAsLocal(size_t file, bool local, void* userData)
+{
+    if (file == 0)
+        return;
+
+    TokenIdxSet& tokens = m_FilesMap[file];
+    for (TokenIdxSet::iterator it = tokens.begin(); it != tokens.end(); ++it)
+    {
+        Token* token = m_Tokens.at(*it);
+        if (token)
+        {
+            token->m_IsLocal = local;
+            token->m_pUserData = userData;
+        }
+    }
 }
 
 size_t TokensTree::ReserveFileForParsing(const wxString& filename,bool preliminary)

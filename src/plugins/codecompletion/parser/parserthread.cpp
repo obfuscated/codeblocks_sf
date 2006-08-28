@@ -730,8 +730,9 @@ Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, 
 
     if (!result && createIfNotExist)
     {
-        result = new Token(ns, 0, 0);
+        result = new Token(ns, m_File, 0);
         result->m_TokenKind = q.empty() ? tkClass : tkNamespace;
+        result->m_IsLocal = m_IsLocal;
         int newidx = m_pTokens->insert(result);
         if (parent)
         {
@@ -849,8 +850,15 @@ void ParserThread::HandleIncludes()
 		if (token.GetChar(0) == '"')
 		{
 			// "someheader.h"
-			token.Replace(_T("\""), _T(""));
-			filename = token;
+			// don't use wxString::Replace(); it's too costly
+			size_t pos = 0;
+			while (pos < token.Length())
+			{
+			    wxChar c = token.GetChar(pos);
+			    if (c != _T('"'))
+                    filename << c;
+                ++pos;
+			}
 		}
 		else if (token.GetChar(0) == '<')
 		{

@@ -64,11 +64,18 @@ struct ParserOptions
 	bool useSmartSense;
 };
 
+enum BrowserDisplayFilter
+{
+    bdfFile = 0,
+    bdfProject,
+    bdfWorkspace,
+};
+
 struct BrowserOptions
 {
 	bool showInheritance; // default: false
 	bool viewFlat; // default: false
-	bool showAllSymbols; // default: false
+	BrowserDisplayFilter displayFilter; // default: bdfWorkspace
 };
 
 class ClassBrowser;
@@ -112,7 +119,7 @@ class Parser : public wxEvtHandler
 #endif // STANDALONE
 		Token* FindTokenByName(const wxString& name, bool globalsOnly = true, short int kindMask = 0xFFFF) const;
 		Token* FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance = false, short int kindMask = 0xFFFF) const;
-		size_t FindMatches(const wxString& s,TokenList& result,bool caseSensitive = true,bool is_prefix = true,bool markedonly = true);
+		size_t FindMatches(const wxString& s,TokenList& result,bool caseSensitive = true,bool is_prefix = true);
 
 		ParserOptions& Options(){ return m_Options; }
 		BrowserOptions& ClassBrowserOptions(){ return m_BrowserOptions; }
@@ -129,6 +136,7 @@ class Parser : public wxEvtHandler
 
 		bool Done();
 		void LinkInheritance(bool tempsOnly = false);
+		void MarkFileTokensAsLocal(const wxString& filename, bool local, void* userData = 0);
 
 		unsigned int GetMaxThreads()const { return m_Pool.GetConcurrentThreads(); }
 		void SetMaxThreads(unsigned int max){ m_Pool.SetConcurrentThreads(max); }

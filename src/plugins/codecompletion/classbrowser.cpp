@@ -121,8 +121,8 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
 
 	m_Tree = XRCCTRL(*this, "treeAll", wxTreeCtrl);
 
-    bool all = Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/show_all_symbols"), false);
-    XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(all ? 1 : 0);
+    int filter = Manager::Get()->GetConfigManager(_T("code_completion"))->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
+    XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(filter);
 
     // if the classbrowser is put under the control of a wxFlatNotebook,
     // somehow the main panel is like "invisible" :/
@@ -138,7 +138,7 @@ ClassBrowser::~ClassBrowser()
 
 void ClassBrowser::SetParser(Parser* parser)
 {
-	if (parser != m_pParser)
+	if (parser != m_pParser || m_pParser->ClassBrowserOptions().displayFilter == bdfProject)
 	{
 		UnlinkParser();
 		if(parser)
@@ -166,7 +166,6 @@ void ClassBrowser::UnlinkParser()
 
 void ClassBrowser::UpdateView()
 {
-    DBGLOG(_T("UpdateView"));
 	if (m_pParser && !Manager::isappShuttingDown())
 		m_pParser->BuildTree(*m_Tree);
 	else
@@ -363,14 +362,14 @@ void ClassBrowser::OnViewScope(wxCommandEvent& event)
 {
 	if (m_pParser)
 	{
-		m_pParser->ClassBrowserOptions().showAllSymbols = event.GetSelection() == 1;
+		m_pParser->ClassBrowserOptions().displayFilter = (BrowserDisplayFilter)event.GetSelection();
 		m_pParser->WriteOptions();
         UpdateView();
 	}
 	else
 	{
 	    // we have no parser; just write the setting in the configuration
-        Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/show_all_symbols"), event.GetSelection() == 1);
+        Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/browser_display_filter"), (int)event.GetSelection());
 	}
 }
 

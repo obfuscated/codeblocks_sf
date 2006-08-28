@@ -1,6 +1,9 @@
 #include <sdk.h>
 #include "classbrowserbuilderthread.h"
 #include <globals.h>
+#include <manager.h>
+#include <projectmanager.h>
+#include <cbproject.h>
 
 ClassBrowserBuilderThread::ClassBrowserBuilderThread(Parser* parser,
                                                     wxTreeCtrl& tree,
@@ -34,6 +37,8 @@ void* ClassBrowserBuilderThread::Entry()
 
 void ClassBrowserBuilderThread::BuildTree()
 {
+    cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+
     wxCriticalSectionLocker lock(s_MutexProtection);
 
     if (TestDestroy())
@@ -49,6 +54,7 @@ void ClassBrowserBuilderThread::BuildTree()
     TokenFilesSet currset;
     currset.clear();
     Token* token = 0;
+    bool fnameEmpty = m_ActiveFilename.IsEmpty();
 
     if (TestDestroy())
     {
@@ -57,15 +63,41 @@ void ClassBrowserBuilderThread::BuildTree()
     }
 
     // "mark" tokens based on scope
-    bool fnameEmpty = m_ActiveFilename.IsEmpty();
-    m_ActiveFilename.Append(_T('.'));
-    if(!fnameEmpty && !m_Options.showAllSymbols)
+    if (m_Options.displayFilter == bdfFile && !fnameEmpty)
     {
+        m_ActiveFilename.Append(_T('.'));
         for(size_t i = 1; i < m_pTokens->m_FilenamesMap.size(); ++i)
         {
-            if(m_pTokens->m_FilenamesMap.GetString(i).StartsWith(m_ActiveFilename))
+            const wxString& str = m_pTokens->m_FilenamesMap.GetString(i);
+            if (!str.IsEmpty() && str.StartsWith(m_ActiveFilename))
                 currset.insert(i);
         }
+    }
+    else if (m_Options.displayFilter == bdfProject && prj)
+    {
+        for (size_t i = 0; i < m_pTokens->size(); ++i)
+        {
+            Token* token = m_pTokens->at(i);
+            if (!token)
+                continue;
+
+            if (token->m_pUserData == prj)
+            {
+                if (token->m_File != 0)
+                    currset.insert(token->m_File);
+                if (token->m_ImplFile != 0)
+                    currset.insert(token->m_ImplFile);
+            }
+        }
+    }
+    else if (m_Options.displayFilter != bdfWorkspace)
+    {
+        // error
+        root = m_Tree.AddRoot(_("Symbols"), PARSER_IMG_SYMBOLS_FOLDER);
+        wxTreeItemId globalNS = m_Tree.AppendItem(root, _("Global namespace"), PARSER_IMG_NAMESPACE);
+        m_Tree.Expand(root);
+        m_Tree.Thaw();
+        return;
     }
 
     if (TestDestroy())
@@ -145,7 +177,7 @@ void ClassBrowserBuilderThread::BuildTreeNamespace(const wxTreeItemId& parentNod
 	for(;it != it_end; it++)
 	{
 	    Token* token = m_pTokens->at(*it);
-	    if(!token || /* !token->m_Bool || */ (!hasCurrset && !token->m_IsLocal) || token->m_TokenKind != tkNamespace)
+	    if(!token || (!hasCurrset && !token->m_IsLocal) || token->m_IsTemp || token->m_TokenKind != tkNamespace)
             continue;
 //        if(hasCurrset && !token->MatchesFiles(currset))
 //            continue;
@@ -195,7 +227,7 @@ void ClassBrowserBuilderThread::AddTreeNamespace(const wxTreeItemId& parentNode,
             return;
 
 	    Token* token = m_pTokens->at(*it);
-	    if(!token || /* !token->m_Bool || */ (!hasCurrset && !token->m_IsLocal))
+	    if(!token || token->m_IsTemp || (!hasCurrset && !token->m_IsLocal))
             continue;
         if(currset.size() && !token->MatchesFiles(currset))
             continue;

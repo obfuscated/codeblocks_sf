@@ -88,6 +88,8 @@ class CCDebugInfo: public wxDialog
 		    ID_STATICTEXT26,
 		    ID_STATICTEXT27,
 		    ID_STATICTEXT28,
+		    ID_STATICTEXT34,
+		    ID_STATICTEXT35,
 		    ID_PANEL2,
 		    ID_LISTBOX1,
 		    ID_STATICTEXT31,
@@ -157,6 +159,8 @@ class CCDebugInfo: public wxDialog
 		wxStaticText* txtDeclFile;
 		wxStaticText* StaticText27;
 		wxStaticText* txtImplFile;
+		wxStaticText* StaticText34;
+		wxStaticText* txtUserData;
 		wxPanel* Panel2;
 		wxBoxSizer* BoxSizer3;
 		wxListBox* lstFiles;

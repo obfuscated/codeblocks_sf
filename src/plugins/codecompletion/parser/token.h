@@ -111,7 +111,7 @@ class Token  : public BlockAllocated<Token, 10000>
         TokenIdxSet m_DirectAncestors;
         TokenIdxSet m_Descendants;
 
-		bool m_Bool; // custom bool value
+		void* m_pUserData; // custom user-data (the classbrowser expects it to be a pointer to a cbProject)
 	protected:
         TokensTree* m_pTree;
 		int m_Self; // current index in the tree
@@ -156,6 +156,9 @@ class TokensTree
         void FlagFileForReparsing(const wxString& filename);
         void FlagFileAsParsed(const wxString& filename);
         bool IsFileParsed(const wxString& filename);
+
+        void MarkFileTokensAsLocal(const wxString& filename, bool local = true, void* userData = 0);
+        void MarkFileTokensAsLocal(size_t file, bool local = true, void* userData = 0);
 
         TokenList m_Tokens; /// Contains the pointers to all the tokens
         TokenSearchTree m_Tree; /** Tree containing the indexes to the tokens

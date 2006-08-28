@@ -194,7 +194,7 @@ void Parser::ReadOptions()
 	m_Options.useSmartSense = true;
 	m_BrowserOptions.showInheritance = false;
 	m_BrowserOptions.viewFlat = false;
-	m_BrowserOptions.showAllSymbols = false;
+	m_BrowserOptions.displayFilter = bdfWorkspace;
 #else // !STANDALONE
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
@@ -223,7 +223,7 @@ void Parser::ReadOptions()
 	m_Options.wantPreprocessor = cfg->ReadBool(_T("/want_preprocessor"), true);
 	m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"), false);
 	m_BrowserOptions.viewFlat = cfg->ReadBool(_T("/browser_view_flat"), false);
-	m_BrowserOptions.showAllSymbols = cfg->ReadBool(_T("/show_all_symbols"), false);
+	m_BrowserOptions.displayFilter = (BrowserDisplayFilter)cfg->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
 #endif // STANDALONE
 }
 
@@ -239,7 +239,7 @@ void Parser::WriteOptions()
 	cfg->Write(_T("/use_SmartSense"), m_Options.useSmartSense);
 	cfg->Write(_T("/want_preprocessor"), m_Options.wantPreprocessor);
 	cfg->Write(_T("/browser_show_inheritance"), m_BrowserOptions.showInheritance);
-	cfg->Write(_T("/show_all_symbols"), m_BrowserOptions.showAllSymbols);
+	cfg->Write(_T("/browser_display_filter"), m_BrowserOptions.displayFilter);
 	cfg->Write(_T("/browser_view_flat"), m_BrowserOptions.viewFlat);
 #endif // STANDALONE
 }
@@ -379,7 +379,7 @@ Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool us
     return result;
 }
 
-size_t Parser::FindMatches(const wxString& s,TokenList& result,bool caseSensitive,bool is_prefix,bool markedonly)
+size_t Parser::FindMatches(const wxString& s,TokenList& result,bool caseSensitive,bool is_prefix)
 {
     result.clear();
     TokenIdxSet tmpresult;
@@ -391,7 +391,7 @@ size_t Parser::FindMatches(const wxString& s,TokenList& result,bool caseSensitiv
     for(it = tmpresult.begin();it!=tmpresult.end();++it)
     {
         Token* token = m_pTokens->at(*it);
-        if(token && (!markedonly || token->m_Bool))
+        if(token)
         result.push_back(token);
     }
     return result.size();
@@ -401,6 +401,12 @@ void Parser::LinkInheritance(bool tempsOnly)
 {
 	wxCriticalSectionLocker lock(s_MutexProtection);
 	(tempsOnly ? m_pTempTokens :  m_pTokens)->RecalcData();
+}
+
+void Parser::MarkFileTokensAsLocal(const wxString& filename, bool local, void* userData)
+{
+	wxCriticalSectionLocker lock(s_MutexProtection);
+    m_pTokens->MarkFileTokensAsLocal(filename, local, userData);
 }
 
 bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks, bool isTemp)
@@ -460,7 +466,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
                                                 buffOrFile,
                                                 isLocal,
                                                 opts,
-                                                m_pTokens);//(opts.useBuffer ? m_pTempTokens : m_pTokens));
+                                                m_pTokens);
         if (opts.useBuffer)
         {
             result = thread->Parse();

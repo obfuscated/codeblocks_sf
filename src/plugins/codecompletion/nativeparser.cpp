@@ -1711,7 +1711,23 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 	Parser* parser = (Parser*)event.GetClientData();
 	if (parser)// && parser->Done())
 	{
+	    // inheritance post-step
         parser->LinkInheritance(false);
+
+        // also, mark all workspace files as local
+        ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
+        for (size_t i = 0; i < projects->GetCount(); ++i) // for all projects
+        {
+            cbProject* prj = projects->Item(i);
+            for (int x = 0; x < prj->GetFilesCount(); ++x) // for all files in project
+            {
+                ProjectFile* pf = prj->GetFile(x);
+                if (!pf)
+                    continue;
+                parser->MarkFileTokensAsLocal(pf->file.GetFullPath(), true, prj);
+            }
+        }
+
         DisplayStatus(parser);
         UpdateClassBrowser();
 	}
@@ -1725,7 +1741,7 @@ void NativeParser::OnEditorActivated(EditorBase* editor)
     if (ed)
     {
         Parser* parser = FindParserFromEditor(ed);
-        if (parser && !parser->ClassBrowserOptions().showAllSymbols)
+        if (parser && parser->ClassBrowserOptions().displayFilter == bdfFile)
             m_pClassBrowser->UpdateView();
     }
 }
