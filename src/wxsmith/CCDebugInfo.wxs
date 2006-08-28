@@ -327,6 +327,18 @@
                                                 <label></label>
                                             </object>
                                         </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxStaticText" name="ID_STATICTEXT34" variable="StaticText34" member="yes">
+                                                <label>User data:</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxStaticText" name="ID_STATICTEXT35" variable="txtUserData" member="yes">
+                                                <label></label>
+                                            </object>
+                                        </object>
                                     </object>
                                 </object>
                             </object>

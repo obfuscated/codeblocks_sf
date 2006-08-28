@@ -824,7 +824,8 @@ bool ProjectManager::CloseAllProjects(bool dontsave)
             return false;
         }
     }
-    RebuildTree();
+    if (!Manager::IsAppShuttingDown())
+        RebuildTree();
     UnfreezeTree(true);
     if(!m_InitialDir.IsEmpty())
         wxFileName::SetCwd(m_InitialDir);
