@@ -20,8 +20,8 @@ LONG WINAPI CrashHandlerFunc(PEXCEPTION_POINTERS ExceptionInfo)
         return EXCEPTION_CONTINUE_SEARCH;
 
     wxLogNull nl;
-    wxString path(ConfigManager::GetHomeFolder() + _T("cb-crash-recover"));
-    wxMkdir(ConfigManager::GetHomeFolder() + _T("cb-crash-recover"));
+    wxString path(ConfigManager::GetHomeFolder() + _T("/cb-crash-recover"));
+    wxMkdir(ConfigManager::GetHomeFolder() + _T("/cb-crash-recover"));
     path << _T("/");
 
     EditorManager* em = Manager::Get()->GetEditorManager();
