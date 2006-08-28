@@ -392,7 +392,7 @@ int CodeCompletion::CodeComplete()
 		return -4;
 	}
 
-    wxBusyCursor busy;
+//    wxBusyCursor busy;
 
     TokenIdxSet result;
     if (m_NativeParsers.MarkItemsByAI(result, parser->Options().useSmartSense) > 0 ||
@@ -624,7 +624,7 @@ void CodeCompletion::ShowCallTip()
         }
         // else, out of range
     }
-    
+
     int start = 0;
     int end = 0;
     int count = 0;

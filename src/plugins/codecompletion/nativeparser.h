@@ -96,8 +96,7 @@ class NativeParser : public wxEvtHandler
 		unsigned int FindCCTokenStart(const wxString& line);
 		wxString GetNextCCToken(const wxString& line, unsigned int& startAt, bool& is_function);
 		wxString GetCCToken(wxString& line, ParserTokenType& tokenType);
-		bool FindFunctionNamespace(cbEditor* editor, wxString* nameSpace = 0L, wxString* procName = 0L);
-		int FindCurrentFunctionStart(cbEditor* editor);
+		int FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace = 0L, wxString* procName = 0L);
 		void BreakUpInLines(wxString& str, const wxString& original_str, int chars_per_line = -1);
 		void AddCompilerDirs(Parser* parser, cbProject* project);
 		bool LoadCachedData(Parser* parser, cbProject* project);

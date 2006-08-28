@@ -134,7 +134,7 @@ void ParserThread::Log(const wxString& log)
 	event.SetString(log);
 	event.SetInt(m_Tokenizer.GetLineNumber());
 	wxPostEvent(m_pParent, event);
-	Manager::ProcessPendingEvents();
+//	Manager::ProcessPendingEvents();
 }
 
 void ParserThread::SetTokens(TokensTree* tokens)
@@ -196,7 +196,7 @@ void ParserThread::SkipBlock()
 		wxString token = m_Tokenizer.GetToken();
 		if (token.IsEmpty())
 			break; // eof
-            
+
 		// if we reach the initial nesting level, we are done
 		if (level == m_Tokenizer.GetNestingLevel())
 			break;
@@ -355,12 +355,7 @@ void ParserThread::DoParse()
 		if (token.IsEmpty())
 			break;
 #if 0
-	if (!m_Str.IsEmpty())
-		DBGLOG(m_Str);
-#endif
-#if 0
-	if (!token.IsEmpty())
-		DBGLOG(token);
+    DBGLOG(_T("m_Str='%s', token='%s'"), m_Str.c_str(), token.c_str());
 #endif
 
 		if (token==ParserConsts::semicolon)
@@ -561,9 +556,9 @@ void ParserThread::DoParse()
 			wxString peek = m_Tokenizer.PeekToken();
 			if (!peek.IsEmpty())
 			{
-				if (peek.GetChar(0) == '(' && 
-                    m_Options.handleFunctions && 
-                    m_Str.IsEmpty() && 
+				if (peek.GetChar(0) == '(' &&
+                    m_Options.handleFunctions &&
+                    m_Str.IsEmpty() &&
                     m_EncounteredNamespaces.empty() &&
                     m_EncounteredTypeNamespaces.empty())
                 {
@@ -617,11 +612,8 @@ void ParserThread::DoParse()
                             m_EncounteredNamespaces.push(token);
                         m_Tokenizer.GetToken(); // eat ::
                     }
-//                    if (m_Str.IsEmpty())
-//                    {
-////                        std::queue<wxString> q = m_EncounteredNamespaces;
-//                        m_Str = GetQueueAsNamespaceString(m_EncounteredNamespaces) + token;
-//                    }
+                    else // case like, std::map<int, int> somevar;
+                        m_Str << token << _T(' ');
 				}
                 else if (peek==ParserConsts::dcolon)
                 {
@@ -925,7 +917,7 @@ void ParserThread::HandleDefines()
         m_pLastParent = 0L;
 		DoAddToken(tkPreprocessor, token, lineNr);
         m_pLastParent = oldParent;
-        
+
         // skip the rest of the #define
         m_Tokenizer.SkipToEOL();
 	}
@@ -1325,7 +1317,7 @@ void ParserThread::HandleTypedef()
 
     if (components.empty())
         return; // invalid typedef
-        
+
     if (!is_function_pointer && components.size() <= 1)
             return; // invalid typedef
 

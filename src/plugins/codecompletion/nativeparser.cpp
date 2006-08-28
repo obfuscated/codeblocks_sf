@@ -110,7 +110,7 @@ void NativeParser::UpdateClassBrowser()
         if (m_pClassBrowser)
         {
             m_pClassBrowser->SetParser(&m_Parser);
-            m_pClassBrowser->Update();
+            m_pClassBrowser->UpdateView();
         }
         Manager::Get()->GetMessageManager()->DebugLog(_T("Class browser updated."));
     }
@@ -151,7 +151,7 @@ void NativeParser::RereadParserOptions()
 		}
 	}
 	if (m_pClassBrowser)
-		m_pClassBrowser->Update();
+		m_pClassBrowser->UpdateView();
 }
 
 void NativeParser::SetClassBrowserProject(cbProject* project)
@@ -171,7 +171,7 @@ void NativeParser::ClearParsers()
 	if (m_pClassBrowser)
 	{
 		m_pClassBrowser->SetParser(0L);
-		m_pClassBrowser->Update();
+		m_pClassBrowser->UpdateView();
 	}
 //    ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
 //    for (size_t i = 0; i < projects->GetCount(); ++i)
@@ -545,7 +545,7 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed)
 
     wxString _namespace;
     wxString _procedure;
-    if (FindFunctionNamespace(ed, &_namespace, &_procedure))
+    if (FindCurrentFunctionStart(ed, &_namespace, &_procedure))
     {
         TokenIdxSet scope_result;
         TokenIdxSet proc_result;
@@ -941,7 +941,7 @@ void NativeParser::BreakUpInLines(wxString& str, const wxString& original_str, i
             last_comma = pos;
         else if (c == _T(' ') || c == _T('\t'))
             last_space = pos;
-        
+
         if (pos % chars_per_line == 0 && last_comma != -1)
         {
             str << original_str.Mid(copy_start, last_comma - copy_start + 1);
@@ -1214,7 +1214,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
     TokenIdxSet scope_result;
     wxString procName;
     wxString scopeName;
-    FindFunctionNamespace(editor, &scopeName, &procName);
+    FindCurrentFunctionStart(editor, &scopeName, &procName);
     // add current scope
     if (!scopeName.IsEmpty())
         tree->FindMatches(scopeName, scope_result, true, false);
@@ -1632,7 +1632,8 @@ bool NativeParser::SkipWhitespaceBackward(cbEditor* editor, int& pos)
     return false;
 }
 
-int NativeParser::FindCurrentFunctionStart(cbEditor* editor)
+// returns current function's position (not line) in the editor
+int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace, wxString* procName)
 {
     cbStyledTextCtrl* control = editor->GetControl();
     if (!control)
@@ -1641,12 +1642,18 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor)
     static cbEditor* s_LastEditor = 0;
     static int s_LastLine = -1;
     static int s_LastResult = -1;
-    
+    static wxString s_LastNS;
+    static wxString s_LastPROC;
+
     // cache last result for optimization
     int pos = control->GetCurrentPos();
     int line = control->GetCurrentLine() + 1;
     if (line == s_LastLine && editor == s_LastEditor)
+    {
+        if (nameSpace) *nameSpace = s_LastNS;
+        if (procName) *procName = s_LastPROC;
         return s_LastResult;
+    }
     s_LastEditor = editor;
     s_LastLine = line;
 
@@ -1666,97 +1673,25 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor)
 	        if (token->m_ImplLineStart <= (size_t)line && token->m_ImplLineEnd >= (size_t)line)
 	        {
 	            // got it :)
+#ifdef DEBUG_CC_AI
+                Manager::Get()->GetMessageManager()->DebugLog(_T("Current function: %s"), token->DisplayName().c_str());
+#endif
+                s_LastNS = token->GetNamespace();
+                s_LastPROC = token->m_Name;
                 s_LastResult = control->PositionFromLine(token->m_ImplLineStart);
+
+                if (nameSpace) *nameSpace = s_LastNS;
+                if (procName) *procName = s_LastPROC;
+
                 return s_LastResult;
 	        }
 	    }
 	}
+#ifdef DEBUG_CC_AI
+    Manager::Get()->GetMessageManager()->DebugLogWarning(_T("Can't determine current function..."));
+#endif
 	s_LastResult = -1;
 	return -1;
-}
-
-// TODO: replace this function by using FindCurrentFunction()
-bool NativeParser::FindFunctionNamespace(cbEditor* editor, wxString* nameSpace, wxString* procName)
-{
-	if (!nameSpace && !procName)
-		return false;
-
-	int posOf = FindCurrentFunctionStart(editor);
-	if (posOf != wxNOT_FOUND)
-	{
-		// look for :: right before procname and procargs
-		// if we find a }, we failed (probably no class member this function)...
-		bool done = false;
-		int nest = 0;
-		bool passedArgs = false;
-		bool hasNS = false;
-		while (posOf > 0)
-		{
-			--posOf;
-			wxChar ch = editor->GetControl()->GetCharAt(posOf);
-			switch (ch)
-			{
-				case ')' : --nest; passedArgs = false; break;
-                case '(' :
-                    ++nest;
-                    passedArgs = nest == 0;
-                    if (passedArgs)
-                    {
-                        --posOf;
-                        SkipWhitespaceBackward(editor, posOf);
-                    }
-                    break;
-			}
-			if (passedArgs)
-			{
-                if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == ':')
-                {
-                    int bkp = posOf;
-                    SkipWhitespaceBackward(editor, posOf);
-                    wxChar nch = editor->GetControl()->GetCharAt(posOf);
-                    wxChar prev_ch = editor->GetControl()->GetCharAt(posOf - 1);
-                    if (nch == ',' || (nch == ':' && prev_ch != ':'))
-                    {
-                        // don't be fooled by member initialisers
-                        passedArgs = false;
-                    }
-                    else
-                    {
-                        done = true;
-                        hasNS = ch == ':' && prev_ch == ':';
-                        posOf = bkp;
-                    }
-                }
-            }
-			if (done || ch == '}' || ch == ';')
-				break;
-		}
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("Pos=%d"), posOf);
-		if (done)
-		{
-			if (procName)
-			{
-				int procEnd = editor->GetControl()->WordEndPosition(posOf + 1, true);
-				*procName = editor->GetControl()->GetTextRange(posOf + 1, procEnd);
-			}
-			if (nameSpace && hasNS)
-			{
-                nameSpace->Clear();
-				posOf -= 2;
-				int scopeStart = editor->GetControl()->WordStartPosition(posOf, true);
-				*nameSpace = editor->GetControl()->GetTextRange(scopeStart, posOf + 1);
-			}
-#ifdef DEBUG_CC_AI
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Namespace: '%s', function: '%s'"), nameSpace ? nameSpace->c_str() : _T(""), procName ? procName->c_str() : _T(""));
-#endif
-			return true;
-		}
-	}
-#ifdef DEBUG_CC_AI
-	else
-        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("Can't find block start."));
-#endif
-	return false;
 }
 
 // events
@@ -1791,6 +1726,6 @@ void NativeParser::OnEditorActivated(EditorBase* editor)
     {
         Parser* parser = FindParserFromEditor(ed);
         if (parser && !parser->ClassBrowserOptions().showAllSymbols)
-            m_pClassBrowser->Update();
+            m_pClassBrowser->UpdateView();
     }
 }

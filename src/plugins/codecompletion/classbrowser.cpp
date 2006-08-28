@@ -146,7 +146,7 @@ void ClassBrowser::SetParser(Parser* parser)
             parser->AbortBuildingTree();
             parser->m_pClassBrowser = this;
             m_pParser = parser;
-            Update();
+            UpdateView();
 		}
 	}
 }
@@ -164,8 +164,9 @@ void ClassBrowser::UnlinkParser()
     }
 }
 
-void ClassBrowser::Update()
+void ClassBrowser::UpdateView()
 {
+    DBGLOG(_T("UpdateView"));
 	if (m_pParser && !Manager::isappShuttingDown())
 		m_pParser->BuildTree(*m_Tree);
 	else
@@ -331,7 +332,7 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
 
 void ClassBrowser::OnRefreshTree(wxCommandEvent& event)
 {
-	Update();
+	UpdateView();
 }
 
 void ClassBrowser::OnForceReparse(wxCommandEvent& event)
@@ -355,7 +356,7 @@ void ClassBrowser::OnCBViewMode(wxCommandEvent& event)
 		return;
 
 	m_pParser->WriteOptions();
-	Update();
+	UpdateView();
 }
 
 void ClassBrowser::OnViewScope(wxCommandEvent& event)
@@ -364,7 +365,7 @@ void ClassBrowser::OnViewScope(wxCommandEvent& event)
 	{
 		m_pParser->ClassBrowserOptions().showAllSymbols = event.GetSelection() == 1;
 		m_pParser->WriteOptions();
-        Update();
+        UpdateView();
 	}
 	else
 	{

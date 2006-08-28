@@ -27,7 +27,7 @@ class ClassBrowser : public wxPanel
 		const Parser& GetParser(){ return *m_pParser; }
 		const Parser* GetParserPtr() { return m_pParser; }
 		void UnlinkParser();
-		void Update();
+		void UpdateView();
     private:
         friend class myTextCtrl;
 		void OnTreeItemDoubleClick(wxTreeEvent& event);
