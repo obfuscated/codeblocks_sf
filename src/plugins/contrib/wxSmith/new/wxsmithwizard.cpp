@@ -1,3 +1,4 @@
+/*
 #include "wxsheaders.h"
 #include "wxsmithwizard.h"
 //#include "wxswizard.h"
@@ -31,3 +32,4 @@ int wxSmithWizard::Launch(int Index)
 //    return Dlg.ShowModal();
     return 0;
 }
+*/

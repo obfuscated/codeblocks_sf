@@ -450,8 +450,8 @@ bool wxsWindowEditor::InsertAfter(wxsItem* New,wxsItem* Ref)
 }
 
 bool wxsWindowEditor::InsertInto(wxsItem* New,wxsItem* Ref)
-{
-	if ( !Ref ) Ref = GetCurrentSelection();
+{//# Called from InsertRequest() and Paste()
+	if ( !Ref ) Ref = GetCurrentSelection();    //# Is this needed ?
 	if ( !Ref || !Ref->ToParent() )
 	{
 		wxsKILL(New);
@@ -677,13 +677,16 @@ void wxsWindowEditor::SetInsertionType(int Type)
 
 void wxsWindowEditor::RebuildInsTypeIcons()
 {
-    BuildInsTypeIcon(InsIntoBtn,InsIntoImg,(InsType&itInto)!=0,(InsTypeMask&itInto)!=0);
-    BuildInsTypeIcon(InsBeforeBtn,InsBeforeImg,(InsType&itBefore)!=0,(InsTypeMask&itBefore)!=0);
-    BuildInsTypeIcon(InsAfterBtn,InsAfterImg,(InsType&itAfter)!=0,(InsTypeMask&itAfter)!=0);
+    BuildInsTypeIcon(InsIntoBtn,InsIntoImg,itInto);
+    BuildInsTypeIcon(InsBeforeBtn,InsBeforeImg,itBefore);
+    BuildInsTypeIcon(InsAfterBtn,InsAfterImg,itAfter);
 }
 
-void wxsWindowEditor::BuildInsTypeIcon(wxBitmapButton* Btn,const wxImage& Original,bool Selected,bool Enabled)
+void wxsWindowEditor::BuildInsTypeIcon(wxBitmapButton* Btn,const wxImage& Original,int ButtonType)
 {
+    bool Selected = (InsType & ButtonType) != 0;
+    bool Enabled = (InsTypeMask & ButtonType) != 0;
+
     if ( !Enabled || !Selected )
     {
         Btn->SetLabel(Original);
@@ -771,7 +774,7 @@ void wxsWindowEditor::RebuildQuickProps(wxsItem* Selection)
     Freeze();
 
     int QPx, QPy;
-
+    // TODO: Check if content of previous QPPanel shouldn't be stored into item
     QPArea->GetViewStart(&QPx,&QPy);
     QPArea->SetSizer(NULL);
     QPArea->DestroyChildren();

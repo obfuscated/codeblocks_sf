@@ -192,7 +192,7 @@ class wxsWindowEditor : public wxsEditor
         void RebuildIcons();
 
         /** \brief Building icon for one button */
-        void BuildInsTypeIcon(wxBitmapButton* Btn,const wxImage& Original,bool Selected,bool Enabled);
+        void BuildInsTypeIcon(wxBitmapButton* Btn,const wxImage& Original,int ButtonType);
 
         /** \brief Opening or closiung Quick Props panel */
         void ToggleQuickPropsPanel(bool Open);

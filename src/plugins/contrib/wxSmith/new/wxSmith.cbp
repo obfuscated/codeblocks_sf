@@ -1,19 +1,18 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="wxSmith" />
 		<Option pch_mode="0" />
-		<Option default_target="-1" />
+		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="wxSmith">
 				<Option output="..\..\..\..\devel\share\CodeBlocks\plugins\wxsmith.dll" />
-				<Option working_dir="..\..\..\..\devel" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application=".\codeblocks.exe" />
-				<Option includeInTargetAll="1" />
+				<Option host_application="..\..\..\..\devel\codeblocks.exe" />
 				<Linker>
 					<Add library="txml" />
 					<Add library="codeblocks" />
@@ -27,6 +26,9 @@
 				<Variable name="WX_CFG" value="" />
 			</Environment>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="wxSmith;" />
+		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-g" />
@@ -1254,5 +1256,6 @@
 			<Option link="0" />
 			<Option target="wxSmith" />
 		</Unit>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

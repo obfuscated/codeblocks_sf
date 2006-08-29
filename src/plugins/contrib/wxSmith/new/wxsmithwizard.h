@@ -1,3 +1,9 @@
+/* wxSmith wizard will probably be disabled in new version of wxSmith
+   (it should be available through standard project wizard plugin
+*/
+
+/*
+
 #ifndef WXSMITHWIZARD_H
 #define WXSMITHWIZARD_H
 
@@ -33,3 +39,5 @@ class wxSmithWizard : public cbProjectWizardPlugin
 };
 
 #endif
+
+*/
