@@ -203,7 +203,6 @@ class CompilerGCC : public cbCompilerPlugin
 		int m_ListPageIndex;
         wxMenu* m_Menu;
         wxMenu* m_TargetMenu;
-		wxToolBar* m_pToolbar;
 		int m_TargetIndex;
         wxMenu* m_ErrorsMenu;
         cbProject* m_Project;
@@ -215,7 +214,6 @@ class CompilerGCC : public cbCompilerPlugin
         SimpleTextLog* m_Log;
         CompilerMessages* m_pListLog;
 		wxComboBox* m_ToolTarget;
-		wxStaticText* m_ToolTargetLabel;
 		bool m_RunAfterCompile;
 		wxString m_CdRun;
 		wxString m_RunCmd;

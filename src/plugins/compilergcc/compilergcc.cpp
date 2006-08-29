@@ -193,7 +193,6 @@ CompilerGCC::CompilerGCC()
     m_ListPageIndex(-1),
     m_Menu(0L),
     m_TargetMenu(0L),
-    m_pToolbar(0L),
     m_TargetIndex(-1),
     m_ErrorsMenu(0L),
     m_Project(0L),
@@ -204,7 +203,6 @@ CompilerGCC::CompilerGCC()
     m_Log(0L),
     m_pListLog(0L),
     m_ToolTarget(0L),
-    m_ToolTargetLabel(0L),
     m_RunAfterCompile(false),
     m_LastExitCode(0),
     m_NotifiedMaxErrors(false),
@@ -274,8 +272,6 @@ CompilerGCC::~CompilerGCC()
     FreeProcesses();
 
     DoDeleteTempMakefile();
-    if (m_ToolTarget)
-        delete m_ToolTarget;
     CompilerFactory::UnregisterCompilers();
 }
 
@@ -462,22 +458,6 @@ void CompilerGCC::OnRelease(bool appShutDown)
 //        delete m_Menu;
 //        m_Menu = 0L;
 //    }
-
-    if (m_pToolbar)
-    {
-        m_pToolbar->DeleteTool(idMenuCompile);
-        m_pToolbar->DeleteTool(idMenuRun);
-        m_pToolbar->DeleteTool(idMenuCompileAndRun);
-        m_pToolbar->DeleteTool(idMenuRebuild);
-
-        m_pToolbar->DeleteTool(idToolTarget);
-        delete m_ToolTarget;
-        m_ToolTarget = 0L;
-
-        m_pToolbar->DeleteTool(idToolTargetLabel);
-        delete m_ToolTargetLabel;
-        m_ToolTargetLabel = 0L;
-    }
 }
 
 int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
@@ -608,11 +588,7 @@ bool CompilerGCC::BuildToolBar(wxToolBar* toolBar)
     m_pTbar = toolBar;
     wxString my_16x16=Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
     Manager::Get()->AddonToolBar(toolBar,_T("compiler_toolbar")+my_16x16);
-
-    // neither the generic nor Motif native toolbars really support this
-    #if (wxUSE_TOOLBAR_NATIVE && !USE_GENERIC_TBAR) && !defined(__WXMOTIF__) && !defined(__WXX11__) && !defined(__WXMAC__)
     m_ToolTarget = XRCCTRL(*toolBar, "idToolTarget", wxComboBox);
-    #endif
     toolBar->Realize();
     toolBar->SetBestFittingSize();
     DoRecreateTargetMenu(); // make sure the tool target combo is up-to-date
@@ -2754,17 +2730,20 @@ void CompilerGCC::OnKillProcess(wxCommandEvent& event)
 
 void CompilerGCC::OnSelectTarget(wxCommandEvent& event)
 {
+    if(m_ToolTarget)
+    {
 #if wxCHECK_VERSION(2,6,2)
-    int sel = m_ToolTarget->GetCurrentSelection();
+        int sel = m_ToolTarget->GetCurrentSelection();
 #else
-    int sel = m_ToolTarget->GetSelection();
+        int sel = m_ToolTarget->GetSelection();
 #endif
 
-    if (event.GetId() == idToolTarget)
-        DoUpdateTargetMenu(sel);
-    else
-        DoUpdateTargetMenu(event.GetId() - idMenuSelectTargetOther[0]);
-}
+        if (event.GetId() == idToolTarget)
+            DoUpdateTargetMenu(sel);
+        else
+            DoUpdateTargetMenu(event.GetId() - idMenuSelectTargetOther[0]);
+    }
+} // end of OnSelectTarget
 
 void CompilerGCC::OnNextError(wxCommandEvent& event)
 {
