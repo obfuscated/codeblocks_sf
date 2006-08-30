@@ -259,6 +259,7 @@ function SetupProject(project)
             pchfile.link = false;
             pchfile.weight = 0;
             project.SetModeForPCH(pchSourceDir); // pch dir
+            project.AddCompilerOption(_T("-Winvalid-pch"));
             project.AddCompilerOption(_T("-include wx_pch.h"));
             project.AddCompilerOption(_T("-DUSE_PCH"));
         }
