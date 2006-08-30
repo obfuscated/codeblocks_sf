@@ -283,10 +283,6 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token)
     return false;
 }
 
-bool ClassBrowserBuilderThread::TokenHasChildren(Token* token)
-{
-}
-
 void ClassBrowserBuilderThread::SelectNode(wxTreeItemId node)
 {
     if (TestDestroy())

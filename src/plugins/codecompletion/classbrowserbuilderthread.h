@@ -36,7 +36,6 @@ class ClassBrowserBuilderThread : public wxThread
         void AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, TokenIdxSet::iterator start, TokenIdxSet::iterator end, int tokenKindMask = 0xffff, bool allowGlobals = false);
         void SelectNode(wxTreeItemId node);
         bool TokenMatchesFilter(Token* token);
-        bool TokenHasChildren(Token* token);
 
         wxSemaphore& m_Semaphore;
         Parser* m_pParser;
