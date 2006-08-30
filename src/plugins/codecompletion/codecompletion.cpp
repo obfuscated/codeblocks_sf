@@ -400,13 +400,15 @@ int CodeCompletion::CodeComplete()
         m_NativeParsers.LastAISearchWasGlobal()) // enter even if no match (code-complete C++ keywords)
     {
 #ifdef DEBUG_CC_AI
-		Manager::Get()->GetMessageManager()->DebugLog(_T("%d results"), result.size());
+        if (s_DebugSmartSense)
+            Manager::Get()->GetMessageManager()->DebugLog(_T("%d results"), result.size());
 #endif
 		size_t max_match = cfg->ReadInt(_T("/max/matches"), 16384);
         if (result.size() <= max_match)
         {
 #ifdef DEBUG_CC_AI
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Generating tokens list"));
+            if (s_DebugSmartSense)
+                Manager::Get()->GetMessageManager()->DebugLog(_T("Generating tokens list"));
 #endif
             wxImageList* ilist = parser->GetImageList();
             ed->GetControl()->ClearRegisteredImages();
@@ -442,7 +444,8 @@ int CodeCompletion::CodeComplete()
             {
                 // empty or partial search phrase: add C++ keywords in search list
 #ifdef DEBUG_CC_AI
-                DBGLOG(_T("Last AI search was global: adding C++ keywords in list"));
+                if (s_DebugSmartSense)
+                    DBGLOG(_T("Last AI search was global: adding C++ keywords in list"));
 #endif
                 EditorColourSet* theme = ed->GetColourSet();
                 if (theme)
@@ -463,7 +466,8 @@ int CodeCompletion::CodeComplete()
             }
 
 #ifdef DEBUG_CC_AI
-            Manager::Get()->GetMessageManager()->DebugLog(_T("0 results"));
+            if (s_DebugSmartSense)
+                Manager::Get()->GetMessageManager()->DebugLog(_T("0 results"));
 #endif
             if (items.GetCount() == 0)
                 return -2;
@@ -473,7 +477,8 @@ int CodeCompletion::CodeComplete()
             else
                 items.Sort(SortCCList);
 #ifdef DEBUG_CC_AI
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Done generating tokens list"));
+            if (s_DebugSmartSense)
+                Manager::Get()->GetMessageManager()->DebugLog(_T("Done generating tokens list"));
 #endif
             ed->GetControl()->AutoCompSetIgnoreCase(!caseSens);
             ed->GetControl()->AutoCompSetCancelAtStart(true);
@@ -497,7 +502,8 @@ int CodeCompletion::CodeComplete()
     else if (!ed->GetControl()->CallTipActive())
     {
 #ifdef DEBUG_CC_AI
-		Manager::Get()->GetMessageManager()->DebugLog(_T("0 results"));
+		if (s_DebugSmartSense)
+            Manager::Get()->GetMessageManager()->DebugLog(_T("0 results"));
 #endif
         if (!parser->Done())
         {

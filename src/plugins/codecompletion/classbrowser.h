@@ -7,10 +7,12 @@
 #include <wx/panel.h>
 #include "parser/parser.h"
 #include "parser/token.h"
+#include "classbrowserbuilderthread.h"
 
 class NativeParser;
 class wxTreeCtrl;
 class wxTextCtrl;
+class cbProject;
 
 /*
  * No description
@@ -37,6 +39,7 @@ class ClassBrowser : public wxPanel
         void OnForceReparse(wxCommandEvent& event);
 		void OnCBViewMode(wxCommandEvent& event);
 		void OnViewScope(wxCommandEvent& event);
+		void OnDebugSmartSense(wxCommandEvent& event);
 
 		void OnSearch(wxCommandEvent& event);
         bool FoundMatch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& item);
@@ -44,12 +47,26 @@ class ClassBrowser : public wxPanel
 		bool RecursiveSearch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& parent, wxTreeItemId& result);
 
         void ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt);
+
+        void BuildTree();
+
+        void OnTreeItemSelected(wxTreeEvent& event);
+        void OnTreeItemExpanding(wxTreeEvent& event);
+        void OnTreeItemCollapsing(wxTreeEvent& event);
+
         NativeParser* m_NativeParser;
         wxTreeCtrl* m_Tree;
         wxTextCtrl* m_Search;
         wxTreeCtrl* m_TreeForPopupMenu;
 		Parser* m_pParser;
 		wxTreeItemId m_RootNode;
+
+		// filtering
+		wxString m_ActiveFilename;
+		cbProject* m_pActiveProject;
+
+        wxSemaphore m_Semaphore;
+        ClassBrowserBuilderThread* m_pBuilderThread;
 
         DECLARE_EVENT_TABLE()
 };

@@ -222,7 +222,6 @@ void Parser::ReadOptions()
 	m_Options.useSmartSense = cfg->ReadBool(_T("/use_SmartSense"), true);
 	m_Options.wantPreprocessor = cfg->ReadBool(_T("/want_preprocessor"), true);
 	m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"), false);
-	m_BrowserOptions.viewFlat = cfg->ReadBool(_T("/browser_view_flat"), false);
 	m_BrowserOptions.displayFilter = (BrowserDisplayFilter)cfg->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
 #endif // STANDALONE
 }
@@ -240,7 +239,6 @@ void Parser::WriteOptions()
 	cfg->Write(_T("/want_preprocessor"), m_Options.wantPreprocessor);
 	cfg->Write(_T("/browser_show_inheritance"), m_BrowserOptions.showInheritance);
 	cfg->Write(_T("/browser_display_filter"), m_BrowserOptions.displayFilter);
-	cfg->Write(_T("/browser_view_flat"), m_BrowserOptions.viewFlat);
 #endif // STANDALONE
 }
 
@@ -442,6 +440,15 @@ bool Parser::Parse(const wxString& filename, bool isLocal)
 	opts.bufferSkipBlocks = false;
 	opts.followLocalIncludes = m_Options.followLocalIncludes;
 	opts.followGlobalIncludes = m_Options.followGlobalIncludes;
+
+    // feature incomplete
+//	bool isSource = FileTypeOf(filename) == ftSource;
+//	opts.handleClasses = !isSource;
+//	opts.handleEnums = !isSource;
+////	opts.handleFunctions = !isSource; // always true, so we can get the implementation info
+//	opts.handleTypedefs = !isSource;
+//	opts.handleVars = !isSource;
+
 	return Parse(UnixFilename(filename), isLocal, opts);
 }
 
@@ -837,29 +844,6 @@ void Parser::OnParseFile(const wxString& filename,int flags)
 	if (filename.IsEmpty())
         return;
     Parse(filename, flags == 0); // isLocal = (flags==0)
-}
-
-void Parser::BuildTree(wxTreeCtrl& tree)
-{
-	if (!Done() || m_pClassBrowserBuilderThread)
-		return;
-
-    wxString fname(_T(""));
-    EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
-    if (ed)
-        fname = ed->GetFilename().BeforeLast(_T('.'));
-
-	tree.SetImageList(m_pImageList);
-
-    m_pClassBrowserBuilderThread = new ClassBrowserBuilderThread(this, tree, fname, m_BrowserOptions, m_pTokens, &m_pClassBrowserBuilderThread);
-    m_pClassBrowserBuilderThread->Create();
-    m_pClassBrowserBuilderThread->Run();
-}
-
-void Parser::AbortBuildingTree()
-{
-    if (m_pClassBrowserBuilderThread)
-        m_pClassBrowserBuilderThread->Delete();
 }
 
 void Parser::StartStopWatch()

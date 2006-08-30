@@ -82,8 +82,6 @@ static const wxString g_SampleClasses =
 BEGIN_EVENT_TABLE(CCOptionsDlg, wxPanel)
     EVT_UPDATE_UI(-1, CCOptionsDlg::OnUpdateUI)
 	EVT_BUTTON(XRCID("btnColour"), CCOptionsDlg::OnChooseColour)
-	EVT_CHECKBOX(XRCID("chkInheritance"), CCOptionsDlg::OnInheritanceToggle)
-	EVT_COMBOBOX(XRCID("cmbCBView"), CCOptionsDlg::OnInheritanceToggle)
 	EVT_COMMAND_SCROLL(XRCID("sliderDelay"), CCOptionsDlg::OnSliderScroll)
 END_EVENT_TABLE()
 
@@ -108,7 +106,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np)
 	XRCCTRL(*this, "chkInheritance", wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().showInheritance);
 	XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_threads"), 1));
 	XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->Enable(false);
-	XRCCTRL(*this, "cmbCBView", wxComboBox)->SetSelection(m_Parser.ClassBrowserOptions().viewFlat ? 0 : 1);
+	XRCCTRL(*this, "chkFloatCB", wxCheckBox)->SetValue(cfg->ReadBool(_T("/as_floating_window"), false));
 //	XRCCTRL(*this, "chkUseCache", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_cache"), false));
 //	XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->SetValue(cfg->ReadBool(_T("/update_cache_always"), false));
 //	XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_cache_progress"), true));
@@ -120,8 +118,8 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np)
 	XRCCTRL(*this, "sliderDelay", wxSlider)->SetValue(timerDelay / 100);
 	UpdateSliderLabel();
 
-	m_Parser.ParseBuffer(g_SampleClasses, true);
-	m_Parser.BuildTree(*XRCCTRL(*this, "treeClasses", wxTreeCtrl));
+//	m_Parser.ParseBuffer(g_SampleClasses, true);
+//	m_Parser.BuildTree(*XRCCTRL(*this, "treeClasses", wxTreeCtrl));
 }
 
 CCOptionsDlg::~CCOptionsDlg()
@@ -152,14 +150,6 @@ void CCOptionsDlg::OnChooseColour(wxCommandEvent& event)
     	wxColour colour = dlg.GetColourData().GetColour();
 	    sender->SetBackgroundColour(colour);
     }
-}
-
-void CCOptionsDlg::OnInheritanceToggle(wxCommandEvent& event)
-{
-//	m_Parser.ClassBrowserOptions().showInheritance = event.IsChecked();
-	m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
-	m_Parser.ClassBrowserOptions().viewFlat = XRCCTRL(*this, "cmbCBView", wxComboBox)->GetSelection() == 0;
-	m_Parser.BuildTree(*XRCCTRL(*this, "treeClasses", wxTreeCtrl));
 }
 
 void CCOptionsDlg::OnSliderScroll(wxScrollEvent& event)
@@ -205,8 +195,8 @@ void CCOptionsDlg::OnApply()
 	m_Parser.Options().caseSensitive = XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->GetValue();
 	m_Parser.Options().useSmartSense = !XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->GetValue();
 	m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
-	m_Parser.ClassBrowserOptions().viewFlat = XRCCTRL(*this, "cmbCBView", wxComboBox)->GetSelection() == 0;
-	m_Parser.WriteOptions();
+	cfg->Write(_T("/as_floating_window"), (bool)XRCCTRL(*this, "chkFloatCB", wxCheckBox)->GetValue());
+    m_Parser.WriteOptions();
 
     m_pNativeParsers->RereadParserOptions();
 }

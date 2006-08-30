@@ -7,7 +7,8 @@
 #include <wx/hashmap.h>
 #include "parser/parser.h"
 
-//#define DEBUG_CC_AI
+#define DEBUG_CC_AI
+extern bool s_DebugSmartSense;
 
 // forward decls
 class cbEditor;
@@ -70,6 +71,12 @@ class NativeParser : public wxEvtHandler
 		Parser* FindParserFromActiveProject();
 		Parser* FindParserFromProject(cbProject* project);
 
+        // returns the editor's position where the current function starts
+        // optionally, returns the function's namespace (ends in double-colon ::) and name
+		int FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace = 0L, wxString* procName = 0L);
+		// fills the result argument with all the tokens matching the current function (hopefully, just one)
+		size_t FindCurrentFunctionToken(cbEditor* editor, TokenIdxSet& result);
+
         ClassBrowser* GetClassBrowser() const { return m_pClassBrowser; }
 		void CreateClassBrowser();
 		void RemoveClassBrowser(bool appShutDown = false);
@@ -96,7 +103,6 @@ class NativeParser : public wxEvtHandler
 		unsigned int FindCCTokenStart(const wxString& line);
 		wxString GetNextCCToken(const wxString& line, unsigned int& startAt, bool& is_function);
 		wxString GetCCToken(wxString& line, ParserTokenType& tokenType);
-		int FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace = 0L, wxString* procName = 0L);
 		void BreakUpInLines(wxString& str, const wxString& original_str, int chars_per_line = -1);
 		void AddCompilerDirs(Parser* parser, cbProject* project);
 		bool LoadCachedData(Parser* parser, cbProject* project);
@@ -118,6 +124,7 @@ class NativeParser : public wxEvtHandler
 		int m_CallTipCommas;
     	ClassBrowser* m_pClassBrowser;
     	bool m_GettingCalltips; // flag while getting calltips
+    	bool m_ClassBrowserIsFloating;
 
     	bool m_LastAISearchWasGlobal; // true if the phrase for code-completion is empty or partial text (i.e. no . -> or :: operators)
     	wxString m_LastAIGlobalSearch; // same case like above, it holds the search string

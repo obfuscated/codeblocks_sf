@@ -46,6 +46,8 @@
 
 #include <cctype>
 
+bool s_DebugSmartSense = false;
+
 BEGIN_EVENT_TABLE(NativeParser, wxEvtHandler)
 //	EVT_MENU(THREAD_START, NativeParser::OnThreadStart)
 //	EVT_MENU(THREAD_END, NativeParser::OnThreadEnd)
@@ -55,11 +57,12 @@ END_EVENT_TABLE()
 NativeParser::NativeParser()
 	: m_Parser(this),
 	m_CallTipCommas(0),
+    m_pClassBrowser(0),
 	m_GettingCalltips(false),
+	m_ClassBrowserIsFloating(false),
 	m_LastAISearchWasGlobal(false)
 {
 	//ctor
-    m_pClassBrowser = 0L;
 }
 
 NativeParser::~NativeParser()
@@ -72,21 +75,34 @@ void NativeParser::CreateClassBrowser()
 {
 	if (!m_pClassBrowser)
 	{
-        m_pClassBrowser = new ClassBrowser(Manager::Get()->GetAppWindow(), this);
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+        bool isFloating = cfg->ReadBool(_T("/as_floating_window"), false);
 
-        // make this a free floating/docking window
-        CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
+        if (!isFloating)
+        {
+            // make this a tab in projectmanager notebook
+            m_pClassBrowser = new ClassBrowser(Manager::Get()->GetProjectManager()->GetNotebook(), this);
+            Manager::Get()->GetProjectManager()->GetNotebook()->AddPage(m_pClassBrowser, _("Symbols"));
+        }
+        else
+        {
+            m_pClassBrowser = new ClassBrowser(Manager::Get()->GetAppWindow(), this);
 
-        evt.name = _T("SymbolsBrowser");
-        evt.title = _("Symbols browser");
-        evt.pWindow = m_pClassBrowser;
-        evt.dockSide = CodeBlocksDockEvent::dsRight;
-        evt.desiredSize.Set(200, 250);
-        evt.floatingSize.Set(200, 250);
-        evt.minimumSize.Set(150, 150);
-        evt.shown = true;
-        evt.hideable = true;
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+            // make this a free floating/docking window
+            CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
+
+            evt.name = _T("SymbolsBrowser");
+            evt.title = _("Symbols browser");
+            evt.pWindow = m_pClassBrowser;
+            evt.dockSide = CodeBlocksDockEvent::dsRight;
+            evt.desiredSize.Set(200, 250);
+            evt.floatingSize.Set(200, 250);
+            evt.minimumSize.Set(150, 150);
+            evt.shown = true;
+            evt.hideable = true;
+            Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        }
+        m_ClassBrowserIsFloating = isFloating;
 	}
 }
 
@@ -94,10 +110,20 @@ void NativeParser::RemoveClassBrowser(bool appShutDown)
 {
     if (m_pClassBrowser)
     {
-        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
-        evt.pWindow = m_pClassBrowser;
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
-        m_pClassBrowser->Destroy();
+        if (!m_ClassBrowserIsFloating)
+        {
+            int idx = Manager::Get()->GetProjectManager()->GetNotebook()->GetPageIndex(m_pClassBrowser);
+            if (idx != -1)
+                Manager::Get()->GetProjectManager()->GetNotebook()->RemovePage(idx);
+            m_pClassBrowser->Destroy();
+        }
+        else if (m_ClassBrowserIsFloating)
+        {
+            CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+            evt.pWindow = m_pClassBrowser;
+            Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+            m_pClassBrowser->Destroy();
+        }
     }
     m_pClassBrowser = 0L;
 }
@@ -118,12 +144,21 @@ void NativeParser::UpdateClassBrowser()
 
 void NativeParser::RereadParserOptions()
 {
-	bool needsReparsing = false;
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+    bool needsReparsing = false;
 
     ParserOptions opts = m_Parser.Options();
     m_Parser.ReadOptions();
 
     // change class-browser docking settings
+    if (m_ClassBrowserIsFloating != cfg->ReadBool(_T("/as_floating_window"), false))
+    {
+        RemoveClassBrowser();
+        CreateClassBrowser();
+        // force re-update
+        UpdateClassBrowser();
+    }
+
     // reparse if settings changed
     if (opts.followLocalIncludes != m_Parser.Options().followLocalIncludes ||
         opts.followGlobalIncludes != m_Parser.Options().followGlobalIncludes ||
@@ -540,42 +575,25 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed)
 		return false;
 
 #ifdef DEBUG_CC_AI
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Parse function arguments"));
+    if (s_DebugSmartSense)
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Parse function arguments"));
 #endif
 
-    wxString _namespace;
-    wxString _procedure;
-    if (FindCurrentFunctionStart(ed, &_namespace, &_procedure))
+    TokenIdxSet proc_result;
+    if (FindCurrentFunctionToken(ed, proc_result) != 0)
     {
-        TokenIdxSet scope_result;
-        TokenIdxSet proc_result;
-        if (!_namespace.IsEmpty())
-        {
-            // search for namespace
-            // NOTE: this will fail if _namespace contains more than one namespace (which *will* happen in the future)
-            parser->GetTokens()->FindMatches(_namespace, scope_result, true, false);
-        }
-        if (scope_result.empty()) // no namespace found?
-            scope_result.insert(-1); // search globals
-
-        // get all function matches
-        for (TokenIdxSet::iterator it = scope_result.begin(); it != scope_result.end(); ++it)
-        {
-            int idx = *it;
-            if (idx != -1)
-            {
-                Token* parentToken = parser->GetTokens()->at(idx);
-                if (parentToken && parentToken->m_TokenKind != tkNamespace && parentToken->m_TokenKind != tkClass)
-                    continue;
-            }
-            GenerateResultSet(parser->GetTokens(), _procedure, idx, proc_result, true, false, tkFunction | tkConstructor | tkDestructor);
-        }
-
-        // loop all matching functions
         for (TokenIdxSet::iterator it = proc_result.begin(); it != proc_result.end(); ++it)
         {
             Token* token = parser->GetTokens()->at(*it);
-            if (token && !token->m_Args.IsEmpty() && !token->m_Args.Matches(_T("()")))
+            if (!token)
+                continue;
+
+#ifdef DEBUG_CC_AI
+            if (s_DebugSmartSense)
+                DBGLOG(_T(" + Function match: ") + token->m_Name);
+#endif
+
+            if (!token->m_Args.IsEmpty() && !token->m_Args.Matches(_T("()")))
             {
                 wxString buffer = token->m_Args;
                 buffer.Remove(0, 1); // remove (
@@ -584,23 +602,27 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed)
                 buffer << _T(';'); // aid parser ;)
                 buffer.Trim();
 #ifdef DEBUG_CC_AI
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Parsing arguments: \"%s\""), buffer.c_str());
+                if (s_DebugSmartSense)
+                    Manager::Get()->GetMessageManager()->DebugLog(_T("Parsing arguments: \"%s\""), buffer.c_str());
 #endif
                 if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false, false, true))
                 {
 #ifdef DEBUG_CC_AI
-                    Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR parsing block:\n%s"), buffer.c_str());
+                    if (s_DebugSmartSense)
+                        Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR parsing arguments:\n%s"), buffer.c_str());
 #endif
                 }
-                else
-                    return true;
             }
         }
+        return true;
     }
-#ifdef DEBUG_CC_AI
     else
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Could not determine current function's namespace..."));
+    {
+#ifdef DEBUG_CC_AI
+        if (s_DebugSmartSense)
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Could not determine current function's namespace..."));
 #endif
+    }
     return false;
 }
 
@@ -617,7 +639,8 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed)
 		return false;
 
 #ifdef DEBUG_CC_AI
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Parse local block"));
+    if (s_DebugSmartSense)
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Parse local block"));
 #endif
 
     int blockStart = FindCurrentFunctionStart(ed);
@@ -630,28 +653,35 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed)
         if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false, false, true))
         {
 #ifdef DEBUG_CC_AI
-            Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR parsing block:\n%s"), buffer.c_str());
+            if (s_DebugSmartSense)
+                Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR parsing block:\n%s"), buffer.c_str());
 #endif
         }
         else
         {
 #ifdef DEBUG_CC_AI
-            DBGLOG(_T("Block:\n%s"), buffer.c_str());
-            DBGLOG(_T("Local tokens:"));
-            for (size_t i = 0; i < parser->GetTokens()->size(); ++i)
+            if (s_DebugSmartSense)
             {
-                Token* t = parser->GetTokens()->at(i);
-                if (t && t->m_IsTemp)
-                    DBGLOG(_T(" + %s"), t->DisplayName().c_str());
+//               DBGLOG(_T("Block:\n%s"), buffer.c_str());
+                DBGLOG(_T("Local tokens:"));
+                for (size_t i = 0; i < parser->GetTokens()->size(); ++i)
+                {
+                    Token* t = parser->GetTokens()->at(i);
+                    if (t && t->m_IsTemp)
+                        DBGLOG(_T(" + %s"), t->DisplayName().c_str());
+                }
             }
 #endif
             return true;
         }
     }
-#ifdef DEBUG_CC_AI
     else
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Could not determine current block start..."));
+    {
+#ifdef DEBUG_CC_AI
+        if (s_DebugSmartSense)
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Could not determine current block start..."));
 #endif
+    }
     return false;
 }
 
@@ -666,7 +696,8 @@ bool NativeParser::ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope)
     TokensTree* tree = parser->GetTokens();
 
 #ifdef DEBUG_CC_AI
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Parse file scope for \"using namespace\""));
+    if (s_DebugSmartSense)
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Parse file scope for \"using namespace\""));
 #endif
 
     wxArrayString ns;
@@ -693,7 +724,7 @@ bool NativeParser::ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope)
             parentIdx = id;
         }
 #ifdef DEBUG_CC_AI
-        if (parentIdx != -1)
+        if (s_DebugSmartSense && parentIdx != -1)
         {
             Token* token = tree->at(parentIdx);
             Manager::Get()->GetMessageManager()->DebugLog(_T("Found %s%s"), token->GetNamespace().c_str(), token->m_Name.c_str());
@@ -1194,7 +1225,8 @@ size_t NativeParser::AI(TokenIdxSet& result,
         actual.StartsWith(cached_search))
     {
 #ifdef DEBUG_CC_AI
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Aborting search: last attempt returned 0 results"));
+        if (s_DebugSmartSense)
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Aborting search: last attempt returned 0 results"));
 #endif
         // but set m_LastAISearchWasGlobal correctly so C++ keywords can be shown
         std::queue<ParserComponent> components;
@@ -1206,46 +1238,35 @@ size_t NativeParser::AI(TokenIdxSet& result,
     }
 
 #ifdef DEBUG_CC_AI
-	Manager::Get()->GetMessageManager()->DebugLog(_T("========================================================="));
-	Manager::Get()->GetMessageManager()->DebugLog(_T("Doing AI for '%s':"), actual.c_str());
+    if (s_DebugSmartSense)
+    {
+        Manager::Get()->GetMessageManager()->DebugLog(_T("========================================================="));
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Doing AI for '%s':"), actual.c_str());
+    }
 #endif
 
 	// find current function's namespace so we can include local scope's tokens
+	// we ' ll get the function's token (all matches) and add its parent namespace
     TokenIdxSet scope_result;
-    wxString procName;
-    wxString scopeName;
-    FindCurrentFunctionStart(editor, &scopeName, &procName);
-    // add current scope
-    if (!scopeName.IsEmpty())
-        tree->FindMatches(scopeName, scope_result, true, false);
-    else if (!procName.IsEmpty())
+    TokenIdxSet proc_result;
+    if (FindCurrentFunctionToken(editor, proc_result) != 0)
     {
-        // we got no scope but we got a function
-        // this happens for global functions (don't care - they are handled below)
-        // and for class/namespace member functions implemented in the header file
-        // (or with "using namespace")
-        //
-        // for this case, we 'll get all procName matches and add all the non-global
-        // parent namespaces/classes in the search scope
-        // better to propose some invalid scopes than none...
-        TokenIdxSet proc_result;
-        tree->FindMatches(procName, proc_result, true, false);
         for (TokenIdxSet::iterator it = proc_result.begin(); it != proc_result.end(); ++it)
         {
-            Token* procToken = tree->at(*it);
-            if (procToken &&
-                procToken->m_ParentIndex != -1 &&
-                (procToken->m_TokenKind == tkFunction || procToken->m_TokenKind == tkConstructor || procToken->m_TokenKind == tkDestructor))
-            {
+            Token* token = parser->GetTokens()->at(*it);
+            if (!token)
+                continue;
+            scope_result.insert(token->m_ParentIndex);
 #ifdef DEBUG_CC_AI
-                Token* parentToken = tree->at(procToken->m_ParentIndex);
-                DBGLOG(_T("Adding non-global scope '%s' for member function '%s'"),
-                        parentToken->DisplayName().c_str(), procToken->DisplayName().c_str());
-#endif
-                scope_result.insert(procToken->m_ParentIndex);
+            if (s_DebugSmartSense)
+            {
+                Token* parent = parser->GetTokens()->at(token->m_ParentIndex);
+                Manager::Get()->GetMessageManager()->DebugLog(_T("Adding search namespace: '%s'"), parent ? parent->m_Name.c_str() : _T("Global namespace"));
             }
+#endif
         }
     }
+
 
     if (!search_scope)
         search_scope = &scope_result;
@@ -1286,8 +1307,11 @@ size_t NativeParser::AI(TokenIdxSet& result,
     for (TokenIdxSet::iterator it = search_scope->begin(); it != search_scope->end(); ++it)
     {
 #ifdef DEBUG_CC_AI
-        Token* scopeToken = tree->at(*it);
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Parent scope: '%s' (%d)"), scopeToken ? scopeToken->m_Name.c_str() : _T("Global namespace"), *it);
+        if (s_DebugSmartSense)
+        {
+            Token* scopeToken = tree->at(*it);
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Parent scope: '%s' (%d)"), scopeToken ? scopeToken->m_Name.c_str() : _T("Global namespace"), *it);
+        }
 #endif
         FindAIMatches(parser, components, result, *it, noPartialMatch, caseSensitive, true, 0xffff, search_scope);
     }
@@ -1354,7 +1378,8 @@ size_t NativeParser::FindAIMatches(Parser* parser,
         return 0;
 
 #ifdef DEBUG_CC_AI
-    Manager::Get()->GetMessageManager()->DebugLog(_T("FindAIMatches - enter"));
+    if (s_DebugSmartSense)
+        Manager::Get()->GetMessageManager()->DebugLog(_T("FindAIMatches - enter"));
 #endif
     TokensTree* tree = parser->GetTokens();
 
@@ -1375,7 +1400,8 @@ size_t NativeParser::FindAIMatches(Parser* parser,
     bool is_last = components.empty();
     wxString searchtext = parser_component.component;
 #ifdef DEBUG_CC_AI
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Search for '%s'"), searchtext.c_str());
+    if (s_DebugSmartSense)
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Search for '%s'"), searchtext.c_str());
 #endif
 
     // get a set of matches for the current token
@@ -1383,7 +1409,8 @@ size_t NativeParser::FindAIMatches(Parser* parser,
     GenerateResultSet(tree, searchtext, parentTokenIdx, local_result, caseSensitive || !is_last, is_last && !noPartialMatch, kindMask);
 //    tree->FindMatches(searchtext, local_result, caseSensitive || !is_last, is_last && !noPartialMatch);
 #ifdef DEBUG_CC_AI
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Looping %d results"), local_result.size());
+    if (s_DebugSmartSense)
+        Manager::Get()->GetMessageManager()->DebugLog(_T("Looping %d results"), local_result.size());
 #endif
 
     // loop all matches, and recurse
@@ -1410,7 +1437,8 @@ size_t NativeParser::FindAIMatches(Parser* parser,
         }
 
 #ifdef DEBUG_CC_AI
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Match: '%s' (%d) : '%s'"), token->m_Name.c_str(), id, token->m_ActualType.c_str());
+        if (s_DebugSmartSense)
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Match: '%s' (%d) : '%s'"), token->m_Name.c_str(), id, token->m_ActualType.c_str());
 #endif
 
         // is the token a function or variable (i.e. is not a type)
@@ -1430,7 +1458,8 @@ size_t NativeParser::FindAIMatches(Parser* parser,
             // what we 'll do is search under current parent and traverse up the parentship
             // until we find a result, or reach -1...
 #ifdef DEBUG_CC_AI
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Looking for type: '%s' (%d components)"), actual.c_str(), type_components.size());
+            if (s_DebugSmartSense)
+                Manager::Get()->GetMessageManager()->DebugLog(_T("Looking for type: '%s' (%d components)"), actual.c_str(), type_components.size());
 #endif
             // search under all search-scope namespaces too
             TokenIdxSet::iterator itsearch;
@@ -1440,7 +1469,8 @@ size_t NativeParser::FindAIMatches(Parser* parser,
             {
                 Token* parent = tree->at(search_scope ? *itsearch : parentTokenIdx);
 #ifdef DEBUG_CC_AI
-                Manager::Get()->GetMessageManager()->DebugLog(_T(" : looking under '%s'"), parent ? parent->m_Name.c_str() : _T("Global namespace"));
+                if (s_DebugSmartSense)
+                    Manager::Get()->GetMessageManager()->DebugLog(_T(" : looking under '%s'"), parent ? parent->m_Name.c_str() : _T("Global namespace"));
 #endif
                 do
                 {
@@ -1473,9 +1503,12 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                     }
                 }
 #ifdef DEBUG_CC_AI
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Type: '%s' (%d)"), tree->at(id)->m_Name.c_str(), id);
-                if (type_result.size() > 1)
-                    Manager::Get()->GetMessageManager()->DebugLog(_T("Multiple types matched for '%s': %d results"), token->m_ActualType.c_str(), type_result.size());
+                if (s_DebugSmartSense)
+                {
+                    Manager::Get()->GetMessageManager()->DebugLog(_T("Type: '%s' (%d)"), tree->at(id)->m_Name.c_str(), id);
+                    if (type_result.size() > 1)
+                        Manager::Get()->GetMessageManager()->DebugLog(_T("Multiple types matched for '%s': %d results"), token->m_ActualType.c_str(), type_result.size());
+                }
 #endif
             }
         }
@@ -1488,7 +1521,8 @@ size_t NativeParser::FindAIMatches(Parser* parser,
             FindAIMatches(parser, components, result, id, noPartialMatch, caseSensitive, kindMask);
     }
 #ifdef DEBUG_CC_AI
-    Manager::Get()->GetMessageManager()->DebugLog(_T("FindAIMatches - leave"));
+    if (s_DebugSmartSense)
+        Manager::Get()->GetMessageManager()->DebugLog(_T("FindAIMatches - leave"));
 #endif
     return result.size();
 }
@@ -1523,7 +1557,8 @@ size_t NativeParser::GenerateResultSet(TokensTree* tree,
 
     Token* parent = tree->at(parentIdx);
 #ifdef DEBUG_CC_AI
-    Manager::Get()->GetMessageManager()->DebugLog(_T("GenerateResultSet: search '%s', parent='%s'"), search.c_str(), parent ? parent->m_Name.c_str() : _T("Global namespace"));
+    if (s_DebugSmartSense)
+        Manager::Get()->GetMessageManager()->DebugLog(_T("GenerateResultSet: search '%s', parent='%s'"), search.c_str(), parent ? parent->m_Name.c_str() : _T("Global namespace"));
 #endif
     if (parent)
     {
@@ -1674,7 +1709,8 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
 	        {
 	            // got it :)
 #ifdef DEBUG_CC_AI
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Current function: %s"), token->DisplayName().c_str());
+                if (s_DebugSmartSense)
+                    Manager::Get()->GetMessageManager()->DebugLog(_T("Current function: %s"), token->DisplayName().c_str());
 #endif
                 s_LastNS = token->GetNamespace();
                 s_LastPROC = token->m_Name;
@@ -1688,10 +1724,56 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
 	    }
 	}
 #ifdef DEBUG_CC_AI
-    Manager::Get()->GetMessageManager()->DebugLogWarning(_T("Can't determine current function..."));
+    if (s_DebugSmartSense)
+        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("Can't determine current function..."));
 #endif
 	s_LastResult = -1;
 	return -1;
+}
+
+size_t NativeParser::FindCurrentFunctionToken(cbEditor* editor, TokenIdxSet& result)
+{
+	if (!editor)
+		return 0;
+
+	Parser* parser = FindParserFromEditor(editor);
+	if (!parser)
+		return 0;
+
+	if (!parser->Done())
+		return 0;
+
+    TokenIdxSet scope_result;
+    wxString procName;
+    wxString scopeName;
+    FindCurrentFunctionStart(editor, &scopeName, &procName);
+
+    if (procName.IsEmpty())
+        return 0;
+
+    // add current scope
+    if (!scopeName.IsEmpty())
+    {
+        // _namespace ends with double-colon (::). remove it
+        scopeName.RemoveLast();
+        scopeName.RemoveLast();
+
+        // search for namespace
+        std::queue<ParserComponent> ns;
+        BreakUpComponents(parser, scopeName, ns);
+        FindAIMatches(parser, ns, scope_result, -1, true, true, false, tkNamespace | tkClass);
+    }
+
+    // if no scope, use global scope
+    if (scope_result.empty())
+        scope_result.insert(-1);
+
+    for (TokenIdxSet::iterator it = scope_result.begin(); it != scope_result.end(); ++it)
+    {
+        GenerateResultSet(parser->GetTokens(), procName, *it, result, true, false, tkFunction | tkConstructor | tkDestructor);
+    }
+
+    return result.size();
 }
 
 // events

@@ -66,8 +66,16 @@
                         </object>
                         <object class="sizeritem">
                             <option>1</option>
-                            <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                            <object class="wxTreeCtrl" name="treeAll" />
+                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                            <object class="wxSplitterWindow" name="splitterWin">
+                                <minsize>64</minsize>
+                                <size>132,86</size>
+                                <style>wxSP_LIVE_UPDATE</style>
+                                <object class="wxTreeCtrl" name="treeAll" />
+                                <object class="wxTreeCtrl" name="treeMembers">
+                                    <style>wxTR_NO_LINES|wxTR_HIDE_ROOT</style>
+                                </object>
+                            </object>
                         </object>
                     </object>
                 </object>

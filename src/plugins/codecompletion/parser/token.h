@@ -141,7 +141,7 @@ class TokensTree
         void RecalcFreeList();
         void RecalcData();
         int TokenExists(const wxString& name, int parent, short int kindMask);
-        size_t FindMatches(const wxString& s,TokenIdxSet& result,bool caseSensitive,bool is_prefix);
+        size_t FindMatches(const wxString& s,TokenIdxSet& result,bool caseSensitive,bool is_prefix, int kindMask = 0xffff);
         size_t FindTokensInFile(const wxString& file, TokenIdxSet& result, short int kindMask);
         void RemoveFile(const wxString& filename);
         void RemoveFile(int index);

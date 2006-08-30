@@ -34,8 +34,11 @@
 #include <wx/stattext.h>
 #include <wx/choice.h>
 #include <wx/menu.h>
+#include <wx/splitter.h>
 #include <wx/button.h>
+#include <wx/utils.h> // wxBusyCursor
 #include <wx/xrc/xmlres.h>
+#include <wx/tipwin.h>
 #include <manager.h>
 #include <configmanager.h>
 #include <pluginmanager.h>
@@ -93,10 +96,17 @@ int idCBViewInheritance = wxNewId();
 int idCBViewModeFlat = wxNewId();
 int idCBViewModeStructured = wxNewId();
 int idMenuForceReparse = wxNewId();
+int idMenuDebugSmartSense = wxNewId();
 
 BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
+	EVT_TREE_ITEM_ACTIVATED(XRCID("treeMembers"), ClassBrowser::OnTreeItemDoubleClick)
+    EVT_TREE_ITEM_RIGHT_CLICK(XRCID("treeMembers"), ClassBrowser::OnTreeItemRightClick)
+
 	EVT_TREE_ITEM_ACTIVATED(XRCID("treeAll"), ClassBrowser::OnTreeItemDoubleClick)
     EVT_TREE_ITEM_RIGHT_CLICK(XRCID("treeAll"), ClassBrowser::OnTreeItemRightClick)
+    EVT_TREE_ITEM_EXPANDING(XRCID("treeAll"), ClassBrowser::OnTreeItemExpanding)
+    EVT_TREE_ITEM_COLLAPSING(XRCID("treeAll"), ClassBrowser::OnTreeItemCollapsing)
+    EVT_TREE_SEL_CHANGED(XRCID("treeAll"), ClassBrowser::OnTreeItemSelected)
 
     EVT_MENU(idMenuJumpToDeclaration, ClassBrowser::OnJumpTo)
     EVT_MENU(idMenuJumpToImplementation, ClassBrowser::OnJumpTo)
@@ -104,7 +114,7 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_MENU(idMenuForceReparse, ClassBrowser::OnForceReparse)
     EVT_MENU(idCBViewInheritance, ClassBrowser::OnCBViewMode)
     EVT_MENU(idCBViewModeFlat, ClassBrowser::OnCBViewMode)
-    EVT_MENU(idCBViewModeStructured, ClassBrowser::OnCBViewMode)
+    EVT_MENU(idMenuDebugSmartSense, ClassBrowser::OnDebugSmartSense)
     EVT_CHOICE(XRCID("cmbView"), ClassBrowser::OnViewScope)
     EVT_BUTTON(XRCID("btnSearch"), ClassBrowser::OnSearch)
 END_EVENT_TABLE()
@@ -113,15 +123,20 @@ END_EVENT_TABLE()
 ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
     : m_NativeParser(np),
     m_TreeForPopupMenu(0),
-	m_pParser(0L)
+	m_pParser(0L),
+	m_pActiveProject(0),
+	m_Semaphore(0, 1),
+	m_pBuilderThread(0)
 {
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+
 	wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlCB"));
     m_Search = new myTextCtrl(this, parent, XRCID("txtSearch"));
     wxXmlResource::Get()->AttachUnknownControl(_T("txtSearch"), m_Search);
 
 	m_Tree = XRCCTRL(*this, "treeAll", wxTreeCtrl);
 
-    int filter = Manager::Get()->GetConfigManager(_T("code_completion"))->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
+    int filter = cfg->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
     XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(filter);
 
     // if the classbrowser is put under the control of a wxFlatNotebook,
@@ -134,6 +149,12 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
 ClassBrowser::~ClassBrowser()
 {
     UnlinkParser();
+
+    if (m_pBuilderThread)
+    {
+        m_Semaphore.Post();
+        m_pBuilderThread->Delete();
+    }
 }
 
 void ClassBrowser::SetParser(Parser* parser)
@@ -143,7 +164,7 @@ void ClassBrowser::SetParser(Parser* parser)
 		UnlinkParser();
 		if(parser)
 		{
-            parser->AbortBuildingTree();
+//            parser->AbortBuildingTree();
             parser->m_pClassBrowser = this;
             m_pParser = parser;
             UpdateView();
@@ -157,7 +178,7 @@ void ClassBrowser::UnlinkParser()
     {
         if(m_pParser->m_pClassBrowser == this)
         {
-            m_pParser->AbortBuildingTree();
+//            m_pParser->AbortBuildingTree();
             m_pParser->m_pClassBrowser = NULL;
         }
         m_pParser = NULL;
@@ -166,8 +187,19 @@ void ClassBrowser::UnlinkParser()
 
 void ClassBrowser::UpdateView()
 {
+    m_pActiveProject = 0;
+    m_ActiveFilename.Clear();
 	if (m_pParser && !Manager::isappShuttingDown())
-		m_pParser->BuildTree(*m_Tree);
+	{
+	    m_pActiveProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+	    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+	    if (ed)
+	    {
+            m_ActiveFilename = ed->GetFilename().BeforeLast(_T('.'));
+            m_ActiveFilename.Append(_T('.'));
+	    }
+		BuildTree();
+	}
 	else
 		m_Tree->DeleteAllItems();
 }
@@ -190,15 +222,15 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt
 	wxString caption;
     wxMenu *menu=new wxMenu(wxEmptyString);
 
-	ClassTreeData* ctd = (ClassTreeData*)tree->GetItemData(id);
-    if (ctd)
+	CBTreeData* ctd = (CBTreeData*)tree->GetItemData(id);
+    if (ctd && ctd->m_pToken)
     {
-        switch (ctd->GetToken()->m_TokenKind)
+        switch (ctd->m_pToken->m_TokenKind)
         {
             case tkConstructor:
             case tkDestructor:
             case tkFunction:
-                if (ctd->GetToken()->m_ImplLine != 0 && !ctd->GetToken()->GetImplFilename().IsEmpty())
+                if (ctd->m_pToken->m_ImplLine != 0 && !ctd->m_pToken->GetImplFilename().IsEmpty())
                     menu->Append(idMenuJumpToImplementation, _("Jump to &implementation"));
                 // intentionally fall through
             default:
@@ -206,171 +238,35 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt
         }
     }
 
-    if (menu->GetMenuItemCount() != 0)
-        menu->AppendSeparator();
-
-    wxMenu *sub = new wxMenu(_T(""));
-    sub->AppendCheckItem(idCBViewInheritance, _("Show inherited members"));
-    sub->AppendSeparator();
-    sub->AppendRadioItem(idCBViewModeFlat, _("Flat"));
-    sub->AppendRadioItem(idCBViewModeStructured, _("Structured"));
-
-    menu->Append(wxNewId(), _("&View options"), sub);
-    menu->Append(idMenuRefreshTree, _("&Refresh tree"));
-
-    if (id == m_Tree->GetRootItem())
+    if (tree == m_Tree)
     {
-        menu->AppendSeparator();
-        menu->Append(idMenuForceReparse, _("Re-parse now"));
-    }
+        // only in top tree
+        if (menu->GetMenuItemCount() != 0)
+            menu->AppendSeparator();
 
-    menu->Check(idCBViewInheritance, m_pParser ? m_pParser->ClassBrowserOptions().showInheritance : false);
-    sub->Check(idCBViewModeFlat, m_pParser ? m_pParser->ClassBrowserOptions().viewFlat : false);
-    sub->Check(idCBViewModeStructured, m_pParser ? !m_pParser->ClassBrowserOptions().viewFlat : false);
+        menu->AppendCheckItem(idCBViewInheritance, _("Show inherited members"));
+        menu->Append(idMenuRefreshTree, _("&Refresh tree"));
 
-    PopupMenu(menu, tree->GetParent()->ScreenToClient(tree->ClientToScreen(pt)));
-    delete menu; // Prevents memory leak
-#endif // wxUSE_MENUS
-}
-
-// events
-
-void ClassBrowser::OnTreeItemRightClick(wxTreeEvent& event)
-{
-    wxTreeCtrl* tree = m_Tree;
-	tree->SelectItem(event.GetItem());
-    ShowMenu(tree, event.GetItem(), event.GetPoint());// + tree->GetPosition());
-}
-
-void ClassBrowser::OnJumpTo(wxCommandEvent& event)
-{
-    wxTreeCtrl* tree = m_TreeForPopupMenu;
-	wxTreeItemId id = tree->GetSelection();
-	ClassTreeData* ctd = (ClassTreeData*)tree->GetItemData(id);
-    if (ctd)
-    {
-        cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-        if (prj)
+        if (id == m_Tree->GetRootItem())
         {
-            wxString base = prj->GetBasePath();
-            wxFileName fname;
-            if (event.GetId() == idMenuJumpToImplementation)
-                fname.Assign(ctd->GetToken()->GetImplFilename());
-            else
-                fname.Assign(ctd->GetToken()->GetFilename());
-            NormalizePath(fname,base);
-        	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
-			if (ed)
-			{
-                int line;
-                if (event.GetId() == idMenuJumpToImplementation)
-                    line = ctd->GetToken()->m_ImplLine - 1;
-                else
-                    line = ctd->GetToken()->m_Line - 1;
-				ed->GotoLine(line);
-			}
+            menu->AppendSeparator();
+            menu->Append(idMenuForceReparse, _("Re-parse now"));
         }
-    }
-}
 
-void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
-{
-    wxTreeCtrl* tree = (wxTreeCtrl*)event.GetEventObject();
-	wxTreeItemId id = event.GetItem();
-	ClassTreeData* ctd = (ClassTreeData*)tree->GetItemData(id);
-    if (ctd)
-    {
         if (wxGetKeyState(WXK_CONTROL) && wxGetKeyState(WXK_SHIFT))
         {
-            CCDebugInfo info(tree, m_pParser, ctd->GetToken());
-            info.ShowModal();
-            return;
+            menu->AppendSeparator();
+            menu->AppendCheckItem(idMenuDebugSmartSense, _("Debug SmartSense"));
+            menu->Check(idMenuDebugSmartSense, s_DebugSmartSense);
         }
 
-        cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-        if (prj)
-        {
-			bool toImp = false;
-			switch (ctd->GetToken()->m_TokenKind)
-			{
-			case tkConstructor:
-            case tkDestructor:
-            case tkFunction:
-                if (ctd->GetToken()->m_ImplLine != 0 && !ctd->GetToken()->GetImplFilename().IsEmpty())
-                    toImp = true;
-				break;
-			default:
-				break;
-			}
-
-            wxString base = prj->GetBasePath();
-            wxFileName fname;
-            if (toImp)
-                fname.Assign(ctd->GetToken()->GetImplFilename());
-            else
-                fname.Assign(ctd->GetToken()->GetFilename());
-
-            NormalizePath(fname, base);
-        	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
-			if (ed)
-			{
-				int line;
-                if (toImp)
-                    line = ctd->GetToken()->m_ImplLine - 1;
-                else
-                    line = ctd->GetToken()->m_Line - 1;
-				ed->GotoLine(line);
-
-				wxFocusEvent ev(wxEVT_SET_FOCUS);
-				ev.SetWindow(this);
-				ed->GetControl()->AddPendingEvent(ev);
-			}
-        }
+        menu->Check(idCBViewInheritance, m_pParser ? m_pParser->ClassBrowserOptions().showInheritance : false);
     }
-}
 
-void ClassBrowser::OnRefreshTree(wxCommandEvent& event)
-{
-	UpdateView();
-}
-
-void ClassBrowser::OnForceReparse(wxCommandEvent& event)
-{
-    if (m_NativeParser)
-        m_NativeParser->ForceReparseActiveProject();
-}
-
-void ClassBrowser::OnCBViewMode(wxCommandEvent& event)
-{
-	if (!m_pParser)
-		return;
-
-	if (event.GetId() == idCBViewInheritance)
-		m_pParser->ClassBrowserOptions().showInheritance = event.IsChecked();
-	else if (event.GetId() == idCBViewModeFlat)
-		m_pParser->ClassBrowserOptions().viewFlat = event.IsChecked();
-	else if (event.GetId() == idCBViewModeStructured)
-		m_pParser->ClassBrowserOptions().viewFlat = !event.IsChecked();
-	else
-		return;
-
-	m_pParser->WriteOptions();
-	UpdateView();
-}
-
-void ClassBrowser::OnViewScope(wxCommandEvent& event)
-{
-	if (m_pParser)
-	{
-		m_pParser->ClassBrowserOptions().displayFilter = (BrowserDisplayFilter)event.GetSelection();
-		m_pParser->WriteOptions();
-        UpdateView();
-	}
-	else
-	{
-	    // we have no parser; just write the setting in the configuration
-        Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/browser_display_filter"), (int)event.GetSelection());
-	}
+    if (menu->GetMenuItemCount() != 0)
+        PopupMenu(menu);
+    delete menu; // Prevents memory leak
+#endif // wxUSE_MENUS
 }
 
 bool ClassBrowser::FoundMatch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& item)
@@ -439,8 +335,170 @@ bool ClassBrowser::RecursiveSearch(const wxString& search, wxTreeCtrl* tree, con
     return RecursiveSearch(search, tree, FindNext(search, tree, parent), result);
 }
 
+// events
+
+void ClassBrowser::OnTreeItemRightClick(wxTreeEvent& event)
+{
+    wxTreeCtrl* tree = (wxTreeCtrl*)event.GetEventObject();
+	tree->SelectItem(event.GetItem());
+    ShowMenu(tree, event.GetItem(), event.GetPoint());// + tree->GetPosition());
+}
+
+void ClassBrowser::OnJumpTo(wxCommandEvent& event)
+{
+    wxTreeCtrl* tree = m_TreeForPopupMenu;
+	wxTreeItemId id = tree->GetSelection();
+	CBTreeData* ctd = (CBTreeData*)tree->GetItemData(id);
+    if (ctd)
+    {
+        cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+        if (prj)
+        {
+            wxString base = prj->GetBasePath();
+            wxFileName fname;
+            if (event.GetId() == idMenuJumpToImplementation)
+                fname.Assign(ctd->m_pToken->GetImplFilename());
+            else
+                fname.Assign(ctd->m_pToken->GetFilename());
+            NormalizePath(fname,base);
+        	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
+			if (ed)
+			{
+                int line;
+                if (event.GetId() == idMenuJumpToImplementation)
+                    line = ctd->m_pToken->m_ImplLine - 1;
+                else
+                    line = ctd->m_pToken->m_Line - 1;
+				ed->GotoLine(line);
+//				// try to move the caret on the exact token
+//				int lineOffset = ed->GetControl()->GetCurLine().Find(ctd->m_pToken->m_Name);
+//				if (lineOffset != wxNOT_FOUND)
+//				{
+//                    int pos = ed->GetControl()->PositionFromLine(line) + lineOffset;
+//                    ed->GetControl()->GotoPos(pos);
+//                    // select the token
+//                    int posend = ed->GetControl()->WordEndPosition(pos, true);
+//                    ed->GetControl()->SetSelection(pos, posend);
+//				}
+			}
+        }
+    }
+}
+
+void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
+{
+    wxTreeCtrl* tree = (wxTreeCtrl*)event.GetEventObject();
+	wxTreeItemId id = event.GetItem();
+	CBTreeData* ctd = (CBTreeData*)tree->GetItemData(id);
+    if (ctd && ctd->m_pToken)
+    {
+        if (wxGetKeyState(WXK_CONTROL) && wxGetKeyState(WXK_SHIFT))
+        {
+            CCDebugInfo info(tree, m_pParser, ctd->m_pToken);
+            info.ShowModal();
+            return;
+        }
+
+        cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+        if (prj)
+        {
+			bool toImp = false;
+			switch (ctd->m_pToken->m_TokenKind)
+			{
+			case tkConstructor:
+            case tkDestructor:
+            case tkFunction:
+                if (ctd->m_pToken->m_ImplLine != 0 && !ctd->m_pToken->GetImplFilename().IsEmpty())
+                    toImp = true;
+				break;
+			default:
+				break;
+			}
+
+            wxString base = prj->GetBasePath();
+            wxFileName fname;
+            if (toImp)
+                fname.Assign(ctd->m_pToken->GetImplFilename());
+            else
+                fname.Assign(ctd->m_pToken->GetFilename());
+
+            NormalizePath(fname, base);
+        	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
+			if (ed)
+			{
+				int line;
+                if (toImp)
+                    line = ctd->m_pToken->m_ImplLine - 1;
+                else
+                    line = ctd->m_pToken->m_Line - 1;
+				ed->GotoLine(line);
+//				// try to move the caret on the exact token
+//				int lineOffset = ed->GetControl()->GetCurLine().Find(ctd->m_pToken->m_Name);
+//				if (lineOffset != wxNOT_FOUND)
+//				{
+//                    int pos = ed->GetControl()->PositionFromLine(line) + lineOffset;
+//                    ed->GetControl()->GotoPos(pos);
+//                    // select the token
+//                    int posend = ed->GetControl()->WordEndPosition(pos, true);
+//                    ed->GetControl()->SetSelection(pos, posend);
+//				}
+
+				wxFocusEvent ev(wxEVT_SET_FOCUS);
+				ev.SetWindow(this);
+				ed->GetControl()->AddPendingEvent(ev);
+			}
+        }
+    }
+}
+
+void ClassBrowser::OnRefreshTree(wxCommandEvent& event)
+{
+	UpdateView();
+}
+
+void ClassBrowser::OnForceReparse(wxCommandEvent& event)
+{
+    if (m_NativeParser)
+        m_NativeParser->ForceReparseActiveProject();
+}
+
+void ClassBrowser::OnCBViewMode(wxCommandEvent& event)
+{
+	if (!m_pParser)
+		return;
+
+	if (event.GetId() == idCBViewInheritance)
+		m_pParser->ClassBrowserOptions().showInheritance = event.IsChecked();
+
+	m_pParser->WriteOptions();
+	UpdateView();
+}
+
+void ClassBrowser::OnViewScope(wxCommandEvent& event)
+{
+	if (m_pParser)
+	{
+		m_pParser->ClassBrowserOptions().displayFilter = (BrowserDisplayFilter)event.GetSelection();
+		m_pParser->WriteOptions();
+        UpdateView();
+	}
+	else
+	{
+	    // we have no parser; just write the setting in the configuration
+        Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/browser_display_filter"), (int)event.GetSelection());
+	}
+}
+
+void ClassBrowser::OnDebugSmartSense(wxCommandEvent& event)
+{
+    s_DebugSmartSense = !s_DebugSmartSense;
+}
+
 void ClassBrowser::OnSearch(wxCommandEvent& event)
 {
+    new wxTipWindow(this, _("Searching the symbols tree is currently disabled.\nWe are sorry for the inconvenience."), 240);
+    return;
+
     wxString search = m_Search->GetValue().Lower();
     if (search.IsEmpty())
         return;
@@ -484,4 +542,48 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
             }
         }
     }
+}
+
+void ClassBrowser::BuildTree()
+{
+    // create the thread if needed
+    if (!m_pBuilderThread)
+    {
+        m_pBuilderThread = new ClassBrowserBuilderThread(m_Semaphore, &m_pBuilderThread);
+        m_pBuilderThread->Create();
+        m_pBuilderThread->Run();
+    }
+
+    // initialise it
+    m_pBuilderThread->Init(m_pParser,
+                            m_Tree,
+                            XRCCTRL(*this, "treeMembers", wxTreeCtrl),
+                            m_ActiveFilename,
+                            m_pActiveProject,
+                            m_pParser->ClassBrowserOptions(),
+                            m_pParser->GetTokens());
+
+    // and launch it
+    m_Semaphore.Post();
+}
+
+void ClassBrowser::OnTreeItemExpanding(wxTreeEvent& event)
+{
+    if (m_pBuilderThread)
+        m_pBuilderThread->ExpandItem(event.GetItem());
+    event.Allow();
+}
+
+void ClassBrowser::OnTreeItemCollapsing(wxTreeEvent& event)
+{
+    if (m_pBuilderThread)
+        m_pBuilderThread->CollapseItem(event.GetItem());
+    event.Allow();
+}
+
+void ClassBrowser::OnTreeItemSelected(wxTreeEvent& event)
+{
+    if (m_pBuilderThread)
+        m_pBuilderThread->SelectItem(event.GetItem());
+    event.Allow();
 }

@@ -20,7 +20,6 @@ class CCOptionsDlg : public cbConfigurationPanel
 	protected:
 		void OnOK(wxCommandEvent& event);
 		void OnChooseColour(wxCommandEvent& event);
-		void OnInheritanceToggle(wxCommandEvent& event);
 		void OnSliderScroll(wxScrollEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
 	private:

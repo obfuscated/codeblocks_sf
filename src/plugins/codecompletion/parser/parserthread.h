@@ -28,7 +28,11 @@ struct ParserThreadOptions
         followLocalIncludes(true),
         followGlobalIncludes(true),
         isTemp(false),
-        handleFunctions(true)
+        handleFunctions(true),
+        handleVars(true),
+        handleClasses(true),
+        handleEnums(true),
+        handleTypedefs(true)
         {}
     /** useBuffer specifies that we're not parsing a file,  but a temporary
       * buffer. The resulting tokens will be temporary, too,
@@ -40,7 +44,12 @@ struct ParserThreadOptions
 	bool followLocalIncludes;
 	bool followGlobalIncludes;
 	bool isTemp;
+
 	bool handleFunctions;
+	bool handleVars;
+	bool handleClasses;
+	bool handleEnums;
+	bool handleTypedefs;
 };
 
 class ParserThread : public cbThreadedTask

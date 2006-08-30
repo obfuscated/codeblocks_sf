@@ -74,7 +74,6 @@ enum BrowserDisplayFilter
 struct BrowserOptions
 {
 	bool showInheritance; // default: false
-	bool viewFlat; // default: false
 	BrowserDisplayFilter displayFilter; // default: bdfWorkspace
 };
 
@@ -141,10 +140,6 @@ class Parser : public wxEvtHandler
 		unsigned int GetMaxThreads()const { return m_Pool.GetConcurrentThreads(); }
 		void SetMaxThreads(unsigned int max){ m_Pool.SetConcurrentThreads(max); }
 
-		void BuildTree(wxTreeCtrl& tree);
-		wxTreeItemId GetRootNode(){ return m_RootNode; }
-
-		void AbortBuildingTree(); // Reserved for future expansion
 		void TerminateAllThreads();
 	protected:
 		void OnParseFile(const wxString& filename,int flags);

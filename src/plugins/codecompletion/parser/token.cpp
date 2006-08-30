@@ -472,7 +472,7 @@ int TokensTree::TokenExists(const wxString& name, int parent, short int kindMask
     return -1;
 }
 
-size_t TokensTree::FindMatches(const wxString& s,TokenIdxSet& result,bool caseSensitive,bool is_prefix)
+size_t TokensTree::FindMatches(const wxString& s,TokenIdxSet& result,bool caseSensitive,bool is_prefix, int kindMask)
 {
     set<size_t> lists;
     result.clear();
@@ -486,7 +486,10 @@ size_t TokensTree::FindMatches(const wxString& s,TokenIdxSet& result,bool caseSe
     {
         curset = &(m_Tree.GetItemAtPos(*it));
         for(it2 = curset->begin();it2 != curset->end(); it2++)
-            result.insert(*it2);
+        {
+            if (kindMask == 0xffff || (at(*it)->m_TokenKind & kindMask))
+                result.insert(*it2);
+        }
     }
     return result.size();
 }
