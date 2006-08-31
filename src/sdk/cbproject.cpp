@@ -31,6 +31,7 @@
 #endif
 
 #include <wx/choicdlg.h>
+#include <wx/settings.h>
 
 #ifndef CB_PRECOMP
     #include "cbproject.h" // class's header file
@@ -933,7 +934,7 @@ wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree,
     {
         ret = tree->AppendItem(parent, text, image, image, data);
         if (!compiles)
-            tree->SetItemTextColour(ret, wxColour(0x80, 0x80, 0x80));
+            tree->SetItemTextColour(ret, wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
     }
     return ret;
 }
