@@ -1388,9 +1388,9 @@ void CodeCompletion::OnFunction(wxCommandEvent& /*event*/)
 		cbEditor* ed = edMan->GetBuiltinActiveEditor();
 		if (!ed)
 			return;
-		cbStyledTextCtrl* control = ed->GetControl();
-		control->GotoLine(Line);
+		ed->GotoLine(Line);
 		m_Scope->SetSelection(sel);
+		ed->SetFocus();
 	}
 }
 
