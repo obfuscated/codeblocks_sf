@@ -8,6 +8,8 @@
 #include <wx/settings.h>
 #include <wx/utils.h>
 
+#include <algorithm>
+
 ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxSemaphore& sem, ClassBrowserBuilderThread** threadVar)
     : wxThread(wxTHREAD_DETACHED),
     m_Semaphore(sem),
@@ -42,6 +44,31 @@ void ClassBrowserBuilderThread::Init(Parser* parser,
     m_pUserData = user_data;
     m_Options = options;
     m_pTokens = pTokens;
+
+    m_CurrentFileSet.clear();
+
+    // fill filter set for current-file-filter
+    if (m_Options.displayFilter == bdfFile && !m_ActiveFilename.IsEmpty())
+    {
+        // m_ActiveFilename is the full filename up to the extension dot. No extension though.
+        TokensTree* tree = m_pParser->GetTokens();
+
+        // get all filenames' indices matching our mask
+        std::set<size_t> result;
+        tree->m_FilenamesMap.FindMatches(m_ActiveFilename, result, true, true);
+
+        // loop matching files, and append their tokens in the filter
+        for (std::set<size_t>::iterator itf = result.begin(); itf != result.end(); ++itf)
+        {
+            TokenIdxSet& tokens = tree->m_FilesMap[*itf];
+//            // doesn't work?
+//            std::copy(tokens.begin(), tokens.end(), m_CurrentFileSet.begin());
+            for (TokenIdxSet::iterator it = tokens.begin(); it != tokens.end(); ++it)
+            {
+                m_CurrentFileSet.insert(*it);
+            }
+        }
+    }
 }
 
 void* ClassBrowserBuilderThread::Entry()
@@ -285,25 +312,13 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token)
     if (m_Options.displayFilter == bdfWorkspace)
         return true;
 
-    if (m_Options.displayFilter == bdfFile && !m_ActiveFilename.IsEmpty())
+    if (m_Options.displayFilter == bdfFile && !m_CurrentFileSet.empty())
     {
-        // TODO: fixme, it's too much because this function is called from inside a loop...
-        if (token->m_File > 0)
-        {
-            const wxString& str = m_pTokens->m_FilenamesMap.GetString(token->m_File);
-            if (!str.IsEmpty() && str.StartsWith(m_ActiveFilename))
-                return true;
-        }
-        if (token->m_ImplFile > 0)
-        {
-            const wxString& str = m_pTokens->m_FilenamesMap.GetString(token->m_ImplFile);
-            if (!str.IsEmpty() && str.StartsWith(m_ActiveFilename))
-                return true;
-        }
+        if (m_CurrentFileSet.find(token->GetSelf()) != m_CurrentFileSet.end())
+            return true;
 
-        // reached here; tough case:
         // we got to check all children of this token (recursively)
-        // to see if any of them match the filter...
+        // to see if any of them matches the filter...
         for (TokenIdxSet::iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
         {
             if (TokenMatchesFilter(m_pTokens->at(*it)))
