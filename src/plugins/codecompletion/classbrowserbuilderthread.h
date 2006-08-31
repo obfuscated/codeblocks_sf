@@ -59,13 +59,14 @@ class ClassBrowserBuilderThread : public wxThread
         void BuildTree();
         void RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemId parent);
         wxTreeItemId AddNodeIfNotThere(wxTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex = -1, CBTreeData* data = 0, bool sorted = true);
-        void AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, int tokenKindMask = 0xffff);
-        void AddAncestorsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx);
-        void AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx);
-        void AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, TokenIdxSet::iterator start, TokenIdxSet::iterator end, int tokenKindMask = 0xffff, bool allowGlobals = false);
+        bool AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, int tokenKindMask = 0xffff);
+        bool AddAncestorsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx);
+        bool AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx);
+        bool AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, TokenIdxSet::iterator start, TokenIdxSet::iterator end, int tokenKindMask = 0xffff, bool allowGlobals = false);
         void SelectNode(wxTreeItemId node);
         bool TokenMatchesFilter(Token* token);
         bool TokenContainsChildrenOfKind(Token* token, int kind);
+        bool CreateSpecialFolders(wxTreeCtrl* tree, wxTreeItemId parent);
 
         wxSemaphore& m_Semaphore;
         Parser* m_pParser;

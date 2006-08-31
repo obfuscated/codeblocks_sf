@@ -5,6 +5,7 @@
 #include <projectmanager.h>
 #include <cbproject.h>
 
+#include <wx/settings.h>
 #include <wx/utils.h>
 
 ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxSemaphore& sem, ClassBrowserBuilderThread** threadVar)
@@ -183,10 +184,10 @@ wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTr
     return existing;
 }
 
-void ClassBrowserBuilderThread::AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, int tokenKindMask)
+bool ClassBrowserBuilderThread::AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, int tokenKindMask)
 {
     if (TestDestroy())
-        return;
+        return false;
 
     Token* parentToken = 0;
 	TokenIdxSet::iterator it;
@@ -203,47 +204,46 @@ void ClassBrowserBuilderThread::AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId par
         if (!parentToken)
         {
 //            DBGLOG(_T("Token not found?!?"));
-            return;
+            return false;
         }
         it = parentToken->m_Children.begin();
         it_end = parentToken->m_Children.end();
     }
 
-    AddNodes(tree, parent, it, it_end, tokenKindMask);
+    return AddNodes(tree, parent, it, it_end, tokenKindMask);
 }
 
-void ClassBrowserBuilderThread::AddAncestorsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx)
+bool ClassBrowserBuilderThread::AddAncestorsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx)
 {
     if (TestDestroy())
-        return;
+        return false;
 
     Token* token = m_pTokens->at(tokenIdx);
     if (!token)
-        return;
+        return false;
 
-    AddNodes(tree, parent, token->m_DirectAncestors.begin(), token->m_DirectAncestors.end(), tkClass, true);
+    return AddNodes(tree, parent, token->m_DirectAncestors.begin(), token->m_DirectAncestors.end(), tkClass, true);
 }
 
-void ClassBrowserBuilderThread::AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx)
+bool ClassBrowserBuilderThread::AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx)
 {
     if (TestDestroy())
-        return;
+        return false;
 
     Token* token = m_pTokens->at(tokenIdx);
     if (!token)
-        return;
+        return false;
 
-    AddNodes(tree, parent, token->m_Descendants.begin(), token->m_Descendants.end(), tkClass, true);
+    return AddNodes(tree, parent, token->m_Descendants.begin(), token->m_Descendants.end(), tkClass, true);
 }
 
-void ClassBrowserBuilderThread::AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, TokenIdxSet::iterator start, TokenIdxSet::iterator end, int tokenKindMask, bool allowGlobals)
+bool ClassBrowserBuilderThread::AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, TokenIdxSet::iterator start, TokenIdxSet::iterator end, int tokenKindMask, bool allowGlobals)
 {
     int count = 0;
 	for ( ; start != end; ++start)
     {
         Token* token = m_pTokens->at(*start);
         if (token &&
-            !token->m_IsTemp &&
             (token->m_TokenKind & tokenKindMask) &&
             (allowGlobals || token->m_IsLocal) &&
             TokenMatchesFilter(token))
@@ -274,10 +274,14 @@ void ClassBrowserBuilderThread::AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, 
     if (tree == m_pTreeBottom) // only sort alphabetically the bottom tree
         tree->SortChildren(parent);
 //    DBGLOG(_T("Added %d nodes"), count);
+    return count != 0;
 }
 
 bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token)
 {
+    if (token->m_IsTemp)
+        return false;
+
     if (m_Options.displayFilter == bdfWorkspace)
         return true;
 
@@ -362,6 +366,46 @@ void ClassBrowserBuilderThread::SelectNode(wxTreeItemId node)
     m_pTreeBottom->Thaw();
 }
 
+// checks if there are respective children and colors the nodes
+bool ClassBrowserBuilderThread::CreateSpecialFolders(wxTreeCtrl* tree, wxTreeItemId parent)
+{
+    bool hasGF = false;
+    bool hasGV = false;
+    bool hasGP = false;
+
+    // loop all tokens in global namespace and see if we have matches
+    TokensTree* tt = m_pParser->GetTokens();
+    for (TokenIdxSet::iterator it = tt->m_GlobalNameSpace.begin(); it != tt->m_GlobalNameSpace.end(); ++it)
+    {
+        Token* token = tt->at(*it);
+        if (token && token->m_IsLocal && TokenMatchesFilter(token))
+        {
+            if (!hasGF && token->m_TokenKind == tkFunction)
+                hasGF = true;
+            else if (!hasGV && token->m_TokenKind == tkVariable)
+                hasGV = true;
+            else if (!hasGP && token->m_TokenKind == tkPreprocessor)
+                hasGP = true;
+        }
+
+        if (hasGF && hasGV && hasGP)
+            break; // we have everything, stop iterating...
+    }
+
+    wxTreeItemId gfuncs = AddNodeIfNotThere(m_pTreeTop, parent, _("Global functions"), PARSER_IMG_OTHERS_FOLDER, new CBTreeData(sfGFuncs, 0, tkFunction, -1));
+    wxTreeItemId gvars = AddNodeIfNotThere(m_pTreeTop, parent, _("Global variables"), PARSER_IMG_OTHERS_FOLDER, new CBTreeData(sfGVars, 0, tkVariable, -1));
+    wxTreeItemId preproc = AddNodeIfNotThere(m_pTreeTop, parent, _("Preprocessor symbols"), PARSER_IMG_PREPROC_FOLDER, new CBTreeData(sfPreproc, 0, tkPreprocessor, -1));
+
+    wxColour black = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
+    wxColour grey = wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT);
+
+    tree->SetItemTextColour(gfuncs, hasGF ? black : grey);
+    tree->SetItemTextColour(gvars, hasGV ? black : grey);
+    tree->SetItemTextColour(preproc, hasGP ? black : grey);
+
+    return hasGF || hasGV || hasGP;
+}
+
 void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
 {
     if (TestDestroy())
@@ -375,10 +419,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
         {
             case sfRoot:
             {
-                wxTreeItemId gfuncs = AddNodeIfNotThere(m_pTreeTop, item, _("Global functions"), PARSER_IMG_OTHERS_FOLDER, new CBTreeData(sfGFuncs, 0, tkFunction, -1));
-                wxTreeItemId gvars = AddNodeIfNotThere(m_pTreeTop, item, _("Global variables"), PARSER_IMG_OTHERS_FOLDER, new CBTreeData(sfGVars, 0, tkVariable, -1));
-                wxTreeItemId gpreproc = AddNodeIfNotThere(m_pTreeTop, item, _("Preprocessor symbols"), PARSER_IMG_PREPROC_FOLDER, new CBTreeData(sfPreproc, 0, tkPreprocessor, -1));
-
+                CreateSpecialFolders(m_pTreeTop, item);
                 AddChildrenOf(m_pTreeTop, item, -1, ~(tkFunction | tkVariable | tkPreprocessor));
                 break;
             }
