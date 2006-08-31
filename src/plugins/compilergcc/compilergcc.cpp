@@ -2346,15 +2346,21 @@ int CompilerGCC::KillProcess()
         if (!m_Processes[i])
             continue;
 
+    #ifdef __WXMSW__
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Aborting process %d ... Be patient!"), i);
+    #endif // __WXMSW__
+
         // Close input pipe
         m_Processes[i]->CloseOutput();
         ((PipedProcess*) m_Processes[i])->ForfeitStreams();
 
         ret = wxProcess::Kill(m_Pid[i], wxSIGTERM);
+
+    #ifndef __WXMSW__
         if(ret != wxKILL_OK)
         {
             // No need to tell the user about the errors - just keep him waiting.
-            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Aborting process %d..."), i);
+            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Aborting process %d ..."), i);
         }
         else switch (ret)
         {
@@ -2362,10 +2368,10 @@ int CompilerGCC::KillProcess()
 //            case wxKILL_NO_PROCESS: cbMessageBox(_("No process")); break;
 //            case wxKILL_BAD_SIGNAL: cbMessageBox(_("Bad signal")); break;
 //            case wxKILL_ERROR: cbMessageBox(_("Unspecified error")); break;
-
             case wxKILL_OK:
             default: break;//Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Process killed..."));
         }
+    #endif // __WXMSW__
     }
     return ret;
 }
