@@ -235,6 +235,8 @@ function SetupProject(project)
                 project.AddCompilerOption(_T("/DWXUSINGDLL"));
             if (IsUnicode)
                 project.AddCompilerOption(_T("/DwxUSE_UNICODE"));
+            if (IsDebug)
+                project.AddCompilerOption(_T("/D__WXDEBUG__"));
         }
         else
         {
@@ -246,6 +248,8 @@ function SetupProject(project)
                 project.AddCompilerOption(_T("-DWXUSINGDLL"));
             if (IsUnicode)
                 project.AddCompilerOption(_T("-DwxUSE_UNICODE"));
+            if (IsDebug)
+                project.AddCompilerOption(_T("-D__WXDEBUG__"));
         }
     }
 
