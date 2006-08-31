@@ -10,6 +10,7 @@
 
 #include <wx/timer.h>
 #include <map>
+#include <vector>
 
 class cbEditor;
 class wxScintillaEvent;
@@ -37,6 +38,13 @@ class CodeCompletion : public cbCodeCompletionPlugin
 
         void EditorEventHook(cbEditor* editor, wxScintillaEvent& event);
 	private:
+
+		struct FunctionScope
+		{
+			int StartLine;
+			int EndLine;
+		};
+
     	void OnUpdateUI(wxUpdateUIEvent& event);
 		void OnViewClassBrowser(wxCommandEvent& event);
 		void OnCodeComplete(wxCommandEvent& event);
@@ -61,6 +69,9 @@ class CodeCompletion : public cbCodeCompletionPlugin
 		void DoCodeComplete();
 		void DoInsertCodeCompleteToken(wxString tokName);
         int DoClassMethodDeclImpl();
+		int FunctionPosition() const;
+		void OnFunction(wxCommandEvent& event);
+		void ParseFunctionsAndFillToolbar();
 
         int m_PageIndex;
         bool m_InitDone;
@@ -83,6 +94,11 @@ class CodeCompletion : public cbCodeCompletionPlugin
 		int m_ActiveCalltipsNest;
 
 		bool m_IsAutoPopup;
+
+		wxChoice* m_Function;
+		wxChoice* m_Scope;
+		std::vector<FunctionScope> m_FunctionsScope;
+		int m_CurrentLine;
 
         DECLARE_EVENT_TABLE()
 };

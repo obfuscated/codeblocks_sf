@@ -57,6 +57,8 @@
 
 #include <set> // for handling unique items in some places
 
+using namespace std;
+
 CB_IMPLEMENT_PLUGIN(CodeCompletion, "Code completion");
 
 // empty bitmap for use as C++ keywords icon in code-completion list
@@ -130,6 +132,9 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_PROJECT_FILE_ADDED(CodeCompletion::OnProjectFileAdded)
 	EVT_PROJECT_FILE_REMOVED(CodeCompletion::OnProjectFileRemoved)
 
+//	EVT_CHOICE(XRCID("chcCodeCompletionScope"),  CodeCompletion::OnScope)
+	EVT_CHOICE(XRCID("chcCodeCompletionFunction"),  CodeCompletion::OnFunction)
+
 	EVT_MENU(PARSER_END, CodeCompletion::OnParserEnd)
 END_EVENT_TABLE()
 
@@ -139,7 +144,8 @@ CodeCompletion::CodeCompletion() :
     m_timerCodeCompletion(this, idCodeCompleteTimer),
     m_pCodeCompletionLastEditor(0),
     m_ActiveCalltipsNest(0),
-    m_IsAutoPopup(false)
+    m_IsAutoPopup(false),
+    m_CurrentLine(0)
 {
     if(!Manager::LoadResource(_T("code_completion.zip")))
     {
@@ -307,7 +313,13 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
 
 bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 {
-	return false;
+    Manager::Get()->AddonToolBar(toolBar,_T("codecompletion_toolbar"));
+    m_Function = XRCCTRL(*toolBar, "chcCodeCompletionFunction", wxChoice);
+    m_Scope = XRCCTRL(*toolBar, "chcCodeCompletionScope", wxChoice);
+    m_Scope->Disable();
+    toolBar->Realize();
+    toolBar->SetBestFittingSize();
+    return true;
 }
 
 void CodeCompletion::OnAttach()
@@ -853,9 +865,81 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
 		if (!parser)
 			return;
 		parser->Reparse(ed->GetFilename());
+		ParseFunctionsAndFillToolbar();
     }
     event.Skip();
 }
+
+
+// help method in finding the function position in the vector for the function containing the current line
+int CodeCompletion::FunctionPosition() const
+{
+	int retValue = -1; // -1 : not found
+	for(unsigned int idxFn = 0; idxFn < m_FunctionsScope.size(); ++idxFn)
+	{
+			const FunctionScope fs = m_FunctionsScope[idxFn];
+	        if (fs.StartLine <= m_CurrentLine && fs.EndLine >= m_CurrentLine)
+	        {	// got it :)
+                retValue = static_cast<int>(idxFn);
+                break;
+	        }
+	} // end for : idx : idxFn
+	return retValue;
+} // end of FunctionPosition
+
+void CodeCompletion::ParseFunctionsAndFillToolbar()
+{
+	m_Function->Clear();
+	m_Scope->Clear();
+	m_FunctionsScope.clear();
+	// let's parse the current editor for funtions
+	EditorManager* edMan = Manager::Get()->GetEditorManager();
+	cbEditor* ed = edMan->GetBuiltinActiveEditor();
+	if (!ed)
+		return;
+	Parser parser(this);
+	parser.ParseBufferForFunctions(ed->GetControl()->GetText());
+
+	wxArrayString funcs;
+	TokensTree* tmptree = parser.GetTempTokens();
+//		size_t LDC1 = tmptree->size();
+	for(size_t i = 0; i < tmptree->size(); ++i)
+	{
+		Token* token = tmptree->at(i);
+		if (token && (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor)
+			&& token->m_ImplLine != 0)
+		{
+//				if(token->m_TokenKind == tkConstructor)
+//				{
+//					FunctionScope func;
+//					func.StartLine = token->m_ImplLine;
+//					func.EndLine = token->m_ImplLineEnd;
+//					int q = 0;
+//				}
+			FunctionScope func;
+			func.StartLine = token->m_ImplLine - 1;
+			func.EndLine = token->m_ImplLineEnd - 1;
+//				wxString name = token->DisplayName();
+			m_FunctionsScope.push_back(func);;
+//				m_Function->Append(token->DisplayName());
+			wxString result = token->m_Name;
+			result << token->m_Args;
+			if (!token->m_Type.IsEmpty())
+				result << _T(" : ") << token->m_Type;
+			m_Function->Append(result);
+
+			m_Scope->Append(token->GetNamespace());
+		}
+	}
+//		int LDC2 = m_FunctionsScope.size();
+	m_CurrentLine = ed->GetControl()->GetCurrentLine();
+	int sel = FunctionPosition();
+	if(sel != -1)
+	{
+		m_Function->SetSelection(sel);
+		m_Scope->SetSelection(sel);
+	}
+} // end of ParseFunctionsAndFillToolbar
 
 void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 {
@@ -866,6 +950,7 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
     {
         lastActiveEditor = eb;
         m_NativeParsers.OnEditorActivated(eb);
+        ParseFunctionsAndFillToolbar();
     }
 
     event.Skip();
@@ -1278,8 +1363,35 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
         }
     }
 
+	if( control->GetCurrentLine() != m_CurrentLine)
+	{
+		m_CurrentLine = control->GetCurrentLine();
+		int sel = FunctionPosition();
+		if(sel != -1 && sel != m_Function->GetSelection())
+		{
+			m_Function->SetSelection(sel);
+			m_Scope->SetSelection(sel);
+		}
+	}
+
     // allow others to handle this event
     event.Skip();
+}
+
+void CodeCompletion::OnFunction(wxCommandEvent& /*event*/)
+{
+	int sel = m_Function->GetSelection();
+	if(sel != -1 && sel < static_cast<int>(m_FunctionsScope.size()))
+	{
+		int Line = m_FunctionsScope[sel].StartLine;
+		EditorManager* edMan = Manager::Get()->GetEditorManager();
+		cbEditor* ed = edMan->GetBuiltinActiveEditor();
+		if (!ed)
+			return;
+		cbStyledTextCtrl* control = ed->GetControl();
+		control->GotoLine(Line);
+		m_Scope->SetSelection(sel);
+	}
 }
 
 void CodeCompletion::OnParserEnd(wxCommandEvent& event)
