@@ -128,17 +128,21 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
 //        tree->Delete(parent);
 }
 
-wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex, wxTreeItemData* data)
+wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex, CBTreeData* data, bool sorted)
 {
+    sorted = sorted & tree == m_pTreeTop && data; // sorting only for the top tree
+
 #if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
     long int cookie = 0;
 #else
     wxTreeItemIdValue cookie; //2.6.0
 #endif
+    wxTreeItemId insert_after; // node to insert after; we 'll be looping all children so we might as well sort at the same time
     wxTreeItemId existing = tree->GetFirstChild(parent, cookie);
     while (existing)
     {
-        if (tree->GetItemText(existing) == name)
+        wxString itemText = tree->GetItemText(existing);
+        if (itemText == name)
         {
             // update the existing node's image indices and user-data.
             // it's not possible to have the same token name more than once
@@ -149,9 +153,33 @@ wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTr
 
             return existing;
         }
+
+        if (sorted)
+        {
+            CBTreeData* existing_data = (CBTreeData*)tree->GetItemData(existing);
+            if (existing_data)
+            {
+                SpecialFolder existing_type = existing_data->m_SpecialFolder;
+                SpecialFolder new_type = data->m_SpecialFolder;
+
+                // first go special folders
+                if ((existing_type == sfGFuncs || existing_type == sfGVars || existing_type == sfPreproc) &&
+                    (new_type != sfGFuncs && new_type != sfGVars && new_type != sfPreproc))
+                {
+                    insert_after = existing;
+                }
+                // then everything else, alphabetically
+                else if (name.CompareTo(itemText, wxString::ignoreCase) >= 0)
+                    insert_after = existing;
+            }
+        }
         existing = tree->GetNextChild(parent, cookie);
     }
-    existing = tree->AppendItem(parent, name, imgIndex, imgIndex, data);
+
+    if (sorted)
+        existing = tree->InsertItem(parent, insert_after, name, imgIndex, imgIndex, data);
+    else
+        existing = tree->AppendItem(parent, name, imgIndex, imgIndex, data);
     return existing;
 }
 
@@ -174,7 +202,7 @@ void ClassBrowserBuilderThread::AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId par
         parentToken = m_pTokens->at(parentTokenIdx);
         if (!parentToken)
         {
-            DBGLOG(_T("Token not found?!?"));
+//            DBGLOG(_T("Token not found?!?"));
             return;
         }
         it = parentToken->m_Children.begin();
@@ -231,17 +259,20 @@ void ClassBrowserBuilderThread::AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, 
 
             if (tree == m_pTreeTop)
             {
-                wxTreeItemId child = AddNodeIfNotThere(tree, parent, str, img, new CBTreeData(sfToken, token));
+                wxTreeItemId child = AddNodeIfNotThere(tree, parent, str, img, new CBTreeData(sfToken, token, tokenKindMask));
                 // mark as expanding if it is a container
-                if (token->m_TokenKind & (tkClass | tkNamespace | tkEnumerator))
-                    tree->SetItemHasChildren(child);
+                if (token->m_TokenKind == tkClass)
+                    tree->SetItemHasChildren(child, m_Options.showInheritance || TokenContainsChildrenOfKind(token, tkClass | tkNamespace | tkEnum));
+                else if (token->m_TokenKind & (tkNamespace | tkEnum))
+                    tree->SetItemHasChildren(child, TokenContainsChildrenOfKind(token, tkClass | tkNamespace | tkEnum));
             }
             else // the bottom tree needs no checks
                 tree->AppendItem(parent, str, img, img, new CBTreeData(sfToken, token));
         }
     }
 //    DBGLOG(_T("Sorting..."));
-    tree->SortChildren(parent);
+    if (tree == m_pTreeBottom) // only sort alphabetically the bottom tree
+        tree->SortChildren(parent);
 //    DBGLOG(_T("Added %d nodes"), count);
 }
 
@@ -283,6 +314,20 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token)
     return false;
 }
 
+bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(Token* token, int kind)
+{
+    if (!token)
+        return false;
+    TokensTree* tt = token->GetTree();
+    for (TokenIdxSet::iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
+    {
+        Token* child = tt->at(*it);
+        if (child->m_TokenKind & kind)
+            return true;
+    }
+    return false;
+}
+
 void ClassBrowserBuilderThread::SelectNode(wxTreeItemId node)
 {
     if (TestDestroy())
@@ -307,7 +352,8 @@ void ClassBrowserBuilderThread::SelectNode(wxTreeItemId node)
             case sfPreproc: AddChildrenOf(m_pTreeBottom, root, -1, tkPreprocessor); break;
             case sfToken:
             {
-                AddChildrenOf(m_pTreeBottom, root, data->m_pToken->GetSelf());
+                // add all children, except containers
+                AddChildrenOf(m_pTreeBottom, root, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum));
                 break;
             }
             default: break;
@@ -366,7 +412,6 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
                 }
                 if (kind != 0)
                     AddChildrenOf(m_pTreeTop, item, data->m_pToken->GetSelf(), kind);
-                m_pTreeTop->SetItemHasChildren(item, m_pTreeTop->GetChildrenCount(item));
                 break;
             }
             default: break;
