@@ -627,7 +627,7 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
     else
         wxBell();
 
-    if (m_pBatchBuildDialog && m_BatchWindowAutoClose && (m_BatchExitCode == 0))
+    if (m_pBatchBuildDialog && m_BatchWindowAutoClose)
     {
         m_pBatchBuildDialog->EndModal(wxID_OK);
         m_pBatchBuildDialog->Destroy();
