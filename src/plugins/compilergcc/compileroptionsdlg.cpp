@@ -1015,12 +1015,17 @@ void CompilerOptionsDlg::OnTreeSelectionChanging(wxTreeEvent& event)
         // YES -> do the changes
         // NO -> no changes, just switch
         // CANCEL : don't switch
-        switch(cbMessageBox(_("You have changed some settings. Do you want these settings saved ?\n\n"
-                        "Yes    : will apply the changes\n"
-                        "No     : will undo the changes\n"
-                        "Cancel : will revert your selection in the project/target tree"),
-                        _("Project/Target change with changed settings"),
-                        wxICON_EXCLAMATION|wxYES|wxNO|wxCANCEL))
+
+        AnnoyingDialog dlg(_("Project/Target change with changed settings"),
+                    _("You have changed some settings. Do you want these settings saved ?\n\n"
+                    "Yes    : will apply the changes\n"
+                    "No     : will undo the changes\n"
+                    "Cancel : will revert your selection in the project/target tree"),
+					wxART_QUESTION,
+					AnnoyingDialog::YES_NO_CANCEL,
+					wxID_YES);
+
+        switch(dlg.ShowModal())
         {
             case wxID_YES :
                 DoSaveCompilerDependentSettings();
