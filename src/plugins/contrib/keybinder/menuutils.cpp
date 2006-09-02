@@ -31,9 +31,6 @@
 // static
 wxMenuBar *wxMenuCmd::m_pMenuBar = NULL;
 
-
-
-
 // ----------------------------------------------------------------------------
 // Global utility functions
 // ----------------------------------------------------------------------------
@@ -88,10 +85,10 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
 
     //+v0.4.11
     // leave numeric menu items alone. They get replaced by CodeBlocks
-    wxString strText = pLclMnuItem->GetText();
-    if (strText.Left(1).IsNumber())
+    if (IsNumericMenuItem(pLclMnuItem))
       return;
 
+    wxString strText = pLclMnuItem->GetText();
 	wxString str = pLclMnuItem->GetLabel();
 
 	// on GTK, an optimization in wxMenu::SetText checks
@@ -105,7 +102,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
 
 	if (m_nShortcuts <= 0) {
 
-		wxLogDebug(wxT("wxMenuCmd::Update - no shortcuts defined for [%s]"), str.c_str());
+		LOGIT(wxT("wxMenuCmd::Update - no shortcuts defined for [%s]"), str.c_str());
 
 		// no more shortcuts for this menuitem: SetText()
 		// will delete the hotkeys associated...
@@ -114,7 +111,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
 	}
 
 	wxString newtext = str+wxT("\t")+GetShortcut(0)->GetStr();
-	wxLogDebug(wxT("wxMenuCmd::Update - setting the new text to [%s]"), newtext.c_str());
+	LOGIT(wxT("wxMenuCmd::Update - setting the new text to [%s]"), newtext.c_str());
 
 
 	// on GTK, the SetAccel() function doesn't have any effect...
@@ -134,7 +131,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
 void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
 // ----------------------------------------------------------------------------
 { //v0.4.4 changes to use bitmapped menuitems
-  //v0.4.6 Rebuild menuitems when bitmapped. Ownerdrawn were misaligned.
+  //v0.4.6 Rebuild menuitems when bitmapped.
 
     //v0.4.17
     // Test if caller wants a different menu item than in keybinder array
@@ -148,9 +145,9 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
 
     //+v0.3
     // leave numeric menu items alone. They get replaced by CodeBlocks
-    wxString strText = pLclMnuItem->GetText();
-    if (strText.Left(1).IsNumber())
+    if (IsNumericMenuItem(pLclMnuItem))
       return;
+    wxString strText = pLclMnuItem->GetText();
     //use full text to get label to preserve mnemonics
 	wxString strLabel = strText.BeforeFirst(_T('\t'));
     wxString newtext = strLabel; //no accel, contains mnemonic
@@ -193,30 +190,51 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
 // RebuildMenuitem
 // ----------------------------------------------------------------------------
 wxMenuItem* wxMenuCmd::RebuildMenuitem(wxMenuItem* pMnuItem)
-{//+v0.4.6 WXMSW
-	// ---------------------------------------------------------------
-	//  Do it the slow/hard way, remove and delete the menu item
-	// ---------------------------------------------------------------
-    wxMenu* pMenu = pMnuItem->GetMenu();
-    wxMenuItemList items = pMenu->GetMenuItems();
-    int pos = items.IndexOf(pMnuItem);
-   // rebuild the menuitem
-    wxMenuItem* pnewitem = new wxMenuItem(pMenu, m_nId, pMnuItem->GetText(),
-                pMnuItem->GetHelp(), pMnuItem->GetKind(),
-                pMnuItem->GetSubMenu() );
-    pnewitem->SetBitmap(pMnuItem->GetBitmap() );
-    pnewitem->SetFont(pMnuItem->GetFont() );
-    // remove the menuitem
-    pMenu->Destroy(pMnuItem);
-    // update keybinder array menu item pointer
-    m_pItem = pnewitem;
-    // put the menuitem back on the menu
-    pMenu->Insert(pos, pnewitem);
-    return pnewitem;
+{//+v0.4.25 WXMSW
+   // Since wxWidgets 2.6.3, we don't have to rebuild the menuitem
+   // to preserve the bitmapped menu icon.
+    return pMnuItem;
 
 }//RebuildMenuitem
+// ----------------------------------------------------------------------------
+// The following routine was used when wxWidgets would not SetText()
+// without clobbering the menu Bitmap icon
+// ----------------------------------------------------------------------------
+//wxMenuItem* wxMenuCmd::RebuildMenuitem(wxMenuItem* pMnuItem)
+//{//+v0.4.6 WXMSW
+//	// ---------------------------------------------------------------
+//	//  Do it the slow/hard way, remove and delete the menu item
+//	// ---------------------------------------------------------------
+//    wxMenu* pMenu = pMnuItem->GetMenu();
+//    wxMenuItemList items = pMenu->GetMenuItems();
+//    int pos = items.IndexOf(pMnuItem);
+//   // rebuild the menuitem
+//    wxMenuItem* pnewitem = new wxMenuItem(pMenu, m_nId, pMnuItem->GetText(),
+//                pMnuItem->GetHelp(), pMnuItem->GetKind(),
+//                pMnuItem->GetSubMenu() );
+//    pnewitem->SetBitmap(pMnuItem->GetBitmap() );
+//    pnewitem->SetFont(pMnuItem->GetFont() );
+//    // remove the menuitem
+//    pMenu->Destroy(pMnuItem);
+//    // update keybinder array menu item pointer
+//    m_pItem = pnewitem;
+//    // put the menuitem back on the menu
+//    pMenu->Insert(pos, pnewitem);
+//    return pnewitem;
+//
+//}//RebuildMenuitem
 #endif //#if defined( __WXMSW__ )
-
+// ----------------------------------------------------------------------------
+bool wxMenuCmd::IsNumericMenuItem(wxMenuItem* pwxMenuItem)   //v0.2
+// ----------------------------------------------------------------------------
+{//v0.2
+    wxString str = pwxMenuItem->GetText();
+    if (str.Length() <2) return false;
+    if (str.Left(1).IsNumber()) return true;
+    if ( (str[0] == '&') && (str.Mid(1,1).IsNumber()) )
+        return true;
+    return false;
+}//IsNumericMeuItem
 // ----------------------------------------------------------------------------
 void wxMenuCmd::Exec(wxObject *origin, wxEvtHandler *client)
 // ----------------------------------------------------------------------------
@@ -252,10 +270,9 @@ wxCmd *wxMenuCmd::CreateNew(wxString cmdName, int id)
 	//-v0.5 wxMenuItem *p = m_pMenuBar->FindItem(id);
 	//-v0.3 if (!p) return NULL;
 
-	// CodeBlocks has dynamic (shifty) menu item id's
-	// so the file loaded item may have a differenct item id
 	// search for a matching menu item
-
+	// CodeBlocks has dynamic (shifty) menu item id's
+	// so the file loaded item may have a different item id.
 
     wxMenuItem* p = 0;
     // Try to match id and text to avoid duplicate named menu items //v0.4.8
@@ -559,11 +576,8 @@ void wxMenuComboListWalker::OnMenuExit(wxMenuBar *, wxMenu *m, void *)
 // ----------------------------------------------------------------------------
 void wxMenuComboListWalker::DeleteData(void *)
 // ----------------------------------------------------------------------------
-{ /* we need NOT TO DELETE the given pointer !! */ }
-
-
-
-
+{ /* we need NOT TO DELETE the given pointer !! */
+}
 
 // ----------------------------------------------------------------------------
 // wxMenuShortcutWalker

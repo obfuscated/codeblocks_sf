@@ -4,9 +4,8 @@
 //#include <messagemanager.h>
 
 
-#define eq ==
-#define neq !=
-
+#define EQUAL ==
+#define NOT_EQUAL !=
 
 //#define LOGGING 0
 #if defined(kbLOGGING)
@@ -26,7 +25,7 @@
    #endif
    // wxGTK wxLogMessage turns into a wxMessage in GTK
    #ifdef __WXGTK__
-    #define LOGIT wxLogDebug
+    #define LOGIT wxLogMessage
    #endif
 
 #endif

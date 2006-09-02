@@ -169,7 +169,7 @@ public:		// static utilities
 
 	static int GetKeyModifier(wxKeyEvent &event);
 	static wxString GetKeyStrokeString(wxKeyEvent &event);
-};
+};//wxKeyBind
 
 
 
@@ -238,8 +238,8 @@ public:		// static
 
 	//! Creates a new command of the given type with the given ID.
 	//! This function is used mainly in wxCmd::Load.
-	static wxCmd *CreateNew(int type, int id);
-    static wxCmd *CreateNew(wxString cmdName, int type, int id); //+v0.3
+	static wxCmd *CreateNew(int type, int id, bool updateMnu = true);
+    static wxCmd *CreateNew(wxString cmdName, int type, int id, bool updateMnu = true); //+v0.3
 
 	//! Adds a new command type to our static list.
 	static void AddCmdType(int type, wxCmdCreationFnc fnc);
@@ -307,44 +307,45 @@ public:
 	// ----------------------------
 
 	//! Adds the given key binding to this command.
-	void AddShortcut(const wxKeyBind &key) {
+	void AddShortcut(const wxKeyBind &key, bool updateMnu=true) {
 		if (m_nShortcuts >= wxCMD_MAX_SHORTCUTS) return;
 		m_keyShortcut[m_nShortcuts++] = key;
-		Update();
+		if (updateMnu) Update();
 	}
 
 	//! Builds and adds a key binding to this command.
-	void AddShortcut(int flags, int keycode) {
+	void AddShortcut(int flags, int keycode, bool updateMnu=true) {
 		if (m_nShortcuts >= wxCMD_MAX_SHORTCUTS) return;
 		wxKeyBind key(flags, keycode);
-		AddShortcut(key);
+		AddShortcut(key, updateMnu);
 		// update is called by the previous call
 	}
 
 	//! Builds and adds a key binding to this command using the
 	//! given key description.
-	void AddShortcut(const wxString &key) {
+	void AddShortcut(const wxString &key, bool updateMnu=true) {
 		if (m_nShortcuts >= wxCMD_MAX_SHORTCUTS) return;
 		if (key.IsEmpty()) return;
 		//-v0.1- m_keyShortcut[m_nShortcuts++] = wxKeyBind(key);
-		m_keyShortcut[m_nShortcuts++] = key;
-		Update();
+		m_keyShortcut[m_nShortcuts++] = wxKeyBind(key);
+		//m_keyShortcut[m_nShortcuts++] = key;
+		if (updateMnu) Update();
 	}
 
 	//! Removes the n-th key shortcut associated to this command.
-	void RemoveShortcut(int n) {
+	void RemoveShortcut(int n, bool updateMnu=true) {
 		//-for (int i=n; i < m_nShortcuts; i++)	// shift array left
 		//pecan 2006/03/25 fix next stmt, avoid array overflow
 		for (int i=n; i < (m_nShortcuts-1); i++)	// shift array left //pecan 2006/03/25
                 m_keyShortcut[i] = m_keyShortcut[i+1];
 		m_nShortcuts--;
-		Update();
+		if (updateMnu) Update();
 	}
 
 	//! Removes all the shortcuts associates to this command.
-	void RemoveAllShortcuts() {
+	void RemoveAllShortcuts(bool updateMnu=true) {
 	    m_nShortcuts=0;
-	    Update();
+	    if (updateMnu) Update();
 	}
 
 
@@ -432,7 +433,7 @@ public:
 
 protected:
 
-	//! Called after that an Add/Remove function is called.
+	//! Called after an Add/Remove function is called.
 	//! Default implementation does nothing.
 	virtual void Update(wxMenuItem* pMnuItem = 0) {}
 
@@ -442,7 +443,7 @@ protected:
 	//! - "client" is the event handler which should receive the
 	//!   event associated with this command.
 	virtual void Exec(wxObject *obj, wxEvtHandler *client) = 0;
-};
+};//wxCmd
 
 
 
@@ -670,7 +671,7 @@ protected:
 	//wxArrayPtrVoid m_arrAttachedWnd;
 	//wxWindowList m_lstAttachedWnd;		// I don't like wxList...
 
-	//! The array of wxBinderEvtHandler which is hold by this keybinder.
+	//! The array of wxBinderEvtHandler held by this keybinder.
 	wxArrayPtrVoid m_arrHandlers;
 
 protected:
@@ -798,6 +799,9 @@ public:		// miscellaneous
     //+v0.3 get name and description from loaded commands
     bool GetNameandDescription(wxConfigBase* p, const wxString &key, wxString& strName, wxString& strDescription);
 
+    // Merge dynamically changed menu items into the wxKeyProfileArray
+    int  MergeDynamicMenuItems(wxMenuBar* pMenuBar);        //v0.4.25
+    int  MergeSubMenu(wxMenu* pMenu, int& modified);        //v0.4.25
 
 	// Add functions
 	// -------------------
@@ -806,16 +810,22 @@ public:		// miscellaneous
 		m_arrCmd.Add(p);
 	}
 
-	void AddShortcut(int id, const wxString &key) {
+	void AddShortcut(int id, const wxString &key, bool updateMnu=true) {
 		wxCmd *p = GetCmd(id);
-		if (p) p->AddShortcut(key);
+		if (p) p->AddShortcut(key, updateMnu);
 	}
 
-	void AddShortcut(int id, const wxKeyBind &key) {
+	void AddShortcut(int id, const wxKeyBind &key, bool updateMnu=true) {
 		wxCmd *p = GetCmd(id);
-		if (p) p->AddShortcut(key);
+		if (p) p->AddShortcut(key,updateMnu);
 	}
 
+	// Remove functions
+	// -------------------
+
+	void RemoveCmd(wxCmd *p) {                              //v0.4.25
+		m_arrCmd.Remove(FindCmd(p->GetId()));
+	}
 
 
 	// Getters
@@ -880,8 +890,10 @@ public:		// miscellaneous
     // returns True if window actually exists
     wxWindow* winExists(wxWindow*);
     wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
+    void      GetMenuItemAccStr(wxMenuItem* pMenuItem, wxString& MenuItemKeyStr);
 
-private:
+
+  private:
     void OnWinClosed(wxCloseEvent& event); //+v0.4.7
 	DECLARE_CLASS(wxKeyBinder)
 };//wxKeyBinder
@@ -1096,6 +1108,13 @@ public:
 	//! The keyprofiles entries are detected using the wxKEYPROFILE_CONFIG_PREFIX
 	//! prefix string.
 	bool Load(wxConfigBase *p, const wxString &key = wxEmptyString);
+
+    int MergeDynamicMenuItems(wxMenuBar* pMnuBar) {
+        int changed = 0;
+		for (int i=0; i<GetCount(); i++)
+			changed += Item(i)->MergeDynamicMenuItems(pMnuBar);
+        return changed;
+    }
 
 };//wxKeyProfileArray
 

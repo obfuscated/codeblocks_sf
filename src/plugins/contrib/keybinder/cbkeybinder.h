@@ -90,6 +90,9 @@ class cbKeyBinder : public cbPlugin
         // save/load key definitions
         void OnSave();
         void OnLoad();
+        // Enable/Disable Merge
+        int EnableMerge(bool allow);
+        int IsEnabledMerge(){return m_mergeActive;}
 
     protected:
         wxADD_KEYBINDER_SUPPORT();
@@ -102,15 +105,20 @@ class cbKeyBinder : public cbPlugin
         void OnProjectFileRemoved(CodeBlocksEvent& event);
         void OnEditorOpen(CodeBlocksEvent& event);
         void OnEditorClose(CodeBlocksEvent& event);
+        void OnIdle(wxIdleEvent& event);
         void OnAppStartupDone(CodeBlocksEvent& event);
         void AttachEditor(wxWindow* pEditor);
         void OnWindowCreateEvent(wxEvent& event);
         void OnWindowDestroyEvent(wxEvent& event);
         void DetachEditor(wxWindow* pWindow);
+        void MergeDynamicMenus();
 
-        wxWindow* pcbWindow;            //main app window
-        wxArrayPtrVoid m_EditorPtrs;    //attached editor windows
-        bool bKeyFileErrMsgShown;
+        wxWindow*       pcbWindow;              //main app window
+        wxArrayPtrVoid  m_EditorPtrs;           //attached editor windows
+        bool            bKeyFileErrMsgShown;
+        int             m_MenuModifiedByMerge;  //menu dynamically modified
+        wxDateTime      m_lastIdleTime;         //previous time of idle call
+        int             m_mergeActive;
 
     private:
 		DECLARE_EVENT_TABLE()
@@ -495,5 +503,47 @@ CB_DECLARE_PLUGIN();
 // -----------------------------------------------------------------------------
 //  commit  2006/08/13 v0.4.24
 // -----------------------------------------------------------------------------
-
-
+//  opened  2006/08/20
+//          Not recognizing dynamically assigned menu keys after initialization.
+//          Re-setting F1 back to first menu item when plugin had set another.
+//  fixed   2006/08/31
+//          Added MergeDynamicMenuItems() to update key profile array
+//          Added dynamic scan and save() at wxIdleEvent every 15 seconds.
+// -----------------------------------------------------------------------------
+//  opened  2006/08/22
+//          Corrupted ini file msg needs to say where file is located.
+//  fixed   2006/08/31
+//          Added global pointer pKeyFilename to get filename to include with msg.
+//          Added save to...ini.bak file before writing new .ini file.
+// -----------------------------------------------------------------------------
+//  note    2006/09/2
+//          wxWidgets 2.6.3 fixed the bitmapped menu icon being clobbered when
+//          SetText() was issued.
+//          When, in wxKeyBinder::MergeSubMenu(), a RemoveShortcut() or
+//          AddShortCut() is issued, Update() is called to update the app menu item.
+//          Update() Destroy()ed and New'ed the app menuitem. This caused MergeSubMenu
+//          to crash because the app menu chain was changed within this recursive
+//          routine.
+//          Because 2.6.3 was fixed, I removed the RebuildMenuItem() routine to
+//          avoid altering the menuitem chain and to avoid the crash.
+//          But this means that the bitmaps will be clobbered by SetText()
+//          under 2.6.2 or earlier.
+//  note    2006/09/2
+//          Was testing on wxGTK 2.6.2. wxMenuItem->GetText() did not return the shortcut
+//          key with the string. Had to use wxAcceleratorEntry routines to get the keys.
+//          This works also for wxMSW. Had to trim all Labels and Texts from wxGTK
+//          menu items. GTK resets all shortcut keys with +'s and keyBinder appends a space
+//          to the SetText() menu items to avoid a GTK optimization.
+//
+//          GTK onIdle() is entered at much longer intervals than MSW, so dynamic
+//          shortcut changes are recorded only on "idle" entries, but no shorter than
+//          15 second intervals.
+// -----------------------------------------------------------------------------
+//  commit   v0.4.25d
+//          - recording dynamically changed menu items
+//          - Get menu shortcuts via wxAcceratorEntry
+//          - Add file name to corrupted file message
+//          - Non Destructive update of menu items
+//          - backup of .ini file before delete/save
+// -----------------------------------------------------------------------------
+//

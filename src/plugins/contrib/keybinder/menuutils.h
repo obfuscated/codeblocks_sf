@@ -112,6 +112,7 @@ public:
 		return wxMENUCMD_TYPE;
 	}
 
+    static bool IsNumericMenuItem(wxMenuItem* pwxMenuItem); //v0.4.25
 
 
 protected:
@@ -130,7 +131,7 @@ protected:
 	#if defined( __WXMSW__ )
 	wxMenuItem* RebuildMenuitem(wxMenuItem* pMnuItem); //+v0.4.6
 	#endif
-};
+};//wxMenuCmd
 
 
 
@@ -331,7 +332,8 @@ protected:
 //! This function uses the wxMenuWalker algorithm to create a
 //! plain list of wxMenuCmd (without any hierarchical structure)
 //! in the given array of wxCmd*.
-class /*-lf-WXDLLIMPEXP_KEYBINDER*/ wxMenuShortcutWalker : public wxMenuWalker
+//class WXDLLIMPEXP_KEYBINDER wxMenuShortcutWalker : public wxMenuWalker
+class wxMenuShortcutWalker : public wxMenuWalker
 {
 	wxCmdArray *m_pArr;
 
