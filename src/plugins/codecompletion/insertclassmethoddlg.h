@@ -29,7 +29,7 @@ class InsertClassMethodDlg : public wxDialog
         void OnClassesChange(wxCommandEvent& event);
         void OnCodeChange(wxCommandEvent& event);
         void OnFilterChange(wxCommandEvent& event);
-s
+
         Parser* m_pParser;
         bool m_Decl;
         wxString m_Filename;
