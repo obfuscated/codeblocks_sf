@@ -99,7 +99,6 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     // tab "General"
     XRCCTRL(*this, "chkShowSplash", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/show_splash"), true));
     XRCCTRL(*this, "chkSingleInstance", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/single_instance"), true));
-    XRCCTRL(*this, "chkWinToolbarHack", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/xp_hack_for_toolbars"), false));
     XRCCTRL(*this, "chkAssociations", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_associations"), true));
     XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_modified_files"), true));
     XRCCTRL(*this, "rbAppStart", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/blank_workspace"), true) ? 1 : 0);
@@ -188,7 +187,6 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
 
     // disable some windows-only settings, in other platforms
 #ifndef __WXMSW__
-    XRCCTRL(*this, "chkWinToolbarHack", wxCheckBox)->Enable(false);
     XRCCTRL(*this, "chkAssociations", wxCheckBox)->Enable(false);
     XRCCTRL(*this, "btnSetAssocs", wxButton)->Enable(false);
     XRCCTRL(*this, "btnManageAssocs", wxButton)->Enable(false);
@@ -361,7 +359,6 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         // tab "General"
         cfg->Write(_T("/environment/show_splash"),           (bool) XRCCTRL(*this, "chkShowSplash", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/single_instance"),       (bool) XRCCTRL(*this, "chkSingleInstance", wxCheckBox)->GetValue());
-        cfg->Write(_T("/environment/xp_hack_for_toolbars"),  (bool) XRCCTRL(*this, "chkWinToolbarHack", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/check_associations"),    (bool) XRCCTRL(*this, "chkAssociations", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/check_modified_files"),  (bool) XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->GetValue());
         cfg->Write(_T("/console_shell"),                            XRCCTRL(*this, "txtConsoleShell", wxTextCtrl)->GetValue());

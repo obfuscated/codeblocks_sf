@@ -51,15 +51,6 @@
                 <object class="sizeritem">
                   <border>8</border>
                   <flag>wxLEFT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                  <object class="wxCheckBox" name="chkWinToolbarHack">
-                    <label>Enable toolbars hack for Windows XP (needs application restart to take effect)</label>
-                    <checked>1</checked>
-                    <tooltip>Under all non-XP Windows versions (including XP when *not* using a manifest file),\nthe size of toolbars that contain windows controls can't be calculated correctly.\nBy enabling this hack, this is remedied under Windows XP too (for other windows versions it is automatically applied).</tooltip>
-                  </object>
-                </object>
-                <object class="sizeritem">
-                  <border>8</border>
-                  <flag>wxLEFT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                   <object class="wxBoxSizer">
                     <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">

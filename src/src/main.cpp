@@ -71,6 +71,45 @@
 
 #include "../sdk/uservarmanager.h"
 
+// function to check the common controls version
+// (should it be moved in sdk globals?)
+#ifdef __WXMSW__
+#include <windows.h>
+#include <shlwapi.h>
+bool UsesCommonControls6()
+{
+    bool result = false;
+    HINSTANCE hinstDll;
+    DWORD dwVersion = 0;
+    hinstDll = LoadLibrary(L"comctl32.dll");
+    if(hinstDll)
+    {
+        DLLGETVERSIONPROC pDllGetVersion;
+        pDllGetVersion = (DLLGETVERSIONPROC)GetProcAddress(hinstDll, "DllGetVersion");
+
+        if (pDllGetVersion)
+        {
+            DLLVERSIONINFO dvi;
+            HRESULT hr;
+
+            ZeroMemory(&dvi, sizeof(dvi));
+            dvi.cbSize = sizeof(dvi);
+
+            hr = (*pDllGetVersion)(&dvi);
+
+            if (SUCCEEDED(hr))
+            {
+               dwVersion = MAKELONG(dvi.dwMinorVersion, dvi.dwMajorVersion);
+               result = dvi.dwMajorVersion == 6;
+            }
+        }
+
+        FreeLibrary(hinstDll);
+    }
+    return result;
+}
+#endif
+
 class wxMyFileDropTarget : public wxFileDropTarget
 {
 public:
@@ -1036,10 +1075,7 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
         // HACK: for all windows versions (including XP *without* using a manifest file),
         //       the best size for a toolbar is not correctly calculated by wxWidgets/wxAUI/whatever.
         //       so we try to help the situation a little. It's not perfect, but it works.
-        int major = 0;
-        int minor = 0;
-        if ((wxGetOsVersion(&major, &minor) <= wxWINDOWS_NT && major < 5) || // max win2000
-            Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/xp_hack_for_toolbars"), false))
+        if (!UsesCommonControls6()) // all windows versions, including XP without a manifest file
         {
             // calculate the total width of all wxWindow* in the toolbar (if any)
             int w = 0;
