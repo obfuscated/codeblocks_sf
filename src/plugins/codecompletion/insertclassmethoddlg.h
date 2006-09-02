@@ -1,9 +1,14 @@
 #ifndef INSERTCLASSMETHODDLG_H
 #define INSERTCLASSMETHODDLG_H
 
+#include <wx/arrstr.h>
 #include <wx/dialog.h>
-#include <wx/checklst.h>
-#include "parser/parser.h"
+#include <wx/string.h>
+
+class Parser;
+class Token;
+class wxCheckListBox;
+class wxCommandEvent;
 
 class InsertClassMethodDlg : public wxDialog
 {
@@ -11,8 +16,8 @@ class InsertClassMethodDlg : public wxDialog
 		InsertClassMethodDlg(wxWindow* parent, Parser* parser, const wxString& filename);
 		virtual ~InsertClassMethodDlg();
 
-        wxArrayString GetCode(); // return an array of checked methods
-	protected:
+        wxArrayString GetCode() const; // return an array of checked methods
+	private:
         void FillClasses();
         void FillMethods();
         void DoFillMethodsFor(wxCheckListBox* clb,
@@ -24,7 +29,7 @@ class InsertClassMethodDlg : public wxDialog
         void OnClassesChange(wxCommandEvent& event);
         void OnCodeChange(wxCommandEvent& event);
         void OnFilterChange(wxCommandEvent& event);
-	private:
+s
         Parser* m_pParser;
         bool m_Decl;
         wxString m_Filename;

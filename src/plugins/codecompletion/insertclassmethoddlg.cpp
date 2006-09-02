@@ -1,14 +1,16 @@
-#include <sdk.h>
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/listbox.h>
+#include "sdk.h"
+#ifndef CB_PRECOMP
 #include <wx/checkbox.h>
+#include <wx/checklst.h>
+#include <wx/intl.h>
+#include <wx/listbox.h>
 #include <wx/radiobox.h>
-#include <wx/button.h>
-
+#include <wx/xrc/xmlres.h>
+#include "globals.h"
 #include "manager.h"
 #include "messagemanager.h"
-#include "globals.h"
+#endif
+#include "parser/parser.h"
 #include "insertclassmethoddlg.h"
 
 BEGIN_EVENT_TABLE(InsertClassMethodDlg, wxDialog)
@@ -35,10 +37,10 @@ InsertClassMethodDlg::~InsertClassMethodDlg()
 	//dtor
 }
 
-wxArrayString InsertClassMethodDlg::GetCode()
+wxArrayString InsertClassMethodDlg::GetCode() const
 {
     wxArrayString array;
-    wxCheckListBox* clb = XRCCTRL(*this, "chklstMethods", wxCheckListBox);
+    const wxCheckListBox* clb = XRCCTRL(*this, "chklstMethods", wxCheckListBox);
 
     for (int i = 0; i < clb->GetCount(); ++i)
     {
@@ -57,7 +59,7 @@ wxArrayString InsertClassMethodDlg::GetCode()
     }
 
     return array;
-}
+} // end of GetCode
 
 void InsertClassMethodDlg::FillClasses()
 {
@@ -125,13 +127,10 @@ void InsertClassMethodDlg::DoFillMethodsFor(wxCheckListBox* clb,
 
     // loop ascending the inheritance tree
 
-    TokenIdxSet::iterator it;
-    int idx;
-    Token* token;
-    for (it = parentToken->m_Children.begin(); it != parentToken->m_Children.end(); it++)
+    for (TokenIdxSet::iterator it = parentToken->m_Children.begin(); it != parentToken->m_Children.end(); ++it)
     {
-        idx = *it;
-        token = tree->at(idx);
+        int idx = *it;
+        Token* token = tree->at(idx);
         if (!token)
             continue;
 
@@ -154,29 +153,29 @@ void InsertClassMethodDlg::DoFillMethodsFor(wxCheckListBox* clb,
     }
 
     // inheritance
-	for (it = parentToken->m_DirectAncestors.begin();it!=parentToken->m_DirectAncestors.end();it++)
+    for (TokenIdxSet::iterator it = parentToken->m_DirectAncestors.begin();it!=parentToken->m_DirectAncestors.end(); ++it)
     {
-        idx = *it;
-        token = tree->at(idx);
+        int idx = *it;
+        Token* token = tree->at(idx);
         if (!token)
             continue;
         DoFillMethodsFor(clb, token, ns, includePrivate, includeProtected, includePublic);
     }
-}
+} // end of DoFillMethodsFor
 
 // events
 
-void InsertClassMethodDlg::OnClassesChange(wxCommandEvent& event)
+void InsertClassMethodDlg::OnClassesChange(wxCommandEvent& /*event*/)
 {
     FillMethods();
 }
 
-void InsertClassMethodDlg::OnCodeChange(wxCommandEvent& event)
+void InsertClassMethodDlg::OnCodeChange(wxCommandEvent& /*event*/)
 {
     m_Decl = XRCCTRL(*this, "rbCode", wxRadioBox)->GetSelection() == 0;
 }
 
-void InsertClassMethodDlg::OnFilterChange(wxCommandEvent& event)
+void InsertClassMethodDlg::OnFilterChange(wxCommandEvent& /*event*/)
 {
     FillMethods();
 }
