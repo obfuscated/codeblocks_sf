@@ -3,6 +3,9 @@
 
 #include <wx/dialog.h>
 
+class wxCommandEvent;
+class wxUpdateUIEvent;
+
 class AutoDetectCompilers : public wxDialog
 {
 	public:
@@ -11,7 +14,6 @@ class AutoDetectCompilers : public wxDialog
 		
 		void OnDefaultClick(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
-	protected:
 	private:
         DECLARE_EVENT_TABLE()
 };

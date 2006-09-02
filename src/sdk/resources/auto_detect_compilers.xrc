@@ -9,7 +9,7 @@
         <object class="wxFlexGridSizer">
           <object class="sizeritem">
             <object class="wxListCtrl" name="lcCompilers">
-              <style>wxLC_REPORT</style>
+              <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
             </object>
             <flag>wxGROW</flag>
             <minsize>320,160</minsize>

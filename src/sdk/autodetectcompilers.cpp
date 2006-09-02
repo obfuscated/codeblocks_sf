@@ -16,11 +16,12 @@
 #ifndef CB_PRECOMP
     #include "compiler.h"
     #include "compilerfactory.h"
-    #include <wx/xrc/xmlres.h>
+    #include <wx/button.h>
     #include <wx/intl.h>
     #include <wx/listctrl.h>
-    #include <wx/button.h>
     #include <wx/stattext.h>
+    #include <wx/string.h>
+    #include <wx/xrc/xmlres.h>
 #endif
 
 BEGIN_EVENT_TABLE(AutoDetectCompilers, wxDialog)
@@ -71,7 +72,7 @@ AutoDetectCompilers::~AutoDetectCompilers()
 	//dtor
 }
 
-void AutoDetectCompilers::OnDefaultClick(wxCommandEvent& event)
+void AutoDetectCompilers::OnDefaultClick(wxCommandEvent& /*event*/)
 {
     wxListCtrl* list = XRCCTRL(*this, "lcCompilers", wxListCtrl);
     int idx = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
