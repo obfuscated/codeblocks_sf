@@ -1031,7 +1031,33 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
     if (plugin->BuildToolBar(tb))
     {
         SetToolBar(0);
-        tb->SetBestFittingSize();
+
+#ifdef __WXMSW__
+        // HACK: for all windows versions (including XP *without* using a manifest file),
+        //       the best size for a toolbar is not correctly calculated by wxWidgets/wxAUI/whatever.
+        //       so we try to help the situation a little. It's not perfect, but it works.
+        int major = 0;
+        int minor = 0;
+        if ((wxGetOsVersion(&major, &minor) <= wxWINDOWS_NT && major < 5) || // max win2000
+            Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/xp_hack_for_toolbars"), false))
+        {
+            // calculate the total width of all wxWindow* in the toolbar (if any)
+            int w = 0;
+            int ccount = 0;
+            for (wxWindowList::compatibility_iterator node = tb->GetChildren().GetFirst(); node; node = node->GetNext())
+            {
+                wxWindow *win = (wxWindow *)node->GetData();
+                if (win)
+                {
+                    w += win->GetSize().GetWidth();
+                    ++ccount;
+                }
+            }
+            wxSize s(w + tb->GetBestFittingSize().GetWidth() - (ccount * (tb->GetToolSize().GetWidth() / 3)), 0);
+            tb->SetBestFittingSize(s);
+        }
+        // end of HACK
+#endif
 
         // add View->Toolbars menu item for toolbar
         wxMenu* viewToolbars = 0;
