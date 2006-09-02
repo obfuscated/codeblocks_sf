@@ -6,6 +6,7 @@
 		<Option pch_mode="2" />
 		<Option default_target="src" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="AutoRevision">
 				<Option output="tools\AutoRevision\autorevision.exe" />
@@ -123,7 +124,7 @@
 				<Option output="devel\codeblocks.dll" />
 				<Option working_dir="devel" />
 				<Option object_output=".objs\2.6" />
-				<Option external_deps="sdk\tinyxml\libtxml.a;sdk\propgrid\libpropgrid.a;sdk\wxFlatNotebook\libwxflatnotebook.a;devel\libwxscintilla.a;sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;sdk\scripting\lib\libsqplus.a;" />
+				<Option external_deps="sdk\tinyxml\libtxml.a;sdk\propgrid\libpropgrid.a;sdk\wxFlatNotebook\libwxflatnotebook.a;sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;sdk\scripting\lib\libsqplus.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations" />

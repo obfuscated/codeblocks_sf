@@ -51,6 +51,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
 		void OnShowCallTip(wxCommandEvent& event);
 		void OnGotoFunction(wxCommandEvent& event);
         void OnClassMethod(wxCommandEvent& event);
+        void OnUnimplementedClassMethods(wxCommandEvent& event);
 		void OnGotoDeclaration(wxCommandEvent& event);
 		void OnOpenIncludeFile(wxCommandEvent& event);
 		void OnAppDoneStartup(CodeBlocksEvent& event);
@@ -69,6 +70,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
 		void DoCodeComplete();
 		void DoInsertCodeCompleteToken(wxString tokName);
         int DoClassMethodDeclImpl();
+        int DoAllMethodsImpl();
 		int FunctionPosition() const;
 		void OnFunction(wxCommandEvent& event);
 		void ParseFunctionsAndFillToolbar();

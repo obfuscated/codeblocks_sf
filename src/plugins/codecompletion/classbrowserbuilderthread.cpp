@@ -104,8 +104,13 @@ void ClassBrowserBuilderThread::BuildTree()
         m_pTreeTop->SetItemHasChildren(root);
     }
 
+    m_pTreeTop->Freeze();
     RemoveInvalidNodes(m_pTreeTop, root);
+    m_pTreeTop->Thaw();
+
+    m_pTreeBottom->Freeze();
     RemoveInvalidNodes(m_pTreeBottom, m_pTreeBottom->GetRootItem());
+    m_pTreeBottom->Thaw();
 
     if (TestDestroy())
         return;
@@ -136,7 +141,10 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
         CBTreeData* data = (CBTreeData*)tree->GetItemData(existing);
         if (data && data->m_pToken)
         {
-            if (m_pTokens->at(data->m_TokenIndex) != data->m_pToken || !TokenMatchesFilter(data->m_pToken))
+            if (m_pTokens->at(data->m_TokenIndex) != data->m_pToken ||
+                data->m_TokenKind != data->m_pToken->m_TokenKind || // need to compare kinds: the token index might have been reused...
+                data->m_TokenName != data->m_pToken->m_Name || // same for the token name
+                !TokenMatchesFilter(data->m_pToken))
             {
 //                DBGLOG(_T("Item %s is invalid"), tree->GetItemText(existing).c_str());
                 wxTreeItemId next = tree->GetPrevSibling(existing);

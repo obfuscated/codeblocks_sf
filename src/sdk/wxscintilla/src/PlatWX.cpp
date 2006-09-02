@@ -716,7 +716,7 @@ public:
     {
         SetBackgroundColour(*wxBLACK);  // for our simple border
 
-        lv = new wxSCIListBox(parent, id, wxDefaultPosition, wxDefaultSize,
+        lv = new wxSCIListBox(this, id, wxDefaultPosition, wxDefaultSize,
                               wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxBORDER_NONE);
         lv->SetCursor(wxCursor(wxCURSOR_ARROW));
         lv->InsertColumn(0, wxEmptyString);
@@ -728,8 +728,12 @@ public:
         // can't receive focus then we have to pull a fast one and temporarily
         // parent the listctrl on the STC window and then call SetFocus and
         // then reparent it back to the popup.
-        lv->SetFocus();
-        lv->Reparent(this);
+//        lv->SetFocus();
+//        lv->Reparent(this);
+
+        // NOTE (mandrav):  Removed the above hack because it causes bad flickering in C::B.
+        //                  I prefer having a "gray" (non-focused) selection, than this
+        //                  flickering...
 #ifdef __WXMSW__
         lv->Show();
 #endif

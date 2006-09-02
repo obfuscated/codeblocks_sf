@@ -48,7 +48,7 @@ wxArrayString InsertClassMethodDlg::GetCode()
             if (XRCCTRL(*this, "chkAddDoc", wxCheckBox)->IsChecked())
             {
                 // add doc block
-                str << _("/** @brief (one liner)\n  *\n  * (documentation goes here)\n  */\n");
+                str << _T("/** @brief (one liner)\n  *\n  * (documentation goes here)\n  */\n");
             }
             str << clb->GetString(i);
             str.Replace(_T("&&"), _T("&"));
@@ -136,7 +136,7 @@ void InsertClassMethodDlg::DoFillMethodsFor(wxCheckListBox* clb,
             continue;
 
         //Manager::Get()->GetMessageManager()->DebugLog("Evaluating %s", token->m_DisplayName.c_str());
-        bool valid = token->m_TokenKind == tkFunction &&
+        bool valid = token->m_TokenKind & (tkFunction | tkConstructor | tkDestructor) &&
                 ((includePrivate && token->m_Scope == tsPrivate) ||
                 (includeProtected && token->m_Scope == tsProtected) ||
                 (includePublic && token->m_Scope == tsPublic));
@@ -146,7 +146,7 @@ void InsertClassMethodDlg::DoFillMethodsFor(wxCheckListBox* clb,
             // BUG IN WXWIDGETS: wxCheckListBox::Append(string, data) crashes...
             //                   wxCheckListBox::Append(string) does not...
             wxString str;
-            str << token->m_Type << _T(" ") << (!m_Decl ? ns : _T("")) << token->m_Name << token->m_Args;
+            str << token->m_Type << _T(" ") << ns << token->m_Name << token->m_Args;
             str.Replace(_T("&"), _T("&&"));
             if (clb->FindString(str) == wxNOT_FOUND)
                 clb->Append(str);
@@ -174,7 +174,6 @@ void InsertClassMethodDlg::OnClassesChange(wxCommandEvent& event)
 void InsertClassMethodDlg::OnCodeChange(wxCommandEvent& event)
 {
     m_Decl = XRCCTRL(*this, "rbCode", wxRadioBox)->GetSelection() == 0;
-    FillMethods();
 }
 
 void InsertClassMethodDlg::OnFilterChange(wxCommandEvent& event)

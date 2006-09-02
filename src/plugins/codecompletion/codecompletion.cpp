@@ -51,6 +51,7 @@
 
 #include "editor_hooks.h"
 #include "cbeditor.h"
+#include "multiselectdlg.h"
 #include <wx/wxscintilla.h>
 #include <wx/tipwin.h>
 #include <wx/tokenzr.h>
@@ -94,6 +95,7 @@ int idMenuGotoFunction = wxNewId();
 int idViewClassBrowser = wxNewId();
 int idEditorSubMenu = wxNewId();
 int idClassMethod = wxNewId();
+int idUnimplementedClassMethods = wxNewId();
 int idGotoDeclaration = wxNewId();
 int idGotoImplementation = wxNewId();
 int idOpenIncludeFile = wxNewId();
@@ -111,6 +113,7 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_MENU(idMenuShowCallTip, CodeCompletion::OnShowCallTip)
 	EVT_MENU(idMenuGotoFunction, CodeCompletion::OnGotoFunction)
 	EVT_MENU(idClassMethod, CodeCompletion::OnClassMethod)
+	EVT_MENU(idUnimplementedClassMethods, CodeCompletion::OnUnimplementedClassMethods)
 	EVT_MENU(idGotoDeclaration, CodeCompletion::OnGotoDeclaration)
 	EVT_MENU(idGotoImplementation, CodeCompletion::OnGotoDeclaration)
 	EVT_MENU(idOpenIncludeFile, CodeCompletion::OnOpenIncludeFile)
@@ -298,6 +301,7 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
                     if (subMenu)
                     {
                         subMenu->Append(idClassMethod, _("Class method declaration/implementation..."));
+                        subMenu->Append(idUnimplementedClassMethods, _("All class methods without implementation..."));
                     }
                     else
                         Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find Insert menu 3!"));
@@ -722,6 +726,108 @@ int CodeCompletion::DoClassMethodDeclImpl()
 	return -5;
 }
 
+int CodeCompletion::DoAllMethodsImpl()
+{
+	if (!m_IsAttached || !m_InitDone)
+		return -1;
+
+	EditorManager* edMan = Manager::Get()->GetEditorManager();
+//    if (!edMan)
+//		return -2;
+    cbEditor* ed = edMan->GetBuiltinActiveEditor();
+    if (!ed)
+		return -3;
+
+	FileType ft = FileTypeOf(ed->GetShortName());
+	if ( ft != ftHeader && ft != ftSource) // only parse source/header files
+		return -4;
+
+	Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
+	if (!parser)
+	{
+		Manager::Get()->GetMessageManager()->DebugLog(_T("Active editor has no associated parser ?!?"));
+		return -4;
+	}
+
+    // mask for filenames (include only classes declared in filename.*)
+    wxString filename = UnixFilename(ed->GetFilename().BeforeLast(_T('.')));
+    filename << _T('.');
+
+    TokensTree* tree = parser->GetTokens();
+
+    // get all filenames' indices matching our mask
+    std::set<size_t> result;
+    tree->m_FilenamesMap.FindMatches(filename, result, true, true);
+    if (result.empty())
+    {
+        cbMessageBox(_("File not in parser's database: ") + filename + _T('*'), _("Warning"), wxICON_WARNING);
+        return -5;
+    }
+
+    // loop matching files, loop tokens in file and get list of un-implemented functions
+    wxArrayString arr; // for selection (keeps strings)
+    wxArrayInt arrint; // for selection (keeps indices)
+    for (std::set<size_t>::iterator itf = result.begin(); itf != result.end(); ++itf)
+    {
+        TokenIdxSet& tokens = tree->m_FilesMap[*itf];
+        // loop tokens in file
+        for (TokenIdxSet::iterator its = tokens.begin(); its != tokens.end(); ++its)
+        {
+            Token* token = tree->at(*its);
+            if (token && // valid token
+                (token->m_TokenKind & (tkFunction | tkConstructor | tkDestructor)) && // is method
+                token->m_ImplLine == 0) // is un-implemented
+            {
+                arr.Add(token->DisplayName());
+                arrint.Add(*its);
+            }
+        }
+    }
+
+    if (arr.empty())
+    {
+        cbMessageBox(_("No classes declared or no un-implemented class methods found in ") + filename + _T('*'), _("Warning"), wxICON_WARNING);
+        return -5;
+    }
+
+    // select tokens
+    MultiSelectDlg dlg(Manager::Get()->GetAppWindow(), arr, true);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        cbStyledTextCtrl* control = ed->GetControl();
+        int pos = control->GetCurrentPos();
+        int line = control->LineFromPosition(pos);
+        control->GotoPos(control->PositionFromLine(line));
+
+        wxArrayInt indices = dlg.GetSelectedIndices();
+        for (size_t i = 0; i < indices.GetCount(); ++i)
+        {
+            Token* token = tree->at(arrint[i]);
+            if (!token)
+                continue;
+
+            pos = control->GetCurrentPos();
+            line = control->LineFromPosition(pos);
+
+            // actual code generation
+            wxString str;
+            str << ed->GetLineIndentString(line - 1);
+            str << _T("/** @brief ") << token->m_Name << _T("\n  *\n  * @todo: document this function\n  */\n");
+            str << token->m_Type << _T(" ") << token->GetParentName() << _T("::") << token->m_Name << token->m_Args;
+            str << _T("\n{\n\n}\n\n");
+
+            // add code in editor
+            control->SetTargetStart(pos);
+            control->SetTargetEnd(pos);
+            control->ReplaceTarget(str);
+            control->GotoPos(pos + str.Length());
+        }
+        return 0;
+    }
+
+	return -5;
+}
+
 void CodeCompletion::DoCodeComplete()
 {
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
@@ -861,7 +967,7 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
     	EditorBase* ed = event.GetEditor();
     	if (!ed)
     		return;
-		Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
+		Parser* parser = m_NativeParsers.FindParserFromEditor(ed);
 		if (!parser)
 			return;
 		parser->Reparse(ed->GetFilename());
@@ -1126,6 +1232,11 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 void CodeCompletion::OnClassMethod(wxCommandEvent& event)
 {
     DoClassMethodDeclImpl();
+}
+
+void CodeCompletion::OnUnimplementedClassMethods(wxCommandEvent& event)
+{
+    DoAllMethodsImpl();
 }
 
 void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)

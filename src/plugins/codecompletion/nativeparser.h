@@ -67,7 +67,7 @@ class NativeParser : public wxEvtHandler
 		int GetEditorEndWord() const { return m_EditorEndWord; }
 
 		Parser* FindParserFromActiveEditor();
-		Parser* FindParserFromEditor(cbEditor* editor);
+		Parser* FindParserFromEditor(EditorBase* editor);
 		Parser* FindParserFromActiveProject();
 		Parser* FindParserFromProject(cbProject* project);
 

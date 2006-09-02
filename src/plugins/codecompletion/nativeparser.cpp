@@ -458,7 +458,7 @@ void NativeParser::ForceReparseActiveProject()
     }
 }
 
-Parser* NativeParser::FindParserFromEditor(cbEditor* editor)
+Parser* NativeParser::FindParserFromEditor(EditorBase* editor)
 {
     return &m_Parser;
 }
