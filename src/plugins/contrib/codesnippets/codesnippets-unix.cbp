@@ -1,11 +1,12 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="Code Snippets Plugin (unix)" />
 		<Option pch_mode="2" />
-		<Option default_target="-1" />
+		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug - Unix">
 				<Option output="../../../devel/share/codeblocks/plugins/libcodesnippets.so" />
@@ -15,21 +16,24 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add option="`pkg-config --cflags codeblocks`" />
 					<Add option="`wx-config --cflags`" />
 					<Add option="-fexceptions" />
 					<Add option="-Winvalid-pch" />
 					<Add option="-fPIC" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DcbDEBUG" />
-					<Add directory="$(#cb)/sdk/wxscintilla/include" />
+					<Add directory="../../../sdk" />
+					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
-					<Add option="`pkg-config --libs codeblocks`" />
 					<Add option="`wx-config --libs`" />
+					<Add directory="../../../devel" />
 				</Linker>
 			</Target>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="Debug - Unix;" />
+		</VirtualTargets>
 		<ExtraCommands>
 			<Add after="./update" />
 			<Mode after="always" />

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="C::B KeyBinder" />
 		<Option pch_mode="0" />
+		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="KeyBinder plugin">
 				<Option output="../../../devel/share/codeblocks/plugins/libkeybinder.so" />
@@ -13,7 +15,6 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="../../../devel/codeblocks" />
-				<Option includeInTargetAll="1" />
 				<Compiler>
 					<Add directory="../../../sdk" />
 					<Add directory="../../../sdk/wxscintilla/include" />
@@ -24,6 +25,9 @@
 				</Linker>
 			</Target>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="KeyBinder plugin;" />
+		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-g" />
@@ -88,6 +92,5 @@
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />
 		</Unit>
-		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

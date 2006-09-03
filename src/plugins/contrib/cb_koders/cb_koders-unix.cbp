@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="C::B Koders Query" />
 		<Option pch_mode="2" />
+		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
 				<Option output="../../../devel/share/CodeBlocks/plugins/cb_koders.dll" />
@@ -13,7 +15,6 @@
 				<Option external_deps="../../../devel/libcodeblocks.a;../../../devel/libwxscintilla.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option includeInTargetAll="1" />
 				<Option projectResourceIncludeDirsRelation="0" />
 			</Target>
 			<Environment>
@@ -21,6 +22,9 @@
 				<Variable name="WX_CFG" value="Unicode" />
 			</Environment>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
 		<Compiler>
 			<Add option="-g" />
 			<Add option="`wx-config --cflags`" />
@@ -29,13 +33,12 @@
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
 			<Add directory="../../../sdk" />
-			<Add directory="../../../sdk/wxscintilla" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
 		</ResourceCompiler>
 		<Linker>
-			<Add option="`wx-config --libs`" />
 			<Add library="libcodeblocks.a" />
 			<Add directory="../../../devel" />
 		</Linker>
@@ -59,11 +62,5 @@
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Extensions>
-			<wxsmith>
-				<dialog wxs_file="KodersDialog.wxs" class="KodersDialog" src_file="kodersdialog.cpp" header_file="kodersdialog.h" xrc_file="" edit_mode="Source" />
-				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
-			</wxsmith>
-		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

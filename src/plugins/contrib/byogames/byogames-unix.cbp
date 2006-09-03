@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="4" />
+	<FileVersion major="1" minor="5" />
 	<Project>
 		<Option title="C::B Games" />
 		<Option pch_mode="0" />
+		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
 				<Option output="../../../devel/share/codeblocks/plugins/libbyogames.so" />
@@ -12,9 +14,11 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="../../../devel/codeblocks" />
-				<Option includeInTargetAll="1" />
 			</Target>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-g" />
@@ -103,12 +107,5 @@
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Extensions>
-			<wxsmith>
-				<dialog wxs_file="byoGameSelect.wxs" class="byoGameSelect" src_file="byogameselect.cpp" header_file="byogameselect.h" xrc_file="" edit_mode="Source" />
-				<panel wxs_file="byoConf.wxs" class="byoConf" src_file="byoconf.cpp" header_file="byoconf.h" xrc_file="/home/mandrav/devel/codeblocks/branches/scripting_squirrel/src/plugins/contrib/byogames/wxsmith/byoConf.wxs" edit_mode="Source" />
-				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
-			</wxsmith>
-		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
