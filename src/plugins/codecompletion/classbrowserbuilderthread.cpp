@@ -104,9 +104,10 @@ void ClassBrowserBuilderThread::BuildTree()
         m_pTreeTop->SetItemHasChildren(root);
     }
 
-    m_pTreeTop->Freeze();
+    // freezing the top tree causes more flickering than not
+//    m_pTreeTop->Freeze();
     RemoveInvalidNodes(m_pTreeTop, root);
-    m_pTreeTop->Thaw();
+//    m_pTreeTop->Thaw();
 
     m_pTreeBottom->Freeze();
     RemoveInvalidNodes(m_pTreeBottom, m_pTreeBottom->GetRootItem());
@@ -122,6 +123,11 @@ void ClassBrowserBuilderThread::BuildTree()
     // has very minimum memory overhead since it contains as few items as possible.
     // plus, it doesn't flicker because we 're not emptying it and re-creating it each time ;)
     m_pTreeTop->Expand(root);
+#ifdef __WXGTK__
+    // seems like the "expand" event comes too late in wxGTK,
+    // so make it happen now
+    ExpandItem(root);
+#endif
 
     SelectNode(m_pTreeTop->GetSelection()); // refresh selection
 }
@@ -360,9 +366,6 @@ void ClassBrowserBuilderThread::SelectNode(wxTreeItemId node)
     if (TestDestroy())
         return;
 
-    wxMutexLocker lock(m_BuildMutex);
-    wxBusyCursor busy;
-
     m_pTreeBottom->Freeze();
     wxTreeItemId root = m_pTreeBottom->GetRootItem();
     if (!root)
@@ -490,7 +493,11 @@ void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item)
         return;
 
     wxMutexLocker lock(m_BuildMutex);
-    m_pTreeTop->CollapseAndReset(item);
+#ifndef __WXGTK__
+    m_pTreeTop->CollapseAndReset(item); // this freezes gtk
+#else
+    m_pTreeTop->DeleteChildren(item);
+#endif
     m_pTreeTop->SetItemHasChildren(item);
 //    DBGLOG(_("C: %d items"), m_pTreeTop->GetCount());
 }
