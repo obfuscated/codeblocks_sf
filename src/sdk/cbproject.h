@@ -159,6 +159,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
 
         /** Is there a build target (virtual or real) by @c name?
           * @param name The build target's name.
+          * @param virtuals_too Include virtual build targets in query.
           * @return True if exists a build target (virtual or real) by that name, false if not.
           */
         bool BuildTargetValid(const wxString& name, bool virtuals_too = true) const;
@@ -172,7 +173,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
 
         /** Set the build target index which will be pre-selected when the "Select target"
           * dialog appears when running the project.
-          * @param index The build target index. Must be equal or greater than zero and less than GetBuildTargetsCount().
+          * @param name The build target's name.
           */
         void SetDefaultExecuteTarget(const wxString& name);
 
