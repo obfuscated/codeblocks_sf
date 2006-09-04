@@ -629,9 +629,13 @@ bool UsesCommonControls6()
 
 wxBitmap cbLoadBitmap(const wxString& filename, int bitmapType)
 {
+#ifdef __WXMSW__
     // cache this, can't change while we 're running :)
     static bool oldCommonControls = !UsesCommonControls6();
-
+#else
+    // irrelevant for this platform
+    static bool oldCommonControls = false;
+#endif
     wxImage im;
     im.LoadFile(filename, bitmapType);
     if (oldCommonControls && im.HasAlpha())
