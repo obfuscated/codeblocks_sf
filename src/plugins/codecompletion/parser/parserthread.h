@@ -24,6 +24,7 @@ struct ParserThreadOptions
     ParserThreadOptions()
         : useBuffer(false),
         bufferSkipBlocks(false),
+	bufferSkipOuterBlocks(false),
         wantPreprocessor(true),
         followLocalIncludes(true),
         followGlobalIncludes(true),
@@ -40,6 +41,7 @@ struct ParserThreadOptions
       */
     bool useBuffer;
 	bool bufferSkipBlocks;
+	bool bufferSkipOuterBlocks;
 	bool wantPreprocessor;
 	bool followLocalIncludes;
 	bool followGlobalIncludes;
