@@ -1092,7 +1092,11 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
             wxSize s(w + tb->GetBestFittingSize().GetWidth() - (ccount * (tb->GetToolSize().GetWidth() / 3)), 0);
             tb->SetBestFittingSize(s);
         }
+        else
+            tb->SetBestFittingSize();
         // end of HACK
+#else
+        tb->SetBestFittingSize();
 #endif
 
         // add View->Toolbars menu item for toolbar
