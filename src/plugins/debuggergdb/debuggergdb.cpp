@@ -1997,6 +1997,11 @@ void DebuggerGDB::OnProjectClosed(CodeBlocksEvent& event)
     // allow others to catch this
     event.Skip();
 
+    // remove all breakpoints belonging to the closed project
+    m_State.RemoveAllProjectBreakpoints(event.GetProject());
+    if (m_pBreakpointsWindow)
+        m_pBreakpointsWindow->Refresh();
+    
     // when a project closes, make sure it's not the actively debugged project.
     // if so, end debugging immediately!
 

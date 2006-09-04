@@ -115,7 +115,8 @@ struct DebuggerBreakpoint
         ignoreCount(0),
         useCondition(false),
         address(0),
-        alreadySet(false)
+        alreadySet(false),
+        userData(0)
     {}
     wxString filename; ///< The filename for the breakpoint (kept as relative).
     wxString filenameAsPassed; ///< The filename for the breakpoint as passed to the debugger (i.e. full filename).
@@ -132,6 +133,7 @@ struct DebuggerBreakpoint
     unsigned long int address; ///< The actual breakpoint address. This is read back from the debugger. *Don't* write to it.
     bool alreadySet; ///< Is this already set? Used to mark temporary breakpoints for removal.
     wxString lineText; ///< Optionally, the breakpoint line's text (used by GDB for setting breapoints on ctors/dtors).
+    void* userData; ///< Custom user data.
 };
 WX_DEFINE_ARRAY(DebuggerBreakpoint*, BreakpointsList);
 

@@ -25,6 +25,7 @@ class DebuggerState
         DebuggerBreakpoint* RemoveBreakpoint(const wxString& file, int line, bool deleteit = true);
         DebuggerBreakpoint* RemoveBreakpoint(int idx, bool deleteit = true);
         void RemoveAllBreakpoints(const wxString& file, bool deleteit = true);
+        void RemoveAllProjectBreakpoints(cbProject* prj);
 
         // helpers to keep in sync with the editors
         int RemoveBreakpointsRange(const wxString& file, int startline, int endline);
@@ -38,6 +39,7 @@ class DebuggerState
     protected:
         void SetupBreakpointIndices();
         wxString ConvertToValidFilename(const wxString& filename);
+        cbProject* FindProjectForFile(const wxString& file);
 
         DebuggerGDB* m_pPlugin;
         DebuggerDriver* m_pDriver;
