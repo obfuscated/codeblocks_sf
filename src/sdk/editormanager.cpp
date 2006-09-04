@@ -135,11 +135,11 @@ struct EditorManagerInternalData
         wxBitmap bmp;
         m_pImages = new wxImageList(16, 16);
         wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
-        bmp.LoadFile(prefix + _T("folder_open.png"), wxBITMAP_TYPE_PNG); // folder
+        bmp = cbLoadBitmap(prefix + _T("folder_open.png"), wxBITMAP_TYPE_PNG); // folder
         m_pImages->Add(bmp);
-        bmp.LoadFile(prefix + _T("ascii.png"), wxBITMAP_TYPE_PNG); // file
+        bmp = cbLoadBitmap(prefix + _T("ascii.png"), wxBITMAP_TYPE_PNG); // file
         m_pImages->Add(bmp);
-        bmp.LoadFile(prefix + _T("modified_file.png"), wxBITMAP_TYPE_PNG); // modified file
+        bmp = cbLoadBitmap(prefix + _T("modified_file.png"), wxBITMAP_TYPE_PNG); // modified file
         m_pImages->Add(bmp);
         pTree->SetImageList(m_pImages);
         m_TreeOpenedFiles=pTree->AddRoot(_T("Opened Files"), 0, 0);
@@ -298,7 +298,7 @@ void EditorManager::CreateSearchLog()
     // set log image
     wxBitmap bmp;
     wxString prefix = ConfigManager::GetDataFolder() + _T("/images/16x16/");
-    bmp.LoadFile(prefix + _T("filefind.png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(prefix + _T("filefind.png"), wxBITMAP_TYPE_PNG);
     Manager::Get()->GetMessageManager()->SetLogImage(m_pSearchLog, bmp);
 }
 

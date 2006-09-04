@@ -218,8 +218,8 @@ void EnvironmentSettingsDlg::AddPluginPanels()
         cbConfigurationPanel* panel = m_PluginPanels[i];
         lb->AddPage(panel, panel->GetTitle());
 
-        lb->GetImageList()->Add(LoadPNGWindows2000Hack(base + panel->GetBitmapBaseName() + _T(".png")));
-        lb->GetImageList()->Add(LoadPNGWindows2000Hack(base + panel->GetBitmapBaseName() + _T("-off.png")));
+        lb->GetImageList()->Add(cbLoadBitmap(base + panel->GetBitmapBaseName() + _T(".png")));
+        lb->GetImageList()->Add(cbLoadBitmap(base + panel->GetBitmapBaseName() + _T("-off.png")));
         lb->SetPageImage(lb->GetPageCount() - 1, lb->GetImageList()->GetImageCount() - 2);
     }
 
@@ -234,9 +234,9 @@ void EnvironmentSettingsDlg::LoadListbookImages()
     wxBitmap bmp;
     for (int i = 0; i < IMAGES_COUNT; ++i)
     {
-        bmp.LoadFile(base + base_imgs[i] + _T(".png"), wxBITMAP_TYPE_PNG);
+        bmp = cbLoadBitmap(base + base_imgs[i] + _T(".png"));
         images->Add(bmp);
-        bmp.LoadFile(base + base_imgs[i] + _T("-off.png"), wxBITMAP_TYPE_PNG);
+        bmp = cbLoadBitmap(base + base_imgs[i] + _T("-off.png"));
         images->Add(bmp);
     }
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);

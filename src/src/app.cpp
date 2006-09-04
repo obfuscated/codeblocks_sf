@@ -109,7 +109,7 @@ class Splash
         {
             if (show)
             {
-                wxBitmap bmp = LoadPNGWindows2000Hack(ConfigManager::ReadDataPath() + _T("/images/splash_new.png"));
+                wxBitmap bmp = cbLoadBitmap(ConfigManager::ReadDataPath() + _T("/images/splash_new.png"));
                 m_pSplash = new cbSplashScreen(bmp, -1, 0, -1, wxNO_BORDER | wxFRAME_NO_TASKBAR);
                 Manager::Yield();
             }

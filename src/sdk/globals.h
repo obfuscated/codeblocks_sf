@@ -8,6 +8,7 @@
 #include <wx/filename.h>
 #include <wx/intl.h>
 #include <wx/msgdlg.h>
+#include <wx/bitmap.h>
 
 class TiXmlDocument;
 
@@ -138,7 +139,19 @@ extern DLLIMPORT bool NormalizePath(wxFileName& f,const wxString& base);
 
 extern DLLIMPORT wxString URLEncode(const wxString &str);
 
-extern DLLIMPORT wxBitmap LoadPNGWindows2000Hack(const wxString& filename);
+#ifdef __WXMSW__
+/// Check if CommonControls version is at least 6 (XP and up)
+extern DLLIMPORT bool UsesCommonControls6();
+#endif
+
+/** This function loads a bitmap from disk.
+  * Always use this to load bitmaps because it takes care of various
+  * issues with pre-XP windows (actually common controls < 6.00).
+  */
+extern DLLIMPORT wxBitmap cbLoadBitmap(const wxString& filename, int bitmapType = wxBITMAP_TYPE_PNG);
+
+// compatibility function
+inline wxBitmap LoadPNGWindows2000Hack(const wxString& filename){ return cbLoadBitmap(filename); }
 
 /** Finds out if a window is really shown.
   *

@@ -250,7 +250,7 @@ void DebuggerGDB::OnAttach()
     // set log image
     wxBitmap bmp;
     wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
-    bmp.LoadFile(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG);
     Manager::Get()->GetMessageManager()->SetLogImage(m_pLog, bmp);
 
     m_HasDebugLog = Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debug_log"), false);
@@ -259,7 +259,7 @@ void DebuggerGDB::OnAttach()
         m_pDbgLog = new SimpleTextLog(true);
         m_DbgPageIndex = msgMan->AddLog(m_pDbgLog, m_PluginInfo.title + _(" (debug)"));
         // set log image
-        bmp.LoadFile(prefix + _T("contents_16x16.png"), wxBITMAP_TYPE_PNG);
+        bmp = cbLoadBitmap(prefix + _T("contents_16x16.png"), wxBITMAP_TYPE_PNG);
         Manager::Get()->GetMessageManager()->SetLogImage(m_pDbgLog, bmp);
     }
 
@@ -461,7 +461,7 @@ void DebuggerGDB::RefreshConfiguration()
         m_DbgPageIndex = Manager::Get()->GetMessageManager()->AddLog(m_pDbgLog, m_PluginInfo.title + _(" (debug)"));
         // set log image
         wxBitmap bmp;
-        bmp.LoadFile(ConfigManager::GetDataFolder() + _T("/images/contents_16x16.png"), wxBITMAP_TYPE_PNG);
+        bmp = cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/contents_16x16.png"), wxBITMAP_TYPE_PNG);
         Manager::Get()->GetMessageManager()->SetLogImage(m_pDbgLog, bmp);
     }
     m_HasDebugLog = log_visible;
@@ -2001,7 +2001,7 @@ void DebuggerGDB::OnProjectClosed(CodeBlocksEvent& event)
     m_State.RemoveAllProjectBreakpoints(event.GetProject());
     if (m_pBreakpointsWindow)
         m_pBreakpointsWindow->Refresh();
-    
+
     // when a project closes, make sure it's not the actively debugged project.
     // if so, end debugging immediately!
 

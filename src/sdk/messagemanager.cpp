@@ -155,9 +155,9 @@ MessageManager::MessageManager()
 	wxBitmap bmp;
 	wxString prefix;
     prefix = ConfigManager::GetDataFolder() + _T("/images/");
-    bmp.LoadFile(prefix + _T("edit_16x16.png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(prefix + _T("edit_16x16.png"), wxBITMAP_TYPE_PNG);
     m_pNotebook->GetImageList()->push_back(bmp);
-    bmp.LoadFile(prefix + _T("contents_16x16.png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(prefix + _T("contents_16x16.png"), wxBITMAP_TYPE_PNG);
     m_pNotebook->GetImageList()->push_back(bmp);
 
     m_AppLog = DoAddLog(new SimpleTextLog(), _("Code::Blocks"));

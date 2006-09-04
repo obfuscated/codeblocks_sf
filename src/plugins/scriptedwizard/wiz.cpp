@@ -1026,8 +1026,8 @@ void Wiz::AddWizard(TemplateOutputType otype,
     info.title = title;
     info.cat = cat;
     info.script = script;
-    info.templatePNG.LoadFile(tpng, wxBITMAP_TYPE_PNG);
-    info.wizardPNG.LoadFile(wpng, wxBITMAP_TYPE_PNG);
+    info.templatePNG = cbLoadBitmap(tpng, wxBITMAP_TYPE_PNG);
+    info.wizardPNG = cbLoadBitmap(wpng, wxBITMAP_TYPE_PNG);
     info.xrc = _xrc;
     m_Wizards.Add(info);
 

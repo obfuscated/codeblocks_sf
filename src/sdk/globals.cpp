@@ -588,27 +588,56 @@ bool NormalizePath(wxFileName& f,const wxString& base)
     return result;
 }
 
-
-inline bool IsRunningWindows2000()
+// function to check the common controls version
+// (should it be moved in sdk globals?)
+#ifdef __WXMSW__
+#include <windows.h>
+#include <shlwapi.h>
+bool UsesCommonControls6()
 {
-    int major = 0;
-    int minor = 0;
-    if(wxGetOsVersion(&major, &minor) == wxWINDOWS_NT && major < 5)
-        return true;
-    return false;
-};
+    bool result = false;
+    HINSTANCE hinstDll;
+    DWORD dwVersion = 0;
+    hinstDll = LoadLibrary(L"comctl32.dll");
+    if(hinstDll)
+    {
+        DLLGETVERSIONPROC pDllGetVersion;
+        pDllGetVersion = (DLLGETVERSIONPROC)GetProcAddress(hinstDll, "DllGetVersion");
 
-wxBitmap LoadPNGWindows2000Hack(const wxString& filename)
+        if (pDllGetVersion)
+        {
+            DLLVERSIONINFO dvi;
+            HRESULT hr;
+
+            ZeroMemory(&dvi, sizeof(dvi));
+            dvi.cbSize = sizeof(dvi);
+
+            hr = (*pDllGetVersion)(&dvi);
+
+            if (SUCCEEDED(hr))
+            {
+               dwVersion = MAKELONG(dvi.dwMinorVersion, dvi.dwMajorVersion);
+               result = dvi.dwMajorVersion == 6;
+            }
+        }
+
+        FreeLibrary(hinstDll);
+    }
+    return result;
+}
+#endif
+
+wxBitmap cbLoadBitmap(const wxString& filename, int bitmapType)
 {
-    static bool isWindows2000 = IsRunningWindows2000();
+    // cache this, can't change while we 're running :)
+    static bool oldCommonControls = !UsesCommonControls6();
 
     wxImage im;
-    im.LoadFile(filename, wxBITMAP_TYPE_PNG);
-    if(isWindows2000)
+    im.LoadFile(filename, bitmapType);
+    if (oldCommonControls && im.HasAlpha())
         im.ConvertAlphaToMask();
 
-    wxBitmap bmp(im);
-    return bmp;
+    return wxBitmap(im);
 }
 
 void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)

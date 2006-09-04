@@ -136,7 +136,7 @@ void CodeSnippetsWindow::InitDialog()
 
 	for (int i = 0; i < SNIPPETS_TREE_IMAGE_COUNT; ++i)
 	{
-		wxBitmap imageFile(dataFolder + wxFILE_SEP_PATH + _T("codesnippets") + wxFILE_SEP_PATH + snippetsTreeImageFileNames[i], wxBITMAP_TYPE_PNG);
+		wxBitmap imageFile = cbLoadBitmap(dataFolder + wxFILE_SEP_PATH + _T("codesnippets") + wxFILE_SEP_PATH + snippetsTreeImageFileNames[i], wxBITMAP_TYPE_PNG);
 		m_SnippetsTreeImageList->Add(imageFile, maskColor);
 	}
 

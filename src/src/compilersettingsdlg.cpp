@@ -96,8 +96,8 @@ void CompilerSettingsDlg::AddPluginPanels()
         cbConfigurationPanel* panel = local[i];
         lb->AddPage(panel, panel->GetTitle());
 
-        lb->GetImageList()->Add(LoadPNGWindows2000Hack(base + panel->GetBitmapBaseName() + _T(".png")));
-        lb->GetImageList()->Add(LoadPNGWindows2000Hack(base + panel->GetBitmapBaseName() + _T("-off.png")));
+        lb->GetImageList()->Add(cbLoadBitmap(base + panel->GetBitmapBaseName() + _T(".png")));
+        lb->GetImageList()->Add(cbLoadBitmap(base + panel->GetBitmapBaseName() + _T("-off.png")));
         lb->SetPageImage(lb->GetPageCount() - 1, lb->GetImageList()->GetImageCount() - 2);
 
         // add it in our central container too
@@ -107,9 +107,9 @@ void CompilerSettingsDlg::AddPluginPanels()
     // now load the builtin pages' images
     lb->AddPage(existingPage, existingTitle);
     wxBitmap bmp;
-    bmp.LoadFile(base + base_imgs[0] + _T(".png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(base + base_imgs[0] + _T(".png"), wxBITMAP_TYPE_PNG);
     lb->GetImageList()->Add(bmp);
-    bmp.LoadFile(base + base_imgs[0] + _T("-off.png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(base + base_imgs[0] + _T("-off.png"), wxBITMAP_TYPE_PNG);
     lb->GetImageList()->Add(bmp);
     lb->SetPageImage(lb->GetPageCount() -1, lb->GetImageList()->GetImageCount() - 2);
 
@@ -120,8 +120,8 @@ void CompilerSettingsDlg::AddPluginPanels()
         cbConfigurationPanel* panel = local[i];
         lb->AddPage(panel, panel->GetTitle());
 
-        lb->GetImageList()->Add(LoadPNGWindows2000Hack(base + panel->GetBitmapBaseName() + _T(".png")));
-        lb->GetImageList()->Add(LoadPNGWindows2000Hack(base + panel->GetBitmapBaseName() + _T("-off.png")));
+        lb->GetImageList()->Add(cbLoadBitmap(base + panel->GetBitmapBaseName() + _T(".png")));
+        lb->GetImageList()->Add(cbLoadBitmap(base + panel->GetBitmapBaseName() + _T("-off.png")));
         lb->SetPageImage(lb->GetPageCount() - 1, lb->GetImageList()->GetImageCount() - 2);
 
         // add it in our central container too

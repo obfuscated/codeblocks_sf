@@ -395,7 +395,7 @@ void CompilerGCC::OnAttach()
     // set log image
     wxBitmap bmp;
     wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
-    bmp.LoadFile(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG);
     Manager::Get()->GetMessageManager()->SetLogImage(m_Log, bmp);
 
     // create warnings/errors log
@@ -410,7 +410,7 @@ void CompilerGCC::OnAttach()
     m_ListPageIndex = msgMan->AddLog(m_pListLog, _("Build messages"));
 
     // set log image
-    bmp.LoadFile(prefix + _T("flag_16x16.png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(prefix + _T("flag_16x16.png"), wxBITMAP_TYPE_PNG);
     Manager::Get()->GetMessageManager()->SetLogImage(m_pListLog, bmp);
 
     // set default compiler for new projects

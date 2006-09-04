@@ -336,7 +336,7 @@ void ProjectManager::BuildTree()
     while (!imgs[i].IsEmpty())
     {
 //        cbMessageBox(wxString::Format(_T("%d: %s"), i, wxString(prefix + imgs[i]).c_str()));
-        bmp.LoadFile(prefix + imgs[i], wxBITMAP_TYPE_PNG); // workspace
+        bmp = cbLoadBitmap(prefix + imgs[i], wxBITMAP_TYPE_PNG); // workspace
         m_pImages->Add(bmp);
         ++i;
     }

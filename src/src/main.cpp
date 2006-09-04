@@ -71,45 +71,6 @@
 
 #include "../sdk/uservarmanager.h"
 
-// function to check the common controls version
-// (should it be moved in sdk globals?)
-#ifdef __WXMSW__
-#include <windows.h>
-#include <shlwapi.h>
-bool UsesCommonControls6()
-{
-    bool result = false;
-    HINSTANCE hinstDll;
-    DWORD dwVersion = 0;
-    hinstDll = LoadLibrary(L"comctl32.dll");
-    if(hinstDll)
-    {
-        DLLGETVERSIONPROC pDllGetVersion;
-        pDllGetVersion = (DLLGETVERSIONPROC)GetProcAddress(hinstDll, "DllGetVersion");
-
-        if (pDllGetVersion)
-        {
-            DLLVERSIONINFO dvi;
-            HRESULT hr;
-
-            ZeroMemory(&dvi, sizeof(dvi));
-            dvi.cbSize = sizeof(dvi);
-
-            hr = (*pDllGetVersion)(&dvi);
-
-            if (SUCCEEDED(hr))
-            {
-               dwVersion = MAKELONG(dvi.dwMinorVersion, dvi.dwMajorVersion);
-               result = dvi.dwMajorVersion == 6;
-            }
-        }
-
-        FreeLibrary(hinstDll);
-    }
-    return result;
-}
-#endif
-
 class wxMyFileDropTarget : public wxFileDropTarget
 {
 public:
@@ -775,7 +736,7 @@ void MainFrame::CreateToolbars()
 
 void MainFrame::AddToolbarItem(int id, const wxString& title, const wxString& shortHelp, const wxString& longHelp, const wxString& image)
 {
-    m_pToolbar->AddTool(id, title, wxBitmap(image, wxBITMAP_TYPE_PNG));
+    m_pToolbar->AddTool(id, title, cbLoadBitmap(image, wxBITMAP_TYPE_PNG));
     m_pToolbar->SetToolShortHelp(id, shortHelp);
     m_pToolbar->SetToolLongHelp(id, longHelp);
 }
