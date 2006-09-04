@@ -742,11 +742,12 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
                 else
                 {
                     contents << output;
-                    if (reGenericHexAddress.Matches(output))
-                    {
-                        contents.Replace(reGenericHexAddress.GetMatch(output, 1), _T(""));
-                        contents.Trim(false);
-                    }
+                    // the following breaks the text when it *is* a hex number
+//                    if (reGenericHexAddress.Matches(output))
+//                    {
+//                        contents.Replace(reGenericHexAddress.GetMatch(output, 1), _T(""));
+//                        contents.Trim(false);
+//                    }
                 }
             }
 

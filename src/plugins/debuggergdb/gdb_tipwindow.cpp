@@ -347,10 +347,22 @@ wxSize GDBTipWindowView::GetTextSize(wxArrayString& array, const wxString& text,
                 m_parent->m_heightLine = height;
         }
     }
+    
+    // this can happen if no newline and small enough not to break in lines
+    if (array.GetCount() == 0)
+        array.Add(text);
 
+    // this can happen if the text was empty; set a default height
+    if (m_parent->m_heightLine == 0)
+    {
+        dc.GetTextExtent(_T("Wq"), &width, &height);
+        m_parent->m_heightLine = height;
+    }
+    
     wxSize ret;
     ret.x = widthMax;
     ret.y = array.GetCount() * m_parent->m_heightLine;
+    DBGLOG(_T("text='%s', y=%d, m_parent->m_heightLine=%d"), text.c_str(), ret.y, m_parent->m_heightLine);
     return ret;
 }
 
