@@ -1045,6 +1045,11 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
 		m_Function->SetSelection(sel);
 		m_Scope->SetSelection(sel);
 	}
+	else
+	{
+		m_Function->SetSelection(wxNOT_FOUND);
+		// TO DO : set scope correctly
+	}
 } // end of ParseFunctionsAndFillToolbar
 
 void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
@@ -1482,6 +1487,11 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 		{
 			m_Function->SetSelection(sel);
 			m_Scope->SetSelection(sel);
+		}
+		else if(sel == -1)
+		{
+			m_Function->SetSelection(wxNOT_FOUND);
+			// TO DO : set scope correctly
 		}
 	}
 
