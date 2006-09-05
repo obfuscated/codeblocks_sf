@@ -598,7 +598,7 @@ bool UsesCommonControls6()
     bool result = false;
     HINSTANCE hinstDll;
     DWORD dwVersion = 0;
-    hinstDll = LoadLibrary("comctl32.dll");
+    hinstDll = LoadLibrary(_T("comctl32.dll"));
     if(hinstDll)
     {
         DLLGETVERSIONPROC pDllGetVersion;
