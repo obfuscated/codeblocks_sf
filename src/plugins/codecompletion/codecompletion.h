@@ -6,6 +6,7 @@
 #include <cbproject.h>
 #include <simpletextlog.h>
 #include <sdk_events.h>
+#include <wx/string.h>
 #include "nativeparser.h"
 
 #include <wx/timer.h>
@@ -37,13 +38,17 @@ class CodeCompletion : public cbCodeCompletionPlugin
         virtual void CodeCompleteIncludes();
 
         void EditorEventHook(cbEditor* editor, wxScintillaEvent& event);
-	private:
 
 		struct FunctionScope
 		{
 			int StartLine;
 			int EndLine;
+			wxString Name;
+			wxString Scope;
 		};
+
+	private:
+
 
     	void OnUpdateUI(wxUpdateUIEvent& event);
 		void OnViewClassBrowser(wxCommandEvent& event);

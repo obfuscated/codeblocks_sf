@@ -57,6 +57,8 @@
 #include <wx/tokenzr.h>
 
 #include <set> // for handling unique items in some places
+#include <algorithm>
+#include <iterator>
 
 using namespace std;
 
@@ -976,6 +978,19 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
     event.Skip();
 }
 
+// compare method for the sort algorithm for our FunctionScope struct
+bool LessFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
+{
+	if(fs1.Name == fs2.Name)
+	{
+		return fs1.StartLine < fs2.StartLine;
+	}
+	else
+	{
+		return fs1.Name < fs2.Name;
+	}
+} // end of LessFunctionScope
+
 
 // help method in finding the function position in the vector for the function containing the current line
 int CodeCompletion::FunctionPosition() const
@@ -1006,38 +1021,35 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
 	Parser parser(this);
 	parser.ParseBufferForFunctions(ed->GetControl()->GetText());
 
-	wxArrayString funcs;
 	TokensTree* tmptree = parser.GetTempTokens();
-//		size_t LDC1 = tmptree->size();
 	for(size_t i = 0; i < tmptree->size(); ++i)
 	{
-		Token* token = tmptree->at(i);
+		const Token* token = tmptree->at(i);
 		if (token && (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor)
 			&& token->m_ImplLine != 0)
 		{
-//				if(token->m_TokenKind == tkConstructor)
-//				{
-//					FunctionScope func;
-//					func.StartLine = token->m_ImplLine;
-//					func.EndLine = token->m_ImplLineEnd;
-//					int q = 0;
-//				}
 			FunctionScope func;
 			func.StartLine = token->m_ImplLine - 1;
 			func.EndLine = token->m_ImplLineEnd - 1;
-//				wxString name = token->DisplayName();
-			m_FunctionsScope.push_back(func);;
-//				m_Function->Append(token->DisplayName());
+			func.Scope = token->GetNamespace();
 			wxString result = token->m_Name;
 			result << token->m_Args;
 			if (!token->m_Type.IsEmpty())
 				result << _T(" : ") << token->m_Type;
-			m_Function->Append(result);
-
-			m_Scope->Append(token->GetNamespace());
+			func.Name = result;
+			m_FunctionsScope.push_back(func);
 		}
 	}
-//		int LDC2 = m_FunctionsScope.size();
+	// sort the vector
+	sort(m_FunctionsScope.begin(), m_FunctionsScope.end(), LessFunctionScope);
+	// add to the choice controls
+	for(unsigned int idxFn = 0; idxFn < m_FunctionsScope.size(); ++idxFn)
+	{
+		const FunctionScope fs = m_FunctionsScope[idxFn];
+		m_Function->Append(fs.Name);
+		m_Scope->Append(fs.Scope);
+	} // end for : idx : idxFn
+
 	m_CurrentLine = ed->GetControl()->GetCurrentLine();
 	int sel = FunctionPosition();
 	if(sel != -1)
