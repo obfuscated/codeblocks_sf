@@ -142,6 +142,7 @@ struct cbEditorInternalData
         m_LastMarginMenuLine(-1),
         m_LastDebugLine(-1),
         m_useByteOrderMark(false),
+        m_byteOrderMarkLength(0),
         m_lineNumbersWidth(0)
     {
         m_encoding = wxLocale::GetSystemEncoding();
@@ -316,6 +317,7 @@ struct cbEditorInternalData
 
     wxFontEncoding m_encoding;
     bool m_useByteOrderMark;
+    int m_byteOrderMarkLength;
 
     int m_lineNumbersWidth;
 
@@ -1067,6 +1069,7 @@ void cbEditor::DetectEncoding( )
         return;
 
     m_pData->m_useByteOrderMark = detector.UsesBOM();
+    m_pData->m_byteOrderMarkLength = detector.GetBOMSizeInBytes();
     m_pData->m_encoding = detector.GetFontEncoding();
 
     // FIXME: Should this default to local encoding or latin-1? (IOW, implement proper encoding detection)
@@ -1117,7 +1120,9 @@ bool cbEditor::Open(bool detectEncoding)
     m_pControl->SetModEventMask(0);
     if (detectEncoding)
         DetectEncoding();
-    m_pControl->InsertText(0, cbReadFileContents(file, GetEncoding()));
+    st = cbReadFileContents(file, GetEncoding());
+    st.Remove(0, m_pData->m_byteOrderMarkLength / sizeof(wxChar)); // remove BOM (if there)
+    m_pControl->InsertText(0, st);
     m_pControl->EmptyUndoBuffer();
     m_pControl->SetModEventMask(wxSCI_MODEVENTMASKALL);
 

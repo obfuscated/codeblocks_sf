@@ -367,7 +367,7 @@ wxString ChooseDirectory(wxWindow* parent,
     return path.GetFullPath();
 }
 
-// Reads a wxString from a non-unicode file. File must be open. File is closed automatically.
+// Reads a wxString from a file. File must be open. File is closed automatically.
 bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
 {
     st.Empty();
@@ -390,8 +390,20 @@ bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
     file.Close();
     buff[len]='\0';
 
-    wxCSConv conv(encoding);
-    st = wxString((const char *)buff, conv);
+    if (encoding != wxFONTENCODING_UTF16 &&
+        encoding != wxFONTENCODING_UTF16LE &&
+        encoding != wxFONTENCODING_UTF16BE &&
+        encoding != wxFONTENCODING_UTF32 &&
+        encoding != wxFONTENCODING_UTF32LE &&
+        encoding != wxFONTENCODING_UTF32BE)
+    {
+        // crashes deep in the runtime (windows, at least)
+        // if one of the above encodings, hence the guard
+        wxCSConv conv(encoding);
+        st = wxString((const char *)buff, conv);
+    }
+    else
+        st = wxString((const wxChar*)buff);
 
     delete[] buff;
 #else
