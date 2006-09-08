@@ -1839,10 +1839,10 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
     if (!ed || !project)
         return;
 
-    if (ed->IsOK() &&
-        cbMessageBox(_("Do you want to add this new file in the active project?"),
+    if (cbMessageBox(_("Do you want to add this new file in the active project (has to be saved first)?"),
                     _("Add file to project"),
-                    wxYES_NO | wxICON_QUESTION) == wxID_YES)
+                    wxYES_NO | wxICON_QUESTION) == wxID_YES &&
+        ed->SaveAs() && ed->IsOK())
     {
         wxArrayInt targets;
         if (Manager::Get()->GetProjectManager()->AddFileToProject(ed->GetFilename(), project, targets) != 0)
