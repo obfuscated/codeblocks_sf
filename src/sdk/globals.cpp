@@ -424,7 +424,7 @@ wxString cbReadFileContents(wxFile& file, wxFontEncoding encoding)
     return st;
 }
 
-// Writes a wxString to a non-unicode file. File must be open. File is closed automatically.
+// Writes a wxString to a file. File must be open. File is closed automatically.
 bool cbWrite(wxFile& file, const wxString& buff, wxFontEncoding encoding)
 {
     bool result = false;
@@ -489,8 +489,23 @@ bool cbSaveToFile(const wxString& filename, const wxString& contents, wxFontEnco
                     return false;
             }
         }
-        if (!file.Write(contents, conv))
-            return false;
+
+        if (encoding != wxFONTENCODING_UTF16 &&
+            encoding != wxFONTENCODING_UTF16LE &&
+            encoding != wxFONTENCODING_UTF16BE &&
+            encoding != wxFONTENCODING_UTF32 &&
+            encoding != wxFONTENCODING_UTF32LE &&
+            encoding != wxFONTENCODING_UTF32BE)
+        {
+            file.Write(contents, conv);
+        }
+        else
+        {
+            const char* s = (const char*)contents.c_str();
+            size_t len = contents.Length() * sizeof(wxChar);
+            if (!file.Write(s, len))
+                return false;
+        }
         if (!file.Commit())
             return false;
     }
