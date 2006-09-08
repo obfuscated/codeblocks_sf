@@ -1,10 +1,12 @@
 #ifndef DEBUGGERSTATE_H
 #define DEBUGGERSTATE_H
 
+#include <wx/string.h>
 #include "debugger_defs.h"
 
 class DebuggerGDB;
 class ProjectBuildTarget;
+class cbProject;
 
 class DebuggerState
 {
