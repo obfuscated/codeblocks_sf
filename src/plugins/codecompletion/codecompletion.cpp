@@ -597,8 +597,10 @@ void CodeCompletion::CodeCompleteIncludes()
         if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
         {
             wxFileName fname(pf->relativeFilename);
-            files.Add(pf->relativeFilename);
-            files.Add(fname.GetFullName());
+            if (files.Index(pf->relativeFilename) == wxNOT_FOUND)
+                files.Add(pf->relativeFilename);
+            if (files.Index(fname.GetFullName()) == wxNOT_FOUND)
+                files.Add(fname.GetFullName());
         }
     }
 
