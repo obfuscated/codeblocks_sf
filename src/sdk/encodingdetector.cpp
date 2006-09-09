@@ -88,6 +88,13 @@ bool EncodingDetector::DetectEncoding(const wxString& filename)
     }
     else
     {
+        return true;
+
+//-------------------------------------------------------------------//
+// The code below is currently ignored because it's missing          //
+// a conversion to utf8, in case of utf16, so scintilla can show it. //
+//-------------------------------------------------------------------//
+
         // try guessing by scanning the buffer
         file.Open(filename);
 
