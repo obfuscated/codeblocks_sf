@@ -4,7 +4,7 @@
 #include <wx/hashmap.h>
 #include <wx/treectrl.h>
 
-class wxsResource;
+#include "wxsresource.h"
 
 /** \brief Manager for external resources
  *
@@ -16,19 +16,25 @@ class wxsExtResManager
 {
     public:
 
+        /** \brief Checking if can handle given file type */
+        bool CanOpen(const wxString& FileName);
+
         /** \brief Opening external file */
         bool Open(const wxString& FileName);
 
-        /** \brief Function notifying that editor has been closed */
-        void ResClosed(wxsResource* Res);
-
         /** \brief Returning singleton object */
-        static wxsExtResManager* Get() { return &Singleton; }
+        static wxsExtResManager* Get() { return &m_Singleton; }
 
     private:
 
-        /** \brief Opening external xrc file */
-        bool OpenXrc(const wxString& FileName);
+        WX_DECLARE_STRING_HASH_MAP(wxsResource*,FilesMapT);
+        typedef FilesMapT::iterator FilesMapI;
+
+        FilesMapT m_Files;                        ///< \brief Map of opened files
+        static wxsExtResManager m_Singleton;      ///< \brief Singleton object
+
+        /** \brief Function notifying that editor has been closed */
+        void EditorClosed(wxsResource* Res);
 
         /** \brief Ctor, private to forbid creating own instances */
         wxsExtResManager();
@@ -36,11 +42,11 @@ class wxsExtResManager
         /** \brief Dctor */
         ~wxsExtResManager();
 
-        WX_DECLARE_STRING_HASH_MAP(wxsResource*,FilesMapT);
-        typedef FilesMapT::iterator FilesMapI;
-
-        FilesMapT Files;                        ///< \brief Map of opened files
-        static wxsExtResManager Singleton;      ///< \brief Singleton object
+        // Allow calling EditorClosed from wxsResource
+        friend class wxsResource;
 };
+
+/** \brief Helper function to access external resource manager easily */
+inline wxsExtResManager* wxsExtRes() { return wxsExtResManager::Get(); }
 
 #endif

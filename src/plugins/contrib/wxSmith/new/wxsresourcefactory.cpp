@@ -1,50 +1,122 @@
 #include "wxsresourcefactory.h"
 
-#include "resources/wxsdialogres.h"
-#include "resources/wxsframeres.h"
-#include "resources/wxspanelres.h"
+wxsResourceFactory* wxsResourceFactory::m_UpdateQueue = NULL;
+wxsResourceFactory* wxsResourceFactory::m_Initialized = NULL;
+wxsResourceFactory::HashT wxsResourceFactory::m_Hash;
+wxString wxsResourceFactory::m_LastExternalName;
+wxsResourceFactory* wxsResourceFactory::m_LastExternalFactory = NULL;
 
-wxsResourceFactory wxsResourceFactory::Singleton;
+wxsResourceFactory::wxsResourceFactory()
+{
+    m_Next = m_UpdateQueue;
+    m_UpdateQueue = this;
+}
+
+wxsResourceFactory::~wxsResourceFactory()
+{
+}
+
+void wxsResourceFactory::InitializeFromQueue()
+{
+    while ( m_UpdateQueue )
+    {
+        wxsResourceFactory* NextFactory = m_UpdateQueue->m_Next;
+        m_UpdateQueue->Initialize();
+        m_UpdateQueue = NextFactory;
+    }
+}
+
+inline void wxsResourceFactory::Initialize()
+{
+    for ( int i=OnGetCount(); i-->0; )
+    {
+        wxString Name;
+        wxString GUI;
+        bool CanBeMain=false;
+        OnGetInfo(i,Name,GUI,CanBeMain);
+        ResourceInfo& Info = m_Hash[Name];
+        Info.m_Factory = this;
+        Info.m_Number = i;
+        Info.m_CanBeMain = CanBeMain;
+        Info.m_GUI = GUI;
+    }
+
+    m_Next = m_Initialized;
+    m_Initialized = this;
+}
 
 wxsResource* wxsResourceFactory::Build(const wxString& ResourceType,wxsProject* Project)
 {
-    #define RES(ClassName,TypeName) if ( _T(#TypeName) == ResourceType ) return new ClassName(Project);
+    InitializeFromQueue();
+    ResourceInfo& Info = m_Hash[ResourceType];
+    if ( !Info.m_Factory )
+    {
+        return NULL;
+    }
+    return Info.m_Factory->OnCreate(Info.m_Number,Project);
+}
 
-    // For compatibility with older resource types, using old names
-    RES(wxsDialogRes,dialog)
-    RES(wxsFrameRes,frame)
-    RES(wxsPanelRes,panel)
+bool wxsResourceFactory::CanBeMain(const wxString& ResourceType)
+{
+    InitializeFromQueue();
+    return m_Hash[ResourceType].m_CanBeMain;
+}
 
-    RES(wxsDialogRes,wxDialog)
-    RES(wxsFrameRes,wxFrame)
-    RES(wxsPanelRes,wxPanel)
-    #undef RES
+bool wxsResourceFactory::CanHandleExternal(const wxString& FileName)
+{
+    InitializeFromQueue();
+    for ( wxsResourceFactory* Factory = m_Initialized; Factory; Factory=Factory->m_Next )
+    {
+        if ( Factory->OnCanHandleExternal(FileName) )
+        {
+            m_LastExternalName = FileName;
+            m_LastExternalFactory = Factory;
+            return true;
+        }
+    }
+    m_LastExternalName = wxEmptyString;
+    m_LastExternalFactory = NULL;
+    return false;
+}
+
+wxsResource* wxsResourceFactory::BuildExternal(const wxString& FileName)
+{
+    InitializeFromQueue();
+    if ( m_LastExternalFactory && (m_LastExternalName==FileName) )
+    {
+        return m_LastExternalFactory->OnBuildExternal(FileName);
+    }
+    for ( wxsResourceFactory* Factory = m_Initialized; Factory; Factory=Factory->m_Next )
+    {
+        wxsResource* Res = Factory->OnBuildExternal(FileName);
+        if ( Res ) return Res;
+    }
     return NULL;
 }
 
-int wxsResourceFactory::GetResTypesCnt()
+void wxsResourceFactory::BuildSmithMenu(wxMenu* menu)
 {
-    return 3;
+    InitializeFromQueue();
+    for ( wxsResourceFactory* Factory = m_Initialized; Factory; Factory=Factory->m_Next )
+    {
+        Factory->OnBuildSmithMenu(menu);
+    }
 }
 
-wxString wxsResourceFactory::GetResType(int No)
+void wxsResourceFactory::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
-    switch ( No )
+    InitializeFromQueue();
+    for ( wxsResourceFactory* Factory = m_Initialized; Factory; Factory=Factory->m_Next )
     {
-        case 0: return _T("wxDialog");
-        case 1: return _T("wxFrame");
-        case 2: return _T("wxPanel");
+        Factory->OnBuildModuleMenu(type,menu,data);
     }
-    return _T("");
 }
 
-wxString wxsResourceFactory::GetResBrowserName(int No)
+void wxsResourceFactory::BuildToolBar(wxToolBar* toolBar)
 {
-    switch ( No )
+    InitializeFromQueue();
+    for ( wxsResourceFactory* Factory = m_Initialized; Factory; Factory=Factory->m_Next )
     {
-        case 0: return _("wxDialog resources");
-        case 1: return _("wxFrame resources");
-        case 2: return _("wxPanel resources");
+        Factory->OnBuildToolBar(toolBar);
     }
-    return _T("");
 }

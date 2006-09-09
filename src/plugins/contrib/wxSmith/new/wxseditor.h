@@ -12,6 +12,12 @@ class wxsResource;
  *
  * Resource is only an information that given resource should exist.
  * Editor does load this resource and allow user to edit it.
+ *
+ * When edting resource it should always be done in such form:
+ *  - Call BeginChange() to put resource into unstable state
+ *  - Change datga of reosource (without updating informations on screen)
+ *  - Call EndChange() which should update data on screen
+ *
  */
 class wxsEditor: public EditorBase
 {
@@ -24,23 +30,12 @@ class wxsEditor: public EditorBase
 		virtual ~wxsEditor();
 
 		/** \brief Getting current resouce */
-		inline wxsResource* GetResource() { return Resource; }
-
-		/** \brief Function called when resource is goingto change
-		 *
-		 * This function notifies editor that resource is going to change.
-		 * During the change, resource is considered as unstable, and won't
-		 * be processed by editor. After the change you MUST call UnlockResource().
-		 */
-		virtual void ResourceLock() = 0;
-
-		/** \brief Function called when resource change is finished */
-		virtual void ResourceUnlock() = 0;
+		inline wxsResource* GetResource() { return m_Resource; }
 
 	private:
 
         /** \brief Currently associated resource */
-        wxsResource* Resource;
+        wxsResource* m_Resource;
 };
 
 #endif

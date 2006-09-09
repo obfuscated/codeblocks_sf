@@ -269,6 +269,7 @@ bool wxsWindowRes::LoadResource()
         TiXmlElement* Structure = TiXmlHandle(&DocXRC).FirstChildElement("resource").FirstChildElement("object").Element();
         if ( Structure )
         {
+            // TODO: Show some notification dialog
             LOG(_("wxSmith warning: Resource '%s' is using obsolete wxs format, it will be updated."),ClassName.c_str());
             RequireUpdate = true;
         }
@@ -356,14 +357,12 @@ bool wxsWindowRes::LoadResource()
         RootItem->XmlRead(Structure,true,true);
     }
 
-    // Clearing undo buffer and adding new position from current entry
-    // TODO: Check if undo things are really done
-
     if ( RequireUpdate )
     {
         Modified = true;
         SaveResource();
     }
+
     Modified = false;
     return true;
 }

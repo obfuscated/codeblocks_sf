@@ -1,9 +1,6 @@
 #include "wxsextresmanager.h"
-
-#include "resources/wxsdialogres.h"
-#include "resources/wxsframeres.h"
-#include "resources/wxspanelres.h"
 #include "wxsmith.h"
+#include "wxsresourcefactory.h"
 
 wxsExtResManager::wxsExtResManager()
 {
@@ -11,32 +8,59 @@ wxsExtResManager::wxsExtResManager()
 
 wxsExtResManager::~wxsExtResManager()
 {
-    for ( FilesMapI i = Files.begin(); i!=Files.end(); ++i )
+    int TestCnt = m_Files.size();
+    while ( !m_Files.empty() )
     {
-        delete i->second;
+        // Each delete should remove one entry
+        delete m_Files.begin()->second;
+        // Just in case of invalid resources to avoid infinite loops
+        if ( --TestCnt < 0 ) break;
     }
-    Files.clear();
+}
+
+bool wxsExtResManager::CanOpen(const wxString& FileName)
+{
+    if ( m_Files.find(FileName) != m_Files.end() ) return true;
+    return wxsResourceFactory::CanHandleExternal(FileName);
 }
 
 bool wxsExtResManager::Open(const wxString& FileName)
 {
-    FilesMapI i = Files.find(FileName);
-    if ( i!=Files.end() )
+    if ( m_Files.find(FileName) == m_Files.end() )
     {
-        // File is already opened in editor
-        i->second->EditOpen();
+        wxsResource* NewResource = wxsResourceFactory::BuildExternal(FileName);
+        if ( !NewResource ) return false;
+        NewResource->BuildTreeEntry(wxsTree()->ExternalResourcesId());
+        m_Files[FileName] = NewResource;
+        NewResource->EditOpen();
         return true;
     }
 
-    wxString Ext = wxFileName(FileName).GetExt().Upper();
-    if ( Ext == _T("XRC") )
-    {
-        return OpenXrc(FileName);
-    }
-
-    return false;
+    m_Files[FileName]->EditOpen();
+    return true;
 }
 
+void wxsExtResManager::EditorClosed(wxsResource* Res)
+{
+    for ( FilesMapI i = m_Files.begin(); i!=m_Files.end(); ++i )
+    {
+        if ( i->second == Res )
+        {
+            m_Files.erase(i);
+            wxsTree()->Delete(Res->GetTreeItemId());
+            delete Res;
+            if ( m_Files.empty() )
+            {
+                wxsTree()->DeleteExternalResourcesId();
+            }
+            return;
+        }
+    }
+}
+
+wxsExtResManager wxsExtResManager::m_Singleton;
+
+/*
 bool wxsExtResManager::OpenXrc(const wxString& FileName)
 {
     TiXmlDocument Doc;
@@ -85,23 +109,5 @@ bool wxsExtResManager::OpenXrc(const wxString& FileName)
     Files[FileName] = NewRes;
     return true;
 }
+*/
 
-void wxsExtResManager::ResClosed(wxsResource* Res)
-{
-    for ( FilesMapI i = Files.begin(); i!=Files.end(); ++i )
-    {
-        if ( i->second == Res )
-        {
-            Files.erase(i);
-            wxsTREE()->Delete(Res->GetTreeItemId());
-            delete Res;
-            if ( Files.empty() )
-            {
-                wxsTREE()->DeleteExternalResourcesId();
-            }
-            return;
-        }
-    }
-}
-
-wxsExtResManager wxsExtResManager::Singleton;

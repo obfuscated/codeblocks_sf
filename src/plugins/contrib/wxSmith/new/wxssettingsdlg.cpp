@@ -1,10 +1,11 @@
+/*
 #include "wxssettingsdlg.h"
 
 #include <configmanager.h>
 #include <wx/colordlg.h>
-#include "wxsglobals.h"
-#include "wxssizer.h"
-#include "editors/wxswindoweditor.h"
+//#include "wxsglobals.h"
+//#include "wxssizer.h"
+//#include "editors/wxswindoweditor.h"
 
 BEGIN_EVENT_TABLE(wxsSettingsDlg,wxPanel)
     //(*EventTable(wxsSettingsDlg)
@@ -255,3 +256,4 @@ void wxsSettingsDlg::OnDragAssistTypeSelect(wxCommandEvent& event)
     DragTargetCol->Enable(Enable);
     DragParentCol->Enable(Enable);
 }
+*/

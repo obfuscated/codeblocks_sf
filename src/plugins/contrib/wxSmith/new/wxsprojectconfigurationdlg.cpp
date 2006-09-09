@@ -1,3 +1,13 @@
+/*
+
+    WARNING !!!
+   =============
+
+   This file is going to be removed soon
+
+*/
+
+/*
 #include "wxsheaders.h"
 #include "wxsprojectconfigurationdlg.h"
 
@@ -171,3 +181,4 @@ void wxsProjectConfigurationDlg::OnButton2Click(wxCommandEvent& event)
 {
     AutoLoad->Clear();
 }
+*/

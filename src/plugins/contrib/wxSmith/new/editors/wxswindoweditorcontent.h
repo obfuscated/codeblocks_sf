@@ -110,8 +110,8 @@ class wxsWindowEditorContent: public wxsDrawingWindow
         inline wxsItem* RootItem()       { return ((wxsWindowRes*)Parent->GetResource())->GetRootItem();      }
         inline wxsItem* RootSelection()  { return ((wxsWindowRes*)Parent->GetResource())->GetRootSelection(); }
         inline void SetCur(int Cur)      { SetCursor(wxCursor(Cur)); }
-        inline void ResourceLock()       { Parent->ResourceLock(); }
-        inline void ResourceUnlock()     { Parent->ResourceUnlock(); }
+        inline void BeginChange()        { Parent->BeginChange(); }
+        inline void EndChange()          { Parent->EndChange(); }
 
         void RebuildDragPoints();
         void ClearDragPoints();

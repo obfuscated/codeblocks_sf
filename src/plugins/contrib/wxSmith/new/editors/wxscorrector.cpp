@@ -8,7 +8,7 @@ wxsCorrector::wxsCorrector(wxsWindowRes* Resource): Res(Resource), NeedRebuild(t
 {
 }
 
-void wxsCorrector::GlobalCheck()
+bool wxsCorrector::GlobalCheck()
 {
     // It will be done in two passes,
     // first will correct all invalid names, second will fill empty names
@@ -21,11 +21,8 @@ void wxsCorrector::GlobalCheck()
 
     NeedRebuild = false;
 
-    if ( AreInvalid || AreEmpty )
-    {
-        ::wxMessageBox(_("Some properties were updated during load.\n"
-                         "You may need to validate new values."));
-    }
+    if ( AreInvalid || AreEmpty ) return true;
+    return false;
 }
 
 bool wxsCorrector::FixAfterLoadCheckNames(wxsItem* Item)

@@ -1,41 +1,48 @@
 #include "wxsresource.h"
-#include "wxsproject.h"
-#include "wxseditor.h"
+#include "wxsextresmanager.h"
 
-#include <wx/msgdlg.h>
-
-wxsResource::wxsResource(wxsProject* _Project): Editor(NULL), Project(_Project), Language(wxsCPP)
-{
-}
+wxsResource::wxsResource(wxsProject* Owner,const wxString& ResourceName,const wxString& ResourceType,wxsCodingLang Language,bool UsingXRC):
+    m_ResourceType(ResourceType),
+    m_ResourceName(ResourceName),
+    m_Owner(Owner),
+    m_Language(Language),
+    m_UsingXRC(UsingXRC)
+{}
 
 wxsResource::~wxsResource()
-{
-    EditClose();
-}
+{}
 
 void wxsResource::EditOpen()
 {
-    if ( !Editor )
+    if ( m_Editor )
     {
-        Editor = CreateEditor();
+        m_Editor->Activate();
     }
-
-    if ( Editor )
+    else
     {
-        assert ( Editor->GetResource() == this );
-        Editor->Activate();
+        m_Editor = OnCreateEditor();
     }
 }
 
 void wxsResource::EditClose()
 {
-    if ( !Editor ) return;
-    Editor->Close();
+    if ( m_Editor )
+    {
+        m_Editor->Close();
+        // Inside Close() m_Editor should be zeroed
+    }
 }
 
-void wxsResource::EditorSaysHeIsClosing()
+void wxsResource::EditorClosed()
 {
-    assert ( Editor != NULL );
-    Editor = NULL;
-    EditorClosed();
+    m_Editor = NULL;
+    if ( !m_Owner )
+    {
+        wxsExtRes()->EditorClosed(this);
+    }
+}
+
+void wxsResource::BuildTreeEntry(const wxsResourceItemId& Parent)
+{
+    m_TreeItemId = wxsTree()->AppendItem(Parent,GetResourceName());
 }

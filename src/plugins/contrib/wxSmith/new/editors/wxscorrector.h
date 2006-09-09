@@ -23,8 +23,10 @@ class wxsCorrector
          * This function scans all items searching for duplicates of
          * variable names and identifiers. For duplicates, new values are
          * created. Also empty fields are filled with new items.
+         *
+         * \return false if all data was correct, false otherwise
          */
-        void GlobalCheck();
+        bool GlobalCheck();
 
         /** \brief Correcting data after change of item properties
          *

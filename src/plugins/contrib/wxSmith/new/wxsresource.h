@@ -1,145 +1,131 @@
 #ifndef WXSRESOURCE_H
 #define WXSRESOURCE_H
 
-#include <wx/treectrl.h>
-#include <tinyxml/tinyxml.h>
+#include "wxseditor.h"
 #include "wxscodinglang.h"
+#include "wxsresourcetree.h"
 
-// Forward declarations
-class wxSmith;
 class wxsProject;
-class wxsEditor;
 
-/** \brief Class representing one resource
+/** \brief Class used to manage basic resource information
  *
- * This class provides generic interface ans some basic managment for
- * resources. All resource classes must be derived from this one.
- *
- * This class should not hold data always. Data should be read on EditOpen
- * and freed on EditClose funcitons. When there's no editor, this class just
- * informs that given resource does exist somewhere (or more precise: should
- * exist if it's not broken).
+ * This class represents resource inside project (or external one).
+ * It should keep only basic resource information but not resource data.
+ * It's stored inside internal wxsEditor's structures.
  */
-class wxsResource: public wxObject
+class wxsResource
 {
-	public:
+    public:
 
-        /** \brief Ctor */
-		wxsResource(wxsProject* Project);
+        /** \brief Ctor
+         *  \param ResourceName name of resource (f.ex. class name)
+         *  \param ResourceType name of resource type
+         *  \param CanBeMain set to true when this resource can be main application's resource
+         */
+        wxsResource(wxsProject* Owner,const wxString& ResourceName,const wxString& ResourceType,wxsCodingLang Language=wxsCPP,bool UsingXRC=false);
 
-		/** \brief Dctor */
-		virtual ~wxsResource();
+        /** \brief dctor */
+        virtual ~wxsResource();
 
-		/** \brief Function returing resource type */
-		virtual wxString GetType() = 0;
+        /** \brief Getting resource type */
+        inline const wxString& GetResourceType() { return m_ResourceType; }
+
+        /** \brief Getting coding language used inside this resource */
+        inline wxsCodingLang GetLanguage() { return m_Language; }
 
         /** \brief Getting resource name */
-        virtual const wxString& GetResourceName() = 0;
+        inline const wxString& GetResourceName() { return m_ResourceName; }
 
-		/** \brief Getting current project */
-		inline wxsProject* GetProject() { return Project; }
+        /** \brief Changing resource's name */
+        inline void SetResourceName(const wxString& NewName) { m_ResourceName = NewName; }
 
-        /** \brief Function opening this resource in eeditor window,
-         *         if editor window already exists, it must be activated
-         */
+        /** \brief Opening editor, if one exists, it will be activated in set of all C::B editors */
         void EditOpen();
 
-        /** \brief Function closing editor window, if window is closed, no action
-         *         should be performed
-         */
+        /** \brief Closing editor if exist */
         void EditClose();
 
-        /** \brief Function returning currently openeditor, NULL if there's no one */
-        inline wxsEditor* GetEditor() { return Editor; }
+        /** \brief Checking if editor for this resource is opened */
+        inline bool IsEditorOpened() { return m_Editor!=NULL; }
 
-        /** \brief Function building entry in resource browser
-         *
-         * This function should build one entry in resource browser.
-         * Note that it should not create child nodes now, but where children
-         * are loaded into memory.
+        /** \brief Getting pointer to editor or NULL if there's none */
+        inline wxsEditor* GetEditor() { return m_Editor; }
+
+        /** \brief Getting tree item id in resource browser */
+        inline const wxsResourceItemId& GetTreeItemId() { return m_TreeItemId; }
+
+        /** \brief Creating entry in resoruce browser */
+        void BuildTreeEntry(const wxsResourceItemId& Parent);
+
+        /** \brief Function checking if this resource uses XRC files
+         * \warning This function is surely to be removed in future wxSmith versions
          */
-        virtual void BuildTree(wxTreeCtrl* Tree,wxTreeItemId ParentId) = 0;
-
-        /** \brief Getting current tree item in resource browser */
-        inline wxTreeItemId GetTreeItemId() { return ItemId; }
-
-        /** \brief Function loading configuration of this resource from
-         *         given xml element
-         */
-        virtual bool LoadConfiguration(TiXmlElement* Element) = 0;
-
-        /** \brief Function storing configuration of this resource to given
-         *         xml element
-         */
-        virtual bool SaveConfiguration(TiXmlElement* Element) = 0;
-
-        /** \brief Function checking ifthis resource can be main resource of application */
-        virtual bool CanBeMain() { return false; }
-
-        /** \brief Function checking if this resource uses xrc files */
-        virtual bool UsingXRC() { return false; }
-
-        /** \brief Function generating source code initializing and displaying
-         *         resource in application class
-         *
-         * \param Code string where new code should be appended. Each line of
-         *        added code should start with _T("\t")
-         * \param Language language of generated code
-         */
-        virtual void BuildShowingCode(wxString& Code,wxsCodingLang Language) { }
-
-        /** \brief Function returning name of file with declaration for this resource.
-         *
-         * This function should return declarating file specific for used coding
-         * language. For example, c++ should return *.h file with declaration
-         * of resource class.
-         * This header file should be added into list of includes to allow
-         * using resource.
-         */
-        virtual wxString GetDeclarationFile() { return wxEmptyString; }
-
-        /** \brief Function checking if given file is used in this resource
-         *  \param Name name of file given as absolute path
-         */
-        virtual bool UsingFile(const wxString& Name) { return false; }
-
-        /** \brief Function getting current coding language */
-        inline wxsCodingLang GetLanguage() { return Language; }
+        inline bool UsingXRC() { return m_UsingXRC; }
 
     protected:
 
-        /** \brief Function which should create editor window.
+        /** \brief Function called when there's need to create new editor
          *
-         * This function is called when user called EditOpen and there's no
-         * editor yet.
+         * This function is called when there's need to open editor and when
+         * editor has not been created yet (or has been closed), so there's no
+         * need to check whether editor is opened or not.
+         * \return Pointer to wxsEditor class
          */
-        virtual wxsEditor* CreateEditor() = 0;
+        virtual wxsEditor* OnCreateEditor() = 0;
 
-        /** \brief Function notifying that editor has just been closed */
-        virtual void EditorClosed() {}
-
-        /** \brief Function setting id of item in tree resource browser
+        /** \brief Function called when reading resource configuration from .cbp file
          *
-         * This functino must be called only from BuildTree() function when
-         * new item id is taken
+         * \param Node - Xml node in cbp file defined for this resource only.
+         * It's in form:
+         *  \code <{Resource_Type} name={Resource_Name} ... /> \endcode
+         * where {Resource_Type} is type of resource returned from GetResourceType() function
+         * and {Resource_Name} is name returned from GetResourceName(). Name attribute is always
+         * present.
          */
-        inline void SetTreeItemId(wxTreeItemId NewId) { ItemId = NewId; }
+        virtual bool OnReadConfig(const TiXmlElement* Node) = 0;
 
-        /** \brief Function setting coding language for given one */
-        inline void SetLanguage(wxsCodingLang NewLanguage) { Language=NewLanguage; }
+        /** \brief Function called when writing resource configuration to .cbp file
+         *
+         * \param Node - Xml node where all data should be written to. "name" attribute
+         *        and Element's value should not be overwritten.
+         */
+        virtual bool OnWriteConfig(TiXmlElement* Node) = 0;
+
+        /** \brief function called to check if this resource handles given file
+         *
+         * This function is called from mime plugin to check if opening some
+         * file should open editor of this resource. If true, EditOpen is called
+         * automatically.
+         *
+         * \return true when opening FileName should result in opening this resource's
+         *         editor.
+         */
+        virtual bool OnCanHandleFile(const wxString& FileName) = 0;
+
+        /** \brief Function which should return name of file
+         *         with resource declaration (f.ex. in c++ it should be .h file)
+         * \return File name relative to project's CBP file path
+         */
+        virtual wxString OnGetDeclarationFile() { return wxEmptyString; }
+
+        /** \brief Function which should build this resource in wxApp code */
+        virtual wxString OnGetAppBuildingCode() { return wxEmptyString; }
 
     private:
 
-        /** \brief Function called from wxsEditor class when it's closing */
-        void EditorSaysHeIsClosing();
+        /** \brief Function called from wxsEditor just before it's deletion */
+        void EditorClosed();
 
-        wxsEditor* Editor;      ///< \brief Current editor or NULL if there's no opened yet
-        wxsProject* Project;    ///< \brief Resource project
-        wxTreeItemId ItemId;    ///< \brief Id of tree item in resource browser
-        wxsCodingLang Language; ///< \brief Coding language used in this resource
+        const wxString& m_ResourceType;
+        wxString m_ResourceName;
+        wxsProject* m_Owner;
+        wxsEditor* m_Editor;
+        wxsResourceItemId m_TreeItemId;
+        const wxsCodingLang m_Language;
+        const bool m_UsingXRC;
 
-        friend class wxsEditor;
-
+        friend wxsEditor::~wxsEditor();
+        friend class wxsProject;
 };
 
 #endif

@@ -61,21 +61,6 @@ class wxsWindowEditor : public wxsEditor
 		/** \brief Pasting */
 		virtual void Paste();
 
-		/** \brief Function called when resource is goingto change
-		 *
-		 * This function notifies editor that resource is going to change.
-		 * During the change, resource is considered as unstable, and won't
-		 * be processed by editor. After the change you MUST call UnlockResource().
-		 */
-		virtual void ResourceLock();
-
-		/** \brief Function called when resource change is finished
-		 *
-		 * After that call, new undo entry is created and new preview is
-		 * generated for resource.
-		 */
-		virtual void ResourceUnlock();
-
 		/** \brief Reloading images in all editors */
 		static void ReloadImages();
 
@@ -85,6 +70,7 @@ class wxsWindowEditor : public wxsEditor
          * selection change.
          */
         void SelectionChanged();
+
 
         /** \brief Function notifying that properties of given item has changed
          *  \note You should call wxsItem::NotifyPropertyChange rather than this
@@ -103,50 +89,50 @@ class wxsWindowEditor : public wxsEditor
         /** \brief Getting current selection (main selected item) */
         inline wxsItem* GetCurrentSelection() { return GetWinRes()->GetRootSelection(); }
 
+        /** \brief Helper function for fetching root item */
+        inline wxsItem* RootItem() { return GetWinRes()->GetRootItem(); }
+
 	private:
 
         WX_DECLARE_HASH_SET(wxsWindowEditor*,wxPointerHash,wxPointerEqual,WindowSet);
         WX_DEFINE_ARRAY(wxsItem*,ItemArray);
 
-        /** \brief Helper function for fetching root item */
-        inline wxsItem* RootItem() { return GetWinRes()->GetRootItem(); }
+        wxsWindowEditorContent* m_Content;  ///< \brief Window with content area
+        wxNotebook* m_WidgetsSet;           ///< \brief Notebook with all widgets inside
+        wxBoxSizer* m_VertSizer;            ///< \brief Root sizer of this editor
+        wxBoxSizer* m_HorizSizer;           ///< \brief Horizontal sizer managing items below palette
+        wxBoxSizer* m_QPSizer;              ///< \brief Sizer for quick properties
+        wxBoxSizer* m_OpsSizer;             ///< \brief Sizer for operations pane
+        wxScrolledWindow* m_QPArea;         ///< \brief Scrolled window containing all QuickProps sturr
+        wxBitmapButton* m_InsIntoBtn;
+        wxBitmapButton* m_InsBeforeBtn;
+        wxBitmapButton* m_InsAfterBtn;
+        wxBitmapButton* m_DelBtn;
+        wxBitmapButton* m_PreviewBtn;
+        wxBitmapButton* m_QuickPanelBtn;
+        wxWindow* m_TopPreview;             ///< \brief Top window of preview
+        int m_InsType;                      ///< \brief Current insertion type
+        int m_InsTypeMask;                  ///< \brief Current insertion type mask
+        bool m_QuickPropsOpen;              ///< \brief Set to true if quick properties panel is opened
+        bool m_DontStoreUndo;               ///< \brief When set to true, FinishChange() won't create new undo entry, usefull in Undo/Redo operations
 
-        wxsWindowEditorContent* Content;///< \brief Window with content area
-        wxNotebook* WidgetsSet;         ///< \brief Notebook with all widgets inside
-        wxBoxSizer* VertSizer;          ///< \brief Root sizer of this editor
-        wxBoxSizer* HorizSizer;         ///< \brief Horizontal sizer managing items below palette
-        wxBoxSizer* QPSizer;            ///< \brief Sizer for quick properties
-        wxBoxSizer* OpsSizer;           ///< \brief Sizer for operations pane
-        wxScrolledWindow* QPArea;       ///< \brief Scrolled window containing all QuickProps sturr
-        wxBitmapButton* InsIntoBtn;
-        wxBitmapButton* InsBeforeBtn;
-        wxBitmapButton* InsAfterBtn;
-        wxBitmapButton* DelBtn;
-        wxBitmapButton* PreviewBtn;
-        wxBitmapButton* QuickPanelBtn;
-        wxWindow* TopPreview;           ///< \brief Top window of preview
-        int InsType;                    ///< \brief Current insertion type
-        int InsTypeMask;                ///< \brief Current insertion type mask
-        bool QuickPropsOpen;            ///< \brief Set to true if quick properties panel is opened
-        int  ResourceLockCnt;           ///< \brief Number of resource locks
-
-        static wxImage InsIntoImg;
-        static wxImage InsBeforeImg;
-        static wxImage InsAfterImg;
-        static wxImage DelImg;
-        static wxImage PreviewImg;
-        static wxImage QuickPropsImgOpen;
-        static wxImage QuickPropsImgClose;
-        static wxImage SelectedImg;
-        static WindowSet AllEditors;
-        static bool ImagesLoaded;
+        static wxImage m_InsIntoImg;
+        static wxImage m_InsBeforeImg;
+        static wxImage m_InsAfterImg;
+        static wxImage m_DelImg;
+        static wxImage m_PreviewImg;
+        static wxImage m_QuickPropsImgOpen;
+        static wxImage m_QuickPropsImgClose;
+        static wxImage m_SelectedImg;
+        static WindowSet m_AllEditors;
+        static bool m_ImagesLoaded;
 
         static const int itBefore = 0x01;
         static const int itAfter  = 0x02;
         static const int itInto   = 0x04;
 
-        wxsWinUndoBuffer* UndoBuff;     ///< \brief Undo buffer
-        wxsCorrector* Corrector;        ///< \brief Data corrector
+        wxsWinUndoBuffer* m_UndoBuff;       ///< \brief Undo buffer
+        wxsCorrector* m_Corrector;          ///< \brief Data corrector
 
 		/* Event handlers */
         void OnMouseClick(wxMouseEvent& event);
@@ -164,6 +150,14 @@ class wxsWindowEditor : public wxsEditor
         /** \brief Building palette */
         void BuildPalette(wxNotebook* Palette);
 
+        /** \brief Selecting one item and unselecting all others
+         *
+         * This function does not update screen nor resource tree but
+         * states inside wxsItem classes only.
+         */
+        void SelectOneItem(wxsItem* ItemToSelect);
+
+
         /** \brief Function inserting new widget */
         void InsertRequest(const wxString& Name);
 
@@ -175,6 +169,12 @@ class wxsWindowEditor : public wxsEditor
 
         /** \brief Function adding item into given one */
         bool InsertInto(wxsItem* New,wxsItem* Ref);
+
+        /** \brief Inisializing resource change */
+        virtual void OnChangeInit();
+
+        /** \brief Finalizing resource change */
+        virtual void OnChangeFinish();
 
         /** \brief Setting mask for insertion type */
         void SetInsertionTypeMask(int Mask);
@@ -200,14 +200,18 @@ class wxsWindowEditor : public wxsEditor
         /** \brief Refreshing content of Quick Props panel */
         void RebuildQuickProps(wxsItem* Selection);
 
-        /** \brief Function building preview of current resource
-         *
-         * This function assumes that there's NO preview created yet
-         */
-        void BuildPreview();
+        /** \brief Rebuilding preview (and updating selection inside preview) */
+        void RebuildPreview();
 
-        /** \brief Function destroying current preview */
-        void KillPreview();
+        /** \brief Rebuinding content of resource browser for this resource */
+        void RebuildTree();
+
+        /** \brief Updating things related to selected item */
+        void UpdateSelection();
+
+        /** \brief Storing state of resource tree required to rebuind it's new content */
+        void StoreTreeState();
+
 
         /** \brief Function checking if given item or any of it's children is selected */
         bool HasSelection(wxsItem* Item);
@@ -216,9 +220,29 @@ class wxsWindowEditor : public wxsEditor
         static void GetSelectionNoChildren(ItemArray& Array,wxsItem* Item);
 
         /** \brief Destroying all selected items
-         *  \param Item Use RootItem() for that
+         * \note This function calls BeginChange() and EndChange()
+         *       so it shouldn't be used as some internal function
+         *       manipulating data, it additionally changes selection.
+         */
+        void KillSelection();
+
+        /** \brief Sestroying selected items starting from item in argument
+         *
+         * This function scans recursively items and their children starting from
+         * Item parameter. If item is selected, it's killed.
+         * \param Item initial item to be searched for selected items
+         * \note This function does NOT call BeginChange and EndChange() so
+         *       it may be used as internal function manipulating data.
+         * \warning To ease operations in parameterless KillSelection, this function
+         *          won't delete Item if it's selected (this avoid deleting root item
+         *          of resource)
          */
         void KillSelection(wxsItem* Item);
+
+        /** \brief Getting item which will be used as reference item when adding new
+         *         items
+         */
+        wxsItem* GetReferenceItem(int& InsertionType);
 
         friend class wxsWindowEditorContent;
 

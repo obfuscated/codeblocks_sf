@@ -1,4 +1,14 @@
-#ifndef WXSPROJECTCONFIGURATIONDLG_H
+/*
+
+    WARNING !!!
+   =============
+
+   This file is going to be removed soon
+
+*/
+
+
+/*#ifndef WXSPROJECTCONFIGURATIONDLG_H
 #define WXSPROJECTCONFIGURATIONDLG_H
 
 #include "wxsglobals.h"
@@ -80,3 +90,4 @@ class wxsProjectConfigurationDlg: public wxDialog
 };
 
 #endif
+*/

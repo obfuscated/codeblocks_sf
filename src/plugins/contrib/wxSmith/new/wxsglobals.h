@@ -89,28 +89,14 @@ enum wxsDragAssistTypes
 #define wxsBEnd()   \
     _T("//*)")
 
-/** \brief Macro returning pointer to wxSmith plugin class */
-#define wxsPLUGIN()    wxSmith::Get()
-
-/** \brief Macro returning current resource tree */
-#define wxsTREE()       wxsResourceTree::Get()
-
-/** \brief Macro returning current external resource manager */
-#define wxsEXTRES() wxsExtResManager::Get()
-
-/** \brief Macro returing current properties window */
-#define wxsPROPERTIES() wxsPropertiesMan::Get()
-
-/** \brief Macro returning items factory */
-#define wxsFACTORY() wxsItemFactory::Get()
-
-/** \brief Macro for easy acces to resource factory */
-#define wxsRESFACTORY() wxsResourceFactory::Get()
 
 /** \brief Macro generating widget with given name */
 #define wxsGEN(Name,Resource) wxsItemFactory::Get()->Generate(Name,Resource)
 
-/** \brief Macro destroying widget */
+/** \brief Macro destroying widget
+ * \warning Item must be manually unbinded from it's parent using wxsParent::UnbindChild,
+ *          otherwise parent will keep pointer to invalid Item,
+ */
 #define wxsKILL(Widget) wxsItemFactory::Get()->Kill(Widget)
 
 /** \brief Macro adding new code to coder */

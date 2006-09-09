@@ -1,4 +1,4 @@
-#ifndef WXSSETTINGSDLG_H
+/*#ifndef WXSSETTINGSDLG_H
 #define WXSSETTINGSDLG_H
 
 #include "wxsglobals.h"
@@ -116,3 +116,4 @@ class wxsSettingsDlg: public cbConfigurationPanel
 };
 
 #endif
+*/

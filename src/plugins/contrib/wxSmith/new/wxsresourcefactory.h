@@ -14,34 +14,85 @@ class wxsResourceFactory
 {
     public:
 
-        /** \brief Getting singleton instance */
-        static wxsResourceFactory* Get() { return &Singleton; }
-
         /** \brief Function generating resource class */
-        wxsResource* Build(const wxString& ResourceType,wxsProject* Project);
+        static wxsResource* Build(const wxString& ResourceType,wxsProject* Project);
 
-        /** \brief Getting number of supported resources */
-        int GetResTypesCnt();
+        /** \brief Checking if given resource type can be main resource of application */
+        static bool CanBeMain(const wxString& ResourceType);
 
-        /** \brief Getting name of given resource
-         *
-         * \note previous wxSmith version used other names for resources than this,
-         *       only new ones are enumerated
-         */
-        wxString GetResType(int No);
+        /** \brief Checking if factory can handle given file as external resource */
+        static bool CanHandleExternal(const wxString& FileName);
 
-        /** \brief Getting name of resource node in resource browser */
-        wxString GetResBrowserName(int No);
+        /** \brief Building external resource object */
+        static wxsResource* BuildExternal(const wxString& FileName);
+
+        /** \brief Building wxSmith menu enteries */
+        static void BuildSmithMenu(wxMenu* menu);
+
+        /** \brief Building module menu enteries */
+        static void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data);
+
+        /** \brief Building toolbar */
+        static void BuildToolBar(wxToolBar* toolBar);
+
+    protected:
+
+        /** \brief Ctor */
+        wxsResourceFactory();
+
+        /** \brief Dctor */
+        virtual ~wxsResourceFactory();
+
+        /** \brief Getting number of resouce types inside this factory */
+        virtual int OnGetCount() = 0;
+
+        /** \brief Getting name of resource */
+        virtual wxString OnGetName(int Number) = 0;
+
+        /** \brief Checking if given resource can be main in application */
+        virtual void OnGetInfo(int Number,wxString& Name,wxString& GUI,bool& CanBeMain) = 0;
+
+        /** \brief creating resource */
+        virtual wxsResource* OnCreate(int Number,wxsProject* Project) = 0;
+
+        /** \brief Checking if factory can handle given file as external resource */
+        virtual bool OnCanHandleExternal(const wxString& FileName) { return false; }
+
+        /** \brief Building external resource object */
+        virtual wxsResource* OnBuildExternal(const wxString& FileName) { return NULL; }
+
+        /** \brief Function allowing factory to create extra menu enteries in wxSmith menu */
+        virtual void OnBuildSmithMenu(wxMenu* Menu) {}
+
+        /** \brief Function allowing factory to create extra module menu enteries */
+        virtual void OnBuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data) {}
+
+        /** \brief Function allowing factory to create etra toolbar items */
+        virtual void OnBuildToolBar(wxToolBar* toolBar) {}
 
     private:
 
-        /** \brief Ctor is private - class can not be created outside,
-         *         only singleton taken
-         */
-        wxsResourceFactory() {}
+        struct ResourceInfo
+        {
+            wxsResourceFactory* m_Factory;
+            int m_Number;
+            bool m_CanBeMain;
+            wxString m_GUI;
+            ResourceInfo(): m_Factory(NULL), m_Number(0), m_CanBeMain(false) {}
+        };
 
-        /** \brief Pointer to singleton */
-        static wxsResourceFactory Singleton;
+        WX_DECLARE_STRING_HASH_MAP(ResourceInfo,HashT);
+
+        wxsResourceFactory* m_Next;
+        static wxsResourceFactory* m_UpdateQueue;
+        static wxsResourceFactory* m_Initialized;
+        static HashT m_Hash;
+        static wxString m_LastExternalName;
+        static wxsResourceFactory* m_LastExternalFactory;
+
+        static void InitializeFromQueue();
+        inline void Initialize();
+
 };
 
 #endif

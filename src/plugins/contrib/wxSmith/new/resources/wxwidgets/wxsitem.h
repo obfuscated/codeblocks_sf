@@ -255,10 +255,16 @@ class wxsItem: public wxsPropertyContainer
         inline wxObject* GetPreview() { return Preview; }
 
         /** \brief Checking if item is selected inside editor */
-        inline bool GetIsSelected() { return IsSelected; }
+        inline bool GetIsSelected() { return m_IsSelected; }
 
         /** \brief Changking current selection state */
-        inline void SetIsSelected(bool NewSelected) { IsSelected = NewSelected; }
+        inline void SetIsSelected(bool NewSelected) { m_IsSelected = NewSelected; }
+
+        /** \brief Checking if node of this item in resource tree is expanded */
+        inline bool GetIsExpanded() { return m_IsExpanded; }
+
+        /** \brief Changing currently stored value indicating whether item is expanded in resource tree or not */
+        inline void SetIsExpanded(bool NewExpanded) { m_IsExpanded = NewExpanded; }
 
         /** \brief Clearing selection in this and all child items */
         void ClearSelection();
@@ -332,7 +338,10 @@ class wxsItem: public wxsPropertyContainer
         bool IsMember;              ///< \brief Swith between local and global variable
 
         wxObject* Preview;          ///< \brief Current preview object
-        bool IsSelected;            ///< \brief Set to true if item is selected inside editor
+        bool m_IsSelected;          ///< \brief Set to true if item is selected inside editor
+        bool m_IsExpanded;          ///< \brief Set to true if corresponding node in resource tree is expanded,
+                                    ///         this value may not always be correct, it's used when recreating
+                                    ///         resource tree after change
         wxTreeItemId LastTreeId;    ///< \brief Last Tree item id generated from BuildItemTree
 
         friend class wxsParent;

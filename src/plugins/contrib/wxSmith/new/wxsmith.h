@@ -44,7 +44,7 @@ class wxSmith : public cbPlugin
 		~wxSmith();
 
         /** \brief Function returing singleton instance */
-		static wxSmith* Get() { return Singleton; }
+		static wxSmith* Get() { return m_Singleton; }
 
         /** \brief Getting group in configuration dialog */
         int GetConfigurationGroup()  const { return cgEditor; }
@@ -60,41 +60,46 @@ class wxSmith : public cbPlugin
 		void OnAttach();
 		void OnRelease(bool appShutDown);
 
-        /** \brief Global function notifying that given resource has been selected */
-        void SelectResource(wxsResource* Resource);
-
         /** \brief Getting wxsProject addition for given cbPrject */
         wxsProject* GetSmithProject(cbProject* Proj);
 
         /** \brief Getting cbProject class from wxsProject addition */
         cbProject* GetCBProject(wxsProject* Proj);
 
+        /** \brief Helper operator used to convert C::B projects to wxS projects */
+        inline wxsProject* operator[](cbProject* Proj) { return GetSmithProject(Proj); }
+
+        /** \brief Helper operator used to convert wxS projects to C::B projects */
+        inline cbProject* operator[](wxsProject* Proj) { return GetCBProject(Proj); }
+
 	private:
-        wxsStoringSplitterWindow* Splitter;
 
         WX_DECLARE_HASH_MAP(cbProject*,wxsProject*,wxPointerHash,wxPointerEqual,ProjectMapT);
         typedef ProjectMapT::iterator ProjectMapI;
 
-        /** \brief Map binding all cbProject classes with wxsProject ones */
-        ProjectMapT ProjectMap;
+        ProjectMapT m_ProjectMap;               ///< \brief Map binding all cbProject classes with wxsProject ones
+        wxsStoringSplitterWindow* m_Splitter;   ///< \brief Splitter window used to divide resource browser and property grid
+        int m_HookId;                           ///< \brief Project hook identifier used when deleting hook
+        static wxSmith* m_Singleton;            ///< \brief Singleton object
 
-        /* Event processing functions */
+        /** \brief Procedure called when loading/saving project, used to load/save additional configuration from/to .cbp file */
+        void OnProjectHook(cbProject*,TiXmlElement*,bool);
+
+        /** \brief Procedure called when closing project, removes additional stuff associated with project */
         void OnProjectClose(CodeBlocksEvent& event);
-        void OnProjectOpen(CodeBlocksEvent& event);
-        void OnProjectActivated(CodeBlocksEvent& event);
-        void OnNewWindow(wxCommandEvent& event);
-        void OnImportXrc(wxCommandEvent& event);
+
+        /** \brief Called when clicked "Configure..." from wxSmith menu */
         void OnConfigure(wxCommandEvent& event);
-
-        /** \brief Function checking and adding wxSmith support for current project */
-        bool CheckIntegration();
-
-        /** \brief Singleton object */
-        static wxSmith* Singleton;
 
         friend class wxSmithMime;
 		DECLARE_EVENT_TABLE()
 };
+
+/** \brief Helper function to easily access wxSmith plugin */
+inline wxSmith* wxsPlugin() { return wxSmith::Get(); }
+
+/** \brief Helper function to access project converter (wxSmith project <-> C::B project) */
+inline wxSmith* wxsProjectConv() { return wxSmith::Get(); }
 
 CB_DECLARE_PLUGIN();
 

@@ -3,18 +3,17 @@
 
 #include <wx/wx.h>
 
-wxsEditor::wxsEditor(wxWindow* parent, const wxString& title,wxsResource* _Resource):
+wxsEditor::wxsEditor(wxWindow* parent, const wxString& title,wxsResource* Resource):
     EditorBase(parent,title),
-    Resource(_Resource)
+    m_Resource(Resource)
 {
 }
 
 wxsEditor::~wxsEditor()
 {
-    if ( Resource )
+    if ( m_Resource )
     {
-        wxsResource* ResStore = Resource;
-        Resource = NULL;
-        ResStore->EditorSaysHeIsClosing();
+        m_Resource->EditorClosed();
+        m_Resource = NULL;
     }
 }

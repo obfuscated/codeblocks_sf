@@ -173,6 +173,9 @@ class wxsWindowRes : public wxsResource
 		/** \brief Getting root selection item */
 		inline wxsItem* GetRootSelection() { return RootSelection; }
 
+		/** \brief Setting root selection item */
+		inline void SetRootSelection(wxsItem* NewRootSelection) { RootSelection = NewRootSelection; }
+
 		/** \brief Notifying about content change
 		 *
 		 * This function validates content, recreates preview and

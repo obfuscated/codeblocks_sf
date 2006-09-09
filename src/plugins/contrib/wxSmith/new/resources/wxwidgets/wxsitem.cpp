@@ -13,7 +13,7 @@ wxsItem::wxsItem(wxsWindowRes* _Resource):
     Resource(_Resource),
     IsMember(true),
     Preview(NULL),
-    IsSelected(false)
+    m_IsSelected(false)
 {
 }
 
@@ -139,6 +139,10 @@ void wxsItem::BuildItemTree(wxTreeCtrl* Tree,wxTreeItemId Parent,int Position)
     else
     {
         LastTreeId = Tree->InsertItem(Parent,Position,GetInfo().Name,-1,-1,new wxsResourceTreeData(this));
+    }
+    if ( !GetIsExpanded() )
+    {
+        Tree->Collapse(LastTreeId);
     }
 
     wxsParent* ParentItem = ToParent();

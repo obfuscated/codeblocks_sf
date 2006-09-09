@@ -7,53 +7,26 @@
  * License:   GPL
  **************************************************************/
 
-#include <licenses.h>
-#include <manager.h>
-#include <tinyxml/tinyxml.h>
-#include <messagemanager.h>
-#include <cbeditor.h>
-#include <projectmanager.h>
-#include <wxFlatNotebook/wxFlatNotebook.h>
-#include <wx/sashwin.h>
-#include <configmanager.h>
-#include <cbexception.h>
-
 #include "wxsmith.h"
 #include "wxsproject.h"
-#include "wxsresource.h"
-#include "wxsitem.h"
-#include "wxssettingsdlg.h"
 #include "wxsmithmime.h"
-#include "wxsmithwizard.h"
-#include "wxsnewwindowdlg.h"
-#include "wxsimportxrcdlg.h"
-#include "wxsitemfactory.h"
+#include "wxssettingsdlg.h"
 #include "wxspropertybrowser.h"
-#include "defwidgets/wxsstdmanager.h"
-#include "editors/wxswindoweditor.h"
+#include "wxsresourcefactory.h"
 
-static int NewDialogId = wxNewId();
-static int NewFrameId  = wxNewId();
-static int NewPanelId  = wxNewId();
-static int ImportXrcId = wxNewId();
+#include <licenses.h>
+#include <wxFlatNotebook/wxFlatNotebook.h>
+#include <projectloader_hooks.h>
+
+CB_IMPLEMENT_PLUGINS_2( wxSmith,     "wxSmith",
+                        wxSmithMime, "wxSmith - MIME extension");
+
 static int ConfigureId = wxNewId();
 
-//CB_IMPLEMENT_PLUGINS_3( wxSmith, "wxSmith",
-//                        wxSmithMime, "wxSmith - MIME plugin",
-//                        wxSmithWizard, "wxSmith - Project Wizard plugin");
-CB_IMPLEMENT_PLUGINS_2( wxSmith, "wxSmith",
-                        wxSmithMime, "wxSmith - MIME plugin");
-
-wxSmith* wxSmith::Singleton = NULL;
+wxSmith* wxSmith::m_Singleton = NULL;
 
 BEGIN_EVENT_TABLE(wxSmith, cbPlugin)
 	EVT_PROJECT_CLOSE(wxSmith::OnProjectClose)
-	EVT_PROJECT_OPEN(wxSmith::OnProjectOpen)
-	EVT_PROJECT_ACTIVATE(wxSmith::OnProjectActivated)
-	EVT_MENU(NewDialogId,wxSmith::OnNewWindow)
-	EVT_MENU(NewFrameId,wxSmith::OnNewWindow)
-	EVT_MENU(NewPanelId,wxSmith::OnNewWindow)
-	EVT_MENU(ImportXrcId,wxSmith::OnImportXrc)
 	EVT_MENU(ConfigureId,wxSmith::OnConfigure)
 END_EVENT_TABLE()
 
@@ -78,33 +51,28 @@ wxSmith::wxSmith()
 
 wxSmith::~wxSmith()
 {
-	if ( Singleton == this )
-	{
-	    Singleton = NULL;
-	}
+    if ( m_Singleton == this )
+    {
+        m_Singleton = NULL;
+    }
 }
 
 void wxSmith::OnAttach()
 {
-    if ( Singleton != NULL )
-    {
-        // Can not have more than one wxSmith instance
-        return;
-    }
+    // No more instances of wxSmith class can be found here,
+    // even if it's on another dll/so, m_Singleton will point
+    // to different memory locations
+    wxASSERT(m_Singleton == NULL);
 
     wxFlatNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
-	if ( !Notebook )
-	{
-        Splitter = NULL;
-        return;
-	}
+    wxASSERT(Notebook!=NULL);
 
     // Creating main splitting object
-    Splitter = new wxsStoringSplitterWindow(Notebook);
-    Notebook->AddPage(Splitter,_("Resources"));
+    m_Splitter = new wxsStoringSplitterWindow(Notebook);
+    Notebook->AddPage(m_Splitter,_("Resources"));
 
-    wxPanel* ResourcesContainer = new wxPanel(Splitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
-    wxPanel* PropertiesContainer = new wxPanel(Splitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
+    wxPanel* ResourcesContainer = new wxPanel(m_Splitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
+    wxPanel* PropertiesContainer = new wxPanel(m_Splitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
 
     // Adding resource browser
     wxSizer* Sizer = new wxGridSizer(1);
@@ -115,32 +83,25 @@ void wxSmith::OnAttach()
 
     // Adding properties / events browser
     Sizer = new wxGridSizer(1);
-    Sizer->Add(new wxsPropertyBrowser(PropertiesContainer),1,wxGROW);
+    // TODO: Uncomment when wxPropertyBrowser will be usable
+//    Sizer->Add(new wxsPropertyBrowser(PropertiesContainer),1,wxGROW);
     PropertiesContainer->SetSizer(Sizer);
-    Splitter->Split(ResourcesContainer,PropertiesContainer);
+    m_Splitter->Split(ResourcesContainer,PropertiesContainer);
 
+    // Loading resources
     Manager::Get()->Loadxrc(_T("/wxsmith.zip#zip:*"));
 
-    // Initializing standard manager
+    // Registering function for loading / saving extra XML configuration inside CBP files
+    ProjectLoaderHooks::HookFunctorBase* wxSmithHook = new ProjectLoaderHooks::HookFunctor<wxSmith>(this, &wxSmith::OnProjectHook);
+    m_HookId = ProjectLoaderHooks::RegisterHook(wxSmithHook);
 
-    wxsStdManager.Initialize();
-    if ( ! wxsStdManager.RegisterInFactory() )
-    {
-        DBGLOG(_T("wxSmith: Couldn't register standard widget's set - this plugin will be useless"));
-    }
-
-    // TODO (SpOoN#1#): Add other widgets from other managers
-
-	if ( Singleton == NULL )
-	{
-	    Singleton = this;
-	}
+    m_Singleton = this;
 }
 
 void wxSmith::OnRelease(bool appShutDown)
 {
-    // Deleting all projects
-    for ( ProjectMapI i = ProjectMap.begin(); i!=ProjectMap.end(); ++i )
+    ProjectLoaderHooks::UnregisterHook(m_HookId,true);
+    for ( ProjectMapI i = m_ProjectMap.begin(); i!=m_ProjectMap.end(); ++i )
     {
         if ( i->second )
         {
@@ -148,79 +109,70 @@ void wxSmith::OnRelease(bool appShutDown)
             i->second = NULL;
         }
     }
-    ProjectMap.clear();
 
-    if ( Singleton == this )
-    {
-        Singleton = NULL;
-    }
+    m_ProjectMap.clear();
 }
 
 cbConfigurationPanel* wxSmith::GetConfigurationPanel(wxWindow* parent)
 {
-	wxsSettingsDlg* Dlg = new wxsSettingsDlg(parent);
-	return Dlg;
+    return NULL;
+//	return new wxsSettingsDlg(parent);
 }
 
 void wxSmith::BuildMenu(wxMenuBar* menuBar)
 {
-	wxMenu* Menu = new wxMenu;
-	Menu->Append(NewDialogId,_("Add &Dialog"));
-	Menu->Append(NewFrameId,_("Add &Frame"));
-	Menu->Append(NewPanelId,_("Add &Panel"));
-	Menu->AppendSeparator();
-	Menu->Append(ImportXrcId,_("Import &XRC file"));
-	Menu->AppendSeparator();
-	Menu->Append(ConfigureId,_("&Configure wxSmith for current project"));
+	wxMenu* SmithMenu = new wxMenu;
+
+	wxsResourceFactory::BuildSmithMenu(SmithMenu);
+
+	SmithMenu->AppendSeparator();
+	SmithMenu->Append(ConfigureId,_("&Configure wxSmith for current project"));
 
 	int ToolsPos = menuBar->FindMenu(_("&Tools"));
-
 	if  ( ToolsPos == wxNOT_FOUND )
 	{
-        menuBar->Append(Menu,_("wxSmith"));
+        menuBar->Append(SmithMenu,_("&wxSmith"));
 	}
 	else
 	{
-        menuBar->Insert(ToolsPos,Menu,_("wxSmith"));
+        menuBar->Insert(ToolsPos,SmithMenu,_("&wxSmith"));
 	}
 }
 
 void wxSmith::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
+    wxsResourceFactory::BuildModuleMenu(type,menu,data);
 }
 
 bool wxSmith::BuildToolBar(wxToolBar* toolBar)
 {
+    wxsResourceFactory::BuildToolBar(toolBar);
 	return false;
+}
+
+void wxSmith::OnProjectHook(cbProject* project,TiXmlElement* elem,bool loading)
+{
+    wxsProject* Proj = GetSmithProject(project);
+    if ( loading ) Proj->ReadConfiguration(elem);
+    else           Proj->WriteConfiguration(elem);
 }
 
 void wxSmith::OnProjectClose(CodeBlocksEvent& event)
 {
     cbProject* Proj = event.GetProject();
-    ProjectMapI i = ProjectMap.find(Proj);
-    if ( i == ProjectMap.end() ) return;
+    ProjectMapI i = m_ProjectMap.find(Proj);
+    if ( i == m_ProjectMap.end() ) return;
     delete i->second;
-    ProjectMap.erase(i);
+    m_ProjectMap.erase(i);
     event.Skip();
 }
 
-void wxSmith::OnProjectOpen(CodeBlocksEvent& event)
+void wxSmith::OnConfigure(wxCommandEvent& event)
 {
-    wxsProject* NewProj = new wxsProject(event.GetProject());
-    ProjectMap[event.GetProject()] = NewProj;
-    event.Skip();
-}
-
-void wxSmith::OnProjectActivated(CodeBlocksEvent& event)
-{
-    event.Skip();
-}
-
-void wxSmith::SelectResource(wxsResource* Res)
-{
-    if ( Res )
+    cbProject* Proj = Manager::Get()->GetProjectManager()->GetActiveProject();
+    if ( Proj )
     {
-        Res->EditOpen();
+        GetSmithProject(Proj)->Configure();
     }
 }
 
@@ -231,11 +183,18 @@ cbProject* wxSmith::GetCBProject(wxsProject* Proj)
 
 wxsProject* wxSmith::GetSmithProject(cbProject* Proj)
 {
-    ProjectMapI i = ProjectMap.find(Proj);
-    if ( i == ProjectMap.end() ) return NULL;
+    ProjectMapI i = m_ProjectMap.find(Proj);
+    if ( i == m_ProjectMap.end() )
+    {
+        wxsProject* NewProj = new wxsProject(Proj);
+        m_ProjectMap[Proj] = NewProj;
+        return NewProj;
+    }
     return i->second;
 }
 
+// TODO: Move to resources\wxwidgets
+/*
 void wxSmith::OnNewWindow(wxCommandEvent& event)
 {
     if ( !CheckIntegration() )
@@ -360,54 +319,4 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     wxsImportXrcDlg Dlg(NULL,Element);
     Dlg.ShowModal();
 }
-
-bool wxSmith::CheckIntegration()
-{
-    cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
-
-    if ( !Project )
-    {
-        wxMessageBox(_("Please open project first"),_("Error"),wxOK|wxICON_ERROR);
-        return false;
-    }
-
-    wxsProject* Proj = GetSmithProject(Project);
-
-    if ( !Proj )
-    {
-        DBGLOG(_T("Something wrong - couldn't find associated wxsProject"));
-        return false;
-    }
-
-    switch ( Proj->GetIntegration() )
-    {
-        case wxsProject::NotBinded:
-            return false;
-
-        case wxsProject::NotWxsProject:
-            if ( wxMessageBox(_("Active project doesn't use wxSmith.\nShould I change it ?"),
-                              _("Not wxSmith project"),wxYES_NO|wxICON_EXCLAMATION ) == wxYES )
-            {
-                if ( !Proj->AddSmithConfig() ) return false;
-            }
-            else
-            {
-                return false;
-            }
-            break;
-
-        default:
-            break;
-    }
-
-    return true;
-}
-
-void wxSmith::OnConfigure(wxCommandEvent& event)
-{
-    cbProject* CP = Manager::Get()->GetProjectManager()->GetActiveProject();
-    if ( !CP ) return;
-    wxsProject* SP = GetSmithProject(CP);
-    if ( !SP ) return;
-    SP->Configure();
-}
+*/
