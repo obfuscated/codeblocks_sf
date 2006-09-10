@@ -1,6 +1,7 @@
 #include <sdk.h>
 #include "gdb_driver.h"
 #include "gdb_commands.h"
+#include "debuggerstate.h"
 #include <manager.h>
 #include <configmanager.h>
 #include <scriptingmanager.h>
@@ -27,6 +28,15 @@ static wxRegEx reThreadSwitch2(_T("^\\[Switching to thread .*\\]#0[ \t]+(0x[A-z0
 #endif
 static wxRegEx reBreak2(_T("^(0x[A-z0-9]+) in (.*) from (.*)"));
 static wxRegEx reBreak3(_T("^(0x[A-z0-9]+) in (.*)"));
+
+// Pending breakpoint "C:/Devel/libs/irr_svn/source/Irrlicht/CSceneManager.cpp:1077" resolved
+#ifdef __WXMSW__
+static wxRegEx rePendingFound(_T("^Pending[ \t]+breakpoint[ \t]+\"([A-z]:)([^:]+):([0-9]+)\".*"));
+#else
+static wxRegEx rePendingFound(_T("^Pending[ \t]+breakpoint[ \t]+\"([^:]+):([0-9]+)\".*"));
+#endif
+// Breakpoint 2, irr::scene::CSceneManager::getSceneNodeFromName (this=0x3fa878, name=0x3fbed8 "MainLevel", start=0x3fa87c) at CSceneManager.cpp:1077
+static wxRegEx rePendingFound1(_T("^Breakpoint[ \t]+([0-9]+),.*"));
 
 // scripting support
 DECLARE_INSTANCE_TYPE(GDB_driver);
@@ -231,7 +241,7 @@ void GDB_driver::Prepare(bool isConsole)
 void GDB_driver::Start(bool breakOnEntry)
 {
     ResetCursor();
-    
+
     // reset other states
     GdbCmd_DisassemblyInit::LastAddr.Clear();
     if (m_pDisassembly)
@@ -558,10 +568,51 @@ void GDB_driver::ParseOutput(const wxString& output)
 
         // pending breakpoint resolved?
         // e.g.
-        // Pending breakpoint "C:/Devel/codeblocks/trunk/src/sdk/cbproject.cpp:332" resolved
+        // Pending breakpoint "C:/Devel/libs/irr_svn/source/Irrlicht/CSceneManager.cpp:1077" resolved
+        // Breakpoint 2, irr::scene::CSceneManager::getSceneNodeFromName (this=0x3fa878, name=0x3fbed8 "MainLevel", start=0x3fa87c) at CSceneManager.cpp:1077
         else if (lines[i].StartsWith(_T("Pending breakpoint ")))
         {
             m_pDBG->Log(lines[i]);
+
+            // we face a problem here:
+            // gdb sets a *new* breakpoint when the pending address is resolved.
+            // this means we must update the breakpoint index we have stored
+            // or else we can never remove this (because the breakpoint index doesn't match)...
+
+            // Pending breakpoint "C:/Devel/libs/irr_svn/source/Irrlicht/CSceneManager.cpp:1077" resolved
+            wxString bpstr = lines[i];
+            // Breakpoint 2, irr::scene::CSceneManager::getSceneNodeFromName (this=0x3fa878, name=0x3fbed8 "MainLevel", start=0x3fa87c) at CSceneManager.cpp:1077
+            wxString newbpstr = lines[i+1];
+
+            if (rePendingFound.Matches(bpstr) &&
+                rePendingFound1.Matches(newbpstr))
+            {
+//                m_pDBG->Log(_T("MATCH"));
+            #ifdef __WXMSW__
+                wxString file = rePendingFound.GetMatch(bpstr, 1) + rePendingFound.GetMatch(bpstr, 2);
+                wxString lineStr = rePendingFound.GetMatch(bpstr, 3);
+            #else
+                wxString file = rePendingFound.GetMatch(bpstr, 1);
+                wxString lineStr = rePendingFound.GetMatch(bpstr, 2);
+            #endif
+                file = UnixFilename(file);
+//                m_pDBG->Log(wxString::Format(_T("file: %s, line: %s"), file.c_str(), lineStr.c_str()));
+                long line;
+                lineStr.ToLong(&line);
+                DebuggerState& state = m_pDBG->GetState();
+                int bpindex = state.HasBreakpoint(file, line - 1);
+                DebuggerBreakpoint* bp = state.GetBreakpoint(bpindex);
+                if (bp)
+                {
+//                    m_pDBG->Log(_T("Found BP!!! Updating index..."));
+                    long index;
+                    wxString indexStr = rePendingFound1.GetMatch(newbpstr, 1);
+                    indexStr.ToLong(&index);
+                    // finally! update the breakpoint index
+                    bp->index = index;
+                }
+            }
+            i += 1;
         }
 
         // cursor change
