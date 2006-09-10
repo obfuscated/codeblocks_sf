@@ -301,9 +301,11 @@ int Parser::GetTokenKindImage(Token* token)
 
 		case tkEnumerator: return PARSER_IMG_ENUMERATOR;
 
-		case tkClass: return token->m_IsTypedef ? PARSER_IMG_TYPEDEF : PARSER_IMG_CLASS;
+		case tkClass: return PARSER_IMG_CLASS;
 
 		case tkNamespace: return PARSER_IMG_NAMESPACE;
+
+		case tkTypedef: return PARSER_IMG_TYPEDEF;
 
 		case tkConstructor:
 			switch (token->m_Scope)

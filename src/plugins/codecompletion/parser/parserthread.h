@@ -24,7 +24,7 @@ struct ParserThreadOptions
     ParserThreadOptions()
         : useBuffer(false),
         bufferSkipBlocks(false),
-	bufferSkipOuterBlocks(false),
+        bufferSkipOuterBlocks(false),
         wantPreprocessor(true),
         followLocalIncludes(true),
         followGlobalIncludes(true),
@@ -35,13 +35,13 @@ struct ParserThreadOptions
         handleEnums(true),
         handleTypedefs(true)
         {}
-    /** useBuffer specifies that we're not parsing a file,  but a temporary
-      * buffer. The resulting tokens will be temporary, too,
-      * and will be deleted when the next file is parsed.
-      */
+    /* useBuffer specifies that we're not parsing a file,  but a temporary
+     * buffer. The resulting tokens will be temporary, too,
+     * and will be deleted when the next file is parsed.
+     */
     bool useBuffer;
 	bool bufferSkipBlocks;
-	bool bufferSkipOuterBlocks;
+	bool bufferSkipOuterBlocks; // classes, namespaces and functions
 	bool wantPreprocessor;
 	bool followLocalIncludes;
 	bool followGlobalIncludes;
@@ -76,6 +76,7 @@ class ParserThread : public cbThreadedTask
 		void SkipAngleBraces();
 		void HandleIncludes();
 		void HandleDefines();
+		void HandlePreprocessorBlocks(const wxString& preproc);
 		void HandleNamespace();
 		void HandleClass(bool isClass = true);
 		void HandleFunction(const wxString& name, bool isOperator = false);
@@ -87,7 +88,7 @@ class ParserThread : public cbThreadedTask
 		void Log(const wxString& log);
 		Token* TokenExists(const wxString& name, Token* parent = 0, short int kindMask = 0xFFFF); // if parent is 0, all tokens are searched
 		wxString GetQueueAsNamespaceString(std::queue<wxString>& q); // NOTICE: clears the queue too
-        Token* FindTokenFromQueue(std::queue<wxString>& q, Token* parent = 0, bool createIfNotExist = false);
+        Token* FindTokenFromQueue(std::queue<wxString>& q, Token* parent = 0, bool createIfNotExist = false, Token* parentIfCreated = 0);
 
 		Tokenizer m_Tokenizer;
 		Parser* m_pParent;
@@ -102,6 +103,8 @@ class ParserThread : public cbThreadedTask
         ParserThreadOptions m_Options;
 		std::queue<wxString> m_EncounteredNamespaces; // for member funcs implementation
 		std::queue<wxString> m_EncounteredTypeNamespaces; // namespaces in types
+
+		int m_PreprocessorIfCount; // handle nesting of #if...#if...#else...#endif...#endif
 
         bool InitTokenizer();
 

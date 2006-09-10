@@ -79,7 +79,6 @@ Token::Token()
 	m_IsOperator(false),
 	m_IsLocal(false),
 	m_IsTemp(false),
-	m_IsTypedef(false),
 	m_ParentIndex(-1),
 	m_pUserData(0),
 	m_pTree(0),
@@ -98,7 +97,6 @@ Token::Token(const wxString& name, unsigned int file, unsigned int line)
 	m_IsOperator(false),
 	m_IsLocal(false),
 	m_IsTemp(false),
-	m_IsTypedef(false),
 	m_ParentIndex(-1),
 	m_pUserData(0),
 	m_pTree(0),
@@ -217,8 +215,9 @@ wxString Token::GetTokenKindString() const
 {
 	switch (m_TokenKind)
 	{
-		case tkClass: return m_IsTypedef ? _T("typedef") : _T("class");
+		case tkClass: return _T("class");
 		case tkNamespace: return _T("namespace");
+		case tkTypedef: return _T("typedef");
 		case tkEnum: return _T("enum");
 		case tkEnumerator: return _T("enumerator");
 		case tkFunction: return _T("function");
@@ -761,7 +760,7 @@ void TokensTree::RecalcData()
         if (!token)
             continue;
 
-        if (token->m_TokenKind != tkClass)
+        if (!(token->m_TokenKind & (tkClass | tkTypedef)))
             continue;
         if (token->m_AncestorsString.IsEmpty())
             continue;
@@ -791,14 +790,14 @@ void TokensTree::RecalcData()
                     wxString ns = anctkz.GetNextToken();
                     if (!ns.IsEmpty())
                     {
-                        int ancestorIdx = TokenExists(ns, ancestorToken ? ancestorToken->GetSelf() : -1, tkNamespace | tkClass);
+                        int ancestorIdx = TokenExists(ns, ancestorToken ? ancestorToken->GetSelf() : -1, tkNamespace | tkClass | tkTypedef);
                         ancestorToken = at(ancestorIdx);
 //                        ancestorToken = token->HasChildToken(ns, tkNamespace | tkClass);
                         if (!ancestorToken) // unresolved
                             break;
                     }
                 }
-                if (ancestorToken && ancestorToken != token && ancestorToken->m_TokenKind == tkClass && !ancestorToken->m_IsTypedef)
+                if (ancestorToken && ancestorToken != token && ancestorToken->m_TokenKind == tkClass)// && !ancestorToken->m_IsTypedef)
                 {
 //                    Manager::Get()->GetMessageManager()->DebugLog(_T("Resolved to %s"), ancestorToken->m_Name.c_str());
                     token->m_Ancestors.insert(ancestorToken->GetSelf());
@@ -817,7 +816,7 @@ void TokensTree::RecalcData()
                 {
                     Token* ancestorToken = at(*it);
                     // only classes take part in inheritance
-                    if (ancestorToken && ancestorToken != token && ancestorToken->m_TokenKind == tkClass && !ancestorToken->m_IsTypedef)
+                    if (ancestorToken && ancestorToken != token && ancestorToken->m_TokenKind == tkClass)// && !ancestorToken->m_IsTypedef)
                     {
                         token->m_Ancestors.insert(*it);
                         ancestorToken->m_Descendants.insert(i);
@@ -845,7 +844,7 @@ void TokensTree::RecalcData()
         if (!token)
             continue;
 
-        if (token->m_TokenKind != tkClass)
+        if (!(token->m_TokenKind & (tkClass | tkTypedef)))
             continue;
 
         // recalc
@@ -885,7 +884,7 @@ void TokensTree::RecalcFullInheritance(int parentIdx, TokenIdxSet& result)
         return;
 
     // only classes take part in inheritance
-    if (ancestor->m_TokenKind != tkClass)
+    if (!(ancestor->m_TokenKind & (tkClass | tkTypedef)))
         return;
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("Anc: '%s'"), ancestor->m_Name.c_str());
 

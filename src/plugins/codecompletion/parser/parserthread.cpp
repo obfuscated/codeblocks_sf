@@ -113,6 +113,7 @@ ParserThread::ParserThread(Parser* parent,
 	m_File(0),
 	m_IsLocal(isLocal),
 	m_Options(options),
+	m_PreprocessorIfCount(0),
 	m_IsBuffer(options.useBuffer),
 	m_Buffer(bufferOrFilename)
 {
@@ -196,6 +197,11 @@ void ParserThread::SkipBlock()
 		wxString token = m_Tokenizer.GetToken();
 		if (token.IsEmpty())
 			break; // eof
+        else if (token == ParserConsts::hash)
+        {
+			token = m_Tokenizer.GetToken();
+            HandlePreprocessorBlocks(token);
+        }
 
 		// if we reach the initial nesting level, we are done
 		if (level == m_Tokenizer.GetNestingLevel())
@@ -382,7 +388,7 @@ void ParserThread::DoParse()
 			m_Str.Clear();
 			// the only time we get to find a } is when recursively called by e.g. HandleClass
 			// we have to return now...
-			if (!m_Options.useBuffer)
+			if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                 break;
 		}
 		else if (token==ParserConsts::colon)
@@ -410,11 +416,11 @@ void ParserThread::DoParse()
 		}
 		else if (token==ParserConsts::kw_typedef)
 		{
-//            if (m_Options.handleTypedefs)
-//		        HandleTypedef(); // disabled until its function is refined
-//            else
-//                SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
-			SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
+            if (m_Options.handleTypedefs)
+		        HandleTypedef();
+            else
+                SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
+//			SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
 		    m_Str.Clear();
 		}
 		else if (token==ParserConsts::kw_return ||
@@ -460,21 +466,8 @@ void ParserThread::DoParse()
 				HandleIncludes();
 			else if (token==ParserConsts::kw_define)
 				HandleDefines();
-            else if (token.StartsWith(ParserConsts::kw_if)) // #if, #ifdef, #ifndef
-            {
-                token = m_Tokenizer.GetToken();
-                if (token.IsSameAs(_T("0")))
-                {
-                    // TODO: handle special case "#if 0"
-//                    DBGLOG(_T("Special case \"#if 0\" not skipped."));
-                }
-                m_Tokenizer.SkipToEOL();
-            }
-            else if (token==ParserConsts::kw_else || token==ParserConsts::kw_elif) // #else, #elif
-            {
-                while (!token.IsEmpty() && token != ParserConsts::kw_endif)
-                    token = m_Tokenizer.GetToken();
-            }
+            else
+                HandlePreprocessorBlocks(token);
 			m_Str.Clear();
 		}
 		else if (token==ParserConsts::kw_using) // using namespace ?
@@ -738,7 +731,7 @@ wxString ParserThread::GetQueueAsNamespaceString(std::queue<wxString>& q)
     return result;
 }
 
-Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, bool createIfNotExist)
+Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, bool createIfNotExist, Token* parentIfCreated)
 {
     if (q.empty())
         return 0;
@@ -752,18 +745,17 @@ Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, 
         result = new Token(ns, m_File, 0);
         result->m_TokenKind = q.empty() ? tkClass : tkNamespace;
         result->m_IsLocal = m_IsLocal;
+        result->m_ParentIndex = parentIfCreated ? parentIfCreated->GetSelf() : -1;
         int newidx = m_pTokens->insert(result);
-        if (parent)
-        {
-            parent->AddChild(newidx);
-            result->m_ParentIndex = parent->GetSelf();
-        }
+        if (parentIfCreated)
+            parentIfCreated->AddChild(newidx);
+//        DBGLOG(_T("Created unknown class/namespace %s (%d) under %s (%d)"), ns.c_str(), newidx, parent ? parent->m_Name.c_str() : _T("<globals>"), parent ? parent->GetSelf() : -1);
     }
 
     if (q.empty())
         return result;
     if (result)
-        result = FindTokenFromQueue(q, result, createIfNotExist);
+        result = FindTokenFromQueue(q, result, createIfNotExist, parentIfCreated);
     return result;
 }
 
@@ -777,7 +769,8 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
 	Token* newToken = 0;
 	wxString newname(name);
 	m_Str.Trim();
-
+//if (name == _T("AlsoDoSomething"))
+//    asm("int $3;");
 	if (kind == tkDestructor)
 	{
 		// special class destructors case
@@ -792,7 +785,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
 	if ((kind == tkDestructor || kind == tkConstructor) && !q.empty())
 	{
 	    // look in m_EncounteredTypeNamespaces
-        localParent = FindTokenFromQueue(q, 0, true);
+        localParent = FindTokenFromQueue(q, 0, true, m_pLastParent);
         if (localParent)
             newToken = TokenExists(newname, localParent);
 	}
@@ -800,16 +793,33 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
     // check for implementation member function
     if (!newToken && !m_EncounteredNamespaces.empty())
     {
-        localParent = FindTokenFromQueue(m_EncounteredNamespaces, 0, true);
+        localParent = FindTokenFromQueue(m_EncounteredNamespaces, 0, true, m_pLastParent);
         if (localParent)
             newToken = TokenExists(newname, localParent);
     }
 
-    if (newToken && newToken->m_TokenKind == kind)
+    // none of the above; check for token under parent
+    if (!newToken)
+        newToken = TokenExists(name, m_pLastParent, kind);
+
+    if (newToken && newToken->m_TokenKind == kind && newToken->m_Args == args)
     {
         m_pTokens->m_modified = true;
     }
     else
+    {
+        Token* finalParent = localParent ? localParent : m_pLastParent;
+        newToken = new Token(newname,m_File,line);
+        newToken->m_ParentIndex = finalParent ? finalParent->GetSelf() : -1;
+        newToken->m_TokenKind = kind;
+        newToken->m_Scope = m_LastScope;
+        newToken->m_Args = args;
+        int newidx = m_pTokens->insert(newToken);
+        if (finalParent)
+            finalParent->AddChild(newidx);
+    }
+
+    if (!(kind & (tkConstructor | tkDestructor)))
     {
         wxString readType = m_Str;
         wxString actualType = GetActualTokenType();
@@ -818,25 +828,21 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
             // token type must contain all namespaces
             actualType.Prepend(GetQueueAsNamespaceString(m_EncounteredTypeNamespaces));
         }
-
-        Token* finalParent = localParent ? localParent : m_pLastParent;
-        newToken = new Token(newname,m_File,line);
         newToken->m_Type = readType;
         newToken->m_ActualType = actualType;
-        newToken->m_Args = args;
-        newToken->m_Scope = m_LastScope;
-        newToken->m_TokenKind = kind;
-        newToken->m_IsLocal = m_IsLocal;
-        newToken->m_IsTemp = m_Options.isTemp;
-        newToken->m_ParentIndex = finalParent ? finalParent->GetSelf() : -1;
-        newToken->m_IsOperator = isOperator;
-    //    Log("Added token " +name+ ", type '" +newToken->m_Type+ "', actual '" +newToken->m_ActualType+ "'");
-        int newidx = m_pTokens->insert(newToken);
-        if (finalParent)
-            finalParent->AddChild(newidx);
     }
+    newToken->m_IsLocal = m_IsLocal;
+    newToken->m_IsTemp = m_Options.isTemp;
+    newToken->m_IsOperator = isOperator;
 
-    if (isImpl)
+    if (!isImpl)
+    {
+
+        newToken->m_File = m_File;
+        newToken->m_Line = line;
+//        DBGLOG(_T("Added/updated token '%s' (%d), type '%s', actual '%s'. Parent is %s (%d)"), name.c_str(), newToken->GetSelf(), newToken->m_Type.c_str(), newToken->m_ActualType.c_str(), newToken->GetParentName().c_str(), newToken->m_ParentIndex);
+    }
+    else
     {
         newToken->m_ImplFile = m_File;
         newToken->m_ImplLine = line;
@@ -950,6 +956,37 @@ void ParserThread::HandleDefines()
 	}
 }
 
+void ParserThread::HandlePreprocessorBlocks(const wxString& preproc)
+{
+    if (preproc.StartsWith(ParserConsts::kw_if)) // #if, #ifdef, #ifndef
+    {
+        wxString token = preproc;
+        ++m_PreprocessorIfCount;
+
+        token = m_Tokenizer.GetToken();
+        if (token.IsSameAs(_T("0")))
+        {
+            // TODO: handle special case "#if 0"
+//                    DBGLOG(_T("Special case \"#if 0\" not skipped."));
+        }
+        m_Tokenizer.SkipToEOL();
+    }
+    else if (preproc==ParserConsts::kw_else || preproc==ParserConsts::kw_elif) // #else, #elif
+    {
+//        DBGLOG(_T("Saving nesting level: %d"), m_Tokenizer.GetNestingLevel());
+        m_Tokenizer.SaveNestingLevel();
+        wxString token = preproc;
+        while (!token.IsEmpty() && token != ParserConsts::kw_endif)
+            token = m_Tokenizer.GetToken();
+        --m_PreprocessorIfCount;
+//        int l = m_Tokenizer.GetNestingLevel();
+        m_Tokenizer.RestoreNestingLevel();
+//        DBGLOG(_T("Restoring nesting level: %d (was %d)"), m_Tokenizer.GetNestingLevel(), l);
+    }
+    else if (preproc==ParserConsts::kw_endif) // #endif
+        --m_PreprocessorIfCount;
+}
+
 void ParserThread::HandleNamespace()
 {
     wxString ns = m_Tokenizer.GetToken();
@@ -973,6 +1010,7 @@ void ParserThread::HandleNamespace()
                 return;
 
             m_Tokenizer.GetToken(); // eat {
+            int lineStart = m_Tokenizer.GetLineNumber();
 
             Token* lastParent = m_pLastParent;
             TokenScope lastScope = m_LastScope;
@@ -985,6 +1023,14 @@ void ParserThread::HandleNamespace()
 
             m_pLastParent = lastParent;
             m_LastScope = lastScope;
+
+            // update implementation file and lines of namespace.
+            // this doesn't make much sense because namespaces are all over the place,
+            // but do it anyway so that buffer-based parsing returns the correct values.
+            newToken->m_ImplFile = m_File;
+            newToken->m_ImplLine = line;
+            newToken->m_ImplLineStart = lineStart;
+            newToken->m_ImplLineEnd = m_Tokenizer.GetLineNumber();
         }
         else
             SkipToOneOfChars(ParserConsts::semicolonopbrace); // some kind of error in code ?
@@ -1151,6 +1197,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
                 lineStart = m_Tokenizer.GetLineNumber();
                 SkipBlock(); // skip  to matching }
                 lineEnd = m_Tokenizer.GetLineNumber();
+//                DBGLOG(_T("Skipped function %s impl. from %d to %d"), name.c_str(), lineStart, lineEnd);
                 break;
             }
             else if (peek == ParserConsts::clbrace || peek == ParserConsts::semicolon)
@@ -1245,7 +1292,7 @@ void ParserThread::HandleEnum()
 
 void ParserThread::HandleTypedef()
 {
-    // we will store typedefs as tkClass and put the typedef'd type as the class's
+    // typedefs are handled as tkClass and we put the typedef'd type as the class's
     // ancestor. this way, it will work through inheritance.
     // function pointers are a different beast and are handled differently.
 
@@ -1264,6 +1311,7 @@ void ParserThread::HandleTypedef()
 
 	size_t lineNr = m_Tokenizer.GetLineNumber();
 	bool is_function_pointer = false;
+	wxString typ;
 	std::queue<wxString> components;
 	// get everything on the same line
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("Typedef start"));
@@ -1274,26 +1322,22 @@ void ParserThread::HandleTypedef()
 	{
 	    token = m_Tokenizer.GetToken();
 	    peek = m_Tokenizer.PeekToken();
+//	    DBGLOG(_T("tdef: token=%s, peek=%s"), token.c_str(), peek.c_str());
 	    if (token.IsEmpty() || token == ParserConsts::semicolon)
             break;
 
 	    if (token == ParserConsts::kw_class ||
             token == ParserConsts::kw_struct ||
-            token == ParserConsts::kw_enum)
+            token == ParserConsts::kw_enum ||
+            token == ParserConsts::kw_union)
 	    {
 	        // "typedef struct" is not supported
 	        // "typedef class" is not supported
 	        // "typedef enum" is not supported
+	        // "typedef union" is not supported
 	        SkipToOneOfChars(ParserConsts::semicolon, true);
             break;
 	    }
-
-        // skip templates <>
-        if (peek == ParserConsts::lt)
-        {
-            SkipAngleBraces();
-            continue;
-        }
 
         // keep namespaces together
         while (peek == ParserConsts::dcolon)
@@ -1302,9 +1346,6 @@ void ParserThread::HandleTypedef()
             m_Tokenizer.GetToken(); // eat it
             token << m_Tokenizer.GetToken(); // get what's next
             peek = m_Tokenizer.PeekToken();
-
-            if (peek == ParserConsts::lt)
-                m_Tokenizer.UngetToken(); // or else templates check above will fail
         }
 
         if (token.GetChar(0) == '(')
@@ -1314,18 +1355,21 @@ void ParserThread::HandleTypedef()
             if (peek.GetChar(0) == '(')
             {
                 // typedef void (*dMessageFunction)(int errnum, const char *msg, va_list ap);
+                // typedef void (MyClass::*Function)(int);
 
-                // remove parentheses and any dereferencing symbols
+                // remove parentheses and keep everything after the dereferencing symbol
                 token.RemoveLast();
-                size_t pos = 1;
-                while (pos < token.Length() && token.GetChar(pos) != '*')
-                    pos++;
-                while (token.GetChar(pos) == '*')
-                    pos++;
-                if (pos < token.Length())
-                    token.Remove(0, pos); // remove up to *
+                int pos = token.Find('*', true);
+                if (pos != wxNOT_FOUND)
+                {
+                    typ << _T('(') << token.Mid(1, pos) << _T(')');
+                    token.Remove(0, pos + 1);
+                }
                 else
+                {
+                    typ = _T("(*)");
                     token.Remove(0, 1); // remove opening parenthesis
+                }
                 args = peek;
                 components.push(token);
             }
@@ -1333,6 +1377,7 @@ void ParserThread::HandleTypedef()
             {
                 // typedef void dMessageFunction (int errnum, const char *msg, va_list ap);
 
+                typ = _T("(*)");
                 // last component is already the name and this is the args
                 args = token;
             }
@@ -1340,6 +1385,14 @@ void ParserThread::HandleTypedef()
         }
 
         components.push(token);
+
+        // skip templates <>
+        if (peek == ParserConsts::lt)
+        {
+            SkipAngleBraces();
+            continue;
+        }
+
 //        Manager::Get()->GetMessageManager()->DebugLog(_T(" + '%s'"), token.c_str());
 	}
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("Typedef done"));
@@ -1361,15 +1414,15 @@ void ParserThread::HandleTypedef()
             ancestor << _T(' ');
         ancestor << token;
     }
+    ancestor << typ;
 
     // no return type
     m_Str.Clear();
 
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("Adding typedef: name '%s', ancestor: '%s'"), components.front().c_str(), ancestor.c_str());
-    Token* tdef = DoAddToken(tkClass, components.front(), lineNr, 0, 0, args);
+    Token* tdef = DoAddToken(tkTypedef, components.front(), lineNr, 0, 0, args);
     if (tdef)
     {
-        tdef->m_IsTypedef = true;
         if (!is_function_pointer)
         {
             tdef->m_AncestorsString = ancestor;

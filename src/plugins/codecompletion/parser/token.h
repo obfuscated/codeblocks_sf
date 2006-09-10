@@ -50,13 +50,19 @@ enum TokenKind
 {
 	tkClass         = 0x0001,
 	tkNamespace     = 0x0002,
-	tkConstructor   = 0x0004,
-	tkDestructor    = 0x0008,
-	tkFunction      = 0x0010,
-	tkVariable      = 0x0020,
-	tkEnum          = 0x0040,
-	tkEnumerator    = 0x0080,
-	tkPreprocessor  = 0x0100,
+	tkTypedef       = 0x0004, // typedefs are stored as classes inheriting from the typedef'd type (taking advantage of existing inheritance code)
+	tkConstructor   = 0x0008,
+	tkDestructor    = 0x0010,
+	tkFunction      = 0x0020,
+	tkVariable      = 0x0040,
+	tkEnum          = 0x0080,
+	tkEnumerator    = 0x0100,
+	tkPreprocessor  = 0x0200,
+
+	// convenient masks
+	tkAnyContainer  = tkClass | tkNamespace | tkTypedef,
+	tkAnyFunction   = tkFunction | tkConstructor | tkDestructor,
+
 	tkUndefined     = 0xFFFF,
 };
 
@@ -103,7 +109,6 @@ class Token  : public BlockAllocated<Token, 10000>
 		bool m_IsOperator;
 		bool m_IsLocal; // found in a local file?
 		bool m_IsTemp; // if true, the tree deletes it in FreeTemporaries()
-		bool m_IsTypedef; // typedefs are stored as classes inheriting from the typedef'd type. This flag tells if the token is a typedef.
 
         int m_ParentIndex;
         TokenIdxSet m_Children;

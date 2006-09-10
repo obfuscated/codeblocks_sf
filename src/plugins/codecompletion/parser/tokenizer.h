@@ -32,13 +32,21 @@ public:
     {
         return m_NestLevel;
     };
+    void SaveNestingLevel() // the parser might need to ignore the nesting level in some cases
+    {
+        m_SavedNestingLevel = m_NestLevel;
+    }
+    void RestoreNestingLevel()
+    {
+        m_NestLevel = m_SavedNestingLevel;
+    }
     bool IsOK() const
     {
         return m_IsOK;
     };
     TokenizerOptions m_Options;
 
-    bool SkipToEOL(); // use with care outside this class!
+    bool SkipToEOL(bool nestBraces = true); // use with care outside this class!
 protected:
     void BaseInit();
     wxString DoGetToken();
@@ -169,6 +177,7 @@ private:
 	unsigned int m_PeekLineNumber;
 	unsigned int m_PeekNestLevel;
 
+    unsigned int m_SavedNestingLevel;
 
     bool m_IsOK;
     bool m_IsOperator;

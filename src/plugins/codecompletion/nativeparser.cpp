@@ -937,7 +937,7 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
                 BreakUpInLines(s, token->m_Args, chars_per_line);
                 m_CallTips.Add(s);
             }
-            else if (token->m_IsTypedef && token->m_ActualType.Contains(_T("(")))
+            else if (token->m_TokenKind == tkTypedef && token->m_ActualType.Contains(_T("(")))
                 m_CallTips.Add(token->m_ActualType); // typedef'd function pointer
         }
     }while(false);
@@ -1282,7 +1282,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
     while (it != search_scope->end())
     {
         Token* token = tree->at(*it);
-        if (!token || (token->m_TokenKind != tkNamespace && token->m_TokenKind != tkClass))
+        if (!token || !(token->m_TokenKind & (tkNamespace | tkClass | tkTypedef)))
         {
             TokenIdxSet::iterator it2 = it;
             ++it;
@@ -1443,8 +1443,8 @@ size_t NativeParser::FindAIMatches(Parser* parser,
 
         // is the token a function or variable (i.e. is not a type)
         if (!searchtext.IsEmpty() &&
-            (parser_component.token_type != pttSearchText ||
-            false /*m_GettingCalltips*/) && // DISABLED! (crash in some cases) this allows calltips for typedef'd function pointers
+            (parser_component.token_type != pttSearchText /*||
+            m_GettingCalltips*/) && // DISABLED! (crash in some cases) this allows calltips for typedef'd function pointers
             !token->m_ActualType.IsEmpty())
         {
             // the token is not a type
@@ -1475,7 +1475,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                 do
                 {
                     // types are searched as whole words, case-sensitive and only classes/namespaces
-                    if (FindAIMatches(parser, type_components, type_result, parent ? parent->GetSelf() : -1, true, false, false, tkClass | tkNamespace | tkEnum, search_scope) != 0)
+                    if (FindAIMatches(parser, type_components, type_result, parent ? parent->GetSelf() : -1, true, false, false, tkClass | tkNamespace | tkTypedef | tkEnum, search_scope) != 0)
                         break;
                     if (!parent)
                         break;
@@ -1761,7 +1761,7 @@ size_t NativeParser::FindCurrentFunctionToken(cbEditor* editor, TokenIdxSet& res
         // search for namespace
         std::queue<ParserComponent> ns;
         BreakUpComponents(parser, scopeName, ns);
-        FindAIMatches(parser, ns, scope_result, -1, true, true, false, tkNamespace | tkClass);
+        FindAIMatches(parser, ns, scope_result, -1, true, true, false, tkNamespace | tkClass | tkTypedef);
     }
 
     // if no scope, use global scope

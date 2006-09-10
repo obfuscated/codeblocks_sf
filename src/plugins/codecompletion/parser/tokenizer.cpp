@@ -56,6 +56,7 @@ Tokenizer::Tokenizer(const wxString& filename)
 	m_UndoTokenIndex(0),
 	m_LineNumber(1),
 	m_UndoLineNumber(1),
+	m_SavedNestingLevel(0),
 	m_IsOK(false),
 	m_IsOperator(false)
 {
@@ -120,6 +121,7 @@ void Tokenizer::BaseInit()
 	m_LineNumber = 1;
 	m_UndoLineNumber = 1;
 	m_NestLevel = 0;
+	m_SavedNestingLevel = 0;
 	m_UndoNestLevel = 0;
 	m_IsOperator = false;
 	m_BufferLen = 0;
@@ -215,13 +217,19 @@ bool Tokenizer::SkipToOneOfChars(const char* chars, bool supportNesting)
 	return true;
 }
 
-bool Tokenizer::SkipToEOL()
+bool Tokenizer::SkipToEOL(bool nestBraces)
 {
 	// skip everything until we find EOL
 	while (1)
 	{
 		while (NotEOF() && CurrentChar() != '\n')
+		{
+            if (nestBraces && CurrentChar() == _T('{'))
+                ++m_NestLevel;
+            else if (nestBraces && CurrentChar() == _T('}'))
+                --m_NestLevel;
 			MoveToNextChar();
+		}
 		wxChar last = PreviousChar();
 		// if DOS line endings, we 've hit \r and we skip to \n...
 		if (last == '\r')
@@ -255,7 +263,7 @@ bool Tokenizer::SkipBlock(const wxChar& ch)
 	{
 	    if (CurrentChar() == '/')
             SkipComment(); // this will decide if it is a comment
-	    
+
 		if (CurrentChar() == '"' || CurrentChar() == '\'')
 		{
 			// this is the case that match is inside a string!
@@ -291,7 +299,7 @@ bool Tokenizer::SkipComment()
     {
         if (!cstyle)
         {
-            if (!SkipToEOL())
+            if (!SkipToEOL(false))
                 return false;
             MoveToNextChar();
             break;
@@ -361,7 +369,7 @@ bool Tokenizer::SkipUnwanted()
 			else
 			{
 				// skip the rest for now...
-				SkipToEOL();
+				SkipToEOL(false);
 				if (!SkipWhiteSpace())
 					return false;
 			}

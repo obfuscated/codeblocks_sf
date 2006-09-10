@@ -74,7 +74,7 @@ void InsertClassMethodDlg::FillClasses()
     {
         Token* token = tree->at(i);
         //Manager::Get()->GetMessageManager()->DebugLog("m_Filename=%s, token=%s", m_Filename.c_str(), token->m_Filename.c_str());
-        if (token && token->m_TokenKind == tkClass) //&&
+        if (token && (token->m_TokenKind & (tkClass | tkTypedef))) //&&
             //token->m_Filename == UnixFilename(m_Filename))
             // TODO: check against file's pair too
             lb->Append(token->m_Name, token);
