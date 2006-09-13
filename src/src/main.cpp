@@ -1075,9 +1075,10 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
             }
         }
 
+        static int row = 1;
         m_LayoutManager.AddPane(tb, wxPaneInfo().
                               Name(plugin->GetInfo()->name + _T("Toolbar")).Caption(plugin->GetInfo()->title + _(" Toolbar")).
-                              ToolbarPane().Top().Row(1));
+                              ToolbarPane().Top().Row(row++));
         DoUpdateLayout();
     }
     else
