@@ -104,10 +104,9 @@ void ClassBrowserBuilderThread::BuildTree()
         m_pTreeTop->SetItemHasChildren(root);
     }
 
-    // freezing the top tree causes more flickering than not
-//    m_pTreeTop->Freeze();
+    m_pTreeTop->Freeze();
     RemoveInvalidNodes(m_pTreeTop, root);
-//    m_pTreeTop->Thaw();
+    m_pTreeTop->Thaw();
 
     m_pTreeBottom->Freeze();
     RemoveInvalidNodes(m_pTreeBottom, m_pTreeBottom->GetRootItem());
