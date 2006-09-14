@@ -77,6 +77,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         int DoClassMethodDeclImpl();
         int DoAllMethodsImpl();
 		int FunctionPosition() const;
+		void OnFunctionsParsingTimer(wxTimerEvent& event);
 		void OnFunction(wxCommandEvent& event);
 		void ParseFunctionsAndFillToolbar();
 
@@ -106,6 +107,8 @@ class CodeCompletion : public cbCodeCompletionPlugin
 		wxChoice* m_Scope;
 		std::vector<FunctionScope> m_FunctionsScope;
 		int m_CurrentLine;
+
+		wxTimer m_FunctionsParsingTimer;
 
         DECLARE_EVENT_TABLE()
 };

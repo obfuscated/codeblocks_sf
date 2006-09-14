@@ -103,7 +103,7 @@ int idGotoImplementation = wxNewId();
 int idOpenIncludeFile = wxNewId();
 int idStartParsingProjects = wxNewId();
 int idCodeCompleteTimer = wxNewId();
-int idEditorAndLineTimer = wxNewId();
+int idFunctionsParsingTimer = wxNewId();
 
 // milliseconds
 #define EDITOR_AND_LINE_INTERVAL 150
@@ -141,6 +141,8 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 	EVT_CHOICE(XRCID("chcCodeCompletionFunction"),  CodeCompletion::OnFunction)
 
 	EVT_MENU(PARSER_END, CodeCompletion::OnParserEnd)
+
+	EVT_TIMER(idFunctionsParsingTimer, CodeCompletion::OnFunctionsParsingTimer)
 END_EVENT_TABLE()
 
 CodeCompletion::CodeCompletion() :
@@ -150,7 +152,8 @@ CodeCompletion::CodeCompletion() :
     m_pCodeCompletionLastEditor(0),
     m_ActiveCalltipsNest(0),
     m_IsAutoPopup(false),
-    m_CurrentLine(0)
+    m_CurrentLine(0),
+    m_FunctionsParsingTimer(this, idFunctionsParsingTimer)
 {
     if(!Manager::LoadResource(_T("code_completion.zip")))
     {
@@ -1075,10 +1078,16 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
     {
         lastActiveEditor = eb;
         m_NativeParsers.OnEditorActivated(eb);
-        ParseFunctionsAndFillToolbar();
+        m_FunctionsParsingTimer.Start(1000, wxTIMER_ONE_SHOT); // one second delay should be ok
     }
 
     event.Skip();
+}
+
+void CodeCompletion::OnFunctionsParsingTimer(wxTimerEvent& event)
+{
+    // time to parse the file for functions
+    ParseFunctionsAndFillToolbar();
 }
 
 void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
