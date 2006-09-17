@@ -17,6 +17,9 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+class TiXmlNode;
+class TiXmlElement;
+
 #ifndef CODESNIPPETSTREECTRL_H
 #define CODESNIPPETSTREECTRL_H
 
@@ -29,6 +32,12 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
 		CodeSnippetsTreeCtrl(wxWindow *parent, const wxWindowID id, const wxPoint& pos, const wxSize& size, long style);
 		~CodeSnippetsTreeCtrl();
 		int OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2);
+		void SaveItemsToFile(const wxString& fileName);
+		void LoadItemsFromFile(const wxString& fileName);
+		void LoadItemsFromXmlNode(const TiXmlElement* node, const wxTreeItemId& parentID);
+		void SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemId& parentID);
+		wxTreeItemId AddCodeSnippet(const wxTreeItemId& parent, wxString title, wxString codeSnippet, bool editNow);
+		wxTreeItemId AddCategory(const wxTreeItemId& parent, wxString title, bool editNow);
 	private:
 		// Must use this so overridden OnCompareItems() works on MSW,
 		// see wxWidgets Samples -> TreeCtrl sample

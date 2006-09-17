@@ -46,7 +46,7 @@ class CodeSnippets : public cbPlugin
 		 * Notice that you can logically AND more than one configuration groups,
 		 * so you could set it, for example, as "cgCompiler | cgContribPlugin".
 		*/
-		int GetConfigurationGroup() const { return cgUnknown; }
+		int GetConfigurationGroup() const { return cgContribPlugin; }
 
 		/** Return plugin's configuration panel.
 		  * @param parent The parent window.

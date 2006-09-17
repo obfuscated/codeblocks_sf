@@ -13,65 +13,27 @@
 <a href="http://ajonsson.kapsi.fi/">http://ajonsson.kapsi.fi/</a></p>
 
 <h3>Table of contents</h3>
-<ul>
-	<li>1. <a href="#installing">Installing</a>
-	<ul>
-		<li>1.1. <a href="#installing-win">Windows</a></li>
-		<li>1.2. <a href="#installing-nix">*nix</a></li>
+<ul style="list-style-type: none;">
+	<li>1. <a href="#about">About</a>
+	<ul style="list-style-type: none;">
+		<li>1.1. <a href="#newsnippet">Creating a new snippet</a></li>
+		<li>1.2. <a href="#applysnippet">Applying a snippet</a></li>
+		<li>1.3. <a href="#newcategory">Creating a new category</a></li>
+		<li>1.4. <a href="#searching">Searching</a></li>
 	</ul>
 	</li>
-	<li>2. <a href="#about">About</a>
-	<ul>
-		<li>2.1. <a href="#newsnippet">Creating a new snippet</a></li>
-		<li>2.2. <a href="#applysnippet">Applying a snippet</a></li>
-		<li>2.3. <a href="#newcategory">Creating a new category</a></li>
-		<li>2.4. <a href="#searching">Searching</a></li>
-	</ul>
-	</li>
-	<li>3. <a href="#development">Development</a>
-	<ul>
-		<li>3.1. <a href="#todo">Todo</a></li>
-		<li>3.2. <a href="#thecode">About the code</a></li>
-		<li>3.3. <a href="#fileformat">File format</a></li>
+	<li>2. <a href="#development">Development</a>
+	<ul style="list-style-type: none;">
+		<li>2.1. <a href="#todo">Todo</a></li>
+		<li>2.2. <a href="#thecode">About the code</a></li>
+		<li>2.3. <a href="#fileformat">File format</a></li>
 	</ul>
 	</li>
 </ul>
 
 <hr />
 
-<h2><a id="installing"></a>1. Installing</h2>
-
-<h3><a id="installing-win"></a>1.1. Windows</h3>
-
-<blockquote><p><strong>NOTE:</strong> I'm unable to build the Windows version
-of this plugin because of linking errors described in this forum topic:
-<a href="http://forums.codeblocks.org/index.php?topic=3804.0">
-http://forums.codeblocks.org/index.php?topic=3804.0</a>.</p>
-<p>If you can come with a solution be sure to notify me.</p></blockquote>
-
-<ol>
-	<li>Open the Windows project file, <tt>codesnippets.cbp</tt>, in
-	Code::Blocks and build it.</li>
-	<li>Copy the generated <tt>codesnippets.dll</tt> to the pluing
-	directory (<tt>CB_INSTALL_DIR\share\CodeBlocks\plugins</tt>).</li>
-	<li>Copy the images from <tt>resources\</tt> to the resources directory
-	under <tt>images\codesnippets\ </tt>
-	(<tt>CB_INSTALL_DIR\share\CodeBlocks\images\codesnippets\</tt>).</li>
-</ol>
-
-<h3><a id="installing-nix"></a>1.2. *nix</h3>
-
-<ol>
-	<li>Open the *nix project file, <tt>codesnippets-unix.cbp</tt>, in
-	Code::Blocks and build it.</li>
-	<li>Copy the generated <tt>libcodeblocks.so</tt> to the plugin
-	directory (in the global or in
-	<tt>~/.codeblocks/share/codeblocks/plugins/</tt>).</li>
-	<li>Copy the images from <tt>resources/</tt> to the global shared
-	resources directory under <tt>images/codesnippets/</tt>.</li>
-</ol>
-
-<h2><a id="about"></a>2. About</h2>
+<h2><a id="about"></a>1. About</h2>
 
 <p>Code snippets plugin is a simple snippets management plugin for
 Code::Blocks. It integrates with the interface by creating a floating
@@ -79,7 +41,7 @@ docking window which show all the snippets. Snippets can be assigned to
 categories or they can be in the global category called
 <em>All snippets</em>.</p>
 
-<h3><a id="newsnippet"></a>2.1. Creating a new snippet</h3>
+<h3><a id="newsnippet"></a>1.1. Creating a new snippet</h3>
 
 <p>To create a snippet you must first write the code. The plugin does not
 use any dialogs (currently no message boxes either) so you have to write
@@ -94,13 +56,13 @@ create a new snippet, hold <strong>Ctrl</strong> and then drag it.</p>
 <p>To assign a piece of code to a existing snippet you simply drag and drop
 the code to that snippet.</p>
 
-<h3><a id="applysnippet"></a>2.2. Applying a snippet</h3>
+<h3><a id="applysnippet"></a>1.2. Applying a snippet</h3>
 
 <p>To apply a snippet, double click it and it will be applied to the
 currently active editor. You can alternatively right click on the snippet
 and select <em>Apply</em>.</p>
 
-<h3><a id="newcategory"></a>2.3. Creating a new category</h3>
+<h3><a id="newcategory"></a>1.3. Creating a new category</h3>
 
 <p>Snippets can be added to categories. Each snippet can be at one category
 at a time. The number of categories and sub-categories is not limited
@@ -111,7 +73,7 @@ in root have the <em>All snippets</em> category as parent. So if you want
 to create a category to the root, right click <em>All snippets</em> and
 select <em>Add subcategory</em>.</p>
 
-<h3><a id="searching"></a>2.4. Searching</h3>
+<h3><a id="searching"></a>1.4. Searching</h3>
 
 <p>Snippets can be searched by typing words to the text edit control at the
 top of the docking window. Searching is performed by find-as-you-type method
@@ -127,19 +89,18 @@ more specific search terms.</p>
 <p>Searching is case-sensitive so <em>C++</em> and <em>c++</em> are
 seen as different search terms.</p>
 
-<h2><a id="development"></a>3. Development</h2>
+<h2><a id="development"></a>2. Development</h2>
 
-<h3><a id="todo"></a>3.1. Todo</h3>
+<h3><a id="todo"></a>2.1. Todo</h3>
 
 <p>A list of things to be done.</p>
 
 <ul>
 	<li>Drag and drop within the tree.</li>
 	<li>Configuration dialog.</li>
-	<li>More visual feedback if no search results was found.</li>
 </ul>
 
-<h3><a id="thecode"></a>3.2. About the code</h3>
+<h3><a id="thecode"></a>2.2. About the code</h3>
 
 <p>Short description of each class used in plugin.</p>
 
@@ -173,7 +134,7 @@ tree control example for more info.</p>
 <p><em>CodeSnippetsWindow</em> is the docking window class and it holds
 most of the functionality of the plugin.</p>
 
-<h3><a id="fileformat"></a>3.3. File format</h3>
+<h3><a id="fileformat"></a>2.3. File format</h3>
 
 <p>Code snippets plugin uses XML (UTF-8 encoded) file to save all code
 snippets.</p>

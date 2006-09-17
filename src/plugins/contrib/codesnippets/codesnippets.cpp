@@ -48,7 +48,7 @@ CodeSnippets::CodeSnippets()
 {
 	m_PluginInfo.name = _T("CodeSnippets");
 	m_PluginInfo.title = _("Code snippets");
-	m_PluginInfo.version = _T("0.1");
+	m_PluginInfo.version = _T("0.2");
 	m_PluginInfo.description =
 					_T("Code Snippets allows you to create and save ")
 					_T("small pieces of code (snippets) for later use.\n")
