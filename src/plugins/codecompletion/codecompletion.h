@@ -46,6 +46,12 @@ class CodeCompletion : public cbCodeCompletionPlugin
 			wxString Name;
 			wxString Scope;
 		};
+		struct NameSpace
+		{
+			int StartLine;
+			int EndLine;
+			wxString Name;
+		};
 
 	private:
 
@@ -77,6 +83,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         int DoClassMethodDeclImpl();
         int DoAllMethodsImpl();
 		int FunctionPosition() const;
+		int NameSpacePosition() const;
 		void OnFunctionsParsingTimer(wxTimerEvent& event);
 		void OnFunction(wxCommandEvent& event);
 		void ParseFunctionsAndFillToolbar();
@@ -106,6 +113,8 @@ class CodeCompletion : public cbCodeCompletionPlugin
 		wxChoice* m_Function;
 		wxChoice* m_Scope;
 		std::vector<FunctionScope> m_FunctionsScope;
+		std::vector<NameSpace> m_NameSpaces;
+		int StartIdxNameSpaceInScope;
 		int m_CurrentLine;
 
 		wxTimer m_FunctionsParsingTimer;

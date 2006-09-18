@@ -177,6 +177,7 @@ CodeCompletion::CodeCompletion() :
 	m_SearchMenu = 0L;
 	m_ViewMenu = 0L;
 
+	StartIdxNameSpaceInScope = -1;
 	m_NativeParsers.SetNextHandler(this);
 }
 
@@ -997,6 +998,25 @@ bool LessFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompl
 } // end of LessFunctionScope
 
 
+// help method in finding the namespace position in the vector for the namespace containing the current line
+int CodeCompletion::NameSpacePosition() const
+{
+	int retValue = -1; // -1 : not found
+	for(unsigned int idxNs = 0; idxNs < m_NameSpaces.size(); ++idxNs)
+	{
+			const NameSpace Ns = m_NameSpaces[idxNs];
+			if (Ns.StartLine <= m_CurrentLine && Ns.EndLine >= m_CurrentLine)
+	        {	// got one, maybe there might be a btter fitting namespace (embedded namespaces)
+	        	// so keep on looking
+                retValue = static_cast<int>(idxNs);
+	        }
+	        else if (Ns.StartLine > m_CurrentLine)
+	        {	// past the curent line, stop searching
+	        }
+	} // end for : idx : idxNs
+	return retValue;
+} // end of NameSpacePosition
+
 // help method in finding the function position in the vector for the function containing the current line
 int CodeCompletion::FunctionPosition() const
 {
@@ -1018,6 +1038,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
 	m_Function->Clear();
 	m_Scope->Clear();
 	m_FunctionsScope.clear();
+	m_NameSpaces.clear();
 	// let's parse the current editor for funtions
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
 	cbEditor* ed = edMan->GetBuiltinActiveEditor();
@@ -1044,6 +1065,18 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
 			func.Name = result;
 			m_FunctionsScope.push_back(func);
 		}
+		else if(token && token->m_TokenKind == tkNamespace)
+		{
+			NameSpace Ns;
+			Ns.StartLine = token->m_ImplLine - 1;
+			Ns.EndLine = token->m_ImplLineEnd - 1;
+			Ns.Name = token->m_Name;
+			m_NameSpaces.push_back(Ns);
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("namespace ") + token->m_Name);
+//       wxString Log;
+//        Log.Printf(_("start %d and end %d"), token->m_ImplLine, token->m_ImplLineEnd);
+//        Manager::Get()->GetMessageManager()->DebugLog(Log);
+		}
 	}
 	// sort the vector
 	sort(m_FunctionsScope.begin(), m_FunctionsScope.end(), LessFunctionScope);
@@ -1054,6 +1087,14 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
 		m_Function->Append(fs.Name);
 		m_Scope->Append(fs.Scope);
 	} // end for : idx : idxFn
+	// add namespaces to the scope
+	StartIdxNameSpaceInScope = m_FunctionsScope.size();
+	for(unsigned int idxNs = 0; idxNs < m_NameSpaces.size(); ++idxNs)
+	{
+		const NameSpace Ns = m_NameSpaces[idxNs];
+		m_Scope->Append(Ns.Name);
+	} // end for : idx : idxNs
+
 
 	m_CurrentLine = ed->GetControl()->GetCurrentLine();
 	int sel = FunctionPosition();
@@ -1066,6 +1107,15 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
 	{
 		m_Function->SetSelection(wxNOT_FOUND);
 		// TO DO : set scope correctly
+		int NsSel = NameSpacePosition();
+		if(NsSel != -1)
+		{
+			m_Scope->SetSelection(NsSel + StartIdxNameSpaceInScope);
+		}
+		else
+		{
+			m_Scope->SetSelection(wxNOT_FOUND);
+		}
 	}
 } // end of ParseFunctionsAndFillToolbar
 
@@ -1515,6 +1565,15 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 		{
 			m_Function->SetSelection(wxNOT_FOUND);
 			// TO DO : set scope correctly
+			int NsSel = NameSpacePosition();
+			if(NsSel != -1)
+			{
+				m_Scope->SetSelection(NsSel + StartIdxNameSpaceInScope);
+			}
+			else
+			{
+				m_Scope->SetSelection(wxNOT_FOUND);
+			}
 		}
 	}
 
