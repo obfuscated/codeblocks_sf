@@ -16,10 +16,11 @@ enum ToDoPosition
 
 enum ToDoCommentType
 {
-    tdctCpp = 0, // C++ style,
-    tdctC, // C style
-    tdctWarning, // compiler warning
-    tdctError // compiler error
+    tdctCpp = 0,	// C++ style,
+    tdctC, 			// C style
+    tdctDoxygen,	// Doxygen style
+    tdctWarning,	// compiler warning
+    tdctError		// compiler error
 };
 
 class AddTodoDlg : public wxDialog

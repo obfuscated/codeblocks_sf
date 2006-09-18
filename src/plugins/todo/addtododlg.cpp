@@ -26,10 +26,18 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& types)
     }
     if (m_Types.Index(_T("TODO")) == wxNOT_FOUND)
         cmb->Append(_T("TODO"));
+    if (m_Types.Index(_T("@todo")) == wxNOT_FOUND)
+        cmb->Append(_T("@todo"));
+    if (m_Types.Index(_T("\\todo")) == wxNOT_FOUND)
+        cmb->Append(_T("\\todo"));
     if (m_Types.Index(_T("FIXME")) == wxNOT_FOUND)
         cmb->Append(_T("FIXME"));
     if (m_Types.Index(_T("NOTE")) == wxNOT_FOUND)
         cmb->Append(_T("NOTE"));
+    if (m_Types.Index(_T("@note")) == wxNOT_FOUND)
+        cmb->Append(_T("@note"));
+    if (m_Types.Index(_T("\\note")) == wxNOT_FOUND)
+        cmb->Append(_T("\\note"));
 
     wxString lastType = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_type"));
     wxString lastStyle = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_style"));

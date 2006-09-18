@@ -151,7 +151,6 @@ void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTr
 
 bool ToDoList::BuildToolBar(wxToolBar* toolBar)
 {
-	//NotImplemented("ToDoList::BuildToolBar()");
 	return false;
 }
 
@@ -170,11 +169,15 @@ void ToDoList::LoadTypes()
 
 	Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("types"), &m_Types);
 
-	if(m_Types.GetCount()==0)
+	if(m_Types.GetCount() == 0)
 	{
         m_Types.Add(_T("TODO"));
+        m_Types.Add(_T("@todo"));
+        m_Types.Add(_T("\\todo"));
         m_Types.Add(_T("FIXME"));
         m_Types.Add(_T("NOTE"));
+        m_Types.Add(_T("@note"));
+        m_Types.Add(_T("\\note"));
 	}
     SaveTypes();
 }
@@ -282,6 +285,9 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 		case tdctCpp:
 			buffer << _T("// ");
 			break;
+		case tdctDoxygen:
+			buffer << _T("/// ");
+			break;
 		case tdctWarning:
 			buffer << _T("#warning ");
 			break;
@@ -317,7 +323,7 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
     if (CmtType == tdctWarning || CmtType == tdctError)
         buffer << _T("");
 
-    else if (CmtType == tdctC)// || dlg.GetPosition() == tdpCurrent)
+    else if (CmtType == tdctC)
 		buffer << _T(" */");
 
 	// add newline char(s), only if dlg.GetPosition() != tdpCurrent

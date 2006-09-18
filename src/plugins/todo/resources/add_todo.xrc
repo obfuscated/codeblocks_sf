@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+﻿<?xml version="1.0" ?>
 <resource>
   <object class="wxDialog" name="dlgAddToDo">
     <title>Add To-Do item</title>
@@ -73,6 +73,7 @@
               <content>
                 <item>C++ style comment</item>
                 <item>C style comment</item>
+                <item>Doxygen style comment</item>
                 <item>Compiler warning</item>
                 <item>Compiler error</item>
               </content>
