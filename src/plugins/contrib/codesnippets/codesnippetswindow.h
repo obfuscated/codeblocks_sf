@@ -38,6 +38,26 @@ class CodeSnippetsWindow : public wxPanel
 	friend class SnippetsDropTarget;
 
 	public:
+		enum SearchScope
+		{
+			SCOPE_SNIPPETS,		// Searches only snippets
+			SCOPE_CATEGORIES,	// Searches only categories
+			SCOPE_BOTH			// Searches both snippets and categories
+		};
+
+		struct SearchConfiguration
+		{
+			bool caseSensitive;
+			SearchScope scope;
+
+			SearchConfiguration()
+			{
+				// Default settings
+				caseSensitive = true;
+				scope = SCOPE_BOTH;
+			}
+		};
+
 		CodeSnippetsWindow();
 		~CodeSnippetsWindow();
 	private:
@@ -46,13 +66,14 @@ class CodeSnippetsWindow : public wxPanel
 		wxTreeItemId SearchSnippet(const wxString& searchTerms, const wxTreeItemId& node);
 
 		wxTextCtrl* m_SearchSnippetCtrl;
-		wxButton* m_ClearSearchBtn;
+		wxButton* m_SearchCfgBtn;
 		CodeSnippetsTreeCtrl* m_SnippetsTreeCtrl;
 		wxTreeItemId m_MnuAssociatedItemID;
 		wxImageList* m_SnippetsTreeImageList;
 		bool m_AppendItemsFromFile;
+		SearchConfiguration m_SearchConfig;
 
-		void OnClearSearch(wxCommandEvent& event);
+		void OnSearchCfg(wxCommandEvent& event);
 		void OnSearch(wxCommandEvent& event);
 		void OnItemActivated(wxTreeEvent& event);
 		void OnItemMenu(wxTreeEvent& event);
@@ -67,6 +88,9 @@ class CodeSnippetsWindow : public wxPanel
 		void OnMnuSaveSnippetsToFile(wxCommandEvent& event);
 		void OnEndLabelEdit(wxTreeEvent& event);
 		void OnMnuRemoveAll(wxCommandEvent& event);
+		void OnMnuCaseSensitive(wxCommandEvent& event);
+		void OnMnuChangeScope(wxCommandEvent& event);
+		void OnMnuClear(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 };
 

@@ -48,7 +48,7 @@ const wxString snippetsTreeImageFileNames[] = {
 };
 
 int idSearchSnippetCtrl = wxNewId();
-int idClearSearchBtn = wxNewId();
+int idSearchCfgBtn = wxNewId();
 int idSnippetsTreeCtrl = wxNewId();
 
 // Menu items
@@ -60,8 +60,16 @@ int idMnuLoadSnippetsFromFile = wxNewId();
 int idMnuSaveSnippetsToFile = wxNewId();
 int idMnuRemoveAll = wxNewId();
 
+// Search config menu items
+int idMnuCaseSensitive = wxNewId();
+int idMnuClear = wxNewId();
+int idMnuScope = wxNewId();
+int idMnuScopeSnippets = wxNewId();
+int idMnuScopeCategories = wxNewId();
+int idMnuScopeBoth = wxNewId();
+
 BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
-	// Menu events
+	// Tree menu events
 	EVT_MENU(idMnuRemove, CodeSnippetsWindow::OnMnuRemove)
 	EVT_MENU(idMnuAddSubCategory, CodeSnippetsWindow::OnMnuAddSubCategory)
 	EVT_MENU(idMnuAddSnippet, CodeSnippetsWindow::OnMnuAddSnippet)
@@ -70,7 +78,16 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 	EVT_MENU(idMnuSaveSnippetsToFile, CodeSnippetsWindow::OnMnuSaveSnippetsToFile)
 	EVT_MENU(idMnuRemoveAll, CodeSnippetsWindow::OnMnuRemoveAll)
 	// ---
-	EVT_BUTTON(idClearSearchBtn, CodeSnippetsWindow::OnClearSearch)
+
+	// Search config menu event
+	EVT_MENU(idMnuCaseSensitive, CodeSnippetsWindow::OnMnuCaseSensitive)
+	EVT_MENU(idMnuScopeSnippets, CodeSnippetsWindow::OnMnuChangeScope)
+	EVT_MENU(idMnuScopeCategories, CodeSnippetsWindow::OnMnuChangeScope)
+	EVT_MENU(idMnuScopeBoth, CodeSnippetsWindow::OnMnuChangeScope)
+	EVT_MENU(idMnuClear, CodeSnippetsWindow::OnMnuClear)
+	// ---
+
+	EVT_BUTTON(idSearchCfgBtn, CodeSnippetsWindow::OnSearchCfg)
 	EVT_TEXT(idSearchSnippetCtrl, CodeSnippetsWindow::OnSearch)
 	EVT_TREE_ITEM_ACTIVATED(idSnippetsTreeCtrl, CodeSnippetsWindow::OnItemActivated)
 	EVT_TREE_ITEM_MENU(idSnippetsTreeCtrl, CodeSnippetsWindow::OnItemMenu)
@@ -85,6 +102,12 @@ CodeSnippetsWindow::CodeSnippetsWindow()
 {
 	// Initialize the dialog
 	InitDialog();
+	m_AppendItemsFromFile = false;
+
+	// Load the settings
+	ConfigManager* cfgMan = Manager::Get()->GetConfigManager(_T("codesnippets"));
+	m_SearchConfig.caseSensitive = cfgMan->ReadBool(_T("casesensitive"), true);
+	m_SearchConfig.scope = SearchScope(cfgMan->ReadInt(_T("scope"), 2));
 
 	// Load the snippets
 	m_SnippetsTreeCtrl->LoadItemsFromFile(ConfigManager::GetFolder(sdConfig) + wxFILE_SEP_PATH + _T("codesnippets.xml"));
@@ -95,12 +118,24 @@ CodeSnippetsWindow::~CodeSnippetsWindow()
 	// Save the snippets
 	m_SnippetsTreeCtrl->SaveItemsToFile(ConfigManager::GetFolder(sdConfig) + wxFILE_SEP_PATH + _T("codesnippets.xml"));
 
+	// Save the settings
+	ConfigManager* cfgMan = Manager::Get()->GetConfigManager(_T("codesnippets"));
+	cfgMan->Write(_T("casesensitive"), m_SearchConfig.caseSensitive);
+	cfgMan->Write(_T("scope"), m_SearchConfig.scope);
+
 	// Release tree images
 	delete m_SnippetsTreeImageList;
 }
 
 void CodeSnippetsWindow::InitDialog()
 {
+	// Color which we're going to use as mask
+	wxColor maskColor(255, 0, 255);
+
+	// Directory where the images are located
+	wxString imagesDir = ConfigManager::GetFolder(sdDataGlobal) + wxFILE_SEP_PATH +
+		_T("images") + wxFILE_SEP_PATH + _T("codesnippets") + wxFILE_SEP_PATH;
+
 	wxBoxSizer* panelSizer;
 	panelSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -108,11 +143,10 @@ void CodeSnippetsWindow::InitDialog()
 	searchCtrlSizer = new wxBoxSizer(wxHORIZONTAL);
 
 	m_SearchSnippetCtrl = new wxTextCtrl(this, idSearchSnippetCtrl, _T(""), wxDefaultPosition, wxDefaultSize, 0);
-	searchCtrlSizer->Add(m_SearchSnippetCtrl, 1, wxALL, 5);
+	searchCtrlSizer->Add(m_SearchSnippetCtrl, 1, wxBOTTOM|wxLEFT|wxTOP, 5);
 
-	m_ClearSearchBtn = new wxButton(this, idClearSearchBtn, _("Clear"), wxDefaultPosition, wxDefaultSize, 0);
-	m_ClearSearchBtn->Enable(false);
-	searchCtrlSizer->Add(m_ClearSearchBtn, 0, wxALL, 5);
+	m_SearchCfgBtn = new wxButton(this, idSearchCfgBtn, _T(">"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+	searchCtrlSizer->Add(m_SearchCfgBtn, 0, wxBOTTOM|wxRIGHT|wxTOP, 5);
 
 	panelSizer->Add(searchCtrlSizer, 0, wxEXPAND, 5);
 
@@ -120,7 +154,7 @@ void CodeSnippetsWindow::InitDialog()
 	treeCtrlSizer = new wxBoxSizer(wxVERTICAL);
 
 	m_SnippetsTreeCtrl = new CodeSnippetsTreeCtrl(this, idSnippetsTreeCtrl, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE|wxTR_EDIT_LABELS);
-	treeCtrlSizer->Add(m_SnippetsTreeCtrl, 1, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, 5);
+	treeCtrlSizer->Add(m_SnippetsTreeCtrl, 1, wxEXPAND, 5);
 
 	panelSizer->Add(treeCtrlSizer, 1, wxEXPAND, 5);
 
@@ -129,13 +163,11 @@ void CodeSnippetsWindow::InitDialog()
 
 	m_SnippetsTreeCtrl->SetDropTarget(new SnippetsDropTarget(m_SnippetsTreeCtrl));
 
-	wxString dataFolder = ConfigManager::GetFolder(sdDataGlobal) + wxFILE_SEP_PATH + _T("images");
-	wxColor maskColor(255, 0, 255);
 	m_SnippetsTreeImageList = new wxImageList(16, 16, true, 3);
 
 	for (int i = 0; i < SNIPPETS_TREE_IMAGE_COUNT; ++i)
 	{
-		wxBitmap imageFile = cbLoadBitmap(dataFolder + wxFILE_SEP_PATH + _T("codesnippets") + wxFILE_SEP_PATH + snippetsTreeImageFileNames[i], wxBITMAP_TYPE_PNG);
+		wxBitmap imageFile = cbLoadBitmap(imagesDir + snippetsTreeImageFileNames[i], wxBITMAP_TYPE_PNG);
 		m_SnippetsTreeImageList->Add(imageFile, maskColor);
 	}
 
@@ -144,21 +176,57 @@ void CodeSnippetsWindow::InitDialog()
 	// Add root item
 	SnippetItemData* rootData = new SnippetItemData(SnippetItemData::TYPE_ROOT);
 	m_SnippetsTreeCtrl->AddRoot(_("All snippets"), 0, -1, rootData);
-
-	m_AppendItemsFromFile = false;
 }
 
-void CodeSnippetsWindow::OnClearSearch(wxCommandEvent& /*event*/)
+void CodeSnippetsWindow::OnSearchCfg(wxCommandEvent& /*event*/)
 {
-	m_SearchSnippetCtrl->Clear();
+	wxMenu* searchCfgMenu = new wxMenu();
+	wxMenu* searchScopeMenu = new wxMenu();
+
+	searchScopeMenu->AppendRadioItem(idMnuScopeSnippets, _("Snippets"));
+	searchScopeMenu->AppendRadioItem(idMnuScopeCategories, _("Categories"));
+	searchScopeMenu->AppendRadioItem(idMnuScopeBoth, _("Snippets and categories"));
+	switch (m_SearchConfig.scope)
+	{
+		case SCOPE_SNIPPETS:
+			searchScopeMenu->Check(idMnuScopeSnippets, true);
+		break;
+
+		case SCOPE_CATEGORIES:
+			searchScopeMenu->Check(idMnuScopeCategories, true);
+		break;
+
+		case SCOPE_BOTH:
+			searchScopeMenu->Check(idMnuScopeBoth, true);
+		break;
+	}
+
+	searchCfgMenu->AppendCheckItem(idMnuCaseSensitive, _("Case sensitive"));
+	if (m_SearchConfig.caseSensitive)
+	{
+		searchCfgMenu->Check(idMnuCaseSensitive, true);
+	}
+
+	searchCfgMenu->Append(idMnuScope, _("Scope"), searchScopeMenu);
+	searchCfgMenu->AppendSeparator();
+	searchCfgMenu->Append(idMnuClear, _("Clear"));
+	if (m_SearchSnippetCtrl->GetValue() == wxEmptyString)
+	{
+		searchCfgMenu->Enable(idMnuClear, false);
+	}
+
+	// Always pop up the menu at the same position
+	wxRect btnRect = m_SearchCfgBtn->GetRect();
+	PopupMenu(searchCfgMenu, btnRect.x, btnRect.y + btnRect.height);
+
+	searchCfgMenu->Destroy(idMnuScope);
+	delete searchCfgMenu;
 }
 
 void CodeSnippetsWindow::OnSearch(wxCommandEvent& /*event*/)
 {
 	if (m_SearchSnippetCtrl->GetValue() == wxEmptyString)
 	{
-		m_ClearSearchBtn->Enable(false);
-
 		// Reset the root node's title
 		m_SnippetsTreeCtrl->SetItemText(m_SnippetsTreeCtrl->GetRootItem(), _("All snippets"));
 
@@ -168,14 +236,18 @@ void CodeSnippetsWindow::OnSearch(wxCommandEvent& /*event*/)
 	}
 	else
 	{
-		m_ClearSearchBtn->Enable(true);
-
 		// Edit the root node's title so that the user knows we are
 		// searching for specific item
 		m_SnippetsTreeCtrl->SetItemText(m_SnippetsTreeCtrl->GetRootItem(), _T("Search \"") + m_SearchSnippetCtrl->GetValue() + _T("\""));
 
 		// Search it!
-		wxTreeItemId foundID = SearchSnippet(m_SearchSnippetCtrl->GetValue(), m_SnippetsTreeCtrl->GetRootItem());
+		wxString searchTerms = m_SearchSnippetCtrl->GetValue();
+		if (!m_SearchConfig.caseSensitive)
+		{
+			searchTerms.LowerCase();
+		}
+
+		wxTreeItemId foundID = SearchSnippet(searchTerms, m_SnippetsTreeCtrl->GetRootItem());
 
 		if (foundID.IsOk())
 		{
@@ -220,15 +292,25 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 				snippetsTreeMenu->Append(idMnuAddSnippet, _("Add code snippet"));
 				snippetsTreeMenu->Append(idMnuAddSubCategory, _("Add subcategory"));
 				snippetsTreeMenu->AppendSeparator();
+
 				snippetsTreeMenu->Append(idMnuRemoveAll, _("Remove all items"));
+
+				// Disable "Remove all items" if the root item does not have child items
+				if (!m_SnippetsTreeCtrl->ItemHasChildren(m_SnippetsTreeCtrl->GetRootItem()))
+					snippetsTreeMenu->Enable(idMnuRemoveAll, false);
+
 				snippetsTreeMenu->AppendSeparator();
 				snippetsTreeMenu->Append(idMnuSaveSnippetsToFile, _("Save to file..."));
+
+				// Disable "Save to file..." if the root item does not have child items
+				if (!m_SnippetsTreeCtrl->ItemHasChildren(m_SnippetsTreeCtrl->GetRootItem()))
+					snippetsTreeMenu->Enable(idMnuSaveSnippetsToFile, false);
 
 				// Check if Shift key is pressed
 				if (::wxGetKeyState(WXK_SHIFT))
 				{
 					// Add append from file entry
-					snippetsTreeMenu->Append(idMnuLoadSnippetsFromFile, _T("Load from file (append)..."));
+					snippetsTreeMenu->Append(idMnuLoadSnippetsFromFile, _("Load from file (append)..."));
 					m_AppendItemsFromFile = true;
 				}
 				else
@@ -342,22 +424,56 @@ wxTreeItemId CodeSnippetsWindow::SearchSnippet(const wxString& searchTerms, cons
 	// Loop through all items
 	while(item.IsOk())
 	{
-		const wxString label = m_SnippetsTreeCtrl->GetItemText(item);
-
-		if(label.Contains(searchTerms))
+		if (const SnippetItemData* itemData = (SnippetItemData*)(m_SnippetsTreeCtrl->GetItemData(item)))
 		{
-			return item;
-		}
+			bool ignoreThisType = false;
 
-		if(m_SnippetsTreeCtrl->ItemHasChildren(item))
-		{
-			wxTreeItemId search = SearchSnippet(searchTerms, item);
-			if(search.IsOk())
+			switch (itemData->GetType())
 			{
-				return search;
+				case SnippetItemData::TYPE_ROOT:
+					ignoreThisType = true;
+				break;
+
+				case SnippetItemData::TYPE_SNIPPET:
+					if (m_SearchConfig.scope == SCOPE_CATEGORIES)
+					{
+						ignoreThisType = true;
+					}
+				break;
+
+				case SnippetItemData::TYPE_CATEGORY:
+					if (m_SearchConfig.scope == SCOPE_SNIPPETS)
+					{
+						ignoreThisType = true;
+					}
+				break;
 			}
+
+			if (!ignoreThisType)
+			{
+				wxString label = m_SnippetsTreeCtrl->GetItemText(item);
+
+				if (!m_SearchConfig.caseSensitive)
+				{
+					label.LowerCase();
+				}
+
+				if(label.Contains(searchTerms))
+				{
+					return item;
+				}
+			}
+
+			if(m_SnippetsTreeCtrl->ItemHasChildren(item))
+			{
+				wxTreeItemId search = SearchSnippet(searchTerms, item);
+				if(search.IsOk())
+				{
+					return search;
+				}
+			}
+			item = m_SnippetsTreeCtrl->GetNextChild(node, cookie);
 		}
-		item = m_SnippetsTreeCtrl->GetNextChild(node, cookie);
 	}
 
    // Return dummy item if search string was not found
@@ -408,6 +524,32 @@ void CodeSnippetsWindow::OnMnuRemoveAll(wxCommandEvent& /*event*/)
 	// Remove all items
 	m_SnippetsTreeCtrl->DeleteChildren(m_SnippetsTreeCtrl->GetRootItem());
 } // end of OnMnuRemoveAll
+
+void CodeSnippetsWindow::OnMnuCaseSensitive(wxCommandEvent& event)
+{
+	m_SearchConfig.caseSensitive = (!m_SearchConfig.caseSensitive);
+}
+
+void CodeSnippetsWindow::OnMnuChangeScope(wxCommandEvent& event)
+{
+	if (event.GetId() == idMnuScopeSnippets)
+	{
+		m_SearchConfig.scope = SCOPE_SNIPPETS;
+	}
+	else if (event.GetId() == idMnuScopeCategories)
+	{
+		m_SearchConfig.scope = SCOPE_CATEGORIES;
+	}
+	else if (event.GetId() == idMnuScopeBoth)
+	{
+		m_SearchConfig.scope = SCOPE_BOTH;
+	}
+}
+
+void CodeSnippetsWindow::OnMnuClear(wxCommandEvent& event)
+{
+	m_SearchSnippetCtrl->Clear();
+}
 
 bool SnippetsDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
 {
