@@ -455,65 +455,73 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     int projectIncludeDirsRelation = 3;
     int projectLibDirsRelation = 3;
     int projectResIncludeDirsRelation = 3;
+    TargetFilenameGenerationPolicy prefixPolicy = tgfpNone; // tgfpNone for compat. with older projects
+    TargetFilenameGenerationPolicy extensionPolicy = tgfpNone;
 
     while (node)
     {
         if (node->Attribute("use_console_runner"))
             use_console_runner = strncmp(node->Attribute("use_console_runner"), "0", 1) != 0;
 
-        else if (node->Attribute("output"))
+        if (node->Attribute("output"))
             output = UnixFilename(cbC2U(node->Attribute("output")));
 
-        else if (node->Attribute("working_dir"))
+        if (node->Attribute("prefix_auto"))
+            prefixPolicy = atoi(node->Attribute("prefix_auto")) == 1 ? tgfpPlatformDefault : tgfpNone;
+
+        if (node->Attribute("extension_auto"))
+            extensionPolicy = atoi(node->Attribute("extension_auto")) == 1 ? tgfpPlatformDefault : tgfpNone;
+
+        if (node->Attribute("working_dir"))
             working_dir = UnixFilename(cbC2U(node->Attribute("working_dir")));
 
-        else if (node->Attribute("object_output"))
+        if (node->Attribute("object_output"))
             obj_output = UnixFilename(cbC2U(node->Attribute("object_output")));
 
-        else if (node->Attribute("deps_output"))
+        if (node->Attribute("deps_output"))
             deps_output = UnixFilename(cbC2U(node->Attribute("deps_output")));
 
-        else if (node->Attribute("external_deps"))
+        if (node->Attribute("external_deps"))
             deps = UnixFilename(cbC2U(node->Attribute("external_deps")));
 
-        else if (node->Attribute("additional_output"))
+        if (node->Attribute("additional_output"))
             added = UnixFilename(cbC2U(node->Attribute("additional_output")));
 
-        else if (node->Attribute("type"))
+        if (node->Attribute("type"))
             type = atoi(node->Attribute("type"));
 
-        else if (node->Attribute("compiler"))
+        if (node->Attribute("compiler"))
             compilerId = GetValidCompilerID(cbC2U(node->Attribute("compiler")), target->GetTitle());
 
-        else if (node->Attribute("parameters"))
+        if (node->Attribute("parameters"))
             parameters = cbC2U(node->Attribute("parameters"));
 
-        else if (node->Attribute("host_application"))
+        if (node->Attribute("host_application"))
             hostApplication = UnixFilename(cbC2U(node->Attribute("host_application")));
 
         // used in versions prior to 1.5
-        else if (node->Attribute("includeInTargetAll"))
+        if (node->Attribute("includeInTargetAll"))
             includeInTargetAll = atoi(node->Attribute("includeInTargetAll")) != 0;
 
-        else if (node->Attribute("createDefFile"))
+        if (node->Attribute("createDefFile"))
             createDefFile = atoi(node->Attribute("createDefFile")) != 0;
 
-        else if (node->Attribute("createStaticLib"))
+        if (node->Attribute("createStaticLib"))
             createStaticLib = atoi(node->Attribute("createStaticLib")) != 0;
 
-        else if (node->Attribute("projectCompilerOptionsRelation"))
+        if (node->Attribute("projectCompilerOptionsRelation"))
             projectCompilerOptionsRelation = atoi(node->Attribute("projectCompilerOptionsRelation"));
 
-        else if (node->Attribute("projectLinkerOptionsRelation"))
+        if (node->Attribute("projectLinkerOptionsRelation"))
             projectLinkerOptionsRelation = atoi(node->Attribute("projectLinkerOptionsRelation"));
 
-        else if (node->Attribute("projectIncludeDirsRelation"))
+        if (node->Attribute("projectIncludeDirsRelation"))
             projectIncludeDirsRelation = atoi(node->Attribute("projectIncludeDirsRelation"));
 
-        else if (node->Attribute("projectLibDirsRelation"))
+        if (node->Attribute("projectLibDirsRelation"))
             projectLibDirsRelation = atoi(node->Attribute("projectLibDirsRelation"));
 
-        else if (node->Attribute("projectResourceIncludeDirsRelation"))
+        if (node->Attribute("projectResourceIncludeDirsRelation"))
         {
             projectResIncludeDirsRelation = atoi(node->Attribute("projectResourceIncludeDirsRelation"));
             // there used to be a bug in this setting and it might have a negative or very big number
@@ -536,6 +544,8 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
 
     if (type != -1)
     {
+        target->SetCompilerID(compilerId);
+        target->SetTargetFilenameGenerationPolicy(prefixPolicy, extensionPolicy);
         target->SetTargetType((TargetType)type); // type *must* come before output filename!
         target->SetOutputFilename(output); // because if no filename defined, one will be suggested based on target type...
         target->SetUseConsoleRunner(use_console_runner);
@@ -547,7 +557,6 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
             target->SetDepsOutput(deps_output);
         target->SetExternalDeps(deps);
         target->SetAdditionalOutputFiles(added);
-        target->SetCompilerID(compilerId);
         target->SetExecutionParameters(parameters);
         target->SetHostApplication(hostApplication);
         target->SetIncludeInTargetAll(includeInTargetAll); // used in versions prior to 1.5
@@ -983,7 +992,13 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         TiXmlElement* tgtnode = AddElement(buildnode, "Target", "title", target->GetTitle());
         if (target->GetTargetType() != ttCommandsOnly)
         {
-            AddElement(tgtnode, "Option", "output", target->GetOutputFilename());
+            TiXmlElement* outnode = AddElement(tgtnode, "Option", "output", target->GetOutputFilename());
+            TargetFilenameGenerationPolicy prefixPolicy;
+            TargetFilenameGenerationPolicy extensionPolicy;
+            target->GetTargetFilenameGenerationPolicy(&prefixPolicy, &extensionPolicy);
+            outnode->SetAttribute("prefix_auto", prefixPolicy == tgfpPlatformDefault ? "1" : "0");
+            outnode->SetAttribute("extension_auto", extensionPolicy == tgfpPlatformDefault ? "1" : "0");
+
             if (target->GetWorkingDir() != _T("."))
                 AddElement(tgtnode, "Option", "working_dir", target->GetWorkingDir());
             if (target->GetObjectOutput() != _T(".objs"))

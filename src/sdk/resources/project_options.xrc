@@ -262,8 +262,7 @@ from target...</label>
                               <object class="wxStaticText">
                                 <label>Type:</label>
                               </object>
-                              <flag>wxTOP</flag>
-                              <border>4</border>
+                              <flag>wxALIGN_CENTRE_VERTICAL</flag>
                             </object>
                             <object class="sizeritem">
                               <object class="wxBoxSizer">
@@ -280,6 +279,7 @@ from target...</label>
                                     <selection>0</selection>
                                     <style>wxCB_READONLY|wxCB_DROPDOWN</style>
                                   </object>
+                                  <flag>wxEXPAND</flag>
                                 </object>
                                 <object class="sizeritem">
                                   <object class="wxCheckBox" name="chkUseConsoleRunner">
@@ -287,7 +287,26 @@ from target...</label>
                                     <tooltip>Pause with &quot;Press any key&quot; when execution ends (only when executed from inside Code::Blocks)</tooltip>
                                   </object>
                                   <flag>wxTOP|wxEXPAND</flag>
-                                  <border>2</border>
+                                  <border>4</border>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxCheckBox" name="chkCreateStaticLib">
+                                    <label>Create import library</label>
+                                  </object>
+                                  <flag>wxTOP|wxEXPAND</flag>
+                                  <border>4</border>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxCheckBox" name="chkCreateDefFile">
+                                    <label>Create .DEF exports file</label>
+                                  </object>
+                                  <flag>wxTOP|wxEXPAND</flag>
+                                  <border>4</border>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxStaticLine"/>
+                                  <flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
+                                  <border>4</border>
                                 </object>
                               </object>
                               <option>1</option>
@@ -298,8 +317,7 @@ from target...</label>
                               <object class="wxStaticText">
                                 <label>Output filename:</label>
                               </object>
-                              <flag>wxTOP</flag>
-                              <border>4</border>
+                              <flag>wxALIGN_CENTRE_VERTICAL</flag>
                             </object>
                             <object class="sizeritem">
                               <object class="wxBoxSizer">
@@ -318,12 +336,38 @@ from target...</label>
                               </object>
                               <flag>wxEXPAND</flag>
                             </object>
+                            <object class="spacer">
+                              <size>0,0</size>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                  <object class="wxCheckBox" name="chkAutoGenPrefix">
+                                    <label>Auto-generate filename prefix</label>
+                                  </object>
+                                  <flag>wxEXPAND</flag>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxCheckBox" name="chkAutoGenExt">
+                                    <label>Auto-generate filename extension</label>
+                                  </object>
+                                  <flag>wxTOP|wxEXPAND</flag>
+                                  <border>4</border>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxStaticLine"/>
+                                  <flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
+                                  <border>4</border>
+                                </object>
+                              </object>
+                              <flag>wxEXPAND</flag>
+                            </object>
                             <object class="sizeritem">
                               <object class="wxStaticText">
                                 <label>Execution working dir:</label>
                               </object>
-                              <flag>wxTOP</flag>
-                              <border>4</border>
+                              <flag>wxALIGN_CENTRE_VERTICAL</flag>
                             </object>
                             <object class="sizeritem">
                               <object class="wxBoxSizer">
@@ -346,8 +390,7 @@ from target...</label>
                               <object class="wxStaticText">
                                 <label>Objects output dir:</label>
                               </object>
-                              <flag>wxTOP</flag>
-                              <border>4</border>
+                              <flag>wxALIGN_CENTRE_VERTICAL</flag>
                             </object>
                             <object class="sizeritem">
                               <object class="wxBoxSizer">
@@ -366,39 +409,10 @@ from target...</label>
                               </object>
                               <flag>wxEXPAND</flag>
                             </object>
-                            <object class="spacer">
-                              <size>0,0</size>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxCheckBox" name="chkBuildThisTarget">
-                                <label>Build this target with &quot;All&quot;</label>
-                                <hidden>1</hidden>
-                                <tooltip>Build this target when building the whole project.\nIf no target is marked to be built, the targets resemble MSVC configurations.</tooltip>
-                              </object>
-                              <flag>wxEXPAND</flag>
-                            </object>
                             <cols>2</cols>
                             <vgap>4</vgap>
                             <hgap>4</hgap>
                             <growablecols>1</growablecols>
-                            <object class="spacer">
-                              <size>0,0</size>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxCheckBox" name="chkCreateDefFile">
-                                <label>Create .DEF exports file</label>
-                              </object>
-                              <flag>wxEXPAND</flag>
-                            </object>
-                            <object class="spacer">
-                              <size>0,0</size>
-                            </object>
-                            <object class="sizeritem">
-                              <object class="wxCheckBox" name="chkCreateStaticLib">
-                                <label>Create import library</label>
-                              </object>
-                              <flag>wxEXPAND</flag>
-                            </object>
                           </object>
                           <flag>wxTOP|wxEXPAND</flag>
                           <border>4</border>
@@ -408,7 +422,7 @@ from target...</label>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticBoxSizer">
-                        <label>Selected build target files:</label>
+                        <label>Build target files:</label>
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
                           <object class="wxCheckList" name="lstFiles">

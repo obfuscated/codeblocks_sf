@@ -201,9 +201,10 @@ void ProjectOptionsDlg::FillBuildTargets()
     DoTargetChange();
 }
 
-void ProjectOptionsDlg::DoTargetChange()
+void ProjectOptionsDlg::DoTargetChange(bool saveOld)
 {
-    DoBeforeTargetChange();
+    if (saveOld)
+        DoBeforeTargetChange();
 
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
 
@@ -213,23 +214,31 @@ void ProjectOptionsDlg::DoTargetChange()
 	if (!target)
 		return;
 
-	XRCCTRL(*this, "chkBuildThisTarget", wxCheckBox)->SetValue(target->GetIncludeInTargetAll());
-	XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->SetValue(target->GetCreateDefFile());
-	XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->SetValue(target->GetCreateStaticLib());
-
 	// global project options
 	wxComboBox* cmb = XRCCTRL(*this, "cmbProjectType", wxComboBox);
 	wxCheckBox* chkCR = XRCCTRL(*this, "chkUseConsoleRunner", wxCheckBox);
+	wxCheckBox* chkSL = XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox);
+	wxCheckBox* chkCD = XRCCTRL(*this, "chkCreateDefFile", wxCheckBox);
     wxTextCtrl* txt = XRCCTRL(*this, "txtOutputFilename", wxTextCtrl);
     wxTextCtrl* txtW = XRCCTRL(*this, "txtWorkingDir", wxTextCtrl);
     wxTextCtrl* txtO = XRCCTRL(*this, "txtObjectDir", wxTextCtrl);
     wxButton* browse = XRCCTRL(*this, "btnBrowseOutputFilename", wxButton);
     wxButton* browseW = XRCCTRL(*this, "btnBrowseWorkingDir", wxButton);
     wxButton* browseO = XRCCTRL(*this, "btnBrowseObjectDir", wxButton);
-    XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->Enable(target->GetTargetType() == ttStaticLib ||
-                                                            target->GetTargetType() == ttDynamicLib);
+
+    chkCR->SetValue(false);
+	chkCD->SetValue(target->GetCreateDefFile());
+	chkSL->SetValue(target->GetCreateStaticLib());
+
+    TargetFilenameGenerationPolicy prefixPolicy;
+    TargetFilenameGenerationPolicy extensionPolicy;
+    target->GetTargetFilenameGenerationPolicy(&prefixPolicy, &extensionPolicy);
+    XRCCTRL(*this, "chkAutoGenPrefix", wxCheckBox)->SetValue(prefixPolicy == tgfpPlatformDefault);
+    XRCCTRL(*this, "chkAutoGenExt", wxCheckBox)->SetValue(extensionPolicy == tgfpPlatformDefault);
+
     chkCR->Enable(false);
-    XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->Enable(target->GetTargetType() == ttDynamicLib);
+    chkSL->Enable(target->GetTargetType() == ttDynamicLib);
+    chkCD->Enable(target->GetTargetType() == ttDynamicLib);
     if (cmb && chkCR && txt && browse)
     {
         cmb->SetSelection(target->GetTargetType());
@@ -308,9 +317,12 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 			return;
 
         target->SetUseConsoleRunner(XRCCTRL(*this, "chkUseConsoleRunner", wxCheckBox)->GetValue());
-		target->SetIncludeInTargetAll(XRCCTRL(*this, "chkBuildThisTarget", wxCheckBox)->GetValue());
         target->SetCreateDefFile(XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->GetValue());
         target->SetCreateStaticLib(XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->GetValue());
+
+        target->SetTargetFilenameGenerationPolicy(
+            XRCCTRL(*this, "chkAutoGenPrefix", wxCheckBox)->GetValue() ? tgfpPlatformDefault : tgfpNone,
+            XRCCTRL(*this, "chkAutoGenExt", wxCheckBox)->GetValue() ? tgfpPlatformDefault : tgfpNone);
 
 		// global project options
 		target->SetTargetType(TargetType(XRCCTRL(*this, "cmbProjectType", wxComboBox)->GetSelection()));
@@ -363,8 +375,8 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
     if (!cmb || !txt || !browse)
         return;
 
-    XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->Enable(cmb->GetSelection() == ttStaticLib ||
-                                                            cmb->GetSelection() == ttDynamicLib);
+    XRCCTRL(*this, "chkUseConsoleRunner", wxCheckBox)->Enable(cmb->GetSelection() == ttConsoleOnly);
+    XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->Enable(cmb->GetSelection() == ttDynamicLib);
     XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->Enable(cmb->GetSelection() == ttDynamicLib);
 
     txt->Enable(true);
@@ -387,6 +399,7 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
     wxString ext = fname.GetExt();
     wxString libext = compiler->GetSwitches().libExtension;
     wxString libpre = compiler->GetSwitches().libPrefix;
+
     switch ((TargetType)cmb->GetSelection())
     {
         case ttConsoleOnly:

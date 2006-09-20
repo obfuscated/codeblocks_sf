@@ -45,6 +45,16 @@ enum MakeCommand
     mcLast
 };
 
+/** A target's filename can either be auto-generated based on the running platform,
+  * or completely specified by the user. For more info, see
+  * CompileTargetBase::SetTargetFilenameGenerationPolicy.
+  */
+enum TargetFilenameGenerationPolicy
+{
+    tgfpPlatformDefault = 0, ///< Generate filename based on running platform defaults.
+    tgfpNone ///< No automatic generation; let the user specify the full filename.
+};
+
 /**
   * @brief Base class for build target classes
   * Each Code::Blocks project
@@ -61,6 +71,36 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
 	public:
 		CompileTargetBase();
 		virtual ~CompileTargetBase();
+
+        /** A target's filename can either be auto-generated based on the running platform,
+          * or completely specified by the user. Calling this function sets the
+          * filename generation method.
+          * @par The filename is divided in 4 parts. Let's see how "Debug/libSomeLib.a"
+          * is divided:
+          * @li the directory part: @c Debug,
+          * @li the filename's prefix: @c lib,
+          * @li the base name: @c SomeLib and
+          * @li the extension: @c a
+          * @par
+          * Calling this function defines if the prefix and extension are auto-generated
+          * or are left as the user specified. So, if the prefix is set to auto-generated
+          * (i.e. @c tgfpPlatformDefault), it would be set depending on the running
+          * platform and compiler, e.g.:
+          * @li Windows & GCC: @c lib
+          * @li Windows & MSVC: @c <empty>
+          * @li Linux & <*>: @c lib
+          * @par
+          * The default generation policy is @c tgfpPlatformDefault for both the prefix
+          * and the extension.
+          * @note The ProjectLoader detects old projects when loaded and, for those, it
+          * sets the default generation policy to @c tgfpNone (i.e. no auto-generation)
+          * for both the prefix and the extension. This is done so the user doesn't
+          * notice any unexpected behaviour...
+          */
+        virtual void SetTargetFilenameGenerationPolicy(TargetFilenameGenerationPolicy prefix,
+                                                        TargetFilenameGenerationPolicy extension);
+        virtual void GetTargetFilenameGenerationPolicy(TargetFilenameGenerationPolicy* prefixOut,
+                                                        TargetFilenameGenerationPolicy* extensionOut) const;
 
         virtual const wxString& GetFilename() const;
         virtual const wxString& GetTitle(); ///< Read the target's title
@@ -94,6 +134,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual bool MakeCommandsModified() const { return m_MakeCommandsModified; } ///< True if any of the "make" commands is modified.
 	protected:
         friend class cbProject;
+
         wxString m_Filename;
         wxString m_Title;
         wxString m_OutputFilename;
@@ -107,7 +148,10 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         wxString m_CompilerId;
         wxString m_MakeCommands[mcLast];
         bool m_MakeCommandsModified;
+        TargetFilenameGenerationPolicy m_PrefixGenerationPolicy;
+        TargetFilenameGenerationPolicy m_ExtensionGenerationPolicy;
 	private:
+        void GenerateTargetFilename(wxString& filename) const;
 };
 
 #endif // COMPILETARGETBASE_H
