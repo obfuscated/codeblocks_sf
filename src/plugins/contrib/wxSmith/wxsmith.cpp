@@ -41,9 +41,13 @@ static int NewPanelId = wxNewId();
 static int ImportXrcId = wxNewId();
 static int ConfigureId = wxNewId();
 
-CB_IMPLEMENT_PLUGINS_3( wxSmith, "wxSmith",
-                        wxSmithMime, "wxSmith - MIME plugin",
-                        wxSmithWizard, "wxSmith - Project Wizard plugin");
+// Register the 3 plugins contained herein
+namespace
+{
+    PluginRegistrant<wxSmith> reg1(_T("wxSmith"));
+    PluginRegistrant<wxSmithMime> reg2(_T("wxSmithMime"));
+    PluginRegistrant<wxSmithWizard> reg3(_T("wxSmithWizard"));
+};
 
 wxSmith* wxSmith::Singleton = NULL;
 
@@ -65,23 +69,6 @@ END_EVENT_TABLE()
 wxSmith::wxSmith()
 {
 	//ctor
-	m_PluginInfo.name = _("wxSmith");
-	m_PluginInfo.title = _("wxSmith");
-	m_PluginInfo.version = _("1.0");
-	m_PluginInfo.description = _("RAD tool used to create wxWidgets forms");
-	m_PluginInfo.author = _("BYO");
-	m_PluginInfo.authorEmail = _("byo.spoon@gmail.com");
-	m_PluginInfo.authorWebsite = _T("");
-	m_PluginInfo.thanksTo =
-        _("Ann for Being\n"
-          "Anha for Smile\n"
-          "Gigi for Faworki\n"
-          "\n"
-          "God for Love\n"
-          "\n"
-          "Jaakko Salli for wxPropertyGrid");
-	m_PluginInfo.license = LICENSE_GPL;
-
 	if ( Singleton == NULL ) Singleton = this;
 }
 

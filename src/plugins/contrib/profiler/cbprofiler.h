@@ -38,7 +38,5 @@ class CBProfiler : public cbToolPlugin
         CBProfilerExecDlg* dlg;
 };
 
-CB_DECLARE_PLUGIN();
-
 #endif // CBPROFILER_H
 

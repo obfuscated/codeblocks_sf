@@ -27,8 +27,11 @@
 wxString* pKeyFilename = 0;
 // ----------------------------------------------------------------------------
 
-// Implement the plugin's hooks
-CB_IMPLEMENT_PLUGIN(cbKeyBinder, "Keyboard shortcuts configuration");
+// Register the plugin
+namespace
+{
+    PluginRegistrant<cbKeyBinder> reg(_T("cbKeyBinder"));
+};
 
 // ----------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(cbKeyBinder, cbPlugin)
@@ -52,22 +55,6 @@ cbKeyBinder::cbKeyBinder()
 // ---------------------------------------------------------------------------
 {
 	//ctor
-	m_PluginInfo.name = _T("cbKeyBinder");
-	m_PluginInfo.title = _("Keyboard shortcuts");
-	m_PluginInfo.version = _T("0.4.25d 2006/09/2");
-	m_PluginInfo.description <<_("\nCode::Blocks KeyBinder\n\n")
-                            << _("NOTE: Ctrl+Alt+{UP|DOWN} is unsupported.\n\n");
-	m_PluginInfo.author = _T("Pecan Heber");
-	m_PluginInfo.authorEmail = _T("");
-	m_PluginInfo.authorWebsite = _T("");
-	m_PluginInfo.thanksTo << _("Thanks to...\n\n")
-                        <<_("Original wxKeyBinder authors:\n")
-                        <<_("Aleksandras Gluchovas,\nFrancesco Montorsi,\n")
-                        <<_("\twxWidgets, \n")
-                        <<_("\tand \n")
-                        <<_("The Code::Blocks team");
-	m_PluginInfo.license = LICENSE_GPL;
-
 }
 // ----------------------------------------------------------------------------
 cbKeyBinder::~cbKeyBinder()
@@ -82,7 +69,7 @@ void cbKeyBinder::OnAttach()
 {
 	// do whatever initialization you need for your plugin
 	// :NOTE: after this function, the inherited member variable
-	// m_IsAttached will be TRUE...
+	// IsAttached() will be TRUE...
 	// You should check for it in other functions, because if it
 	// is FALSE, it means that the application did *not* "load"
 	// (see: does not need) this plugin...
@@ -144,7 +131,7 @@ void cbKeyBinder::OnRelease(bool appShutDown)
 	// if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,
 	// which means you must not use any of the SDK Managers
 	// NOTE: after this function, the inherited member variable
-	// m_IsAttached will be FALSE...
+	// IsAttached() will be FALSE...
 
     // remove keyboard and window close event //+v0.4.7
 	m_pKeyProfArr->DetachAll();
@@ -156,7 +143,7 @@ cbConfigurationPanel* cbKeyBinder::GetConfigurationPanel(wxWindow* parent)
 {
 	//create and display the configuration dialog for your plugin
 	//NotImplemented(_T("cbKeyBinder::Configure()"));
-    if(!m_IsAttached) {	return 0;}
+    if(!IsAttached()) {	return 0;}
 
     //call configuation dialogue
     return OnKeybindings(parent);
@@ -172,7 +159,7 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
 	//NOTE: Be careful in here... The application's menubar is at your disposal.
 	//-NotImplemented(_T("cbKeyBinder::OfferMenuSpace()"));
 
-	if(!m_IsAttached) {	return;	 }
+	if(!IsAttached()) {	return;	 }
 
     // init the keybinder
 	// memorize incomming menubar
@@ -181,7 +168,7 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     // Create filename like cbKeyBinder{pluginversion}v{sdkversion}.ini
     // +v0.4.1 Get major and minor SDK versions to use in filename
     int SDKmajor; int SDKminor; int SDKrelease;
-    PluginSDKVersion( &SDKmajor, &SDKminor, &SDKrelease);
+    reg.SDKVersion( &SDKmajor, &SDKminor, &SDKrelease);
     wxString SDKverStr = wxEmptyString;
     SDKverStr.sprintf(_T("%d%d"),SDKmajor,SDKminor);
 
@@ -195,13 +182,14 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     m_sKeyFilename.Replace(_T("//"),_T("/"));
 
     // get version number from keybinder plugin
-    wxString sPluginVersion = m_PluginInfo.version.BeforeLast('.'); //+v0.4.1
+    const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(this);
+    wxString sPluginVersion = info->version.BeforeLast('.'); //+v0.4.1
 
     // remove the dots from version string (using first 3 chars)
     sPluginVersion.Replace(_T("."),_T(""));
     m_sKeyFilename = m_sKeyFilename
          <<wxFILE_SEP_PATH
-        <<m_PluginInfo.name<<sPluginVersion
+        <<info->name<<sPluginVersion
         <<_T("v")<<SDKverStr<<_T(".ini"); //+v0.4.1
 
     #if LOGGING
@@ -228,7 +216,7 @@ void cbKeyBinder::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
 	//and append any items you need in the menu...
 	//TIP: for consistency, add a separator as the first item...
 	//-v0.1--NotImplemented(_T("cbKeyBinder::OfferModuleMenuSpace()"));
-	if(!m_IsAttached) {	return;	 }
+	if(!IsAttached()) {	return;	 }
 	return;
 }
 // ----------------------------------------------------------------------------
@@ -240,7 +228,7 @@ bool cbKeyBinder::BuildToolBar(wxToolBar* toolBar)
 	//Append any items you need on the toolbar...
 	//NotImplemented(_T("cbKeyBinder::BuildToolBar()"));
 	// return true if you add toolbar items
-	if(!m_IsAttached) {	return false; }
+	if(!IsAttached()) {	return false; }
 	return false;
 }
 // ----------------------------------------------------------------------------
@@ -684,7 +672,7 @@ void MyDialog::OnApply()
 void cbKeyBinder::OnProjectOpened(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-    if (m_IsAttached)
+    if (IsAttached())
      {
         #if LOGGING
           LOGIT(_T("cbKB:ProjectOpened"));
@@ -697,7 +685,7 @@ void cbKeyBinder::OnProjectOpened(CodeBlocksEvent& event)
 void cbKeyBinder::OnProjectActivated(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-    if (m_IsAttached)
+    if (IsAttached())
      {
         #if LOGGING
           LOGIT(_T("cbKB:ProjectActivated"));
@@ -709,7 +697,7 @@ void cbKeyBinder::OnProjectActivated(CodeBlocksEvent& event)
 void cbKeyBinder::OnProjectClosed(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-    if (m_IsAttached)
+    if (IsAttached())
      {
         #if LOGGING
           //LOGIT(_T("cbKB:ProjectClosed"));
@@ -724,7 +712,7 @@ void cbKeyBinder::OnProjectClosed(CodeBlocksEvent& event)
 void cbKeyBinder::OnProjectFileAdded(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-    if (m_IsAttached)
+    if (IsAttached())
      {
         #if LOGGING
           LOGIT(_T("cbKB:ProjectFileAdded"));
@@ -736,7 +724,7 @@ void cbKeyBinder::OnProjectFileAdded(CodeBlocksEvent& event)
 void cbKeyBinder::OnProjectFileRemoved(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-    if (m_IsAttached)
+    if (IsAttached())
      {
        #if LOGGING
         LOGIT(_T("cbKB:ProjectFileRemoved"));
@@ -748,7 +736,7 @@ void cbKeyBinder::OnProjectFileRemoved(CodeBlocksEvent& event)
 void cbKeyBinder::AttachEditor(wxWindow* pWindow)
 // ----------------------------------------------------------------------------
 {
-    if (m_IsAttached)
+    if (IsAttached())
      {
          wxWindow* thisEditor = pWindow->FindWindowByName(_T("SCIwindow"),pWindow);
 
@@ -778,7 +766,7 @@ void cbKeyBinder::AttachEditor(wxWindow* pWindow)
 void cbKeyBinder::DetachEditor(wxWindow* pWindow)
 // ----------------------------------------------------------------------------
 {
-    if (m_IsAttached)
+    if (IsAttached())
      {
 
          wxWindow* thisWindow = pWindow;
@@ -816,7 +804,7 @@ void cbKeyBinder::DetachEditor(wxWindow* pWindow)
 void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-    if (m_IsAttached)
+    if (IsAttached())
      {
          //LOGIT(_T("cbKB:OnEditorOpen()"));
         if (not m_bBound)
@@ -855,7 +843,7 @@ void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event)
 void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-    if (m_IsAttached)
+    if (IsAttached())
      {
 
          wxWindow* thisWindow = event.GetEditor();

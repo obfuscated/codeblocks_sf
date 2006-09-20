@@ -41,24 +41,14 @@
 #endif
 #include "windowsxplooknfeel.h"
 
-CB_IMPLEMENT_PLUGIN(WindowsXPLookNFeel, "Windows XP Look'n'Feel");
+namespace
+{
+    PluginRegistrant<WindowsXPLookNFeel> reg(_T("WindowsXPLookNFeel"));
+}
 
 WindowsXPLookNFeel::WindowsXPLookNFeel()
 {
 	//ctor
-	m_PluginInfo.name = _T("WindowsXPLookNFeel");
-	m_PluginInfo.title = _T("Windows XP Look'n'Feel");
-	m_PluginInfo.version = _T("1.0");
-	m_PluginInfo.description = _("This plugin creates a manifest file that makes " \
-                               "use of common controls 6.0 under Windows XP. " \
-                               "You must copy this manifest file in the same " \
-                               "path as your app's main executable in order for " \
-                               "your application to use common controls version 6.0...");
-    m_PluginInfo.author = _T("Yiannis An. Mandravellos");
-    m_PluginInfo.authorEmail = _T("info@codeblocks.org");
-    m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
-	m_PluginInfo.thanksTo = _T("");
-	m_PluginInfo.license = LICENSE_GPL;
 }
 
 WindowsXPLookNFeel::~WindowsXPLookNFeel()
@@ -70,7 +60,7 @@ void WindowsXPLookNFeel::OnAttach()
 {
 	// do whatever initialization you need for your plugin
 	// NOTE: after this function, the inherited member variable
-	// m_IsAttached will be TRUE...
+	// IsAttached() will be TRUE...
 	// You should check for it in other functions, because if it
 	// is FALSE, it means that the application did *not* "load"
 	// (see: does not need) this plugin...
@@ -80,12 +70,12 @@ void WindowsXPLookNFeel::OnRelease(bool appShutDown)
 {
 	// do de-initialization for your plugin
 	// NOTE: after this function, the inherited member variable
-	// m_IsAttached will be FALSE...
+	// IsAttached() will be FALSE...
 }
 
 int WindowsXPLookNFeel::Execute()
 {
-	if (!m_IsAttached)
+	if (!IsAttached())
 		return -1;
 
 	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();

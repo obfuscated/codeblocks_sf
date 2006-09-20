@@ -29,4 +29,10 @@ noinst_HEADERS = BaseExporter.h \
 				PDFExporter.h \
 				RTFExporter.h
 
-EXTRA_DIST = *.cbp
+EXTRA_DIST = *.cbp manifest.xml
+
+pkgdata_DATA = exporter.zip
+CLEANFILES = $(pkgdata_DATA)
+
+exporter.zip:
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/exporter.zip manifest.xml > /dev/null

@@ -21,8 +21,5 @@ class copystrings : public cbToolPlugin
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 };
 
-// Declare the plugin's hooks
-CB_DECLARE_PLUGIN();
-
 #endif // COPYSTRINGS_H
 

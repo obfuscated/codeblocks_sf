@@ -520,7 +520,10 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             {
                 cbMimePlugin* plugin = (cbMimePlugin*)mimes[i];
                 if (plugin && plugin->CanHandleFile(m_pTree->GetItemText(id)))
-                    openWith->Append(idOpenWith[i], plugin->GetInfo()->title);
+                {
+                    const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(plugin);
+                    openWith->Append(idOpenWith[i], info ? info->title : wxString(_("<Unknown plugin>")));
+                }
             }
             openWith->AppendSeparator();
             openWith->Append(idOpenWithInternal, _("Internal editor"));
@@ -1371,8 +1374,9 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
         }
         else if (plugin->OpenFile(filename) != 0)
         {
+            const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(plugin);
             wxString msg;
-            msg.Printf(_("Could not open file '%s'.\nThe registered handler (%s) could not open it."), filename.c_str(), plugin->GetInfo()->title.c_str());
+            msg.Printf(_("Could not open file '%s'.\nThe registered handler (%s) could not open it."), filename.c_str(), info ? info->title.c_str() : wxString(_("<Unknown plugin>")).c_str());
             Manager::Get()->GetMessageManager()->DebugLogError(msg);
         }
     }

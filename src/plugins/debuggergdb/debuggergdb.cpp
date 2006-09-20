@@ -122,7 +122,11 @@ int idTimerPollDebugger = wxNewId();
 int idMenuDebuggerAddWatch = wxNewId();
 int idMenuSettings = wxNewId();
 
-CB_IMPLEMENT_PLUGIN(DebuggerGDB, "Debugger");
+// this auto-registers the plugin
+namespace
+{
+    PluginRegistrant<DebuggerGDB> reg(_T("Debugger"));
+}
 
 BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
     EVT_UPDATE_UI_RANGE(idMenuContinue, idMenuDebuggerAddWatch, DebuggerGDB::OnUpdateUI)
@@ -224,20 +228,10 @@ DebuggerGDB::DebuggerGDB()
     m_pThreadsDlg(0),
     m_pProject(0)
 {
-    if(!Manager::LoadResource(_T("debugger_gdb.zip")))
+    if(!Manager::LoadResource(_T("debugger.zip")))
     {
-        NotifyMissingFile(_T("debugger_gdb.zip"));
+        NotifyMissingFile(_T("debugger.zip"));
     }
-
-    m_PluginInfo.name = _T("Debugger");
-    m_PluginInfo.title = _("Debugger");
-    m_PluginInfo.version = _T("0.1");
-    m_PluginInfo.description = _("Plugin that interfaces the GNU GDB and MS CDB debuggers.");
-    m_PluginInfo.author = _T("Yiannis An. Mandravellos");
-    m_PluginInfo.authorEmail = _T("info@codeblocks.org");
-    m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
-    m_PluginInfo.thanksTo = _T("");
-    m_PluginInfo.license = LICENSE_GPL;
 
     m_TimerPollDebugger.SetOwner(this, idTimerPollDebugger);
 }
@@ -257,7 +251,7 @@ void DebuggerGDB::OnAttach()
     if (m_HasDebugLog)
     {
         m_pDbgLog = new SimpleTextLog(true);
-        m_DbgPageIndex = msgMan->AddLog(m_pDbgLog, m_PluginInfo.title + _(" (debug)"));
+        m_DbgPageIndex = msgMan->AddLog(m_pDbgLog, _("Debugger (debug)"));
         // set log image
         bmp = cbLoadBitmap(prefix + _T("contents_16x16.png"), wxBITMAP_TYPE_PNG);
         Manager::Get()->GetMessageManager()->SetLogImage(m_pDbgLog, bmp);
@@ -458,7 +452,7 @@ void DebuggerGDB::RefreshConfiguration()
     {
         m_pDbgLog = new SimpleTextLog();
         m_pDbgLog->GetTextControl()->SetFont(m_pLog->GetTextControl()->GetFont());
-        m_DbgPageIndex = Manager::Get()->GetMessageManager()->AddLog(m_pDbgLog, m_PluginInfo.title + _(" (debug)"));
+        m_DbgPageIndex = Manager::Get()->GetMessageManager()->AddLog(m_pDbgLog, _("Debugger (debug)"));
         // set log image
         wxBitmap bmp;
         bmp = cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/contents_16x16.png"), wxBITMAP_TYPE_PNG);
@@ -469,7 +463,7 @@ void DebuggerGDB::RefreshConfiguration()
 
 void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
 {
-    if (!m_IsAttached)
+    if (!IsAttached())
         return;
     m_pMenu=Manager::Get()->LoadMenu(_T("debugger_menu"),true);
 
@@ -504,7 +498,7 @@ void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
 void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-    if (!m_IsAttached)
+    if (!IsAttached())
         return;
     // we 're only interested in editor menus
     // we 'll add a "debug watches" entry only when the debugger is running...
@@ -532,7 +526,7 @@ bool DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
     m_pTbar = toolBar;
     /* Loads toolbar using new Manager class functions */
 #ifdef implement_debugger_toolbar
-    if (!m_IsAttached || !toolBar)
+    if (!IsAttached() || !toolBar)
         return false;
     wxString my_16x16=Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
     Manager::AddonToolBar(toolBar,wxString(_T("debugger_toolbar"))+my_16x16);
@@ -546,14 +540,14 @@ bool DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
 
 void DebuggerGDB::Log(const wxString& msg)
 {
-    if (m_IsAttached)
+    if (IsAttached())
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
 }
 
 void DebuggerGDB::DebugLog(const wxString& msg)
 {
     // gdb debug messages
-    if (m_IsAttached && m_HasDebugLog)
+    if (IsAttached() && m_HasDebugLog)
         Manager::Get()->GetMessageManager()->Log(m_DbgPageIndex, msg);
 }
 

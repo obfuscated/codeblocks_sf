@@ -34,7 +34,10 @@
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(ToDoItems);
 
-CB_IMPLEMENT_PLUGIN(ToDoList, "To-Do List");
+namespace
+{
+    PluginRegistrant<ToDoList> reg(_T("ToDoList"));
+}
 
 const int idViewTodo = wxNewId();
 const int idAddTodo = wxNewId();
@@ -58,16 +61,6 @@ ToDoList::ToDoList()
     {
         NotifyMissingFile(_T("todo.zip"));
     }
-
-	m_PluginInfo.name = _T("ToDoList");
-	m_PluginInfo.title = _("To-Do List");
-	m_PluginInfo.version = _T("0.1");
-	m_PluginInfo.description = _("Code::Blocks To-Do List plugin");
-    m_PluginInfo.author = _T("Yiannis An. Mandravellos");
-    m_PluginInfo.authorEmail = _T("info@codeblocks.org");
-    m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
-	m_PluginInfo.thanksTo = _T("");
-	m_PluginInfo.license = LICENSE_GPL;
 }
 
 ToDoList::~ToDoList()
@@ -140,7 +133,7 @@ void ToDoList::BuildMenu(wxMenuBar* menuBar)
 
 void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
-	if (!menu || !m_IsAttached)
+	if (!menu || !IsAttached())
 		return;
 	if (type == mtEditorManager)
 	{

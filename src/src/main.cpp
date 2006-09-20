@@ -771,10 +771,14 @@ wxMenuItem* MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObject
     if (!plugin || !menu)
         return item;
 
+    const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(plugin);
+    if (!info)
+        return 0;
+
     PluginIDsMap::iterator it;
     for (it = m_PluginIDsMap.begin(); it != m_PluginIDsMap.end(); ++it)
     {
-        if (it->second == plugin->GetInfo()->name)
+        if (it->second == info->name)
         {
             item = menu->FindItem(it->first);
             if (item)
@@ -783,11 +787,11 @@ wxMenuItem* MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObject
     }
 
     int id = wxNewId();
-    m_PluginIDsMap[id] = plugin->GetInfo()->name;
+    m_PluginIDsMap[id] = info->name;
     if (pos == -1)
-        item = menu->Append(id, plugin->GetInfo()->title, wxEmptyString, checkable ? wxITEM_CHECK : wxITEM_NORMAL);
+        item = menu->Append(id, info->title, wxEmptyString, checkable ? wxITEM_CHECK : wxITEM_NORMAL);
     else
-        item = menu->Insert(pos, id, plugin->GetInfo()->title, wxEmptyString, checkable ? wxITEM_CHECK : wxITEM_NORMAL);
+        item = menu->Insert(pos, id, info->title, wxEmptyString, checkable ? wxITEM_CHECK : wxITEM_NORMAL);
     Connect( id,  wxEVT_COMMAND_MENU_SELECTED, callback );
     return item;
 }
@@ -1072,9 +1076,13 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
             }
         }
 
+        const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(plugin);
+        if (!info)
+            cbThrow(_T("No plugin info?!?"));
+
         static int row = 1;
         m_LayoutManager.AddPane(tb, wxPaneInfo().
-                              Name(plugin->GetInfo()->name + _T("Toolbar")).Caption(plugin->GetInfo()->title + _(" Toolbar")).
+                              Name(info->name + _T("Toolbar")).Caption(info->title + _(" Toolbar")).
                               ToolbarPane().Top().Row(row++));
         DoUpdateLayout();
     }
@@ -3051,7 +3059,8 @@ void MainFrame::OnPluginLoaded(CodeBlocksEvent& event)
     {
         if (!m_ReconfiguringPlugins)
             DoAddPlugin(plug);
-        wxString msg = plug->GetInfo()->title;
+        const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(plug);
+        wxString msg = info ? info->title : wxString(_("<Unknown plugin>"));
         Manager::Get()->GetMessageManager()->DebugLog(_T("%s plugin loaded"), msg.c_str());
     }
 }

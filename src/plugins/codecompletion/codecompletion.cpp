@@ -62,7 +62,11 @@
 
 using namespace std;
 
-CB_IMPLEMENT_PLUGIN(CodeCompletion, "Code completion");
+// this auto-registers the plugin
+namespace
+{
+    PluginRegistrant<CodeCompletion> reg(_T("CodeCompletion"));
+}
 
 // empty bitmap for use as C++ keywords icon in code-completion list
 /* XPM */
@@ -155,21 +159,10 @@ CodeCompletion::CodeCompletion() :
     m_CurrentLine(0),
     m_FunctionsParsingTimer(this, idFunctionsParsingTimer)
 {
-    if(!Manager::LoadResource(_T("code_completion.zip")))
+    if(!Manager::LoadResource(_T("codecompletion.zip")))
     {
-        NotifyMissingFile(_T("code_completion.zip"));
+        NotifyMissingFile(_T("codecompletion.zip"));
     }
-
-    m_PluginInfo.name = _T("CodeCompletion");
-    m_PluginInfo.title = _("Code completion");
-    m_PluginInfo.version = _T("0.7");
-    m_PluginInfo.description = _("This plugin provides a symbols browser for your projects "
-                               "and code-completion inside the editor.\n\n"
-                               "Note: Only C/C++ language is supported by this plugin (currently)...");
-    m_PluginInfo.author = _T("Yiannis An. Mandravellos");
-    m_PluginInfo.authorEmail = _T("info@codeblocks.org");
-    m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
-    m_PluginInfo.thanksTo = _T("");
 
     m_PageIndex = -1;
     m_InitDone = false;
@@ -204,7 +197,7 @@ int CodeCompletion::Configure()
 void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
 {
     // if not attached, exit
-    if (!m_IsAttached)
+    if (!IsAttached())
         return;
 
 //	if (m_EditMenu)
@@ -252,7 +245,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
 void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
     // if not attached, exit
-	if (!menu || !m_IsAttached || !m_InitDone)
+	if (!menu || !IsAttached() || !m_InitDone)
 		return;
 
 	if (type == mtEditorManager)
@@ -392,7 +385,7 @@ static int SortCCList(const wxString& first, const wxString& second)
 
 int CodeCompletion::CodeComplete()
 {
-	if (!m_IsAttached || !m_InitDone)
+	if (!IsAttached() || !m_InitDone)
 		return -1;
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
@@ -538,7 +531,7 @@ int CodeCompletion::CodeComplete()
 
 void CodeCompletion::CodeCompleteIncludes()
 {
-	if (!m_IsAttached || !m_InitDone)
+	if (!IsAttached() || !m_InitDone)
 		return;
 
     cbProject* pPrj = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -618,7 +611,7 @@ void CodeCompletion::CodeCompleteIncludes()
 
 wxArrayString CodeCompletion::GetCallTips()
 {
-	if (!m_IsAttached || !m_InitDone)
+	if (!IsAttached() || !m_InitDone)
 	{
 		wxArrayString items;
 		return items;
@@ -628,7 +621,7 @@ wxArrayString CodeCompletion::GetCallTips()
 
 void CodeCompletion::ShowCallTip()
 {
-	if (!m_IsAttached || !m_InitDone)
+	if (!IsAttached() || !m_InitDone)
 		return;
 
 	if (!Manager::Get()->GetEditorManager())
@@ -687,7 +680,7 @@ void CodeCompletion::ShowCallTip()
 
 int CodeCompletion::DoClassMethodDeclImpl()
 {
-	if (!m_IsAttached || !m_InitDone)
+	if (!IsAttached() || !m_InitDone)
 		return -1;
 
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
@@ -736,7 +729,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
 
 int CodeCompletion::DoAllMethodsImpl()
 {
-	if (!m_IsAttached || !m_InitDone)
+	if (!IsAttached() || !m_InitDone)
 		return -1;
 
 	EditorManager* edMan = Manager::Get()->GetEditorManager();
@@ -896,7 +889,7 @@ void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent& event)
     // This is to prevent the Splash Screen from delaying so much. By adding the
     // timer, the splash screen is closed and Code::Blocks doesn't take so long
     // in starting.
-    m_timer.Start(200,wxTIMER_ONE_SHOT);
+    m_timer.Start(200, wxTIMER_ONE_SHOT);
 }
 
 void CodeCompletion::OnCodeCompleteTimer(wxTimerEvent& event)
@@ -924,42 +917,42 @@ void CodeCompletion::OnStartParsingProjects(wxTimerEvent& event)
 
 void CodeCompletion::OnProjectOpened(CodeBlocksEvent& event)
 {
-    if (m_IsAttached && m_InitDone)
+    if (IsAttached() && m_InitDone)
 		m_NativeParsers.AddParser(event.GetProject());
     event.Skip();
 }
 
 void CodeCompletion::OnProjectActivated(CodeBlocksEvent& event)
 {
-    if (m_IsAttached && m_InitDone)
+    if (IsAttached() && m_InitDone)
 		m_NativeParsers.SetClassBrowserProject(event.GetProject());
     event.Skip();
 }
 
 void CodeCompletion::OnProjectClosed(CodeBlocksEvent& event)
 {
-    if (m_IsAttached && m_InitDone)
+    if (IsAttached() && m_InitDone)
 		m_NativeParsers.RemoveParser(event.GetProject());
     event.Skip();
 }
 
 void CodeCompletion::OnProjectFileAdded(CodeBlocksEvent& event)
 {
-    if (m_IsAttached && m_InitDone)
+    if (IsAttached() && m_InitDone)
 		m_NativeParsers.AddFileToParser(event.GetProject(), event.GetString());
 	event.Skip();
 }
 
 void CodeCompletion::OnProjectFileRemoved(CodeBlocksEvent& event)
 {
-    if (m_IsAttached && m_InitDone)
+    if (IsAttached() && m_InitDone)
 		m_NativeParsers.RemoveFileFromParser(event.GetProject(), event.GetString());
 	event.Skip();
 }
 
 void CodeCompletion::OnUserListSelection(CodeBlocksEvent& event)
 {
-    if (m_IsAttached && m_InitDone)
+    if (IsAttached() && m_InitDone)
     {
 		wxString tokName = event.GetString();
 		DoInsertCodeCompleteToken(event.GetString());
@@ -970,7 +963,7 @@ void CodeCompletion::OnUserListSelection(CodeBlocksEvent& event)
 
 void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
 {
-    if (m_IsAttached && m_InitDone)
+    if (IsAttached() && m_InitDone)
     {
     	EditorBase* ed = event.GetEditor();
     	if (!ed)
@@ -1124,7 +1117,7 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
     // TODO: this doesn't seem to fire when using Ctrl-Tab...
     static EditorBase* lastActiveEditor = 0;
     EditorBase* eb = event.GetEditor();
-    if (m_IsAttached && m_InitDone && lastActiveEditor != eb)
+    if (IsAttached() && m_InitDone && lastActiveEditor != eb)
     {
         lastActiveEditor = eb;
         m_NativeParsers.OnEditorActivated(eb);
@@ -1143,7 +1136,7 @@ void CodeCompletion::OnFunctionsParsingTimer(wxTimerEvent& event)
 void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 {
     event.Skip();
-//    if (m_IsAttached && m_InitDone)
+//    if (IsAttached() && m_InitDone)
 //    {
 ////        if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("eval_tooltip"), false))
 ////            return;
@@ -1249,14 +1242,14 @@ void CodeCompletion::OnCodeComplete(wxCommandEvent& event)
 {
     if (!Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/use_code_completion"), true))
         return;
-    if (m_IsAttached && m_InitDone)
+    if (IsAttached() && m_InitDone)
 		DoCodeComplete();
     event.Skip();
 }
 
 void CodeCompletion::OnShowCallTip(wxCommandEvent& event)
 {
-    if (m_IsAttached && m_InitDone)
+    if (IsAttached() && m_InitDone)
 		ShowCallTip();
     event.Skip();
 }
@@ -1451,7 +1444,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
-    if (!m_IsAttached ||
+    if (!IsAttached() ||
         !m_InitDone ||
         !cfg->ReadBool(_T("/use_code_completion"), true))
     {

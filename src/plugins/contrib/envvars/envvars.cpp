@@ -29,8 +29,11 @@
 // Uncomment this for tracing of method calls in C::B's DebugLog:
 //#define TRACE_ENVVARS
 
-// Implement the plugin's hooks
-CB_IMPLEMENT_PLUGIN(EnvVars, "EnvVars");
+// Register the plugin
+namespace
+{
+    PluginRegistrant<EnvVars> reg(_T("EnvVars"));
+};
 
 BEGIN_EVENT_TABLE(EnvVars, cbPlugin)
 END_EVENT_TABLE()
@@ -58,15 +61,6 @@ END_EVENT_TABLE()
 EnvVars::EnvVars()
 {
   //ctor
-  m_PluginInfo.name          = _T("EnvVars");
-  m_PluginInfo.title         = _("Environment variables");
-  m_PluginInfo.version       = _T("0.92");
-  m_PluginInfo.description   = _("Sets up environment variables within the focus of Code::Blocks.");
-  m_PluginInfo.author        = _T("Martin Halle");
-  m_PluginInfo.authorEmail   = _T("codeblocks@martin-halle.de");
-  m_PluginInfo.authorWebsite = _T("");
-  m_PluginInfo.thanksTo      = _("Yiannis Mandravellos, Thomas Denk and the whole Code::Blocks team.");
-  m_PluginInfo.license       = LICENSE_GPL;
 }// EnvVars
 
 void EnvVars::OnAttach()

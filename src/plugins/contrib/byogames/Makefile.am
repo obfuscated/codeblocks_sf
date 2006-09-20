@@ -29,4 +29,11 @@ noinst_HEADERS = byogameselect.h \
 
 EXTRA_DIST = wxsmith/byoGameSelect.wxs \
             byogames.cbp \
-            byogames-unix.cbp
+            byogames-unix.cbp \
+            manifest.xml
+
+pkgdata_DATA = byogames.zip
+CLEANFILES = $(pkgdata_DATA)
+
+byogames.zip:
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/byogames.zip manifest.xml > /dev/null

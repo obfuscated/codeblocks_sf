@@ -21,10 +21,11 @@ noinst_HEADERS = help_common.h \
 
 EXTRA_DIST = *.cbp \
 			help_plugin.xrc \
+			manifest.xml \
 			Readme.txt
 
 pkgdata_DATA = help_plugin.zip
 CLEANFILES = $(pkgdata_DATA)
 
 help_plugin.zip:
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/help_plugin.zip *.xrc > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/help_plugin.zip manifest.xml *.xrc > /dev/null

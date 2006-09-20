@@ -119,9 +119,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
 
 		wxTimer m_FunctionsParsingTimer;
 
-        DECLARE_EVENT_TABLE()
+		DECLARE_EVENT_TABLE()
 };
-
-CB_DECLARE_PLUGIN();
 
 #endif // CODECOMPLETION_H

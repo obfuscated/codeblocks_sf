@@ -187,10 +187,8 @@ class DebuggerGDB : public cbDebuggerPlugin
 
         cbProject* m_pProject; // keep the currently debugged project handy
 
-        DECLARE_EVENT_TABLE()
+		DECLARE_EVENT_TABLE()
 };
-
-CB_DECLARE_PLUGIN();
 
 #endif // DEBUGGERGDB_H
 

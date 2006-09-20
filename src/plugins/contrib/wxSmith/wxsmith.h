@@ -106,7 +106,5 @@ class wxSmith : public cbPlugin
 		DECLARE_EVENT_TABLE()
 };
 
-CB_DECLARE_PLUGIN();
-
 #endif // WXSMITH_H
 

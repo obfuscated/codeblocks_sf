@@ -6,6 +6,7 @@
 		<Option pch_mode="0" />
 		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\keybinder.dll" />
@@ -54,6 +55,10 @@
 			<Add directory="$(#CB.lib)" />
 			<Add directory="$(#WX.lib)\gcc_dll" />
 		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\keybinder.zip manifest.xml" />
+			<Mode after="always" />
+		</ExtraCommands>
 		<Unit filename="cbkeybinder.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
@@ -82,6 +87,12 @@
 		</Unit>
 		<Unit filename="keybinderdef.h">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="manifest.xml">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />

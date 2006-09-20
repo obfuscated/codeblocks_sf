@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="10" release="0" />
+    <Plugin name="Compiler">
+        <Value title="Compiler" />
+        <Value version="0.99" />
+        <Value description="This plugin is an interface to various compilers:
+
+GNU GCC compiler
+Microsoft Visual C++ Free Toolkit 2003
+Borland C++ Compiler 5.5" />
+        <Value author="Yiannis Mandravellos" />
+        <Value authorEmail="info@codeblocks.org" />
+        <Value authorWebsite="http://www.codeblocks.org" />
+        <Value thanksTo="All the free (and not) compilers out there" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

@@ -33,8 +33,11 @@
 #include "codesnippets.h"
 #include "codesnippetswindow.h"
 
-// Implement the plugin's hooks
-CB_IMPLEMENT_PLUGIN(CodeSnippets, "CodeSnippets");
+// Register the plugin
+namespace
+{
+    PluginRegistrant<CodeSnippets> reg(_T("CodeSnippets"));
+};
 
 int idViewSnippets = wxNewId();
 
@@ -46,26 +49,6 @@ END_EVENT_TABLE()
 
 CodeSnippets::CodeSnippets()
 {
-	m_PluginInfo.name = _T("CodeSnippets");
-	m_PluginInfo.title = _("Code snippets");
-	m_PluginInfo.version = _T("0.2");
-	m_PluginInfo.description =
-					_T("Code Snippets allows you to create and save ")
-					_T("small pieces of code (snippets) for later use.\n")
-					_T("\n")
-					_T("For more information, see readme.html.");
-	m_PluginInfo.author = _T("Arto Jonsson");
-	m_PluginInfo.authorEmail = _T("arto.jonsson@gmail.com");
-	m_PluginInfo.authorWebsite = _T("http://ajonsson.kapsi.fi/");
-	m_PluginInfo.thanksTo =
-					_T("Technical help\n\n")
-					_T("\twxWidgets Discussion Forum\n")
-					_T("\t(http://wxforum.shadonet.com/)\n\n")
-					_T("Special thanks\n\n")
-					_T("\tCode::Blocks developers\n")
-					_T("\twxWidgets developers\n")
-					_T("\tTinyXML developers\n");
-	m_PluginInfo.license = LICENSE_GPL;
 }
 
 CodeSnippets::~CodeSnippets()

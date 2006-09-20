@@ -62,9 +62,5 @@ class AutosaveConfigDlg : public cbConfigurationPanel
         void SaveSettings();
 };
 
-
-// Declare the plugin's hooks
-CB_DECLARE_PLUGIN();
-
 #endif // AUTOSAVE_H
 

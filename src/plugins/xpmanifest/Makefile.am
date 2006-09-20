@@ -12,3 +12,10 @@ libxpmanifest_la_LIBADD = ../../sdk/libcodeblocks.la
 
 libxpmanifest_la_SOURCES = windowsxplooknfeel.cpp
 noinst_HEADERS = windowsxplooknfeel.h
+
+EXTRA_DIST = manifest.xml
+pkgdata_DATA = xpmanifest.zip
+CLEANFILES = $(pkgdata_DATA)
+
+xpmanifest.zip:
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/xpmanifest.zip manifest.xml > /dev/null

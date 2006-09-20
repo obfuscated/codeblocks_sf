@@ -24,7 +24,11 @@
 #include "codestatexec.h"
 #include "language_def.h"
 
-CB_IMPLEMENT_PLUGIN(CodeStat, "Code Statistics");
+// Register the plugin
+namespace
+{
+    PluginRegistrant<CodeStat> reg(_T("CodeStat"));
+};
 
 CodeStat::CodeStat()
 {
@@ -32,16 +36,6 @@ CodeStat::CodeStat()
     {
         NotifyMissingFile(_T("codestat.zip"));
     }
-
-    m_PluginInfo.name = _T("CodeStatistics");
-    m_PluginInfo.title = _("Code Statistics");
-    m_PluginInfo.version = _("0.5");
-    m_PluginInfo.description = _("A simple plugin for counting code, comments and empty lines of a project.");
-    m_PluginInfo.author = _("Zlika");
-    m_PluginInfo.authorEmail = _T("");
-    m_PluginInfo.authorWebsite = _T("");
-    m_PluginInfo.thanksTo = _("All the Code::Blocks team!");
-    m_PluginInfo.license = LICENSE_GPL;
 }
 
 CodeStat::~CodeStat()
@@ -53,7 +47,7 @@ void CodeStat::OnAttach()
 {
     // do whatever initialization you need for your plugin
     // NOTE: after this function, the inherited member variable
-    // m_IsAttached will be TRUE...
+    // IsAttached() will be TRUE...
     // You should check for it in other functions, because if it
     // is FALSE, it means that the application did *not* "load"
     // (see: does not need) this plugin...
@@ -65,7 +59,7 @@ void CodeStat::OnRelease(bool appShutDown)
     // if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,
     // which means you must not use any of the SDK Managers
     // NOTE: after this function, the inherited member variable
-    // m_IsAttached will be FALSE...
+    // IsAttached() will be FALSE...
 }
 
 /** Open the plugin configuration panel.
@@ -73,7 +67,7 @@ void CodeStat::OnRelease(bool appShutDown)
 cbConfigurationPanel* CodeStat::GetConfigurationPanel(wxWindow* parent)
 {
     // if not attached, exit
-    if (!m_IsAttached)
+    if (!IsAttached())
         return 0;
 
     CodeStatConfigDlg* dlg = new CodeStatConfigDlg(parent);
@@ -86,7 +80,7 @@ cbConfigurationPanel* CodeStat::GetConfigurationPanel(wxWindow* parent)
 int CodeStat::Execute()
 {
     // if not attached, exit
-    if (!m_IsAttached)
+    if (!IsAttached())
         return -1;
 
    const cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();

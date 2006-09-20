@@ -107,13 +107,14 @@ noinst_HEADERS = ./widget.h \
 EXTRA_DIST = *.cbp \
 			*.xrc \
 			*.bat \
-			*.unix
+			*.unix \
+			manifest.xml
 
 pkgdata_DATA = wxsmith.zip
 CLEANFILES = $(pkgdata_DATA)
 
 wxsmith.zip:
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/wxsmith.zip *.xrc > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/wxsmith.zip manifest.xml *.xrc > /dev/null
 
 $(srcdir)/wxsheaders.h.gch: $(srcdir)/wxsheaders.h
 	-rm -rf $(srcdir)/wxsheaders.h.gch

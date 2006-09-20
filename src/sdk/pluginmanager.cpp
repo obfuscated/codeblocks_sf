@@ -46,6 +46,7 @@
 #endif
 
 #include <wx/dynlib.h>
+#include "tinyxml/tinyxml.h"
 
 #include "annoyingdialog.h"
 #include "pluginsconfigurationdlg.h"
@@ -56,6 +57,8 @@ static cbPlugin* s_LastKnownActivePlugin = 0;
 
 // class constructor
 PluginManager::PluginManager()
+    : m_pCurrentlyLoadingLib(0),
+    m_pCurrentlyLoadingManifestDoc(0)
 {
 }
 
@@ -71,6 +74,189 @@ void PluginManager::CreateMenu(wxMenuBar* menuBar)
 
 void PluginManager::ReleaseMenu(wxMenuBar* menuBar)
 {
+}
+
+void PluginManager::RegisterPlugin(const wxString& name,
+                                    CreatePluginProc createProc,
+                                    FreePluginProc freeProc,
+                                    PluginSDKVersionProc versionProc)
+{
+    // sanity checks
+    if (name.IsEmpty() || !createProc || !freeProc || !versionProc)
+        return;
+
+    // first check to see it's not already loaded
+    if (FindPluginByName(name))
+        return; // yes, already loaded
+
+    // read manifest file for plugin
+    PluginInfo info;
+    if (!ReadManifestFile(m_CurrentlyLoadingFilename, name, &info) ||
+        info.name.IsEmpty())
+    {
+        DBGLOG(_T("Invalid manifest file for: ") + name);
+        return;
+    }
+
+    // now get the SDK version number (extra check)
+    int major;
+    int minor;
+    int release;
+    versionProc(&major, &minor, &release);
+    if (major != PLUGIN_SDK_VERSION_MAJOR ||
+        minor != PLUGIN_SDK_VERSION_MINOR ||
+        release != PLUGIN_SDK_VERSION_RELEASE)
+    {
+        // wrong version: in this case, inform the user...
+        wxString fmt;
+        fmt.Printf(_("SDK version mismatch for %s (%d.%d.%d). Expecting %d.%d.%d"),
+                    name.c_str(),
+                    major,
+                    minor,
+                    release,
+                    PLUGIN_SDK_VERSION_MAJOR,
+                    PLUGIN_SDK_VERSION_MINOR,
+                    PLUGIN_SDK_VERSION_RELEASE);
+        Manager::Get()->GetMessageManager()->Log(fmt);
+        return;
+    }
+
+    // all done
+    // add this plugin in the temporary registration vector to be loaded
+    // by LoadPlugin() (which triggered the call to this function).
+    PluginRegistration pr;
+    pr.name = name;
+    pr.createProc = createProc;
+    pr.freeProc = freeProc;
+    pr.versionProc = versionProc;
+    pr.info = info;
+    m_RegisteredPlugins.push_back(pr);
+}
+
+bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
+                                    const wxString& pluginName,
+                                    PluginInfo* infoOut)
+{
+    if (!m_pCurrentlyLoadingManifestDoc)
+    {
+        // find and load plugin's resource file
+        // (pluginFilename contains no path info)
+        wxFileName fname(pluginFilename);
+        fname.SetExt(_T("zip"));
+        wxString actual = ConfigManager::LocateDataFile(fname.GetFullName(), sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
+        if (actual.IsEmpty())
+        {
+            DBGLOG(_T("Plugin resource not found: %s"), fname.GetFullName().c_str());
+            return false; // not found
+        }
+
+        // load XML from ZIP
+        wxString contents;
+        wxFileSystem* fs = new wxFileSystem;
+        wxFSFile* f = fs->OpenFile(actual + _T("#zip:manifest.xml"));
+        if (f)
+        {
+            wxInputStream* is = f->GetStream();
+            char tmp[1024] = {};
+            while (!is->Eof() && is->CanRead())
+            {
+                memset(tmp, 0, sizeof(tmp));
+                is->Read(tmp, sizeof(tmp) - 1);
+                contents << cbC2U((const char*)tmp);
+            }
+            delete f;
+        }
+        else
+        {
+            DBGLOG(_T("No plugin manifest file in resource: %s"), actual.c_str());
+            delete fs;
+            return false;
+        }
+        delete fs;
+
+        // actually load XML document
+        m_pCurrentlyLoadingManifestDoc = new TiXmlDocument;
+        if (!m_pCurrentlyLoadingManifestDoc->Parse(cbU2C(contents)))
+            return false;
+    }
+
+    TiXmlElement* root = m_pCurrentlyLoadingManifestDoc->FirstChildElement("CodeBlocks_plugin_manifest_file");
+    if (!root)
+        return false;
+
+    TiXmlElement* version = root->FirstChildElement("SdkVersion");
+    if (!version)
+        return false;
+
+    // check version
+    int major;
+    int minor;
+    int release;
+    if (version->QueryIntAttribute("major", &major) != TIXML_SUCCESS)
+        major = 0;
+    if (version->QueryIntAttribute("minor", &minor) != TIXML_SUCCESS)
+        minor = 0;
+    if (version->QueryIntAttribute("release", &release) != TIXML_SUCCESS)
+        release = 0;
+
+    if (major != PLUGIN_SDK_VERSION_MAJOR ||
+        minor != PLUGIN_SDK_VERSION_MINOR ||
+        release != PLUGIN_SDK_VERSION_RELEASE)
+    {
+        // wrong version: in this case, inform the user...
+        wxString fmt;
+        fmt.Printf(_("SDK version mismatch for %s (%d.%d.%d). Expecting %d.%d.%d"),
+                    pluginName.c_str(),
+                    major,
+                    minor,
+                    release,
+                    PLUGIN_SDK_VERSION_MAJOR,
+                    PLUGIN_SDK_VERSION_MINOR,
+                    PLUGIN_SDK_VERSION_RELEASE);
+        Manager::Get()->GetMessageManager()->Log(fmt);
+        return false;
+    }
+
+    // if no plugin name specified, we 're done here (succesfully)
+    if (pluginName.IsEmpty() || !infoOut)
+        return true;
+
+    TiXmlElement* plugin = root->FirstChildElement("Plugin");
+    while (plugin)
+    {
+        const char* name = plugin->Attribute("name");
+        if (name && cbC2U(name) == pluginName)
+        {
+            infoOut->name = pluginName;
+            TiXmlElement* value = plugin->FirstChildElement("Value");
+            while (value)
+            {
+                if (value->Attribute("title"))
+                    infoOut->title = cbC2U(value->Attribute("title"));
+                if (value->Attribute("version"))
+                    infoOut->version = cbC2U(value->Attribute("version"));
+                if (value->Attribute("description"))
+                    infoOut->description = cbC2U(value->Attribute("description"));
+                if (value->Attribute("author"))
+                    infoOut->author = cbC2U(value->Attribute("author"));
+                if (value->Attribute("authorEmail"))
+                    infoOut->authorEmail = cbC2U(value->Attribute("authorEmail"));
+                if (value->Attribute("authorWebsite"))
+                    infoOut->authorWebsite = cbC2U(value->Attribute("authorWebsite"));
+                if (value->Attribute("thanksTo"))
+                    infoOut->thanksTo = cbC2U(value->Attribute("thanksTo"));
+                if (value->Attribute("license"))
+                    infoOut->license = cbC2U(value->Attribute("license"));
+
+                value = value->NextSiblingElement("Value");
+            }
+            break;
+        }
+
+        plugin = plugin->NextSiblingElement("Plugin");
+    }
+
+    return true;
 }
 
 int PluginManager::ScanForPlugins(const wxString& path)
@@ -99,10 +285,18 @@ int PluginManager::ScanForPlugins(const wxString& path)
             ok = dir.GetNext(&filename);
             continue;
         }
-        if (LoadPlugin(path + _T('/') + filename))
-            ++count;
-        else
-            failed << _T('\n') << filename;
+
+        // load manifest
+        m_pCurrentlyLoadingManifestDoc = 0;
+        if (ReadManifestFile(filename))
+        {
+            if (LoadPlugin(path + _T('/') + filename))
+                ++count;
+            else
+                failed << _T('\n') << filename;
+        }
+        delete m_pCurrentlyLoadingManifestDoc;
+        m_pCurrentlyLoadingManifestDoc = 0;
         ok = dir.GetNext(&filename);
     }
     Manager::Get()->GetMessageManager()->Log(_("Found %d plugins"), count);
@@ -126,95 +320,35 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
     wxLogNull zero; // no need for error messages; we check everything ourselves...
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
-    wxDynamicLibrary* lib = new wxDynamicLibrary();
-    lib->Load(pluginName);
-    if (!lib->IsLoaded())
+    // clear registration temporary vector
+    m_RegisteredPlugins.clear();
+
+    // load library
+    m_CurrentlyLoadingFilename = pluginName;
+    m_pCurrentlyLoadingLib = new wxDynamicLibrary();
+    m_pCurrentlyLoadingLib->Load(pluginName);
+    if (!m_pCurrentlyLoadingLib->IsLoaded())
     {
-        msgMan->DebugLog(_T("%s: not loaded (file exists?)"), pluginName.c_str());
-        delete lib;
+        msgMan->DebugLog(_T("%s: not loaded (missing symbols?)"), pluginName.c_str());
+        delete m_pCurrentlyLoadingLib;
+        m_pCurrentlyLoadingLib = 0;
+        m_CurrentlyLoadingFilename.Clear();
         return false;
     }
 
-    // first, see if we have a name function
-    PluginNameProc nameproc = (PluginNameProc)lib->GetSymbol(_T("PluginName"));
-    if (!nameproc)
-    {
-        msgMan->DebugLog(_T("%s: not a plugin (no PluginName)"), pluginName.c_str());
-        delete lib;
-        return false;
-    }
+    // by now, the library has loaded and its global variables are initialized.
+    // this means it has already called RegisterPlugin()
+    // now we can actually create the plugin(s) instance(s) :)
 
-    // now get the SDK version entry points
-    int major;
-    int minor;
-    int release;
-    PluginSDKVersionProc versionproc = (PluginSDKVersionProc)lib->GetSymbol(_T("PluginSDKVersion"));
-    // if no SDK version entry point, abort
-    if (!versionproc)
+    // try to load the plugin(s)
+    std::vector<PluginRegistration>::iterator it;
+    for (it = m_RegisteredPlugins.begin(); it != m_RegisteredPlugins.end(); ++it)
     {
-        msgMan->DebugLog(_T("%s: no SDK version entry point"), pluginName.c_str());
-        delete lib;
-        return false;
-    }
-
-    // check if it is the correct SDK version
-    versionproc(&major, &minor, &release);
-    if (major != PLUGIN_SDK_VERSION_MAJOR ||
-        minor != PLUGIN_SDK_VERSION_MINOR ||
-        release != PLUGIN_SDK_VERSION_RELEASE)
-    {
-        // in this case, inform the user...
-        wxString fmt;
-        fmt.Printf(_("SDK version mismatch for %s (%d.%d.%d). Expecting %d.%d.%d"),
-                    pluginName.c_str(),
-                    major,
-                    minor,
-                    release,
-                    PLUGIN_SDK_VERSION_MAJOR,
-                    PLUGIN_SDK_VERSION_MINOR,
-                    PLUGIN_SDK_VERSION_RELEASE);
-        Manager::Get()->GetMessageManager()->Log(fmt);
-        lib->Unload();
-        delete lib;
-        return false;
-    }
-
-    // get the plugin's count inside this library
-    GetPluginsCountProc countproc = (GetPluginsCountProc)lib->GetSymbol(_T("GetPluginsCount"));
-    // and the factory function too
-    CreatePluginProc factory = (CreatePluginProc)lib->GetSymbol(_T("CreatePlugin"));
-    if (!countproc || !factory)
-    {
-        lib->Unload();
-        delete lib;
-        msgMan->DebugLog(_T("%s: not a plugin"), pluginName.c_str());
-        return false;
-    }
-
-    // loop for all plugins contained in this library
-    size_t pluginsCount = countproc();
-    int libUseCount = 0;
-    for (size_t i = 0; i < pluginsCount; ++i)
-    {
-        // first check if it is allowed to load
-        if (!Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(_T("/") + nameproc(i), true))
-        {
-            // we 'll keep the record, so that it is shown in "Plugins->Manage plugins..."
-            PluginElement* plugElem = new PluginElement;
-            plugElem->fileName = pluginName;
-            plugElem->name = nameproc(i);
-            plugElem->library = lib;
-            plugElem->freeProc = 0;
-            plugElem->plugin = 0;
-            m_Plugins.Add(plugElem);
-            continue; // do not load it at all
-        }
-
-        // try to load the plugin
+        PluginRegistration& pr = *it;
         cbPlugin* plug = 0L;
         try
         {
-            plug = factory(i);
+            plug = pr.createProc();
         }
         catch (cbException& exception)
         {
@@ -222,40 +356,28 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
             continue;
         }
 
-        // check if we have already loaded a plugin by that name
-        wxString plugName = plug->GetInfo()->name;
-        if (FindPluginByName(plugName))
-        {
-            msgMan->DebugLog(_T("%s: another plugin with name \"%s\" is already loaded..."), pluginName.c_str(), plugName.c_str());
-            delete plug;
-            continue;
-        }
-
         // all done; add it to our list
         PluginElement* plugElem = new PluginElement;
-        plugElem->fileName = pluginName;
-        plugElem->name = plugName;
-        plugElem->library = lib;
-        plugElem->freeProc = (FreePluginProc)lib->GetSymbol(_T("FreePlugin"));
+        plugElem->fileName = m_CurrentlyLoadingFilename;
+        plugElem->info = pr.info;
+        plugElem->library = m_pCurrentlyLoadingLib;
+        plugElem->freeProc = pr.freeProc;
         plugElem->plugin = plug;
         m_Plugins.Add(plugElem);
 
-        SetupLocaleDomain(plugName);
+        SetupLocaleDomain(pr.name);
 
-        ++libUseCount;
-
-        msgMan->DebugLog(_T("%s: loaded"), plugName.c_str());
+        Manager::Get()->GetMessageManager()->DebugLog(_T("%s: loaded"), pr.name.c_str());
     }
 
-    if (libUseCount == 0)
+    if (m_RegisteredPlugins.empty())
     {
-        // not even one plugin was loaded
-        // free this library
-        lib->Unload();
-        delete lib;
-        return true; // but it's not an error ;)
+        // no plugins loaded from this library, but it's not an error
+        m_pCurrentlyLoadingLib->Unload();
+        delete m_pCurrentlyLoadingLib;
     }
-
+    m_pCurrentlyLoadingLib = 0;
+    m_CurrentlyLoadingFilename.Clear();
     return true;
 }
 
@@ -274,19 +396,20 @@ void PluginManager::LoadAllPlugins()
 
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
-        cbPlugin* plug = m_Plugins[i]->plugin;
+        PluginElement* elem = m_Plugins[i];
+        cbPlugin* plug = elem->plugin;
         if (!plug)
             continue;
 
         // do not load it if the user has explicitly asked not to...
         wxString baseKey;
-        baseKey << _T("/") << m_Plugins[i]->name;
+        baseKey << _T("/") << elem->info.name;
         bool loadIt = Manager::Get()->GetConfigManager(_T("plugins"))->ReadBool(baseKey, true);
 
         // if we have a problematic plugin, check if this is it
         if (loadIt && !probPlugin.IsEmpty())
         {
-            loadIt = plug->GetInfo()->title != probPlugin;
+            loadIt = elem->info.title != probPlugin;
             // if this is the problematic plugin, don't load it
             if (!loadIt)
                 Manager::Get()->GetConfigManager(_T("plugins"))->Write(baseKey, false);
@@ -294,8 +417,8 @@ void PluginManager::LoadAllPlugins()
 
         if (loadIt && !plug->IsAttached())
         {
-            Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), plug->GetInfo()->title);
-            Manager::Get()->GetMessageManager()->AppendLog(_("%s "), m_Plugins[i]->name.c_str());
+            Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), elem->info.title);
+            Manager::Get()->GetMessageManager()->AppendLog(_("%s "), elem->info.name.c_str());
             try
             {
                 plug->Attach();
@@ -309,7 +432,7 @@ void PluginManager::LoadAllPlugins()
 
                 wxString msg;
                 msg.Printf(_("Plugin \"%s\" failed to load...\n"
-                            "Do you want to disable this plugin from loading next time?"), plug->GetInfo()->title.c_str());
+                            "Do you want to disable this plugin from loading next time?"), elem->info.title.c_str());
                 if (cbMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO) == wxID_YES)
                     Manager::Get()->GetConfigManager(_T("plugins"))->Write(baseKey, false);
             }
@@ -353,8 +476,22 @@ void PluginManager::UnloadAllPlugins()
             m_Plugins[i]->freeProc(plug);
         else
             delete plug; // try to delete it ourselves...
-               delete m_Plugins[i];
+        delete m_Plugins[i];
     }
+    // TODO: free library but take care, the same library might be in use by more than one plugin
+    m_Plugins.Clear();
+}
+
+PluginElement* PluginManager::FindElementByName(const wxString& pluginName)
+{
+    for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
+    {
+        PluginElement* plugElem = m_Plugins[i];
+        if (plugElem->info.name == pluginName)
+            return plugElem;
+    }
+
+    return 0;
 }
 
 cbPlugin* PluginManager::FindPluginByName(const wxString& pluginName)
@@ -362,8 +499,8 @@ cbPlugin* PluginManager::FindPluginByName(const wxString& pluginName)
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
         PluginElement* plugElem = m_Plugins[i];
-        if (plugElem->name == pluginName)
-            return m_Plugins[i]->plugin;
+        if (plugElem->info.name == pluginName)
+            return plugElem->plugin;
     }
 
     return 0;
@@ -375,7 +512,7 @@ cbPlugin* PluginManager::FindPluginByFileName(const wxString& pluginFileName)
     {
         PluginElement* plugElem = m_Plugins[i];
         if (plugElem->fileName == pluginFileName)
-            return m_Plugins[i]->plugin;
+            return plugElem->plugin;
     }
 
     return 0;
@@ -383,22 +520,35 @@ cbPlugin* PluginManager::FindPluginByFileName(const wxString& pluginFileName)
 
 const PluginInfo* PluginManager::GetPluginInfo(const wxString& pluginName)
 {
-    const cbPlugin* plug = FindPluginByName(pluginName);
-    if (plug)
-        return plug->GetInfo();
+    PluginElement* plugElem = FindElementByName(pluginName);
+    if (plugElem && plugElem->info.name == pluginName)
+        return &plugElem->info;
+
+    return 0;
+}
+
+const PluginInfo* PluginManager::GetPluginInfo(cbPlugin* plugin)
+{
+    for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
+    {
+        PluginElement* plugElem = m_Plugins[i];
+        if (plugElem->plugin == plugin)
+            return &plugElem->info;
+    }
 
     return 0;
 }
 
 int PluginManager::ExecutePlugin(const wxString& pluginName)
 {
-    cbPlugin* plug = FindPluginByName(pluginName);
+    PluginElement* elem = FindElementByName(pluginName);
+    cbPlugin* plug = elem ? elem->plugin : 0;
     if (plug)
     {
         if (plug->GetType() != ptTool)
         {
             MessageManager* msgMan = Manager::Get()->GetMessageManager();
-            msgMan->DebugLog(_T("Plugin %s is not a tool to have Execute() method!"), plug->GetInfo()->name.c_str());
+            msgMan->DebugLog(_T("Plugin %s is not a tool to have Execute() method!"), elem->info.name.c_str());
         }
         else
         {
@@ -602,7 +752,7 @@ int PluginManager::Configure()
             plug->Release(false);
         else if (loadIt && !plug->IsAttached())
         {
-            OldConfigManager::Get()->Write(_("/plugins/try_to_activate"), plug->GetInfo()->title);
+            OldConfigManager::Get()->Write(_("/plugins/try_to_activate"), plug->info.title);
             plug->Attach();
         }
     }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="10" release="0" />
+    <Plugin name="Exporter">
+        <Value title="Source Exporter" />
+        <Value version="1.0" />
+        <Value description="Plugin to export syntax highlighted source files to HTML, RTF, ODT or PDF." />
+        <Value author="Ceniza" />
+        <Value authorEmail="ceniza@gda.utp.edu.co" />
+        <Value authorWebsite="" />
+        <Value thanksTo="Code::Blocks Development Team
+wxPdfDocument Development Team" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

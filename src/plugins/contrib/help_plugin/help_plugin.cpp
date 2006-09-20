@@ -58,7 +58,11 @@
 
 int idHelpMenus[MAX_HELP_ITEMS];
 
-CB_IMPLEMENT_PLUGIN(HelpPlugin, "Help plugin");
+// Register the plugin
+namespace
+{
+    PluginRegistrant<HelpPlugin> reg(_T("HelpPlugin"));
+};
 
 BEGIN_EVENT_TABLE(HelpPlugin, cbPlugin)
   // we hook the menus dynamically
@@ -151,41 +155,6 @@ HelpPlugin::HelpPlugin()
         NotifyMissingFile(_T("help_plugin.zip"));
     }
 
-  m_PluginInfo.name = _T("HelpPlugin");
-  m_PluginInfo.title = _T("Help plugin");
-  m_PluginInfo.version = _T("1.0");
-  m_PluginInfo.description = _T("This plugin is used to add a list of help files to the Help menu ")
-                             _T("so you can have them handy to launch.\n")
-                             _T("\n")
-                             _T("You can also set one of the help files as the \"default help file\" ")
-                             _T("and that way it'll be launched when you press F1.\n")
-                             _T("NOTE: you can add any file you want and it'll be launched with the ")
-                             _T("associated application.\n")
-                             _T("\n")
-                             _T("It'll also integrate in the context menu of the editor (right click) ")
-                             _T("enabling you to search the word under the cursor in any of the help ")
-                             _T("files.\n")
-                             _T("NOTE: it's only meaningful under Windows for help files with extension ")
-                             _T("hlp or chm. It's also meaningul for any platform when the help file is ")
-                             _T("an URL (read below).\n")
-                             _T("\n")
-                             _T("A recent addition allows you to add an URL as a help file. To do that ")
-                             _T("Add a new help file BUT when prompted for the location of the file ")
-                             _T("dismiss the file dialog, be sure the new help file is selected and ")
-                             _T("enter the URL in the text entry (the one followed by the ... button).\n")
-                             _T("\n")
-                             _T("For URLs you can add $(keyword) in any place of the address, any ")
-                             _T("number of times, and it'll get replaced by the word you selected to ")
-                             _T("locate in that help file.\n")
-                             _T("\n")
-                             _T("The configuration dialog for this plugin can be found clicking on ")
-                             _T("Settings -> Environment (Help files).");
-  m_PluginInfo.author = _T("Bourricot | Ceniza (maintainer)");
-  m_PluginInfo.authorEmail = _T("titi37fr@yahoo.fr | ceniza@gda.utp.edu.co");
-  m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
-  m_PluginInfo.thanksTo = _T("Codeblocks dev team !\nBourricot for the initial version");
-  m_PluginInfo.license = LICENSE_GPL;
-
   // initialize IDs for Help and popup menu
   for (int i = 0; i < MAX_HELP_ITEMS; ++i)
   {
@@ -253,7 +222,7 @@ void HelpPlugin::OnRelease(bool appShutDown)
 
 void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
 {
-  if (!m_IsAttached)
+  if (!IsAttached())
   {
     return;
   }
@@ -281,7 +250,7 @@ void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
 
 void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const FileTreeData* data)
 {
-  if (!menu || !m_IsAttached || !m_Vector.size())
+  if (!menu || !IsAttached() || !m_Vector.size())
   {
     return;
   }

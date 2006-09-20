@@ -6,6 +6,7 @@
 		<Option pch_mode="2" />
 		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug - Win32">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codesnippets.dll" />
@@ -98,6 +99,13 @@
 			<Option target="Release - Win32" />
 		</Unit>
 		<Unit filename="codesnippetswindow.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug - Win32" />
+			<Option target="Release - Win32" />
+		</Unit>
+		<Unit filename="resources\manifest.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

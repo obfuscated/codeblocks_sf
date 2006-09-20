@@ -19,26 +19,15 @@
 #include <wx/dirdlg.h>
 #include <wx/intl.h>
 
-CB_IMPLEMENT_PLUGIN(DevPakUpdater, "Dev-C++ DevPak updater/installer");
+// Register the plugin
+namespace
+{
+    PluginRegistrant<DevPakUpdater> reg(_T("DevPakUpdater"));
+};
 
 DevPakUpdater::DevPakUpdater()
 {
 	//ctor
-	m_PluginInfo.name = _T("DevPakUpdater");
-	m_PluginInfo.title = _("Dev-C++ DevPak updater/installer");
-	m_PluginInfo.version = _T("0.1");
-	m_PluginInfo.description = _("Installs selected DevPaks from the Internet");
-	m_PluginInfo.author = _("Yiannis Mandravellos");
-	m_PluginInfo.authorEmail = _("mandrav@codeblocks.org");
-	m_PluginInfo.authorWebsite = _("http://www.codeblocks.org");
-	m_PluginInfo.thanksTo = _("Dev-C++ community.\n"
-                            "Julian R Seward for libbzip2.\n"
-                            "\tlibbzip2 copyright notice:\n"
-                            "\t\"bzip2\" and associated library \"libbzip2\", are\n"
-                            "\tcopyright (C) 1996-2000 Julian R Seward.\n"
-                            "\tAll rights reserved.");
-	m_PluginInfo.license = LICENSE_GPL;
-
     if(!Manager::LoadResource(_T("devpakupdater.zip")))
     {
         NotifyMissingFile(_T("devpakupdater.zip"));

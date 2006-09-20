@@ -38,14 +38,16 @@ echo Packing core UI resources
 %ZIPCMD% -j9 %RESDIR%\manager_resources.zip sdk\resources\*.xrc sdk\resources\images\*.png > nul
 %ZIPCMD% -j9 %RESDIR%\start_here.zip src\resources\start_here\*.* > nul
 echo Packing plugins UI resources
-%ZIPCMD% -j9 %RESDIR%\astyle.zip plugins\astyle\resources\*.xrc > nul
-%ZIPCMD% -j9 %RESDIR%\class_wizard.zip plugins\classwizard\resources\*.xrc > nul
-%ZIPCMD% -j9 %RESDIR%\code_completion.zip plugins\codecompletion\resources\*.xrc > nul
-%ZIPCMD% -j9 %RESDIR%\compiler_gcc.zip plugins\compilergcc\resources\*.xrc > nul
-%ZIPCMD% -j9 %RESDIR%\debugger_gdb.zip plugins\debuggergdb\resources\*.xrc > nul
-%ZIPCMD% -j9 %RESDIR%\defaultmimehandler.zip plugins\defaultmimehandler\resources\*.xrc > nul
-%ZIPCMD% -j9 %RESDIR%\todo.zip plugins\todo\resources\*.xrc > nul
-%ZIPCMD% -j9 %RESDIR%\autosave.zip plugins\autosave\*.xrc > nul
+%ZIPCMD% -j9 %RESDIR%\astyle.zip plugins\astyle\resources\manifest.xml plugins\astyle\resources\*.xrc > nul
+%ZIPCMD% -j9 %RESDIR%\autosave.zip plugins\autosave\manifest.xml plugins\autosave\*.xrc > nul
+%ZIPCMD% -j9 %RESDIR%\classwizard.zip plugins\classwizard\resources\manifest.xml plugins\classwizard\resources\*.xrc > nul
+%ZIPCMD% -j9 %RESDIR%\codecompletion.zip plugins\codecompletion\resources\manifest.xml plugins\codecompletion\resources\*.xrc > nul
+%ZIPCMD% -j9 %RESDIR%\compiler.zip plugins\compilergcc\resources\manifest.xml plugins\compilergcc\resources\*.xrc > nul
+%ZIPCMD% -j9 %RESDIR%\debugger.zip plugins\debuggergdb\resources\manifest.xml plugins\debuggergdb\resources\*.xrc > nul
+%ZIPCMD% -j9 %RESDIR%\defaultmimehandler.zip plugins\defaultmimehandler\resources\manifest.xml plugins\defaultmimehandler\resources\*.xrc > nul
+%ZIPCMD% -j9 %RESDIR%\scriptedwizard.zip plugins\scriptedwizard\resources\manifest.xml > nul
+%ZIPCMD% -j9 %RESDIR%\todo.zip plugins\todo\resources\manifest.xml plugins\todo\resources\*.xrc > nul
+%ZIPCMD% -j9 %RESDIR%\xpmanifest.zip plugins\xpmanifest\manifest.xml > nul
 echo Packing core UI bitmaps
 cd src\resources
 %ZIPCMD% -0 -q ..\..\%RESDIR%\resources.zip images\*.png images\16x16\*.png > nul
@@ -53,9 +55,9 @@ cd ..\..\sdk\resources
 %ZIPCMD% -0 -q ..\..\%RESDIR%\manager_resources.zip images\*.png > nul
 echo Packing plugins UI bitmaps
 cd ..\..\plugins\compilergcc\resources
-%ZIPCMD% -0 -q ..\..\..\%RESDIR%\compiler_gcc.zip images\*.png images\16x16\*.png > nul
+%ZIPCMD% -0 -q ..\..\..\%RESDIR%\compiler.zip images\*.png images\16x16\*.png > nul
 cd ..\..\..\plugins\debuggergdb\resources
-%ZIPCMD% -0 -q ..\..\..\%RESDIR%\debugger_gdb.zip images\*.png images\16x16\*.png > nul
+%ZIPCMD% -0 -q ..\..\..\%RESDIR%\debugger.zip images\*.png images\16x16\*.png > nul
 cd ..\..\..
 
 echo Copying external exception handler

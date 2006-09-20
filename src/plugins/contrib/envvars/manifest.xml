@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="10" release="0" />
+    <Plugin name="EnvVars">
+        <Value title="Environment variables" />
+        <Value version="0.92" />
+        <Value description="Sets up environment variables within the focus of Code::Blocks." />
+        <Value author="Martin Halle" />
+        <Value authorEmail="codeblocks@martin-halle.de" />
+        <Value authorWebsite="" />
+        <Value thanksTo="Yiannis Mandravellos, Thomas Denk and the whole Code::Blocks team." />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

@@ -9,15 +9,6 @@
 
 wxSmithMime::wxSmithMime()
 {
-	m_PluginInfo.name = _("wxSmithMime");
-	m_PluginInfo.title = _("wxSmith - MIME plugin");
-	m_PluginInfo.version = _("1.0");
-	m_PluginInfo.description = _("Mime extension for wxSmith");
-	m_PluginInfo.author = _("BYO");
-	m_PluginInfo.authorEmail = _("byo.spoon@gmail.com");
-	m_PluginInfo.authorWebsite = _T("");
-	m_PluginInfo.thanksTo = _T("");
-	m_PluginInfo.license = LICENSE_GPL;
 }
 
 bool wxSmithMime::CanHandleFile(const wxString& FileName) const

@@ -2,7 +2,7 @@ pkgdata_DATA = code_completion.zip
 CLEANFILES = $(pkgdata_DATA)
 
 code_completion.zip:
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/code_completion.zip *.xrc > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/code_completion.zip manifest.xml *.xrc > /dev/null
 
 install-exec-local:
 	mkdir -p $(DESTDIR)$(pkgdatadir)/images/codecompletion
@@ -13,6 +13,7 @@ uninstall-local:
 
 EXTRA_DIST = classbrowser.xrc \
 	insert_class_method.xrc \
+	manifest.xml \
 	selectincludefile.xrc \
 	settings.xrc \
 	images/class_folder.png \

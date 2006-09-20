@@ -37,6 +37,4 @@ class AStylePlugin : public cbToolPlugin
     void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 };
 
-CB_DECLARE_PLUGIN();
-
 #endif // ASTYLEPLUGIN_H

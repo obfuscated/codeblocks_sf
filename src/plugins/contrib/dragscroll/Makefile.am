@@ -17,5 +17,11 @@ noinst_HEADERS = dragscroll.h \
 			dragscrollcfg.h
 
 EXTRA_DIST = DragScroll.cbp \
-		DragScroll-unix.cbp
+		DragScroll-unix.cbp \
+		manifest.xml
 
+pkgdata_DATA = dragscroll.zip
+CLEANFILES = $(pkgdata_DATA)
+
+dragscroll.zip:
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/dragscroll.zip manifest.xml > /dev/null

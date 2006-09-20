@@ -15,6 +15,4 @@ class ClassWizard : public cbToolPlugin
 		virtual int Execute();
 };
 
-CB_DECLARE_PLUGIN();
-
 #endif // CLASSWIZARD_H

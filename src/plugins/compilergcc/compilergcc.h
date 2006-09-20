@@ -246,6 +246,4 @@ class CompilerGCC : public cbCompilerPlugin
         DECLARE_EVENT_TABLE()
 };
 
-CB_DECLARE_PLUGIN();
-
 #endif // COMPILERGCC_H

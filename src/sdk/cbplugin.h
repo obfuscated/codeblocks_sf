@@ -8,6 +8,7 @@
 
 #include "settings.h" // build settings
 #include "globals.h"
+#include "manager.h"
 
 #ifdef __WXMSW__
 	#ifndef PLUGIN_EXPORT
@@ -28,8 +29,8 @@
 // this is the plugins SDK version number
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
-#define PLUGIN_SDK_VERSION_MINOR 9
-#define PLUGIN_SDK_VERSION_RELEASE 1
+#define PLUGIN_SDK_VERSION_MINOR 10
+#define PLUGIN_SDK_VERSION_RELEASE 0
 
 // class decls
 class wxMenuBar;
@@ -71,10 +72,9 @@ struct PluginInfo
   * from.
   * cbPlugin descends from wxEvtHandler, so it provides its methods as well...
   * \n \n
-  * If a plugin has PluginInfo::hasConfigure set to true, this means that
-  * the plugin provides a configuration dialog of some sort. In this case,
-  * Code::Blocks creates a menu entry for the plugin, under the Settings
-  * menu, to configure it. See Configure() for more information.
+  * It's not enough to create a new plugin. You must also provide a resource
+  * zip file containing a file named "manifest.xml". Check the manifest.xml
+  * file of existing plugins to see how to create one (it's ultra-simple).
   */
 class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 {
@@ -84,8 +84,10 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  * should fill the m_PluginInfo members with the appropriate values.
 		  */
         cbPlugin();
+
 		/** cbPlugin destructor. */
         virtual ~cbPlugin();
+
 		/** Attach is <u>not</u> a virtual function, so you can't override it.
 		  * The default implementation hooks the plugin to Code::Block's
 		  * event handling system, so that the plugin can receive (and process)
@@ -94,6 +96,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  * @see OnAttach()
 		  */
         void Attach();
+
 		/** Release is <u>not</u> a virtual function, so you can't override it.
 		  * The default implementation un-hooks the plugin from Code::Blocks's
 		  * event handling system. Use OnRelease() for any clean-up specific
@@ -104,31 +107,34 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  * @see OnRelease()
 		  */
         void Release(bool appShutDown);
+
 		/** The plugin must return its type on request. */
         virtual PluginType GetType() const { return m_Type; }
 
-		/** The plugin must return its info on request. */
-        virtual PluginInfo const* GetInfo() const { return &m_PluginInfo; }
 		/** If a plugin provides some sort of configuration dialog,
 		  * this is the place to invoke it.
 		  */
         virtual int Configure(){ return 0; }
+
         /** Return the plugin's configuration priority.
           * This is a number (default is 50) that is used to sort plugins
           * in configuration dialogs. Lower numbers mean the plugin's
           * configuration is put higher in the list.
           */
         virtual int GetConfigurationPriority() const { return 50; }
+
         /** Return the configuration group for this plugin. Default is cgUnknown.
           * Notice that you can logically AND more than one configuration groups,
           * so you could set it, for example, as "cgCompiler | cgContribPlugin".
           */
         virtual int GetConfigurationGroup() const { return cgUnknown; }
+
 		/** Return plugin's configuration panel.
 		  * @param parent The parent window.
 		  * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
 		  */
         virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent){ return 0; }
+
 		/** Return plugin's configuration panel for projects.
 		  * The panel returned from this function will be added in the project's
 		  * configuration dialog.
@@ -137,6 +143,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
 		  */
         virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project){ return 0; }
+
 		/** This method is called by Code::Blocks and is used by the plugin
 		  * to add any menu items it needs on Code::Blocks's menu bar.\n
 		  * It is a pure virtual method that needs to be implemented by all
@@ -145,6 +152,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  * @param menuBar the wxMenuBar to create items in
 		  */
         virtual void BuildMenu(wxMenuBar* menuBar) = 0;
+
 		/** This method is called by Code::Blocks core modules (EditorManager,
 		  * ProjectManager etc) and is used by the plugin to add any menu
 		  * items it needs in the module's popup menu. For example, when
@@ -161,6 +169,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  * @param data pointer to FileTreeData object (to access/modify the file tree)
 		  */
         virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0) = 0;
+
 		/** This method is called by Code::Blocks and is used by the plugin
 		  * to add any toolbar items it needs on Code::Blocks's toolbar.\n
 		  * It is a pure virtual method that needs to be implemented by all
@@ -170,6 +179,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  * @return The plugin should return true if it needed the toolbar, false if not
 		  */
         virtual bool BuildToolBar(wxToolBar* toolBar) = 0;
+
         /** See whether this plugin is attached or not. A plugin should not perform
 		  * any of its tasks, if not attached...
 		  */
@@ -202,13 +212,12 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  * convenience only.
 		  */
         virtual void NotImplemented(const wxString& log) const;
-		/** Holds the PluginInfo structure that describes the plugin. */
-        PluginInfo m_PluginInfo;
-		/** Holds the plugin's type. Set in the default constructor. You shouldn't change it. */
+
+		/** Holds the plugin's type. Set in the default constructor. */
         PluginType m_Type;
+
 		/** Holds the "attached" state. */
         bool m_IsAttached;
-	private:
 };
 
 /** @brief Base class for compiler plugins
@@ -231,6 +240,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
 		  * only one build target in the project).
 		  */
         virtual int Run(ProjectBuildTarget* target = 0L) = 0;
+
         /** Same as Run(ProjectBuildTarget*) but with a wxString argument. */
         virtual int Run(const wxString& target) = 0;
 
@@ -243,6 +253,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
 		  * cleans all the build targets of the current project.
 		  */
         virtual int Clean(ProjectBuildTarget* target = 0L) = 0;
+
         /** Same as Clean(ProjectBuildTarget*) but with a wxString argument. */
         virtual int Clean(const wxString& target) = 0;
 
@@ -256,6 +267,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
 		  * cleans all the build targets of the current project.
 		  */
         virtual int DistClean(ProjectBuildTarget* target = 0L) = 0;
+
         /** Same as DistClean(ProjectBuildTarget*) but with a wxString argument. */
         virtual int DistClean(const wxString& target) = 0;
 
@@ -265,6 +277,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
 		  * builds all the targets of the current project.
 		  */
         virtual int Build(ProjectBuildTarget* target = 0L) = 0;
+
         /** Same as Build(ProjectBuildTarget*) but with a wxString argument. */
         virtual int Build(const wxString& target) = 0;
 
@@ -278,6 +291,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
 		  * rebuilds all the build targets of the current project.
 		  */
         virtual int Rebuild(ProjectBuildTarget* target = 0L) = 0;
+
         /** Same as Rebuild(ProjectBuildTarget*) but with a wxString argument. */
         virtual int Rebuild(const wxString& target) = 0;
 
@@ -329,33 +343,39 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
 {
 	public:
 		cbDebuggerPlugin();
+
 		/** @brief Request to add a breakpoint.
 		  * @param file The file to add the breakpoint based on a file/line pair.
 		  * @param line The line number to put the breakpoint in @c file.
 		  * @return True if succeeded, false if not.
 		  */
 		virtual bool AddBreakpoint(const wxString& file, int line) = 0;
+
 		/** @brief Request to add a breakpoint based on a function signature.
 		  * @param functionSignature The function signature to add the breakpoint.
 		  * @return True if succeeded, false if not.
 		  */
 		virtual bool AddBreakpoint(const wxString& functionSignature) = 0;
+
 		/** @brief Request to remove a breakpoint based on a file/line pair.
 		  * @param file The file to remove the breakpoint.
 		  * @param line The line number the breakpoint is in @c file.
 		  * @return True if succeeded, false if not.
 		  */
 		virtual bool RemoveBreakpoint(const wxString& file, int line) = 0;
+
 		/** @brief Request to remove a breakpoint based on a function signature.
 		  * @param functionSignature The function signature to remove the breakpoint.
 		  * @return True if succeeded, false if not.
 		  */
 		virtual bool RemoveBreakpoint(const wxString& functionSignature) = 0;
+
 		/** @brief Request to remove all breakpoints from a file.
 		  * @param file The file to remove all breakpoints in. If the argument is empty, all breakpoints are removed from all files.
 		  * @return True if succeeded, false if not.
 		  */
 		virtual bool RemoveAllBreakpoints(const wxString& file = wxEmptyString) = 0;
+
 		/** @brief Notify the debugger that lines were added or removed in an editor.
 		  * This causes the debugger to keep the breakpoints list in-sync with the
 		  * editors (i.e. what the user sees).
@@ -365,18 +385,25 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
 		  *              lines were added. If it's a negative number, lines were removed.
 		  */
 		virtual void EditorLinesAddedOrRemoved(cbEditor* editor, int startline, int lines) = 0;
+
 		/** @brief Start a new debugging process. */
 		virtual int Debug() = 0;
+
 		/** @brief Continue running the debugged program. */
 		virtual void Continue() = 0;
+
 		/** @brief Execute the next instruction and return control to the debugger. */
 		virtual void Next() = 0;
+
 		/** @brief Execute the next instruction, stepping into function calls if needed, and return control to the debugger. */
 		virtual void Step() = 0;
+
 		/** @brief Stop the debugging process. */
 		virtual void Stop() = 0;
+
         /** @brief Is the plugin currently debugging? */
 		virtual bool IsRunning() const = 0;
+
         /** @brief Get the exit code of the last debug process. */
 		virtual int GetExitCode() const = 0;
 };
@@ -392,6 +419,7 @@ class PLUGIN_EXPORT cbToolPlugin : public cbPlugin
 {
     public:
         cbToolPlugin();
+
         /** @brief Execute the plugin.
           *
           * This is the only function needed by a cbToolPlugin.
@@ -417,6 +445,7 @@ class PLUGIN_EXPORT cbMimePlugin : public cbPlugin
 {
     public:
         cbMimePlugin();
+
         /** @brief Can a file be handled by this plugin?
           *
           * @param filename The file in question.
@@ -424,12 +453,14 @@ class PLUGIN_EXPORT cbMimePlugin : public cbPlugin
           * false if not.
           */
         virtual bool CanHandleFile(const wxString& filename) const = 0;
+
         /** @brief Open the file.
           *
           * @param filename The file to open.
           * @return The plugin should return zero on success, other value on error.
           */
         virtual int OpenFile(const wxString& filename) = 0;
+
         /** @brief Is this a default handler?
           *
           * This is a flag notifying the main app that this plugin can handle
@@ -480,24 +511,31 @@ class PLUGIN_EXPORT cbWizardPlugin : public cbPlugin
 
         /** @return the number of template wizards this plugin contains */
         virtual int GetCount() const = 0;
+
         /** @param index the wizard index.
           * @return the output type of the specified wizard at @c index */
         virtual TemplateOutputType GetOutputType(int index) const = 0;
+
         /** @param index the wizard index.
           * @return the template's title */
         virtual wxString GetTitle(int index) const = 0;
+
         /** @param index the wizard index.
           * @return the template's description */
         virtual wxString GetDescription(int index) const = 0;
+
         /** @param index the wizard index.
           * @return the template's category (GUI, Console, etc; free-form text). Try to adhere to standard category names... */
         virtual wxString GetCategory(int index) const = 0;
+
         /** @param index the wizard index.
           * @return the template's bitmap */
         virtual const wxBitmap& GetBitmap(int index) const = 0;
+
         /** @param index the wizard index.
           * @return this wizard's script filename (if this wizard is scripted). */
         virtual wxString GetScriptFilename(int index) const = 0;
+
         /** When this is called, the wizard must get to work ;).
           * @param index the wizard index.
           * @param createdFilename if provided, on return it should contain the main filename
@@ -517,130 +555,52 @@ class PLUGIN_EXPORT cbWizardPlugin : public cbPlugin
         void RemoveToolBar(wxToolBar* toolBar){}
 };
 
+// typedefs for plugins' function pointers
 typedef void(*PluginSDKVersionProc)(int*,int*,int*);
-typedef size_t(*GetPluginsCountProc)(void);
-typedef wxString(*PluginNameProc)(size_t);
-typedef cbPlugin*(*CreatePluginProc)(size_t);
+typedef cbPlugin*(*CreatePluginProc)();
 typedef void(*FreePluginProc)(cbPlugin*);
 
-/** This is used to declare the plugin's hooks.
+/** @brief Plugin registration object.
+  *
+  * Use this class to register your new plugin with Code::Blocks.
+  * All you have to do is instantiate a PluginRegistrant object.
+  * @par
+  * Example code to use in one of your plugin's source files (supposedly called "MyPlugin"):
+  * @code
+  * namespace
+  * {
+  *     PluginRegistrant<MyPlugin> registration("MyPlugin");
+  * }
+  * @endcode
   */
-#define CB_DECLARE_PLUGIN() \
-    extern "C" \
-    { \
-        PLUGIN_EXPORT wxString PluginName(size_t index); \
-        PLUGIN_EXPORT size_t GetPluginsCount(); \
-        PLUGIN_EXPORT cbPlugin* CreatePlugin(size_t index); \
-        PLUGIN_EXPORT void FreePlugin(cbPlugin* plugin); \
-        PLUGIN_EXPORT void PluginSDKVersion(int* major, int* minor, int* release); \
-    }
+template<class T> class PluginRegistrant
+{
+    public:
+        /// @param name The plugin's name.
+        PluginRegistrant(const wxString& name)
+        {
+            Manager::Get()->GetPluginManager()->RegisterPlugin(name, // plugin's name
+                                                                &CreatePlugin, // creation
+                                                                &FreePlugin, // destruction
+                                                                &SDKVersion); // SDK version
+        }
 
-/** This is used to actually implement the plugin's hooks.
-  * Implements and exports one plugin of class @c name.
-  * @param name The plugin's name (class).
-  * @param title The plugin's title (string).
-  */
-#define CB_IMPLEMENT_PLUGIN(name,title) \
-    wxString PluginName(size_t index){ return _T(title); } \
-    size_t GetPluginsCount(){ return 1; } \
-    cbPlugin* CreatePlugin(size_t index) { return new name; } \
-    void FreePlugin(cbPlugin* plugin){ delete plugin; } \
-    void PluginSDKVersion(int* major, int* minor, int* release) \
-    { \
-        if (major) *major = PLUGIN_SDK_VERSION_MAJOR; \
-        if (minor) *minor = PLUGIN_SDK_VERSION_MINOR; \
-        if (release) *release = PLUGIN_SDK_VERSION_RELEASE; \
-    }
+        static cbPlugin* CreatePlugin()
+        {
+            return new T;
+        }
 
-/** Synonym to CB_IMPLEMENT_PLUGIN.
-  * Implements and exports ONE plugin of class @c name.
-  * @param name The plugin's name (class).
-  * @param title The plugin's title (string).
-  */
-#define CB_IMPLEMENT_PLUGINS_1(name,title) \
-    wxString PluginName(size_t index){ return _T(title); } \
-    size_t GetPluginsCount(){ return 1; } \
-    cbPlugin* CreatePlugin(size_t index) { return new name; } \
-    void FreePlugin(cbPlugin* plugin){ delete plugin; } \
-    void PluginSDKVersion(int* major, int* minor, int* release) \
-    { \
-        if (major) *major = PLUGIN_SDK_VERSION_MAJOR; \
-        if (minor) *minor = PLUGIN_SDK_VERSION_MINOR; \
-        if (release) *release = PLUGIN_SDK_VERSION_RELEASE; \
-    }
+        static void FreePlugin(cbPlugin* plugin)
+        {
+            delete plugin;
+        }
 
-/** Used to export more than one plugin from the same library.
-  * Implements and exports TWO plugins of class @c name1 and @c name2.
-  * @param name1 The first plugin's name (class).
-  * @param title1 The first plugin's title (string).
-  * @param name2 The second plugin's name (class).
-  * @param title2 The second plugin's title (string).
-  */
-#define CB_IMPLEMENT_PLUGINS_2(name1,title1,name2,title2) \
-    wxString PluginName(size_t index) \
-    { \
-        switch (index) \
-        { \
-            case 0: return _T(title1);  \
-            case 1: return _T(title2);  \
-            default: cbThrow(_T("Invalid plugin index in PluginName()!")); \
-        } \
-    } \
-    size_t GetPluginsCount(){ return 2; } \
-    cbPlugin* CreatePlugin(size_t index) \
-    { \
-        switch(index) \
-        { \
-            case 0: return new name1; \
-            case 1: return new name2; \
-            default: cbThrow(_T("Invalid plugin index in CreatePlugin()!")); \
-        } \
-    } \
-    void FreePlugin(cbPlugin* plugin){ delete plugin; } \
-    void PluginSDKVersion(int* major, int* minor, int* release) \
-    { \
-        if (major) *major = PLUGIN_SDK_VERSION_MAJOR; \
-        if (minor) *minor = PLUGIN_SDK_VERSION_MINOR; \
-        if (release) *release = PLUGIN_SDK_VERSION_RELEASE; \
-    }
-
-/** Used to export more than one plugin from the same library.
-  * Implements and exports THREE plugins of class @c name1, @c name2 and @c name3.
-  * @param name1 The first plugin's name (class).
-  * @param title1 The first plugin's title (string).
-  * @param name2 The second plugin's name (class).
-  * @param title2 The second plugin's title (string).
-  * @param name3 The third plugin's name (class).
-  * @param title3 The third plugin's title (string).
-  */
-#define CB_IMPLEMENT_PLUGINS_3(name1,title1,name2,title2,name3,title3) \
-    wxString PluginName(size_t index) \
-    { \
-        switch (index) \
-        { \
-            case 0: return _T(title1);  \
-            case 1: return _T(title2);  \
-            case 2: return _T(title3);  \
-            default: cbThrow(_T("Invalid plugin index in PluginName()!")); \
-        } \
-    } \
-    size_t GetPluginsCount(){ return 3; } \
-    cbPlugin* CreatePlugin(size_t index) \
-    { \
-        switch(index) \
-        { \
-            case 0: return new name1; \
-            case 1: return new name2; \
-            case 2: return new name3; \
-            default: cbThrow(_T("Invalid plugin index in CreatePlugin()!")); \
-        } \
-    } \
-    void FreePlugin(cbPlugin* plugin){ delete plugin; } \
-    void PluginSDKVersion(int* major, int* minor, int* release) \
-    { \
-        if (major) *major = PLUGIN_SDK_VERSION_MAJOR; \
-        if (minor) *minor = PLUGIN_SDK_VERSION_MINOR; \
-        if (release) *release = PLUGIN_SDK_VERSION_RELEASE; \
-    }
+        static void SDKVersion(int* major, int* minor, int* release)
+        {
+            if (major) *major = PLUGIN_SDK_VERSION_MAJOR;
+            if (minor) *minor = PLUGIN_SDK_VERSION_MINOR;
+            if (release) *release = PLUGIN_SDK_VERSION_RELEASE;
+        }
+};
 
 #endif // CBPLUGIN_H

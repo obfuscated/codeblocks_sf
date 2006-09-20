@@ -17,8 +17,11 @@
 #include <wx/event.h>
 #include <wx/generic/splitter.h>
 
-// Implement the plugin's hooks
-CB_IMPLEMENT_PLUGIN(cbDragScroll, "DragScroll" );
+// Register the plugin
+namespace
+{
+    PluginRegistrant<cbDragScroll> reg(_T("cbDragScroll"));
+};
 
 int ID_DLG_DONE = wxNewId();
 
@@ -39,17 +42,6 @@ cbDragScroll::cbDragScroll()
 // ----------------------------------------------------------------------------
 {
 	//ctor
-	m_PluginInfo.name = _T("DragScroll");
-	m_PluginInfo.title = _("DragScroll");
-	m_PluginInfo.version = _T("0.28 2006/09/11");
-	m_PluginInfo.description = _("Mouse Drag and Scroll\nUsing Right or Middle Mouse Key");
-	m_PluginInfo.author = _T("Pecan");
-	m_PluginInfo.authorEmail = _T("");
-	m_PluginInfo.authorWebsite = _T("");
-	m_PluginInfo.thanksTo = _("wxWidgets & Code::Blocks Team");
-	m_PluginInfo.license = LICENSE_GPL;
-	//m_PluginInfo.hasConfigure = true;
-
 	// anchor to this one and only object
     pDragScroll = this;
 
@@ -68,7 +60,7 @@ void cbDragScroll::OnAttach()
 {
 	// do whatever initialization you need for your plugin
 	// NOTE: after this function, the inherited member variable
-	// m_IsAttached will be TRUE...
+	// IsAttached() will be TRUE...
 	// You should check for it in other functions, because if it
 	// is FALSE, it means that the application did *not* "load"
 	// (see: does not need) this plugin...
@@ -159,7 +151,7 @@ void cbDragScroll::OnRelease(bool appShutDown)
 	// if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,
 	// which means you must not use any of the SDK Managers
 	// NOTE: after this function, the inherited member variable
-	// m_IsAttached will be FALSE...
+	// IsAttached() will be FALSE...
 
 	// Remove all Mouse event handlers
 	DetachAll();
@@ -169,7 +161,7 @@ cbConfigurationPanel* cbDragScroll::GetConfigurationPanel(wxWindow* parent)
 // ----------------------------------------------------------------------------
 {
 	//create and display the configuration dialog for your plugin
-    if(!m_IsAttached) {	return 0;}
+    if(!IsAttached()) {	return 0;}
     // Create a configuration dialogue and hand it off to codeblocks
 
     //cbConfigurationPanel* pDlg = new cbDragScrollCfg(parent, this);

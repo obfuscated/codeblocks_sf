@@ -84,7 +84,11 @@ namespace ScriptBindings
 #define COLOUR_MAROON wxColour(0xa0, 0x00, 0x00)
 #define COLOUR_NAVY   wxColour(0x00, 0x00, 0xa0)
 
-CB_IMPLEMENT_PLUGIN(CompilerGCC, "Compiler");
+// this auto-registers the plugin
+namespace
+{
+    PluginRegistrant<CompilerGCC> reg(_T("Compiler"));
+}
 
 // menu IDS
 // just because we don't know other plugins' used identifiers,
@@ -219,23 +223,10 @@ CompilerGCC::CompilerGCC()
     m_RunProjectPostBuild(false),
     m_DeleteTempMakefile(true)
 {
-    if(!Manager::LoadResource(_T("compiler_gcc.zip")))
+    if(!Manager::LoadResource(_T("compiler.zip")))
     {
-        NotifyMissingFile(_T("compiler_gcc.zip"));
+        NotifyMissingFile(_T("compiler.zip"));
     }
-
-    m_Type = ptCompiler;
-    m_PluginInfo.name = _T("Compiler");
-    m_PluginInfo.title = _T("Compiler");
-    m_PluginInfo.version = _T("1.0");
-    m_PluginInfo.description = _("This plugin is an interface to various compilers:\n\n"
-                               "\tGNU GCC compiler\n"
-                               "\tMicrosoft Visual C++ Free Toolkit 2003\n"
-                               "\tBorland C++ Compiler 5.5");
-    m_PluginInfo.author = _T("Yiannis An. Mandravellos");
-    m_PluginInfo.authorEmail = _T("info@codeblocks.org");
-    m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
-    m_PluginInfo.thanksTo = _("All the free (and not) compilers out there");
 
     m_timerIdleWakeUp.SetOwner(this, idTimerPollCompiler);
 
@@ -489,7 +480,7 @@ void CompilerGCC::OnConfig(wxCommandEvent& event)
 
 void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
 {
-    if (!m_IsAttached)
+    if (!IsAttached())
         return;
     if (m_Menu)
         return;
@@ -544,7 +535,7 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
 
 void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
-    if (!m_IsAttached)
+    if (!IsAttached())
         return;
     // we 're only interested in project manager's menus
     if (type != mtProjectManager || !menu || IsRunning())
@@ -583,7 +574,7 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
 
 bool CompilerGCC::BuildToolBar(wxToolBar* toolBar)
 {
-    if (!m_IsAttached || !toolBar)
+    if (!IsAttached() || !toolBar)
         return false;
     m_pTbar = toolBar;
     wxString my_16x16=Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
@@ -1056,7 +1047,7 @@ void CompilerGCC::DoClearTargetMenu()
 
 void CompilerGCC::DoRecreateTargetMenu()
 {
-    if (!m_IsAttached)
+    if (!IsAttached())
         return;
 
     if (m_ToolTarget)

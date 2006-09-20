@@ -6,6 +6,7 @@
 		<Option pch_mode="0" />
 		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\CBProfiler.dll" />
@@ -56,7 +57,7 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\profiler.zip resources\*.xrc" />
+			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\CBProfiler.zip resources\manifest.xml resources\*.xrc" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="cbprofiler.cpp">
@@ -96,6 +97,12 @@
 			<Option target="default" />
 		</Unit>
 		<Unit filename="resources\main_dialog.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="resources\manifest.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

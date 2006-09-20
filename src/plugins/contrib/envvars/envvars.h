@@ -89,7 +89,4 @@ public:
   DECLARE_EVENT_TABLE()
 };
 
-// Declare the plugin's hooks
-CB_DECLARE_PLUGIN();
-
 #endif // ENVVARS_H

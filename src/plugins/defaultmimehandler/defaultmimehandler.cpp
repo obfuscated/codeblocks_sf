@@ -26,21 +26,15 @@
 #include "editmimetypesdlg.h"
 #include "filefilters.h"
 
-CB_IMPLEMENT_PLUGIN(DefaultMimeHandler, "Files extension handler");
+// this auto-registers the plugin
+namespace
+{
+    PluginRegistrant<DefaultMimeHandler> reg(_T("FilesExtensionHandler"));
+}
 
 DefaultMimeHandler::DefaultMimeHandler()
 {
     //ctor
-    m_PluginInfo.name = _T("FilesExtensionHandler");
-    m_PluginInfo.title = _("Files extension handler");
-    m_PluginInfo.version = _T("1.0");
-    m_PluginInfo.description = _("This is the default files extension handler for Code::Blocks");
-    m_PluginInfo.author = _T("Yiannis An. Mandravellos");
-    m_PluginInfo.authorEmail = _T("mandrav@codeblocks.org");
-    m_PluginInfo.authorWebsite = _("http://www.codeblocks.org");
-    m_PluginInfo.thanksTo = _T("Code::Blocks");
-    m_PluginInfo.license = LICENSE_GPL;
-
     if(!Manager::LoadResource(_T("defaultmimehandler.zip")))
     {
         NotifyMissingFile(_T("defaultmimehandler.zip"));

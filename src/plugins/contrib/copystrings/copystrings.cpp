@@ -12,6 +12,7 @@
 #include <wx/string.h>
 #include "cbeditor.h"
 #include "editormanager.h"
+#include "pluginmanager.h"
 #include "globals.h"
 #include "licenses.h" // defines some common licenses (like the GPL)
 #include "manager.h"
@@ -24,22 +25,15 @@
 
 using namespace std;
 
-// Implement the plugin's hooks
-CB_IMPLEMENT_PLUGIN(copystrings, "Copy Strings to clipboard");
+// Register the plugin
+namespace
+{
+    PluginRegistrant<copystrings> reg(_T("copystrings"));
+};
 
 copystrings::copystrings()
 {
 	//ctor
-	m_PluginInfo.name = _T("copystrings");
-	m_PluginInfo.title = _("Copy Strings to clipboard");
-	m_PluginInfo.version = _T("1.00");
-	m_PluginInfo.description = _("This plugin copies all the strings in the current editor, into the clipboard.\n" \
-	 "Duplicated strings are removed.");
-	m_PluginInfo.author = _T("Ricardo Garcia");
-	m_PluginInfo.authorEmail = _T("rick_g22 <at> yahoo <dot> com");
-	m_PluginInfo.authorWebsite = _T("http://www.codeblocks.org/");
-	m_PluginInfo.thanksTo = _("The Code::Blocks team");
-	m_PluginInfo.license = LICENSE_WXWINDOWS;
 }
 
 copystrings::~copystrings()

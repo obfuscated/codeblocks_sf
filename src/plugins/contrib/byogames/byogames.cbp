@@ -5,6 +5,7 @@
 		<Option title="C::B Games" />
 		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\byogames.dll" />
@@ -58,6 +59,10 @@
 			<Add directory="$(#CB)\devel" />
 			<Add directory="$(#CB)\sdk\tinyxml" />
 		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\byogames.zip manifest.xml" />
+			<Mode after="always" />
+		</ExtraCommands>
 		<Unit filename="byocbtris.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
@@ -123,6 +128,12 @@
 			<Option target="default" />
 		</Unit>
 		<Unit filename="byosnake.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="manifest.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

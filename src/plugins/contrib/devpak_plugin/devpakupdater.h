@@ -38,7 +38,5 @@ class DevPakUpdater : public cbToolPlugin
 	private:
 };
 
-CB_DECLARE_PLUGIN();
-
 #endif // DEVPAKUPDATER_H
 

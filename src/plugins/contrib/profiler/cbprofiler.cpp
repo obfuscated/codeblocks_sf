@@ -33,25 +33,19 @@
 #include "cbprofilerexec.h"
 
 
-CB_IMPLEMENT_PLUGIN(CBProfiler, "Code profiler");
+// Register the plugin
+namespace
+{
+    PluginRegistrant<CBProfiler> reg(_T("CBProfiler"));
+};
 
 CBProfiler::CBProfiler()
 {
     //ctor
-    if(!Manager::LoadResource(_T("profiler.zip")))
+    if(!Manager::LoadResource(_T("CBProfiler.zip")))
     {
-        NotifyMissingFile(_T("profiler.zip"));
+        NotifyMissingFile(_T("CBProfiler.zip"));
     }
-
-    m_PluginInfo.name          = _T("CBProfiler");
-    m_PluginInfo.title         = _("Code profiler");
-    m_PluginInfo.version       = _("1.0RC2");
-    m_PluginInfo.description   = _("A simple graphical interface to the GNU GProf Profiler\n\nGNU GProf Online Reference:\nhttp://www.gnu.org/software/binutils/manual/gprof-2.9.1/html_mono/gprof.html");
-    m_PluginInfo.author        = _("Dark Lord & Zlika");
-    m_PluginInfo.authorEmail   = _T("");
-    m_PluginInfo.authorWebsite = _T("");
-    m_PluginInfo.thanksTo      = _("Mandrav, for the n00b intro to profiling\nand the sources of his Source code\nformatter (AStyle) Plugin, whose clean\ncode structure served as a basis for this\nplugin\n:)");
-    m_PluginInfo.license       = LICENSE_GPL;
 }
 CBProfiler::~CBProfiler()
 {
@@ -61,7 +55,7 @@ void CBProfiler::OnAttach()
 {
     // do whatever initialization you need for your plugin
     // NOTE: after this function, the inherited member variable
-    // m_IsAttached will be TRUE...
+    // IsAttached() will be TRUE...
     // You should check for it in other functions, because if it
     // is FALSE, it means that the application did *not* "load"
     // (see: does not need) this plugin...
@@ -72,12 +66,12 @@ void CBProfiler::OnRelease(bool appShutDown)
     // if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,
     // which means you must not use any of the SDK Managers
     // NOTE: after this function, the inherited member variable
-    // m_IsAttached will be FALSE...
+    // IsAttached() will be FALSE...
 }
 cbConfigurationPanel* CBProfiler::GetConfigurationPanel(wxWindow* parent)
 {
     // if not attached, exit
-    if (!m_IsAttached)
+    if (!IsAttached())
         return 0;
 
     CBProfilerConfigDlg* dlg = new CBProfilerConfigDlg(parent);
@@ -86,7 +80,7 @@ cbConfigurationPanel* CBProfiler::GetConfigurationPanel(wxWindow* parent)
 int CBProfiler::Execute()
 {
     // if not attached, exit
-    if (!m_IsAttached)
+    if (!IsAttached())
         return -1;
 
     cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();

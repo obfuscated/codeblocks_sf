@@ -33,7 +33,5 @@ class DefaultMimeHandler : public cbMimePlugin
         MimeTypesArray m_MimeTypes;
 };
 
-CB_DECLARE_PLUGIN();
-
 #endif // DEFAULTMIMEHANDLER_H
 

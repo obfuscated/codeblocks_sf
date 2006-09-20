@@ -17,4 +17,11 @@ noinst_HEADERS = kodersdialog.h \
 			cb_koders.h
 
 EXTRA_DIST = wxsmith/KodersDialog.wxs \
-			cb_koders.cbp
+			cb_koders.cbp \
+			manifest.xml
+
+pkgdata_DATA = cb_koders.zip
+CLEANFILES = $(pkgdata_DATA)
+
+cb_koders.zip:
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/cb_koders.zip manifest.xml > /dev/null

@@ -47,15 +47,6 @@ cbPlugin::cbPlugin()
     m_IsAttached(false)
 {
 	SetEvtHandlerEnabled(false);
-    m_PluginInfo.name = _T("");
-    m_PluginInfo.title = _T("");
-    m_PluginInfo.version = _T("");
-    m_PluginInfo.description = _T("");
-    m_PluginInfo.author = _T("");
-    m_PluginInfo.authorEmail = _T("");
-    m_PluginInfo.authorWebsite = _T("");
-    m_PluginInfo.thanksTo = _T("");
-    m_PluginInfo.license = LICENSE_GPL;
 }
 
 cbPlugin::~cbPlugin()
@@ -76,9 +67,8 @@ void cbPlugin::Attach()
         event.SetPlugin(this);
         // post event in the host's event queue
         wxPostEvent(frame, event);
-
-        m_IsAttached = true;
     }
+    m_IsAttached = true;
 	OnAttach();
 	SetEvtHandlerEnabled(true);
 }

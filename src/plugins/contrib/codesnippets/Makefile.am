@@ -28,5 +28,3 @@ EXTRA_DIST = 	codesnippets.cbp \
 		update \
 		readme.html \
 		license.txt
-
-

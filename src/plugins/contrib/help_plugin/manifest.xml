@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="10" release="0" />
+    <Plugin name="HelpPlugin">
+        <Value title="Help plugin" />
+        <Value version="1.0" />
+        <Value description="This plugin is used to add a list of help files to the Help menu so you can have them handy to launch.
+
+You can also set one of the help files as the default help file and that way it'll be launched when you press F1.
+NOTE: you can add any file you want and it'll be launched with the associated application.
+
+It'll also integrate in the context menu of the editor (right click) enabling you to search the word under the cursor in any of the help files.
+NOTE: it's only meaningful under Windows for help files with extension hlp or chm. It's also meaningul for any platform when the help file is an URL (read below).
+
+A recent addition allows you to add an URL as a help file. To do that add a new help file BUT when prompted for the location of the file dismiss the file dialog, be sure the new help file is selected and enter the URL in the text entry (the one followed by the ... button).
+
+For URLs you can add $(keyword) in any place of the address, any number of times, and it'll get replaced by the word you selected to locate in that help file.
+
+The configuration dialog for this plugin can be found clicking on Settings -> Environment (Help files)." />
+        <Value author="Bourricot | Ceniza (maintainer)" />
+        <Value authorEmail="titi37fr@yahoo.fr | ceniza@gda.utp.edu.co" />
+        <Value authorWebsite="www.codeblocks.org" />
+        <Value thanksTo="Codeblocks dev team !\nBourricot for the initial version" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

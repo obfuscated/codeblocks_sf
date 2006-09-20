@@ -132,7 +132,4 @@ class CodeSnippets : public cbPlugin
 		DECLARE_EVENT_TABLE();
 };
 
-// Declare the plugin's hooks
-CB_DECLARE_PLUGIN();
-
 #endif // CODESNIPPETS_H_INCLUDED

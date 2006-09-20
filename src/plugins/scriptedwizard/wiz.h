@@ -170,8 +170,5 @@ class Wiz : public cbWizardPlugin
 	private:
 };
 
-// Declare the plugin's hooks
-CB_DECLARE_PLUGIN();
-
 #endif // WIZ_H
 

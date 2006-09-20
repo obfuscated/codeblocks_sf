@@ -6,6 +6,7 @@
 		<Option pch_mode="0" />
 		<Option default_target="default" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="libbz2">
 				<Option output="bzip2\libbz2.a" />
@@ -44,7 +45,7 @@
 					<Add directory="..\..\..\devel" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip ..\..\..\devel\share\CodeBlocks\devpakupdater.zip *.xrc" />
+					<Add after="zip ..\..\..\devel\share\CodeBlocks\devpakupdater.zip manifest.xml *.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -167,6 +168,12 @@
 		</Unit>
 		<Unit filename="devpakupdater.h">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="manifest.xml">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />

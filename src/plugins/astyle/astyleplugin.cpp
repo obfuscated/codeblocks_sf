@@ -29,7 +29,11 @@
 using std::istringstream;
 using std::string;
 
-CB_IMPLEMENT_PLUGIN(AStylePlugin, "Source code formatter (AStyle)");
+// this auto-registers the plugin
+namespace
+{
+    PluginRegistrant<AStylePlugin> reg(_T("AStylePlugin"));
+}
 
 AStylePlugin::AStylePlugin()
 {
@@ -39,21 +43,6 @@ AStylePlugin::AStylePlugin()
     {
         NotifyMissingFile(_T("astyle.zip"));
     }
-
-	m_PluginInfo.name = _T("AStylePlugin");
-	m_PluginInfo.title = _T("Source code formatter (AStyle)");
-	m_PluginInfo.version = _T("1.2");
-	m_PluginInfo.description =  _T("Uses AStyle 1.19 to reformat your sources. Useful when copying ")
-                              _T("code from the net or if you just want to reformat your sources ")
-                              _T("based on a specific style.\n")
-                              _T("\n")
-                              _T("The configuration dialog for this plugin can be found clicking ")
-                              _T("on Settings -> Editor (Source formatter).");
-	m_PluginInfo.author = _T("Yiannis Mandravellos | Ceniza (maintainer)");
-	m_PluginInfo.authorEmail = _T("mandrav@codeblocks.org | ceniza@gda.utp.edu.co");
-	m_PluginInfo.authorWebsite = _T("http://www.codeblocks.org");
-	m_PluginInfo.thanksTo = _T("AStyle team for the useful library.\nSee http://astyle.sourceforge.net");
-	m_PluginInfo.license = LICENSE_GPL;
 }
 
 AStylePlugin::~AStylePlugin()

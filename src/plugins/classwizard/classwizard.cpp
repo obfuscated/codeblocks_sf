@@ -41,25 +41,18 @@
 #include "classwizard.h"
 #include "classwizarddlg.h"
 
-CB_IMPLEMENT_PLUGIN(ClassWizard, "Class wizard");
+// this auto-registers the plugin
+namespace
+{
+    PluginRegistrant<ClassWizard> reg(_T("ClassWizard"));
+}
 
 ClassWizard::ClassWizard()
 {
-    if(!Manager::LoadResource(_T("class_wizard.zip")))
+    if(!Manager::LoadResource(_T("classwizard.zip")))
     {
-        NotifyMissingFile(_T("class_wizard.zip"));
+        NotifyMissingFile(_T("classwizard.zip"));
     }
-
-    m_PluginInfo.name = _T("ClassWizard");
-    m_PluginInfo.title = _("Class wizard");
-    m_PluginInfo.version = _T("0.2");
-    m_PluginInfo.description = _("This plugin provides an easy way to create a " \
-                               "new C++ class file pair. It's by no means " \
-                               "complete yet but it's here nevertheless;)");
-    m_PluginInfo.author = _T("Yiannis An. Mandravellos");
-    m_PluginInfo.authorEmail = _T("info@codeblocks.org");
-    m_PluginInfo.authorWebsite = _T("www.codeblocks.org");
-    m_PluginInfo.thanksTo = _T("");
 }
 
 ClassWizard::~ClassWizard()

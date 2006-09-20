@@ -12,9 +12,9 @@ libautosave_la_LIBADD = ../../sdk/libcodeblocks.la
 
 libautosave_la_SOURCES = autosave.cpp
 noinst_HEADERS = autosave.h
-EXTRA_DIST = autosave.xrc
+EXTRA_DIST = autosave.xrc manifest.xml
 pkgdata_DATA = autosave.zip
 CLEANFILES = $(pkgdata_DATA)
 
 autosave.zip:
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/autosave.zip *.xrc > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/autosave.zip manifest.xml *.xrc > /dev/null

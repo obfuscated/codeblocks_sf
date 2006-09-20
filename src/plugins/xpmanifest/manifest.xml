@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="10" release="0" />
+    <Plugin name="WindowsXPLookNFeel">
+        <Value title="Windows XP Look'n'Feel" />
+        <Value version="1.0" />
+        <Value description="This plugin creates a manifest file that makes use of common controls 6.0 under Windows XP.
+You must copy this manifest file in the same path as your app's main executable in order for your application to use common controls version 6.0..." />
+        <Value author="Yiannis An. Mandravellos" />
+        <Value authorEmail="info@codeblocks.org" />
+        <Value authorWebsite="http://www.codeblocks.org" />
+        <Value thanksTo="" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

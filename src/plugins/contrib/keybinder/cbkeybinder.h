@@ -148,9 +148,6 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-// Declare the plugin's hooks
-CB_DECLARE_PLUGIN();
-
 #endif // CBKEYBINDER_H
 // 11/9/2005
 // C::B KeyBinder

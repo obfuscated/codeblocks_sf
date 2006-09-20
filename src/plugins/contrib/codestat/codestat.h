@@ -33,6 +33,4 @@ class CodeStat : public cbToolPlugin
       CodeStatExecDlg* dlg;
 };
 
-CB_DECLARE_PLUGIN();
-
 #endif // CODESTAT_H

@@ -1,4 +1,4 @@
-pkgdata_DATA = debugger_gdb.zip
+pkgdata_DATA = debugger.zip
 CLEANFILES = $(pkgdata_DATA)
 
 DEBUG_RESOURCES = backtrace.xrc \
@@ -8,6 +8,7 @@ DEBUG_RESOURCES = backtrace.xrc \
 	debugger_toolbar_16x16.xrc \
 	debugger_toolbar.xrc \
 	disassembly.xrc \
+	manifest.xml \
 	memdump.xrc \
 	threads.xrc \
 	images/dbgnext.png \
@@ -27,5 +28,5 @@ DEBUG_RESOURCES = backtrace.xrc \
 
 EXTRA_DIST = $(DEBUG_RESOURCES)
 
-debugger_gdb.zip: $(DEBUG_RESOURCES)
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/debugger_gdb.zip *.xrc images/*.png images/16x16/*.png > /dev/null
+debugger.zip: $(DEBUG_RESOURCES)
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/debugger.zip manifest.xml *.xrc images/*.png images/16x16/*.png > /dev/null

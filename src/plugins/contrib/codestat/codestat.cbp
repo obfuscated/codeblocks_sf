@@ -6,6 +6,7 @@
 		<Option pch_mode="0" />
 		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codestat.dll" />
@@ -57,7 +58,7 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\codestat.zip resources\*.xrc" />
+			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\codestat.zip resources\manifest.xml resources\*.xrc" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="codestat.cpp">
@@ -92,6 +93,24 @@
 		</Unit>
 		<Unit filename="language_def.h">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="resources\config_dialog.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="resources\main_dialog.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="resources\manifest.xml">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="default" />

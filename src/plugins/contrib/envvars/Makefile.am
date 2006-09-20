@@ -15,9 +15,9 @@ libenvvars_la_SOURCES = envvars.cpp
 
 noinst_HEADERS = envvars.h
 
-EXTRA_DIST = envvars.cbp envvars-unix.cbp envvars.xrc
+EXTRA_DIST = envvars.cbp envvars-unix.cbp envvars.xrc manifest.xml
 
 CLEANFILES = $(pkgdata_DATA)
 
 envvars.zip:
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/envvars.zip *.xrc > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/envvars.zip manifest.xml *.xrc > /dev/null

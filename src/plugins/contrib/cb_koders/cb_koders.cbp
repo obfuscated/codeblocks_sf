@@ -6,6 +6,7 @@
 		<Option pch_mode="0" />
 		<Option default_target="" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\cb_koders.dll" />
@@ -63,6 +64,10 @@
 			<Add directory="$(#CB)\devel" />
 			<Add directory="$(#CB)\sdk\tinyxml" />
 		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\cb_koders.zip manifest.xml" />
+			<Mode after="always" />
+		</ExtraCommands>
 		<Unit filename="cb_koders.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
@@ -78,6 +83,12 @@
 			<Option target="default" />
 		</Unit>
 		<Unit filename="kodersdialog.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="manifest.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

@@ -34,8 +34,11 @@
 #include "projectloader.h"
 #include "autosave.h"
 
-// Implement the plugin's hooks
-CB_IMPLEMENT_PLUGIN(Autosave, "Autosave");
+// this auto-registers the plugin
+namespace
+{
+    PluginRegistrant<Autosave> reg(_T("Autosave"));
+}
 
 BEGIN_EVENT_TABLE(Autosave, cbPlugin)
 EVT_TIMER(-1, Autosave::OnTimer)
@@ -44,16 +47,6 @@ END_EVENT_TABLE()
 Autosave::Autosave()
 {
     //ctor
-    m_PluginInfo.name = _T("Autosave");
-    m_PluginInfo.title = _("Autosave");
-    m_PluginInfo.version = _T("0.1");
-    m_PluginInfo.description = _("Saves your work in regular intervals");
-    m_PluginInfo.author = _T("Thomas Denk");
-    m_PluginInfo.authorEmail = _T("");
-    m_PluginInfo.authorWebsite = _T("");
-    m_PluginInfo.thanksTo = _T("");
-    m_PluginInfo.license = _T("GPL");
-
     timer1 = new wxTimer(this, 10000);
     timer2 = new wxTimer(this, 20000);
 }

@@ -13,8 +13,11 @@
 #include "cb_koders.h"
 #include "kodersdialog.h"
 
-// Implement the plugin's hooks
-CB_IMPLEMENT_PLUGIN(CB_Koders, "Code::Blocks Koders connectivity");
+// Register the plugin
+namespace
+{
+    PluginRegistrant<CB_Koders> reg(_T("CB_Koders"));
+};
 
 const int idSearchKoders = wxNewId();
 
@@ -26,15 +29,6 @@ END_EVENT_TABLE()
 CB_Koders::CB_Koders() :
   TheDialog(0)
 {
-	m_PluginInfo.name = _T("CB_Koders");
-	m_PluginInfo.title = _("Koders query");
-	m_PluginInfo.version = _T("0.1");
-	m_PluginInfo.description = _("This plugin queries the Koders webpage for keywords");
-	m_PluginInfo.author = _T("MortenMacFly");
-	m_PluginInfo.authorEmail = _T("mac-fly@gmx.net");
-	m_PluginInfo.authorWebsite = _T("http://www.codeblocks.org");
-	m_PluginInfo.thanksTo = _("Yiannis Mandravellos, Thomas Denk and all the other C::B developers and contributers for a great piece of software.");
-	m_PluginInfo.license = LICENSE_GPL;
 }
 
 // destructor
