@@ -27,6 +27,7 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/datetime.h>
     #include <wx/imaglist.h>
     #include <wx/menu.h>
     #include <wx/splitter.h>
@@ -61,6 +62,7 @@
 #include "projectdepsdlg.h"
 #include "multiselectdlg.h"
 #include "filefilters.h"
+#include "confirmreplacedlg.h"
 
 // maximum number of items in "Open with" context menu
 static const unsigned int MAX_OPEN_WITH_ITEMS = 20; // keep it in sync with below array!
@@ -212,7 +214,8 @@ ProjectManager::ProjectManager()
     m_TreeFreezeCounter(0),
     m_IsLoadingProject(false),
     m_IsLoadingWorkspace(false),
-    m_InitialDir(_T(""))
+    m_InitialDir(_T("")),
+    m_isCheckingForExternallyModifiedProjects(false)
 {
     m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), idNB);
     m_pNotebook->SetWindowStyleFlag(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/project_tabs_style"), wxFNB_NO_X_BUTTON));
@@ -2285,4 +2288,56 @@ void ProjectManager::OnRenameFile(wxCommandEvent& event)
         }
     }
 }
+
+void ProjectManager::CheckForExternallyModifiedProjects()
+{
+    if(m_isCheckingForExternallyModifiedProjects) // for some reason, a mutex locker does not work???
+        return;
+    m_isCheckingForExternallyModifiedProjects = true;
+
+    wxLogNull ln;
+    // check also the projects (TO DO : what if we gonna reload while compiling/debugging)
+    ProjectManager* ProjectMgr = Manager::Get()->GetProjectManager();
+    if( ProjectsArray* Projects = ProjectMgr->GetProjects())
+    {
+    	bool reloadAll = false;
+    	for(unsigned int idxProject = 0; idxProject < Projects->Count(); ++idxProject)
+    	{
+    		cbProject* pProject = Projects->Item(idxProject);
+    		wxFileName fname(pProject->GetFilename());
+    		wxDateTime last = fname.GetModificationTime();
+    		if(last.IsLaterThan(pProject->GetLastModificationTime()))
+    		{	// was modified -> reload
+				int ret = -1;
+				if (!reloadAll)
+				{
+					Manager::Get()->GetMessageManager()->Log(pProject->GetFilename());
+					wxString msg;
+					msg.Printf(_("Project %s is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"),
+							   pProject->GetFilename().c_str());
+					ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow(), false, msg);
+					dlg.SetTitle(_("Reload Project?"));
+					PlaceWindow(&dlg);
+					ret = dlg.ShowModal();
+					reloadAll = ret == crAll;
+				}
+                if(reloadAll || ret == crYes)
+                {
+                	wxString ProjectFileName = pProject->GetFilename();
+                	ProjectMgr->CloseProject(pProject);
+                	ProjectMgr->LoadProject(ProjectFileName);
+                }
+				else if (ret == crCancel)
+				{
+					break;
+				}
+				else if (ret == crNo)
+				{
+					pProject->Touch();
+				}
+    		}
+    	} // end for : idx : idxProject
+    }
+    m_isCheckingForExternallyModifiedProjects = false;
+} // end of CheckForExternallyModifiedProjects
 

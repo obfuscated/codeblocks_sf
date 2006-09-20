@@ -845,9 +845,17 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
 
     if (Manager::Get()->GetEditorManager() && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/check_modified_files"), true))
     {
+    	// for some reason a mouse up event doen's make it into scintilla (scintilla bug)
+    	// therefor the workaournd is not to directly call the editorManager, but
+    	// take a detour through an event
+    	// the bug is when the file has been offered to reload, no matter what answer you
+    	// give the mouse is in a selecting mode, adding/removing things to it's selection as you
+    	// move it around
+    	// so : idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles just exist for this workaround
         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idEditorManagerCheckFiles);
         wxPostEvent(Manager::Get()->GetEditorManager(), evt);
 //        Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
+        Manager::Get()->GetProjectManager()->CheckForExternallyModifiedProjects();
     }
     cbEditor* ed = Manager::Get()->GetEditorManager()
                     ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()

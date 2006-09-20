@@ -353,6 +353,9 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 		int FolderIconIndex();
 		/** @return The virtual folder icon index in the image list. */
 		int VirtualFolderIconIndex();
+
+        /** Check if one of the open projects has been modified outside the IDE. If so, ask to reload it. */
+        void CheckForExternallyModifiedProjects();
     private:
 		ProjectManager();
 		~ProjectManager();
@@ -420,6 +423,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 		bool m_IsLoadingWorkspace;
         wxString m_InitialDir;
         wxTreeItemId m_DraggingItem;
+        bool m_isCheckingForExternallyModifiedProjects;
 
         DECLARE_EVENT_TABLE()
 };

@@ -1023,7 +1023,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
         cbMessageBox(msg, _("Error"), wxICON_ERROR);
     }
     m_isCheckingForExternallyModifiedFiles = false;
-}
+} // end of CheckForExternallyModifiedFiles
 
 bool EditorManager::SwapActiveHeaderSource()
 {
@@ -2310,9 +2310,6 @@ void EditorManager::OnAppStartShutdown(wxCommandEvent& event)
 void EditorManager::OnCheckForModifiedFiles(wxCommandEvent& event)
 {
     CheckForExternallyModifiedFiles();
-    cbEditor* ed = GetBuiltinActiveEditor();
-    if (ed)
-        ed->GetControl()->SetFocus();
 }
 
 

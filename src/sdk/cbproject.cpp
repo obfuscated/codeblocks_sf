@@ -352,6 +352,7 @@ void cbProject::Open()
                 "Code::Blocks can import older project files,\n"
                 "but will always save in the current format."), 12000, 2000);
         }
+        m_LastModified = fname.GetModificationTime();
     }
     else
         Manager::Get()->GetMessageManager()->Log(_("failed"));
@@ -403,6 +404,11 @@ wxString cbProject::GetCommonTopLevelPath()
     return m_CommonTopLevelPath;
 }
 
+void cbProject::Touch()
+{
+    m_LastModified = wxDateTime::Now();
+}
+
 bool cbProject::SaveAs()
 {
     wxFileName fname;
@@ -434,6 +440,8 @@ bool cbProject::SaveAs()
     ProjectLoader loader(this);
     if (loader.Save(m_Filename))
     {
+        wxFileName fname(m_Filename);
+        m_LastModified = fname.GetModificationTime();
         NotifyPlugins(cbEVT_PROJECT_SAVE);
         return true;
     }
@@ -447,6 +455,8 @@ bool cbProject::Save()
     ProjectLoader loader(this);
     if (loader.Save(m_Filename))
     {
+        wxFileName fname(m_Filename);
+        m_LastModified = fname.GetModificationTime();
         NotifyPlugins(cbEVT_PROJECT_SAVE);
         return true;
     }

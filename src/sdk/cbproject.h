@@ -1,6 +1,7 @@
 #ifndef CBPROJECT_H
 #define CBPROJECT_H
 
+#include <wx/datetime.h>
 #include <wx/dynarray.h>
 #include <wx/hashmap.h>
 #include <wx/treectrl.h>
@@ -517,6 +518,12 @@ class DLLIMPORT cbProject : public CompileTargetBase
 
         /** Set the virtual folders list. Normally used by the project loader only. */
         void SetVirtualFolders(const wxArrayString& folders);
+
+        /** Returns the last modification time for the file. Used to detect modifications outside the Program. */
+        wxDateTime GetLastModificationTime() const { return m_LastModified; }
+
+        /** Sets the last modification time for the project to 'now'. Used to detect modifications outside the Program. */
+        void Touch();
     private:
         void Open();
         void ExpandVirtualBuildTargetGroup(const wxString& alias, wxArrayString& result) const;
@@ -553,6 +560,8 @@ class DLLIMPORT cbProject : public CompileTargetBase
         // hashmap for fast searches in cbProject::GetFileByFilename()
         ProjectFiles m_ProjectFilesMap; // keeps UnixFilename(ProjectFile::relativeFilename)
         ProjectBuildTarget* m_CurrentlyCompilingTarget;
+
+        wxDateTime m_LastModified;
 };
 
 #endif // CBPROJECT_H
