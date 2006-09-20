@@ -143,7 +143,13 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         // (pluginFilename contains no path info)
         wxFileName fname(pluginFilename);
         fname.SetExt(_T("zip"));
-        wxString actual = ConfigManager::LocateDataFile(fname.GetFullName(), sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
+        wxString actual = fname.GetFullName();
+        #ifdef __WXGTK__
+        // remove 'lib' prefix from plugin name (if any)
+        if (actual.StartsWith(_T("lib")))
+            actual.Remove(0, 3);
+        #endif
+        actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
         if (actual.IsEmpty())
         {
             DBGLOG(_T("Plugin resource not found: %s"), fname.GetFullName().c_str());

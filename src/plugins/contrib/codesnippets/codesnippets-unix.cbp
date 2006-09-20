@@ -78,5 +78,6 @@
 			<Option link="0" />
 			<Option target="Debug - Unix" />
 		</Unit>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

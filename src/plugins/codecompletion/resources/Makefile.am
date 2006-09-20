@@ -1,8 +1,8 @@
-pkgdata_DATA = code_completion.zip
+pkgdata_DATA = codecompletion.zip
 CLEANFILES = $(pkgdata_DATA)
 
-code_completion.zip:
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/code_completion.zip manifest.xml *.xrc > /dev/null
+codecompletion.zip:
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/codecompletion.zip manifest.xml *.xrc > /dev/null
 
 install-exec-local:
 	mkdir -p $(DESTDIR)$(pkgdatadir)/images/codecompletion

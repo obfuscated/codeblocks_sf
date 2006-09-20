@@ -36,7 +36,8 @@
 			<Add directory="$(CBDIR)/devel" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ../../../devel/share/codeblocks/profiler.zip resources/*.xrc" />
+			<Add after="zip -j9 ../../../devel/share/codeblocks/CBProfiler.zip resources/manifest.xml resources/*.xrc" />
+			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="cbprofiler.cpp">
 			<Option compilerVar="CPP" />
@@ -68,5 +69,6 @@
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

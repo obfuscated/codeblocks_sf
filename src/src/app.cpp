@@ -422,6 +422,7 @@ bool CodeBlocksApp::OnInit()
         InitDebugConsole();
 
         Manager::SetBatchBuild(m_Batch);
+        Manager::Get()->GetScriptingManager();
         MainFrame* frame = InitFrame();
 
         if (m_Batch)

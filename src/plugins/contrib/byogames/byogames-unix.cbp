@@ -37,6 +37,10 @@
 			<Add library="libcodeblocks.a" />
 			<Add directory="../../../devel" />
 		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ../../../devel/share/codeblocks/byogames.zip manifest.xml" />
+			<Mode after="always" />
+		</ExtraCommands>
 		<Unit filename="byocbtris.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
@@ -107,5 +111,6 @@
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

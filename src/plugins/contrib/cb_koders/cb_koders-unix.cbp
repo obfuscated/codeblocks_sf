@@ -9,7 +9,7 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../devel/share/CodeBlocks/plugins/cb_koders.dll" />
+				<Option output="../../../devel/share/codeblocks/plugins/libcb_koders.so" />
 				<Option object_output="../../../.objs/2.6/plugins/contrib/cb_koders" />
 				<Option deps_output="../../../.deps/2.6/plugins/contrib/cb_koders" />
 				<Option external_deps="../../../devel/libcodeblocks.a;../../../devel/libwxscintilla.a;" />
@@ -42,6 +42,9 @@
 			<Add library="libcodeblocks.a" />
 			<Add directory="../../../devel" />
 		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ../../../devel/share/codeblocks/cb_koders.zip manifest.xml" />
+		</ExtraCommands>
 		<Unit filename="cb_koders.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
@@ -62,5 +65,6 @@
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

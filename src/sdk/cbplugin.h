@@ -9,6 +9,7 @@
 #include "settings.h" // build settings
 #include "globals.h"
 #include "manager.h"
+#include "pluginmanager.h"
 
 #ifdef __WXMSW__
 	#ifndef PLUGIN_EXPORT
@@ -44,6 +45,7 @@ class ProjectBuildTarget;
 class CompileTargetBase;
 class FileTreeData;
 class cbConfigurationPanel;
+struct PluginInfo;
 
 // Define basic groups for plugins' configuration.
 static const int cgCompiler         = 0x01; ///< Compiler related.
@@ -52,20 +54,6 @@ static const int cgEditor           = 0x04; ///< Editor related.
 static const int cgCorePlugin       = 0x08; ///< One of the core plugins.
 static const int cgContribPlugin    = 0x10; ///< One of the contrib plugins (or any third-party plugin for that matter).
 static const int cgUnknown          = 0x20; ///< Unknown. This will be probably grouped with cgContribPlugin.
-
-/** Information about the plugin */
-struct PluginInfo
-{
-    wxString name;
-    wxString title;
-    wxString version;
-    wxString description;
-    wxString author;
-    wxString authorEmail;
-    wxString authorWebsite;
-    wxString thanksTo;
-    wxString license;
-};
 
 /** @brief Base class for plugins
   * This is the most basic class a plugin must descend
@@ -554,11 +542,6 @@ class PLUGIN_EXPORT cbWizardPlugin : public cbPlugin
         bool BuildToolBar(wxToolBar* toolBar){ return false; }
         void RemoveToolBar(wxToolBar* toolBar){}
 };
-
-// typedefs for plugins' function pointers
-typedef void(*PluginSDKVersionProc)(int*,int*,int*);
-typedef cbPlugin*(*CreatePluginProc)();
-typedef void(*FreePluginProc)(cbPlugin*);
 
 /** @brief Plugin registration object.
   *

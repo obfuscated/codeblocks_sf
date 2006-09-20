@@ -11,3 +11,7 @@ CLEANFILES = $(pkgdata_DATA)
 
 scriptedwizard.zip:
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/scriptedwizard.zip manifest.xml > /dev/null
+
+install-data-local: scriptedwizard.zip
+	if test -f $(srcdir)/scriptedwizard.zip; then p=$(srcdir)/scriptedwizard.zip; else p=scriptedwizard.zip; fi; \
+	$(INSTALL_DATA) $$p $(datadir)/@PACKAGE@/scriptedwizard.zip

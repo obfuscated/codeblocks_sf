@@ -1,20 +1,42 @@
 #ifndef PLUGINMANAGER_H
 #define PLUGINMANAGER_H
 
+#include <vector>
 #include <wx/dynarray.h>
 #include "settings.h"
 #include "manager.h"
-#include "cbplugin.h" // for FreePluginProc
 
 //forward decls
 struct PluginInfo;
 class cbPlugin;
+class cbMimePlugin;
 class cbConfigurationPanel;
+class cbProject;
 class wxDynamicLibrary;
 class wxMenuBar;
 class wxMenu;
 class CodeBlocksEvent;
 class TiXmlDocument;
+class FileTreeData;
+
+// typedefs for plugins' function pointers
+typedef void(*PluginSDKVersionProc)(int*,int*,int*);
+typedef cbPlugin*(*CreatePluginProc)();
+typedef void(*FreePluginProc)(cbPlugin*);
+
+/** Information about the plugin */
+struct PluginInfo
+{
+    wxString name;
+    wxString title;
+    wxString version;
+    wxString description;
+    wxString author;
+    wxString authorEmail;
+    wxString authorWebsite;
+    wxString thanksTo;
+    wxString license;
+};
 
 // struct with info about each pluing
 struct PluginElement

@@ -37,7 +37,7 @@
 			<Add directory="../../../devel" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ../../../devel/share/codeblocks/codestat.zip resources/*.xrc" />
+			<Add after="zip -j9 ../../../devel/share/codeblocks/codestat.zip resources/manifest.xml resources/*.xrc" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="codestat.cpp">
@@ -76,5 +76,6 @@
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

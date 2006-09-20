@@ -42,6 +42,10 @@
 		<Linker>
 			<Add option="`wx-config --libs`" />
 		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ../../../devel/share/codeblocks/keybinder.zip manifest.xml" />
+			<Mode after="always" />
+		</ExtraCommands>
 		<Unit filename="cbkeybinder.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
@@ -92,5 +96,6 @@
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />
 		</Unit>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

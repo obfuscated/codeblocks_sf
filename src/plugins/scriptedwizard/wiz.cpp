@@ -29,6 +29,7 @@
 #include <scriptingmanager.h>
 #include <compilerfactory.h>
 #include <compiler.h>
+#include <cbproject.h>
 #include <projectbuildtarget.h>
 #include <filefilters.h>
 #include <infowindow.h>

@@ -3,4 +3,5 @@ mkdir -p ../../../devel/share/codeblocks/images/codesnippets > /dev/null 2> /dev
 mkdir -p ../../../output/share/codeblocks/images/codesnippets > /dev/null 2> /dev/null
 cp ./resources/*.png ../../../devel/share/codeblocks/images/codesnippets/ > /dev/null 2> /dev/null
 cp ./resources/*.png ../../../output/share/codeblocks/images/codesnippets/ > /dev/null 2> /dev/null
+zip -j9 ../../../devel/share/codeblocks/codesnippets.zip resources/manifest.xml
 exit 0

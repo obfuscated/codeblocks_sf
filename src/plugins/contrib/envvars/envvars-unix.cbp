@@ -47,7 +47,7 @@
 			<Add directory="$(#CB.LIB)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ../../../devel/share/codeblocks/envvars.zip *.xrc" />
+			<Add after="zip -j9 ../../../devel/share/codeblocks/envvars.zip manifest.xml *.xrc" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="envvars.cpp">
@@ -66,5 +66,6 @@
 			<Option link="0" />
 			<Option target="default" />
 		</Unit>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

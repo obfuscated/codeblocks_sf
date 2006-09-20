@@ -9,13 +9,13 @@ INCLUDES = $(WX_CXXFLAGS) \
 
 libdir = $(pkgdatadir)/plugins
 
-lib_LTLIBRARIES = libdebuggergdb.la
+lib_LTLIBRARIES = libdebugger.la
 
-libdebuggergdb_la_LDFLAGS = `pkg-config --libs gtk+-2.0` -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libdebugger_la_LDFLAGS = `pkg-config --libs gtk+-2.0` -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libdebuggergdb_la_LIBADD = ../../sdk/libcodeblocks.la
+libdebugger_la_LIBADD = ../../sdk/libcodeblocks.la
 
-libdebuggergdb_la_SOURCES = backtracedlg.cpp \
+libdebugger_la_SOURCES = backtracedlg.cpp \
 			breakpointsdlg.cpp \
 			cdb_driver.cpp \
 			cpuregistersdlg.cpp \

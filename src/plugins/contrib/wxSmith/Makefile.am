@@ -116,7 +116,7 @@ CLEANFILES = $(pkgdata_DATA)
 wxsmith.zip:
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/wxsmith.zip manifest.xml *.xrc > /dev/null
 
-$(srcdir)/wxsheaders.h.gch: $(srcdir)/wxsheaders.h
+$(srcdir)/wxsheaders.h.gch: $(srcdir)/wxsheaders.h $(srcdir)/../../../sdk/sdk.h.gch
 	-rm -rf $(srcdir)/wxsheaders.h.gch
 	$(CXXCOMPILE) -o $(srcdir)/wxsheaders.h.gch -xc++-header $(srcdir)/wxsheaders.h
 
