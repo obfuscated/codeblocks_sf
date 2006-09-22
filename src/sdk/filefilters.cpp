@@ -151,6 +151,7 @@ const wxString FileFilters::XRCRESOURCE_EXT              = _T("xrc");
 const wxString FileFilters::STATICLIB_EXT                = _T("a");
 const wxString FileFilters::RESOURCE_EXT                 = _T("rc");
 const wxString FileFilters::RESOURCEBIN_EXT              = _T("res");
+const wxString FileFilters::XML_EXT                      = _T("xml");
 #ifdef __WXMSW__
     const wxString FileFilters::DYNAMICLIB_EXT           = _T("dll");
     const wxString FileFilters::EXECUTABLE_EXT           = _T("exe");
@@ -184,6 +185,7 @@ const wxString FileFilters::XRCRESOURCE_DOT_EXT              = _T('.') + FileFil
 const wxString FileFilters::STATICLIB_DOT_EXT                = _T('.') + FileFilters::STATICLIB_EXT;
 const wxString FileFilters::RESOURCE_DOT_EXT                 = _T('.') + FileFilters::RESOURCE_EXT;
 const wxString FileFilters::RESOURCEBIN_DOT_EXT              = _T('.') + FileFilters::RESOURCEBIN_EXT;
+const wxString FileFilters::XML_DOT_EXT                      = _T('.') + FileFilters::XML_EXT;
 #ifdef __WXMSW__
     const wxString FileFilters::DYNAMICLIB_DOT_EXT           = _T('.') + FileFilters::DYNAMICLIB_EXT;
     const wxString FileFilters::EXECUTABLE_DOT_EXT           = _T('.') + FileFilters::EXECUTABLE_EXT;

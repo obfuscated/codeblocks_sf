@@ -150,8 +150,12 @@ function GetGeneratedFile(file_index)
 {
     switch (file_index)
     {
+        // header file
         case 0: return PluginSettings.Name + DOT_EXT_H + _T(";") + GenerateHeader();
+        // source file
         case 1: return PluginSettings.Name + DOT_EXT_CPP + _T(";") + GenerateSource();
+        // manifest
+        case 2: return _T("manifest") + DOT_EXT_XML + _T(";") + GenerateManifest();
     }
     return _T(""); // no more generated files
 }
@@ -166,7 +170,7 @@ function SetupProject(project)
         SetupTarget(target, true);
     }
 
-    project.RenameBuildTarget(_T("Debug"), PluginSettings.Name);
+    project.RenameBuildTarget(_T("Debug"), _T("default"));
     project.RemoveBuildTarget(_T("Release"));
 
     return true;
@@ -176,6 +180,11 @@ function SetupTarget(target,is_debug)
 {
     if (IsNull(target))
         return false;
+
+    target.SetTargetType(ttDynamicLib);
+    target.SetOutputFilename(PluginSettings.Name);
+    target.SetCreateDefFile(false);
+    target.SetCreateStaticLib(false);
 
     if (PLATFORM == PLATFORM_MSW)
     {
@@ -204,6 +213,11 @@ function SetupTarget(target,is_debug)
 
         target.AddLibDir(_T("$(#cb)\\devel"));
         target.AddLibDir(_T("$(#wx.lib)\\gcc_dll"));
+        
+        target.AddCommandsAfterBuild(_T("cmd /c copy ") + target.GetOutputFilename() + _T(" $(#cb)\\devel\\share\\codeblocks\\plugins\\"));
+        target.AddCommandsAfterBuild(_T("zip -j9 $(#cb)\\devel\\share\\codeblocks\\") + PluginSettings.Name + _T(".zip manifest") + DOT_EXT_XML);
+        
+        target.SetHostApplication(_T("$(#cb)\\devel\\codeblocks") + DOT_EXT_EXE);
     }
     else
     {
@@ -212,15 +226,14 @@ function SetupTarget(target,is_debug)
 
         target.AddLinkerOption(_T("`pkg-config --libs codeblocks`"));
         target.AddLinkerOption(_T("`wx-config --libs`"));
+
+        // TODO: pkg-config flag for package data dir? (e.g. /usr/share/codeblocks)
+
+        target.SetHostApplication(_T("codeblocks") + DOT_EXT_EXE);
     }
 
     if (is_debug)
         DebugSymbolsOn(target, Wizard.GetCompilerID());
-
-    target.SetTargetType(ttDynamicLib);
-    target.SetOutputFilename(target.GetWorkingDir() + wxFILE_SEP_PATH + target.SuggestOutputFilename());
-    target.SetCreateDefFile(false);
-    target.SetCreateStaticLib(false);
 
     return true;
 }
@@ -263,6 +276,16 @@ function GenerateSource()
 }
 
 // -----------------------------------------------------------------------------
+// return the manifest contents string
+function GenerateManifest()
+{
+    local path = Wizard.FindTemplateFile(_T("plugins/templates/manifest_template.xml"));
+    local buffer = IO.ReadFileContents(path);
+
+    return SubstituteMacros(buffer);
+}
+
+// -----------------------------------------------------------------------------
 // return the template's filename, appending <dot_ext> as an extension (must include the dot)
 function GetTemplateFile(dot_ext)
 {
@@ -297,6 +320,9 @@ function SubstituteMacros(buffer)
                                                         PluginSettings.HasToolbar);
 
     // macros substitution
+    buffer.Replace(_T("[PLUGIN_SDK_VERSION_MAJOR]"), _T("") + PLUGIN_SDK_VERSION_MAJOR);
+    buffer.Replace(_T("[PLUGIN_SDK_VERSION_MINOR]"), _T("") + PLUGIN_SDK_VERSION_MINOR);
+    buffer.Replace(_T("[PLUGIN_SDK_VERSION_RELEASE]"), _T("") + PLUGIN_SDK_VERSION_RELEASE);
     buffer.Replace(_T("[PLUGIN_NAME]"), PluginSettings.Name);
     buffer.Replace(_T("[PLUGIN_TITLE]"), PluginSettings.Title);
     buffer.Replace(_T("[PLUGIN_VERSION]"), PluginSettings.Version);

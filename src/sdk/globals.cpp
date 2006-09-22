@@ -196,6 +196,9 @@ FileType FileTypeOf(const wxString& filename)
     else if (ext.IsSameAs(FileFilters::EXECUTABLE_EXT))
         return ftExecutable;
 
+    else if (ext.IsSameAs(FileFilters::XML_EXT))
+        return ftXMLDocument;
+
     return ftOther;
 }
 

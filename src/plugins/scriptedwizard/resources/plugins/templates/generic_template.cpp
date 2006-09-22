@@ -1,8 +1,14 @@
 #include <sdk.h> // Code::Blocks SDK
+#include <configurationpanel.h>
 #include "[HEADER_FILENAME]"
 
-// Implement the plugin's hooks
-CB_IMPLEMENT_PLUGIN([PLUGIN_NAME], "[PLUGIN_TITLE]");
+// Register the plugin with Code::Blocks.
+// We are using an anonymous namespace so we don't litter the global one.
+namespace
+{
+    PluginRegistrant<[PLUGIN_NAME]> reg(_T("[PLUGIN_NAME]"));
+}
+
 [IF NEED_EVENTS]
 // events handling
 BEGIN_EVENT_TABLE([PLUGIN_NAME], cbPlugin)
@@ -12,15 +18,13 @@ END_EVENT_TABLE()[ENDIF NEED_EVENTS]
 // constructor
 [PLUGIN_NAME]::[PLUGIN_NAME]()
 {
-	m_PluginInfo.name = _T("[PLUGIN_NAME]");
-	m_PluginInfo.title = _("[PLUGIN_TITLE]");
-	m_PluginInfo.version = _T("[PLUGIN_VERSION]");
-	m_PluginInfo.description = _("[PLUGIN_DESCRIPTION]");
-	m_PluginInfo.author = _T("[AUTHOR_NAME]");
-	m_PluginInfo.authorEmail = _T("[AUTHOR_EMAIL]");
-	m_PluginInfo.authorWebsite = _T("[AUTHOR_WWW]");
-	m_PluginInfo.thanksTo = _("[THANKS_TO]");
-	m_PluginInfo.license = LICENSE_GPL;
+    // Make sure our resources are available.
+    // In the generated boilerplate code we have no resources but when
+    // we add some, it will be nice that this code is in place already ;)
+    if(!Manager::LoadResource(_T("[PLUGIN_NAME].zip")))
+    {
+        NotifyMissingFile(_T("[PLUGIN_NAME].zip"));
+    }
 }
 
 // destructor

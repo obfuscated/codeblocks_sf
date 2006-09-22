@@ -54,6 +54,7 @@ enum FileType
 	ftStaticLib,
 	ftDynamicLib,
 	ftExecutable,
+	ftXMLDocument,
 	ftOther
 };
 
