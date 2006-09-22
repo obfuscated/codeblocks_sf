@@ -50,7 +50,10 @@
 // ---------------------------------------------------------------------------
 //  Logging / debugging
 // ---------------------------------------------------------------------------
-#define eq ==
+
+//----------------------------------------
+#define VERSION "0.29 2006/09/20"
+//----------------------------------------
 
 #if defined(dsLOGGING)
     #define LOGGING 1
@@ -177,17 +180,17 @@ private:
     int         m_Direction;
 
     bool KeyDown(wxMouseEvent& event)
-        { if ( 0 eq cbDragScroll::pDragScroll->GetMouseDragKey() )
+        { if ( 0 ==  cbDragScroll::pDragScroll->GetMouseDragKey() )
             return event.RightDown();
             return event.MiddleDown();
         }
     bool KeyIsDown(wxMouseEvent& event)
-        { if ( 0 eq cbDragScroll::pDragScroll->GetMouseDragKey() )
+        { if ( 0 ==  cbDragScroll::pDragScroll->GetMouseDragKey() )
             return event.RightIsDown();
             return event.MiddleIsDown();
         }
     bool KeyUp(wxMouseEvent& event)
-        { if ( 0 eq cbDragScroll::pDragScroll->GetMouseDragKey() )
+        { if ( 0 ==  cbDragScroll::pDragScroll->GetMouseDragKey() )
             return event.RightUp();
             return event.MiddleUp();
         }
@@ -343,6 +346,11 @@ private:
 // ----------------------------------------------------------------------------
 //  commit  v0.28 2006/09/11
 // ----------------------------------------------------------------------------
-
+//  Commit  v0.29 2006/09/22
+//          Edited manifest.xml requirement for codeblocks plugins
+//          Set displayed Menu About version dynamically.
+//          Removed all "eq". Conflicted with wxWidgest hash equates
+//          Added (__WXMAC__) to (_WXGTK_)defines to support mac.
+// ----------------------------------------------------------------------------
 #endif // DRAGSCROLL_H
 

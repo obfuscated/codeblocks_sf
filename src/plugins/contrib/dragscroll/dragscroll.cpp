@@ -44,9 +44,7 @@ cbDragScroll::cbDragScroll()
 	//ctor
 	// anchor to this one and only object
     pDragScroll = this;
-
 }
-
 // ----------------------------------------------------------------------------
 cbDragScroll::~cbDragScroll()
 // ----------------------------------------------------------------------------
@@ -71,11 +69,11 @@ void cbDragScroll::OnAttach()
     wxWindow* pcbWindow = Manager::Get()->GetAppWindow();
     m_pMS_Window = pcbWindow;
     #if LOGGING
-        /*wxLogWindow**/ pMyLog = new wxLogWindow(pcbWindow, m_PluginInfo.name, true, false);
+        /*wxLogWindow**/ pMyLog = new wxLogWindow(pcbWindow, wxT("DragScroll"), true, false);
         wxLog::SetActiveTarget(pMyLog);
         pMyLog->Flush();
         pMyLog->GetFrame()->Move(20,20);
-        wxLogMessage(_T("Logging cbDragScroll version %s"),m_PluginInfo.version.c_str());
+        wxLogMessage(_T("Logging cbDragScroll version %s"),wxString(wxT(VERSION)).c_str());
 	#endif
 
     // names of windows we're allowed to attach
@@ -140,6 +138,10 @@ void cbDragScroll::OnAttach()
     Connect( wxEVT_DESTROY,
 	(wxObjectEventFunction) (wxEventFunction)
 	(wxCommandEventFunction) &cbDragScroll::OnWindowClose);
+
+    // Set current plugin version
+	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
+	pInfo->version = wxT(VERSION);
 
 	return ;
 }
@@ -275,7 +277,7 @@ void cbDragScroll::Attach(wxWindow *p)
 
     // memorize "Search Results" Window address
     // We're assuming it's the first listcrl window found
-    if ( (not m_pSearchResultsWindow) && (windowName eq wxT("listctrl")) )
+    if ( (not m_pSearchResultsWindow) && (windowName ==  wxT("listctrl")) )
     {   m_pSearchResultsWindow = p;
         #ifdef LOGGING
          LOGIT(wxT("SearchResultsWindow: %p"),p );
@@ -520,7 +522,7 @@ void cbDragScroll::OnWindowOpen(wxEvent& event)
         ed  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
         if (ed)
         {
-            if (pWindow->GetParent() eq ed)
+            if (pWindow->GetParent() ==  ed)
             {   Attach(pWindow);
                 #ifdef LOGGING
                     LOGIT( _T("OnWindowOpen Attached:%p name: %s"),
@@ -584,7 +586,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
     if (::wxGetActiveWindow() != pDS->m_pMS_Window)
         {event.Skip(); return;}
     // For efficiency, skip wheel events right now
-    if ( event.GetEventType() eq wxEVT_MOUSEWHEEL)
+    if ( event.GetEventType() ==  wxEVT_MOUSEWHEEL)
         { event.Skip(); return; }
 
     cbEditor* ed = 0;
@@ -601,17 +603,17 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
     // if (m_pEvtObject) ((wxWindow*)m_pEvtObject)->SetFocus();
 
     // set focus to editor window if mouse is in it
-    if (event.GetEventType() eq wxEVT_ENTER_WINDOW)
+    if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)
     {
          //LOGIT( _T("EVT_ENTER_WINDOW:%p Styled:%p LeftSplit:%p RightSplit:%p"), m_pEvtObject, p_cbStyledTextCtrl, pLeftSplitWin, pRightSplitWin );
         if (pDS->GetMouseEditorFocusEnabled() )
-        {  if (p_cbStyledTextCtrl && (m_pEvtObject eq pLeftSplitWin))
+        {  if (p_cbStyledTextCtrl && (m_pEvtObject ==  pLeftSplitWin))
            {    pLeftSplitWin->SetFocus();
                 #ifdef LOGGING
                  //LOGIT( _T("OnMouseEvent:SetFocus %p"), pLeftSplitWin );
                 #endif //LOGGING
            }
-           if (pRightSplitWin && (m_pEvtObject eq pRightSplitWin))
+           if (pRightSplitWin && (m_pEvtObject ==  pRightSplitWin))
            {    pRightSplitWin->SetFocus();
                 #ifdef LOGGING
                  //LOGIT( _T("OnMouseEvent:SetFocus %p"), pRightSplitWin );
@@ -757,7 +759,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
 // ----------------------------------------------------------------------------
 //      MOUSE SCROLLING __WXGTK__
 // ----------------------------------------------------------------------------
-#ifdef __WXGTK__
+#if defined(__WXGTK__) || defined(__WXMAC__)
 void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
 {
 
