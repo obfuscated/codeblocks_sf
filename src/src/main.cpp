@@ -173,6 +173,30 @@ int idEditEncodingUnicode16BE = XRCID("idEditEncodingUnicode16BE");
 int idEditEncodingUnicode16LE = XRCID("idEditEncodingUnicode16LE");
 int idEditEncodingUnicode32BE = XRCID("idEditEncodingUnicode32BE");
 int idEditEncodingUnicode32LE = XRCID("idEditEncodingUnicode32LE");
+int idEditSpecialCommands = XRCID("idEditSpecialCommands");
+int idEditSpecialCommandsMovement = XRCID("idEditSpecialCommandsMovement");
+int idEditParaUp = XRCID("idEditParaUp");
+int idEditParaUpExtend = XRCID("idEditParaUpExtend");
+int idEditParaDown = XRCID("idEditParaDown");
+int idEditParaDownExtend = XRCID("idEditParaDownExtend");
+int idEditWordPartLeft = XRCID("idEditWordPartLeft");
+int idEditWordPartLeftExtend = XRCID("idEditWordPartLeftExtend");
+int idEditWordPartRight = XRCID("idEditWordPartRight");
+int idEditWordPartRightExtend = XRCID("idEditWordPartRightExtend");
+int idEditSpecialCommandsZoom = XRCID("idEditSpecialCommandsZoom");
+int idEditZoomIn = XRCID("idEditZoomIn");
+int idEditZoomOut = XRCID("idEditZoomOut");
+int idEditZoomReset = XRCID("idEditZoomReset");
+int idEditSpecialCommandsLine = XRCID("idEditSpecialCommandsLine");
+int idEditLineCut = XRCID("idEditLineCut");
+int idEditLineDelete = XRCID("idEditLineDelete");
+int idEditLineDuplicate = XRCID("idEditLineDuplicate");
+int idEditLineTranspose = XRCID("idEditLineTranspose");
+int idEditLineCopy = XRCID("idEditLineCopy");
+int idEditLinePaste = XRCID("idEditLinePaste");
+int idEditSpecialCommandsCase = XRCID("idEditSpecialCommandsCase");
+int idEditUpperCase = XRCID("idEditUpperCase");
+int idEditLowerCase = XRCID("idEditLowerCase");
 int idEditSelectAll = XRCID("idEditSelectAll");
 int idEditCommentSelected = XRCID("idEditCommentSelected");
 int idEditUncommentSelected = XRCID("idEditUncommentSelected");
@@ -351,6 +375,25 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditEncodingUnicode16LE,  MainFrame::OnEditEncoding)
     EVT_MENU(idEditEncodingUnicode32BE,  MainFrame::OnEditEncoding)
     EVT_MENU(idEditEncodingUnicode32LE,  MainFrame::OnEditEncoding)
+    EVT_MENU(idEditParaUp,  MainFrame::OnEditParaUp)
+    EVT_MENU(idEditParaUpExtend,  MainFrame::OnEditParaUpExtend)
+    EVT_MENU(idEditParaDown,  MainFrame::OnEditParaDown)
+    EVT_MENU(idEditParaDownExtend,  MainFrame::OnEditParaDownExtend)
+    EVT_MENU(idEditWordPartLeft,  MainFrame::OnEditWordPartLeft)
+    EVT_MENU(idEditWordPartLeftExtend,  MainFrame::OnEditWordPartLeftExtend)
+    EVT_MENU(idEditWordPartRight,  MainFrame::OnEditWordPartRight)
+    EVT_MENU(idEditWordPartRightExtend,  MainFrame::OnEditWordPartRightExtend)
+    EVT_MENU(idEditZoomIn,  MainFrame::OnEditZoomIn)
+    EVT_MENU(idEditZoomOut,  MainFrame::OnEditZoomOut)
+    EVT_MENU(idEditZoomReset,  MainFrame::OnEditZoomReset)
+    EVT_MENU(idEditLineCut,  MainFrame::OnEditLineCut)
+    EVT_MENU(idEditLineDelete,  MainFrame::OnEditLineDelete)
+    EVT_MENU(idEditLineDuplicate,  MainFrame::OnEditLineDuplicate)
+    EVT_MENU(idEditLineTranspose,  MainFrame::OnEditLineTranspose)
+    EVT_MENU(idEditLineCopy,  MainFrame::OnEditLineCopy)
+    EVT_MENU(idEditLinePaste,  MainFrame::OnEditLinePaste)
+    EVT_MENU(idEditUpperCase,  MainFrame::OnEditUpperCase)
+    EVT_MENU(idEditLowerCase,  MainFrame::OnEditLowerCase)
     EVT_MENU(idEditSelectAll,  MainFrame::OnEditSelectAll)
     EVT_MENU(idEditBookmarksToggle,  MainFrame::OnEditBookmarksToggle)
     EVT_MENU(idEditBookmarksNext,  MainFrame::OnEditBookmarksNext)
@@ -2310,6 +2353,168 @@ void MainFrame::OnEditPaste(wxCommandEvent& event)
         ed->Paste();
 }
 
+void MainFrame::OnEditParaUp(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        ed->GetControl()->ParaUp();
+    }
+}
+
+void MainFrame::OnEditParaUpExtend(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        ed->GetControl()->ParaUpExtend();
+    }
+}
+
+void MainFrame::OnEditParaDown(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        ed->GetControl()->ParaDown();
+    }
+}
+
+void MainFrame::OnEditParaDownExtend(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        ed->GetControl()->ParaDownExtend();
+    }
+}
+
+void MainFrame::OnEditWordPartLeft(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        ed->GetControl()->WordPartLeft();
+    }
+}
+
+void MainFrame::OnEditWordPartLeftExtend(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        ed->GetControl()->WordPartLeftExtend();
+    }
+}
+
+void MainFrame::OnEditWordPartRight(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        ed->GetControl()->WordPartRight();
+    }
+}
+
+void MainFrame::OnEditWordPartRightExtend(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        ed->GetControl()->WordPartRightExtend();
+    }
+}
+
+void MainFrame::OnEditZoomIn(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+        ed->GetControl()->ZoomIn();
+}
+
+void MainFrame::OnEditZoomOut(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+        ed->GetControl()->ZoomOut();
+}
+
+void MainFrame::OnEditZoomReset(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+        ed->GetControl()->SetZoom(0);
+}
+
+void MainFrame::OnEditLineCut(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+        ed->GetControl()->LineCut();
+}
+
+void MainFrame::OnEditLineDelete(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+        ed->GetControl()->LineDelete();
+}
+
+void MainFrame::OnEditLineDuplicate(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+        ed->GetControl()->LineDuplicate();
+}
+
+void MainFrame::OnEditLineTranspose(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+        ed->GetControl()->LineTranspose();
+}
+
+void MainFrame::OnEditLineCopy(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+        ed->GetControl()->LineCopy();
+}
+
+void MainFrame::OnEditLinePaste(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        //We want to undo all in one step
+        ed->GetControl()->BeginUndoAction();
+        
+        int pos = ed->GetControl()->GetCurrentPos();
+        int line = ed->GetControl()->LineFromPosition(pos);
+        ed->GetControl()->GotoLine(line);
+        int column = pos - ed->GetControl()->GetCurrentPos();
+        ed->GetControl()->Paste();
+        pos = ed->GetControl()->GetCurrentPos();
+        ed->GetControl()->GotoPos(pos+column);
+        
+        ed->GetControl()->EndUndoAction();
+    }
+}
+
+void MainFrame::OnEditUpperCase(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+        ed->GetControl()->UpperCase();
+}
+
+void MainFrame::OnEditLowerCase(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+        ed->GetControl()->LowerCase();
+}
+
 void MainFrame::OnEditSelectAll(wxCommandEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -2821,6 +3026,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditFolding, ed);
     mbar->Enable(idEditEOLMode, ed);
     mbar->Enable(idEditEncoding, ed);
+    mbar->Enable(idEditSpecialCommands, ed);
     mbar->Enable(idEditCommentSelected, ed);
     mbar->Enable(idEditAutoComplete, ed);
     mbar->Enable(idEditUncommentSelected, ed);

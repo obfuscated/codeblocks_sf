@@ -349,6 +349,99 @@
           <checkable>1</checkable>
         </object>
       </object>
+      <object class="wxMenu" name="idEditSpecialCommands">
+        <label>Special commands</label>
+        <help>Commands to edit more efficiently, should be bound to hotkeys</help>
+        <object class="wxMenu" name="idEditSpecialCommandsMovement">
+          <label>Movement</label>
+          <object class="wxMenuItem" name="idEditParaUp">
+            <label>Paragraph up</label>
+            <help>Move caret one paragraph up</help>
+          </object>
+          <object class="wxMenuItem" name="idEditParaUpExtend">
+            <label>Paragraph up, extending selection</label>
+            <help>Move caret one paragraph up and extend the selection</help>
+          </object>
+          <object class="wxMenuItem" name="idEditParaDown">
+            <label>Paragraph down</label>
+            <help>Move caret one paragraph down</help>
+          </object>
+          <object class="wxMenuItem" name="idEditParaDownExtend">
+            <label>Paragraph down, extending selection</label>
+            <help>Move caret one paragraph down while extend the selection</help>
+          </object>
+          <object class="separator"/>
+          <object class="wxMenuItem" name="idEditWordPartLeft">
+            <label>Wordpart left</label>
+            <help>Move caret one wordpart to the left</help>
+          </object>
+          <object class="wxMenuItem" name="idEditWordPartLeftExtend">
+            <label>Wordpart left, extending selection</label>
+            <help>Move caret one wordpart to the left and extend the selection</help>
+          </object>
+          <object class="wxMenuItem" name="idEditWordPartRight">
+            <label>Wordpart right</label>
+            <help>Move caret one wordpart to the right</help>
+          </object>
+          <object class="wxMenuItem" name="idEditWordPartRightExtend">
+            <label>Wordpart right, extending selection</label>
+            <help>Move caret one wordpart to the right and extend the selection</help>
+          </object>
+        </object>
+        <object class="wxMenu" name="idEditSpecialCommandsZoom">
+          <label>Zoom</label>
+          <object class="wxMenuItem" name="idEditZoomIn">
+            <label>In</label>
+            <help>Increase font size</help>
+          </object>
+          <object class="wxMenuItem" name="idEditZoomOut">
+            <label>Out</label>
+            <help>Decrease font size</help>
+          </object>
+          <object class="wxMenuItem" name="idEditZoomReset">
+            <label>Reset</label>
+            <help>Set default font size</help>
+          </object>
+        </object>
+        <object class="wxMenu" name="idEditSpecialCommandsLine">
+          <label>Line</label>
+          <object class="wxMenuItem" name="idEditLineDuplicate">
+            <label>Duplicate</label>
+            <help>Duplicate current line</help>
+          </object>
+          <object class="wxMenuItem" name="idEditLineCut">
+            <label>Cut</label>
+            <help>Cut current line</help>
+          </object>
+          <object class="wxMenuItem" name="idEditLineDelete">
+            <label>Delete</label>
+            <help>Delete current line</help>
+          </object>
+          <object class="wxMenuItem" name="idEditLineTranspose">
+            <label>Transpose</label>
+            <help>Transpose current line with previous line</help>
+          </object>
+          <object class="wxMenuItem" name="idEditLineCopy">
+            <label>Copy</label>
+            <help>Copy current line</help>
+          </object>
+          <object class="wxMenuItem" name="idEditLinePaste">
+            <label>Paste</label>
+            <help>Paste before current line</help>
+          </object>
+        </object>
+        <object class="wxMenu" name="idEditSpecialCommandsCase">
+          <label>Case</label>
+          <object class="wxMenuItem" name="idEditUpperCase">
+            <label>Uppercase</label>
+            <help>Make selection uppercase</help>
+          </object>
+          <object class="wxMenuItem" name="idEditLowerCase">
+            <label>Lowercase</label>
+            <help>Make selection lowercase</help>
+          </object>
+        </object>
+      </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idEditSelectAll">
         <label>Select &amp;all</label>
