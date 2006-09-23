@@ -764,7 +764,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
 {
 
     // For efficiency, skip wheel events now
-    if ( event.GetEventType() eq wxEVT_MOUSEWHEEL)
+    if ( event.GetEventType() ==  wxEVT_MOUSEWHEEL)
         { event.Skip(); return; }
 
     //remember window pointer
@@ -781,7 +781,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
      if (ed) p_cbStyledTextCtrl = ed->GetControl();
 
      // set focus to editor window if mouse is in it
-    if (event.GetEventType() eq wxEVT_ENTER_WINDOW)
+    if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)
         if (pDS->GetMouseEditorFocusEnabled() )
            if (p_cbStyledTextCtrl && (m_pEvtObject == p_cbStyledTextCtrl))
                 p_cbStyledTextCtrl->SetFocus();
@@ -826,7 +826,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
         scrolly = abs(mouseXY.y - m_InitY) ;
 
         // capture middle mouse key for immediate dragging
-        if ( (GetUserDragKey() eq wxMOUSE_BTN_MIDDLE ) && event.MiddleIsDown() )
+        if ( (GetUserDragKey() ==  wxMOUSE_BTN_MIDDLE ) && event.MiddleIsDown() )
         {   m_DragMode = DRAG_START;
             return;
         }
