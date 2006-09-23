@@ -134,6 +134,7 @@ ALLHEADERS = annoyingdialog.h \
 				cbthreadedtask.h \
 				cbthreadpool.h \
 				cbthreadpool_extras.h \
+				cbtool.h \
 				cbworkspace.h \
 				compileoptionsbase.h \
 				compiler.h \

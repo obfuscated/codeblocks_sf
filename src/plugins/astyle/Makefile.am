@@ -34,5 +34,5 @@ EXTRA_DIST = astyle/astyle.html \
 			astyle/astyle_main.cpp \
 			astyle/astyle_release_notes.html \
       astyle/astyleX.html \
-			astyle/INSTALL.TXT \
+			astyle/install.txt \
 			astyle/license.html
