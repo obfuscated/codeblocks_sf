@@ -42,6 +42,9 @@
 #include "wx/utils.h"
 #include <wx/intl.h>
 
+// --Version--------------------------
+#define VERSION "0.4.26 2006/09/23"
+// -----------------------------------
 class MyDialog;
 
 // ----------------------------------------------------------------------------
@@ -536,11 +539,15 @@ private:
 //          shortcut changes are recorded only on "idle" entries, but no shorter than
 //          15 second intervals.
 // -----------------------------------------------------------------------------
-//  commit   v0.4.25d
+//  commit   v0.4.25d 2006/09/20
 //          - recording dynamically changed menu items
 //          - Get menu shortcuts via wxAcceratorEntry
 //          - Add file name to corrupted file message
 //          - Non Destructive update of menu items
 //          - backup of .ini file before delete/save
+// -----------------------------------------------------------------------------
+//  Commit  v0.4.26 2006/09/23
+//          - minor #defines for WXMAC
+//          - stop OnProfileSelected() from saving blank keyProfile
 // -----------------------------------------------------------------------------
 //

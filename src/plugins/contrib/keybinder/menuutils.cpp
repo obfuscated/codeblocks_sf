@@ -63,7 +63,7 @@ int wxFindMenuItem(wxMenuBar *p, const wxString &str)
 // wxMenuCmd
 // ----------------------------------------------------------------------------
 
-#ifdef __WXGTK__
+#if defined( __WXGTK__) || defined(__WXMAC__)
 // ----------------------------------------------------------------------------
 void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
 // ----------------------------------------------------------------------------

@@ -1,8 +1,8 @@
 /***************************************************************
  * Name:      cbkeybinder.cpp
  * Purpose:   Code::Blocks plugin
- * Author:    Pecan @ Mispent Intent
- * Copyright: (c) Pecan @ Mispent Intent
+ * Author:    Pecan
+ * Copyright: (c) Pecan Heber etal.
  * License:   GPL
  **************************************************************/
 //
@@ -89,7 +89,7 @@ void cbKeyBinder::OnAttach()
         //  wxLogWindow* pMyLog;
         // #define LOGIT wxLogMessage
         /* wxLogWindow* */
-        pMyLog = new wxLogWindow(pcbWindow,m_PluginInfo.name,true,false);
+        pMyLog = new wxLogWindow(pcbWindow,wxT("KeyBinder"),true,false);
         wxLog::SetActiveTarget(pMyLog);
         LOGIT(_T("keybinder log open"));
         pMyLog->Flush();
@@ -118,6 +118,10 @@ void cbKeyBinder::OnAttach()
 
     //block any dynamic update attempts
 	m_mergeActive = 0;
+
+    // Set current plugin version
+	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
+	pInfo->version = wxT(VERSION);
 
 	return;
 
@@ -931,11 +935,11 @@ void cbKeyBinder::OnWindowCreateEvent(wxEvent& event)
             pRightSplitWin = ed->GetRightSplitViewControl();
             //Has this window been split?
             //**This is a temporary hack until some cbEvents are defined**
-            if ( pWindow && (pRightSplitWin EQUAL 0) )
+            if ( pWindow && (pRightSplitWin == 0) )
             {
                 //-if (pRightSplitWin eq pWindow)
                 //-{    Attach(pRightSplitWin);
-                if (pWindow->GetParent() EQUAL ed)
+                if (pWindow->GetParent() == ed)
                 {    AttachEditor(pWindow);
                     LOGIT( _T("OnWindowCreateEvent Attaching:%p"), pWindow );
                 }
