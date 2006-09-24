@@ -12,7 +12,6 @@
 
 #include "dragscroll.h"
 #include "dragscrollcfg.h"
-#include <licenses.h> // defines some common licenses (like the GPL)
 #include <wx/utils.h>
 #include <wx/event.h>
 #include <wx/generic/splitter.h>

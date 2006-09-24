@@ -20,7 +20,6 @@
   #include <wx/xrc/xmlres.h>
   #include "configmanager.h"
   #include "globals.h"
-  #include "licenses.h"
   #include "manager.h"
 #endif
 #include "editpairdlg.h"

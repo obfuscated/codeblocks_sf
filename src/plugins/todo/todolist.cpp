@@ -19,7 +19,6 @@
 #include "cbeditor.h"
 #include "configmanager.h"
 #include "editormanager.h"
-#include "licenses.h"
 #include "manager.h"
 //#include "messagemanager.h"
 #include "sdk_events.h"

@@ -5,8 +5,6 @@
 #include "resources/wxswindowres.h"
 #include "wxsextresmanager.h"
 
-#include <licenses.h>
-
 wxSmithMime::wxSmithMime()
 {
 }

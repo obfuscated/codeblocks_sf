@@ -33,7 +33,6 @@
 #include <projectbuildtarget.h>
 #include <filefilters.h>
 #include <infowindow.h>
-#include <licenses.h> // defines some common licenses (like the GPL)
 
 #include <scripting/bindings/sc_base_types.h>
 

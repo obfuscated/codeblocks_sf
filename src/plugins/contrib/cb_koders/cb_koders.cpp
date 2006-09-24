@@ -4,7 +4,6 @@
   #include <wx/string.h>
   #include <wx/utils.h> // wxLaunchDefaultBrowser
   #include "globals.h"
-  #include "licenses.h"
   #include "manager.h"
   #include "editormanager.h"
   #include "cbeditor.h"

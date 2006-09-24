@@ -19,7 +19,6 @@
     #include "cbproject.h"
     #include "configmanager.h"
     #include "globals.h"
-    #include "licenses.h" // defines some common licenses (like the GPL)
     #include "macrosmanager.h"
     #include "manager.h"
     #include "messagemanager.h"

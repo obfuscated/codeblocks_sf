@@ -43,7 +43,6 @@
 #include <sdk_events.h>
 #include <editarraystringdlg.h>
 #include <compilerfactory.h>
-#include <licenses.h>
 #include <xtra_res.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>

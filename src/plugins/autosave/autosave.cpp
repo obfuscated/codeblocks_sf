@@ -24,7 +24,6 @@
     #include "configmanager.h"
     #include "editormanager.h"
     #include "globals.h"
-    #include "licenses.h"
     #include "pluginmanager.h"
     #include "projectmanager.h"
     #include "manager.h"

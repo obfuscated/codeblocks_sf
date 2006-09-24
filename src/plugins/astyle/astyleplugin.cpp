@@ -11,7 +11,6 @@
 
 #include "astyleplugin.h"
 #include <cbexception.h>
-#include <licenses.h>
 #include "astyleconfigdlg.h"
 #include <sstream>
 #include <string>

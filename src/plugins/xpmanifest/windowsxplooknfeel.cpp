@@ -33,7 +33,6 @@
 #include <wx/string.h>
 #include "cbproject.h"
 #include "globals.h"
-#include "licenses.h"
 #include "manager.h"
 #include "messagemanager.h"
 #include "projectbuildtarget.h"

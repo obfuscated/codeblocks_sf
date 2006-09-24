@@ -17,7 +17,6 @@
 #include "cbeditor.h"
 #include "configmanager.h"
 #include "editormanager.h"
-#include "licenses.h" // defines some common licenses (like the GPL)
 #include "manager.h"
 #endif
 #include <wx/choicdlg.h>

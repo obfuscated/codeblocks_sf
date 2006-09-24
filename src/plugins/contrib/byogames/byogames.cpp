@@ -13,7 +13,6 @@
 #ifndef CB_PRECOMP
 #include <wx/intl.h>
 #include <wx/string.h>
-#include "licenses.h"
 #endif
 #include "byogames.h"
 #include "byogame.h"

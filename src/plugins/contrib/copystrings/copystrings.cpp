@@ -14,7 +14,6 @@
 #include "editormanager.h"
 #include "pluginmanager.h"
 #include "globals.h"
-#include "licenses.h" // defines some common licenses (like the GPL)
 #include "manager.h"
 #endif
 #include <wx/clipbrd.h>

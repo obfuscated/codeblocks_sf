@@ -25,7 +25,6 @@
 	#include <wx/menu.h>
 	#include <wx/menuitem.h>
 	#include <wx/string.h>
-	#include "licenses.h"
 	#include "manager.h"
 	#include "sdk_events.h"
 #endif

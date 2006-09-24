@@ -8,7 +8,6 @@
  **************************************************************/
 
 #include "wxsheaders.h"
-#include <licenses.h>
 #include <manager.h>
 #include <tinyxml/tinyxml.h>
 #include <messagemanager.h>

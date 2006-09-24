@@ -2,7 +2,6 @@
 #include "wxsmithwizard.h"
 #include "wxswizard.h"
 #include <configmanager.h>
-#include <licenses.h>
 
 wxSmithWizard::wxSmithWizard()
 {

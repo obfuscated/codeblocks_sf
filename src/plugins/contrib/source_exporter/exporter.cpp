@@ -14,7 +14,6 @@
 #include <editorcolourset.h>
 #include <messagemanager.h>
 #include <cbexception.h>
-#include <licenses.h> // defines some common licenses (like the GPL)
 #include "HTMLExporter.h"
 #include "RTFExporter.h"
 #include "ODTExporter.h"

@@ -14,7 +14,6 @@
 #include <wx/xrc/xmlres.h>
 #include "cbproject.h"
 #include "configmanager.h"
-#include "licenses.h" // defines some common licenses (like the GPL)
 #include "manager.h"
 #include "messagemanager.h"
 #include "projectmanager.h"

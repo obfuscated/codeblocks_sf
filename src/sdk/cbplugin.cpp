@@ -33,7 +33,6 @@
     #include "compiler.h" // GetSwitches
     #include "sdk_events.h"
     #include "manager.h"
-    #include "licenses.h" // license macros
     #include "projectbuildtarget.h"
     #include "cbproject.h"
     #include "messagemanager.h"

@@ -10,7 +10,6 @@
 #include "devpakupdater.h"
 #include "updatedlg.h"
 #include "conf.h"
-#include <licenses.h> // defines some common licenses (like the GPL)
 #include <manager.h>
 #include <configmanager.h>
 #include <compilerfactory.h>
