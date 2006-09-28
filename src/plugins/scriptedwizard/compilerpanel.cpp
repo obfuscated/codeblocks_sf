@@ -1,3 +1,9 @@
+#include "sdk.h"
+#ifndef CB_PRECOMP
+#include <wx/event.h>
+#include <wx/intl.h>
+#include "globals.h"
+#endif
 #include "compilerpanel.h"
 
 BEGIN_EVENT_TABLE(CompilerPanel,wxPanel)
@@ -20,7 +26,7 @@ CompilerPanel::CompilerPanel(wxWindow* parent,wxWindowID id)
 	wxFlexGridSizer* FlexGridSizer2;
 	wxStaticText* StaticText7;
 	wxStaticText* StaticText8;
-	
+
 	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T(""));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Please select the compiler to use and which configurations\nyou want enabled in your project."),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT1"));
