@@ -54,20 +54,37 @@ void DefaultMimeHandler::OnAttach()
     wxArrayString list = conf->EnumerateKeys(_T("/"));
     for (unsigned int i = 0; i < list.GetCount(); ++i)
     {
-        wxArrayString array = GetArrayFromString(conf->Read(list[i]));
-        if (array.GetCount() == 3 || array.GetCount() == 4)
+        wxArrayString array = GetArrayFromString(conf->Read(list[i]), _T(";"), false);
+        if (array.GetCount() < 3)
+            continue;
+        
+        cbMimeType* mt = new cbMimeType;
+
+        // older formats:
+        // array.GetCount() == 3 or 4 (3 no ext. program, 4 yes)
+        bool isOld = array.GetCount() == 3 || array.GetCount() == 4;
+        if (isOld)
         {
-            cbMimeType* mt = new cbMimeType;
             mt->useEditor = array[0] == _T("true");
+            mt->useAssoc = false;
             mt->programIsModal = array[1] == _T("true");
             mt->wildcard = array[2];
             mt->program = array.GetCount() == 4 ? array[3] : _T("");
-
-            if (!mt->useEditor && mt->program.IsEmpty())
-                delete mt;
-            else
-                m_MimeTypes.Add(mt);
         }
+        else
+        {
+            mt->useEditor = array[0] == _T("true");
+            mt->useAssoc = array[1] == _T("true");
+            mt->programIsModal = array[2] == _T("true");
+            mt->wildcard = array[3];
+            mt->program = array.GetCount() == 5 ? array[4] : _T("");
+        }
+        mt->program.Trim();
+
+        if (!mt->useEditor && !mt->useAssoc && mt->program.IsEmpty())
+            delete mt;
+        else
+            m_MimeTypes.Add(mt);
     }
 }
 
@@ -86,9 +103,10 @@ void DefaultMimeHandler::OnRelease(bool appShutDown)
         cbMimeType* mt = m_MimeTypes[i];
         wxString txt;
         txt << (mt->useEditor ? _T("true") : _T("false")) << _T(";");
+        txt << (mt->useAssoc ? _T("true") : _T("false")) << _T(";");
         txt << (mt->programIsModal ? _T("true") : _T("false")) << _T(";");
         txt << mt->wildcard << _T(";");
-        txt << mt->program;
+        txt << mt->program << _T(' ');
         wxString key;
         key.Printf(_T("MimeType%d"), i);
         conf->Write(key, txt);
@@ -127,9 +145,10 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
     else
     {
         // not yet supported. ask the user how to open it.
-        wxString choices[2] = {_("Select an external program to open it."),
-                               _("Open it inside the Code::Blocks editor.")};
-        wxSingleChoiceDialog dlg(0,
+        wxString choices[3] = {_("Select an external program to open it"),
+                               _("Open it with the associated application (windows only)"),
+                               _("Open it inside the Code::Blocks editor")};
+        wxSingleChoiceDialog dlg(Manager::Get()->GetAppWindow(),
                                 _("Code::Blocks does not yet know how to open this kind of file.\n"
                                   "Please select what you want to do with it:"),
                                 _("What to do?"),
@@ -155,6 +174,7 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
                         mt = new cbMimeType;
                         mt->wildcard = wild;
                         mt->useEditor = false;
+                        mt->useAssoc = false;
                         mt->program = prg;
                         mt->programIsModal = cbMessageBox(_("Do you want Code::Blocks to be disabled while the external program is running?"), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES;
                         m_MimeTypes.Add(mt);
@@ -162,11 +182,20 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
                     }
                     break;
                 }
-                case 1: // open in editor
+                case 1: // open with associated app
+                    mt = new cbMimeType;
+                    mt->wildcard = wild;
+                    mt->useEditor = false;
+                    mt->useAssoc = true;
+                    m_MimeTypes.Add(mt);
+                    return DoOpenFile(mt, filename);
+                    break;
+                case 2: // open in editor
                 {
                     mt = new cbMimeType;
                     mt->wildcard = wild;
                     mt->useEditor = true;
+                    mt->useAssoc = false;
                     m_MimeTypes.Add(mt);
                     return DoOpenFile(mt, filename);
                     break;
@@ -229,6 +258,14 @@ int DefaultMimeHandler::DoOpenFile(cbMimeType* mt, const wxString& filename)
             ed->Show(true);
             return 0;
         }
+    }
+    else if (mt->useAssoc)
+    {
+        // easy too. use associated app
+        #ifdef __WXMSW__
+        ShellExecute(0, wxString(_T("open")).c_str(), filename.c_str(), 0, 0, SW_SHOW);
+        #endif
+        return 0;
     }
     else
     {

@@ -59,6 +59,7 @@
                   <label>To open the file</label>
                   <content>
                     <item>launch an external program</item>
+                    <item>open it with the associated application (windows only)</item>
                     <item>open it inside Code::Blocks editor</item>
                   </content>
                   <dimension>1</dimension>

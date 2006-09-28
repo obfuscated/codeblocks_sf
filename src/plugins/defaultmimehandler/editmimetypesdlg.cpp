@@ -65,7 +65,8 @@ void EditMimeTypesDlg::Save(int index)
         return;
     cbMimeType* mt = m_Array[index];
     mt->wildcard = XRCCTRL(*this, "txtWild", wxTextCtrl)->GetValue().Lower();
-    mt->useEditor = XRCCTRL(*this, "rbOpen", wxRadioBox)->GetSelection() == 1;
+    mt->useEditor = XRCCTRL(*this, "rbOpen", wxRadioBox)->GetSelection() == 2;
+    mt->useAssoc = XRCCTRL(*this, "rbOpen", wxRadioBox)->GetSelection() == 1;
     mt->program = XRCCTRL(*this, "txtProgram", wxTextCtrl)->GetValue();
     mt->programIsModal = XRCCTRL(*this, "chkModal", wxCheckBox)->GetValue();
     // update list, in case the wildcard has changed
@@ -93,15 +94,15 @@ void EditMimeTypesDlg::UpdateDisplay()
 
     cbMimeType* mt = m_Array[m_Selection];
     XRCCTRL(*this, "txtWild", wxTextCtrl)->SetValue(mt->wildcard);
-    XRCCTRL(*this, "rbOpen", wxRadioBox)->SetSelection(mt->useEditor ? 1 : 0);
+    XRCCTRL(*this, "rbOpen", wxRadioBox)->SetSelection(mt->useEditor ? 2 : (mt->useAssoc ? 1 : 0));
     XRCCTRL(*this, "txtProgram", wxTextCtrl)->SetValue(mt->program);
     XRCCTRL(*this, "chkModal", wxCheckBox)->SetValue(mt->programIsModal);
 
     XRCCTRL(*this, "txtWild", wxTextCtrl)->Enable(true);
     XRCCTRL(*this, "rbOpen", wxRadioBox)->Enable(true);
-    XRCCTRL(*this, "txtProgram", wxTextCtrl)->Enable(!mt->useEditor);
-    XRCCTRL(*this, "btnBrowse", wxButton)->Enable(!mt->useEditor);
-    XRCCTRL(*this, "chkModal", wxCheckBox)->Enable(!mt->useEditor);
+    XRCCTRL(*this, "txtProgram", wxTextCtrl)->Enable(!mt->useEditor && !mt->useAssoc);
+    XRCCTRL(*this, "btnBrowse", wxButton)->Enable(!mt->useEditor && !mt->useAssoc);
+    XRCCTRL(*this, "chkModal", wxCheckBox)->Enable(!mt->useEditor && !mt->useAssoc);
 
     m_LastSelection = m_Selection;
 }
@@ -114,10 +115,11 @@ void EditMimeTypesDlg::OnSelectionChanged(wxCommandEvent& event)
 
 void EditMimeTypesDlg::OnActionChanged(wxCommandEvent& event)
 {
-    bool useEd = XRCCTRL(*this, "rbOpen", wxRadioBox)->GetSelection();
-    XRCCTRL(*this, "txtProgram", wxTextCtrl)->Enable(!useEd);
-    XRCCTRL(*this, "btnBrowse", wxButton)->Enable(!useEd);
-    XRCCTRL(*this, "chkModal", wxCheckBox)->Enable(!useEd);
+    bool useEd = XRCCTRL(*this, "rbOpen", wxRadioBox)->GetSelection() == 2;
+    bool useAssoc = XRCCTRL(*this, "rbOpen", wxRadioBox)->GetSelection() == 1;
+    XRCCTRL(*this, "txtProgram", wxTextCtrl)->Enable(!useEd && !useAssoc);
+    XRCCTRL(*this, "btnBrowse", wxButton)->Enable(!useEd && !useAssoc);
+    XRCCTRL(*this, "chkModal", wxCheckBox)->Enable(!useEd && !useAssoc);
 }
 
 void EditMimeTypesDlg::OnNew(wxCommandEvent& event)
@@ -131,6 +133,7 @@ void EditMimeTypesDlg::OnNew(wxCommandEvent& event)
     cbMimeType* mt = new cbMimeType;
     mt->wildcard = wild;
     mt->useEditor = true;
+    mt->useAssoc = false;
     mt->program = _T("");
     mt->programIsModal = false;
     m_Array.Add(mt);

@@ -33,8 +33,11 @@ struct cbMimeType
     // used only if useEditor == false
     wxString program;
 
-    // if true, open it in the Code::Blocks editor, else use "program"
+    // if true, open it in the Code::Blocks editor, else use "program" (or associated app)
     bool useEditor;
+    
+    // if true, open it with the associated app
+    bool useAssoc;
 
     // should the IDE be disabled while working on this file?
     // valid only for external programs...
