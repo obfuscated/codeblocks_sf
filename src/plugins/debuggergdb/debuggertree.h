@@ -1,6 +1,8 @@
 #ifndef DEBUGGERTREE_H
 #define DEBUGGERTREE_H
 
+#include <vector>
+
 #include <wx/intl.h>
 #include <wx/panel.h>
 #include <wx/treectrl.h>
@@ -14,9 +16,8 @@ extern int cbCustom_WATCHES_CHANGED;
 class WatchTreeData : public wxTreeItemData
 {
     public:
-        WatchTreeData(Watch* w) : m_pWatch(w), m_UpToDate(true) {}
+        WatchTreeData(Watch* w) : m_pWatch(w) {}
         Watch* m_pWatch;
-        bool m_UpToDate;
 };
 
 class DebuggerGDB;
@@ -65,11 +66,35 @@ class DebuggerTree : public wxPanel
         int m_NumUpdates;
         int m_CurrNumUpdates;
     private:
-        void MarkAllNodes(const wxTreeItemId& parent, bool uptodate);
-        void ClearAllMarkedNodes(const wxTreeItemId& parent, bool uptodate);
-        wxTreeItemId AddItem(wxTreeItemId& parent, const wxString& text, Watch* watch, bool* newlyAdded = 0);
-        bool FindChildItem(const wxString& item, const wxTreeItemId& parent, wxTreeItemId& result);
-        void ParseEntry(Watch* watch, wxTreeItemId& parent, wxString& text);
+        // recursive struct to keep all watch tree entries
+        struct WatchTreeEntry
+        {
+            wxString name; // entry's name
+            std::vector<WatchTreeEntry> entries; // child entries
+            Watch* watch; // the associated watch
+            
+            WatchTreeEntry() : watch(0) {}
+            
+            void Clear()
+            {
+                name.Clear();
+                watch = 0;
+                entries.clear();
+            }
+            WatchTreeEntry& AddChild(const wxString& childname, Watch* childwatch)
+            {
+                WatchTreeEntry wet;
+                wet.name = childname;
+                wet.watch = childwatch;
+                entries.push_back(wet);
+                return *(--entries.end());
+            }
+        };
+        WatchTreeEntry m_RootEntry;
+
+        void BuildTree(WatchTreeEntry& entry, wxTreeItemId parent);
+        
+        void ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& text);
         int FindCharOutsideQuotes(const wxString& str, wxChar ch); // returns position of ch in str
         int FindCommaPos(const wxString& str); // ignores commas in function signatures
         void FixupVarNameForChange(wxString& str);

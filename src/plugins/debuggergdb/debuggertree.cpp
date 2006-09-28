@@ -7,6 +7,7 @@
 #include <wx/textfile.h>
 #include <wx/msgdlg.h>
 #include <wx/app.h>
+#include <wx/tipwin.h>
 #include <globals.h>
 #include "debuggergdb.h"
 #include "debuggerdriver.h"
@@ -92,15 +93,11 @@ DebuggerTree::DebuggerTree(wxWindow* parent, DebuggerGDB* debugger)
     bs->Add(m_pTree, 1, wxEXPAND | wxALL);
     SetAutoLayout(TRUE);
     SetSizer(bs);
-
-//    m_pParent->AddPage(this, _("Watches"));
-//    m_PageIndex = m_pParent->GetPageCount() - 1;
 }
 
 DebuggerTree::~DebuggerTree()
 {
     //dtor
-//    m_pParent->RemovePage(m_PageIndex);
 }
 
 void DebuggerTree::BeginUpdateTree()
@@ -111,15 +108,10 @@ void DebuggerTree::BeginUpdateTree()
         return;
     }
 
-//    if (m_pTree->IsExpanded(m_pTree->GetRootItem()))
-//        ::SaveTreeState(m_pTree, m_pTree->GetRootItem(), m_TreeState);
-//    m_pTree->Freeze();
-
-//    m_pTree->DeleteAllItems();
-    if (!m_pTree->GetRootItem())
-        m_pTree->AddRoot(_("Watches"));
-    MarkAllNodes(m_pTree->GetRootItem(), false);
     m_InUpdateBlock = true;
+
+    m_RootEntry.Clear();
+    m_RootEntry.name = _("Watches");
 }
 
 void DebuggerTree::BuildTree(Watch* watch, const wxString& infoText, WatchStringFormat fmt)
@@ -144,109 +136,71 @@ void DebuggerTree::EndUpdateTree()
         return;
     }
 
-//    ::RestoreTreeState(m_pTree, m_pTree->GetRootItem(), m_TreeState);
-    ClearAllMarkedNodes(m_pTree->GetRootItem(), false);
-    if (!m_pTree->IsExpanded(m_pTree->GetRootItem()))
-        m_pTree->Expand(m_pTree->GetRootItem());
-//    m_pTree->Thaw();
     m_InUpdateBlock = false;
+
+    if (!m_pTree->GetRootItem().IsOk())
+    {
+        m_pTree->AddRoot(m_RootEntry.name, -1, -1, new WatchTreeData(0));
+        m_RootEntry.watch = 0;
+    }
+    
+    BuildTree(m_RootEntry, m_pTree->GetRootItem());
 }
 
-/** Finds a child tree item, if it exists. */
-bool DebuggerTree::FindChildItem(const wxString& item, const wxTreeItemId& parent, wxTreeItemId& result)
+void DebuggerTree::BuildTree(WatchTreeEntry& entry, wxTreeItemId parent)
 {
-    wxTreeItemIdValue cookie;
-    wxTreeItemId id = m_pTree->GetFirstChild(parent, cookie);
-    while (id)
+    // update item's text
+    if (m_pTree->GetItemText(parent) != entry.name)
+        m_pTree->SetItemText(parent, entry.name);
+    
+    // iterate all item's children (if any) and update their values
+    // any excess items are deleted and then any remaining entries are added
+    
+#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
+    long int cookie = 0;
+#else
+    wxTreeItemIdValue cookie; //2.6.0
+#endif
+    wxTreeItemId item = m_pTree->GetFirstChild(parent, cookie);
+    size_t count = 0;
+    while (item)
     {
-        if (m_pTree->GetItemText(id).Matches(item))
+        // if we still have entries
+        if (count < entry.entries.size())
         {
-            result = id;
-            return true;
-        }
-        id = m_pTree->GetNextChild(parent, cookie);
-    }
-    return false;
-}
-
-wxTreeItemId DebuggerTree::AddItem(wxTreeItemId& parent, const wxString& text, Watch* watch, bool* newlyAdded)
-{
-    wxTreeItemId result;
-    if (newlyAdded)
-        *newlyAdded = false;
-
-    wxString search = text;
-    wxString value = text;
-    int pos = search.Find(_T(" = "));
-    if (pos != -1)
-    {
-        value = search.Right((search.Length() - pos) + 3);
-        search.Truncate(pos + 3);
-        search += _T('*');
-    }
-
-    if (FindChildItem(search, parent, result))
-    {
-        wxString oldtext = m_pTree->GetItemText(result);
-        wxString oldvalue = value;
-        int pos = oldtext.Find(_T(" = "));
-        if (pos != -1)
-            oldvalue = oldtext.Right((oldtext.Length() - pos) + 3);
-
-        m_pTree->SetItemText(result, text);
-        m_pTree->SetItemData(result, new WatchTreeData(watch));
-
-        if (value != oldvalue)
-        {
-            m_pTree->SetItemTextColour(result, *wxRED);
-            wxTreeItemId par = parent;
-            while (par.IsOk())
-            {
-                m_pTree->SetItemTextColour(par, *wxRED);
-                par = m_pTree->GetItemParent(par);
-            }
+            WatchTreeEntry& child = entry.entries[count];
+            wxString itemText = m_pTree->GetItemText(item);
+            // colorize item accordingly
+            if (child.name == itemText)
+                m_pTree->SetItemTextColour(item, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
+            else
+                m_pTree->SetItemTextColour(item, *wxRED); // modified value
+            // set text and data
+            m_pTree->SetItemText(item, child.name);
+            ((WatchTreeData*)m_pTree->GetItemData(item))->m_pWatch = child.watch;
+            // recurse
+            BuildTree(child, item);
+            // continue
+            item = m_pTree->GetNextChild(parent, cookie);
+            ++count;
+            continue;
         }
         else
-            m_pTree->SetItemTextColour(result, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
-    }
-    else
-    {
-        result = m_pTree->AppendItem(parent, text, -1, -1, new WatchTreeData(watch));
-        if (newlyAdded)
-            *newlyAdded = true;
-    }
-    return result;
-}
-
-void DebuggerTree::MarkAllNodes(const wxTreeItemId& parent, bool uptodate)
-{
-    wxTreeItemIdValue cookie;
-    wxTreeItemId id = m_pTree->GetFirstChild(parent, cookie);
-    while (id)
-    {
-        WatchTreeData* data = dynamic_cast<WatchTreeData*>(m_pTree->GetItemData(id));
-        if (data)
-            data->m_UpToDate = uptodate;
-        MarkAllNodes(id, uptodate);
-        id = m_pTree->GetNextChild(parent, cookie);
-    }
-}
-
-void DebuggerTree::ClearAllMarkedNodes(const wxTreeItemId& parent, bool uptodate)
-{
-    wxTreeItemIdValue cookie;
-    wxTreeItemId id = m_pTree->GetFirstChild(parent, cookie);
-    while (id)
-    {
-        wxTreeItemId nextid = m_pTree->GetNextChild(parent, cookie);
-        WatchTreeData* data = dynamic_cast<WatchTreeData*>(m_pTree->GetItemData(id));
-        if (data && data->m_UpToDate == uptodate)
         {
-            m_pTree->Delete(id);
+            // no more entries; delete item
+            wxTreeItemId newitem = m_pTree->GetNextChild(parent, cookie);
+            m_pTree->Delete(item);
+            item = newitem;
         }
-        else
-            ClearAllMarkedNodes(id, uptodate);
-        id = nextid;
+    }
+
+    // now add any remaining entries
+    for (; count < entry.entries.size(); ++count)
+    {
+        WatchTreeEntry& child = entry.entries[count];
+        wxTreeItemId childParent = m_pTree->AppendItem(parent, child.name, -1, -1, new WatchTreeData(child.watch));
+        // recurse
+        BuildTree(child, childParent);
     }
 }
 
@@ -351,7 +305,7 @@ int DebuggerTree::FindCommaPos(const wxString& str)
     return -1;
 }
 
-void DebuggerTree::ParseEntry(Watch* watch, wxTreeItemId& parent, wxString& text)
+void DebuggerTree::ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& text)
 {
 #define MIN(a,b) (a < b ? a : b)
     if (text.IsEmpty())
@@ -375,32 +329,35 @@ void DebuggerTree::ParseEntry(Watch* watch, wxTreeItemId& parent, wxString& text
 
         if (pos == 0xFFFFFE)
         {
+            // no comma, opening or closing brace
             if (text.Right(3).Matches(_T(" = ")))
                 text.Truncate(text.Length() - 3);
             if (!text.IsEmpty())
             {
-                AddItem(parent, text, watch);
+                entry.AddChild(text, watch);
                 text.Clear();
             }
             break;
         }
         else
         {
-            wxTreeItemId newParent = parent;
             wxString tmp = text.Left(pos);
-            bool newlyAdded = false;
+            WatchTreeEntry* newchild = 0;
 
             if (tmp.Right(3).Matches(_T(" = ")))
                 tmp.Truncate(tmp.Length() - 3); // remove " = " if last in string
             if (!tmp.IsEmpty())
-                newParent = AddItem(parent, tmp, watch, &newlyAdded); // add entry
+            {
+//                DBGLOG(_T("entry: %s, watch: %p"), tmp.c_str(), watch);
+                newchild = &entry.AddChild(tmp, watch);
+            }
             text.Remove(0, pos + 1);
 
             if (pos == braceOpenPos)
             {
-                ParseEntry(watch, newParent, text); // proceed one level deeper
-                if (newlyAdded)
-                    m_pTree->Expand(newParent);
+                if (!newchild)
+                    newchild = &entry;
+                ParseEntry(*newchild, watch, text); // proceed one level deeper
             }
             else if (pos == braceClosePos)
                 break; // return one level up
@@ -428,48 +385,50 @@ void DebuggerTree::BuildTreeGDB(Watch* watch, const wxString& infoText)
                 buffer.SetChar(i, _T(','));
         }
     }
-    wxTreeItemId id = m_pTree->GetRootItem();
-    ParseEntry(watch, id, buffer);
+    ParseEntry(m_RootEntry, watch, buffer);
 }
 
 void DebuggerTree::BuildTreeCDB(Watch* watch, const wxString& infoText)
 {
-    wxTreeItemId parent = m_pTree->GetRootItem();
-    wxTreeItemId node = parent;
-
-    wxArrayString lines = GetArrayFromString(infoText, _T('\n'), false);
-    size_t col = 0;
-    for (unsigned int i = 0; i < lines.GetCount(); ++i)
-    {
-        size_t thiscol = lines[i].find_first_not_of(_T(" \t"));
-        size_t nextcol = i < lines.GetCount() - 1 ? lines[i + 1].find_first_not_of(_T(" \t")) : wxString::npos;
-        if (thiscol > col)
-        {
-            // add child node
-            parent = node;
-            col = thiscol;
-        }
-        else if (thiscol < col)
-        {
-            // go one level up
-            parent = m_pTree->GetItemParent(parent);
-            col = thiscol;
-        }
-        wxString actual;
-        int sep = lines[i].First(_T(" = "));
-        if (sep != -1)
-            actual = lines[i].SubString(0, sep).Strip(wxString::both) +
-                    _T(" = ") +
-                    lines[i].SubString(sep + 2, lines[i].Length()).Strip(wxString::both);
-        else
-            actual = lines[i].Strip(wxString::both);
-
-        node = AddItem(parent, actual, watch);
-
-        // if this node doesn't have any children, delete any existing
-        if (nextcol == thiscol || nextcol == wxString::npos)
-            m_pTree->DeleteChildren(node);
-    }
+    new wxTipWindow(m_pTree, _T("Watches are currently disabled for CDB.\n"
+                                "We are sorry for the inconvenience..."), 250);
+        
+//    wxTreeItemId parent = m_pTree->GetRootItem();
+//    wxTreeItemId node = parent;
+//
+//    wxArrayString lines = GetArrayFromString(infoText, _T('\n'), false);
+//    size_t col = 0;
+//    for (unsigned int i = 0; i < lines.GetCount(); ++i)
+//    {
+//        size_t thiscol = lines[i].find_first_not_of(_T(" \t"));
+//        size_t nextcol = i < lines.GetCount() - 1 ? lines[i + 1].find_first_not_of(_T(" \t")) : wxString::npos;
+//        if (thiscol > col)
+//        {
+//            // add child node
+//            parent = node;
+//            col = thiscol;
+//        }
+//        else if (thiscol < col)
+//        {
+//            // go one level up
+//            parent = m_pTree->GetItemParent(parent);
+//            col = thiscol;
+//        }
+//        wxString actual;
+//        int sep = lines[i].First(_T(" = "));
+//        if (sep != -1)
+//            actual = lines[i].SubString(0, sep).Strip(wxString::both) +
+//                    _T(" = ") +
+//                    lines[i].SubString(sep + 2, lines[i].Length()).Strip(wxString::both);
+//        else
+//            actual = lines[i].Strip(wxString::both);
+//
+//        node = AddItem(parent, actual, watch);
+//
+//        // if this node doesn't have any children, delete any existing
+//        if (nextcol == thiscol || nextcol == wxString::npos)
+//            m_pTree->DeleteChildren(node);
+//    }
 }
 
 void DebuggerTree::ClearWatches()
