@@ -1292,6 +1292,8 @@ void cbEditor::AutoComplete()
             control->ReplaceSelection(_T(""));
             curPos = wordStartPos;
 
+            // replace any other macros in the generated code
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(code);
             // add the text
             control->InsertText(curPos, code);
 

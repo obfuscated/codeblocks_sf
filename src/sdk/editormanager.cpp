@@ -366,6 +366,26 @@ void EditorManager::LoadAutoComplete()
         m_AutoCompleteMap[_T("class")] = _T("class $(Class name)|\n{\n\tpublic:\n\t\t$(Class name)();\n\t\t~$(Class name)();\n\tprotected:\n\t\t\n\tprivate:\n\t\t\n};\n");
         m_AutoCompleteMap[_T("struct")] = _T("struct |\n{\n\t\n};\n");
     }
+
+    // date and time macros
+    // these are auto-added if they 're found to be missing
+    const wxString timeAndDate[9][2] =
+    {
+        { _T("tday"), _T("$TDAY") },
+        { _T("tdayu"), _T("$TDAY_UTC") },
+        { _T("today"), _T("$TODAY") },
+        { _T("todayu"), _T("$TODAY_UTC") },
+        { _T("now"), _T("$NOW") },
+        { _T("nowl"), _T("$NOW_L") },
+        { _T("nowu"), _T("$NOW_UTC") },
+        { _T("nowlu"), _T("$NOW_L_UTC") },
+        { _T("wdu"), _T("$WEEKDAY_UTC") },
+    };
+    for (int i = 0; i < 9; ++i)
+    {
+        if (m_AutoCompleteMap.find(timeAndDate[i][0]) == m_AutoCompleteMap.end())
+            m_AutoCompleteMap[timeAndDate[i][0]] = timeAndDate[i][1];
+    }
 }
 
 void EditorManager::SaveAutoComplete()
