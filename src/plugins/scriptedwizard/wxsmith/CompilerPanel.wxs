@@ -6,7 +6,7 @@
             <object class="sizeritem">
                 <border>8</border>
                 <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="no">
+                <object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
                     <label>Please select the compiler to use and which configurations&#x0A;you want enabled in your project.</label>
                 </object>
             </object>
@@ -62,7 +62,7 @@
                         <option>1</option>
                         <border>5</border>
                         <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                        <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
+                        <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
                             <orient>wxHORIZONTAL</orient>
                             <label>&quot;Debug&quot; options</label>
                             <object class="sizeritem">
@@ -151,7 +151,7 @@
                         <option>1</option>
                         <border>5</border>
                         <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                        <object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="no">
+                        <object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="yes">
                             <orient>wxHORIZONTAL</orient>
                             <label>&quot;Release&quot; options</label>
                             <object class="sizeritem">

@@ -140,6 +140,7 @@ class WizCompilerPanel : public WizPageBase
         void OnPageChanging(wxWizardEvent& event);
     protected:
         CompilerPanel* m_pCompilerPanel;
+        bool m_AllowConfigChange;
     private:
 };
 

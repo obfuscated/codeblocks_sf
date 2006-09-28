@@ -444,7 +444,8 @@ void WizGenericSelectPathPanel::OnPageChanging(wxWizardEvent& event)
 
 WizCompilerPanel::WizCompilerPanel(const wxString& compilerID, const wxString& validCompilerIDs, wxWizard* parent, const wxBitmap& bitmap,
                                     bool allowCompilerChange, bool allowConfigChange)
-    : WizPageBase(_T("CompilerPage"), parent, bitmap)
+    : WizPageBase(_T("CompilerPage"), parent, bitmap),
+    m_AllowConfigChange(allowConfigChange)
 {
     m_pCompilerPanel = new CompilerPanel(this);
 
@@ -472,7 +473,7 @@ WizCompilerPanel::WizCompilerPanel(const wxString& compilerID, const wxString& v
     }
     cmb->SetSelection(id);
     cmb->Enable(allowCompilerChange);
-    m_pCompilerPanel->EnableConfigurationTargets(allowConfigChange);
+    m_pCompilerPanel->EnableConfigurationTargets(m_AllowConfigChange);
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("scripts"));
 
@@ -560,24 +561,27 @@ void WizCompilerPanel::OnPageChanging(wxWizardEvent& event)
             event.Veto();
             return;
         }
-        if (!GetWantDebug() && !GetWantRelease())
+        if (m_AllowConfigChange && !GetWantDebug() && !GetWantRelease())
         {
             wxMessageBox(_("You must select at least one configuration..."), _("Error"), wxICON_ERROR);
             event.Veto();
             return;
         }
 
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("scripts"));
+        if (m_AllowConfigChange)
+        {
+            ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("scripts"));
 
-        cfg->Write(_T("/generic_wizard/want_debug"), (bool)GetWantDebug());
-        cfg->Write(_T("/generic_wizard/debug_name"), GetDebugName());
-        cfg->Write(_T("/generic_wizard/debug_output"), GetDebugOutputDir());
-        cfg->Write(_T("/generic_wizard/debug_objects_output"), GetDebugObjectOutputDir());
+            cfg->Write(_T("/generic_wizard/want_debug"), (bool)GetWantDebug());
+            cfg->Write(_T("/generic_wizard/debug_name"), GetDebugName());
+            cfg->Write(_T("/generic_wizard/debug_output"), GetDebugOutputDir());
+            cfg->Write(_T("/generic_wizard/debug_objects_output"), GetDebugObjectOutputDir());
 
-        cfg->Write(_T("/generic_wizard/want_release"), (bool)GetWantRelease());
-        cfg->Write(_T("/generic_wizard/release_name"), GetReleaseName());
-        cfg->Write(_T("/generic_wizard/release_output"), GetReleaseOutputDir());
-        cfg->Write(_T("/generic_wizard/release_objects_output"), GetReleaseObjectOutputDir());
+            cfg->Write(_T("/generic_wizard/want_release"), (bool)GetWantRelease());
+            cfg->Write(_T("/generic_wizard/release_name"), GetReleaseName());
+            cfg->Write(_T("/generic_wizard/release_output"), GetReleaseOutputDir());
+            cfg->Write(_T("/generic_wizard/release_objects_output"), GetReleaseObjectOutputDir());
+        }
     }
     WizPageBase::OnPageChanging(event); // let the base class handle it too
 }

@@ -164,14 +164,10 @@ function GetGeneratedFile(file_index)
 // setup the project options
 function SetupProject(project)
 {
-    local target = project.GetBuildTarget(_T("Debug"));
-    if (!IsNull(target))
-    {
-        SetupTarget(target, true);
-    }
-
-    project.RenameBuildTarget(_T("Debug"), _T("default"));
-    project.RemoveBuildTarget(_T("Release"));
+    local target = project.GetBuildTarget(_T("default"));
+    if (IsNull(target))
+        target = project.AddBuildTarget(_T("default"));
+    SetupTarget(target, true);
 
     return true;
 }
@@ -213,11 +209,11 @@ function SetupTarget(target,is_debug)
 
         target.AddLibDir(_T("$(#cb)\\devel"));
         target.AddLibDir(_T("$(#wx.lib)\\gcc_dll"));
-        
+
         target.AddCommandsAfterBuild(_T("cmd /c copy ") + target.GetOutputFilename() + _T(" $(#cb)\\devel\\share\\codeblocks\\plugins\\"));
         target.AddCommandsAfterBuild(_T("zip -j9 $(#cb)\\devel\\share\\codeblocks\\") + PluginSettings.Name + _T(".zip manifest") + DOT_EXT_XML);
-        
-        target.SetHostApplication(_T("$(#cb)\\devel\\codeblocks") + DOT_EXT_EXE);
+
+        target.SetHostApplication(_T("$(#cb)\\devel\\codeblocks") + DOT_EXT_EXECUTABLE);
     }
     else
     {
@@ -229,7 +225,7 @@ function SetupTarget(target,is_debug)
 
         // TODO: pkg-config flag for package data dir? (e.g. /usr/share/codeblocks)
 
-        target.SetHostApplication(_T("codeblocks") + DOT_EXT_EXE);
+        target.SetHostApplication(_T("codeblocks") + DOT_EXT_EXECUTABLE);
     }
 
     if (is_debug)
@@ -396,4 +392,4 @@ function HandleDirective(buffer, directive, enabled)
     }
 
     return buffer;
-}
+} 

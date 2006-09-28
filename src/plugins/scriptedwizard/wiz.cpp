@@ -369,6 +369,18 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
         }
     }
 
+    // if no targets were created (due to user misconfiguration probably),
+    // create a "default" target
+    if (theproject->GetBuildTargetsCount() == 0)
+    {
+        ProjectBuildTarget* target = theproject->AddBuildTarget(_T("default"));
+        if (target)
+        {
+            target->SetCompilerID(GetCompilerID());
+            target->SetIncludeInTargetAll(false);
+        }
+    }
+    
     // add all the template files
     // first get the dirs with the files by calling GetFilesDir()
     wxString srcdir;
