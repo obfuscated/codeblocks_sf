@@ -36,6 +36,10 @@
     #include "associations.h"
 #endif
 
+#ifndef CB_PRECOMP
+    #include "cbplugin.h" // cgCompiler, cgDebugger...
+#endif
+
 // images by order of pages
 const wxString base_imgs[] =
 {
@@ -136,22 +140,22 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     XRCCTRL(*this, "chkAutoShowMessagesOnWarn", wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkAutoShowMessagesOnErr", wxCheckBox)->Enable(en);
 
-	bool i18n=cfg->ReadBool(_T("/environment/I18N"), false);
-		XRCCTRL(*this, "chkI18N", wxCheckBox)->SetValue(i18n);
-	for(size_t i=0; i < LANGUAGES_SIZE; i++)
-	{
-		XRCCTRL(*this, "cbxLanguage", wxComboBox)->Append(langs[i]);
-	}
-	XRCCTRL(*this, "cbxLanguage", wxComboBox)->Enable(i18n);
-	if(i18n)
-	{
-		int lng = cfg->ReadInt(_T("/locale/language"),-1);
+    bool i18n=cfg->ReadBool(_T("/environment/I18N"), false);
+        XRCCTRL(*this, "chkI18N", wxCheckBox)->SetValue(i18n);
+    for(size_t i=0; i < LANGUAGES_SIZE; i++)
+    {
+        XRCCTRL(*this, "cbxLanguage", wxComboBox)->Append(langs[i]);
+    }
+    XRCCTRL(*this, "cbxLanguage", wxComboBox)->Enable(i18n);
+    if(i18n)
+    {
+        int lng = cfg->ReadInt(_T("/locale/language"),-1);
 
-		if (lng >= 0 && static_cast<unsigned int>(lng) < LANGUAGES_SIZE)
-		{
-			XRCCTRL(*this, "cbxLanguage", wxComboBox)->SetSelection(lng+1);
-		}
-	}
+        if (lng >= 0 && static_cast<unsigned int>(lng) < LANGUAGES_SIZE)
+        {
+            XRCCTRL(*this, "cbxLanguage", wxComboBox)->SetSelection(lng+1);
+        }
+    }
 
     // tab "Notebook"
     XRCCTRL(*this, "cmbEditorTabs", wxComboBox)->SetSelection(cfg->ReadInt(_T("/environment/tabs_style"), 0));
@@ -297,16 +301,16 @@ void EnvironmentSettingsDlg::OnManageAssocs(wxCommandEvent& event)
 
 void EnvironmentSettingsDlg::OnChooseColour(wxCommandEvent& event)
 {
-	wxColourData data;
-	wxWindow* sender = FindWindowById(event.GetId());
+    wxColourData data;
+    wxWindow* sender = FindWindowById(event.GetId());
     data.SetColour(sender->GetBackgroundColour());
 
-	wxColourDialog dlg(this, &data);
+    wxColourDialog dlg(this, &data);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
-    	wxColour colour = dlg.GetColourData().GetColour();
-	    sender->SetBackgroundColour(colour);
+        wxColour colour = dlg.GetColourData().GetColour();
+        sender->SetBackgroundColour(colour);
     }
 }
 

@@ -44,6 +44,7 @@
     #include "pluginmanager.h"
     #include "editormanager.h"
     #include "messagemanager.h"
+    #include "macrosmanager.h" // ReplaceMacros
     #include "cbplugin.h"
 #endif
 

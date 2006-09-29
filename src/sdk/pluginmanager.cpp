@@ -27,9 +27,11 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/string.h>
-    #include <wx/menu.h>
+    #include <wx/dir.h>
+    #include <wx/filesys.h>
     #include <wx/intl.h>
+    #include <wx/menu.h>
+    #include <wx/string.h>
 
     #include "pluginmanager.h"
     #include "cbexception.h"
@@ -42,7 +44,6 @@
     #include "personalitymanager.h"
     #include "globals.h"
     #include "sdk_events.h"
-    #include <wx/dir.h>
 #endif
 
 #include <wx/dynlib.h>

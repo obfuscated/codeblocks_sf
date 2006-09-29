@@ -32,6 +32,7 @@
     #include "compiletargetbase.h"
     #include "compilerfactory.h"
     #include "globals.h"
+    #include "messagemanager.h" // DBGLOG
 #endif
 
 #include "filefilters.h"

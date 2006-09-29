@@ -16,6 +16,10 @@
 #include <wx/event.h>
 #include <wx/generic/splitter.h>
 
+#ifndef CB_PRECOMP
+    #include "sdk_events.h" // EVT_APP_STARTUP_DONE
+#endif
+
 // Register the plugin
 namespace
 {

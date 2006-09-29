@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <wx/dynarray.h>
+#include "globals.h" // PluginType
 #include "settings.h"
 #include "manager.h"
 
