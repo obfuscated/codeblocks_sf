@@ -27,12 +27,11 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "manager.h"
     #include <wx/sizer.h>
-    #include "simpletextlog.h" // class's header file
+    #include <wx/textctrl.h>
+    #include "manager.h"
 #endif
-
-
+#include "simpletextlog.h" // class's header file
 
 const int ID_Text = wxNewId();
 

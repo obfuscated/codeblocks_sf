@@ -1,7 +1,11 @@
 #ifndef SEARCHRESULTSLOG_H
 #define SEARCHRESULTSLOG_H
 
+#include <wx/string.h>
 #include "simplelistlog.h"
+
+class wxArrayString;
+class wxCommandEvent;
 
 class SearchResultsLog : public SimpleListLog
 {
@@ -11,7 +15,6 @@ class SearchResultsLog : public SimpleListLog
 		void FocusEntry(size_t index);
 		void SetBasePath(const wxString base){ m_Base = base; }
 	protected:
-        void OnClick(wxCommandEvent& event);
         void OnDoubleClick(wxCommandEvent& event);
         void SyncEditor(int selIndex);
 

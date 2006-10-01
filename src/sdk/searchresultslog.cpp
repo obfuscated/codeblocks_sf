@@ -13,10 +13,12 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/arrstr.h>
+    #include <wx/filename.h>
+    #include <wx/listctrl.h>
     #include "manager.h"
     #include "editormanager.h"
     #include "cbeditor.h"
-    #include <wx/filename.h>
 #endif
 
 #include "searchresultslog.h"
@@ -30,9 +32,6 @@ SearchResultsLog::SearchResultsLog(int numCols, int widths[], const wxArrayStrin
 {
 	//ctor
     int id = m_pList->GetId();
-    Connect(id, -1, wxEVT_COMMAND_LIST_ITEM_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &SearchResultsLog::OnClick);
     Connect(id, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &SearchResultsLog::OnDoubleClick);
@@ -77,17 +76,13 @@ void SearchResultsLog::SyncEditor(int selIndex)
     ed->Activate();
     ed->GotoLine(line);
 
-    cbStyledTextCtrl* control = 0;
-    control = ed->GetControl();
-    if (control) {
+    if (cbStyledTextCtrl* control = ed->GetControl()) {
         control->EnsureVisible(line);
     }
 }
 
-void SearchResultsLog::OnClick(wxCommandEvent& event)
+void SearchResultsLog::OnDoubleClick(wxCommandEvent& /*event*/)
 {
-    // single and double-click, behave the same
-
     // go to the relevant file/line
     if (m_pList->GetSelectedItemCount() == 0)
         return;
@@ -98,10 +93,4 @@ void SearchResultsLog::OnClick(wxCommandEvent& event)
                                      wxLIST_STATE_SELECTED);
 
     SyncEditor(index);
-}
-
-void SearchResultsLog::OnDoubleClick(wxCommandEvent& event)
-{
-    // single and double-click, behave the same
-    OnClick(event);
-}
+} // end of OnDoubleClick

@@ -3,7 +3,9 @@
 
 #include "settings.h"
 #include "messagelog.h" // inheriting class's header file
-#include <wx/listctrl.h>
+
+class wxListCtrl;
+class wxArrayString;
 
 /*
  * No description
