@@ -80,11 +80,10 @@ int main(int argc, char** argv)
     string comment;
     string old;
 
-    if(!QuerySvn(workingDir, revision, date) && !ParseFile(docFile, revision, date) && !ParseFile(docFile2, revision, date))
-    {
-        puts("Error: failed retrieving version information.");
-        return -1;
-    }
+    QuerySvn(workingDir, revision, date) || ParseFile(docFile, revision, date) || ParseFile(docFile2, revision, date);
+
+    if(revision == "")
+        revision = "0";
 
     WriteOutput(outputFile, revision, date);
 
@@ -128,32 +127,27 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
 
 bool ParseFile(const string& docFile, string& revision, string &date)
 {
-    string token;
+    string token[6];
     date.clear();
+    revision.clear();
+    int c = 0;
 
     ifstream inFile(docFile.c_str());
     if (!inFile)
     {
-        puts("Warning: could not open input file.\nThis does not seem to be a revision controlled project.\nRevision set to 0.");
-        revision = "0";
-        return true;
+        return false;
     }
     else
-        while(!inFile.eof())
-        {
-            inFile >> token;
-            if(token.find("revision=\"") != string::npos)
-            {
-                size_t start = token.find('\"') + 1;
-                size_t end   = token.find('\"', start);
-                if(start < end)
-                {
-                    revision = token.substr(start, end - start);
-                }
-                return true;
-            }
-        }
-    return false;
+    {
+        while(!inFile.eof() && c < 6)
+            inFile >> token[c++];
+
+        revision = token[2];
+        date = token[5].substr(0, strlen("2006-01-01T12:34:56"));
+        date[10] = 32;
+
+        return true;
+    }
 }
 
 
