@@ -73,6 +73,7 @@ const wxString g_EditorModified = _T("*");
 BEGIN_EVENT_TABLE(cbStyledTextCtrl, wxScintilla)
     EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
     EVT_KILL_FOCUS(cbStyledTextCtrl::OnKillFocus)
+    EVT_MIDDLE_DOWN(cbStyledTextCtrl::OnGPM)
 END_EVENT_TABLE()
 
 cbStyledTextCtrl::cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos, const wxSize& size, long style)
@@ -110,6 +111,30 @@ void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
         reinterpret_cast<cbEditor*>(m_pParent)->DisplayContextMenu(mp,mtEditorManager); //pecan 2006/03/22
     }
 }
+
+void cbStyledTextCtrl::OnGPM(wxMouseEvent& event)
+{
+    int pos = PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
+
+    if(pos == wxSCI_INVALID_POSITION)
+        return;
+
+    int start = GetSelectionStart();
+    int end = GetSelectionEnd();
+
+    wxString s = GetSelectedText();
+
+    if(pos < GetCurrentPos())
+    {
+        start += s.length();
+        end += s.length();
+    }
+
+    InsertText(pos, s);
+    SetSelection(start, end);
+}
+
+
 
 /* This struct holds private data for the cbEditor class.
  * It's a paradigm to avoid rebuilding the entire project (as cbEditor is a basic dependency)
