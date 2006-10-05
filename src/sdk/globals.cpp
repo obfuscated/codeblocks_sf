@@ -524,18 +524,15 @@ bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& filename)
         return false;
 
     const char *buffer; // UTF-8 encoded data
-  	size_t len;
 
   	#ifdef TIXML_USE_STL
         std::string outSt;
         outSt << *doc;
         buffer = outSt.c_str();
-        len = outSt.length();
   	#else
-        TiXmlOutStream outSt;
-        outSt << *doc;
-        buffer = outSt.c_str();
-        len = outSt.length();
+        TiXmlPrinter Printer;
+        doc->Accept(&Printer);
+        buffer = Printer.CStr();
   	#endif
 
     wxTempFile file(filename);
@@ -549,7 +546,7 @@ bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& filename)
     else
         return false;
   	return true;
-}
+} // end of cbSaveTinyXMLDocument
 
 // Return @c str as a proper unicode-compatible string
 wxString cbC2U(const char* str)

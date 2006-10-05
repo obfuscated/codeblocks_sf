@@ -170,9 +170,9 @@ void wxsCustomWidget::RebuildXmlData()
         buffer << XmlDataDoc;
         XmlData = cbC2U(buffer.str().c_str());
     #else
-        TiXmlOutStream buffer;
-        buffer << XmlDataDoc;
-        XmlData = cbC2U(buffer.c_str());
+        TiXmlPrinter Printer;
+        XmlDataDoc.Accept(&Printer);
+        XmlData = cbC2U(Printer.CStr());
     #endif
 }
 

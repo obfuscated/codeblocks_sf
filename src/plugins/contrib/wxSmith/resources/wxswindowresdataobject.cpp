@@ -143,8 +143,8 @@ wxString wxsWindowResDataObject::GetXmlData() const
         buffer << XmlDoc;
         return cbC2U(buffer.str().c_str());
     #else
-        TiXmlOutStream buffer;
-        buffer << XmlDoc;
-        return cbC2U(buffer.c_str());
+        TiXmlPrinter Printer;
+        XmlDoc.Accept(&Printer);
+        return cbC2U(Printer.CStr());
     #endif
 }
