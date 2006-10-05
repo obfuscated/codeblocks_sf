@@ -44,18 +44,15 @@ bool TinyXML::SaveDocument(const wxString& filename, TiXmlDocument* doc)
         return false;
 
     const char *buffer;
-    size_t len;
 
 #ifdef TIXML_USE_STL
     std::string outSt;
     outSt << *doc;
     buffer = outSt.c_str();
-    len = outSt.length();
 #else
-    TiXmlOutStream outSt;
-    outSt << *doc;
-    buffer = outSt.c_str();
-    len = outSt.length();
+	TiXmlPrinter Printer;
+	doc->Accept(&Printer);
+    buffer = Printer.CStr();
 #endif
 
     wxTempFile file(filename);
