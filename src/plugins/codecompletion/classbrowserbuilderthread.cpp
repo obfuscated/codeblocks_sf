@@ -16,7 +16,9 @@ ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxSemaphore& sem, ClassBrow
     m_pParser(0),
     m_pTreeTop(0),
     m_pTreeBottom(0),
+    m_ActiveFilename(),
     m_pUserData(0),
+    m_Options(),
     m_pTokens(0),
     m_ppThreadVar(threadVar)
 {
@@ -230,14 +232,14 @@ bool ClassBrowserBuilderThread::AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId par
         return false;
 
     Token* parentToken = 0;
-	TokenIdxSet::iterator it;
-	TokenIdxSet::iterator it_end;
+    TokenIdxSet::iterator it;
+    TokenIdxSet::iterator it_end;
 
-	if (parentTokenIdx == -1)
-	{
+    if (parentTokenIdx == -1)
+    {
         it = m_pTokens->m_GlobalNameSpace.begin();
         it_end = m_pTokens->m_GlobalNameSpace.end();
-	}
+    }
     else
     {
         parentToken = m_pTokens->at(parentTokenIdx);
@@ -280,7 +282,7 @@ bool ClassBrowserBuilderThread::AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId 
 bool ClassBrowserBuilderThread::AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, TokenIdxSet::iterator start, TokenIdxSet::iterator end, int tokenKindMask, bool allowGlobals)
 {
     int count = 0;
-	for ( ; start != end; ++start)
+    for ( ; start != end; ++start)
     {
         Token* token = m_pTokens->at(*start);
         if (token &&

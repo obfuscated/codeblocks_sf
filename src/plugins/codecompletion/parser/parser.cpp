@@ -35,18 +35,18 @@
 #include "../classbrowser.h"
 #include "../classbrowserbuilderthread.h"
 #ifndef STANDALONE
-	#include <configmanager.h>
-	#include <messagemanager.h>
-	#include <editormanager.h>
-	#include <manager.h>
-	#include <globals.h>
-	#include <infowindow.h>
+    #include <configmanager.h>
+    #include <messagemanager.h>
+    #include <editormanager.h>
+    #include <manager.h>
+    #include <globals.h>
+    #include <infowindow.h>
 #endif // STANDALONE
 
 #include <queue>
 
 #ifndef CB_PRECOMP
-	  #include "editorbase.h"
+      #include "editorbase.h"
 #endif
 
 static const char CACHE_MAGIC[] = "CCCACHE_1_3";
@@ -62,9 +62,11 @@ BEGIN_EVENT_TABLE(Parser, wxEvtHandler)
 END_EVENT_TABLE()
 
 Parser::Parser(wxEvtHandler* parent)
-	: m_pParent(parent)
+    : m_Options(),
+    m_BrowserOptions(),
+    m_pParent(parent),
 #ifndef STANDALONE
-	,m_pImageList(0L),
+    m_pImageList(0L),
 #endif
     m_UsingCache(false),
     m_Pool(this, idPool, 1), // in the meanwhile it'll have to be forced to 1
@@ -87,11 +89,11 @@ Parser::Parser(wxEvtHandler* parent)
     m_pTempTokens = new TokensTree;
     m_LocalFiles.clear();
     m_GlobalIncludes.clear();
-	ReadOptions();
+    ReadOptions();
 #ifndef STANDALONE
-	m_pImageList = new wxImageList(16, 16);
-	wxBitmap bmp;
-	wxString prefix;
+    m_pImageList = new wxImageList(16, 16);
+    wxBitmap bmp;
+    wxString prefix;
     prefix = ConfigManager::GetDataFolder() + _T("/images/codecompletion/");
     // bitmaps must be added by order of PARSER_IMG_* consts
     bmp = cbLoadBitmap(prefix + _T("class_folder.png"), wxBITMAP_TYPE_PNG);
@@ -154,15 +156,15 @@ Parser::~Parser()
     m_TreeBuildingStatus = 0;
     m_pClassBrowser = NULL;
 
-	Clear(); // Clear also disconnects the events
+    Clear(); // Clear also disconnects the events
 #ifndef STANDALONE
-	delete m_pImageList;
-	m_pImageList = NULL;
+    delete m_pImageList;
+    m_pImageList = NULL;
 
     delete m_pTempTokens;
     m_pTempTokens = NULL;
-	delete m_pTokens;
-	m_pTokens = NULL;
+    delete m_pTokens;
+    m_pTokens = NULL;
 #endif // STANDALONE
 }
 
@@ -187,14 +189,14 @@ void Parser::DisconnectEvents()
 void Parser::ReadOptions()
 {
 #ifdef STANDALONE
-	m_Options.followLocalIncludes = true;
-	m_Options.followGlobalIncludes = false;
-	m_Options.caseSensitive = true;
-	m_Options.wantPreprocessor = false;
-	m_Options.useSmartSense = true;
-	m_BrowserOptions.showInheritance = false;
-	m_BrowserOptions.viewFlat = false;
-	m_BrowserOptions.displayFilter = bdfWorkspace;
+    m_Options.followLocalIncludes = true;
+    m_Options.followGlobalIncludes = false;
+    m_Options.caseSensitive = true;
+    m_Options.wantPreprocessor = false;
+    m_Options.useSmartSense = true;
+    m_BrowserOptions.showInheritance = false;
+    m_BrowserOptions.viewFlat = false;
+    m_BrowserOptions.displayFilter = bdfWorkspace;
 #else // !STANDALONE
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
@@ -215,14 +217,14 @@ void Parser::ReadOptions()
                             "Code-completion and symbols browser\"."));
     }
 
-	//m_Pool.SetConcurrentThreads(cfg->ReadInt(_T("/max_threads"), 1)); // Ignore it in the meanwhile
-	m_Options.followLocalIncludes = cfg->ReadBool(_T("/parser_follow_local_includes"), true);
-	m_Options.followGlobalIncludes = cfg->ReadBool(_T("/parser_follow_global_includes"), true);
-	m_Options.caseSensitive = cfg->ReadBool(_T("/case_sensitive"), false);
-	m_Options.useSmartSense = cfg->ReadBool(_T("/use_SmartSense"), true);
-	m_Options.wantPreprocessor = cfg->ReadBool(_T("/want_preprocessor"), true);
-	m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"), false);
-	m_BrowserOptions.displayFilter = (BrowserDisplayFilter)cfg->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
+    //m_Pool.SetConcurrentThreads(cfg->ReadInt(_T("/max_threads"), 1)); // Ignore it in the meanwhile
+    m_Options.followLocalIncludes = cfg->ReadBool(_T("/parser_follow_local_includes"), true);
+    m_Options.followGlobalIncludes = cfg->ReadBool(_T("/parser_follow_global_includes"), true);
+    m_Options.caseSensitive = cfg->ReadBool(_T("/case_sensitive"), false);
+    m_Options.useSmartSense = cfg->ReadBool(_T("/use_SmartSense"), true);
+    m_Options.wantPreprocessor = cfg->ReadBool(_T("/want_preprocessor"), true);
+    m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"), false);
+    m_BrowserOptions.displayFilter = (BrowserDisplayFilter)cfg->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
 #endif // STANDALONE
 }
 
@@ -231,14 +233,14 @@ void Parser::WriteOptions()
 #ifndef STANDALONE
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
-	cfg->Write(_T("/max_threads"), (int)GetMaxThreads());
-	cfg->Write(_T("/parser_follow_local_includes"), m_Options.followLocalIncludes);
-	cfg->Write(_T("/parser_follow_global_includes"), m_Options.followGlobalIncludes);
-	cfg->Write(_T("/case_sensitive"), m_Options.caseSensitive);
-	cfg->Write(_T("/use_SmartSense"), m_Options.useSmartSense);
-	cfg->Write(_T("/want_preprocessor"), m_Options.wantPreprocessor);
-	cfg->Write(_T("/browser_show_inheritance"), m_BrowserOptions.showInheritance);
-	cfg->Write(_T("/browser_display_filter"), m_BrowserOptions.displayFilter);
+    cfg->Write(_T("/max_threads"), (int)GetMaxThreads());
+    cfg->Write(_T("/parser_follow_local_includes"), m_Options.followLocalIncludes);
+    cfg->Write(_T("/parser_follow_global_includes"), m_Options.followGlobalIncludes);
+    cfg->Write(_T("/case_sensitive"), m_Options.caseSensitive);
+    cfg->Write(_T("/use_SmartSense"), m_Options.useSmartSense);
+    cfg->Write(_T("/want_preprocessor"), m_Options.wantPreprocessor);
+    cfg->Write(_T("/browser_show_inheritance"), m_BrowserOptions.showInheritance);
+    cfg->Write(_T("/browser_display_filter"), m_BrowserOptions.displayFilter);
 #endif // STANDALONE
 }
 
@@ -254,38 +256,38 @@ bool Parser::CacheNeedsUpdate()
 
 unsigned int Parser::GetFilesCount()
 {
-	wxCriticalSectionLocker lock(s_MutexProtection);
-	return m_pTokens->m_FilesMap.size();
+    wxCriticalSectionLocker lock(s_MutexProtection);
+    return m_pTokens->m_FilesMap.size();
 }
 
 bool Parser::Done()
 {
     wxCriticalSectionLocker lock(s_mutexListProtection);
-	return m_Pool.Done();
+    return m_Pool.Done();
 }
 
 #ifndef STANDALONE
 void Parser::SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxBitmap& mask)
 {
-	if (kind < PARSER_IMG_MIN || kind > PARSER_IMG_MAX)
-		return;
+    if (kind < PARSER_IMG_MIN || kind > PARSER_IMG_MAX)
+        return;
 #ifdef __WXMSW__
-	m_pImageList->Replace(kind, bitmap, mask);
+    m_pImageList->Replace(kind, bitmap, mask);
 #endif
 }
 
 void Parser::SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColour)
 {
-	if (kind < PARSER_IMG_MIN || kind > PARSER_IMG_MAX)
-		return;
-	m_pImageList->Replace(kind, bitmap);//, maskColour);
+    if (kind < PARSER_IMG_MIN || kind > PARSER_IMG_MAX)
+        return;
+    m_pImageList->Replace(kind, bitmap);//, maskColour);
 }
 
 void Parser::SetTokenKindImage(int kind, const wxIcon& icon)
 {
-	if (kind < PARSER_IMG_MIN || kind > PARSER_IMG_MAX)
-		return;
-	m_pImageList->Replace(kind, icon);
+    if (kind < PARSER_IMG_MIN || kind > PARSER_IMG_MAX)
+        return;
+    m_pImageList->Replace(kind, icon);
 }
 
 int Parser::GetTokenKindImage(Token* token)
@@ -293,51 +295,51 @@ int Parser::GetTokenKindImage(Token* token)
     if (!token)
         return PARSER_IMG_NONE;
 
-	switch (token->m_TokenKind)
-	{
-		case tkPreprocessor: return PARSER_IMG_PREPROCESSOR;
+    switch (token->m_TokenKind)
+    {
+        case tkPreprocessor: return PARSER_IMG_PREPROCESSOR;
 
-		case tkEnum: return PARSER_IMG_ENUM;
+        case tkEnum: return PARSER_IMG_ENUM;
 
-		case tkEnumerator: return PARSER_IMG_ENUMERATOR;
+        case tkEnumerator: return PARSER_IMG_ENUMERATOR;
 
-		case tkClass: return PARSER_IMG_CLASS;
+        case tkClass: return PARSER_IMG_CLASS;
 
-		case tkNamespace: return PARSER_IMG_NAMESPACE;
+        case tkNamespace: return PARSER_IMG_NAMESPACE;
 
-		case tkTypedef: return PARSER_IMG_TYPEDEF;
+        case tkTypedef: return PARSER_IMG_TYPEDEF;
 
-		case tkConstructor:
-			switch (token->m_Scope)
-			{
-				case tsProtected: return PARSER_IMG_CTOR_PROTECTED;
-				case tsPrivate: return PARSER_IMG_CTOR_PRIVATE;
-				default: return PARSER_IMG_CTOR_PUBLIC;
-			}
+        case tkConstructor:
+            switch (token->m_Scope)
+            {
+                case tsProtected: return PARSER_IMG_CTOR_PROTECTED;
+                case tsPrivate: return PARSER_IMG_CTOR_PRIVATE;
+                default: return PARSER_IMG_CTOR_PUBLIC;
+            }
 
-		case tkDestructor:
-			switch (token->m_Scope)
-			{
-				case tsProtected: return PARSER_IMG_DTOR_PROTECTED;
-				case tsPrivate: return PARSER_IMG_DTOR_PRIVATE;
-				default: return PARSER_IMG_DTOR_PUBLIC;
-			}
+        case tkDestructor:
+            switch (token->m_Scope)
+            {
+                case tsProtected: return PARSER_IMG_DTOR_PROTECTED;
+                case tsPrivate: return PARSER_IMG_DTOR_PRIVATE;
+                default: return PARSER_IMG_DTOR_PUBLIC;
+            }
 
-		case tkFunction:
-			switch (token->m_Scope)
-			{
-				case tsProtected: return PARSER_IMG_FUNC_PROTECTED;
-				case tsPrivate: return PARSER_IMG_FUNC_PRIVATE;
-				default: return PARSER_IMG_FUNC_PUBLIC;
-			}
+        case tkFunction:
+            switch (token->m_Scope)
+            {
+                case tsProtected: return PARSER_IMG_FUNC_PROTECTED;
+                case tsPrivate: return PARSER_IMG_FUNC_PRIVATE;
+                default: return PARSER_IMG_FUNC_PUBLIC;
+            }
 
-		case tkVariable:
-			switch (token->m_Scope)
-			{
-				case tsProtected: return PARSER_IMG_VAR_PROTECTED;
-				case tsPrivate: return PARSER_IMG_VAR_PRIVATE;
-				default: return PARSER_IMG_VAR_PUBLIC;
-			}
+        case tkVariable:
+            switch (token->m_Scope)
+            {
+                case tsProtected: return PARSER_IMG_VAR_PROTECTED;
+                case tsPrivate: return PARSER_IMG_VAR_PRIVATE;
+                default: return PARSER_IMG_VAR_PUBLIC;
+            }
 
         default: return PARSER_IMG_NONE;
     }
@@ -353,8 +355,8 @@ Token* Parser::FindTokenByName(const wxString& name, bool globalsOnly, short int
 
 Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance, short int kindMask) const
 {
-	if (!parent)
-		return FindTokenByName(name, false, kindMask);
+    if (!parent)
+        return FindTokenByName(name, false, kindMask);
     Token* result = 0;
     wxCriticalSectionLocker *lock = 0;
     {
@@ -399,27 +401,27 @@ size_t Parser::FindMatches(const wxString& s,TokenList& result,bool caseSensitiv
 
 void Parser::LinkInheritance(bool tempsOnly)
 {
-	wxCriticalSectionLocker lock(s_MutexProtection);
-	(tempsOnly ? m_pTempTokens :  m_pTokens)->RecalcData();
+    wxCriticalSectionLocker lock(s_MutexProtection);
+    (tempsOnly ? m_pTempTokens :  m_pTokens)->RecalcData();
 }
 
 void Parser::MarkFileTokensAsLocal(const wxString& filename, bool local, void* userData)
 {
-	wxCriticalSectionLocker lock(s_MutexProtection);
+    wxCriticalSectionLocker lock(s_MutexProtection);
     m_pTokens->MarkFileTokensAsLocal(filename, local, userData);
 }
 
 bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks, bool isTemp)
 {
-	ParserThreadOptions opts;
-	opts.wantPreprocessor = m_Options.wantPreprocessor;
-	opts.followLocalIncludes = m_Options.followLocalIncludes;
-	opts.followGlobalIncludes = m_Options.followGlobalIncludes;
-	opts.useBuffer = true;
-	opts.isTemp = isTemp;
-	opts.bufferSkipBlocks = bufferSkipBlocks;
-	opts.handleFunctions = false;
-	return Parse(buffer, isLocal, opts);
+    ParserThreadOptions opts;
+    opts.wantPreprocessor = m_Options.wantPreprocessor;
+    opts.followLocalIncludes = m_Options.followLocalIncludes;
+    opts.followGlobalIncludes = m_Options.followGlobalIncludes;
+    opts.useBuffer = true;
+    opts.isTemp = isTemp;
+    opts.bufferSkipBlocks = bufferSkipBlocks;
+    opts.handleFunctions = false;
+    return Parse(buffer, isLocal, opts);
 }
 
 void Parser::BatchParse(const wxArrayString& filenames)
@@ -436,28 +438,28 @@ void Parser::BatchParse(const wxArrayString& filenames)
 
 bool Parser::Parse(const wxString& filename, bool isLocal)
 {
-	ParserThreadOptions opts;
-	opts.wantPreprocessor = m_Options.wantPreprocessor;
-	opts.useBuffer = false;
-	opts.bufferSkipBlocks = false;
-	opts.bufferSkipOuterBlocks = false;
-	opts.followLocalIncludes = m_Options.followLocalIncludes;
-	opts.followGlobalIncludes = m_Options.followGlobalIncludes;
+    ParserThreadOptions opts;
+    opts.wantPreprocessor = m_Options.wantPreprocessor;
+    opts.useBuffer = false;
+    opts.bufferSkipBlocks = false;
+    opts.bufferSkipOuterBlocks = false;
+    opts.followLocalIncludes = m_Options.followLocalIncludes;
+    opts.followGlobalIncludes = m_Options.followGlobalIncludes;
 
     // feature incomplete
-//	bool isSource = FileTypeOf(filename) == ftSource;
-//	opts.handleClasses = !isSource;
-//	opts.handleEnums = !isSource;
-////	opts.handleFunctions = !isSource; // always true, so we can get the implementation info
-//	opts.handleTypedefs = !isSource;
-//	opts.handleVars = !isSource;
+//    bool isSource = FileTypeOf(filename) == ftSource;
+//    opts.handleClasses = !isSource;
+//    opts.handleEnums = !isSource;
+////    opts.handleFunctions = !isSource; // always true, so we can get the implementation info
+//    opts.handleTypedefs = !isSource;
+//    opts.handleVars = !isSource;
 
-	return Parse(UnixFilename(filename), isLocal, opts);
+    return Parse(UnixFilename(filename), isLocal, opts);
 }
 
 bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadOptions& opts)
 {
-	wxString buffOrFile = bufferOrFilename;
+    wxString buffOrFile = bufferOrFilename;
     bool result = false;
     do
     {
@@ -514,40 +516,40 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
 
 bool Parser::ParseBufferForFunctions(const wxString& buffer)
 {
-	ParserThreadOptions opts;
-	opts.wantPreprocessor = m_Options.wantPreprocessor;
-	opts.useBuffer = true;
-	opts.bufferSkipBlocks = true;
-	opts.handleFunctions = true;
-	ParserThread* thread = new ParserThread(this,
-											buffer,
-											false,
-											opts,
-											m_pTempTokens);
+    ParserThreadOptions opts;
+    opts.wantPreprocessor = m_Options.wantPreprocessor;
+    opts.useBuffer = true;
+    opts.bufferSkipBlocks = true;
+    opts.handleFunctions = true;
+    ParserThread* thread = new ParserThread(this,
+                                            buffer,
+                                            false,
+                                            opts,
+                                            m_pTempTokens);
     return thread->Parse();
 }
 
 bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
 {
-	ParserThreadOptions opts;
-//	opts.wantPreprocessor = m_Options.wantPreprocessor; // ignored
-//	opts.useBuffer = false; // ignored
-//	opts.bufferSkipBlocks = false; // ignored
-	ParserThread* thread = new ParserThread(this,
-											wxEmptyString,
-											false,
-											opts,
-											m_pTempTokens);
-	return thread->ParseBufferForUsingNamespace(buffer, result);
+    ParserThreadOptions opts;
+//    opts.wantPreprocessor = m_Options.wantPreprocessor; // ignored
+//    opts.useBuffer = false; // ignored
+//    opts.bufferSkipBlocks = false; // ignored
+    ParserThread* thread = new ParserThread(this,
+                                            wxEmptyString,
+                                            false,
+                                            opts,
+                                            m_pTempTokens);
+    return thread->ParseBufferForUsingNamespace(buffer, result);
 }
 
 bool Parser::RemoveFile(const wxString& filename)
 {
-	if(!Done())
+    if(!Done())
         return false; // Can't alter the tokens tree if parsing has not finished
     bool result = false;
-	wxString file = UnixFilename(filename);
-	{
+    wxString file = UnixFilename(filename);
+    {
         wxCriticalSectionLocker lock(s_MutexProtection);
         size_t index = m_pTokens->GetFileIndex(file);
         result = m_pTokens->m_FilesStatus.count(index);
@@ -557,23 +559,23 @@ bool Parser::RemoveFile(const wxString& filename)
         m_pTokens->m_FilesStatus.erase(index);
         m_pTokens->m_FilesToBeReparsed.erase(index);
         m_pTokens->m_modified = true;
-	}
-	return result;
+    }
+    return result;
 }
 
 bool Parser::Reparse(const wxString& filename, bool isLocal)
 {
-	if (!Done())
-		return false; // if still parsing, exit with error
-	wxString file = UnixFilename(filename);
-	if(isLocal)
+    if (!Done())
+        return false; // if still parsing, exit with error
+    wxString file = UnixFilename(filename);
+    if(isLocal)
         m_LocalFiles.insert(filename);
     else
         m_LocalFiles.erase(filename);
-	{
-	    wxCriticalSectionLocker lock(s_MutexProtection);
-	    m_pTokens->FlagFileForReparsing(file);
-	}
+    {
+        wxCriticalSectionLocker lock(s_MutexProtection);
+        m_pTokens->FlagFileForReparsing(file);
+    }
     m_NeedsReparse = true;
     m_timer.Start(reparse_timer_delay,wxTIMER_ONE_SHOT);
     return true;
@@ -582,15 +584,15 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
 void Parser::Clear()
 {
     DisconnectEvents();
-//	if(m_ShuttingDown)
-//	{
+//    if(m_ShuttingDown)
+//    {
 //        Manager::Get()->GetMessageManager()->DebugLog(_T("Terminating threads..."));
-//	}
-	TerminateAllThreads(); //
-//	if(m_ShuttingDown)
-//	{
+//    }
+    TerminateAllThreads(); //
+//    if(m_ShuttingDown)
+//    {
 //        Manager::Get()->GetMessageManager()->DebugLog(_T("Done."));
-//	}
+//    }
 
     Manager::ProcessPendingEvents();
 
@@ -601,13 +603,13 @@ void Parser::Clear()
     m_LocalFiles.clear();
     m_GlobalIncludes.clear();
 
-	if(!m_ShuttingDown)
-	{
+    if(!m_ShuttingDown)
+    {
         Manager::ProcessPendingEvents();
         ConnectEvents();
-	}
+    }
 
-	m_UsingCache = false;
+    m_UsingCache = false;
 }
 
 bool Parser::ReadFromCache(wxInputStream* f)
@@ -767,11 +769,11 @@ void Parser::AddIncludeDir(const wxString& file)
     if (base.Last() == wxFILE_SEP_PATH)
         base.RemoveLast();
 
-	if(m_IncludeDirs.Index(base) == wxNOT_FOUND)
-	{
-//    	Manager::Get()->GetMessageManager()->DebugLog(_T("Adding %s"), base.c_str());
-		m_IncludeDirs.Add(base);
-	}
+    if(m_IncludeDirs.Index(base) == wxNOT_FOUND)
+    {
+//        Manager::Get()->GetMessageManager()->DebugLog(_T("Adding %s"), base.c_str());
+        m_IncludeDirs.Add(base);
+    }
 } // end of AddIncludeDir
 
 wxString Parser::FindFirstFileInIncludeDirs(const wxString& file)
@@ -791,23 +793,23 @@ wxString Parser::FindFirstFileInIncludeDirs(const wxString& file)
 
 wxArrayString Parser::FindFileInIncludeDirs(const wxString& file,bool firstonly)
 {
-	wxArrayString FoundSet;
-	for(size_t idxSearch = 0; idxSearch < m_IncludeDirs.GetCount(); ++idxSearch)
-	{
-		wxString base = m_IncludeDirs[idxSearch];
-		wxFileName tmp = file;
-		NormalizePath(tmp,base);
-		wxString fullname = tmp.GetFullPath();
-		if(wxFileExists(fullname))
-		{
-			FoundSet.Add(fullname);
-			if(firstonly)
+    wxArrayString FoundSet;
+    for(size_t idxSearch = 0; idxSearch < m_IncludeDirs.GetCount(); ++idxSearch)
+    {
+        wxString base = m_IncludeDirs[idxSearch];
+        wxFileName tmp = file;
+        NormalizePath(tmp,base);
+        wxString fullname = tmp.GetFullPath();
+        if(wxFileExists(fullname))
+        {
+            FoundSet.Add(fullname);
+            if(firstonly)
                 break;
-		}
-	} // end for : idx : idxSearch
-//	Manager::Get()->GetMessageManager()->DebugLog(_T("Searching %s"), file.c_str());
-//	Manager::Get()->GetMessageManager()->DebugLog(_T("Found %d"), FoundSet.GetCount());
-	return FoundSet;
+        }
+    } // end for : idx : idxSearch
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Searching %s"), file.c_str());
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Found %d"), FoundSet.GetCount());
+    return FoundSet;
 } // end of FindFileInIncludeDirs
 
 void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
@@ -818,7 +820,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 //    LinkInheritance(false);
     wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, PARSER_END);
     evt.SetClientData(this);
-	wxPostEvent(m_pParent, evt);
+    wxPostEvent(m_pParent, evt);
 }
 
 wxString Parser::GetFullFileName(const wxString& src,const wxString& tgt, bool isGlobal)
@@ -845,10 +847,10 @@ void Parser::OnParseFile(const wxString& filename,int flags)
 {
     if(m_IgnoreThreadEvents)
         return;
-	if ((flags == 0 && !m_Options.followLocalIncludes) ||
-		(flags == 1 && !m_Options.followGlobalIncludes))
-		return;
-	if (filename.IsEmpty())
+    if ((flags == 0 && !m_Options.followLocalIncludes) ||
+        (flags == 1 && !m_Options.followGlobalIncludes))
+        return;
+    if (filename.IsEmpty())
         return;
     Parse(filename, flags == 0); // isLocal = (flags==0)
 }

@@ -69,45 +69,49 @@ bool LoadTokenIdxSetFromFile(wxInputStream* f,TokenIdxSet* data)
 }
 
 Token::Token()
-	:
-	m_File(0),
-	m_Line(0),
-	m_ImplFile(0),
-	m_ImplLine(0),
-	m_ImplLineStart(0),
-	m_ImplLineEnd(0),
-	m_IsOperator(false),
-	m_IsLocal(false),
-	m_IsTemp(false),
-	m_ParentIndex(-1),
-	m_pUserData(0),
-	m_pTree(0),
-	m_Self(-1)
+    :
+    m_File(0),
+    m_Line(0),
+    m_ImplFile(0),
+    m_ImplLine(0),
+    m_ImplLineStart(0),
+    m_ImplLineEnd(0),
+    m_Scope(tsUndefined),
+    m_TokenKind(tkUndefined),
+    m_IsOperator(false),
+    m_IsLocal(false),
+    m_IsTemp(false),
+    m_ParentIndex(-1),
+    m_pUserData(0),
+    m_pTree(0),
+    m_Self(-1)
 {
 }
 
 Token::Token(const wxString& name, unsigned int file, unsigned int line)
-	: m_Name(name),
-	m_File(file),
-	m_Line(line),
-	m_ImplFile(0),
-	m_ImplLine(0),
-	m_ImplLineStart(0),
-	m_ImplLineEnd(0),
-	m_IsOperator(false),
-	m_IsLocal(false),
-	m_IsTemp(false),
-	m_ParentIndex(-1),
-	m_pUserData(0),
-	m_pTree(0),
-	m_Self(-1)
+    : m_Name(name),
+    m_File(file),
+    m_Line(line),
+    m_ImplFile(0),
+    m_ImplLine(0),
+    m_ImplLineStart(0),
+    m_ImplLineEnd(0),
+    m_Scope(tsUndefined),
+    m_TokenKind(tkUndefined),
+    m_IsOperator(false),
+    m_IsLocal(false),
+    m_IsTemp(false),
+    m_ParentIndex(-1),
+    m_pUserData(0),
+    m_pTree(0),
+    m_Self(-1)
 {
-	//ctor
+    //ctor
 }
 
 Token::~Token()
 {
-	//dtor
+    //dtor
 }
 
 const wxString Token::GetParentName()
@@ -173,71 +177,71 @@ bool Token::MatchesFiles(const TokenFilesSet& files)
 
 wxString Token::GetNamespace() const
 {
-	const wxString dcolon(_T("::"));
-	wxString res;
-	Token* parentToken = m_pTree->at(m_ParentIndex);
-	while (parentToken)
-	{
-		res.Prepend(dcolon);
-		res.Prepend(parentToken->m_Name);
-		parentToken = parentToken->GetParentToken();
-	}
-	return res;
+    const wxString dcolon(_T("::"));
+    wxString res;
+    Token* parentToken = m_pTree->at(m_ParentIndex);
+    while (parentToken)
+    {
+        res.Prepend(dcolon);
+        res.Prepend(parentToken->m_Name);
+        parentToken = parentToken->GetParentToken();
+    }
+    return res;
 }
 
 void Token::AddChild(int child)
 {
-	if (child >= 0)
+    if (child >= 0)
         m_Children.insert(child);
 }
 
 bool Token::InheritsFrom(int idx) const
 {
-	if (idx < 0 || !m_pTree)
-		return false;
+    if (idx < 0 || !m_pTree)
+        return false;
     Token* token = m_pTree->at(idx);
     if(!token)
         return false;
 
-	for (TokenIdxSet::iterator it = m_DirectAncestors.begin(); it != m_DirectAncestors.end(); it++)
-	{
-		int idx2 = *it;
-		Token* ancestor = m_pTree->at(idx2);
-		if(!ancestor)
+    for (TokenIdxSet::iterator it = m_DirectAncestors.begin(); it != m_DirectAncestors.end(); it++)
+    {
+        int idx2 = *it;
+        Token* ancestor = m_pTree->at(idx2);
+        if(!ancestor)
             continue;
-		if (ancestor == token || ancestor->InheritsFrom(idx))  // ##### is this intended?
-			return true;
-	}
-	return false;
+        if (ancestor == token || ancestor->InheritsFrom(idx))  // ##### is this intended?
+            return true;
+    }
+    return false;
 }
 
 wxString Token::GetTokenKindString() const
 {
-	switch (m_TokenKind)
-	{
-		case tkClass: return _T("class");
-		case tkNamespace: return _T("namespace");
-		case tkTypedef: return _T("typedef");
-		case tkEnum: return _T("enum");
-		case tkEnumerator: return _T("enumerator");
-		case tkFunction: return _T("function");
-		case tkConstructor: return _T("constructor");
-		case tkDestructor: return _T("destructor");
-		case tkPreprocessor: return _T("preprocessor");
-		case tkVariable: return _T("variable");
-		default: return wxEmptyString; // tkUndefined
-	}
+    switch (m_TokenKind)
+    {
+        case tkClass: return _T("class");
+        case tkNamespace: return _T("namespace");
+        case tkTypedef: return _T("typedef");
+        case tkEnum: return _T("enum");
+        case tkEnumerator: return _T("enumerator");
+        case tkFunction: return _T("function");
+        case tkConstructor: return _T("constructor");
+        case tkDestructor: return _T("destructor");
+        case tkPreprocessor: return _T("preprocessor");
+        case tkVariable: return _T("variable");
+        default: return wxEmptyString; // tkUndefined
+    }
 }
 
 wxString Token::GetTokenScopeString() const
 {
-	switch (m_Scope)
-	{
-		case tsPrivate: return _T("private");
-		case tsProtected: return _T("protected");
-		case tsPublic: return _T("public");
-		default: return wxEmptyString;
-	}
+    switch (m_Scope)
+    {
+        case tsPrivate: return _T("private");
+        case tsProtected: return _T("protected");
+        case tsPublic: return _T("public");
+        default: return wxEmptyString;
+    }
 }
 
 bool Token::SerializeIn(wxInputStream* f)
