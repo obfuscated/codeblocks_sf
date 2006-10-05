@@ -42,6 +42,21 @@ distribution.
 #include <assert.h>
 #include <string.h>
 
+/*	The support for explicit isn't that universal, and it isn't really
+	required - it is used to check that the TiXmlString class isn't incorrectly
+	used. Be nice to old compilers and macro it here:
+*/
+#if defined(_MSC_VER) && (_MSC_VER >= 1200 )
+	// Microsoft visual studio, version 6 and higher.
+	#define TIXML_EXPLICIT explicit
+#elif defined(__GNUC__) && (__GNUC__ >= 3 )
+	// GCC version 3 and higher.s
+	#define TIXML_EXPLICIT explicit
+#else
+	#define TIXML_EXPLICIT
+#endif
+
+
 /*
    TiXmlString is an emulation of a subset of the std::string template.
    Its purpose is to allow compiling TinyXML on compilers with no or poor STL support.
@@ -53,7 +68,7 @@ class TiXmlString
 {
   public :
 	// The size type used
-  	typedef unsigned int size_type;
+  	typedef size_t size_type;
 
 	// Error value for find primitive
 	static const size_type npos; // = -1;
@@ -65,21 +80,21 @@ class TiXmlString
 	}
 
 	// TiXmlString copy constructor
-	TiXmlString (const TiXmlString & copy)
+	TiXmlString ( const TiXmlString & copy) : rep_(0)
 	{
 		init(copy.length());
 		memcpy(start(), copy.data(), length());
 	}
 
 	// TiXmlString constructor, based on a string
-	TiXmlString (const char * copy)
+	TIXML_EXPLICIT TiXmlString ( const char * copy) : rep_(0)
 	{
 		init( static_cast<size_type>( strlen(copy) ));
 		memcpy(start(), copy, length());
 	}
 
 	// TiXmlString constructor, based on a string
-	TiXmlString (const char * str, size_type len)
+	TIXML_EXPLICIT TiXmlString ( const char * str, size_type len) : rep_(0)
 	{
 		init(len);
 		memcpy(start(), str, len);
