@@ -1005,7 +1005,7 @@ void ConfigManager::Read(const wxString& name, wxArrayString *arrayString)
     TiXmlNode *curr = 0;
     if(asNode)
     {
-        while((curr = asNode->IterateChildren("s", curr)->ToElement()))
+        while(curr = asNode->IterateChildren("s", curr))
             arrayString->Add(cbC2U(curr->FirstChild()->ToText()->Value()));
     }
 }
@@ -1072,7 +1072,7 @@ wxArrayString ConfigManager::EnumerateSubPaths(const wxString& path)
     TiXmlElement *curr = 0;
     if(e)
     {
-        while((curr = e->IterateChildren(curr)->ToElement()))
+        while(e->IterateChildren(curr) && (curr = e->IterateChildren(curr)->ToElement()))
         {
             wxChar c = *(cbC2U(curr->Value()));
             if(c < _T('A') || c > _T('Z')) // first char must be a letter, uppercase letters are key names
@@ -1154,7 +1154,7 @@ wxArrayString ConfigManager::EnumerateKeys(const wxString& path)
     TiXmlElement *curr = 0;
     if(e)
     {
-        while((curr = e->IterateChildren(curr)->ToElement()))
+        while(e->IterateChildren(curr) && (curr = e->IterateChildren(curr)->ToElement()))
         {
             wxChar c = *(cbC2U(curr->Value()));
             if(c >= _T('A') && c <= _T('Z')) // opposite of the above
@@ -1223,7 +1223,7 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::StringToS
     TiXmlNode *curr = 0;
     if(mNode)
     {
-        while((curr = mNode->IterateChildren(curr)->ToElement()))
+        while((curr = mNode->IterateChildren(curr)))
             (*map)[cbC2U(curr->Value())] = cbC2U(curr->FirstChild()->ToText()->Value());
     }
 }
@@ -1269,7 +1269,7 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::IntToStri
     long tmp;
     if(mNode)
     {
-        while((curr = mNode->IterateChildren(curr)->ToElement()))
+        while((curr = mNode->IterateChildren(curr)))
         {
             cbC2U(curr->Value()).Mid(1).ToLong(&tmp);
             (*map)[tmp] = cbC2U(curr->FirstChild()->ToText()->Value());
@@ -1321,7 +1321,7 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::StringSet
     TiXmlNode *curr = 0;
     if(mNode)
     {
-        while((curr = mNode->IterateChildren(curr)->ToElement()))
+        while((curr = mNode->IterateChildren(curr)))
             set->insert(cbC2U(curr->FirstChild()->ToText()->Value()));
     }
 }

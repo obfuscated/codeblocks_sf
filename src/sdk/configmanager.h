@@ -278,7 +278,7 @@ public:
         TiXmlHandle ph(AssertPath(key));
         TiXmlElement* e = 0;
         if(TiXmlNode *n = ph.FirstChild(key.mb_str(wxConvUTF8)).FirstChild("objmap").Node())
-            while(e = n->IterateChildren(e)->ToElement())
+            while(n->IterateChildren(e) && (e = n->IterateChildren(e)->ToElement()))
             {
                 T *obj = new T;
                 obj->SerializeIn(wxBase64::Decode(cbC2U(e->FirstChild()->ToText()->Value())));
