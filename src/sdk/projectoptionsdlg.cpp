@@ -829,7 +829,7 @@ void ProjectOptionsDlg::OnAddScript(wxCommandEvent& event)
                     fname.GetPath(),
                     fname.GetFullName(),
                     _("Script files (*.script)|*.script"),
-                    wxOPEN | wxHIDE_READONLY);
+                    wxOPEN);
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)

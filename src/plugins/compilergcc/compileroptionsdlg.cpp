@@ -1740,7 +1740,7 @@ void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)
                             #else
                             _("All files (*)|*"),
                             #endif
-                            wxOPEN | wxFILE_MUST_EXIST | wxHIDE_READONLY);
+                            wxOPEN | wxFILE_MUST_EXIST);
     dlg->SetFilterIndex(0);
 
     PlaceWindow(dlg);

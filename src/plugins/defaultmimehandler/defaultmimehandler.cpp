@@ -57,7 +57,7 @@ void DefaultMimeHandler::OnAttach()
         wxArrayString array = GetArrayFromString(conf->Read(list[i]), _T(";"), false);
         if (array.GetCount() < 3)
             continue;
-        
+
         cbMimeType* mt = new cbMimeType;
 
         // older formats:
@@ -236,7 +236,7 @@ wxString DefaultMimeHandler::ChooseExternalProgram()
                             wxEmptyString,
                             wxEmptyString,
                             FileFilters::GetFilterAll(),
-                            wxOPEN | wxHIDE_READONLY);
+                            wxOPEN);
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
         return dlg->GetPath();
