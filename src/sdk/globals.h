@@ -75,6 +75,11 @@ enum FileVisualState
     fvsVcOutOfDate,
     fvsVcUpToDate,
     fvsVcRequiresLock,
+    fvsVcExternal,
+    fvsVcGotLock,
+    fvsVcLockStolen,
+    fvsVcMismatch,
+    fvsVcNonControlled,
 
     /// do *not* use this, it exists just to know the number of items...
     fvsLast

@@ -590,22 +590,16 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     // create file
     f = new ProjectFile(this);
     bool localCompile, localLink;
-    wxFileName fname;
+    wxFileName fname(filename);
     wxString ext;
 
-    f->project = this;
-    f->editorOpen = false;
-    f->editorPos = 0;
-    f->editorTopLine = 0;
-    f->weight = weight;
-
     FileType ft = FileTypeOf(filename);
-    fname = filename; //UnixFilename(filename);
+
     ext = filename.AfterLast(_T('.')).Lower();
-    if (ext.Matches(FileFilters::C_EXT) || ext.Matches(FileFilters::CC_EXT))
+    if (ext.IsSameAs(FileFilters::C_EXT) || ext.IsSameAs(FileFilters::CC_EXT))
         f->compilerVar = _T("CC");
 #ifdef __WXMSW__
-    else if (ext.Matches(FileFilters::RESOURCE_EXT))
+    else if (ext.IsSameAs(FileFilters::RESOURCE_EXT))
         f->compilerVar = _T("WINDRES");
 #endif
     else

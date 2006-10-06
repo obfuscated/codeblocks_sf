@@ -29,17 +29,17 @@
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(FilesList);
 
-ProjectFile::ProjectFile(cbProject* prj)
-    : project(prj)
+ProjectFile::ProjectFile(cbProject* prj) :
+    compile(false),
+    link(false),
+    weight(50),
+    editorOpen(false),
+    editorPos(0),
+    editorTopLine(0),
+    editorTabPos(0),
+    project(prj),
+    m_VisualState(fvsNormal)
 {
-    compile = false;
-    link = false;
-    weight = 50;
-    editorOpen = false;
-    editorPos = 0;
-    editorTopLine = 0;
-    editorTabPos = 0;
-    m_VisualState = fvsNormal;
 }
 
 ProjectFile::~ProjectFile()
