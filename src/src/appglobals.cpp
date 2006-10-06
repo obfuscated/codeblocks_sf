@@ -32,6 +32,8 @@ const wxString g_AppContactEmail		= _T("info@codeblocks.org");
   const wxString g_AppPlatform = _T("OS/2");
 #elif defined(__WXMAC__)
   const wxString g_AppPlatform = _T("Mac OS X");
+#elif defined(__APPLE__)
+  const wxString g_AppPlatform = _T("Darwin");
 #elif defined(__FreeBSD__)
   const wxString g_AppPlatform = _T("FreeBSD");
 #elif defined(__UNIX__)
