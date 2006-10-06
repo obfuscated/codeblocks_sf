@@ -1888,11 +1888,15 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
     if (!ed || !project)
         return;
 
+    wxString oldname = ed->GetFilename();
     if (cbMessageBox(_("Do you want to add this new file in the active project (has to be saved first)?"),
                     _("Add file to project"),
                     wxYES_NO | wxICON_QUESTION) == wxID_YES &&
         ed->SaveAs() && ed->IsOK())
     {
+        wxString newname = ed->GetFilename();
+        if (oldname != newname)
+            Manager::Get()->GetEditorManager()->RenameTreeFile(oldname, newname);
         wxArrayInt targets;
         if (Manager::Get()->GetProjectManager()->AddFileToProject(ed->GetFilename(), project, targets) != 0)
         {
@@ -2488,7 +2492,7 @@ void MainFrame::OnEditLinePaste(wxCommandEvent& event)
     {
         //We want to undo all in one step
         ed->GetControl()->BeginUndoAction();
-        
+
         int pos = ed->GetControl()->GetCurrentPos();
         int line = ed->GetControl()->LineFromPosition(pos);
         ed->GetControl()->GotoLine(line);
@@ -2496,7 +2500,7 @@ void MainFrame::OnEditLinePaste(wxCommandEvent& event)
         ed->GetControl()->Paste();
         pos = ed->GetControl()->GetCurrentPos();
         ed->GetControl()->GotoPos(pos+column);
-        
+
         ed->GetControl()->EndUndoAction();
     }
 }

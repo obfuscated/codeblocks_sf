@@ -156,6 +156,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void OnTreeItemRightClick(wxTreeEvent &event);
         void SetZoom(int zoom);
         int GetZoom()const;
+        bool RenameTreeFile(const wxString& oldname, const wxString& newname);
 
     protected:
         // m_EditorsList access
@@ -173,7 +174,6 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void DeleteItemfromTree(wxTreeItemId item);
         void DeleteFilefromTree(const wxString& filename);
         void AddFiletoTree(EditorBase* ed);
-        bool RenameTreeFile(const wxString& oldname, const wxString& newname);
         void InitPane();
 
         AutoCompleteMap m_AutoCompleteMap;
