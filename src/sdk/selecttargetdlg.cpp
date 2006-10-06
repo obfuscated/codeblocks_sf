@@ -119,7 +119,7 @@ void SelectTargetDlg::OnHostApplicationButtonClick(wxCommandEvent& /*event*/)
                             #else
                             _("All files (*)|*"),
                             #endif
-                            wxOPEN | wxFILE_MUST_EXIST);
+                            wxOPEN | wxFILE_MUST_EXIST | wxHIDE_READONLY);
         dlg->SetFilterIndex(0);
         PlaceWindow(dlg);
         if (dlg->ShowModal() != wxID_OK)

@@ -1646,7 +1646,7 @@ void DebuggerGDB::OnAddSymbolFile(wxCommandEvent& event)
                                     _T(""),
                                     _T(""),
                                     _("Executables and libraries|*.exe;*.dll"),
-                                    wxOPEN | wxFILE_MUST_EXIST);
+                                    wxOPEN | wxFILE_MUST_EXIST | wxHIDE_READONLY);
     if (file.IsEmpty())
         return;
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Adding symbol file: %s"), file.c_str());

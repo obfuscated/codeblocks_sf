@@ -143,7 +143,7 @@ void DebuggerTree::EndUpdateTree()
         m_pTree->AddRoot(m_RootEntry.name, -1, -1, new WatchTreeData(0));
         m_RootEntry.watch = 0;
     }
-
+    
     BuildTree(m_RootEntry, m_pTree->GetRootItem());
 }
 
@@ -152,10 +152,10 @@ void DebuggerTree::BuildTree(WatchTreeEntry& entry, wxTreeItemId parent)
     // update item's text
     if (m_pTree->GetItemText(parent) != entry.name)
         m_pTree->SetItemText(parent, entry.name);
-
+    
     // iterate all item's children (if any) and update their values
     // any excess items are deleted and then any remaining entries are added
-
+    
 #if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
     long int cookie = 0;
 #else
@@ -392,7 +392,7 @@ void DebuggerTree::BuildTreeCDB(Watch* watch, const wxString& infoText)
 {
     new wxTipWindow(m_pTree, _T("Watches are currently disabled for CDB.\n"
                                 "We are sorry for the inconvenience..."), 250);
-
+        
 //    wxTreeItemId parent = m_pTree->GetRootItem();
 //    wxTreeItemId node = parent;
 //
@@ -586,7 +586,7 @@ void DebuggerTree::OnLoadWatchFile(wxCommandEvent& event)
                     _T(""),
                     _T(""),
                     _T("Watch files (*.watch)|*.watch|Any file (*)|*"),
-                    wxOPEN | wxFILE_MUST_EXIST | wxCHANGE_DIR);
+                    wxOPEN | wxFILE_MUST_EXIST | wxCHANGE_DIR | wxHIDE_READONLY);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;

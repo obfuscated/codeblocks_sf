@@ -1177,7 +1177,7 @@ wxString MainFrame::ShowOpenFileDialog(const wxString& caption, const wxString& 
                             wxEmptyString,
                             wxEmptyString,
                             filter,
-                            wxOPEN);
+                            wxOPEN | wxHIDE_READONLY);
     wxString sel;
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
@@ -1969,7 +1969,7 @@ void MainFrame::OnFileOpen(wxCommandEvent& event)
                             Path,
                             wxEmptyString,
                             Filters,
-                            wxOPEN | wxMULTIPLE);
+                            wxOPEN | wxMULTIPLE | wxHIDE_READONLY);
     dlg->SetFilterIndex(StoredIndex);
 
     PlaceWindow(dlg);
@@ -2488,7 +2488,7 @@ void MainFrame::OnEditLinePaste(wxCommandEvent& event)
     {
         //We want to undo all in one step
         ed->GetControl()->BeginUndoAction();
-
+        
         int pos = ed->GetControl()->GetCurrentPos();
         int line = ed->GetControl()->LineFromPosition(pos);
         ed->GetControl()->GotoLine(line);
@@ -2496,7 +2496,7 @@ void MainFrame::OnEditLinePaste(wxCommandEvent& event)
         ed->GetControl()->Paste();
         pos = ed->GetControl()->GetCurrentPos();
         ed->GetControl()->GotoPos(pos+column);
-
+        
         ed->GetControl()->EndUndoAction();
     }
 }
