@@ -586,6 +586,7 @@ class GdbCmd_Watch : public DebuggerCmd
                     case Hex:           m_Cmd << _T("/x "); break;
                     case Binary:        m_Cmd << _T("/t "); break;
                     case Char:          m_Cmd << _T("/c "); break;
+                    case Float:         m_Cmd << _T("/f "); break;
                     default:            break;
                 }
                 m_Cmd << m_pWatch->keyword;

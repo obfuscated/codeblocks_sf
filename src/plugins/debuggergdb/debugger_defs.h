@@ -149,6 +149,7 @@ enum WatchFormat
     Hex, ///< Variable should be displayed as hexadecimal (e.g. 0xFFFFFFFF).
     Binary, ///< Variable should be displayed as binary (e.g. 00011001).
     Char, ///< Variable should be displayed as a single character (e.g. 'x').
+    Float, ///< Variable should be displayed as floating point number (e.g. 14.35)
 
     // do not remove these
     Last, ///< used for iterations
