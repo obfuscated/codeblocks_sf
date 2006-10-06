@@ -145,7 +145,7 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         wxFileName fname(pluginFilename);
         fname.SetExt(_T("zip"));
         wxString actual = fname.GetFullName();
-        #ifdef __WXGTK__
+        #if defined(__WXGTK__) || defined(__WXMAC__)
         // remove 'lib' prefix from plugin name (if any)
         if (actual.StartsWith(_T("lib")))
             actual.Remove(0, 3);
