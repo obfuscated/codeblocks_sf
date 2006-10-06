@@ -45,11 +45,10 @@ bool TinyXML::SaveDocument(const wxString& filename, TiXmlDocument* doc)
 
 	TiXmlPrinter Printer;
 	doc->Accept(&Printer);
-    const char* buffer = Printer.CStr();
 
     wxTempFile file(filename);
     if(file.IsOpened())
-        if(file.Write(buffer, strlen(buffer)) && file.Commit())
+        if(file.Write(Printer.CStr(), Printer.Size()) && file.Commit())
             return true;
 
     return false;
