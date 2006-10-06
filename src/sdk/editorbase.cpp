@@ -46,6 +46,7 @@ const int idSaveMe = wxNewId();
 const int idSaveAll = wxNewId();
 const int idSwitchTo = wxNewId();
 const int idGoogle = wxNewId();
+const int idGoogleCode = wxNewId();
 const int idMsdn = wxNewId();
 
 BEGIN_EVENT_TABLE(EditorBase, wxPanel)
@@ -56,6 +57,7 @@ BEGIN_EVENT_TABLE(EditorBase, wxPanel)
     EVT_MENU(idSaveMe, EditorBase::OnContextMenuEntry)
     EVT_MENU(idSaveAll, EditorBase::OnContextMenuEntry)
     EVT_MENU(idGoogle, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idGoogleCode, EditorBase::OnContextMenuEntry)
     EVT_MENU(idMsdn, EditorBase::OnContextMenuEntry)
 END_EVENT_TABLE()
 
@@ -229,8 +231,9 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)   
             text = control->GetTextRange(control->WordStartPosition(pos, true), control->WordEndPosition(pos, true));
         }
 
-        popup->Append(idGoogle, _("Search Google for \"") + text + _("\""));
+        popup->Append(idGoogleCode, _("Search Google Code for \"") + text + _("\""));
         popup->Append(idMsdn, _("Search MSDN for \"") + text + _("\""));
+        popup->Append(idGoogle, _("Search the Internet for \"") + text + _("\""));
         lastWord = text;
 
         wxMenu* switchto = CreateContextSubMenu(idSwitchTo);
@@ -322,7 +325,11 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
         m_SwitchTo.clear();
     }
 #if wxABI_VERSION >= 20601
-    else if (id == idGoogle)/////////////////// TODO: UrlEncode
+    else if (id == idGoogleCode)
+    {
+        wxLaunchDefaultBrowser(wxString(_T("http://google.com/codesearch?q=")) << URLEncode(lastWord));
+    }
+    else if (id == idGoogle)
     {
         wxLaunchDefaultBrowser(wxString(_T("http://www.google.com/search?q=")) << URLEncode(lastWord));
     }
