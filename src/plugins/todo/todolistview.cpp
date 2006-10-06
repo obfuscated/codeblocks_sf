@@ -123,6 +123,7 @@ void ToDoListView::FillList()
 			GetListControl()->SetItem(idx, 3, item.priorityStr);
 			GetListControl()->SetItem(idx, 4, item.lineStr);
 			GetListControl()->SetItem(idx, 5, item.filename);
+			GetListControl()->SetItemData(idx, i);
 		}
 	}
 	GetListControl()->Thaw();
@@ -375,8 +376,9 @@ void ToDoListView::OnListItemSelected(wxListEvent& event)
 {
     if (event.GetIndex() == -1)
         return;
-    wxString file = m_Items[event.GetIndex()].filename;
-    long int line = m_Items[event.GetIndex()].line;
+    unsigned int idx = GetListControl()->GetItemData(event.GetIndex());
+    wxString file = m_Items[idx].filename;
+    long int line = m_Items[idx].line;
 
     if (file.IsEmpty() || line <= 0)
         return;
