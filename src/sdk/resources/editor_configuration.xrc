@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxDialog" name="dlgConfigureEditor">
     <title>Configure editor</title>
@@ -575,7 +575,7 @@
                           </object>
                         </object>
                         <object class="sizeritem">
-                          <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                          <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                           <object class="wxSlider" name="slCaretPeriod">
                             <value>500</value>
                             <max>500</max>
