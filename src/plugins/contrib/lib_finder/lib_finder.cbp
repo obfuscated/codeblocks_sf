@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="5" />
+	<Project>
+		<Option title="Library finder" />
+		<Option pch_mode="2" />
+		<Option default_target="" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\lib_finder.dll" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\lib_finder" />
+				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\lib_finder" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option projectResourceIncludeDirsRelation="0" />
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="-pipe" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-include pch.h" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-mthreads" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DTIXML_USE_STL" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add directory="$(#WX.include)" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX)\contrib\include" />
+			<Add directory="$(#CB.include)" />
+			<Add directory="$(#CB.include)\tinyxml" />
+			<Add directory="$(#CB.include)\wxscintilla\include" />
+			<Add directory="$(#CB)\sdk" />
+			<Add directory="$(#CB)\sdk\tinyxml" />
+			<Add directory="$(#CB)\sdk\wxscintilla\include" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add library="wxmsw26$(WX_SUFFIX)" />
+			<Add library="txml" />
+			<Add library="codeblocks" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="$(#CB.lib)" />
+			<Add directory="$(#CB)\devel" />
+			<Add directory="$(#CB)\sdk\tinyxml" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="update.bat" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="README.txt">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="dirlistdlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="dirlistdlg.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib_finder.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib_finder.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib_finder\codeblocks_sdk.xml">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib_finder\glfw.xml">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib_finder\wxwidgets.xml">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="libraryconfig.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="libraryconfigmanager.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="libraryconfigmanager.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="libraryresult.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="pch.h">
+			<Option compilerVar="CPP" />
+			<Option link="0" />
+			<Option weight="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="processingdlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="processingdlg.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="resultmap.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="resultmap.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="manifest.xml">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Extensions>
+<wxsmith>
+	<dialog wxs_file="DirListDlg.wxs" class="DirListDlg" src_file="dirlistdlg.cpp" header_file="dirlistdlg.h" xrc_file="" edit_mode="Source" />
+	<dialog wxs_file="ProcessingDlg.wxs" class="ProcessingDlg" src_file="processingdlg.cpp" header_file="processingdlg.h" xrc_file="" edit_mode="Source" />
+	<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
+</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

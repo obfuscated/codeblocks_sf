@@ -192,6 +192,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/envvars/Makefile
 	src/plugins/contrib/help_plugin/Makefile
 	src/plugins/contrib/keybinder/Makefile
+	src/plugins/contrib/lib_finder/Makefile
 	src/plugins/contrib/profiler/Makefile
 	src/plugins/contrib/profiler/resources/Makefile
 	src/plugins/contrib/source_exporter/Makefile

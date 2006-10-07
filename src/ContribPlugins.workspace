@@ -11,6 +11,7 @@
 		<Project filename="plugins\contrib\envvars\envvars.cbp" />
 		<Project filename="plugins\contrib\help_plugin\help-plugin.cbp" />
 		<Project filename="plugins\contrib\keybinder\keybinder.cbp" />
+		<Project filename="plugins\contrib\lib_finder\lib_finder.cbp" />
 		<Project filename="plugins\contrib\profiler\cbprofiler.cbp" />
 		<Project filename="plugins\contrib\source_exporter\Exporter.cbp" />
 		<Project filename="plugins\contrib\wxSmith\wxSmith.cbp" />

@@ -10,6 +10,7 @@
 		<Project filename="plugins/contrib/envvars/envvars-unix.cbp" />
 		<Project filename="plugins/contrib/help_plugin/help-plugin-unix.cbp" />
 		<Project filename="plugins/contrib/keybinder/keybinder-unix.cbp" />
+		<Project filename="plugins/contrib/lib_finder/lib_finder-unix.cbp" />
 		<Project filename="plugins/contrib/profiler/cbprofiler.unix.cbp" />
 		<Project filename="plugins/contrib/source_exporter/Exporter-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith-unix.cbp" />

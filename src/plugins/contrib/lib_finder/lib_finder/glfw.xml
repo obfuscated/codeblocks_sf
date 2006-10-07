@@ -1,0 +1,17 @@
+<library name="GL Framework" global_var="glfw">
+
+    <file name="include/GL/glfw.h"/>
+
+    <config new_name="OpenGL Framework (Windows DLL)">
+        <file name="lib/win32/libglfwdll.a"/>
+        <path lib="$(BASE_DIR)/lib/win32"/>
+        <flags lflags="-lglfwdll -lopengl32 -lglu32 -lkernel32 -luser32 -lgdi32"/>
+    </config>
+
+    <config new_name="OpenGL Framework (Windows, static library)">
+        <file name="lib/win32/libglfw.a"/>
+        <path lib="$(BASE_DIR)/lib/win32"/>
+        <flags lflags="-lglfw -lopengl32 -lglu32 -lkernel32 -luser32 -lgdi32"/>
+    </config>
+
+</library>

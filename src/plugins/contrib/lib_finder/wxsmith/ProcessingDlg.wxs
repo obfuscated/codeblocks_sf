@@ -1,0 +1,44 @@
+<resource>
+    <object class="wxDialog" name="ProcessingDlg">
+        <style>wxCAPTION</style>
+        <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
+            <rows>0</rows>
+            <cols>1</cols>
+            <vgap>0</vgap>
+            <hgap>0</hgap>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxALL|wxALIGN_CENTER</flag>
+                <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
+                    <orient>wxVERTICAL</orient>
+                    <label>Processing</label>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxStaticText" name="ID_STATICTEXT1" variable="Status" member="yes">
+                            <label>Waiting</label>
+                            <style>wxST_NO_AUTORESIZE</style>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxALIGN_CENTER</flag>
+                        <object class="wxGauge" name="ID_GAUGE1" variable="Gauge1" member="yes">
+                            <size>288,12</size>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER</flag>
+                <object class="wxButton" name="ID_BUTTON1" variable="StopBtn" member="yes">
+                    <label>Stop</label>
+                    <handler entry="EVT_BUTTON" function="OnButton1Click" />
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

@@ -186,6 +186,7 @@ fi
 %{pkgdata}/plugins/libexporter.*
 %{pkgdata}/plugins/libhelp_plugin.*
 %{pkgdata}/plugins/libkeybinder.*
+%{pkgdata}/plugins/liblib_finder.*
 %{pkgdata}/plugins/libprofiler.*
 %{pkgdata}/plugins/libwxsmith.*
 

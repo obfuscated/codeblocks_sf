@@ -1,0 +1,17 @@
+<library name="wxWidgets" global_var="wx">
+    <file name="include/wx/wx.h"/>
+    <file name="include/wx/wxprec.h"/>
+
+    <config new_name="wxWidgets 2.6 Monolithic DLL (Configuration: $(CONFIG_NAME))">
+        <file name="lib/*$(CONFIG_NAME)/msw/wx/setup.h"/>
+        <file name="lib/*$(CONFIG_NAME)/libwxmsw26.a"/>
+        <path include="$(BASE_DIR)/include"/>
+        <path include="$(BASE_DIR)/contrib/include"/>
+        <path include="$(BASE_DIR)/lib/$(CONFIG_NAME)/msw"/>
+        <path lib="$(BASE_DIR)/lib/$(CONFIG_NAME)"/>
+        <path obj="$(BASE_DIR)/include"/>
+        <flags cflags="-DHAVE_W32API_H -D__WXMSW__ -DWXUSINGDLL"/>
+        <flags lflags="-lwxmsw26"/>
+    </config>
+
+</library>
