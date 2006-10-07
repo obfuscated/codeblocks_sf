@@ -101,8 +101,9 @@ int lib_finder::Execute()
 
 void lib_finder::SetGlobalVar(LibraryResult* Res)
 {
-    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("global_uservars"));
-    wxString curr = Res->GlobalVar;
+    ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("gcv"));
+    wxString activeSet = cfg->Read(_T("/active"));
+    wxString curr = _T("/sets/") + activeSet + _T("/") + Res->GlobalVar;
 
     cfg->Write(curr + _T("/base"),    Res->BasePath);
     cfg->Write(curr + _T("/include"), Res->IncludePath);
