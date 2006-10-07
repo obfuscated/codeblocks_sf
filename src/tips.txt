@@ -10,3 +10,4 @@ You can press F2 and Shift-F2 to hide the messages and manager pane respectively
 You can easily find/open files as you type in the project tree by pressing ALT-G. (similar to desktop-search)
 You can close all open files by pressing Ctrl-Shift-F4
 You can close a tab by clicking it with the middle mouse button
+You can perform a quick search to Google, Google Code or MSDN by holding Ctrl and right-clicking the text you want to search.
