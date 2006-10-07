@@ -590,6 +590,8 @@ class GdbCmd_Watch : public DebuggerCmd
                     default:            break;
                 }
                 m_Cmd << m_pWatch->keyword;
+                if (m_pWatch->array_count)
+                    m_Cmd << wxString::Format(_T("[%d]@%d"), m_pWatch->array_start, m_pWatch->array_count);
             }
             else
             {
