@@ -1,11 +1,14 @@
 #ifndef DIRLISTDLG_H
 #define DIRLISTDLG_H
 
-#include <wx/wxprec.h>
-
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
+
+#include <wx/arrstr.h>
+
+// NOTE : once the new wxSmith is up and running these includes should be
+// moved to the cpp, forward declarations is what we need here
 
 //(*Headers(DirListDlg)
 #include <wx/button.h>
@@ -14,6 +17,8 @@
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
 //*)
+
+class wxCommandEvent;
 
 class DirListDlg: public wxDialog
 {
