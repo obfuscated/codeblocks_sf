@@ -1716,7 +1716,18 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
 #endif
                 s_LastNS = token->GetNamespace();
                 s_LastPROC = token->m_Name;
-                s_LastResult = control->PositionFromLine(token->m_ImplLineStart);
+                s_LastResult = control->PositionFromLine(token->m_ImplLine);
+
+                // locate function's opening brace
+                while (true)
+                {
+                    wxChar ch = control->GetCharAt(s_LastResult);
+                    if (ch == _T('{'))
+                        break;
+                    else if (ch == 0)
+                        return -1;
+                    ++s_LastResult;
+                }
 
                 if (nameSpace) *nameSpace = s_LastNS;
                 if (procName) *procName = s_LastPROC;
