@@ -127,12 +127,14 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
             cbThrow(wxString(_T("Error accessing file.")));
 
     if(doc->ErrorId())
-        cbThrow(wxString(_T("TinyXML error:\n")) << cbC2U(doc->ErrorDesc()));
+    {
+        cbThrow(wxString::Format(_T("TinyXML error: %s\nAt row %d, column: %d."), cbC2U(doc->ErrorDesc()).c_str(), doc->ErrorRow(), doc->ErrorCol()));
+    }
 
     TiXmlElement* docroot = doc->FirstChildElement("CodeBlocksConfig");
 
     if(doc->ErrorId())
-        cbThrow(wxString(_T("TinyXML error:\n")) << cbC2U(doc->ErrorDesc()));
+        cbThrow(wxString::Format(_T("TinyXML error: %s\nAt row %d, column: %d."), cbC2U(doc->ErrorDesc()).c_str(), doc->ErrorRow(), doc->ErrorCol()));
 
     const char *vers = docroot->Attribute("version");
     if(!vers || atoi(vers) != 1)
@@ -295,7 +297,7 @@ ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
         if(!docroot)
         {
             wxString err(_("Fatal error parsing supplied configuration file.\nParser error message:\n"));
-            err << cbC2U(doc->ErrorDesc());
+            err << wxString::Format(_T("%s\nAt row %d, column: %d."), cbC2U(doc->ErrorDesc()).c_str(), doc->ErrorRow(), doc->ErrorCol());
             cbThrow(err);
         }
     }
@@ -748,7 +750,17 @@ void ConfigManager::Write(const wxString& name,  const wxString& value, bool ign
     TiXmlElement *str = GetUniqElement(e, key);
 
     TiXmlElement *s = GetUniqElement(str, _T("str"));
-    SetNodeText(s, TiXmlText(value.mb_str(wxConvUTF8)));
+
+    // Convert any < and > to XML entities or else the configuration will
+    // not be able to open again...
+    // This first happened to me when I tried to find a "<p>". When the
+    // find dialog saved my last search in the configuration, I couldn't
+    // launch C::B again.
+    wxString convert(value);
+    convert.Replace(_T("<"), _T("&lt;"));
+    convert.Replace(_T(">"), _T("&gt;"));
+
+    SetNodeText(s, TiXmlText(convert.mb_str(wxConvUTF8)));
 }
 
 void ConfigManager::Write(const wxString& key, const char* str)
