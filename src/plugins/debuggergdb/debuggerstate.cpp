@@ -77,9 +77,12 @@ void DebuggerState::SetupBreakpointIndices()
 // so we check this here and use the file's relative filename if possible.
 wxString DebuggerState::ConvertToValidFilename(const wxString& filename)
 {
+    wxString fname = filename;
+    fname.Replace(_T("\\"), _T("/"));
+
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     if (!prj)
-        return filename;
+        return fname;
 
     bool isAbsolute = false;
 #ifdef __WXMSW__
@@ -90,13 +93,17 @@ wxString DebuggerState::ConvertToValidFilename(const wxString& filename)
     isAbsolute = filename.GetChar(0) == _T('/') ||
                 filename.GetChar(0) == _T('~');
 #endif
+
     if (isAbsolute)
     {
         ProjectFile* pf = prj->GetFileByFilename(UnixFilename(filename), false, true);
-        if (pf && pf->relativeFilename.StartsWith(_T("..")))
-            return pf->relativeFilename;
+        if (pf)
+        {
+            fname = pf->relativeFilename;
+            fname.Replace(_T("\\"), _T("/"));
+        }
     }
-    return filename;
+    return fname;
 }
 
 cbProject* DebuggerState::FindProjectForFile(const wxString& file)

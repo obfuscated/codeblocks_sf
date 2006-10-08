@@ -351,14 +351,12 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                 if (m_BP->func.IsEmpty())
                 {
                     wxString out = m_BP->filename;
-                    DebuggerGDB::ConvertToGDBFile(out);
-                    QuoteStringIfNeeded(out);
                     // we add one to line,  because scintilla uses 0-based line numbers, while gdb uses 1-based
                     if (!m_BP->temporary)
                         m_Cmd << _T("break ");
                     else
                         m_Cmd << _T("tbreak ");
-                    m_Cmd << out << _T(":") << wxString::Format(_T("%d"), m_BP->line + 1);
+                    m_Cmd << _T('"') << out << _T(":") << wxString::Format(_T("%d"), m_BP->line + 1) << _T('"');
                 }
                 //GDB workaround
                 //Use function name if this is C++ constructor/destructor
