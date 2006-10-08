@@ -152,6 +152,37 @@
         <flag>wxLEFT|wxTOP|wxGROW</flag>
         <border>8</border>
       </object>
+      <object class="sizeritem">
+        <object class="wxStaticBoxSizer">
+          <label>Display watched arrays on a single line:</label>
+          <orient>wxVERTICAL</orient>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  <label>If number of elements is less than or equal to:</label>
+                </object>
+                <flag>wxALIGN_CENTRE_VERTICAL</flag>
+              </object>
+              <object class="spacer">
+                <size>5,0</size>
+              </object>
+              <object class="sizeritem">
+                <object class="wxSpinCtrl" name="spnArrayElems">
+                  <value>8</value>
+                  <min>0</min>
+                  <max>128</max>
+                </object>
+              </object>
+            </object>
+            <flag>wxALL|wxGROW</flag>
+            <border>4</border>
+          </object>
+        </object>
+        <flag>wxLEFT|wxTOP|wxGROW</flag>
+        <border>8</border>
+      </object>
     </object>
   </object>
 </resource>

@@ -143,7 +143,7 @@ void DebuggerTree::EndUpdateTree()
         m_pTree->AddRoot(m_RootEntry.name, -1, -1, new WatchTreeData(0));
         m_RootEntry.watch = 0;
     }
-    
+
     BuildTree(m_RootEntry, m_pTree->GetRootItem());
 }
 
@@ -152,10 +152,10 @@ void DebuggerTree::BuildTree(WatchTreeEntry& entry, wxTreeItemId parent)
     // update item's text
     if (m_pTree->GetItemText(parent) != entry.name)
         m_pTree->SetItemText(parent, entry.name);
-    
+
     // iterate all item's children (if any) and update their values
     // any excess items are deleted and then any remaining entries are added
-    
+
 #if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
     long int cookie = 0;
 #else
@@ -305,7 +305,7 @@ int DebuggerTree::FindCommaPos(const wxString& str)
     return -1;
 }
 
-void DebuggerTree::ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& text)
+void DebuggerTree::ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& text, long array_index)
 {
 #define MIN(a,b) (a < b ? a : b)
     if (text.IsEmpty())
@@ -341,6 +341,33 @@ void DebuggerTree::ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& tex
         }
         else
         {
+            // display array on a single line?
+            // normal (multiple lines) display is taken care below, with array indexing
+            if (watch &&
+                watch->is_array &&
+                braceOpenPos != 0xFFFFFE &&
+                braceClosePos != 0xFFFFFE)
+            {
+                wxString tmp = text.Left(braceClosePos + 1);
+                // if more than one opening/closing brace, then it's a complex array so
+                // ignore single-line
+                if (text.Freq(_T('{')) == 1 && text.Freq(_T('}')) == 1)
+                {
+                    // array on single line for up to 8 (by default) elements
+                    // if more elements, fall through to the multi-line display
+                    int commas = Manager::Get()->GetConfigManager(_T("debugger"))->ReadInt(_T("/single_line_array_elem_count"), 8);
+                    if (tmp.Freq(_T(',')) < commas)
+                    {
+                        // array watch type
+                        tmp[braceOpenPos] = _T('[');
+                        tmp.Last() = _T(']');
+                        entry.AddChild(tmp, watch);
+                        text.Remove(0, braceClosePos + 1);
+                        continue;
+                    }
+                }
+            }
+
             wxString tmp = text.Left(pos);
             WatchTreeEntry* newchild = 0;
 
@@ -348,7 +375,10 @@ void DebuggerTree::ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& tex
                 tmp.Truncate(tmp.Length() - 3); // remove " = " if last in string
             if (!tmp.IsEmpty())
             {
-//                DBGLOG(_T("entry: %s, watch: %p"), tmp.c_str(), watch);
+                // take array indexing into account (if applicable)
+                if (array_index != -1)
+                    tmp.Prepend(wxString::Format(_T("[%d]: "), array_index++));
+
                 newchild = &entry.AddChild(tmp, watch);
             }
             text.Remove(0, pos + 1);
@@ -357,7 +387,20 @@ void DebuggerTree::ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& tex
             {
                 if (!newchild)
                     newchild = &entry;
-                ParseEntry(*newchild, watch, text); // proceed one level deeper
+
+                // enable array indexing (if applicable)
+                bool no_indexing = array_index == -1;
+                if (watch && watch->is_array && no_indexing &&
+                    text.Freq(_T('{')) == 0 && text.Freq(_T('}')) == 1) // don't index complex arrays
+                {
+                    array_index = 0;
+                }
+
+                ParseEntry(*newchild, watch, text, array_index); // proceed one level deeper
+
+                // reset array indexing
+                if (no_indexing)
+                    array_index = -1;
             }
             else if (pos == braceClosePos)
                 break; // return one level up
@@ -392,7 +435,7 @@ void DebuggerTree::BuildTreeCDB(Watch* watch, const wxString& infoText)
 {
     new wxTipWindow(m_pTree, _T("Watches are currently disabled for CDB.\n"
                                 "We are sorry for the inconvenience..."), 250);
-        
+
 //    wxTreeItemId parent = m_pTree->GetRootItem();
 //    wxTreeItemId node = parent;
 //

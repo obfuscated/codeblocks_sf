@@ -72,9 +72,9 @@ class DebuggerTree : public wxPanel
             wxString name; // entry's name
             std::vector<WatchTreeEntry> entries; // child entries
             Watch* watch; // the associated watch
-            
+
             WatchTreeEntry() : watch(0) {}
-            
+
             void Clear()
             {
                 name.Clear();
@@ -93,8 +93,8 @@ class DebuggerTree : public wxPanel
         WatchTreeEntry m_RootEntry;
 
         void BuildTree(WatchTreeEntry& entry, wxTreeItemId parent);
-        
-        void ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& text);
+
+        void ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& text, long array_index = -1);
         int FindCharOutsideQuotes(const wxString& str, wxChar ch); // returns position of ch in str
         int FindCommaPos(const wxString& str); // ignores commas in function signatures
         void FixupVarNameForChange(wxString& str);

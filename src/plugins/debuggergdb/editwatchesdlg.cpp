@@ -5,6 +5,7 @@
 #include <wx/textctrl.h>
 #include <wx/button.h>
 #include <wx/listbox.h>
+#include <wx/checkbox.h>
 #include <wx/radiobox.h>
 #include <wx/spinctrl.h>
 #include <wx/textdlg.h>
@@ -50,8 +51,9 @@ void EditWatchesDlg::FillRecord(int sel)
         // save old record
         m_Watches[m_LastSel].keyword = XRCCTRL(*this, "txtKeyword", wxTextCtrl)->GetValue();
         m_Watches[m_LastSel].format = (WatchFormat)XRCCTRL(*this, "rbFormat", wxRadioBox)->GetSelection();
-        m_Watches[sel].array_start = XRCCTRL(*this, "spnArrStart", wxSpinCtrl)->GetValue();
-        m_Watches[sel].array_count = XRCCTRL(*this, "spnArrCount", wxSpinCtrl)->GetValue();
+        m_Watches[m_LastSel].is_array = XRCCTRL(*this, "chkArray", wxCheckBox)->GetValue();
+        m_Watches[m_LastSel].array_start = XRCCTRL(*this, "spnArrStart", wxSpinCtrl)->GetValue();
+        m_Watches[m_LastSel].array_count = XRCCTRL(*this, "spnArrCount", wxSpinCtrl)->GetValue();
         XRCCTRL(*this, "lstWatches", wxListBox)->SetString(m_LastSel, m_Watches[m_LastSel].keyword);
     }
 
@@ -60,6 +62,7 @@ void EditWatchesDlg::FillRecord(int sel)
         m_LastSel = sel;
         XRCCTRL(*this, "txtKeyword", wxTextCtrl)->SetValue(m_Watches[sel].keyword);
         XRCCTRL(*this, "rbFormat", wxRadioBox)->SetSelection((int)m_Watches[sel].format);
+        XRCCTRL(*this, "chkArray", wxCheckBox)->SetValue(m_Watches[sel].is_array);
         XRCCTRL(*this, "spnArrStart", wxSpinCtrl)->SetValue(m_Watches[sel].array_start);
         XRCCTRL(*this, "spnArrCount", wxSpinCtrl)->SetValue(m_Watches[sel].array_count);
         XRCCTRL(*this, "lstWatches", wxListBox)->SetSelection(sel);

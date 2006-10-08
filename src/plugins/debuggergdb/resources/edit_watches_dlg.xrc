@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxDialog" name="dlgEditWatches">
     <title>Edit debugger watches</title>
@@ -80,8 +80,15 @@
                   </object>
                   <object class="sizeritem">
                     <object class="wxStaticBoxSizer">
-                      <label>Array size</label>
+                      <label>Array</label>
                       <orient>wxVERTICAL</orient>
+                      <object class="sizeritem">
+                        <object class="wxCheckBox" name="chkArray">
+                          <label>Watch as array</label>
+                        </object>
+                        <flag>wxTOP|wxBOTTOM|wxGROW</flag>
+                        <border>8</border>
+                      </object>
                       <object class="sizeritem">
                         <object class="wxFlexGridSizer">
                           <object class="sizeritem">
@@ -117,8 +124,7 @@
                             <flag>wxGROW</flag>
                           </object>
                         </object>
-                        <flag>wxTOP|wxGROW</flag>
-                        <border>8</border>
+                        <flag>wxGROW</flag>
                       </object>
                     </object>
                     <flag>wxTOP|wxGROW</flag>
@@ -204,8 +210,15 @@
               </object>
               <object class="sizeritem">
                 <object class="wxStaticBoxSizer">
-                  <label>Array size</label>
+                  <label>Array</label>
                   <orient>wxVERTICAL</orient>
+                  <object class="sizeritem">
+                    <object class="wxCheckBox" name="chkArray">
+                      <label>Watch as array</label>
+                    </object>
+                    <flag>wxTOP|wxBOTTOM|wxGROW</flag>
+                    <border>8</border>
+                  </object>
                   <object class="sizeritem">
                     <object class="wxFlexGridSizer">
                       <object class="sizeritem">
@@ -241,8 +254,7 @@
                         <flag>wxGROW</flag>
                       </object>
                     </object>
-                    <flag>wxTOP|wxGROW</flag>
-                    <border>8</border>
+                    <flag>wxGROW</flag>
                   </object>
                 </object>
                 <flag>wxLEFT|wxGROW</flag>

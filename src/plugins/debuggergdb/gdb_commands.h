@@ -588,7 +588,16 @@ class GdbCmd_Watch : public DebuggerCmd
                     default:            break;
                 }
                 m_Cmd << m_pWatch->keyword;
-                if (m_pWatch->array_count)
+
+                // auto-set array types
+                if (!m_pWatch->is_array &&
+                    m_pWatch->format == Undefined &&
+                    w_type.Contains(_T('[')))
+                {
+                    m_pWatch->is_array = true;
+                }
+
+                if (m_pWatch->is_array && m_pWatch->array_count)
                     m_Cmd << wxString::Format(_T("[%d]@%d"), m_pWatch->array_start, m_pWatch->array_count);
             }
             else

@@ -29,6 +29,7 @@
 #include <configmanager.h>
 #include <wx/intl.h>
 #include <wx/xrc/xmlres.h>
+#include <wx/spinctrl.h>
 #include <wx/textctrl.h>
 #include <wx/checkbox.h>
 
@@ -52,6 +53,7 @@ DebuggerOptionsDlg::DebuggerOptionsDlg(wxWindow* parent, DebuggerGDB* plugin)
     XRCCTRL(*this, "chkDoNotRun",       wxCheckBox)->SetValue(cfg->ReadBool(_T("do_not_run"),            false));
     XRCCTRL(*this, "choDisassemblyFlavor", wxChoice)->SetSelection(cfg->ReadInt(_T("disassembly_flavor"), 0));
     XRCCTRL(*this, "txtInstructionSet", wxTextCtrl)->SetValue(cfg->Read(_T("instruction_set"), wxEmptyString));
+    XRCCTRL(*this, "spnArrayElems",     wxSpinCtrl)->SetValue(cfg->ReadInt(_T("single_line_array_elem_count"), 8));
 }
 
 DebuggerOptionsDlg::~DebuggerOptionsDlg()
@@ -73,6 +75,7 @@ void DebuggerOptionsDlg::OnApply()
     cfg->Write(_T("do_not_run"),            XRCCTRL(*this, "chkDoNotRun",       wxCheckBox)->GetValue());
     cfg->Write(_T("disassembly_flavor"),    XRCCTRL(*this, "choDisassemblyFlavor", wxChoice)->GetSelection());
     cfg->Write(_T("instruction_set"),       XRCCTRL(*this, "txtInstructionSet", wxTextCtrl)->GetValue());
+    cfg->Write(_T("single_line_array_elem_count"), XRCCTRL(*this, "spnArrayElems", wxSpinCtrl)->GetValue());
 
     m_pPlugin->RefreshConfiguration();
 }
