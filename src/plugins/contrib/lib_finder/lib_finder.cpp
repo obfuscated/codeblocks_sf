@@ -6,11 +6,22 @@
  * License:   GPL
  **************************************************************/
 
-#include "lib_finder.h"
-#include "libraryconfigmanager.h"
+#include <wx/arrstr.h>
+#include <wx/choicdlg.h>
+#include <wx/filename.h>
+#include <wx/intl.h>
+#include <wx/string.h>
+
+#include "configmanager.h"
+#include "globals.h"
+#include "manager.h"
+
 #include "resultmap.h"
 #include "dirlistdlg.h"
 #include "processingdlg.h"
+#include "libraryconfigmanager.h"
+#include "libraryresult.h"
+#include "lib_finder.h"
 
 // Register the plugin
 namespace
@@ -44,7 +55,7 @@ int lib_finder::Execute()
 
     if ( LCM()->GetLibraryCount() == 0 )
     {
-        ::wxMessageBox(_("Didn't find any library :("));
+        cbMessageBox(_("Didn't find any library :("));
         return -1;
     }
 
@@ -63,7 +74,7 @@ int lib_finder::Execute()
         RM()->GetAllResults(Results);
         if ( Results.Count() == 0 )
         {
-            ::wxMessageBox(_("Didn't find any library"));
+            cbMessageBox(_("Didn't find any library"));
         }
         else
         {

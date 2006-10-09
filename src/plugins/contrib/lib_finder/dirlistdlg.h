@@ -1,10 +1,6 @@
 #ifndef DIRLISTDLG_H
 #define DIRLISTDLG_H
 
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
-
 #include <wx/arrstr.h>
 
 // NOTE : once the new wxSmith is up and running these includes should be

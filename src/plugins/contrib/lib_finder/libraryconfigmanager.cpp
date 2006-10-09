@@ -1,6 +1,10 @@
+#include <tinyxml/tinyxml.h>
 #include "libraryconfigmanager.h"
 
+#include <wx/arrstr.h>
 #include <wx/dir.h>
+#include <wx/log.h>
+#include <wx/string.h>
 
 LibraryConfigManager::LibraryConfigManager()
 {
@@ -181,7 +185,7 @@ void LibraryConfigManager::LoadXmlDefaults(
     }
 }
 
-bool LibraryConfigManager::CheckConfig(LibraryConfig* Cfg)
+bool LibraryConfigManager::CheckConfig(const LibraryConfig* Cfg) const
 {
     if ( Cfg->LibraryName.empty() ) return false;
     if ( Cfg->FileNames.empty()   ) return false;

@@ -1,10 +1,12 @@
 #ifndef LIBRARYCONFIGMANAGER_H
 #define LIBRARYCONFIGMANAGER_H
 
-#include <tinyxml/tinyxml.h>
 #include <wx/dynarray.h>
 
 #include "libraryconfig.h"
+
+class wxArrayString;
+class wxString;
 
 class LibraryConfigManager
 {
@@ -23,7 +25,7 @@ class LibraryConfigManager
         void LoadXmlConfig(const wxString& Dir);
 
         /** Function returning number of loaded library configurations */
-        inline int GetLibraryCount() { return (int)Libraries.Count(); }
+        inline int GetLibraryCount() const { return (int)Libraries.Count(); }
 
         /** Function returning configuration for one library */
         const LibraryConfig* GetLibrary(int Index);
@@ -44,7 +46,7 @@ class LibraryConfigManager
             wxString& CFlags,
             wxString& LFlags);
 
-        bool CheckConfig(LibraryConfig* Cfg);
+        bool CheckConfig(const LibraryConfig* Cfg) const;
 
         WX_DEFINE_ARRAY(LibraryConfig*,LCArray);
 

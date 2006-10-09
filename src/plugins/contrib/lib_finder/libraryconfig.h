@@ -1,6 +1,9 @@
 #ifndef LIBRARYCONFIG_H
 #define LIBRARYCONFIG_H
 
+#include <wx/arrstr.h>
+#include <wx/string.h>
+
 struct LibraryConfig
 {
     /** Name of library, may use internal variables in form $(VAR_NAME) */
@@ -11,7 +14,7 @@ struct LibraryConfig
 
     /** Set of files required by this library
      *
-     * Each file name will be threateed as relative name inside
+     * Each file name will be threated as relative name inside
      * root library path. It may point to file or directory.
      * When directory is in form:
      *  @code *$(VAR_NAME) @endcode
@@ -56,4 +59,4 @@ struct LibraryConfig
     wxString LFlags;
 };
 
-#endif
+#endif //LIBRARYCONFIG_H

@@ -1,8 +1,8 @@
+#include "dirlistdlg.h"
+
 #include <wx/dirdlg.h>
 #include <wx/string.h>
 #include <wx/tokenzr.h>
-
-#include "dirlistdlg.h"
 
 BEGIN_EVENT_TABLE(DirListDlg,wxDialog)
 	//(*EventTable(DirListDlg)
