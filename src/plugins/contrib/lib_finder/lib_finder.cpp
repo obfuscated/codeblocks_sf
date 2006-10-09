@@ -110,7 +110,7 @@ int lib_finder::Execute()
 	return -1;
 }
 
-void lib_finder::SetGlobalVar(LibraryResult* Res)
+void lib_finder::SetGlobalVar(const LibraryResult* Res)
 {
     ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("gcv"));
     wxString activeSet = cfg->Read(_T("/active"));
