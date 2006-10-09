@@ -7,6 +7,7 @@
 
 class wxArrayString;
 class wxString;
+class TiXmlElement;
 
 class LibraryConfigManager
 {
