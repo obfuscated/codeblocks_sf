@@ -3,6 +3,7 @@
 
 #include <wx/arrstr.h>
 #include <wx/dir.h>
+#include <wx/filename.h>
 #include <wx/log.h>
 #include <wx/string.h>
 
