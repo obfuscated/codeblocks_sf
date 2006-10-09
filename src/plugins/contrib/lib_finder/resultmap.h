@@ -1,6 +1,8 @@
 #ifndef RESULTMAP_H
 #define RESULTMAP_H
 
+#include <wx/dynarray.h>
+
 #include "libraryresult.h"
 
 class wxArrayString;
