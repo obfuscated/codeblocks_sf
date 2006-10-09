@@ -48,6 +48,7 @@
 #include <wx/fontmap.h>
 #include <algorithm>
 #include "filefilters.h"
+#include "tinyxml/tinywxuni.h"
 
 const wxString DEFAULT_WORKSPACE		= _T("default.workspace");
 const wxString DEFAULT_ARRAY_SEP        = _T(";");
@@ -520,33 +521,8 @@ bool cbSaveToFile(const wxString& filename, const wxString& contents, wxFontEnco
 // Saves a TinyXML document correctly, even if the path contains unicode characters.
 bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& filename)
 {
-    if (!doc)
-        return false;
-
-    const char *buffer; // UTF-8 encoded data
-
-  	#ifdef TIXML_USE_STL
-        std::string outSt;
-        outSt << *doc;
-        buffer = outSt.c_str();
-  	#else
-        TiXmlPrinter Printer;
-        doc->Accept(&Printer);
-        buffer = Printer.CStr();
-  	#endif
-
-    wxTempFile file(filename);
-    if (file.IsOpened())
-    {
-        if (!file.Write(buffer, strlen(buffer)))
-            return false;
-        if (!file.Commit())
-            return false;
-    }
-    else
-        return false;
-  	return true;
-} // end of cbSaveTinyXMLDocument
+  	return TinyXML::SaveDocument(filename, doc);
+}
 
 // Return @c str as a proper unicode-compatible string
 wxString cbC2U(const char* str)

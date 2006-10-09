@@ -44,6 +44,7 @@ bool TinyXML::SaveDocument(const wxString& filename, TiXmlDocument* doc)
         return false;
 
 	TiXmlPrinter Printer;
+	Printer.SetIndent("\t");
 	doc->Accept(&Printer);
 
     wxTempFile file(filename);
