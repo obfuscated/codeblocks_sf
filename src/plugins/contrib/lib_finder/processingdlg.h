@@ -1,11 +1,10 @@
 #ifndef PROCESSINGDLG_H
 #define PROCESSINGDLG_H
 
-#include <wx/wxprec.h>
+// NOTE : once the new wxSmith is up and running these includes should be
+// moved to the cpp, forward declarations is what we need here
 
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
+#include <wx/string.h>
 
 //(*Headers(ProcessingDlg)
 #include <wx/button.h>
@@ -17,6 +16,8 @@
 //*)
 
 #include "libraryconfig.h"
+
+class wxArrayString;
 
 WX_DECLARE_STRING_HASH_MAP(wxArrayString,FileNamesMap);
 WX_DECLARE_STRING_HASH_MAP(wxString,wxStringStringMap);
@@ -60,7 +61,7 @@ class ProcessingDlg: public wxDialog
         void ReadDir(const wxString& DirName);
         void ProcessLibrary(const LibraryConfig* Config);
         void SplitPath(const wxString& FileName,wxArrayString& Split);
-        bool IsVariable(const wxString& NamePart);
+        bool IsVariable(const wxString& NamePart) const;
         void CheckNextFileName(const wxString& BasePath,const wxStringStringMap& Vars,const LibraryConfig*Config,int WhichFile);
         void FoundLibrary(const wxString& BasePath,const wxStringStringMap& Vars,const LibraryConfig*Config);
         wxString FixVars(wxString Original,const wxStringStringMap& Vars);
@@ -72,4 +73,4 @@ class ProcessingDlg: public wxDialog
 		DECLARE_EVENT_TABLE()
 };
 
-#endif
+#endif //PROCESSINGDLG_H

@@ -1,8 +1,11 @@
 #include "processingdlg.h"
 
+#include <wx/arrstr.h>
 #include <wx/dir.h>
-#include <stdio.h>
+#include <wx/filename.h>
+#include <wx/log.h>
 #include <wx/tokenzr.h>
+
 #include "libraryconfigmanager.h"
 #include "resultmap.h"
 
@@ -54,17 +57,17 @@ bool ProcessingDlg::ReadDirs(const wxArrayString& Dirs)
     {
         if ( StopFlag ) return false;
         Gauge1->SetValue(i);
-        
+
         wxString DirName = Dirs[i];
         if ( DirName.empty() ) continue;
-        
+
         // Cutting off last character if it is path separator
         wxChar LastChar = DirName[DirName.Len()-1];
         if ( wxFileName::GetPathSeparators().Find(LastChar) != -1 )
         {
             DirName.RemoveLast();
         }
-        
+
         // Reading dir content
         ReadDir(DirName);
     }
@@ -201,7 +204,7 @@ void ProcessingDlg::SplitPath(const wxString& FileName,wxArrayString& Split)
     while (Tknz.HasMoreTokens()) Split.Add(Tknz.GetNextToken());
 }
 
-bool ProcessingDlg::IsVariable(const wxString& NamePart)
+bool ProcessingDlg::IsVariable(const wxString& NamePart) const
 {
     if ( NamePart.Len() < 5 ) return false;
     if ( NamePart[0] != _T('*') ) return false;
