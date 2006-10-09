@@ -65,7 +65,8 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
 	// load last searches
-	wxArrayString previous = GetArrayFromString(cfg->Read(CONF_GROUP _T("/last"), wxEmptyString), DEFAULT_ARRAY_SEP, false);
+	wxArrayString previous;
+	cfg->Read(CONF_GROUP _T("/last"), &previous);
 	for (unsigned int i = 0; i < previous.GetCount(); ++i)
 	{
 		if (!previous[i].IsEmpty())
@@ -151,8 +152,8 @@ FindDlg::~FindDlg()
     }
     if (prev_pos != 0)
         previous.Insert(find, 0);
-    wxString last = GetStringFromArray(previous);
-    cfg->Write(CONF_GROUP _T("/last"), last);
+
+    cfg->Write(CONF_GROUP _T("/last"), previous);
 
 	if (m_Complete)
 	{

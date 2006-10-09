@@ -131,7 +131,8 @@ ReplaceDlg::~ReplaceDlg()
 
 void ReplaceDlg::FillComboWithLastValues(wxComboBox* combo, const wxString& configKey)
 {
-	wxArrayString values = GetArrayFromString(Manager::Get()->GetConfigManager(_T("editor"))->Read(configKey, wxEmptyString), DEFAULT_ARRAY_SEP, false);
+	wxArrayString values;
+	Manager::Get()->GetConfigManager(_T("editor"))->Read(configKey, &values);
 	for (unsigned int i = 0; i < values.GetCount(); ++i)
 	{
 		if (!values[i].IsEmpty())
@@ -150,8 +151,7 @@ void ReplaceDlg::SaveComboValues(wxComboBox* combo, const wxString& configKey)
 	wxString find = combo->GetValue();
 	if (combo->FindString(find) == -1)
 		values.Insert(find, 0);
-	wxString last = GetStringFromArray(values);
-	Manager::Get()->GetConfigManager(_T("editor"))->Write(configKey, last);
+	Manager::Get()->GetConfigManager(_T("editor"))->Write(configKey, values);
 }
 
 wxString ReplaceDlg::GetFindString() const

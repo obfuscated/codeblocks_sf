@@ -751,16 +751,9 @@ void ConfigManager::Write(const wxString& name,  const wxString& value, bool ign
 
     TiXmlElement *s = GetUniqElement(str, _T("str"));
 
-    // Convert any < and > to XML entities or else the configuration will
-    // not be able to open again...
-    // This first happened to me when I tried to find a "<p>". When the
-    // find dialog saved my last search in the configuration, I couldn't
-    // launch C::B again.
-    wxString convert(value);
-    convert.Replace(_T("<"), _T("&lt;"));
-    convert.Replace(_T(">"), _T("&gt;"));
-
-    SetNodeText(s, TiXmlText(convert.mb_str(wxConvUTF8)));
+    TiXmlText t(value.mb_str(wxConvUTF8));
+    t.SetCDATA(true);
+    SetNodeText(s, t);
 }
 
 void ConfigManager::Write(const wxString& key, const char* str)
@@ -1001,7 +994,11 @@ void ConfigManager::Write(const wxString& name,  const wxArrayString& arrayStrin
     for(unsigned int i = 0; i < arrayString.GetCount(); ++i)
     {
         TiXmlElement s("s");
-        s.InsertEndChild(TiXmlText(arrayString[i].mb_str(wxConvUTF8)));
+
+        TiXmlText t(arrayString[i].mb_str(wxConvUTF8));
+        t.SetCDATA(true);
+
+        s.InsertEndChild(t);
         as->InsertEndChild(s);
     }
 }
@@ -1219,7 +1216,11 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::St
     for(ConfigManagerContainer::StringToStringMap::const_iterator it = map.begin(); it != map.end(); ++it)
     {
         TiXmlElement s(cbU2C(it->first));
-        s.InsertEndChild(TiXmlText(cbU2C(it->second)));
+
+        TiXmlText t(cbU2C(it->second));
+        t.SetCDATA(true);
+
+        s.InsertEndChild(t);
         mNode->InsertEndChild(s);
     }
 }
@@ -1263,8 +1264,12 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::In
     for(ConfigManagerContainer::IntToStringMap::const_iterator it = map.begin(); it != map.end(); ++it)
     {
         tmp.Printf(_T("x%d"), (int) it->first);
-        TiXmlElement s(cbU2C(tmp));
-        s.InsertEndChild(TiXmlText(cbU2C(it->second)));
+        TiXmlElement s(tmp.mb_str());
+
+        TiXmlText t(cbU2C(it->second));
+        t.SetCDATA(true);
+
+        s.InsertEndChild(t);
         mNode->InsertEndChild(s);
     }
 }
@@ -1316,7 +1321,11 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::St
     for(ConfigManagerContainer::StringSet::const_iterator it = set.begin(); it != set.end(); ++it)
     {
         TiXmlElement s("s");
-        s.InsertEndChild(TiXmlText(cbU2C(*it)));
+
+        TiXmlText t(cbU2C(*it));
+        t.SetCDATA(true);
+
+        s.InsertEndChild(t);
         mNode->InsertEndChild(s);
     }
 }
