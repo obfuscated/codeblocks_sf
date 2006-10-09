@@ -1,10 +1,11 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/intl.h>
-#include <wx/menu.h>
-#include <wx/string.h>
-#include <wx/utils.h>
-#include "globals.h"
+    #include <wx/intl.h>
+    #include <wx/listctrl.h>
+    #include <wx/menu.h>
+    #include <wx/string.h>
+    #include <wx/utils.h>
+    #include "globals.h"
 #endif
 #include <wx/clipbrd.h>
 #include "compilererrors.h"

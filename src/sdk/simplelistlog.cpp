@@ -29,6 +29,7 @@
 #ifndef CB_PRECOMP
     #include <wx/arrstr.h>
     #include <wx/sizer.h>
+    #include <wx/listctrl.h>
 #endif
 #include "simplelistlog.h" // class's header file
 

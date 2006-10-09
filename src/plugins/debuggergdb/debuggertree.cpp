@@ -18,6 +18,10 @@
 
 #include "editwatchdlg.h"
 
+#ifndef CB_PRECOMP
+    #include <configmanager.h> // GetConfigManager()
+#endif
+
 int cbCustom_WATCHES_CHANGED = wxNewId();
 int idTree = wxNewId();
 int idAddWatch = wxNewId();

@@ -1,6 +1,10 @@
 #ifndef BREAKPOINTSDLG_H
 #define BREAKPOINTSDLG_H
 
+#ifndef CB_PRECOMP
+    #include <wx/listctrl.h>
+#endif
+
 #include <simplelistlog.h>
 #include "debugger_defs.h"
 
