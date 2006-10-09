@@ -1,3 +1,5 @@
+#include <wx/arrstr.h>
+
 #include "resultmap.h"
 
 ResultMap::ResultMap()

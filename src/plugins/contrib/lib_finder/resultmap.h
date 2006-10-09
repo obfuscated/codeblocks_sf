@@ -3,6 +3,9 @@
 
 #include "libraryresult.h"
 
+class wxArrayString;
+class wxString;
+
 WX_DEFINE_ARRAY(LibraryResult*,ResultArray);
 
 class ResultMap

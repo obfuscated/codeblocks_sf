@@ -1,6 +1,8 @@
 #ifndef LIBRARYRESULT_H
 #define LIBRARYRESULT_H
 
+#include <wx/string.h>
+
 struct LibraryResult
 {
     wxString GlobalVar;
@@ -13,4 +15,4 @@ struct LibraryResult
     wxString LFlags;
 };
 
-#endif
+#endif //LIBRARYRESULT_H
