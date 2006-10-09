@@ -49,7 +49,6 @@ class CodeBlocksApp : public wxApp
     protected:
         void OnBatchBuildDone(CodeBlocksEvent& event);
         bool LoadConfig();
-        void InitAssociations(MainFrame* frame);
         void InitDebugConsole();
         void InitExceptionHandler();
         bool InitXRCStuff();
@@ -61,54 +60,35 @@ class CodeBlocksApp : public wxApp
     private:
         void ComplainBadInstall();
         void SetupPersonality(const wxString& personality);
-        void DelayLoadDdeFiles(MainFrame* frame);
 
-		bool m_NoDDE; // no DDE
-		bool m_NoAssocs; // no associations check
-		bool m_NoSplash; // no splash screen
-		bool m_HasDebugLog; // display debug log
-		wxString m_Prefix; // --prefix switch
+        void LoadDelayedFiles(MainFrame* frame); // command line or DDE (if available) files
+
 #ifdef __WXMSW__
+        void InitAssociations();
         HINSTANCE m_ExceptionHandlerLib;
+        bool m_NoDDE; // no DDE
+        bool m_NoAssocs; // no associations check
 #endif
         // batch jobs - start
+        wxDialog* m_pBatchBuildDialog;
+        wxString m_BatchTarget;
+        int m_BatchExitCode;
         bool m_Batch;
         bool m_BatchNotify;
-        wxString m_BatchTarget;
+        bool m_BatchWindowAutoClose; // default: true
         bool m_Build;
         bool m_ReBuild;
-        int m_BatchExitCode;
-        bool m_BatchWindowAutoClose; // default: true
-		wxDialog* m_pBatchBuildDialog;
         // batch jobs - end
+
+        bool m_NoSplash; // no splash screen
+        bool m_HasDebugLog; // display debug log
+        wxString m_Prefix; // --prefix switch
 
 		wxSingleInstanceChecker* m_pSingleInstance;
 
         DECLARE_EVENT_TABLE()
 };
+
 DECLARE_APP(CodeBlocksApp);
-
-#ifdef __WXMSW__
-class DDEServer : public wxServer
-{
-	public:
-		DDEServer(MainFrame* frame) : m_Frame(frame) {}
-		wxConnectionBase *OnAcceptConnection(const wxString& topic);
-		MainFrame* GetFrame(){ return m_Frame; }
-		void SetFrame(MainFrame* frame){ m_Frame = frame; }
-	private:
-		MainFrame* m_Frame;
-};
-
-class DDEConnection : public wxConnection
-{
-	public:
-		DDEConnection(MainFrame* frame) : m_Frame(frame) {}
-		bool OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format);
-	private:
-		MainFrame* m_Frame;
-};
-#endif
-
 
 #endif // CODEBLOCKS_APP_H

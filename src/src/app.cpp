@@ -71,8 +71,67 @@
 
 namespace
 {
+// this list will be filled with files
+// (received through DDE or command line)
+// to be loaded after the app has started up
+wxArrayString s_DelayedFilesToOpen;
+
+#ifdef __WXMSW__
+bool s_Loading = false;
+
+class DDEServer : public wxServer
+{
+	public:
+		DDEServer(MainFrame* frame) : m_Frame(frame) {}
+		wxConnectionBase *OnAcceptConnection(const wxString& topic);
+		MainFrame* GetFrame(){ return m_Frame; }
+		void SetFrame(MainFrame* frame){ m_Frame = frame; }
+	private:
+		MainFrame* m_Frame;
+};
+
+class DDEConnection : public wxConnection
+{
+	public:
+		DDEConnection(MainFrame* frame) : m_Frame(frame) {}
+		bool OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format);
+	private:
+		MainFrame* m_Frame;
+};
+
+wxConnectionBase* DDEServer::OnAcceptConnection(const wxString& topic)
+{
+	return topic == DDE_TOPIC ? new DDEConnection(m_Frame) : 0L;
+}
+
+bool DDEConnection::OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format)
+{
+	wxString strData(data);
+
+	if (!strData.StartsWith(_T("[Open(\"")))
+		return false;
+
+	wxRegEx reCmd(_T("\"(.*)\""));
+	if (reCmd.Matches(strData))
+	{
+		const wxString file = reCmd.GetMatch(strData, 1);
+		if (s_Loading)
+		{
+			s_DelayedFilesToOpen.Add(file);
+		}
+		else if (m_Frame)
+		{
+			m_Frame->Open(file, true); // add to history, files that open through DDE
+		}
+	}
+	return true;
+}
+
+DDEServer* g_DDEServer = 0L;
+#endif
+
 #if wxUSE_CMDLINE_PARSER
-static const wxCmdLineEntryDesc cmdLineDesc[] =
+const wxCmdLineEntryDesc cmdLineDesc[] =
 {
     { wxCMD_LINE_SWITCH, _T("h"), _T("help"), _T("show this help message"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
 #ifdef __WXMSW__
@@ -93,14 +152,6 @@ static const wxCmdLineEntryDesc cmdLineDesc[] =
     { wxCMD_LINE_NONE }
 };
 #endif // wxUSE_CMDLINE_PARSER
-
-#ifdef __WXMSW__
-DDEServer* g_DDEServer = 0L;
-#endif
-
-// this list will be filled with DDE files to load after the app has started up
-wxArrayString s_DdeFilesToOpen;
-bool s_Loading = false;
 
 class Splash
 {
@@ -201,9 +252,9 @@ bool CodeBlocksApp::LoadConfig()
     return true;
 }
 
-void CodeBlocksApp::InitAssociations(MainFrame* frame)
-{
 #ifdef __WXMSW__
+void CodeBlocksApp::InitAssociations()
+{
 	ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
 	if (!m_NoAssocs && cfg->ReadBool(_T("/environment/check_associations"), true))
 	{
@@ -229,8 +280,8 @@ void CodeBlocksApp::InitAssociations(MainFrame* frame)
 
         }
     }
-#endif
 }
+#endif
 
 void CodeBlocksApp::InitDebugConsole()
 {
@@ -363,14 +414,16 @@ void CodeBlocksApp::InitLocale()
 
 bool CodeBlocksApp::OnInit()
 {
+#ifdef __WXMSW__
     s_Loading = true;
+#endif
+    m_pBatchBuildDialog = 0;
+    m_BatchExitCode = 0;
     m_Batch = false;
     m_BatchNotify = false;
     m_Build = false;
     m_ReBuild = false;
-    m_BatchExitCode = 0;
     m_BatchWindowAutoClose = true;
-    m_pBatchBuildDialog = 0;
 
 	wxTheClipboard->Flush();
 
@@ -427,8 +480,11 @@ bool CodeBlocksApp::OnInit()
 
         if (m_Batch)
         {
+#ifdef __WXMSW__
             s_Loading = false;
-            DelayLoadDdeFiles(frame);
+#endif
+            LoadDelayedFiles(frame);
+
             BatchJob();
             frame->Close();
             return true;
@@ -463,10 +519,13 @@ bool CodeBlocksApp::OnInit()
         frame->Show();
 
         frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
-        InitAssociations(frame);
 
+#ifdef __WXMSW__
+        InitAssociations();
         s_Loading = false;
-        DelayLoadDdeFiles(frame);
+#endif
+
+        LoadDelayedFiles(frame);
 
         return true;
     }
@@ -495,8 +554,7 @@ int CodeBlocksApp::OnExit()
 	wxTheClipboard->Flush();
 
 #ifdef __WXMSW__
-	if (g_DDEServer)
-		delete g_DDEServer;
+    delete g_DDEServer;
     if (m_ExceptionHandlerLib)
         FreeLibrary(m_ExceptionHandlerLib);
 #endif
@@ -706,14 +764,14 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                         if (ft == ftCodeBlocksProject)
                         {
                             hasProj = true;
-                            s_DdeFilesToOpen.Add(parser.GetParam(param));
+                            s_DelayedFilesToOpen.Add(parser.GetParam(param));
                         }
                         else if (ft == ftCodeBlocksWorkspace)
                         {
                             // only one workspace can be opened
                             hasWksp = true;
-                            s_DdeFilesToOpen.Clear(); // remove all other files
-                            s_DdeFilesToOpen.Add(parser.GetParam(param)); // and add only the workspace
+                            s_DelayedFilesToOpen.Clear(); // remove all other files
+                            s_DelayedFilesToOpen.Add(parser.GetParam(param)); // and add only the workspace
                             break; // and stop processing any more files
                         }
                     }
@@ -729,9 +787,6 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 #ifdef __WXMSW__
 					m_NoDDE = parser.Found(_T("no-dde"));
 					m_NoAssocs = parser.Found(_T("no-check-associations"));
-#else
-                    m_NoDDE = false;
-                    m_NoAssocs = false;
 #endif
 					m_NoSplash = parser.Found(_T("no-splash-screen"));
 					m_HasDebugLog = parser.Found(_T("debug-log"));
@@ -792,48 +847,14 @@ void CodeBlocksApp::SetupPersonality(const wxString& personality)
         Manager::Get()->GetPersonalityManager()->SetPersonality(personality, true);
 }
 
-void CodeBlocksApp::DelayLoadDdeFiles(MainFrame* frame)
+void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
 {
-    for (size_t i = 0; i < s_DdeFilesToOpen.GetCount(); ++i)
+    for (size_t i = 0; i < s_DelayedFilesToOpen.GetCount(); ++i)
     {
-        frame->Open(s_DdeFilesToOpen[i], true);
+        frame->Open(s_DelayedFilesToOpen[i], true);
     }
-    s_DdeFilesToOpen.Clear();
+    s_DelayedFilesToOpen.Clear();
 }
-
-#ifdef __WXMSW__
-//// DDE
-
-wxConnectionBase* DDEServer::OnAcceptConnection(const wxString& topic)
-{
-    if (topic == DDE_TOPIC)
-        return new DDEConnection(m_Frame);
-
-    // unknown topic
-    return 0L;
-}
-
-bool DDEConnection::OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format)
-{
-	wxString strData = data;
-	if (!strData.StartsWith(_T("[Open(\"")))
-		return false;
-
-	wxRegEx reCmd(_T("\"(.*)\""));
-	if (reCmd.Matches(strData))
-	{
-		wxString file = reCmd.GetMatch(strData, 1);
-		if (s_Loading)
-            s_DdeFilesToOpen.Add(file);
-        else
-        {
-            if(m_Frame)
-                m_Frame->Open(file, true); // add to history, files that open through DDE
-        }
-	}
-    return true;
-}
-#endif
 
 // event handlers
 
