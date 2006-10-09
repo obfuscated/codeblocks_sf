@@ -2,6 +2,7 @@
 #define RESULTMAP_H
 
 #include <wx/dynarray.h>
+#include <wx/hashmap.h>
 
 #include "libraryresult.h"
 
