@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="5" />
 	<Project>
@@ -52,7 +52,6 @@
 			<Add directory="$(#cb)\sdk" />
 			<Add directory="$(#cb)\sdk\wxscintilla\include" />
 			<Add directory="$(#wx.include)" />
-			<Add directory="$(#wx.lib)\gcc_dll\mswu" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 		</Compiler>
 		<Linker>
@@ -62,7 +61,6 @@
 			<Add library="codeblocks" />
 			<Add directory="$(#cb)\devel" />
 			<Add directory="$(#cb)\sdk\tinyxml" />
-			<Add directory="$(#wx.lib)\gcc_dll" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>

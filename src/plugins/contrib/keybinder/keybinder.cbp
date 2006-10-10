@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="5" />
 	<Project>
@@ -53,7 +53,7 @@
 			<Add library="wxmsw26$(WX_SUFFIX)" />
 			<Add directory="$(#CB)\devel" />
 			<Add directory="$(#CB.lib)" />
-			<Add directory="$(#WX.lib)\gcc_dll" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\keybinder.zip manifest.xml" />

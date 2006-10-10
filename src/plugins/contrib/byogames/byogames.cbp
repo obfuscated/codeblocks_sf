@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="5" />
 	<Project>
@@ -15,6 +15,7 @@
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -38,7 +39,7 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add directory="$(#WX.include)" />
-			<Add directory="$(#WX.lib)\gcc_dll\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="$(#CB.include)" />
 			<Add directory="$(#CB.include)\tinyxml" />
@@ -54,7 +55,7 @@
 		<Linker>
 			<Add library="wxmsw26$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
-			<Add directory="$(#WX.lib)\gcc_dll" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="$(#CB.lib)" />
 			<Add directory="$(#CB)\devel" />
 			<Add directory="$(#CB)\sdk\tinyxml" />

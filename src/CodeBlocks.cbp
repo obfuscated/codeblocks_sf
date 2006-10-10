@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="5" />
 	<Project>
@@ -465,7 +465,6 @@
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#WX.include)" />
-			<Add directory="$(#WX.lib)\gcc_dll\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="sdk\wxscintilla\include" />
@@ -477,7 +476,6 @@
 		<Linker>
 			<Add library="wxmsw26$(WX_SUFFIX)" />
 			<Add directory="sdk\tinyxml" />
-			<Add directory="$(#WX.lib)\gcc_dll" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="build_tools\autorevision\autorevision.cpp">
