@@ -124,17 +124,15 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
     doc = new TiXmlDocument();
 
     if(!TinyXML::LoadDocument(fileName, doc))
-            cbThrow(wxString(_T("Error accessing file.")));
+        cbThrow(wxString::Format(_T("Error accessing file:\n%s"), fileName.c_str()));
 
     if(doc->ErrorId())
-    {
-        cbThrow(wxString::Format(_T("TinyXML error: %s\nAt row %d, column: %d."), cbC2U(doc->ErrorDesc()).c_str(), doc->ErrorRow(), doc->ErrorCol()));
-    }
+        cbThrow(wxString::Format(_T("TinyXML error: %s\nIn file: %s\nAt row %d, column: %d."), cbC2U(doc->ErrorDesc()).c_str(), fileName.c_str(), doc->ErrorRow(), doc->ErrorCol()));
 
     TiXmlElement* docroot = doc->FirstChildElement("CodeBlocksConfig");
 
     if(doc->ErrorId())
-        cbThrow(wxString::Format(_T("TinyXML error: %s\nAt row %d, column: %d."), cbC2U(doc->ErrorDesc()).c_str(), doc->ErrorRow(), doc->ErrorCol()));
+        cbThrow(wxString::Format(_T("TinyXML error: %s\nIn file: %s\nAt row %d, column: %d."), cbC2U(doc->ErrorDesc()).c_str(), fileName.c_str(), doc->ErrorRow(), doc->ErrorCol()));
 
     const char *vers = docroot->Attribute("version");
     if(!vers || atoi(vers) != 1)
