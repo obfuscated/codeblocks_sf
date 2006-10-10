@@ -217,8 +217,7 @@ CompilerGCC::CompilerGCC()
     m_RunTargetPostBuild(false),
     m_RunProjectPostBuild(false),
     m_DeleteTempMakefile(true),
-    m_AllowCleanLog(true),
-    m_CleanShowDone(true)
+    m_IsWorkspaceOperation(false)
 {
     if(!Manager::LoadResource(_T("compiler.zip")))
     {
@@ -746,7 +745,7 @@ wxString CompilerGCC::ProjectMakefile()
 
 void CompilerGCC::ClearLog()
 {
-    if (!m_AllowCleanLog)
+    if (m_IsWorkspaceOperation)
         return;
     Manager::Get()->GetMessageManager()->SwitchTo(m_PageIndex);
     if (m_Log)
@@ -1626,9 +1625,12 @@ int CompilerGCC::Clean(const wxString& target)
     if (realTarget.IsEmpty())
         return -1;
 
-    DoPrepareQueue();
-    wxArrayString clean;
+    if (!m_IsWorkspaceOperation)
+    {
+        DoPrepareQueue();
+    }
 
+    wxArrayString clean;
     if (!m_Project)
     {
         DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
@@ -1663,7 +1665,7 @@ int CompilerGCC::Clean(const wxString& target)
         }
     }
 
-    if (m_CleanShowDone)
+    if (!m_IsWorkspaceOperation)
     {
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Done."));
         Manager::Get()->GetMessageManager()->Close();
@@ -1684,7 +1686,8 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
     if (m_Project && !m_Project->SaveAllFiles())
         Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
 
-    DoPrepareQueue();
+    if (!m_IsWorkspaceOperation)
+        DoPrepareQueue();
     if (!CompilerValid(target))
         return -1;
 
@@ -2016,6 +2019,13 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
 {
     wxArrayString tlist;
 
+    // if not a workspace operation, clear any remaining (old) build jobs
+    if (!m_IsWorkspaceOperation)
+    {
+        while (!m_BuildJobTargetsList.empty())
+            m_BuildJobTargetsList.pop();
+    }
+
     // calculate project/workspace dependencies
     wxArrayInt deps;
     if (!project)
@@ -2188,7 +2198,9 @@ int CompilerGCC::Build(const wxString& target)
         return -1;
     }
     DoClearErrors();
-    DoPrepareQueue();
+
+    if (!m_IsWorkspaceOperation)
+        DoPrepareQueue();
 
     if (UseMake())
     {
@@ -2245,7 +2257,8 @@ int CompilerGCC::Rebuild(const wxString& target)
     if (m_Project && !m_Project->SaveAllFiles())
         Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
 
-    DoPrepareQueue();
+    if (!m_IsWorkspaceOperation)
+        DoPrepareQueue();
 
 //    Manager::Get()->GetMacrosManager()->Reset();
 
@@ -2297,7 +2310,7 @@ int CompilerGCC::BuildWorkspace(const wxString& target)
 
     DoPrepareQueue();
     ClearLog();
-    m_AllowCleanLog = false;
+    m_IsWorkspaceOperation = true;
 
     // save files from all projects as they might require each other...
     ProjectsArray* arr = Manager::Get()->GetProjectManager()->GetProjects();
@@ -2316,7 +2329,7 @@ int CompilerGCC::BuildWorkspace(const wxString& target)
     InitBuildState(bjWorkspace, realTarget);
 
     DoBuild();
-    m_AllowCleanLog = true;
+    m_IsWorkspaceOperation = false;
     return DoRunQueue();
 }
 
@@ -2336,9 +2349,7 @@ int CompilerGCC::CleanWorkspace(const wxString& target)
 
     DoPrepareQueue();
     ClearLog();
-
-    m_AllowCleanLog = false;
-    m_CleanShowDone = false;
+    m_IsWorkspaceOperation = true;
 
     ResetBuildState();
     cbProject* bak = m_Project;
@@ -2351,8 +2362,7 @@ int CompilerGCC::CleanWorkspace(const wxString& target)
     ResetBuildState();
     m_Project = bak;
 
-    m_AllowCleanLog = true;
-    m_CleanShowDone = true;
+    m_IsWorkspaceOperation = false;
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Done."));
     Manager::Get()->GetMessageManager()->Close();
     return 0;

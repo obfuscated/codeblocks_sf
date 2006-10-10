@@ -255,8 +255,7 @@ class CompilerGCC : public cbCompilerPlugin
 		wxString m_LastTempMakefile;
         bool m_DeleteTempMakefile;
 
-        bool m_AllowCleanLog;
-        bool m_CleanShowDone;
+        bool m_IsWorkspaceOperation; // true for workspace commands
 
         DECLARE_EVENT_TABLE()
 };
