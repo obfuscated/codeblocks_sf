@@ -15,5 +15,6 @@
 		<Project filename="plugins\contrib\profiler\cbprofiler.cbp" />
 		<Project filename="plugins\contrib\source_exporter\Exporter.cbp" />
 		<Project filename="plugins\contrib\wxSmith\wxSmith.cbp" />
+		<Project filename="tools\cb_share_config\cb_share_config.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
