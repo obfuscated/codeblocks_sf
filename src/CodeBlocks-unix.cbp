@@ -9,7 +9,7 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="AutoRevision">
-				<Option output="tools/autorevision/auto_revision" />
+				<Option output="build_tools/autorevision/auto_revision" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option projectCompilerOptionsRelation="1" />
@@ -141,7 +141,7 @@
 					<Add directory="sdk/wxFlatNotebook" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="tools/autorevision/auto_revision +wx +int +t . sdk/autorevision.h" />
+					<Add before="build_tools/autorevision/auto_revision +wx +int +t . sdk/autorevision.h" />
 				</ExtraCommands>
 			</Target>
 			<Target title="wxAUI">
@@ -4583,7 +4583,7 @@
 			<Option compilerVar="CPP" />
 			<Option target="ConsoleRunner" />
 		</Unit>
-		<Unit filename="tools/autorevision/autorevision.cpp">
+		<Unit filename="build_tools/autorevision/autorevision.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="AutoRevision" />
 		</Unit>

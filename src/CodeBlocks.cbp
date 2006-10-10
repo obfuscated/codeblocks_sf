@@ -9,7 +9,7 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="AutoRevision">
-				<Option output="tools\AutoRevision\autorevision.exe" />
+				<Option output="build_tools\autorevision\autorevision.exe" />
 				<Option object_output=".objs\2.6" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -156,7 +156,7 @@
 					<Add directory="sdk\wxFlatNotebook" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="tools/autorevision/autorevision +wx +int +t . sdk/autorevision.h" />
+					<Add before="build_tools/autorevision/autorevision +wx +int +t . sdk/autorevision.h" />
 				</ExtraCommands>
 			</Target>
 			<Target title="wxAUI">
@@ -480,6 +480,10 @@
 			<Add directory="$(#WX.lib)\gcc_dll" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
+		<Unit filename="build_tools\autorevision\autorevision.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="AutoRevision" />
+		</Unit>
 		<Unit filename="plugins\astyle\asstreamiterator.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="AStyle" />
@@ -4245,10 +4249,6 @@
 		<Unit filename="tools\ConsoleRunner\main.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="ConsoleRunner" />
-		</Unit>
-		<Unit filename="tools\autorevision\autorevision.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AutoRevision" />
 		</Unit>
 		<Unit filename="wxsmith\CCDebugInfo.wxs">
 			<Option compilerVar="CPP" />

@@ -99,6 +99,8 @@ AC_MSG_NOTICE([Configuring Code::Blocks...])
 
 AC_CONFIG_FILES([Makefile
 	src/Makefile
+	src/build_tools/Makefile
+	src/build_tools/autorevision/Makefile
 	src/sdk/Makefile
 	src/sdk/scripting/Makefile
 	src/sdk/scripting/bindings/Makefile
@@ -204,7 +206,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/wxSmith/smithicons/Makefile
 	src/scripts/Makefile
 	src/tools/Makefile
-	src/tools/autorevision/Makefile
+	src/tools/cb_share_config/Makefile
 	src/tools/ConsoleRunner/Makefile
 	src/setup/Makefile
 	src/setup/mime/Makefile
