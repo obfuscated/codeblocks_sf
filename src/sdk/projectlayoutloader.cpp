@@ -54,10 +54,6 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
     if (!pMan || !pMsg)
         return false;
 
-    cbProject* pProject = pMan->GetActiveProject();
-    if (!pProject)
-        return false;
-
     TiXmlElement* root;
     TiXmlElement* elem;
     wxString fname;
@@ -99,7 +95,7 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
             pf = 0L;
         }
         else
-            pf = pProject->GetFileByFilename(fname);
+            pf = m_pProject->GetFileByFilename(fname);
 
         if (pf)
         {

@@ -1,6 +1,8 @@
 #ifndef COMPILERGCC_H
 #define COMPILERGCC_H
 
+#include <queue>
+
 #include <settings.h> // SDK
 #include <sdk_events.h>
 #include <compileoptionsbase.h>
@@ -169,10 +171,10 @@ class CompilerGCC : public cbCompilerPlugin
 		bool CompilerValid(ProjectBuildTarget* target = 0);
 		ProjectBuildTarget* GetBuildTargetForFile(ProjectFile* pf);
 		ProjectBuildTarget* GetBuildTargetForFile(const wxString& file);
-        wxString GetMakeCommandFor(MakeCommand cmd, ProjectBuildTarget* target);
-        int DoBuild(cbProject* prj);
-        void CalculateWorkspaceDependencies();
-        void CalculateProjectDependencies(cbProject* prj);
+        wxString GetMakeCommandFor(MakeCommand cmd, cbProject* project, ProjectBuildTarget* target);
+        int DoBuild();
+        void CalculateWorkspaceDependencies(wxArrayInt& deps);
+        void CalculateProjectDependencies(cbProject* prj, wxArrayInt& deps);
         void InitBuildState(BuildJob job, const wxString& target);
         void ResetBuildState();
         void BuildStateManagement(); ///< This uses m_BuildJob.
@@ -183,20 +185,35 @@ class CompilerGCC : public cbCompilerPlugin
         void AddToCommandQueue(const wxArrayString& commands);
 
         int GetTargetIndexFromName(cbProject* prj, const wxString& name);
-        void UpdateSelectedTargets(int selection = -1);
+        void UpdateProjectTargets(cbProject* project);
+        wxString GetTargetString(int index = -1);
         void DoClean(const wxArrayString& commands);
 
-        wxArrayString m_SelectedTargets;
-        wxArrayString m_BuildSelectedTargets;
+        // when a build is about to start, a preprocessing step runs
+        // in PreprocessJob(), that fills m_BuildJobTargetsList with
+        // BuildJobTarget. It is a simple pair of project->target which
+        // are to be built in order
+        struct BuildJobTarget
+        {
+            BuildJobTarget(cbProject* p = 0, const wxString& n = wxEmptyString) : project(p), targetName(n) {}
+            cbProject* project;
+            wxString targetName;
+        };
+        typedef std::queue<BuildJobTarget> BuildJobTargetsList;
+        BuildJobTargetsList m_BuildJobTargetsList;
+
+        void ExpandTargets(cbProject* project, const wxString& targetName, wxArrayString& result);
+        void PreprocessJob(cbProject* project, const wxString& targetName);
+        BuildJobTarget GetNextJob();
+        BuildJobTarget& PeekNextJob();
+
+        wxArrayString m_Targets; // list of targets contained in the active project
         int m_RealTargetsStartIndex;
         int m_RealTargetIndex;
 
         CompilerQueue m_CommandQueue;
-        bool m_BuildingWorkspace;
 
-		// programs
 		wxString m_CompilerId;
-		CompilerPrograms m_EmptyCompilerPrograms; // always empty; returned on invalid compiler index
 
 		wxString m_EnvironmentMsg;
         int m_PageIndex;
@@ -222,19 +239,14 @@ class CompilerGCC : public cbCompilerPlugin
 		wxString m_LastTargetName;
         bool m_NotifiedMaxErrors;
 
-        // state management
-		cbProject* m_pBuildingProject;
-		int m_BuildingProjectIdx;
-		int m_BuildingTargetIdx;
-		wxString m_BuildingTargetName;
+        // build state management
+		cbProject* m_pBuildingProject; // +
+		wxString m_BuildingTargetName; // +
 		BuildJob m_BuildJob;
 		BuildState m_BuildState;
 		BuildState m_NextBuildState;
-		bool m_BuildStateTargetIsAll;
 		cbProject* m_pLastBuildingProject;
 		ProjectBuildTarget* m_pLastBuildingTarget;
-		wxArrayInt m_BuildDeps;
-		int m_BuildDepsIndex;
         // to decide if post-build steps should run
         bool m_RunTargetPostBuild;
         bool m_RunProjectPostBuild;
@@ -242,6 +254,9 @@ class CompilerGCC : public cbCompilerPlugin
 		wxString m_OriginalPath;
 		wxString m_LastTempMakefile;
         bool m_DeleteTempMakefile;
+
+        bool m_AllowCleanLog;
+        bool m_CleanShowDone;
 
         DECLARE_EVENT_TABLE()
 };

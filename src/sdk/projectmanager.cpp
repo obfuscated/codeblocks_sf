@@ -719,6 +719,8 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
 //            m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), false);
         // ok, set the new project
 
+        project->LoadLayout();
+
         if (!m_IsLoadingWorkspace)
         {
             project->BuildTree(m_pTree, m_TreeRoot, m_TreeCategorize, m_TreeUseFolders, m_pFileGroups);
@@ -727,9 +729,6 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
         }
         if (activateIt)
             SetProject(project, !m_IsLoadingWorkspace);
-
-        project->LoadLayout();
-//        project->SetModified(false);
 
         if (m_pWorkspace)
             m_pWorkspace->SetModified(true);
