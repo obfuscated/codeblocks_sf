@@ -1,4 +1,4 @@
-/*
+﻿/*
 * This file is part of Code::Blocks Studio, an open-source cross-platform IDE
 * Copyright (C) 2003  Yiannis An. Mandravellos
 *
@@ -1373,6 +1373,9 @@ void MainFrame::DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& pref
     if (cfg->ReadBool(_T("/environment/") + prefix + _T("_tabs_bottom")))
         nbstyle |= wxFNB_BOTTOM;
 
+    if (cfg->ReadBool(_T("/environment/tabs_smart")))
+        nbstyle |= wxFNB_SMART_TABS;
+
     target->SetWindowStyleFlag(nbstyle);
     target->SetGradientColorBorder(cfg->ReadColour(_T("/environment/gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
     target->SetGradientColorFrom(cfg->ReadColour(_T("/environment/gradient_from"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE))));
@@ -1382,7 +1385,7 @@ void MainFrame::DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& pref
 void MainFrame::DoUpdateEditorStyle()
 {
     wxFlatNotebook* fn = Manager::Get()->GetEditorManager()->GetNotebook();
-    DoUpdateEditorStyle(fn, _T("editor"), wxFNB_MOUSE_MIDDLE_CLOSES_TABS);
+    DoUpdateEditorStyle(fn, _T("editor"), wxFNB_MOUSE_MIDDLE_CLOSES_TABS | wxFNB_X_ON_TAB | wxFNB_NO_X_BUTTON);
 
     fn = Manager::Get()->GetMessageManager()->GetNotebook();
     DoUpdateEditorStyle(fn, _T("message"), wxFNB_NO_X_BUTTON);

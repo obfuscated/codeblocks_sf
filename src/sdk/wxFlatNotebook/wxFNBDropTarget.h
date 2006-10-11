@@ -1,4 +1,4 @@
-#ifndef _WX_FNB_DROP_TARGET_H
+#ifndef _WX_FNB_DROP_TARGET_H 
 #define _WX_FNB_DROP_TARGET_H
 
 #include <wx/wx.h>
@@ -18,14 +18,54 @@ public:
 	\param pageindex - index of dragged page
 	*/
 	wxFNBDragInfo(wxWindow * container, int pageindex) : m_Container(container), m_PageIndex(pageindex){}	
+
+	/**
+	 * \brief default constructor
+	 */
+	wxFNBDragInfo() : m_Container(0), m_PageIndex(0){} 
+
 	/**
 	Returns wxPageContainer object which contains dragged page
 	*/
 	wxWindow * GetContainer() {return m_Container;}
+
 	/**
 	Returns the index of dragged page
 	*/
 	int GetPageIndex() {return m_PageIndex;}
+};
+
+class wxFNBDragInfoDataObject : public wxDataObjectSimple
+{
+public:
+    wxFNBDragInfoDataObject(const wxDataFormat& format):wxDataObjectSimple(format)
+    {}
+
+    wxFNBDragInfo DragInfo;
+
+    wxFNBDragInfo *GetData()
+    {
+        return &DragInfo;
+    }
+
+    // get the size of our data
+    virtual size_t GetDataSize() const
+    { return sizeof(wxFNBDragInfo); }
+
+    // copy our data to the buffer
+    virtual bool GetDataHere(void *buf) const
+    {
+        memcpy(buf, &DragInfo, sizeof(wxFNBDragInfo));
+        return true;
+    }
+
+    // copy data from buffer to our data
+    virtual bool SetData(size_t WXUNUSED(len), const void *buf)
+    {
+        // don't check the len. Under Win98 the value of 'len' == 0
+        memcpy(&DragInfo, buf, sizeof(wxFNBDragInfo));
+        return true;
+    }
 };
 
 /**
@@ -38,7 +78,7 @@ private:
 	typedef wxDragResult (T::*pt2Func)(wxCoord, wxCoord, int, wxWindow *);
 	T* m_pParent;
 	pt2Func m_pt2CallbackFunc;
-	wxCustomDataObject * m_DataObject;
+	wxFNBDragInfoDataObject * m_DataObject;
 public:
 	/**
 	\brief Constructor
@@ -50,7 +90,7 @@ public:
 		, m_pt2CallbackFunc(pt2CallbackFunc)
 		, m_DataObject(NULL)
 	{
-		m_DataObject = new wxCustomDataObject(wxDataFormat(wxT("wxFNB")));
+		m_DataObject = new wxFNBDragInfoDataObject(wxDataFormat(wxT("wxFNB")));
 		SetDataObject(m_DataObject);
 	}
 	/**
@@ -63,7 +103,7 @@ public:
 	\param y - Y-coordinate
 	\param def - Result of drag-n-drop operation
 	*/
-    virtual wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def)
+    virtual wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult WXUNUSED(def))
 	{		
 		GetData();
 		wxFNBDragInfo * draginfo = (wxFNBDragInfo *)m_DataObject->GetData();

@@ -422,6 +422,13 @@
                     </object>
                   </object>
                 </object>
+	        <object class="sizeritem">
+	            <border>8</border>
+	            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+	            <object class="wxCheckBox" name="chkSmartTabs">
+	                <label>Use Smart Tab-switching scheme</label>
+	            </object>
+	        </object>
               </object>
             </object>
           </object>

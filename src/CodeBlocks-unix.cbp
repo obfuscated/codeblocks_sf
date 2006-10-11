@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="5" />
 	<Project>
@@ -3464,7 +3464,43 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/TextDropTarget.h">
+		<Unit filename="sdk\wxFlatNotebook\fnb_resources.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk\wxFlatNotebook\popup_dlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk\wxFlatNotebook\popup_dlg.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk\wxFlatNotebook\renderer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk\wxFlatNotebook\renderer.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk\wxFlatNotebook\singleton.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk\wxFlatNotebook\smart_ptr.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk/wxFlatNotebook/wxFNBDropTarget.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

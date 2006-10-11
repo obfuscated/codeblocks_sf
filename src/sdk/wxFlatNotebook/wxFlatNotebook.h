@@ -13,17 +13,25 @@
 #define WXFLATNOTEBOOK_H
 
 #include <wx/wx.h>
+#include <wx/frame.h>
+#include <wx/dynarray.h>
 
-#ifdef __VISUALC__
-#pragma warning( push )
-#pragma warning(disable: 4702)
+#ifdef __WXMSW__
+#ifdef _DEBUG
+//#include <crtdbg.h>
+#define DEBUG_NEW new(_NORMAL_BLOCK ,__FILE__, __LINE__)
+#else
+#define DEBUG_NEW new
 #endif
+#endif // __WXMSW__
 
-#include <vector>
-
-#ifdef __VISUALC__
-#pragma warning(pop)
-#endif
+#ifdef WXMAKINGDLL_FNB
+#    define WXDLLIMPEXP_FNB WXEXPORT
+#elif defined(WXUSINGDLL_FNB)
+#    define WXDLLIMPEXP_FNB WXIMPORT
+#else /* not making nor using FNB as DLL */
+#    define WXDLLIMPEXP_FNB
+#endif // WXMAKINGDLL_FNB
 
 #include <wx/dcbuffer.h>
 #include <wx/dataobj.h>
@@ -31,76 +39,69 @@
 
 #include "wxFNBDropTarget.h"
 
-class wxPageContainerBase;
+class wxPageContainer;
 
 #ifndef M_PI
 #define M_PI 3.14159265358979
 #endif
 
+#ifndef wxFNB_HEIGHT_SPACER
+#define wxFNB_HEIGHT_SPACER 10
+#endif
 
-typedef std::vector<wxBitmap> wxFlatNotebookImageList;
+// forward declerations
+class wxFNBRenderer;
+class wxFNBRendererDefault;
+class wxFNBRendererVC71;
+class wxFNBRendererVC8;
+class wxTabNavigatorWindow;
+class wxMenu;
 
+// Since some compiler complains about std::min, we define our own macro
+#define FNB_MIN(a, b) ((a > b) ? b : a)
 
-///  wxFlatNotebookBase styles
+WX_DECLARE_USER_EXPORTED_OBJARRAY(wxBitmap, wxFlatNotebookImageList, WXDLLIMPEXP_FNB);
+WX_DECLARE_USER_EXPORTED_OBJARRAY(wxWindow*, wxWindowPtrArray, WXDLLIMPEXP_FNB);
+
+///  wxFlatNotebook styles
 #define wxFNB_DEFAULT_STYLE				wxFNB_MOUSE_MIDDLE_CLOSES_TABS
+#define wxFNB_VC71						0x00000001
+#define wxFNB_FANCY_TABS				0x00000002
+#define wxFNB_TABS_BORDER_SIMPLE		0x00000004
+#define wxFNB_NO_X_BUTTON				0x00000008
+#define wxFNB_NO_NAV_BUTTONS			0x00000010
+#define wxFNB_MOUSE_MIDDLE_CLOSES_TABS	0x00000020
+#define wxFNB_BOTTOM					0x00000040
+#define wxFNB_NODRAG					0x00000080
+#define wxFNB_ALLOW_FOREIGN_DND			0x00000080
+#define wxFNB_VC8						0x00000100
+#define wxFNB_X_ON_TAB					0x00000200
+#define wxFNB_BACKGROUND_GRADIENT		0x00000400
+#define wxFNB_COLORFUL_TABS				0x00000800
+#define wxFNB_DCLICK_CLOSES_TABS		0x00001000
+#define wxFNB_SMART_TABS				0x00002000
+#define wxFNB_DROPDOWN_TABS_LIST		0x00004000
 
-/// Use Visual Studio 2003 (VC7.1) Style for tabs
-#define wxFNB_VC71						1
-
-/// Use fancy style - square tabs filled with gradient coloring
-#define wxFNB_FANCY_TABS				2
-
-/// Draw thin border around the page
-#define wxFNB_TABS_BORDER_SIMPLE		4
-
-/// Do not display the 'X' button
-#define wxFNB_NO_X_BUTTON				8
-
-/// Do not display the Right / Left arrows
-#define wxFNB_NO_NAV_BUTTONS			16
-
-/// Use the mouse middle button for cloing tabs
-#define wxFNB_MOUSE_MIDDLE_CLOSES_TABS	32
-
-/// Place tabs at bottom - the default is to place them
-/// at top
-#define wxFNB_BOTTOM					64
-
-/// Disable dragging of tabs
-#define wxFNB_NODRAG					128
-
-/// Disable dragging of tabs - Only available on the commercial version
-#define wxFNB_VC8						256
-
-/// Place 'X' on a tab
-/// Note: This style is not supported on VC8 style
-#define wxFNB_X_ON_TAB					512
-
-#define wxFNB_ALLOW_FOREIGN_DND			128
-
-#define VERTICAL_BORDER_PADDING  4
-
-// Button size is a 16x16 xpm bitmap
-#define BUTTON_SPACE			16
-
-#define VC8_SHAPE_LEN			16
-
+/// General macros
+#define VERTICAL_BORDER_PADDING			4
+#define BUTTON_SPACE					16
+#define VC8_SHAPE_LEN					16
 #define MASK_COLOR wxColor(0, 128, 128)
 
-class wxMenu;
 /**
-* \brief Nice cross-platform flat notebook with X-button :)
+* \brief Nice cross-platform flat notebook with X-button, navigation arrows and much more
 */
 
-class wxFlatNotebookBase : public wxPanel
+class WXDLLIMPEXP_FNB wxFlatNotebook : public wxPanel
 {
 private:
-	friend class wxPageContainerBase;
+	friend class wxPageContainer;
 
 public:
 
 	///Default constructor
-	wxFlatNotebookBase(){}
+	wxFlatNotebook() : m_popupWin(NULL) {}
+
 	/// Parametrized constructor
 	/**
 	\param parent - parent window
@@ -110,14 +111,10 @@ public:
 	\param style - window style
 	\param name - window class name
 	*/
-	wxFlatNotebookBase(wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxT("Flat Notebook"));
+	wxFlatNotebook(wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxT("Flat Notebook"));
 
 	/// Destructor
-	~wxFlatNotebookBase(void);
-
-	/// Derived class should override this function to provide the
-	/// appropriate PageManager
-	virtual wxPageContainerBase* CreatePageContainer();
+	virtual ~wxFlatNotebook(void);
 
 	/// Advances the selection
 	/**
@@ -166,14 +163,21 @@ public:
 	\param page - page index
 	*/
 	wxWindow * GetPage(size_t page) const;
-        /// Returns the page index of the window object.
+	/// Returns the page index of the window object.
 	/**
-        \param win - window object
-        */
-        int GetPageIndex(wxWindow* win) const;
+	\param win - window object
+	*/
+	int GetPageIndex(wxWindow* win) const;
 
 	/// Returns the currently visible/selected notebook page 0 based index.
 	int GetSelection() const;
+
+	/**
+	* Return the previous selection, useful when implementing smart tabulation
+	* \return previous selection, or wxNOT_FOUND
+	*/
+	int GetPreviousSelection() const;
+
 	/// Returns tab header inclination angle of specified page
 	/**
 	\param page_index - page index
@@ -210,7 +214,7 @@ public:
 
 	/// Sets the amount of space around each page's icon and label, in pixels.
 	/**
-	NB: The vertical padding cannot be changed in for wxFlatNotebookBase.
+	NB: The vertical padding cannot be changed in for wxFlatNotebook.
 	\param padding - new amount of space around each page's icon and label
 	*/
 	void SetPadding(const wxSize& padding);
@@ -267,11 +271,11 @@ public:
 	/// Sets an image list associated with notebook pages
 	/**
 	\param imglist - image list object.
-	Image list assigned with this method will not be deleted by wxFlatNotebookBase's destructor, you must delete it yourself.
+	Image list assigned with this method will not be deleted by wxFlatNotebook's destructor, you must delete it yourself.
 	*/
 	void SetImageList(wxFlatNotebookImageList * imglist);
 
-	/// Returns an image list object associated with wxFlatNotebookBase
+	/// Returns an image list object associated with wxFlatNotebook
 	wxFlatNotebookImageList * GetImageList();
 
 	/**
@@ -279,7 +283,7 @@ public:
 	* \param x X coordinate where the drop take place
 	* \param y Y coordinate where the drop take place
 	* \param nTabPage page index
-	* \param wnd_oldContainer pointer to wxPageContainerBase object that contained dragged page
+	* \param wnd_oldContainer pointer to wxPageContainer object that contained dragged page
 	* \return Drag operation identifier
 	*/
 	wxDragResult OnDropTarget(wxCoord x, wxCoord y, int nTabPage, wxWindow * wnd_oldContainer);
@@ -336,11 +340,16 @@ public:
 	/// Set the active tab color
 	void SetActiveTabColour(const wxColour& color);
 
+	/**
+	* Return the padding used between the text and icons, text and borders, etc.
+	* \return padding in pixels
+	*/
 	int GetPadding() { return m_nPadding; }
+
 protected:
 	/// Initialization function, called internally
 	virtual void Init();
-	wxPageContainerBase *m_pages;
+	wxPageContainer *m_pages;
 
 private:
 	/// Internal flag to force selection of page,
@@ -352,12 +361,13 @@ private:
 	wxBoxSizer* m_mainSizer;
 
 	/// vector of all the windows associated with the notebook pages.
-	std::vector<wxWindow*> m_windows;
-	wxFNBDropTarget<wxFlatNotebookBase> *m_pDropTarget;
+	wxWindowPtrArray m_windows;
+	wxFNBDropTarget<wxFlatNotebook> *m_pDropTarget;
 	int m_nFrom;
 	int m_nPadding;
+	wxTabNavigatorWindow *m_popupWin;
 
-	DECLARE_DYNAMIC_CLASS(wxFlatNotebookBase)
+	DECLARE_DYNAMIC_CLASS(wxFlatNotebook)
 	DECLARE_EVENT_TABLE()
 	void OnNavigationKey(wxNavigationKeyEvent& event);
 };
@@ -365,7 +375,7 @@ private:
 /**
 * \brief Contains parameters of notebook page
 */
-class wxPageInfo
+class WXDLLIMPEXP_FNB wxPageInfo
 {
 private:
 	// Members
@@ -392,6 +402,9 @@ private:
 
 	/// Tab 'x' button rectangle
 	wxRect m_xRect;
+
+	/// Tab color
+	wxColor m_color;
 
 public:
 
@@ -438,7 +451,7 @@ public:
 	/**
 	\param value - new tab header inclination angle
 	*/
-	void SetTabAngle(unsigned int value) {m_TabAngle = std::min((unsigned int)(45), (unsigned int)(value));}
+	void SetTabAngle(unsigned int value) {m_TabAngle = FNB_MIN((unsigned int)(45), (unsigned int)(value));}
 
 	/// Returns an inclination of tab header borders
 	unsigned int GetTabAngle() {return m_TabAngle;}
@@ -478,7 +491,21 @@ public:
 
 	/// Get the 'x' button rectangle
 	wxRect& GetXRect() { return m_xRect; }
+
+	/**
+	*
+	* \return The tab color
+	*/
+	wxColor GetColor() { return m_color; }
+
+	/**
+	*
+	* \param color Tab face color
+	*/
+	void SetColor(wxColor& color) { m_color = color; }
 };
+
+WX_DECLARE_USER_EXPORTED_OBJARRAY(wxPageInfo, wxPageInfoArray, WXDLLIMPEXP_FNB);
 
 /// Button status
 enum
@@ -491,22 +518,28 @@ enum
 /// Hit Test results
 enum
 {
-	wxFNB_TAB,			/// On a tab
-	wxFNB_X,			/// On the X button
-	wxFNB_TAB_X,		/// On the 'X' button (tab's X button)
-	wxFNB_LEFT_ARROW,	/// On the rotate left arrow button
-	wxFNB_RIGHT_ARROW,	/// On the rotate right arrow button
-	wxFNB_NOWHERE		/// Anywhere else
+	wxFNB_TAB,				///< On a tab
+	wxFNB_X,				///< On the X button
+	wxFNB_TAB_X,			///< On the 'X' button (tab's X button)
+	wxFNB_LEFT_ARROW,		///< On the rotate left arrow button
+	wxFNB_RIGHT_ARROW,		///< On the rotate right arrow button
+	wxFNB_DROP_DOWN_ARROW,	///< On the drop down arrow button
+	wxFNB_NOWHERE			///< Anywhere else
 };
 
 /**
 * \brief Notebook page
 */
-class wxPageContainerBase : public wxPanel
+class WXDLLIMPEXP_FNB wxPageContainer : public wxPanel
 {
 protected:
 
-	friend class wxFlatNotebookBase;
+	friend class wxFlatNotebook;
+	friend class wxFNBRenderer;
+	friend class wxFNBRendererDefault;
+	friend class wxFNBRendererVC71;
+	friend class wxFNBRendererVC8;
+
 	wxFlatNotebookImageList * m_ImageList;
 
 public:
@@ -518,18 +551,18 @@ public:
 	\param size - window size
 	\param style - window style
 	*/
-	wxPageContainerBase(wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);
+	wxPageContainer(wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);
 	/// Destructor
-	virtual ~wxPageContainerBase(void);
+	virtual ~wxPageContainer(void);
 
 	/// Sets an image list associated with notebook pages
 	/**
 	\param imglist - image list object.
-	Image list assigned with this method will not be deleted by wxFlatNotebookBase's destructor, you must delete it yourself.
+	Image list assigned with this method will not be deleted by wxFlatNotebook's destructor, you must delete it yourself.
 	*/
 	virtual void SetImageList(wxFlatNotebookImageList * imglist) {m_ImageList = imglist;}
 
-	/// Returns an image list object associated with wxFlatNotebookBase
+	/// Returns an image list object associated with wxFlatNotebook
 	virtual wxFlatNotebookImageList * GetImageList() {return m_ImageList;}
 
 	/// Apends new notebook page
@@ -606,6 +639,42 @@ public:
 	*/
 	virtual bool GetEnabled(size_t page);
 
+	/// Style helper methods
+	bool HasFlag(int flag);
+
+	/**
+	* Return a vector containing the tabs informations (used by the redereres)
+	* \return tabs info vector
+	*/
+	wxPageInfoArray& GetPageInfoVector() { return m_pagesInfoVec; }
+
+	/**
+	* Return the first graident colour ("from")
+	* \return gradient colour 1
+	*/
+	const wxColour&  GetGradientColourFrom() const { return m_colorFrom; }
+
+	/**
+	* Return the second graident colour ("to")
+	* \return gradient colour 2
+	*/
+	const wxColour&  GetGradientColourTo() const { return m_colorTo; }
+	/**
+	* Return tab's border colour
+	* \return border colour
+	*/
+	const wxColour&  GetBorderColour() const { return m_colorBorder; }
+
+	/**
+	* Return non active tab's text colour
+	* \return non active tab's text colour
+	*/
+	const wxColour&  GetNonoActiveTextColor() const { return m_nonActiveTextColor; }
+
+	const wxColour&  GetActiveTabColour() const { return m_activeTabColor; }
+
+	int GetPreviousSelection() const { return m_iPreviousActivePage; }
+
 	DECLARE_EVENT_TABLE()
 	// Event handlers
 	virtual void OnPaint(wxPaintEvent& event);
@@ -618,20 +687,26 @@ public:
 	virtual void OnEraseBackground(wxEraseEvent& WXUNUSED(event)) { }
 	virtual void OnMouseLeave(wxMouseEvent& event);
 	virtual void OnMouseEnterWindow(wxMouseEvent& event);
+	virtual void OnLeftDClick(wxMouseEvent &event);
+	virtual void OnTabMenuSelection(wxCommandEvent &event);
 
 protected:
+
+	/**
+	 * Popup a menu that contains all the tabs to be selected by user
+	 */
+	void PopupTabsMenu();
+
+	void ClearFlag(int flag);
+
+	/// return true if tabIdx has image
+	bool TabHasImage(int tabIdx);
+
 	/// Check whether the style is set to default
 	virtual bool IsDefaultTabs();
 
-	/// Some styles does not allow drawing X on the active tab
-	/// If you dont want to allow it, override this function
-	virtual bool CanDrawXOnTab() { return true; }
-
-	/// Return the button area space
-	virtual int GetButtonAreaWidth(void);
-
-	/// File a tab with gradient color
-	virtual void FillGradientColor(wxBufferedDC& dc, const wxRect& rect);
+	/// Return the color of the single line border
+	virtual wxColor GetSingleLineBorderColor();
 
 	/// Return true if page is visible
 	virtual bool IsTabVisible(size_t page);
@@ -655,18 +730,6 @@ protected:
 	/// Preform the actual page selection
 	virtual void DoSetSelection(size_t page);
 
-	/// Draw right arrow button to the right area of the tabs
-	virtual void DrawRightArrow(wxDC &dc);
-
-	/// Draw left arrow button to the right area of the tabs
-	virtual void DrawLeftArrow (wxDC &dc);
-
-	/// Draw 'x' button to the right area of the tabs
-	virtual void DrawX         (wxDC &dc);
-
-	/// Draw 'x' button on a tab at position rect.x rect.y
-	virtual void DrawTabX(wxDC &dc, const wxRect &rect, const int& tabIdx);
-
 	/// Return the index of the last visible index
 	virtual int  GetLastVisibleTab();
 
@@ -682,7 +745,7 @@ protected:
 	* \param x X coordinate where the drop take place
 	* \param y Y coordinate where the drop take place
 	* \param nTabPage page index
-	* \param wnd_oldContainer pointer to wxPageContainerBase object that contained dragged page
+	* \param wnd_oldContainer pointer to wxPageContainer object that contained dragged page
 	* \return Drag operation identifier
 	*/
 	virtual wxDragResult OnDropTarget(wxCoord x, wxCoord y, int nTabPage, wxWindow * wnd_oldContainer);
@@ -701,28 +764,14 @@ protected:
 	*/
 	virtual bool CanFitToScreen(size_t page);
 
-	/// Draw a bottom line for the tabs area
-	virtual void DrawTabsLine(wxDC& dc, const wxRect& rect);
-
-	// Functions
-	void DrawVC71Tab(wxBufferedPaintDC& dc, const int& posx, const int &tabIdx, const bool& hasImage, const int &tabWidth, const int &tabHeight);
-	void DrawFancyTab(wxBufferedPaintDC& dc, const int& posx, const int &tabIdx, const bool& hasImage, const int &tabWidth, const int &tabHeight);
-	void DrawStandardTab(wxBufferedPaintDC& dc, const int& posx, const int &tabIdx, const bool& hasImage, const int &tabWidth, const int &tabHeight);
-
-	// Navigation buttons position
-	int GetLeftButtonPos();
-	int GetRightButtonPos();
-	int GetXPos();
-	int GetButtonsAreaLength();
-
 protected:
 
-	std::vector<wxPageInfo> m_pagesInfoVec;
+	wxPageInfoArray m_pagesInfoVec;
 	int m_iActivePage;
 	int m_nFrom;
 
 	/// Drop target for enabling drag'n'drop of tabs
-	wxFNBDropTarget<wxPageContainerBase> *m_pDropTarget;
+	wxFNBDropTarget<wxPageContainer> *m_pDropTarget;
 
 	/// Pointer to the parent window
 	wxWindow *m_pParent;
@@ -740,13 +789,16 @@ protected:
 	int m_nXButtonStatus, m_nLeftButtonStatus, m_nRightButtonStatus, m_nTabXButtonStatus;
 
 	/// holds the button id in case a left click is done on one of them
-    int m_nLeftClickZone;
+	int m_nLeftClickZone;
+
+	int m_iPreviousActivePage;
+	int m_nArrowDownButtonStatus;
 };
 
 /**
-* \brief Holds information about events associated with wxFlatNotebookBase objects
+* \brief Holds information about events associated with wxFlatNotebook objects
 */
-class wxFlatNotebookEvent : public wxNotifyEvent
+class WXDLLIMPEXP_FNB wxFlatNotebookEvent : public wxNotifyEvent
 {
 	DECLARE_DYNAMIC_CLASS(wxFlatNotebookEvent)
 	size_t sel, oldsel;
@@ -778,45 +830,12 @@ public:
 	int  GetOldSelection() { return (int)oldsel; }
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Default implementation of the wxFlatNotebook
-//
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-class wxFlatNotebook : public wxFlatNotebookBase
-{
-public:
-	/**
-	 *
-	 * \param parent parent window
-	 * \param id window ID
-	 * \param pos window position
-	 * \param size window size
-	 * \param style window style
-	 * \param name window class name
-	 * \return
-	 */
-	wxFlatNotebook(wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxT("FlatNotebook")) :
-	  wxFlatNotebookBase(parent, id, pos, size, style, name)
-	  {
-		  m_pages = CreatePageContainer();
-		  Init();
-	  }
-
-	/// Destructor
-	 ~wxFlatNotebook(void)
-	  {}
-};
-
-#define wxFN_IMPEXP
-
 BEGIN_DECLARE_EVENT_TYPES()
-    DECLARE_EXPORTED_EVENT_TYPE(wxFN_IMPEXP, wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CHANGED, 50000)
-    DECLARE_EXPORTED_EVENT_TYPE(wxFN_IMPEXP, wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CHANGING, 50001)
-    DECLARE_EXPORTED_EVENT_TYPE(wxFN_IMPEXP, wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING, 50002)
-    DECLARE_EXPORTED_EVENT_TYPE(wxFN_IMPEXP, wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU, 50003)
-	DECLARE_EXPORTED_EVENT_TYPE(wxFN_IMPEXP, wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSED, 50004)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_FNB, wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CHANGED, 50000)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_FNB, wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CHANGING, 50001)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_FNB, wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING, 50002)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_FNB, wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU, 50003)
+DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_FNB, wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSED, 50004)
 END_DECLARE_EVENT_TYPES()
 
 typedef void (wxEvtHandler::*wxFlatNotebookEventFunction)(wxFlatNotebookEvent&);
@@ -834,7 +853,7 @@ typedef void (wxEvtHandler::*wxFlatNotebookEventFunction)(wxFlatNotebookEvent&);
 	wx__DECLARE_EVT1(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING, winid, wxFlatNotebookEventHandler(fn))
 
 #define EVT_FLATNOTEBOOK_CONTEXT_MENU(winid, fn) \
-        wx__DECLARE_EVT1(wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU, winid, wxFlatNotebookEventHandler(fn))
+	wx__DECLARE_EVT1(wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU, winid, wxFlatNotebookEventHandler(fn))
 
 #define EVT_FLATNOTEBOOK_PAGE_CLOSED(winid, fn) \
 	wx__DECLARE_EVT1(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSED, winid, wxFlatNotebookEventHandler(fn))
@@ -852,36 +871,23 @@ namespace FNB
 	////////////////////////////////////////////////////////////
 	// Images used by the control
 	////////////////////////////////////////////////////////////
+	/* XPM */
 	extern const char *left_arrow_disabled_xpm[];
-
 	extern const char *x_button_pressed_xpm[];
-
 	extern const char *left_arrow_xpm[];
-
 	extern const char *x_button_hilite_xpm[];
-
 	extern const char *x_button_xpm[];
-
 	extern const char *left_arrow_pressed_xpm[];
-
 	extern const char *left_arrow_hilite_xpm[];
-
 	extern const char *right_arrow_disabled_xpm[];
-
 	extern const char *right_arrow_hilite_xpm[];
-
 	extern const char *right_arrow_pressed_xpm[];
-
 	extern const char *right_arrow_xpm[];
-
+	extern const char *down_arrow_hilite_xpm[];
+	extern const char *down_arrow_pressed_xpm[];
+	extern const char *down_arrow_xpm[];
 	extern const int tab_x_size;
-
-	extern const char *tab_x_button_pressed_xpm[];
-
-	extern const char *tab_x_button_xpm[];
-
-	extern const char *tab_x_button_hilite_xpm[];
-};
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
