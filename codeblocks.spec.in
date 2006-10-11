@@ -170,6 +170,7 @@ fi
 
 %files contrib
 %defattr(-,root,root)
+%{_bindir}/cb_share_config
 %{pkgdata}/codestat.zip
 %{pkgdata}/envvars.zip
 %{pkgdata}/help_plugin.zip
@@ -198,6 +199,8 @@ fi
 %{_includedir}/%{name}/*
 
 %changelog
+* Wed Oct 11 2006 Daniel Orb <danielorb2000@googlemail.com>
+- Added cb_share_config to filelist
 * Sun Aug 20 2006 Daniel Orb <danielorb2000@googlemail.com>
 - Added missing files to filelist
 * Sat Jul 22 2006 Daniel Orb <danielorb2000@googlemail.com>
