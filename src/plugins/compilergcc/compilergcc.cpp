@@ -1846,6 +1846,7 @@ BuildState CompilerGCC::GetNextStateBasedOnJob()
             // switch to next project in workspace
             if (m_pBuildingProject)
                 m_pBuildingProject->SetCurrentlyCompilingTarget(0);
+            m_NextBuildState = bsProjectPreBuild;
             return DoBuild() >= 0 ? bsProjectPreBuild : bsNone;
         }
 
@@ -2036,7 +2037,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
         CalculateProjectDependencies(project, deps);
 
     // loop all projects in the dependencies list
-//    DBGLOG(_T("** Creating deps"));
+//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("** Creating deps"));
     for (size_t i = 0; i < deps.GetCount(); ++i)
     {
         cbProject* prj = Manager::Get()->GetProjectManager()->GetProjects()->Item(deps[i]);
@@ -2058,10 +2059,10 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
 
             m_BuildJobTargetsList.push(bjt);
 
-//            DBGLOG(_T("Job: %s - %s"), prj->GetTitle().c_str(), prj->GetBuildTarget(tlist[x])->GetTitle().c_str());
+//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Job: %s - %s"), prj->GetTitle().c_str(), prj->GetBuildTarget(tlist[x])->GetTitle().c_str());
         }
     }
-//    DBGLOG(_T("** Done creating deps"));
+//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("** Done creating deps"));
 }
 
 CompilerGCC::BuildJobTarget CompilerGCC::GetNextJob()
