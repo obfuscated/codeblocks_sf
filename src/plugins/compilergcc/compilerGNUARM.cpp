@@ -157,7 +157,7 @@ void CompilerGNUARM::Reset()
 	m_Commands[(int)ctLinkExeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // no -mwindows
 	m_Commands[(int)ctLinkDynamicCmd] = _T("$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs");
 #endif
-	m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker -r $static_output $link_objects\nranlib $static_output");
+	m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker -r -s $static_output $link_objects");
 
 	LoadDefaultRegExArray();
 
