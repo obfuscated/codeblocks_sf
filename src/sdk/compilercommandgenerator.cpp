@@ -282,7 +282,7 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
 	// not a fully qualified path, so we will prepend lib to /bar/libfoo.a incorrectly
 	// NOTE (thomas#1#): A better solution might be to use a regex, but finding an universal regex might not be easy...
     wxString fnameString(target->GetOutputFilename());
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(fnameString, true);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(fnameString, true, target);
     wxFileName fname(fnameString);
 
     if (!fname.GetName().StartsWith(compiler->GetSwitches().libPrefix))

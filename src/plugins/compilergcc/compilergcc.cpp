@@ -1261,9 +1261,20 @@ bool CompilerGCC::UseMake(ProjectBuildTarget* target)
     return false;
 }
 
+wxString CompilerGCC::GetCurrentCompilerID(ProjectBuildTarget* target)
+{
+    if (target)
+        return target->GetCompilerID();
+    if (m_pBuildingProject)
+        return m_pBuildingProject->GetCompilerID();
+    if (m_Project)
+        return m_Project->GetCompilerID();
+    return wxEmptyString;
+}
+
 bool CompilerGCC::CompilerValid(ProjectBuildTarget* target)
 {
-    wxString idx = target ? target->GetCompilerID() : (m_Project ? m_Project->GetCompilerID() : CompilerFactory::GetDefaultCompilerID());
+    wxString idx = GetCurrentCompilerID(target);
     bool ret = CompilerFactory::GetCompiler(idx);
     if (!ret)
     {
@@ -1835,7 +1846,6 @@ BuildState CompilerGCC::GetNextStateBasedOnJob()
             // switch to next project in workspace
             if (m_pBuildingProject)
                 m_pBuildingProject->SetCurrentlyCompilingTarget(0);
-            m_NextBuildState = bsProjectPreBuild;
             return DoBuild() >= 0 ? bsProjectPreBuild : bsNone;
         }
 
@@ -1924,8 +1934,6 @@ void CompilerGCC::BuildStateManagement()
         case bsTargetPreBuild:
         {
             // check if it should build with "All"
-//            if (m_BuildStateTargetIsAll && !bt->GetIncludeInTargetAll())
-//                break;
             // run target pre-build steps
             cmds = dc.GetPreBuildCommands(bt);
             break;
@@ -1933,8 +1941,6 @@ void CompilerGCC::BuildStateManagement()
 
         case bsTargetBuild:
         {
-//            if (m_BuildStateTargetIsAll && !bt->GetIncludeInTargetAll())
-//                break;
             // run target build
             cmds = dc.GetCompileCommands(bt);
             bool hasCommands = cmds.GetCount();
@@ -1950,13 +1956,9 @@ void CompilerGCC::BuildStateManagement()
 
         case bsTargetPostBuild:
         {
-            // check if it should build with "All"
-//            if (!m_BuildStateTargetIsAll || bt->GetIncludeInTargetAll())
-            {
-                // run target post-build steps
-                if (m_RunTargetPostBuild || bt->GetAlwaysRunPostBuildSteps())
-                    cmds = dc.GetPostBuildCommands(bt);
-            }
+            // run target post-build steps
+            if (m_RunTargetPostBuild || bt->GetAlwaysRunPostBuildSteps())
+                cmds = dc.GetPostBuildCommands(bt);
             // reset
             m_RunTargetPostBuild = false;
             break;

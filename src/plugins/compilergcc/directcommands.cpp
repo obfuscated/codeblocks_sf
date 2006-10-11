@@ -361,10 +361,6 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
 
     m_pCurrTarget = target;
 
-    // make sure all project files are saved
-    if (!m_pProject->SaveAllFiles())
-        cbMessageBox(_("Could not save all files. Build might be incomplete..."));
-
     // set list of #include directories
     DepsSearchStart(target);
 
@@ -476,7 +472,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     wxArrayString ret;
 
     wxString output = target->GetOutputFilename();
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(output);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(output, true, target);
 
     wxFileName out = UnixFilename(output);
     wxString linkfiles;
@@ -544,7 +540,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     // create output dir
     out.MakeAbsolute(m_pProject->GetBasePath());
     wxString dstname = out.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(dstname);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(dstname, true, target);
     if (!dstname.IsEmpty() && !wxDirExists(dstname))
     {
         if (!CreateDirRecursively(dstname, 0755))

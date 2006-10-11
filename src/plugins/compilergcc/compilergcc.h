@@ -189,6 +189,9 @@ class CompilerGCC : public cbCompilerPlugin
         wxString GetTargetString(int index = -1);
         void DoClean(const wxArrayString& commands);
 
+        // active target, currently building project or active project
+        wxString GetCurrentCompilerID(ProjectBuildTarget* target);
+
         // when a build is about to start, a preprocessing step runs
         // in PreprocessJob(), that fills m_BuildJobTargetsList with
         // BuildJobTarget. It is a simple pair of project->target which
