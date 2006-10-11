@@ -701,6 +701,15 @@ void wxFlatNotebook::SetSelection(size_t page)
 
 	int curSel = m_pages->GetSelection();
 
+    // notify the host that we 're about to change the active page
+    wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CHANGING, GetId());
+    event.SetSelection((int)page);
+    event.SetOldSelection((int)curSel);
+    event.SetEventObject(this);
+    GetEventHandler()->ProcessEvent(event);
+    if (!event.IsAllowed())
+        return; // not accepted by the host
+
 	// program allows the page change
 	Freeze();
 	if(curSel >= 0)
@@ -731,6 +740,10 @@ void wxFlatNotebook::SetSelection(size_t page)
 
 	m_pages->m_iActivePage = (int)page;
 	m_pages->DoSetSelection(page);
+
+    // Fire a wxEVT_COMMAND_TABBEDCTRL_PAGE_CHANGED event
+    event.SetEventType(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CHANGED);
+    GetEventHandler()->ProcessEvent(event);
 }
 
 void wxFlatNotebook::DeletePage(size_t page, bool notify)
@@ -1307,20 +1320,7 @@ void wxPageContainer::OnLeftDown(wxMouseEvent& event)
 					break;
 
 				int oldSelection = m_iActivePage;
-
-				wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CHANGING, GetParent()->GetId());
-				event.SetSelection((int)tabIdx);
-				event.SetOldSelection((int)oldSelection);
-				event.SetEventObject(GetParent());
-				if(!GetParent()->GetEventHandler()->ProcessEvent(event) || event.IsAllowed())
-				{
-					SetSelection(tabIdx);
-
-					// Fire a wxEVT_COMMAND_TABBEDCTRL_PAGE_CHANGED event
-					event.SetEventType(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CHANGED);
-					event.SetOldSelection((int)oldSelection);
-					GetParent()->GetEventHandler()->ProcessEvent(event);
-				}
+                SetSelection(tabIdx);
 			}
 			break;
 		}
