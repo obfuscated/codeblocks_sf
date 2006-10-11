@@ -656,13 +656,16 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
 
     if (target->GetTargetType() != ttCommandsOnly)
     {
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(outputfilename, true, target);
         ret.Add(outputfilename);
     }
 
     if (target->GetTargetType() == ttDynamicLib)
     {
         // for dynamic libs, delete static lib
-        ret.Add(target->GetStaticLibFilename());
+        outputfilename = target->GetStaticLibFilename();
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(outputfilename, true, target);
+        ret.Add(outputfilename);
         // .def exports file is not deleted, because it may be user-supplied
 //        ret.Add(target->GetDynamicLibDefFilename());
     }

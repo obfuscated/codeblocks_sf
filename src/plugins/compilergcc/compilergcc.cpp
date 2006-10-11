@@ -1668,7 +1668,6 @@ int CompilerGCC::Clean(const wxString& target)
         }
         else
         {
-            CompilerFactory::GetCompiler(bt->GetCompilerID())->Init(bjt.project);
             DirectCommands dc(this, CompilerFactory::GetCompiler(bt->GetCompilerID()), bjt.project, m_PageIndex);
             clean = dc.GetCleanCommands(bt, true);
             DoClean(clean);
