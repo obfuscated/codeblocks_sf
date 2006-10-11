@@ -1319,7 +1319,6 @@ void wxPageContainer::OnLeftDown(wxMouseEvent& event)
 				if(!m_pagesInfoVec[tabIdx].GetEnabled())
 					break;
 
-				int oldSelection = m_iActivePage;
                 SetSelection(tabIdx);
 			}
 			break;
