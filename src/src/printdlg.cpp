@@ -39,6 +39,8 @@ PrintDialog::PrintDialog(wxWindow* parent)
 
     int mode = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/print_mode"), 1);
     XRCCTRL(*this, "rbColourMode", wxRadioBox)->SetSelection(mode);
+    bool print_line_numbers = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/print_line_numbers"), true);
+    XRCCTRL(*this, "chkLineNumbers", wxCheckBox)->SetValue(print_line_numbers);
 }
 
 PrintDialog::~PrintDialog()
@@ -67,6 +69,7 @@ void PrintDialog::EndModal(int retCode)
     {
         int mode = XRCCTRL(*this, "rbColourMode", wxRadioBox)->GetSelection();
         Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/print_mode"), (int)mode);
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/print_line_numbers"), GetPrintLineNumbers());
     }
     return wxDialog::EndModal(retCode);
 }

@@ -80,7 +80,16 @@ void cbEditorPrintout::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom,
         ppiScr.x = 96;
         ppiScr.y = 96;
     }
-    wxSize page = g_pageSetupData->GetPaperSize();
+
+    wxPrintData* ppd = &(g_printer->GetPrintDialogData().GetPrintData());
+    wxSize page = ppd->GetPaperSize();
+    if(ppd->GetOrientation() == wxLANDSCAPE )
+    {
+        int temp = page.x;
+        page.x = page.y;
+        page.y = temp;
+    }
+
     page.x = static_cast<int> (page.x * ppiScr.x / 25.4);
     page.y = static_cast<int> (page.y * ppiScr.y / 25.4);
     m_pageRect = wxRect (0,
@@ -88,12 +97,13 @@ void cbEditorPrintout::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom,
                          page.x,
                          page.y);
     // get margins information and convert to printer pixels
-    int  top = 25; // default 25
-    int  bottom = 25; // default 25
+    int  top = 15; // default 25
+    int  bottom = 15; // default 25
     int  left = 20; // default 20
-    int  right = 20; // default 20
-    wxPoint (top, left) = g_pageSetupData->GetMarginTopLeft();
-    wxPoint (bottom, right) = g_pageSetupData->GetMarginBottomRight();
+    int  right = 15; // default 20
+// TODO (Tiwag#1#): get margins from PageSetup Dialog
+//    wxPoint (top, left) = g_pageSetupData->GetMarginTopLeft();
+//    wxPoint (bottom, right) = g_pageSetupData->GetMarginBottomRight();
     top = static_cast<int> (top * ppiScr.y / 25.4);
     bottom = static_cast<int> (bottom * ppiScr.y / 25.4);
     left = static_cast<int> (left * ppiScr.x / 25.4);

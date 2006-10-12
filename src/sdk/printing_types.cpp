@@ -13,22 +13,25 @@
 #include "sdk_precomp.h"
 #include "printing_types.h"
 
-wxPrintData* g_printData = 0;
-wxPageSetupData* g_pageSetupData = 0;
+// NOTE (Tiwag#1#): 061012 global wxPrinter, used in cbeditorprintout
+//                  to get correct settings if changed in printer dialog
+wxPrinter* g_printer = 0;
+
+// TODO (Tiwag#1#): 061012 Page Setup not implemented
+// wxPageSetupData* g_pageSetupData = 0;
 
 void InitPrinting()
 {
-    if (!g_printData)
-        g_printData = new wxPrintData;
-    if (!g_pageSetupData)
-        g_pageSetupData = new wxPageSetupDialogData;
+    if (!g_printer)
+        g_printer = new wxPrinter;
+//    if (!g_pageSetupData)
+//        g_pageSetupData = new wxPageSetupDialogData;
 }
 
 void DeInitPrinting()
 {
-    delete g_pageSetupData;
-    g_pageSetupData = 0;
-
-    delete g_printData;
-    g_printData = 0;
+    delete g_printer;
+    g_printer = 0;
+//    delete g_pageSetupData;
+//    g_pageSetupData = 0;
 }

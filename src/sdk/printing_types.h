@@ -4,8 +4,8 @@
 #include "settings.h"
 #include <wx/print.h>
 
-// Global print data, to remember settings during the session
-extern DLLIMPORT wxPrintData* g_printData;
+// Global printer
+extern DLLIMPORT wxPrinter* g_printer;
 
 // Global page setup data
 extern DLLIMPORT wxPageSetupData* g_pageSetupData;

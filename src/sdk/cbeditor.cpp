@@ -1959,7 +1959,7 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
     if (!line_numbers)
         m_pControl->SetMarginWidth(0, 0);
     else
-        m_pControl->SetMarginWidth(0, 48);
+        m_pControl->SetMarginWidth(0, 1);  // NOTE (Tiwag#1#): 061012 there is some bug in (0,48) is way too much
     // never print the gutter line
     m_pControl->SetEdgeMode(wxSCI_EDGE_NONE);
 
@@ -1979,12 +1979,9 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
             break;
     }
     wxLogNull ln;
-//    wxPrintDialogData printDialogData(*g_printData);
-//    wxPrinter printer(&printDialogData);
     InitPrinting();
-    wxPrinter printer;
     wxPrintout* printout = new cbEditorPrintout(m_Filename, m_pControl, selectionOnly);
-    if (!printer.Print(this, printout, true))
+    if (!g_printer->Print(this, printout, true))
     {
         if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
         {
@@ -1992,8 +1989,6 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
                             "Perhaps your current printer is not set correctly?"), _("Printing"), wxICON_ERROR);
         }
     }
-    else
-        *g_printData = printer.GetPrintDialogData().GetPrintData();
     delete printout;
 
     // revert line numbers and gutter settings
