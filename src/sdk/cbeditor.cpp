@@ -1957,9 +1957,15 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
     // print line numbers?
     m_pControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
     if (!line_numbers)
+    {
+        m_pControl->SetPrintMagnification(-1);
         m_pControl->SetMarginWidth(0, 0);
+    }
     else
-        m_pControl->SetMarginWidth(0, 1);  // NOTE (Tiwag#1#): 061012 there is some bug in (0,48) is way too much
+    {
+        m_pControl->SetPrintMagnification(-2);
+        m_pControl->SetMarginWidth(0, 1);
+    }
     // never print the gutter line
     m_pControl->SetEdgeMode(wxSCI_EDGE_NONE);
 
