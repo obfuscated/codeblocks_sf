@@ -1,2 +1,44 @@
 The file cb_wxfn.patch contains the differences between the base wxFlatNotebook version used here and the required changes for use in Code::Blocks.
 wxFlatNotebook version used is 2.00.
+
+
+Here's some information on our changes : 
+
+common change : 
+	1) header include
+		- the original wxFNB code includes it's own headers like this (according do it's directory structure) :
+			#include <wx/wxFlatNotebook/header.h>
+		- CB has put all sources together in the same directory, and therefor changed to includes to this format : 
+			#include "header.h"
+
+modified files : 
+
+1) popup_dlg.cpp
+	- header include (see above for more info)
+
+2) renderer.h
+	- header include (see above for more info)
+
+3) renderer.cpp
+	- header include (see above for more info)
+
+4) wxFlatNotebook.h
+	- header include (see above for more info)
+	- remove the definitions of the XPM's from the header (here) to the cpp file (and just extern declare them here)
+	- add #define wxFNB_ALLOW_FOREIGN_DND 0x00000080 : purpose : prevent dragging tabs from one notebook to another notebook (is only allowed when this style is active)
+	- wxFlatNotebook::DeletePage(), wxFlatNotebook::RemovePage(), wxPageContainer::DeletePage() get a second argument with default value true : bool notify = true  (see below for more info)
+
+5) wxFlatNotebook.cpp
+	- header include (see above for more info)
+	- remove the definitions of the XPM's from the header to the cpp file (here)
+	- wxFlatNotebook::SetSelection (see below for more info : wxPageContainer::OnLeftDown())
+	- wxFlatNotebook::DeletePage(), wxFlatNotebook::RemovePage(), wxPageContainer::DeletePage() get a second argument with default value true : bool notify = true  : only when the new argument is true, an event will be posted, otherwise the actions are just silently carried out
+	example: in EditorManager::Close(EditorBase*,bool) we call wxFNB->DeletePage(index,false). We don't want our page closing event to be called then: we know we 're closing the page, no need for wxFNB to tell us again. We could avoid this patch but we 'd need to add some considerable amount of logic in our sources. Since this kind of scenario is pretty common, we chose to make this little change in wxFNB
+	- wxPageContainer::AddPage() and wxPageContainer::InsertPage() : a SetPosition(wxPoint(1,1)) is carried out on the wxPageInfo 
+		because later, when repainting, there was a comparison taking place and without this (for newly added pages) we would get artifacts
+	- wxPageContainer::OnMiddleDown() : because the original implementation (that was wxFNB 1.3 (or lower)) wouldn't send the wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING event. Now I see that DeletePage() sends it, so I think it would be safe to ignore this patch.
+	- wxPageContainer::OnRightDown() the if(m_pRightClickMenu) is removed : because it was on the top of the function and the right-click menu event wouldn't be called then. I didn't remove it, I just moved it before popping up the menu.
+	- wxPageContainer::OnLeftDown() : event generation (re)moved, is being put in "wxFlatNotebook::SetSelection" because otherwise there were no events generated when the user swicthed tabs by means of ctrl-tab (without this modification it only worked when the change was made with the mouse)
+	- wxPageContainer::IsTabVisible : correct spelling of the Don's name : Yiannis   ;-)
+	- wxPageContainer::OnDropTarget: prevent dragging tabs from one notebook to another notebook (is only allowed when the style wxFNB_ALLOW_FOREIGN_DND is active)
+
