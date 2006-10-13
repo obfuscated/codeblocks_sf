@@ -650,6 +650,10 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed)
     {
         ++blockStart; // skip {
         int blockEnd = ed->GetControl()->GetCurrentPos();
+
+        if (blockStart >= blockEnd)
+            blockStart = blockEnd;
+
         wxString buffer = ed->GetControl()->GetTextRange(blockStart, blockEnd);
         buffer.Trim();
         if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false, false, true))
@@ -1719,7 +1723,7 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
                 s_LastResult = control->PositionFromLine(token->m_ImplLine);
 
                 // locate function's opening brace
-                while (true)
+                while (s_LastResult < control->GetTextLength())
                 {
                     wxChar ch = control->GetCharAt(s_LastResult);
                     if (ch == _T('{'))
