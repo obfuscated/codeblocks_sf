@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxDialog" name="dlgEnvironmentSettings">
     <title>Environment settings</title>
@@ -357,7 +357,8 @@
                         <content>
                           <item>Default</item>
                           <item>Fancy gradient</item>
-                          <item>Microsoft (tm) VisualStudio</item>
+                          <item>Microsoft (tm) Visual Studio 7.1</item>
+                          <item>Microsoft (tm) Visual Studio 8</item>
                         </content>
                         <style>wxCB_READONLY</style>
                       </object>
