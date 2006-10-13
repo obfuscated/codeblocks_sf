@@ -22,6 +22,7 @@ class cbEditorPrintout : public wxPrintout
         int m_printed;
         int m_SelStart;
         int m_SelEnd;
+        wxArrayInt* m_pPageSelStart;
 };
 
 #endif // CBEDITORPRINTOUT_H

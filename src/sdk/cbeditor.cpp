@@ -1995,6 +1995,7 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
         {
             cbMessageBox(_("There was a problem printing.\n"
                             "Perhaps your current printer is not set correctly?"), _("Printing"), wxICON_ERROR);
+            DeInitPrinting();
         }
     }
     delete printout;
