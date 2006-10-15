@@ -49,7 +49,7 @@
 #include <sdk_events.h>
 #include <manager.h>
 #include <scriptingmanager.h>
-#include <wxFlatNotebook.h>
+#include <wx/wxFlatNotebook/wxFlatNotebook.h>
 #include <globals.h>
 #include "splashscreen.h"
 #include <wx/arrstr.h>

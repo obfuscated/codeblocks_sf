@@ -67,7 +67,7 @@
 #include "printdlg.h"
 #include <wx/printdlg.h>
 #include <wx/filename.h>
-#include <wxFlatNotebook.h>
+#include <wx/wxFlatNotebook/wxFlatNotebook.h>
 
 #include "../sdk/uservarmanager.h"
 

@@ -54,7 +54,7 @@
 #include <wx/utils.h>
 #include <wx/textdlg.h>
 #include <wx/progdlg.h>
-#include "wxFlatNotebook/wxFlatNotebook.h"
+#include "wx/wxFlatNotebook/wxFlatNotebook.h"
 
 #include "incrementalselectlistdlg.h"
 #include "filegroupsandmasks.h"

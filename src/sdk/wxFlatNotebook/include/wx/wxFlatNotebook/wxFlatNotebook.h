@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:		wxFlatNotebook.cpp
+// Name:		wxFlatNotebook.cpp 
 // Purpose:     generic implementation of flat style notebook class.
 // Author:      Eran Ifrah <eranif@bezeqint.net>
 // Modified by: Priyank Bolia <soft@priyank.in>
@@ -37,7 +37,7 @@
 #include <wx/dataobj.h>
 #include <wx/dnd.h>
 
-#include "wxFNBDropTarget.h"
+#include <wx/wxFlatNotebook/wxFNBDropTarget.h>
 
 class wxPageContainer;
 
@@ -73,7 +73,6 @@ WX_DECLARE_USER_EXPORTED_OBJARRAY(wxWindow*, wxWindowPtrArray, WXDLLIMPEXP_FNB);
 #define wxFNB_MOUSE_MIDDLE_CLOSES_TABS	0x00000020
 #define wxFNB_BOTTOM					0x00000040
 #define wxFNB_NODRAG					0x00000080
-#define wxFNB_ALLOW_FOREIGN_DND			0x00000080
 #define wxFNB_VC8						0x00000100
 #define wxFNB_X_ON_TAB					0x00000200
 #define wxFNB_BACKGROUND_GRADIENT		0x00000400
@@ -81,6 +80,7 @@ WX_DECLARE_USER_EXPORTED_OBJARRAY(wxWindow*, wxWindowPtrArray, WXDLLIMPEXP_FNB);
 #define wxFNB_DCLICK_CLOSES_TABS		0x00001000
 #define wxFNB_SMART_TABS				0x00002000
 #define wxFNB_DROPDOWN_TABS_LIST		0x00004000
+#define wxFNB_ALLOW_FOREIGN_DND			0x00008000
 
 /// General macros
 #define VERTICAL_BORDER_PADDING			4
@@ -145,8 +145,12 @@ public:
 	void SetSelection(size_t page);
 	/// Removes the window from the notebook, and destroys the window associated with that notebook page.
 	/**
-	\param page - index of page to be deleted
-	*/
+	 * \param page - index of page to be deleted
+	 * \param notify - by default wxFlatNotebook fires two events:
+	 * - wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSED 
+	 * - wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING 
+	 * to disable this functionality set notify to false
+	 */
 	void DeletePage(size_t page, bool notify = true);
 
 	/// Deletes all notebook pages and destroys all windows associated with pages
@@ -174,7 +178,7 @@ public:
 
 	/**
 	* Return the previous selection, useful when implementing smart tabulation
-	* \return previous selection, or wxNOT_FOUND
+	* \return previous selection, or wxNOT_FOUND 
 	*/
 	int GetPreviousSelection() const;
 
@@ -206,10 +210,14 @@ public:
 	*/
 	bool SetPageText(size_t page, const wxString& text);
 
-	/// Removes the window from the notebook, but does not delete the associated window with that notebook page.
 	/**
-	\param page - page index to be removed
-	*/
+	 * Removes the window from the notebook, and destroys the window associated with that notebook page.
+	 * \param page - index of page to be deleted
+	 * \param notify - by default wxFlatNotebook fires two events:
+	 * - wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSED 
+	 * - wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING 
+	 * to disable this functionality set notify to false
+	 */
 	bool RemovePage(size_t page, bool notify = true);
 
 	/// Sets the amount of space around each page's icon and label, in pixels.
@@ -366,6 +374,7 @@ private:
 	int m_nFrom;
 	int m_nPadding;
 	wxTabNavigatorWindow *m_popupWin;
+	bool m_sendPageChangeEvent; ///< Ugly but needed to allow SetSelection to send / dont send event
 
 	DECLARE_DYNAMIC_CLASS(wxFlatNotebook)
 	DECLARE_EVENT_TABLE()
@@ -671,9 +680,22 @@ public:
 	*/
 	const wxColour&  GetNonoActiveTextColor() const { return m_nonActiveTextColor; }
 
+	/**
+	 * Return the active tab colour
+	 * \return tab colour
+	 */
 	const wxColour&  GetActiveTabColour() const { return m_activeTabColor; }
 
+	/**
+	 * Get the previous selected tab, wxNOT_FOUND if none
+	 * \return index of previous selected tab
+	 */
 	int GetPreviousSelection() const { return m_iPreviousActivePage; }
+
+	/**
+	 * Draw a tab preview 
+	 */
+	void DrawDragHint();
 
 	DECLARE_EVENT_TABLE()
 	// Event handlers
@@ -718,7 +740,7 @@ protected:
 	virtual void ShowTabTooltip(int tabIdx);
 
 	/// A wrapper from calling the DoDeletePage()
-	virtual void DeletePage(size_t page, bool notify = true);
+	virtual void DeletePage(size_t page);
 
 	/// Remove all pages from the container (it also deletes them)
 	virtual void DeleteAllPages();
@@ -764,6 +786,7 @@ protected:
 	*/
 	virtual bool CanFitToScreen(size_t page);
 
+
 protected:
 
 	wxPageInfoArray m_pagesInfoVec;
@@ -793,6 +816,7 @@ protected:
 
 	int m_iPreviousActivePage;
 	int m_nArrowDownButtonStatus;
+
 };
 
 /**
@@ -857,42 +881,5 @@ typedef void (wxEvtHandler::*wxFlatNotebookEventFunction)(wxFlatNotebookEvent&);
 
 #define EVT_FLATNOTEBOOK_PAGE_CLOSED(winid, fn) \
 	wx__DECLARE_EVT1(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSED, winid, wxFlatNotebookEventHandler(fn))
-
-
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// XPM Images required by this control
-//
-///////////////////////////////////////////////////////////////////////////////
-
-namespace FNB
-{
-	////////////////////////////////////////////////////////////
-	// Images used by the control
-	////////////////////////////////////////////////////////////
-	/* XPM */
-	extern const char *left_arrow_disabled_xpm[];
-	extern const char *x_button_pressed_xpm[];
-	extern const char *left_arrow_xpm[];
-	extern const char *x_button_hilite_xpm[];
-	extern const char *x_button_xpm[];
-	extern const char *left_arrow_pressed_xpm[];
-	extern const char *left_arrow_hilite_xpm[];
-	extern const char *right_arrow_disabled_xpm[];
-	extern const char *right_arrow_hilite_xpm[];
-	extern const char *right_arrow_pressed_xpm[];
-	extern const char *right_arrow_xpm[];
-	extern const char *down_arrow_hilite_xpm[];
-	extern const char *down_arrow_pressed_xpm[];
-	extern const char *down_arrow_xpm[];
-	extern const int tab_x_size;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// End of XPM Images
-//
-//////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif // WXFLATNOTEBOOK_H

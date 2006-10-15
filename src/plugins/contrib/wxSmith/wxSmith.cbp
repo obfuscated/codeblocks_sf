@@ -54,7 +54,7 @@
 			<Add directory="$(#CB)\sdk\wxscintilla\include" />
 			<Add directory="$(#CB)\sdk\as\include" />
 			<Add directory="$(#CB)\sdk\propgrid\include" />
-			<Add directory="$(#CB)\sdk\wxFlatNotebook" />
+			<Add directory="$(#CB)\sdk\wxFlatNotebook\include" />
 			<Add directory="$(#CB.include)" />
 			<Add directory="$(#CB.include)\wxscintilla\include" />
 			<Add directory="$(#CB.include)\as\include" />

@@ -1,13 +1,11 @@
-#include "popup_dlg.h"
+#include <wx/wxFlatNotebook/popup_dlg.h>
 #include <wx/listctrl.h>
-#include "wxFlatNotebook.h"
-#include "renderer.h"
+#include <wx/wxFlatNotebook/wxFlatNotebook.h>
+#include <wx/wxFlatNotebook/renderer.h>
 #include <wx/listbox.h>
 #include <wx/image.h>
-#include <wx/mstream.h>
-
-extern unsigned char tab_selection_png[];
-extern size_t tab_selection_png_size;
+//#include <wx/mstream.h>
+#include <wx/wxFlatNotebook/fnb_resources.h>
 
 wxBitmap wxTabNavigatorWindow::m_bmp;
 
@@ -67,14 +65,14 @@ void wxTabNavigatorWindow::Create(wxWindow* parent)
 
 	sz->Add( m_panel );
 	sz->Add( m_listBox, 1, wxEXPAND );
-
+	
 	SetSizer( sz );
 
 	// Connect events to the list box
-	m_listBox->Connect(wxID_ANY, wxEVT_KEY_UP, wxKeyEventHandler(wxTabNavigatorWindow::OnKeyUp), NULL, this);
-	m_listBox->Connect(wxID_ANY, wxEVT_NAVIGATION_KEY, wxNavigationKeyEventHandler(wxTabNavigatorWindow::OnNavigationKey), NULL, this);
+	m_listBox->Connect(wxID_ANY, wxEVT_KEY_UP, wxKeyEventHandler(wxTabNavigatorWindow::OnKeyUp), NULL, this); 
+	m_listBox->Connect(wxID_ANY, wxEVT_NAVIGATION_KEY, wxNavigationKeyEventHandler(wxTabNavigatorWindow::OnNavigationKey), NULL, this); 
 	m_listBox->Connect(wxID_ANY, wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler(wxTabNavigatorWindow::OnItemSelected), NULL, this);
-
+	
 	// Connect paint event to the panel
 	m_panel->Connect(wxID_ANY, wxEVT_PAINT, wxPaintEventHandler(wxTabNavigatorWindow::OnPanelPaint), NULL, this);
 	m_panel->Connect(wxID_ANY, wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(wxTabNavigatorWindow::OnPanelEraseBg), NULL, this);
@@ -86,11 +84,9 @@ void wxTabNavigatorWindow::Create(wxWindow* parent)
 	// Create the bitmap, only once
 	if( !m_bmp.Ok() )
 	{
-		wxImage::AddHandler( new wxPNGHandler );
-		wxInputStream *str = new wxMemoryInputStream(tab_selection_png, tab_selection_png_size);
-		wxImage img(*str);
-		m_bmp =  wxBitmap(img);
-		delete str;
+		wxImage img(signpost_xpm);
+		img.SetAlpha(signpost_alpha, true);
+		m_bmp =  wxBitmap(img); 
 	}
 }
 
@@ -108,7 +104,7 @@ void wxTabNavigatorWindow::OnNavigationKey(wxNavigationKeyEvent &event)
 	wxFlatNotebook* bk = static_cast<wxFlatNotebook*>(GetParent());
 	long maxItems = bk->GetPageCount();
 	long itemToSelect;
-
+		
 	if( event.GetDirection() )
 	{
 		// Select next page
@@ -133,7 +129,7 @@ void wxTabNavigatorWindow::PopulateListControl(wxFlatNotebook *book)
 {
 	int selection = book->GetSelection();
 	int count     = book->GetPageCount();
-
+	
 
 	m_listBox->Append( book->GetPageText(static_cast<int>(selection)) );
 	m_indexMap[0] = selection;
@@ -142,7 +138,7 @@ void wxTabNavigatorWindow::PopulateListControl(wxFlatNotebook *book)
 	int prevSel = book->GetPreviousSelection();
 	if( prevSel != wxNOT_FOUND )
 	{
-		// Insert the previous selection as second entry
+		// Insert the previous selection as second entry 
 		m_listBox->Append( book->GetPageText(static_cast<int>(prevSel)) );
 		m_indexMap[1] = prevSel;
 		itemIdx++;
@@ -219,7 +215,7 @@ void wxTabNavigatorWindow::OnPanelPaint(wxPaintEvent &event)
 		font.SetWeight( wxBOLD );
 		mem_dc.SetFont( font );
 		mem_dc.GetTextExtent( wxT("Tp"), &w, &fontHeight );
-
+		
 		txtPt.x = bmpPt.x + m_bmp.GetWidth() + 4;
 		txtPt.y = (rect.height - fontHeight)/2;
 		mem_dc.SetTextForeground( *wxWHITE );
@@ -233,5 +229,5 @@ void wxTabNavigatorWindow::OnPanelPaint(wxPaintEvent &event)
 void wxTabNavigatorWindow::OnPanelEraseBg(wxEraseEvent &event)
 {
 	wxUnusedVar(event);
-
+	
 }

@@ -35,7 +35,7 @@
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../sdk/propgrid/include" />
 			<Add directory="../../../sdk/tinyxml" />
-			<Add directory="../../../sdk/wxFlatNotebook" />
+			<Add directory="../../../sdk/wxFlatNotebook/include" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />

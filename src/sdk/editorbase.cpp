@@ -25,7 +25,7 @@
     #include <wx/wfstream.h>
 #endif
 
-#include "wxFlatNotebook/wxFlatNotebook.h"
+#include "wx/wxFlatNotebook/wxFlatNotebook.h"
 
 // needed for initialization of variables
 int editorbase_RegisterId(int id)

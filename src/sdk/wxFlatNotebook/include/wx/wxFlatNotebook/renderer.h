@@ -3,8 +3,8 @@
 
 #include <wx/dc.h>
 #include <wx/string.h>
-#include "singleton.h"
-#include "smart_ptr.h"
+#include <wx/wxFlatNotebook/singleton.h>
+#include <wx/wxFlatNotebook/smart_ptr.h>
 #include <map>
 #include <vector>
 
@@ -14,6 +14,7 @@ protected:
 	// A bitmap that holds the background of the
 	// x button which is drawn on a tab
 	wxBitmap m_tabXBgBmp, m_xBgBmp, m_leftBgBmp, m_rightBgBmp;
+	wxBitmap m_arrowDown, m_arrowUp;
 
 public:
 	wxFNBRenderer();
@@ -31,7 +32,7 @@ public:
 	 * \param pageContainer parent window on which to draw
 	 * \param dc device context to use
 	 * \param rect button rectangle
-	 * \param tabIdx tab index
+	 * \param tabIdx tab index 
 	 * \param btnStatus button status, can be one of
 	 *   - wxFNB_BTN_PRESSED
 	 *   - wxFNB_BTN_HOVER
@@ -41,13 +42,13 @@ public:
 	virtual void DrawTabX(wxWindow* pageContainer, wxDC& dc, const wxRect& rect, const int& tabIdx, const int btnStatus);
 
 	/**
-	 * Draw tab
+	 * Draw tab 
 	 * \param pageContainer parent window on which to draw
 	 * \param dc device context to use
 	 * \param posx tab x coordinate
 	 * \param tabIdx tab index
-	 * \param tabWidth tab width
-	 * \param tabHeight tab height
+	 * \param tabWidth tab width 
+	 * \param tabHeight tab height 
 	 * \param btnStatus btnStatus the little 'x' button (on top of the active tab) status, can be one of
 	 *   - wxFNB_BTN_PRESSED
 	 *   - wxFNB_BTN_HOVER
@@ -56,7 +57,7 @@ public:
 	virtual void DrawTab(wxWindow* pageContainer, wxDC &dc, const int &posx, const int &tabIdx, const int &tabWidth, const int &tabHeight, const int btnStatus) = 0;
 
 	/**
-	 * Calculate tab width , based on its index (for image, x button on tab)
+	 * Calculate tab width , based on its index (for image, x button on tab) 
 	 * \param pageContainer pageContainer parent window on which to draw
 	 * \param tabIdx tab index
 	 * \param tabHeight the tab height (used for tan() function calculations)
@@ -79,9 +80,9 @@ public:
 	 */
 	virtual void GetBitmap(wxDC& dc, const wxRect &rect, wxBitmap &bmp);
 
-	/**
+	/** 
 	 * Draw a bottom line for the tabs area
-	 */
+	 */ 
 	void DrawTabsLine(wxWindow *pageContainer, wxDC& dc);
 
 	/**
@@ -95,7 +96,7 @@ public:
 	/**
 	 * Paint rectangle with gradient colouring
 	 * \param dc device context
-	 * \param rect rectangle
+	 * \param rect rectangle 
 	 * \param startColor gradient colour 1
 	 * \param endColor gradient colour 2
 	 * \param vertical use vertical gradient or horizontal
@@ -117,6 +118,14 @@ public:
 
 	/// Draw 'x' button to the right area of the tabs
 	virtual void DrawX         (wxWindow *pageContainer, wxDC &dc);
+
+	/**
+	 * Draw tab drag hint, the default implementation is to do nothing ...
+	 * u can override this function to provide a nice feedback to user
+	 * \param pageContainer a pointer to the owner wxPageContainer
+	 * \param tabIdx index of the tab that will be replaced with the dragged tab
+	 */
+	virtual void DrawDragHint(wxWindow *pageContainer, int tabIdx);
 
 	/**
 	 * Draw drop down arrow on the right corner
@@ -171,14 +180,13 @@ public:
 	virtual ~wxFNBRendererVC8(){}
 	virtual void DrawTab(wxWindow* pageContainer, wxDC &dc, const int &posx, const int &tabIdx, const int &tabWidth, const int &tabHeight, const int btnStatus);
 	virtual void DrawTabs(wxWindow *pageContainer, wxDC &dc);
-	virtual void DrawTabX(wxWindow *pageContainer, wxDC &dc, const wxRect&, const int& tabIdx, const int btnStatus);
 	void NumberTabsCanFit(wxWindow *pageContainer, std::vector<wxRect> &vTabInfo, int from = -1);
 
 private:
 	void FillVC8GradientColor(wxWindow* pageContainer, wxDC &dc, const wxPoint tabPoints[], const bool bSelectedTab, const int tabIdx);
 	int GetEndX(const wxPoint tabPoints[], const int &y, long style);
 	int GetStartX(const wxPoint tabPoints[], const int &y, long style);
-
+	
 };
 
 //-----------------------------------
@@ -194,7 +202,7 @@ public:
 	 * Return the renderer according to the style flag, the returned pointer should not be
 	 * deleted by caller, it is owned by this class
 	 * \param style window style flag
-	 * \return wxFNBRenderer
+	 * \return wxFNBRenderer 
 	 */
 	wxFNBRendererPtr GetRenderer(long style);
 

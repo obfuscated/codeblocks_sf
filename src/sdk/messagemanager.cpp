@@ -49,7 +49,7 @@
 #include <wx/utils.h>
 #include <wx/filedlg.h>
 
-#include "wxFlatNotebook/wxFlatNotebook.h"
+#include "wx/wxFlatNotebook/wxFlatNotebook.h"
 
 // Custom window to shutdown the app when closed.
 // used for batch builds only.

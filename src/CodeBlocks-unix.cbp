@@ -101,6 +101,9 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option projectResourceIncludeDirsRelation="2" />
+				<Compiler>
+					<Add directory="sdk/wxFlatNotebook/include" />
+				</Compiler>
 			</Target>
 			<Target title="wxPropertyGrid">
 				<Option output="sdk/propgrid/libpropgrid.a" />
@@ -125,7 +128,7 @@
 					<Add directory="sdk/scripting/include" />
 					<Add directory="sdk/scripting/sqplus" />
 					<Add directory="sdk/propgrid/include" />
-					<Add directory="sdk/wxFlatNotebook" />
+					<Add directory="sdk/wxFlatNotebook/include" />
 				</Compiler>
 				<Linker>
 					<Add library="txml" />
@@ -169,7 +172,7 @@
 					<Add option="-DENABLE_BINRELOC" />
 					<Add directory="sdk" />
 					<Add directory="src/wxAUI" />
-					<Add directory="sdk/wxFlatNotebook" />
+					<Add directory="sdk/wxFlatNotebook/include" />
 					<Add directory="sdk/scripting/include" />
 					<Add directory="sdk/scripting/sqplus" />
 				</Compiler>
@@ -263,6 +266,7 @@
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
 					<Add directory="sdk" />
+					<Add directory="sdk/wxFlatNotebook/include" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -3464,53 +3468,53 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk\wxFlatNotebook\fnb_resources.cpp">
+		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/fnb_resources.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="wxFlatNotebook" />
 		</Unit>
-		<Unit filename="sdk\wxFlatNotebook\popup_dlg.cpp">
+		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/popup_dlg.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="wxFlatNotebook" />
 		</Unit>
-		<Unit filename="sdk\wxFlatNotebook\popup_dlg.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk\wxFlatNotebook\renderer.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk\wxFlatNotebook\renderer.h">
+		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/popup_dlg.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="wxFlatNotebook" />
 		</Unit>
-		<Unit filename="sdk\wxFlatNotebook\singleton.h">
+		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/renderer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/renderer.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="wxFlatNotebook" />
 		</Unit>
-		<Unit filename="sdk\wxFlatNotebook\smart_ptr.h">
+		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/singleton.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="wxFlatNotebook" />
 		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/wxFNBDropTarget.h">
+		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/smart_ptr.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="wxFlatNotebook" />
 		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/wxFlatNotebook.cpp">
+		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/wxFNBDropTarget.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/wxFlatNotebook.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="wxFlatNotebook" />
 		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/wxFlatNotebook.h">
+		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/wxFlatNotebook.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

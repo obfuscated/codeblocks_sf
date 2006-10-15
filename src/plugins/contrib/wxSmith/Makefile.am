@@ -8,6 +8,7 @@ endif
 
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/sdk \
+		-I$(top_srcdir)/src/sdk/wxFlatNotebook/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(top_srcdir)/src/sdk/propgrid/include
 

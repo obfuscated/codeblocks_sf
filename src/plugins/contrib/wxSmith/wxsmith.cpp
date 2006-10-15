@@ -13,7 +13,7 @@
 #include <messagemanager.h>
 #include <cbeditor.h>
 #include <projectmanager.h>
-#include <wxFlatNotebook/wxFlatNotebook.h>
+#include <wx/wxFlatNotebook/wxFlatNotebook.h>
 #include <wx/sashwin.h>
 #include <configmanager.h>
 #include <cbexception.h>

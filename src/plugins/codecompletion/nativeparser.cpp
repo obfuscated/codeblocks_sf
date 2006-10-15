@@ -40,7 +40,7 @@
 #include "parser/parser.h"
 #include <compilerfactory.h>
 #include <wx/regex.h>
-#include <wxFlatNotebook/wxFlatNotebook.h>
+#include "wx/wxFlatNotebook/wxFlatNotebook.h"
 
 #include <wx/wfstream.h>
 
