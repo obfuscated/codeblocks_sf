@@ -231,12 +231,16 @@ DebuggerGDB::DebuggerGDB()
     {
         NotifyMissingFile(_T("debugger.zip"));
     }
+}
 
-    m_TimerPollDebugger.SetOwner(this, idTimerPollDebugger);
+DebuggerGDB::~DebuggerGDB()
+{
 }
 
 void DebuggerGDB::OnAttach()
 {
+    m_TimerPollDebugger.SetOwner(this, idTimerPollDebugger);
+
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
     m_pLog = new SimpleTextLog(true);
     m_PageIndex = msgMan->AddLog(m_pLog, _("Debugger"));
@@ -409,14 +413,12 @@ void DebuggerGDB::OnRelease(bool appShutDown)
         {
             Manager::Get()->GetMessageManager()->RemoveLog(m_pDbgLog);
             m_pDbgLog->Destroy();
+            m_pDbgLog = 0;
         }
         Manager::Get()->GetMessageManager()->RemoveLog(m_pLog);
         m_pLog->Destroy();
+        m_pLog = 0;
     }
-}
-
-DebuggerGDB::~DebuggerGDB()
-{
 }
 
 int DebuggerGDB::Configure()
@@ -754,6 +756,8 @@ int DebuggerGDB::Debug()
         PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
         if (plugins.GetCount())
             m_pCompiler = (cbCompilerPlugin*)plugins[0];
+        else
+            m_pCompiler = 0;
         if (m_pCompiler)
         {
             // is the compiler already running?

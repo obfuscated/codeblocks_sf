@@ -1,58 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxDialog" name="dlgConfigurePlugins">
-    <title>Configure plugins</title>
+    <title>Manage plugins</title>
     <centered>1</centered>
     <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
     <object class="wxBoxSizer">
       <object class="sizeritem">
         <object class="wxStaticText">
-          <label>Available plugins:</label>
+          <label>Installed plugins:</label>
         </object>
         <flag>wxTOP|wxALL</flag>
-        <border>8</border>
+        <border>5</border>
       </object>
       <object class="sizeritem">
-        <object class="wxCheckList" name="lstPlugins">
-          <content/>
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxListCtrl" name="lstPlugins">
+              <style>wxLC_REPORT</style>
+            </object>
+            <option>1</option>
+            <flag>wxGROW</flag>
+            <minsize>320,240</minsize>
+          </object>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxVERTICAL</orient>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnEnable">
+                  <label>&amp;Enable</label>
+                </object>
+                <flag>wxGROW</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnDisable">
+                  <label>&amp;Disable</label>
+                </object>
+                <flag>wxTOP|wxGROW</flag>
+                <border>5</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxStaticLine"/>
+                <flag>wxTOP|wxBOTTOM|wxGROW</flag>
+                <border>10</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnInstall">
+                  <label>&amp;Install new...</label>
+                </object>
+                <flag>wxGROW</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnUninstall">
+                  <label>&amp;Uninstall</label>
+                </object>
+                <flag>wxTOP|wxGROW</flag>
+                <border>5</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxStaticLine"/>
+                <flag>wxTOP|wxBOTTOM|wxGROW</flag>
+                <border>10</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnExport">
+                  <label>&amp;Export...</label>
+                </object>
+                <flag>wxGROW</flag>
+              </object>
+            </object>
+            <flag>wxLEFT</flag>
+            <border>5</border>
+          </object>
         </object>
         <option>1</option>
         <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-        <minsize>320,240</minsize>
+        <border>5</border>
       </object>
       <object class="sizeritem">
         <object class="wxStaticText">
-          <label>Put a checkmark on those plugins that should be auto-loaded on startup.</label>
+          <label>TIP: The above list allows for multiple selections.</label>
         </object>
-        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
+        <flag>wxTOP|wxLEFT|wxRIGHT</flag>
+        <border>5</border>
       </object>
       <object class="sizeritem">
         <object class="wxStaticText">
-          <label>Changes will take effect after restarting Code::Blocks.</label>
+          <label>Have you saved your work first? All functionality in this dialog is to be considered as &quot;experimental&quot;...</label>
+          <fg>#800000</fg>
         </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
+        <flag>wxLEFT|wxRIGHT</flag>
+        <border>5</border>
       </object>
       <object class="sizeritem">
         <object class="wxStaticLine"/>
-        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+        <border>5</border>
       </object>
       <object class="sizeritem">
-        <object class="wxStdDialogButtonSizer">
-          <object class="button">
-            <object class="wxButton" name="wxID_OK">
-              <label></label>
-              <label>&amp;Ok</label>
-              <default>1</default>
-            </object>
-          </object>
-          <object class="button">
+        <object class="wxBoxSizer">
+          <orient>wxVERTICAL</orient>
+          <object class="sizeritem">
             <object class="wxButton" name="wxID_CANCEL">
-              <label></label>
-              <label>&amp;Cancel</label>
+              <label>C&amp;lose</label>
             </object>
           </object>
         </object>

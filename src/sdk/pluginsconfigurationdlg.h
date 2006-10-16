@@ -3,8 +3,8 @@
 
 #include <wx/dialog.h>
 
-/*
- * Dialog for Enabling/Disabling the plug-in.
+/**
+ * Dialog for Enabling/Disabling/Installing/Uninstalling a plug-in.
  */
 class PluginsConfigurationDlg : public wxDialog
 {
@@ -13,8 +13,15 @@ class PluginsConfigurationDlg : public wxDialog
 		PluginsConfigurationDlg(wxWindow* parent);
 		// class destructor
 		~PluginsConfigurationDlg();
+    private:
+        void FillList();
+        void OnToggle(wxCommandEvent& event);
+        void OnInstall(wxCommandEvent& event);
+        void OnUninstall(wxCommandEvent& event);
+        void OnExport(wxCommandEvent& event);
+        void OnUpdateUI(wxUpdateUIEvent& event);
 
-		void EndModal(int retCode);
+        DECLARE_EVENT_TABLE();
 };
 
 #endif // PLUGINSCONFIGURATIONDLG_H

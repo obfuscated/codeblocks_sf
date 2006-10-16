@@ -73,8 +73,16 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>
         bool LoadPlugin(const wxString& pluginName);
         void LoadAllPlugins();
         void UnloadAllPlugins();
+        void UnloadPlugin(cbPlugin* plugin);
         int ExecutePlugin(const wxString& pluginName);
         int ConfigurePlugin(const wxString& pluginName);
+
+        bool AttachPlugin(cbPlugin* plugin);
+        bool DetachPlugin(cbPlugin* plugin);
+
+        bool InstallPlugin(const wxString& pluginName);
+        bool UninstallPlugin(cbPlugin* plugin, bool removeFiles = true);
+        bool ExportPlugin(cbPlugin* plugin, const wxString& filename);
 
         const PluginInfo* GetPluginInfo(const wxString& pluginName);
         const PluginInfo* GetPluginInfo(cbPlugin* plugin);
@@ -98,14 +106,18 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>
         void GetProjectConfigurationPanels(wxWindow* parent, cbProject* project, ConfigurationPanelsArray& arrayToFill);
         int Configure();
         void SetupLocaleDomain(const wxString& DomainName);
-    protected:
+    private:
+        PluginManager();
+        ~PluginManager();
+
         /// @return True if the plugin should be loaded, false if not.
         bool ReadManifestFile(const wxString& pluginFilename,
                                 const wxString& pluginName = wxEmptyString,
                                 PluginInfo* infoOut = 0);
-    private:
-        PluginManager();
-        ~PluginManager();
+        bool ExtractFile(const wxString& bundlename,
+                        const wxString& src_filename,
+                        const wxString& dst_filename);
+
         PluginElementsArray m_Plugins;
         wxString m_CurrentlyLoadingFilename;
         wxDynamicLibrary* m_pCurrentlyLoadingLib;

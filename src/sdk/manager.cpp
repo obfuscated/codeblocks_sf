@@ -293,12 +293,26 @@ FileManager* Manager::GetFileManager() const
 
 bool Manager::LoadResource(const wxString& file)
 {
-    static wxString resDir = ConfigManager::ReadDataPath() + _T("/");
+    wxString resourceFile = ConfigManager::LocateDataFile(file, sdDataGlobal | sdDataUser);
+    wxString memoryFile = _T("memory:") + file;
 
-    if(wxFile::Access(resDir + file, wxFile::read) == false)
+    if(wxFile::Access(resourceFile, wxFile::read) == false)
         return false;
 
-    wxFile f(resDir + file, wxFile::read);
+    // The code below forces a reload of the resource
+    // Currently unused...
+
+//    {
+//        // don't tell us if the file is not already loaded
+//        wxLogNull ln;
+//        wxMemoryFSHandler::RemoveFile(file);
+//    }
+//#if wxABI_VERSION > 20601
+//    // unload old resources with the same name
+//    wxXmlResource::Get()->Unload(memoryFile);
+//#endif
+
+    wxFile f(resourceFile, wxFile::read);
     char *buf = 0;
 
     try
@@ -306,8 +320,12 @@ bool Manager::LoadResource(const wxString& file)
         size_t len = f.Length();
         buf = new char[len];
         f.Read(buf, len);
-        wxMemoryFSHandler::AddFile(file, buf, len);
-        wxXmlResource::Get()->Load(_T("memory:") + file );
+        {
+            // don't tell us if the file already exists in memory
+            wxLogNull ln;
+            wxMemoryFSHandler::AddFile(file, buf, len);
+        }
+        wxXmlResource::Get()->Load(memoryFile);
         delete buf;
         return true;
     }

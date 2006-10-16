@@ -427,7 +427,7 @@ bool CodeBlocksApp::OnInit()
 
 	wxTheClipboard->Flush();
 
-    static CrashHandler crash_handler;
+//    static CrashHandler crash_handler;
 
     // we'll do this once and for all at startup
     wxFileSystem::AddHandler(new wxZipFSHandler);

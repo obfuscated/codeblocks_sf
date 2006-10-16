@@ -159,6 +159,8 @@ class MainFrame : public wxFrame
         // plugin events
         void OnPluginLoaded(CodeBlocksEvent& event);
         void OnPluginUnloaded(CodeBlocksEvent& event);
+        void OnPluginInstalled(CodeBlocksEvent& event);
+        void OnPluginUninstalled(CodeBlocksEvent& event);
 
 		// general UpdateUI events
         void OnEditorUpdateUI(CodeBlocksEvent& event);
@@ -197,7 +199,10 @@ class MainFrame : public wxFrame
         void CreateToolbars();
         void ScanForPlugins();
 		void AddToolbarItem(int id, const wxString& title, const wxString& shortHelp, const wxString& longHelp, const wxString& image);
-        wxMenu* RecreateMenu(wxMenuBar* mbar, const wxString& name);
+        void RecreateMenuBar();
+
+        enum { Installed, Uninstalled, Unloaded };
+        void PluginsUpdated(cbPlugin* plugin, int status);
 
         void DoAddPlugin(cbPlugin* plugin);
         void DoAddPluginToolbar(cbPlugin* plugin);
@@ -242,8 +247,8 @@ class MainFrame : public wxFrame
         void AddToRecentProjectsHistory(const wxString& filename);
         void TerminateRecentFilesHistory();
 
-        wxFileHistory m_FilesHistory;
-        wxFileHistory m_ProjectsHistory;
+        wxFileHistory* m_pFilesHistory;
+        wxFileHistory* m_pProjectsHistory;
 
         /// "Close FullScreen" button. Only shown when in FullScreen view
         wxButton* m_pCloseFullScreenBtn;
@@ -260,7 +265,6 @@ class MainFrame : public wxFrame
 		wxMenu* m_PluginsMenu;
         wxMenu* m_HelpPluginsMenu;
 
-        bool m_ReconfiguringPlugins;
         bool m_SmallToolBar;
         bool m_StartupDone;
         bool m_InitiatedShutdown;

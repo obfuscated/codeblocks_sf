@@ -33,7 +33,7 @@ size_t CompilerFactory::GetCompilersCount()
 
 Compiler* CompilerFactory::GetCompiler(size_t index)
 {
-    if (index > Compilers.GetCount() - 1)
+    if ((index + 1) > Compilers.GetCount())
         return 0;
     return Compilers[index];
 }
@@ -194,6 +194,9 @@ void CompilerFactory::UnregisterCompilers()
 {
     WX_CLEAR_ARRAY(CompilerFactory::Compilers);
     CompilerFactory::Compilers.Empty();
+    Compiler::m_CompilerIDs.Empty();
+
+    s_DefaultCompiler = 0;
 }
 
 const wxString& CompilerFactory::GetDefaultCompilerID()

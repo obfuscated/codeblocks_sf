@@ -210,9 +210,6 @@ function SetupTarget(target,is_debug)
         target.AddLibDir(_T("$(#cb)\\devel"));
         target.AddLibDir(_T("$(#wx.lib)\\gcc_dll"));
 
-        target.AddCommandsAfterBuild(_T("cmd /c copy ") + target.GetOutputFilename() + _T(" $(#cb)\\devel\\share\\codeblocks\\plugins\\"));
-        target.AddCommandsAfterBuild(_T("zip -j9 $(#cb)\\devel\\share\\codeblocks\\") + PluginSettings.Name + _T(".zip manifest") + DOT_EXT_XML);
-
         target.SetHostApplication(_T("$(#cb)\\devel\\codeblocks") + DOT_EXT_EXECUTABLE);
     }
     else
@@ -223,10 +220,16 @@ function SetupTarget(target,is_debug)
         target.AddLinkerOption(_T("`pkg-config --libs codeblocks`"));
         target.AddLinkerOption(_T("`wx-config --libs`"));
 
-        // TODO: pkg-config flag for package data dir? (e.g. /usr/share/codeblocks)
-
         target.SetHostApplication(_T("codeblocks") + DOT_EXT_EXECUTABLE);
     }
+
+    // create plugin resources
+    target.AddCommandsAfterBuild(_T("zip -j9 ") +
+                                PluginSettings.Name + _T(".zip manifest") + DOT_EXT_XML);
+    // create plugin distribution file
+    target.AddCommandsAfterBuild(_T("zip -j9 ") + PluginSettings.Name + _T(".cbplugin ") +
+                                target.GetOutputFilename() + _T(" ") +
+                                PluginSettings.Name + _T(".zip"));
 
     if (is_debug)
         DebugSymbolsOn(target, Wizard.GetCompilerID());
@@ -392,4 +395,4 @@ function HandleDirective(buffer, directive, enabled)
     }
 
     return buffer;
-} 
+}

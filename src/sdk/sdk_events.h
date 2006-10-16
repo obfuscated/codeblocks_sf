@@ -155,6 +155,10 @@ DECLARE_CB_EVENT_TYPE(cbEVT_PLUGIN_ATTACHED)
 #define EVT_PLUGIN_ATTACHED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PLUGIN_ATTACHED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 DECLARE_CB_EVENT_TYPE(cbEVT_PLUGIN_RELEASED)
 #define EVT_PLUGIN_RELEASED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PLUGIN_RELEASED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+DECLARE_CB_EVENT_TYPE(cbEVT_PLUGIN_INSTALLED)
+#define EVT_PLUGIN_INSTALLED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PLUGIN_INSTALLED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+DECLARE_CB_EVENT_TYPE(cbEVT_PLUGIN_UNINSTALLED)
+#define EVT_PLUGIN_UNINSTALLED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PLUGIN_UNINSTALLED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
 // editor events
 DECLARE_CB_EVENT_TYPE(cbEVT_EDITOR_CLOSE)

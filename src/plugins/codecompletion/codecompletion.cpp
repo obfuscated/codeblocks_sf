@@ -163,18 +163,6 @@ CodeCompletion::CodeCompletion() :
     {
         NotifyMissingFile(_T("codecompletion.zip"));
     }
-
-    m_PageIndex = -1;
-    m_InitDone = false;
-    m_EditMenu = 0L;
-    m_SearchMenu = 0L;
-    m_ViewMenu = 0L;
-    m_Function = 0L;
-    m_Scope = 0L;
-
-    m_LastPosForCodeCompletion = -1;
-    StartIdxNameSpaceInScope = -1;
-    m_NativeParsers.SetNextHandler(this);
 }
 
 CodeCompletion::~CodeCompletion()
@@ -330,15 +318,31 @@ bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 
 void CodeCompletion::OnAttach()
 {
+    m_PageIndex = -1;
+    m_InitDone = false;
+    m_EditMenu = 0L;
+    m_SearchMenu = 0L;
+    m_ViewMenu = 0L;
+    m_Function = 0L;
+    m_Scope = 0L;
+
+    m_LastPosForCodeCompletion = -1;
+    StartIdxNameSpaceInScope = -1;
+    m_NativeParsers.SetNextHandler(this);
+
     m_NativeParsers.CreateClassBrowser();
 
     // hook to editors
     EditorHooks::HookFunctorBase* myhook = new EditorHooks::HookFunctor<CodeCompletion>(this, &CodeCompletion::EditorEventHook);
     m_EditorHookId = EditorHooks::RegisterHook(myhook);
+
+    m_timer.Start(2000, wxTIMER_ONE_SHOT);
 }
 
 void CodeCompletion::OnRelease(bool appShutDown)
 {
+    m_timer.Stop();
+
     // unregister hook
     // 'true' will delete the functor too
     EditorHooks::UnregisterHook(m_EditorHookId, true);

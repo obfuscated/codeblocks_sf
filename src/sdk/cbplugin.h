@@ -30,7 +30,7 @@
 // this is the plugins SDK version number
 // it will change when the SDK interface breaks
 #define PLUGIN_SDK_VERSION_MAJOR 1
-#define PLUGIN_SDK_VERSION_MINOR 10
+#define PLUGIN_SDK_VERSION_MINOR 11
 #define PLUGIN_SDK_VERSION_RELEASE 0
 
 // class decls
@@ -76,26 +76,6 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		/** cbPlugin destructor. */
         virtual ~cbPlugin();
 
-		/** Attach is <u>not</u> a virtual function, so you can't override it.
-		  * The default implementation hooks the plugin to Code::Block's
-		  * event handling system, so that the plugin can receive (and process)
-		  * events from Code::Blocks core library. Use OnAttach() for any
-		  * initialization specific tasks.
-		  * @see OnAttach()
-		  */
-        void Attach();
-
-		/** Release is <u>not</u> a virtual function, so you can't override it.
-		  * The default implementation un-hooks the plugin from Code::Blocks's
-		  * event handling system. Use OnRelease() for any clean-up specific
-		  * tasks.
-		  * @param appShutDown If true, the application is shutting down. In this
-		  *         case *don't* use Manager::Get()->Get...() functions or the
-		  *         behaviour is undefined...
-		  * @see OnRelease()
-		  */
-        void Release(bool appShutDown);
-
 		/** The plugin must return its type on request. */
         virtual PluginType GetType() const { return m_Type; }
 
@@ -137,6 +117,10 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  * It is a pure virtual method that needs to be implemented by all
 		  * plugins. If the plugin does not need to add items on the menu,
 		  * just do nothing ;)
+		  *
+		  * @note This function may be called more than one time. This can happen,
+		  * for example, when a plugin is installed or uninstalled.
+		  *
 		  * @param menuBar the wxMenuBar to create items in
 		  */
         virtual void BuildMenu(wxMenuBar* menuBar) = 0;
@@ -170,8 +154,21 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 
         /** See whether this plugin is attached or not. A plugin should not perform
 		  * any of its tasks, if not attached...
+		  * @note This function is *not* virtual.
+		  * @return Returns true if it attached, false if not.
 		  */
 		bool IsAttached() const { return m_IsAttached; }
+
+        /** See whether this plugin can be detached (unloaded) or not.
+          * This function is called usually when the user requests to
+          * uninstall or disable a plugin. Before disabling/uninstalling it, Code::Blocks
+          * asks the plugin if it can be detached or not. In other words, it checks
+          * to see if it can be disabled/uninstalled safely...
+          * @par
+          * A plugin should return true if it can be detached at this moment, false if not.
+          * @return The default implementation returns true.
+		  */
+		virtual bool CanDetach() const { return true; }
     protected:
 		/** Any descendent plugin should override this virtual method and
 		  * perform any necessary initialization. This method is called by
@@ -206,6 +203,29 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 
 		/** Holds the "attached" state. */
         bool m_IsAttached;
+
+    private:
+        friend class PluginManager; // only the plugin manager has access here
+
+		/** Attach is <u>not</u> a virtual function, so you can't override it.
+		  * The default implementation hooks the plugin to Code::Block's
+		  * event handling system, so that the plugin can receive (and process)
+		  * events from Code::Blocks core library. Use OnAttach() for any
+		  * initialization specific tasks.
+		  * @see OnAttach()
+		  */
+        void Attach();
+
+		/** Release is <u>not</u> a virtual function, so you can't override it.
+		  * The default implementation un-hooks the plugin from Code::Blocks's
+		  * event handling system. Use OnRelease() for any clean-up specific
+		  * tasks.
+		  * @param appShutDown If true, the application is shutting down. In this
+		  *         case *don't* use Manager::Get()->Get...() functions or the
+		  *         behaviour is undefined...
+		  * @see OnRelease()
+		  */
+        void Release(bool appShutDown);
 };
 
 /** @brief Base class for compiler plugins

@@ -144,15 +144,36 @@ int idGCCProcess15 = wxNewId();
 int idGCCProcess16 = wxNewId();
 
 BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
-    EVT_UPDATE_UI_RANGE(idMenuCompile, idToolTargetLabel, CompilerGCC::OnUpdateUI)
-
-    // these are loaded from the XRC
     EVT_UPDATE_UI(XRCID("idCompilerMenuCompile"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuCompileTarget"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuCompileFromProjectManager"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuProjectCompilerOptions"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuTargetCompilerOptions"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuTargetCompilerOptionsSub"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuCompileFile"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuCompileFileFromProjectManager"), CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(XRCID("idCompilerMenuRebuild"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuRebuildTarget"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuRebuildFromProjectManager"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuCompileAll"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuRebuildAll"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuClean"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuCleanAll"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuCleanTarget"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuCleanFromProjectManager"), CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(XRCID("idCompilerMenuCompileAndRun"), CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(XRCID("idCompilerMenuRun"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuKillProcess"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuSelectTarget"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuNextError"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuPreviousError"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuClearErrors"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuExportMakefile"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idCompilerMenuSettings"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idToolTarget"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(XRCID("idToolTargetLabel"), CompilerGCC::OnUpdateUI)
 
-    EVT_IDLE(                                        CompilerGCC::OnIdle)
+    EVT_IDLE(                                       CompilerGCC::OnIdle)
     EVT_TIMER(idTimerPollCompiler,                  CompilerGCC::OnTimer)
 
     EVT_MENU(idMenuRun,                             CompilerGCC::Dispatcher)
@@ -177,7 +198,7 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_MENU(idMenuExportMakefile,                  CompilerGCC::Dispatcher)
     EVT_MENU(idMenuSettings,                        CompilerGCC::Dispatcher)
 
-    EVT_COMBOBOX(idToolTarget,                        CompilerGCC::OnSelectTarget)
+    EVT_COMBOBOX(idToolTarget,                      CompilerGCC::OnSelectTarget)
 
     EVT_PROJECT_ACTIVATE(CompilerGCC::OnProjectActivated)
     EVT_PROJECT_OPEN(CompilerGCC::OnProjectLoaded)
@@ -223,6 +244,43 @@ CompilerGCC::CompilerGCC()
     {
         NotifyMissingFile(_T("compiler.zip"));
     }
+}
+
+CompilerGCC::~CompilerGCC()
+{
+}
+
+void CompilerGCC::OnAttach()
+{
+    // reset all vars
+    m_RealTargetsStartIndex = 0;
+    m_RealTargetIndex = 0;
+    m_PageIndex = -1;
+    m_ListPageIndex = -1;
+    m_Menu = 0L;
+    m_TargetMenu = 0L;
+    m_TargetIndex = -1;
+    m_ErrorsMenu = 0L;
+    m_Project = 0L;
+    m_Processes = 0;
+    m_ParallelProcessCount = 1;
+    m_pTbar = 0L;
+    m_Pid = 0;
+    m_Log = 0L;
+    m_pListLog = 0L;
+    m_ToolTarget = 0L;
+    m_RunAfterCompile = false;
+    m_LastExitCode = 0;
+    m_NotifiedMaxErrors = false;
+    m_pBuildingProject = 0;
+    m_BuildJob = bjIdle;
+    m_NextBuildState = bsNone;
+    m_pLastBuildingProject = 0;
+    m_pLastBuildingTarget = 0;
+    m_RunTargetPostBuild = false;
+    m_RunProjectPostBuild = false;
+    m_DeleteTempMakefile = true;
+    m_IsWorkspaceOperation = false;
 
     m_timerIdleWakeUp.SetOwner(this, idTimerPollCompiler);
 
@@ -252,97 +310,7 @@ CompilerGCC::CompilerGCC()
     CompilerFactory::RegisterUserCompilers();
 
     AllocProcesses();
-}
 
-CompilerGCC::~CompilerGCC()
-{
-    FreeProcesses();
-
-    DoDeleteTempMakefile();
-    CompilerFactory::UnregisterCompilers();
-}
-
-void CompilerGCC::Dispatcher(wxCommandEvent& event)
-{
-    // Memorize the currently focused window
-
-    wxWindow* focused = wxWindow::FindFocus();
-
-    int eventId = event.GetId();
-
-//    Manager::Get()->GetMessageManager()->Log(wxT("Dispatcher"));
-
-    if (eventId == idMenuRun)
-        OnRun(event);
-
-    if (eventId == idMenuCompileAndRun)
-        OnCompileAndRun(event);
-
-    if (eventId == idMenuCompile)
-        OnCompile(event);
-
-    if (eventId == idMenuCompileFromProjectManager)
-        OnCompile(event);
-
-    if (eventId == idMenuCompileFile)
-        OnCompileFile(event);
-
-    if (eventId == idMenuCompileFileFromProjectManager)
-        OnCompileFile(event);
-
-    if (eventId == idMenuRebuild)
-        OnRebuild(event);
-
-    if (eventId == idMenuRebuildFromProjectManager)
-        OnRebuild(event);
-
-    if (eventId == idMenuCompileAll)
-        OnCompileAll(event);
-
-    if (eventId == idMenuRebuildAll)
-        OnRebuildAll(event);
-
-    if (eventId == idMenuProjectCompilerOptions)
-        OnProjectCompilerOptions(event);
-
-    if (eventId == idMenuTargetCompilerOptions)
-        OnTargetCompilerOptions(event);
-
-    if (eventId == idMenuClean)
-        OnClean(event);
-
-    if (eventId == idMenuCleanAll)
-        OnCleanAll(event);
-
-    if (eventId == idMenuCleanFromProjectManager)
-        OnClean(event);
-
-    if (eventId == idMenuKillProcess)
-        OnKillProcess(event);
-
-    if (eventId == idMenuNextError)
-        OnNextError(event);
-
-    if (eventId == idMenuPreviousError)
-        OnPreviousError(event);
-
-    if (eventId == idMenuClearErrors)
-        OnClearErrors(event);
-
-    if (eventId == idMenuExportMakefile)
-        OnExportMakefile(event);
-
-    if (eventId == idMenuSettings)
-        OnConfig(event);
-
-    // Return focus to previously focused window
-
-    if (focused)
-        focused->SetFocus();
-}
-
-void CompilerGCC::OnAttach()
-{
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
     // create compiler's log
@@ -399,7 +367,12 @@ void CompilerGCC::OnRelease(bool appShutDown)
     if (Manager::Get()->GetMessageManager())
     {
         Manager::Get()->GetMessageManager()->RemoveLog(m_Log);
+        m_Log->Destroy();
+        m_Log = 0;
+
         Manager::Get()->GetMessageManager()->RemoveLog(m_pListLog);
+        m_pListLog->Destroy();
+        m_pListLog = 0;
     }
 
     if (appShutDown)
@@ -416,6 +389,13 @@ void CompilerGCC::OnRelease(bool appShutDown)
 //        delete m_Menu;
 //        m_Menu = 0L;
 //    }
+
+    m_timerIdleWakeUp.Stop();
+
+    FreeProcesses();
+
+    DoDeleteTempMakefile();
+    CompilerFactory::UnregisterCompilers();
 }
 
 int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
@@ -448,8 +428,6 @@ void CompilerGCC::OnConfig(wxCommandEvent& event)
 void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
 {
     if (!IsAttached())
-        return;
-    if (m_Menu)
         return;
 
     m_Menu=Manager::Get()->LoadMenu(_T("compiler_menu"),true);
@@ -551,6 +529,85 @@ bool CompilerGCC::BuildToolBar(wxToolBar* toolBar)
     toolBar->SetBestFittingSize();
     DoRecreateTargetMenu(); // make sure the tool target combo is up-to-date
     return true;
+}
+
+void CompilerGCC::Dispatcher(wxCommandEvent& event)
+{
+    // Memorize the currently focused window
+
+    wxWindow* focused = wxWindow::FindFocus();
+
+    int eventId = event.GetId();
+
+//    Manager::Get()->GetMessageManager()->Log(wxT("Dispatcher"));
+
+    if (eventId == idMenuRun)
+        OnRun(event);
+
+    if (eventId == idMenuCompileAndRun)
+        OnCompileAndRun(event);
+
+    if (eventId == idMenuCompile)
+        OnCompile(event);
+
+    if (eventId == idMenuCompileFromProjectManager)
+        OnCompile(event);
+
+    if (eventId == idMenuCompileFile)
+        OnCompileFile(event);
+
+    if (eventId == idMenuCompileFileFromProjectManager)
+        OnCompileFile(event);
+
+    if (eventId == idMenuRebuild)
+        OnRebuild(event);
+
+    if (eventId == idMenuRebuildFromProjectManager)
+        OnRebuild(event);
+
+    if (eventId == idMenuCompileAll)
+        OnCompileAll(event);
+
+    if (eventId == idMenuRebuildAll)
+        OnRebuildAll(event);
+
+    if (eventId == idMenuProjectCompilerOptions)
+        OnProjectCompilerOptions(event);
+
+    if (eventId == idMenuTargetCompilerOptions)
+        OnTargetCompilerOptions(event);
+
+    if (eventId == idMenuClean)
+        OnClean(event);
+
+    if (eventId == idMenuCleanAll)
+        OnCleanAll(event);
+
+    if (eventId == idMenuCleanFromProjectManager)
+        OnClean(event);
+
+    if (eventId == idMenuKillProcess)
+        OnKillProcess(event);
+
+    if (eventId == idMenuNextError)
+        OnNextError(event);
+
+    if (eventId == idMenuPreviousError)
+        OnPreviousError(event);
+
+    if (eventId == idMenuClearErrors)
+        OnClearErrors(event);
+
+    if (eventId == idMenuExportMakefile)
+        OnExportMakefile(event);
+
+    if (eventId == idMenuSettings)
+        OnConfig(event);
+
+    // Return focus to previously focused window
+
+    if (focused)
+        focused->SetFocus();
 }
 
 void CompilerGCC::SetupEnvironment()
@@ -848,8 +905,14 @@ void CompilerGCC::AllocProcesses()
 void CompilerGCC::FreeProcesses()
 {
     // free the parallel processes array
+    for (size_t i = 0; i < m_ParallelProcessCount; ++i)
+    {
+        delete m_Processes[i];
+        m_Processes[i] = 0;
+    }
     free(m_Processes);
     m_Processes = 0;
+
     delete[] m_Pid;
     m_Pid = 0;
 }
@@ -864,7 +927,7 @@ bool CompilerGCC::ReAllocProcesses()
 bool CompilerGCC::IsProcessRunning(int idx) const
 {
     // invalid process index
-    if (idx >= (int)m_ParallelProcessCount)
+    if (!m_Processes || idx >= (int)m_ParallelProcessCount)
         return false;
     // specific process
     if (idx >= 0)

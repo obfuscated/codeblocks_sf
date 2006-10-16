@@ -305,8 +305,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idViewFullScreen, MainFrame::OnViewMenuUpdateUI)
 
     EVT_EDITOR_UPDATE_UI(MainFrame::OnEditorUpdateUI)
-    EVT_PLUGIN_ATTACHED(MainFrame::OnPluginLoaded)
-    // EVT_PLUGIN_RELEASED(MainFrame::OnPluginUnloaded)
 
     EVT_MENU(idFileNewEmpty, MainFrame::OnFileNewWhat)
     EVT_MENU(idFileNewProject, MainFrame::OnFileNewWhat)
@@ -449,6 +447,12 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_SHOW_DOCK_WINDOW(MainFrame::OnRequestShowDockWindow)
     EVT_HIDE_DOCK_WINDOW(MainFrame::OnRequestHideDockWindow)
 
+    // plugin events
+    EVT_PLUGIN_ATTACHED(MainFrame::OnPluginLoaded)
+    EVT_PLUGIN_RELEASED(MainFrame::OnPluginUnloaded)
+    EVT_PLUGIN_INSTALLED(MainFrame::OnPluginInstalled)
+    EVT_PLUGIN_UNINSTALLED(MainFrame::OnPluginUninstalled)
+
     EVT_SWITCH_VIEW_LAYOUT(MainFrame::OnLayoutSwitch)
 
     EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, MainFrame::OnPageChanged)
@@ -464,8 +468,8 @@ END_EVENT_TABLE()
 MainFrame::MainFrame(wxWindow* parent)
        : wxFrame(parent, -1, _T("MainWin"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
        m_pAccel(0L),
-       m_FilesHistory(9, wxID_FILE1), // default ctor
-       m_ProjectsHistory(9, wxID_FILE10),
+       m_pFilesHistory(0),
+       m_pProjectsHistory(0),
        m_pCloseFullScreenBtn(0L),
        m_pEdMan(0L),
        m_pPrjMan(0L),
@@ -473,7 +477,6 @@ MainFrame::MainFrame(wxWindow* parent)
        m_pToolbar(0L),
        m_ToolsMenu(0L),
        m_HelpPluginsMenu(0L),
-       m_ReconfiguringPlugins(false),
        m_StartupDone(false), // one-time flag
        m_InitiatedShutdown(false),
        m_ScriptConsoleID(-1)
@@ -612,27 +615,82 @@ void MainFrame::CreateIDE()
     m_pMsgMan->GetNotebook()->SetDropTarget(new wxMyFileDropTarget(this));
 }
 
-wxMenu* MainFrame::RecreateMenu(wxMenuBar* mbar, const wxString& name)
+void MainFrame::PluginsUpdated(cbPlugin* plugin, int status)
 {
-    wxMenu* menu = 0;
-    int idx = mbar->FindMenu(name);
-    if (idx != wxNOT_FOUND)
-        menu = mbar->GetMenu(idx);
+    Freeze();
 
-    if (!menu)
+    // menu
+    RecreateMenuBar();
+
+    // update view->toolbars because we re-created the menubar
+    PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();
+    for (unsigned int i = 0; i < plugins.GetCount(); ++i)
     {
-        menu = new wxMenu();
-        mbar->Append(menu, name);
-    }
-    else
-    {
-        while (menu->GetMenuItemCount() > 0)
+        cbPlugin* plug = plugins[i]->plugin;
+        const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(plug);
+        if (!info)
+            continue;
+
+        if (m_PluginsTools[plug]) // if plugin has a toolbar
         {
-            menu->Destroy(menu->GetMenuItems()[0]);
+            // toolbar exists; add the menu item
+            wxMenu* viewToolbars = 0;
+            GetMenuBar()->FindItem(idViewToolMain, &viewToolbars);
+            if (viewToolbars)
+            {
+                if (viewToolbars->FindItem(info->title) != wxNOT_FOUND)
+                    continue;
+                wxMenuItem* item = AddPluginInMenus(viewToolbars, plug,
+                                                    (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnToggleBar,
+                                                    -1, true);
+                if (item)
+                {
+                    item->Check(IsWindowReallyShown(m_PluginsTools[plug]));
+                }
+            }
         }
     }
 
-    return menu;
+    Thaw();
+}
+
+void MainFrame::RecreateMenuBar()
+{
+    Freeze();
+    wxMenuBar* m = GetMenuBar();
+//    SetMenuBar(0);
+
+    // delete all menus
+    if (m)
+    {
+        while (m->GetMenuCount())
+        {
+            wxMenu* menu = m->Remove(0);
+            if (menu)
+            {
+                while (menu->GetMenuItemCount())
+                {
+                    menu->Destroy(menu->GetMenuItems()[0]);
+                }
+            }
+            //delete menu;
+        }
+
+        // delete menubar
+    //    delete m;
+    }
+
+    CreateMenubar();
+
+    // update layouts menu
+    for (LayoutViewsMap::iterator it = m_LayoutViews.begin(); it != m_LayoutViews.end(); ++it)
+    {
+        if (it->first.IsEmpty())
+            continue;
+        SaveViewLayout(it->first, it->second, it->first == m_LastLayoutName);
+    }
+
+    Thaw();
 }
 
 void MainFrame::CreateMenubar()
@@ -1525,7 +1583,7 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
 //        OnSettingsCompilerDebugger(evt);
     else if(link.StartsWith(_T("CB_CMD_OPEN_HISTORY_")))
     {
-        wxFileHistory* hist = link.StartsWith(_T("CB_CMD_OPEN_HISTORY_PROJECT_")) ? &m_ProjectsHistory : &m_FilesHistory;
+        wxFileHistory* hist = link.StartsWith(_T("CB_CMD_OPEN_HISTORY_PROJECT_")) ? m_pProjectsHistory : m_pFilesHistory;
         unsigned long count;
         link.AfterLast(_T('_')).ToULong(&count);
         --count;
@@ -1565,15 +1623,15 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
     wxString links;
 
     links << _T("<b>Recent projects</b><br>\n");
-    if (m_ProjectsHistory.GetCount())
+    if (m_pProjectsHistory->GetCount())
     {
         links << _T("<ul>");
         for (int i = 0; i < 9; ++i)
         {
-            if (i >= (int)m_ProjectsHistory.GetCount())
+            if (i >= (int)m_pProjectsHistory->GetCount())
                 break;
             links << wxString::Format(_T("<li><a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%d\">%s</a></li>"),
-                                        i + 1, m_ProjectsHistory.GetHistoryFile(i).c_str());
+                                        i + 1, m_pProjectsHistory->GetHistoryFile(i).c_str());
         }
         links << _T("</ul><br>");
     }
@@ -1581,15 +1639,15 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
         links << _T("&nbsp;&nbsp;&nbsp;&nbsp;No recent projects<br>\n");
 
     links << _T("<br><b>Recent files</b><br>\n");
-    if (m_FilesHistory.GetCount())
+    if (m_pFilesHistory->GetCount())
     {
         links << _T("<ul>");
         for (int i = 0; i < 9; ++i)
         {
-            if (i >= (int)m_FilesHistory.GetCount())
+            if (i >= (int)m_pFilesHistory->GetCount())
                 break;
             links << wxString::Format(_T("<li><a href=\"CB_CMD_OPEN_HISTORY_FILE_%d\">%s</a></li>"),
-                                        i + 1, m_FilesHistory.GetHistoryFile(i).c_str());
+                                        i + 1, m_pFilesHistory->GetHistoryFile(i).c_str());
         }
         links << _T("</ul>");
     }
@@ -1604,12 +1662,16 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
 
 void MainFrame::InitializeRecentFilesHistory()
 {
+    TerminateRecentFilesHistory();
+
     wxMenuBar* mbar = GetMenuBar();
     if (!mbar)
         return;
     int pos = mbar->FindMenu(_("&File"));
     if (pos != wxNOT_FOUND)
     {
+        m_pFilesHistory = new wxFileHistory(9, wxID_FILE1);
+
         wxMenu* menu = mbar->GetMenu(pos);
         if (!menu)
             return;
@@ -1623,10 +1685,10 @@ void MainFrame::InitializeRecentFilesHistory()
             for (int i = (int)files.GetCount() - 1; i >= 0; --i)
             {
                 if(wxFileExists(files[i]))
-                    m_FilesHistory.AddFileToHistory(files[i]);
+                    m_pFilesHistory->AddFileToHistory(files[i]);
             }
-            m_FilesHistory.UseMenu(recentFiles);
-            m_FilesHistory.AddFilesToMenu(recentFiles);
+            m_pFilesHistory->UseMenu(recentFiles);
+            m_pFilesHistory->AddFilesToMenu(recentFiles);
             if (recentFiles->GetMenuItemCount())
                 recentFiles->AppendSeparator();
             recentFiles->Append(clear);
@@ -1635,16 +1697,17 @@ void MainFrame::InitializeRecentFilesHistory()
         clear = menu->FindItem(idFileOpenRecentProjectClearHistory, &recentProjects);
         if (recentProjects)
         {
+            m_pProjectsHistory = new wxFileHistory(9, wxID_FILE10);
             recentProjects->Remove(clear);
 
             wxArrayString files = Manager::Get()->GetConfigManager(_T("app"))->ReadArrayString(_T("/recent_projects"));
             for (int i = (int)files.GetCount() - 1; i >= 0; --i)
             {
                 if(wxFileExists(files[i]))
-                    m_ProjectsHistory.AddFileToHistory(files[i]);
+                    m_pProjectsHistory->AddFileToHistory(files[i]);
             }
-            m_ProjectsHistory.UseMenu(recentProjects);
-            m_ProjectsHistory.AddFilesToMenu(recentProjects);
+            m_pProjectsHistory->UseMenu(recentProjects);
+            m_pProjectsHistory->AddFilesToMenu(recentProjects);
             if (recentProjects->GetMenuItemCount())
                 recentProjects->AppendSeparator();
             recentProjects->Append(clear);
@@ -1659,18 +1722,18 @@ void MainFrame::AddToRecentFilesHistory(const wxString& FileName)
     // for windows, look for case-insensitive matches
     // if found, don't add it
     wxString low = filename.Lower();
-    for (size_t i = 0; i < m_FilesHistory.GetCount(); ++i)
+    for (size_t i = 0; i < m_pFilesHistory->GetCount(); ++i)
     {
-        if (low == m_FilesHistory.GetHistoryFile(i).Lower())
+        if (low == m_pFilesHistory->GetHistoryFile(i).Lower())
         {    // it exists, set filename to the existing name, so it can become
             // the most recent one
-            filename = m_FilesHistory.GetHistoryFile(i);
+            filename = m_pFilesHistory->GetHistoryFile(i);
             break;
         }
     }
 #endif
 
-    m_FilesHistory.AddFileToHistory(filename);
+    m_pFilesHistory->AddFileToHistory(filename);
 
     // because we append "clear history" menu to the end of the list,
     // each time we must add a history item we have to:
@@ -1694,12 +1757,12 @@ void MainFrame::AddToRecentFilesHistory(const wxString& FileName)
         // a)
         recentFiles->Remove(clear);
         // b)
-        m_FilesHistory.RemoveMenu(recentFiles);
+        m_pFilesHistory->RemoveMenu(recentFiles);
         while (recentFiles->GetMenuItemCount())
             recentFiles->Delete(recentFiles->GetMenuItems()[0]);
         // c)
-        m_FilesHistory.UseMenu(recentFiles);
-        m_FilesHistory.AddFilesToMenu(recentFiles);
+        m_pFilesHistory->UseMenu(recentFiles);
+        m_pFilesHistory->AddFilesToMenu(recentFiles);
         // d)
         if (recentFiles->GetMenuItemCount())
             recentFiles->AppendSeparator();
@@ -1719,18 +1782,18 @@ void MainFrame::AddToRecentProjectsHistory(const wxString& FileName)
     // for windows, look for case-insensitive matches
     // if found, don't add it
     wxString low = filename.Lower();
-    for (size_t i = 0; i < m_ProjectsHistory.GetCount(); ++i)
+    for (size_t i = 0; i < m_pProjectsHistory->GetCount(); ++i)
     {
-        if (low == m_ProjectsHistory.GetHistoryFile(i).Lower())
+        if (low == m_pProjectsHistory->GetHistoryFile(i).Lower())
         {    // it exists, set filename to the existing name, so it can become
             // the most recent one
-            filename = m_ProjectsHistory.GetHistoryFile(i);
+            filename = m_pProjectsHistory->GetHistoryFile(i);
             break;
         }
     }
 #endif
 
-    m_ProjectsHistory.AddFileToHistory(filename);
+    m_pProjectsHistory->AddFileToHistory(filename);
 
     // because we append "clear history" menu to the end of the list,
     // each time we must add a history item we have to:
@@ -1754,12 +1817,12 @@ void MainFrame::AddToRecentProjectsHistory(const wxString& FileName)
         // a)
         recentProjects->Remove(clear);
         // b)
-        m_ProjectsHistory.RemoveMenu(recentProjects);
+        m_pProjectsHistory->RemoveMenu(recentProjects);
         while (recentProjects->GetMenuItemCount())
             recentProjects->Delete(recentProjects->GetMenuItems()[0]);
         // c)
-        m_ProjectsHistory.UseMenu(recentProjects);
-        m_ProjectsHistory.AddFilesToMenu(recentProjects);
+        m_pProjectsHistory->UseMenu(recentProjects);
+        m_pProjectsHistory->AddFilesToMenu(recentProjects);
         // d)
         if (recentProjects->GetMenuItemCount())
             recentProjects->AppendSeparator();
@@ -1774,32 +1837,58 @@ void MainFrame::AddToRecentProjectsHistory(const wxString& FileName)
 
 void MainFrame::TerminateRecentFilesHistory()
 {
-    wxArrayString files;
-    for (unsigned int i = 0; i < m_FilesHistory.GetCount(); ++i)
-        files.Add(m_FilesHistory.GetHistoryFile(i));
-    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/recent_files"), files);
-    files.Clear();
-    for (unsigned int i = 0; i < m_ProjectsHistory.GetCount(); ++i)
-        files.Add(m_ProjectsHistory.GetHistoryFile(i));
-    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/recent_projects"), files);
-
-    wxMenuBar* mbar = GetMenuBar();
-    if (!mbar)
-        return;
-    int pos = mbar->FindMenu(_("&File"));
-    if (pos != wxNOT_FOUND)
+    if (m_pFilesHistory)
     {
-        wxMenu* menu = mbar->GetMenu(pos);
-        if (!menu)
-            return;
-        wxMenu* recentFiles = 0;
-        menu->FindItem(idFileOpenRecentFileClearHistory, &recentFiles);
-        if (recentFiles)
-            m_FilesHistory.RemoveMenu(recentFiles);
-        wxMenu* recentProjects = 0;
-        menu->FindItem(idFileOpenRecentProjectClearHistory, &recentProjects);
-        if (recentProjects)
-            m_ProjectsHistory.RemoveMenu(recentProjects);
+        wxArrayString files;
+        for (unsigned int i = 0; i < m_pFilesHistory->GetCount(); ++i)
+            files.Add(m_pFilesHistory->GetHistoryFile(i));
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/recent_files"), files);
+
+        wxMenuBar* mbar = GetMenuBar();
+        if (mbar)
+        {
+            int pos = mbar->FindMenu(_("&File"));
+            if (pos != wxNOT_FOUND)
+            {
+                wxMenu* menu = mbar->GetMenu(pos);
+                if (menu)
+                {
+                    wxMenu* recentFiles = 0;
+                    menu->FindItem(idFileOpenRecentFileClearHistory, &recentFiles);
+                    if (recentFiles)
+                        m_pFilesHistory->RemoveMenu(recentFiles);
+                }
+            }
+        }
+        delete m_pFilesHistory;
+        m_pFilesHistory = 0;
+    }
+
+    if (m_pProjectsHistory)
+    {
+        wxArrayString files;
+        for (unsigned int i = 0; i < m_pProjectsHistory->GetCount(); ++i)
+            files.Add(m_pProjectsHistory->GetHistoryFile(i));
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/recent_projects"), files);
+
+        wxMenuBar* mbar = GetMenuBar();
+        if (mbar)
+        {
+            int pos = mbar->FindMenu(_("&File"));
+            if (pos != wxNOT_FOUND)
+            {
+                wxMenu* menu = mbar->GetMenu(pos);
+                if (menu)
+                {
+                    wxMenu* recentProjects = 0;
+                    menu->FindItem(idFileOpenRecentProjectClearHistory, &recentProjects);
+                    if (recentProjects)
+                        m_pProjectsHistory->RemoveMenu(recentProjects);
+                }
+            }
+        }
+        delete m_pProjectsHistory;
+        m_pProjectsHistory = 0;
     }
 }
 
@@ -2009,18 +2098,18 @@ void MainFrame::OnFileOpen(wxCommandEvent& event)
 void MainFrame::OnFileReopenProject(wxCommandEvent& event)
 {
     size_t id = event.GetId() - wxID_FILE10;
-    wxString fname = m_ProjectsHistory.GetHistoryFile(id);
+    wxString fname = m_pProjectsHistory->GetHistoryFile(id);
     if (!OpenGeneric(fname, true))
     {
-        AskToRemoveFileFromHistory(&m_ProjectsHistory, id);
+        AskToRemoveFileFromHistory(m_pProjectsHistory, id);
     }
 }
 
 void MainFrame::OnFileOpenRecentProjectClearHistory(wxCommandEvent& event)
 {
-    while (m_ProjectsHistory.GetCount())
+    while (m_pProjectsHistory->GetCount())
     {
-        m_ProjectsHistory.RemoveFileFromHistory(0);
+        m_pProjectsHistory->RemoveFileFromHistory(0);
     }
     Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/recent_projects"));
 
@@ -2033,18 +2122,18 @@ void MainFrame::OnFileOpenRecentProjectClearHistory(wxCommandEvent& event)
 void MainFrame::OnFileReopen(wxCommandEvent& event)
 {
     size_t id = event.GetId() - wxID_FILE1;
-    wxString fname = m_FilesHistory.GetHistoryFile(id);
+    wxString fname = m_pFilesHistory->GetHistoryFile(id);
     if (!OpenGeneric(fname, true))
     {
-        AskToRemoveFileFromHistory(&m_FilesHistory, id);
+        AskToRemoveFileFromHistory(m_pFilesHistory, id);
     }
 }
 
 void MainFrame::OnFileOpenRecentClearHistory(wxCommandEvent& event)
 {
-    while (m_FilesHistory.GetCount())
+    while (m_pFilesHistory->GetCount())
     {
-        m_FilesHistory.RemoveFileFromHistory(0);
+        m_pFilesHistory->RemoveFileFromHistory(0);
     }
     Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/recent_files"));
 
@@ -2966,8 +3055,8 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     if(prj && prj->GetCurrentlyCompilingTarget())
         canCloseProject = false;
     mbar->Enable(idFileCloseProject,canCloseProject);
-    mbar->Enable(idFileOpenRecentFileClearHistory, m_FilesHistory.GetCount());
-    mbar->Enable(idFileOpenRecentProjectClearHistory, m_ProjectsHistory.GetCount());
+    mbar->Enable(idFileOpenRecentFileClearHistory, m_pFilesHistory->GetCount());
+    mbar->Enable(idFileOpenRecentProjectClearHistory, m_pProjectsHistory->GetCount());
     mbar->Enable(idFileClose, ed);
     mbar->Enable(idFileCloseAll, ed);
     mbar->Enable(idFileSave, ed && ed->GetModified());
@@ -3269,36 +3358,48 @@ void MainFrame::OnToggleFullScreen(wxCommandEvent& event)
     }
 }
 
+void MainFrame::OnPluginInstalled(CodeBlocksEvent& event)
+{
+    PluginsUpdated(event.GetPlugin(), Installed);
+}
+
+void MainFrame::OnPluginUninstalled(CodeBlocksEvent& event)
+{
+    if (Manager::IsAppShuttingDown())
+        return;
+    PluginsUpdated(event.GetPlugin(), Uninstalled);
+}
+
 void MainFrame::OnPluginLoaded(CodeBlocksEvent& event)
 {
     cbPlugin* plug = event.GetPlugin();
     if (plug)
     {
-        if (!m_ReconfiguringPlugins)
-            DoAddPlugin(plug);
+        DoAddPlugin(plug);
         const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(plug);
         wxString msg = info ? info->title : wxString(_("<Unknown plugin>"));
         Manager::Get()->GetMessageManager()->DebugLog(_T("%s plugin loaded"), msg.c_str());
     }
 }
 
-#if 0
 void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
 {
-    cbPlugin* plug = event.GetPlugin();
-    if (plug)
+    if (Manager::IsAppShuttingDown())
+        return;
+
+    cbPlugin* plugin = event.GetPlugin();
+
+    // remove toolbar, if any
+    if (m_PluginsTools[plugin])
     {
-        if (!m_ReconfiguringPlugins)
-        {
-            RemovePluginFromMenus(plug->GetInfo()->name);
-//            CreateToolbars();
-            CreateMenubar();
-        }
-        wxString msg = plug->GetInfo()->title;
-        Manager::Get()->GetMessageManager()->DebugLog(_T("%s plugin unloaded"), msg.c_str());
+        m_LayoutManager.DetachPane(m_PluginsTools[plugin]);
+        m_PluginsTools[plugin]->Destroy();
+        m_PluginsTools.erase(plugin);
+        DoUpdateLayout();
     }
+
+    PluginsUpdated(plugin, Unloaded);
 }
-#endif
 
 void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
 {
@@ -3344,12 +3445,7 @@ void MainFrame::OnSettingsCompilerDebugger(wxCommandEvent& event)
 
 void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
 {
-    m_ReconfiguringPlugins = true;
-    if (Manager::Get()->GetPluginManager()->Configure() == wxID_OK)
-    {
-        // mandrav: disabled on-the-fly plugins enabling/disabling (still has glitches)
-    }
-    m_ReconfiguringPlugins = false;
+    Manager::Get()->GetPluginManager()->Configure();
 }
 
 void MainFrame::OnProjectActivated(CodeBlocksEvent& event)

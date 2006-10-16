@@ -46,14 +46,10 @@ END_EVENT_TABLE()
 Autosave::Autosave()
 {
     //ctor
-    timer1 = new wxTimer(this, 10000);
-    timer2 = new wxTimer(this, 20000);
 }
 
 Autosave::~Autosave()
 {
-    delete timer1;
-    delete timer2;
 }
 
 void Autosave::OnAttach()
@@ -62,6 +58,10 @@ void Autosave::OnAttach()
     {
         NotifyMissingFile(_T("autosave.zip"));
     }
+
+    timer1 = new wxTimer(this, 10000);
+    timer2 = new wxTimer(this, 20000);
+
     Start();
 }
 
@@ -80,7 +80,12 @@ void Autosave::Start()
 }
 
 void Autosave::OnRelease(bool appShutDown)
-{}
+{
+    delete timer1;
+    delete timer2;
+    timer1 = 0;
+    timer2 = 0;
+}
 
 void Autosave::OnTimer(wxTimerEvent& e)
 {

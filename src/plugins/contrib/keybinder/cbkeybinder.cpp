@@ -361,6 +361,7 @@ cbConfigurationPanel* cbKeyBinder::OnKeybindings(wxWindow* parent)
     #endif
 
     //wait for a good key file load()
+    if (not m_bBound) OnLoad();
     if (not m_bBound) return 0;
 
     // Add or adjust any dynamic menu/key assignments made by plugins etc.
