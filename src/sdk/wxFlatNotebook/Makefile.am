@@ -1,5 +1,5 @@
 INCLUDES = $(WX_CXXFLAGS) \
-			-I$(srcdir)/include \
+			-I$(srcdir)/include
 
 sdkdir=$(includedir)/codeblocks/wxFlatNotebook
 
