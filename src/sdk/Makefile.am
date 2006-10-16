@@ -1,4 +1,4 @@
-﻿SUBDIRS = scripting tinyxml wxscintilla resources propgrid wxFlatNotebook
+SUBDIRS = scripting tinyxml wxscintilla resources propgrid wxFlatNotebook
 
 if PRECOMPILE_HEADERS
 BUILT_SOURCES = $(srcdir)/sdk.h.gch

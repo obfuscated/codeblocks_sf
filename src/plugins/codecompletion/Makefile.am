@@ -1,4 +1,4 @@
-﻿SUBDIRS = resources
+SUBDIRS = resources
 
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/sdk \

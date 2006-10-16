@@ -1,4 +1,4 @@
-﻿SUBDIRS = wxAUI resources
+SUBDIRS = wxAUI resources
 
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
