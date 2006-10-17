@@ -542,6 +542,19 @@ MainFrame::MainFrame(wxWindow* parent)
 
     m_StartupDone = true;
     DoUpdateLayout();
+
+    if (Manager::Get()->GetMessageManager()->HasErrors())
+    {
+        InfoWindow::Display(_("Errors logged!"), _("Some errors have been logged during\n"
+                                                    "the Code::Blocks startup process.\n\n"
+                                                    "Please review them in the logs...\n\n"), 8000, 1000);
+    }
+    else if (Manager::Get()->GetMessageManager()->HasWarnings())
+    {
+        InfoWindow::Display(_("Warnings logged!"), _("Some warnings have been logged during\n"
+                                                    "the Code::Blocks startup process.\n\n"
+                                                    "Please review them in the logs...\n\n"), 8000, 1000);
+    }
 }
 
 MainFrame::~MainFrame()

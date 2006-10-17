@@ -19,6 +19,7 @@ class DLLIMPORT SimpleTextLog : public MessageLog
 		~SimpleTextLog();
 
 		virtual void AddLog(const wxString& msg, bool addNewLine = true);
+		virtual void Clear();
 		virtual void ResetLogFont();
 		wxTextCtrl* GetTextControl(){ return m_Text; }
     protected:

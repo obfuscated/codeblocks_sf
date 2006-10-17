@@ -1742,7 +1742,7 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
     }
 #ifdef DEBUG_CC_AI
     if (s_DebugSmartSense)
-        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("Can't determine current function..."));
+        DBGLOG(_T("Can't determine current function..."));
 #endif
     s_LastResult = -1;
     return -1;

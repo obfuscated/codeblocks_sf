@@ -142,7 +142,9 @@ MessageManager::MessageManager()
     m_BatchBuildLog(-1),
     m_BatchBuildLogDialog(0),
     m_LockCounter(0),
-    m_AutoHide(false)
+    m_AutoHide(false),
+    m_HasWarnings(false),
+    m_HasErrors(false)
 {
 
     m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), idNB);
@@ -193,6 +195,23 @@ void MessageManager::CreateMenu(wxMenuBar* menuBar)
 
 void MessageManager::ReleaseMenu(wxMenuBar* menuBar)
 {
+}
+
+bool MessageManager::HasWarnings()
+{
+    return m_HasWarnings;
+}
+
+bool MessageManager::HasErrors()
+{
+    return m_HasErrors;
+}
+
+void MessageManager::ClearLog(int id)
+{
+	if (!CheckLogId(m_DebugLog))
+		return;
+    m_Logs[id]->log->Clear();
 }
 
 bool MessageManager::CheckLogId(int id)
@@ -253,10 +272,8 @@ void MessageManager::DebugLog(const wxChar* msg, ...)
 //    m_Logs[mltDebug]->AddLog(tmp);
 }
 
-void MessageManager::DebugLogWarning(const wxChar* msg, ...)
+void MessageManager::LogWarning(const wxChar* msg, ...)
 {
-    if (!CheckLogId(m_DebugLog))
-        return;
     wxString tmp;
     va_list arg_list;
 
@@ -266,15 +283,25 @@ void MessageManager::DebugLogWarning(const wxChar* msg, ...)
 
     wxString typ = _("WARNING");
 //    wxSafeShowMessage(typ, typ + _T(":\n\n") + tmp);
-    ((SimpleTextLog*)m_Logs[m_DebugLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE));
-    DebugLog(typ + _T(": ") + tmp);
-    ((SimpleTextLog*)m_Logs[m_DebugLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+
+    if (CheckLogId(m_DebugLog))
+    {
+        ((SimpleTextLog*)m_Logs[m_DebugLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE));
+        DebugLog(typ + _T(": ") + tmp);
+        ((SimpleTextLog*)m_Logs[m_DebugLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+    }
+    if (CheckLogId(m_AppLog))
+    {
+        ((SimpleTextLog*)m_Logs[m_AppLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE));
+        Log(typ + _T(": ") + tmp);
+        ((SimpleTextLog*)m_Logs[m_AppLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+    }
+
+    m_HasWarnings = true;
 }
 
-void MessageManager::DebugLogError(const wxChar* msg, ...)
+void MessageManager::LogError(const wxChar* msg, ...)
 {
-    if (!CheckLogId(m_DebugLog))
-        return;
     wxString tmp;
     va_list arg_list;
 
@@ -284,9 +311,21 @@ void MessageManager::DebugLogError(const wxChar* msg, ...)
 
     wxString typ = _("ERROR");
 //    wxSafeShowMessage(typ, typ + _T(":\n\n") + tmp);
-    ((SimpleTextLog*)m_Logs[m_DebugLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
-    DebugLog(typ + _T(": ") + tmp);
-    ((SimpleTextLog*)m_Logs[m_DebugLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+
+    if (CheckLogId(m_DebugLog))
+    {
+        ((SimpleTextLog*)m_Logs[m_DebugLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
+        DebugLog(typ + _T(": ") + tmp);
+        ((SimpleTextLog*)m_Logs[m_DebugLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+    }
+    if (CheckLogId(m_AppLog))
+    {
+        ((SimpleTextLog*)m_Logs[m_AppLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
+        Log(typ + _T(": ") + tmp);
+        ((SimpleTextLog*)m_Logs[m_AppLog]->log)->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+    }
+
+    m_HasErrors = true;
 }
 
 // add a new log page
@@ -384,10 +423,10 @@ wxDialog* MessageManager::GetBatchBuildDialog()
     return m_BatchBuildLogDialog;
 }
 
-void MessageManager::SetBatchBuildLog(int log)
+void MessageManager::SetBatchBuildLog(int id)
 {
-    if (CheckLogId(log))
-        m_BatchBuildLog = log;
+    if (CheckLogId(id))
+        m_BatchBuildLog = id;
 }
 
 // add a new log page

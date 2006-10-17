@@ -387,17 +387,14 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
 //            DBGLOG(_T("Plugin file removed"));
             if (!resourceFilename.IsEmpty())
             {
-                wxRemoveFile(resourceFilename);
-//                if (wxRemoveFile(resourceFilename))
-//                    DBGLOG(_T("Plugin resources removed"));
-//                else
-//                    DBGLOG(_T("Failed to remove plugin resources: ") + resourceFilename);
+                if (!wxRemoveFile(resourceFilename))
+                    LOG_WARN(_T("Failed to remove plugin resources: ") + resourceFilename);
             }
             return true;
         }
         else
         {
-//            DBGLOG(_T("Failed to remove plugin file: ") + pluginFilename);
+            LOG_WARN(_T("Failed to remove plugin file: ") + pluginFilename);
             cbMessageBox(_("Plugin could not be completely uninstalled because its files could not be removed.\n\n"
                             "This can happen if the plugin's file is in-use like, for "
                             "example, when the same plugin file provides more than one "
@@ -547,7 +544,7 @@ void PluginManager::RegisterPlugin(const wxString& name,
     if (!ReadManifestFile(m_CurrentlyLoadingFilename, name, &info) ||
         info.name.IsEmpty())
     {
-        DBGLOG(_T("Invalid manifest file for: ") + name);
+        LOG_ERROR(_T("Invalid manifest file for: ") + name);
         return;
     }
 
@@ -570,7 +567,7 @@ void PluginManager::RegisterPlugin(const wxString& name,
                     PLUGIN_SDK_VERSION_MAJOR,
                     PLUGIN_SDK_VERSION_MINOR,
                     PLUGIN_SDK_VERSION_RELEASE);
-        Manager::Get()->GetMessageManager()->Log(fmt);
+        LOG_ERROR(fmt);
         return;
     }
 
@@ -605,7 +602,7 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
         if (actual.IsEmpty())
         {
-            DBGLOG(_T("Plugin resource not found: %s"), fname.GetFullName().c_str());
+            LOG_ERROR(_T("Plugin resource not found: %s"), fname.GetFullName().c_str());
             return false; // not found
         }
 
@@ -627,7 +624,7 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         }
         else
         {
-            DBGLOG(_T("No plugin manifest file in resource: %s"), actual.c_str());
+            LOG_ERROR(_T("No plugin manifest file in resource: %s"), actual.c_str());
             delete fs;
             return false;
         }
@@ -672,7 +669,7 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
 //                    PLUGIN_SDK_VERSION_MAJOR,
 //                    PLUGIN_SDK_VERSION_MINOR,
 //                    PLUGIN_SDK_VERSION_RELEASE);
-//        Manager::Get()->GetMessageManager()->Log(fmt);
+//        LOG_ERROR(fmt);
 //        return false;
 //    }
 
@@ -777,7 +774,6 @@ int PluginManager::ScanForPlugins(const wxString& path)
 bool PluginManager::LoadPlugin(const wxString& pluginName)
 {
     wxLogNull zero; // no need for error messages; we check everything ourselves...
-    MessageManager* msgMan = Manager::Get()->GetMessageManager();
 
     // clear registration temporary vector
     m_RegisteredPlugins.clear();
@@ -787,7 +783,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
     m_pCurrentlyLoadingLib = LibLoader::LoadLibrary(pluginName);
     if (!m_pCurrentlyLoadingLib->IsLoaded())
     {
-        msgMan->DebugLog(_T("%s: not loaded (missing symbols?)"), pluginName.c_str());
+        LOG_ERROR(_T("%s: not loaded (missing symbols?)"), pluginName.c_str());
         LibLoader::RemoveLibrary(m_pCurrentlyLoadingLib);
         m_pCurrentlyLoadingLib = 0;
         m_CurrentlyLoadingFilename.Clear();
@@ -1017,8 +1013,7 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
     {
         if (plug->GetType() != ptTool)
         {
-            MessageManager* msgMan = Manager::Get()->GetMessageManager();
-            msgMan->DebugLog(_T("Plugin %s is not a tool to have Execute() method!"), elem->info.name.c_str());
+            LOG_ERROR(_T("Plugin %s is not a tool to have Execute() method!"), elem->info.name.c_str());
         }
         else
         {

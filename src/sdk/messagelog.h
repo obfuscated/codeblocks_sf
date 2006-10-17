@@ -17,6 +17,7 @@ class DLLIMPORT MessageLog : public wxPanel
 		virtual ~MessageLog();
 
 		virtual void AddLog(const wxString& msg, bool addNewLine = true) = 0;
+		virtual void Clear() = 0;
 		virtual int GetPageId() const { return m_PageId; }
 		virtual void ResetLogFont() = 0;
 		virtual wxFont GetDefaultLogFont(bool fixedPitchFont = false) const;

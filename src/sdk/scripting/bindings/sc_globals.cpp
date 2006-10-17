@@ -15,10 +15,10 @@
 namespace ScriptBindings
 {
     // global funcs
-    void gDebugLog(const wxString& msg){ Manager::Get()->GetMessageManager()->DebugLog(msg); }
-    void gErrorLog(const wxString& msg){ Manager::Get()->GetMessageManager()->DebugLogError(msg); }
-    void gWarningLog(const wxString& msg){ Manager::Get()->GetMessageManager()->DebugLogWarning(msg); }
-    void gLog(const wxString& msg){ Manager::Get()->GetMessageManager()->Log(msg); }
+    void gDebugLog(const wxString& msg){ DBGLOG(msg); }
+    void gErrorLog(const wxString& msg){ LOG_ERROR(msg); }
+    void gWarningLog(const wxString& msg){ LOG_WARN(msg); }
+    void gLog(const wxString& msg){ LOG(msg); }
     int gMessage(const wxString& msg, const wxString& caption, int buttons){ return cbMessageBox(msg, caption, buttons); }
     void gShowMessage(const wxString& msg){ cbMessageBox(msg, _("Script message")); }
     void gShowMessageWarn(const wxString& msg){ cbMessageBox(msg, _("Script warning"), wxICON_WARNING); }

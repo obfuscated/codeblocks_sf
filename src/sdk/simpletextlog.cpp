@@ -53,6 +53,11 @@ SimpleTextLog::~SimpleTextLog()
 {
 }
 
+void SimpleTextLog::Clear()
+{
+    m_Text->Clear();
+}
+
 void SimpleTextLog::AddLog(const wxString& msg, bool addNewLine)
 {
     m_Text->AppendText(msg);

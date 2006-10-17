@@ -1420,7 +1420,7 @@ ProjectBuildTarget* cbProject::AddBuildTarget(const wxString& targetName)
     if (HasVirtualBuildTarget(targetName))
     {
         RemoveVirtualBuildTarget(targetName);
-        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("Deleted existing virtual target '%s' because real target was added with the same name"), targetName.c_str());
+        LOG_WARN(_T("Deleted existing virtual target '%s' because real target was added with the same name"), targetName.c_str());
     }
 
     SetModified(true);
@@ -1653,14 +1653,14 @@ bool cbProject::DefineVirtualBuildTarget(const wxString& alias, const wxArrayStr
 {
     if (targets.GetCount() == 0)
     {
-        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("Can't define virtual build target '%s': Group of build targets is empty!"), alias.c_str());
+        LOG_WARN(_T("Can't define virtual build target '%s': Group of build targets is empty!"), alias.c_str());
         return false;
     }
 
     ProjectBuildTarget* existing = GetBuildTarget(alias);
     if (existing)
     {
-        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("Can't define virtual build target '%s': Real build target exists with that name!"), alias.c_str());
+        LOG_WARN(_T("Can't define virtual build target '%s': Real build target exists with that name!"), alias.c_str());
         return false;
     }
 

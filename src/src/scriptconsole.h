@@ -82,7 +82,7 @@ class ScriptConsoleLog : public MessageLog
         ~ScriptConsoleLog(){}
 
 		virtual void AddLog(const wxString& msg, bool addNewLine = true){}
-
+        virtual void Clear(){ m_Console->txtConsole->Clear(); }
 		virtual void ResetLogFont()
 		{
             m_Console->txtConsole->SetFont(GetDefaultLogFont(true));

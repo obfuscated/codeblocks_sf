@@ -1338,7 +1338,7 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
         wxString msg;
         msg.Printf(_("Could not open the file '%s'.\nThe file does not exist."), filename.c_str());
         cbMessageBox(msg, _("Error"));
-        Manager::Get()->GetMessageManager()->DebugLogError(msg);
+        LOG_ERROR(msg);
         return;
     }
 
@@ -1356,7 +1356,7 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
         {
             wxString msg;
             msg.Printf(_("Failed to open '%s'."), filename.c_str());
-            Manager::Get()->GetMessageManager()->DebugLogError(msg);
+            LOG_ERROR(msg);
         }
     }
     else
@@ -1377,14 +1377,14 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
         {
             wxString msg;
             msg.Printf(_("Could not open file '%s'.\nNo handler registered for this type of file."), filename.c_str());
-            Manager::Get()->GetMessageManager()->DebugLogError(msg);
+            LOG_ERROR(msg);
         }
         else if (plugin->OpenFile(filename) != 0)
         {
             const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(plugin);
             wxString msg;
             msg.Printf(_("Could not open file '%s'.\nThe registered handler (%s) could not open it."), filename.c_str(), info ? info->title.c_str() : wxString(_("<Unknown plugin>")).c_str());
-            Manager::Get()->GetMessageManager()->DebugLogError(msg);
+            LOG_ERROR(msg);
         }
     }
 }
@@ -2054,7 +2054,7 @@ void ProjectManager::OnOpenWith(wxCommandEvent& event)
             }
             wxString msg;
             msg.Printf(_("Failed to open '%s'."), filename.c_str());
-            Manager::Get()->GetMessageManager()->DebugLogError(msg);
+            LOG_ERROR(msg);
         }
     }
 }
