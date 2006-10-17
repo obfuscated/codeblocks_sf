@@ -33,6 +33,7 @@
     #include "manager.h"
     #include "configmanager.h"
     #include "pluginmanager.h"
+    #include "cbplugin.h" // IsAttached
 #endif
 
 #include "annoyingdialog.h"
