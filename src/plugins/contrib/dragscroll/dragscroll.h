@@ -52,7 +52,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "0.29 2006/09/20"
+#define VERSION "1.0.30 2006/10/16"
 //----------------------------------------
 
 #if defined(dsLOGGING)
@@ -96,6 +96,7 @@ class cbDragScroll : public cbPlugin
 
         bool GetMouseDragScrollEnabled() { return MouseDragScrollEnabled; }
         bool GetMouseEditorFocusEnabled(){ return MouseEditorFocusEnabled; }
+        bool GetMouseFocusEnabled()      { return MouseFocusEnabled; }
         int  GetMouseDragDirection()     { return MouseDragDirection; }
         int  GetMouseDragKey()           { return MouseDragKey; }
         int  GetMouseDragSensitivity()   { return MouseDragSensitivity; }
@@ -130,6 +131,7 @@ class cbDragScroll : public cbPlugin
 
         bool MouseDragScrollEnabled ;   //Enable/Disable mouse event handler
         bool MouseEditorFocusEnabled;   //Enable/Disable mouse focus() editor
+        bool MouseFocusEnabled      ;   //Enable/Disable focus follows mouse
         int  MouseDragDirection     ;   //Move with or opposite mouse
         int  MouseDragKey           ;   //Right or Middle mouse key
         int  MouseDragSensitivity   ;   //Adaptive speed sensitivity
@@ -352,5 +354,10 @@ private:
 //          Removed all "eq". Conflicted with wxWidgest hash equates
 //          Added (__WXMAC__) to (_WXGTK_)defines to support mac.
 // ----------------------------------------------------------------------------
+//  Commit  1.0.30
+//          Add focus follow mouse option for MSW
+// ----------------------------------------------------------------------------
+
+
 #endif // DRAGSCROLL_H
 

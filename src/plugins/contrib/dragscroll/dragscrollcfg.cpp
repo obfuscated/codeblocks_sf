@@ -27,12 +27,16 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	//ScrollEnabled->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
 
     //Focus editor when mouse in editor window
-	EditorFocusEnabled = new wxCheckBox(this,ID_ENABLEDFOCUS,_("Auto Editor Focus Enabled"),wxPoint(-1,-1),wxDefaultSize,0);
+	EditorFocusEnabled = new wxCheckBox(this,ID_EDITORENABLEDFOCUS,_("Auto Editor Focus Enabled"),wxPoint(-1,-1),wxDefaultSize,0);
 	EditorFocusEnabled->SetValue(false);
 	//EditorFocusEnabled->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
 
+    //Focus follows Mouse
+	MouseFocusEnabled = new wxCheckBox(this,ID_MOUSEENABLEDFOCUS,_("Focus follows Mouse"),wxPoint(-1,-1),wxDefaultSize,0);
+	MouseFocusEnabled->SetValue(false);
+
     //Hide Right keydown events from ListCtrl windows
-	MouseRightKeyCtrl = new wxCheckBox(this,ID_ENABLEDFOCUS,_("Smooth Message List Scrolling"),wxPoint(-1,-1),wxDefaultSize,0);
+	MouseRightKeyCtrl = new wxCheckBox(this,ID_EDITORENABLEDFOCUS,_("Smooth Message List Scrolling"),wxPoint(-1,-1),wxDefaultSize,0);
 	MouseRightKeyCtrl->SetValue(false);
 	//MouseRightKeyCtrl->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
 	StaticTextMRKC = new wxStaticText(this,ID_STATICTEXTMRKC,_("(Conflicts with some Context Menus)"),wxDefaultPosition,wxDefaultSize,0);
@@ -79,6 +83,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	FlexGridSizer1->Add(ScrollEnabled,1,wxALL|wxALIGN_CENTER,5);
 
 	FlexGridSizer1->Add(EditorFocusEnabled,1,wxALL|wxALIGN_CENTER,5);
+	FlexGridSizer1->Add(MouseFocusEnabled,1,wxALL|wxALIGN_CENTER,5);
 
 	FlexGridSizer1->Add(MouseRightKeyCtrl,1,(wxALL&~wxBOTTOM)|wxALIGN_CENTER,5);
 	FlexGridSizer1->Add(StaticTextMRKC,1,(wxALL&~wxTOP)|wxALIGN_CENTER,0);

@@ -47,7 +47,8 @@ class cbDragScrollCfg: public cbConfigurationPanel
 		{
 		    ID_DONEBUTTON = 0x1000,
 		    ID_ENABLEDCHECKBOX,
-		    ID_ENABLEDFOCUS,
+		    ID_EDITORENABLEDFOCUS,
+		    ID_MOUSEENABLEDFOCUS,
 		    ID_KEYCHOICE,
 		    ID_RADIOBOX1,
 		    ID_SENSITIVITY,
@@ -62,6 +63,7 @@ class cbDragScrollCfg: public cbConfigurationPanel
 
         bool GetMouseDragScrollEnabled() { return ScrollEnabled->GetValue(); }
         bool GetMouseEditorFocusEnabled(){ return EditorFocusEnabled->GetValue(); }
+        bool GetMouseFocusEnabled()      { return MouseFocusEnabled->GetValue(); }
         int  GetMouseDragDirection()     { return ScrollDirection->GetSelection(); }
         int  GetMouseDragKey()           { return MouseKeyChoice->GetSelection(); }
         int  GetMouseDragSensitivity()   { return Sensitivity->GetValue(); }
@@ -73,6 +75,8 @@ class cbDragScrollCfg: public cbConfigurationPanel
                 { ScrollEnabled->SetValue(value); }
         void SetMouseEditorFocusEnabled(bool value)
                 { EditorFocusEnabled->SetValue(value); }
+        void SetMouseFocusEnabled(bool value)
+                { MouseFocusEnabled->SetValue(value); }
         void SetMouseDragDirection(int selection)
                 { ScrollDirection->SetSelection(selection); }
         void SetMouseDragKey(int selection)
@@ -95,6 +99,7 @@ class cbDragScrollCfg: public cbConfigurationPanel
 		wxStaticText* StaticText1;
 		wxCheckBox* ScrollEnabled;
 		wxCheckBox* EditorFocusEnabled;
+		wxCheckBox* MouseFocusEnabled;
 		wxCheckBox* MouseRightKeyCtrl;
 		wxRadioBox* ScrollDirection;
 		wxStaticText* StaticText2;

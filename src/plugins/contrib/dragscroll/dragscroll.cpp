@@ -84,10 +84,13 @@ void cbDragScroll::OnAttach()
     m_UsableWindows.Add(_T("listctrl"));
     m_UsableWindows.Add(_T("textctrl"));
     m_UsableWindows.Add(_T("treectrl"));
+    m_UsableWindows.Add(_T("treeAll"));
+    m_UsableWindows.Add(_T("treeMembers"));
     m_UsableWindows.Add(_T("sciwindow"));
 
-    MouseDragScrollEnabled = true;
+    MouseDragScrollEnabled  = true;
     MouseEditorFocusEnabled = true;
+    MouseFocusEnabled       = false;
     MouseDragDirection      = 0;
     MouseDragKey            = 0;
     MouseDragSensitivity    = 5;
@@ -113,6 +116,7 @@ void cbDragScroll::OnAttach()
 
 	cfgFile.Read(_T("MouseDragScrollEnabled"),  &MouseDragScrollEnabled ) ;
 	cfgFile.Read(_T("MouseEditorFocusEnabled"), &MouseEditorFocusEnabled ) ;
+	cfgFile.Read(_T("MouseFocusEnabled"),       &MouseFocusEnabled ) ;
 	cfgFile.Read(_T("MouseDragDirection"),      &MouseDragDirection ) ;
 	cfgFile.Read(_T("MouseDragKey"),            &MouseDragKey ) ;
 	cfgFile.Read(_T("MouseDragSensitivity"),    &MouseDragSensitivity ) ;
@@ -122,6 +126,7 @@ void cbDragScroll::OnAttach()
     #ifdef LOGGING
         LOGIT(_T("MouseDragScrollEnabled:%d"),  MouseDragScrollEnabled ) ;
         LOGIT(_T("MouseEditorFocusEnabled:%d"), MouseEditorFocusEnabled ) ;
+        LOGIT(_T("MouseFocusEnabled:%d"),       MouseFocusEnabled ) ;
         LOGIT(_T("MouseDragDirection:%d"),      MouseDragDirection ) ;
         LOGIT(_T("MouseDragKey:%d"),            MouseDragKey ) ;
         LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity ) ;
@@ -174,6 +179,7 @@ cbConfigurationPanel* cbDragScroll::GetConfigurationPanel(wxWindow* parent)
     // set current mouse scrolling options
     pDlg->SetMouseDragScrollEnabled ( MouseDragScrollEnabled );
     pDlg->SetMouseEditorFocusEnabled ( MouseEditorFocusEnabled );
+    pDlg->SetMouseFocusEnabled ( MouseFocusEnabled );
     pDlg->SetMouseDragDirection ( MouseDragDirection );
     pDlg->SetMouseDragKey ( MouseDragKey );
     pDlg->SetMouseDragSensitivity ( MouseDragSensitivity );
@@ -193,6 +199,7 @@ void cbDragScroll::OnDialogDone(cbDragScrollCfg* pDlg)
 
     MouseDragScrollEnabled  = pDlg->GetMouseDragScrollEnabled();
     MouseEditorFocusEnabled = pDlg->GetMouseEditorFocusEnabled();
+    MouseFocusEnabled       = pDlg->GetMouseFocusEnabled();
     MouseDragDirection      = pDlg->GetMouseDragDirection();
     MouseDragKey            = pDlg->GetMouseDragKey();
     MouseDragSensitivity    = pDlg->GetMouseDragSensitivity();
@@ -201,6 +208,7 @@ void cbDragScroll::OnDialogDone(cbDragScrollCfg* pDlg)
     #ifdef LOGGING
      LOGIT(_T("MouseDragScrollEnabled:%d"),  MouseDragScrollEnabled);
      LOGIT(_T("MouseEditorFocusEnabled:%d"), MouseEditorFocusEnabled);
+     LOGIT(_T("MouseFocusEnabled:%d"),       MouseFocusEnabled);
      LOGIT(_T("MouseDragDirection:%d"),      MouseDragDirection);
      LOGIT(_T("MouseDragKey:%d"),            MouseDragKey);
      LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity);
@@ -248,6 +256,7 @@ void cbDragScroll::OnDoConfigRequests(wxUpdateUIEvent& event)
 
 	cfgFile.Write(_T("MouseDragScrollEnabled"),  MouseDragScrollEnabled ) ;
 	cfgFile.Write(_T("MouseEditorFocusEnabled"), MouseEditorFocusEnabled ) ;
+	cfgFile.Write(_T("MouseFocusEnabled"),       MouseFocusEnabled ) ;
 	cfgFile.Write(_T("MouseDragDirection"),      MouseDragDirection ) ;
 	cfgFile.Write(_T("MouseDragKey"),            MouseDragKey ) ;
 	cfgFile.Write(_T("MouseDragSensitivity"),    MouseDragSensitivity ) ;
@@ -602,8 +611,11 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
         pLeftSplitWin = ed->GetLeftSplitViewControl();
         pRightSplitWin = ed->GetRightSplitViewControl();
     }
-    // set focus to any window with mouse
-    // if (m_pEvtObject) ((wxWindow*)m_pEvtObject)->SetFocus();
+
+    // if "focus follows mouse" endabled, set focus to window
+    if (pDS->GetMouseFocusEnabled() )
+        if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)
+            if (m_pEvtObject) ((wxWindow*)m_pEvtObject)->SetFocus();
 
     // set focus to editor window if mouse is in it
     if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)
@@ -788,7 +800,6 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
         if (pDS->GetMouseEditorFocusEnabled() )
            if (p_cbStyledTextCtrl && (m_pEvtObject == p_cbStyledTextCtrl))
                 p_cbStyledTextCtrl->SetFocus();
-
 
     int scrollx;
     int scrolly;
