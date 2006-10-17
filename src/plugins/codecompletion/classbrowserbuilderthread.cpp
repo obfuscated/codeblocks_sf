@@ -84,7 +84,19 @@ void* ClassBrowserBuilderThread::Entry()
         if (TestDestroy())
             break;
 
+        // BJM's patch
+        if(!::wxIsMainThread())
+        {
+          ::wxMutexGuiEnter();
+        }
+
         BuildTree();
+
+        // BJM's patch
+        if(!::wxIsMainThread())
+        {
+          ::wxMutexGuiLeave();
+        }
     }
 
     if (m_ppThreadVar)
