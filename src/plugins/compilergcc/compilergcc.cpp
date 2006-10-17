@@ -1337,15 +1337,18 @@ wxString CompilerGCC::GetCurrentCompilerID(ProjectBuildTarget* target)
 
 bool CompilerGCC::CompilerValid(ProjectBuildTarget* target)
 {
+    if (!target)
+        return CompilerFactory::GetDefaultCompiler() != 0;
+
     wxString idx = GetCurrentCompilerID(target);
-    bool ret = CompilerFactory::GetCompiler(idx);
-    if (!ret)
+    if (!CompilerFactory::GetCompiler(idx))
     {
         wxString msg;
         msg.Printf(_("This %s is configured to use an invalid compiler.\nThe operation failed..."), target ? _("target") : _("project"));
         cbMessageBox(msg, _("Error"), wxICON_ERROR);
+        return false;
     }
-    return ret;
+    return true;
 }
 
 bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
@@ -2249,8 +2252,6 @@ int CompilerGCC::Build(const wxString& target)
     wxString realTarget = target;
     if (realTarget.IsEmpty())
         realTarget = GetTargetString();
-    if (realTarget.IsEmpty())
-        return -1;
 
     if (CheckDebuggerIsRunning())
         return -1;
@@ -2262,6 +2263,10 @@ int CompilerGCC::Build(const wxString& target)
             return CompileFile(Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename());
         return -1;
     }
+
+    if (realTarget.IsEmpty())
+        return -1;
+
     DoClearErrors();
 
     if (!m_IsWorkspaceOperation)
@@ -2524,9 +2529,6 @@ int CompilerGCC::CompileFile(const wxString& file)
     if (!CompilerValid())
         return -1;
 
-    if (m_Project)
-        wxSetWorkingDirectory(m_Project->GetBasePath());
-
     ProjectFile* pf = m_Project ? m_Project->GetFileByFilename(file, true, false) : 0;
     ProjectBuildTarget* bt = GetBuildTargetForFile(pf);
     bool useMake = UseMake(bt);
@@ -2542,22 +2544,16 @@ int CompilerGCC::CompileFile(const wxString& file)
         Manager::Get()->GetMacrosManager()->Reset();
         CompilerFactory::GetCompiler(m_CompilerId)->Init(0);
 
-        if (useMake)
-        {
-            cbMessageBox(_("That file doesn't belong to a project.\n"
-                            "If you want to compile it as stand-alone, please use the \"Invoke compiler directly\" build method\n"
-                            "(Settings->Compiler->Other->Build method)"),
-                        _("Information"), wxICON_INFORMATION);
-        }
-        else
-        {
-            // get compile commands for file (always linked as console-executable)
-            DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
-            wxArrayString compile = dc.GetCompileSingleFileCommand(file);
-            AddToCommandQueue(compile);
-        }
+        // get compile commands for file (always linked as console-executable)
+        DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
+        wxArrayString compile = dc.GetCompileSingleFileCommand(file);
+        AddToCommandQueue(compile);
+
         return DoRunQueue();
     }
+
+    if (m_Project)
+        wxSetWorkingDirectory(m_Project->GetBasePath());
 
     if (!bt)
         return -2;
@@ -2873,10 +2869,10 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
 //        mbar->Enable(idMenuCompileFromProjectManager, !running && prj);
         mbar->Enable(idMenuCompileFile, !running && ed);
 //        mbar->Enable(idMenuCompileFileFromProjectManager, !running && prj);
-        mbar->Enable(idMenuRebuild, !running && (prj || ed));
+        mbar->Enable(idMenuRebuild, !running && prj);
         mbar->Enable(idMenuRebuildAll, !running && prj);
 //        mbar->Enable(idMenuRebuildFromProjectManager, !running && prj);
-        mbar->Enable(idMenuClean, !running && (prj || ed));
+        mbar->Enable(idMenuClean, !running && prj);
         mbar->Enable(idMenuCleanAll, !running && prj);
 //        mbar->Enable(idMenuCleanFromProjectManager, !running && prj);
         mbar->Enable(idMenuCompileAndRun, !running && (prj || ed));
@@ -2901,7 +2897,7 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
         tbar->EnableTool(idMenuCompile, !running && (prj || ed));
         tbar->EnableTool(idMenuRun, !running && (prj || ed));
         tbar->EnableTool(idMenuCompileAndRun, !running && (prj || ed));
-        tbar->EnableTool(idMenuRebuild, !running && (prj || ed));
+        tbar->EnableTool(idMenuRebuild, !running && prj);
         tbar->EnableTool(idMenuKillProcess, running && prj);
 
         m_ToolTarget = XRCCTRL(*tbar, "idToolTarget", wxComboBox);
