@@ -36,6 +36,10 @@
 #include "wxsresourcetree.h"
 
 class wxsProject;
+class wxsCoder;
+class wxsExtResManager;
+class wxsPropertiesMan;
+class wxsWidgetFactory;
 
 /** Main plugin which will handle most of wxSmith's work */
 class wxSmith : public cbPlugin
@@ -68,6 +72,10 @@ class wxSmith : public cbPlugin
         wxScrolledWindow* PropertiesPanel;
         wxScrolledWindow* EventsPanel;
         wxsSplitterWindowEx* LeftSplitter;
+        wxsCoder* Coder;
+        wxsExtResManager* ExtResManager;
+        wxsPropertiesMan* PropertiesManager;
+        wxsWidgetFactory* WidgetFactory;
 
         void OnProjectHook(cbProject*,TiXmlElement*,bool);
         int HookId;

@@ -62,8 +62,11 @@ class wxsWidgetManager
         /** Dctor */
         virtual ~wxsWidgetManager() {}
 
-        /** Funcntion initializing manager */
+        /** Function initializing manager */
         virtual bool Initialize() { return true; }
+
+        /** Function uninitializing manager */
+        virtual bool Uninitialize() { return true; }
 
         /** Returns number of handled widgets */
         virtual int GetCount() = 0;

@@ -4,14 +4,16 @@
 #include "wxsmith.h"
 #include "wxspropertiesman.h"
 
-wxsWidgetFactory* wxsWidgetFactory::Singleton = new wxsWidgetFactory;
+wxsWidgetFactory* wxsWidgetFactory::Singleton = NULL;
 
 wxsWidgetFactory::wxsWidgetFactory()
 {
+    if ( Singleton==NULL ) Singleton = this;
 }
 
 wxsWidgetFactory::~wxsWidgetFactory()
 {
+    if ( Singleton==this ) Singleton = NULL;
 }
 
 const wxsWidgetInfo * wxsWidgetFactory::GetInfo(const wxString& Name)

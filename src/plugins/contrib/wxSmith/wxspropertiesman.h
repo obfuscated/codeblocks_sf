@@ -12,7 +12,7 @@ class wxsPropertiesMan: public wxEvtHandler
 	public:
 		wxsPropertiesMan();
 		virtual ~wxsPropertiesMan();
-		static wxsPropertiesMan* Get() { return &Singleton; }
+		static wxsPropertiesMan* Get() { return Singleton; }
 
 		virtual void SetActiveWidget(wxsWidget* NewActive);
 
@@ -22,7 +22,7 @@ class wxsPropertiesMan: public wxEvtHandler
         wxsWidget* CurrentWidget;
         wxScrolledWindow* PropertiesPanel;
         wxScrolledWindow* EventsPanel;
-        static wxsPropertiesMan Singleton;
+        static wxsPropertiesMan* Singleton;
 
 		friend class wxSmith;
 

@@ -70,6 +70,9 @@ class wxsStdManagerT : public wxsWidgetManager
 		/** Initializing manager */
 		virtual bool Initialize();
 
+		/** Uninitializing manager */
+		virtual bool Uninitialize();
+
 		/** Getting number of handled widgets */
         virtual int GetCount();
 
@@ -81,6 +84,10 @@ class wxsStdManagerT : public wxsWidgetManager
 
         /** Killing widget */
         virtual void KillWidget(wxsWidget* Widget);
+
+    private:
+
+        bool Initialized;
 };
 
 extern wxsStdManagerT wxsStdManager;

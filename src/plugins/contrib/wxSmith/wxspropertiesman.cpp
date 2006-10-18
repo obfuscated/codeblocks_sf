@@ -8,6 +8,7 @@ wxsPropertiesMan::wxsPropertiesMan():
     CurrentWidget(NULL),
     PropertiesPanel(NULL)
 {
+    if ( Singleton==NULL ) Singleton = this;
 }
 
 wxsPropertiesMan::~wxsPropertiesMan()
@@ -17,6 +18,7 @@ wxsPropertiesMan::~wxsPropertiesMan()
         CurrentWidget->KillPropertiesWindow();
         CurrentWidget = NULL;
     }
+    if ( Singleton==this ) Singleton = NULL;
 }
 
 void wxsPropertiesMan::SetActiveWidget(wxsWidget* Widget)
@@ -112,4 +114,4 @@ BEGIN_EVENT_TABLE(wxsPropertiesMan,wxEvtHandler)
 END_EVENT_TABLE()
 
 /** Singleton definition */
-wxsPropertiesMan wxsPropertiesMan::Singleton;
+wxsPropertiesMan* wxsPropertiesMan::Singleton = NULL;

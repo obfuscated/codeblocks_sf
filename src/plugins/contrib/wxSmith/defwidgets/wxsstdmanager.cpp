@@ -249,12 +249,18 @@ static wxsWidgetInfo StdInfos[] =
 static const int StdInfosCnt = sizeof(StdInfos) / sizeof(StdInfos[0]);
 
 
-wxsStdManagerT::wxsStdManagerT()
+wxsStdManagerT::wxsStdManagerT(): Initialized(false)
 {
 }
 
 wxsStdManagerT::~wxsStdManagerT()
 {
+    Uninitialize();
+}
+
+bool wxsStdManagerT::Uninitialize()
+{
+    if ( !Initialized ) return true;
     for ( int i=0; i<StdInfosCnt; i++ )
     {
         if ( StdInfos[i].Icon )
@@ -265,10 +271,13 @@ wxsStdManagerT::~wxsStdManagerT()
             StdInfos[i].Icon16 = NULL;
         }
     }
+    Initialized = false;
+    return true;
 }
 
 bool wxsStdManagerT::Initialize()
 {
+    if ( Initialized ) return true;
     wxString resPath = ConfigManager::GetDataFolder();
     for ( int i=1; i<StdInfosCnt; i++ )
     {
@@ -330,6 +339,7 @@ bool wxsStdManagerT::Initialize()
 //            StdInfos[i].TreeIconId = -1;
 //        }
     }
+    Initialized = true;
     return true;
 }
 

@@ -6,6 +6,7 @@
 
 wxsExtResManager::wxsExtResManager()
 {
+    if ( Singleton==NULL ) Singleton = this;
 }
 
 wxsExtResManager::~wxsExtResManager()
@@ -15,6 +16,7 @@ wxsExtResManager::~wxsExtResManager()
         delete i->second;
     }
     Files.clear();
+    if ( Singleton==this ) Singleton = NULL;
 }
 
 int wxsExtResManager::OpenXrc(const wxString& FileName)
@@ -90,4 +92,4 @@ void wxsExtResManager::ResClosed(wxsResource* Res)
     }
 }
 
-wxsExtResManager wxsExtResManager::Singleton;
+wxsExtResManager* wxsExtResManager::Singleton = NULL;

@@ -13,32 +13,32 @@ class wxsResource;
 class wxsExtResManager
 {
     public:
-    
+
         /** Ctor */
         wxsExtResManager();
-        
+
         /** Dctor */
         ~wxsExtResManager();
-        
+
         /** Opening external xrc file */
         int OpenXrc(const wxString& FileName);
-        
+
         /** Function notifying that editor has been closed */
         void ResClosed(wxsResource* Res);
-        
+
         /** Returning singleton object */
-        static wxsExtResManager* Get() { return &Singleton; }
-        
+        static wxsExtResManager* Get() { return Singleton; }
+
     private:
-    
+
         WX_DECLARE_STRING_HASH_MAP(wxsResource*,FilesMapT);
         typedef FilesMapT::iterator FilesMapI;
-        
+
         wxTreeItemId TreeId;
-        
+
         FilesMapT Files;
-        
-        static wxsExtResManager Singleton;
+
+        static wxsExtResManager* Singleton;
 };
 
 #endif // WXSEXTRESMANAGER_H

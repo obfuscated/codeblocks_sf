@@ -33,6 +33,8 @@
 #include "wxssettingsdlg.h"
 #include "wxsmithmime.h"
 #include "wxsmithwizard.h"
+#include "wxscoder.h"
+#include "wxsextresmanager.h"
 
 static int NewDialogId = wxNewId();
 static int NewFrameId = wxNewId();
@@ -82,6 +84,14 @@ void wxSmith::OnAttach()
         NotifyMissingFile(_T("wxsmith.zip"));
     }
 
+    Coder = new wxsCoder();
+    ExtResManager = new wxsExtResManager();
+    PropertiesManager = new wxsPropertiesMan();
+    WidgetFactory = new wxsWidgetFactory();
+
+    wxsStdManager.Initialize();
+    wxsStdManager.RegisterInFactory();
+
     wxFlatNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
 	if ( Notebook )
 	{
@@ -118,13 +128,6 @@ void wxSmith::OnAttach()
 
         LeftSplitter->Split(ResourcesContainer,PropertiesContainer);
 
-        // Initializing standard manager
-
-        wxsStdManager.Initialize();
-        if ( ! wxsStdManager.RegisterInFactory() )
-        {
-            DBGLOG(_T("wxSmith: Couldn't register standard widget's factory - this plugin will be useless"));
-        }
 	}
 	else
 	{
@@ -165,7 +168,34 @@ void wxSmith::OnRelease(bool appShutDown)
 	if ( LeftSplitter )
 	{
 	    delete LeftSplitter;
+	    LeftSplitter = NULL;
 	}
+
+	if ( Coder )
+	{
+        delete Coder;
+        Coder = NULL;
+	}
+
+	if ( ExtResManager )
+	{
+	    delete ExtResManager;
+	    ExtResManager = NULL;
+	}
+
+	if ( PropertiesManager )
+	{
+	    delete PropertiesManager;
+	    PropertiesManager = NULL;
+	}
+
+	if ( WidgetFactory )
+	{
+	    delete WidgetFactory;
+	    WidgetFactory = NULL;
+	}
+
+	wxsStdManager.Uninitialize();
 
 	if ( Singleton == this ) Singleton = NULL;
 }

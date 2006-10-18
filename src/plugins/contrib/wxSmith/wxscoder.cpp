@@ -9,15 +9,19 @@
 
 #include "wxsglobals.h"
 
+wxsCoder* wxsCoder::Singleton = NULL;
+
 wxsCoder::wxsCoder():
 	Enteries(NULL),
 	BlockProcess(false)
 {
+    if ( Singleton==NULL ) Singleton = this;
 }
 
 wxsCoder::~wxsCoder()
 {
 	ProcessCodeQueue();
+	if ( Singleton==this ) Singleton = NULL;
 }
 
 void wxsCoder::AddCode(const wxString& FileName,const wxString& BlockHeader,const wxString& Code,bool Immediately)
@@ -230,7 +234,7 @@ bool wxsCoder::ApplyChanges(wxsCoder::CodeEntry* Entry,const wxString& FileName)
     }
 
     RebuildCode(BaseIndentation,Entry->Code);
-    
+
     if ( Content.Mid(0,Position) == Entry->Code ) return true;
 
     Result += Entry->Code;
@@ -275,9 +279,6 @@ bool wxsCoder::ProcessCodeForFile(const wxString& FileName)
 
 	return Result;
 }
-
-static wxsCoder SingletonObject;
-wxsCoder* wxsCoder::Singleton = &SingletonObject;
 
 wxString wxsCoder::GetCode(const wxString& FileName,const wxString& BlockHeader)
 {
