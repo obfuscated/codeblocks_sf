@@ -67,17 +67,21 @@ END_EVENT_TABLE()
 
 wxSmith::wxSmith()
 {
-	//ctor
-	if ( Singleton == NULL ) Singleton = this;
 }
 
 wxSmith::~wxSmith()
 {
-	if ( Singleton == this ) Singleton = NULL;
 }
 
 void wxSmith::OnAttach()
 {
+	if ( Singleton == NULL ) Singleton = this;
+
+    if(!Manager::LoadResource(_T("wxsmith.zip")))
+    {
+        NotifyMissingFile(_T("wxsmith.zip"));
+    }
+
     wxFlatNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
 	if ( Notebook )
 	{
@@ -114,20 +118,13 @@ void wxSmith::OnAttach()
 
         LeftSplitter->Split(ResourcesContainer,PropertiesContainer);
 
-        if(!Manager::LoadResource(_T("wxsmith.zip")))
-        {
-            NotifyMissingFile(_T("wxsmith.zip"));
-        }
-
         // Initializing standard manager
 
         wxsStdManager.Initialize();
-
         if ( ! wxsStdManager.RegisterInFactory() )
         {
             DBGLOG(_T("wxSmith: Couldn't register standard widget's factory - this plugin will be useless"));
         }
-        // TODO (SpOoN#1#): Add other widgets
 	}
 	else
 	{
@@ -154,6 +151,23 @@ void wxSmith::OnRelease(bool appShutDown)
     }
 
     ProjectMap.clear();
+
+    // Removing resources page
+    wxFlatNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
+	if ( Notebook )
+	{
+        int Index = Notebook->GetPageIndex(LeftSplitter);
+        if ( Index >= 0 )
+        {
+            Notebook->RemovePage(Index,false);
+        }
+	}
+	if ( LeftSplitter )
+	{
+	    delete LeftSplitter;
+	}
+
+	if ( Singleton == this ) Singleton = NULL;
 }
 
 cbConfigurationPanel* wxSmith::GetConfigurationPanel(wxWindow* parent)
