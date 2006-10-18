@@ -89,7 +89,7 @@ void cbDragScroll::OnAttach()
     m_UsableWindows.Add(_T("sciwindow"));
 
     MouseDragScrollEnabled  = true;
-    MouseEditorFocusEnabled = true;
+    MouseEditorFocusEnabled = false;
     MouseFocusEnabled       = false;
     MouseDragDirection      = 0;
     MouseDragKey            = 0;
