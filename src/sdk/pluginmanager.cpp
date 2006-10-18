@@ -222,7 +222,7 @@ bool PluginManager::DetachPlugin(cbPlugin* plugin)
     return true;
 }
 
-bool PluginManager::InstallPlugin(const wxString& pluginName)
+bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, bool askForConfirmation)
 {
     if (pluginName.IsEmpty())
         return false;
@@ -242,27 +242,43 @@ bool PluginManager::InstallPlugin(const wxString& pluginName)
     cbPlugin* existingPlugin = FindPluginByName(basename);
     if (existingPlugin)
     {
-        wxString msg = _("A plugin with the same name is already installed.\n");
-        if (!version.IsEmpty())
+        if (askForConfirmation)
         {
-            const PluginInfo* existingInfo = GetPluginInfo(existingPlugin);
-            if (CompareVersions(version, existingInfo->version) < 0)
+            wxString msg = _("A plugin with the same name is already installed.\n");
+            if (!version.IsEmpty())
             {
-                msg = _("The plugin you are trying to install, is older "
-                        "than the one currently installed.");
+                const PluginInfo* existingInfo = GetPluginInfo(existingPlugin);
+                if (CompareVersions(version, existingInfo->version) < 0)
+                {
+                    msg = _("The plugin you are trying to install, is older "
+                            "than the one currently installed.");
+                }
             }
-        }
 
-        if (cbMessageBox(msg + _T('\n') +
-                        _("If you want to proceed, the installed plugin will be "
-                        "uninstalled first.\n"
-                        "Do you want to proceed?"),
-                        _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_NO)
-        {
-            return false;
+            if (cbMessageBox(msg + _T('\n') +
+                            _("If you want to proceed, the installed plugin will be "
+                            "uninstalled first.\n"
+                            "Do you want to proceed?"),
+                            _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_NO)
+            {
+                return false;
+            }
         }
         if (!UninstallPlugin(existingPlugin))
             return false;
+    }
+
+    wxString pluginDir;
+    wxString resourceDir;
+    if (forAllUsers)
+    {
+        pluginDir = ConfigManager::GetFolder(sdPluginsGlobal);
+        resourceDir = ConfigManager::GetFolder(sdDataGlobal);
+    }
+    else
+    {
+        pluginDir = ConfigManager::GetFolder(sdPluginsUser);
+        resourceDir = ConfigManager::GetFolder(sdDataUser);
     }
 
     wxProgressDialog pd(_("Installing: ") + basename, _T("A description wide enough for the dialog ;)"), 4);
@@ -273,7 +289,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName)
     if (resourceName.StartsWith(_T("lib")))
         resourceName.Remove(0, 3);
     #endif
-    wxString pluginFilename = ConfigManager::GetPluginsFolder() + _T('/') + localName;
+    wxString pluginFilename = pluginDir + _T('/') + localName;
 //    DBGLOG(_T("Plugin filename: ") + pluginFilename);
 //    DBGLOG(_T("Plugin resources: ") + ConfigManager::GetDataFolder() + _T('/') + resourceName);
 
@@ -291,7 +307,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName)
     // extract resources from bundle
     if (!ExtractFile(pluginName,
                     resourceName,
-                    ConfigManager::GetDataFolder() + _T('/') + resourceName))
+                    resourceDir + _T('/') + resourceName))
         return false;
 //    DBGLOG(_T("Extracted resources"));
 
@@ -299,7 +315,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName)
 
     // bundle extracted; now load the plugin on-the-fly
 //    DBGLOG(_T("Loading plugin..."));
-    ScanForPlugins(ConfigManager::GetPluginsFolder());
+    ScanForPlugins(pluginDir);
     LoadAllPlugins();
     cbPlugin* plugin = FindPluginByFileName(pluginFilename);
     const PluginInfo* info = GetPluginInfo(plugin);
@@ -348,6 +364,15 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
             resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
             break;
         }
+    }
+
+    if (wxFileExists(pluginFilename) && !wxFile::Access(pluginFilename, wxFile::write))
+    {
+        // no write-access; abort
+        cbMessageBox(_("You don't have the needed privileges to uninstall this plugin.\n"
+                        "Ask your administrator to uninstall this plugin for you..."),
+                        _("Warning"), wxICON_WARNING);
+        return false;
     }
 
 //    DBGLOG(_T("UninstallPlugin:"));

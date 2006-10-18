@@ -42,6 +42,7 @@
 #endif
 
 #include "tinyxml/tinyxml.h"
+#include <wx/filefn.h>
 #include <wx/tokenzr.h>
 #include <wx/dirdlg.h>
 #include <wx/msgdlg.h>
@@ -841,3 +842,26 @@ void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
 }
 
 #endif //platform-specific placement code
+
+DirAccessCheck cbDirAccessCheck(const wxString& dir)
+{
+    // append ending path separator if needed
+    wxString actualDir = dir;
+    if (actualDir.Last() != _T('/') && actualDir.Last() != _T('\\'))
+        actualDir << wxFILE_SEP_PATH;
+
+    if (!wxDirExists(actualDir))
+        return dacInvalidDir;
+
+    wxString testFile = wxFileName::CreateTempFileName(actualDir);
+    if (!testFile.IsEmpty())
+    {
+        // ok, write-access confirmed
+        // now remove the temporary file and return success
+        wxRemoveFile(testFile);
+        return dacReadWrite;
+    }
+
+    // if we reached here, the directory is not writable
+    return dacReadOnly;
+}

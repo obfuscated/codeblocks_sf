@@ -193,7 +193,7 @@ extern DLLIMPORT SettingsIconsStyle GetSettingsIconsStyle(wxListCtrl* lc);
 
 class wxWindow;
 
-typedef enum
+enum cbPlaceDialogMode
 {
     pdlDont = 0,
     pdlBest,
@@ -201,7 +201,7 @@ typedef enum
     pdlHead,
     pdlConstrain,
     pdlClip
-}cbPlaceDialogMode;
+};
 
 extern void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode = pdlBest, bool enforce = false);
 
@@ -224,5 +224,21 @@ inline void NotifyMissingFile(const wxString &name)
     msg.Printf(_T("The file %s could not be found.\nPlease check your installation."), name.c_str());
     cbMessageBox(msg);
 };
+
+/// Result values of cbDirAccessCheck()
+enum DirAccessCheck
+{
+    dacInvalidDir, ///< Invalid directory (does not exist).
+    dacReadWrite, ///< Current user has read-write access to the directory.
+    dacReadOnly ///< Current user has read-only access to the directory.
+};
+
+/** Check what access the current user has in a directory.
+  *
+  * @param dir The directory in question.
+  *            It may or may not contain an ending path separator.
+  * @return The type of access the current user has in the directory.
+  */
+extern DLLIMPORT DirAccessCheck cbDirAccessCheck(const wxString& dir);
 
 #endif // SDK_GLOBALS_H

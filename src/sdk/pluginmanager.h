@@ -80,7 +80,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>
         bool AttachPlugin(cbPlugin* plugin);
         bool DetachPlugin(cbPlugin* plugin);
 
-        bool InstallPlugin(const wxString& pluginName);
+        bool InstallPlugin(const wxString& pluginName, bool forAllUsers = true, bool askForConfirmation = true);
         bool UninstallPlugin(cbPlugin* plugin, bool removeFiles = true);
         bool ExportPlugin(cbPlugin* plugin, const wxString& filename);
 

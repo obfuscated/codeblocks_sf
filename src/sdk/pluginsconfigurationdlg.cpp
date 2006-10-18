@@ -39,6 +39,7 @@
 #include "annoyingdialog.h"
 #include <wx/settings.h>
 #include <wx/listctrl.h>
+#include <wx/checkbox.h>
 #include <wx/filedlg.h>
 #include <wx/dirdlg.h>
 #include <wx/progdlg.h>
@@ -60,6 +61,7 @@ BEGIN_EVENT_TABLE(PluginsConfigurationDlg, wxDialog)
     EVT_BUTTON(XRCID("btnInstall"), PluginsConfigurationDlg::OnInstall)
     EVT_BUTTON(XRCID("btnUninstall"), PluginsConfigurationDlg::OnUninstall)
     EVT_BUTTON(XRCID("btnExport"), PluginsConfigurationDlg::OnExport)
+    EVT_BUTTON(XRCID("btnInfo"), PluginsConfigurationDlg::OnInfo)
 
     EVT_UPDATE_UI(-1, PluginsConfigurationDlg::OnUpdateUI)
 END_EVENT_TABLE()
@@ -69,6 +71,22 @@ PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgConfigurePlugins"));
     FillList();
+
+    // install options
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("plugins"));
+    bool globalInstall = cfg->ReadBool(_T("/install_globally"), true);
+    bool confirmation = cfg->ReadBool(_T("/install_confirmation"), true);
+
+    // verify user can install globally
+    DirAccessCheck access = cbDirAccessCheck(ConfigManager::GetFolder(sdPluginsGlobal));
+    if (access != dacReadWrite)
+    {
+        globalInstall = false;
+        // disable checkbox
+        XRCCTRL(*this, "chkInstallGlobally", wxCheckBox)->Enable(false);
+    }
+    XRCCTRL(*this, "chkInstallGlobally", wxCheckBox)->SetValue(globalInstall);
+    XRCCTRL(*this, "chkInstallConfirmation", wxCheckBox)->SetValue(confirmation);
 }
 
 void PluginsConfigurationDlg::FillList()
@@ -187,27 +205,24 @@ void PluginsConfigurationDlg::OnInstall(wxCommandEvent& event)
     if (fd.ShowModal() != wxID_OK)
         return;
 
+    wxBusyCursor busy;
+
     wxArrayString paths;
     fd.GetPaths(paths);
 
-    wxBusyCursor busy;
+    // install in global or user dirs?
+    bool globalInstall = XRCCTRL(*this, "chkInstallGlobally", wxCheckBox)->GetValue();
+    bool confirm = XRCCTRL(*this, "chkInstallConfirmation", wxCheckBox)->GetValue();
 
-    int count = 0;
     wxString failure;
     for (size_t i = 0; i < paths.GetCount(); ++i)
     {
-        if (!Manager::Get()->GetPluginManager()->InstallPlugin(paths[i]))
+        if (!Manager::Get()->GetPluginManager()->InstallPlugin(paths[i], globalInstall, confirm))
             failure << paths[i] << _T('\n');
-        else
-            ++count;
     }
 
     FillList();
-    if (failure.IsEmpty())
-    {
-        cbMessageBox(wxString::Format(_("%d plugin(s) installed succesfully."), count), _("Information"), wxICON_INFORMATION);
-    }
-    else
+    if (!failure.IsEmpty())
         cbMessageBox(_("One or more plugins were not installed succesfully:\n\n") + failure, _("Warning"), wxICON_WARNING);
 }
 
@@ -219,7 +234,6 @@ void PluginsConfigurationDlg::OnUninstall(wxCommandEvent& event)
 
     wxBusyCursor busy;
 
-    int count = 0;
     long sel = -1;
     wxString failure;
     while (true)
@@ -233,15 +247,11 @@ void PluginsConfigurationDlg::OnUninstall(wxCommandEvent& event)
         {
             if (!Manager::Get()->GetPluginManager()->UninstallPlugin(elem->plugin))
                 failure << elem->info.title << _T('\n');
-            else
-                ++count;
         }
     }
 
     FillList();
-    if (failure.IsEmpty())
-        cbMessageBox(wxString::Format(_("%d plugin(s) uninstalled succesfully."), count), _("Information"), wxICON_INFORMATION);
-    else
+    if (!failure.IsEmpty())
         cbMessageBox(_("One or more plugins were not uninstalled succesfully:\n\n") + failure, _("Warning"), wxICON_WARNING);
 }
 
@@ -343,10 +353,29 @@ void PluginsConfigurationDlg::OnExport(wxCommandEvent& event)
             failure << list->GetItemText(sel) << _T('\n');
     }
 
-    if (failure.IsEmpty())
-        cbMessageBox(_("All selected plugins were exported succesfully."), _("Information"), wxICON_INFORMATION);
-    else
+    if (!failure.IsEmpty())
         cbMessageBox(_("Failed exporting one or more plugins:\n\n") + failure, _("Warning"), wxICON_WARNING);
+}
+
+void PluginsConfigurationDlg::OnInfo(wxCommandEvent& event)
+{
+    wxListCtrl* list = XRCCTRL(*this, "lstPlugins", wxListCtrl);
+    if (list->GetSelectedItemCount() != 1)
+        return;
+
+    long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    const PluginElement* elem = (const PluginElement*)list->GetItemData(sel);
+    if (!elem)
+        return;
+
+    wxString info;
+    info << _("Title: ") << elem->info.title << _T('\n');
+    info << _("Version: ") << elem->info.version << _T('\n');
+    info << _("Description: ") << elem->info.description << _T('\n');
+    info << _T('\n');
+    info << _("Filename: ") << elem->fileName << _T('\n');
+
+    cbMessageBox(info, _("Information"), wxICON_INFORMATION);
 }
 
 void PluginsConfigurationDlg::OnUpdateUI(wxUpdateUIEvent& event)
@@ -373,4 +402,15 @@ void PluginsConfigurationDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "btnDisable", wxButton)->Enable(en && (lastSelectionMultiple || (hasPlugin && isAttached)));
     XRCCTRL(*this, "btnUninstall", wxButton)->Enable(en);
     XRCCTRL(*this, "btnExport", wxButton)->Enable(en);
+    XRCCTRL(*this, "btnInfo", wxButton)->Enable(en);
+}
+
+void PluginsConfigurationDlg::EndModal(int retCode)
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("plugins"));
+
+    cfg->Write(_T("/install_globally"), XRCCTRL(*this, "chkInstallGlobally", wxCheckBox)->GetValue());
+    cfg->Write(_T("/install_confirmation"), XRCCTRL(*this, "chkInstallConfirmation", wxCheckBox)->GetValue());
+
+    wxDialog::EndModal(retCode);
 }
