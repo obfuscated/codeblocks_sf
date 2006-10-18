@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #ifdef __WXMSW__
     #include <windows.h>
+    #include <time.h>
 	#include <conio.h>
 	#define wait_key getch
 #else
@@ -70,6 +71,8 @@ int main(int argc, char** argv)
         //Windows's system() seems to not be able to handle parentheses in
         //the path, so we have to launch the program a different way.
 
+        SetConsoleTitle(cmdline);
+
         STARTUPINFO si;
         PROCESS_INFORMATION pi;
 
@@ -78,11 +81,16 @@ int main(int argc, char** argv)
         ZeroMemory( &pi, sizeof(pi) );
 
         // Start the child process.
+		clock_t cl = clock();
         CreateProcess( NULL, TEXT(cmdline), NULL, NULL, FALSE, 0,
                        NULL, NULL, &si, &pi );
 
         // Wait until child process exits.
         WaitForSingleObject( pi.hProcess, INFINITE );
+
+        cl = clock() - cl;
+        cl *= 1000;
+        cl /= CLOCKS_PER_SEC;
 
         // Get the return value of the child process
         DWORD ret;
@@ -91,6 +99,8 @@ int main(int argc, char** argv)
         // Close process and thread handles.
         CloseHandle( pi.hProcess );
         CloseHandle( pi.hThread );
+
+		printf("\nProcess returned %ld (0x%lX)   execution time : %0.3f s", ret, ret, ((float)cl)/1000);
         printf("\nPress any key to continue.\n");
     #else
         int ret = system(cmdline);
