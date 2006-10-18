@@ -1498,13 +1498,27 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 }
                 else
                     control->ReplaceSelection(data->replaceText);
-                data->start += lengthReplace;
+                if (data->directionDown)
+                {
+                    data->start += lengthReplace;
+                }
                 // adjust end pos by adding the length difference between find and replace strings
                 int diff = lengthReplace - lengthFound;
                 if (data->directionDown)
+                {
                     data->end += diff;
+                }
                 else
-                    data->end -= diff;
+                {
+                	if(data->end < diff)
+                	{
+					   data->end = 0;
+                	}
+                	else
+                	{
+                       data->end -= diff;
+                	}
+                }
             }
             else
                 if (data->directionDown)
