@@ -1038,6 +1038,29 @@ int CompilerGCC::DoRunQueue()
         delete cmd;
         return ret;
     }
+    else if (cmd->command.StartsWith(_T("#run_script")))
+    {
+        // special "run_script" command
+        wxString script = cmd->command.AfterFirst(_T(' '));
+        if (script.IsEmpty())
+        {
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED, *wxWHITE));
+            wxString msg = _("The #run_script command must be followed by a script filename");
+            msgMan->Log(m_PageIndex, msg);
+            msgMan->LogToStdOut(msg + _T('\n'));
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
+        }
+        else
+        {
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(script, true);
+            wxString msg = _("Running script: ") + script;
+            msgMan->Log(m_PageIndex, msg);
+            msgMan->LogToStdOut(msg + _T('\n'));
+
+            Manager::Get()->GetScriptingManager()->LoadScript(script);
+        }
+        return DoRunQueue(); // move on
+    }
 
     bool pipe = true;
     int flags = wxEXEC_ASYNC;

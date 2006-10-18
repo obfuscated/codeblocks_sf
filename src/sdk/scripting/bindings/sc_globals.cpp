@@ -8,6 +8,7 @@
     #include <configmanager.h>
     #include <editormanager.h>
     #include <projectmanager.h>
+    #include <pluginmanager.h>
 #endif
 
 #include "sc_base_types.h"
@@ -55,6 +56,16 @@ namespace ScriptBindings
     {
         return Manager::Get()->GetUserVariableManager();
     }
+    bool InstallPlugin(const wxString& pluginName, bool allUsers, bool confirm)
+    {
+        if (cbMessageBox(_("A script is trying to install a Code::Blocks plugin.\n"
+                            "Do you wish to allow this?\n\n") + pluginName,
+                            _("Security warning"), wxICON_WARNING | wxYES_NO) == wxID_NO)
+        {
+            return false;
+        }
+        return Manager::Get()->GetPluginManager()->InstallPlugin(pluginName, allUsers, confirm);
+    }
 
     void Register_Globals()
     {
@@ -79,6 +90,7 @@ namespace ScriptBindings
 
         SqPlus::RegisterGlobal(ConfigManager::GetFolder, "GetFolder");
         SqPlus::RegisterGlobal(ConfigManager::LocateDataFile, "LocateDataFile");
+        SqPlus::RegisterGlobal(InstallPlugin, "InstallPlugin");
 
         SquirrelVM::CreateFunctionGlobal(IsNull, "IsNull", "*");
     }

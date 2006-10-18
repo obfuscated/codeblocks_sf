@@ -227,8 +227,11 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
     if (pluginName.IsEmpty())
         return false;
 
+    wxString actualName = pluginName;
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(actualName, true);
+
     // base name
-    wxString basename = wxFileName(pluginName).GetName();
+    wxString basename = wxFileName(actualName).GetName();
     wxString version;
     if (basename.Contains(_T('-')))
     {
@@ -296,7 +299,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
     pd.Update(1, _("Extracting plugin"));
 
     // extract plugin from bundle
-    if (!ExtractFile(pluginName,
+    if (!ExtractFile(actualName,
                     localName,
                     pluginFilename))
         return false;
@@ -305,7 +308,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
     pd.Update(2, _("Extracting plugin resources"));
 
     // extract resources from bundle
-    if (!ExtractFile(pluginName,
+    if (!ExtractFile(actualName,
                     resourceName,
                     resourceDir + _T('/') + resourceName))
         return false;

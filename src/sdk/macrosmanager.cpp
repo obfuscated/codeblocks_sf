@@ -215,6 +215,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
                 ; // replace spaces with underscores (what about other invalid chars?)
             macros[title + _T("_OUTPUT_FILE")] = UnixFilename(target->GetOutputFilename());
             macros[title + _T("_OUTPUT_DIR")] = UnixFilename(target->GetBasePath());
+            macros[title + _T("_OUTPUT_BASENAME")] = wxFileName(target->GetOutputFilename()).GetName();
         }
         m_lastProject = project;
     }
@@ -245,12 +246,16 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     {
         m_TargetOutputDir = wxEmptyString;
         m_TargetName = wxEmptyString;
+        m_TargetOutputBaseName = wxEmptyString;
+        m_TargetFilename = wxEmptyString;
         m_lastTarget = NULL;
     }
     else if(target != m_lastTarget)
     {
         m_TargetOutputDir = UnixFilename(target->GetBasePath());
         m_TargetName = UnixFilename(target->GetTitle());
+        m_TargetOutputBaseName = wxFileName(target->GetOutputFilename()).GetName();
+        m_TargetFilename = UnixFilename(target->GetOutputFilename());
         m_lastTarget = target;
     }
 
@@ -265,6 +270,8 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
 
     macros[_T("TARGET_OUTPUT_DIR")]   = m_TargetOutputDir;
     macros[_T("TARGET_NAME")]    = m_TargetName;
+    macros[_T("TARGET_OUTPUT_BASENAME")]    = m_TargetOutputBaseName;
+    macros[_T("TARGET_OUTPUT_FILE")]    = m_TargetFilename;
     macros[_T("ACTIVE_EDITOR_FILENAME")] = m_ActiveEditorFilename;
     wxFileName fn(m_ActiveEditorFilename);
     macros[_T("ACTIVE_EDITOR_DIRNAME")]  = fn.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);

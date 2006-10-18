@@ -248,11 +248,12 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
 /// Apply pre-build scripts for @c base.
 void CompilerCommandGenerator::DoBuildScripts(CompileOptionsBase* base, const wxString& funcName)
 {
-    static const wxString clearout_buildscripts = _T("function SetBuildOptions(base){}; function UnsetBuildOptions(base){};");
+    static const wxString clearout_buildscripts = _T("function SetBuildOptions(base){return;};\n"
+                                                     "function UnsetBuildOptions(base){return;};");
     const wxArrayString& scripts = base->GetBuildScripts();
     for (size_t i = 0; i < scripts.GetCount(); ++i)
     {
-        Manager::Get()->GetScriptingManager()->LoadScript(clearout_buildscripts); // clear previous script's context
+        Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_buildscripts); // clear previous script's context
         Manager::Get()->GetScriptingManager()->LoadScript(scripts[i]);
         try
         {
