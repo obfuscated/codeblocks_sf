@@ -758,16 +758,45 @@ int PluginManager::ScanForPlugins(const wxString& path)
         return count;
 
     bool batch = Manager::IsBatchBuild();
+    wxArrayString bbplugins;
+    if (batch)
+    {
+        ConfigManager *bbcfg = Manager::Get()->GetConfigManager(_T("plugins"));
+        bbplugins = bbcfg->ReadArrayString(_T("/batch_build_plugins"));
+        if (!bbplugins.GetCount())
+        {
+            // defaults
+            #ifdef __WXMSW__
+            bbplugins.Add(_T("compiler.dll"));
+            #else
+            bbplugins.Add(_T("libcompiler.so"));
+            #endif
+        }
+    }
 
     wxString filename;
     wxString failed;
     bool ok = dir.GetFirst(&filename, PLUGINS_MASK, wxDIR_FILES);
     while (ok)
     {
-        if(batch && filename.Matches(_T("*compiler*")) == false)
+        if (batch)
         {
-            ok = dir.GetNext(&filename);
-            continue;
+            // for batch builds, we will load only those plugins that the
+            // user has set (default only compiler.dll)
+            bool matched = false;
+            for (size_t i = 0; i < bbplugins.GetCount(); ++i)
+            {
+                if (bbplugins[i] == filename)
+                {
+                    matched = true;
+                    break;
+                }
+            }
+            if (!matched)
+            {
+                ok = dir.GetNext(&filename);
+                continue;
+            }
         }
 
         // load manifest

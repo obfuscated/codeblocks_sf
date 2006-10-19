@@ -65,6 +65,30 @@ The relevant command-line arguments are (all are optional):
                   <flag>wxLEFT|wxEXPAND</flag>
                   <border>8</border>
                 </object>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Plugins to load in batch-build mode</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxCheckListBox" name="chkBBPlugins">
+                        <content/>
+                      </object>
+                      <option>1</option>
+                      <flag>wxALL|wxGROW</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Tip: Ensure you only load what's needed (saves start-up time).</label>
+                        <fg>#800000</fg>
+                      </object>
+                      <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+                      <border>4</border>
+                    </object>
+                  </object>
+                  <flag>wxTOP|wxBOTTOM|wxLEFT|wxGROW</flag>
+                  <border>8</border>
+                </object>
                 <object class="spacer">
                   <size>0,0</size>
                   <option>1</option>

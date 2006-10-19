@@ -19,6 +19,8 @@
 #include <wx/intl.h>
 #include <wx/listbook.h>
 #include <wx/listctrl.h>
+#include <wx/checklst.h>
+#include <wx/filename.h>
 
 #include "configurationpanel.h"
 #include "compilersettingsdlg.h"
@@ -59,6 +61,42 @@ CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
 #else
     XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->Enable(false);
 #endif
+
+    // fill plugins list
+    ConfigManager *bbcfg = Manager::Get()->GetConfigManager(_T("plugins"));
+    wxArrayString bbplugins = bbcfg->ReadArrayString(_T("/batch_build_plugins"));
+    if (!bbplugins.GetCount())
+    {
+        // defaults
+        #ifdef __WXMSW__
+        bbplugins.Add(_T("compiler.dll"));
+        #else
+        bbplugins.Add(_T("libcompiler.so"));
+        #endif
+    }
+    wxCheckListBox* clb = XRCCTRL(*this, "chkBBPlugins", wxCheckListBox);
+    clb->Clear();
+    const PluginElementsArray& plugins = Manager::Get()->GetPluginManager()->GetPlugins();
+    for (size_t i = 0; i < plugins.GetCount(); ++i)
+    {
+        PluginElement* elem = plugins[i];
+        if (!elem)
+            continue;
+        cbPlugin* plugin = elem->plugin;
+        if (!plugin || !plugin->IsAttached())
+            continue;
+        wxString filename = wxFileName(elem->fileName).GetFullName();
+        size_t index = clb->Append(elem->info.title);
+        // check item if any wildcard matches
+        for (size_t n = 0; n < bbplugins.GetCount(); ++n)
+        {
+            if (filename.CmpNoCase(bbplugins[n]) == 0)
+            {
+                clb->Check(index, plugin->IsAttached());
+                break;
+            }
+        }
+    }
 
     // add all plugins configuration panels
     AddPluginPanels();
@@ -177,6 +215,43 @@ void CompilerSettingsDlg::EndModal(int retCode)
             cfg->Write(_T("/batch_build_args"), bbargs);
             Associations::SetBatchBuildOnly();
         }
+
+        // batch build plugins
+        ConfigManager *bbcfg = Manager::Get()->GetConfigManager(_T("plugins"));
+        wxArrayString bbplugins;
+        wxCheckListBox* clb = XRCCTRL(*this, "chkBBPlugins", wxCheckListBox);
+        for (int i = 0; i < clb->GetCount(); ++i)
+        {
+            if (clb->IsChecked(i))
+            {
+                const PluginElementsArray& plugins = Manager::Get()->GetPluginManager()->GetPlugins();
+                for (size_t n = 0; n < plugins.GetCount(); ++n)
+                {
+                    PluginElement* elem = plugins[n];
+                    if (!elem)
+                        continue;
+                    if (elem->info.title == clb->GetString(i))
+                    {
+                        bbplugins.Add(wxFileName(elem->fileName).GetFullName());
+                        break;
+                    }
+                }
+            }
+        }
+
+        #ifdef __WXMSW__
+        const wxString compiler = _T("compiler.dll");
+        #else
+        const wxString compiler = _T("libcompiler.so");
+        #endif
+        if (bbplugins.Index(compiler) == wxNOT_FOUND)
+        {
+            bbplugins.Add(compiler);
+            cbMessageBox(_("The compiler plugin must always be loaded for batch builds!\n"
+                        "Automatically re-enabled."),
+                        _("Warning"), wxICON_WARNING);
+        }
+        bbcfg->Write(_T("/batch_build_plugins"), bbplugins);
 #endif
 
         // finally, apply settings in all plugins' panels
