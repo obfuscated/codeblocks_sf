@@ -335,29 +335,6 @@
                         <style>wxRA_SPECIFY_COLS</style>
                       </object>
                     </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                      <object class="wxStaticBoxSizer">
-                        <orient>wxVERTICAL</orient>
-                        <label>Find options</label>
-                        <object class="sizeritem">
-                          <border>8</border>
-                          <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                          <object class="wxFlexGridSizer">
-                            <rows>4</rows>
-                            <cols>1</cols>
-                            <vgap>4</vgap>
-                            <hgap>4</hgap>
-                            <object class="sizeritem">
-                              <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                              <object class="wxCheckBox" name="chkAutoWrapSearch">
-                                <label>Auto-wrap search when EOF reached</label>
-                              </object>
-                            </object>
-                          </object>
-                        </object>
-                      </object>
-                    </object>
                   </object>
                 </object>
               </object>

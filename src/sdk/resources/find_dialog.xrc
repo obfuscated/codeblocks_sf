@@ -77,6 +77,22 @@
                                                         <checked>0</checked>
                                                     </object>
                                                 </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                                    <border>4</border>
+                                                    <object class="wxCheckBox" name="chkAutoWrapSearch">
+                                                        <label>Auto-wrap search at EOF</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                                    <border>4</border>
+                                                    <object class="wxCheckBox" name="chkFindUsesSelectedText">
+                                                        <label>Find uses Selected Text</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
                                             </object>
                                         </object>
                                         <object class="sizeritem">

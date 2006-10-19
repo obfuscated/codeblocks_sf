@@ -20,6 +20,8 @@ class FindDlg : public FindReplaceBase
 		bool GetStartWord() const;
 		bool GetMatchCase() const;
 		bool GetRegEx() const;
+		bool GetAutoWrapSearch() const;
+		bool GetFindUsesSelectedText() const;
 		int GetDirection() const;
 		int GetOrigin() const;
 		int GetScope() const;

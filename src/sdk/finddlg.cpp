@@ -82,6 +82,9 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
 	XRCCTRL(*this, "chkStartWord1", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/start_word1"), false));
 	XRCCTRL(*this, "chkMatchCase1", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/match_case1"), false));
 	XRCCTRL(*this, "chkRegEx1", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/regex1"), false));
+	XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/auto_wrap_search"), true));
+	XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/findUsesSelectedText"), false));
+
 	XRCCTRL(*this, "rbDirection", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/direction"), 1));
 	XRCCTRL(*this, "rbDirection", wxRadioBox)->Enable(!XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue()); // if regex, only forward searches
 	XRCCTRL(*this, "rbOrigin", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/origin"), 0));
@@ -162,6 +165,9 @@ FindDlg::~FindDlg()
         cfg->Write(CONF_GROUP _T("/start_word1"), XRCCTRL(*this, "chkStartWord1", wxCheckBox)->GetValue());
         cfg->Write(CONF_GROUP _T("/match_case1"), XRCCTRL(*this, "chkMatchCase1", wxCheckBox)->GetValue());
         cfg->Write(CONF_GROUP _T("/regex1"), XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue());
+        cfg->Write(CONF_GROUP _T("/auto_wrap_search"), XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue());
+        cfg->Write(CONF_GROUP _T("/findUsesSelectedText"), XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->GetValue());
+
         cfg->Write(CONF_GROUP _T("/direction"), XRCCTRL(*this, "rbDirection", wxRadioBox)->GetSelection());
         cfg->Write(CONF_GROUP _T("/origin"), XRCCTRL(*this, "rbOrigin", wxRadioBox)->GetSelection());
 	}
@@ -226,6 +232,21 @@ bool FindDlg::GetRegEx() const
 		return XRCCTRL(*this, "chkRegEx2", wxCheckBox)->GetValue();
 	else
 		return XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue();
+}
+bool FindDlg::GetAutoWrapSearch() const
+{
+	if (IsFindInFiles())
+		return XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue();
+	else
+		return XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue();
+}
+
+bool FindDlg::GetFindUsesSelectedText() const
+{
+	if (IsFindInFiles())
+		return XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->GetValue();
+	else
+		return XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->GetValue();
 }
 
 int FindDlg::GetDirection() const
@@ -336,4 +357,5 @@ void FindDlg::OnActivate(wxActivateEvent& event)
     if (cbp != 0) cbp->SetFocus();
     event.Skip();
 }
+
 

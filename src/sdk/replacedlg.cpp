@@ -212,6 +212,22 @@ bool ReplaceDlg::GetRegEx() const
 		return XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue();
 }
 
+bool ReplaceDlg::GetAutoWrapSearch() const
+{
+    if (IsFindInFiles())
+		return XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue();
+	else
+		return XRCCTRL(*this, "chkAutoSrapSearch", wxCheckBox)->GetValue();
+}
+
+bool ReplaceDlg::GetFindUsesSelectedText() const
+{
+    if (IsFindInFiles())
+		return XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->GetValue();
+	else
+		return XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->GetValue();
+}
+
 int ReplaceDlg::GetDirection() const
 {
     if (IsFindInFiles())

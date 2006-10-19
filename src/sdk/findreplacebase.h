@@ -19,6 +19,8 @@ class FindReplaceBase : public wxDialog
 		virtual bool GetStartWord() const = 0;
 		virtual bool GetMatchCase() const = 0;
 		virtual bool GetRegEx() const = 0;
+		virtual bool GetAutoWrapSearch() const = 0;
+		virtual bool GetFindUsesSelectedText() const = 0;
 		virtual int GetDirection() const = 0;
 		virtual int GetOrigin() const = 0;
 		virtual int GetScope() const = 0;

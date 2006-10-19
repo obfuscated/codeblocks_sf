@@ -97,6 +97,8 @@ struct cbFindReplaceData
     bool NewSearch;     //!< only true when a new search has been started
     int SearchInSelectionStart; //!< keep track of the start of a 'search' selection
     int SearchInSelectionEnd;  //!< keep track of the end of a 'search' selection
+    bool autoWrapSearch;
+    bool findUsesSelectedText;
 };
 
 static const int idNBTabSplitHorz = wxNewId();
@@ -1252,6 +1254,8 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     m_LastFindReplaceData->startWord = dlg->GetStartWord();
     m_LastFindReplaceData->matchCase = dlg->GetMatchCase();
     m_LastFindReplaceData->regEx = dlg->GetRegEx();
+    m_LastFindReplaceData->autoWrapSearch = dlg->GetAutoWrapSearch();
+    m_LastFindReplaceData->findUsesSelectedText = dlg->GetFindUsesSelectedText();
     m_LastFindReplaceData->directionDown = dlg->GetDirection() == 1;
     m_LastFindReplaceData->originEntireScope = dlg->GetOrigin() == 1;
     m_LastFindReplaceData->scope = dlg->GetScope();
@@ -1421,7 +1425,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 else
                     msg = _("Text not found.\nSearch from the end of the document?");
 
-                bool auto_wrap_around = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/auto_wrap_search"), true);
+                bool auto_wrap_around = data->autoWrapSearch;
                 if (auto_wrap_around)
                     wxBell();
                 if (auto_wrap_around || cbMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
@@ -1892,7 +1896,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                         msg = _("Text not found.\nSearch from the end of the selection?");
                 }
 
-                bool auto_wrap_around = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/auto_wrap_search"), true);
+                bool auto_wrap_around = data->autoWrapSearch;
                 if (auto_wrap_around)
                     wxBell();
                 if (auto_wrap_around || cbMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
@@ -2175,11 +2179,23 @@ int EditorManager::FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindRep
     if(!data->findInFiles)
     {
         wxString phraseAtCursor = control->GetSelectedText();
-        // NOTE (mandrav): it is not intuitive to change the search text
-        //                  just because there's a selection present...
-        // change findText to selected text (if any text is selected and no search text was set before)
-        if (!phraseAtCursor.IsEmpty() && data->findText.IsEmpty())
-            data->findText = phraseAtCursor;
+
+        if ( not data->findUsesSelectedText )
+        {   // The mandrav find behavior
+            // change findText to selected text (if any text is selected and no search text was set before)
+            if (!phraseAtCursor.IsEmpty() && data->findText.IsEmpty())
+                data->findText = phraseAtCursor;
+        }
+        else
+        {   // The tiwag find behavior
+            // change findText to selected text (if any text is selected)
+            if (!phraseAtCursor.IsEmpty())
+            {
+                data->findText = phraseAtCursor;
+                data->originEntireScope = false;  //search from cursor
+                data->scope = 0; // global ("selected text" is useful only from Find Dialog)
+            }
+        }
     }
 
     data->directionDown = goingDown;
@@ -2749,4 +2765,5 @@ int EditorManager::GetZoom() const
 {
     return m_zoom;
 }
+
 

@@ -8,7 +8,7 @@ class wxComboBox;
 class ReplaceDlg : public FindReplaceBase
 {
 	public:
-		ReplaceDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false, 
+		ReplaceDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false,
             bool findInFilesOnly = false, bool replaceInFilesActive = false);
 		~ReplaceDlg();
 		wxString GetFindString() const;
@@ -19,6 +19,8 @@ class ReplaceDlg : public FindReplaceBase
 		bool GetStartWord() const;
 		bool GetMatchCase() const;
 		bool GetRegEx() const;
+		bool GetAutoWrapSearch() const;
+		bool GetFindUsesSelectedText() const;
 		int GetDirection() const;
 		int GetOrigin() const;
 		int GetScope() const;
@@ -30,7 +32,7 @@ class ReplaceDlg : public FindReplaceBase
 		void OnFindChange(wxNotebookEvent& event);
 		void OnRegEx(wxCommandEvent& event);
 		void OnActivate(wxActivateEvent& event);
-		
+
 	private:
         bool m_Complete;
 		void FillComboWithLastValues(wxComboBox* combo, const wxString& configKey);
