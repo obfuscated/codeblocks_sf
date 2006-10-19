@@ -73,6 +73,8 @@ ReplaceDlg::ReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelect
 	XRCCTRL(*this, "rbOrigin", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/origin"), 0));
 	XRCCTRL(*this, "rbScope1", wxRadioBox)->SetSelection(hasSelection);
 	XRCCTRL(*this, "rbScope1", wxRadioBox)->Enable(hasSelection);
+	// special key, uses same config for both find & replace options
+	XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->SetValue(cfg->ReadBool(_T("/find_options/auto_wrap_search"), true));
 
 	// replace in files options
 	XRCCTRL(*this, "cmbFind2", wxComboBox)->SetValue(initial);
@@ -119,6 +121,8 @@ ReplaceDlg::~ReplaceDlg()
         cfg->Write(CONF_GROUP _T("/regex"), XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue());
         cfg->Write(CONF_GROUP _T("/direction"), XRCCTRL(*this, "rbDirection", wxRadioBox)->GetSelection());
         cfg->Write(CONF_GROUP _T("/origin"), XRCCTRL(*this, "rbOrigin", wxRadioBox)->GetSelection());
+        // special key, uses same config for both find & replace options
+        cfg->Write(_T("/find_options/auto_wrap_search"), XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue());
 	}
 
 	// find(replace) in files options
@@ -215,17 +219,14 @@ bool ReplaceDlg::GetRegEx() const
 bool ReplaceDlg::GetAutoWrapSearch() const
 {
     if (IsFindInFiles())
-		return XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue();
+		return false; // not for replace in files
 	else
-		return XRCCTRL(*this, "chkAutoSrapSearch", wxCheckBox)->GetValue();
+		return XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue();
 }
 
 bool ReplaceDlg::GetFindUsesSelectedText() const
 {
-    if (IsFindInFiles())
-		return XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->GetValue();
-	else
-		return XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->GetValue();
+    return false; // not for replace
 }
 
 int ReplaceDlg::GetDirection() const
