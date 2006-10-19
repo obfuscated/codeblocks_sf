@@ -236,7 +236,7 @@ bool FindDlg::GetRegEx() const
 bool FindDlg::GetAutoWrapSearch() const
 {
 	if (IsFindInFiles())
-		return XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue();
+		return false; // not for search in files
 	else
 		return XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue();
 }
