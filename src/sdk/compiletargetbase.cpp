@@ -238,9 +238,7 @@ void CompileTargetBase::GenerateTargetFilename(wxString& filename) const
             if (m_ExtensionGenerationPolicy == tgfpPlatformDefault)
             {
                 filename << fname.GetName();
-                #ifdef __WXMSW__
                 filename << FileFilters::EXECUTABLE_DOT_EXT;
-                #endif
             }
             else
                 filename << fname.GetFullName();
@@ -260,7 +258,9 @@ void CompileTargetBase::GenerateTargetFilename(wxString& filename) const
             {
                 Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
                 wxString prefix = compiler ? compiler->GetSwitches().libPrefix : _T("");
-                filename << prefix;
+                // avoid adding the prefix, if already there
+                if (!prefix.IsEmpty() && !fname.GetName().StartsWith(prefix))
+                    filename << prefix;
             }
             if (m_ExtensionGenerationPolicy == tgfpPlatformDefault)
                 filename << fname.GetName() << FileFilters::STATICLIB_DOT_EXT;
@@ -272,7 +272,7 @@ void CompileTargetBase::GenerateTargetFilename(wxString& filename) const
             filename.Clear();
             break;
     }
-    DBGLOG(_T("GenerateTargetFilename: input '%s', output '%s'"), fname.GetFullPath().c_str(), filename.c_str());
+//    DBGLOG(_T("GenerateTargetFilename: input '%s', output '%s'"), fname.GetFullPath().c_str(), filename.c_str());
 }
 
 wxString CompileTargetBase::GetExecutableFilename() const
