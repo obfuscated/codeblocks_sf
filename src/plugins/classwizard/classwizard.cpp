@@ -71,34 +71,32 @@ int ClassWizard::Execute()
 {
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
     cbProject* prj = prjMan->GetActiveProject();
-    if (prj)
-        wxSetWorkingDirectory(prj->GetBasePath());
 
-	ClassWizardDlg dlg(Manager::Get()->GetAppWindow());
+    ClassWizardDlg dlg(Manager::Get()->GetAppWindow());
     PlaceWindow(&dlg);
-	if (dlg.ShowModal() == wxID_OK)
-	{
-		if (!prj)
-		{
-			cbMessageBox(	_("The new class has been created."),
-							_("Information"),
-							wxOK | wxICON_INFORMATION,
-							Manager::Get()->GetAppWindow());
-		}
-		else if( cbMessageBox( _("The new class has been created.\n"
-							"Do you want to add it to the current project?"),
-							_("Add to project?"),
-							wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION,
-							Manager::Get()->GetAppWindow()) == wxID_YES)
-		{
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        if (!prj)
+        {
+            cbMessageBox(	_("The new class has been created."),
+                            _("Information"),
+                            wxOK | wxICON_INFORMATION,
+                            Manager::Get()->GetAppWindow());
+        }
+        else if( cbMessageBox( _("The new class has been created.\n"
+                            "Do you want to add it to the current project?"),
+                            _("Add to project?"),
+                            wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION,
+                            Manager::Get()->GetAppWindow()) == wxID_YES)
+        {
             wxArrayInt targets;
-			prjMan->AddFileToProject(dlg.GetHeaderFilename(), prj, targets);
-			if (targets.GetCount() != 0)
-				prjMan->AddFileToProject(dlg.GetImplementationFilename(), prj, targets);
-			prjMan->RebuildTree();
-		}
-		return 0;
-	}
+            prjMan->AddFileToProject(dlg.GetHeaderFilename(), prj, targets);
+            if ((targets.GetCount() != 0) && (dlg.GetImplementationFilename() != _T("")) )
+                prjMan->AddFileToProject(dlg.GetImplementationFilename(), prj, targets);
+            prjMan->RebuildTree();
+        }
+        return 0;
+    }
 
-	return -1;
+    return -1;
 }

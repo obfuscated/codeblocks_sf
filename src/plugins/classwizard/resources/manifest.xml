@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="10" release="0" />
     <Plugin name="ClassWizard">
         <Value title="Class wizard" />
-        <Value version="0.2" />
+        <Value version="0.3" />
         <Value description="This plugin provides an easy way to create a
 new C++ class file pair. It's by no means
 complete yet but it's here nevertheless ;)" />

@@ -12,17 +12,19 @@ class ClassWizardDlg : public wxDialog
     public:
         ClassWizardDlg(wxWindow* parent);
         ~ClassWizardDlg();
-		const wxString& GetHeaderFilename() const { return m_Header; }
-		const wxString& GetImplementationFilename() const { return m_Implementation; }
-	private:
-    	void OnUpdateUI(wxUpdateUIEvent& event);
-		void OnOKClick(wxCommandEvent& event);
-		void OnCancelClick(wxCommandEvent& event);
-		void OnNameChange(wxCommandEvent& event);
-		void DoGuardBlock();
+        const wxString& GetHeaderFilename() const { return m_Header; }
+        const wxString& GetImplementationFilename() const { return m_Implementation; }
+    private:
+        void OnUpdateUI(wxUpdateUIEvent& event);
+        void OnOKClick(wxCommandEvent& event);
+        void OnCancelClick(wxCommandEvent& event);
+        void OnNameChange(wxCommandEvent& event);
+        void OnAncestorChange(wxCommandEvent& event);
+        void OnBaseDirClick(wxCommandEvent& event);
+        void DoGuardBlock();
 
-		wxString m_Header;
-		wxString m_Implementation;
+        wxString m_Header;
+        wxString m_Implementation;
 
         DECLARE_EVENT_TABLE()
 };
