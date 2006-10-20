@@ -1973,7 +1973,10 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         // fill the search list with all the project files
         cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
         if (!prj)
+        {
+            cbMessageBox(_("No project to search in!"), _("Error"), wxICON_WARNING);
             return 0;
+        }
 
         wxString fullpath = _T("");
         for (int i = 0; i < prj->GetFilesCount(); ++i)
@@ -2021,31 +2024,35 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     {
 		// loop over all the projects in the workspace (they are contained in the ProjectManager)
 		const ProjectsArray* pProjects = Manager::Get()->GetProjectManager()->GetProjects();
+        int count = 0;
 		if(pProjects)
+            count = pProjects->GetCount();
+		if(!count)
 		{
-			int count = pProjects->GetCount();
-			for (int idxProject = 0; idxProject < count; ++idxProject)
-			{
-				cbProject* pProject = pProjects->Item(idxProject);
-				if(pProject)
-				{
-					wxString fullpath = _T("");
-					for (int idxFile = 0; idxFile < pProject->GetFilesCount(); ++idxFile)
-					{
-						ProjectFile* pf = pProject->GetFile(idxFile);
-						if (pf)
-						{
-							fullpath = pf->file.GetFullPath();
-							if (filesList.Index(fullpath) == -1) // avoid adding duplicates
-							{
-								if(wxFileExists(fullpath))  // Does the file exist?
-									filesList.Add(fullpath);
-							}
-						}
-					} // end for : idx : idxFile
-				}
-			} // end for : idx : idxProject
+		    cbMessageBox(_("No workspace to search in!"), _("Error"), wxICON_WARNING);
+		    return 0;
 		}
+        for (int idxProject = 0; idxProject < count; ++idxProject)
+        {
+            cbProject* pProject = pProjects->Item(idxProject);
+            if(pProject)
+            {
+                wxString fullpath = _T("");
+                for (int idxFile = 0; idxFile < pProject->GetFilesCount(); ++idxFile)
+                {
+                    ProjectFile* pf = pProject->GetFile(idxFile);
+                    if (pf)
+                    {
+                        fullpath = pf->file.GetFullPath();
+                        if (filesList.Index(fullpath) == -1) // avoid adding duplicates
+                        {
+                            if(wxFileExists(fullpath))  // Does the file exist?
+                                filesList.Add(fullpath);
+                        }
+                    }
+                } // end for : idx : idxFile
+            }
+        } // end for : idx : idxProject
     }
 
     // if the list is empty, leave
