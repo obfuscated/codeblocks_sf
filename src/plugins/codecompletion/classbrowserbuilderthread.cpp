@@ -83,8 +83,29 @@ void* ClassBrowserBuilderThread::Entry()
 
         if (TestDestroy())
             break;
-
+#ifdef __WXGTK__
+		// this code (PART 1/2) seems to be good on linux
+		// because of it the libcairo crash on dualcore processors
+		// is gone, but on windows it has very bad influence,
+		// henceforth the ifdef guard
+		// the questions remains if it is the correct solution
+		if(!::wxIsMainThread())
+		{
+			::wxMutexGuiEnter();
+		}
+#endif // __WXGTK__
         BuildTree();
+#ifdef __WXGTK__
+		// this code (PART 2/2) seems to be good on linux
+		// because of it the libcairo crash on dualcore processors
+		// is gone, but on windows it has very bad influence,
+		// henceforth the ifdef guard
+		// the questions remains if it is the correct solution
+		if(!::wxIsMainThread())
+		{
+			::wxMutexGuiLeave();
+		}
+#endif // __WXGTK__
     }
 
     if (m_ppThreadVar)
