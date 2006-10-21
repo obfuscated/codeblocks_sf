@@ -1028,8 +1028,7 @@ int CompilerGCC::DoRunQueue()
     if (!cmd->message.IsEmpty())
     {
 //        msgMan->Log(m_PageIndex, _T("[%u] %s"), procIndex, cmd->message.c_str());
-        msgMan->Log(m_PageIndex, cmd->message);
-        msgMan->LogToStdOut(cmd->message + _T('\n'));
+        LogMessage(cmd->message);
     }
 
     if (cmd->command.IsEmpty())
@@ -1046,16 +1045,14 @@ int CompilerGCC::DoRunQueue()
         {
             m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED, *wxWHITE));
             wxString msg = _("The #run_script command must be followed by a script filename");
-            msgMan->Log(m_PageIndex, msg);
-            msgMan->LogToStdOut(msg + _T('\n'));
+            LogMessage(msg, true);
             m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         }
         else
         {
             Manager::Get()->GetMacrosManager()->ReplaceMacros(script, true);
             wxString msg = _("Running script: ") + script;
-            msgMan->Log(m_PageIndex, msg);
-            msgMan->LogToStdOut(msg + _T('\n'));
+            LogMessage(msg);
 
             Manager::Get()->GetScriptingManager()->LoadScript(script);
         }
@@ -1095,8 +1092,7 @@ int CompilerGCC::DoRunQueue()
     {
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED, *wxWHITE));
         wxString err = wxString::Format(_("Execution of '%s' in '%s' failed."), cmd->command.c_str(), wxGetCwd().c_str());
-        msgMan->Log(m_PageIndex, err);
-        msgMan->LogToStdOut(err + _T('\n'));
+        LogMessage(err, true);
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         delete m_Processes[procIndex];
         m_Processes[procIndex] = 0;
@@ -1453,8 +1449,7 @@ void CompilerGCC::PrintBanner(cbProject* prj, ProjectBuildTarget* target)
                         ? prj->GetTitle().c_str()
                         : _("\"no project\"")
                 );
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, banner);
-    Manager::Get()->GetMessageManager()->LogToStdOut(banner + _T('\n'));
+    LogMessage(banner, false, false, true);
 }
 
 void CompilerGCC::DoGotoNextError()
@@ -2036,10 +2031,7 @@ void CompilerGCC::BuildStateManagement()
             m_RunTargetPostBuild = hasCommands;
             m_RunProjectPostBuild = hasCommands;
             if (!hasCommands)
-            {
-                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Target is up to date."));
-                Manager::Get()->GetMessageManager()->LogToStdOut(_("Target is up to date.\n"));
-            }
+                LogMessage(_("Target is up to date."));
             break;
         }
 
@@ -2291,6 +2283,11 @@ int CompilerGCC::Build(const wxString& target)
         return -1;
 
     DoClearErrors();
+
+    m_BuildLogTitle = m_Project->GetTitle() + _(" build log");
+    m_BuildLogFilename = m_Project->GetBasePath();
+    m_BuildLogFilename << wxFILE_SEP_PATH << m_Project->GetTitle() << _T(" build log.html");
+    m_BuildLogContents.Clear();
 
     if (!m_IsWorkspaceOperation)
         DoPrepareQueue();
@@ -2977,12 +2974,16 @@ void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 
 void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
 {
-    Manager::Get()->GetMessageManager()->LogToStdOut(output + _T('\n'));
+    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+    CompilerLineType clt = compiler->CheckForWarningsAndErrors(output);
 
     // if max_errors reached, display a one-time message and do not log anymore
     size_t maxErrors = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/max_reported_errors"), 50);
     if (maxErrors > 0 && m_Errors.GetCount(cltError) == maxErrors)
     {
+        // no matter what, everything goes into the build log
+        LogMessage(output, forceErrorColour || clt == cltError, clt == cltWarning, false, true);
+
         if (!m_NotifiedMaxErrors)
         {
             m_NotifiedMaxErrors = true;
@@ -2994,8 +2995,8 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
         return;
     }
 
-    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
-    CompilerLineType clt = compiler->CheckForWarningsAndErrors(output);
+    // add to html build log
+    LogMessage(output, forceErrorColour || clt == cltError, clt == cltWarning);
 
     // log to build log
     switch (clt)
@@ -3037,8 +3038,9 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
         LogWarningOrError(clt, m_pBuildingProject, compiler->GetLastErrorFilename(), compiler->GetLastErrorLine(), compiler->GetLastError());
     }
 
-    if (!output.IsEmpty())
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, output.c_str());
+    // the LogMessage() call above has already done this
+//    if (!output.IsEmpty())
+//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, output.c_str());
 }
 
 void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const wxString& filename, const wxString& line, const wxString& msg)
@@ -3064,6 +3066,61 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
 
     // add to error keeping struct
     m_Errors.AddError(lt, prj, filename, line.IsEmpty() ? 0 : atoi(line.mb_str()), msg);
+}
+
+void CompilerGCC::LogMessage(const wxString& message, bool isError, bool isWarning, bool isTitle, bool logToFileOnly)
+{
+    if (isError)
+        m_BuildLogContents << _T("<font color=\"#ff0000\">");
+    else if (isWarning)
+        m_BuildLogContents << _T("<font color=\"#0000ff\">");
+    else if (isTitle)
+        m_BuildLogContents << _T("<b>");
+
+    m_BuildLogContents << message;
+
+    if (isTitle)
+        m_BuildLogContents << _T("</b>");
+    else if (isError || isWarning)
+        m_BuildLogContents << _T("</font>");
+
+    m_BuildLogContents << _T("<br />\n");
+
+    if (logToFileOnly)
+        return;
+
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, message);
+    Manager::Get()->GetMessageManager()->LogToStdOut(message + _T('\n'));
+}
+
+void CompilerGCC::SaveBuildLog()
+{
+    // NOTE: if we want to add a CSS later on, we 'd have to edit:
+    //       - this function and
+    //       - LogMessage()
+
+    wxFile f(m_BuildLogFilename, wxFile::write);
+
+    // first output the standard header blurb
+    f.Write(_T("<html>\n"));
+    f.Write(_T("<title>") + m_BuildLogTitle + _T("</title>\n"));
+    f.Write(_T("<body>\n"));
+
+    // use fixed-width font
+    f.Write(_T("<tt>\n"));
+
+    // output the main body
+    f.Write(m_BuildLogContents);
+
+    // done with fixed-width font
+    f.Write(_T("</tt>\n"));
+
+    // finally output the footer
+    f.Write(_T("</body>\n"));
+    f.Write(_T("</html>\n"));
+
+    m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
+    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Build log saved as: ") + m_BuildLogFilename);
 }
 
 void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
@@ -3114,15 +3171,14 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
         int secs = (elapsed % 60);
         m_Log->GetTextControl()->SetDefaultStyle(exitCode == 0 ? wxTextAttr(*wxBLUE) : wxTextAttr(*wxRED));
         wxString msg = wxString::Format(_("Process terminated with status %d (%d minutes, %d seconds)"), exitCode, mins, secs);
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
-        Manager::Get()->GetMessageManager()->LogToStdOut(_T('\n') + msg + _T('\n'));
+        LogMessage(msg, exitCode != 0);
         if (!m_CommandQueue.LastCommandWasRun())
         {
             m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
             wxString msg = wxString::Format(_("%d errors, %d warnings"), m_Errors.GetCount(cltError), m_Errors.GetCount(cltWarning));
-            Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
-            Manager::Get()->GetMessageManager()->LogToStdOut(msg + _T('\n'));
+            LogMessage(msg, exitCode != 0, exitCode == 0);
             LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, wxString::Format(_("=== Build finished: %s ==="), msg.c_str()));
+            SaveBuildLog();
         }
         else
         {
@@ -3181,8 +3237,7 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
     if (showNothingToBeDone)
     {
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Nothing to be done."));
-        Manager::Get()->GetMessageManager()->LogToStdOut(_("Nothing to be done.\n"));
+        LogMessage(_("Nothing to be done.\n"));
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
     }
 

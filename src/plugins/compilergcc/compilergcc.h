@@ -166,6 +166,8 @@ class CompilerGCC : public cbCompilerPlugin
         wxString ProjectMakefile();
         void AddOutputLine(const wxString& output, bool forceErrorColour = false);
         void LogWarningOrError(CompilerLineType lt, cbProject* prj, const wxString& filename, const wxString& line, const wxString& msg);
+        void LogMessage(const wxString& message, bool isError = false, bool isWarning = false, bool isTitle = false, bool logToFileOnly = false);
+        void SaveBuildLog();
         void PrintBanner(cbProject* prj = 0, ProjectBuildTarget* target = 0);
         bool UseMake(ProjectBuildTarget* target = 0);
 		bool CompilerValid(ProjectBuildTarget* target = 0);
@@ -259,6 +261,10 @@ class CompilerGCC : public cbCompilerPlugin
         bool m_DeleteTempMakefile;
 
         bool m_IsWorkspaceOperation; // true for workspace commands
+
+        wxString m_BuildLogFilename;
+        wxString m_BuildLogTitle;
+        wxString m_BuildLogContents;
 
         DECLARE_EVENT_TABLE()
 };
