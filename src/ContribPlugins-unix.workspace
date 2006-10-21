@@ -13,6 +13,7 @@
 		<Project filename="plugins/contrib/lib_finder/lib_finder-unix.cbp" />
 		<Project filename="plugins/contrib/profiler/cbprofiler.unix.cbp" />
 		<Project filename="plugins/contrib/source_exporter/Exporter-unix.cbp" />
+		<Project filename="plugins/contrib/symtab/symtab-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith-unix.cbp" />
 		<Project filename="tools/cb_share_config/cb_share_config-unix.cbp" />
 	</Workspace>

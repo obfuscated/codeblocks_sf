@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+  <object class="wxDialog" name="dlgSymTabConfig">
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <option>1</option>
+        <object class="wxNotebook" name="nbTabs">
+          <object class="notebookpage">
+            <label>What do you want to do?</label>
+            <object class="wxPanel" name="tabWhatToDo">
+              <style>wxTAB_TRAVERSAL</style>
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                  <object class="wxStaticBoxSizer" name="wxID_ANY">
+                    <orient>wxVERTICAL</orient>
+                    <label>Search options</label>
+                    <object class="sizeritem">
+                      <object class="wxChoice" name="choWhatToDo">
+                        <content>
+                          <item>Search for a symbol given a list of library path's</item>
+                          <item>Search for all symbols in a given library</item>
+                        </content>
+                        <selection>0</selection>
+                        <tooltip>Select what type of search you want to do.</tooltip>
+                      </object>
+                      <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                      <border>8</border>
+                      <object class="wxStaticBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <label>Library path to analyse:</label>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <flag>wxLEFT|wxALIGN_CENTRE</flag>
+                              <object class="wxStaticText" name="lblLibraryPath">
+                                <label>Select directory:</label>
+                                <tooltip>The option lets you select a path to query all libraries in.</tooltip>
+                              </object>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxTextCtrl" name="txtLibraryPath"/>
+                              <option>1</option>
+                              <flag>wxLEFT|wxALIGN_CENTRE</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnLibraryPath">
+                                <label>Select...</label>
+                                <tooltip>Click to select a path.</tooltip>
+                              </object>
+                              <flag>wxLEFT|wxRIGHT|wxALIGN_CENTRE</flag>
+                              <border>8</border>
+                            </object>
+                          </object>
+                          <option>1</option>
+                          <flag>wxALL|wxEXPAND</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <flag>wxLEFT|wxALIGN_CENTRE</flag>
+                              <object class="wxStaticText" name="lblInclude">
+                                <label>Include:</label>
+                                <tooltip>The option lets you select that type of files to search in.</tooltip>
+                              </object>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkIncludeA">
+                                <label>*.a</label>
+                                <checked>1</checked>
+                              </object>
+                              <option>1</option>
+                              <flag>wxLEFT|wxALIGN_CENTRE</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkIncludeLib">
+                                <checked>1</checked>
+                                <tooltip>Click to select a path.</tooltip>
+                                <label>*.lib</label>
+                              </object>
+                              <option>1</option>
+                              <flag>wxLEFT|wxALIGN_CENTRE</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkIncludeO">
+                                <label>*.o</label>
+                              </object>
+                              <option>1</option>
+                              <flag>wxLEFT|wxALIGN_CENTRE</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkIncludeObj">
+                                <label>*.obj</label>
+                              </object>
+                              <option>1</option>
+                              <flag>wxLEFT|wxALIGN_CENTRE</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkIncludeDll">
+                                <label>*.dll</label>
+                              </object>
+                              <option>1</option>
+                              <flag>wxLEFT|wxRIGHT|wxALIGN_CENTRE</flag>
+                              <border>8</border>
+                            </object>
+                          </object>
+                          <option>1</option>
+                          <flag>wxALL|wxEXPAND</flag>
+                        </object>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                      <border>8</border>
+                      <object class="wxStaticBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <label>Library to analyse:</label>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <flag>wxLEFT|wxALIGN_CENTRE</flag>
+                              <object class="wxStaticText" name="lblLibrary">
+                                <label>Select library:</label>
+                                <tooltip>The option lets you select a library whos symbols you want to see.</tooltip>
+                              </object>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxTextCtrl" name="txtLibrary"/>
+                              <option>1</option>
+                              <flag>wxLEFT|wxALIGN_CENTRE</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnLibrary">
+                                <label>Select...</label>
+                                <tooltip>Click to select a library.</tooltip>
+                              </object>
+                              <flag>wxLEFT|wxRIGHT|wxALIGN_CENTRE</flag>
+                              <border>8</border>
+                            </object>
+                          </object>
+                          <option>1</option>
+                          <flag>wxALL|wxEXPAND</flag>
+                        </object>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <flag>wxLEFT|wxALIGN_CENTRE</flag>
+                          <object class="wxStaticText" name="lblSymbol">
+                            <label>Search for symbol:</label>
+                            <tooltip>The option lets you select a specific symbol's name (or part of it) to search for.</tooltip>
+                          </object>
+                          <border>8</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxTextCtrl" name="txtSymbol"/>
+                          <option>1</option>
+                          <flag>wxLEFT|wxRIGHT|wxALIGN_CENTRE</flag>
+                          <border>8</border>
+                        </object>
+                      </object>
+                      <option>1</option>
+                      <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxStaticText" name="lblHint">
+                            <label>Hint: Leave empty to search for all symbols.</label>
+                            <style>wxALIGN_CENTRE</style>
+                          </object>
+                          <option>1</option>
+                          <flag>wxEXPAND</flag>
+                        </object>
+                      </object>
+                      <option>1</option>
+                      <flag>wxALL|wxEXPAND</flag>
+                      <border>8</border>
+                    </object>
+                  </object>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Options</label>
+            <object class="wxPanel" name="tabOptions">
+              <style>wxTAB_TRAVERSAL</style>
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                  <object class="wxStaticBoxSizer" name="wxID_ANY">
+                    <orient>wxVERTICAL</orient>
+                    <label>Options</label>
+                    <object class="sizeritem">
+                      <option>1</option>
+                      <flag>wxALL|wxEXPAND</flag>
+                      <border>8</border>
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <flag>wxALIGN_CENTRE</flag>
+                          <object class="wxStaticText" name="lblNM">
+                            <label>Select NM application:</label>
+                            <tooltip>This option lets you select the NM application (executable) if it's not in the PATH.</tooltip>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxTextCtrl" name="txtNM"/>
+                          <option>1</option>
+                          <flag>wxLEFT|wxALIGN_CENTRE</flag>
+                          <border>8</border>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnNM">
+                            <label>Select...</label>
+                            <tooltip>Click to select the NM application.</tooltip>
+                          </object>
+                          <flag>wxLEFT|wxALIGN_CENTRE</flag>
+                          <border>8</border>
+                        </object>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkDebug">
+                        <label>Display all symbols, even debugger-only symbols.</label>
+                        <checked>0</checked>
+                      </object>
+                      <flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkDefined">
+                        <label>Display only defined symbols for each object file.</label>
+                        <checked>0</checked>
+                      </object>
+                      <flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkDemangle">
+                        <label>Demangle low-level symbol names into user-level names.</label>
+                        <checked>0</checked>
+                      </object>
+                      <flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkExtern">
+                        <label>Display only external symbols.</label>
+                        <checked>0</checked>
+                      </object>
+                      <flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
+                      <border>8</border>
+                      <object class="wxCheckBox" name="chkSpecial">
+                        <label>Display symbols which have a target-specific special meaning.</label>
+                        <checked>0</checked>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
+                      <border>8</border>
+                      <object class="wxCheckBox" name="chkSynthetic">
+                        <label>Display synthetic symbols as well.</label>
+                        <checked>0</checked>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkUndefined">
+                        <label>Display only undefined symbols (those external to each object file).</label>
+                        <checked>0</checked>
+                      </object>
+                      <flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxStaticText" name="lblNote">
+                            <label>Note: Some of these options might not be available on all platforms.</label>
+                            <style>wxALIGN_CENTRE</style>
+                          </object>
+                          <option>1</option>
+                          <flag>wxEXPAND</flag>
+                        </object>
+                      </object>
+                      <option>1</option>
+                      <flag>wxALL|wxEXPAND</flag>
+                      <border>8</border>
+                    </object>
+                  </object>
+                </object>
+              </object>
+            </object>
+          </object>
+          <usenotebooksizer>1</usenotebooksizer>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <flag>wxALL|wxALIGN_CENTRE</flag>
+            <border>8</border>
+            <object class="wxButton" name="btnSearch">
+              <label>&amp;Search</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnClose">
+              <label>&amp;Close</label>
+            </object>
+            <flag>wxALL|wxALIGN_CENTRE</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+    <title>SymTab Config</title>
+    <centered>1</centered>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
+  </object>
+</resource>

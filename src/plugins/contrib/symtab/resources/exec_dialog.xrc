@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+  <object class="wxDialog" name="dlgSymTabExec">
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
+    <title>SymTab Results</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTRE|wxADJUST_MINSIZE</flag>
+        <border>8</border>
+        <object class="wxStaticText" name="stxtAbout">
+          <style>wxALIGN_CENTRE</style>
+          <font>
+            <size>14</size>
+            <weight>bold</weight>
+          </font>
+          <label>NM's Output</label>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText" name="stxtFile">
+          <label>File: (none selected)</label>
+          <style>wxALIGN_CENTRE</style>
+        </object>
+        <flag>wxALL|wxEXPAND|wxALIGN_CENTRE|wxADJUST_MINSIZE</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <flag>wxGROW|wxALL</flag>
+        <border>5</border>
+        <object class="wxStaticLine" name="wxID_STATIC">
+          <style>wxLI_VERTICAL</style>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <object class="wxNotebook" name="nbTabs">
+          <usenotebooksizer>1</usenotebooksizer>
+          <object class="notebookpage">
+            <label>Symbols</label>
+            <object class="wxPanel" name="tabSymbols">
+              <style>wxTAB_TRAVERSAL</style>
+              <object class="wxGridSizer">
+                <object class="sizeritem">
+                  <object class="wxListCtrl" name="lstLib2Symbol">
+                    <size>600,200</size>
+                    <style>wxLC_REPORT</style>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxTextCtrl" name="txtHelp">
+                    <value>At least the following symbol types are used; others are, as well, depending on the object file format. If lowercase, the symbol is local; if uppercase, the symbol is global (external).
+
+A  The symbol's value is absolute, and will not be changed by further linking.
+B  The symbol is in the uninitialized data section (known as BSS).
+C  The symbol is common. Common symbols are uninitialized data. When linking, multiple common symbols may appear with the same name. If the symbol is defined anywhere, the common symbols are treated as undefined references.
+D  The symbol is in the initialized data section.
+G  The symbol is in an initialized data section for small objects. Some object file formats permit more efficient access to small data objects, such as a global int variable as opposed to a large global array.
+I  The symbol is an indirect reference to another symbol. This is a GNU extension to the a.out object file format which is rarely used.
+N  The symbol is a debugging symbol.
+R  The symbol is in a read only data section.
+S  The symbol is in an uninitialized data section for small objects.
+T  The symbol is in the text (code) section.
+U  The symbol is undefined.
+V  The symbol is a weak object. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the weak symbol becomes zero with no error.
+W  The symbol is a weak symbol that has not been specifically tagged as a weak object symbol. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the symbol is determined in a system-specific manner without error. On some systems, uppercase indicates that a default value has been specified.
+-  The symbol is a stabs symbol in an a.out object file. In this case, the next values printed are the stabs other field, the stabs desc field, and the stab type. Stabs symbols are used to hold debugging information.
+?  The symbol type is unknown, or object file format specific.</value>
+                    <size>600,150</size>
+                    <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                </object>
+                <cols>1</cols>
+                <rows>2</rows>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Misc</label>
+            <object class="wxPanel" name="tabMisc">
+              <object class="wxGridSizer">
+                <object class="sizeritem">
+                  <object class="wxTextCtrl" name="txtMisc">
+                    <size>600,400</size>
+                    <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                </object>
+                <cols>1</cols>
+                <rows>1</rows>
+              </object>
+              <style>wxTAB_TRAVERSAL</style>
+            </object>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnExport">
+              <label>&amp;Export to File...</label>
+            </object>
+            <flag>wxALL</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <flag>wxALL</flag>
+            <border>8</border>
+            <object class="wxButton" name="btnNext">
+              <label>&amp;Next File...</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnCancel">
+              <label>&amp;Cancel</label>
+            </object>
+            <flag>wxALL</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+</resource>

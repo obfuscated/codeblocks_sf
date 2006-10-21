@@ -199,6 +199,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/profiler/resources/Makefile
 	src/plugins/contrib/source_exporter/Makefile
 	src/plugins/contrib/source_exporter/wxPdfDocument/Makefile
+	src/plugins/contrib/symtab/Makefile
+	src/plugins/contrib/symtab/resources/Makefile
 	src/plugins/contrib/wxSmith/Makefile
 	src/plugins/contrib/wxSmith/defwidgets/Makefile
 	src/plugins/contrib/wxSmith/properties/Makefile
