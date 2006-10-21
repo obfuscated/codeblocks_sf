@@ -2283,15 +2283,7 @@ int CompilerGCC::Build(const wxString& target)
         return -1;
 
     DoClearErrors();
-
-    // init HTML build log
-    m_BuildStartTime = wxDateTime::Now();
-    m_BuildLogTitle = m_Project->GetTitle() + _(" build log");
-    m_BuildLogFilename = m_Project->GetBasePath();
-    m_BuildLogFilename << wxFILE_SEP_PATH;
-    m_BuildLogFilename << wxFileName(m_Project->GetTitle()).GetName();
-    m_BuildLogFilename << _T("_build_log.html");
-    m_BuildLogContents.Clear();
+    InitBuildLog(false);
 
     if (!m_IsWorkspaceOperation)
         DoPrepareQueue();
@@ -2405,6 +2397,8 @@ int CompilerGCC::BuildWorkspace(const wxString& target)
     DoPrepareQueue();
     ClearLog();
     m_IsWorkspaceOperation = true;
+
+    InitBuildLog(true);
 
     // save files from all projects as they might require each other...
     ProjectsArray* arr = Manager::Get()->GetProjectManager()->GetProjects();
@@ -3075,9 +3069,15 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
 void CompilerGCC::LogMessage(const wxString& message, bool isError, bool isWarning, bool isTitle, bool logToFileOnly)
 {
     if (isError)
+    {
+        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
         m_BuildLogContents << _T("<font color=\"#ff0000\">");
+    }
     else if (isWarning)
+    {
+        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
         m_BuildLogContents << _T("<font color=\"#0000ff\">");
+    }
     else if (isTitle)
         m_BuildLogContents << _T("<b>");
 
@@ -3091,10 +3091,41 @@ void CompilerGCC::LogMessage(const wxString& message, bool isError, bool isWarni
     m_BuildLogContents << _T("<br />\n");
 
     if (logToFileOnly)
+    {
+        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
         return;
+    }
 
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, message);
     Manager::Get()->GetMessageManager()->LogToStdOut(message + _T('\n'));
+    m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
+}
+
+void CompilerGCC::InitBuildLog(bool workspaceBuild)
+{
+    wxString title;
+    wxString basepath;
+    wxString basename;
+    if (!workspaceBuild && m_Project)
+    {
+        title = m_Project->GetTitle();
+        basepath = m_Project->GetBasePath();
+        basename = wxFileName(m_Project->GetFilename()).GetName();
+    }
+    else if (workspaceBuild)
+    {
+        cbWorkspace* wksp = Manager::Get()->GetProjectManager()->GetWorkspace();
+        title = wksp->GetTitle();
+        basepath = wxFileName(wksp->GetFilename()).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+        basename = wxFileName(wksp->GetFilename()).GetName();
+    }
+
+    // init HTML build log
+    m_BuildStartTime = wxDateTime::Now();
+    m_BuildLogTitle = title + _(" build log");
+    m_BuildLogFilename = basepath;
+    m_BuildLogFilename << basename << _T("_build_log.html");
+    m_BuildLogContents.Clear();
 }
 
 void CompilerGCC::SaveBuildLog()

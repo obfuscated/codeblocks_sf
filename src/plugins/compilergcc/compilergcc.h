@@ -168,6 +168,7 @@ class CompilerGCC : public cbCompilerPlugin
         void LogWarningOrError(CompilerLineType lt, cbProject* prj, const wxString& filename, const wxString& line, const wxString& msg);
         void LogMessage(const wxString& message, bool isError = false, bool isWarning = false, bool isTitle = false, bool logToFileOnly = false);
         void SaveBuildLog();
+        void InitBuildLog(bool workspaceBuild);
         void PrintBanner(cbProject* prj = 0, ProjectBuildTarget* target = 0);
         bool UseMake(ProjectBuildTarget* target = 0);
 		bool CompilerValid(ProjectBuildTarget* target = 0);
