@@ -265,6 +265,7 @@ class CompilerGCC : public cbCompilerPlugin
         wxString m_BuildLogFilename;
         wxString m_BuildLogTitle;
         wxString m_BuildLogContents;
+        wxDateTime m_BuildStartTime;
 
         DECLARE_EVENT_TABLE()
 };

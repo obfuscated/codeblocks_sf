@@ -2284,9 +2284,13 @@ int CompilerGCC::Build(const wxString& target)
 
     DoClearErrors();
 
+    // init HTML build log
+    m_BuildStartTime = wxDateTime::Now();
     m_BuildLogTitle = m_Project->GetTitle() + _(" build log");
     m_BuildLogFilename = m_Project->GetBasePath();
-    m_BuildLogFilename << wxFILE_SEP_PATH << m_Project->GetTitle() << _T(" build log.html");
+    m_BuildLogFilename << wxFILE_SEP_PATH;
+    m_BuildLogFilename << wxFileName(m_Project->GetTitle()).GetName();
+    m_BuildLogFilename << _T("_build_log.html");
     m_BuildLogContents.Clear();
 
     if (!m_IsWorkspaceOperation)
@@ -3108,6 +3112,16 @@ void CompilerGCC::SaveBuildLog()
 
     // use fixed-width font
     f.Write(_T("<tt>\n"));
+
+    // write the start-end time of the build
+    f.Write(_("Build started on: "));
+    f.Write(_T("<u>"));
+    f.Write(m_BuildStartTime.Format(_T("%d-%m-%Y at %H:%M.%S")));
+    f.Write(_T("</u><br />\n"));
+    f.Write(_("Build ended on: "));
+    f.Write(_T("<u>"));
+    f.Write(wxDateTime::Now().Format(_T("%d-%m-%Y at %H:%M.%S")));
+    f.Write(_T("</u><p />\n"));
 
     // output the main body
     f.Write(m_BuildLogContents);
