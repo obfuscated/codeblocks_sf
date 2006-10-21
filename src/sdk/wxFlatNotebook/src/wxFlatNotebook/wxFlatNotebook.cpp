@@ -792,6 +792,8 @@ void wxPageContainer::AddPage(const wxString& caption, const bool selected, cons
 
 	/// Create page info and add it to the vector
 	wxPageInfo pageInfo(caption, imgindex);
+//	pageInfo.SetPosition(wxPoint(1, 1));
+
 	m_pagesInfoVec.Add(pageInfo);
 	Refresh();
 }
@@ -803,13 +805,31 @@ bool wxPageContainer::InsertPage(size_t index, wxWindow* /*page*/, const wxStrin
 		m_iPreviousActivePage = m_iActivePage;
 		m_iActivePage = (int)m_pagesInfoVec.GetCount();
 	}
-	m_pagesInfoVec.Insert(wxPageInfo(text, imgindex), index);
+	wxPageInfo pgInfo(text, imgindex);
+//	pgInfo.SetPosition(wxPoint(1, 1));
+	m_pagesInfoVec.Insert(pgInfo, index);
 	Refresh();
 	return true;
 }
 
 void wxPageContainer::OnSize(wxSizeEvent& WXUNUSED(event))
 {
+	// When resizing the control, try to fit to screen as many tabs as we we can
+	long style = GetParent()->GetWindowStyleFlag();
+	wxFNBRendererPtr render = wxFNBRendererMgrST::Get()->GetRenderer(style);
+	std::vector<wxRect> vTabInfo;
+
+	int from = 0;
+	int page = GetSelection();
+	for(; from<m_nFrom; from++) 
+	{
+		vTabInfo.clear();
+		render->NumberTabsCanFit( this, vTabInfo, from );
+		if(page - from >= static_cast<int>( vTabInfo.size() ))
+			continue;
+		break;
+	}
+	m_nFrom = from;
 	Refresh(); // Call on paint
 }
 
@@ -1143,26 +1163,31 @@ void wxPageContainer::DoSetSelection(size_t page)
 
 	if(!IsTabVisible(page))
 	{
-		if(page == m_pagesInfoVec.GetCount() - 1)
+		FNB_LOG_MSG( wxT("Tab ") << (int)page << wxT(" is not visible"));
+		FNB_LOG_MSG( wxT("m_nFrom=") << m_nFrom << wxT(", Selection=") << (int)page );
+
+		// Try to remove one tab from start and try again
+		if( !CanFitToScreen(page) )
 		{
-			// Incase the added tab is last,
-			// the function IsTabVisible() will always return false
-			// and thus will cause an evil behaviour that the new
-			// tab will hide all other tabs, we need to check if the
-			// new selected tab can fit to the current screen
-			if(!CanFitToScreen(page))
-			{
+			if( m_nFrom > (int)page )
 				m_nFrom = (int)page;
+			else
+			{
+				while( m_nFrom < (int)page )
+				{
+					m_nFrom++;
+					if( CanFitToScreen(page) )
+						break;
+				}
 			}
-			Refresh();
-		}
-		else
-		{
-			// Redraw the tabs starting from page
-			m_nFrom = (int)page;
-			Refresh();
+			FNB_LOG_MSG( wxT("Adjusting m_nFrom to=") << m_nFrom);
 		}
 	}
+	else
+	{
+		FNB_LOG_MSG( wxT("Tab ") << (int)page << wxT(" is visible"));
+	}
+	Refresh();
 }
 
 void wxPageContainer::DeletePage(size_t page)
@@ -1371,6 +1396,9 @@ void wxPageContainer::OnMouseMove(wxMouseEvent& event)
 int wxPageContainer::GetLastVisibleTab()
 {
 	int i;
+	if( m_nFrom < 0)
+		return -1;
+
 	for(i=m_nFrom; i<(int)m_pagesInfoVec.GetCount(); i++)
 	{
 		if(m_pagesInfoVec[i].GetPosition() == wxPoint(-1, -1))
@@ -1482,7 +1510,7 @@ void wxPageContainer::OnMouseLeave(wxMouseEvent& event)
 	render->DrawX(this, dc);
 	render->DrawLeftArrow(this, dc);
 	render->DrawRightArrow(this, dc);
-	if(GetSelection() != -1)
+	if(GetSelection() != -1 && IsTabVisible((size_t)GetSelection()))
 	{
 		render->DrawTabX(this, dc, m_pagesInfoVec[GetSelection()].GetXRect(), GetSelection(), m_nTabXButtonStatus);
 	}
@@ -1656,43 +1684,12 @@ bool wxPageContainer::CanFitToScreen(size_t page)
 
 	long style = GetParent()->GetWindowStyleFlag();
 	wxFNBRendererPtr render = wxFNBRendererMgrST::Get()->GetRenderer(style);
+	std::vector<wxRect> vTabInfo;
+	render->NumberTabsCanFit( this, vTabInfo );
 
-	if( !HasFlag( wxFNB_VC8 ) )
-	{
-
-		wxRect rect = GetClientRect();
-		int clientWidth = rect.width;
-		int tabHeight = render->CalcTabHeight( this );
-		int tabWidth = render->CalcTabWidth( this, static_cast<int>(page), tabHeight );
-
-		int posx = ((wxFlatNotebook *)m_pParent)->m_nPadding;
-		if(m_nFrom >= 0)
-		{
-			for(int i=m_nFrom; i<(int)m_pagesInfoVec.GetCount(); i++)
-			{
-				if(m_pagesInfoVec[i].GetPosition() == wxPoint(-1, -1))
-					break;
-				posx += m_pagesInfoVec[i].GetSize().x;
-			}
-		}
-
-		if(posx + tabWidth + render->GetButtonsAreaLength( this ) >= clientWidth)
-			return false;
-
-		return true;
-	}
-	else
-	{
-		// TODO:: this is ugly and should be improved, we should *never* access the
-		// raw pointer directly like we do here (render.Get())
-		wxFNBRendererVC8 *vc8_render = 	static_cast<wxFNBRendererVC8*>( render.Get() );
-		std::vector<wxRect> vTabInfo;
-		vc8_render->NumberTabsCanFit( this, vTabInfo );
-
-		if(static_cast<int>(page) - m_nFrom >= static_cast<int>( vTabInfo.size() ))
-			return false;
-		return true;
-	}
+	if(static_cast<int>(page) - m_nFrom >= static_cast<int>( vTabInfo.size() ))
+		return false;
+	return true;
 }
 
 int wxPageContainer::GetNumOfVisibleTabs()

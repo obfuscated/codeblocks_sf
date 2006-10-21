@@ -134,6 +134,14 @@ public:
 	 */
 	void DrawDropDownArrow(wxWindow* pageContainer, wxDC& dc);
 
+	/**
+	 * Return an array of tabs info that can fit to screen starting from 'from'
+	 * \param pageContainer 
+	 * \param [output] vTabInfo 
+	 * \param from 
+	 */
+	virtual void NumberTabsCanFit(wxWindow *pageContainer, std::vector<wxRect> &vTabInfo, int from = -1);
+
 protected:
 	/**
 	 * Generate random colour

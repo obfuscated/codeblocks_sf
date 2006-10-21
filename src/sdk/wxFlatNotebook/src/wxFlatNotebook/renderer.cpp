@@ -453,6 +453,40 @@ int wxFNBRenderer::CalcTabWidth(wxWindow *pageContainer, int tabIdx, int tabHeig
 	return tabWidth;
 }
 
+void wxFNBRenderer::NumberTabsCanFit(wxWindow *pageContainer, std::vector<wxRect> &vTabInfo, int from)
+{
+	wxPageContainer *pc = static_cast<wxPageContainer*>( pageContainer );
+	int tabHeight, clientWidth;
+	
+	wxRect rect = pc->GetClientRect();
+	clientWidth = rect.width;
+
+	/// Empty results
+	vTabInfo.clear();
+
+	tabHeight = CalcTabHeight( pageContainer );
+
+	// The drawing starts from posx
+	int posx = ((wxFlatNotebook *)pc->m_pParent)->GetPadding();
+	
+	if( from < 0 )
+		from = pc->m_nFrom;
+
+	for(int i = from; i<(int)pc->GetPageInfoVector().GetCount(); i++)
+	{
+		int tabWidth = CalcTabWidth( pageContainer, i, tabHeight );
+		if(posx + tabWidth + GetButtonsAreaLength( pc ) >= clientWidth)
+			break;
+
+		/// Add a result to the returned vector
+		wxRect tabRect(posx, VERTICAL_BORDER_PADDING, tabWidth , tabHeight);
+		vTabInfo.push_back(tabRect);
+
+		/// Advance posx
+		posx += tabWidth + wxFNB_HEIGHT_SPACER;
+	}
+}
+
 void wxFNBRenderer::DrawDragHint(wxWindow *pageContainer, int tabIdx)
 {
 	wxUnusedVar( pageContainer );
@@ -514,7 +548,7 @@ void wxFNBRenderer::DrawTabs(wxWindow *pageContainer, wxDC &dc)
 	int clientWidth = rect.width;
 
 	// Set the maximum client size
-	pc->SetSizeHints(wxSize(GetButtonsAreaLength( pc ), tabHeight));
+//	pc->SetSizeHints(wxSize(GetButtonsAreaLength( pc ), tabHeight));
 	wxPen borderPen = wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW));
 
 	wxBrush backBrush;
@@ -1059,7 +1093,7 @@ void wxFNBRendererVC8::DrawTabs(wxWindow *pageContainer, wxDC &dc)
 	wxRect rect = pc->GetClientRect();
 
 	// Set the maximum client size
-	pc->SetSizeHints(wxSize(GetButtonsAreaLength( pc ), tabHeight));
+//	pc->SetSizeHints(wxSize(GetButtonsAreaLength( pc ), tabHeight));
 	wxPen borderPen = wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW));
 
 	/// Create brushes
