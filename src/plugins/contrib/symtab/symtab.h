@@ -3,10 +3,8 @@
 
 #include "cbplugin.h" // the base class we 're inheriting
 
-class cbConfigurationPanel;
 class SymTabConfigDlg;
 class SymTabExecDlg;
-class wxWindow;
 
 class SymTab : public cbToolPlugin
 {

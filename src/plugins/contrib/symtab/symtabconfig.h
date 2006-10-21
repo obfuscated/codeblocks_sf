@@ -1,10 +1,7 @@
 #ifndef SYMTABCONFIG_H
 #define SYMTABCONFIG_H
 
-#include <wx/intl.h>
 #include <wx/dialog.h>
-#include <wx/string.h>
-#include "configurationpanel.h"
 
 class wxCommandEvent;
 class wxWindow;
