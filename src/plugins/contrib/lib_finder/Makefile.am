@@ -38,6 +38,9 @@ EXTRA_DIST = 	lib_finder.cbp \
 		license.txt \
 		manifest.xml
 
+pkgdata_DATA = lib_finder.zip
+CLEANFILES = $(pkgdata_DATA)
+
 lib_finder.zip:
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/lib_finder.zip manifest.xml *.xrc > /dev/null
 

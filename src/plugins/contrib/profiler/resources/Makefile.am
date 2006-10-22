@@ -1,7 +1,7 @@
 EXTRA_DIST = configuration.xrc main_dialog.xrc manifest.xml
 
-pkgdata_DATA = CBProfiler.zip
+pkgdata_DATA = profiler.zip
 CLEANFILES = $(pkgdata_DATA)
 
-CBProfiler.zip:
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/CBProfiler.zip manifest.xml *.xrc > /dev/null
+profiler.zip:
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/profiler.zip manifest.xml *.xrc > /dev/null
