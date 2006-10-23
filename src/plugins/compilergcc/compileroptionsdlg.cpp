@@ -64,6 +64,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_UPDATE_UI(			XRCID("btnEditDir"),	    CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnDelDir"),	        CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnClearDir"),	    CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnCopyDirs"),	    CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("spnDirs"),	        CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnEditVar"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnDeleteVar"),		CompilerOptionsDlg::OnUpdateUI)
@@ -82,6 +83,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_UPDATE_UI(			XRCID("btnEditLib"),	    CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnDelLib"),	        CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnClearLib"),	    CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(			XRCID("btnCopyLibs"),	    CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("spnLibs"),	        CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("txtMasterPath"),		CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(			XRCID("btnMasterPath"),		CompilerOptionsDlg::OnUpdateUI)
@@ -122,11 +124,13 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
 	EVT_LISTBOX_DCLICK(		XRCID("lstResDirs"),        CompilerOptionsDlg::OnEditDirClick)
 	EVT_BUTTON(				XRCID("btnDelDir"),	        CompilerOptionsDlg::OnRemoveDirClick)
 	EVT_BUTTON(				XRCID("btnClearDir"),	        CompilerOptionsDlg::OnClearDirClick)
+	EVT_BUTTON(				XRCID("btnCopyDirs"),	        CompilerOptionsDlg::OnCopyDirsClick)
     EVT_BUTTON(			    XRCID("btnAddLib"),	        CompilerOptionsDlg::OnAddLibClick)
     EVT_BUTTON(			    XRCID("btnEditLib"),	    CompilerOptionsDlg::OnEditLibClick)
 	EVT_LISTBOX_DCLICK(		XRCID("lstLibs"),   	    CompilerOptionsDlg::OnEditLibClick)
     EVT_BUTTON(			    XRCID("btnDelLib"),	        CompilerOptionsDlg::OnRemoveLibClick)
     EVT_BUTTON(			    XRCID("btnClearLib"),	        CompilerOptionsDlg::OnClearLibClick)
+    EVT_BUTTON(			    XRCID("btnCopyLibs"),	        CompilerOptionsDlg::OnCopyLibsClick)
     EVT_LISTBOX_DCLICK(XRCID("lstExtraPaths"), CompilerOptionsDlg::OnEditExtraPathClick)
     EVT_BUTTON(			    XRCID("btnExtraAdd"),	    CompilerOptionsDlg::OnAddExtraPathClick)
     EVT_BUTTON(			    XRCID("btnExtraEdit"),	    CompilerOptionsDlg::OnEditExtraPathClick)
@@ -412,6 +416,10 @@ void CompilerOptionsDlg::DoFillOthers()
     chk = XRCCTRL(*this, "chkIncludePrjCwd", wxCheckBox);
     if (chk)
         chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_prj_cwd"), false));
+
+    chk = XRCCTRL(*this, "chkSaveHtmlLog", wxCheckBox);
+    if (chk)
+        chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log"), false));
 
     wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
     if (spn)
@@ -1262,6 +1270,55 @@ void CompilerOptionsDlg::OnClearDirClick(wxCommandEvent& /*event*/)
     }
 } // end of OnClearDirClick
 
+void CompilerOptionsDlg::OnCopyDirsClick(wxCommandEvent& /*event*/)
+{
+    if (!m_pProject)
+        return;
+    wxListBox* control = GetDirsListBox();
+    if (!control || control->GetCount() == 0)
+        return;
+
+    wxArrayString choices;
+    choices.Add(m_pProject->GetTitle());
+    for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
+    {
+        ProjectBuildTarget* bt = m_pProject->GetBuildTarget(i);
+        choices.Add(bt->GetTitle());
+    }
+
+    int sel = wxGetSingleChoiceIndex(_("Please select which target to copy these directories to:"),
+                                    _("Copy directories"),
+                                    choices,
+                                    this);
+    // -1 means no selection
+    if (sel == -1)
+        return;
+
+    --sel;
+    // now, -1 means "copy to project"
+    CompileOptionsBase* base = sel == -1
+                                ? reinterpret_cast<CompileOptionsBase*>(m_pProject)
+                                : reinterpret_cast<CompileOptionsBase*>(m_pProject->GetBuildTarget(sel));
+    if (!base)
+        return;
+    wxNotebook* nb = XRCCTRL(*this, "nbDirs", wxNotebook);
+    for (int i = 0; i < control->GetCount(); ++i)
+    {
+        switch (nb->GetSelection())
+        {
+            case 0: // compiler dirs
+                base->AddIncludeDir(control->GetString(i));
+                break;
+            case 1: // linker dirs
+                base->AddLibDir(control->GetString(i));
+                break;
+            case 2: // resource compiler dirs
+                base->AddResourceIncludeDir(control->GetString(i));
+                break;
+        }
+    }
+} // end of OnCopyDirsClick
+
 void CompilerOptionsDlg::OnAddVarClick(wxCommandEvent& /*event*/)
 {
     wxString key;
@@ -1554,6 +1611,43 @@ void CompilerOptionsDlg::OnClearLibClick(wxCommandEvent& /*event*/)
     }
 } // end of OnClearLibClick
 
+void CompilerOptionsDlg::OnCopyLibsClick(wxCommandEvent& /*event*/)
+{
+    if (!m_pProject)
+        return;
+    wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
+    if (!lstLibs || lstLibs->GetCount() == 0)
+        return;
+
+    wxArrayString choices;
+    choices.Add(m_pProject->GetTitle());
+    for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
+    {
+        ProjectBuildTarget* bt = m_pProject->GetBuildTarget(i);
+        choices.Add(bt->GetTitle());
+    }
+
+    int sel = wxGetSingleChoiceIndex(_("Please select which target to copy these libraries to:"),
+                                    _("Copy libraries"),
+                                    choices,
+                                    this);
+    // -1 means no selection
+    if (sel == -1)
+        return;
+
+    --sel;
+    // now, -1 means "copy to project"
+    CompileOptionsBase* base = sel == -1
+                                ? reinterpret_cast<CompileOptionsBase*>(m_pProject)
+                                : reinterpret_cast<CompileOptionsBase*>(m_pProject->GetBuildTarget(sel));
+    if (!base)
+        return;
+    for (int i = 0; i < lstLibs->GetCount(); ++i)
+    {
+        base->AddLinkLib(lstLibs->GetString(i));
+    }
+} // end of OnCopyLibsClick
+
 void CompilerOptionsDlg::OnAddExtraPathClick(wxCommandEvent& /*event*/)
 {
     wxString path = ChooseDirectory(this,
@@ -1782,6 +1876,7 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
         XRCCTRL(*this, "btnEditDir", wxButton)->Enable(en);
         XRCCTRL(*this, "btnDelDir", wxButton)->Enable(en);
         XRCCTRL(*this, "btnClearDir", wxButton)->Enable(control->GetCount() != 0);
+        XRCCTRL(*this, "btnCopyDirs", wxButton)->Enable(control->GetCount() != 0);
 
         // moveup/movedown dir
         XRCCTRL(*this, "spnDirs", wxSpinButton)->Enable(en);
@@ -1792,6 +1887,7 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     XRCCTRL(*this, "btnEditLib", wxButton)->Enable(en);
     XRCCTRL(*this, "btnDelLib", wxButton)->Enable(en);
     XRCCTRL(*this, "btnClearLib", wxButton)->Enable(XRCCTRL(*this, "lstLibs", wxListBox)->GetCount() != 0);
+    XRCCTRL(*this, "btnCopyLibs", wxButton)->Enable(XRCCTRL(*this, "lstLibs", wxListBox)->GetCount() != 0);
     XRCCTRL(*this, "spnLibs", wxSpinButton)->Enable(en);
 
     // add/edit/delete/clear vars
@@ -1873,6 +1969,9 @@ void CompilerOptionsDlg::OnApply()
     chk = XRCCTRL(*this, "chkIncludePrjCwd", wxCheckBox);
     if (chk)
         Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/include_prj_cwd"), (bool)chk->IsChecked());
+    chk = XRCCTRL(*this, "chkSaveHtmlLog", wxCheckBox);
+    if (chk)
+        Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/save_html_build_log"), (bool)chk->IsChecked());
     wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
     if (spn)
     {

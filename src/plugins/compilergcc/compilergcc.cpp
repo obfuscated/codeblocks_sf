@@ -1043,10 +1043,8 @@ int CompilerGCC::DoRunQueue()
         wxString script = cmd->command.AfterFirst(_T(' '));
         if (script.IsEmpty())
         {
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED, *wxWHITE));
             wxString msg = _("The #run_script command must be followed by a script filename");
             LogMessage(msg, true);
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         }
         else
         {
@@ -1090,10 +1088,8 @@ int CompilerGCC::DoRunQueue()
     m_Pid[procIndex] = wxExecute(cmd->command, flags, m_Processes[procIndex]);
     if ( !m_Pid[procIndex] )
     {
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED, *wxWHITE));
         wxString err = wxString::Format(_("Execution of '%s' in '%s' failed."), cmd->command.c_str(), wxGetCwd().c_str());
         LogMessage(err, true);
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         delete m_Processes[procIndex];
         m_Processes[procIndex] = 0;
         m_CommandQueue.Clear();
@@ -2993,28 +2989,6 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
         return;
     }
 
-    // add to html build log
-    LogMessage(output, forceErrorColour || clt == cltError, clt == cltWarning);
-
-    // log to build log
-    switch (clt)
-    {
-        case cltWarning:
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
-            break;
-
-        case cltError:
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
-            break;
-
-        default:
-            if (forceErrorColour)
-                m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON));
-            else
-                m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
-            break;
-    }
-
     // log to build messages if warning/error
     if (clt != cltNormal)
     {
@@ -3036,9 +3010,8 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
         LogWarningOrError(clt, m_pBuildingProject, compiler->GetLastErrorFilename(), compiler->GetLastErrorLine(), compiler->GetLastError());
     }
 
-    // the LogMessage() call above has already done this
-//    if (!output.IsEmpty())
-//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, output.c_str());
+    // add to log
+    LogMessage(output, forceErrorColour || clt == cltError, clt == cltWarning);
 }
 
 void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const wxString& filename, const wxString& line, const wxString& msg)
@@ -3070,12 +3043,14 @@ void CompilerGCC::LogMessage(const wxString& message, bool isError, bool isWarni
 {
     if (isError)
     {
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
+        if (!logToFileOnly)
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
         m_BuildLogContents << _T("<font color=\"#ff0000\">");
     }
     else if (isWarning)
     {
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
+        if (!logToFileOnly)
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
         m_BuildLogContents << _T("<font color=\"#0000ff\">");
     }
     else if (isTitle)
@@ -3090,14 +3065,11 @@ void CompilerGCC::LogMessage(const wxString& message, bool isError, bool isWarni
 
     m_BuildLogContents << _T("<br />\n");
 
-    if (logToFileOnly)
+    if (!logToFileOnly)
     {
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
-        return;
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, message);
+        Manager::Get()->GetMessageManager()->LogToStdOut(message + _T('\n'));
     }
-
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, message);
-    Manager::Get()->GetMessageManager()->LogToStdOut(message + _T('\n'));
     m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
 }
 
@@ -3130,6 +3102,10 @@ void CompilerGCC::InitBuildLog(bool workspaceBuild)
 
 void CompilerGCC::SaveBuildLog()
 {
+    // if not enabled in the configuration, leave
+    if (!Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log"), false))
+        return;
+
     // NOTE: if we want to add a CSS later on, we 'd have to edit:
     //       - this function and
     //       - LogMessage()
@@ -3210,16 +3186,18 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
         }
         m_CommandQueue.Clear();
         ResetBuildState();
+        // clear any remaining jobs (e.g. in case of build errors)
+        while (!m_BuildJobTargetsList.empty())
+            m_BuildJobTargetsList.pop();
+
 
         long int elapsed = wxGetElapsedTime() / 1000;
         int mins = elapsed / 60;
         int secs = (elapsed % 60);
-        m_Log->GetTextControl()->SetDefaultStyle(exitCode == 0 ? wxTextAttr(*wxBLUE) : wxTextAttr(*wxRED));
         wxString msg = wxString::Format(_("Process terminated with status %d (%d minutes, %d seconds)"), exitCode, mins, secs);
         LogMessage(msg, exitCode != 0);
         if (!m_CommandQueue.LastCommandWasRun())
         {
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
             wxString msg = wxString::Format(_("%d errors, %d warnings"), m_Errors.GetCount(cltError), m_Errors.GetCount(cltWarning));
             LogMessage(msg, exitCode != 0, exitCode == 0);
             LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, wxString::Format(_("=== Build finished: %s ==="), msg.c_str()));
@@ -3232,7 +3210,6 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 // TODO (mandrav##): Maybe create and use GetLastRunExitCode()? Is it needed?
             m_LastExitCode = 0;
         }
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T(" ")); // blank line
 
         NotifyJobDone();
@@ -3280,11 +3257,7 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
 {
     m_BuildJob = bjIdle;
     if (showNothingToBeDone)
-    {
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxBLUE, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         LogMessage(_("Nothing to be done.\n"));
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
-    }
 
     if (!IsProcessRunning())
     {

@@ -74,6 +74,7 @@ class CompilerOptionsDlg : public cbConfigurationPanel
 		void OnEditDirClick(wxCommandEvent& event);
 		void OnRemoveDirClick(wxCommandEvent& event);
 		void OnClearDirClick(wxCommandEvent& event);
+		void OnCopyDirsClick(wxCommandEvent& event);
 		void OnAddVarClick(wxCommandEvent& event);
 		void OnEditVarClick(wxCommandEvent& event);
 		void OnRemoveVarClick(wxCommandEvent& event);
@@ -87,6 +88,7 @@ class CompilerOptionsDlg : public cbConfigurationPanel
 		void OnEditLibClick(wxCommandEvent& event);
 		void OnRemoveLibClick(wxCommandEvent& event);
 		void OnClearLibClick(wxCommandEvent& event);
+		void OnCopyLibsClick(wxCommandEvent& event);
 		void OnMoveLibUpClick(wxSpinEvent& event);
 		void OnMoveLibDownClick(wxSpinEvent& event);
 		void OnMoveDirUpClick(wxSpinEvent& event);

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxPanel" name="dlgCompilerOptions">
     <object class="wxBoxSizer">
@@ -305,6 +305,13 @@
                                   <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
                                   <border>4</border>
                                 </object>
+                                <object class="sizeritem">
+                                  <object class="wxButton" name="btnCopyLibs">
+                                    <label>Copy all to...</label>
+                                    <style>wxBU_EXACTFIT</style>
+                                  </object>
+                                  <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
+                                </object>
                               </object>
                               <option>1</option>
                               <flag>wxALL|wxGROW</flag>
@@ -539,6 +546,13 @@
                             <object class="sizeritem">
                               <object class="wxButton" name="btnClearDir">
                                 <label>Clear</label>
+                              </object>
+                              <flag>wxRIGHT</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnCopyDirs">
+                                <label>Copy all to...</label>
                               </object>
                             </object>
                           </object>
@@ -1148,14 +1162,18 @@ or in any of the &quot;Additional paths&quot;...</label>
                               <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
                               <border>8</border>
                             </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkSaveHtmlLog">
+                                <label>Save build log to HTML file when build is finished.</label>
+                              </object>
+                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                              <border>8</border>
+                            </object>
                           </object>
                           <flag>wxALL|wxGROW</flag>
                           <border>8</border>
                         </object>
-                        <object class="sizeritem">
-                          <object class="wxBoxSizer">
-                            <orient>wxVERTICAL</orient>
-                          </object>
+                        <object class="spacer">
                           <option>1</option>
                           <flag>wxALL|wxGROW</flag>
                           <border>8</border>
