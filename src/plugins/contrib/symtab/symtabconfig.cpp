@@ -337,7 +337,7 @@ void SymTabConfigDlg::SaveSettings()
 
   // What to do options
   cfg->Write(_T("/what_to_do"),
-    XRCCTRL(*this, "choWhatToDo",    wxChoice  )->GetCurrentSelection());
+    XRCCTRL(*this, "choWhatToDo",    wxChoice  )->GetSelection());
 
   cfg->Write(_T("/library_path"),
     XRCCTRL(*this, "txtLibraryPath", wxTextCtrl)->GetValue().Trim());
