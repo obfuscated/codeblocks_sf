@@ -37,6 +37,7 @@ class wxsExtResManager
         wxTreeItemId TreeId;
 
         FilesMapT Files;
+        bool InDestructor;
 
         static wxsExtResManager* Singleton;
 };

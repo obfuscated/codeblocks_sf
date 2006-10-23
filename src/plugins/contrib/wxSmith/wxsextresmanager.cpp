@@ -4,19 +4,21 @@
 #include "resources/wxswindowres.h"
 #include "wxsmith.h"
 
-wxsExtResManager::wxsExtResManager()
+wxsExtResManager::wxsExtResManager(): InDestructor(false)
 {
     if ( Singleton==NULL ) Singleton = this;
 }
 
 wxsExtResManager::~wxsExtResManager()
 {
+    InDestructor = true;
     for ( FilesMapI i = Files.begin(); i!=Files.end(); ++i )
     {
         delete i->second;
     }
     Files.clear();
     if ( Singleton==this ) Singleton = NULL;
+    InDestructor = false;
 }
 
 int wxsExtResManager::OpenXrc(const wxString& FileName)
@@ -76,6 +78,7 @@ int wxsExtResManager::OpenXrc(const wxString& FileName)
 
 void wxsExtResManager::ResClosed(wxsResource* Res)
 {
+    if ( InDestructor ) return;
     for ( FilesMapI i = Files.begin(); i!=Files.end(); ++i )
     {
         if ( i->second == Res )

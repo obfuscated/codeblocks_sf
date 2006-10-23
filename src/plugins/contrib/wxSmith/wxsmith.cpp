@@ -153,7 +153,19 @@ void wxSmith::OnRelease(bool appShutDown)
         }
     }
 
+	if ( ExtResManager )
+	{
+	    delete ExtResManager;
+	    ExtResManager = NULL;
+	}
+
     ProjectMap.clear();
+
+	if ( PropertiesManager )
+	{
+	    delete PropertiesManager;
+	    PropertiesManager = NULL;
+	}
 
     // Removing resources page
     wxFlatNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
@@ -175,18 +187,6 @@ void wxSmith::OnRelease(bool appShutDown)
 	{
         delete Coder;
         Coder = NULL;
-	}
-
-	if ( ExtResManager )
-	{
-	    delete ExtResManager;
-	    ExtResManager = NULL;
-	}
-
-	if ( PropertiesManager )
-	{
-	    delete PropertiesManager;
-	    PropertiesManager = NULL;
 	}
 
 	if ( WidgetFactory )

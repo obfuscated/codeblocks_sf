@@ -7,7 +7,7 @@
 /** \brief Class allowing drawing over it's surface.
  *
  * This window is upgrade of standard wxScrolledWindow.
- * It allows paining over it's surface and over surface
+ * It allows painting over it's surface and over surface
  * of it's children. It also handles all mouse and keyboard
  * events.
  */
