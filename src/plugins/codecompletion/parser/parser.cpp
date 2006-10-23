@@ -827,8 +827,26 @@ wxString Parser::GetFullFileName(const wxString& src,const wxString& tgt, bool i
 {
     wxCriticalSectionLocker lock(s_mutexListProtection);
     wxString fullname(_T("")); // Initialize with Empty String
-    if(isGlobal)
+    if (isGlobal)
+    {
         fullname = FindFirstFileInIncludeDirs(tgt);
+        if (fullname.IsEmpty())
+        {
+            // not found; check this case:
+            //
+            // we had entered the previous file like this: #include <gl/gl.h>
+            // and it now does this: #include "glext.h"
+            // glext.h was correctly not found above but we can now search
+            // for gl/glext.h.
+            // if we still not find it, it's not there. A compilation error
+            // is imminent (well, almost - I guess the compiler knows a little better ;).
+            wxString base = wxFileName(src).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+            fullname = FindFirstFileInIncludeDirs(base + tgt);
+        }
+    }
+
+    // NOTE: isGlobal is always true. The following code never executes...
+
     else // local files are more tricky, since they depend on two filenames
     {
         wxFileName fname(tgt);
@@ -840,6 +858,7 @@ wxString Parser::GetFullFileName(const wxString& src,const wxString& tgt, bool i
                 fullname.Clear();
         }
     }
+
     return fullname;
 }
 
