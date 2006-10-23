@@ -88,7 +88,7 @@ void SymTabConfigDlg::OnWhatToDo(wxCommandEvent& event)
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabConfigDlg::OnSearch(wxCommandEvent& event)
+void SymTabConfigDlg::OnSearch(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
 	DBGLOG(_T("SymTabConfigDlg::OnSearch"));
@@ -151,7 +151,7 @@ void SymTabConfigDlg::OnSearch(wxCommandEvent& event)
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabConfigDlg::OnClose(wxCommandEvent& event)
+void SymTabConfigDlg::OnClose(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
 	DBGLOG(_T("SymTabConfigDlg::OnClose"));
@@ -162,7 +162,7 @@ void SymTabConfigDlg::OnClose(wxCommandEvent& event)
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabConfigDlg::OnLibraryPath(wxCommandEvent& event)
+void SymTabConfigDlg::OnLibraryPath(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
 	DBGLOG(_T("SymTabConfigDlg::OnLibraryPath"));
@@ -178,7 +178,7 @@ void SymTabConfigDlg::OnLibraryPath(wxCommandEvent& event)
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabConfigDlg::OnLibrary(wxCommandEvent& event)
+void SymTabConfigDlg::OnLibrary(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
 	DBGLOG(_T("SymTabConfigDlg::OnLibrary"));
@@ -209,7 +209,7 @@ void SymTabConfigDlg::OnLibrary(wxCommandEvent& event)
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabConfigDlg::OnNM(wxCommandEvent& event)
+void SymTabConfigDlg::OnNM(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
 	DBGLOG(_T("SymTabConfigDlg::OnNM"));

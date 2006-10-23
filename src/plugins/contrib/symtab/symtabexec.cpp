@@ -140,7 +140,7 @@ void SymTabExecDlg::EndModal(int retCode)
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
 // This function writes the nm output to a file
-void SymTabExecDlg::OnWriteToFile(wxCommandEvent& event)
+void SymTabExecDlg::OnWriteToFile(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_EXE
 	DBGLOG(_T("SymTabExecDlg::OnWriteToFile"));
@@ -163,7 +163,7 @@ void SymTabExecDlg::OnWriteToFile(wxCommandEvent& event)
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabExecDlg::OnNext(wxCommandEvent& event)
+void SymTabExecDlg::OnNext(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_EXE
 	DBGLOG(_T("SymTabExecDlg::OnNext"));
@@ -174,7 +174,7 @@ void SymTabExecDlg::OnNext(wxCommandEvent& event)
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTabExecDlg::OnCancel(wxCommandEvent& event)
+void SymTabExecDlg::OnCancel(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_EXE
 	DBGLOG(_T("SymTabExecDlg::OnCancel"));
@@ -339,9 +339,9 @@ int SymTabExecDlg::ExecuteMulti(struct_config &config, wxString cmd)
           ;      // continue
         else if (retval == wxID_CANCEL)
         {
-          cbMessageBox(_("Operation cancelled."), _("Info"),
-                       wxICON_INFORMATION | wxOK,
-                       (wxWindow*)Manager::Get()->GetAppWindow());
+//          cbMessageBox(_("Operation cancelled."), _("Info"),
+//                       wxICON_INFORMATION | wxOK,
+//                       (wxWindow*)Manager::Get()->GetAppWindow());
           break; // cancel operation on any further files
         }
         else
@@ -531,7 +531,9 @@ int SymTabExecDlg::ParseOutputSuccess(wxString lib, wxString filter)
           s_item.Printf(_T("%6d"), item);
           m_ListCtrl->SetItem(item, 0, s_item);
 
-          if (the_line.Contains(_T(":")))
+          // Symbols can have colons in it, too        -> like Class::Method()
+          // Only object files have a colon at the end -> like ABC.o:
+          if (the_line.Last() == _T(':'))
           {
             m_ListCtrl->SetItem(item, 3, the_line.Trim());
             m_ListCtrl->SetItemBackgroundColour(item,
