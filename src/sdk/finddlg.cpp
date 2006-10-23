@@ -243,7 +243,7 @@ bool FindDlg::GetAutoWrapSearch() const
 
 bool FindDlg::GetFindUsesSelectedText() const
 {
-	if (IsFindInFiles())
+ 	if (IsFindInFiles())
 		return false;
 	else
 		return XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->GetValue();

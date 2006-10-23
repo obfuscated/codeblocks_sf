@@ -1248,14 +1248,22 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     m_LastFindReplaceData->end = 0;
     m_LastFindReplaceData->findText = dlg->GetFindString();
     m_LastFindReplaceData->replaceText = dlg->GetReplaceString();
+
     m_LastFindReplaceData->findInFiles = dlg->IsFindInFiles();
+    if(!m_LastFindReplaceData->findInFiles)
+    {
+        //AutoWrapSearch does not exist in FindInFiles dialog
+        m_LastFindReplaceData->autoWrapSearch = dlg->GetAutoWrapSearch();
+
+        //FindUsesSelectedText does not exist in Replace dialogs
+        if (!replace)
+            m_LastFindReplaceData->findUsesSelectedText = dlg->GetFindUsesSelectedText();
+    }
     m_LastFindReplaceData->delOldSearches = dlg->GetDeleteOldSearches();
     m_LastFindReplaceData->matchWord = dlg->GetMatchWord();
     m_LastFindReplaceData->startWord = dlg->GetStartWord();
     m_LastFindReplaceData->matchCase = dlg->GetMatchCase();
     m_LastFindReplaceData->regEx = dlg->GetRegEx();
-    m_LastFindReplaceData->autoWrapSearch = dlg->GetAutoWrapSearch();
-    m_LastFindReplaceData->findUsesSelectedText = dlg->GetFindUsesSelectedText();
     m_LastFindReplaceData->directionDown = dlg->GetDirection() == 1;
     m_LastFindReplaceData->originEntireScope = dlg->GetOrigin() == 1;
     m_LastFindReplaceData->scope = dlg->GetScope();
@@ -2178,7 +2186,11 @@ int EditorManager::FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindRep
         return -1;
 
     if (!data)
+    {
         data = m_LastFindReplaceData;
+        //FindNext/Previous called from Search menu (F3/Shift-F3)
+        if(data) data->findInFiles = false;
+    }
 
     if (!data)
         return ShowFindDialog(false, false);
