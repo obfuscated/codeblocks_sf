@@ -53,6 +53,14 @@ enum BuildState
     bsProjectDone
 };
 
+enum LogTarget
+{
+    ltMessages  = 0x01,
+    ltFile      = 0x02,
+
+    ltAll       = 0xff
+};
+
 class wxTimerEvent;
 class wxComboBox;
 class wxStaticText;
@@ -166,7 +174,7 @@ class CompilerGCC : public cbCompilerPlugin
         wxString ProjectMakefile();
         void AddOutputLine(const wxString& output, bool forceErrorColour = false);
         void LogWarningOrError(CompilerLineType lt, cbProject* prj, const wxString& filename, const wxString& line, const wxString& msg);
-        void LogMessage(const wxString& message, bool isError = false, bool isWarning = false, bool isTitle = false, bool logToFileOnly = false);
+        void LogMessage(const wxString& message, CompilerLineType lt = cltNormal, LogTarget log = ltAll, bool forceErrorColour = false, bool isTitle = false);
         void SaveBuildLog();
         void InitBuildLog(bool workspaceBuild);
         void PrintBanner(cbProject* prj = 0, ProjectBuildTarget* target = 0);

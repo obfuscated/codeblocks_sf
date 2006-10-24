@@ -1166,8 +1166,22 @@ or in any of the &quot;Additional paths&quot;...</label>
                               <object class="wxCheckBox" name="chkSaveHtmlLog">
                                 <label>Save build log to HTML file when build is finished.</label>
                               </object>
-                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                              <flag>wxLEFT|wxRIGHT|wxGROW</flag>
                               <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxBoxSizer">
+                                <orient>wxHORIZONTAL</orient>
+                                <object class="sizeritem">
+                                  <object class="wxCheckBox" name="chkFullHtmlLog">
+                                    <label>Always output the full command line in the generated HTML file</label>
+                                  </object>
+                                  <flag>wxLEFT</flag>
+                                  <border>24</border>
+                                </object>
+                              </object>
+                              <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                              <border>4</border>
                             </object>
                           </object>
                           <flag>wxALL|wxGROW</flag>

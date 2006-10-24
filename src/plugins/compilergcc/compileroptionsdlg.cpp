@@ -421,6 +421,10 @@ void CompilerOptionsDlg::DoFillOthers()
     if (chk)
         chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log"), false));
 
+    chk = XRCCTRL(*this, "chkFullHtmlLog", wxCheckBox);
+    if (chk)
+        chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log/full_command_line"), false));
+
     wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
     if (spn)
     {
@@ -1954,6 +1958,12 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
         XRCCTRL(*this, "btnMake", wxButton)->Enable(en);
         XRCCTRL(*this, "cmbCompiler", wxChoice)->Enable(en);
     }
+
+    // "others" tab
+    if (XRCCTRL(*this, "chkSaveHtmlLog", wxCheckBox)) // page exists?
+    {
+        XRCCTRL(*this, "chkFullHtmlLog", wxCheckBox)->Enable(XRCCTRL(*this, "chkSaveHtmlLog", wxCheckBox)->IsChecked());
+    }
 }
 
 void CompilerOptionsDlg::OnApply()
@@ -1972,6 +1982,10 @@ void CompilerOptionsDlg::OnApply()
     chk = XRCCTRL(*this, "chkSaveHtmlLog", wxCheckBox);
     if (chk)
         Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/save_html_build_log"), (bool)chk->IsChecked());
+    chk = XRCCTRL(*this, "chkFullHtmlLog", wxCheckBox);
+    if (chk)
+        Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/save_html_build_log/full_command_line"), (bool)chk->IsChecked());
+
     wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
     if (spn)
     {

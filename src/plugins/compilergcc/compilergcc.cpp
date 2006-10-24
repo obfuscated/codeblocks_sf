@@ -1025,10 +1025,22 @@ int CompilerGCC::DoRunQueue()
     // if message manager is auto-hiding, this will lock it open
     msgMan->LockOpen();
 
+    // log file
+    bool hasLog = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log"), false);
+    bool saveFull = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log/full_command_line"), false);
+    if (hasLog)
+    {
+        if (!cmd->command.IsEmpty() && saveFull)
+            LogMessage(cmd->command, cltNormal, ltFile);
+        else if (!cmd->message.IsEmpty() && !saveFull)
+            LogMessage(cmd->message, cltNormal, ltFile);
+    }
+
+    // log message
     if (!cmd->message.IsEmpty())
     {
 //        msgMan->Log(m_PageIndex, _T("[%u] %s"), procIndex, cmd->message.c_str());
-        LogMessage(cmd->message);
+        LogMessage(cmd->message, cltNormal, ltMessages);
     }
 
     if (cmd->command.IsEmpty())
@@ -1044,7 +1056,7 @@ int CompilerGCC::DoRunQueue()
         if (script.IsEmpty())
         {
             wxString msg = _("The #run_script command must be followed by a script filename");
-            LogMessage(msg, true);
+            LogMessage(msg, cltError);
         }
         else
         {
@@ -1089,7 +1101,7 @@ int CompilerGCC::DoRunQueue()
     if ( !m_Pid[procIndex] )
     {
         wxString err = wxString::Format(_("Execution of '%s' in '%s' failed."), cmd->command.c_str(), wxGetCwd().c_str());
-        LogMessage(err, true);
+        LogMessage(err, cltError);
         delete m_Processes[procIndex];
         m_Processes[procIndex] = 0;
         m_CommandQueue.Clear();
@@ -1445,7 +1457,7 @@ void CompilerGCC::PrintBanner(cbProject* prj, ProjectBuildTarget* target)
                         ? prj->GetTitle().c_str()
                         : _("\"no project\"")
                 );
-    LogMessage(banner, false, false, true);
+    LogMessage(banner, cltNormal, ltAll, false, true);
 }
 
 void CompilerGCC::DoGotoNextError()
@@ -2976,7 +2988,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
     if (maxErrors > 0 && m_Errors.GetCount(cltError) == maxErrors)
     {
         // no matter what, everything goes into the build log
-        LogMessage(output, forceErrorColour || clt == cltError, clt == cltWarning, false, true);
+        LogMessage(output, clt, ltFile, forceErrorColour);
 
         if (!m_NotifiedMaxErrors)
         {
@@ -3011,7 +3023,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
     }
 
     // add to log
-    LogMessage(output, forceErrorColour || clt == cltError, clt == cltWarning);
+    LogMessage(output, clt, ltAll, forceErrorColour);
 }
 
 void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const wxString& filename, const wxString& line, const wxString& msg)
@@ -3039,38 +3051,47 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
     m_Errors.AddError(lt, prj, filename, line.IsEmpty() ? 0 : atoi(line.mb_str()), msg);
 }
 
-void CompilerGCC::LogMessage(const wxString& message, bool isError, bool isWarning, bool isTitle, bool logToFileOnly)
+void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTarget log, bool forceErrorColour, bool isTitle)
 {
-    if (isError)
+    // log file
+    if (log & ltFile)
     {
-        if (!logToFileOnly)
+        if (forceErrorColour)
+            m_BuildLogContents << _T("<font color=\"#a00000\">");
+        else if (lt == cltError)
+            m_BuildLogContents << _T("<font color=\"#ff0000\">");
+        else if (lt == cltWarning)
+            m_BuildLogContents << _T("<font color=\"#0000ff\">");
+
+        if (isTitle)
+            m_BuildLogContents << _T("<b>");
+
+        m_BuildLogContents << message;
+
+        if (isTitle)
+            m_BuildLogContents << _T("</b>");
+
+        if (lt != cltNormal)
+            m_BuildLogContents << _T("</font>");
+
+        m_BuildLogContents << _T("<br />\n");
+    }
+
+    // log window
+    if (log & ltMessages)
+    {
+        if (forceErrorColour)
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON));
+        else if (lt == cltError)
             m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
-        m_BuildLogContents << _T("<font color=\"#ff0000\">");
-    }
-    else if (isWarning)
-    {
-        if (!logToFileOnly)
+        else if (lt == cltWarning)
             m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
-        m_BuildLogContents << _T("<font color=\"#0000ff\">");
-    }
-    else if (isTitle)
-        m_BuildLogContents << _T("<b>");
 
-    m_BuildLogContents << message;
-
-    if (isTitle)
-        m_BuildLogContents << _T("</b>");
-    else if (isError || isWarning)
-        m_BuildLogContents << _T("</font>");
-
-    m_BuildLogContents << _T("<br />\n");
-
-    if (!logToFileOnly)
-    {
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, message);
         Manager::Get()->GetMessageManager()->LogToStdOut(message + _T('\n'));
+
+        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
     }
-    m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
 }
 
 void CompilerGCC::InitBuildLog(bool workspaceBuild)
@@ -3091,6 +3112,9 @@ void CompilerGCC::InitBuildLog(bool workspaceBuild)
         basepath = wxFileName(wksp->GetFilename()).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
         basename = wxFileName(wksp->GetFilename()).GetName();
     }
+
+    if (basename.IsEmpty())
+        basename = _T("unnamed");
 
     // init HTML build log
     m_BuildStartTime = wxDateTime::Now();
@@ -3195,11 +3219,11 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
         int mins = elapsed / 60;
         int secs = (elapsed % 60);
         wxString msg = wxString::Format(_("Process terminated with status %d (%d minutes, %d seconds)"), exitCode, mins, secs);
-        LogMessage(msg, exitCode != 0);
+        LogMessage(msg, exitCode == 0 ? cltWarning : cltError, ltAll, exitCode != 0);
         if (!m_CommandQueue.LastCommandWasRun())
         {
             wxString msg = wxString::Format(_("%d errors, %d warnings"), m_Errors.GetCount(cltError), m_Errors.GetCount(cltWarning));
-            LogMessage(msg, exitCode != 0, exitCode == 0);
+            LogMessage(msg, exitCode == 0 ? cltWarning : cltError);
             LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, wxString::Format(_("=== Build finished: %s ==="), msg.c_str()));
             SaveBuildLog();
         }
