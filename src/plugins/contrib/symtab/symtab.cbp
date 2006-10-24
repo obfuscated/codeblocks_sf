@@ -9,7 +9,7 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\symtab.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\SymTab.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\symtab" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\symtab" />
 				<Option type="3" />
@@ -62,7 +62,7 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\symtab.zip resources\manifest.xml resources\*.xrc" />
+			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\SymTab.zip resources\manifest.xml resources\*.xrc" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="resources\config_dialog.xrc">

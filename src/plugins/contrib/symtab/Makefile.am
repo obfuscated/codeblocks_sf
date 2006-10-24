@@ -6,7 +6,7 @@ INCLUDES = $(WX_CXXFLAGS) \
 
 libdir = $(pkgdatadir)/plugins
 
-lib_LTLIBRARIES = libsymtab.la
+lib_LTLIBRARIES = libSymTab.la
 
 libsymtab_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 

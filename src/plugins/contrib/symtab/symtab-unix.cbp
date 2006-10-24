@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="5" />
 	<Project>
@@ -9,7 +9,7 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../devel/share/codeblocks/plugins/libsymtab.so" />
+				<Option output="../../../devel/share/codeblocks/plugins/libSymTab.so" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 			</Target>
@@ -36,7 +36,7 @@
 			<Add directory="$(CBDIR)/devel" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ../../../devel/share/codeblocks/symtab.zip resources/manifest.xml resources/*.xrc" />
+			<Add after="zip -j9 ../../../devel/share/codeblocks/SymTab.zip resources/manifest.xml resources/*.xrc" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="symtab.cpp">
