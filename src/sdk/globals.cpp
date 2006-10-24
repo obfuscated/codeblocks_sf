@@ -846,6 +846,7 @@ void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
 DirAccessCheck cbDirAccessCheck(const wxString& dir)
 {
     // append ending path separator if needed
+    wxLogNull null_logger; // we do all file checks ourselves
     wxString actualDir = dir;
     if (actualDir.Last() != _T('/') && actualDir.Last() != _T('\\'))
         actualDir << wxFILE_SEP_PATH;
