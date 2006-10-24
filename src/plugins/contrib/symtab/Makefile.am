@@ -8,11 +8,11 @@ libdir = $(pkgdatadir)/plugins
 
 lib_LTLIBRARIES = libSymTab.la
 
-libsymtab_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSymTab_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libsymtab_la_LIBADD = ../../../sdk/libcodeblocks.la
+libSymTab_la_LIBADD = ../../../sdk/libcodeblocks.la
 
-libsymtab_la_SOURCES = symtabconfig.cpp \
+libSymTab_la_SOURCES = symtabconfig.cpp \
 			symtab.cpp \
 			symtabexec.cpp
 
