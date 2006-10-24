@@ -138,6 +138,9 @@ void ClassBrowserBuilderThread::BuildTree()
     if (TestDestroy())
         return;
 
+    m_pTreeTop->Freeze();
+    m_pTreeBottom->Freeze();
+
     // the tree is completely dynamic: it is populated when a node expands/collapses.
     // so, by expanding the root node, we already instruct it to fill the top level :)
     //
@@ -150,6 +153,9 @@ void ClassBrowserBuilderThread::BuildTree()
     // so make it happen now
     ExpandItem(root);
 #endif
+
+    m_pTreeBottom->Thaw();
+    m_pTreeTop->Thaw();
 
     SelectNode(m_pTreeTop->GetSelection()); // refresh selection
 }
@@ -195,6 +201,8 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
 wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex, CBTreeData* data, bool sorted)
 {
     sorted = sorted & tree == m_pTreeTop && data; // sorting only for the top tree
+    SpecialFolder new_type = data->m_SpecialFolder;
+    bool newIsNamespace = data->m_TokenKind == tkNamespace;
 
 #if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
     long int cookie = 0;
@@ -224,17 +232,27 @@ wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTr
             if (existing_data)
             {
                 SpecialFolder existing_type = existing_data->m_SpecialFolder;
-                SpecialFolder new_type = data->m_SpecialFolder;
 
                 // first go special folders
-                if ((existing_type == sfGFuncs || existing_type == sfGVars || existing_type == sfPreproc) &&
-                    (new_type != sfGFuncs && new_type != sfGVars && new_type != sfPreproc))
+                if ((existing_type & (sfGFuncs | sfGVars | sfPreproc | sfTypedef)) &&
+                    !(new_type & (sfGFuncs | sfGVars | sfPreproc | sfTypedef)))
+                {
+                    insert_after = existing;
+                }
+                // then go namespaces, alphabetically
+                else if (newIsNamespace &&
+                        existing_data->m_TokenKind == tkNamespace &&
+                        name.CompareTo(itemText, wxString::ignoreCase) >= 0)
                 {
                     insert_after = existing;
                 }
                 // then everything else, alphabetically
-                else if (name.CompareTo(itemText, wxString::ignoreCase) >= 0)
+                else if (!newIsNamespace &&
+                        (existing_data->m_TokenKind == tkNamespace ||
+                        name.CompareTo(itemText, wxString::ignoreCase) >= 0))
+                {
                     insert_after = existing;
+                }
             }
         }
         existing = tree->GetNextChild(parent, cookie);
@@ -288,7 +306,7 @@ bool ClassBrowserBuilderThread::AddAncestorsOf(wxTreeCtrl* tree, wxTreeItemId pa
     return AddNodes(tree, parent, token->m_DirectAncestors.begin(), token->m_DirectAncestors.end(), tkClass | tkTypedef, true);
 }
 
-bool ClassBrowserBuilderThread::AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx)
+bool ClassBrowserBuilderThread::AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx, bool allowInheritance)
 {
     if (TestDestroy())
         return false;
@@ -297,7 +315,13 @@ bool ClassBrowserBuilderThread::AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId 
     if (!token)
         return false;
 
-    return AddNodes(tree, parent, token->m_Descendants.begin(), token->m_Descendants.end(), tkClass | tkTypedef, true);
+    bool inh = m_Options.showInheritance;
+    m_Options.showInheritance = allowInheritance;
+
+    bool ret = AddNodes(tree, parent, token->m_Descendants.begin(), token->m_Descendants.end(), tkClass | tkTypedef, true);
+
+    m_Options.showInheritance = inh;
+    return ret;
 }
 
 bool ClassBrowserBuilderThread::AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, TokenIdxSet::iterator start, TokenIdxSet::iterator end, int tokenKindMask, bool allowGlobals)
@@ -402,6 +426,7 @@ void ClassBrowserBuilderThread::SelectNode(wxTreeItemId node)
             case sfGFuncs: AddChildrenOf(m_pTreeBottom, root, -1, tkFunction); break;
             case sfGVars: AddChildrenOf(m_pTreeBottom, root, -1, tkVariable); break;
             case sfPreproc: AddChildrenOf(m_pTreeBottom, root, -1, tkPreprocessor); break;
+            case sfTypedef: AddChildrenOf(m_pTreeBottom, root, -1, tkTypedef); break;
             case sfToken:
             {
                 // add all children, except containers
@@ -420,6 +445,7 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(wxTreeCtrl* tree, wxTreeIte
     bool hasGF = false;
     bool hasGV = false;
     bool hasGP = false;
+    bool hasTD = false;
 
     // loop all tokens in global namespace and see if we have matches
     TokensTree* tt = m_pParser->GetTokens();
@@ -434,13 +460,16 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(wxTreeCtrl* tree, wxTreeIte
                 hasGV = true;
             else if (!hasGP && token->m_TokenKind == tkPreprocessor)
                 hasGP = true;
+            else if (!hasTD && token->m_TokenKind == tkTypedef)
+                hasTD = true;
         }
 
-        if (hasGF && hasGV && hasGP)
+        if (hasGF && hasGV && hasGP && hasTD)
             break; // we have everything, stop iterating...
     }
 
     wxTreeItemId gfuncs = AddNodeIfNotThere(m_pTreeTop, parent, _("Global functions"), PARSER_IMG_OTHERS_FOLDER, new CBTreeData(sfGFuncs, 0, tkFunction, -1));
+    wxTreeItemId tdef = AddNodeIfNotThere(m_pTreeTop, parent, _("Global typedefs"), PARSER_IMG_TYPEDEF_FOLDER, new CBTreeData(sfTypedef, 0, tkTypedef, -1));
     wxTreeItemId gvars = AddNodeIfNotThere(m_pTreeTop, parent, _("Global variables"), PARSER_IMG_OTHERS_FOLDER, new CBTreeData(sfGVars, 0, tkVariable, -1));
     wxTreeItemId preproc = AddNodeIfNotThere(m_pTreeTop, parent, _("Preprocessor symbols"), PARSER_IMG_PREPROC_FOLDER, new CBTreeData(sfPreproc, 0, tkPreprocessor, -1));
 
@@ -450,8 +479,9 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(wxTreeCtrl* tree, wxTreeIte
     tree->SetItemTextColour(gfuncs, hasGF ? black : grey);
     tree->SetItemTextColour(gvars, hasGV ? black : grey);
     tree->SetItemTextColour(preproc, hasGP ? black : grey);
+    tree->SetItemTextColour(tdef, hasTD ? black : grey);
 
-    return hasGF || hasGV || hasGP;
+    return hasGF || hasGV || hasGP || hasTD;
 }
 
 void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
@@ -468,11 +498,11 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
             case sfRoot:
             {
                 CreateSpecialFolders(m_pTreeTop, item);
-                AddChildrenOf(m_pTreeTop, item, -1, ~(tkFunction | tkVariable | tkPreprocessor));
+                AddChildrenOf(m_pTreeTop, item, -1, ~(tkFunction | tkVariable | tkPreprocessor | tkTypedef));
                 break;
             }
             case sfBase: AddAncestorsOf(m_pTreeTop, item, data->m_pToken->GetSelf()); break;
-            case sfDerived: AddDescendantsOf(m_pTreeTop, item, data->m_pToken->GetSelf()); break;
+            case sfDerived: AddDescendantsOf(m_pTreeTop, item, data->m_pToken->GetSelf(), false); break;
             case sfToken:
             {
                 int kind = 0;

@@ -9,13 +9,14 @@
 
 enum SpecialFolder
 {
-    sfToken,
-    sfRoot,
-    sfGFuncs,
-    sfGVars,
-    sfPreproc,
-    sfBase, // base classes
-    sfDerived, // derived classes
+    sfToken         = 0x0001, // token node
+    sfRoot          = 0x0002, // root node
+    sfGFuncs        = 0x0004, // global funcs node
+    sfGVars         = 0x0008, // global vars node
+    sfPreproc       = 0x0010, // preprocessor symbols node
+    sfTypedef       = 0x0020, // typedefs node
+    sfBase          = 0x0040, // base classes node
+    sfDerived       = 0x0080, // derived classes node
 };
 
 class CBTreeData : public wxTreeItemData
@@ -65,7 +66,7 @@ class ClassBrowserBuilderThread : public wxThread
         wxTreeItemId AddNodeIfNotThere(wxTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex = -1, CBTreeData* data = 0, bool sorted = true);
         bool AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, int tokenKindMask = 0xffff);
         bool AddAncestorsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx);
-        bool AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx);
+        bool AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx, bool allowInheritance = true);
         bool AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, TokenIdxSet::iterator start, TokenIdxSet::iterator end, int tokenKindMask = 0xffff, bool allowGlobals = false);
         void SelectNode(wxTreeItemId node);
         bool TokenMatchesFilter(Token* token);
