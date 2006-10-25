@@ -38,6 +38,7 @@
     #include "cbplugin.h"
     #include "infowindow.h"
     #include "messagemanager.h"
+    #include "macrosmanager.h"
     #include "manager.h"
     #include "editormanager.h"
     #include "configmanager.h"

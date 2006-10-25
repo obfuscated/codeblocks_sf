@@ -49,6 +49,7 @@
 #include "compileroptionsdlg.h"
 #include "directcommands.h"
 #include "globals.h"
+#include "cbworkspace.h"
 
 #include "compilerMINGW.h"
 // TODO (mandrav#1#): Find out which compilers exist for linux and adapt this

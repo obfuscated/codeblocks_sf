@@ -26,6 +26,7 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
+#include <wx/arrstr.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/event.h>
@@ -35,9 +36,13 @@
 #include <wx/log.h>
 #include <wx/textctrl.h>
 #include <wx/xrc/xmlres.h>
+#include "cbeditor.h"
+#include "cbproject.h"
 #include "configmanager.h"
+#include "editormanager.h"
 #include "globals.h"
 #include "manager.h"
+#include "projectmanager.h"
 #endif
 #include "classwizarddlg.h"
 #include <wx/tokenzr.h>

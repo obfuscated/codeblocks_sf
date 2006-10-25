@@ -70,6 +70,7 @@
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
 
 #include "../sdk/uservarmanager.h"
+#include "../sdk/infowindow.h"
 
 class wxMyFileDropTarget : public wxFileDropTarget
 {
