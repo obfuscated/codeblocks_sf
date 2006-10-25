@@ -6,13 +6,13 @@ INCLUDES = $(WX_CXXFLAGS) \
 
 libdir = $(pkgdatadir)/plugins
 
-lib_LTLIBRARIES = libprofiler.la
+lib_LTLIBRARIES = libProfiler.la
 
-libprofiler_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libProfiler_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libprofiler_la_LIBADD = ../../../sdk/libcodeblocks.la
+libProfiler_la_LIBADD = ../../../sdk/libcodeblocks.la
 
-libprofiler_la_SOURCES = cbprofilerconfig.cpp \
+libProfiler_la_SOURCES = cbprofilerconfig.cpp \
 			cbprofiler.cpp \
 			cbprofilerexec.cpp
 

@@ -2,14 +2,14 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="5" />
 	<Project>
-		<Option title="C::B Profiler" />
+		<Option title="Profiler" />
 		<Option pch_mode="0" />
 		<Option default_target="" />
 		<Option compiler="gcc" />
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\CBProfiler.dll" />
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\Profiler.dll" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
@@ -57,7 +57,7 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\CBProfiler.zip resources\manifest.xml resources\*.xrc" />
+			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\Profiler.zip resources\manifest.xml resources\*.xrc" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="cbprofiler.cpp">

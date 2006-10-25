@@ -35,15 +35,15 @@
 // Register the plugin
 namespace
 {
-    PluginRegistrant<CBProfiler> reg(_T("CBProfiler"));
+    PluginRegistrant<CBProfiler> reg(_T("Profiler"));
 };
 
 CBProfiler::CBProfiler()
 {
     //ctor
-    if(!Manager::LoadResource(_T("CBProfiler.zip")))
+    if(!Manager::LoadResource(_T("Profiler.zip")))
     {
-        NotifyMissingFile(_T("CBProfiler.zip"));
+        NotifyMissingFile(_T("Profiler.zip"));
     }
 }
 CBProfiler::~CBProfiler()

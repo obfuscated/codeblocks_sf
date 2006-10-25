@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_plugin_manifest_file>
     <SdkVersion major="1" minor="10" release="0" />
-    <Plugin name="CBProfiler">
+    <Plugin name="Profiler">
         <Value title="Code profiler" />
         <Value version="1.0RC2" />
         <Value description="A simple graphical interface to the GNU GProf Profiler
