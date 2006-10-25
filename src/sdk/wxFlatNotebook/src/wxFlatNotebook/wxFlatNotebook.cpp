@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-// Name:		wxFlatNotebook.cpp
+// Name:		wxFlatNotebook.cpp 
 // Purpose:     generic implementation of flat style notebook class.
 // Author:      Eran Ifrah <eranif@bezeqint.net>
 // Modified by: Priyank Bolia <soft@priyank.in>
@@ -43,7 +43,7 @@ wxString WhereToString( int where )
 	}
 	return whereMap[where];
 }
-#endif
+#endif 
 
 //-------------------------------------------------------------------
 // Provide user with a nice feedback when tab is being dragged
@@ -124,7 +124,7 @@ void wxFlatNotebook::Init()
 	tabHeight += 6;
 #endif
 	m_pages->SetSizeHints(wxSize(-1, tabHeight));
-
+	
 	// Add the tab container to the sizer
 	m_mainSizer->Insert(0, m_pages, 0, wxEXPAND);
 	m_mainSizer->Layout();
@@ -458,7 +458,7 @@ void wxFlatNotebook::OnNavigationKey(wxNavigationKeyEvent& event)
 			{
 				m_popupWin = new wxTabNavigatorWindow( this );
 				m_popupWin->ShowModal();
-				m_popupWin->Destroy();
+				m_popupWin->Destroy(); 
 				m_popupWin = NULL;
 			}
 			else
@@ -769,17 +769,12 @@ wxPageContainer::~wxPageContainer(void)
 	}
 }
 
-void wxPageContainer::OnPaint(wxPaintEvent & WXUNUSED(event))
+void wxPageContainer::OnPaint(wxPaintEvent & event)
 {
-	wxPaintDC dc(this);
-	wxMemoryDC memDc;
-	wxSize size = GetSize();
-	wxBitmap bmp( size.x, size.y );
-	memDc.SelectObject( bmp );
-
+	wxBufferedPaintDC dc(this);
 	wxFNBRendererPtr render = wxFNBRendererMgrST::Get()->GetRenderer( GetParent()->GetWindowStyleFlag() );
-	render->DrawTabs(this, memDc);
-	dc.Blit( 0, 0, size.x, size.y, &memDc, 0, 0, wxCOPY );
+
+	render->DrawTabs(this, dc, event);
 }
 
 void wxPageContainer::AddPage(const wxString& caption, const bool selected, const int imgindex)
@@ -1047,7 +1042,7 @@ void wxPageContainer::OnLeftUp(wxMouseEvent& event)
 int wxPageContainer::HitTest(const wxPoint& pt, wxPageInfo& pageInfo, int &tabIdx)
 {
 	wxFNBRendererPtr render = wxFNBRendererMgrST::Get()->GetRenderer( GetParent()->GetWindowStyleFlag() );
-
+	
 	wxRect rect = GetClientRect();
 	int btnLeftPos = render->GetLeftButtonPos(this);
 	int btnRightPos = render->GetRightButtonPos(this);
@@ -1124,7 +1119,7 @@ int wxPageContainer::HitTest(const wxPoint& pt, wxPageInfo& pageInfo, int &tabId
 		else
 		{
 
-			wxRect tabRect = wxRect(pgInfo.GetPosition().x, pgInfo.GetPosition().y,
+			wxRect tabRect = wxRect(pgInfo.GetPosition().x, pgInfo.GetPosition().y, 
 				pgInfo.GetSize().x, pgInfo.GetSize().y);
 			if(tabRect.Inside(pt))
 			{
@@ -1161,7 +1156,7 @@ void wxPageContainer::DoSetSelection(size_t page)
 			da_page->SetFocus();
 	}
 
-	if(!IsTabVisible(page))
+	if( !IsTabVisible(page) )
 	{
 		FNB_LOG_MSG( wxT("Tab ") << (int)page << wxT(" is not visible"));
 		FNB_LOG_MSG( wxT("m_nFrom=") << m_nFrom << wxT(", Selection=") << (int)page );
@@ -1266,7 +1261,7 @@ void wxPageContainer::OnMouseMove(wxMouseEvent& event)
 		const int dropDownButtonStatus = m_nArrowDownButtonStatus;
 
 		long style = GetParent()->GetWindowStyleFlag();
-
+ 
 		m_nXButtonStatus = wxFNB_BTN_NONE;
 		m_nRightButtonStatus = wxFNB_BTN_NONE;
 		m_nLeftButtonStatus = wxFNB_BTN_NONE;
@@ -1361,7 +1356,7 @@ void wxPageContainer::OnMouseMove(wxMouseEvent& event)
 		const bool bRedrawRight = m_nRightButtonStatus != rightButtonStatus;
 		const bool bRedrawLeft = m_nLeftButtonStatus != leftButtonStatus;
 		const bool bRedrawTabX = m_nTabXButtonStatus != xTabButtonStatus;
-
+		
 		wxFNBRendererPtr render = wxFNBRendererMgrST::Get()->GetRenderer( GetParent()->GetWindowStyleFlag() );
 
 		if (bRedrawX || bRedrawRight || bRedrawLeft || bRedrawTabX || bRedrawDropArrow)
@@ -1606,7 +1601,7 @@ wxDragResult wxPageContainer::OnDropTarget(wxCoord x, wxCoord y, int nTabPage, w
 				// to the new notebook
 				int newIndx( wxNOT_FOUND );
 
-				if( m_ImageList )
+				if( m_ImageList ) 
 				{
 					int imageindex = oldContainer->GetPageImageIndex(nTabPage);
 					if( imageindex >= 0 )
@@ -1616,7 +1611,7 @@ wxDragResult wxPageContainer::OnDropTarget(wxCoord x, wxCoord y, int nTabPage, w
 						newIndx = static_cast<int>(m_ImageList->GetCount() - 1);
 					}
 				}
-
+				
 				oldNotebook->RemovePage( nTabPage );
 				window->Reparent( newNotebook );
 				newNotebook->InsertPage(nIndex, window, caption, true, newIndx);

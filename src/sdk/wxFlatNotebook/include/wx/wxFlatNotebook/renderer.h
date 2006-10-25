@@ -7,6 +7,7 @@
 #include <wx/wxFlatNotebook/smart_ptr.h>
 #include <map>
 #include <vector>
+#include <wx/event.h>
 
 class wxFNBRenderer
 {
@@ -22,10 +23,11 @@ public:
 
 	/**
 	 * Generic function that draws the tabs and updates values in the page container
+	 * MAC requires that the event will be skipped, so we must pass it
 	 * \param pageContainer window that contains the tabs drawing
 	 * \param dc device context
 	 */
-	virtual void DrawTabs(wxWindow* pageContainer, wxDC &dc);
+	virtual void DrawTabs(wxWindow* pageContainer, wxDC &dc, wxEvent &event);
 
 	/**
 	 * Draw a small 'x' button on top of the tab
@@ -187,7 +189,7 @@ public:
 	wxFNBRendererVC8() : m_factor(1), m_first(true) {}
 	virtual ~wxFNBRendererVC8(){}
 	virtual void DrawTab(wxWindow* pageContainer, wxDC &dc, const int &posx, const int &tabIdx, const int &tabWidth, const int &tabHeight, const int btnStatus);
-	virtual void DrawTabs(wxWindow *pageContainer, wxDC &dc);
+	virtual void DrawTabs(wxWindow *pageContainer, wxDC &dc, wxEvent &event);
 	void NumberTabsCanFit(wxWindow *pageContainer, std::vector<wxRect> &vTabInfo, int from = -1);
 
 private:

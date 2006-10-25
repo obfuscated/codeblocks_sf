@@ -527,7 +527,7 @@ int wxFNBRenderer::CalcTabHeight(wxWindow *pageContainer)
 	return tabHeight;
 }
 
-void wxFNBRenderer::DrawTabs(wxWindow *pageContainer, wxDC &dc)
+void wxFNBRenderer::DrawTabs(wxWindow *pageContainer, wxDC &dc, wxEvent &event)
 {
 	wxPageContainer *pc = static_cast<wxPageContainer*>( pageContainer );
 #ifndef __WXMAC__
@@ -535,6 +535,7 @@ void wxFNBRenderer::DrawTabs(wxWindow *pageContainer, wxDC &dc)
 	if(pc->GetPageInfoVector().empty() || pc->m_nFrom >= (int)pc->GetPageInfoVector().GetCount())
 	{
 		pc->Hide();
+		event.Skip();
 		return;
 	}
 #endif
@@ -548,7 +549,9 @@ void wxFNBRenderer::DrawTabs(wxWindow *pageContainer, wxDC &dc)
 	int clientWidth = rect.width;
 
 	// Set the maximum client size
-//	pc->SetSizeHints(wxSize(GetButtonsAreaLength( pc ), tabHeight));
+#ifdef __WXMAC__
+	pc->SetSizeHints(wxSize(GetButtonsAreaLength( pc ), tabHeight));
+#endif
 	wxPen borderPen = wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW));
 
 	wxBrush backBrush;
@@ -1068,7 +1071,7 @@ void wxFNBRendererFancy::DrawTab(wxWindow* pageContainer, wxDC &dc, const int &p
 //------------------------------------------------------------------
 // Visual studio 2005 (VS8)
 //------------------------------------------------------------------
-void wxFNBRendererVC8::DrawTabs(wxWindow *pageContainer, wxDC &dc)
+void wxFNBRendererVC8::DrawTabs(wxWindow *pageContainer, wxDC &dc, wxEvent &event)
 {
 	wxPageContainer *pc = static_cast<wxPageContainer*>( pageContainer );
 
@@ -1077,6 +1080,7 @@ void wxFNBRendererVC8::DrawTabs(wxWindow *pageContainer, wxDC &dc)
 	if(pc->GetPageInfoVector().empty() || pc->m_nFrom >= (int)pc->GetPageInfoVector().GetCount())
 	{
 		pc->Hide();
+		event.Skip();
 		return;
 	}
 #endif
@@ -1093,7 +1097,9 @@ void wxFNBRendererVC8::DrawTabs(wxWindow *pageContainer, wxDC &dc)
 	wxRect rect = pc->GetClientRect();
 
 	// Set the maximum client size
-//	pc->SetSizeHints(wxSize(GetButtonsAreaLength( pc ), tabHeight));
+#ifdef __WXMAC__
+	pc->SetSizeHints(wxSize(GetButtonsAreaLength( pc ), tabHeight));
+#endif 
 	wxPen borderPen = wxPen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW));
 
 	/// Create brushes
