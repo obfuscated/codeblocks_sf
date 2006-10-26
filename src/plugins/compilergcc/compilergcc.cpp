@@ -3139,7 +3139,9 @@ void CompilerGCC::SaveBuildLog()
 
     // first output the standard header blurb
     f.Write(_T("<html>\n"));
+    f.Write(_T("<head>\n"));
     f.Write(_T("<title>") + m_BuildLogTitle + _T("</title>\n"));
+    f.Write(_T("</head>\n"));
     f.Write(_T("<body>\n"));
 
     // use fixed-width font
