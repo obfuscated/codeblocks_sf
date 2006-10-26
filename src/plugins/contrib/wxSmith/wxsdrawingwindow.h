@@ -3,6 +3,10 @@
 
 #include <wx/scrolwin.h>
 #include <wx/timer.h>
+#include <wx/event.h>
+
+//#define FETCHING_SYSTEM1
+#define FETCHING_SYSTEM2
 
 /** \brief Class allowing drawing over it's surface.
  *
@@ -65,6 +69,10 @@ class wxsDrawingWindow: public wxScrolledWindow
         void PanelMouse(wxMouseEvent& event);
         void PanelKeyboard(wxKeyEvent& event);
 
+        #ifdef FETCHING_SYSTEM2
+        void OnFetchSequence(wxCommandEvent& event);
+        #endif
+
         /** \brief Function stating sequence fetching editor's background
          *
          * This sequence may be splitted into few smaller events so it's not
@@ -88,6 +96,11 @@ class wxsDrawingWindow: public wxScrolledWindow
         bool WaitTillHideChildren;
         bool IsBlockFetch;
         wxBitmap* Bitmap;
+
+        #ifdef FETCHING_SYSTEM2
+        bool DuringFetch;
+        bool WaitingForPaint;
+        #endif
 
         DECLARE_EVENT_TABLE()
 };
