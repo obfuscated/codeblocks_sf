@@ -908,7 +908,7 @@ bool EditorManager::SaveAll()
         {
             wxString msg;
             msg.Printf(_("File %s could not be saved..."), ed->GetFilename().c_str());
-            cbMessageBox(msg, _("Error saving file"));
+            cbMessageBox(msg, _("Error saving file"), wxICON_ERROR);
         }
     }
 #ifdef USE_OPENFILES_TREE
@@ -968,7 +968,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
             msg.Printf(_("%s has been deleted, or is no longer available.\n"
                          "Do you wish to keep the file open?\n"
                          "Yes to keep the file, No to close it."), ed->GetFilename().c_str());
-            if (cbMessageBox(msg, _("File changed!"), wxYES_NO) == wxID_YES)
+            if (cbMessageBox(msg, _("File changed!"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
                 ed->SetModified(true);
             else
             {

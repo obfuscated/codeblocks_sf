@@ -2163,7 +2163,7 @@ void MainFrame::OnFileSave(wxCommandEvent& event)
     {
         wxString msg;
         msg.Printf(_("File %s could not be saved..."), Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename().c_str());
-        cbMessageBox(msg, _("Error saving file"));
+        cbMessageBox(msg, _("Error saving file"), wxICON_ERROR);
     }
     DoUpdateStatusBar();
 }
@@ -2174,7 +2174,7 @@ void MainFrame::OnFileSaveAs(wxCommandEvent& event)
     {
         wxString msg;
         msg.Printf(_("File %s could not be saved..."), Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename().c_str());
-        cbMessageBox(msg, _("Error saving file"));
+        cbMessageBox(msg, _("Error saving file"), wxICON_ERROR);
     }
     DoUpdateStatusBar();
 }

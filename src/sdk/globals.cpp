@@ -511,7 +511,19 @@ bool cbSaveToFile(const wxString& filename, const wxString& contents, wxFontEnco
             if (!file.Write(s, len))
                 return false;
         }
-        if (!file.Commit())
+
+        bool do_commit = true;
+        if ((contents.Length()>0) && (file.Length()==0))
+        {
+            wxString msg;
+            msg << _("The file's content to be saved seems to have become emtpy.\n")
+                << _("This could be caused by a wrong encoding setup, e.g. you have setup\n")
+                << _("an 'ansi encoding' file but use non-ansi characters in the editor.\n\n")
+                << _("Do you want to save the file anyway (it will be empty)?");
+            do_commit = (cbMessageBox(msg, _("Save file?"), wxICON_WARNING | wxYES_NO) == wxID_YES);
+        }
+
+        if ((!do_commit) || (!file.Commit()))
             return false;
     }
     else
