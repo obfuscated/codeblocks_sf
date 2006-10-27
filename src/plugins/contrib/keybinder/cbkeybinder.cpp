@@ -5,7 +5,8 @@
  * Copyright: (c) Pecan Heber etal.
  * License:   GPL
  **************************************************************/
-//
+// RCS-ID:      $Id$
+
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
 
@@ -16,6 +17,7 @@
 #endif
 
 #include "cbkeybinder.h"
+#include <licenses.h> // defines some common licenses (like the GPL)
 
 #ifndef CB_PRECOMP
     #include "sdk_events.h"
@@ -23,7 +25,7 @@
 //#include <wx/datetime.h>
 
 // ----------------------------------------------------------------------------
-wxString* pKeyFilename = 0;
+wxString* pKeyFilename = 0; //used by keybinder key definition dialog
 // ----------------------------------------------------------------------------
 
 // Register the plugin
@@ -41,8 +43,8 @@ BEGIN_EVENT_TABLE(cbKeyBinder, cbPlugin)
 	EVT_EDITOR_CLOSE    (cbKeyBinder::OnEditorClose)
 	EVT_PROJECT_OPEN    (cbKeyBinder::OnProjectOpened)
 	EVT_APP_STARTUP_DONE(cbKeyBinder::OnAppStartupDone)
-    EVT_IDLE            (cbKeyBinder::OnIdle)
-
+    //EVT_IDLE            (cbKeyBinder::OnIdle)
+    EVT_TIMER           (-1, cbKeyBinder::OnMergeTimer)
 END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 
@@ -52,6 +54,7 @@ END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 cbKeyBinder::cbKeyBinder()
 // ---------------------------------------------------------------------------
+    : m_Timer(this,0)
 {
 	//ctor
 }
@@ -113,14 +116,17 @@ void cbKeyBinder::OnAttach()
     //wxKeyBinder::usableWindows.Add(_T("listctrl"));          //+v0.4.4
     //wxKeyBinder::usableWindows.Add(_T("treectrl"));          //+v0.4.4
 
-    m_lastIdleTime  = wxDateTime::Now();
-
     //block any dynamic update attempts
 	m_mergeActive = 0;
 
     // Set current plugin version
 	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
 	pInfo->version = wxT(VERSION);
+
+    // if old key definitions file is valid for new keybinder release
+    //  set it here.
+	m_OldKeyFilename = wxEmptyString;
+	m_OldKeyFilename = wxT("cbKeyBinder04v111.ini");
 
 	return;
 
@@ -136,6 +142,8 @@ void cbKeyBinder::OnRelease(bool appShutDown)
 	// NOTE: after this function, the inherited member variable
 	// IsAttached() will be FALSE...
 
+	// stop the merge timer
+	EnableMerge(false);
     // remove keyboard and window close event //+v0.4.7
 	m_pKeyProfArr->DetachAll();
 }
@@ -183,6 +191,7 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
 
     // remove the double //s from filename //+v0.4.11
     m_sKeyFilename.Replace(_T("//"),_T("/"));
+    m_sKeyFilePath = m_sKeyFilename;
 
     // get version number from keybinder plugin
     const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(this);
@@ -191,9 +200,9 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     // remove the dots from version string (using first 3 chars)
     sPluginVersion.Replace(_T("."),_T(""));
     m_sKeyFilename = m_sKeyFilename
-         <<wxFILE_SEP_PATH
-        <<info->name<<sPluginVersion
-        <<_T("v")<<SDKverStr<<_T(".ini"); //+v0.4.1
+         << wxFILE_SEP_PATH
+         << info->name<<sPluginVersion
+         << _T("v")<<SDKverStr<<_T(".ini"); //+v0.4.1
 
     #if LOGGING
      LOGIT(_T("cbKB:BuildMenu()"));
@@ -306,18 +315,25 @@ int cbKeyBinder::EnableMerge(bool allow)
 // ----------------------------------------------------------------------------
 {
     // Enable/Disable Merge
+
     // disable Merge
     if (not allow)    // release lock
-        return (m_mergeActive=0);
+    {
+        m_mergeActive=0;
+        StopMergeTimer();
+        return m_mergeActive;
+    }
     // enable Merge
-    return (m_mergeActive  = (m_mergeActive < 0 ? 1 : ++m_mergeActive));
+    m_mergeActive  = (m_mergeActive < 0 ? 1 : ++m_mergeActive );
+    StartMergeTimer( 15 );
+    return m_mergeActive;
 }//LockMerge
 // ----------------------------------------------------------------------------// ----------------------------------------------------------------------------
 void cbKeyBinder::MergeDynamicMenus()
 // ----------------------------------------------------------------------------
 {
     //v0.4.25
-    // Add or adjust any dynamic menu/key assignments made by plugins et.al.
+    // Add or adjust any dynamic menu/key assignments made by plugins etal.
 
     // Caller must have previously enabled merging
     int n;
@@ -329,7 +345,7 @@ void cbKeyBinder::MergeDynamicMenus()
         return;
     }
 
-    // dont allow re-entry from other calls (eg. OnIdle() )
+    // dont allow re-entry from other calls (eg. OnTimer() )
     EnableMerge(false);
 
     #ifdef LOGGING
@@ -361,7 +377,6 @@ cbConfigurationPanel* cbKeyBinder::OnKeybindings(wxWindow* parent)
     #endif
 
     //wait for a good key file load()
-    if (not m_bBound) OnLoad();
     if (not m_bBound) return 0;
 
     // Add or adjust any dynamic menu/key assignments made by plugins etc.
@@ -462,15 +477,18 @@ void cbKeyBinder::OnKeybindingsDialogDone(MyDialog* dlg)
             wxT("Profile selected"));
     #endif
 
-    // Allow dynamic menu updates to keyBinderArray
-    //EnableMerge(true);
-    // dlg dtor will enable merging
-
 }//OnKeybindingsDialogDone
 // ----------------------------------------------------------------------------
 void cbKeyBinder::OnLoad()
 // ----------------------------------------------------------------------------
 {
+    // if compatible, copy old key defs file to new key definitions
+    if (not m_OldKeyFilename.IsEmpty() )
+    {    wxString oldKeyFile = m_sKeyFilePath+wxFILE_SEP_PATH+m_OldKeyFilename;
+        if (not ::wxFileExists(m_sKeyFilename) )
+            if (::wxFileExists( oldKeyFile ) )
+                ::wxCopyFile( oldKeyFile, m_sKeyFilename);
+    }
     // Load key binding definitions from a file %HOME%\cbKeyBinder{ver}.ini
 
 	// before loading we must register in wxCmd arrays the various types
@@ -744,14 +762,6 @@ void cbKeyBinder::AttachEditor(wxWindow* pWindow)
      {
          wxWindow* thisEditor = pWindow->FindWindowByName(_T("SCIwindow"),pWindow);
 
-         // find editor window the Code::Blocks way
-         // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
-//         cbEditor* ed = 0;
-//         EditorBase* eb = event.GetEditor();
-//         if (eb && eb->IsBuiltinEditor())
-//          {  ed = static_cast<cbEditor*>(eb);
-//             thisEditor = ed->GetControl();
-//          }
 
         //skip editors that we already have
         if ( thisEditor && (wxNOT_FOUND == m_EditorPtrs.Index(thisEditor)) )
@@ -783,15 +793,6 @@ void cbKeyBinder::DetachEditor(wxWindow* pWindow)
          //find the cbStyledTextCtrl wxScintilla window
          wxWindow*
            thisEditor = thisWindow->FindWindowByName(_T("SCIwindow"), thisWindow);
-
-         // find editor window the Code::Blocks way
-         // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
-//         cbEditor* ed = 0;
-//         EditorBase* eb = event.GetEditor();
-//         if (eb && eb->IsBuiltinEditor())
-//          {  ed = static_cast<cbEditor*>(eb);
-//             thisEditor = ed->GetControl();
-//          }
 
         if ( thisEditor && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND) )
          {
@@ -973,39 +974,31 @@ void cbKeyBinder::OnWindowDestroyEvent(wxEvent& event)
     event.Skip();
 }//OnWindowClose
 // ----------------------------------------------------------------------------
-void cbKeyBinder::OnIdle(wxIdleEvent& event)
+void cbKeyBinder::OnMergeTimer(wxTimerEvent& event)
 // ----------------------------------------------------------------------------
 {
     // Scan the menu and enter any modified menu items into the array of
     //  key bindings
 
-    // Return if Merge is disabled
-    if (not IsEnabledMerge() ) return;
-
-    // get elaspse seconds
-    wxDateTime now = wxDateTime::Now();
-    wxTimeSpan elapsedTime = now.Subtract(m_lastIdleTime);
-    wxLongLong elapsedSecs = elapsedTime.GetSeconds();
-
-    if ( elapsedSecs >= 15)
+    if ( IsEnabledMerge() )
     {
-        m_lastIdleTime = now;
         // scan for dynamic menu changes
         MergeDynamicMenus();
         if (m_MenuModifiedByMerge){
             #ifdef LOGGING
-              LOGIT( _T("OnIdle:Modified:%d Seconds:%d"), m_MenuModifiedByMerge, elapsedSecs.GetLo() );
+              //-LOGIT( _T("OnIdle:Modified:%d Seconds:%d"), m_MenuModifiedByMerge, elapsedSecs.GetLo() );
+              LOGIT( _T("OnTimer:Modified:%d"), m_MenuModifiedByMerge );
             #endif //LOGGING
-        }
-        if (m_MenuModifiedByMerge)
-        {
             // write changed key profile to disk
             EnableMerge(false);
             OnSave();
             m_MenuModifiedByMerge = 0;
             EnableMerge(true);
         }
-    }//fi
+    }//fi IsEnableMerge...
+
+    // re-enable the timer
+    StartMergeTimer(15);
     event.Skip();
 }//onIdle
 // ----------------------------------------------------------------------------

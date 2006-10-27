@@ -7,6 +7,7 @@
 // Copyright:   (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
+// RCS-ID:      $Id$
 
 #ifdef __GNUG__
 #pragma implementation "menuutils.h"

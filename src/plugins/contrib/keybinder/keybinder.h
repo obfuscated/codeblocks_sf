@@ -7,6 +7,7 @@
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
+// RCS-ID:      $Id$
 
 #define NOT !
 

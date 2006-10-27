@@ -1,5 +1,7 @@
 #ifndef __WX_DEBUGGING_H__
 #define __WX_DEBUGGING_H__
+// RCS-ID:      $Id$
+
 //#include <manager.h>
 //#include <messagemanager.h>
 

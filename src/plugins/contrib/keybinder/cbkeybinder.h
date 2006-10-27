@@ -1,10 +1,11 @@
 /***************************************************************
  * Name:      cbkeybinder.h
  * Purpose:   Code::Blocks plugin
- * Author:    Pecan<>
- * Copyright: (c) Pecan
+ * Author:    Pecan Heber
+ * Copyright: (c) Pecan Heber
  * License:   GPL
  **************************************************************/
+// RCS-ID:      $Id$
 
 #ifndef CBKEYBINDER_H
 #define CBKEYBINDER_H
@@ -41,9 +42,10 @@
 #include "wx/app.h"
 #include "wx/utils.h"
 #include <wx/intl.h>
+#include <wx/timer.h>
 
 // --Version--------------------------
-#define VERSION "0.4.26 2006/09/23"
+#define VERSION "1.0.1 2006/10/27"
 // -----------------------------------
 class MyDialog;
 
@@ -78,6 +80,8 @@ class cbKeyBinder : public cbPlugin
 
         // Users Key file name eg. %HOME%\cbKeybinder.ini
         wxString m_sKeyFilename;
+        wxString m_sKeyFilePath;
+        wxString m_OldKeyFilename;
 
         // Switch to reload keybinding
         bool m_bBound;
@@ -108,7 +112,7 @@ class cbKeyBinder : public cbPlugin
         void OnProjectFileRemoved(CodeBlocksEvent& event);
         void OnEditorOpen(CodeBlocksEvent& event);
         void OnEditorClose(CodeBlocksEvent& event);
-        void OnIdle(wxIdleEvent& event);
+        void OnMergeTimer(wxTimerEvent& event);
         void OnAppStartupDone(CodeBlocksEvent& event);
         void AttachEditor(wxWindow* pEditor);
         void OnWindowCreateEvent(wxEvent& event);
@@ -120,10 +124,13 @@ class cbKeyBinder : public cbPlugin
         wxArrayPtrVoid  m_EditorPtrs;           //attached editor windows
         bool            bKeyFileErrMsgShown;
         int             m_MenuModifiedByMerge;  //menu dynamically modified
-        wxDateTime      m_lastIdleTime;         //previous time of idle call
         int             m_mergeActive;
 
     private:
+        wxTimer         m_Timer;
+        void    StartMergeTimer(int secs){ m_Timer.Start( secs*1000, wxTIMER_ONE_SHOT); }
+        void    StopMergeTimer(){ m_Timer.Stop();}
+
 		DECLARE_EVENT_TABLE()
 };//class cbKeyBinder
 // ----------------------------------------------------------------------------
@@ -549,5 +556,9 @@ private:
 //  Commit  v0.4.26 2006/09/23
 //          - minor #defines for WXMAC
 //          - stop OnProfileSelected() from saving blank keyProfile
+// -----------------------------------------------------------------------------
+//  Commit  1.0.1 2006/10/27
+//          Change OnIdle to OnTimer as per Denk advice
+//          On new version, copy old key defs file if compatible
 // -----------------------------------------------------------------------------
 //

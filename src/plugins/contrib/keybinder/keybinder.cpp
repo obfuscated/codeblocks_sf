@@ -3,10 +3,12 @@
 // Purpose:     wxKeyBind, wxCmd, wxKeyBinder, wxKeyConfigPanel
 // Author:      Aleksandras Gluchovas
 // Modified by: Francesco Montorsi
+// Modified by: Pecan Heber
 // Created:     2000/02/10
 // Copyright:   (c) Aleksandras Gluchovas and (c) Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
+// RCS-ID:      $Id$
 
 #define NOT !
 #if defined(kbLOGGING)
