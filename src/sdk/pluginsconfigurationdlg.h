@@ -3,6 +3,10 @@
 
 #include <wx/dialog.h>
 
+class wxCommandEvent;
+class wxListEvent;
+class wxUpdateUIEvent;
+
 /**
  * Dialog for Enabling/Disabling/Installing/Uninstalling a plug-in.
  */
@@ -21,7 +25,7 @@ class PluginsConfigurationDlg : public wxDialog
         void OnInstall(wxCommandEvent& event);
         void OnUninstall(wxCommandEvent& event);
         void OnExport(wxCommandEvent& event);
-        void OnInfo(wxCommandEvent& event);
+        void OnSelect(wxListEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
 
         DECLARE_EVENT_TABLE();

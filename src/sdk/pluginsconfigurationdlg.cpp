@@ -27,8 +27,12 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/checkbox.h>
+    #include <wx/filename.h>
     #include <wx/intl.h>
+    #include <wx/listctrl.h>
     #include <wx/string.h>
+    #include <wx/utils.h>
     #include <wx/xrc/xmlres.h>
     #include "manager.h"
     #include "configmanager.h"
@@ -38,12 +42,10 @@
 
 #include "annoyingdialog.h"
 #include <wx/settings.h>
-#include <wx/listctrl.h>
-#include <wx/checkbox.h>
 #include <wx/filedlg.h>
 #include <wx/dirdlg.h>
 #include <wx/progdlg.h>
-#include <wx/filename.h>
+#include <wx/html/htmlwin.h>
 
 #include "pluginsconfigurationdlg.h" // class's header file
 
@@ -61,7 +63,7 @@ BEGIN_EVENT_TABLE(PluginsConfigurationDlg, wxDialog)
     EVT_BUTTON(XRCID("btnInstall"), PluginsConfigurationDlg::OnInstall)
     EVT_BUTTON(XRCID("btnUninstall"), PluginsConfigurationDlg::OnUninstall)
     EVT_BUTTON(XRCID("btnExport"), PluginsConfigurationDlg::OnExport)
-    EVT_BUTTON(XRCID("btnInfo"), PluginsConfigurationDlg::OnInfo)
+    EVT_LIST_ITEM_SELECTED(XRCID("lstPlugins"), PluginsConfigurationDlg::OnSelect)
 
     EVT_UPDATE_UI(-1, PluginsConfigurationDlg::OnUpdateUI)
 END_EVENT_TABLE()
@@ -87,6 +89,31 @@ PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
     }
     XRCCTRL(*this, "chkInstallGlobally", wxCheckBox)->SetValue(globalInstall);
     XRCCTRL(*this, "chkInstallConfirmation", wxCheckBox)->SetValue(confirmation);
+
+    // Set default font size based on system default font size
+#ifdef __linux__
+    /* NOTE (mandrav#1#): wxWidgets documentation on wxHtmlWindow::SetFonts(),
+    states that the sizes array accepts values from -2 to +4.
+    My tests (under linux at least) have showed that it actually
+    expects real point sizes. */
+
+	wxFont systemFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+	int sizes[7] = {};
+	for (int i = 0; i < 7; ++i)
+        sizes[i] = systemFont.GetPointSize();
+	XRCCTRL(*this, "htmlInfo", wxHtmlWindow)->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]);
+#endif
+
+    wxString initialInfo;
+    initialInfo << _T("<html><body><font color=\"#0000AA\">");
+    initialInfo << _("Tip: The above list allows for multiple selections.");
+    initialInfo << _T("</font><br /><br /><i><font color=\"red\">");
+    initialInfo << _("Have you saved your work first?");
+    initialInfo << _T("<br />\n");
+    initialInfo << _("All functionality in this dialog is to be considered as &quot;experimental&quot;.");
+    initialInfo << _T("</font></i><br /></body></html>\n");
+
+    XRCCTRL(*this, "htmlInfo", wxHtmlWindow)->SetPage(initialInfo);
 }
 
 void PluginsConfigurationDlg::FillList()
@@ -357,7 +384,7 @@ void PluginsConfigurationDlg::OnExport(wxCommandEvent& event)
         cbMessageBox(_("Failed exporting one or more plugins:\n\n") + failure, _("Warning"), wxICON_WARNING);
 }
 
-void PluginsConfigurationDlg::OnInfo(wxCommandEvent& event)
+void PluginsConfigurationDlg::OnSelect(wxListEvent& event)
 {
     wxListCtrl* list = XRCCTRL(*this, "lstPlugins", wxListCtrl);
     if (list->GetSelectedItemCount() != 1)
@@ -368,14 +395,19 @@ void PluginsConfigurationDlg::OnInfo(wxCommandEvent& event)
     if (!elem)
         return;
 
-    wxString info;
-    info << _("Title: ") << elem->info.title << _T('\n');
-    info << _("Version: ") << elem->info.version << _T('\n');
-    info << _("Description: ") << elem->info.description << _T('\n');
-    info << _T('\n');
-    info << _("Filename: ") << elem->fileName << _T('\n');
+    wxString description(elem->info.description);
+    description.Replace(_T("\n"), _T("<br />\n"));
 
-    cbMessageBox(info, _("Information"), wxICON_INFORMATION);
+    wxString info;
+    info << _T("<html><body>\n");
+    info << _T("<h3>") << elem->info.title << _T(" ");
+    info << _T("<font color=\"#0000AA\">") << elem->info.version << _T("</font></h3>");
+    info << _T("<i><font color=\"#808080\" size=\"-1\">") << UnixFilename(elem->fileName) << _T("</font></i><br />\n");
+    info << _T("<br />\n");
+    info << description << _T("<br />\n");
+    info << _T("</body></html>\n");
+
+    XRCCTRL(*this, "htmlInfo", wxHtmlWindow)->SetPage(info);
 }
 
 void PluginsConfigurationDlg::OnUpdateUI(wxUpdateUIEvent& event)
@@ -402,7 +434,6 @@ void PluginsConfigurationDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "btnDisable", wxButton)->Enable(en && (lastSelectionMultiple || (hasPlugin && isAttached)));
     XRCCTRL(*this, "btnUninstall", wxButton)->Enable(en);
     XRCCTRL(*this, "btnExport", wxButton)->Enable(en);
-    XRCCTRL(*this, "btnInfo", wxButton)->Enable(en);
 }
 
 void PluginsConfigurationDlg::EndModal(int retCode)
