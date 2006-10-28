@@ -16,6 +16,15 @@
 
 using namespace std;
 
+#ifdef __WIN32__
+    #define WIN32_LEAN_AND_MEAN 1
+    #define NOGDI
+    #include <windows.h>
+    inline void set_env(const char* k, const char* v) { SetEnvironmentVariable(k, v); };
+#else
+    #include <stdlib.h>
+    inline void set_env(const char* k, const char* v) { setenv(k, v, 1); };
+#endif
 
 bool QuerySvn(const string& workingDir, string& revision, string &date);
 bool ParseFile(const string& docFile, string& revision, string &date);
@@ -96,6 +105,7 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
 {
     string svncmd("svn info ");
     svncmd.append(workingDir);
+    set_env("LANG", "EN");
     FILE *svn = popen(svncmd.c_str(), "r");
 
     if(svn)
