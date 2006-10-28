@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# stolderdized from Ogre3D (www.ogre3d.org)
-
 # Check for proper versions of autotools
 # We require:
 #  - autoconf 2.50+
@@ -19,19 +17,33 @@ fi
 export WANT_AUTOMAKE='1.7'
 export WANT_AUTOCONF='2.5'
 
+# Default program names
+test -z "$AUTOCONF" && AUTOCONF=autoconf
+test -z "$AUTOHEADER" && AUTOHEADER=autoheader
+
+test -z "$AUTOMAKE" && AUTOMAKE=automake
+test -z "$ACLOCAL" && ACLOCAL=aclocal
+
+test -z "$LIBTOOL" && for LIBTOOL in glibtool libtool; do
+  ($LIBTOOL --version) < /dev/null > /dev/null 2>&1 && break
+done
+test -z "$LIBTOOLIZE" && for LIBTOOLIZE in glibtoolize libtoolize; do
+  ($LIBTOOLIZE --version) < /dev/null > /dev/null 2>&1 && break
+done
+
 ## Using prereq in autoconf rather than here, mostly for the debian systems at
 ## this point
-if test -n "`autoconf --version 2>&1|head -n 1|egrep '1.*|2.[0-4]'`"; then
+if test -n "`$AUTOCONF --version 2>&1|head -n 1|egrep '1.*|2.[0-4]'`"; then
 	echo "Autoconf 2.50 or above is required. Aborting build...";
     exit 1;
 fi
 
-if test -n "`automake --version 2>&1|head -n 1|egrep '1.[0-6]'`"; then
+if test -n "`$AUTOMAKE --version 2>&1|head -n 1|egrep '1.[0-6]'`"; then
 	echo "Automake 1.7 or above is required. Aborting build...";
 	exit 1;
 fi
 
-if test -n "`libtool --version 2>&1|head -n 1|cut -f 4 -d ' '|egrep '1.[0-3]'`"; then
+if test -n "`$LIBTOOL --version 2>&1|head -n 1|cut -f 4 -d ' '|egrep '1.[0-3]'`"; then
 	echo "Libtool 1.4 or above is required. Aborting build...";
 	exit 1;
 fi
@@ -40,8 +52,8 @@ fi
 rm -rf autom4te.cache
 
 # Fire up autotools
-libtoolize --force --copy && \
-	aclocal $ACLOCAL_FLAGS && \
-	autoheader && \
-	automake --include-deps --add-missing --foreign --copy && \
-	autoconf 
+$LIBTOOLIZE --force --copy && \
+	$ACLOCAL $ACLOCAL_FLAGS && \
+	$AUTOHEADER && \
+	$AUTOMAKE --include-deps --add-missing --foreign --copy && \
+	$AUTOCONF 
