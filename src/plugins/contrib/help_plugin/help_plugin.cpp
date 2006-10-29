@@ -32,6 +32,7 @@
 #include <wx/fs_zip.h>
 #include <wx/mimetype.h>
 #include <wx/filename.h>
+#include <globals.h> // cbMessageBox
 #include <manager.h>
 #include <configmanager.h>
 #include <editormanager.h>
@@ -124,13 +125,13 @@ namespace
     {
       cbHH_AKLINK link;
 
-      link.cbStruct =     sizeof(cbHH_AKLINK);
-      link.fReserved =    FALSE;
-      link.pszKeywords =  m_keyword.c_str();
-      link.pszUrl =       NULL;
-      link.pszMsgText =   NULL;
-      link.pszMsgTitle =  NULL;
-      link.pszWindow =    NULL;
+      link.cbStruct     = sizeof(cbHH_AKLINK);
+      link.fReserved    = FALSE;
+      link.pszKeywords  = m_keyword.c_str();
+      link.pszUrl       = NULL;
+      link.pszMsgText   = NULL;
+      link.pszMsgTitle  = NULL;
+      link.pszWindow    = NULL;
       link.fIndexOnFail = TRUE;
 
       fp_htmlHelp(0L, (const wxChar*)m_filename, cbHH_KEYWORD_LOOKUP, (DWORD)&link);
@@ -367,6 +368,7 @@ void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
 {
   const static wxString http_prefix(_T("http://"));
 
+  // Operate on help http (web) links
   if (helpfile.Mid(0, http_prefix.size()).CmpNoCase(http_prefix) == 0)
   {
     wxString the_url = helpfile;
@@ -377,12 +379,25 @@ void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
     return;
   }
 
-  wxString ext = wxFileName(helpfile).GetExt();
+  wxFileName the_helpfile = wxFileName(helpfile);
   Manager::Get()->GetMessageManager()->DebugLog(_T("Help File is %s"), helpfile.c_str());
 
+  if (!(the_helpfile.FileExists()))
+  {
+    wxString msg;
+    msg << _("Couldn't find the help file:\n")
+        << the_helpfile.GetFullPath() << _("\n")
+        << _("Do you want to run the associated program anyway?");
+    if (!(cbMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO | wxNO_DEFAULT) == wxID_YES));
+        return;
+  }
+
+  wxString ext = the_helpfile.GetExt();
+
+#ifdef __WXMSW__
+  // Operate on help files with keyword search (windows only)
   if (!keyword.IsEmpty())
   {
-#ifdef __WXMSW__
   	if (ext.CmpNoCase(_T("hlp")) == 0)
   	{
       wxWinHelpController HelpCtl;
@@ -398,15 +413,16 @@ void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
       p_thread->Run();
       return;
   	}
-#endif
   }
+#endif
 
   // Just call it with the associated program
   wxFileType *filetype = wxTheMimeTypesManager->GetFileTypeFromExtension(ext);
 
   if (!filetype)
   {
-    wxMessageBox(_("Couldn't find an associated program to open ") + wxFileName(helpfile).GetFullName(), _("Warning"), wxOK | wxICON_EXCLAMATION);
+    cbMessageBox(_("Couldn't find an associated program to open:\n") +
+      the_helpfile.GetFullPath(), _("Warning"), wxOK | wxICON_EXCLAMATION);
     return;
   }
 

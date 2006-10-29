@@ -1,5 +1,6 @@
 #include "HelpConfigDialog.h"
 #include <wx/xrc/xmlres.h>
+#include <globals.h> // cbMessageBox
 #include <manager.h>
 #include <editormanager.h>
 #include <messagemanager.h>
@@ -142,13 +143,13 @@ void HelpConfigDialog::Add(wxCommandEvent &event)
 
     if (it != m_Vector.end())
     {
-      wxMessageBox(_("This title is already in use"), _("Warning"), wxICON_WARNING);
+      cbMessageBox(_("This title is already in use"), _("Warning"), wxICON_WARNING);
       return;
     }
 
     if (text.Find(_T('/')) != -1 || text.Find(_T('\\')) != -1)
     {
-      wxMessageBox(_("Slashes and backslashes cannot be used to name a help file"), _("Warning"), wxICON_WARNING);
+      cbMessageBox(_("Slashes and backslashes cannot be used to name a help file"), _("Warning"), wxICON_WARNING);
       return;
     }
 
@@ -174,13 +175,13 @@ void HelpConfigDialog::Rename(wxCommandEvent &event)
 
     if (it != m_Vector.end())
     {
-      wxMessageBox(_("This title is already in use"), _("Warning"), wxICON_WARNING);
+      cbMessageBox(_("This title is already in use."), _("Warning"), wxICON_WARNING);
       return;
     }
 
     if (text.Find(_T('/')) != -1 || text.Find(_T('\\')) != -1)
     {
-      wxMessageBox(_("Slashes and backslashes cannot be used to name a help file"), _("Warning"), wxICON_WARNING);
+      cbMessageBox(_("Slashes and backslashes cannot be used to name a help file."), _("Warning"), wxICON_WARNING);
       return;
     }
 
@@ -191,7 +192,7 @@ void HelpConfigDialog::Rename(wxCommandEvent &event)
 
 void HelpConfigDialog::Delete(wxCommandEvent &event)
 {
-  if (wxMessageBox(_("Are you sure you want to remove this help file?"), _("Remove"), wxICON_QUESTION | wxYES_NO) == wxNO)
+  if (cbMessageBox(_("Are you sure you want to remove this help file?"), _("Remove"), wxICON_QUESTION | wxYES_NO) == wxNO)
   {
     return;
   }
@@ -288,7 +289,7 @@ void HelpConfigDialog::UpdateUI(wxUpdateUIEvent &event)
   XRCCTRL(*this, "btnBrowse", wxButton)->Enable(sel != -1);
   XRCCTRL(*this, "txtHelp", wxTextCtrl)->Enable(sel != -1);
   XRCCTRL(*this, "chkDefault", wxCheckBox)->Enable(sel != -1);
-  
+
   if (sel == -1 || count == 1)
   {
   	XRCCTRL(*this, "btnUp", wxButton)->Disable();
