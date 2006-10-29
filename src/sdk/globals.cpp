@@ -519,7 +519,7 @@ bool cbSaveToFile(const wxString& filename, const wxString& contents, wxFontEnco
                 << _("This could be caused by a wrong encoding setup, e.g. you have setup\n")
                 << _("an 'ansi encoding' file but use non-ansi characters in the editor.\n\n")
                 << _("Do you want to save the file anyway (it will be empty)?");
-            if (!(cbMessageBox(msg, _("Save file?"), wxICON_WARNING | wxYES_NO | wxNO_DEFAULT) == wxID_YES));
+            if (!(cbMessageBox(msg, _("Save file?"), wxICON_WARNING | wxYES_NO | wxNO_DEFAULT) == wxID_YES))
                 return false;
         }
 
