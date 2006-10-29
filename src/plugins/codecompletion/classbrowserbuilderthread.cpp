@@ -172,6 +172,10 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
     wxTreeItemId existing = tree->GetLastChild(parent);
     while (existing)
     {
+        // recurse
+        if (tree->ItemHasChildren(existing))
+            RemoveInvalidNodes(tree, existing);
+
         CBTreeData* data = (CBTreeData*)tree->GetItemData(existing);
         if (data && data->m_pToken)
         {
@@ -180,16 +184,25 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
                 data->m_TokenName != data->m_pToken->m_Name || // same for the token name
                 !TokenMatchesFilter(data->m_pToken))
             {
+                // keep parent and set flag if this is the last child of parent
+                wxTreeItemId parent = tree->GetItemParent(existing);
+                bool isLastChild = tree->GetChildrenCount(parent) == 1;
+                // we have to do this in two steps: first collapse and then set haschildren to false
+                if (isLastChild)
+                    tree->Collapse(parent);
+
 //                DBGLOG(_T("Item %s is invalid"), tree->GetItemText(existing).c_str());
                 wxTreeItemId next = tree->GetPrevSibling(existing);
                 tree->Delete(existing);
                 existing = next;
+
+                // if this was the last child of its parent, collapse the parent
+                if (isLastChild)
+                    tree->SetItemHasChildren(parent, false);
+
                 continue;
             }
         }
-        // recurse
-        if (tree->ItemHasChildren(existing))
-            RemoveInvalidNodes(tree, existing);
 
         existing = tree->GetPrevSibling(existing);
     }
