@@ -1060,8 +1060,21 @@ bool EditorManager::SwapActiveHeaderSource()
     // create a list of search dirs
     wxArrayString dirs;
 
+    cbProject* project = 0;
+
+    // if the file in question belongs to a different open project,
+    // then use that project instead.
+    // this fixes locating the file's pair in a workspace when the active file
+    // does not belong to the active project.
+    ProjectFile* opf = ed->GetProjectFile();
+    if (opf)
+        project = opf->GetParentProject();
+
+    // if we didn't get a valid project, try the active one
+    if (!project)
+        project = Manager::Get()->GetProjectManager()->GetActiveProject();
+
     // get project's include dirs
-    cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
     if (project)
     {
         dirs = project->GetIncludeDirs();
