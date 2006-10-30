@@ -21,4 +21,4 @@ noinst_HEADERS = symtabconfig.h \
 			symtab.h
 
 EXTRA_DIST = symtab.cbp \
-			symtab.unix.cbp
+			symtab-unix.cbp
