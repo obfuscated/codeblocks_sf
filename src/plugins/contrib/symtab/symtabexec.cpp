@@ -1,5 +1,6 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
+  #include <wx/button.h>
   #include <wx/dir.h>
   #include <wx/event.h>
   #include <wx/font.h>
