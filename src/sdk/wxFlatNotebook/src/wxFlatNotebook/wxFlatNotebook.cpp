@@ -102,6 +102,10 @@ void wxFlatNotebook::Init()
 
 	// Set default page height
 	wxMemoryDC memDc;
+
+	wxBitmap bmp(10, 10);
+	memDc.SelectObject(bmp);
+
 	int width, height;
 
 
@@ -742,6 +746,9 @@ wxPageContainer::wxPageContainer(wxWindow* parent, wxWindowID id, const wxPoint&
 
 	// Set default page height, this is done according to the system font
 	wxMemoryDC memDc;
+	wxBitmap bmp(10, 10);
+	memDc.SelectObject(bmp);
+
 	int width, height;
 
 #ifdef __WXGTK__

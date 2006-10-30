@@ -407,6 +407,10 @@ int wxFNBRenderer::CalcTabWidth(wxWindow *pageContainer, int tabIdx, int tabHeig
 	int tabWidth, shapePoints(0), width, pom;
 	wxMemoryDC dc;
 
+	// bitmap must be set before it can be used for anything
+	wxBitmap bmp(10, 10);
+	dc.SelectObject(bmp);
+
 	wxFont boldFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
 	boldFont.SetWeight(wxFONTWEIGHT_BOLD);
 
@@ -498,7 +502,9 @@ int wxFNBRenderer::CalcTabHeight(wxWindow *pageContainer)
 	int tabHeight;
 	wxMemoryDC dc;
 	wxUnusedVar( pageContainer );
-//	wxPageContainer *pc = static_cast<wxPageContainer*>( pageContainer );
+
+	wxBitmap bmp(10, 10);
+	dc.SelectObject(bmp);
 
 	// For GTK it seems that we must do this steps in order
 	// for the tabs will get the proper height on initialization

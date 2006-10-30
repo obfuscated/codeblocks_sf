@@ -49,6 +49,11 @@ void wxTabNavigatorWindow::Create(wxWindow* parent)
 	if( panelHeight == 0 )
 	{
 		wxMemoryDC mem_dc;
+
+		// bitmap must be set before it can be used for anything
+		wxBitmap bmp(10, 10);
+		mem_dc.SelectObject(bmp);
+
 		wxFont font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
 		font.SetWeight( wxBOLD );
 		mem_dc.SetFont(font);
