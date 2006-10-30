@@ -139,13 +139,14 @@ fi
 %{_datadir}/pixmaps/codeblocks.png
 %{pkgdata}/astyle.zip
 %{pkgdata}/autosave.zip
-%{pkgdata}/class_wizard.zip
-%{pkgdata}/code_completion.zip
-%{pkgdata}/compiler_gcc.zip
-%{pkgdata}/debugger_gdb.zip
+%{pkgdata}/classwizard.zip
+%{pkgdata}/codecompletion.zip
+%{pkgdata}/compiler.zip
+%{pkgdata}/debugger.zip
 %{pkgdata}/defaultmimehandler.zip
 %{pkgdata}/manager_resources.zip
 %{pkgdata}/resources.zip
+%{pkgdata}/scriptedwizard.zip
 %{pkgdata}/start_here.zip
 %{pkgdata}/tips.txt
 %{pkgdata}/todo.zip
@@ -160,7 +161,7 @@ fi
 %{pkgdata}/plugins/libclasswizard.*
 %{pkgdata}/plugins/libcodecompletion.*
 %{pkgdata}/plugins/libcompiler.*
-%{pkgdata}/plugins/libdebuggergdb.*
+%{pkgdata}/plugins/libdebugger.*
 %{pkgdata}/plugins/libdefaultmimehandler.*
 %{pkgdata}/plugins/libscriptedwizard.*
 %{pkgdata}/plugins/libtodo.*
@@ -171,10 +172,18 @@ fi
 %files contrib
 %defattr(-,root,root)
 %{_bindir}/cb_share_config
+%{pkgdata}/byogames.zip
+%{pkgdata}/cb_koders.zip
+%{pkgdata}/codesnippets.zip
 %{pkgdata}/codestat.zip
+%{pkgdata}/dragscroll.zip
 %{pkgdata}/envvars.zip
+%{pkgdata}/exporter.zip
 %{pkgdata}/help_plugin.zip
-%{pkgdata}/profiler.zip
+%{pkgdata}/keybinder.zip
+%{pkgdata}/lib_finder.zip
+%{pkgdata}/Profiler.zip
+%{pkgdata}/SymTab.zip
 %{pkgdata}/wxsmith.zip
 %{pkgdata}/images/wxsmith/*
 %{pkgdata}/images/codesnippets/*
@@ -188,7 +197,8 @@ fi
 %{pkgdata}/plugins/libhelp_plugin.*
 %{pkgdata}/plugins/libkeybinder.*
 %{pkgdata}/plugins/liblib_finder.*
-%{pkgdata}/plugins/libprofiler.*
+%{pkgdata}/plugins/libProfiler.*
+%{pkgdata}/plugins/libSymTab.*
 %{pkgdata}/plugins/libwxsmith.*
 
 %files devel
