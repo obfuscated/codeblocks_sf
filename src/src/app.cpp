@@ -423,6 +423,9 @@ bool CodeBlocksApp::OnInit()
     m_BatchNotify = false;
     m_Build = false;
     m_ReBuild = false;
+    m_HasProject = false;
+    m_HasWorkSpace = false;
+
     m_BatchWindowAutoClose = true;
 
 	wxTheClipboard->Flush();
@@ -642,9 +645,27 @@ int CodeBlocksApp::BatchJob()
     m_pBatchBuildDialog->Show();
 
     if (m_ReBuild)
-        compiler->RebuildWorkspace(m_BatchTarget);
+    {
+    	if(m_HasProject)
+    	{
+    		compiler->Rebuild(m_BatchTarget);
+    	}
+    	else if(m_HasWorkSpace)
+    	{
+    		compiler->RebuildWorkspace(m_BatchTarget);
+    	}
+    }
     else if (m_Build)
-        compiler->BuildWorkspace(m_BatchTarget);
+    {
+    	if(m_HasProject)
+    	{
+    		compiler->Build(m_BatchTarget);
+    	}
+    	else if(m_HasWorkSpace)
+    	{
+    		compiler->BuildWorkspace(m_BatchTarget);
+    	}
+    }
 
     // the batch build log might have been deleted in
     // CodeBlocksApp::OnBatchBuildDone().
@@ -754,22 +775,22 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                 if (handlerFrame)
                 {
                     int count = parser.GetParamCount();
-					filesInCmdLine = count != 0;
-					bool hasProj = false;
-					bool hasWksp = false;
+                    filesInCmdLine = count != 0;
+                    m_HasProject = false;
+                    m_HasWorkSpace = false;
                     for ( int param = 0; param < count; ++param )
                     {
                         // is it a project/workspace?
                         FileType ft = FileTypeOf(parser.GetParam(param));
                         if (ft == ftCodeBlocksProject)
                         {
-                            hasProj = true;
+                            m_HasProject = true;
                             s_DelayedFilesToOpen.Add(parser.GetParam(param));
                         }
                         else if (ft == ftCodeBlocksWorkspace)
                         {
                             // only one workspace can be opened
-                            hasWksp = true;
+                            m_HasWorkSpace = true;
                             s_DelayedFilesToOpen.Clear(); // remove all other files
                             s_DelayedFilesToOpen.Add(parser.GetParam(param)); // and add only the workspace
                             break; // and stop processing any more files
@@ -777,7 +798,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     }
 
                     // batch jobs
-                    m_Batch = hasProj || hasWksp;
+                    m_Batch = m_HasProject || m_HasWorkSpace;
                     m_Batch = m_Batch && (m_Build || m_ReBuild);
                 }
                 else
