@@ -1333,6 +1333,19 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
         int cpos = control->GetCurrentPos();
         int clen = control->GetLength();
 
+        // when the user initially had a selection, but then changed the scope
+        // to entire scope, the values of ssta and send will have a bad influence in
+        // the following calculations, therefor check for the scenario
+        // and set the ssta en send to cpos (in the case there would be no selection
+        // that's the value they have [no selection : ssta=send=cpos])
+        if(data->scope== 0 && (ssta != cpos || send != cpos))
+        {
+        	ssta = cpos;
+        	send = cpos;
+        }
+
+
+
         data->start = 0;
         data->end   = clen;
 
