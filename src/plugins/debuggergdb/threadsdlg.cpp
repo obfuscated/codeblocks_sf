@@ -95,5 +95,6 @@ void ThreadsDlg::OnSwitchThread(wxCommandEvent& event)
 
     unsigned long thread_num;
     if (thread.ToULong(&thread_num, 10))
-        m_pDbg->GetState().GetDriver()->SwitchThread(thread_num);
+        if (m_pDbg->GetState().GetDriver())
+            m_pDbg->GetState().GetDriver()->SwitchThread(thread_num);
 }
