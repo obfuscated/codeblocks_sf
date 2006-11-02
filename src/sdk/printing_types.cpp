@@ -23,7 +23,15 @@ wxPrinter* g_printer = 0;
 void InitPrinting()
 {
     if (!g_printer)
+    {
         g_printer = new wxPrinter;
+        int paperid = (wxPaperSize)Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/printerdialog/paperid"), wxPAPER_A4 );
+        int paperorientation  = (wxPaperSize)Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/printerdialog/paperorientation"), wxPORTRAIT );
+        wxPrintData* ppd = &(g_printer->GetPrintDialogData().GetPrintData());
+        ppd->SetPaperId((wxPaperSize)paperid);
+        ppd->SetOrientation(paperorientation);
+    }
+
 //    if (!g_pageSetupData)
 //        g_pageSetupData = new wxPageSetupDialogData;
 }

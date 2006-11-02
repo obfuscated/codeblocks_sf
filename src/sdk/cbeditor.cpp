@@ -1998,6 +1998,12 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
             DeInitPrinting();
         }
     }
+    else
+    {
+        wxPrintData* ppd = &(g_printer->GetPrintDialogData().GetPrintData());
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/printerdialog/paperid"), (int)ppd->GetPaperId());
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/printerdialog/paperorientation"), (int)ppd->GetOrientation());
+    }
     delete printout;
 
     // revert line numbers and gutter settings
