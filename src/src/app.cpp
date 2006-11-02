@@ -75,9 +75,9 @@ namespace
 // (received through DDE or command line)
 // to be loaded after the app has started up
 wxArrayString s_DelayedFilesToOpen;
+bool s_Loading = false;
 
 #ifdef __WXMSW__
-bool s_Loading = false;
 
 class DDEServer : public wxServer
 {
@@ -414,9 +414,8 @@ void CodeBlocksApp::InitLocale()
 
 bool CodeBlocksApp::OnInit()
 {
-#ifdef __WXMSW__
     s_Loading = true;
-#endif
+
     m_pBatchBuildDialog = 0;
     m_BatchExitCode = 0;
     m_Batch = false;
@@ -483,9 +482,7 @@ bool CodeBlocksApp::OnInit()
 
         if (m_Batch)
         {
-#ifdef __WXMSW__
             s_Loading = false;
-#endif
             LoadDelayedFiles(frame);
 
             BatchJob();
@@ -525,8 +522,8 @@ bool CodeBlocksApp::OnInit()
 
 #ifdef __WXMSW__
         InitAssociations();
-        s_Loading = false;
 #endif
+        s_Loading = false;
 
         LoadDelayedFiles(frame);
 
@@ -881,6 +878,8 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
 
 void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
 {
+	if (s_Loading)
+		return; // still loading; we can't possibly be interested for this event ;)
 	if (!event.GetActive())
 		return;
     if (!Manager::Get())
