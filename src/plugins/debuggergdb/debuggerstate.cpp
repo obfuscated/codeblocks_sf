@@ -102,6 +102,13 @@ wxString DebuggerState::ConvertToValidFilename(const wxString& filename)
             fname = pf->relativeFilename;
             fname.Replace(_T("\\"), _T("/"));
         }
+        else
+        {
+        	// for foreign files, we still should use a relative path
+        	wxFileName f(filename);
+        	f.MakeRelativeTo(prj->GetBasePath());
+        	fname = f.GetFullPath();
+        }
     }
     return fname;
 }
