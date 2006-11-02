@@ -113,7 +113,7 @@ void CompilerMINGW::Reset()
 	m_Options.AddOption(_("Stop compiling after first error"), _T("-Wfatal-errors"), category);
 	m_Options.AddOption(_("Inhibit all warning messages"), _T("-w"), category);
 	m_Options.AddOption(_("Enable warnings demanded by strict ISO C and ISO C++"), _T("-pedantic"), category);
-	m_Options.AddOption(_("Treat as errors the warnings demanded by strict ISO C and ISO C++"), _T("-pedantic-error"), category);
+	m_Options.AddOption(_("Treat as errors the warnings demanded by strict ISO C and ISO C++"), _T("-pedantic-errors"), category);
 	m_Options.AddOption(_("Warn if main() is not conformant"), _T("-Wmain"), category);
     // optimization
     category = _("Optimization");
