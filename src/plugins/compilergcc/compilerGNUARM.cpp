@@ -87,6 +87,7 @@ void CompilerGNUARM::Reset()
 	wxString category = _("Warnings");
 
 	// warnings
+	m_Options.AddOption(_("In C mode, support all ISO C90 programs. In C++ mode, remove GNU extensions that conflict with ISO C++"), _T("-ansi"), category);
 	m_Options.AddOption(_("Enable all compiler warnings (overrides every other setting)"), _T("-Wall"), category);
 	m_Options.AddOption(_("Enable standard compiler warnings"), _T("-W"), category);
 	m_Options.AddOption(_("Stop compiling after first error"), _T("-Wfatal-errors"), category);
