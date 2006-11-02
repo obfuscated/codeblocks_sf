@@ -34,6 +34,7 @@
 #include <wx/colour.h>
 #include <wx/filedlg.h>
 #include <wx/tokenzr.h>
+#include <wx/clipbrd.h>
 
 #include "codesnippetswindow.h"
 #include "snippetitemdata.h"
@@ -59,6 +60,7 @@ int idMnuApplySnippet = wxNewId();
 int idMnuLoadSnippetsFromFile = wxNewId();
 int idMnuSaveSnippetsToFile = wxNewId();
 int idMnuRemoveAll = wxNewId();
+int idMnuCopyToClipboard = wxNewId();
 
 // Search config menu items
 int idMnuCaseSensitive = wxNewId();
@@ -77,6 +79,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 	EVT_MENU(idMnuLoadSnippetsFromFile, CodeSnippetsWindow::OnMnuLoadSnippetsFromFile)
 	EVT_MENU(idMnuSaveSnippetsToFile, CodeSnippetsWindow::OnMnuSaveSnippetsToFile)
 	EVT_MENU(idMnuRemoveAll, CodeSnippetsWindow::OnMnuRemoveAll)
+	EVT_MENU(idMnuCopyToClipboard, CodeSnippetsWindow::OnMnuCopyToClipboard)
 	// ---
 
 	// Search config menu event
@@ -332,6 +335,8 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 				snippetsTreeMenu->Append(idMnuApplySnippet, _("Apply"));
 				snippetsTreeMenu->AppendSeparator();
 				snippetsTreeMenu->Append(idMnuRemove, _("Remove"));
+				snippetsTreeMenu->AppendSeparator();
+				snippetsTreeMenu->Append(idMnuCopyToClipboard, _("Copy to clipboard"));
 			break;
 		}
 
@@ -549,6 +554,19 @@ void CodeSnippetsWindow::OnMnuChangeScope(wxCommandEvent& event)
 void CodeSnippetsWindow::OnMnuClear(wxCommandEvent& event)
 {
 	m_SearchSnippetCtrl->Clear();
+}
+
+void CodeSnippetsWindow::OnMnuCopyToClipboard(wxCommandEvent& event)
+{
+	if (wxTheClipboard->Open())
+	{
+		const SnippetItemData* itemData = (SnippetItemData*)(m_SnippetsTreeCtrl->GetItemData(m_MnuAssociatedItemID));
+		if (itemData)
+		{
+			wxTheClipboard->SetData(new wxTextDataObject(itemData->GetSnippet()));
+			wxTheClipboard->Close();
+		}
+	}
 }
 
 bool SnippetsDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)

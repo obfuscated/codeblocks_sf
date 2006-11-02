@@ -91,6 +91,7 @@ class CodeSnippetsWindow : public wxPanel
 		void OnMnuCaseSensitive(wxCommandEvent& event);
 		void OnMnuChangeScope(wxCommandEvent& event);
 		void OnMnuClear(wxCommandEvent& event);
+		void OnMnuCopyToClipboard(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 };
 

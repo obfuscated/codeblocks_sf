@@ -10,30 +10,38 @@
 		<Build>
 			<Target title="Debug - Unix">
 				<Option output="../../../devel/share/codeblocks/plugins/libcodesnippets.so" />
-				<Option object_output="obj/Debug/" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\codesnippets" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add option="`wx-config --cflags`" />
-					<Add option="-fexceptions" />
-					<Add option="-Winvalid-pch" />
-					<Add option="-fPIC" />
-					<Add option="-DCB_PRECOMP" />
-					<Add option="-DcbDEBUG" />
-					<Add directory="../../../sdk" />
-					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
-				<Linker>
-					<Add option="`wx-config --libs`" />
-					<Add directory="../../../devel" />
-				</Linker>
+			</Target>
+			<Target title="Release - Unix">
+				<Option output="../../../devel/share/codeblocks/plugins/libcodesnippets.so" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\codesnippets" />
+				<Option type="3" />
+				<Option compiler="gcc" />
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="Debug - Unix;" />
+			<Add alias="All" targets="Release - Unix;" />
 		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="`wx-config --cflags`" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-fPIC" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DcbDEBUG" />
+			<Add directory="../../../sdk" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --libs`" />
+			<Add directory="../../../devel" />
+		</Linker>
 		<ExtraCommands>
 			<Add after="./update" />
 			<Mode after="always" />
@@ -41,42 +49,50 @@
 		<Unit filename="codesnippets.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Debug - Unix" />
+			<Option target="Release - Unix" />
 		</Unit>
 		<Unit filename="codesnippets.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Debug - Unix" />
+			<Option target="Release - Unix" />
 		</Unit>
 		<Unit filename="codesnippetstreectrl.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Debug - Unix" />
+			<Option target="Release - Unix" />
 		</Unit>
 		<Unit filename="codesnippetstreectrl.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Debug - Unix" />
+			<Option target="Release - Unix" />
 		</Unit>
 		<Unit filename="codesnippetswindow.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Debug - Unix" />
+			<Option target="Release - Unix" />
 		</Unit>
 		<Unit filename="codesnippetswindow.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Debug - Unix" />
+			<Option target="Release - Unix" />
 		</Unit>
 		<Unit filename="snippetitemdata.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Debug - Unix" />
+			<Option target="Release - Unix" />
 		</Unit>
 		<Unit filename="snippetitemdata.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Debug - Unix" />
+			<Option target="Release - Unix" />
 		</Unit>
 		<Extensions />
 	</Project>
