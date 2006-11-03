@@ -31,11 +31,35 @@
           </object>
           <object class="sizeritem">
             <object class="wxStaticText">
-              <label>Priority (1-9):</label>
+              <size>0,0</size>
+              <label></label>
             </object>
           </object>
           <object class="sizeritem">
             <object class="wxChoice" name="chcUser">
+              <content/>
+            </object>
+            <flag>wxBOTTOM|wxEXPAND</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btAddUser">
+              <label>Add new user</label>
+            </object>
+          </object>
+          <growablecols>0</growablecols>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Type:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Priority (1-9):</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxChoice" name="chcType">
               <content/>
             </object>
             <flag>wxBOTTOM|wxEXPAND</flag>
@@ -50,10 +74,9 @@
             <flag>wxBOTTOM|wxEXPAND</flag>
             <border>8</border>
           </object>
-          <growablecols>0</growablecols>
           <object class="sizeritem">
             <object class="wxStaticText">
-              <label>Type:</label>
+              <label>Position:</label>
             </object>
           </object>
           <object class="sizeritem">
@@ -62,8 +85,13 @@
             </object>
           </object>
           <object class="sizeritem">
-            <object class="wxChoice" name="chcType">
-              <content/>
+            <object class="wxChoice" name="chcPosition">
+              <content>
+                <item>New line above current line</item>
+                <item>Exactly where caret is now</item>
+                <item>New line below current line</item>
+              </content>
+              <selection>0</selection>
             </object>
             <flag>wxBOTTOM|wxEXPAND</flag>
             <border>8</border>
@@ -76,29 +104,6 @@
                 <item>Doxygen style comment</item>
                 <item>Compiler warning</item>
                 <item>Compiler error</item>
-              </content>
-              <selection>0</selection>
-            </object>
-            <flag>wxBOTTOM|wxEXPAND</flag>
-            <border>8</border>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Position:</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <size>0,0</size>
-              <label></label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxChoice" name="chcPosition">
-              <content>
-                <item>New line above current line</item>
-                <item>Exactly where caret is now</item>
-                <item>New line below current line</item>
               </content>
               <selection>0</selection>
             </object>

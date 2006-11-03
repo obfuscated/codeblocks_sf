@@ -6,6 +6,7 @@
 
 class wxArrayString;
 class wxWindow;
+class wxCommandEvent;
 
 enum ToDoPosition
 {
@@ -40,7 +41,9 @@ class AddTodoDlg : public wxDialog
 	private:
 		void LoadUsers() const;
 		void SaveUsers() const;
+		void OnAddUser(wxCommandEvent& event);
 		wxArrayString& m_Types;
+		DECLARE_EVENT_TABLE()
 };
 
 #endif // ADDTODODLG_H
