@@ -479,6 +479,7 @@ bool CodeBlocksApp::OnInit()
         Manager::SetBatchBuild(m_Batch);
         Manager::Get()->GetScriptingManager();
         MainFrame* frame = InitFrame();
+        m_Frame = frame;
 
         if (m_Batch)
         {
@@ -873,6 +874,23 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
     }
     s_DelayedFilesToOpen.Clear();
 }
+
+
+#ifdef __WXMAC__
+
+void CodeBlocksApp::MacOpenFile(const wxString & fileName )
+{
+    if (m_Frame)
+        m_Frame->Open(fileName, true);
+}
+
+void CodeBlocksApp::MacPrintFile(const wxString & fileName )
+{
+    //TODO
+    wxApp::MacPrintFile(fileName);
+}
+
+#endif // __WXMAC__
 
 // event handlers
 

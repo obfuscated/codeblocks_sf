@@ -46,6 +46,12 @@ class CodeBlocksApp : public wxApp
 		void OnAppActivate(wxActivateEvent& event);
         bool OnCmdLineParsed(wxCmdLineParser& parser);
         void OnFatalException();
+#ifdef __WXMAC__
+    // in response of an open-document apple event
+    virtual void         MacOpenFile(const wxString &fileName) ;
+    // in response of a print-document apple event
+    virtual void         MacPrintFile(const wxString &fileName) ;
+#endif
     protected:
         void OnBatchBuildDone(CodeBlocksEvent& event);
         bool LoadConfig();
@@ -73,6 +79,7 @@ class CodeBlocksApp : public wxApp
         wxDialog* m_pBatchBuildDialog;
         wxString m_BatchTarget;
         int m_BatchExitCode;
+        MainFrame* m_Frame;
         bool m_Batch;
         bool m_BatchNotify;
         bool m_BatchWindowAutoClose; // default: true
