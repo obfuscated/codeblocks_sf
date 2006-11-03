@@ -5,9 +5,6 @@
 #include <wx/timer.h>
 #include <wx/event.h>
 
-//#define FETCHING_SYSTEM1
-#define FETCHING_SYSTEM2
-
 /** \brief Class allowing drawing over it's surface.
  *
  * This window is upgrade of standard wxScrolledWindow.
@@ -69,9 +66,7 @@ class wxsDrawingWindow: public wxScrolledWindow
         void PanelMouse(wxMouseEvent& event);
         void PanelKeyboard(wxKeyEvent& event);
 
-        #ifdef FETCHING_SYSTEM2
         void OnFetchSequence(wxCommandEvent& event);
-        #endif
 
         /** \brief Function stating sequence fetching editor's background
          *
@@ -91,16 +86,11 @@ class wxsDrawingWindow: public wxScrolledWindow
         void ShowChildren();
 
         class DrawingPanel;
-        DrawingPanel* Panel;
-        bool PaintAfterFetch;
-        bool WaitTillHideChildren;
-        bool IsBlockFetch;
-        wxBitmap* Bitmap;
 
-        #ifdef FETCHING_SYSTEM2
-        bool DuringFetch;
-        bool WaitingForPaint;
-        #endif
+        DrawingPanel* Panel;        /// \brief Panel put over children
+        wxBitmap* Bitmap;           /// \brief Bitmap with fetched window content (may be valid partially)
+        bool IsBlockFetch;          /// \brief Flag used to block fetching background (may be set by user)
+        bool DuringFetch;           /// \brief Set to true if we're during fetching sequence
 
         DECLARE_EVENT_TABLE()
 };
