@@ -63,6 +63,11 @@
     #include "associations.h"
 #endif
 
+#if defined(__APPLE__) && defined(__MACH__)
+#include <sys/param.h>
+#include <mach-o/dyld.h>
+#endif
+
 #include "appglobals.h"
 
 #ifndef CB_PRECOMP
@@ -230,7 +235,7 @@ bool CodeBlocksApp::LoadConfig()
     wxString actualData = _T("/share/codeblocks");
 #ifdef __WXMAC__
     if (!data.Contains(wxString(_T("/Resources"))))
-        data << _T("/..") << actualData; // not a bundle, use relative path
+        data = GetAppPath() + actualData; // not a bundle, use relative path
 #else
     data << actualData;
 #endif
@@ -736,18 +741,25 @@ wxString CodeBlocksApp::GetAppPath() const
     GetModuleFileName(0L, name, MAX_PATH);
     wxFileName fname(name);
     base = fname.GetPath(wxPATH_GET_VOLUME);
-#elif defined(__WXMAC__)
-	// TODO: get the path
-	base = _T(".");
 #else
     if (!m_Prefix.IsEmpty())
         return m_Prefix;
 
+#ifdef SELFPATH
     // SELFPATH is a macro from prefix.h (binreloc)
     // it returns the absolute filename of us
     // similar to win32 GetModuleFileName()...
     base = wxString(SELFPATH,wxConvUTF8);
     base = wxFileName(base).GetPath();
+#endif
+#if defined(__APPLE__) && defined(__MACH__)
+    char path[MAXPATHLEN+1];
+    uint32_t path_len = MAXPATHLEN;
+    // SPI first appeared in Mac OS X 10.2 
+    _NSGetExecutablePath(path, &path_len);
+    base = wxString(path, path_len);
+    base = wxFileName(base).GetPath();
+#endif
 	if (base.IsEmpty())
 		base = _T(".");
 #endif
