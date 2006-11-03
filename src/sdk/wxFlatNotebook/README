@@ -144,5 +144,25 @@ Version 2.0
    
 - Fixed a bug in SetSelection - in case that the navigation buttons were hidden, and the selection was not visible, it did not ensure that it will be visible
 
+========================================================
+Version 2.1
+========================================================
+
+This version is released shortly after 2.0 since v2.0 contained many code changes, I expected feedback from user
+which came ... (as expected)
+
+So, the following changes fixes applies to v2.1:
+
+- 'x' button on tabs with VS8 style
+- dropping page on foreign notebook that does not have image list, while the page does have caused a crash 
+- Drawing problems with VS71 & Fancy style when selecting the bottoms tabs
+- DeletePage, RemovePage now accepts second argument to allow user to disable page closing events
+- Page changing events are now fired from SetSelection, to fix a problem where only mouse left click allowed users to handle the page changes event (e.g. Ctrl + T did not fire page changes event ... )
+- If no right click menu is provided, an event wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU is fired (a bug that existed preveneted this event to be fired)
+- wxFNB_ALLOW_FOREIGN_DND style added (check the demo)
+- All xpm files are now located on a single resource file
+- the smart tabbing dialog icon, was replaced from PNG to XPM.
+
+
 Have fun !
 Eran
