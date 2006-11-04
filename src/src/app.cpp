@@ -757,7 +757,7 @@ wxString CodeBlocksApp::GetAppPath() const
     uint32_t path_len = MAXPATHLEN;
     // SPI first appeared in Mac OS X 10.2 
     _NSGetExecutablePath(path, &path_len);
-    base = wxString(path, path_len);
+    base = wxString(path, wxConvUTF8, path_len);
     base = wxFileName(base).GetPath();
 #endif
 	if (base.IsEmpty())
