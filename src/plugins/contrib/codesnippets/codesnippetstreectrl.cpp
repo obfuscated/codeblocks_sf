@@ -123,7 +123,7 @@ void CodeSnippetsTreeCtrl::SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemI
 		TiXmlElement element("item");
 
 		// Write the item's name
-		element.SetAttribute("name", GetItemText(item).mb_str());
+		element.SetAttribute("name", cbU2C(GetItemText(item)));
 
 		// Write the type of the item
 		switch (data->GetType())
@@ -144,7 +144,7 @@ void CodeSnippetsTreeCtrl::SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemI
 		if (data->GetType() == SnippetItemData::TYPE_SNIPPET)
 		{
 			TiXmlElement snippetElement("snippet");
-			TiXmlText snippetElementText(data->GetSnippet().mb_str());
+			TiXmlText snippetElementText(cbU2C(data->GetSnippet()));
 
             snippetElement.InsertEndChild(snippetElementText);
 
