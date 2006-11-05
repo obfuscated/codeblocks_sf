@@ -35,8 +35,8 @@ EXTRA_DIST = 	lib_finder.cbp \
 		update \
 		update.bat \
 		readme.txt \
-		license.txt \
 		manifest.xml
+#		license.txt 
 
 pkgdata_DATA = lib_finder.zip
 CLEANFILES = $(pkgdata_DATA)

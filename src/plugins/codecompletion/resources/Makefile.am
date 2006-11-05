@@ -12,6 +12,7 @@ uninstall-local:
 	rm -f $(DESTDIR)$(pkgdatadir)/images/codecompletion/*.png
 
 EXTRA_DIST = classbrowser.xrc \
+	codecompletion_toolbar.xrc \
 	insert_class_method.xrc \
 	manifest.xml \
 	selectincludefile.xrc \
