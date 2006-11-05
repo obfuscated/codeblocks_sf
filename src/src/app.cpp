@@ -892,8 +892,14 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
 
 void CodeBlocksApp::MacOpenFile(const wxString & fileName )
 {
-    if (m_Frame)
+    if (s_Loading)
+    {
+        s_DelayedFilesToOpen.Add(fileName);
+    }
+    else if (m_Frame)
+    {
         m_Frame->Open(fileName, true);
+    }
 }
 
 void CodeBlocksApp::MacPrintFile(const wxString & fileName )
