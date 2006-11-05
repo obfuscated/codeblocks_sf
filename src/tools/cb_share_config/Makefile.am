@@ -1,6 +1,8 @@
 bin_PROGRAMS = cb_share_config
 
-INCLUDES = $(WX_CXXFLAGS)
+INCLUDES = $(WX_CXXFLAGS) \
+			-I$(top_srcdir)/src/sdk \
+			-I$(top_srcdir)/src/sdk/tinyxml
 
 cb_share_config_LDFLAGS = 
 
