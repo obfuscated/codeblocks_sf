@@ -1,8 +1,9 @@
 %define _svnrev		%(echo @VERSION@ | cut -c 8-)
 %define req_wxgtk	2.6.0
 %define _fedora		%(if [ -f /etc/fedora-release ]; then echo 1; else echo 0; fi)
+%define _redhat		%(if [ -f /etc/redhat-release ]; then echo 1; else echo 0; fi)
 %define _suse           %(if [ -f /etc/SuSE-release ]; then echo 1; else echo 0; fi)
-%define _mandriva       %(if [ -f /etc/mandrake-release ]; then echo 1; else echo 0; fi)
+%define _mandrake       %(if [ -f /etc/mandrake-release ]; then echo 1; else echo 0; fi)
 %define _version        1.0_0.svn.%{_svnrev}
 %define _rel		0
 %define _release	%{_rel}	
@@ -16,16 +17,24 @@
 %define _prefix		/opt/gnome
 %define _sysconfdir	/etc%{_prefix}
 %endif
-%if %_mandriva
-%define _mandriva_version   %(cat /etc/mandriva-release|cut -f4 -d" ")
-%define _mandriva_vernum    %(echo "%_{mandriva_version}"|tr -d '.')
-%define _release            %{_rel}.mdk%{_mandriva_vernum}
+%if %_mandrake
+%define _mandrake_version   %(cat /etc/mandrake-release|cut -f4 -d" ")
+%define _mandrake_vernum    %(echo "%{_mandrake_version}"|tr -d '.')
+%define _release            %{_rel}.mdk%{_mandrake_vernum}
 %define _distribution       %(cat /etc/mandrake-release|cut -f1-4 -d" ")
+%define _redhat 0
 %endif
 %if %_fedora
 %define _fedora_vernum      %(cat /etc/fedora-release | cut -f4 -d" ")
 %define _release            %{_rel}.fc%{_fedora_vernum}
 %define _distribution       %(cat /etc/fedora-release|cut -f1-4 -d" ")
+%define _redhat 0
+%endif
+%if %_redhat
+%define _redhat_prefix      %(grep -q "Red Hat Linux" /etc/redhat-release && echo rhl || echo el)
+%define _redhat_vernum      %(rpm -qf --queryformat %{VERSION} /etc/redhat-release|tr -d '.')
+%define _release            %{_rel}.%{_redhat_prefix}%{_redhat_vernum}
+%define _distribution       %(cat /etc/redhat-release)
 %endif
 
 %if %_suse
@@ -34,10 +43,17 @@
 %endif
 %endif
 
-%if %_mandriva
+%if %_mandrake
 %define debugrpm            1
 %endif
 
+%define automake17	    0
+
+%if %_redhat
+%if %_redhat_vernum < 4
+%define automake17	    1
+%endif
+%endif
 
 Name:			codeblocks
 Version:		%{_version}
@@ -51,7 +67,7 @@ Source:			%{name}-@VERSION@.tar.gz
 BuildRoot:		%{_tmppath}/%{name}-%{version}-buildroot
 Provides:		codeblocks
 
-%if ! %_mandriva
+%if ! %_mandrake
 Requires:               wxGTK >= %{req_wxgtk}
 BuildRequires:  	wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
 %else
@@ -59,7 +75,11 @@ Requires:               wxGTK2.6 >= %{req_wxgtk}
 BuildRequires:          wxGTK2.6 >= %{req_wxgtk}, wxgtku-devel >= %{req_wxgtk}
 %endif
 
+%if ! %{automake17}
 BuildRequires:          intltool, gcc-c++, make, gettext, autoconf >= 2.5, automake >= 1.7, libtool >= 1.4, m4
+%else
+BuildRequires:          intltool, gcc-c++, make, gettext, autoconf >= 2.5, automake17, libtool >= 1.4, m4
+%endif
 BuildRequires:  	libstdc++, libstdc++-devel
 BuildRequires:  	zip, subversion
 
@@ -101,7 +121,11 @@ Code::Blocks SDK to develop your own plugins.
 %{?suse_update_config:%{suse_update_config -f}}
 
 %build
+%if ! %{automake17}
  ./bootstrap
+%else
+ AUTOMAKE=automake-1.7 ACLOCAL=aclocal-1.7 ACLOCAL_FLAGS="-I %{_datadir}/aclocal" ./bootstrap
+%endif
   %configure \
     --enable-contrib
   %__make
@@ -209,6 +233,9 @@ fi
 %{_includedir}/%{name}/*
 
 %changelog
+* Sun Nov  5 2006 Daniel Orb <danielorb2000@googlemail.com>
+- applied patch #1605
+- renamed _mandriva to _mandrake
 * Wed Oct 11 2006 Daniel Orb <danielorb2000@googlemail.com>
 - Added cb_share_config to filelist
 * Sun Aug 20 2006 Daniel Orb <danielorb2000@googlemail.com>
