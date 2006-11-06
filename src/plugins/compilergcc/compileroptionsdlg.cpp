@@ -291,6 +291,12 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
     Layout();
     GetSizer()->Layout();
     GetSizer()->SetSizeHints(this);
+#ifdef __WXMAC__
+	// seems it's not big enough on the Apple/Mac : hacking time
+    int min_width, min_height;
+    GetSize(&min_width, &min_height);
+    this->SetSizeHints(min_width+140,min_height,-1,-1);
+#endif
     this->SetSize(-1, -1, 0, 0);
     this->CentreOnScreen();
 } // end of constructor
