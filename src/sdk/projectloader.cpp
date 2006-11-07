@@ -1197,8 +1197,6 @@ wxString ProjectLoader::GetValidCompilerID(const wxString& proposal, const wxStr
     if (CompilerFactory::GetCompiler(proposal))
         return proposal;
 
-    m_OpenDirty = true;
-
     // check the map; maybe we asked the user before
     CompilerSubstitutes::iterator it = m_CompilerSubstitutes.find(proposal);
     if (it != m_CompilerSubstitutes.end())
@@ -1211,23 +1209,29 @@ wxString ProjectLoader::GetValidCompilerID(const wxString& proposal, const wxStr
     if (!proposal.IsEmpty())
     {
         long int idx = -1;
-        proposal.ToLong(&idx);
-        compiler = CompilerFactory::GetCompiler(idx);
+        if (proposal.ToLong(&idx))
+			compiler = CompilerFactory::GetCompiler(idx);
     }
 
     if (!compiler)
     {
         wxString msg;
-        msg.Printf(_("The defined compiler for %s cannot be located. "
-                    "Please choose the compiler you want to use:"), scope.c_str());
+        msg.Printf(_("The defined compiler for %s cannot be located (ID: %s).\n"
+                    "Please choose the compiler you want to use instead and click \"OK\".\n"
+                    "If you click \"Cancel\", the project/target will not be built."), scope.c_str(),
+                    proposal.c_str());
         compiler = CompilerFactory::SelectCompilerUI(msg);
     }
 
     if (!compiler)
     {
-        cbMessageBox(_("Setting to default compiler..."), _("Warning"), wxICON_WARNING);
-        return CompilerFactory::GetDefaultCompilerID();
+//        cbMessageBox(_("Setting to default compiler..."), _("Warning"), wxICON_WARNING);
+//        return CompilerFactory::GetDefaultCompilerID();
+		m_CompilerSubstitutes[proposal] = wxEmptyString;
+		return wxEmptyString;
     }
+
+    m_OpenDirty = true;
 
     // finally, keep the user selection in the map so we don't ask him again
     m_CompilerSubstitutes[proposal] = compiler->GetID();

@@ -132,10 +132,6 @@ void cbProject::SetCompilerID(const wxString& id)
 {
 // TODO (mandrav##): Is this needed? The project's compiler has nothing to do with the targets' compilers...
 
-
-    if (!CompilerFactory::GetCompiler(id))
-        return; // Invalid compiler
-
     CompileTargetBase::SetCompilerID(id);
     if (id != GetCompilerID())
     {

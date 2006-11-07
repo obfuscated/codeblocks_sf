@@ -230,16 +230,6 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         XRCCTRL(*this, "lblBuildScriptsNote", wxStaticText)->Show(hasBuildScripts);
     }
 
-	// let's start filling in all the panels of the configuration dialog
-	// there are compiler dependent settings and compiler indepenedent settings
-
-	// compiler independent (so settings these ones is sufficient)
-	DoFillOthers();
-	DoFillCompilerSets();	// the list of compilers (will set m_CurrentCompilerIdx an m_Options !!!)
-	DoFillTree();
-	// compiler dependent settings
-	DoFillCompilerDependentSettings();
-
     wxChoice* cmb = XRCCTRL(*this, "cmbBuildMethod", wxChoice);
     if (cmb)
     {
@@ -287,6 +277,62 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         XRCCTRL(*this, "txtCmdAfter", wxTextCtrl)->Enable(!en);
         XRCCTRL(*this, "chkAlwaysRunPost", wxCheckBox)->Enable(!en);
     }
+
+	// let's start filling in all the panels of the configuration dialog
+	// there are compiler dependent settings and compiler independent settings
+
+	// compiler independent (so settings these ones is sufficient)
+	DoFillOthers();
+	DoFillTree();
+	int compilerIdx = CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompilerID());
+    if (m_pTarget)
+        compilerIdx = CompilerFactory::GetCompilerIndex(m_pTarget->GetCompilerID());
+    else if (m_pProject)
+        compilerIdx = CompilerFactory::GetCompilerIndex(m_pProject->GetCompilerID());
+	if((m_pTarget || m_pProject) && compilerIdx == -1)
+	{ // unknown user compiler
+		// similar code can be found @ OnTreeSelectionChange()
+		// see there for more info : duplicate code now, since here we still need
+		// to fill in the compiler list for the choice control, where in
+		// OnTreeSelectionChange we just need to set an entry
+		// TODO : make 1 help method out of this, with some argument indicating
+		// to fill the choice list, or break it in 2 methods with the list filling in between them
+		// or maybe time will bring even brighter ideas
+		wxString CompilerId = m_pTarget?m_pTarget->GetCompilerID():m_pProject->GetCompilerID();
+		wxString msg;
+		msg.Printf(_("The defined compiler cannot be located (ID: %s).\n"
+					"Please choose the compiler you want to use instead and click \"OK\".\n"
+					"If you click \"Cancel\", the project/target will remain configured for that compiler and consequently can not be configured and will not be built."),
+					CompilerId.c_str());
+		if(Compiler* compiler = CompilerFactory::SelectCompilerUI(msg))
+		{	// a new compiler was choosen, proceed as if the user manually selected another compiler
+			// that means set the compilerselection list accordingly
+			// and go directly to (On)CompilerChanged
+			int NewCompilerIdx = CompilerFactory::GetCompilerIndex(compiler);
+			DoFillCompilerSets(NewCompilerIdx);
+			wxCommandEvent Dummy;
+			OnCompilerChanged(Dummy);
+		}
+		else
+		{ // the user cancelled and wants to keep the compiler
+			DoFillCompilerSets(compilerIdx);
+			if(wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook))
+			{
+				nb->Disable();
+			}
+		}
+	}
+	else
+	{
+		if (!CompilerFactory::GetCompiler(compilerIdx))
+			compilerIdx = 0;
+		DoFillCompilerSets(compilerIdx);
+		m_Options = CompilerFactory::GetCompiler(compilerIdx)->GetOptions();
+		m_CurrentCompilerIdx = compilerIdx;
+		// compiler dependent settings
+		DoFillCompilerDependentSettings();
+	}
+
     sizer->Layout();
     Layout();
     GetSizer()->Layout();
@@ -306,7 +352,7 @@ CompilerOptionsDlg::~CompilerOptionsDlg()
 	//dtor
 }
 
-void CompilerOptionsDlg::DoFillCompilerSets()
+void CompilerOptionsDlg::DoFillCompilerSets(int compilerIdx)
 {
     wxChoice* cmb = XRCCTRL(*this, "cmbCompiler", wxChoice);
     cmb->Clear();
@@ -315,17 +361,20 @@ void CompilerOptionsDlg::DoFillCompilerSets()
         cmb->Append(CompilerFactory::GetCompiler(i)->GetName());
     }
 
-	int compilerIdx = CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompilerID());
-    if (m_pTarget)
-        compilerIdx = CompilerFactory::GetCompilerIndex(m_pTarget->GetCompilerID());
-    else if (m_pProject)
-        compilerIdx = CompilerFactory::GetCompilerIndex(m_pProject->GetCompilerID());
+//	int compilerIdx = CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompilerID());
+//    if (m_pTarget)
+//        compilerIdx = CompilerFactory::GetCompilerIndex(m_pTarget->GetCompilerID());
+//    else if (m_pProject)
+//        compilerIdx = CompilerFactory::GetCompilerIndex(m_pProject->GetCompilerID());
 
-	if (!CompilerFactory::GetCompiler(compilerIdx))
-        compilerIdx = 0;
-    m_Options = CompilerFactory::GetCompiler(compilerIdx)->GetOptions();
-    cmb->SetSelection(compilerIdx);
-    m_CurrentCompilerIdx = compilerIdx;
+//	if (!CompilerFactory::GetCompiler(compilerIdx))
+//        compilerIdx = 0;
+//    m_Options = CompilerFactory::GetCompiler(compilerIdx)->GetOptions();
+	if(compilerIdx != -1)
+	{
+		cmb->SetSelection(compilerIdx);
+	}
+//    m_CurrentCompilerIdx = compilerIdx;
 } // end of DoFillCompilerSets
 
 void CompilerOptionsDlg::DoFillCompilerDependentSettings()
@@ -1011,14 +1060,54 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
     int compilerIdx = data->GetTarget() ? CompilerFactory::GetCompilerIndex(data->GetTarget()->GetCompilerID()) :
                         (data->GetProject() ? CompilerFactory::GetCompilerIndex(data->GetProject()->GetCompilerID()) :
                         XRCCTRL(*this, "cmbCompiler", wxChoice)->GetSelection());
-    XRCCTRL(*this, "cmbCompiler", wxChoice)->SetSelection(compilerIdx);
-    // we don't update the compiler index yet, we leave that to CompilerChanged();
-    m_pTarget = data->GetTarget();
-    // the new selection might have a differerent compiler settings and/or even a different compiler
-    // load all those new settings
-    m_CurrentCompilerIdx = compilerIdx;
-    m_Options = CompilerFactory::GetCompiler(m_CurrentCompilerIdx)->GetOptions();
-	DoFillCompilerDependentSettings();
+	// in order to support projects/targets which have an unknown "user compiler", that is on the current
+	// system that compiler is not (or no longer) installed, we should check the compilerIdx, in such a case it will
+	// be '-1' [NOTE : maybe to the check already on the Id ?]
+	// we then allow the user to make a choice :
+	// a) adjust to another compiler
+	// b) leave that compiler --> no settings can be set then (done by disabling the notebook,
+	// as a consequence might need to be re-enabled when another target/project is chosen in the tree)
+	if(compilerIdx != -1)
+	{
+		if(wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook))
+		{
+			nb->Enable();
+		}
+		XRCCTRL(*this, "cmbCompiler", wxChoice)->SetSelection(compilerIdx);
+		// we don't update the compiler index yet, we leave that to CompilerChanged();
+		m_pTarget = data->GetTarget();
+		// the new selection might have a differerent compiler settings and/or even a different compiler
+		// load all those new settings
+		m_CurrentCompilerIdx = compilerIdx;
+		m_Options = CompilerFactory::GetCompiler(m_CurrentCompilerIdx)->GetOptions();
+		DoFillCompilerDependentSettings();
+	}
+	else
+	{
+		m_pTarget = data->GetTarget();
+		wxString CompilerId = m_pTarget?m_pTarget->GetCompilerID():data->GetProject()->GetCompilerID();
+		wxString msg;
+		msg.Printf(_("The defined compiler cannot be located (ID: %s).\n"
+					"Please choose the compiler you want to use instead and click \"OK\".\n"
+					"If you click \"Cancel\", the project/target will remain configured for that compiler and consequently can not be configured and will not be built."),
+					CompilerId.c_str());
+		if(Compiler* compiler = CompilerFactory::SelectCompilerUI(msg))
+		{	// a new compiler was choosen, proceed as if the user manually selected another compiler
+			// that means set the compilerselection list accordingly
+			// and go directly to (On)CompilerChanged
+			int NewCompilerIdx = CompilerFactory::GetCompilerIndex(compiler);
+			XRCCTRL(*this, "cmbCompiler", wxChoice)->SetSelection(NewCompilerIdx);
+			wxCommandEvent Dummy;
+			OnCompilerChanged(Dummy);
+		}
+		else
+		{ // the user cancelled and wants to keep the compiler
+			if(wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook))
+			{
+				nb->Disable();
+			}
+		}
+	}
 } // end of OnTreeSelectionChange
 
 void CompilerOptionsDlg::OnTreeSelectionChanging(wxTreeEvent& event)
@@ -1935,34 +2024,6 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
         XRCCTRL(*this, "btnResetCompiler", wxButton)->Enable(en &&
                                                         compiler &&
                                                         compiler->GetParentID().IsEmpty());
-    }
-
-    // compiler programs
-    if (XRCCTRL(*this, "txtMasterPath", wxTextCtrl)) // "Programs" page exists?
-    {
-        en = !data; // global options selected
-        int extraSel = XRCCTRL(*this, "lstExtraPaths", wxListBox)->GetSelection();
-        XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->Enable(en);
-        XRCCTRL(*this, "btnMasterPath", wxButton)->Enable(en);
-        XRCCTRL(*this, "btnExtraAdd", wxButton)->Enable(en);
-        XRCCTRL(*this, "btnExtraEdit", wxButton)->Enable(en && extraSel != -1);
-        XRCCTRL(*this, "btnExtraDelete", wxButton)->Enable(en && extraSel != -1);
-        XRCCTRL(*this, "btnExtraClear", wxButton)->Enable(en && XRCCTRL(*this, "lstExtraPaths", wxListBox)->GetCount() != 0);
-        XRCCTRL(*this, "txtCcompiler", wxTextCtrl)->Enable(en);
-        XRCCTRL(*this, "btnCcompiler", wxButton)->Enable(en);
-        XRCCTRL(*this, "txtCPPcompiler", wxTextCtrl)->Enable(en);
-        XRCCTRL(*this, "btnCPPcompiler", wxButton)->Enable(en);
-        XRCCTRL(*this, "txtLinker", wxTextCtrl)->Enable(en);
-        XRCCTRL(*this, "btnLinker", wxButton)->Enable(en);
-        XRCCTRL(*this, "txtLibLinker", wxTextCtrl)->Enable(en);
-        XRCCTRL(*this, "btnLibLinker", wxButton)->Enable(en);
-        XRCCTRL(*this, "txtDebugger", wxTextCtrl)->Enable(en);
-        XRCCTRL(*this, "btnDebugger", wxButton)->Enable(en);
-        XRCCTRL(*this, "txtResComp", wxTextCtrl)->Enable(en);
-        XRCCTRL(*this, "btnResComp", wxButton)->Enable(en);
-        XRCCTRL(*this, "txtMake", wxTextCtrl)->Enable(en);
-        XRCCTRL(*this, "btnMake", wxButton)->Enable(en);
-        XRCCTRL(*this, "cmbCompiler", wxChoice)->Enable(en);
     }
 
     // "others" tab

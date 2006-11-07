@@ -760,7 +760,7 @@ void CompilerGCC::LoadOptions()
 
 const wxString& CompilerGCC::GetCurrentCompilerID()
 {
-    static wxString def = _T("gcc");
+    static wxString def = wxEmptyString;//_T("gcc");
     return CompilerFactory::GetCompiler(m_CompilerId) ? m_CompilerId : def;
 }
 
@@ -1371,9 +1371,9 @@ bool CompilerGCC::CompilerValid(ProjectBuildTarget* target)
     wxString idx = GetCurrentCompilerID(target);
     if (!CompilerFactory::GetCompiler(idx))
     {
-        wxString msg;
-        msg.Printf(_("This %s is configured to use an invalid compiler.\nThe operation failed..."), target ? _("target") : _("project"));
-        cbMessageBox(msg, _("Error"), wxICON_ERROR);
+//        wxString msg;
+//        msg.Printf(_("This %s is configured to use an invalid compiler.\nThe operation failed..."), target ? _("target") : _("project"));
+//        cbMessageBox(msg, _("Error"), wxICON_ERROR);
         return false;
     }
     return true;
@@ -1745,6 +1745,9 @@ int CompilerGCC::Clean(const wxString& target)
 
     // generate build jobs
     PreprocessJob(m_Project, realTarget);
+	if (m_BuildJobTargetsList.empty())
+		return -1;
+    
     // loop all jobs and add them in the queue
     while (!m_BuildJobTargetsList.empty())
     {
@@ -2142,6 +2145,17 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
         // add all matching targets in the job list
         for (size_t x = 0; x < tlist.GetCount(); ++x)
         {
+        	if (!CompilerValid(prj->GetBuildTarget(tlist[x])))
+        	{
+        		wxString msg;
+        		msg.Printf(_T("\"%s - %s\" uses an invalid compiler. Skipping..."),
+							prj->GetTitle().c_str(), tlist[x].c_str());
+        		LOG_WARN(msg);
+				m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON));
+        		Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
+				m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
+				continue;
+        	}
             BuildJobTarget bjt;
             bjt.project = prj;
             bjt.targetName = tlist[x];
@@ -2305,6 +2319,9 @@ int CompilerGCC::Build(const wxString& target)
 
         // generate build jobs
         PreprocessJob(m_Project, realTarget);
+		if (m_BuildJobTargetsList.empty())
+			return -1;
+
         // loop all jobs and add them in the queue
         while (!m_BuildJobTargetsList.empty())
         {
@@ -2320,6 +2337,8 @@ int CompilerGCC::Build(const wxString& target)
     else
     {
         PreprocessJob(m_Project, realTarget);
+		if (m_BuildJobTargetsList.empty())
+			return -1;
         InitBuildState(bjProject, realTarget);
         if (DoBuild())
             return -2;
@@ -2357,7 +2376,9 @@ int CompilerGCC::Rebuild(const wxString& target)
 
 //    Manager::Get()->GetMacrosManager()->Reset();
 
-    CompilerFactory::GetCompiler(m_CompilerId)->Init(m_Project);
+	Compiler* cmp = CompilerFactory::GetCompiler(m_CompilerId);
+	if (cmp)
+		cmp->Init(m_Project);
 
     if (UseMake())
     {
@@ -2366,6 +2387,9 @@ int CompilerGCC::Rebuild(const wxString& target)
 
         // generate build jobs
         PreprocessJob(m_Project, realTarget);
+		if (m_BuildJobTargetsList.empty())
+			return -1;
+
         // loop all jobs and add them in the queue
         while (!m_BuildJobTargetsList.empty())
         {
@@ -2423,6 +2447,9 @@ int CompilerGCC::BuildWorkspace(const wxString& target)
 
     // create list of jobs to run (project->realTarget pairs)
     PreprocessJob(0, realTarget);
+	if (m_BuildJobTargetsList.empty())
+		return -1;
+
     InitBuildState(bjWorkspace, realTarget);
 
     DoBuild();

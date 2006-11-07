@@ -74,9 +74,12 @@ void CompilerCommandGenerator::Init(cbProject* project)
     {
         ProjectBuildTarget* target = project->GetBuildTarget(i);
 
-        // for commands-only targets, nothing to setup
+        // access the compiler used for this target
+        compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
+
+        // for commands-only targets (or if invalid compiler), nothing to setup
         // just add stub entries so that indices keep in sync
-        if (target->GetTargetType() == ttCommandsOnly)
+        if (!compiler || target->GetTargetType() == ttCommandsOnly)
         {
             m_Output[target] = wxEmptyString;
             m_StaticOutput[target] = wxEmptyString;
@@ -94,11 +97,6 @@ void CompilerCommandGenerator::Init(cbProject* project)
 
         // target pre-build scripts
         DoBuildScripts(target, _T("SetBuildOptions"));
-
-        // access the compiler used for this target
-        compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
-        if (!compiler)
-            cbThrow(_T("Compiler for target '") + target->GetTitle() + _T("' is invalid!"));
 
         m_DefOutput[target] = SetupOutputFilenames(compiler, target);
         m_Inc[target] = SetupIncludeDirs(compiler, target);

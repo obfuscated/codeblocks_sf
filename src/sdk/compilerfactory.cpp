@@ -286,8 +286,8 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
     }
     // now display a choice dialog
     wxSingleChoiceDialog dlg(0,
-                        _("Compiler selection"),
                         message,
+                        _("Compiler selection"),
                         CompilerFactory::Compilers.GetCount(),
                         comps);
     dlg.SetSelection(selected);

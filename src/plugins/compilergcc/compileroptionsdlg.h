@@ -44,7 +44,7 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         };
 		void TextToOptions();
 		void OptionsToText();
-		void DoFillCompilerSets();
+		void DoFillCompilerSets(int compilerIdx);
 		void DoFillCompilerPrograms();
 		void DoFillVars();
 		void DoFillOthers();
