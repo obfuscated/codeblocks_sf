@@ -107,11 +107,11 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
     delete fs;
 
 	#ifdef __GNUC__
-	revInfo.Printf(_T("Version %s (%s)   gcc %d.%d.%d %s/%s"),
+	revInfo.Printf(_T("%s (%s)   gcc %d.%d.%d %s/%s"),
 					g_AppActualVersionVerb.c_str(), ConfigManager::GetSvnDate().c_str(),
 					__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, g_AppPlatform.c_str(), g_AppWXAnsiUnicode.c_str());
 	#else
-	revInfo.Printf(_T("Version %s (%s)   %s/%s"),
+	revInfo.Printf(_T("%s (%s)   %s/%s"),
 					g_AppActualVersionVerb.c_str(), ConfigManager::GetSvnDate().c_str(),
 					g_AppPlatform.c_str(), g_AppWXAnsiUnicode.c_str());
 	#endif
@@ -161,7 +161,7 @@ bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
         return true;
     if (!m_pOwner)
         return true;
-    
+
     wxString href = link.GetHref();
     if (href.StartsWith(_T("CB_CMD_")))
     {
@@ -184,6 +184,6 @@ bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
         wxTheClipboard->SetData(data);
         return true;
     }
-    
+
     return false;
 }

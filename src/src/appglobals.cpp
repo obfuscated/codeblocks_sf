@@ -20,9 +20,17 @@
 
 const wxString g_AppVendor              = _T("Code::Blocks");
 const wxString g_AppName			    = _T("Code::Blocks");
-const wxString g_AppVersion				= _T("1.0");
-const wxString g_AppActualVersionVerb	= _T("1.0 revision " SVN_REVISION);
-const wxString g_AppActualVersion		= _T("1.0-r" SVN_REVISION);
+
+#if SVN_BUILD
+    const wxString g_AppVersion				= _T("svn build");
+    const wxString g_AppActualVersionVerb	= _T("svn build  rev " SVN_REVISION);
+    const wxString g_AppActualVersion		= _T("svn-r" SVN_REVISION);
+#else
+    const wxString g_AppVersion				= _T(RELEASE);
+    const wxString g_AppActualVersionVerb	= _T("Release " RELEASE "  rev " SVN_REVISION);
+    const wxString g_AppActualVersion		= _T(RELEASE "-r" SVN_REVISION);
+#endif
+
 const wxString g_AppUrl					= _T("http://www.codeblocks.org");
 const wxString g_AppContactEmail		= _T("info@codeblocks.org");
 

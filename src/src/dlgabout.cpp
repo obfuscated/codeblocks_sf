@@ -47,7 +47,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAbout"));
 
-    const wxString description = _("Welcome to ") + g_AppName + _T(" v") +
+    const wxString description = _("Welcome to ") + g_AppName + _T(" ") +
                                  g_AppVersion + _T("!\n") + g_AppName +
 					             _(" is a full-featured IDE (Integrated Development Environment) "
 					"aiming to make the individual developer (and the development team) "

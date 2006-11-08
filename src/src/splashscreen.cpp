@@ -9,6 +9,8 @@
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
 #include <wx/dcscreen.h>
+#include "../sdk/autorevision.h"
+#include "appglobals.h"
 
 namespace
 {
@@ -17,7 +19,31 @@ namespace
 
 void cbSplashScreen::DoPaint(wxDC &dc)
 {
+  static const wxString release(wxT(RELEASE));
+  static const wxString revision(wxT(SVN_REVISION));
+
+  wxRegion r(0, 0, 181, 181);
+  r.Union(50, 35, 181, 181);
+  r.Union(166, 13, 181, 181);
+  r.Union(259, 29, 181, 181);
+  dc.SetClippingRegion(r);
   dc.DrawBitmap(m_label, 0, 0, false);
+
+  wxFont largeFont(16, wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+  wxFont smallFont(9, wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+
+  wxCoord a, b, c, d;
+
+  dc.GetTextExtent(release,  &a, &b, 0, 0, &largeFont);
+  dc.GetTextExtent(revision, &c, &d, 0, 0, &smallFont);
+
+  a >>= 1; c >>=1;
+  int y = 180 - ((b + d + 8)>>1);
+
+  dc.SetFont(largeFont);
+  dc.DrawText(release,  92 - a, y);
+  dc.SetFont(smallFont);
+  dc.DrawText(revision, 92 - c, y + b);
 }
 
 void cbSplashScreen::OnPaint(wxPaintEvent &)
@@ -85,6 +111,14 @@ cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, 
   label_dc.Blit(0, 0, w, h, &screen_dc, x, y);
   label_dc.DrawBitmap(label, 0, 0, true);
   label_dc.SelectObject(wxNullBitmap);
+
+//  Surprise: SetShape() does not seem to work...?
+//  See DoPaint() -- we simulate it using the clip rect
+//  wxRegion r(0, 0, 182, 182);
+//  r.Union(50, 35, 182, 182);
+//  r.Union(166, 13, 182, 182);
+//  r.Union(258, 28, 182, 182);
+//  SetShape(r);
 
   Show(true);
   SetThemeEnabled(false); // seems to be useful by description

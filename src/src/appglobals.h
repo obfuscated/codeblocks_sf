@@ -3,6 +3,11 @@
 
 #include <wx/string.h>
 
+#ifndef RELEASE
+    #define RELEASE "svn"
+    #define SVN_BUILD 1
+#endif
+
 extern const wxString g_AppVendor;
 extern const wxString g_AppName;
 extern const wxString g_AppVersion;
