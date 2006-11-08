@@ -419,6 +419,7 @@ void CodeBlocksApp::InitLocale()
 
 bool CodeBlocksApp::OnInit()
 {
+    SetAppName(_T("codeblocks"));
     s_Loading = true;
 
     m_pBatchBuildDialog = 0;
@@ -755,7 +756,7 @@ wxString CodeBlocksApp::GetAppPath() const
 #if defined(__APPLE__) && defined(__MACH__)
     char path[MAXPATHLEN+1];
     uint32_t path_len = MAXPATHLEN;
-    // SPI first appeared in Mac OS X 10.2 
+    // SPI first appeared in Mac OS X 10.2
     _NSGetExecutablePath(path, &path_len);
     base = wxString(path, wxConvUTF8, path_len);
     base = wxFileName(base).GetPath();

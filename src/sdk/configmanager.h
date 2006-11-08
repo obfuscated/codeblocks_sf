@@ -83,6 +83,8 @@ enum SearchDirs
     sdAllKnown        = 0xffff, ///< All known dirs (i.e. all of the above)
 };
 
+
+
 /* ------------------------------------------------------------------------------------------------------------------
 *  ConfigManager class
 */
@@ -94,19 +96,20 @@ class DLLIMPORT ConfigManager
     TiXmlElement* root;
     TiXmlElement* pathNode;
 
-    static wxString app_path;
-    static wxString data_path_global;
-    static wxString data_path_user;
-    static wxString config_folder;
-    static wxString home_folder;
-
     ConfigManager(TiXmlElement* r);
     TiXmlElement* AssertPath(wxString& path);
     TiXmlElement* GetUniqElement(TiXmlElement* p, const wxString& q);
     void SetNodeText(TiXmlElement *n, const TiXmlText& t);
     inline void Collapse(wxString& str) const;
     wxString InvalidNameMessage(const wxString& what, const wxString& sub, TiXmlElement *localPath) const;
+    static void InitPaths();
 
+    static wxString config_folder;
+    static wxString home_folder;
+    static wxString data_path_user;
+    static wxString data_path_global;
+    static wxString app_path;
+    static wxString temp_folder;
 
 public:
 
@@ -146,12 +149,12 @@ public:
     * Query "standard" paths that work across platforms.
     * NEVER harcode a path like "C:\CodeBlocks\share\data". Always use one of the following functions to compose a path.
     */
-    static wxString GetHomeFolder(){ return GetFolder(sdHome); }
-    static wxString GetConfigFolder(){ return GetFolder(sdConfig); }
+    static wxString GetHomeFolder() { return home_folder; }
+    static wxString GetConfigFolder(){ return config_folder; }
     static wxString GetPluginsFolder(bool global = true){ return GetFolder(global ? sdPluginsGlobal : sdPluginsUser); }
     static wxString GetScriptsFolder(bool global = true){ return GetFolder(global ? sdScriptsGlobal : sdScriptsUser); }
-    static wxString GetDataFolder(bool global = true){ return GetFolder(global ? sdDataGlobal : sdDataUser); }
-    static wxString GetExecutableFolder(){ return GetFolder(sdBase); }
+    static wxString GetDataFolder(bool global = true){ return global ? data_path_global : data_path_user; }
+    static wxString GetExecutableFolder(){ return app_path; }
     static wxString GetTempFolder(){ return GetFolder(sdTemp); }
 
     /*
@@ -338,7 +341,6 @@ protected:
 public:
     static ConfigManager* GetConfigManager(const wxString& name_space);
 };
-
 
 #endif
 

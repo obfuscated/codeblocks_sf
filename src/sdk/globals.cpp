@@ -312,21 +312,12 @@ void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayStrin
 
 bool CreateDirRecursively(const wxString& full_path, int perms)
 {
+    if(wxDirExists(full_path)) // early out
+        return false;
+
     wxArrayString dirs;
     wxString currdir;
 
-#ifdef __WXMSW__
-    // hack to support for UNC filenames
-    if (full_path.StartsWith(_T("\\\\")))
-    {
-        wxFileName tmp(_T("C:") + full_path.SubString(1, full_path.Length()));
-        dirs = tmp.GetDirs();
-        currdir = _T("\\\\") + dirs[0] + wxFILE_SEP_PATH;
-        cbMessageBox(currdir);
-        dirs.RemoveAt(0);
-    }
-    else
-#endif
     {
         wxFileName tmp(full_path);
         currdir = tmp.GetVolume() + tmp.GetVolumeSeparator() + wxFILE_SEP_PATH;
@@ -339,6 +330,14 @@ bool CreateDirRecursively(const wxString& full_path, int perms)
             return false;
         currdir << wxFILE_SEP_PATH;
     }
+    return true;
+}
+
+bool CreateDir(const wxString& full_path, int perms)
+{
+    if (!wxDirExists(full_path) && !wxMkdir(full_path, perms))
+        return false;
+
     return true;
 }
 

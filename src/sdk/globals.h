@@ -134,6 +134,7 @@ extern DLLIMPORT void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent
 extern DLLIMPORT void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths);
 
 extern DLLIMPORT bool CreateDirRecursively(const wxString& full_path, int perms = 0755);
+extern DLLIMPORT bool CreateDir(const wxString& full_path, int perms = 0755);
 extern DLLIMPORT wxString ChooseDirectory(wxWindow* parent,
                                           const wxString& message = _("Select directory"),
                                           const wxString& initialPath = _T(""),
