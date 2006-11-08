@@ -26,6 +26,8 @@
 
 #include "wx/pdfdoc.h"
 #include "wx/pdfform.h"
+#include "wx/pdfgraphics.h"
+#include "wx/pdftemplate.h"
 
 // ----------------------------------------------------------------------------
 // wxPdfDocument: class representing a PDF document
@@ -50,12 +52,17 @@ wxPdfDocument::wxPdfDocument(int orientation, const wxString& unit, wxPaperSize 
   m_images      = new wxPdfImageHashMap();
   m_pageLinks   = new wxPdfPageLinksMap();
   m_links       = new wxPdfLinkHashMap();
+  m_namedLinks  = new wxPdfNamedLinksMap();
   m_diffs       = new wxPdfDiffHashMap();
+  m_extGStates  = new wxPdfExtGStateMap();
+  m_extGSLookup = new wxPdfExtGSLookupMap();
+  m_currentExtGState = 0;
   m_gradients   = new wxPdfGradientMap();
   m_annotations = new wxPdfAnnotationsMap();
   m_formAnnotations = new wxPdfFormAnnotsMap();
   m_formFields  = new wxPdfFormFieldsMap();
   m_radioGroups = new wxPdfRadioGroupMap();
+  m_templates   = new wxPdfTemplatesMap();
   m_spotColors  = new wxPdfSpotColourMap();
 
   m_outlineRoot     = -1;
@@ -67,9 +74,9 @@ wxPdfDocument::wxPdfDocument(int orientation, const wxString& unit, wxPaperSize 
   m_fontStyle  = _T("");
   m_fontSizePt = 12;
   m_decoration = wxPDF_FONT_NORMAL;
-  m_drawColor  = _T("0 G");
-  m_fillColor  = _T("0 g");
-  m_textColor  = _T("0 g");
+  m_drawColor  = wxPdfColour();
+  m_fillColor  = wxPdfColour();
+  m_textColor  = wxPdfColour();
   m_colorFlag  = false;
   m_ws         = 0;
 
@@ -146,7 +153,10 @@ wxPdfDocument::wxPdfDocument(int orientation, const wxString& unit, wxPaperSize 
   // Full width display mode
   SetDisplayMode(wxPDF_ZOOM_FULLWIDTH);
   m_zoomFactor = 100.;
-  
+
+  // Default viewer preferences
+  m_viewerPrefs = 0;
+
   // Enable compression
   SetCompression(true);
 
@@ -158,6 +168,11 @@ wxPdfDocument::wxPdfDocument(int orientation, const wxString& unit, wxPaperSize 
 
   m_javascript = wxEmptyString;
 
+  m_inTemplate = false;
+  m_templateId = 0;
+  m_templatePrefix = _T("/TPL");
+
+  SetFontPath();
   SetFont(_T("ZapfDingBats"), _T(""), 9);
   m_zapfdingbats = m_currentFont->GetIndex();
 }
@@ -216,6 +231,8 @@ wxPdfDocument::~wxPdfDocument()
   }
   delete m_links;
 
+  delete m_namedLinks;
+
   size_t j;
   for (j = 0; j < m_outlines.GetCount(); j++)
   {
@@ -232,6 +249,18 @@ wxPdfDocument::~wxPdfDocument()
     }
   }
   delete m_diffs;
+
+  wxPdfExtGStateMap::iterator extGState = m_extGStates->begin();
+  for (extGState = m_extGStates->begin(); extGState != m_extGStates->end(); extGState++)
+  {
+    if (extGState->second != NULL)
+    {
+      delete extGState->second;
+    }
+  }
+  delete m_extGStates;
+
+  delete m_extGSLookup;
 
   wxPdfGradientMap::iterator gradient = m_gradients->begin();
   for (gradient = m_gradients->begin(); gradient != m_gradients->end(); gradient++)
@@ -282,6 +311,16 @@ wxPdfDocument::~wxPdfDocument()
     }
   }
   delete m_radioGroups;
+
+  wxPdfTemplatesMap::iterator templateIter = m_templates->begin();
+  for (templateIter = m_templates->begin(); templateIter != m_templates->end(); templateIter++)
+  {
+    if (templateIter->second != NULL)
+    {
+      delete templateIter->second;
+    }
+  }
+  delete m_templates;
 
   wxPdfSpotColourMap::iterator spotColor = m_spotColors->begin();
   for (spotColor = m_spotColors->begin(); spotColor != m_spotColors->end(); spotColor++)
@@ -380,6 +419,12 @@ wxPdfDocument::Open()
 void
 wxPdfDocument::AddPage(int orientation)
 {
+  if (m_inTemplate)
+  {
+    wxLogError(_("wxPdfDocument::AddPage: Adding pages in templates is impossible. Current template ID is %d."), m_templateId);
+    return;
+  }
+
   // Start a new page
   if (m_state == 0)
   {
@@ -401,9 +446,9 @@ wxPdfDocument::AddPage(int orientation)
   }
   double size = m_fontSizePt;
   double lw = m_lineWidth;
-  wxString dc = m_drawColor;
-  wxString fc = m_fillColor;
-  wxString tc = m_textColor;
+  wxPdfColour dc = m_drawColor;
+  wxPdfColour fc = m_fillColor;
+  wxPdfColour tc = m_textColor;
   bool cf = m_colorFlag;
 
   if (m_page > 0)
@@ -434,14 +479,14 @@ wxPdfDocument::AddPage(int orientation)
   
   // Set colors
   m_drawColor = dc;
-  if (dc != _T("0 G"))
+  if (dc != wxPdfColour(0))
   {
-    OutAscii(dc);
+    OutAscii(dc.GetColor(true));
   }
   m_fillColor = fc;
-  if (fc != _T("0 g"))
+  if (fc != wxPdfColour(0))
   {
-    OutAscii(fc);
+    OutAscii(fc.GetColor(false));
   }
   m_textColor = tc;
   m_colorFlag = cf;
@@ -466,12 +511,12 @@ wxPdfDocument::AddPage(int orientation)
   if (m_drawColor != dc)
   {
     m_drawColor = dc;
-    OutAscii(dc);
+    OutAscii(dc.GetColor(true));
   }
   if (m_fillColor != fc)
   {
     m_fillColor = fc;
-    OutAscii(fc);
+    OutAscii(fc.GetColor(false));
   }
   m_textColor = tc;
   m_colorFlag = cf;
@@ -492,6 +537,29 @@ double
 wxPdfDocument::GetLineWidth()
 {
   return m_lineWidth;
+}
+
+void
+wxPdfDocument::SetFontPath(const wxString& fontPath)
+{
+  if (fontPath != wxEmptyString)
+  {
+    m_fontPath = fontPath;
+  }
+  else
+  {
+    wxString localFontPath;
+    if (!wxGetEnv(_T("WXPDF_FONTPATH"), &localFontPath))
+    {
+      localFontPath = wxGetCwd();
+      if (!wxEndsWithPathSeparator(localFontPath))
+      {
+        localFontPath += wxFILE_SEP_PATH;
+      }
+      localFontPath += _T("fonts");
+    }
+    m_fontPath = localFontPath;
+  }
 }
 
 bool
@@ -594,6 +662,7 @@ wxPdfDocument::AddFont(const wxString& family, const wxString& style, const wxSt
     delete addedFont;
     return false;
   }
+  addedFont->SetFilePath(fontFileName.GetPath());
   (*m_fonts)[fontkey] = addedFont;
 
   if (addedFont->HasDiffs())
@@ -693,6 +762,12 @@ wxPdfDocument::SetFontSize(double size)
   }
 }
 
+const wxPdfFontDescription&
+wxPdfDocument::GetFontDescription() const
+{
+  return m_currentFont->GetDesc();
+}
+
 const wxString
 wxPdfDocument::GetFontFamily()
 {
@@ -742,7 +817,7 @@ wxPdfDocument::Text(double x, double y, const wxString& txt)
   if (m_colorFlag)
   {
     Out("q ", false);
-    OutAscii(m_textColor, false);
+    OutAscii(m_textColor.GetColor(false), false);
     Out(" ", false);
   }
   OutAscii(wxString(_T("BT ")) +
@@ -891,7 +966,7 @@ wxPdfDocument::Cell(double w, double h, const wxString& txt, int border, int ln,
     }
     if (m_colorFlag)
     {
-      s += wxString(_T("q ")) + m_textColor + wxString(_T(" "));
+      s += wxString(_T("q ")) + m_textColor.GetColor(false) + wxString(_T(" "));
     }
     s += wxString(_T("BT ")) +
          Double2String((m_x+dx)*k,2) + wxString(_T(" ")) +
@@ -1303,7 +1378,7 @@ wxPdfDocument::WriteCell(double h, const wxString& txt, int border, int fill, co
 
 bool
 wxPdfDocument::Image(const wxString& file, double x, double y, double w, double h,
-                     const wxString& type, const wxPdfLink& link)
+                     const wxString& type, const wxPdfLink& link, int maskImage)
 {
   wxPdfImage* currentImage = NULL;
   // Put an image on the page
@@ -1315,14 +1390,34 @@ wxPdfDocument::Image(const wxString& file, double x, double y, double w, double 
     currentImage = new wxPdfImage(this, i, file, type);
     if (!currentImage->Parse())
     {
+      bool isValid = false;
       delete currentImage;
-      return false;
+
+      if (wxImage::FindHandler(wxBITMAP_TYPE_PNG) == NULL)
+      {
+        wxImage::AddHandler(new wxPNGHandler());
+      }
+      wxImage tempImage;
+      tempImage.LoadFile(file);
+      if (tempImage.Ok())
+      {
+        isValid = Image(file, tempImage, x, y, w, h, link, maskImage);
+      }
+      return isValid;
+    }
+    if (maskImage > 0)
+    {
+      currentImage->SetMaskImage(maskImage);
     }
     (*m_images)[file] = currentImage;
   }
   else
   {
     currentImage = image->second;
+    if (maskImage > 0 && currentImage->GetMaskImage() != maskImage)
+    {
+      currentImage->SetMaskImage(maskImage);
+    }
   }
   OutImage(currentImage, x, y, w, h, link);
   return true;
@@ -1330,9 +1425,148 @@ wxPdfDocument::Image(const wxString& file, double x, double y, double w, double 
 
 bool
 wxPdfDocument::Image(const wxString& name, const wxImage& img, double x, double y, double w, double h,
-                     const wxPdfLink& link)
+                     const wxPdfLink& link, int maskImage)
 {
   bool isValid = false;
+  if (img.Ok())
+  {
+    wxImage tempImage = img.Copy();
+    wxPdfImage* currentImage = NULL;
+    // Put an image on the page
+    wxPdfImageHashMap::iterator image = (*m_images).find(name);
+    if (image == (*m_images).end())
+    {
+      if (tempImage.HasAlpha())
+      {
+        if (maskImage <= 0)
+        {
+          maskImage = ImageMask(name+wxString(_T(".mask")), tempImage);
+        }
+        if(!tempImage.ConvertAlphaToMask(0))
+        {
+          return false;
+        }
+      }
+      // First use of image, get info
+      tempImage.SetMask(false);
+      int i = (*m_images).size() + 1;
+      currentImage = new wxPdfImage(this, i, name, tempImage);
+      if (!currentImage->Parse())
+      {
+        delete currentImage;
+        return false;
+      }
+      if (maskImage > 0)
+      {
+        currentImage->SetMaskImage(maskImage);
+      }
+      (*m_images)[name] = currentImage;
+    }
+    else
+    {
+      currentImage = image->second;
+      if (maskImage > 0 && currentImage->GetMaskImage() != maskImage)
+      {
+        currentImage->SetMaskImage(maskImage);
+      }
+    }
+    OutImage(currentImage, x, y, w, h, link);
+    isValid = true;
+  }
+  return isValid;
+}
+
+bool
+wxPdfDocument::Image(const wxString& name, wxInputStream& stream,
+                     const wxString& mimeType,
+                     double x, double y, double w, double h,
+                     const wxPdfLink& link, int maskImage)
+{
+  bool isValid = false;
+  wxPdfImage* currentImage = NULL;
+  // Put an image on the page
+  wxPdfImageHashMap::iterator image = (*m_images).find(name);
+  if (image == (*m_images).end())
+  {
+    // First use of image, get info
+    int i = (*m_images).size() + 1;
+    currentImage = new wxPdfImage(this, i, name, stream, mimeType);
+    if (!currentImage->Parse())
+    {
+      delete currentImage;
+      if (wxImage::FindHandler(wxBITMAP_TYPE_PNG) == NULL)
+      {
+        wxImage::AddHandler(new wxPNGHandler());
+      }
+      wxImage tempImage;
+      tempImage.LoadFile(stream, mimeType);
+      if (tempImage.Ok())
+      {
+        isValid = Image(name, tempImage, x, y, w, h, link, maskImage);
+      }
+      return isValid;
+
+    }
+    if (maskImage > 0)
+    {
+      currentImage->SetMaskImage(maskImage);
+    }
+    (*m_images)[name] = currentImage;
+  }
+  else
+  {
+    currentImage = image->second;
+    if (maskImage > 0 && currentImage->GetMaskImage() != maskImage)
+    {
+      currentImage->SetMaskImage(maskImage);
+    }
+  }
+  OutImage(currentImage, x, y, w, h, link);
+  isValid = true;
+  return isValid;
+}
+
+int
+wxPdfDocument::ImageMask(const wxString& file, const wxString& type)
+{
+  int n = 0;
+  wxPdfImage* currentImage = NULL;
+  // Put an image on the page
+  wxPdfImageHashMap::iterator image = (*m_images).find(file);
+  if (image == (*m_images).end())
+  {
+    // First use of image, get info
+    n = (*m_images).size() + 1;
+    currentImage = new wxPdfImage(this, n, file, type);
+    if (!currentImage->Parse())
+    {
+      delete currentImage;
+      return 0;
+    }
+    // Check whether this is a gray scale image (must be)
+    if (currentImage->GetColorSpace() != _T("DeviceGray"))
+    {
+      delete currentImage;
+      return 0;
+    }
+    (*m_images)[file] = currentImage;
+  }
+  else
+  {
+    currentImage = image->second;
+    n = currentImage->GetIndex();
+  }
+  if (m_PDFVersion < _T("1.4"))
+  {
+    m_PDFVersion = _T("1.4");
+  }
+  return n;
+}
+
+int
+wxPdfDocument::ImageMask(const wxString& name, const wxImage& img)
+{
+  int n = 0;
   if (img.Ok())
   {
     wxPdfImage* currentImage = NULL;
@@ -1340,35 +1574,98 @@ wxPdfDocument::Image(const wxString& name, const wxImage& img, double x, double 
     wxPdfImageHashMap::iterator image = (*m_images).find(name);
     if (image == (*m_images).end())
     {
+      wxImage tempImage;
+      if (img.HasAlpha())
+      {
+        int x, y;
+        int w = img.GetWidth();
+        int h = img.GetHeight();
+        tempImage = wxImage(w, h);
+        unsigned char alpha;
+        for (x = 0; x < w; x++)
+        {
+          for (y = 0; y < h; y++)
+          {
+            alpha = img.GetAlpha(x, y);
+            tempImage.SetRGB(x, y, alpha, alpha, alpha);
+          }
+        }
+        tempImage.SetOption(wxIMAGE_OPTION_PNG_FORMAT, wxPNG_TYPE_GREY_RED);
+      }
+      else
+      {
+        tempImage = img.Copy();
+        tempImage.SetOption(wxIMAGE_OPTION_PNG_FORMAT, wxPNG_TYPE_GREY);
+      }
+      tempImage.SetMask(false);
       // First use of image, get info
-      int i = (*m_images).size() + 1;
-      currentImage = new wxPdfImage(this, i, name, img);
+      n = (*m_images).size() + 1;
+      currentImage = new wxPdfImage(this, n, name, tempImage);
       if (!currentImage->Parse())
       {
         delete currentImage;
-        return false;
+        return 0;
       }
       (*m_images)[name] = currentImage;
     }
     else
     {
       currentImage = image->second;
+      n = currentImage->GetIndex();
     }
-    OutImage(currentImage, x, y, w, h, link);
-    isValid = true;
+    if (m_PDFVersion < _T("1.4"))
+    {
+      m_PDFVersion = _T("1.4");
+    }
   }
-  return isValid;
+  return n;
 }
-  
+
+int
+wxPdfDocument::ImageMask(const wxString& name, wxInputStream& stream, const wxString& mimeType)
+{
+  int n = 0;
+  wxPdfImage* currentImage = NULL;
+  // Put an image on the page
+  wxPdfImageHashMap::iterator image = (*m_images).find(name);
+  if (image == (*m_images).end())
+  {
+    // First use of image, get info
+    n = (*m_images).size() + 1;
+    currentImage = new wxPdfImage(this, n, name, stream, mimeType);
+    if (!currentImage->Parse())
+    {
+      delete currentImage;
+      return 0;
+    }
+    // Check whether this is a gray scale image (must be)
+    if (currentImage->GetColorSpace() != _T("DeviceGray"))
+    {
+      delete currentImage;
+      return 0;
+    }
+    (*m_images)[name] = currentImage;
+  }
+  else
+  {
+    currentImage = image->second;
+    n = currentImage->GetIndex();
+  }
+  if (m_PDFVersion < _T("1.4"))
+  {
+    m_PDFVersion = _T("1.4");
+  }
+  return n;
+}
+
 void
 wxPdfDocument::RotatedImage(const wxString& file, double x, double y, double w, double h,
-                            double angle, const wxString& type, const wxPdfLink& link)
+                            double angle, const wxString& type, const wxPdfLink& link, int maskImage)
 {
   // Image rotated around its upper-left corner
   StartTransform();
   Rotate(angle, x, y);
-  Image(file, x, y, w, h, type, link);
-  // TODO Rotate(0);
+  Image(file, x, y, w, h, type, link, maskImage);
   StopTransform();
 }
 
@@ -1406,6 +1703,27 @@ wxPdfDocument::SaveAsFile(const wxString& name)
   wxMemoryInputStream tmp(m_buffer);
   outfile.Write(tmp);
   outfile.Close();
+}
+
+const wxMemoryOutputStream&
+wxPdfDocument::CloseAndGetBuffer()
+{
+  if (m_state < 3)
+  {
+    Close();
+  }
+  
+  return m_buffer;
+}
+
+void
+wxPdfDocument::SetViewerPreferences(int preferences)
+{
+  m_viewerPrefs = (preferences > 0) ? preferences : 0;
+  if (((m_viewerPrefs & wxPDF_VIEWER_DISPLAYDOCTITLE) != 0) && (m_PDFVersion < _T("1.4")))
+  {
+    m_PDFVersion = _T("1.4");
+  }
 }
 
 void

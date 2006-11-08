@@ -13,10 +13,6 @@
 #ifndef _PDFIMAGE_H_
 #define _PDFIMAGE_H_
 
-//#if defined(__GNUG__) && !defined(__APPLE__)
-//    #pragma interface "pdfimage.h"
-//#endif
-
 #include <wx/filesys.h>
 
 #include "wx/pdfdocdef.h"
@@ -35,6 +31,9 @@ public:
   /// Constructor
   wxPdfImage(wxPdfDocument* document, int index, const wxString& name, const wxImage& image);
 
+  /// Constructor
+  wxPdfImage(wxPdfDocument* document, int index, const wxString& name, wxInputStream& stream, const wxString& mimeType);
+
   /// Destructor
   virtual ~wxPdfImage();
 
@@ -49,6 +48,12 @@ public:
 
   /// Get object index
   int  GetObjIndex() { return m_n; }
+
+  /// Set mask flag
+  void SetMaskImage(int maskImage) { m_maskImage = maskImage; }
+
+  /// Check mask flag
+  int GetMaskImage() { return m_maskImage; }
 
   /// Set image type
   void SetType(const wxString& type) { m_type = type; }
@@ -159,6 +164,7 @@ protected:
   int            m_n;         ///< Image object index
   wxString       m_type;      ///< Image type
   wxString       m_name;      ///< Image name
+  int            m_maskImage; ///< Id of associated image mask
 
   int            m_width;     ///< Image width in pixels
   int            m_height;    ///< Image height in pixels
@@ -179,6 +185,9 @@ protected:
 
   bool           m_fromWxImage;  ///< Flag whether image originated from wxImage
   bool           m_validWxImage; ///< Flag whether wxImage conversion went ok
+
+  wxFSFile*      m_imageFile;    ///< File system file of image
+  wxInputStream* m_imageStream;  ///< Stream containing the image data
 
   static wxFileSystem* ms_fileSystem; ///< File system for accessing image files
 };

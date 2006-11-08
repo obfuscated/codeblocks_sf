@@ -21,7 +21,66 @@
 #include "wx/wx.h"
 #endif
 
+#include "wx/tokenzr.h"
+
+
 #include "wx/pdfdoc.h"
+#include "wx/pdfgraphics.h"
+
+wxPdfExtGState::wxPdfExtGState(double lineAlpha, double fillAlpha, wxPdfBlendMode blendMode)
+{
+  m_lineAlpha = lineAlpha;
+  m_fillAlpha = fillAlpha;
+  m_blendMode = blendMode;
+}
+
+wxPdfExtGState::~wxPdfExtGState()
+{
+}
+
+int
+wxPdfDocument::SetAlpha(double lineAlpha, double fillAlpha, wxPdfBlendMode blendMode)
+{
+  int n = 0;
+
+  // Force alpha into range 0 .. 1
+  if (lineAlpha < 0) lineAlpha = 0;
+  else if (lineAlpha > 1) lineAlpha = 1;
+  if (fillAlpha < 0) fillAlpha = 0;
+  else if (fillAlpha > 1) fillAlpha = 1;
+
+  // Create state id for lookup map
+  int id = ((int) blendMode) * 100000000 + (int) (lineAlpha * 1000) * 10000 + (int) (fillAlpha * 1000);
+
+  // Lookup state
+  wxPdfExtGSLookupMap::iterator extGState = (*m_extGSLookup).find(id);
+  if (extGState == (*m_extGSLookup).end())
+  {
+	  n = (*m_extGStates).size() + 1;
+    (*m_extGStates)[n] = new wxPdfExtGState(lineAlpha, fillAlpha, blendMode);
+    (*m_extGSLookup)[id] = n;
+  }
+  else
+  {
+    n = extGState->second;
+  }
+
+  if (n != m_currentExtGState)
+  {
+  	SetAlphaState(n);
+  }
+
+  return n;
+}
+
+void
+wxPdfDocument::SetAlphaState(int alphaState)
+{
+  if (alphaState > 0 && (size_t) alphaState <= (*m_extGStates).size())
+  {
+    OutAscii(wxString::Format(_T("/GS%d gs"), alphaState));
+  }
+}
 
 // ----------------------------------------------------------------------------
 // wxPdfLineStyle: class representing line style for drawing graphics
@@ -70,21 +129,741 @@ wxPdfLineStyle::operator= (const wxPdfLineStyle& lineStyle)
   return *this;
 }
 
-wxPdfGradient::wxPdfGradient(int type, const wxColour& color1, const wxColour& color2, double coords[])
+// --- Gradients
+
+wxPdfGradient::wxPdfGradient(wxPdfGradientType type)
 {
   m_type = type;
-  m_color1 = color1;
-  m_color2 = color2;
-  int nCoords = (type == 2) ? 4 : ((type == 3) ? 5 : 0);
-  int j;
-  for (j = 0; j < nCoords; j++)
-  {
-    m_coords[j] = coords[j];
-  }
 }
 
 wxPdfGradient::~wxPdfGradient()
 {
+}
+
+wxPdfAxialGradient::wxPdfAxialGradient(const wxPdfColour& color1, const wxPdfColour& color2, double x1, double y1, double x2, double y2, double intexp)
+  : wxPdfGradient(wxPDF_GRADIENT_AXIAL)
+{
+  m_color1 = color1;
+  m_color2 = color2;
+  m_x1 = x1;
+  m_y1 = y1;
+  m_x2 = x2;
+  m_y2 = y2;
+  m_intexp = intexp;
+}
+
+wxPdfAxialGradient::~wxPdfAxialGradient()
+{
+}
+
+wxPdfMidAxialGradient::wxPdfMidAxialGradient(const wxPdfColour& color1, const wxPdfColour& color2, double x1, double y1, double x2, double y2, double midpoint, double intexp)
+  : wxPdfAxialGradient(color1, color2, x1, y1, x2, y2, intexp)
+{
+  m_type = wxPDF_GRADIENT_MIDAXIAL;
+  m_midpoint = midpoint;
+}
+
+wxPdfMidAxialGradient::~wxPdfMidAxialGradient()
+{
+}
+
+wxPdfRadialGradient::wxPdfRadialGradient(const wxPdfColour& color1, const wxPdfColour& color2,
+                                         double x1, double y1, double r1,
+                                         double x2, double y2, double r2, double intexp)
+  : wxPdfAxialGradient(color1, color2, x1, y1, x2, y2, intexp)
+{
+  m_type = wxPDF_GRADIENT_RADIAL;
+  m_r1 = r1;
+  m_r2 = r2;
+}
+
+wxPdfRadialGradient::~wxPdfRadialGradient()
+{
+}
+
+wxPdfCoonsPatch::wxPdfCoonsPatch(int edgeFlag, wxPdfColour colors[], double x[], double y[])
+{
+  m_edgeFlag = edgeFlag;
+  size_t n = (edgeFlag == 0) ? 4 : 2;
+  size_t j;
+  for (j = 0; j < n; j++)
+  {
+    m_colors[j] = colors[j];
+  }
+
+  n = (edgeFlag == 0) ? 12 : 8;
+  for (j = 0; j < n; j++)
+  {
+    m_x[j] = x[j];
+    m_y[j] = y[j];
+  }
+}
+
+wxPdfCoonsPatch::~wxPdfCoonsPatch()
+{
+}
+
+wxPdfCoonsPatchMesh::wxPdfCoonsPatchMesh()
+{
+  m_ok = false;
+  m_colorType = wxPDF_COLOURTYPE_UNKNOWN;
+}
+
+wxPdfCoonsPatchMesh::~wxPdfCoonsPatchMesh()
+{
+  size_t n = m_patches.size();
+  if (n > 0)
+  {
+    size_t j;
+    for (j = 0; j < n; j++)
+    {
+      delete ((wxPdfCoonsPatch*) m_patches[j]);
+    }
+  }
+}
+
+bool
+wxPdfCoonsPatchMesh::AddPatch(int edgeFlag, wxPdfColour colors[], double x[], double y[])
+{
+  wxPdfColourType colorType = m_colorType;
+  if (m_patches.size() == 0 && edgeFlag != 0) return false;
+  int n = (edgeFlag == 0) ? 4 : 2;
+  int j;
+  for (j = 0; j < n; j++)
+  {
+    if (colorType == wxPDF_COLOURTYPE_UNKNOWN)
+    {
+      colorType = colors[j].GetColorType();
+    }
+    if (colors[j].GetColorType() != colorType) return false;
+  }
+  m_colorType = colorType;
+  wxPdfCoonsPatch* patch = new wxPdfCoonsPatch(edgeFlag, colors, x, y);
+  m_patches.Add(patch);
+  m_ok = true;
+  return true;
+}
+
+wxPdfCoonsPatchGradient::wxPdfCoonsPatchGradient(const wxPdfCoonsPatchMesh& mesh, double minCoord, double maxCoord)
+  : wxPdfGradient(wxPDF_GRADIENT_COONS)
+{
+  int edgeFlag;
+  double *x;
+  double *y;
+  const wxArrayPtrVoid* patches = mesh.GetPatches();
+  size_t n = patches->size();
+  size_t j, k, nc;
+  unsigned char ch;
+	int bpcd = 65535; //16 BitsPerCoordinate
+  int coord;
+  wxPdfColour *colors;
+
+  m_colorType = mesh.GetColorType();
+  // build the data stream
+	for (j = 0;  j < n; j++)
+  {
+    wxPdfCoonsPatch* patch = (wxPdfCoonsPatch*) (*patches)[j];
+    edgeFlag = patch->GetEdgeFlag();
+    ch = edgeFlag;
+    m_buffer.Write(&ch,1); //start with the edge flag as 8 bit
+    x = patch->GetX();
+    y = patch->GetY();
+    nc = (edgeFlag == 0) ? 12 : 8;
+    for (k = 0; k < nc; k++)
+    {
+			// each point as 16 bit
+      coord = ((x[k] - minCoord) / (maxCoord - minCoord)) * bpcd;
+      if (coord < 0)    coord = 0;
+      if (coord > bpcd) coord = bpcd;
+      ch = (coord >> 8) & 0xFF;
+      m_buffer.Write(&ch,1);
+      ch = coord & 0xFF;
+      m_buffer.Write(&ch,1);
+      coord = ((y[k] - minCoord) / (maxCoord - minCoord)) * bpcd;
+      if (coord < 0)    coord = 0;
+      if (coord > bpcd) coord = bpcd;
+      ch = (coord >> 8) & 0xFF;
+      m_buffer.Write(&ch,1);
+      ch = coord & 0xFF;
+      m_buffer.Write(&ch,1);
+		}
+    colors = patch->GetColors();
+    nc = (edgeFlag == 0) ? 4 : 2;
+    for (k = 0; k < nc; k++)
+    {
+			// each color component as 8 bit
+      wxStringTokenizer tkz(colors[k].GetColorValue(), wxT(" "));
+      while ( tkz.HasMoreTokens() )
+      {
+        ch = ((int) (wxPdfDocument::String2Double(tkz.GetNextToken()) * 255)) & 0xFF;
+        m_buffer.Write(&ch,1);
+      }
+		}
+	}
+}
+
+wxPdfCoonsPatchGradient::~wxPdfCoonsPatchGradient()
+{
+}
+
+// ---
+
+wxPdfShape::wxPdfShape()
+{
+  m_subpath = -1;
+  m_index = 0;
+}
+
+wxPdfShape::~wxPdfShape()
+{
+}
+
+void
+wxPdfShape::MoveTo(double x, double y)
+{
+  m_subpath = m_x.GetCount();
+  m_types.Add(wxPDF_SEG_MOVETO);
+  m_x.Add(x);
+  m_y.Add(y);
+}
+
+void
+wxPdfShape::LineTo(double x, double y)
+{
+  if (m_subpath >= 0)
+  {
+    m_types.Add(wxPDF_SEG_LINETO);
+    m_x.Add(x);
+    m_y.Add(y);
+  }
+  else
+  {
+    wxLogError(_T("wxPdfShape::LineTo: Invalid subpath."));
+  }
+}
+
+void
+wxPdfShape::CurveTo(double x1, double y1, double x2, double y2, double x3, double y3)
+{
+  if (m_subpath >= 0)
+  {
+    m_types.Add(wxPDF_SEG_CURVETO);
+    m_x.Add(x1);
+    m_y.Add(y1);
+    m_x.Add(x2);
+    m_y.Add(y2);
+    m_x.Add(x3);
+    m_y.Add(y3);
+  }
+  else
+  {
+    wxLogError(_T("wxPdfShape::LineTo: Invalid subpath."));
+  }
+}
+
+void
+wxPdfShape::ClosePath()
+{
+  if (m_subpath >= 0 && m_types.GetCount() > 0 && m_types.Last() != wxPDF_SEG_CLOSE)
+  {
+    m_types.Add(wxPDF_SEG_CLOSE);
+    m_x.Add(m_x[m_subpath]);
+    m_y.Add(m_y[m_subpath]);
+    m_subpath = -1;
+  }
+}
+
+wxPdfSegmentType
+wxPdfShape::GetSegment(int iterType, int iterPoints, double coords[]) const
+{
+  wxPdfSegmentType segType = wxPDF_SEG_UNDEFINED;
+  if (iterType >= 0 && (size_t) iterType < m_types.GetCount())
+  {
+    int pointCount = (m_types[iterType] == wxPDF_SEG_CURVETO) ? 2 : 0;
+    if (iterPoints >= 0 && (size_t) (iterPoints + pointCount) < m_x.GetCount())
+    {
+      segType = (wxPdfSegmentType) m_types[iterType];
+      switch (segType)
+      {
+        case wxPDF_SEG_CLOSE:
+          coords[0] = m_x[iterPoints];
+          coords[1] = m_y[iterPoints];
+          break;
+
+        case wxPDF_SEG_MOVETO:
+        case wxPDF_SEG_LINETO:
+          coords[0] = m_x[iterPoints];
+          coords[1] = m_y[iterPoints];
+          break;
+
+        case wxPDF_SEG_CURVETO:
+          coords[0] = m_x[iterPoints];
+          coords[1] = m_y[iterPoints];
+          iterPoints++;
+          coords[2] = m_x[iterPoints];
+          coords[3] = m_y[iterPoints];
+          iterPoints++;
+          coords[4] = m_x[iterPoints];
+          coords[5] = m_y[iterPoints];
+          break;
+      }
+    }
+  }
+  return segType;
+}
+
+wxPdfFlatPath::wxPdfFlatPath(const wxPdfShape* shape, double flatness, int limit)
+{
+  m_shape = shape;
+  m_iterType = 0;
+  m_iterPoints = 0;
+  m_done = false;
+  m_flatnessSq = flatness * flatness;
+  m_recursionLimit = limit;
+
+  m_stackMaxSize = 6 * m_recursionLimit + /* 6 + 2 */ 8;
+  m_stack = new double[m_stackMaxSize];
+  m_recLevel = new int[m_recursionLimit + 1];
+
+  FetchSegment();
+}
+
+wxPdfFlatPath::~wxPdfFlatPath()
+{
+  delete [] m_stack;
+  delete [] m_recLevel;
+}
+
+void
+wxPdfFlatPath::InitIter()
+{
+  m_done       = false;
+  m_iterType   = 0;
+  m_iterPoints = 0;
+  m_stackSize  = 0;
+  FetchSegment();
+}
+
+  /**
+   * Fetches the next segment from the source iterator.
+   */
+void
+wxPdfFlatPath::FetchSegment()
+{
+  int sp;
+
+  if ((size_t) m_iterType >= m_shape->GetSegmentCount())
+  {
+    m_done = true;
+    return;
+  }
+
+  m_srcSegType = m_shape->GetSegment(m_iterType, m_iterPoints, m_scratch);
+    
+  switch (m_srcSegType)
+  {
+    case wxPDF_SEG_CLOSE:
+      return;
+
+    case wxPDF_SEG_MOVETO:
+    case wxPDF_SEG_LINETO:
+      m_srcPosX = m_scratch[0];
+      m_srcPosY = m_scratch[1];
+      return;
+
+    case wxPDF_SEG_CURVETO:
+      if (m_recursionLimit == 0)
+      {
+        m_srcPosX = m_scratch[4];
+        m_srcPosY = m_scratch[5];
+        m_stackSize = 0;
+        return;
+      }
+      sp = 6 * m_recursionLimit;
+      m_stackSize = 1;
+      m_recLevel[0] = 0;
+      m_stack[sp] = m_srcPosX;                  // P1.x
+      m_stack[sp + 1] = m_srcPosY;              // P1.y
+      m_stack[sp + 2] = m_scratch[0];           // C1.x
+      m_stack[sp + 3] = m_scratch[1];           // C1.y
+      m_stack[sp + 4] = m_scratch[2];           // C2.x
+      m_stack[sp + 5] = m_scratch[3];           // C2.y
+      m_srcPosX = m_stack[sp + 6] = m_scratch[4]; // P2.x
+      m_srcPosY = m_stack[sp + 7] = m_scratch[5]; // P2.y
+      SubdivideCubic();
+      return;
+  }
+}
+
+void
+wxPdfFlatPath::Next()
+{
+  if (m_stackSize > 0)
+  {
+    --m_stackSize;
+    if (m_stackSize > 0)
+    {
+      switch (m_srcSegType)
+      {
+        case wxPDF_SEG_CURVETO:
+          SubdivideCubic();
+          return;
+
+        default:
+          break;
+          //throw new IllegalStateException();
+      }
+    }
+  }
+
+  if ((size_t) m_iterType < m_shape->GetSegmentCount())
+  {
+    switch (m_srcSegType)
+    {
+      case wxPDF_SEG_CLOSE:
+      case wxPDF_SEG_MOVETO:
+      case wxPDF_SEG_LINETO:
+        m_iterPoints++;
+        break;
+
+      case wxPDF_SEG_CURVETO:
+        m_iterPoints += 3;
+        break;
+    }
+    m_iterType++;
+  }
+
+  FetchSegment();
+}
+
+int
+wxPdfFlatPath::CurrentSegment(double coords[])
+{
+  //if (done)
+    //throw new NoSuchElementException();
+
+  switch (m_srcSegType)
+  {
+    case wxPDF_SEG_CLOSE:
+      return m_srcSegType;
+
+    case wxPDF_SEG_MOVETO:
+    case wxPDF_SEG_LINETO:
+      coords[0] = m_srcPosX;
+      coords[1] = m_srcPosY;
+      return m_srcSegType;
+
+    case wxPDF_SEG_CURVETO:
+      if (m_stackSize == 0)
+      {
+        coords[0] = m_srcPosX;
+        coords[1] = m_srcPosY;
+      }
+      else
+      {
+        int sp = m_stackMaxSize - 6 * m_stackSize;
+        coords[0] = m_stack[sp + 4];
+        coords[1] = m_stack[sp + 5];
+      }
+      return wxPDF_SEG_LINETO;
+  }
+
+  //throw new IllegalStateException();
+  return wxPDF_SEG_UNDEFINED;
+}
+
+static void
+SubdivideCubicCurve(double src[], int srcOff,
+                    double left[], int leftOff,
+                    double right[], int rightOff)
+{
+  // To understand this code, please have a look at the image
+  // "CubicCurve2D-3.png" in the sub-directory "doc-files".
+  double srcC1x;
+  double srcC1y;
+  double srcC2x;
+  double srcC2y;
+  double leftP1x;
+  double leftP1y;
+  double leftC1x;
+  double leftC1y;
+  double leftC2x;
+  double leftC2y;
+  double rightC1x;
+  double rightC1y;
+  double rightC2x;
+  double rightC2y;
+  double rightP2x;
+  double rightP2y;
+  double midx; // Mid = left.P2 = right.P1
+  double midy; // Mid = left.P2 = right.P1
+
+  leftP1x = src[srcOff];
+  leftP1y = src[srcOff + 1];
+  srcC1x = src[srcOff + 2];
+  srcC1y = src[srcOff + 3];
+  srcC2x = src[srcOff + 4];
+  srcC2y = src[srcOff + 5];
+  rightP2x = src[srcOff + 6];
+  rightP2y = src[srcOff + 7];
+
+  leftC1x = (leftP1x + srcC1x) / 2;
+  leftC1y = (leftP1y + srcC1y) / 2;
+  rightC2x = (rightP2x + srcC2x) / 2;
+  rightC2y = (rightP2y + srcC2y) / 2;
+  midx = (srcC1x + srcC2x) / 2;
+  midy = (srcC1y + srcC2y) / 2;
+  leftC2x = (leftC1x + midx) / 2;
+  leftC2y = (leftC1y + midy) / 2;
+  rightC1x = (midx + rightC2x) / 2;
+  rightC1y = (midy + rightC2y) / 2;
+  midx = (leftC2x + rightC1x) / 2;
+  midy = (leftC2y + rightC1y) / 2;
+
+  if (left != NULL)
+  {
+    left[leftOff] = leftP1x;
+    left[leftOff + 1] = leftP1y;
+    left[leftOff + 2] = leftC1x;
+    left[leftOff + 3] = leftC1y;
+    left[leftOff + 4] = leftC2x;
+    left[leftOff + 5] = leftC2y;
+    left[leftOff + 6] = midx;
+    left[leftOff + 7] = midy;
+  }
+
+  if (right != NULL)
+  {
+    right[rightOff] = midx;
+    right[rightOff + 1] = midy;
+    right[rightOff + 2] = rightC1x;
+    right[rightOff + 3] = rightC1y;
+    right[rightOff + 4] = rightC2x;
+    right[rightOff + 5] = rightC2y;
+    right[rightOff + 6] = rightP2x;
+    right[rightOff + 7] = rightP2y;
+  }
+}
+
+static double
+PointSegmentDistanceSq(double x1, double y1, double x2, double y2, double px, double py)
+{
+  double pd2 = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+
+  double x, y;
+  if (pd2 == 0)
+  {
+    // Points are coincident.
+    x = x1;
+    y = y2;
+  }
+  else
+  {
+    double u = ((px - x1) * (x2 - x1) + (py - y1) * (y2 - y1)) / pd2;
+
+    if (u < 0)
+    {
+      // "Off the end"
+      x = x1;
+      y = y1;
+    }
+    else if (u > 1.0)
+    {
+      x = x2;
+      y = y2;
+    }
+    else
+    {
+      x = x1 + u * (x2 - x1);
+      y = y1 + u * (y2 - y1);
+    }
+  }
+
+  return (x - px) * (x - px) + (y - py) * (y - py);
+}
+
+static double
+GetFlatnessSq(double x1, double y1, double cx1, double cy1,
+              double cx2, double cy2, double x2, double y2)
+{
+
+  double d1 = PointSegmentDistanceSq(x1, y1, x2, y2, cx1, cy1);
+  double d2 = PointSegmentDistanceSq(x1, y1, x2, y2, cx2, cy2);
+  return (d1 > d2) ? d1 : d2;
+//  return Math.max(Line2D.ptSegDistSq(x1, y1, x2, y2, cx1, cy1),
+//                  Line2D.ptSegDistSq(x1, y1, x2, y2, cx2, cy2));
+}
+
+static double
+GetFlatnessSq(double coords[], int offset)
+{
+  return GetFlatnessSq(coords[offset+0], coords[offset+1], coords[offset+2],
+                       coords[offset+3], coords[offset+4], coords[offset+5],
+                       coords[offset+6], coords[offset+7]);
+}
+
+  /**
+   * Repeatedly subdivides the cubic curve segment that is on top
+   * of the stack. The iteration terminates when the recursion limit
+   * has been reached, or when the resulting segment is flat enough.
+   */
+void
+wxPdfFlatPath::SubdivideCubic()
+{
+  int sp;
+  int level;
+
+  sp = m_stackMaxSize - 6 * m_stackSize - 2;
+  level = m_recLevel[m_stackSize - 1];
+  while ((level < m_recursionLimit)
+         && (GetFlatnessSq(m_stack, sp) >= m_flatnessSq))
+  {
+    m_recLevel[m_stackSize] = m_recLevel[m_stackSize - 1] = ++level;
+      
+    SubdivideCubicCurve(m_stack, sp, m_stack, sp - 6, m_stack, sp);
+    ++m_stackSize;
+    sp -= 6;
+  }
+}
+
+double
+wxPdfFlatPath::MeasurePathLength()
+{
+  double points[6];
+  double moveX = 0, moveY = 0;
+  double lastX = 0, lastY = 0;
+  double thisX = 0, thisY = 0;
+  int type = 0;
+  double total = 0;
+
+  // Save iterator state
+  bool saveDone      = m_done;
+  int saveIterType   = m_iterType;
+  int saveIterPoints = m_iterPoints;
+  int saveStackSize  = m_stackSize;
+
+  InitIter();
+  while (!IsDone())
+  {
+    type = CurrentSegment(points);
+    switch( type )
+    {
+      case wxPDF_SEG_MOVETO:
+        moveX = lastX = points[0];
+        moveY = lastY = points[1];
+        break;
+
+      case wxPDF_SEG_CLOSE:
+        points[0] = moveX;
+        points[1] = moveY;
+        // Fall into....
+
+      case wxPDF_SEG_LINETO:
+        thisX = points[0];
+        thisY = points[1];
+        double dx = thisX-lastX;
+        double dy = thisY-lastY;
+        total += sqrt(dx*dx + dy*dy);
+        lastX = thisX;
+        lastY = thisY;
+        break;
+    }
+    Next();
+  }
+
+  // Restore iterator state
+  m_done       = saveDone;
+  m_iterType   = saveIterType;
+  m_iterPoints = saveIterPoints;
+  m_stackSize  = saveStackSize;
+  FetchSegment();
+
+  return total;
+}
+
+void
+wxPdfDocument::ShapedText(const wxPdfShape& shape, const wxString& text, wxPdfShapedTextMode mode)
+{
+  bool stretchToFit = (mode == wxPDF_SHAPEDTEXTMODE_STRETCHTOFIT);
+  bool repeat = (mode == wxPDF_SHAPEDTEXTMODE_REPEAT);
+  double flatness = 0.25 / GetScaleFactor();
+  wxPdfFlatPath it(&shape, flatness);
+  double points[6];
+  double moveX = 0, moveY = 0;
+  double lastX = 0, lastY = 0;
+  double thisX = 0, thisY = 0;
+  int type = 0;
+  bool first = false;
+  double next = 0;
+  int currentChar = 0;
+  int length = text.Length();
+  double height = GetFontSize() / GetScaleFactor();
+
+  if ( length == 0 )
+    return;
+
+  double factor = stretchToFit ? it.MeasurePathLength() / GetStringWidth(text) : 1.0;
+  double nextAdvance = 0;
+
+  while (currentChar < length && !it.IsDone())
+  {
+    type = it.CurrentSegment(points);
+    switch (type)
+    {
+      case wxPDF_SEG_MOVETO:
+        moveX = lastX = points[0];
+        moveY = lastY = points[1];
+        SetXY(moveX, moveY);
+        first = true;
+        nextAdvance = GetStringWidth(text.Mid(currentChar,1)) * 0.5;
+        next = nextAdvance;
+        break;
+
+      case wxPDF_SEG_CLOSE:
+        points[0] = moveX;
+        points[1] = moveY;
+        // Fall into....
+
+      case wxPDF_SEG_LINETO:
+        thisX = points[0];
+        thisY = points[1];
+        double dx = thisX-lastX;
+        double dy = thisY-lastY;
+        double distance = sqrt(dx*dx + dy*dy);
+        if (distance >= next)
+        {
+          double r = 1.0 / distance;
+          double angle = atan2(-dy, dx) * 45. / atan(1.);
+          while (currentChar < length && distance >= next)
+          {
+            wxString glyph = text.Mid(currentChar, 1);
+            double x = lastX + next*dx*r;
+            double y = lastY + next*dy*r;
+            double advance = nextAdvance;
+            nextAdvance = currentChar < length-1 ? GetStringWidth(text.Mid(currentChar+1,1)) * 0.5 : 
+                                                   (repeat) ? GetStringWidth(text.Mid(0,1)) * 0.5 : 0;
+            SetXY(x, y);
+            StartTransform();
+            Rotate(angle);
+            SetXY(x-advance,y-height);
+            Write(height, glyph);
+            StopTransform();
+            next += (advance+nextAdvance) * factor;
+            currentChar++;
+            if ( repeat )
+            {
+              currentChar %= length;
+            }
+          }
+        }
+        next -= distance;
+        first = false;
+        lastX = thisX;
+        lastY = thisY;
+        break;
+    }
+    it.Next();
+  }
 }
 
 // ---
@@ -561,6 +1340,69 @@ wxPdfDocument::StarPolygon(double x0, double y0, double r, int nv, int ng, doubl
 }
 
 void
+wxPdfDocument::Shape(const wxPdfShape& shape, int style)
+{
+  wxString op;
+  if ((style & wxPDF_STYLE_MASK) == wxPDF_STYLE_FILL)
+  {
+    op = _T("f");
+  }
+  else
+  {
+    if ((style & wxPDF_STYLE_MASK) == wxPDF_STYLE_FILLDRAW)
+    {
+      op = _T("B");
+    }
+    else if ((style & wxPDF_STYLE_MASK) == (wxPDF_STYLE_DRAWCLOSE | wxPDF_STYLE_FILL))
+    {
+      op = _T("b"); // small 'b' means closing the path as well
+    }
+    else if ((style & wxPDF_STYLE_MASK) == wxPDF_STYLE_DRAWCLOSE)
+    {
+      op = _T("s"); // small 's' means closing the path as well
+    }
+    else
+    {
+      op = _T("S");
+    }
+  }
+
+  Out("q");
+
+  double scratch[6];
+  int iterType;
+  int iterPoints = 0;
+  int segCount = shape.GetSegmentCount();
+  for (iterType = 0; iterType < segCount; iterType++)
+  {
+    int segType = shape.GetSegment(iterType, iterPoints, scratch);
+    switch (segType)
+    {
+      case wxPDF_SEG_CLOSE:
+        Out("h");
+        iterPoints++;
+        break;
+      case wxPDF_SEG_MOVETO:
+        OutPoint(scratch[0], scratch[1]);
+        iterPoints++;
+        break;
+      case wxPDF_SEG_LINETO:
+        OutLine(scratch[0], scratch[1]);
+        iterPoints++;
+        break;
+      case wxPDF_SEG_CURVETO:
+        OutCurve(scratch[0], scratch[1], scratch[2], scratch[3],scratch[4], scratch[5]);
+        iterPoints += 3;
+        break;
+    }
+  }
+  OutAscii(op);
+  Out("Q");
+
+//  ClosePath(style);
+}
+
+void
 wxPdfDocument::ClippingText(double x, double y, const wxString& txt, bool outline)
 {
   wxString op = outline ? _T("5") : _T("7");
@@ -624,6 +1466,95 @@ wxPdfDocument::ClippingEllipse(double x, double y, double rx, double ry, bool ou
            Double2String((m_h-(y+ly))*m_k,2) + wxString(_T(" ")) +
            Double2String((x+rx)*m_k,2) + wxString(_T(" ")) +
            Double2String((m_h-y)*m_k,2) + wxString(_T(" c W ")) + op);
+}
+
+void
+wxPdfDocument::ClippingPolygon(const wxPdfArrayDouble& x, const wxPdfArrayDouble& y, bool outline)
+{
+  int np = (x.GetCount() < y.GetCount()) ? x.GetCount() : y.GetCount();
+
+  wxString op = outline ? _T("S") : _T("n");
+
+  Out("q");
+  OutPoint(x[0], y[0]);
+  int i;
+  for (i = 1; i < np; i++)
+  {
+    OutLine(x[i], y[i]);
+  }
+  OutLine(x[0], y[0]);
+  OutAscii(wxString(_T("h W ")) + op);
+}
+
+void
+wxPdfDocument::ClippingPath()
+{
+  Out("q");
+}
+
+void
+wxPdfDocument::MoveTo(double x, double y)
+{
+  OutPoint(x, y);
+}
+
+void
+wxPdfDocument::LineTo(double x, double y)
+{
+  OutLine(x, y);
+}
+
+void
+wxPdfDocument::CurveTo(double x1, double y1, double x2, double y2, double x3, double y3)
+{
+  OutCurve(x1, y1, x2, y2, x3, y3);
+}
+
+void
+wxPdfDocument::ClosePath(int style)
+{
+  wxString op;
+  switch (style)
+  {
+    case wxPDF_STYLE_DRAW:     op = _T("S"); break;
+    case wxPDF_STYLE_FILL:     op = _T("F"); break;
+    case wxPDF_STYLE_FILLDRAW: op = _T("B"); break;
+    default:                   op = _T("n"); break;
+  }
+  OutAscii(wxString(_T("h W ")) + op);
+}
+
+void
+wxPdfDocument::ClippingPath(const wxPdfShape& shape, int style)
+{
+  ClippingPath();
+  double scratch[6];
+  int iterType;
+  int iterPoints = 0;
+  int segCount = shape.GetSegmentCount();
+  for (iterType = 0; iterType < segCount; iterType++)
+  {
+    int segType = shape.GetSegment(iterType, iterPoints, scratch);
+    switch (segType)
+    {
+      case wxPDF_SEG_CLOSE:
+        iterPoints++;
+        break;
+      case wxPDF_SEG_MOVETO:
+        MoveTo(scratch[0], scratch[1]);
+        iterPoints++;
+        break;
+      case wxPDF_SEG_LINETO:
+        LineTo(scratch[0], scratch[1]);
+        iterPoints++;
+        break;
+      case wxPDF_SEG_CURVETO:
+        CurveTo(scratch[0], scratch[1], scratch[2], scratch[3],scratch[4], scratch[5]);
+        iterPoints += 3;
+        break;
+    }
+  }
+  ClosePath(style);
 }
 
 void
@@ -903,56 +1834,130 @@ wxPdfDocument::StopTransform()
   }
 }
 
-void
-wxPdfDocument::LinearGradient(double x, double y, double w, double h,
-                              const wxColour& col1, const wxColour& col2)
+static bool
+ColorSpaceOk(const wxPdfColour& col1, const wxPdfColour& col2)
 {
-  double coords[4] = {0, 0, 1, 0};
-  LinearGradient(x, y, w, h, col1, col2, coords);
+  return (col1.GetColorType() != wxPDF_COLOURTYPE_SPOT &&
+          col1.GetColorType() == col2.GetColorType());
 }
 
-void
-wxPdfDocument::LinearGradient(double x, double y, double w, double h,
-                              const wxColour& col1, const wxColour& col2,
-                              double coords[4])
+int
+wxPdfDocument::LinearGradient(const wxPdfColour& col1, const wxPdfColour& col2,
+                              wxPdfLinearGradientType gradientType)
 {
-  ClippingRect(x, y, w, h, false);
-  //set up transformation matrix for gradient
-  double tm[6];
-  tm[0] = w * m_k;
-  tm[1] = 0;
-  tm[2] = 0;
-  tm[3] = h * m_k;
-  tm[4] = x * m_k;
-  tm[5] = (m_h - (y+h)) * m_k;
-  Transform(tm);
-  Gradient(2, col1, col2, coords);
+  static double h[] = { 0, 0, 1, 0 };
+  static double v[] = { 0, 0, 0, 1 };
+  wxPdfGradient* gradient;
+
+  int n = 0;
+  if (ColorSpaceOk(col1, col2))
+  {
+    switch (gradientType)
+    {
+      case wxPDF_LINEAR_GRADIENT_REFLECTION_TOP:
+        gradient = new wxPdfMidAxialGradient(col1, col2, v[0], v[1], v[2], v[3], 0.67, 0.7);
+        break;
+      case wxPDF_LINEAR_GRADIENT_REFLECTION_BOTTOM:
+        gradient = new wxPdfMidAxialGradient(col1, col2, v[0], v[1], v[2], v[3], 0.33, 0.7);
+        break;
+      case wxPDF_LINEAR_GRADIENT_REFLECTION_LEFT:
+        gradient = new wxPdfMidAxialGradient(col1, col2, h[0], h[1], h[2], h[3], 0.33, 0.7);
+        break;
+      case wxPDF_LINEAR_GRADIENT_REFLECTION_RIGHT:
+        gradient = new wxPdfMidAxialGradient(col1, col2, h[0], h[1], h[2], h[3], 0.67, 0.7);
+        break;
+      case wxPDF_LINEAR_GRADIENT_MIDVERTICAL:
+        gradient = new wxPdfMidAxialGradient(col1, col2, v[0], v[1], v[2], v[3], 0.5, 1);
+        break;
+      case wxPDF_LINEAR_GRADIENT_MIDHORIZONTAL:
+        gradient = new wxPdfMidAxialGradient(col1, col2, h[0], h[1], h[2], h[3], 0.5, 1);
+        break;
+      case wxPDF_LINEAR_GRADIENT_VERTICAL:
+        gradient = new wxPdfAxialGradient(col1, col2, v[0], v[1], v[2], v[3], 1);
+        break;
+      case wxPDF_LINEAR_GRADIENT_HORIZONTAL:
+      default:
+        gradient = new wxPdfAxialGradient(col1, col2, h[0], h[1], h[2], h[3], 1);
+        break;
+    }
+    n = (*m_gradients).size()+1;
+    (*m_gradients)[n] = gradient;
+  }
+  else
+  {
+    wxLogError(_("wxPdfDocument::LinearGradient: Color spaces do not match."));
+  }
+  return n;
 }
 
-void
-wxPdfDocument::RadialGradient(double x, double y, double w, double h,
-                              const wxColour& col1, const wxColour& col2)
+int
+wxPdfDocument::AxialGradient(const wxPdfColour& col1, const wxPdfColour& col2,
+                             double x1, double y1, double x2, double y2,
+                             double intexp)
 {
-  double coords[5] = {0.5, 0.5, 0.5, 0.5, 1};
-  RadialGradient(x, y, w, h, col1, col2, coords);
+  int n = 0;
+  if (ColorSpaceOk(col1, col2))
+  {
+    n = (*m_gradients).size()+1;
+    (*m_gradients)[n] = new wxPdfAxialGradient(col1, col2, x1, y1, x2, y2, intexp);
+  }
+  else
+  {
+    wxLogError(_("wxPdfDocument::LinearGradient: Color spaces do not match."));
+  }
+  return n;
 }
 
-void
-wxPdfDocument::RadialGradient(double x, double y, double w, double h,
-                              const wxColour& col1, const wxColour& col2, 
-                              double coords[5])
+int
+wxPdfDocument::MidAxialGradient(const wxPdfColour& col1, const wxPdfColour& col2,
+                               double x1, double y1, double x2, double y2,
+                               double midpoint, double intexp)
 {
-  ClippingRect(x, y, w, h, false);
-  //set up transformation matrix for gradient
-  double tm[6];
-  tm[0] = w * m_k;
-  tm[1] = 0;
-  tm[2] = 0;
-  tm[3] = h * m_k;
-  tm[4] = x * m_k;
-  tm[5] = (m_h - (y+h)) * m_k;
-  Transform(tm);
-  Gradient(3, col1, col2, coords);
+  int n = 0;
+  if (ColorSpaceOk(col1, col2))
+  {
+    n = (*m_gradients).size()+1;
+    (*m_gradients)[n] = new wxPdfMidAxialGradient(col1, col2, x1, y1, x2, y2, midpoint, intexp);
+  }
+  else
+  {
+    wxLogError(_("wxPdfDocument::LinearGradient: Color spaces do not match."));
+  }
+  return n;
+}
+
+int
+wxPdfDocument::RadialGradient(const wxPdfColour& col1, const wxPdfColour& col2,
+                              double x1, double y1, double r1,
+                              double x2, double y2, double r2, double intexp)
+{
+  int n = 0;
+  if (ColorSpaceOk(col1, col2))
+  {
+    n = (*m_gradients).size()+1;
+    (*m_gradients)[n] = new wxPdfRadialGradient(col1, col2, x1, y1, r1, x2, y2, r2, intexp);
+  }
+  else
+  {
+    wxLogError(_("wxPdfDocument::RadialGradient: Color spaces do not match."));
+  }
+  return n;
+}
+
+int
+wxPdfDocument::CoonsPatchGradient(const wxPdfCoonsPatchMesh& mesh, double minCoord, double maxCoord)
+{
+  int n = 0;
+  if (mesh.Ok())
+  {
+    n = (*m_gradients).size()+1;
+    (*m_gradients)[n] = new wxPdfCoonsPatchGradient(mesh, minCoord, maxCoord);
+  }
+  else
+  {
+    wxLogError(_("wxPdfDocument::CoonsPatchGradient: Mesh is invalid."));
+  }
+  return n;
 }
 
 /* draw a marker at a raw point-based coordinate */
@@ -1215,5 +2220,3 @@ wxPdfDocument::Arrow(double x1, double y1, double x2, double y2, double linewidt
   Line(x1+cosa*linewidth, y1+sina*linewidth, x2-cosa*height, y2-sina*height);
   SetLineWidth(saveLineWidth);
 }
-
-

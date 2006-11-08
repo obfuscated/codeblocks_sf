@@ -13,12 +13,6 @@
 #ifndef _PDFDOC_H_
 #define _PDFDOC_H_
 
-#if 0 // Use of pragma seems to cause problems
-#if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "pdfdoc.h"
-#endif
-#endif
-
 #include <wx/dynarray.h>
 #include <wx/mstream.h>
 
@@ -26,581 +20,20 @@
 #include "wx/pdfencrypt.h"
 #include "wx/pdffont.h"
 #include "wx/pdfimage.h"
+#include "wx/pdfproperties.h"
 
-#define wxPDF_PRODUCER       _T("wxPdfDocument 0.7.0")
+#define wxPDF_PRODUCER       _T("wxPdfDocument 0.7.6")
 
 #define wxPDF_EPSILON        1e-6
 
-/// Border options
-#define wxPDF_BORDER_NONE    0x0000
-#define wxPDF_BORDER_LEFT    0x0001
-#define wxPDF_BORDER_RIGHT   0x0002
-#define wxPDF_BORDER_TOP     0x0004
-#define wxPDF_BORDER_BOTTOM  0x0008
-#define wxPDF_BORDER_FRAME   0x000F
-
-/// Corner options
-#define wxPDF_CORNER_NONE          0x0000
-#define wxPDF_CORNER_TOP_LEFT      0x0001
-#define wxPDF_CORNER_TOP_RIGHT     0x0002
-#define wxPDF_CORNER_BOTTOM_LEFT   0x0004
-#define wxPDF_CORNER_BOTTOM_RIGHT  0x0008
-#define wxPDF_CORNER_ALL           0x000F
-
-/// Style options
-#define wxPDF_STYLE_DRAW      0x0001
-#define wxPDF_STYLE_FILL      0x0002
-#define wxPDF_STYLE_FILLDRAW  0x0003
-#define wxPDF_STYLE_DRAWCLOSE 0x0004
-#define wxPDF_STYLE_MASK      0x0007
-
-/// Font decoration options
-#define wxPDF_FONT_NORMAL     0x0000
-#define wxPDF_FONT_UNDERLINE  0x0001
-#define wxPDF_FONT_OVERLINE   0x0002
-#define wxPDF_FONT_STRIKEOUT  0x0004
-#define wxPDF_FONT_DECORATION 0x0007 // Mask all possible decorations
-
-
-/// Permission options
-#define wxPDF_PERMISSION_PRINT  0x0004  ///< Allow printing
-#define wxPDF_PERMISSION_MODIFY 0x0008  ///< Allow modifying
-#define wxPDF_PERMISSION_COPY   0x0010  ///< Allow text copying
-#define wxPDF_PERMISSION_ANNOT  0x0020  ///< Allow annotations
-
-/// Form field border styles
-enum wxPdfBorderStyle
-{
-  wxPDF_BORDER_SOLID,
-  wxPDF_BORDER_DASHED,
-  wxPDF_BORDER_BEVELED,
-  wxPDF_BORDER_INSET,
-  wxPDF_BORDER_UNDERLINE
-};
-
-/// Alignment options
-enum wxPdfAlignment
-{
-  wxPDF_ALIGN_LEFT,
-  wxPDF_ALIGN_CENTER,
-  wxPDF_ALIGN_RIGHT,
-  wxPDF_ALIGN_JUSTIFY,
-  wxPDF_ALIGN_TOP    = wxPDF_ALIGN_LEFT,
-  wxPDF_ALIGN_MIDDLE = wxPDF_ALIGN_CENTER,
-  wxPDF_ALIGN_BOTTOM = wxPDF_ALIGN_RIGHT
-};
-
-/// Zoom options
-enum wxPdfZoom
-{
-  wxPDF_ZOOM_FULLPAGE,
-  wxPDF_ZOOM_FULLWIDTH,
-  wxPDF_ZOOM_REAL,
-  wxPDF_ZOOM_DEFAULT,
-  wxPDF_ZOOM_FACTOR
-};
-
-/// Layout options
-enum wxPdfLayout
-{
-  wxPDF_LAYOUT_CONTINUOUS,
-  wxPDF_LAYOUT_SINGLE,
-  wxPDF_LAYOUT_TWO,
-  wxPDF_LAYOUT_DEFAULT
-};
-
-/// Line Cap options
-enum wxPdfLineCap
-{
-  wxPDF_LINECAP_NONE   = -1,
-  wxPDF_LINECAP_BUTT   = 0,
-  wxPDF_LINECAP_ROUND  = 1,
-  wxPDF_LINECAP_SQUARE = 2
-};
-
-/// Line join options
-enum wxPdfLineJoin
-{
-  wxPDF_LINEJOIN_NONE  = -1,
-  wxPDF_LINEJOIN_MITER = 0,
-  wxPDF_LINEJOIN_ROUND = 1,
-  wxPDF_LINEJOIN_BEVEL = 2
-};
-
-/// Marker symbols
-enum wxPdfMarker
-{
-  wxPDF_MARKER_CIRCLE,
-  wxPDF_MARKER_SQUARE,
-  wxPDF_MARKER_TRIANGLE_UP,
-  wxPDF_MARKER_TRIANGLE_DOWN,
-  wxPDF_MARKER_TRIANGLE_LEFT,
-  wxPDF_MARKER_TRIANGLE_RIGHT,
-  wxPDF_MARKER_DIAMOND,
-  wxPDF_MARKER_PENTAGON_UP,
-  wxPDF_MARKER_PENTAGON_DOWN,
-  wxPDF_MARKER_PENTAGON_LEFT,
-  wxPDF_MARKER_PENTAGON_RIGHT,
-  wxPDF_MARKER_STAR,
-  wxPDF_MARKER_STAR4,
-  wxPDF_MARKER_PLUS,
-  wxPDF_MARKER_CROSS,
-  wxPDF_MARKER_SUN,
-  wxPDF_MARKER_BOWTIE_HORIZONTAL,
-  wxPDF_MARKER_BOWTIE_VERTICAL,
-  wxPDF_MARKER_ASTERISK,
-  wxPDF_MARKER_LAST  // Marks the last available marker symbol; do not use!
-};
-
-/// Class representing internal or external links.
-class WXDLLIMPEXP_PDFDOC wxPdfLink
-{
-public:
-  /// Constructor for internal link
-  /**
-  * Use this constructor to create an \b internal link reference.
-  * \see wxPdfDocument::Link(), wxPdfDocument::Write(), wxPdfDocument::Cell(), wxPdfDocument::ClippedCell(), wxPdfDocument::Image(), wxPdfDocument::RotatedImage()
-  */
-  wxPdfLink(int linkRef);
-
-  /// Constructor for external link
-  /**
-  * Use this constructor to create an \b external link reference.
-  * \see wxPdfDocument::Link(), wxPdfDocument::Write(), wxPdfDocument::Cell(), wxPdfDocument::ClippedCell(), wxPdfDocument::Image(), wxPdfDocument::RotatedImage()
-  */
-  wxPdfLink(const wxString& linkURL);
-
-  /// Copy constructor
-  wxPdfLink(const wxPdfLink& pdfLink);
-
-  /// Destructor
-  virtual ~wxPdfLink();
-
-  /// Check whether this instance is a valid link reference
-  bool  IsValid() const { return m_isValid; }
-
-  /// Check whether this instance is an internal reference
-  bool  IsLinkRef() const { return m_isRef; }
-
-  /// Get the internal link reference
-  int   GetLinkRef() const { return m_linkRef; }
-
-  /// Get the external link reference
-  const wxString GetLinkURL() const { return m_linkURL; }
-
-  /// Set page number and position on page
-  void   SetLink(int page, double ypos) { m_page = page; m_ypos = ypos; }
-
-  /// Get the page this link refers to
-  int    GetPage() { return m_page; }
-
-  /// Get the page position this link refers to
-  double GetPosition() { return m_ypos; }
-
-private:
-  bool     m_isValid;   ///< Flag whether this instance is valid
-  bool     m_isRef;     ///< Flag whether this is an internal link reference
-  int      m_linkRef;   ///< Internal link reference
-  wxString m_linkURL;   ///< External link reference
-  int      m_page;      ///< Page number this link refers to
-  double   m_ypos;      ///< Position on page this link refers to
-};
-
-/// Class representing the sensitive area of links referring to a page. (For internal use only)
-class WXDLLIMPEXP_PDFDOC wxPdfPageLink : public wxPdfLink
-{
-public:
-  /// Constructor
-  wxPdfPageLink(double x, double y, double w, double h, const wxPdfLink& pdfLink);
-
-  /// Destructor
-  virtual ~wxPdfPageLink();
-
-  /// Get the X offset
-  double GetX() { return m_x; }
-
-  /// Get the Y offset
-  double GetY() { return m_y; }
-
-  /// Get the width
-  double GetWidth() { return m_w; }
-
-  /// Get the height
-  double GetHeight() { return m_h; }
-
-private:
-  double m_x;   ///< X offset of sensitive area
-  double m_y;   ///< Y offset of sensitive area
-  double m_w;   ///< Width of sensitive area
-  double m_h;   ///< Height of sensitive area
-};
-
-/// Class representing text annotations.
-class WXDLLIMPEXP_PDFDOC wxPdfAnnotation
-{
-public:
-  /// Constructor for text annotation
-  /**
-  * Use this constructor to create a text annotation.
-  * \param x X offset of the annotation
-  * \param y Y offset of the annotation
-  * \param text annotation text
-  */
-  wxPdfAnnotation(double x, double y, const wxString& text);
-
-  /// Copy constructor
-  wxPdfAnnotation(const wxPdfAnnotation& annotation);
-
-  /// Destructor
-  virtual ~wxPdfAnnotation() {}
-
-  /// Get the X offset of the annotation
-  double GetX() const { return m_x; }
-
-  /// Get the Y offset of the annotation
-  double GetY() const { return m_y; }
-
-  /// Get the text of the annotation
-  wxString GetText() const { return m_text; }
-
-private:
-  double   m_x;     ///< X offset of the annotation
-  double   m_y;     ///< Y offset of the annotation
-  wxString m_text;  ///< Annotation text
-};
-
-/// Class representing bookmarks for defining the document's outline. (For internal use only)
-class WXDLLIMPEXP_PDFDOC wxPdfBookmark
-{
-public:
-  /// Constructor
-  wxPdfBookmark(const wxString& txt, int level, double y, int page);
-
-  /// Destructor
-  virtual ~wxPdfBookmark();
-
-  /// Get the bookmark text
-  wxString GetText() { return m_text; }
-
-  /// Get the associated level
-  int GetLevel() { return m_level; }
-
-  /// Get the Y offset of the bookmark
-  double GetY() { return m_y; }
-
-  /// Get the page number of the bookmark
-  int GetPage() { return m_page; }
-
-  /// Set the parent of the bookmark
-  void SetParent(int parent) { m_parent = parent; }
-
-  /// Get the parent of the bookmark
-  int GetParent() { return m_parent; }
-
-  /// Set previous bookmark
-  void SetPrev(int prev) { m_prev = prev; }
-
-  /// Get previous bookmark
-  int GetPrev() { return m_prev; }
-
-  /// Set next bookmark
-  void SetNext(int next) { m_next = next; }
-
-  /// Get next bookmark
-  int GetNext() { return m_next; }
-
-  /// Set first bookmark
-  void SetFirst(int first) { m_first = first; }
-
-  /// Get first bookmark
-  int GetFirst() { return m_first; }
-
-  /// Set last bookmark
-  void SetLast(int last) { m_last = last; }
-
-  /// Get last bookmark
-  int GetLast() { return m_last; }
-
-private:
-  wxString m_text;    ///< Text of bookmark
-  int      m_level;   ///< Associated level
-  double   m_y;       ///< Y offset
-  int      m_page;    ///< Page number
-  int      m_parent;  ///< Parent bookmark
-  int      m_prev;    ///< Previous bookmark
-  int      m_next;    ///< Next bookmark
-  int      m_first;   ///< First bookmark
-  int      m_last;    ///< Last bookmark
-};
-
-/// Class representing wxPdfDocument colors.
-class WXDLLIMPEXP_PDFDOC wxPdfColour
-{
-public:
-  /// Constructor for grayscale color
-  /**
-  * Defines a grayscale color
-  * \param grayscale indicates the gray level. Value between 0 and 255
-  */
-  wxPdfColour(const unsigned char grayscale = 0);
-  
-  /// Constructor for wxColour color
-  /**
-  * Defines a wxColour color.
-  * \param color defines a wxColour color composed of a red, green and blue component
-  */
-  wxPdfColour(const wxColour& color);
-
-  /// Constructor for RGB color
-  /**
-  * Defines a RGB color.
-  * \param red indicates the red level. Value between 0 and 255
-  * \param green indicates the green level. Value between 0 and 255
-  * \param blue indicates the blue level. Value between 0 and 255
-  */
-  wxPdfColour(const unsigned char red, const unsigned char green, const unsigned char blue);
-  
-  /// Constructor for CMYK color
-  /**
-  * Defines a CMYK color.
-  * \param cyan indicates the cyan level. Value between 0 and 100
-  * \param magenta indicates the magenta level. Value between 0 and 100
-  * \param yellow indicates the yellow level. Value between 0 and 100
-  * \param black indicates the black level. Value between 0 and 100
-  */
-  wxPdfColour(double cyan, double magenta, double yellow, double black);
-  
-  /// Constructor for named RGB color
-  /**
-  * Defines a named RGB color.
-  * \param name is the name of the requested color. Use of HTML notation <b><tt>\#rrggbb</tt></b> as color name is also supported.
-  */
-  wxPdfColour(const wxString& name);
-  
-  /// Copy constructor
-  wxPdfColour(const wxPdfColour& color);
-
-  
-  /// Set grayscale color
-  /**
-  * \param grayscale indicates the gray level. Value between 0 and 255. Default: 0 (Black).
-  */
-  void SetColor(const unsigned char grayscale = 0);
-  
-  /// Set wxColour color
-  /**
-  * \param color defines a wxColour color composed of a red, green and blue component
-  */
-  void SetColor(const wxColour& color);
-  
-  /// Set RGB color
-  /**
-  * \param red indicates the red level. Value between 0 and 255
-  * \param green indicates the green level. Value between 0 and 255
-  * \param blue indicates the blue level. Value between 0 and 255
-  */
-  void SetColor(const unsigned char red, const unsigned char green, const unsigned char blue);
-  
-  /// Set CMYK color
-  /**
-  * \param cyan indicates the cyan level. Value between 0 and 100
-  * \param magenta indicates the magenta level. Value between 0 and 100
-  * \param yellow indicates the yellow level. Value between 0 and 100
-  * \param black indicates the black level. Value between 0 and 100
-  */
-  void SetColor(double cyan, double magenta, double yellow, double black);
-
-  /// Set a named RGB color
-  /**
-  * \param name is the name of the requested color
-  */
-  void SetColor(const wxString& name);
-
-  /// Get internal color string representation (for internal use only)
-  /**
-  * \param drawing flag specifying whether the color is used for drawing operations 
-  */
-  const wxString GetColor(bool drawing) const;
-
-protected:
-  /// Constructor for internal color string representation
-  wxPdfColour(const wxString& color, bool WXUNUSED(internal));
-
-  /// Get a color database
-  static wxColourDatabase* GetColorDatabase();
-
-private:
-  wxString m_color;  ///< internal color string
-
-  static wxColourDatabase* ms_colorDatabase;
-};
-
-/// Class representing spot colors.
-class WXDLLIMPEXP_PDFDOC wxPdfSpotColour
-{
-public:
-  /// Constructor for spot color
-  wxPdfSpotColour(int index, double cyan, double magenta, double yellow, double black);
-
-  /// Copy constructor
-  wxPdfSpotColour(const wxPdfSpotColour& color);
-
-  /// Set object index
-  void SetObjIndex(int index) { m_objIndex = index; }
-
-  /// Get object index
-  int  GetObjIndex() { return m_objIndex; }
-
-  /// Get spot color index
-  int    GetIndex() { return m_index; }
-
-  /// Get cyan level
-  double GetCyan() { return m_cyan; }
-
-  /// Get magenta level
-  double GetMagenta() { return m_magenta; }
-
-  /// Get yellow level
-  double GetYellow() { return m_yellow; }
-
-  /// Get black level
-  double GetBlack() { return m_black; }
-
-private:
-  int    m_objIndex;   ///< object index
-  int    m_index;      ///< color index
-  double m_cyan;       ///< cyan level
-  double m_magenta;    ///< magenta level
-  double m_yellow;     ///< yellow level
-  double m_black;      ///< black level
-};
-
-/// Class representing double arrays (no standard class in wxWidgets unfortunately)
-WX_DEFINE_USER_EXPORTED_ARRAY_DOUBLE(double, wxPdfArrayDouble, class WXDLLIMPEXP_PDFDOC);
-
-/// Class representing line styles.
-class WXDLLIMPEXP_PDFDOC wxPdfLineStyle
-{
-public:
-  /// Constructor
-  /**
-  * Creates a line style for use in graphics primitives.
-  * \param[in] width Width of the line in user units.
-  * \param[in] cap   Type of cap to put on the line (butt, round, square).
-  *                  The difference between 'square' and 'butt' is that 'square'
-  *                  projects a flat end past the end of the line.
-  * \param[in] join  form of line joining: miter, round or bevel
-  * \param[in] dash  pattern for dashed lines.Is an empty array (without dash) or
-  *   array with series of length values, which are the lengths of the on and off dashes.
-  *           For example: (2) represents 2 on, 2 off, 2 on , 2 off ...
-  *                        (2,1) is 2 on, 1 off, 2 on, 1 off.. etc
-  * \param[in] phase Modifier of the dash pattern which is used to shift the point at which the pattern starts
-  * \param[in] color line color.
-  * \see SetLineStyle(), Curve(), Line(), Circle(), Ellipse(), Rect(), RoundedRect(), Polygon(), RegularPolygon(), StarPolygon()
-  */
-  wxPdfLineStyle(double width = -1,
-                 wxPdfLineCap cap = wxPDF_LINECAP_NONE, wxPdfLineJoin join = wxPDF_LINEJOIN_NONE,
-                 const wxPdfArrayDouble& dash = wxPdfArrayDouble(), double phase = -1,
-                 const wxPdfColour& color = wxPdfColour());
-
-  /// Copy constructor
-  wxPdfLineStyle(const wxPdfLineStyle& lineStyle);
-
-  /// Assignment operator
-  wxPdfLineStyle& operator= (const wxPdfLineStyle& lineStyle);
-
-  /// Destructor
-  virtual ~wxPdfLineStyle();
-
-  /// Check whether the style is initialized.
-  bool IsSet() const { return m_isSet; }
-
-  /// Set the line width
-  void SetWidth(double width) { m_width = width; }
-
-  /// Get the line width
-  double GetWidth() const { return m_width; }
-
-  /// Set the line ending style
-  void SetLineCap(const wxPdfLineCap cap) { m_cap = cap; }
-
-  /// Get the line ending style
-  wxPdfLineCap GetLineCap() const { return m_cap; }
-
-  /// Set the line join style
-  void SetLineJoin(const wxPdfLineJoin join) { m_join = join; }
-
-  /// Get the line join style
-  wxPdfLineJoin GetLineJoin() const { return m_join; }
-
-  /// Set the dash pattern
-  void SetDash(const wxPdfArrayDouble& dash) { m_dash = dash; }
-
-  /// Get the dash pattern
-  const wxPdfArrayDouble& GetDash() const { return m_dash; }
-
-  /// Set the dash pattern phase
-  void SetPhase(double phase) { m_phase = phase; }
-
-  /// Get the dash pattern phase
-  double GetPhase() const { return m_phase; }
-
-  /// Set the line color
-  void SetColour(const wxPdfColour& color) { m_color = color; };
-
-  /// Get the line color
-  const wxPdfColour& GetColour() const { return m_color; };
-
-private:
-  bool             m_isSet;   ///< Flag whether the style is initialized
-  double           m_width;   ///< Line width
-  wxPdfLineCap     m_cap;     ///< Line ending style
-  wxPdfLineJoin    m_join;    ///< Line joining style
-  wxPdfArrayDouble m_dash;    ///< Dash pattern
-  double           m_phase;   ///< Dash pattern phase
-  wxPdfColour      m_color;   ///< Line color
-};
-
-/// Class representing gradients.
-class WXDLLIMPEXP_PDFDOC wxPdfGradient
-{
-public:
-  /// Constructor
-  wxPdfGradient(int type, const wxColour& color1, const wxColour& color2, double coords[]);
-
-  /// Destructor
-  virtual ~wxPdfGradient();
-
-  /// Set gradient object index
-  void SetObjIndex(int n) { m_n = n; }
-
-  /// Get gradient object index
-  int  GetObjIndex() { return m_n; }
-
-  /// Get the gradient type
-  const int GetType() const { return m_type; };
-
-  /// Get the gradient color 1
-  const wxColour& GetColor1() const { return m_color1; };
-
-  /// Get the gradient color 2
-  const wxColour& GetColor2() const { return m_color2; };
-
-  /// Get the gradient coordinates
-  const double* GetCoords() const { return m_coords; }
-
-private:
-  int              m_n;         ///< Gradient index
-  int              m_type;      ///< Gradient type
-  wxColour         m_color1;    ///< Gradient color 1
-  wxColour         m_color2;    ///< Gradient color 2
-  double           m_coords[5]; ///< Gradient coordinates
-};
+class wxPdfExtGState;
+class wxPdfGradient;
 
 class wxPdfCellContext;
 class wxPdfTable;
 class wxPdfIndirectObject;
 class wxPdfAnnotationWidget;
+class wxPdfTemplate;
 
 /// Hashmap class for offset values
 WX_DECLARE_HASH_MAP(long, int, wxIntegerHash, wxIntegerEqual, wxPdfOffsetHashMap);
@@ -629,14 +62,24 @@ WX_DECLARE_HASH_MAP(long, wxArrayPtrVoid*, wxIntegerHash, wxIntegerEqual, wxPdfF
 /// Hashmap class for form fields
 WX_DECLARE_HASH_MAP(long, wxPdfIndirectObject*, wxIntegerHash, wxIntegerEqual, wxPdfFormFieldsMap);
 
+/// Hashmap class for templates
+WX_DECLARE_HASH_MAP(long, wxPdfTemplate*, wxIntegerHash, wxIntegerEqual, wxPdfTemplatesMap);
+
 /// Hashmap class for font encoding differences
 WX_DECLARE_HASH_MAP(long, wxString*, wxIntegerHash, wxIntegerEqual, wxPdfDiffHashMap);
+
+/// Hashmap class for extended graphics states
+WX_DECLARE_HASH_MAP(long, wxPdfExtGState*, wxIntegerHash, wxIntegerEqual, wxPdfExtGStateMap);
+WX_DECLARE_HASH_MAP(long, int, wxIntegerHash, wxIntegerEqual, wxPdfExtGSLookupMap);
 
 /// Hashmap class for gradients
 WX_DECLARE_HASH_MAP(long, wxPdfGradient*, wxIntegerHash, wxIntegerEqual, wxPdfGradientMap);
 
 /// Hashmap class for core fonts
 WX_DECLARE_STRING_HASH_MAP(int, wxPdfCoreFontMap);
+
+/// Hashmap class for core fonts
+WX_DECLARE_STRING_HASH_MAP(int, wxPdfNamedLinksMap);
 
 /// Hash map class for used/embedded fonts
 WX_DECLARE_STRING_HASH_MAP(wxPdfFont*, wxPdfFontHashMap);
@@ -849,6 +292,18 @@ public:
   * \param compress Boolean indicating if compression must be enabled.
   */
   virtual void SetCompression(bool compress);
+
+  /// Defines the viewer preferences.
+  /**
+  * \param preferences A set of viewer preferences options.
+  *   \li wxPDF_VIEWER_HIDETOOLBAR:     Hide tool bar
+  *   \li wxPDF_VIEWER_HIDEMENUBAR:     Hide menu bar
+  *   \li wxPDF_VIEWER_HIDEWINDOWUI:    Hide user interface
+  *   \li wxPDF_VIEWER_FITWINDOW:       Fit window to page size
+  *   \li wxPDF_VIEWER_CENTERWINDOW:    Center window on screen
+  *   \li wxPDF_VIEWER_DISPLAYDOCTITLE: Display document title in title bar
+  */
+  virtual void SetViewerPreferences(int preferences = 0);
 
   /// Defines the title of the document.
   /**
@@ -1276,9 +731,9 @@ public:
   virtual void RoundedRect(double x, double y, double w, double h,
                            double r, int roundCorner = wxPDF_CORNER_ALL, int style = wxPDF_STYLE_DRAW);
 
-  /// Draws a Bézier curve
+  /// Draws a Bezier curve
   /**
-  * A Bézier curve is tangent to the line between the control points at either end of the curve.
+  * A Bezier curve is tangent to the line between the control points at either end of the curve.
   * \param x0: Abscissa of start point
   * \param y0: Ordinate of start point
   * \param x1: Abscissa of control point 1
@@ -1303,7 +758,7 @@ public:
   * \param astart: Start angle
   * \param afinish: Finish angle
   * \param style: Style of rectangle (draw and/or fill)
-  * \param nSeg: Ellipse is made up of nSeg Bézier curves
+  * \param nSeg: Ellipse is made up of nSeg Bezier curves
   */
   virtual void Ellipse(double x0, double y0, double rx, double ry = 0, 
                        double angle = 0, double astart = 0, double afinish = 360,
@@ -1317,7 +772,7 @@ public:
   * \param astart: Start angle
   * \param afinish: Finish angle
   * \param style: Style of rectangle (draw and/or fill)
-  * \param nSeg: Circle is made up of nSeg Bézier curves
+  * \param nSeg: Circle is made up of nSeg Bezier curves
   */
   virtual void Circle(double x0, double y0, double r, 
                       double astart = 0, double afinish = 360,
@@ -1385,6 +840,17 @@ public:
                            const wxPdfLineStyle& circleLineStyle = wxPdfLineStyle(),
                            const wxPdfColour& circleFillColor = wxPdfColour());
 
+  /// Draws a shape
+  /**
+  * \param shape: shape to be drawn
+  * \param style Style of rendering. Possible values are:
+  *   \li wxPDF_STYLE_DRAW (default)
+  *   \li wxPDF_STYLE_FILL: fill
+  *   \li wxPDF_STYLE_FILLDRAW: draw and fill
+  *   \li wxPDF_STYLE_DRAWCLOSE: close path and draw (can be combined with wxPDF_STYLE_FILL
+  */
+  virtual void Shape(const wxPdfShape& shape, int style = wxPDF_STYLE_DRAW);
+
   /// Performs a rotation around a given center.
   /**
   * \param angle angle in degrees.
@@ -1401,12 +867,31 @@ public:
   */
   virtual void Rotate(double angle, double x = -1, double y = -1);
 
+  /// Sets the default path for font definition files
+  /**
+  * wxPdfDocument uses XML font definition files for embedding fonts.
+  * The definition file (and the font file itself when embedding) must be present
+  * in the path set by SetFontPath.
+  *
+  * \param fontPath the path to be used as the default font file path
+  * If an empty string is passed the default path is set to the path specified
+  * by the environment variable WXPDF_FONTPATH. If WXPDF_FONTPATH does not exist,
+  * the subdirectory 'fonts' of the current working directory is used instead.
+  */
+  virtual void SetFontPath(const wxString& fontPath = wxEmptyString);
+
+  /// Return the current default path for font definition files
+  /**
+  * \return The default font path
+  */
+  virtual wxString GetFontPath() const { return m_fontPath; };
+
   /// Imports a TrueType, TrueTypeUnicode or Type1 font and makes it available.
   /**
   * It is necessary to generate a font definition file first with the makefont utility.
   * The definition file (and the font file itself when embedding) must be present either
-  * in the current directory or in the one indicated by WXPDF_FONTPATH if the constant is
-  * defined.
+  * in the subdirectory 'fonts' of the current working directory or in the one indicated
+  * by WXPDF_FONTPATH if this environment variable is defined.
   * \param family Font family. The name can be chosen arbitrarily. If it is a standard family name,
   * it will override the corresponding font.
   * \param style Font style. Possible values are (case insensitive):
@@ -1415,8 +900,8 @@ public:
   *   \li I: italic
   *   \li BI or IB: bold italic
   * \param file The font definition file. By default, the name is built from the family and style,
-  *  in lower case with no space.
-  * \see SetFont()
+  *  in lower case with no space. 
+  * \see SetFont(), SetFontPath()
   */
   virtual bool AddFont(const wxString& family, 
                        const wxString& style = wxEmptyString, 
@@ -1491,6 +976,13 @@ public:
   * \see SetFont()
   */
   virtual void SetFontSize(double size);
+  
+  /// Returns the current font description instance.
+  /**
+  * \return The current font description.
+  * \see SetFont()
+  */  
+  virtual const wxPdfFontDescription& GetFontDescription() const;
   
   /// Gets the font family of the current font.
   /**
@@ -1775,22 +1267,80 @@ public:
   * \param y Ordinate of the upper-left corner.
   * \param w Width of the image in the page. If not specified or equal to zero, it is automatically calculated.
   * \param h Height of the image in the page. If not specified or equal to zero, it is automatically calculated.
-  * \param type Image format. Possible values are (case insensitive): JPG, JPEG, PNG, GIF, WMF.
+  * \param mimeType Image format. Possible values are: image/jpeg, image/png, image/gif, image/wmf.
   * If not specified, the type is inferred from the file extension.
   * \param link URL or identifier returned by AddLink().
+  * \param maskImage Id of an image mask created previously by ImageMask().
   * \see AddLink()
   */
   virtual bool Image(const wxString& file, double x, double y, double w = 0, double h = 0, 
-                     const wxString& type = wxEmptyString,
-                     const wxPdfLink& link = wxPdfLink(-1));
+                     const wxString& mimeType = wxEmptyString,
+                     const wxPdfLink& link = wxPdfLink(-1),
+                     int maskImage = 0);
 
   /**
   * Puts an image in the page
   * The image is given by an wxImage-Object
+  * \param name Name of the image to be used as an identifier for this image object.
+  * \param image wxImage object which will be embedded as PNG
+  * \param x Abscissa of the upper-left corner.
+  * \param y Ordinate of the upper-left corner.
+  * \param w Width of the image in the page. If not specified or equal to zero, it is automatically calculated.
+  * \param h Height of the image in the page. If not specified or equal to zero, it is automatically calculated.
+  * \param link URL or identifier returned by AddLink().
+  * \param maskImage Id of an image mask created previously by ImageMask().
   */
   virtual bool Image(const wxString& name, const wxImage& image,
                      double x, double y, double w = 0, double h = 0,
-                     const wxPdfLink& link = wxPdfLink(-1));
+                     const wxPdfLink& link = wxPdfLink(-1),
+                     int maskImage = 0);
+
+  /**
+  * Puts an image in the page
+  * The image is given by an wxInputStream-Object containing the raw image data.
+  * \param name Name of the image to be used as an identifier for this image object.
+  * \param stream wxInputStream object containing the raw image data
+  * \param mimeType Image format. Possible values are: image/jpeg, image/png, image/gif, image/wmf.
+  * \param x Abscissa of the upper-left corner.
+  * \param y Ordinate of the upper-left corner.
+  * \param w Width of the image in the page. If not specified or equal to zero, it is automatically calculated.
+  * \param h Height of the image in the page. If not specified or equal to zero, it is automatically calculated.
+  * \param link URL or identifier returned by AddLink().
+  * \param maskImage Id of an image mask created previously by ImageMask().
+  */
+  virtual bool Image(const wxString& name, wxInputStream& stream,
+                     const wxString& mimeType,
+                     double x, double y, double w = 0, double h = 0,
+                     const wxPdfLink& link = wxPdfLink(-1),
+                     int maskImage = 0);
+
+  /**
+  * Prepares an image for use as an image mask
+  * The image is given as the name of the file conatining the image
+  * \param file Name of the file containing the image.
+  * \param mimeType Image format. Possible values are: image/jpeg, image/png, image/gif, image/wmf.
+  * \returns id of the image mask, or 0 in case of an error
+  */
+  virtual int ImageMask(const wxString& file, const wxString& mimeType = wxEmptyString);
+
+  /**
+  * Prepares an image for use as an image mask
+  * The image is given by an wxImage-Object
+  * \param name Name of the image.
+  * \param image wxImage object.
+  * \returns id of the image mask, or 0 in case of an error
+  */
+  virtual int ImageMask(const wxString& name, const wxImage& image);
+
+  /**
+  * Prepares an image for use as an image mask
+  * The image is given by an wxInputStream-Object containing the raw image data.
+  * \param name Name of the image.
+  * \param stream wxInputStream object containing the raw image data
+  * \param mimeType Image format. Possible values are: image/jpeg, image/png, image/gif, image/wmf.
+  * \returns id of the image mask, or 0 in case of an error
+  */
+  virtual int ImageMask(const wxString& name, wxInputStream& stream, const wxString& mimeType);
 
   /// Puts a rotated image in the page. 
   /**
@@ -1811,12 +1361,14 @@ public:
   * \param type Image format. Possible values are (case insensitive): JPG, JPEG, PNG, GIF, WMF.
   * If not specified, the type is inferred from the file extension.
   * \param link URL or identifier returned by AddLink().
+  * \param maskImage Id of an image mask created previously by ImageMask().
   * \see Image(), AddLink()
   */
   virtual void RotatedImage(const wxString& file, double x, double y, double w, double h,
                             double angle,
                             const wxString& type = wxEmptyString,
-                            const wxPdfLink& link = wxPdfLink(-1));
+                            const wxPdfLink& link = wxPdfLink(-1),
+                            int maskImage = 0);
 
   /// Performs a line break.
   /**
@@ -1872,6 +1424,14 @@ public:
   * \see Close()
   */
   virtual void SaveAsFile(const wxString& name = wxEmptyString);
+  
+  /// Closes the document and returns the memory buffer containing the document
+  /**
+  * The method first calls Close() if necessary to terminate the document.
+  * \return const wxMemoryOutputStream reference to the buffer containing the PDF document.
+  * \see Close()
+  */
+  virtual const wxMemoryOutputStream& CloseAndGetBuffer();
 
   /// Define text as clipping area
   /**
@@ -1904,6 +1464,78 @@ public:
   * \param outline Draw the outline or not. (Default false)
   */
   virtual void ClippingEllipse(double x, double y, double rx, double ry = 0, bool outline = false);
+
+  /// Define polygon as clipping area
+  /**
+  * A clipping area restricts the display and prevents any elements from showing outside of it.
+  * \param x Array with abscissa values
+  * \param y Array with ordinate values
+  * \param outline Draw the outline or not. (Default false)
+  */
+  virtual void ClippingPolygon(const wxPdfArrayDouble& x, const wxPdfArrayDouble& y, bool outline = false);
+
+  /// Start defining a clipping path
+  /**
+  * A clipping area restricts the display and prevents any elements from showing outside of it.
+  * The clipping path may consist of one or more subpaths.
+  */
+  virtual void ClippingPath();
+
+  /// Begin a new subpath
+  /**
+  * Move to the starting point of a new (sub)path.
+  * The new current point is (x, y).
+  * \param x abscissa value
+  * \param y ordinate value
+  * \remark This must be the first operation after ClippingPath().
+  */
+  virtual void MoveTo(double x, double y);
+
+  /// Append a straight line segment to the current (sub)path
+  /**
+  * Append a straight line segment from the current point to the point (x, y).
+  * The new current point is (x, y).
+  * \param x abscissa value
+  * \param y ordinate value
+  */
+  virtual void LineTo(double x, double y);
+
+  /// Append a cubic Bezier curve to the current (sub)path
+  /**
+  * Append a cubic Bezier curve to the current path. The curve extends
+  * from the current point to the point (x3, y3), using (x1, y1) and (x2, y2)
+  * as the Bézier control points. The new current point is (x3, y3).
+  * \param x1: Abscissa of control point 1
+  * \param y1: Ordinate of control point 1
+  * \param x2: Abscissa of control point 2
+  * \param y2: Ordinate of control point 2
+  * \param x3: Abscissa of end point
+  * \param y3: Ordinate of end point
+  */
+  virtual void CurveTo(double x1, double y1, double x2, double y2, double x3, double y3);
+
+  /// Close the clipping path
+  /**
+  * A clipping area restricts the display and prevents any elements from showing outside of it.
+  * \param style Style of rendering. Possible values are:
+  *   \li wxPDF_STYLE_NOOP (default)
+  *   \li wxPDF_STYLE_DRAW: draw the outline of the clipping path 
+  *   \li wxPDF_STYLE_FILL: fill the area enclosed by the clipping path
+  *   \li wxPDF_STYLE_FILLDRAW: draw and fill
+  */
+  virtual void ClosePath(int style = wxPDF_STYLE_NOOP);
+
+  /// Define clipping area using a shape
+  /**
+  * A clipping area restricts the display and prevents any elements from showing outside of it.
+  * \param shape shape defining the clipping path
+  * \param style Style of rendering. Possible values are:
+  *   \li wxPDF_STYLE_NOOP (default)
+  *   \li wxPDF_STYLE_DRAW: draw the outline of the clipping path 
+  *   \li wxPDF_STYLE_FILL: fill the area enclosed by the clipping path
+  *   \li wxPDF_STYLE_FILLDRAW: draw and fill
+  */
+  virtual void ClippingPath(const wxPdfShape& shape, int style = wxPDF_STYLE_NOOP);
 
   /// Remove clipping area
   /**
@@ -2064,61 +1696,96 @@ public:
   */
   virtual void StopTransform();
 
-  /// Paints a linear gradient shading to rectangular area
+  /// Sets alpha values and blend mode
   /**
-  * \param x abscissa of the top left corner of the rectangle.
-  * \param y ordinate of the top left corner of the rectangle.
-  * \param w width of the rectangle.
-  * \param h height of the rectangle.
-  * \param col1 first color (RGB components).
-  * \param col2 second color (RGB components).
+	* \param lineAlpha alpha value for stroking operations, from 0 (transparent) to 1 (opaque)
+	* \param fillAlpha alpha value for non-stroking operations, from 0 (transparent) to 1 (opaque)
+	* \param blendMode one of the following:
+	*   Normal, Multiply, Screen, Overlay, Darken, Lighten, ColorDodge, ColorBurn,
+	*   HardLight, SoftLight, Difference, Exclusion, Hue, Saturation, Color, Luminosity
   */
-  virtual void LinearGradient(double x, double y, double w, double h,
-                              const wxColour& col1, const wxColour& col2);
+  virtual int SetAlpha(double lineAlpha = 1, double fillAlpha = 1, wxPdfBlendMode blendMode = wxPDF_BLENDMODE_NORMAL);
 
-  /// Paints a linear gradient shading to rectangular area
+  /// Sets a previously defined alpha state
   /**
-  * \param x abscissa of the top left corner of the rectangle.
-  * \param y ordinate of the top left corner of the rectangle.
-  * \param w width of the rectangle.
-  * \param h height of the rectangle.
-  * \param col1 first color (RGB components).
-  * \param col2 second color (RGB components).
-  * \param coords array of the form (x1, y1, x2, y2) which defines the gradient vector (see linear_gradient_coords.jpg).
-  *               The default value is from left to right (x1=0, y1=0, x2=1, y2=0).
+	* \param alphaState id of alpha state
   */
-  virtual void LinearGradient(double x, double y, double w, double h,
-                              const wxColour& col1, const wxColour& col2,
-                              double coords[4]);
+  virtual void SetAlphaState(int alphaState);
 
-  /// Paints a radial gradient shading to rectangular area
+  /// Defines a linear gradient shading
   /**
-  * \param x abscissa of the top left corner of the rectangle.
-  * \param y ordinate of the top left corner of the rectangle.
-  * \param w width of the rectangle.
-  * \param h height of the rectangle.
-  * \param col1 first color (RGB components).
-  * \param col2 second color (RGB components).
+  * \param col1 first color (RGB or CMYK).
+  * \param col2 second color (RGB or CMYK).
+  * \param gradientType Type of the gradient
   */
-  virtual void RadialGradient(double x, double y, double w, double h,
-                              const wxColour& col1, const wxColour& col2);
+  virtual int LinearGradient(const wxPdfColour& col1, const wxPdfColour& col2,
+                             wxPdfLinearGradientType gradientType = wxPDF_LINEAR_GRADIENT_HORIZONTAL);
 
-  /// Paints a radial gradient shading to rectangular area
+  /// Defines a axial gradient shading
+  /**
+  * \param col1 first color (RGB or CMYK).
+  * \param col2 second color (RGB or CMYK).
+  * \param x1 start point of gradient vector, default: 0 (range 0 .. 1)
+  * \param y1 start point of gradient vector, default: 0 (range 0 .. 1)
+  * \param x2 end point of gradient vector, default: 1 (range 0 .. 1)
+  * \param y2 end point of gradient vector, default: 0 (range 0 .. 1)
+  * \param intexp interpolation exponent, default: 1
+  */
+  virtual int AxialGradient(const wxPdfColour& col1, const wxPdfColour& col2,
+                            double x1 = 0, double y1 = 0,
+                            double x2 = 1, double y2 = 0,
+                            double intexp = 1);
+
+  /// Defines a axial gradient shading
+  /**
+  * \param col1 first color (RGB or CMYK).
+  * \param col2 second color (RGB or CMYK).
+  * \param x1 start point of gradient vector, default: 0 (range 0 .. 1)
+  * \param y1 start point of gradient vector, default: 0 (range 0 .. 1)
+  * \param x2 end point of gradient vector, default: 1 (range 0 .. 1)
+  * \param y2 end point of gradient vector, default: 0 (range 0 .. 1)
+  * \param midpoint position of the mirror point, default: 0.5 (range 0 .. 1)
+  * \param intexp interpolation exponent, default: 1
+  */
+  virtual int MidAxialGradient(const wxPdfColour& col1, const wxPdfColour& col2,
+                               double x1 = 0, double y1 = 0,
+                               double x2 = 1, double y2 = 0,
+                               double midpoint = 0.5, double intexp = 1);
+
+  /// Defines a radial gradient shading
+  /**
+  * \param col1 first color (RGB or CMYK).
+  * \param col2 second color (RGB or CMYK).
+  * \param x1 center point of circle 1, default: 0.5 (range 0 .. 1)
+  * \param y1 center point of circle 1, default: 0.5 (range 0 .. 1)
+  * \param r1 radius of circle 1, default: 0
+  * \param x2 center point of circle 2, default: 0.5 (range 0 .. 1)
+  * \param y2 center point of circle 2, default: 0.5 (range 0 .. 1)
+  * \param r2 radius of circle 2, default: 1
+  * \param intexp interpolation exponent, default: 1
+  */
+  virtual int RadialGradient(const wxPdfColour& col1, const wxPdfColour& col2, 
+                              double x1 = 0.5, double y1 = 0.5, double r1 = 0,
+                              double x2 = 0.5, double y2 = 0.5, double r2 = 1,
+                              double intexp = 1);
+
+  /// Defines a coons patch mesh gradient shading
+  /**
+  * \param mesh coons patch mesh to be used for the gradient
+  * \param minCoord minimal coordinate of the mesh
+  * \param maxCoord maximal coordinate of the mesh
+  */
+  virtual int CoonsPatchGradient(const wxPdfCoonsPatchMesh& mesh, double minCoord = 0, double maxCoord = 1);
+
+  /// Paints a gradient shading to rectangular area
   /**
   * \param x abscissa of the top left corner of the rectangle.
   * \param y ordinate of the top left corner of the rectangle.
   * \param w width of the rectangle.
   * \param h height of the rectangle.
-  * \param col1 first color (RGB components).
-  * \param col2 second color (RGB components).
-  * \param coords array of the form (fx, fy, cx, cy, r) where (fx, fy) is the starting point
-  *               of the gradient with color1, (cx, cy) is the center of the circle with
-  *               color2, and r is the radius of the circle (see radial_gradient_coords.jpg).
-  *               (fx, fy) should be inside the circle, otherwise some areas will not be defined.
+  * \param gradient id of the gradient.
   */
-  virtual void RadialGradient(double x, double y, double w, double h,
-                              const wxColour& col1, const wxColour& col2, 
-                              double coords[5]);
+  virtual void SetFillGradient(double x, double y, double w, double h, int gradient);
 
   /// Draws a graphical marker symbol
   /**
@@ -2299,6 +1966,77 @@ public:
   void SetFormBorderStyle(wxPdfBorderStyle borderStyle = wxPDF_BORDER_SOLID,
                           double borderWidth = -1);
 
+  /**
+  * Start a Template
+  *
+  * This method starts a template. You can give own coordinates to build an own sized
+  * Template. Pay attention, that the margins are adapted to the new templatesize.
+  * If you want to write outside the template, for example to build a clipped Template,
+  * you have to set the Margins and "Cursor"-Position manual after beginTemplate-Call.
+  *
+  * If no parameter is given, the template uses the current page-size.
+  * The Method returns an ID of the current Template.
+  * This ID is used later for using this template.
+  * Warning: A created Template is used in PDF at all events.
+  * Still if you don't use it after creation!
+  *
+  * \param x The x-coordinate given in user-units
+  * \param y The y-coordinate given in user-units
+  * \param w The width given in user-units
+  * \param h The height given in user-units
+  * \return int The ID of new created Template
+  */
+  int BeginTemplate(double x = 0, double y = 0, double w = 0, double h = 0);
+
+  /**
+  * End Template
+  *
+  * This method ends a template and reset initiated variables on beginTemplate.
+  *
+  * \return mixed If a template is opened, the ID is returned. If not a false is returned.
+  */
+  int EndTemplate();
+
+  /**
+  * Get The calculated Size of a Template
+  *
+  * If one size is given, this method calculates the other one.
+  *
+  * \param tplidx A valid template-Id
+  * \param w The width of the template
+  * \param h The height of the template
+  */
+  void GetTemplateSize(int tplidx, double& w, double& h);
+
+  /**
+  * Use a Template in current Page or other Template
+  *
+  * You can use a template in a page or in another template.
+  * You can give the used template a new size like you use the Image()-method.
+  * All parameters are optional. The width or height is calculated automaticaly
+  * if one is given. If no parameter is given the origin size as defined in
+  * beginTemplate() is used.
+  * The calculated or used width and height are returned as an array.
+  *
+  * \param templateId A valid template Id
+  * \param x The x-position
+  * \param y The y-position
+  * \param w The new width of the template, on return the used width
+  * \param h The new height of the template, on return the used height
+  */
+  void UseTemplate(int templateId, double x = -1, double y = -1, double w = 0, double h = 0);
+
+  /// Prints a text string along a path defined by a shape
+  /**
+  * \param shape shape defining a path along which the text is printed
+  * \param text text string to be printed
+  * \param mode flag how to handle the text string
+  *   \li wxPDF_SHAPEDTEXTMODE_ONETIME: the text should be printed at most one time depending on the path length
+  *   \li wxPDF_SHAPEDTEXTMODE_STRETCHTOFIT: the text should be stretched to fit exactly along the given path (default)
+  *   \li wxPDF_SHAPEDTEXTMODE_REPEAT: the text should be repeated if the text length is shorter than the path length
+  */
+  void ShapedText(const wxPdfShape& shape, const wxString& text, wxPdfShapedTextMode mode = wxPDF_SHAPEDTEXTMODE_STRETCHTOFIT);
+
   /// Convert a wxColour to the corresponding PDF specification
   static wxString RGB2String(const wxColour& color);
 
@@ -2315,9 +2053,6 @@ public:
   static double ForceRange(double value, double minValue, double maxValue);
 
 protected:
-
-  /// Return fonts path
-  virtual wxString GetFontPath();
 
   /// Select font
   virtual bool SelectFont(const wxString& family,
@@ -2348,6 +2083,9 @@ protected:
   /// Add bookmarks
   virtual void PutBookmarks();
 
+  /// Add extended graphics states
+  virtual void PutExtGStates();
+
   /// Add shaders
   virtual void PutShaders();
 
@@ -2356,6 +2094,9 @@ protected:
   
   /// Add images
   virtual void PutImages();
+
+  /// Add templates
+  virtual void PutTemplates();
 
   /// Add spot colors
   virtual void PutSpotColors();
@@ -2434,9 +2175,6 @@ protected:
 
   /// Perform transformation
   void Transform(double tm[6]);
-
-  /// Paints a linear or radial gradient shading to a rectangular area
-  void Gradient(int type, const wxColour& col1, const wxColour& col2, double coords[]);
 
   /// Adds a form field to the document
   void AddFormField(wxPdfAnnotationWidget* field, bool setFormField = true);
@@ -2517,6 +2255,12 @@ private:
   wxPdfImageHashMap*   m_images;              ///< array of used images
   wxPdfPageLinksMap*   m_pageLinks;           ///< array of links in pages
   wxPdfLinkHashMap*    m_links;               ///< array of internal links
+  wxPdfNamedLinksMap*  m_namedLinks;          ///< array of named internal links
+
+  wxPdfExtGStateMap*   m_extGStates;          ///< array of extended graphics states
+  wxPdfExtGSLookupMap* m_extGSLookup;         ///< array for fast lookup of extended graphics states
+  int                  m_currentExtGState;    ///< current extended graphics state
+
   wxPdfGradientMap*    m_gradients;           ///< array of gradients
   wxPdfSpotColourMap*  m_spotColors;          ///< array of spot colors
 
@@ -2526,6 +2270,7 @@ private:
   int                  m_outlineRoot;         ///< number of root node
   int                  m_maxOutlineLevel;     ///< max. occuring outline level
 
+  wxString             m_fontPath;            ///< current default path for font files
   wxString             m_fontFamily;          ///< current font family
   wxString             m_fontStyle;           ///< current font style
   int                  m_decoration;          ///< font decoration flags
@@ -2534,9 +2279,9 @@ private:
 
   double               m_fontSizePt;          ///< current font size in points
   double               m_fontSize;            ///< current font size in user unit
-  wxString             m_drawColor;           ///< commands for drawing color
-  wxString             m_fillColor;           ///< commands for filling color
-  wxString             m_textColor;           ///< commands for text color
+  wxPdfColour          m_drawColor;           ///< commands for drawing color
+  wxPdfColour          m_fillColor;           ///< commands for filling color
+  wxPdfColour          m_textColor;           ///< commands for text color
   bool                 m_colorFlag;           ///< indicates whether fill and text colors are different
   double               m_ws;                  ///< word spacing
 
@@ -2546,6 +2291,7 @@ private:
   wxPdfZoom            m_zoomMode;            ///< zoom display mode
   double               m_zoomFactor;          ///< zoom factor
   wxPdfLayout          m_layoutMode;          ///< layout display mode
+  int                  m_viewerPrefs;         ///< viewer preferences
 
   wxString             m_title;               ///< title
   wxString             m_subject;             ///< subject
@@ -2577,6 +2323,13 @@ private:
   wxString             m_formTextColor;       ///< form field text color
   wxString             m_formBorderStyle;     ///< form field border style
   double               m_formBorderWidth;     ///< form field border width
+
+  // Templates
+  bool                 m_inTemplate;          ///< flag whether template mode is on
+  wxPdfTemplatesMap*   m_templates;           ///< array of templates
+  wxString             m_templatePrefix;      ///< prefix used for template object names
+  int                  m_templateId;          ///< Id of current template
+  wxPdfTemplate*       m_currentTemplate;     ///< current template
 
   static bool          ms_seeded;             ///< flag whether random number generator is seeded
   static int           ms_s1;                 ///< Random number generator seed 1

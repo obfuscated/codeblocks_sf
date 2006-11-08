@@ -25,14 +25,6 @@
 
 #include "pdfcolordata.inc"
 
-/// Class representing the internal representation of colors. (For internal use only)
-class wxPdfColourInternal : public wxPdfColour
-{
-public:
-  /// Constructor
-  wxPdfColourInternal(const wxString& color) : wxPdfColour(color, true) {}
-};
-
 wxColourDatabase* wxPdfColour::ms_colorDatabase = NULL;
 
 wxColourDatabase*
@@ -59,6 +51,13 @@ wxPdfColour::GetColorDatabase()
   return ms_colorDatabase;
 }
 
+wxPdfColour::wxPdfColour()
+{
+  m_type   = wxPDF_COLOURTYPE_UNKNOWN;
+  m_prefix = wxEmptyString;
+  m_color  = _T("0");
+}
+
 wxPdfColour::wxPdfColour(const unsigned char grayscale)
 {
   SetColor(grayscale);
@@ -79,9 +78,9 @@ wxPdfColour::wxPdfColour(double cyan, double magenta, double yellow, double blac
   SetColor(cyan, magenta, yellow, black);
 }
 
-wxPdfColour::wxPdfColour(const wxPdfColour& color)
+wxPdfColour::wxPdfColour(const wxPdfSpotColour& spot, double tint)
 {
-  m_color = color.m_color;
+  SetColor(spot, tint);
 }
 
 wxPdfColour::wxPdfColour(const wxString& name)
@@ -89,21 +88,47 @@ wxPdfColour::wxPdfColour(const wxString& name)
   SetColor(name);
 }
 
+wxPdfColour::wxPdfColour(const wxPdfColour& color)
+{
+  m_type   = color.m_type;
+  m_prefix = color.m_prefix;
+  m_color  = color.m_color;
+}
+
 wxPdfColour::wxPdfColour(const wxString& color, bool WXUNUSED(internal))
 {
   m_color = color;
 }
 
+wxPdfColour&
+wxPdfColour::operator=(const wxPdfColour& color)
+{
+  m_type   = color.m_type;
+  m_prefix = color.m_prefix;
+  m_color  = color.m_color;
+  return *this;
+}
+
+bool
+wxPdfColour::Equals(const wxPdfColour& color) const
+{
+  return (m_type == color.m_type) && (m_prefix == color.m_prefix) && (m_color == color.m_color);
+}
+
 void
 wxPdfColour::SetColor(const unsigned char grayscale)
 {
-  m_color = wxPdfDocument::Double2String(((double) grayscale)/255.,3) + _T(" G");
+  m_type   = wxPDF_COLOURTYPE_GRAY;
+  m_prefix = wxEmptyString;
+  m_color  = wxPdfDocument::Double2String(((double) grayscale)/255.,3);
 }
 
 void
 wxPdfColour::SetColor(const wxColour& color)
 {
-  m_color = wxPdfDocument::RGB2String(color) + _T(" RG");
+  m_type   = wxPDF_COLOURTYPE_RGB;
+  m_prefix = wxEmptyString;
+  m_color  = wxPdfDocument::RGB2String(color);
 }
 
 void
@@ -115,10 +140,12 @@ wxPdfColour::SetColor(const unsigned char red, const unsigned char green, const 
 void
 wxPdfColour::SetColor(double cyan, double magenta, double yellow, double black)
 {
-  m_color = wxPdfDocument::Double2String(wxPdfDocument::ForceRange(cyan,    0., 100.)/100.,3) + _T(" ") +
-            wxPdfDocument::Double2String(wxPdfDocument::ForceRange(magenta, 0., 100.)/100.,3) + _T(" ") +
-            wxPdfDocument::Double2String(wxPdfDocument::ForceRange(yellow,  0., 100.)/100.,3) + _T(" ") +
-            wxPdfDocument::Double2String(wxPdfDocument::ForceRange(black,   0., 100.)/100.,3) + _T(" K");
+  m_type   = wxPDF_COLOURTYPE_CMYK;
+  m_prefix = wxEmptyString;
+  m_color  = wxPdfDocument::Double2String(wxPdfDocument::ForceRange(cyan,    0., 100.)/100.,3) + _T(" ") +
+             wxPdfDocument::Double2String(wxPdfDocument::ForceRange(magenta, 0., 100.)/100.,3) + _T(" ") +
+             wxPdfDocument::Double2String(wxPdfDocument::ForceRange(yellow,  0., 100.)/100.,3) + _T(" ") +
+             wxPdfDocument::Double2String(wxPdfDocument::ForceRange(black,   0., 100.)/100.,3);
 }
 
 void
@@ -153,12 +180,48 @@ wxPdfColour::SetColor(const wxString& name)
   }
 }
 
+void
+wxPdfColour::SetColor(const wxPdfSpotColour& spot, double tint)
+{
+  m_type   = wxPDF_COLOURTYPE_SPOT;
+  m_prefix = wxString::Format(_T("/CS%d CS "), spot.GetIndex());
+  m_color  = wxPdfDocument::Double2String(wxPdfDocument::ForceRange(tint, 0., 100.)/100.,3);
+}
+
 const wxString
 wxPdfColour::GetColor(bool drawing) const
 {
-  wxString color = (drawing) ? m_color.Upper() : m_color.Lower();
+  wxString color = wxEmptyString;
+  switch (m_type)
+  {
+    case wxPDF_COLOURTYPE_GRAY:
+      color = m_color + wxString(_T(" g"));
+      break;
+    case wxPDF_COLOURTYPE_RGB:
+      color = m_color + wxString(_T(" rg"));
+      break;
+    case wxPDF_COLOURTYPE_CMYK:
+      color = m_color + wxString(_T(" k"));
+      break;
+    case wxPDF_COLOURTYPE_SPOT:
+      color = m_prefix + m_color + wxString(_T(" scn"));
+      break;
+    default:
+      color = wxString(_T("0 g"));
+      break;
+  }
+  if (drawing)
+    color.MakeUpper();
+  else
+    color.MakeLower();
   color.Replace(_T("/cs"), _T("/CS"));
   return color;
+}
+
+const wxString
+wxPdfColour::GetColorValue() const
+{
+  return m_color;
 }
 
 wxPdfSpotColour::wxPdfSpotColour(int index, double cyan, double magenta, double yellow, double black)
@@ -192,20 +255,22 @@ wxPdfDocument::AddSpotColor(const wxString& name, double cyan, double magenta, d
 void
 wxPdfDocument::SetDrawColor(const wxColour& color)
 {
-  m_drawColor = RGB2String(color) + _T(" RG");
+  wxPdfColour tempColor(color);
+  m_drawColor = tempColor;
   if (m_page > 0)
   {
-    OutAscii(m_drawColor);
+    OutAscii(m_drawColor.GetColor(true));
   }
 }
 
 void
 wxPdfDocument::SetDrawColor(const unsigned char grayscale)
 {
-  m_drawColor = Double2String(((double) grayscale)/255.,3) + _T(" G");
+  wxPdfColour tempColor(grayscale);
+  m_drawColor = tempColor;
   if (m_page > 0)
   {
-    OutAscii(m_drawColor);
+    OutAscii(m_drawColor.GetColor(true));
   }
 }
 
@@ -224,10 +289,10 @@ wxPdfDocument::SetDrawColor(double cyan, double magenta, double yellow, double b
 void
 wxPdfDocument::SetDrawColor(const wxPdfColour& color)
 {
-  m_drawColor = color.GetColor(true);
+  m_drawColor = color;
   if (m_page > 0)
   {
-    OutAscii(m_drawColor);
+    OutAscii(m_drawColor.GetColor(true));
   }
 }
 
@@ -237,11 +302,11 @@ wxPdfDocument::SetDrawColor(const wxString& name, double tint)
   wxPdfSpotColourMap::iterator spotColor = (*m_spotColors).find(name);
   if (spotColor != (*m_spotColors).end())
   {
-    m_drawColor = wxString::Format(_T("/CS%d CS "), spotColor->second->GetIndex()) +
-                  Double2String(ForceRange(tint, 0., 100.)/100.,3) + _T(" SCN");
+    wxPdfColour tempColor(*(spotColor->second), tint);
+    m_drawColor = tempColor;
     if (m_page > 0)
     {
-      OutAscii(m_drawColor);
+      OutAscii(m_drawColor.GetColor(true));
     }
   }
   else
@@ -253,39 +318,41 @@ wxPdfDocument::SetDrawColor(const wxString& name, double tint)
 const wxPdfColour
 wxPdfDocument::GetDrawColor()
 {
-  return wxPdfColourInternal(m_drawColor);
+  return wxPdfColour(m_drawColor);
 }
 
 void
 wxPdfDocument::SetFillColor(const wxColour& color)
 {
-  m_fillColor = RGB2String(color) + _T(" rg");
+  wxPdfColour tempColor(color);
+  m_fillColor = tempColor;
   m_colorFlag = (m_fillColor != m_textColor);
   if (m_page > 0)
   {
-    OutAscii(m_fillColor);
+    OutAscii(m_fillColor.GetColor(false));
   }
 }
 
 void
 wxPdfDocument::SetFillColor(const unsigned char grayscale)
 {
-  m_fillColor = Double2String(((double) grayscale)/255.,3) + _T(" g");
+  wxPdfColour tempColor(grayscale);
+  m_fillColor = tempColor;
   m_colorFlag = (m_fillColor != m_textColor);
   if (m_page > 0)
   {
-    OutAscii(m_fillColor);
+    OutAscii(m_fillColor.GetColor(false));
   }
 }
 
 void
 wxPdfDocument::SetFillColor(const wxPdfColour& color)
 {
-  m_fillColor = color.GetColor(false);
+  m_fillColor = color;
   m_colorFlag = (m_fillColor != m_textColor);
   if (m_page > 0)
   {
-    OutAscii(m_fillColor);
+    OutAscii(m_fillColor.GetColor(false));
   }
 }
 
@@ -307,12 +374,12 @@ wxPdfDocument::SetFillColor(const wxString& name, double tint)
   wxPdfSpotColourMap::iterator spotColor = (*m_spotColors).find(name);
   if (spotColor != (*m_spotColors).end())
   {
-    m_fillColor = wxString::Format(_T("/CS%d cs "), spotColor->second->GetIndex()) +
-                  Double2String(ForceRange(tint, 0., 100.)/100.,3) + _T(" scn");
+    wxPdfColour tempColor(*(spotColor->second), tint);
+    m_fillColor = tempColor;
     m_colorFlag = (m_fillColor != m_textColor);
     if (m_page > 0)
     {
-      OutAscii(m_fillColor);
+      OutAscii(m_fillColor.GetColor(false));
     }
   }
   else
@@ -324,27 +391,29 @@ wxPdfDocument::SetFillColor(const wxString& name, double tint)
 const wxPdfColour
 wxPdfDocument::GetFillColor()
 {
-  return wxPdfColourInternal(m_fillColor);
+  return wxPdfColour(m_fillColor);
 }
 
 void
 wxPdfDocument::SetTextColor(const wxColour& color)
 {
-  m_textColor = RGB2String(color) + _T(" rg");
+  wxPdfColour tempColor(color);
+  m_textColor = tempColor;
   m_colorFlag = (m_fillColor != m_textColor);
 }
 
 void
 wxPdfDocument::SetTextColor(const unsigned char grayscale)
 {
-  m_textColor = Double2String(((double) grayscale)/255.,3) + _T(" g");
+  wxPdfColour tempColor(grayscale);
+  m_textColor = tempColor;
   m_colorFlag = (m_fillColor != m_textColor);
 }
 
 void
 wxPdfDocument::SetTextColor(const wxPdfColour& color)
 {
-  m_textColor = color.GetColor(false);
+  m_textColor = color;
   m_colorFlag = (m_fillColor != m_textColor);
 }
 
@@ -366,8 +435,8 @@ wxPdfDocument::SetTextColor(const wxString& name, double tint)
   wxPdfSpotColourMap::iterator spotColor = (*m_spotColors).find(name);
   if (spotColor != (*m_spotColors).end())
   {
-    m_textColor = wxString::Format(_T("/CS%d cs "), spotColor->second->GetIndex()) +
-                  Double2String(ForceRange(tint, 0., 100.)/100.,3) + _T(" scn");
+    wxPdfColour tempColor(*(spotColor->second), tint);
+    m_textColor = tempColor;
     m_colorFlag = (m_fillColor != m_textColor);
   }
   else
@@ -379,7 +448,15 @@ wxPdfDocument::SetTextColor(const wxString& name, double tint)
 const wxPdfColour
 wxPdfDocument::GetTextColor()
 {
-  return wxPdfColourInternal(m_textColor);
+  return wxPdfColour(m_textColor);
 }
 
+bool operator==(const wxPdfColour& a, const wxPdfColour& b)
+{
+  return a.Equals(b);
+}
 
+bool operator!=(const wxPdfColour& a, const wxPdfColour& b)
+{
+  return !a.Equals(b);
+}

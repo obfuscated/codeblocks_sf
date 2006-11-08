@@ -10,10 +10,6 @@
 
 /// \file pdffont.cpp Implementation of the wxPdfFont class
 
-//#if defined(__GNUG__) && !defined(__APPLE__)
-//#pragma implementation "pdffont.h"
-//#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -51,14 +47,17 @@ GetNodeContent(const wxXmlNode *node)
 static bool
 GetFontDescription(const wxXmlNode *node, wxPdfFontDescription& fontDescription)
 {
-  bool bAscent       = false,
-       bDescent      = false,
-       bCapheight    = false,
-       bFlags        = false,
-       bFontbbox     = false,
-       bItalicangle  = false,
-       bStemv        = false,
-       bMissingwidth = false;
+  bool bAscent             = false,
+       bDescent            = false,
+       bCapheight          = false,
+       bFlags              = false,
+       bFontbbox           = false,
+       bItalicangle        = false,
+       bStemv              = false,
+       bMissingwidth       = false,
+       bXHeight            = false,
+       bUnderlinePosition  = false,
+       bUnderlineThickness = false;
   wxString value;
   long number;
   wxXmlNode* child = node->GetChildren();
@@ -137,16 +136,75 @@ GetFontDescription(const wxXmlNode *node, wxPdfFontDescription& fontDescription)
         fontDescription.SetMissingWidth(number);
       }
     }
+    else if (child->GetName() == wxT("x-height"))
+    {
+      value = GetNodeContent(child);
+      if (value.ToLong(&number))
+      {
+        bXHeight = true;
+        fontDescription.SetXHeight(number);
+      }
+    }
+    else if (child->GetName() == wxT("underline-position"))
+    {
+      value = GetNodeContent(child);
+      if (value.ToLong(&number))
+      {
+        bUnderlinePosition = true;
+        fontDescription.SetUnderlinePosition(number);
+      }
+    }
+    else if (child->GetName() == wxT("underline-thickness"))
+    {
+      value = GetNodeContent(child);
+      if (value.ToLong(&number))
+      {
+        bUnderlineThickness = true;
+        fontDescription.SetUnderlineThickness(number);
+      }
+    }
     child = child->GetNext();
   }
   return (bAscent && bDescent && bCapheight && bFlags && bFontbbox &&
-          bItalicangle && bStemv && bMissingwidth);
+          bItalicangle && bStemv && bMissingwidth && bXHeight &&
+          bUnderlinePosition && bUnderlineThickness);
 }
 
 wxPdfFontDescription::wxPdfFontDescription()
+  : m_ascent(0), m_descent(0), m_capHeight(0), m_flags(0),
+    m_fontBBox(wxEmptyString), m_italicAngle(0), m_stemV(0),
+    m_missingWidth(0), m_xHeight(0),
+    m_underlinePosition(-100), m_underlineThickness(50)
 {
 }
 
+wxPdfFontDescription::wxPdfFontDescription (int ascent, int descent, int capHeight, int flags,
+                                            const wxString& fontBBox, int italicAngle, int stemV,
+                                            int missingWidth, int xHeight,
+                                            int underlinePosition, int underlineThickness)
+  : m_ascent(ascent), m_descent(descent), m_capHeight(capHeight), m_flags(flags),
+    m_fontBBox(fontBBox), m_italicAngle(italicAngle), m_stemV(stemV),
+    m_missingWidth(missingWidth), m_xHeight(xHeight),
+    m_underlinePosition(underlinePosition), m_underlineThickness(underlineThickness)
+{
+}
+
+#if 0
+wxPdfFontDescription::wxPdfFontDescription(const wxPdfFontDescription& desc)
+{
+  m_ascent             = desc.m_ascent;
+  m_descent            = desc.m_descent;
+  m_capHeight          = desc.m_capHeight;
+  m_flags              = desc.m_flags;
+  m_fontBBox           = desc.m_fontBBox;
+  m_italicAngle        = desc.m_italicAngle;
+  m_stemV              = desc.m_stemV;
+  m_missingWidth       = desc.m_missingWidth;
+  m_xHeight            = desc.m_xHeight;
+  m_underlinePosition  = desc.m_underlinePosition;
+  m_underlineThickness = desc.m_underlineThickness;
+}
+#endif
 wxPdfFontDescription::~wxPdfFontDescription()
 {
 }
@@ -168,14 +226,14 @@ wxPdfFont::GetWinEncodingConv()
 // wxPdfFont: class 
 // ----------------------------------------------------------------------------
 
-wxPdfFont::wxPdfFont(int index, const wxString& name, short* cwArray, const wxString& bbox)
+wxPdfFont::wxPdfFont(int index, const wxString& name, short* cwArray,
+                     const wxPdfFontDescription& desc)
 {
   m_index = index;
   m_name  = name;
   m_type  = _T("core");
-  m_up = -100;
-  m_ut = 50;
-  m_desc.SetFontBBox(bbox);
+  m_desc  = desc;
+
 
   if (cwArray != NULL)
   {
@@ -296,8 +354,6 @@ wxPdfFontTrueType::LoadFontMetrics(wxXmlNode* root)
 {
   bool bName  = false,
        bDesc  = false,
-       bUp    = false,
-       bUt    = false,
        bFile  = true,
        bSize  = true,
        bWidth = false;
@@ -319,24 +375,6 @@ wxPdfFontTrueType::LoadFontMetrics(wxXmlNode* root)
     else if (child->GetName() == wxT("description"))
     {
       bDesc = GetFontDescription(child, m_desc);
-    }
-    else if (child->GetName() == wxT("underline-position"))
-    {
-      value = GetNodeContent(child);
-      if (value.ToLong(&number))
-      {
-        bUp = true;
-        m_up = number;
-      }
-    }
-    else if (child->GetName() == wxT("underline-thickness"))
-    {
-      value = GetNodeContent(child);
-      if (value.ToLong(&number))
-      {
-        bUt = true;
-        m_ut = number;
-      }
     }
     else if (child->GetName() == wxT("diff"))
     {
@@ -401,7 +439,7 @@ wxPdfFontTrueType::LoadFontMetrics(wxXmlNode* root)
   }
 #endif
 
-  return (bName && bDesc && bUp && bUt && bFile && bSize && bWidth);
+  return (bName && bDesc && bFile && bSize && bWidth);
 }
 
 double
@@ -460,8 +498,6 @@ wxPdfFontTrueTypeUnicode::LoadFontMetrics(wxXmlNode* root)
 {
   bool bName  = false,
        bDesc  = false,
-       bUp    = false,
-       bUt    = false,
        bFile  = true,
        bSize  = true,
        bWidth = false;
@@ -483,24 +519,6 @@ wxPdfFontTrueTypeUnicode::LoadFontMetrics(wxXmlNode* root)
     else if (child->GetName() == wxT("description"))
     {
       bDesc = GetFontDescription(child, m_desc);
-    }
-    else if (child->GetName() == wxT("underline-position"))
-    {
-      value = GetNodeContent(child);
-      if (value.ToLong(&number))
-      {
-        bUp = true;
-        m_up = number;
-      }
-    }
-    else if (child->GetName() == wxT("underline-thickness"))
-    {
-      value = GetNodeContent(child);
-      if (value.ToLong(&number))
-      {
-        bUt = true;
-        m_ut = number;
-      }
     }
     else if (child->GetName() == wxT("diff"))
     {
@@ -565,7 +583,7 @@ wxPdfFontTrueTypeUnicode::LoadFontMetrics(wxXmlNode* root)
   {
     m_conv = new wxMBConvUTF16BE();
   }
-  return (bName && bDesc && bUp && bUt && bFile && bSize && bWidth);
+  return (bName && bDesc && bFile && bSize && bWidth);
 }
 
 wxString
@@ -631,8 +649,6 @@ wxPdfFontType1::LoadFontMetrics(wxXmlNode* root)
 {
   bool bName  = false,
        bDesc  = false,
-       bUp    = false,
-       bUt    = false,
        bFile  = true,
        bSize  = true,
        bWidth = false;
@@ -654,24 +670,6 @@ wxPdfFontType1::LoadFontMetrics(wxXmlNode* root)
     else if (child->GetName() == wxT("description"))
     {
       bDesc = GetFontDescription(child, m_desc);
-    }
-    else if (child->GetName() == wxT("underline-position"))
-    {
-      value = GetNodeContent(child);
-      if (value.ToLong(&number))
-      {
-        bUp = true;
-        m_up = number;
-      }
-    }
-    else if (child->GetName() == wxT("underline-thickness"))
-    {
-      value = GetNodeContent(child);
-      if (value.ToLong(&number))
-      {
-        bUt = true;
-        m_ut = number;
-      }
     }
     else if (child->GetName() == wxT("diff"))
     {
@@ -741,7 +739,7 @@ wxPdfFontType1::LoadFontMetrics(wxXmlNode* root)
   }
 #endif
 
-  return (bName && bDesc && bUp && bUt && bFile && bSize && bWidth);
+  return (bName && bDesc && bFile && bSize && bWidth);
 }
 
 double
@@ -800,13 +798,10 @@ wxPdfFontType0::LoadFontMetrics(wxXmlNode* root)
 {
   bool bName     = false,
        bDesc     = false,
-       bUp       = false,
-       bUt       = false,
        bRegistry = false,
        bCmap     = false,
        bWidth    = false;
   wxString value;
-  long number;
   wxXmlNode *child = root->GetChildren();
   while (child)
   {
@@ -823,24 +818,6 @@ wxPdfFontType0::LoadFontMetrics(wxXmlNode* root)
     else if (child->GetName() == wxT("description"))
     {
       bDesc = GetFontDescription(child, m_desc);
-    }
-    else if (child->GetName() == wxT("underline-position"))
-    {
-      value = GetNodeContent(child);
-      if (value.ToLong(&number))
-      {
-        bUp = true;
-        m_up = number;
-      }
-    }
-    else if (child->GetName() == wxT("underline-thickness"))
-    {
-      value = GetNodeContent(child);
-      if (value.ToLong(&number))
-      {
-        bUt = true;
-        m_ut = number;
-      }
     }
     else if (child->GetName() == wxT("cmap"))
     {
@@ -913,7 +890,7 @@ wxPdfFontType0::LoadFontMetrics(wxXmlNode* root)
     m_hwFirst = 0xff61;
     m_hwLast  = 0xff9f;
   }
-  return (bName && bDesc && bUp && bUt && bRegistry && bCmap && bWidth);
+  return (bName && bDesc && bRegistry && bCmap && bWidth);
 }
 
 wxString

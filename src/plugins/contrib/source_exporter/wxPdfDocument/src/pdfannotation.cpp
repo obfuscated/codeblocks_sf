@@ -111,6 +111,12 @@ wxPdfBookmark::~wxPdfBookmark()
 int
 wxPdfDocument::AddLink()
 {
+  if (m_inTemplate)
+  {
+    wxLogError(_("wxPdfDocument::Link: Adding links in templates is impossible. Current template ID is %d."), m_templateId);
+    return -1;
+  }
+
   // Create a new internal link
   int n = (*m_links).size()+1;
   (*m_links)[n] = new wxPdfLink(n);
@@ -120,6 +126,12 @@ wxPdfDocument::AddLink()
 bool
 wxPdfDocument::SetLink(int link, double ypos, int page)
 {
+  if (m_inTemplate)
+  {
+    wxLogError(_("wxPdfDocument::Link: Setting links in templates is impossible. Current template ID is %d."), m_templateId);
+    return false;
+  }
+
   bool isValid = false;
   // Set destination of internal link
   if (ypos == -1)
@@ -143,6 +155,12 @@ wxPdfDocument::SetLink(int link, double ypos, int page)
 void
 wxPdfDocument::Link(double x, double y, double w, double h, const wxPdfLink& link)
 {
+  if (m_inTemplate)
+  {
+    wxLogError(_("wxPdfDocument::Link: Using links in templates is impossible. Current template ID is %d."), m_templateId);
+    return;
+  }
+
   // Put a link on the page
   wxArrayPtrVoid* pageLinkArray = NULL;
   wxPdfPageLink* pageLink = new wxPdfPageLink(x*m_k, m_hPt-y*m_k, w*m_k, h*m_k, link);

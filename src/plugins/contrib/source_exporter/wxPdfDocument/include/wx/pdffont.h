@@ -13,10 +13,6 @@
 #ifndef _PDFFONT_H_
 #define _PDFFONT_H_
 
-//#if defined(__GNUG__) && !defined(__APPLE__)
-//    #pragma interface "pdffont.h"
-//#endif
-
 #include "wx/strconv.h"
 #include "wx/xml/xml.h"
 
@@ -28,6 +24,12 @@ class WXDLLIMPEXP_PDFDOC wxPdfFontDescription
 public:
   /// Default constructor
   wxPdfFontDescription();
+  
+  /// Constructor
+  wxPdfFontDescription(int ascent, int descent, int capHeight, int flags,
+                       const wxString &fontBBox, int italicAngle, int stemV,
+                       int missingWidth, int xHeight,
+                       int underlinePosition, int underlineThickness);
 
   /// Default destructor
   ~wxPdfFontDescription();
@@ -79,16 +81,37 @@ public:
 
   /// Get missing character width
   int  GetMissingWidth() const { return m_missingWidth; };
+  
+  /// Set xHeight
+  void SetXHeight(int xHeight) { m_xHeight = xHeight; };
+
+  /// Get xHeight
+  int  GetXHeight() const { return m_xHeight; };
+  
+  /// Set underline position
+  void SetUnderlinePosition(int underlinePosition) { m_underlinePosition = underlinePosition; };
+
+  /// Get underline position
+  int  GetUnderlinePosition() const { return m_underlinePosition; };
+  
+  /// Set underline thickness
+  void SetUnderlineThickness(int underlineThickness) { m_underlineThickness = underlineThickness; };
+
+  /// Get underline thickness
+  int  GetUnderlineThickness() const { return m_underlineThickness; };
 
 private:
-  int      m_ascent;        ///< Ascender
-  int      m_descent;       ///< Descender
-  int      m_capHeight;     ///< CapHeight
-  int      m_flags;         ///< Font flags
-  wxString m_fontBBox;      ///< Font bounding box
-  int      m_italicAngle;   ///< Angle for italics
-  int      m_stemV;         ///< StemV
-  int      m_missingWidth;  ///< Missing character width
+  int      m_ascent;                  ///< Ascender
+  int      m_descent;                 ///< Descender
+  int      m_capHeight;               ///< CapHeight
+  int      m_flags;                   ///< Font flags
+  wxString m_fontBBox;                ///< Font bounding box
+  int      m_italicAngle;             ///< Angle for italics
+  int      m_stemV;                   ///< StemV
+  int      m_missingWidth;            ///< Missing character width
+  int      m_xHeight;                 ///< xHeight
+  int      m_underlinePosition;       ///< Underline position
+  int      m_underlineThickness;      ///< Underline thickness
 };
 
 WX_DECLARE_HASH_MAP(long, short, wxIntegerHash, wxIntegerEqual, wxPdfCharWidthMap);
@@ -99,7 +122,7 @@ class WXDLLIMPEXP_PDFDOC wxPdfFont
 public:
   /// Font constructor
   wxPdfFont(int index, const wxString& name = wxEmptyString, short* cwArray = NULL,
-            const wxString& bbox = wxEmptyString);
+            const wxPdfFontDescription& desc = wxPdfFontDescription());
 
   /// Default destructor
   virtual ~wxPdfFont();
@@ -141,16 +164,16 @@ public:
   wxString GetName() { return m_name; }
 
   /// Set underline position
-  void SetUnderlinePosition(int up) { m_up = up; }
+  void SetUnderlinePosition(int up) { m_desc.SetUnderlinePosition(up); }
 
   /// Get underline position
-  int  GetUnderlinePosition() { return m_up; }
+  int  GetUnderlinePosition() { return m_desc.GetUnderlinePosition(); }
 
   /// Set underline thickness
-  void SetUnderlineThickness(int ut) { m_ut = ut; }
+  void SetUnderlineThickness(int ut) { m_desc.SetUnderlineThickness(ut); }
 
   /// Get underline thickness
-  int  GetUnderlineThickness() { return m_ut; }
+  int  GetUnderlineThickness() { return m_desc.GetUnderlineThickness(); }
 
   /// Get bounding box top position
   int GetBBoxTopPosition();
@@ -169,6 +192,12 @@ public:
 
   /// Get encoding differences
   wxString GetDiffs() { return m_diffs; }
+
+  /// Set path of font files
+  void SetFilePath(const wxString& path) { m_path = path; }
+
+  /// Get path of font files
+  wxString GetFilePath() { return m_path; }
 
   /// Check whether the font has an associated font file
   bool HasFile() { return m_file.Length() > 0; }
@@ -247,8 +276,8 @@ protected:
   wxString             m_type;  ///< Font type
   wxString             m_name;  ///< Font name
   
-  int                  m_up;    ///< Underline position
-  int                  m_ut;    ///< Underline thickness
+  //int                  m_up;    ///< Underline position
+  //int                  m_ut;    ///< Underline thickness
 
   wxPdfCharWidthMap*   m_cw;    ///< Array with character widths
 
@@ -257,6 +286,7 @@ protected:
   wxString             m_enc;   ///< Encoding
   wxString             m_diffs; ///< Encoding differences
 
+  wxString             m_path;  ///< Path of font files
   wxString             m_file;  ///< Filename of font program
   wxString             m_ctg;   ///< Filename of char to glyph mapping
   int                  m_size1; ///< TrueType file size or Type1 file size 1

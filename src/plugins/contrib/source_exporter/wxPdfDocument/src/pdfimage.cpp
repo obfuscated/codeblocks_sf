@@ -10,10 +10,6 @@
 
 /// \file pdfimage.cpp Implementation of the wxPdfImage class
 
-//#if defined(__GNUG__) && !defined(__APPLE__)
-//#pragma implementation "pdfimage.h"
-//#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -56,7 +52,7 @@ wxPdfImage::wxPdfImage(wxPdfDocument* document, int index, const wxString& filen
   m_document = document;
   m_index    = index;
   m_name     = filename;
-  m_type     = type.Lower();
+  m_maskImage = 0;
   m_isFormObj = false;
   m_fromWxImage = false;
   m_validWxImage = false;
@@ -74,6 +70,17 @@ wxPdfImage::wxPdfImage(wxPdfDocument* document, int index, const wxString& filen
   m_trns     = NULL;
   m_dataSize = 0;
   m_data     = NULL;
+
+  wxString fileURL = m_name;
+  wxURI uri(m_name);
+  if (!uri.HasScheme())
+  {
+    fileURL = wxFileSystem::FileNameToURL(m_name);
+  }
+  m_imageFile = wxPdfImage::GetFileSystem()->OpenFile(fileURL);
+  wxString mimeType = m_imageFile->GetMimeType();
+  m_type = (mimeType != wxEmptyString) ? mimeType : type.Lower();
+  m_imageStream = (m_imageFile != NULL) ? m_imageFile->GetStream() : NULL;
 }
 
 wxPdfImage::wxPdfImage(wxPdfDocument* document, int index, const wxString& name, const wxImage& image)
@@ -81,6 +88,7 @@ wxPdfImage::wxPdfImage(wxPdfDocument* document, int index, const wxString& name,
   m_document = document;
   m_index    = index;
   m_name     = name;
+  m_maskImage = 0;
   m_isFormObj = false;
   m_fromWxImage = true;
 
@@ -99,6 +107,38 @@ wxPdfImage::wxPdfImage(wxPdfDocument* document, int index, const wxString& name,
   m_data     = NULL;
 
   m_validWxImage = ConvertWxImage(image);
+
+  m_imageFile = NULL;
+  m_imageStream = NULL;
+}
+
+wxPdfImage::wxPdfImage(wxPdfDocument* document, int index, const wxString& name, wxInputStream& stream, const wxString& mimeType)
+{
+  m_document = document;
+  m_index    = index;
+  m_name     = name;
+  m_maskImage = 0;
+  m_isFormObj = false;
+  m_fromWxImage = false;
+  m_validWxImage = false;
+
+  m_width    = 0;
+  m_height   = 0;
+  m_cs       = _T("");
+  m_bpc      = '\0';
+  m_f        = _T("");
+  m_parms    = _T("");
+
+  m_palSize  = 0;
+  m_pal      = NULL;
+  m_trnsSize = 0;
+  m_trns     = NULL;
+  m_dataSize = 0;
+  m_data     = NULL;
+
+  m_imageFile = NULL;
+  m_type = mimeType;
+  m_imageStream = &stream;
 }
 
 wxPdfImage::~wxPdfImage()
@@ -118,7 +158,6 @@ wxPdfImage::ConvertWxImage(const wxImage& image)
   }
   wxMemoryOutputStream os;
   isValid = image.SaveFile(os, wxBITMAP_TYPE_PNG);
-  image.SaveFile(_T("c:\\temp\\test123.png"), wxBITMAP_TYPE_PNG);
   if (isValid)
   {
     wxMemoryInputStream is(os);
@@ -135,41 +174,34 @@ wxPdfImage::Parse()
   if (m_fromWxImage) return m_validWxImage;
 
   bool isValid = false;
-  wxString type = m_type.Lower();
 
-  wxString fileURL = m_name;
-  wxURI uri(m_name);
-  if (!uri.HasScheme())
+  if (m_imageStream)
   {
-    fileURL = wxFileSystem::FileNameToURL(m_name);
-  }
-  wxFSFile* imageFile = wxPdfImage::GetFileSystem()->OpenFile(fileURL);
-  if (imageFile)
-  {
-    // TODO: create local stream for remote image files
-    wxInputStream* imageStream = imageFile->GetStream();
-    wxString mimeType = imageFile->GetMimeType();
-    if (mimeType == _T("image/png"))
+    if (m_type == _T("image/png") || m_type == _T("png"))
     {
-      isValid = ParsePNG(imageStream);
+      isValid = ParsePNG(m_imageStream);
     }
-    else if (mimeType == _T("image/jpeg"))
+    else if (m_type == _T("image/jpeg") || m_type == _T("jpeg") || m_type == _T("jpg"))
     {
-      isValid = ParseJPG(imageStream);
+      isValid = ParseJPG(m_imageStream);
     }
-    else if (mimeType == _T("image/gif"))
+    else if (m_type == _T("image/gif") || m_type == _T("gif"))
     {
-      isValid = ParseGIF(imageStream);
+      isValid = ParseGIF(m_imageStream);
     }
     else
     {
-      if (type == _T("wmf") || m_name.Right(4) == _T(".wmf"))
+      if (m_type == _T("image/wmf") || m_type == _T("wmf") || m_name.Right(2) == _T(".wmf"))
       {
         m_isFormObj = true;
-        isValid = ParseWMF(imageStream);
+        isValid = ParseWMF(m_imageStream);
       }
     }
-    delete imageFile;
+    if (m_imageFile != NULL)
+    {
+      delete m_imageFile;
+      m_imageFile = NULL;
+    }
   }
   return isValid;
 }
@@ -234,7 +266,7 @@ wxPdfImage::ParsePNG(wxInputStream* imageStream)
     wxLogDebug(_T("wxPdfImage::ParsePNG: Alpha channel not supported: '%s'."), m_name.c_str());
     return false;
   }
-
+  
   imageStream->Read(buffer,3);
   if (buffer[0] != 0)
   {
@@ -300,7 +332,7 @@ wxPdfImage::ParsePNG(wxInputStream* imageStream)
       else
       {
         int pos;
-        for (pos = 0; (pos < n) || (t[pos] == 0); pos++);
+        for (pos = 0; (pos < n) && (t[pos] != 0); pos++);
         if (pos < n)
         {
           m_trnsSize = 1;
@@ -309,6 +341,7 @@ wxPdfImage::ParsePNG(wxInputStream* imageStream)
         }
       }
       imageStream->Read(buffer,4);
+      delete [] t;
     }
     else if (strncmp(buffer,"IDAT",4) == 0)
     {
@@ -469,7 +502,7 @@ wxPdfImage::ParseJPG(wxInputStream* imageStream)
         marker = M_EOI;
         break;
       }
-    }
+    } 
     while (marker == 0xff);
 
     if (a < 2)
@@ -572,6 +605,61 @@ wxPdfImage::ParseGIF(wxInputStream* imageStream)
   m_dataSize = 0;
   m_data     = NULL;
 
+#if wxCHECK_VERSION(2,7,1)
+  wxGIFDecoder gif;
+  if (!gif.CanRead(*imageStream))
+  {
+    wxLogDebug(_T("wxPdfImage::ParseGIF: '%s' not a GIF file."), m_name.c_str());
+    return false;
+  }
+
+  if (gif.LoadGIF(*imageStream) != wxGIF_OK)
+  {
+    wxLogDebug(_T("wxPdfImage::ParseGIF: Invalid GIF file '%s'."), m_name.c_str());
+    return false;
+  }
+
+  isValid = true;
+  wxSize gifSize = gif.GetFrameSize(0);
+  m_width = gifSize.GetWidth();
+  m_height = gifSize.GetHeight();
+  m_cs = _T("Indexed");
+  m_bpc    = 8;
+
+  m_palSize  = 768;
+  m_pal = new char[m_palSize];
+  memcpy(m_pal,gif.GetPalette(0),m_palSize);
+
+  int trns = gif.GetTransparentColourIndex(0);
+  if (trns != -1)
+  {
+    m_trnsSize = 3;
+    m_trns     = new char[3];
+    m_trns[0] = m_pal[3*trns + 0];
+    m_trns[1] = m_pal[3*trns + 1];
+    m_trns[2] = m_pal[3*trns + 2];
+  }
+  
+  m_dataSize = m_width * m_height;
+  if (m_document->m_compress)
+  {
+    m_f = _T("FlateDecode");
+    wxMemoryOutputStream* p = new wxMemoryOutputStream();
+    wxZlibOutputStream q(*p);
+    q.Write(gif.GetData(0),m_dataSize);
+    q.Close();
+    m_dataSize = p->TellO();
+    m_data = new char[m_dataSize];
+    p->CopyTo(m_data,m_dataSize);
+    delete p;
+  }
+  else
+  {
+    m_f = _T("");
+    m_data = new char[m_dataSize];
+    memcpy(m_data,gif.GetData(0),m_dataSize);
+  }
+#else
   wxGIFDecoder gif(imageStream);
   if (!gif.CanRead())
   {
@@ -604,7 +692,7 @@ wxPdfImage::ParseGIF(wxInputStream* imageStream)
     m_trns[1] = m_pal[3*trns + 1];
     m_trns[2] = m_pal[3*trns + 2];
   }
-
+  
   m_dataSize = m_width * m_height;
   if (m_document->m_compress)
   {
@@ -624,7 +712,7 @@ wxPdfImage::ParseGIF(wxInputStream* imageStream)
     m_data = new char[m_dataSize];
     memcpy(m_data,gif.GetData(),m_dataSize);
   }
-
+#endif
   return isValid;
 }
 
@@ -1016,7 +1104,7 @@ wxPdfImage::ParseWMF(wxInputStream* imageStream)
             }
           }
 
-          if (polyFillMode == 1 && (op == _T("b") || op == _T("f")))
+          if (polyFillMode == 1 && (op == _T("b") || op == _T("f"))) 
           {
             op += _T("*");  // use even-odd fill rule
           }

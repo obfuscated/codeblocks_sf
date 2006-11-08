@@ -15,6 +15,7 @@ libwxPdfDocument_la_SOURCES = src/pdfannotation.cpp \
 							src/pdfgraphics.cpp \
 							src/pdfimage.cpp \
 							src/pdfkernel.cpp \
+							src/pdftemplate.cpp \
 							src/pdfxml.cpp
 
 noinst_HEADERS = include/wx/pdfbarcode.h \
@@ -23,7 +24,10 @@ noinst_HEADERS = include/wx/pdfbarcode.h \
 				include/wx/pdfencrypt.h \
 				include/wx/pdffont.h \
 				include/wx/pdfform.h \
+				include/wx/pdfgraphics.h \
 				include/wx/pdfimage.h \
+				include/wx/pdfproperties.h \
+				include/wx/pdftemplate.h \
 				include/wx/pdfxml.h
 
 EXTRA_DIST = src/pdfcolordata.inc \

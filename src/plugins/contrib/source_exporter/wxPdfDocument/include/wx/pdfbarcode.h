@@ -13,10 +13,6 @@
 #ifndef _PDFBARCODE_H_
 #define _PDFBARCODE_H_
 
-//#if defined(__GNUG__) && !defined(__APPLE__)
-//    #pragma interface "pdfbarcode.h"
-//#endif
-
 #include "wx/pdfdocdef.h"
 
 // Forward declarations

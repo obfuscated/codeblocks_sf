@@ -45,6 +45,8 @@ FPDF web site are incorporated into wxPdfDocument. The main features are:
 - Text annotations
 - PDF forms (supported field types: text, combo box, check box, radio button, push button)
 - JavaScript
+- Fill gradients
+- Templates
 
 The class can produce documents in many languages other than the Western European ones:
 Central European, Cyrillic, Greek, Baltic and Thai, provided you own TrueType or Type1
@@ -69,6 +71,39 @@ verified to function properly. This means: wxPdfDocument still needs intensive t
 <b>If you find bugs please report them to the author!</b>
 
 <dl>
+<dt><b>0.7.6</b> - <i>October 2006</i></dt>
+<dd>
+Added features (thanks to Stuart Smith):<br>
+- setting/getting the default path used for loading font files
+- getting the description of the current font
+- loading images from a wxInputStream (in addition to loading from file or wxImage)
+
+<b>Attention</b>: The structure of the font definition files has changed due to
+the addition of the font attribute <tt>xHeight</tt>. It is necessary to regenerate own
+font definition files using the \ref makefont. To support the <tt>xHeight</tt> attribute the utility
+<tt>ttf2ufm</tt> had to be changed.
+
+wxPdfDocument is now compatible with wxWidgets version 2.7.1 or above as well as with version 2.6.x.
+
+Fixed several bugs
+</dd>
+
+<dt><b>0.7.5</b> - <i>September 2006</i></dt>
+<dd>
+Added or enhanced features:<br>
+- support for tables in simple XML markup spanning more than a page
+- support for internal links in simple XML markup
+- support for transparency
+- support for image masks
+- support for internal templates
+- support for polygon and shape clipping
+- support for printing text along a path
+- extended support for fill gradients (<b>API changed!</b>)
+- internal color management reworked
+
+Fixed some minor bugs
+</dd>
+
 <dt><b>0.7</b> - <i>April 2006</i></dt>
 <dd>
 Added features:<br>
@@ -137,13 +172,15 @@ found on the <a href="http://www.fpdf.org"><b>FPDF website</b></a> I would like 
 - Olivier Plathey (FPDF, Barcodes, Bookmarks, Rotation),
 - Maxime Delorme (Sector)
 - Johannes Guentert (JavaScript)
-- Martin Hall-May (WMF images)
+- Martin Hall-May (WMF images, Transparency)
 - Emmanuel Havet (Code39 barcodes)
 - Shailesh Humbad (POSTNET barcodes)
 - Matthias Lau (i25 barcodes)
 - Pierre Marletta (Diagrams)
 - Laurent Passebecq (Labels)
 - David Hernandez Sanz (additional graphics primitives)
+- Valentin Schmidt (Transparency, Alpha channel)
+- Jan Slabon (FPDI)
 - Klemen Vodopivec (Protection)
 - Moritz Wagner (Transformation)
 - Andreas Wuermser (Clipping, Gradients, Transformation)
@@ -166,7 +203,9 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::AliasNbPages - define an alias for number of pages
 \li wxPdfDocument::Annotate - add a text annotation
 \li wxPdfDocument::Arrow - draw an arrow
+\li wxPdfDocument::AxialGradient - define axial gradient shading
 
+\li wxPdfDocument::BeginTemplate - start template creation
 \li wxPdfDocument::Bookmark - add a bookmark
 
 \li wxPdfDocument::Cell - print a cell
@@ -175,18 +214,27 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::ClippingText - define text as clipping area
 \li wxPdfDocument::ClippingRect - define rectangle as clipping area
 \li wxPdfDocument::ClippingEllipse - define ellipse as clipping area
+\li wxPdfDocument::ClippingPath - start defining a clipping path
+\li wxPdfDocument::ClippingPolygon - define polygon as clipping area
 \li wxPdfDocument::ClippedCell - print a clipped cell
 \li wxPdfDocument::Close - terminate the document
+\li wxPdfDocument::CloseAndGetBuffer - terminate the document and return the document buffer
+\li wxPdfDocument::ClosePath - close a clipping path
 \li wxPdfDocument::ComboBox - add a combo box to a form
-\li wxPdfDocument::Curve - draw a Bézier curve
+\li wxPdfDocument::CoonsPatchGradient - define coons patch mesh gradient shading
+\li wxPdfDocument::Curve - draw a Bezier curve
+\li wxPdfDocument::CurveTo - append a cubic Bezier curve to a clipping path
 
 \li wxPdfDocument::Ellipse - draw an ellipse
+\li wxPdfDocument::EndTemplate - end template creation
 
 \li wxPdfDocument::Footer - page footer.
 
 \li wxPdfDocument::GetBreakMargin - get the page break margin
 \li wxPdfDocument::GetCellMargin - get the cell margin
+\li wxPdfDocument::GetFontDescription - get description of current font
 \li wxPdfDocument::GetFontFamily - get current font family
+\li wxPdfDocument::GetFontPath - get current default path for font files
 \li wxPdfDocument::GetFontSize - get current font size in points
 \li wxPdfDocument::GetFontStyle - get current font style
 \li wxPdfDocument::GetImageScale - get image scale
@@ -196,6 +244,7 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::GetRightMargin - get the right margin
 \li wxPdfDocument::GetScaleFactor - get scale factor
 \li wxPdfDocument::GetStringWidth - compute string length
+\li wxPdfDocument::GetTemplateSize - get size of template
 \li wxPdfDocument::GetTopMargin - get the top margin
 \li wxPdfDocument::GetX - get current x position
 \li wxPdfDocument::GetY - get current y position
@@ -203,17 +252,21 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::Header - page header
 
 \li wxPdfDocument::Image - output an image
+\li wxPdfDocument::ImageMask - define an image mask
 \li wxPdfDocument::IsInFooter - check whether footer output is in progress
 
 \li wxPdfDocument::Line - draw a line
-\li wxPdfDocument::LinearGradient - paint a linear gradient shading to rectangular area
+\li wxPdfDocument::LinearGradient - define linear gradient shading
 \li wxPdfDocument::LineCount - count the number of lines a text would occupy
+\li wxPdfDocument::LineTo - append straight line segment to a clipping path
 \li wxPdfDocument::Link - put a link
 \li wxPdfDocument::Ln - line break
 
 \li wxPdfDocument::Marker - draw a marker symbol
+\li wxPdfDocument::MidAxialGradient - define mid axial gradient shading
 \li wxPdfDocument::MirrorH - mirror horizontally
 \li wxPdfDocument::MirrorV - mirror vertically
+\li wxPdfDocument::MoveTo - begin new subpath of a clipping path
 \li wxPdfDocument::MultiCell - print text with line breaks
 
 \li wxPdfDocument::Open - start output to the PDF document
@@ -222,7 +275,7 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::Polygon - draw a polygon
 \li wxPdfDocument::PushButton - add a push button to a form
 
-\li wxPdfDocument::RadialGradient - paint a radial gradient shading to rectangular area
+\li wxPdfDocument::RadialGradient - define radial gradient shading
 \li wxPdfDocument::RadioButton - add a radio button to a form
 \li wxPdfDocument::Rect - draw a rectangle
 \li wxPdfDocument::RegularPolygon -  draw a regular polygon
@@ -237,6 +290,8 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::ScaleXY - scale equally in X and Y direction
 \li wxPdfDocument::ScaleY - scale in Y direction only
 \li wxPdfDocument::Sector - draw a sector
+\li wxPdfDocument::SetAlpha - set alpha transparency
+\li wxPdfDocument::SetAlphaState - set alpha state
 \li wxPdfDocument::SetAuthor - set the document author
 \li wxPdfDocument::SetAutoPageBreak - set the automatic page breaking mode
 \li wxPdfDocument::SetCellMargin - set cell margin
@@ -245,7 +300,9 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::SetDisplayMode - set display mode
 \li wxPdfDocument::SetDrawColor - set drawing color
 \li wxPdfDocument::SetFillColor - set filling color
+\li wxPdfDocument::SetFillGradient - paint a rectangular area using a fill gradient
 \li wxPdfDocument::SetFont - set font
+\li wxPdfDocument::SetFontPath - set default path for font files
 \li wxPdfDocument::SetFontSize - set font size
 \li wxPdfDocument::SetFormBorderStyle - set form field border style
 \li wxPdfDocument::SetFormColors - set form field colors (border, background, text)
@@ -262,9 +319,12 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::SetTextColor - set text color
 \li wxPdfDocument::SetTitle - set document title
 \li wxPdfDocument::SetTopMargin - set top margin
+\li wxPdfDocument::SetViewerPreferences - set viewer preferences
 \li wxPdfDocument::SetX - set current x position
 \li wxPdfDocument::SetXY - set current x and y positions
 \li wxPdfDocument::SetY - set current y position
+\li wxPdfDocument::Shape - draw shape
+\li wxPdfDocument::ShapedText - print text along a path
 \li wxPdfDocument::Skew - skew in X and Y direction
 \li wxPdfDocument::SkewX - skew in Y direction only
 \li wxPdfDocument::SkewY - skew in Y direction only
@@ -279,6 +339,7 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::TranslateX - move the X origin only
 \li wxPdfDocument::TranslateY - move the Y origin only
 
+\li wxPdfDocument::UseTemplate - use template
 \li wxPdfDocument::UnsetClipping - remove clipping area
 
 \li wxPdfDocument::Write - print flowing text
@@ -286,6 +347,7 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::WriteXml - print flowing text containing simple XML markup
 
 \li wxPdfDocument::wxPdfDocument - constructor
+
 
 \section refpdfbarcode wxPdfBarCodeCreator
 
@@ -592,17 +654,22 @@ is an integer <i>number</i> between 1 and 100 giving the width in percent of the
 The default value is 100.</td></tr>
 </table>
 
-\subsection atag External link
+\subsection atag Internal or external link
 
-An external link is displayed as blue underlined text. Clicking on the text opens a browser window
+An internal or external link is displayed as blue underlined text. Clicking on the text opens a browser window
 loading the referenced URL.
 
 <table border="0">
 <tr bgcolor="#6699dd"><td colspan="2"><b>Tag</b></td></tr>
 <tr bgcolor="#eeeeee"><td colspan="2"><b>&lt;a&gt;</b></td></tr>
 <tr bgcolor="#6699dd"><td><b>Attribute</b></td><td><b>Description</b></td></tr>
-<tr bgcolor="#eeeeee"><td><tt>href="<i>url</i>"</tt></td><td><i>url</i> is an unified resource locator.</td></tr>
+<tr bgcolor="#eeeeee"><td><tt>href="<i>url</i>"</tt></td><td><i>url</i> is an unified resource locator.
+If <i>url</i> starts with <b>#</b> it is interpreted as a reference to an internal link anchor;
+the characters following <b>#</b> are used as the name of the anchor.</td></tr>
+<tr bgcolor="#6699dd"><td><tt>name="<i>anchor</i>"</tt></td><td><i>anchor</i> is the name of an internal link anchor.</td></tr>
 </table>
+
+<b>Note:</b> Either the <b><tt>name</tt></b> or the <b><tt>href</tt></b> attribute may be specified, but not both.
 
 \subsection fonttag Font specification
 
@@ -710,7 +777,6 @@ Defines the <i>width</i> of one or more columns. <i>number</i> specifies for how
 <td>Defines a group of table header rows.
 Contains one or more &lt;tr&gt; tags. If a table does not fit on a single page these rows are repeated on each page.
 The attributes <b><tt>odd</tt></b> and <b><tt>even</tt></b> are optional.
-<p><b>Attention</b>: This feature is not implemented yet. The rows are handled as ordinary rows.</p>
 </td></tr>
 <tr bgcolor="#ddeeff"><td valign="top"><tt>&lt;tbody odd="<i>background color for odd numbered rows</i>" even="<i>background color for even numbered rows</i>"&gt; ... &lt;/tbody&gt;</tt></td>
 <td>Defines a group of table body rows. Contains one or more &lt;tr&gt; tags.

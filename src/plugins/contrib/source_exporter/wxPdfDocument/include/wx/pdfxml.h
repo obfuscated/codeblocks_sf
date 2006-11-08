@@ -270,7 +270,7 @@ public:
   void Write();
 
   /// Write one table row to the document
-  void WriteRow(int row, double x, double y);
+  void WriteRow(size_t row, double x, double y);
 
   /// Set cell padding
   void SetPad(double pad) { m_pad = pad; }
@@ -290,6 +290,18 @@ public:
   /// Get total height of table
   double GetTotalHeight() { return m_totalHeight; }
 
+  /// Set index of first header row
+  void SetHeadRowFirst(size_t row) { m_headRowFirst = row; }
+
+  /// Set index of last header row
+  void SetHeadRowLast(size_t row) { m_headRowLast = row; }
+
+  /// Set index of first body row
+  void SetBodyRowFirst(size_t row) { m_bodyRowFirst = row; }
+
+  /// Set index of last body row
+  void SetBodyRowLast(size_t row) { m_bodyRowLast = row; }
+
 private:
   wxPdfDocument*     m_document;     ///< document reference
   wxPdfDoubleHashMap m_minHeights;   ///< array of minimal row heights
@@ -299,6 +311,12 @@ private:
   double             m_maxWidth;     ///< maximal allowed width
   double             m_totalWidth;   ///< total width
   double             m_totalHeight;  ///< total height
+  double             m_headHeight;   ///< total height of table header
+
+  size_t             m_headRowFirst; ///< index of first header row
+  size_t             m_headRowLast;  ///< index of last header row
+  size_t             m_bodyRowFirst; ///< index of first body row
+  size_t             m_bodyRowLast;  ///< index of last body row
 
   size_t             m_nRows;        ///< number of rows
   size_t             m_nCols;        ///< number of columns

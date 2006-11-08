@@ -9,7 +9,7 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="wxPdfDocument">
-				<Option output="libwxPdfDocument.a" />
+				<Option output="libwxPdfDocument.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -17,7 +17,7 @@
 				<Option projectLinkerOptionsRelation="2" />
 			</Target>
 			<Target title="default">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\Exporter.dll" />
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\Exporter.dll" prefix_auto="0" extension_auto="0" />
 				<Option external_deps="libwxPdfDocument.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -181,8 +181,26 @@
 			<Option link="0" />
 			<Option target="wxPdfDocument" />
 		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfgraphics.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxPdfDocument" />
+		</Unit>
 		<Unit filename="wxPdfDocument\include\wx\pdfimage.h">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdfproperties.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\include\wx\pdftemplate.h">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="wxPdfDocument" />
@@ -236,6 +254,10 @@
 			<Option target="wxPdfDocument" />
 		</Unit>
 		<Unit filename="wxPdfDocument\src\pdfkernel.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxPdfDocument" />
+		</Unit>
+		<Unit filename="wxPdfDocument\src\pdftemplate.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="wxPdfDocument" />
 		</Unit>
