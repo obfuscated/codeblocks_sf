@@ -1599,6 +1599,12 @@
 			<Option link="0" />
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\gtk\wizard.script">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\h_file\wizard.script">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />

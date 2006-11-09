@@ -159,6 +159,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/glfw/files/Makefile
 	src/plugins/scriptedwizard/resources/glut/Makefile
 	src/plugins/scriptedwizard/resources/glut/files/Makefile
+	src/plugins/scriptedwizard/resources/gtk/Makefile
+	src/plugins/scriptedwizard/resources/gtk/files/Makefile
 	src/plugins/scriptedwizard/resources/h_file/Makefile
 	src/plugins/scriptedwizard/resources/irrlicht/Makefile
 	src/plugins/scriptedwizard/resources/irrlicht/files/Makefile
