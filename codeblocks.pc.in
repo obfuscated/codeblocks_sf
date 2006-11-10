@@ -4,6 +4,7 @@ libdir=@libdir@
 includedir=@includedir@
 plugindir=@datadir@/@PACKAGE@/plugins
 sharedir=@datadir@
+datarootdir = @datarootdir@
 
 Name: codeblocks
 Description: Code::Blocks IDE
