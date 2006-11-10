@@ -1636,6 +1636,19 @@ void cbProject::ReOrderTargets(const wxArrayString& nameOrder)
 
         m_Targets.Remove(target);
         m_Targets.Insert(target, i);
+        
+        // we have to re-order the targets which are kept inside
+        // the virtual targets array too!
+        VirtualBuildTargetsMap::iterator it;
+		for (it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
+		{
+			wxArrayString& vt = it->second;
+			if (vt.Index(nameOrder[i]) != wxNOT_FOUND)
+			{
+				vt.Remove(nameOrder[i]);
+				vt.Insert(nameOrder[i], i);
+			}
+		}
     }
     SetModified(true);
 }

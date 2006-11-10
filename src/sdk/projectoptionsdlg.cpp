@@ -451,6 +451,7 @@ void ProjectOptionsDlg::OnBuildTargetChanged(wxCommandEvent& event)
 {
     DoTargetChange();
     CodeBlocksEvent e(cbEVT_PROJECT_TARGETS_MODIFIED);
+	e.SetProject(m_Project);
     Manager::Get()->GetPluginManager()->NotifyPlugins(e);
 }
 
@@ -468,9 +469,11 @@ void ProjectOptionsDlg::OnBuildOrderClick(wxCommandEvent& event)
         m_Project->ReOrderTargets(dlg.GetArray());
         m_Current_Sel = -1; // force no "save changes" for next call
         FillBuildTargets();
+
+		CodeBlocksEvent e(cbEVT_PROJECT_TARGETS_MODIFIED);
+		e.SetProject(m_Project);
+		Manager::Get()->GetPluginManager()->NotifyPlugins(e);
     }
-    CodeBlocksEvent e(cbEVT_PROJECT_TARGETS_MODIFIED);
-    Manager::Get()->GetPluginManager()->NotifyPlugins(e);
 }
 
 void ProjectOptionsDlg::OnProjectDepsClick(wxCommandEvent& event)
@@ -520,6 +523,7 @@ void ProjectOptionsDlg::OnAddBuildTargetClick(wxCommandEvent& event)
     DoTargetChange();
     BuildScriptsTree();
     CodeBlocksEvent e(cbEVT_PROJECT_TARGETS_MODIFIED);
+	e.SetProject(m_Project);
     Manager::Get()->GetPluginManager()->NotifyPlugins(e);
 }
 
@@ -549,6 +553,7 @@ void ProjectOptionsDlg::OnEditBuildTargetClick(wxCommandEvent& event)
     lstTargets->SetSelection(targetIdx);
     BuildScriptsTree();
     CodeBlocksEvent e(cbEVT_PROJECT_TARGETS_MODIFIED);
+	e.SetProject(m_Project);
     Manager::Get()->GetPluginManager()->NotifyPlugins(e);
 }
 
@@ -583,6 +588,7 @@ void ProjectOptionsDlg::OnCopyBuildTargetClick(wxCommandEvent& event)
     DoTargetChange();
     BuildScriptsTree();
     CodeBlocksEvent e(cbEVT_PROJECT_TARGETS_MODIFIED);
+	e.SetProject(m_Project);
     Manager::Get()->GetPluginManager()->NotifyPlugins(e);
 }
 
@@ -609,6 +615,7 @@ void ProjectOptionsDlg::OnRemoveBuildTargetClick(wxCommandEvent& event)
     DoTargetChange();
     BuildScriptsTree();
     CodeBlocksEvent e(cbEVT_PROJECT_TARGETS_MODIFIED);
+	e.SetProject(m_Project);
     Manager::Get()->GetPluginManager()->NotifyPlugins(e);
 }
 
