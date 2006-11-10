@@ -137,7 +137,7 @@ void NativeParser::UpdateClassBrowser()
         Manager::Get()->GetMessageManager()->DebugLog(_T("Updating class browser..."));
         if (m_pClassBrowser)
         {
-            m_pClassBrowser->SetParser(&m_Parser);
+//            m_pClassBrowser->SetParser(&m_Parser);
             m_pClassBrowser->UpdateView();
         }
         Manager::Get()->GetMessageManager()->DebugLog(_T("Class browser updated."));
