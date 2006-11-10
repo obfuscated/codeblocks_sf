@@ -847,7 +847,7 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
             FileType ft = FileTypeOf(file->relativeFilename);
             if (ft != ftResource && ft != ftResourceBin)
             {
-                if (objName.GetExt() != compiler->GetSwitches().objectExtension)
+                if (!compiler || objName.GetExt() != compiler->GetSwitches().objectExtension)
                     file->SetObjName(UnixFilename(file->relativeFilename));
             }
         }
@@ -1170,7 +1170,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         {
             wxFileName tmp(f->GetObjName());
             if (FileTypeOf(f->relativeFilename) != ftHeader &&
-                tmp.GetExt() != compiler->GetSwitches().objectExtension)
+                (!compiler || tmp.GetExt() != compiler->GetSwitches().objectExtension))
             {
                 AddElement(unitnode, "Option", "objectName", f->GetObjName());
             }
@@ -1218,17 +1218,16 @@ wxString ProjectLoader::GetValidCompilerID(const wxString& proposal, const wxStr
         wxString msg;
         msg.Printf(_("The defined compiler for %s cannot be located (ID: %s).\n"
                     "Please choose the compiler you want to use instead and click \"OK\".\n"
-                    "If you click \"Cancel\", the project/target will not be built."), scope.c_str(),
+                    "If you click \"Cancel\", the project/target will be excluded from the build."), scope.c_str(),
                     proposal.c_str());
         compiler = CompilerFactory::SelectCompilerUI(msg);
     }
 
     if (!compiler)
     {
-//        cbMessageBox(_("Setting to default compiler..."), _("Warning"), wxICON_WARNING);
-//        return CompilerFactory::GetDefaultCompilerID();
-		m_CompilerSubstitutes[proposal] = wxEmptyString;
-		return wxEmptyString;
+		// allow for invalid compiler IDs to be preserved...
+		m_CompilerSubstitutes[proposal] = proposal;
+		return proposal;
     }
 
     m_OpenDirty = true;
