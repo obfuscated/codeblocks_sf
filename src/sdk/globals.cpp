@@ -315,7 +315,7 @@ bool CreateDirRecursively(const wxString& full_path, int perms)
     wxLogNull null_logger; // we do all file checks ourselves
 
     if(wxDirExists(full_path)) // early out
-        return false;
+        return true;
 
     wxArrayString dirs;
     wxString currdir;
