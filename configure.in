@@ -60,7 +60,17 @@ AC_SUBST(CODEBLOCKS_VERSION_INFO)
 CODEBLOCKS_GET_PLATFORM
 CODEBLOCKS_ENABLE_SETTINGS
 
+dnl check for pkg-config itself so we don't try the m4 macro without pkg-config
+AC_CHECK_PROG(HAVE_PKG_CONFIG, pkg-config, yes, no)
+ifdef([PKG_CHECK_MODULES],[],[
+  define([PKG_CHECK_MODULES],
+  [ echo "You don't have pkg.m4 properly installed" >&2
+    exit 1
+  ])
+])
+if test "x$HAVE_PKG_CONFIG" = "xyes"; then
 PKG_CHECK_MODULES(GTK2, gtk+-2.0 >= 2.0.0)
+fi
 
 AM_OPTIONS_WXCONFIG
 AM_PATH_WXCONFIG(2.6.0, wxWin=1)
