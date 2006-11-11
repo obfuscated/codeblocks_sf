@@ -155,9 +155,8 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
     FileType ft = FileTypeOf(pf->relativeFilename);
 
     // create output dir
-    if (!pfd.object_dir_native.IsEmpty() && !wxDirExists(pfd.object_dir_native))
+    if (!pfd.object_dir_native.IsEmpty() && !CreateDirRecursively(pfd.object_dir_native, 0755))
     {
-        if (!CreateDirRecursively(pfd.object_dir_native, 0755))
             cbMessageBox(_("Can't create object output directory ") + pfd.object_dir_native);
     }
 
@@ -543,9 +542,8 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     out.MakeAbsolute(m_pProject->GetBasePath());
     wxString dstname = out.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     Manager::Get()->GetMacrosManager()->ReplaceMacros(dstname, true, target);
-    if (!dstname.IsEmpty() && !wxDirExists(dstname))
+    if (!dstname.IsEmpty() && !CreateDirRecursively(dstname, 0755))
     {
-        if (!CreateDirRecursively(dstname, 0755))
             cbMessageBox(_("Can't create output directory ") + dstname);
     }
 
