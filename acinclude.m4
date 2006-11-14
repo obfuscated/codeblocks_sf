@@ -5,7 +5,7 @@ AC_DEFUN([CODEBLOCKS_GET_PLATFORM],
 [CODEBLOCKS_PLATFORM=gtk
  AC_ARG_WITH(platform, 
              AC_HELP_STRING([--with-platform=PLATFORM],
-                            [the platform to build, win32 or gtk(default)]),
+                            [the platform to build, win32, macosx or gtk(default)]),
              CODEBLOCKS_PLATFORM=$withval,
              CODEBLOCKS_PLATFORM=gtk)
 
@@ -23,6 +23,10 @@ AC_DEFUN([CODEBLOCKS_GET_PLATFORM],
       PLATFORM_CFLAGS=""
       PLATFORM_LIBS="-lgdi32"
     ;;
+    macosx)
+      PLATFORM_CFLAGS=""
+      PLATFORM_LIBS=""
+    ;;
   esac
 
   AC_SUBST(PLATFORM_CFLAGS)
@@ -38,12 +42,10 @@ AC_DEFUN([CODEBLOCKS_SETUP_FOR_TARGET],
 	AC_CHECK_TOOL(RC, windres)
 	nt=true
 ;;
-*-*-darwin*)
-	dnl although OSX isn't supported yet, it doesn't hurt
-	dnl to support it in this check
-    AC_SUBST(SHARED_FLAGS, "-shared")
-    AC_SUBST(PLUGIN_FLAGS, "-shared -avoid-version")
-    osx=true
+*-*-darwin*) dnl including macosx
+    AC_SUBST(SHARED_FLAGS, "-dynamic")
+    AC_SUBST(PLUGIN_FLAGS, "-bundle -avoid-version")
+    darwin=true
 ;;
  *) dnl default to standard linux
 	AC_SUBST(SHARED_FLAGS, "-shared")
@@ -54,7 +56,7 @@ esac
 dnl you must arrange for every AM_conditional to run every time configure runs
 AM_CONDITIONAL(CODEBLOCKS_NT, test x$nt = xtrue)
 AM_CONDITIONAL(CODEBLOCKS_LINUX, test x$linux = xtrue)
-AM_CONDITIONAL(CODEBLOCKS_OSX, test x$osx = xtrue )
+AM_CONDITIONAL(CODEBLOCKS_DARWIN, test x$darwin = xtrue )
 ])
 
 dnl check what settings to enable

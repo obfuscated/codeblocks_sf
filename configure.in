@@ -104,6 +104,7 @@ dnl             AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?),
 dnl             gthread)
 
 AM_CONDITIONAL([LINUX], [test `uname` = "Linux"])
+AM_CONDITIONAL([DARWIN], [test `uname` = "Darwin"])
 
 AC_MSG_NOTICE([Configuring Code::Blocks...])
 
