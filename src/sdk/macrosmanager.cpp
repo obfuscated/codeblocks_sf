@@ -47,6 +47,11 @@
 
 using namespace std;
 
+
+static const wxString const_COIN(_T("COIN"));
+static const wxString const_RANDOM(_T("RANDOM"));
+
+
 /*
     standard macros are:
 
@@ -84,16 +89,15 @@ void MacrosManager::ReleaseMenu(wxMenuBar* menuBar)
 {
 }
 
-wxString MacrosManager::ReplaceMacros(const wxString& buffer, bool envVarsToo, ProjectBuildTarget* target)
+wxString MacrosManager::ReplaceMacros(const wxString& buffer, ProjectBuildTarget* target)
 {
     wxString tmp = buffer;
-    ReplaceMacros(tmp, envVarsToo, target);
+    ReplaceMacros(tmp, target);
     return tmp;
 }
 
 void MacrosManager::Reset()
 {
-//	Manager::Get()->GetMessageManager()->DebugLog(_T("reset"));
     m_lastProject = 0;
     m_lastTarget = 0;
     m_lastEditor = 0;
@@ -102,9 +106,12 @@ void MacrosManager::Reset()
     m_DataPath = UnixFilename(ConfigManager::GetDataFolder());
     m_Plugins = UnixFilename(ConfigManager::GetDataFolder() + _T("/plugins"));
     ClearProjectKeys();
-    m_re.Compile(_T("(%|\\$[({]?)(#?[A-Za-z_0-9.]+)([)}%/\\]?)"));
+    m_re_unx.Compile(_T("[^$](\\$[({]?(#?[A-Za-z_0-9.]+)[)} /\\]?)"));
+    m_re_dos.Compile(_T("[^%](%(#?[A-Za-z_0-9.]+)%)"));
     m_uVarMan = Manager::Get()->GetUserVariableManager();
     srand(time(0));
+    assert(m_re_unx.IsValid());
+    assert(m_re_dos.IsValid());
 }
 
 void MacrosManager::ClearProjectKeys()
@@ -292,10 +299,13 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     macros[_T("WEEKDAY_UTC")] = nowGMT.Format(_T("%A"));
 }
 
-void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuildTarget* target)
+void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target)
 {
-//	Manager::Get()->GetMessageManager()->DebugLog(wxString("ReplaceMacros(\"") << buffer << "\")");
+//	Manager::Get()->GetMessageManager()->Log(wxString(_T("ReplaceMacros <--- ")) << buffer);
+
     if (buffer.IsEmpty())
+        return;
+    if( buffer.find(_T('$')) == wxString::npos && buffer.find(_T('%')) == wxString::npos )
         return;
 
     cbProject* project = target
@@ -322,24 +332,22 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuil
     wxString search;
     wxString replace;
 
-    while(m_re.Matches(buffer))
+    while(m_re_unx.Matches(buffer))
     {
         replace.Empty();
 
-        wxString var = m_re.GetMatch(buffer, 2).Upper();
-        wxString right = m_re.GetMatch(buffer, 3);
-        search = m_re.GetMatch(buffer, 0);
+        wxString search = m_re_unx.GetMatch(buffer, 1);
+        wxString var = m_re_unx.GetMatch(buffer, 2).Upper();
 
         if (var.GetChar(0) == _T('#'))
         {
             replace = UnixFilename(m_uVarMan->Replace(var));
-//			QuoteStringIfNeeded(replace);
         }
         else
         {
-            if(var.IsSameAs(_T("COIN")))
-                replace = rand() & 1 ? _T("1") : _T("0");
-            else if(var.IsSameAs(_T("RANDOM")))
+            if(var.compare(const_COIN) == 0)
+                replace.assign(1u, rand() & 1 ? _T('1') : _T('0'));
+            else if(var.compare(const_RANDOM) == 0)
                 replace = wxString::Format(_T("%d"), rand() & 0xffff);
             else
             {
@@ -349,39 +357,50 @@ void MacrosManager::ReplaceMacros(wxString& buffer, bool envVarsToo, ProjectBuil
             }
         }
 
+        const wxChar l = search.Last(); // make non-braced variables work
+        if(l != _T(')') && l != _T('}'))
+            replace.append(l);
 
-		if(right.size() && (right.GetChar(0) == _T('\\') || right.GetChar(0) == _T('/'))) // workaround for foo\$variable\bar
-			replace.append(right);
+        if (replace.IsEmpty())
+            wxGetEnv(var, &replace);
 
-//		Manager::Get()->GetMessageManager()->DebugLog(wxString(wxString("replacing ") << search << " (variable: " << var << ") " << "with: ") << replace);
+        buffer.Replace(search, replace, false);
+    }
 
-        int c = 0;
-        if (!replace.IsEmpty())
+    while(m_re_dos.Matches(buffer))
+    {
+        replace.Empty();
+
+        wxString search = m_re_dos.GetMatch(buffer, 1);
+        wxString var = m_re_dos.GetMatch(buffer, 2).Upper();
+
+        if (var.GetChar(0) == _T('#'))
         {
-            c = buffer.Replace(search, replace);
+            replace = UnixFilename(m_uVarMan->Replace(var));
         }
         else
         {
-            if (envVarsToo)
+            if(var.compare(const_COIN) == 0)
+                replace.assign(1u, rand() & 1 ? _T('1') : _T('0'));
+            else if(var.compare(const_RANDOM) == 0)
+                replace = wxString::Format(_T("%d"), rand() & 0xffff);
+            else
             {
-                wxString envactual;
-                wxGetEnv(var, &envactual);
-                c = buffer.Replace(search, envactual);
+                MacrosMap::iterator it;
+                if((it = macros.find(var)) != macros.end())
+                    replace = it->second;
             }
         }
 
-        if (c == 0)
-        {
-            buffer.Replace(search, replace);
-            break; // avoid infinite loop when macro is invalid
-        }
+        if (replace.IsEmpty())
+            wxGetEnv(var, &replace);
+
+        buffer.Replace(search, replace, false);
     }
-//	QuoteStringIfNeeded(replace);
 
-//	Manager::Get()->GetMessageManager()->DebugLog(wxString("ReplaceMacros() ---> return: ") << buffer);
+    buffer.Replace(_T("%%"), _T("%"));
+    buffer.Replace(_T("$$"), _T("$"));
+
+//  Manager::Get()->GetMessageManager()->Log(wxString(_T("ReplaceMacros ---> ")) << buffer);
 }
 
-void MacrosManager::ReplaceEnvVars(wxString& buffer)
-{
-    ReplaceMacros(buffer, true);
-}

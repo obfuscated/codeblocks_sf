@@ -236,8 +236,8 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     // we must replace any macros here early because if the macros expand
     // to absolute paths (like global vars usually do), we 're gonna create
     // invalid filenames below
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(objOut, true, target);
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(depsOut, true, target);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(objOut, target);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(depsOut, target);
 
     source_file_native = pf->relativeFilename;
     source_file_absolute_native = pf->file.GetFullPath();

@@ -411,7 +411,7 @@ WizGenericSelectPathPanel::~WizGenericSelectPathPanel()
 //------------------------------------------------------------------------------
 void WizGenericSelectPathPanel::OnButton(wxCommandEvent& event)
 {
-    wxString dir = Manager::Get()->GetMacrosManager()->ReplaceMacros(m_pGenericSelectPath->txtFolder->GetValue(), true);
+    wxString dir = Manager::Get()->GetMacrosManager()->ReplaceMacros(m_pGenericSelectPath->txtFolder->GetValue());
     dir = ChooseDirectory(0, _("Please select location"), dir, wxEmptyString, false, true);
     if (!dir.IsEmpty() && wxDirExists(dir))
         m_pGenericSelectPath->txtFolder->SetValue(dir);
@@ -422,7 +422,7 @@ void WizGenericSelectPathPanel::OnPageChanging(wxWizardEvent& event)
 {
     if (event.GetDirection() != 0) // !=0 forward, ==0 backward
     {
-        wxString dir = Manager::Get()->GetMacrosManager()->ReplaceMacros(m_pGenericSelectPath->txtFolder->GetValue(), true);
+        wxString dir = Manager::Get()->GetMacrosManager()->ReplaceMacros(m_pGenericSelectPath->txtFolder->GetValue());
         if (!wxDirExists(dir))
         {
             cbMessageBox(_("Please select a valid location..."), _("Error"), wxICON_ERROR);

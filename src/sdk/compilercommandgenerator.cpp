@@ -240,7 +240,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     }
 
     // finally, replace all macros in one go
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(macro, true, target);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(macro, target);
 }
 
 /// Apply pre-build scripts for @c base.
@@ -281,7 +281,7 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
 	// not a fully qualified path, so we will prepend lib to /bar/libfoo.a incorrectly
 	// NOTE (thomas#1#): A better solution might be to use a regex, but finding an universal regex might not be easy...
     wxString fnameString(target->GetOutputFilename());
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(fnameString, true, target);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(fnameString, target);
     wxFileName fname(fnameString);
 
     if (!fname.GetName().StartsWith(compiler->GetSwitches().libPrefix))
@@ -311,7 +311,7 @@ wxString CompilerCommandGenerator::SetupIncludeDirs(Compiler* compiler, ProjectB
         for (unsigned int x = 0; x < arr.GetCount(); ++x)
         {
             wxString tmp = arr[x];
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, true, target);
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
             QuoteStringIfNeeded(tmp);
             tstr << compiler->GetSwitches().includeDirs << tmp << _T(' ');
         }
@@ -322,7 +322,7 @@ wxString CompilerCommandGenerator::SetupIncludeDirs(Compiler* compiler, ProjectB
         for (unsigned int x = 0; x < parr.GetCount(); ++x)
         {
             wxString tmp = parr[x];
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, true, target);
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
             QuoteStringIfNeeded(tmp);
             pstr << compiler->GetSwitches().includeDirs << tmp << _T(' ');
         }
@@ -336,7 +336,7 @@ wxString CompilerCommandGenerator::SetupIncludeDirs(Compiler* compiler, ProjectB
     for (unsigned int x = 0; x < carr.GetCount(); ++x)
     {
         wxString tmp = carr[x];
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, true, target);
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
         QuoteStringIfNeeded(tmp);
         result << compiler->GetSwitches().includeDirs << tmp << _T(' ');
     }
@@ -358,7 +358,7 @@ wxString CompilerCommandGenerator::SetupLibrariesDirs(Compiler* compiler, Projec
         for (unsigned int x = 0; x < arr.GetCount(); ++x)
         {
             wxString tmp = arr[x];
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, true, target);
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
             QuoteStringIfNeeded(tmp);
             tstr << compiler->GetSwitches().libDirs << tmp << _T(' ');
         }
@@ -369,7 +369,7 @@ wxString CompilerCommandGenerator::SetupLibrariesDirs(Compiler* compiler, Projec
         for (unsigned int x = 0; x < parr.GetCount(); ++x)
         {
             wxString tmp = parr[x];
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, true, target);
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
             QuoteStringIfNeeded(tmp);
             pstr << compiler->GetSwitches().libDirs << tmp << _T(' ');
         }
@@ -383,7 +383,7 @@ wxString CompilerCommandGenerator::SetupLibrariesDirs(Compiler* compiler, Projec
     for (unsigned int x = 0; x < carr.GetCount(); ++x)
     {
         wxString cstr = carr[x];
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(cstr, true, target);
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(cstr, target);
         QuoteStringIfNeeded(cstr);
         result << compiler->GetSwitches().libDirs << cstr << _T(' ');
     }
@@ -405,7 +405,7 @@ wxString CompilerCommandGenerator::SetupResourceIncludeDirs(Compiler* compiler, 
         for (unsigned int x = 0; x < arr.GetCount(); ++x)
         {
             wxString tmp = arr[x];
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, true, target);
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
             QuoteStringIfNeeded(tmp);
             tstr << compiler->GetSwitches().includeDirs << tmp << _T(' ');
         }
@@ -416,7 +416,7 @@ wxString CompilerCommandGenerator::SetupResourceIncludeDirs(Compiler* compiler, 
         for (unsigned int x = 0; x < parr.GetCount(); ++x)
         {
             wxString tmp = parr[x];
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, true, target);
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
             QuoteStringIfNeeded(tmp);
             pstr << compiler->GetSwitches().includeDirs << tmp << _T(' ');
         }
@@ -430,7 +430,7 @@ wxString CompilerCommandGenerator::SetupResourceIncludeDirs(Compiler* compiler, 
     for (unsigned int x = 0; x < carr.GetCount(); ++x)
     {
         wxString cstr = carr[x];
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(cstr, true, target);
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(cstr, target);
         QuoteStringIfNeeded(cstr);
         result << compiler->GetSwitches().includeDirs << cstr << _T(' ');
     }

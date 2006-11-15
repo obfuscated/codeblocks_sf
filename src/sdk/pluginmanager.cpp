@@ -229,7 +229,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
         return false;
 
     wxString actualName = pluginName;
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(actualName, true);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(actualName);
 
     // base name
     wxString basename = wxFileName(actualName).GetName();

@@ -235,7 +235,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
     for (unsigned int i = 0; i < project->GetIncludeDirs().GetCount(); ++i)
     {
         wxString out = project->GetIncludeDirs()[i];
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(out, true);
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(out);
         wxFileName dir(out);
         if(NormalizePath(dir,base))
         {
@@ -264,7 +264,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             for (unsigned int ti = 0; ti < target->GetIncludeDirs().GetCount(); ++ti)
             {
                 wxString out = target->GetIncludeDirs()[ti];
-                Manager::Get()->GetMacrosManager()->ReplaceMacros(out, true);
+                Manager::Get()->GetMacrosManager()->ReplaceMacros(out);
                 wxFileName dir(out);
                 wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
                 if(NormalizePath(dir,base))
@@ -300,7 +300,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
         {
             //Manager::Get()->GetMessageManager()->Log(mltDevDebug, "Adding %s", dirs[i].c_str());
             wxString out = dirs[i];
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(out, true);
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(out);
             wxFileName dir(out);
             wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
             if (NormalizePath(dir,base))

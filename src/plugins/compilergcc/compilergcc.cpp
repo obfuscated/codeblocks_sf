@@ -1061,7 +1061,7 @@ int CompilerGCC::DoRunQueue()
         }
         else
         {
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(script, true);
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(script);
             wxString msg = _("Running script: ") + script;
             LogMessage(msg);
 
@@ -1747,7 +1747,7 @@ int CompilerGCC::Clean(const wxString& target)
     PreprocessJob(m_Project, realTarget);
 	if (m_BuildJobTargetsList.empty())
 		return -1;
-    
+
     // loop all jobs and add them in the queue
     while (!m_BuildJobTargetsList.empty())
     {

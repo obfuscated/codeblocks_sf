@@ -473,7 +473,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     wxArrayString ret;
 
     wxString output = target->GetOutputFilename();
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(output, true, target);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(output, target);
 
     wxFileName out = UnixFilename(output);
     wxString linkfiles;
@@ -541,7 +541,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     // create output dir
     out.MakeAbsolute(m_pProject->GetBasePath());
     wxString dstname = out.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(dstname, true, target);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(dstname, target);
     if (!dstname.IsEmpty() && !CreateDirRecursively(dstname, 0755))
     {
             cbMessageBox(_("Can't create output directory ") + dstname);
@@ -656,7 +656,7 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
 
     if (target->GetTargetType() != ttCommandsOnly)
     {
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(outputfilename, true, target);
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(outputfilename, target);
         ret.Add(outputfilename);
     }
 
@@ -664,7 +664,7 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
     {
         // for dynamic libs, delete static lib
         outputfilename = target->GetStaticLibFilename();
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(outputfilename, true, target);
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(outputfilename, target);
         ret.Add(outputfilename);
         // .def exports file is not deleted, because it may be user-supplied
 //        ret.Add(target->GetDynamicLibDefFilename());
@@ -687,7 +687,7 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
         if (deps[i].IsEmpty())
             continue;
 
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(deps[i], true);
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(deps[i]);
         time_t timeSrc;
         depsTimeStamp(deps[i].mb_str(), &timeSrc);
         // if external dep doesn't exist, no need to relink
@@ -700,7 +700,7 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
         	if (files[i].IsEmpty())
                 continue;
 
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(files[i], true);
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(files[i]);
             time_t addT;
             depsTimeStamp(files[i].mb_str(), &addT);
             // if additional file doesn't exist, we can skip it
@@ -721,7 +721,7 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
         // it would return before we had a chance to check the
         // additional output files (above)
         wxString output = buildOutput;
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(output, true);
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(output);
         time_t timeExe;
         depsTimeStamp(output.mb_str(), &timeExe);
         // if build output doesn't exist, relink
@@ -782,9 +782,9 @@ void DirectCommands::DepsSearchStart(ProjectBuildTarget* target)
 
     // replace custom vars in include dirs
     for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
-        mm->ReplaceMacros(prj_incs[i], true, target);
+        mm->ReplaceMacros(prj_incs[i], target);
     for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
-        mm->ReplaceMacros(tgt_incs[i], true, target);
+        mm->ReplaceMacros(tgt_incs[i], target);
 
     OptionsRelation relation = target->GetOptionRelation(ortIncludeDirs);
     switch (relation)

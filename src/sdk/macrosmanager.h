@@ -22,9 +22,9 @@ public:
     friend class Mgr<MacrosManager>;
     void CreateMenu(wxMenuBar* menuBar);
     void ReleaseMenu(wxMenuBar* menuBar);
-    void ReplaceMacros(wxString& buffer, bool envVarsToo = false, ProjectBuildTarget* target = 0);
-    wxString ReplaceMacros(const wxString& buffer, bool envVarsToo = false, ProjectBuildTarget* target = 0);
-    void ReplaceEnvVars(wxString& buffer);
+    void ReplaceMacros(wxString& buffer, ProjectBuildTarget* target = 0);
+    wxString ReplaceMacros(const wxString& buffer, ProjectBuildTarget* target = 0);
+    void ReplaceEnvVars(wxString& buffer){ ReplaceMacros(buffer); }  /* misnomer, should be ReplaceVariables */;
     void RecalcVars(cbProject* project,EditorBase* editor,ProjectBuildTarget* target);
     void ClearProjectKeys();
 protected:
@@ -37,7 +37,8 @@ protected:
     m_ProjectFiles, m_Makefile, m_TargetOutputDir, m_TargetName,
     m_TargetOutputBaseName, m_TargetFilename;
 	MacrosMap macros;
-    wxRegEx m_re;
+    wxRegEx m_re_unx;
+    wxRegEx m_re_dos;
     UserVariableManager *m_uVarMan;
 public:
     void Reset();
