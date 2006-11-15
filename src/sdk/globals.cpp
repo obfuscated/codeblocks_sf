@@ -51,10 +51,10 @@
 #include "filefilters.h"
 #include "tinyxml/tinywxuni.h"
 
-const wxString DEFAULT_WORKSPACE		= _T("default.workspace");
-const wxString DEFAULT_ARRAY_SEP        = _T(";");
-const wxString DEFAULT_CONSOLE_TERM     = _T("xterm -T $TITLE -e");
-const wxString DEFAULT_CONSOLE_SHELL    = _T("/bin/sh -c");
+const wxString DEFAULT_WORKSPACE     = _T("default.workspace");
+const wxString DEFAULT_ARRAY_SEP     = _T(";");
+const wxString DEFAULT_CONSOLE_TERM  = _T("xterm -T $TITLE -e");
+const wxString DEFAULT_CONSOLE_SHELL = _T("/bin/sh -c");
 
 wxString GetStringFromArray(const wxArrayString& array, const wxString& separator)
 {
@@ -537,7 +537,7 @@ bool cbSaveToFile(const wxString& filename, const wxString& contents, wxFontEnco
 // Saves a TinyXML document correctly, even if the path contains unicode characters.
 bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& filename)
 {
-  	return TinyXML::SaveDocument(filename, doc);
+    return TinyXML::SaveDocument(filename, doc);
 }
 
 // Return @c str as a proper unicode-compatible string
@@ -567,10 +567,10 @@ wxString URLEncode(const wxString &str) // not sure this is 100% standards compl
     for(unsigned int i = 0; i < str.length(); ++i)
     {
         wxChar c = str[i];
-        if( (c >= _T('A') && c <= _T('Z'))
-                || (c >= _T('a') && c <= _T('z'))
-                || (c >= _T('0') && c <= _T('9'))
-                || c == _T('.') || c == _T('-')|| c == _T('_') )
+        if(   (c >= _T('A') && c <= _T('Z'))
+           || (c >= _T('a') && c <= _T('z'))
+           || (c >= _T('0') && c <= _T('9'))
+           ||  c == _T('.') || c == _T('-') || c == _T('_') )
 
             ret.Append(c);
         else if(c == _T(' '))

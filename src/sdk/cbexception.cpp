@@ -21,9 +21,9 @@
 #include <wx/intl.h>
 
 cbException::cbException(const wxString& msg, const wxString& file, int line)
-        : Message(msg),
-        File(file),
-        Line(line)
+  : Message(msg),
+    File(file),
+    Line(line)
 {}
 
 cbException::~cbException()
@@ -52,5 +52,3 @@ void cbException::ShowErrorMessage(bool safe)
     else
         cbMessageBox(err, title, wxICON_ERROR);
 }
-
-

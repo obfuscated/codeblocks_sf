@@ -17,45 +17,45 @@ enum PluginType
 {
     ptNone = 1,
     ptTool,
-	ptMime,
+    ptMime,
     ptCompiler,
     ptDebugger,
-	ptCodeCompletion,
-	ptWizard,
+    ptCodeCompletion,
+    ptWizard,
     ptOther
 };
 
 /// The type of module offering a context menu.
 enum ModuleType
 {
-	mtProjectManager = 1,
-	mtEditorManager,
-	mtMessageManager,
-	mtOpenFilesList,                //pecan 2006/03/22
-	mtUnknown
+    mtProjectManager = 1,
+    mtEditorManager,
+    mtMessageManager,
+    mtOpenFilesList,                //pecan 2006/03/22
+    mtUnknown
 };
 
 /// Known file types
 enum FileType
 {
-	ftCodeBlocksProject = 0,
-    ftCodeBlocksWorkspace,
-	ftDevCppProject,
-	ftMSVC6Project,
-	ftMSVC7Project,
-	ftMSVC6Workspace,
-	ftMSVC7Workspace,
-	ftSource,
-	ftHeader,
-	ftObject,
-	ftXRCResource,
-	ftResource,
-	ftResourceBin,
-	ftStaticLib,
-	ftDynamicLib,
-	ftExecutable,
-	ftXMLDocument,
-	ftOther
+    ftCodeBlocksProject = 0,
+  ftCodeBlocksWorkspace,
+    ftDevCppProject,
+    ftMSVC6Project,
+    ftMSVC7Project,
+    ftMSVC6Workspace,
+    ftMSVC7Workspace,
+    ftSource,
+    ftHeader,
+    ftObject,
+    ftXRCResource,
+    ftResource,
+    ftResourceBin,
+    ftStaticLib,
+    ftDynamicLib,
+    ftExecutable,
+    ftXMLDocument,
+    ftOther
 };
 
 /** These are valid values for the state of each project file.
@@ -214,8 +214,30 @@ extern void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode = pdlBest, bool enfo
   */
 inline int cbMessageBox(const wxString& message, const wxString& caption = wxEmptyString, int style = wxOK, wxWindow *parent = NULL, int x = -1, int y = -1)
 {
+    // Cannot create a wxMessageDialog with a NULL as parent
+    if (!parent)
+    {
+      // wxMessage*Box* returns any of: wxYES, wxNO, wxCANCEL, wxOK.
+      int answer = wxMessageBox(message, caption, style, parent, x, y);
+      switch (answer)
+      {
+        // map answer to the one of wxMessage*Dialog* to ensure compatibility
+        case (wxOK):
+          return wxID_OK;
+        case (wxCANCEL):
+          return wxID_CANCEL;
+        case (wxYES):
+          return wxID_YES;
+        case (wxNO):
+          return wxID_NO;
+        default:
+          return -1; // NOTE: Cannot happen unless wxWidgets API changes
+      }
+    }
+
     wxMessageDialog dlg(parent, message, caption, style, wxPoint(x,y));
     PlaceWindow(&dlg);
+    // wxMessage*Dialog* returns any of wxID_OK, wxID_CANCEL, wxID_YES, wxID_NO
     return dlg.ShowModal();
 };
 

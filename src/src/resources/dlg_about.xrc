@@ -7,7 +7,7 @@
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
         <object class="wxStaticBitmap" name="lblTitle">
-          <size>460,135</size>
+          <size>440,217</size>
           <font>
             <size>14</size>
             <style>swiss</style>

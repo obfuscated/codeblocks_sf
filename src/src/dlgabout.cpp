@@ -58,7 +58,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
 					"plugins...\n");
 
 	wxBitmap bmp;
-	wxString file = ConfigManager::ReadDataPath() + _T("/images/splash.png");
+	wxString file = ConfigManager::ReadDataPath() + _T("/images/splash_new.png");
 	bmp = cbLoadBitmap(file, wxBITMAP_TYPE_PNG);
 	XRCCTRL(*this, "lblTitle", wxStaticBitmap)->SetBitmap(bmp);
 	XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_("Build: ")) + g_AppBuildTimestamp);

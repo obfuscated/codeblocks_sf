@@ -15,20 +15,20 @@ cbThrow() and cbAssert().
 /** @brief The base Code::Blocks exception object. */
 class cbException
 {
-	public:
-		cbException(const wxString& msg, const wxString& file, int line);
-		virtual ~cbException();
+    public:
+        cbException(const wxString& msg, const wxString& file, int line);
+        virtual ~cbException();
 
-		/** @brief Display exception error message.
-		  * @param safe If true, wxSafeShowMessage will be used to display the error,
+        /** @brief Display exception error message.
+          * @param safe If true, wxSafeShowMessage will be used to display the error,
           *             else a normal message box will be used.
           */
-		void ShowErrorMessage(bool safe = true);
+        void ShowErrorMessage(bool safe = true);
 
         // public members
-		wxString Message; ///< The exception's error message.
-		wxString File; ///< The file where the exception was raised.
-		int Line; ///< The line in the file where the exception was raised.
+        wxString Message; ///< The exception's error message.
+        wxString File; ///< The file where the exception was raised.
+        int Line; ///< The line in the file where the exception was raised.
 };
 
 #if wxUSE_UNICODE
