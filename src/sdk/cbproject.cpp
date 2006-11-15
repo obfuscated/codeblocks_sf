@@ -363,34 +363,37 @@ void cbProject::CalculateCommonTopLevelPath()
     wxString sep = wxFileName::GetPathSeparator();
     wxFileName base = GetBasePath() + sep;
     Manager::Get()->GetMessageManager()->DebugLog(_T("Project's base path: %s"), base.GetFullPath().c_str());
+    
+    // this loop takes ~30ms for 1000 project files
+    // it's as fast as it can get, considered that it used to take ~1200ms ;)
+    // don't even bother making it faster - you can't :)
     for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
     {
         ProjectFile* f = node->GetData();
         wxString tmp = f->relativeFilename;
-        wxFileName tmpbase = GetBasePath() + sep;
-        while (tmp.StartsWith(_T("..")))
-        {
-            tmpbase.AppendDir(_T(".."));
-            tmp.Remove(0, 2); // two dots
-            // remove separator(s) after dots
-            while (!tmp.IsEmpty() &&  (tmp.GetChar(0) == _T('/') || tmp.GetChar(0) == _T('\\')))
-                tmp.Remove(0, 1);
-        }
-        tmpbase.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE);
+        wxString tmpbase = m_BasePath;
 
-        if (tmpbase.GetDirCount() < base.GetDirCount())
-            base = tmpbase;
-    }
-
-    // update ProjectFiles info
-    for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
-    {
-        ProjectFile* f = node->GetData();
-        wxFileName fname = f->file;
-        fname.MakeRelativeTo(base.GetFullPath());
-        f->relativeToCommonTopLevelPath = fname.GetFullPath();
+        size_t pos = 0;
+        while (pos < tmp.Length() &&
+			(tmp.GetChar(pos) == _T('.') || tmp.GetChar(pos) == _T('/') || tmp.GetChar(pos) == _T('\\')))
+		{
+			++pos;
+		}
+		if (pos > 0 && pos < tmp.Length())
+		{
+			tmpbase << sep << tmp.Left(pos) << sep;
+			f->relativeToCommonTopLevelPath = tmp.Right(tmp.Length() - pos);
+		}
+		else
+			f->relativeToCommonTopLevelPath = tmp;
         f->SetObjName(f->relativeToCommonTopLevelPath);
+
+        wxFileName tmpbaseF(tmpbase);
+        tmpbaseF.Normalize(wxPATH_NORM_DOTS);
+        if (tmpbaseF.GetDirCount() < base.GetDirCount())
+            base = tmpbaseF;
     }
+
     m_CommonTopLevelPath = base.GetFullPath();
     Manager::Get()->GetMessageManager()->DebugLog(_T("Project's common toplevel path: %s"), m_CommonTopLevelPath.c_str());
 }
