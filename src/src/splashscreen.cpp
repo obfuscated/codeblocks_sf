@@ -22,10 +22,6 @@ void cbSplashScreen::DoPaint(wxDC &dc)
   static const wxString release(wxT(RELEASE));
   static const wxString revision(wxT(SVN_REVISION));
 
-  wxRegion r(0, 0, 181, 181);
-  r.Union(50, 35, 181, 181);
-  r.Union(166, 13, 181, 181);
-  r.Union(259, 29, 181, 181);
   dc.SetClippingRegion(r);
   dc.DrawBitmap(m_label, 0, 0, false);
 
@@ -91,8 +87,12 @@ void cbSplashScreen::OnMouseEvent(wxMouseEvent &event)
 
 cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, wxWindowID id, long style)
 : wxFrame(parent, id, wxEmptyString, wxPoint(0, 0), wxSize(100, 100), style),
-  m_timer(this, cbSplashScreen_timer_id)
+  m_timer(this, cbSplashScreen_timer_id), r(0, 0, 181, 181)
 {
+  r.Union(50, 35, 181, 181);
+  r.Union(166, 13, 181, 181);
+  r.Union(259, 29, 181, 181);
+
   int w = label.GetWidth();
   int h = label.GetHeight();
 
@@ -112,13 +112,9 @@ cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, 
   label_dc.DrawBitmap(label, 0, 0, true);
   label_dc.SelectObject(wxNullBitmap);
 
-//  Surprise: SetShape() does not seem to work...?
-//  See DoPaint() -- we simulate it using the clip rect
-//  wxRegion r(0, 0, 182, 182);
-//  r.Union(50, 35, 182, 182);
-//  r.Union(166, 13, 182, 182);
-//  r.Union(258, 28, 182, 182);
-//  SetShape(r);
+  //  Surprise: SetShape() does not seem to work...?
+  //  See DoPaint() -- we simulate it using the clip rect
+  SetShape(r);
 
   Show(true);
   SetThemeEnabled(false); // seems to be useful by description
