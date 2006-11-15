@@ -128,18 +128,17 @@ void ClassBrowserBuilderThread::BuildTree()
     }
 
     m_pTreeTop->Freeze();
-    RemoveInvalidNodes(m_pTreeTop, root);
-    m_pTreeTop->Thaw();
-
     m_pTreeBottom->Freeze();
+
+    RemoveInvalidNodes(m_pTreeTop, root);
     RemoveInvalidNodes(m_pTreeBottom, m_pTreeBottom->GetRootItem());
-    m_pTreeBottom->Thaw();
 
     if (TestDestroy())
+    {
+		m_pTreeBottom->Thaw();
+		m_pTreeTop->Thaw();
         return;
-
-    m_pTreeTop->Freeze();
-    m_pTreeBottom->Freeze();
+    }
 
     // the tree is completely dynamic: it is populated when a node expands/collapses.
     // so, by expanding the root node, we already instruct it to fill the top level :)
@@ -197,8 +196,8 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
                 existing = next;
 
                 // if this was the last child of its parent, collapse the parent
-                if (isLastChild)
-                    tree->SetItemHasChildren(parent, false);
+//                if (isLastChild)
+//                    tree->SetItemHasChildren(parent, false);
 
                 continue;
             }
