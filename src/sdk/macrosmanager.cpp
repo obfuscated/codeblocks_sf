@@ -106,8 +106,8 @@ void MacrosManager::Reset()
     m_DataPath = UnixFilename(ConfigManager::GetDataFolder());
     m_Plugins = UnixFilename(ConfigManager::GetDataFolder() + _T("/plugins"));
     ClearProjectKeys();
-    m_re_unx.Compile(_T("[^$](\\$[({]?(#?[A-Za-z_0-9.]+)[)} /\\]?)"));
-    m_re_dos.Compile(_T("[^%](%(#?[A-Za-z_0-9.]+)%)"));
+    m_re_unx.Compile(_T("([^$]|^)(\\$[({]?(#?[A-Za-z_0-9.]+)[)} /\\]?)"));
+    m_re_dos.Compile(_T("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)"));
     m_uVarMan = Manager::Get()->GetUserVariableManager();
     srand(time(0));
     assert(m_re_unx.IsValid());
@@ -336,8 +336,8 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target)
     {
         replace.Empty();
 
-        wxString search = m_re_unx.GetMatch(buffer, 1);
-        wxString var = m_re_unx.GetMatch(buffer, 2).Upper();
+        wxString search = m_re_unx.GetMatch(buffer, 2);
+        wxString var = m_re_unx.GetMatch(buffer, 3).Upper();
 
         if (var.GetChar(0) == _T('#'))
         {
