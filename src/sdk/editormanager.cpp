@@ -1338,7 +1338,9 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
         // the following calculations, therefor check for the scenario
         // and set the ssta en send to cpos (in the case there would be no selection
         // that's the value they have [no selection : ssta=send=cpos])
-        if(data->scope== 0 && (ssta != cpos || send != cpos))
+        // only do this when it's a new search (when the search is continued (F3/Shift-F3)
+        // there can be a selection, the last found match)
+        if(data->scope== 0 && data->NewSearch && (ssta != cpos || send != cpos))
         {
         	ssta = cpos;
         	send = cpos;
