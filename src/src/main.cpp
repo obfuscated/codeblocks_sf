@@ -1531,7 +1531,7 @@ void MainFrame::DoUpdateAppTitle()
             fulltitle.Append(_T(" - "));
     }
     fulltitle.Append(g_AppName);
-    fulltitle.Append(_T(" v"));
+    fulltitle.Append(_T(" "));
     fulltitle.Append(g_AppVersion);
     SetTitle(fulltitle);
 }
