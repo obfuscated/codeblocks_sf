@@ -651,17 +651,21 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
     wxString sep = wxFileName::GetPathSeparator();
 
     wxString masterPath = compiler->GetMasterPath();
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
     while (masterPath.Last() == '\\' || masterPath.Last() == '/')
         masterPath.RemoveLast();
     wxString gcc = compiler->GetPrograms().C;
-    const wxArrayString& extraPaths = compiler->GetExtraPaths();
+    wxArrayString extraPaths = compiler->GetExtraPaths();
 
     wxPathList pathList;
     pathList.Add(masterPath + sep + _T("bin"));
     for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
     {
         if (!extraPaths[i].IsEmpty())
+        {
+        	Manager::Get()->GetMacrosManager()->ReplaceMacros(extraPaths[i]);
             pathList.Add(extraPaths[i]);
+        }
     }
     pathList.AddEnvList(_T("PATH"));
     wxString binPath = pathList.FindAbsoluteValidPath(gcc);
