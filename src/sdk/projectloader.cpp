@@ -1215,12 +1215,15 @@ wxString ProjectLoader::GetValidCompilerID(const wxString& proposal, const wxStr
 
     if (!compiler)
     {
-        wxString msg;
-        msg.Printf(_("The defined compiler for %s cannot be located (ID: %s).\n"
-                    "Please choose the compiler you want to use instead and click \"OK\".\n"
-                    "If you click \"Cancel\", the project/target will be excluded from the build."), scope.c_str(),
-                    proposal.c_str());
-        compiler = CompilerFactory::SelectCompilerUI(msg);
+		if(!(Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/ignore_invalid_targets"), true)))
+		{
+			wxString msg;
+			msg.Printf(_("The defined compiler for %s cannot be located (ID: %s).\n"
+						"Please choose the compiler you want to use instead and click \"OK\".\n"
+						"If you click \"Cancel\", the project/target will be excluded from the build."), scope.c_str(),
+						proposal.c_str());
+			compiler = CompilerFactory::SelectCompilerUI(msg);
+		}
     }
 
     if (!compiler)
