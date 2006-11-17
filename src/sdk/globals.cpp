@@ -601,7 +601,7 @@ bool NormalizePath(wxFileName& f,const wxString& base)
 //    if(!f.IsAbsolute())
     {
         wxLogNull null_logger; // we do all file checks ourselves
-        f.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE, base);
+        f.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
         result = f.IsOk();
     }
     return result;
