@@ -103,8 +103,8 @@ void MacrosManager::Reset()
     m_lastEditor = 0;
 
     m_AppPath = UnixFilename(ConfigManager::GetExecutableFolder());
+    m_Plugins = UnixFilename(ConfigManager::GetPluginsFolder());
     m_DataPath = UnixFilename(ConfigManager::GetDataFolder());
-    m_Plugins = UnixFilename(ConfigManager::GetDataFolder() + _T("/plugins"));
     ClearProjectKeys();
     m_re_unx.Compile(_T("([^$]|^)(\\$[({]?(#?[A-Za-z_0-9.]+)[)} /\\]?)"));
     m_re_dos.Compile(_T("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)"));
@@ -135,7 +135,6 @@ void MacrosManager::ClearProjectKeys()
 
 void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuildTarget* target)
 {
-//	Manager::Get()->GetMessageManager()->DebugLog(wxString("recalc...  (project == ") << (int) project << _T("   editor == ") << (int)editor << _T("   target == ") << (int)target << ")");
     if(!editor)
     {
         m_ActiveEditorFilename = wxEmptyString;
