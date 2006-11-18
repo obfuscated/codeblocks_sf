@@ -22,7 +22,10 @@ void cbSplashScreen::DoPaint(wxDC &dc)
   static const wxString release(wxT(RELEASE));
   static const wxString revision(wxT(SVN_REVISION));
 
+  #ifdef __WIN32__
   dc.SetClippingRegion(r);
+  #endif
+
   dc.DrawBitmap(m_label, 0, 0, false);
 
   wxFont largeFont(16, wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
