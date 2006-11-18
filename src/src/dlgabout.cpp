@@ -40,6 +40,7 @@
 #include <wx/statbmp.h>
 #include "appglobals.h"
 #include "dlgabout.h" // class's header file
+#include "../sdk/autorevision.h"
 
 // class constructor
 
@@ -57,10 +58,44 @@ dlgAbout::dlgAbout(wxWindow* parent)
 					"any kind of functionality to the core program, through the use of "
 					"plugins...\n");
 
-	wxBitmap bmp;
 	wxString file = ConfigManager::ReadDataPath() + _T("/images/splash_new.png");
-	bmp = cbLoadBitmap(file, wxBITMAP_TYPE_PNG);
-	XRCCTRL(*this, "lblTitle", wxStaticBitmap)->SetBitmap(bmp);
+
+
+	wxStaticBitmap *bmpControl = XRCCTRL(*this, "lblTitle", wxStaticBitmap);
+
+    wxImage im;
+    im.LoadFile(file, wxBITMAP_TYPE_PNG );
+    im.ConvertAlphaToMask();
+	wxBitmap bmp(im);
+
+    {   // copied from splashscreen.cpp
+        const wxString release(wxT(RELEASE));
+        const wxString revision(wxT(SVN_REVISION));
+
+        wxMemoryDC dc;
+        dc.SelectObject(bmp);
+
+        wxFont largeFont(16, wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+        wxFont smallFont(9,  wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+
+        wxCoord a, b, c, d;
+
+        dc.GetTextExtent(release,  &a, &b, 0, 0, &largeFont);
+        dc.GetTextExtent(revision, &c, &d, 0, 0, &smallFont);
+
+        a >>= 1; c >>=1;
+        int y = 180 - ((b + d + 8)>>1);
+
+        dc.SetFont(largeFont);
+        dc.DrawText(release,  92 - a, y);
+        dc.SetFont(smallFont);
+        dc.DrawText(revision, 92 - c, y + b);
+    }
+
+	bmpControl->SetBitmap(bmp);
+
+
+
 	XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_("Build: ")) + g_AppBuildTimestamp);
 	XRCCTRL(*this, "txtDescription", wxTextCtrl)->SetValue(description);
 	XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(_(
