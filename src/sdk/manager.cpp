@@ -326,12 +326,12 @@ bool Manager::LoadResource(const wxString& file)
             wxMemoryFSHandler::AddFile(file, buf, len);
         }
         wxXmlResource::Get()->Load(memoryFile);
-        delete buf;
+        delete[] buf;
         return true;
     }
     catch (...)
     {
-        delete buf;
+        delete[] buf;
         return false;
     }
 }
