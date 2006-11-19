@@ -23,13 +23,12 @@
 #include <editormanager.h>
 #include <configmanager.h>
 #include "startherepage.h"
+#include "main.h"
 #include "appglobals.h"
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
 
 const wxString g_StartHereTitle = _("Start here");
-int idStartHerePageLink = wxNewId();
-int idStartHerePageVarSubst = wxNewId();
 int idWin = wxNewId();
 
 class MyHtmlWin : public wxHtmlWindow

@@ -237,6 +237,8 @@ int idLeftSash = XRCID("idLeftSash");
 int idBottomSash = XRCID("idBottomSash");
 int idCloseFullScreen = XRCID("idCloseFullScreen");
 int idShiftTab = wxNewId();
+int idStartHerePageLink = wxNewId();
+int idStartHerePageVarSubst = wxNewId();
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_ERASE_BACKGROUND(MainFrame::OnEraseBackground)

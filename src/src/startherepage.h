@@ -6,8 +6,6 @@
 #endif
 
 extern const wxString g_StartHereTitle;
-extern int idStartHerePageLink; // used to message the main frame
-extern int idStartHerePageVarSubst; // used to message the main frame
 
 class wxHtmlWindow;
 class wxHtmlLinkInfo;

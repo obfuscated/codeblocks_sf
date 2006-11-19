@@ -17,6 +17,9 @@ WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, PluginIDsMap);
 WX_DECLARE_HASH_MAP(cbPlugin*, wxToolBar*, wxPointerHash, wxPointerEqual, PluginToolbarsMap);
 WX_DECLARE_STRING_HASH_MAP(wxString, LayoutViewsMap);
 
+extern int idStartHerePageLink;
+extern int idStartHerePageVarSubst;
+
 class wxFlatNotebook;
 
 class MainFrame : public wxFrame
