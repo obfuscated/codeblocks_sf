@@ -14,6 +14,7 @@
 #include "astyleconfigdlg.h"
 #include <sstream>
 #include <string>
+#include <vector>
 #include "formattersettings.h"
 #include <manager.h>
 #include <editormanager.h>
@@ -36,9 +37,9 @@ namespace
 
 AStylePlugin::AStylePlugin()
 {
-	//ctor
+    //ctor
 
-    if(!Manager::LoadResource(_T("astyle.zip")))
+    if (!Manager::LoadResource(_T("astyle.zip")))
     {
         NotifyMissingFile(_T("astyle.zip"));
     }
@@ -46,18 +47,17 @@ AStylePlugin::AStylePlugin()
 
 AStylePlugin::~AStylePlugin()
 {
-	//dtor
+    //dtor
 }
 
 void AStylePlugin::OnAttach()
-{
-}
+{}
 
 void AStylePlugin::OnRelease(bool appShutDown)
 {
-	// do de-initialization for your plugin
-	// NOTE: after this function, the inherited member variable
-	// m_IsAttached will be FALSE...
+    // do de-initialization for your plugin
+    // NOTE: after this function, the inherited member variable
+    // m_IsAttached will be FALSE...
 }
 
 int AStylePlugin::Configure()
@@ -65,7 +65,7 @@ int AStylePlugin::Configure()
 //  AstyleConfigDlg dlg(Manager::Get()->GetAppWindow());
 //  dlg.ShowModal();
 
-  return 0;
+    return 0;
 }
 
 cbConfigurationPanel* AStylePlugin::GetConfigurationPanel(wxWindow* parent)
@@ -78,64 +78,95 @@ cbConfigurationPanel* AStylePlugin::GetConfigurationPanel(wxWindow* parent)
 
 int AStylePlugin::Execute()
 {
-  if (!IsAttached())
-  {
-    return -1;
-  }
-
-  cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-
-  if (!ed)
-  {
-    return 0;
-  }
-
-  wxString edText(ed->GetControl()->GetText());
-  wxString formattedText;
-
-  astyle::ASFormatter formatter;
-
-  // load settings
-  FormatterSettings settings;
-  settings.ApplyTo(formatter);
-
-  wxString eolChars;
-
-  switch (ed->GetControl()->GetEOLMode())
-  {
-    case wxSCI_EOL_CRLF: eolChars = _T("\r\n"); break;
-    case wxSCI_EOL_CR: eolChars = _T("\r"); break;
-    case wxSCI_EOL_LF: eolChars = _T("\n"); break;
-  }
-
-  if (edText.size() && edText.Last() != _T('\r') && edText.Last() != _T('\n'))
-  {
-    edText += eolChars;
-  }
-
-  formatter.init(new ASStreamIterator(edText, eolChars));
-
-  wxSetCursor(*wxHOURGLASS_CURSOR);
-
-  while (formatter.hasMoreLines())
-  {
-    formattedText << cbC2U(formatter.nextLine().c_str());
-
-    if (formatter.hasMoreLines())
+    if (!IsAttached())
     {
-      formattedText << eolChars;
+        return -1;
     }
-  }
 
-  int pos = ed->GetControl()->GetCurrentPos();
+    cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 
-  ed->GetControl()->BeginUndoAction();
-  ed->GetControl()->SetText(formattedText);
-  ed->GetControl()->EndUndoAction();
-  ed->GetControl()->GotoPos(pos);
-  ed->SetModified(true);
+    if (!ed)
+    {
+        return 0;
+    }
 
-  wxSetCursor(*wxSTANDARD_CURSOR);
+    wxString edText(ed->GetControl()->GetText());
+    wxString formattedText;
 
-  return 0;
+    astyle::ASFormatter formatter;
+
+    // load settings
+    FormatterSettings settings;
+    settings.ApplyTo(formatter);
+
+    wxString eolChars;
+
+    switch (ed->GetControl()->GetEOLMode())
+    {
+    case wxSCI_EOL_CRLF:
+        eolChars = _T("\r\n");
+        break;
+    case wxSCI_EOL_CR:
+        eolChars = _T("\r");
+        break;
+    case wxSCI_EOL_LF:
+        eolChars = _T("\n");
+        break;
+    }
+
+    if (edText.size() && edText.Last() != _T('\r') && edText.Last() != _T('\n'))
+    {
+        edText += eolChars;
+    }
+
+    ASStreamIterator *asi = new ASStreamIterator(ed, edText, eolChars);
+
+    formatter.init(asi);
+
+    int lineCounter = 0;
+    std::vector<int> new_bookmark;
+
+    // hack: we need to evaluate the special case of having a bookmark in the first line here
+    if (ed->HasBookmark(0))
+    {
+      new_bookmark.push_back(0);
+    }
+
+    wxSetCursor(*wxHOURGLASS_CURSOR);
+
+    while (formatter.hasMoreLines())
+    {
+        formattedText << cbC2U(formatter.nextLine().c_str());
+
+        if (formatter.hasMoreLines())
+        {
+            formattedText << eolChars;
+        }
+
+        ++lineCounter;
+
+        if (asi->FoundBookmark())
+        {
+            new_bookmark.push_back(lineCounter);
+            asi->ClearFoundBookmark();
+        }
+    }
+
+    int pos = ed->GetControl()->GetCurrentPos();
+
+    ed->GetControl()->BeginUndoAction();
+    ed->GetControl()->SetText(formattedText);
+
+    for (std::vector<int>::const_iterator i = new_bookmark.begin(); i != new_bookmark.end(); ++i)
+    {
+        ed->ToggleBookmark(*i);
+    }
+
+    ed->GetControl()->EndUndoAction();
+    ed->GetControl()->GotoPos(pos);
+    ed->SetModified(true);
+
+    wxSetCursor(*wxSTANDARD_CURSOR);
+
+    return 0;
 }

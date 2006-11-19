@@ -1,9 +1,8 @@
 #include "asstreamiterator.h"
 #include "globals.h"
 
-ASStreamIterator::ASStreamIterator(const wxChar* in, const wxString& eolChars)
-    : m_In(in),
-    m_EOL(eolChars)
+ASStreamIterator::ASStreamIterator(cbEditor *cbe, const wxChar* in, const wxString& eolChars)
+: m_cbe(cbe), m_In(in), m_EOL(eolChars), m_curline(0), m_foundBookmark(false)
 {
 	//ctor
 }
@@ -33,6 +32,12 @@ bool ASStreamIterator::IsEOL(wxChar ch)
 
 std::string ASStreamIterator::nextLine()
 {
+  // hack: m_curline = 0 is a special case we should not evaluate here
+  if (m_cbe && m_curline && m_cbe->HasBookmark(m_curline))
+  {
+    m_foundBookmark = true;
+  }
+
   wxChar *filterPtr;
 
   memset(buffer, 0, sizeof(buffer));
@@ -60,6 +65,7 @@ std::string ASStreamIterator::nextLine()
   }
 
   *filterPtr = 0;
+  ++m_curline;
 
   return std::string(cbU2C(buffer));
 }
