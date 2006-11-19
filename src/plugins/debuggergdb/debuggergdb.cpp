@@ -1440,6 +1440,12 @@ void DebuggerGDB::Stop()
         #ifndef __WXMSW__
             // non-windows gdb can interrupt the running process. yay!
             unsigned long pid = m_State.GetDriver()->GetChildPID();
+        #ifdef __WXMAC__
+            if (pid == -1) // look out for the "fake" PID (killall)
+                cbMessageBox(_("Unable to stop GDB process!"),
+                    _("Debug"), wxOK | wxICON_EXCLAMATION);
+            else
+        #endif
             wxKill(pid, wxSIGINT);
         #else
             m_pProcess->CloseOutput();
