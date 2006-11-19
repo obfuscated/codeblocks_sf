@@ -12,9 +12,8 @@ NOTE: you can add any file you want and it'll be launched with the associated ap
 It'll also integrate in the context menu of the editor (right click) enabling you to search the word under the cursor in any of the help files.
 NOTE: it's only meaningful under Windows for help files with extension hlp or chm. It's also meaningul for any platform when the help file is an URL (read below).
 
-A recent addition allows you to add an URL as a help file. To do that add a new help file BUT when prompted for the location of the file dismiss the file dialog, be sure the new help file is selected and enter the URL in the text entry (the one followed by the ... button).
-
-For URLs you can add $(keyword) in any place of the address, any number of times, and it'll get replaced by the word you selected to locate in that help file.
+A recent addition allows you to add an URL as a help file. To do that add a new help file BUT choose NO when prompted for browsing the help file. Be sure the new help file is selected and enter the URL in the text entry (the one followed by the ... button).
+NOTE: you can add $(keyword) in any place of the path to the help file or URL, any number of times, and it'll get replaced by the word you selected to locate in that help file.
 
 The configuration dialog for this plugin can be found clicking on Settings -> Environment (Help files)." />
         <Value author="Bourricot | Ceniza (maintainer)" />

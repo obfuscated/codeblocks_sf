@@ -348,7 +348,7 @@ void HelpPlugin::AddToPopupMenu(wxMenu *menu, int id, const wxString &help)
   }
 }
 
-wxString HelpPlugin::HelpFileFromId(int id)
+HelpCommon::HelpFileAttrib HelpPlugin::HelpFileFromId(int id)
 {
   int counter = 0;
   HelpCommon::HelpFilesVector::iterator it;
@@ -361,21 +361,21 @@ wxString HelpPlugin::HelpFileFromId(int id)
     }
   }
 
-  return wxEmptyString;
+  return HelpCommon::HelpFileAttrib();
 }
 
-void HelpPlugin::LaunchHelp(const wxString &helpfile, const wxString &keyword)
+void HelpPlugin::LaunchHelp(const wxString &c_helpfile, const wxString &keyword)
 {
   const static wxString http_prefix(_T("http://"));
+  wxString helpfile(c_helpfile);
+
+  helpfile.Replace(_T("$(keyword)"), keyword);
 
   // Operate on help http (web) links
   if (helpfile.Mid(0, http_prefix.size()).CmpNoCase(http_prefix) == 0)
   {
-    wxString the_url = helpfile;
-    the_url.Replace(_T("$(keyword)"), keyword);
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Launching %s"), the_url.c_str());
-
-    wxLaunchDefaultBrowser(the_url);
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Launching %s"), helpfile.c_str());
+    wxLaunchDefaultBrowser(helpfile);
     return;
   }
 
@@ -450,6 +450,6 @@ void HelpPlugin::OnFindItem(wxCommandEvent &event)
   }
 
   int id = event.GetId();
-  wxString help = HelpFileFromId(id);
+  wxString help = HelpFileFromId(id).name;
   LaunchHelp(help, text);
 }

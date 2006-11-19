@@ -57,7 +57,7 @@ void DefaultMimeHandler::OnAttach()
         wxArrayString array = GetArrayFromString(conf->Read(list[i]), _T(";"), false);
         if (array.GetCount() < 3)
             continue;
-        
+
         cbMimeType* mt = new cbMimeType;
 
         // older formats:
@@ -176,7 +176,7 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
                         mt->useEditor = false;
                         mt->useAssoc = false;
                         mt->program = prg;
-                        mt->programIsModal = cbMessageBox(_("Do you want Code::Blocks to be disabled while the external program is running?"), _("Question"), wxICON_QUESTION | wxYES_NO) == wxYES;
+                        mt->programIsModal = cbMessageBox(_("Do you want Code::Blocks to be disabled while the external program is running?"), _("Question"), wxICON_QUESTION | wxYES_NO) == wxID_YES;
                         m_MimeTypes.Add(mt);
                         return DoOpenFile(mt, filename);
                     }

@@ -44,7 +44,7 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_lan
    // If not, ask user if we can save them
    if (!all_files_saved)
    {
-       if (cbMessageBox(_T("Some files are not saved.\nDo you want to save them before running the plugin?"), _("Warning"), wxICON_EXCLAMATION | wxYES_NO, Manager::Get()->GetAppWindow()) == wxYES)
+       if (cbMessageBox(_T("Some files are not saved.\nDo you want to save them before running the plugin?"), _("Warning"), wxICON_EXCLAMATION | wxYES_NO, Manager::Get()->GetAppWindow()) == wxID_YES)
        {
            for (int i=0; i<nb_files; ++i)
            {

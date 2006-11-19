@@ -13,14 +13,17 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
   ConfigManager* conf = Manager::Get()->GetConfigManager(_T("help_plugin"));
   m_DefaultHelpIndex = conf->ReadInt(_T("/default"), -1);
   wxArrayString list = conf->EnumerateSubPaths(_T("/"));
+
   for (unsigned int i = 0; i < list.GetCount(); ++i)
   {
+      HelpFileAttrib hfa;
       wxString name = conf->Read(list[i] + _T("/name"), wxEmptyString);
-      wxString file = conf->Read(list[i] + _T("/file"), wxEmptyString);
+      hfa.name = conf->Read(list[i] + _T("/file"), wxEmptyString);
+      conf->Read(list[i] + _T("/isexec"), &hfa.isExecutable);
 
-      if (!name.IsEmpty() && !file.IsEmpty())
+      if (!name.IsEmpty() && !hfa.name.IsEmpty())
       {
-        vect.push_back(make_pair(name, file));
+        vect.push_back(make_pair(name, hfa));
       }
   }
 }
@@ -41,14 +44,16 @@ void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector &vect)
 
   for (it = vect.begin(); it != vect.end(); ++it)
   {
+    HelpFileAttrib hfa;
     wxString name = it->first;
-    wxString file = it->second;
+    hfa = it->second;
 
-    if (!name.IsEmpty() && !file.IsEmpty())
+    if (!name.IsEmpty() && !hfa.name.IsEmpty())
     {
       wxString key = wxString::Format(_T("/help%d/"), count++);
       conf->Write(key + _T("name"), name);
-      conf->Write(key + _T("file"), file);
+      conf->Write(key + _T("file"), hfa.name);
+      conf->Write(key + _T("isexec"), hfa.isExecutable);
     }
   }
 

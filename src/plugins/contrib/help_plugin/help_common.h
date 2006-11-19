@@ -11,18 +11,26 @@ using std::pair;
 class HelpCommon
 {
   public:
-    typedef pair<wxString, wxString> wxStringPair;
+    struct HelpFileAttrib
+    {
+      wxString name;
+      bool isExecutable;
+
+      HelpFileAttrib() : isExecutable(false) { }
+    };
+
+    typedef pair<wxString, HelpFileAttrib> wxStringPair;
     typedef vector<wxStringPair> HelpFilesVector;
-  
+
   private:
     static int m_DefaultHelpIndex;
-  
+
   public:
     static int getDefaultHelpIndex();
     static void setDefaultHelpIndex(int index);
     static void LoadHelpFilesVector(HelpFilesVector &vect);
     static void SaveHelpFilesVector(HelpFilesVector &vect);
-  
+
 	private:
 	  // Block instantiation
     HelpCommon();

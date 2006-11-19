@@ -32,6 +32,7 @@ BEGIN_EVENT_TABLE(HelpConfigDialog, wxPanel)
   EVT_BUTTON(XRCID("btnDown"), HelpConfigDialog::OnDown)
   EVT_LISTBOX(XRCID("lstHelp"), HelpConfigDialog::ListChange)
   EVT_CHECKBOX(XRCID("chkDefault"), HelpConfigDialog::OnCheckbox)
+  EVT_CHECKBOX(XRCID("chkExecute"), HelpConfigDialog::OnCheckboxExecute)
 END_EVENT_TABLE()
 
 
@@ -55,7 +56,8 @@ m_pPlugin(plugin)
   {
     lst->SetSelection(0);
     m_LastSel = 0;
-    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(m_Vector[0].second);
+    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(m_Vector[0].second.name);
+    XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(m_Vector[0].second.isExecutable);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(HelpCommon::getDefaultHelpIndex() == 0);
   }
 }
@@ -76,11 +78,15 @@ void HelpConfigDialog::UpdateEntry(int index)
 
   if (index < static_cast<int>(m_Vector.size()))
   {
-  	m_Vector[index].second = XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue();
+  	m_Vector[index].second.name = XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue();
+  	m_Vector[index].second.isExecutable = XRCCTRL(*this, "chkExecute", wxCheckBox)->IsChecked();
   }
   else
   {
-  	m_Vector.push_back(make_pair(lst->GetString(index), XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue()));
+    HelpCommon::HelpFileAttrib hfa;
+    hfa.name = XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue();
+    hfa.isExecutable = XRCCTRL(*this, "chkExecute", wxCheckBox)->IsChecked();
+  	m_Vector.push_back(make_pair(lst->GetString(index), hfa));
   }
 }
 
@@ -117,12 +123,14 @@ void HelpConfigDialog::ListChange(wxCommandEvent& event)
 
   if ((m_LastSel = lst->GetSelection()) != -1)
   {
-    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(m_Vector[lst->GetSelection()].second);
+    XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(m_Vector[lst->GetSelection()].second.name);
+    XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(m_Vector[lst->GetSelection()].second.isExecutable);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(HelpCommon::getDefaultHelpIndex() == lst->GetSelection());
   }
   else
   {
   	XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
+  	XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(false);
   }
 }
 
@@ -156,8 +164,14 @@ void HelpConfigDialog::Add(wxCommandEvent &event)
     lst->Append(text);
     lst->SetSelection(lst->GetCount() - 1);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
+    XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(false);
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(_T(""));
-    ChooseFile();
+
+    if (cbMessageBox(_("Would you like to browse for the help file?\n(Check \"Help->Plugins->Help plugin\" for a reason you would like to choose No)"), _("Browse"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
+    {
+      ChooseFile();
+    }
+
     UpdateEntry(lst->GetSelection());
     m_LastSel = lst->GetSelection();
   }
@@ -192,7 +206,7 @@ void HelpConfigDialog::Rename(wxCommandEvent &event)
 
 void HelpConfigDialog::Delete(wxCommandEvent &event)
 {
-  if (cbMessageBox(_("Are you sure you want to remove this help file?"), _("Remove"), wxICON_QUESTION | wxYES_NO) == wxNO)
+  if (cbMessageBox(_("Are you sure you want to remove this help file?"), _("Remove"), wxICON_QUESTION | wxYES_NO) == wxID_NO)
   {
     return;
   }
@@ -210,10 +224,12 @@ void HelpConfigDialog::Delete(wxCommandEvent &event)
   if (lst->GetSelection() != -1)
   {
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(m_Vector[lst->GetSelection()].first);
+    XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(m_Vector[lst->GetSelection()].second.isExecutable);
   }
   else
   {
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(_T(""));
+    XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(false);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
   }
 
@@ -280,6 +296,20 @@ void HelpConfigDialog::OnCheckbox(wxCommandEvent &event)
 	}
 }
 
+void HelpConfigDialog::OnCheckboxExecute(wxCommandEvent &event)
+{
+  int current = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
+
+  if (event.IsChecked())
+  {
+    m_Vector[current].second.isExecutable = true;
+  }
+  else
+  {
+    m_Vector[current].second.isExecutable = false;
+  }
+}
+
 void HelpConfigDialog::UpdateUI(wxUpdateUIEvent &event)
 {
   int sel = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
@@ -289,6 +319,7 @@ void HelpConfigDialog::UpdateUI(wxUpdateUIEvent &event)
   XRCCTRL(*this, "btnBrowse", wxButton)->Enable(sel != -1);
   XRCCTRL(*this, "txtHelp", wxTextCtrl)->Enable(sel != -1);
   XRCCTRL(*this, "chkDefault", wxCheckBox)->Enable(sel != -1);
+  XRCCTRL(*this, "chkExecute", wxCheckBox)->Enable(sel != -1);
 
   if (sel == -1 || count == 1)
   {
