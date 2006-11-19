@@ -3007,7 +3007,8 @@ void CompilerGCC::OnGCCOutput(CodeBlocksEvent& event)
 void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 {
     wxString msg = event.GetString();
-    AddOutputLine(msg);
+    if (!msg.IsEmpty())
+        AddOutputLine(msg);
 }
 
 void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
