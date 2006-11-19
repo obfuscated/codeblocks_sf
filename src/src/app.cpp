@@ -225,20 +225,17 @@ bool CodeBlocksApp::LoadConfig()
     wxString data = GetAppPath(); // under windows it is under the exe dir
 #elif defined(__WXMAC__)
     wxString data = GetResourcesDir(); // CodeBlocks.app/Contents/Resources
+    if (!data.Contains(wxString(_T("/Resources"))))
+        data = GetAppPath() + _T("/.."); // not a bundle, use relative path
 #else
     #ifdef APP_PREFIX
         wxString data = wxT(APP_PREFIX); // under linux, get the preprocessor value
     #else
-        wxString data = GetAppPath();
+        wxString data = GetAppPath() + _T("/.."); // remove "/bin" to get to prefix
     #endif
 #endif
     wxString actualData = _T("/share/codeblocks");
-#ifdef __WXMAC__
-    if (!data.Contains(wxString(_T("/Resources"))))
-        data = GetAppPath() + actualData; // not a bundle, use relative path
-#else
     data << actualData;
-#endif
     // check if the user has passed --prefix in the command line
     if (!m_Prefix.IsEmpty())
         data = m_Prefix + actualData;
@@ -758,7 +755,7 @@ wxString CodeBlocksApp::GetAppPath() const
     uint32_t path_len = MAXPATHLEN;
     // SPI first appeared in Mac OS X 10.2
     _NSGetExecutablePath(path, &path_len);
-    base = wxString(path, wxConvUTF8, path_len);
+    base = wxString(path, wxConvUTF8);
     base = wxFileName(base).GetPath();
 #endif
 	if (base.IsEmpty())
