@@ -38,6 +38,7 @@
 #endif
 
 #include "tinyxml/tinywxuni.h"
+#include <stdlib.h>
 
 wxString ConfigManager::config_folder;
 wxString ConfigManager::home_folder;
@@ -45,6 +46,7 @@ wxString ConfigManager::data_path_user;
 wxString ConfigManager::data_path_global;
 wxString ConfigManager::app_path;
 wxString ConfigManager::temp_folder;
+bool ConfigManager::relo = 0;
 
 namespace CfgMgrConsts
 {
@@ -53,6 +55,32 @@ namespace CfgMgrConsts
     const wxString dotDot(_T(".."));
     const int version = 1;
 }
+
+
+namespace
+{
+    wxString DetermineExecutablePath()
+    {
+        #if (__WXMSW__)
+            wxChar name[MAX_PATH];
+            GetModuleFileName(0L, name, MAX_PATH);
+            wxFileName fname(name);
+            return fname.GetPath(wxPATH_GET_VOLUME);
+        #else
+        #if (__linux__)
+            char c[PATH_MAX+1]);
+            char *p = realpath("/proc/self/exe", &c[0]);
+            if(p == 0)
+                return _T(".");
+            wxFileName fname(p);
+            return fname.GetPath(wxPATH_GET_VOLUME);
+        #else
+            return _T(".");
+        #endif
+        #endif
+    };
+};
+
 
 inline void ConfigManager::Collapse(wxString& str) const
 {
@@ -84,6 +112,7 @@ ISerializable::~ISerializable()
 
 
 
+
 /* ------------------------------------------------------------------------------------------------------------------
 *  "Builder pattern" class for ConfigManager
 *  Do not use this class  -  Manager::Get()->GetConfigManager() is a lot friendlier
@@ -100,28 +129,44 @@ CfgMgrBldr::CfgMgrBldr() : doc(0), volatile_doc(0), r(false)
         return;
     }
 
-    cfg = ConfigManager::GetFolder(sdConfig) + wxFILE_SEP_PATH + personality + _T(".conf");
+    cfg = FindConfigFile(personality + _T(".conf"));
 
-    if(::wxFileExists(cfg) == false)
-    {
-    cfg = ConfigManager::LocateDataFile(wxFileName(cfg).GetFullName(), sdBase | sdConfig | sdCurrent);
     if(cfg.IsEmpty())
-        {
-            cfg = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + personality + _T(".conf");
-            doc = new TiXmlDocument();
-            doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
-            doc->InsertEndChild(TiXmlElement("CodeBlocksConfig"));
-            doc->FirstChildElement("CodeBlocksConfig")->SetAttribute("version", CfgMgrConsts::version);
-            return;
-        }
+    {
+        cfg = wxStandardPathsBase::Get().GetUserDataDir() + wxFILE_SEP_PATH + personality + _T(".conf");
+        doc = new TiXmlDocument();
+        doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
+        doc->InsertEndChild(TiXmlElement("CodeBlocksConfig"));
+        doc->FirstChildElement("CodeBlocksConfig")->SetAttribute("version", CfgMgrConsts::version);
+        return;
     }
     SwitchTo(cfg);
 }
 
+
+wxString CfgMgrBldr::FindConfigFile(const wxString& filename)
+{
+    wxLogNull ln;
+    wxPathList searchPaths;
+
+    wxString u(wxStandardPathsBase::Get().GetUserDataDir() + wxFILE_SEP_PATH + filename);
+    wxString e(::DetermineExecutablePath() + wxFILE_SEP_PATH +filename);
+
+    if(::wxFileExists(u))
+    {
+        return u;
+    }
+    if(::wxFileExists(e))
+    {
+        ConfigManager::relo = true;
+        return e;
+    }
+    return wxEmptyString;
+}
+
+
 void CfgMgrBldr::SwitchTo(const wxString& fileName)
 {
-    Close();
-
     doc = new TiXmlDocument();
 
     if(!TinyXML::LoadDocument(fileName, doc))
@@ -185,8 +230,6 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
 
 void CfgMgrBldr::SwitchToR(const wxString& absFileName)
 {
-    Close();
-
     if(doc)
         delete doc;
     doc = new TiXmlDocument();
@@ -413,6 +456,7 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
 
 wxString ConfigManager::LocateDataFile(const wxString& filename, int search_dirs)
 {
+    wxLogNull ln;
     wxPathList searchPaths;
 
     // user dirs have precedence
@@ -456,9 +500,8 @@ wxString ConfigManager::LocateDataFile(const wxString& filename, int search_dirs
 *  ConfigManager
 */
 
-ConfigManager::ConfigManager(TiXmlElement* r) : root(r), pathNode(r)
+ConfigManager::ConfigManager(TiXmlElement* r) : doc(r->GetDocument()), root(r), pathNode(r)
 {
-    doc = root->GetDocument();
 }
 
 
@@ -641,7 +684,6 @@ void ConfigManager::Write(const wxString& name,  const wxString& value, bool ign
 {
     if(name.IsSameAs(CfgMgrConsts::app_path))
     {
-        app_path = value;
         return;
     }
     else if(name.IsSameAs(CfgMgrConsts::data_path))
@@ -1351,30 +1393,23 @@ void ConfigManager::InitPaths()
 {
     ConfigManager::config_folder = wxStandardPathsBase::Get().GetUserDataDir();
     ConfigManager::home_folder = wxStandardPathsBase::Get().GetUserConfigDir();
-    ConfigManager::data_path_user = config_folder + _T("/share/codeblocks");
-
-    #ifdef __WXMSW__
-        wxChar name[MAX_PATH];
-        GetModuleFileName(0L, name, MAX_PATH);
-        wxFileName fname(name);
-        ConfigManager::app_path = fname.GetPath(wxPATH_GET_VOLUME);
-    #else
-        ConfigManager::app_path = _T(".");
-    #endif
+    ConfigManager::app_path = ::DetermineExecutablePath();
 
     if(ConfigManager::Windows())
         ConfigManager::data_path_global = app_path + _T("/share/codeblocks");
     else
         ConfigManager::data_path_global = wxStandardPathsBase::Get().GetDataDir();
 
+    ConfigManager::data_path_user = ConfigManager::relo ? data_path_global : config_folder + _T("/share/codeblocks");
+
     CreateDirRecursively(ConfigManager::config_folder);
     CreateDirRecursively(ConfigManager::data_path_user   + _T("/plugins"));
-    CreateDirRecursively(ConfigManager::data_path_global + _T("/plugins"));
     CreateDir(ConfigManager::data_path_user   + _T("/scripts"));
-    CreateDir(ConfigManager::data_path_global + _T("/scripts"));
 
     wxString tempFile = wxFileName::CreateTempFileName(wxEmptyString);
     ConfigManager::temp_folder = wxFileName(tempFile).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     ::wxRemoveFile(tempFile);
 };
+
+
 

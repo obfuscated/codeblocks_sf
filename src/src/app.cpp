@@ -218,7 +218,6 @@ bool CodeBlocksApp::LoadConfig()
         return false;
 
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-    cfg->Write(_T("app_path"), GetAppPath());
 
     // find out about data path
 #ifdef __WXMSW__

@@ -636,6 +636,7 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         }
 
         // load XML from ZIP
+wxLogNull lognull;
         wxString contents;
         wxFileSystem* fs = new wxFileSystem;
         wxFSFile* f = fs->OpenFile(actual + _T("#zip:manifest.xml"));
@@ -751,7 +752,7 @@ int PluginManager::ScanForPlugins(const wxString& path)
 #else
     #define PLUGINS_MASK _T("*.so")
 #endif
-
+    wxLogNull zero;
     int count = 0;
     wxDir dir(path);
 

@@ -110,6 +110,7 @@ class DLLIMPORT ConfigManager
     static wxString data_path_global;
     static wxString app_path;
     static wxString temp_folder;
+    static bool relo;
 
 public:
 
@@ -333,7 +334,8 @@ class DLLIMPORT CfgMgrBldr : public Mgr<CfgMgrBldr>
     void SwitchTo(const wxString& absFN);
     void SwitchToR(const wxString& absFN);
     ConfigManager* Build(const wxString& name_space);
-
+    wxString FindConfigFile(const wxString& filename);
+    wxString DetermineExecutablePath();
 protected:
     CfgMgrBldr();
     ~CfgMgrBldr();
