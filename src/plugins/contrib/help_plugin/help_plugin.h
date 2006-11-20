@@ -32,7 +32,7 @@ class HelpPlugin : public cbPlugin
     void RemoveFromHelpMenu(int id, const wxString &help);
     void AddFile();
     HelpCommon::HelpFileAttrib HelpFileFromId(int id);
-    void LaunchHelp(const wxString &helpfile, const wxString &keyword = wxEmptyString);
+    void LaunchHelp(const wxString &helpfile, bool isExecutable, const wxString &keyword = wxEmptyString);
 
   private:
     wxMenuBar *m_pMenuBar;

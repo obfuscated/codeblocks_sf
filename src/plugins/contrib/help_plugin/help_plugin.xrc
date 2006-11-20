@@ -156,7 +156,7 @@
             <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
             <border>5</border>
             <object class="wxCheckBox" name="chkExecute">
-              <label>This line represents a full command to be executed (NOT IMPLEMENTED YET)</label>
+              <label>This line represents a full command to be executed</label>
             </object>
           </object>
         </object>

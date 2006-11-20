@@ -364,12 +364,19 @@ HelpCommon::HelpFileAttrib HelpPlugin::HelpFileFromId(int id)
   return HelpCommon::HelpFileAttrib();
 }
 
-void HelpPlugin::LaunchHelp(const wxString &c_helpfile, const wxString &keyword)
+void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, const wxString &keyword)
 {
   const static wxString http_prefix(_T("http://"));
   wxString helpfile(c_helpfile);
 
   helpfile.Replace(_T("$(keyword)"), keyword);
+
+  if (isExecutable)
+  {
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Executing %s"), helpfile.c_str());
+    wxExecute(helpfile);
+    return;
+  }
 
   // Operate on help http (web) links
   if (helpfile.Mid(0, http_prefix.size()).CmpNoCase(http_prefix) == 0)
@@ -450,6 +457,6 @@ void HelpPlugin::OnFindItem(wxCommandEvent &event)
   }
 
   int id = event.GetId();
-  wxString help = HelpFileFromId(id).name;
-  LaunchHelp(help, text);
+  HelpCommon::HelpFileAttrib hfa = HelpFileFromId(id);
+  LaunchHelp(hfa.name, hfa.isExecutable, text);
 }
