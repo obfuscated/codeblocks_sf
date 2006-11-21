@@ -68,7 +68,7 @@ namespace
             return fname.GetPath(wxPATH_GET_VOLUME);
         #else
         #if (__linux__)
-            char c[PATH_MAX+1]);
+            char c[PATH_MAX+1];
             char *p = realpath("/proc/self/exe", &c[0]);
             if(p == 0)
                 return _T(".");
