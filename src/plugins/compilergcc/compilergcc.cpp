@@ -68,7 +68,7 @@
 #endif
 #include "compilerICC.h"
 #include "compilerSDCC.h"
-#include "compilertcc.h"
+#include "compilerTcc.h"
 
 #include <scripting/bindings/sc_base_types.h>
 
