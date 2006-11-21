@@ -68,6 +68,7 @@
 #endif
 #include "compilerICC.h"
 #include "compilerSDCC.h"
+#include "compilertcc.h"
 
 #include <scripting/bindings/sc_base_types.h>
 
@@ -298,6 +299,7 @@ void CompilerGCC::OnAttach()
 #endif
     CompilerFactory::RegisterCompiler(new CompilerICC);
     CompilerFactory::RegisterCompiler(new CompilerSDCC);
+    CompilerFactory::RegisterCompiler(new CompilerTcc);
 #ifdef __WXMSW__
     CompilerFactory::RegisterCompiler(new CompilerGDC);
     CompilerFactory::RegisterCompiler(new CompilerDMD);

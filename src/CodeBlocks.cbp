@@ -9,7 +9,7 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="AutoRevision">
-				<Option output="build_tools\autorevision\autorevision.exe" />
+				<Option output="build_tools\autorevision\autorevision.exe" prefix_auto="0" extension_auto="0" />
 				<Option object_output=".objs\2.6" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -19,7 +19,7 @@
 				</Linker>
 			</Target>
 			<Target title="ConsoleRunner">
-				<Option output="tools\ConsoleRunner\cb_console_runner.exe" />
+				<Option output="tools\ConsoleRunner\cb_console_runner.exe" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="tools\ConsoleRunner" />
 				<Option object_output=".objs\2.6" />
 				<Option type="1" />
@@ -32,7 +32,7 @@
 				</Compiler>
 			</Target>
 			<Target title="tinyXML">
-				<Option output="sdk\tinyxml\libtxml.a" />
+				<Option output="sdk\tinyxml\libtxml.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
@@ -42,7 +42,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel">
-				<Option output="sdk\scripting\lib\libsquirrel.a" />
+				<Option output="sdk\scripting\lib\libsquirrel.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
@@ -54,7 +54,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel std lib">
-				<Option output="sdk\scripting\lib\libsqstdlib.a" />
+				<Option output="sdk\scripting\lib\libsqstdlib.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option external_deps="sdk\scripting\lib\libsquirrel.a;" />
@@ -66,7 +66,7 @@
 				</Compiler>
 			</Target>
 			<Target title="SqPlus">
-				<Option output="sdk\scripting\lib\libsqplus.a" />
+				<Option output="sdk\scripting\lib\libsqplus.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option external_deps="sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;" />
@@ -79,7 +79,7 @@
 				</Compiler>
 			</Target>
 			<Target title="scintilla">
-				<Option output="devel\wxscintilla.dll" />
+				<Option output="devel\wxscintilla.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
@@ -104,14 +104,14 @@
 				</Linker>
 			</Target>
 			<Target title="wxPropertyGrid">
-				<Option output="sdk\propgrid\libpropgrid.a" />
+				<Option output="sdk\propgrid\libpropgrid.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 			</Target>
 			<Target title="wxFlatNotebook">
-				<Option output="sdk\wxFlatNotebook\libwxflatnotebook.a" />
+				<Option output="sdk\wxFlatNotebook\libwxflatnotebook.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
@@ -121,7 +121,7 @@
 				</Compiler>
 			</Target>
 			<Target title="sdk">
-				<Option output="devel\codeblocks.dll" />
+				<Option output="devel\codeblocks.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel" />
 				<Option object_output=".objs\2.6" />
 				<Option external_deps="sdk\tinyxml\libtxml.a;sdk\propgrid\libpropgrid.a;sdk\wxFlatNotebook\libwxflatnotebook.a;sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;sdk\scripting\lib\libsqplus.a;" />
@@ -160,7 +160,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="wxAUI">
-				<Option output="src\wxAUI\libwxaui.a" />
+				<Option output="src\wxAUI\libwxaui.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
@@ -173,7 +173,7 @@
 				</Compiler>
 			</Target>
 			<Target title="src">
-				<Option output="devel\codeblocks.exe" />
+				<Option output="devel\codeblocks.exe" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel" />
 				<Option object_output=".objs\2.6" />
 				<Option external_deps="src\wxAUI\libwxaui.a;" />
@@ -215,7 +215,7 @@
 				</Linker>
 			</Target>
 			<Target title="AStyle">
-				<Option output="devel\share\CodeBlocks\plugins\astyle.dll" />
+				<Option output="devel\share\CodeBlocks\plugins\astyle.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
@@ -236,7 +236,7 @@
 				</Linker>
 			</Target>
 			<Target title="Compiler depslib">
-				<Option output="plugins\compilergcc\depslib\libdepslib.a" />
+				<Option output="plugins\compilergcc\depslib\libdepslib.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output=".objs\2.6" />
 				<Option type="2" />
@@ -246,7 +246,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Compiler">
-				<Option output="devel\share\CodeBlocks\plugins\compiler.dll" />
+				<Option output="devel\share\CodeBlocks\plugins\compiler.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option external_deps="plugins\compilergcc\depslib\libdepslib.a;" />
@@ -274,7 +274,7 @@
 				</Linker>
 			</Target>
 			<Target title="Debugger">
-				<Option output="devel\share\CodeBlocks\plugins\debugger.dll" />
+				<Option output="devel\share\CodeBlocks\plugins\debugger.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
@@ -298,7 +298,7 @@
 				</Linker>
 			</Target>
 			<Target title="Code-completion">
-				<Option output="devel\share\CodeBlocks\plugins\codecompletion.dll" />
+				<Option output="devel\share\CodeBlocks\plugins\codecompletion.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
@@ -321,7 +321,7 @@
 				</Linker>
 			</Target>
 			<Target title="Class wizard">
-				<Option output="devel\share\CodeBlocks\plugins\classwizard.dll" />
+				<Option output="devel\share\CodeBlocks\plugins\classwizard.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
@@ -343,7 +343,7 @@
 				</Linker>
 			</Target>
 			<Target title="Default MIME handler">
-				<Option output="devel\share\CodeBlocks\plugins\defaultmimehandler.dll" />
+				<Option output="devel\share\CodeBlocks\plugins\defaultmimehandler.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
@@ -364,7 +364,7 @@
 				</Linker>
 			</Target>
 			<Target title="Scripted wizard">
-				<Option output="devel\share\CodeBlocks\plugins\scriptedwizard.dll" />
+				<Option output="devel\share\CodeBlocks\plugins\scriptedwizard.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
@@ -385,7 +385,7 @@
 				</Linker>
 			</Target>
 			<Target title="To-do">
-				<Option output="devel\share\CodeBlocks\plugins\todo.dll" />
+				<Option output="devel\share\CodeBlocks\plugins\todo.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
@@ -403,7 +403,7 @@
 				</Linker>
 			</Target>
 			<Target title="Autosave">
-				<Option output="devel\share\CodeBlocks\plugins\autosave.dll" />
+				<Option output="devel\share\CodeBlocks\plugins\autosave.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
@@ -421,7 +421,7 @@
 				</Linker>
 			</Target>
 			<Target title="XP look &amp; feel">
-				<Option output="devel\share\CodeBlocks\plugins\xpmanifest.dll" />
+				<Option output="devel\share\CodeBlocks\plugins\xpmanifest.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option object_output=".objs\2.6" />
 				<Option type="3" />
@@ -907,6 +907,16 @@
 		</Unit>
 		<Unit filename="plugins\compilergcc\compilerSDCC.h">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerTcc.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerTcc.h">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Compiler" />
@@ -3522,22 +3532,10 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk\wxFlatNotebook\src\wxFlatNotebook\fnb_resources.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk\wxFlatNotebook\src\wxFlatNotebook\popup_dlg.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxFlatNotebook" />
-		</Unit>
 		<Unit filename="sdk\wxFlatNotebook\include\wx\wxFlatNotebook\popup_dlg.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk\wxFlatNotebook\src\wxFlatNotebook\renderer.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="wxFlatNotebook" />
 		</Unit>
 		<Unit filename="sdk\wxFlatNotebook\include\wx\wxFlatNotebook\renderer.h">
@@ -3564,14 +3562,26 @@
 			<Option link="0" />
 			<Option target="wxFlatNotebook" />
 		</Unit>
-		<Unit filename="sdk\wxFlatNotebook\src\wxFlatNotebook\wxFlatNotebook.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxFlatNotebook" />
-		</Unit>
 		<Unit filename="sdk\wxFlatNotebook\include\wx\wxFlatNotebook\wxFlatNotebook.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk\wxFlatNotebook\src\wxFlatNotebook\fnb_resources.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk\wxFlatNotebook\src\wxFlatNotebook\popup_dlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk\wxFlatNotebook\src\wxFlatNotebook\renderer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk\wxFlatNotebook\src\wxFlatNotebook\wxFlatNotebook.cpp">
+			<Option compilerVar="CPP" />
 			<Option target="wxFlatNotebook" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\include\wx\wxscintilla.h">
@@ -4310,12 +4320,12 @@
 			<Option target="sdk" />
 		</Unit>
 		<Extensions>
-<wxsmith>
-	<dialog wxs_file="CCDebugInfo.wxs" class="CCDebugInfo" src_file="plugins\codecompletion\ccdebuginfo.cpp" header_file="plugins\codecompletion\ccdebuginfo.h" xrc_file="" edit_mode="Source" />
-	<dialog wxs_file="VirtualBuildTargetsDlg.wxs" class="VirtualBuildTargetsDlg" src_file="sdk\virtualbuildtargetsdlg.cpp" header_file="sdk\virtualbuildtargetsdlg.h" xrc_file="" edit_mode="Source" />
-	<panel wxs_file="ScriptConsole.wxs" class="ScriptConsole" src_file="src\scriptconsole.cpp" header_file="src\scriptconsole.h" xrc_file="" edit_mode="Source" />
-	<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
-</wxsmith>
+			<wxsmith>
+				<dialog wxs_file="CCDebugInfo.wxs" class="CCDebugInfo" src_file="plugins\codecompletion\ccdebuginfo.cpp" header_file="plugins\codecompletion\ccdebuginfo.h" xrc_file="" edit_mode="Source" />
+				<dialog wxs_file="VirtualBuildTargetsDlg.wxs" class="VirtualBuildTargetsDlg" src_file="sdk\virtualbuildtargetsdlg.cpp" header_file="sdk\virtualbuildtargetsdlg.h" xrc_file="" edit_mode="Source" />
+				<panel wxs_file="ScriptConsole.wxs" class="ScriptConsole" src_file="src\scriptconsole.cpp" header_file="src\scriptconsole.h" xrc_file="" edit_mode="Source" />
+				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
+			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
