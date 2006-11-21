@@ -72,7 +72,7 @@ namespace
             char *p = realpath("/proc/self/exe", &c[0]);
             if(p == 0)
                 return _T(".");
-            wxFileName fname(p);
+            wxFileName fname(cbC2U(p));
             return fname.GetPath(wxPATH_GET_VOLUME);
         #else
             return _T(".");
