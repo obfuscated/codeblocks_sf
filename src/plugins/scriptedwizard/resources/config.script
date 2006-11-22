@@ -9,15 +9,11 @@ function RegisterWizards()
     // project wizards
     //
     RegisterWizard(wizProject,     _T("empty"),        _T("Empty project"),         _T("Console"));
-
-//    if (PLATFORM == PLATFORM_MSW)
-        RegisterWizard(wizProject, _T("plugins"),      _T("Code::Blocks plugin"),   _T("Code::Blocks"));
-
     RegisterWizard(wizProject,     _T("console"),      _T("Console application"),   _T("Console"));
     RegisterWizard(wizProject,     _T("d"),            _T("D application"),         _T("D language"));
     if (PLATFORM == PLATFORM_MSW)
     {
-        RegisterWizard(wizProject, _T("directx"),      _T("Direct/X application"),  _T("2D/3D Graphics"));
+        RegisterWizard(wizProject, _T("directx"),      _T("Direct/X project"),      _T("2D/3D Graphics"));
         RegisterWizard(wizProject, _T("dll"),          _T("Dynamic Link Library"),  _T("Console"));
         RegisterWizard(wizProject, _T("fltk"),         _T("FLTK project"),          _T("GUI"));
     }
@@ -28,6 +24,7 @@ function RegisterWizards()
     RegisterWizard(wizProject,     _T("irrlicht"),     _T("Irrlicht project"),      _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("opengl"),       _T("OpenGL project"),        _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("ogre"),         _T("Ogre project"),          _T("2D/3D Graphics"));
+    RegisterWizard(wizProject,     _T("plugins"),      _T("Code::Blocks plugin"),   _T("Code::Blocks"));
     RegisterWizard(wizProject,     _T("qt4"),          _T("QT4 project"),           _T("GUI"));
     RegisterWizard(wizProject,     _T("sdl"),          _T("SDL project"),           _T("2D/3D Graphics"));
     if (PLATFORM == PLATFORM_MSW)
@@ -35,7 +32,7 @@ function RegisterWizards()
     RegisterWizard(wizProject,     _T("staticlib"),    _T("Static library"),        _T("Console"));
     if (PLATFORM == PLATFORM_MSW)
         RegisterWizard(wizProject, _T("win32gui"),     _T("Win32 GUI project"),     _T("GUI"));
-    RegisterWizard(wizProject,     _T("wxwidgets"),    _T("wxWidgets application"), _T("GUI"));
+    RegisterWizard(wizProject,     _T("wxwidgets"),    _T("wxWidgets project"),     _T("GUI"));
 
     //
     // build target wizards

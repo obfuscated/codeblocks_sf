@@ -117,6 +117,8 @@ function OnLeave_WxConf(fwd)
 
         if (IsDLL)
             lib = lib + _T("dll");
+        else
+            lib = lib + _T("lib");
 
         lib = lib + Configuration;
 
@@ -227,7 +229,12 @@ function SetupProject(project)
         project.AddIncludeDir(WxPath + _T("/contrib/include"));
         project.AddLibDir(LibPath);
         project.AddLinkLib(LibName);
+        project.AddLinkLib(_T("comctl32"));
         project.AddLinkLib(_T("gdi32"));
+        project.AddLinkLib(_T("ole32"));
+        project.AddLinkLib(_T("oleaut32"));
+        project.AddLinkLib(_T("uuid"));
+
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
         {
             project.AddCompilerOption(_T("/D__WXMSW__"));
