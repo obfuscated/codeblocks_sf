@@ -21,6 +21,7 @@
     #include <wx/log.h>
     #include <wx/stopwatch.h>
     #include "manager.h"
+    #include "configmanager.h"
     #include "projectmanager.h"
     #include "messagemanager.h"
     #include "macrosmanager.h"
