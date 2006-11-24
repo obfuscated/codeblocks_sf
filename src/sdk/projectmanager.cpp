@@ -23,8 +23,8 @@
 * $Id$
 * $HeadURL$
 */
-
 #include "sdk_precomp.h"
+#include <vector>
 
 #ifndef CB_PRECOMP
     #include <wx/datetime.h>
@@ -2301,13 +2301,21 @@ void ProjectManager::CheckForExternallyModifiedProjects()
 
     wxLogNull ln;
     // check also the projects (TO DO : what if we gonna reload while compiling/debugging)
+    // TODO : make sure the same project is the active one again
     ProjectManager* ProjectMgr = Manager::Get()->GetProjectManager();
     if( ProjectsArray* Projects = ProjectMgr->GetProjects())
     {
     	bool reloadAll = false;
+    	// make a copy of all the pointers before we start messing with closing and opening projects
+    	// the hash (Projects) could change the order
+    	std::vector<cbProject*> ProjectPointers;
     	for(unsigned int idxProject = 0; idxProject < Projects->Count(); ++idxProject)
     	{
-    		cbProject* pProject = Projects->Item(idxProject);
+    		ProjectPointers.push_back(Projects->Item(idxProject));
+    	}
+    	for(unsigned int idxProject = 0; idxProject < ProjectPointers.size(); ++idxProject)
+    	{
+    		cbProject* pProject = ProjectPointers[idxProject];
     		wxFileName fname(pProject->GetFilename());
     		wxDateTime last = fname.GetModificationTime();
     		if(last.IsLaterThan(pProject->GetLastModificationTime()))
