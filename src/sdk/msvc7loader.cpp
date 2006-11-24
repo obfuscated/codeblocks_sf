@@ -356,6 +356,7 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             for (i = 0; i < arr.GetCount(); ++i)
             {
                 bt->AddIncludeDir(ReplaceMSVCMacros(arr[i]));
+                bt->AddResourceIncludeDir(ReplaceMSVCMacros(arr[i]));
             }
 
             tmp = cbC2U(tool->Attribute("PreprocessorDefinitions"));
