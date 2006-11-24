@@ -230,7 +230,7 @@ bool CodeBlocksApp::LoadConfig()
     #ifdef APP_PREFIX
         wxString data = wxT(APP_PREFIX); // under linux, get the preprocessor value
     #else
-        wxString data = GetAppPath() + _T("/.."); // remove "/bin" to get to prefix
+        wxString data = GetAppPath();
     #endif
 #endif
     wxString actualData = _T("/share/codeblocks");

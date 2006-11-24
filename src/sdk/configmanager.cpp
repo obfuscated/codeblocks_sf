@@ -1395,10 +1395,14 @@ void ConfigManager::InitPaths()
     ConfigManager::home_folder = wxStandardPathsBase::Get().GetUserConfigDir();
     ConfigManager::app_path = ::DetermineExecutablePath();
 
-    if(ConfigManager::Windows())
-        ConfigManager::data_path_global = app_path + _T("/share/codeblocks");
-    else
-        ConfigManager::data_path_global = wxStandardPathsBase::Get().GetDataDir();
+    // if non-empty, the app has overriden it (e.g. "--prefix" was passed in the command line)
+    if (data_path_global.IsEmpty())
+    {
+        if(ConfigManager::Windows())
+            ConfigManager::data_path_global = app_path + _T("/share/codeblocks");
+        else
+            ConfigManager::data_path_global = wxStandardPathsBase::Get().GetDataDir();
+    }
 
     ConfigManager::data_path_user = ConfigManager::relo ? data_path_global : config_folder + _T("/share/codeblocks");
 
