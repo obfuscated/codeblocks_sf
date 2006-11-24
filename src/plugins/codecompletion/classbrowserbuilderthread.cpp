@@ -75,13 +75,13 @@ void ClassBrowserBuilderThread::Init(Parser* parser,
 
 void* ClassBrowserBuilderThread::Entry()
 {
-    while (!TestDestroy())
+    while (!TestDestroy() && !Manager::IsAppShuttingDown())
     {
         // wait until the classbrowser signals
         m_Semaphore.Wait();
 //        DBGLOG(_T(" - - - - - -"));
 
-        if (TestDestroy())
+        if (TestDestroy() || Manager::IsAppShuttingDown())
             break;
 #ifdef __WXGTK__
 		// this code (PART 1/2) seems to be good on linux
@@ -108,6 +108,10 @@ void* ClassBrowserBuilderThread::Entry()
 #endif // __WXGTK__
     }
 
+    m_pParser = 0;
+    m_pTreeTop = 0;
+    m_pTreeBottom = 0;
+
     if (m_ppThreadVar)
         *m_ppThreadVar = 0;
     return 0;
@@ -115,6 +119,8 @@ void* ClassBrowserBuilderThread::Entry()
 
 void ClassBrowserBuilderThread::BuildTree()
 {
+    if (Manager::IsAppShuttingDown())
+        return;
 //    wxMutexLocker lock(m_BuildMutex);
 
     m_pTreeTop->SetImageList(m_pParser->GetImageList());
@@ -133,7 +139,7 @@ void ClassBrowserBuilderThread::BuildTree()
     RemoveInvalidNodes(m_pTreeTop, root);
     RemoveInvalidNodes(m_pTreeBottom, m_pTreeBottom->GetRootItem());
 
-    if (TestDestroy())
+    if (TestDestroy() || Manager::IsAppShuttingDown())
     {
 		m_pTreeBottom->Thaw();
 		m_pTreeTop->Thaw();
@@ -161,7 +167,7 @@ void ClassBrowserBuilderThread::BuildTree()
 
 void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemId parent)
 {
-    if (TestDestroy())
+    if (TestDestroy() || Manager::IsAppShuttingDown())
         return;
 
     // recursively enters all existing nodes and deletes the node if the token it references
@@ -279,7 +285,7 @@ wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTr
 
 bool ClassBrowserBuilderThread::AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, int tokenKindMask)
 {
-    if (TestDestroy())
+    if (TestDestroy() || Manager::IsAppShuttingDown())
         return false;
 
     Token* parentToken = 0;
@@ -308,7 +314,7 @@ bool ClassBrowserBuilderThread::AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId par
 
 bool ClassBrowserBuilderThread::AddAncestorsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx)
 {
-    if (TestDestroy())
+    if (TestDestroy() || Manager::IsAppShuttingDown())
         return false;
 
     Token* token = m_pTokens->at(tokenIdx);
@@ -320,7 +326,7 @@ bool ClassBrowserBuilderThread::AddAncestorsOf(wxTreeCtrl* tree, wxTreeItemId pa
 
 bool ClassBrowserBuilderThread::AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx, bool allowInheritance)
 {
-    if (TestDestroy())
+    if (TestDestroy() || Manager::IsAppShuttingDown())
         return false;
 
     Token* token = m_pTokens->at(tokenIdx);
@@ -421,7 +427,7 @@ bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(Token* token, int ki
 
 void ClassBrowserBuilderThread::SelectNode(wxTreeItemId node)
 {
-    if (TestDestroy())
+    if (TestDestroy() || Manager::IsAppShuttingDown())
         return;
 
     m_pTreeBottom->Freeze();
@@ -498,7 +504,7 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(wxTreeCtrl* tree, wxTreeIte
 
 void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
 {
-    if (TestDestroy())
+    if (TestDestroy() || Manager::IsAppShuttingDown())
         return;
 
     wxMutexLocker lock(m_BuildMutex);
@@ -553,7 +559,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
 
 void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item)
 {
-    if (TestDestroy())
+    if (TestDestroy() || Manager::IsAppShuttingDown())
         return;
 
     wxMutexLocker lock(m_BuildMutex);
@@ -568,7 +574,7 @@ void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item)
 
 void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
 {
-    if (TestDestroy())
+    if (TestDestroy() || Manager::IsAppShuttingDown())
         return;
 
     wxMutexLocker lock(m_BuildMutex);

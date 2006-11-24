@@ -152,8 +152,8 @@ ClassBrowser::~ClassBrowser()
 
     if (m_pBuilderThread)
     {
-        m_Semaphore.Post();
         m_pBuilderThread->Delete();
+        m_Semaphore.Post();
     }
 }
 
@@ -546,6 +546,9 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
 
 void ClassBrowser::BuildTree()
 {
+    if (Manager::IsAppShuttingDown())
+        return;
+
     // create the thread if needed
     if (!m_pBuilderThread)
     {
