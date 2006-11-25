@@ -55,6 +55,8 @@ class CodeCompletion : public cbCodeCompletionPlugin
 
     private:
 
+        void LoadTokenReplacements();
+        void SaveTokenReplacements();
 
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnViewClassBrowser(wxCommandEvent& event);

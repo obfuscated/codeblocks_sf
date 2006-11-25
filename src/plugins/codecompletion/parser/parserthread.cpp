@@ -46,6 +46,7 @@ namespace ParserConsts
     const wxString space(_T(" "));
     const wxString spaced_colon(_T(" : "));
     const wxString empty(_T(""));
+    const wxString equals(_T("="));
     const wxString hash(_T("#"));
     const wxString plus(_T("+"));
     const wxString comma(_T(","));
@@ -248,14 +249,14 @@ bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayS
 	while (!m_EncounteredNamespaces.empty())
         m_EncounteredNamespaces.pop();
 
-	while (1)
+	while (m_Tokenizer.NotEOF())
 	{
         if (!m_pTokens || TestDestroy())
             return false;
 
 		wxString token = m_Tokenizer.GetToken();
 		if (token.IsEmpty())
-			break;
+			continue;
 
 		if (token==ParserConsts::kw_namespace)
 		{
@@ -352,14 +353,14 @@ void ParserThread::DoParse()
 	m_LastToken.Clear();
 	while (!m_EncounteredNamespaces.empty())
         m_EncounteredNamespaces.pop();
-	while (1)
+	while (m_Tokenizer.NotEOF())
 	{
 		if (!m_pTokens || TestDestroy())
 			break;
 
 		wxString token = m_Tokenizer.GetToken();
 		if (token.IsEmpty())
-			break;
+			continue;
 #if 0
     DBGLOG(_T("m_Str='%s', token='%s'"), m_Str.c_str(), token.c_str());
 #endif
@@ -999,9 +1000,17 @@ void ParserThread::HandleNamespace()
     }
     else
     {
+        // for namespace aliases to be parsed, we need to tell the tokenizer
+        // not to skip the usually unwanted tokens. One of those tokens is the
+        // "assignment" (=).
+        // we just have to remember to revert this setting below, or else problems will follow
+        m_Tokenizer.SetSkipUnwantedTokens(false);
+
         wxString next = m_Tokenizer.PeekToken(); // named namespace
         if (next==ParserConsts::opbrace)
         {
+            m_Tokenizer.SetSkipUnwantedTokens(true);
+
             // use the existing copy (if any)
             Token* newToken = TokenExists(ns, m_pLastParent, tkNamespace);
             if (!newToken)
@@ -1031,6 +1040,30 @@ void ParserThread::HandleNamespace()
             newToken->m_ImplLine = line;
             newToken->m_ImplLineStart = lineStart;
             newToken->m_ImplLineEnd = m_Tokenizer.GetLineNumber();
+        }
+        else if (next==ParserConsts::equals)
+        {
+            // namespace alias; example from cxxabi.h:
+            //
+            // namespace __cxxabiv1
+            // {
+            // ...
+            // }
+            // namespace abi = __cxxabiv1; <-- we 're in this case now
+
+            m_Tokenizer.GetToken(); // eat '='
+            wxString aliasns = m_Tokenizer.GetToken();
+
+            m_Tokenizer.SetSkipUnwantedTokens(true);
+
+            // use the existing copy (if any)
+            Token* aliasToken = TokenExists(aliasns, m_pLastParent, tkNamespace);
+            if (!aliasToken)
+                aliasToken = DoAddToken(tkNamespace, aliasns, line);
+            if (!aliasToken)
+                return;
+
+            aliasToken->m_Aliases.Add(ns);
         }
         else
             SkipToOneOfChars(ParserConsts::semicolonopbrace); // some kind of error in code ?

@@ -2,6 +2,7 @@
 #define TOKENIZER_H
 
 #include <wx/string.h>
+#include <configmanager.h>
 
 struct TokenizerOptions
 {
@@ -19,6 +20,11 @@ public:
     wxString GetToken();
     wxString PeekToken();
     void UngetToken();
+
+    void SetSkipUnwantedTokens(bool skip)
+    {
+        m_SkipUnwantedTokens = skip;
+    }
 
     const wxString& GetFilename() const
     {
@@ -47,16 +53,23 @@ public:
     TokenizerOptions m_Options;
 
     bool SkipToEOL(bool nestBraces = true); // use with care outside this class!
-protected:
-    void BaseInit();
-    wxString DoGetToken();
-    bool ReadFile();
-    bool SkipWhiteSpace();
-    bool SkipToChar(const wxChar& ch);
-    bool SkipToOneOfChars(const char* chars, bool supportNesting = false);
-    bool SkipBlock(const wxChar& ch);
-    bool SkipUnwanted(); // skips comments, assignments, preprocessor etc.
-    bool SkipComment();
+
+    static void SetReplacementString(const wxString& from, const wxString& to)
+    {
+        s_Replacements.insert(s_Replacements.end(), std::make_pair(from, to));
+    }
+
+    static void RemoveReplacementString(const wxString& from)
+    {
+        ConfigManagerContainer::StringToStringMap::iterator it = s_Replacements.find(from);
+        if (it != s_Replacements.end())
+            s_Replacements.erase(it);
+    }
+
+    static ConfigManagerContainer::StringToStringMap& GetTokenReplacementsMap()
+    {
+        return s_Replacements;
+    }
 
     bool IsEOF() const
     {
@@ -67,6 +80,17 @@ protected:
     {
         return m_TokenIndex < m_BufferLen;
     };
+
+protected:
+    void BaseInit();
+    wxString DoGetToken();
+    bool ReadFile();
+    bool SkipWhiteSpace();
+    bool SkipToChar(const wxChar& ch);
+    bool SkipToOneOfChars(const char* chars, bool supportNesting = false);
+    bool SkipBlock(const wxChar& ch);
+    bool SkipUnwanted(); // skips comments, assignments, preprocessor etc.
+    bool SkipComment();
 
     bool MoveToNextChar(const unsigned int amount = 1)
     {
@@ -161,6 +185,14 @@ private:
         return false;
     };
 
+    inline const wxString& ThisOrReplacement(const wxString& str) const
+    {
+        ConfigManagerContainer::StringToStringMap::const_iterator it = s_Replacements.find(str);
+        if (it != s_Replacements.end())
+            return it->second;
+        return str;
+    }
+
     wxString m_Filename;
     wxString m_Buffer;
     wxString m_peek;
@@ -183,6 +215,9 @@ private:
     bool m_IsOperator;
     bool m_LastWasPreprocessor;
     wxString m_LastPreprocessor;
+    bool m_SkipUnwantedTokens;
+
+    static ConfigManagerContainer::StringToStringMap s_Replacements;
 };
 
 #endif // TOKENIZER_H

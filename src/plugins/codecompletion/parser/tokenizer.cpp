@@ -44,6 +44,9 @@ const wxString hash(_T("#"));
 const wxString tabcrlf(_T("\t\n\r"));
 };
 
+// static
+ConfigManagerContainer::StringToStringMap Tokenizer::s_Replacements;
+
 Tokenizer::Tokenizer(const wxString& filename)
     : m_Filename(filename),
     m_peek(_T("")),
@@ -62,7 +65,8 @@ Tokenizer::Tokenizer(const wxString& filename)
     m_SavedNestingLevel(0),
     m_IsOK(false),
     m_IsOperator(false),
-    m_LastWasPreprocessor(false)
+    m_LastWasPreprocessor(false),
+    m_SkipUnwantedTokens(true)
 {
     //ctor
     m_Options.wantPreprocessor = false;
@@ -429,7 +433,7 @@ wxString Tokenizer::GetToken()
     else
         m_curtoken = DoGetToken();
     m_peekavailable = false;
-    return m_curtoken;
+    return ThisOrReplacement(m_curtoken);
 }
 
 wxString Tokenizer::PeekToken()
@@ -471,7 +475,7 @@ wxString Tokenizer::DoGetToken()
     if (!SkipWhiteSpace())
         return wxEmptyString;
 
-    if (!SkipUnwanted())
+    if (m_SkipUnwantedTokens && !SkipUnwanted())
         return wxEmptyString;
 
     int start = m_TokenIndex;

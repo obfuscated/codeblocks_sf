@@ -46,6 +46,7 @@
 #include "insertclassmethoddlg.h"
 #include "ccoptionsdlg.h"
 #include "parser/parser.h"
+#include "parser/tokenizer.h"
 #include "selectincludefile.h"
 #include "globals.h"
 
@@ -167,6 +168,30 @@ CodeCompletion::CodeCompletion() :
 
 CodeCompletion::~CodeCompletion()
 {
+}
+
+void CodeCompletion::LoadTokenReplacements()
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+
+    ConfigManagerContainer::StringToStringMap& repl = Tokenizer::GetTokenReplacementsMap();
+    repl.clear();
+
+    if (!cfg->Exists(_T("token_replacements")))
+    {
+        // first run; add default replacements
+        Tokenizer::SetReplacementString(_T("_GLIBCXX_STD"), _T("std"));
+    }
+    else
+        cfg->Read(_T("token_replacements"), &repl);
+}
+
+void CodeCompletion::SaveTokenReplacements()
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+
+    const ConfigManagerContainer::StringToStringMap& repl = Tokenizer::GetTokenReplacementsMap();
+    cfg->Write(_T("token_replacements"), repl);
 }
 
 cbConfigurationPanel* CodeCompletion::GetConfigurationPanel(wxWindow* parent)
@@ -326,6 +351,8 @@ void CodeCompletion::OnAttach()
     m_Function = 0L;
     m_Scope = 0L;
 
+    LoadTokenReplacements();
+
     m_LastPosForCodeCompletion = -1;
     StartIdxNameSpaceInScope = -1;
     m_NativeParsers.SetNextHandler(this);
@@ -342,6 +369,8 @@ void CodeCompletion::OnAttach()
 void CodeCompletion::OnRelease(bool appShutDown)
 {
     m_timer.Stop();
+
+    SaveTokenReplacements();
 
     // unregister hook
     // 'true' will delete the functor too
@@ -460,6 +489,19 @@ int CodeCompletion::CodeComplete()
                 wxString tmp;
                 tmp << token->m_Name << wxString::Format(_T("?%d"), iidx);
                 items.Add(tmp);
+
+                if (token->m_TokenKind == tkNamespace && token->m_Aliases.size())
+                {
+                    for (size_t i = 0; i < token->m_Aliases.size(); ++i)
+                    {
+                        if (unique_strings.find(token->m_Aliases[i]) != unique_strings.end())
+                            continue;
+                        unique_strings.insert(token->m_Aliases[i]);
+                        wxString tmp;
+                        tmp << token->m_Aliases[i] << wxString::Format(_T("?%d"), iidx);
+                        items.Add(tmp);
+                    }
+                }
             }
 
             if (m_NativeParsers.LastAISearchWasGlobal())
@@ -885,6 +927,13 @@ void CodeCompletion::DoInsertCodeCompleteToken(wxString tokName)
 
 void CodeCompletion::OnViewClassBrowser(wxCommandEvent& event)
 {
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+    if (!cfg->ReadBool(_T("/use_symbols_browser"), true))
+    {
+        cbMessageBox(_("The symbols browser is disabled in code-completion options.\n"
+                        "Please enable it there first..."), _("Information"), wxICON_INFORMATION);
+        return;
+    }
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = (wxWindow*)m_NativeParsers.GetClassBrowser();
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
@@ -1479,7 +1528,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
         int wordstart = control->WordStartPosition(pos, true);
 
         // if more than two chars have been typed, invoke CC
-        int autoCCchars = cfg->ReadInt(_T("/auto_launch"), 4);
+        int autoCCchars = cfg->ReadInt(_T("/auto_launch_chars"), 4);
         bool autoCC = cfg->ReadBool(_T("/auto_launch"), true) &&
                     pos - wordstart >= autoCCchars;
 

@@ -24,7 +24,7 @@
                                     <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                                     <object class="wxStaticBoxSizer">
                                         <orient>wxVERTICAL</orient>
-                                        <label>Code completion options</label>
+                                        <label>Options</label>
                                         <object class="sizeritem">
                                             <border>8</border>
                                             <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
@@ -141,7 +141,7 @@
                         </object>
                     </object>
                     <object class="notebookpage">
-                        <label>Parser &amp;&amp; symbols browser</label>
+                        <label>C/C++ parser</label>
                         <object class="wxPanel" name="tabParser">
                             <pos>133,18</pos>
                             <object class="wxBoxSizer">
@@ -151,7 +151,7 @@
                                     <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                                     <object class="wxStaticBoxSizer">
                                         <orient>wxVERTICAL</orient>
-                                        <label>C/C++ Parser options</label>
+                                        <label>Options</label>
                                         <object class="sizeritem">
                                             <border>8</border>
                                             <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -173,29 +173,114 @@
                                                 <label>Parse preprocessor directives</label>
                                             </object>
                                         </object>
-                                    </object>
-                                </object>
-                                <object class="sizeritem">
-                                    <border>8</border>
-                                    <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
-                                    <object class="wxBoxSizer">
-                                        <orient>wxHORIZONTAL</orient>
                                         <object class="sizeritem">
-                                            <border>5</border>
-                                            <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                                            <object class="wxStaticText" name="ID_STATICTEXT6">
-                                                <label>Concurrently parsing threads:</label>
+                                            <border>8</border>
+                                            <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                            <object class="wxStaticLine" name="ID_STATICLINE1">
+                                                <size>10,-1</size>
                                             </object>
                                         </object>
                                         <object class="sizeritem">
                                             <border>8</border>
-                                            <flag>wxLEFT|wxALIGN_CENTER</flag>
-                                            <object class="wxSpinCtrl" name="spnThreadsNum">
-                                                <value>2</value>
-                                                <min>1</min>
-                                                <max>16</max>
+                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <border>5</border>
+                                                    <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                                    <object class="wxStaticText" name="ID_STATICTEXT6">
+                                                        <label>Concurrently parsing threads:</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <border>8</border>
+                                                    <flag>wxLEFT|wxALIGN_CENTER</flag>
+                                                    <object class="wxSpinCtrl" name="spnThreadsNum">
+                                                        <value>2</value>
+                                                        <min>1</min>
+                                                        <max>16</max>
+                                                    </object>
+                                                </object>
                                             </object>
                                         </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <border>8</border>
+                                    <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                    <object class="wxStaticBoxSizer">
+                                        <orient>wxVERTICAL</orient>
+                                        <label>Replacement tokens</label>
+                                        <object class="sizeritem">
+                                            <option>1</option>
+                                            <border>8</border>
+                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <option>1</option>
+                                                    <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                                    <object class="wxListBox" name="lstRepl" />
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <border>8</border>
+                                                    <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                                    <object class="wxBoxSizer">
+                                                        <orient>wxVERTICAL</orient>
+                                                        <object class="sizeritem">
+                                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                                            <object class="wxButton" name="btnAddRepl">
+                                                                <label>&amp;Add</label>
+                                                            </object>
+                                                        </object>
+                                                        <object class="sizeritem">
+                                                            <border>4</border>
+                                                            <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                                            <object class="wxButton" name="btnEditRepl">
+                                                                <label>&amp;Edit</label>
+                                                            </object>
+                                                        </object>
+                                                        <object class="sizeritem">
+                                                            <border>4</border>
+                                                            <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                                            <object class="wxButton" name="btnDelRepl">
+                                                                <label>&amp;Delete</label>
+                                                            </object>
+                                                        </object>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxStaticText" name="ID_STATICTEXT4">
+                                                <label>The more replacement tokens you add, the slower the parser will become.</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <border>8</border>
+                                            <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                            <object class="wxStaticText" name="ID_STATICTEXT5">
+                                                <label>So try not to over-do it :).</label>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>Symbols browser</label>
+                        <object class="wxPanel" name="ID_PANEL1">
+                            <pos>133,18</pos>
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <border>8</border>
+                                    <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                                    <object class="wxCheckBox" name="chkNoSB">
+                                        <label>Disable symbols browser</label>
                                     </object>
                                 </object>
                                 <object class="sizeritem">
@@ -203,7 +288,7 @@
                                     <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                                     <object class="wxStaticBoxSizer">
                                         <orient>wxVERTICAL</orient>
-                                        <label>Symbols browser options</label>
+                                        <label>Options</label>
                                         <object class="sizeritem">
                                             <border>8</border>
                                             <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
@@ -215,59 +300,9 @@
                                             <border>8</border>
                                             <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                                             <object class="wxCheckBox" name="chkFloatCB">
-                                                <label>As free floating window</label>
+                                                <label>Display as free floating/docking window</label>
                                             </object>
                                         </object>
-                                    </object>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
-                    <object class="notebookpage">
-                        <label>Cache</label>
-                        <object class="wxPanel" name="tabCache">
-                            <object class="wxBoxSizer">
-                                <orient>wxVERTICAL</orient>
-                                <object class="sizeritem">
-                                    <border>8</border>
-                                    <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                    <object class="wxStaticBoxSizer">
-                                        <orient>wxVERTICAL</orient>
-                                        <label>Cache file options</label>
-                                        <object class="sizeritem">
-                                            <border>8</border>
-                                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                            <object class="wxCheckBox" name="chkUseCache">
-                                                <label>Use cache</label>
-                                            </object>
-                                        </object>
-                                        <object class="sizeritem">
-                                            <border>8</border>
-                                            <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                            <object class="wxCheckBox" name="chkAlwaysUpdateCache">
-                                                <label>Always update cache</label>
-                                            </object>
-                                        </object>
-                                        <object class="sizeritem">
-                                            <border>8</border>
-                                            <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                            <object class="wxCheckBox" name="chkShowCacheProgress">
-                                                <label>Display cache loading/saving progress</label>
-                                            </object>
-                                        </object>
-                                    </object>
-                                </object>
-                                <object class="spacer">
-                                    <option>1</option>
-                                    <border>5</border>
-                                    <flag>wxALL|wxALIGN_CENTER</flag>
-                                </object>
-                                <object class="sizeritem">
-                                    <border>8</border>
-                                    <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                    <object class="wxStaticText" name="ID_STATICTEXT7">
-                                        <label>The cache has been disabled and will soon be removed completely.</label>
-                                        <fg>#800000</fg>
                                     </object>
                                 </object>
                             </object>

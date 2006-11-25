@@ -38,7 +38,8 @@
 #include <wx/colordlg.h>
 #include <configmanager.h>
 #include <manager.h>
-#include "globals.h"
+#include <editpairdlg.h>
+#include <globals.h>
 
 static const wxString g_SampleClasses =
 	_T("class A_class"
@@ -81,6 +82,9 @@ static const wxString g_SampleClasses =
 
 BEGIN_EVENT_TABLE(CCOptionsDlg, wxPanel)
     EVT_UPDATE_UI(-1, CCOptionsDlg::OnUpdateUI)
+	EVT_BUTTON(XRCID("btnAddRepl"), CCOptionsDlg::OnAddRepl)
+	EVT_BUTTON(XRCID("btnEditRepl"), CCOptionsDlg::OnEditRepl)
+	EVT_BUTTON(XRCID("btnDelRepl"), CCOptionsDlg::OnDelRepl)
 	EVT_BUTTON(XRCID("btnColour"), CCOptionsDlg::OnChooseColour)
 	EVT_COMMAND_SCROLL(XRCID("sliderDelay"), CCOptionsDlg::OnSliderScroll)
 END_EVENT_TABLE()
@@ -101,22 +105,25 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np)
 	XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->SetValue(m_Parser.Options().caseSensitive);
 	XRCCTRL(*this, "chkAutoSelectOne", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_select_one"), false));
 	XRCCTRL(*this, "chkAutoLaunch", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_launch"), true));
-	XRCCTRL(*this, "spnAutoLaunchChars", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/auto_launch"), 4));
+	XRCCTRL(*this, "spnAutoLaunchChars", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/auto_launch_chars"), 4));
 	XRCCTRL(*this, "spnMaxMatches", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_matches"), 16384));
 	XRCCTRL(*this, "chkInheritance", wxCheckBox)->SetValue(m_Parser.ClassBrowserOptions().showInheritance);
 	XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_threads"), 1));
 	XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->Enable(false);
 	XRCCTRL(*this, "chkFloatCB", wxCheckBox)->SetValue(cfg->ReadBool(_T("/as_floating_window"), false));
-//	XRCCTRL(*this, "chkUseCache", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_cache"), false));
-//	XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->SetValue(cfg->ReadBool(_T("/update_cache_always"), false));
-//	XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_cache_progress"), true));
-	XRCCTRL(*this, "chkUseCache", wxCheckBox)->Enable(false);
-	XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->Enable(false);
-	XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->Enable(false);
+	XRCCTRL(*this, "chkNoSB", wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_symbols_browser"), true));
 
 	int timerDelay = cfg->ReadInt(_T("/cc_delay"), 500);
 	XRCCTRL(*this, "sliderDelay", wxSlider)->SetValue(timerDelay / 100);
 	UpdateSliderLabel();
+
+    const ConfigManagerContainer::StringToStringMap& repl = Tokenizer::GetTokenReplacementsMap();
+    ConfigManagerContainer::StringToStringMap::const_iterator it = repl.begin();
+    while (it != repl.end())
+    {
+        XRCCTRL(*this, "lstRepl", wxListBox)->Append(it->first + _T(" -> ") + it->second);
+        ++it;
+    }
 
 //	m_Parser.ParseBuffer(g_SampleClasses, true);
 //	m_Parser.BuildTree(*XRCCTRL(*this, "treeClasses", wxTreeCtrl));
@@ -135,6 +142,79 @@ void CCOptionsDlg::UpdateSliderLabel()
 	else
 		lbl.Printf(_("%d ms"), position * 100);
 	XRCCTRL(*this, "lblDelay", wxStaticText)->SetLabel(lbl);
+}
+
+bool CCOptionsDlg::ValidateReplacementToken(wxString& from, wxString& to)
+{
+    wxRegEx re(_T("[A-Za-z_]+[0-9]*[A-Za-z_]*"));
+    from.Trim(true).Trim(false);
+    to.Trim(true).Trim(false);
+    if (!re.Matches(from) || !re.Matches(to))
+    {
+        cbMessageBox(_("Replacement tokens can only contain alphanumeric characters and underscores..."),
+                    _("Error"), wxICON_ERROR);
+        return false;
+    }
+    return true;
+}
+
+void CCOptionsDlg::OnAddRepl(wxCommandEvent& event)
+{
+    wxString key;
+    wxString value;
+    EditPairDlg dlg(this, key, value, _("Add new replacement token"), EditPairDlg::bmDisable);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        if (ValidateReplacementToken(key, value))
+        {
+            Tokenizer::SetReplacementString(key, value);
+            XRCCTRL(*this, "lstRepl", wxListBox)->Append(key + _T(" -> ") + value);
+        }
+    }
+}
+
+void CCOptionsDlg::OnEditRepl(wxCommandEvent& event)
+{
+    wxString key;
+    wxString value;
+
+    int sel = XRCCTRL(*this, "lstRepl", wxListBox)->GetSelection();
+    if (sel == -1)
+        return;
+
+    key = XRCCTRL(*this, "lstRepl", wxListBox)->GetStringSelection();
+    value = key;
+
+    key = key.BeforeFirst(_T(' '));
+    value = value.AfterLast(_T(' '));
+
+    EditPairDlg dlg(this, key, value, _("Edit replacement token"), EditPairDlg::bmDisable);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        if (ValidateReplacementToken(key, value))
+        {
+            Tokenizer::SetReplacementString(key, value);
+            XRCCTRL(*this, "lstRepl", wxListBox)->SetString(sel, key + _T(" -> ") + value);
+        }
+    }
+}
+
+void CCOptionsDlg::OnDelRepl(wxCommandEvent& event)
+{
+    int sel = XRCCTRL(*this, "lstRepl", wxListBox)->GetSelection();
+    if (sel == -1)
+        return;
+
+    if (cbMessageBox(_("Are you sure you want to delete this replacement token?"),
+                    _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
+    {
+        wxString key = XRCCTRL(*this, "lstRepl", wxListBox)->GetStringSelection();
+        key = key.BeforeFirst(_T(' '));
+        Tokenizer::RemoveReplacementString(key);
+        XRCCTRL(*this, "lstRepl", wxListBox)->Delete(sel);
+    }
 }
 
 void CCOptionsDlg::OnChooseColour(wxCommandEvent& event)
@@ -166,7 +246,17 @@ void CCOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "chkAutoSelectOne", wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkAutoLaunch", wxCheckBox)->Enable(en);
     XRCCTRL(*this, "spnAutoLaunchChars", wxSpinCtrl)->Enable(en && auto_launch);
+    XRCCTRL(*this, "spnMaxMatches", wxSpinCtrl)->Enable(en);
     XRCCTRL(*this, "sliderDelay", wxSlider)->Enable(en);
+    XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->Enable(en);
+
+    en = !XRCCTRL(*this, "chkNoSB", wxCheckBox)->GetValue();
+	XRCCTRL(*this, "chkInheritance", wxCheckBox)->Enable(en);
+	XRCCTRL(*this, "chkFloatCB", wxCheckBox)->Enable(en);
+
+    int sel = XRCCTRL(*this, "lstRepl", wxListBox)->GetSelection();
+    XRCCTRL(*this, "btnEditRepl", wxButton)->Enable(sel != -1);
+    XRCCTRL(*this, "btnDelRepl", wxButton)->Enable(sel != -1);
 }
 
 void CCOptionsDlg::OnApply()
@@ -176,9 +266,6 @@ void CCOptionsDlg::OnApply()
     // force parser to read its options that we write in the config
 	cfg->Write(_T("/use_code_completion"), (bool)!XRCCTRL(*this, "chkNoCC", wxCheckBox)->GetValue());
 	cfg->Write(_T("/max_threads"), (int)XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->GetValue());
-	cfg->Write(_T("/use_cache"), (bool)XRCCTRL(*this, "chkUseCache", wxCheckBox)->GetValue());
-	cfg->Write(_T("/update_cache_always"), (bool)XRCCTRL(*this, "chkAlwaysUpdateCache", wxCheckBox)->GetValue());
-	cfg->Write(_T("/show_cache_progress"), (bool)XRCCTRL(*this, "chkShowCacheProgress", wxCheckBox)->GetValue());
 
 	int timerDelay = XRCCTRL(*this, "sliderDelay", wxSlider)->GetValue() * 100;
 	cfg->Write(_T("/cc_delay"), (int)timerDelay);
@@ -190,10 +277,12 @@ void CCOptionsDlg::OnApply()
 	m_Parser.Options().wantPreprocessor = XRCCTRL(*this, "chkPreprocessor", wxCheckBox)->GetValue();
 	cfg->Write(_T("/auto_select_one"), (bool)XRCCTRL(*this, "chkAutoSelectOne", wxCheckBox)->GetValue());
 	cfg->Write(_T("/auto_launch"), (bool)XRCCTRL(*this, "chkAutoLaunch", wxCheckBox)->GetValue());
-	cfg->Write(_T("/auto_launch"), (int)XRCCTRL(*this, "spnAutoLaunchChars", wxSpinCtrl)->GetValue());
+	cfg->Write(_T("/auto_launch_chars"), (int)XRCCTRL(*this, "spnAutoLaunchChars", wxSpinCtrl)->GetValue());
 	cfg->Write(_T("/max_matches"), (int)XRCCTRL(*this, "spnMaxMatches", wxSpinCtrl)->GetValue());
 	m_Parser.Options().caseSensitive = XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->GetValue();
 	m_Parser.Options().useSmartSense = !XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->GetValue();
+
+	cfg->Write(_T("/use_symbols_browser"), (bool)!XRCCTRL(*this, "chkNoSB", wxCheckBox)->GetValue());
 	m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
 	cfg->Write(_T("/as_floating_window"), (bool)XRCCTRL(*this, "chkFloatCB", wxCheckBox)->GetValue());
     m_Parser.WriteOptions();

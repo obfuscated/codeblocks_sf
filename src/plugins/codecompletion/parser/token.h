@@ -116,6 +116,8 @@ class Token  : public BlockAllocated<Token, 10000>
         TokenIdxSet m_DirectAncestors;
         TokenIdxSet m_Descendants;
 
+        wxArrayString m_Aliases; // used for namespace aliases
+
 		void* m_pUserData; // custom user-data (the classbrowser expects it to be a pointer to a cbProject)
 	protected:
         TokensTree* m_pTree;

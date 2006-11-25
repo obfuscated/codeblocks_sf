@@ -18,12 +18,16 @@ class CCOptionsDlg : public cbConfigurationPanel
         virtual void OnApply();
         virtual void OnCancel(){}
 	protected:
+        void OnAddRepl(wxCommandEvent& event);
+        void OnEditRepl(wxCommandEvent& event);
+        void OnDelRepl(wxCommandEvent& event);
 		void OnOK(wxCommandEvent& event);
 		void OnChooseColour(wxCommandEvent& event);
 		void OnSliderScroll(wxScrollEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
 	private:
 		void UpdateSliderLabel();
+		bool ValidateReplacementToken(wxString& from, wxString& to);
 		Parser m_Parser;
 		NativeParser* m_pNativeParsers;
 		DECLARE_EVENT_TABLE()

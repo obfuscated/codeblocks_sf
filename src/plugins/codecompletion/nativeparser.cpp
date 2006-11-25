@@ -75,9 +75,9 @@ NativeParser::~NativeParser()
 
 void NativeParser::CreateClassBrowser()
 {
-    if (!m_pClassBrowser)
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+    if (!m_pClassBrowser && cfg->ReadBool(_T("/use_symbols_browser"), true))
     {
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
         bool isFloating = cfg->ReadBool(_T("/as_floating_window"), false);
 
         if (!isFloating)
@@ -132,14 +132,11 @@ void NativeParser::RemoveClassBrowser(bool appShutDown)
 
 void NativeParser::UpdateClassBrowser()
 {
-    if (m_Parser.Done() && !Manager::isappShuttingDown())
+    if (m_pClassBrowser && m_Parser.Done() && !Manager::isappShuttingDown())
     {
         Manager::Get()->GetMessageManager()->DebugLog(_T("Updating class browser..."));
-        if (m_pClassBrowser)
-        {
 //            m_pClassBrowser->SetParser(&m_Parser);
             m_pClassBrowser->UpdateView();
-        }
         Manager::Get()->GetMessageManager()->DebugLog(_T("Class browser updated."));
     }
 }
@@ -151,6 +148,15 @@ void NativeParser::RereadParserOptions()
 
     ParserOptions opts = m_Parser.Options();
     m_Parser.ReadOptions();
+
+    // disabled?
+    if (cfg->ReadBool(_T("/use_symbols_browser"), true) && !m_pClassBrowser)
+    {
+        CreateClassBrowser();
+        UpdateClassBrowser();
+    }
+    else if (!cfg->ReadBool(_T("/use_symbols_browser"), true) && m_pClassBrowser)
+        RemoveClassBrowser();
 
     // change class-browser docking settings
     if (m_ClassBrowserIsFloating != cfg->ReadBool(_T("/as_floating_window"), false))
@@ -1572,8 +1578,22 @@ size_t NativeParser::GenerateResultSet(TokensTree* tree,
         for (TokenIdxSet::iterator it = parent->m_Children.begin(); it != parent->m_Children.end(); ++it)
         {
             Token* token = tree->at(*it);
-            if (token && MatchType(token->m_TokenKind, kindMask) && MatchText(token->m_Name, search, caseSens, isPrefix))
-                result.insert(*it);
+            if (token && MatchType(token->m_TokenKind, kindMask))
+            {
+                if (MatchText(token->m_Name, search, caseSens, isPrefix))
+                    result.insert(*it);
+                else if (token && token->m_TokenKind == tkNamespace && token->m_Aliases.size()) // handle namespace aliases
+                {
+                    for (size_t i = 0; i < token->m_Aliases.size(); ++i)
+                    {
+                        if (MatchText(token->m_Aliases[i], search, caseSens, isPrefix))
+                        {
+                            result.insert(*it);
+                            // break; ?
+                        }
+                    }
+                }
+            }
             else if (token && token->m_TokenKind == tkEnum) // check enumerators for match too
                 GenerateResultSet(tree, search, *it, result, caseSens, isPrefix, kindMask);
         }
@@ -1586,8 +1606,22 @@ size_t NativeParser::GenerateResultSet(TokensTree* tree,
             for (TokenIdxSet::iterator it2 = ancestor->m_Children.begin(); it2 != ancestor->m_Children.end(); ++it2)
             {
                 Token* token = tree->at(*it2);
-                if (token && MatchType(token->m_TokenKind, kindMask) && MatchText(token->m_Name, search, caseSens, isPrefix))
-                    result.insert(*it2);
+                if (token && MatchType(token->m_TokenKind, kindMask))
+                {
+                    if (MatchText(token->m_Name, search, caseSens, isPrefix))
+                        result.insert(*it2);
+                    else if (token && token->m_TokenKind == tkNamespace && token->m_Aliases.size()) // handle namespace aliases
+                    {
+                        for (size_t i = 0; i < token->m_Aliases.size(); ++i)
+                        {
+                            if (MatchText(token->m_Aliases[i], search, caseSens, isPrefix))
+                            {
+                                result.insert(*it2);
+                                // break; ?
+                            }
+                        }
+                    }
+                }
                 else if (token && token->m_TokenKind == tkEnum) // check enumerators for match too
                     GenerateResultSet(tree, search, *it2, result, caseSens, isPrefix, kindMask);
             }
@@ -1601,8 +1635,22 @@ size_t NativeParser::GenerateResultSet(TokensTree* tree,
             Token* token = *it;
             if (token && token->m_ParentIndex == -1)
             {
-                if (MatchType(token->m_TokenKind, kindMask) && MatchText(token->m_Name, search, caseSens, isPrefix))
-                    result.insert(token->GetSelf());
+                if (token && MatchType(token->m_TokenKind, kindMask))
+                {
+                    if (MatchText(token->m_Name, search, caseSens, isPrefix))
+                        result.insert(token->GetSelf());
+                    else if (token && token->m_TokenKind == tkNamespace && token->m_Aliases.size()) // handle namespace aliases
+                    {
+                        for (size_t i = 0; i < token->m_Aliases.size(); ++i)
+                        {
+                            if (MatchText(token->m_Aliases[i], search, caseSens, isPrefix))
+                            {
+                                result.insert(token->GetSelf());
+                                // break; ?
+                            }
+                        }
+                    }
+                }
                 else if (token && token->m_TokenKind == tkEnum) // check enumerators for match too
                     GenerateResultSet(tree, search, token->GetSelf(), result, caseSens, isPrefix, kindMask);
             }
