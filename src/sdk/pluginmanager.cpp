@@ -756,6 +756,8 @@ int PluginManager::ScanForPlugins(const wxString& path)
 #endif
     wxLogNull zero;
     int count = 0;
+    if(!wxDirExists(path))
+    	return count;
     wxDir dir(path);
 
     if (!dir.IsOpened())

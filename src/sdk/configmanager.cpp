@@ -1407,8 +1407,8 @@ void ConfigManager::InitPaths()
     ConfigManager::data_path_user = ConfigManager::relo ? data_path_global : config_folder + _T("/share/codeblocks");
 
     CreateDirRecursively(ConfigManager::config_folder);
-    CreateDirRecursively(ConfigManager::data_path_user   + _T("/plugins"));
-    CreateDir(ConfigManager::data_path_user   + _T("/scripts"));
+    CreateDirRecursively(ConfigManager::data_path_user   + _T("/plugins/"));
+    CreateDir(ConfigManager::data_path_user   + _T("/scripts/"));
 
     wxString tempFile = wxFileName::CreateTempFileName(wxEmptyString);
     ConfigManager::temp_folder = wxFileName(tempFile).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
