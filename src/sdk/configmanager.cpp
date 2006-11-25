@@ -33,6 +33,19 @@
 #include <shlobj.h>
 #endif
 
+#if defined(__APPLE__) && defined(__MACH__)
+#include <sys/param.h>
+#include <mach-o/dyld.h>
+#endif
+
+#ifdef __WXMAC__
+#include "wx/mac/corefoundation/cfstring.h"
+#include "wx/intl.h"
+
+#include <CoreFoundation/CFBundle.h>
+#include <CoreFoundation/CFURL.h>
+#endif
+
 #ifdef TIXML_USE_STL
 #include <string>
 #endif
@@ -74,9 +87,33 @@ namespace
                 return _T(".");
             wxFileName fname(cbC2U(p));
             return fname.GetPath(wxPATH_GET_VOLUME);
+        #elif defined(__APPLE__) && defined(__MACH__)
+            char path[MAXPATHLEN+1];
+            uint32_t path_len = MAXPATHLEN;
+            // SPI first appeared in Mac OS X 10.2
+            _NSGetExecutablePath(path, &path_len);
+            wxFileName fname(wxString(path, wxConvUTF8));
+            return fname.GetPath(wxPATH_GET_VOLUME);
         #else
             return _T(".");
         #endif
+        #endif
+    };
+
+    wxString DetermineResourcesPath()
+    {
+        #if defined(__WXMAC__)
+            CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
+            CFURLRef absoluteURL = CFURLCopyAbsoluteURL(resourcesURL); // relative -> absolute
+            CFRelease(resourcesURL);
+            CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL,kCFURLPOSIXPathStyle);
+            CFRelease(absoluteURL);
+            wxString str = wxMacCFStringHolder(cfStrPath).AsString(wxLocale::GetSystemEncoding());
+            if (!str.Contains(wxString(_T("/Resources"))))
+               return ::DetermineExecutablePath() + _T("/.."); // not a bundle, use relative path
+            return str;
+        #else
+            return _T(".");
         #endif
     };
 };
@@ -1394,12 +1431,15 @@ void ConfigManager::InitPaths()
     ConfigManager::config_folder = wxStandardPathsBase::Get().GetUserDataDir();
     ConfigManager::home_folder = wxStandardPathsBase::Get().GetUserConfigDir();
     ConfigManager::app_path = ::DetermineExecutablePath();
+    wxString res_path = ::DetermineResourcesPath();
 
     // if non-empty, the app has overriden it (e.g. "--prefix" was passed in the command line)
     if (data_path_global.IsEmpty())
     {
         if(ConfigManager::Windows())
             ConfigManager::data_path_global = app_path + _T("/share/codeblocks");
+        else if(ConfigManager::MacOS())
+            ConfigManager::data_path_global = res_path + _T("/share/codeblocks");
         else
             ConfigManager::data_path_global = wxStandardPathsBase::Get().GetDataDir();
     }
