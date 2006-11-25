@@ -22,14 +22,24 @@ namespace ScriptBindings
         // platform constants
         BIND_INT_CONSTANT_NAMED(0, "PLATFORM_MSW");
         BIND_INT_CONSTANT_NAMED(1, "PLATFORM_GTK");
+        BIND_INT_CONSTANT_NAMED(2, "PLATFORM_MAC");
+        BIND_INT_CONSTANT_NAMED(3, "PLATFORM_OS2");
+        BIND_INT_CONSTANT_NAMED(4, "PLATFORM_X11");       
         BIND_INT_CONSTANT_NAMED(99, "PLATFORM_UNKNOWN");
+        
         #ifdef __WXMSW__
             BIND_INT_CONSTANT_NAMED(0, "PLATFORM");
         #elif __WXGTK__
             BIND_INT_CONSTANT_NAMED(1, "PLATFORM");
+        #elif __WXMAC__
+            BIND_INT_CONSTANT_NAMED(2, "PLATFORM");
+        #elif __WXOS2__
+            BIND_INT_CONSTANT_NAMED(3, "PLATFORM");
+        #elif __WXX11__
+            BIND_INT_CONSTANT_NAMED(4, "PLATFORM");
         #else
             BIND_INT_CONSTANT_NAMED(99, "PLATFORM");
-        #endif
+        #endif        
 
         BIND_INT_CONSTANT_NAMED(PLUGIN_SDK_VERSION_MAJOR, "PLUGIN_SDK_VERSION_MAJOR");
         BIND_INT_CONSTANT_NAMED(PLUGIN_SDK_VERSION_MINOR, "PLUGIN_SDK_VERSION_MINOR");

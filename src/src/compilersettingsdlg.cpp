@@ -70,6 +70,8 @@ CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
         // defaults
         #ifdef __WXMSW__
         bbplugins.Add(_T("compiler.dll"));
+        #elif __WXMAC__
+        bbplugins.Add(_T("libcompiler.dylib"));
         #else
         bbplugins.Add(_T("libcompiler.so"));
         #endif
@@ -241,6 +243,8 @@ void CompilerSettingsDlg::EndModal(int retCode)
 
         #ifdef __WXMSW__
         const wxString compiler = _T("compiler.dll");
+        #elif __WXMAC__
+        const wxString compiler = _T("libcompiler.dylib");
         #else
         const wxString compiler = _T("libcompiler.so");
         #endif

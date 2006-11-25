@@ -133,7 +133,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 #if defined(__WXMSW__)
 	const int default_eol = 0; //CR&LF
 #elif defined(__WXMAC__)
-    const int default_eol = 1; //CR
+    const int default_eol = 2; //LF (in the past the default was CR but Apple encourages LF nowadays)
 #elif defined(__UNIX__)
 	const int default_eol = 2; //LF
 #endif

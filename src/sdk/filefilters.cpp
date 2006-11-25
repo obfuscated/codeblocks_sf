@@ -155,6 +155,9 @@ const wxString FileFilters::XML_EXT                      = _T("xml");
 #ifdef __WXMSW__
     const wxString FileFilters::DYNAMICLIB_EXT           = _T("dll");
     const wxString FileFilters::EXECUTABLE_EXT           = _T("exe");
+#elif __WXMAC__
+    const wxString FileFilters::DYNAMICLIB_EXT	         = _T("dylib");
+    const wxString FileFilters::EXECUTABLE_EXT	         = _T("");
 #else
     const wxString FileFilters::DYNAMICLIB_EXT	         = _T("so");
     const wxString FileFilters::EXECUTABLE_EXT	         = _T("");

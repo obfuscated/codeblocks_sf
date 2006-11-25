@@ -1651,7 +1651,7 @@ void CompilerOptionsDlg::OnAddLibClick(wxCommandEvent& /*event*/)
             _("Choose library to link"),
             false,
             true,
-            _("Library files (*.a, *.so, *.lib)|*.a;*.so;*.lib|All files (*)|*"));
+            _("Library files (*.a, *.so, *.lib, *.dylib, *.bundle)|*.a;*.so;*.lib;*.dylib;*.bundle|All files (*)|*"));
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
@@ -1676,7 +1676,7 @@ void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& /*event*/)
             _("Choose library to link"),
             false,
             false,
-            _("Library files (*.a, *.so, *.lib)|*.a;*.so;*.lib|All files (*)|*"));
+            _("Library files (*.a, *.so, *.lib, *.dylib, *.bundle)|*.a;*.so;*.lib;*.dylib;*.bundle|All files (*)|*"));
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)

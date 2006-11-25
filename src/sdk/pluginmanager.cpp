@@ -749,6 +749,8 @@ int PluginManager::ScanForPlugins(const wxString& path)
 {
 #ifdef __WXMSW__
     #define PLUGINS_MASK _T("*.dll")
+#elif __WXMAC__
+    #define PLUGINS_MASK _T("*.dylib")
 #else
     #define PLUGINS_MASK _T("*.so")
 #endif
@@ -770,6 +772,8 @@ int PluginManager::ScanForPlugins(const wxString& path)
             // defaults
             #ifdef __WXMSW__
             bbplugins.Add(_T("compiler.dll"));
+            #elif __WXMAC__
+            bbplugins.Add(_T("libcompiler.dylib"));
             #else
             bbplugins.Add(_T("libcompiler.so"));
             #endif
