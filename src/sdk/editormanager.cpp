@@ -1425,7 +1425,11 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
     if (data->matchCase)
         flags |= wxSCI_FIND_MATCHCASE;
     if (data->regEx)
+    {
         flags |= wxSCI_FIND_REGEXP;
+        if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
+            flags |= wxSCI_FIND_POSIX;
+    }
 
     control->BeginUndoAction();
     int pos = -1;
@@ -1660,7 +1664,11 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
     if (data->matchCase)
         flags |= wxSCI_FIND_MATCHCASE;
     if (data->regEx)
+    {
         flags |= wxSCI_FIND_REGEXP;
+        if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
+            flags |= wxSCI_FIND_POSIX;
+    }
 
     bool replace = false;
     bool confirm = true;
@@ -1886,7 +1894,11 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
     if (data->matchCase)
         flags |= wxSCI_FIND_MATCHCASE;
     if (data->regEx)
+    {
         flags |= wxSCI_FIND_REGEXP;
+        if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
+            flags |= wxSCI_FIND_POSIX;
+    }
 
     int pos = -1;
     // avoid infinite loop when wrapping search around, eventually crashing WinLogon O.O
