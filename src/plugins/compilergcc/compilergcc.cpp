@@ -98,23 +98,23 @@ namespace
 // (don't forget that, especially in a plugin)
 int idTimerPollCompiler = XRCID("idTimerPollCompiler");
 int idMenuCompile = XRCID("idCompilerMenuCompile");
-int idMenuCompileTarget = XRCID("idCompilerMenuCompileTarget");
-int idMenuCompileFromProjectManager = XRCID("idCompilerMenuCompileFromProjectManager");
-int idMenuProjectCompilerOptions = XRCID("idCompilerMenuProjectCompilerOptions");
+int idMenuCompileTarget = wxNewId();
+int idMenuCompileFromProjectManager = wxNewId();
+int idMenuProjectCompilerOptions = wxNewId();
 int idMenuProjectCompilerOptionsFromProjectManager = wxNewId();
-int idMenuTargetCompilerOptions = XRCID("idCompilerMenuTargetCompilerOptions");
-int idMenuTargetCompilerOptionsSub = XRCID("idCompilerMenuTargetCompilerOptionsSub");
+int idMenuTargetCompilerOptions = wxNewId();
+int idMenuTargetCompilerOptionsSub = wxNewId();
 int idMenuCompileFile = XRCID("idCompilerMenuCompileFile");
-int idMenuCompileFileFromProjectManager = XRCID("idCompilerMenuCompileFileFromProjectManager");
+int idMenuCompileFileFromProjectManager = wxNewId();
 int idMenuRebuild = XRCID("idCompilerMenuRebuild");
-int idMenuRebuildTarget = XRCID("idCompilerMenuRebuildTarget");
-int idMenuRebuildFromProjectManager = XRCID("idCompilerMenuRebuildFromProjectManager");
+int idMenuRebuildTarget = wxNewId();
+int idMenuRebuildFromProjectManager = wxNewId();
 int idMenuCompileAll = XRCID("idCompilerMenuCompileAll");
 int idMenuRebuildAll = XRCID("idCompilerMenuRebuildAll");
 int idMenuClean = XRCID("idCompilerMenuClean");
 int idMenuCleanAll = XRCID("idCompilerMenuCleanAll");
-int idMenuCleanTarget = XRCID("idCompilerMenuCleanTarget");
-int idMenuCleanFromProjectManager = XRCID("idCompilerMenuCleanFromProjectManager");
+int idMenuCleanTarget = wxNewId();
+int idMenuCleanFromProjectManager = wxNewId();
 int idMenuCompileAndRun = XRCID("idCompilerMenuCompileAndRun");
 int idMenuRun = XRCID("idCompilerMenuRun");
 int idMenuKillProcess = XRCID("idCompilerMenuKillProcess");
@@ -147,34 +147,34 @@ int idGCCProcess15 = wxNewId();
 int idGCCProcess16 = wxNewId();
 
 BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuCompile"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuCompileTarget"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuCompileFromProjectManager"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuProjectCompilerOptions"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuTargetCompilerOptions"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuTargetCompilerOptionsSub"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuCompileFile"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuCompileFileFromProjectManager"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuRebuild"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuRebuildTarget"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuRebuildFromProjectManager"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuCompileAll"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuRebuildAll"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuClean"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuCleanAll"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuCleanTarget"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuCleanFromProjectManager"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuCompileAndRun"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuRun"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuKillProcess"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuSelectTarget"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuNextError"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuPreviousError"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuClearErrors"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuExportMakefile"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idCompilerMenuSettings"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idToolTarget"), CompilerGCC::OnUpdateUI)
-    EVT_UPDATE_UI(XRCID("idToolTargetLabel"), CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuCompile, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuCompileTarget, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuCompileFromProjectManager, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuProjectCompilerOptions, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuTargetCompilerOptions, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuTargetCompilerOptionsSub, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuCompileFile, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuCompileFileFromProjectManager, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuRebuild, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuRebuildTarget, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuRebuildFromProjectManager, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuCompileAll, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuRebuildAll, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuClean, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuCleanAll, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuCleanTarget, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuCleanFromProjectManager, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuCompileAndRun, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuRun, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuKillProcess, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuSelectTarget, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuNextError, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuPreviousError, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuClearErrors, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuExportMakefile, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuSettings, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idToolTarget, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idToolTargetLabel, CompilerGCC::OnUpdateUI)
 
     EVT_IDLE(                                       CompilerGCC::OnIdle)
     EVT_TIMER(idTimerPollCompiler,                  CompilerGCC::OnTimer)
