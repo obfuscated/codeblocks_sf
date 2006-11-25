@@ -101,6 +101,7 @@ int idMenuCompile = XRCID("idCompilerMenuCompile");
 int idMenuCompileTarget = XRCID("idCompilerMenuCompileTarget");
 int idMenuCompileFromProjectManager = XRCID("idCompilerMenuCompileFromProjectManager");
 int idMenuProjectCompilerOptions = XRCID("idCompilerMenuProjectCompilerOptions");
+int idMenuProjectCompilerOptionsFromProjectManager = wxNewId();
 int idMenuTargetCompilerOptions = XRCID("idCompilerMenuTargetCompilerOptions");
 int idMenuTargetCompilerOptionsSub = XRCID("idCompilerMenuTargetCompilerOptionsSub");
 int idMenuCompileFile = XRCID("idCompilerMenuCompileFile");
@@ -189,6 +190,7 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_MENU(idMenuCompileAll,                      CompilerGCC::Dispatcher)
     EVT_MENU(idMenuRebuildAll,                      CompilerGCC::Dispatcher)
     EVT_MENU(idMenuProjectCompilerOptions,          CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuProjectCompilerOptionsFromProjectManager, CompilerGCC::Dispatcher)
     EVT_MENU(idMenuTargetCompilerOptions,           CompilerGCC::Dispatcher)
     EVT_MENU(idMenuClean,                           CompilerGCC::Dispatcher)
     EVT_MENU(idMenuCleanAll,                        CompilerGCC::Dispatcher)
@@ -469,7 +471,7 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
         int propsID = prj->FindItem(_("Properties"));
         if (propsID != wxNOT_FOUND)
             prj->FindChildItem(propsID, &propsPos);
-        prj->Insert(propsPos, idMenuProjectCompilerOptions, _("Build options"), _("Set the project's build options"));
+        prj->Insert(propsPos, idMenuProjectCompilerOptionsFromProjectManager, _("Build options"), _("Set the project's build options"));
         prj->InsertSeparator(propsPos);
     }
 //    // Add entry in settings menu (outside "plugins")
@@ -574,7 +576,8 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
     if (eventId == idMenuRebuildAll)
         OnRebuildAll(event);
 
-    if (eventId == idMenuProjectCompilerOptions)
+    if (eventId == idMenuProjectCompilerOptions ||
+		eventId == idMenuProjectCompilerOptionsFromProjectManager)
         OnProjectCompilerOptions(event);
 
     if (eventId == idMenuTargetCompilerOptions)
@@ -2851,7 +2854,7 @@ void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& event)
     wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
     wxTreeItemId sel = tree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)tree->GetItemData(sel);
-    if (ftd)
+    if (ftd && (event.GetId() != idMenuProjectCompilerOptionsFromProjectManager))
     {
         // 'configure' selected target, if other than 'All'
         ProjectBuildTarget* target = 0;
@@ -2862,13 +2865,27 @@ void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& event)
         }
         Configure(ftd->GetProject(), target);
     }
+    else if(event.GetId() == idMenuProjectCompilerOptionsFromProjectManager)
+    {
+        if(cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject())
+        {
+			if (prj == m_Project)
+			{
+				ProjectBuildTarget* target = 0;
+				if (m_RealTargetIndex != -1)
+					target = m_Project->GetBuildTarget(m_RealTargetIndex);
+				Configure(Manager::Get()->GetProjectManager()->GetActiveProject(), target);
+			}
+        }
+    }
     else
     {
-        cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-        if (prj)
+        if (cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject())
+        {
             Configure(prj);
+        }
     }
-}
+} // end of OnProjectCompilerOptions
 
 void CompilerGCC::OnTargetCompilerOptions(wxCommandEvent& event)
 {
