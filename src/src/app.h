@@ -91,6 +91,7 @@ class CodeBlocksApp : public wxApp
 
         bool m_NoSplash; // no splash screen
         bool m_HasDebugLog; // display debug log
+        bool m_NoCrashHandler; // no crash handler
         wxString m_Prefix; // --prefix switch
 
 		wxSingleInstanceChecker* m_pSingleInstance;

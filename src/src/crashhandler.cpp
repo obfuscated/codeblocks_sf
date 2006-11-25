@@ -116,12 +116,15 @@ LONG WINAPI CrashHandlerFunc(PEXCEPTION_POINTERS ExceptionInfo)
 };
 
 
-CrashHandler::CrashHandler() : handler(0)
+CrashHandler::CrashHandler(bool bDisabled) : handler(0)
 {
+    if (!bDisabled)
+    {
         AddHandler_t AddHandler = (AddHandler_t) GetProcAddress(GetModuleHandle(_T("kernel32")), "AddVectoredExceptionHandler");
 
         if (AddHandler)
             handler = AddHandler(1, CrashHandlerFunc);
+    }
 }
 
 CrashHandler::~CrashHandler()

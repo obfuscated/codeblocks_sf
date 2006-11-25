@@ -14,7 +14,7 @@ class CrashHandler
 
     void * handler;
 public:
-    CrashHandler();
+    CrashHandler(bool bDisabled);
     ~CrashHandler();
 };
 
@@ -23,7 +23,7 @@ public:
 class CrashHandler
 {
 public:
-    CrashHandler(){};
+    CrashHandler(bool bDisabled){};
     ~CrashHandler(){};
 };
 

@@ -145,6 +145,7 @@ const wxCmdLineEntryDesc cmdLineDesc[] =
 #endif
     { wxCMD_LINE_SWITCH, _T("ns"), _T("no-splash-screen"), _T("don't display a splash screen while loading"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T("d"), _T("debug-log"), _T("display application's debug log"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T("nc"), _T("no-crash-handler"), _T("don't use the crash handler (useful for debugging C::B)"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, _T(""), _T("prefix"),  _T("the shared data dir prefix"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_OPTION, _T("p"), _T("personality"),  _T("the personality to use: \"ask\" or <personality-name>"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_OPTION, _T(""), _T("profile"),  _T("synonym to personality"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
@@ -431,7 +432,7 @@ bool CodeBlocksApp::OnInit()
 
 	wxTheClipboard->Flush();
 
-//    static CrashHandler crash_handler;
+    static CrashHandler crash_handler(m_NoCrashHandler);
 
     // we'll do this once and for all at startup
     wxFileSystem::AddHandler(new wxZipFSHandler);
@@ -818,6 +819,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 #endif
 					m_NoSplash = parser.Found(_T("no-splash-screen"));
 					m_HasDebugLog = parser.Found(_T("debug-log"));
+					m_NoCrashHandler = parser.Found(_T("no-crash-handler"));
 					if (parser.Found(_T("personality"), &val) ||
                         parser.Found(_T("profile"), &val))
                     {
