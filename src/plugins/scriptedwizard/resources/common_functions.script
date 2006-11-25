@@ -5,64 +5,146 @@
 // Warnings On
 function WarningsOn(base, compilerID)
 {
-    if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
+    if      (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")) )
     {
         base.AddCompilerOption(_T("/W3"));
     }
-    else
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc")) )
     {
-        // GCC options are used as fallback
         base.AddCompilerOption(_T("-Wall"));
     }
-}
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd")) )
+    {
+        base.AddCompilerOption(_T("-w"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")) )
+    {
+        base.AddCompilerOption(_T("-wx")); // max. warning level
+    }
+    else
+    {
+        ShowWarning(_T("This wizard doesn't know how to setup warning flags for this compiler.\n"));
+    }
+    // TODO: Other compilers, fallback?
+}// WarningsOn
 
 // Debug symbols On
 function DebugSymbolsOn(base, compilerID)
 {
-    if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
+    if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
     {
         base.AddCompilerOption(_T("/Zi"));
         base.AddCompilerOption(_T("/D_DEBUG"));
         base.AddLinkerOption(_T("/DEBUG"));
     }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc")) )
+    {
+        base.AddCompilerOption(_T("-g"));
+
+        if  (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd")))
+        {
+            base.AddCompilerOption(_T("-D"));
+        }
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc")))
+    {
+        base.AddCompilerOption(_T("-v"));
+        base.AddLinkerOption(_T("-v"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc")))
+    {
+        base.AddCompilerOption(_T("/Zi"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
+    {
+        base.AddCompilerOption(_T("-d2")); // full symbolic debugging information
+    }
     else
     {
-        // GCC options are used as fallback
-        base.AddCompilerOption(_T("-g"));
+        ShowWarning(_T("This wizard doesn't know how to setup debug flags for this compiler.\n"));
     }
-}
+    // TODO: Other compilers, fallback?
+}// DebugSymbolsOn
 
 // Optimizations On
 function OptimizationsOn(base, compilerID)
 {
-    if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
+    if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
     {
         base.AddCompilerOption(_T("/Og"));
         base.AddCompilerOption(_T("/Ox"));
         base.AddCompilerOption(_T("/DNDEBUG"));
     }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc")) )
+    {
+        base.AddCompilerOption(_T("-O2"));
+
+        if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
+            || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
+            || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc")) )
+        {
+            base.AddLinkerOption(_T("-s"));
+        }
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd")))
+    {
+        base.AddCompilerOption(_T("-o"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc")))
+    {
+        base.AddCompilerOption(_T("/O2"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
+    {
+        base.AddCompilerOption(_T("-ot")); // optimize for time
+    }
     else
     {
-        // GCC options are used as fallback
-        base.AddCompilerOption(_T("-O2"));
-        base.AddLinkerOption(_T("-s"));
+        ShowWarning(_T("This wizard doesn't know how to setup optimisation flags for this compiler.\n"));
     }
-}
+    // TODO: Other compilers, fallback?
+}// OptimizationsOn
 
 // C++ Exceptions On
 function CppExceptionsOn(base, compilerID)
 {
-    if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
+    if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
     {
         base.AddCompilerOption(_T("/EHsc"));
     }
-    else
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc")))
     {
-        // GCC options are used as fallback
         base.AddCompilerOption(_T("-fexceptions"));
     }
-}
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc")))
+    {
+        base.AddCompilerOption(_T("-x"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
+    {
+        base.AddCompilerOption(_T("-xs"));
+    }
+    else
+    {
+        ShowWarning(_T("This wizard doesn't know how to setup exception flags for this compiler.\n"));
+    }
+    // TODO: Other compilers, fallback?
+}// CppExceptionsOn
 
+// Verify a (provided) directory exists - otherwise throw an error.
+// Return the true directory having replaced all possible macros.
 function VerifyDirectory(dir_or_macro)
 {
     // try to make it a real path and verify it's existense

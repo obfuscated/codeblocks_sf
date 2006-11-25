@@ -90,6 +90,13 @@ function SetupProject(project)
     // enable compiler warnings (project-wide)
     WarningsOn(project, Wizard.GetCompilerID());
 
+    // add additional libs for special compilers
+    if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc")))
+    {
+        project.AddLinkLib(_T("cw32mt.lib"));
+        project.AddLinkLib(_T("import32.lib"));
+    }
+
     // We setup the targets using SetupTarget() which is conveniently called by Code::Blocks
     // if we register this wizard as wizTarget type :)
     // This means that this very wizard can be used both as wizProject *and* as wizTarget ;)
@@ -124,12 +131,14 @@ function SetupTarget(target,is_debug)
     if (is_debug)
     {
         // enable debugging symbols for this target
-        DebugSymbolsOn(target, Wizard.GetTargetCompilerID());
+        // DebugSymbolsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
     }
     else
     {
         // enable optimizations for this target
-        OptimizationsOn(target, Wizard.GetTargetCompilerID());
+        // OptimizationsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        OptimizationsOn(target, Wizard.GetCompilerID());
     }
 
     // all done!
