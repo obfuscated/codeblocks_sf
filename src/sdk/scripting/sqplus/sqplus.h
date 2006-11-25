@@ -15,7 +15,11 @@
 #ifdef __APPLE__
   #include <malloc/malloc.h>
 #else
-  #include <malloc.h>
+  #ifdef __FreeBSD__
+    #include <stdlib.h>
+  #else
+    #include <malloc.h>
+  #endif
 #endif
 #include <memory.h>
 #if defined(_MSC_VER) || defined(__BORLANDC__)
