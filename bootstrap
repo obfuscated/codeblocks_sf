@@ -14,8 +14,10 @@ elif [ ! -f ./revision.m4 ]; then
 fi
 
 # Deal with some gentoo-specific issues
-export WANT_AUTOMAKE='1.7'
-export WANT_AUTOCONF='2.5'
+WANT_AUTOMAKE='1.7'
+export WANT_AUTOMAKE
+WANT_AUTOCONF='2.5'
+export WANT_AUTOCONF
 
 # Default program names
 test -z "$AUTOCONF" && AUTOCONF=autoconf
