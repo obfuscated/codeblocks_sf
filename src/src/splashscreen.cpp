@@ -102,21 +102,27 @@ cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, 
   SetClientSize(w, h);
   CentreOnScreen();
 
+#ifndef __WXMAC__
   int x = GetPosition().x;
   int y = GetPosition().y;
 
   wxScreenDC screen_dc;
+#endif
   wxMemoryDC label_dc;
 
   m_label.Create(w, h);
 
   label_dc.SelectObject(m_label);
+#ifndef __WXMAC__
   label_dc.Blit(0, 0, w, h, &screen_dc, x, y);
+#endif
   label_dc.DrawBitmap(label, 0, 0, true);
   label_dc.SelectObject(wxNullBitmap);
 
+  #ifdef __WIN32__
   //  Surprise: SetShape() does not seem to work...?
   //  See DoPaint() -- we simulate it using the clip rect
+  #endif
   SetShape(r);
 
   Show(true);
