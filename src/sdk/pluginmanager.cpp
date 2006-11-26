@@ -749,8 +749,6 @@ int PluginManager::ScanForPlugins(const wxString& path)
 {
 #ifdef __WXMSW__
     #define PLUGINS_MASK _T("*.dll")
-#elif __WXMAC__
-    #define PLUGINS_MASK _T("*.dylib")
 #else
     #define PLUGINS_MASK _T("*.so")
 #endif
