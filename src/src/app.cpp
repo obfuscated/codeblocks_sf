@@ -750,6 +750,10 @@ wxString CodeBlocksApp::GetAppPath() const
     base = wxString(SELFPATH,wxConvUTF8);
     base = wxFileName(base).GetPath();
 #endif
+#if defined(sun) || defined(__sun)
+    base = wxString(getexecname(),wxConvCurrent);
+    base = wxFileName(base).GetPath();
+#endif
 #if defined(__APPLE__) && defined(__MACH__)
     char path[MAXPATHLEN+1];
     uint32_t path_len = MAXPATHLEN;
