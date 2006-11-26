@@ -1,5 +1,5 @@
-#ifdef __WXMSW__
-// this compiler is valid only in windows
+#if defined(_WIN32) || defined(linux)
+// this compiler is valid only in windows and linux
 
 #include <sdk.h>
 #include "compilerDMD.h"
@@ -32,10 +32,12 @@ Compiler * CompilerDMD::CreateCopy()
 
 void CompilerDMD::Reset()
 {
+	#ifdef __WXMSW__
 	m_Programs.C = _T("dmd.exe");
 	m_Programs.CPP = _T("dmd.exe");
 	m_Programs.LD = _T("dmd.exe");
 	m_Programs.LIB = _T("lib.exe");
+	m_Programs.DBG = _T("windbg.exe");
 	m_Programs.WINDRES = _T("dmd.exe");
 	m_Programs.MAKE = _T("make.exe");
 
@@ -54,6 +56,45 @@ void CompilerDMD::Reset()
 	m_Switches.buildMethod = cbmDirect;
 	m_Switches.linkerNeedsLibPrefix = false;
 	m_Switches.linkerNeedsLibExtension = true;
+
+	// FIXME (hd#1#): should be work on: we need $res_options
+	m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp $resource_output $res_includes $file");
+	m_Commands[(int)ctLinkExeCmd] = _T("$linker $exe_output $link_options $link_objects $libs");
+	m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker $exe_output $link_options $link_objects $libs");
+	
+	#else // linux
+	m_Programs.C = _T("dmd");
+	m_Programs.CPP = _T("dmd");
+	m_Programs.LD = _T("gcc");
+	m_Programs.LIB = _T("ar");
+	m_Programs.DBG = _T("gdb");
+	m_Programs.WINDRES = _T("");
+	m_Programs.MAKE = _T("make");
+
+	m_Switches.includeDirs = _T("-I");
+	m_Switches.libDirs = _T("-L");
+	m_Switches.linkLibs = _T("-l");
+	m_Switches.libPrefix = _T("lib");
+	m_Switches.libExtension = _T("a");
+	m_Switches.defines = _T("");
+	m_Switches.genericSwitch = _T("-");
+	m_Switches.objectExtension = _T("o");
+	m_Switches.needDependencies = false;
+	m_Switches.forceCompilerUseQuotes = false;
+	m_Switches.forceLinkerUseQuotes = false;
+	m_Switches.logging = clogSimple;
+	m_Switches.buildMethod = cbmDirect;
+	m_Switches.linkerNeedsLibPrefix = false;
+	m_Switches.linkerNeedsLibExtension = false;
+
+ 	m_Commands[(int)ctCompileResourceCmd] = _T("");
+	m_Commands[(int)ctLinkExeCmd] = _T("$linker -o $exe_output $link_options $link_objects $libs");
+	m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker -o $exe_output $link_options $link_objects $libs");
+	#endif
+
+    m_Commands[(int)ctCompileObjectCmd] = _T("$compiler $options $includes -c $file -of$object");
+    m_Commands[(int)ctLinkDynamicCmd] = _T("$linker $exe_output $link_options $link_objects $libs $link_resobjects");
+    m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker $static_output $link_options $link_objects");	
 
     m_Options.ClearOptions();
 
@@ -75,19 +116,15 @@ void CompilerDMD::Reset()
     m_Options.AddOption(_("verbose"), _T("-v"), _("Others"));
     m_Options.AddOption(_("enable warnings"), _T("-w"), _("Others"));
 
-    // FIXME (hd#1#): should be work on: we need $res_options
-    m_Commands[(int)ctCompileObjectCmd] = _T("$compiler $options $includes -c $file -of$object");
-    m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp $resource_output $res_includes $file");
-    m_Commands[(int)ctLinkExeCmd] = _T("$linker $exe_output $link_options $link_objects $libs");
-    m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker $exe_output $link_options $link_objects $libs");
-    m_Commands[(int)ctLinkDynamicCmd] = _T("$linker $exe_output $link_options $link_objects $libs $link_resobjects");
-    m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker $static_output $link_options $link_objects");
-
     LoadDefaultRegExArray();
 
     m_CompilerOptions.Clear();
     m_LinkerOptions.Clear();
     m_LinkLibs.Clear();
+	#ifndef __WXMSW__
+	m_LinkLibs.Add(_("-lpthread"));
+	m_LinkLibs.Add(_("-lm"));
+	#endif
     m_CmdsBefore.Clear();
     m_CmdsAfter.Clear();
 }
@@ -103,20 +140,32 @@ void CompilerDMD::LoadDefaultRegExArray()
 
 AutoDetectResult CompilerDMD::AutoDetectInstallationDir()
 {
-    // just a guess; the default installation dir
-	m_MasterPath = _T("C:\\dmd");
     wxString sep = wxFileName::GetPathSeparator();
 
     // NOTE (hd#1#): dmc uses sc.ini for compiler's master directories
     // NOTE (mandrav#1#): which doesn't seem to exist if you don't have the CD version ;)
+
+    // just a guess; the default installation dir
+	#ifdef __WXMSW__
+	m_MasterPath = _T("C:\\dmd");
+	wxString incPath=m_MasterPath + sep + _T("src") + sep + _T("phobos");
+	wxString libPath=m_MasterPath + sep + _T("lib");
+	wxString libName=_T("phobos.lib");
+	#else // linux
+	m_MasterPath = _T("/usr/local");
+	wxString incPath=m_MasterPath + sep + _T("lib") + sep + _T("phobos");
+	wxString libPath=m_MasterPath + sep + _T("lib");
+	wxString libName=_T("-lphobos");
+	#endif
+
     if (!m_MasterPath.IsEmpty())
     {
-        AddIncludeDir(m_MasterPath + sep + _T("src") + sep + _T("phobos"));
-        AddLibDir(m_MasterPath + sep + _T("lib"));
+        AddIncludeDir(incPath);
+        AddLibDir(libPath);
     }
-    AddLinkLib( _T("phobos.lib") );
+    AddLinkLib(libName);
 
     return wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
 }
 
-#endif // __WXMSW__
+#endif // _WIN32 || linux

@@ -1,5 +1,5 @@
-#ifdef __WXMSW__
-// this compiler is valid only in windows
+#if defined(_WIN32) || defined(linux)
+// this compiler is valid only in windows and linux
 
 #ifndef COMPILERDMD_H
 #define COMPILERDMD_H
@@ -19,6 +19,6 @@ class CompilerDMD : public Compiler
 	private:
 };
 
-#endif // COMPILERDMC_H
+#endif // COMPILERDMD_H
 
-#endif // __WXMSW__
+#endif // _WIN32 || linux

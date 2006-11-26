@@ -52,7 +52,11 @@
 #include "cbworkspace.h"
 
 #include "compilerMINGW.h"
+#ifdef __WXGTK__
 // TODO (mandrav#1#): Find out which compilers exist for linux and adapt this
+    #include "compilerGDC.h"
+    #include "compilerDMD.h"
+#endif
 #ifdef __WXMSW__
     #include "compilerMSVC.h"
     #include "compilerMSVC8.h"
@@ -303,12 +307,11 @@ void CompilerGCC::OnAttach()
     CompilerFactory::RegisterCompiler(new CompilerSDCC);
     CompilerFactory::RegisterCompiler(new CompilerTcc);
 #ifdef __WXMSW__
-    CompilerFactory::RegisterCompiler(new CompilerGDC);
-    CompilerFactory::RegisterCompiler(new CompilerDMD);
     CompilerFactory::RegisterCompiler(new CompilerGNUARM);
 #endif
-#ifdef __WXMAC__
     CompilerFactory::RegisterCompiler(new CompilerGDC);
+#if defined(_WIN32) || defined(linux)
+    CompilerFactory::RegisterCompiler(new CompilerDMD);
 #endif
 
     // register (if any) user-copies of built-in compilers
