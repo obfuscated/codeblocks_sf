@@ -432,13 +432,13 @@
                     </object>
                   </object>
                 </object>
-	        <object class="sizeritem">
-	            <border>8</border>
-	            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-	            <object class="wxCheckBox" name="chkSmartTabs">
-	                <label>Use Smart Tab-switching scheme</label>
-	            </object>
-	        </object>
+                <object class="sizeritem">
+                  <border>8</border>
+                  <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                  <object class="wxCheckBox" name="chkSmartTabs">
+                    <label>Use Smart Tab-switching scheme</label>
+                  </object>
+                </object>
               </object>
             </object>
           </object>
@@ -491,54 +491,6 @@
                       <object class="wxSpinCtrl" name="spnAuiCaption">
                         <value>17</value>
                         <min>4</min>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                      <object class="wxStaticText" name="ID_STATICTEXT8">
-                        <label>Background colour:</label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnAuiBgColour">
-                        <label></label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                      <object class="wxStaticText" name="ID_STATICTEXT9">
-                        <label>Sash colour:</label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnAuiSashColour">
-                        <label></label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                      <object class="wxStaticText" name="ID_STATICTEXT10">
-                        <label>Border colour:</label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnAuiBorderColour">
-                        <label></label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                      <object class="wxStaticText" name="ID_STATICTEXT11">
-                        <label>Gripper colour:</label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                      <object class="wxButton" name="btnAuiGripperColour">
-                        <label></label>
                       </object>
                     </object>
                     <object class="sizeritem">

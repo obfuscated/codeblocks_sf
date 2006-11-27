@@ -1481,16 +1481,12 @@ void MainFrame::DoUpdateLayoutColours()
     art->SetMetric(wxAUI_ART_PANE_BORDER_SIZE,   cfg->ReadInt(_T("/environment/aui/border_size"), art->GetMetric(wxAUI_ART_PANE_BORDER_SIZE)));
     art->SetMetric(wxAUI_ART_SASH_SIZE,          cfg->ReadInt(_T("/environment/aui/sash_size"), art->GetMetric(wxAUI_ART_SASH_SIZE)));
     art->SetMetric(wxAUI_ART_CAPTION_SIZE,       cfg->ReadInt(_T("/environment/aui/caption_size"), art->GetMetric(wxAUI_ART_CAPTION_SIZE)));
-    art->SetColour(wxAUI_ART_BACKGROUND_COLOUR,   cfg->ReadColour(_T("/environment/aui/bg_colour"), art->GetColour(wxAUI_ART_BACKGROUND_COLOUR)));
-    art->SetColour(wxAUI_ART_SASH_COLOUR,         cfg->ReadColour(_T("/environment/aui/sash_colour"), art->GetColour(wxAUI_ART_SASH_COLOUR)));
     art->SetColour(wxAUI_ART_ACTIVE_CAPTION_COLOUR,              cfg->ReadColour(_T("/environment/aui/active_caption_colour"), art->GetColour(wxAUI_ART_ACTIVE_CAPTION_COLOUR)));
     art->SetColour(wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR,     cfg->ReadColour(_T("/environment/aui/active_caption_gradient_colour"), art->GetColour(wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR)));
     art->SetColour(wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR,         cfg->ReadColour(_T("/environment/aui/active_caption_text_colour"), art->GetColour(wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR)));
     art->SetColour(wxAUI_ART_INACTIVE_CAPTION_COLOUR,            cfg->ReadColour(_T("/environment/aui/inactive_caption_colour"), art->GetColour(wxAUI_ART_INACTIVE_CAPTION_COLOUR)));
     art->SetColour(wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR,   cfg->ReadColour(_T("/environment/aui/inactive_caption_gradient_colour"), art->GetColour(wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR)));
     art->SetColour(wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR,       cfg->ReadColour(_T("/environment/aui/inactive_caption_text_colour"), art->GetColour(wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR)));
-    art->SetColour(wxAUI_ART_BORDER_COLOUR,       cfg->ReadColour(_T("/environment/aui/border_colour"), art->GetColour(wxAUI_ART_BORDER_COLOUR)));
-    art->SetColour(wxAUI_ART_GRIPPER_COLOUR,      cfg->ReadColour(_T("/environment/aui/gripper_colour"), art->GetColour(wxAUI_ART_GRIPPER_COLOUR)));
 
     DoUpdateLayout();
 }

@@ -59,12 +59,8 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
     EVT_BUTTON(XRCID("btnFNBorder"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnFNFrom"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnFNTo"), EnvironmentSettingsDlg::OnChooseColour)
-    EVT_BUTTON(XRCID("btnAuiBgColour"), EnvironmentSettingsDlg::OnChooseColour)
-    EVT_BUTTON(XRCID("btnAuiSashColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnAuiCaptionColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnAuiCaptionTextColour"), EnvironmentSettingsDlg::OnChooseColour)
-    EVT_BUTTON(XRCID("btnAuiBorderColour"), EnvironmentSettingsDlg::OnChooseColour)
-    EVT_BUTTON(XRCID("btnAuiGripperColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnAuiActiveCaptionColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnAuiActiveCaptionGradientColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnAuiActiveCaptionTextColour"), EnvironmentSettingsDlg::OnChooseColour)
@@ -169,16 +165,12 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art)
     XRCCTRL(*this, "spnAuiBorder", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/environment/aui/border_size"), m_pArt->GetMetric(wxAUI_ART_PANE_BORDER_SIZE)));
     XRCCTRL(*this, "spnAuiSash", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/environment/aui/sash_size"), m_pArt->GetMetric(wxAUI_ART_SASH_SIZE)));
     XRCCTRL(*this, "spnAuiCaption", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/environment/aui/caption_size"), m_pArt->GetMetric(wxAUI_ART_CAPTION_SIZE)));
-    XRCCTRL(*this, "btnAuiBgColour", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/bg_colour"), m_pArt->GetColour(wxAUI_ART_BACKGROUND_COLOUR)));
-    XRCCTRL(*this, "btnAuiSashColour", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/sash_colour"), m_pArt->GetColour(wxAUI_ART_SASH_COLOUR)));
     XRCCTRL(*this, "btnAuiActiveCaptionColour", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/active_caption_colour"), m_pArt->GetColour(wxAUI_ART_ACTIVE_CAPTION_COLOUR)));
     XRCCTRL(*this, "btnAuiActiveCaptionGradientColour", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/active_caption_gradient_colour"), m_pArt->GetColour(wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR)));
     XRCCTRL(*this, "btnAuiActiveCaptionTextColour", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/active_caption_text_colour"), m_pArt->GetColour(wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR)));
     XRCCTRL(*this, "btnAuiInactiveCaptionColour", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/inactive_caption_colour"), m_pArt->GetColour(wxAUI_ART_INACTIVE_CAPTION_COLOUR)));
     XRCCTRL(*this, "btnAuiInactiveCaptionGradientColour", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/inactive_caption_gradient_colour"), m_pArt->GetColour(wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR)));
     XRCCTRL(*this, "btnAuiInactiveCaptionTextColour", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/inactive_caption_text_colour"), m_pArt->GetColour(wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR)));
-    XRCCTRL(*this, "btnAuiBorderColour", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/border_colour"), m_pArt->GetColour(wxAUI_ART_BORDER_COLOUR)));
-    XRCCTRL(*this, "btnAuiGripperColour", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/aui/gripper_colour"), m_pArt->GetColour(wxAUI_ART_GRIPPER_COLOUR)));
 
     // tab "Dialogs"
     wxCheckListBox* clb = XRCCTRL(*this, "chkDialogs", wxCheckListBox);
@@ -396,30 +388,22 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         cfg->Write(_T("/environment/aui/border_size"),          (int)XRCCTRL(*this, "spnAuiBorder", wxSpinCtrl)->GetValue());
         cfg->Write(_T("/environment/aui/sash_size"),            (int)XRCCTRL(*this, "spnAuiSash", wxSpinCtrl)->GetValue());
         cfg->Write(_T("/environment/aui/caption_size"),         (int)XRCCTRL(*this, "spnAuiCaption", wxSpinCtrl)->GetValue());
-        cfg->Write(_T("/environment/aui/bg_colour"),             XRCCTRL(*this, "btnAuiBgColour", wxButton)->GetBackgroundColour());
-        cfg->Write(_T("/environment/aui/sash_colour"),           XRCCTRL(*this, "btnAuiSashColour", wxButton)->GetBackgroundColour());
         cfg->Write(_T("/environment/aui/active_caption_colour"),             XRCCTRL(*this, "btnAuiActiveCaptionColour", wxButton)->GetBackgroundColour());
         cfg->Write(_T("/environment/aui/active_caption_gradient_colour"),    XRCCTRL(*this, "btnAuiActiveCaptionGradientColour", wxButton)->GetBackgroundColour());
         cfg->Write(_T("/environment/aui/active_caption_text_colour"),        XRCCTRL(*this, "btnAuiActiveCaptionTextColour", wxButton)->GetBackgroundColour());
         cfg->Write(_T("/environment/aui/inactive_caption_colour"),           XRCCTRL(*this, "btnAuiInactiveCaptionColour", wxButton)->GetBackgroundColour());
         cfg->Write(_T("/environment/aui/inactive_caption_gradient_colour"),  XRCCTRL(*this, "btnAuiInactiveCaptionGradientColour", wxButton)->GetBackgroundColour());
         cfg->Write(_T("/environment/aui/inactive_caption_text_colour"),      XRCCTRL(*this, "btnAuiInactiveCaptionTextColour", wxButton)->GetBackgroundColour());
-        cfg->Write(_T("/environment/aui/border_colour"),                     XRCCTRL(*this, "btnAuiBorderColour", wxButton)->GetBackgroundColour());
-        cfg->Write(_T("/environment/aui/gripper_colour"),                    XRCCTRL(*this, "btnAuiGripperColour", wxButton)->GetBackgroundColour());
 
         m_pArt->SetMetric(wxAUI_ART_PANE_BORDER_SIZE,   XRCCTRL(*this, "spnAuiBorder", wxSpinCtrl)->GetValue());
         m_pArt->SetMetric(wxAUI_ART_SASH_SIZE,          XRCCTRL(*this, "spnAuiSash", wxSpinCtrl)->GetValue());
         m_pArt->SetMetric(wxAUI_ART_CAPTION_SIZE,       XRCCTRL(*this, "spnAuiCaption", wxSpinCtrl)->GetValue());
-        m_pArt->SetColour(wxAUI_ART_BACKGROUND_COLOUR,   XRCCTRL(*this, "btnAuiBgColour", wxButton)->GetBackgroundColour());
-        m_pArt->SetColour(wxAUI_ART_SASH_COLOUR,         XRCCTRL(*this, "btnAuiSashColour", wxButton)->GetBackgroundColour());
         m_pArt->SetColour(wxAUI_ART_ACTIVE_CAPTION_COLOUR,           XRCCTRL(*this, "btnAuiActiveCaptionColour", wxButton)->GetBackgroundColour());
         m_pArt->SetColour(wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR,  XRCCTRL(*this, "btnAuiActiveCaptionGradientColour", wxButton)->GetBackgroundColour());
         m_pArt->SetColour(wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR,      XRCCTRL(*this, "btnAuiActiveCaptionTextColour", wxButton)->GetBackgroundColour());
         m_pArt->SetColour(wxAUI_ART_INACTIVE_CAPTION_COLOUR,         XRCCTRL(*this, "btnAuiInactiveCaptionColour", wxButton)->GetBackgroundColour());
         m_pArt->SetColour(wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR,XRCCTRL(*this, "btnAuiInactiveCaptionGradientColour", wxButton)->GetBackgroundColour());
         m_pArt->SetColour(wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR,    XRCCTRL(*this, "btnAuiInactiveCaptionTextColour", wxButton)->GetBackgroundColour());
-        m_pArt->SetColour(wxAUI_ART_BORDER_COLOUR,       XRCCTRL(*this, "btnAuiBorderColour", wxButton)->GetBackgroundColour());
-        m_pArt->SetColour(wxAUI_ART_GRIPPER_COLOUR,      XRCCTRL(*this, "btnAuiGripperColour", wxButton)->GetBackgroundColour());
 
         // tab "Dialogs"
         wxCheckListBox* lb = XRCCTRL(*this, "chkDialogs", wxCheckListBox);
