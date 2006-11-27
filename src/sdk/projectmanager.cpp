@@ -736,12 +736,18 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
 
         result = project;
 
-        // notify plugins that the project is loaded
-        // moved here from cbProject::Open() because code-completion
-        // kicks in too early and the perceived loading time is long...
-        CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
-        event.SetProject(project);
-        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+		// if loading a workspace, avoid sending the event now
+		// we 'll send them after all projects have been loaded
+		// (look in LoadWorkspace)
+		if (!m_IsLoadingWorkspace)
+		{
+			// notify plugins that the project is loaded
+			// moved here from cbProject::Open() because code-completion
+			// kicks in too early and the perceived loading time is long...
+			CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
+			event.SetProject(project);
+			Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+		}
 
         break;
     } while(false);
@@ -1040,6 +1046,18 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
         UnfreezeTree(true);
         // sort out any global user vars that need to be defined now (in a batch) :)
         Manager::Get()->GetUserVariableManager()->Arrogate();
+
+		// and now send the project loaded events
+		// since we were loading a workspace, these events were not sent before
+		for (size_t i = 0; i < m_pProjects->GetCount(); ++i)
+		{
+			// notify plugins that the project is loaded
+			// moved here from cbProject::Open() because code-completion
+			// kicks in too early and the perceived loading time is long...
+			CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
+			event.SetProject(m_pProjects->Item(i));
+			Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+		}
     }
     else
     {
