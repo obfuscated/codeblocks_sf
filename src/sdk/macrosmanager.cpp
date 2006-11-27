@@ -108,6 +108,8 @@ void MacrosManager::Reset()
     ClearProjectKeys();
     m_re_unx.Compile(_T("([^$]|^)(\\$[({]?(#?[A-Za-z_0-9.]+)[)} /\\]?)"));
     m_re_dos.Compile(_T("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)"));
+    m_re_if.Compile(_T("\\$if\\((.*)\\)[ ]*\\{([^}]*)\\}{1}([ ]*else[ ]*\\{([^}]*)\\})?"));
+    m_re_ifsp.Compile(_T("[^=!<>]+|(([^=!<>]+)[ ]*(=|==|!=|>|<|>=|<=)[ ]*([^=!<>]+))"));
     m_uVarMan = Manager::Get()->GetUserVariableManager();
     srand(time(0));
     assert(m_re_unx.IsValid());
@@ -298,10 +300,8 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     macros[_T("WEEKDAY_UTC")] = nowGMT.Format(_T("%A"));
 }
 
-void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target)
+void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, bool subrequest)
 {
-//	Manager::Get()->GetMessageManager()->Log(wxString(_T("ReplaceMacros <--- ")) << buffer);
-
     if (buffer.IsEmpty())
         return;
     if( buffer.find(_T('$')) == wxString::npos && buffer.find(_T('%')) == wxString::npos )
@@ -330,6 +330,14 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target)
 
     wxString search;
     wxString replace;
+
+    if(buffer.find(_T("$if")) != wxString::npos)
+    while(m_re_if.Matches(buffer))
+    {
+        search = m_re_if.GetMatch(buffer, 0);
+        replace = EvalCondition(m_re_if.GetMatch(buffer, 1), m_re_if.GetMatch(buffer, 2), m_re_if.GetMatch(buffer, 4), target);
+        buffer.Replace(search, replace, false);
+    }
 
     while(m_re_unx.Matches(buffer))
     {
@@ -397,9 +405,58 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target)
         buffer.Replace(search, replace, false);
     }
 
-    buffer.Replace(_T("%%"), _T("%"));
-    buffer.Replace(_T("$$"), _T("$"));
 
-//  Manager::Get()->GetMessageManager()->Log(wxString(_T("ReplaceMacros ---> ")) << buffer);
+    if(!subrequest)
+    {
+        buffer.Replace(_T("%%"), _T("%"));
+        buffer.Replace(_T("$$"), _T("$"));
+    }
 }
 
+wxString MacrosManager::EvalCondition(const wxString& in_cond, const wxString& true_clause, const wxString& false_clause, ProjectBuildTarget* target)
+{
+    enum condition_codes {EQ = 1, LT = 2, GT = 4, NE = 8};
+
+    wxString cond(in_cond);
+    wxString result;
+
+    ReplaceMacros(cond, target, true);
+
+    if(!m_re_ifsp.Matches(in_cond))
+        return false_clause;
+
+
+    wxString cmpToken(m_re_ifsp.GetMatch(in_cond, 3).Strip(wxString::both));
+    wxString left(m_re_ifsp.GetMatch(in_cond, 2).Strip(wxString::both));
+    wxString right(m_re_ifsp.GetMatch(in_cond, 4).Strip(wxString::both));
+
+
+    int compare = left.Cmp(right);
+    if(compare == 0)
+        compare = EQ;
+    else if(compare < 0)
+        compare = LT | NE;
+    else if(compare > 0)
+        compare = GT | NE;
+
+
+    if(cmpToken.IsEmpty())
+        return m_re_ifsp.GetMatch(in_cond, 0) ? true_clause : false_clause;
+
+    int condCode = 0;
+
+    if(cmpToken.IsSameAs(_T("==")) || cmpToken.IsSameAs(_T("=")))
+        condCode = EQ;
+    if(cmpToken.IsSameAs(_T("<")))
+        condCode = LT;
+    if(cmpToken.IsSameAs(_T(">")))
+        condCode = GT;
+    if(cmpToken.IsSameAs(_T("<=")))
+        condCode = EQ | LT;
+    if(cmpToken.IsSameAs(_T(">=")))
+        condCode = EQ | GT;
+    if(cmpToken.IsSameAs(_T("!=")))
+        condCode = NE;
+
+    return condCode & compare ? true_clause : false_clause;
+}
