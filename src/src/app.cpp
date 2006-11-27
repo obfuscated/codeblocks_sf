@@ -432,7 +432,10 @@ bool CodeBlocksApp::OnInit()
 
 	wxTheClipboard->Flush();
 
-    static CrashHandler crash_handler(m_NoCrashHandler);
+	// NOTE: crash handler explicitly disabled because it causes problems
+	//       with plugins loading/unloading...
+    //
+    // static CrashHandler crash_handler(m_NoCrashHandler);
 
     // we'll do this once and for all at startup
     wxFileSystem::AddHandler(new wxZipFSHandler);
