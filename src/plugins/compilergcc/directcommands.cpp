@@ -571,6 +571,12 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             ct = ctLinkStaticCmd;
             kind_of_output = _("static library");
             break;
+
+        case ttNative:
+            ct = ctLinkNativeCmd;
+            kind_of_output = _("native");
+            break;
+
 		case ttCommandsOnly:
             // add target post-build commands
             ret.Clear();

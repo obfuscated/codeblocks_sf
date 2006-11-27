@@ -324,6 +324,7 @@ void CompilerOW::Reset()
         = wxT("$linker -$libdirs -fe=$exe_output $libs $link_objects $link_options");
     m_Commands[(int)ctLinkStaticCmd]
         = wxT("$lib_linker $static_output $link_objects");
+    m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     LoadDefaultRegExArray();
 

@@ -140,6 +140,7 @@ void CompilerBCC::Reset()
     m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker -q -ap  $link_options $libdirs c0x32 $link_objects,$exe_output,,$libs,,$link_resobjects");
     m_Commands[(int)ctLinkDynamicCmd] = _T("$linker -q $libdirs -o $exe_output $libs $link_objects $link_options");
     m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker /C $static_output $+-link_objects,$def_output");
+    m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     LoadDefaultRegExArray();
 

@@ -166,6 +166,7 @@ wxString CompileTargetBase::SuggestOutputFilename()
         case ttExecutable: suggestion = GetExecutableFilename(); break;
         case ttDynamicLib: suggestion = GetDynamicLibFilename(); break;
         case ttStaticLib: suggestion = GetStaticLibFilename(); break;
+        case ttNative: suggestion = GetNativeFilename(); break;
         default:
             suggestion.Clear();
             break;
@@ -252,6 +253,14 @@ void CompileTargetBase::GenerateTargetFilename(wxString& filename) const
                 filename << fname.GetFullName();
             break;
         }
+        case ttNative:
+        {
+            if (m_ExtensionGenerationPolicy == tgfpPlatformDefault)
+                filename << fname.GetName() << FileFilters::NATIVE_DOT_EXT;
+            else
+                filename << fname.GetFullName();
+            break;
+        }
         case ttStaticLib:
         {
             if (m_PrefixGenerationPolicy == tgfpPlatformDefault)
@@ -293,6 +302,26 @@ wxString CompileTargetBase::GetExecutableFilename() const
 #else
     fname.SetExt(_T(""));
 #endif
+    return fname.GetFullPath();
+}
+
+wxString CompileTargetBase::GetNativeFilename()
+{
+    if (m_TargetType == ttCommandsOnly)
+        return wxEmptyString;
+    if (m_Filename.IsEmpty())
+        m_Filename = m_OutputFilename;
+
+    if (m_PrefixGenerationPolicy != tgfpNone || m_ExtensionGenerationPolicy != tgfpNone)
+    {
+        wxString out = m_Filename;
+        GenerateTargetFilename(out);
+        return out;
+    }
+
+    wxFileName fname(m_Filename);
+    fname.SetName(fname.GetName());
+    fname.SetExt(FileFilters::NATIVE_EXT);
     return fname.GetFullPath();
 }
 

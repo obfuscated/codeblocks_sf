@@ -252,18 +252,21 @@ void ProjectOptionsDlg::DoTargetChange(bool saveOld)
 
             case ttExecutable:
             case ttDynamicLib:
+            case ttNative:
             case ttStaticLib:
                 txt->SetValue(target->GetOutputFilename());
                 txt->Enable(true);
                 txtW->SetValue(target->GetWorkingDir());
                 txtW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
                             (TargetType)cmb->GetSelection() == ttConsoleOnly ||
+                            (TargetType)cmb->GetSelection() == ttNative ||
                             (TargetType)cmb->GetSelection() == ttDynamicLib);
                 txtO->SetValue(target->GetObjectOutput());
                 txtO->Enable(true);
                 browse->Enable(true);
                 browseW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
                                 (TargetType)cmb->GetSelection() == ttConsoleOnly ||
+                                (TargetType)cmb->GetSelection() == ttNative ||
                                 (TargetType)cmb->GetSelection() == ttDynamicLib);
                 browseO->Enable(true);
                 break;
@@ -429,6 +432,16 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
             if (!libpre.IsEmpty() && !name.StartsWith(libpre))
             {
                 name.Prepend(libpre);
+                fname.SetName(name);
+            }
+            txt->SetValue(fname.GetFullPath());
+            break;
+        case ttNative:
+            if (ext != FileFilters::NATIVE_EXT)
+                fname.SetExt(FileFilters::NATIVE_EXT);
+            if (!libpre.IsEmpty() && name.StartsWith(libpre))
+            {
+                name.Remove(0, libpre.Length());
                 fname.SetName(name);
             }
             txt->SetValue(fname.GetFullPath());

@@ -155,6 +155,7 @@ void CompilerMSVC8::Reset()
     m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
     m_Commands[(int)ctLinkDynamicCmd] = _T("$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
     m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker /lib /nologo $libdirs /out:$static_output $libs $link_objects $link_resobjects $link_options");
+    m_Commands[(int)ctLinkNativeCmd] = _T("$linker /nologo /subsystem:native $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
 
     LoadDefaultRegExArray();
 

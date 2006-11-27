@@ -220,6 +220,8 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
         bt->SetTargetType(ttDynamicLib);
     else if (conftype.IsSameAs(_T("4"))) // typeStaticLibrary 4
         bt->SetTargetType(ttStaticLib);
+    else if (conftype.IsSameAs(_T("-1"))) // typeNative -1, check subsystem property of the linker to make sure
+        bt->SetTargetType(ttNative);
     else if (conftype.IsSameAs(_T("10"))) // typeGeneric 10
         bt->SetTargetType(ttCommandsOnly);
     else { // typeUnknown 0
@@ -242,7 +244,7 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
 		    // linker
             wxString tmp;
 
-            if (bt->GetTargetType()==ttExecutable) {
+            if ((bt->GetTargetType()==ttExecutable) || (bt->GetTargetType()==ttNative)) {
                 tmp = cbC2U(tool->Attribute("SubSystem"));
                 //subSystemNotSet 0
                 //subSystemConsole 1
@@ -250,6 +252,9 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
                 if (tmp.IsSameAs(_T("1"))) {
                     bt->SetTargetType(ttConsoleOnly);
                     //bt->AddLinkerOption("/SUBSYSTEM:CONSOLE"); // don't know if it is necessary
+                }
+                else if (tmp.IsSameAs(_T("3"))) {
+                    bt->SetTargetType(ttNative);
                 }
             } // else we keep executable
 

@@ -275,6 +275,7 @@ from target...</label>
                                       <item>Static library</item>
                                       <item>Dynamic library</item>
                                       <item>Commands only</item>
+                                      <item>Native</item>
                                     </content>
                                     <selection>0</selection>
                                     <style>wxCB_READONLY|wxCB_DROPDOWN</style>

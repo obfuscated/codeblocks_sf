@@ -140,6 +140,7 @@ void CompilerSDCC::Reset()
     m_Commands[(int)ctLinkExeCmd] =         _T("$linker $libdirs -o $exe_output $options $link_options $libs $link_objects");
     m_Commands[(int)ctLinkConsoleExeCmd] =  _T("$linker $libdirs -o $exe_output $options $link_options $libs $link_objects");
     //m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker -r $static_output $link_objects\n\tranlib $exe_output");
+    m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     LoadDefaultRegExArray();
 

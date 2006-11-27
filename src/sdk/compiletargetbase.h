@@ -27,11 +27,12 @@ enum OptionsRelation
 /** Enum to define the type of output the target produces */
 enum TargetType
 {
-    ttExecutable = 0, /**< Target produces an executable */
-    ttConsoleOnly, /**< Target produces a console executable (without GUI) (distinction between ttExecutable and ttConsoleOnly happens only under Win32) */
-    ttStaticLib, /**< Target produces a static library */
-    ttDynamicLib, /**< Target produces a dynamic library */
-    ttCommandsOnly /**< Target only runs commands in pre-build and/or post-build steps */
+    ttExecutable    = 0, /**< Target produces an executable */
+    ttConsoleOnly   = 1, /**< Target produces a console executable (without GUI) (distinction between ttExecutable and ttConsoleOnly happens only under Win32) */
+    ttStaticLib		= 2, /**< Target produces a static library */
+    ttDynamicLib    = 3, /**< Target produces a dynamic library */
+    ttCommandsOnly  = 4, /**< Target only runs commands in pre-build and/or post-build steps */
+    ttNative        = 5, /**< Target produces a native binary */
 };
 
 enum MakeCommand
@@ -120,6 +121,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual wxString GetDynamicLibFilename(); ///< Read the target's dynamic library filename (produced if target type is ttDynamicLib)
         virtual wxString GetDynamicLibDefFilename(); ///< Read the target's dynamic library definition file filename (produced if target type is ttDynamicLib)
         virtual wxString GetStaticLibFilename(); ///< Read the target's static library filename (produced if target type is ttStaticLib)
+        virtual wxString GetNativeFilename(); ///< Read the target's native filename (produced if target type is ttNative)
         virtual wxString GetBasePath() const; ///< Read the target's base path, e.g. if GetOutputFilename() returns "/usr/local/bin/xxx", base path will return "/usr/local/bin"
         virtual void SetTargetType(TargetType pt); ///< Set the target's type to \c pt
         virtual TargetType GetTargetType() const; ///< Read the target's type

@@ -138,6 +138,7 @@ void CompilerICC::Reset()
     m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
     m_Commands[(int)ctLinkDynamicCmd] = _T("$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
     m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker /lib /nologo $libdirs /out:$static_output $libs $link_objects $link_resobjects $link_options");
+    m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
 #else
 	m_Programs.C = _T("icc");
@@ -251,6 +252,7 @@ void CompilerICC::Reset()
     m_Commands[(int)ctLinkExeCmd] = m_Commands[(int)ctLinkConsoleExeCmd];
     m_Commands[(int)ctLinkDynamicCmd] = _T("$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs");
     m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker -r $static_output $link_objects\n\tranlib $exe_output");
+    m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 #endif
 
     LoadDefaultRegExArray();

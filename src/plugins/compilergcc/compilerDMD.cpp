@@ -61,7 +61,7 @@ void CompilerDMD::Reset()
 	m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp $resource_output $res_includes $file");
 	m_Commands[(int)ctLinkExeCmd] = _T("$linker $exe_output $link_options $link_objects $libs");
 	m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker $exe_output $link_options $link_objects $libs");
-	
+
 	#else // linux
 	m_Programs.C = _T("dmd");
 	m_Programs.CPP = _T("dmd");
@@ -94,7 +94,8 @@ void CompilerDMD::Reset()
 
     m_Commands[(int)ctCompileObjectCmd] = _T("$compiler $options $includes -c $file -of$object");
     m_Commands[(int)ctLinkDynamicCmd] = _T("$linker $exe_output $link_options $link_objects $libs $link_resobjects");
-    m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker $static_output $link_options $link_objects");	
+    m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker $static_output $link_options $link_objects");
+    m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     m_Options.ClearOptions();
 

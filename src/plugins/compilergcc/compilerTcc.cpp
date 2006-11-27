@@ -103,6 +103,7 @@ void CompilerTcc::Reset()
     m_Commands[(int)ctLinkDynamicCmd] = _T("$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs");
 #endif
     m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker -r -static -o $static_output $link_objects");
+    m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     LoadDefaultRegExArray();
 

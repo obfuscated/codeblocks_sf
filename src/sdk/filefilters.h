@@ -82,10 +82,11 @@ namespace FileFilters
     extern const DLLIMPORT wxString STATICLIB_EXT;
     extern const DLLIMPORT wxString DYNAMICLIB_EXT;
     extern const DLLIMPORT wxString EXECUTABLE_EXT;
+    extern const DLLIMPORT wxString NATIVE_EXT;
     extern const DLLIMPORT wxString RESOURCE_EXT;
     extern const DLLIMPORT wxString RESOURCEBIN_EXT;
     extern const DLLIMPORT wxString XML_EXT;
-    
+
     // a dot *and* the extension, e.g. ".exe"
     extern const DLLIMPORT wxString WORKSPACE_DOT_EXT;
     extern const DLLIMPORT wxString CODEBLOCKS_DOT_EXT;
@@ -111,6 +112,7 @@ namespace FileFilters
     extern const DLLIMPORT wxString STATICLIB_DOT_EXT;
     extern const DLLIMPORT wxString DYNAMICLIB_DOT_EXT;
     extern const DLLIMPORT wxString EXECUTABLE_DOT_EXT;
+    extern const DLLIMPORT wxString NATIVE_DOT_EXT;
     extern const DLLIMPORT wxString RESOURCE_DOT_EXT;
     extern const DLLIMPORT wxString RESOURCEBIN_DOT_EXT;
     extern const DLLIMPORT wxString XML_DOT_EXT;

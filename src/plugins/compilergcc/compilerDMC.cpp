@@ -159,6 +159,7 @@ void CompilerDMC::Reset()
     m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker /NOLOGO $link_objects, $exe_output, , $libs $link_options");
     m_Commands[(int)ctLinkDynamicCmd] = _T("$linker /NOLOGO /subsystem:windows $link_objects, $exe_output, , $libs $link_options, , $link_resobjects");
     m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker -c $link_options $static_output $link_objects");
+    m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     LoadDefaultRegExArray();
 

@@ -195,6 +195,9 @@ FileType FileTypeOf(const wxString& filename)
     else if (ext.IsSameAs(FileFilters::DYNAMICLIB_EXT))
         return ftDynamicLib;
 
+    else if (ext.IsSameAs(FileFilters::NATIVE_EXT))
+        return ftNative;
+
     else if (ext.IsSameAs(FileFilters::EXECUTABLE_EXT))
         return ftExecutable;
 

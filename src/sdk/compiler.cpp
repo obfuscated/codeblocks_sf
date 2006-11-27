@@ -42,7 +42,8 @@ wxString Compiler::CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT] =
     _("Link object files to executable"),
     _("Link object files to console executable"),
     _("Link object files to dynamic library"),
-    _("Link object files to static library")
+    _("Link object files to static library"),
+    _("Link object files to native executable")
 };
 
 Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& parentID)
