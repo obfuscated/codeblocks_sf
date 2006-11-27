@@ -28,7 +28,7 @@
 #endif
 
 CompilerGDC::CompilerGDC()
-    : Compiler(_("GNU GDC Compiler"), _T("gdc"))
+    : Compiler(_("GDC D Compiler"), _T("gdc"))
 {
     Reset();
 }
@@ -241,7 +241,7 @@ AutoDetectResult CompilerGDC::AutoDetectInstallationDir()
     AutoDetectResult ret = wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
     if (ret == adrDetected)
     {
-        AddIncludeDir(m_MasterPath + sep + _T("include"));
+        AddIncludeDir(m_MasterPath + sep + _T("include") + sep + _T("d"));
         AddLibDir(m_MasterPath + sep + _T("lib"));
     }
     return ret;
