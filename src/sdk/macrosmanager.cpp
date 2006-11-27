@@ -110,6 +110,7 @@ void MacrosManager::Reset()
     m_re_dos.Compile(_T("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)"));
     m_re_if.Compile(_T("\\$if\\((.*)\\)[ ]*\\{([^}]*)\\}{1}([ ]*else[ ]*\\{([^}]*)\\})?"));
     m_re_ifsp.Compile(_T("[^=!<>]+|(([^=!<>]+)[ ]*(=|==|!=|>|<|>=|<=)[ ]*([^=!<>]+))"));
+//    m_re_rel.Compile(_T("([^$]|^)(\\$relative\\([^\\)]\\)"));
     m_uVarMan = Manager::Get()->GetUserVariableManager();
     srand(time(0));
     assert(m_re_unx.IsValid());
@@ -276,6 +277,11 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
         }
 	}
 
+    Compiler *c = CompilerFactory::GetCompiler(target->GetCompilerID());
+    macros[_T("TARGET_CC")]   = c->GetPrograms().C;
+    macros[_T("TARGET_CPP")]   = c->GetPrograms().CPP;
+    macros[_T("TARGET_LD")]   = c->GetPrograms().LD;
+    macros[_T("TARGET_LIB")]   = c->GetPrograms().LIB;
     macros[_T("TARGET_OUTPUT_DIR")]   = m_TargetOutputDir;
     macros[_T("TARGET_NAME")]    = m_TargetName;
     macros[_T("TARGET_OUTPUT_BASENAME")]    = m_TargetOutputBaseName;
@@ -338,6 +344,16 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
         replace = EvalCondition(m_re_if.GetMatch(buffer, 1), m_re_if.GetMatch(buffer, 2), m_re_if.GetMatch(buffer, 4), target);
         buffer.Replace(search, replace, false);
     }
+
+//    if(buffer.find(_T("$relative")) != wxString::npos)
+//    while(m_re_rel.Matches(buffer))
+//    {
+//    for(int i = 0; i < 5; ++i)
+////    Manager::Get()->GetMessageManager()->DebugLog(m_re_rel.GetMatch(i));
+//        search = m_re_if.GetMatch(buffer, 0);
+//        replace = EvalCondition(m_re_if.GetMatch(buffer, 1), m_re_if.GetMatch(buffer, 2), m_re_if.GetMatch(buffer, 4), target);
+//        buffer.Replace(search, replace, false);
+//    }
 
     while(m_re_unx.Matches(buffer))
     {
