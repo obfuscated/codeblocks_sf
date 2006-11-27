@@ -441,7 +441,12 @@ wxString MacrosManager::EvalCondition(const wxString& in_cond, const wxString& t
 
 
     if(cmpToken.IsEmpty())
-        return m_re_ifsp.GetMatch(in_cond, 0) ? true_clause : false_clause;
+        {
+        wxString s(m_re_ifsp.GetMatch(in_cond, 0));
+        if(s.IsEmpty() || s.IsSameAs(_T("0")) || s.IsSameAs(_T("false")))
+            return false_clause;
+        return true_clause;
+        }
 
     int condCode = 0;
 
