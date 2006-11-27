@@ -110,7 +110,7 @@ void MacrosManager::Reset()
     m_re_dos.Compile(_T("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)"));
     m_re_if.Compile(_T("\\$if\\((.*)\\)[ ]*\\{([^}]*)\\}{1}([ ]*else[ ]*\\{([^}]*)\\})?"));
     m_re_ifsp.Compile(_T("[^=!<>]+|(([^=!<>]+)[ ]*(=|==|!=|>|<|>=|<=)[ ]*([^=!<>]+))"));
-//    m_re_rel.Compile(_T("([^$]|^)(\\$relative\\([^\\)]\\)"));
+    m_re_path.Compile(_T("([^$]|^)(\\$(absolute|relative)\\(([^)]+)\\))"));
     m_uVarMan = Manager::Get()->GetUserVariableManager();
     srand(time(0));
     assert(m_re_unx.IsValid());
@@ -345,15 +345,25 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
         buffer.Replace(search, replace, false);
     }
 
-//    if(buffer.find(_T("$relative")) != wxString::npos)
-//    while(m_re_rel.Matches(buffer))
-//    {
-//    for(int i = 0; i < 5; ++i)
-////    Manager::Get()->GetMessageManager()->DebugLog(m_re_rel.GetMatch(i));
-//        search = m_re_if.GetMatch(buffer, 0);
-//        replace = EvalCondition(m_re_if.GetMatch(buffer, 1), m_re_if.GetMatch(buffer, 2), m_re_if.GetMatch(buffer, 4), target);
-//        buffer.Replace(search, replace, false);
-//    }
+    while(m_re_path.Matches(buffer))
+    {
+        search = m_re_path.GetMatch(buffer, 2);
+        replace = m_re_path.GetMatch(buffer, 4);
+        wxString abs_rel(m_re_path.GetMatch(buffer, 3).Lower());
+        ReplaceMacros(replace, target, true);
+
+        {
+        wxLogNull shit;
+        wxFileName f(replace);
+        if(abs_rel.IsSameAs(_T("relative")))
+            f.MakeRelativeTo(m_ProjectDir);
+        else
+            f.MakeAbsolute();
+        replace = f.GetFullPath();
+        }
+
+        buffer.Replace(search, replace, false);
+    }
 
     while(m_re_unx.Matches(buffer))
     {
@@ -381,7 +391,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
         }
 
         const wxChar l = search.Last(); // make non-braced variables work
-        if(l != _T(')') && l != _T('}'))
+        if(l == _T('/') || l == _T('\\') || l == _T('$') || l == _T(' '))
             replace.append(l);
 
         if (replace.IsEmpty())
