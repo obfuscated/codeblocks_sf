@@ -275,13 +275,17 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
         {
             macros[it->first.Upper()] = it->second;
         }
+
+        Compiler *c;
+        if(c = CompilerFactory::GetCompiler(target->GetCompilerID()))
+        {
+            macros[_T("TARGET_CC")]   = c->GetPrograms().C;
+            macros[_T("TARGET_CPP")]   = c->GetPrograms().CPP;
+            macros[_T("TARGET_LD")]   = c->GetPrograms().LD;
+            macros[_T("TARGET_LIB")]   = c->GetPrograms().LIB;
+        }
 	}
 
-    Compiler *c = CompilerFactory::GetCompiler(target->GetCompilerID());
-    macros[_T("TARGET_CC")]   = c->GetPrograms().C;
-    macros[_T("TARGET_CPP")]   = c->GetPrograms().CPP;
-    macros[_T("TARGET_LD")]   = c->GetPrograms().LD;
-    macros[_T("TARGET_LIB")]   = c->GetPrograms().LIB;
     macros[_T("TARGET_OUTPUT_DIR")]   = m_TargetOutputDir;
     macros[_T("TARGET_NAME")]    = m_TargetName;
     macros[_T("TARGET_OUTPUT_BASENAME")]    = m_TargetOutputBaseName;
