@@ -298,13 +298,18 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
         // entries in the include dir list
         Compilers[nCompilers++] = compiler;
     }
+
+    // keep the gccc compiler path's once if found accross C::B session
+    // makes opening workspaces a *lot* faster by avoiding endless calls to the compiler
+    static wxArrayString gcc_compiler_dirs;
+
     // add compiler include dirs
     for (int idxCompiler = 0; idxCompiler < nCompilers; ++idxCompiler)
     {
         const wxArrayString& dirs = (Compilers[idxCompiler])->GetIncludeDirs();
         for (unsigned int i = 0; i < dirs.GetCount(); ++i)
         {
-            //Manager::Get()->GetMessageManager()->Log(mltDevDebug, "Adding %s", dirs[i].c_str());
+//            Manager::Get()->GetMessageManager()->Log(mltDevDebug, "Adding %s", dirs[i].c_str());
             wxString out = dirs[i];
             Manager::Get()->GetMacrosManager()->ReplaceMacros(out);
             wxFileName dir(out);
@@ -317,70 +322,23 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             else
                 Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());
         }
+
         // find out which compiler, if gnu, do the special trick
         // to find it's internal include paths
+        // but do only once per C::B session, thus cache for later calls
         wxString CompilerID = (Compilers[idxCompiler])->GetID();
         if(CompilerID == _T("gcc"))
-        { // for starters , only do this for gnu compiler
-            wxLogNull ln; // spare us the error messages; we 'll deal with them on our own
-//            Manager::Get()->GetMessageManager()->DebugLog(_T("CompilerID ") + CompilerID);
-            //    wxString Command("mingw32-g++ -v -E -x c++ - < nul");
-            // specifying "< nul", does not seem to work
-            // workaround : create a dummy file (let's hope it does not exist)
-            // do the trick only for c++, not needed then for C (since this is a subset of C++)
-            wxString DummyFileName = wxFileName::CreateTempFileName(_T("Dummy_z4hsdkl9nf7ba3L9nv41"));
-            if(!DummyFileName.IsEmpty())
-            {
-                // let's construct the command
-                wxString Command = ((Compilers[idxCompiler])->GetPrograms()).CPP;
-                Command += _T(" -v -E -x c++ ") + DummyFileName;
-                // action time  (everything shows up on the error stream
-                wxArrayString Output, Errors;
-                wxExecute(Command, Output, Errors, wxEXEC_NODISABLE);
-                int nCount = Errors.GetCount();
-                // the include dir (1 per line) show up between the lines
-                // #include <...> search starts here:
-                // End of search list
-                //   let's hope this does not change too quickly, otherwise we need
-                // to adjust our search code (for several versions ...)
-                bool bStart = false;
-                for(int idxCount = 0; idxCount < nCount; ++idxCount)
-                {
-                    if (!bStart && Errors[idxCount] == _("#include <...> search starts here:"))
-                    {
-                        bStart = true;
-                    }
-                    else if (bStart && Errors[idxCount] == _("End of search list."))
-                    {
-                        bStart = false; // could jump out of for loop if we want
-                    }
-                    else if (bStart)
-                    {
-//                         Manager::Get()->GetMessageManager()->DebugLog("include dir " + Errors[idxCount]);
-                        // get rid of the leading space (more general : any whitespace)in front
-                        wxRegEx reg(_T("^[ \t]*(.*)"));
-                        if(reg.Matches(Errors[idxCount]))
-                        {
-                            wxString out = reg.GetMatch(Errors[idxCount], 1);
-                            if(!out.IsEmpty())
-                            {
-                                wxFileName dir(out);
-                                wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
-                                if (NormalizePath(dir,base))
-                                {
-                                    parser->AddIncludeDir(dir.GetFullPath());
-//                                    Manager::Get()->GetMessageManager()->DebugLog(_T("Parser internal cmp dir: ") + dir.GetFullPath());
-                                }
-                                else
-                                    Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());
-                            }
-                        }
-                    }
-                } // end for : idx : idxCount
-                // clean up our temp file
-                ::wxRemoveFile(DummyFileName);
-            } // Dummy is open
-        } // GNU GCC compiler
+        {
+          if (gcc_compiler_dirs.IsEmpty())
+          {
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Caching internal gcc dirs for adding to parser..."));
+            gcc_compiler_dirs = GetGCCCompilerDirs(((Compilers[idxCompiler])->GetPrograms()).CPP, base);
+          }
+
+          Manager::Get()->GetMessageManager()->DebugLog(_T("Adding %d cached gcc dirs to parser..."), gcc_compiler_dirs.GetCount());
+          for (size_t i=0; i<gcc_compiler_dirs.GetCount(); i++)
+            parser->AddIncludeDir(gcc_compiler_dirs[i]);
+        }
     } // end of while loop over the found compilers
     if(!nCompilers)
     {
@@ -388,6 +346,69 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
     }
     delete [] Compilers;
 } // end of AddCompilerDirs
+
+wxArrayString NativeParser::GetGCCCompilerDirs(const wxString &cpp_compiler, const wxString &base)
+{
+    wxArrayString gcc_compiler_dirs;
+
+    // for starters , only do this for gnu compiler
+    wxLogNull ln; // spare us the error messages; we 'll deal with them on our own
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("CompilerID ") + CompilerID);
+    //    wxString Command("mingw32-g++ -v -E -x c++ - < nul");
+    // specifying "< nul", does not seem to work
+    // workaround : create a dummy file (let's hope it does not exist)
+    // do the trick only for c++, not needed then for C (since this is a subset of C++)
+    wxString DummyFileName = wxFileName::CreateTempFileName(_T("Dummy_z4hsdkl9nf7ba3L9nv41"));
+    if(!DummyFileName.IsEmpty())
+    {
+        // let's construct the command
+        wxString Command = cpp_compiler + _T(" -v -E -x c++ ") + DummyFileName;
+        // action time  (everything shows up on the error stream
+        wxArrayString Output, Errors;
+        wxExecute(Command, Output, Errors, wxEXEC_NODISABLE);
+        int nCount = Errors.GetCount();
+        // the include dir (1 per line) show up between the lines
+        // #include <...> search starts here:
+        // End of search list
+        //   let's hope this does not change too quickly, otherwise we need
+        // to adjust our search code (for several versions ...)
+        bool bStart = false;
+        for(int idxCount = 0; idxCount < nCount; ++idxCount)
+        {
+            if (!bStart && Errors[idxCount] == _("#include <...> search starts here:"))
+            {
+                bStart = true;
+            }
+            else if (bStart && Errors[idxCount] == _("End of search list."))
+            {
+                bStart = false; // could jump out of for loop if we want
+            }
+            else if (bStart)
+            {
+//                Manager::Get()->GetMessageManager()->DebugLog("include dir " + Errors[idxCount]);
+                // get rid of the leading space (more general : any whitespace)in front
+                wxRegEx reg(_T("^[ \t]*(.*)"));
+                if(reg.Matches(Errors[idxCount]))
+                {
+                    wxString out = reg.GetMatch(Errors[idxCount], 1);
+                    if(!out.IsEmpty())
+                    {
+                        wxFileName dir(out);
+                        wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
+                        if (NormalizePath(dir,base))
+                            gcc_compiler_dirs.Add(dir.GetFullPath());
+                        else
+                            Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());
+                    }
+                }
+            }
+        } // end for : idx : idxCount
+        // clean up our temp file
+        ::wxRemoveFile(DummyFileName);
+    } // Dummy is open
+
+    return gcc_compiler_dirs;
+}
 
 void NativeParser::AddParser(cbProject* project, bool useCache)
 {
