@@ -539,7 +539,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     while (node)
     {
         if (node->Attribute("file"))
-            target->AddBuildScript(UnixFilename(cbC2U(node->Attribute("file"))));
+            target->AddBuildScript(cbC2U(node->Attribute("file")));
 
         node = node->NextSiblingElement("Script");
     }

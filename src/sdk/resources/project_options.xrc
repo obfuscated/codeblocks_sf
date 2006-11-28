@@ -483,9 +483,7 @@ from target...</label>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxTreeCtrl" name="tcOverview">
-                        <style>wxTR_NO_BUTTONS|wxTR_SINGLE</style>
-                      </object>
+                      <object class="wxTreeCtrl" name="tcOverview"/>
                       <option>1</option>
                       <flag>wxGROW</flag>
                     </object>

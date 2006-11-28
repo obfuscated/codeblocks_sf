@@ -366,7 +366,7 @@ void CompileOptionsBase::AddBuildScript(const wxString& script)
 #ifdef __WXMSW__
     casesens = false;
 #endif
-    wxString envopt = script;
+    wxString envopt = UnixFilename(script);
     if (m_Scripts.Index(envopt, casesens) == wxNOT_FOUND)
     {
         m_Scripts.Add(envopt);
@@ -484,7 +484,7 @@ void CompileOptionsBase::RemoveBuildScript(const wxString& script)
 #ifdef __WXMSW__
     casesens = false;
 #endif
-    wxString envopt = script;
+    wxString envopt = UnixFilename(script);
     int idx = m_Scripts.Index(envopt, casesens);
     if (idx != wxNOT_FOUND)
     {
