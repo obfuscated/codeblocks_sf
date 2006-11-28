@@ -754,13 +754,14 @@ void ProjectOptionsDlg::OnScriptsOverviewSelChanged(wxTreeEvent& event)
 
 bool ProjectOptionsDlg::IsScriptValid(const wxString& script)
 {
+    static const wxString clearout_buildscripts = _T("SetBuildOptions <- null;");
     try
     {
+        Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_buildscripts); // clear previous script's context
         Manager::Get()->GetScriptingManager()->LoadScript(m_Project->GetBasePath() + wxFILE_SEP_PATH + script);
         SqPlus::SquirrelFunction<void> setopts("SetBuildOptions");
-        SqPlus::SquirrelFunction<void> unsetopts("UnsetBuildOptions");
-        // scripts must provide both functions
-        if (setopts.func.IsNull() || unsetopts.func.IsNull())
+
+        if (setopts.func.IsNull())
             return false;
         return true;
     }

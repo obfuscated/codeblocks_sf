@@ -66,7 +66,11 @@ void CompilerCommandGenerator::Init(cbProject* project)
         }
     }
 
-    // project pre-build scripts
+    // backup project settings
+    bool projectWasModified = project->GetModified();
+    CompileTargetBase backup = *(CompileTargetBase*)project;
+
+    // project build scripts
     DoBuildScripts(project, _T("SetBuildOptions"));
 
     // for each target
@@ -95,7 +99,10 @@ void CompilerCommandGenerator::Init(cbProject* project)
             continue;
         }
 
-        // target pre-build scripts
+        // backup target settings
+        CompileTargetBase backuptarget = *(CompileTargetBase*)target;
+
+        // target build scripts
         DoBuildScripts(target, _T("SetBuildOptions"));
 
         m_DefOutput[target] = SetupOutputFilenames(compiler, target);
@@ -107,12 +114,13 @@ void CompilerCommandGenerator::Init(cbProject* project)
         m_LDAdd[target] = SetupLinkLibraries(compiler, target);
         m_RCFlags[target] = SetupResourceCompilerOptions(compiler, target);
 
-        // target post-build scripts
-        DoBuildScripts(target, _T("UnsetBuildOptions"));
+        // restore target settings
+        *(CompileTargetBase*)target = backuptarget;
     }
 
-    // project post-build scripts
-    DoBuildScripts(project, _T("UnsetBuildOptions"));
+    // restore project settings
+    *(CompileTargetBase*)project = backup;
+    project->SetModified(projectWasModified);
 }
 
 void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
@@ -244,11 +252,10 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
 }
 
 /// Apply pre-build scripts for @c base.
-void CompilerCommandGenerator::DoBuildScripts(CompileOptionsBase* base, const wxString& funcName)
+void CompilerCommandGenerator::DoBuildScripts(CompileTargetBase* target, const wxString& funcName)
 {
-    static const wxString clearout_buildscripts = _T("function SetBuildOptions(base){return;};\n"
-                                                     "function UnsetBuildOptions(base){return;};");
-    const wxArrayString& scripts = base->GetBuildScripts();
+    static const wxString clearout_buildscripts = _T("SetBuildOptions <- null;");
+    const wxArrayString& scripts = target->GetBuildScripts();
     for (size_t i = 0; i < scripts.GetCount(); ++i)
     {
         Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_buildscripts); // clear previous script's context
@@ -256,7 +263,7 @@ void CompilerCommandGenerator::DoBuildScripts(CompileOptionsBase* base, const wx
         try
         {
             SqPlus::SquirrelFunction<void> f(cbU2C(funcName));
-            f(base);
+            f(target);
         }
         catch (SquirrelError& e)
         {
