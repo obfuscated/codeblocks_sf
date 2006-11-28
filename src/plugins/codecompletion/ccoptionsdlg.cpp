@@ -36,6 +36,7 @@
 #include <wx/button.h>
 #include <wx/stattext.h>
 #include <wx/colordlg.h>
+#include <wx/regex.h>
 #include <configmanager.h>
 #include <manager.h>
 #include <editpairdlg.h>
