@@ -123,8 +123,8 @@ void CompilerDMD::Reset()
     m_LinkerOptions.Clear();
     m_LinkLibs.Clear();
 	#ifndef __WXMSW__
-	m_LinkLibs.Add(_("-lpthread"));
-	m_LinkLibs.Add(_("-lm"));
+	m_LinkLibs.Add(_("pthread"));
+	m_LinkLibs.Add(_("m"));
 	#endif
     m_CmdsBefore.Clear();
     m_CmdsAfter.Clear();
@@ -153,10 +153,10 @@ AutoDetectResult CompilerDMD::AutoDetectInstallationDir()
 	wxString libPath=m_MasterPath + sep + _T("lib");
 	wxString libName=_T("phobos.lib");
 	#else // linux
-	m_MasterPath = _T("/usr/local");
+	m_MasterPath = wxFileExists(_T("/usr/local/bin/dmd")) ? _T("/usr/local") : _T("/usr");
 	wxString incPath=m_MasterPath + sep + _T("lib") + sep + _T("phobos");
 	wxString libPath=m_MasterPath + sep + _T("lib");
-	wxString libName=_T("-lphobos");
+	wxString libName=_T("phobos");
 	#endif
 
     if (!m_MasterPath.IsEmpty())
