@@ -115,6 +115,9 @@ cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, 
   label_dc.SelectObject(m_label);
 #ifndef __WXMAC__
   label_dc.Blit(0, 0, w, h, &screen_dc, x, y);
+#else
+  label_dc.SetBackground(*wxWHITE_BRUSH);
+  label_dc.Clear();
 #endif
   label_dc.DrawBitmap(label, 0, 0, true);
   label_dc.SelectObject(wxNullBitmap);
