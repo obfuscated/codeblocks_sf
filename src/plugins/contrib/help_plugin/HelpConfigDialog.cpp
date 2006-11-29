@@ -98,12 +98,14 @@ void HelpConfigDialog::ChooseFile()
     wxEmptyString,
     wxEmptyString,
     wxEmptyString,
-    _T(
 #ifdef __WXMSW__
+    _T(
       "Windows help files (*.chm;*.hlp)|*.hlp;*.chm|"
-#endif
       "All files (*.*)|*.*"
     )
+#else
+    _T("All files (*.*)|*.*")
+#endif
   );
 
   if (!filename.IsEmpty())

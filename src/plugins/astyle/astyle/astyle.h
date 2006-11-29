@@ -31,6 +31,8 @@
 #include <string>
 #include <vector>
 
+#include <cctype>
+
 using namespace std;
 
 // disable secure version deprecation warnings for .NET 2005

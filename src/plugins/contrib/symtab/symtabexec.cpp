@@ -23,6 +23,7 @@
 #include <wx/ffile.h>
 #include <wx/filedlg.h>
 #include <wx/progdlg.h>
+#include <wx/button.h>
 
 #include "symtabexec.h"
 
