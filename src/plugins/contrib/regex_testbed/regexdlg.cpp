@@ -10,7 +10,7 @@
 BEGIN_EVENT_TABLE(RegExDlg,wxDialog)
 	//(*EventTable(RegExDlg)
 	EVT_INIT_DIALOG(RegExDlg::OnInit)
-	EVT_BUTTON(XRCID("ID_BUTTON1"),RegExDlg::OnTestClick)
+	EVT_BUTTON(XRCID("ID_BTN_TEXT"),RegExDlg::OnTestClick)
 	//*)
 END_EVENT_TABLE()
 
@@ -18,9 +18,10 @@ RegExDlg::RegExDlg(wxWindow* parent,wxWindowID id)
 {
 	//(*Initialize(RegExDlg)
 	wxXmlResource::Get()->LoadDialog(this,parent,_T("RegExDlg"));
-	txtRegEx = XRCCTRL(*this,"ID_TEXTCTRL1",wxTextCtrl);
-	txtInput = XRCCTRL(*this,"ID_TEXTCTRL2",wxTextCtrl);
-	btnTest = XRCCTRL(*this,"ID_BUTTON1",wxButton);
+	txtRegEx = XRCCTRL(*this,"ID_TXT_REGEX",wxTextCtrl);
+	txtInput = XRCCTRL(*this,"ID_TXT_INPUT",wxTextCtrl);
+	txtOutput = XRCCTRL(*this,"ID_TXT_OUTPUT",wxTextCtrl);
+	btnTest = XRCCTRL(*this,"ID_BTN_TEXT",wxButton);
 	btnCancel = XRCCTRL(*this,"wxID_CANCEL",wxButton);
 	//*)
 }
@@ -31,8 +32,8 @@ RegExDlg::~RegExDlg()
 
 void RegExDlg::OnTestClick(wxCommandEvent& event)
 {
-    wxString reS = txtRegEx->GetValue();
-    wxString inS = txtInput->GetValue();
+    wxString reS = txtRegEx->GetValue().Trim();
+    wxString inS = txtInput->GetValue().Trim();
 
     if (reS.IsEmpty() || inS.IsEmpty())
     {
@@ -44,9 +45,11 @@ void RegExDlg::OnTestClick(wxCommandEvent& event)
     if (!re.Compile(reS))
     {
         cbMessageBox(_("Could not compile regular expression.\n"
-                        "Check its syntax..."), _("Error"), wxICON_ERROR);
+                       "Check its syntax..."), _("Error"), wxICON_ERROR);
         return;
     }
+
+    txtOutput->Clear();
 
     if (!re.Matches(inS))
     {
@@ -61,7 +64,7 @@ void RegExDlg::OnTestClick(wxCommandEvent& event)
         wxString match = wxString::Format(_("Expression %d: %s\n"), i, re.GetMatch(inS, i).c_str());
         result << match;
     }
-    cbMessageBox(result, _("Matches"), wxICON_INFORMATION);
+    txtOutput->SetValue(result);
 }
 
 void RegExDlg::EndModal(int retCode)

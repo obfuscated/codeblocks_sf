@@ -15,40 +15,54 @@
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-pipe" />
-					<Add option="-mthreads" />
-					<Add option="-fmessage-length=0" />
-					<Add option="-fexceptions" />
-					<Add option="-Winvalid-pch" />
-					<Add option="-DBUILDING_PLUGIN" />
-					<Add option="-DHAVE_W32API_H" />
-					<Add option="-D__WXMSW__" />
-					<Add option="-DWXUSINGDLL" />
-					<Add option="-DTIXML_USE_STL" />
 					<Add option="-DcbDEBUG" />
-					<Add option="-DCB_PRECOMP" />
-					<Add option="-DWX_PRECOMP" />
-					<Add option="-DwxUSE_UNICODE" />
-					<Add directory="..\..\..\sdk" />
-					<Add directory="..\..\..\sdk\wxscintilla\include" />
-					<Add directory="$(#wx.include)" />
-					<Add directory="$(#wx.lib)\gcc_dll\mswu" />
 				</Compiler>
-				<Linker>
-					<Add library="codeblocks" />
-					<Add library="wxmsw26u" />
-					<Add directory="..\..\..\devel" />
-					<Add directory="$(#wx.lib)\gcc_dll" />
-				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel\share\codeblocks\RegExTestbed.zip manifest.xml *.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+			</Environment>
 		</Build>
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-pipe" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-mthreads" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DTIXML_USE_STL" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add directory="$(#WX.include)" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX)\contrib\include" />
+			<Add directory="$(#CB.include)" />
+			<Add directory="$(#CB.include)\wxscintilla\include" />
+			<Add directory="$(#CB)\sdk" />
+			<Add directory="$(#CB)\sdk\wxscintilla\include" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add library="wxmsw26$(WX_SUFFIX)" />
+			<Add library="codeblocks" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="$(#CB.lib)" />
+			<Add directory="$(#CB)\devel" />
+		</Linker>
 		<Unit filename="RegExTestbed.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />

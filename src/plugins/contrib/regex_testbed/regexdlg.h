@@ -42,6 +42,7 @@ class RegExDlg: public wxDialog
 		//(*Declarations(RegExDlg)
 		wxTextCtrl* txtRegEx;
 		wxTextCtrl* txtInput;
+		wxTextCtrl* txtOutput;
 		wxButton* btnTest;
 		wxButton* btnCancel;
 		//*)
