@@ -205,7 +205,7 @@ void wxFNBRenderer::DrawDropDownArrow(wxWindow* pageContainer, wxDC& dc)
 	xbmp.SetMask(new wxMask(xbmp, MASK_COLOR));
 	// erase old bitmap
 	int posx = GetDropArrowButtonPos( pc );
-	dc.DrawBitmap(m_xBgBmp, posx, 6);
+	dc.DrawBitmap(m_rightBgBmp, posx, 6);
 
 	// Draw the new bitmap
 	dc.DrawBitmap(xbmp, posx, 6, true);

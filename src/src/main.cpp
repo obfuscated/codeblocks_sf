@@ -1464,6 +1464,12 @@ void MainFrame::DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& pref
     if (cfg->ReadBool(_T("/environment/tabs_smart")))
         nbstyle |= wxFNB_SMART_TABS;
 
+    if (cfg->ReadBool(_T("/environment/tabs_list")))
+    {
+        nbstyle |= wxFNB_DROPDOWN_TABS_LIST;
+        nbstyle |= wxFNB_NO_NAV_BUTTONS;
+    }
+
     target->SetWindowStyleFlag(nbstyle);
     target->SetGradientColorBorder(cfg->ReadColour(_T("/environment/gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
     target->SetGradientColorFrom(cfg->ReadColour(_T("/environment/gradient_from"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE))));

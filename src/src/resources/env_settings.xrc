@@ -439,6 +439,13 @@
                     <label>Use Smart Tab-switching scheme</label>
                   </object>
                 </object>
+                <object class="sizeritem">
+                  <border>8</border>
+                  <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                  <object class="wxCheckBox" name="chkListTabs">
+                    <label>Use drop-down tab list</label>
+                  </object>
+                </object>
               </object>
             </object>
           </object>
