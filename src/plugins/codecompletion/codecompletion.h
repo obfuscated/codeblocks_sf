@@ -25,8 +25,9 @@ class CodeCompletion : public cbCodeCompletionPlugin
 
         virtual void OnAttach();
         virtual void OnRelease(bool appShutDown);
-        int GetConfigurationGroup() const { return cgEditor; }
-        cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+        virtual int GetConfigurationGroup() const { return cgEditor; }
+        virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+        virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
         virtual int Configure();
         virtual void BuildMenu(wxMenuBar* menuBar); // offer for menu space by host
         virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);

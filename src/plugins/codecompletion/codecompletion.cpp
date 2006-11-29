@@ -45,6 +45,7 @@
 #include <incrementalselectlistdlg.h>
 #include "insertclassmethoddlg.h"
 #include "ccoptionsdlg.h"
+#include "ccoptionsprjdlg.h"
 #include "parser/parser.h"
 #include "parser/tokenizer.h"
 #include "selectincludefile.h"
@@ -198,6 +199,11 @@ cbConfigurationPanel* CodeCompletion::GetConfigurationPanel(wxWindow* parent)
 {
     CCOptionsDlg* dlg = new CCOptionsDlg(parent, &m_NativeParsers);
     return dlg;
+}
+
+cbConfigurationPanel* CodeCompletion::GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
+{
+    return new CCOptionsProjectDlg(parent, project, &m_NativeParsers);
 }
 
 int CodeCompletion::Configure()

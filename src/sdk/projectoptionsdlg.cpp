@@ -166,12 +166,11 @@ void ProjectOptionsDlg::AddPluginPanels()
 {
     wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
 
-    ConfigurationPanelsArray panels;
-    Manager::Get()->GetPluginManager()->GetProjectConfigurationPanels(nb, m_Project, panels);
+    Manager::Get()->GetPluginManager()->GetProjectConfigurationPanels(nb, m_Project, m_PluginPanels);
 
-    for (size_t i = 0; i < panels.GetCount(); ++i)
+    for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
     {
-        cbConfigurationPanel* panel = panels[i];
+        cbConfigurationPanel* panel = m_PluginPanels[i];
         nb->AddPage(panel, panel->GetTitle());
     }
 }
@@ -996,6 +995,22 @@ void ProjectOptionsDlg::EndModal(int retCode)
             m_Current_Sel = 0; // force update of global options
 
         DoBeforeTargetChange(true);
+
+        // finally, apply settings in all plugins' panels
+        for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
+        {
+            cbConfigurationPanel* panel = m_PluginPanels[i];
+            panel->OnApply();
+        }
+    }
+    else
+    {
+        // finally, cancel settings in all plugins' panels
+        for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
+        {
+            cbConfigurationPanel* panel = m_PluginPanels[i];
+            panel->OnCancel();
+        }
     }
 
     wxDialog::EndModal(retCode);

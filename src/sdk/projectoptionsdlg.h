@@ -60,6 +60,7 @@ class ProjectOptionsDlg : public wxDialog
         cbProject* m_Project;
         int m_Current_Sel; // current target selection (when selection changes it is the old selection - handy, eh?)
     	cbCompilerPlugin* m_pCompiler;
+        ConfigurationPanelsArray m_PluginPanels;
 		DECLARE_EVENT_TABLE()
 };
 

@@ -15,6 +15,7 @@ EXTRA_DIST = classbrowser.xrc \
 	codecompletion_toolbar.xrc \
 	insert_class_method.xrc \
 	manifest.xml \
+	project_settings.xrc \
 	selectincludefile.xrc \
 	settings.xrc \
 	images/class_folder.png \

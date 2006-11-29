@@ -15,6 +15,7 @@ libcodecompletion_la_LIBADD = ../../sdk/libcodeblocks.la
 
 libcodecompletion_la_SOURCES = ccdebuginfo.cpp \
 			ccoptionsdlg.cpp \
+			ccoptionsprjdlg.cpp \
 			classbrowser.cpp \
 			classbrowserbuilderthread.cpp \
 			codecompletion.cpp \
@@ -29,6 +30,7 @@ libcodecompletion_la_SOURCES = ccdebuginfo.cpp \
 
 noinst_HEADERS = ccdebuginfo.h \
 			ccoptionsdlg.h \
+			ccoptionsprjdlg.h \
 			classbrowser.h \
 			classbrowserbuilderthread.h \
 			codecompletion.h \

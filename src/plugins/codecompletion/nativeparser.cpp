@@ -39,7 +39,9 @@
 #include "classbrowser.h"
 #include "parser/parser.h"
 #include <compilerfactory.h>
+#include <projectloader_hooks.h>
 #include <wx/regex.h>
+#include <tinyxml/tinyxml.h>
 #include "wx/wxFlatNotebook/wxFlatNotebook.h"
 
 #include <wx/wfstream.h>
@@ -65,12 +67,52 @@ NativeParser::NativeParser()
     m_LastAISearchWasGlobal(false)
 {
     //ctor
+
+    // hook to project loading procedure
+    ProjectLoaderHooks::HookFunctorBase* myhook = new ProjectLoaderHooks::HookFunctor<NativeParser>(this, &NativeParser::OnProjectLoadingHook);
+    m_HookId = ProjectLoaderHooks::RegisterHook(myhook);
 }
 
 NativeParser::~NativeParser()
 {
+    ProjectLoaderHooks::UnregisterHook(m_HookId, true);
+
     RemoveClassBrowser();
     ClearParsers();
+}
+
+void NativeParser::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading)
+{
+    if (loading)
+    {
+        // Hook called when loading project file.
+        wxArrayString& pdirs = GetProjectSearchDirs(project);
+
+        TiXmlElement* CCConf = elem->FirstChildElement("code_completion");
+        if (CCConf)
+        {
+            TiXmlElement* pathsElem = CCConf->FirstChildElement("search_path");
+            while (pathsElem)
+            {
+                if (pathsElem->Attribute("add"))
+                    pdirs.Add(cbC2U(pathsElem->Attribute("add")));
+
+                pathsElem = pathsElem->NextSiblingElement("search_path");
+            }
+        }
+    }
+    else
+    {
+        // Hook called when saving project file.
+        wxArrayString& pdirs = GetProjectSearchDirs(project);
+
+        TiXmlElement* node = elem->InsertEndChild(TiXmlElement("code_completion"))->ToElement();
+        for (size_t i = 0; i < pdirs.GetCount(); ++i)
+        {
+            TiXmlElement* path = node->InsertEndChild(TiXmlElement("search_path"))->ToElement();
+            path->SetAttribute("add", cbU2C(pdirs[i]));
+        }
+    }
 }
 
 void NativeParser::CreateClassBrowser()
@@ -413,6 +455,17 @@ wxArrayString NativeParser::GetGCCCompilerDirs(const wxString &cpp_compiler, con
     return gcc_compiler_dirs;
 }
 
+wxArrayString& NativeParser::GetProjectSearchDirs(cbProject* project)
+{
+    ProjectSearchDirsMap::iterator it;
+    it = m_ProjectSearchDirsMap.find(project);
+    if (it == m_ProjectSearchDirsMap.end())
+    {
+        it = m_ProjectSearchDirsMap.insert(m_ProjectSearchDirsMap.end(), std::make_pair(project, wxArrayString()));
+    }
+    return it->second;
+}
+
 void NativeParser::AddParser(cbProject* project, bool useCache)
 {
     if (!project)
@@ -421,6 +474,20 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
     Manager::Get()->GetMessageManager()->DebugLog(_T("Add project %s in parsing queue"), project->GetTitle().c_str());
     Parser* parser = &m_Parser;//new Parser(this);
     AddCompilerDirs(parser, project);
+
+    // add per-project dirs
+    wxArrayString& pdirs = GetProjectSearchDirs(project);
+    wxString base = project->GetBasePath();
+    for (size_t i = 0; i < pdirs.GetCount(); ++i)
+    {
+        wxFileName dir(pdirs[i]);
+
+        wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
+        if (NormalizePath(dir, base))
+            parser->AddIncludeDir(dir.GetFullPath());
+        else
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"), pdirs[i].c_str(), base.c_str());
+    }
 
     wxArrayString files;
 

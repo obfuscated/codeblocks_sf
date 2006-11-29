@@ -2,9 +2,10 @@
 #define NATIVEPARSER_H
 
 #include <queue>
+#include <map>
 
 #include <wx/event.h>
-#include <wx/hashmap.h>
+#include <wx/hashmap.h> // TODO: replace with std::map
 #include "parser/parser.h"
 
 #define DEBUG_CC_AI
@@ -20,6 +21,8 @@ class Token;
 
 WX_DECLARE_HASH_MAP(cbProject*, Parser*, wxPointerHash, wxPointerEqual, ParsersMap);
 WX_DECLARE_HASH_MAP(cbProject*, wxString, wxPointerHash, wxPointerEqual, ParsersFilenameMap);
+
+typedef std::map<cbProject*, wxArrayString> ProjectSearchDirsMap;
 
 enum ParserTokenType
 {
@@ -71,6 +74,8 @@ class NativeParser : public wxEvtHandler
 		Parser* FindParserFromActiveProject();
 		Parser* FindParserFromProject(cbProject* project);
 
+		wxArrayString& GetProjectSearchDirs(cbProject* project);
+
         // returns the editor's position where the current function starts
         // optionally, returns the function's namespace (ends in double-colon ::) and name
 		int FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace = 0L, wxString* procName = 0L);
@@ -83,6 +88,8 @@ class NativeParser : public wxEvtHandler
 		void UpdateClassBrowser();
 		void SetClassBrowserProject(cbProject* project);
 		void SetCBViewMode(const BrowserViewMode& mode);
+
+        void OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading);
 	protected:
 	private:
         friend class CodeCompletion;
@@ -129,6 +136,9 @@ class NativeParser : public wxEvtHandler
 
     	bool m_LastAISearchWasGlobal; // true if the phrase for code-completion is empty or partial text (i.e. no . -> or :: operators)
     	wxString m_LastAIGlobalSearch; // same case like above, it holds the search string
+
+        ProjectSearchDirsMap m_ProjectSearchDirsMap;
+        int m_HookId; // project loader hook ID
 
         DECLARE_EVENT_TABLE()
 };
