@@ -556,6 +556,16 @@
 			<Option link="0" />
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins/codecompletion/ccoptionsprjdlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/ccoptionsprjdlg.h">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins/codecompletion/classbrowser.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Code-completion" />
@@ -801,6 +811,12 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/resources/settings.xrc">
+			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/resources/project_settings.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
