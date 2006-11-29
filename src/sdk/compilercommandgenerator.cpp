@@ -66,6 +66,10 @@ void CompilerCommandGenerator::Init(cbProject* project)
         }
     }
 
+    // reset failed-scripts arrays
+    m_NotLoadedScripts.Clear();
+    m_ScriptsWithErrors.Clear();
+
     // backup project settings
     bool projectWasModified = project->GetModified();
     CompileTargetBase backup = *(CompileTargetBase*)project;
@@ -121,6 +125,35 @@ void CompilerCommandGenerator::Init(cbProject* project)
     // restore project settings
     *(CompileTargetBase*)project = backup;
     project->SetModified(projectWasModified);
+
+    // let's display all script errors now in a batch
+    if (!m_NotLoadedScripts.IsEmpty() || !m_ScriptsWithErrors.IsEmpty())
+    {
+        wxString msg;
+
+        if (!m_NotLoadedScripts.IsEmpty())
+        {
+            msg << _("Scripts that failed to load either because they don't exist\n"
+                    "or because they contain syntax errors:\n\n");
+            for (size_t i = 0; i < m_NotLoadedScripts.GetCount(); ++i)
+            {
+                msg << m_NotLoadedScripts[i] << _T("\n");
+            }
+            msg << _T("\n");
+        }
+        if (!m_ScriptsWithErrors.IsEmpty())
+        {
+            msg << _("Scripts that failed to load because the mandatory function\n"
+                    "SetBuildOptions() is missing:\n\n");
+            for (size_t i = 0; i < m_ScriptsWithErrors.GetCount(); ++i)
+            {
+                msg << m_ScriptsWithErrors[i] << _T("\n");
+            }
+            msg << _T("\n");
+        }
+
+        cbMessageBox(msg, _("Error"), wxICON_ERROR);
+    }
 }
 
 void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
@@ -258,8 +291,23 @@ void CompilerCommandGenerator::DoBuildScripts(CompileTargetBase* target, const w
     const wxArrayString& scripts = target->GetBuildScripts();
     for (size_t i = 0; i < scripts.GetCount(); ++i)
     {
-        Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_buildscripts); // clear previous script's context
-        Manager::Get()->GetScriptingManager()->LoadScript(scripts[i]);
+        // if the script has failed before, skip it
+        if (m_NotLoadedScripts.Index(scripts[i]) != wxNOT_FOUND ||
+            m_ScriptsWithErrors.Index(scripts[i]) != wxNOT_FOUND)
+        {
+            continue;
+        }
+
+        // clear previous script's context
+        Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_buildscripts);
+
+        // if the script doesn't exist, just return
+        if (!Manager::Get()->GetScriptingManager()->LoadScript(scripts[i]))
+        {
+            m_NotLoadedScripts.Add(scripts[i]);
+            continue;
+        }
+
         try
         {
             SqPlus::SquirrelFunction<void> f(cbU2C(funcName));
@@ -268,6 +316,7 @@ void CompilerCommandGenerator::DoBuildScripts(CompileTargetBase* target, const w
         catch (SquirrelError& e)
         {
             Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+            m_ScriptsWithErrors.Add(scripts[i]);
         }
     }
 }

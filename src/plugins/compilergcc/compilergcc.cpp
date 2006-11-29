@@ -2000,11 +2000,15 @@ void CompilerGCC::BuildStateManagement()
             PrintBanner(m_pBuildingProject, bt);
         }
 
+        // avoid calling Compiler::Init() twice below, if it is the same compiler
+        Compiler* initCompiler = 0;
+
         if (m_pBuildingProject != m_pLastBuildingProject)
         {
             m_pLastBuildingProject = m_pBuildingProject;
             wxSetWorkingDirectory(m_pBuildingProject->GetBasePath());
             CompilerFactory::GetCompiler(m_CompilerId)->Init(m_pBuildingProject);
+            initCompiler = CompilerFactory::GetCompiler(m_CompilerId);
         }
         if (bt != m_pLastBuildingTarget)
         {
@@ -2012,7 +2016,7 @@ void CompilerGCC::BuildStateManagement()
             // if so, we must Init() the target's compiler...
             Compiler* last = m_pLastBuildingTarget ? CompilerFactory::GetCompiler(m_pLastBuildingTarget->GetCompilerID()) : 0;
             Compiler* curr = bt ? CompilerFactory::GetCompiler(bt->GetCompilerID()) : 0;
-            if (curr && last != curr)
+            if (curr && last != curr && curr != initCompiler)
                 curr->Init(m_pBuildingProject);
             m_pLastBuildingTarget = bt;
         }

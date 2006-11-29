@@ -2,6 +2,7 @@
 #define COMPILERCOMMANDGENERATOR_H
 
 #include <wx/string.h>
+#include <wx/dynarray.h>
 #include <wx/hashmap.h>
 #include "settings.h"
 #include "compiletargetbase.h"
@@ -65,6 +66,8 @@ class DLLIMPORT CompilerCommandGenerator
     private:
         void ExpandBackticks(wxString& str);
         BackticksMap m_Backticks;
+        wxArrayString m_NotLoadedScripts;
+        wxArrayString m_ScriptsWithErrors;
 };
 
 #endif // COMPILERCOMMANDGENERATOR_H
