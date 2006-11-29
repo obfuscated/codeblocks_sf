@@ -4,12 +4,12 @@
 	<Project>
 		<Option title="RegExTestbed" />
 		<Option pch_mode="2" />
-		<Option default_target="" />
+		<Option default_target="default" />
 		<Option compiler="gcc" />
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
-				<Option output="RegExTestbed.dll" prefix_auto="1" extension_auto="1" />
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\RegExTestbed.dll" prefix_auto="1" extension_auto="1" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
@@ -70,6 +70,12 @@
 			<Option target="default" />
 		</Unit>
 		<Unit filename="regexdlg.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="default" />
+		</Unit>
+		<Unit filename="wxsmith\RegExDlg.wxs">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

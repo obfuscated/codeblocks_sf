@@ -31,6 +31,7 @@
                 <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                 <object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="txtInput" member="yes">
                     <value></value>
+                    <size>410,133</size>
                     <style>wxTE_MULTILINE</style>
                 </object>
             </object>
