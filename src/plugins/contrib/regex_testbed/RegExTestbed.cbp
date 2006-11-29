@@ -46,6 +46,9 @@
 				</ExtraCommands>
 			</Target>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
 		<Unit filename="RegExTestbed.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="default" />
