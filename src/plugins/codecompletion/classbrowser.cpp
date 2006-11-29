@@ -152,8 +152,8 @@ ClassBrowser::~ClassBrowser()
 
     if (m_pBuilderThread)
     {
-        m_pBuilderThread->Delete();
         m_Semaphore.Post();
+        m_pBuilderThread->Delete();
     }
 }
 

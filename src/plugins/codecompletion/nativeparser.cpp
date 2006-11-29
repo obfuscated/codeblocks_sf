@@ -105,6 +105,8 @@ void NativeParser::CreateClassBrowser()
             Manager::Get()->GetAppWindow()->ProcessEvent(evt);
         }
         m_ClassBrowserIsFloating = isFloating;
+
+        m_pClassBrowser->SetParser(&m_Parser);
     }
 }
 
@@ -117,15 +119,14 @@ void NativeParser::RemoveClassBrowser(bool appShutDown)
             int idx = Manager::Get()->GetProjectManager()->GetNotebook()->GetPageIndex(m_pClassBrowser);
             if (idx != -1)
                 Manager::Get()->GetProjectManager()->GetNotebook()->RemovePage(idx);
-            m_pClassBrowser->Destroy();
         }
         else if (m_ClassBrowserIsFloating)
         {
             CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
             evt.pWindow = m_pClassBrowser;
             Manager::Get()->GetAppWindow()->ProcessEvent(evt);
-            m_pClassBrowser->Destroy();
         }
+        m_pClassBrowser->Destroy();
     }
     m_pClassBrowser = 0L;
 }
@@ -150,22 +151,24 @@ void NativeParser::RereadParserOptions()
     m_Parser.ReadOptions();
 
     // disabled?
-    if (cfg->ReadBool(_T("/use_symbols_browser"), true) && !m_pClassBrowser)
+    if (cfg->ReadBool(_T("/use_symbols_browser"), true))
     {
-        CreateClassBrowser();
-        UpdateClassBrowser();
+        if (!m_pClassBrowser)
+        {
+            CreateClassBrowser();
+            UpdateClassBrowser();
+        }
+        // change class-browser docking settings
+        else if (m_ClassBrowserIsFloating != cfg->ReadBool(_T("/as_floating_window"), false))
+        {
+            RemoveClassBrowser();
+            CreateClassBrowser();
+            // force re-update
+            UpdateClassBrowser();
+        }
     }
     else if (!cfg->ReadBool(_T("/use_symbols_browser"), true) && m_pClassBrowser)
         RemoveClassBrowser();
-
-    // change class-browser docking settings
-    if (m_ClassBrowserIsFloating != cfg->ReadBool(_T("/as_floating_window"), false))
-    {
-        RemoveClassBrowser();
-        CreateClassBrowser();
-        // force re-update
-        UpdateClassBrowser();
-    }
 
     // reparse if settings changed
     if (opts.followLocalIncludes != m_Parser.Options().followLocalIncludes ||
@@ -1905,6 +1908,8 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
 
 void NativeParser::OnEditorActivated(EditorBase* editor)
 {
+    if (!m_pClassBrowser)
+        return;
     cbEditor* ed = editor && editor->IsBuiltinEditor() ? static_cast<cbEditor*>(editor) : 0;
     if (ed)
     {
