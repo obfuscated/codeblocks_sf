@@ -21,6 +21,7 @@
 #include "scripting/bindings/scriptbindings.h"
 
 static wxString s_ScriptErrors;
+static wxString capture;
 
 static void ScriptsPrintFunc(HSQUIRRELVM v, const SQChar * s, ...)
 {
@@ -34,6 +35,16 @@ static void ScriptsPrintFunc(HSQUIRRELVM v, const SQChar * s, ...)
 
     s_ScriptErrors << msg;
 }
+
+static void CaptureScriptOutput(HSQUIRRELVM v, const SQChar * s, ...)
+{
+    static SQChar temp[2048];
+    va_list vl;
+    va_start(vl,s);
+    scvsprintf(temp,s,vl);
+    ::capture.append(cbC2U(temp));
+    va_end(vl);
+};
 
 ScriptingManager::ScriptingManager()
 {
@@ -59,6 +70,7 @@ ScriptingManager::~ScriptingManager()
 
 bool ScriptingManager::LoadScript(const wxString& filename)
 {
+    wxCriticalSectionLocker c(cs);
     wxLogNull ln;
 
     wxString fname = filename;
@@ -81,6 +93,8 @@ bool ScriptingManager::LoadScript(const wxString& filename)
 
 bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugName)
 {
+    wxCriticalSectionLocker c(cs);
+
     s_ScriptErrors.Clear();
 
     // compile script
@@ -106,6 +120,20 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
         return false;
     }
     return true;
+}
+
+
+wxString ScriptingManager::LoadBufferRedirectOutput(const wxString& buffer)
+{
+    wxCriticalSectionLocker c(cs);
+
+    ::capture.Clear();
+
+    sq_setprintfunc(SquirrelVM::GetVMPtr(), CaptureScriptOutput);
+    bool res = LoadBuffer(buffer);
+    sq_setprintfunc(SquirrelVM::GetVMPtr(), ScriptsPrintFunc);
+
+    return res ? ::capture : (wxString) wxEmptyString;
 }
 
 wxString ScriptingManager::GetErrorString(SquirrelError* exception, bool clearErrors)

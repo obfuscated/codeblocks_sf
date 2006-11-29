@@ -41,7 +41,7 @@ protected:
     wxRegEx m_re_dos;
     wxRegEx m_re_if;
     wxRegEx m_re_ifsp;
-    wxRegEx m_re_path;
+    wxRegEx m_re_script;
     UserVariableManager *m_uVarMan;
 public:
     void Reset();

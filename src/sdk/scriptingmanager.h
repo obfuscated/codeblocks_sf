@@ -36,6 +36,7 @@ class SquirrelError;
 class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>
 {
         friend class Mgr<ScriptingManager>;
+        wxCriticalSection cs;
     public:
         /** @brief Loads a script.
           *
@@ -51,6 +52,7 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>
           * @return True if the script compiled, false if not.
           */
         bool LoadBuffer(const wxString& buffer, const wxString& debugName = _T("CommandLine"));
+        wxString LoadBufferRedirectOutput(const wxString& buffer);
 
         /** @brief Returns an accumulated error string.
           *

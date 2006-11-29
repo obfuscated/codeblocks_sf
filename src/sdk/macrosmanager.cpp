@@ -45,32 +45,14 @@
 
 #include <cstdlib>
 
+#include "scripting/sqplus/sqplus.h"
+#include "scripting/bindings/scriptbindings.h"
+
 using namespace std;
 
 
 static const wxString const_COIN(_T("COIN"));
 static const wxString const_RANDOM(_T("RANDOM"));
-
-
-/*
-    standard macros are:
-
-    ${PROJECT_FILENAME} ${PROJECT_FILE} ${PROJECTFILE}
-    ${PROJECT_NAME}
-    ${PROJECT_DIR} ${PROJECTDIR} ${PROJECT_DIRECTORY}
-    ${CODEBLOCKS} ${APP_PATH}  ${APPPATH}
-    ${DATA_PATH} ${DATAPATH}
-    ${PLUGINS}
-    ${ACTIVE_EDITOR_FILENAME}
-    ${ALL_PROJECT_FILES}
-    ${MAKEFILE}
-    ${FOO_OUTPUT_FILE} // per target
-    ${BAR_OUTPUT_DIR} // per target
-    $(TARGET_OUTPUT_DIR) // the current target's out dir
-    $(TARGET_NAME)       // the current target's name (title)
-
-    ${AMP} TODO: implement AddMacro() for custom macros (like this)
-*/
 
 MacrosManager::MacrosManager()
 {
@@ -110,7 +92,7 @@ void MacrosManager::Reset()
     m_re_dos.Compile(_T("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)"));
     m_re_if.Compile(_T("\\$if\\((.*)\\)[ ]*\\{([^}]*)\\}{1}([ ]*else[ ]*\\{([^}]*)\\})?"));
     m_re_ifsp.Compile(_T("[^=!<>]+|(([^=!<>]+)[ ]*(=|==|!=|>|<|>=|<=)[ ]*([^=!<>]+))"));
-    m_re_path.Compile(_T("([^$]|^)(\\$(absolute|relative)\\(([^)]+)\\))"));
+    m_re_script.Compile(_T("(\\[\\[(.*)\\]\\])"));
     m_uVarMan = Manager::Get()->GetUserVariableManager();
     srand(time(0));
     assert(m_re_unx.IsValid());
@@ -310,11 +292,14 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     macros[_T("WEEKDAY_UTC")] = nowGMT.Format(_T("%A"));
 }
 
+
 void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, bool subrequest)
 {
     if (buffer.IsEmpty())
         return;
-    if( buffer.find(_T('$')) == wxString::npos && buffer.find(_T('%')) == wxString::npos )
+
+    static const wxString delim(_T("$%["));
+    if( buffer.find_first_of(delim) == wxString::npos )
         return;
 
     cbProject* project = target
@@ -349,23 +334,17 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
         buffer.Replace(search, replace, false);
     }
 
-    while(m_re_path.Matches(buffer))
+Manager::Get()->GetMessageManager()->DebugLog(_T("------------------"));
+Manager::Get()->GetMessageManager()->DebugLog(buffer);
+    while(m_re_script.Matches(buffer))
     {
-        search = m_re_path.GetMatch(buffer, 2);
-        replace = m_re_path.GetMatch(buffer, 4);
-        wxString abs_rel(m_re_path.GetMatch(buffer, 3).Lower());
-        ReplaceMacros(replace, target, true);
-
-        {
-        wxLogNull shit;
-        wxFileName f(replace);
-        if(abs_rel.IsSameAs(_T("relative")))
-            f.MakeRelativeTo(m_ProjectDir);
-        else
-            f.MakeAbsolute();
-        replace = f.GetFullPath();
-        }
-
+Manager::Get()->GetMessageManager()->DebugLog(_T("------------------"));
+Manager::Get()->GetMessageManager()->DebugLog(m_re_script.GetMatch(buffer, 1));
+Manager::Get()->GetMessageManager()->DebugLog(m_re_script.GetMatch(buffer, 2));
+        search = m_re_script.GetMatch(buffer, 1);
+        replace = Manager::Get()->GetScriptingManager()->LoadBufferRedirectOutput(m_re_script.GetMatch(buffer, 2));
+Manager::Get()->GetMessageManager()->DebugLog(search);
+Manager::Get()->GetMessageManager()->DebugLog(replace);
         buffer.Replace(search, replace, false);
     }
 
