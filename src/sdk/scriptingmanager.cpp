@@ -70,7 +70,7 @@ ScriptingManager::~ScriptingManager()
 
 bool ScriptingManager::LoadScript(const wxString& filename)
 {
-    wxCriticalSectionLocker c(cs);
+//    wxCriticalSectionLocker c(cs);
     wxLogNull ln;
 
     wxString fname = filename;
@@ -93,7 +93,7 @@ bool ScriptingManager::LoadScript(const wxString& filename)
 
 bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugName)
 {
-    wxCriticalSectionLocker c(cs);
+//    wxCriticalSectionLocker c(cs);
 
     s_ScriptErrors.Clear();
 
@@ -125,7 +125,7 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
 
 wxString ScriptingManager::LoadBufferRedirectOutput(const wxString& buffer)
 {
-    wxCriticalSectionLocker c(cs);
+//    wxCriticalSectionLocker c(cs);
 
     ::capture.Clear();
 
