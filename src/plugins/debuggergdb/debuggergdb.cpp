@@ -629,7 +629,11 @@ int DebuggerGDB::LaunchProcess(const wxString& cmd, const wxString& cwd)
 
     #ifndef __WXMSW__
         // setup dynamic linker path
+    #if defined(__APPLE__) && defined(__MACH__)
+        wxSetEnv(_T("DYLD_LIBRARY_PATH"), _T(".:$DYLD_LIBRARY_PATH"));
+    #else
         wxSetEnv(_T("LD_LIBRARY_PATH"), _T(".:$LD_LIBRARY_PATH"));
+    #endif // __APPLE__ && __MACH__
     #endif
 
     // start the gdb process
