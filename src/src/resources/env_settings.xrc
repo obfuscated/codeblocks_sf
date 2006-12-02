@@ -600,7 +600,7 @@
                   <option>1</option>
                   <border>8</border>
                   <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                  <object class="wxCheckList" name="chkDialogs">
+                  <object class="wxCheckListBox" name="chkDialogs">
                     <style></style>
                     <content/>
                   </object>

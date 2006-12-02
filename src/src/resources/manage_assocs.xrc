@@ -14,7 +14,7 @@
         <object class="sizeritem">
             <flag>wxGROW|wxALIGN_CENTER_VERTICAL|wxALL</flag>
             <border>5</border>
-            <object class="wxCheckList" name="checkList">
+            <object class="wxCheckListBox" name="checkList">
                 <size>320,400</size>
             </object>
         </object>

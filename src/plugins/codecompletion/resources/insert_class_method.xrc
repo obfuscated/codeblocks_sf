@@ -34,7 +34,7 @@
             <object class="wxBoxSizer">
               <orient>wxVERTICAL</orient>
               <object class="sizeritem">
-                <object class="wxCheckList" name="chklstMethods">
+                <object class="wxCheckListBox" name="chklstMethods">
                   <content/>
                 </object>
                 <option>1</option>

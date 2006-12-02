@@ -426,7 +426,7 @@ from target...</label>
                         <label>Build target files:</label>
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
-                          <object class="wxCheckList" name="lstFiles">
+                          <object class="wxCheckListBox" name="lstFiles">
                             <content/>
                           </object>
                           <option>1</option>

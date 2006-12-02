@@ -30,7 +30,7 @@
                   <object class="wxStaticBoxSizer">
                     <label>Belongs in targets:</label>
                     <object class="sizeritem">
-                      <object class="wxCheckList" name="lstTargets">
+                      <object class="wxCheckListBox" name="lstTargets">
                         <content/>
                         <size>-1,150</size>
                       </object>
