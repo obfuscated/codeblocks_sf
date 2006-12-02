@@ -1419,7 +1419,7 @@ bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
 
         // invoke Makefile generation
         if (temporary)
-            m_LastTempMakefile = wxFileName::CreateTempFileName(_T("cbmk"), 0L);
+            m_LastTempMakefile = wxFileName::CreateTempFileName(_T("cbmk"), (wxFile*)0L);
         else
         {
             m_LastTempMakefile = makefile;
