@@ -208,6 +208,7 @@ fi
 %{pkgdata}/lib_finder.zip
 %{pkgdata}/Profiler.zip
 %{pkgdata}/SymTab.zip
+%{pkgdata}/RegExTestbed.zip
 %{pkgdata}/wxsmith.zip
 %{pkgdata}/images/wxsmith/*
 %{pkgdata}/images/codesnippets/*
@@ -222,6 +223,7 @@ fi
 %{pkgdata}/plugins/libkeybinder.*
 %{pkgdata}/plugins/liblib_finder.*
 %{pkgdata}/plugins/libProfiler.*
+%{pkgdata}/plugins/libRegExTestbed.*
 %{pkgdata}/plugins/libSymTab.*
 %{pkgdata}/plugins/libwxsmith.*
 
@@ -233,6 +235,8 @@ fi
 %{_includedir}/%{name}/*
 
 %changelog
+* Sun Dec  2 2006 Daniel Orb <danielorb2000@googlemail.com>
+- Added RegExTestbed plugin to filelist
 * Sun Nov  5 2006 Daniel Orb <danielorb2000@googlemail.com>
 - applied patch #1605
 - renamed _mandriva to _mandrake
