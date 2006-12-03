@@ -842,29 +842,37 @@ void ProjectOptionsDlg::OnAddScript(wxCommandEvent& event)
         return;
 
     wxFileName fname;
-    fname.Assign(ctrl->GetStringSelection());
+    if (ctrl->GetSelection())
+		fname.Assign(ctrl->GetStringSelection());
+	else if (ctrl->GetCount())
+		fname.Assign(ctrl->GetString(ctrl->GetCount() - 1));
     fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
     wxFileDialog dlg(this,
                     _("Select script file"),
                     fname.GetPath(),
                     fname.GetFullName(),
                     _("Script files (*.script)|*.script"),
-                    wxOPEN | wxHIDE_READONLY);
+                    wxOPEN | wxMULTIPLE | wxHIDE_READONLY);
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
-    fname.Assign(dlg.GetPath());
-    fname.MakeRelativeTo(m_Project->GetBasePath());
-    ctrl->Append(fname.GetFullPath());
-    ctrl->SetSelection(ctrl->GetCount());
+	wxArrayString paths;
+	dlg.GetPaths(paths);
+	for (size_t i = 0; i < paths.GetCount(); ++i)
+	{
+		fname.Assign(paths[i]);
+		fname.MakeRelativeTo(m_Project->GetBasePath());
+		ctrl->Append(fname.GetFullPath());
+		ctrl->SetSelection(ctrl->GetCount());
 
-	wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
-	wxTreeItemId sel = tc->GetSelection();
-    CompileOptionsBase* base = sel == tc->GetRootItem()
-                                ? static_cast<CompileOptionsBase*>(m_Project)
-                                : static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
-    base->AddBuildScript(fname.GetFullPath());
+		wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
+		wxTreeItemId sel = tc->GetSelection();
+		CompileOptionsBase* base = sel == tc->GetRootItem()
+									? static_cast<CompileOptionsBase*>(m_Project)
+									: static_cast<CompileOptionsBase*>(m_Project->GetBuildTarget(tc->GetItemText(sel)));
+		base->AddBuildScript(fname.GetFullPath());
+	}
 }
 
 void ProjectOptionsDlg::OnRemoveScript(wxCommandEvent& event)

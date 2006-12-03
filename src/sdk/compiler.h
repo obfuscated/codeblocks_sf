@@ -229,6 +229,16 @@ class DLLIMPORT Compiler : public CompileOptionsBase
                                         const wxString& FlatObject,
                                         const wxString& deps);
 
+		/** @brief Get the full include dirs used in the actuall command line.
+		  *
+		  * These are the actual include dirs that will be used for building
+		  * and might be different than target->GetIncludeDirs(). This is
+		  * because it's the sum of target include dirs + project include dirs +
+		  * build-script include dirs.
+		  * @note This is only valid after Init() has been called.
+		  */
+		virtual const wxArrayString& GetCompilerSearchDirs(ProjectBuildTarget* target);
+
         /** @brief Save settings */
         virtual void SaveSettings(const wxString& baseKey);
         /** @brief Load settings */

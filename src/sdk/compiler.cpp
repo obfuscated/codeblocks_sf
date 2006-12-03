@@ -168,6 +168,16 @@ void Compiler::GenerateCommandLine(wxString& macro,
     m_pGenerator->GenerateCommandLine(macro, target, pf, file, object, FlatObject, deps);
 }
 
+const wxArrayString& Compiler::GetCompilerSearchDirs(ProjectBuildTarget* target)
+{
+	static wxArrayString retIfError;
+	retIfError.Clear();
+	if (!m_pGenerator)
+		return retIfError;
+
+	return m_pGenerator->GetCompilerSearchDirs(target);
+}
+
 void Compiler::SaveSettings(const wxString& baseKey)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("compiler"));

@@ -358,9 +358,17 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
 wxString CompilerCommandGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target)
 {
     wxString result;
-
+    
     if (target)
     {
+		// currently, we ignore compiler search dirs (despite the var's name)
+		// we only care about project/target search dirs
+		wxArrayString prjSearchDirs = target->GetParentProject()->GetIncludeDirs();
+		wxArrayString tgtSearchDirs = target->GetIncludeDirs();
+		wxArrayString searchDirs;
+        searchDirs = GetOrderedOptions(target, ortIncludeDirs, prjSearchDirs, tgtSearchDirs);
+        m_CompilerSearchDirs.insert(m_CompilerSearchDirs.end(), std::make_pair(target, searchDirs));
+
         // target dirs
         wxString tstr;
         const wxArrayString& arr = target->GetIncludeDirs();
@@ -637,6 +645,18 @@ wxString CompilerCommandGenerator::SetupResourceCompilerOptions(Compiler* compil
     return wxEmptyString;
 }
 
+const wxArrayString& CompilerCommandGenerator::GetCompilerSearchDirs(ProjectBuildTarget* target)
+{
+	static wxArrayString retIfError;
+	retIfError.Clear();
+	
+	SearchDirsMap::iterator it = m_CompilerSearchDirs.find(target);
+	if (it == m_CompilerSearchDirs.end())
+		return retIfError;
+	
+	return it->second;
+}
+
 /** Arrange order of options.
   * Depending on the order defined for the build target, it concatenates
   * @c project_options with @c target_options and returns the result.
@@ -658,6 +678,40 @@ wxString CompilerCommandGenerator::GetOrderedOptions(const ProjectBuildTarget* t
             break;
         case orAppendToParentOptions:
             result << project_options << target_options;
+            break;
+    }
+    return result;
+}
+
+/** Arrange order of options.
+  * Depending on the order defined for the build target, it concatenates
+  * @c project_options with @c target_options and returns the result.
+  */
+wxArrayString CompilerCommandGenerator::GetOrderedOptions(const ProjectBuildTarget* target, OptionsRelationType rel, const wxArrayString& project_options, const wxArrayString& target_options)
+{
+    wxArrayString result;
+    OptionsRelation relation = target->GetOptionRelation(rel);
+    switch (relation)
+    {
+        case orUseParentOptionsOnly:
+			for (size_t i = 0; i < project_options.GetCount(); ++i)
+				result.Add(project_options[i]);
+            break;
+        case orUseTargetOptionsOnly:
+			for (size_t i = 0; i < target_options.GetCount(); ++i)
+				result.Add(target_options[i]);
+            break;
+        case orPrependToParentOptions:
+			for (size_t i = 0; i < target_options.GetCount(); ++i)
+				result.Add(target_options[i]);
+			for (size_t i = 0; i < project_options.GetCount(); ++i)
+				result.Add(project_options[i]);
+            break;
+        case orAppendToParentOptions:
+			for (size_t i = 0; i < project_options.GetCount(); ++i)
+				result.Add(project_options[i]);
+			for (size_t i = 0; i < target_options.GetCount(); ++i)
+				result.Add(target_options[i]);
             break;
     }
     return result;
