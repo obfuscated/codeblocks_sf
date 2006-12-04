@@ -1,10 +1,13 @@
+#include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+#include <wx/file.h>
+#include <wx/string.h>
+#include "filemanager.h"
+#include "manager.h"
+#endif
 #include "tinywxuni.h"
 #include "tinyxml.h"
-
-#include "../sdk_precomp.h"
-#include <wx/file.h>
-#include "manager.h"
-#include "filemanager.h"
 
 bool TinyXML::LoadDocument(const wxString& filename, TiXmlDocument *doc)
 {
