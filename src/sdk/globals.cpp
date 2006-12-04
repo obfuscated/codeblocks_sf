@@ -177,6 +177,12 @@ FileType FileTypeOf(const wxString& filename)
     else if (ext.IsSameAs(FileFilters::MSVC7_WORKSPACE_EXT))
         return ftMSVC7Workspace;
 
+    else if (ext.IsSameAs(FileFilters::XCODE1_EXT))
+        return ftXcode1Project; // Xcode 1.0+ (Mac OS X 10.3)
+
+    else if (ext.IsSameAs(FileFilters::XCODE2_EXT))
+        return ftXcode2Project; // Xcode 2.1+ (Mac OS X 10.4)
+
     else if (ext.IsSameAs(FileFilters::OBJECT_EXT))
         return ftObject;
 

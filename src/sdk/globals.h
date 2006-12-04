@@ -45,6 +45,8 @@ enum FileType
     ftMSVC7Project,
     ftMSVC6Workspace,
     ftMSVC7Workspace,
+    ftXcode1Project,
+    ftXcode2Project,
     ftSource,
     ftHeader,
     ftObject,

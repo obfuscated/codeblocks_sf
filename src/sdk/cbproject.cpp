@@ -76,7 +76,7 @@ cbProject::cbProject(const wxString& filename)
     SetModified(false);
 
     m_Files.Clear();
-    if (!filename.IsEmpty() && wxFileExists(filename))
+    if (!filename.IsEmpty() && wxFileExists(filename) || wxDirExists(filename))
     {
         // existing project
         m_Filename = filename;
@@ -260,7 +260,7 @@ void cbProject::Open()
     m_Loaded = false;
     m_ProjectFilesMap.clear();
 
-    if (!wxFileName::FileExists(m_Filename))
+    if (!wxFileName::FileExists(m_Filename) && !wxFileName::DirExists(m_Filename))
     {
         wxString msg;
         msg.Printf(_("Project '%s' does not exist..."), m_Filename.c_str());
@@ -291,6 +291,8 @@ void cbProject::Open()
              case ftDevCppProject: loader = new DevCppLoader(this); break;
              case ftMSVC6Project: loader = new MSVCLoader(this); break;
              case ftMSVC7Project: loader = new MSVC7Loader(this); break;
+             case ftXcode1Project: /* placeholder, fallthrough (for now) */
+             case ftXcode2Project: /* placeholder, fallthrough (for now) */
              default:
                  Manager::Get()->GetMessageManager()->Log(_("failed."));
                  return;

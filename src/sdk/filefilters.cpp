@@ -22,6 +22,8 @@ void FileFilters::AddDefaultFileFilters()
     Add(_("MS Visual Studio 7.0+ project files"),     _T("*.vcproj"));
     Add(_("MS Visual C++ 6.0 workspace files"),        _T("*.dsw"));
     Add(_("MS Visual Studio 7.0+ solution files"),     _T("*.sln"));
+    Add(_("Apple Xcode 1.x project bundles"),          _T("*.xcode"));
+    Add(_("Apple Xcode 2.x project bundles"),          _T("*.xcodeproj"));
 }
 
 bool FileFilters::Add(const wxString& name, const wxString& mask)
@@ -134,6 +136,8 @@ const wxString FileFilters::MSVC6_EXT                    = _T("dsp");
 const wxString FileFilters::MSVC7_EXT                    = _T("vcproj");
 const wxString FileFilters::MSVC6_WORKSPACE_EXT          = _T("dsw");
 const wxString FileFilters::MSVC7_WORKSPACE_EXT          = _T("sln");
+const wxString FileFilters::XCODE1_EXT                   = _T("xcode");
+const wxString FileFilters::XCODE2_EXT                   = _T("xcodeproj");
 const wxString FileFilters::CPP_EXT                      = _T("cpp");
 const wxString FileFilters::D_EXT                        = _T("d");
 const wxString FileFilters::F_EXT                        = _T("f");
@@ -174,6 +178,8 @@ const wxString FileFilters::MSVC6_DOT_EXT                    = _T('.') + FileFil
 const wxString FileFilters::MSVC7_DOT_EXT                    = _T('.') + FileFilters::MSVC7_EXT;
 const wxString FileFilters::MSVC6_WORKSPACE_DOT_EXT          = _T('.') + FileFilters::MSVC6_WORKSPACE_EXT;
 const wxString FileFilters::MSVC7_WORKSPACE_DOT_EXT          = _T('.') + FileFilters::MSVC7_WORKSPACE_EXT;
+const wxString FileFilters::XCODE1_DOT_EXT                   = _T('.') + FileFilters::XCODE1_EXT;
+const wxString FileFilters::XCODE2_DOT_EXT                   = _T('.') + FileFilters::XCODE2_EXT;
 const wxString FileFilters::CPP_DOT_EXT                      = _T('.') + FileFilters::CPP_EXT;
 const wxString FileFilters::D_DOT_EXT                        = _T('.') + FileFilters::D_EXT;
 const wxString FileFilters::F_DOT_EXT                        = _T('.') + FileFilters::F_EXT;
