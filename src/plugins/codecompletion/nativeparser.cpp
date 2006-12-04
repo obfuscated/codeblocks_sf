@@ -480,13 +480,15 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
     wxString base = project->GetBasePath();
     for (size_t i = 0; i < pdirs.GetCount(); ++i)
     {
-        wxFileName dir(pdirs[i]);
+        wxString path = pdirs[i];
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(path);
+        wxFileName dir(path);
 
         wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
         if (NormalizePath(dir, base))
             parser->AddIncludeDir(dir.GetFullPath());
         else
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"), pdirs[i].c_str(), base.c_str());
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"), path.c_str(), base.c_str());
     }
 
     wxArrayString files;
