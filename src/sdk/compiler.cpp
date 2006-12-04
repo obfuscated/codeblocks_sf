@@ -194,17 +194,17 @@ void Compiler::SaveSettings(const wxString& baseKey)
 	cfg->Write(tmp + _T("/parent"), m_ParentID, true);
 
 	wxString key = GetStringFromArray(m_CompilerOptions);
-	cfg->Write(tmp + _T("/compiler_options"), key, true);
+	cfg->Write(tmp + _T("/compiler_options"), key, false);
 	key = GetStringFromArray(m_LinkerOptions);
-	cfg->Write(tmp + _T("/linker_options"), key, true);
+	cfg->Write(tmp + _T("/linker_options"), key, false);
 	key = GetStringFromArray(m_IncludeDirs);
-	cfg->Write(tmp + _T("/include_dirs"), key, true);
+	cfg->Write(tmp + _T("/include_dirs"), key, false);
 	key = GetStringFromArray(m_ResIncludeDirs);
-	cfg->Write(tmp + _T("/res_include_dirs"), key, true);
+	cfg->Write(tmp + _T("/res_include_dirs"), key, false);
 	key = GetStringFromArray(m_LibDirs);
-	cfg->Write(tmp + _T("/library_dirs"), key, true);
+	cfg->Write(tmp + _T("/library_dirs"), key, false);
 	key = GetStringFromArray(m_LinkLibs);
-	cfg->Write(tmp + _T("/libraries"), key, true);
+	cfg->Write(tmp + _T("/libraries"), key, false);
 	key = GetStringFromArray(m_CmdsBefore);
 	cfg->Write(tmp + _T("/commands_before"), key, true);
 	key = GetStringFromArray(m_CmdsAfter);
