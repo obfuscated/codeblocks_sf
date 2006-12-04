@@ -1,9 +1,10 @@
 #include "mainframe.h"
 
+#include <wx/file.h> // wxFile, wxTempFile
+#include <wx/filedlg.h>
+#include <wx/msgdlg.h>
 #include <wx/settings.h>
 #include <wx/statusbr.h>
-#include <wx/msgdlg.h>
-#include <wx/filedlg.h>
 #include <wx/tokenzr.h>
 
 #ifndef __WXMSW__
@@ -218,7 +219,7 @@ void MainFrame::OnBtnSaveClick(wxCommandEvent& event)
   if (wxMessageBox(wxT("Are you sure to save destination configuration file?"),
                    wxT("Question"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT ) == wxYES)
   {
-    if (!TinyXML::SaveDocument(mFileDst, mCfgDst))
+    if (!TiXmlSaveDocument(mFileDst, mCfgDst))
     {
       wxMessageBox(wxT("Could not save destination configuration file."),
                    wxT("Warning"), wxICON_EXCLAMATION | wxOK);
@@ -262,7 +263,7 @@ bool MainFrame::LoadConfig(const wxString& filename, TiXmlDocument** doc)
   if (*doc) delete *doc;
   *doc = new TiXmlDocument();
 
-  if(!TinyXML::LoadDocument(filename, *doc))
+  if(!TiXmlLoadDocument(filename, *doc))
   {
     wxMessageBox(wxT("Error accessing configuration file!"),
                  wxT("Error"), wxICON_EXCLAMATION | wxOK);
@@ -506,6 +507,44 @@ wxArrayString MainFrame::PathToArray(const wxString& path)
 
   return as;
 }// PathToArray
+
+//***********************************************************************
+
+bool MainFrame::TiXmlLoadDocument(const wxString& filename, TiXmlDocument*doc)
+{
+  if(!doc || !wxFile::Access(filename, wxFile::read))
+    return false;
+
+  wxFile file(filename);
+  size_t len = file.Length();
+
+  char *input = new char[len+1];
+  input[len] = '\0';
+  file.Read(input, len);
+
+  doc->Parse(input);
+  delete[] input;
+  return true;
+}// TiXmlLoadDocument
+
+//***********************************************************************
+
+bool MainFrame::TiXmlSaveDocument(const wxString& filename, TiXmlDocument* doc)
+{
+  if (!doc)
+    return false;
+
+  TiXmlPrinter printer;
+  printer.SetIndent("\t");
+  doc->Accept(&printer);
+
+  wxTempFile file(filename);
+  if(file.IsOpened())
+    if(file.Write(printer.CStr(), printer.Size()) && file.Commit())
+      return true;
+
+  return false;
+}// TiXmlSaveDocument
 
 //***********************************************************************
 

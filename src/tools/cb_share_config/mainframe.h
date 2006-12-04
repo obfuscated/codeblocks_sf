@@ -99,6 +99,11 @@ class MainFrame: public wxFrame
     bool          TransferNode(TiXmlNode** node, const wxArrayString& path);
     wxArrayString PathToArray (const wxString& path);
 
+    // The following methods to load/save a TinyXML document are taken and
+    // modified from C::B. Changes done there may have to be applied here, too.
+    // Modifications: Remove the dependency to C::B SDK (C::B Manager classes).
+    bool          TiXmlLoadDocument(const wxString& filename, TiXmlDocument* doc);
+    bool          TiXmlSaveDocument(const wxString& filename, TiXmlDocument* doc);
     bool          TiXmlSuccess(TiXmlDocument* doc);
 
     wxString                mFileSrc;
