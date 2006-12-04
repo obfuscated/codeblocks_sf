@@ -454,6 +454,10 @@ bool cbWrite(wxFile& file, const wxString& buff, wxFontEncoding encoding)
 // to save first and then it copies it over the original.
 bool cbSaveToFile(const wxString& filename, const wxString& contents, wxFontEncoding encoding, bool bom)
 {
+// this function body should be:
+// return Manager::Get()->GetFileManager()->Save(filename, contents, encoding, bom);
+
+    wxLogNull ln;
     wxCSConv conv(encoding);
 
     wxTempFile file(filename);

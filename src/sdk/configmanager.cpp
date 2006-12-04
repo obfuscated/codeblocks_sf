@@ -1431,6 +1431,7 @@ bool ConfigManager::Linux()
 
 void ConfigManager::InitPaths()
 {
+    wxLogNull ln;
     ConfigManager::config_folder = wxStandardPathsBase::Get().GetUserDataDir();
     ConfigManager::home_folder = wxStandardPathsBase::Get().GetUserConfigDir();
     ConfigManager::app_path = ::DetermineExecutablePath();

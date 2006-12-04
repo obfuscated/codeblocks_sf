@@ -1,8 +1,7 @@
 #include "tinywxuni.h"
 #include "tinyxml.h"
 
-#include <wx/string.h>
-#include <wx/file.h>
+#include "../sdk_precomp.h"
 
 
 bool TinyXML::LoadDocument(const wxString& filename, TiXmlDocument *doc)
@@ -43,15 +42,16 @@ bool TinyXML::SaveDocument(const wxString& filename, TiXmlDocument* doc)
     if (!doc)
         return false;
 
-	TiXmlPrinter Printer;
-	Printer.SetIndent("\t");
-	doc->Accept(&Printer);
+	TiXmlPrinter printer;
+	printer.SetIndent("\t");
+	doc->Accept(&printer);
 
-    wxTempFile file(filename);
-    if(file.IsOpened())
-        if(file.Write(Printer.CStr(), Printer.Size()) && file.Commit())
-            return true;
+    return Manager::Get()->GetFileManager()->Save(filename, printer.CStr(), printer.Size());
 
-    return false;
+//    wxTempFile file(filename);
+//    if(file.IsOpened())
+//        if(file.Write(Printer.CStr(), Printer.Size()) && file.Commit())
+//            return true;
+//    return false;
 }
 
