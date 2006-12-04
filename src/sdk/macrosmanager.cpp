@@ -101,7 +101,7 @@ void MacrosManager::Reset()
 
 void MacrosManager::ClearProjectKeys()
 {
-//	Manager::Get()->GetMessageManager()->DebugLog(_T("clear"));
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("clear"));
     macros.clear();
 
     macros[_T("AMP")]   = _T("&");
@@ -113,24 +113,24 @@ void MacrosManager::ClearProjectKeys()
     macros[_T("DATA-PATH")]  = m_DataPath;
     macros[_T("DATAPATH")]  = m_DataPath;
     macros[_T("PLUGINS")]  = m_Plugins;
-	macros[_T("LANGUAGE")]  = wxLocale::GetLanguageName(wxLocale::GetSystemLanguage());
-	macros[_T("ENCODING")]  = wxLocale::GetSystemEncodingName();
+    macros[_T("LANGUAGE")]  = wxLocale::GetLanguageName(wxLocale::GetSystemLanguage());
+    macros[_T("ENCODING")]  = wxLocale::GetSystemEncodingName();
 
 #ifdef __WIN32__
     const wxString cmd(_T("cmd /c "));
-	macros[_T("CMD_CP")]  = cmd + _T("copy");
-	macros[_T("CMD_RM")]  = cmd + _T("del");
-	macros[_T("CMD_MV")]  = cmd + _T("move");
-	macros[_T("CMD_NULL")]  = cmd + _T("NUL");
-	macros[_T("CMD_MKDIR")] = cmd + _T("md");
-	macros[_T("CMD_RMDIR")] = cmd + _T("rd");
+    macros[_T("CMD_CP")]  = cmd + _T("copy");
+    macros[_T("CMD_RM")]  = cmd + _T("del");
+    macros[_T("CMD_MV")]  = cmd + _T("move");
+    macros[_T("CMD_NULL")]  = cmd + _T("NUL");
+    macros[_T("CMD_MKDIR")] = cmd + _T("md");
+    macros[_T("CMD_RMDIR")] = cmd + _T("rd");
 #else
-	macros[_T("CMD_CP")]  = _T("cp");
-	macros[_T("CMD_RM")]  = _T("rm");
-	macros[_T("CMD_MV")]  = _T("mv");
-	macros[_T("CMD_NULL")]  = _T("/dev/null");
-	macros[_T("CMD_MKDIR")]  = _T("mkdir");
-	macros[_T("CMD_RMDIR")]  = _T("rmdir");
+    macros[_T("CMD_CP")]  = _T("cp");
+    macros[_T("CMD_RM")]  = _T("rm");
+    macros[_T("CMD_MV")]  = _T("mv");
+    macros[_T("CMD_NULL")]  = _T("/dev/null");
+    macros[_T("CMD_MKDIR")]  = _T("mkdir");
+    macros[_T("CMD_RMDIR")]  = _T("rmdir");
 #endif
 }
 
@@ -148,7 +148,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     }
     if(!project)
     {
-//		Manager::Get()->GetMessageManager()->DebugLog("project == 0");
+//        Manager::Get()->GetMessageManager()->DebugLog("project == 0");
         m_ProjectFilename = wxEmptyString;
         m_ProjectName = wxEmptyString;
         m_ProjectDir = wxEmptyString;
@@ -176,7 +176,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     }
     else if(project != m_lastProject)
     {
-//		Manager::Get()->GetMessageManager()->DebugLog("project != m_lastProject");
+//        Manager::Get()->GetMessageManager()->DebugLog("project != m_lastProject");
         m_lastTarget = NULL; // reset last target when project changes
         m_prjname.Assign(project->GetFilename());
         m_ProjectFilename = UnixFilename(m_prjname.GetFullName());
@@ -240,14 +240,14 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
         }
     }
 
-	if(project)
-	{
+    if(project)
+    {
         const StringHash& v = project->GetAllVars();
         for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
         {
             macros[it->first.Upper()] = it->second;
         }
-	}
+    }
 
     if(!target)
     {
@@ -266,8 +266,8 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
         m_lastTarget = target;
     }
 
-	if(target)
-	{
+    if(target)
+    {
         const StringHash& v = target->GetAllVars();
         for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
         {
@@ -282,10 +282,10 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
             macros[_T("TARGET_LD")]   = c->GetPrograms().LD;
             macros[_T("TARGET_LIB")]   = c->GetPrograms().LIB;
         }
-	}
+        macros[_T("TARGET_OBJECT_DIR")]   = target->GetObjectOutput();
+    }
 
     macros[_T("TARGET_OUTPUT_DIR")]   = m_TargetOutputDir;
-    macros[_T("TARGET_OBJECT_DIR")]   = target->GetObjectOutput();
     macros[_T("TARGET_NAME")]    = m_TargetName;
     macros[_T("TARGET_OUTPUT_BASENAME")]    = m_TargetOutputBaseName;
     macros[_T("TARGET_OUTPUT_FILE")]    = m_TargetFilename;
@@ -294,8 +294,8 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     macros[_T("ACTIVE_EDITOR_DIRNAME")]  = fn.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     macros[_T("ACTIVE_EDITOR_STEM")]  = fn.GetName();
     macros[_T("ACTIVE_EDITOR_EXT")]  = fn.GetExt();
-	wxDateTime now(wxDateTime::Now());
-	wxDateTime nowGMT(now.ToGMT());
+    wxDateTime now(wxDateTime::Now());
+    wxDateTime nowGMT(now.ToGMT());
 
     macros[_T("TDAY")]   = now.Format(_T("%Y%m%d"));
     macros[_T("TODAY")]   = now.Format(_T("%Y-%m-%d"));
