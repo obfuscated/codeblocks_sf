@@ -2,7 +2,9 @@
 #include "tinyxml.h"
 
 #include "../sdk_precomp.h"
-
+#include <wx/file.h>
+#include "manager.h"
+#include "filemanager.h"
 
 bool TinyXML::LoadDocument(const wxString& filename, TiXmlDocument *doc)
 {
@@ -42,9 +44,9 @@ bool TinyXML::SaveDocument(const wxString& filename, TiXmlDocument* doc)
     if (!doc)
         return false;
 
-	TiXmlPrinter printer;
-	printer.SetIndent("\t");
-	doc->Accept(&printer);
+    TiXmlPrinter printer;
+    printer.SetIndent("\t");
+    doc->Accept(&printer);
 
     return Manager::Get()->GetFileManager()->Save(filename, printer.CStr(), printer.Size());
 
