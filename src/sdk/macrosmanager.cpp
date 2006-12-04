@@ -285,6 +285,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
 	}
 
     macros[_T("TARGET_OUTPUT_DIR")]   = m_TargetOutputDir;
+    macros[_T("TARGET_OBJECT_DIR")]   = target->GetObjectOutput();
     macros[_T("TARGET_NAME")]    = m_TargetName;
     macros[_T("TARGET_OUTPUT_BASENAME")]    = m_TargetOutputBaseName;
     macros[_T("TARGET_OUTPUT_FILE")]    = m_TargetFilename;
