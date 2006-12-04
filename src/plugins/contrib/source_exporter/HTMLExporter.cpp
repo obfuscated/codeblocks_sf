@@ -8,9 +8,8 @@
 #include <cstdlib>
 #include <sstream>
 #include <iomanip>
-#include <fstream>
+#include <wx/file.h>
 
-using std::ofstream;
 using std::ostringstream;
 using std::hex;
 using std::setw;
@@ -242,6 +241,6 @@ void HTMLExporter::Export(const wxString &filename, const wxString &title, const
   html_code += HTMLBody(styled_text);
   html_code += HTMLBodyEND;
 
-  ofstream file(cbU2C(filename));
-  file << html_code;
+  wxFile file(filename, wxFile::write);
+  file.Write(html_code.c_str(), html_code.size());
 }

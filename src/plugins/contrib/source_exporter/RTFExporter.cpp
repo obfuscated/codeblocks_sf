@@ -11,9 +11,8 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-#include <fstream>
+#include <wx/file.h>
 
-using std::ofstream;
 using std::ostringstream;
 using std::hex;
 using std::setw;
@@ -376,6 +375,6 @@ void RTFExporter::Export(const wxString &filename, const wxString &title, const 
   rtf_code += RTFBody(styled_text, pt);
   rtf_code += RTFEnd;
 
-  ofstream file(cbU2C(filename));
-  file << rtf_code;
+  wxFile file(filename, wxFile::write);
+  file.Write(rtf_code.c_str(), rtf_code.size());
 }
