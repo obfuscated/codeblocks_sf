@@ -510,6 +510,11 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
 
     // get all the linkable objects for the target
     MyFilesArray files = GetProjectFilesSortedByWeight(target, false, true);
+    if (files.GetCount() == 0)
+    {
+        ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking stage skipped (build target has no object files to link)"));
+        return ret;
+    }
     for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
         ProjectFile* pf = files[i];
