@@ -32,15 +32,13 @@ size_t LoaderBase::GetLength()
     return len;
 };
 
-
-
 void FileLoader::operator()()
 {
     if(!wxFile::Access(fileName, wxFile::read))
-        {
+    {
         Ready();
         return;
-        }
+    }
 
     wxFile file(fileName);
     len = file.Length();
@@ -63,18 +61,18 @@ void URLLoader::operator()()
     url.SetProxy(ConfigManager::GetProxy());
 
     if (url.GetError() != wxURL_NOERR)
-        {
+    {
         Ready();
         return;
-        }
+    }
 
     std::auto_ptr<wxInputStream> stream(url.GetInputStream());
 
     if (stream.get() == 0 || stream->IsOk() == false)
-        {
+    {
         Ready();
         return;
-        }
+    }
 
     char tmp[8192];
     size_t chunk = 0;
@@ -86,7 +84,6 @@ void URLLoader::operator()()
     len = buffer.Length();
     Ready();
 }
-
 
 LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
 {
@@ -178,37 +175,22 @@ bool FileManager::Save(const wxString& name, const char* data, size_t len)
         return f.Write(data, len);
     }
 
+    // create a new temporary file to write data into
     wxString tempName(name + _T(".cbTemp"));
-    wxString backupName(name + _T(".cbBack"));
-
     wxFile f(tempName, wxFile::write);
     if(!f.IsOpened())
         return false;
 
+    // write new data to newly created temporary file
     if(f.Write(data, len) != len)
-        {
+    {
+        // writing the data failed - remove temporary file
         f.Close();
         wxRemoveFile(tempName);
         return false;
-        }
+    }
 
-    if(wxRenameFile(name, backupName))
-    {
-        if(wxRenameFile(tempName, name))
-        {
-            delayedDeleteThread.Queue(new DelayedDelete(backupName));
-            return true;
-        }
-        else
-        {
-            wxRenameFile(backupName, name); // restore previous state
-            return false;
-        }
-    }
-    else
-    {
-        return false;
-    }
+    return ReplaceFile(name, tempName); // replace old with new (temporary) file
 }
 
 bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncoding encoding, bool bom)
@@ -221,37 +203,46 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
         return WriteWxStringToFile(f, data, encoding, bom);
     }
 
+    // create a new temporary file to write data into
     wxString tempName(name + _T(".cbTemp"));
-    wxString backupName(name + _T(".cbBack"));
-
     wxFile f(tempName, wxFile::write);
     if(!f.IsOpened())
         return false;
 
+    // write new data to newly created temporary file
     if(WriteWxStringToFile(f, data, encoding, bom) == false)
-        {
+    {
+        // writing the data failed - remove temporary file
         f.Close();
         wxRemoveFile(tempName);
         return false;
-        }
+    }
 
-    if(wxRenameFile(name, backupName))
+    return ReplaceFile(name, tempName); // replace old with new (temporary) file
+}
+
+bool FileManager::ReplaceFile(const wxString& old_file, const wxString& new_file)
+{
+    // old_file exists, new_file exists -> create a backup filename
+    wxString backup_file(old_file + _T(".cbBack"));
+
+    // rename the old file into a backup file
+    if(wxRenameFile(old_file, backup_file))
     {
-        if(wxRenameFile(tempName, name))
+        // now rename the new created (temporary) file to the "old" filename
+        if(wxRenameFile(new_file, old_file))
         {
-            delayedDeleteThread.Queue(new DelayedDelete(backupName));
+            // issue a delayed deletion of the back'd up (old) file
+            delayedDeleteThread.Queue(new DelayedDelete(backup_file));
             return true;
         }
         else
         {
-            wxRenameFile(backupName, name); // restore previous state
+            // if final rename operation failed, restore the old file from backup
+            wxRenameFile(backup_file, old_file);
             return false;
         }
     }
-    else
-    {
-        return false;
-    }
+
+    return false;
 }
-
-

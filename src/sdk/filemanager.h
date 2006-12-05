@@ -154,6 +154,8 @@ public:
 
     bool Save(const wxString& file, const wxString& data, wxFontEncoding encoding, bool bom);
     bool Save(const wxString& file, const char* data, size_t len);
+private:
+    bool ReplaceFile(const wxString& old_file, const wxString& new_file);
 };
 
 
