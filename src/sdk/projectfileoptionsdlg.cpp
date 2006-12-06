@@ -260,6 +260,8 @@ void ProjectFileOptionsDlg::UpdateBuildCommand()
     wxChoice* cmb = XRCCTRL(*this, "cmbBuildStageCompiler", wxChoice);
     int idx = cmb->GetSelection();
     Compiler* compiler = CompilerFactory::GetCompiler(idx);
+    if (!compiler)
+      return;
 
     FileType ft = FileTypeOf(m_ProjectFile->relativeFilename);
     wxString cmd;

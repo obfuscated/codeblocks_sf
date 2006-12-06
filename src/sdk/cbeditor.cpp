@@ -1028,8 +1028,6 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
     if (!control)
         return;
 
-    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
-
     // line numbering
     control->SetMarginType(0, wxSCI_MARGIN_NUMBER);
 }
