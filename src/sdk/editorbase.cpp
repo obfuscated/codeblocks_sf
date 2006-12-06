@@ -327,7 +327,7 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
 #if wxABI_VERSION >= 20601
     else if (id == idGoogleCode)
     {
-        wxLaunchDefaultBrowser(wxString(_T("http://google.com/codesearch?q=")) << URLEncode(lastWord));
+        wxLaunchDefaultBrowser(wxString(_T("http://www.google.com/codesearch?q=")) << URLEncode(lastWord));
     }
     else if (id == idGoogle)
     {
