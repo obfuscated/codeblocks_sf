@@ -187,6 +187,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
         else
             compilerStr = compiler->GetPrograms().CPP;
     }
+    FixPathSeparators(compiler, compilerStr);
 
     wxString fileInc;
     if (Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_file_cwd"), false))
@@ -215,11 +216,25 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
         // search dir so it works.
         fileInc << _T(' ') << m_PrjIncPath;
     }
+    FixPathSeparators(compiler, fileInc);
+
+    wxString tmp;
+    wxString tmpFile = file;
+    wxString tmpDeps = deps;
+    wxString tmpObject = object;
+    wxString tmpFlatObject = FlatObject;
+
+    FixPathSeparators(compiler, tmpFile);
+    FixPathSeparators(compiler, tmpDeps);
+    FixPathSeparators(compiler, tmpObject);
+    FixPathSeparators(compiler, tmpFlatObject);
 
     if (target)
     {  // this one has to come first, since wxString::Replace, otherwise $object would go first
     	// leaving nothing to replace for this $objects_output_dir
-        macro.Replace(_T("$objects_output_dir"), target->GetObjectOutput());
+    	tmp = target->GetObjectOutput();
+        FixPathSeparators(compiler, tmp);
+        macro.Replace(_T("$objects_output_dir"), tmp);
     }
     macro.Replace(_T("$compiler"), compilerStr);
     macro.Replace(_T("$linker"), compiler->GetPrograms().LD);
@@ -231,10 +246,10 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     macro.Replace(_T("$res_includes"), m_RC[target] + fileInc);
     macro.Replace(_T("$libdirs"), m_Lib[target]);
     macro.Replace(_T("$libs"), m_LDAdd[target]);
-    macro.Replace(_T("$file"), file);
-    macro.Replace(_T("$dep_object"), deps);
-    macro.Replace(_T("$object"), object);
-    macro.Replace(_T("$resource_output"), object);
+    macro.Replace(_T("$file"), tmpFile);
+    macro.Replace(_T("$dep_object"), tmpDeps);
+    macro.Replace(_T("$object"), tmpObject);
+    macro.Replace(_T("$resource_output"), tmpObject);
     if (!target)
     {
         // single file compilation, probably
@@ -245,21 +260,22 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
         fname.SetExt(FileFilters::EXECUTABLE_EXT);
         wxString output = fname.GetFullPath();
         QuoteStringIfNeeded(output);
+        FixPathSeparators(compiler, output);
         macro.Replace(_T("$exe_output"), output);
     }
     else
     {
         macro.Replace(_T("$exe_output"), m_Output[target]);
     }
-    macro.Replace(_T("$link_resobjects"), deps);
-    macro.Replace(_T("$link_objects"), object);
-    macro.Replace(_T("$link_flat_objects"), FlatObject);
+    macro.Replace(_T("$link_resobjects"), tmpDeps);
+    macro.Replace(_T("$link_objects"), tmpObject);
+    macro.Replace(_T("$link_flat_objects"), tmpFlatObject);
     // the following were added to support the QUICK HACK in compiler plugin:
     // DirectCommands::GetTargetLinkCommands()
-    macro.Replace(_T("$+link_objects"), object);
-    macro.Replace(_T("$-link_objects"), object);
-    macro.Replace(_T("$-+link_objects"), object);
-    macro.Replace(_T("$+-link_objects"), object);
+    macro.Replace(_T("$+link_objects"), tmpObject);
+    macro.Replace(_T("$-link_objects"), tmpObject);
+    macro.Replace(_T("$-+link_objects"), tmpObject);
+    macro.Replace(_T("$+-link_objects"), tmpObject);
 
     if (target && (target->GetTargetType() == ttStaticLib || target->GetTargetType() == ttDynamicLib))
     {
@@ -321,6 +337,24 @@ void CompilerCommandGenerator::DoBuildScripts(CompileTargetBase* target, const w
     }
 }
 
+void CompilerCommandGenerator::FixPathSeparators(Compiler* compiler, wxString& inAndOut)
+{
+    // replace path separators with forward slashes if needed by this compiler
+    if (!compiler || !compiler->GetSwitches().forceFwdSlashes)
+        return;
+
+    size_t i = 0;
+    while (i < inAndOut.Length())
+    {
+        if (inAndOut.GetChar(i) == _T('\\') &&
+            (i == inAndOut.Length() - 1 || inAndOut.GetChar(i + 1) != _T(' ')))
+        {
+            inAndOut.SetChar(i, _T('/'));
+        }
+        ++i;
+    }
+}
+
 /// Setup output filename for build target.
 wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, ProjectBuildTarget* target)
 {
@@ -330,6 +364,7 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
     // exe file
     wxString result = target->GetOutputFilename();
     QuoteStringIfNeeded(result);
+    FixPathSeparators(compiler, result);
     m_Output[target] = result;
 
 	// Replace Variables FIRST to address the $(VARIABLE)libfoo.a problem
@@ -345,12 +380,15 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
     fname.SetExt(compiler->GetSwitches().libExtension);
     result = UnixFilename(fname.GetFullPath());
     QuoteStringIfNeeded(result);
+    FixPathSeparators(compiler, result);
     m_StaticOutput[target] = result;
 
     // def
     fname.SetExt(_T("def"));
     result = UnixFilename(fname.GetFullPath());
     QuoteStringIfNeeded(result); // NOTE (thomas#1#): Do we really need to call QuoteStringIfNeeded that often? ReplaceMacros already does it, and we do it twice again without ever possibly adding whitespace
+    FixPathSeparators(compiler, result);
+
     return result;
 }
 
@@ -358,7 +396,7 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
 wxString CompilerCommandGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target)
 {
     wxString result;
-    
+
     if (target)
     {
 		// currently, we ignore compiler search dirs (despite the var's name)
@@ -377,6 +415,7 @@ wxString CompilerCommandGenerator::SetupIncludeDirs(Compiler* compiler, ProjectB
             wxString tmp = arr[x];
             Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
             QuoteStringIfNeeded(tmp);
+            FixPathSeparators(compiler, tmp);
             tstr << compiler->GetSwitches().includeDirs << tmp << _T(' ');
         }
 
@@ -388,6 +427,7 @@ wxString CompilerCommandGenerator::SetupIncludeDirs(Compiler* compiler, ProjectB
             wxString tmp = parr[x];
             Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
             QuoteStringIfNeeded(tmp);
+            FixPathSeparators(compiler, tmp);
             pstr << compiler->GetSwitches().includeDirs << tmp << _T(' ');
         }
 
@@ -402,6 +442,7 @@ wxString CompilerCommandGenerator::SetupIncludeDirs(Compiler* compiler, ProjectB
         wxString tmp = carr[x];
         Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
         QuoteStringIfNeeded(tmp);
+        FixPathSeparators(compiler, tmp);
         result << compiler->GetSwitches().includeDirs << tmp << _T(' ');
     }
 
@@ -424,6 +465,7 @@ wxString CompilerCommandGenerator::SetupLibrariesDirs(Compiler* compiler, Projec
             wxString tmp = arr[x];
             Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
             QuoteStringIfNeeded(tmp);
+            FixPathSeparators(compiler, tmp);
             tstr << compiler->GetSwitches().libDirs << tmp << _T(' ');
         }
 
@@ -435,6 +477,7 @@ wxString CompilerCommandGenerator::SetupLibrariesDirs(Compiler* compiler, Projec
             wxString tmp = parr[x];
             Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
             QuoteStringIfNeeded(tmp);
+            FixPathSeparators(compiler, tmp);
             pstr << compiler->GetSwitches().libDirs << tmp << _T(' ');
         }
 
@@ -449,6 +492,7 @@ wxString CompilerCommandGenerator::SetupLibrariesDirs(Compiler* compiler, Projec
         wxString cstr = carr[x];
         Manager::Get()->GetMacrosManager()->ReplaceMacros(cstr, target);
         QuoteStringIfNeeded(cstr);
+        FixPathSeparators(compiler, cstr);
         result << compiler->GetSwitches().libDirs << cstr << _T(' ');
     }
 
@@ -471,6 +515,7 @@ wxString CompilerCommandGenerator::SetupResourceIncludeDirs(Compiler* compiler, 
             wxString tmp = arr[x];
             Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
             QuoteStringIfNeeded(tmp);
+            FixPathSeparators(compiler, tmp);
             tstr << compiler->GetSwitches().includeDirs << tmp << _T(' ');
         }
 
@@ -482,6 +527,7 @@ wxString CompilerCommandGenerator::SetupResourceIncludeDirs(Compiler* compiler, 
             wxString tmp = parr[x];
             Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
             QuoteStringIfNeeded(tmp);
+            FixPathSeparators(compiler, tmp);
             pstr << compiler->GetSwitches().includeDirs << tmp << _T(' ');
         }
 
@@ -496,6 +542,7 @@ wxString CompilerCommandGenerator::SetupResourceIncludeDirs(Compiler* compiler, 
         wxString cstr = carr[x];
         Manager::Get()->GetMacrosManager()->ReplaceMacros(cstr, target);
         QuoteStringIfNeeded(cstr);
+        FixPathSeparators(compiler, cstr);
         result << compiler->GetSwitches().includeDirs << cstr << _T(' ');
     }
 
@@ -567,6 +614,7 @@ wxString CompilerCommandGenerator::FixupLinkLibraries(Compiler* compiler, const 
     wxString libPrefix = compiler->GetSwitches().libPrefix;
     wxString libExt = compiler->GetSwitches().libExtension;
     QuoteStringIfNeeded(result);
+    FixPathSeparators(compiler, result);
     // run replacements on libs only if no slashes in name (which means it's a relative or absolute path)
     if (result.Find('/') == -1 && result.Find('\\') == -1)
     {
@@ -649,11 +697,11 @@ const wxArrayString& CompilerCommandGenerator::GetCompilerSearchDirs(ProjectBuil
 {
 	static wxArrayString retIfError;
 	retIfError.Clear();
-	
+
 	SearchDirsMap::iterator it = m_CompilerSearchDirs.find(target);
 	if (it == m_CompilerSearchDirs.end())
 		return retIfError;
-	
+
 	return it->second;
 }
 

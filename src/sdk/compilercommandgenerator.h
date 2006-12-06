@@ -63,6 +63,7 @@ class DLLIMPORT CompilerCommandGenerator
         virtual wxString SetupLinkLibraries(Compiler* compiler, ProjectBuildTarget* target);
         virtual wxString SetupResourceCompilerOptions(Compiler* compiler, ProjectBuildTarget* target);
         virtual wxString FixupLinkLibraries(Compiler* compiler, const wxString& lib);
+        virtual void FixPathSeparators(Compiler* compiler, wxString& inAndOut);
 
         OptionsMap m_Output; ///< output filenames, per-target
         OptionsMap m_StaticOutput; ///< static output filenames, per-target
@@ -76,7 +77,7 @@ class DLLIMPORT CompilerCommandGenerator
         OptionsMap m_RCFlags; ///< resource compiler flags, per-target
 
         wxString m_PrjIncPath; ///< directive to add the project's top-level path in compiler search dirs (ready for the command line)
-    
+
 		SearchDirsMap m_CompilerSearchDirs; ///< array of final search dirs, per-target
     private:
         void ExpandBackticks(wxString& str);

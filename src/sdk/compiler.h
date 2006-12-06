@@ -147,6 +147,7 @@ struct CompilerSwitches
     wxString defines;       // -D
     wxString genericSwitch; // -
     wxString objectExtension; // o
+    bool forceFwdSlashes; // force use forward slashes in file/path names (used by CompilerCommandGenerator)
     bool forceLinkerUseQuotes; // use quotes for filenames in linker command line (needed or not)?
     bool forceCompilerUseQuotes; // use quotes for filenames in compiler command line (needed or not)?
     bool needDependencies; // true

@@ -478,6 +478,20 @@ the regular expression.</label>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText">
+                        <label>Force use of forward slash as path separator:</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkFwdSlashes">
+                        <label></label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
                         <label>Need dependency checks:</label>
                       </object>
                       <flag>wxTOP</flag>

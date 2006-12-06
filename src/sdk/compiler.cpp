@@ -56,6 +56,7 @@ Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& par
     MakeValidID();
 
     m_Switches.supportsPCH = false;
+    m_Switches.forceFwdSlashes = false;
 
     Manager::Get()->GetMessageManager()->DebugLog(_T("Added compiler \"%s\""), m_Name.c_str());
 }
@@ -241,6 +242,7 @@ void Compiler::SaveSettings(const wxString& baseKey)
     cfg->Write(tmp + _T("/switches/libExtension"), m_Switches.libExtension, true);
     cfg->Write(tmp + _T("/switches/linkerNeedsLibPrefix"), m_Switches.linkerNeedsLibPrefix);
     cfg->Write(tmp + _T("/switches/linkerNeedsLibExtension"), m_Switches.linkerNeedsLibExtension);
+    cfg->Write(tmp + _T("/switches/forceFwdSlashes"), m_Switches.forceFwdSlashes);
 
     // regexes
     cfg->DeleteSubPath(tmp + _T("/regex"));
@@ -347,6 +349,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Switches.libExtension = cfg->Read(tmp + _T("/switches/libExtension"), m_Switches.libExtension);
     m_Switches.linkerNeedsLibPrefix = cfg->ReadBool(tmp + _T("/switches/linkerNeedsLibPrefix"), m_Switches.linkerNeedsLibPrefix);
     m_Switches.linkerNeedsLibExtension = cfg->ReadBool(tmp + _T("/switches/linkerNeedsLibExtension"), m_Switches.linkerNeedsLibExtension);
+    m_Switches.forceFwdSlashes = cfg->ReadBool(tmp + _T("/switches/forceFwdSlashes"), m_Switches.forceFwdSlashes);
 
     // regexes
     wxString group;
