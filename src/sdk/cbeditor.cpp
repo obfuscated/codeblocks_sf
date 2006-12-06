@@ -817,6 +817,7 @@ void cbEditor::Unsplit()
     Thaw();
 }
 
+// static
 wxColour cbEditor::GetOptionColour(const wxString& option, const wxColour _default)
 {
     return Manager::Get()->GetConfigManager(_T("editor"))->ReadColour(option, _default);
@@ -830,9 +831,28 @@ void cbEditor::SetEditorStyle()
 
 void cbEditor::SetEditorStyleBeforeFileOpen()
 {
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+
+    // update the tab text based on preferences
+    if (m_pProjectFile)
+    {
+        if (mgr->ReadBool(_T("/tab_text_relative"), true))
+            m_Shortname = m_pProjectFile->relativeToCommonTopLevelPath;
+        else
+            m_Shortname = m_pProjectFile->file.GetFullName();
+        SetEditorTitle(m_Shortname);
+    }
+
+    // EOL properties
+    m_pData->m_strip_trailing_spaces = mgr->ReadBool(_T("/eol/strip_trailing_spaces"), true);
+    m_pData->m_ensure_final_line_end = mgr->ReadBool(_T("/eol/ensure_final_line_end"), true);
+    m_pData->m_ensure_consistent_line_ends = mgr->ReadBool(_T("/eol/ensure_consistent_line_ends"), false);
+
     InternalSetEditorStyleBeforeFileOpen(m_pControl);
     if (m_pControl2)
         InternalSetEditorStyleBeforeFileOpen(m_pControl2);
+
+    SetLanguage( HL_AUTO );
 }
 
 void cbEditor::SetEditorStyleAfterFileOpen()
@@ -840,8 +860,37 @@ void cbEditor::SetEditorStyleAfterFileOpen()
     InternalSetEditorStyleAfterFileOpen(m_pControl);
     if (m_pControl2)
         InternalSetEditorStyleAfterFileOpen(m_pControl2);
+
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+
+    // line numbers
+    if (mgr->ReadBool(_T("/show_line_numbers"), true))
+        m_pData->SetLineNumberColWidth();
+    else
+    {
+        m_pControl->SetMarginWidth(0, 0);
+        if (m_pControl2)
+            m_pControl2->SetMarginWidth(0, 0);
+    }
 }
 
+// static
+// public version of InternalSetEditorStyleBeforeFileOpen
+void cbEditor::ApplyStyles(cbStyledTextCtrl* control)
+{
+    if (!control)
+        return;
+    InternalSetEditorStyleBeforeFileOpen(control);
+    InternalSetEditorStyleAfterFileOpen(control);
+
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+
+    int pixelWidth = control->TextWidth(wxSCI_STYLE_LINENUMBER, _T("9"));
+    if (mgr->ReadBool(_T("/show_line_numbers"), true))
+        control->SetMarginWidth(0, 5 * pixelWidth); // hardcoded width up to 99999 lines
+}
+
+// static
 void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
 {
     if (!control)
@@ -862,16 +911,6 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         wxNativeFontInfo nfi;
         nfi.FromString(fontstring);
         font.SetNativeFontInfo(nfi);
-    }
-
-    // update the tab text based on preferences
-    if (m_pProjectFile)
-    {
-        if (mgr->ReadBool(_T("/tab_text_relative"), true))
-            m_Shortname = m_pProjectFile->relativeToCommonTopLevelPath;
-        else
-            m_Shortname = m_pProjectFile->file.GetFullName();
-        SetEditorTitle(m_Shortname);
     }
 
     control->SetMouseDwellTime(1000);
@@ -916,11 +955,6 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->MarkerSetBackground(DEBUG_MARKER, wxColour(0xFF, 0xFF, 0x00));
     control->MarkerDefine(ERROR_MARKER, ERROR_STYLE);
     control->MarkerSetBackground(ERROR_MARKER, wxColour(0xFF, 0x00, 0x00));
-
-    // EOL properties
-    m_pData->m_strip_trailing_spaces = mgr->ReadBool(_T("/eol/strip_trailing_spaces"), true);
-    m_pData->m_ensure_final_line_end = mgr->ReadBool(_T("/eol/ensure_final_line_end"), true);
-    m_pData->m_ensure_consistent_line_ends = mgr->ReadBool(_T("/eol/ensure_consistent_line_ends"), false);
 
 // NOTE: a same block of code is in editorconfigurationdlg.cpp (ctor)
 #if defined(__WXMSW__)
@@ -986,10 +1020,9 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     }
     else
         control->SetMarginWidth(2, 0);
-
-    SetLanguage( HL_AUTO );
 }
 
+// static
 void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
 {
     if (!control)
@@ -999,10 +1032,6 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
 
     // line numbering
     control->SetMarginType(0, wxSCI_MARGIN_NUMBER);
-    if (mgr->ReadBool(_T("/show_line_numbers"), true))
-        m_pData->SetLineNumberColWidth();
-    else
-        control->SetMarginWidth(0, 0);
 }
 
 void cbEditor::SetColourSet(EditorColourSet* theme)

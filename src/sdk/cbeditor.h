@@ -48,6 +48,21 @@ class DLLIMPORT cbEditor : public EditorBase
 {
         DECLARE_EVENT_TABLE()
     	friend class EditorManager;
+
+    protected:
+		/** cbEditor constructor.
+		  * @param parent the parent notebook - you should use EditorManager::Get()
+		  * @param filename the filename to open. If filename is empty, it creates a
+		  * new, empty, editor.
+		  * @param theme the initial colour set to use\n
+		  * <em>Note: you cannot create a cbEditor object directly. Instead
+		  * use EditorManager's methods to do it...</em>
+		  */
+		cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme = 0L);
+        /** Don't use this. It throws an exception if you do. */
+        cbEditor(const cbEditor& rhs) : EditorBase(rhs) { cbThrow(_T("Can't call cbEditor's copy ctor!!!")); }
+		/** cbEditor destructor. */
+		~cbEditor();
 	public:
         enum SplitType
         {
@@ -56,20 +71,6 @@ class DLLIMPORT cbEditor : public EditorBase
             stVertical
         };
 
-		/** cbEditor constructor.
-		  * @param parent the parent notebook - you should use EditorManager::Get()
-		  * @param filename the filename to open. If filename is empty, it creates a
-		  * new, empty, editor.
-		  * @param theme the initial colour set to use\n
-		  * <em>Note: you should not create a cbEditor object directly. Instead
-		  * use EditorManager's methods to do it...</em>
-		  */
-		cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme = 0L);
-		/** cbEditor destructor. */
-		~cbEditor();
-
-        /** Don't use this. It throws an exception if you do. */
-        cbEditor(const cbEditor& rhs) : EditorBase(rhs) { cbThrow(_T("Can't call cbEditor's copy ctor!!!")); }
         /** Don't use this. It throws an exception if you do. */
         virtual void operator=(const cbEditor& rhs){ cbThrow(_T("Can't assign an cbEditor* !!!")); }
 
@@ -286,6 +287,9 @@ class DLLIMPORT cbEditor : public EditorBase
 
         bool GetUseBom() const;
         void SetUseBom( bool bom );
+
+        /// Apply the editor defaults to any (possibly foreign) cbStyledTextCtrl.
+        static void ApplyStyles(cbStyledTextCtrl* control);
     private:
         // functions
         bool LineHasMarker(int marker, int line = -1) const;
@@ -301,12 +305,12 @@ class DLLIMPORT cbEditor : public EditorBase
         void SetEditorStyle();
         void SetEditorStyleBeforeFileOpen();
         void SetEditorStyleAfterFileOpen();
-        void InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control);
-        void InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control);
+        static void InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control);
+        static void InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control);
         void DetectEncoding();
         bool Open(bool detectEncoding = true);
         void DoAskForCodeCompletion(); // relevant to code-completion plugins
-		wxColour GetOptionColour(const wxString& option, const wxColour _default);
+		static wxColour GetOptionColour(const wxString& option, const wxColour _default);
 		void NotifyPlugins(wxEventType type, int intArg = 0, const wxString& strArg = wxEmptyString, int xArg = 0, int yArg = 0);
 
         // events
