@@ -337,7 +337,7 @@
             </object>
           </object>
           <object class="listbookpage">
-            <label>Notebooks appearence</label>
+            <label>Notebooks appearance</label>
             <object class="wxPanel" name="pblNotebooks">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
