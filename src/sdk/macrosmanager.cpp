@@ -33,6 +33,7 @@
     #include "editormanager.h"
     #include "messagemanager.h"
     #include "macrosmanager.h"
+    #include "scriptingmanager.h"
     #include "manager.h"
     #include "cbproject.h"
     #include "cbeditor.h"

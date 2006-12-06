@@ -19,6 +19,10 @@
 #include <wx/xrc/xmlres.h>
 //*)
 
+#ifndef CB_PRECOMP
+  #include <wx/listctrl.h> // wxListEvent
+#endif
+
 class RegExDlg: public wxDialog
 {
 	public:

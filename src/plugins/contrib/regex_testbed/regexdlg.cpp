@@ -5,6 +5,8 @@
 
 #ifndef CB_PRECOMP
     #include <globals.h>
+    #include <manager.h>
+    #include <configmanager.h>
 #endif
 
 BEGIN_EVENT_TABLE(RegExDlg,wxDialog)
