@@ -162,7 +162,54 @@ inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding 
             break;
         }
     }
-    return(f.Write(mark, mark_length) == mark_length && f.Write(data, encoding));
+
+    if(f.Write(mark, mark_length) != mark_length)
+        return false;
+
+    if(data.length() == 0)
+        return true;
+
+
+    if( encoding == wxFONTENCODING_UTF16 || encoding == wxFONTENCODING_UTF16LE || encoding == wxFONTENCODING_UTF16BE ||
+        encoding == wxFONTENCODING_UTF32 || encoding == wxFONTENCODING_UTF32LE || encoding == wxFONTENCODING_UTF32BE)
+    {
+        //FIXME: This code probably does not work correctly, as it does not really convert anything according to
+        //       the requested encoding. The output is always whatever wxWidgets uses as native data.
+        //       However, it's been like this ever since Code::Blocks started using Unicode, and nobody ever complained...
+        //       Apparently, UTF-16/UTF-32 is not a big issue ---> will leave it as it is for now.
+        const size_t len = data.Length() * sizeof(wxChar);
+        return f.Write(data.c_str(), len) == len;
+    }
+
+    size_t size = 0;
+    wxCSConv conv(encoding);
+    wxCharBuffer buf = data.mb_str(conv);
+
+    if(!(size = strlen(buf)))
+    {
+        buf = data.mb_str(wxConvUTF8);
+
+        if(!(size = strlen(buf)))
+            {
+                cbMessageBox(_T(    "The file could not be saved because it contains characters "
+                                    "that can neither be represented in your current code page, "
+                                    "nor be converted to UTF-8.\n"
+                                    "The latter should actually not be possible.\n\n"
+                                    "Please check your language/encoding settings and try saving again." ),
+                                    _("Failure"), wxICON_WARNING | wxOK );
+                return false;
+            }
+        else
+            {
+                InfoWindow::Display(_("Encoding Changed"),
+                                    _("The saved document contained characters\n"
+                                      "which were illegal in the selected encoding.\n\n"
+                                      "The file's encoding has been changed to UTF-8\n"
+                                      "to prevent you from losing data."), 8000);
+            }
+    }
+
+    return f.Write(buf, size);
 };
 
 bool FileManager::Save(const wxString& name, const char* data, size_t len)
