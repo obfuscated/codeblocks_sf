@@ -175,22 +175,22 @@ bool FileManager::Save(const wxString& name, const char* data, size_t len)
         return f.Write(data, len);
     }
 
-    // create a new temporary file to write data into
     wxString tempName(name + _T(".cbTemp"));
-    wxFile f(tempName, wxFile::write);
-    if(!f.IsOpened())
-        return false;
+	do
+	{
+		wxFile f(tempName, wxFile::write);
+		if(!f.IsOpened())
+			return false;
 
-    // write new data to newly created temporary file
-    if(f.Write(data, len) != len)
-    {
-        // writing the data failed - remove temporary file
-        f.Close();
-        wxRemoveFile(tempName);
-        return false;
-    }
+        if(f.Write(data, len) != len)
+        {
+            f.Close();
+            wxRemoveFile(tempName);
+            return false;
+        }
+	}while(false);
 
-    return ReplaceFile(name, tempName); // replace old with new (temporary) file
+    return ReplaceFile(name, tempName);
 }
 
 bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncoding encoding, bool bom)
@@ -203,28 +203,27 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
         return WriteWxStringToFile(f, data, encoding, bom);
     }
 
-    // create a new temporary file to write data into
     wxString tempName(name + _T(".cbTemp"));
-    wxFile f(tempName, wxFile::write);
-    if(!f.IsOpened())
-        return false;
+	do
+	{
+		wxFile f(tempName, wxFile::write);
+		if(!f.IsOpened())
+			return false;
 
-    // write new data to newly created temporary file
-    if(WriteWxStringToFile(f, data, encoding, bom) == false)
-    {
-        // writing the data failed - remove temporary file
-        f.Close();
-        wxRemoveFile(tempName);
-        return false;
-    }
+		if(WriteWxStringToFile(f, data, encoding, bom) == false)
+		{
+			f.Close();
+			wxRemoveFile(tempName);
+			return false;
+		}
+	}while(false);
 
-    return ReplaceFile(name, tempName); // replace old with new (temporary) file
+    return ReplaceFile(name, tempName);
 }
 
 bool FileManager::ReplaceFile(const wxString& old_file, const wxString& new_file)
 {
-    // old_file exists, new_file exists -> create a backup filename
-    wxString backup_file(old_file + _T(".cbBack"));
+    wxString backup_file(old_file + _T(".backup"));
 
     // rename the old file into a backup file
     if(wxRenameFile(old_file, backup_file))
@@ -240,7 +239,6 @@ bool FileManager::ReplaceFile(const wxString& old_file, const wxString& new_file
         {
             // if final rename operation failed, restore the old file from backup
             wxRenameFile(backup_file, old_file);
-            return false;
         }
     }
 
