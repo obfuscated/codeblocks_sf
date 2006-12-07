@@ -1,4 +1,5 @@
-INCLUDES = $(WX_CXXFLAGS)
+INCLUDES = $(WX_CXXFLAGS) \
+				-I$(top_srcdir)/src/sdk/wxscintilla/include
 
 sdkdir=$(includedir)/codeblocks/tinyxml
 
