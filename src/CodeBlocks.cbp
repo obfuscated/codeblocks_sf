@@ -156,7 +156,7 @@
 					<Add directory="sdk\wxFlatNotebook" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="build_tools/autorevision/autorevision +wx +int +t . sdk/autorevision.h" />
+					<Add before="build_tools/autorevision/autorevision +int +t . sdk/autorevision.h" />
 				</ExtraCommands>
 			</Target>
 			<Target title="wxAUI">
@@ -4336,6 +4336,7 @@
 			<Option target="sdk" />
 		</Unit>
 		<Extensions>
+			<code_completion />
 			<wxsmith>
 				<dialog wxs_file="CCDebugInfo.wxs" class="CCDebugInfo" src_file="plugins\codecompletion\ccdebuginfo.cpp" header_file="plugins\codecompletion\ccdebuginfo.h" xrc_file="" edit_mode="Source" />
 				<dialog wxs_file="VirtualBuildTargetsDlg.wxs" class="VirtualBuildTargetsDlg" src_file="sdk\virtualbuildtargetsdlg.cpp" header_file="sdk\virtualbuildtargetsdlg.h" xrc_file="" edit_mode="Source" />
