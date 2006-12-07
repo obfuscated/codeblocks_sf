@@ -1519,6 +1519,8 @@ void DebuggerGDB::SyncEditor(const wxString& filename, int line, bool setMarker)
         if (setMarker)
             ed->SetDebugLine(line - 1);
     }
+    else
+        Log(_("Cannot open file: ") + fname.GetLongPath());
 }
 
 wxString DebuggerGDB::GetEditorWordAtCaret()

@@ -19,19 +19,22 @@ WX_DEFINE_OBJARRAY(TypesArray);
 #define FULL_GDB_PROMPT _T(">>>>>>") + GDB_PROMPT
 
 //[Switching to thread 2 (Thread 1082132832 (LWP 12298))]#0  0x00002aaaac5a2aca in pthread_cond_wait@@GLIBC_2.3.2 () from /lib/libpthread.so.0
-static wxRegEx reThreadSwitch(_T("^\\[Switching to thread .*\\]#0[ \t]+(0x[A-z0-9]+) in (.*) from (.*)"));
-static wxRegEx reThreadSwitch2(_T("^\\[Switching to thread .*\\]#0[ \t]+(0x[A-z0-9]+) in (.*) from (.*):([0-9]+)"));
+static wxRegEx reThreadSwitch(_T("^\\[Switching to thread .*\\]#0[ \t]+(0x[A-Fa-f0-9]+) in (.*) from (.*)"));
+static wxRegEx reThreadSwitch2(_T("^\\[Switching to thread .*\\]#0[ \t]+(0x[A-Fa-f0-9]+) in (.*) from (.*):([0-9]+)"));
 #ifdef __WXMSW__
-    static wxRegEx reBreak(_T("([A-z]:)([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-z]+)"));
+    static wxRegEx reBreak(_T("([A-Za-z]*[:]*)([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-Fa-f]+)"));
 #else
-    static wxRegEx reBreak(_T("\032\032([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-z]+)"));
+    static wxRegEx reBreak(_T("\032\032([^:]+):([0-9]+):[0-9]+:[begmidl]+:(0x[0-9A-Fa-f]+)"));
 #endif
-static wxRegEx reBreak2(_T("^(0x[A-z0-9]+) in (.*) from (.*)"));
-static wxRegEx reBreak3(_T("^(0x[A-z0-9]+) in (.*)"));
+static wxRegEx reBreak2(_T("^(0x[A-Fa-f0-9]+) in (.*) from (.*)"));
+static wxRegEx reBreak3(_T("^(0x[A-Fa-f0-9]+) in (.*)"));
+
+// easily match cygwin paths
+static wxRegEx reCygwin(_T("/cygdrive/([A-Za-z])/"));
 
 // Pending breakpoint "C:/Devel/libs/irr_svn/source/Irrlicht/CSceneManager.cpp:1077" resolved
 #ifdef __WXMSW__
-static wxRegEx rePendingFound(_T("^Pending[ \t]+breakpoint[ \t]+\"([A-z]:)([^:]+):([0-9]+)\".*"));
+static wxRegEx rePendingFound(_T("^Pending[ \t]+breakpoint[ \t]+\"([A-Za-z]:)([^:]+):([0-9]+)\".*"));
 #else
 static wxRegEx rePendingFound(_T("^Pending[ \t]+breakpoint[ \t]+\"([^:]+):([0-9]+)\".*"));
 #endif
@@ -496,6 +499,12 @@ void GDB_driver::ParseOutput(const wxString& output)
     {
 //            Log(_T("DEBUG: ") + lines[i]); // write it in the full debugger log
 
+        // "fix" cygwin paths for Uniwin (maybe it breaks real cygwin gdb? hope not...)
+        if (reCygwin.Matches(lines[i]))
+        {
+            reCygwin.Replace(&lines[i], _T("\\1:/"));
+        }
+
         // log GDB's version
         if (lines[i].StartsWith(_T("GNU gdb")))
         {
@@ -644,6 +653,13 @@ void GDB_driver::ParseOutput(const wxString& output)
                     m_Cursor.changed = true;
                     needsUpdate = true;
                 }
+            }
+            else
+            {
+                m_pDBG->Log(_("The program has stopped on a breakpoint but the breakpoint format is not recognized:"));
+                m_pDBG->Log(lines[i]);
+                m_Cursor.changed = true;
+                needsUpdate = true;
             }
         }
         else
