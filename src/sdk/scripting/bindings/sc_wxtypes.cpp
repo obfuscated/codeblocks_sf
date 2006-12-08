@@ -42,6 +42,13 @@ namespace ScriptBindings
         return sa.Return((SQInteger)str1.Cmp(*SqPlus::GetInstance<wxString>(v, 2)));
     }
 
+    SQInteger wxString_OpToString(HSQUIRRELVM v)
+    {
+        StackHandler sa(v);
+        wxString& self = *SqPlus::GetInstance<wxString>(v, 1);
+        return sa.Return((const SQChar*)self.mb_str(wxConvUTF8));
+    }
+
     SQInteger wxString_AddChar(HSQUIRRELVM v)
     {
         StackHandler sa(v);
@@ -113,6 +120,7 @@ namespace ScriptBindings
                 emptyCtor().
                 staticFuncVarArgs(&wxString_OpAdd, "_add", "*").
                 staticFuncVarArgs(&wxString_OpCmp, "_cmp", "*").
+                staticFuncVarArgs(&wxString_OpToString, "_tostring", "").
                 func<WXSTR_FIRST_STR>(&wxString::First, "Find").
                 staticFuncVarArgs(&wxString_Matches, "Matches", "*").
                 staticFuncVarArgs(&wxString_AddChar, "AddChar", "n").
