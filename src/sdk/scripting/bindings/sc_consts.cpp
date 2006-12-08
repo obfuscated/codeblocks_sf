@@ -61,6 +61,26 @@ namespace ScriptBindings
         BIND_INT_CONSTANT(wxICON_WARNING);
         BIND_INT_CONSTANT(wxICON_ERROR);
 
+        // wxPathFormat
+        BIND_INT_CONSTANT(wxPATH_NATIVE);
+        BIND_INT_CONSTANT(wxPATH_UNIX);
+        BIND_INT_CONSTANT(wxPATH_BEOS);
+        BIND_INT_CONSTANT(wxPATH_MAC);
+        BIND_INT_CONSTANT(wxPATH_DOS);
+        BIND_INT_CONSTANT(wxPATH_WIN);
+        BIND_INT_CONSTANT(wxPATH_OS2);
+        BIND_INT_CONSTANT(wxPATH_VMS);
+
+        // wxPathNormalize
+        BIND_INT_CONSTANT(wxPATH_NORM_ENV_VARS);
+        BIND_INT_CONSTANT(wxPATH_NORM_DOTS);
+        BIND_INT_CONSTANT(wxPATH_NORM_TILDE);
+        BIND_INT_CONSTANT(wxPATH_NORM_CASE);
+        BIND_INT_CONSTANT(wxPATH_NORM_ABSOLUTE);
+        BIND_INT_CONSTANT(wxPATH_NORM_LONG);
+        BIND_INT_CONSTANT(wxPATH_NORM_SHORTCUT);
+        BIND_INT_CONSTANT(wxPATH_NORM_ALL);
+
         // OptionsRelationType
         BIND_INT_CONSTANT(ortCompilerOptions);
         BIND_INT_CONSTANT(ortLinkerOptions);

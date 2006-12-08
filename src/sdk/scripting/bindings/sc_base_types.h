@@ -19,6 +19,7 @@
 
 DECLARE_INSTANCE_TYPE(wxString);
 DECLARE_INSTANCE_TYPE(wxArrayString);
+DECLARE_INSTANCE_TYPE(wxFileName);
 DECLARE_INSTANCE_TYPE(ConfigManager);
 DECLARE_INSTANCE_TYPE(EditorManager);
 DECLARE_INSTANCE_TYPE(UserVariableManager);
@@ -41,6 +42,8 @@ namespace SqPlus \
     inline T Get(TypeWrapper<T>,HSQUIRRELVM v,int idx) { SQInteger i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return (T)i; } \
 }
 
+DECLARE_ENUM_TYPE(wxPathFormat);
+DECLARE_ENUM_TYPE(wxPathNormalize);
 DECLARE_ENUM_TYPE(PrintColourMode);
 DECLARE_ENUM_TYPE(OptionsRelation);
 DECLARE_ENUM_TYPE(OptionsRelationType);

@@ -3,6 +3,7 @@
     #include <wx/string.h>
     #include <globals.h>
 #endif
+#include <wx/filename.h>
 
 #include "sc_base_types.h"
 
@@ -109,6 +110,19 @@ namespace ScriptBindings
         return sa.Return((SQInteger)self.Replace(from, to, all));
     }
 
+////////////////
+// wxFileName //
+////////////////
+
+    SQInteger wxFileName_OpToString(HSQUIRRELVM v)
+    {
+        StackHandler sa(v);
+        wxFileName& self = *SqPlus::GetInstance<wxFileName>(v, 1);
+        return sa.Return((const SQChar*)self.GetFullPath().mb_str(wxConvUTF8));
+    }
+
+////////////////////////////////////////////////////////////////////////////////
+
     void Register_wxTypes()
     {
         SqPlus::RegisterGlobal(&static_T, "_T");
@@ -145,6 +159,54 @@ namespace ScriptBindings
                 staticFuncVarArgs(&wxString_AfterLast, "AfterLast", "*").
                 staticFuncVarArgs(&wxString_BeforeFirst, "BeforeFirst", "*").
                 staticFuncVarArgs(&wxString_BeforeLast, "BeforeLast", "*");
+
+        typedef void(wxFileName::*WXFN_ASSIGN_FN)(const wxFileName&);
+        typedef void(wxFileName::*WXFN_ASSIGN_STR)(const wxString&, wxPathFormat);
+        typedef wxString(wxFileName::*WXFN_GETPATH)(int, wxPathFormat)const;
+        typedef bool(wxFileName::*WXFN_SETCWD)();
+
+        SqPlus::SQClassDef<wxFileName>("wxFileName").
+                emptyCtor().
+                staticFuncVarArgs(&wxFileName_OpToString, "_tostring", "").
+                func<WXFN_ASSIGN_FN>(&wxFileName::Assign, "Assign").
+                func<WXFN_ASSIGN_STR>(&wxFileName::Assign, "Assign").
+                func(&wxFileName::AssignCwd, "AssignCwd").
+                func(&wxFileName::AssignDir, "AssignDir").
+                func(&wxFileName::AssignHomeDir, "AssignHomeDir").
+                func(&wxFileName::Clear, "Clear").
+                func(&wxFileName::ClearExt, "ClearExt").
+//                func(&wxFileName::GetCwd, "GetCwd").
+                func(&wxFileName::GetDirCount, "GetDirCount").
+                func(&wxFileName::GetDirs, "GetDirs").
+                func(&wxFileName::GetExt, "GetExt").
+                func(&wxFileName::GetFullName, "GetFullName").
+                func(&wxFileName::GetFullPath, "GetFullPath").
+                func(&wxFileName::GetLongPath, "GetLongPath").
+                func(&wxFileName::GetName, "GetName").
+                func<WXFN_GETPATH>(&wxFileName::GetPath, "GetPath").
+                func(&wxFileName::GetShortPath, "GetShortPath").
+                func(&wxFileName::GetVolume, "GetVolume").
+                func(&wxFileName::HasExt, "HasExt").
+                func(&wxFileName::HasName, "HasName").
+                func(&wxFileName::HasVolume, "HasVolume").
+                func(&wxFileName::InsertDir, "InsertDir").
+                func(&wxFileName::IsAbsolute, "IsAbsolute").
+                func(&wxFileName::IsOk, "IsOk").
+                func(&wxFileName::IsRelative, "IsRelative").
+                func(&wxFileName::IsDir, "IsDir").
+                func(&wxFileName::MakeAbsolute, "MakeAbsolute").
+                func(&wxFileName::MakeRelativeTo, "MakeRelativeTo").
+                func(&wxFileName::Normalize, "Normalize").
+                func(&wxFileName::PrependDir, "PrependDir").
+                func(&wxFileName::RemoveDir, "RemoveDir").
+                func(&wxFileName::RemoveLastDir, "RemoveLastDir").
+                func(&wxFileName::SameAs, "SameAs").
+                func<WXFN_SETCWD>(&wxFileName::SetCwd, "SetCwd").
+                func(&wxFileName::SetExt, "SetExt").
+                func(&wxFileName::SetEmptyExt, "SetEmptyExt").
+                func(&wxFileName::SetFullName, "SetFullName").
+                func(&wxFileName::SetName, "SetName").
+                func(&wxFileName::SetVolume, "SetVolume");
 
         SqPlus::SQClassDef<wxArrayString>("wxArrayString").
                 emptyCtor().
