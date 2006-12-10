@@ -543,6 +543,8 @@ MainFrame::MainFrame(wxWindow* parent)
     if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/show_script_console"), false))
         ShowHideScriptConsole();
 
+	RegisterScriptFunctions();
+
     m_StartupDone = true;
     DoUpdateLayout();
 
@@ -629,6 +631,80 @@ void MainFrame::CreateIDE()
     m_pEdMan->GetNotebook()->SetDropTarget(new wxMyFileDropTarget(this));
     m_pPrjMan->GetNotebook()->SetDropTarget(new wxMyFileDropTarget(this));
     m_pMsgMan->GetNotebook()->SetDropTarget(new wxMyFileDropTarget(this));
+}
+
+DECLARE_INSTANCE_TYPE(MainFrame);
+
+void MainFrame::RegisterScriptFunctions()
+{
+	typedef void(MainFrame::*REGISTER_SCRIPT_WX)(const wxString&, const wxString&);
+	typedef void(MainFrame::*REGISTER_SCRIPT_SQ)(const SQChar*, const SQChar*);
+
+	SqPlus::SQClassDef<MainFrame>("CodeblocksApp").
+			func<REGISTER_SCRIPT_WX>(&MainFrame::RegisterScript, "RegisterScript").
+			func<REGISTER_SCRIPT_SQ>(&MainFrame::RegisterScript, "RegisterScript");
+	SqPlus::BindVariable(this, "App", SqPlus::VAR_ACCESS_READ_ONLY);
+}
+
+void MainFrame::RegisterScript(const wxString& script, const wxString& menuPath)
+{
+	if (script.IsEmpty() || menuPath.Freq(_T('/')) != 1)
+	{
+		LOG(_("Error registering script: filename must not be empty and "
+			"menu path string must contain exactly one path separator (/) "
+			"not at the start or the end of the string."));
+		return;
+	}
+	
+	// create menu entry from path
+	wxString menuItem = menuPath;
+	wxString menuTitle = menuItem.BeforeFirst(_T('/'));
+	menuItem = menuItem.AfterFirst(_T('/'));
+	bool needsSep = menuItem.StartsWith(_T("-"));
+	if (needsSep)
+		menuItem.Remove(0, 1);
+	if (menuTitle.IsEmpty() || menuItem.IsEmpty())
+	{
+		LOG(_("Error registering script: filename must not be empty and "
+			"menu path string must contain exactly one path separator (/) "
+			"not at the start or the end of the string."));
+		return;
+	}
+	wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
+	wxMenu* menu = 0;
+	int menuPos = mbar->FindMenu(menuTitle);
+	if (menuPos == wxNOT_FOUND)
+	{
+		menu = new wxMenu();
+		mbar->Insert(mbar->GetMenuCount() - 2, menu, menuTitle); // -2 to be inserted before "Settings"
+	}
+	else
+		menu = mbar->GetMenu(menuPos);
+
+	if (menu->FindItem(menuItem) != wxNOT_FOUND)
+	{
+		cbMessageBox(_("Error registering script: menu item exists"),
+						_("Error"), wxICON_ERROR);
+		return;
+	}
+	
+	if (needsSep)
+		menu->AppendSeparator();
+	
+	int id = wxNewId();
+	menu->Append(id, menuItem, _("Press SHIFT while clicking this menu item to edit the assigned script in the editor"));
+
+	Connect(id, -1, wxEVT_COMMAND_MENU_SELECTED,
+			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+			&MainFrame::OnScriptMenu);
+
+	m_MenuIDToScript.insert(m_MenuIDToScript.end(), std::make_pair(id, script));
+	LOG(_("Script '%s' registered under menu '%s'"), script.c_str(), menuPath.c_str());
+}
+
+void MainFrame::RegisterScript(const SQChar* script, const SQChar* menuPath)
+{
+	RegisterScript(cbC2U(script), cbC2U(menuPath));
 }
 
 void MainFrame::PluginsUpdated(cbPlugin* plugin, int status)
@@ -3601,4 +3677,34 @@ void MainFrame::OnRequestHideDockWindow(CodeBlocksDockEvent& event)
 void MainFrame::OnLayoutSwitch(CodeBlocksLayoutEvent& event)
 {
     LoadViewLayout(event.layout);
+}
+
+void MainFrame::OnScriptMenu(wxCommandEvent& event)
+{
+	MenuIDToScript::iterator it = m_MenuIDToScript.find(event.GetId());
+	if (it == m_MenuIDToScript.end())
+	{
+		cbMessageBox(_("No script associated with this menu?!?"), _("Error"), wxICON_ERROR);
+		return;
+	}
+
+	if (wxGetKeyState(WXK_SHIFT))
+	{
+		wxString script = ConfigManager::LocateDataFile(it->second, sdScriptsUser | sdScriptsGlobal);
+		Manager::Get()->GetEditorManager()->Open(script);
+		return;
+	}
+	
+	// run script
+	try
+	{
+		if (!Manager::Get()->GetScriptingManager()->LoadScript(it->second))
+			cbMessageBox(_("Could not run script: ") + it->second, _("Error"), wxICON_ERROR);
+//		SqPlus::SquirrelFunction<void> f("main");
+//		f();
+	}
+	catch (SquirrelError& exception)
+	{
+		Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
+	}
 }

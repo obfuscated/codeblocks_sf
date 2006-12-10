@@ -797,42 +797,6 @@ void DirectCommands::DepsSearchStart(ProjectBuildTarget* target)
 		depsAddSearchDir(incs[i].mb_str());
     }
 
-//    wxArrayString prj_incs = m_pProject->GetIncludeDirs();
-//    wxArrayString tgt_incs = target->GetIncludeDirs();
-//
-//	MacrosManager* mm = Manager::Get()->GetMacrosManager();
-//
-//    // replace custom vars in include dirs
-//    for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
-//        mm->ReplaceMacros(prj_incs[i], target);
-//    for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
-//        mm->ReplaceMacros(tgt_incs[i], target);
-//
-//    OptionsRelation relation = target->GetOptionRelation(ortIncludeDirs);
-//    switch (relation)
-//    {
-//        case orUseParentOptionsOnly:
-//            for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
-//                depsAddSearchDir(prj_incs[i].mb_str());
-//            break;
-//        case orUseTargetOptionsOnly:
-//            for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
-//                depsAddSearchDir(tgt_incs[i].mb_str());
-//            break;
-//        case orPrependToParentOptions:
-//            for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
-//                depsAddSearchDir(tgt_incs[i].mb_str());
-//            for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
-//                depsAddSearchDir(prj_incs[i].mb_str());
-//            break;
-//        case orAppendToParentOptions:
-//            for (unsigned int i = 0; i < prj_incs.GetCount(); ++i)
-//                depsAddSearchDir(prj_incs[i].mb_str());
-//            for (unsigned int i = 0; i < tgt_incs.GetCount(); ++i)
-//                depsAddSearchDir(tgt_incs[i].mb_str());
-//            break;
-//    }
-
     // We could add the "global" compiler directories too, but we normally
     // don't care about the modification times of system include files.
 }

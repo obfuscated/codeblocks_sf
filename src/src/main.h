@@ -1,14 +1,18 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#include <map>
+
 #include <wx/toolbar.h>
 #include <wx/docview.h> // for wxFileHistory
 #include <wx/notebook.h>
 #include <wx/dynarray.h>
 #include <../sdk/cbeditor.h>
 #include "../sdk/manager.h"
+#include "../sdk/cbexception.h"
 #include "../sdk/cbplugin.h"
 #include "../sdk/sdk_events.h"
+#include "../sdk/scripting/bindings/sc_base_types.h"
 
 // wxAUI
 #include "wxAUI/manager.h"
@@ -31,6 +35,9 @@ class MainFrame : public wxFrame
         wxAcceleratorTable* m_pAccel;
         MainFrame(wxWindow* parent = (wxWindow*)NULL);
         ~MainFrame();
+
+        MainFrame(const MainFrame& rhs){ cbThrow(_T("Can't use MainFrame's copy constructor")); }
+        MainFrame& operator=(const MainFrame& rhs){ cbThrow(_T("Can't use MainFrame's operator=")); }
 
         bool Open(const wxString& filename, bool addToHistory = true);
         bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
@@ -196,6 +203,8 @@ class MainFrame : public wxFrame
 		void OnEditorModified(CodeBlocksEvent& event);
 		void OnPageChanged(wxNotebookEvent& event);
         void OnShiftTab(wxCommandEvent& event);
+        
+        void OnScriptMenu(wxCommandEvent& event);
     protected:
         void CreateIDE();
 		void CreateMenubar();
@@ -203,6 +212,10 @@ class MainFrame : public wxFrame
         void ScanForPlugins();
 		void AddToolbarItem(int id, const wxString& title, const wxString& shortHelp, const wxString& longHelp, const wxString& image);
         void RecreateMenuBar();
+
+		void RegisterScriptFunctions();
+		void RegisterScript(const wxString& script, const wxString& menuPath);
+		void RegisterScript(const SQChar* script, const SQChar* menuPath);
 
         enum { Installed, Uninstalled, Unloaded };
         void PluginsUpdated(cbPlugin* plugin, int status);
@@ -276,6 +289,9 @@ class MainFrame : public wxFrame
         wxString m_LastLayoutData;
 
         int m_ScriptConsoleID;
+        
+        typedef std::map<int, const wxString> MenuIDToScript; // script menuitem ID -> script function name
+		MenuIDToScript m_MenuIDToScript;
 
         DECLARE_EVENT_TABLE()
 };

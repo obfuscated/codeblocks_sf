@@ -78,12 +78,12 @@ bool ScriptingManager::LoadScript(const wxString& filename)
     f.Open(fname);
     if (!f.IsOpened())
     {
-        fname = ConfigManager::GetScriptsFolder() + _T("/") + filename;
+		fname = ConfigManager::LocateDataFile(filename, sdScriptsUser | sdScriptsGlobal);
         f.Open(fname);
         if(!f.IsOpened())
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Can't open script %s"), filename.c_str());
-            return false;
+			Manager::Get()->GetMessageManager()->DebugLog(_T("Can't open script %s"), filename.c_str());
+			return false;
         }
     }
     // read file
