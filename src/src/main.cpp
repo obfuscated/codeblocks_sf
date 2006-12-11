@@ -640,7 +640,7 @@ void MainFrame::RegisterScriptFunctions()
 	typedef void(MainFrame::*REGISTER_SCRIPT_WX)(const wxString&, const wxString&);
 	typedef void(MainFrame::*REGISTER_SCRIPT_SQ)(const SQChar*, const SQChar*);
 
-	SqPlus::SQClassDef<MainFrame>("CodeblocksApp").
+	SqPlus::SQClassDef<MainFrame>("MainFrame").
 			func<REGISTER_SCRIPT_WX>(&MainFrame::RegisterScript, "RegisterScript").
 			func<REGISTER_SCRIPT_SQ>(&MainFrame::RegisterScript, "RegisterScript");
 	SqPlus::BindVariable(this, "App", SqPlus::VAR_ACCESS_READ_ONLY);
@@ -655,7 +655,7 @@ void MainFrame::RegisterScript(const wxString& script, const wxString& menuPath)
 			"not at the start or the end of the string."));
 		return;
 	}
-	
+
 	// create menu entry from path
 	wxString menuItem = menuPath;
 	wxString menuTitle = menuItem.BeforeFirst(_T('/'));
@@ -687,10 +687,10 @@ void MainFrame::RegisterScript(const wxString& script, const wxString& menuPath)
 						_("Error"), wxICON_ERROR);
 		return;
 	}
-	
+
 	if (needsSep)
 		menu->AppendSeparator();
-	
+
 	int id = wxNewId();
 	menu->Append(id, menuItem, _("Press SHIFT while clicking this menu item to edit the assigned script in the editor"));
 
@@ -3694,7 +3694,7 @@ void MainFrame::OnScriptMenu(wxCommandEvent& event)
 		Manager::Get()->GetEditorManager()->Open(script);
 		return;
 	}
-	
+
 	// run script
 	try
 	{
