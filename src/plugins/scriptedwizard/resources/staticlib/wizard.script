@@ -72,12 +72,14 @@ function SetupTarget(target, is_debug)
     if (is_debug)
     {
         // enable debugging symbols for this target
-        DebugSymbolsOn(target, Wizard.GetTargetCompilerID());
+        // DebugSymbolsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
     }
     else
     {
         // enable optimizations for this target
-        OptimizationsOn(target, Wizard.GetTargetCompilerID());
+        // OptimizationsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        OptimizationsOn(target, Wizard.GetCompilerID());
     }
 
     return true;
