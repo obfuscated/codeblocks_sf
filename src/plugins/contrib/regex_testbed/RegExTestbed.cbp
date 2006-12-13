@@ -8,7 +8,7 @@
 		<Option compiler="gcc" />
 		<Option virtualFolders="" />
 		<Build>
-			<Target title="default">
+			<Target title="plugin">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\RegExTestbed.dll" prefix_auto="1" extension_auto="1" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -28,7 +28,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="default;" />
+			<Add alias="All" targets="gnu_regex;prcre_dftables;pcre;plugin;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -45,6 +45,7 @@
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DSUPPORT_UTF8" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX)\contrib\include" />
@@ -52,6 +53,8 @@
 			<Add directory="$(#CB.include)\wxscintilla\include" />
 			<Add directory="$(#CB)\sdk" />
 			<Add directory="$(#CB)\sdk\wxscintilla\include" />
+			<Add directory="pcre-6.7" />
+			<Add directory="regex-0.12" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -62,40 +65,36 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="$(#CB.lib)" />
 			<Add directory="$(#CB)\devel" />
+			<Add directory="." />
 		</Linker>
 		<Unit filename="RegExTestbed.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="plugin" />
 		</Unit>
 		<Unit filename="RegExTestbed.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="plugin" />
 		</Unit>
 		<Unit filename="manifest.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
+			<Option target="plugin" />
 		</Unit>
 		<Unit filename="regexdlg.cpp">
 			<Option compilerVar="CPP" />
-			<Option target="default" />
+			<Option target="plugin" />
 		</Unit>
 		<Unit filename="regexdlg.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="wxsmith\RegExDlg.wxs">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
+			<Option target="plugin" />
 		</Unit>
 		<Extensions>
+			<code_completion />
 			<wxsmith>
 				<dialog wxs_file="RegExDlg.wxs" class="RegExDlg" src_file="regexdlg.cpp" header_file="regexdlg.h" xrc_file="regexdlg.xrc" edit_mode="Xrc" />
 				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />

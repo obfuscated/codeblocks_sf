@@ -19,8 +19,13 @@
 #include <wx/xrc/xmlres.h>
 //*)
 
+#include <wx/html/htmlwin.h>
+
 #ifndef CB_PRECOMP
   #include <wx/listctrl.h> // wxListEvent
+  #include <wx/choice.h>
+  #include <wx/checkbox.h>
+  #include <wx/regex.h>
 #endif
 
 class RegExDlg: public wxDialog
@@ -38,20 +43,28 @@ class RegExDlg: public wxDialog
 	protected:
 
 		//(*Handlers(RegExDlg)
-		void OnTestClick(wxCommandEvent& event);
+		void OnCloseButton(wxCommandEvent& event){ Close(); };
+		void RunBenchmark(wxCommandEvent& event);
 		void OnInit(wxInitDialogEvent& event);
 		void OnRegExItemActivated(wxListEvent& event);
-		//*)
-
-		//(*Declarations(RegExDlg)
-		wxTextCtrl* txtRegEx;
-		wxTextCtrl* txtInput;
-		wxTextCtrl* txtOutput;
-		wxButton* btnTest;
-		wxButton* btnCancel;
+        void OnUpdateUI(wxUpdateUIEvent& event);
 		//*)
 
 	private:
+
+
+        wxArrayString GetBuiltinMatches(const wxString& text);
+        wxArrayString GetPregMatches(const wxString& text);
+
+        wxTextCtrl *m_regex;
+        wxTextCtrl *m_quoted;
+        wxChoice *m_library;
+        wxCheckBox *m_nocase;
+        wxCheckBox *m_newlines;
+        wxTextCtrl *m_text;
+        wxHtmlWindow *m_output;
+
+        wxRegEx m_wxre;
 
 		DECLARE_EVENT_TABLE()
 };
