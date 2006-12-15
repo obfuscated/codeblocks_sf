@@ -2153,9 +2153,9 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
 
         if (tlist.GetCount() == 0)
         {
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON));
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
             Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Warning: No target named '%s' in project '%s'. Project will not be built..."), targetName.c_str(), prj->GetTitle().c_str());
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         }
 
         // add all matching targets in the job list
@@ -2167,9 +2167,9 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
         		msg.Printf(_T("\"%s - %s\" uses an invalid compiler. Skipping..."),
 							prj->GetTitle().c_str(), tlist[x].c_str());
         		LOG_WARN(msg);
-				m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON));
+				m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         		Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
-				m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
+				m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
 				continue;
         	}
             BuildJobTarget bjt;
@@ -2287,9 +2287,9 @@ void CompilerGCC::CalculateProjectDependencies(cbProject* prj, wxArrayInt& deps)
         }
         else
         {
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON));
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
             Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Circular dependency detected between \"%s\" and \"%s\". Skipping..."), prj->GetTitle().c_str(), thisprj->GetTitle().c_str());
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         }
     }
 
@@ -3140,16 +3140,16 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
     if (log & ltMessages)
     {
         if (forceErrorColour)
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON));
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         else if (lt == cltError)
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED));
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
         else if (lt == cltWarning)
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY));
+            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
 
         Manager::Get()->GetMessageManager()->Log(m_PageIndex, message);
         Manager::Get()->GetMessageManager()->LogToStdOut(message + _T('\n'));
 
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
+        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
     }
 }
 
@@ -3225,7 +3225,7 @@ void CompilerGCC::SaveBuildLog()
     f.Write(_T("</body>\n"));
     f.Write(_T("</html>\n"));
 
-    m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT)));
+    m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW)));
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Build log saved as: ") + m_BuildLogFilename);
 }
 
