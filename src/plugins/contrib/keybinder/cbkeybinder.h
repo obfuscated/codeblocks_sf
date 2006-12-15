@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version--------------------------
-#define VERSION "1.0.1 2006/10/27"
+#define VERSION "1.0.7 2006/12/14"
 // -----------------------------------
 class MyDialog;
 
@@ -561,4 +561,21 @@ private:
 //          Change OnIdle to OnTimer as per Denk advice
 //          On new version, copy old key defs file if compatible
 // -----------------------------------------------------------------------------
-//
+//  closed  2006/12/12 open    2006/12/12
+//          Update/Merge the current array of keybindings via WalkMenuStructure
+//          ala Rebind() but without clobbering other arrayss
+//          A: Forget it. It'll wipe out the user secondary command settings.
+//  closed  2006/12/12
+//          When merging, verify menu id and delete from array if absent.
+//  open    when menuItems are changed without an attached() window, they arnt saved
+//  closed  The OnKey() fix now doesnt allow F1-F9 etc
+// ----------------------------------------------------------------------------
+//  Commit  1.0.6 2006/12/14
+//          2) Added code to remove stale dynamic menu items
+//          3) Added MergeDynamicMenu() & OnSave() at plugin termination
+//          4) In IsValidKeyComb() changed '+' to '-'
+//          5) Disallowed single key cmdStrings in wxKeyMonitorTextCtrl::OnKey()
+//          6) Reduced size of .ini fileName
+//          7) Fixed broken OnKey() to accept function keys w/o Ctrl- Alt- or Shift-
+// ----------------------------------------------------------------------------
+

@@ -73,7 +73,7 @@ void cbKeyBinder::OnAttach()
 	// :NOTE: after this function, the inherited member variable
 	// IsAttached() will be TRUE...
 	// You should check for it in other functions, because if it
-	// is FALSE, it means that the application did *not* "load"
+	// is FALSE, it means that the application did *not* ""
 	// (see: does not need) this plugin...
 
 
@@ -126,7 +126,7 @@ void cbKeyBinder::OnAttach()
     // if old key definitions file is valid for new keybinder release
     //  set it here.
 	m_OldKeyFilename = wxEmptyString;
-	m_OldKeyFilename = wxT("cbKeyBinder04v111.ini");
+	m_OldKeyFilename = wxT("cbKeyBinder10v111.ini");
 
 	return;
 
@@ -142,8 +142,12 @@ void cbKeyBinder::OnRelease(bool appShutDown)
 	// NOTE: after this function, the inherited member variable
 	// IsAttached() will be FALSE...
 
-	// stop the merge timer
+	// stop the merge timer, do a final merge to catch any changes
+    StopMergeTimer();
+    MergeDynamicMenus();
 	EnableMerge(false);
+	// write out any changed menu items or cmd strings
+	OnSave();
     // remove keyboard and window close event //+v0.4.7
 	m_pKeyProfArr->DetachAll();
 }
@@ -176,14 +180,9 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
 	// memorize incomming menubar
     m_pMenuBar = menuBar;
 
-    // Create filename like cbKeyBinder{pluginversion}v{sdkversion}.ini
-    // +v0.4.1 Get major and minor SDK versions to use in filename
-    int SDKmajor; int SDKminor; int SDKrelease;
-    reg.SDKVersion( &SDKmajor, &SDKminor, &SDKrelease);
-    wxString SDKverStr = wxEmptyString;
-    SDKverStr.sprintf(_T("%d%d"),SDKmajor,SDKminor);
+    // Create filename like cbKeyBinder{pluginversion}.ini
 
-    //memorize the key file name as {%HOME%}\cbKeyBinder+{vers}.ini
+    //memorize the key file name as {%HOME%}\cbKeyBinder+{ver}.ini
     m_sKeyFilename = ConfigManager::GetConfigFolder();
 
     //*bug* GTK GetConfigFolder is returning double "//?, eg, "/home/pecan//.codeblocks"
@@ -202,12 +201,10 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     m_sKeyFilename = m_sKeyFilename
          << wxFILE_SEP_PATH
          << info->name<<sPluginVersion
-         << _T("v")<<SDKverStr<<_T(".ini"); //+v0.4.1
+         <<_T(".ini");
 
     #if LOGGING
-     LOGIT(_T("cbKB:BuildMenu()"));
-     LOGIT(_T("SDKmajor:%d SDKminor:%d SDKverStr:%s"),SDKmajor,SDKminor,SDKverStr.GetData());
-     LOGIT(_T("File:%s"),m_sKeyFilename.GetData());
+     LOGIT(_T("cbKB:BuildMenu()File:%s"),m_sKeyFilename.GetData());
     #endif
 
     // initialize static pointer to filename
@@ -337,7 +334,7 @@ void cbKeyBinder::MergeDynamicMenus()
 
     // Caller must have previously enabled merging
     int n;
-    if (not (n=IsEnabledMerge()))
+    if (not (n = IsEnabledMerge()))
     {
         #ifdef LOGGING
          LOGIT( _T("MergeDynamicMenus entered when disabled n:%d."),n );
@@ -594,6 +591,7 @@ void cbKeyBinder::OnSave()
 // ----------------------------------------------------------------------------
 {
     // Save the key profile(s) to a file
+
     bool done = false;
     // copy the .ini file to a .ini.bak file
     if (::wxFileExists(m_sKeyFilename) )
@@ -624,7 +622,7 @@ void cbKeyBinder::OnSave()
 		int total = 0;
 		for (int i=0; i<m_pKeyProfArr->GetCount(); i++)
 			total += m_pKeyProfArr->Item(i)->GetCmdCount();
-
+        cfg->Flush();
 		//wxMessageBox(wxString::Format(wxT("All the [%d] keyprofiles ([%d] commands ")
 		//	wxT("in total) have been saved in \n\"")+path, //+wxT(".ini\""),
         //      m_pKeyProfArr->GetCount(), total),

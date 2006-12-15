@@ -738,8 +738,6 @@ int wxBinderApp::FilterEvent(wxEvent &ev)
 
 			wxLogDebug(wxT("wxBinderApp::FilterEvent - discarding this keypress because our ")
 					wxT("main frame does not have the focus..."));
-		    //-wxLogDebug("\n");
-
 			return -1;
 		}
 
@@ -821,13 +819,9 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
         //---------------------------
         // skip separater menu items
         if (pMenuItem->GetKind() == wxITEM_SEPARATOR) continue;
-
         int nMenuItemID = pMenuItem->GetId();
 
         // Skip any menu items beginning with numerics
-        //if (menuItemText.Left(1).IsNumber()) continue;
-        //if ( (menuItemText[0] == '&') && (menuItemText.Mid(1,1).IsNumber()) )
-        //    continue;
         if (wxMenuCmd::IsNumericMenuItem(pMenuItem)) continue;
 
         //-wxString menuItemText = pMenuItem->GetText();
@@ -852,15 +846,15 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             if (pCmd->GetShortcutCount()
                 && (GetShortcutStr(nMenuItemID,0) != menuItemKeyStr)  )
                changed = 3;
-            if (changed)
-            {
-                #ifdef LOGGING
-                 LOGIT( _T("MnmLabel[%s] MnuKey[%s]"), menuItemLabel.GetData(), menuItemKeyStr.GetData() );
-                 int n = pCmd->GetShortcutCount();
-                 LOGIT( _T("arrLabel[%s] arrKey[%s]"), pCmd->GetName().GetData(),
-                        n?GetShortcutStr(nMenuItemID,0).GetData():wxEmptyString );
-                #endif //LOGGING
-            }
+            //if (changed)
+            //{
+            //    #ifdef LOGGING
+            //     LOGIT( _T("MnuLabel[%s] MnuKey[%s]"), menuItemLabel.GetData(), menuItemKeyStr.GetData() );
+            //     int n = pCmd->GetShortcutCount();
+            //     LOGIT( _T("arrLabel[%s] arrKey[%s]"), pCmd->GetName().GetData(),
+            //            n?GetShortcutStr(nMenuItemID,0).GetData():wxEmptyString );
+            //   #endif //LOGGING
+            //}
         }//fi
         else{// menu item not found in KeyProfileArray
             changed = 4;
@@ -870,9 +864,9 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
         {   // menu item has been changed dynamically by core or plugins
             // remove old dynamic menu item from wxKeyProfileArray
             // update wxKeyProfileArray with dynamically changed menu item
-
+            //-if ( menuItemLabel == wxT("Braces")) TRAP; //debugging
             // if the key bind was owned by other commands, remove the binding
-            wxCmd *p = 0;
+            wxCmd* p = 0;
             while ((p = GetCmdBindTo(menuItemKeyStr) ))
             {
                 // another command already owns this key bind...
@@ -902,7 +896,7 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             //   menu items will never match causing constant update overhead
             AddShortcut(nMenuItemID, menuItemKeyStr, true );
             #ifdef LOGGING
-             LOGIT(wxT("Merge changed[%d]:%d:%d:%p:[%s]"), changed, j, nMenuItemID, pMenuItem, pMenuItem->GetText().GetData() );
+             LOGIT(wxT("Merge change type[%d]:item[%d]:id[%d]:@[%p]:[%s]"), changed, j, nMenuItemID, pMenuItem, pMenuItem->GetText().c_str() );
             #endif
         }//if
         else
@@ -920,13 +914,14 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
 int wxKeyBinder::MergeDynamicMenuItems(wxMenuBar* pMenuBar)     //v0.4.25
 // ----------------------------------------------------------------------------
 {
+
 	// Merge any new/dynamic CB Menu/Key items into the current wxKeyProfileArray
 	// CB's plugins etc can add/change menu items and key assignments
 	// cf: Help plugin which dynamically switches F1 assignment
     int changed = 0;
-    if (m_arrHandlers.GetCount() == 0)
-        return false;	// we are not attached to any window... we can skip
-                        // this update...
+    //-if (m_arrHandlers.GetCount() == 0)
+    //-    return false;	// we are not attached to any window... we can skip
+    //-                    // this update...
 
 
    //menu bar item count (level 1)
@@ -939,7 +934,24 @@ int wxKeyBinder::MergeDynamicMenuItems(wxMenuBar* pMenuBar)     //v0.4.25
     #ifdef LOGGING
      //LOGIT( _T("MergeDynamicMenuItems() modified %d items"), changed );
     #endif //LOGGING
-    // return true any menu items changed
+
+    // ---------------------------------------------------------------
+    // Loop through the wxCmdArray and remove any wxCmds that have no
+    // associated menu item. This is caused by dynamic menu items changing their id
+    // ---------------------------------------------------------------
+    wxCmdArray* pCmdArray = GetArray();
+    for (int i=0; i < GetCmdCount(); i++)
+    {
+        wxCmd* pCmd = pCmdArray->Item(i);
+        if (not pMenuBar->FindItem( pCmd->GetId(), NULL) )
+        {
+            LOGIT( _T("Merge Removing old[%s][%d]"), pCmd->GetName().c_str(),pCmd->GetId() );
+            RemoveCmd( pCmd);
+            ++changed;
+        }
+    }
+
+    // return true when any menu items changed
     return (changed);
 
 }//MergeDynamicMenuItems
@@ -961,7 +973,7 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
         int nMenuItemID = pMenuItem->GetId();
         // Find item in array of keybinder commands
         int k=0;
-        if ( -1 != ( k = FindCmd(nMenuItemID) ) )
+        if ( -1 != ( k = FindCmd(nMenuItemID) ) )   //item found
         {
             wxString menuItemKeyStr;
             GetMenuItemAccStr(pMenuItem, menuItemKeyStr);
@@ -1248,14 +1260,6 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 		event.Skip();
 		return;
 	}
-	if (p && p->IsBindTo(wxKeyBind(wxT("Alt-F4")))) {
-
-		wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring an Alt-F4 event [%d]"),
-					event.GetKeyCode());
-        //-wxLogDebug("\n");
-		event.Skip();
-		return;
-	}
 
 #if 0
 	// for some reason we need to avoid processing also of the ENTER keypresses...
@@ -1273,9 +1277,8 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 	// if the given event is not a shortcut key...
 	if (p == NULL) {
 
-//		wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring this keyevent [%d]"),
-//					event.GetKeyCode());
-
+		//wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring this keyevent [%d]"),
+		//			event.GetKeyCode());
 		event.Skip();		// ... skip it
 
 	} else {
@@ -1296,14 +1299,14 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 			event.Skip();		// ... skip it
 			return;
 		}
-
-		wxLogDebug(wxT("wxKeyBinder::OnChar - calling the Exec() function of the [%s] ")
+        #ifdef LOGGING
+		LOGIT(wxT("wxKeyBinder::OnChar - calling the Exec() function of the [%s] ")
 				wxT("wxCmd on the keycode [%d] (event timestamp: %ld)"),
 				p->GetName().c_str(), event.GetKeyCode(), event.GetTimestamp());
 		wxLogDebug(wxT("wxKeyBinder::OnChar - window[%s][%p]"),
                 ((wxWindow*)event.GetEventObject())->GetName().GetData(),
                  event.GetEventObject() );
-
+        #endif
 		p->Exec(event.GetEventObject(),		// otherwise, tell wxCmd to send the
 				client);	// associated wxEvent to the next handler in the chain
 	}
@@ -1594,7 +1597,21 @@ void wxKeyMonitorTextCtrl::OnKey(wxKeyEvent &event)
 		// modifier key like shift, ctrl or alt without adding any
 		// other alphanumeric char, thus generating an invalid keystroke
 		// which must be cleared out...
-		SetValue(wxKeyBind::GetKeyStrokeString(event));
+		//-SetValue(wxKeyBind::GetKeyStrokeString(event));
+		//-SetInsertionPointEnd();
+
+        // Command must begin with 'Ctrl-' 'Alt-' or 'Shift-' F1-F??
+            wxString keyStrokeString = wxKeyBind::GetKeyStrokeString(event);
+            LOGIT( _T("KeyStrokString[%s]"),keyStrokeString.c_str() );
+        if (not keyStrokeString.IsEmpty() ) do{
+            if (keyStrokeString.Length() <2) { keyStrokeString.Clear(); break;}
+            if ( (keyStrokeString[0] == 'F') && (keyStrokeString.Mid(1,1).IsNumber()) ) break;
+            if ( not (validCmdPrefixes.Contains(keyStrokeString.BeforeFirst('-'))) )
+            {    keyStrokeString.Clear();
+                break;
+            }
+        }while(0); //ifdo
+		SetValue( keyStrokeString );
 		SetInsertionPointEnd();
 	}
 }

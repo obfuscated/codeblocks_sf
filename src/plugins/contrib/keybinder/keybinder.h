@@ -1133,8 +1133,10 @@ public:
 //!          the wxKeyMonitorTextCtrl displays exactly the string
 //!          "Ctrl+Shift+A"
 //!
-//class /*-v0.1-WXDLLIMPEXP_KEYBINDER*/ wxKeyMonitorTextCtrl : public wxTextCtrl
+//class WXDLLIMPEXP_KEYBINDER wxKeyMonitorTextCtrl : public wxTextCtrl
+// ----------------------------------------------------------------------------
 class wxKeyMonitorTextCtrl : public wxTextCtrl
+// ----------------------------------------------------------------------------
 {
 public:
 	wxKeyMonitorTextCtrl(
@@ -1146,7 +1148,8 @@ public:
 		long style = wxTE_PROCESS_ENTER,
 		const wxValidator& validator = wxDefaultValidator,
 		const wxString& name = wxTextCtrlNameStr) :
-		wxTextCtrl(parent, id, value, pos, size, style, validator, name) {}
+		wxTextCtrl(parent, id, value, pos, size, style, validator, name)
+        { validCmdPrefixes = wxT("Ctrl-Alt-Shift-");}
 
 	virtual ~wxKeyMonitorTextCtrl() {}
 
@@ -1158,10 +1161,13 @@ public:
 
 	//! Returns TRUE if this window is containing a valid key combination.
 	bool IsValidKeyComb() const {
-		return !GetValue().IsEmpty() && GetValue().Last() != '+';
+		//-return !GetValue().IsEmpty() && GetValue().Last() != '+';
+		return !GetValue().IsEmpty() && GetValue().Last() != '-';
 	}
 
 private:
+    wxString validCmdPrefixes; //= wxT("CtrlAltShift");
+
 	DECLARE_CLASS(wxKeyMonitorTextCtrl)
 	DECLARE_EVENT_TABLE()
 };

@@ -137,7 +137,9 @@ protected:
 //! To perform your task, provide the implementation of the #OnMenuWalk
 //! and #OnMenuItemWalk functions.
 // class /*-lf-WXDLLIMPEXP_KEYBINDER*/ wxMenuWalker
+// ----------------------------------------------------------------------------
 class wxMenuWalker
+// ----------------------------------------------------------------------------
 {
 protected:
 
@@ -210,7 +212,10 @@ protected:		// the core functions
 //! with this tree item.
 //! The ID should be unique among all the commands contained in the
 //! same command collection so it should be enough to identify a wxCmd...
-class /*-lf-WXDLLIMPEXP_KEYBINDER*/ wxExTreeItemData : public wxTreeItemData
+//class WXDLLIMPEXP_KEYBINDER wxExTreeItemData : public wxTreeItemData
+// ----------------------------------------------------------------------------
+class wxExTreeItemData : public wxTreeItemData
+// ----------------------------------------------------------------------------
 {
 protected:
 	int m_nMenuId;
@@ -237,7 +242,10 @@ public:
 //! object which contains the ID of the menuitem it represents
 //! (for items representing the top level menus, wxID_INVALID is
 //! contained).
-class /*-lf-WXDLLIMPEXP_KEYBINDER*/ wxMenuTreeWalker : public wxMenuWalker
+//class WXDLLIMPEXP_KEYBINDER wxMenuTreeWalker : public wxMenuWalker
+// ----------------------------------------------------------------------------
+class wxMenuTreeWalker : public wxMenuWalker
+// ----------------------------------------------------------------------------
 {
 	wxTreeCtrl *m_pTreeCtrl;
 	wxTreeItemId m_root;
@@ -265,16 +273,16 @@ protected:
 	void *OnMenuItemWalk(wxMenuBar *p, wxMenuItem *, void *);
 	void DeleteData(void *data);
 };
-
-
-
-
+// ----------------------------------------------------------------------------
 
 //! The data associated with each entry of the combobox given
 //! to the wxMenuComboListWalker class.
 //! Contains the array of labels of the menu items contained
 //! into a wxMenu and their IDs.
-class /*-lf-WXDLLIMPEXP_KEYBINDER*/ wxExComboItemData : public wxClientData
+//class WXDLLIMPEXP_KEYBINDER wxExComboItemData : public wxClientData
+// ----------------------------------------------------------------------------
+class wxExComboItemData : public wxClientData
+// ----------------------------------------------------------------------------
 {
 protected:
 	wxArrayString m_arrStr;
@@ -303,7 +311,10 @@ public:
 //! which is "walked".
 //! The wxExComboItemData associated with these items contains the
 //! list of the wxMenuItem contained into the relative wxMenu.
-class /*-lf-WXDLLIMPEXP_KEYBINDER*/ wxMenuComboListWalker : public wxMenuWalker
+//class WXDLLIMPEXP_KEYBINDER wxMenuComboListWalker : public wxMenuWalker
+// ----------------------------------------------------------------------------
+class wxMenuComboListWalker : public wxMenuWalker
+// ----------------------------------------------------------------------------
 {
 	wxComboBox *m_pCategories;
 	wxString m_strAcc;
@@ -331,7 +342,9 @@ protected:
 //! plain list of wxMenuCmd (without any hierarchical structure)
 //! in the given array of wxCmd*.
 //class WXDLLIMPEXP_KEYBINDER wxMenuShortcutWalker : public wxMenuWalker
+// ----------------------------------------------------------------------------
 class wxMenuShortcutWalker : public wxMenuWalker
+// ----------------------------------------------------------------------------
 {
 	wxCmdArray *m_pArr;
 

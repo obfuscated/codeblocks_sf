@@ -583,7 +583,6 @@ void wxMenuComboListWalker::DeleteData(void *)
 // ----------------------------------------------------------------------------
 // wxMenuShortcutWalker
 // ----------------------------------------------------------------------------
-
 void *wxMenuShortcutWalker::OnMenuItemWalk(wxMenuBar *, wxMenuItem *m, void *)
 {
 	wxASSERT(m);
