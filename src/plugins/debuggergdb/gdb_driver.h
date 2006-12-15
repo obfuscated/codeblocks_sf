@@ -73,7 +73,7 @@ class GDB_driver : public DebuggerDriver
     private:
         void InitializeScripting();
         void RegisterType(const wxString& name, const wxString& regex, const wxString& eval_func, const wxString& parse_func);
-        void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak, wxString line);
+        void HandleMainBreakPoint(const wxRegEx& reBreak, wxString line);
 #ifdef __WXMSW__
         // win/Cygwin platform checking
         void DetectCygwinMount(void);

@@ -1145,11 +1145,13 @@ class GdbCmd_DisassemblyInit : public DebuggerCmd
                     sf.function = reDisassemblyInitFunc.GetMatch(output, 2);
                     long int active;
 
+#ifdef __WXMSW__
                     if(m_disassemblyFlavor == _T("set disassembly-flavor or32"))
                     {
                         reDisassemblyInitFuncOR32.GetMatch(output, 1).ToLong(&active, 16);
                     }
                     else
+#endif
                     {
                         reDisassemblyInitFunc.GetMatch(output, 1).ToLong(&active, 16);
                     }

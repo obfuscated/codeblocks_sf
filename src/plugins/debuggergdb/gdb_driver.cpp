@@ -752,11 +752,13 @@ void GDB_driver::ParseOutput(const wxString& output)
             // Main breakpoint handler is wrapped into a function so we can use
             // the same code with different regular expressions - depending on
             // the platform.
+#ifdef __WXMSW__
             if(flavour == _T("set disassembly-flavor or32"))
             {
                 HandleMainBreakPoint(reBreak_or32, lines[i]);
             }
             else
+#endif
             {
                 HandleMainBreakPoint(reBreak, lines[i]);
             }
