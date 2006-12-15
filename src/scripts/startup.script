@@ -1,5 +1,8 @@
-function main()
-{
-	Log(_T("Running startup script"));
-    // ShowMessage(_T("Hello world!"));
-}
+Log(_T("Running startup script"));
+
+// #include any script plugins; this will register them too
+// un-comment the line below to register a pointless sample plugin
+// Include(_T("sample_plugin.script"));
+
+// add a menu entry to edit this script
+GetScriptingManager().RegisterScriptMenu(_T("edit_startup_script.script"), _T("Settings/-Edit startup script"));

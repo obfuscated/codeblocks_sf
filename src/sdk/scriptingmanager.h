@@ -1,8 +1,12 @@
 #ifndef SCRIPTING_H
 #define SCRIPTING_H
 
+#include <map>
+#include <set>
+
 #include "settings.h"
 #include "manager.h"
+#include "menuitemsmanager.h"
 #include <wx/intl.h>
 
 class SquirrelError;
@@ -33,11 +37,15 @@ class SquirrelError;
   * The templated type denotes the function's return type. Also note that the
   * function name is not unicode (we 're not using Squirrel in unicode mode).
   */
-class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>
+class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHandler
 {
         friend class Mgr<ScriptingManager>;
         wxCriticalSection cs;
     public:
+        // needed for SqPlus bindings
+        ScriptingManager(const ScriptingManager& rhs) { cbThrow(_T("Can't call ScriptingManager's copy ctor!!!")); }
+        void operator=(const ScriptingManager& rhs){ cbThrow(_T("Can't assign an ScriptingManager* !!!")); }
+
         /** @brief Loads a script.
           *
           * @param filename The filename of the script to run.
@@ -52,6 +60,12 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>
           * @return True if the script compiled, false if not.
           */
         bool LoadBuffer(const wxString& buffer, const wxString& debugName = _T("CommandLine"));
+
+        /** @brief Loads a string buffer and captures its output.
+          *
+          * @param buffer The script buffer to compile and run.
+          * @return The script's output (if any).
+          */
         wxString LoadBufferRedirectOutput(const wxString& buffer);
 
         /** @brief Returns an accumulated error string.
@@ -86,10 +100,120 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>
           * @param output The engine's output to inject.
           */
         void InjectScriptOutput(const wxString& output);
-	protected:
+
+        /** @brief Configure scripting in Code::Blocks.
+          *
+          * @return 0 on success or a negative value on error.
+          */
+        int Configure();
+
+        /** @brief Registers a script plugin menu IDs with the callback function.
+          *
+          * @param name The script plugin's name.
+          * @param ids The menu IDs to bind.
+          * @return True on success, false on failure.
+          */
+        bool RegisterScriptPlugin(const wxString& name, const wxArrayInt& ids);
+
+        /** @brief Script-bound function to register a script with a menu item.
+          *
+          * @param script The script's filename.
+          * @param menuPath The full menu path. This can be separated by slashes (/)
+          *                 to create submenus (e.g. "MyScripts/ASubMenu/MyItem").
+          *                 If the last part of the string ("MyItem" in the example)
+          *                 starts with a dash (-) (e.g. "-MyItem") then a menu
+          *                 separator is prepended before the actual menu item.
+          * @return True on success, false on failure.
+          */
+        bool RegisterScriptMenu(const wxString& script, const wxString& menuPath);
+
+        /** @brief Script-bound function to unregister a script's menu item.
+          *
+          * @param menuPath The full menu path to unregister.
+          * @return True on success, false on failure.
+          */
+        bool UnRegisterScriptMenu(const wxString& menuPath);
+
+        /** @brief Unregister all scripts' menu items.
+          *
+          * @return True on success, false on failure.
+          */
+        bool UnRegisterAllScriptMenus();
+
+        /** @brief Security function.
+          *
+          * @param script The script's full filename.
+          * @return True if the script is trusted, false if not.
+          *
+          * @see TrustScript(), TrustCurrentlyRunningScript(), IsCurrentlyRunningScriptTrusted().
+          */
+        bool IsScriptTrusted(const wxString& script);
+
+        /** @brief Security function.
+          *
+          * @param script The script's full filename.
+          * @return True if the script is trusted, false if not.
+          *
+          * @see TrustScript(), TrustCurrentlyRunningScript(), IsScriptTrusted().
+          */
+        bool IsCurrentlyRunningScriptTrusted();
+
+        /** @brief Security function to trust a script.
+          *
+          * @param script The script's full filename.
+          * @param permanently If true, this script will be trusted on a permanent basis.
+          *                    If false, it will be trusted for this session only.
+          *
+          * @note When a script is marked as trusted, a CRC key is generated from its contents
+          *       and stored for reference. When the IsScriptTrusted() function is called
+          *       later on, besides checking the script's filename against the trusted
+          *       scripts database, the CRC is checked too. If the CRC doesn't match, the
+          *       script is not trusted anymore (the user is notified too).
+          * @see TrustCurrentlyRunningScript()
+          */
+        void TrustScript(const wxString& script, bool permanently);
+
+        /** @brief Security function to trust a script.
+          *
+          * @param permanently If true, this script will be trusted on a permanent basis.
+          *                    If false, it will be trusted for this session only.
+          * @see TrustScript()
+          */
+        void TrustCurrentlyRunningScript(bool permanently);
 	private:
+        void OnScriptMenu(wxCommandEvent& event);
+        void OnScriptPluginMenu(wxCommandEvent& event);
+        void RegisterScriptFunctions();
+
         ScriptingManager();
         ~ScriptingManager();
+
+        // helper struct for script trusts
+        struct TrustedScriptProps
+        {
+            bool store; // store trust in config (permanent trust)
+            wxUint32 crc; // script's contents crc32
+        };
+
+        // container for script trusts
+        // script filename -> props
+        typedef std::map<wxString, TrustedScriptProps> TrustedScripts;
+        TrustedScripts m_TrustedScripts;
+
+        // container for script menus
+        // script menuitem_ID -> script_filename
+        typedef std::map<int, wxString> MenuIDToScript;
+		MenuIDToScript m_MenuIDToScript;
+
+        bool m_AttachedToMainWindow;
+        wxString m_CurrentlyRunningScriptFile;
+
+        typedef std::set<wxString> IncludeSet;
+        IncludeSet m_IncludeSet;
+
+        MenuItemsManager m_MenuItemsManager;
+
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // SCRIPTING_H

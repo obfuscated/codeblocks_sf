@@ -1,0 +1,69 @@
+// Script plugins must extend cbScriptPlugin
+
+class TestPlugin extends cbScriptPlugin
+{
+    // mandatory to setup the plugin's info
+	constructor()
+	{
+		info.name = _T("TestPlugin");
+		info.title = _T("Test script");
+		info.version = _T("0.1a");
+		info.license = _T("GPL");
+	}
+
+    // optional to create menubar items
+	function GetMenu()
+	{
+		local entries = ::wxArrayString();
+		entries.Add(_T("Project/7:-Export Makefile"), 1);
+		return entries;
+	}
+
+    // optional to create context menu entries
+	function GetModuleMenu(who, data)
+	{
+		local entries = ::wxArrayString();
+
+	    if (who == ::mtEditorManager)
+	    {
+	        local f = wxFileName();
+	        f.Assign(data.GetFolder(), ::wxPATH_NATIVE);
+            entries.Add(_T("Work with ") + f.GetFullName(), 1);
+
+            entries.Add(_T("Sample entry"), 1);
+	    }
+
+		return entries;
+	}
+	
+	// optional to support ExecutePlugin(pluginNameString)
+	function Execute()
+    {
+        ::ShowMessage(_T("Ho-ho was here ;)"));
+        return 0;
+    }
+    
+    // optional calback for menubar items clicking
+	function OnMenuClicked(index)
+	{
+        if (index == 0)
+            ::ShowMessage(_T("Exporting Makefile..."));
+	}
+
+    // optional calback for context menu items clicking
+	function OnModuleMenuClicked(index)
+	{
+		if (index == 0)
+			::ShowMessage(_T("Working with file"));
+		else if (index == 1)
+			::ShowMessage(_T("Sample entry not working yet"));
+		else
+			::ShowMessage(_T("?!? Functionality not implemented yet"));
+	}
+}
+
+// this call actually registers the script plugin with Code::Blocks
+RegisterPlugin(TestPlugin());
+
+// if you want to call this plugin's Execute() function, use this in a script:
+// ExecutePlugin(_T("TestPlugin"));

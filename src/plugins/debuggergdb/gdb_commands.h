@@ -11,6 +11,7 @@
 #include <wx/string.h>
 #include <wx/regex.h>
 #include <wx/tipwin.h>
+#include <wx/tokenzr.h>
 #include <globals.h>
 #include <manager.h>
 #include <scriptingmanager.h>
@@ -116,6 +117,8 @@ static wxRegEx reBT3(_T("\\)[ \t]+[atfrom]+[ \t]+(.*)"));
 static wxRegEx reBreakpoint(_T("Breakpoint ([0-9]+) at (0x[0-9A-Fa-f]+)"));
 // eax            0x40e66666       1088841318
 static wxRegEx reRegisters(_T("([A-z0-9]+)[ \t]+(0x[0-9A-Fa-f]+)[ \t]+(.*)"));
+// wayne registers
+//static wxRegEx reRegisters(_T("(R[0-9]+)[ \t]+(0x[0-9A-Fa-f]+)"));
 // 0x00401390 <main+0>:    push   ebp
 static wxRegEx reDisassembly(_T("(0x[0-9A-Za-z]+)[ \t]+<.*>:[ \t]+(.*)"));
 //Stack level 0, frame at 0x22ff80:
@@ -127,6 +130,10 @@ static wxRegEx reDisassembly(_T("(0x[0-9A-Za-z]+)[ \t]+<.*>:[ \t]+(.*)"));
 //  ebx at 0x22ff6c, ebp at 0x22ff78, esi at 0x22ff70, edi at 0x22ff74, eip at 0x22ff7c
 static wxRegEx reDisassemblyInit(_T("^Stack level [0-9]+, frame at (0x[A-Fa-f0-9]+):"));
 static wxRegEx reDisassemblyInitFunc(_T("eip = (0x[A-Fa-f0-9]+) in ([^;]*)"));
+// or32 variant
+#ifdef __WXMSW__
+static wxRegEx reDisassemblyInitFuncOR32(_T("PC = (0x[A-Fa-f0-9]+) in ([^;]*)"));
+#endif
 //    Using the running image of child Thread 46912568064384 (LWP 7051).
 static wxRegEx reInfoProgramThread(_T("\\(LWP[ \t]([0-9]+)\\)"));
 //    Using the running image of child process 10011.
@@ -878,7 +885,7 @@ class GdbCmd_Backtrace : public DebuggerCmd
                 if (reBTX.Matches(lines[i]))
                 {
 //                    m_pDriver->DebugLog(_T("MATCH!"));
-                    reBTX.GetMatch(lines[i], 1).ToLong(&sf.number);
+                    reBTX.GetMatch(lines[i], 1).ToULong(&sf.number);
                     reBTX.GetMatch(lines[i], 2).ToULong(&sf.address, 16);
                     sf.function = reBTX.GetMatch(lines[i], 3) + reBTX.GetMatch(lines[i], 4);
                     matched = true;
@@ -886,14 +893,14 @@ class GdbCmd_Backtrace : public DebuggerCmd
                 else if (reBT1.Matches(lines[i]))
                 {
 //                    m_pDriver->DebugLog(_T("MATCH!"));
-                    reBT1.GetMatch(lines[i], 1).ToLong(&sf.number);
+                    reBT1.GetMatch(lines[i], 1).ToULong(&sf.number);
                     reBT1.GetMatch(lines[i], 2).ToULong(&sf.address, 16);
                     sf.function = reBT1.GetMatch(lines[i], 3) + reBT1.GetMatch(lines[i], 4);
                     matched = true;
                 }
                 else if (reBT0.Matches(lines[i]))
                 {
-                    reBT0.GetMatch(lines[i], 1).ToLong(&sf.number);
+                    reBT0.GetMatch(lines[i], 1).ToULong(&sf.number);
                     sf.function = reBT0.GetMatch(lines[i], 2) + reBT0.GetMatch(lines[i], 3);
                     matched = true;
                 }
@@ -921,13 +928,23 @@ class GdbCmd_Backtrace : public DebuggerCmd
 class GdbCmd_InfoRegisters : public DebuggerCmd
 {
         CPURegistersDlg* m_pDlg;
+        wxString m_disassemblyFlavor;
+
     public:
         /** @param dlg The disassembly dialog. */
+#ifdef __WXMSW__
+        // only tested on mingw/pc/win env
+        GdbCmd_InfoRegisters(DebuggerDriver* driver, CPURegistersDlg* dlg, wxString disassemblyFlavor)
+#else
         GdbCmd_InfoRegisters(DebuggerDriver* driver, CPURegistersDlg* dlg)
+#endif
             : DebuggerCmd(driver),
             m_pDlg(dlg)
         {
             m_Cmd << _T("info registers");
+#ifdef __WXMSW__
+            m_disassemblyFlavor = disassemblyFlavor;
+#endif
         }
         void ParseOutput(const wxString& output)
         {
@@ -952,18 +969,93 @@ class GdbCmd_InfoRegisters : public DebuggerCmd
 
             if (!m_pDlg)
                 return;
-
-            wxArrayString lines = GetArrayFromString(output, _T('\n'));
-            for (unsigned int i = 0; i < lines.GetCount(); ++i)
+            // or32 register string parser
+            if(m_disassemblyFlavor == _T("set disassembly-flavor or32"))
             {
-                if (reRegisters.Matches(lines[i]))
+                ParseOutputFromOR32gdbPort(output);
+            }
+            else
+            // use generic parser - this may work for other platforms or you may have to write your own
+            {
+                wxArrayString lines = GetArrayFromString(output, _T('\n'));
+                for (unsigned int i = 0; i < lines.GetCount(); ++i)
                 {
-                    long int addr = wxStrHexTo<long int>(reRegisters.GetMatch(lines[i], 2));
-                    m_pDlg->SetRegisterValue(reRegisters.GetMatch(lines[i], 1), addr);
+                    if (reRegisters.Matches(lines[i]))
+                    {
+                        long int addr = wxStrHexTo<long int>(reRegisters.GetMatch(lines[i], 2));
+                        m_pDlg->SetRegisterValue(reRegisters.GetMatch(lines[i], 1), addr);
+                    }
                 }
             }
+
 //            m_pDlg->Show(true);
 //            m_pDriver->DebugLog(output);
+        }
+
+        void ParseOutputFromOR32gdbPort(const wxString& output)
+        {
+// (gdb) info reg
+//        R0        R1        R2        R3        R4        R5        R6        R7
+//  00000000  f0016f2c  f0016ff8  00000005  00000008  00004c84  ffffbfff  00000001
+//        R8        R9       R10       R11       R12       R13       R14       R15
+//  00000001  00004ce0  0001e888  00000000  00000000  00000000  f0001754  00000014
+//       R16       R17       R18       R19       R20       R21       R22       R23
+//  000000e1  00000000  00000003  00000000  8000000c  00000000  f0000870  00000000
+//       R24       R25       R26       R27       R28       R29       R30       R31
+//  000000c0  00000000  00030021  00000000  00000000  00000000  00000000  f0016f2c
+
+            // produce an array of alternate register/value string lines, each entry
+            // is started on detecting a '\n'
+            wxArrayString lines = GetArrayFromString(output, _T("\n"));
+
+            // check for empty or short string
+            if((output == _T("")) || (lines.GetCount()<2))
+            {
+                return;
+            }
+
+            for (unsigned int i = 0; i < lines.GetCount(); i+=2)
+            {
+                wxArrayString regMnemonics;
+                wxArrayString regValues;
+                wxString RegisterMnemonicString;
+                wxString RegisterValueString;
+
+                // filter register values
+                RegisterValueString =lines.Item(i+1);
+
+                wxStringTokenizer RegisterValueStringTokenizer((RegisterValueString), wxT(" "), wxTOKEN_STRTOK);
+                while ( RegisterValueStringTokenizer.HasMoreTokens() )
+                {
+                    wxString RegisterValueStringToken = RegisterValueStringTokenizer.GetNextToken();
+                    // add register value to array
+                    regValues.Add(RegisterValueStringToken);
+                }
+                // register mnemonics on even (and zero) lines
+                RegisterMnemonicString =lines.Item(i);
+
+                wxStringTokenizer RegisterMnemonicStringTokenizer((RegisterMnemonicString), wxT(" "), wxTOKEN_STRTOK);
+                while ( RegisterMnemonicStringTokenizer.HasMoreTokens() )
+                {
+                    wxString RegisterMnemonicStringToken = RegisterMnemonicStringTokenizer.GetNextToken();
+                    // add register mnemonic to arrau
+                    regMnemonics.Add(RegisterMnemonicStringToken);
+                }
+
+                // loop around the values and mnemonics arrays and add them to the dialog boxes
+                for (unsigned int j = 0; j < regMnemonics.GetCount(); j++)
+                {
+                    wxString reg = regMnemonics.Item(j);
+                    wxString addr = regValues.Item(j);
+
+                    if (!reg.IsEmpty() && !addr.IsEmpty())
+                    {
+                        unsigned long int addrL;
+                        addr.ToULong(&addrL, 16);
+                        m_pDlg->SetRegisterValue(reg, addrL);
+                    }
+                }
+            }
         }
 };
 
@@ -998,8 +1090,8 @@ class GdbCmd_Disassembly : public DebuggerCmd
             {
                 if (reDisassembly.Matches(lines[i]))
                 {
-                    long int addr;
-                    reDisassembly.GetMatch(lines[i], 1).ToLong(&addr, 16);
+                    unsigned long int addr;
+                    reDisassembly.GetMatch(lines[i], 1).ToULong(&addr, 16);
                     m_pDlg->AddAssemblerLine(addr, reDisassembly.GetMatch(lines[i], 2));
                 }
             }
@@ -1014,14 +1106,25 @@ class GdbCmd_Disassembly : public DebuggerCmd
 class GdbCmd_DisassemblyInit : public DebuggerCmd
 {
         DisassemblyDlg* m_pDlg;
+#ifdef __WXMSW__
+        wxString m_disassemblyFlavor;
+#endif
     public:
         static wxString LastAddr;
         /** @param dlg The disassembly dialog. */
+#ifdef __WXMSW__
+        // only tested on mingw/pc/win env
+        GdbCmd_DisassemblyInit(DebuggerDriver* driver, DisassemblyDlg* dlg, wxString disassemblyFlavor)
+#else
         GdbCmd_DisassemblyInit(DebuggerDriver* driver, DisassemblyDlg* dlg)
+#endif
             : DebuggerCmd(driver),
             m_pDlg(dlg)
         {
             m_Cmd << _T("info frame");
+#ifdef __WXMSW__
+            m_disassemblyFlavor = disassemblyFlavor;
+#endif
         }
         void ParseOutput(const wxString& output)
         {
@@ -1035,13 +1138,21 @@ class GdbCmd_DisassemblyInit : public DebuggerCmd
                 if (addr == LastAddr)
                     return;
                 LastAddr = addr;
-                addr.ToLong((long int*)&sf.address, 16);
+                addr.ToULong((unsigned long int*)&sf.address, 16);
 
                 if (reDisassemblyInitFunc.Matches(output))
                 {
                     sf.function = reDisassemblyInitFunc.GetMatch(output, 2);
                     long int active;
-                    reDisassemblyInitFunc.GetMatch(output, 1).ToLong(&active, 16);
+
+                    if(m_disassemblyFlavor == _T("set disassembly-flavor or32"))
+                    {
+                        reDisassemblyInitFuncOR32.GetMatch(output, 1).ToLong(&active, 16);
+                    }
+                    else
+                    {
+                        reDisassemblyInitFunc.GetMatch(output, 1).ToLong(&active, 16);
+                    }
                     m_pDlg->SetActiveAddress(active);
                 }
 

@@ -1,0 +1,61 @@
+//
+// Sample script that opens the "startup.script" file for editing
+// (check startup.script which registers this script under the menu "Settings->Edit startup script")
+//
+
+
+
+// In order to open the startup.script file, we first have to locate it.
+// Code::Blocks looks for scripts in two places:
+//  1) the per-user scripts dir
+//  2) the global scripts dir
+//
+// One way to achieve this is to use the following lines:
+//
+//  // search for "startup.script" in scripts folders (user and global)
+//  local f = LocateDataFile(_T("startup.script"), sdScriptsUser | sdScriptsGlobal);
+//
+// LocateDataFile() looks in the specified dirs for the file in question.
+// Per-user directories *always* have precedence in this function so if the file
+// exists both in the global dirs as well as in the user directory, the file in
+// the user directory will be returned.
+//
+// In this sample script though, we 'll follow a different procedure. We will manually
+// ask for the user scripts dir and try to open the file there. If it is not opened
+// (which means it doesn't exist), we will copy the script from the global scripts dir
+// and then attempt to open it again.
+// This will make sure that the startup.script to edit is the one the user used to use
+// until the moment this script runs.
+
+
+
+// get user scripts dir
+local scriptsDir = GetFolder(sdScriptsUser);
+
+// try to open it in the editor
+local ed = GetEditorManager().Open(scriptsDir + _T("/startup.script"));
+
+// if it succeeded, we 're done here
+if (!IsNull(ed))
+    return;
+
+// log a message
+LogDebug(_T("First time editing startup.script: copying from global to user scripts dir"));
+
+// nope, we must copy the global script
+local scriptsGlobalDir = GetFolder(sdScriptsGlobal);
+
+// don't try to copy over itself (in case something's wrong)
+if (scriptsGlobalDir == scriptsDir)
+    return;
+IO.CopyFile(scriptsGlobalDir + _T("/startup.script"), // source file
+            scriptsDir + _T("/startup.script"), // destination file
+            false); // don't overwrite (well, we know it's not there but better safe than sorry)
+
+// and try again to open it in the editor
+ed = GetEditorManager().Open(scriptsDir + _T("/startup.script"));
+
+// we don't check anything more because the user's system is too borked to bother :)
+// just display a message if all our efforts have failed
+if (IsNull(ed))
+    ShowError(_T("Could not locate startup.script anywhere on this system..."));

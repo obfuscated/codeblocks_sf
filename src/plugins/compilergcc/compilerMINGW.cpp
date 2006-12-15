@@ -28,8 +28,8 @@
     #include <wx/msw/registry.h>
 #endif
 
-CompilerMINGW::CompilerMINGW()
-    : Compiler(_("GNU GCC Compiler"), _T("gcc"))
+CompilerMINGW::CompilerMINGW(const wxString& name, const wxString& ID)
+    : Compiler(name, ID)
 {
     Reset();
 }

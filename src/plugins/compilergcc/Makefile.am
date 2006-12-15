@@ -21,6 +21,7 @@ libcompiler_la_LIBADD = ../../sdk/libcodeblocks.la \
 libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 			compilerBCC.cpp \
 			compiler_defs.cpp \
+			compilerCYGWIN.cpp \
 			compilerDMC.cpp \
 			compilerDMD.cpp \
 			compilererrors.cpp \
@@ -42,6 +43,7 @@ libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 noinst_HEADERS = advancedcompileroptionsdlg.h \
 			compilerBCC.h \
 			compiler_defs.h \
+			compilerCYGWIN.h \
 			compilerDMC.h \
 			compilerDMD.h \
 			compilererrors.h \

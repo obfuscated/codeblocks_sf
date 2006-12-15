@@ -2,6 +2,8 @@
 #define PLUGINMANAGER_H
 
 #include <vector>
+#include <map>
+
 #include <wx/dynarray.h>
 #include "globals.h" // PluginType
 #include "settings.h"
@@ -53,10 +55,18 @@ WX_DEFINE_ARRAY(PluginElement*, PluginElementsArray);
 WX_DEFINE_ARRAY(cbPlugin*, PluginsArray);
 WX_DEFINE_ARRAY(cbConfigurationPanel*, ConfigurationPanelsArray);
 
-/*
- * No description
+/**
+ * PluginManager manages plugins.
+ *
+ * There are two plugin types: binary and scripted.
+ *
+ * Binary plugins are dynamically loaded shared libraries (dll/so) which
+ * can do pretty much anything with the SDK.
+ *
+ * Script plugins are more lightweight and are very convenient for
+ * smaller scale/functionality plugins.
  */
-class DLLIMPORT PluginManager : public Mgr<PluginManager>
+class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
 {
     public:
         friend class Mgr<PluginManager>;
@@ -110,6 +120,9 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>
         PluginManager();
         ~PluginManager();
 
+		void OnScriptMenu(wxCommandEvent& event);
+		void OnScriptModuleMenu(wxCommandEvent& event);
+
         /// @return True if the plugin should be loaded, false if not.
         bool ReadManifestFile(const wxString& pluginFilename,
                                 const wxString& pluginName = wxEmptyString,
@@ -148,6 +161,8 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>
             PluginInfo info;
         };
         std::vector<PluginRegistration> m_RegisteredPlugins;
+
+		DECLARE_EVENT_TABLE()
 };
 
 #endif // PLUGINMANAGER_H

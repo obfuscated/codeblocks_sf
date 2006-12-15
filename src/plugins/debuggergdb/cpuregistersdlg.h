@@ -13,7 +13,7 @@ class CPURegistersDlg : public wxPanel
         virtual ~CPURegistersDlg();
 
         void Clear();
-        void SetRegisterValue(const wxString& reg_name, long int value);
+        void SetRegisterValue(const wxString& reg_name, unsigned long int value);
     protected:
         int RegisterIndex(const wxString& reg_name);
         void OnRefresh(wxCommandEvent& event);

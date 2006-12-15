@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+  <object class="wxDialog" name="ScriptingSecurityDlg">
+    <title>Security Warning!</title>
+    <centered>1</centered>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <object class="sizeritem">
+            <object class="wxStaticBitmap">
+              <bitmap stock_id="wxART_WARNING"></bitmap>
+            </object>
+            <flag>wxALL|wxALIGN_TOP</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxVERTICAL</orient>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  <label>A script is trying to execute a privileged command:</label>
+                </object>
+                <flag>wxBOTTOM</flag>
+                <border>8</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxStaticText" name="lblOperation">
+                  <label>Operation:</label>
+                </object>
+                <flag>wxTOP|wxBOTTOM|wxGROW</flag>
+                <border>8</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxTextCtrl" name="txtCommand">
+                  <style>wxTE_MULTILINE|wxTE_READONLY|wxTE_WORDWRAP|wxNO_BORDER</style>
+                </object>
+                <flag>wxBOTTOM|wxGROW</flag>
+                <border>16</border>
+                <minsize>-1,64</minsize>
+              </object>
+              <object class="sizeritem">
+                <object class="wxRadioBox" name="rgAnswer">
+                  <label>What do you want to do?</label>
+                  <content>
+                    <item>Allow execution of this command</item>
+                    <item>Deny execution of this command</item>
+                    <item>Mark this script as trusted for this session</item>
+                    <item>Mark this script as permanently trusted</item>
+                  </content>
+                  <selection>1</selection>
+                  <focused>1</focused>
+                </object>
+                <flag>wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
+                <border>16</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxStaticText">
+                  <label>Scripts may contain malicious code so by default you are asked before a privileged
+command is allowed to execute. Only allow execution of this command if you trust
+the source of this script or you are confident enough that the above command is
+harmless for your system.
+
+If you mark the script as &quot;trusted&quot; you declare that you trust this script and explicitely
+allow it to execute privileged commands. You should only trust scripts that you wrote
+yourself or if they come from a trusty source.</label>
+                </object>
+              </object>
+            </object>
+            <option>1</option>
+            <flag>wxALL|wxGROW</flag>
+            <border>8</border>
+          </object>
+          <orient>wxHORIZONTAL</orient>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticLine"/>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStdDialogButtonSizer">
+          <object class="button">
+            <object class="wxButton" name="wxID_OK">
+              <label></label>
+              <label>&amp;Ok</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="button">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label></label>
+              <label>&amp;Cancel</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+</resource>

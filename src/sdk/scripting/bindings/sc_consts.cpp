@@ -146,6 +146,21 @@ namespace ScriptBindings
         BIND_INT_CONSTANT(sdAllGlobal);
         BIND_INT_CONSTANT(sdAllKnown);
 
+        // ModuleType
+        BIND_INT_CONSTANT(mtProjectManager);
+        BIND_INT_CONSTANT(mtEditorManager);
+        BIND_INT_CONSTANT(mtMessageManager);
+        BIND_INT_CONSTANT(mtOpenFilesList);
+        BIND_INT_CONSTANT(mtUnknown);
+
+        // FileTreeDataKind
+        BIND_INT_CONSTANT_NAMED(FileTreeData::ftdkUndefined, "ftdkUndefined");
+        BIND_INT_CONSTANT_NAMED(FileTreeData::ftdkProject, "ftdkProject");
+        BIND_INT_CONSTANT_NAMED(FileTreeData::ftdkFolder, "ftdkFolder");
+        BIND_INT_CONSTANT_NAMED(FileTreeData::ftdkFile, "ftdkFile");
+        BIND_INT_CONSTANT_NAMED(FileTreeData::ftdkVirtualGroup, "ftdkVirtualGroup");
+        BIND_INT_CONSTANT_NAMED(FileTreeData::ftdkVirtualFolder, "ftdkVirtualFolder");
+
         // file extensions
         BIND_WXSTR_CONSTANT_NAMED(FileFilters::WORKSPACE_EXT, "EXT_WORKSPACE");
         BIND_WXSTR_CONSTANT_NAMED(FileFilters::CODEBLOCKS_EXT, "EXT_CODEBLOCKS");

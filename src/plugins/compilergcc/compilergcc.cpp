@@ -66,6 +66,7 @@
     #include "compilerGDC.h"
     #include "compilerDMD.h"
     #include "compilerGNUARM.h"
+    #include "compilerCYGWIN.h"
 #endif
 #ifdef __WXMAC__
     #include "compilerGDC.h"
@@ -302,13 +303,12 @@ void CompilerGCC::OnAttach()
     CompilerFactory::RegisterCompiler(new CompilerBCC);
     CompilerFactory::RegisterCompiler(new CompilerDMC);
     CompilerFactory::RegisterCompiler(new CompilerOW);
+    CompilerFactory::RegisterCompiler(new CompilerGNUARM);
+    CompilerFactory::RegisterCompiler(new CompilerCYGWIN);
 #endif
     CompilerFactory::RegisterCompiler(new CompilerICC);
     CompilerFactory::RegisterCompiler(new CompilerSDCC);
     CompilerFactory::RegisterCompiler(new CompilerTcc);
-#ifdef __WXMSW__
-    CompilerFactory::RegisterCompiler(new CompilerGNUARM);
-#endif
     CompilerFactory::RegisterCompiler(new CompilerGDC);
 #if defined(_WIN32) || defined(linux)
     CompilerFactory::RegisterCompiler(new CompilerDMD);

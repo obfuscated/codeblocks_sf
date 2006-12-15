@@ -12,6 +12,8 @@
 #include <projectmanager.h>
 #include <macrosmanager.h>
 #include <uservarmanager.h>
+#include <pluginmanager.h>
+#include <scriptingmanager.h>
 #include <compilerfactory.h>
 #include <cbproject.h>
 #include <cbeditor.h>
@@ -23,6 +25,7 @@ DECLARE_INSTANCE_TYPE(wxFileName);
 DECLARE_INSTANCE_TYPE(ConfigManager);
 DECLARE_INSTANCE_TYPE(EditorManager);
 DECLARE_INSTANCE_TYPE(UserVariableManager);
+DECLARE_INSTANCE_TYPE(ScriptingManager);
 DECLARE_INSTANCE_TYPE(EditorBase);
 DECLARE_INSTANCE_TYPE(cbEditor);
 DECLARE_INSTANCE_TYPE(CompileOptionsBase);
@@ -32,6 +35,8 @@ DECLARE_INSTANCE_TYPE(cbProject);
 DECLARE_INSTANCE_TYPE(ProjectFile);
 DECLARE_INSTANCE_TYPE(ProjectManager);
 DECLARE_INSTANCE_TYPE(CompilerFactory);
+DECLARE_INSTANCE_TYPE(PluginInfo);
+DECLARE_INSTANCE_TYPE(FileTreeData);
 
 // make SqPlus aware of enum-type arguments
 #define DECLARE_ENUM_TYPE(T) \
@@ -51,6 +56,8 @@ DECLARE_ENUM_TYPE(TargetType);
 DECLARE_ENUM_TYPE(PCHMode);
 DECLARE_ENUM_TYPE(TemplateOutputType);
 DECLARE_ENUM_TYPE(SearchDirs);
+DECLARE_ENUM_TYPE(ModuleType);
+DECLARE_ENUM_TYPE(FileTreeData::FileTreeDataKind);
 
 namespace SqPlus
 {

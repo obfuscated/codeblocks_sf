@@ -23,6 +23,7 @@ namespace ScriptBindings
     extern void Register_Globals();
     extern void Register_wxTypes();
     extern void Register_IO();
+    extern void Register_ScriptPlugin();
 
     SQInteger ConfigManager_Read(HSQUIRRELVM v)
     {
@@ -101,6 +102,18 @@ namespace ScriptBindings
             return 1;
         }
         return sa.ThrowError("Invalid arguments to \"EditorManager::GetBuiltinEditor\"");
+    }
+    SQInteger EditorManager_Open(HSQUIRRELVM v)
+    {
+        StackHandler sa(v);
+        int paramCount = sa.GetParamCount();
+        if (paramCount == 2)
+        {
+            cbEditor* ed = Manager::Get()->GetEditorManager()->Open(*SqPlus::GetInstance<wxString>(v, 2));
+            SqPlus::Push(v, ed);
+            return 1;
+        }
+        return sa.ThrowError("Invalid arguments to \"EditorManager::Open\"");
     }
     SQInteger EditorManager_Close(HSQUIRRELVM v)
     {
@@ -533,7 +546,7 @@ namespace ScriptBindings
         SqPlus::SQClassDef<EditorManager>("EditorManager").
                 func(&EditorManager::Configure, "Configure").
                 func(&EditorManager::New, "New").
-                func(&EditorManager::Open, "Open").
+                staticFuncVarArgs(&EditorManager_Open, "Open").
                 func(&EditorManager::IsBuiltinOpen, "IsBuiltinOpen").
                 staticFuncVarArgs(&EditorManager_GetBuiltinEditor, "GetBuiltinEditor", "*").
                 func(&EditorManager::GetBuiltinActiveEditor, "GetBuiltinActiveEditor").
@@ -554,6 +567,9 @@ namespace ScriptBindings
         SqPlus::SQClassDef<UserVariableManager>("UserVariableManager").
                 func(&UserVariableManager::Exists, "Exists");
 
+        SqPlus::SQClassDef<ScriptingManager>("ScriptingManager").
+                func(&ScriptingManager::RegisterScriptMenu, "RegisterScriptMenu");
+
         typedef bool(*CF_INHERITSFROM)(const wxString&, const wxString&); // CompilerInheritsFrom
 
         SqPlus::SQClassDef<CompilerFactory>("CompilerFactory").
@@ -561,5 +577,32 @@ namespace ScriptBindings
                 staticFuncVarArgs(&CompilerFactory_GetCompilerIndex, "GetCompilerIndex", "*").
                 staticFunc(&CompilerFactory::GetDefaultCompilerID, "GetDefaultCompilerID").
                 staticFunc<CF_INHERITSFROM>(&CompilerFactory::CompilerInheritsFrom, "CompilerInheritsFrom");
+
+        SqPlus::SQClassDef<PluginInfo>("PluginInfo").
+            emptyCtor().
+            var(&PluginInfo::name, "name").
+            var(&PluginInfo::title, "title").
+            var(&PluginInfo::version, "version").
+            var(&PluginInfo::description, "description").
+            var(&PluginInfo::author, "author").
+            var(&PluginInfo::authorEmail, "authorEmail").
+            var(&PluginInfo::authorWebsite, "authorWebsite").
+            var(&PluginInfo::thanksTo, "thanksTo").
+            var(&PluginInfo::license, "license");
+
+        SqPlus::SQClassDef<FileTreeData>("FileTreeData").
+            func(&FileTreeData::GetKind, "GetKind").
+            func(&FileTreeData::GetProject, "GetProject").
+            func(&FileTreeData::GetFileIndex, "GetFileIndex").
+            func(&FileTreeData::GetProjectFile, "GetProjectFile").
+            func(&FileTreeData::GetFolder, "GetFolder").
+            func(&FileTreeData::SetKind, "SetKind").
+            func(&FileTreeData::SetProject, "SetProject").
+            func(&FileTreeData::SetFileIndex, "SetFileIndex").
+            func(&FileTreeData::SetProjectFile, "SetProjectFile").
+            func(&FileTreeData::SetFolder, "SetFolder");
+
+        // called last because it needs a few previously registered types
+        Register_ScriptPlugin();
     }
 } // namespace ScriptBindings

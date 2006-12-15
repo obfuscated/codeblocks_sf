@@ -817,6 +817,16 @@
 			<Option link="0" />
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins\compilergcc\compilerCYGWIN.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerCYGWIN.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins\compilergcc\compilerDMC.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Compiler" />
@@ -3035,6 +3045,12 @@
 			<Option compile="0" />
 			<Option link="0" />
 		</Unit>
+		<Unit filename="sdk\resources\scripting_security_dlg.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk\resources\select_target.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
@@ -3056,6 +3072,16 @@
 		</Unit>
 		<Unit filename="sdk\scripting\bindings\sc_io.cpp">
 			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_plugin.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_plugin.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\scripting\bindings\sc_wxtypes.cpp">
@@ -3382,6 +3408,16 @@
 		</Unit>
 		<Unit filename="sdk\scriptingmanager.h">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scriptsecuritywarningdlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scriptsecuritywarningdlg.h">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="sdk" />

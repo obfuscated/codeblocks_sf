@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="5" />
 	<Project>
@@ -9,7 +9,7 @@
 		<Option virtualFolders="" />
 		<Build>
 			<Target title="AutoRevision">
-				<Option output="build_tools/autorevision/auto_revision" />
+				<Option output="build_tools/autorevision/auto_revision" prefix_auto="0" extension_auto="0" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option projectCompilerOptionsRelation="1" />
@@ -22,7 +22,7 @@
 				</Linker>
 			</Target>
 			<Target title="ConsoleRunner">
-				<Option output="tools/ConsoleRunner/cb_console_runner" />
+				<Option output="tools/ConsoleRunner/cb_console_runner" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="tools/ConsoleRunner" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -36,14 +36,14 @@
 				</Compiler>
 			</Target>
 			<Target title="tinyXML">
-				<Option output="sdk/tinyxml/libtxml.a" />
+				<Option output="sdk/tinyxml/libtxml.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option projectResourceIncludeDirsRelation="2" />
 			</Target>
 			<Target title="Squirrel">
-				<Option output="sdk/scripting/lib/libsquirrel.a" />
+				<Option output="sdk/scripting/lib/libsquirrel.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -55,7 +55,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel std library">
-				<Option output="sdk/scripting/lib/libsqstdlib.a" />
+				<Option output="sdk/scripting/lib/libsqstdlib.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -67,7 +67,7 @@
 				</Compiler>
 			</Target>
 			<Target title="SqPlus">
-				<Option output="sdk/scripting/lib/libsqplus.a" />
+				<Option output="sdk/scripting/lib/libsqplus.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -79,7 +79,7 @@
 				</Compiler>
 			</Target>
 			<Target title="scintilla">
-				<Option output="devel/libwxscintilla.so" />
+				<Option output="devel/libwxscintilla.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -96,7 +96,7 @@
 				</ResourceCompiler>
 			</Target>
 			<Target title="wxFlatNotebook">
-				<Option output="sdk/wxFlatNotebook/libwxflatnotebook.a" />
+				<Option output="sdk/wxFlatNotebook/libwxflatnotebook.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -106,7 +106,7 @@
 				</Compiler>
 			</Target>
 			<Target title="wxPropertyGrid">
-				<Option output="sdk/propgrid/libpropgrid.a" />
+				<Option output="sdk/propgrid/libpropgrid.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -116,7 +116,7 @@
 				</Compiler>
 			</Target>
 			<Target title="sdk">
-				<Option output="devel/libcodeblocks.so" />
+				<Option output="devel/libcodeblocks.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel" />
 				<Option external_deps="sdk/tinyxml/libtxml.a;sdk/propgrid/libpropgrid.a;sdk/wxFlatNotebook/libwxflatnotebook.a;" />
 				<Option type="3" />
@@ -148,7 +148,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="wxAUI">
-				<Option output="src/wxAUI/libwxaui.a" />
+				<Option output="src/wxAUI/libwxaui.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -158,7 +158,7 @@
 				</Compiler>
 			</Target>
 			<Target title="src">
-				<Option output="devel/codeblocks" />
+				<Option output="devel/codeblocks" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel" />
 				<Option external_deps="src/wxAUI/libwxaui.a;" />
 				<Option type="0" />
@@ -185,7 +185,7 @@
 				</Linker>
 			</Target>
 			<Target title="AStyle">
-				<Option output="devel/share/codeblocks/plugins/libastyle.so" />
+				<Option output="devel/share/codeblocks/plugins/libastyle.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -202,7 +202,7 @@
 				</Linker>
 			</Target>
 			<Target title="Compiler depslib">
-				<Option output="plugins/compilergcc/depslib/libdepslib.a" />
+				<Option output="plugins/compilergcc/depslib/libdepslib.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -212,7 +212,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Compiler">
-				<Option output="devel/share/codeblocks/plugins/libcompiler.so" />
+				<Option output="devel/share/codeblocks/plugins/libcompiler.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -235,7 +235,7 @@
 				</Linker>
 			</Target>
 			<Target title="Debugger">
-				<Option output="devel/share/codeblocks/plugins/libdebugger.so" />
+				<Option output="devel/share/codeblocks/plugins/libdebugger.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -257,7 +257,7 @@
 				</Linker>
 			</Target>
 			<Target title="Code-completion">
-				<Option output="devel/share/codeblocks/plugins/libcodecompletion.so" />
+				<Option output="devel/share/codeblocks/plugins/libcodecompletion.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -276,7 +276,7 @@
 				</Linker>
 			</Target>
 			<Target title="Class wizard">
-				<Option output="devel/share/codeblocks/plugins/libclasswizard.so" />
+				<Option output="devel/share/codeblocks/plugins/libclasswizard.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -294,7 +294,7 @@
 				</Linker>
 			</Target>
 			<Target title="Default MIME handler">
-				<Option output="devel/share/codeblocks/plugins/libdefaultmimehandler.so" />
+				<Option output="devel/share/codeblocks/plugins/libdefaultmimehandler.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -311,7 +311,7 @@
 				</Linker>
 			</Target>
 			<Target title="Scripted wizard">
-				<Option output="devel/share/codeblocks/plugins/libscriptedwizard.so" />
+				<Option output="devel/share/codeblocks/plugins/libscriptedwizard.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -332,7 +332,7 @@
 				</Linker>
 			</Target>
 			<Target title="To-do">
-				<Option output="devel/share/codeblocks/plugins/libtodo.so" />
+				<Option output="devel/share/codeblocks/plugins/libtodo.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -347,7 +347,7 @@
 				</Linker>
 			</Target>
 			<Target title="Autosave">
-				<Option output="devel/share/codeblocks/plugins/libautosave.so" />
+				<Option output="devel/share/codeblocks/plugins/libautosave.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -386,6 +386,10 @@
 			<Add option="`wx-config --libs`" />
 			<Add directory="sdk/tinyxml" />
 		</Linker>
+		<Unit filename="build_tools/autorevision/autorevision.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="AutoRevision" />
+		</Unit>
 		<Unit filename="plugins/astyle/asstreamiterator.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="AStyle" />
@@ -810,13 +814,13 @@
 			<Option link="0" />
 			<Option target="Code-completion" />
 		</Unit>
-		<Unit filename="plugins/codecompletion/resources/settings.xrc">
+		<Unit filename="plugins/codecompletion/resources/project_settings.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Code-completion" />
 		</Unit>
-		<Unit filename="plugins/codecompletion/resources/project_settings.xrc">
+		<Unit filename="plugins/codecompletion/resources/settings.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -848,6 +852,16 @@
 		</Unit>
 		<Unit filename="plugins/compilergcc/compilerBCC.h">
 			<Option compilerVar="" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerCYGWIN.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerCYGWIN.h">
+			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="Compiler" />
@@ -952,11 +966,11 @@
 			<Option link="0" />
 			<Option target="Compiler" />
 		</Unit>
-		<Unit filename="plugins\compilergcc\compilerTcc.cpp">
+		<Unit filename="plugins/compilergcc/compilerTcc.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="Compiler" />
 		</Unit>
-		<Unit filename="plugins\compilergcc\compilerTcc.h">
+		<Unit filename="plugins/compilergcc/compilerTcc.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -3003,6 +3017,12 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/resources/scripting_security_dlg.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/resources/select_target.xrc">
 			<Option compilerVar="" />
 			<Option compile="0" />
@@ -3031,6 +3051,16 @@
 		</Unit>
 		<Unit filename="sdk/scripting/bindings/sc_io.cpp">
 			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/scripting/bindings/sc_plugin.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/scripting/bindings/sc_plugin.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/scripting/bindings/sc_wxtypes.cpp">
@@ -3351,6 +3381,16 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/scriptsecuritywarningdlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/scriptsecuritywarningdlg.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/sdk.h">
 			<Option compilerVar="CPP" />
 			<Option link="0" />
@@ -3514,22 +3554,10 @@
 			<Option link="0" />
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/fnb_resources.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/popup_dlg.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxFlatNotebook" />
-		</Unit>
 		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/popup_dlg.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/renderer.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="wxFlatNotebook" />
 		</Unit>
 		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/renderer.h">
@@ -3556,14 +3584,26 @@
 			<Option link="0" />
 			<Option target="wxFlatNotebook" />
 		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/wxFlatNotebook.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxFlatNotebook" />
-		</Unit>
 		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/wxFlatNotebook.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/fnb_resources.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/popup_dlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/renderer.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/wxFlatNotebook.cpp">
+			<Option compilerVar="CPP" />
 			<Option target="wxFlatNotebook" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/include/wx/wxscintilla.h">
@@ -4669,9 +4709,8 @@
 			<Option compilerVar="CPP" />
 			<Option target="ConsoleRunner" />
 		</Unit>
-		<Unit filename="build_tools/autorevision/autorevision.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="AutoRevision" />
-		</Unit>
+		<Extensions>
+			<code_completion />
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

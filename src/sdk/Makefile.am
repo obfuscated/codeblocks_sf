@@ -108,6 +108,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						projecttemplateloader.cpp \
 						replacedlg.cpp \
 						scriptingmanager.cpp \
+						scriptsecuritywarningdlg.cpp \
 						sdk_events.cpp \
 						searchresultslog.cpp \
 						selecttargetdlg.cpp \
@@ -209,6 +210,7 @@ ALLHEADERS = annoyingdialog.h \
 				replacedlg.h \
 				safedelete.h \
 				scriptingmanager.h \
+				scriptsecuritywarningdlg.h \
 				sdk.h \
 				sdk_common.h \
 				sdk_precomp.h \

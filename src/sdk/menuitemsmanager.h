@@ -23,15 +23,17 @@ WX_DEFINE_ARRAY(wxMenuItem*, MenuItemsList);
 class DLLIMPORT MenuItemsManager
 {
 	public:
-		MenuItemsManager();
+		MenuItemsManager(bool autoClearOnDestroy = true);
 		virtual ~MenuItemsManager();
-		
-		virtual void Add(wxMenu* parent, int id, const wxString& caption, const wxString& helptext);
-		virtual void Insert(wxMenu* parent, int index, int id, const wxString& caption, const wxString& helptext);
-		virtual void Clear(wxMenu* menu);
+
+        virtual wxMenuItem* CreateFromString(const wxString& menuPath, int id);
+
+		virtual wxMenuItem* Add(wxMenu* parent, int id, const wxString& caption, const wxString& helptext);
+		virtual wxMenuItem* Insert(wxMenu* parent, int index, int id, const wxString& caption, const wxString& helptext);
+		virtual void Clear();
 	protected:
-		MenuItemsList m_MenuItems; ///< The managed array of wxMenuItem pointers
-		wxMenu* m_Menu; ///< Holds the menu to append items (used only in dtor)
+		MenuItemsList m_MenuItems; // The managed array of wxMenuItem pointers
+		bool m_AutoClearOnDestroy; // if true, the menus are cleared in the destructor
 	private:
 };
 

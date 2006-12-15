@@ -17,8 +17,11 @@
     #include <wx/regex.h>
 #endif
 
+#include "crc32.h"
+#include "menuitemsmanager.h"
 #include "scripting/sqplus/sqplus.h"
 #include "scripting/bindings/scriptbindings.h"
+#include "scripting/bindings/sc_plugin.h"
 
 static wxString s_ScriptErrors;
 static wxString capture;
@@ -46,7 +49,13 @@ static void CaptureScriptOutput(HSQUIRRELVM v, const SQChar * s, ...)
     va_end(vl);
 };
 
+BEGIN_EVENT_TABLE(ScriptingManager, wxEvtHandler)
+//
+END_EVENT_TABLE()
+
 ScriptingManager::ScriptingManager()
+    : m_AttachedToMainWindow(false),
+    m_MenuItemsManager(false) // not auto-clear
 {
     //ctor
 
@@ -58,6 +67,24 @@ ScriptingManager::ScriptingManager()
 
     sq_setprintfunc(SquirrelVM::GetVMPtr(), ScriptsPrintFunc);
 
+    // load trusted scripts set
+    m_TrustedScripts.clear();
+    ConfigManagerContainer::StringToStringMap myMap;
+    Manager::Get()->GetConfigManager(_T("security"))->Read(_T("/trusted_scripts"), &myMap);
+    ConfigManagerContainer::StringToStringMap::iterator it;
+    for (it = myMap.begin(); it != myMap.end(); ++it)
+    {
+        wxString key = it->second.BeforeFirst(_T('?'));
+        wxString value = it->second.AfterFirst(_T('?'));
+
+        TrustedScriptProps props;
+        props.store = true;
+        unsigned long tmp;
+        value.ToULong(&tmp, 16);
+        props.crc = tmp;
+        m_TrustedScripts.insert(m_TrustedScripts.end(), std::make_pair(key, props));
+    }
+
     // register types
     ScriptBindings::RegisterBindings();
 }
@@ -65,7 +92,26 @@ ScriptingManager::ScriptingManager()
 ScriptingManager::~ScriptingManager()
 {
     //dtor
+    // save trusted scripts set
+    ConfigManagerContainer::StringToStringMap myMap;
+    int i = 0;
+    TrustedScripts::iterator it;
+    for (it = m_TrustedScripts.begin(); it != m_TrustedScripts.end(); ++it)
+    {
+        if (!it->second.store)
+            continue;
+        wxString key = wxString::Format(_T("trust%d"), i++);
+        wxString value = wxString::Format(_T("%s?%x"), it->first.c_str(), it->second.crc);
+        myMap.insert(myMap.end(), std::make_pair(key, value));
+    }
+    Manager::Get()->GetConfigManager(_T("security"))->Write(_T("/trusted_scripts"), myMap);
+
 	SquirrelVM::Shutdown();
+}
+
+void ScriptingManager::RegisterScriptFunctions()
+{
+    // done in scriptbindings.cpp
 }
 
 bool ScriptingManager::LoadScript(const wxString& filename)
@@ -88,11 +134,23 @@ bool ScriptingManager::LoadScript(const wxString& filename)
     }
     // read file
     wxString contents = cbReadFileContents(f);
-    return LoadBuffer(contents, filename);
+    m_CurrentlyRunningScriptFile = fname;
+    bool ret = LoadBuffer(contents, fname);
+    m_CurrentlyRunningScriptFile.Clear();
+    return ret;
 }
 
 bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugName)
 {
+    // includes guard to avoid recursion
+    wxString incName = UnixFilename(debugName);
+    if (m_IncludeSet.find(incName) != m_IncludeSet.end())
+    {
+        LOG_WARN(_T("Ignoring Include(\"%s\") because it would cause recursion..."), incName.c_str());
+        return true;
+    }
+    m_IncludeSet.insert(incName);
+
 //    wxCriticalSectionLocker c(cs);
 
     s_ScriptErrors.Clear();
@@ -106,6 +164,7 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
     catch (SquirrelError e)
     {
         cbMessageBox(wxString::Format(_T("Filename: %s\nError: %s\nDetails: %s"), debugName.c_str(), cbC2U(e.desc).c_str(), s_ScriptErrors.c_str()), _("Script compile error"), wxICON_ERROR);
+        m_IncludeSet.erase(incName);
         return false;
     }
 
@@ -117,8 +176,10 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
     catch (SquirrelError e)
     {
         cbMessageBox(wxString::Format(_T("Filename: %s\nError: %s\nDetails: %s"), debugName.c_str(), cbC2U(e.desc).c_str(), s_ScriptErrors.c_str()), _("Script run error"), wxICON_ERROR);
+        m_IncludeSet.erase(incName);
         return false;
     }
+    m_IncludeSet.erase(incName);
     return true;
 }
 
@@ -159,4 +220,153 @@ void ScriptingManager::DisplayErrors(SquirrelError* exception, bool clearErrors)
 void ScriptingManager::InjectScriptOutput(const wxString& output)
 {
     s_ScriptErrors << output;
+}
+
+int ScriptingManager::Configure()
+{
+    return -1;
+}
+
+bool ScriptingManager::RegisterScriptPlugin(const wxString& name, const wxArrayInt& ids)
+{
+    // attach this event handler in the main window (one-time run)
+    if (!m_AttachedToMainWindow)
+    {
+        Manager::Get()->GetAppWindow()->PushEventHandler(this);
+        m_AttachedToMainWindow = true;
+    }
+
+    for (size_t i = 0; i < ids.GetCount(); ++i)
+    {
+		Connect(ids[i], -1, wxEVT_COMMAND_MENU_SELECTED,
+				(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+				&ScriptingManager::OnScriptPluginMenu);
+    }
+    return true;
+}
+
+bool ScriptingManager::RegisterScriptMenu(const wxString& script, const wxString& menuPath)
+{
+    // attach this event handler in the main window (one-time run)
+    if (!m_AttachedToMainWindow)
+    {
+        Manager::Get()->GetAppWindow()->PushEventHandler(this);
+        m_AttachedToMainWindow = true;
+    }
+
+    int id = wxNewId();
+    wxMenuItem* item = m_MenuItemsManager.CreateFromString(menuPath, id);
+    if (item)
+    {
+        item->SetHelp(_("Press SHIFT while clicking this menu item to edit the assigned script in the editor"));
+
+        Connect(id, -1, wxEVT_COMMAND_MENU_SELECTED,
+                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                &ScriptingManager::OnScriptMenu);
+
+        m_MenuIDToScript.insert(m_MenuIDToScript.end(), std::make_pair(id, script));
+        LOG(_("Script '%s' registered under menu '%s'"), script.c_str(), menuPath.c_str());
+
+        return true;
+    }
+
+    LOG(_("Error registering script menu: %s"), menuPath.c_str());
+    return false;
+}
+
+bool ScriptingManager::UnRegisterScriptMenu(const wxString& menuPath)
+{
+    // TODO: not implemented
+    DBGLOG(_T("ScriptingManager::UnRegisterScriptMenu() not implemented"));
+    return false;
+}
+
+bool ScriptingManager::UnRegisterAllScriptMenus()
+{
+    DBGLOG(_T("ScriptingManager::UnRegisterAllScriptMenus() not implemented"));
+    return false;
+//    MenuIDToScript::iterator it;
+//    for (it = m_MenuIDToScript.begin(); it != m_MenuIDToScript.end(); ++it)
+//    {
+//        UnRegisterScriptMenu(it->second);
+//    }
+//    m_MenuIDToScript.clear();
+//    return true;
+}
+
+bool ScriptingManager::IsScriptTrusted(const wxString& script)
+{
+    TrustedScripts::iterator it = m_TrustedScripts.find(script);
+    if (it == m_TrustedScripts.end())
+        return false;
+    // check the crc too
+    wxUint32 crc = wxCrc32::FromFile(script);
+    if (crc == it->second.crc)
+        return true;
+    cbMessageBox(script + _T("\n\n") + _("The script was marked as \"trusted\" but it has been modified "
+                    "since then.\nScript not trusted anymore."),
+                _("Warning"), wxICON_WARNING);
+    m_TrustedScripts.erase(it);
+    return false;
+}
+
+bool ScriptingManager::IsCurrentlyRunningScriptTrusted()
+{
+    return IsScriptTrusted(m_CurrentlyRunningScriptFile);
+}
+
+void ScriptingManager::TrustScript(const wxString& script, bool permanently)
+{
+    // TODO: what should happen when script is empty()?
+
+    TrustedScripts::iterator it = m_TrustedScripts.find(script);
+    if (it != m_TrustedScripts.end())
+    {
+        // already trusted, remove it from the trusts (we recreate the trust below)
+        m_TrustedScripts.erase(it);
+    }
+
+    TrustedScriptProps props;
+    props.store = permanently;
+    props.crc = wxCrc32::FromFile(script);
+
+    m_TrustedScripts.insert(m_TrustedScripts.end(), std::make_pair(script, props));
+}
+
+void ScriptingManager::TrustCurrentlyRunningScript(bool permanently)
+{
+    TrustScript(m_CurrentlyRunningScriptFile, permanently);
+}
+
+void ScriptingManager::OnScriptMenu(wxCommandEvent& event)
+{
+	MenuIDToScript::iterator it = m_MenuIDToScript.find(event.GetId());
+	if (it == m_MenuIDToScript.end())
+	{
+		cbMessageBox(_("No script associated with this menu?!?"), _("Error"), wxICON_ERROR);
+		return;
+	}
+
+	if (wxGetKeyState(WXK_SHIFT))
+	{
+		wxString script = ConfigManager::LocateDataFile(it->second, sdScriptsUser | sdScriptsGlobal);
+		Manager::Get()->GetEditorManager()->Open(script);
+		return;
+	}
+
+	// run script
+	try
+	{
+		if (!LoadScript(it->second))
+			cbMessageBox(_("Could not run script: ") + it->second, _("Error"), wxICON_ERROR);
+	}
+	catch (SquirrelError exception)
+	{
+		DisplayErrors(&exception);
+	}
+}
+
+void ScriptingManager::OnScriptPluginMenu(wxCommandEvent& event)
+{
+    ScriptBindings::ScriptPluginWrapper::OnScriptMenu(event.GetId());
 }

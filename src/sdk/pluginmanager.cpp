@@ -43,6 +43,7 @@
     #include "editormanager.h"
     #include "configmanager.h"
     #include "personalitymanager.h"
+    #include "scriptingmanager.h"
     #include "globals.h"
     #include "sdk_events.h"
 #endif
@@ -63,7 +64,7 @@
 #include "annoyingdialog.h"
 #include "pluginsconfigurationdlg.h"
 
-#include <map>
+#include "scripting/bindings/sc_plugin.h"
 
 void VersionStringToNumbers(const wxString& version, long* major, long* minor, long* release)
 {
@@ -172,11 +173,16 @@ namespace LibLoader
 // it just keeps a pointer to the last active plugin in the chain...
 static cbPlugin* s_LastKnownActivePlugin = 0;
 
+BEGIN_EVENT_TABLE(PluginManager, wxEvtHandler)
+//
+END_EVENT_TABLE()
+
 // class constructor
 PluginManager::PluginManager()
     : m_pCurrentlyLoadingLib(0),
     m_pCurrentlyLoadingManifestDoc(0)
 {
+    Manager::Get()->GetAppWindow()->PushEventHandler(this);
 }
 
 // class destructor
@@ -1088,7 +1094,6 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
             }
         }
     }
-
     return 0;
 }
 
@@ -1229,6 +1234,25 @@ void PluginManager::AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu,
             }
         }
     }
+    
+    // script plugins now
+    wxArrayInt ids = ScriptBindings::ScriptPluginWrapper::CreateModuleMenu(type, menu, data);
+    for (size_t i = 0; i < ids.GetCount(); ++i)
+    {
+		Connect(ids[i], -1, wxEVT_COMMAND_MENU_SELECTED,
+				(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+				&PluginManager::OnScriptModuleMenu);
+    }
+}
+
+void PluginManager::OnScriptMenu(wxCommandEvent& event)
+{
+	ScriptBindings::ScriptPluginWrapper::OnScriptMenu(event.GetId());
+}
+
+void PluginManager::OnScriptModuleMenu(wxCommandEvent& event)
+{
+	ScriptBindings::ScriptPluginWrapper::OnScriptModuleMenu(event.GetId());
 }
 
 void PluginManager::NotifyPlugins(CodeBlocksEvent& event)

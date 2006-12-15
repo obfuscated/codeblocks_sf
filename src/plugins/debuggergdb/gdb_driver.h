@@ -66,20 +66,33 @@ class GDB_driver : public DebuggerDriver
         virtual void EvaluateSymbol(const wxString& symbol, const wxRect& tipRect);
         virtual void UpdateWatches(bool doLocals, bool doArgs, DebuggerTree* tree);
         virtual void ParseOutput(const wxString& output);
+        virtual wxString GetDisassemblyFlavour(void);
 
         wxString GetScriptedTypeCommand(const wxString& gdb_type, wxString& parse_func);
     protected:
     private:
         void InitializeScripting();
         void RegisterType(const wxString& name, const wxString& regex, const wxString& eval_func, const wxString& parse_func);
+        void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak, wxString line);
+#ifdef __WXMSW__
+        // win/Cygwin platform checking
+        void DetectCygwinMount(void);
+        void CorrectCygwinPath(wxString& path);
 
+        bool m_CygwinPresent;
+        wxString m_CygdrivePrefix;
+#endif
         TypesArray m_Types;
         bool m_BreakOnEntry;
         bool m_ManualBreakOnEntry;
 
+        // cursor update flags
+        bool m_needsUpdate;
+        bool m_forceUpdate;
         // GDB version
         long m_GDBVersionMajor;
         long m_GDBVersionMinor;
+        wxString flavour;
 };
 
 #endif // GDB_DRIVER_H

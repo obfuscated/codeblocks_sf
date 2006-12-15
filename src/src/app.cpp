@@ -510,8 +510,9 @@ bool CodeBlocksApp::OnInit()
             if (!startup.IsEmpty())
             {
                 Manager::Get()->GetScriptingManager()->LoadScript(startup);
-                SqPlus::SquirrelFunction<void> f("main");
-                f();
+                // no more need for main() in startup script
+//                SqPlus::SquirrelFunction<void> f("main");
+//                f();
             }
         }
         catch (SquirrelError& exception)

@@ -36,6 +36,7 @@ class MainFrame : public wxFrame
         MainFrame(wxWindow* parent = (wxWindow*)NULL);
         ~MainFrame();
 
+        // needed for binding with SqPlus
         MainFrame(const MainFrame& rhs){ cbThrow(_T("Can't use MainFrame's copy constructor")); }
         MainFrame& operator=(const MainFrame& rhs){ cbThrow(_T("Can't use MainFrame's operator=")); }
 
@@ -203,8 +204,6 @@ class MainFrame : public wxFrame
 		void OnEditorModified(CodeBlocksEvent& event);
 		void OnPageChanged(wxNotebookEvent& event);
         void OnShiftTab(wxCommandEvent& event);
-        
-        void OnScriptMenu(wxCommandEvent& event);
     protected:
         void CreateIDE();
 		void CreateMenubar();
@@ -289,7 +288,7 @@ class MainFrame : public wxFrame
         wxString m_LastLayoutData;
 
         int m_ScriptConsoleID;
-        
+
         typedef std::map<int, const wxString> MenuIDToScript; // script menuitem ID -> script function name
 		MenuIDToScript m_MenuIDToScript;
 

@@ -197,7 +197,7 @@ struct StackFrame
         line.Clear();
     }
     bool valid; ///< Is this stack frame valid?
-    long int number; ///< Stack frame's number (used in backtraces).
+    unsigned long int number; ///< Stack frame's number (used in backtraces).
     unsigned long int address; ///< Stack frame's address.
     wxString function; ///< Current function name.
     wxString file; ///< Current file.

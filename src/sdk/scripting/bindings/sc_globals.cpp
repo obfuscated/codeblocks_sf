@@ -56,6 +56,10 @@ namespace ScriptBindings
     {
         return Manager::Get()->GetUserVariableManager();
     }
+    ScriptingManager* getSM()
+    {
+        return Manager::Get()->GetScriptingManager();
+    }
     bool InstallPlugin(const wxString& pluginName, bool allUsers, bool confirm)
     {
         if (cbMessageBox(_("A script is trying to install a Code::Blocks plugin.\n"
@@ -65,6 +69,10 @@ namespace ScriptBindings
             return false;
         }
         return Manager::Get()->GetPluginManager()->InstallPlugin(pluginName, allUsers, confirm);
+    }
+    void Include(const wxString& filename)
+    {
+        getSM()->LoadScript(filename);
     }
 
     void Register_Globals()
@@ -86,11 +94,14 @@ namespace ScriptBindings
         SqPlus::RegisterGlobal(getEM, "GetEditorManager");
         SqPlus::RegisterGlobal(getCM, "GetConfigManager");
         SqPlus::RegisterGlobal(getUVM, "GetUserVariableManager");
+        SqPlus::RegisterGlobal(getSM, "GetScriptingManager");
         SqPlus::RegisterGlobal(getCF, "GetCompilerFactory");
 
         SqPlus::RegisterGlobal(ConfigManager::GetFolder, "GetFolder");
         SqPlus::RegisterGlobal(ConfigManager::LocateDataFile, "LocateDataFile");
         SqPlus::RegisterGlobal(InstallPlugin, "InstallPlugin");
+
+        SqPlus::RegisterGlobal(Include, "Include");
 
         SquirrelVM::CreateFunctionGlobal(IsNull, "IsNull", "*");
     }

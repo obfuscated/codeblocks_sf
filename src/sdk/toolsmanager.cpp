@@ -76,7 +76,7 @@ ToolsManager::~ToolsManager()
     // in this case, the app has already un-hooked us, so no need to do it ourselves...
 //    Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
 
-    m_ItemsManager.Clear( m_Menu );
+    m_ItemsManager.Clear();
 
     // free-up any memory used for tools
     m_Tools.DeleteContents(true);
@@ -312,7 +312,7 @@ void ToolsManager::SaveTools()
 void ToolsManager::BuildToolsMenu(wxMenu* menu)
 {
     // clear previously added menu items
-    m_ItemsManager.Clear(menu);
+    m_ItemsManager.Clear();
 
     // add menu items for tools
     m_Menu = menu;
