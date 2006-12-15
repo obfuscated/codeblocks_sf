@@ -47,6 +47,7 @@ static wxRegEx rePendingFound(_T("^Pending[ \t]+breakpoint[ \t]+\"([^:]+):([0-9]
 // Breakpoint 2, irr::scene::CSceneManager::getSceneNodeFromName (this=0x3fa878, name=0x3fbed8 "MainLevel", start=0x3fa87c) at CSceneManager.cpp:1077
 static wxRegEx rePendingFound1(_T("^Breakpoint[ \t]+([0-9]+),.*"));
 
+
 // scripting support
 DECLARE_INSTANCE_TYPE(GDB_driver);
 
