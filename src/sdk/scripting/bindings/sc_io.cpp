@@ -182,8 +182,8 @@ namespace ScriptBindings
         SqPlus::SQClassDef<IONamespace>("IO").
 
 				#ifndef NO_INSECURE_SCRIPTS
-                staticFunc(&IOLib::CreateDirRecursively, "CreateDir").
-                staticFunc(&IOLib::RemoveDir, "RemoveDir").
+                staticFunc(&IOLib::CreateDirRecursively, "CreateDirectory").
+                staticFunc(&IOLib::RemoveDir, "RemoveDirectory").
                 staticFunc(&IOLib::CopyFile, "CopyFile").
                 staticFunc(&IOLib::RenameFile, "RenameFile").
                 staticFunc(&IOLib::RemoveFile, "RemoveFile").
