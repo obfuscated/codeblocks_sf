@@ -144,6 +144,12 @@ class DLLIMPORT cbEditor : public EditorBase
 		/** Unimplemented */
 		bool RenameTo(const wxString& filename, bool deleteOldFromDisk = false);
 
+		/** Save fold states within a new cbStyledTextCtrl. This saves the whole document, thus saving the fold states before the Fold Options Change*/
+		bool SaveFoldState();
+
+		/** Fix fold states by comparing foldBackup with m_pControl. This is a temp fix for the Scintilla bug*/
+		bool FixFoldState();
+
 		/** Fold all editor folds (hides blocks of code). */
 		void FoldAll();
 

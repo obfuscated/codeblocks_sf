@@ -274,11 +274,18 @@ void EditorManager::Configure()
         {
             cbEditor* ed = InternalGetBuiltinEditor(i);
             if (ed)
+            {
+                bool saveSuccess = ed->SaveFoldState(); //First Save the old fold levels
                 ed->SetEditorStyle();
+                if(saveSuccess)
+                {
+                    ed->FixFoldState(); //Compare old fold levels with new and change the bugs
+                }
+            }
         }
         RebuildOpenedFilesTree(0); // maybe the tab text naming changed
     }
-}
+} // end of Configure
 
 void EditorManager::CreateSearchLog()
 {

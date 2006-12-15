@@ -432,6 +432,7 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
     m_pSizer(0),
     m_pControl(0),
     m_pControl2(0),
+        m_foldBackup(0),
     m_SplitType(stNoSplit),
     m_Modified(false),
     m_Index(-1),
@@ -1299,6 +1300,75 @@ bool cbEditor::RenameTo(const wxString& filename, bool deleteOldFromDisk)
     return false;
 }
 
+bool cbEditor::SaveFoldState()
+{
+	bool bRet = false;
+	if(m_foldBackup = CreateEditor())
+	{
+		ApplyStyles(m_foldBackup);
+		m_foldBackup->SetText(m_pControl->GetText());
+		int count = m_pControl->GetLineCount();
+		for (int i = 0; i < count; ++i)
+		{
+			m_foldBackup->SetFoldLevel(i,m_pControl->GetFoldLevel(i));
+		}
+		bRet = true;
+	}
+	return bRet;
+} // end of SaveFoldState
+
+bool cbEditor::FixFoldState()
+{
+	bool bRet = false;
+	if(m_foldBackup)
+	{
+		int backupLength = m_foldBackup->GetLineCount();
+		int realLength = m_pControl->GetLineCount();
+		if(backupLength == realLength) //It is supposed to be the same, but you never know :)
+		{
+			ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+			if (mgr->ReadBool(_T("/folding/show_folds"), true)) //Only fix the folds if the folds are enabled
+			{
+				m_pControl->Colourise(0, -1); // the *most* important part!
+				m_foldBackup->Colourise(0, -1); // " Not so sure here.. but what the hell :)
+				int count = m_pControl->GetLineCount();
+				for (int i = 0; i < count; ++i)
+				{
+					int oldFoldLevel = m_foldBackup->GetFoldLevel(i);
+					int newFoldLevel = m_pControl->GetFoldLevel(i);
+					if(oldFoldLevel != newFoldLevel)
+					{
+						if(m_pControl->GetLineVisible(i) == true)
+						{
+							m_pControl->SetFoldExpanded(i, true);
+						}
+						else
+						{
+							int parent = m_foldBackup->GetFoldParent(i);
+							while(parent != -1)
+							{
+								m_pControl->ToggleFold(parent);
+								parent = m_foldBackup->GetFoldParent(parent);
+							}
+							m_pControl->ShowLines(i, i);
+							parent = m_foldBackup->GetFoldParent(i);
+							while(parent != -1)
+							{
+								m_pControl->ToggleFold(parent);
+								parent = m_foldBackup->GetFoldParent(parent);
+							}
+						}
+					}
+				}
+			}
+			bRet = true;
+		}
+		m_foldBackup->Destroy();
+		m_foldBackup = 0;
+	}
+	return bRet;
+} // end of FixFoldState
+
 void cbEditor::AutoComplete()
 {
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
@@ -1391,7 +1461,29 @@ bool cbEditor::DoFoldLine(int line, int fold)
 {
     int level = m_pControl->GetFoldLevel(line);
     if ((level & wxSCI_FOLDLEVELHEADERFLAG) &&
-        (wxSCI_FOLDLEVELBASE == (level & wxSCI_FOLDLEVELNUMBERMASK)))
+            (wxSCI_FOLDLEVELBASE == (level & wxSCI_FOLDLEVELNUMBERMASK))) //Check for top fold headers
+    {
+        bool expand = false;
+        int maxLine = m_pControl->GetLastChild(line, -1);
+        if (fold == 2) // toggle
+            expand = !m_pControl->GetFoldExpanded(line);
+        else
+            expand = fold == 0;
+        m_pControl->SetFoldExpanded(line, expand);
+        if (maxLine > line)
+        {
+            if (expand)
+                m_pControl->ShowLines(line + 1, maxLine);
+            else
+                m_pControl->HideLines(line + 1, maxLine);
+        }
+        return true;
+    }
+    //Lets check if the folded code is a sub-fold from a main fold?
+    //We can include this in the top check list but will propably hinder
+    //if you want to do some custom code for the inner folds instead of the main folds
+    if ((level & wxSCI_FOLDLEVELHEADERFLAG) &&
+            (wxSCI_FOLDLEVELBASE < (level & wxSCI_FOLDLEVELNUMBERMASK))) //Check for sub fold headers
     {
         bool expand = false;
         int maxLine = m_pControl->GetLastChild(line, -1);
