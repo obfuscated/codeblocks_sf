@@ -345,6 +345,7 @@ class DLLIMPORT cbEditor : public EditorBase
         wxBoxSizer* m_pSizer;
         cbStyledTextCtrl* m_pControl;
         cbStyledTextCtrl* m_pControl2;
+        cbStyledTextCtrl* m_foldBackup;
         SplitType m_SplitType;
         int m_ID;
 		bool m_Modified;
