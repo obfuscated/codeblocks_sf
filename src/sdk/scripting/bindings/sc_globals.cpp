@@ -13,6 +13,10 @@
 
 #include "sc_base_types.h"
 
+#include <wx/colordlg.h>
+#include <wx/numdlg.h>
+#include <wx/textdlg.h>
+
 namespace ScriptBindings
 {
     // global funcs
@@ -74,6 +78,24 @@ namespace ScriptBindings
     {
         getSM()->LoadScript(filename);
     }
+    SQInteger wx_GetColourFromUser(HSQUIRRELVM v)
+    {
+    	StackHandler sa(v);
+		wxColour& c = sa.GetParamCount() == 2 ? *SqPlus::GetInstance<wxColour>(v, 2) : *wxBLACK;
+		return SqPlus::ReturnCopy(v, wxGetColourFromUser(Manager::Get()->GetAppWindow(), c));
+    }
+    long wx_GetNumberFromUser(const wxString& message, const wxString& prompt, const wxString& caption, long value)
+    {
+    	return wxGetNumberFromUser(message, prompt, caption, value);
+    }
+    wxString wx_GetPasswordFromUser(const wxString& message, const wxString& caption, const wxString& default_value)
+    {
+    	return wxGetPasswordFromUser(message, caption, default_value);
+    }
+    wxString wx_GetTextFromUser(const wxString& message, const wxString& caption, const wxString& default_value)
+    {
+    	return wxGetTextFromUser(message, caption, default_value);
+    }
 
     void Register_Globals()
     {
@@ -104,5 +126,12 @@ namespace ScriptBindings
         SqPlus::RegisterGlobal(Include, "Include");
 
         SquirrelVM::CreateFunctionGlobal(IsNull, "IsNull", "*");
+        
+        // now for some wx globals (utility) functions
+        SqPlus::RegisterGlobal(wxLaunchDefaultBrowser, "wxLaunchDefaultBrowser");
+        SquirrelVM::CreateFunctionGlobal(wx_GetColourFromUser, "wxGetColourFromUser", "*");
+        SqPlus::RegisterGlobal(wx_GetNumberFromUser, "wxGetNumberFromUser");
+        SqPlus::RegisterGlobal(wx_GetPasswordFromUser, "wxGetPasswordFromUser");
+        SqPlus::RegisterGlobal(wx_GetTextFromUser, "wxGetTextFromUser");
     }
 }

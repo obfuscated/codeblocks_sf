@@ -331,6 +331,7 @@ namespace ScriptBindings
                 func(&ProjectFile::GetObjName, "GetObjName").
                 func(&ProjectFile::SetObjName, "SetObjName").
                 func(&ProjectFile::GetParentProject, "GetParentProject").
+                var(&ProjectFile::file, "file").
                 var(&ProjectFile::relativeFilename, "relativeFilename").
                 var(&ProjectFile::relativeToCommonTopLevelPath, "relativeToCommonTopLevelPath").
                 var(&ProjectFile::compile, "compile").

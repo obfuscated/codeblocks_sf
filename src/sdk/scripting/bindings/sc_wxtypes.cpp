@@ -4,6 +4,7 @@
     #include <globals.h>
 #endif
 #include <wx/filename.h>
+#include <wx/colour.h>
 
 #include "sc_base_types.h"
 
@@ -120,6 +121,19 @@ namespace ScriptBindings
         wxFileName& self = *SqPlus::GetInstance<wxFileName>(v, 1);
         return sa.Return((const SQChar*)self.GetFullPath().mb_str(wxConvUTF8));
     }
+    
+////////////////
+// wxColour //
+////////////////
+
+    SQInteger wxColour_OpToString(HSQUIRRELVM v)
+    {
+        StackHandler sa(v);
+        wxColour& self = *SqPlus::GetInstance<wxColour>(v, 1);
+        wxString str = wxString::Format(_T("[r=%d, g=%d, b=%d]"), self.Red(), self.Green(), self.Blue());
+        return sa.Return((const SQChar*)str.mb_str(wxConvUTF8));
+    }
+    
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -215,5 +229,15 @@ namespace ScriptBindings
 //                func(&wxArrayString::Index, "Index").
                 func(&wxArrayString::GetCount, "GetCount").
                 func(&wxArrayString::Item, "Item");
+		
+		typedef void(wxColour::*WXC_SET)(const unsigned char, const unsigned char, const unsigned char);
+		SqPlus::SQClassDef<wxColour>("wxColour").
+				emptyCtor().
+                staticFuncVarArgs(&wxColour_OpToString, "_tostring", "").
+				func(&wxColour::Blue, "Blue").
+				func(&wxColour::Green, "Green").
+				func(&wxColour::Red, "Red").
+				func(&wxColour::Ok, "Ok").
+				func<WXC_SET>(&wxColour::Set, "Set");
     }
 };
