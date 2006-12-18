@@ -40,6 +40,8 @@ void CompilerCYGWIN::Reset()
 
 AutoDetectResult CompilerCYGWIN::AutoDetectInstallationDir()
 {
+    m_MasterPath = _T("C:\\Cygwin"); // just a guess
+
     // look in registry for Cygwin
 
     wxLogNull ln;

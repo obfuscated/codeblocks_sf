@@ -12,7 +12,7 @@
               <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
             </object>
             <flag>wxGROW</flag>
-            <minsize>320,160</minsize>
+            <minsize>460,240</minsize>
           </object>
           <cols>2</cols>
           <vgap>8</vgap>
@@ -68,5 +68,6 @@
         <border>8</border>
       </object>
     </object>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
   </object>
 </resource>
