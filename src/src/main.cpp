@@ -64,6 +64,7 @@
 #include "dlgabout.h"
 #include "startherepage.h"
 #include "scriptconsole.h"
+#include "scriptingsettingsdlg.h"
 #include "printdlg.h"
 #include <wx/printdlg.h>
 #include <wx/filename.h>
@@ -229,6 +230,7 @@ int idSettingsGlobalUserVars = XRCID("idSettingsGlobalUserVars");
 int idSettingsEditor = XRCID("idSettingsEditor");
 int idSettingsCompilerDebugger = XRCID("idSettingsCompilerDebugger");
 int idPluginsManagePlugins = XRCID("idPluginsManagePlugins");
+int idSettingsScripting = XRCID("idSettingsScripting");
 
 int idHelpTips = XRCID("idHelpTips");
 int idHelpPlugins = XRCID("idHelpPlugins");
@@ -428,6 +430,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idSettingsEditor, MainFrame::OnSettingsEditor)
     EVT_MENU(idSettingsCompilerDebugger, MainFrame::OnSettingsCompilerDebugger)
     EVT_MENU(idPluginsManagePlugins, MainFrame::OnSettingsPlugins)
+    EVT_MENU(idSettingsScripting, MainFrame::OnSettingsScripting)
 
     EVT_MENU(wxID_ABOUT, MainFrame::OnHelpAbout)
     EVT_MENU(idHelpTips, MainFrame::OnHelpTips)
@@ -544,6 +547,7 @@ MainFrame::MainFrame(wxWindow* parent)
         ShowHideScriptConsole();
 
 	RegisterScriptFunctions();
+	RunStartupScripts();
 
     m_StartupDone = true;
     DoUpdateLayout();
@@ -641,6 +645,42 @@ void MainFrame::RegisterScriptFunctions()
 	SqPlus::SQClassDef<MainFrame>("MainFrame");
 
 	SqPlus::BindVariable(this, "App", SqPlus::VAR_ACCESS_READ_ONLY);
+}
+
+void MainFrame::RunStartupScripts()
+{
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("scripting"));
+    wxArrayString keys = mgr->EnumerateKeys(_T("/startup_scripts"));
+
+    for (size_t i = 0; i < keys.GetCount(); ++i)
+    {
+        ScriptEntry se;
+        wxString ser;
+        if (mgr->Read(_T("/startup_scripts/") + keys[i], &ser))
+        {
+            se.SerializeIn(ser);
+            if (!se.enabled)
+                continue;
+
+            try
+            {
+                wxString startup = ConfigManager::LocateDataFile(se.script, sdScriptsUser | sdScriptsGlobal);
+                if (!startup.IsEmpty())
+                {
+                    if (!se.registered)
+                        Manager::Get()->GetScriptingManager()->LoadScript(startup);
+                    else if (!se.menu.IsEmpty())
+                        Manager::Get()->GetScriptingManager()->RegisterScriptMenu(startup, se.menu);
+                    else
+                        LOG_WARN(_("Startup script '%s' not loaded: invalid configuration"), se.script.c_str());
+                }
+            }
+            catch (SquirrelError& exception)
+            {
+                Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
+            }
+        }
+    }
 }
 
 void MainFrame::PluginsUpdated(cbPlugin* plugin, int status)
@@ -3486,6 +3526,13 @@ void MainFrame::OnSettingsCompilerDebugger(wxCommandEvent& event)
 void MainFrame::OnSettingsPlugins(wxCommandEvent& event)
 {
     Manager::Get()->GetPluginManager()->Configure();
+}
+
+void MainFrame::OnSettingsScripting(wxCommandEvent& event)
+{
+    ScriptingSettingsDlg dlg(this);
+    if (dlg.ShowModal() == wxID_OK)
+        RunStartupScripts();
 }
 
 void MainFrame::OnProjectActivated(CodeBlocksEvent& event)

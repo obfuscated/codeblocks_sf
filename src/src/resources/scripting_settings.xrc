@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+  <object class="wxDialog" name="dlgScriptingSettings">
+    <title>Scripting settings</title>
+    <centered>1</centered>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxNotebook" name="nbMain">
+          <object class="notebookpage">
+            <label>General</label>
+            <object class="wxPanel" name="pnlGeneral">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Scripts to load/register on startup</label>
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxListCtrl" name="chkStartupScripts">
+                            <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
+                          </object>
+                          <option>1</option>
+                          <flag>wxGROW</flag>
+                          <minsize>320, 160</minsize>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticBoxSizer">
+                            <label>Options</label>
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxBoxSizer">
+                                <orient>wxHORIZONTAL</orient>
+                                <object class="sizeritem">
+                                  <object class="wxCheckBox" name="chkEnableScript">
+                                    <label>Enabled:</label>
+                                  </object>
+                                  <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                  <border>5</border>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxTextCtrl" name="txtScript"/>
+                                  <option>1</option>
+                                  <flag>wxLEFT</flag>
+                                  <border>5</border>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxButton" name="btnBrowseScript">
+                                    <label>...</label>
+                                  </object>
+                                  <minsize>22,22</minsize>
+                                </object>
+                              </object>
+                              <flag>wxALL|wxGROW</flag>
+                              <border>5</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxBoxSizer">
+                                <orient>wxHORIZONTAL</orient>
+                                <object class="sizeritem">
+                                  <object class="wxCheckBox" name="chkRegisterScript">
+                                    <label>Register in menus: </label>
+                                  </object>
+                                  <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxTextCtrl" name="txtScriptMenu"/>
+                                  <option>1</option>
+                                </object>
+                              </object>
+                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                              <border>5</border>
+                            </object>
+                          </object>
+                          <flag>wxTOP|wxBOTTOM|wxGROW</flag>
+                          <border>5</border>
+                        </object>
+                      </object>
+                      <option>1</option>
+                      <flag>wxALL|wxGROW</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnAdd">
+                            <label>Add</label>
+                          </object>
+                          <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnDelete">
+                            <label>Remove</label>
+                          </object>
+                          <flag>wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
+                          <border>5</border>
+                        </object>
+                      </object>
+                      <flag>wxTOP|wxBOTTOM|wxRIGHT</flag>
+                      <border>5</border>
+                    </object>
+                  </object>
+                  <option>1</option>
+                  <flag>wxALL|wxGROW</flag>
+                  <border>5</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Note: any changes you make here will take effect on next startup...</label>
+                  </object>
+                  <flag>wxALL|wxGROW</flag>
+                  <border>5</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Security</label>
+            <object class="wxPanel" name="pnlSecurity">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Not yet implemented</label>
+                  </object>
+                  <flag>wxTOP|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
+                  <border>16</border>
+                </object>
+              </object>
+            </object>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxGROW</flag>
+        <border>5</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStdDialogButtonSizer">
+          <object class="button">
+            <object class="wxButton" name="wxID_OK">
+              <label></label>
+              <label>&amp;Ok</label>
+              <default>1</default>
+            </object>
+          </object>
+          <object class="button">
+            <object class="wxButton" name="wxID_CANCEL">
+              <label></label>
+              <label>&amp;Cancel</label>
+            </object>
+          </object>
+        </object>
+        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>5</border>
+      </object>
+    </object>
+  </object>
+</resource>

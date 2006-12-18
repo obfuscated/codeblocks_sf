@@ -4659,11 +4659,27 @@
 			<Option link="0" />
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/resources/scripting_settings.xrc">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/scriptconsole.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/scriptconsole.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/scriptingsettingsdlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/scriptingsettingsdlg.h">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />

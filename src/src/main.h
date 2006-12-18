@@ -156,6 +156,7 @@ class MainFrame : public wxFrame
         void OnSettingsCompilerDebugger(wxCommandEvent& event);
         void OnSettingsPlugins(wxCommandEvent& event);
         void OnPluginSettingsMenu(wxCommandEvent& event);
+        void OnSettingsScripting(wxCommandEvent& event);
 
         void OnHelpAbout(wxCommandEvent& event);
         void OnHelpTips(wxCommandEvent& event);
@@ -213,8 +214,7 @@ class MainFrame : public wxFrame
         void RecreateMenuBar();
 
 		void RegisterScriptFunctions();
-		void RegisterScript(const wxString& script, const wxString& menuPath);
-		void RegisterScript(const SQChar* script, const SQChar* menuPath);
+		void RunStartupScripts();
 
         enum { Installed, Uninstalled, Unloaded };
         void PluginsUpdated(cbPlugin* plugin, int status);

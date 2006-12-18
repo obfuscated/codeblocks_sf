@@ -616,12 +616,16 @@
         <help>Change editor's settings</help>
       </object>
       <object class="wxMenuItem" name="idSettingsCompilerDebugger">
-        <label>Compiler and debugger</label>
+        <label>&amp;Compiler and debugger</label>
         <help>Change compiler and debugger settings</help>
       </object>
       <object class="wxMenuItem" name="idSettingsGlobalUserVars">
         <label>&amp;Global variables</label>
         <help>Change global compiler variables</help>
+      </object>
+      <object class="wxMenuItem" name="idSettingsScripting">
+        <label>&amp;Scripting</label>
+        <help>Change scripting settings</help>
       </object>
     </object>
     <object class="wxMenu" name="menu_help">
