@@ -60,6 +60,7 @@
 #include "projectoptionsdlg.h" // class's header file
 #include "editarrayorderdlg.h"
 #include "editarrayfiledlg.h"
+#include "editpathdlg.h"
 #include "externaldepsdlg.h"
 #include "annoyingdialog.h"
 #include "filefilters.h"
@@ -847,18 +848,20 @@ void ProjectOptionsDlg::OnAddScript(wxCommandEvent& event)
 	else if (ctrl->GetCount())
 		fname.Assign(ctrl->GetString(ctrl->GetCount() - 1));
     fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
-    wxFileDialog dlg(this,
-                    _("Select script file"),
-                    fname.GetPath(),
-                    fname.GetFullName(),
-                    _("Script files (*.script)|*.script"),
-                    wxOPEN | wxMULTIPLE | wxHIDE_READONLY);
+
+    EditPathDlg dlg(this,
+            fname.GetFullName(),
+            wxEmptyString,//fname.GetPath(),
+            _("Add script(s)"),
+            _("Select script file(s)"),
+            false,
+            true,
+            _("Script files (*.script)|*.script"));
 
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
-	wxArrayString paths;
-	dlg.GetPaths(paths);
+    wxArrayString paths = GetArrayFromString(dlg.GetPath());
 	for (size_t i = 0; i < paths.GetCount(); ++i)
 	{
 		fname.Assign(paths[i]);

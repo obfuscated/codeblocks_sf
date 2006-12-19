@@ -152,7 +152,10 @@ void CompilerCommandGenerator::Init(cbProject* project)
             msg << _T("\n");
         }
 
-        cbMessageBox(msg, _("Error"), wxICON_ERROR);
+        if (Manager::IsBatchBuild()) // no dialog if batch building...
+            Manager::Get()->GetMessageManager()->LogToStdOut(msg);
+        else
+            cbMessageBox(msg, _("Error"), wxICON_ERROR);
     }
 }
 

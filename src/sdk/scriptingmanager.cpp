@@ -188,6 +188,7 @@ wxString ScriptingManager::LoadBufferRedirectOutput(const wxString& buffer)
 {
 //    wxCriticalSectionLocker c(cs);
 
+    s_ScriptErrors.Clear();
     ::capture.Clear();
 
     sq_setprintfunc(SquirrelVM::GetVMPtr(), CaptureScriptOutput);
