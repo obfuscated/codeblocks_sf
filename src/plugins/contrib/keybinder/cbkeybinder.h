@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version--------------------------
-#define VERSION "1.0.7 2006/12/14"
+#define VERSION "1.0.8 2006/12/14"
 // -----------------------------------
 class MyDialog;
 
@@ -570,12 +570,14 @@ private:
 //  open    when menuItems are changed without an attached() window, they arnt saved
 //  closed  The OnKey() fix now doesnt allow F1-F9 etc
 // ----------------------------------------------------------------------------
-//  Commit  1.0.6 2006/12/14
+//  Commit  1.0.8 2006/12/14
 //          2) Added code to remove stale dynamic menu items
 //          3) Added MergeDynamicMenu() & OnSave() at plugin termination
 //          4) In IsValidKeyComb() changed '+' to '-'
 //          5) Disallowed single key cmdStrings in wxKeyMonitorTextCtrl::OnKey()
 //          6) Reduced size of .ini fileName
 //          7) Fixed broken OnKey() to accept function keys w/o Ctrl- Alt- or Shift-
+//  Commit  1.0.8 2006/12/19
+//          8) Removed dependency on event EVT_APP_STARTUP_DONE to avoid "uninitialized" crashes
 // ----------------------------------------------------------------------------
 

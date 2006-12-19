@@ -906,7 +906,7 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             #endif
         }
         // count changed array wxCmd items
-        modified += (changed NOT_EQUAL 0) ;
+        modified += (changed != 0) ;
     }//rof
     return modified;
 }//mergeSubmenu

@@ -346,7 +346,7 @@ void cbKeyBinder::MergeDynamicMenus()
     EnableMerge(false);
 
     #ifdef LOGGING
-     if ( n NOT_EQUAL 1)
+     if ( n != 1)
      LOGIT( _T("MergeDynamicMenus: EnabelMerge Out of synch. Count[%d]"), n );
     #endif //LOGGING
 
@@ -531,16 +531,19 @@ void cbKeyBinder::OnLoad()
 
 		if (total == 0)
 		 {
-			wxMessageBox(wxString::Format(
-					wxT("No keyprofiles have been found...\n")
-					wxT("A default keyprofile will be set.")));
-			wxKeyProfile *p = new wxKeyProfile(wxT("Default"));
-			p->ImportMenuBarCmd(m_pMenuBar);
-			#if LOGGING
-			  LOGIT(_T("cbKB:OnLoad:Imported MenuBar"));
-			#endif
-			m_pKeyProfArr->Add(p);
-
+            wxString msg;
+            msg  	<< wxT("KeyBinder: No keyprofiles have been found...\n")
+					<< strLoadFilename.c_str()
+					<< wxT("\nmay be corrupted.\n")
+					<< wxT("A default keyprofile will be set.");
+			wxMessageBox(msg,wxT("KeyBinder"));
+//			wxKeyProfile *p = new wxKeyProfile(wxT("Default"));
+//			p->ImportMenuBarCmd(m_pMenuBar);
+//			#if LOGGING
+//			  LOGIT(_T("cbKB:OnLoad:Imported MenuBar"));
+//			#endif
+//			m_pKeyProfArr->Add(p);
+            Rebind();
 		 }//endif
         else
         { //all is loaded
@@ -812,7 +815,8 @@ void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event)
          //LOGIT(_T("cbKB:OnEditorOpen()"));
         if (not m_bBound)
          {
-            OnLoad(); event.Skip(); return;
+            //OnLoad(); event.Skip(); return;
+            OnAppStartupDone(event);
          }
 
         //already bound, just add the editor window
@@ -884,18 +888,18 @@ void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
 void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // if keys still unbound, do it here.
 
+    // if keys still unbound, do it here.
     // load key binding from file
     if (not m_bBound)
      {
         #if LOGGING
-         LOGIT(_T("cbKeyBinder:Begin initial Key Load"));
+         LOGIT(_T("cbKB:OnAppStartupDone:Begin initial Key Load"));
         #endif
         m_bBound=TRUE;
         OnLoad();
         #if LOGGING
-         LOGIT(_T("cbKeyBinder:End initial Key Load"));
+         LOGIT(_T("cbKB:OnAppStartupDone:End initial Key Load"));
         #endif
      }
     // Check creation of windows that have no notification (ie., wxSplitWindows)

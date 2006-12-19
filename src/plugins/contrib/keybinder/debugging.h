@@ -5,9 +5,6 @@
 //#include <manager.h>
 //#include <messagemanager.h>
 
-
-#define NOT_EQUAL !=
-
 #if defined(kbLOGGING)
     #define LOGGING 1
 #endif
@@ -24,6 +21,7 @@
    #endif
    // wxGTK wxLogMessage turns into a wxMessage in GTK
    #ifdef __WXGTK__
+    #define TRAP asm("int3")
     #define LOGIT wxLogMessage
    #endif
    #ifdef __WXMAC__    #warning kbLOGGING and __WXMAC__  defined for debugging.h
