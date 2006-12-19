@@ -886,7 +886,12 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
                 RemoveCmd(pCmd);
             }
             // add the missing menu item as a wxCmd and update app menu items
-            pCmd = wxCmd::CreateNew(menuItemLabel, wxMENUCMD_TYPE, nMenuItemID, false);            if (not pCmd) { //CreateNew command did not allocate                LOGIT(wxT("Merge:CreateNew refused to allocate the new wxCmd"));                LOGIT(wxT("Label[%s],ID[%d]"), menuItemLabel.GetData(), nMenuItemID);                return modified;            }
+            pCmd = wxCmd::CreateNew(menuItemLabel, wxMENUCMD_TYPE, nMenuItemID, false);
+            if (not pCmd) { //CreateNew command did not allocate
+                LOGIT(wxT("Merge:CreateNew refused to allocate the new wxCmd"));
+                LOGIT(wxT("Label[%s],ID[%d]"), menuItemLabel.GetData(), nMenuItemID);
+                return modified;
+            }
             pCmd->m_strName = menuItemLabel;
             pCmd->m_strDescription = pMenuItem->GetHelp();
             AddCmd (pCmd);
@@ -2286,8 +2291,15 @@ void wxKeyConfigPanel::OnProfileEditing(wxCommandEvent &)
 // ----------------------------------------------------------------------------
 {
 	wxASSERT(m_nCurrentProf != -1);
-    // This routine is screwing up unix, and its never called on MSW    // so.. forget it //(pecan 2006/9/23)    return ;
-	wxString oldname = m_kBinder.GetName();        // on unix, this routine is being entered with oldname == ""        // We're not going to save the blank temp profile anyway        // so ignore this situation //(pecan 2006.09.22)    if ( oldname == wxEmptyString )     //(pecan 2006.09.23)        return;
+    // This routine is screwing up unix, and its never called on MSW
+    // so.. forget it //(pecan 2006/9/23)
+    return ;
+	wxString oldname = m_kBinder.GetName();
+        // on unix, this routine is being entered with oldname == ""
+        // We're not going to save the blank temp profile anyway
+        // so ignore this situation //(pecan 2006.09.22)
+    if ( oldname == wxEmptyString )     //(pecan 2006.09.23)
+        return;
 	wxString newname = m_pKeyProfiles->GetValue();//ev.GetString();
 	if (newname == oldname)
 		return;
@@ -2384,8 +2396,12 @@ void wxKeyConfigPanel::OnProfileSelected(wxCommandEvent &)
 	if (selidx != -1) {
 
 		// did the user modify the old profile ?
-		if (m_bProfileHasBeenModified)        {
-            //(pecan 2006/9/23)            //////////////////////////////////////////////////////////////////////////////            // This routine keeps saving an empty profile. Disabled until I find out why.            //////////////////////////////////////////////////////////////////////////////
+		if (m_bProfileHasBeenModified)
+        {
+            //(pecan 2006/9/23)
+            //////////////////////////////////////////////////////////////////////////////
+            // This routine keeps saving an empty profile. Disabled until I find out why.
+            //////////////////////////////////////////////////////////////////////////////
 ////			// NB: m_nCurrentProf now retains the old profile index
 ////			int choice = wxMessageBox(
 ////				wxString::Format(wxT("The previous profile (named \"%s\") has been modified.\n")

@@ -16,7 +16,8 @@
     #undef LOGIT
    // wxMSW wont write msg to our log window via wxLogDebug
    #ifdef __WXMSW__
-    #define TRAP asm("int3")    #define wxLogDebug wxLogMessage
+    #define TRAP asm("int3")
+    #define wxLogDebug wxLogMessage
     #define LOGIT wxLogMessage
    #endif
    // wxGTK wxLogMessage turns into a wxMessage in GTK
@@ -24,8 +25,11 @@
     #define TRAP asm("int3")
     #define LOGIT wxLogMessage
    #endif
-   #ifdef __WXMAC__    #warning kbLOGGING and __WXMAC__  defined for debugging.h
-    #define TRAP asm("trap")    #define LOGIT wxLogMessage    #define wxLogDebug wxLogMessage
+   #ifdef __WXMAC__
+    #warning kbLOGGING and __WXMAC__  defined for debugging.h
+    #define TRAP asm("trap")
+    #define LOGIT wxLogMessage
+    #define wxLogDebug wxLogMessage
    #endif
 #endif
 

@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version--------------------------
-#define VERSION "1.0.8 2006/12/14"
+#define VERSION "1.0.9 2006/12/19"
 // -----------------------------------
 class MyDialog;
 
@@ -577,7 +577,8 @@ private:
 //          5) Disallowed single key cmdStrings in wxKeyMonitorTextCtrl::OnKey()
 //          6) Reduced size of .ini fileName
 //          7) Fixed broken OnKey() to accept function keys w/o Ctrl- Alt- or Shift-
-//  Commit  1.0.8 2006/12/19
+//  Commit  1.0.9 2006/12/19
 //          8) Removed dependency on event EVT_APP_STARTUP_DONE to avoid "uninitialized" crashes
+//          9) Set all EOL to dos ala TimS instructions & {svn propset eol-style native" *.h and *.cpp
 // ----------------------------------------------------------------------------
 
