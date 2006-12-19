@@ -282,6 +282,9 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 
     Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
 
+    // so we can access post-processed project's search dirs
+    compiler->Init(project);
+
     // get project include dirs
     for (unsigned int i = 0; i < project->GetIncludeDirs().GetCount(); ++i)
     {
@@ -310,6 +313,21 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
         ProjectBuildTarget* target = project->GetBuildTarget(i);
         if (target)
         {
+            // post-processed search dirs (from build scripts)
+            for (unsigned int ti = 0; ti < compiler->GetCompilerSearchDirs(target).GetCount(); ++ti)
+            {
+                wxString out = compiler->GetCompilerSearchDirs(target)[ti];
+                wxFileName dir(out);
+                wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
+                if(NormalizePath(dir,base))
+                {
+                    parser->AddIncludeDir(dir.GetFullPath());
+//                    Manager::Get()->GetMessageManager()->DebugLog(_T("Parser tgt dir: ") + dir.GetFullPath());
+                }
+                else
+                    Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());
+            }
+
             // apply target vars
 //            target->GetCustomVars().ApplyVarsToEnvironment();
             for (unsigned int ti = 0; ti < target->GetIncludeDirs().GetCount(); ++ti)

@@ -39,6 +39,8 @@ void CompilerCommandGenerator::Init(cbProject* project)
     m_RCFlags.clear();
     m_Backticks.clear();
 
+    m_CompilerSearchDirs.clear();
+
     // access the default compiler
     Compiler* compiler = CompilerFactory::GetDefaultCompiler();
     if (!compiler)
@@ -69,6 +71,10 @@ void CompilerCommandGenerator::Init(cbProject* project)
     // reset failed-scripts arrays
     m_NotLoadedScripts.Clear();
     m_ScriptsWithErrors.Clear();
+
+    // change to the project's base dir so scripts can be found
+    // (they 're always stored relative to the base dir)
+    wxSetWorkingDirectory(project->GetBasePath());
 
     // backup project settings
     bool projectWasModified = project->GetModified();
@@ -408,6 +414,11 @@ wxString CompilerCommandGenerator::SetupIncludeDirs(Compiler* compiler, ProjectB
 		wxArrayString tgtSearchDirs = target->GetIncludeDirs();
 		wxArrayString searchDirs;
         searchDirs = GetOrderedOptions(target, ortIncludeDirs, prjSearchDirs, tgtSearchDirs);
+        // replace vars
+        for (unsigned int x = 0; x < searchDirs.GetCount(); ++x)
+        {
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(searchDirs[x], target);
+        }
         m_CompilerSearchDirs.insert(m_CompilerSearchDirs.end(), std::make_pair(target, searchDirs));
 
         // target dirs
