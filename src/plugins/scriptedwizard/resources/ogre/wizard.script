@@ -123,13 +123,13 @@ function SetupProject(project)
     {
         if (!OgreIsSource) // SDK
         {
-            project.AddIncludeDir(OgrePath + _T("/stlport/stlport"));
+//            project.AddIncludeDir(OgrePath + _T("/stlport/stlport"));
             project.AddIncludeDir(OgrePath + _T("/include"));
             project.AddIncludeDir(OgrePath + _T("/samples/include"));
             project.AddIncludeDir(OgrePath + _T("/samples/refapp/include"));
             project.AddLibDir(OgrePath + _T("/lib"));
-            project.AddCompilerOption(_T("-D_STLP_NO_CUSTOM_IO"));
-            project.AddCompilerOption(_T("-D_STLP_USE_DYNAMIC_LIB"));
+//            project.AddCompilerOption(_T("-D_STLP_NO_CUSTOM_IO"));
+//            project.AddCompilerOption(_T("-D_STLP_USE_DYNAMIC_LIB"));
         }
 
         project.AddCompilerOption(_T("-mthreads"));
@@ -138,10 +138,10 @@ function SetupProject(project)
         project.AddCompilerOption(_T("-fident"));
         project.AddCompilerOption(_T("-DWIN32"));
         project.AddCompilerOption(_T("-D_WINDOWS"));
-        project.AddLinkLib(_T("opengl32"));
-        project.AddLinkLib(_T("gdi32"));
-        project.AddLinkLib(_T("user32"));
-        project.AddLinkLib(_T("kernel32"));
+//        project.AddLinkLib(_T("opengl32"));
+//        project.AddLinkLib(_T("gdi32"));
+//        project.AddLinkLib(_T("user32"));
+//        project.AddLinkLib(_T("kernel32"));
 
         // help the linker
         project.AddLinkerOption(_T("-Wl,--enable-runtime-pseudo-reloc"));
@@ -193,12 +193,12 @@ function SetupProject(project)
         if (PLATFORM == PLATFORM_MSW)
         {
             target.AddCompilerOption(_T("-D_DEBUG"));
-            // windows SDK uses STLport
-            if (!OgreIsSource)
-            {
-                target.AddCompilerOption(_T("-D_STLP_DEBUG"));
-                target.AddLinkLib(_T("stlportstlg.5.0"));
-            }
+//            // windows SDK uses STLport
+//            if (!OgreIsSource)
+//            {
+//                target.AddCompilerOption(_T("-D_STLP_DEBUG"));
+//                target.AddLinkLib(_T("stlportstlg.5.0"));
+//            }
         }
         if (OgreIsSource)
             target.AddLibDir(OgrePath + _T("/OgreMain/lib/Debug"));
@@ -230,9 +230,9 @@ function SetupProject(project)
         if (PLATFORM == PLATFORM_MSW)
         {
             target.AddCompilerOption(_T("-DNDEBUG"));
-            // windows SDK uses STLport
-            if (!OgreIsSource)
-                target.AddLinkLib(_T("stlport.5.0"));
+//            // windows SDK uses STLport
+//            if (!OgreIsSource)
+//                target.AddLinkLib(_T("stlport.5.0"));
         }
         if (OgreIsSource)
             target.AddLibDir(OgrePath + _T("/OgreMain/lib/Release"));
