@@ -35,9 +35,6 @@
 			<Add directory="../../../sdk" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 		</Compiler>
-		<ResourceCompiler>
-			<Add directory="$(#WX.include)" />
-		</ResourceCompiler>
 		<Linker>
 			<Add library="libcodeblocks.a" />
 			<Add directory="../../../devel" />

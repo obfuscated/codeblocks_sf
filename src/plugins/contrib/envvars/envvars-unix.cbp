@@ -37,9 +37,6 @@
 			<Add directory="$(#CB)/sdk/wxscintilla/include" />
 			<Add directory="$(#CB.INCLUDE)/wxscintilla/include" />
 		</Compiler>
-		<ResourceCompiler>
-			<Add directory="$(#WX.include)" />
-		</ResourceCompiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="codeblocks" />

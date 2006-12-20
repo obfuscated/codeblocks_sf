@@ -35,9 +35,6 @@
 			<Add directory="../../../sdk/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 		</Compiler>
-		<ResourceCompiler>
-			<Add directory="$(#WX.include)" />
-		</ResourceCompiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="txml" />
