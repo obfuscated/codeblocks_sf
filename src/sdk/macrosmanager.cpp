@@ -398,8 +398,8 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
     {
         replace.Empty();
 
-        wxString search = m_re_dos.GetMatch(buffer, 1);
-        wxString var = m_re_dos.GetMatch(buffer, 2).Upper();
+        wxString search = m_re_dos.GetMatch(buffer, 2);
+        wxString var = m_re_dos.GetMatch(buffer, 3).Upper();
 
         if (var.GetChar(0) == _T('#'))
         {
