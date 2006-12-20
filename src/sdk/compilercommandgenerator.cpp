@@ -185,8 +185,6 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
             compilerStr = compiler->GetPrograms().C;
         else if (pf->compilerVar.Matches(_T("WINDRES")))
             compilerStr = compiler->GetPrograms().WINDRES;
-        else
-            return;
     }
     else
     {
@@ -196,6 +194,18 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
         else
             compilerStr = compiler->GetPrograms().CPP;
     }
+
+    // check that we have valid compiler/linker program names (and are indeed needed by the macro)
+    if ((compilerStr.IsEmpty() && macro.Contains(_T("$compiler"))) ||
+        (compiler->GetPrograms().LD.IsEmpty() && macro.Contains(_T("$linker"))) ||
+        (compiler->GetPrograms().LIB.IsEmpty() && macro.Contains(_T("$lib_linker"))) ||
+        (compiler->GetPrograms().WINDRES.IsEmpty() && macro.Contains(_T("$rescomp"))))
+    {
+        DBGLOG(_T("GenerateCommandLine: no executable found! (file=%s)"), file.c_str());
+        macro.Clear();
+        return;
+    }
+
     FixPathSeparators(compiler, compilerStr);
 
     wxString fileInc;

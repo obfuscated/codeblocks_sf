@@ -110,8 +110,10 @@ MyFilesArray DirectCommands::GetProjectFilesSortedByWeight(ProjectBuildTarget* t
         if (target && (pf->buildTargets.Index(target->GetTitle()) == wxNOT_FOUND))
             continue;
         files.Add(pf);
-        if(m_doYield)
-            Manager::Yield();
+
+        // Why was this here?!?
+//        if(m_doYield)
+//            Manager::Yield();
     }
     files.Sort(MySortProjectFilesByWeight);
     return files;
@@ -220,6 +222,8 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
             wxRemoveFile(pfd.object_file_absolute_native);
         }
     }
+    else
+        ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Skipping file (no compiler program set): ") + pfd.source_file_native);
     return ret;
 }
 
@@ -281,6 +285,8 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
         }
         AddCommandsToArray(compilerCmd, ret);
     }
+    else
+        ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Skipping file (no compiler program set): ") + filename);
 
     if (!linkerCmd.IsEmpty())
     {
@@ -296,6 +302,8 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
         }
         AddCommandsToArray(linkerCmd, ret, true);
     }
+    else
+        ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Skipping linking (no linker program set): ") + exe_filename);
     return ret;
 }
 
@@ -487,6 +495,8 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     if (AreExternalDepsOutdated(out.GetFullPath(), target->GetAdditionalOutputFiles(), target->GetExternalDeps()))
         force = true;
 
+    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
+
     wxString prependHack; // part of the following hack
     if (target->GetTargetType() == ttStaticLib)
     {
@@ -501,7 +511,6 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         //
         // So, we first scan the command for this special case and, if found,
         // set a flag so that the linkfiles array is filled with the correct options
-        Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
         wxString compilerCmd = compiler->GetCommand(ctLinkStaticCmd);
         wxRegEx re(_T("\\$([-+]+)link_objects"));
         if (re.Matches(compilerCmd))
@@ -518,6 +527,15 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
         ProjectFile* pf = files[i];
+
+        // we have to test again for each file if it is to be compiled
+        // and we can't check the file for existence because we 're still
+        // generating the command lines that will create the files...
+        wxString macro = _T("$compiler");
+        compiler->GenerateCommandLine(macro, target, pf, wxEmptyString, wxEmptyString, wxEmptyString, wxEmptyString);
+        if (macro.IsEmpty())
+            continue;
+
         const pfDetails& pfd = pf->GetFileDetails(target);
 
         if (FileTypeOf(pf->relativeFilename) == ftResource)
@@ -536,8 +554,10 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             if (objtime > outputtime)
                 force = true;
         }
-        if(m_doYield)
-            Manager::Yield();
+
+        // Why was this here?
+//        if(m_doYield)
+//            Manager::Yield();
     }
 
     if (!force)
@@ -594,7 +614,6 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
 			cbThrow(ex);
         break;
     }
-    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
     wxString compilerCmd = compiler->GetCommand(ct);
     compiler->GenerateCommandLine(compilerCmd,
                                              target,
@@ -624,6 +643,8 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         // COMPILER_WAIT signal
         AddCommandsToArray(compilerCmd, ret, true);
     }
+    else
+        ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Skipping linking (no linker program set): ") + output);
     return ret;
 }
 
