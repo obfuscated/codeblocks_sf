@@ -142,4 +142,4 @@ wxString cbDragScrollCfg::GetBitmapBaseName() const
     return pngName;
 }
 // ----------------------------------------------------------------------------
-
+//

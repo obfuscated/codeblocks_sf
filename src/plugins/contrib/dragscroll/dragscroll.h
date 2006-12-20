@@ -52,7 +52,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.0.31 2006/10/18"
+#define VERSION "1.0.33 2006/12/19"
 //----------------------------------------
 
 #if defined(dsLOGGING)
@@ -108,6 +108,7 @@ class cbDragScroll : public cbPlugin
 
 	private:
         void OnAppStartupDone(CodeBlocksEvent& event);
+        void OnAppStartupDoneInit();
         void OnDoConfigRequests(wxUpdateUIEvent& event);
 
         bool IsAttachedTo(wxWindow* p);
@@ -354,12 +355,22 @@ private:
 //          Removed all "eq". Conflicted with wxWidgest hash equates
 //          Added (__WXMAC__) to (_WXGTK_)defines to support mac.
 // ----------------------------------------------------------------------------
-//  Commit  1.0.30
+//  Commit  1.0.30 2006/10/16
 //          Add focus follow mouse option for MSW
 // ----------------------------------------------------------------------------
-//  Commit  1.0.31
+//  Commit  1.0.31 2006/10/18
 //          Default Auto focus editor to OFF
 // ----------------------------------------------------------------------------
+//  Commit  1.0.32
+//          Determine RTTI GetClassName() in mouse event
+// ----------------------------------------------------------------------------
+//  Commit  1.0.33 2006/12/19
+//          33) Removed dependency on EVT_APP_STARTUP_DONE
+// ----------------------------------------------------------------------------
+//  ToDo
+//          2006/10/23 Determine attachable windows via RTTI
+// ----------------------------------------------------------------------------
+
 
 
 #endif // DRAGSCROLL_H

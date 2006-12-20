@@ -504,9 +504,19 @@ void cbDragScroll::DetachAll()
 void cbDragScroll::OnAppStartupDone(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-    //attach windows //+v0.6
+    // EVT_APP_STARTUP_DONE
+    //attach windows
     LOGIT(_T("AppStartupDone"));
 
+    OnAppStartupDoneInit();
+
+    event.Skip();
+    return;
+}//OnAppStartupDone
+// ----------------------------------------------------------------------------
+void cbDragScroll::OnAppStartupDoneInit()
+// ----------------------------------------------------------------------------
+{
     if (not GetMouseDragScrollEnabled() )    //v04.14
         return;
 
@@ -515,9 +525,7 @@ void cbDragScroll::OnAppStartupDone(CodeBlocksEvent& event)
         AttachRecursively(Manager::Get()->GetAppWindow());
         m_bNotebooksAttached = true;
     }
-    event.Skip();
-    return;
-}//OnAppStartupDone
+}
 // ----------------------------------------------------------------------------
 void cbDragScroll::OnWindowOpen(wxEvent& event)
 // ----------------------------------------------------------------------------
@@ -525,6 +533,15 @@ void cbDragScroll::OnWindowOpen(wxEvent& event)
     // wxEVT_CREATE entry
     // Have to do this especially for split windows since CodeBlocks does not have
     // events when opening/closing split windows
+
+    wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
+
+    // Some code (at times) is not event.Skip()ing on EVT_APP_STARTUP_DONE
+    // so here we do it ourselves. If not initialized and this is the first
+    // scintilla window, initialize now.
+    if ( (not m_bNotebooksAttached)
+        && ( pWindow->GetName().Lower() == wxT("sciwindow")) )
+        OnAppStartupDoneInit();
 
     // Attach a split window (or any other window)
     if ( m_bNotebooksAttached )
@@ -601,6 +618,14 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
     if ( event.GetEventType() ==  wxEVT_MOUSEWHEEL)
         { event.Skip(); return; }
 
+//    //Returns the string form of the class name.
+//    const wxChar* pClassName = 0;
+//    if (m_pEvtObject)
+//        pClassName = m_pEvtObject->GetClassInfo()->GetClassName();
+//    #ifdef LOGGING
+//     LOGIT( _T("ClassName[%s]"), pClassName );
+//    #endif //LOGGING
+
     cbEditor* ed = 0;
     cbStyledTextCtrl* p_cbStyledTextCtrl = 0;
     cbStyledTextCtrl* pLeftSplitWin = 0;
@@ -666,10 +691,9 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
              //LOGIT(_T("Down X:%d Y:%d"), m_InitY, m_InitX);
             #endif
             // If hiding Right mouse keydown from ListCtrls, return v0.22
+            // RightMouseDown is causing an immediate selection in the control
+            // This stops it.
             if (pDS->GetMouseRightKeyCtrl()) return;
-            //- If Search Results window, hide right mouse click
-            //-if (m_pEvtObject eq pDS->m_pSearchResultsWindow)
-            //-    return;
             event.Skip(); //v0.21
             return;
      }

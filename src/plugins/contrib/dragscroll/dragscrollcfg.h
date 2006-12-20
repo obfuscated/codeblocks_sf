@@ -118,3 +118,4 @@ class cbDragScrollCfg: public cbConfigurationPanel
 };
 
 #endif // DragScrollCfg_H
+//
