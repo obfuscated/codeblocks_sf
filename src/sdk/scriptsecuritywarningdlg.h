@@ -6,6 +6,7 @@
 enum ScriptSecurityResponse
 {
     ssrAllow = 0,
+    ssrAllowAll,
     ssrDeny,
     ssrTrust,
     ssrTrustPermanently

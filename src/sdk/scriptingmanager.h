@@ -42,6 +42,17 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
         friend class Mgr<ScriptingManager>;
         wxCriticalSection cs;
     public:
+        /// Script trusts container struct
+        struct TrustedScriptProps
+        {
+            bool permanent; // store trust in config (permanent trust)
+            wxUint32 crc; // script's contents crc32
+        };
+
+        // script filename -> props
+        /// Script trusts container struct
+        typedef std::map<wxString, TrustedScriptProps> TrustedScripts;
+
         // needed for SqPlus bindings
         ScriptingManager(const ScriptingManager& rhs) { cbThrow(_T("Can't call ScriptingManager's copy ctor!!!")); }
         void operator=(const ScriptingManager& rhs){ cbThrow(_T("Can't assign an ScriptingManager* !!!")); }
@@ -180,6 +191,21 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
           * @see TrustScript()
           */
         void TrustCurrentlyRunningScript(bool permanently);
+
+        /** @brief Remove a script trust.
+          *
+          * @return True if the trust existed and was removed, false if not.
+          */
+        bool RemoveTrust(const wxString& script);
+
+        /** @brief Force refresh of script trusts. */
+        void RefreshTrusts();
+
+        /** @brief Access the script trusts container (const).
+          *
+          * @return The script trusts container.
+          */
+        const TrustedScripts& GetTrustedScripts();
 	private:
         void OnScriptMenu(wxCommandEvent& event);
         void OnScriptPluginMenu(wxCommandEvent& event);
@@ -188,16 +214,6 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
         ScriptingManager();
         ~ScriptingManager();
 
-        // helper struct for script trusts
-        struct TrustedScriptProps
-        {
-            bool store; // store trust in config (permanent trust)
-            wxUint32 crc; // script's contents crc32
-        };
-
-        // container for script trusts
-        // script filename -> props
-        typedef std::map<wxString, TrustedScriptProps> TrustedScripts;
         TrustedScripts m_TrustedScripts;
 
         // container for script menus

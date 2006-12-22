@@ -6,7 +6,7 @@
 #include <wx/settings.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/radiobox.h>
+#include <wx/combobox.h>
 
 ScriptSecurityWarningDlg::ScriptSecurityWarningDlg(wxWindow* parent, const wxString& operation, const wxString& command)
 {
@@ -27,7 +27,7 @@ ScriptSecurityWarningDlg::~ScriptSecurityWarningDlg()
 
 ScriptSecurityResponse ScriptSecurityWarningDlg::GetResponse()
 {
-    return (ScriptSecurityResponse)XRCCTRL(*this, "rgAnswer", wxRadioBox)->GetSelection();
+    return (ScriptSecurityResponse)XRCCTRL(*this, "cmbAnswer", wxComboBox)->GetSelection();
 }
 
 void ScriptSecurityWarningDlg::EndModal(int retCode)

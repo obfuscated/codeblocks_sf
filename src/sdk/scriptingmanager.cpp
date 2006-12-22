@@ -67,23 +67,7 @@ ScriptingManager::ScriptingManager()
 
     sq_setprintfunc(SquirrelVM::GetVMPtr(), ScriptsPrintFunc);
 
-    // load trusted scripts set
-    m_TrustedScripts.clear();
-    ConfigManagerContainer::StringToStringMap myMap;
-    Manager::Get()->GetConfigManager(_T("security"))->Read(_T("/trusted_scripts"), &myMap);
-    ConfigManagerContainer::StringToStringMap::iterator it;
-    for (it = myMap.begin(); it != myMap.end(); ++it)
-    {
-        wxString key = it->second.BeforeFirst(_T('?'));
-        wxString value = it->second.AfterFirst(_T('?'));
-
-        TrustedScriptProps props;
-        props.store = true;
-        unsigned long tmp;
-        value.ToULong(&tmp, 16);
-        props.crc = tmp;
-        m_TrustedScripts.insert(m_TrustedScripts.end(), std::make_pair(key, props));
-    }
+    RefreshTrusts();
 
     // register types
     ScriptBindings::RegisterBindings();
@@ -98,7 +82,7 @@ ScriptingManager::~ScriptingManager()
     TrustedScripts::iterator it;
     for (it = m_TrustedScripts.begin(); it != m_TrustedScripts.end(); ++it)
     {
-        if (!it->second.store)
+        if (!it->second.permanent)
             continue;
         wxString key = wxString::Format(_T("trust%d"), i++);
         wxString value = wxString::Format(_T("%s?%x"), it->first.c_str(), it->second.crc);
@@ -328,7 +312,7 @@ void ScriptingManager::TrustScript(const wxString& script, bool permanently)
     }
 
     TrustedScriptProps props;
-    props.store = permanently;
+    props.permanent = permanently;
     props.crc = wxCrc32::FromFile(script);
 
     m_TrustedScripts.insert(m_TrustedScripts.end(), std::make_pair(script, props));
@@ -337,6 +321,44 @@ void ScriptingManager::TrustScript(const wxString& script, bool permanently)
 void ScriptingManager::TrustCurrentlyRunningScript(bool permanently)
 {
     TrustScript(m_CurrentlyRunningScriptFile, permanently);
+}
+
+bool ScriptingManager::RemoveTrust(const wxString& script)
+{
+    TrustedScripts::iterator it = m_TrustedScripts.find(script);
+    if (it != m_TrustedScripts.end())
+    {
+        // already trusted, remove it from the trusts (we recreate the trust below)
+        m_TrustedScripts.erase(it);
+        return true;
+    }
+    return false;
+}
+
+void ScriptingManager::RefreshTrusts()
+{
+    // reload trusted scripts set
+    m_TrustedScripts.clear();
+    ConfigManagerContainer::StringToStringMap myMap;
+    Manager::Get()->GetConfigManager(_T("security"))->Read(_T("/trusted_scripts"), &myMap);
+    ConfigManagerContainer::StringToStringMap::iterator it;
+    for (it = myMap.begin(); it != myMap.end(); ++it)
+    {
+        wxString key = it->second.BeforeFirst(_T('?'));
+        wxString value = it->second.AfterFirst(_T('?'));
+
+        TrustedScriptProps props;
+        props.permanent = true;
+        unsigned long tmp;
+        value.ToULong(&tmp, 16);
+        props.crc = tmp;
+        m_TrustedScripts.insert(m_TrustedScripts.end(), std::make_pair(key, props));
+    }
+}
+
+const ScriptingManager::TrustedScripts& ScriptingManager::GetTrustedScripts()
+{
+    return m_TrustedScripts;
 }
 
 void ScriptingManager::OnScriptMenu(wxCommandEvent& event)

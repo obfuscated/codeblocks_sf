@@ -25,6 +25,9 @@ namespace ScriptBindings
     	    if (Manager::Get()->GetScriptingManager()->IsCurrentlyRunningScriptTrusted())
                 return true;
 
+            if (Manager::Get()->GetConfigManager(_T("security"))->ReadBool(operation, false))
+                return true;
+
     	    ScriptSecurityWarningDlg dlg(Manager::Get()->GetAppWindow(), operation, descr);
     	    if (dlg.ShowModal() != wxID_OK)
                 return false;
@@ -33,6 +36,10 @@ namespace ScriptBindings
             switch (response)
             {
                 case ssrAllow:
+                    return true;
+
+                case ssrAllowAll:
+                    Manager::Get()->GetConfigManager(_T("security"))->Write(operation, true);
                     return true;
 
                 case ssrTrust: // purposely fall through
@@ -50,7 +57,7 @@ namespace ScriptBindings
         {
         	wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(full_path));
         	NormalizePath(fname, wxEmptyString);
-        	if (!SecurityAllows(_T("CreateDirRecursively"), fname.GetFullPath()))
+        	if (!SecurityAllows(_T("CreateDir"), fname.GetFullPath()))
 				return false;
             return ::CreateDirRecursively(fname.GetFullPath(), perms);
         }
@@ -147,7 +154,7 @@ namespace ScriptBindings
         {
         	wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(filename));
         	NormalizePath(fname, wxEmptyString);
-        	if (!SecurityAllows(_T("WriteFileContents"), fname.GetFullPath()))
+        	if (!SecurityAllows(_T("CreateFile"), fname.GetFullPath()))
 				return false;
             wxFile f(fname.GetFullPath(), wxFile::write);
             return cbWrite(f, contents);
@@ -163,7 +170,7 @@ namespace ScriptBindings
 
         wxString ExecuteAndGetOutput(const wxString& command)
         {
-        	if (!SecurityAllows(_T("ExecuteAndGetOutput"), command))
+        	if (!SecurityAllows(_T("Execute"), command))
 				return wxEmptyString;
 			wxArrayString output;
         	wxExecute(command, output, wxEXEC_NODISABLE);

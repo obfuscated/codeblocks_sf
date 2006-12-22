@@ -24,6 +24,11 @@ BEGIN_EVENT_TABLE(ScriptingSettingsDlg, wxDialog)
     EVT_BUTTON(XRCID("btnBrowseScript"), ScriptingSettingsDlg::OnBrowse)
     EVT_CHECKBOX(XRCID("chkEnableScript"), ScriptingSettingsDlg::OnEnable)
     EVT_CHECKBOX(XRCID("chkRegisterScript"), ScriptingSettingsDlg::OnRegister)
+
+    EVT_LIST_ITEM_SELECTED(XRCID("lstTrustedScripts"), ScriptingSettingsDlg::OnTrustSelection)
+    EVT_LIST_ITEM_DESELECTED(XRCID("lstTrustedScripts"), ScriptingSettingsDlg::OnTrustSelection)
+    EVT_BUTTON(XRCID("btnValidateTrusts"), ScriptingSettingsDlg::OnValidateTrusts)
+    EVT_BUTTON(XRCID("btnDeleteTrust"), ScriptingSettingsDlg::OnDeleteTrust)
 END_EVENT_TABLE()
 
 ScriptingSettingsDlg::ScriptingSettingsDlg(wxWindow* parent)
@@ -38,6 +43,13 @@ ScriptingSettingsDlg::ScriptingSettingsDlg(wxWindow* parent)
     list->InsertColumn(2, _("Menu"), wxLIST_FORMAT_LEFT, 160);
 
     FillScripts();
+
+    list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
+    list->InsertColumn(0, _("Script"), wxLIST_FORMAT_LEFT, 160);
+    list->InsertColumn(1, _("Signature"));
+    list->InsertColumn(2, _("Temp?"));
+
+    FillTrusts();
 }
 
 ScriptingSettingsDlg::~ScriptingSettingsDlg()
@@ -48,6 +60,8 @@ ScriptingSettingsDlg::~ScriptingSettingsDlg()
 void ScriptingSettingsDlg::FillScripts()
 {
     wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
+    list->DeleteAllItems();
+
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("scripting"));
     wxArrayString keys = mgr->EnumerateKeys(_T("/startup_scripts"));
 
@@ -86,6 +100,46 @@ void ScriptingSettingsDlg::UpdateState()
     XRCCTRL(*this, "txtScriptMenu", wxTextCtrl)->Enable(en && se.enabled && se.registered);
 }
 
+void ScriptingSettingsDlg::FillTrusts()
+{
+    wxListCtrl* list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
+    list->DeleteAllItems();
+
+    const ScriptingManager::TrustedScripts& trusts = Manager::Get()->GetScriptingManager()->GetTrustedScripts();
+    ScriptingManager::TrustedScripts::const_iterator it;
+    for (it = trusts.begin(); it != trusts.end(); ++it)
+    {
+        const ScriptingManager::TrustedScriptProps& props = it->second;
+
+        long item = list->InsertItem(list->GetItemCount(), it->first);
+        list->SetItem(item, 1, wxString::Format(_T("%x"), props.crc));
+        list->SetItem(item, 2, !props.permanent ? _("Yes") : _(""));
+    }
+
+    UpdateTrustsState();
+
+    // fill main switches
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("security"));
+    XRCCTRL(*this, "chkMkDir", wxCheckBox)->SetValue(mgr->ReadBool(_T("CreateDir"), false));
+    XRCCTRL(*this, "chkRmDir", wxCheckBox)->SetValue(mgr->ReadBool(_T("RemoveDir"), false));
+    XRCCTRL(*this, "chkCp", wxCheckBox)->SetValue(mgr->ReadBool(_T("CopyFile"), false));
+    XRCCTRL(*this, "chkMv", wxCheckBox)->SetValue(mgr->ReadBool(_T("RenameFile"), false));
+    XRCCTRL(*this, "chkRm", wxCheckBox)->SetValue(mgr->ReadBool(_T("RemoveFile"), false));
+    XRCCTRL(*this, "chkTouch", wxCheckBox)->SetValue(mgr->ReadBool(_T("CreateFile"), false));
+    XRCCTRL(*this, "chkExec", wxCheckBox)->SetValue(mgr->ReadBool(_T("Execute"), false));
+}
+
+void ScriptingSettingsDlg::UpdateTrustsState()
+{
+    wxListCtrl* list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
+    long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+
+    bool en = sel != -1;
+
+    XRCCTRL(*this, "btnDeleteTrust", wxButton)->Enable(en);
+    XRCCTRL(*this, "btnValidateTrusts", wxButton)->Enable(en);
+}
+
 void ScriptingSettingsDlg::EndModal(int retCode)
 {
     if (retCode == wxID_OK)
@@ -101,6 +155,15 @@ void ScriptingSettingsDlg::EndModal(int retCode)
             wxString key = wxString::Format(_T("/startup_scripts/script%d"), i);
             mgr->Write(key, se.SerializeOut());
         }
+
+        mgr = Manager::Get()->GetConfigManager(_T("security"));
+        mgr->Write(_T("CreateDirRecursively"), XRCCTRL(*this, "chkMkDir", wxCheckBox)->GetValue());
+        mgr->Write(_T("RemoveDir"), XRCCTRL(*this, "chkRmDir", wxCheckBox)->GetValue());
+        mgr->Write(_T("CopyFile"), XRCCTRL(*this, "chkCp", wxCheckBox)->GetValue());
+        mgr->Write(_T("RenameFile"), XRCCTRL(*this, "chkMv", wxCheckBox)->GetValue());
+        mgr->Write(_T("RemoveFile"), XRCCTRL(*this, "chkRm", wxCheckBox)->GetValue());
+        mgr->Write(_T("CreateFile"), XRCCTRL(*this, "chkTouch", wxCheckBox)->GetValue());
+        mgr->Write(_T("Execute"), XRCCTRL(*this, "chkExec", wxCheckBox)->GetValue());
     }
 
     wxDialog::EndModal(retCode);
@@ -261,4 +324,36 @@ void ScriptingSettingsDlg::OnBrowse(wxCommandEvent& event)
         XRCCTRL(*this, "txtScript", wxTextCtrl)->SetValue(f.GetFullPath());
     }
     dlg->Destroy();
+}
+
+void ScriptingSettingsDlg::OnTrustSelection(wxListEvent& event)
+{
+    UpdateTrustsState();
+}
+
+void ScriptingSettingsDlg::OnDeleteTrust(wxCommandEvent& event)
+{
+    wxListCtrl* list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
+    long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+
+    wxString script = list->GetItemText(sel);
+    Manager::Get()->GetScriptingManager()->RemoveTrust(script);
+    list->DeleteItem(sel);
+
+    UpdateTrustsState();
+}
+
+void ScriptingSettingsDlg::OnValidateTrusts(wxCommandEvent& event)
+{
+    bool check = true;
+    wxListCtrl* list = XRCCTRL(*this, "lstTrustedScripts", wxListCtrl);
+    for (int i = 0; i < list->GetItemCount(); ++i)
+    {
+        wxString script = list->GetItemText(i);
+        if (!Manager::Get()->GetScriptingManager()->IsScriptTrusted(script))
+            check = false;
+    }
+
+    if (check)
+        cbMessageBox(_("All script trusts are valid!"), _("Information"), wxICON_INFORMATION);
 }

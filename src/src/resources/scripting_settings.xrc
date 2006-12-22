@@ -26,12 +26,22 @@
                           </object>
                           <option>1</option>
                           <flag>wxGROW</flag>
-                          <minsize>320, 160</minsize>
+                          <minsize>340, 160</minsize>
                         </object>
                         <object class="sizeritem">
                           <object class="wxStaticBoxSizer">
                             <label>Options</label>
                             <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxStaticText">
+                                <label>Enabling a script makes it run on application startup. But if you
+register it with a menu item too, then it does not run on startup
+anymore. In this case, it only runs when the specified menu item
+is clicked.</label>
+                              </object>
+                              <flag>wxALL|wxGROW</flag>
+                              <border>5</border>
+                            </object>
                             <object class="sizeritem">
                               <object class="wxBoxSizer">
                                 <orient>wxHORIZONTAL</orient>
@@ -125,11 +135,122 @@
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
-                  <object class="wxStaticText">
-                    <label>Not yet implemented</label>
+                  <object class="wxStaticBoxSizer">
+                    <label>Main security switches</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>When a script tries to perform any of the following operations, it is first checked
+whether it is allowed to do so. If it is not, then you are asked whether to allow it
+or not (on a case-by-case basis).
+By checking a box below, you explicitely allow the releveant operation to be
+performed by any script (without you being asked again).</label>
+                      </object>
+                      <flag>wxALL|wxGROW</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkMkDir">
+                        <label>Create directories</label>
+                      </object>
+                      <flag>wxALL|wxGROW</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkRmDir">
+                        <label>Delete (non-empty) directories</label>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkCp">
+                        <label>Copy files</label>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkMv">
+                        <label>Rename files</label>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkRm">
+                        <label>Delete files</label>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkTouch">
+                        <label>Create new files</label>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkExec">
+                        <label>Launch executables</label>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <border>5</border>
+                    </object>
                   </object>
-                  <flag>wxTOP|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
-                  <border>16</border>
+                  <flag>wxALL|wxGROW</flag>
+                  <border>5</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Trusted scripts (overriding ALL above switches)</label>
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Trusted scripts are allowed to perform any of the above operations unconditionally.
+Make sure you only trust scripts coming from a known source (e.g. written by you)!
+To trust a script, just select the relevant option in the security dialog that pops up
+when it tries to perform any of the above operations (and this operation is not
+allowed).</label>
+                      </object>
+                      <flag>wxALL|wxGROW</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxListCtrl" name="lstTrustedScripts">
+                        <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
+                      </object>
+                      <option>1</option>
+                      <flag>wxALL|wxGROW</flag>
+                      <border>5</border>
+                      <minsize>-1,128</minsize>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnValidateTrusts">
+                            <label>Validate all trusts</label>
+                          </object>
+                        </object>
+                        <object class="spacer">
+                          <size>0,0</size>
+                          <option>1</option>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnDeleteTrust">
+                            <label>Delete trust</label>
+                          </object>
+                        </object>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <border>5</border>
+                    </object>
+                  </object>
+                  <option>1</option>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                  <border>5</border>
                 </object>
               </object>
             </object>

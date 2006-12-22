@@ -40,16 +40,28 @@
                 <minsize>-1,64</minsize>
               </object>
               <object class="sizeritem">
-                <object class="wxRadioBox" name="rgAnswer">
-                  <label>What do you want to do?</label>
-                  <content>
-                    <item>Allow execution of this command</item>
-                    <item>Deny execution of this command</item>
-                    <item>Mark this script as trusted for this session</item>
-                    <item>Mark this script as permanently trusted</item>
-                  </content>
-                  <selection>1</selection>
-                  <focused>1</focused>
+                <object class="wxBoxSizer">
+                  <orient>wxHORIZONTAL</orient>
+                  <object class="sizeritem">
+                    <object class="wxStaticText">
+                      <label>Choose your action:</label>
+                    </object>
+                    <flag>wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                    <border>5</border>
+                  </object>
+                  <object class="sizeritem">
+                    <object class="wxComboBox" name="cmbAnswer">
+                      <content>
+                        <item>ALLOW execution of this command</item>
+                        <item>ALLOW execution of this command for all scripts from now on</item>
+                        <item>DENY execution of this command</item>
+                        <item>Mark this script as TRUSTED for this session</item>
+                        <item>Mark this script as TRUSTED permanently</item>
+                      </content>
+                      <selection>2</selection>
+                      <style>wxCB_READONLY</style>
+                    </object>
+                  </object>
                 </object>
                 <flag>wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
                 <border>16</border>

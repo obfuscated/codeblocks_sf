@@ -40,6 +40,8 @@ class ScriptingSettingsDlg : public wxDialog
     protected:
         void FillScripts();
         void UpdateState();
+        void FillTrusts();
+        void UpdateTrustsState();
         void LoadItem(long item);
         void SaveItem(long item);
 
@@ -52,6 +54,10 @@ class ScriptingSettingsDlg : public wxDialog
         void OnEnable(wxCommandEvent& event);
         void OnRegister(wxCommandEvent& event);
         void OnBrowse(wxCommandEvent& event);
+
+        void OnTrustSelection(wxListEvent& event);
+        void OnDeleteTrust(wxCommandEvent& event);
+        void OnValidateTrusts(wxCommandEvent& event);
 
         ScriptsVector m_ScriptsVector;
         bool m_IgnoreTextEvents;
