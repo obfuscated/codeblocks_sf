@@ -57,7 +57,9 @@ class cbDragScrollCfg: public cbConfigurationPanel
 		    ID_STATICTEXT2,
 		    ID_STATICTEXT3,
 		    ID_STATICTEXT4,
-		    ID_STATICTEXTMRKC
+		    ID_STATICTEXTMRKC,
+		    ID_STATICTEXT5,
+		    ID_MOUSECONTEXTDELAY
 		};
 		//*)
 
@@ -69,7 +71,7 @@ class cbDragScrollCfg: public cbConfigurationPanel
         int  GetMouseDragSensitivity()   { return Sensitivity->GetValue(); }
         int  GetMouseToLineRatio()       { return MouseToLineRatio->GetValue(); }
         int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl->GetValue(); }
-
+        int  GetMouseContextDelay()      { return MouseContextDelay->GetValue(); }
 
         void SetMouseDragScrollEnabled(bool value)
                 { ScrollEnabled->SetValue(value); }
@@ -87,6 +89,8 @@ class cbDragScrollCfg: public cbConfigurationPanel
                 { MouseToLineRatio->SetValue(value); }
         void SetMouseRightKeyCtrl(int value)
                 { MouseRightKeyCtrl->SetValue(value); }
+        void SetMouseContextDelay(int value)
+                { MouseContextDelay->SetValue(value); }
 
 	protected:
 
@@ -110,6 +114,8 @@ class cbDragScrollCfg: public cbConfigurationPanel
 		wxSlider* MouseToLineRatio;
 		wxButton* DoneButton;
 		wxStaticText* StaticTextMRKC;
+		wxStaticText* StaticText5;
+		wxSlider* MouseContextDelay;
 		//*)
 
 	private:

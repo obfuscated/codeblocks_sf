@@ -52,7 +52,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.0.33 2006/12/19"
+#define VERSION "1.0.36 2006/12/22"
 //----------------------------------------
 
 #if defined(dsLOGGING)
@@ -102,6 +102,7 @@ class cbDragScroll : public cbPlugin
         int  GetMouseDragSensitivity()   { return MouseDragSensitivity; }
         int  GetMouseToLineRatio()       { return MouseToLineRatio; }
         int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl; }
+        int  GetMouseContextDelay()      { return MouseContextDelay; }
 
         wxWindow* m_pMS_Window;
         wxWindow* m_pSearchResultsWindow;
@@ -138,6 +139,7 @@ class cbDragScroll : public cbPlugin
         int  MouseDragSensitivity   ;   //Adaptive speed sensitivity
         int  MouseToLineRatio       ;   //Percentage of mouse moves that make a line
         bool MouseRightKeyCtrl      ;   //Hide Right mouse down from ListCtrl windows
+        int  MouseContextDelay      ;   //Linux context menu delay to catch possible mouse scroll move
 
     private:
 		DECLARE_EVENT_TABLE()
@@ -164,6 +166,7 @@ public:
        m_RatioX = 1; m_RatioY = 1;
        m_MouseMoveToLineMoveRatio    = 0.30;
        m_Direction      = -1;
+       m_gtkContextDelay = 240 ;
      }
     ~MyMouseEvents();
 
@@ -181,6 +184,7 @@ private:
     int         m_InitX,  m_InitY;
     // Scroll Direction move -1(mouse direction) +1(reverse mouse direction)
     int         m_Direction;
+    unsigned    m_gtkContextDelay;
 
     bool KeyDown(wxMouseEvent& event)
         { if ( 0 ==  cbDragScroll::pDragScroll->GetMouseDragKey() )
@@ -347,6 +351,10 @@ private:
 //  closed  2006/09/11
 //          Removed all Setfont()'s from config. Removed SetBackGroundColorColor()
 // ----------------------------------------------------------------------------
+//  ToDo
+//          2006/10/23 Determine attachable windows via RTTI
+//          2006/12/19 Add user specified RightKey drag dwell for GTK
+// ----------------------------------------------------------------------------
 //  commit  v0.28 2006/09/11
 // ----------------------------------------------------------------------------
 //  Commit  v0.29 2006/09/22
@@ -367,8 +375,10 @@ private:
 //  Commit  1.0.33 2006/12/19
 //          33) Removed dependency on EVT_APP_STARTUP_DONE
 // ----------------------------------------------------------------------------
-//  ToDo
-//          2006/10/23 Determine attachable windows via RTTI
+//  Commit  1.0.36 2006/12/19 - 2006/12/22
+//          34) Added focus follows mouse for wxGTK
+//          35) Fixed GTK RightMouse scrolling (avoiding Context Menu conflict)
+//          36) Added slider allowing user to set GTK RightMouse scrolling/context menu sensitivity
 // ----------------------------------------------------------------------------
 
 

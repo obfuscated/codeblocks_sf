@@ -96,6 +96,7 @@ void cbDragScroll::OnAttach()
     MouseDragSensitivity    = 5;
     MouseToLineRatio        = 30;
     MouseRightKeyCtrl       = 0 ;
+    MouseContextDelay       = 192;
 
     // Create filename like cbDragScroll.ini
     //memorize the key file name as {%HOME%}\cbDragScroll.ini
@@ -122,6 +123,10 @@ void cbDragScroll::OnAttach()
 	cfgFile.Read(_T("MouseDragSensitivity"),    &MouseDragSensitivity ) ;
 	cfgFile.Read(_T("MouseToLineRatio"),        &MouseToLineRatio ) ;
 	cfgFile.Read(_T("MouseRightKeyCtrl"),       &MouseRightKeyCtrl) ;
+	cfgFile.Read(_T("MouseContextDelay"),       &MouseContextDelay) ;
+
+	// Don't allow less than 100 mils on context/scroll delay.
+	if ( MouseContextDelay < 100) { MouseContextDelay = 100;}
 
     #ifdef LOGGING
         LOGIT(_T("MouseDragScrollEnabled:%d"),  MouseDragScrollEnabled ) ;
@@ -132,6 +137,7 @@ void cbDragScroll::OnAttach()
         LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity ) ;
         LOGIT(_T("MouseToLineRatio:%d"),        MouseToLineRatio ) ;
         LOGIT(_T("MouseRightKeyCtrl:%d"),       MouseRightKeyCtrl ) ;
+        LOGIT(_T("MouseContextDelay:%d"),       MouseContextDelay ) ;
     #endif //LOGGING
 
     // Pointer to "Search Results" Window (first listCtrl window)
@@ -185,6 +191,7 @@ cbConfigurationPanel* cbDragScroll::GetConfigurationPanel(wxWindow* parent)
     pDlg->SetMouseDragSensitivity ( MouseDragSensitivity );
     pDlg->SetMouseToLineRatio ( MouseToLineRatio );
     pDlg->SetMouseRightKeyCtrl ( MouseRightKeyCtrl );
+    pDlg->SetMouseContextDelay ( MouseContextDelay );
 
 
     // when the configuration panel is closed with OK, OnDialogDone() will be called
@@ -205,6 +212,7 @@ void cbDragScroll::OnDialogDone(cbDragScrollCfg* pDlg)
     MouseDragSensitivity    = pDlg->GetMouseDragSensitivity();
     MouseToLineRatio        = pDlg->GetMouseToLineRatio();
     MouseRightKeyCtrl       = pDlg->GetMouseRightKeyCtrl();
+    MouseContextDelay       = pDlg->GetMouseContextDelay();
     #ifdef LOGGING
      LOGIT(_T("MouseDragScrollEnabled:%d"),  MouseDragScrollEnabled);
      LOGIT(_T("MouseEditorFocusEnabled:%d"), MouseEditorFocusEnabled);
@@ -214,6 +222,7 @@ void cbDragScroll::OnDialogDone(cbDragScrollCfg* pDlg)
      LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity);
      LOGIT(_T("MouseToLineRatio:%d"),        MouseToLineRatio);
      LOGIT(_T("MouseRightKeyCtrl:%d"),       MouseRightKeyCtrl);
+     LOGIT(_T("MouseContextDelay:%d"),       MouseContextDelay);
      LOGIT(_T("-----------------------------"));
     #endif //LOGGING
 
@@ -262,6 +271,7 @@ void cbDragScroll::OnDoConfigRequests(wxUpdateUIEvent& event)
 	cfgFile.Write(_T("MouseDragSensitivity"),    MouseDragSensitivity ) ;
 	cfgFile.Write(_T("MouseToLineRatio"),        MouseToLineRatio ) ;
 	cfgFile.Write(_T("MouseRightKeyCtrl"),       MouseRightKeyCtrl ) ;
+	cfgFile.Write(_T("MouseContextDelay"),       MouseContextDelay ) ;
 
 }
 // ----------------------------------------------------------------------------
@@ -600,11 +610,15 @@ MyMouseEvents::~MyMouseEvents()
     return;
 }//dtor
 
+///////////////////////////////////////////////////////////////////////////////
 // ----------------------------------------------------------------------------
 //      MOUSE SCROLLING for __WXMSW__
 // ----------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
 #ifdef __WXMSW__
+// ----------------------------------------------------------------------------
 void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
+// ----------------------------------------------------------------------------
 {
 
     //remember event window pointer
@@ -795,11 +809,15 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
 }//OnMouseEvent
 #endif //__WXMSW__ scroling
 
+///////////////////////////////////////////////////////////////////////////////
 // ----------------------------------------------------------------------------
 //      MOUSE SCROLLING __WXGTK__
 // ----------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
 #if defined(__WXGTK__) || defined(__WXMAC__)
+// ----------------------------------------------------------------------------
 void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
+// ----------------------------------------------------------------------------
 {
 
     // For efficiency, skip wheel events now
@@ -814,10 +832,21 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
      //LOGIT( _T("m_MouseMoveToLineMoveRatio %f"),m_MouseMoveToLineMoveRatio );
     #endif //LOGGING
 
-     cbEditor* ed = 0;
-     cbStyledTextCtrl* p_cbStyledTextCtrl = 0;
-     ed  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-     if (ed) p_cbStyledTextCtrl = ed->GetControl();
+    cbEditor* ed = 0;
+    cbStyledTextCtrl* p_cbStyledTextCtrl = 0;
+    cbStyledTextCtrl* pLeftSplitWin = 0;
+    cbStyledTextCtrl* pRightSplitWin = 0;
+    ed  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {   p_cbStyledTextCtrl = ed->GetControl();
+        pLeftSplitWin = ed->GetLeftSplitViewControl();
+        pRightSplitWin = ed->GetRightSplitViewControl();
+    }
+
+    // if "focus follows mouse" endabled, set focus to window
+    if (pDS->GetMouseFocusEnabled() )
+        if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)
+            if (m_pEvtObject) ((wxWindow*)m_pEvtObject)->SetFocus();
 
      // set focus to editor window if mouse is in it
     if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)
@@ -853,15 +882,19 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
          LOGIT(_T("Down at  X:%d Y:%d"), m_InitX, m_InitY);
         #endif
 
-        // 1/8 second wait for any mouse moves
-        ::wxMilliSleep(128);
-
-        //allow user some slop moves in case this is a context menu request
         wxPoint mouseXY = ((wxWindow*)m_pEvtObject)->ScreenToClient(wxGetMousePosition());
         LOGIT(_T("Down MoveTo X:%d Y:%d"), mouseXY.x, mouseXY.y);
 
-        scrollx = abs(mouseXY.x - m_InitX) ;
-        scrolly = abs(mouseXY.y - m_InitY) ;
+        // wait for possible mouse moves before poping context menu
+        for (int i = 0; i < pDS->GetMouseContextDelay();)
+        {
+            ::wxMilliSleep(10);    // wait for move (if any)
+            mouseXY = ((wxWindow*)m_pEvtObject)->ScreenToClient(wxGetMousePosition());
+            scrollx = abs(mouseXY.x - m_InitX) ;
+            scrolly = abs(mouseXY.y - m_InitY) ;
+            if ( ( scrolly > 1) || (scrollx > 1) ) break;
+            i += 10;
+        }
 
         // capture middle mouse key for immediate dragging
         if ( (GetUserDragKey() ==  wxMOUSE_BTN_MIDDLE ) && event.MiddleIsDown() )
@@ -910,7 +943,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
     else if ( (m_DragMode!=DRAG_NONE) && event.Dragging() ) //v0.12
     {
 
-        LOGIT( _T("Dragging") ) ;
+        //-LOGIT( _T("Dragging") ) ;
         //make sure user didnt leave client area and lift mouse key
         if ( not KeyIsDown(event))
          {  m_DragMode = DRAG_NONE;

@@ -78,6 +78,16 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	if ( 1 ) MouseToLineRatio->SetTick(1);
 	if ( 10 || 100 ) MouseToLineRatio->SetSelection(10,100);
     //
+	StaticText5 = new wxStaticText(this,ID_STATICTEXT5,_("-- Context Menu Wait for Drag (millisecs) --"),wxDefaultPosition,wxDefaultSize,0);
+	//StaticText4->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
+	MouseContextDelay = new wxSlider(this,ID_MOUSECONTEXTDELAY,100,100,1000,wxDefaultPosition,wxDefaultSize,wxSL_HORIZONTAL|wxSL_AUTOTICKS|wxSL_LABELS);
+	if ( 1 ) MouseContextDelay->SetTickFreq(10,0);
+	if ( 1 ) MouseContextDelay->SetPageSize(10);
+	if ( 0 ) MouseContextDelay->SetLineSize(0);
+	if ( 0 ) MouseContextDelay->SetThumbLength(0);
+	if ( 1 ) MouseContextDelay->SetTick(100);
+	if ( 100 || 1000 ) MouseContextDelay->SetSelection(10,100);
+    //
 	FlexGridSizer1->Add(StaticText1,1,wxALL|wxALIGN_CENTER,5);
 	//FlexGridSizer1->Add(-1,-1,1);
 	FlexGridSizer1->Add(ScrollEnabled,1,wxALL|wxALIGN_CENTER,5);
@@ -96,6 +106,8 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	FlexGridSizer1->Add(Sensitivity,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
 	FlexGridSizer1->Add(StaticText4,1,wxALL|wxALIGN_CENTER,5);
 	FlexGridSizer1->Add(MouseToLineRatio,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
+	FlexGridSizer1->Add(StaticText5,1,wxALL|wxALIGN_CENTER,5);
+	FlexGridSizer1->Add(MouseContextDelay,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
 
 	this->SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
