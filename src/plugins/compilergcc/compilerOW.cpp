@@ -313,17 +313,17 @@ void CompilerOW::Reset()
 
 
     m_Commands[(int)ctCompileObjectCmd]
-        = wxT("$compiler -c $options $includes -fo=$object $file");
+        = wxT("$compiler -q -c $options $includes -fo=$object $file");
     m_Commands[(int)ctCompileResourceCmd]
-        = wxT("$rescomp -r -fo=$resource_output $res_includes $file");
+        = wxT("$rescomp -q -r -fo=$resource_output $res_includes $file");
     m_Commands[(int)ctLinkExeCmd]
-        = wxT("$linker $link_options $libdirs $link_objects -fe=$exe_output $libs $link_resobjects");
+        = wxT("$linker -q $link_options $libdirs $link_objects -fe=$exe_output $libs $link_resobjects");
     m_Commands[(int)ctLinkConsoleExeCmd]
-        = wxT("$linker $link_options $libdirs $link_objects -fe=$exe_output $libs $link_resobjects");
+        = wxT("$linker -q $link_options $libdirs $link_objects -fe=$exe_output $libs $link_resobjects");
     m_Commands[(int)ctLinkDynamicCmd]
-        = wxT("$linker -$libdirs -fe=$exe_output $libs $link_objects $link_options");
+        = wxT("$linker -q -$libdirs -fe=$exe_output $libs $link_objects $link_options");
     m_Commands[(int)ctLinkStaticCmd]
-        = wxT("$lib_linker $static_output $link_objects");
+        = wxT("$lib_linker -q $static_output $link_objects");
     m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     LoadDefaultRegExArray();
