@@ -1143,8 +1143,11 @@ void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, boo
         m_PluginIDsMap[id] = name;
     }
     if (select)
+    {
         DoSelectLayout(name);
-}
+    }
+    m_LastLayoutName = name;
+} // end of SaveViewLayout
 
 bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
 {
@@ -3010,8 +3013,8 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
         {
             m_LayoutViews[gDefaultLayout] = gDefaultLayoutData;
             LoadViewLayout(gDefaultLayout);
-            return;
         }
+        return;
     }
 
     if (cbMessageBox(wxString::Format(_("Are you really sure you want to delete the layout '%s'?"), m_LastLayoutName.c_str()),
