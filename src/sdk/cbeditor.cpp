@@ -1248,15 +1248,35 @@ bool cbEditor::SaveAs()
     int StoredIndex = 0;
     wxString Filters = FileFilters::GetFilterString();
     wxString Path = fname.GetPath();
-    if(mgr)
+    wxString Extension = fname.GetExt();
+    wxString Filter;
+    if (!Extension.IsEmpty())
+    {	// use the current extension as the filter
+        // Select filter belonging to this file type:
+        Extension.Prepend(_T("."));
+        Filter = FileFilters::GetFilterString(Extension);
+    }
+    else if(mgr)
     {
+        // File type is unknown. Select the last used filter:
         wxString Filter = mgr->Read(_T("/file_dialogs/save_file_as/filter"), _T("C/C++ files"));
-        if(!Filter.IsEmpty())
+    }
+    if(!Filter.IsEmpty())
+    {
+        // We found a filter, look up its index:
+        int sep = Filter.find(_T("|"));
+        if (sep != wxNOT_FOUND)
+        {
+            Filter.Truncate(sep);
+        }
+        if (!Filter.IsEmpty())
         {
             FileFilters::GetFilterIndexFromName(Filters, Filter, StoredIndex);
         }
-        if (Path.IsEmpty())
-            Path = mgr->Read(_T("/file_dialogs/save_file_as/directory"), Path);
+    }
+    if(mgr && Path.IsEmpty())
+    {
+        Path = mgr->Read(_T("/file_dialogs/save_file_as/directory"), Path);
     }
     wxFileDialog* dlg = new wxFileDialog(Manager::Get()->GetAppWindow(),
                                          _("Save file"),
