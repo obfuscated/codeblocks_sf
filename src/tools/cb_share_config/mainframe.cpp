@@ -254,7 +254,6 @@ wxString MainFrame::FileSelector()
 #if (WXWIN_COMPATIBILITY_2_4)
     | wxHIDE_READONLY
 #endif
-    );
   );
 
   return filename;
