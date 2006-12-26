@@ -341,7 +341,11 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
         _T(""),
         _T("xrc"),
         _("XRC files (*.xrc)|*.xrc"),
-        wxOPEN|wxFILE_MUST_EXIST|wxHIDE_READONLY);
+        wxOPEN|wxFILE_MUST_EXIST
+#if (WXWIN_COMPATIBILITY_2_4)
+        | wxHIDE_READONLY
+#endif
+        );
 
     if ( FileName.empty() ) return;
 

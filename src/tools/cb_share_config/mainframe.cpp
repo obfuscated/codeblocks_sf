@@ -250,7 +250,11 @@ wxString MainFrame::FileSelector()
     wxT("*.conf"),                                   // default extension
     wxT("Code::Blocks configuration files (*.conf)|*.conf|"
         "All files (*.*)|*.*"),                      // wildcards
-    wxOPEN | wxFILE_MUST_EXIST | wxHIDE_READONLY     // flags
+    wxOPEN | wxFILE_MUST_EXIST                       // flags
+#if (WXWIN_COMPATIBILITY_2_4)
+    | wxHIDE_READONLY
+#endif
+    );
   );
 
   return filename;

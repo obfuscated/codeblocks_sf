@@ -1875,7 +1875,11 @@ void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
                     prj->GetBasePath(),
                     wxEmptyString,
                     FileFilters::GetFilterString(),
-                    wxOPEN | wxMULTIPLE | wxFILE_MUST_EXIST | wxHIDE_READONLY);
+                    wxOPEN | wxMULTIPLE | wxFILE_MUST_EXIST
+#if (WXWIN_COMPATIBILITY_2_4)
+                    | wxHIDE_READONLY
+#endif
+                    );
     dlg.SetFilterIndex(FileFilters::GetIndexForFilterAll());
 
     PlaceWindow(&dlg);

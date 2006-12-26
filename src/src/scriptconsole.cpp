@@ -128,7 +128,11 @@ void ScriptConsole::OnbtnLoadClick(wxCommandEvent& event)
                             path,
                             wxEmptyString,
                             _T("Script files (*.script)|*.script"),
-                            wxOPEN | wxHIDE_READONLY);
+                            wxOPEN
+#if (WXWIN_COMPATIBILITY_2_4)
+                            | wxHIDE_READONLY
+#endif
+                            );
     if (dlg->ShowModal() == wxID_OK)
     {
         mgr->Write(_T("/file_dialogs/file_run_script/directory"), dlg->GetDirectory());

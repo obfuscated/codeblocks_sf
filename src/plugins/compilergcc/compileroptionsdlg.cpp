@@ -1933,7 +1933,11 @@ void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)
                             #else
                             _("All files (*)|*"),
                             #endif
-                            wxOPEN | wxFILE_MUST_EXIST | wxHIDE_READONLY);
+                            wxOPEN | wxFILE_MUST_EXIST
+#if (WXWIN_COMPATIBILITY_2_4)
+                            | wxHIDE_READONLY
+#endif
+                            );
     dlg->SetFilterIndex(0);
 
     PlaceWindow(dlg);
