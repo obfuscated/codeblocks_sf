@@ -243,7 +243,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
     if (!m_pProject)
     {
         // global settings
-        SetTitle(_("Compiler Settings"));
+        SetLabel(_("Compiler Settings"));
         sizer->Show(tree,false);
         sizer->Remove(tree);
         wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
@@ -344,7 +344,11 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
     this->SetSizeHints(min_width+140,min_height,-1,-1);
 #endif
     this->SetSize(-1, -1, 0, 0);
+#if wxCHECK_VERSION(2, 8, 0)
+    this->Centre(wxBOTH | wxCENTRE_ON_SCREEN);
+#else
     this->CentreOnScreen();
+#endif
 } // end of constructor
 
 CompilerOptionsDlg::~CompilerOptionsDlg()
@@ -740,7 +744,7 @@ void CompilerOptionsDlg::DoLoadOptions()
 		if (!m_pTarget)
 		{
 			// project options
-			SetTitle(_("Project build options"));
+			SetLabel(_("Project build options"));
 			IncludeDirs = m_pProject->GetIncludeDirs();
 			ResDirs = m_pProject->GetResourceIncludeDirs();
 			LibDirs = m_pProject->GetLibDirs();
@@ -759,7 +763,7 @@ void CompilerOptionsDlg::DoLoadOptions()
 		else
 		{
 			// target options
-			SetTitle(_("Target build options: ") + m_pTarget->GetTitle());
+			SetLabel(_("Target build options: ") + m_pTarget->GetTitle());
 			IncludeDirs = m_pTarget->GetIncludeDirs();
 			ResDirs = m_pTarget->GetResourceIncludeDirs();
 			LibDirs = m_pTarget->GetLibDirs();

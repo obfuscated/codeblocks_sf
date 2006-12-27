@@ -2,6 +2,7 @@
 
 #include "compilerCYGWIN.h"
 #include <wx/filefn.h>
+#include <wx/log.h>
 #include <wx/msw/registry.h>
 
 CompilerCYGWIN::CompilerCYGWIN()
