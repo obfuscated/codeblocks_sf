@@ -885,14 +885,18 @@ int  ScintillaWX::DoKeyDown(const wxKeyEvent& evt, bool* consumed)
     case WXK_HOME:              key = SCK_HOME;     break;
     case WXK_NUMPAD_END:        // fall through
     case WXK_END:               key = SCK_END;      break;
-    case WXK_NUMPAD_PAGEUP:     // fall through
-    case WXK_PAGEUP:            // fall through
+#if !wxCHECK_VERSION(2, 8, 0)
+    case WXK_PRIOR:     		// fall through
     case WXK_NUMPAD_PRIOR:      // fall through
-    case WXK_PRIOR:             key = SCK_PRIOR;    break;
-    case WXK_NUMPAD_PAGEDOWN:   // fall through
-    case WXK_PAGEDOWN:          // fall through
+#endif
+    case WXK_PAGEUP:            // fall through
+    case WXK_NUMPAD_PAGEUP:     key = SCK_PRIOR;    break;
+#if !wxCHECK_VERSION(2, 8, 0)
+    case WXK_NEXT:   			// fall through
     case WXK_NUMPAD_NEXT:       // fall through
-    case WXK_NEXT:              key = SCK_NEXT;     break;
+#endif
+    case WXK_PAGEDOWN:          // fall through
+    case WXK_NUMPAD_PAGEDOWN:   key = SCK_NEXT;     break;
     case WXK_NUMPAD_DELETE:     // fall through
     case WXK_DELETE:            key = SCK_DELETE;   break;
     case WXK_NUMPAD_INSERT:     // fall through
