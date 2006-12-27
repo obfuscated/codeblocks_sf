@@ -10,7 +10,11 @@
 #include "../wxsproperties.h"
 #include "../widget.h"
 
+#if wxCHECK_VERSION(2, 8, 0)
+WX_DEFINE_ARRAY_INT(bool,wxsArrayBool);
+#else
 WX_DEFINE_ARRAY(bool,wxsArrayBool);
+#endif
 
 class wxsStringListCheckProperty : public wxsProperty
 {
