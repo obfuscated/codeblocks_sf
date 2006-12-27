@@ -517,7 +517,7 @@ protected:
     void ClearClientDatas();
 
     virtual int DoAppend(const wxString& item);
-    virtual int DoInsert(const wxString& item, int pos);
+    virtual int DoInsert(const wxString& item, wxODCIndex pos);
     virtual void DoSetItemClientData(wxODCIndex n, void* clientData);
     virtual void* DoGetItemClientData(wxODCIndex n) const;
     virtual void DoSetItemClientObject(wxODCIndex n, wxClientData* clientData);
