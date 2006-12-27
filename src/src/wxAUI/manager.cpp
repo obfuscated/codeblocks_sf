@@ -14,6 +14,7 @@
 #include <wx/image.h>
 #include "manager.h"
 
+#if (!(wxCHECK_VERSION(2, 8, 0)))
 
 // -- various array and event implementations --
 
@@ -4286,3 +4287,5 @@ void wxFrameManager::OnPaneButton(wxFrameManagerEvent& event)
         Update();
     }
 }
+
+#endif // wxCHECK_VERSION
