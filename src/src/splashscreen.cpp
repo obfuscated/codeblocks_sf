@@ -100,7 +100,11 @@ cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, 
   int h = label.GetHeight();
 
   SetClientSize(w, h);
+#if wxCHECK_VERSION(2, 8, 0)
+  Centre(wxBOTH | wxCENTRE_ON_SCREEN);
+#else
   CentreOnScreen();
+#endif
 
 #ifndef __WXMAC__
   int x = GetPosition().x;

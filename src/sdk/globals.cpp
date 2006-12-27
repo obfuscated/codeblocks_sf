@@ -760,10 +760,17 @@ void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
     if(the_mode == pdlCentre || the_mode == pdlHead)
     {
         if(w->GetParent())
+        {
             w->CentreOnParent(); // poo!
+        }
         else
+        {
+#if wxCHECK_VERSION(2, 8, 0)
+            w->Centre(wxBOTH | wxCENTRE_ON_SCREEN);
+#else
             w->CentreOnScreen();
-
+#endif
+        }
         return;
     }
     else
