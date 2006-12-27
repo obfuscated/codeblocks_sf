@@ -19,6 +19,15 @@
 #include "wx/choice.h"
 //#include "wx/popupwin.h"
 
+// Item counts in GUI components were changed in 2.8.0
+#if wxCHECK_VERSION(2,8,0)
+    #define wxODCCount  unsigned int
+    #define wxODCIndex  unsigned int
+#else
+    #define wxODCCount  int
+    #define wxODCIndex  int
+#endif
+
 class WXDLLEXPORT wxVListBox;
 class WXDLLEXPORT wxTextCtrl;
 class WXDLLEXPORT wxButton;
@@ -474,10 +483,10 @@ public:
 
     // wxControlWithItems methods
     virtual void Clear();
-    virtual void Delete(int n);
-    virtual int GetCount() const;
-    virtual wxString GetString(int n) const;
-    virtual void SetString(int n, const wxString& s);
+    virtual void Delete(wxODCIndex n);
+    virtual wxODCCount GetCount() const;
+    virtual wxString GetString(wxODCIndex n) const;
+    virtual void SetString(wxODCIndex n, const wxString& s);
     virtual int FindString(const wxString& s) const;
     virtual void Select(int n);
     virtual int GetSelection() const;
@@ -509,10 +518,10 @@ protected:
 
     virtual int DoAppend(const wxString& item);
     virtual int DoInsert(const wxString& item, int pos);
-    virtual void DoSetItemClientData(int n, void* clientData);
-    virtual void* DoGetItemClientData(int n) const;
-    virtual void DoSetItemClientObject(int n, wxClientData* clientData);
-    virtual wxClientData* DoGetItemClientObject(int n) const;
+    virtual void DoSetItemClientData(wxODCIndex n, void* clientData);
+    virtual void* DoGetItemClientData(wxODCIndex n) const;
+    virtual void DoSetItemClientObject(wxODCIndex n, wxClientData* clientData);
+    virtual wxClientData* DoGetItemClientObject(wxODCIndex n) const;
 
     // popup interface
     wxComboPopupInterface*  m_popupInterface;

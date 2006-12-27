@@ -565,7 +565,7 @@ void wxComboFrameEventHandler::OnIdle( wxIdleEvent& event )
 
     if (
          win_focused != m_focusStart &&
-         win_focused != popup && 
+         win_focused != popup &&
          win_focused->GetParent() != popup &&
          win_focused != winpopup &&
          win_focused->GetParent() != winpopup &&
@@ -575,7 +575,7 @@ void wxComboFrameEventHandler::OnIdle( wxIdleEvent& event )
     {
         //wxASSERT ( win_focused );
         //wxLogDebug( wxT("FOCUSED: class: %s"), win_focused->GetClassInfo()->GetClassName() );
-        m_combo->HidePopup( false );    
+        m_combo->HidePopup( false );
     }
 
     event.Skip();
@@ -645,7 +645,7 @@ public:
 
 protected:
 
-#if wxODC_USE_TRANSIENT_POPUP 
+#if wxODC_USE_TRANSIENT_POPUP
     virtual void OnDismiss();
 #endif
 
@@ -713,7 +713,7 @@ bool wxComboPopupWindow::ProcessLeftDown(wxMouseEvent& event )
 }
 #endif
 
-#if wxODC_USE_TRANSIENT_POPUP 
+#if wxODC_USE_TRANSIENT_POPUP
 void wxComboPopupWindow::OnDismiss()
 {
     // Tell combo control that we are dismissed.
@@ -2142,7 +2142,7 @@ void wxPGCustomComboBox::SetCustomPaintArea( int width )
         }
 #endif
     }
-    
+
     m_widthCustomPaint = width;
 
 }
@@ -2795,7 +2795,7 @@ void wxPGOwnerDrawnComboBox::Clear()
     GetTextCtrl()->SetValue(wxEmptyString);
 }
 
-void wxPGOwnerDrawnComboBox::Delete(int n)
+void wxPGOwnerDrawnComboBox::Delete(wxODCIndex n)
 {
     if ( m_hasIntValue )
     {
@@ -2817,13 +2817,13 @@ void wxPGOwnerDrawnComboBox::Delete(int n)
     }
 }
 
-int wxPGOwnerDrawnComboBox::GetCount() const
+wxODCCount wxPGOwnerDrawnComboBox::GetCount() const
 {
     wxASSERT ( m_popupInterface );
     return m_popupInterface->GetCount();
 }
 
-wxString wxPGOwnerDrawnComboBox::GetString(int n) const
+wxString wxPGOwnerDrawnComboBox::GetString(wxODCIndexs n) const
 {
     wxCHECK_MSG( (n >= 0) && (n < GetCount()), wxEmptyString, _T("invalid index in wxPGOwnerDrawnComboBox::GetString") );
     return m_popupInterface->GetString(n);
@@ -2833,7 +2833,7 @@ wxString wxPGOwnerDrawnComboBox::GetString(int n) const
     return wxEmptyString;*/
 }
 
-void wxPGOwnerDrawnComboBox::SetString(int n, const wxString& s)
+void wxPGOwnerDrawnComboBox::SetString(wxODCIndex n, const wxString& s)
 {
     wxCHECK_RET( (n >= 0) && (n < GetCount()), _T("invalid index in wxPGOwnerDrawnComboBox::SetString") );
     m_popupInterface->SetString(n,s);
@@ -2900,7 +2900,7 @@ int wxPGOwnerDrawnComboBox::DoAppend(const wxString& item)
     return pos;
 }
 
-int wxPGOwnerDrawnComboBox::DoInsert(const wxString& item, int pos)
+int wxPGOwnerDrawnComboBox::DoInsert(const wxString& item, wxODCIndex pos)
 {
     wxCHECK_MSG(!(GetWindowStyle() & wxCB_SORT), -1, wxT("can't insert into sorted list"));
     wxCHECK_MSG((pos>=0) && (pos<=GetCount()), -1, wxT("invalid index"));
@@ -2910,13 +2910,13 @@ int wxPGOwnerDrawnComboBox::DoInsert(const wxString& item, int pos)
     return pos;
 }
 
-void wxPGOwnerDrawnComboBox::DoSetItemClientData(int n, void* clientData)
+void wxPGOwnerDrawnComboBox::DoSetItemClientData(wxODCIndex n, void* clientData)
 {
     m_clientDatas.SetCount(n+1,NULL);
     m_clientDatas[n] = clientData;
 }
 
-void *wxPGOwnerDrawnComboBox::DoGetItemClientData(int n) const
+void *wxPGOwnerDrawnComboBox::DoGetItemClientData(wxODCIndex n) const
 {
     if ( (int)m_clientDatas.GetCount() > n )
         return m_clientDatas[n];
@@ -2924,12 +2924,12 @@ void *wxPGOwnerDrawnComboBox::DoGetItemClientData(int n) const
     return NULL;
 }
 
-void wxPGOwnerDrawnComboBox::DoSetItemClientObject(int n, wxClientData* clientData)
+void wxPGOwnerDrawnComboBox::DoSetItemClientObject(wxODCIndex n, wxClientData* clientData)
 {
     DoSetItemClientData(n, (void*) clientData);
 }
 
-wxClientData* wxPGOwnerDrawnComboBox::DoGetItemClientObject(int n) const
+wxClientData* wxPGOwnerDrawnComboBox::DoGetItemClientObject(wxODCIndex n) const
 {
     return (wxClientData*) DoGetItemClientData(n);
 }
