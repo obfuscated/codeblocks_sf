@@ -197,12 +197,16 @@ wxString wxKeyBind::NumpadKeyCodeToString(int keyCode)
 
 	case WXK_NUMPAD_HOME:
 		res << wxT("HOME"); break;
+#if !wxCHECK_VERSION(2, 8, 0)
 	case WXK_NUMPAD_PRIOR:
 		res << wxT("PgUp"); break;
+#endif
 	case WXK_NUMPAD_PAGEUP:
 		res << wxT("PAGEUP"); break;
+#if !wxCHECK_VERSION(2, 8, 0)
 	case WXK_NUMPAD_NEXT:
 		res << wxT("PgDn"); break;
+#endif
 	case WXK_NUMPAD_PAGEDOWN:
 		res << wxT("PAGEDOWN"); break;
 	case WXK_NUMPAD_END:
@@ -344,10 +348,12 @@ wxString wxKeyBind::KeyCodeToString(int keyCode)
         res << wxT("MENU"); break;
 	case WXK_CAPITAL:
         res << wxT("CAPITAL"); break;
+#if !wxCHECK_VERSION(2, 8, 0)
 	case WXK_PRIOR:
         res << wxT("PgUp"); break;
 	case WXK_NEXT:
         res << wxT("PgDn"); break;
+#endif
 	case WXK_END:
         res << wxT("END"); break;
 	case WXK_HOME:
