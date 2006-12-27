@@ -2823,7 +2823,7 @@ wxODCCount wxPGOwnerDrawnComboBox::GetCount() const
     return m_popupInterface->GetCount();
 }
 
-wxString wxPGOwnerDrawnComboBox::GetString(wxODCIndexs n) const
+wxString wxPGOwnerDrawnComboBox::GetString(wxODCIndex n) const
 {
     wxCHECK_MSG( (n >= 0) && (n < GetCount()), wxEmptyString, _T("invalid index in wxPGOwnerDrawnComboBox::GetString") );
     return m_popupInterface->GetString(n);
