@@ -37,12 +37,22 @@
 #define wxCMD_MAX_SHORTCUTS				3
 
 #ifndef wxID_INVALID
-
 	// A value used to represent an invalid id...
-	#define wxID_INVALID				-1
+	#define wxID_INVALID -1
 #endif
-
-
+// -----------------------2006/12/29------
+//  defines for wxWidgets 2.8.0
+//  Allow expected PgUp/PgDn behavior under 2.8.0
+//  even when 2.6 compatibility turned off
+// ---------------------------------------
+#if  wxCHECK_VERSION(2, 8, 0)
+#if not WXWIN_COMPATIBILITY_2_6
+    const wxKeyCode WXK_PRIOR = WXK_PAGEUP;
+    const wxKeyCode WXK_NUMPAD_PRIOR = WXK_NUMPAD_PAGEUP;
+    const wxKeyCode WXK_NEXT = WXK_PAGEDOWN ;
+    const wxKeyCode WXK_NUMPAD_NEXT = WXK_NUMPAD_PAGEDOWN ;
+#endif //WXWIN_COMPATIBILITY_2_6
+#endif //wxCHECK_VERSION(2, 8, 0)
 
 // defined later...
 class wxConfigBase;

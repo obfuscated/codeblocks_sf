@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version--------------------------
-#define VERSION "1.0.9 2006/12/19"
+#define VERSION "1.0.10 2006/12/29"
 // -----------------------------------
 class MyDialog;
 
@@ -569,6 +569,16 @@ private:
 //          When merging, verify menu id and delete from array if absent.
 //  open    when menuItems are changed without an attached() window, they arnt saved
 //  closed  The OnKey() fix now doesnt allow F1-F9 etc
+//  open    2006/12/29
+//          If a key is defined in the secondary profile, then user changes to primary
+//          profile, key will be "saved" there also. Next load will have key in wrong
+//          profile. EG. define secondary About=Alt-Shift-H. Then change to primary.
+//          The definition will be saved in primary also.
+//          All defs need to be cleared when a different profile is loaded. This might
+//          cause havoc with dynamic keys
+//  open    The only way to clear a def thats in both the primary and secondary is:
+//          Remove one def, do OK, reload, remove the secondary def. This is probably a
+//          side effect of dynamic merging.
 // ----------------------------------------------------------------------------
 //  Commit  1.0.8 2006/12/14
 //          2) Added code to remove stale dynamic menu items
@@ -581,4 +591,6 @@ private:
 //          8) Removed dependency on event EVT_APP_STARTUP_DONE to avoid "uninitialized" crashes
 //          9) Set all EOL to dos ala TimS instructions & {svn propset eol-style native" *.h and *.cpp
 // ----------------------------------------------------------------------------
-
+//  Commit  1.0.10 2006/12/29
+//          10) redefine WXK_PRIOR and WXK_NEXT for wx2.8.0 allowing expected code behavior
+// ----------------------------------------------------------------------------
