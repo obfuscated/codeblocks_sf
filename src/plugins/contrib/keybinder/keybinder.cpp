@@ -194,15 +194,16 @@ wxString wxKeyBind::NumpadKeyCodeToString(int keyCode)
 		res << wxT("RIGHT"); break;
 	case WXK_NUMPAD_DOWN:
 		res << wxT("DOWN"); break;
-
 	case WXK_NUMPAD_HOME:
 		res << wxT("HOME"); break;
+#if not wxCHECK_VERSION(2, 8, 0)
 	case WXK_NUMPAD_PRIOR:
 		res << wxT("PgUp"); break;
-	case WXK_NUMPAD_PAGEUP:
-		res << wxT("PAGEUP"); break;
 	case WXK_NUMPAD_NEXT:
 		res << wxT("PgDn"); break;
+#endif
+	case WXK_NUMPAD_PAGEUP:
+		res << wxT("PAGEUP"); break;
 	case WXK_NUMPAD_PAGEDOWN:
 		res << wxT("PAGEDOWN"); break;
 	case WXK_NUMPAD_END:
@@ -314,6 +315,13 @@ wxString wxKeyBind::KeyCodeToString(int keyCode)
 		res << wxT("."); break;
 	case WXK_DIVIDE:
 		res << wxT("/"); break;
+
+#if not wxCHECK_VERSION(2, 8, 0)
+	case WXK_PRIOR:
+        res << wxT("PgUp"); break;
+	case WXK_NEXT:
+        res << wxT("PgDn"); break;
+#endif
 	case WXK_PAGEUP:
 		res << wxT("PAGEUP"); break;
 	case WXK_PAGEDOWN:
@@ -344,10 +352,6 @@ wxString wxKeyBind::KeyCodeToString(int keyCode)
         res << wxT("MENU"); break;
 	case WXK_CAPITAL:
         res << wxT("CAPITAL"); break;
-	case WXK_PRIOR:
-        res << wxT("PgUp"); break;
-	case WXK_NEXT:
-        res << wxT("PgDn"); break;
 	case WXK_END:
         res << wxT("END"); break;
 	case WXK_HOME:

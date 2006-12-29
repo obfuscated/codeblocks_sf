@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version--------------------------
-#define VERSION "1.0.10 2006/12/29"
+#define VERSION "1.0.11 2006/12/29"
 // -----------------------------------
 class MyDialog;
 
@@ -591,6 +591,7 @@ private:
 //          8) Removed dependency on event EVT_APP_STARTUP_DONE to avoid "uninitialized" crashes
 //          9) Set all EOL to dos ala TimS instructions & {svn propset eol-style native" *.h and *.cpp
 // ----------------------------------------------------------------------------
-//  Commit  1.0.10 2006/12/29
+//  Commit  1.0.11 2006/12/29
 //          10) redefine WXK_PRIOR and WXK_NEXT for wx2.8.0 allowing expected code behavior
+//          11) remove case stmts for wx2.8.0
 // ----------------------------------------------------------------------------
