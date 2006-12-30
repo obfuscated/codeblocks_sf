@@ -190,40 +190,54 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
 // ----------------------------------------------------------------------------
 // RebuildMenuitem
 // ----------------------------------------------------------------------------
-wxMenuItem* wxMenuCmd::RebuildMenuitem(wxMenuItem* pMnuItem)
-{//+v0.4.25 WXMSW
-   // Since wxWidgets 2.6.3, we don't have to rebuild the menuitem
-   // to preserve the bitmapped menu icon.
-    return pMnuItem;
-
-}//RebuildMenuitem
+//wxMenuItem* wxMenuCmd::RebuildMenuitem(wxMenuItem* pMnuItem)
+//{//+v0.4.25 WXMSW
+//   // Since wxWidgets 2.6.3, we don't have to rebuild the menuitem
+//   // to preserve the bitmapped menu icon.
+//    return pMnuItem;
+//
+//}//RebuildMenuitem
 // ----------------------------------------------------------------------------
 // The following routine was used when wxWidgets would not SetText()
 // without clobbering the menu Bitmap icon
 // ----------------------------------------------------------------------------
-//wxMenuItem* wxMenuCmd::RebuildMenuitem(wxMenuItem* pMnuItem)
-//{//+v0.4.6 WXMSW
-//	// ---------------------------------------------------------------
-//	//  Do it the slow/hard way, remove and delete the menu item
-//	// ---------------------------------------------------------------
-//    wxMenu* pMenu = pMnuItem->GetMenu();
-//    wxMenuItemList items = pMenu->GetMenuItems();
-//    int pos = items.IndexOf(pMnuItem);
-//   // rebuild the menuitem
-//    wxMenuItem* pnewitem = new wxMenuItem(pMenu, m_nId, pMnuItem->GetText(),
-//                pMnuItem->GetHelp(), pMnuItem->GetKind(),
-//                pMnuItem->GetSubMenu() );
-//    pnewitem->SetBitmap(pMnuItem->GetBitmap() );
-//    pnewitem->SetFont(pMnuItem->GetFont() );
-//    // remove the menuitem
-//    pMenu->Destroy(pMnuItem);
-//    // update keybinder array menu item pointer
-//    m_pItem = pnewitem;
-//    // put the menuitem back on the menu
-//    pMenu->Insert(pos, pnewitem);
-//    return pnewitem;
-//
-//}//RebuildMenuitem
+wxMenuItem* wxMenuCmd::RebuildMenuitem(wxMenuItem* pMnuItem)
+{//Reinstated v1.0.13 2006/12/30 for wx2.6.3 w/fixes and wx2.8.0
+ // which now cause the same problem as 2.6.2
+	// ---------------------------------------------------------------
+	//  Do it the slow/hard way, remove and delete the menu item
+	// ---------------------------------------------------------------
+    wxMenu* pMenu = pMnuItem->GetMenu();
+    wxMenuItemList items = pMenu->GetMenuItems();
+    int pos = items.IndexOf(pMnuItem);
+   // rebuild the menuitem
+    wxMenuItem* pnewitem = new wxMenuItem(pMenu, m_nId, pMnuItem->GetText(),
+                pMnuItem->GetHelp(), pMnuItem->GetKind(),
+                pMnuItem->GetSubMenu() );
+    pnewitem->SetBitmap(pMnuItem->GetBitmap() );
+    pnewitem->SetFont(pMnuItem->GetFont() );
+   #if wxUSE_OWNER_DRAWN    //TimS 2006/12/30 v1.0.13
+    if ( pMnuItem->IsOwnerDrawn() )
+    {
+        pnewitem->SetOwnerDrawn(true);
+        pnewitem->SetMarginWidth(pMnuItem->GetMarginWidth());
+        pnewitem->SetDisabledBitmap(pMnuItem->GetDisabledBitmap());
+        if (pMnuItem->IsCheckable())
+        {
+            pnewitem->SetCheckable(true);
+            pnewitem->SetBitmaps(pMnuItem->GetBitmap(true), pMnuItem->GetBitmap(false));
+        }
+    }
+   #endif
+    // remove the menuitem
+    pMenu->Destroy(pMnuItem);
+    // update keybinder array menu item pointer
+    m_pItem = pnewitem;
+    // put the menuitem back on the menu
+    pMenu->Insert(pos, pnewitem);
+    return pnewitem;
+
+}//RebuildMenuitem
 #endif //#if defined( __WXMSW__ )
 // ----------------------------------------------------------------------------
 bool wxMenuCmd::IsNumericMenuItem(wxMenuItem* pwxMenuItem)   //v0.2

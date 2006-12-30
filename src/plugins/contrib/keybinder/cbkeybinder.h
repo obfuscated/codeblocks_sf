@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version--------------------------
-#define VERSION "1.0.12 2006/12/29"
+#define VERSION "1.0.13 2006/12/30"
 // -----------------------------------
 class MyDialog;
 
@@ -567,19 +567,25 @@ private:
 //          A: Forget it. It'll wipe out the user secondary command settings.
 //  closed  2006/12/12
 //          When merging, verify menu id and delete from array if absent.
-//  open    when menuItems are changed without an attached() window, they arnt saved
+//  closed  when menuItems are changed without an attached() window, they arnt saved
+//          A: no window was being attached at OnLoad() & UpdateArr(), so UpdateAllCmd()
+//          was not being run. "flatnotebook" named had changed to "flat notebook"
 //  closed  The OnKey() fix now doesnt allow F1-F9 etc
-//  open    2006/12/29
+//  closed  2006/12/29
 //          If a key is defined in the secondary profile, then user changes to primary
 //          profile, key will be "saved" there also. Next load will have key in wrong
 //          profile. EG. define secondary About=Alt-Shift-H. Then change to primary.
 //          The definition will be saved in primary also.
 //          All defs need to be cleared when a different profile is loaded. This might
 //          cause havoc with dynamic keys
-//  open    The only way to clear a def thats in both the primary and secondary is:
+//          A: fixed, see next two items.
+//  closed  The only way to clear a def thats in both the primary and secondary is:
 //          Remove one def, do OK, reload, remove the secondary def. This is probably a
 //          side effect of dynamic merging.
-//  open    Deleteing a secondary profile fails when no keys were changed.
+//          A: caused by merging before invoking UpdateArr() in OnLoad().
+//  closed  Deleteing a secondary profile fails when no keys were changed.
+//          A: caused by profile compare code in OnKeybindingsDialogDone() reporting
+//             no changes even when a secondary profile was deleted.
 // ----------------------------------------------------------------------------
 //  Commit  1.0.8 2006/12/14
 //          2) Added code to remove stale dynamic menu items
@@ -597,4 +603,9 @@ private:
 //          11) remove case stmts for wx2.8.0
 //          12) Fixed secondary profile keys leaking into primary profile
 //              Fixed inability to delete secondary profiles
+//  Commit  1.0.13 2006/12/30
+//          13) Re-instated 2.6.2 version of RebuildMenuItem() with TimS additions
+//              to solve missing menu icon problem (wx2.6.2 dejavu).
+//              Completely rebuilds menuItems with changed shortcut and a bitmapped icon.
+//              Works with wx2.6.3 w/fixes and wx2.8.0 according to TimS.
 // ----------------------------------------------------------------------------
