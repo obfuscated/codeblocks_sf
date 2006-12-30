@@ -167,7 +167,7 @@ void ClassBrowserBuilderThread::BuildTree()
 
 void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemId parent)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if (TestDestroy() || Manager::IsAppShuttingDown() || (!(parent.IsOk())))
         return;
 
     // recursively enters all existing nodes and deletes the node if the token it references
@@ -175,7 +175,7 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
 
     // we 'll loop backwards so we can delete nodes without problems
     wxTreeItemId existing = tree->GetLastChild(parent);
-    while (existing)
+    while (existing.IsOk())
     {
         // recurse
         if (tree->ItemHasChildren(existing))
@@ -427,7 +427,7 @@ bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(Token* token, int ki
 
 void ClassBrowserBuilderThread::SelectNode(wxTreeItemId node)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if (TestDestroy() || Manager::IsAppShuttingDown() || (!(node.IsOk())))
         return;
 
     m_pTreeBottom->Freeze();

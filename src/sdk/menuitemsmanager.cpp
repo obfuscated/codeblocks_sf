@@ -67,11 +67,11 @@ wxMenuItem* MenuItemsManager::Insert(wxMenu* parent, int index, int id, const wx
 {
     if (!parent)
         return 0;
-    wxMenuItem* ni = new wxMenuItem(0L, id, caption, helptext);
+    wxMenuItem* ni = new wxMenuItem(parent, id, caption, helptext);
     m_MenuItems.Add(ni);
     parent->Insert(index, ni);
     return ni;
-}
+} // end of Insert
 
 /** @brief Clear all managed menu items
   */
@@ -90,7 +90,7 @@ void MenuItemsManager::Clear()
         }
     }
     m_MenuItems.Clear();
-}
+} // end of Clear
 
 /** @brief Create menu path from string
   * @param menuPath The full menu path. This can be separated by slashes (/)
@@ -177,7 +177,7 @@ wxMenuItem* MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
             {
                 if (needsSep)
                 {
-                    wxMenuItem* item = new wxMenuItem(0, wxID_SEPARATOR);
+                    wxMenuItem* item = new wxMenuItem(menu, wxID_SEPARATOR);
                     menu->Insert(insert ? insertIndex : menu->GetMenuItemCount(), item);
                 }
 
@@ -189,7 +189,7 @@ wxMenuItem* MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
                 else
                 {
                     wxMenu* sub = new wxMenu;
-                    wxMenuItem* item = new wxMenuItem(0, -1, current, wxEmptyString, wxITEM_NORMAL, sub);
+                    wxMenuItem* item = new wxMenuItem(menu, -1, current, wxEmptyString, wxITEM_NORMAL, sub);
                     menu->Insert(insert ? insertIndex : menu->GetMenuItemCount(), item);
                     menu = sub;
                 }
@@ -199,4 +199,4 @@ wxMenuItem* MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
         pos = nextPos; // prepare for next loop
     }
     return 0;
-}
+} // end of CreateFromString
