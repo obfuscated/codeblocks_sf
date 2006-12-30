@@ -1075,7 +1075,7 @@ void wxKeyBinder::Attach(wxWindow *p)
 
     if (wxNOT_FOUND == usableWindows.Index(_T("*"),false)) //+v0.4.4 debugging
     if (wxNOT_FOUND == usableWindows.Index(windowName,false)) //+v0.4.2
-     {  wxLogDebug(wxT("wxKeyBinder::Attach skipping [%s]"), p->GetName().c_str());
+     {  //wxLogDebug(wxT("wxKeyBinder::Attach skipping [%s]"), p->GetName().c_str());
         return;
      }
 
@@ -1501,10 +1501,12 @@ bool wxKeyProfileArray::Save(wxConfigBase *cfg, const wxString &key, bool bClean
 		return FALSE;
 
 	for (int i=0; i<GetCount(); i++)
-
+    {
+        LOGIT(wxT("wxKeyProfileArray::Save profile[%d]"),i);
 		// save all our elements into a subkey of the given key
 		b &= Item(i)->Save(cfg, basekey + wxKEYPROFILE_CONFIG_PREFIX +
 									wxString::Format(wxT("%d"), i), bCleanOld);
+    }//for
 
 	// if required, remove any previously stored key profile...
 	if (bCleanOld) {

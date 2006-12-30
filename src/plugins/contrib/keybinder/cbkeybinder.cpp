@@ -109,8 +109,16 @@ void cbKeyBinder::OnAttach()
    #if LOGGING
     //wxKeyBinder::usableWindows.Add(_T("*"));                 //+v0.4.4
    #endif
+   // -----------------------------------------------
+   // At least one window must be attached for the menus
+   // to get update at startup. Thus "flat notebook"
+   // -----------------------------------------------
     wxKeyBinder::usableWindows.Add(_T("sciwindow"));           //+v0.4.4
-    wxKeyBinder::usableWindows.Add(_T("flatnotebook"));        //+v0.4.4
+    wxKeyBinder::usableWindows.Add(_T("flat notebook"));        //+v0.4.4
+
+    // CB window name is "frame". Not good for us.
+    // LOGIT(wxT("CodeBlocks AppName[%s]"), pcbWindow->GetName().c_str());
+
     //wxKeyBinder::usableWindows.Add(_T("panel"));             //+v0.4.4
     //wxKeyBinder::usableWindows.Add(_T("list"));              //+v0.4.4
     //wxKeyBinder::usableWindows.Add(_T("listctrl"));          //+v0.4.4
@@ -383,9 +391,6 @@ cbConfigurationPanel* cbKeyBinder::OnKeybindings(wxWindow* parent)
     // MyDialog dtor will re-enable menu merging
     EnableMerge(false);
 
-    // Add or adjust any dynamic menu/key assignments made by plugins etc.
-    MergeDynamicMenus();                                               //v0.4.25
-
     // Set options and invoke the configuation dialog
     // The commented lines are from the original wxKeyBinder
     // They may be useful later
@@ -420,7 +425,7 @@ void cbKeyBinder::OnKeybindingsDialogDone(MyDialog* dlg)
 // ----------------------------------------------------------------------------
 {
     // The configuration panel has run its OnApply() function.
-    // So here it's like we were using ShowModal() and it just returned wxID_OK.
+    // So here it's as if we were using ShowModal() and it just returned wxID_OK.
 
     // Apply user keybinder changes to key profile array as if the
     //  old EVT_BUTTON(wxID_APPLY, wxKeyConfigPanel::OnApplyChanges)
@@ -432,29 +437,35 @@ void cbKeyBinder::OnKeybindingsDialogDone(MyDialog* dlg)
     bool modified = false;
     dlg->m_p->ApplyChanges();
 
+    // -----------Disabled-----------------------------
+    // comparing profiles to avoid excessive processing
+    // temporarily disabled. Need a flag to show that
+    // a secondary/primary profile may have been deleted.
+    // Else we keep applying the old profiles
+    // ------------------------------------------1.0.12--
     // check if any key modifications //v0.4.13
-    wxKeyProfileArray* pNewKBA = new wxKeyProfileArray;
-    *pNewKBA = dlg->m_p->GetProfiles();
-    int newSel = pNewKBA->GetSelProfileIdx();               //+v0.4.24
-    int oldSel = m_pKeyProfArr->GetSelProfileIdx();         //+v0.4.24
-
-    if ( ( newSel == oldSel )                               //+v0.4.24
-        && ( *(pNewKBA->Item(newSel)) == *(m_pKeyProfArr->Item(oldSel)) ) )
-    {
-        LOGIT(_T("DialogDone: NO key changes NewIdx[%d] OldIdx[%d]"),
-                newSel, oldSel);
-    }
-    else
-    {   // update our array (we gave a copy of it to MyDialog)
+//    wxKeyProfileArray* pNewKBA = new wxKeyProfileArray;
+//    *pNewKBA = dlg->m_p->GetProfiles();
+//    int newSel = pNewKBA->GetSelProfileIdx();               //+v0.4.24
+//    int oldSel = m_pKeyProfArr->GetSelProfileIdx();         //+v0.4.24
+//
+//    if ( ( newSel == oldSel )                               //+v0.4.24
+//        && ( *(pNewKBA->Item(newSel)) == *(m_pKeyProfArr->Item(oldSel)) ) )
+//    {
+//        LOGIT(_T("DialogDone: NO key changes NewIdx[%d] OldIdx[%d]"),
+//                newSel, oldSel);
+//    }
+//    else
+//    {   // update our array (we gave a copy of it to MyDialog)
         modified = true;
         *m_pKeyProfArr = dlg->m_p->GetProfiles();
-        LOGIT(_T("DialogDone keys MODIFIED"));
-    }
-    delete pNewKBA;
+//      LOGIT(_T("DialogDone keys MODIFIED"));
+//    }
+//    delete pNewKBA;
     // don't delete "dlg" variable; CodeBlocks will destroy it
 
     //update Windows/EventHanders from changed wxKeyProfile
-    if ( modified || m_MenuModifiedByMerge)
+//    if ( modified || m_MenuModifiedByMerge)
     {   // update attaches and menu items
         UpdateArr(*m_pKeyProfArr) ;
         //Save the key profiles to external storage
@@ -530,21 +541,15 @@ void cbKeyBinder::OnLoad()
 			total += m_pKeyProfArr->Item(i)->GetCmdCount();
 
 		if (total == 0)
-		 {
+        {
             wxString msg;
             msg  	<< wxT("KeyBinder: No keyprofiles have been found...\n")
 					<< strLoadFilename.c_str()
 					<< wxT("\nmay be corrupted.\n")
 					<< wxT("A default keyprofile will be set.");
 			wxMessageBox(msg,wxT("KeyBinder"));
-//			wxKeyProfile *p = new wxKeyProfile(wxT("Default"));
-//			p->ImportMenuBarCmd(m_pMenuBar);
-//			#if LOGGING
-//			  LOGIT(_T("cbKB:OnLoad:Imported MenuBar"));
-//			#endif
-//			m_pKeyProfArr->Add(p);
             Rebind();
-		 }//endif
+		}//endif
         else
         { //all is loaded
             ;
@@ -560,13 +565,10 @@ void cbKeyBinder::OnLoad()
              LOGIT(_T("cbKeyBinder Matched %d MenuItems"), total);
             #endif
 
-            // Add or adjust any dynamic menu/key assignments made by plugins etal.
-            // but had not been saved in the previous session
-            EnableMerge(true);
-            MergeDynamicMenus();                                               //v0.4.25
         }//endelse
 
 		// reattach frames to the loaded keybinder
+		// which updates the menu items to current profile
 		UpdateArr(*m_pKeyProfArr);
 
 	} else {
@@ -626,10 +628,9 @@ void cbKeyBinder::OnSave()
 		for (int i=0; i<m_pKeyProfArr->GetCount(); i++)
 			total += m_pKeyProfArr->Item(i)->GetCmdCount();
         cfg->Flush();
-		//wxMessageBox(wxString::Format(wxT("All the [%d] keyprofiles ([%d] commands ")
-		//	wxT("in total) have been saved in \n\"")+path, //+wxT(".ini\""),
-        //      m_pKeyProfArr->GetCount(), total),
-		//	wxT("Save"));
+		LOGIT(wxString::Format(wxT("All the [%d] keyprofiles ([%d] commands ")
+			wxT("in total) have been saved in \n\"")+path, //+wxT(".ini\""),
+              m_pKeyProfArr->GetCount(), total) );
 
 	 } else {
 
@@ -896,7 +897,8 @@ void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
         #if LOGGING
          LOGIT(_T("cbKB:OnAppStartupDone:Begin initial Key Load"));
         #endif
-        m_bBound=TRUE;
+        // attach to at least one window so menus get updated
+
         OnLoad();
         #if LOGGING
          LOGIT(_T("cbKB:OnAppStartupDone:End initial Key Load"));

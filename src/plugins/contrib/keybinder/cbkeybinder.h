@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version--------------------------
-#define VERSION "1.0.11 2006/12/29"
+#define VERSION "1.0.12 2006/12/29"
 // -----------------------------------
 class MyDialog;
 
@@ -579,6 +579,7 @@ private:
 //  open    The only way to clear a def thats in both the primary and secondary is:
 //          Remove one def, do OK, reload, remove the secondary def. This is probably a
 //          side effect of dynamic merging.
+//  open    Deleteing a secondary profile fails when no keys were changed.
 // ----------------------------------------------------------------------------
 //  Commit  1.0.8 2006/12/14
 //          2) Added code to remove stale dynamic menu items
@@ -591,7 +592,9 @@ private:
 //          8) Removed dependency on event EVT_APP_STARTUP_DONE to avoid "uninitialized" crashes
 //          9) Set all EOL to dos ala TimS instructions & {svn propset eol-style native" *.h and *.cpp
 // ----------------------------------------------------------------------------
-//  Commit  1.0.11 2006/12/29
+//  Commit  1.0.12 2006/12/29
 //          10) redefine WXK_PRIOR and WXK_NEXT for wx2.8.0 allowing expected code behavior
 //          11) remove case stmts for wx2.8.0
+//          12) Fixed secondary profile keys leaking into primary profile
+//              Fixed inability to delete secondary profiles
 // ----------------------------------------------------------------------------
