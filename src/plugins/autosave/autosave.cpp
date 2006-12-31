@@ -96,48 +96,70 @@ void Autosave::OnTimer(wxTimerEvent& e)
         ProjectManager *pm = Manager::Get()->GetProjectManager();
         if(pm && pm->GetActiveProject())
         {
-            cbProject * p = pm->GetActiveProject();
-            if(p && p->GetModified())
+            if(cbProject * p = pm->GetActiveProject())
             {
                 switch(method)
                 {
                     case 0:
                     {
-                        if(::wxRenameFile(p->GetFilename(), p->GetFilename() + _T(".bak")))
-                            if(p->Save())
-                            {
-                                CodeBlocksEvent e(cbEVT_PROJECT_SAVE);
-                                plm->NotifyPlugins(e);
-                            }
+                        if(p->GetModified())
+                        {
+                            if(::wxRenameFile(p->GetFilename(), p->GetFilename() + _T(".bak")))
+                                if(p->Save())
+                                {
+                                    CodeBlocksEvent e(cbEVT_PROJECT_SAVE);
+                                    plm->NotifyPlugins(e);
+                                }
+                        }
+                        wxFileName file = p->GetFilename();
+                        file.SetExt(_T("layout"));
+                        wxString filename = file.GetFullPath();
+                        if(::wxRenameFile(filename, filename + _T(".bak")))
+                            p->SaveLayout();
                         break;
                     }
                     case 1:
                     {
-                        if(p->Save())
+                        if(p->GetModified() && p->Save())
                         {
                             CodeBlocksEvent e(cbEVT_PROJECT_SAVE);
                             plm->NotifyPlugins(e);
                         }
+                        p->SaveLayout();
                         break;
                     }
                     case 2:
                     {
                         if (p->IsLoaded() == false)
                             return;
-                        ProjectLoader loader(p);
-                        if(loader.Save(p->GetFilename() + _T(".save")))
+                        if(p->GetModified())
                         {
-                            CodeBlocksEvent e(cbEVT_PROJECT_SAVE);
-                            plm->NotifyPlugins(e);
+                            ProjectLoader loader(p);
+                            if(loader.Save(p->GetFilename() + _T(".save")))
+                            {
+                                CodeBlocksEvent e(cbEVT_PROJECT_SAVE);
+                                plm->NotifyPlugins(e);
+                            }
+                            p->SetModified(); // the actual project file is still not updated!
                         }
-                        p->SetModified(); // the actual project file is still not updated!
+                        wxFileName file = wxFileName(p->GetFilename());
+                        file.SetExt(_T("layout"));
+                        wxString filename = file.GetFullPath();
+                        wxString temp = filename + _T(".temp");
+                        wxString save = filename + _T(".save");
+                        if(::wxCopyFile(filename, temp))
+                        {
+                            p->SaveLayout();
+                            ::wxRenameFile(filename, save);
+                            ::wxRenameFile(temp, filename);
+                        }
                         break;
                     }
                 }
             }
         }
     }
-else if(e.GetId() == 20000)
+    else if(e.GetId() == 20000)
     {
         int method = Manager::Get()->GetConfigManager(_T("autosave"))->ReadInt(_T("method"));
         EditorManager* em = Manager::Get()->GetEditorManager();
