@@ -52,7 +52,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.0.36 2006/12/22"
+#define VERSION "1.0.38 2007/01/1"
 //----------------------------------------
 
 #if defined(dsLOGGING)
@@ -380,8 +380,10 @@ private:
 //          35) Fixed GTK RightMouse scrolling (avoiding Context Menu conflict)
 //          36) Added slider allowing user to set GTK RightMouse scrolling/context menu sensitivity
 // ----------------------------------------------------------------------------
-
-
+//  Commit  1.0.37
+//          37) Re-instated GTK wxTextCtrl y-axis scrolling
+//              GTK cannot scroll a wxListCtrl
+//          38) Corrected GTK dialog layout
+// ----------------------------------------------------------------------------
 
 #endif // DRAGSCROLL_H
-

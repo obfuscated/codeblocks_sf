@@ -908,9 +908,9 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
             #endif
             if (p_cbStyledTextCtrl && (m_pEvtObject == p_cbStyledTextCtrl) //v0.21
                 && ( ( scrolly > 1) || (scrollx > 1) ))
-                {   m_DragMode = DRAG_START;
-                    return;
-                }
+            {   m_DragMode = DRAG_START;
+                return;
+            }
             // Since scrolling other types of windows doesnt work on GTK
             // just event.Skip()
             //else {  // listctrl windows ALWAYS report 24 pixel y move
@@ -920,7 +920,24 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
             //        return;
             //    }
             //}//endelse
+            else {  // listctrl windows ALWAYS report 24 pixel y move
+                    // when just hitting the mouse button.
+                if ( (scrolly > 1) || (scrollx > 1))
+                {   m_DragMode = DRAG_START;
+                    return;
+                }
+            }//endelse
         }//else wait for movement
+        // --------------------------------
+        // Dont do the following on Linux, it kills all context menus
+        // --------------------------------
+        //// If hiding Right mouse keydown from ListCtrls, return v0.22
+        //// RightMouseDown is causing an immediate selection in the control
+        //// This stops it.
+        //if (pDS->GetMouseRightKeyCtrl()) return;
+        //event.Skip(); //v0.21
+        //return;
+
         //no mouse movements, so pass off to context menu processing
         event.Skip();
         return;
@@ -1010,14 +1027,28 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
                 p_cbStyledTextCtrl->LineScroll (scrollx,scrolly);
         }
         else //use control scrolling
-        {   //NONE of the following works on GTK
+        {
+//            //Returns the string form of the class name.
+//            const wxChar* pClassName = 0;
+//            wxString classname;
+//            if (m_pEvtObject)
+//            {   pClassName = m_pEvtObject->GetClassInfo()->GetClassName();
+//                classname = wxString(pClassName,10);
+//                LOGIT( _T("ClassName[%s]"), classname.c_str() );
+//            }
+            // ---------------------------------
+            //The following works in the BuildLog, but now the SearchResults
             // ---------------------------------
             //use wxTextCtrl scroll for y scrolling
-            if ( scrolly)
+            if ( scrolly )//&& (classname == wxT("wxTextCtrl")) )
+            {   //LOGIT(wxT("ScrollText x:%d y:%d"),scrollx, scrolly );
                 ((wxWindow*)m_pEvtObject)->ScrollLines(scrolly);
-            else  // use listCtrl for x scrolling
-                //LOGIT(wxT("ScrollList x:%d y:%d"),scrollx, scrolly );
-                ((wxListCtrl*)m_pEvtObject)->ScrollList(scrollx,scrolly);
+            }
+            // Following does not work. GTK does not scroll wxListCtrl
+            //else  // use listCtrl for x scrolling
+            //{    LOGIT(wxT("ScrollList x:%d y:%d"),scrollx, scrolly );
+            //    ((wxListCtrl*)m_pEvtObject)->ScrollList(scrollx,scrolly);
+            //}
         }//esle
     }//esle fi (event.Dragging() && m_dragMode != DRAG_NONE)
 

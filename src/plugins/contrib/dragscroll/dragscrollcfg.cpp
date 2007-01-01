@@ -49,7 +49,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	ScrollDirection = new wxRadioBox(this,ID_RADIOBOX1,_("Scroll Direction"),wxDefaultPosition,wxSize(290,70),2,wxRadioBoxChoices_ScrollDirection,1,wxRA_VERTICAL);
 	//ScrollDirection->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
 
-	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Mouse Key To Use"),wxDefaultPosition,wxDefaultSize,0);
+	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Mouse_Key_To_Use"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
 	//StaticText2->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
 
 	MouseKeyChoice = new wxChoice(this,ID_KEYCHOICE,wxDefaultPosition,wxDefaultSize,0,NULL,0);
@@ -87,9 +87,9 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	if ( 0 ) MouseContextDelay->SetThumbLength(0);
 	if ( 1 ) MouseContextDelay->SetTick(100);
 	if ( 100 || 1000 ) MouseContextDelay->SetSelection(10,100);
+	//FlexGridSizer1->Add(-1,-1,1);
     //
 	FlexGridSizer1->Add(StaticText1,1,wxALL|wxALIGN_CENTER,5);
-	//FlexGridSizer1->Add(-1,-1,1);
 	FlexGridSizer1->Add(ScrollEnabled,1,wxALL|wxALIGN_CENTER,5);
 
 	FlexGridSizer1->Add(EditorFocusEnabled,1,wxALL|wxALIGN_CENTER,5);
@@ -98,14 +98,19 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	FlexGridSizer1->Add(MouseRightKeyCtrl,1,(wxALL&~wxBOTTOM)|wxALIGN_CENTER,5);
 	FlexGridSizer1->Add(StaticTextMRKC,1,(wxALL&~wxTOP)|wxALIGN_CENTER,0);
 
-
+	FlexGridSizer1->AddSpacer(2);
 	FlexGridSizer1->Add(ScrollDirection,1,wxALL|wxALIGN_CENTER,5);
+
+	FlexGridSizer1->AddSpacer(1);
 	FlexGridSizer1->Add(StaticText2,1,wxALL|wxALIGN_CENTER,5);
 	FlexGridSizer1->Add(MouseKeyChoice,1,wxALL|wxALIGN_CENTER,5);
+
 	FlexGridSizer1->Add(StaticText3,1,wxALL|wxALIGN_CENTER,5);
 	FlexGridSizer1->Add(Sensitivity,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
+
 	FlexGridSizer1->Add(StaticText4,1,wxALL|wxALIGN_CENTER,5);
 	FlexGridSizer1->Add(MouseToLineRatio,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
+
 	FlexGridSizer1->Add(StaticText5,1,wxALL|wxALIGN_CENTER,5);
 	FlexGridSizer1->Add(MouseContextDelay,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
 
