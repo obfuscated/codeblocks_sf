@@ -376,6 +376,10 @@ namespace ScriptBindings
                 func(&CompileOptionsBase::RemoveCommandsAfterBuild, "RemoveCommandsAfterBuild").
                 func(&CompileOptionsBase::GetAlwaysRunPostBuildSteps, "GetAlwaysRunPostBuildSteps").
                 func(&CompileOptionsBase::SetAlwaysRunPostBuildSteps, "SetAlwaysRunPostBuildSteps").
+                func(&CompileOptionsBase::SetBuildScripts, "SetBuildScripts").
+                func(&CompileOptionsBase::GetBuildScripts, "GetBuildScripts").
+                func(&CompileOptionsBase::AddBuildScript, "AddBuildScript").
+                func(&CompileOptionsBase::RemoveBuildScript, "RemoveBuildScript").
                 func(&CompileOptionsBase::SetVar, "SetVar").
                 func(&CompileOptionsBase::GetVar, "GetVar").
                 func(&CompileOptionsBase::UnsetVar, "UnsetVar").

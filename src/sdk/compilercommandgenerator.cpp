@@ -81,7 +81,7 @@ void CompilerCommandGenerator::Init(cbProject* project)
     CompileTargetBase backup = *(CompileTargetBase*)project;
 
     // project build scripts
-    DoBuildScripts(project, _T("SetBuildOptions"));
+    DoBuildScripts(project, project, _T("SetBuildOptions"));
 
     // for each target
     for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
@@ -113,7 +113,7 @@ void CompilerCommandGenerator::Init(cbProject* project)
         CompileTargetBase backuptarget = *(CompileTargetBase*)target;
 
         // target build scripts
-        DoBuildScripts(target, _T("SetBuildOptions"));
+        DoBuildScripts(project, target, _T("SetBuildOptions"));
 
         m_DefOutput[target] = SetupOutputFilenames(compiler, target);
         m_Inc[target] = SetupIncludeDirs(compiler, target);
@@ -320,15 +320,20 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
 }
 
 /// Apply pre-build scripts for @c base.
-void CompilerCommandGenerator::DoBuildScripts(CompileTargetBase* target, const wxString& funcName)
+void CompilerCommandGenerator::DoBuildScripts(cbProject* project, CompileTargetBase* target, const wxString& funcName)
 {
+	ProjectBuildTarget* bt = dynamic_cast<ProjectBuildTarget*>(target);
     static const wxString clearout_buildscripts = _T("SetBuildOptions <- null;");
     const wxArrayString& scripts = target->GetBuildScripts();
     for (size_t i = 0; i < scripts.GetCount(); ++i)
     {
+    	wxString script_nomacro = scripts[i];
+    	Manager::Get()->GetMacrosManager()->ReplaceMacros(script_nomacro, bt);
+    	script_nomacro = wxFileName(script_nomacro).IsAbsolute() ? script_nomacro : project->GetBasePath() + wxFILE_SEP_PATH + script_nomacro;
+
         // if the script has failed before, skip it
-        if (m_NotLoadedScripts.Index(scripts[i]) != wxNOT_FOUND ||
-            m_ScriptsWithErrors.Index(scripts[i]) != wxNOT_FOUND)
+        if (m_NotLoadedScripts.Index(script_nomacro) != wxNOT_FOUND ||
+            m_ScriptsWithErrors.Index(script_nomacro) != wxNOT_FOUND)
         {
             continue;
         }
@@ -337,9 +342,9 @@ void CompilerCommandGenerator::DoBuildScripts(CompileTargetBase* target, const w
         Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_buildscripts);
 
         // if the script doesn't exist, just return
-        if (!Manager::Get()->GetScriptingManager()->LoadScript(scripts[i]))
+        if (!Manager::Get()->GetScriptingManager()->LoadScript(script_nomacro))
         {
-            m_NotLoadedScripts.Add(scripts[i]);
+            m_NotLoadedScripts.Add(script_nomacro);
             continue;
         }
 
@@ -351,7 +356,7 @@ void CompilerCommandGenerator::DoBuildScripts(CompileTargetBase* target, const w
         catch (SquirrelError& e)
         {
             Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-            m_ScriptsWithErrors.Add(scripts[i]);
+            m_ScriptsWithErrors.Add(script_nomacro);
         }
     }
 }

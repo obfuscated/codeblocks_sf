@@ -752,13 +752,16 @@ void ProjectOptionsDlg::OnScriptsOverviewSelChanged(wxTreeEvent& event)
     FillScripts();
 }
 
-bool ProjectOptionsDlg::IsScriptValid(const wxString& script)
+bool ProjectOptionsDlg::IsScriptValid(ProjectBuildTarget* target, const wxString& script)
 {
     static const wxString clearout_buildscripts = _T("SetBuildOptions <- null;");
     try
     {
+    	wxString script_nomacro = script;
+    	Manager::Get()->GetMacrosManager()->ReplaceMacros(script_nomacro, target);
+    	script_nomacro = wxFileName(script_nomacro).IsAbsolute() ? script_nomacro : m_Project->GetBasePath() + wxFILE_SEP_PATH + script_nomacro;
         Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_buildscripts); // clear previous script's context
-        Manager::Get()->GetScriptingManager()->LoadScript(m_Project->GetBasePath() + wxFILE_SEP_PATH + script);
+        Manager::Get()->GetScriptingManager()->LoadScript(script_nomacro);
         SqPlus::SquirrelFunction<void> setopts("SetBuildOptions");
 
         if (setopts.func.IsNull())
@@ -810,7 +813,8 @@ bool ProjectOptionsDlg::DoCheckScripts(CompileTargetBase* base)
     const wxArrayString& scripts = base->GetBuildScripts();
     for (size_t i = 0; i < scripts.GetCount(); ++i)
     {
-        if (!IsScriptValid(scripts[i]))
+    	ProjectBuildTarget* bt = dynamic_cast<ProjectBuildTarget*>(base);
+        if (!IsScriptValid(bt, scripts[i]))
         {
             wxString msg;
             msg << _("Invalid build script: ") + scripts[i] << _T('\n');

@@ -51,7 +51,7 @@ class DLLIMPORT CompilerCommandGenerator
 		  */
 		virtual const wxArrayString& GetCompilerSearchDirs(ProjectBuildTarget* target);
     protected:
-        virtual void DoBuildScripts(CompileTargetBase* target, const wxString& funcName);
+        virtual void DoBuildScripts(cbProject* project, CompileTargetBase* target, const wxString& funcName);
         virtual wxString GetOrderedOptions(const ProjectBuildTarget* target, OptionsRelationType rel, const wxString& project_options, const wxString& target_options);
         virtual wxArrayString GetOrderedOptions(const ProjectBuildTarget* target, OptionsRelationType rel, const wxArrayString& project_options, const wxArrayString& target_options);
         virtual wxString SetupOutputFilenames(Compiler* compiler, ProjectBuildTarget* target);

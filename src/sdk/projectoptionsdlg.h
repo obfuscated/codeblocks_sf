@@ -54,7 +54,7 @@ class ProjectOptionsDlg : public wxDialog
         void DoTargetChange(bool saveOld = true);
         void DoBeforeTargetChange(bool force = false);
         bool DoCheckScripts(CompileTargetBase* base);
-        bool IsScriptValid(const wxString& script);
+        bool IsScriptValid(ProjectBuildTarget* target, const wxString& script);
         bool ValidateTargetName(const wxString& name);
         void UpdateTargetControls();
         cbProject* m_Project;
