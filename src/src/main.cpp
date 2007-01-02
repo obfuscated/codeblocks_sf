@@ -726,29 +726,9 @@ void MainFrame::RecreateMenuBar()
 {
     Freeze();
     wxMenuBar* m = GetMenuBar();
-//    SetMenuBar(0);
-
-    // delete all menus
-    if (m)
-    {
-        while (m->GetMenuCount())
-        {
-            wxMenu* menu = m->Remove(0);
-            if (menu)
-            {
-                while (menu->GetMenuItemCount())
-                {
-                    menu->Destroy(menu->GetMenuItems()[0]);
-                }
-            }
-            //delete menu;
-        }
-
-        // delete menubar
-    //    delete m;
-    }
-
-    CreateMenubar();
+    SetMenuBar(0); // unhook old menubar
+    CreateMenubar(); // create new menubar
+    delete m; // delete old menubar
 
     // update layouts menu
     for (LayoutViewsMap::iterator it = m_LayoutViews.begin(); it != m_LayoutViews.end(); ++it)
