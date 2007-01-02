@@ -36,7 +36,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
 		void LoadItemsFromFile(const wxString& fileName);
 		void LoadItemsFromXmlNode(const TiXmlElement* node, const wxTreeItemId& parentID);
 		void SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemId& parentID);
-		wxTreeItemId AddCodeSnippet(const wxTreeItemId& parent, wxString title, wxString codeSnippet, bool editNow);
+		void AddCodeSnippet(const wxTreeItemId& parent, wxString title, wxString codeSnippet, bool editNow);
 		wxTreeItemId AddCategory(const wxTreeItemId& parent, wxString title, bool editNow);
 	private:
 		// Must use this so overridden OnCompareItems() works on MSW,

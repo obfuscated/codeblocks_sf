@@ -15,12 +15,14 @@ libcodesnippets_la_LIBADD = ../../../sdk/libcodeblocks.la
 libcodesnippets_la_SOURCES = 	codesnippets.cpp \
 				codesnippetstreectrl.cpp \
 				codesnippetswindow.cpp \
-				snippetitemdata.cpp
+				snippetitemdata.cpp \
+				editsnippetdlg.cpp
 
 noinst_HEADERS =  	codesnippets.h \
 			codesnippetstreectrl.h \
 			codesnippetswindow.h \
-			snippetitemdata.h
+			snippetitemdata.h \
+			editsnippetdlg.h
 
 EXTRA_DIST = 	codesnippets.cbp \
 		codesnippets-unix.cbp \

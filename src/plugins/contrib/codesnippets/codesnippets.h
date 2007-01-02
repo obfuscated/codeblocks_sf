@@ -33,7 +33,7 @@ class CodeSnippets : public cbPlugin
 		~CodeSnippets();
 
 		/** Invoke configuration dialog. */
-		int Configure();
+		int Configure() { return 0; }
 
 		/** Return the plugin's configuration priority.
 		 * This is a number (default is 50) that is used to sort plugins

@@ -34,12 +34,10 @@ IMPLEMENT_DYNAMIC_CLASS(CodeSnippetsTreeCtrl, wxTreeCtrl)
 CodeSnippetsTreeCtrl::CodeSnippetsTreeCtrl(wxWindow *parent, const wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
 	: wxTreeCtrl(parent, id, pos, size, style)
 {
-	//ctor
 }
 
 CodeSnippetsTreeCtrl::~CodeSnippetsTreeCtrl()
 {
-	//dtor
 }
 
 int CodeSnippetsTreeCtrl::OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2)
@@ -47,7 +45,6 @@ int CodeSnippetsTreeCtrl::OnCompareItems(const wxTreeItemId& item1, const wxTree
 	// Get the items' data first
 	const SnippetItemData* data1 = (SnippetItemData*)(GetItemData(item1));
 	const SnippetItemData* data2 = (SnippetItemData*)(GetItemData(item2));
-
 
 	if (data1 && data2)
 	{
@@ -106,98 +103,76 @@ int CodeSnippetsTreeCtrl::OnCompareItems(const wxTreeItemId& item1, const wxTree
 void CodeSnippetsTreeCtrl::SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemId& parentID)
 {
 	wxTreeItemIdValue cookie;
-	wxTreeItemId item = GetFirstChild(parentID, cookie );
+	wxTreeItemId item = GetFirstChild(parentID, cookie);
 
 	// Loop through all items
 	while(item.IsOk())
 	{
 		// Get the item's information
-		const SnippetItemData* data = (SnippetItemData*)(GetItemData(item));
+		if (const SnippetItemData* data = (SnippetItemData*)(GetItemData(item)))
+		{
+			// Begin item element
+			TiXmlElement element("item");
 
-		if (!data)
+			// Write the item's name
+			element.SetAttribute("name", cbU2C(GetItemText(item)));
+
+			if (data->GetType() == SnippetItemData::TYPE_CATEGORY)
+			{
+				// Category
+				element.SetAttribute("type", "category");
+
+				// Check if this category has children
+				if(ItemHasChildren(item))
+				{
+					// If it has, check those too
+					SaveItemsToXmlNode(&element, item);
+				}
+			}
+			else
+			{
+				// Snippet
+				element.SetAttribute("type", "snippet");
+
+				TiXmlElement snippetElement("snippet");
+				TiXmlText snippetElementText(cbU2C(data->GetSnippet()));
+
+				snippetElement.InsertEndChild(snippetElementText);
+
+				element.InsertEndChild(snippetElement);
+			}
+
+			// Insert the item we created as parent node's child
+			node->InsertEndChild(element);
+
+			// Check the next child
+			item = GetNextChild(parentID, cookie);
+		}
+		else
 		{
 			return;
 		}
-
-		// Begin item element
-		TiXmlElement element("item");
-
-		// Write the item's name
-		element.SetAttribute("name", cbU2C(GetItemText(item)));
-
-		// Write the type of the item
-		switch (data->GetType())
-		{
-			case SnippetItemData::TYPE_CATEGORY:
-				element.SetAttribute("type", "category");
-			break;
-
-			case SnippetItemData::TYPE_SNIPPET:
-				element.SetAttribute("type", "snippet");
-			break;
-
-			default:
-			break;
-		}
-
-		// And the snippet
-		if (data->GetType() == SnippetItemData::TYPE_SNIPPET)
-		{
-			TiXmlElement snippetElement("snippet");
-			TiXmlText snippetElementText(cbU2C(data->GetSnippet()));
-
-            snippetElement.InsertEndChild(snippetElementText);
-
-			element.InsertEndChild(snippetElement);
-		}
-
-		// Check if this item has children
-		if(ItemHasChildren(item))
-		{
-			// If it has, check those too
-			SaveItemsToXmlNode(&element, item);
-		}
-
-		// Insert the item we created as parent node's child
-		node->InsertEndChild(element);
-
-		// Check the next child
-		item = GetNextChild(parentID, cookie);
 	}
-} // end of SaveSnippets
+}
 
 void CodeSnippetsTreeCtrl::LoadItemsFromXmlNode(const TiXmlElement* node, const wxTreeItemId& parentID)
 {
 	for (; node; node = node->NextSiblingElement())
 	{
 		// Check if the node has attributes
-		const char* name = node->Attribute("name");
-		if (!name)
-		{
-			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Error loading XML file; attribute \"name\" cannot be found."));
-			return;
-		}
-
-		const char* type = node->Attribute("type");
-		if (!type)
-		{
-			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Error loading XML file; attribute \"type\" cannot be found."));
-			return;
-		}
-
-		const wxString itemName(cbC2U(name));
-		const wxString itemType(cbC2U(type));
+		const wxString itemName(cbC2U(node->Attribute("name")));
+		const wxString itemType(cbC2U(node->Attribute("type")));
 
 		// Check the item type
 		if (itemType == _T("category"))
 		{
 			// Add new category
-			wxTreeItemId newItemId = AddCategory(parentID, itemName, false);
+			wxTreeItemId newCategoryId = AddCategory(parentID, itemName, false);
 
 			// Load the child items
 			if (!node->NoChildren())
 			{
-				LoadItemsFromXmlNode(node->FirstChildElement(), newItemId);
+				LoadItemsFromXmlNode(node->FirstChildElement(), newCategoryId);
 			}
 		}
 		else if (itemType == _T("snippet"))
@@ -226,11 +201,11 @@ void CodeSnippetsTreeCtrl::LoadItemsFromXmlNode(const TiXmlElement* node, const 
 		else
 		{
 			// Unknown
-			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Error loading XML file; attribute \"type\" returned \"") + itemType + _T("\" which is invalid item type."));
+			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Error loading XML file; attribute \"type\" is \"") + itemType + _T("\" which is invalid item type."));
 			return;
 		}
 	} // end for
-} // end of LoadSnippets
+}
 
 void CodeSnippetsTreeCtrl::SaveItemsToFile(const wxString& fileName)
 {
@@ -244,7 +219,7 @@ void CodeSnippetsTreeCtrl::SaveItemsToFile(const wxString& fileName)
 	doc.InsertEndChild(snippetsElement);
 
 	doc.SaveFile(fileName.mb_str());
-} // end of SaveSnippetsToFile
+}
 
 void CodeSnippetsTreeCtrl::LoadItemsFromFile(const wxString& fileName)
 {
@@ -267,15 +242,12 @@ void CodeSnippetsTreeCtrl::LoadItemsFromFile(const wxString& fileName)
 		}
 		else
 		{
-			wxString errorMsg = _T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ");
-			errorMsg << cbC2U(doc.ErrorDesc());
-			Manager::Get()->GetMessageManager()->DebugLog(errorMsg);
+			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + cbC2U(doc.ErrorDesc()));
 		}
 	}
-} // end of LoadSnippetsFromFile
+}
 
-// NOTE : nobody uses the return vlaue -> could remove it
-wxTreeItemId CodeSnippetsTreeCtrl::AddCodeSnippet(const wxTreeItemId& parent, wxString title, wxString codeSnippet, bool editNow)
+void CodeSnippetsTreeCtrl::AddCodeSnippet(const wxTreeItemId& parent, wxString title, wxString codeSnippet, bool editNow)
 {
 	wxTreeItemId newItemID = InsertItem(parent, GetLastChild(parent), title, 2, -1, new SnippetItemData(SnippetItemData::TYPE_SNIPPET, codeSnippet));
 
@@ -288,8 +260,6 @@ wxTreeItemId CodeSnippetsTreeCtrl::AddCodeSnippet(const wxTreeItemId& parent, wx
 		EnsureVisible(newItemID);
 		EditLabel(newItemID);
 	}
-
-	return newItemID;
 }
 
 wxTreeItemId CodeSnippetsTreeCtrl::AddCategory(const wxTreeItemId& parent, wxString title, bool editNow)

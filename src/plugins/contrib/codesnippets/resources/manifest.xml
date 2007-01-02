@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="10" release="0" />
     <Plugin name="CodeSnippets">
         <Value title="Code snippets" />
-        <Value version="0.2" />
+        <Value version="0.3" />
         <Value description="Code Snippets allows you to create and save small pieces of code (snippets) for later use.
 
 Documentation is available at the Code::Blocks Wiki at http://wiki.codeblocks.org/index.php?title=Code_Snippets_plugin." />
@@ -12,7 +12,7 @@ Documentation is available at the Code::Blocks Wiki at http://wiki.codeblocks.or
         <Value authorWebsite="http://ajonsson.kapsi.fi/" />
         <Value thanksTo="Technical help
 
-	wxWidgets Discussion Forum
+    wxWidgets Discussion Forum
     (http://wxforum.shadonet.com/)
 
     Pecan Heber

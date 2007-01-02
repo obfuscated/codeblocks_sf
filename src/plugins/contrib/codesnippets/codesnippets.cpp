@@ -52,7 +52,6 @@ CodeSnippets::CodeSnippets()
 
 CodeSnippets::~CodeSnippets()
 {
-	// dtor
 }
 
 void CodeSnippets::OnAttach()
@@ -78,38 +77,26 @@ void CodeSnippets::OnRelease(bool appShutDown)
 	m_SnippetsWindow->Destroy();
 }
 
-int CodeSnippets::Configure()
-{
-	//create and display the configuration dialog for your plugin
-	/*cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, _("Your dialog title"));
-	cbConfigurationPanel* panel = GetConfigurationPanel(&dlg);
-	if (panel)
-	{
-		dlg.AttachConfigurationPanel(panel);
-		PlaceWindow(&dlg);
-		return dlg.ShowModal() == wxID_OK ? 0 : -1;
-	}*/
-	return 0;
-}
-
 void CodeSnippets::BuildMenu(wxMenuBar* menuBar)
 {
 	int idx = menuBar->FindMenu(_("View"));
 	if (idx != wxNOT_FOUND)
 	{
-		wxMenu* view = menuBar->GetMenu(idx);
-		wxMenuItemList& items = view->GetMenuItems();
+		wxMenu* viewMenu = menuBar->GetMenu(idx);
+		wxMenuItemList& items = viewMenu->GetMenuItems();
+
 		// Find the first separator and insert before it
 		for (size_t i = 0; i < items.GetCount(); ++i)
 		{
 			if (items[i]->IsSeparator())
 			{
-				view->InsertCheckItem(i, idViewSnippets, _("Code snippets"), _("Toggle displaying the code snippets."));
+				viewMenu->InsertCheckItem(i, idViewSnippets, _("Code snippets"), _("Toggle displaying the code snippets."));
 				return;
 			}
 		}
+
 		// Not found, just append
-		view->AppendCheckItem(idViewSnippets, _("Code snippets"), _("Toggle displaying the code snippets."));
+		viewMenu->AppendCheckItem(idViewSnippets, _("Code snippets"), _("Toggle displaying the code snippets."));
 	}
 }
 

@@ -122,6 +122,18 @@
 			<Option target="Debug - Win32" />
 			<Option target="Release - Win32" />
 		</Unit>
+		<Unit filename="editsnippetdlg.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="Debug - Win32" />
+			<Option target="Release - Win32" />
+		</Unit>
+		<Unit filename="editsnippetdlg.h">
+			<Option compilerVar="CPP" />
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug - Win32" />
+			<Option target="Release - Win32" />
+		</Unit>
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

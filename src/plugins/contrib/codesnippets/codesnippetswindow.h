@@ -63,6 +63,7 @@ class CodeSnippetsWindow : public wxPanel
 	private:
 		void InitDialog();
 		void ApplySnippet(const wxTreeItemId& itemID);
+		void CheckForMacros(wxString& snippet);
 		wxTreeItemId SearchSnippet(const wxString& searchTerms, const wxTreeItemId& node);
 
 		wxTextCtrl* m_SearchSnippetCtrl;
@@ -92,6 +93,7 @@ class CodeSnippetsWindow : public wxPanel
 		void OnMnuChangeScope(wxCommandEvent& event);
 		void OnMnuClear(wxCommandEvent& event);
 		void OnMnuCopyToClipboard(wxCommandEvent& event);
+		void OnMnuEditSnippet(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
 };
 
