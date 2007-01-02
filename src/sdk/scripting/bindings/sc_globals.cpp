@@ -80,9 +80,9 @@ namespace ScriptBindings
     }
     SQInteger wx_GetColourFromUser(HSQUIRRELVM v)
     {
-    	StackHandler sa(v);
-		wxColour& c = sa.GetParamCount() == 2 ? *SqPlus::GetInstance<wxColour>(v, 2) : *wxBLACK;
-		return SqPlus::ReturnCopy(v, wxGetColourFromUser(Manager::Get()->GetAppWindow(), c));
+        StackHandler sa(v);
+        const wxColour& c = sa.GetParamCount() == 2 ? *SqPlus::GetInstance<wxColour>(v, 2) : *wxBLACK;
+        return SqPlus::ReturnCopy(v, wxGetColourFromUser(Manager::Get()->GetAppWindow(), c));
     }
     long wx_GetNumberFromUser(const wxString& message, const wxString& prompt, const wxString& caption, long value)
     {
