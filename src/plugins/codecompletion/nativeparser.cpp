@@ -283,7 +283,8 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
     Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
 
     // so we can access post-processed project's search dirs
-    compiler->Init(project);
+    if (compiler)
+        compiler->Init(project);
 
     // get project include dirs
     for (unsigned int i = 0; i < project->GetIncludeDirs().GetCount(); ++i)
@@ -313,19 +314,22 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
         ProjectBuildTarget* target = project->GetBuildTarget(i);
         if (target)
         {
-            // post-processed search dirs (from build scripts)
-            for (unsigned int ti = 0; ti < compiler->GetCompilerSearchDirs(target).GetCount(); ++ti)
+            if (compiler)
             {
-                wxString out = compiler->GetCompilerSearchDirs(target)[ti];
-                wxFileName dir(out);
-                wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
-                if(NormalizePath(dir,base))
+                // post-processed search dirs (from build scripts)
+                for (unsigned int ti = 0; ti < compiler->GetCompilerSearchDirs(target).GetCount(); ++ti)
                 {
-                    parser->AddIncludeDir(dir.GetFullPath());
+                    wxString out = compiler->GetCompilerSearchDirs(target)[ti];
+                    wxFileName dir(out);
+                    wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
+                    if(NormalizePath(dir,base))
+                    {
+                        parser->AddIncludeDir(dir.GetFullPath());
 //                    Manager::Get()->GetMessageManager()->DebugLog(_T("Parser tgt dir: ") + dir.GetFullPath());
+                    }
+                    else
+                        Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());
                 }
-                else
-                    Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());
             }
 
             // apply target vars
@@ -352,17 +356,17 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
                 Compilers[nCompilers] = myc;
                 ++nCompilers;
             }
-        }
+        } // if (target)
     } // end loop over the targets
     // add the project compiler to the array of compilers
-    if(compiler)
+    if (compiler)
     { // note it might be possible that this compiler is already in the list
         // no need to worry since the compiler list of the parser will filter out duplicate
         // entries in the include dir list
         Compilers[nCompilers++] = compiler;
     }
 
-    // keep the gccc compiler path's once if found accross C::B session
+    // keep the gcc compiler path's once if found accross C::B session
     // makes opening workspaces a *lot* faster by avoiding endless calls to the compiler
     static wxArrayString gcc_compiler_dirs;
 
