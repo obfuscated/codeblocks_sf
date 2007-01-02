@@ -43,7 +43,6 @@
 BEGIN_EVENT_TABLE(SelectTargetDlg, wxDialog)
 	EVT_CHECKBOX(XRCID("chkSetAsDefaultExec"), SelectTargetDlg::OnCheckboxSelection)
 	EVT_LISTBOX(XRCID("lstItems"), SelectTargetDlg::OnListboxSelection)
-	EVT_LISTBOX_DCLICK(XRCID("lstItems"), SelectTargetDlg::OnOK)
 	EVT_BUTTON(XRCID("btnHostApplication"),	SelectTargetDlg::OnHostApplicationButtonClick)
 END_EVENT_TABLE()
 
