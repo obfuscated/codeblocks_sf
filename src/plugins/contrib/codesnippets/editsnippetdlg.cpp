@@ -35,7 +35,10 @@ EditSnippetDlg::EditSnippetDlg(const wxString& snippetName, const wxString& snip
 	: wxDialog(Manager::Get()->GetAppWindow(), wxID_ANY, _("Edit snippet"),
 		wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER)
 {
-	InitDialog(snippetName, snippetText);
+	InitDlg();
+
+	m_SnippetNameCtrl->SetValue(snippetName);
+	m_SnippetTextCtrl->SetValue(snippetText);
 
 	// Load the window's size
 	ConfigManager* cfgMan = Manager::Get()->GetConfigManager(_T("codesnippets"));
@@ -65,32 +68,32 @@ EditSnippetDlg::~EditSnippetDlg()
 	}
 }
 
-void EditSnippetDlg::InitDialog(const wxString& snippetName, const wxString& snippetText)
+void EditSnippetDlg::InitDlg()
 {
 	wxBoxSizer* dlgSizer = new wxBoxSizer(wxVERTICAL);
 
 	wxBoxSizer* snippetDataSizer = new wxBoxSizer(wxVERTICAL);
 
-	m_NameLbl = new wxStaticText(this, wxID_ANY, _("Name:"), wxDefaultPosition, wxDefaultSize, 0);
+	m_NameLbl = new wxStaticText(this, wxID_ANY, _("&Name:"), wxDefaultPosition, wxDefaultSize, 0);
 	snippetDataSizer->Add( m_NameLbl, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
 
-	m_SnippetNameCtrl = new wxTextCtrl(this, wxID_ANY, snippetName, wxDefaultPosition, wxDefaultSize, 0);
+	m_SnippetNameCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
 	snippetDataSizer->Add(m_SnippetNameCtrl, 0, wxEXPAND|wxALL, 5 );
 
-	m_SnippetLbl = new wxStaticText(this, wxID_ANY, _("Snippet:"), wxDefaultPosition, wxDefaultSize, 0);
+	m_SnippetLbl = new wxStaticText(this, wxID_ANY, _("&Snippet:"), wxDefaultPosition, wxDefaultSize, 0);
 	snippetDataSizer->Add(m_SnippetLbl, 0, wxTOP|wxRIGHT|wxLEFT, 5);
 
-	m_SnippetTextCtrl = new wxTextCtrl(this, wxID_ANY, snippetText, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_PROCESS_TAB);
+	m_SnippetTextCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_PROCESS_TAB);
 	snippetDataSizer->Add(m_SnippetTextCtrl, 1, wxALL|wxEXPAND, 5);
 
 	dlgSizer->Add(snippetDataSizer, 1, wxEXPAND, 5);
 
 	wxBoxSizer* buttonsSizer = new wxBoxSizer(wxHORIZONTAL);
 
-	m_OKBtn = new wxButton(this, wxID_OK, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	m_OKBtn = new wxButton(this, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0);
 	buttonsSizer->Add(m_OKBtn, 0, wxALL, 5);
 
-	m_CancelBtn = new wxButton(this, wxID_CANCEL, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+	m_CancelBtn = new wxButton(this, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0);
 	buttonsSizer->Add(m_CancelBtn, 0, wxALL, 5);
 
 	m_HelpBtn = new wxButton(this, wxID_HELP, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);

@@ -31,7 +31,7 @@ class EditSnippetDlg : public wxDialog
 		wxString GetName();
 		wxString GetText();
 	private:
-		void InitDialog(const wxString& snippetName, const wxString& snippetText);
+		void InitDlg();
 
 		void OnOK(wxCommandEvent& event);
 		void OnCancel(wxCommandEvent& event);

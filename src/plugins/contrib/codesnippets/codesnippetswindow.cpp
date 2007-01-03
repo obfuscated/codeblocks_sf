@@ -102,13 +102,14 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 	EVT_TREE_END_DRAG(idSnippetsTreeCtrl, CodeSnippetsWindow::OnEndDrag)
 	EVT_TREE_BEGIN_LABEL_EDIT(idSnippetsTreeCtrl, CodeSnippetsWindow::OnBeginLabelEdit)
 	EVT_TREE_END_LABEL_EDIT(idSnippetsTreeCtrl, CodeSnippetsWindow::OnEndLabelEdit)
+	EVT_TREE_ITEM_GETTOOLTIP(idSnippetsTreeCtrl, CodeSnippetsWindow::OnItemGetToolTip)
 END_EVENT_TABLE()
 
 CodeSnippetsWindow::CodeSnippetsWindow()
 	: wxPanel(Manager::Get()->GetAppWindow(), wxID_ANY, wxDefaultPosition, wxDefaultSize)
 {
 	// Initialize the dialog
-	InitDialog();
+	InitDlg();
 	m_AppendItemsFromFile = false;
 
 	// Load the settings
@@ -134,7 +135,7 @@ CodeSnippetsWindow::~CodeSnippetsWindow()
 	delete m_SnippetsTreeImageList;
 }
 
-void CodeSnippetsWindow::InitDialog()
+void CodeSnippetsWindow::InitDlg()
 {
 	// Color which we're going to use as mask
 	wxColor maskColor(255, 0, 255);
@@ -613,6 +614,40 @@ void CodeSnippetsWindow::CheckForMacros(wxString& snippet)
 
 	// Replace any other macros in the generated code
 	Manager::Get()->GetMacrosManager()->ReplaceMacros(snippet);
+}
+
+void CodeSnippetsWindow::OnItemGetToolTip(wxTreeEvent& event)
+{
+	// "My eyes! The goggles do nothing!"
+	//
+	// Use the following only on wxWidgets 2.8.
+	#if wxCHECK_VERSION(2, 8, 0)
+	if (const SnippetItemData* itemData = (SnippetItemData*)(m_SnippetsTreeCtrl->GetItemData(event.GetItem())))
+	{
+		if (itemData->GetType() == SnippetItemData::TYPE_SNIPPET)
+		{
+			wxString snippetToolTip = itemData->GetSnippet();
+			size_t originalLength = snippetToolTip.Len();
+
+			// Take the first 255 characters or less, note that the
+			// wxWidgets documentation doesn't say what is maximum lenght of
+			// the tooltip so this can be increased if needed.
+			size_t charsInToolTip = 255;
+			snippetToolTip = snippetToolTip.Mid(0, charsInToolTip);
+
+			// Replace all tabs with spaces; tabs break the tooltips
+			snippetToolTip.Replace(_T("\t"), _T("    "));
+
+			if (snippetToolTip.Len() > charsInToolTip || originalLength > charsInToolTip)
+			{
+				snippetToolTip = snippetToolTip.Mid(0, charsInToolTip - 4);
+				snippetToolTip.Append(_T(" ..."));
+			}
+
+			event.SetToolTip(snippetToolTip);
+		}
+	}
+	#endif
 }
 
 bool SnippetsDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
