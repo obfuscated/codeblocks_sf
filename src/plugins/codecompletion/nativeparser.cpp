@@ -1625,7 +1625,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                     while (it != type_result.end())
                     {
                         std::queue<ParserComponent> lcomp = components;
-                        FindAIMatches(parser, lcomp, result, *it, noPartialMatch, caseSensitive, kindMask);
+                        FindAIMatches(parser, lcomp, result, *it, noPartialMatch, caseSensitive, use_inheritance, kindMask);
                         ++it;
                     }
                 }
@@ -1645,7 +1645,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
             result.insert(id);
         // else recurse this function using id as a parent
         else
-            FindAIMatches(parser, components, result, id, noPartialMatch, caseSensitive, kindMask);
+            FindAIMatches(parser, components, result, id, noPartialMatch, caseSensitive, use_inheritance, kindMask);
     }
 #ifdef DEBUG_CC_AI
     if (s_DebugSmartSense)
@@ -1708,9 +1708,9 @@ size_t NativeParser::GenerateResultSet(TokensTree* tree,
                         }
                     }
                 }
+                else if (token && token->m_TokenKind == tkEnum) // check enumerators for match too
+                    GenerateResultSet(tree, search, *it, result, caseSens, isPrefix, kindMask);
             }
-            else if (token && token->m_TokenKind == tkEnum) // check enumerators for match too
-                GenerateResultSet(tree, search, *it, result, caseSens, isPrefix, kindMask);
         }
         // now go up the inheritance chain and add all ancestors' children too
         for (TokenIdxSet::iterator it = parent->m_Ancestors.begin(); it != parent->m_Ancestors.end(); ++it)
@@ -1736,9 +1736,9 @@ size_t NativeParser::GenerateResultSet(TokensTree* tree,
                             }
                         }
                     }
+                    else if (token && token->m_TokenKind == tkEnum) // check enumerators for match too
+                        GenerateResultSet(tree, search, *it2, result, caseSens, isPrefix, kindMask);
                 }
-                else if (token && token->m_TokenKind == tkEnum) // check enumerators for match too
-                    GenerateResultSet(tree, search, *it2, result, caseSens, isPrefix, kindMask);
             }
         }
     }
@@ -1765,9 +1765,9 @@ size_t NativeParser::GenerateResultSet(TokensTree* tree,
                             }
                         }
                     }
+                    else if (token && token->m_TokenKind == tkEnum) // check enumerators for match too
+                        GenerateResultSet(tree, search, token->GetSelf(), result, caseSens, isPrefix, kindMask);
                 }
-                else if (token && token->m_TokenKind == tkEnum) // check enumerators for match too
-                    GenerateResultSet(tree, search, token->GetSelf(), result, caseSens, isPrefix, kindMask);
             }
         }
     }
