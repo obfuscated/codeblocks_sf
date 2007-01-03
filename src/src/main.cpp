@@ -1125,8 +1125,8 @@ void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, boo
     if (select)
     {
         DoSelectLayout(name);
+        m_LastLayoutName = name;
     }
-    m_LastLayoutName = name;
 } // end of SaveViewLayout
 
 bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
