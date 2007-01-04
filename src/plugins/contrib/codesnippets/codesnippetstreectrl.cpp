@@ -213,6 +213,10 @@ void CodeSnippetsTreeCtrl::SaveItemsToFile(const wxString& fileName)
 	TiXmlDeclaration header("1.0", "UTF-8", "yes");
 	doc.InsertEndChild(header);
 
+	TiXmlComment comment;
+	comment.SetValue("Trust me. I know what I'm doing.");
+	doc.InsertEndChild(comment);
+
 	TiXmlElement snippetsElement("snippets");
 	SaveItemsToXmlNode(&snippetsElement, GetRootItem());
 
@@ -225,6 +229,9 @@ void CodeSnippetsTreeCtrl::LoadItemsFromFile(const wxString& fileName)
 {
 	if (wxFileExists(fileName))
 	{
+		// Don't remove any whitespace
+		TiXmlBase::SetCondenseWhiteSpace(false);
+
 		TiXmlDocument doc;
 
 		if (doc.LoadFile(fileName.mb_str()))
@@ -242,7 +249,15 @@ void CodeSnippetsTreeCtrl::LoadItemsFromFile(const wxString& fileName)
 		}
 		else
 		{
+			// Create a backup copy of the offending file
+			wxString backupFile = fileName;
+			backupFile.Append(_T(".bak"));
+
+			// Overwrite it
+			wxCopyFile(fileName, backupFile, true);
+
 			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + cbC2U(doc.ErrorDesc()));
+			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Backup of the failed file has been created."));
 		}
 	}
 }

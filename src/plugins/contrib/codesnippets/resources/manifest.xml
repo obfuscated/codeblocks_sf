@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="10" release="0" />
     <Plugin name="CodeSnippets">
         <Value title="Code snippets" />
-        <Value version="0.3.1" />
+        <Value version="0.3.2" />
         <Value description="Code Snippets allows you to create and save small pieces of code (snippets) for later use.
 
 Documentation is available at the Code::Blocks Wiki at http://wiki.codeblocks.org/index.php?title=Code_Snippets_plugin." />

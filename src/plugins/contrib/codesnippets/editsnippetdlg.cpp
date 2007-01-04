@@ -88,18 +88,36 @@ void EditSnippetDlg::InitDlg()
 
 	dlgSizer->Add(snippetDataSizer, 1, wxEXPAND, 5);
 
+	wxBoxSizer* bottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxBoxSizer* buttonsSizer = new wxBoxSizer(wxHORIZONTAL);
 
 	m_OKBtn = new wxButton(this, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0);
+	m_CancelBtn = new wxButton(this, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0);
+	m_HelpBtn = new wxButton(this, wxID_HELP, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+
+#ifdef __WXGTK__
+
+	wxBoxSizer* helpButtonSizer = new wxBoxSizer(wxHORIZONTAL);
+	helpButtonSizer->Add(m_HelpBtn, 0, wxALL, 5);
+
+	bottomSizer->Add(helpButtonSizer, 0, wxEXPAND, 5);
+
+	buttonsSizer->Add(m_CancelBtn, 0, wxALL, 5);
 	buttonsSizer->Add(m_OKBtn, 0, wxALL, 5);
 
-	m_CancelBtn = new wxButton(this, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0);
-	buttonsSizer->Add(m_CancelBtn, 0, wxALL, 5);
+	bottomSizer->Add(buttonsSizer, 1, wxALIGN_RIGHT|wxSHAPED|wxEXPAND, 5);
 
-	m_HelpBtn = new wxButton(this, wxID_HELP, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+#else
+
+	buttonsSizer->Add(m_OKBtn, 0, wxALL, 5);
+	buttonsSizer->Add(m_CancelBtn, 0, wxALL, 5);
 	buttonsSizer->Add(m_HelpBtn, 0, wxALL, 5);
 
-	dlgSizer->Add(buttonsSizer, 0, wxALIGN_RIGHT, 5);
+	bottomSizer->Add(buttonsSizer, 1, wxALIGN_RIGHT|wxSHAPED|wxEXPAND, 5);
+
+#endif
+
+	dlgSizer->Add(bottomSizer, 0, wxEXPAND, 5);
 
 	SetSizer(dlgSizer);
 	Layout();
