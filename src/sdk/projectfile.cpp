@@ -333,8 +333,24 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     }
     else
     {
-        object_file_native = objOut + sep + tmp.GetFullPath();
-        object_file_flat_native = objOut + sep + tmp.GetFullName();
+        if (pf->GetParentProject())
+        {
+            wxFileName fname(pf->relativeToCommonTopLevelPath);
+            if (pf->GetParentProject()->GetExtendedObjectNamesGeneration())
+            {
+                object_file_native = objOut + sep + fname.GetFullPath();
+                object_file_flat_native = objOut + sep + fname.GetFullName();
+
+                object_file_native += _T('.') + compiler->GetSwitches().objectExtension;
+                object_file_flat_native += _T('.') + compiler->GetSwitches().objectExtension;
+            }
+            else
+            {
+                fname.SetExt(compiler->GetSwitches().objectExtension);
+                object_file_native = objOut + sep + fname.GetFullPath();
+                object_file_flat_native = objOut + sep + fname.GetFullName();
+            }
+        }
     }
     wxFileName o_file(object_file_native);
     o_file.MakeAbsolute(prjbase.GetFullPath());
