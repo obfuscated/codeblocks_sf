@@ -48,7 +48,7 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
 
     wxFlexGridSizer *mainArea = new wxFlexGridSizer(2, 0, 0);
     wxStaticBitmap *bitmap = new wxStaticBitmap(this, -1, wxArtProvider::GetBitmap(icon,  wxART_MESSAGE_BOX), wxDefaultPosition);
-    mainArea->Add(bitmap, 0, wxALIGN_CENTER|wxALL, 10);
+    mainArea->Add(bitmap, 0, wxALL, 5);
 
     wxStaticText *txt = new wxStaticText(this, -1, message, wxDefaultPosition, wxDefaultSize, 0);
     mainArea->Add( txt, 0, wxALIGN_CENTER|wxALL, 5 );

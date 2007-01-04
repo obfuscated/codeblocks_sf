@@ -113,15 +113,30 @@ const wxString& ProjectFile::GetObjName()
 
 void ProjectFile::SetObjName(const wxString& name)
 {
+    bool extendedObjectNames = project->GetExtendedObjectNamesGeneration();
     wxFileName fname(name);
+    m_ObjName = name;
     FileType ft = FileTypeOf(name);
     if (ft == ftResource || ft == ftResourceBin)
-        fname.SetExt(FileFilters::RESOURCEBIN_EXT);
+    {
+        if (extendedObjectNames)
+            m_ObjName += FileFilters::RESOURCEBIN_DOT_EXT;
+        else
+        {
+            fname.SetExt(FileFilters::RESOURCEBIN_EXT);
+            m_ObjName = fname.GetFullPath();
+        }
+    }
     else if (ft == ftHeader) // support precompiled headers?
     {
         Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
         if (compiler && compiler->GetSwitches().supportsPCH)
+        {
+            // PCHs are always using the extended name mode (at least for GCC)
+            // the extension is set to "h.gch"
             fname.SetExt(compiler->GetSwitches().PCHExtension);
+            m_ObjName = fname.GetFullPath();
+        }
     }
     else
     {
@@ -129,21 +144,34 @@ void ProjectFile::SetObjName(const wxString& name)
         {
             Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
             if (compiler)
-                fname.SetExt(compiler->GetSwitches().objectExtension);
+            {
+                if (extendedObjectNames)
+                    m_ObjName += _T('.') + compiler->GetSwitches().objectExtension;
+                else
+                {
+                    fname.SetExt(compiler->GetSwitches().objectExtension);
+                    m_ObjName = fname.GetFullPath();
+                }
+            }
         }
         else
-            fname.SetExt(_T(".o")); // fallback?
+        {
+            if (extendedObjectNames)
+                m_ObjName += _T(".o"); // fallback?
+            else
+            {
+                fname.SetExt(_T(".o"));
+                m_ObjName = fname.GetFullPath();
+            }
+        }
     }
 #ifdef __WXMSW__
     // special case for windows and files on a different drive
     if (name.Length() > 1 && name.GetChar(1) == _T(':'))
     {
-        wxString tmp = fname.GetFullPath();
-        tmp.Remove(1, 1);
-        fname.Assign(tmp);
+        m_ObjName.Remove(1, 1); // NOTE (mandrav): why remove the colon???
     }
 #endif
-    m_ObjName = fname.GetFullPath();
 }
 
 // map target to pfDetails
@@ -249,17 +277,18 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                             ? CompilerFactory::GetCompiler(target->GetCompilerID())
                             : CompilerFactory::GetDefaultCompiler();
 
-    if (ft == ftResource)
-    {
-        // windows resources need different extension than other object files
-        tmp.SetExt(_T("res"));
-    }
-    else if (ft != ftHeader)
-    {
-        // don't change object extension for precompiled headers
-        if (compiler)
-            tmp.SetExt(compiler->GetSwitches().objectExtension);
-    }
+    // already set in PF::SetObjectName()
+//    if (ft == ftResource)
+//    {
+//        // windows resources need different extension than other object files
+//        tmp.SetExt(_T("res"));
+//    }
+//    else if (ft != ftHeader)
+//    {
+//        // don't change object extension for precompiled headers
+//        if (compiler)
+//            tmp.SetExt(compiler->GetSwitches().objectExtension);
+//    }
 
     // support for precompiled headers
     if (target && ft == ftHeader && compiler && compiler->GetSwitches().supportsPCH)
@@ -305,7 +334,7 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     else
     {
         object_file_native = objOut + sep + tmp.GetFullPath();
-        object_file_flat_native = objOut + sep + tmp.GetName() + _T('.') + tmp.GetExt();
+        object_file_flat_native = objOut + sep + tmp.GetFullName();
     }
     wxFileName o_file(object_file_native);
     o_file.MakeAbsolute(prjbase.GetFullPath());

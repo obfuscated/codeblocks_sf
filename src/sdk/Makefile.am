@@ -73,6 +73,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						filegroupsandmasks.cpp \
 						filemanager.cpp \
 						finddlg.cpp \
+						genericmultilinenotesdlg.cpp \
 						globals.cpp \
 						importers_globals.cpp \
 						incrementalselectlistdlg.cpp \
@@ -169,6 +170,7 @@ ALLHEADERS = annoyingdialog.h \
 				filemanager.h \
 				finddlg.h \
 				findreplacebase.h \
+				genericmultilinenotesdlg.h \
 				globals.h \
 				ibaseloader.h \
 				ibaseworkspaceloader.h \

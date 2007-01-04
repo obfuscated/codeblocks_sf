@@ -93,6 +93,7 @@ int idMenuRemoveFolderFilesPopup = wxNewId();
 int idMenuRemoveFilePopup = wxNewId();
 int idMenuRemoveFile = wxNewId();
 int idMenuRenameFile = wxNewId();
+int idMenuProjectNotes = wxNewId();
 int idMenuProjectProperties = wxNewId();
 int idMenuFileProperties = wxNewId();
 int idMenuTreeProjectProperties = wxNewId();
@@ -191,6 +192,7 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuCloseProject, ProjectManager::OnCloseProject)
     EVT_MENU(idMenuCloseFile, ProjectManager::OnCloseFile)
     EVT_MENU(idMenuOpenFile, ProjectManager::OnOpenFile)
+    EVT_MENU(idMenuProjectNotes, ProjectManager::OnNotes)
     EVT_MENU(idMenuProjectProperties, ProjectManager::OnProperties)
     EVT_MENU(idMenuFileProperties, ProjectManager::OnProperties)
     EVT_MENU(idMenuTreeProjectProperties, ProjectManager::OnProperties)
@@ -403,6 +405,7 @@ It is duplicated in ShowMenu() */
             menu->Append(idMenuProjectTreeProps, _("Project tree"), treeprops);
 
             menu->Append(idMenuExecParams, _("Set &programs' arguments..."), _("Set execution parameters for the targets of this project"));
+            menu->Append(idMenuProjectNotes, _("Notes..."));
             menu->Append(idMenuProjectProperties, _("Properties"));
         }
     }
@@ -747,6 +750,13 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
 			CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
 			event.SetProject(project);
 			Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+        }
+
+        // finally, if not loading a workspace, display project notes (if appropriate)
+		if (!m_IsLoadingWorkspace)
+		{
+		    if (project->GetShowNotesOnLoad())
+                project->ShowNotes(true);
 		}
 
         break;
@@ -1047,17 +1057,44 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
         // sort out any global user vars that need to be defined now (in a batch) :)
         Manager::Get()->GetUserVariableManager()->Arrogate();
 
+        int numNotes = 0;
+
 		// and now send the project loaded events
 		// since we were loading a workspace, these events were not sent before
 		for (size_t i = 0; i < m_pProjects->GetCount(); ++i)
 		{
+		    cbProject* project = m_pProjects->Item(i);
+
 			// notify plugins that the project is loaded
 			// moved here from cbProject::Open() because code-completion
 			// kicks in too early and the perceived loading time is long...
 			CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
-			event.SetProject(m_pProjects->Item(i));
+			event.SetProject(project);
 			Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+
+			// since we 're iterating anyway, let's count the project notes that should be displayed
+		    if (project->GetShowNotesOnLoad() && !project->GetNotes().IsEmpty())
+                ++numNotes;
 		}
+
+        // finally, display projects notes (if appropriate)
+        if (numNotes)
+        {
+            if (numNotes == 1 || // if only one project has notes, don't bother asking
+                cbMessageBox(wxString::Format(_("%d projects contain notes that should be displayed on-load.\n"
+                                                "Do you want to display them now, one after the other?"),
+                                                numNotes),
+                                                _("Display project notes?"),
+                                                wxICON_QUESTION | wxYES_NO) == wxID_YES)
+            {
+                for (size_t i = 0; i < m_pProjects->GetCount(); ++i)
+                {
+                    cbProject* project = m_pProjects->Item(i);
+                    if (project->GetShowNotesOnLoad())
+                        project->ShowNotes(true);
+                }
+            }
+        }
     }
     else
     {
@@ -2079,6 +2116,13 @@ void ProjectManager::OnOpenWith(wxCommandEvent& event)
             LOG_ERROR(msg);
         }
     }
+}
+
+void ProjectManager::OnNotes(wxCommandEvent& event)
+{
+    cbProject* project = GetActiveProject();
+    if (project)
+        project->ShowNotes(false, true);
 }
 
 void ProjectManager::OnProperties(wxCommandEvent& event)

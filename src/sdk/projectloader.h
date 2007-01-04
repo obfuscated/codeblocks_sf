@@ -5,7 +5,7 @@
 #include "ibaseloader.h"
 
 #define PROJECT_FILE_VERSION_MAJOR 1
-#define PROJECT_FILE_VERSION_MINOR 5
+#define PROJECT_FILE_VERSION_MINOR 6
 
 class cbProject;
 class ProjectBuildTarget;
@@ -75,6 +75,7 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         bool m_OpenDirty; // set this to true if the project is loaded but modified (like the case when setting another compiler, if invalid)
         bool m_IsPre_1_2;
         int m_1_4_to_1_5_deftarget;
+        bool m_IsPre_1_6;
         CompilerSubstitutes m_CompilerSubstitutes;
 };
 

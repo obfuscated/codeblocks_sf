@@ -113,6 +113,35 @@
                       <option>1</option>
                       <flag>wxGROW</flag>
                     </object>
+                    <object class="spacer">
+                      <size>0,8</size>
+                    </object>
+                    <object class="spacer">
+                      <size>0,8</size>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Object names generation:</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkExtendedObjNames">
+                            <label>Generate extended object names (i.e. &quot;foo.cpp.o&quot; instead of &quot;foo.o&quot;)</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>(this setting is mostly useful for large projects containing similarly named files differing on extension only)</label>
+                            <fg>#800000</fg>
+                          </object>
+                        </object>
+                      </object>
+                      <option>1</option>
+                      <flag>wxGROW</flag>
+                    </object>
                   </object>
                   <option>1</option>
                   <flag>wxALL|wxEXPAND</flag>
@@ -555,6 +584,36 @@ from target...</label>
                   </object>
                   <option>2</option>
                   <flag>wxTOP|wxBOTTOM|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Notes</label>
+            <object class="wxPanel" name="tabNotes">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Project notes:</label>
+                  </object>
+                  <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxTextCtrl" name="txtNotes">
+                    <style>wxTE_PROCESS_TAB|wxTE_MULTILINE</style>
+                  </object>
+                  <option>1</option>
+                  <flag>wxALL|wxGROW</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkShowNotes">
+                    <label>Auto-show these notes on project loading (only if notes not empty)</label>
+                  </object>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
                   <border>8</border>
                 </object>
               </object>

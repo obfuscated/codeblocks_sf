@@ -63,6 +63,7 @@
 #include "filefilters.h"
 #include "importers_globals.h"
 #include "annoyingdialog.h"
+#include "genericmultilinenotesdlg.h"
 
 // class constructor
 cbProject::cbProject(const wxString& filename)
@@ -70,7 +71,9 @@ cbProject::cbProject(const wxString& filename)
     m_Loaded(false),
     m_CurrentlyLoading(false),
     m_PCHMode(pchSourceFile),
-    m_CurrentlyCompilingTarget(0)
+    m_CurrentlyCompilingTarget(0),
+    m_ExtendedObjectNamesGeneration(false),
+    m_AutoShowNotesOnLoad(false)
 {
     SetCompilerID(CompilerFactory::GetDefaultCompilerID());
     SetModified(false);
@@ -365,7 +368,7 @@ void cbProject::CalculateCommonTopLevelPath()
     wxString sep = wxFileName::GetPathSeparator();
     wxFileName base = GetBasePath() + sep;
     Manager::Get()->GetMessageManager()->DebugLog(_T("Project's base path: %s"), base.GetFullPath().c_str());
-    
+
     // this loop takes ~30ms for 1000 project files
     // it's as fast as it can get, considered that it used to take ~1200ms ;)
     // don't even bother making it faster - you can't :)
@@ -1641,7 +1644,7 @@ void cbProject::ReOrderTargets(const wxArrayString& nameOrder)
 
         m_Targets.Remove(target);
         m_Targets.Insert(target, i);
-        
+
         // we have to re-order the targets which are kept inside
         // the virtual targets array too!
         VirtualBuildTargetsMap::iterator it;
@@ -1804,3 +1807,74 @@ bool MiscTreeItemData::OwnerCheck(wxTreeEvent& event,wxTreeCtrl *tree,wxEvtHandl
     return true;
 }
 #endif
+
+void cbProject::SetExtendedObjectNamesGeneration(bool ext)
+{
+	bool changed = m_ExtendedObjectNamesGeneration != ext;
+
+	// update it now because SetObjName() below will call GetExtendedObjectNamesGeneration()
+	// so it must be up-to-date
+	m_ExtendedObjectNamesGeneration = ext;
+
+    if (changed)
+    {
+        for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
+        {
+            ProjectFile* f = node->GetData();
+            f->SetObjName(f->relativeToCommonTopLevelPath);
+            f->UpdateFileDetails();
+        }
+
+        SetModified(true);
+    }
+}
+
+bool cbProject::GetExtendedObjectNamesGeneration() const
+{
+    return m_ExtendedObjectNamesGeneration;
+}
+
+void cbProject::SetNotes(const wxString& notes)
+{
+    if (m_Notes != notes)
+    {
+        m_Notes = notes;
+        SetModified(true);
+    }
+}
+
+const wxString& cbProject::GetNotes() const
+{
+    return m_Notes;
+}
+
+void cbProject::SetShowNotesOnLoad(bool show)
+{
+    if (m_AutoShowNotesOnLoad != show)
+    {
+        m_AutoShowNotesOnLoad = show;
+        SetModified(true);
+    }
+}
+
+bool cbProject::GetShowNotesOnLoad() const
+{
+    return m_AutoShowNotesOnLoad;
+}
+
+void cbProject::ShowNotes(bool nonEmptyOnly, bool editable)
+{
+    if (!editable && nonEmptyOnly && m_Notes.IsEmpty())
+        return;
+
+    GenericMultiLineNotesDlg dlg(Manager::Get()->GetAppWindow(),
+                                _("Notes about ") + m_Title,
+                                m_Notes,
+                                !editable);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        if (editable)
+            SetNotes(dlg.GetNotes());
+    }
+}

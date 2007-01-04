@@ -467,7 +467,14 @@ namespace ScriptBindings
                 func(&cbProject::GetCurrentlyCompilingTarget, "GetCurrentlyCompilingTarget").
                 func(&cbProject::SetCurrentlyCompilingTarget, "SetCurrentlyCompilingTarget").
                 func(&cbProject::GetModeForPCH, "GetModeForPCH").
-                func(&cbProject::SetModeForPCH, "SetModeForPCH");
+                func(&cbProject::SetModeForPCH, "SetModeForPCH").
+                func(&cbProject::SetExtendedObjectNamesGeneration, "SetExtendedObjectNamesGeneration").
+                func(&cbProject::GetExtendedObjectNamesGeneration, "GetExtendedObjectNamesGeneration").
+                func(&cbProject::SetNotes, "SetNotes").
+                func(&cbProject::GetNotes, "GetNotes").
+                func(&cbProject::SetShowNotesOnLoad, "SetShowNotesOnLoad").
+                func(&cbProject::GetShowNotesOnLoad, "GetShowNotesOnLoad").
+                func(&cbProject::ShowNotes, "ShowNotes");
 
         SqPlus::SQClassDef<ProjectManager>("ProjectManager").
                 func(&ProjectManager::GetDefaultPath, "GetDefaultPath").

@@ -524,6 +524,59 @@ class DLLIMPORT cbProject : public CompileTargetBase
 
         /** Sets the last modification time for the project to 'now'. Used to detect modifications outside the Program. */
         void Touch();
+
+        /** Sets object names generation to extended/normal mode.
+          *
+          * In normal mode (the default), the file @c foo.cpp generates the @c foo.o object file.
+          * In extended mode, the file @c foo.cpp generates the @c foo.cpp.o object file.
+          *
+          * This option is useful for large projects containing similarly named files
+          * (in the same directory) differing only on their extensions. Using the
+          * extended mode with said projects guarantees that each object name will
+          * be unique.
+          *
+          * @param ext Set to true to switch to extended mode, false for normal mode.
+          */
+        void SetExtendedObjectNamesGeneration(bool ext);
+
+        /** Gets object names generation mode (extended/normal).
+          * @return True for extended mode, false for normal mode.
+          * @see SetExtendedObjectNamesGeneration.
+          */
+        bool GetExtendedObjectNamesGeneration() const;
+
+        /** Set notes on the project.
+          *
+          * @param notes Simple text notes about the project.
+          */
+        void SetNotes(const wxString& notes);
+
+        /** Get notes on the project.
+          *
+          * @return Simple text notes about the project.
+          */
+        const wxString& GetNotes() const;
+
+        /** Set show project notes on load automatically.
+          *
+          * @param show If true show project notes on load.
+          */
+        void SetShowNotesOnLoad(bool show);
+
+        /** Get show project notes on load automatically.
+          *
+          * @return True if show project notes on load is set, false if not.
+          */
+        bool GetShowNotesOnLoad() const;
+
+        /** Show project notes now.
+          *
+          * @param nonEmptyOnly If true, show notes only if non-empty.
+          * @param editable If true, the notes will be editable.
+          *
+          * @note If @c editable is true, the @c nonEmptyOnly parameter is ignored...
+          */
+        void ShowNotes(bool nonEmptyOnly, bool editable = false);
     private:
         void Open();
         void ExpandVirtualBuildTargetGroup(const wxString& alias, wxArrayString& result) const;
@@ -562,6 +615,10 @@ class DLLIMPORT cbProject : public CompileTargetBase
         ProjectBuildTarget* m_CurrentlyCompilingTarget;
 
         wxDateTime m_LastModified;
+
+        bool m_ExtendedObjectNamesGeneration;
+        wxString m_Notes;
+        bool m_AutoShowNotesOnLoad;
 };
 
 #endif // CBPROJECT_H

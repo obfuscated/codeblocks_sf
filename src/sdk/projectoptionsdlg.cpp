@@ -124,6 +124,11 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
 	bool hasPCH = compiler && compiler->GetSwitches().supportsPCH;
 	XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->Enable(hasPCH);
 
+	XRCCTRL(*this, "chkExtendedObjNames", wxCheckBox)->SetValue(m_Project->GetExtendedObjectNamesGeneration());
+
+	XRCCTRL(*this, "chkShowNotes", wxCheckBox)->SetValue(m_Project->GetShowNotesOnLoad());
+	XRCCTRL(*this, "txtNotes", wxTextCtrl)->SetValue(m_Project->GetNotes());
+
     FillBuildTargets();
 
 	PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
@@ -1005,6 +1010,9 @@ void ProjectOptionsDlg::EndModal(int retCode)
         m_Project->SetMakefileCustom(XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->GetValue());
         m_Project->SetTargetType(TargetType(XRCCTRL(*this, "cmbProjectType", wxComboBox)->GetSelection()));
         m_Project->SetModeForPCH((PCHMode)XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->GetSelection());
+        m_Project->SetExtendedObjectNamesGeneration(XRCCTRL(*this, "chkExtendedObjNames", wxCheckBox)->GetValue());
+        m_Project->SetShowNotesOnLoad(XRCCTRL(*this, "chkShowNotes", wxCheckBox)->GetValue());
+        m_Project->SetNotes(XRCCTRL(*this, "txtNotes", wxTextCtrl)->GetValue());
 
         if (m_Current_Sel == -1)
             m_Current_Sel = 0; // force update of global options
