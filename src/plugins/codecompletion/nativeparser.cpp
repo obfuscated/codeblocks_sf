@@ -95,7 +95,11 @@ void NativeParser::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, 
             while (pathsElem)
             {
                 if (pathsElem->Attribute("add"))
-                    pdirs.Add(cbC2U(pathsElem->Attribute("add")));
+                {
+                    wxString dir = cbC2U(pathsElem->Attribute("add"));
+                    if (pdirs.Index(dir) == wxNOT_FOUND)
+                        pdirs.Add(dir);
+                }
 
                 pathsElem = pathsElem->NextSiblingElement("search_path");
             }
@@ -1589,12 +1593,30 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                 Manager::Get()->GetMessageManager()->DebugLog(_T("Looking for type: '%s' (%d components)"), actual.c_str(), type_components.size());
 #endif
             // search under all search-scope namespaces too
-            TokenIdxSet::iterator itsearch;
+            TokenIdxSet temp_search_scope;
             if (search_scope)
-                itsearch = search_scope->begin();
-            while (!search_scope || itsearch != search_scope->end())
+                temp_search_scope = *search_scope;
+            TokenIdxSet::iterator itsearch;
+            // add grand-parent as search scope (if none defined)
+            // this helps with namespaces when the token's type doesn't contain
+            // namespace info. In that case (with the code here) we 're searching in
+            // the parent's namespace too
+            if (parentTokenIdx != -1)
             {
-                Token* parent = tree->at(search_scope ? *itsearch : parentTokenIdx);
+                Token* parent = tree->at(parentTokenIdx);
+                if (parent && parent->GetParentToken())
+                {
+                    temp_search_scope.insert(parent->GetParentToken()->GetSelf());
+#ifdef DEBUG_CC_AI
+                    if (s_DebugSmartSense)
+                        DBGLOG(_T("Implicit search scope added: %s"), parent->GetParentToken()->m_Name.c_str());
+#endif
+                }
+            }
+            itsearch = temp_search_scope.begin();
+            while (!search_scope || itsearch != temp_search_scope.end())
+            {
+                Token* parent = tree->at(*itsearch);
 #ifdef DEBUG_CC_AI
                 if (s_DebugSmartSense)
                     Manager::Get()->GetMessageManager()->DebugLog(_T(" : looking under '%s'"), parent ? parent->m_Name.c_str() : _T("Global namespace"));
@@ -1602,14 +1624,12 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                 do
                 {
                     // types are searched as whole words, case-sensitive and only classes/namespaces
-                    if (FindAIMatches(parser, type_components, type_result, parent ? parent->GetSelf() : -1, true, false, false, tkClass | tkNamespace | tkTypedef | tkEnum, search_scope) != 0)
+                    if (FindAIMatches(parser, type_components, type_result, parent ? parent->GetSelf() : -1, true, false, false, tkClass | tkNamespace | tkTypedef | tkEnum, &temp_search_scope) != 0)
                         break;
                     if (!parent)
                         break;
                     parent = tree->at(parent->m_ParentIndex);
                 } while (true);
-                if (!search_scope)
-                    break;
                 ++itsearch;
             }
             // we got all possible types (hopefully should be just one)
@@ -1625,7 +1645,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                     while (it != type_result.end())
                     {
                         std::queue<ParserComponent> lcomp = components;
-                        FindAIMatches(parser, lcomp, result, *it, noPartialMatch, caseSensitive, use_inheritance, kindMask);
+                        FindAIMatches(parser, lcomp, result, *it, noPartialMatch, caseSensitive, use_inheritance, kindMask, search_scope);
                         ++it;
                     }
                 }
@@ -1645,7 +1665,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
             result.insert(id);
         // else recurse this function using id as a parent
         else
-            FindAIMatches(parser, components, result, id, noPartialMatch, caseSensitive, use_inheritance, kindMask);
+            FindAIMatches(parser, components, result, id, noPartialMatch, caseSensitive, use_inheritance, kindMask, search_scope);
     }
 #ifdef DEBUG_CC_AI
     if (s_DebugSmartSense)
