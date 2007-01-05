@@ -14,8 +14,6 @@
 %define _suse_vernum	%(echo "%{_suse_version}"|tr -d '.')
 %define _release	%{_rel}.suse%{_suse_vernum}
 %define _distribution	SuSE Linux %{_suse_version}
-%define _prefix		/opt/gnome
-%define _sysconfdir	/etc%{_prefix}
 %endif
 %if %_mandrake
 %define _mandrake_version   %(cat /etc/mandrake-release|cut -f4 -d" ")
@@ -235,6 +233,8 @@ fi
 %{_includedir}/%{name}/*
 
 %changelog
+* Fri Jan  5 2006 Daniel Orb <danielorb2000@googlemail.com>
+- changed prefix on suse to default (from /opt/gnome to /usr)
 * Sun Dec  2 2006 Daniel Orb <danielorb2000@googlemail.com>
 - Added RegExTestbed plugin to filelist
 * Sun Nov  5 2006 Daniel Orb <danielorb2000@googlemail.com>
