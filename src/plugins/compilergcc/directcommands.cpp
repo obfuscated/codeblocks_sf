@@ -132,7 +132,7 @@ wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFil
         DepsSearchStart(target);
 
         const pfDetails& pfd = pf->GetFileDetails(target);
-        if (!IsObjectOutdated(pfd))
+        if (!IsObjectOutdated(target, pfd))
             return ret;
     }
 
@@ -152,6 +152,8 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         return ret;
 
     const pfDetails& pfd = pf->GetFileDetails(target);
+    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
+    wxString Object = (compiler->GetSwitches().UseFlatObjects)?pfd.object_file_flat:pfd.object_file;
 
     // lookup file's type
     FileType ft = FileTypeOf(pf->relativeFilename);
@@ -176,7 +178,6 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
 //        return ret;
 //#endif
 
-    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
     wxString compilerCmd;
     if (!isHeader || compiler->GetSwitches().supportsPCH)
     {
@@ -188,7 +189,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
                                          target,
                                          pf,
                                          pfd.source_file,
-                                         pfd.object_file,
+                                         Object,
                                          pfd.object_file_flat,
                                          pfd.dep_file);
     }
@@ -219,7 +220,8 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         // (it 'll be recreated anyway)
         if (FileTypeOf(pf->relativeFilename) == ftHeader && pf->compile)
         {
-            wxRemoveFile(pfd.object_file_absolute_native);
+            wxString ObjectAbs = (compiler->GetSwitches().UseFlatObjects)?pfd.object_file_flat_absolute_native:pfd.object_file_absolute_native;
+            wxRemoveFile(ObjectAbs);
         }
     }
     else
@@ -380,7 +382,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
         ProjectFile* pf = files[i];
         const pfDetails& pfd = pf->GetFileDetails(target);
 
-        if (force || IsObjectOutdated(pfd))
+        if (force || IsObjectOutdated(target, pfd))
         {
             // compile file
             wxArrayString filecmd = GetCompileFileCommand(target, pf);
@@ -537,12 +539,13 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             continue;
 
         const pfDetails& pfd = pf->GetFileDetails(target);
+        wxString Object = (compiler->GetSwitches().UseFlatObjects)?pfd.object_file_flat:pfd.object_file;
 
         if (FileTypeOf(pf->relativeFilename) == ftResource)
-            resfiles << pfd.object_file << _T(" ");
+            resfiles << Object << _T(" ");
         else
         {
-            linkfiles << prependHack << pfd.object_file << _T(" "); // see QUICK HACK above (prependHack)
+            linkfiles << prependHack << Object << _T(" "); // see QUICK HACK above (prependHack)
             FlatLinkFiles << prependHack << pfd.object_file_flat << _T(" "); // see QUICK HACK above (prependHack)
         }
 
@@ -676,7 +679,9 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
     {
         ProjectFile* pf = files[i];
         const pfDetails& pfd = pf->GetFileDetails(target);
-        ret.Add(pfd.object_file_absolute_native);
+        Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
+        wxString ObjectAbs = (compiler->GetSwitches().UseFlatObjects)?pfd.object_file_flat_absolute_native:pfd.object_file_absolute_native;
+        ret.Add(ObjectAbs);
         if (distclean)
             ret.Add(pfd.dep_file_absolute_native);
         if(m_doYield)
@@ -767,7 +772,7 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
     return false; // no force relink
 }
 
-bool DirectCommands::IsObjectOutdated(const pfDetails& pfd)
+bool DirectCommands::IsObjectOutdated(ProjectBuildTarget* target, const pfDetails& pfd)
 {
     // If the source file does not exist, then do not compile.
     time_t timeSrc;
@@ -778,7 +783,9 @@ bool DirectCommands::IsObjectOutdated(const pfDetails& pfd)
     // If the object file does not exist, then it must be built. In this case
     // there is no need to scan the source file for headers.
     time_t timeObj;
-    depsTimeStamp(pfd.object_file_absolute_native.mb_str(), &timeObj);
+    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
+    wxString ObjectAbs = (compiler->GetSwitches().UseFlatObjects)?pfd.object_file_flat_absolute_native:pfd.object_file_absolute_native;
+    depsTimeStamp(ObjectAbs.mb_str(), &timeObj);
     if (!timeObj)
         return true;
 

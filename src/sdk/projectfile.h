@@ -171,6 +171,7 @@ class pfDetails : public BlockAllocated<pfDetails, 1000>
         wxString dep_dir_native;
         wxString source_file_absolute_native;
         wxString object_file_absolute_native;
+        wxString object_file_flat_absolute_native;
         wxString dep_file_absolute_native;
         wxString object_file_flat_native;
 };

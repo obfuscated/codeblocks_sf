@@ -32,6 +32,32 @@ WX_DEFINE_OBJARRAY(RegExArray);
 // static
 wxArrayString Compiler::m_CompilerIDs; // map to guarantee unique IDs
 
+
+
+CompilerSwitches::CompilerSwitches()
+{	// default based upon gnu
+	includeDirs = _T("-I");
+	libDirs = _T("-L");
+	linkLibs = _T("-l");
+	defines = _T("-D");
+	genericSwitch = _T("-");
+	objectExtension = _T("o");
+	needDependencies = true;
+	forceFwdSlashes = false;
+	forceCompilerUseQuotes = false;
+	forceLinkerUseQuotes = false;
+	logging = clogSimple;
+	libPrefix = _T("lib");
+	libExtension = _T("a");
+	linkerNeedsLibPrefix = false;
+	linkerNeedsLibExtension = false;
+	buildMethod = cbmDirect;
+	supportsPCH = true;
+	PCHExtension = _T("h.gch");
+	UseFlatObjects = false;
+} // end of constructor
+
+
 wxString Compiler::CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT] =
 {
     // These are the strings that describe each CommandType enumerator...

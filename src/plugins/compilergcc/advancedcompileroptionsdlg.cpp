@@ -68,11 +68,12 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
     XRCCTRL(*this, "chkForceLinkerQuotes", wxCheckBox)->SetValue(switches.forceLinkerUseQuotes);
     XRCCTRL(*this, "chkSupportsPCH", wxCheckBox)->SetValue(switches.supportsPCH);
     XRCCTRL(*this, "txtPCHExt", wxTextCtrl)->SetValue(switches.PCHExtension);
+    XRCCTRL(*this, "chkUseFlatObjects", wxCheckBox)->SetValue(switches.UseFlatObjects);
 
     m_Regexes = compiler->GetRegExArray();
     m_SelectedRegex = m_Regexes.Count() > 0 ? 0 : -1;
     FillRegexes();
-}
+} // end of ReadCompilerOptions
 
 void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
 {
@@ -102,8 +103,9 @@ void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
     switches.forceLinkerUseQuotes = XRCCTRL(*this, "chkForceLinkerQuotes", wxCheckBox)->GetValue();
     switches.supportsPCH = XRCCTRL(*this, "chkSupportsPCH", wxCheckBox)->GetValue();
     switches.PCHExtension = XRCCTRL(*this, "txtPCHExt", wxTextCtrl)->GetValue();
+    switches.UseFlatObjects = XRCCTRL(*this, "chkUseFlatObjects", wxCheckBox)->GetValue();
     compiler->SetSwitches(switches);
-}
+} // end of WriteCompilerOptions
 
 void AdvancedCompilerOptionsDlg::DisplayCommand(int nr)
 {

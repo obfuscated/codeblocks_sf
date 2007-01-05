@@ -159,6 +159,8 @@ struct CompilerSwitches
     bool linkerNeedsLibExtension; // when adding a link library, linker needs extension?
     bool supportsPCH; // supports precompiled headers?
     wxString PCHExtension; // precompiled headers extension
+    bool UseFlatObjects; // Use Flat object file names (no extra subdirs)?
+    CompilerSwitches();		// constructor initializing the members, specific compilers should overrule if needed
 };
 
 /**
