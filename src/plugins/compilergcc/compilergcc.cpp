@@ -2920,9 +2920,14 @@ void CompilerGCC::OnSelectTarget(wxCommandEvent& event)
 {
     int sel = event.GetSelection();
     if (event.GetId() == idToolTarget)
+    {   // through the toolbar
         DoUpdateTargetMenu(sel);
+    }
     else
+    {   // through Build->SelectTarget
         DoUpdateTargetMenu(event.GetId() - idMenuSelectTargetOther[0]);
+        m_ToolTarget->SetSelection(event.GetId() - idMenuSelectTargetOther[0]);
+    }
 } // end of OnSelectTarget
 
 void CompilerGCC::OnNextError(wxCommandEvent& event)
