@@ -233,7 +233,7 @@ fi
 %{_includedir}/%{name}/*
 
 %changelog
-* Fri Jan  5 2006 Daniel Orb <danielorb2000@googlemail.com>
+* Fri Jan  5 2007 Daniel Orb <danielorb2000@googlemail.com>
 - changed prefix on suse to default (from /opt/gnome to /usr)
 * Sun Dec  2 2006 Daniel Orb <danielorb2000@googlemail.com>
 - Added RegExTestbed plugin to filelist
