@@ -952,6 +952,7 @@ void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent& event)
     // timer, the splash screen is closed and Code::Blocks doesn't take so long
     // in starting.
     m_timer.Start(200, wxTIMER_ONE_SHOT);
+    event.Skip();
 }
 
 void CodeCompletion::OnCodeCompleteTimer(wxTimerEvent& event)
