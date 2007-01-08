@@ -277,19 +277,6 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                             ? CompilerFactory::GetCompiler(target->GetCompilerID())
                             : CompilerFactory::GetDefaultCompiler();
 
-    // already set in PF::SetObjectName()
-//    if (ft == ftResource)
-//    {
-//        // windows resources need different extension than other object files
-//        tmp.SetExt(_T("res"));
-//    }
-//    else if (ft != ftHeader)
-//    {
-//        // don't change object extension for precompiled headers
-//        if (compiler)
-//            tmp.SetExt(compiler->GetSwitches().objectExtension);
-//    }
-
     // support for precompiled headers
     if (target && ft == ftHeader && compiler && compiler->GetSwitches().supportsPCH)
     {
@@ -336,19 +323,39 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
         if (pf->GetParentProject())
         {
             wxFileName fname(pf->relativeToCommonTopLevelPath);
-            if (pf->GetParentProject()->GetExtendedObjectNamesGeneration())
+            if (ft == ftResource || ft == ftResourceBin)
             {
-                object_file_native = objOut + sep + fname.GetFullPath();
-                object_file_flat_native = objOut + sep + fname.GetFullName();
+                if (pf->GetParentProject()->GetExtendedObjectNamesGeneration())
+                {
+                    object_file_native = objOut + sep + fname.GetFullPath();
+                    object_file_flat_native = objOut + sep + fname.GetFullName();
 
-                object_file_native += _T('.') + compiler->GetSwitches().objectExtension;
-                object_file_flat_native += _T('.') + compiler->GetSwitches().objectExtension;
+                    object_file_native += FileFilters::RESOURCEBIN_DOT_EXT;
+                    object_file_flat_native += FileFilters::RESOURCEBIN_DOT_EXT;
+                }
+                else
+                {
+                    fname.SetExt(FileFilters::RESOURCEBIN_EXT);
+                    object_file_native = objOut + sep + fname.GetFullPath();
+                    object_file_flat_native = objOut + sep + fname.GetFullName();
+                }
             }
             else
             {
-                fname.SetExt(compiler->GetSwitches().objectExtension);
-                object_file_native = objOut + sep + fname.GetFullPath();
-                object_file_flat_native = objOut + sep + fname.GetFullName();
+                if (pf->GetParentProject()->GetExtendedObjectNamesGeneration())
+                {
+                    object_file_native = objOut + sep + fname.GetFullPath();
+                    object_file_flat_native = objOut + sep + fname.GetFullName();
+
+                    object_file_native += _T('.') + compiler->GetSwitches().objectExtension;
+                    object_file_flat_native += _T('.') + compiler->GetSwitches().objectExtension;
+                }
+                else
+                {
+                    fname.SetExt(compiler->GetSwitches().objectExtension);
+                    object_file_native = objOut + sep + fname.GetFullPath();
+                    object_file_flat_native = objOut + sep + fname.GetFullName();
+                }
             }
         }
     }
