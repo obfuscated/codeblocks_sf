@@ -583,7 +583,7 @@
 			<Option link="0" />
 			<Option target="Autosave" />
 		</Unit>
-		<Unit filename="plugins\autosave\resources\manifest.xml">
+		<Unit filename="plugins\autosave\manifest.xml">
 			<Option compilerVar="CC" />
 			<Option compile="0" />
 			<Option link="0" />
@@ -1849,7 +1849,7 @@
 			<Option link="0" />
 			<Option target="To-do" />
 		</Unit>
-		<Unit filename="plugins\xpmanifest\resources\manifest.xml">
+		<Unit filename="plugins\xpmanifest\manifest.xml">
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
