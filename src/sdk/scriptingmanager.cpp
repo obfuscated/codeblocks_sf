@@ -230,7 +230,7 @@ bool ScriptingManager::RegisterScriptPlugin(const wxString& name, const wxArrayI
     return true;
 }
 
-bool ScriptingManager::RegisterScriptMenu(const wxString& script, const wxString& menuPath)
+bool ScriptingManager::RegisterScriptMenu(const wxString& menuPath, const wxString& scriptOrFunc, bool isFunction)
 {
     // attach this event handler in the main window (one-time run)
     if (!m_AttachedToMainWindow)
@@ -243,14 +243,18 @@ bool ScriptingManager::RegisterScriptMenu(const wxString& script, const wxString
     wxMenuItem* item = m_MenuItemsManager.CreateFromString(menuPath, id);
     if (item)
     {
-        item->SetHelp(_("Press SHIFT while clicking this menu item to edit the assigned script in the editor"));
+        if (!isFunction)
+            item->SetHelp(_("Press SHIFT while clicking this menu item to edit the assigned script in the editor"));
 
         Connect(id, -1, wxEVT_COMMAND_MENU_SELECTED,
                 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                 &ScriptingManager::OnScriptMenu);
 
-        m_MenuIDToScript.insert(m_MenuIDToScript.end(), std::make_pair(id, script));
-        LOG(_("Script '%s' registered under menu '%s'"), script.c_str(), menuPath.c_str());
+        MenuBoundScript mbs;
+        mbs.scriptOrFunc = scriptOrFunc;
+        mbs.isFunc = isFunction;
+        m_MenuIDToScript.insert(m_MenuIDToScript.end(), std::make_pair(id, mbs));
+        LOG(_("Script/function '%s' registered under menu '%s'"), scriptOrFunc.c_str(), menuPath.c_str());
 
         return true;
     }
@@ -268,15 +272,8 @@ bool ScriptingManager::UnRegisterScriptMenu(const wxString& menuPath)
 
 bool ScriptingManager::UnRegisterAllScriptMenus()
 {
-    DBGLOG(_T("ScriptingManager::UnRegisterAllScriptMenus() not implemented"));
-    return false;
-//    MenuIDToScript::iterator it;
-//    for (it = m_MenuIDToScript.begin(); it != m_MenuIDToScript.end(); ++it)
-//    {
-//        UnRegisterScriptMenu(it->second);
-//    }
-//    m_MenuIDToScript.clear();
-//    return true;
+    m_MenuItemsManager.Clear();
+    return true;
 }
 
 bool ScriptingManager::IsScriptTrusted(const wxString& script)
@@ -369,10 +366,29 @@ void ScriptingManager::OnScriptMenu(wxCommandEvent& event)
 		cbMessageBox(_("No script associated with this menu?!?"), _("Error"), wxICON_ERROR);
 		return;
 	}
+	
+	MenuBoundScript& mbs = it->second;
+	
+	// is it a function?
+	if (mbs.isFunc)
+	{
+	    try
+	    {
+            SqPlus::SquirrelFunction<void> f(cbU2C(mbs.scriptOrFunc));
+            f();
+        }
+        catch (SquirrelError exception)
+        {
+            DisplayErrors(&exception);
+        }
+	    return;
+	}
+
+    // script loading below
 
 	if (wxGetKeyState(WXK_SHIFT))
 	{
-		wxString script = ConfigManager::LocateDataFile(it->second, sdScriptsUser | sdScriptsGlobal);
+		wxString script = ConfigManager::LocateDataFile(mbs.scriptOrFunc, sdScriptsUser | sdScriptsGlobal);
 		Manager::Get()->GetEditorManager()->Open(script);
 		return;
 	}
@@ -380,8 +396,8 @@ void ScriptingManager::OnScriptMenu(wxCommandEvent& event)
 	// run script
 	try
 	{
-		if (!LoadScript(it->second))
-			cbMessageBox(_("Could not run script: ") + it->second, _("Error"), wxICON_ERROR);
+		if (!LoadScript(mbs.scriptOrFunc))
+			cbMessageBox(_("Could not run script: ") + mbs.scriptOrFunc, _("Error"), wxICON_ERROR);
 	}
 	catch (SquirrelError exception)
 	{

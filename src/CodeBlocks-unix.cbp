@@ -3060,6 +3060,10 @@
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/scripting/bindings/sc_dialog.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/scripting/bindings/sc_globals.cpp">
 			<Option compilerVar="CPP" />
 			<Option target="sdk" />
@@ -3076,6 +3080,10 @@
 			<Option compilerVar="CPP" />
 			<Option compile="0" />
 			<Option link="0" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/scripting/bindings/sc_progress.cpp">
+			<Option compilerVar="CPP" />
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/scripting/bindings/sc_wxtypes.cpp">

@@ -5,4 +5,4 @@ Log(_T("Running startup script"));
 // Include(_T("sample_plugin.script"));
 
 // add a menu entry to edit this script
-GetScriptingManager().RegisterScriptMenu(_T("edit_startup_script.script"), _T("Settings/-Edit startup script"));
+GetScriptingManager().RegisterScriptMenu(_T("Settings/-Edit startup script"), _T("edit_startup_script.script"), false);

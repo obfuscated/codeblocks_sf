@@ -53,6 +53,16 @@ namespace ScriptBindings
             return false;
     	}
 
+        wxString GetCwd()
+        {
+        	return wxGetCwd();
+        }
+        
+        void SetCwd(const wxString& dir)
+        {
+        	wxSetWorkingDirectory(dir);
+        }
+        
         bool CreateDirRecursively(const wxString& full_path, int perms)
         {
         	wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(full_path));
@@ -168,6 +178,7 @@ namespace ScriptBindings
         {
         	if (!SecurityAllows(_T("Execute"), command))
 				return -1;
+			wxLogNull ln;
 			wxArrayString output;
         	return wxExecute(command, output, wxEXEC_NODISABLE);
         }
@@ -176,6 +187,7 @@ namespace ScriptBindings
         {
         	if (!SecurityAllows(_T("Execute"), command))
 				return wxEmptyString;
+			wxLogNull ln;
 			wxArrayString output;
         	wxExecute(command, output, wxEXEC_NODISABLE);
         	return GetStringFromArray(output);
@@ -203,6 +215,9 @@ namespace ScriptBindings
                 staticFunc(&IOLib::ExecuteAndGetOutput, "ExecuteAndGetOutput").
 				#endif // NO_INSECURE_SCRIPTS
 
+                staticFunc(&IOLib::GetCwd, "GetCwd").
+                staticFunc(&IOLib::SetCwd, "SetCwd").
+                
                 staticFunc(&IOLib::DirectoryExists, "DirectoryExists").
                 staticFunc(&IOLib::ChooseDir, "SelectDirectory").
                 staticFunc(&IOLib::FileExists, "FileExists").

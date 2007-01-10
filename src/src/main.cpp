@@ -670,9 +670,9 @@ void MainFrame::RunStartupScripts()
                     if (!se.registered)
                         Manager::Get()->GetScriptingManager()->LoadScript(startup);
                     else if (!se.menu.IsEmpty())
-                        Manager::Get()->GetScriptingManager()->RegisterScriptMenu(startup, se.menu);
+                        Manager::Get()->GetScriptingManager()->RegisterScriptMenu(se.menu, startup, false);
                     else
-                        LOG_WARN(_("Startup script '%s' not loaded: invalid configuration"), se.script.c_str());
+                        LOG_WARN(_("Startup script/function '%s' not loaded: invalid configuration"), se.script.c_str());
                 }
             }
             catch (SquirrelError& exception)

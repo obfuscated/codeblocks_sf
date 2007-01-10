@@ -70,6 +70,10 @@ namespace ScriptBindings
         BIND_INT_CONSTANT(wxPATH_WIN);
         BIND_INT_CONSTANT(wxPATH_OS2);
         BIND_INT_CONSTANT(wxPATH_VMS);
+        
+        // for wxFileName::GetPath()
+        BIND_INT_CONSTANT(wxPATH_GET_VOLUME);
+        BIND_INT_CONSTANT(wxPATH_GET_SEPARATOR);
 
         // wxPathNormalize
         BIND_INT_CONSTANT(wxPATH_NORM_ENV_VARS);

@@ -128,15 +128,18 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
 
         /** @brief Script-bound function to register a script with a menu item.
           *
-          * @param script The script's filename.
           * @param menuPath The full menu path. This can be separated by slashes (/)
           *                 to create submenus (e.g. "MyScripts/ASubMenu/MyItem").
           *                 If the last part of the string ("MyItem" in the example)
           *                 starts with a dash (-) (e.g. "-MyItem") then a menu
           *                 separator is prepended before the actual menu item.
+          * @param scriptOrFunc The script's filename or a script's function name.
+          * @param isFunction If true, the @c scriptOrFunc parameter is considered
+          *       to be a script filename. If false, it is considered to be a
+          *       script's function name.
           * @return True on success, false on failure.
           */
-        bool RegisterScriptMenu(const wxString& script, const wxString& menuPath);
+        bool RegisterScriptMenu(const wxString& menuPath, const wxString& scriptOrFunc, bool isFunction);
 
         /** @brief Script-bound function to unregister a script's menu item.
           *
@@ -218,7 +221,12 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
 
         // container for script menus
         // script menuitem_ID -> script_filename
-        typedef std::map<int, wxString> MenuIDToScript;
+        struct MenuBoundScript
+        {
+            wxString scriptOrFunc;
+            bool isFunc;
+        };
+        typedef std::map<int, MenuBoundScript> MenuIDToScript;
 		MenuIDToScript m_MenuIDToScript;
 
         bool m_AttachedToMainWindow;
