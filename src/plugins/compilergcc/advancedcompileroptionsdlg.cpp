@@ -1,14 +1,44 @@
-#include <sdk.h>
-#include "advancedcompileroptionsdlg.h"
-#include <compilerfactory.h>
-#include <wx/xrc/xmlres.h>
+#include "sdk.h"
+#ifndef CB_PRECOMP
+#include <wx/checkbox.h>
+#include <wx/combobox.h>
 #include <wx/intl.h>
 #include <wx/listbox.h>
+#include <wx/spinctrl.h>
 #include <wx/textctrl.h>
-#include <wx/combobox.h>
-#include <wx/checkbox.h>
-#include <wx/msgdlg.h>
-#include <globals.h>
+#include <wx/xrc/xmlres.h>
+#include "compilerfactory.h"
+#include "globals.h"
+#endif
+#include "advancedcompileroptionsdlg.h"
+
+// TODO : implement full IsDirty mechanism, now always forced to true when ok is pressed
+// NOTE : when OK pressed settings are already applied to the compiler, although in the compiler settings
+//		that the parent dialog that spawned this dialog the user can still click on cancel there,
+//		meaning also the changes here should not be applied, but as it is now : too late, applied (TO FIX)
+
+
+wxString ControlCharsToString(const wxString& src)
+{
+    wxString ret = src;
+    ret.Replace(_T("\t"), _T("\\t"));
+    ret.Replace(_T("\n"), _T("\\n"));
+    ret.Replace(_T("\r"), _T("\\r"));
+    ret.Replace(_T("\a"), _T("\\a"));
+    ret.Replace(_T("\b"), _T("\\b"));
+    return ret;
+} // end of ControlCharsToString
+
+wxString StringToControlChars(const wxString& src)
+{
+    wxString ret = src;
+    ret.Replace(_T("\\t"), _T("\t"));
+    ret.Replace(_T("\\n"), _T("\n"));
+    ret.Replace(_T("\\r"), _T("\r"));
+    ret.Replace(_T("\\a"), _T("\a"));
+    ret.Replace(_T("\\b"), _T("\b"));
+    return ret;
+} // end of StringToControlChars
 
 BEGIN_EVENT_TABLE(AdvancedCompilerOptionsDlg, wxDialog)
     EVT_LISTBOX(XRCID("lstCommands"),       AdvancedCompilerOptionsDlg::OnCommandsChange)
@@ -28,7 +58,8 @@ AdvancedCompilerOptionsDlg::AdvancedCompilerOptionsDlg(wxWindow* parent, const w
 	//ctor
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAdvancedCompilerOptions"));
 	ReadCompilerOptions();
-}
+	m_bDirty = false;
+} // end of constructor
 
 AdvancedCompilerOptionsDlg::~AdvancedCompilerOptionsDlg()
 {
@@ -295,32 +326,11 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& event)
     cbMessageBox(msg, _("Test results"), wxICON_INFORMATION);
 }
 
-wxString AdvancedCompilerOptionsDlg::ControlCharsToString(const wxString& src)
-{
-    wxString ret = src;
-    ret.Replace(_T("\t"), _T("\\t"));
-    ret.Replace(_T("\n"), _T("\\n"));
-    ret.Replace(_T("\r"), _T("\\r"));
-    ret.Replace(_T("\a"), _T("\\a"));
-    ret.Replace(_T("\b"), _T("\\b"));
-    return ret;
-}
-
-wxString AdvancedCompilerOptionsDlg::StringToControlChars(const wxString& src)
-{
-    wxString ret = src;
-    ret.Replace(_T("\\t"), _T("\t"));
-    ret.Replace(_T("\\n"), _T("\n"));
-    ret.Replace(_T("\\r"), _T("\r"));
-    ret.Replace(_T("\\a"), _T("\a"));
-    ret.Replace(_T("\\b"), _T("\b"));
-    return ret;
-}
-
 void AdvancedCompilerOptionsDlg::EndModal(int retCode)
 {
     if (retCode == wxID_OK)
     {
+    	m_bDirty = true;
         Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
 
         // make sure we update the first command, if it changed

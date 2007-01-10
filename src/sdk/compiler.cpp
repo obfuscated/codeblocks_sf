@@ -271,6 +271,7 @@ void Compiler::SaveSettings(const wxString& baseKey)
     cfg->Write(tmp + _T("/switches/forceFwdSlashes"), m_Switches.forceFwdSlashes);
     cfg->Write(tmp + _T("/switches/supportsPCH"), m_Switches.supportsPCH);
     cfg->Write(tmp + _T("/switches/pchExtension"), m_Switches.PCHExtension);
+    cfg->Write(tmp + _T("/switches/UseFlatObjects"), m_Switches.UseFlatObjects);
 
     // regexes
     cfg->DeleteSubPath(tmp + _T("/regex"));
@@ -380,6 +381,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Switches.forceFwdSlashes = cfg->ReadBool(tmp + _T("/switches/forceFwdSlashes"), m_Switches.forceFwdSlashes);
     m_Switches.supportsPCH = cfg->ReadBool(tmp + _T("/switches/supportsPCH"), m_Switches.supportsPCH);
     m_Switches.PCHExtension = cfg->Read(tmp + _T("/switches/pchExtension"), m_Switches.PCHExtension);
+    m_Switches.UseFlatObjects = cfg->ReadBool(tmp + _T("/switches/UseFlatObjects"), m_Switches.UseFlatObjects);
 
     // regexes
     wxString group;

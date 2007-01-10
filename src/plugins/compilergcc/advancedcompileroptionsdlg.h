@@ -2,15 +2,19 @@
 #define ADVANCEDCOMPILEROPTIONSDLG_H
 
 #include <wx/dialog.h>
-#include <wx/spinctrl.h>
-#include <compiler.h>
+#include <wx/string.h>
+#include "compiler.h"	// RegExArray, COMPILER_COMMAND_TYPES_COUNT
+
+class wxCommandEvent;
+class wxSpinEvent;
 
 class AdvancedCompilerOptionsDlg : public wxDialog
 {
 	public:
 		AdvancedCompilerOptionsDlg(wxWindow* parent, const wxString& compilerId);
 		virtual ~AdvancedCompilerOptionsDlg();
-	protected:
+		bool IsDirty() const {return m_bDirty;}
+	private:
         void OnCommandsChange(wxCommandEvent& event);
         void OnRegexChange(wxCommandEvent& event);
         void OnRegexTest(wxCommandEvent& event);
@@ -33,10 +37,8 @@ class AdvancedCompilerOptionsDlg : public wxDialog
         int m_LastCmdIndex;
         RegExArray m_Regexes;
         int m_SelectedRegex;
+        bool m_bDirty;		//!< Have changes being made to settings in the dialog
         wxString m_Commands[COMPILER_COMMAND_TYPES_COUNT];
-	private:
-        wxString ControlCharsToString(const wxString& src);
-        wxString StringToControlChars(const wxString& src);
         DECLARE_EVENT_TABLE();
 };
 

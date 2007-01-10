@@ -1970,6 +1970,11 @@ void CompilerOptionsDlg::OnAdvancedClick(wxCommandEvent& /*event*/)
         AdvancedCompilerOptionsDlg dlg(this, CompilerFactory::GetCompiler(compilerIdx)->GetID());
         PlaceWindow(&dlg);
         dlg.ShowModal();
+        // check if dirty
+        if(dlg.IsDirty())
+        {
+//        	m_bDirty = true;  // TO DO : Activate when implemented in the adv dialog
+        }
     }
 }
 
