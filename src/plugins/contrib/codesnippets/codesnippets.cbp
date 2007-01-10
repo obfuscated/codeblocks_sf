@@ -1,15 +1,13 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="5" />
+	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="Code Snippets Plugin" />
 		<Option pch_mode="2" />
-		<Option default_target="" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="" />
 		<Build>
 			<Target title="Debug - Win32">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codesnippets.dll" />
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codesnippets.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\codesnippets" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\codesnippets" />
 				<Option type="3" />
@@ -19,7 +17,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release - Win32">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codesnippets.dll" />
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codesnippets.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\codesnippets" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\codesnippets" />
 				<Option type="3" />
@@ -67,73 +65,19 @@
 			<Add after="update.bat" />
 			<Mode after="always" />
 		</ExtraCommands>
-		<Unit filename="codesnippets.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug - Win32" />
-			<Option target="Release - Win32" />
-		</Unit>
-		<Unit filename="codesnippets.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug - Win32" />
-			<Option target="Release - Win32" />
-		</Unit>
-		<Unit filename="codesnippetstreectrl.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug - Win32" />
-			<Option target="Release - Win32" />
-		</Unit>
-		<Unit filename="codesnippetstreectrl.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug - Win32" />
-			<Option target="Release - Win32" />
-		</Unit>
-		<Unit filename="codesnippetswindow.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug - Win32" />
-			<Option target="Release - Win32" />
-		</Unit>
-		<Unit filename="codesnippetswindow.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug - Win32" />
-			<Option target="Release - Win32" />
-		</Unit>
-		<Unit filename="resources\manifest.xml">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug - Win32" />
-			<Option target="Release - Win32" />
-		</Unit>
-		<Unit filename="snippetitemdata.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug - Win32" />
-			<Option target="Release - Win32" />
-		</Unit>
-		<Unit filename="snippetitemdata.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug - Win32" />
-			<Option target="Release - Win32" />
-		</Unit>
-		<Unit filename="editsnippetdlg.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="Debug - Win32" />
-			<Option target="Release - Win32" />
-		</Unit>
-		<Unit filename="editsnippetdlg.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="Debug - Win32" />
-			<Option target="Release - Win32" />
-		</Unit>
-		<Extensions />
+		<Unit filename="codesnippets.cpp" />
+		<Unit filename="codesnippets.h" />
+		<Unit filename="codesnippetstreectrl.cpp" />
+		<Unit filename="codesnippetstreectrl.h" />
+		<Unit filename="codesnippetswindow.cpp" />
+		<Unit filename="codesnippetswindow.h" />
+		<Unit filename="editsnippetdlg.cpp" />
+		<Unit filename="editsnippetdlg.h" />
+		<Unit filename="resources\manifest.xml" />
+		<Unit filename="snippetitemdata.cpp" />
+		<Unit filename="snippetitemdata.h" />
+		<Extensions>
+			<code_completion />
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

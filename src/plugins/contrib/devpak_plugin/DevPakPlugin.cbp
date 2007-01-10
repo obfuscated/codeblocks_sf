@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="5" />
+	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="Dev-C++ DevPak updater/installer (wx2.6)" />
 		<Option pch_mode="0" />
 		<Option default_target="default" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="" />
 		<Build>
 			<Target title="libbz2">
-				<Option output="bzip2\libbz2.a" />
+				<Option output="bzip2\libbz2.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 			</Target>
 			<Target title="default">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\devpakupdater.dll" />
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\devpakupdater.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="..\devpak_plugin" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -81,15 +80,9 @@
 			<Option target="libbz2" />
 		</Unit>
 		<Unit filename="bzip2\bzlib.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="libbz2" />
 		</Unit>
 		<Unit filename="bzip2\bzlib_private.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="libbz2" />
 		</Unit>
 		<Unit filename="bzip2\compress.c">
@@ -113,97 +106,61 @@
 			<Option target="libbz2" />
 		</Unit>
 		<Unit filename="cbiniparser.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="cbiniparser.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="cbnetwork.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="cbnetwork.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="conf.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="conf.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="crc32.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="crc32.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="devpakinstaller.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="devpakinstaller.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="devpakupdater.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="devpakupdater.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="manifest.xml">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="mytar.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="mytar.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="update.xrc">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="updatedlg.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="updatedlg.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Extensions />
+		<Extensions>
+			<code_completion />
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
