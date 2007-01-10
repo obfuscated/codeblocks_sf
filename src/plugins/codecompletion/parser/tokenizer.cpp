@@ -272,6 +272,7 @@ bool Tokenizer::SkipBlock(const wxChar& ch)
     int count = 1; // counter for nested blocks (xxx())
     while (NotEOF())
     {
+		bool noMove = false;
         if (CurrentChar() == '/')
             SkipComment(); // this will decide if it is a comment
 
@@ -281,13 +282,17 @@ bool Tokenizer::SkipBlock(const wxChar& ch)
             char ch = CurrentChar();
             MoveToNextChar();
             SkipToChar(ch);
-            MoveToNextChar();
+			MoveToNextChar();
+            // don't move to next char below if concatenating strings (e.g. printf("" ""))
+			if (CurrentChar() == '"' || CurrentChar() == '\'')
+				noMove = true;
         }
         if (CurrentChar() == ch)
             ++count;
         else if (CurrentChar() == match)
             --count;
-        MoveToNextChar();
+		if (!noMove)
+			MoveToNextChar();
         if (count == 0)
             break;
     }
