@@ -1932,14 +1932,6 @@
 			<Option link="0" />
 			<Option target="To-do" />
 		</Unit>
-		<Unit filename="plugins/xpmanifest/windowsxplooknfeel.cpp">
-			<Option compilerVar="CPP" />
-		</Unit>
-		<Unit filename="plugins/xpmanifest/windowsxplooknfeel.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-		</Unit>
 		<Unit filename="sdk.doxy">
 			<Option compilerVar="" />
 			<Option compile="0" />
