@@ -39,7 +39,7 @@ enum ModuleType
 enum FileType
 {
     ftCodeBlocksProject = 0,
-  ftCodeBlocksWorkspace,
+    ftCodeBlocksWorkspace,
     ftDevCppProject,
     ftMSVC6Project,
     ftMSVC7Project,
@@ -58,6 +58,7 @@ enum FileType
     ftExecutable,
     ftNative,
     ftXMLDocument,
+    ftScript,
     ftOther
 };
 

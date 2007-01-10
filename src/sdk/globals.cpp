@@ -210,6 +210,9 @@ FileType FileTypeOf(const wxString& filename)
     else if (ext.IsSameAs(FileFilters::XML_EXT))
         return ftXMLDocument;
 
+    else if (ext.IsSameAs(FileFilters::SCRIPT_EXT))
+        return ftScript;
+
     return ftOther;
 }
 

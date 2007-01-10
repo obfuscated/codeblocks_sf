@@ -18,11 +18,11 @@ class DLLIMPORT FilesGroupsAndMasks
         FilesGroupsAndMasks();
         FilesGroupsAndMasks(FilesGroupsAndMasks& copy);
         ~FilesGroupsAndMasks();
-		void CopyFrom(FilesGroupsAndMasks& copy); // copy ctor helper
+        void CopyFrom(FilesGroupsAndMasks& copy); // copy ctor helper
 
         unsigned int AddGroup(const wxString& name); // returns the group index
-		void RenameGroup(unsigned int group, const wxString& newName);
-		void DeleteGroup(unsigned int group);
+        void RenameGroup(unsigned int group, const wxString& newName);
+        void DeleteGroup(unsigned int group);
         void SetFileMasks(unsigned int group, const wxString& masks);
 
         void Clear();
@@ -32,9 +32,9 @@ class DLLIMPORT FilesGroupsAndMasks
         wxString GetFileMasks(unsigned int group) const;
         bool MatchesMask(const wxString& ext, unsigned int group);
 
-		void Save();
+        void Save();
     private:
-		void Load();
+        void Load();
         FileGroupsArray m_Groups;
 };
 

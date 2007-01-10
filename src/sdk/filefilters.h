@@ -46,7 +46,7 @@ namespace FileFilters
       * @param FilterName Receives the filters name if found
       * @return filter found : yes/no.
       */
-	DLLIMPORT bool GetFilterNameFromIndex(const wxString& FiltersList, int Index, wxString& FilterName);
+    DLLIMPORT bool GetFilterNameFromIndex(const wxString& FiltersList, int Index, wxString& FilterName);
 
     /** @brief Get the index of the filter 'FilterName' in the FiltersList
       * @param FiltersList The list of Filters
@@ -54,7 +54,7 @@ namespace FileFilters
       * @param Index Receives the index of the filter if found
       * @return filter found : yes/no.
       */
-	DLLIMPORT bool GetFilterIndexFromName(const wxString& FiltersList, const wxString& FilterName, int& Index);
+    DLLIMPORT bool GetFilterIndexFromName(const wxString& FiltersList, const wxString& FilterName, int& Index);
 
     // file extension constants
     // *just* the extension, e.g. "exe"
@@ -88,6 +88,7 @@ namespace FileFilters
     extern const DLLIMPORT wxString RESOURCE_EXT;
     extern const DLLIMPORT wxString RESOURCEBIN_EXT;
     extern const DLLIMPORT wxString XML_EXT;
+    extern const DLLIMPORT wxString SCRIPT_EXT;
 
     // a dot *and* the extension, e.g. ".exe"
     extern const DLLIMPORT wxString WORKSPACE_DOT_EXT;
@@ -120,6 +121,7 @@ namespace FileFilters
     extern const DLLIMPORT wxString RESOURCE_DOT_EXT;
     extern const DLLIMPORT wxString RESOURCEBIN_DOT_EXT;
     extern const DLLIMPORT wxString XML_DOT_EXT;
+    extern const DLLIMPORT wxString SCRIPT_DOT_EXT;
 };
 
 #endif // FILEFILTERS_H

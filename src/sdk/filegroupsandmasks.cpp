@@ -26,31 +26,37 @@
 
 FilesGroupsAndMasks::FilesGroupsAndMasks()
 {
-	//ctor
-	Load();
+    //ctor
+    Load();
 
-	if (m_Groups.GetCount() == 0)
-	{
-		// only add default groups if none were loaded...
-		unsigned int group = AddGroup(_("Sources"));
-		SetFileMasks(group, _T("*.c;*.cpp;*.cc;*.cxx;*.C;*.CPP;*.CC;*.CXX;*.d;*.D") );
-		group = AddGroup(_("Headers"));
-		SetFileMasks(group, _T("*.h;*.hpp;*.hh;*.hxx;*.H;*.HPP;*.HH;*.HXX") );
-		group = AddGroup(_("Resources"));
-		SetFileMasks(group, _T("*.res;*.xrc;*.rc;*.RES;*.XRC;*.RC") );
-	}
+    if (m_Groups.GetCount() == 0)
+    {
+        // only add default groups if none were loaded...
+        unsigned int group = AddGroup(_("Sources"));
+        SetFileMasks(group, _T("*.c;*.cpp;*.cc;*.cxx;*.C;*.CPP;*.CC;*.CXX") );
+        group = AddGroup(_("D Sources"));
+        SetFileMasks(group, _T("*.d;*.D") );
+        group = AddGroup(_("Fortran Sources"));
+        SetFileMasks(group, _T("*.f;*.f77;*.f97") );
+        group = AddGroup(_("Headers"));
+        SetFileMasks(group, _T("*.h;*.hpp;*.hh;*.hxx;*.H;*.HPP;*.HH;*.HXX") );
+        group = AddGroup(_("Resources"));
+        SetFileMasks(group, _T("*.res;*.xrc;*.rc;*.RES;*.XRC;*.RC") );
+        group = AddGroup(_("Scripts"));
+        SetFileMasks(group, _T("*.script;*.SCRIPT") );
+    }
 }
 
 FilesGroupsAndMasks::FilesGroupsAndMasks(FilesGroupsAndMasks& copy)
 {
-	// copy ctor
-	CopyFrom(copy);
+    // copy ctor
+    CopyFrom(copy);
 }
 
 FilesGroupsAndMasks::~FilesGroupsAndMasks()
 {
-	//dtor
-	Save();
+    //dtor
+    Save();
     Clear();
 }
 
@@ -59,43 +65,43 @@ void FilesGroupsAndMasks::CopyFrom(FilesGroupsAndMasks& copy)
     Clear();
     for (unsigned int i = 0; i < copy.m_Groups.GetCount(); ++i)
     {
-		FileGroups* fg = new FileGroups;
+        FileGroups* fg = new FileGroups;
         FileGroups* otherfg = copy.m_Groups[i];
-		fg->groupName = otherfg->groupName;
-		fg->fileMasks = otherfg->fileMasks;
+        fg->groupName = otherfg->groupName;
+        fg->fileMasks = otherfg->fileMasks;
 
-		m_Groups.Add(fg);
+        m_Groups.Add(fg);
     }
 }
 
 void FilesGroupsAndMasks::Load()
 {
-	Clear();
-	ConfigManager* conf = Manager::Get()->GetConfigManager(_T("project_manager"));
-	wxArrayString list = conf->EnumerateSubPaths(_T("/file_groups"));
-	for (unsigned int i = 0; i < list.GetCount(); ++i)
-	{
-		// new way (reading groups)
-		wxString key = _T("/file_groups/") + list[i];
+    Clear();
+    ConfigManager* conf = Manager::Get()->GetConfigManager(_T("project_manager"));
+    wxArrayString list = conf->EnumerateSubPaths(_T("/file_groups"));
+    for (unsigned int i = 0; i < list.GetCount(); ++i)
+    {
+        // new way (reading groups)
+        wxString key = _T("/file_groups/") + list[i];
         unsigned int group = AddGroup(conf->Read(key + _T("/name")));
         SetFileMasks(group, conf->Read(key + _T("/mask")));
-	}
+    }
 }
 
 void FilesGroupsAndMasks::Save()
 {
-	ConfigManager* conf = Manager::Get()->GetConfigManager(_T("project_manager"));
-	conf->DeleteSubPath(_T("/file_groups"));
-	for (unsigned int i = 0; i < m_Groups.GetCount(); ++i)
-	{
+    ConfigManager* conf = Manager::Get()->GetConfigManager(_T("project_manager"));
+    conf->DeleteSubPath(_T("/file_groups"));
+    for (unsigned int i = 0; i < m_Groups.GetCount(); ++i)
+    {
         FileGroups* fg = m_Groups[i];
         wxString key;
         key << _T("/file_groups/group") << wxString::Format(_T("%d"), i) << _T("/") << _T("name");
-		conf->Write(key, fg->groupName);
+        conf->Write(key, fg->groupName);
         key.Clear();
         key << _T("/file_groups/group") << wxString::Format(_T("%d"), i) << _T("/") << _T("mask");
-		conf->Write(key, GetStringFromArray(fg->fileMasks, _T(";")));
-	}
+        conf->Write(key, GetStringFromArray(fg->fileMasks, _T(";")));
+    }
 }
 
 void FilesGroupsAndMasks::Clear()
@@ -123,7 +129,7 @@ void FilesGroupsAndMasks::RenameGroup(unsigned int group, const wxString& newNam
         return;
 
     FileGroups* fg = m_Groups[group];
-	fg->groupName = newName;
+    fg->groupName = newName;
 }
 
 void FilesGroupsAndMasks::DeleteGroup(unsigned int group)
@@ -132,8 +138,8 @@ void FilesGroupsAndMasks::DeleteGroup(unsigned int group)
         return;
 
     FileGroups* fg = m_Groups[group];
-	delete fg;
-	m_Groups.Remove(fg);
+    delete fg;
+    m_Groups.Remove(fg);
 }
 
 void FilesGroupsAndMasks::SetFileMasks(unsigned int group, const wxString& masks)
