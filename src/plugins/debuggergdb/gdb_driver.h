@@ -83,16 +83,27 @@ class GDB_driver : public DebuggerDriver
         wxString m_CygdrivePrefix;
 #endif
         TypesArray m_Types;
-        bool m_BreakOnEntry;
-        bool m_ManualBreakOnEntry;
 
+        // Seems to be intended to allow step before program has started.
+        // Was always false.  HC changed to take value from DebuggerGDB::m_BreakOnEntry.
+        bool m_BreakOnEntry; 
+    
+        // Seems to be used to issue a InfoProgram command, then continue
+        // True after first "Start()", until first break
+        bool m_ManualBreakOnEntry; 
+
+		// Program is "running": after a "run" or a "start", and before "kill" or a "quit"
+		bool m_IsStarted;
+		
         // cursor update flags
         bool m_needsUpdate;
         bool m_forceUpdate;
+	
         // GDB version
         long m_GDBVersionMajor;
         long m_GDBVersionMinor;
         wxString flavour;
-};
+		
+}; // GDB_driver
 
 #endif // GDB_DRIVER_H

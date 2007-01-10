@@ -336,7 +336,7 @@ void DebuggerGDB::OnAttach()
 
 void DebuggerGDB::OnRelease(bool appShutDown)
 {
-    if (m_State.GetDriver())
+    if (m_State.HasDriver())
         m_State.GetDriver()->SetDebugWindows(0, 0, 0, 0, 0);
 
     if (m_pThreadsDlg)
@@ -722,7 +722,7 @@ wxString DebuggerGDB::GetDebuggee(ProjectBuildTarget* target)
 
 bool DebuggerGDB::IsStopped()
 {
-    return !m_State.GetDriver() || m_State.GetDriver()->IsStopped();
+    return !m_State.HasDriver() || m_State.GetDriver()->IsStopped();
 }
 
 int DebuggerGDB::Debug()
@@ -952,14 +952,14 @@ int DebuggerGDB::Debug()
 
     // Don't issue 'run' if attaching to a process (Bug #1391904)
     if (m_PidToAttach == 0)
-        m_State.GetDriver()->Start(false);
+        m_State.GetDriver()->Start(m_BreakOnEntry);
 
     return 0;
-}
+} // Debug
 
 void DebuggerGDB::AddSourceDir(const wxString& dir)
 {
-    if (!m_State.GetDriver() || dir.IsEmpty())
+    if (!m_State.HasDriver() || dir.IsEmpty())
         return;
     wxString filename = dir;
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(filename); // apply env vars
@@ -1102,7 +1102,7 @@ void DebuggerGDB::RunCommand(int cmd)
     {
         case CMD_CONTINUE:
             ClearActiveMarkFromAllEditors();
-            if (m_State.GetDriver())
+            if (m_State.HasDriver())
             {
                 Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Continuing..."));
                 m_State.GetDriver()->Continue();
@@ -1112,7 +1112,7 @@ void DebuggerGDB::RunCommand(int cmd)
 
         case CMD_STEP:
             ClearActiveMarkFromAllEditors();
-            if (m_State.GetDriver())
+            if (m_State.HasDriver())
                 m_State.GetDriver()->Step();
 //            QueueCommand(new DebuggerCmd(this, _T("next")));
             break;
@@ -1124,35 +1124,35 @@ void DebuggerGDB::RunCommand(int cmd)
                 // first time users should have some help from us ;)
                 Disassemble();
             }
-            if (m_State.GetDriver())
+            if (m_State.HasDriver())
                 m_State.GetDriver()->StepInstruction();
 //            QueueCommand(new DebuggerCmd(this, _T("nexti")));
             break;
 
         case CMD_STEPIN:
             ClearActiveMarkFromAllEditors();
-            if (m_State.GetDriver())
+            if (m_State.HasDriver())
                 m_State.GetDriver()->StepIn();
 //            QueueCommand(new DebuggerCmd(this, _T("step")));
             break;
 
         case CMD_STOP:
             ClearActiveMarkFromAllEditors();
-            if (m_State.GetDriver())
+            if (m_State.HasDriver())
                 m_State.GetDriver()->Stop();
 //            QueueCommand(new DebuggerCmd(this, _T("quit")));
             break;
 
         case CMD_BACKTRACE:
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Running back-trace...");
-            if (m_State.GetDriver())
+            if (m_State.HasDriver())
                 m_State.GetDriver()->Backtrace();
             break;
 
         case CMD_DISASSEMBLE:
         {
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Disassemblying...");
-            if (m_State.GetDriver())
+            if (m_State.HasDriver())
                 m_State.GetDriver()->Disassemble();
             break;
         }
@@ -1160,20 +1160,20 @@ void DebuggerGDB::RunCommand(int cmd)
         case CMD_REGISTERS:
         {
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Displaying registers...");
-            if (m_State.GetDriver())
+            if (m_State.HasDriver())
                 m_State.GetDriver()->CPURegisters();
             break;
         }
 
         case CMD_MEMORYDUMP:
         {
-            if (m_State.GetDriver())
+            if (m_State.HasDriver())
                 m_State.GetDriver()->MemoryDump();
         }
 
         case CMD_RUNNINGTHREADS:
         {
-            if (m_State.GetDriver())
+            if (m_State.HasDriver())
                 m_State.GetDriver()->RunningThreads();
         }
 
@@ -1467,7 +1467,7 @@ void DebuggerGDB::Stop()
 
 void DebuggerGDB::ParseOutput(const wxString& output)
 {
-    if (m_State.GetDriver())
+    if (m_State.HasDriver())
     {
         m_State.GetDriver()->ParseOutput(output);
     }
@@ -1622,8 +1622,10 @@ void DebuggerGDB::OnStep(wxCommandEvent& event)
     {
         m_BreakOnEntry = true;
         Debug();
+		m_BreakOnEntry = false;
     }
-    else Step();
+    else
+		Step();
 }
 
 void DebuggerGDB::OnStepOut(wxCommandEvent& event)
@@ -1796,7 +1798,7 @@ void DebuggerGDB::OnToolInfo(wxCommandEvent& event)
 
 void DebuggerGDB::OnInfoFrame(wxCommandEvent& event)
 {
-    if (m_State.GetDriver())
+    if (m_State.HasDriver())
     {
         m_State.GetDriver()->InfoFrame();
     }
@@ -1804,7 +1806,7 @@ void DebuggerGDB::OnInfoFrame(wxCommandEvent& event)
 
 void DebuggerGDB::OnInfoDLL(wxCommandEvent& event)
 {
-    if (m_State.GetDriver())
+    if (m_State.HasDriver())
     {
         m_State.GetDriver()->InfoDLL();
     }
@@ -1812,7 +1814,7 @@ void DebuggerGDB::OnInfoDLL(wxCommandEvent& event)
 
 void DebuggerGDB::OnInfoFiles(wxCommandEvent& event)
 {
-    if (m_State.GetDriver())
+    if (m_State.HasDriver())
     {
         m_State.GetDriver()->InfoFiles();
     }
@@ -1820,7 +1822,7 @@ void DebuggerGDB::OnInfoFiles(wxCommandEvent& event)
 
 void DebuggerGDB::OnInfoFPU(wxCommandEvent& event)
 {
-    if (m_State.GetDriver())
+    if (m_State.HasDriver())
     {
         m_State.GetDriver()->InfoFPU();
     }
@@ -1828,7 +1830,7 @@ void DebuggerGDB::OnInfoFPU(wxCommandEvent& event)
 
 void DebuggerGDB::OnInfoSignals(wxCommandEvent& event)
 {
-    if (m_State.GetDriver())
+    if (m_State.HasDriver())
     {
         m_State.GetDriver()->InfoSignals();
     }
@@ -1986,7 +1988,7 @@ void DebuggerGDB::OnProjectActivated(CodeBlocksEvent& event)
     // when a project is activated and it's not the actively debugged project,
     // ask the user to end debugging or re-activate the debugged project.
 
-    if (!m_State.GetDriver() || !m_pProject)
+    if (!m_State.HasDriver() || !m_pProject)
         return;
 
     if (event.GetProject() != m_pProject)
@@ -2018,7 +2020,7 @@ void DebuggerGDB::OnProjectClosed(CodeBlocksEvent& event)
     // when a project closes, make sure it's not the actively debugged project.
     // if so, end debugging immediately!
 
-    if (!m_State.GetDriver() || !m_pProject)
+    if (!m_State.HasDriver() || !m_pProject)
         return;
 
     if (event.GetProject() == m_pProject)
@@ -2051,7 +2053,7 @@ void DebuggerGDB::OnWatchesChanged(wxCommandEvent& event)
 
 void DebuggerGDB::OnCursorChanged(wxCommandEvent& event)
 {
-    if (m_State.GetDriver())
+    if (m_State.HasDriver())
     {
         const Cursor& cursor = m_State.GetDriver()->GetCursor();
         if (m_State.GetDriver()->IsStopped() && cursor.changed)

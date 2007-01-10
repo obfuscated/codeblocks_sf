@@ -18,6 +18,12 @@ class DebuggerState
 
         bool StartDriver(ProjectBuildTarget* target);
         void StopDriver();
+
+	/// Check so see if Driver exists before getting it
+	bool HasDriver();
+	
+	/// Will always return a driver, or throw a code assertion error
+	// (to fix multiple bugs in use of GetDriver without checking return value)
         DebuggerDriver* GetDriver();
 
         void CleanUp();

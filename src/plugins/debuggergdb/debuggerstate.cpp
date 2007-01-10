@@ -1,4 +1,5 @@
 #include <sdk.h>
+#include <cbexception.h>
 #include "debuggerstate.h"
 #include <compilerfactory.h>
 #include "debuggergdb.h"
@@ -42,9 +43,15 @@ void DebuggerState::StopDriver()
     m_pDriver = 0;
 }
 
+bool DebuggerState::HasDriver()
+{
+	return m_pDriver != NULL;
+}
+
 DebuggerDriver* DebuggerState::GetDriver()
 {
-    return m_pDriver;
+	cbAssert(m_pDriver != NULL);
+	return m_pDriver;
 }
 
 void DebuggerState::CleanUp()
@@ -105,9 +112,9 @@ wxString DebuggerState::ConvertToValidFilename(const wxString& filename)
         else
         {
         	// for foreign files, we still should use a relative path
-        	wxFileName f(filename);
-        	f.MakeRelativeTo(prj->GetBasePath());
-        	fname = f.GetFullPath();
+        	//~ wxFileName f(filename);
+        	//~ f.MakeRelativeTo(prj->GetBasePath());
+        	//~ fname = f.GetFullPath();
         }
     }
     return fname;

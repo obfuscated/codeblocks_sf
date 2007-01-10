@@ -792,9 +792,10 @@ void DebuggerTree::FixupVarNameForChange(wxString& str)
 
 void DebuggerTree::OnChangeValue(wxCommandEvent& event)
 {
+    if (!m_pDebugger->GetState().HasDriver())
+	    return;
+    
     DebuggerDriver* driver = m_pDebugger->GetState().GetDriver();
-    if (!driver)
-        return;
 
     wxString var;
     wxTreeItemId parent;

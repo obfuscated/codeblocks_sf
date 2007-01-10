@@ -181,7 +181,7 @@ void BacktraceDlg::OnSwitchFrame(wxCommandEvent& event)
     if (lst->GetItemText(index).ToLong(&realFrameNr))
     {
         // switch to this frame
-        if (m_pDbg->GetState().GetDriver())
+        if (m_pDbg->GetState().HasDriver())
             m_pDbg->GetState().GetDriver()->SwitchToFrame(realFrameNr);
     }
     else

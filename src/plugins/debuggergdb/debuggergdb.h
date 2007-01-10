@@ -168,7 +168,11 @@ class DebuggerGDB : public cbDebuggerPlugin
         wxRect m_EvalRect;
         wxTimer m_TimerPollDebugger;
         bool m_NoDebugInfo;
-        bool m_BreakOnEntry;
+
+        // Set, but was never used.  HC changed to pass to "Start()"
+		// Looks like was meant to allow initial step into first instruction of program start
+        bool m_BreakOnEntry; 
+	
         int m_HaltAtLine;
         bool m_HasDebugLog;
         bool m_StoppedOnSignal;

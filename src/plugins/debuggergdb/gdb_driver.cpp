@@ -55,6 +55,7 @@ GDB_driver::GDB_driver(DebuggerGDB* plugin)
     : DebuggerDriver(plugin),
     m_BreakOnEntry(false),
     m_ManualBreakOnEntry(false),
+	m_IsStarted(false),
     m_GDBVersionMajor(0),
     m_GDBVersionMinor(0)
 {
@@ -347,6 +348,8 @@ wxString GDB_driver::GetDisassemblyFlavour(void)
     return flavour;
 }
 
+// Only called from DebuggerGDB::Debug
+// breakOnEntry was always false.  Changed by HC.
 void GDB_driver::Start(bool breakOnEntry)
 {
     ResetCursor();
@@ -372,21 +375,30 @@ void GDB_driver::Start(bool breakOnEntry)
     m_ManualBreakOnEntry = true;
 
     if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("do_not_run"), false))
+    {
         // start the process
         QueueCommand(new DebuggerCmd(this, _T("start")));
+		m_IsStarted = true;
+	}
 #endif
-}
+} // Start
 
 void GDB_driver::Stop()
 {
     ResetCursor();
     QueueCommand(new DebuggerCmd(this, _T("quit")));
+	m_IsStarted = false;
 }
 
 void GDB_driver::Continue()
 {
     ResetCursor();
-    QueueCommand(new DebuggerCmd(this, _T("cont")));
+	if (m_IsStarted)
+		QueueCommand(new DebuggerCmd(this, _T("cont")));
+	else {
+		QueueCommand(new DebuggerCmd(this, m_ManualBreakOnEntry ? _T("start") : _T("run")));
+		m_IsStarted = true;
+	}
 }
 
 void GDB_driver::Step()
@@ -600,7 +612,7 @@ void GDB_driver::ParseOutput(const wxString& output)
     }
     else
     {
-//      m_ProgramIsStopped = false;
+		m_ProgramIsStopped = false;
         return; // come back later
     }
 
@@ -653,6 +665,7 @@ void GDB_driver::ParseOutput(const wxString& output)
         {
             m_pDBG->Log(lines[i]);
             QueueCommand(new DebuggerCmd(this, _T("quit")));
+			m_IsStarted = false;
         }
 
         // no debug symbols?
@@ -825,7 +838,7 @@ void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak, wxString line)
             m_ManualBreakOnEntry = false;
             QueueCommand(new GdbCmd_InfoProgram(this), DebuggerDriver::High);
             if (!m_BreakOnEntry)
-            Continue();
+				Continue();
         }
         else
         {
