@@ -20,16 +20,16 @@ class ProgressDialog : public wxProgressDialog
 								wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT)
 		{
 		}
-		
+
 		~ProgressDialog()
 		{
 		}
-		
-		ProgressDialog& ProgressDialog::operator=(const ProgressDialog&)
+
+		ProgressDialog& operator=(const ProgressDialog&)
 		{
 			cbThrow(_T("ProgressDialog copy constructor should never be called!"));
 		}
-		
+
 		bool Update(int val, const wxString& msg)
 		{
 			return wxProgressDialog::Update(val, msg, 0);
