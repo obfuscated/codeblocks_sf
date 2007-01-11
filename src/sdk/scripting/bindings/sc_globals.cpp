@@ -86,15 +86,15 @@ namespace ScriptBindings
     }
     long wx_GetNumberFromUser(const wxString& message, const wxString& prompt, const wxString& caption, long value)
     {
-    	return wxGetNumberFromUser(message, prompt, caption, value);
+        return wxGetNumberFromUser(message, prompt, caption, value);
     }
     wxString wx_GetPasswordFromUser(const wxString& message, const wxString& caption, const wxString& default_value)
     {
-    	return wxGetPasswordFromUser(message, caption, default_value);
+        return wxGetPasswordFromUser(message, caption, default_value);
     }
     wxString wx_GetTextFromUser(const wxString& message, const wxString& caption, const wxString& default_value)
     {
-    	return wxGetTextFromUser(message, caption, default_value);
+        return wxGetTextFromUser(message, caption, default_value);
     }
 
     void Register_Globals()

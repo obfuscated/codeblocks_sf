@@ -229,19 +229,19 @@ namespace ScriptBindings
 //                func(&wxArrayString::Index, "Index").
                 func(&wxArrayString::GetCount, "GetCount").
                 func(&wxArrayString::Item, "Item");
-		
+        
 #if wxCHECK_VERSION(2, 8, 0)
-		typedef void(wxColour::*WXC_SET)(const unsigned char, const unsigned char, const unsigned char, const unsigned char);
+        typedef void(wxColour::*WXC_SET)(const unsigned char, const unsigned char, const unsigned char, const unsigned char);
 #else
-		typedef void(wxColour::*WXC_SET)(const unsigned char, const unsigned char, const unsigned char);
+        typedef void(wxColour::*WXC_SET)(const unsigned char, const unsigned char, const unsigned char);
 #endif
-		SqPlus::SQClassDef<wxColour>("wxColour").
-				emptyCtor().
+        SqPlus::SQClassDef<wxColour>("wxColour").
+                emptyCtor().
                 staticFuncVarArgs(&wxColour_OpToString, "_tostring", "").
-				func(&wxColour::Blue, "Blue").
-				func(&wxColour::Green, "Green").
-				func(&wxColour::Red, "Red").
-				func(&wxColour::Ok, "Ok").
-				func<WXC_SET>(&wxColour::Set, "Set");
+                func(&wxColour::Blue, "Blue").
+                func(&wxColour::Green, "Green").
+                func(&wxColour::Red, "Red").
+                func(&wxColour::Ok, "Ok").
+                func<WXC_SET>(&wxColour::Set, "Set");
     }
 };

@@ -9,14 +9,14 @@ class wxMenu;
 
 namespace ScriptBindings
 {
-	namespace ScriptPluginWrapper
-	{
-		wxArrayInt CreateMenu(wxMenuBar* mbar);
-		wxArrayInt CreateModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data);
-		
-		void OnScriptMenu(int id);
-		void OnScriptModuleMenu(int id);
-	}; // namespace ScriptPluginWrapper
+    namespace ScriptPluginWrapper
+    {
+        wxArrayInt CreateMenu(wxMenuBar* mbar);
+        wxArrayInt CreateModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data);
+        
+        void OnScriptMenu(int id);
+        void OnScriptModuleMenu(int id);
+    }; // namespace ScriptPluginWrapper
 };
 
 #endif // SC_PLUGIN_H

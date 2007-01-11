@@ -52,7 +52,7 @@ function DebugSymbolsOn(base, compilerID)
 
         if  (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd")))
         {
-            base.AddCompilerOption(_T("-D"));
+            base.AddCompilerOption(_T("-debug"));
         }
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc")))
@@ -100,7 +100,7 @@ function OptimizationsOn(base, compilerID)
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd")))
     {
-        base.AddCompilerOption(_T("-o"));
+        base.AddCompilerOption(_T("-O"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc")))
     {

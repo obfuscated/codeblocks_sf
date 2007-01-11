@@ -102,7 +102,7 @@ void CompilerDMD::Reset()
 	//. m_Options.AddOption(_("Alignment of struct members"), "-a[1|2|4|8]", _("Architecture"));
 	//m_Options.AddOption(_("compile only, do not link"), _T("-c"), _("D Features"));
     m_Options.AddOption(_("instrument for code coverage analysis"), _T("-cov"), _("D Features"));
-    m_Options.AddOption(_("generate documentation"), _T("-D"), _("D Features"));
+    m_Options.AddOption(_("generate documentation from source"), _T("-D"), _("D Features"));
     m_Options.AddOption(_("allow deprecated features"), _T("-d"), _("D Features"));
     m_Options.AddOption(_("compile in debug code"), _T("-debug"), _("D Features"));
     m_Options.AddOption(_("add symbolic debug info"), _T("-g"), _("D Features"));
@@ -110,6 +110,7 @@ void CompilerDMD::Reset()
     m_Options.AddOption(_("inline expand functions"), _T("-inline"), _("Optimize"));
     m_Options.AddOption(_("optimize"), _T("-O"), _("D Features"));
     m_Options.AddOption(_("suppress generation of object file"), _T("-o-"), _("D Features"));
+    m_Options.AddOption(_("do not strip path from .d source files for object files"), _T("-op"), _("D Features"));
     m_Options.AddOption(_("profile the runtime performance of the generated code"), _T("-profile"), _("Debugging"));
     m_Options.AddOption(_("suppress non-essential compiler messages"), _T("-quiet"), _("Others"));
     m_Options.AddOption(_("compile release version, which means not generating code for contracts and asserts"), _T("-release"), _("D Features"));
