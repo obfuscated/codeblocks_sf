@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version--------------------------
-#define VERSION "1.0.13 2006/12/30"
+#define VERSION "1.0.14 2007/01/13"
 // -----------------------------------
 class MyDialog;
 
@@ -608,4 +608,10 @@ private:
 //              to solve missing menu icon problem (wx2.6.2 dejavu).
 //              Completely rebuilds menuItems with changed shortcut and a bitmapped icon.
 //              Works with wx2.6.3 w/fixes and wx2.8.0 according to TimS.
+// ----------------------------------------------------------------------------
+//  Commit  1.0.14 2007/01/13
+//          14) Applied patch 1821 by DerMeister
+//              This patch fixes a crash in the *nix keybinder plugin.
+//              See http://forums.codeblocks.org/index.php?topic=4927.0 for more information.
+//              https://developer.berlios.de/patch/index.php?func=detailpatch&patch_id=1821&group_id=5358
 // ----------------------------------------------------------------------------

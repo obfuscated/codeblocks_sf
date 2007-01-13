@@ -2113,7 +2113,9 @@ void wxKeyConfigPanel::UpdateButtons()
 	wxString str;
 
 	// is the remove button to be enabled ?
-    m_pRemoveBtn->Enable(m_pBindings->GetSelection() >= 0);
+    //-m_pRemoveBtn->Enable(m_pBindings->GetSelection() >= 0);        //DerMeister 2007/01/13
+    m_pRemoveBtn->Enable(m_pBindings->GetSelection() != wxNOT_FOUND); //DerMeister 2007/01/13
+
     m_pRemoveAllBtn->Enable(m_pBindings->GetCount() > 0);
 
 	// is the assign button to be enabled ?
@@ -2545,11 +2547,18 @@ void wxKeyConfigPanel::OnAssignKey(wxCommandEvent &)
 void wxKeyConfigPanel::OnRemoveKey(wxCommandEvent &)
 // ----------------------------------------------------------------------------
 {
+    // Check if there is a selected shortcut:       //DerMeister 2007/01/13
+    int selection = m_pBindings->GetSelection();    //DerMeister 2007/01/13
+    if (selection == wxNOT_FOUND)                   //DerMeister 2007/01/13
+            return; // Nothing to do.               //DerMeister 2007/01/13
+
+
 	// now the user has modified the currently selected profile...
 	m_bProfileHasBeenModified = TRUE;
 
 	// remove the selected shortcut
-	GetSelCmd()->RemoveShortcut(m_pBindings->GetSelection());
+	//-GetSelCmd()->RemoveShortcut(m_pBindings->GetSelection()); //DerMeister 2007/01/13
+    GetSelCmd()->RemoveShortcut(selection);                      //DerMeister 2007/01/13
 
 	// and update the list of the key bindings
 	FillInBindings();
