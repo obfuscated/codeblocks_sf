@@ -53,7 +53,8 @@ class ClassBrowserBuilderThread : public wxThread
                     const wxString& active_filename,
                     void* user_data, // active project
                     const BrowserOptions& options,
-                    TokensTree* pTokens);
+                    TokensTree* pTokens,
+                    bool build_tree);
         void AbortBuilding();
         void ExpandItem(wxTreeItemId item);
         void CollapseItem(wxTreeItemId item);

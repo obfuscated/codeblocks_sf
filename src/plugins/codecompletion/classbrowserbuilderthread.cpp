@@ -36,7 +36,8 @@ void ClassBrowserBuilderThread::Init(Parser* parser,
                                     const wxString& active_filename,
                                     void* user_data, // active project
                                     const BrowserOptions& options,
-                                    TokensTree* pTokens)
+                                    TokensTree* pTokens,
+                                    bool build_tree)
 {
     wxMutexLocker lock(m_BuildMutex);
     m_pParser = parser;
@@ -70,6 +71,11 @@ void ClassBrowserBuilderThread::Init(Parser* parser,
                 m_CurrentFileSet.insert(*it);
             }
         }
+    }
+
+    if (build_tree)
+    {
+        BuildTree();
     }
 }
 

@@ -553,12 +553,15 @@ void ClassBrowser::BuildTree()
     if (Manager::IsAppShuttingDown())
         return;
 
+    bool created_builderthread = false;
+
     // create the thread if needed
     if (!m_pBuilderThread)
     {
         m_pBuilderThread = new ClassBrowserBuilderThread(m_Semaphore, &m_pBuilderThread);
         m_pBuilderThread->Create();
         m_pBuilderThread->Run();
+        created_builderthread = true;
     }
 
     // initialise it
@@ -568,10 +571,14 @@ void ClassBrowser::BuildTree()
                             m_ActiveFilename,
                             m_pActiveProject,
                             m_pParser->ClassBrowserOptions(),
-                            m_pParser->GetTokens());
+                            m_pParser->GetTokens(),
+                            created_builderthread);
 
     // and launch it
-    m_Semaphore.Post();
+    if (!created_builderthread)
+    {
+        m_Semaphore.Post();
+    }
 }
 
 void ClassBrowser::OnTreeItemExpanding(wxTreeEvent& event)
