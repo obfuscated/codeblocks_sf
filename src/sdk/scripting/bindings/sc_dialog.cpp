@@ -78,7 +78,9 @@ namespace ScriptBindings
                 int ret = s_ActiveDialog->ShowModal();
                 delete s_ActiveDialog;
                 s_ActiveDialog = old;
+                #if wxABI_VERSION > 20601
                 wxXmlResource::Get()->Unload(actual);
+                #endif
                 return ret;
             }
             catch (cbException& e)
