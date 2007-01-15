@@ -266,6 +266,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     macro.Replace(_T("$libdirs"), m_Lib[target]);
     macro.Replace(_T("$libs"), m_LDAdd[target]);
     macro.Replace(_T("$file"), tmpFile);
+    macro.Replace(_T("$file_basename"), wxFileName(tmpFile).GetName());
     macro.Replace(_T("$dep_object"), tmpDeps);
     macro.Replace(_T("$object"), tmpObject);
     macro.Replace(_T("$resource_output"), tmpObject);
