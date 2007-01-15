@@ -561,13 +561,12 @@ void ClassBrowser::BuildTree()
         m_pBuilderThread = new ClassBrowserBuilderThread(m_Semaphore, &m_pBuilderThread);
         m_pBuilderThread->Create();
         m_pBuilderThread->Run();
+#ifdef __WXMSW__
+        // workaround only needed for windows (DDE server issue)
         created_builderthread = true;
+#endif
     }
 
-#ifndef __WXMSW__
-	// workaround only needed for windows (DDE server issue)
-	created_builderthread = false;
-#endif
     // initialise it
     m_pBuilderThread->Init(m_pParser,
                             m_Tree,
