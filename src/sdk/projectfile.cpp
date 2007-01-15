@@ -134,6 +134,8 @@ void ProjectFile::SetObjName(const wxString& name)
         {
             // PCHs are always using the extended name mode (at least for GCC)
             // the extension is set to "h.gch"
+            if (project->GetModeForPCH() == pchSourceFile)
+                fname.Assign(relativeFilename);
             fname.SetExt(compiler->GetSwitches().PCHExtension);
             m_ObjName = fname.GetFullPath();
         }
@@ -182,6 +184,10 @@ void ProjectFile::UpdateFileDetails(ProjectBuildTarget* target)
 
     if (!compile && !link)
         return;
+
+    // update PCH output name (in case project PCH mode was changed)
+    if (FileTypeOf(relativeFilename) == ftHeader)
+        SetObjName(relativeToCommonTopLevelPath);
 
     if (!target) // update all targets
     {
@@ -293,7 +299,7 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                 for (size_t i = 0; i < len; ++i)
                 {
                     wxChar c = new_gch[i];
-                    if (c == _T('/') || c == _T('\\'))
+                    if (c == _T('/') || c == _T('\\') || c == _T('.'))
                         new_gch[i] = _T('_');
                 }
 
