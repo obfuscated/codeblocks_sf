@@ -5,6 +5,7 @@
     #include "safedelete.h"
     #include "cbeditor.h"
     #include "editormanager.h"
+    #include "infowindow.h"
 #endif
 
 #include <wx/url.h>

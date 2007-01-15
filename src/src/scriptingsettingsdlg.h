@@ -2,6 +2,7 @@
 #define SCRIPTINGSETTINGSDLG_H
 
 #include <vector>
+#include <wx/listctrl.h> // wxListEvent
 #include <wx/dialog.h>
 
 class ScriptEntry// : public ISerializable (<-- can't make it work)

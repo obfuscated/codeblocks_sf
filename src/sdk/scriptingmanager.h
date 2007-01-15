@@ -4,6 +4,11 @@
 #include <map>
 #include <set>
 
+#ifndef CB_PRECOMP
+    #include "cbexception.h" // cbThrow
+    #include "globals.h" // cbC2U
+#endif
+
 #include "settings.h"
 #include "manager.h"
 #include "menuitemsmanager.h"
@@ -209,7 +214,7 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
           * @return The script trusts container.
           */
         const TrustedScripts& GetTrustedScripts();
-	private:
+    private:
         void OnScriptMenu(wxCommandEvent& event);
         void OnScriptPluginMenu(wxCommandEvent& event);
         void RegisterScriptFunctions();
@@ -227,7 +232,7 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
             bool isFunc;
         };
         typedef std::map<int, MenuBoundScript> MenuIDToScript;
-		MenuIDToScript m_MenuIDToScript;
+        MenuIDToScript m_MenuIDToScript;
 
         bool m_AttachedToMainWindow;
         wxString m_CurrentlyRunningScriptFile;

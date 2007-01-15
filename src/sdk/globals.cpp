@@ -39,6 +39,7 @@
     #include "cbexception.h"
     #include "manager.h"
     #include "configmanager.h" // ReadBool
+    #include "filemanager.h"
 #endif
 
 #include "tinyxml/tinyxml.h"

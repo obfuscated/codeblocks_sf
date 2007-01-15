@@ -62,7 +62,7 @@ ScriptingManager::ScriptingManager()
     // initialize but don't load the IO lib
     SquirrelVM::Init((SquirrelInitFlags)(sqifAll & ~sqifIO));
 
-	if (!SquirrelVM::GetVMPtr())
+    if (!SquirrelVM::GetVMPtr())
         cbThrow(_T("Can't create scripting engine!"));
 
     sq_setprintfunc(SquirrelVM::GetVMPtr(), ScriptsPrintFunc);
@@ -90,7 +90,7 @@ ScriptingManager::~ScriptingManager()
     }
     Manager::Get()->GetConfigManager(_T("security"))->Write(_T("/trusted_scripts"), myMap);
 
-	SquirrelVM::Shutdown();
+    SquirrelVM::Shutdown();
 }
 
 void ScriptingManager::RegisterScriptFunctions()
@@ -108,12 +108,12 @@ bool ScriptingManager::LoadScript(const wxString& filename)
     f.Open(fname);
     if (!f.IsOpened())
     {
-		fname = ConfigManager::LocateDataFile(filename, sdScriptsUser | sdScriptsGlobal);
+        fname = ConfigManager::LocateDataFile(filename, sdScriptsUser | sdScriptsGlobal);
         f.Open(fname);
         if(!f.IsOpened())
         {
-			Manager::Get()->GetMessageManager()->DebugLog(_T("Can't open script %s"), filename.c_str());
-			return false;
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Can't open script %s"), filename.c_str());
+            return false;
         }
     }
     // read file
@@ -223,9 +223,9 @@ bool ScriptingManager::RegisterScriptPlugin(const wxString& name, const wxArrayI
 
     for (size_t i = 0; i < ids.GetCount(); ++i)
     {
-		Connect(ids[i], -1, wxEVT_COMMAND_MENU_SELECTED,
-				(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-				&ScriptingManager::OnScriptPluginMenu);
+        Connect(ids[i], -1, wxEVT_COMMAND_MENU_SELECTED,
+                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                &ScriptingManager::OnScriptPluginMenu);
     }
     return true;
 }
@@ -360,20 +360,20 @@ const ScriptingManager::TrustedScripts& ScriptingManager::GetTrustedScripts()
 
 void ScriptingManager::OnScriptMenu(wxCommandEvent& event)
 {
-	MenuIDToScript::iterator it = m_MenuIDToScript.find(event.GetId());
-	if (it == m_MenuIDToScript.end())
-	{
-		cbMessageBox(_("No script associated with this menu?!?"), _("Error"), wxICON_ERROR);
-		return;
-	}
-	
-	MenuBoundScript& mbs = it->second;
-	
-	// is it a function?
-	if (mbs.isFunc)
-	{
-	    try
-	    {
+    MenuIDToScript::iterator it = m_MenuIDToScript.find(event.GetId());
+    if (it == m_MenuIDToScript.end())
+    {
+        cbMessageBox(_("No script associated with this menu?!?"), _("Error"), wxICON_ERROR);
+        return;
+    }
+    
+    MenuBoundScript& mbs = it->second;
+    
+    // is it a function?
+    if (mbs.isFunc)
+    {
+        try
+        {
             SqPlus::SquirrelFunction<void> f(cbU2C(mbs.scriptOrFunc));
             f();
         }
@@ -381,28 +381,28 @@ void ScriptingManager::OnScriptMenu(wxCommandEvent& event)
         {
             DisplayErrors(&exception);
         }
-	    return;
-	}
+        return;
+    }
 
     // script loading below
 
-	if (wxGetKeyState(WXK_SHIFT))
-	{
-		wxString script = ConfigManager::LocateDataFile(mbs.scriptOrFunc, sdScriptsUser | sdScriptsGlobal);
-		Manager::Get()->GetEditorManager()->Open(script);
-		return;
-	}
+    if (wxGetKeyState(WXK_SHIFT))
+    {
+        wxString script = ConfigManager::LocateDataFile(mbs.scriptOrFunc, sdScriptsUser | sdScriptsGlobal);
+        Manager::Get()->GetEditorManager()->Open(script);
+        return;
+    }
 
-	// run script
-	try
-	{
-		if (!LoadScript(mbs.scriptOrFunc))
-			cbMessageBox(_("Could not run script: ") + mbs.scriptOrFunc, _("Error"), wxICON_ERROR);
-	}
-	catch (SquirrelError exception)
-	{
-		DisplayErrors(&exception);
-	}
+    // run script
+    try
+    {
+        if (!LoadScript(mbs.scriptOrFunc))
+            cbMessageBox(_("Could not run script: ") + mbs.scriptOrFunc, _("Error"), wxICON_ERROR);
+    }
+    catch (SquirrelError exception)
+    {
+        DisplayErrors(&exception);
+    }
 }
 
 void ScriptingManager::OnScriptPluginMenu(wxCommandEvent& event)

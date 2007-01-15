@@ -5,7 +5,10 @@
 #include "configmanager.h"
 #include "filefilters.h"
 
-#include <wx/listctrl.h>
+#ifndef CB_PRECOMP
+    #include "scriptingmanager.h"
+#endif
+
 #include <wx/textctrl.h>
 #include <wx/button.h>
 #include <wx/checkbox.h>

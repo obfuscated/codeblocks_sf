@@ -10,6 +10,10 @@
 * $HeadURL$
 */
 
+#ifndef CB_PRECOMP
+    #include <wx/frame.h> // GetAppWindow
+#endif
+
 #include "sdk_precomp.h"
 #include "manager.h"
 #include "menuitemsmanager.h"
@@ -23,17 +27,17 @@ namespace
 MenuItemsManager::MenuItemsManager(bool autoClearOnDestroy)
     : m_AutoClearOnDestroy(autoClearOnDestroy)
 {
-	//ctor
+    //ctor
 }
 
 MenuItemsManager::~MenuItemsManager()
 {
-	//dtor
-	if (m_AutoClearOnDestroy)
-	{
+    //dtor
+    if (m_AutoClearOnDestroy)
+    {
         Clear();
         m_MenuItems.Clear();
-	}
+    }
 }
 
 /** @brief Add a menu item
@@ -102,18 +106,18 @@ void MenuItemsManager::Clear()
   */
 wxMenuItem* MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
 {
-	wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
+    wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
     wxMenu* menu = 0;
-	size_t pos = 0;
-	while (true)
-	{
-	    // ignore consecutive slashes
+    size_t pos = 0;
+    while (true)
+    {
+        // ignore consecutive slashes
         while (pos < menuPath.Length() && menuPath.GetChar(pos) == _T('/'))
         {
             ++pos;
         }
 
-	    // find next slash
+        // find next slash
         size_t nextPos = pos;
         while (nextPos < menuPath.Length() && menuPath.GetChar(++nextPos) != _T('/'))
             ;
