@@ -672,6 +672,7 @@ void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
     else // Win95, NT4: support only single monitor
     {
         wxDisplaySize(&monitorWidth, &monitorHeight);
+        r.left = r.top = 0;
     }
 
 
