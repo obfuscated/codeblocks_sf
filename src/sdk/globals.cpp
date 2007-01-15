@@ -622,6 +622,9 @@ SettingsIconsStyle GetSettingsIconsStyle(wxListCtrl* lc)
 
 #ifdef __WXMSW__
 
+typedef APIENTRY HMONITOR (*MonitorFromWindow_t)(HWND, DWORD);
+typedef APIENTRY BOOL (*GetMonitorInfo_t)(HMONITOR, LPMONITORINFO);
+
 void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
 {
     HMONITOR hMonitor;
@@ -650,14 +653,27 @@ void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
         the_mode = (int) mode;
 
 
-    hMonitor = MonitorFromWindow((HWND) referenceWindow->GetHandle(), MONITOR_DEFAULTTONEAREST);
+    static MonitorFromWindow_t MonitorFromWindowProc = (MonitorFromWindow_t) GetProcAddress(GetModuleHandle(_T("user32.dll")), "MonitorFromWindow");
+    static GetMonitorInfo_t GetMonitorInfoProc = (GetMonitorInfo_t) GetProcAddress(GetModuleHandle(_T("user32.dll")), "GetMonitorInfoA");
+    int monitorWidth;
+    int monitorHeight;
 
-    mi.cbSize = sizeof(mi);
-    GetMonitorInfo(hMonitor, &mi);
-    r = mi.rcWork;
+    if(GetMonitorInfoProc)
+    {
+        hMonitor = MonitorFromWindowProc((HWND) referenceWindow->GetHandle(), MONITOR_DEFAULTTONEAREST);
 
-    int monitorWidth  = r.right - r.left;
-    int monitorHeight = r.bottom - r. top;
+        mi.cbSize = sizeof(mi);
+        GetMonitorInfoProc(hMonitor, &mi);
+        r = mi.rcWork;
+
+        monitorWidth  = r.right - r.left;
+        monitorHeight = r.bottom - r. top;
+    }
+    else // Win95, NT4: support only single monitor
+    {
+        wxDisplaySize(&monitorWidth, &monitorHeight);
+    }
+
 
     switch(the_mode)
     {
