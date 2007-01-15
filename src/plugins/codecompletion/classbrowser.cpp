@@ -564,6 +564,10 @@ void ClassBrowser::BuildTree()
         created_builderthread = true;
     }
 
+#ifndef __WXMSW__
+	// workaround only needed for windows (DDE server issue)
+	created_builderthread = true;
+#endif
     // initialise it
     m_pBuilderThread->Init(m_pParser,
                             m_Tree,
@@ -574,12 +578,16 @@ void ClassBrowser::BuildTree()
                             m_pParser->GetTokens(),
                             created_builderthread);
 
+#ifndef __WXMSW__
+	// workaround only needed for windows (DDE server issue)
+	created_builderthread = false;
+#endif
     // and launch it
     if (!created_builderthread)
     {
         m_Semaphore.Post();
     }
-}
+} // end of BuildTree
 
 void ClassBrowser::OnTreeItemExpanding(wxTreeEvent& event)
 {
