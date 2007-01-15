@@ -188,7 +188,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         compiler->GenerateCommandLine(compilerCmd,
                                          target,
                                          pf,
-                                         pfd.source_file,
+                                         pfd.source_file_absolute_native,
                                          Object,
                                          pfd.object_file_flat,
                                          pfd.dep_file);
