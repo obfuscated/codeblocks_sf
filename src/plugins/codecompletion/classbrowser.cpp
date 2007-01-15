@@ -566,7 +566,7 @@ void ClassBrowser::BuildTree()
 
 #ifndef __WXMSW__
 	// workaround only needed for windows (DDE server issue)
-	created_builderthread = true;
+	created_builderthread = false;
 #endif
     // initialise it
     m_pBuilderThread->Init(m_pParser,
@@ -578,10 +578,6 @@ void ClassBrowser::BuildTree()
                             m_pParser->GetTokens(),
                             created_builderthread);
 
-#ifndef __WXMSW__
-	// workaround only needed for windows (DDE server issue)
-	created_builderthread = false;
-#endif
     // and launch it
     if (!created_builderthread)
     {
