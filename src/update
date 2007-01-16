@@ -80,13 +80,13 @@ echo Stripping debug info from output tree
 #strip output/share/codeblocks/plugins/*.so
 
 echo Creating launch-scripts
-echo "#!/bin/sh\n" > output/run.sh
+echo "#!/bin/sh" > output/run.sh
 echo -n "APP_DIR=" >> output/run.sh
 echo `pwd`/output >> output/run.sh
 echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> output/run.sh
 echo "\$APP_DIR/codeblocks \$@" >> output/run.sh
 chmod +x output/run.sh
-echo "#!/bin/sh\n" > devel/run.sh
+echo "#!/bin/sh" > devel/run.sh
 echo -n "APP_DIR=" >> devel/run.sh
 echo `pwd`/devel >> devel/run.sh
 echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> devel/run.sh
