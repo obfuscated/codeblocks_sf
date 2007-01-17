@@ -970,6 +970,12 @@
 		<Unit filename="plugins\debuggergdb\debuggeroptionsdlg.h">
 			<Option target="Debugger" />
 		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggeroptionsprjdlg.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\debuggeroptionsprjdlg.h">
+			<Option target="Debugger" />
+		</Unit>
 		<Unit filename="plugins\debuggergdb\debuggerstate.cpp">
 			<Option target="Debugger" />
 		</Unit>
@@ -1037,6 +1043,9 @@
 			<Option target="Debugger" />
 		</Unit>
 		<Unit filename="plugins\debuggergdb\resources\debugger_options_dlg.xrc">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\resources\debugger_project_options_dlg.xrc">
 			<Option target="Debugger" />
 		</Unit>
 		<Unit filename="plugins\debuggergdb\resources\debugger_toolbar.xrc">
@@ -1913,6 +1922,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\scripting\bindings\sc_progress.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\scripting\bindings\sc_util_dialogs.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\scripting\bindings\sc_wxtypes.cpp">

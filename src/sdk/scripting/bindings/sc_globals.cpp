@@ -16,6 +16,7 @@
 #include <wx/colordlg.h>
 #include <wx/numdlg.h>
 #include <wx/textdlg.h>
+#include <infowindow.h>
 
 namespace ScriptBindings
 {
@@ -125,8 +126,10 @@ namespace ScriptBindings
 
         SqPlus::RegisterGlobal(Include, "Include");
 
+        SqPlus::RegisterGlobal(InfoWindow::Display, "InfoWindow");
+
         SquirrelVM::CreateFunctionGlobal(IsNull, "IsNull", "*");
-        
+
         // now for some wx globals (utility) functions
         SqPlus::RegisterGlobal(wxLaunchDefaultBrowser, "wxLaunchDefaultBrowser");
         SquirrelVM::CreateFunctionGlobal(wx_GetColourFromUser, "wxGetColourFromUser", "*");

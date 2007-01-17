@@ -16,6 +16,7 @@ class EditPairDlg : public wxDialog
 
         EditPairDlg(wxWindow* parent, wxString& key, wxString& value, const wxString& title = _("Edit pair"), BrowseMode allowBrowse = bmDisable);
         virtual ~EditPairDlg();
+		EditPairDlg& operator=(const EditPairDlg&){ return *this; } // just to satisfy script bindings (never used)
 		virtual void EndModal(int retCode);
     protected:
         void OnUpdateUI(wxUpdateUIEvent& event);

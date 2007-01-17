@@ -12,10 +12,11 @@ libsqbindings_la_SOURCES = scriptbindings.cpp \
                             sc_consts.cpp \
                             sc_dialog.cpp \
                             sc_globals.cpp \
+                            sc_io.cpp \
                             sc_plugin.cpp \
                             sc_progress.cpp \
-                            sc_wxtypes.cpp \
-                            sc_io.cpp
+                            sc_util_dialogs.cpp \
+                            sc_wxtypes.cpp
 
 noinst_HEADERS = scriptbindings.h
 

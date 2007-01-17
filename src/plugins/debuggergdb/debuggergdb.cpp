@@ -43,6 +43,7 @@
 #include <sdk_events.h>
 #include <editarraystringdlg.h>
 #include <compilerfactory.h>
+#include <projectloader_hooks.h>
 #include <xtra_res.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
@@ -50,6 +51,7 @@
 #include "debuggergdb.h"
 #include "debuggerdriver.h"
 #include "debuggeroptionsdlg.h"
+#include "debuggeroptionsprjdlg.h"
 #include "debuggertree.h"
 #include "editbreakpointdlg.h"
 #include "editwatchesdlg.h"
@@ -332,10 +334,16 @@ void DebuggerGDB::OnAttach()
     evt.floatingSize.Set(450, 75);
     evt.minimumSize.Set(250, 75);
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    // hook to project loading procedure
+    ProjectLoaderHooks::HookFunctorBase* myhook = new ProjectLoaderHooks::HookFunctor<DebuggerGDB>(this, &DebuggerGDB::OnProjectLoadingHook);
+    m_HookId = ProjectLoaderHooks::RegisterHook(myhook);
 }
 
 void DebuggerGDB::OnRelease(bool appShutDown)
 {
+    ProjectLoaderHooks::UnregisterHook(m_HookId, true);
+
     if (m_State.HasDriver())
         m_State.GetDriver()->SetDebugWindows(0, 0, 0, 0, 0);
 
@@ -435,6 +443,12 @@ int DebuggerGDB::Configure()
 cbConfigurationPanel* DebuggerGDB::GetConfigurationPanel(wxWindow* parent)
 {
     DebuggerOptionsDlg* dlg = new DebuggerOptionsDlg(parent, this);
+    return dlg;
+}
+
+cbConfigurationPanel* DebuggerGDB::GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
+{
+    DebuggerOptionsProjectDlg* dlg = new DebuggerOptionsProjectDlg(parent, this, project);
     return dlg;
 }
 
@@ -550,6 +564,57 @@ void DebuggerGDB::DebugLog(const wxString& msg)
     // gdb debug messages
     if (IsAttached() && m_HasDebugLog)
         Manager::Get()->GetMessageManager()->Log(m_DbgPageIndex, msg);
+}
+
+wxArrayString& DebuggerGDB::GetSearchDirs(cbProject* prj)
+{
+    SearchDirsMap::iterator it = m_SearchDirs.find(prj);
+    if (it == m_SearchDirs.end())
+    {
+        // create an empty set for this project
+        it = m_SearchDirs.insert(m_SearchDirs.begin(), std::make_pair(prj, wxArrayString()));
+    }
+
+    return it->second;
+}
+
+void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading)
+{
+    wxArrayString& pdirs = GetSearchDirs(project);
+
+    if (loading)
+    {
+        // Hook called when loading project file.
+        TiXmlElement* conf = elem->FirstChildElement("debugger");
+        if (conf)
+        {
+            TiXmlElement* pathsElem = conf->FirstChildElement("search_path");
+            while (pathsElem)
+            {
+                if (pathsElem->Attribute("add"))
+                {
+                    wxString dir = cbC2U(pathsElem->Attribute("add"));
+                    if (pdirs.Index(dir) == wxNOT_FOUND)
+                        pdirs.Add(dir);
+                }
+
+                pathsElem = pathsElem->NextSiblingElement("search_path");
+            }
+        }
+    }
+    else
+    {
+        // Hook called when saving project file.
+        if (pdirs.GetCount() > 0)
+        {
+            TiXmlElement* node = elem->InsertEndChild(TiXmlElement("debugger"))->ToElement();
+            for (size_t i = 0; i < pdirs.GetCount(); ++i)
+            {
+                TiXmlElement* path = node->InsertEndChild(TiXmlElement("search_path"))->ToElement();
+                path->SetAttribute("add", cbU2C(pdirs[i]));
+            }
+        }
+    }
 }
 
 void DebuggerGDB::DoSwitchLayout(const wxString& config_key)
@@ -903,6 +968,12 @@ int DebuggerGDB::Debug()
                 AddSourceDir(it->GetBasePath());
                 AddSourceDir(it->GetCommonTopLevelPath());
             }
+        }
+        // now add all per-project user-set search dirs
+        wxArrayString& pdirs = GetSearchDirs(project);
+        for (size_t i = 0; i < pdirs.GetCount(); ++i)
+        {
+            AddSourceDir(pdirs[i]);
         }
         // lastly, add THE project as source dir
         AddSourceDir(project->GetBasePath());
@@ -2011,6 +2082,10 @@ void DebuggerGDB::OnProjectClosed(CodeBlocksEvent& event)
 {
     // allow others to catch this
     event.Skip();
+
+    // remove all search dirs sotred for this project so we don't have conflicts
+    // if a newly opened project happens to use the same memory address
+    GetSearchDirs(event.GetProject()).clear();
 
     // remove all breakpoints belonging to the closed project
     m_State.RemoveAllProjectBreakpoints(event.GetProject());

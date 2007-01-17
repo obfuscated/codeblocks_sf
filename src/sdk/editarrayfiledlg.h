@@ -10,6 +10,7 @@ class DLLIMPORT EditArrayFileDlg : public wxDialog
 	public:
 		EditArrayFileDlg(wxWindow* parent, wxArrayString& array, bool useRelativePaths = false, const wxString& basePath = _T(""));
 		virtual ~EditArrayFileDlg();
+		EditArrayFileDlg& operator=(const EditArrayFileDlg&){ return *this; } // just to satisfy script bindings (never used)
 		virtual void EndModal(int retCode);
 	protected:
 		void OnAdd(wxCommandEvent& event);

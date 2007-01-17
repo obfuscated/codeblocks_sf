@@ -10,6 +10,7 @@ class DLLIMPORT EditArrayStringDlg : public wxDialog
 	public:
 		EditArrayStringDlg(wxWindow* parent, wxArrayString& array);
 		virtual ~EditArrayStringDlg();
+		EditArrayStringDlg& operator=(const EditArrayStringDlg&){ return *this; } // just to satisfy script bindings (never used)
 		virtual void EndModal(int retCode);
 	protected:
 		void OnAdd(wxCommandEvent& event);

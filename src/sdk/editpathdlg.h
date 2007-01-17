@@ -17,6 +17,7 @@ class EditPathDlg : public wxDialog
                 const wxString& filter = _("All files(*)|*"));  // wildcard for files
 
 		virtual ~EditPathDlg();
+		EditPathDlg& operator=(const EditPathDlg&){ return *this; } // just to satisfy script bindings (never used)
 
 		const wxString& GetPath(){ return m_Path; }
         void EndModal(int retCode);

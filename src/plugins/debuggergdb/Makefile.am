@@ -23,6 +23,7 @@ libdebugger_la_SOURCES = backtracedlg.cpp \
 			debuggerdriver.cpp \
 			debuggergdb.cpp \
 			debuggeroptionsdlg.cpp \
+			debuggeroptionsprjdlg.cpp \
 			debuggerstate.cpp \
 			debuggertree.cpp \
 			disassemblydlg.cpp \
@@ -43,6 +44,7 @@ noinst_HEADERS = backtracedlg.h \
 			debuggerdriver.h \
 			debuggergdb.h \
 			debuggeroptionsdlg.h \
+			debuggeroptionsprjdlg.h \
 			debuggerstate.h \
 			debuggertree.h \
 			disassemblydlg.h \

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+  <object class="wxPanel" name="pnlDebuggerProjectOptions">
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <object class="wxStaticBoxSizer">
+          <label>Additional debugger search dirs:</label>
+          <orient>wxVERTICAL</orient>
+          <object class="sizeritem">
+            <object class="wxListBox" name="lstSearchDirs">
+              <content/>
+            </object>
+            <option>1</option>
+            <flag>wxALL|wxGROW</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnAdd">
+                  <label>&amp;Add</label>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnEdit">
+                  <label>&amp;Edit</label>
+                </object>
+                <flag>wxLEFT</flag>
+                <border>8</border>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btnDelete">
+                  <label>&amp;Delete</label>
+                </object>
+                <flag>wxLEFT</flag>
+                <border>8</border>
+              </object>
+            </object>
+            <flag>wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
+            <border>5</border>
+          </object>
+        </object>
+        <option>1</option>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+      </object>
+    </object>
+  </object>
+</resource>

@@ -1,6 +1,8 @@
 #ifndef DEBUGGERGDB_H
 #define DEBUGGERGDB_H
 
+#include <map>
+
 #include <settings.h> // much of the SDK is here
 #include <sdk_events.h>
 #include <cbplugin.h>
@@ -18,6 +20,8 @@
 
 extern const wxString g_EscapeChars;
 
+class cbProject;
+class TiXmlElement;
 class DebuggerDriver;
 class DebuggerCmd;
 class Compiler;
@@ -40,6 +44,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         int GetConfigurationPriority() const { return 0; }
         int GetConfigurationGroup() const { return cgDebugger; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+        cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
         void BuildMenu(wxMenuBar* menuBar);
         void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
         bool BuildToolBar(wxToolBar* toolBar);
@@ -84,6 +89,10 @@ class DebuggerGDB : public cbDebuggerPlugin
 
         void BringAppToFront();
         void RefreshConfiguration();
+
+        wxArrayString& GetSearchDirs(cbProject* prj);
+
+        void OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading);
 
         static void ConvertToGDBFriendly(wxString& str);
         static void ConvertToGDBFile(wxString& str);
@@ -171,8 +180,8 @@ class DebuggerGDB : public cbDebuggerPlugin
 
         // Set, but was never used.  HC changed to pass to "Start()"
 		// Looks like was meant to allow initial step into first instruction of program start
-        bool m_BreakOnEntry; 
-	
+        bool m_BreakOnEntry;
+
         int m_HaltAtLine;
         bool m_HasDebugLog;
         bool m_StoppedOnSignal;
@@ -190,6 +199,11 @@ class DebuggerGDB : public cbDebuggerPlugin
         ThreadsDlg* m_pThreadsDlg;
 
         cbProject* m_pProject; // keep the currently debugged project handy
+
+        typedef std::map<cbProject*, wxArrayString> SearchDirsMap;
+        SearchDirsMap m_SearchDirs;
+
+        int m_HookId; // project loader hook ID
 
 		DECLARE_EVENT_TABLE()
 };

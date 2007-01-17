@@ -7,6 +7,7 @@ DEBUG_RESOURCES = backtrace.xrc \
 	breakpoints.xrc \
 	debugger_menu.xrc \
 	debugger_options_dlg.xrc \
+	debugger_project_options_dlg.xrc \
 	debugger_toolbar_16x16.xrc \
 	debugger_toolbar.xrc \
 	disassembly.xrc \

@@ -15,6 +15,7 @@ class EditArrayOrderDlg : public wxDialog
 		EditArrayOrderDlg(wxWindow* parent, const wxArrayString& array = 0L);
 		// class destructor
 		~EditArrayOrderDlg();
+		EditArrayOrderDlg& operator=(const EditArrayOrderDlg&){ return *this; } // just to satisfy script bindings (never used)
 		void SetArray(const wxArrayString& array){ m_Array = array; }
 		const wxArrayString& GetArray(){ return m_Array; }
 		void EndModal(int retCode);

@@ -24,6 +24,7 @@ namespace ScriptBindings
     extern void Register_wxTypes();
     extern void Register_Dialog();
     extern void Register_ProgressDialog();
+    extern void Register_UtilDialogs();
     extern void Register_IO();
     extern void Register_ScriptPlugin();
 
@@ -322,6 +323,7 @@ namespace ScriptBindings
         Register_IO(); // IO is enabled, but just for harmless functions
         Register_Dialog();
         Register_ProgressDialog();
+        Register_UtilDialogs();
 
         SqPlus::SQClassDef<ConfigManager>("ConfigManager").
                 staticFuncVarArgs(&ConfigManager_Read, "Read", "*").
