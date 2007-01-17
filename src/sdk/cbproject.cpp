@@ -1878,3 +1878,12 @@ void cbProject::ShowNotes(bool nonEmptyOnly, bool editable)
             SetNotes(dlg.GetNotes());
     }
 }
+
+void cbProject::SetTitle(const wxString& title)
+{
+    if ( title != GetTitle() )
+    {
+        CompileTargetBase::SetTitle(title);
+        NotifyPlugins(cbEVT_PROJECT_RENAMED);
+    }
+}

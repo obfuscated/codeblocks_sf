@@ -577,6 +577,15 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * @note If @c editable is true, the @c nonEmptyOnly parameter is ignored...
           */
         void ShowNotes(bool nonEmptyOnly, bool editable = false);
+
+        /** Changes project title
+          *
+          * This function overrides CompileTargetBase::SetTitle.
+          * It sends additional notification event to plugins
+          * and than calls base function.
+          */
+        virtual void SetTitle(const wxString& title);
+
     private:
         void Open();
         void ExpandVirtualBuildTargetGroup(const wxString& alias, wxArrayString& result) const;
@@ -622,4 +631,5 @@ class DLLIMPORT cbProject : public CompileTargetBase
 };
 
 #endif // CBPROJECT_H
+
 
