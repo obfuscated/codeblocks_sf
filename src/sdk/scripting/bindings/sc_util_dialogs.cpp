@@ -258,7 +258,7 @@ namespace ScriptBindings
         SQUserPointer up = 0;
         sq_getinstanceup(v, 1, &up, 0);
         wxDialog* dlg = (wxDialog*)up;
-        return sa.Return(dlg->ShowModal());
+        return sa.Return(static_cast<SQInteger>(dlg->ShowModal()));
     }
 
     void Register_UtilDialogs()
