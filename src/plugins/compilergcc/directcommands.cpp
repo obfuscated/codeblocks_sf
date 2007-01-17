@@ -185,10 +185,12 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         compilerCmd = pcfb.useCustomBuildCommand
                         ? pcfb.buildCommand
                         : compiler->GetCommand(isResource ? ctCompileResourceCmd : ctCompileObjectCmd);
+        wxString source_file = UnixFilename(pfd.source_file_absolute_native);
+        QuoteStringIfNeeded(source_file);
         compiler->GenerateCommandLine(compilerCmd,
                                          target,
                                          pf,
-                                         pfd.source_file_absolute_native,
+                                         source_file,
                                          Object,
                                          pfd.object_file_flat,
                                          pfd.dep_file);
