@@ -79,44 +79,13 @@ void DebuggerState::SetupBreakpointIndices()
     }
 }
 
-// when the project file is in a subdir, breaking with full filenames
-// doesn't work.
-// so we check this here and use the file's relative filename if possible.
+// The compiler now uses absolute paths to source files so we don't need
+// any absolute->relative filename conversions here anymore.
+// Just adjust the path separators...
 wxString DebuggerState::ConvertToValidFilename(const wxString& filename)
 {
     wxString fname = filename;
     fname.Replace(_T("\\"), _T("/"));
-
-    cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-    if (!prj)
-        return fname;
-
-    bool isAbsolute = false;
-#ifdef __WXMSW__
-    isAbsolute = (filename.GetChar(1) == _T(':')) ||
-                filename.GetChar(0) == _T('/') ||
-                filename.GetChar(0) == _T('\\');
-#else
-    isAbsolute = filename.GetChar(0) == _T('/') ||
-                filename.GetChar(0) == _T('~');
-#endif
-
-    if (isAbsolute)
-    {
-        ProjectFile* pf = prj->GetFileByFilename(UnixFilename(filename), false, true);
-        if (pf)
-        {
-            fname = pf->relativeFilename;
-            fname.Replace(_T("\\"), _T("/"));
-        }
-        else
-        {
-        	// for foreign files, we still should use a relative path
-        	//~ wxFileName f(filename);
-        	//~ f.MakeRelativeTo(prj->GetBasePath());
-        	//~ fname = f.GetFullPath();
-        }
-    }
     return fname;
 }
 

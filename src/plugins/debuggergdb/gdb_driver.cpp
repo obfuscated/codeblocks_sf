@@ -368,8 +368,11 @@ void GDB_driver::Start(bool breakOnEntry)
     m_ManualBreakOnEntry = false;
 
     if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("do_not_run"), false))
+    {
         // start the process
         QueueCommand(new DebuggerCmd(this, _T("run")));
+		m_IsStarted = true;
+    }
 #else
     m_BreakOnEntry = breakOnEntry;
     m_ManualBreakOnEntry = true;
@@ -395,7 +398,8 @@ void GDB_driver::Continue()
     ResetCursor();
 	if (m_IsStarted)
 		QueueCommand(new DebuggerCmd(this, _T("cont")));
-	else {
+	else
+	{
 		QueueCommand(new DebuggerCmd(this, m_ManualBreakOnEntry ? _T("start") : _T("run")));
 		m_IsStarted = true;
 	}
@@ -612,7 +616,11 @@ void GDB_driver::ParseOutput(const wxString& output)
     }
     else
     {
-		m_ProgramIsStopped = false;
+    	// don't un-comment the next line
+    	// if you do, when hovering the mouse over the editor invoking tooltips
+    	// the state gets messed up and shows like the program is running
+    	// while it's not...
+//		m_ProgramIsStopped = false;
         return; // come back later
     }
 
