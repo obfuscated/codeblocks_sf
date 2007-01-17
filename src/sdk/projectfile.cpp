@@ -274,7 +274,10 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     Manager::Get()->GetMacrosManager()->ReplaceMacros(depsOut, target);
 
     source_file_native = pf->relativeFilename;
+    QuoteStringIfNeeded(source_file_native);
+
     source_file_absolute_native = pf->file.GetFullPath();
+    QuoteStringIfNeeded(source_file_absolute_native);
 
     tmp = pf->GetObjName();
     FileType ft = FileTypeOf(pf->relativeFilename);
