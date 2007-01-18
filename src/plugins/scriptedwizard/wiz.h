@@ -138,6 +138,17 @@ class Wiz : public cbWizardPlugin
         int GetFileTargetIndex();
         void SetFilePathSelectionFilter(const wxString& filter);
 
+        // compiler defaults
+        void SetCompilerDefault(const wxString& defCompilerID);
+        void SetDebugTargetDefaults(bool wantDebug,
+                                        const wxString& debugName,
+                                        const wxString& debugOut,
+                                        const wxString& debugObjOut);
+        void SetReleaseTargetDefaults(bool wantRelease,
+                                        const wxString& releaseName,
+                                        const wxString& releaseOut,
+                                        const wxString& releaseObjOut);
+
         // pre-defined pages
         void AddInfoPage(const wxString& pageId, const wxString& intro_msg);
         void AddFilePathPage(bool showHeaderGuard);
@@ -167,6 +178,17 @@ class Wiz : public cbWizardPlugin
         WizBuildTargetPanel* m_pWizBuildTargetPanel;
         int m_LaunchIndex;
         wxString m_LastXRC;
+
+        // default compiler settings (returned if no compiler page is added in the wizard)
+        wxString m_DefCompilerID;
+        bool m_WantDebug;
+        wxString m_DebugName;
+        wxString m_DebugOutputDir;
+        wxString m_DebugObjOutputDir;
+        bool m_WantRelease;
+        wxString m_ReleaseName;
+        wxString m_ReleaseOutputDir;
+        wxString m_ReleaseObjOutputDir;
 	private:
 };
 

@@ -116,6 +116,18 @@ void Wiz::OnAttach()
             }
         }
     }
+
+    // default compiler settings (returned if no compiler page is added in the wizard)
+    wxString sep = wxString(wxFILE_SEP_PATH);
+    m_DefCompilerID = CompilerFactory::GetDefaultCompilerID();
+    m_WantDebug = true;
+    m_DebugName = _T("Debug");
+    m_DebugOutputDir = _T("bin") + sep + _T("Debug") + sep;
+    m_DebugObjOutputDir = _T("obj") + sep + _T("Debug") + sep;
+    m_WantRelease = true;
+    m_ReleaseName = _T("Release");
+    m_ReleaseOutputDir = _T("bin") + sep + _T("Release") + sep;
+    m_ReleaseObjOutputDir = _T("obj") + sep + _T("Release") + sep;
 }
 
 int Wiz::GetCount() const
@@ -380,7 +392,7 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
             target->SetIncludeInTargetAll(false);
         }
     }
-    
+
     // add all the template files
     // first get the dirs with the files by calling GetFilesDir()
     wxString srcdir;
@@ -1081,63 +1093,63 @@ wxString Wiz::GetCompilerID()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetCompilerID();
-    return wxEmptyString;
+    return m_DefCompilerID;
 }
 
 bool Wiz::GetWantDebug()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetWantDebug();
-    return false;
+    return m_WantDebug;
 }
 
 wxString Wiz::GetDebugName()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetDebugName();
-    return wxEmptyString;
+    return m_DebugName;
 }
 
 wxString Wiz::GetDebugOutputDir()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetDebugOutputDir();
-    return wxEmptyString;
+    return m_DebugOutputDir;
 }
 
 wxString Wiz::GetDebugObjectOutputDir()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetDebugObjectOutputDir();
-    return wxEmptyString;
+    return m_DebugObjOutputDir;
 }
 
 bool Wiz::GetWantRelease()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetWantRelease();
-    return false;
+    return m_WantRelease;
 }
 
 wxString Wiz::GetReleaseName()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetReleaseName();
-    return wxEmptyString;
+    return m_ReleaseName;
 }
 
 wxString Wiz::GetReleaseOutputDir()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetReleaseOutputDir();
-    return wxEmptyString;
+    return m_ReleaseOutputDir;
 }
 
 wxString Wiz::GetReleaseObjectOutputDir()
 {
     if (m_pWizCompilerPanel)
         return m_pWizCompilerPanel->GetReleaseObjectOutputDir();
-    return wxEmptyString;
+    return m_ReleaseObjOutputDir;
 }
 
 wxString Wiz::GetTargetCompilerID()
@@ -1209,6 +1221,36 @@ void Wiz::SetFilePathSelectionFilter(const wxString& filter)
         m_pWizFilePathPanel->SetFilePathSelectionFilter(filter);
 }
 
+void Wiz::SetCompilerDefault(const wxString& defCompilerID)
+{
+    // default compiler settings (returned if no compiler page is added in the wizard)
+    m_DefCompilerID = CompilerFactory::GetDefaultCompilerID();
+}
+
+void Wiz::SetDebugTargetDefaults(bool wantDebug,
+                                    const wxString& debugName,
+                                    const wxString& debugOut,
+                                    const wxString& debugObjOut)
+{
+    // default compiler settings (returned if no compiler page is added in the wizard)
+    m_WantDebug = wantDebug;
+    m_DebugName = debugName;
+    m_DebugOutputDir = debugOut;
+    m_DebugObjOutputDir = debugObjOut;
+}
+
+void Wiz::SetReleaseTargetDefaults(bool wantRelease,
+                                    const wxString& releaseName,
+                                    const wxString& releaseOut,
+                                    const wxString& releaseObjOut)
+{
+    // default compiler settings (returned if no compiler page is added in the wizard)
+    m_WantRelease = wantRelease;
+    m_ReleaseName = releaseName;
+    m_ReleaseOutputDir = releaseOut;
+    m_ReleaseObjOutputDir = releaseObjOut;
+}
+
 void Wiz::RegisterWizard()
 {
     SqPlus::SQClassDef<Wiz>("Wiz").
@@ -1223,6 +1265,10 @@ void Wiz::RegisterWizard()
             func(&Wiz::AddGenericSingleChoiceListPage, "AddGenericSingleChoiceListPage").
             func(&Wiz::AddGenericSelectPathPage, "AddGenericSelectPathPage").
             func(&Wiz::AddPage, "AddPage").
+            // compiler defaults
+            func(&Wiz::SetCompilerDefault, "SetCompilerDefault").
+            func(&Wiz::SetDebugTargetDefaults, "SetDebugTargetDefaults").
+            func(&Wiz::SetReleaseTargetDefaults, "SetReleaseTargetDefaults").
             // GUI controls
             func(&Wiz::EnableWindow, "EnableWindow").
             func(&Wiz::SetTextControlValue, "SetTextControlValue").
