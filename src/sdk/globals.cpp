@@ -589,7 +589,15 @@ wxBitmap cbLoadBitmap(const wxString& filename, int bitmapType)
     static bool oldCommonControls = false;
 #endif
     wxImage im;
-    im.LoadFile(filename, bitmapType);
+    wxFileSystem* fs = new wxFileSystem;
+    wxFSFile* f = fs->OpenFile(filename);
+    if (f)
+    {
+        wxInputStream* is = f->GetStream();
+        im.LoadFile(*is, bitmapType);
+        delete f;
+    }
+    delete fs;
     if (oldCommonControls && im.HasAlpha())
         im.ConvertAlphaToMask();
 
