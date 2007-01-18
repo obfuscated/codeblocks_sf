@@ -150,12 +150,21 @@ void cbKeyBinder::OnRelease(bool appShutDown)
 	// NOTE: after this function, the inherited member variable
 	// IsAttached() will be FALSE...
 
+    // -------------------------------------------
+    // Saving disabled when no editors attached because
+    // when CB/Plugins/ManagePlugsin menu "re-enables" the plugin,
+    // then the user closes down without opening a file,
+    // an empty .ini file is written. The profiles are never built because no
+    // opens took place, no attaches took place, no events handed to KeyBinder.
+    // -------------------------------------------
 	// stop the merge timer, do a final merge to catch any changes
     StopMergeTimer();
-    MergeDynamicMenus();
-	EnableMerge(false);
-	// write out any changed menu items or cmd strings
-	OnSave();
+	if (m_bBound)
+    {   // m_bBound is false when KB re-enabled and no events occured
+        MergeDynamicMenus();
+        EnableMerge(false);
+        OnSave();
+    }
     // remove keyboard and window close event //+v0.4.7
 	m_pKeyProfArr->DetachAll();
 }

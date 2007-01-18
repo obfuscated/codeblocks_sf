@@ -44,8 +44,8 @@
 #include <wx/intl.h>
 #include <wx/timer.h>
 
-// --Version--------------------------
-#define VERSION "1.0.14 2007/01/13"
+// --Version-Rlease-Feature-Fix-------
+#define VERSION "1.0.15 2007/01/18"
 // -----------------------------------
 class MyDialog;
 
@@ -615,3 +615,7 @@ private:
 //              See http://forums.codeblocks.org/index.php?topic=4927.0 for more information.
 //              https://developer.berlios.de/patch/index.php?func=detailpatch&patch_id=1821&group_id=5358
 // ----------------------------------------------------------------------------
+//  Commit  1.0.15 2007/01/18
+//          15) Empty profile written when CB re-enables KeyBinder and no events occur.
+// ----------------------------------------------------------------------------
+
