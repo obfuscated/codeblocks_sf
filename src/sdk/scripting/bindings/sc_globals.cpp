@@ -88,7 +88,7 @@ namespace ScriptBindings
             wxString msg = wxString::Format(_("Failed to load required script: %s"), filename.c_str());
             return sa.ThrowError(cbU2C(msg));
         }
-        return sa.Return(0);
+        return sa.Return(static_cast<SQInteger>(0));
     }
     SQInteger wx_GetColourFromUser(HSQUIRRELVM v)
     {
