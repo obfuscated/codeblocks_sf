@@ -79,6 +79,17 @@ namespace ScriptBindings
     {
         getSM()->LoadScript(filename);
     }
+    SQInteger Require(HSQUIRRELVM v)
+    {
+        StackHandler sa(v);
+        const wxString& filename = *SqPlus::GetInstance<wxString>(v, 2);
+        if (!getSM()->LoadScript(filename))
+        {
+            wxString msg = wxString::Format(_("Failed to load required script: %s"), filename.c_str());
+            return sa.ThrowError(cbU2C(msg));
+        }
+        return sa.Return(0);
+    }
     SQInteger wx_GetColourFromUser(HSQUIRRELVM v)
     {
         StackHandler sa(v);
@@ -125,6 +136,7 @@ namespace ScriptBindings
         SqPlus::RegisterGlobal(InstallPlugin, "InstallPlugin");
 
         SqPlus::RegisterGlobal(Include, "Include");
+        SquirrelVM::CreateFunctionGlobal(Require, "Require", "*");
 
         SqPlus::RegisterGlobal(InfoWindow::Display, "InfoWindow");
 
