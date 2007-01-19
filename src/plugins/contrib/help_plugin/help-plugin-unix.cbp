@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="5" />
+	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="Help Plugin (Unix)" />
 		<Option pch_mode="0" />
-		<Option default_target="" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="" />
 		<Build>
 			<Target title="help_plugin">
-				<Option output="../../../devel/share/codeblocks/plugins/libhelp_plugin.so" />
+				<Option output="../../../devel/share/codeblocks/plugins/libhelp_plugin.so" prefix_auto="0" extension_auto="0" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="../../../devel/codeblocks.exe" />
@@ -42,42 +40,15 @@
 		<ExtraCommands>
 			<Add after="zip -j9 ../../../devel/share/codeblocks/help_plugin.zip manifest.xml *.xrc" />
 		</ExtraCommands>
-		<Unit filename="HelpConfigDialog.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="help_plugin" />
-		</Unit>
-		<Unit filename="HelpConfigDialog.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="help_plugin" />
-		</Unit>
-		<Unit filename="help_common.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="help_plugin" />
-		</Unit>
-		<Unit filename="help_common.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="help_plugin" />
-		</Unit>
-		<Unit filename="help_plugin.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="help_plugin" />
-		</Unit>
-		<Unit filename="help_plugin.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="help_plugin" />
-		</Unit>
-		<Unit filename="help_plugin.xrc">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="help_plugin" />
-		</Unit>
-		<Extensions />
+		<Unit filename="HelpConfigDialog.cpp" />
+		<Unit filename="HelpConfigDialog.h" />
+		<Unit filename="help_common.cpp" />
+		<Unit filename="help_common.h" />
+		<Unit filename="help_plugin.cpp" />
+		<Unit filename="help_plugin.h" />
+		<Unit filename="help_plugin.xrc" />
+		<Extensions>
+			<code_completion />
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

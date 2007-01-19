@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="5" />
+	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="C::B KeyBinder" />
 		<Option pch_mode="0" />
-		<Option default_target="" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="" />
 		<Build>
 			<Target title="KeyBinder plugin">
-				<Option output="../../../devel/share/codeblocks/plugins/libkeybinder.so" />
+				<Option output="../../../devel/share/codeblocks/plugins/libkeybinder.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="../keybinder" />
 				<Option object_output="../../../.objs/plugins/contrib/keybinder" />
 				<Option type="3" />
@@ -47,55 +45,39 @@
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="cbkeybinder.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />
 		</Unit>
 		<Unit filename="cbkeybinder.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />
 		</Unit>
 		<Unit filename="debugging.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />
 		</Unit>
 		<Unit filename="keybinder.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />
 		</Unit>
 		<Unit filename="keybinder.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />
 		</Unit>
 		<Unit filename="keybinderdef.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />
 		</Unit>
 		<Unit filename="menuutils.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />
 		</Unit>
 		<Unit filename="menuutils.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />
 		</Unit>
-		<Extensions />
+		<Extensions>
+			<code_completion />
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

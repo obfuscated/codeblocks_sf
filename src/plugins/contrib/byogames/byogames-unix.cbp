@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="5" />
+	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="C::B Games" />
 		<Option pch_mode="0" />
-		<Option default_target="" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../devel/share/codeblocks/plugins/libbyogames.so" />
+				<Option output="../../../devel/share/codeblocks/plugins/libbyogames.so" prefix_auto="0" extension_auto="0" />
 				<Option object_output="." />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -41,76 +39,22 @@
 			<Add after="zip -j9 ../../../devel/share/codeblocks/byogames.zip manifest.xml" />
 			<Mode after="always" />
 		</ExtraCommands>
-		<Unit filename="byocbtris.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="byocbtris.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="byoconf.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="byoconf.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="byogame.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="byogame.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="byogamebase.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="byogamebase.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="byogames.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="byogames.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="byogameselect.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="byogameselect.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="byosnake.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="byosnake.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Extensions />
+		<Unit filename="byocbtris.cpp" />
+		<Unit filename="byocbtris.h" />
+		<Unit filename="byoconf.cpp" />
+		<Unit filename="byoconf.h" />
+		<Unit filename="byogame.cpp" />
+		<Unit filename="byogame.h" />
+		<Unit filename="byogamebase.cpp" />
+		<Unit filename="byogamebase.h" />
+		<Unit filename="byogames.cpp" />
+		<Unit filename="byogames.h" />
+		<Unit filename="byogameselect.cpp" />
+		<Unit filename="byogameselect.h" />
+		<Unit filename="byosnake.cpp" />
+		<Unit filename="byosnake.h" />
+		<Extensions>
+			<code_completion />
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="5" />
+	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="C::B Koders Query" />
 		<Option pch_mode="2" />
-		<Option default_target="" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../devel/share/codeblocks/plugins/libcb_koders.so" />
+				<Option output="../../../devel/share/codeblocks/plugins/libcb_koders.so" prefix_auto="0" extension_auto="0" />
 				<Option object_output="../../../.objs/2.6/plugins/contrib/cb_koders" />
 				<Option deps_output="../../../.deps/2.6/plugins/contrib/cb_koders" />
 				<Option external_deps="../../../devel/libcodeblocks.a;../../../devel/libwxscintilla.a;" />
@@ -42,26 +40,12 @@
 		<ExtraCommands>
 			<Add after="zip -j9 ../../../devel/share/codeblocks/cb_koders.zip manifest.xml" />
 		</ExtraCommands>
-		<Unit filename="cb_koders.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="cb_koders.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="kodersdialog.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="kodersdialog.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Extensions />
+		<Unit filename="cb_koders.cpp" />
+		<Unit filename="cb_koders.h" />
+		<Unit filename="kodersdialog.cpp" />
+		<Unit filename="kodersdialog.h" />
+		<Extensions>
+			<code_completion />
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

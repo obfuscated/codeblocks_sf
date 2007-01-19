@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="5" />
+	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="Exporter (Unix)" />
 		<Option pch_mode="0" />
-		<Option default_target="" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="" />
 		<Build>
 			<Target title="wxPdfDocument">
 				<Option output="libwxPdfDocument.a" prefix_auto="0" extension_auto="0" />
@@ -17,11 +15,11 @@
 				<Option projectLinkerOptionsRelation="2" />
 			</Target>
 			<Target title="default">
-				<Option output="..\..\..\devel\share\codeblocks\plugins\libexporter.so" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../devel/share/codeblocks/plugins/libexporter.so" prefix_auto="0" extension_auto="0" />
 				<Option external_deps="libwxPdfDocument.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option host_application="../../../devel/codeblocks.exe" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Linker>
 					<Add library="libwxPdfDocument.a" />
@@ -46,197 +44,127 @@
 			<Add option="-fPIC" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DcbDEBUG" />
-			<Add directory="..\..\..\sdk" />
-			<Add directory="..\..\..\sdk\wxscintilla\include" />
-			<Add directory="wxPdfDocument\include" />
+			<Add directory="../../../sdk" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="wxPdfDocument/include" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="codeblocks" />
 			<Add library="wxscintilla" />
-			<Add directory="..\..\..\devel" />
+			<Add directory="../../../devel" />
 			<Add directory="." />
 		</Linker>
 		<Unit filename="BaseExporter.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="BaseExporter.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="HTMLExporter.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="HTMLExporter.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="ODTExporter.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="ODTExporter.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="PDFExporter.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="PDFExporter.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="RTFExporter.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="RTFExporter.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="exporter.cpp">
-			<Option compilerVar="CPP" />
 			<Option target="default" />
 		</Unit>
 		<Unit filename="exporter.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
 			<Option target="default" />
 		</Unit>
-		<Unit filename="wxPdfDocument\include\wx\pdfbarcode.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxPdfDocument/include/wx/pdfbarcode.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\include\wx\pdfdoc.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxPdfDocument/include/wx/pdfdoc.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\include\wx\pdfdocdef.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxPdfDocument/include/wx/pdfdocdef.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\include\wx\pdfencrypt.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxPdfDocument/include/wx/pdfencrypt.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\include\wx\pdffont.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxPdfDocument/include/wx/pdffont.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\include\wx\pdfform.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxPdfDocument/include/wx/pdfform.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\include\wx\pdfgraphics.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxPdfDocument/include/wx/pdfgraphics.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\include\wx\pdfimage.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxPdfDocument/include/wx/pdfimage.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\include\wx\pdfproperties.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxPdfDocument/include/wx/pdfproperties.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\include\wx\pdftemplate.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxPdfDocument/include/wx/pdftemplate.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\include\wx\pdfxml.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxPdfDocument/include/wx/pdfxml.h">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdfannotation.cpp">
-			<Option compilerVar="CPP" />
+		<Unit filename="wxPdfDocument/src/pdfannotation.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdfbarcode.cpp">
-			<Option compilerVar="CPP" />
+		<Unit filename="wxPdfDocument/src/pdfbarcode.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdfcolor.cpp">
-			<Option compilerVar="CPP" />
+		<Unit filename="wxPdfDocument/src/pdfcolor.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdfdoc.cpp">
-			<Option compilerVar="CPP" />
+		<Unit filename="wxPdfDocument/src/pdfdoc.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdfencrypt.cpp">
-			<Option compilerVar="CPP" />
+		<Unit filename="wxPdfDocument/src/pdfencrypt.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdffont.cpp">
-			<Option compilerVar="CPP" />
+		<Unit filename="wxPdfDocument/src/pdffont.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdffontdata.inc">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxPdfDocument/src/pdffontdata.inc">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdfform.cpp">
-			<Option compilerVar="CPP" />
+		<Unit filename="wxPdfDocument/src/pdfform.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdfgraphics.cpp">
-			<Option compilerVar="CPP" />
+		<Unit filename="wxPdfDocument/src/pdfgraphics.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdfimage.cpp">
-			<Option compilerVar="CPP" />
+		<Unit filename="wxPdfDocument/src/pdfimage.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdfkernel.cpp">
-			<Option compilerVar="CPP" />
+		<Unit filename="wxPdfDocument/src/pdfkernel.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdftemplate.cpp">
-			<Option compilerVar="CPP" />
+		<Unit filename="wxPdfDocument/src/pdftemplate.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Unit filename="wxPdfDocument\src\pdfxml.cpp">
-			<Option compilerVar="CPP" />
+		<Unit filename="wxPdfDocument/src/pdfxml.cpp">
 			<Option target="wxPdfDocument" />
 		</Unit>
-		<Extensions />
+		<Extensions>
+			<code_completion />
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

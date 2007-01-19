@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="5" />
+	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="wxSmith (Unix)" />
 		<Option pch_mode="0" />
-		<Option default_target="" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="" />
 		<Build>
 			<Target title="wxSmith">
-				<Option output="../../../devel/share/codeblocks/plugins/libwxsmith.so" />
+				<Option output="../../../devel/share/codeblocks/plugins/libwxsmith.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="../../../devel" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -51,1493 +49,292 @@
 			<Add after="./update" />
 			<Mode after="always" />
 		</ExtraCommands>
-		<Unit filename="defwidgets/wxsboxsizer.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsboxsizer.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsbutton.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsbutton.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxscalendarctrl.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxscalendarctrl.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxscheckbox.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxscheckbox.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxschecklistbox.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxschecklistbox.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxschoice.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxschoice.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxschoicebook.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxschoicebook.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxschoicebookparentqp.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxschoicebookparentqp.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxscombobox.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxscombobox.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxscustomwidget.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxscustomwidget.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsdatepickerctrl.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsdatepickerctrl.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsdialog.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsdialog.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsflexgridsizer.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsflexgridsizer.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsframe.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsframe.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsgauge.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsgauge.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsgenericdirctrl.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsgenericdirctrl.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsgridsizer.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsgridsizer.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxshtmlwindow.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxshtmlwindow.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxslistbook.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxslistbook.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxslistbookparentqp.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxslistbookparentqp.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxslistbox.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxslistbox.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxslistctrl.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxslistctrl.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsnotebook.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsnotebook.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsnotebookparentqp.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsnotebookparentqp.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxspanel.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxspanel.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsradiobox.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsradiobox.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsradiobutton.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsradiobutton.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsscrollbar.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsscrollbar.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsscrolledwindow.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsscrolledwindow.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsslider.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsslider.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsspacer.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsspacer.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsspinbutton.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsspinbutton.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsspinctrl.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsspinctrl.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxssplitterwindow.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxssplitterwindow.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsstaticbitmap.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsstaticbitmap.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsstaticbox.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsstaticbox.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsstaticboxsizer.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsstaticboxsizer.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsstaticline.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsstaticline.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsstatictext.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsstatictext.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsstddialogbuttonsizer.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsstddialogbuttonsizer.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsstdmanager.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxsstdmanager.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxstextctrl.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxstextctrl.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxstogglebutton.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxstogglebutton.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxstreectrl.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxstreectrl.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxswindow.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="defwidgets/wxswindow.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="newwindow.xrc">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxs2intproperty.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxs2intproperty.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsadvimageproperty.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsadvimageproperty.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsboolproperty.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsboolproperty.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsborderproperty.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsborderproperty.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxscheckstringseditor.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxscheckstringseditor.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxscolourproperty.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxscolourproperty.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsenumproperty.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsenumproperty.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsfontproperty.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsfontproperty.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsintproperty.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsintproperty.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsplacementproperty.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsplacementproperty.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsstringlistcheckproperty.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsstringlistcheckproperty.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsstringlistproperty.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsstringlistproperty.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsstringproperty.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsstringproperty.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsstyleproperty.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="properties/wxsstyleproperty.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="resources/wxsdialogpreviewdlg.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="resources/wxsdialogpreviewdlg.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="resources/wxsframepreviewfrm.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="resources/wxsframepreviewfrm.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="resources/wxswindowres.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="resources/wxswindowres.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="resources/wxswindowresdataobject.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="resources/wxswindowresdataobject.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/Spacer.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/Spacer16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/deletewidget.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/deletewidget16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/insertafter.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/insertafter16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/insertbefore.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/insertbefore16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/insertinto.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/insertinto16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/quickpropsclose.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/quickpropsclose16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/quickpropsopen.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/quickpropsopen16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/selected.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/selected16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/showpreview.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/showpreview16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxBoxSizer.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxBoxSizer16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxButton.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxButton16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxCheckBox.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxCheckBox16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxComboBox.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxComboBox16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxDatePickerCtrl.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxDatePickerCtrl16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxFlexGridSizer.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxFlexGridSizer16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxGauge.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxGauge16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxGridSizer.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxGridSizer16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxListBox.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxListBox16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxListbook.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxListbook16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxNotebook.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxNotebook16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxPanel.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxPanel16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxRadioBox.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxRadioBox16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxRadioButton.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxRadioButton16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxScrollBar.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxScrollBar16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxSmith16x16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxSpinButton.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxSpinButton16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxSpinCtrl.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxSpinCtrl16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxSplitterWindow.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxSplitterWindow16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxStaticBoxSizer.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxStaticBoxSizer16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxStaticLine.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxStaticLine16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxStaticText.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxStaticText16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxTextCtrl.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxTextCtrl16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxToggleButton.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxToggleButton16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxTreeCtrl.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="smithicons/wxTreeCtrl16.png">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="widget.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="widget.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsbaseproperties.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsbaseproperties.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxscodegen.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxscodegen.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxscodeparams.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxscoder.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxscoder.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxscontainer.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxscontainer.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxscustomwidgetxmlhandler.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxscustomwidgetxmlhandler.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsdefsizer.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsdefsizer.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsdefwidget.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsdefwidget.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsdragwindow.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsdragwindow.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsdrawingwindow.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsdrawingwindow.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxseditor.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxseditor.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsevent.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsevent.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxseventseditor.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxseventseditor.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsextresmanager.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsextresmanager.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsglobals.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsglobals.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
+		<Unit filename="defwidgets/wxsboxsizer.cpp" />
+		<Unit filename="defwidgets/wxsboxsizer.h" />
+		<Unit filename="defwidgets/wxsbutton.cpp" />
+		<Unit filename="defwidgets/wxsbutton.h" />
+		<Unit filename="defwidgets/wxscalendarctrl.cpp" />
+		<Unit filename="defwidgets/wxscalendarctrl.h" />
+		<Unit filename="defwidgets/wxscheckbox.cpp" />
+		<Unit filename="defwidgets/wxscheckbox.h" />
+		<Unit filename="defwidgets/wxschecklistbox.cpp" />
+		<Unit filename="defwidgets/wxschecklistbox.h" />
+		<Unit filename="defwidgets/wxschoice.cpp" />
+		<Unit filename="defwidgets/wxschoice.h" />
+		<Unit filename="defwidgets/wxschoicebook.cpp" />
+		<Unit filename="defwidgets/wxschoicebook.h" />
+		<Unit filename="defwidgets/wxschoicebookparentqp.cpp" />
+		<Unit filename="defwidgets/wxschoicebookparentqp.h" />
+		<Unit filename="defwidgets/wxscombobox.cpp" />
+		<Unit filename="defwidgets/wxscombobox.h" />
+		<Unit filename="defwidgets/wxscustomwidget.cpp" />
+		<Unit filename="defwidgets/wxscustomwidget.h" />
+		<Unit filename="defwidgets/wxsdatepickerctrl.cpp" />
+		<Unit filename="defwidgets/wxsdatepickerctrl.h" />
+		<Unit filename="defwidgets/wxsdialog.cpp" />
+		<Unit filename="defwidgets/wxsdialog.h" />
+		<Unit filename="defwidgets/wxsflexgridsizer.cpp" />
+		<Unit filename="defwidgets/wxsflexgridsizer.h" />
+		<Unit filename="defwidgets/wxsframe.cpp" />
+		<Unit filename="defwidgets/wxsframe.h" />
+		<Unit filename="defwidgets/wxsgauge.cpp" />
+		<Unit filename="defwidgets/wxsgauge.h" />
+		<Unit filename="defwidgets/wxsgenericdirctrl.cpp" />
+		<Unit filename="defwidgets/wxsgenericdirctrl.h" />
+		<Unit filename="defwidgets/wxsgridsizer.cpp" />
+		<Unit filename="defwidgets/wxsgridsizer.h" />
+		<Unit filename="defwidgets/wxshtmlwindow.cpp" />
+		<Unit filename="defwidgets/wxshtmlwindow.h" />
+		<Unit filename="defwidgets/wxslistbook.cpp" />
+		<Unit filename="defwidgets/wxslistbook.h" />
+		<Unit filename="defwidgets/wxslistbookparentqp.cpp" />
+		<Unit filename="defwidgets/wxslistbookparentqp.h" />
+		<Unit filename="defwidgets/wxslistbox.cpp" />
+		<Unit filename="defwidgets/wxslistbox.h" />
+		<Unit filename="defwidgets/wxslistctrl.cpp" />
+		<Unit filename="defwidgets/wxslistctrl.h" />
+		<Unit filename="defwidgets/wxsnotebook.cpp" />
+		<Unit filename="defwidgets/wxsnotebook.h" />
+		<Unit filename="defwidgets/wxsnotebookparentqp.cpp" />
+		<Unit filename="defwidgets/wxsnotebookparentqp.h" />
+		<Unit filename="defwidgets/wxspanel.cpp" />
+		<Unit filename="defwidgets/wxspanel.h" />
+		<Unit filename="defwidgets/wxsradiobox.cpp" />
+		<Unit filename="defwidgets/wxsradiobox.h" />
+		<Unit filename="defwidgets/wxsradiobutton.cpp" />
+		<Unit filename="defwidgets/wxsradiobutton.h" />
+		<Unit filename="defwidgets/wxsscrollbar.cpp" />
+		<Unit filename="defwidgets/wxsscrollbar.h" />
+		<Unit filename="defwidgets/wxsscrolledwindow.cpp" />
+		<Unit filename="defwidgets/wxsscrolledwindow.h" />
+		<Unit filename="defwidgets/wxsslider.cpp" />
+		<Unit filename="defwidgets/wxsslider.h" />
+		<Unit filename="defwidgets/wxsspacer.cpp" />
+		<Unit filename="defwidgets/wxsspacer.h" />
+		<Unit filename="defwidgets/wxsspinbutton.cpp" />
+		<Unit filename="defwidgets/wxsspinbutton.h" />
+		<Unit filename="defwidgets/wxsspinctrl.cpp" />
+		<Unit filename="defwidgets/wxsspinctrl.h" />
+		<Unit filename="defwidgets/wxssplitterwindow.cpp" />
+		<Unit filename="defwidgets/wxssplitterwindow.h" />
+		<Unit filename="defwidgets/wxsstaticbitmap.cpp" />
+		<Unit filename="defwidgets/wxsstaticbitmap.h" />
+		<Unit filename="defwidgets/wxsstaticbox.cpp" />
+		<Unit filename="defwidgets/wxsstaticbox.h" />
+		<Unit filename="defwidgets/wxsstaticboxsizer.cpp" />
+		<Unit filename="defwidgets/wxsstaticboxsizer.h" />
+		<Unit filename="defwidgets/wxsstaticline.cpp" />
+		<Unit filename="defwidgets/wxsstaticline.h" />
+		<Unit filename="defwidgets/wxsstatictext.cpp" />
+		<Unit filename="defwidgets/wxsstatictext.h" />
+		<Unit filename="defwidgets/wxsstddialogbuttonsizer.cpp" />
+		<Unit filename="defwidgets/wxsstddialogbuttonsizer.h" />
+		<Unit filename="defwidgets/wxsstdmanager.cpp" />
+		<Unit filename="defwidgets/wxsstdmanager.h" />
+		<Unit filename="defwidgets/wxstextctrl.cpp" />
+		<Unit filename="defwidgets/wxstextctrl.h" />
+		<Unit filename="defwidgets/wxstogglebutton.cpp" />
+		<Unit filename="defwidgets/wxstogglebutton.h" />
+		<Unit filename="defwidgets/wxstreectrl.cpp" />
+		<Unit filename="defwidgets/wxstreectrl.h" />
+		<Unit filename="defwidgets/wxswindow.cpp" />
+		<Unit filename="defwidgets/wxswindow.h" />
+		<Unit filename="newwindow.xrc" />
+		<Unit filename="properties/wxs2intproperty.cpp" />
+		<Unit filename="properties/wxs2intproperty.h" />
+		<Unit filename="properties/wxsadvimageproperty.cpp" />
+		<Unit filename="properties/wxsadvimageproperty.h" />
+		<Unit filename="properties/wxsboolproperty.cpp" />
+		<Unit filename="properties/wxsboolproperty.h" />
+		<Unit filename="properties/wxsborderproperty.cpp" />
+		<Unit filename="properties/wxsborderproperty.h" />
+		<Unit filename="properties/wxscheckstringseditor.cpp" />
+		<Unit filename="properties/wxscheckstringseditor.h" />
+		<Unit filename="properties/wxscolourproperty.cpp" />
+		<Unit filename="properties/wxscolourproperty.h" />
+		<Unit filename="properties/wxsenumproperty.cpp" />
+		<Unit filename="properties/wxsenumproperty.h" />
+		<Unit filename="properties/wxsfontproperty.cpp" />
+		<Unit filename="properties/wxsfontproperty.h" />
+		<Unit filename="properties/wxsintproperty.cpp" />
+		<Unit filename="properties/wxsintproperty.h" />
+		<Unit filename="properties/wxsplacementproperty.cpp" />
+		<Unit filename="properties/wxsplacementproperty.h" />
+		<Unit filename="properties/wxsstringlistcheckproperty.cpp" />
+		<Unit filename="properties/wxsstringlistcheckproperty.h" />
+		<Unit filename="properties/wxsstringlistproperty.cpp" />
+		<Unit filename="properties/wxsstringlistproperty.h" />
+		<Unit filename="properties/wxsstringproperty.cpp" />
+		<Unit filename="properties/wxsstringproperty.h" />
+		<Unit filename="properties/wxsstyleproperty.cpp" />
+		<Unit filename="properties/wxsstyleproperty.h" />
+		<Unit filename="resources/wxsdialogpreviewdlg.cpp" />
+		<Unit filename="resources/wxsdialogpreviewdlg.h" />
+		<Unit filename="resources/wxsframepreviewfrm.cpp" />
+		<Unit filename="resources/wxsframepreviewfrm.h" />
+		<Unit filename="resources/wxswindowres.cpp" />
+		<Unit filename="resources/wxswindowres.h" />
+		<Unit filename="resources/wxswindowresdataobject.cpp" />
+		<Unit filename="resources/wxswindowresdataobject.h" />
+		<Unit filename="smithicons/Spacer.png" />
+		<Unit filename="smithicons/Spacer16.png" />
+		<Unit filename="smithicons/deletewidget.png" />
+		<Unit filename="smithicons/deletewidget16.png" />
+		<Unit filename="smithicons/insertafter.png" />
+		<Unit filename="smithicons/insertafter16.png" />
+		<Unit filename="smithicons/insertbefore.png" />
+		<Unit filename="smithicons/insertbefore16.png" />
+		<Unit filename="smithicons/insertinto.png" />
+		<Unit filename="smithicons/insertinto16.png" />
+		<Unit filename="smithicons/quickpropsclose.png" />
+		<Unit filename="smithicons/quickpropsclose16.png" />
+		<Unit filename="smithicons/quickpropsopen.png" />
+		<Unit filename="smithicons/quickpropsopen16.png" />
+		<Unit filename="smithicons/selected.png" />
+		<Unit filename="smithicons/selected16.png" />
+		<Unit filename="smithicons/showpreview.png" />
+		<Unit filename="smithicons/showpreview16.png" />
+		<Unit filename="smithicons/wxBoxSizer.png" />
+		<Unit filename="smithicons/wxBoxSizer16.png" />
+		<Unit filename="smithicons/wxButton.png" />
+		<Unit filename="smithicons/wxButton16.png" />
+		<Unit filename="smithicons/wxCheckBox.png" />
+		<Unit filename="smithicons/wxCheckBox16.png" />
+		<Unit filename="smithicons/wxComboBox.png" />
+		<Unit filename="smithicons/wxComboBox16.png" />
+		<Unit filename="smithicons/wxDatePickerCtrl.png" />
+		<Unit filename="smithicons/wxDatePickerCtrl16.png" />
+		<Unit filename="smithicons/wxFlexGridSizer.png" />
+		<Unit filename="smithicons/wxFlexGridSizer16.png" />
+		<Unit filename="smithicons/wxGauge.png" />
+		<Unit filename="smithicons/wxGauge16.png" />
+		<Unit filename="smithicons/wxGridSizer.png" />
+		<Unit filename="smithicons/wxGridSizer16.png" />
+		<Unit filename="smithicons/wxListBox.png" />
+		<Unit filename="smithicons/wxListBox16.png" />
+		<Unit filename="smithicons/wxListbook.png" />
+		<Unit filename="smithicons/wxListbook16.png" />
+		<Unit filename="smithicons/wxNotebook.png" />
+		<Unit filename="smithicons/wxNotebook16.png" />
+		<Unit filename="smithicons/wxPanel.png" />
+		<Unit filename="smithicons/wxPanel16.png" />
+		<Unit filename="smithicons/wxRadioBox.png" />
+		<Unit filename="smithicons/wxRadioBox16.png" />
+		<Unit filename="smithicons/wxRadioButton.png" />
+		<Unit filename="smithicons/wxRadioButton16.png" />
+		<Unit filename="smithicons/wxScrollBar.png" />
+		<Unit filename="smithicons/wxScrollBar16.png" />
+		<Unit filename="smithicons/wxSmith16x16.png" />
+		<Unit filename="smithicons/wxSpinButton.png" />
+		<Unit filename="smithicons/wxSpinButton16.png" />
+		<Unit filename="smithicons/wxSpinCtrl.png" />
+		<Unit filename="smithicons/wxSpinCtrl16.png" />
+		<Unit filename="smithicons/wxSplitterWindow.png" />
+		<Unit filename="smithicons/wxSplitterWindow16.png" />
+		<Unit filename="smithicons/wxStaticBoxSizer.png" />
+		<Unit filename="smithicons/wxStaticBoxSizer16.png" />
+		<Unit filename="smithicons/wxStaticLine.png" />
+		<Unit filename="smithicons/wxStaticLine16.png" />
+		<Unit filename="smithicons/wxStaticText.png" />
+		<Unit filename="smithicons/wxStaticText16.png" />
+		<Unit filename="smithicons/wxTextCtrl.png" />
+		<Unit filename="smithicons/wxTextCtrl16.png" />
+		<Unit filename="smithicons/wxToggleButton.png" />
+		<Unit filename="smithicons/wxToggleButton16.png" />
+		<Unit filename="smithicons/wxTreeCtrl.png" />
+		<Unit filename="smithicons/wxTreeCtrl16.png" />
+		<Unit filename="widget.cpp" />
+		<Unit filename="widget.h" />
+		<Unit filename="wxsbaseproperties.cpp" />
+		<Unit filename="wxsbaseproperties.h" />
+		<Unit filename="wxscodegen.cpp" />
+		<Unit filename="wxscodegen.h" />
+		<Unit filename="wxscodeparams.h" />
+		<Unit filename="wxscoder.cpp" />
+		<Unit filename="wxscoder.h" />
+		<Unit filename="wxscontainer.cpp" />
+		<Unit filename="wxscontainer.h" />
+		<Unit filename="wxscustomwidgetxmlhandler.cpp" />
+		<Unit filename="wxscustomwidgetxmlhandler.h" />
+		<Unit filename="wxsdefsizer.cpp" />
+		<Unit filename="wxsdefsizer.h" />
+		<Unit filename="wxsdefwidget.cpp" />
+		<Unit filename="wxsdefwidget.h" />
+		<Unit filename="wxsdragwindow.cpp" />
+		<Unit filename="wxsdragwindow.h" />
+		<Unit filename="wxsdrawingwindow.cpp" />
+		<Unit filename="wxsdrawingwindow.h" />
+		<Unit filename="wxseditor.cpp" />
+		<Unit filename="wxseditor.h" />
+		<Unit filename="wxsevent.cpp" />
+		<Unit filename="wxsevent.h" />
+		<Unit filename="wxseventseditor.cpp" />
+		<Unit filename="wxseventseditor.h" />
+		<Unit filename="wxsextresmanager.cpp" />
+		<Unit filename="wxsextresmanager.h" />
+		<Unit filename="wxsglobals.cpp" />
+		<Unit filename="wxsglobals.h" />
 		<Unit filename="wxsheaders.h">
-			<Option compilerVar="CPP" />
-			<Option link="0" />
+			<Option compile="1" />
 			<Option weight="0" />
-			<Option target="wxSmith" />
 		</Unit>
-		<Unit filename="wxsimportxrcdlg.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsimportxrcdlg.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsmith.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsmith.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsmith/wxsListbookParentQP.wxs">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsmith/wxsNewWindowDlg.wxs">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsmith/wxsNotebookParentQP.wxs">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsmith/wxsProjectConfigurationDlg.wxs">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsmith/wxsSettingsDlg.wxs">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsmith/wxsSizerParentQP.wxs">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsmith/wxsStandardQP.wxs">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsmithmime.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsmithmime.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsmithwizard.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsmithwizard.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsnewwindowdlg.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsnewwindowdlg.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxspredefinedids.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxspredefinedids.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsproject.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsproject.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsprojectconfigurationdlg.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsprojectconfigurationdlg.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsprojectconfigurationdlg.xrc">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsproperties.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsproperties.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxspropertiesman.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxspropertiesman.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsresource.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsresource.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsresourcetree.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsresourcetree.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxssettingsdlg.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxssettingsdlg.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxssettingsdlg.xrc">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxssizerparentqp.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxssizerparentqp.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxssplitterwindow.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxssplitterwindow.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsstandardqp.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsstandardqp.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsstdwidget.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxsstyle.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxswidgetevents.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxswidgetevents.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxswidgetfactory.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxswidgetfactory.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxswidgetmanager.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxswidgetmanager.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxswindoweditor.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxswindoweditor.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxswinundobuffer.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxswinundobuffer.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxswizard.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="wxSmith" />
-		</Unit>
-		<Unit filename="wxswizard.h">
-			<Option compilerVar="" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="wxSmith" />
-		</Unit>
+		<Unit filename="wxsimportxrcdlg.cpp" />
+		<Unit filename="wxsimportxrcdlg.h" />
+		<Unit filename="wxsmith.cpp" />
+		<Unit filename="wxsmith.h" />
+		<Unit filename="wxsmith/wxsListbookParentQP.wxs" />
+		<Unit filename="wxsmith/wxsNewWindowDlg.wxs" />
+		<Unit filename="wxsmith/wxsNotebookParentQP.wxs" />
+		<Unit filename="wxsmith/wxsProjectConfigurationDlg.wxs" />
+		<Unit filename="wxsmith/wxsSettingsDlg.wxs" />
+		<Unit filename="wxsmith/wxsSizerParentQP.wxs" />
+		<Unit filename="wxsmith/wxsStandardQP.wxs" />
+		<Unit filename="wxsmithmime.cpp" />
+		<Unit filename="wxsmithmime.h" />
+		<Unit filename="wxsmithwizard.cpp" />
+		<Unit filename="wxsmithwizard.h" />
+		<Unit filename="wxsnewwindowdlg.cpp" />
+		<Unit filename="wxsnewwindowdlg.h" />
+		<Unit filename="wxspredefinedids.cpp" />
+		<Unit filename="wxspredefinedids.h" />
+		<Unit filename="wxsproject.cpp" />
+		<Unit filename="wxsproject.h" />
+		<Unit filename="wxsprojectconfigurationdlg.cpp" />
+		<Unit filename="wxsprojectconfigurationdlg.h" />
+		<Unit filename="wxsprojectconfigurationdlg.xrc" />
+		<Unit filename="wxsproperties.cpp" />
+		<Unit filename="wxsproperties.h" />
+		<Unit filename="wxspropertiesman.cpp" />
+		<Unit filename="wxspropertiesman.h" />
+		<Unit filename="wxsresource.cpp" />
+		<Unit filename="wxsresource.h" />
+		<Unit filename="wxsresourcetree.cpp" />
+		<Unit filename="wxsresourcetree.h" />
+		<Unit filename="wxssettingsdlg.cpp" />
+		<Unit filename="wxssettingsdlg.h" />
+		<Unit filename="wxssettingsdlg.xrc" />
+		<Unit filename="wxssizerparentqp.cpp" />
+		<Unit filename="wxssizerparentqp.h" />
+		<Unit filename="wxssplitterwindow.cpp" />
+		<Unit filename="wxssplitterwindow.h" />
+		<Unit filename="wxsstandardqp.cpp" />
+		<Unit filename="wxsstandardqp.h" />
+		<Unit filename="wxsstdwidget.h" />
+		<Unit filename="wxsstyle.h" />
+		<Unit filename="wxswidgetevents.cpp" />
+		<Unit filename="wxswidgetevents.h" />
+		<Unit filename="wxswidgetfactory.cpp" />
+		<Unit filename="wxswidgetfactory.h" />
+		<Unit filename="wxswidgetmanager.cpp" />
+		<Unit filename="wxswidgetmanager.h" />
+		<Unit filename="wxswindoweditor.cpp" />
+		<Unit filename="wxswindoweditor.h" />
+		<Unit filename="wxswinundobuffer.cpp" />
+		<Unit filename="wxswinundobuffer.h" />
+		<Unit filename="wxswizard.cpp" />
+		<Unit filename="wxswizard.h" />
 		<Extensions>
+			<code_completion />
 			<wxsmith>
 				<dialog wxs_file="wxsNewWindowDlg.wxs" class="wxsNewWindowDlg" src_file="wxsnewwindowdlg.cpp" header_file="wxsnewwindowdlg.h" xrc_file="newwindow.xrc" edit_mode="Xrc" />
 				<dialog wxs_file="wxsProjectConfigurationDlg.wxs" class="wxsProjectConfigurationDlg" src_file="wxsprojectconfigurationdlg.cpp" header_file="wxsprojectconfigurationdlg.h" xrc_file="wxsprojectconfigurationdlg.xrc" edit_mode="Xrc" />
