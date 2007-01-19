@@ -26,6 +26,7 @@
 #endif
 
 #include "compilercommandgenerator.h"
+#include <wx/filefn.h>
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(RegExArray);
 
@@ -76,7 +77,9 @@ Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& par
     : m_Name(name),
     m_ID(ID.Lower()),
     m_ParentID(parentID.Lower()),
-    m_pGenerator(0)
+    m_pGenerator(0),
+    m_Valid(false),
+    m_NeedValidityCheck(true)
 {
 	//ctor
     MakeValidID();
@@ -116,12 +119,38 @@ Compiler::Compiler(const Compiler& other)
     {
         m_Commands[i] = other.m_Commands[i];
     }
+
+    m_Valid = other.m_Valid;
+    m_NeedValidityCheck = other.m_NeedValidityCheck;
 }
 
 Compiler::~Compiler()
 {
 	//dtor
 	delete m_pGenerator;
+}
+
+bool Compiler::IsValid()
+{
+    if (!m_NeedValidityCheck)
+        return m_Valid;
+
+    if (m_MasterPath.IsEmpty())
+        return true; // still initializing, don't try to test now
+
+    m_NeedValidityCheck = false;
+    m_Valid = wxFileExists(m_MasterPath + _T("/bin/") + m_Programs.C);
+    if (!m_Valid)
+    {
+        // look in extra paths too
+        for (size_t i = 0; i < m_ExtraPaths.GetCount(); ++i)
+        {
+            m_Valid = wxFileExists(m_ExtraPaths[i] + _T("/") + m_Programs.C);
+            if (m_Valid)
+                break;
+        }
+    }
+    return m_Valid;
 }
 
 void Compiler::MakeValidID()

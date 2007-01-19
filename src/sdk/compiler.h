@@ -174,6 +174,9 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 		Compiler(const wxString& name, const wxString& ID, const wxString& parentID = wxEmptyString);
 		virtual ~Compiler();
 
+		/** @brief Check if the compiler is actually valid (installed). */
+		virtual bool IsValid();
+
 		/** @brief Check if the supplied string is a compiler warning/error */
 		virtual CompilerLineType CheckForWarningsAndErrors(const wxString& line);
 		/** @brief Returns warning/error filename. Use it after a call to CheckForWarningsAndErrors() */
@@ -204,11 +207,11 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         /** @brief Set the compiler's name */
 		virtual void SetName(const wxString& name){ m_Name = name; }
         /** @brief Set the compiler's master path (must contain "bin", "include" and "lib") */
-		virtual void SetMasterPath(const wxString& path){ m_MasterPath = path; }
+		virtual void SetMasterPath(const wxString& path){ m_MasterPath = path; m_NeedValidityCheck = true; }
         /** @brief Set the compiler's extra paths */
-		virtual void SetExtraPaths(const wxArrayString& paths){ m_ExtraPaths = paths; }
+		virtual void SetExtraPaths(const wxArrayString& paths){ m_ExtraPaths = paths; m_NeedValidityCheck = true; }
         /** @brief Set the compiler's programs */
-		virtual void SetPrograms(const CompilerPrograms& programs){ m_Programs = programs; }
+		virtual void SetPrograms(const CompilerPrograms& programs){ m_Programs = programs; m_NeedValidityCheck = true; }
         /** @brief Set the compiler's generic switches */
 		virtual void SetSwitches(const CompilerSwitches& switches){ m_Switches = switches; }
         /** @brief Set the compiler's options */
@@ -294,6 +297,8 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         wxString m_ParentID; // -1 for builtin compilers, the builtin compiler's ID to derive from for user compilers...
         static wxArrayString m_CompilerIDs; // map to guarantee unique IDs
         CompilerCommandGenerator* m_pGenerator;
+        bool m_Valid; // 'valid' flag
+        bool m_NeedValidityCheck; // flag to re-check validity (raised when changing compiler paths)
 };
 
 #endif // COMPILER_H

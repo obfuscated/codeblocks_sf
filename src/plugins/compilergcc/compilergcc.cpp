@@ -1377,18 +1377,15 @@ wxString CompilerGCC::GetCurrentCompilerID(ProjectBuildTarget* target)
 
 bool CompilerGCC::CompilerValid(ProjectBuildTarget* target)
 {
+    Compiler* compiler = 0;
     if (!target)
-        return CompilerFactory::GetDefaultCompiler() != 0;
-
-    wxString idx = GetCurrentCompilerID(target);
-    if (!CompilerFactory::GetCompiler(idx))
+        compiler = CompilerFactory::GetDefaultCompiler();
+    else
     {
-//        wxString msg;
-//        msg.Printf(_("This %s is configured to use an invalid compiler.\nThe operation failed..."), target ? _("target") : _("project"));
-//        cbMessageBox(msg, _("Error"), wxICON_ERROR);
-        return false;
+        wxString idx = GetCurrentCompilerID(target);
+        compiler = CompilerFactory::GetCompiler(idx);
     }
-    return true;
+    return compiler && compiler->IsValid();
 }
 
 bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
