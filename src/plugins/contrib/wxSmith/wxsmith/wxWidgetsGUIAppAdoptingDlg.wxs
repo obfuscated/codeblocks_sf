@@ -1,0 +1,138 @@
+<resource>
+    <object class="wxDialog" name="wxWidgetsGUIAppAdoptingDlg">
+        <title>Integrating application class with wxSmith</title>
+        <centered>1</centered>
+        <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+        <object class="wxBoxSizer" variable="BoxSizer1" member="yes">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>4</border>
+                <flag>wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxBoxSizer" variable="BoxSizer4" member="yes">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>4</border>
+                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
+                            <orient>wxVERTICAL</orient>
+                            <label>Files with application class:</label>
+                            <object class="sizeritem">
+                                <option>1</option>
+                                <border>4</border>
+                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
+                                <object class="wxListBox" name="ID_LISTBOX1" variable="FoundFiles" member="yes">
+                                    <size>198,166</size>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <border>4</border>
+                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                                <object class="wxGauge" name="ID_GAUGE1" variable="Progress" member="yes">
+                                    <size>90,13</size>
+                                    <style>wxGA_SMOOTH</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <border>4</border>
+                                <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                                <object class="wxBoxSizer" variable="BoxSizer2" member="yes">
+                                    <orient>wxHORIZONTAL</orient>
+                                    <object class="sizeritem">
+                                        <border>4</border>
+                                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                                        <object class="wxStaticText" name="ID_STATICTEXT1" variable="ScanningTxt" member="yes">
+                                            <label>Scanning:</label>
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>4</border>
+                                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                                        <object class="wxStaticText" name="ID_STATICTEXT2" variable="ScanningFile" member="yes">
+                                            <label></label>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <border>4</border>
+                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxBoxSizer" variable="BoxSizer3" member="yes">
+                            <orient>wxVERTICAL</orient>
+                            <object class="spacer">
+                                <size>28,17</size>
+                                <border>4</border>
+                                <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                            </object>
+                            <object class="sizeritem">
+                                <border>4</border>
+                                <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                <object class="wxButton" name="ID_BUTTON5" variable="UseFileBtn" member="yes">
+                                    <label>Use selected file</label>
+                                    <handler entry="EVT_BUTTON" function="OnUseFileBtnClick" />
+                                    <enabled>0</enabled>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <border>4</border>
+                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                                <object class="wxButton" name="ID_BUTTON2" variable="SelectBtn" member="yes">
+                                    <label>Select file manually</label>
+                                    <handler entry="EVT_BUTTON" function="OnSelectBtnClick" />
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <border>4</border>
+                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
+                                <object class="wxButton" name="ID_BUTTON3" variable="CreateBtn" member="yes">
+                                    <label>Create new file</label>
+                                    <handler entry="EVT_BUTTON" function="OnCreateBtnClick" />
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <border>8</border>
+                                <flag>wxALL|wxALIGN_CENTER</flag>
+                                <object class="wxStaticLine" name="ID_STATICLINE2" variable="StaticLine2" member="yes">
+                                    <size>50,-1</size>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <border>4</border>
+                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
+                                <object class="wxButton" name="ID_BUTTON4" variable="Button4" member="yes">
+                                    <label>Cancel</label>
+                                    <default>1</default>
+                                    <handler entry="EVT_BUTTON" function="OnButton4Click" />
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <border>8</border>
+                                <flag>wxALL|wxALIGN_CENTER</flag>
+                                <object class="wxStaticLine" name="ID_STATICLINE1" variable="StaticLine1" member="yes">
+                                    <size>50,-1</size>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <border>4</border>
+                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                                <object class="wxButton" name="ID_BUTTON6" variable="Button6" member="yes">
+                                    <label>What&apos;s this for ?</label>
+                                    <handler entry="EVT_BUTTON" function="OnButton6Click" />
+                                </object>
+                            </object>
+                            <object class="spacer">
+                                <size>28,17</size>
+                                <border>4</border>
+                                <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

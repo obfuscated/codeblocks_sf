@@ -1,0 +1,276 @@
+<resource>
+    <object class="wxPanel" name="wxsSizerParentQP">
+        <style>wxTAB_TRAVERSAL</style>
+        <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
+            <rows>0</rows>
+            <cols>1</cols>
+            <vgap>0</vgap>
+            <hgap>0</hgap>
+            <growablecols>1</growablecols>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
+                    <orient>wxVERTICAL</orient>
+                    <label>Border</label>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <flag>wxALIGN_CENTER</flag>
+                        <object class="wxFlexGridSizer" variable="FlexGridSizer2" member="no">
+                            <rows>0</rows>
+                            <cols>2</cols>
+                            <vgap>0</vgap>
+                            <hgap>0</hgap>
+                            <growablecols>1</growablecols>
+                            <object class="sizeritem">
+                                <option>1</option>
+                                <border>5</border>
+                                <flag>wxALIGN_CENTER</flag>
+                                <object class="wxGridSizer" variable="GridSizer1" member="no">
+                                    <rows>0</rows>
+                                    <cols>3</cols>
+                                    <vgap>0</vgap>
+                                    <hgap>0</hgap>
+                                    <object class="spacer">
+                                        <size>0,0</size>
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxCheckBox" name="ID_CHECKBOX1" variable="BrdTop" member="yes">
+                                            <label></label>
+                                            <handler entry="EVT_CHECKBOX" function="OnBrdChange" />
+                                        </object>
+                                    </object>
+                                    <object class="spacer">
+                                        <size>0,0</size>
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxCheckBox" name="ID_CHECKBOX2" variable="BrdLeft" member="yes">
+                                            <label></label>
+                                            <handler entry="EVT_CHECKBOX" function="OnBrdChange" />
+                                        </object>
+                                    </object>
+                                    <object class="spacer">
+                                        <size>0,0</size>
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxCheckBox" name="ID_CHECKBOX3" variable="BrdRight" member="yes">
+                                            <label></label>
+                                            <handler entry="EVT_CHECKBOX" function="OnBrdChange" />
+                                        </object>
+                                    </object>
+                                    <object class="spacer">
+                                        <size>0,0</size>
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxCheckBox" name="ID_CHECKBOX4" variable="BrdBottom" member="yes">
+                                            <label></label>
+                                            <handler entry="EVT_CHECKBOX" function="OnBrdChange" />
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <option>1</option>
+                                <border>5</border>
+                                <flag>wxALL|wxALIGN_CENTER</flag>
+                                <object class="wxSpinCtrl" name="ID_SPINCTRL1" variable="BrdSize" member="yes">
+                                    <value>0</value>
+                                    <handler entry="EVT_SPINCTRL" function="OnBrdSizeChange" />
+                                    <size>51,-1</size>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <border>5</border>
+                        <flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                        <object class="wxCheckBox" name="ID_CHECKBOX7" variable="BrdDlg" member="yes">
+                            <label>Dialog Units</label>
+                            <handler entry="EVT_CHECKBOX" function="OnBrdDlgChange" />
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="no">
+                    <orient>wxHORIZONTAL</orient>
+                    <label>Placement</label>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <flag>wxALIGN_CENTER</flag>
+                        <object class="wxFlexGridSizer" variable="FlexGridSizer3" member="yes">
+                            <rows>0</rows>
+                            <cols>0</cols>
+                            <vgap>0</vgap>
+                            <hgap>0</hgap>
+                            <object class="sizeritem">
+                                <option>1</option>
+                                <border>5</border>
+                                <flag>wxALIGN_CENTER</flag>
+                                <object class="wxGridSizer" variable="GridSizer2" member="yes">
+                                    <rows>3</rows>
+                                    <cols>3</cols>
+                                    <vgap>0</vgap>
+                                    <hgap>0</hgap>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxRadioButton" name="ID_RADIOBUTTON4" variable="PlaceLT" member="yes">
+                                            <label></label>
+                                            <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxRadioButton" name="ID_RADIOBUTTON5" variable="PlaceCT" member="yes">
+                                            <label></label>
+                                            <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxRadioButton" name="ID_RADIOBUTTON6" variable="PlaceRT" member="yes">
+                                            <label></label>
+                                            <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxRadioButton" name="ID_RADIOBUTTON7" variable="PlaceLC" member="yes">
+                                            <label></label>
+                                            <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxRadioButton" name="ID_RADIOBUTTON8" variable="PlaceCC" member="yes">
+                                            <label></label>
+                                            <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxRadioButton" name="ID_RADIOBUTTON9" variable="PlaceRC" member="yes">
+                                            <label></label>
+                                            <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxRadioButton" name="ID_RADIOBUTTON10" variable="PlaceLB" member="yes">
+                                            <label></label>
+                                            <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxRadioButton" name="ID_RADIOBUTTON11" variable="PlaceCB" member="yes">
+                                            <label></label>
+                                            <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxRadioButton" name="ID_RADIOBUTTON12" variable="PlaceRB" member="yes">
+                                            <label></label>
+                                            <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <option>1</option>
+                                <border>10</border>
+                                <flag>wxLEFT|wxALIGN_CENTER</flag>
+                                <object class="wxBoxSizer" variable="BoxSizer1" member="yes">
+                                    <orient>wxVERTICAL</orient>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>2</border>
+                                        <flag>wxTOP|wxALIGN_CENTER|wxEXPAND</flag>
+                                        <object class="wxCheckBox" name="ID_CHECKBOX6" variable="PlaceShp" member="yes">
+                                            <label>Shaped</label>
+                                            <handler entry="EVT_CHECKBOX" function="OnPlaceChange" />
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxCheckBox" name="ID_CHECKBOX5" variable="PlaceExp" member="yes">
+                                            <label>Expand</label>
+                                            <handler entry="EVT_CHECKBOX" function="OnPlaceChange" />
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="yes">
+                    <orient>wxVERTICAL</orient>
+                    <label>Proportion</label>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxSpinCtrl" name="ID_SPINCTRL2" variable="Proportion" member="yes">
+                            <value>0</value>
+                            <handler entry="EVT_SPINCTRL" function="OnProportionChange" />
+                            <size>65,21</size>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

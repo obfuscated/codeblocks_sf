@@ -1,0 +1,160 @@
+<resource>
+    <object class="wxDialog" name="wxsSimpleFontEditorDlg">
+        <title>Font settings</title>
+        <centered>1</centered>
+        <style>wxDEFAULT_DIALOG_STYLE</style>
+        <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
+            <rows>0</rows>
+            <cols>1</cols>
+            <vgap>0</vgap>
+            <hgap>0</hgap>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>4</border>
+                <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxBoxSizer" variable="BoxSizer4" member="yes">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
+                            <orient>wxHORIZONTAL</orient>
+                            <label>Current font</label>
+                            <object class="sizeritem">
+                                <option>1</option>
+                                <border>5</border>
+                                <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                <object class="wxFlexGridSizer" variable="FlexGridSizer2" member="yes">
+                                    <rows>0</rows>
+                                    <cols>0</cols>
+                                    <vgap>0</vgap>
+                                    <hgap>0</hgap>
+                                    <growablecols>0</growablecols>
+                                    <growablerows>0</growablerows>
+                                    <object class="sizeritem">
+                                        <border>5</border>
+                                        <flag>wxALL|wxALIGN_CENTER</flag>
+                                        <object class="wxStaticText" name="ID_STATICTEXT1" variable="FontDescription" member="yes">
+                                            <label>-- None --</label>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <border>5</border>
+                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
+                                <object class="wxStaticLine" name="ID_STATICLINE2" variable="StaticLine2" member="yes">
+                                    <style>wxLI_VERTICAL</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <border>5</border>
+                                <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                                <object class="wxBoxSizer" variable="BoxSizer2" member="yes">
+                                    <orient>wxVERTICAL</orient>
+                                    <object class="sizeritem">
+                                        <border>5</border>
+                                        <flag>wxALIGN_CENTER</flag>
+                                        <object class="wxButton" name="ID_BUTTON1" variable="Button1" member="yes">
+                                            <label>Change</label>
+                                            <handler entry="EVT_BUTTON" function="OnButton1Click" />
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <option>1</option>
+                                        <border>5</border>
+                                        <flag>wxTOP|wxALIGN_CENTER</flag>
+                                        <object class="wxButton" name="ID_BUTTON3" variable="Button3" member="yes">
+                                            <label>Clear</label>
+                                            <handler entry="EVT_BUTTON" function="OnButton3Click" />
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <border>5</border>
+                                        <flag>wxTOP|wxALIGN_CENTER|wxEXPAND</flag>
+                                        <object class="wxStaticLine" name="ID_STATICLINE1" variable="StaticLine1" member="yes">
+                                            <size>10,-1</size>
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <border>5</border>
+                                        <flag>wxTOP|wxALIGN_CENTER</flag>
+                                        <object class="wxButton" name="ID_BUTTON2" variable="Button2" member="yes">
+                                            <label>Advanced</label>
+                                            <handler entry="EVT_BUTTON" function="OnButton2Click" />
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="yes">
+                    <orient>wxHORIZONTAL</orient>
+                    <label>Test area</label>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>4</border>
+                        <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="TestArea" member="yes">
+                            <value>This is sample text</value>
+                            <size>275,71</size>
+                            <style>wxTE_MULTILINE</style>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>4</border>
+                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER</flag>
+                <object class="wxBoxSizer" variable="BoxSizer3" member="yes">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <border>4</border>
+                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="yes">
+                            <label>Note:</label>
+                            <style>wxALIGN_CENTRE</style>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>4</border>
+                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="yes">
+                            <label>In order to provide best cross-platform compatibility&#x0A;you should use either system-based font or multiple &#x0A;face names. You can change it in advanced options.</label>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>4</border>
+                <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxBoxSizer" variable="BoxSizer1" member="yes">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxStdDialogButtonSizer" variable="StdDialogButtonSizer1" member="yes">
+                            <object class="button">
+                                <object class="wxButton" name="wxID_OK" />
+                            </object>
+                            <object class="button">
+                                <object class="wxButton" name="wxID_CANCEL" />
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

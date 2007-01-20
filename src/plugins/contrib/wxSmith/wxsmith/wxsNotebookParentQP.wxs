@@ -1,0 +1,46 @@
+<resource>
+    <object class="wxPanel" name="wxsNotebookParentQP">
+        <style>wxTAB_TRAVERSAL</style>
+        <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
+            <rows>0</rows>
+            <cols>1</cols>
+            <vgap>0</vgap>
+            <hgap>0</hgap>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
+                    <orient>wxVERTICAL</orient>
+                    <label>Label</label>
+                    <object class="sizeritem">
+                        <border>5</border>
+                        <flag>wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="Label" member="yes">
+                            <value></value>
+                            <handler entry="EVT_TEXT_ENTER" function="OnLabelText" />
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="yes">
+                    <orient>wxHORIZONTAL</orient>
+                    <label>Selection</label>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxCheckBox" name="ID_CHECKBOX1" variable="Selected" member="yes">
+                            <label>Selected</label>
+                            <handler entry="EVT_CHECKBOX" function="OnSelectionChange" />
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

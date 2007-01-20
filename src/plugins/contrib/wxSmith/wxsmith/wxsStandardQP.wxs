@@ -1,0 +1,101 @@
+<resource>
+    <object class="wxPanel" name="wxsStandardQP">
+        <style>wxTAB_TRAVERSAL</style>
+        <object class="wxFlexGridSizer" variable="MainSizer" member="yes">
+            <rows>0</rows>
+            <cols>1</cols>
+            <vgap>0</vgap>
+            <hgap>0</hgap>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
+                    <label>Standard options</label>
+                    <style>wxALIGN_CENTRE</style>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer" variable="VariableSizer" member="yes">
+                    <orient>wxVERTICAL</orient>
+                    <label>Variable</label>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="VarName" member="yes">
+                            <value></value>
+                            <handler entry="EVT_TEXT" function="OnTextChanged" />
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxCheckBox" name="ID_CHECKBOX1" variable="IsMember" member="yes">
+                            <label>Is class member</label>
+                            <handler entry="EVT_CHECKBOX" function="OnChange" />
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer" variable="IdentifierSizer" member="yes">
+                    <orient>wxHORIZONTAL</orient>
+                    <label>Identifier</label>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="Ident" member="yes">
+                            <value></value>
+                            <handler entry="EVT_TEXT" function="OnTextChanged" />
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <option>1</option>
+                <border>5</border>
+                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
+                <object class="wxStaticBoxSizer" variable="FlagsSizer" member="yes">
+                    <orient>wxVERTICAL</orient>
+                    <label>Flags</label>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxCheckBox" name="ID_CHECKBOX3" variable="Enabled" member="yes">
+                            <label>Enabled</label>
+                            <handler entry="EVT_CHECKBOX" function="OnChange" />
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxCheckBox" name="ID_CHECKBOX2" variable="Focused" member="yes">
+                            <label>Focused</label>
+                            <handler entry="EVT_CHECKBOX" function="OnChange" />
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <option>1</option>
+                        <border>5</border>
+                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                        <object class="wxCheckBox" name="ID_CHECKBOX4" variable="Hdden" member="yes">
+                            <label>Hidden</label>
+                            <handler entry="EVT_CHECKBOX" function="OnChange" />
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>
