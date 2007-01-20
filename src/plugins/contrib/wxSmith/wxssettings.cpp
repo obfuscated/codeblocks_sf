@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/colordlg.h>
 #include "wxssettings.h"
 #include "wxwidgets/wxssizer.h"
 #include "wxwidgets/wxsitemeditor.h"
