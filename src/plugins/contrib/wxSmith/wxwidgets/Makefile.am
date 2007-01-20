@@ -13,7 +13,7 @@ libwxsmith_wxwidgets_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefi
 
 libwxsmith_wxwidgets_la_LIBADD = ../../../../sdk/libcodeblocks.la \
 				    properties/libwxsmith_wxwidgets_properties.la \
-				    defwidgets/libwxsmith_wxwidgets_defitems.la
+				    defitems/libwxsmith_wxwidgets_defitems.la
 
 libwxsmith_wxwidgets_la_SOURCES = \
 ./wxssizer.cpp \
