@@ -90,19 +90,32 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
       return;
 
     wxString strText = pLclMnuItem->GetText();
-	wxString str = pLclMnuItem->GetLabel();
+
+    // *bug* 2007/01/19 v1.0.15
+    // Dont use  GetLabel to re-establish the menu text. It doesn't
+    // contain the underlined mnemonic. Use GetText()
+	//-wxString str = pLclMnuItem->GetLabel();
+
+	wxString str = strText.BeforeFirst('\t');
+	 // GTK is returing '&' as underscore
+    int idx = 0;
+    // change the first underscore to an & mnemonic, all others to blank
+    if ( -1 != (idx = str.Find('_'))) str[idx] = '&';
+    for ( size_t i=0; i<str.Length(); ++i)
+        if ( str[i]=='_'){ str[i] = ' ';}
+	 LOGIT( _T("Updating menu item Label[%s]Text[%s][%d]"), str.c_str(), strText.c_str(), idx );
 
 	// on GTK, an optimization in wxMenu::SetText checks
-	// if the new label is identic to the old and in this
-	// case, it returns without doing nothing... :-(
+	// if the new label is identical to the old and in this
+	// case, it returns without doing anything... :-(
 	// to solve the problem, a space is added or removed
-	// from the label to ovverride this optimization check
+	// from the label to override this optimization check
 	str.Trim();
 	if (str == pLclMnuItem->GetLabel())
 		str += wxT(" ");
 
-	if (m_nShortcuts <= 0) {
-
+	if (m_nShortcuts <= 0)
+	{
 		LOGIT(wxT("wxMenuCmd::Update - no shortcuts defined for [%s]"), str.c_str());
 
 		// no more shortcuts for this menuitem: SetText()

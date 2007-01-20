@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.15 2007/01/18"
+#define VERSION "1.0.16 2007/01/19"
 // -----------------------------------
 class MyDialog;
 
@@ -618,4 +618,6 @@ private:
 //  Commit  1.0.15 2007/01/18
 //          15) Empty profile written when CB re-enables KeyBinder and no events occur.
 // ----------------------------------------------------------------------------
-
+//  Commit  1.0.16 2007/01/19
+//          16) Fixed for missing *nix menu mnemonics
+// ----------------------------------------------------------------------------
