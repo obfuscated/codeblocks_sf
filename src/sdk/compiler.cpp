@@ -56,6 +56,7 @@ CompilerSwitches::CompilerSwitches()
 	supportsPCH = true;
 	PCHExtension = _T("h.gch");
 	UseFlatObjects = false;
+	UseFullSourcePaths = false;
 } // end of constructor
 
 
@@ -301,6 +302,7 @@ void Compiler::SaveSettings(const wxString& baseKey)
     cfg->Write(tmp + _T("/switches/supportsPCH"), m_Switches.supportsPCH);
     cfg->Write(tmp + _T("/switches/pchExtension"), m_Switches.PCHExtension);
     cfg->Write(tmp + _T("/switches/UseFlatObjects"), m_Switches.UseFlatObjects);
+    cfg->Write(tmp + _T("/switches/UseFullSourcePaths"), m_Switches.UseFullSourcePaths);
 
     // regexes
     cfg->DeleteSubPath(tmp + _T("/regex"));
@@ -411,6 +413,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Switches.supportsPCH = cfg->ReadBool(tmp + _T("/switches/supportsPCH"), m_Switches.supportsPCH);
     m_Switches.PCHExtension = cfg->Read(tmp + _T("/switches/pchExtension"), m_Switches.PCHExtension);
     m_Switches.UseFlatObjects = cfg->ReadBool(tmp + _T("/switches/UseFlatObjects"), m_Switches.UseFlatObjects);
+    m_Switches.UseFullSourcePaths = cfg->ReadBool(tmp + _T("/switches/UseFullSourcePaths"), m_Switches.UseFullSourcePaths);
 
     // regexes
     wxString group;

@@ -598,6 +598,20 @@ the regular expression.</label>
                       <flag>wxTOP</flag>
                       <border>4</border>
                     </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Use Full Paths for source files (GDB workaround) :</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkUseFullSourcePaths">
+                        <label></label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
                   </object>
                   <option>1</option>
                   <flag>wxALL|wxGROW</flag>

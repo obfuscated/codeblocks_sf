@@ -100,6 +100,7 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
     XRCCTRL(*this, "chkSupportsPCH", wxCheckBox)->SetValue(switches.supportsPCH);
     XRCCTRL(*this, "txtPCHExt", wxTextCtrl)->SetValue(switches.PCHExtension);
     XRCCTRL(*this, "chkUseFlatObjects", wxCheckBox)->SetValue(switches.UseFlatObjects);
+    XRCCTRL(*this, "chkUseFullSourcePaths", wxCheckBox)->SetValue(switches.UseFullSourcePaths);
 
     m_Regexes = compiler->GetRegExArray();
     m_SelectedRegex = m_Regexes.Count() > 0 ? 0 : -1;
@@ -135,6 +136,7 @@ void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
     switches.supportsPCH = XRCCTRL(*this, "chkSupportsPCH", wxCheckBox)->GetValue();
     switches.PCHExtension = XRCCTRL(*this, "txtPCHExt", wxTextCtrl)->GetValue();
     switches.UseFlatObjects = XRCCTRL(*this, "chkUseFlatObjects", wxCheckBox)->GetValue();
+    switches.UseFullSourcePaths = XRCCTRL(*this, "chkUseFullSourcePaths", wxCheckBox)->GetValue();
     compiler->SetSwitches(switches);
 } // end of WriteCompilerOptions
 

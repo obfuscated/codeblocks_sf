@@ -160,6 +160,9 @@ struct CompilerSwitches
     bool supportsPCH; // supports precompiled headers?
     wxString PCHExtension; // precompiled headers extension
     bool UseFlatObjects; // Use Flat object file names (no extra subdirs)?
+    bool UseFullSourcePaths; // This is mainly a workaround for the GDB debugger, apparantly I doesn't deal
+			// well with relative paths, therefor for GCC it is better to specify the source full to the compiler in
+			// a full path notation, for all other compilers it is suggested to keep this switch at false
     CompilerSwitches();		// constructor initializing the members, specific compilers should overrule if needed
 };
 
