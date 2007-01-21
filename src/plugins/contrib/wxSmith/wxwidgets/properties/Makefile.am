@@ -23,7 +23,8 @@ libwxsmith_wxwidgets_properties_la_SOURCES = \
 ./wxsfontfaceeditordlg.cpp \
 ./wxsbitmapiconeditordlg.cpp \
 ./wxsdimensionproperty.cpp \
-./wxsbitmapiconproperty.cpp
+./wxsbitmapiconproperty.cpp \
+./wxssimplefonteditordlg.cpp
 
 noinst_HEADERS = \
 ./wxsdimensionproperty.h \
@@ -37,4 +38,5 @@ noinst_HEADERS = \
 ./wxsfontproperty.h \
 ./wxssizerflagsproperty.h \
 ./wxsfontfaceeditordlg.h \
-./wxsbitmapiconeditordlg.h
+./wxsbitmapiconeditordlg.h \
+./wxssimplefonteditordlg.h
