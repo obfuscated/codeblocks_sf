@@ -176,6 +176,7 @@ void wxSmith::OnProjectHook(cbProject* project,TiXmlElement* elem,bool loading)
 
 void wxSmith::OnProjectOpened(CodeBlocksEvent& event)
 {
+    event.Skip();
     cbProject* Proj = event.GetProject();
     ProjectMapI i = m_ProjectMap.find(Proj);
     if ( i == m_ProjectMap.end() ) return;
@@ -185,16 +186,17 @@ void wxSmith::OnProjectOpened(CodeBlocksEvent& event)
 
 void wxSmith::OnProjectClose(CodeBlocksEvent& event)
 {
+    event.Skip();
     cbProject* Proj = event.GetProject();
     ProjectMapI i = m_ProjectMap.find(Proj);
     if ( i == m_ProjectMap.end() ) return;
     delete i->second;
     m_ProjectMap.erase(i);
-    event.Skip();
 }
 
 void wxSmith::OnProjectRenamed(CodeBlocksEvent& event)
 {
+    event.Skip();
     cbProject* Proj = event.GetProject();
     ProjectMapI i = m_ProjectMap.find(Proj);
     if ( i == m_ProjectMap.end() ) return;
