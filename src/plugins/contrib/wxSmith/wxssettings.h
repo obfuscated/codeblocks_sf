@@ -8,10 +8,8 @@
 #include <wx/checkbox.h>
 #include <wx/choice.h>
 #include <wx/combobox.h>
-#include <wx/intl.h>
 #include <wx/panel.h>
 #include <wx/radiobut.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
@@ -27,37 +25,34 @@ class wxsSettings: public cbConfigurationPanel
 	private:
 
 		//(*Identifiers(wxsSettings)
-		enum Identifiers
-		{
-		    ID_STATICTEXT2 = 0x1000,
-		    ID_COMBOBOX1,
-		    ID_STATICTEXT3,
-		    ID_BUTTON1,
-		    ID_STATICTEXT4,
-		    ID_BUTTON2,
-		    ID_STATICTEXT5,
-		    ID_RADIOBUTTON1,
-		    ID_RADIOBUTTON2,
-		    ID_STATICTEXT6,
-		    ID_RADIOBUTTON3,
-		    ID_RADIOBUTTON4,
-		    ID_STATICTEXT7,
-		    ID_SPINCTRL2,
-		    ID_STATICTEXT8,
-		    ID_CHECKBOX1,
-		    ID_CHECKBOX2,
-		    ID_CHECKBOX3,
-		    ID_CHECKBOX4,
-		    ID_STATICTEXT9,
-		    ID_CHECKBOX5,
-		    ID_STATICTEXT10,
-		    ID_CHECKBOX6,
-		    ID_STATICTEXT12,
-		    ID_CHOICE1,
-		    ID_STATICTEXT13,
-		    ID_SPINCTRL3,
-		    ID_CHECKBOX8
-		};
+		static const long ID_STATICTEXT2;
+		static const long ID_COMBOBOX1;
+		static const long ID_STATICTEXT3;
+		static const long ID_BUTTON1;
+		static const long ID_STATICTEXT4;
+		static const long ID_BUTTON2;
+		static const long ID_STATICTEXT5;
+		static const long ID_RADIOBUTTON1;
+		static const long ID_RADIOBUTTON2;
+		static const long ID_STATICTEXT6;
+		static const long ID_RADIOBUTTON3;
+		static const long ID_RADIOBUTTON4;
+		static const long ID_STATICTEXT7;
+		static const long ID_SPINCTRL2;
+		static const long ID_STATICTEXT8;
+		static const long ID_CHECKBOX1;
+		static const long ID_CHECKBOX2;
+		static const long ID_CHECKBOX3;
+		static const long ID_CHECKBOX4;
+		static const long ID_STATICTEXT9;
+		static const long ID_CHECKBOX5;
+		static const long ID_STATICTEXT10;
+		static const long ID_CHECKBOX6;
+		static const long ID_STATICTEXT12;
+		static const long ID_CHOICE1;
+		static const long ID_STATICTEXT13;
+		static const long ID_SPINCTRL3;
+		static const long ID_CHECKBOX8;
 		//*)
 
 		//(*Handlers(wxsSettings)

@@ -25,11 +25,30 @@
 
 #include <wx/fontdlg.h>
 
+//(*InternalHeaders(wxsSimpleFontEditorDlg)
+#include <wx/bitmap.h>
+#include <wx/font.h>
+#include <wx/fontenum.h>
+#include <wx/fontmap.h>
+#include <wx/image.h>
+#include <wx/intl.h>
+#include <wx/settings.h>
+//*)
+
+//(*IdInit(wxsSimpleFontEditorDlg)
+const long wxsSimpleFontEditorDlg::ID_STATICTEXT1 = wxNewId();
+const long wxsSimpleFontEditorDlg::ID_STATICLINE2 = wxNewId();
+const long wxsSimpleFontEditorDlg::ID_BUTTON1 = wxNewId();
+const long wxsSimpleFontEditorDlg::ID_BUTTON3 = wxNewId();
+const long wxsSimpleFontEditorDlg::ID_STATICLINE1 = wxNewId();
+const long wxsSimpleFontEditorDlg::ID_BUTTON2 = wxNewId();
+const long wxsSimpleFontEditorDlg::ID_TEXTCTRL1 = wxNewId();
+const long wxsSimpleFontEditorDlg::ID_STATICTEXT2 = wxNewId();
+const long wxsSimpleFontEditorDlg::ID_STATICTEXT3 = wxNewId();
+//*)
+
 BEGIN_EVENT_TABLE(wxsSimpleFontEditorDlg,wxDialog)
 	//(*EventTable(wxsSimpleFontEditorDlg)
-	EVT_BUTTON(ID_BUTTON1,wxsSimpleFontEditorDlg::OnButton1Click)
-	EVT_BUTTON(ID_BUTTON3,wxsSimpleFontEditorDlg::OnButton3Click)
-	EVT_BUTTON(ID_BUTTON2,wxsSimpleFontEditorDlg::OnButton2Click)
 	//*)
 	EVT_BUTTON(wxID_OK,wxsSimpleFontEditorDlg::OnOK)
 END_EVENT_TABLE()
@@ -38,55 +57,54 @@ wxsSimpleFontEditorDlg::wxsSimpleFontEditorDlg(wxWindow* parent,wxsFontData& Dat
     m_Data(Data)
 {
 	//(*Initialize(wxsSimpleFontEditorDlg)
-	Create(parent,id,_("Font settings"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T(""));
+	Create(parent,id,_("Font settings"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("id"));
 	FlexGridSizer1 = new wxFlexGridSizer(0,1,0,0);
 	BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Current font"));
 	FlexGridSizer2 = new wxFlexGridSizer(0,0,0,0);
 	FlexGridSizer2->AddGrowableCol(0);
 	FlexGridSizer2->AddGrowableRow(0);
-	FontDescription = new wxStaticText(this,ID_STATICTEXT1,_("-- None --"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT1"));
-	FlexGridSizer2->Add(FontDescription,0,wxALL|wxALIGN_CENTER,5);
-	StaticLine2 = new wxStaticLine(this,ID_STATICLINE2,wxDefaultPosition,wxDefaultSize,wxLI_VERTICAL,_("ID_STATICLINE2"));
+	FontDescription = new wxStaticText(this,ID_STATICTEXT1,_("-- None --"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));
+	FlexGridSizer2->Add(FontDescription,0,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	StaticBoxSizer1->Add(FlexGridSizer2,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	StaticLine2 = new wxStaticLine(this,ID_STATICLINE2,wxDefaultPosition,wxDefaultSize,wxLI_VERTICAL,_T("ID_STATICLINE2"));
+	StaticBoxSizer1->Add(StaticLine2,0,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer2 = new wxBoxSizer(wxVERTICAL);
-	Button1 = new wxButton(this,ID_BUTTON1,_("Change"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_BUTTON1"));
-	if (false) Button1->SetDefault();
-	Button3 = new wxButton(this,ID_BUTTON3,_("Clear"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_BUTTON3"));
-	if (false) Button3->SetDefault();
-	StaticLine1 = new wxStaticLine(this,ID_STATICLINE1,wxDefaultPosition,wxSize(10,-1),0,_("ID_STATICLINE1"));
-	Button2 = new wxButton(this,ID_BUTTON2,_("Advanced"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_BUTTON2"));
-	if (false) Button2->SetDefault();
-	BoxSizer2->Add(Button1,0,wxALIGN_CENTER,5);
-	BoxSizer2->Add(Button3,1,wxTOP|wxALIGN_CENTER,5);
-	BoxSizer2->Add(StaticLine1,0,wxTOP|wxALIGN_CENTER|wxEXPAND,5);
-	BoxSizer2->Add(Button2,0,wxTOP|wxALIGN_CENTER,5);
-	StaticBoxSizer1->Add(FlexGridSizer2,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
-	StaticBoxSizer1->Add(StaticLine2,0,wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND,5);
-	StaticBoxSizer1->Add(BoxSizer2,0,wxALL|wxALIGN_CENTER|wxEXPAND,5);
-	BoxSizer4->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
+	Button1 = new wxButton(this,ID_BUTTON1,_("Change"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON1"));
+	BoxSizer2->Add(Button1,0,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	Button3 = new wxButton(this,ID_BUTTON3,_("Clear"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON3"));
+	BoxSizer2->Add(Button3,1,wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	StaticLine1 = new wxStaticLine(this,ID_STATICLINE1,wxDefaultPosition,wxSize(10,-1),wxLI_HORIZONTAL,_T("ID_STATICLINE1"));
+	BoxSizer2->Add(StaticLine1,0,wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	Button2 = new wxButton(this,ID_BUTTON2,_("Advanced"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON2"));
+	BoxSizer2->Add(Button2,0,wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	StaticBoxSizer1->Add(BoxSizer2,0,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BoxSizer4->Add(StaticBoxSizer1,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	FlexGridSizer1->Add(BoxSizer4,1,wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Test area"));
-	TestArea = new wxTextCtrl(this,ID_TEXTCTRL1,_("This is sample text"),wxDefaultPosition,wxSize(275,71),wxTE_MULTILINE,wxDefaultValidator,_("ID_TEXTCTRL1"));
-	if ( 0 ) TestArea->SetMaxLength(0);
-	StaticBoxSizer2->Add(TestArea,1,wxALL|wxALIGN_CENTER|wxEXPAND,4);
+	TestArea = new wxTextCtrl(this,ID_TEXTCTRL1,_("This is sample text"),wxDefaultPosition,wxSize(275,71),wxTE_MULTILINE,wxDefaultValidator,_T("ID_TEXTCTRL1"));
+	StaticBoxSizer2->Add(TestArea,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
+	FlexGridSizer1->Add(StaticBoxSizer2,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Note:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE,_("ID_STATICTEXT2"));
-	StaticText3 = new wxStaticText(this,ID_STATICTEXT3,_("In order to provide best cross-platform compatibility\nyou should use either system-based font or multiple \nface names. You can change it in advanced options."),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT3"));
-	BoxSizer3->Add(StaticText2,0,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,4);
-	BoxSizer3->Add(StaticText3,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,4);
+	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Note:"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE,_T("ID_STATICTEXT2"));
+	BoxSizer3->Add(StaticText2,0,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
+	StaticText3 = new wxStaticText(this,ID_STATICTEXT3,_("In order to provide best cross-platform compatibility\nyou should use either system-based font or multiple \nface names. You can change it in advanced options."),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT3"));
+	BoxSizer3->Add(StaticText3,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
+	FlexGridSizer1->Add(BoxSizer3,1,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
 	StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
-	StdDialogButtonSizer1->AddButton(new wxButton(this,wxID_OK,_T("")));
-	StdDialogButtonSizer1->AddButton(new wxButton(this,wxID_CANCEL,_T("")));
+	StdDialogButtonSizer1->AddButton(new wxButton(this,wxID_OK,wxEmptyString));
+	StdDialogButtonSizer1->AddButton(new wxButton(this,wxID_CANCEL,wxEmptyString));
 	StdDialogButtonSizer1->Realize();
-	BoxSizer1->Add(StdDialogButtonSizer1,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
-	FlexGridSizer1->Add(BoxSizer4,1,wxALIGN_CENTER|wxEXPAND,4);
-	FlexGridSizer1->Add(StaticBoxSizer2,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
-	FlexGridSizer1->Add(BoxSizer3,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER,4);
-	FlexGridSizer1->Add(BoxSizer1,1,wxALL|wxALIGN_CENTER|wxEXPAND,4);
-	this->SetSizer(FlexGridSizer1);
+	BoxSizer1->Add(StdDialogButtonSizer1,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	FlexGridSizer1->Add(BoxSizer1,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
+	SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
-	Center();
+	Centre();
+	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSimpleFontEditorDlg::OnButton1Click);
+	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSimpleFontEditorDlg::OnButton3Click);
+	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSimpleFontEditorDlg::OnButton2Click);
 	//*)
 
     m_WorkingCopy = m_Data;

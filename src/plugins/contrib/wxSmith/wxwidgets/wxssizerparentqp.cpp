@@ -23,26 +23,39 @@
 
 #include "wxssizerparentqp.h"
 
+//(*InternalHeaders(wxsSizerParentQP)
+#include <wx/bitmap.h>
+#include <wx/font.h>
+#include <wx/fontenum.h>
+#include <wx/fontmap.h>
+#include <wx/image.h>
+#include <wx/intl.h>
+#include <wx/settings.h>
+//*)
+
+//(*IdInit(wxsSizerParentQP)
+const long wxsSizerParentQP::ID_CHECKBOX1 = wxNewId();
+const long wxsSizerParentQP::ID_CHECKBOX2 = wxNewId();
+const long wxsSizerParentQP::ID_CHECKBOX3 = wxNewId();
+const long wxsSizerParentQP::ID_CHECKBOX4 = wxNewId();
+const long wxsSizerParentQP::ID_SPINCTRL1 = wxNewId();
+const long wxsSizerParentQP::ID_CHECKBOX7 = wxNewId();
+const long wxsSizerParentQP::ID_RADIOBUTTON4 = wxNewId();
+const long wxsSizerParentQP::ID_RADIOBUTTON5 = wxNewId();
+const long wxsSizerParentQP::ID_RADIOBUTTON6 = wxNewId();
+const long wxsSizerParentQP::ID_RADIOBUTTON7 = wxNewId();
+const long wxsSizerParentQP::ID_RADIOBUTTON8 = wxNewId();
+const long wxsSizerParentQP::ID_RADIOBUTTON9 = wxNewId();
+const long wxsSizerParentQP::ID_RADIOBUTTON10 = wxNewId();
+const long wxsSizerParentQP::ID_RADIOBUTTON11 = wxNewId();
+const long wxsSizerParentQP::ID_RADIOBUTTON12 = wxNewId();
+const long wxsSizerParentQP::ID_CHECKBOX6 = wxNewId();
+const long wxsSizerParentQP::ID_CHECKBOX5 = wxNewId();
+const long wxsSizerParentQP::ID_SPINCTRL2 = wxNewId();
+//*)
+
 BEGIN_EVENT_TABLE(wxsSizerParentQP,wxPanel)
     //(*EventTable(wxsSizerParentQP)
-    EVT_CHECKBOX(ID_CHECKBOX1,wxsSizerParentQP::OnBrdChange)
-    EVT_CHECKBOX(ID_CHECKBOX2,wxsSizerParentQP::OnBrdChange)
-    EVT_CHECKBOX(ID_CHECKBOX3,wxsSizerParentQP::OnBrdChange)
-    EVT_CHECKBOX(ID_CHECKBOX4,wxsSizerParentQP::OnBrdChange)
-    EVT_SPINCTRL(ID_SPINCTRL1,wxsSizerParentQP::OnBrdSizeChange)
-    EVT_CHECKBOX(ID_CHECKBOX7,wxsSizerParentQP::OnBrdDlgChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON4,wxsSizerParentQP::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON5,wxsSizerParentQP::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON6,wxsSizerParentQP::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON7,wxsSizerParentQP::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON8,wxsSizerParentQP::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON9,wxsSizerParentQP::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON10,wxsSizerParentQP::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON11,wxsSizerParentQP::OnPlaceChange)
-    EVT_RADIOBUTTON(ID_RADIOBUTTON12,wxsSizerParentQP::OnPlaceChange)
-    EVT_CHECKBOX(ID_CHECKBOX6,wxsSizerParentQP::OnPlaceChange)
-    EVT_CHECKBOX(ID_CHECKBOX5,wxsSizerParentQP::OnPlaceChange)
-    EVT_SPINCTRL(ID_SPINCTRL2,wxsSizerParentQP::OnProportionChange)
     //*)
 END_EVENT_TABLE()
 
@@ -55,86 +68,90 @@ wxsSizerParentQP::wxsSizerParentQP(wxsAdvQPP* parent,wxsSizerExtra* Extra,wxWind
 	wxFlexGridSizer* FlexGridSizer2;
 	wxGridSizer* GridSizer1;
 	wxStaticBoxSizer* StaticBoxSizer2;
-
-	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T(""));
+	
+	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("id"));
 	FlexGridSizer1 = new wxFlexGridSizer(0,1,0,0);
 	FlexGridSizer1->AddGrowableCol(1);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL,this,_("Border"));
 	FlexGridSizer2 = new wxFlexGridSizer(0,2,0,0);
 	FlexGridSizer2->AddGrowableCol(1);
 	GridSizer1 = new wxGridSizer(0,3,0,0);
-	BrdTop = new wxCheckBox(this,ID_CHECKBOX1,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_CHECKBOX1"));
-	BrdTop->SetValue(false);
-	BrdLeft = new wxCheckBox(this,ID_CHECKBOX2,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_CHECKBOX2"));
-	BrdLeft->SetValue(false);
-	BrdRight = new wxCheckBox(this,ID_CHECKBOX3,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_CHECKBOX3"));
-	BrdRight->SetValue(false);
-	BrdBottom = new wxCheckBox(this,ID_CHECKBOX4,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_CHECKBOX4"));
-	BrdBottom->SetValue(false);
-	GridSizer1->Add(0,0,1);
-	GridSizer1->Add(BrdTop,1,wxALIGN_CENTER,5);
-	GridSizer1->Add(0,0,1);
-	GridSizer1->Add(BrdLeft,1,wxALIGN_CENTER,5);
-	GridSizer1->Add(0,0,1);
-	GridSizer1->Add(BrdRight,1,wxALIGN_CENTER,5);
-	GridSizer1->Add(0,0,1);
-	GridSizer1->Add(BrdBottom,1,wxALIGN_CENTER,5);
-	BrdSize = new wxSpinCtrl(this,ID_SPINCTRL1,_("0"),wxDefaultPosition,wxSize(51,-1),0,0,100,0,_("ID_SPINCTRL1"));
-	FlexGridSizer2->Add(GridSizer1,1,wxALIGN_CENTER,5);
-	FlexGridSizer2->Add(BrdSize,1,wxALL|wxALIGN_CENTER,5);
-	BrdDlg = new wxCheckBox(this,ID_CHECKBOX7,_("Dialog Units"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_CHECKBOX7"));
-	BrdDlg->SetValue(false);
-	StaticBoxSizer1->Add(FlexGridSizer2,1,wxALIGN_CENTER,0);
+	GridSizer1->Add(0,0,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BrdTop = new wxCheckBox(this,ID_CHECKBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX1"));
+	GridSizer1->Add(BrdTop,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	GridSizer1->Add(0,0,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BrdLeft = new wxCheckBox(this,ID_CHECKBOX2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX2"));
+	GridSizer1->Add(BrdLeft,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	GridSizer1->Add(0,0,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BrdRight = new wxCheckBox(this,ID_CHECKBOX3,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX3"));
+	GridSizer1->Add(BrdRight,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	GridSizer1->Add(0,0,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BrdBottom = new wxCheckBox(this,ID_CHECKBOX4,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX4"));
+	GridSizer1->Add(BrdBottom,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	FlexGridSizer2->Add(GridSizer1,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BrdSize = new wxSpinCtrl(this,ID_SPINCTRL1,_("0"),wxDefaultPosition,wxSize(51,-1),0,0,100,0,_T("ID_SPINCTRL1"));
+	BrdSize->SetValue(_("0"));
+	FlexGridSizer2->Add(BrdSize,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	StaticBoxSizer1->Add(FlexGridSizer2,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,0);
+	BrdDlg = new wxCheckBox(this,ID_CHECKBOX7,_("Dialog Units"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX7"));
 	StaticBoxSizer1->Add(BrdDlg,0,wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
+	FlexGridSizer1->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Placement"));
 	FlexGridSizer3 = new wxFlexGridSizer(0,0,0,0);
 	GridSizer2 = new wxGridSizer(3,3,0,0);
-	PlaceLT = new wxRadioButton(this,ID_RADIOBUTTON4,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_RADIOBUTTON4"));
-	PlaceLT->SetValue(false);
-	PlaceCT = new wxRadioButton(this,ID_RADIOBUTTON5,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_RADIOBUTTON5"));
-	PlaceCT->SetValue(false);
-	PlaceRT = new wxRadioButton(this,ID_RADIOBUTTON6,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_RADIOBUTTON6"));
-	PlaceRT->SetValue(false);
-	PlaceLC = new wxRadioButton(this,ID_RADIOBUTTON7,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_RADIOBUTTON7"));
-	PlaceLC->SetValue(false);
-	PlaceCC = new wxRadioButton(this,ID_RADIOBUTTON8,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_RADIOBUTTON8"));
-	PlaceCC->SetValue(false);
-	PlaceRC = new wxRadioButton(this,ID_RADIOBUTTON9,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_RADIOBUTTON9"));
-	PlaceRC->SetValue(false);
-	PlaceLB = new wxRadioButton(this,ID_RADIOBUTTON10,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_RADIOBUTTON10"));
-	PlaceLB->SetValue(false);
-	PlaceCB = new wxRadioButton(this,ID_RADIOBUTTON11,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_RADIOBUTTON11"));
-	PlaceCB->SetValue(false);
-	PlaceRB = new wxRadioButton(this,ID_RADIOBUTTON12,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_RADIOBUTTON12"));
-	PlaceRB->SetValue(false);
-	GridSizer2->Add(PlaceLT,1,wxALIGN_CENTER,5);
-	GridSizer2->Add(PlaceCT,1,wxALIGN_CENTER,5);
-	GridSizer2->Add(PlaceRT,1,wxALIGN_CENTER,5);
-	GridSizer2->Add(PlaceLC,1,wxALIGN_CENTER,5);
-	GridSizer2->Add(PlaceCC,1,wxALIGN_CENTER,5);
-	GridSizer2->Add(PlaceRC,1,wxALIGN_CENTER,5);
-	GridSizer2->Add(PlaceLB,1,wxALIGN_CENTER,5);
-	GridSizer2->Add(PlaceCB,1,wxALIGN_CENTER,5);
-	GridSizer2->Add(PlaceRB,1,wxALIGN_CENTER,5);
+	PlaceLT = new wxRadioButton(this,ID_RADIOBUTTON4,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON4"));
+	GridSizer2->Add(PlaceLT,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	PlaceCT = new wxRadioButton(this,ID_RADIOBUTTON5,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON5"));
+	GridSizer2->Add(PlaceCT,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	PlaceRT = new wxRadioButton(this,ID_RADIOBUTTON6,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON6"));
+	GridSizer2->Add(PlaceRT,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	PlaceLC = new wxRadioButton(this,ID_RADIOBUTTON7,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON7"));
+	GridSizer2->Add(PlaceLC,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	PlaceCC = new wxRadioButton(this,ID_RADIOBUTTON8,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON8"));
+	GridSizer2->Add(PlaceCC,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	PlaceRC = new wxRadioButton(this,ID_RADIOBUTTON9,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON9"));
+	GridSizer2->Add(PlaceRC,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	PlaceLB = new wxRadioButton(this,ID_RADIOBUTTON10,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON10"));
+	GridSizer2->Add(PlaceLB,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	PlaceCB = new wxRadioButton(this,ID_RADIOBUTTON11,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON11"));
+	GridSizer2->Add(PlaceCB,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	PlaceRB = new wxRadioButton(this,ID_RADIOBUTTON12,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON12"));
+	GridSizer2->Add(PlaceRB,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	FlexGridSizer3->Add(GridSizer2,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	PlaceShp = new wxCheckBox(this,ID_CHECKBOX6,_("Shaped"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_CHECKBOX6"));
-	PlaceShp->SetValue(false);
-	PlaceExp = new wxCheckBox(this,ID_CHECKBOX5,_("Expand"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_CHECKBOX5"));
-	PlaceExp->SetValue(false);
-	BoxSizer1->Add(PlaceShp,1,wxTOP|wxALIGN_CENTER|wxEXPAND,2);
-	BoxSizer1->Add(PlaceExp,1,wxALIGN_CENTER,0);
-	FlexGridSizer3->Add(GridSizer2,1,wxALIGN_CENTER,5);
-	FlexGridSizer3->Add(BoxSizer1,1,wxLEFT|wxALIGN_CENTER,10);
-	StaticBoxSizer2->Add(FlexGridSizer3,1,wxALIGN_CENTER,0);
+	PlaceShp = new wxCheckBox(this,ID_CHECKBOX6,_("Shaped"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX6"));
+	BoxSizer1->Add(PlaceShp,1,wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,2);
+	PlaceExp = new wxCheckBox(this,ID_CHECKBOX5,_("Expand"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX5"));
+	BoxSizer1->Add(PlaceExp,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,0);
+	FlexGridSizer3->Add(BoxSizer1,1,wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,10);
+	StaticBoxSizer2->Add(FlexGridSizer3,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,0);
+	FlexGridSizer1->Add(StaticBoxSizer2,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	StaticBoxSizer3 = new wxStaticBoxSizer(wxVERTICAL,this,_("Proportion"));
-	Proportion = new wxSpinCtrl(this,ID_SPINCTRL2,_("0"),wxDefaultPosition,wxSize(65,21),0,0,100,0,_("ID_SPINCTRL2"));
-	StaticBoxSizer3->Add(Proportion,1,wxALIGN_CENTER|wxEXPAND,5);
-	FlexGridSizer1->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND,5);
-	FlexGridSizer1->Add(StaticBoxSizer2,1,wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND,5);
-	FlexGridSizer1->Add(StaticBoxSizer3,1,wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND,5);
-	this->SetSizer(FlexGridSizer1);
+	Proportion = new wxSpinCtrl(this,ID_SPINCTRL2,_("0"),wxDefaultPosition,wxSize(65,21),0,0,100,0,_T("ID_SPINCTRL2"));
+	Proportion->SetValue(_("0"));
+	StaticBoxSizer3->Add(Proportion,1,wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	FlexGridSizer1->Add(StaticBoxSizer3,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
+	Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnBrdChange);
+	Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnBrdChange);
+	Connect(ID_CHECKBOX3,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnBrdChange);
+	Connect(ID_CHECKBOX4,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnBrdChange);
+	Connect(ID_SPINCTRL1,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&wxsSizerParentQP::OnBrdSizeChange);
+	Connect(ID_CHECKBOX7,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnBrdDlgChange);
+	Connect(ID_RADIOBUTTON4,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
+	Connect(ID_RADIOBUTTON5,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
+	Connect(ID_RADIOBUTTON6,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
+	Connect(ID_RADIOBUTTON7,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
+	Connect(ID_RADIOBUTTON8,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
+	Connect(ID_RADIOBUTTON9,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
+	Connect(ID_RADIOBUTTON10,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
+	Connect(ID_RADIOBUTTON11,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
+	Connect(ID_RADIOBUTTON12,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
+	Connect(ID_CHECKBOX6,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
+	Connect(ID_CHECKBOX5,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
+	Connect(ID_SPINCTRL2,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&wxsSizerParentQP::OnProportionChange);
 	//*)
 
     ReadData();

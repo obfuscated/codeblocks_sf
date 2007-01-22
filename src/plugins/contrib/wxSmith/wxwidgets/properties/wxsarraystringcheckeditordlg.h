@@ -7,8 +7,6 @@
 #include <wx/button.h>
 #include <wx/checklst.h>
 #include <wx/dialog.h>
-#include <wx/intl.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/statline.h>
 #include <wx/textctrl.h>
@@ -23,20 +21,17 @@ class wxsArrayStringCheckEditorDlg: public wxDialog
 		virtual ~wxsArrayStringCheckEditorDlg();
 
 		//(*Identifiers(wxsArrayStringCheckEditorDlg)
-		enum Identifiers
-		{
-		    ID_TEXTCTRL1 = 0x1000,
-		    ID_BUTTON1,
-		    ID_STATICLINE1,
-		    ID_CHECKLISTBOX1,
-		    ID_BUTTON2,
-		    ID_BUTTON4,
-		    ID_BUTTON3,
-		    ID_BUTTON5,
-		    ID_STATICLINE2,
-		    ID_BUTTON6,
-		    ID_BUTTON7
-		};
+		static const long ID_TEXTCTRL1;
+		static const long ID_BUTTON1;
+		static const long ID_STATICLINE1;
+		static const long ID_CHECKLISTBOX1;
+		static const long ID_BUTTON2;
+		static const long ID_BUTTON4;
+		static const long ID_BUTTON3;
+		static const long ID_BUTTON5;
+		static const long ID_STATICLINE2;
+		static const long ID_BUTTON6;
+		static const long ID_BUTTON7;
 		//*)
 
 	protected:

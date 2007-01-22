@@ -1,4 +1,4 @@
-<resource>
+<wxsmith>
     <object class="wxDialog" name="wxsSimpleFontEditorDlg">
         <title>Font settings</title>
         <centered>1</centered>
@@ -157,4 +157,4 @@
             </object>
         </object>
     </object>
-</resource>
+</wxsmith>

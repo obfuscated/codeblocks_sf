@@ -27,13 +27,20 @@
 
 //(*Headers(wxsListbookParentQP)
 #include <wx/checkbox.h>
-#include <wx/intl.h>
 #include <wx/panel.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
 //*)
 
+//(*InternalHeaders(wxsListbookParentQP)
+#include <wx/bitmap.h>
+#include <wx/font.h>
+#include <wx/fontenum.h>
+#include <wx/fontmap.h>
+#include <wx/image.h>
+#include <wx/intl.h>
+#include <wx/settings.h>
+//*)
 
 // TODO: Add images
 namespace
@@ -72,21 +79,21 @@ namespace
                 m_Extra(Extra)
             {
                 //(*Initialize(wxsListbookParentQP)
-                Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T(""));
+                Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("id"));
                 FlexGridSizer1 = new wxFlexGridSizer(0,1,0,0);
                 StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL,this,_("Label"));
-                Label = new wxTextCtrl(this,ID_TEXTCTRL1,_T(""),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_TEXTCTRL1"));
-                if ( 0 ) Label->SetMaxLength(0);
-                StaticBoxSizer1->Add(Label,0,wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
+                Label = new wxTextCtrl(this,ID_TEXTCTRL1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL1"));
+                StaticBoxSizer1->Add(Label,0,wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+                FlexGridSizer1->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
                 StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Selection"));
-                Selected = new wxCheckBox(this,ID_CHECKBOX1,_("Selected"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_CHECKBOX1"));
-                Selected->SetValue(false);
-                StaticBoxSizer2->Add(Selected,1,wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
-                FlexGridSizer1->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND,5);
-                FlexGridSizer1->Add(StaticBoxSizer2,1,wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND,5);
-                this->SetSizer(FlexGridSizer1);
+                Selected = new wxCheckBox(this,ID_CHECKBOX1,_("Selected"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX1"));
+                StaticBoxSizer2->Add(Selected,1,wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+                FlexGridSizer1->Add(StaticBoxSizer2,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+                SetSizer(FlexGridSizer1);
                 FlexGridSizer1->Fit(this);
                 FlexGridSizer1->SetSizeHints(this);
+                Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsListbookParentQP::OnLabelText);
+                Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsListbookParentQP::OnSelectionChange);
                 //*)
                 ReadData();
 
@@ -118,11 +125,8 @@ namespace
             }
 
             //(*Identifiers(wxsListbookParentQP)
-            enum Identifiers
-            {
-                ID_TEXTCTRL1 = 0x1000,
-                ID_CHECKBOX1
-            };
+            static const long ID_TEXTCTRL1;
+            static const long ID_CHECKBOX1;
             //*)
 
             //(*Handlers(wxsListbookParentQP)
@@ -144,10 +148,13 @@ namespace
             DECLARE_EVENT_TABLE()
     };
 
+    //(*IdInit(wxsListbookParentQP)
+    const long wxsListbookParentQP::ID_TEXTCTRL1 = wxNewId();
+    const long wxsListbookParentQP::ID_CHECKBOX1 = wxNewId();
+    //*)
+
     BEGIN_EVENT_TABLE(wxsListbookParentQP,wxPanel)
         //(*EventTable(wxsListbookParentQP)
-        EVT_TEXT_ENTER(ID_TEXTCTRL1,wxsListbookParentQP::OnLabelText)
-        EVT_CHECKBOX(ID_CHECKBOX1,wxsListbookParentQP::OnSelectionChange)
         //*)
     END_EVENT_TABLE()
 

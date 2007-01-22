@@ -4,7 +4,6 @@
 //(*Headers(wxsArrayStringEditorDlg)
 #include <wx/button.h>
 #include <wx/dialog.h>
-#include <wx/intl.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
 //*)
@@ -17,10 +16,7 @@ class wxsArrayStringEditorDlg: public wxDialog
 		virtual ~wxsArrayStringEditorDlg();
 
 		//(*Identifiers(wxsArrayStringEditorDlg)
-		enum Identifiers
-		{
-		    ID_TEXTCTRL1 = 0x1000
-		};
+		static const long ID_TEXTCTRL1;
 		//*)
 
 	protected:

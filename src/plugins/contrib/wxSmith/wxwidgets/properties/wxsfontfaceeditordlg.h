@@ -10,7 +10,6 @@
 //(*Headers(wxsFontFaceEditorDlg)
 #include <wx/button.h>
 #include <wx/dialog.h>
-#include <wx/intl.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
 //*)
@@ -23,11 +22,8 @@ class wxsFontFaceEditorDlg: public wxDialog
 		virtual ~wxsFontFaceEditorDlg();
 
 		//(*Identifiers(wxsFontFaceEditorDlg)
-		enum Identifiers
-		{
-		    ID_BUTTON1 = 0x1000,
-		    ID_TEXTCTRL1
-		};
+		static const long ID_TEXTCTRL1;
+		static const long ID_BUTTON1;
 		//*)
 
 	protected:

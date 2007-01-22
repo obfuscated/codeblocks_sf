@@ -1,4 +1,4 @@
-<resource>
+<wxsmith>
     <object class="wxDialog" name="wxsNewWindowDlg">
         <centered>1</centered>
         <style>wxDEFAULT_DIALOG_STYLE</style>
@@ -30,7 +30,7 @@
                                 <border>5</border>
                                 <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                                 <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="m_Class" member="yes">
-                                    <value></value>
+                                    <value />
                                     <handler entry="EVT_TEXT" function="OnClassChanged" />
                                     <size>80,-1</size>
                                 </object>
@@ -46,7 +46,7 @@
                                 <border>5</border>
                                 <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
                                 <object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="m_Header" member="yes">
-                                    <value></value>
+                                    <value />
                                     <handler entry="EVT_TEXT" function="OnHeaderChanged" />
                                     <size>80,-1</size>
                                 </object>
@@ -62,7 +62,7 @@
                                 <border>5</border>
                                 <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
                                 <object class="wxTextCtrl" name="ID_TEXTCTRL3" variable="m_Source" member="yes">
-                                    <value></value>
+                                    <value />
                                     <handler entry="EVT_TEXT" function="OnSourceChanged" />
                                     <size>80,-1</size>
                                 </object>
@@ -79,7 +79,7 @@
                                 <border>5</border>
                                 <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
                                 <object class="wxTextCtrl" name="ID_TEXTCTRL4" variable="m_Xrc" member="yes">
-                                    <value></value>
+                                    <value />
                                     <handler entry="EVT_TEXT" function="OnXrcChanged" />
                                     <size>80,-1</size>
                                 </object>
@@ -109,4 +109,4 @@
             </object>
         </object>
     </object>
-</resource>
+</wxsmith>

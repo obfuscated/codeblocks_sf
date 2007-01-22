@@ -4,16 +4,14 @@
 	<Project>
 		<Option title="wxSmith (Unix)" />
 		<Option pch_mode="0" />
-		<Option default_target="" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="" />
 		<Build>
 			<Target title="wxSmith">
-				<Option output="../../../devel/share/codeblocks/plugins/libwxsmith.so" />
-				<Option working_dir="../../../devel" />
+				<Option output="..\..\..\devel\share\codeblocks\plugins\libwxsmith.so" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="..\..\..\devel" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="./codeblocks.exe" />
+				<Option host_application=".\codeblocks.exe" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -31,11 +29,11 @@
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
-			<Add directory="../../../sdk" />
-			<Add directory="../../../sdk/wxscintilla/include" />
-			<Add directory="../../../sdk/propgrid/include" />
-			<Add directory="../../../sdk/tinyxml" />
-			<Add directory="../../../sdk/wxFlatNotebook/include" />
+			<Add directory="..\..\..\sdk" />
+			<Add directory="..\..\..\sdk\wxscintilla\include" />
+			<Add directory="..\..\..\sdk\propgrid\include" />
+			<Add directory="..\..\..\sdk\tinyxml" />
+			<Add directory="..\..\..\sdk\wxFlatNotebook\include" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
@@ -43,9 +41,9 @@
 			<Add library="codeblocks" />
 			<Add library="propgrid" />
 			<Add library="wxscintilla" />
-			<Add directory="../../../devel" />
-			<Add directory="../../../sdk/tinyxml" />
-			<Add directory="../../../sdk/propgrid" />
+			<Add directory="..\..\..\devel" />
+			<Add directory="..\..\..\sdk\tinyxml" />
+			<Add directory="..\..\..\sdk\propgrid" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="./update" />
@@ -290,20 +288,24 @@
 		<Unit filename="wxwidgets\wxwidgetsresfactory.h" />
 		<Extensions>
 			<code_completion />
-			<wxsmith>
-				<dialog wxs_file="wxWidgetsGUIAppAdoptingDlg.wxs" class="wxWidgetsGUIAppAdoptingDlg" src_file="wxwidgets\wxwidgetsguiappadoptingdlg.cpp" header_file="wxwidgets/wxwidgetsguiappadoptingdlg.h" xrc_file="" edit_mode="Source" />
-				<dialog wxs_file="wxsNewWindowDlg.wxs" class="wxsNewWindowDlg" src_file="wxwidgets/wxsnewwindowdlg.cpp" header_file="wxwidgets/wxsnewwindowdlg.h" xrc_file="" edit_mode="Source" />
-				<dialog wxs_file="wxsArrayStringCheckEditorDlg.wxs" class="wxsArrayStringCheckEditorDlg" src_file="wxwidgets/properties/wxsarraystringcheckeditordlg.cpp" header_file="wxwidgets\properties\wxsarraystringcheckeditordlg.h" xrc_file="" edit_mode="Source" />
-				<dialog wxs_file="wxsFontEditorDlg.wxs" class="wxsFontEditorDlg" src_file="wxwidgets/properties/wxsfonteditordlg.cpp" header_file="wxwidgets\properties\wxsfonteditordlg.h" xrc_file="" edit_mode="Source" />
-				<dialog wxs_file="wxsFontFaceEditorDlg.wxs" class="wxsFontFaceEditorDlg" src_file="wxwidgets/properties/wxsfontfaceeditordlg.cpp" header_file="wxwidgets\properties\wxsfontfaceeditordlg.h" xrc_file="" edit_mode="Source" />
-				<dialog wxs_file="wxsSimpleFontEditorDlg.wxs" class="wxsSimpleFontEditorDlg" src_file="wxwidgets/properties/wxssimplefonteditordlg.cpp" header_file="wxwidgets/properties/wxssimplefonteditordlg.h" xrc_file="" edit_mode="Source" />
-				<panel wxs_file="wxWidgetsGUIConfigPanel.wxs" class="wxWidgetsGUIConfigPanel" src_file="wxwidgets/wxwidgetsguiconfigpanel.cpp" header_file="wxwidgets/wxwidgetsguiconfigpanel.h" xrc_file="" edit_mode="Source" />
-				<panel wxs_file="wxsSizerParentQP.wxs" class="wxsSizerParentQP" src_file="wxwidgets/wxssizerparentqp.cpp" header_file="wxwidgets/wxssizerparentqp.h" xrc_file="" edit_mode="Source" />
-				<panel wxs_file="wxsNotebookParentQP.wxs" class="wxsNotebookParentQP" src_file="wxwidgets/defitems/wxsnotebook.cpp" header_file="wxwidgets/defitems/wxsnotebook.cpp" xrc_file="" edit_mode="Source" />
-				<panel wxs_file="wxsChoicebookParentQP.wxs" class="wxsChoicebookParentQP" src_file="wxwidgets/defitems/wxschoicebook.cpp" header_file="wxwidgets/defitems/wxschoicebook.cpp" xrc_file="" edit_mode="Source" />
-				<panel wxs_file="wxsListbookParentQP.wxs" class="wxsListbookParentQP" src_file="wxwidgets/defitems/wxslistbook.cpp" header_file="wxwidgets/defitems/wxslistbook.cpp" xrc_file="" edit_mode="Source" />
-				<panel wxs_file="wxsSettings.wxs" class="wxsSettings" src_file="wxssettings.cpp" header_file="wxssettings.h" xrc_file="" edit_mode="Source" />
-				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxDialog wxs="wxsmith/wxWidgetsGUIAppAdoptingDlg.wxs" src="wxwidgets\wxwidgetsguiappadoptingdlg.cpp" hdr="wxwidgets/wxwidgetsguiappadoptingdlg.h" name="wxWidgetsGUIAppAdoptingDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/wxsNewWindowDlg.wxs" src="wxwidgets/wxsnewwindowdlg.cpp" hdr="wxwidgets/wxsnewwindowdlg.h" name="wxsNewWindowDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/wxsArrayStringEditorDlg.wxs" src="properties/wxsarraystringeditordlg.cpp" hdr="properties/wxsarraystringeditordlg.h" name="wxsArrayStringEditorDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/wxsArrayStringCheckEditorDlg.wxs" src="wxwidgets/properties/wxsarraystringcheckeditordlg.cpp" hdr="wxwidgets/properties/wxsarraystringcheckeditordlg.h" name="wxsArrayStringCheckEditorDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/wxsBitmapIconEditorDlg.wxs" src="wxwidgets/properties/wxsbitmapiconeditordlg.cpp" hdr="wxwidgets/properties/wxsbitmapiconeditordlg.h" name="wxsBitmapIconEditorDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/wxsFontEditorDlg.wxs" src="wxwidgets/properties/wxsfonteditordlg.cpp" hdr="wxwidgets\properties\wxsfonteditordlg.h" name="wxsFontEditorDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/wxsFontFaceEditorDlg.wxs" src="wxwidgets/properties/wxsfontfaceeditordlg.cpp" hdr="wxwidgets\properties\wxsfontfaceeditordlg.h" name="wxsFontFaceEditorDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/wxsSimpleFontEditorDlg.wxs" src="wxwidgets/properties/wxssimplefonteditordlg.cpp" hdr="wxwidgets/properties/wxssimplefonteditordlg.h" name="wxsSimpleFontEditorDlg" language="CPP" />
+					<wxPanel wxs="wxsmith/wxWidgetsGUIConfigPanel.wxs" src="wxwidgets/wxwidgetsguiconfigpanel.cpp" hdr="wxwidgets/wxwidgetsguiconfigpanel.h" name="wxWidgetsGUIConfigPanel" language="CPP" />
+					<wxPanel wxs="wxsmith/wxsSizerParentQP.wxs" src="wxwidgets/wxssizerparentqp.cpp" hdr="wxwidgets/wxssizerparentqp.h" name="wxsSizerParentQP" language="CPP" />
+					<wxPanel wxs="wxsmith/wxsNotebookParentQP.wxs" src="wxwidgets/defitems/wxsnotebook.cpp" hdr="wxwidgets/defitems/wxsnotebook.cpp" name="wxsNotebookParentQP" language="CPP" />
+					<wxPanel wxs="wxsmith/wxsChoicebookParentQP.wxs" src="wxwidgets/defitems/wxschoicebook.cpp" hdr="wxwidgets/defitems/wxschoicebook.cpp" name="wxsChoicebookParentQP" language="CPP" />
+					<wxPanel wxs="wxsmith/wxsListbookParentQP.wxs" src="wxwidgets/defitems/wxslistbook.cpp" hdr="wxwidgets/defitems/wxslistbook.cpp" name="wxsListbookParentQP" language="CPP" />
+					<wxPanel wxs="wxsmith/wxsSettings.wxs" src="wxssettings.cpp" hdr="wxssettings.h" name="wxsSettings" language="CPP" />
+				</resources>
 			</wxsmith>
 		</Extensions>
 	</Project>

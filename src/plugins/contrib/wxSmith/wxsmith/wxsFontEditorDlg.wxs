@@ -1,4 +1,4 @@
-<resource>
+<wxsmith>
     <object class="wxDialog" name="wxsFontEditorDlg">
         <title>Advanced font settings</title>
         <style>wxDEFAULT_DIALOG_STYLE</style>
@@ -63,7 +63,7 @@
                                                         <border>5</border>
                                                         <flag>wxALL|wxALIGN_CENTER</flag>
                                                         <object class="wxCheckBox" name="ID_CHECKBOX8" variable="BaseFontUse" member="yes">
-                                                            <label></label>
+                                                            <label />
                                                             <checked>1</checked>
                                                             <handler entry="EVT_CHECKBOX" function="OnBaseFontUseChange" />
                                                             <enabled>0</enabled>
@@ -193,7 +193,7 @@
                                         <flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                                         <object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="yes">
                                             <orient>wxVERTICAL</orient>
-                                            <label></label>
+                                            <label />
                                             <object class="sizeritem">
                                                 <border>5</border>
                                                 <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
@@ -236,7 +236,7 @@
                                         <flag>wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
                                         <object class="wxStaticBoxSizer" variable="StaticBoxSizer4" member="yes">
                                             <orient>wxVERTICAL</orient>
-                                            <label></label>
+                                            <label />
                                             <object class="sizeritem">
                                                 <border>5</border>
                                                 <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
@@ -279,7 +279,7 @@
                                         <flag>wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
                                         <object class="wxStaticBoxSizer" variable="StaticBoxSizer5" member="yes">
                                             <orient>wxVERTICAL</orient>
-                                            <label></label>
+                                            <label />
                                             <object class="sizeritem">
                                                 <border>5</border>
                                                 <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
@@ -416,4 +416,4 @@
             </object>
         </object>
     </object>
-</resource>
+</wxsmith>

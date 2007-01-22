@@ -1,4 +1,4 @@
-<resource>
+<wxsmith>
     <object class="wxPanel" name="wxsSettings">
         <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
             <rows>0</rows>
@@ -257,7 +257,7 @@
                                         <border>5</border>
                                         <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxCheckBox" name="ID_CHECKBOX5" variable="chkExpand" member="yes">
-                                            <label></label>
+                                            <label />
                                         </object>
                                     </object>
                                     <object class="sizeritem">
@@ -273,7 +273,7 @@
                                         <border>5</border>
                                         <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxCheckBox" name="ID_CHECKBOX6" variable="chkShaped" member="yes">
-                                            <label></label>
+                                            <label />
                                         </object>
                                     </object>
                                     <object class="sizeritem">
@@ -341,4 +341,4 @@
             </object>
         </object>
     </object>
-</resource>
+</wxsmith>

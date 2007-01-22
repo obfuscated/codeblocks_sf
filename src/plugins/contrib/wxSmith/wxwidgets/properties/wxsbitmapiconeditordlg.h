@@ -5,7 +5,6 @@
 #include <wx/button.h>
 #include <wx/combobox.h>
 #include <wx/dialog.h>
-#include <wx/intl.h>
 #include <wx/radiobut.h>
 #include <wx/sizer.h>
 #include <wx/statbmp.h>
@@ -24,20 +23,17 @@ class wxsBitmapIconEditorDlg: public wxDialog
 		virtual ~wxsBitmapIconEditorDlg();
 
 		//(*Identifiers(wxsBitmapIconEditorDlg)
-		enum Identifiers
-		{
-		    ID_BUTTON1 = 0x1000,
-		    ID_BUTTON3,
-		    ID_COMBOBOX1,
-		    ID_COMBOBOX2,
-		    ID_RADIOBUTTON1,
-		    ID_RADIOBUTTON2,
-		    ID_RADIOBUTTON3,
-		    ID_STATICBITMAP1,
-		    ID_STATICTEXT1,
-		    ID_STATICTEXT2,
-		    ID_TEXTCTRL1
-		};
+		static const long ID_RADIOBUTTON1;
+		static const long ID_RADIOBUTTON2;
+		static const long ID_TEXTCTRL1;
+		static const long ID_BUTTON3;
+		static const long ID_RADIOBUTTON3;
+		static const long ID_STATICTEXT1;
+		static const long ID_COMBOBOX2;
+		static const long ID_STATICTEXT2;
+		static const long ID_COMBOBOX1;
+		static const long ID_STATICBITMAP1;
+		static const long ID_BUTTON1;
 		//*)
 
 	protected:

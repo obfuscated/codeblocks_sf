@@ -6,8 +6,6 @@
 //(*Headers(wxsSimpleFontEditorDlg)
 #include <wx/button.h>
 #include <wx/dialog.h>
-#include <wx/intl.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/statline.h>
 #include <wx/stattext.h>
@@ -22,18 +20,15 @@ class wxsSimpleFontEditorDlg: public wxDialog
 		virtual ~wxsSimpleFontEditorDlg();
 
 		//(*Identifiers(wxsSimpleFontEditorDlg)
-		enum Identifiers
-		{
-		    ID_STATICTEXT1 = 0x1000,
-		    ID_STATICLINE2,
-		    ID_BUTTON1,
-		    ID_BUTTON3,
-		    ID_STATICLINE1,
-		    ID_BUTTON2,
-		    ID_TEXTCTRL1,
-		    ID_STATICTEXT2,
-		    ID_STATICTEXT3
-		};
+		static const long ID_STATICTEXT1;
+		static const long ID_STATICLINE2;
+		static const long ID_BUTTON1;
+		static const long ID_BUTTON3;
+		static const long ID_STATICLINE1;
+		static const long ID_BUTTON2;
+		static const long ID_TEXTCTRL1;
+		static const long ID_STATICTEXT2;
+		static const long ID_STATICTEXT3;
 		//*)
 
 	private:

@@ -1,4 +1,4 @@
-<resource>
+<wxsmith>
     <object class="wxPanel" name="wxsChoicebookParentQP">
         <style>wxTAB_TRAVERSAL</style>
         <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
@@ -17,7 +17,7 @@
                         <border>5</border>
                         <flag>wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
                         <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="Label" member="yes">
-                            <value></value>
+                            <value />
                             <handler entry="EVT_TEXT_ENTER" function="OnLabelText" />
                         </object>
                     </object>
@@ -43,4 +43,4 @@
             </object>
         </object>
     </object>
-</resource>
+</wxsmith>

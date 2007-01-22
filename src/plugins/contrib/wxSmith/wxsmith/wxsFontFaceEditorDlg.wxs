@@ -1,4 +1,4 @@
-<resource>
+<wxsmith>
     <object class="wxDialog" name="wxsFontFaceEditorDlg">
         <title>Selecting font face</title>
         <centered>1</centered>
@@ -17,7 +17,7 @@
                         <border>3</border>
                         <flag>wxLEFT|wxBOTTOM|wxALIGN_CENTER</flag>
                         <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="FaceName" member="yes">
-                            <value></value>
+                            <value />
                         </object>
                     </object>
                     <object class="sizeritem">
@@ -67,4 +67,4 @@
             </object>
         </object>
     </object>
-</resource>
+</wxsmith>

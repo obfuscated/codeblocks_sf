@@ -26,6 +26,17 @@
 #include <wx/dcmemory.h>
 #include <wx/filedlg.h>
 
+//(*InternalHeaders(wxsBitmapIconEditorDlg)
+#include <wx/artprov.h>
+#include <wx/bitmap.h>
+#include <wx/font.h>
+#include <wx/fontenum.h>
+#include <wx/fontmap.h>
+#include <wx/image.h>
+#include <wx/intl.h>
+#include <wx/settings.h>
+//*)
+
 #define TIMER_DELAY    250
 
 static const wxChar* PredefinedIds[] =
@@ -78,16 +89,22 @@ static const wxChar* PredefinedClients[] =
 };
 
 
+//(*IdInit(wxsBitmapIconEditorDlg)
+const long wxsBitmapIconEditorDlg::ID_RADIOBUTTON1 = wxNewId();
+const long wxsBitmapIconEditorDlg::ID_RADIOBUTTON2 = wxNewId();
+const long wxsBitmapIconEditorDlg::ID_TEXTCTRL1 = wxNewId();
+const long wxsBitmapIconEditorDlg::ID_BUTTON3 = wxNewId();
+const long wxsBitmapIconEditorDlg::ID_RADIOBUTTON3 = wxNewId();
+const long wxsBitmapIconEditorDlg::ID_STATICTEXT1 = wxNewId();
+const long wxsBitmapIconEditorDlg::ID_COMBOBOX2 = wxNewId();
+const long wxsBitmapIconEditorDlg::ID_STATICTEXT2 = wxNewId();
+const long wxsBitmapIconEditorDlg::ID_COMBOBOX1 = wxNewId();
+const long wxsBitmapIconEditorDlg::ID_STATICBITMAP1 = wxNewId();
+const long wxsBitmapIconEditorDlg::ID_BUTTON1 = wxNewId();
+//*)
+
 BEGIN_EVENT_TABLE(wxsBitmapIconEditorDlg,wxDialog)
 	//(*EventTable(wxsBitmapIconEditorDlg)
-	EVT_RADIOBUTTON(ID_RADIOBUTTON1,wxsBitmapIconEditorDlg::OnUpdatePreview)
-	EVT_RADIOBUTTON(ID_RADIOBUTTON2,wxsBitmapIconEditorDlg::OnUpdatePreview)
-	EVT_TEXT(ID_TEXTCTRL1,wxsBitmapIconEditorDlg::OnFileNameText)
-	EVT_BUTTON(ID_BUTTON3,wxsBitmapIconEditorDlg::OnButton3Click)
-	EVT_RADIOBUTTON(ID_RADIOBUTTON3,wxsBitmapIconEditorDlg::OnUpdatePreview)
-	EVT_COMBOBOX(ID_COMBOBOX2,wxsBitmapIconEditorDlg::OnArtIdSelect)
-	EVT_COMBOBOX(ID_COMBOBOX1,wxsBitmapIconEditorDlg::OnArtIdSelect)
-	EVT_BUTTON(ID_BUTTON1,wxsBitmapIconEditorDlg::OnButton1Click)
 	//*)
 	EVT_TIMER(-1,wxsBitmapIconEditorDlg::OnTimer)
 END_EVENT_TABLE()
@@ -98,62 +115,64 @@ wxsBitmapIconEditorDlg::wxsBitmapIconEditorDlg(wxWindow* parent,wxsBitmapIconDat
     Data(_Data)
 {
 	//(*Initialize(wxsBitmapIconEditorDlg)
-	Create(parent,id,_("Image editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX);
+	Create(parent,id,_("Image editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX,_T("id"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Image options"));
 	FlexGridSizer1 = new wxFlexGridSizer(0,1,0,0);
 	FlexGridSizer1->AddGrowableCol(1);
-	NoImage = new wxRadioButton(this,ID_RADIOBUTTON1,_("No image"),wxDefaultPosition,wxDefaultSize,0);
-	NoImage->SetValue(true);
-	ImageFile = new wxRadioButton(this,ID_RADIOBUTTON2,_("Image From File:"),wxDefaultPosition,wxDefaultSize,0);
-	ImageFile->SetValue(false);
-	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	FileName = new wxTextCtrl(this,ID_TEXTCTRL1,_T(""),wxDefaultPosition,wxDefaultSize,0);
-	if ( 0 ) FileName->SetMaxLength(0);
-	Button3 = new wxButton(this,ID_BUTTON3,_("..."),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
-	if (false) Button3->SetDefault();
-	BoxSizer2->Add(20,1,0);
-	BoxSizer2->Add(FileName,1,wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER,5);
-	BoxSizer2->Add(Button3,0,wxRIGHT|wxTOP|wxBOTTOM|wxALIGN_CENTER,5);
-	ImageArt = new wxRadioButton(this,ID_RADIOBUTTON3,_("Image from wxArtProvider:"),wxDefaultPosition,wxDefaultSize,0);
-	ImageArt->SetValue(false);
-	BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-	FlexGridSizer2 = new wxFlexGridSizer(0,2,0,0);
-	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Art Id:"),wxDefaultPosition,wxDefaultSize,0);
-	ArtId = new wxComboBox(this,ID_COMBOBOX2,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,0);
-	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Art Client:"),wxDefaultPosition,wxDefaultSize,0);
-	ArtClient = new wxComboBox(this,ID_COMBOBOX1,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,0);
-	FlexGridSizer2->Add(StaticText1,1,wxLEFT|wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-	FlexGridSizer2->Add(ArtId,1,wxLEFT|wxRIGHT|wxTOP|wxALIGN_CENTER|wxEXPAND,5);
-	FlexGridSizer2->Add(StaticText2,1,wxLEFT|wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-	FlexGridSizer2->Add(ArtClient,1,wxLEFT|wxRIGHT|wxTOP|wxALIGN_CENTER|wxEXPAND,5);
-	BoxSizer4->Add(20,1,0);
-	BoxSizer4->Add(FlexGridSizer2,1,wxALIGN_CENTER,5);
-	FlexGridSizer1->Add(NoImage,1,wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND,5);
-	FlexGridSizer1->Add(1,1,1);
+	NoImage = new wxRadioButton(this,ID_RADIOBUTTON1,_("No image"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON1"));
+	FlexGridSizer1->Add(NoImage,1,wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
+	FlexGridSizer1->Add(1,1,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	ImageFile = new wxRadioButton(this,ID_RADIOBUTTON2,_("Image From File:"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON2"));
 	FlexGridSizer1->Add(ImageFile,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-	FlexGridSizer1->Add(BoxSizer2,1,wxALIGN_CENTER|wxEXPAND,5);
-	FlexGridSizer1->Add(ImageArt,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP,5);
-	FlexGridSizer1->Add(BoxSizer4,1,wxALIGN_CENTER,5);
-	StaticBoxSizer1->Add(FlexGridSizer1,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
+	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
+	BoxSizer2->Add(20,1,0,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	FileName = new wxTextCtrl(this,ID_TEXTCTRL1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL1"));
+	BoxSizer2->Add(FileName,1,wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	Button3 = new wxButton(this,ID_BUTTON3,_("..."),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT,wxDefaultValidator,_T("ID_BUTTON3"));
+	BoxSizer2->Add(Button3,0,wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	FlexGridSizer1->Add(BoxSizer2,1,wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	ImageArt = new wxRadioButton(this,ID_RADIOBUTTON3,_("Image from wxArtProvider:"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON3"));
+	FlexGridSizer1->Add(ImageArt,1,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP,5);
+	BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
+	BoxSizer4->Add(20,1,0,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	FlexGridSizer2 = new wxFlexGridSizer(0,2,0,0);
+	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Art Id:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));
+	FlexGridSizer2->Add(StaticText1,1,wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
+	ArtId = new wxComboBox(this,ID_COMBOBOX2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_T("ID_COMBOBOX2"));
+	FlexGridSizer2->Add(ArtId,1,wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Art Client:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT2"));
+	FlexGridSizer2->Add(StaticText2,1,wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
+	ArtClient = new wxComboBox(this,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_T("ID_COMBOBOX1"));
+	FlexGridSizer2->Add(ArtClient,1,wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BoxSizer4->Add(FlexGridSizer2,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	FlexGridSizer1->Add(BoxSizer4,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	StaticBoxSizer1->Add(FlexGridSizer1,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BoxSizer5->Add(StaticBoxSizer1,0,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Preview"));
-	Preview = new wxStaticBitmap(this,ID_STATICBITMAP1,wxBitmap(),wxDefaultPosition,wxSize(200,200),0);
-	StaticBoxSizer2->Add(Preview,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
-	BoxSizer5->Add(StaticBoxSizer1,0,wxALL|wxALIGN_CENTER|wxEXPAND,5);
-	BoxSizer5->Add(StaticBoxSizer2,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
+	Preview = new wxStaticBitmap(this,ID_STATICBITMAP1,wxNullBitmap,wxDefaultPosition,wxSize(200,200),0,_T("ID_STATICBITMAP1"));
+	StaticBoxSizer2->Add(Preview,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BoxSizer5->Add(StaticBoxSizer2,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BoxSizer1->Add(BoxSizer5,1,wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-	Button1 = new wxButton(this,ID_BUTTON1,_("OK"),wxDefaultPosition,wxDefaultSize,0);
-	if (true) Button1->SetDefault();
-	Button2 = new wxButton(this,wxID_CANCEL,_("Cancel"),wxDefaultPosition,wxDefaultSize,0);
-	if (false) Button2->SetDefault();
-	BoxSizer3->Add(Button1,0,wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER,5);
-	BoxSizer3->Add(Button2,0,wxALL|wxALIGN_CENTER,5);
-	BoxSizer1->Add(BoxSizer5,1,wxALIGN_CENTER|wxEXPAND,5);
-	BoxSizer1->Add(BoxSizer3,0,wxALL|wxALIGN_CENTER,5);
-	this->SetSizer(BoxSizer1);
+	Button1 = new wxButton(this,ID_BUTTON1,_("OK"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON1"));
+	Button1->SetDefault();
+	BoxSizer3->Add(Button1,0,wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	Button2 = new wxButton(this,wxID_CANCEL,_("Cancel"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("wxID_CANCEL"));
+	BoxSizer3->Add(Button2,0,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BoxSizer1->Add(BoxSizer3,0,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
+	Connect(ID_RADIOBUTTON1,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsBitmapIconEditorDlg::OnUpdatePreview);
+	Connect(ID_RADIOBUTTON2,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsBitmapIconEditorDlg::OnUpdatePreview);
+	Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsBitmapIconEditorDlg::OnFileNameText);
+	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsBitmapIconEditorDlg::OnButton3Click);
+	Connect(ID_RADIOBUTTON3,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsBitmapIconEditorDlg::OnUpdatePreview);
+	Connect(ID_COMBOBOX2,wxEVT_COMMAND_COMBOBOX_SELECTED,(wxObjectEventFunction)&wxsBitmapIconEditorDlg::OnArtIdSelect);
+	Connect(ID_COMBOBOX1,wxEVT_COMMAND_COMBOBOX_SELECTED,(wxObjectEventFunction)&wxsBitmapIconEditorDlg::OnArtIdSelect);
+	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsBitmapIconEditorDlg::OnButton1Click);
 	//*)
 
 	for ( const wxChar** Ptr = PredefinedIds; *Ptr; Ptr++ )

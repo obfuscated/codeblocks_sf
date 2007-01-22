@@ -1,4 +1,4 @@
-<resource>
+<wxsmith>
     <object class="wxPanel" name="wxsSizerParentQP">
         <style>wxTAB_TRAVERSAL</style>
         <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
@@ -43,7 +43,7 @@
                                         <border>5</border>
                                         <flag>wxALIGN_CENTER</flag>
                                         <object class="wxCheckBox" name="ID_CHECKBOX1" variable="BrdTop" member="yes">
-                                            <label></label>
+                                            <label />
                                             <handler entry="EVT_CHECKBOX" function="OnBrdChange" />
                                         </object>
                                     </object>
@@ -58,7 +58,7 @@
                                         <border>5</border>
                                         <flag>wxALIGN_CENTER</flag>
                                         <object class="wxCheckBox" name="ID_CHECKBOX2" variable="BrdLeft" member="yes">
-                                            <label></label>
+                                            <label />
                                             <handler entry="EVT_CHECKBOX" function="OnBrdChange" />
                                         </object>
                                     </object>
@@ -73,7 +73,7 @@
                                         <border>5</border>
                                         <flag>wxALIGN_CENTER</flag>
                                         <object class="wxCheckBox" name="ID_CHECKBOX3" variable="BrdRight" member="yes">
-                                            <label></label>
+                                            <label />
                                             <handler entry="EVT_CHECKBOX" function="OnBrdChange" />
                                         </object>
                                     </object>
@@ -88,7 +88,7 @@
                                         <border>5</border>
                                         <flag>wxALIGN_CENTER</flag>
                                         <object class="wxCheckBox" name="ID_CHECKBOX4" variable="BrdBottom" member="yes">
-                                            <label></label>
+                                            <label />
                                             <handler entry="EVT_CHECKBOX" function="OnBrdChange" />
                                         </object>
                                     </object>
@@ -145,7 +145,7 @@
                                         <border>5</border>
                                         <flag>wxALIGN_CENTER</flag>
                                         <object class="wxRadioButton" name="ID_RADIOBUTTON4" variable="PlaceLT" member="yes">
-                                            <label></label>
+                                            <label />
                                             <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
                                         </object>
                                     </object>
@@ -154,7 +154,7 @@
                                         <border>5</border>
                                         <flag>wxALIGN_CENTER</flag>
                                         <object class="wxRadioButton" name="ID_RADIOBUTTON5" variable="PlaceCT" member="yes">
-                                            <label></label>
+                                            <label />
                                             <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
                                         </object>
                                     </object>
@@ -163,7 +163,7 @@
                                         <border>5</border>
                                         <flag>wxALIGN_CENTER</flag>
                                         <object class="wxRadioButton" name="ID_RADIOBUTTON6" variable="PlaceRT" member="yes">
-                                            <label></label>
+                                            <label />
                                             <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
                                         </object>
                                     </object>
@@ -172,7 +172,7 @@
                                         <border>5</border>
                                         <flag>wxALIGN_CENTER</flag>
                                         <object class="wxRadioButton" name="ID_RADIOBUTTON7" variable="PlaceLC" member="yes">
-                                            <label></label>
+                                            <label />
                                             <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
                                         </object>
                                     </object>
@@ -181,7 +181,7 @@
                                         <border>5</border>
                                         <flag>wxALIGN_CENTER</flag>
                                         <object class="wxRadioButton" name="ID_RADIOBUTTON8" variable="PlaceCC" member="yes">
-                                            <label></label>
+                                            <label />
                                             <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
                                         </object>
                                     </object>
@@ -190,7 +190,7 @@
                                         <border>5</border>
                                         <flag>wxALIGN_CENTER</flag>
                                         <object class="wxRadioButton" name="ID_RADIOBUTTON9" variable="PlaceRC" member="yes">
-                                            <label></label>
+                                            <label />
                                             <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
                                         </object>
                                     </object>
@@ -199,7 +199,7 @@
                                         <border>5</border>
                                         <flag>wxALIGN_CENTER</flag>
                                         <object class="wxRadioButton" name="ID_RADIOBUTTON10" variable="PlaceLB" member="yes">
-                                            <label></label>
+                                            <label />
                                             <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
                                         </object>
                                     </object>
@@ -208,7 +208,7 @@
                                         <border>5</border>
                                         <flag>wxALIGN_CENTER</flag>
                                         <object class="wxRadioButton" name="ID_RADIOBUTTON11" variable="PlaceCB" member="yes">
-                                            <label></label>
+                                            <label />
                                             <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
                                         </object>
                                     </object>
@@ -217,7 +217,7 @@
                                         <border>5</border>
                                         <flag>wxALIGN_CENTER</flag>
                                         <object class="wxRadioButton" name="ID_RADIOBUTTON12" variable="PlaceRB" member="yes">
-                                            <label></label>
+                                            <label />
                                             <handler entry="EVT_RADIOBUTTON" function="OnPlaceChange" />
                                         </object>
                                     </object>
@@ -273,4 +273,4 @@
             </object>
         </object>
     </object>
-</resource>
+</wxsmith>

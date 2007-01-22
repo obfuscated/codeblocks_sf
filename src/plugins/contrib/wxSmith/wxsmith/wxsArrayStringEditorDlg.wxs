@@ -1,4 +1,4 @@
-<resource>
+<wxsmith>
     <object class="wxDialog" name="wxsArrayStringEditorDlg">
         <title>Edit items</title>
         <style>wxDEFAULT_DIALOG_STYLE</style>
@@ -16,7 +16,7 @@
                         <border>2</border>
                         <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER</flag>
                         <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="Items" member="yes">
-                            <value></value>
+                            <value />
                             <size>350,200</size>
                             <style>wxTE_MULTILINE</style>
                         </object>
@@ -51,4 +51,4 @@
             </object>
         </object>
     </object>
-</resource>
+</wxsmith>

@@ -1,4 +1,4 @@
-<resource>
+<wxsmith>
     <object class="wxDialog" name="wxsBitmapIconEditorDlg">
         <title>Image editor</title>
         <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
@@ -67,7 +67,7 @@
                                                 <border>5</border>
                                                 <flag>wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER</flag>
                                                 <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="FileName" member="yes">
-                                                    <value></value>
+                                                    <value />
                                                     <handler entry="EVT_TEXT" function="OnFileNameText" />
                                                 </object>
                                             </object>
@@ -163,7 +163,7 @@
                                 <border>5</border>
                                 <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
                                 <object class="wxStaticBitmap" name="ID_STATICBITMAP1" variable="Preview" member="yes">
-                                    <bitmap></bitmap>
+                                    <bitmap />
                                     <size>200,200</size>
                                 </object>
                             </object>
@@ -196,4 +196,4 @@
             </object>
         </object>
     </object>
-</resource>
+</wxsmith>

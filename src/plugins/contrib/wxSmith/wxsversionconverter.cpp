@@ -208,56 +208,168 @@ void wxsVersionConverter::AdoptOldSourceFile(const wxString& FileName,const wxSt
     // cause some problems with future conversion of these marks
     // (upgrade of old-wxSmith project will be done in two steps then,
     // first - convertion to version 1 of new wxsmith and then upgrading to
-    // higher version so if convention of code marks wil lchange, it will
+    // higher version so if convention of code marks will change, it will
     // break the conversion chain)
 
-    wxString Content = wxsCoder::Get()->GetFullCode(FileName);
-    int Pos = 0;
-    while ( Pos<(int)Content.Len() && LineContainDirectivesOnly(Content,Pos) );
+    bool IsInternalHeaders = wxsCoder::Get()->GetCode(
+        FileName,
+        _T("//(*InternalHeaders(") + Class + _T(")\n"),
+        _T("//*)"),
+        true,true).Length() != 0;
 
-    wxString AddInternalHeaders =
-        _T("//(*InternalHeaders(") + Class + _T(")\n")
-        _T("//*)\n")
-        _T("\n");
+    bool IsIdInit = wxsCoder::Get()->GetCode(
+        FileName,
+        _T("//(*IdInit(") + Class + _T(")\n"),
+        _T("//*)"),
+        true,true).Length() != 0;
 
-    Content = Content.Mid(0,Pos) + AddInternalHeaders + Content.Mid(Pos);
-
-    int NewPos = Content.Find(_T("BEGIN_EVENT_TABLE(")+Class);
-    if ( NewPos==wxNOT_FOUND )
+    if ( !IsInternalHeaders || !IsIdInit )
     {
-        // Trying some risky but maybe enough solution - add
-        // IdInit section right after includes (this will fail only
-        // in case of using namespace around resource class
-        NewPos = Pos + AddInternalHeaders.Len();
+
+        wxString Content = wxsCoder::Get()->GetFullCode(FileName);
+
+        int Pos = 0;
+        if ( !IsInternalHeaders )
+        {
+            while ( Pos<(int)Content.Len() && LineContainDirectivesOnly(Content,Pos) );
+
+            wxString AddInternalHeaders =
+                _T("//(*InternalHeaders(") + Class + _T(")\n")
+                _T("//*)\n")
+                _T("\n");
+
+            Content = Content.Mid(0,Pos) + AddInternalHeaders + Content.Mid(Pos);
+        }
+        else
+        {
+            Pos = Content.Find(_T("//(*InternalHeaders(") + Class + _T(")\n"));
+            int Shift = Content.Mid(Pos).Find(_T("//*)"));
+            if ( Shift != wxNOT_FOUND )
+            {
+                Pos += Shift;
+            }
+        }
+
+        if ( !IsIdInit )
+        {
+            int NewPos = Content.Find(_T("BEGIN_EVENT_TABLE(")+Class);
+            if ( NewPos!=wxNOT_FOUND )
+            {
+                Pos = NewPos;
+            }
+
+            // Switching to first character in this line
+            wxString Indent;
+            while ( Pos>0 &&
+                    Content.GetChar(Pos-1)!=_T('\n') &&
+                    Content.GetChar(Pos-1)!=_T('\r') )
+            {
+                wxChar Ch = Content.GetChar(Pos--);
+                Indent.Append((Ch==_T('\t'))?_T('\t'):_T(' '));
+            }
+
+            wxString AddIdInit =
+                Indent + _T("//(*IdInit(") + Class + _T(")\n") +
+                Indent + _T("//*)\n") +
+                Indent + _T("\n");
+
+            Content = Content.Mid(0,Pos) + AddIdInit + Content.Mid(Pos);
+        }
+        wxsCoder::Get()->PutFullCode(FileName,Content);
     }
-
-    // Switching to first character in this line
-    wxString Indent;
-    while ( NewPos>0 &&
-            Content.GetChar(NewPos-1)!=_T('\n') &&
-            Content.GetChar(NewPos-1)!=_T('\r') )
-    {
-        wxChar Ch = Content.GetChar(NewPos--);
-        Indent.Append((Ch==_T('\t'))?_T('\t'):_T(' '));
-    }
-
-    wxString AddIdInit =
-        Indent + _T("//(*IdInit(") + Class + _T(")\n") +
-        Indent + _T("//*)\n") +
-        Indent + _T("\n");
-
-    Content = Content.Mid(0,NewPos) + AddIdInit + Content.Mid(NewPos);
-
-    wxsCoder::Get()->PutFullCode(FileName,Content);
 }
 
 bool wxsVersionConverter::LineContainDirectivesOnly(const wxString& Code,int& BeginPos) const
 {
     int Pos = BeginPos;
+
+    wxChar PreviousChar = _T('\0');
+
+    // Processing characters in this line
     while ( Pos < (int)Code.Len() )
     {
         wxChar Ch = Code.GetChar(Pos);
-        if ( Ch!=_T(' ') && Ch!=_T('\t') ) break;
+        if ( Ch==_T('/') && PreviousChar==_T('/') )
+        {
+            // We got // comment, skipping till the end of line
+            while ( ++Pos < (int)Code.Len() )
+            {
+                PreviousChar = Ch;
+                wxChar Ch = Code.GetChar(Pos);
+                if ( Ch==_T('\n') || Ch==_T('\r') )
+                {
+                    if ( PreviousChar == _T('\\') )
+                    {
+                        // Backslash removes EOL
+                        if ( ++Pos < (int)Code.Len() )
+                        {
+                            PreviousChar = Ch;
+                            Ch = Code.GetChar(Pos);
+                            if ( (Ch!=_T('\n') && Ch==_T('\r')) || (Ch==PreviousChar) )
+                            {
+                                // One-char EOL
+                                --Pos;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // End-Of-Line and End-Of-Comment
+                        while ( Pos<(int)Code.Len() )
+                        {
+                            wxChar Ch = Code.GetChar(Pos);
+                            if ( Ch!=_T('\n') && Ch!=_T('\r') ) break;
+                            Pos++;
+                        }
+
+                        BeginPos = Pos;
+                        return true;
+                    }
+                }
+            }
+            // End of file approached
+            BeginPos = Pos;
+            return false;
+        }
+        else if ( Ch==_T('*') && PreviousChar==_T('/') )
+        {
+            // Starting multiline comment, we skip everything till */ sequence
+            while ( ++Pos < (int)Code.Len() )
+            {
+                PreviousChar = Ch;
+                wxChar Ch = Code.GetChar(Pos);
+
+                if ( Ch==_T('/') && PreviousChar==_T('*') )
+                {
+                    // End of comment, breaking
+                    break;
+                }
+            }
+
+            if ( Pos >= (int)Code.Len() )
+            {
+                // Jumping out to skip another Pos++
+                break;
+            }
+        }
+        else if ( PreviousChar==_T('/') )
+        {
+            // Previous char was not comment beginning
+            // need to rewind to it and jump out
+            Pos--;
+            break;
+        }
+        else if ( Ch!=_T(' ') && Ch!=_T('\t') )
+        {
+            if ( Ch!=_T('/') )
+            {
+                // No white char, jumping out to find out what's this
+                break;
+            }
+            // If it's '/', it may be a start
+            // of comment, we give it a try
+        }
+        PreviousChar = Ch;
         Pos++;
     }
 
@@ -266,17 +378,82 @@ bool wxsVersionConverter::LineContainDirectivesOnly(const wxString& Code,int& Be
         wxChar Ch = Code.GetChar(Pos);
         if ( (Ch!=_T('\n')) && (Ch!=_T('\r')) )
         {
+            // This is no directive, jumping out of function
             if ( Ch != _T('#') ) return false;
         }
     }
 
+    // Searching for EOL
+    bool BlockMultilineComment = false;
     while ( Pos<(int)Code.Len() )
     {
         wxChar Ch = Code.GetChar(Pos);
-        if ( Ch==_T('\n') || Ch==_T('\r') ) break;
+
+        if ( Ch==_T('\n') || Ch==_T('\r') )
+        {
+            if ( PreviousChar == _T('\\') )
+            {
+                // Backslash removes EOL
+                if ( ++Pos >= (int)Code.Len() )
+                {
+                    // EOF reached
+                    BeginPos = Pos;
+                    return false;
+                }
+                PreviousChar = Ch;
+                Ch = Code.GetChar(Pos);
+                if ( (Ch!=_T('\n') && Ch!=_T('\r')) || (Ch==PreviousChar) )
+                {
+                    // One-character EOL
+                    Pos--;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+        else if ( Ch==_T('/') && PreviousChar==_T('/') )
+        {
+            // Have to block any multiline comment in this line
+            BlockMultilineComment = true;
+        }
+        else if ( Ch==_T('*') && PreviousChar==_T('/') && !BlockMultilineComment )
+        {
+            // Searching for end of comment and return there
+            bool WasAnyNL = false;
+            while ( ++Pos<(int)Code.Len() )
+            {
+                PreviousChar = Ch;
+                Ch = Code.GetChar(Pos);
+                if ( Ch==_T('/') && PreviousChar==_T('*') )
+                {
+                    // Comment has been finished
+                    if ( WasAnyNL )
+                    {
+                        // If there was any NL in comment, this mean that
+                        // we can start scanning new line here so we return
+                        // with true
+                        BeginPos = ++Pos;
+                        return true;
+                    }
+                    else
+                    {
+                        // There was no NL in comment, we're still inside directive
+                        break;
+                    }
+                }
+                else if ( Ch==_T('\n') || Ch==_T('\r') )
+                {
+                    WasAnyNL = true;
+                }
+            }
+        }
+        PreviousChar = Ch;
         Pos++;
     }
 
+    // Skipping all NL chars left
     while ( Pos<(int)Code.Len() )
     {
         wxChar Ch = Code.GetChar(Pos);

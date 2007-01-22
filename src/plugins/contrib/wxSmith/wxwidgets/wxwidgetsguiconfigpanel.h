@@ -5,9 +5,7 @@
 #include <wx/button.h>
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
-#include <wx/intl.h>
 #include <wx/panel.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -24,17 +22,14 @@ class wxWidgetsGUIConfigPanel: public cbConfigurationPanel
 		virtual ~wxWidgetsGUIConfigPanel();
 
 		//(*Identifiers(wxWidgetsGUIConfigPanel)
-		enum Identifiers
-		{
-		    ID_STATICTEXT1 = 0x1000,
-		    ID_TEXTCTRL1,
-		    ID_BUTTON1,
-		    ID_BUTTON2,
-		    ID_COMBOBOX1,
-		    ID_STATICTEXT2,
-		    ID_CHECKBOX2,
-		    ID_CHECKBOX1
-		};
+		static const long ID_STATICTEXT1;
+		static const long ID_TEXTCTRL1;
+		static const long ID_BUTTON1;
+		static const long ID_BUTTON2;
+		static const long ID_COMBOBOX1;
+		static const long ID_STATICTEXT2;
+		static const long ID_CHECKBOX2;
+		static const long ID_CHECKBOX1;
 		//*)
 
 	private:

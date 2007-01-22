@@ -24,10 +24,23 @@
 #include "wxsfontfaceeditordlg.h"
 #include <wx/fontdlg.h>
 
+//(*InternalHeaders(wxsFontFaceEditorDlg)
+#include <wx/bitmap.h>
+#include <wx/font.h>
+#include <wx/fontenum.h>
+#include <wx/fontmap.h>
+#include <wx/image.h>
+#include <wx/intl.h>
+#include <wx/settings.h>
+//*)
+
+//(*IdInit(wxsFontFaceEditorDlg)
+const long wxsFontFaceEditorDlg::ID_TEXTCTRL1 = wxNewId();
+const long wxsFontFaceEditorDlg::ID_BUTTON1 = wxNewId();
+//*)
+
 BEGIN_EVENT_TABLE(wxsFontFaceEditorDlg,wxDialog)
 	//(*EventTable(wxsFontFaceEditorDlg)
-	EVT_BUTTON(ID_BUTTON1,wxsFontFaceEditorDlg::OnButton1Click)
-	EVT_BUTTON(wxID_OK,wxsFontFaceEditorDlg::OnButton2Click)
 	//*)
 END_EVENT_TABLE()
 
@@ -35,30 +48,29 @@ wxsFontFaceEditorDlg::wxsFontFaceEditorDlg(wxWindow* parent,wxString& _Face,wxWi
     Face(_Face)
 {
 	//(*Initialize(wxsFontFaceEditorDlg)
-	Create(parent,id,_("Selecting font face"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE);
+	Create(parent,id,_("Selecting font face"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("id"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Face name"));
-	FaceName = new wxTextCtrl(this,ID_TEXTCTRL1,_T(""),wxDefaultPosition,wxDefaultSize,0);
-	if ( 0 ) FaceName->SetMaxLength(0);
-	Button1 = new wxButton(this,ID_BUTTON1,_("Pick"),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
-	if (false) Button1->SetDefault();
-	StaticBoxSizer1->Add(FaceName,1,wxLEFT|wxBOTTOM|wxALIGN_CENTER,3);
-	StaticBoxSizer1->Add(Button1,0,wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,3);
+	FaceName = new wxTextCtrl(this,ID_TEXTCTRL1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL1"));
+	StaticBoxSizer1->Add(FaceName,1,wxBOTTOM|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,3);
+	Button1 = new wxButton(this,ID_BUTTON1,_("Pick"),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT,wxDefaultValidator,_T("ID_BUTTON1"));
+	StaticBoxSizer1->Add(Button1,0,wxBOTTOM|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,3);
+	BoxSizer1->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	Button2 = new wxButton(this,wxID_OK,_("OK"),wxDefaultPosition,wxDefaultSize,0);
-	if (true) Button2->SetDefault();
-	Button3 = new wxButton(this,wxID_CANCEL,_("Cancel"),wxDefaultPosition,wxDefaultSize,0);
-	if (false) Button3->SetDefault();
-	BoxSizer2->Add(60,1,1);
-	BoxSizer2->Add(Button2,0,wxALL|wxALIGN_CENTER,5);
-	BoxSizer2->Add(Button3,0,wxRIGHT|wxTOP|wxBOTTOM|wxALIGN_CENTER,5);
-	BoxSizer2->Add(-1,-1,1);
-	BoxSizer1->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND,5);
-	BoxSizer1->Add(BoxSizer2,0,wxLEFT|wxRIGHT|wxALIGN_CENTER,5);
-	this->SetSizer(BoxSizer1);
+	BoxSizer2->Add(60,1,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	Button2 = new wxButton(this,wxID_OK,_("OK"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("wxID_OK"));
+	Button2->SetDefault();
+	BoxSizer2->Add(Button2,0,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	Button3 = new wxButton(this,wxID_CANCEL,_("Cancel"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("wxID_CANCEL"));
+	BoxSizer2->Add(Button3,0,wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BoxSizer2->Add(-1,-1,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BoxSizer1->Add(BoxSizer2,0,wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
-	Center();
+	Centre();
+	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsFontFaceEditorDlg::OnButton1Click);
+	Connect(wxID_OK,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsFontFaceEditorDlg::OnButton2Click);
 	//*)
 	FaceName->SetValue(Face);
 }

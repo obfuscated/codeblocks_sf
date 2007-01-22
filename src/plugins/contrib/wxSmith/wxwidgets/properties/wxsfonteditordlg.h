@@ -9,10 +9,8 @@
 #include <wx/choice.h>
 #include <wx/combobox.h>
 #include <wx/dialog.h>
-#include <wx/intl.h>
 #include <wx/listbox.h>
 #include <wx/radiobut.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
@@ -27,39 +25,36 @@ class wxsFontEditorDlg: public wxDialog
 		virtual ~wxsFontEditorDlg();
 
 		//(*Identifiers(wxsFontEditorDlg)
-		enum Identifiers
-		{
-		    ID_CHOICE1 = 0x1000,
-		    ID_CHECKBOX8,
-		    ID_STATICTEXT1,
-		    ID_CHOICE2,
-		    ID_CHECKBOX2,
-		    ID_COMBOBOX1,
-		    ID_CHECKBOX1,
-		    ID_CHOICE3,
-		    ID_CHECKBOX7,
-		    ID_SPINCTRL1,
-		    ID_CHECKBOX6,
-		    ID_TEXTCTRL1,
-		    ID_CHECKBOX3,
-		    ID_RADIOBUTTON1,
-		    ID_RADIOBUTTON2,
-		    ID_RADIOBUTTON3,
-		    ID_CHECKBOX4,
-		    ID_RADIOBUTTON4,
-		    ID_RADIOBUTTON5,
-		    ID_RADIOBUTTON6,
-		    ID_CHECKBOX5,
-		    ID_RADIOBUTTON7,
-		    ID_RADIOBUTTON8,
-		    ID_LISTBOX1,
-		    ID_BUTTON4,
-		    ID_BUTTON5,
-		    ID_BUTTON6,
-		    ID_BUTTON8,
-		    ID_BUTTON7,
-		    ID_TEXTCTRL2
-		};
+		static const long ID_CHOICE1;
+		static const long ID_CHECKBOX8;
+		static const long ID_STATICTEXT1;
+		static const long ID_CHOICE2;
+		static const long ID_CHECKBOX2;
+		static const long ID_COMBOBOX1;
+		static const long ID_CHECKBOX1;
+		static const long ID_CHOICE3;
+		static const long ID_CHECKBOX7;
+		static const long ID_SPINCTRL1;
+		static const long ID_CHECKBOX6;
+		static const long ID_TEXTCTRL1;
+		static const long ID_CHECKBOX3;
+		static const long ID_RADIOBUTTON1;
+		static const long ID_RADIOBUTTON2;
+		static const long ID_RADIOBUTTON3;
+		static const long ID_CHECKBOX4;
+		static const long ID_RADIOBUTTON4;
+		static const long ID_RADIOBUTTON5;
+		static const long ID_RADIOBUTTON6;
+		static const long ID_CHECKBOX5;
+		static const long ID_RADIOBUTTON7;
+		static const long ID_RADIOBUTTON8;
+		static const long ID_LISTBOX1;
+		static const long ID_BUTTON4;
+		static const long ID_BUTTON5;
+		static const long ID_BUTTON6;
+		static const long ID_BUTTON8;
+		static const long ID_BUTTON7;
+		static const long ID_TEXTCTRL2;
 		//*)
 
 	protected:

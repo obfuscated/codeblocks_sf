@@ -1,4 +1,4 @@
-<resource>
+<wxsmith>
     <object class="wxPanel" name="wxWidgetsGUIConfigPanel">
         <object class="wxBoxSizer" variable="BoxSizer1" member="yes">
             <orient>wxVERTICAL</orient>
@@ -28,7 +28,7 @@
                                 <border>5</border>
                                 <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_CENTER|wxEXPAND</flag>
                                 <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="AutoLoad" member="yes">
-                                    <value></value>
+                                    <value />
                                     <size>218,102</size>
                                     <style>wxTE_MULTILINE</style>
                                 </object>
@@ -144,4 +144,4 @@
             </object>
         </object>
     </object>
-</resource>
+</wxsmith>
