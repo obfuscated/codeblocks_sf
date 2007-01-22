@@ -76,7 +76,8 @@ void wxWidgetsGUI::OnRebuildApplicationCode()
     wxString NewCode;
     switch ( m_AppLanguage )
     {
-        case wxsCPP: NewCode = _T("\nbool wxsOK = true;\n"); break;
+        case wxsCPP: NewCode = _T("\nbool wxsOK = true;\n")
+                               _T("wxInitAllImageHandlers();\n"); break;
         default:;
     }
 
@@ -153,6 +154,12 @@ void wxWidgetsGUI::OnRebuildApplicationCode()
             case wxsCPP: NewCode.Append(_T("#include <wx/xrc/xmlres.h>\n")); break;
             default:;
         }
+    }
+
+    switch ( m_AppLanguage )
+    {
+        case wxsCPP: NewCode.Append(_T("#include <wx/image.h>\n")); break;
+        default:;
     }
 
     wxsCoder::Get()->AddCode(
