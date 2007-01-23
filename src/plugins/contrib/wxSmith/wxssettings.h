@@ -1,6 +1,7 @@
 #ifndef WXSSETTINGS_H
 #define WXSSETTINGS_H
 
+#include <wx/intl.h>
 #include <configurationpanel.h>
 
 //(*Headers(wxsSettings)
