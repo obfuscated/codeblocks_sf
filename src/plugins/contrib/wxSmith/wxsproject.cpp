@@ -82,8 +82,10 @@ void wxsProject::ReadConfiguration(TiXmlElement* element)
         SmithNode = wxsVersionConverter::Get().ConvertFromOldConfig(SmithNode,&TempDoc,this);
         if ( !SmithNode )
         {
-            // TODO: Some info about conversion failure
-            //       and store full node for later save
+            for ( TiXmlNode* Node = SmithNode->FirstChild(); Node; Node=Node->NextSibling() )
+            {
+                m_UnknownConfig.InsertEndChild(*Node);
+            }
             return;
         }
         else
@@ -175,9 +177,9 @@ void wxsProject::ReadConfiguration(TiXmlElement* element)
 
 void wxsProject::WriteConfiguration(TiXmlElement* element)
 {
-    if ( !m_GUI && m_Resources.empty() )
+    if ( !m_GUI && m_Resources.empty() && m_UnknownConfig.NoChildren() && m_UnknownResources.NoChildren() )
     {
-        // Ths project does not use wxSmith at all - we do not store anything
+        // Nothing to write
         return;
     }
 
@@ -193,7 +195,7 @@ void wxsProject::WriteConfiguration(TiXmlElement* element)
     }
 
     // saving resources
-    if ( !m_Resources.empty() )
+    if ( !m_Resources.empty() || !m_UnknownResources.NoChildren() )
     {
         TiXmlElement* ResElement = SmithElement->InsertEndChild(TiXmlElement("resources"))->ToElement();
         size_t Count = m_Resources.Count();
