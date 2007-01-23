@@ -45,14 +45,42 @@ struct wxsEventDesc
 
 /** \brief Beginning new  category */
 #define WXS_EV_CATEGORY(name)                                       \
-    { wxsEventDesc::Category, _T(#name), _T(""), _T(""), _T("") },
+    { wxsEventDesc::Category, name, _T(""), _T(""), _T("") },
 
 /** \brief Ending creation of list */
 #define WXS_EV_END()                                                \
     { wxsEventDesc::EndOfList, _T(""), _T(""), _T(""), _T("") } };
 
 /** \brief Adding all default events */
-#define WXS_EV_DEFAULTS()                                           \
+#define WXS_EV_DEFAULTS()                                                               \
+                                                                                        \
+    WXS_EV_CATEGORY(_("Paint events"))                                                  \
+    WXS_EV(EVT_PAINT,wxEVT_PAINT,wxPaintEvent,Paint)                                    \
+    WXS_EV(EVT_ERASE_BACKGROUND,wxEVT_ERASE_BACKGROUND,wxEraseEvent,EraseBackground)    \
+                                                                                        \
+    WXS_EV_CATEGORY(_("Keyboard events"))                                               \
+    WXS_EV(EVT_KEY_DOWN,wxEVT_KEY_DOWN,wxKeyEvent,KeyDown)                              \
+    WXS_EV(EVT_KEY_UP,wxEVT_KEY_UP,wxKeyEvent,KeyUp)                                    \
+    WXS_EV(EVT_CHAR,wxEVT_CHAR,wxKeyEvent,Char)                                         \
+    WXS_EV(EVT_SET_FOCUS,wxEVT_SET_FOCUS,wxFocusEvent,SetFocus)                         \
+    WXS_EV(EVT_KILL_FOCUS,wxEVT_KILL_FOCUS,wxFocusEvent,KillFocus)                      \
+                                                                                        \
+    WXS_EV_CATEGORY(_T("Mouse events"))                                                 \
+    WXS_EV(EVT_LEFT_DOWN,wxEVT_LEFT_DOWN,wxMouseEvent,LeftDown)                         \
+    WXS_EV(EVT_LEFT_UP,wxEVT_LEFT_UP,wxMouseEvent,LeftUp)                               \
+    WXS_EV(EVT_LEFT_DCLICK,wxEVT_LEFT_DCLICK,wxMouseEvent,LeftDClick)                   \
+    WXS_EV(EVT_MIDDLE_DOWN,wxEVT_MIDDLE_DOWN,wxMouseEvent,MiddleDown)                   \
+    WXS_EV(EVT_MIDDLE_UP,wxEVT_MIDDLE_UP,wxMouseEvent,MiddleUp)                         \
+    WXS_EV(EVT_MIDDLE_DCLICK,wxEVT_MIDDLE_DCLICK,wxMouseEvent,MiddleDClick)             \
+    WXS_EV(EVT_RIGHT_DOWN,wxEVT_RIGHT_DOWN,wxMouseEvent,RightDown)                      \
+    WXS_EV(EVT_RIGHT_UP,wxEVT_RIGHT_UP,wxMouseEvent,RightUp)                            \
+    WXS_EV(EVT_RIGHT_DCLICK,wxEVT_RIGHT_DCLICK,wxMouseEvent,RightDClick)                \
+    WXS_EV(EVT_MOTION,wxEVT_MOTION,wxMouseEvent,MouseMove)                              \
+    WXS_EV(EVT_ENTER_WINDOW,wxEVT_ENTER_WINDOW,wxMouseEvent,MouseEnter)                 \
+    WXS_EV(EVT_LEAVE_WINDOW,wxEVT_LEAVE_WINDOW,wxMouseEvent,MouseLeave)                 \
+    WXS_EV(EVT_MOUSEWHEEL,wxEVT_MOUSEWHEEL,wxMouseEvent,MouseWheel)                     \
+    WXS_EV(EVT_SET_CURSOR,wxEVT_SET_CURSOR,wxSetCursorEvent,SetCursor)                  \
+
 
 /** \brief Class managing events used by item
  *

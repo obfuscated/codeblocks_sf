@@ -70,7 +70,7 @@ void wxsEvents::XmlLoadFunctions(TiXmlElement* Element)
     	    wxString Name = cbC2U(EntryName);
     	    for ( int i=0; i<m_Count; i++ )
     	    {
-    	        if ( m_EventArray[i].Entry == Name )
+    	        if ( (m_EventArray[i].Entry == Name) && (m_EventArray[i].ET != wxsEventDesc::Category) )
     	        {
     	            m_Functions[i] = cbC2U(FunctionName);
     	            break;
@@ -83,7 +83,7 @@ void wxsEvents::XmlLoadFunctions(TiXmlElement* Element)
     	    wxString Name = cbC2U(TypeName);
     	    for ( int i=0; i<m_Count; i++ )
     	    {
-    	        if ( m_EventArray[i].Type == Name )
+    	        if ( (m_EventArray[i].Type == Name) && (m_EventArray[i].ET != wxsEventDesc::Category) )
     	        {
     	            m_Functions[i] = cbC2U(FunctionName);
     	        }
@@ -96,7 +96,7 @@ void wxsEvents::XmlSaveFunctions(TiXmlElement* Element)
 {
     for ( int i=0; i<m_Count; i++ )
     {
-    	if ( !m_Functions[i].empty() )
+    	if ( !m_Functions[i].empty() && (m_EventArray[i].ET != wxsEventDesc::Category) )
     	{
     		TiXmlElement* Handler = Element->InsertEndChild( TiXmlElement(HandlerXmlElementName) ) -> ToElement();
     		Handler->SetAttribute(HandlerXmlFunctionName,cbU2C(m_Functions[i]));

@@ -89,6 +89,9 @@ void wxsEventsEditor::BuildEvents(wxsItem* Item,wxsPropertyGridManager* Grid)
 		const wxsEventDesc* Event = m_Events->GetDesc(i);
 		const wxString& FunctionName = m_Events->GetHandler(i);
 
+        // TODO: Create new group
+		if ( Event->ET == wxsEventDesc::Category ) continue;
+
 		wxArrayString Functions;
 		FindFunctions(Event->ArgType,Functions);
 
