@@ -39,6 +39,9 @@ class wxsProject
         /** \brief Displaying configuration dialog */
         void Configure();
 
+        /** \brief Creating extra configuration panel in project options */
+        cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent);
+
         /** \brief Function returning main project path */
         wxString GetProjectPath();
 

@@ -285,6 +285,18 @@ void wxsProject::Configure()
     }
 }
 
+cbConfigurationPanel* wxsProject::GetProjectConfigurationPanel(wxWindow* parent)
+{
+    if ( m_GUI )
+    {
+        if ( m_GUI->CheckIfApplicationManaged() )
+        {
+            return m_GUI->BuildConfigurationPanel(parent);
+        }
+    }
+    return NULL;
+}
+
 wxString wxsProject::GetProjectPath()
 {
     return m_ProjectPath;

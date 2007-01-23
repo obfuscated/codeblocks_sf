@@ -53,6 +53,9 @@ class wxSmith : public cbPlugin
         /** \brief Creating configuration panel */
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 
+        /** \brief Generating extra configuration panel inside project options */
+        virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
+
         /** \brief This funciton will add enteries into menu */
 		void BuildMenu(wxMenuBar* menuBar);
 

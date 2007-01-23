@@ -95,20 +95,6 @@ void wxSmith::OnAttach()
     ProjectLoaderHooks::HookFunctorBase* wxSmithHook = new ProjectLoaderHooks::HookFunctor<wxSmith>(this, &wxSmith::OnProjectHook);
     m_HookId = ProjectLoaderHooks::RegisterHook(wxSmithHook);
 
-    /*
-    wxMessageBox(_("!!! Warning !!!\n"
-                   "\n"
-                   "Loaded version of wxSmith is still UNSTABLE\n"
-                   "After opening project containing wxSmith extensions\n"
-                   "made by old wxSmith version (it is currently included in\n"
-                   "RC2 and nightly builds), project andsource files will be\n"
-                   "updated to support new wxSmith.\n"
-                   "\n"
-                   "THERES NO EASY WAY TO CONVERT BACK TO OLD WXSMITH FORMAT!\n"
-                   "PLEASE BACKUP YOUR PROJECTS BEFORE OPENING THEM !!!\n"),
-                 _("Unstable wxSmith warning"));
-    */
-
     m_Singleton = this;
 }
 
@@ -136,6 +122,13 @@ void wxSmith::OnRelease(bool appShutDown)
 cbConfigurationPanel* wxSmith::GetConfigurationPanel(wxWindow* parent)
 {
 	return new wxsSettings(parent);
+}
+
+cbConfigurationPanel* wxSmith::GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
+{
+    ProjectMapI i = m_ProjectMap.find(project);
+    if ( i == m_ProjectMap.end() ) return NULL;
+    return i->second->GetProjectConfigurationPanel(parent);
 }
 
 void wxSmith::BuildMenu(wxMenuBar* menuBar)

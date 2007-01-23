@@ -173,7 +173,7 @@ void wxWidgetsGUIConfigPanel::OnButton2Click(wxCommandEvent& event)
 
 wxString wxWidgetsGUIConfigPanel::GetTitle() const
 {
-    return _T("wxWidgets GUI Configuration");
+    return _("wxSmith");
 }
 
 wxString wxWidgetsGUIConfigPanel::GetBitmapBaseName() const
