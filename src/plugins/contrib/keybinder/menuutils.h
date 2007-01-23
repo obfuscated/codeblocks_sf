@@ -77,11 +77,13 @@ public:
 		const wxKeyBind &first,
 		const wxString &name = wxEmptyString,
 		const wxString &desc = wxEmptyString) :
-		 wxCmd(first, p->GetId(), name, desc), m_pItem(p) {}
+		 wxCmd(first, p->GetId(), name, desc), m_pItem(p)
+    {;}
 
 	wxMenuCmd(wxMenuItem *p = NULL,
 		const wxString &name = wxEmptyString,
-		const wxString &desc = wxEmptyString) {
+		const wxString &desc = wxEmptyString)
+    {
 		m_pItem = p;
 		m_strDescription = desc;
 		m_strName = name;

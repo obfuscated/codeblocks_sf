@@ -153,6 +153,8 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
     if (pSpecificMenuItem) pLclMnuItem = pSpecificMenuItem;
     //+v0.4
     // verify menu item has not changed its id or disappeared
+    if ( NULL==m_pMenuBar->FindItem(m_nId) )
+        return;
     if (not pSpecificMenuItem)
         if (m_pMenuBar->FindItem(m_nId) != pLclMnuItem)
             return;

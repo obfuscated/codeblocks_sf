@@ -57,6 +57,7 @@ cbKeyBinder::cbKeyBinder()
     : m_Timer(this,0)
 {
 	//ctor
+	m_menuPreviouslyBuilt = false;
 }
 // ----------------------------------------------------------------------------
 cbKeyBinder::~cbKeyBinder()
@@ -82,7 +83,7 @@ void cbKeyBinder::OnAttach()
 
     // Have to have at least one window to attach to else secondary keys wont work
     // and "notebook" windows work just fine. Dont need AppWindow attach
-
+    m_menuPreviouslyBuilt = false;
     //get window for log when debugging
     pcbWindow = Manager::Get()->GetAppWindow();
 
@@ -125,7 +126,7 @@ void cbKeyBinder::OnAttach()
     //wxKeyBinder::usableWindows.Add(_T("treectrl"));          //+v0.4.4
 
     //block any dynamic update attempts
-	m_mergeActive = 0;
+	m_mergeEnabled = 0;
 
     // Set current plugin version
 	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
@@ -192,6 +193,25 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
 	//-NotImplemented(_T("cbKeyBinder::OfferMenuSpace()"));
 
 	if(!IsAttached()) {	return;	 }
+
+	// This routine may be called when another plugin modifies the menu.
+	// or codeblocks disables another plugin and rebuilds the menu bar
+    if ( m_menuPreviouslyBuilt )
+    {
+         LOGIT( _T("KeyBinder re-entered at BuildMenu") );
+         LOGIT( _T("OldMenuBar[%p] NewMenuBar[%p]"), m_pMenuBar, menuBar );
+        m_pMenuBar = menuBar;
+       	wxMenuCmd::Register(m_pMenuBar);
+       	EnableMerge(false);
+       	for (int i=0;i<5;i++)
+        {
+            if ( IsMerging() ) wxSleep(1);
+            else break;
+        }
+       	OnLoad();
+        return;
+    }
+    m_menuPreviouslyBuilt = true;
 
     // init the keybinder
 	// memorize incomming menubar
@@ -333,14 +353,14 @@ int cbKeyBinder::EnableMerge(bool allow)
     // disable Merge
     if (not allow)    // release lock
     {
-        m_mergeActive=0;
+        m_mergeEnabled=0;
         StopMergeTimer();
-        return m_mergeActive;
+        return m_mergeEnabled;
     }
     // enable Merge
-    m_mergeActive  = (m_mergeActive < 0 ? 1 : ++m_mergeActive );
+    m_mergeEnabled  = (m_mergeEnabled < 0 ? 1 : ++m_mergeEnabled );
     StartMergeTimer( 15 );
-    return m_mergeActive;
+    return m_mergeEnabled;
 }//LockMerge
 // ----------------------------------------------------------------------------// ----------------------------------------------------------------------------
 void cbKeyBinder::MergeDynamicMenus()
@@ -367,6 +387,7 @@ void cbKeyBinder::MergeDynamicMenus()
      LOGIT( _T("MergeDynamicMenus: EnabelMerge Out of synch. Count[%d]"), n );
     #endif //LOGGING
 
+    IsMerging(true);
     m_MenuModifiedByMerge +=
             m_pKeyProfArr->GetSelProfile()->MergeDynamicMenuItems(m_pMenuBar);
 
@@ -377,6 +398,7 @@ void cbKeyBinder::MergeDynamicMenus()
         #endif //LOGGING;
     }
 
+    IsMerging(false);
     // enable re-entry to this routine
     EnableMerge(true);
     return;
@@ -499,6 +521,9 @@ void cbKeyBinder::OnKeybindingsDialogDone(MyDialog* dlg)
 void cbKeyBinder::OnLoad()
 // ----------------------------------------------------------------------------
 {
+	// stop any dynamic update attempts
+    EnableMerge(false);
+
     // if compatible, copy old key defs file to new key definitions
     if (not m_OldKeyFilename.IsEmpty() )
     {    wxString oldKeyFile = m_sKeyFilePath+wxFILE_SEP_PATH+m_OldKeyFilename;
@@ -515,9 +540,6 @@ void cbKeyBinder::OnLoad()
 	 LOGIT(_T("OnLoad()Begin"));
 	#endif
 
-	// stop any dynamic update attempts
-    EnableMerge(false);
-
     // tell other routines that binding has taken place
     m_bBound = TRUE;
 
@@ -530,7 +552,7 @@ void cbKeyBinder::OnLoad()
 	// before loading we must register in wxCmd arrays the various types
 	// of commands we want wxCmd::Load to be able to recognize...
 	wxMenuCmd::Register(m_pMenuBar);
-
+     LOGIT( _T("OnLoad Register MenuBar[%p]"),m_pMenuBar );
 	wxString strLoadFilename = m_sKeyFilename;
 	#if LOGGING
 	 LOGIT(_T("cbKB:Loading File %s"), strLoadFilename.GetData());
@@ -860,7 +882,7 @@ void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event)
 void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-    if (IsAttached())
+    if (IsAttached() && m_bBound)
      {
 
          wxWindow* thisWindow = event.GetEditor();
@@ -909,6 +931,7 @@ void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
         // attach to at least one window so menus get updated
 
         OnLoad();
+
         #if LOGGING
          LOGIT(_T("cbKB:OnAppStartupDone:End initial Key Load"));
         #endif
@@ -973,6 +996,8 @@ void cbKeyBinder::OnWindowDestroyEvent(wxEvent& event)
     // entered for split windows. CodeBlocks doesnt yet have events
     // when opening/closing split windows.
 
+    if (not m_bBound){ event.Skip(); return;}
+
     wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
 
     //-Detach(pWindow); causes crash
@@ -992,6 +1017,8 @@ void cbKeyBinder::OnMergeTimer(wxTimerEvent& event)
 {
     // Scan the menu and enter any modified menu items into the array of
     //  key bindings
+
+    if (not m_bBound) { event.Skip(); return; }
 
     if ( IsEnabledMerge() )
     {

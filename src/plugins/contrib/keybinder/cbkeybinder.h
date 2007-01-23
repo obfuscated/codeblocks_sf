@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.16 2007/01/19"
+#define VERSION "1.0.19 2007/01/23"
 // -----------------------------------
 class MyDialog;
 
@@ -99,7 +99,9 @@ class cbKeyBinder : public cbPlugin
         void OnLoad();
         // Enable/Disable Merge
         int EnableMerge(bool allow);
-        int IsEnabledMerge(){return m_mergeActive;}
+        int IsEnabledMerge(){return m_mergeEnabled;}
+        bool IsMerging(){return m_bMerging;}
+        void IsMerging(bool state){m_bMerging = state;}
 
     protected:
         wxADD_KEYBINDER_SUPPORT();
@@ -124,12 +126,15 @@ class cbKeyBinder : public cbPlugin
         wxArrayPtrVoid  m_EditorPtrs;           //attached editor windows
         bool            bKeyFileErrMsgShown;
         int             m_MenuModifiedByMerge;  //menu dynamically modified
-        int             m_mergeActive;
+        int             m_mergeEnabled;         //merging menus allowed
+        bool            m_bMerging;             //merging menus active
+        bool            m_menuPreviouslyBuilt;
 
     private:
         wxTimer         m_Timer;
         void    StartMergeTimer(int secs){ m_Timer.Start( secs*1000, wxTIMER_ONE_SHOT); }
         void    StopMergeTimer(){ m_Timer.Stop();}
+
 
 		DECLARE_EVENT_TABLE()
 };//class cbKeyBinder
@@ -620,4 +625,11 @@ private:
 // ----------------------------------------------------------------------------
 //  Commit  1.0.16 2007/01/19
 //          16) Fixed for missing *nix menu mnemonics
+// ----------------------------------------------------------------------------
+//  Commit  1.0.19 2007/01/23
+//          17) Fixed: CB Plugins->ManagePlugins->disable plugin is completely
+//              re-building the menuBar at another address causing Keybinder to crash.
+//          18) Fixed: CB Plugins->ManagePlugins->disable plugin is re-entering
+//              KeyBinders BuildMenu() routine causing crashes.
+//          19) Re-initialize KeyBinder on next OnEditorOpen() when re-enabled by Plugin Manager.
 // ----------------------------------------------------------------------------
