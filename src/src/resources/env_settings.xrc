@@ -430,6 +430,13 @@
                         </object>
                       </object>
                     </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="btnNbDefaults">
+                        <label>Read from system theme</label>
+                      </object>
+                      <flag>wxTOP|wxALIGN_CENTRE_HORIZONTAL</flag>
+                      <border>24</border>
+                    </object>
                   </object>
                 </object>
                 <object class="sizeritem">

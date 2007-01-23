@@ -59,6 +59,7 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
     EVT_BUTTON(XRCID("btnFNBorder"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnFNFrom"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnFNTo"), EnvironmentSettingsDlg::OnChooseColour)
+    EVT_BUTTON(XRCID("btnNbDefaults"), EnvironmentSettingsDlg::OnNbDefaults)
     EVT_BUTTON(XRCID("btnAuiCaptionColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnAuiCaptionTextColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnAuiActiveCaptionColour"), EnvironmentSettingsDlg::OnChooseColour)
@@ -292,6 +293,13 @@ void EnvironmentSettingsDlg::OnManageAssocs(wxCommandEvent& event)
     PlaceWindow(&dlg);
     dlg.ShowModal();
 #endif
+}
+
+void EnvironmentSettingsDlg::OnNbDefaults(wxCommandEvent& event)
+{
+    XRCCTRL(*this, "btnFNBorder", wxButton)->SetBackgroundColour(wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW)));
+    XRCCTRL(*this, "btnFNFrom", wxButton)->SetBackgroundColour(wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE)));
+    XRCCTRL(*this, "btnFNTo", wxButton)->SetBackgroundColour(wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE)));
 }
 
 void EnvironmentSettingsDlg::OnChooseColour(wxCommandEvent& event)
