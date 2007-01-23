@@ -140,13 +140,23 @@ bool Compiler::IsValid()
         return true; // still initializing, don't try to test now
 
     m_NeedValidityCheck = false;
-    m_Valid = wxFileExists(m_MasterPath + _T("/bin/") + m_Programs.C);
+    wxString tmp = m_MasterPath + _T("/bin/") + m_Programs.C;
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
+    m_Valid = wxFileExists(tmp);
+    if (!m_Valid)
+    {	// and try witout appending the 'bin'
+    	tmp = m_MasterPath + _T("/") + m_Programs.C;
+    	Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
+        m_Valid = wxFileExists(tmp);
+    }
     if (!m_Valid)
     {
         // look in extra paths too
         for (size_t i = 0; i < m_ExtraPaths.GetCount(); ++i)
         {
-            m_Valid = wxFileExists(m_ExtraPaths[i] + _T("/") + m_Programs.C);
+        	tmp = m_ExtraPaths[i] + _T("/") + m_Programs.C;
+        	Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
+            m_Valid = wxFileExists(tmp);
             if (m_Valid)
                 break;
         }
