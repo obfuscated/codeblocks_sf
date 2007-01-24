@@ -472,8 +472,15 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
     m_pControl = CreateEditor();
     m_pSizer->Add(m_pControl, 1, wxEXPAND);
     SetSizer(m_pSizer);
-    m_pSizer->Fit(this);
-    m_pSizer->SetSizeHints(this);
+
+    // the following two lines make the editors behave strangely in linux:
+    // when resizing other docked windows, the editors do NOT resize too
+    // and they stame the same size...
+    // if commenting the following two lines causes problems in other platforms,
+    // simply put an "#ifdef __WXGTK__" guard around and uncomment them.
+//    m_pSizer->Fit(this);
+//    m_pSizer->SetSizeHints(this);
+
     Thaw();
     m_pControl->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());
     m_pSizer->SetItemMinSize(m_pControl, 32, 32);
