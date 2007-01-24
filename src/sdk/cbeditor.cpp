@@ -781,6 +781,9 @@ void cbEditor::Split(cbEditor::SplitType split)
     // update right control's look'n'feel
     InternalSetEditorStyleBeforeFileOpen(m_pControl2);
     InternalSetEditorStyleAfterFileOpen(m_pControl2);
+    // apply syntax highlighting too
+    if (m_pTheme)
+        m_pTheme->Apply(m_lang, m_pControl2);
 
     // make sure the line numbers margin is correct for the new control
     m_pControl2->SetMarginWidth(0, m_pControl->GetMarginWidth(0));
