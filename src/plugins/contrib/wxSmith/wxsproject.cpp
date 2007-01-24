@@ -79,8 +79,8 @@ void wxsProject::ReadConfiguration(TiXmlElement* element)
     // Checking version
     if ( wxsVersionConverter::Get().DetectOldConfig(SmithNode,this) )
     {
-        SmithNode = wxsVersionConverter::Get().ConvertFromOldConfig(SmithNode,&TempDoc,this);
-        if ( !SmithNode )
+        TiXmlElement* ConvertedSmithNode = wxsVersionConverter::Get().ConvertFromOldConfig(SmithNode,&TempDoc,this);
+        if ( !ConvertedSmithNode )
         {
             for ( TiXmlNode* Node = SmithNode->FirstChild(); Node; Node=Node->NextSibling() )
             {
@@ -90,6 +90,7 @@ void wxsProject::ReadConfiguration(TiXmlElement* element)
         }
         else
         {
+            SmithNode = ConvertedSmithNode;
             m_WasModifiedDuringLoad = true;
         }
     }
