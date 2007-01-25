@@ -1419,12 +1419,17 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
                 }
             }
         }
-        if (selections.GetCount())
+        if (selections.GetCount() > 1)
         {
             int sel = wxGetSingleChoiceIndex(_("Please make a selection:"), _("Multiple matches"), selections);
             if (sel == -1)
                 return;
             token = parser->GetTokens()->at(int_selections[sel]);
+        }
+        else if (selections.GetCount() == 1)
+        {	// number of selections can be < result.size() due to the if tests, so in case we fall
+        	// back on 1 entry no need to show a selection
+        	token = parser->GetTokens()->at(int_selections[0]);
         }
     }
 
