@@ -400,7 +400,7 @@ bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
         file.Close();
         return true;
     }
-#if wxUSE_UNICODE
+
     char* buff = new char[len+1];
     if (!buff)
     {
@@ -410,30 +410,8 @@ bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
     file.Read((void*)buff, len);
     file.Close();
     buff[len]='\0';
-
-    if (encoding != wxFONTENCODING_UTF16 &&
-        encoding != wxFONTENCODING_UTF16LE &&
-        encoding != wxFONTENCODING_UTF16BE &&
-        encoding != wxFONTENCODING_UTF32 &&
-        encoding != wxFONTENCODING_UTF32LE &&
-        encoding != wxFONTENCODING_UTF32BE)
-    {
-        // crashes deep in the runtime (windows, at least)
-        // if one of the above encodings, hence the guard
-        wxCSConv conv(encoding);
-        st = wxString((const char *)buff, conv);
-    }
-    else
-        st = wxString((const wxChar*)buff);
-
-    delete[] buff;
-#else
-
-    char* buff = st.GetWriteBuf(len); // GetWriteBuf already handles the extra '\0'.
-    file.Read((void*)buff, len);
-    file.Close();
-    st.UngetWriteBuf();
-#endif
+	
+	DetectEncodingAndConvert(buff, st, encoding);
 
     return true;
 }
@@ -491,6 +469,62 @@ wxWX2MBbuf cbU2C(const wxString& str)
 #else
     return (wxChar*)str.mb_str();
 #endif
+}
+
+// Try converting a C-string from different encodings until a possible match is found.
+// This tries the following encoding converters (in the same order):
+// utf8, system, default and iso8859-1 to iso8859-15
+wxFontEncoding DetectEncodingAndConvert(const char* strIn, wxString& strOut, wxFontEncoding possibleEncoding)
+{
+	wxFontEncoding encoding = possibleEncoding;
+	strOut.Clear();
+
+#if wxUSE_UNICODE
+    if (possibleEncoding != wxFONTENCODING_UTF16 &&
+        possibleEncoding != wxFONTENCODING_UTF16LE &&
+        possibleEncoding != wxFONTENCODING_UTF16BE &&
+        possibleEncoding != wxFONTENCODING_UTF32 &&
+        possibleEncoding != wxFONTENCODING_UTF32LE &&
+        possibleEncoding != wxFONTENCODING_UTF32BE)
+    {
+        // crashes deep in the runtime (windows, at least)
+        // if one of the above encodings, hence the guard
+        wxCSConv conv(possibleEncoding);
+        strOut = wxString(strIn, conv);
+        
+        if (strOut.Length() == 0)
+        {
+        	// oops! wrong encoding...
+        	
+        	// try utf8 first, if that was not what was asked for
+        	if (possibleEncoding != wxFONTENCODING_UTF8)
+        	{
+        		encoding = wxFONTENCODING_UTF8;
+				strOut = wxString(strIn, wxConvUTF8);
+        	}
+			
+			// check again: if still not right, try system encoding, default encoding and then iso8859-1 to iso8859-15
+			if (strOut.Length() == 0)
+			{
+				for (int i = wxFONTENCODING_SYSTEM; i < wxFONTENCODING_ISO8859_MAX; ++i)
+				{
+					encoding = (wxFontEncoding)i;
+					if (encoding == possibleEncoding)
+						continue; // skip if same as what was asked
+					wxCSConv conv(encoding);
+					strOut = wxString(strIn, conv);
+					if (strOut.Length() != 0)
+						break; // got it!
+				}
+			}
+        }
+    }
+    else
+        strOut = wxString((const wxChar*)strIn);
+#else
+	strOut = wxString(strIn);
+#endif
+	return encoding;
 }
 
 wxString URLEncode(const wxString &str) // not sure this is 100% standards compliant, but I hope so

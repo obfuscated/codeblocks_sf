@@ -124,6 +124,11 @@ extern DLLIMPORT bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& 
 extern DLLIMPORT wxString cbC2U(const char* str);
 /// Return multibyte (C string) representation of the string
 extern DLLIMPORT wxWX2MBbuf cbU2C(const wxString& str);
+/// Try converting a C-string from different encodings until a possible match is found.
+/// This tries the following encoding converters (in the same order):
+/// utf8, system, default and iso8859-1 to iso8859-15.
+/// Returns the final encoding detected.
+extern DLLIMPORT wxFontEncoding DetectEncodingAndConvert(const char* strIn, wxString& strOut, wxFontEncoding possibleEncoding = wxFONTENCODING_SYSTEM);
 
 extern DLLIMPORT wxString GetStringFromArray(const wxArrayString& array, const wxString& separator = DEFAULT_ARRAY_SEP);
 extern DLLIMPORT wxArrayString GetArrayFromString(const wxString& text, const wxString& separator = DEFAULT_ARRAY_SEP, bool trimSpaces = true);

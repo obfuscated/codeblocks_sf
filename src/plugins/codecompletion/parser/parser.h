@@ -89,7 +89,7 @@ class Parser : public wxEvtHandler
 		~Parser();
 
 		void BatchParse(const wxArrayString& filenames);
-		bool Parse(const wxString& filename, bool isLocal = true);
+		bool Parse(const wxString& filename, bool isLocal = true, LoaderBase* loader = 0);
 		bool Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadOptions& opts);
 		bool ParseBuffer(const wxString& buffer, bool isLocal = true, bool bufferSkipBlocks = false, bool isTemp = false);
 		bool ParseBufferForFunctions(const wxString& buffer);

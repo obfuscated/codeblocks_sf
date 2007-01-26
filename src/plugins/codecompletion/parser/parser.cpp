@@ -430,13 +430,16 @@ void Parser::BatchParse(const wxArrayString& filenames)
     m_IsBatch = true;
     m_Pool.BatchBegin();
     for (unsigned int i = 0; i < filenames.GetCount(); ++i)
-        Parse(filenames[i]);
+    {
+		LoaderBase* loader = Manager::Get()->GetFileManager()->Load(filenames[i], false);
+        Parse(filenames[i], true, loader);
+    }
 
     // Allow future parses to take place in this same run
     m_batchtimer.Start(batch_timer_delay,wxTIMER_ONE_SHOT);
 }
 
-bool Parser::Parse(const wxString& filename, bool isLocal)
+bool Parser::Parse(const wxString& filename, bool isLocal, LoaderBase* loader)
 {
     ParserThreadOptions opts;
     opts.wantPreprocessor = m_Options.wantPreprocessor;
@@ -445,6 +448,7 @@ bool Parser::Parse(const wxString& filename, bool isLocal)
     opts.bufferSkipOuterBlocks = false;
     opts.followLocalIncludes = m_Options.followLocalIncludes;
     opts.followGlobalIncludes = m_Options.followGlobalIncludes;
+    opts.loader = loader;
 
     // feature incomplete
 //    bool isSource = FileTypeOf(filename) == ftSource;
@@ -871,7 +875,8 @@ void Parser::OnParseFile(const wxString& filename,int flags)
         return;
     if (filename.IsEmpty())
         return;
-    Parse(filename, flags == 0); // isLocal = (flags==0)
+	LoaderBase* loader = Manager::Get()->GetFileManager()->Load(filename, false);
+    Parse(filename, flags == 0, loader); // isLocal = (flags==0)
 }
 
 void Parser::StartStopWatch()

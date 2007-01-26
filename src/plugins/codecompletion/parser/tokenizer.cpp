@@ -66,7 +66,8 @@ Tokenizer::Tokenizer(const wxString& filename)
     m_IsOK(false),
     m_IsOperator(false),
     m_LastWasPreprocessor(false),
-    m_SkipUnwantedTokens(true)
+    m_SkipUnwantedTokens(true),
+    m_pLoader(0)
 {
     //ctor
     m_Options.wantPreprocessor = false;
@@ -79,14 +80,15 @@ Tokenizer::~Tokenizer()
     //dtor
 }
 
-bool Tokenizer::Init(const wxString& filename)
+bool Tokenizer::Init(const wxString& filename, LoaderBase* loader)
 {
+	m_pLoader = loader;
     BaseInit();
     if (filename.IsEmpty())
     {
         if (m_Filename.IsEmpty())
         {
-            cbMessageBox(_T("Tokenizer::Init() called without filename..."));
+//            cbMessageBox(_T("Tokenizer::Init() called without filename..."));
             return false;
         }
     }
@@ -98,7 +100,7 @@ bool Tokenizer::Init(const wxString& filename)
 
     if (!ReadFile())
     {
-        cbMessageBox(_T("File ") + filename + _T(" does not exist..."));
+//        cbMessageBox(_T("File ") + filename + _T(" does not exist..."));
         return false;
     }
 
@@ -144,6 +146,37 @@ void Tokenizer::BaseInit()
 
 bool Tokenizer::ReadFile()
 {
+	if (m_pLoader)
+	{
+		char* data = m_pLoader->GetData();
+		m_BufferLen = m_pLoader->GetLength();
+		
+		// the following code is faster than DetectEncodingAndConvert()
+//		DetectEncodingAndConvert(data, m_Buffer);
+		
+		// same code as in cbC2U() but with the addition of the string length (3rd param in unicode version)
+		// and the fallback encoding conversion
+#if wxUSE_UNICODE
+		m_Buffer = wxString(data, wxConvUTF8, m_BufferLen);
+		if (m_Buffer.Length() == 0)
+		{
+			// could not read as utf-8 encoding, try iso8859-1
+			m_Buffer = wxString(data, wxConvISO8859_1, m_BufferLen);
+		}
+#else
+		m_Buffer = wxString(data, m_BufferLen);
+#endif
+
+		if (m_BufferLen != m_Buffer.Length())
+		{
+			// inconsistency!
+			// correct it to avoid crashes but this file will probably NOT be parsed correctly
+			m_BufferLen = m_Buffer.Length();
+//			asm("int $3;");
+		}
+		return data != 0;
+	};
+
     if (!wxFileExists(m_Filename))
         return false;
 
@@ -485,8 +518,9 @@ wxString Tokenizer::DoGetToken()
 
     int start = m_TokenIndex;
     wxString m_Str;
+    wxChar c = CurrentChar();
 
-    if (CurrentChar() == '_' || isalpha(CurrentChar()))
+    if (c == '_' || isalpha(c))
     {
         // keywords, identifiers, etc.
 

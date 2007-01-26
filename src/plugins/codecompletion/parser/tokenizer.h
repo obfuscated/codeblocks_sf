@@ -3,6 +3,7 @@
 
 #include <wx/string.h>
 #include <configmanager.h>
+#include <filemanager.h>
 
 struct TokenizerOptions
 {
@@ -15,7 +16,7 @@ public:
     Tokenizer(const wxString& filename = wxEmptyString);
     ~Tokenizer();
 
-    bool Init(const wxString& filename = wxEmptyString);
+    bool Init(const wxString& filename = wxEmptyString, LoaderBase* loader = 0);
     bool InitFromBuffer(const wxString& buffer);
     wxString GetToken();
     wxString PeekToken();
@@ -216,6 +217,8 @@ private:
     bool m_LastWasPreprocessor;
     wxString m_LastPreprocessor;
     bool m_SkipUnwantedTokens;
+    
+    LoaderBase* m_pLoader;
 
     static ConfigManagerContainer::StringToStringMap s_Replacements;
 };

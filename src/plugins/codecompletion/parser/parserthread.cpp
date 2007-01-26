@@ -126,6 +126,14 @@ ParserThread::ParserThread(Parser* parent,
 ParserThread::~ParserThread()
 {
 	//dtor
+	
+	// wait for file loader object to complete (can't abort it)
+	if (m_Options.loader)
+	{
+		m_Options.loader->Sync();
+		delete m_Options.loader;
+		m_Options.loader = 0;
+	}
 }
 
 void ParserThread::Log(const wxString& log)
@@ -304,7 +312,10 @@ bool ParserThread::InitTokenizer()
 		if (!m_IsBuffer)
 		{
 			m_Filename = m_Buffer;
-			return m_Tokenizer.Init(m_Filename);
+			bool ret = m_Tokenizer.Init(m_Filename, m_Options.loader);
+			delete m_Options.loader;
+			m_Options.loader = 0;
+			return ret;
 		}
 
         return m_Tokenizer.InitFromBuffer(m_Buffer);
@@ -858,6 +869,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
         m_EncounteredTypeNamespaces.pop();
 
     s_MutexProtection.Leave();
+//			wxMilliSleep(0);
 	return newToken;
 }
 

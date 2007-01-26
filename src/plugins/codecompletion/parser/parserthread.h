@@ -8,6 +8,7 @@
 #include "tokenizer.h"
 #include "token.h"
 #include <cbthreadpool.h>
+#include <filemanager.h>
 
 #include <queue>
 
@@ -33,7 +34,8 @@ struct ParserThreadOptions
         handleVars(true),
         handleClasses(true),
         handleEnums(true),
-        handleTypedefs(true)
+        handleTypedefs(true),
+        loader(0)
         {}
     /* useBuffer specifies that we're not parsing a file,  but a temporary
      * buffer. The resulting tokens will be temporary, too,
@@ -52,6 +54,8 @@ struct ParserThreadOptions
 	bool handleClasses;
 	bool handleEnums;
 	bool handleTypedefs;
+	
+	LoaderBase* loader; // if not NULL, load through filemanager (using threads)
 };
 
 class ParserThread : public cbThreadedTask
