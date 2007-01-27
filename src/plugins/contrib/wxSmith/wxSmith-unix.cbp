@@ -192,6 +192,8 @@
 		<Unit filename="wxwidgets\defitems\wxsstddialogbuttonsizer.h" />
 		<Unit filename="wxwidgets\defitems\wxstextctrl.cpp" />
 		<Unit filename="wxwidgets\defitems\wxstextctrl.h" />
+		<Unit filename="wxwidgets\defitems\wxstimer.cpp" />
+		<Unit filename="wxwidgets\defitems\wxstimer.h" />
 		<Unit filename="wxwidgets\defitems\wxstogglebutton.cpp" />
 		<Unit filename="wxwidgets\defitems\wxstogglebutton.h" />
 		<Unit filename="wxwidgets\defitems\wxstreectrl.cpp" />
@@ -274,6 +276,10 @@
 		<Unit filename="wxwidgets\wxssizerparentqp.h" />
 		<Unit filename="wxwidgets\wxsstyle.cpp" />
 		<Unit filename="wxwidgets\wxsstyle.h" />
+		<Unit filename="wxwidgets\wxstool.cpp" />
+		<Unit filename="wxwidgets\wxstool.h" />
+		<Unit filename="wxwidgets\wxstoolspace.cpp" />
+		<Unit filename="wxwidgets\wxstoolspace.h" />
 		<Unit filename="wxwidgets\wxswidget.cpp" />
 		<Unit filename="wxwidgets\wxswidget.h" />
 		<Unit filename="wxwidgets\wxwidgetsgui.cpp" />

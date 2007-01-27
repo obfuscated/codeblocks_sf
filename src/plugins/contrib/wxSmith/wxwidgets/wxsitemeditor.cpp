@@ -24,9 +24,10 @@
 #include "wxsitemeditor.h"
 #include "wxsitemeditorcontent.h"
 #include "wxsitemfactory.h"
-//#include "wxsbaseproperties.h"
 #include "wxsitemresdata.h"
+#include "wxstoolspace.h"
 #include "wxsitem.h"
+#include "wxstool.h"
 #include "wxsparent.h"
 #include "../wxsproject.h"
 
@@ -119,6 +120,8 @@ void wxsItemEditor::InitializeVisualStuff()
     m_VertSizer = new wxBoxSizer(wxVERTICAL);
     m_WidgetsSet = new wxNotebook(this,-1);
     BuildPalette(m_WidgetsSet);
+    m_ToolSpace = new wxsToolSpace(this,m_Data);
+    m_VertSizer->Add(m_ToolSpace,0,wxEXPAND);
     m_HorizSizer = new wxBoxSizer(wxHORIZONTAL);
     m_VertSizer->Add(m_HorizSizer,1,wxEXPAND);
     m_VertSizer->Add(m_WidgetsSet,0,wxEXPAND);
@@ -174,6 +177,7 @@ void wxsItemEditor::RebuildPreview()
     if ( !m_Content ) return;
 
     m_Content->BeforePreviewChanged();
+    m_ToolSpace->BeforePreviewChanged();
 
     Freeze();
 
@@ -214,6 +218,17 @@ void wxsItemEditor::RebuildPreview()
         Layout();
     }
 
+    m_ToolSpace->AfterPreviewChanged();
+    if ( m_ToolSpace->AreAnyTools() )
+    {
+        m_VertSizer->Show(m_ToolSpace,true,false);
+    }
+    else
+    {
+        m_VertSizer->Show(m_ToolSpace,false,false);
+    }
+    m_VertSizer->Layout();
+
     Thaw();
     Update();
 
@@ -228,6 +243,7 @@ void wxsItemEditor::UpdateSelection()
 
     // Updating drag point data
     m_Content->RefreshSelection();
+    m_ToolSpace->RefreshSelection();
 
     // Updating insertion type mask
     wxsItem* Item = m_Data->GetRootSelection();
@@ -331,6 +347,33 @@ void wxsItemEditor::Paste()
 
 void wxsItemEditor::InsertRequest(const wxString& Name)
 {
+    const wxsItemInfo* Info = wxsItemFactory::GetInfo(Name);
+    if ( !Info ) return;
+    if ( Info->Type == wxsTTool )
+    {
+        // Tools are threated differently :)
+        wxsItem* New = wxsItemFactory::Build(Name,m_Data);
+        if ( !New ) return;
+        wxsTool* Tool = New->ConvertToTool();
+        if ( !Tool )
+        {
+            delete New;
+            return;
+        }
+        if ( !Tool->CanAddToResource(m_Data,true) )
+        {
+            delete Tool;
+            return;
+        }
+        m_Data->BeginChange();
+        if ( m_Data->InsertNewTool(Tool) )
+        {
+            m_Data->SelectItem(New,true);
+        }
+        m_Data->EndChange();
+        return;
+    }
+
     wxsItem* Reference = GetReferenceItem(m_InsType);
     if ( !Reference )
     {
@@ -526,6 +569,7 @@ namespace
 void wxsItemEditor::BuildPalette(wxNotebook* Palette)
 {
     Palette->DeleteAllPages();
+    bool AllowNonXRCItems = m_Data->GetPropertiesFilter() == wxsItem::flSource;
 
     // First we need to split all widgets into groups
     // it will be done using multimap (map of arrays)
@@ -562,7 +606,15 @@ void wxsItemEditor::BuildPalette(wxNotebook* Palette)
                         wxDefaultPosition,wxDefaultSize,wxBU_AUTODRAW,
                         wxDefaultValidator, Info->ClassName);
                 RowSizer->Add(Btn,0,wxALIGN_CENTER);
-                Btn->SetToolTip(Info->ClassName);
+                if ( !AllowNonXRCItems && !Info->AllowInXRC )
+                {
+                    Btn->Disable();
+                    Btn->SetToolTip(Info->ClassName + _(" (Not available for XRC-based resources)"));
+                }
+                else
+                {
+                    Btn->SetToolTip(Info->ClassName);
+                }
             }
             else
             {
@@ -570,7 +622,15 @@ void wxsItemEditor::BuildPalette(wxNotebook* Palette)
                     wxDefaultPosition,wxDefaultSize,0,
                     wxDefaultValidator,Info->ClassName);
                 RowSizer->Add(Btn,0,wxGROW);
-                Btn->SetToolTip(Info->ClassName);
+                if ( !AllowNonXRCItems && !Info->AllowInXRC )
+                {
+                    Btn->Disable();
+                    Btn->SetToolTip(Info->ClassName + _(" (Not available for XRC-based resources)"));
+                }
+                else
+                {
+                    Btn->SetToolTip(Info->ClassName);
+                }
             }
         }
         CurrentPanel->SetSizer(RowSizer);

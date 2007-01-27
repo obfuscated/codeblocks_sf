@@ -53,7 +53,7 @@ class wxsWidget: public wxsItem
          */
         virtual void OnEnumWidgetProperties(long Flags) = 0;
 
-        /** \brief Function which adding new items to QPP
+        /** \brief Function which adds new items to QPP
          *
          * This function may be used to add special quick properties for
          * this item.

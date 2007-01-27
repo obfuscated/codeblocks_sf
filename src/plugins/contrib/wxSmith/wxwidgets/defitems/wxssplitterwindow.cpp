@@ -128,7 +128,7 @@ void wxsSplitterWindow::OnBuildCreatingCode(wxString& Code,const wxString& Windo
     {
         case wxsCPP:
         {
-            if ( GetParent() )
+            if ( !IsRootItem() )
             {
                 Code << GetVarName() << _T(" = new wxSplitterWindow(");
             }
@@ -202,6 +202,7 @@ void wxsSplitterWindow::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,w
 
 bool wxsSplitterWindow::OnCanAddChild(wxsItem* Item,bool ShowMessage)
 {
+    // TODO: Allow more tools
 	if ( GetChildCount() == 2 )
 	{
 	    if ( ShowMessage )

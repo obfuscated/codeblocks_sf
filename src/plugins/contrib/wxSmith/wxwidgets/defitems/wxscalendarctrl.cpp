@@ -67,7 +67,7 @@ void wxsCalendarCtrl::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
     {
         case wxsCPP:
         {
-            if ( GetParent() )
+            if ( !IsRootItem() )
             {
                 Code<< GetVarName() << _T(" = new wxCalendarCtrl(");
             }

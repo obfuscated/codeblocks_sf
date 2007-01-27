@@ -76,7 +76,7 @@ void wxsScrollBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowPare
     {
         case wxsCPP:
         {
-            if ( GetParent() )
+            if ( !IsRootItem() )
             {
                 Code<< GetVarName() << _T(" = new wxScrollBar(");
             }

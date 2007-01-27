@@ -58,7 +58,7 @@ void wxsStaticText::OnBuildCreatingCode(wxString& Code,const wxString& WindowPar
     {
         case wxsCPP:
         {
-            if ( GetParent() )
+            if ( !IsRootItem() )
             {
                 Code<< GetVarName() << _T(" = new wxStaticText(");
             }

@@ -52,7 +52,8 @@ libwxsmith_wxwidgets_defitems_la_SOURCES = \
 ./wxscustomwidget.cpp \
 ./wxsnotebook.cpp \
 ./wxschoicebook.cpp \
-./wxslistbook.cpp
+./wxslistbook.cpp \
+./wxstimer.cpp
 
 noinst_HEADERS = \
 ./wxsgauge.h \
@@ -95,4 +96,5 @@ noinst_HEADERS = \
 ./wxscustomwidget.h \
 ./wxsnotebook.h \
 ./wxschoicebook.h \
-./wxslistbook.h
+./wxslistbook.h \
+./wxstimer.h

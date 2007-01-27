@@ -13,6 +13,7 @@
 
 class wxsItemResData;
 class wxsParent;
+class wxsTool;
 
 /** \brief Base class for all items in resource
  *
@@ -83,16 +84,19 @@ class wxsItem: public wxsPropertyContainer
          */
         inline wxsEvents& GetEvents() { return m_Events; }
 
+        /** \brief Checking if this item is root item of resource */
+        bool IsRootItem();
+
         /** \brief Getting variable name
          *  \return name of variable or empty string of this item doesn't have one
          */
-        inline wxString GetVarName() { return GetParent()?m_VarName:_T("this"); }
+        inline wxString GetVarName() { return IsRootItem() ? _T("this") : m_VarName; }
 
         /** \brief Setting variabne name */
         inline void SetVarName(const wxString& NewName) { m_VarName = NewName; }
 
         /** \brief Getting identifier */
-        inline wxString GetIdName() { return GetParent()?m_IdName:_T("id"); }
+        inline wxString GetIdName() { return IsRootItem() ? _T("id") : m_IdName; }
 
         /** \brief Setting identifier */
         inline void SetIdName(const wxString& NewIdName) { m_IdName = NewIdName; }
@@ -180,11 +184,17 @@ class wxsItem: public wxsPropertyContainer
          */
         inline wxsResourceItemId GetLastTreeItemId() { return m_LastTreeId; }
 
-        /** \brief Function converting this item to wxsParent class.
+        /** \brief Function converting this item to wxsParent class
          *  \return Pointer to wxsParent class or NULL if class hasn't been
          *          derived from it
          */
         virtual wxsParent* ConvertToParent() { return NULL; }
+
+        /** \brief Function converting this item to wxsTool class
+         *  \return Pointer to wxsTool class or NULL if class hasn't been
+         *          derived from it
+         */
+        virtual wxsTool* ConvertToTool() { return NULL; }
 
         /** \brief Function returinng pointer to wxsBaseProperties class if item uses it. */
         virtual wxsBaseProperties* GetBaseProps() { return m_BaseProperties; }

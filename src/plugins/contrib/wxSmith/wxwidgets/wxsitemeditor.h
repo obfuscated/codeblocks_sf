@@ -12,6 +12,7 @@
 
 class wxsItemEditorContent;
 class wxsItemResData;
+class wxsToolSpace;
 class wxsItem;
 
 /** \brief This is root class for editing wxWidgets window resources
@@ -137,6 +138,7 @@ class wxsItemEditor : public wxsEditor
         wxsItemResData* m_Data;             ///< \brief Data managment object
 
         wxsItemEditorContent* m_Content;    ///< \brief Window with content area
+        wxsToolSpace* m_ToolSpace;          ///< \brief Space for tools in resource
         wxNotebook* m_WidgetsSet;           ///< \brief Notebook with all widgets inside
         wxBoxSizer* m_VertSizer;            ///< \brief Root sizer of this editor
         wxBoxSizer* m_HorizSizer;           ///< \brief Horizontal sizer managing items below palette

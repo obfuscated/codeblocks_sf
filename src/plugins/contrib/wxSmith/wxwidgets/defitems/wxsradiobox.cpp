@@ -78,7 +78,7 @@ void wxsRadioBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
             }
 
             if ( Dimension < 1 ) Dimension = 1;
-            if ( GetParent() )
+            if ( !IsRootItem() )
             {
                 Code<< GetVarName() << _T(" = new wxRadioBox(");
             }

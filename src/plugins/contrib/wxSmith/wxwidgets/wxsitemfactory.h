@@ -92,7 +92,8 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             unsigned short VerHi,
             unsigned short VerLo,
             const wxBitmap& Bmp32,
-            const wxBitmap& Bmp16
+            const wxBitmap& Bmp16,
+            bool AllowInXRC = true
             ): wxsItemFactory(&Info,ClassName)
         {
             Info.ClassName = ClassName;
@@ -109,6 +110,7 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             Info.VerLo = VerLo;
             Info.Icon32 = Bmp32.GetSubBitmap(wxRect(0,0,Bmp32.GetWidth(),Bmp32.GetHeight()));
             Info.Icon16 = Bmp16.GetSubBitmap(wxRect(0,0,Bmp16.GetWidth(),Bmp16.GetHeight()));
+            Info.AllowInXRC = AllowInXRC;
 
             // TODO: Build resource tree entry
         }
@@ -128,7 +130,8 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             unsigned short VerHi,
             unsigned short VerLo,
             const wxString& Bmp32FileName,
-            const wxString& Bmp16FileName
+            const wxString& Bmp16FileName,
+            bool AllowInXRC = true
             ): wxsItemFactory(&Info,ClassName)
         {
             Info.ClassName = ClassName;
@@ -143,6 +146,7 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             Info.Languages = Languages;
             Info.VerHi = VerHi;
             Info.VerLo = VerLo;
+            Info.AllowInXRC = AllowInXRC;
 
             wxString DataPath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
             Info.Icon32.LoadFile(DataPath+Bmp32FileName,wxBITMAP_TYPE_ANY);
@@ -156,7 +160,8 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             const wxString& ClassNameWithoutWx,
             wxsItemType Type,
             const wxString& Category,
-            long Priority): wxsItemFactory(&Info,_T("wx") + ClassNameWithoutWx)
+            long Priority,
+            bool AllowInXRC=true): wxsItemFactory(&Info,_T("wx") + ClassNameWithoutWx)
         {
             Info.ClassName = _T("wx") + ClassNameWithoutWx;
             Info.Type = Type;
@@ -170,6 +175,7 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             Info.Languages = wxsCPP;
             Info.VerHi = 2;
             Info.VerLo = 6;
+            Info.AllowInXRC = AllowInXRC;
 
             wxString DataPath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
             Info.Icon32.LoadFile(DataPath+Info.ClassName+_T(".png"),wxBITMAP_TYPE_PNG);

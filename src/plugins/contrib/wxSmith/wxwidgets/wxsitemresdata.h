@@ -9,7 +9,7 @@
 #include "wxsitemresdataobject.h"
 #include "../wxsresourcetree.h"
 
-
+class wxsTool;
 class wxsItemEditor;
 
 /** \brief Class holding data for item resources and operating on it */
@@ -190,6 +190,7 @@ class wxsItemResData
 		 * is added and true is returned. If it's
 		 * impossible, new item is deleted internally
 		 * and function returns false.
+		 * \note To add tool item use InsertNewTool
 		 * \param New new item
 		 * \param Parent item which will become parent of New
 		 * \param Position position inside Parent (if <0 or  out of range,
@@ -197,8 +198,24 @@ class wxsItemResData
 		 */
         bool InsertNew(wxsItem* New,wxsParent* Parent,int Position);
 
+        /** \brief Adding new tool
+         *
+         * This function adds new tool into this resource.
+         * Since tools require special threatment, they
+         * need separate function.
+         * \param Tool new tool
+         * \return true on success, false otherwise
+         */
+        bool InsertNewTool(wxsTool* Tool);
+
         /** \brief Deleting all selected items */
         void DeleteSelected();
+
+        /** \brief Getting number of tools */
+        inline int GetToolsCount() { return (int)m_Tools.Count(); }
+
+        /** \brief Getting tool at given index */
+        inline wxsTool* GetTool(int Index) { return ((Index>=0)&&(Index<GetToolsCount())) ? m_Tools[Index] : 0; }
 
         /* ******************* */
         /*  Preview functions  */
@@ -231,6 +248,7 @@ class wxsItemResData
 
         WX_DECLARE_STRING_HASH_MAP(TiXmlElement*,IdToXmlMapT);
         WX_DECLARE_HASH_MAP(wxsItem*,wxsResourceItemId,wxPointerHash,wxPointerEqual,ItemToIdMapT);
+        WX_DEFINE_ARRAY(wxsTool*,ToolArrayT);
 
         /** \brief Generating string with xml data for this item
          *  \note used when creating undo enteries
@@ -256,6 +274,7 @@ class wxsItemResData
         bool LoadInSourceMode();
         void UpdateExtraDataReq(wxsItem* Item,IdToXmlMapT& Map);
         void RecreateRootItem();
+        void LoadToolsReq(TiXmlElement* Node,bool IsXRC,bool IsExtra);
 
         // Various saving function
         bool SaveInFileMode();
@@ -308,6 +327,7 @@ class wxsItemResData
 
         wxsItem* m_RootItem;
         wxsItem* m_RootSelection;
+        ToolArrayT m_Tools;
         long m_PropertiesFilter;
 
         wxWindow* m_Preview;

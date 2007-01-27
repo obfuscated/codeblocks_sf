@@ -264,7 +264,7 @@ void wxsListbook::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
     {
         case wxsCPP:
         {
-            if ( GetParent() )
+            if ( !IsRootItem() )
             {
                 Code << GetVarName() << _T(" = new wxListbook(");
             }

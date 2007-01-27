@@ -62,7 +62,7 @@ void wxsGauge::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
     {
         case wxsCPP:
         {
-            if ( GetParent() )
+            if ( !IsRootItem() )
             {
                 Code<< GetVarName() << _T(" = new wxGauge(");
             }

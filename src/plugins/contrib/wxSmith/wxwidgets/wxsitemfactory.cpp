@@ -28,7 +28,40 @@ wxsItem* wxsItemFactory::Build(const wxString& Name,wxsItemResData* Data)
 {
     ItemMapT::iterator it = ItemMap().find(Name);
     if ( it == ItemMap().end() ) return NULL;
-    return it->second->OnBuild(Data);
+    wxsItem* Item = it->second->OnBuild(Data);
+
+    // Checking few things in item's info
+    switch ( Item->GetInfo().Type )
+    {
+        case wxsTTool:
+            if ( !Item->ConvertToTool() )
+            {
+                // Fake item
+                delete Item;
+                return NULL;
+            }
+            break;
+
+        case wxsTContainer:
+        case wxsTSizer:
+            if ( !Item->ConvertToParent() )
+            {
+                // Fake item
+                delete Item;
+                return NULL;
+            }
+            break;
+
+        case wxsTSpacer:
+        case wxsTWidget:
+            break;
+
+        default:
+            delete Item;
+            return NULL;
+    }
+
+    return Item;
 }
 
 const wxsItemInfo* wxsItemFactory::GetInfo(const wxString& Name)

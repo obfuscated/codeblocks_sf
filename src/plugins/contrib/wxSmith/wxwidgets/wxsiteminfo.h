@@ -32,6 +32,7 @@ struct wxsItemInfo
     unsigned short  VerLo;          ///< \brief Higher number of version
     wxBitmap        Icon32;         ///< \brief Item's icon (32x32 pixels)
     wxBitmap        Icon16;         ///< \brief Item's icon (16x16 pixels)
+    bool            AllowInXRC;     ///< \brief Item can be used in XRC files
     int             TreeIconId;     ///< \brief Identifier of image inside resource tree
 };
 

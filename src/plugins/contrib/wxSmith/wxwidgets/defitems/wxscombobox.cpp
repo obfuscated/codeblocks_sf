@@ -59,7 +59,7 @@ void wxsComboBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
     {
         case wxsCPP:
         {
-            if ( GetParent() )
+            if ( !GetParent() )
             {
                 Code<< GetVarName() << _T(" = new wxComboBox(");
             }

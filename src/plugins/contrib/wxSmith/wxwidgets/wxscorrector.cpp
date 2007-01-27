@@ -23,6 +23,7 @@
 
 #include "wxscorrector.h"
 #include "wxsitem.h"
+#include "wxstool.h"
 #include "wxsparent.h"
 #include "wxsitemresdata.h"
 
@@ -41,7 +42,21 @@ bool wxsCorrector::GlobalCheck()
     m_Vars.clear();
     m_Ids.clear();
     bool AreInvalid = FixAfterLoadCheckNames(RootItem);
+    for ( int i=0; i<m_Data->GetToolsCount(); i++ )
+    {
+        if ( !FixAfterLoadCheckNames(m_Data->GetTool(i)) )
+        {
+            AreInvalid = false;
+        }
+    }
     bool AreEmpty = FillEmpty(RootItem);
+    for ( int i=0; i<m_Data->GetToolsCount(); i++ )
+    {
+        if ( !FillEmpty(m_Data->GetTool(i)) )
+        {
+            AreEmpty = false;
+        }
+    }
 
     m_NeedRebuild = false;
 
@@ -142,10 +157,14 @@ bool wxsCorrector::FillEmpty(wxsItem* Item)
 void wxsCorrector::AfterChange(wxsItem* Item)
 {
     // Building new sets without given item
-    wxsItem* RootItem = m_Data->GetRootItem();
     m_Vars.clear();
     m_Ids.clear();
+    wxsItem* RootItem = m_Data->GetRootItem();
     RebuildSetsReq(RootItem,Item);
+    for ( int i=0; i<m_Data->GetToolsCount(); i++ )
+    {
+        RebuildSetsReq(m_Data->GetTool(i),Item);
+    }
 
     if ( Item->GetPropertiesFlags() & wxsItem::flVariable )
     {
@@ -186,6 +205,10 @@ void wxsCorrector::RebuildSets()
     m_Vars.clear();
     m_Ids.clear();
     RebuildSetsReq(m_Data->GetRootItem(),NULL);
+    for ( int i=0; i<m_Data->GetToolsCount(); i++ )
+    {
+        RebuildSetsReq(m_Data->GetTool(i),NULL);
+    }
     m_NeedRebuild = false;
 }
 

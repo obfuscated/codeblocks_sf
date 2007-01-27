@@ -59,7 +59,7 @@ void wxsRadioButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowPa
     {
         case wxsCPP:
         {
-            if ( GetParent() )
+            if ( !IsRootItem() )
             {
                 Code<< GetVarName() << _T(" = new wxRadioButton(");
             }

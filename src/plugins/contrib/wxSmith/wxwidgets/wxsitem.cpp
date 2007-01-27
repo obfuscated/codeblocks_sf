@@ -93,7 +93,7 @@ wxsQuickPropsPanel* wxsItem::OnCreateQuickProperties(wxWindow* ParentWnd)
 
 long wxsItem::OnGetPropertiesFlags()
 {
-    if ( !GetParent() )
+    if ( IsRootItem() )
     {
         // Small hack - if there's no parent, this is root item
         // of resource and thus can not have id nor variable
@@ -252,4 +252,9 @@ void wxsItem::OnAddExtraProperties(wxsPropertyGridManager* Grid)
 void wxsItem::OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id)
 {
     wxsEventsEditor::Get().PGChanged(this,Grid,Id);
+}
+
+bool wxsItem::IsRootItem()
+{
+    return m_ResourceData->GetRootItem() == this;
 }

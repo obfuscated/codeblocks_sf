@@ -56,7 +56,7 @@ void wxsStaticBitmap::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
             wxString SizeCodeStr = SizeCode(WindowParent,wxsCPP);
             wxString BmpCode = Bitmap.IsEmpty() ? _T("wxNullBitmap") : Bitmap.BuildCode(DontResize,SizeCodeStr,wxsCPP,wxART_OTHER);
 
-            if ( GetParent() )
+            if ( !IsRootItem() )
             {
                 Code<< GetVarName() << _T(" = new wxStaticBitmap(");
             }

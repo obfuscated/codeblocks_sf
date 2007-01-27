@@ -61,7 +61,7 @@ void wxsBitmapButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
         {
             wxString BmpCode = BitmapLabel.IsEmpty() ? _T("wxNullBitmap") : BitmapLabel.BuildCode(true,_T(""),wxsCPP,wxART_BUTTON);
 
-            if ( GetParent() )
+            if ( !IsRootItem() )
             {
                 Code<< GetVarName() << _T(" = new wxBitmapButton(");
             }

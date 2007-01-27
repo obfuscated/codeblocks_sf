@@ -25,6 +25,7 @@
 #include "wxsparent.h"
 #include "wxsitemfactory.h"
 #include "wxsitemeditor.h"
+#include "wxstool.h"
 #include "../wxscoder.h"
 
 #include <wx/clipbrd.h>
@@ -104,6 +105,11 @@ wxsItemResData::~wxsItemResData()
     delete m_RootItem;
     m_RootItem = NULL;
     m_RootSelection = NULL;
+    for ( int i=0; i<GetToolsCount(); i++ )
+    {
+        delete m_Tools[i];
+    }
+    m_Tools.clear();
     m_PropertiesFilter = 0;
     wxsResourceItemId ParentId = wxsResourceTree::Get()->GetItemParent(m_TreeId);
     // Selecting parent to prevent reopening resource on wxGTK
@@ -184,6 +190,7 @@ bool wxsItemResData::LoadInFileMode()
     RecreateRootItem();
     if ( !m_RootItem ) return false;
     m_RootItem->XmlRead(Object,true,false);
+    LoadToolsReq(Object,true,false);
 
     return true;
 }
@@ -220,6 +227,7 @@ bool wxsItemResData::LoadInMixedMode()
     RecreateRootItem();
     if ( !m_RootItem ) return false;
     m_RootItem->XmlRead(Object,true,false);
+    LoadToolsReq(Object,true,false);
 
     // Loading extra data from wxs file
 
@@ -248,6 +256,10 @@ bool wxsItemResData::LoadInMixedMode()
             }
 
             UpdateExtraDataReq(m_RootItem,IdToXmlMap);
+            for ( int i=0; i<GetToolsCount(); i++ )
+            {
+                UpdateExtraDataReq(m_Tools[i],IdToXmlMap);
+            }
         }
     }
 
@@ -312,6 +324,7 @@ bool wxsItemResData::LoadInSourceMode()
     RecreateRootItem();
     if ( !m_RootItem ) return false;
     m_RootItem->XmlRead(Object,true,true);
+    LoadToolsReq(Object,true,true);
 
     return true;
 }
@@ -320,6 +333,31 @@ void wxsItemResData::RecreateRootItem()
 {
     delete m_RootItem;
     m_RootItem = wxsItemFactory::Build(m_ClassType,this);
+}
+
+void wxsItemResData::LoadToolsReq(TiXmlElement* Node,bool IsXRC,bool IsExtra)
+{
+    for ( TiXmlElement* Object = Node->FirstChildElement("object"); Object; Object = Object->NextSiblingElement("object") )
+    {
+        LoadToolsReq(Object,IsXRC,IsExtra);
+
+        wxString Class = cbC2U(Object->Attribute("class"));
+        if ( Class.IsEmpty() ) continue;
+        const wxsItemInfo* Info = wxsItemFactory::GetInfo(Class);
+        if ( !Info ) continue;
+        if ( Info->Type != wxsTTool ) continue;
+        if ( GetPropertiesFilter()!=wxsItem::flSource && !Info->AllowInXRC ) continue;
+        wxsItem* Item = wxsItemFactory::Build(Class,this);
+        if ( !Item ) continue;
+        wxsTool* Tool = Item->ConvertToTool();
+        if ( !Tool )
+        {
+            delete Item;
+            continue;
+        }
+        InsertNewTool(Tool);
+        Tool->XmlRead(Object,IsXRC,IsExtra);
+    }
 }
 
 bool wxsItemResData::Save()
@@ -366,6 +404,10 @@ bool wxsItemResData::SaveInMixedMode()
     // Now storing all extra data
     TiXmlElement* Extra = wxSmithNode->InsertEndChild(TiXmlElement("resource_extra"))->ToElement();
     SaveExtraDataReq(m_RootItem,Extra);
+    for ( int i=0; i<GetToolsCount(); i++ )
+    {
+        SaveExtraDataReq(m_Tools[i],Extra);
+    }
 
     if ( Doc.SaveFile() )
     {
@@ -383,7 +425,7 @@ void wxsItemResData::SaveExtraDataReq(wxsItem* Item,TiXmlElement* Node)
         if ( !Id.empty() )
         {
             TiXmlElement* Object = Node->InsertEndChild(TiXmlElement("object"))->ToElement();
-            if ( Item->GetParent() )
+            if ( Item!=m_RootItem )
             {
                 Object->SetAttribute("name",cbU2C(Id));
                 Object->SetAttribute("class",cbU2C(Item->GetClassName()));
@@ -418,6 +460,11 @@ bool wxsItemResData::SaveInSourceMode()
     TiXmlElement* Object = wxSmithNode->InsertEndChild(TiXmlElement("object"))->ToElement();
     m_RootItem->XmlWrite(Object,true,true);
     Object->SetAttribute("name",cbU2C(m_ClassName));
+    for ( int i=0; i<GetToolsCount(); i++ )
+    {
+        TiXmlElement* ToolElement = Object->InsertEndChild(TiXmlElement("object"))->ToElement();
+        m_Tools[i]->XmlWrite(ToolElement,true,true);
+    }
 
     if ( Doc.SaveFile() )
     {
@@ -522,7 +569,19 @@ void wxsItemResData::BuildVariablesCode(wxsCodingLang Lang,wxString& LocalCode, 
         case wxsCPP:
         {
             // Creating local and global declarations
-            BuildVariablesCodeReq(wxsCPP,m_RootItem,LocalCode,GlobalCode);
+            wxsParent* RootAsParent = m_RootItem->ConvertToParent();
+            if ( RootAsParent )
+            {
+                for ( int i=0; i<RootAsParent->GetChildCount(); i++ )
+                {
+                    BuildVariablesCodeReq(wxsCPP,RootAsParent->GetChild(i),LocalCode,GlobalCode);
+                }
+            }
+            for ( int i=0; i<GetToolsCount(); i++ )
+            {
+                BuildVariablesCodeReq(wxsCPP,m_Tools[i],LocalCode,GlobalCode);
+            }
+
             if ( LocalCode.Length()>1 )
             {
                 // Adding one empty line between local declarations and
@@ -541,27 +600,25 @@ void wxsItemResData::BuildVariablesCode(wxsCodingLang Lang,wxString& LocalCode, 
 
 void wxsItemResData::BuildVariablesCodeReq(wxsCodingLang Lang,wxsItem* Item,wxString& LocalCode, wxString& GlobalCode)
 {
-    wxsParent* Parent = Item->ConvertToParent();
-    if ( !Parent ) return;
-
-    int ChildCnt = Parent->GetChildCount();
-    for ( int i=0; i<ChildCnt; i++ )
+    if ( Item->GetPropertiesFlags() & wxsItem::flVariable )
     {
-        wxsItem* Child = Parent->GetChild(i);
-
-        if ( Child->GetPropertiesFlags() & wxsItem::flVariable )
+        if ( Item->GetIsMember() )
         {
-            if ( Child->GetIsMember() )
-            {
-                Child->BuildDeclarationCode(GlobalCode,Lang);
-            }
-            else if ( m_PropertiesFilter == wxsItem::flSource )
-            {
-                Child->BuildDeclarationCode(LocalCode,Lang);
-            }
+            Item->BuildDeclarationCode(GlobalCode,Lang);
         }
+        else if ( m_PropertiesFilter == wxsItem::flSource )
+        {
+            Item->BuildDeclarationCode(LocalCode,Lang);
+        }
+    }
 
-        BuildVariablesCodeReq(Lang,Child,LocalCode,GlobalCode);
+    wxsParent* Parent = Item->ConvertToParent();
+    if ( Parent )
+    {
+        for ( int i=0; i<Parent->GetChildCount(); i++ )
+        {
+            BuildVariablesCodeReq(Lang,Parent->GetChild(i),LocalCode,GlobalCode);
+        }
     }
 }
 
@@ -571,6 +628,10 @@ void wxsItemResData::BuildCreatingCode(wxsCodingLang Lang,wxString& Code)
     {
         case wxsItem::flSource:
             m_RootItem->BuildCreatingCode(Code,_T("parent"),Lang);
+            for ( int i=0; i<GetToolsCount(); i++ )
+            {
+                m_Tools[i]->BuildCreatingCode(Code,_T("this"),Lang);
+            }
             break;
 
         case wxsItem::flMixed:
@@ -604,6 +665,8 @@ void wxsItemResData::BuildXrcLoadingCode(wxsCodingLang Language,wxString& Code)
 void wxsItemResData::BuildXrcItemsFetchingCode(wxsCodingLang Lang,wxString& Code)
 {
     BuildXrcItemsFetchingCodeReq(Lang,m_RootItem,Code);
+    // We do not fetch tools since they can not be windows and thus can not be
+    // fetched using FindWindow()
 }
 
 void wxsItemResData::BuildXrcItemsFetchingCodeReq(wxsCodingLang Lang,wxsItem* Item,wxString& Code)
@@ -647,6 +710,10 @@ void wxsItemResData::BuildXrcItemsFetchingCodeReq(wxsCodingLang Lang,wxsItem* It
 void wxsItemResData::BuildEventHandlersCode(wxsCodingLang Language,wxString& Code)
 {
     BuildEventHandlersCodeReq(Language,m_RootItem,Code);
+    for ( int i=0; i<GetToolsCount(); i++ )
+    {
+        BuildEventHandlersCodeReq(Language,m_Tools[i],Code);
+    }
 }
 
 void wxsItemResData::BuildEventHandlersCodeReq(wxsCodingLang Language,wxsItem* Item,wxString& Code)
@@ -701,7 +768,15 @@ void wxsItemResData::BuildIdentifiersCode(wxsCodingLang Lang,wxString& IdCode,wx
     if ( m_PropertiesFilter == wxsItem::flSource )
     {
         wxArrayString IdsArray;
-        BuildIdsArrayReq(m_RootItem,IdsArray);
+        wxsParent* RootAsParent = m_RootItem->ConvertToParent();
+        for ( int i=0; i<RootAsParent->GetChildCount(); i++ )
+        {
+            BuildIdsArrayReq(RootAsParent->GetChild(i),IdsArray);
+        }
+        for ( int i=0; i<GetToolsCount(); i++ )
+        {
+            BuildIdsArrayReq(m_Tools[i],IdsArray);
+        }
         switch ( Lang )
         {
             case wxsCPP:
@@ -731,23 +806,21 @@ void wxsItemResData::BuildIdentifiersCode(wxsCodingLang Lang,wxString& IdCode,wx
 
 void wxsItemResData::BuildIdsArrayReq(wxsItem* Item,wxArrayString& Array)
 {
+    if ( Item->GetPropertiesFlags() & wxsItem::flId )
+    {
+        const wxString& Name = Item->GetIdName();
+
+        if ( !wxsPredefinedIDs::Check(Name) )
+        {
+            Array.Add(Name);
+        }
+    }
+
     wxsParent* Parent = Item->ConvertToParent();
     if ( !Parent ) return;
-
-	int Cnt = Parent->GetChildCount();
-	for ( int i=0; i<Cnt; i++ )
+	for ( int i=0; i<Parent->GetChildCount(); i++ )
 	{
-		wxsItem* Child = Parent->GetChild(i);
-		if ( Child->GetPropertiesFlags() & wxsItem::flId )
-		{
-		    const wxString& Name = Child->GetIdName();
-
-		    if ( !wxsPredefinedIDs::Check(Name) )
-		    {
-                Array.Add(Name);
-		    }
-		}
-		BuildIdsArrayReq(Child,Array);
+		BuildIdsArrayReq(Parent->GetChild(i),Array);
 	}
 }
 
@@ -760,6 +833,10 @@ void wxsItemResData::BuildIncludesCode(wxsCodingLang Language,wxString& LocalInc
             wxArrayString GlobalHeaders;
             wxArrayString LocalHeaders;
             BuildHeadersReq(wxsCPP,m_RootItem,LocalHeaders,GlobalHeaders);
+            for ( int i=0; i<GetToolsCount(); i++ )
+            {
+                BuildHeadersReq(wxsCPP,m_Tools[i],LocalHeaders,GlobalHeaders);
+            }
 
             LocalHeaders.Add(_T("<wx/intl.h>"));
             // TODO: Use these headers dynamically, not always
@@ -867,6 +944,11 @@ bool wxsItemResData::RebuildXrcFile()
     // The only things left are: to dump item into object ...
     m_RootItem->XmlWrite(Object,true,false);
     Object->SetAttribute("name",cbU2C(m_ClassName));
+    for ( int i=0; i<GetToolsCount(); i++ )
+    {
+        TiXmlElement* ToolElement = Object->InsertEndChild(TiXmlElement("object"))->ToElement();
+        m_Tools[i]->XmlWrite(ToolElement,true,false);
+    }
 
     // ... and save back the file
     return Doc.SaveFile(cbU2C(m_XrcFileName));
@@ -905,12 +987,20 @@ void wxsItemResData::EndChange()
 bool wxsItemResData::ValidateRootSelection()
 {
     wxsItem* NewSelection = NULL;
-    if ( !ValidateRootSelectionReq(m_RootItem,NewSelection) )
+    if ( ValidateRootSelectionReq(m_RootItem,NewSelection) )
     {
-        m_RootSelection = NewSelection ? NewSelection : m_RootItem;
-        return false;
+        return true;
     }
-    return true;
+
+    for ( int i=0; i<GetToolsCount(); i++ )
+    {
+        if ( ValidateRootSelectionReq(m_Tools[i],NewSelection) )
+        {
+            return true;
+        }
+    }
+    m_RootSelection = NewSelection ? NewSelection : m_RootItem;
+    return false;
 }
 
 bool wxsItemResData::ValidateRootSelectionReq(wxsItem* Item,wxsItem*& NewSelection)
@@ -954,6 +1044,10 @@ void wxsItemResData::Copy()
     if ( !wxTheClipboard->Open() ) return;
     wxsItemResDataObject* Data = new wxsItemResDataObject;
     CopyReq(m_RootItem,Data);
+    for ( int i=0; i<GetToolsCount(); i++ )
+    {
+        CopyReq(m_Tools[i],Data);
+    }
 
     wxTheClipboard->SetData(Data);
     wxTheClipboard->Close();
@@ -981,8 +1075,9 @@ void wxsItemResData::CopyReq(wxsItem* Item,wxsItemResDataObject* Data)
 
 void wxsItemResData::Paste()
 {
-    if ( !m_RootItem->ConvertToParent() ) return;
+    if ( !m_RootItem ) return;
     if ( !wxTheClipboard->Open() ) return;
+    bool RootIsParent = (m_RootItem->ConvertToParent()!=NULL);
 
     wxsItemResDataObject Data;
     if ( wxTheClipboard->GetData(Data) )
@@ -994,20 +1089,28 @@ void wxsItemResData::Paste()
 
         wxsParent* Parent = Reference->GetParent();
         int Index = 0;
-        if (! Parent )
+        if ( !Parent )
         {
             Parent = m_RootItem->ConvertToParent();
-            Reference = Parent->GetChild(Parent->GetChildCount()-1);
+            if ( Parent )
+            {
+                Reference = Parent->GetChild(Parent->GetChildCount()-1);
+            }
+            else
+            {
+                Reference = NULL;
+            }
         }
 
         while ( Reference != NULL &&
                 Reference->GetType() == wxsTSizer &&
+                Parent != NULL &&
                 Parent->GetType() != wxsTSizer )
         {
             Parent = Reference->ConvertToParent();
             Reference = Parent->GetChild(Parent->GetChildCount()-1);
         }
-        Index = Reference ? Parent->GetChildIndex(Reference) : 0;
+        Index = (Reference&&Parent) ? Parent->GetChildIndex(Reference) : 0;
 
         int Cnt = Data.GetItemCount();
         if ( Cnt )
@@ -1019,9 +1122,26 @@ void wxsItemResData::Paste()
                 wxsItem* Insert = Data.BuildItem(this,i);
                 if ( Insert )
                 {
-                    if ( InsertNew(Insert,Parent,Index++) )
+                    if ( Insert->ConvertToTool() )
                     {
-                        Insert->SetIsSelected(true);
+                        if ( InsertNewTool(Insert->ConvertToTool()) )
+                        {
+                            Insert->SetIsSelected(true);
+                        }
+                    }
+                    else
+                    {
+                        if ( Parent && RootIsParent )
+                        {
+                            if ( InsertNew(Insert,Parent,Index++) )
+                            {
+                                Insert->SetIsSelected(true);
+                            }
+                        }
+                        else
+                        {
+                            delete Insert;
+                        }
                     }
                 }
             }
@@ -1034,7 +1154,12 @@ void wxsItemResData::Paste()
 
 bool wxsItemResData::AnySelected()
 {
-    return AnySelectedReq(m_RootItem);
+    if ( AnySelectedReq(m_RootItem) ) return true;
+    for ( int i=0; i<GetToolsCount(); i++ )
+    {
+        if ( m_Tools[i]->GetIsSelected() ) return true;
+    }
+    return false;
 }
 
 bool wxsItemResData::AnySelectedReq(wxsItem* Item)
@@ -1058,6 +1183,10 @@ bool wxsItemResData::AnySelectedReq(wxsItem* Item)
 void wxsItemResData::StoreTreeExpandState()
 {
     StoreTreeExpandStateReq(m_RootItem);
+    for ( int i=0; i<GetToolsCount(); i++ )
+    {
+        StoreTreeExpandStateReq(m_Tools[i]);
+    }
 }
 
 void wxsItemResData::StoreTreeExpandStateReq(wxsItem* Item)
@@ -1083,14 +1212,16 @@ void wxsItemResData::StoreTreeExpandStateReq(wxsItem* Item)
 
 bool wxsItemResData::SelectItem(wxsItem* Item,bool UnselectOther)
 {
-    if ( !m_RootItem )
-    {
-        return false;
-    }
-
     if ( UnselectOther )
     {
-        m_RootItem->ClearSelection();
+        if ( m_RootItem )
+        {
+            m_RootItem->ClearSelection();
+        }
+        for ( int i=0; i<GetToolsCount(); i++ )
+        {
+            m_Tools[i]->ClearSelection();
+        }
     }
 
     if ( !Item )
@@ -1098,10 +1229,12 @@ bool wxsItemResData::SelectItem(wxsItem* Item,bool UnselectOther)
         Item = m_RootItem;
     }
 
-    Item->SetIsSelected(true);
+    if ( Item )
+    {
+        Item->SetIsSelected(true);
+        Item->ShowInPropertyGrid();
+    }
     m_RootSelection = Item;
-
-    Item->ShowInPropertyGrid();
     m_Editor->RebuildQuickProps(Item);
     m_Editor->UpdateSelection();
 
@@ -1147,6 +1280,10 @@ wxString wxsItemResData::GetXmlData()
 {
     wxsItemResDataObject Object;
     Object.AddItem(m_RootItem);
+    for ( int i=0; i<GetToolsCount(); i++ )
+    {
+        Object.AddItem(m_Tools[i]);
+    }
     return Object.GetXmlData();
 }
 
@@ -1157,15 +1294,38 @@ bool wxsItemResData::SetXmlData(const wxString& XmlData)
     wxsItemResDataObject Object;
     Object.SetXmlData(XmlData);
 
+    // Recreating root item
     wxsItem* NewRoot = Object.BuildItem(this,0);
     if ( NewRoot->GetClassName() != m_ClassType )
     {
         delete NewRoot;
         return false;
     }
-
     delete m_RootItem;
     m_RootItem = NewRoot;
+
+    // Recreating tools
+    for ( int i=0; i<GetToolsCount(); i++ )
+    {
+        delete m_Tools[i];
+    }
+    m_Tools.Clear();
+    for ( int i=1; i<Object.GetItemCount(); i++ )
+    {
+        wxsItem* NewItem = Object.BuildItem(this,i);
+        if ( !NewItem->ConvertToTool() )
+        {
+            delete NewItem;
+            continue;
+        }
+        wxsTool* Tool = NewItem->ConvertToTool();
+        if ( !Tool->CanAddToResource(this,false) )
+        {
+            delete Tool;
+            continue;
+        }
+        InsertNewTool(Tool);
+    }
 
     RebuildFiles();
     RebuildTree();
@@ -1179,6 +1339,16 @@ bool wxsItemResData::SetXmlData(const wxString& XmlData)
 
 bool wxsItemResData::InsertNew(wxsItem* New,wxsParent* Parent,int Position)
 {
+    if ( !New )
+    {
+        return false;
+    }
+
+    if ( New->ConvertToTool() )
+    {
+        return InsertNewTool(New->ConvertToTool());
+    }
+
     m_Corrector.BeforePaste(New);
     if ( !Parent->AddChild(New,Position) )
     {
@@ -1188,10 +1358,43 @@ bool wxsItemResData::InsertNew(wxsItem* New,wxsParent* Parent,int Position)
     return true;
 }
 
+bool wxsItemResData::InsertNewTool(wxsTool* Tool)
+{
+    if ( !Tool )
+    {
+        return false;
+    }
+    if ( !Tool->CanAddToResource(this,false) )
+    {
+        delete Tool;
+        return false;
+    }
+
+    // TODO: Check if this tool can be added to this resource
+    m_Corrector.BeforePaste(Tool);
+    m_Tools.Add(Tool);
+    return true;
+}
+
 void wxsItemResData::DeleteSelected()
 {
+    // Clearing directory structure
     DeleteSelectedReq(m_RootItem);
+
+    // Clearing tools
+    for ( int i=0; i<GetToolsCount(); i++ )
+    {
+        if ( m_Tools[i]->GetIsSelected() )
+        {
+            delete m_Tools[i];
+            m_Tools.RemoveAt(i);
+            i--;
+        }
+    }
+
+    // Changing selection
     m_RootSelection = m_RootItem;
+    m_RootSelection->SetIsSelected(true);
 }
 
 void wxsItemResData::DeleteSelectedReq(wxsItem* Item)
@@ -1242,6 +1445,14 @@ void wxsItemResData::RebuildTree()
 {
     wxsResourceTree::Get()->DeleteChildren(m_TreeId);
     m_RootItem->BuildItemTree(wxsResourceTree::Get(),m_TreeId,-1);
+    if ( GetToolsCount() )
+    {
+        wxsResourceItemId ToolsId = wxsResourceTree::Get()->AppendItem(m_TreeId,_("Tools"));
+        for ( int i=0; i<GetToolsCount(); i++ )
+        {
+            m_Tools[i]->BuildItemTree(wxsResourceTree::Get(),ToolsId,-1);
+        }
+    }
     StoreTreeIds();
 }
 
@@ -1251,6 +1462,10 @@ void wxsItemResData::StoreTreeIds()
     if ( m_RootItem )
     {
         StoreTreeIdsReq(m_RootItem);
+    }
+    for ( int i=0; i<GetToolsCount(); i++ )
+    {
+        m_IdMap[m_Tools[i]] = m_Tools[i]->GetLastTreeItemId();
     }
 }
 

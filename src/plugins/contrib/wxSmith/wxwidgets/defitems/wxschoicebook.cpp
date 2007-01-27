@@ -263,7 +263,7 @@ void wxsChoicebook::OnBuildCreatingCode(wxString& Code,const wxString& WindowPar
     {
         case wxsCPP:
         {
-            if ( GetParent() )
+            if ( !GetParent() )
             {
                 Code << GetVarName() << _T(" = new wxChoicebook(");
             }

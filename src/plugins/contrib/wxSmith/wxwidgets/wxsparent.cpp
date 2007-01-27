@@ -23,8 +23,8 @@
 
 #include "wxsparent.h"
 
-//#include "wxsglobals.h"
 #include "wxsitemfactory.h"
+#include "wxsitemresdata.h"
 
 wxsParent::wxsParent(wxsItemResData* Data,const wxsItemInfo* Info,long PropertiesFlags,const wxsEventDesc* Events):
     wxsItem(Data,Info,PropertiesFlags,Events)
@@ -55,6 +55,7 @@ wxsItem* wxsParent::GetChild(int Index)
 bool wxsParent::AddChild(wxsItem* Child,int Position)
 {
     if ( !Child ) return false;
+    if ( Child->GetType() == wxsTTool ) return false;
     if ( !CanAddChild(Child,true) ) return false;
     if ( Child->GetParent() != NULL )
     {
@@ -252,6 +253,25 @@ bool wxsParent::OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
     {
         NewItem = wxsItemFactory::Build(_T("Custom"),GetResourceData());
         if ( !NewItem ) return false;
+    }
+
+    // Checking if this item is allowed in this edit mode
+    if ( GetResourceData()->GetPropertiesFilter()!=flSource && !NewItem->GetInfo().AllowInXRC )
+    {
+        // we will load this item as custom item since it's not supported when using XRC
+        delete NewItem;
+        NewItem = wxsItemFactory::Build(_T("Custom"),GetResourceData());
+        if ( !NewItem ) return false;
+    }
+    else
+    {
+        if ( NewItem->GetInfo().Type == wxsTTool )
+        {
+            // We do not load tools at this stage,
+            // returning true to prevent load errors
+            delete NewItem;
+            return true;
+        }
     }
 
     // Trying to add new item to this class
