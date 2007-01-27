@@ -1,4 +1,4 @@
-%define _svnrev		%(echo @VERSION@ | cut -c 8-)
+%define _svnrev		@REVISION@
 %define req_wxgtk	2.6.0
 %define _fedora		%(if [ -f /etc/fedora-release ]; then echo 1; else echo 0; fi)
 %define _redhat		%(if [ -f /etc/redhat-release ]; then echo 1; else echo 0; fi)

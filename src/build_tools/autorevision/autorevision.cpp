@@ -173,7 +173,7 @@ bool WriteOutput(const string& outputFile, string& revision, string& date)
         if (!in.bad() && !in.eof())
         {
             in >> old;
-            if(old == comment)
+            if(old >= comment)
             {
                 if(be_verbose)
                     printf("Revision unchanged (%s). Skipping.", revision.c_str());

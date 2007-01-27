@@ -6,6 +6,7 @@ AC_INIT([codeblocks], SVN_REVISION)
 
 AC_CANONICAL_TARGET
 
+AM_INIT_AUTOMAKE([1.9 tar-ustar])
 AM_INIT_AUTOMAKE
 AC_CONFIG_HEADER([src/sdk/config.h])
 
@@ -107,12 +108,16 @@ AM_CONDITIONAL([LINUX], [test `uname` = "Linux"])
 AM_CONDITIONAL([DARWIN], [test `uname` = "Darwin"])
 
 AC_MSG_NOTICE([Configuring Code::Blocks...])
+AC_MSG_NOTICE(SVN revision SVN_REVISION (SVN_DATE))
+AC_SUBST(REVISION, SVN_REV)
+AC_SUBST(DATE, "SVN_DATE")
 
 AC_CONFIG_FILES([Makefile
 	src/Makefile
 	src/build_tools/Makefile
 	src/build_tools/autorevision/Makefile
 	src/sdk/Makefile
+	src/sdk/autorevision.h
 	src/sdk/scripting/Makefile
 	src/sdk/scripting/bindings/Makefile
 	src/sdk/scripting/squirrel/Makefile
@@ -236,6 +241,7 @@ AC_CONFIG_FILES([Makefile
 	src/wxsmith/Makefile
 	codeblocks.pc
 	codeblocks.spec
+	codeblocks.plist
 ])
 
 AC_OUTPUT

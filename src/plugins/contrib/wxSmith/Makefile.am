@@ -59,7 +59,6 @@ noinst_HEADERS = \
 EXTRA_DIST = \
 *.cbp \
 *.bat \
-*.unix \
 manifest.xml
 
 pkgdata_DATA = wxsmith.zip
