@@ -937,10 +937,11 @@ TiXmlElement* ProjectLoader::AddElement(TiXmlElement* parent, const char* name, 
     TiXmlElement elem(name);
 
     if (attr)
+    {
         elem.SetAttribute(attr, cbU2C(attribute));
+    }
 
-    //return parent->InsertEndChild(TiXmlElement(name))->ToElement();
-    return static_cast<TiXmlElement*>(parent->InsertEndChild(TiXmlElement(name)));
+    return parent->InsertEndChild(elem)->ToElement();
 }
 
 // convenience function, used in Save()
@@ -949,10 +950,11 @@ TiXmlElement* ProjectLoader::AddElement(TiXmlElement* parent, const char* name, 
     TiXmlElement elem(name);
 
     if (attr)
+    {
         elem.SetAttribute(attr, attribute);
+    }
 
-    //return parent->InsertEndChild(TiXmlElement(name))->ToElement();
-    return static_cast<TiXmlElement*>(parent->InsertEndChild(TiXmlElement(name)));
+    return parent->InsertEndChild(elem)->ToElement();
 }
 
 // convenience function, used in Save()
