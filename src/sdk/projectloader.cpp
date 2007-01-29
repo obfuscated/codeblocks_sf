@@ -1283,7 +1283,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
     // as a last step, run all hooked callbacks
     if (ProjectLoaderHooks::HasRegisteredHooks())
     {
-        TiXmlElement* node = AddElement(prjnode, "Extensions", "", wxEmptyString);
+        TiXmlElement* node = AddElement(prjnode, "Extensions");
         if (node)
         {
             ProjectLoaderHooks::CallHooks(m_pProject, node, false);
