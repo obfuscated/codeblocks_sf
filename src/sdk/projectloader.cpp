@@ -884,7 +884,7 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
         //
         if (node->Attribute("virtualFolder"))
         {
-            file->virtual_path = cbC2U(node->Attribute("virtualFolder"));
+            file->virtual_path = UnixFilename(cbC2U(node->Attribute("virtualFolder")));
         }
         //
         if (node->Attribute("buildCommand") && node->Attribute("compiler"))

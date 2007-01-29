@@ -105,16 +105,31 @@ bool ScriptingManager::LoadScript(const wxString& filename)
 
     wxString fname = filename;
     wxFile f;
+    // try open
     f.Open(fname);
     if (!f.IsOpened())
     {
-        fname = ConfigManager::LocateDataFile(filename, sdScriptsUser | sdScriptsGlobal);
-        f.Open(fname);
-        if(!f.IsOpened())
-        {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Can't open script %s"), filename.c_str());
-            return false;
-        }
+    	bool found = false;
+
+    	// check in same dir as currently running script (if any)
+    	if (!m_CurrentlyRunningScriptFile.IsEmpty())
+    	{
+    		fname = wxFileName(m_CurrentlyRunningScriptFile).GetPath() + _T('/') + filename;
+			f.Open(fname);
+			found = f.IsOpened();
+    	}
+
+		if (!found)
+		{
+			// check in standard script dirs
+			fname = ConfigManager::LocateDataFile(filename, sdScriptsUser | sdScriptsGlobal);
+			f.Open(fname);
+			if (!f.IsOpened())
+			{
+				Manager::Get()->GetMessageManager()->DebugLog(_T("Can't open script %s"), filename.c_str());
+				return false;
+			}
+		}
     }
     // read file
     wxString contents = cbReadFileContents(f);

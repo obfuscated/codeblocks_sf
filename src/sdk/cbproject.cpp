@@ -1038,6 +1038,11 @@ const wxArrayString& cbProject::GetVirtualFolders() const
 void cbProject::SetVirtualFolders(const wxArrayString& folders)
 {
     m_VirtualFolders = folders;
+    for (size_t i = 0; i < m_VirtualFolders.GetCount(); ++i)
+    {
+    	m_VirtualFolders[i].Replace(_T("/"), wxString(wxFILE_SEP_PATH));
+    	m_VirtualFolders[i].Replace(_T("\\"), wxString(wxFILE_SEP_PATH));
+    }
 }
 
 bool cbProject::CanDragNode(wxTreeCtrl* tree, wxTreeItemId node)
