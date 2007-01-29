@@ -69,17 +69,14 @@ class CodeBlocksApp : public wxApp
 
         void LoadDelayedFiles(MainFrame* frame); // command line or DDE (if available) files
 
-#ifdef __WXMSW__
-        void InitAssociations();
-        HINSTANCE m_ExceptionHandlerLib;
-        bool m_NoDDE; // no DDE
-        bool m_NoAssocs; // no associations check
-#endif
-        // batch jobs - start
-        wxDialog* m_pBatchBuildDialog;
+        wxString m_Prefix; // --prefix switch
         wxString m_BatchTarget;
-        int m_BatchExitCode;
+        wxString m_Script;
+
+        wxDialog* m_pBatchBuildDialog;
         MainFrame* m_Frame;
+		wxSingleInstanceChecker* m_pSingleInstance;
+
         bool m_Batch;
         bool m_BatchNotify;
         bool m_BatchWindowAutoClose; // default: true
@@ -87,14 +84,17 @@ class CodeBlocksApp : public wxApp
         bool m_ReBuild;
         bool m_HasProject;
         bool m_HasWorkSpace;
-        // batch jobs - end
-
         bool m_NoSplash; // no splash screen
         bool m_HasDebugLog; // display debug log
         bool m_NoCrashHandler; // no crash handler
-        wxString m_Prefix; // --prefix switch
 
-		wxSingleInstanceChecker* m_pSingleInstance;
+#ifdef __WXMSW__
+        void InitAssociations();
+        bool m_NoDDE; // no DDE
+        bool m_NoAssocs; // no associations check
+        HINSTANCE m_ExceptionHandlerLib;
+#endif
+        int m_BatchExitCode;
 
         DECLARE_EVENT_TABLE()
 };

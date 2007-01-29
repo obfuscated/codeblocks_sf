@@ -154,6 +154,7 @@ const wxCmdLineEntryDesc cmdLineDesc[] =
     { wxCMD_LINE_OPTION, _T(""), _T("target"),  _T("the target for the batch build"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_SWITCH, _T(""), _T("no-batch-window-close"),  _T("do not auto-close log window when batch build is done"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T(""), _T("batch-build-notify"),  _T("show message when batch build is done"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_OPTION, _T(""), _T("script"),  _T("execute script file"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_PARAM, _T(""), _T(""),  _T("filename(s)"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
     { wxCMD_LINE_NONE }
 };
@@ -337,7 +338,7 @@ MainFrame* CodeBlocksApp::InitFrame()
             Manager::Get()->GetProjectManager()->LoadWorkspace();
     }
 
-    if (!m_Batch)
+    if (!m_Batch && !m_Script)
     {
 #ifdef wxUSE_BINDERAPP
         SetGlobalHandler(frame);
@@ -455,13 +456,13 @@ bool CodeBlocksApp::OnInit()
         if(!LoadConfig())
             return false;
 
-        if(!m_Batch && !InitXRCStuff())
+        if(!m_Batch && !m_Script && !InitXRCStuff())
         {
            // wsSafeShowMessage(_T("Fatal error"), _T("Initialisation of resources failed."));
             return false;
         }
 
-        Splash splash(!m_Batch &&
+        Splash splash(!m_Batch && !m_Script &&
                       !m_NoSplash &&
                       Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/show_splash"), true));
 
@@ -482,7 +483,7 @@ bool CodeBlocksApp::OnInit()
 
         InitDebugConsole();
 
-        Manager::SetBatchBuild(m_Batch);
+        Manager::SetBatchBuild(m_Batch | !!m_Script);
         Manager::Get()->GetScriptingManager();
         MainFrame* frame = InitFrame();
         m_Frame = frame;
@@ -493,6 +494,18 @@ bool CodeBlocksApp::OnInit()
             LoadDelayedFiles(frame);
 
             BatchJob();
+            frame->Close();
+            return true;
+        }
+
+        if (!m_Script.IsEmpty())
+        {
+            s_Loading = false;
+            LoaderBase* loader = Manager::Get()->GetFileManager()->Load(m_Script);
+
+            if(loader->GetData())
+                Manager::Get()->GetScriptingManager()->LoadBuffer(cbC2U(loader->GetData()));
+
             frame->Close();
             return true;
         }
@@ -840,7 +853,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     m_Build = parser.Found(_T("build"));
                     m_ReBuild = parser.Found(_T("rebuild"));
                     parser.Found(_T("target"), &m_BatchTarget);
-
+                    parser.Found(_T("script"), &m_Script);
                     // initial setting for batch flag (will be reset when ParseCmdLine() is called again).
                     m_Batch = m_Build || m_ReBuild;
                 }
