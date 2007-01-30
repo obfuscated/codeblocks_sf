@@ -1,4 +1,4 @@
-SUBDIRS = common pch
+SUBDIRS = common pch rc
 
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/wxwidgets
 

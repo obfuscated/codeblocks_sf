@@ -184,6 +184,12 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/h_file/Makefile
 	src/plugins/scriptedwizard/resources/irrlicht/Makefile
 	src/plugins/scriptedwizard/resources/irrlicht/files/Makefile
+	src/plugins/scriptedwizard/resources/lf/Makefile
+	src/plugins/scriptedwizard/resources/lf/files/Makefile
+	src/plugins/scriptedwizard/resources/lf/files/common/Makefile
+	src/plugins/scriptedwizard/resources/lf/files/common/buildscripts/Makefile
+	src/plugins/scriptedwizard/resources/lf/files/quick/Makefile
+	src/plugins/scriptedwizard/resources/lf/files/structured/Makefile
 	src/plugins/scriptedwizard/resources/ogre/Makefile
 	src/plugins/scriptedwizard/resources/ogre/files/Makefile
 	src/plugins/scriptedwizard/resources/opengl/Makefile
@@ -204,6 +210,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/wxwidgets/Makefile
 	src/plugins/scriptedwizard/resources/wxwidgets/common/Makefile
 	src/plugins/scriptedwizard/resources/wxwidgets/pch/Makefile
+	src/plugins/scriptedwizard/resources/wxwidgets/rc/Makefile
 	src/plugins/todo/Makefile
 	src/plugins/todo/resources/Makefile
 	src/plugins/xpmanifest/Makefile

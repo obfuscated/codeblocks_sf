@@ -1,5 +1,14 @@
-#ifndef WX_PCH_H_INCLUDED
-#define WX_PCH_H_INCLUDED
+/***************************************************************
+ * Name:      [PROJECT_NAME]_pch.h
+ * Purpose:   Header to support Pre-Compiled Header
+ * Author:    [AUTHOR_NAME] ([AUTHOR_EMAIL])
+ * Created:   [NOW]
+ * Copyright: [AUTHOR_NAME] ([AUTHOR_WWW])
+ * License:   
+ **************************************************************/
+
+#ifndef [PROJECT_HDR]_PCH_H_INCLUDED
+#define [PROJECT_HDR]_PCH_H_INCLUDED
 
 #if ( defined(USE_PCH) && !defined(WX_PRECOMP) )
     #define WX_PRECOMP
@@ -20,4 +29,4 @@
 	// put here all your rarely-changing header files
 #endif // USE_PCH
 
-#endif // WX_PCH_H_INCLUDED
+#endif //[PROJECT_HDR]_PCH_H_INCLUDED

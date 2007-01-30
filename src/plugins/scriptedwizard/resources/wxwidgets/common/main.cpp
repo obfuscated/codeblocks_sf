@@ -1,4 +1,21 @@
-#include "main.h"
+/***************************************************************
+ * Name:      [PROJECT_NAME]Main.cpp
+ * Purpose:   Code for Application Frame
+ * Author:    [AUTHOR_NAME] ([AUTHOR_EMAIL])
+ * Created:   [NOW]
+ * Copyright: [AUTHOR_NAME] ([AUTHOR_WWW])
+ * License:   
+ **************************************************************/
+
+#ifdef USE_PCH
+#include "[PROJECT_NAME]_pch.h"
+#endif
+
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif //__BORLANDC__
+
+#include "[PROJECT_NAME]Main.h"
 
 //helper functions
 enum wxbuildinfoformat {
@@ -29,12 +46,12 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 int idMenuQuit = wxNewId();
 int idMenuAbout = wxNewId();
 
-BEGIN_EVENT_TABLE(MyFrame, wxFrame)
-    EVT_MENU(idMenuQuit, MyFrame::OnQuit)
-    EVT_MENU(idMenuAbout, MyFrame::OnAbout)
+BEGIN_EVENT_TABLE([PROJECT_NAME]Frame, wxFrame)
+    EVT_MENU(idMenuQuit, [PROJECT_NAME]Frame::OnQuit)
+    EVT_MENU(idMenuAbout, [PROJECT_NAME]Frame::OnAbout)
 END_EVENT_TABLE()
 
-MyFrame::MyFrame(wxFrame *frame, const wxString& title)
+[PROJECT_NAME]Frame::[PROJECT_NAME]Frame(wxFrame *frame, const wxString& title)
     : wxFrame(frame, -1, title)
 {
 #if wxUSE_MENUS
@@ -59,16 +76,16 @@ MyFrame::MyFrame(wxFrame *frame, const wxString& title)
 #endif // wxUSE_STATUSBAR
 }
 
-MyFrame::~MyFrame()
+[PROJECT_NAME]Frame::~[PROJECT_NAME]Frame()
 {
 }
 
-void MyFrame::OnQuit(wxCommandEvent& event)
+void [PROJECT_NAME]Frame::OnQuit(wxCommandEvent& event)
 {
     Close();
 }
 
-void MyFrame::OnAbout(wxCommandEvent& event)
+void [PROJECT_NAME]Frame::OnAbout(wxCommandEvent& event)
 {
     wxString msg = wxbuildinfo(long_f);
     wxMessageBox(msg, _("Welcome to..."));

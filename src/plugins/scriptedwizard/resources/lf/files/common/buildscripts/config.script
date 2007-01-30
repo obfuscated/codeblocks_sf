@@ -1,0 +1,24 @@
+//
+// Master config
+// This file *must* be the very first attached script in the project
+//
+
+//
+// ------------- Start of user configuration options -------------
+//
+
+// the base (top-level) directory Lightfeather exists in
+LF_BASE <- _T("$(lf)");
+// or use the following for foreign projects and setup the GCV "lf"
+//LF_BASE <- ReplaceMacros(_T("$(#lf)"));
+
+// select whether Lightfeather uses NVidia's Cg or not
+HAVE_CG <- true;
+
+//
+// -------------- End of user configuration options --------------
+//
+
+// this function must exist for this file to be used as a build script
+// but we don't want to do anything in it
+function SetBuildOptions(targetBase){}

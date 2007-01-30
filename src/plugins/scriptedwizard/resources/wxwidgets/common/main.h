@@ -1,17 +1,26 @@
-#ifndef MAIN_H
-#define MAIN_H
+/***************************************************************
+ * Name:      [PROJECT_NAME]Main.h
+ * Purpose:   Defines Application Frame
+ * Author:    [AUTHOR_NAME] ([AUTHOR_EMAIL])
+ * Created:   [NOW]
+ * Copyright: [AUTHOR_NAME] ([AUTHOR_WWW])
+ * License:   
+ **************************************************************/
 
-#include "app.h"
+#ifndef [PROJECT_HDR]MAIN_H
+#define [PROJECT_HDR]MAIN_H
 
-class MyFrame: public wxFrame
+#include "[PROJECT_NAME]App.h"
+
+class [PROJECT_NAME]Frame: public wxFrame
 {
 	public:
-		MyFrame(wxFrame *frame, const wxString& title);
-		~MyFrame();
+		[PROJECT_NAME]Frame(wxFrame *frame, const wxString& title);
+		~[PROJECT_NAME]Frame();
 	private:
 		void OnQuit(wxCommandEvent& event);
 		void OnAbout(wxCommandEvent& event);
-		DECLARE_EVENT_TABLE();
+		DECLARE_EVENT_TABLE()
 };
 
-#endif // MAIN_H
+#endif // [PROJECT_NAME]MAIN_H

@@ -1,5 +1,14 @@
-#ifndef APP_H
-#define APP_H
+/***************************************************************
+ * Name:      [PROJECT_NAME]App.h
+ * Purpose:   Defines Application Class
+ * Author:    [AUTHOR_NAME] ([AUTHOR_EMAIL])
+ * Created:   [NOW]
+ * Copyright: [AUTHOR_NAME] ([AUTHOR_WWW])
+ * License:   
+ **************************************************************/
+ 
+#ifndef [PROJECT_HDR]APP_H
+#define [PROJECT_HDR]APP_H
 
 #include <wx/wxprec.h>
 
@@ -11,10 +20,10 @@
     #include <wx/wx.h>
 #endif
 
-class MyApp : public wxApp
+class [PROJECT_NAME]App : public wxApp
 {
 	public:
 		virtual bool OnInit();
 };
 
-#endif // APP_H
+#endif // [PROJECT_NAME]APP_H
