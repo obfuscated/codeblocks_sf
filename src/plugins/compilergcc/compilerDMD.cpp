@@ -134,8 +134,8 @@ void CompilerDMD::Reset()
 void CompilerDMD::LoadDefaultRegExArray()
 {
     m_RegExes.Clear();
-    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltError, _T("warning - ([ \\tA-Za-z0-9_:+/\\.-]+)\\(([0-9]+)\\):[ \\t](.*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, _T("([ \\tA-Za-z0-9_:+/\\.-]+)\\(([0-9]+)\\):[ \\t](.*)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltError, _T("warning - (") + FilePathWithSpaces + _T(")\\(([0-9]+)\\):[ \\t](.*)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, _T("(") + FilePathWithSpaces + _T(")\\(([0-9]+)\\):[ \\t](.*)"), 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("Linker error"), cltError, _T("Error ([0-9]+):[\\s]*(.*)"), 2));
     m_RegExes.Add(RegExStruct(_("Linker warning"), cltError, _T("Error ([0-9]+):[\\s]*(.*)"), 2));
 }

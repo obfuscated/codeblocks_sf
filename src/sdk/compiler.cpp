@@ -33,7 +33,10 @@ WX_DEFINE_OBJARRAY(RegExArray);
 // static
 wxArrayString Compiler::m_CompilerIDs; // map to guarantee unique IDs
 
-
+// common regex that can be used by the different compiler for matching compiler output
+// it can be used in the patterns for warnings, errors, ...
+// NOTE : it is an approximation (for example the ':' can appear anywhere and several times)
+const wxString Compiler::FilePathWithSpaces = _T("[][{}() \t#%$~A-Za-z0-9_:+/\\.-]+");
 
 CompilerSwitches::CompilerSwitches()
 {	// default based upon gnu

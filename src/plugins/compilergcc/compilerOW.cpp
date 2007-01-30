@@ -338,9 +338,9 @@ void CompilerOW::Reset()
 void CompilerOW::LoadDefaultRegExArray()
 {
     m_RegExes.Clear();
-    m_RegExes.Add(RegExStruct(_("Note"), cltError, wxT("([A-Za-z0-9_:/\\.-]+)\\(([0-9]+)\\): Note! (.+)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, wxT("([A-Za-z0-9_:/\\.-]+)\\(([0-9]+)\\): Error! (.+)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, wxT("([A-Za-z0-9_:/\\.-]+)\\(([0-9]+)\\): Warning! (.+)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Note"), cltError, wxT("(") + FilePathWithSpaces + _T(")\\(([0-9]+)\\): Note! (.+)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, wxT("(") + FilePathWithSpaces + _T(")\\(([0-9]+)\\): Error! (.+)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, wxT("(") + FilePathWithSpaces + _T(")\\(([0-9]+)\\): Warning! (.+)"), 3, 1, 2));
 }
 
 AutoDetectResult CompilerOW::AutoDetectInstallationDir()

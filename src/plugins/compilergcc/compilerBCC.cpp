@@ -154,8 +154,8 @@ void CompilerBCC::Reset()
 void CompilerBCC::LoadDefaultRegExArray()
 {
     m_RegExes.Clear();
-    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, _T("(^Warning[ \t]W[0-9]+)[ \t]([A-Za-z0-9_:/\\.-]+)[ \t]([0-9]+)(:[ \t].*)"), 1, 2, 3, 4));
-    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, _T("(^Error[ \t]E[0-9]+)[ \t]([A-Za-z0-9_:/\\.-]+)[ \t]([0-9]+)(:[ \t].*)"), 1, 2, 3, 4));
+    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, _T("(^Warning[ \t]W[0-9]+)[ \t](") + FilePathWithSpaces + _T(")[ \t]([0-9]+)(:[ \t].*)"), 1, 2, 3, 4));
+    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, _T("(^Error[ \t]E[0-9]+)[ \t](") + FilePathWithSpaces + _T(")[ \t]([0-9]+)(:[ \t].*)"), 1, 2, 3, 4));
     m_RegExes.Add(RegExStruct(_("Unknown error"), cltError, _T("(^Error[ \t]+E[0-9]+:.*)"), 1));
     m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, _T("Fatal:[ \t]+(.*)"), 1));
 }

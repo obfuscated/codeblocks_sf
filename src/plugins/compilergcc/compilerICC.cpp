@@ -267,9 +267,9 @@ void CompilerICC::Reset()
 void CompilerICC::LoadDefaultRegExArray()
 {
     m_RegExes.Clear();
-    m_RegExes.Add(RegExStruct(_("Compilation remark"), cltWarning, _T("([ \tA-Za-z0-9_:+/\\.-]+)\\(([0-9]+).:[ \t]([Rr]emark[ \t]#[0-9]+:[ \t].*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compilation warning"), cltWarning, _T("([ \tA-Za-z0-9_:+/\\.-]+)\\(([0-9]+).:[ \t]([Ww]arning[ \t]#[0-9]+:[ \t].*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compilation error"), cltError, _T("([ \tA-Za-z0-9_:+/\\.-]+)\\(([0-9]+).:[ \t](.*)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compilation remark"), cltWarning, _T("(") + FilePathWithSpaces + _T(")\\(([0-9]+).:[ \t]([Rr]emark[ \t]#[0-9]+:[ \t].*)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compilation warning"), cltWarning, _T("(") + FilePathWithSpaces + _T(")\\(([0-9]+).:[ \t]([Ww]arning[ \t]#[0-9]+:[ \t].*)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compilation error"), cltError, _T("(") + FilePathWithSpaces + _T(")\\(([0-9]+).:[ \t](.*)"), 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("General warning"), cltWarning, _T("([Ww]arning:[ \t].*)"), 1));
     m_RegExes.Add(RegExStruct(_("General error"), cltError, _T("([Ee]rror:[ \t].*)"), 1));
 }

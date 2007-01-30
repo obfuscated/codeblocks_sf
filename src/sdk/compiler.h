@@ -174,6 +174,7 @@ struct CompilerSwitches
 class DLLIMPORT Compiler : public CompileOptionsBase
 {
 	public:
+		static const wxString FilePathWithSpaces;
 		Compiler(const wxString& name, const wxString& ID, const wxString& parentID = wxEmptyString);
 		virtual ~Compiler();
 

@@ -169,10 +169,10 @@ void CompilerMSVC8::Reset()
 void CompilerMSVC8::LoadDefaultRegExArray()
 {
     m_RegExes.Clear();
-    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, _T("([ \tA-Za-z0-9_:\\-\\+/\\.-]+)\\(([0-9]+)\\) :[ \t]([Ww]arning[ \t].*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, _T("([ \tA-Za-z0-9_:\\-\\+/\\.-]+)\\(([0-9]+)\\) :[ \t](.*[Ee]rror[ \t].*)"), 3, 1, 2));
-    m_RegExes.Add(RegExStruct(_("Linker warning"), cltWarning, _T("([ \tA-Za-z0-9_:\\-\\+/\\.\\(\\)-]*)[ \t]+:[ \t]+(.*warning LNK[0-9]+.*)"), 2, 1, 0));
-    m_RegExes.Add(RegExStruct(_("Linker error"), cltError, _T("([ \tA-Za-z0-9_:\\-\\+/\\.\\(\\)-]*)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)"), 2, 1, 0));
+    m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, _T("(") + FilePathWithSpaces + _T(")\\(([0-9]+)\\) :[ \t]([Ww]arning[ \t].*)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, _T("(") + FilePathWithSpaces + _T(")\\(([0-9]+)\\) :[ \t](.*[Ee]rror[ \t].*)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Linker warning"), cltWarning, _T("(") + FilePathWithSpaces + _T(")[ \t]+:[ \t]+(.*warning LNK[0-9]+.*)"), 2, 1, 0));
+    m_RegExes.Add(RegExStruct(_("Linker error"), cltError, _T("(") + FilePathWithSpaces + _T(")[ \t]+:[ \t]+(.*error LNK[0-9]+.*)"), 2, 1, 0));
 }
 
 AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
