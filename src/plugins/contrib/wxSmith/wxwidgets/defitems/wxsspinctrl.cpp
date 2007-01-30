@@ -64,31 +64,10 @@ void wxsSpinCtrl::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
     {
         case wxsCPP:
         {
-            if ( !IsRootItem() )
-            {
-                Code<< GetVarName() << _T(" = new wxSpinCtrl(");
-            }
-            else
-            {
-                Code<< _T("Create(");
-            }
             long ValueLong = 0;
             Value.ToLong(&ValueLong);
-            Code<< WindowParent << _T(",")
-                << GetIdName() << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,Value) << _T(",")
-                << PosCode(WindowParent,wxsCPP) << _T(",")
-                << SizeCode(WindowParent,wxsCPP) << _T(",")
-                << StyleCode(wxsCPP) << _T(",")
-                << wxString::Format(_T("%d"),Min) << _T(",")
-                << wxString::Format(_T("%d"),Max) << _T(",")
-                << wxString::Format(_T("%d"),ValueLong) << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
-
-            if ( !Value.empty() )
-            {
-                Code << GetVarName() << _T("->SetValue(") << wxsCodeMarks::WxString(wxsCPP,Value) << _(");\n");
-            }
+            Code << Codef(Language,_T("%C(%W,%I,%u,%P,%S,%T,%d,%d,%d,%N);\n"),Value.c_str(),Min,Max,ValueLong);
+            if ( !Value.empty() ) Code << Codef(Language,_T("%ASetValue(%u);\n"),Value.c_str());
             SetupWindowCode(Code,Language);
             return;
         }

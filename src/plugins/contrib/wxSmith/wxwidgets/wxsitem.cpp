@@ -110,7 +110,11 @@ void wxsItem::EnumItemProperties(long Flags)
     if ( (Flags & (flPropGrid|flPropStream)) != 0 )
     {
         WXS_STRING(wxsItem,m_VarName,flVariable,_("Var name"),_T("var_name"),wxEmptyString,false,false);
-        WXS_BOOL(wxsItem,m_IsMember,flVariable,_(" Is member"),_T("var_is_member"),true);
+        if ( IsPointer() )
+        {
+            // If item is not pointer it must be declared globally
+            WXS_BOOL(wxsItem,m_IsMember,flVariable,_(" Is member"),_T("var_is_member"),true);
+        }
         WXS_STRING(wxsItem,m_IdName,flId,_("Identifier"),_T("identifier"),wxEmptyString,false,false);
     }
 
@@ -128,7 +132,12 @@ void wxsItem::OnBuildDeclarationCode(wxString& Code,wxsCodingLang Language)
     switch ( Language )
     {
         case wxsCPP:
-            Code << GetClassName() << _T("* ") << GetVarName() << _T(";\n");
+            Code << GetClassName();
+            if ( IsPointer() )
+            {
+                Code << _T("* ");
+            }
+            Code << _T(" ") << GetVarName() << _T(";\n");
             return;
 
         default:
@@ -257,4 +266,179 @@ void wxsItem::OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id)
 bool wxsItem::IsRootItem()
 {
     return m_ResourceData->GetRootItem() == this;
+}
+
+wxString wxsItem::GetCreatePrefix(wxsCodingLang Language)
+{
+    switch ( Language )
+    {
+        case wxsCPP:
+            if ( IsRootItem() ) return _T("Create");
+            if ( IsPointer()  ) return GetVarName() + _T(" = new ") + GetClassName();
+            return GetVarName() + _T(".Create");
+
+        default:
+            wxsCodeMarks::Unknown(_T("wxsItem::GetCreatePrefix"),Language);
+    }
+    return wxEmptyString;
+}
+
+wxString wxsItem::GetAccessPrefix(wxsCodingLang Language)
+{
+    switch ( Language )
+    {
+        case wxsCPP:
+            if ( IsRootItem() ) return wxEmptyString;
+            if ( IsPointer()  ) return GetVarName() + _T("->");
+            return GetVarName() + _T(".");
+
+        default:
+            wxsCodeMarks::Unknown(_T("wxsItem::GetAccessPrefix"),Language);
+    }
+    return wxEmptyString;
+}
+
+bool wxsItem::OnIsPointer()
+{
+    // TODO: Check in resource data
+    return true;
+}
+
+wxString wxsItem::Codef(wxsCodingLang Language,const wxChar* Fmt,...)
+{
+    va_list ap;
+    va_start(ap,Fmt);
+    wxString Result;
+    wxChar Buff[0x20];
+    int Pos;
+    wxChar* Char;
+    int Dec;
+    bool Bool;
+
+
+    while ( *Fmt )
+    {
+        if ( *Fmt == _T('%') )
+        {
+            Fmt++;
+            if ( *Fmt )
+            {
+                if ( !OnCodefExtension(Language,Result,Fmt,ap) )
+                {
+                    switch ( *Fmt )
+                    {
+                        case _T('C'):
+                            Result << GetCreatePrefix(Language);
+                            break;
+
+                        case _T('A'):
+                            Result << GetAccessPrefix(Language);
+                            break;
+
+                        case _T('W'):
+                            switch ( Language )
+                            {
+                                case wxsCPP: Result << m_WindowParent; break;
+                                default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
+                            }
+                            break;
+
+                        case _T('I'):
+                            switch ( Language )
+                            {
+                                case wxsCPP: Result << GetIdName(); break;
+                                default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
+                            }
+                            break;
+
+                        case _T('P'):
+                            if ( GetPropertiesFlags() && flPosition )
+                            {
+                                Result << GetBaseProps()->m_Position.GetPositionCode(m_WindowParent,Language);
+                            }
+                            else
+                            {
+                                Result << _T("wxDefaultPosition");
+                            }
+                            break;
+
+                        case _T('S'):
+                            if ( GetPropertiesFlags() && flSize )
+                            {
+                                Result << GetBaseProps()->m_Size.GetSizeCode(m_WindowParent,Language);
+                            }
+                            else
+                            {
+                                Result << _T("wxDefaultSize");
+                            }
+                            break;
+
+                        case _T('V'):
+                            Result << _T("wxDefaultValidator");
+                            break;
+
+                        case _T('N'):
+                            if ( GetPropertiesFlags() && flId )
+                            {
+                                Result << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false);
+                            }
+                            else
+                            {
+                                Result << wxsCodeMarks::WxString(wxsCPP,GetClassName(),false);
+                            }
+                            break;
+
+                        case _T('v'):
+                            Char = va_arg(ap,wxChar*);
+                            switch ( Language )
+                            {
+                                case wxsCPP: Result << Char; break;
+                                default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
+                            }
+                            break;
+
+                        case _T('t'):
+                            Char = va_arg(ap,wxChar*);
+                            Result << wxsCodeMarks::WxString(Language,Char?Char:_T(""),true);
+                            break;
+
+                        case _T('u'):
+                            Char = va_arg(ap,wxChar*);
+                            Result << wxsCodeMarks::WxString(Language,Char?Char:_T(""),false);
+                            break;
+
+                        case _T('s'):
+                            Char = va_arg(ap,wxChar*);
+                            Result << Char;
+                            break;
+
+                        case _T('d'):
+                            Dec = va_arg(ap,int);
+                            Pos = 0;
+                            do Buff[Pos++] = _T('0') + (Dec%10), Dec /= 10; while ( Dec );
+                            while ( --Pos>=0 ) Result.Append(Buff[Pos]);
+                            break;
+
+                        case _T('b'):
+                            Bool = va_arg(ap,int)!=0;
+                            if ( Bool ) Result << _T("true");
+                            else        Result << _T("false");
+                            break;
+
+                        default:
+                            *Result.Append(*Fmt);
+                    }
+                    Fmt++;
+                }
+            }
+        }
+        else
+        {
+            Result.Append(*Fmt++);
+        }
+    }
+
+    va_end(ap);
+
+    return Result;
 }

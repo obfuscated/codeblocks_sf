@@ -84,22 +84,14 @@ void wxsFrame::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
     {
         case wxsCPP:
         {
-            Code<< _T("Create(")
-                << WindowParent << _T(",")
-                << GetIdName() << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,Title) << _T(",")
-                << PosCode(WindowParent,wxsCPP) << _T(",")
-                << SizeCode(WindowParent,wxsCPP) << _T(",")
-                << StyleCode(wxsCPP) << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
-
+            Code << Codef(Language,_T("%C(%W,%I,%t,%P,%S,%T,%N);\n"),Title.c_str());
             SetupWindowCode(Code,Language);
             // TODO: Setup Icon
 
             AddChildrenCode(Code,wxsCPP);
             if ( Centered )
             {
-                Code<<_T("Centre();\n");
+                Code << Codef(Language,_T("%ACenter();\n"));
             }
 
             return;

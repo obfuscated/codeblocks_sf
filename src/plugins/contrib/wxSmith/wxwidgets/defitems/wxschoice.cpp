@@ -55,30 +55,15 @@ void wxsChoice::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,
     {
         case wxsCPP:
         {
-            if ( !IsRootItem() )
-            {
-                Code<< GetVarName() << _T(" = new wxChoice(");
-            }
-            else
-            {
-                Code<< _T("Create(");
-            }
-            Code<< WindowParent << _T(",")
-                << GetIdName() << _T(",")
-                << PosCode(WindowParent,wxsCPP) << _T(",")
-                << SizeCode(WindowParent,wxsCPP) << _T(",")
-                << _T("0,NULL,")
-                << StyleCode(wxsCPP) << _T(",")
-                << _T("wxDefaultValidator") << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
+            Code << Codef(Language,_T("%C(%W,%I,%P,%S,0,NULL,%T,%V,%N);\n"));
 
             for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
             {
                 if ( DefaultSelection == (int)i )
                 {
-                    Code << GetVarName() << _T("->SetSelection( ");
+                    Code << Codef(Language,_T("%ASetSelection( "));
                 }
-                Code << GetVarName() << _T("->Append(") << wxsCodeMarks::WxString(wxsCPP,ArrayChoices[i]) << _T(")");
+                Code << Codef(Language,_T("%AAppend(%t)"),ArrayChoices[i].c_str());
                 if ( DefaultSelection == (int)i )
                 {
                     Code << _T(" )");

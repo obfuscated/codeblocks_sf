@@ -61,42 +61,26 @@ void wxsBitmapButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
         {
             wxString BmpCode = BitmapLabel.IsEmpty() ? _T("wxNullBitmap") : BitmapLabel.BuildCode(true,_T(""),wxsCPP,wxART_BUTTON);
 
-            if ( !IsRootItem() )
-            {
-                Code<< GetVarName() << _T(" = new wxBitmapButton(");
-            }
-            else
-            {
-                Code<< _T("Create(");
-            }
-            Code<< WindowParent << _T(",")
-                << GetIdName() << _T(",")
-                << BmpCode << _T(",")
-                << PosCode(WindowParent,wxsCPP) << _T(",")
-                << SizeCode(WindowParent,wxsCPP) << _T(",")
-                << StyleCode(wxsCPP) << _T(",")
-                << _T("wxDefaultValidator") << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
-
+            Code << Codef(Language,_T("%C(%W,%I,%s,%P,%S,%T,%V,%N);\n"),BmpCode.c_str());
             if ( !BitmapDisabled.IsEmpty() )
             {
                 BmpCode = BitmapDisabled.BuildCode(true,_T(""),wxsCPP,wxART_OTHER);
-                Code << GetVarName() << _T("->SetBitmapDisabled(") << BmpCode << _T(");\n");
+                Code << Codef(Language,_T("%ASetBitmapDisabled(%s);\n"),BmpCode.c_str());
             }
             if ( !BitmapSelected.IsEmpty() )
             {
                 BmpCode = BitmapSelected.BuildCode(true,_T(""),wxsCPP,wxART_OTHER);
-                Code << GetVarName() << _T("->SetBitmapSelected(") << BmpCode << _T(");\n");
+                Code << Codef(Language,_T("%ASetBitmapSelected(%s);\n"),BmpCode.c_str());
             }
             if ( !BitmapSelected.IsEmpty() )
             {
                 BmpCode = BitmapFocus.BuildCode(true,_T(""),wxsCPP,wxART_OTHER);
-                Code << GetVarName() << _T("->SetBitmapFocus(") << BmpCode << _T(");\n");
+                Code << Codef(Language,_T("%ASetBitmapFocus(%s);\n"),BmpCode.c_str());
             }
 
             if ( IsDefault )
             {
-                Code << GetVarName() << _T("->SetDefault();\n");
+                Code << Codef(Language,_T("%ASetDefault();\n"));
             }
             SetupWindowCode(Code,Language);
             return;

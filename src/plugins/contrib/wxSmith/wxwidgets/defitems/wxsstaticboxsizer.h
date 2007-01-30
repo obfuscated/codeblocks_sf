@@ -15,6 +15,7 @@ class wxsStaticBoxSizer: public wxsSizer
         virtual void OnBuildSizerCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
         virtual void OnEnumSizerProperties(long Flags);
         virtual void OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language);
+        virtual bool OnIsPointer() { return true; }
 
         long Orient;
         wxString Label;

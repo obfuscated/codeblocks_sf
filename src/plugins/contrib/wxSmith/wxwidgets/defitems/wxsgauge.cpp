@@ -62,27 +62,10 @@ void wxsGauge::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
     {
         case wxsCPP:
         {
-            if ( !IsRootItem() )
-            {
-                Code<< GetVarName() << _T(" = new wxGauge(");
-            }
-            else
-            {
-                Code<< _T("Create(");
-            }
-            Code<< WindowParent << _T(",")
-                << GetIdName() << _T(",")
-                << wxString::Format(_T("%d"),Range) << _T(",")
-                << PosCode(WindowParent,wxsCPP) << _T(",")
-                << SizeCode(WindowParent,wxsCPP) << _T(",")
-                << StyleCode(wxsCPP) << _T(",")
-                << _T("wxDefaultValidator") << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
-
-            if ( Value )  Code << GetVarName() << _T("->SetValue(") << wxString::Format(_T("%d"),Value) << _T(");\n");
-            if ( Shadow ) Code << GetVarName() << _T("->SetShadowWidth(") << wxString::Format(_T("%d"),Shadow) << _T(");\n");
-            if ( Bezel )  Code << GetVarName() << _T("->SetBezelFace(") << wxString::Format(_T("%d"),Bezel) << _T(");\n");
-
+            Code << Codef(Language,_T("%C(%W,%I,%d,%P,%S,%T,%V,%N);\n"),Range);
+            if ( Value )  Code << Codef(Language,_T("%ASetValue(%d);\n"),Value);
+            if ( Shadow ) Code << Codef(Language,_T("%ASetShadowWidth(%d);\n"),Shadow);
+            if ( Bezel )  Code << Codef(Language,_T("%ASetBezelFace(%d);\n"),Bezel);
             SetupWindowCode(Code,Language);
             return;
         }

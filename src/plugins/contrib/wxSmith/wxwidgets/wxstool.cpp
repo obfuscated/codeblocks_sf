@@ -59,3 +59,14 @@ void wxsTool::OnAddItemQPP(wxsAdvQPP* QPP)
 {
     OnAddToolQPP(QPP);
 }
+
+bool wxsTool::OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap)
+{
+    if ( *FmtChar == _T('T') )
+    {
+        Result << StyleCode(Language);
+        FmtChar++;
+        return true;
+    }
+    return wxsItem::OnCodefExtension(Language,Result,FmtChar,ap);
+}

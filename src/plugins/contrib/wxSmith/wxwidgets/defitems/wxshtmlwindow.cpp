@@ -55,36 +55,10 @@ void wxsHtmlWindow::OnBuildCreatingCode(wxString& Code,const wxString& WindowPar
     {
         case wxsCPP:
         {
-            if ( !IsRootItem() )
-            {
-                Code << GetVarName() << _T(" = new wxHtmlWindow(");
-            }
-            else
-            {
-                Code << _T("Create(");
-            }
-
-            Code << WindowParent << _T(",")
-                 << GetIdName() << _T(",")
-                 << PosCode(WindowParent,wxsCPP) << _T(",")
-                 << SizeCode(WindowParent,wxsCPP) << _T(",")
-                 << StyleCode(wxsCPP) << _T(",")
-                 << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
-
-            if ( Borders.Value )
-            {
-                Code << GetVarName() << _T("->SetBorders(") << Borders.GetPixelsCode(WindowParent,wxsCPP) << _T(");\n");
-            }
-
-            if ( !Url.empty() )
-            {
-                Code << GetVarName() << _T("->LoadPage(") << wxsCodeMarks::WxString(wxsCPP,Url,false) << _T(");\n");
-            }
-            else if ( !HtmlCode.empty() )
-            {
-                Code << GetVarName() << _T("->SetPage(") << wxsCodeMarks::WxString(wxsCPP,HtmlCode,false) << _T(");\n");
-            }
-
+            Code << Codef(Language,_T("%C(%W,%I,%P,%S,%T,%N);\n"));
+            if ( Borders.Value ) Code << Codef(Language,_T("%ASetBorders(%s);\n"),Borders.GetPixelsCode(WindowParent,wxsCPP).c_str());
+            if ( !Url.empty() ) Code << Codef(Language,_T("%ALoadPage(%t);\n"),Url.c_str());
+            else if ( !HtmlCode.empty() ) Code << Codef(Language,_T("%ASetPage(%t);\n"),HtmlCode.c_str());
             SetupWindowCode(Code,Language);
             break;
         }

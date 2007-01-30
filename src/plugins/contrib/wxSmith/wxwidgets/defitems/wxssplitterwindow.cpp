@@ -128,51 +128,24 @@ void wxsSplitterWindow::OnBuildCreatingCode(wxString& Code,const wxString& Windo
     {
         case wxsCPP:
         {
-            if ( !IsRootItem() )
-            {
-                Code << GetVarName() << _T(" = new wxSplitterWindow(");
-            }
-            else
-            {
-                Code << _T("Create(");
-            }
-            Code<< WindowParent << _T(",")
-                << GetIdName() << _T(",")
-                << PosCode(WindowParent,wxsCPP) << _T(",")
-                << SizeCode(WindowParent,wxsCPP) << _T(",")
-                << StyleCode(wxsCPP) << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
-
+            Code << Codef(Language,_T("%C(%W,%I,%P,%S,%T,%N);\n"));
             SetupWindowCode(Code,wxsCPP);
-            if ( MinSize != -1 )
-            {
-                Code << GetVarName() << _T("->SetMinimumPaneSize(") << wxString::Format(_T("%d"),MinSize) << _T(");\n");
-            }
+            if ( MinSize != -1 ) Code << Codef(Language,_T("%ASetMinimumPaneSize(%d);\n"),MinSize);
             AddChildrenCode(Code,wxsCPP);
-
             if ( GetChildCount() == 0 )
             {
             }
             else if ( GetChildCount() == 1 )
             {
-                Code << GetVarName() << _T("->Initialize(") << GetChild(0)->GetVarName() << _T(");\n");
+                Code << Codef(Language,_T("%AInitialize(%v);\n"),GetChild(0)->GetVarName().c_str());
             }
             else
             {
-                Code << GetVarName();
-                if ( Orientation == wxHORIZONTAL )
-                {
-                    Code << _T("->SplitHorizontally(");
-                }
-                else
-                {
-                    Code << _T("->SplitVertically(");
-                }
-
-                Code << GetChild(0)->GetVarName() << _T(",")
-                     << GetChild(1)->GetVarName() << _T(");\n");
+                Code << Codef(Language,_T("%ASplit%s(%v,%v);\n"),
+                            (Orientation==wxHORIZONTAL) ? _T("Horizontally") : _T("Vertically"),
+                            GetChild(0)->GetVarName().c_str(),
+                            GetChild(1)->GetVarName().c_str());
             }
-
             break;
         }
 

@@ -54,31 +54,30 @@ void wxsBaseProperties::SetupWindow(wxWindow* Window,long Flags)
     if ( !m_HelpText.empty() ) Window->SetHelpText(m_HelpText);
 }
 
-void wxsBaseProperties::BuildSetupWindowCode(wxString& Code,const wxString& WindowName,wxsCodingLang Language)
+void wxsBaseProperties::BuildSetupWindowCode(wxString& Code,const wxString& WindowName,const wxString& AccessPrefix,wxsCodingLang Language)
 {
     switch ( Language )
     {
         case wxsCPP:
         {
-            wxString VarAccess = WindowName.empty() ? _T("") : WindowName + _T("->");
-            if ( !m_Enabled ) Code << VarAccess << _T("Disable();\n");
-            if ( m_Focused  ) Code << VarAccess << _T("SetFocus();\n");
-            if ( m_Hidden )   Code << VarAccess << _T("Hide();\n");
+            if ( !m_Enabled ) Code << AccessPrefix << _T("Disable();\n");
+            if ( m_Focused  ) Code << AccessPrefix << _T("SetFocus();\n");
+            if ( m_Hidden )   Code << AccessPrefix << _T("Hide();\n");
 
             wxString FGCol = m_Fg.BuildCode(wxsCPP);
-            if ( !FGCol.empty() ) Code << VarAccess << _T("SetForegroundColour(") << FGCol << _T(");\n");
+            if ( !FGCol.empty() ) Code << AccessPrefix << _T("SetForegroundColour(") << FGCol << _T(");\n");
 
             wxString BGCol = m_Bg.BuildCode(wxsCPP);
-            if ( !BGCol.empty() ) Code << VarAccess << _T("SetBackgroundColour(") << BGCol << _T(");\n");
+            if ( !BGCol.empty() ) Code << AccessPrefix << _T("SetBackgroundColour(") << BGCol << _T(");\n");
 
             wxString FontVal = m_Font.BuildFontCode(WindowName + _T("Font"), wxsCPP);
             if ( !FontVal.empty() )
             {
                 Code << FontVal;
-                Code << VarAccess << _T("SetFont(") << WindowName << _T("Font);\n");
+                Code << AccessPrefix << _T("SetFont(") << WindowName << _T("Font);\n");
             }
-            if ( !m_ToolTip.empty()  ) Code << VarAccess << _T("SetToolTip(") << wxsCodeMarks::WxString(wxsCPP,m_ToolTip) << _T(");\n");
-            if ( !m_HelpText.empty() ) Code << VarAccess << _T("SetHelpText(") << wxsCodeMarks::WxString(wxsCPP,m_HelpText) << _T(");\n");
+            if ( !m_ToolTip.empty()  ) Code << AccessPrefix << _T("SetToolTip(") << wxsCodeMarks::WxString(wxsCPP,m_ToolTip) << _T(");\n");
+            if ( !m_HelpText.empty() ) Code << AccessPrefix << _T("SetHelpText(") << wxsCodeMarks::WxString(wxsCPP,m_HelpText) << _T(");\n");
             return;
         }
 

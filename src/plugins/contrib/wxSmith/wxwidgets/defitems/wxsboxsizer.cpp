@@ -69,9 +69,7 @@ void wxsBoxSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& Window
     {
         case wxsCPP:
         {
-            Code << GetVarName() << _T(" = new wxBoxSizer(");
-            if ( Orient != wxHORIZONTAL ) Code << _T("wxVERTICAL"); else Code << _T("wxHORIZONTAL");
-            Code << _T(");\n");
+            Code << Codef(Language,_T("%C(%s);\n"),(Orient!=wxHORIZONTAL)?_T("wxVERTICAL"):_T("wxHORIZONTAL"));
             return;
         }
 

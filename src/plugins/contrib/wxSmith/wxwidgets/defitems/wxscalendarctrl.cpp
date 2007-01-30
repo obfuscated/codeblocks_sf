@@ -67,22 +67,7 @@ void wxsCalendarCtrl::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
     {
         case wxsCPP:
         {
-            if ( !IsRootItem() )
-            {
-                Code<< GetVarName() << _T(" = new wxCalendarCtrl(");
-            }
-            else
-            {
-                Code<< _T("Create(");
-            }
-            Code<< WindowParent << _T(",")
-                << GetIdName() << _T(",")
-                << _T("wxDefaultDateTime") << _T(",")
-                << PosCode(WindowParent,wxsCPP) << _T(",")
-                << SizeCode(WindowParent,wxsCPP) << _T(",")
-                << StyleCode(wxsCPP) << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
-
+            Code << Codef(Language,_T("%C(%W,%I,wxDefaultDateTime,%P,%S,%T,%N);\n"));
             SetupWindowCode(Code,Language);
             return;
         }

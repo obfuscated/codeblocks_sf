@@ -104,42 +104,14 @@ void wxsSlider::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,
     {
         case wxsCPP:
         {
-            if ( !IsRootItem() )
-            {
-                Code<< GetVarName() << _T(" = new wxSlider(");
-            }
-            else
-            {
-                Code<< _T("Create(");
-            }
-            Code<< WindowParent << _T(",")
-                << wxString::Format(_T("%d,%d,%d,"),Value,Min,Max)
-                << GetIdName() << _T(",")
-                << PosCode(WindowParent,wxsCPP) << _T(",")
-                << SizeCode(WindowParent,wxsCPP) << _T(",")
-                << StyleCode(wxsCPP) << _T(",")
-                << _T("wxDefaultValidator") << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
+            Code << Codef(Language,_T("%C(%W,%I,%d,%d,%d,%P,%S,%T,%V,%N);\n"),Value,Min,Max);
 
-            if ( TickFrequency )    Code << GetVarName() << _T("->SetTickFreq(")
-                                         << wxString::Format(_T("%d"),TickFrequency) << _T(",0);\n");
-
-            if ( PageSize )         Code << GetVarName() << _T("->SetPageSize(")
-                                         << wxString::Format(_T("%d"),PageSize) << _T(");\n");
-
-            if ( LineSize )         Code << GetVarName() << _T("->SetLineSize(")
-                                         << wxString::Format(_T("%d"),LineSize) << _T(");\n");
-
-            if ( ThumbLength )      Code << GetVarName() << _T("->SetThumbLength(")
-                                         << wxString::Format(_T("%d"),ThumbLength) << _T(");\n");
-
-            if ( Tick )             Code << GetVarName() << _T("->SetTick(")
-                                         << wxString::Format(_T("%d"),Tick) << _T(");\n");
-
-            if ( SelMin || SelMax ) Code << GetVarName() << _T("->SetSelection(")
-                                         << wxString::Format(_T("%d"),SelMin) << _T(",")
-                                         << wxString::Format(_T("%d"),SelMax) << _T(");\n");
-
+            if ( TickFrequency )    Code << Codef(Language,_T("%ASetTickFreq(%d);\n"),TickFrequency);
+            if ( PageSize )         Code << Codef(Language,_T("%ASetPageSize(%d);\n"),PageSize);
+            if ( LineSize )         Code << Codef(Language,_T("%ASetLineSize(%d);\n"),LineSize);
+            if ( ThumbLength )      Code << Codef(Language,_T("%ASetThumbLength(%d);\n"),ThumbLength);
+            if ( Tick )             Code << Codef(Language,_T("%ASetTick(%d);\n"),Tick);
+            if ( SelMin || SelMax ) Code << Codef(Language,_T("%ASetSelection(%d,%d);\n"),SelMin,SelMax);
             SetupWindowCode(Code,Language);
             return;
         }

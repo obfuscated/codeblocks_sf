@@ -60,7 +60,7 @@ class wxsBaseProperties: public wxsPropertyContainer
          *
          * Created code will do the same as SetupWindow function
          */
-        void BuildSetupWindowCode(wxString& Code,const wxString& WindowName,wxsCodingLang Language);
+        void BuildSetupWindowCode(wxString& Code,const wxString& WindowName,const wxString& AccessPrefix,wxsCodingLang Language);
 
         /** \brief Function generating QPPChild Panel for most frequently used
          *         properties.

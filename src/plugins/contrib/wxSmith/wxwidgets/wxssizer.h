@@ -82,6 +82,9 @@ class wxsSizer: public wxsParent
          */
         virtual void OnAddSizerQPP(wxsAdvQPP* QPP) {}
 
+        /** \brief Extensions to Codef function */
+        virtual bool OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap);
+
     private:
 
         /** \brief Getting properties availability flags

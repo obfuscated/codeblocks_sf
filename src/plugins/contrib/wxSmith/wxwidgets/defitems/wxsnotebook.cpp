@@ -268,30 +268,15 @@ void wxsNotebook::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
     {
         case wxsCPP:
         {
-            if ( !IsRootItem() )
-            {
-                Code << GetVarName() << _T(" = new wxNotebook(");
-            }
-            else
-            {
-                Code << _T("Create(");
-            }
-            Code << WindowParent << _T(",")
-                 << GetIdName() << _T(",")
-                 << PosCode(WindowParent,wxsCPP) << _T(",")
-                 << SizeCode(WindowParent,wxsCPP) << _T(",")
-                 << StyleCode(wxsCPP) << _T(",")
-                 << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
-
+            Code << Codef(Language,_T("%C(%W,%I,%P,%S,%T,%N);\n"));
+            SetupWindowCode(Code,wxsCPP);
             AddChildrenCode(Code,wxsCPP);
 
             for ( int i=0; i<GetChildCount(); i++ )
             {
                 wxsNotebookExtra* Extra = (wxsNotebookExtra*)GetChildExtra(i);
-                Code << GetVarName() << _T("->AddPage(")
-                     << GetChild(i)->GetVarName() << _T(",")
-                     << wxsCodeMarks::WxString(wxsCPP,Extra->m_Label) << _T(",")
-                     << (Extra->m_Selected ? _T("true") : _T("false")) << _T(");\n");
+                Code << Codef(Language,_T("%AAddPage(%v,%t,%b);\b"),
+                        GetChild(i)->GetVarName().c_str(),Extra->m_Label.c_str(),Extra->m_Selected);
             }
 
             break;

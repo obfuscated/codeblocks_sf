@@ -160,20 +160,16 @@ void wxsStdDialogButtonSizer::OnBuildCreatingCode(wxString& Code,const wxString&
     {
         case wxsCPP:
         {
-            Code << GetVarName() << _T(" = new wxStdDialogButtonSizer();\n");
+            if ( IsPointer() ) Code << Codef(Language,_T("%C();\n"));
 
             for ( int i=0; i<NumButtons; i++ )
             {
                 if ( m_Use[i] )
                 {
-                    Code << GetVarName() << _T("->AddButton(new wxButton(")
-                         << WindowParent << _T(",")
-                         << IdNames[i] << _T(",")
-                         << wxsCodeMarks::WxString(wxsCPP,m_Label[i]) << _T("));\n");
+                    Code << Codef(Language,_T("%AAddButton(new wxButton(%W,%v,%t));\n"),IdNames[i],m_Label[i].c_str());
                 }
             }
-
-            Code << GetVarName() << _T("->Realize();\n");
+            Code << Codef(Language,_T("%ARealize();\n"));
             break;
         }
 

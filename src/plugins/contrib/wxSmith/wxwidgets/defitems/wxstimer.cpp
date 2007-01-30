@@ -49,11 +49,19 @@ wxsTimer::wxsTimer(wxsItemResData* Data):
 
 void wxsTimer::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
 {
-    Code << GetVarName() << _T(".SetOwner(this,") << GetIdName() << _T(");\n");
-    if ( m_Interval > 0 )
+    switch ( Language )
     {
-        Code << GetVarName() << _T(".Start(") << wxString::Format(_T("%d"),m_Interval) << _T(",")
-             << (m_OneShoot ? _T("true") : _T("false") ) << _T(");\n");
+        case wxsCPP:
+        {
+            Code << Codef(Language,_T("%ASetOwner(this,%I);\n"));
+            if ( m_Interval > 0 ) Code << Codef(Language,_T("%AStart(%d,%b);\n"),m_Interval,m_OneShoot);
+            return;
+        }
+
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsTimer::OnBuildCreatingCode"),Language);
+        }
     }
 }
 
@@ -69,15 +77,6 @@ void wxsTimer::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingL
     {
         case wxsCPP: Decl.Add(_T("<wx/timer.h>")); return;
         default: wxsCodeMarks::Unknown(_T("wxsTimer::OnEnumDeclFiles"),Language);
-    }
-}
-
-void wxsTimer::OnBuildDeclarationCode(wxString& Code,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Code << _T("wxTimer ") << GetVarName() << _T(";\n"); break;
-        default: wxsCodeMarks::Unknown(_T("wxsTimer::OnBuildDeclarationCode"),Language);
     }
 }
 

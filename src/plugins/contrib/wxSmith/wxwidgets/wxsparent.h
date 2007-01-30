@@ -189,6 +189,9 @@ class wxsParent: public wxsItem
          */
         virtual bool OnEnsureChildPreviewVisible(wxsItem* Child) { return false; }
 
+        /** \brief Extensions to Codef function */
+        virtual bool OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap);
+
     private:
 
         /** \brief Function converting this item to wxsParent class.

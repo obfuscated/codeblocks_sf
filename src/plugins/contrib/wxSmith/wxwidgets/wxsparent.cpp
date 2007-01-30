@@ -307,3 +307,8 @@ bool wxsParent::OnXmlWriteChild(int Index,TiXmlElement* Elem,bool IsXRC,bool IsE
     // Saving child item
     return Children[Index]->XmlWrite(RealElem,IsXRC,IsExtra);
 }
+
+bool wxsParent::OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap)
+{
+    return wxsItem::OnCodefExtension(Language,Result,FmtChar,ap);
+}

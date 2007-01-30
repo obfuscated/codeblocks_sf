@@ -59,25 +59,8 @@ void wxsToggleButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
     {
         case wxsCPP:
         {
-            if ( !IsRootItem() )
-            {
-                Code<< GetVarName() << _T(" = new wxToggleButton(");
-            }
-            else
-            {
-                Code<< _T("Create(");
-            }
-            Code<< WindowParent << _T(",")
-                << GetIdName() << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,Label) << _T(",")
-                << PosCode(WindowParent,wxsCPP) << _T(",")
-                << SizeCode(WindowParent,wxsCPP) << _T(",")
-                << StyleCode(wxsCPP) << _T(",")
-                << _T("wxDefaultValidator") << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
-
-            if ( IsChecked ) Code << GetVarName() << _T("->SetValue(true);\n");
-
+            Code << Codef(Language,_T("%C(%W,%I,%t,%P,%S,%T,%V,%N);\n"),Label.c_str());
+            if ( IsChecked ) Code << Codef(Language,_T("%ASetValue(%b);\n"),true);
             SetupWindowCode(Code,Language);
             return;
         }

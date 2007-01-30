@@ -72,9 +72,9 @@ void wxsStaticBoxSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& 
     {
         case wxsCPP:
         {
-            Code << GetVarName() << _T(" = new wxStaticBoxSizer(");
-            if ( Orient != wxHORIZONTAL ) Code << _T("wxVERTICAL"); else Code << _T("wxHORIZONTAL");
-            Code << _T(",") << WindowParent << _T(",") << wxsCodeMarks::WxString(wxsCPP,Label) << _T(");\n");
+            Code << Codef(Language,_T("%C(%s,%W,%t);\n"),
+                    (Orient!=wxHORIZONTAL)?_T("wxVERTICAL"):_T("wxHORIZONTAL"),
+                    Label.c_str());
             return;
         }
 

@@ -101,21 +101,20 @@ void wxsFlexGridSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& W
     {
         case wxsCPP:
         {
-            Code << GetVarName() << _T(" = new wxFlexGridSizer(")
-                 << wxString::Format(_T("%d,%d"),Rows,Cols) << _T(",")
-                 << VGap.GetPixelsCode(WindowParent,wxsCPP) << _T(",")
-                 << HGap.GetPixelsCode(WindowParent,wxsCPP) << _T(");\n");
+            Code << Codef(Language,_T("%C(%d,%d,%s,%s);\n"),Rows,Cols,
+                 VGap.GetPixelsCode(WindowParent,wxsCPP).c_str(),
+                 HGap.GetPixelsCode(WindowParent,wxsCPP).c_str());
 
             wxArrayInt Cols = GetArray(GrowableCols);
             for ( size_t i=0; i<Cols.Count(); i++ )
             {
-                Code << GetVarName() << wxString::Format(_T("->AddGrowableCol(%d);\n"),Cols[i]);
+                Code << Codef(Language,_T("%AAddGrowableCol(%d);\n"),Cols[i]);
             }
 
             wxArrayInt Rows = GetArray(GrowableRows);
             for ( size_t i=0; i<Rows.Count(); i++ )
             {
-                Code << GetVarName() << wxString::Format(_T("->AddGrowableRow(%d);\n"),Rows[i]);
+                Code << Codef(Language,_T("%AAddGrowableRow(%d);\n"),Rows[i]);
             }
 
             return;

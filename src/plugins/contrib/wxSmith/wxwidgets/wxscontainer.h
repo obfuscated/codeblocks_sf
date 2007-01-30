@@ -141,6 +141,9 @@ class wxsContainer: public wxsParent
         /** \brief Function adding code generating child items */
         void AddChildrenCode(wxString& Code,wxsCodingLang Language);
 
+        /** \brief Extensions to Codef function */
+        virtual bool OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap);
+
     private:
 
         /** \brief Function enumerating properties with default ones

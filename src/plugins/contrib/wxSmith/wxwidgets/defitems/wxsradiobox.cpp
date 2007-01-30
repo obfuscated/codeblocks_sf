@@ -78,41 +78,16 @@ void wxsRadioBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
             }
 
             if ( Dimension < 1 ) Dimension = 1;
-            if ( !IsRootItem() )
-            {
-                Code<< GetVarName() << _T(" = new wxRadioBox(");
-            }
-            else
-            {
-                Code<< _T("Create(");
-            }
-            Code<< WindowParent << _T(",")
-                << GetIdName() << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,Label) << _T(",")
-                << PosCode(WindowParent,wxsCPP) << _T(",")
-                << SizeCode(WindowParent,wxsCPP) << _T(",")
-                << wxString::Format(_T("%d"),ArrayChoices.GetCount()) << _T(",");
 
-            if ( ArrayChoices.GetCount()>0 )
-            {
-                Code<< _T("wxRadioBoxChoices_") << GetVarName();
-            }
-            else
-            {
-                Code << _T("NULL");
-            }
-            Code<< _T(",")
-                << wxString::Format(_T("%d"),Dimension) << _T(",")
-                << StyleCode(wxsCPP) << _T(",")
-                << _T("wxDefaultValidator") << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
+            Code << Codef(Language,_T("%C(%W,%I,%t,%P,%S,%d,%s,%d,%T,%V,%N);\n"),
+                        Label.c_str(),ArrayChoices.GetCount(),
+                        (ArrayChoices.IsEmpty()?_T("NULL"):(_T("wxRadioBoxChoices_")+GetVarName()).c_str()),
+                        Dimension);
 
             if ( DefaultSelection >= 0 && DefaultSelection < (int)ArrayChoices.GetCount() )
             {
-                Code << GetVarName() << _T("->SetSelection(")
-                     << wxString::Format(_T("%d"),DefaultSelection) << _T(");\n");
+                Code << Codef(Language,_T("%ASetSelection(%d);\n"),DefaultSelection);
             }
-
             SetupWindowCode(Code,Language);
             return;
         }

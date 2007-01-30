@@ -10,6 +10,8 @@
 #include "../properties/wxsproperties.h"
 #include "../wxsresourcetree.h"
 
+#include <stdarg.h>
+
 
 class wxsItemResData;
 class wxsParent;
@@ -87,6 +89,19 @@ class wxsItem: public wxsPropertyContainer
         /** \brief Checking if this item is root item of resource */
         bool IsRootItem();
 
+        /** \brief Function checking if this item is represented as pointer or
+         *         as object.
+         *
+         * If given item can be represented in only one way (can not be represented as
+         * pointer or can not be represented as object), you should override
+         * OnIsPointer() function. Otherwise it will return default value for owning
+         * resource which can be both true or false.
+         *
+         * \note If item is represented as object, it doesn't have "Is Member" property
+         *       because it must be created as class member.
+         */
+        inline bool IsPointer() { return OnIsPointer(); }
+
         /** \brief Getting variable name
          *  \return name of variable or empty string of this item doesn't have one
          */
@@ -95,6 +110,28 @@ class wxsItem: public wxsPropertyContainer
         /** \brief Setting variabne name */
         inline void SetVarName(const wxString& NewName) { m_VarName = NewName; }
 
+        /** \brief Getting create prefix for item
+         *
+         * Create prefix is part of source code just before first parameter of function
+         * creating item. It may be one of following forms:
+         *  - In case of pointer initialization: "VAR_NAME = new CLASS"
+         *  - In case of object initialization: "VAR_NAME.Create"
+         *  - In case of root item: "Create"
+         * .
+         * This function may be used in OnBuildCreatingCode to properly create object
+         */
+        wxString GetCreatePrefix(wxsCodingLang Language);
+
+        /** \brief Getting access prefix for item
+         *
+         * Access prefix is part of source code just before accessing member of this object.
+         * It may be one of following forms:
+         *  - In case of pointer to object: "VAR_NAME->"
+         *  - In case of object instance: "VAR_NAME."
+         *  - In case of root item: "" (empty string because we can access members directly)
+         */
+        wxString GetAccessPrefix(wxsCodingLang Language);
+
         /** \brief Getting identifier */
         inline wxString GetIdName() { return IsRootItem() ? _T("id") : m_IdName; }
 
@@ -102,7 +139,7 @@ class wxsItem: public wxsPropertyContainer
         inline void SetIdName(const wxString& NewIdName) { m_IdName = NewIdName; }
 
         /** \brief Checking if variable is member of class */
-        inline bool GetIsMember() { return m_IsMember; }
+        inline bool GetIsMember() { return IsPointer() ? m_IsMember : true; }
 
         /** \brief Setting IsMember flag */
         inline void SetIsMember(bool NewIsMember) { m_IsMember = NewIsMember; }
@@ -138,7 +175,7 @@ class wxsItem: public wxsPropertyContainer
         /** \brief Function generating code creating item in resource
          *  \note This is wrapped for \link OnBuildCreatingCode function
          */
-        inline void BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language) { return OnBuildCreatingCode(Code,WindowParent,Language); }
+        inline void BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language) { m_WindowParent = WindowParent; return OnBuildCreatingCode(Code,WindowParent,Language); }
 
         /** \brief Function generating code declaring item (and all it's children)
          *  \note This is wrapped for \link OnBuildCreatingCode function
@@ -232,6 +269,34 @@ class wxsItem: public wxsPropertyContainer
         inline bool MouseClick(wxWindow* Preview,int PosX,int PosY) { return OnMouseClick(Preview,PosX,PosY); }
 
     protected:
+
+        /** \brief Helpful printf-like function used when creating source code.
+         *
+         * This function works like simplified printf function producing string
+         * with few differences: most of %x formating sequences doesn't need
+         * argument because default value is taken. Argument-requiring sequences
+         * are: %V %t %u %s %b.
+         *
+         * As default it recognize following formatting strings:
+         *  - %C - Create prefix (see GetCreatePrefix for details)
+         *  - %A - Access prefix (see GetAccessPrefix for details)
+         *  - %W - parent Window
+         *  - %I - Identifier
+         *  - %P - Position
+         *  - %S - Size
+         *  - %T - sTyle (not available in wxsSizer)
+         *  - %V - Validator (currently wxDefaultValidator only)
+         *  - %N - Name (usually last parameter in constructor)
+         *  - %v - Variable (require argument: wxString*)
+         *  - %t - wx-converted string with translation in _("...") form (reguire argument: wxChar*)
+         *  - %u - wx-converted string without translation in _T("...") form (require argument: wxChar*)
+         *  - %s - string value (require argument: wxChar*)
+         *  - %d - decimal value (require argument: integer)
+         *  - %b - boolean value ("true"/"false") (require argument: bool)
+         *  .
+         * More formating strings may be added through OnCodefExtension function
+         */
+        wxString Codef(wxsCodingLang Language,const wxChar* Fmt,...);
 
         /** \brief Getting properties availability flags
          *
@@ -383,6 +448,19 @@ class wxsItem: public wxsPropertyContainer
          */
         virtual bool OnMouseClick(wxWindow* Preview,int PosX,int PosY) { return false; }
 
+        /** \brief Function checking if this item is represented as pointer */
+        virtual bool OnIsPointer();
+
+        /** \brief Extensions to Codef function
+         * \note Remember to call OnCodefExtension of base class (this function is implemented
+         *       in all default wxSmith classes even when not used
+         * \param Result result string, new data should be appended to it
+         * \param FmtChar pointer to char right after %, function should shift this pointer
+         *        after all detected formating chars
+         * \param ap pointer to arguments, get arguments through va_arg
+         */
+        virtual bool OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap) { return false; }
+
     private:
 
         /** \brief Function enumerating proeprties
@@ -425,6 +503,7 @@ class wxsItem: public wxsPropertyContainer
                                                 ///         this value may not always be correct, it's used when recreating
                                                 ///         resource tree after change
         wxsResourceItemId m_LastTreeId;         ///< \brief Last Tree item id generated from BuildItemTree
+        wxString m_WindowParent;                ///< \brief name of variable with window parent used while generating code
 
         friend class wxsParent;
 };

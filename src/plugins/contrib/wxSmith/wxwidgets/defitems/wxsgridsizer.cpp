@@ -47,10 +47,9 @@ void wxsGridSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& Windo
     {
         case wxsCPP:
         {
-            Code << GetVarName() << _T(" = new wxGridSizer(")
-                 << wxString::Format(_T("%d,%d"),Rows,Cols) << _T(",")
-                 << VGap.GetPixelsCode(WindowParent,wxsCPP) << _T(",")
-                 << HGap.GetPixelsCode(WindowParent,wxsCPP) << _T(");\n");
+            Code << Codef(Language,_T("%C(%d,%d,%s,%s);\n"),Rows,Cols,
+                    VGap.GetPixelsCode(WindowParent,wxsCPP).c_str(),
+                    HGap.GetPixelsCode(WindowParent,wxsCPP).c_str());
             return;
         }
 

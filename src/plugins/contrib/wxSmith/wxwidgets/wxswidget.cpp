@@ -76,16 +76,14 @@ void wxsWidget::SetupWindowCode(wxString& Code,wxsCodingLang Language)
     {
         case wxsCPP:
         {
-            GetBaseProps()->BuildSetupWindowCode(Code,GetVarName(),wxsCPP);
+            GetBaseProps()->BuildSetupWindowCode(Code,GetVarName(),GetAccessPrefix(wxsCPP),wxsCPP);
             if ( m_ExStyleBits )
             {
                 wxString ExStyleStr = m_StyleSet ? m_StyleSet->GetString(m_ExStyleBits,true,wxsCPP) : _T("0");
                 if ( ExStyleStr != _T("0") )
                 {
-                    wxString VarAccess = GetVarName().empty() ? _T("") : GetVarName() + _T("->");
-
-                    Code << VarAccess << _T("SetExtraStyle(") <<
-                            VarAccess << _T("GetExtraStyle() | ") <<
+                    Code << GetAccessPrefix(wxsCPP) << _T("SetExtraStyle(") <<
+                            GetAccessPrefix(wxsCPP) << _T("GetExtraStyle() | ") <<
                             ExStyleStr << _T(");\n");
                 }
             }
@@ -98,4 +96,15 @@ void wxsWidget::SetupWindowCode(wxString& Code,wxsCodingLang Language)
         }
     }
 
+}
+
+bool wxsWidget::OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap)
+{
+    if ( *FmtChar == _T('T') )
+    {
+        Result << StyleCode(Language);
+        FmtChar++;
+        return true;
+    }
+    return wxsItem::OnCodefExtension(Language,Result,FmtChar,ap);
 }

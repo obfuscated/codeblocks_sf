@@ -60,30 +60,15 @@ void wxsCheckListBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
     {
         case wxsCPP:
         {
-            if ( !IsRootItem() )
-            {
-                Code<< GetVarName() << _T(" = new wxCheckListBox(");
-            }
-            else
-            {
-                Code<< _T("Create(");
-            }
-            Code<< WindowParent << _T(",")
-                << GetIdName() << _T(",")
-                << PosCode(WindowParent,wxsCPP) << _T(",")
-                << SizeCode(WindowParent,wxsCPP) << _T(",")
-                << _T("0,NULL,")
-                << StyleCode(wxsCPP) << _T(",")
-                << _T("wxDefaultValidator") << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
+            Code << Codef(Language,_T("%C(%W,%I,%P,%S,0,NULL,%T,%V,%N);\n"));
 
             for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
             {
                 if ( ArrayChecks[i] )
                 {
-                    Code << GetVarName() << _T("->Check(");
+                    Code << Codef(Language,_T("%ACheck("));
                 }
-                Code << GetVarName() << _T("->Append(") << wxsCodeMarks::WxString(wxsCPP,ArrayChoices[i]) << _T(")");
+                Code << Codef(Language,_T("%AAppend(%t)"),ArrayChoices[i].c_str());
                 if ( ArrayChecks[i] )
                 {
                     Code << _T(")");

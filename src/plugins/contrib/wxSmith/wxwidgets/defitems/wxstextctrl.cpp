@@ -88,27 +88,8 @@ void wxsTextCtrl::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
     {
         case wxsCPP:
         {
-            if ( !IsRootItem() )
-            {
-                Code<< GetVarName() << _T(" = new wxTextCtrl(");
-            }
-            else
-            {
-                Code<< _T("Create(");
-            }
-            Code<< WindowParent << _T(",")
-                << GetIdName() << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,Text) << _T(",")
-                << PosCode(WindowParent,wxsCPP) << _T(",")
-                << SizeCode(WindowParent,wxsCPP) << _T(",")
-                << StyleCode(wxsCPP) << _T(",")
-                << _T("wxDefaultValidator") << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
-
-            if ( MaxLength > 0 )
-            {
-                Code << GetVarName() << _T("->SetMaxLength(") << wxString::Format(_T("%d"),MaxLength) << _T(");\n");
-            }
+            Code << Codef(Language,_T("%C(%W,%I,%t,%P,%S,%T,%V,%N);\n"),Text.c_str());
+            if ( MaxLength > 0 ) Code << Codef(Language,_T("%ASetMaxLength(%d);\n"),MaxLength);
             SetupWindowCode(Code,Language);
             return;
         }

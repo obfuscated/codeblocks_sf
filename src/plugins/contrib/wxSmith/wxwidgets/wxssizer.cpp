@@ -269,4 +269,8 @@ void wxsSizer::OnAddItemQPP(wxsAdvQPP* QPP)
     OnAddSizerQPP(QPP);
 }
 
+bool wxsSizer::OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap)
+{
+    return wxsParent::OnCodefExtension(Language,Result,FmtChar,ap);
+}
 

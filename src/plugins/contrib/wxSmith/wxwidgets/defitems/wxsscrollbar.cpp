@@ -76,28 +76,8 @@ void wxsScrollBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowPare
     {
         case wxsCPP:
         {
-            if ( !IsRootItem() )
-            {
-                Code<< GetVarName() << _T(" = new wxScrollBar(");
-            }
-            else
-            {
-                Code<< _T("Create(");
-            }
-            Code<< WindowParent << _T(",")
-                 << GetIdName() << _T(",")
-                 << PosCode(WindowParent,wxsCPP) << _T(",")
-                 << SizeCode(WindowParent,wxsCPP) << _T(",")
-                 << StyleCode(wxsCPP) << _T(",")
-                << _T("wxDefaultValidator") << _T(",")
-                << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false) << _T(");\n");
-
-            Code << GetVarName() << _T("->SetScrollbar(")
-                 << wxString::Format(_T("%d"),Value)  << _T(",")
-                 << wxString::Format(_T("%d"),ThumbSize)  << _T(",")
-                 << wxString::Format(_T("%d"),Range)  << _T(",")
-                 << wxString::Format(_T("%d"),PageSize)  << _T(");\n");
-
+            Code << Codef(Language,_T("%C(%W,%I,%P,%S,%T,%V,%N);\n"));
+            Code << Codef(Language,_T("%ASetScrollbar(%d,%d,%d,%d);\n"),Value,ThumbSize,Range,PageSize);
             SetupWindowCode(Code,Language);
             return;
         }
