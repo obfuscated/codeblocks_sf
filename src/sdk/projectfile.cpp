@@ -167,13 +167,13 @@ void ProjectFile::SetObjName(const wxString& name)
             }
         }
     }
-#ifdef __WXMSW__
-    // special case for windows and files on a different drive
-    if (name.Length() > 1 && name.GetChar(1) == _T(':'))
-    {
-        m_ObjName.Remove(1, 1); // NOTE (mandrav): why remove the colon???
-    }
-#endif
+//#ifdef __WXMSW__
+//    // special case for windows and files on a different drive
+//    if (name.Length() > 1 && name.GetChar(1) == _T(':'))
+//    {
+//        m_ObjName.Remove(1, 1); // NOTE (mandrav): why remove the colon???
+//    }
+//#endif
 }
 
 // map target to pfDetails
@@ -330,6 +330,8 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
             wxFileName fname(pf->relativeToCommonTopLevelPath);
             if (ft == ftResource || ft == ftResourceBin)
             {
+				source_file_absolute_native = pf->file.GetShortPath();
+
                 if (pf->GetParentProject()->GetExtendedObjectNamesGeneration())
                 {
                     object_file_native = objOut + sep + fname.GetFullPath();

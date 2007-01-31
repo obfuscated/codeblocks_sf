@@ -15,6 +15,15 @@
 #include "scripting/bindings/sc_base_types.h"
 #include "scripting/sqplus/sqplus.h"
 
+// move this to globals if needed
+wxString UnquoteStringIfNeeded(const wxString& str)
+{
+	wxString s = str;
+	if (!str.IsEmpty() && str.GetChar(0) == _T('"') && str.Last() == _T('"'))
+		s = str.Mid(1, str.Length() - 2);
+	return s;
+}
+
 CompilerCommandGenerator::CompilerCommandGenerator()
 {
     //ctor
@@ -63,6 +72,8 @@ void CompilerCommandGenerator::Init(cbProject* project)
         m_PrjIncPath = project->GetCommonTopLevelPath();
         if (!m_PrjIncPath.IsEmpty())
         {
+        	if (m_PrjIncPath.Last() == _T('\\'))
+				m_PrjIncPath.RemoveLast();
             QuoteStringIfNeeded(m_PrjIncPath);
             m_PrjIncPath.Prepend(compiler->GetSwitches().includeDirs);
         }
@@ -217,7 +228,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
         //
         // So here we add the currently compiling file's directory to the includes
         // search dir so it works.
-        wxFileName fileCwd = file;
+        wxFileName fileCwd = UnquoteStringIfNeeded(file);
         fileInc = fileCwd.GetPath();
         if (!fileInc.IsEmpty()) // only if non-empty! (remember r1813 errors)
         {
