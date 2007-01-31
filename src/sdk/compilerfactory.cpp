@@ -234,6 +234,10 @@ void CompilerFactory::SetDefaultCompiler(Compiler* compiler)
 
 void CompilerFactory::SaveSettings()
 {
+	// clear old keys before saving
+	Manager::Get()->GetConfigManager(_T("compiler"))->DeleteSubPath(_T("/sets"));
+	Manager::Get()->GetConfigManager(_T("compiler"))->DeleteSubPath(_T("/user_sets"));
+
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
         wxString baseKey = Compilers[i]->GetParentID().IsEmpty() ? _T("/sets") : _T("/user_sets");

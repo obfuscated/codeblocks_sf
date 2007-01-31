@@ -78,6 +78,21 @@ struct RegExStruct
         msg[1] = _msg2;
         msg[2] = _msg3;
     }
+    bool operator!=(const RegExStruct& other)
+    {
+    	return !(*this == other);
+    }
+    bool operator==(const RegExStruct& other)
+    {
+    	return desc == other.desc &&
+				lt == other.lt &&
+				regex == other.regex &&
+				msg[0] == other.msg[0] &&
+				msg[1] == other.msg[1] &&
+				msg[2] == other.msg[2] &&
+				filename == other.filename &&
+				line == other.line;
+    }
     wxString desc; // title of this regex
     CompilerLineType lt; // classify the line, if regex matches
     wxString regex; // the regex to match
@@ -284,6 +299,9 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         // converts, if needed, m_ID to something that is valid
         void MakeValidID();
 
+		// keeps a copy of current settings (works only the first time it's called)
+        void MirrorCurrentSettings();
+
         // set the following members in your class
         wxString m_Name;
         wxString m_MasterPath;
@@ -303,6 +321,33 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         CompilerCommandGenerator* m_pGenerator;
         bool m_Valid; // 'valid' flag
         bool m_NeedValidityCheck; // flag to re-check validity (raised when changing compiler paths)
+        
+        // "mirror" default settings for comparing when saving (to save only those that differ from defaults)
+        struct MirrorSettings
+        {
+			wxString Name;
+			wxString MasterPath;
+			wxArrayString ExtraPaths;
+			CompilerPrograms Programs;
+			
+			// these are the CompileOptionsBase settings that each compiler keeps on a global level
+			wxArrayString CompilerOptions_;
+			wxArrayString LinkerOptions;
+			wxArrayString IncludeDirs;
+			wxArrayString ResIncludeDirs;
+			wxArrayString LibDirs;
+			wxArrayString LinkLibs;
+			wxArrayString CmdsBefore;
+			wxArrayString CmdsAfter;
+			
+			// below are the settings that the user is asked to revert to defaults (if defaults have changed)
+			wxString Commands[COMPILER_COMMAND_TYPES_COUNT];
+			CompilerSwitches Switches;
+			CompilerOptions Options;
+			RegExArray RegExes;
+        };
+        MirrorSettings m_Mirror;
+        bool m_Mirrored; // flag to only mirror the settings once
 };
 
 #endif // COMPILER_H
