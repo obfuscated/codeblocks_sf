@@ -68,8 +68,10 @@ EditorColourSet::EditorColourSet(const EditorColourSet& other) // copy ctor
 		for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
 		{
             mset.m_Keywords[i] = it->second.m_Keywords[i];
+            mset.m_originalKeywords[i] = it->second.m_originalKeywords[i];
 		}
 		mset.m_FileMasks = it->second.m_FileMasks;
+		mset.m_originalFileMasks = it->second.m_originalFileMasks;
 		mset.m_SampleCode = it->second.m_SampleCode;
 		mset.m_BreakLine = it->second.m_BreakLine;
 		mset.m_DebugLine = it->second.m_DebugLine;
@@ -511,7 +513,8 @@ void EditorColourSet::Save()
 	ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
     //FIXME: Commenting out the following line is no definite cure, but it hides the annoying disappearing colourset for now
-	//cfg->DeleteSubPath(_T("/colour_sets/") + m_Name);
+    //NOTE (mandrav): uncommenting it doesn't seem to cause any trouble (at least now). What was the problem?
+	cfg->DeleteSubPath(_T("/colour_sets/") + m_Name);
 
 	// write the theme name
 	cfg->Write(_T("/colour_sets/") + m_Name + _T("/name"), m_Name);
@@ -692,7 +695,7 @@ void EditorColourSet::Reset(HighlightLanguage lang)
     wxLogNull ln;
     wxString key;
     key << _T("/colour_sets/") << m_Name << _T('/') << lang;
-    if (Manager::Get()->GetConfigManager(_T("editor"))->Exists(key + _T("name")))
+    if (Manager::Get()->GetConfigManager(_T("editor"))->Exists(key + _T("/name")))
         Manager::Get()->GetConfigManager(_T("editor"))->DeleteSubPath(key);
 
     ClearAllOptionColours();

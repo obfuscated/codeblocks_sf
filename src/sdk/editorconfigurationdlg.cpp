@@ -683,6 +683,7 @@ void EditorConfigurationDlg::OnColoursReset(wxCommandEvent& event)
         {
             m_Theme->Reset(m_Lang);
             ApplyColours();
+            ReadColours();
             m_ThemeModified = true;
         }
 	}
