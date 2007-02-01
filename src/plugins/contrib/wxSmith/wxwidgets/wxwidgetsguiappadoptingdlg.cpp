@@ -237,7 +237,7 @@ void wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick(wxCommandEvent& event)
         _T("myapp.cpp"),
         _T("cpp"),
         _T("C++ source files|*.cpp|All files|*"),
-        wxOPEN|wxOVERWRITE_PROMPT);
+        wxSAVE|wxOVERWRITE_PROMPT);
 
     if ( FileName.empty() ) return;
 
