@@ -90,6 +90,12 @@ int AStylePlugin::Execute()
         return 0;
     }
 
+    if (ed->GetControl()->GetReadOnly())
+    {
+      cbMessageBox(_("The file is read-only"), _("Error"), wxICON_ERROR);
+      return 0;
+    }
+
     wxString edText(ed->GetControl()->GetText());
     wxString formattedText;
 
