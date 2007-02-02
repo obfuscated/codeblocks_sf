@@ -90,7 +90,11 @@ void wxsEventsEditor::BuildEvents(wxsItem* Item,wxsPropertyGridManager* Grid)
 		const wxString& FunctionName = m_Events->GetHandler(i);
 
         // TODO: Create new group
-		if ( Event->ET == wxsEventDesc::Category ) continue;
+		if ( Event->ET == wxsEventDesc::Category )
+		{
+		    m_Ids.Add(0);
+		    continue;
+		}
 
 		wxArrayString Functions;
 		FindFunctions(Event->ArgType,Functions);
@@ -274,7 +278,8 @@ wxString wxsEventsEditor::GetFunctionProposition(const wxsEventDesc* Event)
     // Creating proposition of new function name
 
     wxString NewNameBase;
-    NewNameBase.Printf(_T("On%s%s"),m_Item->GetVarName().c_str(),Event->NewFuncNameBase.c_str());
+    wxString VarName = m_Item->IsRootItem() ? _T("") : m_Item->GetVarName();
+    NewNameBase.Printf(_T("On%s%s"),VarName.c_str(),Event->NewFuncNameBase.c_str());
 
     int Suffix = 0;
     wxArrayString Functions;
