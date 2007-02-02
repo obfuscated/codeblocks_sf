@@ -330,8 +330,6 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
             wxFileName fname(pf->relativeToCommonTopLevelPath);
             if (ft == ftResource || ft == ftResourceBin)
             {
-				source_file_absolute_native = pf->file.GetShortPath();
-
                 if (pf->GetParentProject()->GetExtendedObjectNamesGeneration())
                 {
                     object_file_native = objOut + sep + fname.GetFullPath();

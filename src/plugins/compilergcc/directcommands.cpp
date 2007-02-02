@@ -132,8 +132,13 @@ wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFil
         DepsSearchStart(target);
 
         const pfDetails& pfd = pf->GetFileDetails(target);
-        if (!IsObjectOutdated(target, pfd))
+		wxString err;
+        if (!IsObjectOutdated(target, pfd, &err))
+        {
+        	if (!err.IsEmpty())
+				ret.Add(wxString(COMPILER_SIMPLE_LOG) + err);
             return ret;
+        }
     }
 
     if (target)
@@ -161,7 +166,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
     // create output dir
     if (!pfd.object_dir_native.IsEmpty() && !CreateDirRecursively(pfd.object_dir_native, 0755))
     {
-            cbMessageBox(_("Can't create object output directory ") + pfd.object_dir_native);
+		cbMessageBox(_("Can't create object output directory ") + pfd.object_dir_native);
     }
 
     bool isResource = ft == ftResource;
@@ -185,7 +190,16 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         compilerCmd = pcfb.useCustomBuildCommand
                         ? pcfb.buildCommand
                         : compiler->GetCommand(isResource ? ctCompileResourceCmd : ctCompileObjectCmd);
-        wxString source_file = (compiler->GetSwitches().UseFullSourcePaths)?UnixFilename(pfd.source_file_absolute_native):pfd.source_file;
+        wxString source_file;
+        if (compiler->GetSwitches().UseFullSourcePaths)
+        {
+			source_file = UnixFilename(pfd.source_file_absolute_native);
+			// for resource files, use short from if path because if windres bug with spaces-in-paths
+			if (isResource)
+				source_file = pf->file.GetShortPath();
+        }
+		else
+			source_file = pfd.source_file;
         QuoteStringIfNeeded(source_file);
         compiler->GenerateCommandLine(compilerCmd,
                                          target,
@@ -383,12 +397,17 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     {
         ProjectFile* pf = files[i];
         const pfDetails& pfd = pf->GetFileDetails(target);
-
-        if (force || IsObjectOutdated(target, pfd))
+		wxString err;
+        if (force || IsObjectOutdated(target, pfd, &err))
         {
             // compile file
             wxArrayString filecmd = GetCompileFileCommand(target, pf);
             AppendArray(filecmd, ret);
+        }
+        else
+        {
+        	if (!err.IsEmpty())
+				ret.Add(wxString(COMPILER_SIMPLE_LOG) + err);
         }
         if(m_doYield)
             Manager::Yield();
@@ -774,13 +793,17 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
     return false; // no force relink
 }
 
-bool DirectCommands::IsObjectOutdated(ProjectBuildTarget* target, const pfDetails& pfd)
+bool DirectCommands::IsObjectOutdated(ProjectBuildTarget* target, const pfDetails& pfd, wxString* errorStr)
 {
     // If the source file does not exist, then do not compile.
     time_t timeSrc;
     depsTimeStamp(pfd.source_file_absolute_native.mb_str(), &timeSrc);
     if (!timeSrc)
+    {
+    	if (errorStr)
+			*errorStr = _("WARNING: Can't read file's timestamp: ") + pfd.source_file_absolute_native;
         return false;
+    }
 
     // If the object file does not exist, then it must be built. In this case
     // there is no need to scan the source file for headers.
@@ -808,7 +831,7 @@ bool DirectCommands::IsObjectOutdated(ProjectBuildTarget* target, const pfDetail
         return (timeNewest > timeObj);
     }
 
-    // Source file doesn't exist.
+    // object file is up to date with source file
     return false;
 }
 
