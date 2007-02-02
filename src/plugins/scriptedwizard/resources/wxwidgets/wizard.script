@@ -17,9 +17,7 @@ LibPath <- _T("");
 LibPrefix <- _T(""); // Prefix of lib name
 LibWxVer <- _T(""); // Determines wx version
 LibUnicSuffix <- _T(""); // Suffix for Unicode
-LibDebugSuffix <- _T("d"); //Suffix for Debug Build
 LibSuffix <- _T(""); // Suffix for Lib, defines file extension
-//LibName <- _T("");
 LibWxJpeg <- false; // JPEG Lib
 LibWxTiff <- false; //TIFF Lib
 LibWxRegex <- false; // Regex Lib
@@ -186,6 +184,17 @@ function OnLeave_WxConf(fwd)
         IsDebug = Wizard.IsCheckboxChecked(_T("chkWxConfDebug"));
         WantPCH = Wizard.IsCheckboxChecked(_T("chkWxConfPCH"));
         Configuration = Wizard.GetTextControlValue(_T("txtWxConfConfig"));
+		
+		// Ask the user whether wizard shall add PCH support when empty Project is selected
+		if (IsEmpty && WantPCH)
+		{
+			local msg = _T("You have selected PCH support for Empty project.\n\n");
+			msg = msg + _T("Wizard will add support for PCH assuming the PCH header name as {Project_Name}_pch.h\n\n");
+			msg = msg + _T("Do you want to add PCH support for this project?");
+			local return_val = Message(msg, _T("wxWidgets Project Wizard"), wxICON_QUESTION | wxYES_NO);
+			if (return_val == wxID_NO) WantPCH = false;
+		}
+		
 		// Now write the configurations
 		ConfigManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
 		ConfigManager.Write(_T("/wx_project_wizard/monolithic"), BoolToInt(IsMonolithic));
@@ -302,7 +311,6 @@ function OnEnter_WxConfUnix(fwd)
 {
     if (fwd)
     {
-        //Wizard.CheckCheckbox(_T("chkWxConfPCH"), ConfigManager.Read(_T("/wx_project_wizard/pch"), true));
         Wizard.CheckCheckbox(_T("chkWxConfSo"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/dll"), 0)));
         Wizard.CheckCheckbox(_T("chkWxConfUnicode"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/unicode"), 0)));
         Wizard.CheckCheckbox(_T("chkWxConfPCH"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/pch"), 0)));
@@ -375,8 +383,6 @@ function SetupProject(project)
 			target.AddCompilerOption(flags + _T(" --debug=no --cflags`"));
 			target.AddLinkerOption(flags + _T(" --debug=no --libs`"));
 		}
-		//project.AddCompilerOption(_T("`wx-config --cflags`"));
-        //project.AddLinkerOption(_T("`wx-config --libs`"));
     }
     else
     {		
@@ -416,7 +422,6 @@ function SetupProject(project)
             if (IsDLL)
                 project.AddCompilerOption(_T("-DWXUSINGDLL"));
             if (IsUnicode)
-                //project.AddCompilerOption(_T("-DwxUSE_UNICODE"));
 				project.AddCompilerOption(_T("-DUNICODE"));
 			project.AddCompilerOption(_T("-q"));
 			project.AddCompilerOption(_T("-c"));
@@ -450,9 +455,7 @@ function SetupProject(project)
 			project.AddCompilerOption(_T("/D_VC80_UPGRADE=0x0600"));
 		}
 
-        //project.AddIncludeDir(libdir);
         project.AddIncludeDir(WxPath + _T("/contrib/include"));
-        //project.AddLibDir(LibPath);
 		if (!IsDLL)
 		{
 			project.AddLinkLib(LibPrefix + _T("kernel32") + LibSuffix);
@@ -671,9 +674,7 @@ function SetupProject(project)
 				if (LibWxRegex) target.AddLinkLib(LibPrefix + _T("wxregex") + LibUnicSuffix + LibSuffix);
 				if (LibWxExpat) target.AddLinkLib(LibPrefix + _T("wxexpat") + LibSuffix);
 			}
-		}		
-        // enable optimizations for target
-        //OptimizationsOn(target, Wizard.GetCompilerID());
+		}
     }
 
     return true;
