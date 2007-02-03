@@ -33,7 +33,7 @@
 				</Compiler>
 				<Linker>
 					<Add library="libQt3Support4.a"/>
-					<Add library="libQtAssistantClient.a"/>
+					<Add library="libQtAssistantClient4.a"/>
 					<Add library="libQtCore4.a"/>
 					<Add library="libQtDesigner4.a"/>
 					<Add library="libQtDesignerComponents4.a"/>
