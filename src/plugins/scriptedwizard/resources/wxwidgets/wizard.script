@@ -40,6 +40,7 @@ FileName <- _T(""); // Filename for wizard
 ProjAuthor <- _T(""); // Project Author
 ProjEmail <- _T(""); // Author's e-mail
 ProjWebsite <- _T(""); // Project website
+PCHFileName <- _T(""); // PCH filename
 
 function BeginWizard()
 {
@@ -165,7 +166,6 @@ function OnEnter_WxConf(fwd)
 		Wizard.CheckCheckbox(_T("chkWxConfDLL"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/dll"), 0)));
         Wizard.CheckCheckbox(_T("chkWxConfMono"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/monolithic"), 0)));
         Wizard.CheckCheckbox(_T("chkWxConfUni"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/unicode"), 0)));
-		//Wizard.EnableWindow(_T("chkWxConfDebug"), false);
 		Wizard.CheckCheckbox(_T("chkWxConfDebug"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/debug"), 0)));
         Wizard.CheckCheckbox(_T("chkWxConfPCH"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/pch"), 0)));
         Wizard.SetTextControlValue(_T("txtWxConfConfig"), ConfigManager.Read(_T("/wx_project_wizard/configuration"), _T("")));
@@ -190,10 +190,20 @@ function OnLeave_WxConf(fwd)
 		{
 			local msg = _T("You have selected PCH support for Empty project.\n\n");
 			msg = msg + _T("Wizard will add support for PCH assuming the PCH header name as {Project_Name}_pch.h\n\n");
-			msg = msg + _T("Do you want to add PCH support for this project?");
+			msg = msg + _T("Click Yes to accept default settings\n\nClick No to Enter PCH header manually");
 			local return_val = Message(msg, _T("wxWidgets Project Wizard"), wxICON_QUESTION | wxYES_NO);
-			if (return_val == wxID_NO) WantPCH = false;
+			if (return_val == wxID_NO)
+			{
+				msg = _T("Please enter PCH header file name");
+				PCHFileName = wxGetTextFromUser(msg, _T("wxWidgets Wizard"), _T("wxprec.h"));
+				if (PCHFileName.IsEmpty()) // Check for empty string
+					PCHFileName = Wizard.GetProjectName() + _T("_pch.h");
+			}
+			else if (return_val == wxID_YES)
+				PCHFileName = Wizard.GetProjectName() + _T("_pch.h");
 		}
+		else // Set PCHFileName to Default
+			PCHFileName = Wizard.GetProjectName() + _T("_pch.h");
 		
 		// Now write the configurations
 		ConfigManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
@@ -343,6 +353,27 @@ function OnLeave_WxConfUnix(fwd)
     return true;
 }
 
+// -----------------------------------------------------------------------------
+// each time, return a string of the form "filename.ext;contents"
+// you can change the return string based on <file_index>
+// return an empty string to denote that no more files are to be generated
+function GetGeneratedFile(file_index)
+{
+    if (!IsEmpty)
+	{
+		local ProjectName = Wizard.GetProjectName();
+		switch (file_index)
+	    {
+	        case 0: return ProjectName + _T("App.h") + _T(";") + GenerateHeader(file_index); break;
+	        case 1: return ProjectName + _T("App.cpp") + _T(";") + GenerateSource(file_index); break;
+	        case 2: return ProjectName + _T("Main.h") + _T(";") + GenerateHeader(file_index); break;
+			case 3: return ProjectName + _T("Main.cpp") + _T(";") + GenerateSource(file_index); break;
+			case 4: {if (WantPCH) {return ProjectName + _T("_pch.h") + _T(";") + GenerateHeader(file_index); break;}}// PCH file
+	    }
+	}
+    return _T(""); // no more generated files
+}
+
 // return the files this project contains
 function GetFilesDir()
 {
@@ -351,7 +382,7 @@ function GetFilesDir()
 	{
 		/*result = _T("wxwidgets/common");
 	    if (WantPCH)
-	        result = result + _T(";wxwidgets/pch");*/
+	        result = result + _T("wxwidgets/pch;");*/
 		if (PLATFORM == PLATFORM_MSW)
 			result = result + _T("wxwidgets/rc");
 	}
@@ -478,7 +509,7 @@ function SetupProject(project)
     // enable PCH
     if (WantPCH && GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
     {
-        local pchfile = project.GetFileByFilename(Wizard.GetProjectName() + _T("_pch.h"), true, true);
+        local pchfile = project.GetFileByFilename(PCHFileName, true, true);
         if (!IsNull(pchfile))
         {
             pchfile.compile = true;
@@ -486,7 +517,7 @@ function SetupProject(project)
             pchfile.weight = 0;
             project.SetModeForPCH(pchSourceDir); // pch dir
             project.AddCompilerOption(_T("-Winvalid-pch"));
-			project.AddCompilerOption(_T("-include ") + Wizard.GetProjectName() + _T("_pch.h"));
+			project.AddCompilerOption(_T("-include ") + PCHFileName);
             project.AddCompilerOption(_T("-DUSE_PCH"));
         }
     }
@@ -499,8 +530,8 @@ function SetupProject(project)
 	else if (WantPCH && (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
 						|| GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8"))))
 	{
-		project.AddCompilerOption(_T("/FI\"") + Wizard.GetProjectName() + _T("_pch.h\""));
-		project.AddCompilerOption(_T("/Yc\"") + Wizard.GetProjectName() + _T("_pch.h\""));
+		project.AddCompilerOption(_T("/FI\"") + PCHFileName + _T("\""));
+		project.AddCompilerOption(_T("/Yc\"") + PCHFileName + _T("\""));
 		project.AddCompilerOption(_T("/DUSE_PCH"));
 	}
 
@@ -827,27 +858,6 @@ function OnLeave_WxAdvLib(fwd)
 		}
 	}
 	return true;
-}
-
-// -----------------------------------------------------------------------------
-// each time, return a string of the form "filename.ext;contents"
-// you can change the return string based on <file_index>
-// return an empty string to denote that no more files are to be generated
-function GetGeneratedFile(file_index)
-{
-    if (!IsEmpty)
-	{
-		local ProjectName = Wizard.GetProjectName();
-		switch (file_index)
-	    {
-	        case 0: return ProjectName + _T("App.h") + _T(";") + GenerateHeader(file_index); break;
-	        case 1: return ProjectName + _T("App.cpp") + _T(";") + GenerateSource(file_index); break;
-	        case 2: return ProjectName + _T("Main.h") + _T(";") + GenerateHeader(file_index); break;
-			case 3: return ProjectName + _T("Main.cpp") + _T(";") + GenerateSource(file_index); break;
-			case 4: {if (WantPCH) {return ProjectName + _T("_pch.h") + _T(";") + GenerateHeader(file_index); break;}}// PCH file
-	    }
-	}
-    return _T(""); // no more generated files
 }
 
 // -----------------------------------------------------------------------------
