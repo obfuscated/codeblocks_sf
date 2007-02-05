@@ -170,7 +170,6 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
 
         /** @brief Security function.
           *
-          * @param script The script's full filename.
           * @return True if the script is trusted, false if not.
           *
           * @see TrustScript(), TrustCurrentlyRunningScript(), IsScriptTrusted().

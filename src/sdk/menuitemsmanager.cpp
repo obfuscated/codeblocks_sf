@@ -102,6 +102,7 @@ void MenuItemsManager::Clear()
   *                 If the last part of the string ("MyItem" in the example)
   *                 starts with a dash (-) (e.g. "-MyItem") then a menu
   *                 separator is prepended before the actual menu item.
+  * @param id The menu item ID (use wxID_SEPARATOR for adding a separator)
   * @return The newly created menu item or NULL for failure.
   */
 wxMenuItem* MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
