@@ -275,7 +275,7 @@ void wxsNotebook::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
             for ( int i=0; i<GetChildCount(); i++ )
             {
                 wxsNotebookExtra* Extra = (wxsNotebookExtra*)GetChildExtra(i);
-                Code << Codef(Language,_T("%AAddPage(%v,%t,%b);\b"),
+                Code << Codef(Language,_T("%AAddPage(%v,%t,%b);\n"),
                         GetChild(i)->GetVarName().c_str(),Extra->m_Label.c_str(),Extra->m_Selected);
             }
 

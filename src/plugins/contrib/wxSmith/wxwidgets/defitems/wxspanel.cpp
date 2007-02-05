@@ -31,6 +31,7 @@ namespace
         WXS_ST_CATEGORY("wxPanel")
         WXS_ST(wxNO_3D)
         WXS_ST(wxTAB_TRAVERSAL)
+        WXS_ST(wxWANTS_CHARS)
         WXS_EXST(wxWS_EX_VALIDATE_RECURSIVELY)
     WXS_ST_END()
 
