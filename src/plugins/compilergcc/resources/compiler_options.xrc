@@ -89,9 +89,9 @@
                 <border>8</border>
               </object>
               <object class="sizeritem">
-                <object class="wxNotebook" name="nbMain">
-                  <object class="notebookpage">
-                    <label>Compiler</label>
+                <object class="wxChoicebook" name="nbMain">
+                  <object class="choicebookpage">
+                    <label>Compiler settings</label>
                     <object class="wxPanel" name="tabCompiler">
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
@@ -203,8 +203,8 @@
                       </object>
                     </object>
                   </object>
-                  <object class="notebookpage">
-                    <label>Linker</label>
+                  <object class="choicebookpage">
+                    <label>Linker settings</label>
                     <object class="wxPanel" name="tabLinker">
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
@@ -342,8 +342,8 @@
                       </object>
                     </object>
                   </object>
-                  <object class="notebookpage">
-                    <label>Directories</label>
+                  <object class="choicebookpage">
+                    <label>Search directories</label>
                     <object class="wxPanel" name="tabDirs">
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
@@ -562,8 +562,8 @@
                       </object>
                     </object>
                   </object>
-                  <object class="notebookpage">
-                    <label>Commands</label>
+                  <object class="choicebookpage">
+                    <label>Pre/post build steps</label>
                     <object class="wxPanel" name="tabExtras">
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
@@ -611,8 +611,8 @@
                       </object>
                     </object>
                   </object>
-                  <object class="notebookpage">
-                    <label>Programs</label>
+                  <object class="choicebookpage">
+                    <label>Toolchain executables</label>
                     <object class="wxPanel" name="tabPrograms">
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
@@ -905,14 +905,14 @@ or in any of the &quot;Additional paths&quot;...</label>
                       </object>
                     </object>
                   </object>
-                  <object class="notebookpage">
+                  <object class="choicebookpage">
                     <label>Custom variables</label>
                     <object class="wxPanel" name="tabVars">
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
                           <object class="wxStaticText">
-                            <label>Programs / variables:</label>
+                            <label>Variables:</label>
                           </object>
                           <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
                           <border>8</border>
@@ -970,14 +970,15 @@ or in any of the &quot;Additional paths&quot;...</label>
                       </object>
                     </object>
                   </object>
-                  <object class="notebookpage">
+                  <object class="choicebookpage">
                     <label>&quot;Make&quot; commands</label>
                     <object class="wxPanel" name="tabMake">
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
                           <object class="wxStaticText" name="">
-                            <label>IMPORTANT: These commands are ONLY used when the project is using a custom Makefile.</label>
+                            <label>IMPORTANT: These commands are ONLY used when the project is using a custom
+Makefile.</label>
                             <fg>#800000</fg>
                           </object>
                           <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
@@ -1043,14 +1044,14 @@ or in any of the &quot;Additional paths&quot;...</label>
                             <label>Known variables: $$make, $$makefile, $$target,$$file</label>
                             <fg>#800000</fg>
                           </object>
-                          <flag>wxLEFT|wxRIGHT</flag>
+                          <flag>wxLEFT|wxRIGHT|wxGROW</flag>
                           <border>8</border>
                         </object>
                       </object>
                     </object>
                   </object>
-                  <object class="notebookpage">
-                    <label>Other</label>
+                  <object class="choicebookpage">
+                    <label>Other settings</label>
                     <object class="wxPanel" name="tabOther">
                       <object class="wxBoxSizer">
                         <orient>wxVERTICAL</orient>

@@ -29,25 +29,25 @@
               <orient>wxVERTICAL</orient>
               <object class="sizeritem">
                 <object class="wxButton" name="btnSelectWild">
-                  <label>Wildcard select</label>
+                  <label>&amp;Wildcard select</label>
                 </object>
                 <flag>wxGROW</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxButton" name="btnToggle">
-                  <label>Toggle selection</label>
+                  <label>&amp;Toggle selection</label>
                 </object>
                 <flag>wxGROW</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxButton" name="btnSelectAll">
-                  <label>Select All</label>
+                  <label>Select &amp;All</label>
                 </object>
                 <flag>wxGROW</flag>
               </object>
               <object class="sizeritem">
                 <object class="wxButton" name="btnDeselectAll">
-                  <label>Deselect All</label>
+                  <label>&amp;Deselect All</label>
                 </object>
                 <flag>wxGROW</flag>
               </object>

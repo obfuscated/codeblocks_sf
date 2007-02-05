@@ -53,7 +53,7 @@
 #endif
 
 #include <wx/radiobox.h>
-#include <wx/notebook.h>
+#include <wx/choicebk.h>
 
 #include "scripting/sqplus/sqplus.h"
 
@@ -105,7 +105,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
 	m_pCompiler(0L)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgProjectOptions"));
-
+    
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
     int count = m_Project->GetFilesCount();
     for (int i = 0; i < count; ++i)
@@ -171,7 +171,7 @@ void ProjectOptionsDlg::BuildScriptsTree()
 
 void ProjectOptionsDlg::AddPluginPanels()
 {
-    wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
+    wxChoicebook* nb = XRCCTRL(*this, "nbMain", wxChoicebook);
 
     Manager::Get()->GetPluginManager()->GetProjectConfigurationPanels(nb, m_Project, m_PluginPanels);
 

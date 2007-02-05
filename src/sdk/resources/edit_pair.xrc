@@ -56,20 +56,18 @@
         <minsize>264,-1</minsize>
       </object>
       <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
+        <object class="wxStdDialogButtonSizer">
+          <object class="button">
             <object class="wxButton" name="wxID_OK">
-              <label>&amp;OK</label>
-              <default>1</default>
+              <label></label>
+              <label>&amp;Ok</label>
             </object>
           </object>
-          <object class="sizeritem">
+          <object class="button">
             <object class="wxButton" name="wxID_CANCEL">
+              <label></label>
               <label>&amp;Cancel</label>
             </object>
-            <flag>wxLEFT</flag>
-            <border>8</border>
           </object>
         </object>
         <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>

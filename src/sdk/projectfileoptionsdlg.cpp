@@ -227,7 +227,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 
 		XRCCTRL(*this, "txtProject", wxTextCtrl)->SetValue(prj?(prj->GetTitle() + _T("\n") + prj->GetFilename()):_T("-"));
 		XRCCTRL(*this, "txtAbsName", wxTextCtrl)->SetValue(pf->file.GetFullPath());
-		XRCCTRL(*this, "txtRelName", wxTextCtrl)->SetValue(pf->GetBaseName());
+		XRCCTRL(*this, "txtRelName", wxTextCtrl)->SetValue(pf->relativeFilename);
 
 		SetTitle(_("Options for ") + wxString(_("\"")) + pf->relativeFilename + wxString(_("\"")));
 	}

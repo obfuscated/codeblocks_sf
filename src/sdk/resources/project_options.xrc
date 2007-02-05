@@ -6,10 +6,10 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxNotebook" name="nbMain">
+        <object class="wxChoicebook" name="nbMain">
           <usenotebooksizer>1</usenotebooksizer>
-          <object class="notebookpage">
-            <label>Project</label>
+          <object class="choicebookpage">
+            <label>Project settings</label>
             <object class="wxPanel" name="tabProject">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
@@ -28,7 +28,7 @@
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtProjectName"/>
-                      <flag>wxEXPAND</flag>
+                      <flag>wxGROW</flag>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText">
@@ -39,7 +39,7 @@
                       <object class="wxStaticText" name="txtProjectFilename">
                         <label></label>
                       </object>
-                      <flag>wxEXPAND</flag>
+                      <flag>wxGROW</flag>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText">
@@ -110,8 +110,6 @@
                           </object>
                         </object>
                       </object>
-                      <option>1</option>
-                      <flag>wxGROW</flag>
                     </object>
                     <object class="spacer">
                       <size>0,8</size>
@@ -134,13 +132,12 @@
                         </object>
                         <object class="sizeritem">
                           <object class="wxStaticText">
-                            <label>(this setting is mostly useful for large projects containing similarly named files differing on extension only)</label>
+                            <label>(this setting is mostly useful for large projects containing similarly named files
+differing on extension only)</label>
                             <fg>#800000</fg>
                           </object>
                         </object>
                       </object>
-                      <option>1</option>
-                      <flag>wxGROW</flag>
                     </object>
                   </object>
                   <option>1</option>
@@ -171,8 +168,8 @@
               </object>
             </object>
           </object>
-          <object class="notebookpage">
-            <label>Targets</label>
+          <object class="choicebookpage">
+            <label>Build targets</label>
             <object class="wxPanel" name="tabTargets">
               <object class="wxBoxSizer">
                 <orient>wxHORIZONTAL</orient>
@@ -274,7 +271,6 @@ from target...</label>
                     </object>
                     <label>Build targets</label>
                   </object>
-                  <option>1</option>
                   <flag>wxALL|wxEXPAND</flag>
                   <border>8</border>
                 </object>
@@ -291,7 +287,7 @@ from target...</label>
                               <object class="wxStaticText">
                                 <label>Type:</label>
                               </object>
-                              <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                              <flag></flag>
                             </object>
                             <object class="sizeritem">
                               <object class="wxBoxSizer">
@@ -496,8 +492,8 @@ from target...</label>
               </object>
             </object>
           </object>
-          <object class="notebookpage">
-            <label>Scripts</label>
+          <object class="choicebookpage">
+            <label>Build scripts</label>
             <object class="wxPanel" name="tabScripts">
               <object class="wxBoxSizer">
                 <orient>wxHORIZONTAL</orient>
@@ -589,7 +585,7 @@ from target...</label>
               </object>
             </object>
           </object>
-          <object class="notebookpage">
+          <object class="choicebookpage">
             <label>Notes</label>
             <object class="wxPanel" name="tabNotes">
               <object class="wxBoxSizer">
@@ -620,7 +616,7 @@ from target...</label>
             </object>
           </object>
         </object>
-        <option>1</option>
+        <option>0</option>
         <flag>wxALL|wxEXPAND</flag>
         <border>8</border>
       </object>

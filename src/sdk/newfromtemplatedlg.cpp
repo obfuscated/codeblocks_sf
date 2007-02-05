@@ -58,6 +58,8 @@ struct ListItemData
 };
 
 static int idEditWizardScript = wxNewId();
+static int idDiscardWizardScript = wxNewId();
+static int idInfoWizardScript = wxNewId();
 static int idEditGlobalWizardScript = wxNewId();
 
 BEGIN_EVENT_TABLE(NewFromTemplateDlg, wxDialog)
@@ -85,10 +87,11 @@ BEGIN_EVENT_TABLE(NewFromTemplateDlg, wxDialog)
 
     // context menu for wizard scripts
 	EVT_MENU(idEditWizardScript, NewFromTemplateDlg::OnEditScript)
+	EVT_MENU(idDiscardWizardScript, NewFromTemplateDlg::OnDiscardScript)
 	EVT_MENU(idEditGlobalWizardScript, NewFromTemplateDlg::OnEditGlobalScript)
 
 	EVT_RADIOBOX(XRCID("rbView"), NewFromTemplateDlg::OnViewChange)
-	EVT_BUTTON(XRCID("btnHelp"), NewFromTemplateDlg::OnHelp)
+	EVT_MENU(idInfoWizardScript, NewFromTemplateDlg::OnHelp)
 END_EVENT_TABLE()
 
 NewFromTemplateDlg::NewFromTemplateDlg(TemplateOutputType initial, const wxArrayString& user_templates)
@@ -408,7 +411,16 @@ void NewFromTemplateDlg::OnListRightClick(wxListEvent& event)
 
 	if (data && data->plugin)
 	{
-	    menu->Append(idEditWizardScript, _("Edit this wizard's script"));
+	    menu->Append(idEditWizardScript, _("Edit this script"));
+	    
+		// if the script exists in the user's configuration, it has been customized
+		wxString script = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + data->plugin->GetScriptFilename(data->wizPluginIndex);
+		if (wxFileExists(script))
+		{
+			menu->Append(idDiscardWizardScript, _("Discard modifications of this script"));
+			menu->Append(idInfoWizardScript, _("Why is this script marked red?"));
+			menu->AppendSeparator();
+		}
 	}
     menu->Append(idEditGlobalWizardScript, _("Edit global registration script"));
 	list->PopupMenu(menu);
@@ -436,6 +448,30 @@ void NewFromTemplateDlg::OnEditScript(wxCommandEvent& event)
 	ListItemData* data = (ListItemData*)list->GetItemData(index);
     cbWizardPlugin* wiz = data->plugin;
     EditScript(wiz->GetScriptFilename(data->wizPluginIndex));
+}
+
+void NewFromTemplateDlg::OnDiscardScript(wxCommandEvent& event)
+{
+    wxListCtrl* list = GetVisibleListCtrl();
+    if (!list)
+        return;
+    long index = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    if (index == -1)
+        return;
+	ListItemData* data = (ListItemData*)list->GetItemData(index);
+	if (!data)
+		return;
+
+	wxString script = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + data->plugin->GetScriptFilename(data->wizPluginIndex);
+	if (wxFileExists(script))
+	{
+		if (cbMessageBox(_("Are you sure you want to discard all local modifications to this script?"),
+						_("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
+		{
+			if (wxRemoveFile(script))
+				list->SetItemTextColour(index, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
+		}
+	}
 }
 
 void NewFromTemplateDlg::OnEditGlobalScript(wxCommandEvent& event)

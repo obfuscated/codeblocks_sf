@@ -13,6 +13,184 @@
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
+                    <cols>2</cols>
+                    <rows>2</rows>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>In Project :</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtProject">
+                        <style>wxTE_MULTILINE|wxTE_READONLY</style>
+                      </object>
+                      <option>1</option>
+                      <flag>wxEXPAND</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>FileName (absolute) :</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtAbsName">
+                        <style>wxTE_READONLY</style>
+                      </object>
+                      <option>1</option>
+                      <flag>wxEXPAND</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>FileName (relative) :</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtRelName">
+                        <style>wxTE_READONLY</style>
+                      </object>
+                      <option>1</option>
+                      <flag>wxEXPAND</flag>
+                    </object>
+                    <vgap>4</vgap>
+                    <hgap>4</hgap>
+                    <growablecols>1</growablecols>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
+                    <cols>4</cols>
+                    <rows>3</rows>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Total Lines : </label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText" name="staticTotalLines">
+                        <font>
+                          <weight>bold</weight>
+                        </font>
+                        <label></label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Empty Lines : </label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText" name="staticEmptyLines">
+                        <font>
+                          <weight>bold</weight>
+                        </font>
+                        <label></label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Actual Code Lines : </label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText" name="staticActualLines">
+                        <font>
+                          <weight>bold</weight>
+                        </font>
+                        <label></label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>File Size : </label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText" name="staticFileSize">
+                        <font>
+                          <weight>bold</weight>
+                        </font>
+                        <label>35504</label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Comment Lines : </label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText" name="staticCommentLines">
+                        <font>
+                          <weight>bold</weight>
+                        </font>
+                        <label></label>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText" name="staticIncludedFilesLabel">
+                        <label>Included files : </label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText" name="staticIncludedFiles">
+                        <font>
+                          <weight>bold</weight>
+                        </font>
+                        <label>TBD</label>
+                      </object>
+                    </object>
+                    <vgap>4</vgap>
+                    <hgap>4</hgap>
+                    <growablecols>1</growablecols>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
+                    <cols>2</cols>
+                    <rows>1</rows>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>File's date/time stamp : </label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText" name="staticDateTimeStamp">
+                        <label></label>
+                        <font>
+                          <weight>bold</weight>
+                        </font>
+                      </object>
+                      <flag></flag>
+                    </object>
+                    <vgap>4</vgap>
+                    <hgap>4</hgap>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>8</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="notebookpage">
+            <label>Build</label>
+            <object class="wxPanel" name="tabBuild">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
                   <object class="wxCheckBox" name="chkCompile">
                     <label>Compile file</label>
                   </object>
@@ -78,176 +256,6 @@
                   </object>
                   <border>8</border>
                   <flag>wxALL|wxGROW</flag>
-                </object>
-              </object>
-            </object>
-          </object>
-          <object class="notebookpage">
-            <label>Properties</label>
-            <object class="wxPanel" name="tabProperties">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxFlexGridSizer">
-                    <cols>2</cols>
-                    <rows>2</rows>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>In Project :</label>
-                      </object>
-                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxTextCtrl" name="txtProject">
-                        <style>wxTE_MULTILINE|wxTE_READONLY</style>
-                      </object>
-                      <option>1</option>
-                      <flag>wxEXPAND</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>FileName (absolute) :</label>
-                      </object>
-                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxTextCtrl" name="txtAbsName">
-                        <style>wxTE_READONLY</style>
-                      </object>
-                      <option>1</option>
-                      <flag>wxEXPAND</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>FileName (relative) :</label>
-                      </object>
-                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxTextCtrl" name="txtRelName">
-                        <style>wxTE_READONLY</style>
-                      </object>
-                      <option>1</option>
-                      <flag>wxEXPAND</flag>
-                    </object>
-                    <vgap>4</vgap>
-                    <hgap>4</hgap>
-                    <growablecols>1</growablecols>
-                  </object>
-                  <flag>wxALL|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxFlexGridSizer">
-                    <cols>4</cols>
-                    <rows>3</rows>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Total Lines : </label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticTotalLines">
-                        <font>
-                          <weight>bold</weight>
-                        </font>
-                        <label></label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Empty Lines : </label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticEmptyLines">
-                        <font>
-                          <weight>bold</weight>
-                        </font>
-                        <label></label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Actual Code Lines : </label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticActualLines">
-                        <font>
-                          <weight>bold</weight>
-                        </font>
-                        <label></label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>File Size : </label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticFileSize">
-                        <font>
-                          <weight>bold</weight>
-                        </font>
-                        <label>35504</label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Comment Lines : </label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticCommentLines">
-                        <font>
-                          <weight>bold</weight>
-                        </font>
-                        <label></label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticIncludedFilesLabel">
-                        <label>Included files : </label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticIncludedFiles">
-                        <font>
-                          <weight>bold</weight>
-                        </font>
-                        <label>TBD</label>
-                      </object>
-                    </object>
-                    <vgap>4</vgap>
-                    <hgap>4</hgap>
-                    <growablecols>1</growablecols>
-                  </object>
-                  <flag>wxALL|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxFlexGridSizer">
-                    <cols>2</cols>
-                    <rows>1</rows>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>File's date/time stamp : </label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticDateTimeStamp">
-                        <label></label>
-                        <font>
-                          <weight>bold</weight>
-                        </font>
-                      </object>
-                    </object>
-                    <vgap>4</vgap>
-                    <hgap>4</hgap>
-                  </object>
-                  <flag>wxALL|wxEXPAND</flag>
-                  <border>8</border>
                 </object>
               </object>
             </object>

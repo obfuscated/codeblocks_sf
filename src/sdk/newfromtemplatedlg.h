@@ -36,6 +36,7 @@ class NewFromTemplateDlg : public wxDialog
 		void OnListActivate(wxListEvent& event);
 		void OnCategoryChanged(wxCommandEvent& event);
 		void OnEditScript(wxCommandEvent& event);
+		void OnDiscardScript(wxCommandEvent& event);
 		void OnEditGlobalScript(wxCommandEvent& event);
 		void OnViewChange(wxCommandEvent& event);
 		void OnHelp(wxCommandEvent& event);

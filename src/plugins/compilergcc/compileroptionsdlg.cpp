@@ -33,7 +33,6 @@
     #include <wx/event.h>
     #include <wx/filename.h>
     #include <wx/listbox.h>
-    #include <wx/textctrl.h>
     #include <wx/treectrl.h>
     #include <wx/xrc/xmlres.h>
     #include "compiler.h"
@@ -47,6 +46,7 @@
     #include <wx/spinctrl.h>
 #endif
 #include <wx/filedlg.h>
+#include <wx/choicebk.h>
 #include "cbexception.h"
 #include "annoyingdialog.h"
 #include "compileroptionsdlg.h"
@@ -240,13 +240,13 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
 
     wxTreeCtrl* tree = XRCCTRL(*this, "tcScope", wxTreeCtrl);
     wxSizer* sizer = tree->GetContainingSizer();
+	wxChoicebook* nb = XRCCTRL(*this, "nbMain", wxChoicebook);
     if (!m_pProject)
     {
         // global settings
         SetLabel(_("Compiler Settings"));
         sizer->Show(tree,false);
         sizer->Remove(tree);
-        wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
         nb->DeletePage(6); // remove "Make" page
         nb->DeletePage(3); // remove "Commands" page
     }
@@ -254,7 +254,6 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
     {
         // project settings
 
-        wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
         nb->DeletePage(7); // remove "Other" page
         nb->DeletePage(4); // remove "Programs" page
 
@@ -316,7 +315,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         else
         { // the user cancelled and wants to keep the compiler
             DoFillCompilerSets(compilerIdx);
-            if(wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook))
+            if(nb)
             {
                 nb->Disable();
             }
@@ -332,7 +331,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         // compiler dependent settings
         DoFillCompilerDependentSettings();
     }
-
+	nb->SetSelection(0);
     sizer->Layout();
     Layout();
     GetSizer()->Layout();
@@ -1073,7 +1072,7 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
     // as a consequence might need to be re-enabled when another target/project is chosen in the tree)
     if(compilerIdx != -1)
     {
-        if(wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook))
+        if(wxChoicebook* nb = XRCCTRL(*this, "nbMain", wxChoicebook))
         {
             nb->Enable();
         }
@@ -1106,7 +1105,7 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
         }
         else
         { // the user cancelled and wants to keep the compiler
-            if(wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook))
+            if(wxChoicebook* nb = XRCCTRL(*this, "nbMain", wxChoicebook))
             {
                 nb->Disable();
             }

@@ -6,374 +6,223 @@
     <object class="wxFlexGridSizer">
       <object class="sizeritem">
         <object class="wxListbook" name="nbMain">
-          
           <object class="listbookpage">
-            
             <label>Projects</label>
-            
             <object class="wxPanel" name="pnlProjects">
-              
               <object class="wxBoxSizer">
-                
                 <orient>wxVERTICAL</orient>
-                
                 <object class="sizeritem">
-                  
                   <object class="wxBoxSizer">
-                    
                     <orient>wxHORIZONTAL</orient>
-                    
                     <object class="sizeritem">
-                      
                       <object class="wxStaticText">
-                        
                         <label>Category:</label>
                       </object>
-                      
                       <flag>wxTOP</flag>
-                      
                       <border>4</border>
                     </object>
-                    
                     <object class="sizeritem">
-                      
                       <object class="wxBoxSizer">
-                        
                         <orient>wxVERTICAL</orient>
-                        
                         <object class="sizeritem">
-                          
                           <object class="wxChoice" name="cmbProjectCategories">
-                            
                             <content/>
                           </object>
-                          
                           <option>1</option>
-                          
                           <flag>wxEXPAND</flag>
                         </object>
                       </object>
-                      
                       <option>1</option>
-                      
                       <flag>wxLEFT|wxEXPAND</flag>
-                      
                       <border>8</border>
                     </object>
                   </object>
-                  
                   <flag>wxGROW</flag>
                 </object>
-                
                 <object class="sizeritem">
-                  
                   <object class="wxListCtrl" name="listProjects">
-                    
                     <style>wxLC_ICON|wxLC_AUTOARRANGE|wxLC_SINGLE_SEL</style>
                   </object>
-                  
                   <option>1</option>
-                  
                   <flag>wxTOP|wxEXPAND</flag>
-                  
                   <border>8</border>
                 </object>
               </object>
             </object>
           </object>
-          
           <object class="listbookpage">
-            
             <label>Build targets</label>
-            
             <object class="wxPanel" name="pnlTargets">
-              
               <object class="wxBoxSizer">
-                
                 <orient>wxVERTICAL</orient>
-                
                 <object class="sizeritem">
-                  
                   <object class="wxBoxSizer">
-                    
                     <orient>wxHORIZONTAL</orient>
-                    
                     <object class="sizeritem">
-                      
                       <object class="wxStaticText">
-                        
                         <label>Category:</label>
                       </object>
-                      
                       <flag>wxTOP</flag>
-                      
                       <border>4</border>
                     </object>
-                    
                     <object class="sizeritem">
-                      
                       <object class="wxBoxSizer">
-                        
                         <orient>wxVERTICAL</orient>
-                        
                         <object class="sizeritem">
-                          
                           <object class="wxChoice" name="cmbTargetCategories">
-                            
                             <content/>
                           </object>
-                          
                           <option>1</option>
-                          
                           <flag>wxEXPAND</flag>
                         </object>
                       </object>
-                      
                       <option>1</option>
-                      
                       <flag>wxLEFT|wxEXPAND</flag>
-                      
                       <border>8</border>
                     </object>
                   </object>
-                  
                   <flag>wxGROW</flag>
                 </object>
-                
                 <object class="sizeritem">
-                  
                   <object class="wxListCtrl" name="listTargets">
-                    
                     <style>wxLC_ICON|wxLC_AUTOARRANGE|wxLC_SINGLE_SEL</style>
                   </object>
-                  
                   <option>1</option>
-                  
                   <flag>wxTOP|wxEXPAND</flag>
-                  
                   <border>8</border>
                 </object>
               </object>
             </object>
           </object>
-          
           <object class="listbookpage">
-            
             <label>Files</label>
-            
             <object class="wxPanel" name="pnlFiles">
-              
               <object class="wxBoxSizer">
-                
                 <orient>wxVERTICAL</orient>
-                
                 <object class="sizeritem">
-                  
                   <object class="wxBoxSizer">
-                    
                     <orient>wxHORIZONTAL</orient>
-                    
                     <object class="sizeritem">
-                      
                       <object class="wxStaticText">
-                        
                         <label>Category:</label>
                       </object>
-                      
                       <flag>wxTOP</flag>
-                      
                       <border>4</border>
                     </object>
-                    
                     <object class="sizeritem">
-                      
                       <object class="wxBoxSizer">
-                        
                         <orient>wxVERTICAL</orient>
-                        
                         <object class="sizeritem">
-                          
                           <object class="wxChoice" name="cmbFileCategories">
-                            
                             <content/>
                           </object>
-                          
                           <option>1</option>
-                          
                           <flag>wxEXPAND</flag>
                         </object>
                       </object>
-                      
                       <option>1</option>
-                      
                       <flag>wxLEFT|wxEXPAND</flag>
-                      
                       <border>8</border>
                     </object>
                   </object>
-                  
                   <flag>wxGROW</flag>
                 </object>
-                
                 <object class="sizeritem">
-                  
                   <object class="wxListCtrl" name="listFiles">
-                    
                     <style>wxLC_ICON|wxLC_AUTOARRANGE|wxLC_SINGLE_SEL</style>
                   </object>
-                  
                   <option>1</option>
-                  
                   <flag>wxTOP|wxEXPAND</flag>
-                  
                   <border>8</border>
                 </object>
               </object>
             </object>
           </object>
-          
           <object class="listbookpage">
-            
             <label>Custom</label>
-            
             <object class="wxPanel" name="pnlCustoms">
-              
               <object class="wxBoxSizer">
-                
                 <orient>wxVERTICAL</orient>
-                
                 <object class="sizeritem">
-                  
                   <object class="wxBoxSizer">
-                    
                     <orient>wxHORIZONTAL</orient>
-                    
                     <object class="sizeritem">
-                      
                       <object class="wxStaticText">
-                        
                         <label>Category:</label>
                       </object>
-                      
                       <flag>wxTOP</flag>
-                      
                       <border>4</border>
                     </object>
-                    
                     <object class="sizeritem">
-                      
                       <object class="wxBoxSizer">
-                        
                         <orient>wxVERTICAL</orient>
-                        
                         <object class="sizeritem">
-                          
                           <object class="wxChoice" name="cmbCustomCategories">
-                            
                             <content/>
                           </object>
-                          
                           <option>1</option>
-                          
                           <flag>wxEXPAND</flag>
                         </object>
                       </object>
-                      
                       <option>1</option>
-                      
                       <flag>wxLEFT|wxEXPAND</flag>
-                      
                       <border>8</border>
                     </object>
                   </object>
-                  
                   <flag>wxGROW</flag>
                 </object>
-                
                 <object class="sizeritem">
-                  
                   <object class="wxListCtrl" name="listCustoms">
-                    
                     <style>wxLC_ICON|wxLC_AUTOARRANGE|wxLC_SINGLE_SEL</style>
                   </object>
-                  
                   <option>1</option>
-                  
                   <flag>wxTOP|wxEXPAND</flag>
-                  
                   <border>8</border>
                 </object>
               </object>
             </object>
           </object>
-          
           <object class="listbookpage">
-            
             <label>User templates</label>
-            
             <object class="wxPanel" name="pnlUser">
-              
               <object class="wxBoxSizer">
-                
                 <orient>wxVERTICAL</orient>
-                
                 <object class="sizeritem">
-                  
                   <object class="wxListBox" name="lstUser">
-                    
                     <content/>
                   </object>
-                  
                   <option>1</option>
-                  
                   <flag>wxGROW</flag>
                 </object>
-                
                 <object class="sizeritem">
-                  
                   <object class="wxStaticText">
-                    
                     <label>* To create a user template, create a project the way you want it
    and click &quot;Project-&gt;Save project as user-template&quot; in main menu bar.</label>
                   </object>
-                  
                   <flag>wxBOTTOM</flag>
-                  
                   <border>8</border>
                 </object>
-                
                 <object class="sizeritem">
-                  
                   <object class="wxStaticText">
-                    
                     <label>* To delete a user template, delete the similarly named folder created
    in %APPDATA%\codeblocks\UserTemplates (for Windows) or
    ~/.codeblocks (for other platforms).</label>
                   </object>
                 </object>
-                
                 <object class="sizeritem">
-                  
                   <object class="wxStaticText">
-                    
                     <label>   Please note the dot (.) in front of &quot;codeblocks&quot;!</label>
-                    
                     <fg>#800000</fg>
                   </object>
-                  
-                  <flag/>
+                  <flag></flag>
                 </object>
               </object>
             </object>
           </object>
         </object>
-        
         <option>1</option>
-        
         <flag>wxTOP|wxLEFT|wxGROW</flag>
-        
         <border>8</border>
-        
         <minsize>480,320</minsize>
       </object>
       <object class="sizeritem">
@@ -381,50 +230,37 @@
           <orient>wxVERTICAL</orient>
           <object class="sizeritem">
             <object class="wxButton" name="wxID_OK">
-              
               <label>&amp;Go</label>
-              
               <default>1</default>
             </object>
-            
             <flag>wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
-            
             <border>8</border>
           </object>
           <object class="sizeritem">
             <object class="wxButton" name="wxID_CANCEL">
-              
               <label>&amp;Cancel</label>
             </object>
-            
             <flag>wxALIGN_CENTRE_HORIZONTAL</flag>
           </object>
           <object class="spacer">
-            
             <option>1</option>
-            
             <flag>wxGROW</flag>
           </object>
           <object class="sizeritem">
             <object class="wxRadioBox" name="rbView">
-              
               <label>View as</label>
-              
               <content>
                 <item>Large icons</item>
                 <item>List</item>
               </content>
-              
-              
+              <selection>0</selection>
               <dimension>1</dimension>
+              <style>wxRA_SPECIFY_COLS</style>
             </object>
-            
             <flag>wxGROW</flag>
           </object>
         </object>
-        
         <flag>wxTOP|wxRIGHT|wxGROW|wxALIGN_CENTRE_HORIZONTAL</flag>
-        
         <border>8</border>
       </object>
       <cols>2</cols>
@@ -437,46 +273,37 @@
         <object class="wxBoxSizer">
           <orient>wxVERTICAL</orient>
           <object class="sizeritem">
-            <object class="wxButton" name="btnHelp">
-              <label>Why are some wizards marked in red?</label>
+            <object class="wxStaticText">
+              <label>TIP: Try right-clicking an item</label>
+              <fg>#0000FF</fg>
             </object>
-            <flag>wxALIGN_RIGHT</flag>
+            <flag>wxGROW</flag>
           </object>
           <object class="sizeritem">
             <object class="wxStaticLine"/>
-            
             <flag>wxTOP|wxBOTTOM|wxGROW</flag>
-            
             <border>8</border>
           </object>
           <object class="sizeritem">
             <object class="wxStaticText">
-              
               <label>1. Select a wizard type first on the left</label>
             </object>
-            
             <flag>wxGROW</flag>
           </object>
           <object class="sizeritem">
             <object class="wxStaticText">
-              
               <label>2. Select a specific wizard from the main window (filter by categories if needed)</label>
             </object>
-            
             <flag>wxGROW</flag>
           </object>
           <object class="sizeritem">
             <object class="wxStaticText">
-              
               <label>3. Press Go</label>
             </object>
-            
             <flag>wxGROW</flag>
           </object>
         </object>
-        
         <flag>wxBOTTOM|wxLEFT|wxGROW</flag>
-        
         <border>8</border>
       </object>
     </object>

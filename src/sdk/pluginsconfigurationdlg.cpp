@@ -107,10 +107,11 @@ PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
     wxString initialInfo;
     initialInfo << _T("<html><body><font color=\"#0000AA\">");
     initialInfo << _("Tip: The above list allows for multiple selections.");
-    initialInfo << _T("</font><br /><br /><i><font color=\"red\">");
+    initialInfo << _T("</font><br /><br /><b><font color=\"red\">");
     initialInfo << _("Have you saved your work first?");
-    initialInfo << _T("<br />\n");
-    initialInfo << _("All functionality in this dialog is to be considered as &quot;experimental&quot;.");
+    initialInfo << _T("</font></b><br /><i><font color=\"black\">\n");
+    initialInfo << _("If a plugin is not well-written, it could cause Code::Blocks to crash ");
+    initialInfo << _T("when performing any operation on it...");
     initialInfo << _T("</font></i><br /></body></html>\n");
 
     XRCCTRL(*this, "htmlInfo", wxHtmlWindow)->SetPage(initialInfo);
