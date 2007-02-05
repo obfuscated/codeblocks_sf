@@ -10,7 +10,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-
+multi_thread <- true; //Default to Multi-thread. For MSVC only.
 ConsoleLang <- 1; // default to C++
 
 //
@@ -55,6 +55,17 @@ function OnLeave_ConsoleLanguagePage(fwd)
     if (fwd)
     {
         ConsoleLang = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk")))
+		{
+			local msg = _T("Wizard will setup the Project in Multi-threaded Dynamic CRT mode by default.\n\n");
+			msg = msg + _T("Click Yes to continue with Multi-threaded Dynamic CRT mode\n\n");
+			msg = msg + _T("Click No to continue with Single-threaded Static CRT mode");
+			local thread = Message(msg, _T("Console Wizard"), wxICON_QUESTION | wxYES_NO);
+			if (thread == wxID_YES)
+				multi_thread = true;
+			else
+				multi_thread = false;
+		}
     }
     return true;
 }
@@ -86,8 +97,8 @@ function SetupProject(project)
     // These functions are located in <templates_path>/common_functions.script.
     // If you add other commonly used functions or bug-fix anything in that file,
     // please share it with us :)
-
-    // enable compiler warnings (project-wide)
+	
+	// enable compiler warnings (project-wide)
     WarningsOn(project, Wizard.GetCompilerID());
 
     // add additional libs for special compilers
@@ -104,14 +115,18 @@ function SetupProject(project)
     // Debug build target
     local target = project.GetBuildTarget(Wizard.GetDebugName());
     if (!IsNull(target))
+	{
         SetupTarget(target, true);
+	}
 
     // Release build target
     target = project.GetBuildTarget(Wizard.GetReleaseName());
     if (!IsNull(target))
         SetupTarget(target, false);
 
-    // all done!
+    //Add CPP Exception handling support
+	CppExceptionsOn(project, Wizard.GetCompilerID());
+	// all done!
     return true;
 }
 //
@@ -133,12 +148,42 @@ function SetupTarget(target,is_debug)
         // enable debugging symbols for this target
         // DebugSymbolsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
         DebugSymbolsOn(target, Wizard.GetCompilerID());
+		//Special consideration for MSVC 7.1
+		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk")) && multi_thread)
+		{
+			target.AddCompilerOption(_T("/MLd"));
+			target.AddLinkerOption(_T("/NODEFAULTLIB:libcmtd.lib"));
+			target.AddLinkerOption(_T("/NODEFAULTLIB:libcpmtd.lib"));
+			target.AddLinkLib(_T("libcd.lib"));
+			target.AddLinkLib(_T("libcpd.lib"));
+		}
+		else
+		{
+			target.AddCompilerOption(_T("/MDd"));
+			target.AddLinkLib(_T("msvcrtd.lib"));
+			target.AddLinkLib(_T("msvcprtd.lib"));
+		}
     }
     else
     {
         // enable optimizations for this target
         // OptimizationsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
         OptimizationsOn(target, Wizard.GetCompilerID());
+		//Special consideration for MSVC 7.1
+		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk")) && multi_thread) 
+		{
+			target.AddCompilerOption(_T("/ML"));
+			target.AddLinkerOption(_T("/NODEFAULTLIB:libcmt.lib"));
+			target.AddLinkerOption(_T("/NODEFAULTLIB:libcpmt.lib"));
+			target.AddLinkLib(_T("libc.lib"));
+			target.AddLinkLib(_T("libcp.lib"));
+		}
+		else
+		{
+			target.AddCompilerOption(_T("/MD"));
+			target.AddLinkLib(_T("msvcrt.lib"));
+			target.AddLinkLib(_T("msvcprt.lib"));
+		}
     }
 
     // all done!
