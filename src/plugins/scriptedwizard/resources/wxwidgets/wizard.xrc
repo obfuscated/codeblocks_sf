@@ -1,80 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxPanel" name="WxConf">
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxStaticText">
-          <label>Please select various configuration options. What you select
-here, must match the installed wxWidgets library's settings.</label>
-        </object>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxFlexGridSizer">
-          <object class="sizeritem">
-            <object class="wxCheckBox" name="chkWxConfDLL">
-              <label>Use wxWidgets DLL</label>
-            </object>
-          </object>
-          <cols>1</cols>
-          <vgap>8</vgap>
-          <hgap>8</hgap>
-          <object class="sizeritem">
-            <object class="wxCheckBox" name="chkWxConfMono">
-              <label>wxWidgets is built as a monolithic library</label>
-            </object>
-          </object>
-          <growablecols>0</growablecols>
-          <object class="sizeritem">
-            <object class="wxCheckBox" name="chkWxConfUni">
-              <label>Enable unicode</label>
-            </object>
-          </object>
-		  <object class="sizeritem">
-            <object class="wxCheckBox" name="chkWxEmpty">
-              <label>Create Empty Project</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxCheckBox" name="chkWxConfDebug">
-              <label>Set Target Types (For Advanced users only)</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxBoxSizer">
-              <orient>wxHORIZONTAL</orient>
-              <object class="sizeritem">
-                <object class="wxStaticText">
-                  <label>Configuration:</label>
-                </object>
-                <flag>wxALIGN_CENTRE_VERTICAL</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxTextCtrl" name="txtWxConfConfig"/>
-                <option>1</option>
-                <flag>wxLEFT|wxGROW</flag>
-                <border>8</border>
-              </object>
-            </object>
-            <option>1</option>
-            <flag>wxGROW</flag>
-          </object>
-        </object>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxCheckBox" name="chkWxConfPCH">
-          <label>Create and use precompiled header (PCH)</label>
-          <checked>1</checked>
-        </object>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-      </object>
-    </object>
-  </object>
+		<style>wxTAB_TRAVERSAL</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+				<object class="wxStaticText" name="m_staticText1">
+					<label>Please select various configuration options.\n\nWhat you select here, must match the installed wxWidgets\nlibrary&apos;s settings.</label>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>wxWidgets Library Settings</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL</flag>
+						<border>8</border>
+						<object class="wxCheckBox" name="chkWxConfDLL">
+							<label>Use wxWidgets DLL</label>
+							<checked>0</checked>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL</flag>
+						<border>8</border>
+						<object class="wxCheckBox" name="chkWxConfMono">
+							<label>wxWidgets is built as a monolithic library</label>
+							<checked>0</checked>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL</flag>
+						<border>8</border>
+						<object class="wxCheckBox" name="chkWxConfUni">
+							<label>Enable unicode</label>
+							<checked>0</checked>
+						</object>
+					</object>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Miscellaneous Settings</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL</flag>
+						<border>8</border>
+						<object class="wxCheckBox" name="chkWxEmpty">
+							<label>Create Empty Project</label>
+							<checked>0</checked>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>8</border>
+						<object class="wxCheckBox" name="chkWxConfPCH">
+							<label>Create and use precompiled header (PCH)</label>
+							<checked>0</checked>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>1</option>
+						<flag>wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxBoxSizer">
+							<orient>wxHORIZONTAL</orient>
+							<object class="sizeritem">
+								<option>0</option>
+								<flag>wxALL</flag>
+								<border>8</border>
+								<object class="wxStaticText" name="m_staticText2">
+									<label>Configuration:</label>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>0</option>
+								<flag>wxALIGN_CENTER_VERTICAL|wxLEFT</flag>
+								<border>8</border>
+								<object class="wxTextCtrl" name="txtWxConfConfig">
+									<value></value>
+									<maxlength>0</maxlength>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL</flag>
+						<border>8</border>
+						<object class="wxCheckBox" name="chkWxConfDebug">
+							<label>Set Target Types (For Advanced users only)</label>
+							<checked>0</checked>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
   <object class="wxPanel" name="WxConfUnix">
 		<style>wxTAB_TRAVERSAL</style>
 		<object class="wxBoxSizer">
