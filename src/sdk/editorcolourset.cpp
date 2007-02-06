@@ -300,13 +300,6 @@ bool EditorColourSet::AddOption(HighlightLanguage lang, OptionColour* option, bo
 	if (checkIfExists && GetOptionByValue(lang, option->value))
         return false;
 
-    option->originalfore = option->fore;
-    option->originalback = option->back;
-    option->originalbold = option->bold;
-    option->originalitalics = option->italics;
-    option->originalunderlined = option->underlined;
-    option->originalisStyle = option->isStyle;
-
 	OptionColours& colours =  m_Sets[lang].m_Colours;
 	colours.Add(new OptionColour(*option));
 	return true;
@@ -333,6 +326,13 @@ void EditorColourSet::AddOption(HighlightLanguage lang,
 	opt->italics = italics;
 	opt->underlined = underlined;
 	opt->isStyle = isStyle;
+
+    opt->originalfore = fore;
+    opt->originalback = back;
+    opt->originalbold = bold;
+    opt->originalitalics = italics;
+    opt->originalunderlined = underlined;
+    opt->originalisStyle = isStyle;
 
 	AddOption(lang, opt);
     delete opt;
