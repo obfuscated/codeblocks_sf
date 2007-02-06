@@ -604,7 +604,9 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
             bool AddAfter = true;
             if ( FindDraggingItemTarget(event.GetX(),event.GetY(),m_CurDragItem,NewParent,AtCursor,AddAfter) )
             {
-                if ( (m_CurDragItem->GetParent() == NewParent) || NewParent->CanAddChild(m_CurDragItem,false) )
+                if ( (m_CurDragItem->GetParent() == NewParent) ||
+                     (NewParent->CanAddChild(m_CurDragItem,false) &&
+                      m_CurDragItem->CanAddToParent(NewParent,false)) )
                 {
                     wxsParent* CurParent = m_CurDragItem->GetParent();
 

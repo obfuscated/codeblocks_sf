@@ -57,6 +57,7 @@ bool wxsParent::AddChild(wxsItem* Child,int Position)
     if ( !Child ) return false;
     if ( Child->GetType() == wxsTTool ) return false;
     if ( !CanAddChild(Child,true) ) return false;
+    if ( !Child->CanAddToParent(this,true) ) return false;
     if ( Child->GetParent() != NULL )
     {
         Child->GetParent()->UnbindChild(Child);

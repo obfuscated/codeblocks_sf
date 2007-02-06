@@ -349,7 +349,8 @@ void wxsItemEditor::InsertRequest(const wxString& Name)
 {
     const wxsItemInfo* Info = wxsItemFactory::GetInfo(Name);
     if ( !Info ) return;
-    if ( Info->Type == wxsTTool )
+    bool IsTool = Info->Type == wxsTTool;
+    /*
     {
         // Tools are threated differently :)
         wxsItem* New = wxsItemFactory::Build(Name,m_Data);
@@ -373,6 +374,7 @@ void wxsItemEditor::InsertRequest(const wxString& Name)
         m_Data->EndChange();
         return;
     }
+    */
 
     wxsItem* Reference = GetReferenceItem(m_InsType);
     if ( !Reference )
@@ -401,10 +403,33 @@ void wxsItemEditor::InsertRequest(const wxString& Name)
         case itBefore:
             if ( Parent )
             {
-                if ( m_Data->InsertNew(New,Parent,RefIndex) )
+                // Checking if this is tool, tools can be added
+                // into other tools or into resource only
+                if ( IsTool &&
+                     ( !Parent->ConvertToTool() ||
+                       !New->CanAddToParent(Parent,false)) )
                 {
-                    m_Data->SelectItem(New,true);
+                    // Trying to add to resource
+                    if ( !New->ConvertToTool()->CanAddToResource(m_Data,true) )
+                    {
+                        delete New;
+                    }
+                    else
+                    {
+                        if ( m_Data->InsertNewTool(New->ConvertToTool()) )
+                        {
+                            m_Data->SelectItem(New,true);
+                        }
+                    }
                 }
+                else
+                {
+                    if ( m_Data->InsertNew(New,Parent,RefIndex) )
+                    {
+                        m_Data->SelectItem(New,true);
+                    }
+                }
+
             }
             else
             {
@@ -414,9 +439,29 @@ void wxsItemEditor::InsertRequest(const wxString& Name)
 
         case itInto:
         {
-            if ( m_Data->InsertNew(New,Reference->ConvertToParent(),-1) )
+            if ( IsTool &&
+                 (!Reference->ConvertToTool() ||
+                  !New->CanAddToParent(Reference->ConvertToParent(),false)) )
             {
-                m_Data->SelectItem(New,true);
+                // Trying to add to resource
+                if ( !New->ConvertToTool()->CanAddToResource(m_Data,true) )
+                {
+                    delete New;
+                }
+                else
+                {
+                    if ( m_Data->InsertNewTool(New->ConvertToTool()) )
+                    {
+                        m_Data->SelectItem(New,true);
+                    }
+                }
+            }
+            else
+            {
+                if ( m_Data->InsertNew(New,Reference->ConvertToParent(),-1) )
+                {
+                    m_Data->SelectItem(New,true);
+                }
             }
         }
 

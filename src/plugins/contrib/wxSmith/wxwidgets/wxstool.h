@@ -1,10 +1,10 @@
 #ifndef WXSTOOL_H
 #define WXSTOOL_H
 
-#include "wxsitem.h"
+#include "wxsparent.h"
 
 /** \brief Base class for wxWidgets tools like wxTimer */
-class wxsTool: public wxsItem
+class wxsTool: public wxsParent
 {
     public:
 

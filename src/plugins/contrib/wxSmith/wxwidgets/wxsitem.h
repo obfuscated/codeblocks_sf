@@ -268,6 +268,11 @@ class wxsItem: public wxsPropertyContainer
          */
         inline bool MouseClick(wxWindow* Preview,int PosX,int PosY) { return OnMouseClick(Preview,PosX,PosY); }
 
+        /** \brief Checking if this item can be added to other parent
+         * \note This is only a wrapper to OnCanAddToParent function
+         */
+        inline bool CanAddToParent(wxsParent* Parent,bool ShowMessage) { return OnCanAddToParent(Parent,ShowMessage); }
+
     protected:
 
         /** \brief Helpful printf-like function used when creating source code.
@@ -460,6 +465,9 @@ class wxsItem: public wxsPropertyContainer
          * \param ap pointer to arguments, get arguments through va_arg
          */
         virtual bool OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap) { return false; }
+
+        /** \brief Checking if this item can be added to given parent */
+        virtual bool OnCanAddToParent(wxsParent* Parent,bool ShowMessage) { return true; }
 
     private:
 

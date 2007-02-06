@@ -32,7 +32,7 @@ wxsTool::wxsTool(
     const wxsEventDesc* EventArray,
     const wxsStyleSet* StyleSet,
     long PropertiesFlags):
-        wxsItem(Data,Info,PropertiesFlags,EventArray),
+        wxsParent(Data,Info,PropertiesFlags,EventArray),
         m_StyleSet(StyleSet),
         m_StyleBits(0),
         m_ExStyleBits(0)

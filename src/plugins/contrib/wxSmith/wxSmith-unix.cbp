@@ -156,6 +156,12 @@
 		<Unit filename="wxwidgets\defitems\wxslistbox.h" />
 		<Unit filename="wxwidgets\defitems\wxslistctrl.cpp" />
 		<Unit filename="wxwidgets\defitems\wxslistctrl.h" />
+		<Unit filename="wxwidgets\defitems\wxsmenu.cpp" />
+		<Unit filename="wxwidgets\defitems\wxsmenu.h" />
+		<Unit filename="wxwidgets\defitems\wxsmenubar.cpp" />
+		<Unit filename="wxwidgets\defitems\wxsmenubar.h" />
+		<Unit filename="wxwidgets\defitems\wxsmenueditor.cpp" />
+		<Unit filename="wxwidgets\defitems\wxsmenueditor.h" />
 		<Unit filename="wxwidgets\defitems\wxsnotebook.cpp" />
 		<Unit filename="wxwidgets\defitems\wxsnotebook.h" />
 		<Unit filename="wxwidgets\defitems\wxspanel.cpp" />
@@ -311,6 +317,7 @@
 					<wxPanel wxs="wxsmith/wxsChoicebookParentQP.wxs" src="wxwidgets/defitems/wxschoicebook.cpp" hdr="wxwidgets/defitems/wxschoicebook.cpp" name="wxsChoicebookParentQP" language="CPP" />
 					<wxPanel wxs="wxsmith/wxsListbookParentQP.wxs" src="wxwidgets/defitems/wxslistbook.cpp" hdr="wxwidgets/defitems/wxslistbook.cpp" name="wxsListbookParentQP" language="CPP" />
 					<wxPanel wxs="wxsmith/wxsSettings.wxs" src="wxssettings.cpp" hdr="wxssettings.h" name="wxsSettings" language="CPP" />
+					<wxPanel wxs="wxsmith/wxsmenueditor.wxs" src="wxwidgets/defitems/wxsmenueditor.cpp" hdr="wxwidgets/defitems/wxsmenueditor.h" name="wxsMenuEditor" language="CPP" />
 				</resources>
 			</wxsmith>
 		</Extensions>
