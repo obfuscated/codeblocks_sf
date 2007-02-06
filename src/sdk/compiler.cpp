@@ -420,7 +420,7 @@ void Compiler::SaveSettings(const wxString& baseKey)
     wxString group;
     for (size_t i = 0; i < m_RegExes.Count(); ++i)
     {
-    	if (m_Mirror.RegExes[i] == m_RegExes[i])
+    	if (i < m_Mirror.RegExes.GetCount() && m_Mirror.RegExes[i] == m_RegExes[i])
 			continue;
 
         group.Printf(_T("%s/regex/re%3.3d"), tmp.c_str(), i + 1);
@@ -539,19 +539,32 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Switches.UseFullSourcePaths = cfg->ReadBool(tmp + _T("/switches/UseFullSourcePaths"), m_Switches.UseFullSourcePaths);
 
     // regexes
+
+	// because we 're only saving changed regexes, we can't just iterate like before.
+	// instead, we must iterate all child-keys and deduce the regex index number from
+	// the key name
+	wxArrayString keys = cfg->EnumerateSubPaths(tmp + _T("/regex/"));
     wxString group;
-    int index = 1;
-    bool cleared = false;
-    while (true)
+    long index;
+	for (size_t i = 0; i < keys.GetCount(); ++i)
     {
-        group.Printf(_T("%s/regex/re%3.3d"), tmp.c_str(), index++);
+    	wxString key = keys[i];
+
+    	// reNNN
+    	if (!key.StartsWith(_T("re")))
+			continue;
+		key.Remove(0, 2);
+		if (!key.ToLong(&index, 10))
+			continue;
+		
+		// 'index' now holds the regex index.
+		// read everything and either assign it to an existing regex
+		// if the index exists, or add a new regex
+
+        group.Printf(_T("%s/regex/re%3.3d"), tmp.c_str(), index);
         if (!cfg->Exists(group+_T("/description")))
-            break;
-        else if (!cleared)
-        {
-            cleared = true;
-            m_RegExes.Clear();
-        }
+            continue;
+
         RegExStruct rs;
         rs.desc = cfg->Read(group + _T("/description"));
         rs.lt = (CompilerLineType)cfg->ReadInt(group + _T("/type"), 0);
@@ -561,7 +574,11 @@ void Compiler::LoadSettings(const wxString& baseKey)
         rs.msg[2] = cfg->ReadInt(group + _T("/msg3"), 0);
         rs.filename = cfg->ReadInt(group + _T("/filename"), 0);
         rs.line = cfg->ReadInt(group + _T("/line"), 0);
-        m_RegExes.Add(rs);
+        
+        if (index <= (long)m_RegExes.GetCount())
+			m_RegExes[index - 1] = rs;
+		else
+			m_RegExes.Add(rs);
     }
 
     // custom vars
