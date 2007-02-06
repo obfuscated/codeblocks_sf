@@ -41,6 +41,7 @@ ProjAuthor <- _T(""); // Project Author
 ProjEmail <- _T(""); // Author's e-mail
 ProjWebsite <- _T(""); // Project website
 PCHFileName <- _T(""); // PCH filename
+ChoiceWxUnixLib <- 0; // wx lib choice in Unix; 0 for default, 1 for advanced
 
 function BeginWizard()
 {
@@ -321,9 +322,8 @@ function OnEnter_WxConfUnix(fwd)
 {
     if (fwd)
     {
-        Wizard.CheckCheckbox(_T("chkWxConfSo"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/dll"), 0)));
-        Wizard.CheckCheckbox(_T("chkWxConfUnicode"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/unicode"), 0)));
-        Wizard.CheckCheckbox(_T("chkWxConfPCH"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/pch"), 0)));
+        Wizard.SetRadioboxSelection(_T("m_radioBoxWxChoice"), ChoiceWxUnixLib);
+		OnClick_m_radioBoxWxChoice();
     }
     return true;
 }
@@ -332,25 +332,48 @@ function OnLeave_WxConfUnix(fwd)
 {
     if (fwd)
     {
-        IsDLL = Wizard.IsCheckboxChecked(_T("chkWxConfSo"));
-		IsUnicode = Wizard.IsCheckboxChecked(_T("chkWxConfUnicode"));
-		IsEmpty = Wizard.IsCheckboxChecked(_T("chkWxUnixEmpty")); // Checks option for Empty Project
-		WantPCH = Wizard.IsCheckboxChecked(_T("chkWxConfPCH"));
-    }
-    
-    // Now write the setting to Configuration
-    ConfigManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
-	ConfigManager.Write(_T("/wx_project_wizard/unicode"), BoolToInt(IsUnicode));
-	ConfigManager.Write(_T("/wx_project_wizard/pch"), BoolToInt(WantPCH));
+        ChoiceWxUnixLib = Wizard.GetRadioboxSelection(_T("m_radioBoxWxChoice"));
+		if (ChoiceWxUnixLib == 1)
+		{
+			IsDLL = Wizard.IsCheckboxChecked(_T("chkWxConfSo"));
+			IsUnicode = Wizard.IsCheckboxChecked(_T("chkWxConfUnicode"));
+			IsEmpty = Wizard.IsCheckboxChecked(_T("chkWxUnixEmpty")); // Checks option for Empty Project
+			WantPCH = Wizard.IsCheckboxChecked(_T("chkWxConfPCH"));
 
-    if (!GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")) && WantPCH)
-    {
-        ShowWarning(_T("Precompiled headers currently only work for GNU GCC.\n" +
-                    "They are disabled for all other compilers."));
-        WantPCH = false;
-        Wizard.CheckCheckbox(_T("chkConfPCH"), false);
-    }
+		    if (!GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")) && WantPCH)
+		    {
+		        ShowWarning(_T("Precompiled headers currently only work for GNU GCC.\n" +
+		                    "They are disabled for all other compilers."));
+		        WantPCH = false;
+		        //Wizard.CheckCheckbox(_T("chkConfPCH"), false);
+		    }
+			
+			// Now write the setting to Configuration
+		    ConfigManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
+			ConfigManager.Write(_T("/wx_project_wizard/unicode"), BoolToInt(IsUnicode));
+			ConfigManager.Write(_T("/wx_project_wizard/pch"), BoolToInt(WantPCH));
+		}
+	}
     return true;
+}
+
+function OnClick_m_radioBoxWxChoice()
+{
+	ChoiceWxUnixLib = Wizard.GetRadioboxSelection(_T("m_radioBoxWxChoice"));
+	if (ChoiceWxUnixLib == 0) // Means default choice
+	{
+		Wizard.EnableWindow(_T("chkWxUnixEmpty"), false);
+		Wizard.EnableWindow(_T("chkWxConfSo"), false);
+		Wizard.EnableWindow(_T("chkWxConfUnicode"), false);
+		Wizard.EnableWindow(_T("chkWxConfPCH"), false);
+	}
+	else
+	{
+		Wizard.EnableWindow(_T("chkWxUnixEmpty"), true);
+		Wizard.EnableWindow(_T("chkWxConfSo"), true);
+		Wizard.EnableWindow(_T("chkWxConfUnicode"), true);
+		Wizard.EnableWindow(_T("chkWxConfPCH"), true);
+	}
 }
 
 // -----------------------------------------------------------------------------
@@ -378,7 +401,7 @@ function GetGeneratedFile(file_index)
 function GetFilesDir()
 {
     local result = _T("");
-	if (!IsEmpty) // Ckecks whether user wants Empty Project or not
+	if (!IsEmpty) // Checks whether user wants Empty Project or not
 	{
 		/*result = _T("wxwidgets/common");
 	    if (WantPCH)
@@ -397,22 +420,30 @@ function SetupProject(project)
     if (PLATFORM != PLATFORM_MSW)
     {
 		/* For Linux / Mac */
-        local flags;
-		flags = _T("`wx-config ");
-		flags = flags + (WxVersion == 0 ? _T(" --version=2.6") : _T(" --version=2.8"));
-		flags = flags + (IsDLL == false ? _T(" --static=yes") : _T(" --static=no"));
-		flags = flags + (IsUnicode == true ? _T(" --unicode=yes") : _T(" --unicode=no"));
-		local target = project.GetBuildTarget(Wizard.GetDebugName());
-		if (!IsNull(target))
+		if (ChoiceWxUnixLib == 1)
 		{
-			target.AddCompilerOption(flags + _T(" --debug=yes --cflags`"));
-			target.AddLinkerOption(flags + _T(" --debug=yes --libs`"));
+			local flags;
+			flags = _T("`wx-config ");
+			flags = flags + (WxVersion == 0 ? _T(" --version=2.6") : _T(" --version=2.8"));
+			flags = flags + (IsDLL == false ? _T(" --static=yes") : _T(" --static=no"));
+			flags = flags + (IsUnicode == true ? _T(" --unicode=yes") : _T(" --unicode=no"));
+			local target = project.GetBuildTarget(Wizard.GetDebugName());
+			if (!IsNull(target))
+			{
+				target.AddCompilerOption(flags + _T(" --debug=yes --cflags`"));
+				target.AddLinkerOption(flags + _T(" --debug=yes --libs`"));
+			}
+			local target = project.GetBuildTarget(Wizard.GetReleaseName());
+			if (!IsNull(target))
+			{
+				target.AddCompilerOption(flags + _T(" --debug=no --cflags`"));
+				target.AddLinkerOption(flags + _T(" --debug=no --libs`"));
+			}
 		}
-		local target = project.GetBuildTarget(Wizard.GetReleaseName());
-		if (!IsNull(target))
+		else
 		{
-			target.AddCompilerOption(flags + _T(" --debug=no --cflags`"));
-			target.AddLinkerOption(flags + _T(" --debug=no --libs`"));
+			project.AddCompilerOption(_T("`wx-config --cflags`"));
+			project.AddLinkerOption(_T("`wx-config --libs`"));
 		}
     }
     else

@@ -9,7 +9,7 @@
 				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 				<object class="wxStaticText" name="m_staticText1">
-					<label>Please select various configuration options.\n\nWhat you select here, must match the installed wxWidgets\nlibrary&apos;s settings.</label>
+					<label>Please select appropriate wxWidgets configurations.\nIf you are not sure then use &quot;Use default wxWidgets\nConfiguration&quot;\n\nAdvanced Options are to be set carefully or\nCompilation will Fail.</label>
 				</object>
 			</object>
 			<object class="sizeritem">
@@ -120,43 +120,66 @@
 				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 				<object class="wxStaticText" name="m_staticText1">
-					<label>Please select whether you want this project to use a\nprecompiled header (PCH).\n\nNote that if your compiler doesn&apos;t support them, this option\nwill be ignored...</label>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxConfSo">
-					<label>Use Dynamic Lib</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxConfUnicode">
-					<label>Use Unicode Lib</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxUnixEmpty">
-					<label>Create Empty Project</label>
-					<checked>0</checked>
+					<label>Please select appropriate wxWidgets configurations. If you are\nnot sure then use &quot;Use default wxWidgets Configuration&quot;\n\nAdvanced Options are to be set carefully or Compilation will Fail.</label>
 				</object>
 			</object>
 			<object class="sizeritem">
 				<option>0</option>
 				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
-				<object class="wxCheckBox" name="chkWxConfPCH">
-					<label>Create and use precompiled header (PCH)</label>
-					<checked>1</checked>
+				<object class="wxRadioBox" name="m_radioBoxWxChoice">
+					<style>wxRA_SPECIFY_COLS</style>
+					<label>wxWidgets Library Settings</label>
+					<content>
+						<item>Use default wxWidgets configuration</item>
+						<item>Use Advanced options</item>
+					</content>
+					<dimension>1</dimension>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<option>0</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<label>Advanced Options</label>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL</flag>
+						<border>8</border>
+						<object class="wxCheckBox" name="chkWxUnixEmpty">
+							<label>Create Empty Project</label>
+							<checked>0</checked>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL</flag>
+						<border>8</border>
+						<object class="wxCheckBox" name="chkWxConfSo">
+							<label>Use Dynamic wxWidgets Lib</label>
+							<checked>0</checked>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL</flag>
+						<border>8</border>
+						<object class="wxCheckBox" name="chkWxConfUnicode">
+							<label>Use Unicode build of wxWidgets</label>
+							<checked>0</checked>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>8</border>
+						<object class="wxCheckBox" name="chkWxConfPCH">
+							<label>Create and use precompiled header (PCH)</label>
+							<checked>0</checked>
+						</object>
+					</object>
 				</object>
 			</object>
 		</object>
@@ -188,7 +211,7 @@
 			<object class="sizeritem">
 				<option>0</option>
 				<flag>wxALL|wxEXPAND</flag>
-				<border>5</border>
+				<border>8</border>
 				<object class="wxRadioBox" name="RadioBoxDebug">
 					<style>wxRA_SPECIFY_COLS</style>
 					<label>Debug Target</label>
