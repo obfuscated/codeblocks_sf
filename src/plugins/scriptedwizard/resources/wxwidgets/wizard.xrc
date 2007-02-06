@@ -9,7 +9,7 @@
 				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 				<object class="wxStaticText" name="m_staticText1">
-					<label>Please select appropriate wxWidgets configurations.\nIf you are not sure then use &quot;Use default wxWidgets\nConfiguration&quot;\n\nAdvanced Options are to be set carefully or\nCompilation will Fail.</label>
+					<label>Please select various configuration options.\n\nWhat you select here, must match the installed wxWidgets\nlibrary&apos;s settings.</label>
 				</object>
 			</object>
 			<object class="sizeritem">
@@ -120,7 +120,7 @@
 				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 				<object class="wxStaticText" name="m_staticText1">
-					<label>Please select appropriate wxWidgets configurations. If you are\nnot sure then use &quot;Use default wxWidgets Configuration&quot;\n\nAdvanced Options are to be set carefully or Compilation will Fail.</label>
+					<label>Please select appropriate wxWidgets configurations.\nIf you are not sure then use &quot;Use default wxWidgets\nConfiguration&quot;\n\nAdvanced Options are to be set carefully or\nCompilation will Fail.</label>
 				</object>
 			</object>
 			<object class="sizeritem">
