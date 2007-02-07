@@ -2029,6 +2029,8 @@ void NativeParser::OnEditorActivated(EditorBase* editor)
     {
         Parser* parser = FindParserFromEditor(ed);
         if (parser && parser->ClassBrowserOptions().displayFilter == bdfFile)
+        {
             m_pClassBrowser->UpdateView();
+        }
     }
 }

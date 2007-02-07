@@ -79,7 +79,6 @@ class ClassBrowserBuilderThread : public wxThread
         wxTreeCtrl* m_pTreeTop;
         wxTreeCtrl* m_pTreeBottom;
         wxString m_ActiveFilename;
-        wxString m_LastActiveFilename;
         void* m_pUserData; // active project
         BrowserOptions m_Options;
         TokensTree* m_pTokens;

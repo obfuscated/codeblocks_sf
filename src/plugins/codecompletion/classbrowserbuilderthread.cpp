@@ -39,9 +39,6 @@ void ClassBrowserBuilderThread::Init(Parser* parser,
                                     bool build_tree)
 {
     wxMutexLocker lock(m_BuildMutex);
-    
-    m_LastActiveFilename = m_ActiveFilename;
-
     m_pParser = parser;
     m_pTreeTop = treeTop;
     m_pTreeBottom = treeBottom;
@@ -49,14 +46,6 @@ void ClassBrowserBuilderThread::Init(Parser* parser,
     m_pUserData = user_data;
     m_Options = options;
     m_pTokens = pTokens;
-
-	// if displaying current-file-symbols and the file has not changed, leave
-    if (m_Options.displayFilter == bdfFile &&
-		!m_ActiveFilename.IsEmpty() &&
-		m_ActiveFilename == m_LastActiveFilename)
-	{
-		return;
-	}
 
     m_CurrentFileSet.clear();
 
@@ -96,15 +85,6 @@ void* ClassBrowserBuilderThread::Entry()
         // wait until the classbrowser signals
         m_Semaphore.Wait();
 //        DBGLOG(_T(" - - - - - -"));
-
-		// if displaying current-file-symbols and the file has not changed, leave
-		if (m_Options.displayFilter == bdfFile &&
-			!m_ActiveFilename.IsEmpty() &&
-			m_ActiveFilename == m_LastActiveFilename)
-		{
-			continue;
-		}
-		m_ActiveFilename = m_LastActiveFilename;
 
         if (TestDestroy() || Manager::IsAppShuttingDown())
             break;

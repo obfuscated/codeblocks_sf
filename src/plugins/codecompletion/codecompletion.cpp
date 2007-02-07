@@ -1177,12 +1177,9 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
 
 void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 {
-    // TODO: this doesn't seem to fire when using Ctrl-Tab...
-    static EditorBase* lastActiveEditor = 0;
     EditorBase* eb = event.GetEditor();
-    if (IsAttached() && m_InitDone && lastActiveEditor != eb)
+    if (IsAttached() && m_InitDone)
     {
-        lastActiveEditor = eb;
         m_NativeParsers.OnEditorActivated(eb);
         m_FunctionsParsingTimer.Start(1000, wxTIMER_ONE_SHOT); // one second delay should be ok
     }
