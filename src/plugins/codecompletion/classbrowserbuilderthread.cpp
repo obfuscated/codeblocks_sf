@@ -16,7 +16,6 @@ ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxSemaphore& sem, ClassBrow
     m_pParser(0),
     m_pTreeTop(0),
     m_pTreeBottom(0),
-    m_ActiveFilename(),
     m_pUserData(0),
     m_Options(),
     m_pTokens(0),
@@ -40,6 +39,9 @@ void ClassBrowserBuilderThread::Init(Parser* parser,
                                     bool build_tree)
 {
     wxMutexLocker lock(m_BuildMutex);
+    
+    m_LastActiveFilename = m_ActiveFilename;
+
     m_pParser = parser;
     m_pTreeTop = treeTop;
     m_pTreeBottom = treeBottom;
@@ -47,6 +49,14 @@ void ClassBrowserBuilderThread::Init(Parser* parser,
     m_pUserData = user_data;
     m_Options = options;
     m_pTokens = pTokens;
+
+	// if displaying current-file-symbols and the file has not changed, leave
+    if (m_Options.displayFilter == bdfFile &&
+		!m_ActiveFilename.IsEmpty() &&
+		m_ActiveFilename == m_LastActiveFilename)
+	{
+		return;
+	}
 
     m_CurrentFileSet.clear();
 
@@ -86,6 +96,15 @@ void* ClassBrowserBuilderThread::Entry()
         // wait until the classbrowser signals
         m_Semaphore.Wait();
 //        DBGLOG(_T(" - - - - - -"));
+
+		// if displaying current-file-symbols and the file has not changed, leave
+		if (m_Options.displayFilter == bdfFile &&
+			!m_ActiveFilename.IsEmpty() &&
+			m_ActiveFilename == m_LastActiveFilename)
+		{
+			continue;
+		}
+		m_ActiveFilename = m_LastActiveFilename;
 
         if (TestDestroy() || Manager::IsAppShuttingDown())
             break;
@@ -142,8 +161,8 @@ void ClassBrowserBuilderThread::BuildTree()
     m_pTreeTop->Freeze();
     m_pTreeBottom->Freeze();
 
-    RemoveInvalidNodes(m_pTreeTop, root);
-    RemoveInvalidNodes(m_pTreeBottom, m_pTreeBottom->GetRootItem());
+	RemoveInvalidNodes(m_pTreeTop, root);
+	RemoveInvalidNodes(m_pTreeBottom, m_pTreeBottom->GetRootItem());
 
     if (TestDestroy() || Manager::IsAppShuttingDown())
     {
@@ -200,12 +219,17 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
                 bool isLastChild = tree->GetChildrenCount(parent) == 1;
                 // we have to do this in two steps: first collapse and then set haschildren to false
                 if (isLastChild)
-                    tree->Collapse(parent);
-
-//                DBGLOG(_T("Item %s is invalid"), tree->GetItemText(existing).c_str());
-                wxTreeItemId next = tree->GetPrevSibling(existing);
-                tree->Delete(existing);
-                existing = next;
+                {
+                    CollapseItem(parent);
+                    return;
+                }
+				else
+				{
+//                	DBGLOG(_T("Item %s is invalid"), tree->GetItemText(existing).c_str());
+					wxTreeItemId next = tree->GetPrevSibling(existing);
+					tree->Delete(existing);
+					existing = next;
+				}
 
                 // if this was the last child of its parent, collapse the parent
 //                if (isLastChild)

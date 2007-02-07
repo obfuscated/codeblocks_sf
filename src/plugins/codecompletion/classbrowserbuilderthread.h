@@ -22,7 +22,7 @@ enum SpecialFolder
 class CBTreeData : public wxTreeItemData
 {
     public:
-        CBTreeData(SpecialFolder sf = sfToken, Token* token = 0, int kindMask = 0xffff, int parentIdx = -1)
+        CBTreeData(SpecialFolder sf = sfToken, Token* token = 0, int kindMask = 0xffffffff, int parentIdx = -1)
             : m_pToken(token),
             m_KindMask(kindMask),
             m_SpecialFolder(sf),
@@ -79,6 +79,7 @@ class ClassBrowserBuilderThread : public wxThread
         wxTreeCtrl* m_pTreeTop;
         wxTreeCtrl* m_pTreeBottom;
         wxString m_ActiveFilename;
+        wxString m_LastActiveFilename;
         void* m_pUserData; // active project
         BrowserOptions m_Options;
         TokensTree* m_pTokens;
