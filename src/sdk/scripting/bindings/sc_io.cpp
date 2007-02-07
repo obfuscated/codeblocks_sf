@@ -190,7 +190,7 @@ namespace ScriptBindings
             wxLogNull ln;
             wxArrayString output;
             wxExecute(command, output, wxEXEC_NODISABLE);
-            return GetStringFromArray(output);
+            return GetStringFromArray(output, _T("\n"));
         }
 
     } // namespace IOLib
