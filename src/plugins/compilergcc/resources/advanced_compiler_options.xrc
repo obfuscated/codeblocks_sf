@@ -627,15 +627,15 @@ the regular expression.</label>
         <border>8</border>
       </object>
       <object class="sizeritem">
-        <object class="wxBoxSizer">
+        <object class="wxStdDialogButtonSizer">
           <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
+          <object class="button">
             <object class="wxButton" name="wxID_OK">
               <label>&amp;OK</label>
               <default>1</default>
             </object>
           </object>
-          <object class="sizeritem">
+          <object class="button">
             <object class="wxButton" name="wxID_CANCEL">
               <label>&amp;Cancel</label>
             </object>
