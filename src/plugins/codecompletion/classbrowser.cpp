@@ -138,6 +138,9 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
 
     int filter = cfg->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
     XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(filter);
+    
+    int pos = cfg->ReadInt(_T("/splitter_pos"), 250);
+    XRCCTRL(*this, "splitterWin", wxSplitterWindow)->SetSashPosition(pos, false);
 
     // if the classbrowser is put under the control of a wxFlatNotebook,
     // somehow the main panel is like "invisible" :/
@@ -148,6 +151,9 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
 // class destructor
 ClassBrowser::~ClassBrowser()
 {
+    int pos = XRCCTRL(*this, "splitterWin", wxSplitterWindow)->GetSashPosition();
+    Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/splitter_pos"), pos);
+
     UnlinkParser();
 
     if (m_pBuilderThread)

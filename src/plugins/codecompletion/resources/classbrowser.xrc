@@ -1,85 +1,85 @@
+<?xml version="1.0" ?>
 <resource>
-    <object class="wxPanel" name="pnlCB">
-        <object class="wxBoxSizer">
+  <object class="wxPanel" name="pnlCB">
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <option>1</option>
+        <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+        <object class="wxPanel" name="MainPanel">
+          <object class="wxBoxSizer">
             <orient>wxVERTICAL</orient>
             <object class="sizeritem">
-                <option>1</option>
-                <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxPanel" name="MainPanel">
-                    <object class="wxBoxSizer">
-                        <orient>wxVERTICAL</orient>
-                        <object class="sizeritem">
-                            <border>4</border>
-                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                            <object class="wxFlexGridSizer">
-                                <rows>2</rows>
-                                <cols>2</cols>
-                                <vgap>4</vgap>
-                                <hgap>4</hgap>
-                                <growablecols>1</growablecols>
-                                <object class="sizeritem">
-                                    <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                                    <object class="wxStaticText" name="ID_STATICTEXT1">
-                                        <label>View:</label>
-                                    </object>
-                                </object>
-                                <object class="sizeritem">
-                                    <option>1</option>
-                                    <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                    <object class="wxChoice" name="cmbView">
-                                        <selection>2</selection>
-                                        <content>
-                                            <item>Current file&apos;s symbols</item>
-                                            <item>Active project&apos;s symbols</item>
-                                            <item>All workspace symbols</item>
-                                        </content>
-                                    </object>
-                                </object>
-                                <object class="sizeritem">
-                                    <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                                    <object class="wxStaticText" name="ID_STATICTEXT2">
-                                        <label>Search:</label>
-                                    </object>
-                                </object>
-                                <object class="sizeritem">
-                                    <option>1</option>
-                                    <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                    <object class="wxBoxSizer">
-                                        <orient>wxHORIZONTAL</orient>
-                                        <object class="sizeritem">
-                                            <option>1</option>
-                                            <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                            <object class="unknown" name="txtSearch">
-                                                <style></style>
-                                            </object>
-                                        </object>
-                                        <object class="sizeritem">
-                                            <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                            <object class="wxButton" name="btnSearch">
-                                                <label>&gt;</label>
-                                                <size>22,23</size>
-                                            </object>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                        </object>
-                        <object class="sizeritem">
-                            <option>1</option>
-                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                            <object class="wxSplitterWindow" name="splitterWin">
-                                <minsize>64</minsize>
-                                <size>132,86</size>
-                                <style>wxSP_LIVE_UPDATE</style>
-                                <object class="wxTreeCtrl" name="treeAll" />
-                                <object class="wxTreeCtrl" name="treeMembers">
-                                    <style>wxTR_NO_LINES|wxTR_HIDE_ROOT</style>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
+              <border>4</border>
+              <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+              <object class="wxFlexGridSizer">
+                <rows>2</rows>
+                <cols>2</cols>
+                <vgap>4</vgap>
+                <hgap>4</hgap>
+                <growablecols>1</growablecols>
+                <object class="sizeritem">
+                  <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                  <object class="wxStaticText" name="ID_STATICTEXT1">
+                    <label>View:</label>
+                  </object>
                 </object>
+                <object class="sizeritem">
+                  <option>1</option>
+                  <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                  <object class="wxChoice" name="cmbView">
+                    <selection>2</selection>
+                    <content>
+                      <item>Current file's symbols</item>
+                      <item>Active project's symbols</item>
+                      <item>All workspace symbols</item>
+                    </content>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                  <object class="wxStaticText" name="ID_STATICTEXT2">
+                    <label>Search:</label>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <option>1</option>
+                  <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                  <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                      <option>1</option>
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                      <object class="unknown" name="txtSearch">
+                        <style></style>
+                      </object>
+                    </object>
+                    <object class="sizeritem">
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                      <object class="wxButton" name="btnSearch">
+                        <label>&gt;</label>
+                        <size>22,23</size>
+                      </object>
+                    </object>
+                  </object>
+                </object>
+              </object>
             </object>
+            <object class="sizeritem">
+              <option>1</option>
+              <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+              <object class="wxSplitterWindow" name="splitterWin">
+                <minsize>64</minsize>
+                <style>wxSP_LIVE_UPDATE</style>
+                <object class="wxTreeCtrl" name="treeAll"/>
+                <object class="wxTreeCtrl" name="treeMembers">
+                  <style>wxTR_NO_LINES|wxTR_HIDE_ROOT</style>
+                </object>
+              </object>
+            </object>
+          </object>
         </object>
+      </object>
     </object>
+  </object>
 </resource>
