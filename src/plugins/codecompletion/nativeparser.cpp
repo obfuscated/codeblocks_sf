@@ -575,14 +575,17 @@ void NativeParser::RemoveFileFromParser(cbProject* project, const wxString& file
     m_Parser.RemoveFile(filename);
 }
 
+// NOTE: it actually forces reparsing of workspace
 void NativeParser::ForceReparseActiveProject()
 {
-    cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-    if (prj)
-    {
-        RemoveParser(prj, false);
-        AddParser(prj, false);
-    }
+	m_Parser.Clear();
+	UpdateClassBrowser();
+
+	ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
+	for (size_t i = 0; i < projects->GetCount(); ++i)
+	{
+		AddParser(projects->Item(i), false);
+	}
 }
 
 Parser* NativeParser::FindParserFromEditor(EditorBase* editor)
