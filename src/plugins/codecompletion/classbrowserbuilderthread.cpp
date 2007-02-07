@@ -99,7 +99,13 @@ void* ClassBrowserBuilderThread::Entry()
 			::wxMutexGuiEnter();
 		}
 #endif // __WXGTK__
+        
         BuildTree();
+		
+		m_pTreeTop->Freeze();
+        ExpandNamespaces(m_pTreeTop->GetRootItem());
+	    m_pTreeTop->Thaw();
+
 #ifdef __WXGTK__
 		// this code (PART 2/2) seems to be good on linux
 		// because of it the libcairo crash on dualcore processors
@@ -120,6 +126,27 @@ void* ClassBrowserBuilderThread::Entry()
     if (m_ppThreadVar)
         *m_ppThreadVar = 0;
     return 0;
+}
+
+void ClassBrowserBuilderThread::ExpandNamespaces(wxTreeItemId node)
+{
+	if (!m_Options.expandNS || !node.IsOk())
+		return;
+
+	wxTreeItemIdValue enumerationCookie;
+    wxTreeItemId existing = m_pTreeTop->GetFirstChild(node, enumerationCookie);
+    while (existing.IsOk())
+    {
+		CBTreeData* data = (CBTreeData*)m_pTreeTop->GetItemData(existing);
+		if (data && data->m_pToken && data->m_pToken->m_TokenKind == tkNamespace)
+		{
+//			DBGLOG(_T("Auto-expanding: ") + data->m_pToken->m_Name);
+			m_pTreeTop->Expand(existing);
+			ExpandNamespaces(existing); // recurse
+		}
+
+    	existing = m_pTreeTop->GetNextSibling(existing);
+	}
 }
 
 void ClassBrowserBuilderThread::BuildTree()

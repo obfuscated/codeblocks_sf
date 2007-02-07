@@ -38,6 +38,7 @@ class ClassBrowser : public wxPanel
         void OnRefreshTree(wxCommandEvent& event);
         void OnForceReparse(wxCommandEvent& event);
         void OnCBViewMode(wxCommandEvent& event);
+		void OnCBExpandNS(wxCommandEvent& event);
         void OnViewScope(wxCommandEvent& event);
         void OnDebugSmartSense(wxCommandEvent& event);
 

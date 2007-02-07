@@ -93,6 +93,7 @@ int idMenuJumpToDeclaration = wxNewId();
 int idMenuJumpToImplementation = wxNewId();
 int idMenuRefreshTree = wxNewId();
 int idCBViewInheritance = wxNewId();
+int idCBExpandNS = wxNewId();
 int idCBViewModeFlat = wxNewId();
 int idCBViewModeStructured = wxNewId();
 int idMenuForceReparse = wxNewId();
@@ -113,6 +114,7 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_MENU(idMenuRefreshTree, ClassBrowser::OnRefreshTree)
     EVT_MENU(idMenuForceReparse, ClassBrowser::OnForceReparse)
     EVT_MENU(idCBViewInheritance, ClassBrowser::OnCBViewMode)
+    EVT_MENU(idCBExpandNS, ClassBrowser::OnCBExpandNS)
     EVT_MENU(idCBViewModeFlat, ClassBrowser::OnCBViewMode)
     EVT_MENU(idMenuDebugSmartSense, ClassBrowser::OnDebugSmartSense)
     EVT_CHOICE(XRCID("cmbView"), ClassBrowser::OnViewScope)
@@ -255,6 +257,7 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt
             menu->AppendSeparator();
 
         menu->AppendCheckItem(idCBViewInheritance, _("Show inherited members"));
+        menu->AppendCheckItem(idCBExpandNS, _("Auto-expand namespaces"));
         menu->Append(idMenuRefreshTree, _("&Refresh tree"));
 
         if (id == m_Tree->GetRootItem())
@@ -271,6 +274,7 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt
         }
 
         menu->Check(idCBViewInheritance, m_pParser ? m_pParser->ClassBrowserOptions().showInheritance : false);
+        menu->Check(idCBExpandNS, m_pParser ? m_pParser->ClassBrowserOptions().expandNS : false);
     }
 
     if (menu->GetMenuItemCount() != 0)
@@ -479,6 +483,18 @@ void ClassBrowser::OnCBViewMode(wxCommandEvent& event)
 
 	if (event.GetId() == idCBViewInheritance)
 		m_pParser->ClassBrowserOptions().showInheritance = event.IsChecked();
+
+	m_pParser->WriteOptions();
+	UpdateView();
+}
+
+void ClassBrowser::OnCBExpandNS(wxCommandEvent& event)
+{
+	if (!m_pParser)
+		return;
+
+	if (event.GetId() == idCBExpandNS)
+		m_pParser->ClassBrowserOptions().expandNS = event.IsChecked();
 
 	m_pParser->WriteOptions();
 	UpdateView();

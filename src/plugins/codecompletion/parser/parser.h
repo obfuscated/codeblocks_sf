@@ -74,6 +74,7 @@ enum BrowserDisplayFilter
 struct BrowserOptions
 {
 	bool showInheritance; // default: false
+	bool expandNS; // default: false (auto-expand namespaces)
 	BrowserDisplayFilter displayFilter; // default: bdfWorkspace
 };
 

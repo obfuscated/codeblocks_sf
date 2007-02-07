@@ -195,6 +195,7 @@ void Parser::ReadOptions()
     m_Options.wantPreprocessor = false;
     m_Options.useSmartSense = true;
     m_BrowserOptions.showInheritance = false;
+    m_BrowserOptions.expandNS = false;
     m_BrowserOptions.viewFlat = false;
     m_BrowserOptions.displayFilter = bdfWorkspace;
 #else // !STANDALONE
@@ -224,6 +225,7 @@ void Parser::ReadOptions()
     m_Options.useSmartSense = cfg->ReadBool(_T("/use_SmartSense"), true);
     m_Options.wantPreprocessor = cfg->ReadBool(_T("/want_preprocessor"), true);
     m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"), false);
+    m_BrowserOptions.expandNS = cfg->ReadBool(_T("/browser_expand_ns"), false);
     m_BrowserOptions.displayFilter = (BrowserDisplayFilter)cfg->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
 #endif // STANDALONE
 }
@@ -240,6 +242,7 @@ void Parser::WriteOptions()
     cfg->Write(_T("/use_SmartSense"), m_Options.useSmartSense);
     cfg->Write(_T("/want_preprocessor"), m_Options.wantPreprocessor);
     cfg->Write(_T("/browser_show_inheritance"), m_BrowserOptions.showInheritance);
+    cfg->Write(_T("/browser_expand_ns"), m_BrowserOptions.expandNS);
     cfg->Write(_T("/browser_display_filter"), m_BrowserOptions.displayFilter);
 #endif // STANDALONE
 }

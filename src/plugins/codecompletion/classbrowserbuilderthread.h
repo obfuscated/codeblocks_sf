@@ -73,6 +73,7 @@ class ClassBrowserBuilderThread : public wxThread
         bool TokenMatchesFilter(Token* token);
         bool TokenContainsChildrenOfKind(Token* token, int kind);
         bool CreateSpecialFolders(wxTreeCtrl* tree, wxTreeItemId parent);
+		void ExpandNamespaces(wxTreeItemId node);
 
         wxSemaphore& m_Semaphore;
         Parser* m_pParser;
