@@ -453,13 +453,21 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
 
                     if (!actual.IsEmpty())
                     {
-                        DBGLOG(_T("Generated file %s"), actual.c_str());
-                        // add it to the project
-                        ProjectFile* pf = theproject->AddFile(0, actual);
-                        // to all targets...
-                        for (int x = 1; x < theproject->GetBuildTargetsCount(); ++x)
+                        // Add the file only if it does not exist
+                        if (theproject->GetFileByFilename(files[i], true, true) == NULL)
                         {
-                            pf->AddBuildTarget(theproject->GetBuildTarget(x)->GetTitle());
+                            DBGLOG(_T("Generated file %s"), actual.c_str());
+                            // add it to the project
+                            ProjectFile* pf = theproject->AddFile(0, actual);
+                            // to all targets...
+                            for (int x = 1; x < theproject->GetBuildTargetsCount(); ++x)
+                            {
+                                pf->AddBuildTarget(theproject->GetBuildTarget(x)->GetTitle());
+                            }
+                        }
+                        else
+                        {
+                            DBGLOG(_T("File %s exists"), actual.c_str());
                         }
                     }
                 }
