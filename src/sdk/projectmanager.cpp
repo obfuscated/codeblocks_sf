@@ -63,6 +63,7 @@
 #include "multiselectdlg.h"
 #include "filefilters.h"
 #include "confirmreplacedlg.h"
+#include "projectfileoptionsdlg.h"
 
 // maximum number of items in "Open with" context menu
 static const unsigned int MAX_OPEN_WITH_ITEMS = 20; // keep it in sync with below array!
@@ -2177,6 +2178,13 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
             ProjectFile* pf = ed->GetProjectFile();
             if (pf)
                 pf->ShowOptions(m_pTree);
+			else
+			{
+				// active editor not-in-project
+				ProjectFileOptionsDlg dlg(m_pTree, ed->GetFilename());
+				PlaceWindow(&dlg);
+				dlg.ShowModal();
+			}
         }
     }
 }

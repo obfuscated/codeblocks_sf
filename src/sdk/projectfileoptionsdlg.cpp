@@ -43,6 +43,7 @@
 
 #include "projectfileoptionsdlg.h"
 #include <wx/slider.h>
+#include <wx/notebook.h>
 #include <wx/textfile.h>
 
 BEGIN_EVENT_TABLE(ProjectFileOptionsDlg, wxDialog)
@@ -169,53 +170,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 				list->Check(i, true);
 		}
 
-		// count some statistics of the file (only c/c++ files for the moment)
-		SLanguageDef langCPP;
-		langCPP.ext.Add(_T("c"));
-		langCPP.ext.Add(_T("cpp"));
-		langCPP.ext.Add(_T("h"));
-		langCPP.ext.Add(_T("hpp"));
-		langCPP.single_line_comment = _T("//");
-		langCPP.multiple_line_comment[0] = _T("/*");
-		langCPP.multiple_line_comment[1] = _T("*/");
-		wxFileName filename = pf->file;
-		if (filename.FileExists())
-		{
-			bool bExtOk = false;
-			for (int j = 0; j < (int) langCPP.ext.Count(); ++j)
-			{
-				if (filename.GetExt() == langCPP.ext[j])
-				{
-					bExtOk = true;
-					break;
-				}
-			}
-			if(bExtOk)
-			{
-				long int total_lines = 0;
-				long int code_lines = 0;
-				long int empty_lines = 0;
-				long int comment_lines = 0;
-				long int codecomments_lines = 0;
-				CountLines(filename, langCPP, code_lines, codecomments_lines, comment_lines, empty_lines, total_lines);
-				XRCCTRL(*this, "staticTotalLines", wxStaticText)->SetLabel(wxString::Format(_("%ld"), total_lines));
-				XRCCTRL(*this, "staticEmptyLines", wxStaticText)->SetLabel(wxString::Format(_("%ld"), empty_lines));
-				XRCCTRL(*this, "staticActualLines", wxStaticText)->SetLabel(wxString::Format(_("%ld"), code_lines + codecomments_lines));
-				XRCCTRL(*this, "staticCommentLines", wxStaticText)->SetLabel(wxString::Format(_("%ld"), comment_lines));
-			}
-			wxFile file(filename.GetFullPath());
-			if(file.IsOpened())
-			{
-				long Length = static_cast<long>(file.Length());
-				XRCCTRL(*this, "staticFileSize", wxStaticText)->SetLabel(wxString::Format(_("%ld"), Length));
-				file.Close();
-			}
-			wxDateTime ModTime = filename.GetModificationTime();
-			XRCCTRL(*this, "staticDateTimeStamp", wxStaticText)->SetLabel(
-				wxString::Format(_("%ld/%ld/%ld %ld:%ld:%ld"), ModTime.GetDay(),
-				ModTime.GetMonth() + 1, ModTime.GetYear(), ModTime.GetHour(), // seems I have to add 1 for the month ?
-				ModTime.GetMinute(), ModTime.GetSecond()));
-		}
+		FillGeneralProperties(pf->file.GetFullPath());
 
 		XRCCTRL(*this, "txtCompiler", wxTextCtrl)->SetValue(pf->compilerVar);
 		XRCCTRL(*this, "chkCompile", wxCheckBox)->SetValue(pf->compile);
@@ -229,7 +184,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 		XRCCTRL(*this, "txtAbsName", wxTextCtrl)->SetValue(pf->file.GetFullPath());
 		XRCCTRL(*this, "txtRelName", wxTextCtrl)->SetValue(pf->relativeFilename);
 
-		SetTitle(_("Options for ") + wxString(_("\"")) + pf->relativeFilename + wxString(_("\"")));
+		SetTitle(_("Properties of ") + wxString(_("\"")) + pf->relativeFilename + wxString(_("\"")));
 	}
     XRCCTRL(*this, "txtObjName", wxTextCtrl)->Enable(false);
 	// included files not implemented yet -> hide it
@@ -237,8 +192,77 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf)
 	XRCCTRL(*this, "staticIncludedFiles", wxTextCtrl)->Hide();
 } // end of constructor
 
+ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, const wxString& fileName)
+	: m_ProjectFile(0),
+	m_LastBuildStageCompilerSel(-1)
+{
+	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgProjectFileOptions"));
+
+	FillGeneralProperties(fileName);
+
+	XRCCTRL(*this, "txtAbsName", wxTextCtrl)->SetValue(fileName);
+
+	SetTitle(_("Properties of ") + wxString(_("\"")) + fileName + wxString(_("\"")));
+//	
+//	// hide un-needed pages (in reverse order!)
+//	wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
+//	nb->DeletePage(2);
+//	nb->DeletePage(1);
+}
+
 ProjectFileOptionsDlg::~ProjectFileOptionsDlg()
 {
+}
+
+void ProjectFileOptionsDlg::FillGeneralProperties(const wxString& fileName)
+{
+	// count some statistics of the file (only c/c++ files for the moment)
+	SLanguageDef langCPP;
+	langCPP.ext.Add(_T("c"));
+	langCPP.ext.Add(_T("cpp"));
+	langCPP.ext.Add(_T("h"));
+	langCPP.ext.Add(_T("hpp"));
+	langCPP.single_line_comment = _T("//");
+	langCPP.multiple_line_comment[0] = _T("/*");
+	langCPP.multiple_line_comment[1] = _T("*/");
+	wxFileName filename = fileName;
+	if (filename.FileExists())
+	{
+		bool bExtOk = false;
+		for (int j = 0; j < (int) langCPP.ext.Count(); ++j)
+		{
+			if (filename.GetExt() == langCPP.ext[j])
+			{
+				bExtOk = true;
+				break;
+			}
+		}
+		if(bExtOk)
+		{
+			long int total_lines = 0;
+			long int code_lines = 0;
+			long int empty_lines = 0;
+			long int comment_lines = 0;
+			long int codecomments_lines = 0;
+			CountLines(filename, langCPP, code_lines, codecomments_lines, comment_lines, empty_lines, total_lines);
+			XRCCTRL(*this, "staticTotalLines", wxStaticText)->SetLabel(wxString::Format(_("%ld"), total_lines));
+			XRCCTRL(*this, "staticEmptyLines", wxStaticText)->SetLabel(wxString::Format(_("%ld"), empty_lines));
+			XRCCTRL(*this, "staticActualLines", wxStaticText)->SetLabel(wxString::Format(_("%ld"), code_lines + codecomments_lines));
+			XRCCTRL(*this, "staticCommentLines", wxStaticText)->SetLabel(wxString::Format(_("%ld"), comment_lines));
+		}
+		wxFile file(filename.GetFullPath());
+		if(file.IsOpened())
+		{
+			long Length = static_cast<long>(file.Length());
+			XRCCTRL(*this, "staticFileSize", wxStaticText)->SetLabel(wxString::Format(_("%ld"), Length));
+			file.Close();
+		}
+		wxDateTime ModTime = filename.GetModificationTime();
+		XRCCTRL(*this, "staticDateTimeStamp", wxStaticText)->SetLabel(
+			wxString::Format(_("%ld/%ld/%ld %ld:%ld:%ld"), ModTime.GetDay(),
+			ModTime.GetMonth() + 1, ModTime.GetYear(), ModTime.GetHour(), // seems I have to add 1 for the month ?
+			ModTime.GetMinute(), ModTime.GetSecond()));
+	}
 }
 
 void ProjectFileOptionsDlg::FillCompilers()
@@ -312,12 +336,13 @@ void ProjectFileOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 		XRCCTRL(*this, "txtObjName", wxTextCtrl)->Enable(false);;
 		XRCCTRL(*this, "chkBuildStage", wxCheckBox)->Enable(false);
 		XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->Enable(false);
+		XRCCTRL(*this, "sliderWeight", wxSlider)->Enable(false);
 	}
 }
 
 void ProjectFileOptionsDlg::EndModal(int retCode)
 {
-    if (retCode == wxID_OK)
+    if (retCode == wxID_OK && m_ProjectFile)
     {
         m_ProjectFile->buildTargets.Clear();
         wxCheckListBox *list = XRCCTRL(*this, "lstTargets", wxCheckListBox);

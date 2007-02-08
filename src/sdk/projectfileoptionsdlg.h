@@ -10,11 +10,13 @@ class ProjectFileOptionsDlg : public wxDialog
 {
 	public:
 		ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf);
+		ProjectFileOptionsDlg(wxWindow* parent, const wxString& fileName);
 		~ProjectFileOptionsDlg();
 		void OnCompilerCombo(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
 		void EndModal(int retCode);
 	private:
+		void FillGeneralProperties(const wxString& fileName);
         void FillCompilers();
         void UpdateBuildCommand();
         void SaveBuildCommandSelection();

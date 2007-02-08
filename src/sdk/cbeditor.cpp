@@ -55,6 +55,7 @@
 #include "editor_hooks.h"
 #include "filefilters.h"
 #include "encodingdetector.h"
+#include "projectfileoptionsdlg.h"
 
 const wxString g_EditorModified = _T("*");
 
@@ -2226,6 +2227,13 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
     {
         if (m_pProjectFile)
             m_pProjectFile->ShowOptions(this);
+		else
+		{
+			// active editor not-in-project
+			ProjectFileOptionsDlg dlg(this, GetFilename());
+			PlaceWindow(&dlg);
+			dlg.ShowModal();
+		}
     }
     else if (id == idBreakpointAdd)
         AddBreakpoint(m_pData->m_LastMarginMenuLine);
