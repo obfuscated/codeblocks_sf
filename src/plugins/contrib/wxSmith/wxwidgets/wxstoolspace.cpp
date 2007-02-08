@@ -36,6 +36,8 @@ namespace
 BEGIN_EVENT_TABLE(wxsToolSpace,wxScrolledWindow)
     EVT_PAINT(wxsToolSpace::OnPaint)
     EVT_LEFT_DOWN(wxsToolSpace::OnMouseClick)
+    EVT_LEFT_DCLICK(wxsToolSpace::OnMouseDClick)
+    EVT_RIGHT_DOWN(wxsToolSpace::OnMouseRight)
 END_EVENT_TABLE()
 
 wxsToolSpace::wxsToolSpace(wxWindow* Parent,wxsItemResData* Data):
@@ -166,30 +168,56 @@ void wxsToolSpace::OnMouseClick(wxMouseEvent& event)
     if ( m_Unstable ) return;
 
     // Finding out which tool has been clicked
-    // TODO: Check if mouse coordinates are yet shifted to virtual area
+    int PosX = event.GetX();
+    int PosY = event.GetY();
 
-    if ( event.GetY() < ExtraBorderSize ) return;
-    if ( event.GetY() >= ExtraBorderSize + IconSize ) return;
+    Entry* Tool = FindEntry(PosX,PosY);
 
-    int ToolNumber = event.GetX() / (ExtraBorderSize + IconSize);
-    int InToolPos  = event.GetX() % (ExtraBorderSize + IconSize);
-
-    if ( ToolNumber >= m_Count ) return;
-    if ( InToolPos < ExtraBorderSize ) return;
-
-    Entry* Tool;
-    for ( Tool = m_First; Tool && ToolNumber--; Tool = Tool->m_Next );
-    if ( !Tool ) return;
-
-    if ( !Tool->m_Tool->GetIsSelected() )
+    if ( Tool )
     {
-        m_Data->SelectItem(Tool->m_Tool,!event.ControlDown());
-    }
-    else
-    {
-        m_Data->SelectItem(Tool->m_Tool,false);
-    }
+        if ( !Tool->m_Tool->GetIsSelected() )
+        {
+            m_Data->SelectItem(Tool->m_Tool,!event.ControlDown());
+        }
+        else
+        {
+            m_Data->SelectItem(Tool->m_Tool,false);
+        }
 
+        Tool->m_Tool->MouseClick(NULL,PosX,PosY);
+    }
+}
+
+void wxsToolSpace::OnMouseDClick(wxMouseEvent& event)
+{
+    if ( m_Unstable ) return;
+
+    // Finding out which tool has been clicked
+    int PosX = event.GetX();
+    int PosY = event.GetY();
+
+    Entry* Tool = FindEntry(PosX,PosY);
+
+    if ( Tool )
+    {
+        Tool->m_Tool->MouseDClick(NULL,PosX,PosY);
+    }
+}
+
+void wxsToolSpace::OnMouseRight(wxMouseEvent& event)
+{
+    if ( m_Unstable ) return;
+
+    // Finding out which tool has been clicked
+    int PosX = event.GetX();
+    int PosY = event.GetY();
+
+    Entry* Tool = FindEntry(PosX,PosY);
+
+    if ( Tool )
+    {
+        Tool->m_Tool->MouseRightClick(NULL,PosX,PosY);
+    }
 }
 
 void wxsToolSpace::RecalculateVirtualSize()
@@ -197,4 +225,24 @@ void wxsToolSpace::RecalculateVirtualSize()
     SetVirtualSize(
         m_Count*(ExtraBorderSize + IconSize) + ExtraBorderSize,
         2*ExtraBorderSize + IconSize);
+}
+
+wxsToolSpace::Entry* wxsToolSpace::FindEntry(int& PosX,int& PosY)
+{
+    // TODO: Check if mouse coordinates are yet shifted to virtual area
+    if ( PosY < ExtraBorderSize ) return NULL;
+    if ( PosY >= ExtraBorderSize + IconSize ) return NULL;
+
+    int ToolNumber = PosX / (ExtraBorderSize + IconSize);
+    int InToolPos  = PosX % (ExtraBorderSize + IconSize);
+
+    if ( ToolNumber >= m_Count ) return NULL;
+    if ( InToolPos < ExtraBorderSize ) return NULL;
+
+    PosY -= ExtraBorderSize;
+    PosX -= ExtraBorderSize + ToolNumber*(ExtraBorderSize+IconSize);
+
+    Entry* Tool;
+    for ( Tool = m_First; Tool && ToolNumber--; Tool = Tool->m_Next );
+    return Tool;
 }

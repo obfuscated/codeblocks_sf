@@ -22,10 +22,43 @@
 */
 
 #include "wxsmenu.h"
+#include "wxsmenueditor.h"
+#include "../wxsitemresdata.h"
+#include <globals.h>
 
 namespace
 {
     wxsRegisterItem<wxsMenu> Reg(_T("Menu"),wxsTTool,/*_T("Tools")*/_T(""),90);
+
+    class MenuEditorDialog: public wxDialog
+    {
+        public:
+
+            wxsMenuEditor* Editor;
+
+            MenuEditorDialog(wxsMenu* Menu):
+                wxDialog(NULL,-1,_("Menu editor"),wxDefaultPosition,wxDefaultSize)
+            {
+                wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
+                Sizer->Add(Editor = new wxsMenuEditor(this,Menu),1,wxEXPAND,0);
+                Sizer->Add(CreateButtonSizer(wxOK|wxCANCEL));
+                SetSizer(Sizer);
+                Sizer->SetSizeHints(this);
+                PlaceWindow(this,pdlCentre,true);
+            }
+
+            void OnOK(wxCommandEvent& event)
+            {
+                Editor->ApplyChanges();
+                EndModal(wxID_OK);
+            }
+
+            DECLARE_EVENT_TABLE()
+    };
+
+    BEGIN_EVENT_TABLE(MenuEditorDialog,wxDialog)
+        EVT_BUTTON(wxID_OK,MenuEditorDialog::OnOK)
+    END_EVENT_TABLE()
 }
 
 wxsMenu::wxsMenu(wxsItemResData* Data):
@@ -180,7 +213,8 @@ void wxsMenu::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLa
 {
 }
 
-bool wxsMenu::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
+bool wxsMenu::OnMouseDClick(wxWindow* Preview,int PosX,int PosY)
 {
-    return false;
+    MenuEditorDialog Dlg(this);
+    return Dlg.ShowModal() == wxID_OK;
 }

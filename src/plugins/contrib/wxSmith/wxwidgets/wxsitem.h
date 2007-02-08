@@ -268,6 +268,16 @@ class wxsItem: public wxsPropertyContainer
          */
         inline bool MouseClick(wxWindow* Preview,int PosX,int PosY) { return OnMouseClick(Preview,PosX,PosY); }
 
+        /** \brief Posting mouse double-click event from editor
+         * \note This is only a wrapper to OnMouseDClick function
+         */
+        inline bool MouseDClick(wxWindow* Preview,int PosX,int PosY) { return OnMouseDClick(Preview,PosX,PosY); }
+
+        /** \brief Posting mouse right-click event from editor
+         * \note This is only a wrapper to OnMouseRightClick function
+         */
+        inline bool MouseRightClick(wxWindow* Preview,int PosX,int PosY) { return OnMouseRightClick(Preview,PosX,PosY); }
+
         /** \brief Checking if this item can be added to other parent
          * \note This is only a wrapper to OnCanAddToParent function
          */
@@ -452,6 +462,33 @@ class wxsItem: public wxsPropertyContainer
          * \return false if nothing has changed, true if preview must be refreshed
          */
         virtual bool OnMouseClick(wxWindow* Preview,int PosX,int PosY) { return false; }
+
+        /** \brief Function processing double-click event
+         *
+         * This funciton may be used by item to do some action when
+         * used clicks on preview. It may be usefull to do some special action
+         * when item is double-clicked. By default it will try to find
+         * or create event handler.
+         *
+         * \param Preview preview item
+         * \param PosX X position of mouse relative to item's position
+         * \param PosY Y position of mouse relative to item's position
+         * \return false if nothing has changed, true if preview must be refreshed
+         */
+        virtual bool OnMouseDClick(wxWindow* Preview,int PosX,int PosY);
+
+        /** \brief Function processing right-click event
+         *
+         * This funciton may be used by item to do some action when
+         * used right-clicks on preview. It may be used to show some
+         * extra menu specific for given item only.
+         *
+         * \param Preview preview item
+         * \param PosX X position of mouse relative to item's position
+         * \param PosY Y position of mouse relative to item's position
+         * \return false if nothing has changed, true if preview must be refreshed
+         */
+        virtual bool OnMouseRightClick(wxWindow* Preview,int PosX,int PosY) { return false; }
 
         /** \brief Function checking if this item is represented as pointer */
         virtual bool OnIsPointer();

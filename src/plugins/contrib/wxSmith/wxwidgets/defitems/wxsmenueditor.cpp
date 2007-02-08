@@ -1,3 +1,26 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #include "wxsmenueditor.h"
 
 #include "wxsmenu.h"
@@ -74,14 +97,19 @@ void wxsMenuEditor::CreateContent(wxWindow* parent)
 	GridSizer1 = new wxGridSizer(0,2,0,0);
 	m_TypeNormal = new wxRadioButton(this,ID_RADIOBUTTON1,_("Normal"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON1"));
 	m_TypeNormal->SetValue(true);
+	m_TypeNormal->Disable();
 	GridSizer1->Add(m_TypeNormal,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	m_TypeSeparator = new wxRadioButton(this,ID_RADIOBUTTON4,_("Separator"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON4"));
+	m_TypeSeparator->Disable();
 	GridSizer1->Add(m_TypeSeparator,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	m_TypeCheck = new wxRadioButton(this,ID_RADIOBUTTON2,_("Check"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON2"));
+	m_TypeCheck->Disable();
 	GridSizer1->Add(m_TypeCheck,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	m_TypeBreak = new wxRadioButton(this,ID_RADIOBUTTON5,_("Break"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON5"));
+	m_TypeBreak->Disable();
 	GridSizer1->Add(m_TypeBreak,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	m_TypeRadio = new wxRadioButton(this,ID_RADIOBUTTON3,_("Radio"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON3"));
+	m_TypeRadio->Disable();
 	GridSizer1->Add(m_TypeRadio,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	StaticBoxSizer2->Add(GridSizer1,0,wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,10);
 	StaticLine1 = new wxStaticLine(this,ID_STATICLINE1,wxDefaultPosition,wxSize(10,-1),wxLI_HORIZONTAL,_T("ID_STATICLINE1"));
@@ -90,28 +118,34 @@ void wxsMenuEditor::CreateContent(wxWindow* parent)
 	StaticText6 = new wxStaticText(this,ID_STATICTEXT6,_("Id:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT6"));
 	FlexGridSizer1->Add(StaticText6,1,wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,4);
 	m_Id = new wxTextCtrl(this,ID_TEXTCTRL4,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL4"));
+	m_Id->Disable();
 	FlexGridSizer1->Add(m_Id,1,wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Label:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));
 	FlexGridSizer1->Add(StaticText1,1,wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,4);
 	m_Label = new wxTextCtrl(this,ID_TEXTCTRL1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL1"));
+	m_Label->Disable();
 	FlexGridSizer1->Add(m_Label,1,wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Accelerator:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT2"));
 	FlexGridSizer1->Add(StaticText2,1,wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,4);
 	m_Accelerator = new wxTextCtrl(this,ID_TEXTCTRL2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL2"));
+	m_Accelerator->Disable();
 	FlexGridSizer1->Add(m_Accelerator,1,wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	StaticText3 = new wxStaticText(this,ID_STATICTEXT3,_("Help:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT3"));
 	FlexGridSizer1->Add(StaticText3,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,4);
 	m_Help = new wxTextCtrl(this,ID_TEXTCTRL3,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL3"));
+	m_Help->Disable();
 	FlexGridSizer1->Add(m_Help,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	StaticText4 = new wxStaticText(this,ID_STATICTEXT4,_("Checked:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT4"));
 	FlexGridSizer1->Add(StaticText4,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,4);
 	m_Checked = new wxCheckBox(this,ID_CHECKBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX1"));
 	m_Checked->SetValue(false);
+	m_Checked->Disable();
 	FlexGridSizer1->Add(m_Checked,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	StaticText5 = new wxStaticText(this,ID_STATICTEXT5,_("Enabled:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT5"));
 	FlexGridSizer1->Add(StaticText5,1,wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,4);
 	m_Enabled = new wxCheckBox(this,ID_CHECKBOX2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX2"));
 	m_Enabled->SetValue(false);
+	m_Enabled->Disable();
 	FlexGridSizer1->Add(m_Enabled,1,wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	StaticBoxSizer2->Add(FlexGridSizer1,0,wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,10);
 	StaticLine2 = new wxStaticLine(this,ID_STATICLINE2,wxDefaultPosition,wxSize(10,-1),wxLI_HORIZONTAL,_T("ID_STATICLINE2"));
@@ -142,10 +176,13 @@ void wxsMenuEditor::CreateContent(wxWindow* parent)
 	Connect(ID_RADIOBUTTON2,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsMenuEditor::OnTypeChanged);
 	Connect(ID_RADIOBUTTON5,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsMenuEditor::OnTypeChanged);
 	Connect(ID_RADIOBUTTON3,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsMenuEditor::OnTypeChanged);
-	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsMenuEditor::OnButton1Click);
+	Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsMenuEditor::OnLabelChanged);
+	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsMenuEditor::OnButtonLeftClick);
+	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsMenuEditor::OnButtonRightClick);
 	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsMenuEditor::OnButtonUpClick);
 	Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsMenuEditor::OnButtonDownClick);
 	Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsMenuEditor::OnButtonNewClick);
+	Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsMenuEditor::OnButtonDelClick);
 	//*)
 }
 
@@ -407,6 +444,14 @@ void wxsMenuEditor::StoreDataCopy()
 {
     if ( m_Menu )
     {
+        // Have to delete all children of menu
+        for ( int Count = m_Menu->GetChildCount(); Count-->0; )
+        {
+            wxsItem* Child = m_Menu->GetChild(Count);
+            m_Menu->UnbindChild(Count);
+            delete Child;
+        }
+
         StoreDataCopyReq(m_Menu,&m_Data);
     }
     else
@@ -541,11 +586,6 @@ void wxsMenuEditor::OnTypeChanged(wxCommandEvent& event)
     SelectItem(Selected);
 }
 
-void wxsMenuEditor::OnButton1Click(wxCommandEvent& event)
-{
-    // Requested to move this item one level up
-}
-
 void wxsMenuEditor::OnButtonUpClick(wxCommandEvent& event)
 {
     if ( !m_Selected ) return;
@@ -668,6 +708,120 @@ void wxsMenuEditor::OnButtonNewClick(wxCommandEvent& event)
         SelectItem(m_Selected);
     }
 
+    m_Selected = NewItem;
     UpdateMenuContent();
-    m_Content->SelectItem(NewItem->m_TreeId);
+}
+
+void wxsMenuEditor::OnButtonDelClick(wxCommandEvent& event)
+{
+    if ( !m_Selected ) return;
+    if ( !m_Selected->m_Parent ) return;
+    if ( cbMessageBox(
+        _("Are you sure to delete this menu item ?\n"
+          "(It will delete all sub menus too)"),
+        _("Delete menu"),
+        wxYES_NO) != wxID_YES ) return;
+
+
+    MenuItem* Previous = GetPrevious(m_Selected);
+    if ( !Previous )
+    {
+        m_Selected->m_Parent->m_Child = m_Selected->m_Next;
+        MenuItem* ToDel = m_Selected;
+        if ( m_Selected->m_Next )
+        {
+            m_Selected = m_Selected->m_Next;
+        }
+        else
+        {
+            m_Selected = m_Selected->m_Parent;
+            if ( m_Selected == &m_Data )
+            {
+                m_Selected = NULL;
+            }
+        }
+        DeleteDataCopyReq(ToDel);
+    }
+    else
+    {
+        Previous->m_Next = m_Selected->m_Next;
+        DeleteDataCopyReq(m_Selected);
+        if ( Previous->m_Next )
+        {
+            m_Selected = Previous->m_Next;
+        }
+        else
+        {
+            m_Selected = Previous;
+        }
+    }
+
+    UpdateMenuContent();
+}
+
+void wxsMenuEditor::OnButtonLeftClick(wxCommandEvent& event)
+{
+    if ( !m_Selected ) return;
+    if ( !m_Selected->m_Parent ) return;
+    if ( m_Selected->m_Parent == &m_Data ) return;
+
+    MenuItem* Previous = GetPrevious(m_Selected);
+    MenuItem* Parent = m_Selected->m_Parent;
+
+    if ( Previous )
+    {
+        Previous->m_Next = NULL;
+    }
+    else
+    {
+        m_Selected->m_Parent->m_Child = NULL;
+    }
+
+    m_Selected->m_Parent = Parent->m_Parent;
+    m_Selected->m_Next = Parent->m_Next;
+    Parent->m_Next = m_Selected;
+
+    UpdateMenuContent();
+}
+
+
+void wxsMenuEditor::OnButtonRightClick(wxCommandEvent& event)
+{
+    if ( !m_Selected ) return;
+    if ( !m_Selected->m_Parent ) return;
+
+    MenuItem* Previous = GetPrevious(m_Selected);
+    if ( !Previous ) return;
+    if ( Previous->m_Type == wxsMenu::Separator ) return;
+    if ( Previous->m_Type == wxsMenu::Break ) return;
+
+    Previous->m_Type = wxsMenu::Normal;
+    Previous->m_Next = m_Selected->m_Next;
+    m_Selected->m_Parent = Previous;
+    m_Selected->m_Next = NULL;
+
+    if ( !Previous->m_Child )
+    {
+        Previous->m_Child = m_Selected;
+    }
+    else
+    {
+        Previous = Previous->m_Child;
+        while ( Previous->m_Next )
+        {
+            Previous = Previous->m_Next;
+        }
+
+        Previous->m_Next = m_Selected;
+    }
+
+    UpdateMenuContent();
+}
+
+void wxsMenuEditor::OnLabelChanged(wxCommandEvent& event)
+{
+    if ( m_Selected && (m_Selected!=&m_Data) && m_Selected->m_TreeId.IsOk() )
+    {
+        m_Content->SetItemText(m_Selected->m_TreeId,m_Label->GetValue());
+    }
 }

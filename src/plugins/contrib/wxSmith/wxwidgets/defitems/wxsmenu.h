@@ -15,8 +15,9 @@ class wxsMenu: public wxsTool
         virtual void OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
         virtual void OnEnumToolProperties(long Flags);
         virtual void OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language);
-        virtual bool OnIsPointer() { return true; }
-        virtual bool OnCanAddToResource(wxsItemResData* Data,bool ShowMessage);
+        virtual bool OnIsPointer() { return false; }
+        virtual bool OnCanAddToResource(wxsItemResData* Data,bool ShowMessage) { return true; }
+        virtual bool OnMouseDClick(wxWindow* Preview,int PosX,int PosY);
 
         wxSize CalculateSize(wxArrayInt* Cols = 0); ///< \brief Getting size of this item requied by editor
         void   Draw(wxDC* DC,int BegX,int BegY);    ///< \brief Drawing preview of this menu in some DC

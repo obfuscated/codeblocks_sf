@@ -442,3 +442,9 @@ wxString wxsItem::Codef(wxsCodingLang Language,const wxChar* Fmt,...)
 
     return Result;
 }
+
+bool wxsItem::OnMouseDClick(wxWindow* Preview,int PosX,int PosY)
+{
+    // TODO: Create new event / search for current event
+    return false;
+}

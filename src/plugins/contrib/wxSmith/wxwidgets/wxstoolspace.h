@@ -31,14 +31,25 @@ class wxsToolSpace: public wxScrolledWindow
 
     private:
 
+        struct Entry;
+
         /** \brief Custom paint handler */
         void OnPaint(wxPaintEvent& event);
 
         /** \brief Custom mouse click event */
         void OnMouseClick(wxMouseEvent& event);
 
+        /** \brief Custom mouse double-click event */
+        void OnMouseDClick(wxMouseEvent& event);
+
+        /** \brief Custom right click event */
+        void OnMouseRight(wxMouseEvent& event);
+
         /** \brief Recalculating virtual space required by this window */
         void RecalculateVirtualSize();
+
+        /** \brief Searching for tool entry at given position */
+        Entry* FindEntry(int& PosX,int& PosY);
 
         /** \brief Entry for each tool in resource */
         struct Entry

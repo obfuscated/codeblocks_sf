@@ -137,10 +137,13 @@ class wxsMenuEditor: public wxPanel
 		//(*Handlers(wxsMenuEditor)
 		void OnContentSelectionChanged(wxTreeEvent& event);
 		void OnTypeChanged(wxCommandEvent& event);
-		void OnButton1Click(wxCommandEvent& event);
 		void OnButtonUpClick(wxCommandEvent& event);
 		void OnButtonDownClick(wxCommandEvent& event);
 		void OnButtonNewClick(wxCommandEvent& event);
+		void OnButtonDelClick(wxCommandEvent& event);
+		void OnButtonLeftClick(wxCommandEvent& event);
+		void OnButtonRightClick(wxCommandEvent& event);
+		void OnLabelChanged(wxCommandEvent& event);
 		//*)
 
 		//(*Declarations(wxsMenuEditor)

@@ -31,6 +31,7 @@
                                 <object class="wxRadioButton" name="ID_RADIOBUTTON1" variable="m_TypeNormal" member="yes">
                                     <label>Normal</label>
                                     <selected>1</selected>
+                                    <enabled>0</enabled>
                                     <handler function="OnTypeChanged" entry="EVT_RADIOBUTTON" />
                                 </object>
                                 <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -40,6 +41,7 @@
                             <object class="sizeritem">
                                 <object class="wxRadioButton" name="ID_RADIOBUTTON4" variable="m_TypeSeparator" member="yes">
                                     <label>Separator</label>
+                                    <enabled>0</enabled>
                                     <handler function="OnTypeChanged" entry="EVT_RADIOBUTTON" />
                                 </object>
                                 <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -49,6 +51,7 @@
                             <object class="sizeritem">
                                 <object class="wxRadioButton" name="ID_RADIOBUTTON2" variable="m_TypeCheck" member="yes">
                                     <label>Check</label>
+                                    <enabled>0</enabled>
                                     <handler function="OnTypeChanged" entry="EVT_RADIOBUTTON" />
                                 </object>
                                 <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -58,6 +61,7 @@
                             <object class="sizeritem">
                                 <object class="wxRadioButton" name="ID_RADIOBUTTON5" variable="m_TypeBreak" member="yes">
                                     <label>Break</label>
+                                    <enabled>0</enabled>
                                     <handler function="OnTypeChanged" entry="EVT_RADIOBUTTON" />
                                 </object>
                                 <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -67,6 +71,7 @@
                             <object class="sizeritem">
                                 <object class="wxRadioButton" name="ID_RADIOBUTTON3" variable="m_TypeRadio" member="yes">
                                     <label>Radio</label>
+                                    <enabled>0</enabled>
                                     <handler function="OnTypeChanged" entry="EVT_RADIOBUTTON" />
                                 </object>
                                 <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -96,7 +101,9 @@
                                 <option>1</option>
                             </object>
                             <object class="sizeritem">
-                                <object class="wxTextCtrl" name="ID_TEXTCTRL4" variable="m_Id" member="yes" />
+                                <object class="wxTextCtrl" name="ID_TEXTCTRL4" variable="m_Id" member="yes">
+                                    <enabled>0</enabled>
+                                </object>
                                 <flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                                 <border>4</border>
                                 <option>1</option>
@@ -110,7 +117,10 @@
                                 <option>1</option>
                             </object>
                             <object class="sizeritem">
-                                <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="m_Label" member="yes" />
+                                <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="m_Label" member="yes">
+                                    <enabled>0</enabled>
+                                    <handler function="OnLabelChanged" entry="EVT_TEXT" />
+                                </object>
                                 <flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                                 <border>4</border>
                                 <option>1</option>
@@ -124,7 +134,9 @@
                                 <option>1</option>
                             </object>
                             <object class="sizeritem">
-                                <object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="m_Accelerator" member="yes" />
+                                <object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="m_Accelerator" member="yes">
+                                    <enabled>0</enabled>
+                                </object>
                                 <flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                                 <border>4</border>
                                 <option>1</option>
@@ -138,7 +150,9 @@
                                 <option>1</option>
                             </object>
                             <object class="sizeritem">
-                                <object class="wxTextCtrl" name="ID_TEXTCTRL3" variable="m_Help" member="yes" />
+                                <object class="wxTextCtrl" name="ID_TEXTCTRL3" variable="m_Help" member="yes">
+                                    <enabled>0</enabled>
+                                </object>
                                 <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                                 <border>4</border>
                                 <option>1</option>
@@ -152,7 +166,9 @@
                                 <option>1</option>
                             </object>
                             <object class="sizeritem">
-                                <object class="wxCheckBox" name="ID_CHECKBOX1" variable="m_Checked" member="yes" />
+                                <object class="wxCheckBox" name="ID_CHECKBOX1" variable="m_Checked" member="yes">
+                                    <enabled>0</enabled>
+                                </object>
                                 <flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                                 <border>4</border>
                                 <option>1</option>
@@ -166,7 +182,9 @@
                                 <option>1</option>
                             </object>
                             <object class="sizeritem">
-                                <object class="wxCheckBox" name="ID_CHECKBOX2" variable="m_Enabled" member="yes" />
+                                <object class="wxCheckBox" name="ID_CHECKBOX2" variable="m_Enabled" member="yes">
+                                    <enabled>0</enabled>
+                                </object>
                                 <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                                 <border>4</border>
                                 <option>1</option>
@@ -188,7 +206,7 @@
                                 <object class="wxButton" name="ID_BUTTON1" variable="Button1" member="yes">
                                     <label>&lt;</label>
                                     <style>wxBU_EXACTFIT</style>
-                                    <handler function="OnButton1Click" entry="EVT_BUTTON" />
+                                    <handler function="OnButtonLeftClick" entry="EVT_BUTTON" />
                                 </object>
                                 <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                                 <border>2</border>
@@ -198,6 +216,7 @@
                                 <object class="wxButton" name="ID_BUTTON2" variable="Button2" member="yes">
                                     <label>&gt;</label>
                                     <style>wxBU_EXACTFIT</style>
+                                    <handler function="OnButtonRightClick" entry="EVT_BUTTON" />
                                 </object>
                                 <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                                 <border>2</border>
@@ -243,6 +262,7 @@
                                 <object class="wxButton" name="ID_BUTTON6" variable="Button6" member="yes">
                                     <label>Delete</label>
                                     <style>wxBU_EXACTFIT</style>
+                                    <handler function="OnButtonDelClick" entry="EVT_BUTTON" />
                                 </object>
                                 <flag>wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                                 <border>4</border>

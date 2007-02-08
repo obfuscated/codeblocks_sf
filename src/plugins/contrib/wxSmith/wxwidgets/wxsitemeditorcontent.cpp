@@ -293,16 +293,32 @@ void wxsItemEditorContent::OnMouseIdle(wxMouseEvent& event)
     BlockFetch(false);
     m_DragInitPosX = event.GetX();
     m_DragInitPosY = event.GetY();
-    if ( event.LeftIsDown() && !event.RightIsDown() && !event.MiddleIsDown() )
+
+    int MouseX = event.GetX();
+    int MouseY = event.GetY();
+
+    wxsItem* OnCursor = FindItemAtPos(MouseX,MouseY,m_Data->GetRootItem());
+    if ( !OnCursor ) OnCursor = m_Data->GetRootItem();
+
+    wxWindow* Preview = GetPreviewWindow(OnCursor);
+
+    if ( event.LeftDClick() && !event.RightIsDown() && !event.MiddleIsDown() )
+    {
+        if ( Preview )
+        {
+            int PosX, PosY, SizeX, SizeY;
+            FindAbsoluteRect(OnCursor,PosX,PosY,SizeX,SizeY);
+            if ( OnCursor->MouseDClick(Preview,MouseX-PosX,MouseY-PosY) )
+            {
+                m_Editor->RebuildPreview();
+                m_MouseState = msIdle;
+            }
+        }
+    }
+
+    if ( event.LeftIsDown() && !event.LeftDClick() && !event.RightIsDown() && !event.MiddleIsDown() )
     {
         // Selecting / drag init event
-        int MouseX = event.GetX();
-        int MouseY = event.GetY();
-
-        wxsItem* OnCursor = FindItemAtPos(MouseX,MouseY,m_Data->GetRootItem());
-        if ( !OnCursor ) OnCursor = m_Data->GetRootItem();
-
-        wxWindow* Preview = GetPreviewWindow(OnCursor);
         bool NeedRefresh = false;
         if ( Preview )
         {
@@ -344,7 +360,16 @@ void wxsItemEditorContent::OnMouseIdle(wxMouseEvent& event)
 
     if ( !event.LeftIsDown() && event.RightDown() && !event.MiddleIsDown() )
     {
-        // Menu invoking event
+        if ( Preview )
+        {
+            int PosX, PosY, SizeX, SizeY;
+            FindAbsoluteRect(OnCursor,PosX,PosY,SizeX,SizeY);
+            if ( OnCursor->MouseRightClick(Preview,MouseX-PosX,MouseY-PosY) )
+            {
+                m_Editor->RebuildPreview();
+                m_MouseState = msIdle;
+            }
+        }
     }
 
     if ( !event.LeftIsDown() && !event.RightIsDown() && !event.MiddleIsDown() )
