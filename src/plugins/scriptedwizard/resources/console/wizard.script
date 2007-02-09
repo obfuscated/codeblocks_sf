@@ -149,7 +149,7 @@ function SetupTarget(target,is_debug)
 		//Special consideration for MSVC 7.1
 		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk")))
 		{
-			if (multi_thread)
+			if (!multi_thread)
 			{
 				target.AddCompilerOption(_T("/MLd"));
 				target.AddLinkerOption(_T("/NODEFAULTLIB:libcmtd.lib"));
@@ -173,7 +173,7 @@ function SetupTarget(target,is_debug)
 		//Special consideration for MSVC 7.1
 		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk")))
 		{
-			if (multi_thread)
+			if (!multi_thread)
 			{
 				target.AddCompilerOption(_T("/ML"));
 				target.AddLinkerOption(_T("/NODEFAULTLIB:libcmt.lib"));
