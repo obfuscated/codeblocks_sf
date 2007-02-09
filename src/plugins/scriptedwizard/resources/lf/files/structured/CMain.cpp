@@ -1,8 +1,8 @@
-#include "CGame.h"
+#include "CMain.h"
 
 using namespace lf;
 
-CGame::CGame(render::IRenderWindow* win)
+CMain::CMain(render::IRenderWindow* win)
 	: rwin(win),
 	smgr(win->getSceneManager(0)),
 	cam(0),
@@ -13,7 +13,7 @@ CGame::CGame(render::IRenderWindow* win)
     setupScene();
 }
 
-CGame::~CGame()
+CMain::~CMain()
 {
     smgr->remove(cam);
     smgr->remove(camController);
@@ -25,7 +25,7 @@ CGame::~CGame()
     rwin->removeKeyListener(this);
 }
 
-void CGame::run()
+void CMain::run()
 {
     quitNow = false;
 
@@ -36,7 +36,7 @@ void CGame::run()
 	}
 }
 
-void CGame::setupScene()
+void CMain::setupScene()
 {
     cam = new scene::C3DCamera(rwin,
                                core::PI / 3.0f,
@@ -56,7 +56,7 @@ void CGame::setupScene()
     smgr->add( camController );
 }
 
-void CGame::keyPressed(input::CKeyEvent& event)
+void CMain::keyPressed(input::CKeyEvent& event)
 {
     switch (event.getKey())
     {

@@ -1,10 +1,10 @@
 #include <lf/Lightfeather.h>
 
-class CGame : public lf::input::IKeyListener
+class CMain : public lf::input::IKeyListener
 {
     public:
-        CGame(lf::render::IRenderWindow* win);
-        ~CGame();
+        CMain(lf::render::IRenderWindow* win);
+        ~CMain();
 
         void run();
         void setupScene();
