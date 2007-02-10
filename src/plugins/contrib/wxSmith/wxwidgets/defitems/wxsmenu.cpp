@@ -28,7 +28,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsMenu> Reg(_T("Menu"),wxsTTool,/*_T("Tools")*/_T(""),90);
+    wxsRegisterItem<wxsMenu> Reg(_T("Menu"),wxsTTool,_T("Tools"),90);
 
     class MenuEditorDialog: public wxDialog
     {
@@ -41,7 +41,7 @@ namespace
             {
                 wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
                 Sizer->Add(Editor = new wxsMenuEditor(this,Menu),1,wxEXPAND,0);
-                Sizer->Add(CreateButtonSizer(wxOK|wxCANCEL));
+                Sizer->Add(CreateButtonSizer(wxOK|wxCANCEL),0,wxEXPAND,5);
                 SetSizer(Sizer);
                 Sizer->SetSizeHints(this);
                 PlaceWindow(this,pdlCentre,true);

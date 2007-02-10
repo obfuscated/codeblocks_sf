@@ -69,6 +69,7 @@ class wxsMenuEditor: public wxPanel
         {
             public:
                 MenuItemHolder(MenuItem* Item): m_Item(Item) {}
+                virtual ~MenuItemHolder() {}
                 MenuItem* m_Item;
         };
 
@@ -81,7 +82,7 @@ class wxsMenuEditor: public wxPanel
 
         /** \brief Storing copy of data */
         void StoreDataCopy();
-        void StoreDataCopyReq(wxsMenu* Menu,MenuItem* Item);
+        void StoreDataCopyReq(wxsParent* Parent,MenuItem* Item);
 
         /** \brief Deleting data copy */
         void DeleteDataCopy();
@@ -90,6 +91,13 @@ class wxsMenuEditor: public wxPanel
         /** \brief Updating content of tree and selecting first item */
         void UpdateMenuContent();
         void UpdateMenuContentReq(wxTreeItemId Id,MenuItem* Item);
+
+        /** \brief Checking data consistency */
+        void CheckConsistency();
+        void CheckConsistencyReq(MenuItem* Item);
+
+        /** \brief Getting name shown in resource tree for given item */
+        wxString GetItemTreeName(MenuItem* Item);
 
         /** \brief Selecting item - this must update current item's data and switch to new one */
         void SelectItem(MenuItem* NewSelection);
@@ -102,8 +110,9 @@ class wxsMenuEditor: public wxPanel
 
         wxsMenuBar* m_MenuBar;  ///< \brief Edited menu bar, NULL if editing menu
         wxsMenu*    m_Menu;     ///< \brief Edited menu, NULL if editing menu bar
-        MenuItem    m_Data;     ///< \brief Root of menu
+        MenuItem*   m_First;    ///< \brief First child item od edited resource
         MenuItem*   m_Selected; ///< \brief Currently selected item
+        bool        m_BlockSel; ///< \brief Flag for blockig select events from tree ctrl
 
 		//(*Identifiers(wxsMenuEditor)
 		static const long ID_TREECTRL1;

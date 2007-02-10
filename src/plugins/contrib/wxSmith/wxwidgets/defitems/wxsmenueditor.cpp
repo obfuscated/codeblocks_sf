@@ -25,6 +25,7 @@
 
 #include "wxsmenu.h"
 #include "wxsmenubar.h"
+#include "../wxsitemresdata.h"
 
 //(*InternalHeaders(wxsMenuEditor)
 #include <wx/bitmap.h>
@@ -67,7 +68,10 @@ const long wxsMenuEditor::ID_BUTTON6 = wxNewId();
 
 wxsMenuEditor::wxsMenuEditor(wxWindow* parent,wxsMenuBar* MenuBar):
     m_MenuBar(MenuBar),
-    m_Menu(NULL)
+    m_Menu(NULL),
+    m_First(NULL),
+    m_Selected(NULL),
+    m_BlockSel(false)
 {
     CreateDataCopy();
     CreateContent(parent);
@@ -76,7 +80,10 @@ wxsMenuEditor::wxsMenuEditor(wxWindow* parent,wxsMenuBar* MenuBar):
 
 wxsMenuEditor::wxsMenuEditor(wxWindow* parent,wxsMenu* Menu):
     m_MenuBar(NULL),
-    m_Menu(Menu)
+    m_Menu(Menu),
+    m_First(NULL),
+    m_Selected(NULL),
+    m_BlockSel(false)
 {
     CreateDataCopy();
     CreateContent(parent);
@@ -193,38 +200,28 @@ wxsMenuEditor::~wxsMenuEditor()
 
 void wxsMenuEditor::CreateDataCopy()
 {
-    m_Data.m_Type = wxsMenu::Menu;
-    m_Data.m_Enabled = true;
-    m_Data.m_Checked = false;
-    m_Data.m_Child = NULL;
-    m_Data.m_Next = NULL;
-    m_Data.m_Parent = NULL;
-
-    if ( m_MenuBar )
+    wxsParent* Parent = m_MenuBar ? ((wxsItem*)m_MenuBar)->ConvertToParent() : ((wxsItem*)m_Menu)->ConvertToParent();
+    if ( Parent )
     {
         MenuItem* LastChild = NULL;
-        for ( int i=0; i<m_MenuBar->GetChildCount(); i++ )
+        for ( int i=0; i<Parent->GetChildCount(); i++ )
         {
-            wxsMenu* Child = (wxsMenu*) m_MenuBar->GetChild(i);
+            wxsMenu* Child = (wxsMenu*)Parent->GetChild(i);
             MenuItem* NewChild = new MenuItem;
             NewChild->m_Next = NULL;
             NewChild->m_Child = NULL;
-            NewChild->m_Parent = &m_Data;
+            NewChild->m_Parent = NULL;
             if ( LastChild )
             {
                 LastChild->m_Next = NewChild;
             }
             else
             {
-                m_Data.m_Child = NewChild;
+                m_First = NewChild;
             }
             LastChild = NewChild;
             CreateDataCopyReq(Child,NewChild);
         }
-    }
-    else
-    {
-        CreateDataCopyReq(m_Menu,&m_Data);
     }
 }
 
@@ -261,63 +258,62 @@ void wxsMenuEditor::CreateDataCopyReq(wxsMenu* Menu,MenuItem* Item)
 
 void wxsMenuEditor::DeleteDataCopy()
 {
-    DeleteDataCopyReq(&m_Data);
-    m_Data.m_Type = wxsMenu::Menu;
-    m_Data.m_Id.Clear();
-    m_Data.m_Label.Clear();
-    m_Data.m_Accelerator.Clear();
-    m_Data.m_Help.Clear();
-    m_Data.m_Enabled = true;
-    m_Data.m_Checked = true;
-    m_Data.m_Child = NULL;
+    DeleteDataCopyReq(m_First);
+    m_First = NULL;
 }
 
 void wxsMenuEditor::DeleteDataCopyReq(MenuItem* Item)
 {
-    MenuItem* Child = Item->m_Child;
-    while ( Child )
+    while ( Item )
     {
-        MenuItem* Next = Child->m_Next;
-        DeleteDataCopyReq(Child);
-        delete Child;
-        Child = Next;
+        MenuItem* Next = Item->m_Next;
+        DeleteDataCopyReq(Item->m_Child);
+        delete Item;
+        Item = Next;
     }
 }
 
 void wxsMenuEditor::UpdateMenuContent()
 {
-    m_Selected = NULL;
+    CheckConsistency();
+    m_Content->Freeze();
+    m_BlockSel = true;              // wxTreeCtrl changes selection during delete
     m_Content->DeleteAllItems();
+    m_BlockSel = false;
     wxTreeItemId RootId = m_Content->AddRoot(_T("Menu"));
-    m_Data.m_TreeId = RootId;
-    UpdateMenuContentReq(RootId,&m_Data);
+    UpdateMenuContentReq(RootId,m_First);
     m_Content->Expand(RootId);
+    m_Content->Thaw();
+    if ( m_Selected )
+    {
+        m_Content->SelectItem(m_Selected->m_TreeId);
+    }
 }
 
 void wxsMenuEditor::UpdateMenuContentReq(wxTreeItemId Id,MenuItem* Item)
 {
-    for ( MenuItem* Child = Item->m_Child; Child; Child = Child->m_Next )
+    for ( ; Item; Item = Item->m_Next )
     {
-        wxString Label;
-        switch ( Child->m_Type )
-        {
-            case wxsMenu::Separator: Label = _T("--------"); break;
-            case wxsMenu::Break:     Label = _("** BREAK **"); break;
-            default:                 Label = Child->m_Label;
-        }
-        wxTreeItemId ChildId = m_Content->AppendItem(Id,Label,-1,-1,new MenuItemHolder(Child));
-        Child->m_TreeId = ChildId;
-        UpdateMenuContentReq(ChildId,Child);
-        m_Content->Expand(ChildId);
+        wxTreeItemId ItemId = m_Content->AppendItem(Id,GetItemTreeName(Item),-1,-1,new MenuItemHolder(Item));
+        Item->m_TreeId = ItemId;
+        UpdateMenuContentReq(ItemId,Item->m_Child);
+        m_Content->Expand(ItemId);
     }
-    if ( Item == m_Selected )
+}
+
+wxString wxsMenuEditor::GetItemTreeName(MenuItem* Item)
+{
+    switch ( Item->m_Type )
     {
-        m_Content->SelectItem(Id);
+        case wxsMenu::Separator: return _T("--------");
+        case wxsMenu::Break:     return _("** BREAK **");
+        default:                 return Item->m_Label;
     }
 }
 
 void wxsMenuEditor::OnContentSelectionChanged(wxTreeEvent& event)
 {
+    if ( m_BlockSel ) return;
     wxTreeItemId Id = event.GetItem();
     if ( !Id.IsOk() ) return;
     MenuItem* Selected = ((MenuItemHolder*)m_Content->GetItemData(Id))->m_Item;
@@ -363,20 +359,17 @@ void wxsMenuEditor::SelectItem(MenuItem* NewSelection)
         {
             case wxsMenu::Menu:
             case wxsMenu::Normal:
-            {
                 m_TypeNormal->SetValue(true);
                 // If item has children, can not change type to anything else
-                // Same goes for children of wxMenuBar or root items
-                if ( m_Selected->m_Child || !m_Selected->m_Parent ||
-                     ((m_Selected->m_Parent==&m_Data) && m_MenuBar) )
+                // Same goes for children of wxMenuBar
+                if ( m_Selected->m_Child || (!m_Selected->m_Parent && m_MenuBar) )
                 {
-                    m_TypeCheck->Enable();
-                    m_TypeRadio->Enable();
-                    m_TypeBreak->Enable();
-                    m_TypeSeparator->Enable();
+                    m_TypeCheck->Disable();
+                    m_TypeRadio->Disable();
+                    m_TypeBreak->Disable();
+                    m_TypeSeparator->Disable();
                 }
                 break;
-            }
 
             case wxsMenu::Radio:
                 m_TypeRadio->SetValue(true);
@@ -442,78 +435,61 @@ void wxsMenuEditor::ApplyChanges()
 
 void wxsMenuEditor::StoreDataCopy()
 {
-    if ( m_Menu )
+    wxsParent* Parent = m_MenuBar ? ((wxsItem*)m_MenuBar)->ConvertToParent() : ((wxsItem*)m_Menu)->ConvertToParent();
+    if ( Parent )
     {
+        // First notifying that structure is going to change
+        Parent->GetResourceData()->BeginChange();
+
         // Have to delete all children of menu
-        for ( int Count = m_Menu->GetChildCount(); Count-->0; )
+        for ( int Count = Parent->GetChildCount(); Count-->0; )
         {
-            wxsItem* Child = m_Menu->GetChild(Count);
+            wxsItem* Child = Parent->GetChild(Count);
             m_Menu->UnbindChild(Count);
             delete Child;
         }
+        StoreDataCopyReq(Parent,m_First);
 
-        StoreDataCopyReq(m_Menu,&m_Data);
-    }
-    else
-    {
-        // Have to delete all children of menubar
-        for ( int Count = m_MenuBar->GetChildCount(); Count-->0; )
-        {
-            wxsItem* Child = m_MenuBar->GetChild(Count);
-            m_MenuBar->UnbindChild(Count);
-            delete Child;
-        }
-
-        // Now building new enteries
-        for ( MenuItem* Child = m_Data.m_Child; Child; Child = Child->m_Next )
-        {
-            wxsMenu* NewMenu = new wxsMenu(m_MenuBar->GetResourceData());
-            if ( !m_MenuBar->AddChild(NewMenu) )
-            {
-                delete NewMenu;
-                continue;
-            }
-            StoreDataCopyReq(NewMenu,Child);
-        }
+        // Notifying about finished change
+        Parent->GetResourceData()->EndChange();
     }
 }
 
-void wxsMenuEditor::StoreDataCopyReq(wxsMenu* Menu,MenuItem* Item)
+void wxsMenuEditor::StoreDataCopyReq(wxsParent* Parent,MenuItem* Item)
 {
     // First need to copy data from Item to Menu, not all data will
     // be copied, only things proper to item type
-
-    bool UseId = false;
-    bool UseLabel = false;
-    bool UseAccelerator = false;
-    bool UseHelp = false;
-    bool UseEnabled = false;
-    bool UseChecked = false;
-
-    Menu->SetIdName(_T(""));
-    Menu->m_Label.Clear();
-    Menu->m_Accelerator.Clear();
-    Menu->m_Help.Clear();
-    Menu->m_Enabled = true;
-    Menu->m_Checked = false;
-    Menu->m_Type = CorrectType(Item,UseId,UseLabel,UseAccelerator,UseHelp,UseEnabled,UseChecked);
-    if ( UseId          ) Menu->SetIdName(Item->m_Id);
-    if ( UseLabel       ) Menu->m_Label = Item->m_Label;
-    if ( UseAccelerator ) Menu->m_Accelerator = Item->m_Accelerator;
-    if ( UseHelp        ) Menu->m_Help = Item->m_Help;
-    if ( UseEnabled     ) Menu->m_Enabled = Item->m_Enabled;
-    if ( UseChecked     ) Menu->m_Checked = Item->m_Checked;
-
-    // Next do same thing for all child items
-    for ( MenuItem* Child = Item->m_Child; Child; Child = Child->m_Next )
+    for ( ; Item; Item = Item->m_Next )
     {
-        wxsMenu* NewMenu = new wxsMenu(Menu->GetResourceData());
-        if ( !Menu->AddChild(NewMenu) )
+        wxsMenu* Menu = new wxsMenu(Parent->GetResourceData());
+        if ( !Parent->AddChild(Menu) )
         {
             delete Menu;
             continue;
         }
-        StoreDataCopyReq(NewMenu,Child);
+
+        bool UseId = false;
+        bool UseLabel = false;
+        bool UseAccelerator = false;
+        bool UseHelp = false;
+        bool UseEnabled = false;
+        bool UseChecked = false;
+
+        Menu->SetIdName(_T(""));
+        Menu->m_Label.Clear();
+        Menu->m_Accelerator.Clear();
+        Menu->m_Help.Clear();
+        Menu->m_Enabled = true;
+        Menu->m_Checked = false;
+        Menu->m_Type = CorrectType(Item,UseId,UseLabel,UseAccelerator,UseHelp,UseEnabled,UseChecked);
+        if ( UseId          ) Menu->SetIdName(Item->m_Id);
+        if ( UseLabel       ) Menu->m_Label = Item->m_Label;
+        if ( UseAccelerator ) Menu->m_Accelerator = Item->m_Accelerator;
+        if ( UseHelp        ) Menu->m_Help = Item->m_Help;
+        if ( UseEnabled     ) Menu->m_Enabled = Item->m_Enabled;
+        if ( UseChecked     ) Menu->m_Checked = Item->m_Checked;
+
+        StoreDataCopyReq(Menu,Item->m_Child);
     }
 }
 
@@ -526,17 +502,18 @@ wxsMenuEditor::Type wxsMenuEditor::CorrectType(MenuItem* Item,bool& UseId,bool& 
     UseEnabled = false;
     UseChecked = false;
 
-    if ( !Item->m_Parent )
+    if ( !Item->m_Parent && m_MenuBar )
     {
-        // No parent, must be wxMenu item
-        // It doesn't possess ANY flags
+        // Children of wxMenuBar must be menus
+        UseId = true;
+        UseLabel = true;
         return wxsMenu::Menu;
     }
 
     if ( Item->m_Child )
     {
         // There's child item, so it must be wxMenu also
-        if ( m_MenuBar && (Item->m_Parent==&m_Data) )
+        if ( m_MenuBar && !Item->m_Parent )
         {
             // Only id and label (title) is used when child of wxMenuBar
             UseId = true;
@@ -584,12 +561,13 @@ void wxsMenuEditor::OnTypeChanged(wxCommandEvent& event)
     SelectItem(Selected);
     m_Selected = NULL;
     SelectItem(Selected);
+    m_Content->SetItemText(m_Selected->m_TreeId,GetItemTreeName(m_Selected));
 }
 
 void wxsMenuEditor::OnButtonUpClick(wxCommandEvent& event)
 {
     if ( !m_Selected ) return;
-    if ( !m_Selected->m_Parent ) return;
+
     MenuItem* Parent = m_Selected->m_Parent;
     MenuItem* Previous = GetPrevious(m_Selected);
 
@@ -606,24 +584,35 @@ void wxsMenuEditor::OnButtonUpClick(wxCommandEvent& event)
         else
         {
             // Moving to first position in parent
-            m_Selected->m_Parent->m_Child = m_Selected;
+            if ( Parent )
+            {
+                Parent->m_Child = m_Selected;
+            }
+            else
+            {
+                m_First = m_Selected;
+            }
         }
     }
     else
     {
         // Have to put outside current parent
-        if ( Parent == &m_Data ) return;
+        if ( !Parent ) return;
         Parent->m_Child = m_Selected->m_Next;
         m_Selected->m_Next = Parent;
-        m_Selected->m_Parent = Parent->m_Parent;
+        Parent = m_Selected->m_Parent = Parent->m_Parent;
         MenuItem* Previous2 = GetPrevious(Parent);
         if ( Previous2 )
         {
             Previous2->m_Next = m_Selected;
         }
+        else if ( Parent )
+        {
+            Parent->m_Child = m_Selected;
+        }
         else
         {
-            Parent->m_Parent->m_Child = m_Selected;
+            m_First = m_Selected;
         }
     }
 
@@ -634,36 +623,40 @@ void wxsMenuEditor::OnButtonUpClick(wxCommandEvent& event)
 void wxsMenuEditor::OnButtonDownClick(wxCommandEvent& event)
 {
     if ( !m_Selected ) return;
-    if ( !m_Selected->m_Parent ) return;
 
-    if ( m_Selected->m_Next )
+    MenuItem* Previous = GetPrevious(m_Selected);
+    MenuItem* Next = m_Selected->m_Next;
+    MenuItem* Parent = m_Selected->m_Parent;
+
+    if ( Next )
     {
-        MenuItem* Previous = GetPrevious(m_Selected);
-        MenuItem* Next = m_Selected->m_Next;
         if ( Previous )
         {
             Previous->m_Next = Next;
         }
+        else if ( Parent )
+        {
+            Parent->m_Child = Next;
+        }
         else
         {
-            m_Selected->m_Parent->m_Child = Next;
+            m_First = Next;
         }
+
         m_Selected->m_Next = Next->m_Next;
         Next->m_Next = m_Selected;
     }
     else
     {
         // Last item of parent, need to jump out of menu
-        if ( m_Selected->m_Parent == &m_Data ) return;
-        MenuItem* Parent = m_Selected->m_Parent;
-        MenuItem* Previous = GetPrevious(m_Selected);
+        if ( !Parent ) return;
         if ( Previous )
         {
-            Previous->m_Next = m_Selected->m_Next;
+            Previous->m_Next = NULL;
         }
         else
         {
-            m_Selected->m_Parent->m_Child = m_Selected->m_Next;
+            Parent->m_Child = NULL;
         }
         m_Selected->m_Next = Parent->m_Next;
         m_Selected->m_Parent = Parent->m_Parent;
@@ -677,8 +670,10 @@ void wxsMenuEditor::OnButtonDownClick(wxCommandEvent& event)
 wxsMenuEditor::MenuItem* wxsMenuEditor::GetPrevious(MenuItem* Item)
 {
     MenuItem* Parent = Item->m_Parent;
-    if ( Parent->m_Child == Item ) return NULL;
-    for ( MenuItem* Prev = Parent->m_Child; Prev; Prev = Prev->m_Next )
+    if ( !Parent && Item == m_First         ) return NULL;
+    if (  Parent && Item == Parent->m_Child ) return NULL;
+
+    for ( MenuItem* Prev = Parent ? Parent->m_Child : m_First ; Prev; Prev = Prev->m_Next )
     {
         if ( Prev->m_Next == Item ) return Prev;
     }
@@ -695,65 +690,75 @@ void wxsMenuEditor::OnButtonNewClick(wxCommandEvent& event)
     if ( !m_Selected )
     {
         // Just adding new item into m_Data
-        NewItem->m_Parent = &m_Data;
-        NewItem->m_Next = m_Data.m_Child;
-        m_Data.m_Child = NewItem;
+        NewItem->m_Parent = NULL;
+        NewItem->m_Next = m_First;
+        m_First = NewItem;
     }
     else
     {
         NewItem->m_Parent = m_Selected->m_Parent;
         NewItem->m_Next = m_Selected->m_Next;
         m_Selected->m_Next = NewItem;
-        // Just to store data
-        SelectItem(m_Selected);
     }
 
-    m_Selected = NewItem;
+    SelectItem(NewItem);
     UpdateMenuContent();
 }
 
 void wxsMenuEditor::OnButtonDelClick(wxCommandEvent& event)
 {
     if ( !m_Selected ) return;
-    if ( !m_Selected->m_Parent ) return;
+
     if ( cbMessageBox(
         _("Are you sure to delete this menu item ?\n"
           "(It will delete all sub menus too)"),
         _("Delete menu"),
         wxYES_NO) != wxID_YES ) return;
 
-
     MenuItem* Previous = GetPrevious(m_Selected);
-    if ( !Previous )
+    MenuItem* Parent = m_Selected->m_Parent;
+
+    if ( Previous )
     {
-        m_Selected->m_Parent->m_Child = m_Selected->m_Next;
-        MenuItem* ToDel = m_Selected;
-        if ( m_Selected->m_Next )
+        Previous->m_Next = m_Selected->m_Next;
+        m_Selected->m_Next = NULL;
+        DeleteDataCopyReq(m_Selected);
+        m_Selected = NULL;
+        if ( Previous->m_Next )
         {
-            m_Selected = m_Selected->m_Next;
+            SelectItem(Previous->m_Next);
         }
         else
         {
-            m_Selected = m_Selected->m_Parent;
-            if ( m_Selected == &m_Data )
-            {
-                m_Selected = NULL;
-            }
+            SelectItem(Previous);
         }
-        DeleteDataCopyReq(ToDel);
     }
     else
     {
-        Previous->m_Next = m_Selected->m_Next;
-        DeleteDataCopyReq(m_Selected);
-        if ( Previous->m_Next )
+        if ( Parent )
         {
-            m_Selected = Previous->m_Next;
+            Parent->m_Child = m_Selected->m_Next;
         }
         else
         {
-            m_Selected = Previous;
+            m_First = m_Selected->m_Next;
         }
+
+        MenuItem* NewSelected = m_Selected;
+
+        if ( m_Selected->m_Next )
+        {
+            NewSelected = m_Selected->m_Next;
+        }
+        else
+        {
+            NewSelected = m_Selected->m_Parent;
+        }
+
+        m_Selected->m_Next = NULL;
+        DeleteDataCopyReq(m_Selected);
+        m_Selected = NULL;
+        SelectItem(NewSelected);
     }
 
     UpdateMenuContent();
@@ -763,18 +768,17 @@ void wxsMenuEditor::OnButtonLeftClick(wxCommandEvent& event)
 {
     if ( !m_Selected ) return;
     if ( !m_Selected->m_Parent ) return;
-    if ( m_Selected->m_Parent == &m_Data ) return;
 
     MenuItem* Previous = GetPrevious(m_Selected);
     MenuItem* Parent = m_Selected->m_Parent;
 
     if ( Previous )
     {
-        Previous->m_Next = NULL;
+        Previous->m_Next = m_Selected->m_Next;
     }
     else
     {
-        m_Selected->m_Parent->m_Child = NULL;
+        Parent->m_Child = m_Selected->m_Next;
     }
 
     m_Selected->m_Parent = Parent->m_Parent;
@@ -788,7 +792,6 @@ void wxsMenuEditor::OnButtonLeftClick(wxCommandEvent& event)
 void wxsMenuEditor::OnButtonRightClick(wxCommandEvent& event)
 {
     if ( !m_Selected ) return;
-    if ( !m_Selected->m_Parent ) return;
 
     MenuItem* Previous = GetPrevious(m_Selected);
     if ( !Previous ) return;
@@ -820,8 +823,41 @@ void wxsMenuEditor::OnButtonRightClick(wxCommandEvent& event)
 
 void wxsMenuEditor::OnLabelChanged(wxCommandEvent& event)
 {
-    if ( m_Selected && (m_Selected!=&m_Data) && m_Selected->m_TreeId.IsOk() )
+    SelectItem(m_Selected);
+    if ( m_Selected && m_Selected->m_TreeId.IsOk() )
     {
-        m_Content->SetItemText(m_Selected->m_TreeId,m_Label->GetValue());
+        m_Content->SetItemText(m_Selected->m_TreeId,GetItemTreeName(m_Selected));
+    }
+}
+
+void wxsMenuEditor::CheckConsistency()
+{
+    //CheckConsistencyReq(m_First);
+}
+
+void wxsMenuEditor::CheckConsistencyReq(MenuItem* Item)
+{
+    if ( !Item ) return;
+    MenuItem* Parent = Item->m_Parent;
+
+    for ( MenuItem* Scan = Item; Scan; Scan = Scan->m_Next )
+    {
+        for ( MenuItem* LoopScan = Scan->m_Next; LoopScan; LoopScan = LoopScan->m_Next )
+        {
+            if ( LoopScan == Scan )
+            {
+                // We've got looping sequence
+                wxMessageBox(_T("wxSmith: Loop"));
+                return;
+            }
+        }
+
+        if ( Scan->m_Parent != Parent )
+        {
+            wxMessageBox(_T("wxSmith: Parent"));
+            return;
+        }
+
+        CheckConsistencyReq(Scan->m_Child);
     }
 }
