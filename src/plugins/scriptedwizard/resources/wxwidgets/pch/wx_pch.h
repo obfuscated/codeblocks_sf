@@ -1,6 +1,6 @@
 /***************************************************************
  * Name:      [PROJECT_NAME]_pch.h
- * Purpose:   Header to support Pre-Compiled Header
+ * Purpose:   Header to create Pre-Compiled Header (PCH)
  * Author:    [AUTHOR_NAME] ([AUTHOR_EMAIL])
  * Created:   [NOW]
  * Copyright: [AUTHOR_NAME] ([AUTHOR_WWW])

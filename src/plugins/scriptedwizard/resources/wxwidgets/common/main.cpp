@@ -34,7 +34,7 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 #endif
 
 #if wxUSE_UNICODE
-        wxbuild << _T("-unicode build");
+        wxbuild << _T("-Unicode build");
 #else
         wxbuild << _T("-ANSI build");
 #endif // wxUSE_UNICODE
