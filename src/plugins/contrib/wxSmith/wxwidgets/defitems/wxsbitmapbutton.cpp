@@ -72,7 +72,7 @@ void wxsBitmapButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
                 BmpCode = BitmapSelected.BuildCode(true,_T(""),wxsCPP,wxART_OTHER);
                 Code << Codef(Language,_T("%ASetBitmapSelected(%s);\n"),BmpCode.c_str());
             }
-            if ( !BitmapSelected.IsEmpty() )
+            if ( !BitmapFocus.IsEmpty() )
             {
                 BmpCode = BitmapFocus.BuildCode(true,_T(""),wxsCPP,wxART_OTHER);
                 Code << Codef(Language,_T("%ASetBitmapFocus(%s);\n"),BmpCode.c_str());
