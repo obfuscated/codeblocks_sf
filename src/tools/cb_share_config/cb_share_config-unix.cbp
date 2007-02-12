@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="5" />
+	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="C::B Share Config (Unix)" />
 		<Option pch_mode="2" />
-		<Option default_target="" />
 		<Option compiler="gcc" />
-		<Option virtualFolders="" />
 		<Build>
 			<Target title="default">
 				<Option output="../../devel/cb_share_config" prefix_auto="0" extension_auto="0" />
@@ -22,58 +20,28 @@
 			<Add option="`wx-config --cflags`" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
-			<Add directory="../../sdk" />
-			<Add directory="../../sdk/tinyxml" />
+			<Add directory="../../include" />
+			<Add directory="../../include/tinyxml" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="txml" />
 			<Add directory="../../sdk/tinyxml" />
 		</Linker>
-		<Unit filename="../../sdk/tinyxml/tinywxuni.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="../../sdk/tinyxml/tinywxuni.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="app.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="app.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="mainframe.cpp">
-			<Option compilerVar="CPP" />
-			<Option target="default" />
-		</Unit>
-		<Unit filename="mainframe.h">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
+		<Unit filename="../../sdk/tinyxml/tinywxuni.cpp" />
+		<Unit filename="../../sdk/tinyxml/tinywxuni.h" />
+		<Unit filename="app.cpp" />
+		<Unit filename="app.h" />
+		<Unit filename="mainframe.cpp" />
+		<Unit filename="mainframe.h" />
 		<Unit filename="wx_pch.h">
-			<Option compilerVar="CPP" />
-			<Option link="0" />
+			<Option compile="1" />
 			<Option weight="0" />
-			<Option target="default" />
 		</Unit>
-		<Unit filename="wxsmith/MainFrame.wxs">
-			<Option compilerVar="CPP" />
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="default" />
-		</Unit>
+		<Unit filename="wxsmith/MainFrame.wxs" />
 		<Extensions>
-			<wxsmith>
+			<code_completion />
+			<wxsmith version="1">
 				<frame wxs_file="MainFrame.wxs" class="MainFrame" src_file="mainframe.cpp" header_file="mainframe.h" xrc_file="" edit_mode="Source" />
 				<configuration app_src_file="app.cpp" main_resource="MainFrame" init_all_handlers="necessary" />
 			</wxsmith>

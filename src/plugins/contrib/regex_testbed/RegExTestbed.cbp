@@ -50,8 +50,6 @@
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="$(#CB.include)" />
 			<Add directory="$(#CB.include)\wxscintilla\include" />
-			<Add directory="$(#CB)\sdk" />
-			<Add directory="$(#CB)\sdk\wxscintilla\include" />
 			<Add directory="pcre-6.7" />
 			<Add directory="regex-0.12" />
 		</Compiler>

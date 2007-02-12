@@ -1,9 +1,9 @@
 SUBDIRS = resources
 
 INCLUDES = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/sdk \
-		-I$(top_srcdir)/src/sdk/wxFlatNotebook/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include
+		-I$(top_srcdir)/src/include \
+		-I$(top_srcdir)/src/include/wxFlatNotebook/include \
+		-I$(top_srcdir)/src/include/wxscintilla/include
 
 libdir = $(pkgdatadir)/plugins
 

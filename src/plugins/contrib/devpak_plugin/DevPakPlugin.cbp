@@ -36,8 +36,8 @@
 					<Add option="-DcbDEBUG" />
 					<Add option="-DTIXML_USE_STL" />
 					<Add option="-DwxUSE_UNICODE" />
-					<Add directory="..\..\..\sdk" />
-					<Add directory="..\..\..\sdk\wxscintilla\include" />
+					<Add directory="..\..\..\include" />
+					<Add directory="..\..\..\include\wxscintilla\include" />
 				</Compiler>
 				<Linker>
 					<Add library="bz2" />

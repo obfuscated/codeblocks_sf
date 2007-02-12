@@ -7,12 +7,12 @@
 #include <wx/docview.h> // for wxFileHistory
 #include <wx/notebook.h>
 #include <wx/dynarray.h>
-#include <../sdk/cbeditor.h>
-#include "../sdk/manager.h"
-#include "../sdk/cbexception.h"
-#include "../sdk/cbplugin.h"
-#include "../sdk/sdk_events.h"
-#include "../sdk/scripting/bindings/sc_base_types.h"
+#include <cbeditor.h>
+#include "manager.h"
+#include "cbexception.h"
+#include "cbplugin.h"
+#include "sdk_events.h"
+#include "scripting/bindings/sc_base_types.h"
 
 // wxAUI
 #include "wxAUI/manager.h"

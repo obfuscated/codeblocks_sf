@@ -36,9 +36,8 @@
 			<Add option="-DTIXML_USE_STL" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="$(#WX)\contrib\include" />
-			<Add directory="..\..\sdk" />
-			<Add directory="..\..\sdk\tinyxml" />
+			<Add directory="..\..\include" />
+			<Add directory="..\..\include\tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />

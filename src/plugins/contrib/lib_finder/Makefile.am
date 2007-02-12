@@ -1,12 +1,6 @@
-if PRECOMPILE_HEADERS
-BUILT_SOURCES = $(srcdir)/pch.h.gch
-else
-BUILT_SOURCES = 
-endif
-
 INCLUDES = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/sdk \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include
+		-I$(top_srcdir)/src/include \
+		-I$(top_srcdir)/src/include/wxscintilla/include
 
 libdir = $(pkgdatadir)/plugins
 
@@ -43,10 +37,3 @@ CLEANFILES = $(pkgdata_DATA)
 
 lib_finder.zip:
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/lib_finder.zip manifest.xml *.xrc > /dev/null
-
-$(srcdir)/pch.h.gch: $(srcdir)/pch.h $(srcdir)/../../../sdk/sdk.h.gch
-	-rm -rf $(srcdir)/pch.h.gch
-	$(CXXCOMPILE) -o $(srcdir)/pch.h.gch -xc++-header $(srcdir)/pch.h
-
-clean-local:
-	-rm -rf $(srcdir)/pch.h.gch

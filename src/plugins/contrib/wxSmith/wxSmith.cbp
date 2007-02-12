@@ -46,17 +46,10 @@
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="$(#CB)\sdk" />
-			<Add directory="$(#CB)\sdk\wxscintilla\include" />
-			<Add directory="$(#CB)\sdk\as\include" />
-			<Add directory="$(#CB)\sdk\propgrid\include" />
-			<Add directory="$(#CB)\sdk\wxFlatNotebook\include" />
 			<Add directory="$(#CB.include)" />
 			<Add directory="$(#CB.include)\wxscintilla\include" />
-			<Add directory="$(#CB.include)\as\include" />
 			<Add directory="$(#CB.include)\propgrid\include" />
 			<Add directory="$(#WX.include)" />
-			<Add directory="$(#WX)\contrib\include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />

@@ -2,10 +2,10 @@ SUBDIRS = resources
 
 INCLUDES = $(WX_CXXFLAGS) \
 		`pkg-config --cflags gtk+-2.0` \
-		-I$(top_srcdir)/src/sdk \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		-I$(top_srcdir)/src/sdk/scripting/include \
-    	-I$(top_srcdir)/src/sdk/scripting/sqplus
+		-I$(top_srcdir)/src/include \
+		-I$(top_srcdir)/src/include/wxscintilla/include \
+		-I$(top_srcdir)/src/include/scripting/include \
+    	-I$(top_srcdir)/src/include/scripting/sqplus
 
 libdir = $(pkgdatadir)/plugins
 

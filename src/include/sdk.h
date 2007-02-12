@@ -5,6 +5,11 @@
 #ifndef SDK_H
 #define SDK_H
 
-#include "sdk_common.h"
+#ifdef __WXMSW__
+	#include "sdk_common.h"
+#else
+	// for non-windows platforms, one PCH is enough
+	#include "sdk_precomp.h"
+#endif
 
 #endif // SDK_H

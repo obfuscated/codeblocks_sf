@@ -40,6 +40,9 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option projectResourceIncludeDirsRelation="2" />
+				<Compiler>
+					<Add directory="include/tinyxml" />
+				</Compiler>
 			</Target>
 			<Target title="Squirrel">
 				<Option output="sdk/scripting/lib/libsquirrel.a" prefix_auto="0" extension_auto="0" />
@@ -49,8 +52,8 @@
 				<Option projectResourceIncludeDirsRelation="2" />
 				<Compiler>
 					<Add option="-fno-inline" />
-					<Add directory="sdk/scripting/include" />
-					<Add directory="sdk/scripting/squirrel" />
+					<Add directory="include/scripting/include" />
+					<Add directory="include/scripting/squirrel" />
 				</Compiler>
 			</Target>
 			<Target title="Squirrel std library">
@@ -61,8 +64,8 @@
 				<Option projectResourceIncludeDirsRelation="2" />
 				<Compiler>
 					<Add option="-fno-inline" />
-					<Add directory="sdk/scripting/include" />
-					<Add directory="sdk/scripting/sqstdlib" />
+					<Add directory="include/scripting/include" />
+					<Add directory="include/scripting/sqstdlib" />
 				</Compiler>
 			</Target>
 			<Target title="SqPlus">
@@ -73,8 +76,8 @@
 				<Option projectResourceIncludeDirsRelation="2" />
 				<Compiler>
 					<Add option="-fno-inline" />
-					<Add directory="sdk/scripting/include" />
-					<Add directory="sdk/scripting/sqplus" />
+					<Add directory="include/scripting/include" />
+					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 			</Target>
 			<Target title="scintilla">
@@ -86,12 +89,12 @@
 					<Add option="-DSCI_LEXER" />
 					<Add option="-DLINK_LEXERS" />
 					<Add option="-DGTK" />
-					<Add directory="sdk/wxscintilla/include" />
+					<Add directory="include/wxscintilla/include" />
 					<Add directory="sdk/wxscintilla/src/scintilla/include" />
 					<Add directory="sdk/wxscintilla/src/scintilla/src" />
 				</Compiler>
 				<ResourceCompiler>
-					<Add directory="sdk/wxscintilla/include" />
+					<Add directory="include/wxscintilla/include" />
 				</ResourceCompiler>
 			</Target>
 			<Target title="wxFlatNotebook">
@@ -101,7 +104,7 @@
 				<Option compiler="gcc" />
 				<Option projectResourceIncludeDirsRelation="2" />
 				<Compiler>
-					<Add directory="sdk/wxFlatNotebook/include" />
+					<Add directory="include/wxFlatNotebook/include" />
 				</Compiler>
 			</Target>
 			<Target title="wxPropertyGrid">
@@ -111,7 +114,7 @@
 				<Option compiler="gcc" />
 				<Option projectResourceIncludeDirsRelation="2" />
 				<Compiler>
-					<Add directory="sdk/propgrid/include" />
+					<Add directory="include/propgrid/include" />
 				</Compiler>
 			</Target>
 			<Target title="sdk">
@@ -123,11 +126,13 @@
 				<Option parameters="--debug-log --no-check-associations" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
-					<Add directory="sdk" />
-					<Add directory="sdk/scripting/include" />
-					<Add directory="sdk/scripting/sqplus" />
-					<Add directory="sdk/propgrid/include" />
-					<Add directory="sdk/wxFlatNotebook/include" />
+					<Add directory="include" />
+					<Add directory="include/tinyxml" />
+					<Add directory="include/scripting/bindings" />
+					<Add directory="include/scripting/include" />
+					<Add directory="include/scripting/sqplus" />
+					<Add directory="include/propgrid/include" />
+					<Add directory="include/wxFlatNotebook/include" />
 				</Compiler>
 				<Linker>
 					<Add library="txml" />
@@ -169,11 +174,11 @@
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
 					<Add option="-DENABLE_BINRELOC" />
-					<Add directory="sdk" />
+					<Add directory="include" />
 					<Add directory="src/wxAUI" />
-					<Add directory="sdk/wxFlatNotebook/include" />
-					<Add directory="sdk/scripting/include" />
-					<Add directory="sdk/scripting/sqplus" />
+					<Add directory="include/wxFlatNotebook/include" />
+					<Add directory="include/scripting/include" />
+					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />
@@ -190,7 +195,7 @@
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
-					<Add directory="sdk" />
+					<Add directory="include" />
 					<Add directory="plugins/astyle/astyle" />
 				</Compiler>
 				<Linker>
@@ -219,10 +224,10 @@
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
-					<Add directory="sdk" />
+					<Add directory="include" />
 					<Add directory="plugins/compilergcc/depslib/src" />
-					<Add directory="sdk/scripting/include" />
-					<Add directory="sdk/scripting/sqplus" />
+					<Add directory="include/scripting/include" />
+					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -243,9 +248,9 @@
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
 					<Add option="`pkg-config --cflags gtk+-2.0`" />
-					<Add directory="sdk" />
-					<Add directory="sdk/scripting/include" />
-					<Add directory="sdk/scripting/sqplus" />
+					<Add directory="include" />
+					<Add directory="include/scripting/include" />
+					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -264,8 +269,8 @@
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
-					<Add directory="sdk" />
-					<Add directory="sdk/wxFlatNotebook/include" />
+					<Add directory="include" />
+					<Add directory="include/wxFlatNotebook/include" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -283,7 +288,7 @@
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
-					<Add directory="sdk" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -301,7 +306,7 @@
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
-					<Add directory="sdk" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -319,9 +324,9 @@
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
 					<Add option='-include &quot;sdk.h&quot;' />
-					<Add directory="sdk" />
-					<Add directory="sdk/scripting/include" />
-					<Add directory="sdk/scripting/sqplus" />
+					<Add directory="include" />
+					<Add directory="include/scripting/include" />
+					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -336,7 +341,7 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add directory="sdk" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -351,7 +356,7 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add directory="sdk" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -379,7 +384,7 @@
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
-			<Add directory="sdk/wxscintilla/include" />
+			<Add directory="include/wxscintilla/include" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
@@ -387,6 +392,494 @@
 		</Linker>
 		<Unit filename="build_tools/autorevision/autorevision.cpp">
 			<Option target="AutoRevision" />
+		</Unit>
+		<Unit filename="include/annoyingdialog.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/autodetectcompilers.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/backgroundthread.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/base64.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/blockallocated.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/cbeditor.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/cbeditorprintout.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/cbexception.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/cbexecute.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/cbplugin.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/cbproject.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/cbthreadedtask.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/cbthreadpool.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/cbthreadpool_extras.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/cbtool.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/cbworkspace.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/compileoptionsbase.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/compiler.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/compilercommandgenerator.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/compilerfactory.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/compileroptions.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/compiletargetbase.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/configmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/configurationpanel.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/configuretoolsdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/confirmreplacedlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/crc32.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/devcpploader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/editarrayfiledlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/editarrayorderdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/editarraystringdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/editkeywordsdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/editor_hooks.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/editorbase.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/editorcolourset.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/editorconfigurationdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/editorlexerloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/editormanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/editpairdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/editpathdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/edittooldlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/encodingdetector.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/externaldepsdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/filefilters.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/filegroupsandmasks.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/filemanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/finddlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/findreplacebase.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/genericmultilinenotesdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/globals.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/ibaseloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/ibaseworkspaceloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/id.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/importers_globals.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/incrementalselectlistdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/infowindow.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/licenses.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/macrosmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/managedthread.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/manager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/menuitemsmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/messagelog.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/messagemanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/msvc7loader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/msvc7workspaceloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/msvcloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/msvcworkspacebase.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/msvcworkspaceloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/multiselectdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/newfromtemplatedlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/openfilestree.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/personalitymanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/pipedprocess.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/pluginmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/pluginsconfigurationdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/printing_types.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/projectbuildtarget.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/projectdepsdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/projectfile.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/projectfileoptionsdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/projectlayoutloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/projectloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/projectloader_hooks.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/projectmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/projectoptionsdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/projectsfilemasksdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/projecttemplateloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/propgrid/include/wx/propgrid/advprops.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/propgrid/include/wx/propgrid/custctrl.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/propgrid/include/wx/propgrid/manager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/propgrid/include/wx/propgrid/odcombo.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/propgrid/include/wx/propgrid/pg_dox_mainpage.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/propgrid/include/wx/propgrid/propdev.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/propgrid/include/wx/propgrid/propgrid.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/replacedlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/safedelete.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/bindings/sc_base_types.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/bindings/sc_plugin.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/bindings/scriptbindings.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/include/sqdbgserver.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/include/sqrdbg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/include/sqstdaux.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/include/sqstdblob.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/include/sqstdio.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/include/sqstdmath.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/include/sqstdstring.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/include/sqstdsystem.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/include/squirrel.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/sqplus/SqPlusConst.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/sqplus/SquirrelBindingsUtils.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/sqplus/SquirrelBindingsUtilsWin32.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/sqplus/SquirrelObject.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/sqplus/SquirrelVM.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/sqplus/sqplus.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/sqplus/sqplusWin32.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/sqstdlib/sqstdblobimpl.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/sqstdlib/sqstdstream.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/sqarray.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/sqclass.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/sqclosure.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/sqcompiler.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/sqfuncproto.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/sqfuncstate.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/sqlexer.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/sqobject.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/sqopcodes.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/sqpcheader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/sqstate.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/sqstring.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/sqtable.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/squserdata.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/squtils.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scripting/squirrel/sqvm.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scriptingmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/scriptsecuritywarningdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/sdk.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/sdk_common.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/sdk_events.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/sdk_precomp.h">
+			<Option compile="1" />
+			<Option weight="0" />
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/searchresultslog.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/selecttargetdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/settings.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/simplelistlog.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/simpletextlog.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/templatemanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/tinyxml/tinystr.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/tinyxml/tinywxuni.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/tinyxml/tinyxml.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/toolsmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/uservarmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/virtualbuildtargetsdlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/workspaceloader.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/fnb_resources.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/popup_dlg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/renderer.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/singleton.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/smart_ptr.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/wxFNBDropTarget.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/wxFlatNotebook.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/wxscintilla/include/wx/wxscintilla.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/xtra_classes.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/xtra_res.h">
+			<Option target="sdk" />
 		</Unit>
 		<Unit filename="plugins/astyle/asstreamiterator.cpp">
 			<Option target="AStyle" />
@@ -1285,109 +1778,52 @@
 		<Unit filename="sdk/annoyingdialog.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/annoyingdialog.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/autodetectcompilers.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/autodetectcompilers.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/backgroundthread.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/base64.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/base64.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/blockallocated.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/blockallocated.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/cbeditor.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/cbeditor.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/cbeditorprintout.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/cbeditorprintout.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/cbexception.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/cbexception.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/cbplugin.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/cbplugin.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/cbproject.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/cbproject.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/cbthreadedtask.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/cbthreadpool.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/cbthreadpool.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/cbworkspace.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/cbworkspace.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/compileoptionsbase.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/compileoptionsbase.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/compiler.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/compiler.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/compilercommandgenerator.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/compilercommandgenerator.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/compilerfactory.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/compilerfactory.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/compileroptions.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/compileroptions.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/compiletargetbase.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/compiletargetbase.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/configmanager-revision.cpp">
@@ -1396,398 +1832,179 @@
 		<Unit filename="sdk/configmanager.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/configmanager.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/configurationpanel.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/configurationpanel.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/configuretoolsdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/configuretoolsdlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/confirmreplacedlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/confirmreplacedlg.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/crc32.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/crc32.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/devcpploader.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/devcpploader.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/editarrayfiledlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/editarrayfiledlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/editarrayorderdlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/editarrayorderdlg.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/editarraystringdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/editarraystringdlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/editkeywordsdlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/editkeywordsdlg.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/editor_hooks.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/editor_hooks.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/editorbase.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/editorbase.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/editorcolourset.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/editorcolourset.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/editorconfigurationdlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/editorconfigurationdlg.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/editorlexerloader.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/editorlexerloader.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/editormanager.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/editormanager.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/editpairdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/editpairdlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/editpathdlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/editpathdlg.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/edittooldlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/edittooldlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/encodingdetector.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/encodingdetector.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/externaldepsdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/externaldepsdlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/filefilters.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/filefilters.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/filegroupsandmasks.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/filegroupsandmasks.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/filemanager.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/filemanager.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/finddlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/finddlg.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/findreplacebase.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/genericmultilinenotesdlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/genericmultilinenotesdlg.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/globals.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/globals.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/ibaseloader.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/ibaseworkspaceloader.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/id.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/importers_globals.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/importers_globals.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/incrementalselectlistdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/incrementalselectlistdlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/infowindow.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/infowindow.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/licenses.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/macrosmanager.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/macrosmanager.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/managedthread.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/managedthread.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/manager.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/manager.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/managerproxy.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/menuitemsmanager.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/menuitemsmanager.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/messagelog.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/messagelog.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/messagemanager.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/messagemanager.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/msvc7loader.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/msvc7loader.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/msvc7workspaceloader.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/msvc7workspaceloader.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/msvcloader.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/msvcloader.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/msvcworkspacebase.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/msvcworkspacebase.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/msvcworkspaceloader.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/msvcworkspaceloader.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/multiselectdlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/multiselectdlg.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/newfromtemplatedlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/newfromtemplatedlg.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/openfilestree.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/personalitymanager.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/personalitymanager.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/pipedprocess.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/pipedprocess.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/pluginmanager.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/pluginmanager.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/pluginsconfigurationdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/pluginsconfigurationdlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/printing_types.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/printing_types.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/projectbuildtarget.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/projectbuildtarget.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/projectdepsdlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/projectdepsdlg.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/projectfile.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/projectfile.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/projectfileoptionsdlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/projectfileoptionsdlg.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/projectlayoutloader.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/projectlayoutloader.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/projectloader.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/projectloader.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/projectloader_hooks.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/projectloader_hooks.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/projectmanager.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/projectmanager.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/projectoptionsdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/projectoptionsdlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/projectsfilemasksdlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/projectsfilemasksdlg.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/projecttemplateloader.cpp">
 			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/projecttemplateloader.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/propgrid/include/wx/propgrid/advprops.h">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk/propgrid/include/wx/propgrid/custctrl.h">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk/propgrid/include/wx/propgrid/manager.h">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk/propgrid/include/wx/propgrid/odcombo.h">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk/propgrid/include/wx/propgrid/pg_dox_mainpage.h">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk/propgrid/include/wx/propgrid/propdev.h">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk/propgrid/include/wx/propgrid/propgrid.h">
-			<Option target="wxPropertyGrid" />
 		</Unit>
 		<Unit filename="sdk/propgrid/include/wx/propgrid/propgrid.i">
 			<Option target="wxPropertyGrid" />
@@ -1808,9 +2025,6 @@
 			<Option target="wxPropertyGrid" />
 		</Unit>
 		<Unit filename="sdk/replacedlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/replacedlg.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/auto_detect_compilers.xrc">
@@ -1913,12 +2127,6 @@
 		<Unit filename="sdk/resources/select_target.xrc">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/safedelete.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/scripting/bindings/sc_base_types.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/scripting/bindings/sc_consts.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -1934,9 +2142,6 @@
 		<Unit filename="sdk/scripting/bindings/sc_plugin.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/scripting/bindings/sc_plugin.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/scripting/bindings/sc_progress.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -1949,73 +2154,22 @@
 		<Unit filename="sdk/scripting/bindings/scriptbindings.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/scripting/bindings/scriptbindings.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/scripting/include/sqdbgserver.h">
-			<Option target="Squirrel" />
-		</Unit>
-		<Unit filename="sdk/scripting/include/sqrdbg.h">
-			<Option target="Squirrel" />
-		</Unit>
-		<Unit filename="sdk/scripting/include/sqstdaux.h">
-			<Option target="Squirrel std library" />
-		</Unit>
-		<Unit filename="sdk/scripting/include/sqstdblob.h">
-			<Option target="Squirrel std library" />
-		</Unit>
-		<Unit filename="sdk/scripting/include/sqstdio.h">
-			<Option target="Squirrel std library" />
-		</Unit>
-		<Unit filename="sdk/scripting/include/sqstdmath.h">
-			<Option target="Squirrel std library" />
-		</Unit>
-		<Unit filename="sdk/scripting/include/sqstdstring.h">
-			<Option target="Squirrel std library" />
-		</Unit>
-		<Unit filename="sdk/scripting/include/sqstdsystem.h">
-			<Option target="Squirrel std library" />
-		</Unit>
-		<Unit filename="sdk/scripting/include/squirrel.h">
-			<Option target="Squirrel" />
-		</Unit>
 		<Unit filename="sdk/scripting/sqplus/SqPlus.cpp">
-			<Option target="SqPlus" />
-		</Unit>
-		<Unit filename="sdk/scripting/sqplus/SqPlusConst.h">
 			<Option target="SqPlus" />
 		</Unit>
 		<Unit filename="sdk/scripting/sqplus/SquirrelBindingsUtils.cpp">
 			<Option target="SqPlus" />
 		</Unit>
-		<Unit filename="sdk/scripting/sqplus/SquirrelBindingsUtils.h">
-			<Option target="SqPlus" />
-		</Unit>
 		<Unit filename="sdk/scripting/sqplus/SquirrelObject.cpp">
 			<Option target="SqPlus" />
 		</Unit>
-		<Unit filename="sdk/scripting/sqplus/SquirrelObject.h">
-			<Option target="SqPlus" />
-		</Unit>
 		<Unit filename="sdk/scripting/sqplus/SquirrelVM.cpp">
-			<Option target="SqPlus" />
-		</Unit>
-		<Unit filename="sdk/scripting/sqplus/SquirrelVM.h">
-			<Option target="SqPlus" />
-		</Unit>
-		<Unit filename="sdk/scripting/sqplus/sqplus.h">
-			<Option target="SqPlus" />
-		</Unit>
-		<Unit filename="sdk/scripting/sqplus/sqplusWin32.h">
 			<Option target="SqPlus" />
 		</Unit>
 		<Unit filename="sdk/scripting/sqstdlib/sqstdaux.cpp">
 			<Option target="Squirrel std library" />
 		</Unit>
 		<Unit filename="sdk/scripting/sqstdlib/sqstdblob.cpp">
-			<Option target="Squirrel std library" />
-		</Unit>
-		<Unit filename="sdk/scripting/sqstdlib/sqstdblobimpl.h">
 			<Option target="Squirrel std library" />
 		</Unit>
 		<Unit filename="sdk/scripting/sqstdlib/sqstdio.cpp">
@@ -2030,9 +2184,6 @@
 		<Unit filename="sdk/scripting/sqstdlib/sqstdstream.cpp">
 			<Option target="Squirrel std library" />
 		</Unit>
-		<Unit filename="sdk/scripting/sqstdlib/sqstdstream.h">
-			<Option target="Squirrel std library" />
-		</Unit>
 		<Unit filename="sdk/scripting/sqstdlib/sqstdstring.cpp">
 			<Option target="Squirrel std library" />
 		</Unit>
@@ -2042,43 +2193,22 @@
 		<Unit filename="sdk/scripting/squirrel/sqapi.cpp">
 			<Option target="Squirrel" />
 		</Unit>
-		<Unit filename="sdk/scripting/squirrel/sqarray.h">
-			<Option target="Squirrel" />
-		</Unit>
 		<Unit filename="sdk/scripting/squirrel/sqbaselib.cpp">
 			<Option target="Squirrel" />
 		</Unit>
 		<Unit filename="sdk/scripting/squirrel/sqclass.cpp">
 			<Option target="Squirrel" />
 		</Unit>
-		<Unit filename="sdk/scripting/squirrel/sqclass.h">
-			<Option target="Squirrel" />
-		</Unit>
-		<Unit filename="sdk/scripting/squirrel/sqclosure.h">
-			<Option target="Squirrel" />
-		</Unit>
 		<Unit filename="sdk/scripting/squirrel/sqcompiler.cpp">
-			<Option target="Squirrel" />
-		</Unit>
-		<Unit filename="sdk/scripting/squirrel/sqcompiler.h">
 			<Option target="Squirrel" />
 		</Unit>
 		<Unit filename="sdk/scripting/squirrel/sqdebug.cpp">
 			<Option target="Squirrel" />
 		</Unit>
-		<Unit filename="sdk/scripting/squirrel/sqfuncproto.h">
-			<Option target="Squirrel" />
-		</Unit>
 		<Unit filename="sdk/scripting/squirrel/sqfuncstate.cpp">
 			<Option target="Squirrel" />
 		</Unit>
-		<Unit filename="sdk/scripting/squirrel/sqfuncstate.h">
-			<Option target="Squirrel" />
-		</Unit>
 		<Unit filename="sdk/scripting/squirrel/sqlexer.cpp">
-			<Option target="Squirrel" />
-		</Unit>
-		<Unit filename="sdk/scripting/squirrel/sqlexer.h">
 			<Option target="Squirrel" />
 		</Unit>
 		<Unit filename="sdk/scripting/squirrel/sqmem.cpp">
@@ -2087,122 +2217,46 @@
 		<Unit filename="sdk/scripting/squirrel/sqobject.cpp">
 			<Option target="Squirrel" />
 		</Unit>
-		<Unit filename="sdk/scripting/squirrel/sqobject.h">
-			<Option target="Squirrel" />
-		</Unit>
-		<Unit filename="sdk/scripting/squirrel/sqopcodes.h">
-			<Option target="Squirrel" />
-		</Unit>
-		<Unit filename="sdk/scripting/squirrel/sqpcheader.h">
-			<Option target="Squirrel" />
-		</Unit>
 		<Unit filename="sdk/scripting/squirrel/sqstate.cpp">
-			<Option target="Squirrel" />
-		</Unit>
-		<Unit filename="sdk/scripting/squirrel/sqstate.h">
-			<Option target="Squirrel" />
-		</Unit>
-		<Unit filename="sdk/scripting/squirrel/sqstring.h">
 			<Option target="Squirrel" />
 		</Unit>
 		<Unit filename="sdk/scripting/squirrel/sqtable.cpp">
 			<Option target="Squirrel" />
 		</Unit>
-		<Unit filename="sdk/scripting/squirrel/sqtable.h">
-			<Option target="Squirrel" />
-		</Unit>
-		<Unit filename="sdk/scripting/squirrel/squserdata.h">
-			<Option target="Squirrel" />
-		</Unit>
-		<Unit filename="sdk/scripting/squirrel/squtils.h">
-			<Option target="Squirrel" />
-		</Unit>
 		<Unit filename="sdk/scripting/squirrel/sqvm.cpp">
-			<Option target="Squirrel" />
-		</Unit>
-		<Unit filename="sdk/scripting/squirrel/sqvm.h">
 			<Option target="Squirrel" />
 		</Unit>
 		<Unit filename="sdk/scriptingmanager.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/scriptingmanager.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/scriptsecuritywarningdlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/scriptsecuritywarningdlg.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/sdk.h">
-			<Option compile="1" />
-			<Option weight="0" />
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/sdk_common.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/sdk_events.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/sdk_events.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/sdk_precomp.h">
-			<Option compile="1" />
-			<Option weight="0" />
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/searchresultslog.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/searchresultslog.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/selecttargetdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/selecttargetdlg.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/settings.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/simplelistlog.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/simplelistlog.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/simpletextlog.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/simpletextlog.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/templatemanager.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/templatemanager.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/tinyxml/tinystr.cpp">
 			<Option target="tinyXML" />
 		</Unit>
-		<Unit filename="sdk/tinyxml/tinystr.h">
-			<Option target="tinyXML" />
-		</Unit>
 		<Unit filename="sdk/tinyxml/tinywxuni.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/tinyxml/tinywxuni.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/tinyxml/tinyxml.cpp">
-			<Option target="tinyXML" />
-		</Unit>
-		<Unit filename="sdk/tinyxml/tinyxml.h">
 			<Option target="tinyXML" />
 		</Unit>
 		<Unit filename="sdk/tinyxml/tinyxmlerror.cpp">
@@ -2214,44 +2268,14 @@
 		<Unit filename="sdk/toolsmanager.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/toolsmanager.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/uservarmanager.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/uservarmanager.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/virtualbuildtargetsdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/virtualbuildtargetsdlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/workspaceloader.cpp">
 			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/workspaceloader.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/popup_dlg.h">
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/renderer.h">
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/singleton.h">
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/smart_ptr.h">
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/wxFNBDropTarget.h">
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/include/wx/wxFlatNotebook/wxFlatNotebook.h">
-			<Option target="wxFlatNotebook" />
 		</Unit>
 		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/fnb_resources.cpp">
 			<Option target="wxFlatNotebook" />
@@ -2265,7 +2289,13 @@
 		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/wxFlatNotebook.cpp">
 			<Option target="wxFlatNotebook" />
 		</Unit>
-		<Unit filename="sdk/wxscintilla/include/wx/wxscintilla.h">
+		<Unit filename="sdk/wxscintilla/samples/test/defsext.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/samples/test/edit.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/samples/test/prefs.h">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/PlatWX.cpp">
@@ -2598,13 +2628,7 @@
 		<Unit filename="sdk/xtra_classes.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/xtra_classes.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/xtra_res.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/xtra_res.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="src/app.cpp">

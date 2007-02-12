@@ -47,9 +47,6 @@
 			<Add directory="$(#CB.include)" />
 			<Add directory="$(#CB.include)\tinyxml" />
 			<Add directory="$(#CB.include)\wxscintilla\include" />
-			<Add directory="$(#CB)\sdk" />
-			<Add directory="$(#CB)\sdk\tinyxml" />
-			<Add directory="$(#CB)\sdk\wxscintilla\include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />

@@ -30,8 +30,8 @@
 			<Add option="-fexceptions" />
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
-			<Add directory="../../../sdk" />
-			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/wxscintilla/include" />
 		</Compiler>
 		<Linker>
 			<Add library="libcodeblocks.a" />

@@ -1,9 +1,9 @@
 INCLUDES = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/sdk \
-		-I$(top_srcdir)/src/sdk/wxFlatNotebook/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		-I$(top_srcdir)/src/sdk/wxFlatNotebook \
-		-I$(top_srcdir)/src/sdk/propgrid/include
+		-I$(top_srcdir)/src/include \
+		-I$(top_srcdir)/src/include/wxFlatNotebook/include \
+		-I$(top_srcdir)/src/include/wxscintilla/include \
+		-I$(top_srcdir)/src/include/wxFlatNotebook \
+		-I$(top_srcdir)/src/include/propgrid/include
 
 noinst_LTLIBRARIES = libwxsmith_wxwidgets_defitems.la
 

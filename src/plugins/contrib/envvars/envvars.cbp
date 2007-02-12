@@ -36,9 +36,7 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DTIXML_USE_STL" />
 			<Add option="-DwxUSE_UNICODE" />
-			<Add directory="$(#CB)\sdk" />
 			<Add directory="$(#CB.INCLUDE)" />
-			<Add directory="$(#CB)\sdk\wxscintilla\include" />
 			<Add directory="$(#CB.INCLUDE)\wxscintilla\include" />
 			<Add directory="$(#WX.INCLUDE)" />
 			<Add directory="$(#WX)\contrib\include" />

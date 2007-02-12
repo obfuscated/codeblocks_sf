@@ -27,7 +27,7 @@
 #include <wx/msgdlg.h>
 #include "wxAUI/manager.h"
 #include "appglobals.h"
-#include "../sdk/globals.h"
+#include "globals.h"
 #include "associations.h"
 
 #include "configurationpanel.h"

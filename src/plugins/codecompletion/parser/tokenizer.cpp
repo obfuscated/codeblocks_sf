@@ -29,7 +29,7 @@
 #include <wx/utils.h>
 #include <wx/file.h>
 #include <wx/msgdlg.h>
-#include "../../../sdk/manager.h"
+#include "manager.h"
 #include <cctype>
 #include <globals.h>
 

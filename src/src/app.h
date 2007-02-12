@@ -30,7 +30,7 @@
 
 #include <wx/splash.h>
 #include <wx/snglinst.h>
-#include "../sdk/manager.h"
+#include "manager.h"
 #include "main.h"
 
 class cbSplashScreen;

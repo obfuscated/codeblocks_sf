@@ -42,13 +42,10 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DTIXML_USE_STL" />
 			<Add option="-DwxUSE_UNICODE" />
-			<Add directory="$(#CB)\sdk" />
 			<Add directory="$(#CB.include)" />
-			<Add directory="$(#CB)\sdk\wxscintilla\include" />
 			<Add directory="$(#CB.include)\wxscintilla\include" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="$(#WX)\contrib\include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />

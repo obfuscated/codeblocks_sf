@@ -40,8 +40,8 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-g" />
-			<Add directory="$(#CB)\sdk" />
-			<Add directory="$(#CB)\sdk\wxscintilla\include" />
+			<Add directory="$(#CB.include)" />
+			<Add directory="$(#CB.include)\wxscintilla\include" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX)\contrib\include" />

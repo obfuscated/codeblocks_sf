@@ -44,8 +44,8 @@
 			<Add option="-fPIC" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DcbDEBUG" />
-			<Add directory="../../../sdk" />
-			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/wxscintilla/include" />
 			<Add directory="wxPdfDocument/include" />
 		</Compiler>
 		<Linker>

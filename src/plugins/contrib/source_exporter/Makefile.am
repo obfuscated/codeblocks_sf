@@ -1,8 +1,8 @@
 SUBDIRS = wxPdfDocument
 
 INCLUDES = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/sdk \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include \
+		-I$(top_srcdir)/src/include \
+		-I$(top_srcdir)/src/include/wxscintilla/include \
 		-I$(top_srcdir)/src/plugins/contrib/source_exporter/wxPdfDocument/include \
 		-include "sdk.h"
 

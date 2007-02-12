@@ -1,4 +1,5 @@
-INCLUDES = -I$(top_srcdir)/src/sdk/scripting/include
+INCLUDES = -I$(top_srcdir)/src/include/scripting/include \
+					-I$(top_srcdir)/src/include/scripting/sqstdlib
 
 noinst_LTLIBRARIES = libsqstdlib.la
 
@@ -11,9 +12,6 @@ libsqstdlib_la_SOURCES = sqstdsystem.cpp \
                         sqstdio.cpp \
                         sqstdblob.cpp
                             
-noinst_HEADERS = sqstdstream.h \
-                sqstdblobimpl.h
-
 EXTRA_DIST = sqstdlib71.vcproj \
             sqstdlib.cbp \
             sqstdlib.vcproj

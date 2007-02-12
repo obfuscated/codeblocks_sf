@@ -30,9 +30,7 @@
 			<Add option="-fPIC" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DcbDEBUG" />
-			<Add directory="$(#CB)/sdk" />
 			<Add directory="$(#CB.INCLUDE)" />
-			<Add directory="$(#CB)/sdk/wxscintilla/include" />
 			<Add directory="$(#CB.INCLUDE)/wxscintilla/include" />
 		</Compiler>
 		<Linker>
