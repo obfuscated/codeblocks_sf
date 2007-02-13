@@ -581,6 +581,10 @@ int CodeBlocksApp::OnExit()
 #endif
     if (m_pSingleInstance)
         delete m_pSingleInstance;
+	
+	// ultimate shutdown...
+	Manager::Free();
+    
     // WX docs say that this function's return value is ignored,
     // but we return our value anyway. It might not be ignored at some point...
     return m_Batch ? m_BatchExitCode : 0;

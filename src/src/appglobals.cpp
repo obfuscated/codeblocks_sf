@@ -16,7 +16,7 @@
 #include <wx/intl.h>
 #endif
 #include "appglobals.h"
-#include <../sdk/autorevision.h>
+#include <autorevision.h>
 
 const wxString g_AppVendor              = _T("Code::Blocks");
 const wxString g_AppName			    = _T("Code::Blocks");

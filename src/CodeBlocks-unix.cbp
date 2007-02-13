@@ -7,6 +7,16 @@
 		<Option default_target="src" />
 		<Option compiler="gcc" />
 		<Build>
+			<Target title="tinyXML">
+				<Option output="base/tinyxml/libtxml.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option projectResourceIncludeDirsRelation="2" />
+				<Compiler>
+					<Add directory="include/tinyxml" />
+				</Compiler>
+			</Target>
 			<Target title="AutoRevision">
 				<Option output="build_tools/autorevision/auto_revision" prefix_auto="0" extension_auto="0" />
 				<Option type="1" />
@@ -16,8 +26,13 @@
 				<Option projectIncludeDirsRelation="1" />
 				<Option projectResourceIncludeDirsRelation="1" />
 				<Option projectLibDirsRelation="1" />
+				<Compiler>
+					<Add directory="include" />
+				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add library="txml" />
+					<Add directory="base/tinyxml" />
 				</Linker>
 			</Target>
 			<Target title="ConsoleRunner">
@@ -32,16 +47,6 @@
 				<Option projectLibDirsRelation="1" />
 				<Compiler>
 					<Add option="-Os" />
-				</Compiler>
-			</Target>
-			<Target title="tinyXML">
-				<Option output="sdk/tinyxml/libtxml.a" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="" />
-				<Option type="2" />
-				<Option compiler="gcc" />
-				<Option projectResourceIncludeDirsRelation="2" />
-				<Compiler>
-					<Add directory="include/tinyxml" />
 				</Compiler>
 			</Target>
 			<Target title="Squirrel">
@@ -120,7 +125,7 @@
 			<Target title="sdk">
 				<Option output="devel/libcodeblocks.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel" />
-				<Option external_deps="sdk/tinyxml/libtxml.a;sdk/propgrid/libpropgrid.a;sdk/wxFlatNotebook/libwxflatnotebook.a;" />
+				<Option external_deps="base/tinyxml/libtxml.a;sdk/propgrid/libpropgrid.a;sdk/wxFlatNotebook/libwxflatnotebook.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations" />
@@ -370,9 +375,9 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="AutoRevision;ConsoleRunner;tinyXML;Squirrel;Squirrel std library;SqPlus;scintilla;wxFlatNotebook;wxPropertyGrid;sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;Autosave;" />
+			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;wxFlatNotebook;wxPropertyGrid;sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;Autosave;" />
 			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;Autosave;" />
-			<Add alias="Third-party libs" targets="AutoRevision;ConsoleRunner;tinyXML;Squirrel;Squirrel std library;SqPlus;scintilla;wxFlatNotebook;wxPropertyGrid;wxAUI;Compiler depslib;" />
+			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;wxFlatNotebook;wxPropertyGrid;wxAUI;Compiler depslib;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -388,7 +393,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
-			<Add directory="sdk/tinyxml" />
+			<Add directory="base/tinyxml" />
 		</Linker>
 		<Unit filename="build_tools/autorevision/autorevision.cpp">
 			<Option target="AutoRevision" />
@@ -2250,19 +2255,19 @@
 		<Unit filename="sdk/templatemanager.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/tinyxml/tinystr.cpp">
+		<Unit filename="base/tinyxml/tinystr.cpp">
 			<Option target="tinyXML" />
 		</Unit>
-		<Unit filename="sdk/tinyxml/tinywxuni.cpp">
+		<Unit filename="base/tinyxml/tinywxuni.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/tinyxml/tinyxml.cpp">
+		<Unit filename="base/tinyxml/tinyxml.cpp">
 			<Option target="tinyXML" />
 		</Unit>
-		<Unit filename="sdk/tinyxml/tinyxmlerror.cpp">
+		<Unit filename="base/tinyxml/tinyxmlerror.cpp">
 			<Option target="tinyXML" />
 		</Unit>
-		<Unit filename="sdk/tinyxml/tinyxmlparser.cpp">
+		<Unit filename="base/tinyxml/tinyxmlparser.cpp">
 			<Option target="tinyXML" />
 		</Unit>
 		<Unit filename="sdk/toolsmanager.cpp">

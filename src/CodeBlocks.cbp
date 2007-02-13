@@ -7,14 +7,30 @@
 		<Option default_target="src" />
 		<Option compiler="gcc" />
 		<Build>
+			<Target title="tinyXML">
+				<Option output="base\tinyxml\libtxml.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output=".objs\2.6" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DEXPORT_LIB" />
+					<Add directory="include/tinyxml" />
+				</Compiler>
+			</Target>
 			<Target title="AutoRevision">
 				<Option output="build_tools\autorevision\autorevision.exe" prefix_auto="0" extension_auto="0" />
 				<Option object_output=".objs\2.6" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add directory="include" />
+				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add library="txml" />
+					<Add directory="base\tinyxml" />
 				</Linker>
 			</Target>
 			<Target title="ConsoleRunner">
@@ -28,16 +44,6 @@
 				<Option projectIncludeDirsRelation="2" />
 				<Compiler>
 					<Add option="-Os" />
-				</Compiler>
-			</Target>
-			<Target title="tinyXML">
-				<Option output="sdk\tinyxml\libtxml.a" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="" />
-				<Option object_output=".objs\2.6" />
-				<Option type="2" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-DEXPORT_LIB" />
 				</Compiler>
 			</Target>
 			<Target title="Squirrel">
@@ -124,7 +130,7 @@
 				<Option output="devel\codeblocks.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel" />
 				<Option object_output=".objs\2.6" />
-				<Option external_deps="sdk\tinyxml\libtxml.a;sdk\propgrid\libpropgrid.a;sdk\wxFlatNotebook\libwxflatnotebook.a;sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;sdk\scripting\lib\libsqplus.a;" />
+				<Option external_deps="base\tinyxml\libtxml.a;sdk\propgrid\libpropgrid.a;sdk\wxFlatNotebook\libwxflatnotebook.a;sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;sdk\scripting\lib\libsqplus.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations" />
@@ -157,7 +163,7 @@
 					<Add directory="sdk\wxFlatNotebook" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="build_tools/autorevision/autorevision +int +t . sdk/autorevision.h" />
+					<Add before="build_tools/autorevision/autorevision +int +t . include/autorevision.h" />
 				</ExtraCommands>
 			</Target>
 			<Target title="wxAUI">
@@ -446,9 +452,9 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="AutoRevision;ConsoleRunner;tinyXML;Squirrel;Squirrel std lib;SqPlus;scintilla;wxPropertyGrid;wxFlatNotebook;sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;Autosave;XP look &amp; feel;" />
+			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;wxPropertyGrid;wxFlatNotebook;sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;Autosave;XP look &amp; feel;" />
 			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;Autosave;XP look &amp; feel;" />
-			<Add alias="Third-party libs" targets="AutoRevision;ConsoleRunner;tinyXML;Squirrel;Squirrel std lib;SqPlus;scintilla;wxPropertyGrid;wxFlatNotebook;wxAUI;Compiler depslib;" />
+			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;wxPropertyGrid;wxFlatNotebook;wxAUI;Compiler depslib;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -477,7 +483,7 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add library="wxmsw26$(WX_SUFFIX)" />
-			<Add directory="sdk\tinyxml" />
+			<Add directory="base\tinyxml" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="build_tools\autorevision\autorevision.cpp">
@@ -2227,19 +2233,19 @@
 		<Unit filename="sdk\templatemanager.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk\tinyxml\tinystr.cpp">
-			<Option target="tinyXML" />
-		</Unit>
-		<Unit filename="sdk\tinyxml\tinywxuni.cpp">
+		<Unit filename="base\tinyxml\tinystr.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk\tinyxml\tinyxml.cpp">
+		<Unit filename="base\tinyxml\tinywxuni.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="base\tinyxml\tinyxml.cpp">
 			<Option target="tinyXML" />
 		</Unit>
-		<Unit filename="sdk\tinyxml\tinyxmlerror.cpp">
+		<Unit filename="base\tinyxml\tinyxmlerror.cpp">
 			<Option target="tinyXML" />
 		</Unit>
-		<Unit filename="sdk\tinyxml\tinyxmlparser.cpp">
+		<Unit filename="base\tinyxml\tinyxmlparser.cpp">
 			<Option target="tinyXML" />
 		</Unit>
 		<Unit filename="sdk\toolsmanager.cpp">

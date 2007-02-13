@@ -14,6 +14,9 @@
 #include <string>
 #include <fstream>
 
+#include "tinyxml/tinystr.h"
+#include "tinyxml/tinyxml.h"
+
 using namespace std;
 
 #ifdef __WIN32__
@@ -79,21 +82,12 @@ int main(int argc, char** argv)
     if(outputFile.empty())
         outputFile.assign("autorevision.h");
 
-    string docFile(workingDir);
-    docFile.append("/.svn/entries");
-    string docFile2(workingDir);
-    docFile2.append("/_svn/entries");
-
     string revision;
     string date;
     string comment;
     string old;
 
-    QuerySvn(workingDir, revision, date) || ParseFile(docFile, revision, date) || ParseFile(docFile2, revision, date);
-
-    if(revision == "")
-        revision = "0";
-
+    QuerySvn(workingDir, revision, date);
     WriteOutput(outputFile, revision, date);
 
     return 0;
@@ -103,62 +97,40 @@ int main(int argc, char** argv)
 
 bool QuerySvn(const string& workingDir, string& revision, string &date)
 {
-    string svncmd("svn info ");
+    revision = "0";
+    date = "unknown date";
+    string svncmd("svn info --xml --non-interactive ");
     svncmd.append(workingDir);
-    set_env("LANG", "en_US");
+
     FILE *svn = popen(svncmd.c_str(), "r");
 
     if(svn)
     {
-        char buf[1024];
-        string line;
-        while(fgets(buf, 4095, svn))
-        {
-            line.assign(buf);
-            if(line.find("Revision:") != string::npos)
-            {
-                revision = line.substr(strlen("Revision: "));
+        char buf[16384];
+        memset(buf, 0, 16384);
+        fread(buf, 16383, 1, svn);
+        pclose(svn);
 
-                    string lbreak("\r\n");
-                    size_t i;
-                    while((i = revision.find_first_of(lbreak)) != string::npos)
-                        revision.erase(revision.length()-1);
-            }
-            if(line.find("Last Changed Date: ") != string::npos)
-            {
-                    date = line.substr(strlen("Last Changed Date: "), strlen("2006-01-01 12:34:56"));
-            }
+        TiXmlDocument doc;
+        doc.Parse(buf);
+
+        if(doc.Error())
+            return 0;
+
+        TiXmlElement *e;
+        if((e = doc.RootElement()) && (e = e->FirstChildElement("entry")) && (e = e->FirstChildElement("commit")))
+        {
+            revision = e->Attribute("revision") ? e->Attribute("revision") : "";
+            TiXmlElement *d = e->FirstChildElement("date");
+            if(d && d->GetText())
+                date = d->GetText();
+
+            return 1;
         }
     }
-    pclose(svn);
-    return !revision.empty();
+    return 0;
 }
 
-
-bool ParseFile(const string& docFile, string& revision, string &date)
-{
-    string token[6];
-    date.clear();
-    revision.clear();
-    int c = 0;
-
-    ifstream inFile(docFile.c_str());
-    if (!inFile)
-    {
-        return false;
-    }
-    else
-    {
-        while(!inFile.eof() && c < 6)
-            inFile >> token[c++];
-
-        revision = token[2];
-        date = token[5].substr(0, strlen("2006-01-01T12:34:56"));
-        date[10] = 32;
-
-        return true;
-    }
-}
 
 
 bool WriteOutput(const string& outputFile, string& revision, string& date)

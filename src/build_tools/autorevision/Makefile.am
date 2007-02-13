@@ -1,5 +1,9 @@
 noinst_PROGRAMS = auto_revision
 auto_revision_SOURCES = autorevision.cpp
 
+INCLUDES = -I$(top_srcdir)/src/include
+
+auto_revision_LDADD = ../../base/tinyxml/libtinyxml.la
+
 all-local: auto_revision
-	./auto_revision +int +wx +t $(top_srcdir) $(srcdir)/../../sdk/autorevision.h
+	./auto_revision +int +wx +t $(top_srcdir) $(srcdir)/../../include/autorevision.h

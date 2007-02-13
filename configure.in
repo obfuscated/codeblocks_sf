@@ -118,8 +118,11 @@ AC_SUBST(DATE, "SVN_DATE")
 
 AC_CONFIG_FILES([Makefile
 	src/Makefile
+	src/base/Makefile
+	src/base/tinyxml/Makefile
 	src/build_tools/Makefile
 	src/build_tools/autorevision/Makefile
+	src/include/autorevision.h
 	src/include/Makefile
 	src/include/propgrid/Makefile
 	src/include/scripting/Makefile
@@ -132,13 +135,11 @@ AC_CONFIG_FILES([Makefile
 	src/include/wxFlatNotebook/Makefile
 	src/include/wxscintilla/Makefile
 	src/sdk/Makefile
-	src/sdk/autorevision.h
 	src/sdk/scripting/Makefile
 	src/sdk/scripting/bindings/Makefile
 	src/sdk/scripting/squirrel/Makefile
 	src/sdk/scripting/sqstdlib/Makefile
 	src/sdk/scripting/sqplus/Makefile
-	src/sdk/tinyxml/Makefile
 	src/sdk/wxscintilla/Makefile
 	src/sdk/wxFlatNotebook/Makefile
 	src/sdk/propgrid/Makefile

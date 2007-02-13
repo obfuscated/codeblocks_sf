@@ -1,4 +1,4 @@
-SUBDIRS = scripting tinyxml wxscintilla resources propgrid wxFlatNotebook
+SUBDIRS = scripting wxscintilla propgrid wxFlatNotebook resources
 
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -18,7 +18,7 @@ libcodeblocks_la_LIBADD =  $(WX_LIBS) \
 			scripting/sqplus/libsqplus.la \
 			scripting/sqstdlib/libsqstdlib.la \
 			scripting/squirrel/libsquirrel.la \
-			tinyxml/libtinyxml.la \
+			../base/tinyxml/libtinyxml.la \
 			wxscintilla/libwxscintilla.la \
 			wxFlatNotebook/libwxflatnotebook.la \
 			propgrid/libpropgrid.la
