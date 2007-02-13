@@ -148,7 +148,8 @@ class FileManager : public Mgr<FileManager>
     BackgroundThread urlLoaderThread;
     BackgroundThread delayedDeleteThread;
 public:
-    FileManager() : fileLoaderThread(false), uncLoaderThread(false), urlLoaderThread(false){};
+    FileManager();
+    ~FileManager();
 
     LoaderBase* Load(const wxString& file, bool reuseEditors = false);
 

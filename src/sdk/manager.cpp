@@ -56,6 +56,8 @@
 //    #include "buildsystem/buildsystemmanager.h"
 
 
+static Manager* instance = 0;
+
 
 Manager::Manager() : m_pAppWindow(0)
 {
@@ -65,6 +67,7 @@ Manager::~Manager()
 {
 //    Shutdown();
     CfgMgrBldr::Free(); // only terminate config at the very last moment
+//	FileManager::Free();
 }
 
 
@@ -88,8 +91,15 @@ Manager* Manager::Get(wxFrame *appWindow)
 
 Manager* Manager::Get()
 {
-	static Manager instance;
-    return &instance;
+	if (!instance)
+		instance = new Manager;
+    return instance;
+}
+
+void Manager::Free()
+{
+    delete instance;
+    instance = 0;
 }
 
 void Manager::SetBatchBuild(bool is_batch)

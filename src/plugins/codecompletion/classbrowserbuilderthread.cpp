@@ -102,6 +102,15 @@ void* ClassBrowserBuilderThread::Entry()
         
         BuildTree();
 		
+        if (TestDestroy() || Manager::IsAppShuttingDown())
+        {
+			if(!::wxIsMainThread())
+			{
+				::wxMutexGuiLeave();
+			}
+            break;
+        }
+
 		m_pTreeTop->Freeze();
         ExpandNamespaces(m_pTreeTop->GetRootItem());
 	    m_pTreeTop->Thaw();

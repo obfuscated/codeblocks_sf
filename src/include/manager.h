@@ -60,6 +60,8 @@ public:
      * Manager::Get() is guaranteed to never return an invalid pointer.
      */
     static Manager* Get();
+    /** Never, EVER, call this function! It is the last function called on shutdown.... */
+    static void Free();
 
     wxFrame* GetAppWindow() const;
 

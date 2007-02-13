@@ -86,6 +86,22 @@ void URLLoader::operator()()
     Ready();
 }
 
+FileManager::FileManager()
+	: fileLoaderThread(false),
+	uncLoaderThread(false),
+	urlLoaderThread(false),
+	delayedDeleteThread(false)
+{
+}
+
+FileManager::~FileManager()
+{
+	delayedDeleteThread.Die();
+	fileLoaderThread.Die();
+	uncLoaderThread.Die();
+	urlLoaderThread.Die();
+}
+
 LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
 {
     if(reuseEditors)
@@ -279,8 +295,16 @@ bool FileManager::ReplaceFile(const wxString& old_file, const wxString& new_file
         // now rename the new created (temporary) file to the "old" filename
         if(wxRenameFile(new_file, old_file))
         {
-            // issue a delayed deletion of the back'd up (old) file
-            delayedDeleteThread.Queue(new DelayedDelete(backup_file));
+        	if (Manager::IsAppShuttingDown())
+        	{
+        		// app shut down, forget delayed deletion
+        		wxRemoveFile(backup_file);
+        	}
+        	else
+        	{
+				// issue a delayed deletion of the back'd up (old) file
+				delayedDeleteThread.Queue(new DelayedDelete(backup_file));
+        	}
             return true;
         }
         else

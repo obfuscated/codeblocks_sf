@@ -160,12 +160,12 @@ ClassBrowser::~ClassBrowser()
 
     if (m_pBuilderThread)
     {
-        m_Semaphore.Post();
-
         // must check for NULL again because by posting the semaphore above,
         // the thread might have terminated by now and the variable NULLed...
         if (m_pBuilderThread)
             m_pBuilderThread->Delete();
+
+        m_Semaphore.Post();
     }
 }
 
