@@ -153,7 +153,7 @@
 					<Add directory="sdk/wxFlatNotebook" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="build_tools/autorevision/auto_revision +wx +int +t . sdk/autorevision.h" />
+					<Add before="build_tools/autorevision/auto_revision +wx +int +t . include/autorevision.h" />
 				</ExtraCommands>
 			</Target>
 			<Target title="wxAUI">
@@ -395,6 +395,21 @@
 			<Add option="`wx-config --libs`" />
 			<Add directory="base/tinyxml" />
 		</Linker>
+		<Unit filename="base/tinyxml/tinystr.cpp">
+			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="base/tinyxml/tinywxuni.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="base/tinyxml/tinyxml.cpp">
+			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="base/tinyxml/tinyxmlerror.cpp">
+			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="base/tinyxml/tinyxmlparser.cpp">
+			<Option target="tinyXML" />
+		</Unit>
 		<Unit filename="build_tools/autorevision/autorevision.cpp">
 			<Option target="AutoRevision" />
 		</Unit>
@@ -2254,21 +2269,6 @@
 		</Unit>
 		<Unit filename="sdk/templatemanager.cpp">
 			<Option target="sdk" />
-		</Unit>
-		<Unit filename="base/tinyxml/tinystr.cpp">
-			<Option target="tinyXML" />
-		</Unit>
-		<Unit filename="base/tinyxml/tinywxuni.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="base/tinyxml/tinyxml.cpp">
-			<Option target="tinyXML" />
-		</Unit>
-		<Unit filename="base/tinyxml/tinyxmlerror.cpp">
-			<Option target="tinyXML" />
-		</Unit>
-		<Unit filename="base/tinyxml/tinyxmlparser.cpp">
-			<Option target="tinyXML" />
 		</Unit>
 		<Unit filename="sdk/toolsmanager.cpp">
 			<Option target="sdk" />
