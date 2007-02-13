@@ -9,7 +9,7 @@
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
 #include <wx/dcscreen.h>
-#include "../sdk/autorevision.h"
+#include "autorevision.h"
 #include "appglobals.h"
 
 namespace

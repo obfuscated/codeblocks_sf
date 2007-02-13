@@ -46,7 +46,7 @@
 			<Add library="txml" />
 			<Add library="wxmsw26$(WX_SUFFIX)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
-			<Add directory="..\..\sdk\tinyxml" />
+			<Add directory="..\..\base\tinyxml" />
 		</Linker>
 		<Unit filename="app.cpp" />
 		<Unit filename="app.h" />
@@ -59,7 +59,7 @@
 		<Unit filename="wxsmith\MainFrame.wxs" />
 		<Extensions>
 			<code_completion />
-			<wxsmith>
+			<wxsmith version="1">
 				<frame wxs_file="MainFrame.wxs" class="MainFrame" src_file="mainframe.cpp" header_file="mainframe.h" xrc_file="" edit_mode="Source" />
 				<configuration app_src_file="app.cpp" main_resource="MainFrame" init_all_handlers="necessary" />
 			</wxsmith>

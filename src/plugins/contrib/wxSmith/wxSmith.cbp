@@ -61,7 +61,7 @@
 			<Add option="-Wl,--add-stdcall-alias" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="$(#CB)\devel" />
-			<Add directory="$(#CB)\sdk\tinyxml" />
+			<Add directory="$(#CB)\base\tinyxml" />
 			<Add directory="$(#CB)\sdk\propgrid" />
 			<Add directory="$(#CB.lib)" />
 			<Add directory="$(#CB.lib)\tinyxml" />

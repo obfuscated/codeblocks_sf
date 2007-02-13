@@ -48,7 +48,7 @@
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#cb.include)" />
-			<Add directory="$(#cb.include)\\wxscintilla\include" />
+			<Add directory="$(#cb.include)\wxscintilla\include" />
 			<Add directory="$(#wx.include)" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 		</Compiler>
@@ -58,7 +58,7 @@
 			<Add library="txml" />
 			<Add library="codeblocks" />
 			<Add directory="$(#cb)\devel" />
-			<Add directory="$(#cb)\sdk\tinyxml" />
+			<Add directory="$(#cb)\base\tinyxml" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>

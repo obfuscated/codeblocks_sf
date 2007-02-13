@@ -58,7 +58,7 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="$(#CB.lib)" />
 			<Add directory="$(#CB)\devel" />
-			<Add directory="$(#CB)\sdk\tinyxml" />
+			<Add directory="$(#CB)\base\tinyxml" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="update.bat" />
@@ -87,7 +87,7 @@
 		<Unit filename="resultmap.h" />
 		<Extensions>
 			<code_completion />
-			<wxsmith>
+			<wxsmith version="1">
 				<dialog wxs_file="DirListDlg.wxs" class="DirListDlg" src_file="dirlistdlg.cpp" header_file="dirlistdlg.h" xrc_file="" edit_mode="Source" />
 				<dialog wxs_file="ProcessingDlg.wxs" class="ProcessingDlg" src_file="processingdlg.cpp" header_file="processingdlg.h" xrc_file="" edit_mode="Source" />
 				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
