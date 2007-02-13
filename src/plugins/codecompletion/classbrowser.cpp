@@ -160,12 +160,19 @@ ClassBrowser::~ClassBrowser()
 
     if (m_pBuilderThread)
     {
+    	// for some reason, windows need to "post" the semaphore first...
+#ifdef __WXMSW__
+        m_Semaphore.Post();
+#endif
         // must check for NULL again because by posting the semaphore above,
         // the thread might have terminated by now and the variable NULLed...
         if (m_pBuilderThread)
             m_pBuilderThread->Delete();
 
+		// ... while other platforms need it last...
+#ifndef __WXMSW__
         m_Semaphore.Post();
+#endif
     }
 }
 
