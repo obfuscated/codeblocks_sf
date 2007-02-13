@@ -39,7 +39,7 @@
 			<Add library="codeblocks" />
 			<Add library="wxscintilla" />
 			<Add directory="../../../devel" />
-			<Add directory="../../../sdk/tinyxml" />
+			<Add directory="../../../base/tinyxml" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="./update" />
@@ -68,7 +68,7 @@
 		<Unit filename="resultmap.h" />
 		<Extensions>
 			<code_completion />
-			<wxsmith>
+			<wxsmith version="1">
 				<dialog wxs_file="DirListDlg.wxs" class="DirListDlg" src_file="dirlistdlg.cpp" header_file="dirlistdlg.h" xrc_file="" edit_mode="Source" />
 				<dialog wxs_file="ProcessingDlg.wxs" class="ProcessingDlg" src_file="processingdlg.cpp" header_file="processingdlg.h" xrc_file="" edit_mode="Source" />
 				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
