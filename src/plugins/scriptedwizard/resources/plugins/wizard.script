@@ -199,8 +199,8 @@ function SetupTarget(target,is_debug)
         target.AddCompilerOption(_T("-fexceptions"));
         target.AddCompilerOption(_T("-Winvalid-pch"));
 
-        target.AddIncludeDir(_T("$(#cb)\\sdk"));
-        target.AddIncludeDir(_T("$(#cb)\\sdk\\wxscintilla\\include"));
+        target.AddIncludeDir(_T("$(#cb)\\include"));
+        target.AddIncludeDir(_T("$(#cb)\\include\\wxscintilla\\include"));
         target.AddIncludeDir(_T("$(#wx.include)"));
         target.AddIncludeDir(_T("$(#wx.lib)\\gcc_dll\\mswu"));
 
