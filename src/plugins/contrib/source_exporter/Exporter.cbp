@@ -9,6 +9,8 @@
 			<Target title="wxPdfDocument">
 				<Option output="libwxPdfDocument.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\Exporter" />
+				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\Exporter" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option projectCompilerOptionsRelation="2" />
@@ -16,6 +18,8 @@
 			</Target>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\Exporter.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\Exporter" />
+				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\Exporter" />
 				<Option external_deps="libwxPdfDocument.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -57,7 +61,6 @@
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#CB.include)" />
-			<Add directory="$(#CB.include)\tinyxml" />
 			<Add directory="$(#CB.include)\wxscintilla\include" />
 			<Add directory="wxPdfDocument\include" />
 		</Compiler>
@@ -71,7 +74,6 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="$(#CB.lib)" />
 			<Add directory="$(#CB)\devel" />
-			<Add directory="$(#CB)\sdk\tinyxml" />
 		</Linker>
 		<Unit filename="BaseExporter.cpp">
 			<Option target="default" />

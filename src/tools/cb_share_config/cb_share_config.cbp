@@ -36,8 +36,8 @@
 			<Add option="-DTIXML_USE_STL" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="..\..\include" />
-			<Add directory="..\..\include\tinyxml" />
+			<Add directory="$(#CB.include)" />
+			<Add directory="$(#CB.include)\tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -46,7 +46,7 @@
 			<Add library="txml" />
 			<Add library="wxmsw26$(WX_SUFFIX)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
-			<Add directory="..\..\base\tinyxml" />
+			<Add directory="$(#CB)\base\tinyxml" />
 		</Linker>
 		<Unit filename="app.cpp" />
 		<Unit filename="app.h" />

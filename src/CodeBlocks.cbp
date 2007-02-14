@@ -15,7 +15,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-DEXPORT_LIB" />
-					<Add directory="include/tinyxml" />
+					<Add directory="include\tinyxml" />
 				</Compiler>
 			</Target>
 			<Target title="AutoRevision">
@@ -486,6 +486,21 @@
 			<Add directory="base\tinyxml" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
+		<Unit filename="base\tinyxml\tinystr.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="base\tinyxml\tinywxuni.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="base\tinyxml\tinyxml.cpp">
+			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="base\tinyxml\tinyxmlerror.cpp">
+			<Option target="tinyXML" />
+		</Unit>
+		<Unit filename="base\tinyxml\tinyxmlparser.cpp">
+			<Option target="tinyXML" />
+		</Unit>
 		<Unit filename="build_tools\autorevision\autorevision.cpp">
 			<Option target="AutoRevision" />
 		</Unit>
@@ -2232,21 +2247,6 @@
 		</Unit>
 		<Unit filename="sdk\templatemanager.cpp">
 			<Option target="sdk" />
-		</Unit>
-		<Unit filename="base\tinyxml\tinystr.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="base\tinyxml\tinywxuni.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="base\tinyxml\tinyxml.cpp">
-			<Option target="tinyXML" />
-		</Unit>
-		<Unit filename="base\tinyxml\tinyxmlerror.cpp">
-			<Option target="tinyXML" />
-		</Unit>
-		<Unit filename="base\tinyxml\tinyxmlparser.cpp">
-			<Option target="tinyXML" />
 		</Unit>
 		<Unit filename="sdk\toolsmanager.cpp">
 			<Option target="sdk" />

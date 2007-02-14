@@ -7,6 +7,8 @@
 		<Build>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\byogames.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\byogames" />
+				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\byogames" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
@@ -40,9 +42,8 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="$(#CB.include)" />
-			<Add directory="$(#CB.include)\tinyxml" />
-			<Add directory="$(#CB.include)\wxscintilla\include" />
 			<Add directory="$(#CB.include)\wxFlatNotebook" />
+			<Add directory="$(#CB.include)\wxscintilla\include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -53,7 +54,6 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="$(#CB.lib)" />
 			<Add directory="$(#CB)\devel" />
-			<Add directory="$(#CB)\sdk\tinyxml" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\byogames.zip manifest.xml" />

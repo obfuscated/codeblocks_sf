@@ -47,19 +47,19 @@
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
-			<Add directory="$(#cb.include)" />
-			<Add directory="$(#cb.include)\wxscintilla\include" />
-			<Add directory="$(#wx.include)" />
-			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#CB.include)" />
+			<Add directory="$(#CB.include)\wxscintilla\include" />
+			<Add directory="$(#WX.include)" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 		</Compiler>
 		<Linker>
 			<Add library="wxmsw26$(WX_SUFFIX)" />
-			<Add library="wxscintilla" />
 			<Add library="txml" />
 			<Add library="codeblocks" />
-			<Add directory="$(#cb)\devel" />
-			<Add directory="$(#cb)\base\tinyxml" />
-			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
+			<Add library="wxscintilla" />
+			<Add directory="$(#CB)\devel" />
+			<Add directory="$(#CB)\base\tinyxml" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="update.bat" />

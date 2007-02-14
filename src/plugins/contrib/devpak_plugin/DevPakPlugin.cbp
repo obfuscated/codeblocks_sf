@@ -10,12 +10,16 @@
 			<Target title="libbz2">
 				<Option output="bzip2\libbz2.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\devpak_plugin" />
+				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\devpak_plugin" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 			</Target>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\devpakupdater.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="..\devpak_plugin" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\devpak_plugin" />
+				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\devpak_plugin" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
@@ -36,12 +40,11 @@
 					<Add option="-DcbDEBUG" />
 					<Add option="-DTIXML_USE_STL" />
 					<Add option="-DwxUSE_UNICODE" />
-					<Add directory="..\..\..\include" />
-					<Add directory="..\..\..\include\wxscintilla\include" />
+					<Add directory="$(#CB.include)" />
 				</Compiler>
 				<Linker>
 					<Add library="bz2" />
-					<Add directory="..\..\..\devel" />
+					<Add directory="$(#CB)\devel" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip ..\..\..\devel\share\CodeBlocks\devpakupdater.zip manifest.xml *.xrc" />

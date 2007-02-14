@@ -8,6 +8,8 @@
 		<Build>
 			<Target title="help_plugin">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\help_plugin.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\help_plugin" />
+				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\help_plugin" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
@@ -29,25 +31,7 @@
 					<Add option="-DcbDEBUG" />
 					<Add option="-DTIXML_USE_STL" />
 					<Add option="-DwxUSE_UNICODE" />
-					<Add directory="$(#WX.include)" />
-					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-					<Add directory="$(#WX)\contrib\include" />
-					<Add directory="$(#CB.include)" />
-					<Add directory="$(#CB.include)\wxscintilla\include" />
 				</Compiler>
-				<ResourceCompiler>
-					<Add directory="$(#WX.include)" />
-				</ResourceCompiler>
-				<Linker>
-					<Add option="-Wl,--enable-auto-image-base" />
-					<Add option="-Wl,--add-stdcall-alias" />
-					<Add library="libcodeblocks.a" />
-					<Add library="libwxscintilla.a" />
-					<Add library="wxmsw26$(WX_SUFFIX)" />
-					<Add directory="$(#CB)\devel" />
-					<Add directory="$(#CB.lib)" />
-					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
-				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\help_plugin.zip manifest.xml *.xrc" />
 					<Mode after="always" />
@@ -61,6 +45,26 @@
 		<VirtualTargets>
 			<Add alias="All" targets="help_plugin;" />
 		</VirtualTargets>
+		<Compiler>
+			<Add directory="$(#WX.include)" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX)\contrib\include" />
+			<Add directory="$(#CB.include)" />
+			<Add directory="$(#CB.include)\wxscintilla\include" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="-Wl,--enable-auto-image-base" />
+			<Add option="-Wl,--add-stdcall-alias" />
+			<Add library="wxmsw26$(WX_SUFFIX)" />
+			<Add library="codeblocks" />
+			<Add library="wxscintilla" />
+			<Add directory="$(#CB.lib)" />
+			<Add directory="$(#CB)\devel" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+		</Linker>
 		<Unit filename="HelpConfigDialog.cpp" />
 		<Unit filename="HelpConfigDialog.h" />
 		<Unit filename="help_common.cpp" />
