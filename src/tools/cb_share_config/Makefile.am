@@ -6,7 +6,7 @@ INCLUDES = $(WX_CXXFLAGS) \
 
 cb_share_config_LDFLAGS = 
 
-cb_share_config_LDADD =  -L../../sdk/tinyxml -ltinyxml \
+cb_share_config_LDADD =  -L../../base/tinyxml -ltinyxml \
 			$(WX_LIBS)
 
 cb_share_config_SOURCES = app.cpp \
