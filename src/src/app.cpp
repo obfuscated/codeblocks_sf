@@ -72,6 +72,7 @@
 
 #ifndef CB_PRECOMP
     #include "xtra_res.h"
+    #include "filemanager.h" // LoaderBase
 #endif
 
 namespace

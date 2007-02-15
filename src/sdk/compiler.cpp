@@ -18,6 +18,7 @@
     #include "manager.h"
     #include "messagemanager.h"
     #include "configmanager.h"
+    #include "macrosmanager.h"
     #include "globals.h"
     #include "compilerfactory.h"
 

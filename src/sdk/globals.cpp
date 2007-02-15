@@ -36,6 +36,7 @@
     #include <wx/file.h>
     #include <wx/image.h>
     #include <wx/listctrl.h>
+    #include <wx/filesys.h>
     #include "cbexception.h"
     #include "manager.h"
     #include "configmanager.h" // ReadBool
