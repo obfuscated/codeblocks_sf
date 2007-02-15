@@ -89,17 +89,17 @@ void URLLoader::operator()()
 FileManager::FileManager()
 	: fileLoaderThread(false),
 	uncLoaderThread(false),
-	urlLoaderThread(false),
-	delayedDeleteThread(false)
+	urlLoaderThread(false)//,
+//	delayedDeleteThread(false)
 {
 }
 
 FileManager::~FileManager()
 {
-	delayedDeleteThread.Die();
-	fileLoaderThread.Die();
-	uncLoaderThread.Die();
-	urlLoaderThread.Die();
+//	delayedDeleteThread.Die();
+//	fileLoaderThread.Die();
+//	uncLoaderThread.Die();
+//	urlLoaderThread.Die();
 }
 
 LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
