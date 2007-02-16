@@ -17,7 +17,8 @@ class wxsMenuBar: public wxsTool
         virtual void OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language);
         virtual bool OnIsPointer() { return true; }
         virtual bool OnCanAddToResource(wxsItemResData* Data,bool ShowMessage);
-        void ShowMenuEditor();
+        virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
+        virtual bool OnMouseDClick(wxWindow* Preview,int PosX,int PosY);
 };
 
 

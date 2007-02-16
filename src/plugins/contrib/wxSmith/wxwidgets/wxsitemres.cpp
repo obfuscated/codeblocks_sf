@@ -51,6 +51,8 @@ namespace
         _T("\n")
         _T("$(ClassName)::~$(ClassName)()\n")
         _T("{\n")
+        _T("\t") + wxsCodeMarks::Beg(wxsCPP,_T("Destroy"),_T("$(ClassName)")) + _T("\n")
+        _T("\t") + wxsCodeMarks::End(wxsCPP) + _T("\n")
         _T("}\n")
         _T("\n");
 

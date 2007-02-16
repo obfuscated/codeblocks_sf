@@ -22,12 +22,43 @@
 */
 
 #include "wxsmenubar.h"
+#include "wxsmenueditor.h"
 #include "../wxsitemresdata.h"
 #include <wx/menu.h>
 
 namespace
 {
-    wxsRegisterItem<wxsMenuBar> Reg(_T("MenuBar"),wxsTTool,/*_T("Tools")*/_T(""),90);
+    wxsRegisterItem<wxsMenuBar> Reg(_T("MenuBar"),wxsTTool,_T("Tools"),90);
+
+    class MenuEditorDialog: public wxDialog
+    {
+        public:
+
+            wxsMenuEditor* Editor;
+
+            MenuEditorDialog(wxsMenuBar* MenuBar):
+                wxDialog(NULL,-1,_("MenuBar editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
+            {
+                wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
+                Sizer->Add(Editor = new wxsMenuEditor(this,MenuBar),1,wxEXPAND,0);
+                Sizer->Add(CreateButtonSizer(wxOK|wxCANCEL),0,wxEXPAND,15);
+                SetSizer(Sizer);
+                Sizer->SetSizeHints(this);
+                PlaceWindow(this,pdlCentre,true);
+            }
+
+            void OnOK(wxCommandEvent& event)
+            {
+                Editor->ApplyChanges();
+                EndModal(wxID_OK);
+            }
+
+            DECLARE_EVENT_TABLE()
+    };
+
+    BEGIN_EVENT_TABLE(MenuEditorDialog,wxDialog)
+        EVT_BUTTON(wxID_OK,MenuEditorDialog::OnOK)
+    END_EVENT_TABLE()
 }
 
 wxsMenuBar::wxsMenuBar(wxsItemResData* Data):
@@ -42,6 +73,20 @@ wxsMenuBar::wxsMenuBar(wxsItemResData* Data):
 
 void wxsMenuBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
 {
+    switch ( Language )
+    {
+        case wxsCPP:
+            Code << Codef(Language,_T("%C();\n"));
+            for ( int i=0; i<GetChildCount(); i++ )
+            {
+                GetChild(i)->BuildCreatingCode(Code,WindowParent,Language);
+            }
+            Code << Codef(Language,_T("SetMenuBar(%v);\n"),GetVarName().c_str());
+            break;
+
+        default:
+            wxsCodeMarks::Unknown(_T("wxsMenuBar::OnBuildCreatingCode"),Language);
+    }
 }
 
 void wxsMenuBar::OnEnumToolProperties(long Flags)
@@ -83,6 +128,22 @@ bool wxsMenuBar::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
     return true;
 }
 
-void wxsMenuBar::ShowMenuEditor()
+bool wxsMenuBar::OnCanAddChild(wxsItem* Item,bool ShowMessage)
 {
+    if ( Item->GetClassName() != _T("wxMenu") )
+    {
+        if ( ShowMessage )
+        {
+            cbMessageBox(_T("Only wxMenu items can be added into wxMenuBar"));
+        }
+        return false;
+    }
+    return true;
+}
+
+bool wxsMenuBar::OnMouseDClick(wxWindow* Preview,int PosX,int PosY)
+{
+    MenuEditorDialog Dlg(this);
+    Dlg.ShowModal();
+    return false;
 }

@@ -266,7 +266,7 @@ bool wxsParent::OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
     }
     else
     {
-        if ( NewItem->GetInfo().Type == wxsTTool )
+        if ( NewItem->GetInfo().Type==wxsTTool && GetType()!=wxsTTool )
         {
             // We do not load tools at this stage,
             // returning true to prevent load errors

@@ -184,6 +184,8 @@
 		<Unit filename="wxwidgets\defitems\wxsmenubar.h" />
 		<Unit filename="wxwidgets\defitems\wxsmenueditor.cpp" />
 		<Unit filename="wxwidgets\defitems\wxsmenueditor.h" />
+		<Unit filename="wxwidgets\defitems\wxsmenuitem.cpp" />
+		<Unit filename="wxwidgets\defitems\wxsmenuitem.h" />
 		<Unit filename="wxwidgets\defitems\wxsnotebook.cpp" />
 		<Unit filename="wxwidgets\defitems\wxsnotebook.h" />
 		<Unit filename="wxwidgets\defitems\wxspanel.cpp" />

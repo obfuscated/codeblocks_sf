@@ -14,6 +14,7 @@
 //*)
 
 #include "wxsmenu.h"
+#include "wxsmenuitem.h"
 
 class wxsMenuBar;
 
@@ -35,7 +36,7 @@ class wxsMenuEditor: public wxPanel
 
 	private:
 
-        typedef wxsMenu::Type Type;
+        typedef wxsMenuItem::Type Type;
 
         /** \brief Data of menu item
          *
@@ -46,13 +47,14 @@ class wxsMenuEditor: public wxPanel
          */
         struct MenuItem
         {
-            Type m_Type;
+            Type      m_Type;
             wxString  m_Id;
             wxString  m_Label;
             wxString  m_Accelerator;
             wxString  m_Help;
             bool      m_Enabled;
             bool      m_Checked;
+            wxString  m_HandlerFunction;
             MenuItem* m_Child;
             MenuItem* m_Next;
             MenuItem* m_Parent;
@@ -78,7 +80,9 @@ class wxsMenuEditor: public wxPanel
 
         /** \brief Copying data into internal structures */
         void CreateDataCopy();
-        void CreateDataCopyReq(wxsMenu* Menu,MenuItem* Item);
+        void CreateDataCopyReq(wxsMenuBar* Bar,MenuItem* Parent);
+        void CreateDataCopyReq(wxsMenu* Menu,MenuItem* Parent);
+        void CreateDataCopyReq(wxsMenuItem* Menu,MenuItem* Parent);
 
         /** \brief Storing copy of data */
         void StoreDataCopy();
@@ -113,6 +117,7 @@ class wxsMenuEditor: public wxPanel
         MenuItem*   m_First;    ///< \brief First child item od edited resource
         MenuItem*   m_Selected; ///< \brief Currently selected item
         bool        m_BlockSel; ///< \brief Flag for blockig select events from tree ctrl
+        bool        m_BlockRead;///< \brief Flag for blocking reading data from dialog to MenuItem
 
 		//(*Identifiers(wxsMenuEditor)
 		static const long ID_TREECTRL1;

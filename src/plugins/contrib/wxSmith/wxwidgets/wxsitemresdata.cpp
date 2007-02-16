@@ -339,13 +339,15 @@ void wxsItemResData::LoadToolsReq(TiXmlElement* Node,bool IsXRC,bool IsExtra)
 {
     for ( TiXmlElement* Object = Node->FirstChildElement("object"); Object; Object = Object->NextSiblingElement("object") )
     {
-        LoadToolsReq(Object,IsXRC,IsExtra);
-
         wxString Class = cbC2U(Object->Attribute("class"));
         if ( Class.IsEmpty() ) continue;
         const wxsItemInfo* Info = wxsItemFactory::GetInfo(Class);
         if ( !Info ) continue;
-        if ( Info->Type != wxsTTool ) continue;
+        if ( Info->Type != wxsTTool )
+        {
+            LoadToolsReq(Object,IsXRC,IsExtra);
+            continue;
+        }
         if ( GetPropertiesFilter()!=wxsItem::flSource && !Info->AllowInXRC ) continue;
         wxsItem* Item = wxsItemFactory::Build(Class,this);
         if ( !Item ) continue;

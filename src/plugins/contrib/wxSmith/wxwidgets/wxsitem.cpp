@@ -135,7 +135,7 @@ void wxsItem::OnBuildDeclarationCode(wxString& Code,wxsCodingLang Language)
             Code << GetClassName();
             if ( IsPointer() )
             {
-                Code << _T("* ");
+                Code << _T("*");
             }
             Code << _T(" ") << GetVarName() << _T(";\n");
             return;

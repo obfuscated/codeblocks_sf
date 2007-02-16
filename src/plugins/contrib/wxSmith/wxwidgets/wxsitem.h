@@ -302,7 +302,7 @@ class wxsItem: public wxsPropertyContainer
          *  - %T - sTyle (not available in wxsSizer)
          *  - %V - Validator (currently wxDefaultValidator only)
          *  - %N - Name (usually last parameter in constructor)
-         *  - %v - Variable (require argument: wxString*)
+         *  - %v - Variable (require argument: wxChar*)
          *  - %t - wx-converted string with translation in _("...") form (reguire argument: wxChar*)
          *  - %u - wx-converted string without translation in _T("...") form (require argument: wxChar*)
          *  - %s - string value (require argument: wxChar*)
