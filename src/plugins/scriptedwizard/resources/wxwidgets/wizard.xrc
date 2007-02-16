@@ -1,495 +1,512 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
   <object class="wxPanel" name="WxConf">
-		<style>wxTAB_TRAVERSAL</style>
-		<object class="wxBoxSizer">
-			<orient>wxVERTICAL</orient>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL|wxEXPAND</flag>
-				<border>8</border>
-				<object class="wxStaticText" name="m_staticText1">
-					<label>Please select various configuration options.\n\nWhat you select here, must match the installed wxWidgets\nlibrary&apos;s settings.</label>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL|wxEXPAND</flag>
-				<border>8</border>
-				<object class="wxStaticBoxSizer">
-					<orient>wxVERTICAL</orient>
-					<label>wxWidgets Library Settings</label>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>8</border>
-						<object class="wxCheckBox" name="chkWxConfDLL">
-							<label>Use wxWidgets DLL</label>
-							<checked>0</checked>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>8</border>
-						<object class="wxCheckBox" name="chkWxConfMono">
-							<label>wxWidgets is built as a monolithic library</label>
-							<checked>0</checked>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>8</border>
-						<object class="wxCheckBox" name="chkWxConfUni">
-							<label>Enable unicode</label>
-							<checked>0</checked>
-						</object>
-					</object>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL|wxEXPAND</flag>
-				<border>8</border>
-				<object class="wxStaticBoxSizer">
-					<orient>wxVERTICAL</orient>
-					<label>Miscellaneous Settings</label>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>8</border>
-						<object class="wxCheckBox" name="chkWxEmpty">
-							<label>Create Empty Project</label>
-							<checked>0</checked>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL|wxEXPAND</flag>
-						<border>8</border>
-						<object class="wxCheckBox" name="chkWxConfPCH">
-							<label>Create and use precompiled header (PCH)</label>
-							<checked>0</checked>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>1</option>
-						<flag>wxEXPAND</flag>
-						<border>0</border>
-						<object class="wxBoxSizer">
-							<orient>wxHORIZONTAL</orient>
-							<object class="sizeritem">
-								<option>0</option>
-								<flag>wxALL</flag>
-								<border>8</border>
-								<object class="wxStaticText" name="m_staticText2">
-									<label>Configuration:</label>
-								</object>
-							</object>
-							<object class="sizeritem">
-								<option>0</option>
-								<flag>wxALIGN_CENTER_VERTICAL|wxLEFT</flag>
-								<border>8</border>
-								<object class="wxTextCtrl" name="txtWxConfConfig">
-									<value></value>
-									<maxlength>0</maxlength>
-								</object>
-							</object>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>8</border>
-						<object class="wxCheckBox" name="chkWxConfDebug">
-							<label>Set Target Types (For Advanced users only)</label>
-							<checked>0</checked>
-						</object>
-					</object>
-				</object>
-			</object>
-		</object>
-	</object>
+    <style>wxTAB_TRAVERSAL</style>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <object class="wxStaticText" name="m_staticText1">
+          <label>Please select various configuration options.\n\nWhat you select here, must match the installed wxWidgets\nlibrary's settings.</label>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <object class="wxStaticBoxSizer">
+          <orient>wxVERTICAL</orient>
+          <label>wxWidgets Library Settings</label>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL</flag>
+            <border>8</border>
+            <object class="wxCheckBox" name="chkWxConfDLL">
+              <label>Use wxWidgets DLL</label>
+              <checked>0</checked>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL</flag>
+            <border>8</border>
+            <object class="wxCheckBox" name="chkWxConfMono">
+              <label>wxWidgets is built as a monolithic library</label>
+              <checked>0</checked>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL</flag>
+            <border>8</border>
+            <object class="wxCheckBox" name="chkWxConfUni">
+              <label>Enable unicode</label>
+              <checked>0</checked>
+            </object>
+          </object>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <object class="wxStaticBoxSizer">
+          <orient>wxVERTICAL</orient>
+          <label>Miscellaneous Settings</label>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL</flag>
+            <border>8</border>
+            <object class="wxCheckBox" name="chkWxEmpty">
+              <label>Create Empty Project</label>
+              <checked>0</checked>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL|wxEXPAND</flag>
+            <border>8</border>
+            <object class="wxCheckBox" name="chkWxConfPCH">
+              <label>Create and use precompiled header (PCH)</label>
+              <checked>0</checked>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxEXPAND</flag>
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              <object class="sizeritem">
+                <option>0</option>
+                <flag>wxALL|wxALIGN_CENTRE_VERTICAL</flag>
+                <border>8</border>
+                <object class="wxStaticText" name="m_staticText2">
+                  <label>Configuration:</label>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <option>1</option>
+                <flag>wxALL|wxEXPAND|wxALIGN_CENTRE_VERTICAL</flag>
+                <border>8</border>
+                <object class="wxTextCtrl" name="txtWxConfConfig">
+                  <value></value>
+                  <maxlength>0</maxlength>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL</flag>
+            <border>8</border>
+            <object class="wxCheckBox" name="chkWxConfAdvOpt">
+              <label>Configure Advanced Options</label>
+              <checked>0</checked>
+            </object>
+          </object>
+        </object>
+      </object>
+    </object>
+  </object>
   <object class="wxPanel" name="WxConfUnix">
-		<style>wxTAB_TRAVERSAL</style>
-		<object class="wxBoxSizer">
-			<orient>wxVERTICAL</orient>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL|wxEXPAND</flag>
-				<border>8</border>
-				<object class="wxStaticText" name="m_staticText1">
-					<label>Please select appropriate wxWidgets configurations.\nIf you are not sure then use &quot;Use default wxWidgets\nConfiguration&quot;\n\nAdvanced Options are to be set carefully or\nCompilation will Fail.</label>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL|wxEXPAND</flag>
-				<border>8</border>
-				<object class="wxRadioBox" name="m_radioBoxWxChoice">
-					<style>wxRA_SPECIFY_COLS</style>
-					<label>wxWidgets Library Settings</label>
-					<content>
-						<item>Use default wxWidgets configuration</item>
-						<item>Use Advanced options</item>
-					</content>
-					<dimension>1</dimension>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL|wxEXPAND</flag>
-				<border>8</border>
-				<object class="wxStaticBoxSizer">
-					<orient>wxVERTICAL</orient>
-					<label>Advanced Options</label>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>8</border>
-						<object class="wxCheckBox" name="chkWxUnixEmpty">
-							<label>Create Empty Project</label>
-							<checked>0</checked>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>8</border>
-						<object class="wxCheckBox" name="chkWxConfSo">
-							<label>Use Dynamic wxWidgets Lib</label>
-							<checked>0</checked>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>8</border>
-						<object class="wxCheckBox" name="chkWxConfUnicode">
-							<label>Use Unicode build of wxWidgets</label>
-							<checked>0</checked>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL|wxEXPAND</flag>
-						<border>8</border>
-						<object class="wxCheckBox" name="chkWxConfPCH">
-							<label>Create and use precompiled header (PCH)</label>
-							<checked>0</checked>
-						</object>
-					</object>
-				</object>
-			</object>
-		</object>
-	</object>
-	<object class="wxPanel" name="WxConfTType">
-		<style>wxTAB_TRAVERSAL</style>
-		<object class="wxBoxSizer">
-			<orient>wxVERTICAL</orient>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxStaticText" name="m_staticText2">
-					<label>Please select Executable Type for each target</label>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxStaticText" name="m_staticText5">
-					<font>
-						<style>normal</style>
-						<weight>bold</weight>
-					</font>
-					<label>Don't change them unless you need it.\nYou may need to change some settings manually.</label>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL|wxEXPAND</flag>
-				<border>8</border>
-				<object class="wxRadioBox" name="RadioBoxDebug">
-					<style>wxRA_SPECIFY_COLS</style>
-					<label>Debug Target</label>
-					<content>
-						<item>Console Mode Application</item>
-						<item>GUI Mode Application</item>
-					</content>
-					<selection>1</selection>
-					<dimension>1</dimension>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL|wxEXPAND</flag>
-				<border>8</border>
-				<object class="wxRadioBox" name="RadioBoxRelease">
-					<style>wxRA_SPECIFY_COLS</style>
-					<label>Release Target</label>
-					<content>
-						<item>Console Mode Application</item>
-						<item>GUI Mode Application</item>
-					</content>
-					<selection>1</selection>
-					<dimension>1</dimension>
-				</object>
-			</object>
-		</object>
-	</object>
+    <style>wxTAB_TRAVERSAL</style>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <object class="wxStaticText" name="m_staticText1">
+          <label>Please select appropriate wxWidgets configurations.\nIf you are not sure then use &quot;Use default wxWidgets\nConfiguration&quot;\n\nAdvanced Options are to be set carefully or\nCompilation will Fail.</label>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <object class="wxRadioBox" name="m_radioBoxWxChoice">
+          <style>wxRA_SPECIFY_COLS</style>
+          <label>wxWidgets Library Settings</label>
+          <content>
+            <item>Use default wxWidgets configuration</item>
+            <item>Use Advanced options</item>
+          </content>
+          <dimension>1</dimension>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <object class="wxStaticBoxSizer">
+          <orient>wxVERTICAL</orient>
+          <label>Advanced Options</label>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL</flag>
+            <border>8</border>
+            <object class="wxCheckBox" name="chkWxUnixEmpty">
+              <label>Create Empty Project</label>
+              <checked>0</checked>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL</flag>
+            <border>8</border>
+            <object class="wxCheckBox" name="chkWxConfSo">
+              <label>Use Dynamic wxWidgets Lib</label>
+              <checked>0</checked>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL</flag>
+            <border>8</border>
+            <object class="wxCheckBox" name="chkWxConfUnicode">
+              <label>Use Unicode build of wxWidgets</label>
+              <checked>0</checked>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL|wxEXPAND</flag>
+            <border>8</border>
+            <object class="wxCheckBox" name="chkWxConfPCH">
+              <label>Create and use precompiled header (PCH)</label>
+              <checked>0</checked>
+            </object>
+          </object>
+        </object>
+      </object>
+    </object>
+  </object>
+  <object class="wxPanel" name="WxConfAdvOpt">
+    <style>wxTAB_TRAVERSAL</style>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxStaticText" name="m_staticText2">
+          <label>Please select advanced options. Some of options will work
+only with GCC</label>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxStaticText" name="m_staticText5">
+          <font>
+            <style>normal</style>
+            <weight>bold</weight>
+          </font>
+          <label>Don't change them unless you need it.\nYou may need to change some settings manually.</label>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticBoxSizer">
+          <label>Advanced options</label>
+          <orient>wxVERTICAL</orient>
+          <object class="sizeritem">
+            <object class="wxCheckBox" name="chkWxDebug">
+              <label>Use __WXDEBUG__ and Debug wxWidgets lib</label>
+              <checked>0</checked>
+              <tooltip>This is available for GCC only!</tooltip>
+            </object>
+            <flag>wxALL</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <object class="wxRadioBox" name="RadioBoxDebug">
+          <style>wxRA_SPECIFY_COLS</style>
+          <label>Debug Target</label>
+          <content>
+            <item>Console Mode Application</item>
+            <item>GUI Mode Application</item>
+          </content>
+          <selection>1</selection>
+          <dimension>1</dimension>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <object class="wxRadioBox" name="RadioBoxRelease">
+          <style>wxRA_SPECIFY_COLS</style>
+          <label>Release Target</label>
+          <content>
+            <item>Console Mode Application</item>
+            <item>GUI Mode Application</item>
+          </content>
+          <selection>1</selection>
+          <dimension>1</dimension>
+        </object>
+      </object>
+    </object>
+  </object>
   <object class="wxPanel" name="WxAddLib">
-		<style>wxTAB_TRAVERSAL</style>
-		<object class="wxBoxSizer">
-			<orient>wxVERTICAL</orient>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxStaticText" name="LabelHeading">
-					<label>Please select additional libraries you want to add to project.\n\nPlease Note that Code::Blocks will NOT check for the\nexistence of any Libraries added below.</label>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxJpeg">
-					<label>wxWidgets JPEG Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxTiff">
-					<label>wxWidgets TIFF Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxRegExp">
-					<label>wxWidgets Regular Expression Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxExpat">
-					<label>wxWidgets Expat Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxXml">
-					<label>wxWidgets XML Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxXrc">
-					<label>wxWidgets XRC Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL|wxGROW</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxAdv">
-					<label>wxWidgets Adv Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxMore">
-					<font>
-						<weight>bold</weight>
-					</font>
-					<label>Add more wxWidgets libraries</label>
-					<checked>0</checked>
-				</object>
-			</object>
-		</object>
-	</object>
+    <style>wxTAB_TRAVERSAL</style>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxStaticText" name="LabelHeading">
+          <label>Please select additional libraries you want to add to project.\n\nPlease Note that Code::Blocks will NOT check for the\nexistence of any Libraries added below.</label>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxJpeg">
+          <label>wxWidgets JPEG Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxTiff">
+          <label>wxWidgets TIFF Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxRegExp">
+          <label>wxWidgets Regular Expression Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxExpat">
+          <label>wxWidgets Expat Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxXml">
+          <label>wxWidgets XML Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxXrc">
+          <label>wxWidgets XRC Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxAdv">
+          <label>wxWidgets Adv Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxMore">
+          <font>
+            <weight>bold</weight>
+          </font>
+          <label>Add more wxWidgets libraries</label>
+          <checked>0</checked>
+        </object>
+      </object>
+    </object>
+  </object>
   <object class="wxPanel" name="WxAdvLib">
-		<object class="wxBoxSizer">
-			<orient>wxVERTICAL</orient>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL|wxGROW</flag>
-				<border>8</border>
-				<object class="wxStaticText" name="LabelHeading">
-					<label>Please select the advanced libraries you want to include in\nthe project.</label>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxAdvUI">
-					<label>wxWidgets Advanced UI Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxHtml">
-					<label>wxWidgets HTML Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxOdbc">
-					<label>wxWidgets ODBC Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxMedia">
-					<label>wxWidgets Media Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxNet">
-					<label>wxWidgets Net Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxOgl">
-					<label>wxWidgets OpenGL Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxQa">
-					<label>wxWidgets QA Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxCheckBox" name="chkWxRichText">
-					<label>wxWidgets RichText Library</label>
-					<checked>0</checked>
-				</object>
-			</object>
-		</object>
-	</object>
-	<object class="wxPanel" name="WxProjDetails">
-		<style>wxTAB_TRAVERSAL</style>
-		<object class="wxBoxSizer">
-			<orient>wxVERTICAL</orient>
-			<object class="sizeritem">
-				<option>0</option>
-				<flag>wxALL</flag>
-				<border>8</border>
-				<object class="wxStaticText" name="m_staticText3">
-					<label>Please Enter Project Details. Details will be used in labelling\nsource code of project.</label>
-				</object>
-			</object>
-			<object class="sizeritem">
-				<option>1</option>
-				<flag>wxALL|wxEXPAND</flag>
-				<border>8</border>
-				<object class="wxFlexGridSizer">
-					<rows>3</rows>
-					<cols>2</cols>
-					<vgap>8</vgap>
-					<hgap>8</hgap>
-					<growablecols>1</growablecols>
-					<growablerows></growablerows>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>0</border>
-						<object class="wxStaticText" name="m_staticText4">
-							<label>Author:</label>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL|wxEXPAND</flag>
-						<border>0</border>
-						<object class="wxTextCtrl" name="txtProjAuthor">
-							<value></value>
-							<maxlength>0</maxlength>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>0</border>
-						<object class="wxStaticText" name="m_staticText5">
-							<label>Author&apos;s email:</label>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL|wxEXPAND</flag>
-						<border>0</border>
-						<object class="wxTextCtrl" name="txtProjEmail">
-							<value></value>
-							<maxlength>0</maxlength>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL</flag>
-						<border>0</border>
-						<object class="wxStaticText" name="m_staticText6">
-							<label>Author&apos;s website:</label>
-						</object>
-					</object>
-					<object class="sizeritem">
-						<option>0</option>
-						<flag>wxALL|wxEXPAND</flag>
-						<border>0</border>
-						<object class="wxTextCtrl" name="txtProjWebsite">
-							<value></value>
-							<maxlength>0</maxlength>
-						</object>
-					</object>
-				</object>
-			</object>
-		</object>
-	</object>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL|wxGROW</flag>
+        <border>8</border>
+        <object class="wxStaticText" name="LabelHeading">
+          <label>Please select the advanced libraries you want to include in\nthe project.</label>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxAdvUI">
+          <label>wxWidgets Advanced UI Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxHtml">
+          <label>wxWidgets HTML Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxOdbc">
+          <label>wxWidgets ODBC Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxMedia">
+          <label>wxWidgets Media Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxNet">
+          <label>wxWidgets Net Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxOgl">
+          <label>wxWidgets OpenGL Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxQa">
+          <label>wxWidgets QA Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxCheckBox" name="chkWxRichText">
+          <label>wxWidgets RichText Library</label>
+          <checked>0</checked>
+        </object>
+      </object>
+    </object>
+  </object>
+  <object class="wxPanel" name="WxProjDetails">
+    <style>wxTAB_TRAVERSAL</style>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxStaticText" name="m_staticText3">
+          <label>Please Enter Project Details. Details will be used in labelling\nsource code of project.</label>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>1</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <object class="wxFlexGridSizer">
+          <rows>3</rows>
+          <cols>2</cols>
+          <vgap>8</vgap>
+          <hgap>8</hgap>
+          <growablecols>1</growablecols>
+          <growablerows></growablerows>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL</flag>
+            <border>0</border>
+            <object class="wxStaticText" name="m_staticText4">
+              <label>Author:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL|wxEXPAND</flag>
+            <border>0</border>
+            <object class="wxTextCtrl" name="txtProjAuthor">
+              <value></value>
+              <maxlength>0</maxlength>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL</flag>
+            <border>0</border>
+            <object class="wxStaticText" name="m_staticText5">
+              <label>Author's email:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL|wxEXPAND</flag>
+            <border>0</border>
+            <object class="wxTextCtrl" name="txtProjEmail">
+              <value></value>
+              <maxlength>0</maxlength>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL</flag>
+            <border>0</border>
+            <object class="wxStaticText" name="m_staticText6">
+              <label>Author's website:</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL|wxEXPAND</flag>
+            <border>0</border>
+            <object class="wxTextCtrl" name="txtProjWebsite">
+              <value></value>
+              <maxlength>0</maxlength>
+            </object>
+          </object>
+        </object>
+      </object>
+    </object>
+  </object>
 </resource>
