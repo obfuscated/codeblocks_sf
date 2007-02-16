@@ -62,6 +62,7 @@ class wxsItem: public wxsPropertyContainer
         static const long flToolTip   = 0x000800;  ///< \brief Item is using tooltips
         static const long flFont      = 0x001000;  ///< \brief Item is using font
         static const long flHelpText  = 0x002000;  ///< \brief Item is using help text
+        static const long flSubclass  = 0x004000;  ///< \brief Item is using subclassing
 
         // Flags used when generating preview
         static const long pfExact     = 0x000001;   ///< \brief Notify to create exact preview (without any editor-like goodies)
@@ -159,6 +160,16 @@ class wxsItem: public wxsPropertyContainer
 
         /** \brief Getting class name */
         inline const wxString& GetClassName() { return GetInfo().ClassName; }
+
+        /** \brief Getting user class name
+         *
+         * This function returns name of class used in application. It is equal
+         * to GetClassName() when there's no subclass and m_Subclass when there's one
+         */
+        wxString GetUserClass();
+
+        /** \brief Setting user class */
+        inline void SetUserClass(const wxString& Subclass) { m_Subclass = Subclass; }
 
         /** \brief Function enumerating properties of this item
          *
@@ -540,6 +551,7 @@ class wxsItem: public wxsPropertyContainer
         wxString m_VarName;                     ///< \brief Variable name
         wxString m_IdName;                      ///< \brief Name of identifier
         bool m_IsMember;                        ///< \brief Swith between local and global variable
+        wxString m_Subclass;                    ///< \brief Subclass (class used instead of original base class)
         wxsBaseProperties* m_BaseProperties;    ///< \brief Pointer to base properties if item uses it
         long m_PropertiesFlags;                 ///< \brief Properties flags
         wxObject* m_LastPreview;                ///< \brief Current preview object

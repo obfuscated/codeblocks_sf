@@ -97,7 +97,7 @@ long wxsItem::OnGetPropertiesFlags()
     {
         // Small hack - if there's no parent, this is root item
         // of resource and thus can not have id nor variable
-        return m_ResourceData->GetPropertiesFilter() | m_PropertiesFlags & ~flVariable & ~flId;
+        return m_ResourceData->GetPropertiesFilter() | m_PropertiesFlags & ~flVariable & ~flId & ~flSubclass;
     }
     return m_ResourceData->GetPropertiesFilter() | m_PropertiesFlags;
 }
@@ -116,6 +116,7 @@ void wxsItem::EnumItemProperties(long Flags)
             WXS_BOOL(wxsItem,m_IsMember,flVariable,_(" Is member"),_T("var_is_member"),true);
         }
         WXS_STRING(wxsItem,m_IdName,flId,_("Identifier"),_T("identifier"),wxEmptyString,false,false);
+        WXS_STRING(wxsItem,m_Subclass,flSubclass,_("Custom class"),_T("subclass"),wxEmptyString,false,false);
     }
 
     OnEnumItemProperties(Flags);
@@ -132,7 +133,7 @@ void wxsItem::OnBuildDeclarationCode(wxString& Code,wxsCodingLang Language)
     switch ( Language )
     {
         case wxsCPP:
-            Code << GetClassName();
+            Code << GetUserClass();
             if ( IsPointer() )
             {
                 Code << _T("*");
@@ -151,6 +152,7 @@ bool wxsItem::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
     {
         wxsPropertyContainer::XmlRead(Element);
         m_IdName = cbC2U(Element->Attribute("name"));
+        m_Subclass = cbC2U(Element->Attribute("subclass"));
     }
 
     if ( IsExtra )
@@ -173,6 +175,13 @@ bool wxsItem::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
         if ( GetPropertiesFlags() & flId )
         {
             Element->SetAttribute("name",cbU2C(m_IdName));
+        }
+        if ( GetPropertiesFlags() & flSubclass )
+        {
+            if ( !m_Subclass.IsEmpty() )
+            {
+                Element->SetAttribute("subclass",cbU2C(m_Subclass));
+            }
         }
     }
 
@@ -274,7 +283,7 @@ wxString wxsItem::GetCreatePrefix(wxsCodingLang Language)
     {
         case wxsCPP:
             if ( IsRootItem() ) return _T("Create");
-            if ( IsPointer()  ) return GetVarName() + _T(" = new ") + GetClassName();
+            if ( IsPointer()  ) return GetVarName() + _T(" = new ") + GetUserClass();
             return GetVarName() + _T(".Create");
 
         default:
@@ -447,4 +456,16 @@ bool wxsItem::OnMouseDClick(wxWindow* Preview,int PosX,int PosY)
 {
     // TODO: Create new event / search for current event
     return false;
+}
+
+wxString wxsItem::GetUserClass()
+{
+    if ( GetPropertiesFlags() & flSubclass )
+    {
+        if ( !m_Subclass.IsEmpty() )
+        {
+            return m_Subclass;
+        }
+    }
+    return GetClassName();
 }

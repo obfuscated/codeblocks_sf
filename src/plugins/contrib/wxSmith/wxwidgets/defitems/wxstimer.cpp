@@ -41,7 +41,7 @@ wxsTimer::wxsTimer(wxsItemResData* Data):
         &Reg.Info,
         wxsTimerEvents,
         NULL,
-        flVariable|flId)
+        flVariable|flId|flSubclass)
 {
     m_Interval = 0;
     m_OneShoot = false;

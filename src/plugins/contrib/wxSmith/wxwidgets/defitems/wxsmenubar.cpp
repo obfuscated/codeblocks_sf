@@ -67,7 +67,7 @@ wxsMenuBar::wxsMenuBar(wxsItemResData* Data):
         &Reg.Info,
         NULL,
         NULL,
-        flVariable)
+        flVariable|flSubclass)
 {
 }
 

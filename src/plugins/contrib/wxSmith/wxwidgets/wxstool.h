@@ -9,7 +9,7 @@ class wxsTool: public wxsParent
     public:
 
         /** \brief Default properties flags used by tools */
-        static const long flTool = flVariable;
+        static const long flTool = flVariable | flSubclass;
 
         /** \brief Ctor */
         wxsTool(

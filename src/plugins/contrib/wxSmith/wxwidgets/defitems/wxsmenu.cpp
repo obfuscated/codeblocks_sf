@@ -63,7 +63,7 @@ namespace
 }
 
 wxsMenu::wxsMenu(wxsItemResData* Data):
-    wxsTool(Data,&Reg.Info,NULL,NULL,flVariable)
+    wxsTool(Data,&Reg.Info,NULL,NULL,flVariable|flSubclass)
 {
 }
 

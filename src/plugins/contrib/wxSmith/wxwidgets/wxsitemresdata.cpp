@@ -693,7 +693,7 @@ void wxsItemResData::BuildXrcItemsFetchingCodeReq(wxsCodingLang Lang,wxsItem* It
                     if ( Child->GetIsMember() )
                     {
                         Code << Child->GetVarName()
-                             << _T(" = (") << Child->GetClassName() << _T("*)")
+                             << _T(" = (") << Child->GetUserClass() << _T("*)")
                              << _T("FindWindow(XRCID(\"") + Child->GetIdName() + _T("\"));\n");
                     }
                 }
