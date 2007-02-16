@@ -299,3 +299,17 @@ bool wxsMenuItem::OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
     return true;
 }
 
+wxString wxsMenuItem::OnGetTreeLabel()
+{
+    switch ( m_Type )
+    {
+        case Separator:
+            return _T("--------");
+
+        case Break:
+            return _("** BREAK **");
+
+        default:
+            return m_Label;
+    }
+}

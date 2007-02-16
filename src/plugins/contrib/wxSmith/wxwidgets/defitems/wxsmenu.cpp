@@ -309,3 +309,16 @@ bool wxsMenu::OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
 
     return true;
 }
+
+wxString wxsMenu::OnGetTreeLabel()
+{
+    if ( GetParent() )
+    {
+        // This is internal item of wxMenu / wxMenuBar,
+        // we give the description like in wxMenuItem
+        return m_Label;
+    }
+
+    // When this is tool, we return usual description
+    return wxsItem::OnGetTreeLabel();
+}

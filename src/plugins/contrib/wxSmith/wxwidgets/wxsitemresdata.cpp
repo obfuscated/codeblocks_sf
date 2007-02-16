@@ -56,7 +56,8 @@ wxsItemResData::wxsItemResData(
         m_Preview(NULL),
         m_Corrector(this),
         m_IsOK(false),
-        m_LockCount(0)
+        m_LockCount(0),
+        m_CurrentCode(NULL)
 {
     if (  WxsFileName.empty() &&
           SrcFileName.empty() &&
@@ -626,6 +627,7 @@ void wxsItemResData::BuildVariablesCodeReq(wxsCodingLang Lang,wxsItem* Item,wxSt
 
 void wxsItemResData::BuildCreatingCode(wxsCodingLang Lang,wxString& Code)
 {
+    m_CurrentCode = &Code;
     switch ( m_PropertiesFilter )
     {
         case wxsItem::flSource:
@@ -643,6 +645,7 @@ void wxsItemResData::BuildCreatingCode(wxsCodingLang Lang,wxString& Code)
 
         default:;
     }
+    m_CurrentCode = NULL;
 }
 
 void wxsItemResData::BuildXrcLoadingCode(wxsCodingLang Language,wxString& Code)
@@ -711,11 +714,13 @@ void wxsItemResData::BuildXrcItemsFetchingCodeReq(wxsCodingLang Lang,wxsItem* It
 
 void wxsItemResData::BuildEventHandlersCode(wxsCodingLang Language,wxString& Code)
 {
+    m_CurrentCode = &Code;
     BuildEventHandlersCodeReq(Language,m_RootItem,Code);
     for ( int i=0; i<GetToolsCount(); i++ )
     {
         BuildEventHandlersCodeReq(Language,m_Tools[i],Code);
     }
+    m_CurrentCode = NULL;
 }
 
 void wxsItemResData::BuildEventHandlersCodeReq(wxsCodingLang Language,wxsItem* Item,wxString& Code)

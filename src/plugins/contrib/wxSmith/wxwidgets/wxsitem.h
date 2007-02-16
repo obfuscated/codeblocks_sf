@@ -324,6 +324,13 @@ class wxsItem: public wxsPropertyContainer
          */
         wxString Codef(wxsCodingLang Language,const wxChar* Fmt,...);
 
+        /** \brief Simplified version of Codef function
+         *
+         * This function uses language of current resource and adds result string
+         * to currently generated source code.
+         */
+        void Codef(const wxChar* Fmt,...);
+
         /** \brief Getting properties availability flags
          *
          * Availability flags are taken from resource object - resource
@@ -517,6 +524,12 @@ class wxsItem: public wxsPropertyContainer
         /** \brief Checking if this item can be added to given parent */
         virtual bool OnCanAddToParent(wxsParent* Parent,bool ShowMessage) { return true; }
 
+        /** \brief Getting name of entry in resource browser
+         *
+         * Default implementation returns string "<ClassName>: <VarName>" or "<ClassName>"
+         */
+        virtual wxString OnGetTreeLabel();
+
     private:
 
         /** \brief Function enumerating proeprties
@@ -543,6 +556,9 @@ class wxsItem: public wxsPropertyContainer
 
         /** \brief Additional handler for sub properties */
         virtual void OnSubPropertyChanged(wxsPropertyContainer*);
+
+        /** \brief Internal version of Codef function */
+        void Codef(wxsCodingLang Language,const wxChar* Fmt,wxString& Result,va_list ap);
 
         const wxsItemInfo* m_Info;              ///< \brief Pointer to item's info structure
         wxsEvents m_Events;                     ///< \brief Object managing events

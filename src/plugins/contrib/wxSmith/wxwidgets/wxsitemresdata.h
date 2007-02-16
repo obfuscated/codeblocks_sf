@@ -133,6 +133,9 @@ class wxsItemResData
         /** \brief Getting language used in resource */
         inline wxsCodingLang GetLanguage() { return m_Language; }
 
+        /** \brief Getting pointer to current source code string */
+        inline wxString* GetCurentCode() { return m_CurrentCode; }
+
         /* ************************ */
         /*  Undo buffer operations  */
         /* ************************ */
@@ -337,6 +340,8 @@ class wxsItemResData
 
         bool m_IsOK;
         int m_LockCount;
+
+        wxString* m_CurrentCode;
 };
 
 #endif

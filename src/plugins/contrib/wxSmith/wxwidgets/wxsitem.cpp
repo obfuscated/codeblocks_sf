@@ -202,11 +202,11 @@ void wxsItem::BuildItemTree(wxsResourceTree* Tree,wxsResourceItemId Parent,int P
 {
     if ( Position<0 || Position>=(int)Tree->GetChildrenCount(Parent) )
     {
-        m_LastTreeId = Tree->AppendItem(Parent,GetClassName(),-1,-1,new wxsItemResTreeData(this));
+        m_LastTreeId = Tree->AppendItem(Parent,OnGetTreeLabel(),-1,-1,new wxsItemResTreeData(this));
     }
     else
     {
-        m_LastTreeId = Tree->InsertItem(Parent,Position,GetClassName(),-1,-1,new wxsItemResTreeData(this));
+        m_LastTreeId = Tree->InsertItem(Parent,Position,OnGetTreeLabel(),-1,-1,new wxsItemResTreeData(this));
     }
 
     wxsParent* ParentItem = ConvertToParent();
@@ -315,15 +315,36 @@ bool wxsItem::OnIsPointer()
 
 wxString wxsItem::Codef(wxsCodingLang Language,const wxChar* Fmt,...)
 {
+    wxString Result;
     va_list ap;
     va_start(ap,Fmt);
-    wxString Result;
+
+    Codef(Language,Fmt,Result,ap);
+
+    va_end(ap);
+    return Result;
+}
+
+void wxsItem::Codef(const wxChar* Fmt,...)
+{
+    wxString* Code = GetResourceData()->GetCurentCode();
+    if ( !Code ) return;
+
+    va_list ap;
+    va_start(ap,Fmt);
+
+    Codef(GetResourceData()->GetLanguage(),Fmt,*Code,ap);
+
+    va_end(ap);
+}
+
+void wxsItem::Codef(wxsCodingLang Language,const wxChar* Fmt,wxString& Result,va_list ap)
+{
     wxChar Buff[0x20];
     int Pos;
     wxChar* Char;
     int Dec;
     bool Bool;
-
 
     while ( *Fmt )
     {
@@ -446,10 +467,6 @@ wxString wxsItem::Codef(wxsCodingLang Language,const wxChar* Fmt,...)
             Result.Append(*Fmt++);
         }
     }
-
-    va_end(ap);
-
-    return Result;
 }
 
 bool wxsItem::OnMouseDClick(wxWindow* Preview,int PosX,int PosY)
@@ -468,4 +485,16 @@ wxString wxsItem::GetUserClass()
         }
     }
     return GetClassName();
+}
+
+wxString wxsItem::OnGetTreeLabel()
+{
+    if ( GetPropertiesFlags() & flVariable )
+    {
+        return GetClassName() + _T(": ") + GetVarName();
+    }
+    else
+    {
+        return GetClassName();
+    }
 }
