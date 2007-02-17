@@ -23,6 +23,7 @@
 
 #include "wxsitemfactory.h"
 #include "wxsitem.h"
+#include "../wxsresourcetree.h"
 
 wxsItem* wxsItemFactory::Build(const wxString& Name,wxsItemResData* Data)
 {
@@ -82,6 +83,11 @@ const wxsItemInfo* wxsItemFactory::GetNextInfo()
     if ( m_Iter==ItemMap().end() ) return NULL;
     ++m_Iter;
     return (m_Iter==ItemMap().end()) ? NULL : m_Iter->second->m_Info;
+}
+
+wxImageList& wxsItemFactory::GetImageList()
+{
+    return wxsResourceTree::GetGlobalImageList();
 }
 
 wxsItemFactory::wxsItemFactory(const wxsItemInfo* Info):

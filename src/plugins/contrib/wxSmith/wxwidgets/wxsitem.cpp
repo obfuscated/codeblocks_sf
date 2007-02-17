@@ -202,11 +202,11 @@ void wxsItem::BuildItemTree(wxsResourceTree* Tree,wxsResourceItemId Parent,int P
 {
     if ( Position<0 || Position>=(int)Tree->GetChildrenCount(Parent) )
     {
-        m_LastTreeId = Tree->AppendItem(Parent,OnGetTreeLabel(),-1,-1,new wxsItemResTreeData(this));
+        m_LastTreeId = Tree->AppendItem(Parent,OnGetTreeLabel(),GetInfo().TreeIconId,GetInfo().TreeIconId,new wxsItemResTreeData(this));
     }
     else
     {
-        m_LastTreeId = Tree->InsertItem(Parent,Position,OnGetTreeLabel(),-1,-1,new wxsItemResTreeData(this));
+        m_LastTreeId = Tree->InsertItem(Parent,Position,OnGetTreeLabel(),GetInfo().TreeIconId,GetInfo().TreeIconId,new wxsItemResTreeData(this));
     }
 
     wxsParent* ParentItem = ConvertToParent();

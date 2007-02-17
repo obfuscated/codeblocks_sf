@@ -8,7 +8,6 @@
 		<Build>
 			<Target title="wxSmith">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\wxsmith.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="..\..\..\devel\share\CodeBlocks\plugins" />
 				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\wxSmith" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\wxSmith" />
 				<Option type="3" />

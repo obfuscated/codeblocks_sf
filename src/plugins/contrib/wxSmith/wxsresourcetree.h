@@ -38,11 +38,19 @@ class wxsResourceTree: public wxTreeCtrl
         /** \brief Getting singleton instance */
         static inline wxsResourceTree* Get() { return m_Singleton; }
 
+        /** \brief Getting global image list
+         *
+         * This list is declared as static, so it can be used even
+         * before wxsResourceTree is created
+         */
+        static wxImageList& GetGlobalImageList();
+
     private:
 
         wxsResourceItemId m_ExtId;              ///< \brief id of tree item containing external resources
         bool m_IsExt;                           ///< \brief True if there is item for external resources
         static wxsResourceTree* m_Singleton;    ///< \brief singleton object
+
 
         void OnSelect(wxTreeEvent& event);
         void OnRightClick(wxTreeEvent& event);

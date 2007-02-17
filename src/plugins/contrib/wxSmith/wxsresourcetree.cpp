@@ -46,6 +46,7 @@ wxsResourceTree* wxsResourceTree::m_Singleton = NULL;
 wxsResourceTree::wxsResourceTree(wxWindow* Parent): wxTreeCtrl(Parent,-1), m_IsExt(false)
 {
     m_Singleton = this;
+    SetImageList(&GetGlobalImageList());
 }
 
 wxsResourceTree::~wxsResourceTree()
@@ -103,6 +104,19 @@ void wxsResourceTree::OnRightClick(wxTreeEvent& event)
 {
     wxsResourceTreeItemData* Data = (wxsResourceTreeItemData*)GetItemData(event.GetItem());
     if ( Data ) Data->OnRightClick();
+}
+
+wxImageList& wxsResourceTree::GetGlobalImageList()
+{
+    static wxImageList List(16,16);
+    static bool FirstTime = true;
+    if ( FirstTime )
+    {
+        // Adding some zero-index image
+        List.Add(wxBitmap(wxImage(16,16)),*wxBLACK);
+        FirstTime = false;
+    }
+    return List;
 }
 
 BEGIN_EVENT_TABLE(wxsResourceTree,wxTreeCtrl)

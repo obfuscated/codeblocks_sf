@@ -6,6 +6,7 @@
 
 #include <wx/string.h>
 #include <wx/hashmap.h>
+#include <wx/imaglist.h>
 
 #include <configmanager.h>
 
@@ -40,6 +41,12 @@ class wxsItemFactory
 
         /** \brief Continuing getting item infos */
         static const wxsItemInfo* GetNextInfo();
+
+        /** \brief Getting global image list with enteries for items
+         *
+         * In fact this function takes image list from resource browser
+         */
+        static wxImageList& GetImageList();
 
     protected:
 
@@ -111,8 +118,7 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             Info.Icon32 = Bmp32.GetSubBitmap(wxRect(0,0,Bmp32.GetWidth(),Bmp32.GetHeight()));
             Info.Icon16 = Bmp16.GetSubBitmap(wxRect(0,0,Bmp16.GetWidth(),Bmp16.GetHeight()));
             Info.AllowInXRC = AllowInXRC;
-
-            // TODO: Build resource tree entry
+            Info.TreeIconId = Info.Icon16.Ok() ? GetImageList().Add(Info.Icon16) : 0;
         }
 
         /** \brief Ctor - bitmaps are loaded from files */
@@ -152,7 +158,7 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             Info.Icon32.LoadFile(DataPath+Bmp32FileName,wxBITMAP_TYPE_ANY);
             Info.Icon16.LoadFile(DataPath+Bmp16FileName,wxBITMAP_TYPE_ANY);
 
-            // TODO: Build resource tree entry
+            Info.TreeIconId = Info.Icon16.Ok() ? GetImageList().Add(Info.Icon16) : 0;
         }
 
         /** \brief Ctor for built-in items from wxWidgets - sets most of data fields to default */
@@ -181,7 +187,7 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             Info.Icon32.LoadFile(DataPath+Info.ClassName+_T(".png"),wxBITMAP_TYPE_PNG);
             Info.Icon16.LoadFile(DataPath+Info.ClassName+_T("16.png"),wxBITMAP_TYPE_PNG);
 
-            // TODO: Build resource tree entry
+            Info.TreeIconId = Info.Icon16.Ok() ? GetImageList().Add(Info.Icon16) : 0;
         }
 
     protected:
