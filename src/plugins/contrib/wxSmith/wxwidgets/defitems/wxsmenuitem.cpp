@@ -66,14 +66,14 @@ void wxsMenuItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
                     if ( GetChildCount() )
                     {
                         // Creating new wxMenu
-                        Code << Codef(Language,_T("%C();\n"));
+                        Codef(_T("%v = new wxMenu();\n"),GetVarName().c_str());
                         for ( int i=0; i<GetChildCount(); i++ )
                         {
                             GetChild(i)->BuildCreatingCode(Code,WindowParent,Language);
                         }
                         // Many parameters are passed in wxMenu::Append, so we call this function
                         // here, not in wxMenu
-                        Code << Codef(Language,_T("%MAppend(%I,%t,%v,%t)%s;\n"),
+                        Codef(_T("%MAppend(%I,%t,%v,%t)%s;\n"),
                             m_Label.c_str(),
                             GetVarName().c_str(),
                             m_Help.c_str(),
@@ -102,19 +102,19 @@ void wxsMenuItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
                         default:     ItemType = _T("wxITEM_CHECK");  break;
                     }
 
-                    Code << Codef(Language,_T("%C(%R,%I,%t,%t,%s);\n"),
+                    Codef(_T("%C(%R,%I,%t,%t,%s);\n"),
                         Text.c_str(),
                         m_Help.c_str(),
                         ItemType);
 
-                    Code << Codef(Language,_T("%MAppend(%v);\n"),GetVarName().c_str());
+                    Codef(_T("%MAppend(%v);\n"),GetVarName().c_str());
                     if ( !m_Enabled )
                     {
-                        Code << Codef(Language,_T("%AEnable(false);\n"));
+                        Codef(_T("%AEnable(false);\n"));
                     }
                     if ( m_Checked && (m_Type==Check) )
                     {
-                        Code << Codef(Language,_T("%ACheck(true);\n"));
+                        Codef(_T("%ACheck(true);\n"));
                     }
                     break;
                 }
@@ -122,13 +122,13 @@ void wxsMenuItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
 
                 case Separator:
                 {
-                    Code << Codef(Language,_T("%MAppendSeparator();\n"));
+                    Codef(_T("%MAppendSeparator();\n"));
                     break;
                 }
 
                 case Break:
                 {
-                    Code << Codef(Language,_T("%MBreak();\n"));
+                    Codef(_T("%MBreak();\n"));
                     break;
                 }
 
@@ -146,6 +146,18 @@ void wxsMenuItem::OnEnumToolProperties(long Flags)
     switch ( m_Type )
     {
         case Normal:
+            if ( GetChildCount() )
+            {
+                // When there are children (wxMenuItem maps to wxMenu class),
+                // only these properties are enabled
+                WXS_STRING(wxsMenuItem,m_Label,0,_("Label"),_T("label"),_T(""),false,true);
+                WXS_STRING(wxsMenuItem,m_Help,0,_T("Help text"),_T("help"),_T(""),false,false);
+                WXS_BOOL(wxsMenuItem,m_Enabled,0,_T("Enabled"),_T("enabled"),true);
+                break;
+            }
+            // When there are no children, we threat this item as wxMenuItem
+
+     /* case Normal: */
         case Radio:
         case Check:
             WXS_STRING(wxsMenuItem,m_Label,0,_("Label"),_T("label"),_T(""),false,true);
@@ -243,6 +255,7 @@ bool wxsMenuItem::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
         }
         else
         {
+            // This will handle both wxMenu and wxMenuItem
             TiXmlElement* Node = Element->FirstChildElement("radio");
             if ( Node && (cbC2U(Node->GetText())==_T("1")) )
             {
@@ -265,7 +278,8 @@ bool wxsMenuItem::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
 
 bool wxsMenuItem::OnCanAddToParent(wxsParent* Parent,bool ShowMessage)
 {
-    if ( Parent->GetClassName() != _T("wxMenu") )
+    if ( Parent->GetClassName() != _T("wxMenu") &&
+         Parent->GetClassName() != _T("wxMenuItem") )
     {
         if ( ShowMessage )
         {
@@ -312,4 +326,34 @@ wxString wxsMenuItem::OnGetTreeLabel()
         default:
             return m_Label;
     }
+}
+
+void wxsMenuItem::OnBuildDeclarationCode(wxString& Code,wxsCodingLang Language)
+{
+    // Few hacks needed, First: if this item has children, we have to change to
+    // wxMenu, Second: if it is break or separtor we do not have any declaration
+    if ( GetChildCount() )
+    {
+        switch ( Language )
+        {
+            case wxsCPP:
+                Code << _T("wxMenu* ") << GetVarName() << _T(";\n");
+                break;
+
+            default:
+                wxsCodeMarks::Unknown(_T("wxsMenuItem::OnBuildDeclarationCode"),Language);
+        }
+        return;
+    }
+
+    switch ( m_Type )
+    {
+        case Break:
+        case Separator:
+            return;
+
+        default:;
+    }
+
+    wxsItem::OnBuildDeclarationCode(Code,Language);
 }
