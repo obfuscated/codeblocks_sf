@@ -84,8 +84,8 @@ wxString wxsDialogRes::OnGetAppBuildingCode()
 {
     return wxString::Format(
         _T("\t%s Dlg(NULL);\n")
-        _T("\tDlg.ShowModal();\n")
         _T("\tSetTopWindow(&Dlg);\n")
+        _T("\tDlg.ShowModal();\n")
         _T("\twxsOK = false;\n"),
             GetResourceName().c_str());
 }
