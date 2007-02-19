@@ -24,6 +24,7 @@
 #include "wxsresourcetree.h"
 #include "wxsresourcetreeitemdata.h"
 
+#include <wx/image.h>
 #include <wx/intl.h>
 
 namespace
