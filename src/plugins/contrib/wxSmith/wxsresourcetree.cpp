@@ -44,7 +44,7 @@ namespace
 
 wxsResourceTree* wxsResourceTree::m_Singleton = NULL;
 
-wxsResourceTree::wxsResourceTree(wxWindow* Parent): wxTreeCtrl(Parent,-1), m_IsExt(false)
+wxsResourceTree::wxsResourceTree(wxWindow* Parent): wxTreeCtrl(Parent,-1), m_IsExt(false), m_BlockCount(0)
 {
     m_Singleton = this;
     SetImageList(&GetGlobalImageList());
@@ -97,6 +97,7 @@ void wxsResourceTree::DeleteExternalResourcesId()
 
 void wxsResourceTree::OnSelect(wxTreeEvent& event)
 {
+    if ( m_BlockCount ) return;
     wxsResourceTreeItemData* Data = (wxsResourceTreeItemData*)GetItemData(event.GetItem());
     if ( Data ) Data->OnSelect();
 }
@@ -118,6 +119,16 @@ wxImageList& wxsResourceTree::GetGlobalImageList()
         FirstTime = false;
     }
     return List;
+}
+
+void wxsResourceTree::BlockSelect()
+{
+    m_BlockCount++;
+}
+
+void wxsResourceTree::UnblockSelect()
+{
+    m_BlockCount--;
 }
 
 BEGIN_EVENT_TABLE(wxsResourceTree,wxTreeCtrl)

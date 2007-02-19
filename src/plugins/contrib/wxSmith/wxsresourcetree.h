@@ -45,10 +45,21 @@ class wxsResourceTree: public wxTreeCtrl
          */
         static wxImageList& GetGlobalImageList();
 
+        /** \brief Blocking processing select events
+         * \note This function must be paired with UnblockSelect
+         */
+        void BlockSelect();
+
+        /** \brief Unblocking select events
+         * \note This function must be paired with BlockSelect
+         */
+        void UnblockSelect();
+
     private:
 
         wxsResourceItemId m_ExtId;              ///< \brief id of tree item containing external resources
         bool m_IsExt;                           ///< \brief True if there is item for external resources
+        int m_BlockCount;                       ///< \brief if > 0 must block all select events
         static wxsResourceTree* m_Singleton;    ///< \brief singleton object
 
 

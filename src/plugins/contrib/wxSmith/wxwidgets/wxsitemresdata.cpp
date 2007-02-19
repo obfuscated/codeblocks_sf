@@ -966,6 +966,7 @@ void wxsItemResData::BeginChange()
     if ( !m_LockCount++ )
     {
         StoreTreeExpandState();
+        wxsResourceTree::Get()->BlockSelect();
     }
 }
 
@@ -988,6 +989,7 @@ void wxsItemResData::EndChange()
             m_RootSelection->ShowInPropertyGrid();
             m_Editor->RebuildQuickProps(m_RootSelection);
         }
+        wxsResourceTree::Get()->UnblockSelect();
     }
 }
 
