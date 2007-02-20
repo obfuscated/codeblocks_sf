@@ -328,7 +328,7 @@ void CompilerGCC::OnAttach()
     m_Log = new SimpleTextLog(true);
     m_PageIndex = msgMan->AddLog(m_Log, _("Build log"));
     msgMan->SetBatchBuildLog(m_PageIndex);
-    
+
     m_LogBuildProgressPercentage = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/percentage"), false);
     bool hasBuildProg = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/bar"), false);
     if (hasBuildProg)
@@ -633,7 +633,7 @@ void CompilerGCC::AddBuildProgressBar()
 {
 	if (!m_BuildProgress)
 	{
-		m_BuildProgress = new wxGauge(m_Log, -1, 0, wxDefaultPosition, wxSize(-1, 8));
+		m_BuildProgress = new wxGauge(m_Log, -1, 0, wxDefaultPosition, wxSize(-1, 12));
 		wxSizer* s = m_Log->GetSizer();
 		if (s)
 		{
@@ -948,7 +948,7 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
             ++m_MaxProgress;
         }
     }
-    
+
     if (m_BuildProgress)
     {
     	m_BuildProgress->SetRange(m_MaxProgress);
