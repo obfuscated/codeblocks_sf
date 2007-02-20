@@ -374,6 +374,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     wxString compilerId = _T("gcc");
     bool extendedObjectNames = false;
     wxArrayString vfolders;
+    int platformsFinal = spAll;
     PCHMode pch_mode = m_IsPre_1_2 ? pchSourceDir : pchObjectDir;
     bool showNotes = false;
     wxString notes;
@@ -383,6 +384,9 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     {
         if (node->Attribute("title"))
             title = cbC2U(node->Attribute("title"));
+
+        else if (node->Attribute("platforms"))
+        	platformsFinal = GetPlatformsFromString(cbC2U(node->Attribute("platforms")));
 
         else if (node->Attribute("makefile")) // there is only one attribute per option, so "else" is a safe optimisation
             makefile = cbC2U(node->Attribute("makefile"));
@@ -424,6 +428,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     }
 
     m_pProject->SetTitle(title);
+    m_pProject->SetPlatforms(platformsFinal);
     m_pProject->SetMakefile(makefile);
     m_pProject->SetMakefileCustom(makefile_custom);
     m_pProject->SetDefaultExecuteTarget(defaultTarget);
@@ -520,25 +525,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     while (node)
     {
         if (node->Attribute("platforms"))
-        {
-        	wxString platforms = cbC2U(node->Attribute("platforms"));
-			bool pW = platforms.Contains(_("Windows"));
-			bool pU = platforms.Contains(_("Unix"));
-			bool pM = platforms.Contains(_("Mac"));
-			bool pA = platforms.Contains(_("All"));
-			if (pA || (pW && pU && pM))
-				platformsFinal = spAll;
-			else
-			{
-				platformsFinal = 0;
-				if (pW)
-					platformsFinal |= spWindows;
-				if (pU)
-					platformsFinal |= spUnix;
-				if (pM)
-					platformsFinal |= spMac;
-			}
-        }
+        	platformsFinal = GetPlatformsFromString(cbC2U(node->Attribute("platforms")));
         
         if (node->Attribute("use_console_runner"))
             use_console_runner = strncmp(node->Attribute("use_console_runner"), "0", 1) != 0;
@@ -1040,6 +1027,11 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
     TiXmlElement* prjnode = rootnode->FirstChildElement("Project");
 
     AddElement(prjnode, "Option", "title", m_pProject->GetTitle());
+	if (m_pProject->GetPlatforms() != spAll)
+	{
+		wxString platforms = GetStringFromPlatforms(m_pProject->GetPlatforms());
+		AddElement(prjnode, "Option", "platforms", platforms);
+	}
     if (m_pProject->GetMakefile() != _T("Makefile"))
         AddElement(prjnode, "Option", "makefile", m_pProject->GetMakefile());
     if (m_pProject->IsMakefileCustom())
@@ -1099,13 +1091,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         TiXmlElement* tgtnode = AddElement(buildnode, "Target", "title", target->GetTitle());
         if (target->GetPlatforms() != spAll)
         {
-        	wxString platforms;
-			if (target->GetPlatforms() & spWindows)
-				platforms << _("Windows;");
-			if (target->GetPlatforms() & spUnix)
-				platforms << _("Unix;");
-			if (target->GetPlatforms() & spMac)
-				platforms << _("Mac;");
+        	wxString platforms = GetStringFromPlatforms(target->GetPlatforms());
             AddElement(tgtnode, "Option", "platforms", platforms);
         }
         if (target->GetTargetType() != ttCommandsOnly)
