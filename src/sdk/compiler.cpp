@@ -153,6 +153,13 @@ bool Compiler::IsValid()
         return true; // still initializing, don't try to test now
 
     m_NeedValidityCheck = false;
+    
+    if (!SupportsCurrentPlatform())
+    {
+    	m_Valid = false;
+    	return false;
+    }
+    
     wxString tmp = m_MasterPath + _T("/bin/") + m_Programs.C;
     Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
     m_Valid = wxFileExists(tmp);

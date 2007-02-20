@@ -23,12 +23,37 @@
                       <object class="wxStaticText">
                         <label>Title:</label>
                       </object>
-                      <flag>wxTOP</flag>
-                      <border>4</border>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtProjectName"/>
                       <flag>wxGROW</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Platforms:</label>
+                      </object>
+                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <object class="wxTextCtrl" name="txtPlatformProj">
+                            <style>wxTE_READONLY</style>
+                          </object>
+                          <option>1</option>
+                          <flag>wxGROW</flag>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxButton" name="btnPlatformProj">
+                            <label>...</label>
+                          </object>
+                          <minsize>22,22</minsize>
+                        </object>
+                      </object>
+                      <flag>wxBOTTOM|wxEXPAND</flag>
+                      <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText">
@@ -58,8 +83,6 @@
                           <object class="wxCheckBox" name="chkCustomMakefile">
                             <label>This is a custom Makefile</label>
                           </object>
-                          <flag>wxTOP</flag>
-                          <border>4</border>
                         </object>
                         <cols>2</cols>
                         <rows>2</rows>
@@ -79,6 +102,8 @@
                       <object class="wxStaticText">
                         <label>Precompiled headers:</label>
                       </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxRadioBox" name="rbPCHStrategy">
@@ -121,6 +146,8 @@
                       <object class="wxStaticText">
                         <label>Object names generation:</label>
                       </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxBoxSizer">
@@ -285,28 +312,58 @@ from target...</label>
                           <object class="wxFlexGridSizer">
                             <object class="sizeritem">
                               <object class="wxStaticText">
+                                <label>Platforms:</label>
+                              </object>
+                              <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxBoxSizer">
+                                <orient>wxHORIZONTAL</orient>
+                                <object class="sizeritem">
+                                  <object class="wxTextCtrl" name="txtPlatform">
+                                    <style>wxTE_READONLY</style>
+                                  </object>
+                                  <option>1</option>
+                                  <flag>wxGROW</flag>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxButton" name="btnPlatform">
+                                    <label>...</label>
+                                  </object>
+                                  <minsize>22,22</minsize>
+                                </object>
+                              </object>
+                              <option>1</option>
+                              <flag>wxBOTTOM|wxEXPAND</flag>
+                              <border>4</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxStaticText">
                                 <label>Type:</label>
                               </object>
-                              <flag></flag>
+                              <flag>wxALIGN_CENTRE_VERTICAL</flag>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxComboBox" name="cmbProjectType">
+                                <content>
+                                  <item>GUI application</item>
+                                  <item>Console application</item>
+                                  <item>Static library</item>
+                                  <item>Dynamic library</item>
+                                  <item>Commands only</item>
+                                  <item>Native</item>
+                                </content>
+                                <selection>0</selection>
+                                <style>wxCB_READONLY|wxCB_DROPDOWN</style>
+                              </object>
+                              <flag>wxEXPAND</flag>
+                            </object>
+                            <object class="spacer">
+                              <size>0,0</size>
                             </object>
                             <object class="sizeritem">
                               <object class="wxBoxSizer">
                                 <orient>wxVERTICAL</orient>
-                                <object class="sizeritem">
-                                  <object class="wxComboBox" name="cmbProjectType">
-                                    <content>
-                                      <item>GUI application</item>
-                                      <item>Console application</item>
-                                      <item>Static library</item>
-                                      <item>Dynamic library</item>
-                                      <item>Commands only</item>
-                                      <item>Native</item>
-                                    </content>
-                                    <selection>0</selection>
-                                    <style>wxCB_READONLY|wxCB_DROPDOWN</style>
-                                  </object>
-                                  <flag>wxEXPAND</flag>
-                                </object>
                                 <object class="sizeritem">
                                   <object class="wxCheckBox" name="chkUseConsoleRunner">
                                     <label>Pause when execution ends</label>

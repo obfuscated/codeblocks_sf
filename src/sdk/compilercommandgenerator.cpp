@@ -104,7 +104,7 @@ void CompilerCommandGenerator::Init(cbProject* project)
 
         // for commands-only targets (or if invalid compiler), nothing to setup
         // just add stub entries so that indices keep in sync
-        if (!compiler || target->GetTargetType() == ttCommandsOnly)
+        if (!compiler || target->GetTargetType() == ttCommandsOnly || !target->SupportsCurrentPlatform())
         {
             m_Output[target] = wxEmptyString;
             m_StaticOutput[target] = wxEmptyString;
@@ -184,6 +184,12 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
                                                     const wxString& FlatObject,
                                                     const wxString& deps)
 {
+	if (target && !target->SupportsCurrentPlatform())
+	{
+		macro.Clear();
+		return;
+	}
+
     Compiler* compiler = target
                             ? CompilerFactory::GetCompiler(target->GetCompilerID())
                             : CompilerFactory::GetDefaultCompiler();

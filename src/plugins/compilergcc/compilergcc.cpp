@@ -2200,6 +2200,19 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
     for (size_t i = 0; i < deps.GetCount(); ++i)
     {
         cbProject* prj = Manager::Get()->GetProjectManager()->GetProjects()->Item(deps[i]);
+
+		if (!prj->SupportsCurrentPlatform())
+		{
+			wxString msg;
+			msg.Printf(_T("\"%s\" does not support the current platform. Skipping..."),
+						prj->GetTitle().c_str());
+			LOG_WARN(msg);
+			m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON, wxNullColour));
+			Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
+			m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxNullColour));
+			continue;
+		}
+
         ExpandTargets(prj, targetName, tlist);
 
         if (tlist.GetCount() == 0)
@@ -2212,10 +2225,22 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
         // add all matching targets in the job list
         for (size_t x = 0; x < tlist.GetCount(); ++x)
         {
-        	if (!CompilerValid(prj->GetBuildTarget(tlist[x])))
+        	ProjectBuildTarget* tgt = prj->GetBuildTarget(tlist[x]);
+        	if (!CompilerValid(tgt))
         	{
         		wxString msg;
         		msg.Printf(_T("\"%s - %s\" uses an invalid compiler. Skipping..."),
+							prj->GetTitle().c_str(), tlist[x].c_str());
+        		LOG_WARN(msg);
+				m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON, wxNullColour));
+        		Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
+				m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxNullColour));
+				continue;
+        	}
+        	else if (!tgt->SupportsCurrentPlatform())
+        	{
+        		wxString msg;
+        		msg.Printf(_T("\"%s - %s\" does not support the current platform. Skipping..."),
 							prj->GetTitle().c_str(), tlist[x].c_str());
         		LOG_WARN(msg);
 				m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON, wxNullColour));

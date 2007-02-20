@@ -149,6 +149,12 @@ namespace ScriptBindings
         BIND_INT_CONSTANT(sdDataGlobal);
         BIND_INT_CONSTANT(sdAllGlobal);
         BIND_INT_CONSTANT(sdAllKnown);
+        
+        // SupportedPlatforms
+        BIND_INT_CONSTANT(spWindows);
+        BIND_INT_CONSTANT(spUnix);
+        BIND_INT_CONSTANT(spMac);
+        BIND_INT_CONSTANT(spAll);
 
         // ModuleType
         BIND_INT_CONSTANT(mtProjectManager);

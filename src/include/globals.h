@@ -99,6 +99,17 @@ enum TemplateOutputType
     totUser ///< template is a user-saved project template
 };
 
+/** Supported platforms */
+enum SupportedPlatforms
+{
+	spMac		= 0x01,
+	spUnix		= 0x02,
+	spWindows 	= 0x04,
+	
+	spAll		= 0xff
+};
+// NOTE: if you add/remove platforms, remember to update the relevant Get/Set globals
+
 typedef wxString HighlightLanguage;
 #define HL_AUTO _T(" ")
 #define HL_NONE _T("  ")
@@ -129,6 +140,9 @@ extern DLLIMPORT wxWX2MBbuf cbU2C(const wxString& str);
 /// utf8, system, default and iso8859-1 to iso8859-15.
 /// Returns the final encoding detected.
 extern DLLIMPORT wxFontEncoding DetectEncodingAndConvert(const char* strIn, wxString& strOut, wxFontEncoding possibleEncoding = wxFONTENCODING_SYSTEM);
+
+extern DLLIMPORT int GetPlatformsFromString(const wxString& platforms);
+extern DLLIMPORT wxString GetStringFromPlatforms(int platforms, bool forceSeparate = false);
 
 extern DLLIMPORT wxString GetStringFromArray(const wxArrayString& array, const wxString& separator = DEFAULT_ARRAY_SEP);
 extern DLLIMPORT wxArrayString GetArrayFromString(const wxString& text, const wxString& separator = DEFAULT_ARRAY_SEP, bool trimSpaces = true);

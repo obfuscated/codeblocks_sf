@@ -502,6 +502,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     wxString deps;
     wxString added;
     int type = -1;
+    int platformsFinal = spAll;
     wxString compilerId = m_pProject->GetCompilerID();
     wxString parameters;
     wxString hostApplication;
@@ -518,6 +519,27 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
 
     while (node)
     {
+        if (node->Attribute("platforms"))
+        {
+        	wxString platforms = cbC2U(node->Attribute("platforms"));
+			bool pW = platforms.Contains(_("Windows"));
+			bool pU = platforms.Contains(_("Unix"));
+			bool pM = platforms.Contains(_("Mac"));
+			bool pA = platforms.Contains(_("All"));
+			if (pA || (pW && pU && pM))
+				platformsFinal = spAll;
+			else
+			{
+				platformsFinal = 0;
+				if (pW)
+					platformsFinal |= spWindows;
+				if (pU)
+					platformsFinal |= spUnix;
+				if (pM)
+					platformsFinal |= spMac;
+			}
+        }
+        
         if (node->Attribute("use_console_runner"))
             use_console_runner = strncmp(node->Attribute("use_console_runner"), "0", 1) != 0;
 
@@ -602,6 +624,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
 
     if (type != -1)
     {
+        target->SetPlatforms(platformsFinal);
         target->SetCompilerID(compilerId);
         target->SetTargetFilenameGenerationPolicy(prefixPolicy, extensionPolicy);
         target->SetTargetType((TargetType)type); // type *must* come before output filename!
@@ -1074,6 +1097,17 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             continue;
 
         TiXmlElement* tgtnode = AddElement(buildnode, "Target", "title", target->GetTitle());
+        if (target->GetPlatforms() != spAll)
+        {
+        	wxString platforms;
+			if (target->GetPlatforms() & spWindows)
+				platforms << _("Windows;");
+			if (target->GetPlatforms() & spUnix)
+				platforms << _("Unix;");
+			if (target->GetPlatforms() & spMac)
+				platforms << _("Mac;");
+            AddElement(tgtnode, "Option", "platforms", platforms);
+        }
         if (target->GetTargetType() != ttCommandsOnly)
         {
             TiXmlElement* outnode = AddElement(tgtnode, "Option", "output", target->GetOutputFilename());

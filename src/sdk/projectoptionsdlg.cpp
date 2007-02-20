@@ -63,12 +63,15 @@
 #include "editarrayfiledlg.h"
 #include "editpathdlg.h"
 #include "externaldepsdlg.h"
+#include "multiselectdlg.h"
 #include "annoyingdialog.h"
 #include "filefilters.h"
 #include "virtualbuildtargetsdlg.h"
 
 BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
     EVT_UPDATE_UI( -1,                                 ProjectOptionsDlg::OnUpdateUI)
+	EVT_BUTTON(    XRCID("btnPlatform"),    		   ProjectOptionsDlg::OnPlatform)
+	EVT_BUTTON(    XRCID("btnPlatformProj"),    	   ProjectOptionsDlg::OnPlatform)
 	EVT_BUTTON(    XRCID("btnProjectBuildOptions"),    ProjectOptionsDlg::OnProjectBuildOptionsClick)
 	EVT_BUTTON(    XRCID("btnProjectDeps"),            ProjectOptionsDlg::OnProjectDepsClick)
 	EVT_BUTTON(    XRCID("btnTargetBuildOptions"),     ProjectOptionsDlg::OnTargetBuildOptionsClick)
@@ -117,6 +120,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     // general
 	XRCCTRL(*this, "txtProjectName", wxTextCtrl)->SetValue(m_Project->GetTitle());
 	XRCCTRL(*this, "txtProjectFilename", wxStaticText)->SetLabel(m_Project->GetFilename());
+	XRCCTRL(*this, "txtPlatformProj", wxTextCtrl)->SetValue(GetStringFromPlatforms(m_Project->GetPlatforms()));
 	XRCCTRL(*this, "txtProjectMakefile", wxTextCtrl)->SetValue(m_Project->GetMakefile());
 	XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->SetValue(m_Project->IsMakefileCustom());
 	XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->SetSelection((int)m_Project->GetModeForPCH());
@@ -221,6 +225,7 @@ void ProjectOptionsDlg::DoTargetChange(bool saveOld)
 		return;
 
 	// global project options
+	wxTextCtrl* txtP = XRCCTRL(*this, "txtPlatform", wxTextCtrl);
 	wxComboBox* cmb = XRCCTRL(*this, "cmbProjectType", wxComboBox);
 	wxCheckBox* chkCR = XRCCTRL(*this, "chkUseConsoleRunner", wxCheckBox);
 	wxCheckBox* chkSL = XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox);
@@ -231,6 +236,9 @@ void ProjectOptionsDlg::DoTargetChange(bool saveOld)
     wxButton* browse = XRCCTRL(*this, "btnBrowseOutputFilename", wxButton);
     wxButton* browseW = XRCCTRL(*this, "btnBrowseWorkingDir", wxButton);
     wxButton* browseO = XRCCTRL(*this, "btnBrowseObjectDir", wxButton);
+
+	wxString platforms = GetStringFromPlatforms(target->GetPlatforms());
+	txtP->SetValue(platforms);
 
     chkCR->SetValue(false);
 	chkCD->SetValue(target->GetCreateDefFile());
@@ -324,6 +332,10 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 		ProjectBuildTarget* target = m_Project->GetBuildTarget(m_Current_Sel);
 		if (!target)
 			return;
+
+		wxString platforms = XRCCTRL(*this, "txtPlatform", wxTextCtrl)->GetValue();
+		int p = GetPlatformsFromString(platforms);
+		target->SetPlatforms(p);
 
         target->SetUseConsoleRunner(XRCCTRL(*this, "chkUseConsoleRunner", wxCheckBox)->GetValue());
         target->SetCreateDefFile(XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->GetValue());
@@ -908,6 +920,37 @@ void ProjectOptionsDlg::OnRemoveScript(wxCommandEvent& event)
     ctrl->SetSelection(isel < ctrl->GetCount() ? isel : --isel );
 }
 
+void ProjectOptionsDlg::OnPlatform(wxCommandEvent& event)
+{
+	wxTextCtrl* txtP;
+	if (event.GetId() == XRCID("btnPlatform"))
+		txtP = XRCCTRL(*this, "txtPlatform", wxTextCtrl);
+	else
+		txtP = XRCCTRL(*this, "txtPlatformProj", wxTextCtrl);
+	bool isAll = txtP->GetValue().Contains(_("All"));
+
+	wxArrayString arr = GetArrayFromString(GetStringFromPlatforms(spAll, true));
+	MultiSelectDlg dlg(this, arr, isAll, _("Select supported platforms:"), _("Build target platforms"));
+	if (!isAll)
+	{
+		wxArrayString sel = GetArrayFromString(txtP->GetValue());
+		for (size_t i = 0; i < sel.GetCount(); ++i)
+			dlg.SelectWildCard(sel[i].Lower(), true, false);
+	}
+
+	if (dlg.ShowModal() == wxID_OK)
+	{
+		wxArrayString ret = dlg.GetSelectedStrings();
+		if (ret.GetCount() == 3)
+			txtP->SetValue(_("All"));
+		else
+		{
+			wxString platform = GetStringFromArray(ret);
+			txtP->SetValue(platform);
+		}
+	}
+}
+
 void ProjectOptionsDlg::OnScriptMoveUp(wxSpinEvent& event)
 {
     wxListBox* ctrl = XRCCTRL(*this, "lstPreScripts", wxListBox);
@@ -1006,6 +1049,7 @@ void ProjectOptionsDlg::EndModal(int retCode)
     if (retCode == wxID_OK)
     {
         m_Project->SetTitle(XRCCTRL(*this, "txtProjectName", wxTextCtrl)->GetValue());
+        m_Project->SetPlatforms(GetPlatformsFromString(XRCCTRL(*this, "txtPlatformProj", wxTextCtrl)->GetValue()));
         m_Project->RenameInTree(m_Project->GetTitle());
         m_Project->SetMakefile(XRCCTRL(*this, "txtProjectMakefile", wxTextCtrl)->GetValue());
         m_Project->SetMakefileCustom(XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->GetValue());

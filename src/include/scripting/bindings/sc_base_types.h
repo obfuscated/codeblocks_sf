@@ -15,6 +15,7 @@
 #include <pluginmanager.h>
 #include <scriptingmanager.h>
 #include <compilerfactory.h>
+#include <compiletargetbase.h>
 #include <cbproject.h>
 #include <cbeditor.h>
 #include <sqplus.h>
@@ -55,6 +56,7 @@ DECLARE_ENUM_TYPE(OptionsRelation);
 DECLARE_ENUM_TYPE(OptionsRelationType);
 DECLARE_ENUM_TYPE(TargetType);
 DECLARE_ENUM_TYPE(PCHMode);
+DECLARE_ENUM_TYPE(MakeCommand);
 DECLARE_ENUM_TYPE(TemplateOutputType);
 DECLARE_ENUM_TYPE(SearchDirs);
 DECLARE_ENUM_TYPE(ModuleType);

@@ -26,10 +26,11 @@ class DLLIMPORT CompileOptionsBase
 		CompileOptionsBase();
 		virtual ~CompileOptionsBase();
 
-		virtual const wxString* GetSupportedPlatforms() const;
-
-		virtual void SetPlatform(const wxString& platform);
-		virtual const wxString& GetPlatform() const;
+		virtual void AddPlatform(int platform);
+		virtual void RemovePlatform(int platform);
+		virtual void SetPlatforms(int platforms);
+		virtual int GetPlatforms() const;
+		virtual bool SupportsCurrentPlatform() const;
 
 		virtual void SetLinkerOptions(const wxArrayString& linkerOpts);
 		virtual const wxArrayString& GetLinkerOptions() const;
@@ -88,7 +89,7 @@ class DLLIMPORT CompileOptionsBase
 		virtual const wxString& GetVar(const wxString& key) const;
 		virtual const StringHash& GetAllVars() const;
 	protected:
-		wxString m_Platform;
+		int m_Platform;
 		wxArrayString m_LinkerOptions;
 		wxArrayString m_LinkLibs;
 		wxArrayString m_CompilerOptions;

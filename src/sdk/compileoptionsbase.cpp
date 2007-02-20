@@ -33,15 +33,9 @@
     #include "macrosmanager.h"
 #endif
 
-static const wxString s_KnownPlatforms[] =
-{
-    _T("any"),
-    _T("windows"),
-    _T("unix"),
-};
-
 CompileOptionsBase::CompileOptionsBase()
-	: m_Modified(false),
+	: m_Platform(spAll),
+	m_Modified(false),
 	m_AlwaysRunPostCmds(false)
 {
 	//ctor
@@ -52,22 +46,44 @@ CompileOptionsBase::~CompileOptionsBase()
 	//dtor
 }
 
-const wxString* CompileOptionsBase::GetSupportedPlatforms() const
+void CompileOptionsBase::AddPlatform(int platform)
 {
-    return s_KnownPlatforms;
-}
-
-void CompileOptionsBase::SetPlatform(const wxString& platform)
-{
-	if (m_Platform == platform)
+	if (m_Platform & platform)
 		return;
-	m_Platform = platform;
+	m_Platform |= platform;
 	SetModified(true);
 }
 
-const wxString& CompileOptionsBase::GetPlatform() const
+void CompileOptionsBase::RemovePlatform(int platform)
+{
+	if (!(m_Platform & platform))
+		return;
+	m_Platform &= ~platform;
+	SetModified(true);
+}
+
+void CompileOptionsBase::SetPlatforms(int platforms)
+{
+	if (m_Platform == platforms)
+		return;
+	m_Platform = platforms;
+	SetModified(true);
+}
+
+int CompileOptionsBase::GetPlatforms() const
 {
 	return m_Platform;
+}
+
+bool CompileOptionsBase::SupportsCurrentPlatform() const
+{
+	#ifdef __WXMSW__
+	return m_Platform & spWindows;
+	#elif __WXGTK__
+	return m_Platform & spUnix;
+	#else
+	return m_Platform & spMac;
+	#endif
 }
 
 void CompileOptionsBase::SetLinkerOptions(const wxArrayString& linkerOpts)

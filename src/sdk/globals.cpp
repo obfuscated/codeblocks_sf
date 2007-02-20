@@ -58,6 +58,46 @@ const wxString DEFAULT_ARRAY_SEP     = _T(";");
 const wxString DEFAULT_CONSOLE_TERM  = _T("xterm -T $TITLE -e");
 const wxString DEFAULT_CONSOLE_SHELL = _T("/bin/sh -c");
 
+int GetPlatformsFromString(const wxString& platforms)
+{
+	bool pW = platforms.Contains(_("Windows"));
+	bool pU = platforms.Contains(_("Unix"));
+	bool pM = platforms.Contains(_("Mac"));
+	bool pA = platforms.Contains(_("All"));
+
+	if (pA || (pW && pU && pM))
+		return spAll;
+
+	int p = 0;
+	if (pW)
+		p |= spWindows;
+	if (pU)
+		p |= spUnix;
+	if (pM)
+		p |= spMac;
+	return p;
+}
+
+wxString GetStringFromPlatforms(int platforms, bool forceSeparate)
+{
+	wxString ret;
+	
+	if (!forceSeparate)
+	{
+		int tmpAll = spWindows | spUnix | spMac;
+		if (((platforms & tmpAll) == tmpAll) || ((platforms & spAll) == spAll))
+			return _("All");
+	}
+
+	if (platforms & spWindows)
+		ret << _("Windows;");
+	if (platforms & spUnix)
+		ret << _("Unix;");
+	if (platforms & spMac)
+		ret << _("Mac;");
+	return ret;
+}
+
 wxString GetStringFromArray(const wxArrayString& array, const wxString& separator)
 {
     wxString out;

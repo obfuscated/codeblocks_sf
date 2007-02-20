@@ -38,6 +38,7 @@ class ProjectOptionsDlg : public wxDialog
 		void OnProjectBuildOptionsClick(wxCommandEvent& event);
 		void OnProjectDepsClick(wxCommandEvent& event);
 		void OnTargetBuildOptionsClick(wxCommandEvent& event);
+		void OnPlatform(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
 
 		void OnScriptsOverviewSelChanged(wxTreeEvent& event);

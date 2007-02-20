@@ -346,6 +346,11 @@ namespace ScriptBindings
                 var(&ProjectFile::compilerVar, "compilerVar");
 
         SqPlus::SQClassDef<CompileOptionsBase>("CompileOptionsBase").
+                func(&CompileOptionsBase::AddPlatform, "AddPlatform").
+                func(&CompileOptionsBase::RemovePlatform, "RemovePlatform").
+                func(&CompileOptionsBase::SetPlatforms, "SetPlatforms").
+                func(&CompileOptionsBase::GetPlatforms, "GetPlatforms").
+                func(&CompileOptionsBase::SupportsCurrentPlatform, "SupportsCurrentPlatform").
                 func(&CompileOptionsBase::SetLinkerOptions, "SetLinkerOptions").
                 func(&CompileOptionsBase::SetLinkLibs, "SetLinkLibs").
                 func(&CompileOptionsBase::SetCompilerOptions, "SetCompilerOptions").
@@ -418,7 +423,10 @@ namespace ScriptBindings
                 func(&CompileTargetBase::GetHostApplication, "GetHostApplication").
                 func(&CompileTargetBase::SetHostApplication, "SetHostApplication").
                 func(&CompileTargetBase::SetCompilerID, "SetCompilerID").
-                func(&CompileTargetBase::GetCompilerID, "GetCompilerID");
+                func(&CompileTargetBase::GetCompilerID, "GetCompilerID").
+                func(&CompileTargetBase::GetMakeCommandFor, "GetMakeCommandFor").
+                func(&CompileTargetBase::SetMakeCommandFor, "SetMakeCommandFor").
+                func(&CompileTargetBase::MakeCommandsModified, "MakeCommandsModified");
 
         SqPlus::SQClassDef<ProjectBuildTarget>("ProjectBuildTarget", "CompileTargetBase").
                 func(&ProjectBuildTarget::GetParentProject, "GetParentProject").
