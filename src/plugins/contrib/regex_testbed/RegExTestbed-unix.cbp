@@ -47,9 +47,11 @@
 		<Unit filename="wxsmith/RegExDlg.wxs" />
 		<Extensions>
 			<code_completion />
-			<wxsmith>
-				<dialog wxs_file="RegExDlg.wxs" class="RegExDlg" src_file="regexdlg.cpp" header_file="regexdlg.h" xrc_file="regexdlg.xrc" edit_mode="Xrc" />
-				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxDialog wxs="wxsmith/RegExDlg.wxs" src="regexdlg.cpp" hdr="regexdlg.h" xrc="regexdlg.xrc" name="RegExDlg" language="CPP" />
+				</resources>
 			</wxsmith>
 		</Extensions>
 	</Project>

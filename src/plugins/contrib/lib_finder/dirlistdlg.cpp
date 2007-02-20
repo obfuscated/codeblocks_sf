@@ -4,6 +4,12 @@
 #include <wx/string.h>
 #include <wx/tokenzr.h>
 
+//(*InternalHeaders(DirListDlg)
+//*)
+
+//(*IdInit(DirListDlg)
+//*)
+
 BEGIN_EVENT_TABLE(DirListDlg,wxDialog)
 	//(*EventTable(DirListDlg)
 	EVT_BUTTON(ID_BUTTON1,DirListDlg::OnButton1Click)

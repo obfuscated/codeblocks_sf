@@ -69,9 +69,11 @@
 		<Extensions>
 			<code_completion />
 			<wxsmith version="1">
-				<dialog wxs_file="DirListDlg.wxs" class="DirListDlg" src_file="dirlistdlg.cpp" header_file="dirlistdlg.h" xrc_file="" edit_mode="Source" />
-				<dialog wxs_file="ProcessingDlg.wxs" class="ProcessingDlg" src_file="processingdlg.cpp" header_file="processingdlg.h" xrc_file="" edit_mode="Source" />
-				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxDialog wxs="wxsmith/DirListDlg.wxs" src="dirlistdlg.cpp" hdr="dirlistdlg.h" name="DirListDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/ProcessingDlg.wxs" src="processingdlg.cpp" hdr="processingdlg.h" name="ProcessingDlg" language="CPP" />
+				</resources>
 			</wxsmith>
 		</Extensions>
 	</Project>

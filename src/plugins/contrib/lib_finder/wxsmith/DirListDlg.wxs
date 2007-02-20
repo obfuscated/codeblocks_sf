@@ -1,4 +1,4 @@
-<resource>
+<wxsmith>
     <object class="wxDialog" name="DirListDlg">
         <title>List of directories with libraries</title>
         <style>wxDEFAULT_DIALOG_STYLE</style>
@@ -19,7 +19,7 @@
                         <border>5</border>
                         <flag>wxBOTTOM|wxALIGN_CENTER</flag>
                         <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="DirList" member="yes">
-                            <value></value>
+                            <value />
                             <size>292,194</size>
                             <style>wxTE_MULTILINE</style>
                         </object>
@@ -76,4 +76,4 @@
             </object>
         </object>
     </object>
-</resource>
+</wxsmith>

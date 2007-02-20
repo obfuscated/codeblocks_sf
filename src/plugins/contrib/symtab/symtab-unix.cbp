@@ -25,8 +25,8 @@
 			<Add option='-include &quot;sdk.h&quot;' />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
-			<Add directory="$(CBDIR.include)" />
-			<Add directory="$(CBDIR.include)/wxscintilla/include" />
+			<Add directory="$(CBDIR)/include" />
+			<Add directory="$(CBDIR)/include/wxscintilla/include" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />

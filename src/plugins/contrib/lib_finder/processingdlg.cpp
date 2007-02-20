@@ -9,6 +9,12 @@
 #include "libraryconfigmanager.h"
 #include "resultmap.h"
 
+//(*InternalHeaders(ProcessingDlg)
+//*)
+
+//(*IdInit(ProcessingDlg)
+//*)
+
 BEGIN_EVENT_TABLE(ProcessingDlg,wxDialog)
 	//(*EventTable(ProcessingDlg)
 	EVT_BUTTON(ID_BUTTON1,ProcessingDlg::OnButton1Click)

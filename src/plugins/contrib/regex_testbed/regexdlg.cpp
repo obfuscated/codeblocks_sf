@@ -9,6 +9,12 @@
     #include <configmanager.h>
 #endif
 
+//(*InternalHeaders(RegExDlg)
+//*)
+
+//(*IdInit(RegExDlg)
+//*)
+
 BEGIN_EVENT_TABLE(RegExDlg,wxDialog)
 	EVT_INIT_DIALOG(RegExDlg::OnInit)
 	EVT_BUTTON(XRCID("ID_BENCHMARK"), RegExDlg::RunBenchmark)

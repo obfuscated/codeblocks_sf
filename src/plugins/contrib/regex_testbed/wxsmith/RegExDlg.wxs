@@ -1,4 +1,4 @@
-<resource>
+<wxsmith>
     <object class="wxDialog" name="RegExDlg">
         <title>Regular expressions testbed</title>
         <handler entry="EVT_INIT_DIALOG" function="OnInit" />
@@ -16,7 +16,7 @@
                 <border>5</border>
                 <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                 <object class="wxTextCtrl" name="ID_TXT_REGEX" variable="txtRegEx" member="yes">
-                    <value></value>
+                    <value />
                     <size>410,24</size>
                 </object>
             </object>
@@ -31,7 +31,7 @@
                 <border>5</border>
                 <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                 <object class="wxTextCtrl" name="ID_TXT_INPUT" variable="txtInput" member="yes">
-                    <value></value>
+                    <value />
                     <size>410,133</size>
                     <style>wxTE_MULTILINE</style>
                 </object>
@@ -47,7 +47,7 @@
                 <border>5</border>
                 <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                 <object class="wxTextCtrl" name="ID_TXT_OUTPUT" variable="txtOutput" member="yes">
-                    <value></value>
+                    <value />
                     <size>410,133</size>
                     <style>wxTE_MULTILINE|wxTE_READONLY</style>
                 </object>
@@ -83,4 +83,20 @@
             </object>
         </object>
     </object>
-</resource>
+    <resource_extra>
+        <object root="1">
+            <handler entry="EVT_INIT_DIALOG" function="OnInit" />
+        </object>
+        <object variable="lblRegEx" member="no" name="ID_LBL_REGEX" class="wxStaticText" />
+        <object variable="txtRegEx" member="yes" name="ID_TXT_REGEX" class="wxTextCtrl" />
+        <object variable="lblInput" member="no" name="ID_LBL_INPUT" class="wxStaticText" />
+        <object variable="txtInput" member="yes" name="ID_TXT_INPUT" class="wxTextCtrl" />
+        <object variable="lblOutput" member="no" name="ID_LBL_OUTPUT" class="wxStaticText" />
+        <object variable="txtOutput" member="yes" name="ID_TXT_OUTPUT" class="wxTextCtrl" />
+        <object variable="stlLine" member="no" name="ID_STL_LINE" class="wxStaticLine" />
+        <object variable="btnTest" member="yes" name="ID_BTN_TEXT" class="wxButton">
+            <handler entry="EVT_BUTTON" function="OnTestClick" />
+        </object>
+        <object variable="btnCancel" member="yes" name="wxID_CANCEL" class="wxButton" />
+    </resource_extra>
+</wxsmith>
