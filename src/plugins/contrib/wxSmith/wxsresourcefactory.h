@@ -35,6 +35,8 @@ class wxsResourceFactory
          */
         static bool NewResourceMenu(int Id,wxsProject* Project);
 
+        static int ResourceTreeIcon(const wxString &ResourceType);
+
     protected:
 
         /** \brief Ctor */
@@ -66,6 +68,9 @@ class wxsResourceFactory
          * to get needed params.
          */
         virtual bool OnNewWizard(int Number,wxsProject* Project) = 0;
+
+        /** \brief Function getting icon in resource browser for this resource entry */
+        virtual int OnResourceTreeIcon(int Number) { return -1; }
 
     private:
 

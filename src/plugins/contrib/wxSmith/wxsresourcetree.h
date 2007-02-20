@@ -45,6 +45,12 @@ class wxsResourceTree: public wxTreeCtrl
          */
         static wxImageList& GetGlobalImageList();
 
+        /** \brief Loading image to list
+         *  \param FileName name relative to codeblock's data path
+         *  \return Index in list
+         */
+        static int LoadImage(const wxString& FileName);
+
         /** \brief Blocking processing select events
          * \note This function must be paired with UnblockSelect
          */
@@ -61,6 +67,10 @@ class wxsResourceTree: public wxTreeCtrl
         bool m_IsExt;                           ///< \brief True if there is item for external resources
         int m_BlockCount;                       ///< \brief if > 0 must block all select events
         static wxsResourceTree* m_Singleton;    ///< \brief singleton object
+
+        static int m_RootImageId;
+        static int m_ProjectImageId;
+        static int m_ExternalImageId;
 
 
         void OnSelect(wxTreeEvent& event);

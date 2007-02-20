@@ -15,6 +15,7 @@ class wxWidgetsResFactory : public wxsResourceFactory
         virtual bool OnCanHandleExternal(const wxString& FileName);
         virtual wxsResource* OnBuildExternal(const wxString& FileName);
         virtual bool OnNewWizard(int Number,wxsProject* Project);
+        virtual int OnResourceTreeIcon(int Number);
 };
 
 

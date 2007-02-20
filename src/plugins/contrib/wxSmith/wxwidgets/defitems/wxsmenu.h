@@ -21,7 +21,7 @@ class wxsMenu: public wxsTool
         virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
         virtual bool OnCanAddToParent(wxsParent* Item,bool ShowMessage);
         virtual bool OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra);
-        virtual wxString OnGetTreeLabel();
+        virtual wxString OnGetTreeLabel(int& Image);
 
 //        wxSize CalculateSize(wxArrayInt* Cols = 0); ///< \brief Getting size of this item requied by editor
 //        void   Draw(wxDC* DC,int BegX,int BegY);    ///< \brief Drawing preview of this menu in some DC

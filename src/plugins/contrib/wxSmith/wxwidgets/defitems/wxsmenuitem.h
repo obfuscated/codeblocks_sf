@@ -25,7 +25,7 @@ class wxsMenuItem: public wxsTool
         virtual bool OnCanAddToParent(wxsParent* Parent,bool ShowMessage);
         virtual bool OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra);
         virtual void OnBuildDeclarationCode(wxString& Code,wxsCodingLang Language);
-        virtual wxString OnGetTreeLabel();
+        virtual wxString OnGetTreeLabel(int& Image);
 
         enum Type                                   ///< \brief Type of menu (or it's item)
         {

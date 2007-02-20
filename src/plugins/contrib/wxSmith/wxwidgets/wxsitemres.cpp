@@ -23,6 +23,7 @@
 
 #include "wxsitemres.h"
 #include "wxsitemeditor.h"
+#include "wxsitemfactory.h"
 #include "../wxscoder.h"
 
 IMPLEMENT_CLASS(wxsItemRes,wxWidgetsRes)
@@ -298,4 +299,11 @@ wxsItemRes::EditMode wxsItemRes::GetEditMode()
     if ( m_WxsFileName.empty() ) return File;
     if ( m_XrcFileName.empty() ) return Source;
     return Mixed;
+}
+
+int wxsItemRes::OnGetTreeIcon()
+{
+    const wxsItemInfo* Info = wxsItemFactory::GetInfo(GetResourceType());
+    if ( Info ) return Info->TreeIconId;
+    return wxsResource::OnGetTreeIcon();
 }

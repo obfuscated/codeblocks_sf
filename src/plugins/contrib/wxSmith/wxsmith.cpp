@@ -77,7 +77,6 @@ void wxSmith::OnAttach()
     // Adding resource browser
     wxSizer* Sizer = new wxGridSizer(1);
     wxTreeCtrl* ResourceBrowser = new wxsResourceTree(ResourcesContainer);
-    ResourceBrowser->Expand(ResourceBrowser->AddRoot(_("Resources")));
     Sizer->Add(ResourceBrowser,1,wxGROW|wxALL);
     ResourcesContainer->SetSizer(Sizer);
 

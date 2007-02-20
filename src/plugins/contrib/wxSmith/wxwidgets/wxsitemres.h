@@ -74,6 +74,8 @@ class wxsItemRes: public wxWidgetsRes, public wxsItemResFunctions
 
     private:
 
+        virtual int OnGetTreeIcon();
+
         wxString m_WxsFileName;
         wxString m_SrcFileName;
         wxString m_HdrFileName;

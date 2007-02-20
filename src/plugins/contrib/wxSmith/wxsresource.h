@@ -138,6 +138,9 @@ class wxsResource: public wxObject
         /** \brief Function which should build this resource in application initializing code */
         virtual wxString OnGetAppBuildingCode() { return wxEmptyString; }
 
+        /** \brief Index of icon in resource browser */
+        virtual int OnGetTreeIcon() { return -1; }
+
     private:
 
         /** \brief Function called from wxsEditor just before it's deletion */

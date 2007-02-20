@@ -43,11 +43,15 @@ namespace
 }
 
 wxsResourceTree* wxsResourceTree::m_Singleton = NULL;
+int wxsResourceTree::m_RootImageId = LoadImage(_T("/images/gohome.png"));
+int wxsResourceTree::m_ProjectImageId = LoadImage(_T("/images/codeblocks.png"));
+int wxsResourceTree::m_ExternalImageId = LoadImage(_T("/images/wxsmith/deletewidget16.png"));
 
 wxsResourceTree::wxsResourceTree(wxWindow* Parent): wxTreeCtrl(Parent,-1), m_IsExt(false), m_BlockCount(0)
 {
     m_Singleton = this;
     SetImageList(&GetGlobalImageList());
+    Expand(AddRoot(_("Resources"),m_RootImageId));
 }
 
 wxsResourceTree::~wxsResourceTree()
@@ -61,13 +65,13 @@ wxsResourceItemId wxsResourceTree::NewProjectItem(const wxString& ProjectTitle,w
     if ( !m_IsExt )
     {
         Id = AppendItem(GetRootItem(),
-            ProjectTitle,-1,-1,
+            ProjectTitle,m_ProjectImageId,m_ProjectImageId,
             new wxsResourceTreeProjectData(Project));
     }
     else
     {
         Id = InsertItem(GetRootItem(),GetChildrenCount(GetRootItem(),false),
-            ProjectTitle,-1,-1,
+            ProjectTitle,m_ProjectImageId,m_ProjectImageId,
             new wxsResourceTreeProjectData(Project));
     }
 
@@ -80,7 +84,8 @@ wxsResourceItemId wxsResourceTree::ExternalResourcesId()
     if ( !m_IsExt )
     {
         m_ExtId = AppendItem(GetRootItem(),
-            _("External resources"),-1,-1,NULL);
+            _("External resources"),m_ExternalImageId,m_ExternalImageId,
+            NULL);
         m_IsExt = true;
     }
     return m_ExtId;
@@ -116,9 +121,15 @@ wxImageList& wxsResourceTree::GetGlobalImageList()
     {
         // Adding some zero-index image
         List.Add(wxBitmap(wxImage(16,16)),*wxBLACK);
+
         FirstTime = false;
     }
     return List;
+}
+
+int wxsResourceTree::LoadImage(const wxString& FileName)
+{
+    return GetGlobalImageList().Add(wxBitmap(ConfigManager::GetDataFolder()+FileName,wxBITMAP_TYPE_ANY));
 }
 
 void wxsResourceTree::BlockSelect()

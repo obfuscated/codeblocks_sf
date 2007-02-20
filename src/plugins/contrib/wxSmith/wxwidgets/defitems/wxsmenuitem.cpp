@@ -313,7 +313,7 @@ bool wxsMenuItem::OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
     return true;
 }
 
-wxString wxsMenuItem::OnGetTreeLabel()
+wxString wxsMenuItem::OnGetTreeLabel(int& Image)
 {
     switch ( m_Type )
     {

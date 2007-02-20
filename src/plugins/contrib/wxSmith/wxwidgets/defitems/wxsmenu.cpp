@@ -310,15 +310,15 @@ bool wxsMenu::OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
     return true;
 }
 
-wxString wxsMenu::OnGetTreeLabel()
+wxString wxsMenu::OnGetTreeLabel(int& Image)
 {
     if ( GetParent() )
     {
-        // This is internal item of wxMenu / wxMenuBar,
+        // This is internal item of wxMenuBar,
         // we give the description like in wxMenuItem
         return m_Label;
     }
 
     // When this is tool, we return usual description
-    return wxsItem::OnGetTreeLabel();
+    return wxsItem::OnGetTreeLabel(Image);
 }

@@ -25,6 +25,8 @@
 #include "wxsframeres.h"
 #include "wxspanelres.h"
 #include "wxsnewwindowdlg.h"
+#include "wxsitemfactory.h"
+#include "../wxsresourcetree.h"
 
 #include <wx/choicdlg.h>
 
@@ -147,4 +149,13 @@ bool wxWidgetsResFactory::OnNewWizard(int Number,wxsProject* Project)
 {
     wxsNewWindowDlg Dlg(NULL,NamesPtr[Number],Project);
     return Dlg.ShowModal() == wxID_OK;
+}
+
+int wxWidgetsResFactory::OnResourceTreeIcon(int Number)
+{
+    const wxsItemInfo* Info = wxsItemFactory::GetInfo(Names[Number]);
+    if ( Info ) return Info->TreeIconId;
+    // If there's no valid info, we return id from wxsResourceFactory
+    // to get default value
+    return wxsResourceFactory::OnResourceTreeIcon(0);
 }

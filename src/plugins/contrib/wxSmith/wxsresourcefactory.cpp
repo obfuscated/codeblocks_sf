@@ -136,3 +136,14 @@ bool wxsResourceFactory::NewResourceMenu(int Id,wxsProject* Project)
     }
     return false;
 }
+
+int wxsResourceFactory::ResourceTreeIcon(const wxString& ResourceType)
+{
+    InitializeFromQueue();
+    ResourceInfo& Info = m_Hash[ResourceType];
+    if ( !Info.m_Factory )
+    {
+        return -1;
+    }
+    return Info.m_Factory->OnResourceTreeIcon(Info.m_Number);
+}

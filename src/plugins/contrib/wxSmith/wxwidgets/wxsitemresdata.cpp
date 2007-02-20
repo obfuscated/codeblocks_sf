@@ -30,6 +30,11 @@
 
 #include <wx/clipbrd.h>
 
+namespace
+{
+    const int ToolsTreeImageId = wxsResourceTree::LoadImage(_T("/images/misc_16x16.png"));
+}
+
 wxsItemResData::wxsItemResData(
     const wxString& WxsFileName,
     const wxString& SrcFileName,
@@ -1456,7 +1461,7 @@ void wxsItemResData::RebuildTree()
     m_RootItem->BuildItemTree(wxsResourceTree::Get(),m_TreeId,-1);
     if ( GetToolsCount() )
     {
-        wxsResourceItemId ToolsId = wxsResourceTree::Get()->AppendItem(m_TreeId,_("Tools"));
+        wxsResourceItemId ToolsId = wxsResourceTree::Get()->AppendItem(m_TreeId,_("Tools"),ToolsTreeImageId,ToolsTreeImageId);
         for ( int i=0; i<GetToolsCount(); i++ )
         {
             m_Tools[i]->BuildItemTree(wxsResourceTree::Get(),ToolsId,-1);

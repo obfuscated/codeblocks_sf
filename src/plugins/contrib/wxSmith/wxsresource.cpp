@@ -106,7 +106,7 @@ void wxsResource::BuildTreeEntry(const wxsResourceItemId& Parent)
     m_TreeItemId = wxsTree()->AppendItem(
         Parent,
         GetResourceName(),
-        -1, -1,
+        OnGetTreeIcon(), OnGetTreeIcon(),
         new wxsResourceOpening(this));
 }
 

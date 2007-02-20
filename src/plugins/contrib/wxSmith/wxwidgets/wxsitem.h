@@ -528,7 +528,7 @@ class wxsItem: public wxsPropertyContainer
          *
          * Default implementation returns string "<ClassName>: <VarName>" or "<ClassName>"
          */
-        virtual wxString OnGetTreeLabel();
+        virtual wxString OnGetTreeLabel(int& Image);
 
     private:
 

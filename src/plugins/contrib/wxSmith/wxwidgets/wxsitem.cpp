@@ -200,13 +200,15 @@ bool wxsItem::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
 
 void wxsItem::BuildItemTree(wxsResourceTree* Tree,wxsResourceItemId Parent,int Position)
 {
+    int Image = GetInfo().TreeIconId;
+    wxString Label = OnGetTreeLabel(Image);
     if ( Position<0 || Position>=(int)Tree->GetChildrenCount(Parent) )
     {
-        m_LastTreeId = Tree->AppendItem(Parent,OnGetTreeLabel(),GetInfo().TreeIconId,GetInfo().TreeIconId,new wxsItemResTreeData(this));
+        m_LastTreeId = Tree->AppendItem(Parent,Label,Image,Image,new wxsItemResTreeData(this));
     }
     else
     {
-        m_LastTreeId = Tree->InsertItem(Parent,Position,OnGetTreeLabel(),GetInfo().TreeIconId,GetInfo().TreeIconId,new wxsItemResTreeData(this));
+        m_LastTreeId = Tree->InsertItem(Parent,Position,Label,Image,Image,new wxsItemResTreeData(this));
     }
 
     wxsParent* ParentItem = ConvertToParent();
@@ -487,7 +489,7 @@ wxString wxsItem::GetUserClass()
     return GetClassName();
 }
 
-wxString wxsItem::OnGetTreeLabel()
+wxString wxsItem::OnGetTreeLabel(int& Image)
 {
     if ( GetPropertiesFlags() & flVariable )
     {
