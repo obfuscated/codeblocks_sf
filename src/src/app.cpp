@@ -216,8 +216,7 @@ static wxString GetResourcesDir()
 
 bool CodeBlocksApp::LoadConfig()
 {
-    if (ParseCmdLine(0L) != 0)
-
+    if (ParseCmdLine(0L) == -1) // only abort if '--help' was passed in the command line
         return false;
 
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
@@ -796,12 +795,17 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 	bool filesInCmdLine = false;
 
 #if wxUSE_CMDLINE_PARSER
-    wxCmdLineParser parser(cmdLineDesc, argc, argv);
+    wxCmdLineParser& parser = *Manager::GetCmdLineParser();
+    parser.SetDesc(cmdLineDesc);
+    parser.SetCmdLine(argc, argv);
     // wxApp::argc is a wxChar**
 
-    switch ( parser.Parse() )
+	// don't display errors as plugins will have the chance to parse the command-line
+	// too, so we don't know here what exactly are the supported options
+    switch ( parser.Parse(false) )
     {
         case -1:
+			parser.Usage();
             return -1;
 
         case 0:

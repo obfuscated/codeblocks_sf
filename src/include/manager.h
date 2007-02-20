@@ -10,6 +10,7 @@
 #define MANAGER_H
 
 #include <wx/event.h>
+#include <wx/cmdline.h>
 #include "settings.h"
 
 // forward decls
@@ -31,7 +32,6 @@ class FileManager;
 class CodeBlocksEvent;
 
 
-
 class DLLIMPORT Manager
 {
     bool SendEventTo(wxEvtHandler* handler, CodeBlocksEvent& event);
@@ -40,6 +40,7 @@ class DLLIMPORT Manager
     static bool appShuttingDown;
     static bool blockYields;
     static bool isBatch;
+    static wxCmdLineParser m_CmdLineParser;
 
     Manager();
     ~Manager();
@@ -122,6 +123,8 @@ public:
 
     static void AddonToolBar(wxToolBar* toolBar,wxString resid);
     static bool isToolBar16x16(wxToolBar* toolBar);
+    
+    static wxCmdLineParser* GetCmdLineParser();
 };
 
 template <class MgrT> class Mgr

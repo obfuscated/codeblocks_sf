@@ -346,7 +346,12 @@ bool Manager::LoadResource(const wxString& file)
     }
 }
 
+wxCmdLineParser* Manager::GetCmdLineParser()
+{
+	return &m_CmdLineParser;
+}
 
 bool Manager::appShuttingDown = false;
 bool Manager::blockYields = false;
 bool Manager::isBatch = false;
+wxCmdLineParser Manager::m_CmdLineParser;
