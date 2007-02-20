@@ -104,10 +104,12 @@ void* ClassBrowserBuilderThread::Entry()
 		
         if (TestDestroy() || Manager::IsAppShuttingDown())
         {
+#ifdef __WXGTK__
 			if(!::wxIsMainThread())
 			{
 				::wxMutexGuiLeave();
 			}
+#endif // __WXGTK__
             break;
         }
 
