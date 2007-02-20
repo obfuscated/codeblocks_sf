@@ -948,6 +948,12 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
             ++m_MaxProgress;
         }
     }
+    
+    if (m_BuildProgress)
+    {
+    	m_BuildProgress->SetRange(m_MaxProgress);
+    	m_BuildProgress->SetValue(m_CurrentProgress);
+    }
 }
 
 void CompilerGCC::AllocProcesses()
