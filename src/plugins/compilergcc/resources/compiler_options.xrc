@@ -1164,6 +1164,11 @@ Makefile.</label>
                               <border>8</border>
                             </object>
                             <object class="sizeritem">
+                              <object class="wxStaticLine"/>
+                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
                               <object class="wxCheckBox" name="chkSaveHtmlLog">
                                 <label>Save build log to HTML file when build is finished.</label>
                               </object>
@@ -1183,6 +1188,20 @@ Makefile.</label>
                               </object>
                               <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
                               <border>4</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkBuildProgressBar">
+                                <label>Display build progress bar</label>
+                              </object>
+                              <flag>wxALL|wxGROW</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkBuildProgressPerc">
+                                <label>Display build progress percentage in log</label>
+                              </object>
+                              <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                              <border>8</border>
                             </object>
                           </object>
                           <flag>wxALL|wxGROW</flag>

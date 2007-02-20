@@ -483,6 +483,14 @@ void CompilerOptionsDlg::DoFillOthers()
     if (chk)
         chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log/full_command_line"), false));
 
+    chk = XRCCTRL(*this, "chkBuildProgressBar", wxCheckBox);
+    if (chk)
+        chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/bar"), false));
+
+    chk = XRCCTRL(*this, "chkBuildProgressPerc", wxCheckBox);
+    if (chk)
+        chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/percentage"), false));
+
     wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
     if (spn)
     {
@@ -2064,7 +2072,21 @@ void CompilerOptionsDlg::OnApply()
     chk = XRCCTRL(*this, "chkFullHtmlLog", wxCheckBox);
     if (chk)
         Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/save_html_build_log/full_command_line"), (bool)chk->IsChecked());
-
+    chk = XRCCTRL(*this, "chkBuildProgressBar", wxCheckBox);
+    if (chk)
+    {
+        Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/build_progress/bar"), (bool)chk->IsChecked());
+		if (chk->IsChecked())
+			m_Compiler->AddBuildProgressBar();
+		else
+			m_Compiler->RemoveBuildProgressBar();
+    }
+    chk = XRCCTRL(*this, "chkBuildProgressPerc", wxCheckBox);
+    if (chk)
+    {
+        Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/build_progress/percentage"), (bool)chk->IsChecked());
+        m_Compiler->m_LogBuildProgressPercentage = chk->IsChecked();
+    }
     wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
     if (spn)
     {

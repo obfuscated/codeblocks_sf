@@ -64,6 +64,7 @@ enum LogTarget
 class wxTimerEvent;
 class wxComboBox;
 class wxStaticText;
+class wxGauge;
 
 class CompilerGCC : public cbCompilerPlugin
 {
@@ -174,7 +175,7 @@ class CompilerGCC : public cbCompilerPlugin
         wxString ProjectMakefile();
         void AddOutputLine(const wxString& output, bool forceErrorColour = false);
         void LogWarningOrError(CompilerLineType lt, cbProject* prj, const wxString& filename, const wxString& line, const wxString& msg);
-        void LogMessage(const wxString& message, CompilerLineType lt = cltNormal, LogTarget log = ltAll, bool forceErrorColour = false, bool isTitle = false);
+        void LogMessage(const wxString& message, CompilerLineType lt = cltNormal, LogTarget log = ltAll, bool forceErrorColour = false, bool isTitle = false, bool updateProgress = false);
         void SaveBuildLog();
         void InitBuildLog(bool workspaceBuild);
         void PrintBanner(cbProject* prj = 0, ProjectBuildTarget* target = 0);
@@ -220,6 +221,9 @@ class CompilerGCC : public cbCompilerPlugin
         void PreprocessJob(cbProject* project, const wxString& targetName);
         BuildJobTarget GetNextJob();
         BuildJobTarget& PeekNextJob();
+        
+        void AddBuildProgressBar();
+        void RemoveBuildProgressBar();
 
         wxArrayString m_Targets; // list of targets contained in the active project
         int m_RealTargetsStartIndex;
@@ -275,6 +279,12 @@ class CompilerGCC : public cbCompilerPlugin
         wxString m_BuildLogTitle;
         wxString m_BuildLogContents;
         wxDateTime m_BuildStartTime;
+        
+        // build progress
+        size_t m_MaxProgress;
+        size_t m_CurrentProgress;
+        bool m_LogBuildProgressPercentage;
+        wxGauge* m_BuildProgress;
 
         DECLARE_EVENT_TABLE()
 };

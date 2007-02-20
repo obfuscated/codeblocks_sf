@@ -45,6 +45,7 @@
 #include <wx/button.h>
 #include <wx/stattext.h>
 #include <wx/statline.h>
+#include <wx/gauge.h>
 #include "makefilegenerator.h"
 #include "compileroptionsdlg.h"
 #include "directcommands.h"
@@ -247,7 +248,9 @@ CompilerGCC::CompilerGCC()
     m_RunTargetPostBuild(false),
     m_RunProjectPostBuild(false),
     m_DeleteTempMakefile(true),
-    m_IsWorkspaceOperation(false)
+    m_IsWorkspaceOperation(false),
+    m_LogBuildProgressPercentage(false),
+    m_BuildProgress(0)
 {
     if(!Manager::LoadResource(_T("compiler.zip")))
     {
@@ -325,6 +328,11 @@ void CompilerGCC::OnAttach()
     m_Log = new SimpleTextLog(true);
     m_PageIndex = msgMan->AddLog(m_Log, _("Build log"));
     msgMan->SetBatchBuildLog(m_PageIndex);
+    
+    m_LogBuildProgressPercentage = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/percentage"), false);
+    bool hasBuildProg = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/bar"), false);
+    if (hasBuildProg)
+		AddBuildProgressBar();
 
     // set log image
     wxBitmap bmp;
@@ -368,6 +376,8 @@ void CompilerGCC::OnRelease(bool appShutDown)
 {
     // disable script functions
     ScriptBindings::gBuildLogId = -1;
+
+	RemoveBuildProgressBar();
 
     DoDeleteTempMakefile();
     SaveOptions();
@@ -619,6 +629,41 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
         focused->SetFocus();
 }
 
+void CompilerGCC::AddBuildProgressBar()
+{
+	if (!m_BuildProgress)
+	{
+		m_BuildProgress = new wxGauge(m_Log, -1, 0, wxDefaultPosition, wxSize(-1, 8));
+		wxSizer* s = m_Log->GetSizer();
+		if (s)
+		{
+			s->Add(m_BuildProgress, 0, wxEXPAND);
+			s->Layout();
+		}
+		else
+		{
+			delete m_BuildProgress;
+			m_BuildProgress = 0;
+			DBGLOG(_T("Can't create build progress bar: no sizer found"));
+		}
+	}
+}
+
+void CompilerGCC::RemoveBuildProgressBar()
+{
+	if (m_BuildProgress)
+	{
+		wxSizer* s = m_Log->GetSizer();
+		if (s)
+		{
+			s->Detach(m_BuildProgress);
+			m_BuildProgress->Destroy();
+			m_BuildProgress = 0;
+			s->Layout();
+		}
+	}
+}
+
 void CompilerGCC::SetupEnvironment()
 {
     if (!CompilerFactory::GetCompiler(m_CompilerId))
@@ -847,6 +892,8 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
 //    wxString myWaitEnd = wxString(COMPILER_WAIT_END);
 //    ProjectBuildTarget* lastTarget = 0;
     ProjectBuildTarget* bt = m_pBuildingProject ? m_pBuildingProject->GetBuildTarget(GetTargetIndexFromName(m_pBuildingProject, m_BuildingTargetName)) : 0;
+    m_CurrentProgress = 0;
+    m_MaxProgress = 0;
     bool isLink = false;
     size_t count = commands.GetCount();
     for (size_t i = 0; i < count; ++i)
@@ -898,6 +945,7 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
             m_CommandQueue.Add(p);
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("ADD: %s %s"), cmd.c_str(), isLink ? _T("(wait)") : _T(""));
             isLink = false;
+            ++m_MaxProgress;
         }
     }
 }
@@ -1053,7 +1101,7 @@ int CompilerGCC::DoRunQueue()
     if (!cmd->message.IsEmpty())
     {
 //        msgMan->Log(m_PageIndex, _T("[%u] %s"), procIndex, cmd->message.c_str());
-        LogMessage(cmd->message, cltNormal, ltMessages);
+        LogMessage(cmd->message, cltNormal, ltMessages, false, false, true);
     }
 
     if (cmd->command.IsEmpty())
@@ -3112,7 +3160,7 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
     m_Errors.AddError(lt, prj, filename, line.IsEmpty() ? 0 : atoi(line.mb_str()), msg);
 }
 
-void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTarget log, bool forceErrorColour, bool isTitle)
+void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTarget log, bool forceErrorColour, bool isTitle, bool updateProgress)
 {
     // log file
     if (log & ltFile)
@@ -3148,8 +3196,24 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
         else if (lt == cltWarning)
             m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY, wxNullColour));
 
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, message);
-        Manager::Get()->GetMessageManager()->LogToStdOut(message + _T('\n'));
+		wxString progressMsg;
+		if (updateProgress && m_CurrentProgress < m_MaxProgress)
+		{
+			++m_CurrentProgress;
+			if (m_LogBuildProgressPercentage)
+			{
+				float p = (float)(m_CurrentProgress * 100.0f) / (float)m_MaxProgress;
+				progressMsg.Printf(_T("[%5.1f%%] "), p);
+			}
+			if (m_BuildProgress)
+			{
+				m_BuildProgress->SetRange(m_MaxProgress);
+				m_BuildProgress->SetValue(m_CurrentProgress);
+			}
+		}
+
+        Manager::Get()->GetMessageManager()->Log(m_PageIndex, progressMsg + message);
+        Manager::Get()->GetMessageManager()->LogToStdOut(progressMsg + message + _T('\n'));
 
         m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxNullColour));
     }
@@ -3183,6 +3247,8 @@ void CompilerGCC::InitBuildLog(bool workspaceBuild)
     m_BuildLogFilename = basepath;
     m_BuildLogFilename << basename << _T("_build_log.html");
     m_BuildLogContents.Clear();
+    m_MaxProgress = 0;
+    m_CurrentProgress = 0;
 }
 
 void CompilerGCC::SaveBuildLog()
