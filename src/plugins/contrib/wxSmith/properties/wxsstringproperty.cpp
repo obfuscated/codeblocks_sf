@@ -28,7 +28,7 @@
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,wxString)
 
-// TODO: Fix \n handling
+// TODO: Fix \n handling in property editor
 
 
 wxsStringProperty::wxsStringProperty(const wxString& PGName, const wxString& DataName,long _Offset,bool _IsLongString,bool _XmlStoreEmpty,const wxString& _Default):
@@ -78,7 +78,36 @@ bool wxsStringProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Eleme
         VALUE.Clear();
         return false;
     }
-    VALUE = cbC2U(Element->GetText());
+    // TODO: Use proper endocing
+    wxString Base = cbC2U(Element->GetText());
+    wxString Result;
+    for ( const wxChar* Ch = Base.c_str(); *Ch; Ch++ )
+    {
+        if ( *Ch == _T('_') )
+        {
+            if ( *++Ch != _T('_') )
+            {
+                Result << _T('$');
+            }
+            Result << *Ch;
+        }
+        else if ( *Ch == _T('\\') )
+        {
+            switch ( *++Ch )
+            {
+                case _T('n'):  Result << _T('\n'); break;
+                case _T('r'):  Result << _T('\r'); break;
+                case _T('t'):  Result << _T('\t'); break;
+                case _T('\\'): Result << _T('\\'); break;
+                default: Result << _T('\\') << *Ch; break;
+            }
+        }
+        else
+        {
+            Result << *Ch;
+        }
+    }
+    VALUE = Result;
     return true;
 }
 
@@ -86,7 +115,22 @@ bool wxsStringProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Elem
 {
     if ( XmlStoreEmpty || (VALUE != Default) )
     {
-        Element->InsertEndChild(TiXmlText(cbU2C(VALUE)));
+        wxString Base = VALUE;
+        wxString Result;
+        for ( const wxChar* Ch = Base.c_str(); *Ch; Ch++ )
+        {
+            switch ( *Ch )
+            {
+                case _T('_'):  Result << _T("__"); break;
+                case _T('&'):  Result << _T('_');  break;     // We could leave this to be translated into &amp; but this looks nicer ;)
+                case _T('\\'): Result << _T('\\'); break;
+                // We could handle \n and \r here too but this is not necessary since XRC loaging
+                // routines also handle \n and \r chars
+                default:       Result << *Ch;
+            }
+        }
+        // TODO: Use proper encoding
+        Element->InsertEndChild(TiXmlText(cbU2C(Result)));
         return true;
     }
     return false;

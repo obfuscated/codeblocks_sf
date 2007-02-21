@@ -58,22 +58,22 @@ class wxWidgetsGUIAppAdoptingDlg: public wxDialog
 		//*)
 
 		//(*Declarations(wxWidgetsGUIAppAdoptingDlg)
-		wxBoxSizer*  BoxSizer1;
-		wxBoxSizer*  BoxSizer4;
-		wxStaticBoxSizer*  StaticBoxSizer1;
-		wxListBox*  FoundFiles;
-		wxGauge*  Progress;
-		wxBoxSizer*  BoxSizer2;
-		wxStaticText*  ScanningTxt;
-		wxStaticText*  ScanningFile;
-		wxBoxSizer*  BoxSizer3;
-		wxButton*  UseFileBtn;
-		wxButton*  SelectBtn;
-		wxButton*  CreateBtn;
-		wxStaticLine*  StaticLine2;
-		wxButton*  Button4;
-		wxStaticLine*  StaticLine1;
-		wxButton*  Button6;
+		wxBoxSizer* BoxSizer1;
+		wxBoxSizer* BoxSizer4;
+		wxStaticBoxSizer* StaticBoxSizer1;
+		wxListBox* FoundFiles;
+		wxGauge* Progress;
+		wxBoxSizer* BoxSizer2;
+		wxStaticText* ScanningTxt;
+		wxStaticText* ScanningFile;
+		wxBoxSizer* BoxSizer3;
+		wxButton* UseFileBtn;
+		wxButton* SelectBtn;
+		wxButton* CreateBtn;
+		wxStaticLine* StaticLine2;
+		wxButton* Button4;
+		wxStaticLine* StaticLine1;
+		wxButton* Button6;
 		//*)
 
 	private:
