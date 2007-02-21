@@ -129,7 +129,7 @@ wxImageList& wxsResourceTree::GetGlobalImageList()
 
 int wxsResourceTree::LoadImage(const wxString& FileName)
 {
-    return GetGlobalImageList().Add(wxBitmap(ConfigManager::GetDataFolder()+FileName,wxBITMAP_TYPE_ANY));
+    return GetGlobalImageList().Add(cbLoadBitmap(ConfigManager::GetDataFolder()+FileName,wxBITMAP_TYPE_ANY));
 }
 
 void wxsResourceTree::BlockSelect()

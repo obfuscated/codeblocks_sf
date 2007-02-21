@@ -90,6 +90,11 @@ wxImageList& wxsItemFactory::GetImageList()
     return wxsResourceTree::GetGlobalImageList();
 }
 
+int wxsItemFactory::LoadImage(const wxString& FileName)
+{
+    return wxsResourceTree::LoadImage(FileName);
+}
+
 wxsItemFactory::wxsItemFactory(const wxsItemInfo* Info):
     m_Info(Info)
 {

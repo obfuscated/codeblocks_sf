@@ -48,6 +48,9 @@ class wxsItemFactory
          */
         static wxImageList& GetImageList();
 
+        /** \brief Loading icon into image list */
+        static int LoadImage(const wxString& Name);
+
     protected:
 
         /** \brief Ctor - can be accessed from derived classes only */
@@ -158,7 +161,7 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             Info.Icon32.LoadFile(DataPath+Bmp32FileName,wxBITMAP_TYPE_ANY);
             Info.Icon16.LoadFile(DataPath+Bmp16FileName,wxBITMAP_TYPE_ANY);
 
-            Info.TreeIconId = Info.Icon16.Ok() ? GetImageList().Add(Info.Icon16) : 0;
+            Info.TreeIconId = LoadImage(DataPath+Bmp16FileName);
         }
 
         /** \brief Ctor for built-in items from wxWidgets - sets most of data fields to default */
@@ -187,7 +190,7 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             Info.Icon32.LoadFile(DataPath+Info.ClassName+_T(".png"),wxBITMAP_TYPE_PNG);
             Info.Icon16.LoadFile(DataPath+Info.ClassName+_T("16.png"),wxBITMAP_TYPE_PNG);
 
-            Info.TreeIconId = Info.Icon16.Ok() ? GetImageList().Add(Info.Icon16) : 0;
+            Info.TreeIconId = LoadImage(_T("/images/wxsmith/")+Info.ClassName+_T("16.png"));
         }
 
     protected:
