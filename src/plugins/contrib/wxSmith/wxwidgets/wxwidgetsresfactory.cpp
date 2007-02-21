@@ -29,6 +29,8 @@
 #include "../wxsresourcetree.h"
 
 #include <wx/choicdlg.h>
+#include <sqplus.h>
+#include <sc_base_types.h>
 
 namespace
 {
@@ -53,11 +55,29 @@ namespace
     wxArrayString Names(ResourcesCount,NamesPtr);
 
     WX_DEFINE_ARRAY(TiXmlElement*,wxArrayElement);
+
+    /** \brief Function used inside wxWidgets wizard to
+      *        bind wxSmith's extensions
+      * \param Project - newly created project
+      * \param AppSource - name of source file with application source code, relative to cbp file's path
+      * \param MainResSource - name of source file with main resource (frame/fialog), relative to cbp file's path
+      * \param MainResHeader - name of header file with main resource (frame/fialog), relative to cbp file's path
+      */
+    void AddWxExtensions(cbProject* Project,const wxString& AppSource,const wxString& MainResSource,const wxString& MainResHeader)
+    {
+        cbMessageBox(
+            AppSource+_T("\n")+
+            MainResSource+_T("\n")+
+            MainResHeader);
+    }
 }
 
 
 wxWidgetsResFactory::wxWidgetsResFactory()
 {
+    // This is static object created once,
+    // we can bing wxSmith's binding function here
+    SqPlus::RegisterGlobal(AddWxExtensions,"WxsAddWxExtensions");
 }
 
 int wxWidgetsResFactory::OnGetCount()

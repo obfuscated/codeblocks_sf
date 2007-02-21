@@ -8,13 +8,11 @@
 		<Build>
 			<Target title="wxSmith">
 				<Option output="..\..\..\devel\share\codeblocks\plugins\libwxsmith.so" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="..\..\..\devel" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\wxSmith" />
+				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\wxSmith" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application=".\codeblocks.exe" />
-				<Compiler>
-					<Add option="-g" />
-				</Compiler>
+				<Option host_application="..\..\..\devel\codeblocks.exe" />
 			</Target>
 		</Build>
 		<VirtualTargets>
@@ -34,6 +32,10 @@
 			<Add directory="..\..\..\include\propgrid\include" />
 			<Add directory="..\..\..\include\tinyxml" />
 			<Add directory="..\..\..\include\wxFlatNotebook\include" />
+			<Add directory="..\..\..\include\scripting\include" />
+			<Add directory="..\..\..\include\scripting\squirrel" />
+			<Add directory="..\..\..\include\scripting\sqplus" />
+			<Add directory="..\..\..\include\scripting\bindings" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />

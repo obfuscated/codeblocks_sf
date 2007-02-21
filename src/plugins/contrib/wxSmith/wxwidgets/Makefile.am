@@ -5,7 +5,11 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include/wxFlatNotebook/include \
 		-I$(top_srcdir)/src/include/wxscintilla/include \
 		-I$(top_srcdir)/src/include/wxFlatNotebook \
-		-I$(top_srcdir)/src/include/propgrid/include
+		-I$(top_srcdir)/src/include/propgrid/include \
+		-I$(top_srcdir)/src/include/scripting/include \
+		-I$(top_srcdir)/src/include/scripting/squirrel \
+		-I$(top_srcdir)/src/include/scripting/sqplus \
+		-I$(top_srcdir)/src/include/scripting/bindings
 
 noinst_LTLIBRARIES = libwxsmith_wxwidgets.la
 

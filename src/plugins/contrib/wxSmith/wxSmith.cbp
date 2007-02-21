@@ -12,7 +12,7 @@
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\wxSmith" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="../../../devel/codeblocks.exe" />
+				<Option host_application="..\..\..\devel\codeblocks.exe" />
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
@@ -45,6 +45,10 @@
 			<Add directory="$(#CB.include)\wxscintilla\include" />
 			<Add directory="$(#CB.include)\wxFlatNotebook\include" />
 			<Add directory="$(#CB.include)\propgrid\include" />
+			<Add directory="$(#CB.include)\scripting\include" />
+			<Add directory="$(#CB.include)\scripting\squirrel" />
+			<Add directory="$(#CB.include)\scripting\sqplus" />
+			<Add directory="$(#CB.include)\scripting\bindings" />
 			<Add directory="$(#WX.include)" />
 		</Compiler>
 		<ResourceCompiler>
