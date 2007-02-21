@@ -27,6 +27,9 @@
 #include <wx/image.h>
 #include <wx/intl.h>
 
+#include "configmanager.h"
+#include "globals.h"
+
 namespace
 {
     class wxsResourceTreeProjectData: public wxsResourceTreeItemData
