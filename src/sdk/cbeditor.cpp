@@ -103,14 +103,20 @@ void cbStyledTextCtrl::OnKillFocus(wxFocusEvent& event)
 
 void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
 {
-    if (m_pParent)
-    {
-        /*  or use noeditor to handle "contect menu" key?
-         */
-        const bool is_right_click = event.GetPosition()!=wxDefaultPosition;
-        const wxPoint mp(is_right_click ? event.GetPosition() : wxDefaultPosition);
-        reinterpret_cast<cbEditor*>(m_pParent)->DisplayContextMenu(mp,mtEditorManager); //pecan 2006/03/22
-    }
+	if ( m_pParent != NULL )
+	{
+		cbEditor* pParent = dynamic_cast<cbEditor*>(m_pParent);
+		if ( pParent != NULL )
+		{
+			const bool is_right_click = event.GetPosition()!=wxDefaultPosition;
+			const wxPoint mp(is_right_click ? event.GetPosition() : wxDefaultPosition);
+			pParent->DisplayContextMenu(mp,mtEditorManager);
+		}
+		else
+		{
+			event.Skip();
+		}
+	}
 }
 
 void cbStyledTextCtrl::OnGPM(wxMouseEvent& event)
