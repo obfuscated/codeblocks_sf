@@ -23,16 +23,20 @@
 
 #include "wxsresourcefactory.h"
 
+// TODO: Support dynamic loading / unloading of factories
+
 wxsResourceFactory* wxsResourceFactory::m_UpdateQueue = NULL;
 wxsResourceFactory* wxsResourceFactory::m_Initialized = NULL;
 wxsResourceFactory::HashT wxsResourceFactory::m_Hash;
 wxString wxsResourceFactory::m_LastExternalName;
 wxsResourceFactory* wxsResourceFactory::m_LastExternalFactory = NULL;
+bool wxsResourceFactory::m_AllAttached = false;
 
 wxsResourceFactory::wxsResourceFactory()
 {
     m_Next = m_UpdateQueue;
     m_UpdateQueue = this;
+    m_Attached = false;
 }
 
 wxsResourceFactory::~wxsResourceFactory()
@@ -68,6 +72,12 @@ inline void wxsResourceFactory::Initialize()
 
     m_Next = m_Initialized;
     m_Initialized = this;
+
+    if ( m_AllAttached )
+    {
+        OnAttach();
+        m_Attached = true;
+    }
 }
 
 wxsResource* wxsResourceFactory::Build(const wxString& ResourceType,wxsProject* Project)
@@ -146,4 +156,34 @@ int wxsResourceFactory::ResourceTreeIcon(const wxString& ResourceType)
         return -1;
     }
     return Info.m_Factory->OnResourceTreeIcon(Info.m_Number);
+}
+
+void wxsResourceFactory::OnAttachAll()
+{
+    if ( m_AllAttached ) return;
+    InitializeFromQueue();
+    for ( wxsResourceFactory* Factory = m_Initialized; Factory; Factory = Factory->m_Next )
+    {
+        if ( !Factory->m_Attached )
+        {
+            Factory->OnAttach();
+            Factory->m_Attached = true;
+        }
+    }
+    m_AllAttached = true;
+}
+
+void wxsResourceFactory::OnReleaseAll()
+{
+    if ( !m_AllAttached ) return;
+    InitializeFromQueue();
+    for ( wxsResourceFactory* Factory = m_Initialized; Factory; Factory = Factory->m_Next )
+    {
+        if ( Factory->m_Attached )
+        {
+            Factory->OnRelease();
+            Factory->m_Attached = false;
+        }
+    }
+    m_AllAttached = false;
 }

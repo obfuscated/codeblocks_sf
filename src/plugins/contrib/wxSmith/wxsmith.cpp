@@ -95,6 +95,8 @@ void wxSmith::OnAttach()
     m_HookId = ProjectLoaderHooks::RegisterHook(wxSmithHook);
 
     m_Singleton = this;
+
+    wxsResourceFactory::OnAttachAll();
 }
 
 void wxSmith::OnRelease(bool appShutDown)
@@ -111,6 +113,8 @@ void wxSmith::OnRelease(bool appShutDown)
     wxsExtResManager::Get()->DeleteAll();
 
     m_ProjectMap.clear();
+
+    wxsResourceFactory::OnReleaseAll();
 
     if ( m_Singleton == this )
     {

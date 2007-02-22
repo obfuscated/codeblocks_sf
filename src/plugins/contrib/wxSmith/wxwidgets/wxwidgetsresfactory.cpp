@@ -77,9 +77,34 @@ namespace
 
 wxWidgetsResFactory::wxWidgetsResFactory()
 {
-    // This is static object created once,
-    // we can bing wxSmith's binding function here
-    SqPlus::RegisterGlobal(AddWxExtensions,"WxsAddWxExtensions");
+}
+
+void wxWidgetsResFactory::OnAttach()
+{
+    // TODO: Call OnAttach for item factories
+
+    // Registering wizard function in scripting manager
+    Manager::Get()->GetScriptingManager();
+    if (SquirrelVM::GetVMPtr())
+    {
+        SqPlus::RegisterGlobal(AddWxExtensions,"WxsAddWxExtensions");
+    }
+}
+
+void wxWidgetsResFactory::OnRelease()
+{
+    // TODO: Call OnRelease for item factories
+
+    // Unregistering wizard function
+    Manager::Get()->GetScriptingManager();
+    HSQUIRRELVM v = SquirrelVM::GetVMPtr();
+    if ( v )
+    {
+        sq_pushroottable(v);
+        sq_pushstring(v,"WxsAddWxExtensions",-1);
+        sq_deleteslot(v,-2,false);
+        sq_poptop(v);
+    }
 }
 
 int wxWidgetsResFactory::OnGetCount()

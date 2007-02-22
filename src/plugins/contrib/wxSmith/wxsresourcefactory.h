@@ -35,7 +35,14 @@ class wxsResourceFactory
          */
         static bool NewResourceMenu(int Id,wxsProject* Project);
 
+        /** \brief Getting tree icon id for given resource type */
         static int ResourceTreeIcon(const wxString &ResourceType);
+
+        /** \brief Calling OnAttach for all factories */
+        static void OnAttachAll();
+
+        /** \brief Calling OnRelease for all factories */
+        static void OnReleaseAll();
 
     protected:
 
@@ -44,6 +51,12 @@ class wxsResourceFactory
 
         /** \brief Dctor */
         virtual ~wxsResourceFactory();
+
+        /** \brief Called when plugin is being attached */
+        virtual void OnAttach() {}
+
+        /** \brief Called when plugin is being released */
+        virtual void OnRelease() {}
 
         /** \brief Getting number of resouce types inside this factory */
         virtual int OnGetCount() = 0;
@@ -86,11 +99,13 @@ class wxsResourceFactory
         WX_DECLARE_STRING_HASH_MAP(ResourceInfo,HashT);
 
         wxsResourceFactory* m_Next;
+        bool m_Attached;
         static wxsResourceFactory* m_UpdateQueue;
         static wxsResourceFactory* m_Initialized;
         static HashT m_Hash;
         static wxString m_LastExternalName;
         static wxsResourceFactory* m_LastExternalFactory;
+        static bool m_AllAttached;
 
         static void InitializeFromQueue();
         inline void Initialize();

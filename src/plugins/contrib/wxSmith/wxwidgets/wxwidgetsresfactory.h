@@ -9,6 +9,8 @@ class wxWidgetsResFactory : public wxsResourceFactory
     public:
         wxWidgetsResFactory();
     private:
+        virtual void OnAttach();
+        virtual void OnRelease();
         virtual int OnGetCount();
         virtual void OnGetInfo(int Number,wxString& Name,wxString& GUI);
         virtual wxsResource* OnCreate(int Number,wxsProject* Project);
