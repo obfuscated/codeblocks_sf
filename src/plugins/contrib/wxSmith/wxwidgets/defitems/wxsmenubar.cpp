@@ -108,7 +108,7 @@ bool wxsMenuBar::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
     {
         if ( ShowMessage )
         {
-            cbMessageBox(_T("wxMenuBar can be added to wxFrame only"));
+            cbMessageBox(_("wxMenuBar can be added to wxFrame only"));
         }
         return false;
     }
@@ -119,7 +119,7 @@ bool wxsMenuBar::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
         {
             if ( ShowMessage )
             {
-                cbMessageBox(_T("Can not add two or more wxMenuBar classes"));
+                cbMessageBox(_("Can not add two or more wxMenuBar classes\ninto one wxFrame"));
             }
             return false;
         }
@@ -134,7 +134,7 @@ bool wxsMenuBar::OnCanAddChild(wxsItem* Item,bool ShowMessage)
     {
         if ( ShowMessage )
         {
-            cbMessageBox(_T("Only wxMenu items can be added into wxMenuBar"));
+            cbMessageBox(_("Only wxMenu items can be added into wxMenuBar"));
         }
         return false;
     }

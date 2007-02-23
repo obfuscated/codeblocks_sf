@@ -446,6 +446,11 @@ void wxsItem::Codef(wxsCodingLang Language,const wxChar* Fmt,wxString& Result,va
 
                         case _T('d'):
                             Dec = va_arg(ap,int);
+                            if ( Dec < 0 )
+                            {
+                                Result.Append(_T('-'));
+                                Dec = -Dec;
+                            }
                             Pos = 0;
                             do Buff[Pos++] = _T('0') + (Dec%10), Dec /= 10; while ( Dec );
                             while ( --Pos>=0 ) Result.Append(Buff[Pos]);

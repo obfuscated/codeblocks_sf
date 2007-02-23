@@ -221,6 +221,8 @@
 		<Unit filename="wxwidgets\defitems\wxsstaticline.h" />
 		<Unit filename="wxwidgets\defitems\wxsstatictext.cpp" />
 		<Unit filename="wxwidgets\defitems\wxsstatictext.h" />
+		<Unit filename="wxwidgets\defitems\wxsstatusbar.cpp" />
+		<Unit filename="wxwidgets\defitems\wxsstatusbar.h" />
 		<Unit filename="wxwidgets\defitems\wxsstddialogbuttonsizer.cpp" />
 		<Unit filename="wxwidgets\defitems\wxsstddialogbuttonsizer.h" />
 		<Unit filename="wxwidgets\defitems\wxstextctrl.cpp" />
