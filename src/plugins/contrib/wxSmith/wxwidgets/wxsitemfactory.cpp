@@ -44,7 +44,6 @@ wxsItem* wxsItemFactory::Build(const wxString& Name,wxsItemResData* Data)
             break;
 
         case wxsTContainer:
-        case wxsTSizer:
             if ( !Item->ConvertToParent() )
             {
                 // Fake item
@@ -53,6 +52,7 @@ wxsItem* wxsItemFactory::Build(const wxString& Name,wxsItemResData* Data)
             }
             break;
 
+        case wxsTSizer:
         case wxsTSpacer:
         case wxsTWidget:
             break;
