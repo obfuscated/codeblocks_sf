@@ -19,7 +19,6 @@
 #endif
 
 // required includes
-#include "keybinderdef.h"
 #include "wx/panel.h"
 #include "wx/dialog.h"
 #include "wx/listbox.h"

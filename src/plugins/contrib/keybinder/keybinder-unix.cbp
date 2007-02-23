@@ -64,10 +64,6 @@
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />
 		</Unit>
-		<Unit filename="keybinderdef.h">
-			<Option target="default" />
-			<Option target="KeyBinder plugin" />
-		</Unit>
 		<Unit filename="menuutils.cpp">
 			<Option target="default" />
 			<Option target="KeyBinder plugin" />

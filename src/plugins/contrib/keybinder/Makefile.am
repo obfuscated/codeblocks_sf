@@ -17,7 +17,6 @@ libkeybinder_la_SOURCES = cbkeybinder.cpp \
 noinst_HEADERS = cbkeybinder.h \
 			debugging.h \
 			keybinder.h \
-			keybinderdef.h \
 			menuutils.h
 
 EXTRA_DIST = keybinder.cbp manifest.xml

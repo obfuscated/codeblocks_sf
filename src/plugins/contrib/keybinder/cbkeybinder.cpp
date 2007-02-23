@@ -127,6 +127,8 @@ void cbKeyBinder::OnAttach()
 
     //block any dynamic update attempts
 	m_mergeEnabled = 0;
+	// remove any predefined command keys set in main.cpp accelerator table
+    Manager::Get()->GetAppWindow()->SetAcceleratorTable(wxNullAcceleratorTable);
 
     // Set current plugin version
 	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
@@ -220,14 +222,19 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     // Create filename like cbKeyBinder{pluginversion}.ini
 
     //memorize the key file name as {%HOME%}\cbKeyBinder+{ver}.ini
-    m_sKeyFilename = ConfigManager::GetConfigFolder();
+    //m_sKeyFilename = ConfigManager::GetConfigFolder();
+    m_sConfigFolder = ConfigManager::GetConfigFolder();
+    m_sExecuteFolder = ConfigManager::GetExecutableFolder();
+    m_sDataFolder = ConfigManager::GetDataFolder();
 
     //*bug* GTK GetConfigFolder is returning double "//?, eg, "/home/pecan//.codeblocks"
-    LOGIT(_T("GetConfigFolder() is returning [%s]"), m_sKeyFilename.GetData());
+    LOGIT(_T("GetConfigFolder() is returning [%s]"), m_sConfigFolder.GetData());
+    LOGIT(_T("GetExecutableFolder() is returning [%s]"), m_sExecuteFolder.GetData());
+    //LOGIT(_T("GetDataFolder() is returning [%s]"), m_sDataFolder.GetData());
 
     // remove the double //s from filename //+v0.4.11
-    m_sKeyFilename.Replace(_T("//"),_T("/"));
-    m_sKeyFilePath = m_sKeyFilename;
+    m_sConfigFolder.Replace(_T("//"),_T("/"));
+    m_sExecuteFolder.Replace(_T("//"),_T("/"));
 
     // get version number from keybinder plugin
     const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(this);
@@ -235,10 +242,23 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
 
     // remove the dots from version string (using first 3 chars)
     sPluginVersion.Replace(_T("."),_T(""));
-    m_sKeyFilename = m_sKeyFilename
+
+    // if cbKeyBinder##.ini is in the executable folder, use it
+    // else use the default config folder
+    m_sKeyFilePath = m_sExecuteFolder;
+    m_sKeyFilename = m_sKeyFilePath
          << wxFILE_SEP_PATH
          << info->name<<sPluginVersion
          <<_T(".ini");
+    if (::wxFileExists(m_sKeyFilename)) {;/*OK Use exe path*/}
+    else //use the default.conf folder
+    {
+        m_sKeyFilePath = m_sConfigFolder;
+        m_sKeyFilename = m_sKeyFilePath
+            << wxFILE_SEP_PATH
+            << info->name<<sPluginVersion
+            <<_T(".ini");
+    }
 
     #if LOGGING
      LOGIT(_T("cbKB:BuildMenu()File:%s"),m_sKeyFilename.GetData());

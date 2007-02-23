@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.19 2007/01/23"
+#define VERSION "1.0.31 2007/02/23"
 // -----------------------------------
 class MyDialog;
 
@@ -77,6 +77,11 @@ class cbKeyBinder : public cbPlugin
 
         //memorized menubar from BuildMenu(...)
         wxMenuBar* m_pMenuBar;
+
+        // possible locations of config file
+        wxString m_sConfigFolder;
+        wxString m_sExecuteFolder;
+        wxString m_sDataFolder;
 
         // Users Key file name eg. %HOME%\cbKeybinder.ini
         wxString m_sKeyFilename;
@@ -591,6 +596,8 @@ private:
 //  closed  Deleteing a secondary profile fails when no keys were changed.
 //          A: caused by profile compare code in OnKeybindingsDialogDone() reporting
 //             no changes even when a secondary profile was deleted.
+//  Todo    2007/01/29
+//          Save() .ini file to .ini.bak, then rename it to .ini
 // ----------------------------------------------------------------------------
 //  Commit  1.0.8 2006/12/14
 //          2) Added code to remove stale dynamic menu items
@@ -632,4 +639,8 @@ private:
 //          18) Fixed: CB Plugins->ManagePlugins->disable plugin is re-entering
 //              KeyBinders BuildMenu() routine causing crashes.
 //          19) Re-initialize KeyBinder on next OnEditorOpen() when re-enabled by Plugin Manager.
+// ----------------------------------------------------------------------------
+//  Commit  1.0.31 2007/02/23
+//          20) Allow override of predefined menu accelerators set in Main.cpp
+//          21) Use cbKeyBinder##.ini file when in executable folder
 // ----------------------------------------------------------------------------
