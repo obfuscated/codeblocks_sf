@@ -87,7 +87,7 @@ bool wxsStringProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Eleme
         {
             if ( *++Ch != _T('_') )
             {
-                Result << _T('$');
+                Result << _T('&');
             }
             Result << *Ch;
         }
