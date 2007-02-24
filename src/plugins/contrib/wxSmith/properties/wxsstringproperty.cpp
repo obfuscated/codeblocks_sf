@@ -123,8 +123,8 @@ bool wxsStringProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Elem
             {
                 case _T('_'):  Result << _T("__"); break;
                 case _T('&'):  Result << _T('_');  break;     // We could leave this to be translated into &amp; but this looks nicer ;)
-                case _T('\\'): Result << _T('\\'); break;
-                // We could handle \n and \r here too but this is not necessary since XRC loaging
+                case _T('\\'): Result << _T("\\\\"); break;
+                // We could handle \n and \r here too but this is not necessary since XRC loading
                 // routines also handle \n and \r chars
                 default:       Result << *Ch;
             }
