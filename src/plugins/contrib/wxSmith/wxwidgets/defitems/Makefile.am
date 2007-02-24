@@ -58,7 +58,10 @@ libwxsmith_wxwidgets_defitems_la_SOURCES = \
 ./wxsmenu.cpp \
 ./wxsmenueditor.cpp \
 ./wxsmenuitem.cpp \
-./wxsstatusbar.cpp
+./wxsstatusbar.cpp \
+./wxstoolbar.cpp \
+./wxstoolbaritem.cpp \
+./wxstoolbareditor.cpp
 
 noinst_HEADERS = \
 ./wxsgauge.h \
@@ -107,4 +110,7 @@ noinst_HEADERS = \
 ./wxsmenu.h \
 ./wxsmenueditor.h \
 ./wxsmenuitem.h \
-./wxsstatusbar.h
+./wxsstatusbar.h \
+./wxstoolbar.h \
+./wxstoolbaritem.h \
+./wxstoolbareditor.h

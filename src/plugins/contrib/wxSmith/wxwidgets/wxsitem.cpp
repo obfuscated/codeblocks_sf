@@ -384,7 +384,7 @@ void wxsItem::Codef(wxsCodingLang Language,const wxChar* Fmt,wxString& Result,va
                             break;
 
                         case _T('P'):
-                            if ( GetPropertiesFlags() && flPosition )
+                            if ( GetPropertiesFlags() & flPosition )
                             {
                                 Result << GetBaseProps()->m_Position.GetPositionCode(m_WindowParent,Language);
                             }
@@ -395,7 +395,7 @@ void wxsItem::Codef(wxsCodingLang Language,const wxChar* Fmt,wxString& Result,va
                             break;
 
                         case _T('S'):
-                            if ( GetPropertiesFlags() && flSize )
+                            if ( GetPropertiesFlags() & flSize )
                             {
                                 Result << GetBaseProps()->m_Size.GetSizeCode(m_WindowParent,Language);
                             }
@@ -410,7 +410,7 @@ void wxsItem::Codef(wxsCodingLang Language,const wxChar* Fmt,wxString& Result,va
                             break;
 
                         case _T('N'):
-                            if ( GetPropertiesFlags() && flId )
+                            if ( GetPropertiesFlags() & flId )
                             {
                                 Result << wxsCodeMarks::WxString(wxsCPP,GetIdName(),false);
                             }

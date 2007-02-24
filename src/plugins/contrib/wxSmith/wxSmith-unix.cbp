@@ -208,6 +208,12 @@
 		<Unit filename="wxwidgets/defitems/wxstimer.h" />
 		<Unit filename="wxwidgets/defitems/wxstogglebutton.cpp" />
 		<Unit filename="wxwidgets/defitems/wxstogglebutton.h" />
+		<Unit filename="wxwidgets/defitems/wxstoolbar.cpp" />
+		<Unit filename="wxwidgets/defitems/wxstoolbar.h" />
+		<Unit filename="wxwidgets/defitems/wxstoolbareditor.cpp" />
+		<Unit filename="wxwidgets/defitems/wxstoolbareditor.h" />
+		<Unit filename="wxwidgets/defitems/wxstoolbaritem.cpp" />
+		<Unit filename="wxwidgets/defitems/wxstoolbaritem.h" />
 		<Unit filename="wxwidgets/defitems/wxstreectrl.cpp" />
 		<Unit filename="wxwidgets/defitems/wxstreectrl.h" />
 		<Unit filename="wxwidgets/properties/wxsarraystringcheckeditordlg.cpp" />

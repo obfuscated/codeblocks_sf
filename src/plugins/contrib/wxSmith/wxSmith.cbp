@@ -231,6 +231,12 @@
 		<Unit filename="wxwidgets\defitems\wxstimer.h" />
 		<Unit filename="wxwidgets\defitems\wxstogglebutton.cpp" />
 		<Unit filename="wxwidgets\defitems\wxstogglebutton.h" />
+		<Unit filename="wxwidgets\defitems\wxstoolbar.cpp" />
+		<Unit filename="wxwidgets\defitems\wxstoolbar.h" />
+		<Unit filename="wxwidgets\defitems\wxstoolbareditor.cpp" />
+		<Unit filename="wxwidgets\defitems\wxstoolbareditor.h" />
+		<Unit filename="wxwidgets\defitems\wxstoolbaritem.cpp" />
+		<Unit filename="wxwidgets\defitems\wxstoolbaritem.h" />
 		<Unit filename="wxwidgets\defitems\wxstreectrl.cpp" />
 		<Unit filename="wxwidgets\defitems\wxstreectrl.h" />
 		<Unit filename="wxwidgets\properties\wxsarraystringcheckeditordlg.cpp" />
@@ -347,6 +353,7 @@
 					<wxPanel wxs="wxsmith/wxsListbookParentQP.wxs" src="wxwidgets/defitems/wxslistbook.cpp" hdr="wxwidgets/defitems/wxslistbook.cpp" name="wxsListbookParentQP" language="CPP" />
 					<wxPanel wxs="wxsmith/wxsSettings.wxs" src="wxssettings.cpp" hdr="wxssettings.h" name="wxsSettings" language="CPP" />
 					<wxPanel wxs="wxsmith/wxsmenueditor.wxs" src="wxwidgets/defitems/wxsmenueditor.cpp" hdr="wxwidgets/defitems/wxsmenueditor.h" name="wxsMenuEditor" language="CPP" />
+					<wxPanel wxs="wxsmith/wxstoolbareditor.wxs" src="wxwidgets/defitems/wxstoolbareditor.cpp" hdr="wxwidgets/defitems/wxstoolbareditor.h" name="wxsToolBarEditor" language="CPP" />
 				</resources>
 			</wxsmith>
 		</Extensions>

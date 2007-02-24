@@ -76,11 +76,11 @@ wxString wxsBitmapIconData::BuildCode(bool NoResize,const wxString& SizeCode,wxs
                 Code << _T("wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(") << wxsCodeMarks::WxString(wxsCPP,Id) << _T("),");
                 if ( Client.empty() )
                 {
-                    Code << wxsCodeMarks::WxString(wxsCPP,DefaultClient);
+                    Code << wxsCodeMarks::WxString(wxsCPP,DefaultClient,false);
                 }
                 else
                 {
-                    Code << wxsCodeMarks::WxString(wxsCPP,Client);
+                    Code << wxsCodeMarks::WxString(wxsCPP,Client,false);
                 }
 
                 if ( !NoResize )

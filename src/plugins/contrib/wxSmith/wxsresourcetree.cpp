@@ -46,7 +46,7 @@ namespace
 }
 
 wxsResourceTree* wxsResourceTree::m_Singleton = NULL;
-int wxsResourceTree::m_RootImageId = LoadImage(_T("/images/gohome.png"));
+int wxsResourceTree::m_RootImageId = LoadImage(_T("/images/wxsmith/wxSmith16.png"));
 int wxsResourceTree::m_ProjectImageId = LoadImage(_T("/images/codeblocks.png"));
 int wxsResourceTree::m_ExternalImageId = LoadImage(_T("/images/wxsmith/deletewidget16.png"));
 
