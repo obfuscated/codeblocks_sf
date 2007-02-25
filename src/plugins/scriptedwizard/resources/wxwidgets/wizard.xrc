@@ -509,4 +509,47 @@ only with GCC</label>
       </object>
     </object>
   </object>
+  <object class="wxPanel" name="WxGuiSelect">
+    <style>wxTAB_TRAVERSAL</style>
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL</flag>
+        <border>8</border>
+        <object class="wxStaticText" name="StaticWxGuiWelcome">
+          <label>Please select your favourite GUI Builder to use.\n\nYou can also select the type of application that you want\n to use in your project.</label>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <object class="wxRadioBox" name="RB_GUISelect">
+          <style>wxRA_SPECIFY_COLS</style>
+          <label>Preferred GUI Builder</label>
+          <content>
+            <item>None</item>
+            <item>wxSmith</item>
+            <item>wxFormBuilder</item>
+          </content>
+          <dimension>1</dimension>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <option>0</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
+        <object class="wxRadioBox" name="RB_GUIAppType">
+          <style>wxRA_SPECIFY_COLS</style>
+          <label>Application Type</label>
+          <content>
+            <item>Dialog Based</item>
+            <item>Frame Based</item>
+          </content>
+          <dimension>1</dimension>
+        </object>
+      </object>
+    </object>
+  </object>
 </resource>

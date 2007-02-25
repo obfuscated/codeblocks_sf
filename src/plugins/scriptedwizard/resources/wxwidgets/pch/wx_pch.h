@@ -1,5 +1,5 @@
 /***************************************************************
- * Name:      [PROJECT_NAME]_pch.h
+ * Name:      wx_pch.h
  * Purpose:   Header to create Pre-Compiled Header (PCH)
  * Author:    [AUTHOR_NAME] ([AUTHOR_EMAIL])
  * Created:   [NOW]
@@ -7,12 +7,8 @@
  * License:   
  **************************************************************/
 
-#ifndef [PROJECT_HDR]_PCH_H_INCLUDED
-#define [PROJECT_HDR]_PCH_H_INCLUDED
-
-#if ( defined(USE_PCH) && !defined(WX_PRECOMP) )
-    #define WX_PRECOMP
-#endif // USE_PCH
+#ifndef WX_PCH_H_INCLUDED
+#define WX_PCH_H_INCLUDED
 
 // basic wxWidgets headers
 #include <wx/wxprec.h>
@@ -25,8 +21,8 @@
 	#include <wx/wx.h>
 #endif
 
-#ifdef USE_PCH
+#ifdef WX_PRECOMP
 	// put here all your rarely-changing header files
-#endif // USE_PCH
+#endif // WX_PRECOMP
 
-#endif //[PROJECT_HDR]_PCH_H_INCLUDED
+#endif // WX_PCH_H_INCLUDED

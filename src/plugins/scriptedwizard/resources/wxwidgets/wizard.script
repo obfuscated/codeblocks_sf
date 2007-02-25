@@ -44,6 +44,8 @@ ProjWebsite <- _T(""); // Project website
 PCHFileName <- _T(""); // PCH filename
 ChoiceWxUnixLib <- 0; // wx lib choice in Unix; 0 for default, 1 for advanced
 ChkWxDebug <- true; // Adds wxdebug and debug wx lib. By default it's set to True
+GuiBuilder <- 0; // Default to None. 0-None, 1-wxSmith, 2-wxFormBuilder
+GuiAppType <- 1; // Default to Dialog. 0-Dialog, 1-Frame
 
 function BeginWizard()
 {
@@ -61,6 +63,7 @@ function BeginWizard()
 	Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"), _T("Please select the wxWidgets version you want to use."), _T("wxWidgets 2.6.x;wxWidgets 2.8.x; wxWidgets 2.9.x (CVS Version)"), WxVersion); // select wxwidgets version
     Wizard.AddProjectPathPage();
 	Wizard.AddPage(_T("WxProjDetails"));
+	Wizard.AddPage(_T("WxGuiSelect"));
     if (PLATFORM == PLATFORM_MSW)
         Wizard.AddGenericSelectPathPage(_T("WxPath"), wxpath_msg, _T("wxWidgets' location:"), _T("$(#wx)"));
     // we need the compiler selection before wx settings, because we 'll have
@@ -130,6 +133,39 @@ function OnLeave_WxProjDetails(fwd)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Project GUI Builder Details
+////////////////////////////////////////////////////////////////////////////////
+
+function OnEnter_WxGuiSelect(fwd)
+{
+	if (fwd)
+	{
+		GuiBuilder = ConfigManager.Read(_T("/wx_project_wizard/guibuilder"), 0);
+		GuiAppType = ConfigManager.Read(_T("/wx_project_wizard/guiapptype"), 0);
+		Wizard.SetRadioboxSelection(_T("RB_GUISelect"), GuiBuilder);
+		Wizard.SetRadioboxSelection(_T("RB_GUIAppType"), GuiAppType);
+	}
+	return true;
+}
+
+function OnLeave_WxGuiSelect(fwd)
+{
+	if (fwd)
+	{
+		GuiBuilder = Wizard.GetRadioboxSelection(_T("RB_GUISelect"));
+		GuiAppType = Wizard.GetRadioboxSelection(_T("RB_GUIAppType"));
+		if (GuiBuilder == 1)
+		{
+			ShowInfo(_T("Work on wxSmith support addition is in progress.\nThis message will be removed once it'll be added.\n\nThanks for your patience."));
+			GuiBuilder = ConfigManager.Read(_T("/wx_project_wizard/guibuilder"), 0);
+		}
+		GetConfigManager().Write(_T("/wx_project_wizard/guibuilder"), GuiBuilder);
+		GetConfigManager().Write(_T("/wx_project_wizard/guiapptype"), GuiAppType);
+	}
+	return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // wxWidgets' path page
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -192,7 +228,7 @@ function OnLeave_WxConf(fwd)
 		if (IsEmpty && WantPCH)
 		{
 			local msg = _T("You have selected PCH support for Empty project.\n\n");
-			msg = msg + _T("Wizard will add support for PCH assuming the PCH header name as {Project_Name}_pch.h\n\n");
+			msg = msg + _T("Wizard will add support for PCH assuming the PCH header name as wx_pch.h\n\n");
 			msg = msg + _T("Click Yes to accept default settings\n\nClick No to Enter PCH header manually");
 			local return_val = Message(msg, _T("wxWidgets Project Wizard"), wxICON_QUESTION | wxYES_NO);
 			if (return_val == wxID_NO)
@@ -200,13 +236,13 @@ function OnLeave_WxConf(fwd)
 				msg = _T("Please enter PCH header file name");
 				PCHFileName = wxGetTextFromUser(msg, _T("wxWidgets Wizard"), _T("wxprec.h"));
 				if (PCHFileName.IsEmpty()) // Check for empty string
-					PCHFileName = Wizard.GetProjectName() + _T("_pch.h");
+					PCHFileName = _T("wx_pch.h");
 			}
 			else if (return_val == wxID_YES)
-				PCHFileName = Wizard.GetProjectName() + _T("_pch.h");
+				PCHFileName = _T("wx_pch.h");
 		}
 		else // Set PCHFileName to Default
-			PCHFileName = Wizard.GetProjectName() + _T("_pch.h");
+			PCHFileName = _T("wx_pch.h");
 		
 		// Now write the configurations
 		ConfigManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
@@ -368,7 +404,7 @@ function OnLeave_WxConfUnix(fwd)
 				ShowInfo(msg);
 				WantPCH = false; // Sorry! Wizard can't add PCH support
 			}
-			PCHFileName = Wizard.GetProjectName() + _T("_pch.h");
+			PCHFileName = _T("wx_pch.h");
 			
 			// Now write the setting to Configuration
 		    ConfigManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
@@ -407,14 +443,16 @@ function GetGeneratedFile(file_index)
     if (!IsEmpty)
 	{
 		local ProjectName = Wizard.GetProjectName();
-		switch (file_index)
-	    {
-	        case 0: return ProjectName + _T("App.h") + _T(";") + GenerateHeader(file_index); break;
-	        case 1: return ProjectName + _T("App.cpp") + _T(";") + GenerateSource(file_index); break;
-	        case 2: return ProjectName + _T("Main.h") + _T(";") + GenerateHeader(file_index); break;
-			case 3: return ProjectName + _T("Main.cpp") + _T(";") + GenerateSource(file_index); break;
-			case 4: {if (WantPCH) {return ProjectName + _T("_pch.h") + _T(";") + GenerateHeader(file_index); break;}}// PCH file
-	    }
+		if (file_index == 0)
+			return ProjectName + _T("App.h") + _T(";") + GenerateHeader(file_index);
+		else if (file_index == 1)
+	        return ProjectName + _T("App.cpp") + _T(";") + GenerateSource(file_index);
+		else if (file_index == 2)
+	        return ProjectName + _T("Main.h") + _T(";") + GenerateHeader(file_index);
+		else if (file_index == 3)
+			return ProjectName + _T("Main.cpp") + _T(";") + GenerateSource(file_index);
+		else if (file_index == 4)
+			return _T("wx_pch.h") + _T(";") + GenerateHeader(file_index);
 	}
     return _T(""); // no more generated files
 }
@@ -425,11 +463,17 @@ function GetFilesDir()
     local result = _T("");
 	if (!IsEmpty) // Checks whether user wants Empty Project or not
 	{
-		/*result = _T("wxwidgets/common");
-	    if (WantPCH)
-	        result = result + _T("wxwidgets/pch;");*/
 		if (PLATFORM == PLATFORM_MSW)
-			result = result + _T("wxwidgets/rc");
+			result = result + _T("wxwidgets/rc;");
+		if (WantPCH)
+			result = result + _T("wxwidgets/pch;");
+		if (GuiBuilder == 2)
+		{
+			if (GuiAppType == 0)
+				result = result + _T("wxwidgets/wxfb/dialog;");
+			else if (GuiAppType == 1)
+				result = result + _T("wxwidgets/wxfb/frame;");
+		}
 	}
     return result;
 }
@@ -480,7 +524,7 @@ function SetupProject(project)
 	            project.SetModeForPCH(pchSourceDir); // pch dir
 	            project.AddCompilerOption(_T("-Winvalid-pch"));
 				project.AddCompilerOption(_T("-include ") + PCHFileName);
-	            project.AddCompilerOption(_T("-DUSE_PCH"));
+	            project.AddCompilerOption(_T("-DWX_PRECOMP"));
 	        }
 	    }
     }
@@ -587,21 +631,21 @@ function SetupProject(project)
             project.SetModeForPCH(pchSourceDir); // pch dir
             project.AddCompilerOption(_T("-Winvalid-pch"));
 			project.AddCompilerOption(_T("-include ") + PCHFileName);
-            project.AddCompilerOption(_T("-DUSE_PCH"));
+            project.AddCompilerOption(_T("-DWX_PRECOMP"));
         }
     }
 	// For other compilers, different approach has been used
 	else if (WantPCH && GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc*")))
 	{
 		project.AddCompilerOption(_T("-H"));
-		project.AddCompilerOption(_T("-DUSE_PCH"));
+		project.AddCompilerOption(_T("-DWX_PRECOMP"));
 	}
 	else if (WantPCH && (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
 						|| GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8"))))
 	{
 		project.AddCompilerOption(_T("/FI\"") + PCHFileName + _T("\""));
 		project.AddCompilerOption(_T("/Yc\"") + PCHFileName + _T("\""));
-		project.AddCompilerOption(_T("/DUSE_PCH"));
+		project.AddCompilerOption(_T("/DWX_PRECOMP"));
 	}
 
     // enable compiler warnings (project-wide)
@@ -944,15 +988,16 @@ function OnLeave_WxAdvLib(fwd)
 function GetTemplateFile(index)
 {
     local template_file = _T("");
-    switch (index)
-    {
-        case 0:	template_file = _T("wxwidgets/common/app.h"); break;
-        case 1: template_file = _T("wxwidgets/common/app.cpp"); break;
-        case 2: template_file = _T("wxwidgets/common/main.h"); break;
-        case 3:	template_file = _T("wxwidgets/common/main.cpp"); break;
-		case 4: template_file = _T("wxwidgets/pch/wx_pch.h"); break;
-        default: break; // error
-    }
+	if (index == 0)
+		template_file = _T("wxwidgets/common/app.h");
+	else if (index == 1)
+		template_file = _T("wxwidgets/common/app.cpp");
+	else if (index == 2)
+		template_file = _T("wxwidgets/common/main.h");
+	else if (index == 3)
+		template_file = _T("wxwidgets/common/main.cpp");
+	else if (index == 4 && WantPCH)
+		template_file = _T("wxwidgets/pch/wx_pch.h");
     return template_file;
 }
 
@@ -981,7 +1026,37 @@ function GenerateSource(index)
 function SubstituteMacros(buffer)
 {
     // handle [IF] / [ENDIF] pairs
-    buffer = HandleDirective(buffer, _T("WINDOWS"), (PLATFORM == PLATFORM_MSW ? true : false));
+	if (GuiBuilder == 0)
+	{
+		if (GuiAppType == 0)
+		{
+			buffer  = HandleDirective(buffer, _T("WXDIALOG"), true);
+			buffer  = HandleDirective(buffer, _T("WXFRAME"), false);
+		}
+		else if (GuiAppType == 1)
+		{
+			buffer  = HandleDirective(buffer, _T("WXDIALOG"), false);
+			buffer  = HandleDirective(buffer, _T("WXFRAME"), true);
+		}
+		buffer  = HandleDirective(buffer, _T("NONE"), true);
+		buffer  = HandleDirective(buffer, _T("WXFB"), false);
+	}
+	else if (GuiBuilder == 2)
+	{
+		if (GuiAppType == 0)
+		{
+			buffer  = HandleDirective(buffer, _T("WXDIALOG"), true);
+			buffer  = HandleDirective(buffer, _T("WXFRAME"), false);
+		}
+		else if (GuiAppType == 1)
+		{
+			buffer  = HandleDirective(buffer, _T("WXDIALOG"), false);
+			buffer  = HandleDirective(buffer, _T("WXFRAME"), true);
+		}
+		buffer  = HandleDirective(buffer, _T("NONE"), false);
+		buffer  = HandleDirective(buffer, _T("WXFB"), true);
+	}
+	buffer = HandleDirective(buffer, _T("WINDOWS"), (PLATFORM == PLATFORM_MSW ? true : false));
 
     // macros substitution
     buffer.Replace(_T("[PROJECT_HDR]"), Wizard.GetProjectName().MakeUpper());
