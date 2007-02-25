@@ -451,7 +451,7 @@ function GetGeneratedFile(file_index)
 	        return ProjectName + _T("Main.h") + _T(";") + GenerateHeader(file_index);
 		else if (file_index == 3)
 			return ProjectName + _T("Main.cpp") + _T(";") + GenerateSource(file_index);
-		else if (file_index == 4)
+		else if (file_index == 4 && WantPCH)
 			return _T("wx_pch.h") + _T(";") + GenerateHeader(file_index);
 	}
     return _T(""); // no more generated files
@@ -464,9 +464,7 @@ function GetFilesDir()
 	if (!IsEmpty) // Checks whether user wants Empty Project or not
 	{
 		if (PLATFORM == PLATFORM_MSW)
-			result = result + _T("wxwidgets/rc;");
-		if (WantPCH)
-			result = result + _T("wxwidgets/pch;");
+			result = _T("wxwidgets/rc;");
 		if (GuiBuilder == 2)
 		{
 			if (GuiAppType == 0)
