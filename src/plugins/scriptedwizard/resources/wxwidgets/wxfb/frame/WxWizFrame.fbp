@@ -36,7 +36,7 @@
             <property name="window_extra_style"></property>
             <property name="window_style">wxTAB_TRAVERSAL</property>
             <property name="xrc_skip_sizer">1</property>
-            <event name="OnClose"></event>
+            <event name="OnClose">OnClose</event>
             <event name="OnSize"></event>
             <object class="wxMenuBar" expanded="1">
                 <property name="bg"></property>

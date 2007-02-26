@@ -44,6 +44,7 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 }
 
 [IF WXFRAME][IF NONE]BEGIN_EVENT_TABLE([PROJECT_NAME]Frame, wxFrame)
+	EVT_CLOSE([PROJECT_NAME]Frame::OnClose)
     EVT_MENU(idMenuQuit, [PROJECT_NAME]Frame::OnQuit)
     EVT_MENU(idMenuAbout, [PROJECT_NAME]Frame::OnAbout)
 END_EVENT_TABLE()
@@ -86,22 +87,28 @@ END_EVENT_TABLE()
 {
 }
 
-void [PROJECT_NAME]Frame::OnQuit(wxCommandEvent& event)
+void [PROJECT_NAME]Frame::OnClose(wxCloseEvent &event)
 {
-    Close();
+    Destroy();
 }
 
-void [PROJECT_NAME]Frame::OnAbout(wxCommandEvent& event)
+void [PROJECT_NAME]Frame::OnQuit(wxCommandEvent &event)
+{
+    Destroy();
+}
+
+void [PROJECT_NAME]Frame::OnAbout(wxCommandEvent &event)
 {
     wxString msg = wxbuildinfo(long_f);
     wxMessageBox(msg, _("Welcome to..."));
 }[ENDIF WXFRAME]
 [IF WXDIALOG][IF NONE]BEGIN_EVENT_TABLE([PROJECT_NAME]Dialog, wxDialog)
+	EVT_CLOSE([PROJECT_NAME]Dialog::OnClose)
     EVT_BUTTON(idBtnQuit, [PROJECT_NAME]Dialog::OnQuit)
     EVT_BUTTON(idBtnAbout, [PROJECT_NAME]Dialog::OnAbout)
 END_EVENT_TABLE()
 
-[PROJECT_NAME]Dialog::[PROJECT_NAME]Dialog(wxDialog *dlg, const wxString& title)
+[PROJECT_NAME]Dialog::[PROJECT_NAME]Dialog(wxDialog *dlg, const wxString &title)
     : wxDialog(dlg, -1, title)
 {
 	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
@@ -132,12 +139,17 @@ END_EVENT_TABLE()
 {
 }
 
-void [PROJECT_NAME]Dialog::OnQuit(wxCommandEvent& event)
+void [PROJECT_NAME]Dialog::OnClose(wxCloseEvent &event)
 {
     Destroy();
 }
 
-void [PROJECT_NAME]Dialog::OnAbout(wxCommandEvent& event)
+void [PROJECT_NAME]Dialog::OnQuit(wxCommandEvent &event)
+{
+    Destroy();
+}
+
+void [PROJECT_NAME]Dialog::OnAbout(wxCommandEvent &event)
 {
     wxString msg = wxbuildinfo(long_f);
     wxMessageBox(msg, _("Welcome to..."));

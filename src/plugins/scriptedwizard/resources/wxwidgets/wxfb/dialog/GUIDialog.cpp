@@ -19,6 +19,7 @@
 
 ///////////////////////////////////////////////////////////////////////////
 BEGIN_EVENT_TABLE( GUIDialog, wxDialog )
+	EVT_CLOSE( GUIDialog::_wxFB_OnClose )
 	EVT_BUTTON( idBtnAbout, GUIDialog::_wxFB_OnAbout )
 	EVT_BUTTON( idBtnQuit, GUIDialog::_wxFB_OnQuit )
 END_EVENT_TABLE()

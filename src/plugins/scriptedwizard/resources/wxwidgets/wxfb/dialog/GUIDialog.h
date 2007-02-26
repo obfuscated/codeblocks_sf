@@ -33,6 +33,7 @@ class GUIDialog : public wxDialog
 	private:
 		
 		// Private event handlers
+		void _wxFB_OnClose( wxCloseEvent& event ){ OnClose( event ); }
 		void _wxFB_OnAbout( wxCommandEvent& event ){ OnAbout( event ); }
 		void _wxFB_OnQuit( wxCommandEvent& event ){ OnQuit( event ); }
 		
@@ -50,6 +51,7 @@ class GUIDialog : public wxDialog
 		wxButton* BtnQuit;
 		
 		// Virtual event handlers, overide them in your derived class
+		virtual void OnClose( wxCloseEvent& event ){ event.Skip(); }
 		virtual void OnAbout( wxCommandEvent& event ){ event.Skip(); }
 		virtual void OnQuit( wxCommandEvent& event ){ event.Skip(); }
 		

@@ -35,6 +35,7 @@ class GUIFrame : public wxFrame
 	private:
 		
 		// Private event handlers
+		void _wxFB_OnClose( wxCloseEvent& event ){ OnClose( event ); }
 		void _wxFB_OnQuit( wxCommandEvent& event ){ OnQuit( event ); }
 		void _wxFB_OnAbout( wxCommandEvent& event ){ OnAbout( event ); }
 		
@@ -44,6 +45,7 @@ class GUIFrame : public wxFrame
 		wxStatusBar* statusBar;
 		
 		// Virtual event handlers, overide them in your derived class
+		virtual void OnClose( wxCloseEvent& event ){ event.Skip(); }
 		virtual void OnQuit( wxCommandEvent& event ){ event.Skip(); }
 		virtual void OnAbout( wxCommandEvent& event ){ event.Skip(); }
 		

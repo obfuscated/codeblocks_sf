@@ -35,7 +35,7 @@
             <property name="tooltip"></property>
             <property name="window_extra_style"></property>
             <property name="window_style"></property>
-            <event name="OnClose"></event>
+            <event name="OnClose">OnClose</event>
             <event name="OnSize"></event>
             <object class="wxBoxSizer" expanded="1">
                 <property name="minimum_size"></property>

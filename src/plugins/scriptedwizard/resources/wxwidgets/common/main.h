@@ -23,6 +23,7 @@
 			idMenuQuit = 1000,
 			idMenuAbout
 		};
+		void OnClose(wxCloseEvent& event);
 		void OnQuit(wxCommandEvent& event);
 		void OnAbout(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
@@ -35,6 +36,7 @@ class [PROJECT_NAME]Frame: public GUIFrame
 		[PROJECT_NAME]Frame(wxFrame *frame);
 		~[PROJECT_NAME]Frame();
 	private:
+		virtual void OnClose(wxCloseEvent& event);
 		virtual void OnQuit(wxCommandEvent& event);
 		virtual void OnAbout(wxCommandEvent& event);
 };[ENDIF WXFB][ENDIF WXFRAME]
@@ -58,6 +60,7 @@ class [PROJECT_NAME]Dialog: public wxDialog
 		wxButton* BtnQuit;
 		
 	private:
+		void OnClose(wxCloseEvent& event);
 		void OnQuit(wxCommandEvent& event);
 		void OnAbout(wxCommandEvent& event);
 		DECLARE_EVENT_TABLE()
@@ -70,6 +73,7 @@ class [PROJECT_NAME]Dialog: public GUIDialog
 		[PROJECT_NAME]Dialog(wxDialog *dlg);
 		~[PROJECT_NAME]Dialog();
 	private:
+		virtual void OnClose(wxCloseEvent& event);
 		virtual void OnQuit(wxCommandEvent& event);
 		virtual void OnAbout(wxCommandEvent& event);
 };[ENDIF WXFB][ENDIF WXDIALOG]

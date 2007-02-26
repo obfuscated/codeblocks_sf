@@ -19,6 +19,7 @@
 
 ///////////////////////////////////////////////////////////////////////////
 BEGIN_EVENT_TABLE( GUIFrame, wxFrame )
+	EVT_CLOSE( GUIFrame::_wxFB_OnClose )
 	EVT_MENU( idMenuQuit, GUIFrame::_wxFB_OnQuit )
 	EVT_MENU( idMenuAbout, GUIFrame::_wxFB_OnAbout )
 END_EVENT_TABLE()
