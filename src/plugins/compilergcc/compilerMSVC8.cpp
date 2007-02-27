@@ -87,7 +87,7 @@ void CompilerMSVC8::Reset()
 	m_Options.AddOption(_("Treat warnings as errors"), _T("/WX"), _("Warnings"));
 
 	//Optimization
-	m_Options.AddOption(_("Enable global optimization"), _T("/Og"), _("Optimization"));
+	//m_Options.AddOption(_("Enable global optimization"), _T("/Og"), _("Optimization")); // Deprecated in MSVC 8
 	m_Options.AddOption(_("Maximum optimization (no need for other options)"), _T("/Ox"), _("Optimization"));
 	m_Options.AddOption(_("Disable optimizations"), _T("/Od"), _("Optimization")); //added no optimization
 	m_Options.AddOption(_("Minimize space"), _T("/O1"), _("Optimization"));
@@ -114,7 +114,7 @@ void CompilerMSVC8::Reset()
 	m_Options.AddOption(_("Enable minimal rebuild"), _T("/Gm"), _("Code generation"));
 	m_Options.AddOption(_("Enable link-time code generation"), _T("/GL"), _("Code generation"), _T(""), true, _T("/Zi /ZI"), _("Link-time code generation is incompatible with debugging info"));
 	m_Options.AddOption(_("Optimize for windows application"), _T("/GA"), _("Code generation"));
-	m_Options.AddOption(_("Force stack checking for all funcs"), _T("/Ge"), _("Code generation"));
+	//m_Options.AddOption(_("Force stack checking for all funcs"), _T("/Ge"), _("Code generation")); // Deprecated in MSVC 8
 	// /Gs[num] control stack checking calls
 	m_Options.AddOption(_("Enable _penter function call"), _T("/Gh"), _("Code generation"));
 	m_Options.AddOption(_("Enable _pexit function call"), _T("/GH"), _("Code generation"));
@@ -132,7 +132,7 @@ void CompilerMSVC8::Reset()
 	m_Options.AddOption(_("__cdecl calling convention"), _T("/Gd"), _("Code generation"));
 	m_Options.AddOption(_("__fastcall calling convention"), _T("/Gr"), _("Code generation"));
 	m_Options.AddOption(_("__stdcall calling convention"), _T("/Gz"), _("Code generation"));
-	m_Options.AddOption(_("use FIST instead of ftol("), _T("/QIfist"), _("Code generation"));
+	//m_Options.AddOption(_("use FIST instead of ftol("), _T("/QIfist"), _("Code generation")); // Deprecated in MSVC 8
 	//m_Options.AddOption(_("Ensure function padding for hotpatchable images"), _T("/hotpatch"), _("Code generation"));
 	m_Options.AddOption(_("Enable SSE instruction set"), _T("/arch:SSE"), _("Code generation"));
 	m_Options.AddOption(_("Enable SSE2 instruction set"), _T("/arch:SSE2"), _("Code generation"));
