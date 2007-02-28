@@ -100,13 +100,23 @@ void cbDragScroll::OnAttach()
 
     // Create filename like cbDragScroll.ini
     //memorize the key file name as {%HOME%}\cbDragScroll.ini
-    m_CfgFilenameStr = ConfigManager::GetConfigFolder();
+    m_ConfigFolder = ConfigManager::GetConfigFolder();
+    m_ExecuteFolder = ConfigManager::GetExecutableFolder();
+    m_DataFolder = ConfigManager::GetDataFolder();
 
     //GTK GetConfigFolder is returning double "//?, eg, "/home/pecan//.codeblocks"
 
     // remove the double //s from filename //+v0.4.11
-    m_CfgFilenameStr.Replace(_T("//"),_T("/"));
-    m_CfgFilenameStr = m_CfgFilenameStr + wxFILE_SEP_PATH + _T("DragScroll.ini");
+    m_ConfigFolder.Replace(_T("//"),_T("/"));
+    m_ExecuteFolder.Replace(_T("//"),_T("/"));
+
+    // if DragScroll.ini is in the executable folder, use it
+    // else use the default config folder
+    m_CfgFilenameStr = m_ExecuteFolder + wxFILE_SEP_PATH + _T("DragScroll.ini");
+    if (::wxFileExists(m_CfgFilenameStr)) {;/*OK Use exe path*/}
+    else //use the default.conf folder
+        m_CfgFilenameStr = m_ConfigFolder + wxFILE_SEP_PATH + _T("DragScroll.ini");
+
     LOGIT(_T("DragScroll Config Filename:[%s]"), m_CfgFilenameStr.GetData());
     // read configuaton file
     wxFileConfig cfgFile(wxEmptyString,     // appname
@@ -596,9 +606,9 @@ void cbDragScroll::OnWindowClose(wxEvent& event)
 BEGIN_EVENT_TABLE(MyMouseEvents, wxEvtHandler)
     //-Deprecated- EVT_MOUSE_EVENTS( MyMouseEvents::OnMouseEvent)
     // Using Connect/Disconnect events  and EVT_CREATE/EVT_DESTROY
-    // widgets events since split-windows were
+    // wxWidgets events since split-windows were
     // introduced without providing codeblocks events to plugins.
-    // Witout events, event handlers were being leaked for each split
+    // Without CB events, event handlers were being leaked for each split
     // window.
 END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
@@ -640,6 +650,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
 //     LOGIT( _T("ClassName[%s]"), pClassName );
 //    #endif //LOGGING
 
+    // differentialte window, left, right split window
     cbEditor* ed = 0;
     cbStyledTextCtrl* p_cbStyledTextCtrl = 0;
     cbStyledTextCtrl* pLeftSplitWin = 0;
@@ -651,7 +662,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
         pRightSplitWin = ed->GetRightSplitViewControl();
     }
 
-    // if "focus follows mouse" endabled, set focus to window
+    // if "focus follows mouse" enabled, set focus to window
     if (pDS->GetMouseFocusEnabled() )
         if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)
             if (m_pEvtObject) ((wxWindow*)m_pEvtObject)->SetFocus();
@@ -801,9 +812,9 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
             else  // use listCtrl for x scrolling
                 ((wxListCtrl*)m_pEvtObject)->ScrollList(scrollx,scrolly);
         }//esle
-    }//else if (event.Dragging() && m_dragMode != DRAG_NONE)
+    }//else if
 
-    // pass on the event
+    // pass the event onward
     event.Skip();
 
 }//OnMouseEvent

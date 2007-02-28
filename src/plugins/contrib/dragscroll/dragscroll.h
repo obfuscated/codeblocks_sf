@@ -52,7 +52,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.0.38 2007/01/1"
+#define VERSION "1.0.39 2007/02/28"
 //----------------------------------------
 
 #if defined(dsLOGGING)
@@ -124,7 +124,11 @@ class cbDragScroll : public cbPlugin
         void OnWindowOpen(wxEvent& event);
         void OnWindowClose(wxEvent& event);
 
+        wxString        m_ConfigFolder;
+        wxString        m_ExecuteFolder;
+        wxString        m_DataFolder;
         wxString        m_CfgFilenameStr;
+
         wxArrayString   m_UsableWindows;
         wxArrayPtrVoid  m_EditorPtrs;
         wxLogWindow*    pMyLog;
@@ -380,10 +384,12 @@ private:
 //          35) Fixed GTK RightMouse scrolling (avoiding Context Menu conflict)
 //          36) Added slider allowing user to set GTK RightMouse scrolling/context menu sensitivity
 // ----------------------------------------------------------------------------
-//  Commit  1.0.37
+//  Commit  1.0.38
 //          37) Re-instated GTK wxTextCtrl y-axis scrolling
 //              GTK cannot scroll a wxListCtrl
 //          38) Corrected GTK dialog layout
 // ----------------------------------------------------------------------------
-
+//  Commit  1.0.39
+//          39) If exists executable folder .ini file, use it.
+// ----------------------------------------------------------------------------
 #endif // DRAGSCROLL_H
