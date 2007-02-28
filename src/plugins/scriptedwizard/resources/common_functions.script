@@ -425,8 +425,12 @@ function AddFileToTargets(the_wiz, the_file)
         local prj = GetProjectManager().GetActiveProject();
         if (!IsNull(prj))
         {
-            // add the file to the first selected target
-            local pf = prj.AddFile(tgtidx, the_file);
+            // Check first if the file exists in Active Project
+            local pf_check = prj.GetFileByFilename(the_file, false, false);
+			if (!IsNull(pf_check)) // File exists, Remove it first
+				prj.RemoveFile(pf_check)
+			// Now add the file to the first selected target
+			local pf = prj.AddFile(tgtidx, the_file);
             GetProjectManager().RebuildTree(); // make sure our view is current
 
             // if the file was added succesfully, (...)
