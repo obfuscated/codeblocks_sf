@@ -25,6 +25,7 @@
 #include "wxsresourcetreeitemdata.h"
 
 #include <wx/image.h>
+#include <wx/imaglist.h>
 #include <wx/intl.h>
 
 #include "configmanager.h"
