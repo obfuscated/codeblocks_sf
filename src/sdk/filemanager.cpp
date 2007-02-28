@@ -231,6 +231,8 @@ inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding 
 
 bool FileManager::Save(const wxString& name, const char* data, size_t len)
 {
+    wxLogNull jwfsk;
+
     if(wxFileExists(name) == false) // why bother if we don't need to
     {
         wxFile f(name, wxFile::write);
@@ -238,6 +240,14 @@ bool FileManager::Save(const wxString& name, const char* data, size_t len)
             return false;
         return f.Write(data, len);
     }
+
+#ifdef __WIN32__
+    {
+        wxFile f;
+        if(!f.Open(name, wxFile::read_write))
+            return false;
+    }
+#endif
 
     wxString tempName(name + _T(".cbTemp"));
 	do
@@ -259,6 +269,8 @@ bool FileManager::Save(const wxString& name, const char* data, size_t len)
 
 bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncoding encoding, bool bom)
 {
+    wxLogNull jwfsk;
+
     if(wxFileExists(name) == false) // why bother if we don't need to
     {
         wxFile f(name, wxFile::write);
@@ -266,6 +278,14 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
             return false;
         return WriteWxStringToFile(f, data, encoding, bom);
     }
+
+#ifdef __WIN32__
+    {
+        wxFile f;
+        if(!f.Open(name, wxFile::read_write))
+            return false;
+    }
+#endif
 
     wxString tempName(name + _T(".cbTemp"));
 	do
