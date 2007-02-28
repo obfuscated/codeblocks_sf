@@ -655,6 +655,32 @@ int CodeBlocksApp::BatchJob()
     if (!compiler)
         return -3;
 
+	if (!m_Clean && m_BatchTarget.Lower() == _T("ask"))
+	{
+		m_BatchTarget.Clear();
+		cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+		if (prj)
+		{
+			int idx = -1;
+			wxString defTarget = prj->GetActiveBuildTarget();
+			// find active target's index
+			// TODO: make this easier in the SDK
+			for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
+			{
+				ProjectBuildTarget* target = prj->GetBuildTarget(i);
+				if (target->GetTitle().Matches(defTarget))
+				{
+					idx = i;
+					break;
+				}
+			}
+			idx = prj->SelectTarget(idx, false);
+			if (idx == -1)
+				return 0; // no target selected: just abort
+			m_BatchTarget = prj->GetBuildTarget(idx)->GetTitle();
+		}
+	}
+
     wxTaskBarIcon* tbIcon = new wxTaskBarIcon();
     tbIcon->SetIcon(
             #ifdef __WXMSW__
@@ -692,14 +718,14 @@ int CodeBlocksApp::BatchJob()
     }
     else if (m_Clean)
     {
-       if(m_HasProject)
-       {
-               compiler->Clean(m_BatchTarget);
-       }
-       else if(m_HasWorkSpace)
-       {
-               compiler->CleanWorkspace(m_BatchTarget);
-       }
+		if(m_HasProject)
+		{
+			compiler->Clean(m_BatchTarget);
+		}
+		else if(m_HasWorkSpace)
+		{
+			compiler->CleanWorkspace(m_BatchTarget);
+		}
     }
 
     // the batch build log might have been deleted in
