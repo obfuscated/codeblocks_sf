@@ -152,6 +152,7 @@ const wxCmdLineEntryDesc cmdLineDesc[] =
     { wxCMD_LINE_OPTION, _T(""), _T("profile"),  _T("synonym to personality"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_SWITCH, _T(""), _T("rebuild"), _T("clean and then build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T(""), _T("build"), _T("just build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T(""), _T("clean"), _T("clean the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, _T(""), _T("target"),  _T("the target for the batch build"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_SWITCH, _T(""), _T("no-batch-window-close"),  _T("do not auto-close log window when batch build is done"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T(""), _T("batch-build-notify"),  _T("show message when batch build is done"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
@@ -426,6 +427,7 @@ bool CodeBlocksApp::OnInit()
     m_BatchNotify = false;
     m_Build = false;
     m_ReBuild = false;
+    m_Clean = false;
     m_HasProject = false;
     m_HasWorkSpace = false;
 
@@ -688,11 +690,26 @@ int CodeBlocksApp::BatchJob()
     		compiler->BuildWorkspace(m_BatchTarget);
     	}
     }
+    else if (m_Clean)
+    {
+       if(m_HasProject)
+       {
+               compiler->Clean(m_BatchTarget);
+       }
+       else if(m_HasWorkSpace)
+       {
+               compiler->CleanWorkspace(m_BatchTarget);
+       }
+    }
 
     // the batch build log might have been deleted in
     // CodeBlocksApp::OnBatchBuildDone().
     // if it hasn't, it's still compiling
-    if (m_pBatchBuildDialog)
+    //
+    // also note that if operation is "--clean", there is no need
+    // to display the dialog as the operation is synchronous and it
+    // already has finished by the time the call to Clean() returned...
+    if (!m_Clean && m_pBatchBuildDialog)
         m_pBatchBuildDialog->ShowModal();
 
     tbIcon->RemoveIcon();
@@ -837,7 +854,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 
                     // batch jobs
                     m_Batch = m_HasProject || m_HasWorkSpace;
-                    m_Batch = m_Batch && (m_Build || m_ReBuild);
+                    m_Batch = m_Batch && (m_Build || m_ReBuild || m_Clean);
                 }
                 else
                 {
@@ -861,10 +878,11 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     m_BatchWindowAutoClose = !parser.Found(_T("no-batch-window-close"));
                     m_Build = parser.Found(_T("build"));
                     m_ReBuild = parser.Found(_T("rebuild"));
+                    m_Clean = parser.Found(_T("clean"));
                     parser.Found(_T("target"), &m_BatchTarget);
                     parser.Found(_T("script"), &m_Script);
                     // initial setting for batch flag (will be reset when ParseCmdLine() is called again).
-                    m_Batch = m_Build || m_ReBuild;
+                    m_Batch = m_Build || m_ReBuild || m_Clean;
                 }
             }
             break;

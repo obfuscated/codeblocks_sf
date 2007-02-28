@@ -36,6 +36,7 @@
     #include "editormanager.h"
     #include "configmanager.h"
     #include "pluginmanager.h"
+    #include "cbexception.h"
     #include "cbplugin.h"
     #include "messagelog.h"
     #include "simpletextlog.h"
@@ -56,15 +57,21 @@
 class BatchLogWindow : public wxDialog
 {
     public:
-        BatchLogWindow(wxWindow *parent, const wxChar *title)
-            : wxDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
+        BatchLogWindow(wxWindow *parent, const wxChar *title, MessageLog* log)
+            : wxDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX),
+			m_pLog(0)
         {
             wxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-            wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
-            m_pText = new wxTextCtrl(this, -1, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE | wxTE_RICH2 | wxHSCROLL);
-            m_pText->SetFont(font);
 
-            sizer->Add(m_pText, 1, wxGROW);
+			if (!log)
+				cbThrow(_T("No log window pointer passed to batch-build log's ctor!"));
+
+			// reparent log
+			m_pLog = log;
+			Manager::Get()->GetMessageManager()->ShowLog(log, false);
+			log->Reparent(this);
+			log->Show(true);
+            sizer->Add(log, 1, wxGROW);
 
             wxSize size;
             size.SetWidth(Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/batch_build_log/width"), wxDefaultSize.GetWidth()));
@@ -104,7 +111,7 @@ class BatchLogWindow : public wxDialog
             Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/batch_build_log/height"), (int)GetSize().GetHeight());
             wxDialog::EndModal(retCode);
         }
-        wxTextCtrl* m_pText;
+        MessageLog* m_pLog;
 };
 
 static const int idNB = wxNewId();
@@ -186,7 +193,14 @@ MessageManager::~MessageManager()
     delete m_pNotebook->GetImageList();
     m_pNotebook->Destroy();
     for (LogsMap::iterator it = m_Logs.begin(); it != m_Logs.end(); ++it)
-               delete (*it).second;
+    {
+    	// in batch build mode, just avoid deleting the batch build log
+    	// it's already deleted by its parent, the batch build dialog
+    	if (m_BatchBuildLogDialog && (*it).first == m_BatchBuildLog)
+			continue;
+
+		delete (*it).second;
+    }
 }
 
 void MessageManager::CreateMenu(wxMenuBar* menuBar)
@@ -419,7 +433,7 @@ void MessageManager::ShowLog(int id, bool show)
 wxDialog* MessageManager::GetBatchBuildDialog()
 {
     if (!m_BatchBuildLogDialog)
-        m_BatchBuildLogDialog = new BatchLogWindow(Manager::Get()->GetAppWindow(), _("Batch build"));
+        m_BatchBuildLogDialog = new BatchLogWindow(Manager::Get()->GetAppWindow(), _("Batch build"), m_Logs[m_BatchBuildLog]->log);
     return m_BatchBuildLogDialog;
 }
 
@@ -454,18 +468,11 @@ void MessageManager::Log(int id, const wxString& msg)
 
     m_Logs[id]->log->AddLog(msg);
 
-    if (Manager::IsBatchBuild() && id == m_BatchBuildLog)
+    if (Manager::IsBatchBuild() && id == m_BatchBuildLog && !m_BatchBuildLogDialog)
     {
-        // this log is the batch build log
+        // create the batch build log if needed
         if (!m_BatchBuildLogDialog)
             GetBatchBuildDialog();
-        BatchLogWindow* dlg = static_cast<BatchLogWindow*>(m_BatchBuildLogDialog);
-        if (dlg->m_pText)
-        {
-            dlg->m_pText->AppendText(msg + _T('\n')); // log to build log window
-            dlg->m_pText->ScrollLines(-1);
-            Manager::ProcessPendingEvents();
-        }
     }
 }
 
@@ -483,18 +490,11 @@ void MessageManager::Log(int id, const wxChar* msg, ...)
 
     m_Logs[id]->log->AddLog(tmp);
 
-    if (Manager::IsBatchBuild() && id == m_BatchBuildLog)
+    if (Manager::IsBatchBuild() && id == m_BatchBuildLog && !m_BatchBuildLogDialog)
     {
-        // this log is the batch build log
+        // create the batch build log if needed
         if (!m_BatchBuildLogDialog)
             GetBatchBuildDialog();
-        BatchLogWindow* dlg = static_cast<BatchLogWindow*>(m_BatchBuildLogDialog);
-        if (dlg->m_pText)
-        {
-            dlg->m_pText->AppendText(tmp + _T('\n')); // log to build log window
-            dlg->m_pText->ScrollLines(-1);
-            Manager::ProcessPendingEvents();
-        }
     }
 }
 

@@ -105,6 +105,10 @@ void EditorColourSet::ClearAllOptionColours()
 
 void EditorColourSet::LoadAvailableSets()
 {
+	// no need for syntax highlighting if batch building
+	if (Manager::IsBatchBuild())
+		return;
+
     wxLogNull ln;
 	EditorLexerLoader lex(this);
     wxDir dir;
@@ -509,6 +513,10 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
 
 void EditorColourSet::Save()
 {
+	// no need for syntax highlighting if batch building
+	if (Manager::IsBatchBuild())
+		return;
+
 	wxString key;
 	ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
@@ -600,6 +608,10 @@ void EditorColourSet::Save()
 
 void EditorColourSet::Load()
 {
+	// no need for syntax highlighting if batch building
+	if (Manager::IsBatchBuild())
+		return;
+
     static bool s_notifiedUser = false;
 
 	wxString key;
@@ -692,6 +704,10 @@ void EditorColourSet::Load()
 
 void EditorColourSet::Reset(HighlightLanguage lang)
 {
+	// no need for syntax highlighting if batch building
+	if (Manager::IsBatchBuild())
+		return;
+
     wxLogNull ln;
     wxString key;
     key << _T("/colour_sets/") << m_Name << _T('/') << lang;

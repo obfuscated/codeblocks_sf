@@ -377,15 +377,19 @@ void CompilerGCC::OnRelease(bool appShutDown)
     // disable script functions
     ScriptBindings::gBuildLogId = -1;
 
-	RemoveBuildProgressBar();
+//	RemoveBuildProgressBar();
 
     DoDeleteTempMakefile();
     SaveOptions();
     Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/default_compiler"), CompilerFactory::GetDefaultCompilerID());
     if (Manager::Get()->GetMessageManager())
     {
-        Manager::Get()->GetMessageManager()->RemoveLog(m_Log);
-        m_Log->Destroy();
+    	// for batch builds, the log is deleted by the manager
+    	if (!Manager::IsBatchBuild())
+    	{
+			Manager::Get()->GetMessageManager()->RemoveLog(m_Log);
+			m_Log->Destroy();
+    	}
         m_Log = 0;
 
         Manager::Get()->GetMessageManager()->RemoveLog(m_pListLog);
@@ -2257,6 +2261,13 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Job: %s - %s"), prj->GetTitle().c_str(), prj->GetBuildTarget(tlist[x])->GetTitle().c_str());
         }
     }
+    
+    // were there any jobs generated?
+    if (m_BuildJobTargetsList.empty())
+    {
+    	NotifyJobDone(true);
+    }
+
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("** Done creating deps"));
 }
 

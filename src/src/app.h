@@ -82,6 +82,7 @@ class CodeBlocksApp : public wxApp
         bool m_BatchWindowAutoClose; // default: true
         bool m_Build;
         bool m_ReBuild;
+        bool m_Clean;
         bool m_HasProject;
         bool m_HasWorkSpace;
         bool m_NoSplash; // no splash screen
