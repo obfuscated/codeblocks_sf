@@ -87,12 +87,13 @@ binary-arch: build install
 	dh_installdocs
 	dh_installexamples
 #	dh_install
-#	dh_installmenu
+	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate
 #	dh_installemacsen
 #	dh_installpam
-#	dh_installmime
+	dh_installmime
+	dh_iconcache
 #	dh_installinit
 #	dh_installcron
 #	dh_installinfo

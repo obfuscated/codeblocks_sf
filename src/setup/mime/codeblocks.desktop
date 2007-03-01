@@ -9,6 +9,6 @@ Terminal=false
 X-MultipleArgs=false
 Type=Application
 Categories=Application;Development;
-StartupNotify=false
+StartupNotify=true
 MimeType=application/x-codeblocks;application/x-codeblocks-workspace;
 GenericName[en_GR]=

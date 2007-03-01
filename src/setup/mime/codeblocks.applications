@@ -1,7 +1,0 @@
-codeblocks
-	command=codeblocks
-	name=Code::Blocks IDE
-	can_open_multiple_files=true
-	expects_uris=false
-	requires_terminal=false
-	mime_types=application/x-codeblocks,application/x-codeblocks-workspace
