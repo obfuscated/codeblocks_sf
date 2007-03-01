@@ -60,7 +60,7 @@ void wxsGenericDirCtrl::OnBuildCreatingCode(wxString& Code,const wxString& Windo
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%u,%P,%S,%T,%u,%d,%N);\n"),DefaultFolder.c_str(),Filter.c_str(),DefaultFilter);
+            Code << Codef(Language,_T("%C(%W,%I,%n,%P,%S,%T,%n,%d,%N);\n"),DefaultFolder.c_str(),Filter.c_str(),DefaultFilter);
             SetupWindowCode(Code,Language);
             return;
         }

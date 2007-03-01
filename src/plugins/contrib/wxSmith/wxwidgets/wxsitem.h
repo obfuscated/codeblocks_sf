@@ -301,7 +301,7 @@ class wxsItem: public wxsPropertyContainer
          * This function works like simplified printf function producing string
          * with few differences: most of %x formating sequences doesn't need
          * argument because default value is taken. Argument-requiring sequences
-         * are: %V %t %u %s %b.
+         * are: %V %t %n %s %b.
          *
          * As default it recognize following formatting strings:
          *  - %C - Create prefix (see GetCreatePrefix for details)
@@ -315,7 +315,7 @@ class wxsItem: public wxsPropertyContainer
          *  - %N - Name (usually last parameter in constructor)
          *  - %v - Variable (require argument: wxChar*)
          *  - %t - wx-converted string with translation in _("...") form (reguire argument: wxChar*)
-         *  - %u - wx-converted string without translation in _T("...") form (require argument: wxChar*)
+         *  - %n - wx-converted string without translation in _T("...") form (require argument: wxChar*)
          *  - %s - string value (require argument: wxChar*)
          *  - %d - decimal value (require argument: integer)
          *  - %b - boolean value ("true"/"false") (require argument: bool)
@@ -508,18 +508,18 @@ class wxsItem: public wxsPropertyContainer
          */
         virtual bool OnMouseRightClick(wxWindow* Preview,int PosX,int PosY) { return false; }
 
-        /** \brief Function checking if this item is represented as pointer */
-        virtual bool OnIsPointer();
-
         /** \brief Extensions to Codef function
          * \note Remember to call OnCodefExtension of base class (this function is implemented
-         *       in all default wxSmith classes even when not used
+         *       in all default wxSmith classes even when not used)
          * \param Result result string, new data should be appended to it
          * \param FmtChar pointer to char right after %, function should shift this pointer
          *        after all detected formating chars
          * \param ap pointer to arguments, get arguments through va_arg
          */
         virtual bool OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap) { return false; }
+
+        /** \brief Function checking if this item is represented as pointer */
+        virtual bool OnIsPointer();
 
         /** \brief Checking if this item can be added to given parent */
         virtual bool OnCanAddToParent(wxsParent* Parent,bool ShowMessage) { return true; }
@@ -558,7 +558,7 @@ class wxsItem: public wxsPropertyContainer
         virtual void OnSubPropertyChanged(wxsPropertyContainer*);
 
         /** \brief Internal version of Codef function */
-        void Codef(wxsCodingLang Language,const wxChar* Fmt,wxString& Result,va_list ap);
+        void Codef(wxsCodingLang Language,wxString WindowParent,const wxChar* Fmt,wxString& Result,va_list ap);
 
         const wxsItemInfo* m_Info;              ///< \brief Pointer to item's info structure
         wxsEvents m_Events;                     ///< \brief Object managing events

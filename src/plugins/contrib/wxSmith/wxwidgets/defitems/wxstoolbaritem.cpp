@@ -122,35 +122,6 @@ void wxsToolBarItem::OnEnumToolProperties(long Flags)
     }
 }
 
-bool wxsToolBarItem::OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap)
-{
-    if ( *FmtChar == _T('M') )
-    {
-        Result.Append(GetParent()->GetAccessPrefix(Language));
-        FmtChar++;
-        return true;
-    }
-    if ( *FmtChar == _T('R') )
-    {
-        FmtChar++;
-        switch ( Language )
-        {
-            case wxsCPP:
-                if ( !GetParent()->IsPointer() )
-                {
-                    Result.Append(_T('&'));
-                }
-                Result.Append(GetParent()->GetVarName());
-                break;
-
-            default:
-                wxsCodeMarks::Unknown(_T("wxsToolBarItem::OnCodefExtension"),Language);
-        }
-        return true;
-    }
-    return wxsTool::OnCodefExtension(Language,Result,FmtChar,ap);
-}
-
 bool wxsToolBarItem::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
 {
     bool Ret = wxsParent::OnXmlWrite(Element,IsXRC,IsExtra);

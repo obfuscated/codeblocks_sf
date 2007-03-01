@@ -59,28 +59,23 @@ void wxsBitmapButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
     {
         case wxsCPP:
         {
-            wxString BmpCode = BitmapLabel.IsEmpty() ? _T("wxNullBitmap") : BitmapLabel.BuildCode(true,_T(""),wxsCPP,wxART_BUTTON);
-
-            Code << Codef(Language,_T("%C(%W,%I,%s,%P,%S,%T,%V,%N);\n"),BmpCode.c_str());
+            Codef(_T("%C(%W,%I,%i,%P,%S,%T,%V,%N);\n"),&BitmapLabel,wxART_BUTTON);
             if ( !BitmapDisabled.IsEmpty() )
             {
-                BmpCode = BitmapDisabled.BuildCode(true,_T(""),wxsCPP,wxART_OTHER);
-                Code << Codef(Language,_T("%ASetBitmapDisabled(%s);\n"),BmpCode.c_str());
+                Codef(_T("%ASetBitmapDisabled(%i);\n"),&BitmapDisabled,wxART_BUTTON);
             }
             if ( !BitmapSelected.IsEmpty() )
             {
-                BmpCode = BitmapSelected.BuildCode(true,_T(""),wxsCPP,wxART_OTHER);
-                Code << Codef(Language,_T("%ASetBitmapSelected(%s);\n"),BmpCode.c_str());
+                Codef(_T("%ASetBitmapSelected(%i);\n"),&BitmapSelected,wxART_BUTTON);
             }
             if ( !BitmapFocus.IsEmpty() )
             {
-                BmpCode = BitmapFocus.BuildCode(true,_T(""),wxsCPP,wxART_OTHER);
-                Code << Codef(Language,_T("%ASetBitmapFocus(%s);\n"),BmpCode.c_str());
+                Codef(_T("%ASetBitmapFocus(%i);\n"),&BitmapFocus,wxART_BUTTON);
             }
 
             if ( IsDefault )
             {
-                Code << Codef(Language,_T("%ASetDefault();\n"));
+                Codef(_T("%ASetDefault();\n"));
             }
             SetupWindowCode(Code,Language);
             return;
