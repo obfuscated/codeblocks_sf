@@ -135,9 +135,9 @@ class DebuggerDriver
         /** Get debugger cursor. */
         virtual const Cursor& GetCursor() const { return m_Cursor; }
         /** Set child PID (debuggee's). Usually set by debugger commands. */
-        virtual void SetChildPID(unsigned long pid) { m_ChildPID = pid; }
+        virtual void SetChildPID(long pid) { m_ChildPID = pid; }
         /** Get the child's (debuggee's) PID. */
-        virtual unsigned long GetChildPID() const { return m_ChildPID; }
+        virtual long GetChildPID() const { return m_ChildPID; }
         /** Request to switch to another thread. */
         virtual void SwitchThread(size_t threadIndex) = 0;
 
@@ -165,7 +165,7 @@ class DebuggerDriver
         wxString m_LastCursorAddress;
         Cursor m_Cursor;
 
-        unsigned long m_ChildPID;
+        long m_ChildPID;
 
         // debugging windows pointers
         BacktraceDlg* m_pBacktrace;

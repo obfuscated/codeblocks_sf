@@ -527,8 +527,8 @@ class GdbCmd_InfoProgram : public DebuggerCmd
 
             if (!pid_str.IsEmpty())
             {
-                unsigned long pid;
-                if (pid_str.ToULong(&pid, 10) && pid != 0)
+                long pid;
+                if (pid_str.ToLong(&pid, 10) && pid != 0)
                     m_pDriver->SetChildPID(pid);
             }
         }
@@ -773,7 +773,6 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
             if (s_pWin)
                 (s_pWin)->Close();
             s_pWin = new GDBTipWindow((wxWindow*)Manager::Get()->GetAppWindow(), m_What, m_Type, m_Address, contents, 640, &s_pWin, &m_WinRect);
-//            m_pDriver->DebugLog(output);
         }
 };
 // static
@@ -807,6 +806,9 @@ class GdbCmd_FindTooltipAddress : public DebuggerCmd
         }
         void ParseOutput(const wxString& output)
         {
+        	if (output.StartsWith(_T("No symbol")))
+				return;
+
             // examples:
             // type = wxString
             // type = const wxChar
@@ -841,6 +843,9 @@ class GdbCmd_FindTooltipType : public DebuggerCmd
         }
         void ParseOutput(const wxString& output)
         {
+        	if (output.StartsWith(_T("No symbol")))
+				return;
+
             // examples:
             // type = wxString
             // type = const wxChar

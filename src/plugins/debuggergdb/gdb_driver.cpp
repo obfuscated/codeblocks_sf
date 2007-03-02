@@ -547,7 +547,8 @@ void GDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp)
 
 void GDB_driver::EvaluateSymbol(const wxString& symbol, const wxRect& tipRect)
 {
-    QueueCommand(new GdbCmd_FindTooltipType(this, symbol, tipRect));
+	Log(_("Tooltip evaluation is temporarily disabled for GDB..."));
+//    QueueCommand(new GdbCmd_FindTooltipType(this, symbol, tipRect));
 }
 
 void GDB_driver::UpdateWatches(bool doLocals, bool doArgs, DebuggerTree* tree)
@@ -593,43 +594,36 @@ void GDB_driver::ParseOutput(const wxString& output)
     m_pDBG->DebugLog(output);
 
     int idx = buffer.First(GDB_PROMPT);
-    if (idx != wxNOT_FOUND)
+    if (idx == wxNOT_FOUND)
     {
-        m_ProgramIsStopped = true;
-        m_QueueBusy = false;
-        DebuggerCmd* cmd = CurrentCommand();
-        if (cmd)
-        {
-//            Log(_T("Command parsing output: ") + buffer.Left(idx));
-            RemoveTopCommand(false);
-            buffer.Remove(idx);
-            // remove the '>>>>>>' part of the prompt (or what's left of it)
-            int cnt = 6; // max 6 '>'
-            while (buffer.Last() == _T('>') && cnt--)
-                buffer.RemoveLast();
-            if (buffer.Last() == _T('\n'))
-                buffer.RemoveLast();
-            cmd->ParseOutput(buffer.Left(idx));
-            delete cmd;
-            RunQueue();
-        }
-    }
-    else
-    {
-    	// don't un-comment the next line
-    	// if you do, when hovering the mouse over the editor invoking tooltips
-    	// the state gets messed up and shows like the program is running
-    	// while it's not...
-//		m_ProgramIsStopped = false;
+		m_ProgramIsStopped = false;
         return; // come back later
     }
+
+	m_ProgramIsStopped = true;
+	m_QueueBusy = false;
+	DebuggerCmd* cmd = CurrentCommand();
+	if (cmd)
+	{
+//		DebugLog(wxString::Format(_T("Command parsing output (cmd: %s): %s"), cmd->m_Cmd.c_str(), buffer.Left(idx).c_str()));
+		RemoveTopCommand(false);
+		buffer.Remove(idx);
+		// remove the '>>>>>>' part of the prompt (or what's left of it)
+		int cnt = 6; // max 6 '>'
+		while (buffer.Last() == _T('>') && cnt--)
+			buffer.RemoveLast();
+		if (buffer.Last() == _T('\n'))
+			buffer.RemoveLast();
+		cmd->ParseOutput(buffer.Left(idx));
+		delete cmd;
+		RunQueue();
+	}
 
     m_needsUpdate = false;
     m_forceUpdate = false;
 
     // non-command messages (e.g. breakpoint hits)
     // break them up in lines
-    m_ProgramIsStopped = true; // shows initial cursor position
 
     wxArrayString lines = GetArrayFromString(buffer, _T('\n'));
     for (unsigned int i = 0; i < lines.GetCount(); ++i)

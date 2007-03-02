@@ -85,7 +85,7 @@ void DebuggerDriver::ResetCursor()
 
 void DebuggerDriver::QueueCommand(DebuggerCmd* dcmd, QueuePriority prio)
 {
-//    Log(_T("Queueing command: ") + dcmd->m_Cmd);
+//    DebugLog(_T("Queueing command: ") + dcmd->m_Cmd);
     if (prio == Low)
         m_DCmds.Add(dcmd);
     else
