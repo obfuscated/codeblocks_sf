@@ -34,6 +34,7 @@ libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 			compilerMSVC.cpp \
 			compileroptionsdlg.cpp \
 			compilerOW.cpp \
+			compilerOWgenerator.cpp \
 			compilerSDCC.cpp \
 			compilerGNUARM.cpp \
 			compilerTcc.cpp \
@@ -56,6 +57,7 @@ noinst_HEADERS = advancedcompileroptionsdlg.h \
 			compilerMSVC.h \
 			compileroptionsdlg.h \
 			compilerOW.h \
+			compilerOWgenerator.h \
 			compilerSDCC.h \
 			compilerGNUARM.h \
 			compilerTcc.h \

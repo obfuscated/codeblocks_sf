@@ -563,11 +563,30 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         wxString Object = (compiler->GetSwitches().UseFlatObjects)?pfd.object_file_flat:pfd.object_file;
 
         if (FileTypeOf(pf->relativeFilename) == ftResource)
-            resfiles << Object << _T(" ");
+        {
+            // -----------------------------------------
+            // Following lines have been modified for OpenWatcom
+            if (compiler->GetID().IsSameAs(_T("ow")))
+                resfiles << _T("option resource=") << Object << _T(" ");
+            else
+                resfiles << Object << _T(" ");
+            // ------------------------------------------
+        }
         else
         {
-            linkfiles << prependHack << Object << _T(" "); // see QUICK HACK above (prependHack)
-            FlatLinkFiles << prependHack << pfd.object_file_flat << _T(" "); // see QUICK HACK above (prependHack)
+            // -----------------------------------------
+            // Following lines have been modified for OpenWatcom
+            if (compiler->GetID().IsSameAs(_T("ow")))
+            {
+                linkfiles << _T("file ") << prependHack << Object << _T(" "); // see QUICK HACK above (prependHack)
+                FlatLinkFiles << _T("file ") << prependHack << pfd.object_file_flat << _T(" "); // see QUICK HACK above (prependHack)
+            }
+            else
+            {
+                linkfiles << prependHack << Object << _T(" "); // see QUICK HACK above (prependHack)
+                FlatLinkFiles << prependHack << pfd.object_file_flat << _T(" "); // see QUICK HACK above (prependHack)
+            }
+            // -----------------------------------------
         }
 
         // timestamp check

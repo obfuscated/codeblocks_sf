@@ -15,6 +15,7 @@
 
 #include <messagemanager.h>
 #include <manager.h>
+#include "compilerOWgenerator.h"
 
 #include <wx/utils.h>
 #include <wx/filefn.h>
@@ -37,6 +38,11 @@ Compiler * CompilerOW::CreateCopy()
     return c;
 }
 
+CompilerCommandGenerator* CompilerOW::GetCommandGenerator()
+{
+    return new CompilerOWGenerator;
+}
+
 void CompilerOW::Reset()
 {
     /*
@@ -46,13 +52,13 @@ void CompilerOW::Reset()
 
 	m_Programs.C                = wxT("wcl386.exe");
 	m_Programs.CPP              = wxT("wcl386.exe");
-	m_Programs.LD               = wxT("wcl386.exe");
+	m_Programs.LD               = wxT("wlink.exe");
 	m_Programs.LIB              = wxT("wlib.exe");
 	m_Programs.WINDRES          = wxT("wrc.exe");
-	m_Programs.MAKE             = wxT("mingw32-make.exe");
+	m_Programs.MAKE             = wxT("wmake.exe");
 
 	m_Switches.includeDirs      = wxT("-i");
-	m_Switches.libDirs          = wxT("-L");
+	m_Switches.libDirs          = wxT("LIBP ");
 	m_Switches.linkLibs         = wxT("");
 	m_Switches.libPrefix        = wxT("");
 	m_Switches.libExtension     = wxT("lib");
@@ -317,13 +323,13 @@ void CompilerOW::Reset()
     m_Commands[(int)ctCompileResourceCmd]
         = wxT("$rescomp -q -r -fo=$resource_output $res_includes $file");
     m_Commands[(int)ctLinkExeCmd]
-        = wxT("$linker -q $link_options $libdirs $link_objects -fe=$exe_output $libs $link_resobjects");
+        = wxT("$linker option quiet $link_options $libdirs $link_objects name $exe_output $libs $link_resobjects");
     m_Commands[(int)ctLinkConsoleExeCmd]
-        = wxT("$linker -q $link_options $libdirs $link_objects -fe=$exe_output $libs $link_resobjects");
+        = wxT("$linker option quiet $link_options $libdirs $link_objects name $exe_output $libs $link_resobjects");
     m_Commands[(int)ctLinkDynamicCmd]
-        = wxT("$linker -q -$libdirs -fe=$exe_output $libs $link_objects $link_options");
+        = wxT("$linker option quiet $link_options $libdirs name $exe_output $libs $link_objects");
     m_Commands[(int)ctLinkStaticCmd]
-        = wxT("$lib_linker -q $static_output $link_objects");
+        = wxT("$lib_linker option quiet $static_output $link_objects");
     m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     LoadDefaultRegExArray();
@@ -338,7 +344,7 @@ void CompilerOW::Reset()
 void CompilerOW::LoadDefaultRegExArray()
 {
     m_RegExes.Clear();
-    m_RegExes.Add(RegExStruct(_("Note"), cltError, wxT("(") + FilePathWithSpaces + _T(")\\(([0-9]+)\\): Note! (.+)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("Note"), cltWarning, wxT("(") + FilePathWithSpaces + _T(")\\(([0-9]+)\\): Note! (.+)"), 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("Compiler error"), cltError, wxT("(") + FilePathWithSpaces + _T(")\\(([0-9]+)\\): Error! (.+)"), 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("Compiler warning"), cltWarning, wxT("(") + FilePathWithSpaces + _T(")\\(([0-9]+)\\): Warning! (.+)"), 3, 1, 2));
 }
@@ -347,11 +353,13 @@ AutoDetectResult CompilerOW::AutoDetectInstallationDir()
 {
 #ifdef __WXMSW__
     wxLogNull ln;
-    wxRegKey key; // defaults to HKCR
+    /* Following code is Not necessary as OpenWatcom does not write to
+       Registry anymore */
+    /*wxRegKey key; // defaults to HKCR
     key.SetName(wxT("HKEY_LOCAL_MACHINE\\Software\\Open Watcom\\c_1.0"));
     if (key.Open())
         // found; read it
-        key.QueryValue(wxT("Install Location"), m_MasterPath);
+        key.QueryValue(wxT("Install Location"), m_MasterPath);*/
 
     if (m_MasterPath.IsEmpty())
         // just a guess; the default installation dir
@@ -361,6 +369,10 @@ AutoDetectResult CompilerOW::AutoDetectInstallationDir()
     {
         AddIncludeDir(m_MasterPath + wxFILE_SEP_PATH + wxT("h"));
         AddIncludeDir(m_MasterPath + wxFILE_SEP_PATH + wxT("h") + wxFILE_SEP_PATH + wxT("nt"));
+        AddLibDir(m_MasterPath + wxFILE_SEP_PATH + wxT("lib386"));
+        AddLibDir(m_MasterPath + wxFILE_SEP_PATH + wxT("lib386") + wxFILE_SEP_PATH + wxT("nt"));
+        AddResourceIncludeDir(m_MasterPath + wxFILE_SEP_PATH + wxT("h"));
+        AddResourceIncludeDir(m_MasterPath + wxFILE_SEP_PATH + wxT("h") + wxFILE_SEP_PATH + wxT("nt"));
         m_ExtraPaths.Add(m_MasterPath + wxFILE_SEP_PATH + wxT("binnt"));
         m_ExtraPaths.Add(m_MasterPath + wxFILE_SEP_PATH + wxT("binw"));
     }

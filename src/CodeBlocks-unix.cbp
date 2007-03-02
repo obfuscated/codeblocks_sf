@@ -1224,6 +1224,12 @@
 		<Unit filename="plugins/compilergcc/compilerOW.h">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins/compilergcc/compilerOWgenerator.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerOWgenerator.h">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins/compilergcc/compilerSDCC.cpp">
 			<Option target="Compiler" />
 		</Unit>
