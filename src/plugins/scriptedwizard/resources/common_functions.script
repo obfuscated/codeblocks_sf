@@ -109,6 +109,7 @@ function OptimizationsOn(base, compilerID)
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
     {
         base.AddCompilerOption(_T("-ot")); // optimize for time
+		base.AddCompilerOption(_T("-ox")); // Maximum optimization
     }
     else
     {

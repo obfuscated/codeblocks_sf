@@ -210,7 +210,7 @@ only with GCC</label>
       </object>
       <object class="sizeritem">
         <object class="wxStaticBoxSizer">
-          <label>Advanced options</label>
+          <label>Advanced options (GCC only)</label>
           <orient>wxVERTICAL</orient>
           <object class="sizeritem">
             <object class="wxCheckBox" name="chkWxDebug">

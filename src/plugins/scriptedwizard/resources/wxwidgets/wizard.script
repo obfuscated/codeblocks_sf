@@ -275,6 +275,12 @@ function OnLeave_WxConf(fwd)
             lib_prefix = _T("");
             lib_suffix = _T(".lib");
         }
+		else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
+		{
+            lib = lib + _T("wat_");
+            lib_prefix = _T("");
+            lib_suffix = _T(".lib");
+        }
 		
 
         if (IsDLL)
@@ -577,6 +583,24 @@ function SetupProject(project)
 			project.AddLinkerOption(_T("-Tpe"));
 			project.AddLinkerOption(_T("-aa"));
         }
+		else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
+		{
+			project.AddCompilerOption(_T("-d__WXMSW__"));
+            if (IsDLL)
+                project.AddCompilerOption(_T("-dWXUSINGDLL"));
+            if (IsUnicode)
+				project.AddCompilerOption(_T("-dUNICODE"));
+			project.AddCompilerOption(_T("-bm"));
+			project.AddCompilerOption(_T("-br"));
+			project.AddCompilerOption(_T("-bt=nt"));
+			project.AddCompilerOption(_T("-zq"));
+			project.AddCompilerOption(_T("-xr"));
+			project.AddCompilerOption(_T("-xs"));
+			project.AddCompilerOption(_T("-wcd=549"));
+			project.AddCompilerOption(_T("-wcd=656"));
+			project.AddCompilerOption(_T("-wcd=657"));
+			project.AddCompilerOption(_T("-wcd=667"));
+		}
 		// Please remember that the following code have been added separately as it is not tested with MSVC 6
 		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
 			|| GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
@@ -688,7 +712,12 @@ function SetupProject(project)
 				if (WantPCH) // Add support for PCH
 					target.AddCompilerOption(_T("-H -H=obj\\") + Wizard.GetDebugName() + _T("\\") + Wizard.GetProjectName() + _T(".csm"));
 				target.AddLinkerOption(_T("-v"));
-	        }		
+	        }
+			else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
+	        {
+				target.AddCompilerOption(_T("-d__WXDEBUG__"));
+				target.AddLinkerOption(_T("-d2"));
+			}
 			if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk")))
 			{
 				target.AddLinkerOption(_T("/NODEFAULTLIB:libcpmtd.lib"));
