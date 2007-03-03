@@ -131,13 +131,29 @@ bool wxsBitmapIconProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* E
         return false;
     }
 
-    if ( !XmlGetString(Element,VALUE.Id,_T("stock_id")) || VALUE.Id.empty() )
+    // Trying to read from element's attributes
+    VALUE.Id = cbC2U(Element->Attribute("stock_id"));
+    VALUE.Client = cbC2U(Element->Attribute("stock_client"));
+
+    // If failed, trying to read from child elements
+    // (previous buggy style)
+    if ( VALUE.Id.IsEmpty() )
     {
+        XmlGetString(Element,VALUE.Id,_T("stock_id"));
+    }
+    if ( VALUE.Client.IsEmpty() )
+    {
+        XmlGetString(Element,VALUE.Client,_T("stock_client"));
+    }
+
+    if ( VALUE.Id.IsEmpty() )
+    {
+        // No wxART_PROVIDER Id, do it must be filename
         VALUE.Id.Clear();
         VALUE.Client.Clear();
         return XmlGetString(Element,VALUE.FileName);
     }
-    XmlGetString(Element,VALUE.Client,_T("stock_client"));
+
     VALUE.FileName.Clear();
     return true;
 }
@@ -146,10 +162,10 @@ bool wxsBitmapIconProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* 
 {
     if ( !VALUE.Id.empty() )
     {
-        XmlSetString(Element,VALUE.Id,_T("stock_id"));
+        Element->SetAttribute("stock_id",cbU2C(VALUE.Id));
         if ( !VALUE.Client.empty() )
         {
-            XmlSetString(Element,VALUE.Client,_T("stock_client"));
+            Element->SetAttribute("stock_client",cbU2C(VALUE.Client));
         }
         return true;
     }
