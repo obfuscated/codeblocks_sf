@@ -45,10 +45,10 @@ namespace
 
 wxsCustomWidget::wxsCustomWidget(wxsItemResData* Data):
     wxsWidget(Data,&Reg.Info,wxsCustomWidgetEvents),
-    m_ClassName(_("CustomClass")),
     m_CreatingCode(_T("$(THIS) = new $(CLASS)($(PARENT),$(ID),$(POS),$(SIZE),$(STYLE),wxDefaultValidator,$(NAME));")),
     m_Style(_T("0"))
 {
+    SetUserClass(_("CustomClass"));
 }
 
 void wxsCustomWidget::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
@@ -61,17 +61,24 @@ void wxsCustomWidget::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
     Result.Replace(_T("$(THIS)"),GetVarName());
     Result.Replace(_T("$(PARENT)"),WindowParent);
     Result.Replace(_T("$(NAME)"),wxsCodeMarks::WxString(Language,GetIdName(),false));
-    Result.Replace(_T("$(CLASS)"),m_ClassName);
+    Result.Replace(_T("$(CLASS)"),GetUserClass());
 
     Code << Result << _T("\n");
 }
 
 wxObject* wxsCustomWidget::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-    wxStaticText* Wnd = new wxStaticText(Parent,-1,_T("???"),
-        Pos(Parent),Size(Parent),wxST_NO_AUTORESIZE|wxALIGN_CENTRE);
+    wxPanel* Background = new wxPanel(Parent,-1,Pos(Parent),Size(Parent));
+    wxStaticText* Wnd = new wxStaticText(Background,-1,_T("???"),
+        wxDefaultPosition,wxDefaultSize,wxST_NO_AUTORESIZE|wxALIGN_CENTRE);
+    wxSizer* Sizer = new wxBoxSizer(wxHORIZONTAL);
+    Sizer->Add(Wnd,1,wxEXPAND,0);
+    Background->SetSizer(Sizer);
+    Sizer->SetSizeHints(Background);
     Wnd->SetBackgroundColour(wxColour(0,0,0));
     Wnd->SetForegroundColour(wxColour(0xFF,0xFF,0xFF));
+    Background->SetBackgroundColour(wxColour(0,0,0));
+    Background->SetForegroundColour(wxColour(0xFF,0xFF,0xFF));
     return Wnd;
 }
 
@@ -80,14 +87,12 @@ void wxsCustomWidget::OnEnumWidgetProperties(long Flags)
     wxString XmlDataInit = m_XmlData;
     if ( GetResourceData()->GetPropertiesFilter() == flSource )
     {
-        WXS_STRING(wxsCustomWidget,m_ClassName,0,_("Class name:"),_T("class"),_T(""),false,true);
         WXS_STRING(wxsCustomWidget,m_CreatingCode,0,_("Creating code:"),_T("creating_code"),_T(""),true,true);
     }
     else
     {
         if ( !(Flags&flXml) )
         {
-            WXS_STRING(wxsCustomWidget,m_ClassName,0,_("Class name:"),_T("class"),_T(""),false,true);
             WXS_STRING(wxsCustomWidget,m_XmlData,0,_("Xml Data:"),_T(""),_T(""),true,false);
         }
     }
@@ -109,15 +114,6 @@ void wxsCustomWidget::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxs
 {
 }
 
-void wxsCustomWidget::OnBuildDeclarationCode(wxString& Code,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Code << m_ClassName << _T("* ") << GetVarName() << _T(";\n"); break;
-        default: wxsCodeMarks::Unknown(_T("wxsCustomWidget::OnBuildDeclarationCode"),Language);
-    }
-}
-
 bool wxsCustomWidget::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
 {
     bool Ret = wxsItem::OnXmlRead(Element,IsXRC,IsExtra);
@@ -126,7 +122,7 @@ bool wxsCustomWidget::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
     {
         if ( GetResourceData()->GetPropertiesFilter() != flSource )
         {
-            m_ClassName = cbC2U(Element->Attribute("class"));
+            SetUserClass(cbC2U(Element->Attribute("class")));
             m_XmlDataDoc.Clear();
             for ( TiXmlElement* Child = Element->FirstChildElement(); Child; Child = Child->NextSiblingElement() )
             {
@@ -161,7 +157,8 @@ bool wxsCustomWidget::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
     {
         if ( GetResourceData()->GetPropertiesFilter() != flSource )
         {
-            Element->SetAttribute("class",cbU2C(m_ClassName));
+            Element->SetAttribute("class",cbU2C(GetUserClass()));
+            Element->RemoveAttribute("subclass");
             Element->InsertEndChild(TiXmlElement("style"))->InsertEndChild(TiXmlText(cbU2C(m_Style)));
 
             for ( TiXmlElement* Child = m_XmlDataDoc.FirstChildElement(); Child; Child = Child->NextSiblingElement() )

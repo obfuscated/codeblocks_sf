@@ -21,14 +21,13 @@ class wxsCustomWidget: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
         virtual void OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language);
-        virtual void OnBuildDeclarationCode(wxString& Code,wxsCodingLang Language);
+        virtual bool OnIsPointer() { return true; }
         virtual bool OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra);
         virtual bool OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
 
         void RebuildXmlData();
         bool RebuildXmlDataDoc();
 
-        wxString m_ClassName;
         wxString m_CreatingCode;
         wxString m_Style;
         wxString m_XmlData;

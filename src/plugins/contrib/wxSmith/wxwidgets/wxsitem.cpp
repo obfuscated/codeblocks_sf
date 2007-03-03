@@ -116,7 +116,7 @@ void wxsItem::EnumItemProperties(long Flags)
             WXS_BOOL(wxsItem,m_IsMember,flVariable,_(" Is member"),_T("var_is_member"),true);
         }
         WXS_STRING(wxsItem,m_IdName,flId,_("Identifier"),_T("identifier"),wxEmptyString,false,false);
-        WXS_STRING(wxsItem,m_Subclass,flSubclass,_("Custom class"),_T("subclass"),wxEmptyString,false,false);
+        WXS_STRING(wxsItem,m_Subclass,flSubclass,_("Class name"),_T("subclass"),wxEmptyString,false,false);
     }
 
     OnEnumItemProperties(Flags);
@@ -153,6 +153,10 @@ bool wxsItem::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
         wxsPropertyContainer::XmlRead(Element);
         m_IdName = cbC2U(Element->Attribute("name"));
         m_Subclass = cbC2U(Element->Attribute("subclass"));
+        if ( m_Subclass.IsEmpty() )
+        {
+            m_Subclass = GetClassName();
+        }
     }
 
     if ( IsExtra )
@@ -178,7 +182,7 @@ bool wxsItem::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
         }
         if ( GetPropertiesFlags() & flSubclass )
         {
-            if ( !m_Subclass.IsEmpty() )
+            if ( !m_Subclass.IsEmpty() && (m_Subclass!=GetClassName()) )
             {
                 Element->SetAttribute("subclass",cbU2C(m_Subclass));
             }
