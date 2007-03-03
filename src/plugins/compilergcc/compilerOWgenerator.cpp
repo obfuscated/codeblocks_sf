@@ -101,6 +101,19 @@ wxString CompilerOWGenerator::SetupLinkerOptions(Compiler* compiler, ProjectBuil
                 if (Temp.Matches(_T("-d*")) && Temp.Length() <= 4)
                     LinkerOptions = LinkerOptions + MapDebugOptions(Temp);
             }
+
+            /* Following code will allow user to add any valid linker option
+            *  in target's linker option section.
+            */
+            ComLinkerOptions = target->GetLinkerOptions();
+            int Count = ComLinkerOptions.GetCount();
+            for (i = 0; i < Count; ++i)
+            {
+                Temp = ComLinkerOptions[i];
+                /* Let's make a small check. It should not start with - or /  */
+                if ((Temp[0] != _T('-')) && (Temp[0] != _T('/')))
+                    LinkerOptions = LinkerOptions + Temp + _T(" ");
+            }
         }
     }
 

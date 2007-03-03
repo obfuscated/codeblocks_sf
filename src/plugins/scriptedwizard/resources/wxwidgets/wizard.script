@@ -716,7 +716,6 @@ function SetupProject(project)
 			else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
 	        {
 				target.AddCompilerOption(_T("-d__WXDEBUG__"));
-				target.AddLinkerOption(_T("-d2"));
 			}
 			if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk")))
 			{
