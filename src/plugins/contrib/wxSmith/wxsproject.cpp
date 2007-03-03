@@ -328,6 +328,15 @@ bool wxsProject::TryOpenEditor(const wxString& FileName)
     return false;
 }
 
+void wxsProject::SetGUI(wxsGUI* NewGUI)
+{
+    if ( m_GUI != NewGUI )
+    {
+        delete m_GUI;
+        m_GUI = NewGUI;
+    }
+}
+
 void wxsProject::NotifyChange()
 {
     return m_Project->SetModified(true);

@@ -26,7 +26,9 @@
 #include "wxspanelres.h"
 #include "wxsnewwindowdlg.h"
 #include "wxsitemfactory.h"
+#include "wxwidgetsgui.h"
 #include "../wxsresourcetree.h"
+#include "../wxsmith.h"
 
 #include <wx/choicdlg.h>
 #include <sqplus.h>
@@ -66,11 +68,79 @@ namespace
       */
     void AddWxExtensions(cbProject* Project,const wxString& AppSource,const wxString& MainResSource,const wxString& MainResHeader,const wxString& WxsFile)
     {
-        cbMessageBox(
-            AppSource+_T("\n")+
-            MainResSource+_T("\n")+
-            MainResHeader+_T("\n")+
+        wxsProject* WxsProject = wxSmith::Get()->GetSmithProject(Project);
+
+        wxString ResourceName;
+        wxString ResourceType;
+
+        // First thing we fetch resource name and type from wxs file
+        TiXmlDocument Doc(cbU2C(WxsProject->GetProjectPath() + WxsFile));
+        if ( Doc.LoadFile() )
+        {
+            TiXmlElement* Root = Doc.RootElement();
+            if ( Root )
+            {
+                if ( cbC2U(Root->Value()) == _T("wxsmith") )
+                {
+                    TiXmlElement* Object = Root->FirstChildElement("object");
+                    if ( Object )
+                    {
+                        ResourceType = cbC2U(Object->Attribute("class"));
+                        ResourceName = cbC2U(Object->Attribute("name"));
+                    }
+                }
+            }
+        }
+
+        if ( ResourceType.IsEmpty() || ResourceName.IsEmpty() )
+        {
+            // Can not continue, show some error
+            cbMessageBox(_("Coudn't parse newly created Wxs file\nwxSmith support is disabled"));
+            return;
+        }
+
+        // Checking if this resource is really supported inside wxWidgets gui
+        if ( Names.Index(ResourceType) == wxNOT_FOUND )
+        {
+            cbMessageBox(_("Resource type in newly created Wxs file is not supported\nwxSmith support is disabled"));
+            return;
+        }
+
+        // Creating new resource matching parameters from WXS file
+        wxsResource* MainResourceGeneric = wxsResourceFactory::Build(ResourceType,WxsProject);
+        wxsItemRes* MainResource = wxDynamicCast(MainResourceGeneric,wxsItemRes);
+        if ( !MainResource )
+        {
+            delete MainResourceGeneric;
+            cbMessageBox(_("Resource type in newly created Wxs file is not supported\nwxSmith support is disabled"));
+            return;
+        }
+
+        // Creating new resource using existing files
+        MainResource->CreateNewResource(
+            ResourceName,
+            MainResSource,false,
+            MainResHeader,false,
+            wxEmptyString,false,
             WxsFile);
+
+        // Registering new resource inside project
+        WxsProject->AddResource(MainResource);
+
+        // Creating new GUI class
+        wxWidgetsGUI* GUI = new wxWidgetsGUI(WxsProject);
+        GUI->SetAppSourceFile(AppSource);
+        GUI->SetInitParams(true,true);
+        GUI->SetMainResourceName(ResourceName);
+        GUI->RebuildApplicationCode();
+
+        // Registering GUI class inside project and saving all project's changes
+        WxsProject->SetGUI(GUI);
+        Project->Save();
+
+        // Final step - opening main resource to recreate source
+        //              and show results of wizard :)
+        MainResource->EditOpen();
     }
 }
 

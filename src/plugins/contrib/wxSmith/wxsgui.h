@@ -66,6 +66,9 @@ class wxsGUI: public wxObject
          */
         inline bool CreateApplicationBinding() { return OnCreateApplicationBinding(); }
 
+        /** \brief Rebuilding application's code */
+        inline void RebuildApplicationCode() { OnRebuildApplicationCode(); }
+
     protected:
 
         /** \brief Function called to build configuration panel */

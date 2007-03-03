@@ -15,6 +15,38 @@ class wxWidgetsGUI : public wxsGUI
         /** \brief Dctor */
         virtual ~wxWidgetsGUI();
 
+        /** \brief Getting coding language of application's source */
+        inline wxsCodingLang GetLanguage() { return m_AppLanguage; }
+
+        /** \brief Setting new coding language for applicatino's source */
+        inline void SetLanguage(wxsCodingLang Language) { m_AppLanguage = Language; }
+
+        /** \brief Getting application source file */
+        inline const wxString& GetAppSourceFile() { return m_AppFile; }
+
+        /** \brief Setting new application source file
+         *  \note remember to call RebuildApplicationCode to regenerate sources
+         *  \note This functin will also set valid language according to file's extension
+         */
+        void SetAppSourceFile(const wxString& NewAppFile);
+
+        /** \brief Getting array of loaded resources */
+        inline wxArrayString& GetLoadedResources() { return m_LoadedResources; }
+
+        /** \brief Getting main resource name */
+        inline const wxString& GetMainResourceName() { return m_MainResource; }
+
+        /** \brief Setting new main resource
+         *  \note remember to call RebuildApplicationCode to regenerate sources
+         */
+        inline void SetMainResourceName(const wxString& Resource) { m_MainResource = Resource; }
+
+        /** \brief Getting Some Initialization config */
+        inline void GetInitParams(bool& CallInitAll,bool& CallInitAllNecessary) { CallInitAll = m_CallInitAll; CallInitAllNecessary = m_CallInitAllNecessary; }
+
+        /** \brief Setting initialization config */
+        inline void SetInitParams(bool CallInitAll=true,bool CallInitAllNecessary=true) { m_CallInitAll=CallInitAll; m_CallInitAllNecessary = CallInitAllNecessary; }
+
     private:
 
         virtual cbConfigurationPanel* OnBuildConfigurationPanel(wxWindow* Parent);

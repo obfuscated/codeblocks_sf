@@ -198,7 +198,7 @@ bool wxsItemRes::OnGetCanBeMain()
     return m_CanBeMain;
 }
 
-bool wxsItemRes::CreateNewResource(const wxString& Class,const wxString& Src, bool GenSrc,const wxString& Hdr, bool GenHdr,const wxString& Xrc, bool GenXrc)
+bool wxsItemRes::CreateNewResource(const wxString& Class,const wxString& Src, bool GenSrc,const wxString& Hdr, bool GenHdr,const wxString& Xrc, bool GenXrc,const wxString& Wxs)
 {
     wxFileName HFN(GetProjectPath()+Hdr);
     SetLanguage(wxsCodeMarks::IdFromExt(HFN.GetExt()));
@@ -247,42 +247,49 @@ bool wxsItemRes::CreateNewResource(const wxString& Class,const wxString& Src, bo
                 if ( !File.Write(EmptyXrc) ) return false;
             }
 
-            // Searching for new wxs file name
-            // TODO: Do not use constant folder name
-            wxString WxsNameBase = _T("wxsmith");
-            wxString WxsName;
-            if ( !wxFileName::DirExists(GetProjectPath()+WxsNameBase) )
+            if ( Wxs.IsEmpty() )
             {
-                if ( !wxFileName::Mkdir(GetProjectPath()+WxsNameBase,0777,wxPATH_MKDIR_FULL) )
+                // Searching for new wxs file name
+                // TODO: Do not use constant folder name
+                wxString WxsNameBase = _T("wxsmith");
+                wxString WxsName;
+                if ( !wxFileName::DirExists(GetProjectPath()+WxsNameBase) )
                 {
-                    return false;
+                    if ( !wxFileName::Mkdir(GetProjectPath()+WxsNameBase,0777,wxPATH_MKDIR_FULL) )
+                    {
+                        return false;
+                    }
                 }
-            }
-            WxsNameBase += _T("/") + Class.Lower();
-            WxsName = WxsNameBase + _T(".wxs");
-            int Cnt = 0;
-            for(;;)
-            {
-                if ( !wxFileName::FileExists(GetProjectPath()+WxsName) &&
-                     !wxFileName::DirExists(GetProjectPath()+WxsName) )
+                WxsNameBase += _T("/") + Class.Lower();
+                WxsName = WxsNameBase + _T(".wxs");
+                int Cnt = 0;
+                for(;;)
                 {
-                    break;
+                    if ( !wxFileName::FileExists(GetProjectPath()+WxsName) &&
+                         !wxFileName::DirExists(GetProjectPath()+WxsName) )
+                    {
+                        break;
+                    }
+                    Cnt++;
+                    WxsName = wxString::Format(_T("%s%d.wxs"),WxsNameBase.c_str(),Cnt);
                 }
-                Cnt++;
-                WxsName = wxString::Format(_T("%s%d.wxs"),WxsNameBase.c_str(),Cnt);
-            }
 
-            m_WxsFileName = WxsName;
-            {
-                wxString Name = GetProjectPath()+m_WxsFileName;
-                wxFile File(Name,wxFile::write);
-                wxString Content = EmptyWxs;
-                Content.Replace(_T("$(ClassName)"),Class);
-                Content.Replace(_T("$(BaseClassName)"),GetResourceType());
-                if ( !File.Write(Content) )
+                m_WxsFileName = WxsName;
                 {
-                    return false;
+                    wxString Name = GetProjectPath()+m_WxsFileName;
+                    wxFile File(Name,wxFile::write);
+                    wxString Content = EmptyWxs;
+                    Content.Replace(_T("$(ClassName)"),Class);
+                    Content.Replace(_T("$(BaseClassName)"),GetResourceType());
+                    if ( !File.Write(Content) )
+                    {
+                        return false;
+                    }
                 }
+            }
+            else
+            {
+                m_WxsFileName = Wxs;
             }
             return true;
         }

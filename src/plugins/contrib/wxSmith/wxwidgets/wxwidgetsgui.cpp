@@ -45,6 +45,12 @@ wxWidgetsGUI::~wxWidgetsGUI()
 {
 }
 
+void wxWidgetsGUI::SetAppSourceFile(const wxString& NewAppFile)
+{
+    m_AppFile = NewAppFile;
+    m_AppLanguage = wxsCodeMarks::IdFromExt(wxFileName(NewAppFile).GetExt());
+}
+
 cbConfigurationPanel* wxWidgetsGUI::OnBuildConfigurationPanel(wxWindow* Parent)
 {
     return new wxWidgetsGUIConfigPanel(Parent,this);
