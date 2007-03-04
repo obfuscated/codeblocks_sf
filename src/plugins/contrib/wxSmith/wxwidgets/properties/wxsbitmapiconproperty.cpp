@@ -27,6 +27,7 @@
 #include <messagemanager.h>
 #include <wx/artprov.h>
 #include <wx/image.h>
+#include "globals.h"
 
 wxBitmap wxsBitmapIconData::GetPreview(const wxSize& Size,const wxString& DefaultClient)
 {
