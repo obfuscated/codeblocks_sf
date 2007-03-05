@@ -32,11 +32,12 @@ void wxsStatusBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowPare
                 wxString WidthsVarName = GetVarName() + _T("__widths");
                 wxString StylesVarName = GetVarName() + _T("__styles");
                 Codef(_T("int %v[%d] = { "),WidthsVarName.c_str(),m_Fields);
-                for ( int i=0; i<m_Fields-1; i++ )
+                for ( int i=0; i<m_Fields; i++ )
                 {
-                    Codef(_T("%d, "),m_VarWidth[i]?-m_Widths[i]:m_Widths[i]);
+                    Codef( _T("%d%s"),
+                        m_VarWidth[i]?-m_Widths[i]:m_Widths[i],
+                        i==(m_Fields-1) ? _T(" };\n") : _T(", "));
                 }
-                Codef(_T("%d };\n"),m_Widths[m_Fields-1]);
                 Codef(_T("int %v[%d] = { "),StylesVarName.c_str(),m_Fields);
                 for ( int i=0; i<m_Fields; i++ )
                 {
@@ -279,15 +280,15 @@ bool wxsStatusBar::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
             Widths << wxString::Format(_T("%d"),m_VarWidth[i]?-m_Widths[i]:m_Widths[i]);
             if ( m_Styles[i] == wxSB_FLAT )
             {
-                Widths << _T("wxSB_FLAT");
+                Styles << _T("wxSB_FLAT");
             }
             else if ( m_Styles[i] == wxSB_RAISED )
             {
-                Widths << _T("wxSB_RAISED");
+                Styles << _T("wxSB_RAISED");
             }
             else
             {
-                Widths << _T("wxSB_NORMAL");
+                Styles << _T("wxSB_NORMAL");
             }
         }
 

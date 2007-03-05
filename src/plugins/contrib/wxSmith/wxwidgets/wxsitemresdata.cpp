@@ -363,8 +363,10 @@ void wxsItemResData::LoadToolsReq(TiXmlElement* Node,bool IsXRC,bool IsExtra)
             delete Item;
             continue;
         }
-        InsertNewTool(Tool);
-        Tool->XmlRead(Object,IsXRC,IsExtra);
+        if ( InsertNewTool(Tool) )
+        {
+            Tool->XmlRead(Object,IsXRC,IsExtra);
+        }
     }
 }
 
