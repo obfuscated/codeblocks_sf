@@ -357,7 +357,8 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                 }
                 else
                 {
-                    fname.SetExt(compiler->GetSwitches().objectExtension);
+                    if (compiler)
+						fname.SetExt(compiler->GetSwitches().objectExtension);
                     object_file_native = objOut + sep + fname.GetFullPath();
                     object_file_flat_native = objOut + sep + fname.GetFullName();
                 }
