@@ -153,10 +153,8 @@ fi
 %{_bindir}/codeblocks
 %{_bindir}/cb_console_runner
 %{_libdir}/libcodeblocks.so.*
-%{_datadir}/application-registry/codeblocks.applications
 %{_datadir}/applications/codeblocks.desktop
 %{_datadir}/icons/gnome/48x48/mimetypes/*
-%{_datadir}/mime-info/*
 %{_datadir}/mime/packages/codeblocks.xml
 %{_datadir}/pixmaps/codeblocks.png
 %{pkgdata}/astyle.zip
