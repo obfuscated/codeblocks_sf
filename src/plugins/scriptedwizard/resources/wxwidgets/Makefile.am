@@ -1,4 +1,4 @@
-SUBDIRS = common pch rc
+SUBDIRS = common pch rc wxfb wxsmith
 
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/wxwidgets
 

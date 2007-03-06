@@ -655,7 +655,7 @@ wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, c
         case ftStaticLib:
         case ftResourceBin:
         case ftObject:
-        case ftOther:
+//        case ftOther:
             DBGLOG(_T("Attempt to generate a file with forbidden extension!\nFile: %s"), fname.GetFullPath().c_str());
             return wxEmptyString;
         default: break;
@@ -666,17 +666,31 @@ wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, c
         fname.MakeRelativeTo(basePath);
 
     // make sure filename is located inside the project path (should already be)
-    if (fname.GetFullPath().StartsWith(_T("..")))
+    const wxArrayString& Dirs = fname.GetDirs();
+    int IntDirCount = 0;
+    for ( size_t i=0; i<Dirs.Count(); i++ )
     {
-        // attempt to create file outside the project dir
-        // remove any path info from the filename
-        fname = fname.GetFullName();
-        DBGLOG(_T("Attempt to generate a file outside the project base dir:\nOriginal: %s\nConverted to:%s"), filename.c_str(), fname.GetFullPath().c_str());
+        if ( Dirs[i] == _T("..") )
+        {
+            if ( IntDirCount-- == 0 )
+            {
+                // attempt to create file outside the project dir
+                // remove any path info from the filename
+                fname = fname.GetFullName();
+                DBGLOG(_T("Attempt to generate a file outside the project base dir:\nOriginal: %s\nConverted to:%s"), filename.c_str(), fname.GetFullPath().c_str());
+                break;
+            }
+        }
+        else if ( Dirs[i] != _T(".") )
+        {
+            IntDirCount++;
+        }
     }
 
-    fname = basePath + wxFILE_SEP_PATH + fname.GetFullName();
+    fname = basePath + wxFILE_SEP_PATH + fname.GetFullPath();
 
     // create the file with the passed contents
+    wxFileName::Mkdir(fname.GetPath(),0777,wxPATH_MKDIR_FULL);
     wxFile f(fname.GetFullPath(), wxFile::write);
     if (cbWrite(f, contents + _T('\n')))
         return fname.GetFullPath(); // success

@@ -88,7 +88,7 @@ function BeginWizard()
 function OnEnter_wxVersionPage(fwd)
 {
     if (fwd)
-    {        
+    {
 		WxVersion = Wizard.GetListboxSelection(_T("GenericChoiceList"));
     }
     return true;
@@ -154,10 +154,13 @@ function OnLeave_WxGuiSelect(fwd)
 	{
 		GuiBuilder = Wizard.GetRadioboxSelection(_T("RB_GUISelect"));
 		GuiAppType = Wizard.GetRadioboxSelection(_T("RB_GUIAppType"));
-		if (GuiBuilder == 1)
+		if ( GuiBuilder==1 )
 		{
-			ShowInfo(_T("Work on wxSmith support addition is in progress.\nThis message will be removed once it'll be added.\n\nThanks for your patience."));
-			GuiBuilder = ConfigManager.Read(_T("/wx_project_wizard/guibuilder"), 0);
+		    if ( !("WxsAddWxExtensions" in getroottable()) )
+		    {
+		        ShowInfo(_T("wxSmith plugin is not loaded, can not continue"));
+		        return false;
+		    }
 		}
 		GetConfigManager().Write(_T("/wx_project_wizard/guibuilder"), GuiBuilder);
 		GetConfigManager().Write(_T("/wx_project_wizard/guiapptype"), GuiAppType);
@@ -223,7 +226,7 @@ function OnLeave_WxConf(fwd)
         IsAdvOpt = Wizard.IsCheckboxChecked(_T("chkWxConfAdvOpt"));
         WantPCH = Wizard.IsCheckboxChecked(_T("chkWxConfPCH"));
         Configuration = Wizard.GetTextControlValue(_T("txtWxConfConfig"));
-		
+
 		// Ask the user whether wizard shall add PCH support when empty Project is selected
 		if (IsEmpty && WantPCH)
 		{
@@ -243,7 +246,7 @@ function OnLeave_WxConf(fwd)
 		}
 		else // Set PCHFileName to Default
 			PCHFileName = _T("wx_pch.h");
-		
+
 		// Now write the configurations
 		ConfigManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
 		ConfigManager.Write(_T("/wx_project_wizard/monolithic"), BoolToInt(IsMonolithic));
@@ -281,7 +284,7 @@ function OnLeave_WxConf(fwd)
             lib_prefix = _T("");
             lib_suffix = _T(".lib");
         }
-		
+
 
         if (IsDLL)
             lib = lib + _T("dll");
@@ -301,14 +304,14 @@ function OnLeave_WxConf(fwd)
 			lib_unic_suffix = _T("u");
 		else
 			lib_unic_suffix = _T("");
-		
+
 		if (WxVersion == 0)
 			lib_wxver = _T("26");
 		else if (WxVersion == 1)
 			lib_wxver = _T("28");
 		else if (WxVersion == 2)
 			lib_wxver = _T("29");
-		
+
 		// Now set the global variables
 		LibPrefix = lib_prefix; // Prefix of lib name
 		LibWxVer <- lib_wxver; // Determines wx version
@@ -393,14 +396,14 @@ function OnLeave_WxConfUnix(fwd)
 		        WantPCH = false;
 		        //Wizard.CheckCheckbox(_T("chkConfPCH"), false);
 		    }
-			
+
 			if (WxVersion == 0)
 				LibWxVer = _T("2.6");
 			else if (WxVersion == 1)
 				LibWxVer = _T("2.8");
 			else if (WxVersion == 2)
 				LibWxVer = _T("2.9");
-				
+
 			// Ask the user whether wizard shall add PCH support when empty Project is selected
 			if (IsEmpty && WantPCH)
 			{
@@ -411,7 +414,7 @@ function OnLeave_WxConfUnix(fwd)
 				WantPCH = false; // Sorry! Wizard can't add PCH support
 			}
 			PCHFileName = _T("wx_pch.h");
-			
+
 			// Now write the setting to Configuration
 		    ConfigManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
 			ConfigManager.Write(_T("/wx_project_wizard/unicode"), BoolToInt(IsUnicode));
@@ -457,8 +460,23 @@ function GetGeneratedFile(file_index)
 	        return ProjectName + _T("Main.h") + _T(";") + GenerateHeader(file_index);
 		else if (file_index == 3)
 			return ProjectName + _T("Main.cpp") + _T(";") + GenerateSource(file_index);
-		else if (file_index == 4 && WantPCH)
-			return _T("wx_pch.h") + _T(";") + GenerateHeader(file_index);
+		if (GuiBuilder == 1)
+		{
+			if (file_index == 4)
+			{
+				if (GuiAppType == 0)
+					return _T("wxsmith/") + ProjectName.Lower() + _T("dialog.wxs") + _T(";") + GenerateSource(file_index);
+				else
+					return _T("wxsmith/") + ProjectName.Lower() + _T("frame.wxs") + _T(";") + GenerateSource(file_index);
+			}
+			if (file_index == 5 && WantPCH)
+				return _T("wx_pch.h") + _T(";") + GenerateHeader(file_index);
+		}
+		else
+		{
+			if (file_index == 4 && WantPCH)
+				return _T("wx_pch.h") + _T(";") + GenerateHeader(file_index);
+		}
 	}
     return _T(""); // no more generated files
 }
@@ -515,7 +533,7 @@ function SetupProject(project)
 			project.AddCompilerOption(_T("`wx-config --cflags`"));
 			project.AddLinkerOption(_T("`wx-config --libs`"));
 		}
-		
+
 		// Now enable PCH
 	    if (WantPCH && GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
 	    {
@@ -533,13 +551,13 @@ function SetupProject(project)
 	    }
     }
     else
-    {		
+    {
 		project.AddIncludeDir(WxPath + _T("/include"));
 		project.AddResourceIncludeDir(WxPath + _T("/include"));
         libdir = LibPath + _T("/msw");
         if (IsUnicode)
             libdir = libdir + _T("u");
-		
+
 		/* Add standard and special compiler options and libraries */
 		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
         {
@@ -698,7 +716,7 @@ function SetupProject(project)
 				target.AddResourceIncludeDir(libdir);
 			}
 			target.AddLibDir(LibPath);
-			
+
 			/* Modified and added */
 			if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
 	            target.AddCompilerOption(_T("/D__WXDEBUG__")); // For Debug Build
@@ -716,6 +734,7 @@ function SetupProject(project)
 			else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
 	        {
 				target.AddCompilerOption(_T("-d__WXDEBUG__"));
+				target.AddLinkerOption(_T("-d2"));
 			}
 			if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk")))
 			{
@@ -740,7 +759,7 @@ function SetupProject(project)
 				target.AddCommandsAfterBuild(_T("mt.exe /nologo /manifest \"") + exe_name + _T(".manifest\" /outputresource:\"") + exe_name+ _T("\";1"));
 			}
 			/* End Modification*/
-			
+
 			/* Now Add the required Libraries */
 			if (IsMonolithic)
 				target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + LibSuffix);
@@ -820,7 +839,7 @@ function SetupProject(project)
 				/* Now embed the generated manifest file */
 				target.AddCommandsAfterBuild(_T("mt.exe /nologo /manifest \"") + exe_name + _T(".manifest\" /outputresource:\"") + exe_name+ _T("\";1"));
 			}
-			
+
 			/* Now Add the required Libraries */
 			if (IsMonolithic)
 				target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibSuffix);
@@ -853,6 +872,28 @@ function SetupProject(project)
 				if (LibWxExpat) target.AddLinkLib(LibPrefix + _T("wxexpat") + LibSuffix);
 			}
 		}
+    }
+
+    if (GuiBuilder == 1)
+    {
+        if ("WxsAddWxExtensions" in getroottable())
+        {
+            // Adding extra bindings for wxSmith
+            local ProjectName = Wizard.GetProjectName();
+            local WxsFileName = _T("");
+
+            if ( GuiAppType==0 )
+                WxsFileName = _T("dialog.wxs");
+            else
+                WxsFileName = _T("frame.wxs");
+
+            WxsAddWxExtensions(
+                project,
+                ProjectName+_T("App.cpp"),
+                ProjectName+_T("Main.cpp"),
+                ProjectName+_T("Main.h"),
+                _T("wxsmith/")+ProjectName.Lower()+WxsFileName);
+        }
     }
 
     return true;
@@ -1014,16 +1055,34 @@ function OnLeave_WxAdvLib(fwd)
 function GetTemplateFile(index)
 {
     local template_file = _T("");
-	if (index == 0)
-		template_file = _T("wxwidgets/common/app.h");
-	else if (index == 1)
-		template_file = _T("wxwidgets/common/app.cpp");
-	else if (index == 2)
-		template_file = _T("wxwidgets/common/main.h");
-	else if (index == 3)
-		template_file = _T("wxwidgets/common/main.cpp");
-	else if (index == 4 && WantPCH)
-		template_file = _T("wxwidgets/pch/wx_pch.h");
+	if (GuiBuilder == 1)
+	{
+		if (index == 0)
+			template_file = _T("wxwidgets/common/app.h");
+		else if (index == 1)
+			template_file = _T("wxwidgets/wxsmith/app.cpp");
+		else if (index == 2)
+			template_file = _T("wxwidgets/wxsmith/main.h");
+		else if (index == 3)
+			template_file = _T("wxwidgets/wxsmith/main.cpp");
+		else if (index == 4)
+            template_file = _T("wxwidgets/wxsmith/resource.wxs");
+		else if (index == 5 && WantPCH)
+			template_file = _T("wxwidgets/pch/wx_pch.h");
+	}
+	else
+	{
+		if (index == 0)
+			template_file = _T("wxwidgets/common/app.h");
+		else if (index == 1)
+			template_file = _T("wxwidgets/common/app.cpp");
+		else if (index == 2)
+			template_file = _T("wxwidgets/common/main.h");
+		else if (index == 3)
+			template_file = _T("wxwidgets/common/main.cpp");
+		else if (index == 4 && WantPCH)
+			template_file = _T("wxwidgets/pch/wx_pch.h");
+	}
     return template_file;
 }
 
@@ -1066,6 +1125,19 @@ function SubstituteMacros(buffer)
 		}
 		buffer  = HandleDirective(buffer, _T("NONE"), true);
 		buffer  = HandleDirective(buffer, _T("WXFB"), false);
+	}
+	else if (GuiBuilder == 1)
+	{
+		if (GuiAppType == 0)
+		{
+			buffer  = HandleDirective(buffer, _T("WXDIALOG"), true);
+			buffer  = HandleDirective(buffer, _T("WXFRAME"), false);
+		}
+		else if (GuiAppType == 1)
+		{
+			buffer  = HandleDirective(buffer, _T("WXDIALOG"), false);
+			buffer  = HandleDirective(buffer, _T("WXFRAME"), true);
+		}
 	}
 	else if (GuiBuilder == 2)
 	{

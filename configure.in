@@ -222,6 +222,10 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/wxwidgets/common/Makefile
 	src/plugins/scriptedwizard/resources/wxwidgets/pch/Makefile
 	src/plugins/scriptedwizard/resources/wxwidgets/rc/Makefile
+	src/plugins/scriptedwizard/resources/wxwidgets/wxfb/Makefile
+	src/plugins/scriptedwizard/resources/wxwidgets/wxfb/dialog/Makefile
+	src/plugins/scriptedwizard/resources/wxwidgets/wxfb/frame/Makefile
+	src/plugins/scriptedwizard/resources/wxwidgets/wxsmith/Makefile
 	src/plugins/todo/Makefile
 	src/plugins/todo/resources/Makefile
 	src/plugins/xpmanifest/Makefile
