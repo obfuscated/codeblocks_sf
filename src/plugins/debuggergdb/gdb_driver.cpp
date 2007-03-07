@@ -547,8 +547,7 @@ void GDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp)
 
 void GDB_driver::EvaluateSymbol(const wxString& symbol, const wxRect& tipRect)
 {
-	Log(_("Tooltip evaluation is temporarily disabled for GDB..."));
-//    QueueCommand(new GdbCmd_FindTooltipType(this, symbol, tipRect));
+    QueueCommand(new GdbCmd_FindTooltipType(this, symbol, tipRect));
 }
 
 void GDB_driver::UpdateWatches(bool doLocals, bool doArgs, DebuggerTree* tree)
@@ -591,7 +590,7 @@ void GDB_driver::ParseOutput(const wxString& output)
     static wxString buffer;
     buffer << output << _T('\n');
 
-    m_pDBG->DebugLog(output);
+	m_pDBG->DebugLog(output);
 
     int idx = buffer.First(GDB_PROMPT);
     if (idx == wxNOT_FOUND)

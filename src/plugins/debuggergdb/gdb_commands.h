@@ -806,9 +806,6 @@ class GdbCmd_FindTooltipAddress : public DebuggerCmd
         }
         void ParseOutput(const wxString& output)
         {
-        	if (output.StartsWith(_T("No symbol")))
-				return;
-
             // examples:
             // type = wxString
             // type = const wxChar
@@ -831,6 +828,7 @@ class GdbCmd_FindTooltipType : public DebuggerCmd
 {
         wxRect m_WinRect;
         wxString m_What;
+        static bool singleUsage; // special flag to avoid launching multiple tooltips because of event chain latency
     public:
         /** @param tree The tree to display the watch. */
         GdbCmd_FindTooltipType(DebuggerDriver* driver, const wxString& what, const wxRect& tiprect)
@@ -838,14 +836,19 @@ class GdbCmd_FindTooltipType : public DebuggerCmd
             m_WinRect(tiprect),
             m_What(what)
         {
-            m_Cmd << _T("whatis ");
-            m_Cmd << m_What;
+        	if (!singleUsage)
+        	{
+				singleUsage = true;
+				m_Cmd << _T("whatis ");
+				m_Cmd << m_What;
+        	}
+        }
+        ~GdbCmd_FindTooltipType()
+        {
+			singleUsage = false;
         }
         void ParseOutput(const wxString& output)
         {
-        	if (output.StartsWith(_T("No symbol")))
-				return;
-
             // examples:
             // type = wxString
             // type = const wxChar
@@ -859,6 +862,7 @@ class GdbCmd_FindTooltipType : public DebuggerCmd
             m_pDriver->QueueCommand(new GdbCmd_FindTooltipAddress(m_pDriver, m_What, m_WinRect, tmp), DebuggerDriver::High);
         }
 };
+bool GdbCmd_FindTooltipType::singleUsage = false;
 
 /**
   * Command to run a backtrace.
