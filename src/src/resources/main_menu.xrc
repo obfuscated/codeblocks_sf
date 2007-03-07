@@ -54,7 +54,7 @@
         </object>
       </object>
       <object class="wxMenu" name="idFileReopenFile">
-        <label>&amp;Recent files</label>
+        <label>R&amp;ecent files</label>
         <help>Open a recent file</help>
         <object class="wxMenuItem" name="idFileOpenRecentFileClearHistory">
           <label>&amp;Clear history</label>
@@ -101,7 +101,7 @@
         <help>Save the active file under a different name</help>
       </object>
       <object class="wxMenuItem" name="idFileSaveAllFiles">
-        <label>&amp;Save a&amp;ll files</label>
+        <label>Save a&amp;ll files</label>
         <accel>Ctrl-Shift-S</accel>
         <help>Save all modified files</help>
       </object>
@@ -115,11 +115,11 @@
         <help>Save active project under a different name</help>
       </object>
       <object class="wxMenuItem" name="idFileSaveProjectTemplate">
-        <label>&amp;Save project as user-template</label>
+        <label>Save project as user-template</label>
         <help>Keep this project as a user-template to base new projects on</help>
       </object>
       <object class="wxMenuItem" name="idFileSaveProjectAllProjects">
-        <label>Save a&amp;ll projects</label>
+        <label>Save all projects</label>
         <help>Save all modified projects</help>
       </object>
       <object class="separator"/>
