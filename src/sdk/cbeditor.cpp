@@ -1478,65 +1478,49 @@ void cbEditor::DoFoldAll(int fold)
 {
     m_pControl->Colourise(0, -1); // the *most* important part!
     int count = m_pControl->GetLineCount();
-    for (int i = 0; i < count; ++i)
+    /* Start from child to toggle the roots properly */
+    for (int i = count; i >= 0; --i)
         DoFoldLine(i, fold);
 }
 
 void cbEditor::DoFoldBlockFromLine(int line, int fold)
 {
     m_pControl->Colourise(0, -1); // the *most* important part!
-    int i = line;
-    while (i != 0)
+    int i;
+    int maxLine = m_pControl->GetLastChild(line, -1);
+
+    if (maxLine >= line)
     {
-        if (DoFoldLine(i, fold))
-            return;
-        --i;
+        /* Start from child to toggle the roots properly */
+        for (i = maxLine; i >= line; --i)
+            DoFoldLine(i, fold);
     }
 }
 
 bool cbEditor::DoFoldLine(int line, int fold)
 {
     int level = m_pControl->GetFoldLevel(line);
-    if ((level & wxSCI_FOLDLEVELHEADERFLAG) &&
-            (wxSCI_FOLDLEVELBASE == (level & wxSCI_FOLDLEVELNUMBERMASK))) //Check for top fold headers
+    if (level & wxSCI_FOLDLEVELHEADERFLAG)
     {
         bool expand = false;
-        int maxLine = m_pControl->GetLastChild(line, -1);
         if (fold == 2) // toggle
-            expand = !m_pControl->GetFoldExpanded(line);
+        {
+            m_pControl->ToggleFold(line);
+            return true;
+        }
         else
             expand = fold == 0;
-        m_pControl->SetFoldExpanded(line, expand);
-        if (maxLine > line)
+        bool IsCurLineFolded = m_pControl->GetFoldExpanded(line);
+        /* -------------------------------------------------------
+        *  fold = 0 (Unfold), 1 (fold), 2 (toggle)
+        *  So check if fold = 0 then GetFoldExpanded(line) = false
+        *  before toggling it and vice-versa
+        *  -----------------------------------------------------*/
+        if ((!IsCurLineFolded && expand) || (IsCurLineFolded && !expand))
         {
-            if (expand)
-                m_pControl->ShowLines(line + 1, maxLine);
-            else
-                m_pControl->HideLines(line + 1, maxLine);
+            m_pControl->ToggleFold(line);
+            return true;
         }
-        return true;
-    }
-    //Lets check if the folded code is a sub-fold from a main fold?
-    //We can include this in the top check list but will propably hinder
-    //if you want to do some custom code for the inner folds instead of the main folds
-    if ((level & wxSCI_FOLDLEVELHEADERFLAG) &&
-            (wxSCI_FOLDLEVELBASE < (level & wxSCI_FOLDLEVELNUMBERMASK))) //Check for sub fold headers
-    {
-        bool expand = false;
-        int maxLine = m_pControl->GetLastChild(line, -1);
-        if (fold == 2) // toggle
-            expand = !m_pControl->GetFoldExpanded(line);
-        else
-            expand = fold == 0;
-        m_pControl->SetFoldExpanded(line, expand);
-        if (maxLine > line)
-        {
-            if (expand)
-                m_pControl->ShowLines(line + 1, maxLine);
-            else
-                m_pControl->HideLines(line + 1, maxLine);
-        }
-        return true;
     }
     return false;
 }
