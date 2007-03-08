@@ -370,6 +370,7 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, const
   wxString helpfile(c_helpfile);
 
   helpfile.Replace(_T("$(keyword)"), keyword);
+  Manager::Get()->GetMacrosManager()->ReplaceMacros(helpfile);
 
   if (isExecutable)
   {
