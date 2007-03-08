@@ -138,9 +138,15 @@ bool MSVC7Loader::DoSelectConfiguration(TiXmlElement* root)
 
     // build an array of all configurations
     wxArrayString configurations;
+    wxString ConfigName;
     while (confs)
     {
-        configurations.Add(cbC2U(confs->Attribute("Name")));
+        /*[Biplab] Replace all '|' with '_' so that compilation does not fail.
+		* This is vital as object directory names will be derived from target names
+		*/
+        ConfigName = cbC2U(confs->Attribute("Name"));
+        ConfigName.Replace(_T("|"), _T("_"), true);
+        configurations.Add(ConfigName);
         confs = confs->NextSiblingElement();
     }
 
@@ -158,7 +164,7 @@ bool MSVC7Loader::DoSelectConfiguration(TiXmlElement* root)
         PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_CANCEL)
         {
-	            Manager::Get()->GetMessageManager()->DebugLog(_T("Canceled..."));
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Canceled..."));
             return false;
         }
         selected_indices = dlg.GetSelectedIndices();
@@ -174,7 +180,7 @@ bool MSVC7Loader::DoSelectConfiguration(TiXmlElement* root)
             confs = confs->NextSiblingElement();
         if (!confs)
         {
-	            Manager::Get()->GetMessageManager()->DebugLog(_T("Cannot find configuration nr %d..."), selected_indices[i]);
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Cannot find configuration nr %d..."), selected_indices[i]);
             success = false;
             break;
         }
@@ -542,8 +548,10 @@ bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
                 {
                     // add it to all configurations, not just the first
                     for (int i = 1; i < numConfigurations; ++i)
-                        pf->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
-                    HandleFileConfiguration(file, pf);
+					{
+						pf->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
+						HandleFileConfiguration(file, pf); // We need to do this for all files [Biplab]
+					}
                 }
             }
             file = file->NextSiblingElement("File");
@@ -580,12 +588,11 @@ void MSVC7Loader::HandleFileConfiguration(TiXmlElement* file, ProjectFile* pf)
         if (const char* s = fconf->Attribute("ExcludedFromBuild"))
         {
             wxString exclude = cbC2U(s); // can you initialize wxString from NULL?
+            exclude = exclude.MakeUpper();
             if (exclude.IsSameAs(_T("TRUE")))
             {
                 wxString name = cbC2U(fconf->Attribute("Name"));
-                int pos = name.Find(_T('|'));
-                if (pos != wxNOT_FOUND)
-                    name.Remove(pos);
+                name.Replace(_T("|"), _T("_"), true); // Replace '|' to ensure proper check
                 pf->RemoveBuildTarget(name);
                 Manager::Get()->GetMessageManager()->DebugLog(
                     _("removed %s from %s"),
