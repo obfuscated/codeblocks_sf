@@ -1478,23 +1478,42 @@ void cbEditor::DoFoldAll(int fold)
 {
     m_pControl->Colourise(0, -1); // the *most* important part!
     int count = m_pControl->GetLineCount();
-    /* Start from child to toggle the roots properly */
-    for (int i = count; i >= 0; --i)
+    for (int i = 0; i <= count; ++i)
         DoFoldLine(i, fold);
 }
 
 void cbEditor::DoFoldBlockFromLine(int line, int fold)
 {
     m_pControl->Colourise(0, -1); // the *most* important part!
-    int i;
-    int maxLine = m_pControl->GetLastChild(line, -1);
+    int i, parent, maxLine, level, UnfoldUpto = line;
+    bool FoldedInside = false;
 
-    if (maxLine >= line)
+    parent = m_pControl->GetFoldParent(line);
+    level = m_pControl->GetFoldLevel(parent);
+    /* The following code will check if the child is hidden
+    *  under parent before unfolding it
+    */
+    if (fold == 0)
     {
-        /* Start from child to toggle the roots properly */
-        for (i = maxLine; i >= line; --i)
-            DoFoldLine(i, fold);
+        do
+        {
+            if (!m_pControl->GetFoldExpanded(parent))
+            {
+                FoldedInside = true;
+                UnfoldUpto = parent;
+            }
+            if (wxSCI_FOLDLEVELBASE == (level & wxSCI_FOLDLEVELNUMBERMASK))
+                break;
+            parent = m_pControl->GetFoldParent(parent);
+            level = m_pControl->GetFoldLevel(parent);
+        }
+        while (parent != -1);
     }
+
+    maxLine = m_pControl->GetLastChild(line, -1);
+
+    for (i = UnfoldUpto; i <= maxLine; ++i)
+        DoFoldLine(i, fold);
 }
 
 bool cbEditor::DoFoldLine(int line, int fold)
