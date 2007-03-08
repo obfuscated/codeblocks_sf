@@ -1512,22 +1512,35 @@ void DebuggerGDB::Stop()
         }
         else
         {
+            long pid = m_State.GetDriver()->GetChildPID();
         #ifndef __WXMSW__
             // non-windows gdb can interrupt the running process. yay!
-            long pid = m_State.GetDriver()->GetChildPID();
             if (pid <= 0) // look out for the "fake" PIDs (killall)
                 cbMessageBox(_("Unable to stop the debug process!"), _("Error"), wxOK | wxICON_WARNING);
             else
 				wxKill(pid, wxSIGINT);
         #else
-            m_pProcess->CloseOutput();
-            wxKillError err = m_pProcess->Kill(m_Pid, wxSIGKILL);
-            if (err == wxKILL_OK)
+            // windows gdb can interrupt the running process too. yay!
+            bool done = false;
+            if (pid > 0)
             {
-/*
-                cbMessageBox(_("Debug session terminated!"),
-                    _("Debug"), wxOK | wxICON_EXCLAMATION);
-*/
+            	Log(_("Trying to pause the running process..."));
+            	HANDLE proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)pid);
+            	if (proc)
+            	{
+					DebugBreakProcess(proc); // yay!
+					CloseHandle(proc);
+					done = true;
+            	}
+            	else
+					Log(_("Failed."));
+            }
+
+            if (!done)
+            {
+            	// we failed...
+				m_pProcess->CloseOutput();
+				m_pProcess->Kill(m_Pid, wxSIGKILL);
             }
         #endif
         }

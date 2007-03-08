@@ -47,6 +47,9 @@ static wxRegEx rePendingFound(_T("^Pending[ \t]+breakpoint[ \t]+\"([^:]+):([0-9]
 // Breakpoint 2, irr::scene::CSceneManager::getSceneNodeFromName (this=0x3fa878, name=0x3fbed8 "MainLevel", start=0x3fa87c) at CSceneManager.cpp:1077
 static wxRegEx rePendingFound1(_T("^Breakpoint[ \t]+([0-9]+),.*"));
 
+// gdb: do_initial_child_stuff: process 1392
+static wxRegEx reChildPid(_T("gdb: do_initial_child_stuff: process ([0-9]+)"));
+
 
 // scripting support
 DECLARE_INSTANCE_TYPE(GDB_driver);
@@ -57,7 +60,9 @@ GDB_driver::GDB_driver(DebuggerGDB* plugin)
     m_ManualBreakOnEntry(false),
 	m_IsStarted(false),
     m_GDBVersionMajor(0),
-    m_GDBVersionMinor(0)
+    m_GDBVersionMinor(0),
+    want_debug_events(true),
+    disable_debug_events(false)
 {
     //ctor
 #ifdef __WXMSW__
@@ -188,6 +193,16 @@ void GDB_driver::Prepare(bool isConsole)
     QueueCommand(new DebuggerCmd(this, _T("set print asm-demangle on")));
     // unwind stack on signal
     QueueCommand(new DebuggerCmd(this, _T("set unwindonsignal on")));
+
+#ifdef __WXMSW__
+    // want debug events
+    QueueCommand(new DebuggerCmd(this, _T("set debugevents on")));
+    want_debug_events = true;
+    disable_debug_events = false;
+#else
+    want_debug_events = false;
+    disable_debug_events = false;
+#endif
 
     int disassembly_flavour = Manager::Get()->GetConfigManager(_T("debugger"))
                               ->ReadInt(_T("disassembly_flavor"), 0);
@@ -581,12 +596,41 @@ void GDB_driver::Detach()
 void GDB_driver::ParseOutput(const wxString& output)
 {
     m_Cursor.changed = false;
-    if (output.StartsWith(_T("gdb: ")) ||
+
+#ifdef __WXMSW__
+	// Watch for initial debug info and grab the child PID
+	// this is put here because we need this info even if
+	// we don't get a prompt back.
+	// It's "cheap" anyway because the line we 're after is
+	// the very first line printed by gdb when running our
+	// program. It then sets the child PID and never enters here
+	// again because the "want_debug_events" condition below
+	// is not satisfied anymore...
+	if (want_debug_events && output.Contains(_T("do_initial_child_stuff")))
+	{
+		// got the line with the PID, parse it out:
+		// e.g.
+		// gdb: do_initial_child_stuff: process 1392
+		if (reChildPid.Matches(output))
+		{
+			wxString pidStr = reChildPid.GetMatch(output, 1);
+			long pid = 0;
+			pidStr.ToLong(&pid);
+			SetChildPID(pid);
+			want_debug_events = false;
+			disable_debug_events = true;
+			m_pDBG->Log(wxString::Format(_T("Pid extracted: %d (s=%s)"), pid, pidStr.c_str()));
+		}
+	}
+#endif
+    if (!want_debug_events &&
+		output.StartsWith(_T("gdb: ")) ||
         output.StartsWith(_T("Warning: ")) ||
         output.StartsWith(_T("ContinueDebugEvent ")))
     {
         return;
-    }
+    } 
+
     static wxString buffer;
     buffer << output << _T('\n');
 
@@ -599,6 +643,13 @@ void GDB_driver::ParseOutput(const wxString& output)
         return; // come back later
     }
 
+	if (disable_debug_events)
+	{
+		// we don't want debug events anymore (we got the pid)
+		QueueCommand(new DebuggerCmd(this, _T("set debugevents off")));
+		disable_debug_events = false;
+	}
+	
 	m_ProgramIsStopped = true;
 	m_QueueBusy = false;
 	DebuggerCmd* cmd = CurrentCommand();
@@ -630,12 +681,12 @@ void GDB_driver::ParseOutput(const wxString& output)
 //            Log(_T("DEBUG: ") + lines[i]); // write it in the full debugger log
 
 #ifdef __WXMSW__
-            // Check for possibility of a cygwin compiled program
-            // convert to valid path
-            if(m_CygwinPresent==true)
-            {
-                CorrectCygwinPath(lines.Item(i));
-            }
+		// Check for possibility of a cygwin compiled program
+		// convert to valid path
+		if(m_CygwinPresent==true)
+		{
+			CorrectCygwinPath(lines.Item(i));
+		}
 #endif
         // log GDB's version
         if (lines[i].StartsWith(_T("GNU gdb")))
@@ -676,28 +727,36 @@ void GDB_driver::ParseOutput(const wxString& output)
         }
 
         // signal
-        else if (lines[i].StartsWith(_T("Program received signal SIG")) &&
-        !( lines[i].StartsWith(_T("Program received signal SIGINT")) || lines[i].StartsWith(_T("Program received signal SIGTRAP"))) )
+        else if (lines[i].StartsWith(_T("Program received signal SIG")))
         {
-            Log(lines[i]);
-            m_pDBG->BringAppToFront();
-            if (IsWindowReallyShown(m_pBacktrace))
-            {
-                // don't ask; it's already shown
-                // just grab the user's attention
-                cbMessageBox(lines[i], _("Signal received"), wxICON_ERROR);
-            }
-            else if (cbMessageBox(wxString::Format(_("%s\nDo you want to view the backtrace?"), lines[i].c_str()), _("Signal received"), wxICON_ERROR | wxYES_NO) == wxID_YES)
-            {
-                // show the backtrace window
-                CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
-                evt.pWindow = m_pBacktrace;
-                Manager::Get()->GetAppWindow()->ProcessEvent(evt);
-                m_forceUpdate = true;
-            }
-            m_needsUpdate = true;
-            // the backtrace will be generated when NotifyPlugins() is called
-            // and only if the backtrace window is shown
+			if (lines[i].StartsWith(_T("Program received signal SIGINT")) ||
+				lines[i].StartsWith(_T("Program received signal SIGTRAP")))
+			{
+				// these are break/trace signals, just log them
+				Log(lines[i]);
+			}
+			else
+			{
+				Log(lines[i]);
+				m_pDBG->BringAppToFront();
+				if (IsWindowReallyShown(m_pBacktrace))
+				{
+					// don't ask; it's already shown
+					// just grab the user's attention
+					cbMessageBox(lines[i], _("Signal received"), wxICON_ERROR);
+				}
+				else if (cbMessageBox(wxString::Format(_("%s\nDo you want to view the backtrace?"), lines[i].c_str()), _("Signal received"), wxICON_ERROR | wxYES_NO) == wxID_YES)
+				{
+					// show the backtrace window
+					CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+					evt.pWindow = m_pBacktrace;
+					Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+					m_forceUpdate = true;
+				}
+				m_needsUpdate = true;
+				// the backtrace will be generated when NotifyPlugins() is called
+				// and only if the backtrace window is shown
+			}
         }
 
         // general errors
