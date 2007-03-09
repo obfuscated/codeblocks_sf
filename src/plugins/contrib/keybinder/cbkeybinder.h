@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.31 2007/02/23"
+#define VERSION "1.0.22 2007/03/9"
 // -----------------------------------
 class MyDialog;
 
@@ -640,7 +640,10 @@ private:
 //              KeyBinders BuildMenu() routine causing crashes.
 //          19) Re-initialize KeyBinder on next OnEditorOpen() when re-enabled by Plugin Manager.
 // ----------------------------------------------------------------------------
-//  Commit  1.0.31 2007/02/23
+//  Commit  1.0.21 2007/02/23
 //          20) Allow override of predefined menu accelerators set in Main.cpp
 //          21) Use cbKeyBinder##.ini file when in executable folder
+// ----------------------------------------------------------------------------
+//  Commit  1.0.22 2007/03/9
+//          22) [ Patch #1913 ] Patch Key Binder plugin for wxW28 with disable_compat26
 // ----------------------------------------------------------------------------

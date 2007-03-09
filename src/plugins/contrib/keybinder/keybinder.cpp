@@ -417,10 +417,12 @@ int wxKeyBind::StringToKeyCode(const wxString &keyName)
 	if (keyName == wxT("SPACE"))    return WXK_SPACE;
 	if (keyName == wxT("DELETE"))   return WXK_DELETE;
 
+   #if not wxCHECK_VERSION(2, 8, 0)
 	if (keyName == wxT("PRIOR"))    return WXK_PRIOR;	           //v4.15
 	if (keyName == wxT("PgUp"))     return WXK_PRIOR;	           //v4.15
     if (keyName == wxT("NEXT"))     return WXK_NEXT;	           //v4.15
     if (keyName == wxT("PgDn"))     return WXK_NEXT;	           //v4.15
+   #endif
     if (keyName == wxT("LEFT"))     return WXK_LEFT ;       //+v0.5
 	if (keyName == wxT("UP"))       return WXK_UP;          //+v0.5
 	if (keyName == wxT("RIGHT"))    return WXK_RIGHT;       //+v0.5
@@ -438,7 +440,9 @@ int wxKeyBind::StringToKeyCode(const wxString &keyName)
 	if (keyName == wxT("DOWN (numpad)"))     return WXK_NUMPAD_DOWN;        //+v0.1-
 	if (keyName == wxT("HOME (numpad)"))     return WXK_NUMPAD_HOME;        //+v0.1-
 	if (keyName == wxT("PAGEUP (numpad)"))   return WXK_NUMPAD_PAGEUP;      //+v0.1-
+   #if not wxCHECK_VERSION(2, 8, 0)
 	if (keyName == wxT("PgDn (numpad)"))     return WXK_NUMPAD_NEXT;        //+v0.1-
+    #endif
 	if (keyName == wxT("PAGEDOWN (numpad)")) return WXK_NUMPAD_PAGEDOWN;    //+v0.1-
 	if (keyName == wxT("END (numpad)"))      return WXK_NUMPAD_END;         //+v0.1-
 	if (keyName == wxT("BEGIN (numpad)"))    return WXK_NUMPAD_BEGIN;       //+v0.1-

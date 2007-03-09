@@ -187,7 +187,11 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
 	newtext = strLabel+wxT("\t")+GetShortcut(0)->GetStr();
 
 	// change the accelerator...but only if it has changed
-    wxAcceleratorEntry* pPrfAccel = wxGetAccelFromString(newtext);
+   #if wxCHECK_VERSION(2, 8, 0)
+    wxAcceleratorEntry* pPrfAccel = wxAcceleratorEntry::Create(newtext);
+   #else
+     wxAcceleratorEntry* pPrfAccel = wxGetAccelFromString(newtext);
+   #endif
     if ( ! pPrfAccel) return;
     if ( pItemAccel
          && ( pItemAccel->GetFlags() == pPrfAccel->GetFlags() )
