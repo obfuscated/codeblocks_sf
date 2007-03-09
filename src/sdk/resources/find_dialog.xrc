@@ -65,7 +65,7 @@
                                                     <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
                                                     <border>4</border>
                                                     <object class="wxCheckBox" name="chkMatchCase1">
-                                                        <label>Match &amp;case</label>
+                                                        <label>&amp;Match case</label>
                                                         <checked>0</checked>
                                                     </object>
                                                 </object>
@@ -114,7 +114,7 @@
                                                 <style>wxRA_SPECIFY_COLS</style>
                                                 <label>Origin</label>
                                                 <content>
-                                                    <item>&amp;From cursor</item>
+                                                    <item>F&amp;rom cursor</item>
                                                     <item>&amp;Entire scope</item>
                                                 </content>
                                             </object>
@@ -190,7 +190,7 @@
                                                     <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
                                                     <border>4</border>
                                                     <object class="wxCheckBox" name="chkMatchCase2">
-                                                        <label>Match &amp;case</label>
+                                                        <label>&amp;Match case</label>
                                                         <checked>0</checked>
                                                     </object>
                                                 </object>

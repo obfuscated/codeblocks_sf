@@ -33,7 +33,7 @@
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticText" name="">
-                    <label>&amp;Replace with:</label>
+                    <label>Re&amp;place with:</label>
                   </object>
                   <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
                   <border>8</border>
@@ -67,7 +67,7 @@
                         </object>
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkMatchCase1">
-                            <label>Match &amp;case</label>
+                            <label>&amp;Match case</label>
                           </object>
                           <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
                           <border>4</border>
@@ -162,7 +162,7 @@
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticText" name="">
-                    <label>&amp;Replace with:</label>
+                    <label>Re&amp;place with:</label>
                   </object>
                   <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
                   <border>8</border>
@@ -209,7 +209,7 @@
                           <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
                           <border>4</border>
                           <object class="wxCheckBox" name="chkMatchCase2">
-                            <label>Match &amp;case</label>
+                            <label>&amp;Match case</label>
                             <checked>0</checked>
                           </object>
                         </object>
