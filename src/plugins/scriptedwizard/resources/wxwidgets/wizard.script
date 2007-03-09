@@ -762,7 +762,16 @@ function SetupProject(project)
 
 			/* Now Add the required Libraries */
 			if (IsMonolithic)
+			{
 				target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibDebugSuffix + LibSuffix);
+				if (!IsDLL)
+				{
+					target.AddLinkLib(LibPrefix + _T("wxpng") + LibDebugSuffix + LibSuffix);
+					target.AddLinkLib(LibPrefix + _T("wxjpeg") + LibDebugSuffix + LibSuffix);
+					target.AddLinkLib(LibPrefix + _T("wxtiff") + LibDebugSuffix + LibSuffix);
+					target.AddLinkLib(LibPrefix + _T("wxzlib") + LibDebugSuffix + LibSuffix);
+				}
+			}
 			else
 			{
 				// Check and add additional libraries
@@ -842,7 +851,16 @@ function SetupProject(project)
 
 			/* Now Add the required Libraries */
 			if (IsMonolithic)
+			{
 				target.AddLinkLib(LibPrefix + _T("wxmsw") + LibWxVer + LibUnicSuffix + LibSuffix);
+				if (!IsDLL)
+				{
+					target.AddLinkLib(LibPrefix + _T("wxpng") + LibSuffix);
+					target.AddLinkLib(LibPrefix + _T("wxjpeg") + LibSuffix);
+					target.AddLinkLib(LibPrefix + _T("wxtiff") + LibSuffix);
+					target.AddLinkLib(LibPrefix + _T("wxzlib") + LibSuffix);
+				}
+			}
 			else
 			{
 				// Check and add additional libraries
@@ -908,8 +926,9 @@ function OnGetNextPage_WxConf()
 	IsAdvOpt = Wizard.IsCheckboxChecked(_T("chkWxConfAdvOpt"));
 	if (IsAdvOpt)
 		return _T("WxConfAdvOpt");
-	else
+	if (!IsMonolithic)	
 		return _T("WxAddLib");
+	return _T("");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
