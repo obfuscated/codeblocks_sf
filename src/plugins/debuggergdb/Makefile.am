@@ -19,6 +19,7 @@ libdebugger_la_SOURCES = backtracedlg.cpp \
 			breakpointsdlg.cpp \
 			cdb_driver.cpp \
 			cpuregistersdlg.cpp \
+			databreakpointdlg.cpp \
 			debugger_defs.cpp \
 			debuggerdriver.cpp \
 			debuggergdb.cpp \
@@ -40,6 +41,7 @@ noinst_HEADERS = backtracedlg.h \
 			cdb_commands.h \
 			cdb_driver.h \
 			cpuregistersdlg.h \
+			databreakpointdlg.h \
 			debugger_defs.h \
 			debuggerdriver.h \
 			debuggergdb.h \

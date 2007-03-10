@@ -19,19 +19,21 @@ class DebuggerState
         bool StartDriver(ProjectBuildTarget* target);
         void StopDriver();
 
-	/// Check so see if Driver exists before getting it
-	bool HasDriver();
-	
-	/// Will always return a driver, or throw a code assertion error
-	// (to fix multiple bugs in use of GetDriver without checking return value)
+		/// Check so see if Driver exists before getting it
+		bool HasDriver();
+		
+		/// Will always return a driver, or throw a code assertion error
+		// (to fix multiple bugs in use of GetDriver without checking return value)
         DebuggerDriver* GetDriver();
 
         void CleanUp();
 
         int AddBreakpoint(DebuggerBreakpoint* bp); // returns -1 if not found
         int AddBreakpoint(const wxString& file, int line, bool temp = false, const wxString& lineText = wxEmptyString); // returns -1 if not found
+        int AddBreakpoint(const wxString& dataAddr, bool onRead = false, bool onWrite = true); // returns -1 if not found
         DebuggerBreakpoint* RemoveBreakpoint(const wxString& file, int line, bool deleteit = true);
         DebuggerBreakpoint* RemoveBreakpoint(int idx, bool deleteit = true);
+        DebuggerBreakpoint* RemoveBreakpoint(DebuggerBreakpoint* bp, bool deleteit = true);
         void RemoveAllBreakpoints(const wxString& file, bool deleteit = true);
         void RemoveAllProjectBreakpoints(cbProject* prj);
 
@@ -40,9 +42,11 @@ class DebuggerState
         void ShiftBreakpoints(const wxString& file, int startline, int nroflines);
 
         int HasBreakpoint(const wxString& file, int line); // returns -1 if not found
+		int HasBreakpoint(const wxString& dataAddr);
         DebuggerBreakpoint* GetBreakpoint(int idx);
         DebuggerBreakpoint* GetBreakpointByNumber(int num);
         void ResetBreakpoint(int idx);
+        void ResetBreakpoint(DebuggerBreakpoint* bp);
         void ApplyBreakpoints();
     protected:
         void SetupBreakpointIndices();

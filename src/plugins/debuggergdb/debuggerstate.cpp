@@ -118,12 +118,23 @@ int DebuggerState::AddBreakpoint(const wxString& file, int line, bool temp, cons
     // create new bp
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("add bp: file=%s, bpfile=%s"), file.c_str(), bpfile.c_str());
     DebuggerBreakpoint* bp = new DebuggerBreakpoint;
+    bp->type = DebuggerBreakpoint::bptCode;
     bp->filename = bpfile;
     bp->filenameAsPassed = file;
     bp->line = line;
     bp->temporary = temp;
     bp->lineText = lineText;
     bp->userData = FindProjectForFile(file);
+    return AddBreakpoint(bp);
+}
+
+int DebuggerState::AddBreakpoint(const wxString& dataAddr, bool onRead, bool onWrite)
+{
+    DebuggerBreakpoint* bp = new DebuggerBreakpoint;
+    bp->type = DebuggerBreakpoint::bptData;
+    bp->breakAddress = dataAddr;
+    bp->breakOnRead = onRead;
+    bp->breakOnWrite = onWrite;
     return AddBreakpoint(bp);
 }
 
@@ -142,6 +153,18 @@ int DebuggerState::AddBreakpoint(DebuggerBreakpoint* bp)
     if (m_pDriver)
         m_pDriver->AddBreakpoint(bp);
     return bp->index;
+}
+
+DebuggerBreakpoint* DebuggerState::RemoveBreakpoint(DebuggerBreakpoint* bp, bool deleteit)
+{
+    for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
+    {
+		if (m_Breakpoints[i] == bp)
+		{
+			return RemoveBreakpoint(i, deleteit);
+		}
+    }
+    return 0;
 }
 
 DebuggerBreakpoint* DebuggerState::RemoveBreakpoint(const wxString& file, int line, bool deleteit)
@@ -248,6 +271,17 @@ int DebuggerState::HasBreakpoint(const wxString& file, int line)
     return -1;
 }
 
+int DebuggerState::HasBreakpoint(const wxString& dataAddr)
+{
+    for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
+    {
+        DebuggerBreakpoint* bp = m_Breakpoints[i];
+        if (bp->breakAddress == dataAddr)
+            return i;
+    }
+    return -1;
+}
+
 DebuggerBreakpoint* DebuggerState::GetBreakpoint(int idx)
 {
     if (idx < 0 || idx >= (int)m_Breakpoints.GetCount())
@@ -270,6 +304,19 @@ void DebuggerState::ResetBreakpoint(int idx)
 {
     DebuggerBreakpoint* bp = RemoveBreakpoint(idx, false);
     AddBreakpoint(bp);
+}
+
+void DebuggerState::ResetBreakpoint(DebuggerBreakpoint* bp)
+{
+    for (unsigned int i = 0; i < m_Breakpoints.GetCount(); ++i)
+    {
+		if (m_Breakpoints[i] == bp)
+		{
+			RemoveBreakpoint(i);
+			AddBreakpoint(bp);
+			break;
+		}
+    }
 }
 
 void DebuggerState::ApplyBreakpoints()

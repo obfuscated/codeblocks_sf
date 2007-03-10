@@ -1453,6 +1453,12 @@
 		<Unit filename="plugins\debuggergdb\cpuregistersdlg.h">
 			<Option target="Debugger" />
 		</Unit>
+		<Unit filename="plugins\debuggergdb\databreakpointdlg.cpp">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins\debuggergdb\databreakpointdlg.h">
+			<Option target="Debugger" />
+		</Unit>
 		<Unit filename="plugins\debuggergdb\debugger_defs.cpp">
 			<Option target="Debugger" />
 		</Unit>
@@ -2733,6 +2739,12 @@
 		</Unit>
 		<Extensions>
 			<code_completion />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxDialog wxs="wxsmith/databreakpointdlg.wxs" src="plugins/debuggergdb/databreakpointdlg.cpp" hdr="plugins/debuggergdb/databreakpointdlg.h" name="DataBreakpointDlg" language="CPP" />
+				</resources>
+			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

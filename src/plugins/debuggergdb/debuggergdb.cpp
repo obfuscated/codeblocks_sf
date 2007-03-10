@@ -58,6 +58,7 @@
 #include "examinememorydlg.h"
 #include "threadsdlg.h"
 #include "editwatchdlg.h"
+#include "databreakpointdlg.h"
 #include "globals.h"
 
 #ifdef __WXMSW__
@@ -96,6 +97,7 @@ int idMenuStepOut = XRCID("idDebuggerMenuStepOut");
 int idMenuStop = XRCID("idDebuggerMenuStop");
 int idMenuContinue = XRCID("idDebuggerMenuContinue");
 int idMenuToggleBreakpoint = XRCID("idDebuggerMenuToggleBreakpoint");
+int idMenuAddDataBreakpoint = XRCID("idMenuAddDataBreakpoint");
 int idMenuSendCommandToGDB = XRCID("idDebuggerMenuSendCommandToGDB");
 int idMenuAddSymbolFile = XRCID("idDebuggerMenuAddSymbolFile");
 int idMenuCPU = XRCID("idDebuggerMenuCPU");
@@ -156,6 +158,7 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
     EVT_MENU(idMenuNextInstr, DebuggerGDB::OnNextInstr)
     EVT_MENU(idMenuStepOut, DebuggerGDB::OnStepOut)
     EVT_MENU(idMenuToggleBreakpoint, DebuggerGDB::OnToggleBreakpoint)
+    EVT_MENU(idMenuAddDataBreakpoint, DebuggerGDB::OnAddDataBreakpoint)
     EVT_MENU(idMenuRunToCursor, DebuggerGDB::OnRunToCursor)
     EVT_MENU(idMenuStop, DebuggerGDB::OnStop)
     EVT_MENU(idMenuSendCommandToGDB, DebuggerGDB::OnSendCommandToGDB)
@@ -531,9 +534,13 @@ void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
     if (w.IsEmpty())
         return;
 
+    
+    // data breakpoint
+    menu->Insert(2,idMenuAddDataBreakpoint, wxString::Format(_("Add data breakpoint for '%s'"), w.c_str()));
+
     wxString s;
     s.Printf(_("Watch '%s'"), w.c_str());
-    menu->Insert(2, idMenuDebuggerAddWatch,  s);
+    menu->Insert(3, idMenuDebuggerAddWatch,  s);
 }
 
 bool DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
@@ -1501,6 +1508,19 @@ void DebuggerGDB::ToggleBreakpoint()
     ed->ToggleBreakpoint();
 }
 
+void DebuggerGDB::AddDataBreakpoint()
+{
+	DataBreakpointDlg dlg(0, -1);
+	PlaceWindow(&dlg);
+	if (dlg.ShowModal() == wxID_OK)
+	{
+		int sel = dlg.GetSelection();
+		m_State.AddBreakpoint(GetEditorWordAtCaret(), sel != 1, sel != 0);
+		if (m_pBreakpointsWindow)
+			m_pBreakpointsWindow->Refresh();
+	}
+}
+
 void DebuggerGDB::Stop()
 {
     if (m_pProcess && m_Pid)
@@ -1738,6 +1758,11 @@ void DebuggerGDB::OnRunToCursor(wxCommandEvent& event)
 void DebuggerGDB::OnToggleBreakpoint(wxCommandEvent& event)
 {
     ToggleBreakpoint();
+}
+
+void DebuggerGDB::OnAddDataBreakpoint(wxCommandEvent& event)
+{
+    AddDataBreakpoint();
 }
 
 void DebuggerGDB::OnStop(wxCommandEvent& event)
@@ -2160,7 +2185,9 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& event)
     if (m_State.HasDriver())
     {
         const Cursor& cursor = m_State.GetDriver()->GetCursor();
-        if (m_State.GetDriver()->IsStopped() && cursor.changed)
+        // checking if driver is stopped is redundant because it would only
+        // send us this event if it was stopped anyway
+        if (/*m_State.GetDriver()->IsStopped() &&*/ cursor.changed)
         {
             SyncEditor(cursor.file, cursor.line);
             m_HaltAtLine = cursor.line - 1;

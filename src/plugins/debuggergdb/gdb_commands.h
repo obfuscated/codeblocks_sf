@@ -115,6 +115,8 @@ static wxRegEx reBT2(_T("\\)[ \t]+[atfrom]+[ \t]+(.*):([0-9]+)"));
 static wxRegEx reBT3(_T("\\)[ \t]+[atfrom]+[ \t]+(.*)"));
 // Breakpoint 1 at 0x4013d6: file main.cpp, line 8.
 static wxRegEx reBreakpoint(_T("Breakpoint ([0-9]+) at (0x[0-9A-Fa-f]+)"));
+// Hardware watchpoint 1: expr
+static wxRegEx reDataBreakpoint(_T("Hardware watchpoint ([0-9]+):.*"));
 // eax            0x40e66666       1088841318
 static wxRegEx reRegisters(_T("([A-z0-9]+)[ \t]+(0x[0-9A-Fa-f]+)[ \t]+(.*)"));
 // wayne registers
@@ -357,7 +359,7 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
 
             if (m_BP->enabled)
             {
-                if (m_BP->func.IsEmpty())
+                if (m_BP->type == DebuggerBreakpoint::bptCode)//m_BP->func.IsEmpty())
                 {
                     wxString out = m_BP->filename;
                     // we add one to line,  because scintilla uses 0-based line numbers, while gdb uses 1-based
@@ -366,6 +368,16 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                     else
                         m_Cmd << _T("tbreak ");
                     m_Cmd << _T('"') << out << _T(":") << wxString::Format(_T("%d"), m_BP->line + 1) << _T('"');
+                }
+                else if (m_BP->type == DebuggerBreakpoint::bptData)
+                {
+                    if (m_BP->breakOnRead && m_BP->breakOnWrite)
+						m_Cmd << _T("awatch ");
+					else if (m_BP->breakOnRead)
+						m_Cmd << _T("rwatch ");
+					else
+						m_Cmd << _T("watch ");
+					m_Cmd << m_BP->breakAddress;
                 }
                 //GDB workaround
                 //Use function name if this is C++ constructor/destructor
@@ -383,8 +395,9 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
         }
         void ParseOutput(const wxString& output)
         {
-            // possible outputs (we 're only interested in 1st sample):
+            // possible outputs (we 're only interested in 1st and 2nd samples):
             //
+            // Hardware watchpoint 1: expr
             // Breakpoint 1 at 0x4013d6: file main.cpp, line 8.
             // No line 100 in file "main.cpp".
             // No source file named main2.cpp.
@@ -411,8 +424,44 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                     m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, cmd), DebuggerDriver::High);
                 }
             }
+            else if (reDataBreakpoint.Matches(output))
+            {
+                reDataBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
+            }
             else
                 m_pDriver->Log(output); // one of the error responses
+        }
+};
+
+/**
+  * Command to add a data breakpoint.
+  */
+class GdbCmd_AddDataBreakpoint : public DebuggerCmd
+{
+        DebuggerBreakpoint* m_BP;
+    public:
+        /** @param bp The breakpoint to set. */
+        GdbCmd_AddDataBreakpoint(DebuggerDriver* driver, DebuggerBreakpoint* bp)
+            : DebuggerCmd(driver),
+            m_BP(bp)
+        {
+            if (m_BP->enabled)
+				m_Cmd << _T("output &") << m_BP->breakAddress;
+        }
+        void ParseOutput(const wxString& output)
+        {
+            // Hardware watchpoint 1: expr
+            if (output.StartsWith(_T("No symbol ")) || output.StartsWith(_T("Attempt to ")))
+                m_pDriver->Log(output);
+			else
+			{
+				if (reGenericHexAddress.Matches(output))
+				{
+					wxString contents = reGenericHexAddress.GetMatch(output, 1);
+					m_BP->breakAddress = _T("*") + contents;
+					m_pDriver->QueueCommand(new GdbCmd_AddBreakpoint(m_pDriver, m_BP), DebuggerDriver::High);
+				}
+			}
         }
 };
 

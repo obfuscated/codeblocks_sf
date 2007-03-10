@@ -4,6 +4,7 @@
 #include <editormanager.h>
 #include <cbeditor.h>
 #include "editbreakpointdlg.h"
+#include "databreakpointdlg.h"
 #include "debuggerstate.h"
 #include "debuggerdriver.h"
 #include <wx/intl.h>
@@ -34,11 +35,12 @@ BreakpointsDlg::BreakpointsDlg(DebuggerState& state)
     //ctor
     long style = m_pList->GetWindowStyleFlag();
     m_pList->SetWindowStyleFlag(style | wxLC_HRULES | wxLC_VRULES);
-    int widths[] = { 128, 44 };
+    int widths[] = { 128, 128, 44 };
     wxArrayString titles;
-    titles.Add(_("Filename"));
+    titles.Add(_("Type"));
+    titles.Add(_("Filename/Address"));
     titles.Add(_("Line"));
-    SetColumns(2, widths, titles);
+    SetColumns(3, widths, titles);
 
     Connect(m_pList->GetId(), -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
             (wxObjectEventFunction) (wxEventFunction) (wxListEventFunction)
@@ -71,11 +73,33 @@ void BreakpointsDlg::FillBreakpoints()
         if (bp->temporary)
             continue;
         wxArrayString entry;
-        entry.Add(bp->filename);
-        entry.Add(wxString::Format(_T("%d"), bp->line + 1));
+        if (bp->type == DebuggerBreakpoint::bptCode)
+        {
+			entry.Add(_("Code"));
+			entry.Add(bp->filename);
+			entry.Add(wxString::Format(_T("%d"), bp->line + 1));
+        }
+        else if (bp->type == DebuggerBreakpoint::bptData)
+        {
+			entry.Add(_("Data"));
+			entry.Add(wxString::Format(_T("%s (read: %s, write: %s)"),
+										bp->breakAddress.c_str(),
+										bp->breakOnRead ? _T("yes") : _T("no"),
+										bp->breakOnWrite ? _T("yes") : _T("no")));
+			entry.Add(wxEmptyString);
+        }
+        else if (bp->type == DebuggerBreakpoint::bptFunction)
+        {
+			entry.Add(_("Function"));
+			entry.Add(bp->filename);
+			entry.Add(wxString::Format(_T("%d"), bp->line + 1));
+        }
         AddLog(entry);
+        m_pList->SetItemData(m_pList->GetItemCount() - 1, (long)bp);
     }
     m_pList->SetColumnWidth(0, wxLIST_AUTOSIZE);
+    m_pList->SetColumnWidth(1, wxLIST_AUTOSIZE);
+    m_pList->SetColumnWidth(2, wxLIST_AUTOSIZE);
     m_pList->Thaw();
 }
 
@@ -88,12 +112,20 @@ void BreakpointsDlg::RemoveBreakpoint(int sel)
     if (sel < 0 || sel >= (int)m_State.GetBreakpoints().GetCount())
         return;
     // if not valid breakpoint, return
-    DebuggerBreakpoint* bp = m_State.GetBreakpoints()[sel];
+    DebuggerBreakpoint* bp = (DebuggerBreakpoint*)m_pList->GetItemData(sel);//m_State.GetBreakpoints()[sel];
     if (!bp)
         return;
-    cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(bp->filenameAsPassed);
-    if (ed)
-        ed->RemoveBreakpoint(bp->line);
+	if (bp->type == DebuggerBreakpoint::bptData)
+	{
+		m_State.RemoveBreakpoint(bp);
+		Refresh();
+	}
+	else
+	{
+		cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(bp->filenameAsPassed);
+		if (ed)
+			ed->RemoveBreakpoint(bp->line);
+	}
 }
 
 void BreakpointsDlg::OnRemove(wxCommandEvent& event)
@@ -128,16 +160,37 @@ void BreakpointsDlg::OnProperties(wxCommandEvent& event)
     long item = m_pList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (item == -1 || item > (int)m_State.GetBreakpoints().GetCount())
         return;
-    DebuggerBreakpoint* bp = m_State.GetBreakpoints()[item];
+    DebuggerBreakpoint* bp = (DebuggerBreakpoint*)m_pList->GetItemData(item);//m_State.GetBreakpoints()[item];
     if (!bp)
         return;
-    int idx = m_State.HasBreakpoint(bp->filename, bp->line);
-    bp = m_State.GetBreakpoint(idx);
-    EditBreakpointDlg dlg(bp);
-    PlaceWindow(&dlg);
-    if (dlg.ShowModal() == wxID_OK)
+
+    if (bp->type == DebuggerBreakpoint::bptData)
     {
-        m_State.ResetBreakpoint(idx);
+    	int sel = 0;
+    	if (bp->breakOnRead && bp->breakOnWrite)
+			sel = 2;
+    	else if (!bp->breakOnRead && bp->breakOnWrite)
+			sel = 1;
+    	DataBreakpointDlg dlg(this, -1, bp->enabled, sel);
+    	if (dlg.ShowModal() == wxID_OK)
+    	{
+    		bp->enabled = dlg.IsEnabled();
+    		bp->breakOnRead = dlg.GetSelection() != 1;
+    		bp->breakOnWrite = dlg.GetSelection() != 0;
+    		m_State.ResetBreakpoint(bp);
+    	}
+    }
+    else
+    {
+		int idx = m_State.HasBreakpoint(bp->filename, bp->line);
+		bp = m_State.GetBreakpoint(idx);
+
+		EditBreakpointDlg dlg(bp);
+		PlaceWindow(&dlg);
+		if (dlg.ShowModal() == wxID_OK)
+		{
+			m_State.ResetBreakpoint(idx);
+		}
     }
 }
 

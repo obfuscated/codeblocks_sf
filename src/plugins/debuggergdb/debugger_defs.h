@@ -102,11 +102,19 @@ class DbgCmd_UpdateWatchesTree : public DebuggerCmd
 ////////////////////////////////////////////////////////////////////////////////
 struct DebuggerBreakpoint
 {
+	enum BreakpointType
+	{
+		bptCode = 0,	///< Normal file/line breakpoint
+		bptFunction,	///< Function signature breakpoint
+		bptData			///< Data breakpoint
+	};
+	
     /** Constructor.
       * Sets default values for members.
       */
     DebuggerBreakpoint()
-        : line(0),
+        : type(bptCode),
+        line(0),
         index(-1),
         temporary(false),
         enabled(true),
@@ -116,8 +124,11 @@ struct DebuggerBreakpoint
         useCondition(false),
         address(0),
         alreadySet(false),
+        breakOnRead(false),
+        breakOnWrite(true),
         userData(0)
     {}
+    BreakpointType type; ///< The type of this breakpoint.
     wxString filename; ///< The filename for the breakpoint (kept as relative).
     wxString filenameAsPassed; ///< The filename for the breakpoint as passed to the debugger (i.e. full filename).
     int line; ///< The line for the breakpoint.
@@ -133,6 +144,9 @@ struct DebuggerBreakpoint
     unsigned long int address; ///< The actual breakpoint address. This is read back from the debugger. *Don't* write to it.
     bool alreadySet; ///< Is this already set? Used to mark temporary breakpoints for removal.
     wxString lineText; ///< Optionally, the breakpoint line's text (used by GDB for setting breapoints on ctors/dtors).
+    wxString breakAddress; ///< Valid only for type==bptData: address to break when read/written.
+    bool breakOnRead; ///< Valid only for type==bptData: break when memory is read from.
+    bool breakOnWrite; ///< Valid only for type==bptData: break when memory is written to.
     void* userData; ///< Custom user data.
 };
 WX_DEFINE_ARRAY(DebuggerBreakpoint*, BreakpointsList);

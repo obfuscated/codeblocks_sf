@@ -529,35 +529,43 @@ void GDB_driver::SwitchThread(size_t threadIndex)
 
 void GDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
 {
+	if (bp->type == DebuggerBreakpoint::bptData)
+	{
+		QueueCommand(new GdbCmd_AddDataBreakpoint(this, bp));
+	}
     //Workaround for GDB to break on C++ constructor/destructor
-    if (bp->func.IsEmpty() && !bp->lineText.IsEmpty())
+    else
     {
-        wxRegEx reCtorDtor(_T("([0-9A-z_]+)::([~]?)([0-9A-z_]+)[ \t\(]*"));
-        if (reCtorDtor.Matches(bp->lineText))
-        {
-            wxString strBase = reCtorDtor.GetMatch(bp->lineText, 1);
-            wxString strDtor = reCtorDtor.GetMatch(bp->lineText, 2);
-            wxString strMethod = reCtorDtor.GetMatch(bp->lineText, 3);
-            if (strBase.IsSameAs(strMethod))
-            {
-                bp->func = strBase;
-                bp->func << _T("::");
-                bp->func << strDtor;
-                bp->func << strMethod;
-//                if (bp->temporary)
-//                    bp->temporary = false;
-                NotifyCursorChanged(); // to force breakpoints window update
-            }
-        }
-    }
-    //end GDB workaround
+    	if (bp->func.IsEmpty() && !bp->lineText.IsEmpty())
+		{
+			wxRegEx reCtorDtor(_T("([0-9A-z_]+)::([~]?)([0-9A-z_]+)[ \t\(]*"));
+			if (reCtorDtor.Matches(bp->lineText))
+			{
+				wxString strBase = reCtorDtor.GetMatch(bp->lineText, 1);
+				wxString strDtor = reCtorDtor.GetMatch(bp->lineText, 2);
+				wxString strMethod = reCtorDtor.GetMatch(bp->lineText, 3);
+				if (strBase.IsSameAs(strMethod))
+				{
+					bp->func = strBase;
+					bp->func << _T("::");
+					bp->func << strDtor;
+					bp->func << strMethod;
+	//                if (bp->temporary)
+	//                    bp->temporary = false;
+					NotifyCursorChanged(); // to force breakpoints window update
+				}
+			}
+		}
+		//end GDB workaround
 
-    QueueCommand(new GdbCmd_AddBreakpoint(this, bp));
+		QueueCommand(new GdbCmd_AddBreakpoint(this, bp));
+    }
 }
 
 void GDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp)
 {
-    QueueCommand(new GdbCmd_RemoveBreakpoint(this, bp));
+	if (bp && bp->index != -1)
+		QueueCommand(new GdbCmd_RemoveBreakpoint(this, bp));
 }
 
 void GDB_driver::EvaluateSymbol(const wxString& symbol, const wxRect& tipRect)
@@ -619,7 +627,7 @@ void GDB_driver::ParseOutput(const wxString& output)
 			SetChildPID(pid);
 			want_debug_events = false;
 			disable_debug_events = true;
-			m_pDBG->Log(wxString::Format(_T("Pid extracted: %d (s=%s)"), pid, pidStr.c_str()));
+			m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
 		}
 	}
 #endif

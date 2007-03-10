@@ -110,6 +110,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         int LaunchProcess(const wxString& cmd, const wxString& cwd);
         wxString GetDebuggee(ProjectBuildTarget* target);
         bool IsStopped();
+        void AddDataBreakpoint();
 
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnDebug(wxCommandEvent& event);
@@ -128,6 +129,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnStep(wxCommandEvent& event);
         void OnStepOut(wxCommandEvent& event);
         void OnToggleBreakpoint(wxCommandEvent& event);
+        void OnAddDataBreakpoint(wxCommandEvent& event);
         void OnRunToCursor(wxCommandEvent& event);
         void OnBreakpointAdd(CodeBlocksEvent& event);
         void OnBreakpointEdit(CodeBlocksEvent& event);
