@@ -17,7 +17,7 @@ function WarningsOn(base, compilerID)
     {
         base.AddCompilerOption(_T("-Wall"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc"))
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd")) )
     {
         base.AddCompilerOption(_T("-w"));
@@ -55,7 +55,7 @@ function DebugSymbolsOn(base, compilerID)
             base.AddCompilerOption(_T("-debug"));
         }
     }
-    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc")))
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*")))
     {
         base.AddCompilerOption(_T("-v"));
         base.AddLinkerOption(_T("-v"));
@@ -80,12 +80,15 @@ function OptimizationsOn(base, compilerID)
 {
     if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
     {
-        base.AddCompilerOption(_T("/Og"));
-        base.AddCompilerOption(_T("/Ox"));
+        if (!GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc8")))
+		{
+			base.AddCompilerOption(_T("/Og"));  // Deprecated in MSVC 8
+		}
+		base.AddCompilerOption(_T("/Ox"));
         base.AddCompilerOption(_T("/DNDEBUG"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
-             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc")) )
     {
@@ -129,7 +132,7 @@ function CppExceptionsOn(base, compilerID)
     {
         base.AddCompilerOption(_T("-fexceptions"));
     }
-    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc")))
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*")))
     {
         base.AddCompilerOption(_T("-x"));
     }

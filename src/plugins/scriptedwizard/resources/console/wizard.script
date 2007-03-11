@@ -10,7 +10,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-multi_thread <- true; //Default to Multi-thread. For MSVC only.
+multi_thread_dynamic <- true; //Default to Multi-thread. For MSVC only.
 ConsoleLang <- 1; // default to C++
 
 //
@@ -55,16 +55,17 @@ function OnLeave_ConsoleLanguagePage(fwd)
     if (fwd)
     {
         ConsoleLang = Wizard.GetListboxSelection(_T("GenericChoiceList"));
-		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk")))
+		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
+		 || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
 		{
 			local msg = _T("Wizard will setup the Project in Multi-threaded Dynamic CRT mode by default.\n\n");
 			msg = msg + _T("Click Yes to continue with Multi-threaded Dynamic CRT mode\n\n");
-			msg = msg + _T("Click No to continue with Single-threaded Static CRT mode");
+			msg = msg + _T("Click No to continue with Multi-threaded Static CRT mode");
 			local thread = Message(msg, _T("Console Wizard"), wxICON_QUESTION | wxYES_NO);
 			if (thread == wxID_YES)
-				multi_thread = true;
+				multi_thread_dynamic = true;
 			else
-				multi_thread = false;
+				multi_thread_dynamic = false;
 		}
     }
     return true;
@@ -136,26 +137,25 @@ function SetupTarget(target,is_debug)
         return false;
 
     target.SetTargetType(ttConsoleOnly);
-    if (target.GetWorkingDir().Matches(_T("")))
-        target.SetOutputFilename(target.SuggestOutputFilename());
-    else
-        target.SetOutputFilename(target.GetWorkingDir() + wxFILE_SEP_PATH + target.SuggestOutputFilename());
 
     if (is_debug)
     {
-        // enable debugging symbols for this target
+        if (target.GetWorkingDir().Matches(_T("")))
+			target.SetOutputFilename(target.SuggestOutputFilename());
+		else
+			target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+		// enable debugging symbols for this target
         // DebugSymbolsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
         DebugSymbolsOn(target, Wizard.GetCompilerID());
 		//Special consideration for MSVC 7.1
-		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk")))
+		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
+		 || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
 		{
-			if (!multi_thread)
+			if (!multi_thread_dynamic)
 			{
-				target.AddCompilerOption(_T("/MLd"));
-				target.AddLinkerOption(_T("/NODEFAULTLIB:libcmtd.lib"));
-				target.AddLinkerOption(_T("/NODEFAULTLIB:libcpmtd.lib"));
-				target.AddLinkLib(_T("libcd.lib"));
-				target.AddLinkLib(_T("libcpd.lib"));
+				target.AddCompilerOption(_T("/MTd"));
+				target.AddLinkLib(_T("libcmtd.lib"));
+				target.AddLinkLib(_T("libcpmtd.lib"));
 			}
 			else
 			{
@@ -167,19 +167,22 @@ function SetupTarget(target,is_debug)
     }
     else
     {
-        // enable optimizations for this target
+        if (target.GetWorkingDir().Matches(_T("")))
+			target.SetOutputFilename(target.SuggestOutputFilename());
+		else
+			target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+		// enable optimizations for this target
         // OptimizationsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
         OptimizationsOn(target, Wizard.GetCompilerID());
 		//Special consideration for MSVC 7.1
-		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk")))
+		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
+		 || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
 		{
-			if (!multi_thread)
+			if (!multi_thread_dynamic)
 			{
-				target.AddCompilerOption(_T("/ML"));
-				target.AddLinkerOption(_T("/NODEFAULTLIB:libcmt.lib"));
-				target.AddLinkerOption(_T("/NODEFAULTLIB:libcpmt.lib"));
-				target.AddLinkLib(_T("libc.lib"));
-				target.AddLinkLib(_T("libcp.lib"));
+				target.AddCompilerOption(_T("/MT"));
+				target.AddLinkLib(_T("libcmt.lib"));
+				target.AddLinkLib(_T("libcpmt.lib"));
 			}
 			else
 			{
