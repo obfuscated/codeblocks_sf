@@ -576,7 +576,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         {
             // -----------------------------------------
             // Following lines have been modified for OpenWatcom
-            if (compiler->GetID().IsSameAs(_T("ow")))
+            if (compiler->GetID().IsSameAs(_T("ow")) && (!compiler->GetPrograms().LIB.IsSameAs(_T("wlib.exe"))))
             {
                 linkfiles << _T("file ") << prependHack << Object << _T(" "); // see QUICK HACK above (prependHack)
                 FlatLinkFiles << _T("file ") << prependHack << pfd.object_file_flat << _T(" "); // see QUICK HACK above (prependHack)

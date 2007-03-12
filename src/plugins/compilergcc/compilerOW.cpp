@@ -329,7 +329,7 @@ void CompilerOW::Reset()
     m_Commands[(int)ctLinkDynamicCmd]
         = wxT("$linker option quiet $link_options $libdirs name $exe_output $libs $link_objects");
     m_Commands[(int)ctLinkStaticCmd]
-        = wxT("$lib_linker option quiet $static_output $link_objects");
+        = wxT("$lib_linker -q $static_output $link_objects");
     m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     LoadDefaultRegExArray();
