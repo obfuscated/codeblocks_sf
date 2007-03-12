@@ -1313,6 +1313,9 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
 {
     if (filename.IsEmpty())
         return false;
+    wxFileName fname(filename);
+    fname.ClearExt();
+    fname.SetExt(_T("cbp"));
     switch(FileTypeOf(filename))
     {
         //
@@ -1347,11 +1350,21 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
         case ftMSVC6Project:
             // fallthrough
         case ftMSVC7Project:
+            // Make a check whether the project exists in current workspace
+            if (Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath()) == NULL)
             {
-                wxBusyCursor wait; // loading a project can take some time -> showhourglass
+                wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
                 return DoOpenProject(filename, addToHistory);
             }
-
+            else
+            {
+                wxString msg;
+                msg.Printf(_T("Project already exists in workspace"));
+                DBGLOG(msg);
+                cbMessageBox(msg, _T("Error"), wxOK | wxICON_ERROR);
+                return false;
+            }
+            break;
         //
         // Source files
         //
@@ -1361,7 +1374,6 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
             // fallthrough
         case ftResource:
             return DoOpenFile(filename, addToHistory);
-
         //
         // For all other files, ask MIME plugin for a suitable handler
         //

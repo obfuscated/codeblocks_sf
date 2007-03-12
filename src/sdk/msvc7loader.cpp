@@ -141,7 +141,7 @@ bool MSVC7Loader::DoSelectConfiguration(TiXmlElement* root)
     wxString ConfigName;
     while (confs)
     {
-        /*[Biplab] Replace all '|' with '_' so that compilation does not fail.
+        /*Replace all '|' with '_' so that compilation does not fail.
 		* This is vital as object directory names will be derived from target names
 		*/
         ConfigName = cbC2U(confs->Attribute("Name"));
@@ -164,7 +164,7 @@ bool MSVC7Loader::DoSelectConfiguration(TiXmlElement* root)
         PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_CANCEL)
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Canceled..."));
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Cancelled..."));
             return false;
         }
         selected_indices = dlg.GetSelectedIndices();
@@ -550,7 +550,7 @@ bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
                     for (int i = 1; i < numConfigurations; ++i)
 					{
 						pf->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
-						HandleFileConfiguration(file, pf); // We need to do this for all files [Biplab]
+						HandleFileConfiguration(file, pf); // We need to do this for all files
 					}
                 }
             }
