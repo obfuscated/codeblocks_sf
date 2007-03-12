@@ -1804,6 +1804,9 @@ int CompilerGCC::Clean(const wxString& target)
     wxArrayString clean;
     if (!m_Project)
     {
+        if (!Manager::Get()->GetEditorManager()->GetActiveEditor())
+          return -1;
+
         DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
         clean = dc.GetCleanSingleFileCommand(Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename());
         DoClean(clean);
@@ -2261,7 +2264,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
 //            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Job: %s - %s"), prj->GetTitle().c_str(), prj->GetBuildTarget(tlist[x])->GetTitle().c_str());
         }
     }
-    
+
     // were there any jobs generated?
     if (m_BuildJobTargetsList.empty())
     {
