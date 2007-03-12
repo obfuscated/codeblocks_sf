@@ -241,16 +241,16 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
                 __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
 #endif
 
-    if(ConfigManager::Linux())
-        info.append(_T("\n\t Linux "));
-    if(ConfigManager::Windows())
+    if(platform::windows)
         info.append(_T("\n\t Windows "));
-    if(ConfigManager::MacOS())
+    if(platform::linux)
+        info.append(_T("\n\t Linux "));
+    if(platform::macos)
         info.append(_T("\n\t MacOS "));
-    if(ConfigManager::Unix())
+    if(platform::unix)
         info.append(_T("\n\t Unix "));
 
-    info.append(ConfigManager::Unicode() ? _T("Unicode ") : _T("ANSI "));
+    info.append(platform::unicode ? _T("Unicode ") : _T("ANSI "));
 
     TiXmlComment c;
     c.SetValue((const char*) info.mb_str());
@@ -583,13 +583,9 @@ wxString ConfigManager::InvalidNameMessage(const wxString& what, const wxString&
     s.Printf(_T("The %s %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for path naming (must start with a letter)."),
     what.c_str(),
     sub.c_str(),
-    #if wxUSE_UNICODE
     cbC2U(localPath->Value()).c_str(),
     cbC2U(root->Value()).c_str());
-    #else
-    localPath->Value(),
-    root->Value());
-    #endif
+
     return s;
 }
 
@@ -1369,66 +1365,6 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::Se
 }
 
 
-
-#if wxUSE_UNICODE
-bool ConfigManager::Unicode()
-{
-    return true;
-}
-#else
-bool ConfigManager::Unicode()
-{
-    return false;
-}
-#endif
-
-#ifdef __WIN32__
-bool ConfigManager::Windows()
-{
-    return true;
-}
-bool ConfigManager::Unix()
-{
-    return false;
-}
-#endif
-
-#if (defined(__WXGTK__)  || defined(__WXMAC__))
-bool ConfigManager::Windows()
-{
-    return false;
-}
-bool ConfigManager::Unix()
-{
-    return true;
-}
-#endif
-
-#ifdef __WXMAC__
-bool ConfigManager::MacOS()
-{
-    return true;
-}
-#else
-bool ConfigManager::MacOS()
-{
-    return false;
-}
-#endif
-
-#ifdef __linux__
-bool ConfigManager::Linux()
-{
-    return true;
-}
-#else
-bool ConfigManager::Linux()
-{
-    return false;
-}
-#endif
-
-
 void ConfigManager::InitPaths()
 {
     wxLogNull ln;
@@ -1440,9 +1376,9 @@ void ConfigManager::InitPaths()
     // if non-empty, the app has overriden it (e.g. "--prefix" was passed in the command line)
     if (data_path_global.IsEmpty())
     {
-        if(ConfigManager::Windows())
+        if(platform::windows)
             ConfigManager::data_path_global = app_path + _T("/share/codeblocks");
-        else if(ConfigManager::MacOS())
+        else if(platform::macos)
             ConfigManager::data_path_global = res_path + _T("/share/codeblocks");
         else
             ConfigManager::data_path_global = wxStandardPathsBase::Get().GetDataDir();

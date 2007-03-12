@@ -289,12 +289,6 @@ public:
                 (*map)[cbC2U(e->Value())] = obj;
             }
     };
-
-    static inline bool Windows();
-    static inline bool Unix();
-    static inline bool Linux();
-    static inline bool MacOS();
-    static inline bool Unicode();
 };
 
 
