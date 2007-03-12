@@ -56,11 +56,11 @@ namespace platform
 
     const bool windows = (id == platform_windows);
     const bool macos   = (id == platform_macos);
-    const bool linux   = (id == platform_linux);
+    const bool CBlinux   = (id == platform_linux);
     const bool freebsd = (id == platform_freebsd);
     const bool netbsd  = (id == platform_netbsd);
     const bool openbsd = (id == platform_openbsd);
-    const bool unix    = (linux | freebsd | netbsd | openbsd);
+    const bool CBunix    = (CBlinux | freebsd | netbsd | openbsd);
 
     const int bits = 8*sizeof(void*);
 
