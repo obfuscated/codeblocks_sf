@@ -723,6 +723,9 @@
 		<Unit filename="include\pluginsconfigurationdlg.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include\prep.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include\printing_types.h">
 			<Option target="sdk" />
 		</Unit>
@@ -2739,12 +2742,6 @@
 		</Unit>
 		<Extensions>
 			<code_completion />
-			<wxsmith version="1">
-				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
-				<resources>
-					<wxDialog wxs="wxsmith/databreakpointdlg.wxs" src="plugins/debuggergdb/databreakpointdlg.cpp" hdr="plugins/debuggergdb/databreakpointdlg.h" name="DataBreakpointDlg" language="CPP" />
-				</resources>
-			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

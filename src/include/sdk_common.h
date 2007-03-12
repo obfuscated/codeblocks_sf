@@ -32,6 +32,7 @@
 	#pragma hdrstop
 #endif
 
+#include "prep.h" // this is deliberately not inside the #ifdef block
 
 #ifdef CB_PRECOMP
 
