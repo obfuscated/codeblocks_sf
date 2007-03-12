@@ -380,7 +380,7 @@ void ToDoListView::OnListItemSelected(wxListEvent& event)
     wxString file = m_Items[idx].filename;
     long int line = m_Items[idx].line;
 
-    if (file.IsEmpty() || line <= 0)
+    if (file.IsEmpty() || line < 0)
         return;
 
 	// jump to file/line selected
