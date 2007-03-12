@@ -89,8 +89,9 @@ class CodeBlocksApp : public wxApp
         bool m_HasDebugLog; // display debug log
         bool m_NoCrashHandler; // no crash handler
 
-#ifdef __WXMSW__
         void InitAssociations();
+
+#ifdef __WXMSW__
         bool m_NoDDE; // no DDE
         bool m_NoAssocs; // no associations check
         HINSTANCE m_ExceptionHandlerLib;

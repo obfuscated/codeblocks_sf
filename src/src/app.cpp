@@ -75,6 +75,14 @@
     #include "filemanager.h" // LoaderBase
 #endif
 
+#ifndef APP_PREFIX
+#define APP_PREFIX ""
+#endif
+
+#ifndef __WXMAC__
+wxString GetResourcesDir(){ return wxEmptyString; };
+#endif
+
 namespace
 {
 // this list will be filled with files
@@ -222,43 +230,50 @@ bool CodeBlocksApp::LoadConfig()
 
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
 
-    // find out about data path
-#ifdef __WXMSW__
-    wxString data = GetAppPath(); // under windows it is under the exe dir
-#elif defined(__WXMAC__)
-    wxString data = GetResourcesDir(); // CodeBlocks.app/Contents/Resources
-    if (!data.Contains(wxString(_T("/Resources"))))
-        data = GetAppPath() + _T("/.."); // not a bundle, use relative path
-#else
-    #ifdef APP_PREFIX
-        wxString data = wxT(APP_PREFIX); // under linux, get the preprocessor value
-    #else
-        wxString data = GetAppPath();
-    #endif
-#endif
-    wxString actualData = _T("/share/codeblocks");
-    data << actualData;
-    // check if the user has passed --prefix in the command line
-    if (!m_Prefix.IsEmpty())
-        data = m_Prefix + actualData;
-    else
+    wxString data(wxT(APP_PREFIX));
+
+    if(platform::windows)
     {
-        // if no --prefix passed, check for the environment variable
+        data.assign(GetAppPath());
+    }
+    else if(platform::macos)
+    {
+        data.assign(GetResourcesDir());                 // CodeBlocks.app/Contents/Resources
+        if (!data.Contains(wxString(_T("/Resources")))) // not a bundle, use relative path
+            data = GetAppPath() + _T("/..");
+    }
+
+    if(data.IsEmpty())
+    {
+        data.assign(GetAppPath());  // Linux/MacOS fallback (should never be needed, but for whatever it's good...)
+    }
+
+
+    if (!m_Prefix.IsEmpty())        // --prefix command line switch overrides builtin value
+    {
+        data = m_Prefix;
+    }
+    else                            // also, check for environment
+    {
+
         wxString env;
         wxGetEnv(_T("CODEBLOCKS_DATA_DIR"), &env);
         if (!env.IsEmpty())
-            data = env + actualData;
+            data = env;
     }
 
+    data.append(_T("/share/codeblocks"));
+
     cfg->Write(_T("data_path"), data);
+
     m_HasDebugLog = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/has_debug_log"), false) || m_HasDebugLog;
     Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/has_debug_log"), m_HasDebugLog);
     return true;
 }
 
-#ifdef __WXMSW__
 void CodeBlocksApp::InitAssociations()
 {
+#ifdef __WXMSW__
 	ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
 	if (!m_NoAssocs && cfg->ReadBool(_T("/environment/check_associations"), true))
 	{
@@ -284,8 +299,8 @@ void CodeBlocksApp::InitAssociations()
 
         }
     }
-}
 #endif
+}
 
 void CodeBlocksApp::InitDebugConsole()
 {
@@ -322,6 +337,7 @@ bool CodeBlocksApp::InitXRCStuff()
 
 MainFrame* CodeBlocksApp::InitFrame()
 {
+    CompileTimeAssertion<wxMinimumVersion<2,6>::eval>::Assert();
     MainFrame *frame = new MainFrame();
     wxUpdateUIEvent::SetUpdateInterval(100);
     SetTopWindow(0);
@@ -352,23 +368,11 @@ MainFrame* CodeBlocksApp::InitFrame()
 
 void CodeBlocksApp::CheckVersion()
 {
-#ifdef __WXMSW__
-    // for windows users only, display a message that no compiler is provided
+    // This is a rudiment from early 2006 (Windows only), but keep the revision tag for possible future use
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
 
-    if (cfg->Read(_T("version")) != g_AppActualVersion)
-    {
-        // this is a (probably) newer version; show a message box with
-        // important notes
-
-        // NOTE:
-        // the info box, has moved to the installer, because now there are
-        // setup files including a compiler...
-
-        // update the version
+    if(cfg->Read(_T("version")) != g_AppActualVersion)
         cfg->Write(_T("version"), g_AppActualVersion);
-    }
-#endif
 }
 
 void CodeBlocksApp::InitLocale()
@@ -544,9 +548,9 @@ bool CodeBlocksApp::OnInit()
 
         frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
 
-#ifdef __WXMSW__
-        InitAssociations();
-#endif
+        if(platform::windows)
+            InitAssociations();
+
         s_Loading = false;
 
         LoadDelayedFiles(frame);
@@ -925,31 +929,22 @@ void CodeBlocksApp::SetupPersonality(const wxString& personality)
 {
     if (personality.CmpNoCase(_T("ask")) == 0)
     {
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
-        // wx < 2.5.x single choice dialog wants wxString*
-        const wxArrayString& list = Manager::Get()->GetPersonalityManager()->GetPersonalitiesList();
-        wxString* strings = new wxString[list.GetCount()];
-        for (unsigned int i = 0; i < list.GetCount(); ++i)
-            strings[i] = list[i];
-#endif
-        // display personality selection dialog
-        wxSingleChoiceDialog dlg(0,
-                                _("Please choose which personality (profile) to load:"),
-                                _("Personalities (profiles)"),
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
-                                list.GetCount(), strings);
-#else
-                                Manager::Get()->GetPersonalityManager()->GetPersonalitiesList());
-#endif
+        CompileTimeAssertion<wxMinimumVersion<2,5>::eval>::Assert(); // just to make sure: wxWidgets 2.4 is dead
+
+        const wxArrayString items(Manager::Get()->GetPersonalityManager()->GetPersonalitiesList());
+
+        wxSingleChoiceDialog dlg(0, _("Please choose which personality (profile) to load:"),
+                                    _("Personalities (profiles)"),
+                                    items);
         PlaceWindow(&dlg);
+
         if (dlg.ShowModal() == wxID_OK)
             Manager::Get()->GetPersonalityManager()->SetPersonality(dlg.GetStringSelection());
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
-        delete[] strings;
-#endif
     }
     else
+    {
         Manager::Get()->GetPersonalityManager()->SetPersonality(personality, true);
+    }
 }
 
 void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
