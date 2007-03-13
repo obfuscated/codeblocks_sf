@@ -25,7 +25,7 @@
 #endif
 
 #ifdef __WXMSW__
-	#include <wx/ipc.h>
+    #include <wx/ipc.h>
 #endif
 
 #include <wx/splash.h>
@@ -43,7 +43,7 @@ class CodeBlocksApp : public wxApp
         virtual int OnRun();
         wxString GetAppPath() const;
         int ParseCmdLine(MainFrame* handlerFrame);
-		void OnAppActivate(wxActivateEvent& event);
+        void OnAppActivate(wxActivateEvent& event);
         bool OnCmdLineParsed(wxCmdLineParser& parser);
         void OnFatalException();
 #ifdef __WXMAC__
@@ -75,7 +75,7 @@ class CodeBlocksApp : public wxApp
 
         wxDialog* m_pBatchBuildDialog;
         MainFrame* m_Frame;
-		wxSingleInstanceChecker* m_pSingleInstance;
+        wxSingleInstanceChecker* m_pSingleInstance;
 
         bool m_Batch;
         bool m_BatchNotify;
