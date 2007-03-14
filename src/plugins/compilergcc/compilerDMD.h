@@ -1,4 +1,4 @@
-#if defined(_WIN32) || defined(linux)
+#if defined(_WIN32) || defined(__linux__)
 // this compiler is valid only in windows and linux
 
 #ifndef COMPILERDMD_H

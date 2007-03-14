@@ -313,7 +313,7 @@ void CompilerGCC::OnAttach()
     CompilerFactory::RegisterCompiler(new CompilerSDCC);
     CompilerFactory::RegisterCompiler(new CompilerTcc);
     CompilerFactory::RegisterCompiler(new CompilerGDC);
-#if defined(_WIN32) || defined(linux)
+#if defined(_WIN32) || defined(__linux__)
     CompilerFactory::RegisterCompiler(new CompilerDMD);
 #endif
 
