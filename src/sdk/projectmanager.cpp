@@ -1828,21 +1828,35 @@ void ProjectManager::OnSetActiveProject(wxCommandEvent& event)
 void ProjectManager::OnAddFilesToProjectRecursively(wxCommandEvent& event)
 {
     cbProject* prj = 0;
+    wxString basePath;
+
     if (event.GetId() == idMenuAddFilesRecursively)
+    {
         prj = GetActiveProject();
+        if (prj)
+            basePath = prj->GetBasePath();
+    }
     else
     {
         wxTreeItemId sel = m_pTree->GetSelection();
         FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
         if (ftd)
-            prj = ftd->GetProject();
+        {
+             prj = ftd->GetProject();
+             if (prj)
+             {
+                 basePath = ftd->GetFolder();
+                 if (!wxDirExists(basePath))
+                     basePath = prj->GetBasePath();
+             }
+        }
     }
     if (!prj)
         return;
 
     wxString dir = ChooseDirectory(m_pTree,
                                     _("Add files recursively..."),
-                                    prj->GetBasePath(),
+                                    basePath,
                                     wxEmptyString,
                                     false,
                                     false);
@@ -1896,21 +1910,35 @@ void ProjectManager::OnAddFilesToProjectRecursively(wxCommandEvent& event)
 void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
 {
     cbProject* prj = 0;
+    wxString basePath;
+
     if (event.GetId() == idMenuAddFile)
+    {
         prj = GetActiveProject();
+        if (prj)
+            basePath = prj->GetBasePath();
+    }
     else
     {
         wxTreeItemId sel = m_pTree->GetSelection();
         FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
         if (ftd)
+        {
             prj = ftd->GetProject();
+            if (prj)
+            {
+                basePath = ftd->GetFolder();
+                if (!wxDirExists(basePath))
+                    basePath = prj->GetBasePath();
+            }
+        }
     }
     if (!prj)
         return;
 
     wxFileDialog dlg(Manager::Get()->GetAppWindow(),
                     _("Add files to project..."),
-                    prj->GetBasePath(),
+                    basePath,
                     wxEmptyString,
                     FileFilters::GetFilterString(),
                     wxOPEN | wxMULTIPLE | wxFILE_MUST_EXIST | compatibility::wxHideReadonly);
