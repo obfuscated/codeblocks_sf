@@ -5,15 +5,15 @@
 
 class CompilerGDC : public Compiler
 {
-	public:
-		CompilerGDC();
-		virtual ~CompilerGDC();
+    public:
+        CompilerGDC();
+        virtual ~CompilerGDC();
         virtual void Reset();
-		virtual void LoadDefaultRegExArray();
+        virtual void LoadDefaultRegExArray();
         virtual AutoDetectResult AutoDetectInstallationDir();
     protected:
         virtual Compiler* CreateCopy();
-	private:
+    private:
 };
 
 #endif // COMPILER_MINGW_H

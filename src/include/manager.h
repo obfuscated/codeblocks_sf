@@ -46,7 +46,7 @@ class DLLIMPORT Manager
     ~Manager();
 
 public:
-    static void SetBatchBuild(bool isBatch);
+    static void SetBatchBuild(bool is_batch);
     static bool IsBatchBuild(){ return isBatch; }
     /// Blocks/unblocks Manager::Yield(). Be carefull when using it. Actually, do *not* use it ;)
     static void BlockYields(bool block);

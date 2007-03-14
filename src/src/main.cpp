@@ -1358,10 +1358,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
             }
             else
             {
-                wxString msg;
-                msg.Printf(_T("Project already exists in workspace"));
-                DBGLOG(msg);
-                cbMessageBox(msg, _T("Error"), wxOK | wxICON_ERROR);
+                // NOTE (Morten#1#): A message here will prevent batch-builds from working and is shown sometimes even if correct
                 return false;
             }
             break;

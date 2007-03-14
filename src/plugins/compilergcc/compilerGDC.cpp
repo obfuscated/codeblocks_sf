@@ -35,7 +35,7 @@ CompilerGDC::CompilerGDC()
 
 CompilerGDC::~CompilerGDC()
 {
-	//dtor
+    //dtor
 }
 
 Compiler * CompilerGDC::CreateCopy()
@@ -48,65 +48,65 @@ Compiler * CompilerGDC::CreateCopy()
 void CompilerGDC::Reset()
 {
 #ifdef __WXMSW__
-	m_Programs.C = _T("mingw32-gdc.exe");
-	m_Programs.CPP = _T("mingw32-gdc.exe");
-	m_Programs.LD = _T("mingw32-gdc.exe");
-	m_Programs.DBG = _T("gdb.exe");
-	m_Programs.LIB = _T("ar.exe");
-	m_Programs.WINDRES = _T("windres.exe");
-	m_Programs.MAKE = _T("mingw32-make.exe");
+    m_Programs.C = _T("mingw32-gdc.exe");
+    m_Programs.CPP = _T("mingw32-gdc.exe");
+    m_Programs.LD = _T("mingw32-gdc.exe");
+    m_Programs.DBG = _T("gdb.exe");
+    m_Programs.LIB = _T("ar.exe");
+    m_Programs.WINDRES = _T("windres.exe");
+    m_Programs.MAKE = _T("mingw32-make.exe");
 #else
-	m_Programs.C = _T("gdc");
-	m_Programs.CPP = _T("gdc");
-	m_Programs.LD = _T("gdc");
-	m_Programs.DBG = _T("gdb");
-	m_Programs.LIB = _T("ar");
-	m_Programs.WINDRES = _T("");
-	m_Programs.MAKE = _T("make");
+    m_Programs.C = _T("gdc");
+    m_Programs.CPP = _T("gdc");
+    m_Programs.LD = _T("gdc");
+    m_Programs.DBG = _T("gdb");
+    m_Programs.LIB = _T("ar");
+    m_Programs.WINDRES = _T("");
+    m_Programs.MAKE = _T("make");
 #endif
-	m_Switches.includeDirs = _T("-I");
-	m_Switches.libDirs = _T("-L");
-	m_Switches.linkLibs = _T("-l");
-	m_Switches.defines = _T("-D");
-	m_Switches.genericSwitch = _T("-");
-	m_Switches.objectExtension = _T("o");
-	m_Switches.needDependencies = true;
-	m_Switches.forceCompilerUseQuotes = false;
-	m_Switches.forceLinkerUseQuotes = false;
-	m_Switches.logging = clogSimple;
-	m_Switches.libPrefix = _T("lib");
-	m_Switches.libExtension = _T("a");
-	m_Switches.linkerNeedsLibPrefix = false;
-	m_Switches.linkerNeedsLibExtension = false;
-	m_Switches.buildMethod = cbmDirect;
+    m_Switches.includeDirs = _T("-I");
+    m_Switches.libDirs = _T("-L");
+    m_Switches.linkLibs = _T("-l");
+    m_Switches.defines = _T("-D");
+    m_Switches.genericSwitch = _T("-");
+    m_Switches.objectExtension = _T("o");
+    m_Switches.needDependencies = true;
+    m_Switches.forceCompilerUseQuotes = false;
+    m_Switches.forceLinkerUseQuotes = false;
+    m_Switches.logging = clogSimple;
+    m_Switches.libPrefix = _T("lib");
+    m_Switches.libExtension = _T("a");
+    m_Switches.linkerNeedsLibPrefix = false;
+    m_Switches.linkerNeedsLibExtension = false;
+    m_Switches.buildMethod = cbmDirect;
 
     // Summary of GCC options: http://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html
 
     m_Options.ClearOptions();
-	m_Options.AddOption(_("Produce debugging symbols"),
-				_T("-g"),
-				_("Debugging"),
-				_T(""),
-				true,
-				_T("-O -O1 -O2 -O3 -Os"),
-				_("You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."));
+    m_Options.AddOption(_("Produce debugging symbols"),
+                _T("-g"),
+                _("Debugging"),
+                _T(""),
+                true,
+                _T("-O -O1 -O2 -O3 -Os"),
+                _("You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."));
 #ifdef __WXMSW__
     #define GPROF_LINK _T("-pg -lgmon")
 #else
     #define GPROF_LINK _T("-pg")
 #endif
-	m_Options.AddOption(_("Profile code when executed"), _T("-pg"), _("Profiling"), GPROF_LINK);
+    m_Options.AddOption(_("Profile code when executed"), _T("-pg"), _("Profiling"), GPROF_LINK);
 
     wxString category = _("Warnings");
 
     // warnings
-	m_Options.AddOption(_("Enable all compiler warnings (overrides every other setting)"), _T("-Wall"), category);
-	m_Options.AddOption(_("Enable standard compiler warnings"), _T("-W"), category);
-	m_Options.AddOption(_("Stop compiling after first error"), _T("-Wfatal-errors"), category);
-	m_Options.AddOption(_("Inhibit all warning messages"), _T("-w"), category);
-	m_Options.AddOption(_("Enable warnings demanded by strict ISO C and ISO C++"), _T("-pedantic"), category);
-	m_Options.AddOption(_("Treat as errors the warnings demanded by strict ISO C and ISO C++"), _T("-pedantic-errors"), category);
-	m_Options.AddOption(_("Warn if main() is not conformant"), _T("-Wmain"), category);
+    m_Options.AddOption(_("Enable all compiler warnings (overrides every other setting)"), _T("-Wall"), category);
+    m_Options.AddOption(_("Enable standard compiler warnings"), _T("-W"), category);
+    m_Options.AddOption(_("Stop compiling after first error"), _T("-Wfatal-errors"), category);
+    m_Options.AddOption(_("Inhibit all warning messages"), _T("-w"), category);
+    m_Options.AddOption(_("Enable warnings demanded by strict ISO C and ISO C++"), _T("-pedantic"), category);
+    m_Options.AddOption(_("Treat as errors the warnings demanded by strict ISO C and ISO C++"), _T("-pedantic-errors"), category);
+    m_Options.AddOption(_("Warn if main() is not conformant"), _T("-Wmain"), category);
     // D features
     category = _("D");
     m_Options.AddOption(_("generate documentation"), _T("-fdoc"), category);
@@ -118,38 +118,38 @@ void CompilerGDC::Reset()
 
     // optimization
     category = _("Optimization");
-	m_Options.AddOption(_("Strip all symbols from binary (minimizes size)"), _T(""), category, _T("-s"), true, _T("-g -ggdb"), _("Stripping the binary will strip debugging symbols as well!"));
-	m_Options.AddOption(_("Optimize generated code (for speed)"), _T("-O"), category);
-	m_Options.AddOption(_("Optimize more (for speed)"), _T("-O1"), category);
-	m_Options.AddOption(_("Optimize even more (for speed)"), _T("-O2"), category);
-	m_Options.AddOption(_("Optimize fully (for speed)"), _T("-O3"), category);
-	m_Options.AddOption(_("Optimize generated code (for size)"), _T("-Os"), category);
-	m_Options.AddOption(_("Expensive optimizations"), _T("-fexpensive-optimizations"), category);
+    m_Options.AddOption(_("Strip all symbols from binary (minimizes size)"), _T(""), category, _T("-s"), true, _T("-g -ggdb"), _("Stripping the binary will strip debugging symbols as well!"));
+    m_Options.AddOption(_("Optimize generated code (for speed)"), _T("-O"), category);
+    m_Options.AddOption(_("Optimize more (for speed)"), _T("-O1"), category);
+    m_Options.AddOption(_("Optimize even more (for speed)"), _T("-O2"), category);
+    m_Options.AddOption(_("Optimize fully (for speed)"), _T("-O3"), category);
+    m_Options.AddOption(_("Optimize generated code (for size)"), _T("-Os"), category);
+    m_Options.AddOption(_("Expensive optimizations"), _T("-fexpensive-optimizations"), category);
     // machine dependent options - cpu arch
     category = _("CPU architecture tuning (choose none, or only one of these)");
-	m_Options.AddOption(_("i386"), _T("-march=i386"), category);
-	m_Options.AddOption(_("i486"), _T("-march=i486"), category);
-	m_Options.AddOption(_("Intel Pentium"), _T("-march=i586"), category);
-	m_Options.AddOption(_("Intel Pentium (MMX)"), _T("-march=pentium-mmx"), category);
-	m_Options.AddOption(_("Intel Pentium PRO"), _T("-march=i686"), category);
-	m_Options.AddOption(_("Intel Pentium 2 (MMX)"), _T("-march=pentium2"), category);
-	m_Options.AddOption(_("Intel Pentium 3 (MMX, SSE)"), _T("-march=pentium3"), category);
-	m_Options.AddOption(_("Intel Pentium 4 (MMX, SSE, SSE2)"), _T("-march=pentium4"), category);
-	m_Options.AddOption(_("Intel Pentium 4 Prescott (MMX, SSE, SSE2, SSE3)"), _T("-march=prescott"), category);
-	m_Options.AddOption(_("Intel Pentium 4 Nocona (MMX, SSE, SSE2, SSE3, 64bit extensions)"), _T("-march=nocona"), category);
-	m_Options.AddOption(_("Intel Pentium M (MMX, SSE, SSE2)"), _T("-march=pentium-m"), category);
-	m_Options.AddOption(_("AMD K6 (MMX)"), _T("-march=k6"), category);
-	m_Options.AddOption(_("AMD K6-2 (MMX, 3DNow!)"), _T("-march=k6-2"), category);
-	m_Options.AddOption(_("AMD K6-3 (MMX, 3DNow!)"), _T("-march=k6-3"), category);
-	m_Options.AddOption(_("AMD Athlon (MMX, 3DNow!, enhanced 3DNow!, SSE prefetch)"), _T("-march=athlon"), category);
-	m_Options.AddOption(_("AMD Athlon Thunderbird (MMX, 3DNow!, enhanced 3DNow!, SSE prefetch)"), _T("-march=athlon-tbird"), category);
-	m_Options.AddOption(_("AMD Athlon 4 (MMX, 3DNow!, enhanced 3DNow!, full SSE)"), _T("-march=athlon-4"), category);
-	m_Options.AddOption(_("AMD Athlon XP (MMX, 3DNow!, enhanced 3DNow!, full SSE)"), _T("-march=athlon-xp"), category);
-	m_Options.AddOption(_("AMD Athlon MP (MMX, 3DNow!, enhanced 3DNow!, full SSE)"), _T("-march=athlon-mp"), category);
-	m_Options.AddOption(_("AMD K8 core (x86-64 instruction set)"), _T("-march=k8"), category);
-	m_Options.AddOption(_("AMD Opteron (x86-64 instruction set)"), _T("-march=opteron"), category);
-	m_Options.AddOption(_("AMD Athlon64 (x86-64 instruction set)"), _T("-march=athlon64"), category);
-	m_Options.AddOption(_("AMD Athlon-FX (x86-64 instruction set)"), _T("-march=athlon-fx"), category);
+    m_Options.AddOption(_("i386"), _T("-march=i386"), category);
+    m_Options.AddOption(_("i486"), _T("-march=i486"), category);
+    m_Options.AddOption(_("Intel Pentium"), _T("-march=i586"), category);
+    m_Options.AddOption(_("Intel Pentium (MMX)"), _T("-march=pentium-mmx"), category);
+    m_Options.AddOption(_("Intel Pentium PRO"), _T("-march=i686"), category);
+    m_Options.AddOption(_("Intel Pentium 2 (MMX)"), _T("-march=pentium2"), category);
+    m_Options.AddOption(_("Intel Pentium 3 (MMX, SSE)"), _T("-march=pentium3"), category);
+    m_Options.AddOption(_("Intel Pentium 4 (MMX, SSE, SSE2)"), _T("-march=pentium4"), category);
+    m_Options.AddOption(_("Intel Pentium 4 Prescott (MMX, SSE, SSE2, SSE3)"), _T("-march=prescott"), category);
+    m_Options.AddOption(_("Intel Pentium 4 Nocona (MMX, SSE, SSE2, SSE3, 64bit extensions)"), _T("-march=nocona"), category);
+    m_Options.AddOption(_("Intel Pentium M (MMX, SSE, SSE2)"), _T("-march=pentium-m"), category);
+    m_Options.AddOption(_("AMD K6 (MMX)"), _T("-march=k6"), category);
+    m_Options.AddOption(_("AMD K6-2 (MMX, 3DNow!)"), _T("-march=k6-2"), category);
+    m_Options.AddOption(_("AMD K6-3 (MMX, 3DNow!)"), _T("-march=k6-3"), category);
+    m_Options.AddOption(_("AMD Athlon (MMX, 3DNow!, enhanced 3DNow!, SSE prefetch)"), _T("-march=athlon"), category);
+    m_Options.AddOption(_("AMD Athlon Thunderbird (MMX, 3DNow!, enhanced 3DNow!, SSE prefetch)"), _T("-march=athlon-tbird"), category);
+    m_Options.AddOption(_("AMD Athlon 4 (MMX, 3DNow!, enhanced 3DNow!, full SSE)"), _T("-march=athlon-4"), category);
+    m_Options.AddOption(_("AMD Athlon XP (MMX, 3DNow!, enhanced 3DNow!, full SSE)"), _T("-march=athlon-xp"), category);
+    m_Options.AddOption(_("AMD Athlon MP (MMX, 3DNow!, enhanced 3DNow!, full SSE)"), _T("-march=athlon-mp"), category);
+    m_Options.AddOption(_("AMD K8 core (x86-64 instruction set)"), _T("-march=k8"), category);
+    m_Options.AddOption(_("AMD Opteron (x86-64 instruction set)"), _T("-march=opteron"), category);
+    m_Options.AddOption(_("AMD Athlon64 (x86-64 instruction set)"), _T("-march=athlon64"), category);
+    m_Options.AddOption(_("AMD Athlon-FX (x86-64 instruction set)"), _T("-march=athlon-fx"), category);
 
     m_Commands[(int)ctCompileObjectCmd] = _T("$compiler $options $includes -c $file -o $object");
     m_Commands[(int)ctGenDependenciesCmd] = _T("$compiler -MM $options -MF $dep_object -MT $object $includes $file");
@@ -178,6 +178,7 @@ void CompilerGDC::LoadDefaultRegExArray()
 {
     m_RegExes.Clear();
     m_RegExes.Add(RegExStruct(_("Fatal error"), cltError, _T("FATAL:[ \t]*(.*)"), 1));
+    m_RegExes.Add(RegExStruct(_("'Instantiated from here' info"), cltNormal, _T("(") + FilePathWithSpaces + _T("):([0-9]+):[ \t]+([iI]nstantiated from here.*)"), 3, 1, 2));    m_RegExes.Add(RegExStruct(_("Resource compiler error"), cltError, _T("windres.exe:[ \t](") + FilePathWithSpaces + _T("):([0-9]+):[ \t](.*)"), 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("Resource compiler error"), cltError, _T("windres.exe:[ \t](") + FilePathWithSpaces + _T("):([0-9]+):[ \t](.*)"), 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("Resource compiler error (2)"), cltError, _T("windres.exe:[ \t](.*)"), 1));
     m_RegExes.Add(RegExStruct(_("Preprocessor warning"), cltWarning, _T("(") + FilePathWithSpaces + _T("):([0-9]+):([0-9]+):[ \t]([Ww]arning:[ \t].*)"), 4, 1, 2));
@@ -197,7 +198,7 @@ AutoDetectResult CompilerGDC::AutoDetectInstallationDir()
 #ifdef __WXMSW__
     // look first if MinGW was installed with Code::Blocks (new in beta6)
     m_MasterPath = ConfigManager::GetExecutableFolder();
-	if (!wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C))
+    if (!wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C))
     {
         // no... search for MinGW installation dir
         wxString windir = wxGetOSDirectory();
@@ -217,16 +218,16 @@ AutoDetectResult CompilerGDC::AutoDetectInstallationDir()
             else {
                 // installed by inno-setup
                 // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Minimalist GNU for Windows 4.1_is1
-            	wxString name;
-            	long index;
-            	key.SetName(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall"));
-            	//key.SetName("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion");
+                wxString name;
+                long index;
+                key.SetName(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall"));
+                //key.SetName("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion");
                 bool ok = key.GetFirstKey(name, index);
                 while (ok && !name.StartsWith(_T("Minimalist GNU for Windows"))) {
                     ok = key.GetNextKey(name, index);
                 }
                 if (ok) {
-                	name = key.GetName() + _T("\\") + name;
+                    name = key.GetName() + _T("\\") + name;
                     key.SetName(name);
                     Manager::Get()->GetMessageManager()->DebugLog(_T("name: %s"), name.c_str());
                     if (key.Exists()) key.QueryValue(_T("InstallLocation"), m_MasterPath);
