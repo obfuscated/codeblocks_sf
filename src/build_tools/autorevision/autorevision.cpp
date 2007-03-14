@@ -82,12 +82,17 @@ int main(int argc, char** argv)
     if(outputFile.empty())
         outputFile.assign("autorevision.h");
 
+    string docFile(workingDir);
+    docFile.append("/.svn/entries");
+    string docFile2(workingDir);
+    docFile2.append("/_svn/entries");
+
     string revision;
     string date;
     string comment;
     string old;
 
-    QuerySvn(workingDir, revision, date);
+    QuerySvn(workingDir, revision, date) || ParseFile(docFile, revision, date) || ParseFile(docFile2, revision, date);
     WriteOutput(outputFile, revision, date);
 
     return 0;
@@ -131,7 +136,29 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
     return 0;
 }
 
+bool ParseFile(const string& docFile, string& revision, string &date)
+{
+    string token[6];
+    date.clear();
+    revision.clear();
+    int c = 0;
 
+    ifstream inFile(docFile.c_str());
+    if (!inFile)
+    {
+        return false;
+    }
+    else
+    {
+        while(!inFile.eof() && c < 6)
+            inFile >> token[c++];
+
+        revision = token[2];
+        date = token[5].substr(0, strlen("2006-01-01T12:34:56"));
+        date[10] = 32;
+        return true;
+    }
+}
 
 bool WriteOutput(const string& outputFile, string& revision, string& date)
 {

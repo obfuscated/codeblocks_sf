@@ -16,6 +16,7 @@
 #include <wx/string.h>
 #include <typeinfo>
 #include "globals.h"
+#include "prep.h"
 
 namespace BlkAllc
 {
