@@ -241,13 +241,12 @@ bool FileManager::Save(const wxString& name, const char* data, size_t len)
         return f.Write(data, len);
     }
 
-#ifdef __WIN32__
+    if(platform::windows) // work around broken Windows readonly flag
     {
         wxFile f;
         if(!f.Open(name, wxFile::read_write))
             return false;
     }
-#endif
 
     wxString tempName(name + _T(".cbTemp"));
 	do
@@ -279,13 +278,12 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
         return WriteWxStringToFile(f, data, encoding, bom);
     }
 
-#ifdef __WIN32__
+    if(platform::windows)
     {
         wxFile f;
         if(!f.Open(name, wxFile::read_write))
             return false;
     }
-#endif
 
     wxString tempName(name + _T(".cbTemp"));
 	do

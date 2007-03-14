@@ -153,23 +153,26 @@ void AppendArray(const wxArrayString& from, wxArrayString& to)
 wxString UnixFilename(const wxString& filename)
 {
     wxString result = filename;
-#ifdef __WXMSW__
-    bool unc_name = result.StartsWith(_T("\\\\"));
 
-    while (result.Replace(_T("/"), _T("\\")))
-        ;
-    while (result.Replace(_T("\\\\"), _T("\\")))
-        ;
+    if(platform::windows)
+    {
+        bool unc_name = result.StartsWith(_T("\\\\"));
 
-    if (unc_name)
-        result = _T("\\") + result;
-#else
+        while (result.Replace(_T("/"), _T("\\")))
+            ;
+        while (result.Replace(_T("\\\\"), _T("\\")))
+            ;
 
-    while (result.Replace(_T("\\"), _T("/")))
-        ;
-    while (result.Replace(_T("//"), _T("/")))
-        ;
-#endif
+        if (unc_name)
+            result = _T("\\") + result;
+    }
+    else
+    {
+        while (result.Replace(_T("\\"), _T("/")))
+            ;
+        while (result.Replace(_T("//"), _T("/")))
+            ;
+    }
 
     return result;
 }

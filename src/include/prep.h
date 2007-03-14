@@ -89,7 +89,7 @@ namespace sdk
 
 namespace compatibility
 {
-    #if(WXWIN_COMPATIBILITY_2_4)
+    #if defined(WXWIN_COMPATIBILITY_2_4) && defined(wxHIDE_READONLY)
         const int wxHideReadonly = wxHIDE_READONLY;
     #else
         const int wxHideReadonly = 0;

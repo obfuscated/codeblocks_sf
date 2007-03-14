@@ -84,11 +84,10 @@ wxString FileFilters::GetFilterString(const wxString& ext)
 wxString FileFilters::GetFilterAll()
 {
     s_LastFilterAllIndex = 0;
-#ifdef __WXMSW__
-    return _("All files (*.*)|*.*");
-#else
-    return _("All files (*)|*");
-#endif
+    if(platform::windows)
+        return _("All files (*.*)|*.*");
+    else
+        return _("All files (*)|*");
 }
 
 size_t FileFilters::GetIndexForFilterAll()

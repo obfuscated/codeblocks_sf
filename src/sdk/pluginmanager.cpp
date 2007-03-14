@@ -629,11 +629,11 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         wxFileName fname(pluginFilename);
         fname.SetExt(_T("zip"));
         wxString actual = fname.GetFullName();
-        #if defined(__WXGTK__) || defined(__WXMAC__)
+
         // remove 'lib' prefix from plugin name (if any)
-        if (actual.StartsWith(_T("lib")))
+        if ((platform::gtk || platform::macos) && actual.StartsWith(_T("lib")))
             actual.Remove(0, 3);
-        #endif
+
         actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
         if (actual.IsEmpty())
         {
@@ -642,7 +642,7 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         }
 
         // load XML from ZIP
-wxLogNull lognull;
+        wxLogNull lognull;
         wxString contents;
         wxFileSystem* fs = new wxFileSystem;
         wxFSFile* f = fs->OpenFile(actual + _T("#zip:manifest.xml"));
@@ -776,11 +776,10 @@ int PluginManager::ScanForPlugins(const wxString& path)
         if (!bbplugins.GetCount())
         {
             // defaults
-            #ifdef __WXMSW__
-            bbplugins.Add(_T("compiler.dll"));
-            #else
-            bbplugins.Add(_T("libcompiler.so"));
-            #endif
+            if(platform::windows)
+                bbplugins.Add(_T("compiler.dll"));
+            else
+                bbplugins.Add(_T("libcompiler.so"));
         }
     }
 
@@ -1234,7 +1233,7 @@ void PluginManager::AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu,
             }
         }
     }
-    
+
     // script plugins now
     wxArrayInt ids = ScriptBindings::ScriptPluginWrapper::CreateModuleMenu(type, menu, data);
     for (size_t i = 0; i < ids.GetCount(); ++i)

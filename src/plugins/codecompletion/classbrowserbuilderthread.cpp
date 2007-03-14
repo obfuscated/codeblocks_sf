@@ -10,6 +10,8 @@
 
 #include <algorithm>
 
+namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
+
 ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxSemaphore& sem, ClassBrowserBuilderThread** threadVar)
     : wxThread(wxTHREAD_DETACHED),
     m_Semaphore(sem),
@@ -99,9 +101,9 @@ void* ClassBrowserBuilderThread::Entry()
 			::wxMutexGuiEnter();
 		}
 #endif // __WXGTK__
-        
+
         BuildTree();
-		
+
         if (TestDestroy() || Manager::IsAppShuttingDown())
         {
 #ifdef __WXGTK__
@@ -270,11 +272,8 @@ wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTr
     SpecialFolder new_type = data->m_SpecialFolder;
     bool newIsNamespace = data->m_TokenKind == tkNamespace;
 
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
-    long int cookie = 0;
-#else
-    wxTreeItemIdValue cookie; //2.6.0
-#endif
+    compatibility::tree_cookie_t cookie = 0;
+
     wxTreeItemId insert_after; // node to insert after; we 'll be looping all children so we might as well sort at the same time
     wxTreeItemId existing = tree->GetFirstChild(parent, cookie);
     while (existing)

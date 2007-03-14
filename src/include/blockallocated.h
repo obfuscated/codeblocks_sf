@@ -69,9 +69,8 @@ public:
 
     BlockAllocator() : first(0), ref_count(0), max_refs(0), total_refs(0)
     {
-	#ifdef __GNUC__
-	assert(__builtin_constant_p(debug));
-	#endif
+	if(platform::gcc)
+        assert(__builtin_constant_p(debug));
 	};
 
     ~BlockAllocator()

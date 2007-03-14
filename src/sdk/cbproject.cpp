@@ -606,10 +606,8 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     ext = filename.AfterLast(_T('.')).Lower();
     if (ext.IsSameAs(FileFilters::C_EXT) || ext.IsSameAs(FileFilters::CC_EXT))
         f->compilerVar = _T("CC");
-#ifdef __WXMSW__
-    else if (ext.IsSameAs(FileFilters::RESOURCE_EXT))
+    else if (platform::windows && ext.IsSameAs(FileFilters::RESOURCE_EXT))
         f->compilerVar = _T("WINDRES");
-#endif
     else
         f->compilerVar = _T("CPP"); // default
 
@@ -888,11 +886,11 @@ wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree,
         return ret;
 
     wxString path = text;
-#ifdef __WXMSW__
+
     // special case for windows and files on a different drive
-    if (path.Length() > 1 && path.GetChar(1) == _T(':'))
+    if (platform::windows && path.Length() > 1 && path.GetChar(1) == _T(':'))
         path.Remove(1, 1);
-#endif
+
     int pos = path.Find(_T('/'));
     if (pos == -1)
         pos = path.Find(_T('\\'));

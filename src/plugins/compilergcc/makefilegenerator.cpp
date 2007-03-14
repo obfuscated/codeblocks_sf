@@ -860,8 +860,8 @@ void MakefileGenerator::RecursiveCreateDir(wxString& buffer, const wxArrayString
     for (size_t i = 0; i < subdirs.GetCount(); ++i)
     {
     	wxString sub = subdirs[i];
-#ifdef __WXMSW__
-    	if (m_GeneratingMakefile)
+
+    	if (platform::windows && m_GeneratingMakefile)
     	{
             // Can't do it differently here...
             // We *must* replace the env vars if we 're running under windows
@@ -870,7 +870,6 @@ void MakefileGenerator::RecursiveCreateDir(wxString& buffer, const wxArrayString
             // path separators, it breaks under windows...
             Manager::Get()->GetMacrosManager()->ReplaceEnvVars(sub);
     	}
-#endif
 
         currdir << sub;
         if (guardList.Index(currdir) != wxNOT_FOUND)

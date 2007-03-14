@@ -11,6 +11,7 @@
 #include <wx/dcscreen.h>
 #include "autorevision.h"
 #include "appglobals.h"
+#include "prep.h" // haven't included sdk in this source file
 
 namespace
 {
@@ -135,11 +136,11 @@ cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, 
   Show(true);
   SetThemeEnabled(false); // seems to be useful by description
   SetBackgroundStyle(wxBG_STYLE_CUSTOM); // the trick for GTK+ (notice it's after Show())
-#if defined(__WXMSW__) || defined(__WXMAC__)
-  Update();
-#else
-  wxYieldIfNeeded();
-#endif
+
+  if(platform::windows || platform::macos)
+    Update();
+  else
+    wxYieldIfNeeded();
 
   if (timeout != -1)
   {

@@ -22,6 +22,8 @@
     #include <configmanager.h> // GetConfigManager()
 #endif
 
+namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
+
 int cbCustom_WATCHES_CHANGED = wxNewId();
 int idTree = wxNewId();
 int idAddWatch = wxNewId();
@@ -160,11 +162,8 @@ void DebuggerTree::BuildTree(WatchTreeEntry& entry, wxTreeItemId parent)
     // iterate all item's children (if any) and update their values
     // any excess items are deleted and then any remaining entries are added
 
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
-    long int cookie = 0;
-#else
-    wxTreeItemIdValue cookie; //2.6.0
-#endif
+    compatibility::tree_cookie_t cookie = 0;
+
     wxTreeItemId item = m_pTree->GetFirstChild(parent, cookie);
     size_t count = 0;
     while (item)

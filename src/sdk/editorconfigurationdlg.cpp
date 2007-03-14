@@ -208,12 +208,10 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     wxString key;
     key.Printf(_T("/default_code/set%d"), IdxToFileType[m_DefCodeFileType]);
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(cfg->Read(key, wxEmptyString));
-#ifdef __WXMAC__
+
     // 8 point is not readable on Mac OS X, increase font size:
-    wxFont tmpFont(10, wxMODERN, wxNORMAL, wxNORMAL);
-#else
-    wxFont tmpFont(8, wxMODERN, wxNORMAL, wxNORMAL);
-#endif
+    wxFont tmpFont(platform::macos ? 10 : 8, wxMODERN, wxNORMAL, wxNORMAL);
+
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetFont(tmpFont);
 	// read them all in the array
 	for(size_t idx = 0; idx < sizeof(IdxToFileType)/sizeof(*IdxToFileType); ++ idx)
@@ -457,12 +455,8 @@ void EditorConfigurationDlg::WriteColours()
 
 void EditorConfigurationDlg::UpdateSampleFont(bool askForNewFont)
 {
-#ifdef __WXMAC__
     // 8 point is not readable on Mac OS X, increase font size:
-    wxFont tmpFont(10, wxMODERN, wxNORMAL, wxNORMAL);
-#else
-    wxFont tmpFont(8, wxMODERN, wxNORMAL, wxNORMAL);
-#endif
+    wxFont tmpFont(platform::macos ? 10 : 8, wxMODERN, wxNORMAL, wxNORMAL);
     wxString fontstring = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);
 
     if (!fontstring.IsEmpty())

@@ -140,7 +140,7 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
 
     int filter = cfg->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
     XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(filter);
-    
+
     int pos = cfg->ReadInt(_T("/splitter_pos"), 250);
     XRCCTRL(*this, "splitterWin", wxSplitterWindow)->SetSashPosition(pos, false);
 
@@ -161,18 +161,17 @@ ClassBrowser::~ClassBrowser()
     if (m_pBuilderThread)
     {
     	// for some reason, windows need to "post" the semaphore first...
-#ifdef __WXMSW__
-        m_Semaphore.Post();
-#endif
+        if(platform::windows)
+            m_Semaphore.Post();
+
         // must check for NULL again because by posting the semaphore above,
         // the thread might have terminated by now and the variable NULLed...
         if (m_pBuilderThread)
             m_pBuilderThread->Delete();
 
 		// ... while other platforms need it last...
-#ifndef __WXMSW__
-        m_Semaphore.Post();
-#endif
+        if(!platform::windows)
+            m_Semaphore.Post();
     }
 }
 
