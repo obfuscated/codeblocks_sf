@@ -371,15 +371,15 @@ void CodeBlocksApp::CheckVersion()
     // This is a rudiment from early 2006 (Windows only), but keep the revision tag for possible future use
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
 
-    if(cfg->Read(_T("version")) != g_AppActualVersion)
-        cfg->Write(_T("version"), g_AppActualVersion);
+    if(cfg->Read(_T("version")) != appglobals::AppActualVersion)
+        cfg->Write(_T("version"), appglobals::AppActualVersion);
 }
 
 void CodeBlocksApp::InitLocale()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
 
-    bool i18n=cfg->ReadBool(_T("/environment/I18N"),LOCALIZE);
+    bool i18n=cfg->ReadBool(_T("/environment/I18N"), true);
 
     if(!i18n)
         return; // Localisation turned off? Skip the rest!
@@ -395,7 +395,7 @@ void CodeBlocksApp::InitLocale()
 
     if (lng>=0)
     {
-        m_locale.Init(locales[lng]);
+        m_locale.Init(appglobals::languages[lng].locale_code);
         wxLocale::AddCatalogLookupPathPrefix(ConfigManager::GetDataFolder() + _T("/locale"));
         wxLocale::AddCatalogLookupPathPrefix(wxT("."));
         wxLocale::AddCatalogLookupPathPrefix(wxT(".."));
@@ -642,7 +642,7 @@ void CodeBlocksApp::OnFatalException()
 #else
     cbMessageBox(wxString::Format(_("Something has gone wrong inside %s and it "
                                     "will terminate immediately.\n"
-                                    "We are sorry for the inconvenience..."), g_AppName.c_str()));
+                                    "We are sorry for the inconvenience..."), appglobals::AppName.c_str()));
 #endif
 }
 
@@ -772,7 +772,7 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
         else
             msg << _("Batch build stopped with errors.\n");
         msg << wxString::Format(_("Process exited with status code %d."), m_BatchExitCode);
-        cbMessageBox(msg, g_AppName, m_BatchExitCode == 0 ? wxICON_INFORMATION : wxICON_WARNING);
+        cbMessageBox(msg, appglobals::AppName, m_BatchExitCode == 0 ? wxICON_INFORMATION : wxICON_WARNING);
     }
     else
         wxBell();
@@ -794,9 +794,9 @@ void CodeBlocksApp::ComplainBadInstall()
         "set the CODEBLOCKS_DATA_DIR environment variable "
         "to point where %s is installed,\n"
         "or try re-installing the application..."),
-        g_AppName.c_str(),
+        appglobals::AppName.c_str(),
         ConfigManager::ReadDataPath().c_str(),
-        g_AppName.c_str());
+        appglobals::AppName.c_str());
     cbMessageBox(msg);
 }
 

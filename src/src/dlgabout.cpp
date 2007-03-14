@@ -48,8 +48,8 @@ dlgAbout::dlgAbout(wxWindow* parent)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAbout"));
 
-    const wxString description = _("Welcome to ") + g_AppName + _T(" ") +
-                                 g_AppVersion + _T("!\n") + g_AppName +
+    const wxString description = _("Welcome to ") + appglobals::AppName + _T(" ") +
+                                 appglobals::AppVersion + _T("!\n") + appglobals::AppName +
 					             _(" is a full-featured IDE (Integrated Development Environment) "
 					"aiming to make the individual developer (and the development team) "
 					"work in a nice programming environment offering everything he/they "
@@ -96,7 +96,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
 
 
 
-	XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_("Build: ")) + g_AppBuildTimestamp);
+	XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_("Build: ")) + appglobals::AppBuildTimestamp);
 	XRCCTRL(*this, "txtDescription", wxTextCtrl)->SetValue(description);
 	XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(_(
         "Developers:\n"
@@ -125,11 +125,11 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Last, but not least, the open-source community."
         ));
 	XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetValue(LICENSE_GPL);
-	XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(g_AppName);
-	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(g_AppActualVersionVerb);
+	XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(appglobals::AppName);
+	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(appglobals::AppActualVersionVerb);
 	XRCCTRL(*this, "lblAuthor", wxStaticText)->SetLabel(_("The Code::Blocks Team"));
-	XRCCTRL(*this, "lblEmail", wxStaticText)->SetLabel(g_AppContactEmail);
-	XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(g_AppUrl);
+	XRCCTRL(*this, "lblEmail", wxStaticText)->SetLabel(appglobals::AppContactEmail);
+	XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(appglobals::AppUrl);
 
 #ifdef __WXMAC__
 	// Courier 8 point is not readable on Mac OS X, increase font size:

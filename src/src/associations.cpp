@@ -136,7 +136,7 @@ bool Associations::Check()
 void Associations::DoSetAssociation(const wxString& ext, const wxString& descr, const wxString& exe, int icoNum)
 {
 	wxString BaseKeyName(_T("HKEY_CURRENT_USER\\Software\\Classes\\"));
-    if(OS() == osWindows9598ME)
+    if(WindowsVersion() == winver_Windows9598ME)
 		BaseKeyName = _T("HKEY_CLASSES_ROOT\\");
 
     wxString node(_T("CodeBlocks.") + ext);
@@ -172,7 +172,7 @@ void Associations::DoSetAssociation(const wxString& ext, const wxString& descr, 
 
 	if(ext.IsSameAs(FileFilters::CODEBLOCKS_EXT) || ext.IsSameAs(FileFilters::WORKSPACE_EXT))
 	{
-	    wxString batchbuildargs = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs);
+	    wxString batchbuildargs = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), appglobals::DefaultBatchBuildArgs);
 		key.SetName(BaseKeyName + node + _T("\\shell\\Build\\command"));
 		key.Create();
 		key = _T("\"") + exe + _T("\" ") + batchbuildargs + _T(" --build \"%1\"");
@@ -187,7 +187,7 @@ void Associations::DoSetAssociation(const wxString& ext, const wxString& descr, 
 void Associations::DoClearAssociation(const wxString& ext)
 {
 	wxString BaseKeyName(_T("HKEY_CURRENT_USER\\Software\\Classes\\"));
-    if(OS() == osWindows9598ME)
+    if(WindowsVersion() == winver_Windows9598ME)
 		BaseKeyName = _T("HKEY_CLASSES_ROOT\\");
 
 	wxRegKey key;
@@ -210,7 +210,7 @@ bool Associations::DoCheckAssociation(const wxString& ext, const wxString& descr
 {
 	wxString BaseKeyName(_T("HKEY_CURRENT_USER\\Software\\Classes\\"));
 
-    if(OS() == osWindows9598ME)
+    if(WindowsVersion() == winver_Windows9598ME)
 		BaseKeyName = _T("HKEY_CLASSES_ROOT\\");
 
 	wxRegKey key; // defaults to HKCR
@@ -265,7 +265,7 @@ bool Associations::DoCheckAssociation(const wxString& ext, const wxString& descr
 
 	if(ext.IsSameAs(FileFilters::CODEBLOCKS_EXT) || ext.IsSameAs(FileFilters::WORKSPACE_EXT))
 	{
-	    wxString batchbuildargs = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs);
+	    wxString batchbuildargs = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), appglobals::DefaultBatchBuildArgs);
 		key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\Build\\command"));
         if (!key.Open())
             return false;

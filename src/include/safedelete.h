@@ -7,8 +7,6 @@
 #include <deque>
 #include <algorithm>
 
-template<typename T>inline void Delete(T*& p){delete p; p = 0;};
-
 struct SeqDelete
 {
     template<typename T>inline void operator()(T& p){Delete(p);};

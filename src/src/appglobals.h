@@ -2,43 +2,57 @@
 #define APPGLOBALS_H
 
 #include <wx/string.h>
+#include <wx/intl.h>
 
 #ifndef RELEASE
     #define RELEASE "svn"
     #define SVN_BUILD 1
 #endif
 
-extern const wxString g_AppVendor;
-extern const wxString g_AppName;
-extern const wxString g_AppVersion;
-extern const wxString g_AppActualVersionVerb;
-extern const wxString g_AppActualVersion;
-extern const wxString g_AppUrl;
-extern const wxString g_AppContactEmail;
-extern const wxString g_AppPlatform;
-extern const wxString g_AppWXAnsiUnicode;
-extern const wxString g_AppBuildTimestamp;
 
-extern const wxString g_DefaultBatchBuildArgs;
 
-#define LOCALIZE   true
-#define LANGUAGES_SIZE  2
+namespace appglobals
+{
+    typedef struct { int locale_code; wxString name; } Localisation;
 
-extern const wxString langs[LANGUAGES_SIZE];
-extern const int locales[LANGUAGES_SIZE];
+    static const Localisation languages[] = /* TODO: Some day in the future, remove that hardcoded stuff alltogether */
+    {
+        { wxLANGUAGE_DEFAULT,            _T("(System default)") },  // don't translate system default
+    //    { wxLANGUAGE_ENGLISH,          _("English") },
+    //    { wxLANGUAGE_ENGLISH_US,       _("English (US)") },
+    //    { wxLANGUAGE_FRENCH,           _("French") },
+    //    { wxLANGUAGE_GERMAN,           _("German") },
+    //    { wxLANGUAGE_SPANISH,          _("Spanish") },
+    //    { wxLANGUAGE_RUSSIAN,          _("Russian") },
+        { wxLANGUAGE_CHINESE_SIMPLIFIED, _("Chinese (Simplified)") }
+    };
+
+
+    extern const wxString AppVendor;
+    extern const wxString AppName;
+    extern const wxString AppVersion;
+    extern const wxString AppActualVersionVerb;
+    extern const wxString AppActualVersion;
+    extern const wxString AppUrl;
+    extern const wxString AppContactEmail;
+    extern const wxString AppPlatform;
+    extern const wxString AppWXAnsiUnicode;
+    extern const wxString AppBuildTimestamp;
+
+    extern const wxString DefaultBatchBuildArgs;
+
+};
 
 typedef enum
 {
-osUnknownWindows,
-osWindows9598ME,
-osWindowsNT2000,
-osWindowsXP,
-osFreeBSD,
-osLinux,
-osOS2,
-osOSX
-}operating_system_t;
+    winver_NotWindows = 0,
+    winver_UnknownWindows,
+    winver_Windows9598ME,
+    winver_WindowsNT2000,
+    winver_WindowsXP,
+    winver_Vista, // untested!
+}windows_version_t;
 
-operating_system_t OS();
+windows_version_t WindowsVersion();
 
 #endif // APPGLOBALS_H

@@ -17,6 +17,7 @@ template <bool cond, class true_t, class false_t> struct TernaryCond { typedef t
 template <class true_t, class false_t> struct TernaryCond<false, true_t, false_t> { typedef false_t eval; };
 
 template <typename T> unsigned int array_size(const T& array) { enum {result = sizeof(array) / sizeof(array[0])}; return result; };
+template<typename T>inline void Delete(T*& p){delete p; p = 0;};
 
 namespace platform
 {

@@ -57,7 +57,7 @@ CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
     // tab "Batch builds"
 #ifdef __WXMSW__
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-    XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->SetValue(cfg->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs));
+    XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->SetValue(cfg->Read(_T("/batch_build_args"), appglobals::DefaultBatchBuildArgs));
 #else
     XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->Enable(false);
 #endif
@@ -210,7 +210,7 @@ void CompilerSettingsDlg::EndModal(int retCode)
 #ifdef __WXMSW__
         ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
         wxString bbargs = XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->GetValue();
-        if (bbargs != cfg->Read(_T("/batch_build_args"), g_DefaultBatchBuildArgs))
+        if (bbargs != cfg->Read(_T("/batch_build_args"), appglobals::DefaultBatchBuildArgs))
         {
             cfg->Write(_T("/batch_build_args"), bbargs);
             Associations::SetBatchBuildOnly();
