@@ -25,6 +25,7 @@ class MSVCLoader : public IBaseLoader
         bool ParseSourceFiles();
         void ProcessCompilerOptions(ProjectBuildTarget* target, const wxString& opts);
         void ProcessLinkerOptions(ProjectBuildTarget* target, const wxString& opts);
+        void ProcessResourceCompilerOptions(ProjectBuildTarget* target, const wxString& opts);
         wxString RemoveQuotes(const wxString& src);
 
         cbProject* m_pProject;

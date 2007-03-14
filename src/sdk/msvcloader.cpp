@@ -38,6 +38,10 @@
 #include "msvcloader.h"
 #include "multiselectdlg.h"
 
+/* NOTE:- Replacing all wxString::Remove(size_t, size_t) with wxString::Mid()
+*  and Truncate() functions. This function has been marked as a wx-1.xx
+*  compatibility function in wxWidgets-2.8. So in future it will be dropped.
+*/
 
 MSVCLoader::MSVCLoader(cbProject* project)
     : m_pProject(project),
@@ -56,7 +60,7 @@ bool MSVCLoader::Open(const wxString& filename)
  /* NOTE (mandrav#1#): not necessary to ask for switches conversion... */
     m_ConvertSwitches = m_pProject->GetCompilerID().IsSameAs(_T("gcc"));
 
-   m_Filename = filename;
+    m_Filename = filename;
     if (!ReadConfigurations())
         return false;
 
@@ -153,7 +157,7 @@ bool MSVCLoader::ReadConfigurations()
         //  !MESSAGE "anothertest - Win32 Release" (based on "Win32 (x86) Application")
             int pos;
             pos = line.Find('\"');
-            line.Remove(0, pos+1);
+            line = line.Mid(pos + 1);
             pos = line.Find('\"');
             wxArrayString projectTarget = GetArrayFromString(line.Left(pos), _T("-"));
             wxString target = projectTarget[1];
@@ -161,9 +165,9 @@ bool MSVCLoader::ReadConfigurations()
                 Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR: bad target format"));
                 return false;
             }
-            line.Remove(0, pos+1);
+            line = line.Mid(pos + 1);
             pos = line.Find('\"');
-            line.Remove(0, pos+1);
+            line = line.Mid(pos + 1);
             pos = line.Find('\"');
             wxString basedon = line.Left(pos);
             TargetType type = ttCommandsOnly;
@@ -189,14 +193,14 @@ bool MSVCLoader::ReadConfigurations()
         if (size != -1)
         {
             // read configuration name
-            line.Remove(0, size);
+            line = line.Mid(size);
             line.Trim(true);
             line.Trim(false);
             wxString tmp = RemoveQuotes(line);
             // remove the project name part, i.e "anothertest - "
             int idx = tmp.Find('-');
             if (idx != -1) {
-              tmp.Remove(0, idx+1);
+              tmp = tmp.Mid(idx + 1);
               tmp.Trim(false);
             }
             if (m_Configurations.Index(tmp) == wxNOT_FOUND)
@@ -255,7 +259,7 @@ bool MSVCLoader::ParseConfiguration(int index)
 //        if (line.StartsWith("# PROP BASE Output_Dir "))
         if (line.StartsWith(_T("# PROP Output_Dir ")))
         {
-            line.Remove(0, 18);
+            line = line.Mid(18);
             line.Trim(true);
             line.Trim(false);
             wxString tmp = RemoveQuotes(line);
@@ -271,7 +275,7 @@ bool MSVCLoader::ParseConfiguration(int index)
 //        else if (line.StartsWith("# PROP BASE Intermediate_Dir "))
         else if (line.StartsWith(_T("# PROP Intermediate_Dir ")))
         {
-            line.Remove(0, 24);
+            line = line.Mid(24);
             line.Trim(true);
             line.Trim(false);
             wxString tmp = RemoveQuotes(line);
@@ -282,31 +286,38 @@ bool MSVCLoader::ParseConfiguration(int index)
         }
         else if (line.StartsWith(_T("# ADD BASE CPP ")))
         {
-            line.Remove(0, 15);
+            line = line.Mid(15);
             line.Trim(true);
             line.Trim(false);
             ProcessCompilerOptions(bt, line);
         }
         else if (line.StartsWith(_T("# ADD CPP ")))
         {
-            line.Remove(0, 10);
+            line = line.Mid(10);
             line.Trim(true);
             line.Trim(false);
             ProcessCompilerOptions(bt, line);
         }
-        else if (line.StartsWith(_T("# ADD BASE LIB32 ")))
+        else if (line.StartsWith(_T("# ADD BASE LINK32 ")))
         {
-            line.Remove(0, 17);
+            line = line.Mid(18);
             line.Trim(true);
             line.Trim(false);
             ProcessLinkerOptions(bt, line);
         }
-        else if (line.StartsWith(_T("# ADD LIB32 ")))
+        else if (line.StartsWith(_T("# ADD LINK32 ")))
         {
-            line.Remove(0, 12);
+            line = line.Mid(13);
             line.Trim(true);
             line.Trim(false);
             ProcessLinkerOptions(bt, line);
+        }
+        else if (line.StartsWith(_T("# ADD RSC "))) // To import resource compiler options
+        {
+            line = line.Mid(11);
+            line.Trim(true);
+            line.Trim(false);
+            ProcessResourceCompilerOptions(bt, line);
         }
     }
     return true;
@@ -338,7 +349,7 @@ bool MSVCLoader::ParseSourceFiles()
         if (!line.StartsWith(_T("SOURCE=")))
             continue;
 
-        line.Remove(0, 7);
+        line = line.Mid(7);
         line.Trim(true);
         line.Trim(false);
 
@@ -460,22 +471,22 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
         {
             if (opt.StartsWith(_T("/libpath:")))
             {
-                opt.Remove(0, 9);
+                opt = opt.Mid(9);
                 target->AddLibDir(RemoveQuotes(opt));
             }
             else if (opt.StartsWith(_T("/base:")))
             {
-                opt.Remove(0, 6);
+                opt = opt.Mid(6);
                 target->AddLinkerOption(_T("--image-base ") + RemoveQuotes(opt));
             }
             else if (opt.StartsWith(_T("/implib:")))
             {
-                opt.Remove(0, 8);
+                opt = opt.Mid(8);
                 target->AddLinkerOption(_T("--implib ") + RemoveQuotes(opt));
             }
             else if (opt.StartsWith(_T("/map:")))
             {
-                opt.Remove(0, 5);
+                opt = opt.Mid(5);
                 target->AddLinkerOption(_T("-Map ") + RemoveQuotes(opt) + _T(".map"));
             }
             else if (opt.Matches(_T("/nologo")))
@@ -493,7 +504,7 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
         {
             if (opt.StartsWith(_T("/libpath:")))
             {
-                opt.Remove(0, 9);
+                opt = opt.Mid(9);
                 target->AddLibDir(RemoveQuotes(opt));
             }
             else if (opt.Matches(_T("/nologo"))) {} // ignore silently
@@ -513,13 +524,13 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
             int idx = opt.Find(_T(".lib"));
             if (idx != -1)
             {
-                opt.Remove(idx);
+                opt.Truncate(idx);
                 target->AddLinkLib(opt);
             }
         }
         else if (opt.StartsWith(_T("/out:")))
         {
-            opt.Remove(0, 5);
+            opt = opt.Mid(5);
             opt = RemoveQuotes(opt);
             if (m_Type == ttStaticLib)
             {
@@ -544,13 +555,31 @@ I need it here and there... */
     }
 }
 
+void MSVCLoader::ProcessResourceCompilerOptions(ProjectBuildTarget* target, const wxString& opts)
+{
+    wxArrayString array;
+    array = GetArrayFromString(opts, _T(" "));
+
+    for (unsigned int i = 0; i < array.GetCount(); ++i)
+    {
+        wxString opt = array[i];
+        opt.Trim();
+
+        if (opt.StartsWith(_T("/")))
+        {
+            if (opt.StartsWith(_T("/i"))) // Only include dir is imported
+                target->AddResourceIncludeDir(RemoveQuotes(array[++i]));
+        }
+    }
+}
+
 wxString MSVCLoader::RemoveQuotes(const wxString& src)
 {
     wxString res = src;
     if (res.StartsWith(_T("\"")))
     {
-        res.Remove(0, 1);
-        res.Remove(res.Length() - 1);
+        res = res.Mid(1);
+        res.Truncate(res.Length() - 1);
     }
 //    Manager::Get()->GetMessageManager()->DebugLog("Removing quotes: %s --> %s", src.c_str(), res.c_str());
     return res;
