@@ -65,6 +65,9 @@
 #include "wx/wxFlatNotebook/wxFlatNotebook.h"
 
 
+namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
+
+
 //#define DONT_USE_OPENFILES_TREE
 
 int ID_NBEditorManager = wxNewId();
@@ -2493,13 +2496,8 @@ wxTreeItemId EditorManager::FindTreeFile(const wxString& filename)
         wxTreeCtrl *tree=GetTree();
         if(!tree || !m_pData->m_TreeOpenedFiles)
             break;
-#if !wxCHECK_VERSION(2,5,0)
 
-        long int cookie = 0;
-#else
-
-        wxTreeItemIdValue cookie; //2.6.0
-#endif
+        compatibility::tree_cookie_t cookie = 0;
 
         for(item = tree->GetFirstChild(m_pData->m_TreeOpenedFiles,cookie);
                 item;
@@ -2602,13 +2600,8 @@ bool EditorManager::RenameTreeFile(const wxString& oldname, const wxString& newn
     wxTreeCtrl *tree = GetTree();
     if(!tree)
         return false;
-#if !wxCHECK_VERSION(2,5,0)
 
-    long int cookie = 0;
-#else
-
-    wxTreeItemIdValue cookie; //2.6.0
-#endif
+    compatibility::tree_cookie_t cookie = 0;
 
     wxTreeItemId item;
     wxString filename,shortname;
@@ -2740,13 +2733,8 @@ void EditorManager::RefreshOpenedFilesTree(bool force)
     m_LastActiveFile=fname;
     m_LastModifiedflag=ismodif;
     m_pTree->Freeze();
-#if !wxCHECK_VERSION(2,5,0)
 
-    long int cookie = 0;
-#else
-
-    wxTreeItemIdValue cookie; //2.6.0
-#endif
+    compatibility::tree_cookie_t cookie = 0;
 
     wxTreeItemId item = m_pTree->GetFirstChild(m_pData->m_TreeOpenedFiles,cookie);
     wxString filename,shortname;

@@ -534,7 +534,7 @@ void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
     if (w.IsEmpty())
         return;
 
-    
+
     // data breakpoint
     menu->Insert(2,idMenuAddDataBreakpoint, wxString::Format(_("Add data breakpoint for '%s'"), w.c_str()));
 
@@ -1786,11 +1786,7 @@ void DebuggerGDB::OnAddSymbolFile(wxCommandEvent& event)
                                     _T(""),
                                     _T(""),
                                     _("Executables and libraries|*.exe;*.dll"),
-                                    wxOPEN | wxFILE_MUST_EXIST
-#if (WXWIN_COMPATIBILITY_2_4)
-                                    | wxHIDE_READONLY
-#endif
-                                    );
+                                    wxOPEN | wxFILE_MUST_EXIST | compatibility::wxHideReadonly);
     if (file.IsEmpty())
         return;
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Adding symbol file: %s"), file.c_str());

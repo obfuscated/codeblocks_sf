@@ -6,15 +6,15 @@
 #endif
 
 
-template <int major, int minor> struct wxMinimumVersion { enum { eval = (wxMAJOR_VERSION > major || (wxMAJOR_VERSION == major && wxMINOR_VERSION >= minor))}; };
-template <int major, int minor> struct wxExactVersion { enum { eval = (wxMAJOR_VERSION == major && wxMINOR_VERSION == minor)}; };
+template <int major, int minor = 0, int revision = 0> struct Version { enum { eval = 1000*1000*major + 1000*minor + revision }; };
+
+template <int major, int minor, int rel = 0> struct wxMinimumVersion { enum { eval = ((unsigned int)  Version<wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER>::eval >= (unsigned int) Version<major, minor, rel>::eval) }; };
+template <int major, int minor, int rel = 0> struct wxExactVersion { enum { eval = ((unsigned int) Version<wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER>::eval == (unsigned int) Version<major, minor, rel>::eval) }; };
 template <bool b> struct CompileTimeAssertion{};
 template<> struct CompileTimeAssertion<true> { static inline void Assert(){}; };
 
-template <int major, int minor = 0, int revision = 0> struct Version { enum { eval = 1000*1000*major + 1000*minor + revision }; };
-
-template <bool cond, class true_t, class false_t> struct TernaryCond { typedef true_t eval; };
-template <class true_t, class false_t> struct TernaryCond<false, true_t, false_t> { typedef false_t eval; };
+template <bool cond, class true_t, class false_t> struct TernaryCondTypedef { typedef true_t eval; };
+template <class true_t, class false_t> struct TernaryCondTypedef<false, true_t, false_t> { typedef false_t eval; };
 
 template <typename T> unsigned int array_size(const T& array) { enum {result = sizeof(array) / sizeof(array[0])}; return result; };
 template<typename T>inline void Delete(T*& p){delete p; p = 0;};
@@ -55,6 +55,12 @@ namespace platform
     const identifier id = platform_unknown;
     #endif
 
+    #if   defined ( __WXGTK__ )
+    const bool gtk = true;
+    #else
+    const bool gtk = false;
+    #endif
+
     const bool windows = (id == platform_windows);
     const bool macos   = (id == platform_macos);
     const bool linux   = (id == platform_linux);
@@ -80,5 +86,14 @@ namespace sdk
     const int plugin_api_version = Version<1,11,10>::eval;
 };
 
+
+namespace compatibility
+{
+    #if(WXWIN_COMPATIBILITY_2_4)
+        const int wxHideReadonly = wxHIDE_READONLY;
+    #else
+        const int wxHideReadonly = 0;
+    #endif
+}
 
 #endif

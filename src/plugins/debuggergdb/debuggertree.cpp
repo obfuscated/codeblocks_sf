@@ -633,11 +633,7 @@ void DebuggerTree::OnLoadWatchFile(wxCommandEvent& event)
                     _T(""),
                     _T(""),
                     _T("Watch files (*.watch)|*.watch|Any file (*)|*"),
-                    wxOPEN | wxFILE_MUST_EXIST | wxCHANGE_DIR
-#if (WXWIN_COMPATIBILITY_2_4)
-                   | wxHIDE_READONLY
-#endif
-                   );
+                    wxOPEN | wxFILE_MUST_EXIST | wxCHANGE_DIR | compatibility::wxHideReadonly);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
@@ -794,7 +790,7 @@ void DebuggerTree::OnChangeValue(wxCommandEvent& event)
 {
     if (!m_pDebugger->GetState().HasDriver())
 	    return;
-    
+
     DebuggerDriver* driver = m_pDebugger->GetState().GetDriver();
 
     wxString var;

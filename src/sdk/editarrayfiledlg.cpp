@@ -84,12 +84,7 @@ void EditArrayFileDlg::OnAdd(wxCommandEvent& event)
                     m_BasePath,
                     _T(""),
                     FileFilters::GetFilterAll(),
-                    wxOPEN
-#if (WXWIN_COMPATIBILITY_2_4)
-                    | wxHIDE_READONLY
-#endif
-                    );
-
+                    wxOPEN | compatibility::wxHideReadonly);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
@@ -108,12 +103,7 @@ void EditArrayFileDlg::OnEdit(wxCommandEvent& event)
                     m_BasePath,
                     list->GetStringSelection(),
                     FileFilters::GetFilterAll(),
-                    wxOPEN
-#if (WXWIN_COMPATIBILITY_2_4)
-                    | wxHIDE_READONLY
-#endif
-                    );
-
+                    wxOPEN | compatibility::wxHideReadonly);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;

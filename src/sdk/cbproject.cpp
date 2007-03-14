@@ -65,6 +65,10 @@
 #include "annoyingdialog.h"
 #include "genericmultilinenotesdlg.h"
 
+
+namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
+
+
 // class constructor
 cbProject::cbProject(const wxString& filename)
     : m_CustomMakefile(false),
@@ -901,12 +905,8 @@ wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree,
             ++pos;
         path = path.Right(path.Length() - pos - 1);
 
-        // see if we already have this path
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
-        long int cookie = 0;
-#else
-        wxTreeItemIdValue cookie; //2.6.0
-#endif
+        compatibility::tree_cookie_t cookie = 0;
+
         wxTreeItemId newparent = tree->GetFirstChild(parent, cookie);
         while (newparent)
         {
@@ -953,16 +953,13 @@ wxTreeItemId cbProject::FindNodeToInsertAfter(wxTreeCtrl* tree, const wxString& 
 
     if (tree && parent.IsOk())
     {
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
-        long int cookie2 = 0;
-#else
-        wxTreeItemIdValue cookie2; //2.6.0
-#endif
+        compatibility::tree_cookie_t cookie = 0;
+
         int fldIdx = Manager::Get()->GetProjectManager()->FolderIconIndex();
         int vfldIdx = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
         wxTreeItemId last;
         bool last_is_folder = false;
-        wxTreeItemId child = tree->GetFirstChild(parent, cookie2);
+        wxTreeItemId child = tree->GetFirstChild(parent, cookie);
         while (child)
         {
             bool is_folder = tree->GetItemImage(child) == fldIdx || tree->GetItemImage(child) == vfldIdx;
@@ -986,7 +983,7 @@ wxTreeItemId cbProject::FindNodeToInsertAfter(wxTreeCtrl* tree, const wxString& 
 
             last = child;
             last_is_folder = is_folder;
-            child = tree->GetNextChild(parent, cookie2);
+            child = tree->GetNextChild(parent, cookie);
         }
         if (!result.IsOk())
             result = last;

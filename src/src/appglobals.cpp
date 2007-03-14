@@ -12,7 +12,7 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/utils.h>       //wxGetOsVersion
+#include <wx/utils.h>
 #include <wx/intl.h>
 #endif
 #include "appglobals.h"

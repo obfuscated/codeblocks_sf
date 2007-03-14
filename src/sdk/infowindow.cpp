@@ -91,18 +91,14 @@ int InfoWindow::screenWidth = -1;//wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
 int InfoWindow::screenHeight = -1;//wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
 std::list<wxString> InfoWindow::active_messages;
 
-namespace // anonumous
+namespace
 {
     // while in windows world, sleep(1) takes anywhere between 20-50 milliseconds,
     // in linux sleep(1) means sleep 1 millisecond.
     // so we need conditional compilation here in order for the scrolling effect to be
     // visible under non-windows platforms :)
-#ifdef __WXMSW__
-    static const int scroll_millis = 1;
-#else
-    static const int scroll_millis = 5;
-#endif
-} // anonumous namespace
+    static const int scroll_millis = platform::windows ? 1 : 5;
+}
 
 class ForwardingTextControl : public wxStaticText
 {
@@ -130,20 +126,27 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
         wxBoxSizer *bs = new wxBoxSizer(wxVERTICAL);
 
         wxWindow* o = 0;
-#ifdef __WXGTK__
-        wxBoxSizer *pbs = new wxBoxSizer(wxVERTICAL);
-        wxPanel* pnl = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
-        pnl->SetBackgroundColour(titleBackground);
-        ForwardingTextControl *titleC = new ForwardingTextControl(pnl, -1, title, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
-        pbs->Add(titleC, 0, wxALL|wxALIGN_CENTER, 5);
-        pnl->SetSizer(pbs);
-        pbs->SetSizeHints(pnl);
-        o = pnl;
-#else
-        ForwardingTextControl *titleC = new ForwardingTextControl(this, -1, title, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
-        titleC->SetBackgroundColour(titleBackground);
-        o = titleC;
-#endif
+
+        ForwardingTextControl *titleC = 0;
+
+        if(platform::gtk)
+        {
+            wxBoxSizer *pbs = new wxBoxSizer(wxVERTICAL);
+            wxPanel* pnl = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
+            pnl->SetBackgroundColour(titleBackground);
+            titleC = new ForwardingTextControl(pnl, -1, title, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
+            pbs->Add(titleC, 0, wxALL|wxALIGN_CENTER, 5);
+            pnl->SetSizer(pbs);
+            pbs->SetSizeHints(pnl);
+            o = pnl;
+        }
+        else
+        {
+            titleC = new ForwardingTextControl(this, -1, title, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
+            titleC->SetBackgroundColour(titleBackground);
+            o = titleC;
+        }
+
         titleC->SetForegroundColour(*wxWHITE);
         titleC->SetFont(wxFont(11, wxSWISS, wxNORMAL, wxBOLD));
         bs->Add(o, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5);
@@ -156,10 +159,11 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
         bs->SetSizeHints(this);
         Layout();
 
-#ifndef __WXGTK__
-        // since we used a panel, no more bitmap :(
-        new wxStaticBitmap(this, -1, wxBitmap(iBitmap), wxPoint(4, o->GetRect().GetBottom() - 9));
-#endif
+        if(!platform::gtk)
+        {
+            // since we used a panel, no more bitmap :(
+            new wxStaticBitmap(this, -1, wxBitmap(iBitmap), wxPoint(4, o->GetRect().GetBottom() - 9));
+        }
         wxCoord w, h;
         GetClientSize(&w, &h);
 

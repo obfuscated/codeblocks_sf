@@ -16,8 +16,12 @@
 #include <wx/event.h>
 #include <wx/timer.h>
 #include <wx/string.h>
+
 #if wxUSE_POPUPWIN
-#include <wx/popupwin.h>
+    #include <wx/popupwin.h>
+    typedef wxPopupWindow wxInfoWindowBase;
+#else
+    typedef wxDialog wxInfoWindowBase;
 #endif
 
 #undef new
@@ -50,11 +54,6 @@ class Stacker
     };
 };
 
-#if wxUSE_POPUPWIN
-# define wxInfoWindowBase wxPopupWindow
-#else
-# define wxInfoWindowBase wxDialog
-#endif
 
 class InfoWindow : public wxInfoWindowBase
 {

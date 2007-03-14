@@ -55,12 +55,10 @@ CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
     SetSettingsIconsStyle(lb->GetListView(), (SettingsIconsStyle)sel);
 
     // tab "Batch builds"
-#ifdef __WXMSW__
-    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-    XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->SetValue(cfg->Read(_T("/batch_build_args"), appglobals::DefaultBatchBuildArgs));
-#else
-    XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->Enable(false);
-#endif
+    if(platform::windows)
+        XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->SetValue(Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/batch_build_args"), appglobals::DefaultBatchBuildArgs));
+    else
+        XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->Enable(false);
 
     // fill plugins list
     ConfigManager *bbcfg = Manager::Get()->GetConfigManager(_T("plugins"));
@@ -68,11 +66,10 @@ CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
     if (!bbplugins.GetCount())
     {
         // defaults
-        #ifdef __WXMSW__
-        bbplugins.Add(_T("compiler.dll"));
-        #else
-        bbplugins.Add(_T("libcompiler.so"));
-        #endif
+        if(platform::windows)
+            bbplugins.Add(_T("compiler.dll"));
+        else
+            bbplugins.Add(_T("libcompiler.so"));
     }
     wxCheckListBox* clb = XRCCTRL(*this, "chkBBPlugins", wxCheckListBox);
     clb->Clear();
@@ -207,7 +204,7 @@ void CompilerSettingsDlg::EndModal(int retCode)
     if (retCode == wxID_OK)
     {
         // tab "Batch builds"
-#ifdef __WXMSW__
+#ifdef __WXMSW__  /* TODO: remove preprocessor when Associations::SetXXX are supported on non-Windows platforms */
         ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
         wxString bbargs = XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->GetValue();
         if (bbargs != cfg->Read(_T("/batch_build_args"), appglobals::DefaultBatchBuildArgs))
@@ -239,11 +236,8 @@ void CompilerSettingsDlg::EndModal(int retCode)
             }
         }
 
-        #ifdef __WXMSW__
-        const wxString compiler = _T("compiler.dll");
-        #else
-        const wxString compiler = _T("libcompiler.so");
-        #endif
+        const wxString compiler(platform::windows ? _T("compiler.dll") : _T("libcompiler.so"));
+
         if (bbplugins.Index(compiler) == wxNOT_FOUND)
         {
             bbplugins.Add(compiler);

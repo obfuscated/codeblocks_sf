@@ -57,12 +57,12 @@ namespace ScriptBindings
         {
             return wxGetCwd();
         }
-        
+
         void SetCwd(const wxString& dir)
         {
             wxSetWorkingDirectory(dir);
         }
-        
+
         bool CreateDirRecursively(const wxString& full_path, int perms)
         {
             wxFileName fname(Manager::Get()->GetMacrosManager()->ReplaceMacros(full_path));
@@ -145,11 +145,7 @@ namespace ScriptBindings
                             wxEmptyString,
                             Manager::Get()->GetMacrosManager()->ReplaceMacros(defaultFile),
                             filter,
-                            wxOPEN
-#if (WXWIN_COMPATIBILITY_2_4)
-                            | wxHIDE_READONLY
-#endif
-                            );
+                            wxOPEN | compatibility::wxHideReadonly);
             PlaceWindow(&dlg);
             if (dlg.ShowModal() == wxID_OK)
                 return dlg.GetPath();
@@ -217,7 +213,7 @@ namespace ScriptBindings
 
                 staticFunc(&IOLib::GetCwd, "GetCwd").
                 staticFunc(&IOLib::SetCwd, "SetCwd").
-                
+
                 staticFunc(&IOLib::DirectoryExists, "DirectoryExists").
                 staticFunc(&IOLib::ChooseDir, "SelectDirectory").
                 staticFunc(&IOLib::FileExists, "FileExists").

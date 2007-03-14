@@ -121,26 +121,27 @@ void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
 
 void cbStyledTextCtrl::OnGPM(wxMouseEvent& event)
 {
-#ifndef __WXGTK__
-    int pos = PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
-
-    if(pos == wxSCI_INVALID_POSITION)
-        return;
-
-    int start = GetSelectionStart();
-    int end = GetSelectionEnd();
-
-    wxString s = GetSelectedText();
-
-    if(pos < GetCurrentPos())
+    if(platform::gtk == false) // only if GPM is not already implemented by the OS
     {
-        start += s.length();
-        end += s.length();
-    }
+        int pos = PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
 
-    InsertText(pos, s);
-    SetSelection(start, end);
-#endif
+        if(pos == wxSCI_INVALID_POSITION)
+            return;
+
+        int start = GetSelectionStart();
+        int end = GetSelectionEnd();
+
+        wxString s = GetSelectedText();
+
+        if(pos < GetCurrentPos())
+        {
+            start += s.length();
+            end += s.length();
+        }
+
+        InsertText(pos, s);
+        SetSelection(start, end);
+    }
 }
 
 
@@ -916,14 +917,11 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
 
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
 
-#ifdef __WXMAC__
-    // 8 point is not readable on Mac OS X, increase font size:
-    wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
-#else
-    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
-#endif
+    // 8 point is not readable on Mac OS X, increase font size
+    wxFont font(platform::macos ? 10 : 8, wxMODERN, wxNORMAL, wxNORMAL);
+
     wxString fontstring = mgr->Read(_T("/font"), wxEmptyString);
-    int eolmode = wxSCI_EOL_CRLF;
+
     if (!fontstring.IsEmpty())
     {
         wxNativeFontInfo nfi;
@@ -974,31 +972,10 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->MarkerDefine(ERROR_MARKER, ERROR_STYLE);
     control->MarkerSetBackground(ERROR_MARKER, wxColour(0xFF, 0x00, 0x00));
 
-// NOTE: a same block of code is in editorconfigurationdlg.cpp (ctor)
-#if defined(__WXMSW__)
-    const int default_eol = 0; //CR&LF
-#elif defined(__WXMAC__)
-    const int default_eol = 2; //LF (in the past the default was CR but Apple encourages LF nowadays)
-#elif defined(__UNIX__)
-    const int default_eol = 2; //LF
-#endif
+    // NOTE: duplicate line in editorconfigurationdlg.cpp (ctor)
+    static const int default_eol = platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF; // Windows takes CR+LF, other platforms LF only
 
-    switch (mgr->ReadInt(_T("/eol/eolmode"), default_eol))
-    {
-        case 1:
-            eolmode = wxSCI_EOL_CR;
-            break;
-
-        case 2:
-            eolmode = wxSCI_EOL_LF;
-            break;
-
-        case 0:
-        default:
-            eolmode = wxSCI_EOL_CRLF;
-            break;
-    }
-    control->SetEOLMode(eolmode);
+    control->SetEOLMode(mgr->ReadInt(_T("/eol/eolmode"), default_eol));
 
     // folding margin
     control->SetProperty(_T("fold"), mgr->ReadBool(_T("/folding/show_folds"), true) ? _T("1") : _T("0"));
@@ -1729,61 +1706,60 @@ void cbEditor::SetErrorLine(int line)
 
 void cbEditor::Undo()
 {
-    wxASSERT(m_pControl);
+    cbAssert(m_pControl);
     m_pControl->Undo();
 }
 
 void cbEditor::Redo()
 {
-    wxASSERT(m_pControl);
+    cbAssert(m_pControl);
     GetControl()->Redo();
 }
 
 void cbEditor::Cut()
 {
-    wxASSERT(m_pControl);
+    cbAssert(m_pControl);
     GetControl()->Cut();
 }
 
 void cbEditor::Copy()
 {
-    wxASSERT(m_pControl);
+    cbAssert(m_pControl);
     GetControl()->Copy();
 }
 
 void cbEditor::Paste()
 {
-    wxASSERT(m_pControl);
+    cbAssert(m_pControl);
     GetControl()->Paste();
 }
 
 bool cbEditor::CanUndo() const
 {
-    wxASSERT(m_pControl);
+    cbAssert(m_pControl);
     return m_pControl->CanUndo();
 }
 
 bool cbEditor::CanRedo() const
 {
-    wxASSERT(m_pControl);
+    cbAssert(m_pControl);
     return m_pControl->CanRedo();
 }
 
 bool cbEditor::HasSelection() const
 {
-    wxASSERT(m_pControl);
+    cbAssert(m_pControl);
     cbStyledTextCtrl* control = GetControl();
     return control->GetSelectionStart() != control->GetSelectionEnd();
 }
 
 bool cbEditor::CanPaste() const
 {
-    wxASSERT(m_pControl);
-#ifdef __WXGTK__
-    return true;
-#else
+    cbAssert(m_pControl);
+    if(platform::gtk)
+        return true;
+
     return m_pControl->CanPaste();
-#endif
 }
 
 bool cbEditor::LineHasMarker(int marker, int line) const
@@ -1940,12 +1916,12 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
         menu->Enable(idRedo, control->CanRedo());
         menu->Enable(idCut, hasSel);
         menu->Enable(idCopy, hasSel);
-#ifdef __WXGTK__
-        // a wxGTK bug causes the triggering of unexpected events
-        menu->Enable(idPaste, true);
-#else
-        menu->Enable(idPaste, control->CanPaste());
-#endif
+
+        if(platform::gtk) // a wxGTK bug causes the triggering of unexpected events
+            menu->Enable(idPaste, true);
+        else
+            menu->Enable(idPaste, control->CanPaste());
+
         menu->Enable(idDelete, hasSel);
     }
     else if(id == idBookmarks)
@@ -1973,9 +1949,9 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
 }
 
 // Adds menu items to context menu (both before and after loading plugins' items)
-void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone) //pecan 2006/03/22
+void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
 {
-    bool noeditor = (type != mtEditorManager);                              //pecan 2006/03/22
+    bool noeditor = (type != mtEditorManager);
     if(!pluginsdone)
     {
         wxMenu *bookmarks = 0, *folding = 0, *editsubmenu = 0, *insert = 0;
@@ -2034,9 +2010,9 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone) 
     }
 }
 
-bool cbEditor::OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type)   //pecan 2006/03/22
+bool cbEditor::OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type)
 {
-    bool noeditor = (type != mtEditorManager);                              //pecan 2006/03/22
+    bool noeditor = (type != mtEditorManager);
     if (!noeditor && position!=wxDefaultPosition)
     {
         // right mouse click inside the editor
@@ -2105,10 +2081,10 @@ bool cbEditor::OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type
     }
 
     // follow default strategy
-    return EditorBase::OnBeforeBuildContextMenu(position, type);        //pecan 2006/03/22
+    return EditorBase::OnBeforeBuildContextMenu(position, type);
 }
 
-void cbEditor::OnAfterBuildContextMenu(ModuleType type)                //pecan 2006/03/22
+void cbEditor::OnAfterBuildContextMenu(ModuleType type)
 {
     // we don't care
 }
@@ -2457,14 +2433,14 @@ void cbEditor::DoIndent()
 {
     cbStyledTextCtrl* control = GetControl();
     if (control)
-        control->SendMsg(2327); // wxSCI_CMD_TAB
+        control->SendMsg(wxSCI_CMD_TAB);
 }
 
 void cbEditor::DoUnIndent()
 {
     cbStyledTextCtrl* control = GetControl();
     if (control)
-        control->SendMsg(2328); // wxSCI_CMD_BACKTAB
+        control->SendMsg(wxSCI_CMD_BACKTAB);
 }
 
 void cbEditor::OnZoom(wxScintillaEvent& event)

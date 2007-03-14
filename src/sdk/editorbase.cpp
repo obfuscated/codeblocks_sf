@@ -231,9 +231,12 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)   
             text = control->GetTextRange(control->WordStartPosition(pos, true), control->WordEndPosition(pos, true));
         }
 
-        popup->Append(idGoogleCode, _("Search Google Code for \"") + text + _("\""));
-        popup->Append(idMsdn, _("Search MSDN for \"") + text + _("\""));
-        popup->Append(idGoogle, _("Search the Internet for \"") + text + _("\""));
+        if(wxMinimumVersion<2,6,1>::eval)
+        {
+            popup->Append(idGoogleCode, _("Search Google Code for \"") + text + _("\""));
+            popup->Append(idMsdn, _("Search MSDN for \"") + text + _("\""));
+            popup->Append(idGoogle, _("Search the Internet for \"") + text + _("\""));
+        }
         lastWord = text;
 
         wxMenu* switchto = CreateContextSubMenu(idSwitchTo);
@@ -313,7 +316,7 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
     {
         Manager::Get()->GetEditorManager()->SaveAll();
     }
-    else //pecan 2006/03/22
+    else
     if (id >= idSwitchFile1 && id <= idSwitchFileMax)
     {
         // "Switch to..." item
@@ -324,20 +327,21 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
         }
         m_SwitchTo.clear();
     }
-#if wxABI_VERSION >= 20601
-    else if (id == idGoogleCode)
+    else if(wxMinimumVersion<2,6,1>::eval)
     {
-        wxLaunchDefaultBrowser(wxString(_T("http://www.google.com/codesearch?q=")) << URLEncode(lastWord));
+        if (id == idGoogleCode)
+        {
+            wxLaunchDefaultBrowser(wxString(_T("http://www.google.com/codesearch?q=")) << URLEncode(lastWord));
+        }
+        else if (id == idGoogle)
+        {
+            wxLaunchDefaultBrowser(wxString(_T("http://www.google.com/search?q=")) << URLEncode(lastWord));
+        }
+        else if (id == idMsdn)
+        {
+            wxLaunchDefaultBrowser(wxString(_T("http://search.microsoft.com/search/results.aspx?qu=")) << URLEncode(lastWord) << _T("&View=msdn"));
+        }
     }
-    else if (id == idGoogle)
-    {
-        wxLaunchDefaultBrowser(wxString(_T("http://www.google.com/search?q=")) << URLEncode(lastWord));
-    }
-    else if (id == idMsdn)
-    {
-        wxLaunchDefaultBrowser(wxString(_T("http://search.microsoft.com/search/results.aspx?qu=")) << URLEncode(lastWord) << _T("&View=msdn"));
-    }
-#endif
     else
     {
         event.Skip();

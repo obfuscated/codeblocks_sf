@@ -105,7 +105,7 @@ enum SupportedPlatforms
 	spMac		= 0x01,
 	spUnix		= 0x02,
 	spWindows 	= 0x04,
-	
+
 	spAll		= 0xff
 };
 // NOTE: if you add/remove platforms, remember to update the relevant Get/Set globals
@@ -169,10 +169,8 @@ extern DLLIMPORT bool NormalizePath(wxFileName& f,const wxString& base);
 
 extern DLLIMPORT wxString URLEncode(const wxString &str);
 
-#ifdef __WXMSW__
 /// Check if CommonControls version is at least 6 (XP and up)
 extern DLLIMPORT bool UsesCommonControls6();
-#endif
 
 /** This function loads a bitmap from disk.
   * Always use this to load bitmaps because it takes care of various

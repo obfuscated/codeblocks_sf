@@ -53,6 +53,10 @@
 #include "filefilters.h"
 #include "tinyxml/tinywxuni.h"
 
+
+namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
+
+
 const wxString DEFAULT_WORKSPACE     = _T("default.workspace");
 const wxString DEFAULT_ARRAY_SEP     = _T(";");
 const wxString DEFAULT_CONSOLE_TERM  = _T("xterm -T $TITLE -e");
@@ -81,7 +85,7 @@ int GetPlatformsFromString(const wxString& platforms)
 wxString GetStringFromPlatforms(int platforms, bool forceSeparate)
 {
 	wxString ret;
-	
+
 	if (!forceSeparate)
 	{
 		int tmpAll = spWindows | spUnix | spMac;
@@ -266,13 +270,8 @@ bool DoRememberExpandedNodes(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArr
 
     wxString originalPath = path;
     bool found = false;
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
 
-    long int cookie = 0;
-#else
-
-    wxTreeItemIdValue cookie; //2.6.0
-#endif
+    compatibility::tree_cookie_t cookie = 0;
 
     wxTreeItemId child = tree->GetFirstChild(parent, cookie);
     while (child.IsOk())
@@ -318,12 +317,7 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
 
         //Manager::Get()->GetMessageManager()->Log(mltDevDebug, "%s, %s", folder.c_str(), tmpPath.c_str());
 
-#if (wxMAJOR_VERSION == 2) && (wxMINOR_VERSION < 5)
-        long int cookie = 0;
-#else
-
-        wxTreeItemIdValue cookie; //2.6.0
-#endif
+        compatibility::tree_cookie_t cookie = 0;
 
         wxTreeItemId child = tree->GetFirstChild(parent, cookie);
         while (child.IsOk())
@@ -451,7 +445,7 @@ bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
     file.Read((void*)buff, len);
     file.Close();
     buff[len]='\0';
-	
+
 	DetectEncodingAndConvert(buff, st, encoding);
 
     return true;
@@ -505,11 +499,10 @@ wxString cbC2U(const char* str)
 // Return multibyte (C string) representation of the string
 wxWX2MBbuf cbU2C(const wxString& str)
 {
-#if wxUSE_UNICODE
-    return str.mb_str(wxConvUTF8);
-#else
-    return (wxChar*)str.mb_str();
-#endif
+    if(platform::unicode)
+        return str.mb_str(wxConvUTF8);
+    else
+        return str.mb_str();
 }
 
 // Try converting a C-string from different encodings until a possible match is found.
@@ -520,51 +513,56 @@ wxFontEncoding DetectEncodingAndConvert(const char* strIn, wxString& strOut, wxF
 	wxFontEncoding encoding = possibleEncoding;
 	strOut.Clear();
 
-#if wxUSE_UNICODE
-    if (possibleEncoding != wxFONTENCODING_UTF16 &&
-        possibleEncoding != wxFONTENCODING_UTF16LE &&
-        possibleEncoding != wxFONTENCODING_UTF16BE &&
-        possibleEncoding != wxFONTENCODING_UTF32 &&
-        possibleEncoding != wxFONTENCODING_UTF32LE &&
-        possibleEncoding != wxFONTENCODING_UTF32BE)
+    if(platform::unicode)
     {
-        // crashes deep in the runtime (windows, at least)
-        // if one of the above encodings, hence the guard
-        wxCSConv conv(possibleEncoding);
-        strOut = wxString(strIn, conv);
-        
-        if (strOut.Length() == 0)
+        if (possibleEncoding != wxFONTENCODING_UTF16 &&
+            possibleEncoding != wxFONTENCODING_UTF16LE &&
+            possibleEncoding != wxFONTENCODING_UTF16BE &&
+            possibleEncoding != wxFONTENCODING_UTF32 &&
+            possibleEncoding != wxFONTENCODING_UTF32LE &&
+            possibleEncoding != wxFONTENCODING_UTF32BE)
         {
-        	// oops! wrong encoding...
-        	
-        	// try utf8 first, if that was not what was asked for
-        	if (possibleEncoding != wxFONTENCODING_UTF8)
-        	{
-        		encoding = wxFONTENCODING_UTF8;
-				strOut = wxString(strIn, wxConvUTF8);
-        	}
-			
-			// check again: if still not right, try system encoding, default encoding and then iso8859-1 to iso8859-15
-			if (strOut.Length() == 0)
-			{
-				for (int i = wxFONTENCODING_SYSTEM; i < wxFONTENCODING_ISO8859_MAX; ++i)
-				{
-					encoding = (wxFontEncoding)i;
-					if (encoding == possibleEncoding)
-						continue; // skip if same as what was asked
-					wxCSConv conv(encoding);
-					strOut = wxString(strIn, conv);
-					if (strOut.Length() != 0)
-						break; // got it!
-				}
-			}
+            // crashes deep in the runtime (windows, at least)
+            // if one of the above encodings, hence the guard
+            wxCSConv conv(possibleEncoding);
+            strOut = wxString(strIn, conv);
+
+            if (strOut.Length() == 0)
+            {
+                // oops! wrong encoding...
+
+                // try utf8 first, if that was not what was asked for
+                if (possibleEncoding != wxFONTENCODING_UTF8)
+                {
+                    encoding = wxFONTENCODING_UTF8;
+                    strOut = wxString(strIn, wxConvUTF8);
+                }
+
+                // check again: if still not right, try system encoding, default encoding and then iso8859-1 to iso8859-15
+                if (strOut.Length() == 0)
+                {
+                    for (int i = wxFONTENCODING_SYSTEM; i < wxFONTENCODING_ISO8859_MAX; ++i)
+                    {
+                        encoding = (wxFontEncoding)i;
+                        if (encoding == possibleEncoding)
+                            continue; // skip if same as what was asked
+                        wxCSConv conv(encoding);
+                        strOut = wxString(strIn, conv);
+                        if (strOut.Length() != 0)
+                            break; // got it!
+                    }
+                }
+            }
+        }
+        else
+        {
+            strOut = (const wxChar*) strIn;
         }
     }
     else
-        strOut = wxString((const wxChar*)strIn);
-#else
-	strOut = wxString(strIn);
-#endif
+    {
+        strOut = (const wxChar*) strIn;
+    }
 	return encoding;
 }
 
@@ -652,17 +650,18 @@ bool UsesCommonControls6()
     }
     return result;
 }
+#else
+bool UsesCommonControls6()
+{
+    return false;
+}
 #endif
 
 wxBitmap cbLoadBitmap(const wxString& filename, int bitmapType)
 {
-#ifdef __WXMSW__
     // cache this, can't change while we 're running :)
     static bool oldCommonControls = !UsesCommonControls6();
-#else
-    // irrelevant for this platform
-    static bool oldCommonControls = false;
-#endif
+
     wxImage im;
     wxFileSystem* fs = new wxFileSystem;
     wxFSFile* f = fs->OpenFile(filename);
