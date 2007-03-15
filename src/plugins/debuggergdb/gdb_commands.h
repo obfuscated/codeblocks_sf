@@ -135,6 +135,10 @@ static wxRegEx reDisassemblyInitFunc(_T("eip = (0x[A-Fa-f0-9]+) in ([^;]*)"));
 // or32 variant
 #ifdef __WXMSW__
 static wxRegEx reDisassemblyInitFuncOR32(_T("PC = (0x[A-Fa-f0-9]+) in ([^;]*)"));
+#else
+// not used on linux, but make sure it exists otherwise compilation fails on linux
+// if(platform::windows && m_disassemblyFlavor == _T("set disassembly-flavor or32")) blabla
+static wxRegEx reDisassemblyInitFuncOR32(_T("PC = (0x[A-Fa-f0-9]+) in ([^;]*)"));
 #endif
 //    Using the running image of child Thread 46912568064384 (LWP 7051).
 static wxRegEx reInfoProgramThread(_T("\\(LWP[ \t]([0-9]+)\\)"));
