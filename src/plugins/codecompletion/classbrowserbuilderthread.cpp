@@ -90,28 +90,31 @@ void* ClassBrowserBuilderThread::Entry()
 
         if (TestDestroy() || Manager::IsAppShuttingDown())
             break;
-#ifdef __WXGTK__
-		// this code (PART 1/2) seems to be good on linux
-		// because of it the libcairo crash on dualcore processors
-		// is gone, but on windows it has very bad influence,
-		// henceforth the ifdef guard
-		// the questions remains if it is the correct solution
-		if(!::wxIsMainThread())
-		{
-			::wxMutexGuiEnter();
-		}
-#endif // __WXGTK__
+
+        if(platform::gtk)
+        {
+            // this code (PART 1/2) seems to be good on linux
+            // because of it the libcairo crash on dualcore processors
+            // is gone, but on windows it has very bad influence,
+            // henceforth the ifdef guard
+            // the questions remains if it is the correct solution
+            if(!::wxIsMainThread())
+            {
+                ::wxMutexGuiEnter();
+            }
+        }
 
         BuildTree();
 
         if (TestDestroy() || Manager::IsAppShuttingDown())
         {
-#ifdef __WXGTK__
+        if(platform::gtk)
+        {
 			if(!::wxIsMainThread())
 			{
 				::wxMutexGuiLeave();
 			}
-#endif // __WXGTK__
+        }
             break;
         }
 
@@ -119,17 +122,18 @@ void* ClassBrowserBuilderThread::Entry()
         ExpandNamespaces(m_pTreeTop->GetRootItem());
 	    m_pTreeTop->Thaw();
 
-#ifdef __WXGTK__
-		// this code (PART 2/2) seems to be good on linux
-		// because of it the libcairo crash on dualcore processors
-		// is gone, but on windows it has very bad influence,
-		// henceforth the ifdef guard
-		// the questions remains if it is the correct solution
-		if(!::wxIsMainThread())
-		{
-			::wxMutexGuiLeave();
-		}
-#endif // __WXGTK__
+        if(platform::gtk)
+        {
+            // this code (PART 2/2) seems to be good on linux
+            // because of it the libcairo crash on dualcore processors
+            // is gone, but on windows it has very bad influence,
+            // henceforth the ifdef guard
+            // the questions remains if it is the correct solution
+            if(!::wxIsMainThread())
+            {
+                ::wxMutexGuiLeave();
+            }
+        }
     }
 
     m_pParser = 0;
@@ -198,11 +202,13 @@ void ClassBrowserBuilderThread::BuildTree()
     // has very minimum memory overhead since it contains as few items as possible.
     // plus, it doesn't flicker because we 're not emptying it and re-creating it each time ;)
     m_pTreeTop->Expand(root);
-#ifdef __WXGTK__
-    // seems like the "expand" event comes too late in wxGTK,
-    // so make it happen now
-    ExpandItem(root);
-#endif
+
+    if(platform::gtk)
+    {
+        // seems like the "expand" event comes too late in wxGTK,
+        // so make it happen now
+        ExpandItem(root);
+    }
 
     m_pTreeBottom->Thaw();
     m_pTreeTop->Thaw();

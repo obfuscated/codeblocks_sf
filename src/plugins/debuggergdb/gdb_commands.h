@@ -990,20 +990,15 @@ class GdbCmd_InfoRegisters : public DebuggerCmd
 
     public:
         /** @param dlg The disassembly dialog. */
-#ifdef __WXMSW__
+
         // only tested on mingw/pc/win env
-        GdbCmd_InfoRegisters(DebuggerDriver* driver, CPURegistersDlg* dlg, wxString disassemblyFlavor)
-#else
-        GdbCmd_InfoRegisters(DebuggerDriver* driver, CPURegistersDlg* dlg)
-#endif
+        GdbCmd_InfoRegisters(DebuggerDriver* driver, CPURegistersDlg* dlg, wxString disassemblyFlavor = wxEmptyString)
             : DebuggerCmd(driver),
-            m_pDlg(dlg)
+            m_pDlg(dlg), m_disassemblyFlavor(disassemblyFlavor)
         {
             m_Cmd << _T("info registers");
-#ifdef __WXMSW__
-            m_disassemblyFlavor = disassemblyFlavor;
-#endif
-        }
+        };
+
         void ParseOutput(const wxString& output)
         {
             // output is a series of:
@@ -1164,26 +1159,20 @@ class GdbCmd_Disassembly : public DebuggerCmd
 class GdbCmd_DisassemblyInit : public DebuggerCmd
 {
         DisassemblyDlg* m_pDlg;
-#ifdef __WXMSW__
         wxString m_disassemblyFlavor;
-#endif
+
     public:
         static wxString LastAddr;
         /** @param dlg The disassembly dialog. */
-#ifdef __WXMSW__
+
         // only tested on mingw/pc/win env
-        GdbCmd_DisassemblyInit(DebuggerDriver* driver, DisassemblyDlg* dlg, wxString disassemblyFlavor)
-#else
-        GdbCmd_DisassemblyInit(DebuggerDriver* driver, DisassemblyDlg* dlg)
-#endif
+        GdbCmd_DisassemblyInit(DebuggerDriver* driver, DisassemblyDlg* dlg, wxString disassemblyFlavor = wxEmptyString)
             : DebuggerCmd(driver),
-            m_pDlg(dlg)
+            m_pDlg(dlg), m_disassemblyFlavor(disassemblyFlavor)
         {
             m_Cmd << _T("info frame");
-#ifdef __WXMSW__
-            m_disassemblyFlavor = disassemblyFlavor;
-#endif
-        }
+        };
+
         void ParseOutput(const wxString& output)
         {
             if (!m_pDlg)
@@ -1203,13 +1192,11 @@ class GdbCmd_DisassemblyInit : public DebuggerCmd
                     sf.function = reDisassemblyInitFunc.GetMatch(output, 2);
                     long int active;
 
-#ifdef __WXMSW__
-                    if(m_disassemblyFlavor == _T("set disassembly-flavor or32"))
+                    if(platform::windows && m_disassemblyFlavor == _T("set disassembly-flavor or32"))
                     {
                         reDisassemblyInitFuncOR32.GetMatch(output, 1).ToLong(&active, 16);
                     }
                     else
-#endif
                     {
                         reDisassemblyInitFunc.GetMatch(output, 1).ToLong(&active, 16);
                     }

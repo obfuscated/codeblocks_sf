@@ -74,39 +74,39 @@ class GDB_driver : public DebuggerDriver
         void InitializeScripting();
         void RegisterType(const wxString& name, const wxString& regex, const wxString& eval_func, const wxString& parse_func);
         void HandleMainBreakPoint(const wxRegEx& reBreak, wxString line);
-#ifdef __WXMSW__
+
         // win/Cygwin platform checking
         void DetectCygwinMount(void);
         void CorrectCygwinPath(wxString& path);
 
         bool m_CygwinPresent;
         wxString m_CygdrivePrefix;
-#endif
+
         TypesArray m_Types;
 
         // Seems to be intended to allow step before program has started.
         // Was always false.  HC changed to take value from DebuggerGDB::m_BreakOnEntry.
-        bool m_BreakOnEntry; 
-    
+        bool m_BreakOnEntry;
+
         // Seems to be used to issue a InfoProgram command, then continue
         // True after first "Start()", until first break
-        bool m_ManualBreakOnEntry; 
+        bool m_ManualBreakOnEntry;
 
 		// Program is "running": after a "run" or a "start", and before "kill" or a "quit"
 		bool m_IsStarted;
-		
+
         // cursor update flags
         bool m_needsUpdate;
         bool m_forceUpdate;
-	
+
         // GDB version
         long m_GDBVersionMajor;
         long m_GDBVersionMinor;
         wxString flavour;
-        
+
         bool want_debug_events;
         bool disable_debug_events;
-		
+
 }; // GDB_driver
 
 #endif // GDB_DRIVER_H

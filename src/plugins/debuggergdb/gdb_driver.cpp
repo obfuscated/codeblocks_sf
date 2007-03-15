@@ -56,6 +56,7 @@ DECLARE_INSTANCE_TYPE(GDB_driver);
 
 GDB_driver::GDB_driver(DebuggerGDB* plugin)
     : DebuggerDriver(plugin),
+    m_CygwinPresent(false),
     m_BreakOnEntry(false),
     m_ManualBreakOnEntry(false),
 	m_IsStarted(false),
@@ -65,9 +66,6 @@ GDB_driver::GDB_driver(DebuggerGDB* plugin)
     disable_debug_events(false)
 {
     //ctor
-#ifdef __WXMSW__
-    m_CygwinPresent = false;
-#endif
     m_needsUpdate = false;
     m_forceUpdate = false;
 }
@@ -172,10 +170,10 @@ void GDB_driver::Prepare(bool isConsole)
 {
     // default initialization
 
-#ifdef __WXMSW__
     // for the possibility that the program to be debugged is compiled under Cygwin
-    DetectCygwinMount();
-#endif
+    if(platform::windows)
+        DetectCygwinMount();
+
     // make sure we 're using the prompt that we know and trust ;)
     QueueCommand(new DebuggerCmd(this, wxString(_T("set prompt ")) + FULL_GDB_PROMPT));
 
@@ -194,15 +192,18 @@ void GDB_driver::Prepare(bool isConsole)
     // unwind stack on signal
     QueueCommand(new DebuggerCmd(this, _T("set unwindonsignal on")));
 
-#ifdef __WXMSW__
     // want debug events
-    QueueCommand(new DebuggerCmd(this, _T("set debugevents on")));
-    want_debug_events = true;
-    disable_debug_events = false;
-#else
-    want_debug_events = false;
-    disable_debug_events = false;
-#endif
+    if(platform::windows)
+    {
+        QueueCommand(new DebuggerCmd(this, _T("set debugevents on")));
+        want_debug_events = true;
+        disable_debug_events = false;
+    }
+    else
+    {
+        want_debug_events = false;
+        disable_debug_events = false;
+    }
 
     int disassembly_flavour = Manager::Get()->GetConfigManager(_T("debugger"))
                               ->ReadInt(_T("disassembly_flavor"), 0);
@@ -230,17 +231,20 @@ void GDB_driver::Prepare(bool isConsole)
             break;
         }
         default: // including case 0: // System default
-#ifndef __WXMSW__
+
+        if(platform::windows)
+        {
             flavour << _T("att");
-#else
+        }
+        else
+        {
             flavour << _T("intel");
-#endif
+        }
     }// switch
 
-#ifdef __WXMSW__
-    if (isConsole)
+    if (platform::windows && isConsole)
         QueueCommand(new DebuggerCmd(this, _T("set new-console on")));
-#endif
+
     QueueCommand(new DebuggerCmd(this, flavour));
 
     // define all scripted types
@@ -276,7 +280,7 @@ void GDB_driver::Prepare(bool isConsole)
 // Cygwin check code
 #ifdef __WXMSW__
 
-#define BUFSIZE (64)
+enum{ BUFSIZE = 64 };
 
 // routines to handle cygwin compiled programs on a Windows compiled C::B IDE
 void GDB_driver::DetectCygwinMount(void)
@@ -356,6 +360,9 @@ void GDB_driver::CorrectCygwinPath(wxString& path)
         path.Replace(DriveLetter, DriveLetter + _T(":"), false);
     }
 }
+#else
+    void GDB_driver::DetectCygwinMount(void){/* dummy */}
+    void GDB_driver::CorrectCygwinPath(wxString& path){/* dummy */}
 #endif
 
 wxString GDB_driver::GetDisassemblyFlavour(void)
@@ -378,27 +385,30 @@ void GDB_driver::Start(bool breakOnEntry)
     }
 
     // under windows, 'start' segfaults with wx projects...
-#if (defined( __WXMSW__) || defined(__WXMAC__))
-    m_BreakOnEntry = false;
-    m_ManualBreakOnEntry = false;
-
-    if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("do_not_run"), false))
+    if(platform::windows || platform::macos)
     {
-        // start the process
-        QueueCommand(new DebuggerCmd(this, _T("run")));
-		m_IsStarted = true;
+        m_BreakOnEntry = false;
+        m_ManualBreakOnEntry = false;
+
+        if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("do_not_run"), false))
+        {
+            // start the process
+            QueueCommand(new DebuggerCmd(this, _T("run")));
+            m_IsStarted = true;
+        }
     }
-#else
-    m_BreakOnEntry = breakOnEntry;
-    m_ManualBreakOnEntry = true;
-
-    if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("do_not_run"), false))
+    else
     {
-        // start the process
-        QueueCommand(new DebuggerCmd(this, _T("start")));
-		m_IsStarted = true;
+        m_BreakOnEntry = breakOnEntry;
+        m_ManualBreakOnEntry = true;
+
+        if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("do_not_run"), false))
+        {
+            // start the process
+            QueueCommand(new DebuggerCmd(this, _T("start")));
+            m_IsStarted = true;
+        }
 	}
-#endif
 } // Start
 
 void GDB_driver::Stop()
@@ -455,22 +465,22 @@ void GDB_driver::Disassemble()
 {
     if (!m_pDisassembly)
         return;
-#ifdef __WXMSW__
-    QueueCommand(new GdbCmd_DisassemblyInit(this, m_pDisassembly, flavour));
-#else
-    QueueCommand(new GdbCmd_DisassemblyInit(this, m_pDisassembly));
-#endif
+
+    if(platform::windows)
+        QueueCommand(new GdbCmd_DisassemblyInit(this, m_pDisassembly, flavour));
+    else
+        QueueCommand(new GdbCmd_DisassemblyInit(this, m_pDisassembly));
 }
 
 void GDB_driver::CPURegisters()
 {
     if (!m_pCPURegisters)
         return;
-#ifdef __WXMSW__
-    QueueCommand(new GdbCmd_InfoRegisters(this, m_pCPURegisters, flavour));
-#else
-    QueueCommand(new GdbCmd_InfoRegisters(this, m_pCPURegisters));
-#endif
+
+    if(platform::windows)
+        QueueCommand(new GdbCmd_InfoRegisters(this, m_pCPURegisters, flavour));
+    else
+        QueueCommand(new GdbCmd_InfoRegisters(this, m_pCPURegisters));
 }
 
 void GDB_driver::SwitchToFrame(size_t number)
@@ -605,7 +615,6 @@ void GDB_driver::ParseOutput(const wxString& output)
 {
     m_Cursor.changed = false;
 
-#ifdef __WXMSW__
 	// Watch for initial debug info and grab the child PID
 	// this is put here because we need this info even if
 	// we don't get a prompt back.
@@ -614,7 +623,7 @@ void GDB_driver::ParseOutput(const wxString& output)
 	// program. It then sets the child PID and never enters here
 	// again because the "want_debug_events" condition below
 	// is not satisfied anymore...
-	if (want_debug_events && output.Contains(_T("do_initial_child_stuff")))
+	if (platform::windows && want_debug_events && output.Contains(_T("do_initial_child_stuff")))
 	{
 		// got the line with the PID, parse it out:
 		// e.g.
@@ -630,14 +639,14 @@ void GDB_driver::ParseOutput(const wxString& output)
 			m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
 		}
 	}
-#endif
+
     if (!want_debug_events &&
 		output.StartsWith(_T("gdb: ")) ||
         output.StartsWith(_T("Warning: ")) ||
         output.StartsWith(_T("ContinueDebugEvent ")))
     {
         return;
-    } 
+    }
 
     static wxString buffer;
     buffer << output << _T('\n');
@@ -657,7 +666,7 @@ void GDB_driver::ParseOutput(const wxString& output)
 		QueueCommand(new DebuggerCmd(this, _T("set debugevents off")));
 		disable_debug_events = false;
 	}
-	
+
 	m_ProgramIsStopped = true;
 	m_QueueBusy = false;
 	DebuggerCmd* cmd = CurrentCommand();
@@ -688,14 +697,13 @@ void GDB_driver::ParseOutput(const wxString& output)
     {
 //            Log(_T("DEBUG: ") + lines[i]); // write it in the full debugger log
 
-#ifdef __WXMSW__
 		// Check for possibility of a cygwin compiled program
 		// convert to valid path
-		if(m_CygwinPresent==true)
+		if(platform::windows && m_CygwinPresent==true)
 		{
 			CorrectCygwinPath(lines.Item(i));
 		}
-#endif
+
         // log GDB's version
         if (lines[i].StartsWith(_T("GNU gdb")))
         {
@@ -797,13 +805,21 @@ void GDB_driver::ParseOutput(const wxString& output)
                 rePendingFound1.Matches(newbpstr))
             {
 //                m_pDBG->Log(_T("MATCH"));
-            #ifdef __WXMSW__
-                wxString file = rePendingFound.GetMatch(bpstr, 1) + rePendingFound.GetMatch(bpstr, 2);
-                wxString lineStr = rePendingFound.GetMatch(bpstr, 3);
-            #else
-                wxString file = rePendingFound.GetMatch(bpstr, 1);
-                wxString lineStr = rePendingFound.GetMatch(bpstr, 2);
-            #endif
+
+                wxString file;
+                wxString lineStr;
+
+                if(platform::windows)
+                {
+                    file = rePendingFound.GetMatch(bpstr, 1) + rePendingFound.GetMatch(bpstr, 2);
+                    lineStr = rePendingFound.GetMatch(bpstr, 3);
+                }
+                else
+                {
+                    file = rePendingFound.GetMatch(bpstr, 1);
+                    lineStr = rePendingFound.GetMatch(bpstr, 2);
+                }
+
                 file = UnixFilename(file);
 //                m_pDBG->Log(wxString::Format(_T("file: %s, line: %s"), file.c_str(), lineStr.c_str()));
                 long line;
@@ -833,13 +849,12 @@ void GDB_driver::ParseOutput(const wxString& output)
             // Main breakpoint handler is wrapped into a function so we can use
             // the same code with different regular expressions - depending on
             // the platform.
-#ifdef __WXMSW__
-            if(flavour == _T("set disassembly-flavor or32"))
+
+            if(platform::windows && flavour == _T("set disassembly-flavor or32"))
             {
                 HandleMainBreakPoint(reBreak_or32, lines[i]);
             }
             else
-#endif
             {
                 HandleMainBreakPoint(reBreak, lines[i]);
             }
@@ -898,7 +913,6 @@ void GDB_driver::ParseOutput(const wxString& output)
 
 void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak, wxString line)
 {
-
     if ( reBreak.Matches(line) )
     {
         if (m_ManualBreakOnEntry)
@@ -910,26 +924,30 @@ void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak, wxString line)
         }
         else
         {
-            #ifdef  __WXMSW__
+            wxString lineStr;
+            if(platform::windows)
+            {
                 m_Cursor.file = reBreak.GetMatch(line, 1) + reBreak.GetMatch(line, 2);
-                wxString lineStr = reBreak.GetMatch(line, 3);
+                lineStr = reBreak.GetMatch(line, 3);
                 m_Cursor.address = reBreak.GetMatch(line, 4);
-            #else
-                m_Cursor.file = reBreak.GetMatch( line, 1);
-                wxString lineStr = reBreak.GetMatch( line, 2);
-                m_Cursor.address = reBreak.GetMatch( line, 3);
-            #endif
-                lineStr.ToLong(&m_Cursor.line);
-                m_Cursor.changed = true;
-                m_needsUpdate = true;
             }
-        }
+            else
+            {
+                m_Cursor.file = reBreak.GetMatch( line, 1);
+                lineStr = reBreak.GetMatch( line, 2);
+                m_Cursor.address = reBreak.GetMatch( line, 3);
+            }
 
-        else
-        {
-            m_pDBG->Log(_("The program has stopped on a breakpoint but the breakpoint format is not recognized:"));
-            m_pDBG->Log(line);
+            lineStr.ToLong(&m_Cursor.line);
             m_Cursor.changed = true;
             m_needsUpdate = true;
         }
+    }
+    else
+    {
+        m_pDBG->Log(_("The program has stopped on a breakpoint but the breakpoint format is not recognized:"));
+        m_pDBG->Log(line);
+        m_Cursor.changed = true;
+        m_needsUpdate = true;
+    }
 }
