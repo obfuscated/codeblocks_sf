@@ -25,6 +25,7 @@
 */
 
 #include <sdk.h>
+#include "prep.h"
 #include "compilergcc.h"
 #include <manager.h>
 #include <sdk_events.h>
