@@ -126,13 +126,12 @@ ParserThread::ParserThread(Parser* parent,
 ParserThread::~ParserThread()
 {
 	//dtor
-	
+
 	// wait for file loader object to complete (can't abort it)
 	if (m_Options.loader)
 	{
 		m_Options.loader->Sync();
-		delete m_Options.loader;
-		m_Options.loader = 0;
+		Delete(m_Options.loader);
 	}
 }
 
@@ -313,8 +312,7 @@ bool ParserThread::InitTokenizer()
 		{
 			m_Filename = m_Buffer;
 			bool ret = m_Tokenizer.Init(m_Filename, m_Options.loader);
-			delete m_Options.loader;
-			m_Options.loader = 0;
+			Delete(m_Options.loader);
 			return ret;
 		}
 

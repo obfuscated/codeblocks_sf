@@ -158,13 +158,9 @@ Parser::~Parser()
 
     Clear(); // Clear also disconnects the events
 #ifndef STANDALONE
-    delete m_pImageList;
-    m_pImageList = NULL;
-
-    delete m_pTempTokens;
-    m_pTempTokens = NULL;
-    delete m_pTokens;
-    m_pTokens = NULL;
+    Delete(m_pImageList);
+    Delete(m_pTempTokens);
+    Delete(m_pTokens);
 #endif // STANDALONE
 }
 

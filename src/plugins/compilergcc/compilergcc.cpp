@@ -92,10 +92,13 @@ namespace ScriptBindings
 #define COLOUR_MAROON wxColour(0xa0, 0x00, 0x00)
 #define COLOUR_NAVY   wxColour(0x00, 0x00, 0xa0)
 
-// this auto-registers the plugin
 namespace
 {
     PluginRegistrant<CompilerGCC> reg(_T("Compiler"));
+
+    static const wxString strCONSOLE_RUNNER(platform::windows ? _T("cb_strCONSOLE_RUNNER.exe") : _T("cb_strCONSOLE_RUNNER"));
+    static const wxString strSLASH(_T("/"));
+    static const wxString strSPACE(_T(" "));
 }
 
 // menu IDS
@@ -646,8 +649,7 @@ void CompilerGCC::AddBuildProgressBar()
 		}
 		else
 		{
-			delete m_BuildProgress;
-			m_BuildProgress = 0;
+			Delete(m_BuildProgress);
 			DBGLOG(_T("Can't create build progress bar: no sizer found"));
 		}
 	}
@@ -964,7 +966,7 @@ void CompilerGCC::AllocProcesses()
 {
     // create the parallel processes array
     m_ParallelProcessCount = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 1);
-    m_Processes = (wxProcess**)malloc(m_ParallelProcessCount * sizeof(wxProcess*));
+    m_Processes = new wxProcess*[m_ParallelProcessCount];
     m_Pid = new long int[m_ParallelProcessCount];
     for (size_t i = 0; i < m_ParallelProcessCount; ++i)
     {
@@ -978,14 +980,10 @@ void CompilerGCC::FreeProcesses()
     // free the parallel processes array
     for (size_t i = 0; i < m_ParallelProcessCount; ++i)
     {
-        delete m_Processes[i];
-        m_Processes[i] = 0;
+        Delete(m_Processes[i]);
     }
-    free(m_Processes);
-    m_Processes = 0;
-
-    delete[] m_Pid;
-    m_Pid = 0;
+    DeleteArray(m_Processes);
+    DeleteArray(m_Pid);
 }
 
 bool CompilerGCC::ReAllocProcesses()
@@ -1147,23 +1145,23 @@ int CompilerGCC::DoRunQueue()
         pipe = false; // no need to pipe output channels...
         flags |= wxEXEC_NOHIDE;
         dir = m_CdRun;
-    #ifndef __WXMSW__
-        // setup dynamic linker path
+
+    // setup dynamic linker path
+    if(platform::windows)
         wxSetEnv(_T("LD_LIBRARY_PATH"), _T(".:$LD_LIBRARY_PATH"));
-    #endif
     }
 
     // special shell used only for build commands
     if (!cmd->isRun)
     {
-    #ifndef __WXMSW__
         // run the command in a shell, so backtick'd expressions can be evaluated
-        wxString shell = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
-        cmd->command = shell + _T(" '") + cmd->command + _T("'");
-//    #else
-//    // TODO (mandrav#1#): Check windows version and substitute cmd.exe with command.com if needed.
-//        cmd->command = _T("cmd /c ") + cmd->command;
-    #endif
+        if(platform::windows == false)
+        {
+            wxString shell = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
+            cmd->command = shell + _T(" '") + cmd->command + _T("'");
+        }
+        // TODO (mandrav#1#): Check windows version and substitute cmd.exe with command.com if needed.
+        // cmd->command = _T("cmd /c ") + cmd->command;
     }
 
     // create a new process
@@ -1566,16 +1564,12 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
     // for non-win platforms, use m_ConsoleTerm to run the console app
     wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
     term.Replace(_T("$TITLE"), _T("'") + exe_filename + _T("'"));
-    cmd << term << _T(" ");
+    cmd << term << strSPACE;
 #endif
     wxString baseDir = ConfigManager::GetExecutableFolder();
-#ifdef __WXMSW__
-    #define CONSOLE_RUNNER "cb_console_runner.exe"
-#else
-    #define CONSOLE_RUNNER "cb_console_runner"
-#endif
-    if (wxFileExists(baseDir + wxT("/" CONSOLE_RUNNER)))
-        cmd << baseDir << wxT("/" CONSOLE_RUNNER " ");
+
+    if (wxFileExists(baseDir + strSLASH + strCONSOLE_RUNNER))
+        cmd << baseDir << strSLASH << strCONSOLE_RUNNER << strSPACE;
 
     cmd << _T("\"");
     cmd << exe_filename;
@@ -1672,23 +1666,20 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     // execution ends...
     if (target->GetTargetType() == ttConsoleOnly)
     {
-#ifndef __WXMSW__
-        // for non-win platforms, use m_ConsoleTerm to run the console app
-        wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
-        term.Replace(_T("$TITLE"), _T("'") + m_Project->GetTitle() + _T("'"));
-        cmd << term << _T(" 'LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH ");
-#endif
+        if(platform::windows)
+        {
+            // for non-win platforms, use m_ConsoleTerm to run the console app
+            wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
+            term.Replace(_T("$TITLE"), _T("'") + m_Project->GetTitle() + _T("'"));
+            cmd << term << _T(" 'LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH ");
+        }
         // should console runner be used?
         if (target->GetUseConsoleRunner())
         {
             wxString baseDir = ConfigManager::GetExecutableFolder();
-#ifdef __WXMSW__
-    #define CONSOLE_RUNNER "cb_console_runner.exe"
-#else
-    #define CONSOLE_RUNNER "cb_console_runner"
-#endif
-            if (wxFileExists(baseDir + wxT("/" CONSOLE_RUNNER)))
-                cmd << baseDir << wxT("/" CONSOLE_RUNNER " ");
+
+            if (wxFileExists(baseDir + strSLASH + strCONSOLE_RUNNER))
+                cmd << baseDir << strSLASH << strCONSOLE_RUNNER << strSPACE;
         }
     }
 
