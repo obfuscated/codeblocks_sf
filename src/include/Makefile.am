@@ -97,6 +97,7 @@ ALLHEADERS = annoyingdialog.h \
 				pipedprocess.h \
 				pluginmanager.h \
 				pluginsconfigurationdlg.h \
+				prep.h \
 				printing_types.h \
 				projectbuildtarget.h \
 				projectdepsdlg.h \
