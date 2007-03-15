@@ -64,7 +64,7 @@
 #ifdef __WXMSW__
     #include <winbase.h>
 #else
-    int GetShortPathName(void*, void*, int){/* bogus */ return 0; };
+    int GetShortPathName(const void*, void*, int){/* bogus */ return 0; };
 #endif
 
 #ifndef CB_PRECOMP
