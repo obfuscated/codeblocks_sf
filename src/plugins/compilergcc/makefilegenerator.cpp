@@ -709,75 +709,76 @@ void MakefileGenerator::DoAddMakefileVars(wxString& buffer)
 //    buffer << _T('\n');
 }
 
-#ifdef __WXMSW__
 void MakefileGenerator::DoAddMakefileResources(wxString& buffer)
 {
-    buffer << _T("### Resources used in this Makefile") << _T('\n');
-
-    int targetsCount = m_Project->GetBuildTargetsCount();
-    for (int x = 0; x < targetsCount; ++x)
+    if(platform::windows)
     {
-        ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
-        if (!target)
-            break;
+        buffer << _T("### Resources used in this Makefile") << _T('\n');
 
-		// create target's options only if it has at least one linkable file
-		if (!IsTargetValid(target))
-			continue;
-
-        buffer << target->GetTitle() << _T("_RESOURCE=");
-
-        if (target->GetTargetType() == ttConsoleOnly)
+        int targetsCount = m_Project->GetBuildTargetsCount();
+        for (int x = 0; x < targetsCount; ++x)
         {
-            buffer << _T('\n');
-            break;
-        }
+            ProjectBuildTarget* target = m_Project->GetBuildTarget(x);
+            if (!target)
+                break;
 
-        wxFileName resFile;
-        resFile.SetName(target->GetTitle() + _T("_private"));
-        resFile.SetExt(FileFilters::RESOURCEBIN_EXT);
-        resFile.MakeRelativeTo(m_Project->GetBasePath());
+            // create target's options only if it has at least one linkable file
+            if (!IsTargetValid(target))
+                continue;
 
-        // now create the resource file...
-        bool hasResources = false;
-        wxString resBuf;
-        resBuf << _T("#include <windows.h>") << _T('\n');
-        int filesCount = (int)m_Files.GetCount();
-        for (int i = 0; i < filesCount; ++i)
-        {
-            wxFileName file;
+            buffer << target->GetTitle() << _T("_RESOURCE=");
 
-            ProjectFile* pf = m_Files[i];
-            // if the file is allowed to compile *and* belongs in this target
-            if (pf->link && pf->buildTargets.Index(target->GetTitle()) >= 0)
+            if (target->GetTargetType() == ttConsoleOnly)
             {
-                file.Assign(pf->relativeFilename);
-                if (file.GetExt().Lower().Matches(_T("rc")))
+                buffer << _T('\n');
+                break;
+            }
+
+            wxFileName resFile;
+            resFile.SetName(target->GetTitle() + _T("_private"));
+            resFile.SetExt(FileFilters::RESOURCEBIN_EXT);
+            resFile.MakeRelativeTo(m_Project->GetBasePath());
+
+            // now create the resource file...
+            bool hasResources = false;
+            wxString resBuf;
+            resBuf << _T("#include <windows.h>") << _T('\n');
+            int filesCount = (int)m_Files.GetCount();
+            for (int i = 0; i < filesCount; ++i)
+            {
+                wxFileName file;
+
+                ProjectFile* pf = m_Files[i];
+                // if the file is allowed to compile *and* belongs in this target
+                if (pf->link && pf->buildTargets.Index(target->GetTitle()) >= 0)
                 {
-                    resBuf << _T("#include \"") << file.GetFullPath() << _T("\"") << _T('\n');
-                    hasResources = true;
+                    file.Assign(pf->relativeFilename);
+                    if (file.GetExt().Lower().Matches(_T("rc")))
+                    {
+                        resBuf << _T("#include \"") << file.GetFullPath() << _T("\"") << _T('\n');
+                        hasResources = true;
+                    }
                 }
             }
-        }
 
-        if (hasResources)
-        {
-            wxString out = UnixFilename(resFile.GetFullPath());
-            ConvertToMakefileFriendly(out);
-            QuoteStringIfNeeded(out);
-            buffer << out << _T('\n');
-            // write private resource file to disk
-            resFile.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
-            resFile.SetExt(FileFilters::RESOURCE_EXT);
-            wxFile file(resFile.GetFullPath(), wxFile::write);
-            cbWrite(file,resBuf);
+            if (hasResources)
+            {
+                wxString out = UnixFilename(resFile.GetFullPath());
+                ConvertToMakefileFriendly(out);
+                QuoteStringIfNeeded(out);
+                buffer << out << _T('\n');
+                // write private resource file to disk
+                resFile.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
+                resFile.SetExt(FileFilters::RESOURCE_EXT);
+                wxFile file(resFile.GetFullPath(), wxFile::write);
+                cbWrite(file,resBuf);
+            }
+            else
+                buffer << _T('\n');
         }
-        else
-            buffer << _T('\n');
+        buffer << _T('\n');
     }
-    buffer << _T('\n');
 }
-#endif // __WXMSW__
 
 void MakefileGenerator::DoAddMakefileCreateDirs(wxString& buffer, ProjectBuildTarget* target, bool obj, bool dep, bool bin)
 {
@@ -878,14 +879,19 @@ void MakefileGenerator::RecursiveCreateDir(wxString& buffer, const wxArrayString
             continue;
         }
         guardList.Add(currdir);
-#ifdef __WXMSW__
-        buffer << _T("\t-@if not exist \"") << currdir << wxFileName::GetPathSeparator() << _T(".\" mkdir \"") << currdir << _T("\"\n");
-#else
-        wxString out = currdir;
-        ConvertToMakefileFriendly(out);
-        QuoteStringIfNeeded(out);
-        buffer << _T("\t-@if ! test -d ") << out << _T("; then mkdir ") << out << _T("; fi\n");
-#endif
+
+        if(platform::windows)
+        {
+            buffer << _T("\t-@if not exist \"") << currdir << wxFileName::GetPathSeparator() << _T(".\" mkdir \"") << currdir << _T("\"\n");
+        }
+        else
+        {
+            wxString out = currdir;
+            ConvertToMakefileFriendly(out);
+            QuoteStringIfNeeded(out);
+            buffer << _T("\t-@if ! test -d ") << out << _T("; then mkdir ") << out << _T("; fi\n");
+        }
+
         currdir << wxFileName::GetPathSeparator();
     }
 }
@@ -1530,9 +1536,8 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
         if (!IsTargetValid(target))
             continue;
 
-#ifdef __WXMSW__
         wxString resources;
-#endif // __WXMSW__
+
         int filesCount = (int)m_Files.GetCount();
         for (int i = 0; i < filesCount; ++i)
         {
@@ -1621,19 +1626,17 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
                 }
                 else
                 {
-#ifdef __WXMSW__
-                    if (pf->compile && FileTypeOf(pf->relativeFilename) == ftResource)
+                    if (platform::windows && pf->compile && FileTypeOf(pf->relativeFilename) == ftResource)
                     {
                         wxString out = pf->relativeFilename;
                         ConvertToMakefileFriendly(out);
                         resources << out << _T(" ");
                     }
-#endif // __WXMSW__
                 }
             }
         }
-#ifdef __WXMSW__
-        if (!resources.IsEmpty())
+
+        if (platform::windows && !resources.IsEmpty())
         {
             wxFileName resFile;
             resFile.SetName(target->GetTitle() + _T("_private"));
@@ -1657,7 +1660,6 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
 			buffer << _T('\n');
         }
         buffer << _T('\n');
-#endif // __WXMSW__
     }
     buffer << _T('\n');
 }
@@ -1785,9 +1787,10 @@ bool MakefileGenerator::CreateMakefile()
     buffer << _("#         You shouldn't need to modify anything beyond this point             #") << _T('\n');
     buffer << _T("###############################################################################") << _T('\n');
     buffer << _T('\n');
-#ifdef __WXMSW__
-    DoAddMakefileResources(buffer);
-#endif // __WXMSW__
+
+    if(platform::windows)
+        DoAddMakefileResources(buffer);
+
     DoAddMakefileObjs(buffer);
     DoAddMakefileTargets(buffer);
 	DoAddPhonyTargets(buffer);

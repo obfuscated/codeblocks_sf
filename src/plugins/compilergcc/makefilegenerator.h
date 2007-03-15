@@ -48,9 +48,9 @@ class MakefileGenerator
 
         void DoAddVarsSet(wxString& buffer, CustomVars& vars);
         void DoAddMakefileVars(wxString& buffer);
-#ifdef __WXMSW__
+
         void DoAddMakefileResources(wxString& buffer);
-#endif // __WXMSW__
+
         void DoAddMakefileCreateDirs(wxString& buffer, ProjectBuildTarget* target, bool obj, bool dep, bool bin);
         void DoAddMakefileObjs(wxString& buffer);
         void DoAddMakefileIncludes(wxString& buffer);

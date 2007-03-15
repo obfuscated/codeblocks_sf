@@ -62,7 +62,9 @@
 #include "globals.h"
 
 #ifdef __WXMSW__
-    #include <winbase.h> //For GetShortPathName()...only for windows systems
+    #include <winbase.h>
+#else
+    int GetShortPathName(void*, void*, int){/* bogus */ return 0; };
 #endif
 
 #ifndef CB_PRECOMP
@@ -917,12 +919,17 @@ int DebuggerGDB::Debug()
     if(cmdexe.IsEmpty())
     {
         msgMan->AppendLog(m_PageIndex,_("ERROR: You need to specify a debugger program in the compiler's settings."));
-        #ifdef __WXMSW__
-        msgMan->Log(m_PageIndex,_("\n(For MinGW compilers, it's 'gdb.exe' (without the quotes))"));
-        msgMan->Log(m_PageIndex,_("\n(For MSVC compilers, it's 'cdb.exe' (without the quotes))"));
-        #else
-        msgMan->Log(m_PageIndex,_("\n(For GCC compilers, it's 'gdb' (without the quotes))"));
-        #endif
+
+        if(platform::windows)
+        {
+            msgMan->Log(m_PageIndex,_("\n(For MinGW compilers, it's 'gdb.exe' (without the quotes))"));
+            msgMan->Log(m_PageIndex,_("\n(For MSVC compilers, it's 'cdb.exe' (without the quotes))"));
+        }
+        else
+        {
+            msgMan->Log(m_PageIndex,_("\n(For GCC compilers, it's 'gdb' (without the quotes))"));
+        }
+
         return -1;
     }
 
@@ -1090,7 +1097,8 @@ void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relat
     StripQuotes(str);
     StripQuotes(base);
 
-    #ifdef __WXMSW__
+    if(platform::windows)
+    {
         int ColonLocation = str.Find(_T(':'));
         wxChar buf[255];
         if(ColonLocation != -1)
@@ -1120,22 +1128,27 @@ void DebuggerGDB::ConvertToGDBDirectory(wxString& str, wxString base, bool relat
 
         if(ColonLocation == -1 || base.IsEmpty())
             relative = false;        //Can't do it
-    #else
+    }
+    else
+    {
         if((str.GetChar(0) != _T('/') && str.GetChar(0) != _T('~')) || base.IsEmpty())
             relative = false;
-    #endif
+    }
 
     if(relative)
     {
-        #ifdef __WXMSW__
+        if(platform::windows)
+        {
             if(str.Find(_T(':')) != -1) str = str.Mid(str.Find(_T(':')) + 2, str.Length());
             if(base.Find(_T(':')) != -1) base = base.Mid(base.Find(_T(':')) + 2, base.Length());
-        #else
+        }
+        else
+        {
             if(str.GetChar(0) == _T('/')) str = str.Mid(1, str.Length());
             else if(str.GetChar(0) == _T('~')) str = str.Mid(2, str.Length());
             if(base.GetChar(0) == _T('/')) base = base.Mid(1, base.Length());
             else if(base.GetChar(0) == _T('~')) base = base.Mid(2, base.Length());
-        #endif
+        }
 
         while(!base.IsEmpty() && !str.IsEmpty())
         {
