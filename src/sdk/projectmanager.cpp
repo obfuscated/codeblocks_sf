@@ -478,6 +478,26 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
 
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(id);
     bool is_vfolder = ftd && ftd->GetKind() == FileTreeData::ftdkVirtualFolder;
+    /* Following code will check for currently compiling project.
+    *  If it finds the selected is project is currently compiling,
+    *  then it will disable some of the options */
+    bool ProjectRelatedOptions= true;
+    ProjectsArray* Projects = Manager::Get()->GetProjectManager()->GetProjects();
+    if (Projects && (ftd->GetKind() == FileTreeData::ftdkProject)) // Make sure we're looking for projects
+    {
+        int Count = Projects->GetCount();
+        cbProject* ProjInTree = ftd->GetProject();
+        for (int i = 0; i < Count; ++i)
+        {
+            cbProject* CurProject = Projects->Item(i);
+            if (ProjInTree->GetTitle().IsSameAs(CurProject->GetTitle()))
+            {
+                ProjectBuildTarget* CompTarget = CurProject->GetCurrentlyCompilingTarget();
+                if (CompTarget)
+                    ProjectRelatedOptions = false;
+            }
+        }
+    }
 
     // if it is not the workspace, add some more options
     if (ftd)
@@ -488,10 +508,14 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             if (ftd->GetProject() != m_pActiveProject)
                 menu.Append(idMenuSetActiveProject, _("Activate project"));
             menu.Append(idMenuCloseProject, _("Close project"));
+            menu.Enable(idMenuCloseProject, ProjectRelatedOptions);
             menu.AppendSeparator();
             menu.Append(idMenuAddFilePopup, _("Add files..."));
+            menu.Enable(idMenuAddFilePopup, ProjectRelatedOptions);
             menu.Append(idMenuAddFilesRecursivelyPopup, _("Add files recursively..."));
+            menu.Enable(idMenuAddFilesRecursivelyPopup, ProjectRelatedOptions);
             menu.Append(idMenuRemoveFile, _("Remove files..."));
+            menu.Enable(idMenuRemoveFile, ProjectRelatedOptions);
             menu.AppendSeparator();
             menu.Append(idMenuAddVirtualFolder, _("Add new virtual folder"));
             if (is_vfolder)
@@ -602,6 +626,7 @@ it differs from the block currently in CreateMenu() by the following two IDs */
 
             menu.Append(idMenuProjectTreeProps, _("Project tree"), treeprops);
             menu.Append(idMenuTreeProjectProperties, _("Properties"));
+            menu.Enable(idMenuTreeProjectProperties, ProjectRelatedOptions);
         }
 
         // more file options
