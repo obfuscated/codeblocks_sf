@@ -97,7 +97,7 @@ namespace
 {
     PluginRegistrant<CompilerGCC> reg(_T("Compiler"));
 
-    static const wxString strCONSOLE_RUNNER(platform::windows ? _T("cb_strCONSOLE_RUNNER.exe") : _T("cb_strCONSOLE_RUNNER"));
+    static const wxString strCONSOLE_RUNNER(platform::windows ? _T("cb_console_runner.exe") : _T("cb_console_runner"));
     static const wxString strSLASH(_T("/"));
     static const wxString strSPACE(_T(" "));
 }
@@ -1667,7 +1667,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     // execution ends...
     if (target->GetTargetType() == ttConsoleOnly)
     {
-        if(platform::windows)
+        if(!platform::windows)
         {
             // for non-win platforms, use m_ConsoleTerm to run the console app
             wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
