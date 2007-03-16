@@ -327,6 +327,7 @@ void cbProject::Open()
             m_Loaded = loader->Open(m_Filename);
             fname.SetExt(FileFilters::CODEBLOCKS_EXT);
             m_Filename = fname.GetFullPath();
+            Save(); // Save it now to avoid project file opening error
             SetModified(true);
             m_CurrentlyLoading = false;
         }
