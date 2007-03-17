@@ -160,7 +160,7 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             Info.VerLo = VerLo;
             Info.AllowInXRC = AllowInXRC;
 
-            wxString DataPath = ConfigManager::GetDataFolder();
+            wxString DataPath = ConfigManager::GetDataFolder()+_T("/");
             Info.Icon32.LoadFile(DataPath+Bmp32FileName,wxBITMAP_TYPE_ANY);
             Info.Icon16.LoadFile(DataPath+Bmp16FileName,wxBITMAP_TYPE_ANY);
             Info.TreeIconId = m_TreeImage.GetIndex();
@@ -174,7 +174,7 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             long Priority,
             bool AllowInXRC=true):
                 wxsItemFactory(&Info,_T("wx") + ClassNameWithoutWx),
-                m_TreeImage(_T("/images/wxsmith/wx")+ClassNameWithoutWx+_T("16.png"),true)
+                m_TreeImage(_T("images/wxsmith/wx")+ClassNameWithoutWx+_T("16.png"),true)
         {
             Info.ClassName = _T("wx") + ClassNameWithoutWx;
             Info.Type = Type;

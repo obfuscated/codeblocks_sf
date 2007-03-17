@@ -133,7 +133,7 @@ wxImageList& wxsResourceTree::GetGlobalImageList()
 
 int wxsResourceTree::LoadImage(const wxString& FileName)
 {
-    wxBitmap Bmp(cbLoadBitmap(ConfigManager::GetDataFolder()+FileName,wxBITMAP_TYPE_ANY));
+    wxBitmap Bmp(cbLoadBitmap(ConfigManager::GetDataFolder()+_T("/")+FileName,wxBITMAP_TYPE_ANY));
     return InsertImage(Bmp);
 }
 

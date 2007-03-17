@@ -84,6 +84,8 @@
 		<Unit filename="wxsadvqpp.h" />
 		<Unit filename="wxsadvqppchild.cpp" />
 		<Unit filename="wxsadvqppchild.h" />
+		<Unit filename="wxsautoresourcetreeimage.cpp" />
+		<Unit filename="wxsautoresourcetreeimage.h" />
 		<Unit filename="wxscoder.cpp" />
 		<Unit filename="wxscoder.h" />
 		<Unit filename="wxscodinglang.cpp" />
@@ -242,6 +244,14 @@
 		<Unit filename="wxwidgets/properties/wxssizerflagsproperty.h" />
 		<Unit filename="wxwidgets/properties/wxsstyleproperty.cpp" />
 		<Unit filename="wxwidgets/properties/wxsstyleproperty.h" />
+		<Unit filename="wxwidgets/useritems/wxsuseritem.cpp">
+			<Option link="0" />
+		</Unit>
+		<Unit filename="wxwidgets/useritems/wxsuseritem.h" />
+		<Unit filename="wxwidgets/useritems/wxsuseritemmanager.cpp">
+			<Option link="0" />
+		</Unit>
+		<Unit filename="wxwidgets/useritems/wxsuseritemmanager.h" />
 		<Unit filename="wxwidgets/wxsbaseproperties.cpp" />
 		<Unit filename="wxwidgets/wxsbaseproperties.h" />
 		<Unit filename="wxwidgets/wxscontainer.cpp" />
@@ -315,13 +325,13 @@
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
-					<wxDialog wxs="wxsmith/wxWidgetsGUIAppAdoptingDlg.wxs" src="wxwidgets\wxwidgetsguiappadoptingdlg.cpp" hdr="wxwidgets/wxwidgetsguiappadoptingdlg.h" name="wxWidgetsGUIAppAdoptingDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/wxWidgetsGUIAppAdoptingDlg.wxs" src="wxwidgets/wxwidgetsguiappadoptingdlg.cpp" hdr="wxwidgets/wxwidgetsguiappadoptingdlg.h" name="wxWidgetsGUIAppAdoptingDlg" language="CPP" />
 					<wxDialog wxs="wxsmith/wxsNewWindowDlg.wxs" src="wxwidgets/wxsnewwindowdlg.cpp" hdr="wxwidgets/wxsnewwindowdlg.h" name="wxsNewWindowDlg" language="CPP" />
 					<wxDialog wxs="wxsmith/wxsArrayStringEditorDlg.wxs" src="properties/wxsarraystringeditordlg.cpp" hdr="properties/wxsarraystringeditordlg.h" name="wxsArrayStringEditorDlg" language="CPP" />
 					<wxDialog wxs="wxsmith/wxsArrayStringCheckEditorDlg.wxs" src="wxwidgets/properties/wxsarraystringcheckeditordlg.cpp" hdr="wxwidgets/properties/wxsarraystringcheckeditordlg.h" name="wxsArrayStringCheckEditorDlg" language="CPP" />
 					<wxDialog wxs="wxsmith/wxsBitmapIconEditorDlg.wxs" src="wxwidgets/properties/wxsbitmapiconeditordlg.cpp" hdr="wxwidgets/properties/wxsbitmapiconeditordlg.h" name="wxsBitmapIconEditorDlg" language="CPP" />
-					<wxDialog wxs="wxsmith/wxsFontEditorDlg.wxs" src="wxwidgets/properties/wxsfonteditordlg.cpp" hdr="wxwidgets\properties\wxsfonteditordlg.h" name="wxsFontEditorDlg" language="CPP" />
-					<wxDialog wxs="wxsmith/wxsFontFaceEditorDlg.wxs" src="wxwidgets/properties/wxsfontfaceeditordlg.cpp" hdr="wxwidgets\properties\wxsfontfaceeditordlg.h" name="wxsFontFaceEditorDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/wxsFontEditorDlg.wxs" src="wxwidgets/properties/wxsfonteditordlg.cpp" hdr="wxwidgets/properties/wxsfonteditordlg.h" name="wxsFontEditorDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/wxsFontFaceEditorDlg.wxs" src="wxwidgets/properties/wxsfontfaceeditordlg.cpp" hdr="wxwidgets/properties/wxsfontfaceeditordlg.h" name="wxsFontFaceEditorDlg" language="CPP" />
 					<wxDialog wxs="wxsmith/wxsSimpleFontEditorDlg.wxs" src="wxwidgets/properties/wxssimplefonteditordlg.cpp" hdr="wxwidgets/properties/wxssimplefonteditordlg.h" name="wxsSimpleFontEditorDlg" language="CPP" />
 					<wxPanel wxs="wxsmith/wxWidgetsGUIConfigPanel.wxs" src="wxwidgets/wxwidgetsguiconfigpanel.cpp" hdr="wxwidgets/wxwidgetsguiconfigpanel.h" name="wxWidgetsGUIConfigPanel" language="CPP" />
 					<wxPanel wxs="wxsmith/wxsSizerParentQP.wxs" src="wxwidgets/wxssizerparentqp.cpp" hdr="wxwidgets/wxssizerparentqp.h" name="wxsSizerParentQP" language="CPP" />
