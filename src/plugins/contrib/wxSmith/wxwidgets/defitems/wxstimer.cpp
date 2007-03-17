@@ -16,9 +16,9 @@
 * along with wxSmith; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 *
-* $Revision: 3522 $
-* $Id: wxsbutton.cpp 3522 2007-01-20 20:46:00Z byo $
-* $HeadURL: svn+ssh://byo@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxsbutton.cpp $
+* $Revision$
+* $Id$
+* $HeadURL$
 */
 
 #include "wxstimer.h"

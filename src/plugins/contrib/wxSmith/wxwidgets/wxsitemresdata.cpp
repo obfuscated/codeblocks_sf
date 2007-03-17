@@ -639,10 +639,6 @@ void wxsItemResData::BuildCreatingCode(wxsCodingLang Lang,wxString& Code)
     {
         case wxsItem::flSource:
             m_RootItem->BuildCreatingCode(Code,_T("parent"),Lang);
-            for ( int i=0; i<GetToolsCount(); i++ )
-            {
-                m_Tools[i]->BuildCreatingCode(Code,_T("this"),Lang);
-            }
             break;
 
         case wxsItem::flMixed:

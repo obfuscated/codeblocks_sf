@@ -22,6 +22,8 @@
 */
 
 #include "wxscontainer.h"
+#include "wxsitemresdata.h"
+#include "wxstool.h"
 #include <messagemanager.h>
 
 wxsContainer::wxsContainer(
@@ -168,24 +170,44 @@ void wxsContainer::AddChildrenCode(wxString& Code,wxsCodingLang Language)
         {
             for ( int i=0; i<GetChildCount(); i++ )
             {
-                wxString ThisName = GetParent()?GetVarName():_T("this");
-                GetChild(i)->BuildCreatingCode(Code,ThisName,wxsCPP);
-                if ( GetChild(i)->GetType() == wxsTSizer )
+                wxsItem* Child = GetChild(i);
+                Child->BuildCreatingCode(Code,GetVarName(),Language);
+                if ( Child->GetType() == wxsTSizer )
                 {
-                    wxString SizerName = GetChild(i)->GetVarName();
-                    if ( GetParent() )
+                    Code << GetAccessPrefix(Language)
+                         << _T("SetSizer(")
+                         // TODO: Fix, child may not be pointer
+                         << Child->GetVarName()
+                         << _T(");\n");
+                }
+            }
+
+            if ( IsRootItem() )
+            {
+                // Adding all tools before calling Fit and SetSizeHints()
+
+                wxsItemResData* Data = GetResourceData();
+                if ( Data )
+                {
+                    for ( int i=0; i<Data->GetToolsCount(); i++ )
                     {
-                        Code << GetVarName() << _T("->");
+                        Data->GetTool(i)->BuildCreatingCode(Code,GetVarName(),Language);
                     }
+                }
 
-                    Code << _T("SetSizer(") << SizerName << _T(");\n");
+            }
 
+            for ( int i=0; i<GetChildCount(); i++ )
+            {
+                wxsItem* Child = GetChild(i);
+                if ( Child->GetType() == wxsTSizer )
+                {
                     if ( GetBaseProps()->m_Size.IsDefault )
                     {
-                        Code << SizerName << _T("->Fit(") << ThisName << _T(");\n");
+                        Code << Child->GetAccessPrefix(Language) << _T("Fit(") << Codef(Language,_T("%O")) << _T(");\n");
                     }
 
-                    Code << SizerName << _T("->SetSizeHints(") << ThisName << _T(");\n");
+                    Code << Child->GetAccessPrefix(Language) << _T("SetSizeHints(") << Codef(Language,_T("%O")) << _T(");\n");
                 }
             }
             return;

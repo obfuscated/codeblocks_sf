@@ -451,7 +451,15 @@ void wxsItem::Codef(wxsCodingLang Language,wxString WindowParent,const wxChar* F
 
                         case _T('O'):
                         {
-                            if ( GetPropertiesFlags() & flVariable )
+                            if ( IsRootItem() )
+                            {
+                                switch ( Language )
+                                {
+                                    case wxsCPP: Result << _T("this"); break;
+                                    default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
+                                }
+                            }
+                            else if ( GetPropertiesFlags() & flVariable )
                             {
                                 if ( IsPointer() )
                                 {
@@ -488,7 +496,15 @@ void wxsItem::Codef(wxsCodingLang Language,wxString WindowParent,const wxChar* F
 
                         case _T('R'):
                         {
-                            if ( GetPropertiesFlags() & flVariable )
+                            if ( IsRootItem() )
+                            {
+                                switch ( Language )
+                                {
+                                    case wxsCPP: Result << _T("(*this)"); break;
+                                    default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
+                                }
+                            }
+                            else if ( GetPropertiesFlags() & flVariable )
                             {
                                 if ( IsPointer() )
                                 {
