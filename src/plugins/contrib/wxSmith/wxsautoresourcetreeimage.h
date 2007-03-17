@@ -1,6 +1,10 @@
 #ifndef WXSAUTORESOURCETREEIMAGE_H
 #define WXSAUTORESOURCETREEIMAGE_H
 /** \brief This class helps automatically loading images into resource browser */
+
+class wxString;
+class wxBitmap;
+
 class wxsAutoResourceTreeImage
 {
     public:
@@ -25,7 +29,7 @@ class wxsAutoResourceTreeImage
         ~wxsAutoResourceTreeImage();
 
         /** \brief Get index of handled image */
-        inline int GetIndex() { return m_Index; }
+        inline int GetIndex() const { return m_Index; }
 
     private:
 
