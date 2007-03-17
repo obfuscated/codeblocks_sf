@@ -483,7 +483,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     *  then it will disable some of the options */
     bool ProjectRelatedOptions= true;
     ProjectsArray* Projects = Manager::Get()->GetProjectManager()->GetProjects();
-    if (Projects && (ftd->GetKind() == FileTreeData::ftdkProject)) // Make sure we're looking for projects
+    if (Projects && ftd && (ftd->GetKind() == FileTreeData::ftdkProject)) // Make sure we're looking for projects
     {
         int Count = Projects->GetCount();
         cbProject* ProjInTree = ftd->GetProject();
