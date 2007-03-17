@@ -39,8 +39,8 @@ namespace
         _T(""),
         wxsCPP,
         2,6,
-        _T("Spacer32.png"),
-        _T("Spacer16.png"));
+        _T("images/wxsmith/Spacer32.png"),
+        _T("images/wxsmith/Spacer16.png"));
 
     class wxsSpacerPreview: public wxPanel
     {

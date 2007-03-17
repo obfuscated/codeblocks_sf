@@ -133,7 +133,46 @@ wxImageList& wxsResourceTree::GetGlobalImageList()
 
 int wxsResourceTree::LoadImage(const wxString& FileName)
 {
-    return GetGlobalImageList().Add(cbLoadBitmap(ConfigManager::GetDataFolder()+FileName,wxBITMAP_TYPE_ANY));
+    wxBitmap Bmp(cbLoadBitmap(ConfigManager::GetDataFolder()+FileName,wxBITMAP_TYPE_ANY));
+    return InsertImage(Bmp);
+}
+
+int wxsResourceTree::InsertImage(const wxBitmap& Bitmap)
+{
+    if ( !Bitmap.Ok() )
+    {
+        return 0;
+    }
+
+    int Index = 0;
+    do
+    {
+        if ( GetFreedList().IsEmpty() )
+        {
+            return GetGlobalImageList().Add(Bitmap);
+        }
+        Index = GetFreedList().Last();
+        GetFreedList().RemoveAt(GetFreedList().Count()-1);
+    }
+    while ( Index<=0 || Index>=GetGlobalImageList().GetImageCount() );
+
+    if ( GetGlobalImageList().Replace(Index,Bitmap) )
+    {
+        return Index;
+    }
+
+    return GetGlobalImageList().Add(Bitmap);
+}
+
+wxArrayInt& wxsResourceTree::GetFreedList()
+{
+    static wxArrayInt List;
+    return List;
+}
+
+void wxsResourceTree::FreeImage(int Index)
+{
+    GetFreedList().Add(Index);
 }
 
 void wxsResourceTree::BlockSelect()

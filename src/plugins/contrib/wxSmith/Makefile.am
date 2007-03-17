@@ -34,7 +34,8 @@ libwxsmith_la_SOURCES = \
 ./wxsresourcetreeitemdata.cpp \
 ./wxsstoringsplitterwindow.cpp \
 ./wxsversionconverter.cpp \
-./wxssettings.cpp
+./wxssettings.cpp \
+./wxsautoresourcetreeimage.cpp
 
 noinst_HEADERS = \
 ./wxsadvqpp.h \
@@ -54,7 +55,8 @@ noinst_HEADERS = \
 ./wxsresourcetreeitemdata.h \
 ./wxsstoringsplitterwindow.h \
 ./wxsversionconverter.h \
-./wxssettings.h
+./wxssettings.h \
+./wxsautoresourcetreeimage.h
 
 EXTRA_DIST = \
 *.cbp \

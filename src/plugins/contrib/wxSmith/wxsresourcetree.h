@@ -51,6 +51,20 @@ class wxsResourceTree: public wxTreeCtrl
          */
         static int LoadImage(const wxString& FileName);
 
+        /** \brief Adding bitmap into global list
+         *  \param Bitmap bitmap to be added
+         *  \return Index in list
+         */
+        static int InsertImage(const wxBitmap& Bitmap);
+
+        /** \brief Freeing image at given index
+         *
+         * This function marks image at given index as freed, so
+         * it may be replaced by LoadImage in future without
+         * unnecessarily increasing size of list
+         */
+        static void FreeImage(int Index);
+
         /** \brief Blocking processing select events
          * \note This function must be paired with UnblockSelect
          */
@@ -72,6 +86,7 @@ class wxsResourceTree: public wxTreeCtrl
         static int m_ProjectImageId;
         static int m_ExternalImageId;
 
+        static wxArrayInt& GetFreedList();
 
         void OnSelect(wxTreeEvent& event);
         void OnRightClick(wxTreeEvent& event);

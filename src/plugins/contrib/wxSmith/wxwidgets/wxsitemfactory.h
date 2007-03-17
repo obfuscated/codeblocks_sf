@@ -2,6 +2,7 @@
 #define WXSITEMFACTORY_H
 
 #include "wxsiteminfo.h"
+#include "../wxsautoresourcetreeimage.h"
 #include "../wxscodinglang.h"
 
 #include <wx/string.h>
@@ -104,7 +105,8 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             const wxBitmap& Bmp32,
             const wxBitmap& Bmp16,
             bool AllowInXRC = true
-            ): wxsItemFactory(&Info,ClassName)
+            ): wxsItemFactory(&Info,ClassName),
+               m_TreeImage(Bmp16)
         {
             Info.ClassName = ClassName;
             Info.Type = Type;
@@ -121,7 +123,7 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             Info.Icon32 = Bmp32.GetSubBitmap(wxRect(0,0,Bmp32.GetWidth(),Bmp32.GetHeight()));
             Info.Icon16 = Bmp16.GetSubBitmap(wxRect(0,0,Bmp16.GetWidth(),Bmp16.GetHeight()));
             Info.AllowInXRC = AllowInXRC;
-            Info.TreeIconId = Info.Icon16.Ok() ? GetImageList().Add(Info.Icon16) : 0;
+            Info.TreeIconId = m_TreeImage.GetIndex();
         }
 
         /** \brief Ctor - bitmaps are loaded from files */
@@ -141,7 +143,8 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             const wxString& Bmp32FileName,
             const wxString& Bmp16FileName,
             bool AllowInXRC = true
-            ): wxsItemFactory(&Info,ClassName)
+            ): wxsItemFactory(&Info,ClassName),
+               m_TreeImage(Bmp16FileName)
         {
             Info.ClassName = ClassName;
             Info.Type = Type;
@@ -157,11 +160,10 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             Info.VerLo = VerLo;
             Info.AllowInXRC = AllowInXRC;
 
-            wxString DataPath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
+            wxString DataPath = ConfigManager::GetDataFolder();
             Info.Icon32.LoadFile(DataPath+Bmp32FileName,wxBITMAP_TYPE_ANY);
             Info.Icon16.LoadFile(DataPath+Bmp16FileName,wxBITMAP_TYPE_ANY);
-
-            Info.TreeIconId = LoadImage(DataPath+Bmp16FileName);
+            Info.TreeIconId = m_TreeImage.GetIndex();
         }
 
         /** \brief Ctor for built-in items from wxWidgets - sets most of data fields to default */
@@ -170,7 +172,9 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             wxsItemType Type,
             const wxString& Category,
             long Priority,
-            bool AllowInXRC=true): wxsItemFactory(&Info,_T("wx") + ClassNameWithoutWx)
+            bool AllowInXRC=true):
+                wxsItemFactory(&Info,_T("wx") + ClassNameWithoutWx),
+                m_TreeImage(_T("/images/wxsmith/wx")+ClassNameWithoutWx+_T("16.png"),true)
         {
             Info.ClassName = _T("wx") + ClassNameWithoutWx;
             Info.Type = Type;
@@ -190,7 +194,7 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             Info.Icon32.LoadFile(DataPath+Info.ClassName+_T(".png"),wxBITMAP_TYPE_PNG);
             Info.Icon16.LoadFile(DataPath+Info.ClassName+_T("16.png"),wxBITMAP_TYPE_PNG);
 
-            Info.TreeIconId = LoadImage(_T("/images/wxsmith/")+Info.ClassName+_T("16.png"));
+            Info.TreeIconId = m_TreeImage.GetIndex();
         }
 
     protected:
@@ -199,6 +203,8 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
         {
             return new T(Data);
         }
+
+        wxsAutoResourceTreeImage m_TreeImage;
 };
 
 #endif
