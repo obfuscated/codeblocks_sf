@@ -73,6 +73,13 @@
 
 #define implement_debugger_toolbar
 
+// function pointer to DebugBreakProcess under windows (XP+)
+#if (_WIN32_WINNT >= 0x0501)
+typedef WINBASEAPI BOOL WINAPI (*DebugBreakProcessApiCall)(HANDLE);
+DebugBreakProcessApiCall DebugBreakProcessFunc = 0;
+HINSTANCE kernelLib = 0; 
+#endif
+
 // valid debugger command constants
 enum DebugCommandConst
 {
@@ -238,10 +245,21 @@ DebuggerGDB::DebuggerGDB()
     {
         NotifyMissingFile(_T("debugger.zip"));
     }
+
+	// get a function pointer to DebugBreakProcess under windows (XP+)
+	#if (_WIN32_WINNT >= 0x0501)
+	kernelLib = LoadLibrary(TEXT("kernel32.dll")); 
+	if (kernelLib)
+		DebugBreakProcessFunc = (DebugBreakProcessApiCall)GetProcAddress(kernelLib, "DebugBreakProcess");
+	#endif
 }
 
 DebuggerGDB::~DebuggerGDB()
 {
+	#if (_WIN32_WINNT >= 0x0501)
+	if (kernelLib)
+		FreeLibrary(kernelLib); 
+	#endif
 }
 
 void DebuggerGDB::OnAttach()
@@ -1555,13 +1573,13 @@ void DebuggerGDB::Stop()
         #else
             // windows gdb can interrupt the running process too. yay!
             bool done = false;
-            if (pid > 0)
+            if (DebugBreakProcessFunc && pid > 0)
             {
             	Log(_("Trying to pause the running process..."));
             	HANDLE proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)pid);
             	if (proc)
             	{
-					DebugBreakProcess(proc); // yay!
+					DebugBreakProcessFunc(proc); // yay!
 					CloseHandle(proc);
 					done = true;
             	}
