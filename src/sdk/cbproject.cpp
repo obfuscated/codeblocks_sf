@@ -729,6 +729,7 @@ bool cbProject::RemoveFile(ProjectFile* pf)
     }
     delete pf;
 
+    Manager::Get()->GetProjectManager()->RebuildTree();
     SetModified(true);
     return true;
 }
