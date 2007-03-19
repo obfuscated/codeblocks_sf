@@ -1147,16 +1147,16 @@ int CompilerGCC::DoRunQueue()
         flags |= wxEXEC_NOHIDE;
         dir = m_CdRun;
 
-    // setup dynamic linker path
-    if(platform::windows)
-        wxSetEnv(_T("LD_LIBRARY_PATH"), _T(".:$LD_LIBRARY_PATH"));
+		// setup dynamic linker path
+		if (!platform::windows)
+			wxSetEnv(_T("LD_LIBRARY_PATH"), _T(".:$LD_LIBRARY_PATH"));
     }
 
     // special shell used only for build commands
     if (!cmd->isRun)
     {
         // run the command in a shell, so backtick'd expressions can be evaluated
-        if(platform::windows == false)
+        if (!platform::windows)
         {
             wxString shell = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
             cmd->command = shell + _T(" '") + cmd->command + _T("'");
@@ -1667,7 +1667,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     // execution ends...
     if (target->GetTargetType() == ttConsoleOnly)
     {
-        if(!platform::windows)
+        if (!platform::windows)
         {
             // for non-win platforms, use m_ConsoleTerm to run the console app
             wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
