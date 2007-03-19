@@ -412,7 +412,7 @@ WizGenericSelectPathPanel::~WizGenericSelectPathPanel()
 void WizGenericSelectPathPanel::OnButton(wxCommandEvent& event)
 {
     wxString dir = Manager::Get()->GetMacrosManager()->ReplaceMacros(m_pGenericSelectPath->txtFolder->GetValue());
-    dir = ChooseDirectory(0, _("Please select location"), dir, wxEmptyString, false, true);
+    dir = ChooseDirectory(this, _("Please select location"), dir, wxEmptyString, false, true);
     if (!dir.IsEmpty() && wxDirExists(dir))
         m_pGenericSelectPath->txtFolder->SetValue(dir);
 }

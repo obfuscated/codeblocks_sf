@@ -631,7 +631,7 @@ void UsrGlblMgrEditDialog::OnFS(wxCommandEvent& event)
     else
         cbThrow(_T("Encountered invalid button ID"));
 
-    wxString path = ChooseDirectory(0, _("Choose a location"), c->GetValue());
+    wxString path = ChooseDirectory(this, _("Choose a location"), c->GetValue());
     if (!path.IsEmpty())
         c->SetValue(path);
 }
