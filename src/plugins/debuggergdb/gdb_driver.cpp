@@ -657,7 +657,9 @@ void GDB_driver::ParseOutput(const wxString& output)
     int idx = buffer.First(GDB_PROMPT);
     if (idx == wxNOT_FOUND)
     {
-		m_ProgramIsStopped = false;
+    	// don't uncomment the following line
+    	// m_ProgramIsStopped is set to false in DebuggerDriver::RunQueue()
+//		m_ProgramIsStopped = false;
         return; // come back later
     }
 

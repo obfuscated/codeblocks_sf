@@ -1600,25 +1600,10 @@ void DebuggerGDB::Stop()
 
 void DebuggerGDB::ParseOutput(const wxString& output)
 {
-	// and here's the root of many problems in parsing:
-	// because we receive (asynchronous) separate output/error stream events, we have to
-	// make sure that they 're processed in the order they arrived.
-	static bool busy = false;
-	static wxString busyBuffer;
-
-	if (busy)
-	{
-		busyBuffer << output;
-		return;
-	}
-
-	busy = true;
-    if ((!output.IsEmpty() || !busyBuffer.IsEmpty()) && m_State.HasDriver())
+    if (!output.IsEmpty() && m_State.HasDriver())
     {
-        m_State.GetDriver()->ParseOutput(busyBuffer + output);
+        m_State.GetDriver()->ParseOutput(output);
     }
-    busyBuffer.Clear();
-    busy = false;
 }
 
 void DebuggerGDB::BringAppToFront()
