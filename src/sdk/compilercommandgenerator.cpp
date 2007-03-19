@@ -452,6 +452,13 @@ wxString CompilerCommandGenerator::SetupIncludeDirs(Compiler* compiler, ProjectB
         {
             Manager::Get()->GetMacrosManager()->ReplaceMacros(searchDirs[x], target);
         }
+        // respect include dirs set by specific options (helps dependency tracking)
+        bool incPrjDir = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_prj_cwd"), false);
+        if (incPrjDir)
+			searchDirs.Add(target->GetParentProject()->GetBasePath());
+        bool incFileDir = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_file_cwd"), false);
+        if (incFileDir)
+			searchDirs.Add(_T("."));
         m_CompilerSearchDirs.insert(m_CompilerSearchDirs.end(), std::make_pair(target, searchDirs));
 
         // target dirs
