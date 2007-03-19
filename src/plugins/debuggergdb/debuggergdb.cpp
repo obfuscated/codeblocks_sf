@@ -86,6 +86,7 @@ enum DebugCommandConst
     CMD_CONTINUE,
     CMD_STEP,
     CMD_STEPIN,
+    CMD_STEPOUT,
     CMD_STEP_INSTR,
     CMD_STOP,
     CMD_BACKTRACE,
@@ -1245,6 +1246,13 @@ void DebuggerGDB::RunCommand(int cmd)
 //            QueueCommand(new DebuggerCmd(this, _T("step")));
             break;
 
+        case CMD_STEPOUT:
+            ClearActiveMarkFromAllEditors();
+            if (m_State.HasDriver())
+                m_State.GetDriver()->StepOut();
+//            QueueCommand(new DebuggerCmd(this, _T("finish")));
+            break;
+
         case CMD_STOP:
             ClearActiveMarkFromAllEditors();
             if (m_State.HasDriver())
@@ -1484,36 +1492,7 @@ bool DebuggerGDB::Validate(const wxString& line, const char cb)
 
 void DebuggerGDB::StepOut()
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed) return;
-    wxString filename = UnixFilename(ed->GetFilename()), lineBuf, cmd;
-    cbStyledTextCtrl* stc = ed->GetControl();
-    int line = m_HaltAtLine;
-    lineBuf = stc->GetLine(line);
-    int maxline = stc->GetLineCount();
-
-    unsigned int nLevel = 1;
-    while(nLevel && line <= maxline)
-    {
-        if ((lineBuf.Find(_T('{'))+1) &&
-            Validate(lineBuf, _T('{')) &&
-            (line > m_HaltAtLine))
-        {
-            nLevel++;
-        }
-        if ((lineBuf.Find(_T('}'))+1) && Validate(lineBuf, _T('}')))
-            nLevel--;
-        if (nLevel)
-            lineBuf = stc->GetLine(++line);
-    }
-    if (line == stc->GetCurrentLine())
-        Next();
-    else
-    {
-        ConvertToGDBFile(filename);
-        m_State.AddBreakpoint(filename, line, true);
-        Continue();
-    }
+	RunCommand(CMD_STEPOUT);
 }
 
 void DebuggerGDB::RunToCursor()
