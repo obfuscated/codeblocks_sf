@@ -62,6 +62,14 @@ namespace platform
     const bool gtk = false;
     #endif
 
+	#if defined ( linux )
+		#undef linux
+	#endif
+
+	#if defined ( unix )
+		#undef unix
+	#endif
+
     const bool windows = (id == platform_windows);
     const bool macos   = (id == platform_macos);
     const bool linux   = (id == platform_linux);

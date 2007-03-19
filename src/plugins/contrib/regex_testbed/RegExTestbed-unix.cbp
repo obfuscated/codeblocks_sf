@@ -39,6 +39,10 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+		<Compiler>
+			<Add option="-Ulinux" />
+			<Add option="-Uunix" />
+		</Compiler>
 		<Unit filename="RegExTestbed.cpp" />
 		<Unit filename="RegExTestbed.h" />
 		<Unit filename="manifest.xml" />

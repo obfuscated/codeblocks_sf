@@ -20,6 +20,8 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-Ulinux" />
+			<Add option="-Uunix" />
 			<Add option="`wx-config --cflags`" />
 			<Add option="-fPIC" />
 			<Add option='-include &quot;sdk.h&quot;' />
