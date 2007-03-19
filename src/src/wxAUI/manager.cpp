@@ -502,6 +502,8 @@ void wxDefaultDockArt::DrawPaneButton(wxDC& dc,
                                       wxPaneInfo& pane)
 {
     wxRect rect = _rect;
+    if (!(&pane))
+        return;
 
     if (button_state == wxAUI_BUTTON_STATE_PRESSED)
     {
@@ -517,7 +519,7 @@ void wxDefaultDockArt::DrawPaneButton(wxDC& dc,
             dc.SetBrush(wxBrush(StepColour(m_active_caption_colour, 120)));
             dc.SetPen(wxPen(StepColour(m_active_caption_colour, 70)));
         }
-         else
+        else
         {
             dc.SetBrush(wxBrush(StepColour(m_inactive_caption_colour, 120)));
             dc.SetPen(wxPen(StepColour(m_inactive_caption_colour, 70)));
