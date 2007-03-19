@@ -656,7 +656,9 @@ bool UsesCommonControls6()
 #else
 bool UsesCommonControls6()
 {
-    return false;
+	// for non-windows platforms, return true
+	// as this is only used for knowing if bitmaps support transparency or not
+    return true;
 }
 #endif
 
