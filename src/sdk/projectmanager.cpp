@@ -2046,14 +2046,13 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
         wxString filename = ftd->GetProjectFile()->file.GetFullPath();
         prj->RemoveFile(ftd->GetProjectFile());
         prj->CalculateCommonTopLevelPath();
-        if (prj->GetCommonTopLevelPath() != oldpath)
-            RebuildTree();
-        else
-            m_pTree->Delete(sel);
         CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
         evt.SetProject(prj);
         evt.SetString(filename);
         Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+        if (prj->GetCommonTopLevelPath() == oldpath)
+            m_pTree->Delete(sel);
+        RebuildTree();
     }
     else if (event.GetId() == idMenuRemoveFolderFilesPopup)
     {
@@ -2085,10 +2084,9 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
                 ++i;
         }
         prj->CalculateCommonTopLevelPath();
-        if (prj->GetCommonTopLevelPath() != oldpath)
-            RebuildTree();
-        else
+        if (prj->GetCommonTopLevelPath() == oldpath)
             m_pTree->Delete(sel);
+        RebuildTree();
     }
 }
 
