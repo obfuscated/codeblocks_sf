@@ -386,7 +386,7 @@ bool MSVCLoader::ParseSourceFiles()
 void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxString& opts)
 {
     wxArrayString array;
-    array = GetArrayFromString(opts, _T(" "));
+    array = OptStringTokeniser(opts);
 
     for (unsigned int i = 0; i < array.GetCount(); ++i)
     {
@@ -467,7 +467,7 @@ void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxStri
 void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString& opts)
 {
     wxArrayString array;
-    array = GetArrayFromString(opts, _T(" "));
+    array = OptStringTokeniser(opts);
 
     for (unsigned int i = 0; i < array.GetCount(); ++i)
     {
@@ -565,7 +565,7 @@ I need it here and there... */
 void MSVCLoader::ProcessResourceCompilerOptions(ProjectBuildTarget* target, const wxString& opts)
 {
     wxArrayString array;
-    array = GetArrayFromString(opts, _T(" "));
+    array = OptStringTokeniser(opts);
 
     for (unsigned int i = 0; i < array.GetCount(); ++i)
     {
@@ -578,6 +578,53 @@ void MSVCLoader::ProcessResourceCompilerOptions(ProjectBuildTarget* target, cons
                 target->AddResourceIncludeDir(RemoveQuotes(array[++i]));
         }
     }
+}
+
+wxArrayString MSVCLoader::OptStringTokeniser(const wxString& opts)
+{
+    // tokenise string like:
+    // wsock32.lib /nologo /machine:I386 /libpath:"lib" /libpath:"C:\My Folder"
+
+    wxArrayString out;
+
+    wxString search = opts;
+    search.Trim(true).Trim(false);
+
+    // trivial case: string is empty or consists of blanks only
+    if (search.IsEmpty())
+        return out;
+
+    wxString token;
+    bool     inside_quot = false;
+    size_t   pos         = 0;
+    while (pos < search.Length())
+    {
+        wxString current_char = search.GetChar(pos);
+
+        // for e.g. /libpath:"C:\My Folder"
+        if (current_char.CompareTo(_T("\""))==0) // equality
+            inside_quot = !inside_quot;
+
+        if ((current_char.CompareTo(_T(" "))==0) && (!inside_quot))
+        {
+            if (!token.IsEmpty())
+            {
+                out.Add(token);
+                token.Clear();
+            }
+        }
+        else
+        {
+            token.Append(current_char);
+        }
+
+        pos++;
+        // Append final token
+        if ((pos==search.Length()) && (!inside_quot) && (!token.IsEmpty()))
+            out.Add(token);
+    }
+
+    return out;
 }
 
 wxString MSVCLoader::RemoveQuotes(const wxString& src)
