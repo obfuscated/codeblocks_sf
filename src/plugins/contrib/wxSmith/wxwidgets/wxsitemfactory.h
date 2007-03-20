@@ -52,9 +52,7 @@ class wxsItemFactory
         /** \brief Loading icon into image list */
         static int LoadImage(const wxString& Name);
 
-    protected:
-
-        /** \brief Ctor - can be accessed from derived classes only */
+        /** \brief Ctor */
 		wxsItemFactory(const wxsItemInfo* Info);
 
 		/** \brief Extra ctor for templates - uses class name from param.
@@ -63,8 +61,10 @@ class wxsItemFactory
 		 */
         wxsItemFactory(const wxsItemInfo* Info,const wxString& ClassName);
 
-		/** \brief Dctor */
+        /** \brief Dctor */
 		virtual ~wxsItemFactory();
+
+    protected:
 
         /** \brief Building item */
         virtual wxsItem* OnBuild(wxsItemResData* Data) = 0;

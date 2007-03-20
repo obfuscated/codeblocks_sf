@@ -16,7 +16,7 @@ class wxsColourData: public wxColourPropertyValue
     public:
 
         wxsColourData(wxUint32 type, const wxColour &colour): wxColourPropertyValue(type,colour) {}
-        wxsColourData(wxUint32 type): wxColourPropertyValue(type) {}
+        wxsColourData(wxUint32 type = wxsCOLOUR_DEFAULT): wxColourPropertyValue(type) {}
         wxsColourData(const wxColour &colour): wxColourPropertyValue(colour) {}
         wxsColourData(const wxColourPropertyValue& cp): wxColourPropertyValue(cp) {}
 

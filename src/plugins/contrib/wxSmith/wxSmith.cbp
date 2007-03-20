@@ -267,14 +267,20 @@
 		<Unit filename="wxwidgets\properties\wxssizerflagsproperty.h" />
 		<Unit filename="wxwidgets\properties\wxsstyleproperty.cpp" />
 		<Unit filename="wxwidgets\properties\wxsstyleproperty.h" />
-		<Unit filename="wxwidgets\useritems\wxsuseritem.cpp">
-			<Option link="0" />
-		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvalue.cpp" />
+		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvalue.h" />
+		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvaluelist.cpp" />
+		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvaluelist.h" />
+		<Unit filename="wxwidgets\useritems\wxsuseritem.cpp" />
 		<Unit filename="wxwidgets\useritems\wxsuseritem.h" />
+		<Unit filename="wxwidgets\useritems\wxsuseritemdescription.cpp" />
+		<Unit filename="wxwidgets\useritems\wxsuseritemdescription.h" />
 		<Unit filename="wxwidgets\useritems\wxsuseritemmanager.cpp">
 			<Option link="0" />
 		</Unit>
 		<Unit filename="wxwidgets\useritems\wxsuseritemmanager.h" />
+		<Unit filename="wxwidgets\useritems\wxsuseritemproperties.cpp" />
+		<Unit filename="wxwidgets\useritems\wxsuseritemproperties.h" />
 		<Unit filename="wxwidgets\wxsbaseproperties.cpp" />
 		<Unit filename="wxwidgets\wxsbaseproperties.h" />
 		<Unit filename="wxwidgets\wxscontainer.cpp" />
