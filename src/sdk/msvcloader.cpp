@@ -312,7 +312,14 @@ bool MSVCLoader::ParseConfiguration(int index)
             line.Trim(false);
             ProcessLinkerOptions(bt, line);
         }
-        else if (line.StartsWith(_T("# ADD RSC "))) // To import resource compiler options
+        else if (line.StartsWith(_T("# ADD BASE RSC "))) // To import resource compiler options
+        {
+            line = line.Mid(16);
+            line.Trim(true);
+            line.Trim(false);
+            ProcessResourceCompilerOptions(bt, line);
+        }
+        else if (line.StartsWith(_T("# ADD RSC ")))
         {
             line = line.Mid(11);
             line.Trim(true);
@@ -581,6 +588,6 @@ wxString MSVCLoader::RemoveQuotes(const wxString& src)
         res = res.Mid(1);
         res.Truncate(res.Length() - 1);
     }
-//    Manager::Get()->GetMessageManager()->DebugLog("Removing quotes: %s --> %s", src.c_str(), res.c_str());
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Removing quotes: %s --> %s"), src.c_str(), res.c_str());
     return res;
 }
