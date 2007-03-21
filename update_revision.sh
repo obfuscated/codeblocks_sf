@@ -28,4 +28,4 @@ fi
 
 echo "OLD_REV=$REV" > ./.last_revision
 
-exit 1
+exit 0
