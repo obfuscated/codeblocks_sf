@@ -260,6 +260,10 @@ void CodeSnippetsTreeCtrl::LoadItemsFromFile(const wxString& fileName)
 			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Backup of the failed file has been created."));
 		}
 	}
+	// Show the first level of items
+	if (  GetRootItem() && GetRootItem().IsOk())
+        Expand( GetRootItem() );
+
 }
 
 void CodeSnippetsTreeCtrl::AddCodeSnippet(const wxTreeItemId& parent, wxString title, wxString codeSnippet, bool editNow)

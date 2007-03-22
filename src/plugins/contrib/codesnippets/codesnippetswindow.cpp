@@ -417,7 +417,10 @@ void CodeSnippetsWindow::ApplySnippet(const wxTreeItemId& itemID)
 			// Apply the snippet
 			wxString snippet = item->GetSnippet();
 			CheckForMacros(snippet);
-			ctrl->AddText(snippet);
+			//wxLeaner: http://forums.codeblocks.org/index.php/topic,5375.new.html#new
+			// Honor target source line indentation
+            snippet.Replace(wxT("\n"), wxT('\n') + editor->GetLineIndentString(ctrl->GetCurrentLine()));
+            ctrl->AddText(snippet);
 		}
 	}
 }
