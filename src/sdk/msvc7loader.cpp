@@ -283,8 +283,8 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             m_TargetFilename = wxFileName(tmp).GetFullName();
 
             tmp = cbC2U(tool->Attribute("AdditionalLibraryDirectories"));
-            wxArrayString arr = GetArrayFromString(tmp, _T(";"));
-            if (arr.GetCount()==1) arr = GetArrayFromString(tmp, _T(","));
+            wxArrayString arr;
+            ParseDirectories(tmp, arr);
             for (unsigned int i = 0; i < arr.GetCount(); ++i)
             {
                 bt->AddLibDir(ReplaceMSVCMacros(arr[i]));
@@ -361,9 +361,7 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             // vc70 uses ";" while vc71 uses "," separators
             // NOTE (mandrav#1#): No, that is *not* the case (what were they thinking at MS?)
             // try with comma (,) which is the newest I believe
-            arr = GetArrayFromString(tmp, _T(","));
-            if (arr.GetCount() == 1) // if it fails, try with semicolon
-                arr = GetArrayFromString(tmp, _T(";"));
+            ParseDirectories(tmp, arr); // This will parse recursively
             for (i = 0; i < arr.GetCount(); ++i)
             {
                 bt->AddIncludeDir(ReplaceMSVCMacros(arr[i]));
@@ -601,4 +599,26 @@ void MSVC7Loader::HandleFileConfiguration(TiXmlElement* file, ProjectFile* pf)
         }
         fconf = fconf->NextSiblingElement("FileConfiguration");
     }
+}
+
+bool MSVC7Loader::ParseDirectories(wxString Input, wxArrayString& Output)
+{
+    /* This function will parse directories recursively
+    *  to avoid any string with ';' to slip through */
+    wxArrayString Array1, Array2;
+    if (Input.IsEmpty())
+        return false;
+    Array1 = GetArrayFromString(Input, _T(","));
+    for (size_t i = 0; i < Array1.GetCount(); ++i)
+    {
+        if (Array1[i].Find(_T(";")) != -1)
+        {
+            Array2 = GetArrayFromString(Array1[i], _T(";"));
+            for (size_t j = 0; j < Array2.GetCount(); ++j)
+                Output.Add(Array2[j]);
+        }
+        else
+            Output.Add(Array1[i]);
+    }
+    return true;
 }
