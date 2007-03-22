@@ -32,6 +32,7 @@ class MSVC7Loader : public IBaseLoader
         bool DoSelectConfiguration(TiXmlElement* root);
         bool DoImport(TiXmlElement* conf);
         bool DoImportFiles(TiXmlElement* root, int numConfigurations);
+        bool ParseDirectories(wxString Input, wxArrayString& Output);
 };
 
 #endif // MSVC7LOADER_H
