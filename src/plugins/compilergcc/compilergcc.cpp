@@ -2813,6 +2813,17 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
             if (ed->Save())
                 file.Assign(ed->GetFilename());
         }
+        // Now activate the project this file belongs to
+        ProjectFile* pf = ed->GetProjectFile();
+        if (pf)
+        {
+            cbProject* CurProject = pf->GetParentProject();
+            if (CurProject)
+            {
+                Manager::Get()->GetProjectManager()->SetProject(CurProject, true);
+                AskForActiveProject();
+            }
+        }
     }
 
     if (m_Project)
