@@ -132,7 +132,10 @@ bool ToolsManager::Execute(const cbTool* tool)
             cmdline << baseDir << wxT("/" CONSOLE_RUNNER " ");
     }
 
-    cmdline << cmd << _T(" ") << params;
+    if (!cmdline.Replace(_T("$SCRIPT"), cmd << _T(" ") << params))
+        // if they didn't specify $SCRIPT, append:
+        cmdline << cmd << _T(" ") << params;
+
     if(!(Manager::Get()->GetMacrosManager()))
         return false; // We cannot afford the Macros Manager to fail here!
                       // What if it failed already?
