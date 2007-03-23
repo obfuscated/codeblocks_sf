@@ -133,6 +133,10 @@ cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, 
   SetThemeEnabled(false); // seems to be useful by description
   SetBackgroundStyle(wxBG_STYLE_CUSTOM); // the trick for GTK+ (notice it's after Show())
 
+#ifdef __WXMAC__
+  Centre(wxBOTH | wxCENTRE_ON_SCREEN); // centre only works when the window is showing
+#endif
+
   if(platform::windows || platform::macos)
     Update();
   else
