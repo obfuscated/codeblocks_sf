@@ -4,11 +4,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-// globals
+// globals (windows only)
 FltkPathDefault    <- _T("$(#fl)");
 FltkPathDefaultInc <- _T("$(#fl.include)");
 FltkPathDefaultLib <- _T("$(#fl.lib)");
 FltkPath <- _T("");
+
+FLTKQuickProject <- true;
 
 function BeginWizard()
 {
@@ -22,9 +24,15 @@ function BeginWizard()
                               "To help you, this folder must contain the subfolders\n" +
                               "\"include\" and \"lib\".");
 
+    // "select fltk project to generate" text
+    local fltkprjtype_descr = _T("Please select the type of project to generate.");
+    local fltkprj_choices = _T("Simple main() example;FLUID-based project");
+
     Wizard.AddInfoPage(_T("FltkIntro"), intro_msg);
     Wizard.AddProjectPathPage();
-    Wizard.AddGenericSelectPathPage(_T("FltkPath"), fltkpath_descr, _T("Please select FLTK's location:"), FltkPathDefault);
+    if (PLATFORM == PLATFORM_MSW)
+	    Wizard.AddGenericSelectPathPage(_T("FltkPath"), fltkpath_descr, _T("Please select FLTK's location:"), FltkPathDefault);
+    Wizard.AddGenericSingleChoiceListPage(_T("FLTKPrjType"), fltkprjtype_descr, fltkprj_choices, 0);
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
@@ -78,32 +86,56 @@ function OnLeave_FltkPath(fwd)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Project type to create
+////////////////////////////////////////////////////////////////////////////////
+
+function OnLeave_FLTKPrjType(fwd)
+{
+    if (fwd)
+    {
+        FLTKQuickProject = Wizard.GetListboxSelection(_T("GenericChoiceList")) == 0;
+    }
+    return true;
+}
+
 // return the files this project contains
 function GetFilesDir()
 {
-    return _T("fltk/files");
+	if (FLTKQuickProject)
+		return _T("fltk/files");
+	return _T("fltk/fluid");
 }
 
 // setup the already created project
 function SetupProject(project)
 {
-    // set project options
-    project.AddIncludeDir(FltkPathDefaultInc);
-    project.AddLibDir(FltkPathDefaultLib);
+    if (PLATFORM == PLATFORM_MSW)
+    {
+	    // set project options
+	    project.AddIncludeDir(FltkPathDefaultInc);
+	    project.AddLibDir(FltkPathDefaultLib);
 
-    // add link libraries
-    project.AddLinkLib(_T("fltk"));
-    project.AddLinkLib(_T("ole32"));
-    project.AddLinkLib(_T("uuid"));
-    project.AddLinkLib(_T("comctl32"));
-    project.AddLinkLib(_T("wsock32"));
-    project.AddLinkLib(_T("m"));
-    project.AddLinkLib(_T("gdi32"));
-    project.AddLinkLib(_T("user32"));
-    project.AddLinkLib(_T("kernel32"));
+	    // add link libraries
+	    project.AddLinkLib(_T("fltk"));
+	    project.AddLinkLib(_T("ole32"));
+	    project.AddLinkLib(_T("uuid"));
+	    project.AddLinkLib(_T("comctl32"));
+	    project.AddLinkLib(_T("wsock32"));
+	    project.AddLinkLib(_T("m"));
+	    project.AddLinkLib(_T("gdi32"));
+	    project.AddLinkLib(_T("user32"));
+	    project.AddLinkLib(_T("kernel32"));
 
-    project.AddCompilerOption(_T("-DWIN32"))
-    project.AddCompilerOption(_T("-mms-bitfields"))
+	    project.AddCompilerOption(_T("-DWIN32"))
+	    project.AddCompilerOption(_T("-mms-bitfields"))
+	}
+	else // PLATFORM != PLATFORM_MSW
+	{
+		// fltk-config based: things are ultra-simple :)
+		project.AddCompilerOption(_T("`fltk-config --cxxflags`"));
+		project.AddLinkerOption(_T("`fltk-config --ldstaticflags`"));
+	}
 
     // Debug
     local target = project.GetBuildTarget(Wizard.GetDebugName());

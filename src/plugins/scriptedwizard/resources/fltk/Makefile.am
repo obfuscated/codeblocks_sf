@@ -1,4 +1,4 @@
-SUBDIRS = files
+SUBDIRS = files fluid
 
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/fltk
 
