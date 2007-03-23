@@ -166,12 +166,7 @@ wxString UserVariableManager::Replace(const wxString& variable)
     {
         wxString ret = cfg->Read(path + member);
         if(ret.IsEmpty())
-        {
             ret = base + _T('/') + member;
-            if (member.IsSameAs(cInclude) && (platform::unix || platform::macos))
-                ret = ret.Append(_T('/') + package); // *nixes have this convention
-            return ret;
-        }
         return ret;
     }
     else
