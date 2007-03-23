@@ -120,6 +120,9 @@
 				<Option projectResourceIncludeDirsRelation="2" />
 				<Compiler>
 					<Add directory="include/propgrid/include" />
+					<Add option="-DWXMAKINGLIB_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=0" />
+					<Add option="-DwxPG_COMPATIBILITY_1_0_0" />
 				</Compiler>
 			</Target>
 			<Target title="sdk">

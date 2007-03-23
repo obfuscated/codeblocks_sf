@@ -1,6 +1,8 @@
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include/propgrid/include
 
+AM_CPPFLAGS = -DWXMAKINGLIB_PROPGRID -DwxPG_USE_WXMODULE=0 -DwxPG_COMPATIBILITY_1_0_0
+
 noinst_LTLIBRARIES = libpropgrid.la
 
 libpropgrid_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
