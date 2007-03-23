@@ -46,6 +46,8 @@ function OnLeave_IrrPath(fwd)
         local dir_nomacro_inc = GetCompilerIncludeDir(dir, IrrlichtPathDefault, IrrlichtPathDefaultInc);
         if (dir_nomacro_inc.IsEmpty())
             return false;
+        if (PLATFORM != PLATFORM_MSW)
+        	dir_nomacro_inc = dir_nomacro_inc + _T("/irrlicht");
         if (!VerifyFile(dir_nomacro_inc, _T("irrlicht.h"), _T("Irrlicht's include"))) return false;
 
         // verify library dependencies
@@ -90,6 +92,11 @@ function OnLeave_IrrPath(fwd)
             // not possible -> use the real inc path we had computed instead
             IrrlichtPathDefaultInc = dir_nomacro_inc;
         }
+        else
+        {
+        	if (PLATFORM != PLATFORM_MSW)
+        		IrrlichtPathDefaultInc = IrrlichtPathDefaultInc + _T("/irrlicht");
+        }
 
         // try to resolve the library directory as macro
         is_macro = GetCompilerLibMacro(dir, IrrlichtPathDefault, IrrlichtPathDefaultLib);
@@ -129,7 +136,7 @@ function SetupProject(project)
         }
     }
     else
-        IrrlichtLibDir = _T("Linux");
+        IrrlichtLibDir = _T("");
 
     // set compiler/linker search paths
     project.AddIncludeDir(IrrlichtPathDefaultInc);
