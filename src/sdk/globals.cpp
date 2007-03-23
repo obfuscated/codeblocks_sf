@@ -59,7 +59,12 @@ namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval
 
 const wxString DEFAULT_WORKSPACE     = _T("default.workspace");
 const wxString DEFAULT_ARRAY_SEP     = _T(";");
+
+#ifndef __WXMAC__
 const wxString DEFAULT_CONSOLE_TERM  = _T("xterm -T $TITLE -e");
+#else
+const wxString DEFAULT_CONSOLE_TERM  = _T("osascript -e 'tell app \"Terminal\" to do script \"$SCRIPT\"'");
+#endif
 const wxString DEFAULT_CONSOLE_SHELL = _T("/bin/sh -c");
 
 int GetPlatformsFromString(const wxString& platforms)

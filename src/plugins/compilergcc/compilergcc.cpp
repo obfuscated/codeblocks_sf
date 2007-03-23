@@ -93,6 +93,12 @@ namespace ScriptBindings
 #define COLOUR_MAROON wxColour(0xa0, 0x00, 0x00)
 #define COLOUR_NAVY   wxColour(0x00, 0x00, 0xa0)
 
+#if defined(__APPLE__) && defined(__MACH__)
+    #define LIBRARY_ENVVAR _T("DYLD_LIBRARY_PATH")
+#else
+    #define LIBRARY_ENVVAR _T("LD_LIBRARY_PATH")
+#endif
+
 namespace
 {
     PluginRegistrant<CompilerGCC> reg(_T("Compiler"));
@@ -1149,7 +1155,7 @@ int CompilerGCC::DoRunQueue()
 
 		// setup dynamic linker path
 		if (!platform::windows)
-			wxSetEnv(_T("LD_LIBRARY_PATH"), _T(".:$LD_LIBRARY_PATH"));
+			wxSetEnv(LIBRARY_ENVVAR, _T(".:$") LIBRARY_ENVVAR);
     }
 
     // special shell used only for build commands
@@ -1572,9 +1578,9 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
     if (wxFileExists(baseDir + strSLASH + strCONSOLE_RUNNER))
         cmd << baseDir << strSLASH << strCONSOLE_RUNNER << strSPACE;
 
-    cmd << _T("\"");
-    cmd << exe_filename;
-    cmd << _T("\"");
+    if (!cmd.Replace(_T("$SCRIPT"), exe_filename))
+        // if they didn't specify $SCRIPT, append:
+        cmd << _T("\"") << exe_filename << _T("\"");
 
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), exe_filename.c_str());
     if (!wxFileExists(exe_filename))
@@ -1653,6 +1659,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out);
 
     wxString cmd;
+    wxString command;
     wxFileName f(out);
     f.MakeAbsolute(m_Project->GetBasePath());
 
@@ -1672,7 +1679,18 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
             // for non-win platforms, use m_ConsoleTerm to run the console app
             wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
             term.Replace(_T("$TITLE"), _T("'") + m_Project->GetTitle() + _T("'"));
-            cmd << term << _T(" 'LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH ");
+            cmd << term;
+
+            wxString shell;
+            wxGetEnv(_T("SHELL"), &shell);
+            if (shell.Contains(_T("csh")))
+            {
+                // "The csh is a tool utterly inadequate for programming,
+                //  and its use for such purposes should be strictly banned!"
+                //                 -- Csh Programming Considered Harmful
+                command << DEFAULT_CONSOLE_SHELL << strSPACE;
+            }
+            command << _T("'") << LIBRARY_ENVVAR _T("=.:$") LIBRARY_ENVVAR << _T(" ");
         }
         // should console runner be used?
         if (target->GetUseConsoleRunner())
@@ -1680,7 +1698,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
             wxString baseDir = ConfigManager::GetExecutableFolder();
 
             if (wxFileExists(baseDir + strSLASH + strCONSOLE_RUNNER))
-                cmd << baseDir << strSLASH << strCONSOLE_RUNNER << strSPACE;
+                command << baseDir << strSLASH << strCONSOLE_RUNNER << strSPACE;
         }
     }
 
@@ -1696,19 +1714,18 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         }
         wxString tmp = target->GetHostApplication();
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(tmp);
-        cmd << _T("\"") << tmp << _T("\" ") << target->GetExecutionParameters();
+        command << _T("\"") << tmp << _T("\" ");
+        command << target->GetExecutionParameters();
     }
     else if (target->GetTargetType() != ttCommandsOnly)
     {
-        cmd << _T("\"");
-        cmd << f.GetFullPath();
-        cmd << _T("\" ");
-        cmd << target->GetExecutionParameters();
-#ifndef __WXMSW__
+        wxString tmp = f.GetFullPath();
+        command << _T("\"") << tmp << _T("\" ");
+        command << target->GetExecutionParameters();
+
         // closing single-quote for xterm command line
-        if (target->GetTargetType() == ttConsoleOnly)
-            cmd << _T("'");
-#endif
+        if (target->GetTargetType() == ttConsoleOnly && !platform::windows)
+            command << _T("'");
     }
     else
     {
@@ -1717,6 +1734,22 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         m_Project->SetCurrentlyCompilingTarget(0);
         return -1;
     }
+
+    wxString script = command;
+
+#ifdef __WXMAC__
+    if (target->GetTargetType() == ttConsoleOnly &&
+        script.GetChar(0) == '\'' && script.GetChar(script.length()-1) == '\'')
+        script = script.Mid(1,script.length()-2); // skip outmost single-quotes
+
+    // convert embedded quotes to AppleScript syntax
+    script.Replace(_T("\""), _T("\"&quote&\""), true);
+    script.Replace(_T("\'"), _T("\"&ASCII character 39&\""), true);
+#endif
+
+    if (!cmd.Replace(_T("$SCRIPT"), script))
+        // if they didn't specify $SCRIPT, append:
+        cmd << _T(" ") << command;
 
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), f.GetFullPath().c_str());
     if (!wxFileExists(f.GetFullPath()))
