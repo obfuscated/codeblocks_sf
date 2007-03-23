@@ -23,14 +23,15 @@ class wxsArrayStringEditorDlg: public wxDialog
 
 		//(*Handlers(wxsArrayStringEditorDlg)
 		void OnOK(wxCommandEvent& event);
-		//*)
+        void OnCancel(wxCommandEvent& event);
+        //*)
 
 		//(*Declarations(wxsArrayStringEditorDlg)
 		wxTextCtrl* Items;
 		//*)
 
 	private:
-	
+
         wxArrayString& Data;
 
 		DECLARE_EVENT_TABLE()

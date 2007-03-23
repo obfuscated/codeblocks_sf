@@ -53,8 +53,8 @@ wxsArrayStringEditorDlg::wxsArrayStringEditorDlg(wxWindow* parent,wxArrayString&
 	wxBoxSizer* BoxSizer2;
 	wxButton* Button1;
 	wxButton* Button2;
-	
-	Create(parent,id,_("Edit items"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("id"));
+
+	Create(parent,id,_("Edit items"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("wxDialog"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Enter items (one item per line)"));
 	Items = new wxTextCtrl(this,ID_TEXTCTRL1,wxEmptyString,wxDefaultPosition,wxSize(350,200),wxTE_MULTILINE,wxDefaultValidator,_T("ID_TEXTCTRL1"));
@@ -99,4 +99,9 @@ void wxsArrayStringEditorDlg::OnOK(wxCommandEvent& event)
     }
 
     EndModal(wxID_OK);
+}
+
+void wxsArrayStringEditorDlg::OnCancel(wxCommandEvent& event)
+{
+    EndModal(wxID_CANCEL);
 }

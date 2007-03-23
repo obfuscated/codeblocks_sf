@@ -58,7 +58,9 @@ namespace
         WXS_ST(wxSP_3D)
         WXS_ST(wxSP_3DSASH)
         WXS_ST(wxSP_3DBORDER)
+#if WXWIN_COMPATIBILITY_2_6
         WXS_ST(wxSP_FULLSASH)
+#endif
         WXS_ST(wxSP_BORDER)
         WXS_ST(wxSP_NOBORDER)
         WXS_ST(wxSP_PERMIT_UNSPLIT)

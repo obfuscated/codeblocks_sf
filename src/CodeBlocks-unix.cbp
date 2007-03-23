@@ -679,7 +679,7 @@
 		<Unit filename="include/propgrid/include/wx/propgrid/advprops.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/propgrid/include/wx/propgrid/custctrl.h">
+		<Unit filename="include/propgrid/include/wx/propgrid/extras.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/propgrid/include/wx/propgrid/manager.h">
@@ -2046,7 +2046,7 @@
 		<Unit filename="sdk/propgrid/src/propgrid/advprops.cpp">
 			<Option target="wxPropertyGrid" />
 		</Unit>
-		<Unit filename="sdk/propgrid/src/propgrid/custctrl.cpp">
+		<Unit filename="sdk/propgrid/src/propgrid/extras.cpp">
 			<Option target="wxPropertyGrid" />
 		</Unit>
 		<Unit filename="sdk/propgrid/src/propgrid/manager.cpp">
@@ -2057,6 +2057,9 @@
 		</Unit>
 		<Unit filename="sdk/propgrid/src/propgrid/propgrid.cpp">
 			<Option target="wxPropertyGrid" />
+		</Unit>
+		<Unit filename="sdk/propgrid/src/propgrid/props.cpp">
+            <Option target="wxPropertyGrid" />
 		</Unit>
 		<Unit filename="sdk/replacedlg.cpp">
 			<Option target="sdk" />

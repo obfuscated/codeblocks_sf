@@ -39,10 +39,15 @@ wxFont wxsFontData::BuildFont()
     wxString Face;
     wxFontEnumerator Enumer;
     Enumer.EnumerateFacenames();
+#if wxCHECK_VERSION(2, 8, 0)
+        wxArrayString faceNames = Enumer.GetFacenames();
+#else
+        wxArrayString& faceNames = *Enumer.GetFacenames();
+#endif
     size_t Count = Faces.Count();
     for ( size_t i = 0; i<Count; i++ )
     {
-        if ( Enumer.GetFacenames()->Index(Faces[i]) != wxNOT_FOUND )
+        if ( faceNames.Index(Faces[i]) != wxNOT_FOUND )
         {
             Face = Faces[i];
             break;
@@ -487,4 +492,5 @@ bool wxsFontProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertySt
     Stream->PopCategory();
     return Ret;
 }
+
 

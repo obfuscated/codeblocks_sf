@@ -570,7 +570,7 @@ void wxsItemEditor::BuildInsTypeIcon(wxBitmapButton* Btn,const wxImage& Original
 
     if ( !Enabled || !Selected )
     {
-        Btn->SetLabel(Original);
+        Btn->SetBitmapLabel(Original);
     }
     else
     {
@@ -578,7 +578,7 @@ void wxsItemEditor::BuildInsTypeIcon(wxBitmapButton* Btn,const wxImage& Original
         wxMemoryDC DC;
         DC.SelectObject(Copy);
         DC.DrawBitmap(m_SelectedImg,0,0);
-        Btn->SetLabel(Copy);
+        Btn->SetBitmapLabel(Copy);
     }
 
     Btn->Enable(Enabled);
@@ -587,15 +587,15 @@ void wxsItemEditor::BuildInsTypeIcon(wxBitmapButton* Btn,const wxImage& Original
 
 void wxsItemEditor::RebuildQuickPropsIcon()
 {
-    m_QuickPanelBtn->SetLabel( m_QuickPropsOpen ? m_QuickPropsImgClose : m_QuickPropsImgOpen );
+    m_QuickPanelBtn->SetBitmapLabel( m_QuickPropsOpen ? m_QuickPropsImgClose : m_QuickPropsImgOpen );
 }
 
 void wxsItemEditor::RebuildIcons()
 {
     RebuildInsTypeIcons();
     RebuildQuickPropsIcon();
-    m_DelBtn->SetLabel(m_DelImg);
-    m_PreviewBtn->SetLabel(m_PreviewImg);
+    m_DelBtn->SetBitmapLabel(m_DelImg);
+    m_PreviewBtn->SetBitmapLabel(m_PreviewImg);
     BuildPalette(m_WidgetsSet);
     Layout();
 }

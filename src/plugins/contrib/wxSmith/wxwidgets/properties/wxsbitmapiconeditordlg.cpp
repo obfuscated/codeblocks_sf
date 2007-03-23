@@ -115,7 +115,7 @@ wxsBitmapIconEditorDlg::wxsBitmapIconEditorDlg(wxWindow* parent,wxsBitmapIconDat
     Data(_Data)
 {
 	//(*Initialize(wxsBitmapIconEditorDlg)
-	Create(parent,id,_("Image editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX,_T("id"));
+    Create(parent,id,_("Image editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX,_T("id"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Image options"));

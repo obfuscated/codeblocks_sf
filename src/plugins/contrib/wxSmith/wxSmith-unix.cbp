@@ -29,6 +29,8 @@
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWXMAKINGLIB_PROPGRID" />
+			<Add option="-DwxPG_COMPATIBILITY_1_0_0" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/wxscintilla/include" />
 			<Add directory="../../../include/propgrid/include" />

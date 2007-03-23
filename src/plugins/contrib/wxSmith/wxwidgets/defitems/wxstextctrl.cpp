@@ -56,7 +56,12 @@ namespace
     //    WXS_ST(wxTE_DONTWRAP)
 
     // Not in Help file but in XRC file, assume applying to all platform
+
+#if WXWIN_COMPATIBILITY_2_6
         WXS_ST(wxTE_LINEWRAP)
+#else
+        WXS_ST(wxTE_CHARWRAP)
+#endif // WXWIN_COMPATIBILITY_2_6
     WXS_ST_END()
 
 

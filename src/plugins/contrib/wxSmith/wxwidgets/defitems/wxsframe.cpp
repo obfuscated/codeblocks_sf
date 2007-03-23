@@ -33,10 +33,10 @@ namespace
         WXS_ST(wxCAPTION)
         WXS_ST(wxDEFAULT_DIALOG_STYLE)
         WXS_ST(wxDEFAULT_FRAME_STYLE)
-        WXS_ST(wxTHICK_FRAME)
+     //   WXS_ST(wxTHICK_FRAME)// replaced by wxRESIZE_BORDER in 2.6
         WXS_ST(wxSYSTEM_MENU)
         WXS_ST(wxRESIZE_BORDER)
-        WXS_ST(wxRESIZE_BOX)
+     //   WXS_ST(wxRESIZE_BOX) // replaced by wxMAXIMIZE_BOX in 2.6
         WXS_ST(wxCLOSE_BOX)
 
         WXS_ST(wxFRAME_NO_TASKBAR)

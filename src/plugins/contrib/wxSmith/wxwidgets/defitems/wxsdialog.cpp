@@ -32,13 +32,13 @@ namespace
         WXS_ST(wxSTAY_ON_TOP)
         WXS_ST(wxCAPTION)
         WXS_ST(wxDEFAULT_DIALOG_STYLE)
-        WXS_ST(wxTHICK_FRAME)
+     //   WXS_ST(wxTHICK_FRAME)// replaced by wxRESIZE_BORDER in 2.6
         WXS_ST(wxSYSTEM_MENU)
         WXS_ST(wxRESIZE_BORDER)
-        WXS_ST(wxRESIZE_BOX)
+     //   WXS_ST(wxRESIZE_BOX) // replaced by wxMAXIMIZE_BOX in 2.6
         WXS_ST(wxCLOSE_BOX)
-        WXS_ST(wxDIALOG_MODAL)
-        WXS_ST(wxDIALOG_MODELESS)
+     //   WXS_ST(wxDIALOG_MODAL)    // removed in 2.6
+     //   WXS_ST(wxDIALOG_MODELESS) // removed in 2.6
         WXS_ST(wxDIALOG_NO_PARENT)
         WXS_ST(wxTAB_TRAVERSAL)
         WXS_ST(wxWS_EX_VALIDATE_RECURSIVELY)
@@ -50,7 +50,7 @@ namespace
     // on WXMSW wxDIALOG_EX_METAL only for WXMAC
     // NOTE (cyberkoa#1#):  wxDIALOG_EX_CONTEXTHELP & wxDIALOG_EX_METAL are
     // extended style which need 2 steps construction
-        WXS_ST_MASK(wxNO_3D,wxsSFWin,0,true)
+     //   WXS_ST_MASK(wxNO_3D,wxsSFWin,0,true) // removed in 2.6
         WXS_EXST_MASK(wxDIALOG_EX_CONTEXTHELP,wxsSFWin,0,true)
         WXS_EXST_MASK(wxDIALOG_EX_METAL,wxsSFOSX,0,true)
     WXS_ST_END()

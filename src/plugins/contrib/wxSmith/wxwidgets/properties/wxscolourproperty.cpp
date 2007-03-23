@@ -128,7 +128,11 @@ namespace
         wxSYS_COLOUR_MENUBAR
     };
 
+#if defined(wxPG_VERSION) && wxPG_VERSION > 1099
+    WX_PG_IMPLEMENT_PROPERTY_CLASS(wxsMyColourProperty,wxEnumProperty,wxColourPropertyValue,const wxColourPropertyValue&,Choice)
+#else
     WX_PG_IMPLEMENT_PROPERTY_CLASS(wxsMyColourProperty,wxColourPropertyValue,const wxColourPropertyValue&,Choice)
+#endif
 
     wxsMyColourPropertyClass::wxsMyColourPropertyClass( const wxString& label, const wxString& name,
         const wxColourPropertyValue& value )
@@ -181,7 +185,11 @@ namespace
                 (int)m_value.m_colour.Red(),(int)m_value.m_colour.Green(),(int)m_value.m_colour.Blue());
             return temp;
         }
+#if defined(wxPG_VERSION) && wxPG_VERSION > 1099
+        return m_choices.GetLabel(m_index);
+#else
         return m_constants->GetLabel(m_index);
+#endif
     }
 
     wxSize wxsMyColourPropertyClass::GetImageSize() const
@@ -657,4 +665,5 @@ bool wxsColourProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsProperty
     Stream->PopCategory();
     return Ret;
 }
+
 
