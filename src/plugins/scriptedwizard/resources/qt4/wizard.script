@@ -5,9 +5,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // globals
-QtPathDefault    <- _T("$(#qt)");
-QtPathDefaultInc <- _T("$(#qt.include)");
-QtPathDefaultLib <- _T("$(#qt.lib)");
+QtPathDefault    <- _T("$(#qt4)");
+QtPathDefaultInc <- _T("$(#qt4.include)");
+QtPathDefaultLib <- _T("$(#qt4.lib)");
 QtPath <- _T("");
 
 function BeginWizard()

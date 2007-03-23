@@ -5,9 +5,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // globals
-IrrlichtPathDefault    <- _T("$(#irr)");
-IrrlichtPathDefaultInc <- _T("$(#irr.include)");
-IrrlichtPathDefaultLib <- _T("$(#irr.lib)");
+IrrlichtPathDefault    <- _T("$(#irrlicht)");
+IrrlichtPathDefaultInc <- _T("$(#irrlicht.include)");
+IrrlichtPathDefaultLib <- _T("$(#irrlicht.lib)");
 IrrlichtPath <- _T("");
 
 function BeginWizard()
@@ -56,8 +56,8 @@ function OnLeave_IrrPath(fwd)
         local lib_dir = dir_nomacro_lib + wxFILE_SEP_PATH;
         if (PLATFORM == PLATFORM_MSW)
         {
-            if (   (!IO.FileExists(lib_dir + _T("Irrlicht.a")))
-                && (!IO.FileExists(lib_dir + _T("Win32-gcc") + wxFILE_SEP_PATH + _T("Irrlicht.a")))
+            if (   (!IO.FileExists(lib_dir + _T("libIrrlicht.a")))
+                && (!IO.FileExists(lib_dir + _T("Win32-gcc") + wxFILE_SEP_PATH + _T("libIrrlicht.a")))
                 && (!IO.FileExists(lib_dir + _T("Win32-visualstudio") + wxFILE_SEP_PATH + _T("Irrlicht.lib"))) )
 
             {
@@ -69,8 +69,8 @@ function OnLeave_IrrPath(fwd)
         }
         else
         {
-            if (   (!IO.FileExists(lib_dir + _T("Irrlicht.a")))
-                && (!IO.FileExists(lib_dir + _T("Linux") + wxFILE_SEP_PATH + _T("Irrlicht.a"))) )
+            if (   (!IO.FileExists(lib_dir + _T("libIrrlicht.a")))
+                && (!IO.FileExists(lib_dir + _T("Linux") + wxFILE_SEP_PATH + _T("libIrrlicht.a"))) )
 
             {
                 ShowError(_T("The path you entered seems valid, but this wizard\n" +
