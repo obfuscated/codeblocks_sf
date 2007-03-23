@@ -343,11 +343,6 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
     this->SetSizeHints(min_width+140,min_height,-1,-1);
 #endif
     this->SetSize(-1, -1, 0, 0);
-#if wxCHECK_VERSION(2, 8, 0)
-    this->Centre(wxBOTH | wxCENTRE_ON_SCREEN);
-#else
-    this->CentreOnScreen();
-#endif
 } // end of constructor
 
 CompilerOptionsDlg::~CompilerOptionsDlg()

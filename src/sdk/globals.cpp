@@ -840,7 +840,7 @@ void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
 #else // ----- non-Windows ----------------------------------------------
 
 
-void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
+void PlaceWindow(wxToplevelWindow *w, cbPlaceDialogMode mode, bool enforce)
 // TODO (thomas#1#): The non-Windows implementation is *pathetic*.
 // However, I don't know how to do it well under GTK / X / Xinerama / whatever.
 // Anyone?
@@ -867,18 +867,7 @@ void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
 
     if(the_mode == pdlCentre || the_mode == pdlHead)
     {
-        if(w->GetParent())
-        {
-            w->CentreOnParent(); // poo!
-        }
-        else
-        {
-#if wxCHECK_VERSION(2, 8, 0)
-            w->Centre(wxBOTH | wxCENTRE_ON_SCREEN);
-#else
-            w->CentreOnScreen();
-#endif
-        }
+        w->CentreOnScreen();
         return;
     }
     else
