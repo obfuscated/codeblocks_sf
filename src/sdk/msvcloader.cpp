@@ -337,6 +337,10 @@ bool MSVCLoader::ParseSourceFiles()
         return false; // error opening file???
 
     wxTextInputStream input(file);
+    wxString LastProcessedFile = wxEmptyString;
+    wxString CurCFG;
+    bool FoundIf = false;
+    size_t size;
 
     // go to the begining of source files
     int currentLine = 0;
@@ -352,31 +356,75 @@ bool MSVCLoader::ParseSourceFiles()
         line.Trim(true);
         line.Trim(false);
 
-        // we 're only interested in lines starting with SOURCE=
-        if (!line.StartsWith(_T("SOURCE=")))
-            continue;
-
-        line = line.Mid(7);
-        line.Trim(true);
-        line.Trim(false);
-
-        wxString fname (RemoveQuotes(line));
-
-        if ((!fname.IsEmpty()) && (fname != _T(".\\")))
+        if (line.StartsWith(_T("SOURCE=")))
         {
-            if (fname.StartsWith(_T(".\\")))
-                fname.erase(0, 2);
+            line = line.Mid(7);
+            line.Trim(true);
+            line.Trim(false);
 
-            #ifndef __WXMSW__
-            fname.Replace(_T("\\"), _T("/"), true);
-            #endif
+            wxString fname (RemoveQuotes(line));
 
-            ProjectFile* pf = m_pProject->AddFile(0, fname);
-            if (pf)
+            if ((!fname.IsEmpty()) && (fname != _T(".\\")))
             {
-                // add it to all configurations, not just the first
-                for (int i = 1; i < m_pProject->GetBuildTargetsCount(); ++i)
-                    pf->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
+                if (fname.StartsWith(_T(".\\")))
+                    fname.erase(0, 2);
+
+                #ifndef __WXMSW__
+                fname.Replace(_T("\\"), _T("/"), true);
+                #endif
+
+                ProjectFile* pf = m_pProject->AddFile(0, fname);
+                if (pf)
+                {
+                    LastProcessedFile = fname;
+                    // add it to all configurations, not just the first
+                    for (int i = 1; i < m_pProject->GetBuildTargetsCount(); ++i)
+                        pf->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
+                }
+            }
+        }
+        else if (line.StartsWith(_T("!")))
+        {
+            FoundIf = true;
+            if (line.StartsWith(_T("!IF  \"$(CFG)\" ==")))
+                size = 16;
+            else if (line.StartsWith(_T("!ELSEIF  \"$(CFG)\" ==")))
+                size = 20;
+            else
+            {
+                size = 0;
+                FoundIf = false;
+            }
+            if (size > 0)
+            {
+                CurCFG = line.Mid(size);
+                CurCFG = RemoveQuotes(CurCFG.Trim(false).Trim(true));
+                CurCFG = CurCFG.Mid(CurCFG.Find(_T("-")) + 1).Trim(true).Trim(false);
+            }
+            if (line.StartsWith(_T("!ENDIF")))
+            {
+                FoundIf = false;
+                CurCFG = wxEmptyString;
+                LastProcessedFile = wxEmptyString;
+            }
+        }
+        else if (line.StartsWith(_T("#")))
+        {
+            if (FoundIf && line.StartsWith(_T("# PROP Exclude_From_Build ")))
+            {
+                line.Trim(true);
+                if (line.Right(1).IsSameAs(_T("1")))
+                {
+                    ProjectFile* pf = m_pProject->GetFileByFilename(LastProcessedFile);
+                    if (pf)
+                        for (int j = 0; j < m_pProject->GetBuildTargetsCount(); ++j)
+                            if (m_pProject->GetBuildTarget(j)->GetTitle().IsSameAs(CurCFG))
+                            {
+                                pf->RemoveBuildTarget(CurCFG);
+                                DBGLOG(wxString::Format(_T("Buid target %s has been excluded from %s"),
+                                    CurCFG.c_str(), LastProcessedFile.c_str()));
+                            }
+                }
             }
         }
     }
