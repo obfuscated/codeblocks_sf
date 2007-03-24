@@ -481,9 +481,12 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     /* Following code will check for currently compiling project.
     *  If it finds the selected is project is currently compiling,
     *  then it will disable some of the options */
-    bool ProjectRelatedOptions= true;
+    bool PopUpMenuOption = true;
     ProjectsArray* Projects = Manager::Get()->GetProjectManager()->GetProjects();
-    if (Projects && ftd && (ftd->GetKind() == FileTreeData::ftdkProject)) // Make sure we're looking for projects
+    if (Projects && ftd
+        && (ftd->GetKind() == FileTreeData::ftdkProject
+        || ftd->GetKind() == FileTreeData::ftdkFile
+        || ftd->GetKind() == FileTreeData::ftdkFolder))
     {
         int Count = Projects->GetCount();
         cbProject* ProjInTree = ftd->GetProject();
@@ -494,7 +497,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             {
                 ProjectBuildTarget* CompTarget = CurProject->GetCurrentlyCompilingTarget();
                 if (CompTarget)
-                    ProjectRelatedOptions = false;
+                    PopUpMenuOption = false;
             }
         }
     }
@@ -508,14 +511,14 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             if (ftd->GetProject() != m_pActiveProject)
                 menu.Append(idMenuSetActiveProject, _("Activate project"));
             menu.Append(idMenuCloseProject, _("Close project"));
-            menu.Enable(idMenuCloseProject, ProjectRelatedOptions);
+            menu.Enable(idMenuCloseProject, PopUpMenuOption);
             menu.AppendSeparator();
             menu.Append(idMenuAddFilePopup, _("Add files..."));
-            menu.Enable(idMenuAddFilePopup, ProjectRelatedOptions);
+            menu.Enable(idMenuAddFilePopup, PopUpMenuOption);
             menu.Append(idMenuAddFilesRecursivelyPopup, _("Add files recursively..."));
-            menu.Enable(idMenuAddFilesRecursivelyPopup, ProjectRelatedOptions);
+            menu.Enable(idMenuAddFilesRecursivelyPopup, PopUpMenuOption);
             menu.Append(idMenuRemoveFile, _("Remove files..."));
-            menu.Enable(idMenuRemoveFile, ProjectRelatedOptions);
+            menu.Enable(idMenuRemoveFile, PopUpMenuOption);
             menu.AppendSeparator();
             menu.Append(idMenuAddVirtualFolder, _("Add new virtual folder"));
             if (is_vfolder)
@@ -569,21 +572,27 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             {
                 menu.AppendSeparator();
                 menu.Append(idMenuRenameFile, _("Rename file..."));
+                menu.Enable(idMenuRenameFile, PopUpMenuOption);
             }
             menu.AppendSeparator();
             menu.Append(idMenuRemoveFilePopup, _("Remove file from project"));
+            menu.Enable(idMenuRemoveFilePopup, PopUpMenuOption);
         }
 
         // if it is a folder...
         else if (ftd->GetKind() == FileTreeData::ftdkFolder)
         {
             menu.Append(idMenuAddFilePopup, _("Add files..."));
+            menu.Enable(idMenuAddFilePopup, PopUpMenuOption);
             menu.Append(idMenuAddFilesRecursivelyPopup, _("Add files recursively..."));
+            menu.Enable(idMenuAddFilesRecursivelyPopup, PopUpMenuOption);
             menu.AppendSeparator();
             menu.Append(idMenuRemoveFile, _("Remove files..."));
+            menu.Enable(idMenuRemoveFile, PopUpMenuOption);
             wxFileName f(ftd->GetFolder());
             f.MakeRelativeTo(ftd->GetProject()->GetBasePath());
             menu.Append(idMenuRemoveFolderFilesPopup, wxString::Format(_("Remove %s*"), f.GetFullPath().c_str()));
+            menu.Enable(idMenuRemoveFolderFilesPopup, PopUpMenuOption);
         }
 
         // if it is a virtual folder
@@ -626,7 +635,7 @@ it differs from the block currently in CreateMenu() by the following two IDs */
 
             menu.Append(idMenuProjectTreeProps, _("Project tree"), treeprops);
             menu.Append(idMenuTreeProjectProperties, _("Properties"));
-            menu.Enable(idMenuTreeProjectProperties, ProjectRelatedOptions);
+            menu.Enable(idMenuTreeProjectProperties, PopUpMenuOption);
         }
 
         // more file options
@@ -2473,4 +2482,5 @@ void ProjectManager::CheckForExternallyModifiedProjects()
     }
     m_isCheckingForExternallyModifiedProjects = false;
 } // end of CheckForExternallyModifiedProjects
+
 
