@@ -6,6 +6,8 @@
 #include <wx/toolbar.h>
 #include <wx/stattext.h>
 #include <wx/button.h>
+#include <wx/dcclient.h>
+#include <wx/textctrl.h>
 
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/manager.h>
@@ -15,24 +17,24 @@
 
 class wxsPropertyContainer;
 
-/** \brief Class representing one property 
+/** \brief Class representing one property
  *
  * Property is object around real variable(s) which is responsible
  * for streaming it. Currently there are three strammings supported:
  * - Streaming to/from PropertyGrid - this will be used in
  *   property editor
- * - Streaming to/from Xml structure - this kind of streaming will be 
+ * - Streaming to/from Xml structure - this kind of streaming will be
  *   compatible with Xrc file structure (with some additional data)
  *   Streaming to Xml format could be done in streaming to property stream
- *   but because of some special structures used in XRC format it is 
+ *   but because of some special structures used in XRC format it is
  *   given as separate function set
  * - Streaming to/from property stream (interface modelled in wxsPropertyStream)
  *
  * Property object is build independently from class instance. Each operating
  * function takes pointer to class as argument.
  *
- * Some properties provide additional functions operating on data. In some cases 
- * data is not stored directly but must be stored in modified form. These 
+ * Some properties provide additional functions operating on data. In some cases
+ * data is not stored directly but must be stored in modified form. These
  * functions are operating on this modified form which guarantee consistency
  * of data (good example is wxsStyleProperty, where styles are not stored like
  * they are in wxWidgets)
@@ -49,13 +51,13 @@ class wxsProperty
          *  \param DataName name used in data operations (including Xml/Xrc)
          */
         wxsProperty(const wxString& PGName, const wxString& DataName);
-        
+
         /** \brief Dctor */
         virtual ~wxsProperty() {}
-        
+
         /** \brief Function creating Property grid enteries
          *
-         * This function must create all property grid enteries. All enteries 
+         * This function must create all property grid enteries. All enteries
          * must have correct values set on initialization.
          * Each wxPGId of created entrty must be passed to PGRegister function.
          *
@@ -66,7 +68,7 @@ class wxsProperty
          * \param Parent id of parent property which MUST be passed to AppendIn function
          */
         virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent) {}
-        
+
         /** \brief Function reading value from property grid.
          *
          * \param Object class where data should be stored, same as class passed to PGCreate
@@ -75,7 +77,7 @@ class wxsProperty
          * \param Index index of variable - value returned from PGRegister function, usually set to variable offset
          */
         virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index) { return false; }
-        
+
         /** \brief Function writing value to property grid.
          *
          * \param Object class from which data should be read from, same as class passed to PGCreate
@@ -84,8 +86,8 @@ class wxsProperty
          * \param Index index returned from PGRegister(), usually set to variable offset
          */
         virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index) { return false; }
-        
-        /** \brief Fuunction reading value from xml element 
+
+        /** \brief Fuunction reading value from xml element
          *
          * \param Object class where data should be stored
          * \param Element Xml element for this property, may be NULL - in such case,
@@ -94,7 +96,7 @@ class wxsProperty
          */
         virtual bool XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element) { return false; }
 
-        /** \brief Function writing value to xml element 
+        /** \brief Function writing value to xml element
          *
          * Returning false means that values were not stored in xml node,
          * this usually happens when value is equal to default one.
@@ -104,30 +106,30 @@ class wxsProperty
          * \return True of write success, false when this element should not be stored
          */
         virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element) { return false; }
-        
-        /** \brief Function reading value from property stream 
+
+        /** \brief Function reading value from property stream
          *
          * Stream->GetXXX functions should be used inside this function
          *
          *  \return True on read success (when all Stream->GetXXX functions returned true), false otherwise
          */
         virtual bool PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream) { return false; }
-        
-        /** \brief Function writing value to property stream (or checking it) 
+
+        /** \brief Function writing value to property stream (or checking it)
          *
          * Stream->PutXXX functions should be used inside this function
          *
          *  \return True on write success (when all stream->PutXXX functions returned true), false otherwise
          */
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream) { return false; }
-        
+
         /** \brief Getting name of PropertyGrid entry */
         inline const wxString& GetPGName()   { return PGName; }
-        
+
         /** \brief Getting name of data (Xml and others) entry */
         inline const wxString& GetDataName() { return DataName; }
-        
-        /** \brief Getting unique name of type 
+
+        /** \brief Getting unique name of type
          *
          * Type name will be used in group selection to merge properties
          * of different objects into one thing. Returning empty string
@@ -135,10 +137,10 @@ class wxsProperty
          * This function must be declared in property implementations.
          */
         virtual const wxString GetTypeName() = 0;
-        
+
     protected:
-        
-        /** \brief Registering property grid identifier 
+
+        /** \brief Registering property grid identifier
          *
          * This function must be called in PGCreate for each property created.
          * Identifier will be used to determine which property object must be
@@ -153,8 +155,8 @@ class wxsProperty
          * \return Index of added property (value of Index if Index >= 0 ) or -1 on failue
          */
         long PGRegister(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId ID,long Index = -1);
-        
-        /** \brief Function getting properties flags from given container. 
+
+        /** \brief Function getting properties flags from given container.
          *
          * This operation is prohibited by default because availability flags
          * are protected inside wxsPropertyContainer. wxsProperty class may
@@ -164,22 +166,22 @@ class wxsProperty
          * \return Object->GetPropertiesFlags()
          */
         long GetPropertiesFlags(wxsPropertyContainer* Object);
-        
-        /** \brief Helper function for fetching value from xml element 
+
+        /** \brief Helper function for fetching value from xml element
          *  \param Elem - element holding value, may be NULL
          *  \param Value - here string will be stored
          *  \param SubChild - name of sub node, if empty, Elem will be used
          *  \return true when string exist, false if it does not exist
          */
         static bool XmlGetString(TiXmlElement* Elem,wxString& Value,const wxString& SubChild = wxEmptyString);
-        
+
         /** \brief Helper function for setting value of xml elemet
          *  \param Elem - element which will hold value
          *  \param Value - value
          *  \param SubChild - value of sub node, if empty, Elem will be used
          */
         static void XmlSetString(TiXmlElement* Elem,const wxString& Value,const wxString& SubChild = wxEmptyString);
-        
+
         /** \brief Helper function for fetching long integer value from xml element
          *  \param Elem - element holding value, may be NULL
          *  \param Value - here value will be stored
@@ -191,7 +193,7 @@ class wxsProperty
             wxString Tmp;
             return XmlGetString(Elem,Tmp,SubChild) && Tmp.ToLong(&Value);
         }
-        
+
         /** \brief Helper function for setting long integer value of xml elemet
          *  \param Elem - element which will hold value
          *  \param Value - value
@@ -201,7 +203,7 @@ class wxsProperty
         {
             XmlSetString(Elem,wxString::Format(_T("%d"),Value),SubChild);
         }
-        
+
         /** \brief Helper function for fetching bool value from xml element
          *  \param Elem - element holding value, may be NULL
          *  \param Value - here value will be stored
@@ -215,7 +217,7 @@ class wxsProperty
             Value = Tmp!=0;
             return true;
         }
-        
+
         /** \brief Helper function for setting long integer value of xml elemet
          *  \param Elem - element which will hold value
          *  \param Value - value
@@ -225,14 +227,14 @@ class wxsProperty
         {
             XmlSetString(Elem,Value?_T("1"):_T("0"),SubChild);
         }
-        
+
     private:
-    
+
         wxString PGName;        ///< Name used inside property grid
         wxString DataName;      ///< Name of data element (xml element)
 };
 
-/** \brief Macro fetching offset of variable from given object 
+/** \brief Macro fetching offset of variable from given object
  *
  * \param Class type of class containing variable
  * \param Variable name of variable inside class
@@ -241,7 +243,7 @@ class wxsProperty
     ( (long)(((char*)(&(((Class*)1)->Variable)))) - \
       (long)(((char*)((wxsPropertyContainer*)((Class*)1)))) )
 
-/** \brief Macro converting variable offset to value 
+/** \brief Macro converting variable offset to value
  *
  * \param Instance pointer to class instance
  * \param Offset variable offset
@@ -249,5 +251,5 @@ class wxsProperty
  */
 #define wxsVARIABLE(Instance,Offset,Type) \
     (*((Type*)(((char*)&((wxsPropertyContainer&)*(Instance)))+(Offset))))
-    
+
 #endif

@@ -6,6 +6,7 @@
 #include <wx/stattext.h>
 #include <wx/button.h>
 #include <wx/hashset.h>
+#include <wx/dcclient.h>
 
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/manager.h>

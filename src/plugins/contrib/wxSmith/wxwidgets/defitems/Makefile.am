@@ -1,3 +1,5 @@
+AM_CPPFLAGS = -DWXMAKINGLIB_PROPGRID -DwxPG_COMPATIBILITY_1_0_0
+
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/include/wxFlatNotebook/include \

@@ -376,6 +376,7 @@ void wxPropertyGrid::AutoGetTranslation ( bool ) { }
 
 // -----------------------------------------------------------------------
 
+/*
 #if !wxCHECK_VERSION(2, 7, 1)
 
 #if defined(__WXMSW__)
@@ -413,12 +414,14 @@ static bool wxPGIsWindowBuffered( const wxWindow* WXUNUSED(wnd) )
 }
 
 #else
+*/
 
 static bool wxPGIsWindowBuffered( const wxWindow* WXUNUSED(wnd) )
 {
     return false;
 }
 
+/*
 #endif
 
 #else
@@ -429,6 +432,7 @@ static bool wxPGIsWindowBuffered( const wxWindow* wnd )
 }
 
 #endif
+*/
 
 
 // -----------------------------------------------------------------------
