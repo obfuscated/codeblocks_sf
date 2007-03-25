@@ -3,7 +3,11 @@
 #else
     #include <stdlib.h>
 #endif
+#ifdef __APPLE__
+#include <SDL/SDL.h>
+#else
 #include <SDL.h>
+#endif
 
 int main ( int argc, char** argv )
 {

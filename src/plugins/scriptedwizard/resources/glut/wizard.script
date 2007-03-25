@@ -24,7 +24,12 @@ function BeginWizard()
 
     Wizard.AddInfoPage(_T("GlutIntro"), intro_msg);
     Wizard.AddProjectPathPage();
-    Wizard.AddGenericSelectPathPage(_T("GlutPath"), glutpath_descr, _T("Please select GLUT's location:"), GlutPathDefault);
+    if (PLATFORM == PLATFORM_MAC)
+    {
+        GlutPathDefault="/System/Library/Frameworks/GLUT.framework";
+    }
+    else
+        Wizard.AddGenericSelectPathPage(_T("GlutPath"), glutpath_descr, _T("Please select GLUT's location:"), GlutPathDefault);
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
 
@@ -96,8 +101,11 @@ function GetFilesDir()
 function SetupProject(project)
 {
     // set project options
-    project.AddIncludeDir(GlutPathDefaultInc);
-    project.AddLibDir(GlutPathDefaultLib);
+    if (PLATFORM != PLATFORM_MAC)
+    {
+        project.AddIncludeDir(GlutPathDefaultInc);
+        project.AddLibDir(GlutPathDefaultLib);
+    }
 
     // add link libraries
     if (PLATFORM == PLATFORM_MSW)
@@ -107,6 +115,13 @@ function SetupProject(project)
         project.AddLinkLib(_T("glu32"));
         project.AddLinkLib(_T("winmm"));
         project.AddLinkLib(_T("gdi32"));
+    }
+    else if (PLATFORM == PLATFORM_MAC)
+    {
+        project.AddLinkerOption(_T("-framework GLUT"));
+        project.AddLinkerOption(_T("-framework OpenGL"));
+
+        project.AddLinkerOption(_T("-framework Cocoa")); // GLUT dependency
     }
     else
     {

@@ -107,6 +107,15 @@ function SetupProject(project)
         project.AddLinkLib(_T("winmm"));
         project.AddLinkLib(_T("dxguid"));
     }
+    else if (PLATFORM == PLATFORM_MAC)
+    {
+        //project.AddCompilerOption(_T("-D_GNU_SOURCE=1 -D_THREAD_SAFE"));
+        project.AddLinkerOption(_T("-framework SDL"));
+        // libSDLmain.a does not exist by default, needs to be built from SDLMain.m:
+        project.AddLinkLib(_T("SDLmain"));
+
+        project.AddLinkerOption(_T("-framework Cocoa")); // SDL dependency
+    }
     else
     {
         // unix way
