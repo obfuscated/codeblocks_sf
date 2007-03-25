@@ -52,6 +52,7 @@ wxString MSVC7Loader::ReplaceMSVCMacros(const wxString& str)
     ret.Replace(_T("$(INTDIR)"), m_IntDir);
     ret.Replace(_T("$(ConfigurationName)"), m_ConfigurationName);
     ret.Replace(_T("$(ProjectName)"), m_ProjectName);
+    ret.Replace(_T("$(ProjectDir)"), m_pProject->GetBasePath());
     ret.Replace(_T("$(TargetPath)"), m_TargetPath);
     ret.Replace(_T("$(TargetFileName)"), m_TargetFilename);
     ret.Replace(_T("\""), _T(""));
@@ -284,7 +285,7 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
 
             tmp = cbC2U(tool->Attribute("AdditionalLibraryDirectories"));
             wxArrayString arr;
-            ParseDirectories(tmp, arr);
+            ParseInputString(tmp, arr);
             for (unsigned int i = 0; i < arr.GetCount(); ++i)
             {
                 bt->AddLibDir(ReplaceMSVCMacros(arr[i]));
@@ -361,7 +362,7 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             // vc70 uses ";" while vc71 uses "," separators
             // NOTE (mandrav#1#): No, that is *not* the case (what were they thinking at MS?)
             // try with comma (,) which is the newest I believe
-            ParseDirectories(tmp, arr); // This will parse recursively
+            ParseInputString(tmp, arr); // This will parse recursively
             for (i = 0; i < arr.GetCount(); ++i)
             {
                 bt->AddIncludeDir(ReplaceMSVCMacros(arr[i]));
@@ -499,6 +500,16 @@ ObjectFile="Debug\"
                   bt->AddCompilerOption(arr[i]);
             }
 
+            tmp = cbC2U(tool->Attribute("ForcedIncludeFiles"));
+            if (!tmp.IsEmpty())
+            {
+                wxArrayString FIfiles;
+                ParseInputString(tmp, FIfiles);
+                for (size_t i = 0; i < FIfiles.GetCount(); ++i)
+                    bt->AddCompilerOption(m_ConvertSwitches? _T("-include ") + ReplaceMSVCMacros(FIfiles[i])
+                        : _T("/FI ") + ReplaceMSVCMacros(FIfiles[i]));
+            }
+
         }
         else if (strcmp(tool->Attribute("Name"), "VCPreBuildEventTool") == 0)
         {
@@ -601,10 +612,10 @@ void MSVC7Loader::HandleFileConfiguration(TiXmlElement* file, ProjectFile* pf)
     }
 }
 
-bool MSVC7Loader::ParseDirectories(wxString Input, wxArrayString& Output)
+bool MSVC7Loader::ParseInputString(wxString Input, wxArrayString& Output)
 {
-    /* This function will parse directories recursively
-    *  to avoid any string with ';' to slip through */
+    /* This function will parse an input string recursively
+    *  with separators (',' and ';') */
     wxArrayString Array1, Array2;
     if (Input.IsEmpty())
         return false;
