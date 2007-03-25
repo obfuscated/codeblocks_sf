@@ -9,7 +9,7 @@ lib_LTLIBRARIES = libRegExTestbed.la
 
 libRegExTestbed_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libRegExTestbed_la_LIBADD = ../../../sdk/libcodeblocks.la
+libRegExTestbed_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
 
 libRegExTestbed_la_SOURCES = regexdlg.cpp RegExTestbed.cpp
 

@@ -101,6 +101,48 @@ AC_SUBST(CXXFLAGS)
 AC_SUBST(CFLAGS)
 AC_SUBST(LIBS)
 
+WX_GTK2_CFLAGS=
+WX_GTK2_LIBS=
+
+AC_MSG_CHECKING(for wxWidgets platform)
+WX_BASENAME=`$WX_CONFIG_WITH_ARGS --basename`
+case $WX_BASENAME in 
+    *wx_gtk*)
+        AC_MSG_RESULT(wxGTK)
+        WX_GTK2_CFLAGS="$GTK2_CFLAGS"
+        WX_GTK2_LIBS="$GTK2_LIBS"
+    ;;
+    *wx_msw*)
+        AC_MSG_RESULT(wxMSW)
+    ;;
+    *wx_mac*)
+        AC_MSG_RESULT(wxMac)
+        AC_CHECK_PROG(REZ, Rez, Rez, /Developer/Tools/Rez)
+        AC_CHECK_PROG(SETFILE, SetFile, SetFile, /Developer/Tools/SetFile)
+    ;;
+    *) 
+        AC_MSG_RESULT(other)
+    ;;
+esac
+
+AC_SUBST(WX_GTK2_CFLAGS)
+AC_SUBST(WX_GTK2_LIBS)
+
+PLUGIN_WX_LIBS=
+
+AC_MSG_CHECKING(if wxWidgets libraries are needed for plugins)
+case `uname` in 
+    Darwin)
+        AC_MSG_RESULT(yes)
+        PLUGIN_WX_LIBS="$WX_LIBS"
+    ;;
+    *) 
+        AC_MSG_RESULT(no)
+    ;;
+esac
+
+AC_SUBST(PLUGIN_WX_LIBS)
+
 CPPFLAGS="$CPPFLAGS -Ulinux -Uunix"
 CXXFLAGS="$CXXFLAGS $PCH_FLAGS -fPIC -DPIC -fexceptions"
 AC_SUBST(codeblocks_PCH_FLAGS, "$PCH_FLAGS")
