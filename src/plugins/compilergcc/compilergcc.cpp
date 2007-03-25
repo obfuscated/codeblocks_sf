@@ -1749,7 +1749,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 
     if (!cmd.Replace(_T("$SCRIPT"), script))
         // if they didn't specify $SCRIPT, append:
-        cmd << _T(" ") << command;
+        cmd << command;
 
     Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), f.GetFullPath().c_str());
     if (!wxFileExists(f.GetFullPath()))
