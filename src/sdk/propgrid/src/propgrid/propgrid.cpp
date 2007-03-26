@@ -376,7 +376,6 @@ void wxPropertyGrid::AutoGetTranslation ( bool ) { }
 
 // -----------------------------------------------------------------------
 
-/*
 #if !wxCHECK_VERSION(2, 7, 1)
 
 #if defined(__WXMSW__)
@@ -400,10 +399,11 @@ static bool wxPGIsWindowBuffered( const wxWindow* wnd )
 
 #elif defined(__WXGTK20__)
 
-#include <gtk/gtk.h>
+//#include <gtk/gtk.h>
 static bool wxPGIsWindowBuffered( const wxWindow* wnd )
 {
-    return GTK_WIDGET_DOUBLE_BUFFERED(wnd->GetHandle());
+//    return GTK_WIDGET_DOUBLE_BUFFERED(wnd->GetHandle());
+    return false;
 }
 
 #elif defined(__WXMAC_OSX__) || defined(__WXCOCOA__) || defined(__WXDFB__)
@@ -414,14 +414,12 @@ static bool wxPGIsWindowBuffered( const wxWindow* WXUNUSED(wnd) )
 }
 
 #else
-*/
 
 static bool wxPGIsWindowBuffered( const wxWindow* WXUNUSED(wnd) )
 {
     return false;
 }
 
-/*
 #endif
 
 #else
@@ -432,7 +430,6 @@ static bool wxPGIsWindowBuffered( const wxWindow* wnd )
 }
 
 #endif
-*/
 
 
 // -----------------------------------------------------------------------
