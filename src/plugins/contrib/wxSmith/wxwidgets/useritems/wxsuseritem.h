@@ -4,6 +4,8 @@
 #include "wxsgenericpropertyvaluelist.h"
 #include "../wxswidget.h"
 
+class wxsUserItemDescription;
+
 /** \brief This is base class for simple user -defined items.
  *
  * Currently only widgets can be defined using this approach.
@@ -22,6 +24,7 @@ class wxsUserItem : public wxsWidget
          */
         wxsUserItem(
             wxsItemResData* Data,
+            wxsUserItemDescription* Description,
             wxsItemInfo* Info,
             wxsGenericPropertyValueList* Properties,
             const wxBitmap& PreviewBitmap,
@@ -50,6 +53,7 @@ class wxsUserItem : public wxsWidget
         wxArrayString   m_CppDefinitionHeaders;     ///< \brief Header files used in definition of resource
 
         wxsGenericPropertyValueList* m_Properties;  ///< \brief List of properties
+        wxsUserItemDescription* m_Description;      ///< \brief Item's description
 };
 
 

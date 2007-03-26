@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+    <object class="wxDialog" name="wxsUserItemEditor">
+        <title>User item editor</title>
+        <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+        <object class="wxBoxSizer" variable="BoxSizer1" member="yes">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <object class="wxBoxSizer" variable="BoxSizer2" member="yes">
+                    <object class="sizeritem">
+                        <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
+                            <label>Item list</label>
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                                <object class="wxListBox" name="ID_LISTBOX1" variable="m_ItemList" member="yes">
+                                    <default>-1</default>
+                                    <handler function="OnItemListSelect" entry="EVT_LISTBOX" />
+                                </object>
+                                <flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                <border>5</border>
+                                <option>1</option>
+                            </object>
+                            <object class="sizeritem">
+                                <object class="wxBoxSizer" variable="BoxSizer3" member="yes">
+                                    <object class="sizeritem">
+                                        <object class="wxButton" name="ID_BUTTON1" variable="m_Add" member="yes">
+                                            <label>Add</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>5</border>
+                                        <option>1</option>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <object class="wxButton" name="ID_BUTTON5" variable="m_Duplicate" member="yes">
+                                            <label>Duplicate</label>
+                                        </object>
+                                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>5</border>
+                                        <option>1</option>
+                                    </object>
+                                </object>
+                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                <border>5</border>
+                            </object>
+                            <object class="sizeritem">
+                                <object class="wxButton" name="ID_BUTTON2" variable="m_Delete" member="yes">
+                                    <label>Delete</label>
+                                </object>
+                                <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                <border>5</border>
+                            </object>
+                        </object>
+                        <flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                        <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                        <object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="yes">
+                            <label>Description</label>
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                                <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
+                                    <cols>2</cols>
+                                    <growablecols>1</growablecols>
+                                    <object class="sizeritem">
+                                        <object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
+                                            <label>Name:</label>
+                                        </object>
+                                        <flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>5</border>
+                                        <option>1</option>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="m_Name" member="yes" />
+                                        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>5</border>
+                                        <option>1</option>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="yes">
+                                            <label>Icons:</label>
+                                            <style>wxALIGN_CENTRE</style>
+                                        </object>
+                                        <flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>5</border>
+                                        <option>1</option>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <object class="wxFlexGridSizer" variable="FlexGridSizer2" member="yes">
+                                            <cols>3</cols>
+                                            <growablecols>0,2</growablecols>
+                                            <object class="sizeritem">
+                                                <object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="yes">
+                                                    <label>16x16</label>
+                                                </object>
+                                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                                <border>5</border>
+                                                <option>1</option>
+                                            </object>
+                                            <object class="spacer">
+                                                <flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                                <border>5</border>
+                                                <option>1</option>
+                                                <size>10,10</size>
+                                            </object>
+                                            <object class="sizeritem">
+                                                <object class="wxStaticText" name="ID_STATICTEXT7" variable="StaticText7" member="yes">
+                                                    <label>32x32</label>
+                                                </object>
+                                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                                <border>5</border>
+                                                <option>1</option>
+                                            </object>
+                                            <object class="sizeritem">
+                                                <object class="wxBitmapButton" name="ID_BITMAPBUTTON1" variable="m_Icon16" member="yes">
+                                                    <bitmap stock_id="wxART_TIP" />
+                                                    <default>1</default>
+                                                </object>
+                                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                                <border>5</border>
+                                                <option>1</option>
+                                            </object>
+                                            <object class="spacer">
+                                                <flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                                <border>5</border>
+                                                <option>1</option>
+                                                <size>10,10</size>
+                                            </object>
+                                            <object class="sizeritem">
+                                                <object class="wxBitmapButton" name="ID_BITMAPBUTTON2" variable="m_Icon32" member="yes">
+                                                    <bitmap stock_id="wxART_TIP" />
+                                                    <default>1</default>
+                                                </object>
+                                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                                <border>5</border>
+                                                <option>1</option>
+                                            </object>
+                                        </object>
+                                        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>5</border>
+                                        <option>1</option>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="yes">
+                                            <label>Preview image:</label>
+                                        </object>
+                                        <flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>5</border>
+                                        <option>1</option>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <object class="wxBitmapButton" name="ID_BITMAPBUTTON3" variable="m_PreviewBitmap" member="yes">
+                                            <bitmap stock_id="wxART_TIP" />
+                                            <default>1</default>
+                                            <size>68,64</size>
+                                        </object>
+                                        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>5</border>
+                                        <option>1</option>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="yes">
+                                            <label>Properties:</label>
+                                        </object>
+                                        <flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>5</border>
+                                        <option>1</option>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <object class="wxButton" name="ID_BUTTON3" variable="m_PropertiesEdit" member="yes">
+                                            <label>Edit</label>
+                                        </object>
+                                        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>5</border>
+                                        <option>1</option>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="yes">
+                                            <label>Source code:</label>
+                                        </object>
+                                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>5</border>
+                                        <option>1</option>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <object class="wxButton" name="ID_BUTTON4" variable="m_SourceCodeEdit" member="yes">
+                                            <label>Edit</label>
+                                        </object>
+                                        <flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>5</border>
+                                        <option>1</option>
+                                    </object>
+                                </object>
+                                <flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                <border>5</border>
+                                <option>1</option>
+                            </object>
+                        </object>
+                        <flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                        <border>5</border>
+                        <option>1</option>
+                    </object>
+                </object>
+                <flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                <border>5</border>
+                <option>1</option>
+            </object>
+            <object class="sizeritem">
+                <object class="wxStdDialogButtonSizer" variable="StdDialogButtonSizer1" member="yes">
+                    <object class="button">
+                        <object class="wxButton" name="wxID_OK">
+                            <label></label>
+                        </object>
+                    </object>
+                    <object class="button">
+                        <object class="wxButton" name="wxID_CANCEL">
+                            <label></label>
+                        </object>
+                    </object>
+                </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                <border>5</border>
+            </object>
+        </object>
+    </object>
+</wxsmith>

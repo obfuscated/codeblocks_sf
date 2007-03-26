@@ -32,12 +32,100 @@ wxsUserItemManager& wxsUserItemManager::Get()
 
 wxsUserItemManager::wxsUserItemManager()
 {
-    //ctor
 }
 
 wxsUserItemManager::~wxsUserItemManager()
 {
-    //dtor
+    UninitializeUserItems();
 }
 
+void wxsUserItemManager::InitializeUserItems()
+{
+    // First deleting all items which may have been here
+    UninitializeUserItems();
 
+    // Now enumerating user items inside configuration node
+    ConfigManager* Manager = Manager::Get()->GetConfigManager(_T("wxsmith"));
+
+    // Now enumerating all configuration items
+    wxArrayString UserItems = Manager->EnumerateSubPaths(_T("/useritems"));
+    for ( size_t i=0; i<UserItems.Count(); i++ )
+    {
+        wxString UserItemName = UserItems[i];
+
+        // Searching for given item inside item factory
+        if ( wxsItemFactory::GetInfo(UserItemName) )
+        {
+            // This item is already registered and won't be added
+            continue;
+        }
+
+        // Creating new user item description
+        wxsUserItemDescription* Description = new wxsUserItemDescription(UserItemName);
+        Description->ReadFromConfig(Manager,_T("/useritems/")+UserItemName);
+        m_Descriptions.Add(Description);
+    }
+}
+
+void wxsUserItemManager::UninitializeUserItems()
+{
+    for ( size_t i=0; i<m_Descriptions.Count(); i++ )
+    {
+        m_Descriptions[i]->DecReference(true);
+    }
+    m_Descriptions.Clear();
+}
+
+void wxsUserItemManager::StoreItemsInsideConfiguration()
+{
+    ConfigManager* Manager = Manager::Get()->GetConfigManager(_T("wxsmith"));
+
+    // Need to remove all previous things inside configuration nodes
+    Manager->DeleteSubPath(_T("/useritems"));
+
+    for ( size_t i=0; i<m_Descriptions.Count(); i++ )
+    {
+        m_Descriptions[i]->WriteToConfig(Manager,_T("/useritems/")+m_Descriptions[i]->GetName());
+    }
+}
+
+int wxsUserItemManager::GetItemsCount()
+{
+    return (int)m_Descriptions.GetCount();
+}
+
+wxsUserItemDescription* wxsUserItemManager::GetDescription(int Index)
+{
+    if ( Index < 0 ) return NULL;
+    if ( Index >= GetItemsCount() ) return NULL;
+    return m_Descriptions[Index];
+}
+
+void wxsUserItemManager::DeleteDescription(int Index)
+{
+    if ( Index < 0 ) return;
+    if ( Index >= GetItemsCount() ) return;
+    m_Descriptions[Index]->DecReference(true);
+    m_Descriptions.RemoveAt(Index);
+}
+
+void wxsUserItemManager::UnregisterAll()
+{
+    for ( size_t i=0; i<m_Descriptions.Count(); i++ )
+    {
+        m_Descriptions[i]->Unregister();
+    }
+}
+
+void wxsUserItemManager::ReregisterAll()
+{
+    for ( size_t i=0; i<m_Descriptions.Count(); i++ )
+    {
+        m_Descriptions[i]->Reregister();
+    }
+}
+
+void wxsUserItemManager::AddDescription(wxsUserItemDescription* Description)
+{
+    m_Descriptions.Add(Description);
+}

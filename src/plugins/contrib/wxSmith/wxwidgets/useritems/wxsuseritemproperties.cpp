@@ -121,6 +121,7 @@ void wxsUserItemProperties::ReadFromConfig(ConfigManager* Manager,const wxString
 
 void wxsUserItemProperties::WriteToConfig(ConfigManager* Manager,const wxString& BasePath)
 {
+    Manager->DeleteSubPath(BasePath);
     for ( size_t i=0; i<m_Descriptions.Count(); i++ )
     {
         PropertyDescription* Desc = m_Descriptions[i];

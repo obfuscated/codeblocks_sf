@@ -277,9 +277,9 @@
 		<Unit filename="wxwidgets\useritems\wxsuseritem.h" />
 		<Unit filename="wxwidgets\useritems\wxsuseritemdescription.cpp" />
 		<Unit filename="wxwidgets\useritems\wxsuseritemdescription.h" />
-		<Unit filename="wxwidgets\useritems\wxsuseritemmanager.cpp">
-			<Option link="0" />
-		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsuseritemeditor.cpp" />
+		<Unit filename="wxwidgets\useritems\wxsuseritemeditor.h" />
+		<Unit filename="wxwidgets\useritems\wxsuseritemmanager.cpp" />
 		<Unit filename="wxwidgets\useritems\wxsuseritemmanager.h" />
 		<Unit filename="wxwidgets\useritems\wxsuseritemproperties.cpp" />
 		<Unit filename="wxwidgets\useritems\wxsuseritemproperties.h" />
@@ -372,6 +372,7 @@
 					<wxPanel wxs="wxsmith/wxsSettings.wxs" src="wxssettings.cpp" hdr="wxssettings.h" name="wxsSettings" language="CPP" />
 					<wxPanel wxs="wxsmith/wxsmenueditor.wxs" src="wxwidgets/defitems/wxsmenueditor.cpp" hdr="wxwidgets/defitems/wxsmenueditor.h" name="wxsMenuEditor" language="CPP" />
 					<wxPanel wxs="wxsmith/wxstoolbareditor.wxs" src="wxwidgets/defitems/wxstoolbareditor.cpp" hdr="wxwidgets/defitems/wxstoolbareditor.h" name="wxsToolBarEditor" language="CPP" />
+					<wxDialog wxs="wxsmith/wxsuseritemeditor.wxs" src="wxwidgets\useritems\wxsuseritemeditor.cpp" hdr="wxwidgets\useritems\wxsuseritemeditor.h" name="wxsUserItemEditor" language="CPP" />
 				</resources>
 			</wxsmith>
 		</Extensions>

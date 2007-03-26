@@ -57,7 +57,7 @@ namespace
 }
 
 
-wxsUserItemDescription::wxsUserItemDescription(const wxString& Name): m_Name(Name), m_Factory(NULL)
+wxsUserItemDescription::wxsUserItemDescription(const wxString& Name): m_Name(Name), m_Factory(NULL), m_RefCount(1)
 {
 }
 
@@ -72,7 +72,7 @@ wxsUserItemDescription::~wxsUserItemDescription()
 wxsUserItem* wxsUserItemDescription::BuildUserItem(wxsItemResData* Data)
 {
     wxsGenericPropertyValueList* NewList = m_Properties.BuildList();
-    wxsUserItem* Item = new wxsUserItem(Data,&m_Info,NewList,m_Bitmap,m_DefaultSize);
+    wxsUserItem* Item = new wxsUserItem(Data,this,&m_Info,NewList,m_PreviewBitmap,m_DefaultSize);
     Item->AddLanguage(wxsCPP,m_CppCodeTemplate,m_CppDeclarationHeaders,m_CppDefinitionHeaders);
     return Item;
 }
@@ -116,7 +116,7 @@ void wxsUserItemDescription::ReadFromConfig(ConfigManager* Manager,const wxStrin
     m_TreeImage = new wxsAutoResourceTreeImage(m_Info.Icon16);
     m_Info.TreeIconId = m_TreeImage->GetIndex();
     wxMemoryInputStream StreamBitmapMain(BinaryBitmapMain,BinaryBitmapMain.Length());
-    m_Bitmap = wxBitmap(wxImage(StreamBitmapMain));
+    m_PreviewBitmap = wxBitmap(wxImage(StreamBitmapMain));
     m_Properties.ReadFromConfig(Manager,BasePath+_T("/Poperties"));
     long Width, Height;
     SizeStr.BeforeFirst(_T(',')).ToLong(&Width);
@@ -132,7 +132,7 @@ void wxsUserItemDescription::WriteToConfig(ConfigManager* Manager,const wxString
     wxMemoryOutputStream StreamBitmap16;
     wxMemoryOutputStream StreamBitmap32;
 
-    m_Bitmap.ConvertToImage().SaveFile(StreamBitmapMain,wxBITMAP_TYPE_PNG);
+    m_PreviewBitmap.ConvertToImage().SaveFile(StreamBitmapMain,wxBITMAP_TYPE_PNG);
     m_Info.Icon16.ConvertToImage().SaveFile(StreamBitmap16,wxBITMAP_TYPE_PNG);
     m_Info.Icon32.ConvertToImage().SaveFile(StreamBitmap32,wxBITMAP_TYPE_PNG);
 
@@ -163,4 +163,50 @@ void wxsUserItemDescription::WriteToConfig(ConfigManager* Manager,const wxString
     Manager->Write(BasePath+_T("/Cpp/CodeTemplate"),m_CppCodeTemplate);
     Manager->Write(BasePath+_T("/Cpp/DeclarationHeaders"),m_CppDeclarationHeaders);
     Manager->Write(BasePath+_T("/Cpp/DefinitionHeaders"),m_CppDefinitionHeaders);
+
+    m_Properties.WriteToConfig(Manager,BasePath+_T("/Properties"));
+}
+
+void wxsUserItemDescription::AddReference()
+{
+    m_RefCount++;
+}
+
+void wxsUserItemDescription::DecReference(bool DeleteFactory)
+{
+    if ( DeleteFactory )
+    {
+        delete m_Factory;
+        m_Factory = NULL;
+    }
+
+    if ( !--m_RefCount )
+    {
+        delete this;
+    }
+}
+
+void wxsUserItemDescription::Unregister()
+{
+    delete m_Factory;
+    m_Factory = NULL;
+}
+
+void wxsUserItemDescription::Reregister()
+{
+    Unregister();
+    m_Factory = new wxsUserItemFactory(this);
+}
+
+void wxsUserItemDescription::SetName(const wxString& NewName)
+{
+    m_Name = NewName;
+    m_Info.ClassName = NewName;
+}
+
+void wxsUserItemDescription::UpdateTreeIcon()
+{
+    delete m_TreeImage;
+    m_TreeImage = new wxsAutoResourceTreeImage(m_Info.Icon16);
+    m_Info.TreeIconId = m_TreeImage->GetIndex();
 }

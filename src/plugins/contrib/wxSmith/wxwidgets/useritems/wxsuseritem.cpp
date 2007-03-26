@@ -22,10 +22,12 @@
 */
 
 #include "wxsuseritem.h"
+#include "wxsuseritemdescription.h"
 #include "../wxsitemresdata.h"
 
 wxsUserItem::wxsUserItem(
     wxsItemResData* Data,
+    wxsUserItemDescription* Description,
     wxsItemInfo* Info,
     wxsGenericPropertyValueList* Properties,
     const wxBitmap& PreviewBitmap,
@@ -33,13 +35,16 @@ wxsUserItem::wxsUserItem(
         wxsWidget(Data,Info,NULL,NULL),
         m_PreviewBitmap(PreviewBitmap),        // Do not use GetSubBitmap to get immediate result on change of original bitmap
         m_DefaultSize(DefaultSize),
-        m_Properties(Properties)
+        m_Properties(Properties),
+        m_Description(Description)
 {
+    m_Description->AddReference();
 }
 
 wxsUserItem::~wxsUserItem()
 {
     delete m_Properties;
+    m_Description->DecReference(false);
 }
 
 void wxsUserItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
