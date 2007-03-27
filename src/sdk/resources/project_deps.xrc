@@ -28,7 +28,7 @@
         <border>8</border>
       </object>
       <object class="sizeritem">
-        <object class="wxCheckList" name="lstDeps">
+        <object class="wxCheckListBox" name="lstDeps">
           <content/>
         </object>
         <option>1</option>

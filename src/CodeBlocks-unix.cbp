@@ -2076,10 +2076,19 @@
 		<Unit filename="sdk/resources/confirm_replace.xrc">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/resources/confirm_replace_multiple.xrc">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/resources/edit_array_order.xrc">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/edit_array_string.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/edit_keywords.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/edit_pair.xrc">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/edit_path.xrc">
@@ -2089,6 +2098,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/editor_configuration.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/editor_manager.xrc">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/external_deps.xrc">
@@ -2275,6 +2287,9 @@
 		<Unit filename="sdk/resources/plugins_configuration.xrc">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/resources/project_deps.xrc">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/resources/project_manager_file_types.xrc">
 			<Option target="sdk" />
 		</Unit>
@@ -2291,6 +2306,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/select_target.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/virtualbuildtargetsdlg.xrc">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/scripting/bindings/sc_consts.cpp">

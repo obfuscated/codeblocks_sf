@@ -1023,8 +1023,12 @@ void Wiz::Finalize()
         wxWizardPageSimple::Chain(m_Pages[i - 1], m_Pages[i]);
 
     // allow the wizard to size itself around the pages
-    for (size_t i = 1; i < m_Pages.GetCount(); ++i)
-        m_pWizard->GetPageAreaSizer()->Add(m_Pages[i]);
+    #if wxCHECK_VERSION(2, 8, 0)
+        m_pWizard->GetPageAreaSizer()->Add(m_Pages[0]);
+    #else
+        for (size_t i = 1; i < m_Pages.GetCount(); ++i)
+            m_pWizard->GetPageAreaSizer()->Add(m_Pages[i]);
+    #endif
 
     m_pWizard->Fit();
 }
