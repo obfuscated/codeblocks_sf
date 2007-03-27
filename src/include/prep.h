@@ -44,7 +44,7 @@ namespace platform
 
     #if   defined ( __WIN32__ )
     const identifier id = platform_windows;
-    #elif defined ( __WXMAC__ )
+    #elif defined ( __WXMAC__ )  || defined ( __WXCOCOA__ )
     const identifier id = platform_macosx;
     #elif defined ( __linux__ )  || defined ( LINUX )
     const identifier id = platform_linux;
@@ -66,6 +66,18 @@ namespace platform
     const bool gtk = true;
     #else
     const bool gtk = false;
+    #endif
+
+    #if   defined ( __WXMAC__ )
+    const bool carbon = true;
+    #else
+    const bool carbon = false;
+    #endif
+
+    #if   defined ( __WXCOCOA__ )
+    const bool cocoa = true;
+    #else
+    const bool cocoa = false;
     #endif
 
 	#if defined ( linux )

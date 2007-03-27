@@ -40,7 +40,7 @@ namespace appglobals
       const wxString AppPlatform = _T("Windows");
     #elif defined(__WXOS2__)
       const wxString AppPlatform = _T("OS/2");
-    #elif defined(__WXMAC__)
+    #elif defined(__WXMAC__) || defined(__WXCOCOA__)
       const wxString AppPlatform = _T("Mac OS X");
     #elif defined(__APPLE__)
       const wxString AppPlatform = _T("Darwin");
