@@ -119,10 +119,10 @@
 				<Option compiler="gcc" />
 				<Option projectResourceIncludeDirsRelation="2" />
 				<Compiler>
-					<Add directory="include/propgrid/include" />
 					<Add option="-DWXMAKINGLIB_PROPGRID" />
 					<Add option="-DwxPG_USE_WXMODULE=0" />
 					<Add option="-DwxPG_COMPATIBILITY_1_0_0" />
+					<Add directory="include/propgrid/include" />
 				</Compiler>
 			</Target>
 			<Target title="sdk">
@@ -2062,7 +2062,7 @@
 			<Option target="wxPropertyGrid" />
 		</Unit>
 		<Unit filename="sdk/propgrid/src/propgrid/props.cpp">
-            <Option target="wxPropertyGrid" />
+			<Option target="wxPropertyGrid" />
 		</Unit>
 		<Unit filename="sdk/replacedlg.cpp">
 			<Option target="sdk" />
@@ -2107,10 +2107,70 @@
 		<Unit filename="sdk/resources/incremental_select_list.xrc">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_OgreCompositor.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_OgreCompositor.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_OgreMaterial.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_OgreMaterial.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_angelscript.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_angelscript.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_batch.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_batch.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_cg.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_cg.xml">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_cpp.sample">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_cpp.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_css.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_css.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_d.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_d.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_diff.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_diff.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_f77.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_f77.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_glsl.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_glsl.xml">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_gm.sample">
@@ -2125,16 +2185,82 @@
 		<Unit filename="sdk/resources/lexers/lexer_hitasm.xml">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_html.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_html.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_latex.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_latex.xml">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_lua.sample">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_lua.xml">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_make.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_make.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_masm.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_masm.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_matlab.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_matlab.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_nsis.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_nsis.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_perl.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_perl.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_prg.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_prg.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_properties.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_properties.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_python.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_python.xml">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_rc.sample">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_rc.xml">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_squirrel.sample">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_squirrel.xml">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_xml.sample">

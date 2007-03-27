@@ -68,7 +68,7 @@
 						<Language index="0"
 								value="break case catch class clone continue 
 										default delegate delete else extends for 
-										function if in local null resume 
+										foreach function if in local null resume 
 										return switch this throw try typeof 
 										while parent yield constructor vargc vargv 
 										instanceof true false static"/>
