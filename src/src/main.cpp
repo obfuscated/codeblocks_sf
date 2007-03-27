@@ -452,6 +452,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_REMOVE_DOCK_WINDOW(MainFrame::OnRequestUndockWindow)
     EVT_SHOW_DOCK_WINDOW(MainFrame::OnRequestShowDockWindow)
     EVT_HIDE_DOCK_WINDOW(MainFrame::OnRequestHideDockWindow)
+    EVT_DOCK_WINDOW_VISIBILITY(MainFrame::OnDockWindowVisibility)
 
     // plugin events
     EVT_PLUGIN_ATTACHED(MainFrame::OnPluginLoaded)
@@ -543,8 +544,11 @@ MainFrame::MainFrame(wxWindow* parent)
     LoadWindowState();
 
     ShowHideStartPage();
-    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/show_script_console"), false))
-        ShowHideScriptConsole();
+    m_ScriptConsoleVisible = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/show_script_console"), false);
+    // create console
+    m_ScriptConsoleID = Manager::Get()->GetMessageManager()->AddLog(new ScriptConsoleLog(), _("Script console"));
+    if (m_ScriptConsoleID != -1)
+        Manager::Get()->GetMessageManager()->ShowLog(m_ScriptConsoleID, m_ScriptConsoleVisible);
 
 	RegisterScriptFunctions();
 	RunStartupScripts();
@@ -1640,18 +1644,12 @@ void MainFrame::ShowHideStartPage(bool forceHasProject)
 
 void MainFrame::ShowHideScriptConsole()
 {
-    if (m_ScriptConsoleID == -1)
+    if (m_ScriptConsoleID != -1)
     {
-        // create console
-        m_ScriptConsoleID = Manager::Get()->GetMessageManager()->AddLog(new ScriptConsoleLog(), _("Script console"));
+        m_ScriptConsoleVisible = !m_ScriptConsoleVisible;
+        Manager::Get()->GetMessageManager()->ShowLog(m_ScriptConsoleID, m_ScriptConsoleVisible);
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/show_script_console"), m_ScriptConsoleVisible);
     }
-    else
-    {
-        // remove console
-        Manager::Get()->GetMessageManager()->RemoveLog(m_ScriptConsoleID);
-        m_ScriptConsoleID = -1;
-    }
-    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/show_script_console"), m_ScriptConsoleID != -1);
 }
 
 void MainFrame::OnStartHereLink(wxCommandEvent& event)
@@ -3062,8 +3060,6 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
 void MainFrame::OnViewScriptConsole(wxCommandEvent& event)
 {
     ShowHideScriptConsole();
-    if (m_ScriptConsoleID != -1)
-        Manager::Get()->GetMessageManager()->SwitchTo(m_ScriptConsoleID);
 }
 
 void MainFrame::OnSearchFind(wxCommandEvent& event)
@@ -3280,7 +3276,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idViewOpenFilesTree, m_pEdMan);
     mbar->Check(idViewMessageManager, m_LayoutManager.GetPane(Manager::Get()->GetMessageManager()->GetNotebook()).IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
-    mbar->Check(idViewScriptConsole, m_ScriptConsoleID != -1);
+    mbar->Check(idViewScriptConsole, m_ScriptConsoleVisible);
     mbar->Check(idViewFullScreen, IsFullScreen());
     mbar->Enable(idViewFocusEditor, ed);
 
@@ -3676,6 +3672,18 @@ void MainFrame::OnRequestHideDockWindow(CodeBlocksDockEvent& event)
 	CodeBlocksDockEvent evt(cbEVT_DOCK_WINDOW_VISIBILITY);
 	evt.pWindow = event.pWindow;
 	ProcessEvent(evt);
+}
+
+void MainFrame::OnDockWindowVisibility(CodeBlocksDockEvent& event)
+{
+    if (m_ScriptConsoleID != -1)
+    {
+        m_ScriptConsoleVisible = Manager::Get()->GetMessageManager()->IsLogVisible(m_ScriptConsoleID);
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/show_script_console"), m_ScriptConsoleVisible);
+        wxUpdateUIEvent e;
+        e.SetId(idViewScriptConsole);
+        OnViewMenuUpdateUI(e);
+    }
 }
 
 void MainFrame::OnLayoutSwitch(CodeBlocksLayoutEvent& event)

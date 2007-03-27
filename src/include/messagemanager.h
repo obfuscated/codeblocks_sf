@@ -234,6 +234,11 @@ class DLLIMPORT MessageManager : public Mgr<MessageManager>, public wxEvtHandler
           */
         void Unlock(bool force = false);
 
+        /** @brief Checks whether the provided Log id is visible or not.
+          * @param id an long integer pointing to Log id. If it can't find that id, it will return false.
+          */
+        bool IsLogVisible(int id);
+
 		/** @brief Streaming operator.
 		  * By default, streams to the debug log. This can be changed by
 		  * using LogPage(), e.g:

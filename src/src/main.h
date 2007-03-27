@@ -193,6 +193,7 @@ class MainFrame : public wxFrame
 		void OnRequestUndockWindow(CodeBlocksDockEvent& event);
 		void OnRequestShowDockWindow(CodeBlocksDockEvent& event);
 		void OnRequestHideDockWindow(CodeBlocksDockEvent& event);
+		void OnDockWindowVisibility(CodeBlocksDockEvent& event);
 
         // layout requests
         void OnLayoutSwitch(CodeBlocksLayoutEvent& event);
@@ -288,6 +289,7 @@ class MainFrame : public wxFrame
         wxString m_LastLayoutData;
 
         int m_ScriptConsoleID;
+        bool m_ScriptConsoleVisible;
 
         typedef std::map<int, const wxString> MenuIDToScript; // script menuitem ID -> script function name
 		MenuIDToScript m_MenuIDToScript;

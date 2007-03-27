@@ -571,6 +571,23 @@ bool MessageManager::IsAutoHiding()
     return m_AutoHide;
 }
 
+bool MessageManager::IsLogVisible(int id)
+{
+    if (!CheckLogId(id))
+        return false;
+    bool result = false;
+    int count = 0;
+    for (LogsMap::iterator it = m_Logs.begin(); it != m_Logs.end() && id < MAX_LOGS; ++it)
+    {
+        if (id == count++)
+        {
+            result = it->second->visible;
+            break;
+        }
+    }
+    return result;
+}
+
 void MessageManager::Open()
 {
     if (!m_AutoHide)
@@ -654,6 +671,9 @@ void MessageManager::OnShowHideLog(wxCommandEvent& event)
         if (idx == count++)
         {
             ShowLog(it->second->log, !it->second->visible);
+            CodeBlocksDockEvent e(cbEVT_DOCK_WINDOW_VISIBILITY);
+            e.SetId(idx);
+            Manager::Get()->GetAppWindow()->ProcessEvent(e);
             break;
         }
     }
