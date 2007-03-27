@@ -743,6 +743,9 @@ void MainFrame::RecreateMenuBar()
 
 void MainFrame::CreateMenubar()
 {
+	CodeBlocksEvent event(cbEVT_MENUBAR_CREATE_BEGIN);
+	Manager::Get()->ProcessEvent(event);
+
     int tmpidx;
     wxMenuBar* mbar=0L;
     wxMenu *hl=0L, *tools=0L, *plugs=0L, *pluginsM=0L;
@@ -836,6 +839,9 @@ void MainFrame::CreateMenubar()
 
     SetMenuBar(mbar);
     InitializeRecentFilesHistory();
+
+	CodeBlocksEvent event2(cbEVT_MENUBAR_CREATE_END);
+	Manager::Get()->ProcessEvent(event2);
 }
 
 void MainFrame::CreateToolbars()
@@ -1105,6 +1111,10 @@ void MainFrame::LoadViewLayout(const wxString& name)
 
     m_LastLayoutName = name;
     m_LastLayoutData = layout;
+
+	CodeBlocksLayoutEvent evt(cbEVT_SWITCHED_VIEW_LAYOUT);
+	evt.layout = name;
+	ProcessEvent(evt);
 }
 
 void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, bool select)
@@ -2407,6 +2417,11 @@ void MainFrame::OnSize(wxSizeEvent& event)
 
 void MainFrame::OnApplicationClose(wxCloseEvent& event)
 {
+	CodeBlocksEvent evt(cbEVT_APP_START_SHUTDOWN);
+	Manager::Get()->ProcessEvent(evt);
+	Manager::Yield();
+
+
     m_InitiatedShutdown = true;
     Manager::BlockYields(true);
 
@@ -3647,12 +3662,20 @@ void MainFrame::OnRequestShowDockWindow(CodeBlocksDockEvent& event)
 {
     m_LayoutManager.GetPane(event.pWindow).Show();
     DoUpdateLayout();
+
+	CodeBlocksDockEvent evt(cbEVT_DOCK_WINDOW_VISIBILITY);
+	evt.pWindow = event.pWindow;
+	ProcessEvent(evt);
 }
 
 void MainFrame::OnRequestHideDockWindow(CodeBlocksDockEvent& event)
 {
     m_LayoutManager.GetPane(event.pWindow).Hide();
     DoUpdateLayout();
+
+	CodeBlocksDockEvent evt(cbEVT_DOCK_WINDOW_VISIBILITY);
+	evt.pWindow = event.pWindow;
+	ProcessEvent(evt);
 }
 
 void MainFrame::OnLayoutSwitch(CodeBlocksLayoutEvent& event)

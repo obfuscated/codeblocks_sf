@@ -238,9 +238,22 @@ DECLARE_CB_EVENT_TYPE(cbEVT_SHOW_DOCK_WINDOW)
 // request app to hide a docked window
 DECLARE_CB_EVENT_TYPE(cbEVT_HIDE_DOCK_WINDOW)
 #define EVT_HIDE_DOCK_WINDOW(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_HIDE_DOCK_WINDOW, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksDockEventFunction) & fn, (wxObject *) NULL ),
+// app notifies that a docked window has been hidden/shown
+// to actually find out its state use IsWindowReallyShown(event.pWindow);
+DECLARE_CB_EVENT_TYPE(cbEVT_DOCK_WINDOW_VISIBILITY)
+#define EVT_DOCK_WINDOW_VISIBILITY(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DOCK_WINDOW_VISIBILITY, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksDockEventFunction) & fn, (wxObject *) NULL ),
 // request app to switch view layout
 DECLARE_CB_EVENT_TYPE(cbEVT_SWITCH_VIEW_LAYOUT)
 #define EVT_SWITCH_VIEW_LAYOUT(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_SWITCH_VIEW_LAYOUT, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksLayoutEventFunction) & fn, (wxObject *) NULL ),
+// app notifies that a new layout has been applied
+DECLARE_CB_EVENT_TYPE(cbEVT_SWITCHED_VIEW_LAYOUT)
+#define EVT_SWITCHED_VIEW_LAYOUT(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_SWITCHED_VIEW_LAYOUT, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksLayoutEventFunction) & fn, (wxObject *) NULL ),
+// app notifies that the menubar is started being (re)created
+DECLARE_CB_EVENT_TYPE(cbEVT_MENUBAR_CREATE_BEGIN)
+#define EVT_MENUBAR_CREATE_BEGIN(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_MENUBAR_CREATE_BEGIN, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksEventFunction) & fn, (wxObject *) NULL ),
+// app notifies that the menubar (re)creation ended
+DECLARE_CB_EVENT_TYPE(cbEVT_MENUBAR_CREATE_END)
+#define EVT_MENUBAR_CREATE_END(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_MENUBAR_CREATE_END, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksEventFunction) & fn, (wxObject *) NULL ),
 
 // compiler-related events
 DECLARE_CB_EVENT_TYPE(cbEVT_COMPILER_STARTED)

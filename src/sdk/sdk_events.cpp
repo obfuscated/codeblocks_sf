@@ -87,6 +87,14 @@ DEFINE_CB_EVENT_TYPE(cbEVT_SHOW_DOCK_WINDOW)
 DEFINE_CB_EVENT_TYPE(cbEVT_HIDE_DOCK_WINDOW)
 // request app to switch view layout
 DEFINE_CB_EVENT_TYPE(cbEVT_SWITCH_VIEW_LAYOUT)
+// app notifies that a new layout has been applied
+DEFINE_CB_EVENT_TYPE(cbEVT_SWITCHED_VIEW_LAYOUT)
+// app notifies that a docked window has been hidden/shown
+DEFINE_CB_EVENT_TYPE(cbEVT_DOCK_WINDOW_VISIBILITY)
+// app notifies that the menubar is started being (re)created
+DEFINE_CB_EVENT_TYPE(cbEVT_MENUBAR_CREATE_BEGIN)
+// app notifies that the menubar (re)creation ended
+DEFINE_CB_EVENT_TYPE(cbEVT_MENUBAR_CREATE_END)
 // compiler-related events
 DEFINE_CB_EVENT_TYPE(cbEVT_COMPILER_STARTED)
 DEFINE_CB_EVENT_TYPE(cbEVT_COMPILER_FINISHED)

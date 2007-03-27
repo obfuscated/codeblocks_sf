@@ -984,6 +984,9 @@ void CodeBlocksApp::MacPrintFile(const wxString & fileName )
 
 void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
 {
+	// allow others to process this event
+	event.Skip();
+	
     if (s_Loading)
         return; // still loading; we can't possibly be interested for this event ;)
     if (!event.GetActive())
