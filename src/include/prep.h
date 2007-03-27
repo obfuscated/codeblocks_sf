@@ -30,6 +30,8 @@ namespace platform
         platform_freebsd,
         platform_netbsd,
         platform_openbsd,
+        platform_darwin,
+        platform_solaris,
         platform_macos
     };
 
@@ -52,6 +54,10 @@ namespace platform
     const identifier id = platform_netbsd;
     #elif defined ( OPENBSD )    || defined ( __OPENBSD__ )
     const identifier id = platform_openbsd;
+    #elif defined ( DARWIN )     || defined ( __APPLE__ )
+    const identifier id = platform_darwin;
+    #elif defined(sun) || defined(__sun)
+    const identifier id = platform_solaris;
     #else
     const identifier id = platform_unknown;
     #endif
@@ -76,7 +82,9 @@ namespace platform
     const bool freebsd = (id == platform_freebsd);
     const bool netbsd  = (id == platform_netbsd);
     const bool openbsd = (id == platform_openbsd);
-    const bool unix    = (linux | freebsd | netbsd | openbsd);
+    const bool darwin  = (id == platform_darwin);
+    const bool solaris = (id == platform_solaris);
+    const bool unix    = (linux | freebsd | netbsd | openbsd | darwin | solaris);
 
     const int bits = 8*sizeof(void*);
 
