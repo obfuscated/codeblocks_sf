@@ -83,7 +83,7 @@ ClassWizardDlg::ClassWizardDlg(wxWindow* parent)
     if (prj)
   	    XRCCTRL(*this, "txtBaseDir", wxTextCtrl)->SetValue(prj->GetBasePath());
     else
-  	    XRCCTRL(*this, "txtBaseDir", wxTextCtrl)->SetValue(wxGetWorkingDirectory());
+  	    XRCCTRL(*this, "txtBaseDir", wxTextCtrl)->SetValue(::wxGetCwd());
 }
 
 
