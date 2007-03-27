@@ -1373,7 +1373,13 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
         default:
         {
             cbMimePlugin* plugin = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(filename);
-            if (plugin && plugin->OpenFile(filename) == 0)
+            // warn user that "Files extension handler" is disabled
+            if (!plugin)
+            {
+                cbMessageBox(_("Could not open file ") + filename + _(",\nbecause \"Files extention handler\" plugin is disabled."), _("Error"), wxICON_ERROR);
+                return false;
+            }
+            if (plugin->OpenFile(filename) == 0)
             {
                 AddToRecentFilesHistory(filename);
                 return true;
