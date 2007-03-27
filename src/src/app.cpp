@@ -236,7 +236,7 @@ bool CodeBlocksApp::LoadConfig()
     {
         data.assign(GetAppPath());
     }
-    else if(platform::macos)
+    else if(platform::macosx)
     {
         data.assign(GetResourcesDir());                 // CodeBlocks.app/Contents/Resources
         if (!data.Contains(wxString(_T("/Resources")))) // not a bundle, use relative path

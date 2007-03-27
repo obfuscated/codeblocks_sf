@@ -245,8 +245,8 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
         info.append(_T("\n\t Windows "));
     if(platform::linux)
         info.append(_T("\n\t Linux "));
-    if(platform::macos)
-        info.append(_T("\n\t MacOS "));
+    if(platform::macosx)
+        info.append(_T("\n\t Mac OS X "));
     if(platform::unix)
         info.append(_T("\n\t Unix "));
 
@@ -1378,7 +1378,7 @@ void ConfigManager::InitPaths()
     {
         if(platform::windows)
             ConfigManager::data_path_global = app_path + _T("/share/codeblocks");
-        else if(platform::macos)
+        else if(platform::macosx)
             ConfigManager::data_path_global = res_path + _T("/share/codeblocks");
         else
             ConfigManager::data_path_global = wxStandardPathsBase::Get().GetDataDir();

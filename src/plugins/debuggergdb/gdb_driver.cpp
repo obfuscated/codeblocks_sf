@@ -386,7 +386,7 @@ void GDB_driver::Start(bool breakOnEntry)
     }
 
     // under windows, 'start' segfaults with wx projects...
-    if(platform::windows || platform::macos)
+    if(platform::windows || platform::macosx)
     {
         m_BreakOnEntry = false;
         m_ManualBreakOnEntry = false;

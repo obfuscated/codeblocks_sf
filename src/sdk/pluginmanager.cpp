@@ -631,8 +631,10 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         wxString actual = fname.GetFullName();
 
         // remove 'lib' prefix from plugin name (if any)
-        if ((platform::gtk || platform::macos) && actual.StartsWith(_T("lib")))
+        #ifndef __WXMSW__
+        if (actual.StartsWith(_T("lib")))
             actual.Remove(0, 3);
+        #endif
 
         actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
         if (actual.IsEmpty())

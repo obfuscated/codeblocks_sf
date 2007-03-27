@@ -49,7 +49,7 @@ MessageLog::~MessageLog()
 
 wxFont MessageLog::GetDefaultLogFont(bool fixedPitchFont) const
 {
-    int size = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/log_font_size"), platform::macos ? 10 : 8);
+    int size = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/log_font_size"), platform::macosx ? 10 : 8);
 
     wxFont font(size,
                 fixedPitchFont ? wxFONTFAMILY_MODERN : wxFONTFAMILY_DEFAULT,

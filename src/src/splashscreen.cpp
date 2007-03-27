@@ -137,7 +137,7 @@ cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, 
   Centre(wxBOTH | wxCENTRE_ON_SCREEN); // centre only works when the window is showing
 #endif
 
-  if(platform::windows || platform::macos)
+  if(platform::windows || platform::macosx)
     Update();
   else
     wxYieldIfNeeded();

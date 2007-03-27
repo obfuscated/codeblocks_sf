@@ -83,7 +83,7 @@ bool CompileOptionsBase::SupportsCurrentPlatform() const
         return m_Platform & spWindows;
 	if(platform::unix)
         return m_Platform & spUnix;
-	if(platform::macos)
+	if(platform::macosx)
         return m_Platform & spMac;
 
     return false;

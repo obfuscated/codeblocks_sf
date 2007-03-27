@@ -32,7 +32,7 @@ namespace platform
         platform_openbsd,
         platform_darwin,
         platform_solaris,
-        platform_macos
+        platform_macosx
     };
 
     // unfortunately we still need to use the preprocessor here...
@@ -45,7 +45,7 @@ namespace platform
     #if   defined ( __WIN32__ )
     const identifier id = platform_windows;
     #elif defined ( __WXMAC__ )
-    const identifier id = platform_macos;
+    const identifier id = platform_macosx;
     #elif defined ( __linux__ )  || defined ( LINUX )
     const identifier id = platform_linux;
     #elif defined ( FREEBSD )    || defined ( __FREEBSD__ )
@@ -77,7 +77,7 @@ namespace platform
 	#endif
 
     const bool windows = (id == platform_windows);
-    const bool macos   = (id == platform_macos);
+    const bool macosx  = (id == platform_macosx);
     const bool linux   = (id == platform_linux);
     const bool freebsd = (id == platform_freebsd);
     const bool netbsd  = (id == platform_netbsd);
