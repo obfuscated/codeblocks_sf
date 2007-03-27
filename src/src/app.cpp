@@ -245,7 +245,8 @@ bool CodeBlocksApp::LoadConfig()
 
     if(data.IsEmpty())
     {
-        data.assign(GetAppPath());  // Linux/MacOS fallback (should never be needed, but for whatever it's good...)
+        data.assign(GetAppPath());  // fallback
+        data.Replace(_T("/bin"),_T(""));
     }
 
 
