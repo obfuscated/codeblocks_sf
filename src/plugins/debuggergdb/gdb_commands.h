@@ -115,6 +115,8 @@ static wxRegEx reBT2(_T("\\)[ \t]+[atfrom]+[ \t]+(.*):([0-9]+)"));
 static wxRegEx reBT3(_T("\\)[ \t]+[atfrom]+[ \t]+(.*)"));
 // Breakpoint 1 at 0x4013d6: file main.cpp, line 8.
 static wxRegEx reBreakpoint(_T("Breakpoint ([0-9]+) at (0x[0-9A-Fa-f]+)"));
+// Hardware assisted breakpoint 1 at 0x4013d6: file main.cpp, line 8.
+static wxRegEx reHWBreakpoint(_T("Hardware assisted breakpoint ([0-9]+) at (0x[0-9A-Fa-f]+)"));
 // Hardware watchpoint 1: expr
 static wxRegEx reDataBreakpoint(_T("Hardware watchpoint ([0-9]+):.*"));
 // eax            0x40e66666       1088841318
@@ -432,6 +434,11 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
             {
                 reDataBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
             }
+	    else if (reHWBreakpoint.Matches(output))
+	    {
+	        reHWBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
+	        reHWBreakpoint.GetMatch(output, 2).ToULong(&m_BP->address, 16);
+	    }
             else
                 m_pDriver->Log(output); // one of the error responses
         }
