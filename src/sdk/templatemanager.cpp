@@ -156,6 +156,18 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
     {
         path.RemoveLast();
     }
+    
+    // check for existing files; if found, notify about overwriting them
+    if (wxDir::GetAllFiles(path, 0) > 0)
+    {
+		if (cbMessageBox(path + _(" already contains other files.\n"
+								"If you continue, files with the same names WILL BE OVERWRITTEN.\n"
+								"Are you sure you want to continue?"),
+								_("Files exist in directory"), wxICON_EXCLAMATION | wxYES_NO | wxNO_DEFAULT) != wxID_YES)
+		{
+			return 0;
+		}
+    }
 
     wxBusyCursor busy;
 

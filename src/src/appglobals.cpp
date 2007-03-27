@@ -65,13 +65,21 @@ windows_version_t cb_get_os()
     if(!platform::windows)
         return winver_NotWindows;
 
+#if wxCHECK_VERSION(2, 8, 0)
+	int famWin95 = wxOS_WINDOWS_9X;
+	int famWinNT = wxOS_WINDOWS_NT;
+#else
+ 	int famWin95 = wxWIN95;
+ 	int famWinNT = wxWINDOWS_NT;
+#endif
 
 	int Major = 0;
 	int family = wxGetOsVersion(&Major, NULL);
-	if(family == wxWIN95)
-        return winver_Windows9598ME;
 
-    if(family == wxWINDOWS_NT)
+ 	if(family == famWin95)
+         return winver_Windows9598ME;
+
+	if(family == famWinNT)
     {
         if(Major == 5)
             return winver_WindowsXP;
