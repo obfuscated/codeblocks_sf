@@ -246,7 +246,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         // global settings
         SetLabel(_("Compiler Settings"));
         sizer->Show(tree,false);
-        sizer->Remove(tree);
+        sizer->Detach(tree);
         nb->DeletePage(6); // remove "Make" page
         nb->DeletePage(3); // remove "Commands" page
     }

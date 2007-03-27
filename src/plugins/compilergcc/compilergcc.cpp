@@ -737,7 +737,11 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
     wxString binPath = pathList.FindAbsoluteValidPath(gcc);
     // it seems, under Win32, the above command doesn't search in paths with spaces...
     // look directly for the file in question in masterPath
+#if wxCHECK_VERSION(2, 8, 0)
+    if (binPath.IsEmpty() || !(pathList.Index(wxPathOnly(binPath)) != wxNOT_FOUND))
+#else
     if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
+#endif
     {
         if (wxFileExists(masterPath + sep + _T("bin") + sep + gcc))
             binPath = masterPath + sep + _T("bin");
@@ -759,7 +763,11 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
         }
     }
 
+#if wxCHECK_VERSION(2, 8, 0)
+    if (binPath.IsEmpty() || !(pathList.Index(wxPathOnly(binPath)) != wxNOT_FOUND))
+#else
     if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
+#endif
     {
         m_EnvironmentMsg << _("Can't find compiler executable in your search path for ") << compiler->GetName() << _T('\n');
         Manager::Get()->GetMessageManager()->DebugLog(_T("Can't find compiler executable in your search path (%s)..."), compiler->GetName().c_str());
@@ -1362,7 +1370,8 @@ void CompilerGCC::DoPrepareQueue()
     {
         ClearLog();
         DoClearErrors();
-        wxStartTimer();
+        // wxStartTimer();
+        m_StartTimer = wxGetLocalTimeMillis();
     }
     Manager::Yield();
 }
@@ -3425,7 +3434,11 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             m_BuildJobTargetsList.pop();
 
 
-        long int elapsed = wxGetElapsedTime() / 1000;
+        // long int elapsed = wxGetElapsedTime() / 1000;
+        wxLongLong localTime = wxGetLocalTimeMillis();
+        wxLongLong duration = localTime - m_StartTimer;
+        long int elapsed = duration.ToLong();
+        elapsed /= 1000;
         int mins = elapsed / 60;
         int secs = (elapsed % 60);
         wxString msg = wxString::Format(_("Process terminated with status %d (%d minutes, %d seconds)"), exitCode, mins, secs);
