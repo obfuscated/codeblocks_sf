@@ -34,10 +34,20 @@ wxsCoder* wxsCoder::Singleton = &SingletonObject;
 
 void wxsCoder::AddCode(const wxString& FileName,const wxString& Header,const wxString& End,const wxString& Code,bool Immediately,bool CodeHasHeader,bool CodeHasEnd)
 {
+    // Updating the file name in case there are some ".." or "." enteries which prevents from finding
+    // opened editor for file
+    wxFileName FixedNameObject(FileName);
+    FixedNameObject.Normalize(wxPATH_NORM_DOTS);
+    wxString FixedFileName = FixedNameObject.GetFullPath();
+    if ( FixedFileName.IsEmpty() )
+    {
+        return;
+    }
+
     // Searching for file in opened file list
 	EditorManager* EM = Manager::Get()->GetEditorManager();
 	assert ( EM != NULL );
-    cbEditor* Editor = EM->GetBuiltinEditor(FileName);
+    cbEditor* Editor = EM->GetBuiltinEditor(FixedFileName);
 
     if ( Editor )
     {
@@ -45,7 +55,7 @@ void wxsCoder::AddCode(const wxString& FileName,const wxString& Header,const wxS
     }
     else
     {
-        ApplyChanges(FileName,Header,End,Code,CodeHasHeader,CodeHasEnd);
+        ApplyChanges(FixedFileName,Header,End,Code,CodeHasHeader,CodeHasEnd);
     }
 }
 

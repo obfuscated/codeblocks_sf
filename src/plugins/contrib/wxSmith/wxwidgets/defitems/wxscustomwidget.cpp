@@ -69,9 +69,9 @@ void wxsCustomWidget::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
 
 wxObject* wxsCustomWidget::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-    wxPanel* Background = new wxPanel(Parent,-1,Pos(Parent),Size(Parent));
+    wxPanel* Background = new wxPanel(Parent,-1,Pos(Parent),wxDefaultSize);
     wxStaticText* Wnd = new wxStaticText(Background,-1,_T("???"),
-        wxDefaultPosition,wxDefaultSize,wxST_NO_AUTORESIZE|wxALIGN_CENTRE);
+        wxDefaultPosition,Size(Parent),wxST_NO_AUTORESIZE|wxALIGN_CENTRE);
     wxSizer* Sizer = new wxBoxSizer(wxHORIZONTAL);
     Sizer->Add(Wnd,1,wxEXPAND,0);
     Background->SetSizer(Sizer);
@@ -80,7 +80,7 @@ wxObject* wxsCustomWidget::OnBuildPreview(wxWindow* Parent,long Flags)
     Wnd->SetForegroundColour(wxColour(0xFF,0xFF,0xFF));
     Background->SetBackgroundColour(wxColour(0,0,0));
     Background->SetForegroundColour(wxColour(0xFF,0xFF,0xFF));
-    return Wnd;
+    return Background;
 }
 
 void wxsCustomWidget::OnEnumWidgetProperties(long Flags)
