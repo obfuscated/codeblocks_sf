@@ -134,7 +134,7 @@ extern DLLIMPORT bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& 
 /// Return @c str as a proper unicode-compatible string
 extern DLLIMPORT wxString cbC2U(const char* str);
 /// Return multibyte (C string) representation of the string
-extern DLLIMPORT wxWX2MBbuf cbU2C(const wxString& str);
+extern DLLIMPORT const wxWX2MBbuf cbU2C(const wxString& str);
 /// Try converting a C-string from different encodings until a possible match is found.
 /// This tries the following encoding converters (in the same order):
 /// utf8, system, default and iso8859-1 to iso8859-15.

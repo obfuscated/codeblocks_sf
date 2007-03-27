@@ -44,7 +44,7 @@ void wxsItemResDataObject::GetAllFormats(wxDataFormat *formats, Direction dir) c
 bool wxsItemResDataObject::GetDataHere(const wxDataFormat& format,void *buf) const
 {
 	wxString XmlData = GetXmlData();
-	wxWX2MBbuf str = cbU2C(XmlData);
+	const wxWX2MBbuf str = cbU2C(XmlData);
     memcpy(buf,str,strlen(str)+1);
    	return true;
 }
@@ -52,7 +52,7 @@ bool wxsItemResDataObject::GetDataHere(const wxDataFormat& format,void *buf) con
 size_t wxsItemResDataObject::GetDataSize(const wxDataFormat& format) const
 {
 	wxString XmlData = GetXmlData();
-	wxWX2MBbuf str = cbU2C(XmlData);
+	const wxWX2MBbuf str = cbU2C(XmlData);
     return strlen(str)+1;
 }
 

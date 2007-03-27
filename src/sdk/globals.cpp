@@ -505,7 +505,7 @@ wxString cbC2U(const char* str)
 }
 
 // Return multibyte (C string) representation of the string
-wxWX2MBbuf cbU2C(const wxString& str)
+const wxWX2MBbuf cbU2C(const wxString& str)
 {
     if(platform::unicode)
         return str.mb_str(wxConvUTF8);
