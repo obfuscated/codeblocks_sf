@@ -143,8 +143,25 @@ esac
 
 AC_SUBST(PLUGIN_WX_LIBS)
 
+PIC_FLAGS=
+
+AC_MSG_CHECKING(for PIC flags)
+case `uname` in 
+    Solaris)
+        if test "$GCC" = yes; then
+            PIC_FLAGS="-fPIC -DPIC"
+        else
+            PIC_FLAGS="-KPIC -DPIC"
+        fi
+    ;;
+    *) 
+        PIC_FLAGS="-fPIC -DPIC"
+    ;;
+esac
+AC_MSG_RESULT($PIC_FLAGS)
+
 CPPFLAGS="$CPPFLAGS -Ulinux -Uunix"
-CXXFLAGS="$CXXFLAGS $PCH_FLAGS -fPIC -DPIC -fexceptions"
+CXXFLAGS="$CXXFLAGS $PCH_FLAGS $PIC_FLAGS -fexceptions"
 AC_SUBST(codeblocks_PCH_FLAGS, "$PCH_FLAGS")
 
 dnl AM_PATH_GTK(1.2.7, ,
