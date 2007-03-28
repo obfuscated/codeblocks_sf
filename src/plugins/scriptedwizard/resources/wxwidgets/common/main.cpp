@@ -29,6 +29,8 @@ wxString wxbuildinfo(wxbuildinfoformat format)
     {
 #if defined(__WXMSW__)
         wxbuild << _T("-Windows");
+#elif defined(__WXMAC__)
+        wxbuild << _T("-Mac");
 #elif defined(__UNIX__)
         wxbuild << _T("-Linux");
 #endif

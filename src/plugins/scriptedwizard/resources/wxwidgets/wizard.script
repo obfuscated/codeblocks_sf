@@ -549,6 +549,23 @@ function SetupProject(project)
 	            project.AddCompilerOption(_T("-DWX_PRECOMP"));
 	        }
 	    }
+	    
+        if (PLATFORM == PLATFORM_MAC)
+        {
+            // still need the resource fork hack to run unbundled wxWidgets applications:
+            local rezflags = _T("/Developer/Tools/Rez -d __DARWIN__ -t APPL Carbon.r -o");
+            
+            local target = project.GetBuildTarget(Wizard.GetDebugName());
+            if (!IsNull(target))
+            {
+                target.AddCommandsAfterBuild(rezflags + _T(" $(TARGET_OUTPUT_FILE)"));
+            }
+            local target = project.GetBuildTarget(Wizard.GetReleaseName());
+            if (!IsNull(target))
+            {
+                target.AddCommandsAfterBuild(rezflags + _T(" $(TARGET_OUTPUT_FILE)"));
+            }
+        }
     }
     else
     {
