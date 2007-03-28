@@ -13,29 +13,29 @@
         </object>
         <object class="separator"/>
         <object class="wxMenuItem" name="idFileNewProject">
-          <label>Project</label>
+          <label>Project...</label>
           <help>Create a new project</help>
         </object>
         <object class="wxMenuItem" name="idFileNewTarget">
-          <label>Build target</label>
+          <label>Build target...</label>
           <help>Create a new build target for the active project</help>
         </object>
         <object class="wxMenuItem" name="idFileNewFile">
-          <label>File</label>
+          <label>File...</label>
           <help>Create a new file</help>
         </object>
         <object class="wxMenuItem" name="idFileNewCustom">
-          <label>Custom</label>
+          <label>Custom...</label>
           <help>Create a new custom something :-)</help>
         </object>
         <object class="wxMenuItem" name="idFileNewUser">
-          <label>From user template</label>
+          <label>From user template...</label>
           <help>Create a new project based on a previously saved user template</help>
         </object>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileOpen">
-        <label>&amp;Open</label>
+        <label>&amp;Open...</label>
         <bitmap>images\16x16\fileopen.png</bitmap>
         <accel>Ctrl-O</accel>
         <help>Open a file or project</help>
@@ -66,25 +66,25 @@
       <object class="wxMenu" name="idFileImportProject">
         <label>&amp;Import project</label>
         <object class="wxMenuItem" name="idFileImportProjectDevCpp">
-          <label>Dev-C++ project</label>
+          <label>Dev-C++ project...</label>
           <help>Import an existing Dev-C++ project</help>
         </object>
         <object class="separator"/>
         <object class="wxMenuItem" name="idFileImportProjectMSVC">
-          <label>MS Visual C++ project</label>
+          <label>MS Visual C++ project...</label>
           <help>Import an existing MS Visual C++ project</help>
         </object>
         <object class="wxMenuItem" name="idFileImportProjectMSVCWksp">
-          <label>MS Visual C++ workspace</label>
+          <label>MS Visual C++ workspace...</label>
           <help>Import an existing MS Visual C++ workspace</help>
         </object>
         <object class="separator"/>
         <object class="wxMenuItem" name="idFileImportProjectMSVS">
-          <label>MS Visual Studio project</label>
+          <label>MS Visual Studio project...</label>
           <help>Import an existing MS Visual Studio project</help>
         </object>
         <object class="wxMenuItem" name="idFileImportProjectMSVSWksp">
-          <label>MS Visual Studio solution</label>
+          <label>MS Visual Studio solution...</label>
           <help>Import an existing MS Visual Studio solution</help>
         </object>
       </object>
@@ -115,7 +115,7 @@
         <help>Save active project under a different name</help>
       </object>
       <object class="wxMenuItem" name="idFileSaveProjectTemplate">
-        <label>Save project as user-template</label>
+        <label>Save project as user-template...</label>
         <help>Keep this project as a user-template to base new projects on</help>
       </object>
       <object class="wxMenuItem" name="idFileSaveProjectAllProjects">
@@ -157,7 +157,7 @@
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFilePrint">
-        <label>Print</label>
+        <label>Print...</label>
         <bitmap>images\16x16\fileprint.png</bitmap>
       </object>
       <object class="separator"/>
@@ -553,7 +553,7 @@
         <help>Search for text</help>
       </object>
       <object class="wxMenuItem" name="idSearchFindInFiles">
-        <label>&amp;Find in Files</label>
+        <label>&amp;Find in Files...</label>
         <bitmap>images\16x16\findf.png</bitmap>
         <accel>Ctrl-Shift-F</accel>
         <help>Search for text</help>
@@ -572,13 +572,13 @@
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idSearchReplace">
-        <label>&amp;Replace</label>
+        <label>&amp;Replace...</label>
         <bitmap>images\16x16\searchreplace.png</bitmap>
         <accel>Ctrl-R</accel>
         <help>Find and replace text</help>
       </object>
       <object class="wxMenuItem" name="idSearchReplaceInFiles">
-        <label>&amp;Replace in Files</label>
+        <label>&amp;Replace in Files...</label>
         <bitmap>images\16x16\searchreplacef.png</bitmap>
         <accel>Ctrl-Shift-R</accel>
         <help>Find and replace text</help>
@@ -600,7 +600,7 @@
     <object class="wxMenu" name="menu_plugins">
       <label>P&amp;lugins</label>
       <object class="wxMenuItem" name="idPluginsManagePlugins">
-        <label>Manage &amp;plugins</label>
+        <label>Manage &amp;plugins...</label>
         <bitmap>images\16x16\plug.png</bitmap>
         <help>Enable or disable plugins for the next session</help>
       </object>
@@ -608,23 +608,23 @@
     <object class="wxMenu" name="menu_settings">
       <label>&amp;Settings</label>
       <object class="wxMenuItem" name="idSettingsEnvironment">
-        <label>&amp;Environment</label>
+        <label>&amp;Environment...</label>
         <help>Change environment settings</help>
       </object>
       <object class="wxMenuItem" name="idSettingsEditor">
-        <label>E&amp;ditor</label>
+        <label>E&amp;ditor...</label>
         <help>Change editor's settings</help>
       </object>
       <object class="wxMenuItem" name="idSettingsCompilerDebugger">
-        <label>&amp;Compiler and debugger</label>
+        <label>&amp;Compiler and debugger...</label>
         <help>Change compiler and debugger settings</help>
       </object>
       <object class="wxMenuItem" name="idSettingsGlobalUserVars">
-        <label>&amp;Global variables</label>
+        <label>&amp;Global variables...</label>
         <help>Change global compiler variables</help>
       </object>
       <object class="wxMenuItem" name="idSettingsScripting">
-        <label>&amp;Scripting</label>
+        <label>&amp;Scripting...</label>
         <help>Change scripting settings</help>
       </object>
     </object>

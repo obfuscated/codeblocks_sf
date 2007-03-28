@@ -948,9 +948,11 @@ wxMenuItem* MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObject
     int id = wxNewId();
     m_PluginIDsMap[id] = info->name;
     if (pos == -1)
-        item = menu->Append(id, info->title, wxEmptyString, checkable ? wxITEM_CHECK : wxITEM_NORMAL);
+        item = menu->Append(id, info->title + (menu == m_HelpPluginsMenu ? _T("...") :
+            wxEmptyString), wxEmptyString, checkable ? wxITEM_CHECK : wxITEM_NORMAL);
     else
-        item = menu->Insert(pos, id, info->title, wxEmptyString, checkable ? wxITEM_CHECK : wxITEM_NORMAL);
+        item = menu->Insert(pos, id, info->title + (menu == m_HelpPluginsMenu ? _T("...") :
+            wxEmptyString), wxEmptyString, checkable ? wxITEM_CHECK : wxITEM_NORMAL);
     Connect( id,  wxEVT_COMMAND_MENU_SELECTED, callback );
     return item;
 }

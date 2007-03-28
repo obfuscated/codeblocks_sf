@@ -371,7 +371,7 @@ void ProjectManager::CreateMenu(wxMenuBar* menuBar)
         menu = menuBar->GetMenu(pos);
         if (menu)
         {
-            menu->Insert(menu->GetMenuItemCount() - 1, idMenuFileProperties, _("Properties"));
+            menu->Insert(menu->GetMenuItemCount() - 1, idMenuFileProperties, _("Properties..."));
             menu->Insert(menu->GetMenuItemCount() - 1, wxID_SEPARATOR, _T("")); // instead of AppendSeparator();
         }
 
@@ -407,7 +407,7 @@ It is duplicated in ShowMenu() */
 
             menu->Append(idMenuExecParams, _("Set &programs' arguments..."), _("Set execution parameters for the targets of this project"));
             menu->Append(idMenuProjectNotes, _("Notes..."));
-            menu->Append(idMenuProjectProperties, _("Properties"));
+            menu->Append(idMenuProjectProperties, _("Properties..."));
         }
     }
 }
@@ -520,9 +520,9 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.Append(idMenuRemoveFile, _("Remove files..."));
             menu.Enable(idMenuRemoveFile, PopUpMenuOption);
             menu.AppendSeparator();
-            menu.Append(idMenuAddVirtualFolder, _("Add new virtual folder"));
+            menu.Append(idMenuAddVirtualFolder, _("Add new virtual folder..."));
             if (is_vfolder)
-                menu.Append(idMenuDeleteVirtualFolder, _("Delete this virtual folder"));
+                menu.Append(idMenuDeleteVirtualFolder, _("Delete this virtual folder..."));
         }
 
         // if it is a file...
@@ -598,7 +598,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         // if it is a virtual folder
         else if (is_vfolder)
         {
-            menu.Append(idMenuAddVirtualFolder, _("Add new virtual folder"));
+            menu.Append(idMenuAddVirtualFolder, _("Add new virtual folder..."));
             menu.Append(idMenuDeleteVirtualFolder, _("Delete this virtual folder"));
             menu.AppendSeparator();
             menu.Append(idMenuRemoveFile, _("Remove files..."));
@@ -634,7 +634,7 @@ it differs from the block currently in CreateMenu() by the following two IDs */
             treeprops->Append(idMenuViewFileMasks, _("Edit file types && categories..."));
 
             menu.Append(idMenuProjectTreeProps, _("Project tree"), treeprops);
-            menu.Append(idMenuTreeProjectProperties, _("Properties"));
+            menu.Append(idMenuTreeProjectProperties, _("Properties..."));
             menu.Enable(idMenuTreeProjectProperties, PopUpMenuOption);
         }
 
@@ -642,12 +642,12 @@ it differs from the block currently in CreateMenu() by the following two IDs */
         else if (ftd->GetKind() == FileTreeData::ftdkFile)
         {
             menu.AppendSeparator();
-            menu.Append(idMenuTreeFileProperties, _("Properties"));
+            menu.Append(idMenuTreeFileProperties, _("Properties..."));
         }
     }
     else if (!ftd && m_pWorkspace)
     {
-        menu.Append(idMenuTreeRenameWorkspace, _("Rename workspace"));
+        menu.Append(idMenuTreeRenameWorkspace, _("Rename workspace..."));
         menu.AppendSeparator();
         menu.Append(idMenuTreeSaveWorkspace, _("Save workspace"));
         menu.Append(idMenuTreeSaveAsWorkspace, _("Save workspace as..."));
@@ -2482,5 +2482,4 @@ void ProjectManager::CheckForExternallyModifiedProjects()
     }
     m_isCheckingForExternallyModifiedProjects = false;
 } // end of CheckForExternallyModifiedProjects
-
 

@@ -73,7 +73,7 @@
       </object>
     </object>
     <object class="wxMenu" name="idCompilerMenuSelectTarget">
-      <label>Select target...</label>
+      <label>Select target</label>
     </object>
     <object class="separator"/>
     <object class="wxMenuItem" name="idCompilerMenuExportMakefile">
