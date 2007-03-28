@@ -14,7 +14,8 @@ endif
 
 bin_PROGRAMS = codeblocks
 
-codeblocks_LDFLAGS = 
+# wxAUI uses GTK+ libraries on wxGTK
+codeblocks_LDFLAGS = $(WX_GTK2_LIBS)
 
 codeblocks_LDADD =  -LwxAUI -lwxaui \
 			-L../sdk -lcodeblocks \
