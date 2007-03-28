@@ -822,45 +822,44 @@ wxArrayString CompilerCommandGenerator::GetOrderedOptions(const ProjectBuildTarg
 /** Adds support for backtick'd expressions under windows. */
 void CompilerCommandGenerator::ExpandBackticks(wxString& str)
 {
-    // only for windows...
-    // real OSes support this natively ;)
-#ifdef __WXMSW__
-    size_t start = str.find(_T('`'));
-    if (start == wxString::npos)
-        return; // no backticks here
-    size_t end = str.find(_T('`'), start + 1);
-    if (end == wxString::npos)
-        return; // no ending backtick; error?
-
-    while (start != wxString::npos && end != wxString::npos)
+    if(platform::windows)
     {
-        wxString cmd = str.substr(start + 1, end - start - 1);
-        if (cmd.IsEmpty())
-            break;
+        size_t start = str.find(_T('`'));
+        if (start == wxString::npos)
+            return; // no backticks here
+        size_t end = str.find(_T('`'), start + 1);
+        if (end == wxString::npos)
+            return; // no ending backtick; error?
 
-        wxString bt;
-        BackticksMap::iterator it = m_Backticks.find(cmd);
-        if (it != m_Backticks.end())
+        while (start != wxString::npos && end != wxString::npos)
         {
-            // in cache :)
-            bt = it->second;
-        }
-        else
-        {
-            wxArrayString output;
-            if (wxGetOsVersion() == wxWINDOWS_NT)
-                wxExecute(_T("cmd /c ") + cmd, output, wxEXEC_NODISABLE);
+            wxString cmd = str.substr(start + 1, end - start - 1);
+            if (cmd.IsEmpty())
+                break;
+
+            wxString bt;
+            BackticksMap::iterator it = m_Backticks.find(cmd);
+            if (it != m_Backticks.end())
+            {
+                // in cache :)
+                bt = it->second;
+            }
             else
-                wxExecute(cmd, output, wxEXEC_NODISABLE);
-            bt = GetStringFromArray(output, _T(" "));
-            // add it in the cache
-            m_Backticks[cmd] = bt;
-        }
-        str = str.substr(0, start) + bt + str.substr(end + 1, wxString::npos);
+            {
+                wxArrayString output;
+                if (platform::WindowsVersion() >= platform::winver_WindowsNT2000)
+                    wxExecute(_T("cmd /c ") + cmd, output, wxEXEC_NODISABLE);
+                else
+                    wxExecute(cmd, output, wxEXEC_NODISABLE);
+                bt = GetStringFromArray(output, _T(" "));
+                // add it in the cache
+                m_Backticks[cmd] = bt;
+            }
+            str = str.substr(0, start) + bt + str.substr(end + 1, wxString::npos);
 
-        // find next occurrence
-        start = str.find(_T('`'));
-        end = str.find(_T('`'), start + 1);
+            // find next occurrence
+            start = str.find(_T('`'));
+            end = str.find(_T('`'), start + 1);
+        }
     }
-#endif
 }

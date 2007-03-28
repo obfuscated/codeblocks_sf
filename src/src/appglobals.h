@@ -43,16 +43,4 @@ namespace appglobals
 
 };
 
-typedef enum
-{
-    winver_NotWindows = 0,
-    winver_UnknownWindows,
-    winver_Windows9598ME,
-    winver_WindowsNT2000,
-    winver_WindowsXP,
-    winver_Vista, // untested!
-}windows_version_t;
-
-windows_version_t WindowsVersion();
-
 #endif // APPGLOBALS_H

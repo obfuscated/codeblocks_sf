@@ -285,4 +285,19 @@ enum DirAccessCheck
   */
 extern DLLIMPORT DirAccessCheck cbDirAccessCheck(const wxString& dir);
 
+namespace platform
+{
+    typedef enum
+    {
+        winver_NotWindows = 0,
+        winver_UnknownWindows,
+        winver_Windows9598ME,
+        winver_WindowsNT2000,
+        winver_WindowsXP,
+        winver_Vista, // untested!
+    }windows_version_t;
+
+    extern DLLIMPORT windows_version_t WindowsVersion();
+};
+
 #endif // SDK_GLOBALS_H

@@ -60,42 +60,4 @@ namespace appglobals
 };
 
 
-windows_version_t cb_get_os()
-{
-    if(!platform::windows)
-        return winver_NotWindows;
-
-#if wxCHECK_VERSION(2, 8, 0)
-	int famWin95 = wxOS_WINDOWS_9X;
-	int famWinNT = wxOS_WINDOWS_NT;
-#else
- 	int famWin95 = wxWIN95;
- 	int famWinNT = wxWINDOWS_NT;
-#endif
-
-	int Major = 0;
-	int family = wxGetOsVersion(&Major, NULL);
-
- 	if(family == famWin95)
-         return winver_Windows9598ME;
-
-	if(family == famWinNT)
-    {
-        if(Major == 5)
-            return winver_WindowsXP;
-
-        if(Major == 6) // just guessing here, not sure if this is right
-            return winver_Vista;
-
-        return winver_WindowsNT2000;
-    }
-    else
-        return winver_UnknownWindows;
-};
-
-windows_version_t WindowsVersion()
-{
-    static windows_version_t theOS = cb_get_os();
-    return theOS;
-}
 

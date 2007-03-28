@@ -46,6 +46,7 @@
     #include "personalitymanager.h"
     #include "uservarmanager.h"
     #include "filemanager.h"
+    #include "globals.h"
     #include "xtra_classes.h" // Our custom set of wxWidgets classes
     #include "xtra_res.h" // our new ToolBarAddOn handler
 #endif
@@ -210,12 +211,10 @@ wxToolBar *Manager::LoadToolBar(wxFrame *parent,wxString resid,bool defaultsmall
     if(!tb)
     {
         int flags = wxTB_HORIZONTAL;
-        int major;
-        int minor;
-        // version==wxWINDOWS_NT && major==5 && minor==1 => windowsXP
-        bool isXP = wxGetOsVersion(&major, &minor) == wxWINDOWS_NT && major == 5 && minor == 1;
-        if (!isXP)
+
+        if (platform::WindowsVersion() < platform::winver_WindowsXP)
             flags |= wxTB_FLAT;
+
         tb = parent->CreateToolBar(flags, wxID_ANY);
         tb->SetToolBitmapSize(defaultsmall ? wxSize(16, 16) : wxSize(22, 22));
     }
