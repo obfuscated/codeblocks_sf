@@ -492,6 +492,20 @@ void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxStri
                 // do nothing (ignore silently)
             }
             else if (opt.Matches(_T("/c"))) {} // do nothing
+            else if (opt.StartsWith(_T("@")))
+            {
+                wxArrayString options;
+                if (ParseResponseFile(m_pProject->GetBasePath() + opt.Mid(1), options))
+                {
+                    for (size_t i = 0; i < options.GetCount(); ++i)
+                        ProcessCompilerOptions(target, options[i]);
+                }
+                else
+                { // Fallback: Remember GCC will process Pre-processor macros only
+                    DBGLOG(_T("Can't open ") + m_pProject->GetBasePath() + opt.Mid(1) + _T(" for parsing"));
+                    target->AddCompilerOption(_T("-imacros ") + opt.Mid(1));
+                }
+            }
             //else Manager::Get()->GetMessageManager()->DebugLog("Unhandled compiler option: " + opt);
         }
         else // !m_ConvertSwitches
@@ -552,6 +566,15 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
             {
                 // do nothing; it is handled below, in common options
             }
+            else if (opt.StartsWith(_T("@")))
+            {
+                wxArrayString options;
+                if (ParseResponseFile(m_pProject->GetBasePath() + opt.Mid(1), options))
+                {
+                    for (size_t i = 0; i < options.GetCount(); ++i)
+                        ProcessLinkerOptions(target, options[i]);
+                } // else ignore
+            }
             else
                 Manager::Get()->GetMessageManager()->DebugLog(_T("Unknown linker option: " + opt));
         }
@@ -563,6 +586,8 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
                 target->AddLibDir(RemoveQuotes(opt));
             }
             else if (opt.Matches(_T("/nologo"))) {} // ignore silently
+            else if (opt.StartsWith(_T("@")))
+                target->AddLinkerOption(opt);
             else
             {
                 // don't add linking lib (added below, in common options)
@@ -685,4 +710,22 @@ wxString MSVCLoader::RemoveQuotes(const wxString& src)
     }
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("Removing quotes: %s --> %s"), src.c_str(), res.c_str());
     return res;
+}
+
+bool MSVCLoader::ParseResponseFile(const wxString filename, wxArrayString& output)
+{
+    /* Note: MSDN says user cannot call another response file
+    *  from a response file. Thus it's quite safe to parse the file. */
+    bool success = false;
+    wxFileInputStream inp_file(filename);
+    if (inp_file.Ok())
+    {
+        wxTextInputStream inp_txt(inp_file);
+        success = true;
+        while (!inp_file.Eof())
+            output.Add(inp_txt.ReadLine());
+    }
+    else
+        success = false;
+    return success;
 }
