@@ -70,7 +70,7 @@ void wxsPanel::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
 wxObject* wxsPanel::OnBuildPreview(wxWindow* Parent,long Flags)
 {
     // TODO: Use grid-viewing panel when not in exact mode
-    wxWindow* NewItem = new wxPanel( Parent,GetId(),wxDefaultPosition,wxDefaultSize,Style());
+    wxWindow* NewItem = new wxPanel(Parent,GetId(),Pos(Parent),Size(Parent),Style());
     NewItem->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE ));
     SetupWindow(NewItem,Flags);
     AddChildrenPreview(NewItem,Flags);

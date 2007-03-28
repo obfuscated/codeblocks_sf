@@ -84,14 +84,22 @@ void wxsFrame::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%t,%P,%S,%T,%N);\n"),Title.c_str());
+            Codef(_T("%C(%W,%I,%t,wxDefaultPosition,wxDefaultSize,%T,%N);\n"),Title.c_str());
+            if ( !GetBaseProps()->m_Size.IsDefault )
+            {
+                Codef(_T("%ASetClientSize(%S);\n"));
+            }
+            if ( !GetBaseProps()->m_Position.IsDefault )
+            {
+                Codef(_T("%AMove(%P);\n"));
+            }
             SetupWindowCode(Code,Language);
             // TODO: Setup Icon
 
             AddChildrenCode(Code,wxsCPP);
             if ( Centered )
             {
-                Code << Codef(Language,_T("%ACenter();\n"));
+                Codef(_T("%ACenter();\n"));
             }
 
             return;
@@ -116,23 +124,57 @@ wxObject* wxsFrame::OnBuildPreview(wxWindow* Parent,long Flags)
         Frm = wxDynamicCast(Parent,wxFrame);
         if ( Frm )
         {
-            Frm->Create(NULL,GetId(),Title,Pos(wxTheApp->GetTopWindow()),Size(wxTheApp->GetTopWindow()),Style());
+            Frm->Create(NULL,GetId(),Title,wxDefaultPosition,wxDefaultSize,Style());
+            Frm->SetClientSize(Size(wxTheApp->GetTopWindow()));
+            Frm->Move(Pos(wxTheApp->GetTopWindow()));
         }
         NewItem = Frm;
+        SetupWindow(NewItem,Flags);
+        AddChildrenPreview(NewItem,Flags);
+        if ( Centered )
+        {
+            Frm->Centre();
+        }
+
     }
     else
     {
-        // In preview we simulate dialog using panel
         // TODO: Use grid-viewing panel
-        NewItem = new wxPanel(Parent,GetId(),wxDefaultPosition,wxDefaultSize,0/*wxRAISED_BORDER*/);
-    }
+        NewItem = new wxPanel(Parent,GetId(),wxDefaultPosition,Size(Parent),0);
+        SetupWindow(NewItem,Flags);
+        AddChildrenPreview(NewItem,Flags);
 
-    SetupWindow(NewItem,Flags);
-    AddChildrenPreview(NewItem,Flags);
+        // wxPanel tends to behave very strange when it has children and no sizer,
+        // we have to manually resize it's content
+        if ( GetChildCount() && GetChild(0)->GetType()!=wxsTSizer )
+        {
+            wxSize NewSize = Size(Parent);
 
-    if ( Frm && Centered )
-    {
-        Frm->Centre();
+            if ( !NewSize.IsFullySpecified() )
+            {
+                NewSize.SetDefaults(NewItem->GetBestSize());
+            }
+
+            NewItem->SetSize(NewSize);
+            NewItem->SetBestFittingSize(NewSize);
+
+            if ( GetChildCount() == 1 )
+            {
+                // If there's only one child it's size gets frame's size
+                wxWindow* ChildPreview = wxDynamicCast(GetChild(0)->GetLastPreview(),wxWindow);
+                if ( ChildPreview )
+                {
+                    ChildPreview->SetSize(0,0,NewItem->GetClientSize().GetWidth(),NewItem->GetClientSize().GetHeight());
+                }
+            }
+
+        }
+        else if ( !GetChildCount() )
+        {
+            NewItem->SetSize(wxSize(400,450));
+            NewItem->SetBestFittingSize(wxSize(400,450));
+        }
+
     }
 
     return NewItem;
