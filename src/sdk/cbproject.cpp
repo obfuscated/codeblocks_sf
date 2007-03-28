@@ -1439,12 +1439,26 @@ bool cbProject::RenameBuildTarget(int index, const wxString& targetName)
     ProjectBuildTarget* target = GetBuildTarget(index);
     if (target)
     {
+    	// rename target if referenced in any virtual target too
+    	for (VirtualBuildTargetsMap::iterator it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
+    	{
+    		wxArrayString& tgts = it->second;
+    		int index = tgts.Index(target->GetTitle());
+    		if (index != -1)
+    		{
+    			tgts[index] = targetName;
+    		}
+    	}
+
+    	// rename target for all files that reference it
         int count = GetFilesCount();
         for (int i = 0; i < count; ++i)
         {
             ProjectFile* pf = GetFile(i);
             pf->RenameBuildTarget(target->GetTitle(), targetName);
         }
+        
+        // finally rename the target
         target->SetTitle(targetName);
         SetModified(true);
         NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
@@ -1528,12 +1542,26 @@ bool cbProject::RemoveBuildTarget(int index)
     ProjectBuildTarget* target = GetBuildTarget(index);
     if (target)
     {
+    	// remove target from any virtual targets it belongs to
+    	for (VirtualBuildTargetsMap::iterator it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
+    	{
+    		wxArrayString& tgts = it->second;
+    		int index = tgts.Index(target->GetTitle());
+    		if (index != -1)
+    		{
+    			tgts.RemoveAt(index);
+    		}
+    	}
+    	
+    	// remove target from any project files that reference it
         int count = GetFilesCount();
         for (int i = 0; i < count; ++i)
         {
             ProjectFile* pf = GetFile(i);
             pf->RemoveBuildTarget(target->GetTitle());
         }
+        
+        // finally remove the target
         delete target;
         m_Targets.RemoveAt(index);
         SetModified(true);
