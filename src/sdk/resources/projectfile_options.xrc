@@ -76,6 +76,7 @@
                       <object class="wxStaticText" name="staticTotalLines">
                         <font>
                           <weight>bold</weight>
+                          <size platform="mac">12</size>
                         </font>
                         <label></label>
                       </object>
@@ -90,6 +91,7 @@
                       <object class="wxStaticText" name="staticEmptyLines">
                         <font>
                           <weight>bold</weight>
+                          <size platform="mac">12</size>
                         </font>
                         <label></label>
                       </object>
@@ -104,6 +106,7 @@
                       <object class="wxStaticText" name="staticActualLines">
                         <font>
                           <weight>bold</weight>
+                          <size platform="mac">12</size>
                         </font>
                         <label></label>
                       </object>
@@ -118,6 +121,7 @@
                       <object class="wxStaticText" name="staticFileSize">
                         <font>
                           <weight>bold</weight>
+                          <size platform="mac">12</size>
                         </font>
                         <label>35504</label>
                       </object>
@@ -132,6 +136,7 @@
                       <object class="wxStaticText" name="staticCommentLines">
                         <font>
                           <weight>bold</weight>
+                          <size platform="mac">12</size>
                         </font>
                         <label></label>
                       </object>
@@ -146,6 +151,7 @@
                       <object class="wxStaticText" name="staticIncludedFiles">
                         <font>
                           <weight>bold</weight>
+                          <size platform="mac">12</size>
                         </font>
                         <label>TBD</label>
                       </object>
@@ -172,6 +178,7 @@
                         <label></label>
                         <font>
                           <weight>bold</weight>
+                          <size platform="mac">12</size>
                         </font>
                       </object>
                       <flag></flag>
