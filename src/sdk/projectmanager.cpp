@@ -836,8 +836,16 @@ cbProject* ProjectManager::NewProject(const wxString& filename)
 {
     if (!filename.IsEmpty() && wxFileExists(filename))
     {
-        if (cbMessageBox(_("Project file already exists.\nAre you really sure you want to OVERWRITE it?"), _("Confirmation"), wxYES_NO | wxICON_QUESTION) == wxID_YES)
-            wxRemoveFile(filename);
+        if (cbMessageBox(_("Project file already exists.\nAre you really sure you want to OVERWRITE it?"),
+                         _("Confirmation"), wxYES_NO | wxICON_QUESTION) == wxID_YES)
+        {
+            if (!wxRemoveFile(filename))
+            {
+                cbMessageBox(_("Couldn't remove the old project file to create the new one.\nThe file might be read-only?!"),
+                             _("Error"), wxICON_WARNING);
+                return 0;
+            }
+        }
         else
             return 0;
     }
