@@ -118,6 +118,7 @@ int idMenuCompileTarget = wxNewId();
 int idMenuCompileFromProjectManager = wxNewId();
 int idMenuProjectCompilerOptions = wxNewId();
 int idMenuProjectCompilerOptionsFromProjectManager = wxNewId();
+int idMenuProjectProperties = wxNewId();
 int idMenuTargetCompilerOptions = wxNewId();
 int idMenuTargetCompilerOptionsSub = wxNewId();
 int idMenuCompileFile = XRCID("idCompilerMenuCompileFile");
@@ -495,10 +496,10 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
         // look if we have a "Properties" item. If yes, we 'll insert
         // before it, else we 'll just append...
         size_t propsPos = prj->GetMenuItemCount(); // append
-        int propsID = prj->FindItem(_("Properties"));
-        if (propsID != wxNOT_FOUND)
-            prj->FindChildItem(propsID, &propsPos);
-        prj->Insert(propsPos, idMenuProjectCompilerOptionsFromProjectManager, _("Build options"), _("Set the project's build options"));
+        idMenuProjectProperties = prj->FindItem(_("Properties..."));
+        if (idMenuProjectProperties != wxNOT_FOUND)
+            prj->FindChildItem(idMenuProjectProperties, &propsPos);
+        prj->Insert(propsPos, idMenuProjectCompilerOptions, _("Build options..."), _("Set the project's build options"));
         prj->InsertSeparator(propsPos);
     }
 //    // Add entry in settings menu (outside "plugins")
@@ -535,7 +536,7 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
         menu->Append(idMenuRebuildFromProjectManager, _("Rebuild\tCtrl-F11"));
         menu->Append(idMenuCleanFromProjectManager, _("Clean"));
         menu->AppendSeparator();
-        menu->Append(idMenuProjectCompilerOptions, _("Build options"));
+        menu->Append(idMenuProjectCompilerOptionsFromProjectManager, _("Build options..."));
     }
     else if (data && data->GetKind() == FileTreeData::ftdkFile)
     {
@@ -3112,6 +3113,7 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
 
         // Project menu
         mbar->Enable(idMenuProjectCompilerOptions, !running && prj);
+        mbar->Enable(idMenuProjectProperties, !running && prj);
     }
 
     // enable/disable compiler toolbar buttons

@@ -38,7 +38,7 @@ void CompilerMSVC::Reset()
 	m_Programs.LD = _T("link.exe");
 	m_Programs.LIB = _T("link.exe");
 	m_Programs.WINDRES = _T("rc.exe"); // platform SDK is needed for this
-	m_Programs.MAKE = _T("mingw32-make.exe");
+	m_Programs.MAKE = _T("nmake.exe");
 	m_Programs.DBG = _T("cdb.exe");
 
 	m_Switches.includeDirs = _T("/I");

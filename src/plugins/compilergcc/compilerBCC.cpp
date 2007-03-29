@@ -32,7 +32,7 @@ void CompilerBCC::Reset()
     m_Programs.LD = _T("ilink32.exe");
     m_Programs.LIB = _T("tlib.exe");
     m_Programs.WINDRES = _T("brcc32.exe"); // platform SDK is needed for this
-    m_Programs.MAKE = _T("mingw32-make.exe");
+    m_Programs.MAKE = _T("make.exe");
 
     m_Switches.includeDirs = _T("-I");
     m_Switches.libDirs = _T("-L");
