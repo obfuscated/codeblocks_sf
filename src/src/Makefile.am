@@ -14,6 +14,12 @@ endif
 
 bin_PROGRAMS = codeblocks
 
+# wxMac resource fork/unbundled app
+install-exec-hook:
+	$(POSTLINK_COMMAND) $(DESTDIR)$(bindir)/codeblocks$(EXEEXT) \
+	                    $(srcdir)/resources/icons/app.r
+	$(MACSETFILE) -a C $(DESTDIR)$(bindir)/codeblocks$(EXEEXT)
+
 # wxAUI uses GTK+ libraries on wxGTK
 codeblocks_LDFLAGS = $(WX_GTK2_LIBS)
 

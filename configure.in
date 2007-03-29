@@ -104,6 +104,10 @@ AC_SUBST(LIBS)
 WX_GTK2_CFLAGS=
 WX_GTK2_LIBS=
 
+dnl default value is to (silently) do nothing in the makefile
+POSTLINK_COMMAND="@true"
+MACSETFILE="@true"
+
 AC_MSG_CHECKING(for wxWidgets platform)
 WX_BASENAME=`$WX_CONFIG_WITH_ARGS --basename`
 case $WX_BASENAME in 
@@ -118,7 +122,9 @@ case $WX_BASENAME in
     *wx_mac*)
         AC_MSG_RESULT(wxMac)
         AC_CHECK_PROG(REZ, Rez, Rez, /Developer/Tools/Rez)
+        POSTLINK_COMMAND="\$(REZ) -d __DARWIN__ -t APPL Carbon.r -o"
         AC_CHECK_PROG(SETFILE, SetFile, SetFile, /Developer/Tools/SetFile)
+        MACSETFILE="\$(SETFILE)"
     ;;
     *) 
         AC_MSG_RESULT(other)
@@ -127,6 +133,9 @@ esac
 
 AC_SUBST(WX_GTK2_CFLAGS)
 AC_SUBST(WX_GTK2_LIBS)
+
+AC_SUBST(POSTLINK_COMMAND)
+AC_SUBST(MACSETFILE)
 
 PLUGIN_WX_LIBS=
 
