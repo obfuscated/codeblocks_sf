@@ -801,6 +801,7 @@ public:
 #else
         m_CanSetShape = true;
 #endif
+        m_Region = wxRegion(0, 0, 0, 0);
         SetTransparency(0);
     }
 
@@ -811,12 +812,10 @@ public:
             int w=100; // some defaults
             int h=100;
             GetClientSize(&w, &h);
-            if ((amount != m_Amount) || (m_MaxWidth<w) | (m_MaxHeight<h))
+
             {
-                // Make the region at least double the height and width so we don't have
-                // to rebuild if the size changes.
-                m_MaxWidth=w*2;
-                m_MaxHeight=h*2;
+                m_MaxWidth=w;
+                m_MaxHeight=h;
                 m_Amount = amount;
                 m_Region.Clear();
 //				m_Region.Union(0, 0, 1, m_MaxWidth);
@@ -840,7 +839,14 @@ public:
     {
         wxPaintDC dc(this);
 
+        if (m_Region.IsEmpty())
+  	             return;
+ 
+#ifdef __WXMAC__
+        dc.SetBrush(wxColour(128, 192, 255));
+#else
         dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_ACTIVECAPTION));
+#endif
         dc.SetPen(*wxTRANSPARENT_PEN);
 
         wxRegionIterator upd(GetUpdateRegion()); // get the update rect list
@@ -857,6 +863,16 @@ public:
 #ifdef __WXGTK__
     void OnWindowCreate(wxWindowCreateEvent& WXUNUSED(event)) {m_CanSetShape=true; SetTransparency(0);}
 #endif
+
+    void OnSize(wxSizeEvent& event)
+    {
+        SetTransparency(m_Amount);
+        m_Region.Intersect(0, 0, event.GetSize().GetWidth(),
+                           event.GetSize().GetHeight());
+        SetShape(m_Region);
+        Refresh();
+        event.Skip();
+    }
 
 private:
     int m_Amount;
@@ -875,6 +891,7 @@ IMPLEMENT_DYNAMIC_CLASS( wxPseudoTransparentFrame, wxFrame )
 
 BEGIN_EVENT_TABLE(wxPseudoTransparentFrame, wxFrame)
     EVT_PAINT(wxPseudoTransparentFrame::OnPaint)
+    EVT_SIZE(wxPseudoTransparentFrame::OnSize)
 #ifdef __WXGTK__
     EVT_WINDOW_CREATE(wxPseudoTransparentFrame::OnWindowCreate)
 #endif
@@ -3689,6 +3706,7 @@ void wxFrameManager::OnSize(wxSizeEvent& event)
         DoFrameLayout();
         Repaint();
     }
+    event.Skip();
 }
 
 
