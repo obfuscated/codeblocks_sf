@@ -64,9 +64,11 @@ enum FileType
 
 /** These are valid values for the state of each project file.
     If a value is casted to integer, it corresponds to the tree's imagelist index for the state.
+    NOTE: Keep in sync with icons loaded in ProjectManager::BuildTree()!
 */
 enum FileVisualState
 {
+    // The following are related to (editable, source-) file states
     fvsNormal = 0,
     fvsMissing,
     fvsModified,
@@ -84,6 +86,13 @@ enum FileVisualState
     fvsVcLockStolen,
     fvsVcMismatch,
     fvsVcNonControlled,
+    // The following are related to C::B workspace/project/folder/virtual
+    fvsWorkspace,
+    fvsWorkspaceReadOnly,
+    fvsProject,
+    fvsProjectReadOnly,
+    fvsFolder,
+    fvsVirtualFolder,
 
     /// do *not* use this, it exists just to know the number of items...
     fvsLast

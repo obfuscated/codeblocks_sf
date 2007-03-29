@@ -43,25 +43,25 @@ WX_DECLARE_HASH_MAP(cbProject*, ProjectsArray*, wxPointerHash, wxPointerEqual, D
 class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 {
         static bool s_CanShutdown;
-	public:
+    public:
         friend class Mgr<ProjectManager>;
         friend class Manager; // give Manager access to our private members
 
         ProjectManager(const ProjectManager& rhs) { cbThrow(_T("Can't call ProjectManager's copy ctor!!!")); }
         virtual void operator=(const ProjectManager& rhs){ cbThrow(_T("Can't assign an ProjectManager* !!!")); }
 
-		wxFlatNotebook* GetNotebook() { return m_pNotebook; }
+        wxFlatNotebook* GetNotebook() { return m_pNotebook; }
 
         // Can the app shutdown? (actually: is ProjectManager busy at the moment?)
         static bool CanShutdown(){ return s_CanShutdown; }
         /// Application menu creation. Called by the application only.
-		static void CreateMenu(wxMenuBar* menuBar);
+        static void CreateMenu(wxMenuBar* menuBar);
         /// Application menu removal. Called by the application only.
-		void ReleaseMenu(wxMenuBar* menuBar);
-		/** Retrieve the default path for new projects.
-		  * @return The default path for new projects. Contains trailing path separator.
-		  * @note This might be empty if not configured before...
-		  */
+        void ReleaseMenu(wxMenuBar* menuBar);
+        /** Retrieve the default path for new projects.
+          * @return The default path for new projects. Contains trailing path separator.
+          * @note This might be empty if not configured before...
+          */
         wxString GetDefaultPath();
         /** Set the default path for new projects.
           * @note ProjectManager doesn't use this by itself. It's only doing the book-keeping.
@@ -76,7 +76,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * you 'll be calling in ProjectManager.
           * @return A pointer to the active project.
           */
-		cbProject* GetActiveProject(){ return (this==NULL) ? 0 : m_pActiveProject; }
+        cbProject* GetActiveProject(){ return (this==NULL) ? 0 : m_pActiveProject; }
         /** Retrieve an array of all the opened projects. This is a standard
           * wxArray containing pointers to projects. Using this array you can
           * iterate through all the opened projects.
@@ -87,13 +87,13 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * @param filename The project's filename. Must be an absolute path.
           * @return A pointer to the project if it is open, or NULL if it is not.
           */
-		cbProject* IsOpen(const wxString& filename);
+        cbProject* IsOpen(const wxString& filename);
         /** Set the active project. Use this function if you want to change the
           * active project.
           * @param project A pointer to the new active project.
           * @param refresh If true, refresh the project manager's tree, else do not refresh it.
           */
-		void SetProject(cbProject* project, bool refresh = true);
+        void SetProject(cbProject* project, bool refresh = true);
         /** Load a project from disk. This function, internally, uses IsOpen()
           * so that the same project can't be loaded twice.
           * @param filename The project file's filename.
@@ -174,10 +174,10 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           */
         void MoveProjectDown(cbProject* project, bool warpAround = false);
         /** Create a new empty project.
-		  * @param filename the project's filename
+          * @param filename the project's filename
           * @return A pointer to the new project if succesful, or NULL if not.
           * @note When the new project is created, if no filename parameter was supplied,
-		  * it asks the user where to save it.
+          * it asks the user where to save it.
           * If the user cancels the Save dialog, then NULL is returned from this function.
           */
         cbProject* NewProject(const wxString& filename = wxEmptyString);
@@ -192,7 +192,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * If the project has more than one build targets, a dialog appears so
           * that the user can select which build target this file should belong to.
           */
-		int AddFileToProject(const wxString& filename, cbProject* project = 0L, int target = -1);
+        int AddFileToProject(const wxString& filename, cbProject* project = 0L, int target = -1);
         /** Add a file to a project. This function comes in two versions. This version,
           * expects an array of build target indices for the added file to belong to.
           * @param filename The file to add to the project.
@@ -206,7 +206,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * Also note than when this function returns, the targets array will contain
           * the user-selected build targets.
           */
-		int AddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
+        int AddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
         /** Add multiple files to a project. This function comes in two versions. This version,
           * expects a single build target index for the added files to belong to.
           * @param filelist The files to add to the project.
@@ -218,7 +218,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * If the project has more than one build targets, a dialog appears so
           * that the user can select which build target these files should belong to.
           */
-		int AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project, int target = -1);
+        int AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project, int target = -1);
         /** Add multiple files to a project. This function comes in two versions. This version,
           * expects an array of build target indices for the added files to belong to.
           * @param filelist The files to add to the project.
@@ -232,46 +232,46 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * Also note than when this function returns, the targets array will contain
           * the user-selected build targets.
           */
-		int AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project, wxArrayInt& targets);
-		/** Utility function. Displays a single selection list of a project's
-		  * build targets to choose from.
-		  * @param project The project to use. If NULL, the active project is used.
-		  * @return The selected build target's index, or -1 if no build target was selected.
-		  */
-		int AskForBuildTargetIndex(cbProject* project = 0L);
-		/** Utility function. Displays a multiple selection list of a project's
-		  * build targets to choose from.
-		  * @param project The project to use. If NULL, the active project is used.
-		  * @return An integer array containing the selected build targets indices.
-		  * This array will be empty if no build targets were selected.
-		  */
-		wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = 0L);
-		/** Load a workspace.
-		  * @param filename The workspace to open.
-		  * @return True if the workspace loads succefully, false if not.
-		  */
-		bool LoadWorkspace(const wxString& filename = DEFAULT_WORKSPACE);
-		/** Save the open workspace.
-		  * @return True if the workspace is saved succefully, false if not.
-		  */
-		bool SaveWorkspace();
-		/** Save the open workspace under a different filename.
-		  * @param filename The workspace to save.
-		  * @return True if the workspace is saved succefully, false if not.
-		  */
-		bool SaveWorkspaceAs(const wxString& filename);
-		/** Close the workspace.
-		  * @return True if the workspace closes, false if not (the user is asked to save
-		  * the workspace, if it is modified)
-		  */
-		bool CloseWorkspace();
-		/** Check if the project manager is loading a project/workspace.
-		  * @return True if it's loading a workspace/project, false otherwise
-		  */
-		bool IsLoading();
-		/** Get the current workspace filename.
-		  * @return The current workspace filename.
-		  */
+        int AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project, wxArrayInt& targets);
+        /** Utility function. Displays a single selection list of a project's
+          * build targets to choose from.
+          * @param project The project to use. If NULL, the active project is used.
+          * @return The selected build target's index, or -1 if no build target was selected.
+          */
+        int AskForBuildTargetIndex(cbProject* project = 0L);
+        /** Utility function. Displays a multiple selection list of a project's
+          * build targets to choose from.
+          * @param project The project to use. If NULL, the active project is used.
+          * @return An integer array containing the selected build targets indices.
+          * This array will be empty if no build targets were selected.
+          */
+        wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = 0L);
+        /** Load a workspace.
+          * @param filename The workspace to open.
+          * @return True if the workspace loads succefully, false if not.
+          */
+        bool LoadWorkspace(const wxString& filename = DEFAULT_WORKSPACE);
+        /** Save the open workspace.
+          * @return True if the workspace is saved succefully, false if not.
+          */
+        bool SaveWorkspace();
+        /** Save the open workspace under a different filename.
+          * @param filename The workspace to save.
+          * @return True if the workspace is saved succefully, false if not.
+          */
+        bool SaveWorkspaceAs(const wxString& filename);
+        /** Close the workspace.
+          * @return True if the workspace closes, false if not (the user is asked to save
+          * the workspace, if it is modified)
+          */
+        bool CloseWorkspace();
+        /** Check if the project manager is loading a project/workspace.
+          * @return True if it's loading a workspace/project, false otherwise
+          */
+        bool IsLoading();
+        /** Get the current workspace filename.
+          * @return The current workspace filename.
+          */
         cbWorkspace* GetWorkspace();
 
 
@@ -315,21 +315,21 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         bool CausesCircularDependency(cbProject* base, cbProject* dependsOn);
 
 
-		/// Rebuild the project manager's tree.
+        /// Rebuild the project manager's tree.
         void RebuildTree();
-		/** Stop the tree control from updating.
-		  * @note This operation is accumulative. This means you have to call
-		  * UnfreezeTree() as many times as you 've called FreezeTree() for the
-		  * tree control to un-freeze (except if you call UnfreezeTree(true)).
-		  */
+        /** Stop the tree control from updating.
+          * @note This operation is accumulative. This means you have to call
+          * UnfreezeTree() as many times as you 've called FreezeTree() for the
+          * tree control to un-freeze (except if you call UnfreezeTree(true)).
+          */
         void FreezeTree();
-		/** Le the tree control be updated again.
-		  * @param force If true the tree control is forced to un-freeze. Else it
-		  * depends on freeze-unfreeze balance (see note).
-		  * @note This operation is accumulative. This means you have to call
-		  * UnfreezeTree() as many times as you 've called FreezeTree() for the
-		  * tree control to un-freeze (except if you call UnfreezeTree(true)).
-		  */
+        /** Le the tree control be updated again.
+          * @param force If true the tree control is forced to un-freeze. Else it
+          * depends on freeze-unfreeze balance (see note).
+          * @note This operation is accumulative. This means you have to call
+          * UnfreezeTree() as many times as you 've called FreezeTree() for the
+          * tree control to un-freeze (except if you call UnfreezeTree(true)).
+          */
         void UnfreezeTree(bool force = false);
         /** Retrieve a pointer to the project manager's tree (GUI).
           * @return A pointer to a wxTreeCtrl window.
@@ -339,26 +339,30 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * is the parent of the project manager's tree obtained through GetTree().
           * @return A pointer to a wxPanel window.
           */
-		wxMenu* GetProjectMenu();
-		/** Sets the Top Editor (the active editor from the last session) */
-		void SetTopEditor(EditorBase* ed);
-		/** @return The Top Editor */
-		EditorBase* GetTopEditor() const;
+        wxMenu* GetProjectMenu();
+        /** Sets the Top Editor (the active editor from the last session) */
+        void SetTopEditor(EditorBase* ed);
+        /** @return The Top Editor */
+        EditorBase* GetTopEditor() const;
 
-		/** @return The workspace icon index in the image list. */
-		int WorkspaceIconIndex();
-		/** @return The project icon index in the image list. */
-		int ProjectIconIndex();
-		/** @return The folder icon index in the image list. */
-		int FolderIconIndex();
-		/** @return The virtual folder icon index in the image list. */
-		int VirtualFolderIconIndex();
+        /** @return The workspace icon index in the image list.
+            @param  read_only Return the read-only icon for a workspace?
+         */
+        int WorkspaceIconIndex(bool read_only = false);
+        /** @return The project icon index in the image list.
+            @param  read_only Return the read-only icon for a project?
+         */
+        int ProjectIconIndex(bool read_only = false);
+        /** @return The folder icon index in the image list. */
+        int FolderIconIndex();
+        /** @return The virtual folder icon index in the image list. */
+        int VirtualFolderIconIndex();
 
         /** Check if one of the open projects has been modified outside the IDE. If so, ask to reload it. */
         void CheckForExternallyModifiedProjects();
     private:
-		ProjectManager();
-		~ProjectManager();
+        ProjectManager();
+        ~ProjectManager();
 
         /** Asks user to save the workspace, projects and files
           * (Yes/No/cancel). If user pressed Yes, it saves accordingly.
@@ -369,8 +373,8 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           */
         bool QueryCloseWorkspace();
 
-		void InitPane();
-		void BuildTree();
+        void InitPane();
+        void BuildTree();
         void ShowMenu(wxTreeItemId id, const wxPoint& pt);
         void OnTabPosition(wxCommandEvent& event);
         void OnProjectFileActivated(wxTreeEvent& event);
@@ -394,7 +398,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void OnOpenWith(wxCommandEvent& event);
         void OnProperties(wxCommandEvent& event);
         void OnNotes(wxCommandEvent& event);
-		void OnGotoFile(wxCommandEvent& event);
+        void OnGotoFile(wxCommandEvent& event);
         void OnViewCategorize(wxCommandEvent& event);
         void OnViewUseFolders(wxCommandEvent& event);
         void OnViewFileMasks(wxCommandEvent& event);
@@ -405,8 +409,8 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnIdle(wxIdleEvent& event);
         void DoOpenSelectedFile();
-		void DoOpenFile(ProjectFile* pf, const wxString& filename);
-		int DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
+        void DoOpenFile(ProjectFile* pf, const wxString& filename);
+        int DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
 
         wxFlatNotebook* m_pNotebook;
         wxTreeCtrl* m_pTree;
@@ -418,10 +422,10 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         cbWorkspace* m_pWorkspace;
         bool m_TreeCategorize;
         bool m_TreeUseFolders;
-		FilesGroupsAndMasks* m_pFileGroups;
-		int m_TreeFreezeCounter;
-		bool m_IsLoadingProject;
-		bool m_IsLoadingWorkspace;
+        FilesGroupsAndMasks* m_pFileGroups;
+        int m_TreeFreezeCounter;
+        bool m_IsLoadingProject;
+        bool m_IsLoadingWorkspace;
         wxString m_InitialDir;
         wxTreeItemId m_DraggingItem;
         bool m_isCheckingForExternallyModifiedProjects;

@@ -20,40 +20,40 @@
   */
 class cbWorkspace
 {
-	public:
+    public:
         /** @brief Constructor
           *
           * @param filename The file from which to load the workspace. If this
           *        parameter is empty, the default workspace is loaded.
           */
-		cbWorkspace(const wxString& filename = DEFAULT_WORKSPACE);
+        cbWorkspace(const wxString& filename = DEFAULT_WORKSPACE);
 
         /** @brief Destructor */
-		virtual ~cbWorkspace();
+        virtual ~cbWorkspace();
 
-		/** @brief Save the workspace
-		  *
-		  * @param force If false (the default), the workspace will not be written to disk,
-		  * if it is not marked as modified.
-		  * @return True if saving succeeded, false if not.
-		  */
+        /** @brief Save the workspace
+          *
+          * @param force If false (the default), the workspace will not be written to disk,
+          * if it is not marked as modified.
+          * @return True if saving succeeded, false if not.
+          */
         virtual bool Save(bool force = false);
 
-		/** @brief Save the workspace under a different filename
-		  *
-		  * @param filename The name of the file to save.
-		  * @return True if saving succeeded, false if not.
-		  * @note If the filename parameter is empty, a file dialog to choose
-		  * the filename to save will be displayed.
-		  */
+        /** @brief Save the workspace under a different filename
+          *
+          * @param filename The name of the file to save.
+          * @return True if saving succeeded, false if not.
+          * @note If the filename parameter is empty, a file dialog to choose
+          * the filename to save will be displayed.
+          */
         virtual bool SaveAs(const wxString& filename);
 
         /** @brief Get the workspace file's name
           *
           * @return The name of the file this workspace was loaded from.
           */
-		virtual wxString GetFilename() const
-		{
+        virtual wxString GetFilename() const
+        {
           return m_Filename.GetFullPath();
         }
 
@@ -61,16 +61,16 @@ class cbWorkspace
           *
           * @return The title of the workspace.
           */
-		virtual wxString GetTitle() const
-		{
-		  return m_Title;
+        virtual wxString GetTitle() const
+        {
+          return m_Title;
         }
 
         /** @brief Set the workspace's title
           *
           * @param title The new title.
           */
-		virtual void SetTitle(const wxString& title);
+        virtual void SetTitle(const wxString& title);
 
         /** @brief Was this workspace loaded succesfully?
           *
@@ -79,13 +79,13 @@ class cbWorkspace
           * constructor, and because we don't use exceptions, this is the only
           * way to know if loading succeeded.
           */
-		virtual bool IsOK() const { return m_IsOK; }
+        virtual bool IsOK() const { return m_IsOK; }
 
         /** @brief Is this workspace the Code::Blocks default?
           *
           * @return True if the workspace is the default, false if not.
           */
-		virtual bool IsDefault() const { return m_IsDefault; }
+        virtual bool IsDefault() const { return m_IsDefault; }
 
         /** @brief Is this workspace modified?
           *
@@ -94,15 +94,15 @@ class cbWorkspace
           * are added-to/removed-from it, when the project's order
           * is changed or when the active project is changed.
           */
-		virtual bool GetModified() const { return m_Modified; }
+        virtual bool GetModified() const { return m_Modified; }
 
         /** @brief Mark the workspace as modified or not
           *
           * @param modified If true, the workspace will be marked as modified. If
           * false, the workspace will be marked as unmodified.
           */
-		virtual void SetModified(bool modified);
-	private:
+        virtual void SetModified(bool modified);
+    private:
         bool m_IsOK; // succeeded loading?
         bool m_IsDefault; // is this the Code::Blocks default workspace?
         bool m_Modified; // is it modified?

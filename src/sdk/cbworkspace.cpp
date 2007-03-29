@@ -44,9 +44,9 @@
 
 cbWorkspace::cbWorkspace(const wxString& filename) : m_Title(_("Default workspace"))
 {
-	//ctor
+    //ctor
     if (filename.Matches(DEFAULT_WORKSPACE))
-	{
+    {
         wxString tmp;
         // if no filename given, use the default workspace
         tmp = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH;
@@ -55,9 +55,9 @@ cbWorkspace::cbWorkspace(const wxString& filename) : m_Title(_("Default workspac
         tmp << wxFILE_SEP_PATH << DEFAULT_WORKSPACE;
         m_Filename = tmp;
         m_IsDefault = true;
-	}
-	else
-	{
+    }
+    else
+    {
         m_Filename = filename;
         m_IsDefault = false;
     }
@@ -75,26 +75,26 @@ void cbWorkspace::Load()
     wxString fname = m_Filename.GetFullPath();
     if (fname.IsEmpty())
         return;
-	Manager::Get()->GetMessageManager()->DebugLog(_T("Loading workspace \"%s\""), fname.c_str());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Loading workspace \"%s\""), fname.c_str());
 
-	if (!m_Filename.FileExists())
-	{
-		Manager::Get()->GetMessageManager()->DebugLog(_T("File does not exist."));
-		if (!m_IsDefault)
-		{
+    if (!m_Filename.FileExists())
+    {
+        Manager::Get()->GetMessageManager()->DebugLog(_T("File does not exist."));
+        if (!m_IsDefault)
+        {
             wxString msg;
             msg.Printf(_("Workspace '%s' does not exist..."), fname.c_str());
             cbMessageBox(msg, _("Error"), wxOK | wxCENTRE | wxICON_ERROR);
             // workspace wasn't loaded succesfully
             m_IsOK = false;
             return;
-		}
-	}
+        }
+    }
 
-	bool modified = false;
-	IBaseWorkspaceLoader* pWsp = 0;
-	switch (FileTypeOf(fname))
-	{
+    bool modified = false;
+    IBaseWorkspaceLoader* pWsp = 0;
+    switch (FileTypeOf(fname))
+    {
         case ftCodeBlocksWorkspace: pWsp = new WorkspaceLoader; modified = false; break;
         case ftMSVC6Workspace: pWsp = new MSVCWorkspaceLoader; modified = true; break;
         case ftMSVC7Workspace: pWsp = new MSVC7WorkspaceLoader; modified = true; break;
@@ -121,9 +121,9 @@ bool cbWorkspace::Save(bool force)
     if (!force && !m_Modified)
         return true;
 
-	Manager::Get()->GetMessageManager()->DebugLog(_T("Saving workspace \"%s\""), m_Filename.GetFullPath().c_str());
-	WorkspaceLoader wsp;
-	bool ret = wsp.Save(m_Title, m_Filename.GetFullPath());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Saving workspace \"%s\""), m_Filename.GetFullPath().c_str());
+    WorkspaceLoader wsp;
+    bool ret = wsp.Save(m_Title, m_Filename.GetFullPath());
     SetModified(!ret);
     return ret;
 }

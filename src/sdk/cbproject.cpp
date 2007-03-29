@@ -753,7 +753,8 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
 
     int fldIdx = Manager::Get()->GetProjectManager()->FolderIconIndex();
     int vfldIdx = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
-    int prjIdx = Manager::Get()->GetProjectManager()->ProjectIconIndex();
+    bool read_only = (!wxFile::Access(GetFilename().c_str(), wxFile::write));
+    int prjIdx = Manager::Get()->GetProjectManager()->ProjectIconIndex(read_only);
 
     //sort list of files
     m_Files.Sort(filesSort);
@@ -1457,7 +1458,7 @@ bool cbProject::RenameBuildTarget(int index, const wxString& targetName)
             ProjectFile* pf = GetFile(i);
             pf->RenameBuildTarget(target->GetTitle(), targetName);
         }
-        
+
         // finally rename the target
         target->SetTitle(targetName);
         SetModified(true);
@@ -1552,7 +1553,7 @@ bool cbProject::RemoveBuildTarget(int index)
     			tgts.RemoveAt(index);
     		}
     	}
-    	
+
     	// remove target from any project files that reference it
         int count = GetFilesCount();
         for (int i = 0; i < count; ++i)
@@ -1560,7 +1561,7 @@ bool cbProject::RemoveBuildTarget(int index)
             ProjectFile* pf = GetFile(i);
             pf->RemoveBuildTarget(target->GetTitle());
         }
-        
+
         // finally remove the target
         delete target;
         m_Targets.RemoveAt(index);

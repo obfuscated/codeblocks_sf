@@ -287,24 +287,30 @@ void ProjectManager::InitPane()
     m_pNotebook->AddPage(m_pTree, _("Projects"));
 }
 
-int ProjectManager::WorkspaceIconIndex()
+int ProjectManager::WorkspaceIconIndex(bool read_only)
 {
-    return (int)fvsLast + 0;
+    if (read_only)
+        return (int)fvsWorkspaceReadOnly;
+
+    return (int)fvsWorkspace;
 }
 
-int ProjectManager::ProjectIconIndex()
+int ProjectManager::ProjectIconIndex(bool read_only)
 {
-    return (int)fvsLast + 1;
+    if (read_only)
+        return (int)fvsProjectReadOnly;
+
+    return (int)fvsProject;
 }
 
 int ProjectManager::FolderIconIndex()
 {
-    return (int)fvsLast + 2;
+    return (int)fvsFolder;
 }
 
 int ProjectManager::VirtualFolderIconIndex()
 {
-    return (int)fvsLast + 3;
+    return (int)fvsVirtualFolder;
 }
 
 void ProjectManager::BuildTree()
@@ -316,26 +322,36 @@ void ProjectManager::BuildTree()
     #endif
 
     static const wxString imgs[] = {
-        _T("file.png"),
-        _T("file-missing.png"),
-        _T("file-modified.png"),
-        _T("file-readonly.png"),
-        _T("rc-file-added.png"),
-        _T("rc-file-conflict.png"),
-        _T("rc-file-missing.png"),
-        _T("rc-file-modified.png"),
-        _T("rc-file-outofdate.png"),
-        _T("rc-file-uptodate.png"),
-        _T("rc-file-requireslock.png"),
-        _T("rc-file-external.png"),
-        _T("rc-file-gotlock.png"),
-        _T("rc-file-lockstolen.png"),
-        _T("rc-file-mismatch.png"),
-        _T("rc-file-noncontrolled.png"),
-        _T("gohome.png"),
-        _T("codeblocks.png"),
-        _T("folder_open.png"),
-        _T("vfolder_open.png"),
+
+        // NOTE: Keep in sync with FileVisualState in globals.h!
+
+        // The following are related to (editable, source-) file states
+        _T("file.png"),                  // fvsNormal
+        _T("file-missing.png"),          // fvsMissing,
+        _T("file-modified.png"),         // fvsModified,
+        _T("file-readonly.png"),         // fvsReadOnly,
+
+        // The following are related to version control systems (vc)
+        _T("rc-file-added.png"),         // fvsVcAdded,
+        _T("rc-file-conflict.png"),      // fvsVcConflict,
+        _T("rc-file-missing.png"),       // fvsVcMissing,
+        _T("rc-file-modified.png"),      // fvsVcModified,
+        _T("rc-file-outofdate.png"),     // fvsVcOutOfDate,
+        _T("rc-file-uptodate.png"),      // fvsVcUpToDate,
+        _T("rc-file-requireslock.png"),  // fvsVcRequiresLock,
+        _T("rc-file-external.png"),      // fvsVcExternal,
+        _T("rc-file-gotlock.png"),       // fvsVcGotLock,
+        _T("rc-file-lockstolen.png"),    // fvsVcLockStolen,
+        _T("rc-file-mismatch.png"),      // fvsVcMismatch,
+        _T("rc-file-noncontrolled.png"), // fvsVcNonControlled,
+
+        // The following are related to C::B workspace/project/folder/virtual
+        _T("workspace.png"),             // fvsWorkspace,         WorkspaceIconIndex()
+        _T("workspace-readonly.png"),    // fvsWorkspaceReadOnly, WorkspaceIconIndex(true)
+        _T("project.png"),               // fvsProject,           ProjectIconIndex()
+        _T("project-readonly.png"),      // fvsProjectReadOnly,   ProjectIconIndex(true)
+        _T("folder_open.png"),           // fvsFolder,            FolderIconIndex()
+        _T("vfolder_open.png"),          // fvsVirtualFolder,     VirtualFolderIconIndex()
 
         wxEmptyString
     };
@@ -774,25 +790,25 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
 
         result = project;
 
-		// if loading a workspace, avoid sending the event now
-		// we 'll send them after all projects have been loaded
-		// (look in LoadWorkspace)
-		if (!m_IsLoadingWorkspace)
-		{
-			// notify plugins that the project is loaded
-			// moved here from cbProject::Open() because code-completion
-			// kicks in too early and the perceived loading time is long...
-			CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
-			event.SetProject(project);
-			Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+        // if loading a workspace, avoid sending the event now
+        // we 'll send them after all projects have been loaded
+        // (look in LoadWorkspace)
+        if (!m_IsLoadingWorkspace)
+        {
+            // notify plugins that the project is loaded
+            // moved here from cbProject::Open() because code-completion
+            // kicks in too early and the perceived loading time is long...
+            CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
+            event.SetProject(project);
+            Manager::Get()->GetPluginManager()->NotifyPlugins(event);
         }
 
         // finally, if not loading a workspace, display project notes (if appropriate)
-		if (!m_IsLoadingWorkspace)
-		{
-		    if (project->GetShowNotesOnLoad())
+        if (!m_IsLoadingWorkspace)
+        {
+            if (project->GetShowNotesOnLoad())
                 project->ShowNotes(true);
-		}
+        }
 
         break;
     } while(false);
@@ -1094,23 +1110,23 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
 
         int numNotes = 0;
 
-		// and now send the project loaded events
-		// since we were loading a workspace, these events were not sent before
-		for (size_t i = 0; i < m_pProjects->GetCount(); ++i)
-		{
-		    cbProject* project = m_pProjects->Item(i);
+        // and now send the project loaded events
+        // since we were loading a workspace, these events were not sent before
+        for (size_t i = 0; i < m_pProjects->GetCount(); ++i)
+        {
+            cbProject* project = m_pProjects->Item(i);
 
-			// notify plugins that the project is loaded
-			// moved here from cbProject::Open() because code-completion
-			// kicks in too early and the perceived loading time is long...
-			CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
-			event.SetProject(project);
-			Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+            // notify plugins that the project is loaded
+            // moved here from cbProject::Open() because code-completion
+            // kicks in too early and the perceived loading time is long...
+            CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
+            event.SetProject(project);
+            Manager::Get()->GetPluginManager()->NotifyPlugins(event);
 
-			// since we 're iterating anyway, let's count the project notes that should be displayed
-		    if (project->GetShowNotesOnLoad() && !project->GetNotes().IsEmpty())
+            // since we 're iterating anyway, let's count the project notes that should be displayed
+            if (project->GetShowNotesOnLoad() && !project->GetNotes().IsEmpty())
                 ++numNotes;
-		}
+        }
 
         // finally, display projects notes (if appropriate)
         if (numNotes)
@@ -1243,12 +1259,18 @@ void ProjectManager::RebuildTree()
             project->SaveTreeState(m_pTree);
     }
     m_pTree->DeleteAllItems();
-    wxString title=_T("");
+    wxString title;
+    bool read_only = false;
     if(m_pWorkspace)
-        title=m_pWorkspace->GetTitle();
-     if(title==_T(""))
-         title=_("Workspace");
-    m_TreeRoot = m_pTree->AddRoot(title, WorkspaceIconIndex(), WorkspaceIconIndex());
+    {
+        title = m_pWorkspace->GetTitle();
+        wxString ws_file = m_pWorkspace->GetFilename();
+        read_only = (   !ws_file.IsEmpty() && wxFile::Exists(ws_file.c_str())
+                     && !wxFile::Access(ws_file.c_str(), wxFile::write) );
+    }
+    if(title.IsEmpty())
+        title = _("Workspace");
+    m_TreeRoot = m_pTree->AddRoot(title, WorkspaceIconIndex(read_only), WorkspaceIconIndex(read_only));
     for (int i = 0; i < count; ++i)
     {
         cbProject* project = m_pProjects->Item(i);
@@ -2234,13 +2256,13 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
             ProjectFile* pf = ed->GetProjectFile();
             if (pf)
                 pf->ShowOptions(m_pTree);
-			else
-			{
-				// active editor not-in-project
-				ProjectFileOptionsDlg dlg(m_pTree, ed->GetFilename());
-				PlaceWindow(&dlg);
-				dlg.ShowModal();
-			}
+            else
+            {
+                // active editor not-in-project
+                ProjectFileOptionsDlg dlg(m_pTree, ed->GetFilename());
+                PlaceWindow(&dlg);
+                dlg.ShowModal();
+            }
         }
     }
 }
@@ -2435,51 +2457,50 @@ void ProjectManager::CheckForExternallyModifiedProjects()
     ProjectManager* ProjectMgr = Manager::Get()->GetProjectManager();
     if( ProjectsArray* Projects = ProjectMgr->GetProjects())
     {
-    	bool reloadAll = false;
-    	// make a copy of all the pointers before we start messing with closing and opening projects
-    	// the hash (Projects) could change the order
-    	std::vector<cbProject*> ProjectPointers;
-    	for(unsigned int idxProject = 0; idxProject < Projects->Count(); ++idxProject)
-    	{
-    		ProjectPointers.push_back(Projects->Item(idxProject));
-    	}
-    	for(unsigned int idxProject = 0; idxProject < ProjectPointers.size(); ++idxProject)
-    	{
-    		cbProject* pProject = ProjectPointers[idxProject];
-    		wxFileName fname(pProject->GetFilename());
-    		wxDateTime last = fname.GetModificationTime();
-    		if(last.IsLaterThan(pProject->GetLastModificationTime()))
-    		{	// was modified -> reload
-				int ret = -1;
-				if (!reloadAll)
-				{
-					Manager::Get()->GetMessageManager()->Log(pProject->GetFilename());
-					wxString msg;
-					msg.Printf(_("Project %s is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"),
-							   pProject->GetFilename().c_str());
-					ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow(), false, msg);
-					dlg.SetTitle(_("Reload Project?"));
-					PlaceWindow(&dlg);
-					ret = dlg.ShowModal();
-					reloadAll = ret == crAll;
-				}
+        bool reloadAll = false;
+        // make a copy of all the pointers before we start messing with closing and opening projects
+        // the hash (Projects) could change the order
+        std::vector<cbProject*> ProjectPointers;
+        for(unsigned int idxProject = 0; idxProject < Projects->Count(); ++idxProject)
+        {
+            ProjectPointers.push_back(Projects->Item(idxProject));
+        }
+        for(unsigned int idxProject = 0; idxProject < ProjectPointers.size(); ++idxProject)
+        {
+            cbProject* pProject = ProjectPointers[idxProject];
+            wxFileName fname(pProject->GetFilename());
+            wxDateTime last = fname.GetModificationTime();
+            if(last.IsLaterThan(pProject->GetLastModificationTime()))
+            {    // was modified -> reload
+                int ret = -1;
+                if (!reloadAll)
+                {
+                    Manager::Get()->GetMessageManager()->Log(pProject->GetFilename());
+                    wxString msg;
+                    msg.Printf(_("Project %s is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"),
+                               pProject->GetFilename().c_str());
+                    ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow(), false, msg);
+                    dlg.SetTitle(_("Reload Project?"));
+                    PlaceWindow(&dlg);
+                    ret = dlg.ShowModal();
+                    reloadAll = ret == crAll;
+                }
                 if(reloadAll || ret == crYes)
                 {
-                	wxString ProjectFileName = pProject->GetFilename();
-                	ProjectMgr->CloseProject(pProject);
-                	ProjectMgr->LoadProject(ProjectFileName);
+                    wxString ProjectFileName = pProject->GetFilename();
+                    ProjectMgr->CloseProject(pProject);
+                    ProjectMgr->LoadProject(ProjectFileName);
                 }
-				else if (ret == crCancel)
-				{
-					break;
-				}
-				else if (ret == crNo)
-				{
-					pProject->Touch();
-				}
-    		}
-    	} // end for : idx : idxProject
+                else if (ret == crCancel)
+                {
+                    break;
+                }
+                else if (ret == crNo)
+                {
+                    pProject->Touch();
+                }
+            }
+        } // end for : idx : idxProject
     }
     m_isCheckingForExternallyModifiedProjects = false;
 } // end of CheckForExternallyModifiedProjects
-
