@@ -1197,15 +1197,20 @@ bool ProjectManager::CloseWorkspace()
 {
     if (m_pWorkspace)
     {
-        if(!QueryCloseWorkspace())
+        if (!QueryCloseWorkspace())
             return false;
-        if(!CloseAllProjects(true))
+        if (!CloseAllProjects(true))
             return false;
 
         delete m_pWorkspace;
         m_pWorkspace = 0;
-        if(m_pTree)
+
+        if (m_pTree)
+        {
             m_pTree->SetItemText(m_TreeRoot, _("Workspace"));
+            if (!Manager::IsAppShuttingDown())
+                RebuildTree(); // update the workspace icon if required
+        }
     }
     else
         return CloseAllProjects(false);
