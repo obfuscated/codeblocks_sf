@@ -206,6 +206,7 @@
                   <object class="wxStaticText">
                     <label>* To delete a user template, delete the similarly named folder created
    in %APPDATA%\codeblocks\UserTemplates (for Windows) or
+   ~/Library/Application Support/CodeBlocks (for Mac OS X) or
    ~/.codeblocks (for other platforms).</label>
                   </object>
                 </object>
