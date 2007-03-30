@@ -114,7 +114,6 @@ void wxsSizer::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
                 {
                     case wxsCPP:
                     {
-                        // cyberkoa : Left out a comma after the GetVarName()
                         Code << GetVarName() << _T("->Add(") << Child->GetVarName() << _T(",")
                              << Extra->AllParamsCode(WindowParent,wxsCPP) << _T(");\n");
                         break;
@@ -192,18 +191,9 @@ wxObject* wxsSizer::OnBuildPreview(wxWindow* Parent,long Flags)
         NewParent->SetSizer(Sizer);
         Sizer->Fit(NewParent);
         Sizer->SetSizeHints(NewParent);
-        wxSizer* OutSizer = new wxBoxSizer(wxHORIZONTAL);
-        OutSizer->Add(NewParent,1,wxEXPAND,0);
-        Parent->SetSizer(OutSizer);
-        OutSizer->SetSizeHints(Parent);
         return NewParent;
     }
 
-    if ( GetParent() && GetParent()->GetType()!=wxsTSizer )
-    {
-        Parent->SetSizer(Sizer);
-        Sizer->SetSizeHints(Parent);
-    }
     return Sizer;
 }
 

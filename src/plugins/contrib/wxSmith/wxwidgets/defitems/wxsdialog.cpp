@@ -67,7 +67,7 @@ wxsDialog::wxsDialog(wxsItemResData* Data):
         wxsDialogEvents,
         wxsDialogStyles),
     Title(_("Dialog")),
-    Centered(false)
+    Centered(true)
 {}
 
 void wxsDialog::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
@@ -136,13 +136,14 @@ wxObject* wxsDialog::OnBuildPreview(wxWindow* Parent,long Flags)
 
         // wxPanel tends to behave very strange when it has children and no sizer,
         // we have to manually resize it's content
-        if ( GetChildCount() && GetChild(0)->GetType()!=wxsTSizer )
+        if ( !GetChildCount() || GetChild(0)->GetType()!=wxsTSizer )
         {
             wxSize NewSize = Size(Parent);
-
             if ( !NewSize.IsFullySpecified() )
             {
-                NewSize.SetDefaults(NewItem->GetBestSize());
+                NewSize.SetDefaults(wxSize(400,450));
+                NewItem->SetSize(NewSize);
+                NewItem->SetBestFittingSize(NewSize);
                 if ( GetChildCount() == 1 )
                 {
                     // If there's only one child it's size gets dialog's size
@@ -153,14 +154,11 @@ wxObject* wxsDialog::OnBuildPreview(wxWindow* Parent,long Flags)
                     }
                 }
             }
-
-            NewItem->SetSize(NewSize);
-            NewItem->SetBestFittingSize(NewSize);
-        }
-        else if ( !GetChildCount() )
-        {
-            NewItem->SetSize(wxSize(400,450));
-            NewItem->SetBestFittingSize(wxSize(400,450));
+            else
+            {
+                NewItem->SetSize(NewSize);
+                NewItem->SetBestFittingSize(NewSize);
+            }
         }
     }
 

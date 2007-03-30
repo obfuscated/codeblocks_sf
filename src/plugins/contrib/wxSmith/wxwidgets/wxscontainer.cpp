@@ -150,14 +150,93 @@ void wxsContainer::SetupWindowCode(wxString& Code,wxsCodingLang Language)
 
 void wxsContainer::AddChildrenPreview(wxWindow* This,long Flags)
 {
+//    for ( int i=0; i<GetChildCount(); i++ )
+//    {
+//        wxsItem* Child = GetChild(i);
+//        Child->BuildPreview(This,Flags);
+//        if ( Child->GetType() == wxsTSizer )
+//        {
+//
+//            This->SetSizer(
+//            Code << GetAccessPrefix(Language)
+//                 << _T("SetSizer(")
+//                 // TODO: Fix, child may not be pointer
+//                 << Child->GetVarName()
+//                 << _T(");\n");
+//        }
+//    }
+//
+//    if ( GetBaseProps()->m_Size.IsDefault )
+//    {
+//        This->Fit();
+//    }
+
     for ( int i=0; i<GetChildCount(); i++ )
     {
-        GetChild(i)->BuildPreview(This,Flags);
+        wxsItem* Child = GetChild(i);
+        wxObject* ChildPreviewAsObject = Child->BuildPreview(This,Flags);
+        if ( Child->GetType() == wxsTSizer )
+        {
+            wxSizer* ChildPreviewAsSizer = wxDynamicCast(ChildPreviewAsObject,wxSizer);
+            if ( ChildPreviewAsSizer )
+            {
+                This->SetSizer(ChildPreviewAsSizer);
+            }
+        }
     }
 
-    if ( GetBaseProps()->m_Size.IsDefault )
+    if ( IsRootItem() )
     {
-        This->Fit();
+        // Adding all tools before calling Fit and SetSizeHints()
+
+        wxsItemResData* Data = GetResourceData();
+        if ( Data )
+        {
+            for ( int i=0; i<Data->GetToolsCount(); i++ )
+            {
+                Data->GetTool(i)->BuildPreview(This,Flags);
+            }
+        }
+
+    }
+
+    for ( int i=0; i<GetChildCount(); i++ )
+    {
+        wxsItem* Child = GetChild(i);
+        if ( Child->GetType() == wxsTSizer )
+        {
+            wxObject* ChildPreviewAsObject = Child->GetLastPreview();
+            wxSizer*  ChildPreviewAsSizer  = wxDynamicCast(ChildPreviewAsObject,wxSizer);
+            wxWindow* ChildPreviewAsWindow = wxDynamicCast(ChildPreviewAsObject,wxWindow);
+
+            if ( ChildPreviewAsSizer )
+            {
+                // Child preview was created directly as sizer, we use it to
+                // call Fit() and SetSizeHints() directly
+                if ( GetBaseProps()->m_Size.IsDefault )
+                {
+                    ChildPreviewAsSizer->Fit(This);
+                }
+                ChildPreviewAsSizer->SetSizeHints(This);
+            }
+            else if ( ChildPreviewAsWindow )
+            {
+                // Preview of sizer is given actually as some kind of panel which paints
+                // some extra data of sizer. So we have to create out own sizer to call
+                // Fit and SetSizeHints
+
+                wxSizer* IndirectSizer = new wxBoxSizer(wxHORIZONTAL);
+                IndirectSizer->Add(ChildPreviewAsWindow,1,wxEXPAND,0);
+                This->SetSizer(IndirectSizer);
+
+                if ( GetBaseProps()->m_Size.IsDefault )
+                {
+                    IndirectSizer->Fit(This);
+                }
+
+                IndirectSizer->SetSizeHints(This);
+            }
+        }
     }
 }
 
