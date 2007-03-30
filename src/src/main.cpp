@@ -2087,6 +2087,7 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
             ProjectFile* pf = project->GetFileByFilename(ed->GetFilename(), false);
             ed->SetProjectFile(pf);
             Manager::Get()->GetProjectManager()->RebuildTree();
+            Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree(true);
         }
     }
     // verify that the open files are still in sync
