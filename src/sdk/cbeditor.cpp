@@ -1453,20 +1453,28 @@ void cbEditor::AutoComplete()
 
 void cbEditor::DoFoldAll(int fold)
 {
-    m_pControl->Colourise(0, -1); // the *most* important part!
-    int count = m_pControl->GetLineCount();
+    cbAssert(m_pControl);
+    if (m_SplitType != stNoSplit)
+        cbAssert(m_pControl2);
+    cbStyledTextCtrl* ctrl = GetControl();
+    ctrl->Colourise(0, -1); // the *most* important part!
+    int count = ctrl->GetLineCount();
     for (int i = 0; i <= count; ++i)
         DoFoldLine(i, fold);
 }
 
 void cbEditor::DoFoldBlockFromLine(int line, int fold)
 {
-    m_pControl->Colourise(0, -1); // the *most* important part!
+    cbAssert(m_pControl);
+    if (m_SplitType != stNoSplit)
+        cbAssert(m_pControl2);
+    cbStyledTextCtrl* ctrl = GetControl();
+    ctrl->Colourise(0, -1); // the *most* important part!
     int i, parent, maxLine, level, UnfoldUpto = line;
     bool FoldedInside = false;
 
-    parent = m_pControl->GetFoldParent(line);
-    level = m_pControl->GetFoldLevel(parent);
+    parent = ctrl->GetFoldParent(line);
+    level = ctrl->GetFoldLevel(parent);
     /* The following code will check if the child is hidden
     *  under parent before unfolding it
     */
@@ -1474,20 +1482,20 @@ void cbEditor::DoFoldBlockFromLine(int line, int fold)
     {
         do
         {
-            if (!m_pControl->GetFoldExpanded(parent))
+            if (!ctrl->GetFoldExpanded(parent))
             {
                 FoldedInside = true;
                 UnfoldUpto = parent;
             }
             if (wxSCI_FOLDLEVELBASE == (level & wxSCI_FOLDLEVELNUMBERMASK))
                 break;
-            parent = m_pControl->GetFoldParent(parent);
-            level = m_pControl->GetFoldLevel(parent);
+            parent = ctrl->GetFoldParent(parent);
+            level = ctrl->GetFoldLevel(parent);
         }
         while (parent != -1);
     }
 
-    maxLine = m_pControl->GetLastChild(line, -1);
+    maxLine = ctrl->GetLastChild(line, -1);
 
     for (i = UnfoldUpto; i <= maxLine; ++i)
         DoFoldLine(i, fold);
@@ -1495,18 +1503,22 @@ void cbEditor::DoFoldBlockFromLine(int line, int fold)
 
 bool cbEditor::DoFoldLine(int line, int fold)
 {
-    int level = m_pControl->GetFoldLevel(line);
+    cbAssert(m_pControl);
+    if (m_SplitType != stNoSplit)
+        cbAssert(m_pControl2);
+    cbStyledTextCtrl* ctrl = GetControl();
+    int level = ctrl->GetFoldLevel(line);
     if (level & wxSCI_FOLDLEVELHEADERFLAG)
     {
         bool expand = false;
         if (fold == 2) // toggle
         {
-            m_pControl->ToggleFold(line);
+            ctrl->ToggleFold(line);
             return true;
         }
         else
             expand = fold == 0;
-        bool IsCurLineFolded = m_pControl->GetFoldExpanded(line);
+        bool IsCurLineFolded = ctrl->GetFoldExpanded(line);
         /* -------------------------------------------------------
         *  fold = 0 (Unfold), 1 (fold), 2 (toggle)
         *  So check if fold = 0 then GetFoldExpanded(line) = false
@@ -1514,7 +1526,7 @@ bool cbEditor::DoFoldLine(int line, int fold)
         *  -----------------------------------------------------*/
         if ((!IsCurLineFolded && expand) || (IsCurLineFolded && !expand))
         {
-            m_pControl->ToggleFold(line);
+            ctrl->ToggleFold(line);
             return true;
         }
     }
@@ -1707,30 +1719,40 @@ void cbEditor::SetErrorLine(int line)
 void cbEditor::Undo()
 {
     cbAssert(m_pControl);
-    m_pControl->Undo();
+    if (m_SplitType != stNoSplit)
+        cbAssert(m_pControl2);
+    GetControl()->Undo();
 }
 
 void cbEditor::Redo()
 {
     cbAssert(m_pControl);
+    if (m_SplitType != stNoSplit)
+        cbAssert(m_pControl2);
     GetControl()->Redo();
 }
 
 void cbEditor::Cut()
 {
     cbAssert(m_pControl);
+    if (m_SplitType != stNoSplit)
+        cbAssert(m_pControl2);
     GetControl()->Cut();
 }
 
 void cbEditor::Copy()
 {
     cbAssert(m_pControl);
+    if (m_SplitType != stNoSplit)
+        cbAssert(m_pControl2);
     GetControl()->Copy();
 }
 
 void cbEditor::Paste()
 {
     cbAssert(m_pControl);
+    if (m_SplitType != stNoSplit)
+        cbAssert(m_pControl2);
     GetControl()->Paste();
 }
 
