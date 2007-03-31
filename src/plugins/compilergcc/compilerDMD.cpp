@@ -46,7 +46,7 @@ void CompilerDMD::Reset()
 	m_Switches.linkLibs = _T("");
 	m_Switches.libPrefix = _T("");
 	m_Switches.libExtension = _T("lib");
-	m_Switches.defines = _T("");
+	m_Switches.defines = _T("-version=");
 	m_Switches.genericSwitch = _T("-");
 	m_Switches.objectExtension = _T("obj");
 	m_Switches.needDependencies = false;
@@ -76,7 +76,7 @@ void CompilerDMD::Reset()
 	m_Switches.linkLibs = _T("-l");
 	m_Switches.libPrefix = _T("lib");
 	m_Switches.libExtension = _T("a");
-	m_Switches.defines = _T("");
+	m_Switches.defines = _T("-version=");
 	m_Switches.genericSwitch = _T("-");
 	m_Switches.objectExtension = _T("o");
 	m_Switches.needDependencies = false;
