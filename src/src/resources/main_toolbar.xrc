@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
 <resource>
 <object class="wxToolBarAddOn" name="main_toolbar">
-<bitmapsize>22,22</bitmapsize>
+<bitmapsize platform="mac">32,32</bitmapsize>
+<bitmapsize platform="win,unix">22,22</bitmapsize>
 <style>wxTB_HORIZONTAL</style>
  <object class="tool" name="idToolNew">
   <tooltip>New file</tooltip>

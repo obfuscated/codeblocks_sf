@@ -23,6 +23,10 @@ class wxToolBarAddOnXmlHandler : public wxXmlResourceHandler
         bool m_isInside;
         bool m_isAddon;
         wxToolBar *m_toolbar;
+
+        wxBitmap GetCenteredBitmap(const wxString& param = wxT("bitmap"), 
+            const wxArtClient& defaultArtClient = wxART_OTHER,
+            wxSize size = wxDefaultSize);
 };
 
 #endif

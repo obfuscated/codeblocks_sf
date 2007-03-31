@@ -865,7 +865,7 @@ void MainFrame::CreateToolbars()
     myres->Load(resPath + _T("/resources.zip#zip:*.xrc"));
     Manager::Get()->GetMessageManager()->DebugLog(_T("Loading toolbar..."));
 
-    wxSize size = m_SmallToolBar ? wxSize(16, 16) : wxSize(22, 22);
+    wxSize size = m_SmallToolBar ? wxSize(16, 16) : (platform::macosx ? wxSize(32, 32) : wxSize(22, 22));
     m_pToolbar = new wxToolBar(this, -1, wxDefaultPosition, size, wxTB_FLAT | wxTB_NODIVIDER);
     m_pToolbar->SetToolBitmapSize(size);
     Manager::Get()->AddonToolBar(m_pToolbar,xrcToolbarName);
@@ -1204,7 +1204,7 @@ void MainFrame::DoSelectLayout(const wxString& name)
 
 void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
 {
-    wxSize size = m_SmallToolBar ? wxSize(16, 16) : wxSize(22, 22);
+    wxSize size = m_SmallToolBar ? wxSize(16, 16) : (platform::macosx ? wxSize(32, 32) : wxSize(22, 22));
     wxToolBar* tb = new wxToolBar(this, -1, wxDefaultPosition, size, wxTB_FLAT | wxTB_NODIVIDER);
     tb->SetToolBitmapSize(size);
     if (plugin->BuildToolBar(tb))

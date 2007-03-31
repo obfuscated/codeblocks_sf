@@ -34,6 +34,47 @@ wxToolBarAddOnXmlHandler::wxToolBarAddOnXmlHandler()
     XRC_ADD_STYLE(wxTB_NOALIGN);
 }
 
+wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param,
+    const wxArtClient& defaultArtClient, wxSize size)
+{
+    wxBitmap bitmap = GetBitmap(param, defaultArtClient, wxDefaultSize);
+    if (!bitmap.Ok()) // == wxNullBitmap
+        return bitmap;
+
+    int bw = bitmap.GetWidth();
+    int bh = bitmap.GetHeight();
+    if (size == wxSize(bw, bh))
+        return bitmap;
+
+    wxImage image = bitmap.ConvertToImage();
+
+    int w = size.GetWidth();
+    int h = size.GetHeight();
+    int x = (w - bw) / 2;
+    int y = (h - bh) / 2;
+
+    if (image.HasAlpha()) // Resize doesn't handle Alpha... :-(
+    {
+        const unsigned char *data = image.GetData();
+        const unsigned char *alpha = image.GetAlpha();
+        unsigned char *rgb = (unsigned char *) calloc(w * h, 3);
+        unsigned char *a = (unsigned char *) calloc(w * h, 1);
+        
+        // copy Data/Alpha from smaller bitmap to larger bitmap
+        for (int row = 0; row < bh; row++)
+        {
+            memcpy(rgb + ((row + y) * w + x) * 3, data + (row * bw) * 3, bw * 3);
+            memcpy(a + ((row + y) * w + x), alpha + (row * bw), bw);
+        }
+
+        image = wxImage(w, h, rgb, a);
+    }
+    else
+        image.Resize(size, wxPoint(x,y));
+
+    return wxBitmap(image);
+}
+
 wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
 {
     wxToolBar* toolbar=NULL;
@@ -41,11 +82,13 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
     {
         wxCHECK_MSG(m_toolbar, NULL, _("Incorrect syntax of XRC resource: tool not within a toolbar!"));
 
+        wxSize bitmapSize = m_toolbar->GetToolBitmapSize();
+        
         if (GetPosition() != wxDefaultPosition)
         {
             m_toolbar->AddTool(GetID(),
-                               GetBitmap(_T("bitmap"), wxART_TOOLBAR),
-                               GetBitmap(_T("bitmap2"), wxART_TOOLBAR),
+                               GetCenteredBitmap(_T("bitmap"), wxART_TOOLBAR, bitmapSize),
+                               GetCenteredBitmap(_T("bitmap2"), wxART_TOOLBAR, bitmapSize),
                                GetBool(_T("toggle")),
                                GetPosition().x,
                                GetPosition().y,
@@ -71,8 +114,8 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
             }
             m_toolbar->AddTool(GetID(),
                                GetText(_T("label")),
-                               GetBitmap(_T("bitmap"), wxART_TOOLBAR),
-                               GetBitmap(_T("bitmap2"), wxART_TOOLBAR),
+                               GetCenteredBitmap(_T("bitmap"), wxART_TOOLBAR, bitmapSize),
+                               GetCenteredBitmap(_T("bitmap2"), wxART_TOOLBAR, bitmapSize),
                                kind,
                                GetText(_T("tooltip")),
                                GetText(_T("longhelp")));
