@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.22 2007/03/9"
+#define VERSION "1.0.23 2007/03/24"
 // -----------------------------------
 class MyDialog;
 
@@ -126,6 +126,7 @@ class cbKeyBinder : public cbPlugin
         void OnWindowDestroyEvent(wxEvent& event);
         void DetachEditor(wxWindow* pWindow);
         void MergeDynamicMenus();
+        void OnAppStartShutdown(wxCommandEvent& event);
 
         wxWindow*       pcbWindow;              //main app window
         wxArrayPtrVoid  m_EditorPtrs;           //attached editor windows
@@ -647,3 +648,8 @@ private:
 //  Commit  1.0.22 2007/03/9
 //          22) [ Patch #1913 ] Patch Key Binder plugin for wxW28 with disable_compat26
 // ----------------------------------------------------------------------------
+//  Commit  1.0.24 2007/03/31
+//          23) Remove dynamic merge from OnRelease() to avoid recording CB core menu deletions
+//          24) Reinstate Menu UpdateByLabel when UpdateByID fails
+// ----------------------------------------------------------------------------
+//

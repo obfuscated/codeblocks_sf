@@ -43,6 +43,7 @@ BEGIN_EVENT_TABLE(cbKeyBinder, cbPlugin)
 	EVT_EDITOR_CLOSE    (cbKeyBinder::OnEditorClose)
 	EVT_PROJECT_OPEN    (cbKeyBinder::OnProjectOpened)
 	EVT_APP_STARTUP_DONE(cbKeyBinder::OnAppStartupDone)
+    EVT_APP_START_SHUTDOWN(cbKeyBinder::OnAppStartShutdown) //this is never called
     //EVT_IDLE            (cbKeyBinder::OnIdle)
     EVT_TIMER           (-1, cbKeyBinder::OnMergeTimer)
 END_EVENT_TABLE()
@@ -155,8 +156,8 @@ void cbKeyBinder::OnRelease(bool appShutDown)
 
     // -------------------------------------------
     // Saving disabled when no editors attached because
-    // when CB/Plugins/ManagePlugsin menu "re-enables" the plugin,
-    // then the user closes down without opening a file,
+    // when CB/Plugins/ManagePlugins menu "re-enables" the plugin,
+    // then if the user closes down without opening a file,
     // an empty .ini file is written. The profiles are never built because no
     // opens took place, no attaches took place, no events handed to KeyBinder.
     // -------------------------------------------
@@ -164,9 +165,12 @@ void cbKeyBinder::OnRelease(bool appShutDown)
     StopMergeTimer();
 	if (m_bBound)
     {   // m_bBound is false when KB re-enabled and no events occured
-        MergeDynamicMenus();
+        // Do *not* do a merge here. CB code has already remove some menu items
+        //-*MergeDynamicMenus();*//
         EnableMerge(false);
-        OnSave();
+        // Do *not* do a save, here. CB core has destroyed some menu items before
+        // we have a chance to finish the write.
+        //-OnSave();
     }
     // remove keyboard and window close event //+v0.4.7
 	m_pKeyProfArr->DetachAll();
@@ -1062,4 +1066,18 @@ void cbKeyBinder::OnMergeTimer(wxTimerEvent& event)
     event.Skip();
 }//onIdle
 // ----------------------------------------------------------------------------
+void cbKeyBinder::OnAppStartShutdown(wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // currently this is defined in the sdk, but not implemented
+    // and never called. Another sdk gotcha! And another reason to avoid it.
+     LOGIT( _T("OnAppStartShutdown") );
+	// stop the merge timer
+    StopMergeTimer();
+    EnableMerge(false);
+//    OnSave();
+//    asm("int3");
 
+    event.Skip(); // allow others to process it too
+}
+// ----------------------------------------------------------------------------

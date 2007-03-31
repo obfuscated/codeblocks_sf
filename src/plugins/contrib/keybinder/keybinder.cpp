@@ -951,6 +951,7 @@ int wxKeyBinder::MergeDynamicMenuItems(wxMenuBar* pMenuBar)     //v0.4.25
     // ---------------------------------------------------------------
     // Loop through the wxCmdArray and remove any wxCmds that have no
     // associated menu item. This is caused by dynamic menu items changing their id
+    // or being removed by plugins and projects
     // ---------------------------------------------------------------
     wxCmdArray* pCmdArray = GetArray();
     for (int i=0; i < GetCmdCount(); i++)
@@ -986,12 +987,12 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
         int nMenuItemID = pMenuItem->GetId();
         // Find item in array of keybinder commands
         int k=0;
+        wxString menuItemKeyStr;
         if ( -1 != ( k = FindCmd(nMenuItemID) ) )   //item found
         {
-            wxString menuItemKeyStr;
             GetMenuItemAccStr(pMenuItem, menuItemKeyStr);
             #ifdef LOGGING
-             LOGIT(wxT("UpdateAllCmd:on:%d:%d:%p:[%s] key[%s]"),
+             LOGIT(wxT("UpdateAllCmd ById on:%d:%d:%p:[%s] key[%s]"),
                     j,k,pMenuItem,pMenuItem->GetLabel().GetData(), menuItemKeyStr.GetData() );
             #endif
             m_arrCmd.Item(k)->Update(pMenuItem);
@@ -999,13 +1000,24 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
             //^^Above applies only to update() code used with wxWidgets 2.6.2,now deprecated
         }
         else{
+            // a menu id failed to match any in the file bindings
+            // it's probably had its id dynamically assigned
             if (not (pMenuItem->GetKind() == wxITEM_SEPARATOR)
                 && (not wxMenuCmd::IsNumericMenuItem(pMenuItem)) )
             {
                 #ifdef LOGGING
-                 LOGIT(wxT("UpdateAllCmd:Failed on:%d:%d:%p:%s"),j,k,pMenuItem,pMenuItem->GetText().GetData() );
+                 LOGIT(wxT("UpdateAllCmd ById Failed on:%d:%d:%p:%s"),j,k,pMenuItem,pMenuItem->GetText().GetData() );
                 #endif
-            }
+                // Try to find the wxCmd that matches this menu label
+                if (-1 != (k = FindMatchingName(pMenuItem->GetLabel() )))
+                {   // Look for wxCmd with this menu label
+                    #ifdef LOGGING
+                     LOGIT(wxT("UpdateAllCmd ByLabel on:%d:%d:%p:[%s] key[%s]"),
+                            j,k,pMenuItem,pMenuItem->GetLabel().GetData(), menuItemKeyStr.GetData() );
+                    #endif
+                    m_arrCmd.Item(k)->Update(pMenuItem);
+                }//if
+            }//if
         }
     }//rof
 }//updateSubmenu

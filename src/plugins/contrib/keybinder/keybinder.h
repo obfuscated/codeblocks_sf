@@ -712,7 +712,20 @@ protected:
 				return i;
 		return -1;
 	}
-
+	// Returns index to wxCmd whos name matches the text
+    int FindMatchingName(wxString menuItemLabel)
+    {
+        wxCmdArray* pCmdArray = GetArray();
+         //LOGIT( _T("menuItemLabel[%s]"),menuItemLabel.c_str() );
+        for (int i=0; i < GetCmdCount(); i++)
+        {
+            wxCmd* pCmd = pCmdArray->Item(i);
+             //LOGIT( _T("pCmd->Getname()[%s]"),pCmd->GetName().c_str() );
+            if (pCmd->GetName() == menuItemLabel)
+                return i;
+        }
+        return -1;
+    }
 
 public:
 
