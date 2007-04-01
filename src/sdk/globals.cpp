@@ -845,7 +845,7 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
 #else // ----- non-Windows ----------------------------------------------
 
 
-void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
+void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
 // TODO (thomas#1#): The non-Windows implementation is *pathetic*.
 // However, I don't know how to do it well under GTK / X / Xinerama / whatever.
 // Anyone?
