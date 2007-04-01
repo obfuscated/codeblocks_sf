@@ -718,7 +718,7 @@ SettingsIconsStyle GetSettingsIconsStyle(wxListCtrl* lc)
 typedef APIENTRY HMONITOR (*MonitorFromWindow_t)(HWND, DWORD);
 typedef APIENTRY BOOL (*GetMonitorInfo_t)(HMONITOR, LPMONITORINFO);
 
-void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode, bool enforce)
+void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
 {
     HMONITOR hMonitor;
     MONITORINFO mi;

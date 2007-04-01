@@ -234,7 +234,7 @@ enum cbPlaceDialogMode
     pdlClip
 };
 
-extern void PlaceWindow(wxWindow *w, cbPlaceDialogMode mode = pdlBest, bool enforce = false);
+extern void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode = pdlBest, bool enforce = false);
 
 /** wxMessageBox wrapper.
   *
