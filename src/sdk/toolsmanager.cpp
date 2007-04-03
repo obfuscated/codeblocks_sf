@@ -134,7 +134,7 @@ bool ToolsManager::Execute(const cbTool* tool)
 
     if (!cmdline.Replace(_T("$SCRIPT"), cmd << _T(" ") << params))
         // if they didn't specify $SCRIPT, append:
-        cmdline << cmd << _T(" ") << params;
+        cmdline << cmd;
 
     if(!(Manager::Get()->GetMacrosManager()))
         return false; // We cannot afford the Macros Manager to fail here!
