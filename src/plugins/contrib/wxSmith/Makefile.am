@@ -61,8 +61,8 @@ noinst_HEADERS = \
 ./wxsautoresourcetreeimage.h
 
 EXTRA_DIST = \
-*.cbp \
-*.bat \
+$(srcdir)/*.cbp \
+$(srcdir)/*.bat \
 manifest.xml
 
 pkgdata_DATA = wxsmith.zip

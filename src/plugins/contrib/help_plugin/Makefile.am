@@ -19,7 +19,7 @@ noinst_HEADERS = help_common.h \
 			HelpConfigDialog.h \
 			help_plugin.h
 
-EXTRA_DIST = *.cbp \
+EXTRA_DIST = $(srcdir)/*.cbp \
 			help_plugin.xrc \
 			manifest.xml \
 			Readme.txt
