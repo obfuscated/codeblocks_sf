@@ -1,6 +1,7 @@
 /*
 	This file is part of Code Snippets, a plugin for Code::Blocks
 	Copyright (C) 2006 Arto Jonsson
+	Copyright (C) 2007 Pecan Heber
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -16,18 +17,30 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
+// RCS-ID: $Id: snippetitemdata.cpp 28 2007-04-01 14:32:57Z Pecan $
+
+#ifdef WX_PRECOMP
+    #include "wx_pch.h"
+#else
+#endif
 
 #include "snippetitemdata.h"
 
+// ----------------------------------------------------------------------------
 SnippetItemData::SnippetItemData(SnippetItemType type) : m_Type(type), m_Snippet(wxEmptyString)
+// ----------------------------------------------------------------------------
 {
 }
 
+// ----------------------------------------------------------------------------
 SnippetItemData::SnippetItemData(SnippetItemType type, wxString snippet) : m_Type(type), m_Snippet(snippet)
+// ----------------------------------------------------------------------------
 {
 }
 
+// ----------------------------------------------------------------------------
 SnippetItemData::~SnippetItemData()
+// ----------------------------------------------------------------------------
 {
 	//dtor
 }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
@@ -9,8 +9,9 @@
 <body>
 <h1>Code Snippets Plugin</h1>
 
-<p>Arto Jonsson<br />
-<a href="http://ajonsson.kapsi.fi/">http://ajonsson.kapsi.fi/</a></p>
+<p><ul><li>Arto Jonsson</li><li>Pecan Heber</li><br />
+<a href="http://www.codeblocks.org/">http://www.codeblocks.org/</a></p>
+<br><a href="http://wiki.codeblocks.org/">http://wiki.codeblocks.org/</a></br>
 
 <h3>Table of contents</h3>
 <ul style="list-style-type: none;">
@@ -18,8 +19,9 @@
 	<ul style="list-style-type: none;">
 		<li>1.1. <a href="#newsnippet">Creating a new snippet</a></li>
 		<li>1.2. <a href="#applysnippet">Applying a snippet</a></li>
-		<li>1.3. <a href="#newcategory">Creating a new category</a></li>
+		<li>1.3. <a href="#newCategory">Creating a new Category</a></li>
 		<li>1.4. <a href="#searching">Searching</a></li>
+		<li>1.5. <a href="#File Links">File Link Snippets</a></li>
 	</ul>
 	</li>
 	<li>2. <a href="#development">Development</a>
@@ -35,70 +37,101 @@
 
 <h2><a id="about"></a>1. About</h2>
 
-<p>Code snippets plugin is a simple snippets management plugin for
+<p>Code Snippets plugin is a simple Snippets management plugin for
 Code::Blocks. It integrates with the interface by creating a floating
-docking window which show all the snippets. Snippets can be assigned to
-categories or they can be in the global category called
-<em>All snippets</em>.</p>
+docking window which shows all the Snippets. Snippets can be assigned to
+Categories or they can be in the global Category called
+<em>All Snippets</em>.</p>
 
-<h3><a id="newsnippet"></a>1.1. Creating a new snippet</h3>
+<h3><a id="newsnippet"></a>1.1. Creating a new Snippet</h3>
 
-<p>To create a snippet you must first write the code. The plugin does not
-use any dialogs (currently no message boxes either) so you have to write
-the code in the editor. Select your code and and drag it to a category,
-either in the <em>All snippets</em> or in other category you may have
-created.</p>
+<p>To create a snippet you may
+<ul>
+	<li>1) write the text in the default snippet editor;</li>
+	<li>2) mark some text and drag it over the top of a snippet tree item; or</li>
+	<li>3) cut, paste or drag text into the snippet editor.</li>
+</ul>
+</p>
 
-<p>You might noticed that the code you wrote is gone, this is how the drag
-and drop works; you move by default. If you want to copy the code and then
-create a new snippet, hold <strong>Ctrl</strong> and then drag it.</p>
+<p>For example, create some external text. Select your text and and drag it over
+the top of a Category, either to the <em>All Snippets</em> root item or to some
+other Category you may have created via the Snippets context menu.</p>
 
-<p>To assign a piece of code to a existing snippet you simply drag and drop
-the code to that snippet.</p>
+<p>You might noticed that the text you dragged disappeared. This is the default
+behavior of drag and drop; it moves by default. If you want to copy instead,
+simply hold down the <strong>Ctrl</strong> key while dragging the text.</p>
 
-<h3><a id="applysnippet"></a>1.2. Applying a snippet</h3>
+<p>To assign text to a existing snippet, you drag and drop the text
+to that snippet. If you pefer to append the text, use the context menu <em>Edit</em>
+command.</p>
 
-<p>To apply a snippet, double click it and it will be applied to the
-currently active editor. You can alternatively right click on the snippet
-and select <em>Apply</em>.</p>
+<p>
+The default editor is based on Scintilla and contains a context menu of its own
+for copy/cut/paste/undo etc.
+</p>
 
-<h3><a id="newcategory"></a>1.3. Creating a new category</h3>
+<h3><a id="applysnippet"></a>1.2. Applying a Snippet</h3>
 
-<p>Snippets can be added to categories. Each snippet can be at one category
-at a time. The number of categories and sub-categories is not limited
-however.</p>
+<p>To apply a snippet, double click it. It will be applied to the
+currently active editor at the current cursor location.</p>
 
-<p>Each user created category has a parent category, the categories created
-in root have the <em>All snippets</em> category as parent. So if you want
-to create a category to the root, right click <em>All snippets</em> and
-select <em>Add subcategory</em>.</p>
+<p>You can, alternatively, right click on the snippet and select <em>Apply</em>.</p>
+
+<p>You may also open the snippet with the editor, mark the text and drag it to
+its destination.</p>
+
+<h3><a id="newCategory"></a>1.3. Creating a new Category</h3>
+
+<p>Snippets can be added to Categories. And Categories can be added to Categories.
+
+To add a Category, right click the root or other Category and select
+<em>Add SubCategory</em>.</p>
+
+<p>You may change any Snippet or Category label by slowly left clicking the label,
+typing a new label, then finishing with the <strong>Enter</strong> key.</p>
+
+<p>Snippet labels may also be changed from within the editor. Right click the
+Snippet, choose <em>Edit</em> and change the Label field, Click <em>Ok</em></p>
+
+<p>Each Snippet is owned by its containing Category. But you may drag Snippets and
+Categories to other locations on the tree.</p>
+
+<p>The number of Categories and sub-Categories is not limited.</p>
+
+<p>Each Category has a parent Category, whose ultimate base is the <em>All Snippets</em>
+parent Category. If you want to create a Category to the root, right click <em>All Snippets</em> and
+select <em>Add SubCategory</em>.</p>
 
 <h3><a id="searching"></a>1.4. Searching</h3>
 
-<p>Snippets can be searched by typing words to the text edit control at the
-top of the docking window. Searching is performed by find-as-you-type method
-so you don't have to press any search buttons or Enter key. Searching by
-default includes categories.</p>
+<p>Search for Snippets by typing their labels into the search pane at the
+top of the window. Searching is performed by find-as-you-type method.
+Category labels are included in the default search method.</p>
 
-<p>Searching at the current state can be considered unoptimized. I haven't
-tested it yet with hundreds of items but I'm pretty sure it's slow. The search
-could by optimized by saving the search state when the firs item is found
-and then later use it as the starting point if the user wants to specify
-more specific search terms.</p>
+<p>Select the <em>">"</em> icon to change the search method and case sensitivity.</p>
 
-<p>Searching is case-sensitive so <em>C++</em> and <em>c++</em> are
-seen as different search terms.</p>
+<h3><a id="File Links"></a>1.5. File Link Snippets</h3>
+
+<p>File Link Snippets contain a file name.</p>
+
+<p>When the editor is invoked on a File Link Snippet, the file data is opened in the
+editor rather than the Snippet data. The Snippet data containing the file name can
+be accessed with the context menu <em>Properties</em> command.</p>
+
+<p>To create a File Linked Snippet item either:
+<ul>
+	<li>Right click a text Snippet and invoke the context menu <em>Convert To File Link</em>.</li>
+	<li>Invoke the <em>Properties</em> context menu and choose a file as a target
+	link to be placed in the Snippet item (use the <em>Link Target</em> button).</li>
+</ul>
+Edited data changes from a File Link is saved with the <em>Ok</em> button and
+disgarded by <em>Cancel</em>.
+</p><p>
+The user may specify their own editor by using the <em>Settings</em> entry in
+the root items context menu.
+</p>
 
 <h2><a id="development"></a>2. Development</h2>
-
-<h3><a id="todo"></a>2.1. Todo</h3>
-
-<p>A list of things to be done.</p>
-
-<ul>
-	<li>Drag and drop enchancements</li>
-	<li>Find next / previous.</li>
-</ul>
 
 <h3><a id="thecode"></a>2.2. About the code</h3>
 
@@ -120,9 +153,9 @@ class is derived from <em>wxTreeItemData</em>.</p>
 
 <p><em>SnippetsItemTreeCtrl</em> is the tree control used in the docking
 window. It's subclass of <em>wxTreeCtrl</em> and overloads the OnCompare
-method. The overloaded compare method uses extra checks for category and
-snippet sorting: categories are first in the tree, sorted A-Z and then
-the snippets, sorted A-Z.</p>
+method. The overloaded compare method uses extra checks for Category and
+snippet sorting: Categories are first in the tree, sorted A-Z and then
+the Snippets, sorted A-Z.</p>
 
 <p>In case you're wondering why the control uses wxWidget's dynamic class
 macros: classes derived from wxTreeCtrl must use these macros so that the
@@ -136,18 +169,20 @@ most of the functionality of the plugin.</p>
 
 <h3><a id="fileformat"></a>2.3. File format</h3>
 
-<p>Code snippets plugin uses XML (UTF-8 encoded) file to save all code
-snippets.</p>
+<p>Code Snippets plugin uses XML (UTF-8 encoded) format to save internal
+text Snippets (text contained in the XML file and designated by the T-folder icon).
+Formats for File Links to external data are user specified (Snippets designated
+by the L-folder icon).</p>
 
-<p>The XML file starts with root item, <em>snippets</em>, which holds all
-the categories and code snippets. Code snippets and categories use the same
-element called <em>item</em>. The item's attributes tell what type of item
-it is, category or code snippet.</p>
+<p>The XML file starts with root item, named <em>Snippets</em>, which holds all
+the Categories and code Snippets. Code Snippets and Categories use the same
+element called <em>item</em>. The item's attributes indicate what type of item
+it is, Category or code snippet.</p>
 
-<p><em>snippets</em></p>
+<p><em>Snippets</em></p>
 <ul>
 	<li>Attributes: none</li>
-	<li>Subelements: all code snippets and categories</li>
+	<li>Subelements: all code Snippets and Categories</li>
 </ul>
 
 <p><em>item</em></p>
@@ -156,15 +191,15 @@ it is, category or code snippet.</p>
 	<ul>
 		<li>Name -- Name of the element</li>
 		<li>Type -- Type of the element, either "snippet" or
-		"category".</li>
+		"Category".</li>
 	</ul>
 	</li>
 	<li>Subelements:
 	<ul>
 		<li>Snippet -- The actual code snippet (only if the item is type
 		"snippet").</li>
-		<li>Subitems and categories (only if the item is type
-		"category").</li>
+		<li>Subitems and Categories (only if the item is type
+		"Category").</li>
 	</ul>
 	</li>
 </ul>
@@ -174,16 +209,16 @@ it is, category or code snippet.</p>
 <blockquote>
 <pre>
 &lt;?xml version="1.0" encoding="UTF-8" standalone="yes" ?&gt;
-&lt;snippets&gt;
-	&lt;item name="Test category" type="category" /&gt;
+&lt;Snippets&gt;
+	&lt;item name="Test Category" type="Category" /&gt;
 		&lt;item name="Test item 1" type="snippet" /&gt;
-			&lt;snippet&gt;// Test 1&lt;/snippets&gt;
-		&lt;/item&gt;	
+			&lt;snippet&gt;// Test 1&lt;/Snippets&gt;
+		&lt;/item&gt;
 	&lt;/item&gt;
 	&lt;item name="Test item 2" type="snippet" /&gt;
-		&lt;snippet&gt;// Test 2&lt;/snippets&gt;
+		&lt;snippet&gt;// Test 2&lt;/Snippets&gt;
 	&lt;item&gt;
-&lt;/snippets&gt;
+&lt;/Snippets&gt;
 </pre>
 </blockquote>
 
@@ -191,9 +226,9 @@ it is, category or code snippet.</p>
 
 <blockquote>
 <pre>
-All snippets
+All Snippets
 |
-|- Test category
+|- Test Category
 |  |
 |  |- Test item 1
 |

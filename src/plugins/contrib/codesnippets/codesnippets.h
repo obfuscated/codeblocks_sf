@@ -21,6 +21,7 @@
 #define CODESNIPPETS_H_INCLUDED
 
 #include "cbplugin.h" // for "class cbPlugin"
+//#include "wxaui/manager.h"
 
 class CodeSnippetsWindow;
 
@@ -123,12 +124,22 @@ class CodeSnippets : public cbPlugin
 		void OnRelease(bool appShutDown);
 
 		// ---
-		CodeSnippetsWindow* m_SnippetsWindow;
-
+		CodeSnippetsWindow* m_pSnippetsWindow;
+		void SetSnippetsWindow(CodeSnippetsWindow* p);
+		CodeSnippetsWindow*  GetSnippetsWindow(){return m_pSnippetsWindow;}
 
 	private:
+
+        void CreateSnippetWindow();
+
 		void OnViewSnippets(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
+		void OnActivate(wxActivateEvent& event);
+        void OnWindowDestroy(wxEvent& event);
+		void OnIdle(wxIdleEvent& event);
+
+		wxWindow*   m_pAppWin;
+
 		DECLARE_EVENT_TABLE();
 };
 

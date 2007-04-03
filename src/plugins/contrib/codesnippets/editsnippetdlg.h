@@ -21,17 +21,26 @@
 #define EDITSNIPPETDLG_H
 
 #include <wx/dialog.h>
+#include <wx/stattext.h>
+#include <wx/button.h>
+
+class Edit;
 
 class EditSnippetDlg : public wxDialog
 {
+    friend class EditSnippetDropTarget;
+
 	public:
-		EditSnippetDlg(const wxString& snippetName, const wxString& snippetText);
+		EditSnippetDlg(const wxString& snippetName, const wxString& snippetText,
+                            wxSemaphore* pWaitSem, wxString fileName=wxEmptyString);
 		~EditSnippetDlg();
 
 		wxString GetName();
 		wxString GetText();
 	private:
 		void InitDlg();
+		void EndSnippetDlg(int wxID_OKorCANCEL);
+
 
 		void OnOK(wxCommandEvent& event);
 		void OnCancel(wxCommandEvent& event);
@@ -40,10 +49,13 @@ class EditSnippetDlg : public wxDialog
 		wxStaticText* m_NameLbl;
 		wxTextCtrl* m_SnippetNameCtrl;
 		wxStaticText* m_SnippetLbl;
-		wxTextCtrl* m_SnippetTextCtrl;
+		//wxTextCtrl* m_SnippetTextCtrl;
+		Edit* m_SnippetEditCtrl;
 		wxButton* m_OKBtn;
 		wxButton* m_CancelBtn;
 		wxButton* m_HelpBtn;
+		wxSemaphore* pWaitingSemaphore;
+		wxString     m_EditFileName;
 
 		DECLARE_EVENT_TABLE()
 };

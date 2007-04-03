@@ -1,6 +1,7 @@
 /*
 	This file is part of Code Snippets, a plugin for Code::Blocks
 	Copyright (C) 2006 Arto Jonsson
+	Copyright (C) 2007 Pecan Heber
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -16,13 +17,18 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
+// RCS-ID: $Id: codesnippetswindow.h 32 2007-04-02 17:51:48Z Pecan $
 
-#ifndef CODESNIPPETSLIST_H
-#define CODESNIPPETSLIST_H
+#ifndef CODESNIPPETSWINDOW_H
+#define CODESNIPPETSWINDOW_H
 
 #include <wx/dnd.h>
 #include <wx/string.h>
+#include <wx/treectrl.h>
+#include <wx/datetime.h>
+#include <wx/dialog.h>
 
+#include "snippetsconfig.h"
 #include "codesnippetstreectrl.h"
 
 class wxTextCtrl;
@@ -30,49 +36,78 @@ class wxButton;
 class wxTreeCtrl;
 class wxCommandEvent;
 class wxTreeEvent;
+class EditSnippetDlg;
 
-
+// ----------------------------------------------------------------------------
 class CodeSnippetsWindow : public wxPanel
+// ----------------------------------------------------------------------------
 {
 	// Ugly as hell but this how it needs to be done
 	friend class SnippetsDropTarget;
+	friend class CodeSnippetsAppFrame;
+	friend class CodeSnippets;
 
 	public:
-		enum SearchScope
-		{
-			SCOPE_SNIPPETS,		// Searches only snippets
-			SCOPE_CATEGORIES,	// Searches only categories
-			SCOPE_BOTH			// Searches both snippets and categories
-		};
+//		enum SearchScope
+//		{
+//			SCOPE_SNIPPETS,		// Searches only snippets
+//			SCOPE_CATEGORIES,	// Searches only categories
+//			SCOPE_BOTH			// Searches both snippets and categories
+//		};
+//
+//		struct SearchConfiguration
+//		{
+//			bool caseSensitive;
+//			SearchScope scope;
+//
+//			SearchConfiguration()
+//			{
+//				// Default settings
+//				caseSensitive = true;
+//				scope = SCOPE_BOTH;
+//			}
+//		};
 
-		struct SearchConfiguration
-		{
-			bool caseSensitive;
-			SearchScope scope;
-
-			SearchConfiguration()
-			{
-				// Default settings
-				caseSensitive = true;
-				scope = SCOPE_BOTH;
-			}
-		};
-
-		CodeSnippetsWindow();
+		CodeSnippetsWindow(wxWindow* parent);
 		~CodeSnippetsWindow();
+
+        void SaveSnippetsToFile(const wxString& fileName);
+        bool    IsSnippet(wxTreeItemId item = (void*)0  )
+            { return GetSnippetsTreeCtrl()->IsSnippet(item); }
+        bool IsFileSnippet(wxTreeItemId itemId=(void*)0)
+            { return GetSnippetsTreeCtrl()->IsFileSnippet(itemId); }
+
+        //Getter helper routines
+        CodeSnippetsTreeCtrl* GetSnippetsTreeCtrl(){ return m_SnippetsTreeCtrl ;}
+        wxImageList* GetSnipImageList(){ return GetConfig()->GetSnipImages()->GetSnipImageList();}
+        bool GetFileChanged( )
+            {return GetSnippetsTreeCtrl()->GetFileChanged();}
+        bool SetFileChanged( bool truefalse )
+            {return GetSnippetsTreeCtrl()->SetFileChanged(truefalse);}
+        wxString GetSnippet() { return GetSnippetsTreeCtrl()->GetSnippet();}
+        wxString GetSnippet( wxTreeItemId itemId ) { return GetSnippetsTreeCtrl()->GetSnippet(itemId);}
+        wxTreeItemId GetAssociatedItemID(){return GetSnippetsTreeCtrl()->GetAssociatedItemID();}
+        void CenterChildOnParent(wxWindow* child);
+
+
 	private:
 		void InitDlg();
 		void ApplySnippet(const wxTreeItemId& itemID);
 		void CheckForMacros(wxString& snippet);
 		wxTreeItemId SearchSnippet(const wxString& searchTerms, const wxTreeItemId& node);
+		bool AddTextToClipBoard(const wxString& text);
+        void SetSnippetImage(wxTreeItemId itemId);
+        void CheckForExternallyModifiedFiles();
+        void ShowSnippetsAbout(wxString buildInfo);
 
-		wxTextCtrl* m_SearchSnippetCtrl;
-		wxButton* m_SearchCfgBtn;
-		CodeSnippetsTreeCtrl* m_SnippetsTreeCtrl;
-		wxTreeItemId m_MnuAssociatedItemID;
-		wxImageList* m_SnippetsTreeImageList;
-		bool m_AppendItemsFromFile;
-		SearchConfiguration m_SearchConfig;
+		wxTextCtrl*             m_SearchSnippetCtrl;
+		wxButton*               m_SearchCfgBtn;
+		CodeSnippetsTreeCtrl*   m_SnippetsTreeCtrl;
+		wxImageList*            m_SnippetsTreeImageList;
+		bool                    m_AppendItemsFromFile;
+//-		SearchConfiguration     m_SearchConfig;
+		bool                    m_isCheckingForExternallyModifiedFiles;
+
 
 		void OnSearchCfg(wxCommandEvent& event);
 		void OnSearch(wxCommandEvent& event);
@@ -82,11 +117,13 @@ class CodeSnippetsWindow : public wxPanel
 		void OnEndDrag(wxTreeEvent& event);
 		void OnMnuAddSubCategory(wxCommandEvent& event);
 		void OnMnuRemove(wxCommandEvent& event);
+		void OnMnuConvertToCategory(wxCommandEvent& event);
 		void OnMnuAddSnippet(wxCommandEvent& event);
 		void OnMnuApplySnippet(wxCommandEvent& event);
 		void OnBeginLabelEdit(wxTreeEvent& event);
 		void OnMnuLoadSnippetsFromFile(wxCommandEvent& event);
-		void OnMnuSaveSnippetsToFile(wxCommandEvent& event);
+		void OnMnuSaveSnippets(wxCommandEvent& event);
+		void OnMnuSaveSnippetsAs(wxCommandEvent& event);
 		void OnEndLabelEdit(wxTreeEvent& event);
 		void OnMnuRemoveAll(wxCommandEvent& event);
 		void OnMnuCaseSensitive(wxCommandEvent& event);
@@ -95,10 +132,19 @@ class CodeSnippetsWindow : public wxPanel
 		void OnMnuCopyToClipboard(wxCommandEvent& event);
 		void OnMnuEditSnippet(wxCommandEvent& event);
 		void OnItemGetToolTip(wxTreeEvent& event);
+        void OnMnuProperties(wxCommandEvent& event);
+        void OnMnuEditSnippetAsFileLink(wxCommandEvent& event);
+        void OnMnuSaveSnippetAsFileLink(wxCommandEvent& event);
+        void OnMnuSettings(wxCommandEvent& event);
+        void OnMnuAbout(wxCommandEvent& event);
+        void OnShutdown(wxCloseEvent& event);
+
 		DECLARE_EVENT_TABLE()
 };
 
+// ----------------------------------------------------------------------------
 class SnippetsDropTarget : public wxTextDropTarget
+// ----------------------------------------------------------------------------
 {
 	public:
 		SnippetsDropTarget(CodeSnippetsTreeCtrl* treeCtrl) : m_TreeCtrl(treeCtrl) {}
@@ -108,4 +154,4 @@ class SnippetsDropTarget : public wxTextDropTarget
 		CodeSnippetsTreeCtrl* m_TreeCtrl;
 };
 
-#endif // CODESNIPPETSLIST_H
+#endif // CODESNIPPETSWINDOW_H

@@ -2,26 +2,32 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Code Snippets Plugin" />
-		<Option pch_mode="2" />
+		<Option title="CodeSnippets-msw" />
+		<Option default_target="App - Win32" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug - Win32">
+			<Target title="Plugin - Win32">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codesnippets.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\codesnippets" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\codesnippets\plugin\" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\codesnippets" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DNO_LOGGING" />
 				</Compiler>
 			</Target>
-			<Target title="Release - Win32">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codesnippets.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\codesnippets" />
+			<Target title="App - Win32">
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codesnippets.exe" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\codesnippets\app\" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\codesnippets" />
-				<Option type="3" />
+				<Option type="0" />
 				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DNO_LOGGING" />
+				</Compiler>
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
@@ -29,7 +35,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="Release - Win32;" />
+			<Add alias="All" targets="Plugin - Win32;App - Win32;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -38,16 +44,16 @@
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
-			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DWXUSINGDLL" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
-			<Add option="-DWXUSINGDLL" />
 			<Add option="-DTIXML_USE_STL" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#CB.include)" />
+			<Add directory="$(#cb)\src" />
 			<Add directory="$(#CB.include)\wxscintilla\include" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
@@ -63,19 +69,51 @@
 		</Linker>
 		<ExtraCommands>
 			<Add after="update.bat" />
-			<Mode after="always" />
 		</ExtraCommands>
-		<Unit filename="codesnippets.cpp" />
-		<Unit filename="codesnippets.h" />
+		<Unit filename="codesnippets.cpp">
+			<Option target="Plugin - Win32" />
+		</Unit>
+		<Unit filename="codesnippets.h">
+			<Option target="Plugin - Win32" />
+		</Unit>
+		<Unit filename="codesnippetsapp.cpp">
+			<Option target="App - Win32" />
+		</Unit>
+		<Unit filename="codesnippetsapp.h">
+			<Option target="App - Win32" />
+		</Unit>
 		<Unit filename="codesnippetstreectrl.cpp" />
 		<Unit filename="codesnippetstreectrl.h" />
 		<Unit filename="codesnippetswindow.cpp" />
 		<Unit filename="codesnippetswindow.h" />
+		<Unit filename="defsext.h" />
+		<Unit filename="edit.cpp" />
+		<Unit filename="edit.h" />
 		<Unit filename="editsnippetdlg.cpp" />
 		<Unit filename="editsnippetdlg.h" />
-		<Unit filename="resources\manifest.xml" />
+		<Unit filename="menuidentifiers.h" />
+		<Unit filename="messageBoxForm.cpp" />
+		<Unit filename="messageBoxForm.h" />
+		<Unit filename="messagebox.cpp" />
+		<Unit filename="messagebox.h" />
+		<Unit filename="prefs.cpp" />
+		<Unit filename="prefs.h" />
+		<Unit filename="settingsdlg.cpp" />
+		<Unit filename="settingsdlg.h" />
+		<Unit filename="settingsdlgform.cpp" />
+		<Unit filename="settingsdlgform.h" />
 		<Unit filename="snippetitemdata.cpp" />
 		<Unit filename="snippetitemdata.h" />
+		<Unit filename="snippetproperty.cpp" />
+		<Unit filename="snippetproperty.h" />
+		<Unit filename="snippetpropertyform.cpp" />
+		<Unit filename="snippetpropertyform.h" />
+		<Unit filename="snippetsconfig.cpp" />
+		<Unit filename="snippetsconfig.h" />
+		<Unit filename="snippetsimages.cpp" />
+		<Unit filename="snippetsimages.h" />
+		<Unit filename="version.cpp" />
+		<Unit filename="version.h" />
 		<Extensions>
 			<code_completion />
 		</Extensions>

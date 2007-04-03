@@ -1,7 +1,6 @@
 @echo off
-cls
-md ..\..\..\devel\share\CodeBlocks\images\codesnippets > nul 2>&1
-md ..\..\..\output\share\CodeBlocks\images\codesnippets > nul 2>&1
-copy resources\*.png ..\..\..\devel\share\CodeBlocks\images\codesnippets\ > nul 2>&1
-copy resources\*.png ..\..\..\output\share\CodeBlocks\images\codesnippets\ > nul 2>&1
-zip -j9 ..\..\..\devel\share\CodeBlocks\codesnippets.zip resources\manifest.xml
+mkdir ..\..\..\output\share\CodeBlocks\plugins > nul 2>&1
+copy ..\..\..\devel\share\CodeBlocks\plugins\codesnippets.exe ..\..\..\output\share\CodeBlocks\plugins\codesnippets.exe > nul 2>&1
+zip -j9 ..\..\..\devel\share\CodeBlocks\codesnippets.zip manifest.xml
+echo start share\codeblocks\plugins\codesnippets.exe > ..\..\..\devel\codesnippets.bat
+echo start share\codeblocks\plugins\codesnippets.exe > ..\..\..\output\codesnippets.bat
