@@ -2438,7 +2438,9 @@ void ProjectManager::OnRenameFile(wxCommandEvent& event)
 
         if(name != new_name)
         {
-            #if wxCHECK_VERSION(2, 6, 0) // wx-2.6 doesn't check whether it's overwriting an existing file
+            #if wxCHECK_VERSION(2, 8, 0)
+            if (!wxRenameFile(path + name, path + new_name, false))
+            #else // wx-2.6 doesn't check whether it's overwriting an existing file
             if(wxFileExists(path + new_name))
             {
                 cbMessageBox(_("Can't rename file ") + path + new_name +
@@ -2447,8 +2449,6 @@ void ProjectManager::OnRenameFile(wxCommandEvent& event)
                 return;
             }
             if (!wxRenameFile(path + name, path + new_name))
-            #else
-            if (!wxRenameFile(path + name, path + new_name, false))
             #endif
             {
                 wxBell();
