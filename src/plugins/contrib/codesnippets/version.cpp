@@ -108,6 +108,7 @@ AppVersion::~AppVersion()
 //          51) Fixed Bug: When window is docked, we're recording CodeBlocks posn & size
 //          52) Removed initial Linux floating window to avoid wxAUI menu bug.(cf."Other" category)
 //          53) Updated codesnippets.cbp, readme.html, codesnippets.am
+//          54) Fix unix error. Add const to use of wxWX2MBbuf cbU2C(const wxString& str);
 // ----------------------------------------------------------------------------
 // Published Changes for Version 1.1:
 //    Ability to save Snippets as external files
@@ -157,6 +158,7 @@ AppVersion::~AppVersion()
 //          Bug: on Linux, the executable dir is being reported incorrectly
 //          Help should invoke browser for wiki article
 //          Investigate Linux problem dragging item out of window (alternate X11 solution)
+//          Update wiki for Re-arranging Tree items
 //  Todo    Plugin
 //          Find work around for wxAUI floating window vs menu right click bug
 //          Option to wxExecute CodeSnippets vs Docking Snippets

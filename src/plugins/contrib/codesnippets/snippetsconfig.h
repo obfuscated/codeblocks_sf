@@ -39,7 +39,7 @@ class CodeSnippetsWindow;
 
    #if !defined(BUILDING_PLUGIN)
     wxString cbC2U(const char* str);
-    wxWX2MBbuf cbU2C(const wxString& str);
+    const wxWX2MBbuf cbU2C(const wxString& str);
    #endif
 // ----------------------------------------------------------------------------
 class CodeSnippetsConfig

@@ -53,7 +53,7 @@
     }
 
     // Return multibyte (C string) representation of the string
-    wxWX2MBbuf cbU2C(const wxString& str)
+    const wxWX2MBbuf cbU2C(const wxString& str)
     {
         #if wxUSE_UNICODE
             return str.mb_str(wxConvUTF8);
