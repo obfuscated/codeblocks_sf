@@ -2846,6 +2846,7 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
             return;
         }
         file = pf->file;
+        CheckProject();
     }
     else
     {
@@ -2853,8 +2854,8 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
         if (ed)
         {
             // make sure it is saved
-            if (ed->Save())
-                file.Assign(ed->GetFilename());
+            ed->Save();
+            file.Assign(ed->GetFilename());
         }
         // Now activate the project this file belongs to
         ProjectFile* pf = ed->GetProjectFile();
@@ -2864,7 +2865,7 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
             if (CurProject)
             {
                 Manager::Get()->GetProjectManager()->SetProject(CurProject, true);
-                AskForActiveProject();
+                CheckProject();
             }
         }
     }
@@ -2997,6 +2998,8 @@ void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& event)
     wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
     wxTreeItemId sel = tree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)tree->GetItemData(sel);
+    if (event.GetId() == idMenuProjectCompilerOptionsFromProjectManager)
+        ftd = DoSwitchProjectTemporarily();
     if (ftd && (event.GetId() != idMenuProjectCompilerOptionsFromProjectManager))
     {
         // 'configure' selected target, if other than 'All'
