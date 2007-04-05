@@ -29,7 +29,9 @@
 #include <wx/textctrl.h>
 #include <wx/filedlg.h>
 #include <wx/dirdlg.h>
+#ifndef __WXMAC__
 #include <wx/generic/dirdlgg.h>
+#endif
 
 #include "codesnippetswindow.h"
 #include "snippetsconfig.h"
