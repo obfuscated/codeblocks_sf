@@ -3472,6 +3472,9 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
                 Manager::Get()->GetMessageManager()->Open();
             Manager::Get()->GetMessageManager()->SwitchTo(m_ListPageIndex);
             m_pListLog->FocusError(m_Errors.GetFirstError());
+            // Build is not completed, so clear the progress bar
+            if (m_BuildProgress)
+                m_BuildProgress->SetValue(0);
         }
         else
         {
