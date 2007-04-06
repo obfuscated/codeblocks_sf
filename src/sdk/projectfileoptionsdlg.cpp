@@ -203,7 +203,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, const wxString& f
 	XRCCTRL(*this, "txtAbsName", wxTextCtrl)->SetValue(fileName);
 
 	SetTitle(_("Properties of ") + wxString(_("\"")) + fileName + wxString(_("\"")));
-//	
+//
 //	// hide un-needed pages (in reverse order!)
 //	wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
 //	nb->DeletePage(2);
@@ -274,8 +274,8 @@ void ProjectFileOptionsDlg::FillCompilers()
     {
         cmb->Append(CompilerFactory::GetCompiler(i)->GetName());
     }
-    // select default compiler
-    m_LastBuildStageCompilerSel = CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompilerID());
+    // select project default compiler
+    m_LastBuildStageCompilerSel = CompilerFactory::GetCompilerIndex(m_ProjectFile->GetParentProject()->GetCompilerID());
     cmb->SetSelection(m_LastBuildStageCompilerSel);
 }
 
