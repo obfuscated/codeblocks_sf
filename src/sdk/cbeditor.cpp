@@ -1986,7 +1986,7 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
         }
         if(insert)
         {
-            popup->Append(idInsert, _("Insert..."), insert);
+            popup->Append(idInsert, _("Insert"), insert);
             popup->AppendSeparator();
         }
         popup->Append(idSwapHeaderSource, _("Swap header/source"));
@@ -2013,11 +2013,11 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
         splitMenu->Enable(idSplitHorz, !isSplitHorz);
         splitMenu->Enable(idSplitVert, !isSplitVert);
         splitMenu->Enable(idUnsplit, isSplitHorz || isSplitVert);
-        popup->Append(idSplit, _("Split view..."), splitMenu);
+        popup->Append(idSplit, _("Split view"), splitMenu);
 
         if(!noeditor)
-            popup->Append(idConfigureEditor, _("Configure editor"));
-        popup->Append(idProperties, _("Properties"));
+            popup->Append(idConfigureEditor, _("Configure editor..."));
+        popup->Append(idProperties, _("Properties..."));
 
         // remove "Insert/Empty" if more than one entry
         wxMenu* insert = 0;
