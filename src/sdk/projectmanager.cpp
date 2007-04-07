@@ -582,7 +582,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             }
             openWith->AppendSeparator();
             openWith->Append(idOpenWithInternal, _("Internal editor"));
-            menu.Append(wxID_ANY, _("Open with..."), openWith);
+            menu.Append(wxID_ANY, _("Open with"), openWith);
 
             if(pf->GetFileState() == fvsNormal &&  !Manager::Get()->GetEditorManager()->IsOpen(pf->file.GetFullPath()))
             {

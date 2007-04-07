@@ -2347,7 +2347,7 @@ void EditorManager::OnPageContextMenu(wxFlatNotebookEvent& event)
         splitMenu->Enable(idNBTabUnsplit, ed->GetSplitType() != cbEditor::stNoSplit);
 
         pop->AppendSeparator();
-        pop->Append(-1, _("Split view..."), splitMenu);
+        pop->Append(-1, _("Split view"), splitMenu);
     }
 
     bool any_modified = false;
