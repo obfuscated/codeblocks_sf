@@ -204,7 +204,7 @@ void EditorBase::BasicAddToContextMenu(wxMenu* popup,ModuleType type)   //pecan 
     {
         wxMenu* switchto = CreateContextSubMenu(idSwitchTo);
         if(switchto)
-            popup->Append(idSwitchTo, _("Switch to..."), switchto);
+            popup->Append(idSwitchTo, _("Switch to"), switchto);
     }
 }
 
@@ -243,7 +243,7 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)   
         if(switchto)
         {
             popup->AppendSeparator();
-            popup->Append(idSwitchTo, _("Switch to..."), switchto);
+            popup->Append(idSwitchTo, _("Switch to"), switchto);
         }
     }
     else if(!noeditor && wxGetKeyState(WXK_ALT))

@@ -312,7 +312,7 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
                     m_LastKeyword = txt;
                 }
             }
-            int insertId = menu->FindItem(_("Insert..."));
+            int insertId = menu->FindItem(_("Insert"));
             if (insertId != wxNOT_FOUND)
             {
                 wxMenuItem* insertMenu = menu->FindItem(insertId, NULL);
