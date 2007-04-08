@@ -136,7 +136,7 @@ void CodeSnippetsConfig::SettingsLoad()
     cfgFile.Read( wxT("WindowPosition"),  &winPos, wxEmptyString) ;
     if ( not winPos.IsEmpty() )
     {
-        wxWX2MBbuf buf = cbU2C(winPos);
+        const wxWX2MBbuf buf = cbU2C(winPos);
         std::string cstring( buf );
         std::stringstream istream(cstring);
         istream >> windowXpos ;
