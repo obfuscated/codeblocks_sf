@@ -56,6 +56,7 @@ namespace
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsDialogEvents)
+        WXS_EVI(EVT_CLOSE,wxEVT_CLOSE_WINDOW,wxCloseEvent,Close)
         WXS_EV_DEFAULTS()
     WXS_EV_END()
 }

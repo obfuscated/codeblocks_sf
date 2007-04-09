@@ -106,11 +106,13 @@ void wxsToolBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent
             // NOTE: This code assumes that parent is wxToolBar
             if ( GetChildCount() )
             {
+                /*
                 if ( !GetParent() && GetResourceData()->GetClassType()==_T("wxFrame") )
                 {
                     Codef(_T("%v = CreateToolBar(%T,%I,%N);\n"),GetVarName().c_str());
                 }
                 else
+                */
                 {
                     Codef(_T("%C(%W,%I,%P,%S,%T,%N);\n"));
                 }

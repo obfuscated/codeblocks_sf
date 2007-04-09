@@ -735,7 +735,11 @@ void wxsItemResData::BuildEventHandlersCodeReq(wxsCodingLang Language,wxsItem* I
             wxsEvents& Events = Item->GetEvents();
             wxString IdString;
             wxString VarNameString;
-            if ( m_PropertiesFilter == wxsItem::flSource )
+            if ( Item->IsRootItem() )
+            {
+                IdString = _T("wxID_ANY");
+            }
+            else if ( m_PropertiesFilter == wxsItem::flSource )
             {
                 IdString = Item->GetIdName();
                 VarNameString = Item->GetVarName();
