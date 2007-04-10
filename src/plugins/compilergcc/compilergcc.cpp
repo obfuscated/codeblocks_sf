@@ -2998,9 +2998,7 @@ void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& event)
     wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
     wxTreeItemId sel = tree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)tree->GetItemData(sel);
-    if (event.GetId() == idMenuProjectCompilerOptionsFromProjectManager)
-        ftd = DoSwitchProjectTemporarily();
-    if (ftd && (event.GetId() != idMenuProjectCompilerOptionsFromProjectManager))
+    if (ftd)
     {
         // 'configure' selected target, if other than 'All'
         ProjectBuildTarget* target = 0;
@@ -3010,19 +3008,6 @@ void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& event)
                 target = m_Project->GetBuildTarget(m_RealTargetIndex);
         }
         Configure(ftd->GetProject(), target);
-    }
-    else if(event.GetId() == idMenuProjectCompilerOptionsFromProjectManager)
-    {
-        if(cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject())
-        {
-			if (prj == m_Project)
-			{
-				ProjectBuildTarget* target = 0;
-				if (m_RealTargetIndex != -1)
-					target = m_Project->GetBuildTarget(m_RealTargetIndex);
-				Configure(Manager::Get()->GetProjectManager()->GetActiveProject(), target);
-			}
-        }
     }
     else
     {
