@@ -109,6 +109,7 @@ AppVersion::~AppVersion()
 //          52) Removed initial Linux floating window to avoid wxAUI menu bug.(cf."Other" category)
 //          53) Updated codesnippets.cbp, readme.html, codesnippets.am
 //          54) Fix unix error. Add const to use of wxWX2MBbuf cbU2C(const wxString& str);
+//          55) Missing event.Skip() in OnIdle() caused debugger to hang.
 // ----------------------------------------------------------------------------
 // Published Changes for Version 1.1:
 //    Ability to save Snippets as external files

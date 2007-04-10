@@ -280,7 +280,7 @@ void CodeSnippets::OnIdle(wxIdleEvent& event)
     // our docked window to see if it has closed. There are no events
     // that tell us if the user closed the docked or floating window.
 
-    if (not GetSnippetsWindow()) return;
+    if (not GetSnippetsWindow()) { event.Skip();return; }
     bool bOpen = IsWindowReallyShown(GetSnippetsWindow());
     if ( (not bOpen) && GetSnippetsWindow())
     {   //Docked window is closed. Release our resources
