@@ -79,6 +79,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         void OnUserListSelection(CodeBlocksEvent& event);
         void OnReparseActiveEditor(CodeBlocksEvent& event);
         void OnEditorActivated(CodeBlocksEvent& event);
+        void OnEditorClosed(CodeBlocksEvent& event);
         void OnParserEnd(wxCommandEvent& event);
         void OnValueTooltip(CodeBlocksEvent& event);
         void DoCodeComplete();

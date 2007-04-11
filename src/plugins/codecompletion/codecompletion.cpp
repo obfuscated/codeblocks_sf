@@ -135,6 +135,7 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_EDITOR_OPEN(CodeCompletion::OnEditorActivated)
     EVT_EDITOR_ACTIVATED(CodeCompletion::OnEditorActivated)
     EVT_EDITOR_TOOLTIP(CodeCompletion::OnValueTooltip)
+    EVT_EDITOR_CLOSE(CodeCompletion::OnEditorClosed)
 
     EVT_APP_STARTUP_DONE(CodeCompletion::OnAppDoneStartup)
     EVT_PROJECT_OPEN(CodeCompletion::OnProjectOpened)
@@ -1183,6 +1184,14 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
         m_NativeParsers.OnEditorActivated(eb);
         m_FunctionsParsingTimer.Start(1000, wxTIMER_ONE_SHOT); // one second delay should be ok
     }
+
+    event.Skip();
+}
+
+void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
+{
+    // clear toolbar when closing editor
+    m_Function->Clear();
 
     event.Skip();
 }
