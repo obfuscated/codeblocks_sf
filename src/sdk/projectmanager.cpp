@@ -2107,25 +2107,10 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
         {
             return;
         }
-        int i = 0;
         bool is_virtual = ftd->GetKind() == FileTreeData::ftdkVirtualFolder;
-        while (i >= 0 && i < prj->GetFilesCount())
+        if (is_virtual || ftd->GetKind() == FileTreeData::ftdkFolder)
         {
-            ProjectFile* pf = prj->GetFile(i);
-            // ftd->GetFolder() ends with the path separator, so it is
-            // safe to just compare the two strings...
-            if ((is_virtual && pf->virtual_path.StartsWith(ftd->GetFolder())) || // vfolder-based
-                pf->file.GetFullPath().StartsWith(ftd->GetFolder())) // filesystem-based
-            {
-                wxString filename = pf->file.GetFullPath();
-                prj->RemoveFile(pf);
-                CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
-                evt.SetProject(prj);
-                evt.SetString(filename);
-                Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
-            }
-            else
-                ++i;
+            RemoveFilesRecursively(sel);
         }
         prj->CalculateCommonTopLevelPath();
         if (prj->GetCommonTopLevelPath() == oldpath)
@@ -2528,3 +2513,51 @@ void ProjectManager::CheckForExternallyModifiedProjects()
     }
     m_isCheckingForExternallyModifiedProjects = false;
 } // end of CheckForExternallyModifiedProjects
+
+
+void ProjectManager::RemoveFilesRecursively(wxTreeItemId& sel_id)
+{
+    wxTreeItemIdValue cookie;
+    wxTreeItemId child;
+    wxString filename;
+    size_t i = 0;
+    while (i < m_pTree->GetChildrenCount(sel_id))
+    {
+        if (i == 0)
+            child = m_pTree->GetFirstChild(sel_id, cookie);
+        else
+            child = m_pTree->GetNextChild(sel_id, cookie);
+        if (child.IsOk())
+        {
+            FileTreeData* data = (FileTreeData*)m_pTree->GetItemData(child);
+            if (data)
+            {
+                cbProject* prj = data->GetProject();
+                if (prj && data->GetKind() == FileTreeData::ftdkFile)
+                {
+                    ProjectFile* pf = data->GetProjectFile();
+                    if (pf)
+                    {
+                        filename = pf->file.GetFullPath();
+                        DBGLOG(_T("Removed ") + filename + _T(" from ") + prj->GetTitle());
+                        prj->RemoveFile(pf);
+                        CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
+                        evt.SetProject(prj);
+                        evt.SetString(filename);
+                        Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+                    }
+                    else
+                        DBGLOG(_T("Bad Project File!"));
+                }
+                else if (data->GetKind() == FileTreeData::ftdkFolder
+                        || data->GetKind() == FileTreeData::ftdkVirtualFolder)
+                {
+                    RemoveFilesRecursively(child);
+                }
+            }
+            ++i;
+        }
+        else
+            break;
+    }
+}

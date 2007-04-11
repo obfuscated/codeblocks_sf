@@ -411,6 +411,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void DoOpenSelectedFile();
         void DoOpenFile(ProjectFile* pf, const wxString& filename);
         int DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
+        void RemoveFilesRecursively(wxTreeItemId& sel_id);
 
         wxFlatNotebook* m_pNotebook;
         wxTreeCtrl* m_pTree;
