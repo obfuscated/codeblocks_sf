@@ -77,7 +77,7 @@ void wxsBitmapButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
             {
                 Codef(_T("%ASetDefault();\n"));
             }
-            SetupWindowCode(Code,Language);
+            SetupWindowCode(Code,WindowParent,Language);
             return;
         }
 

@@ -66,7 +66,7 @@ void wxsGauge::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
             if ( Value )  Code << Codef(Language,_T("%ASetValue(%d);\n"),Value);
             if ( Shadow ) Code << Codef(Language,_T("%ASetShadowWidth(%d);\n"),Shadow);
             if ( Bezel )  Code << Codef(Language,_T("%ASetBezelFace(%d);\n"),Bezel);
-            SetupWindowCode(Code,Language);
+            SetupWindowCode(Code,WindowParent,Language);
             return;
         }
 

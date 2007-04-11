@@ -94,7 +94,7 @@ void wxsFrame::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
             {
                 Codef(_T("%AMove(%P);\n"));
             }
-            SetupWindowCode(Code,Language);
+            SetupWindowCode(Code,WindowParent,Language);
             // TODO: Setup Icon
 
             AddChildrenCode(Code,wxsCPP);

@@ -36,57 +36,13 @@ void wxsBaseProperties::OnEnumProperties(long Flags)
     WXS_FONT    (wxsBaseProperties,m_Font,wxsItem::flFont,_("Font"),_("font"));
     WXS_STRING  (wxsBaseProperties,m_ToolTip,wxsItem::flToolTip,_("Tooltip"),_T("tooltip"),wxEmptyString,true,false);
     WXS_STRING  (wxsBaseProperties,m_HelpText,wxsItem::flHelpText,_("Help text"),_T("helptext"),wxEmptyString,true,false);
-}
 
-void wxsBaseProperties::SetupWindow(wxWindow* Window,long Flags)
-{
-    bool IsExact = (Flags&wxsItem::pfExact) != 0;
-    if ( !m_Enabled ) Window->Disable();
-    if ( m_Focused  ) Window->SetFocus();
-    if ( m_Hidden && IsExact ) Window->Hide();
-    wxColour FGCol = m_Fg.GetColour();
-    if ( FGCol.Ok() ) Window->SetForegroundColour(FGCol);
-    wxColour BGCol = m_Bg.GetColour();
-    if ( BGCol.Ok() ) Window->SetBackgroundColour(BGCol);
-    wxFont FontVal = m_Font.BuildFont();
-    if ( FontVal.Ok() ) Window->SetFont(FontVal);
-    if ( !m_ToolTip.empty() ) Window->SetToolTip(m_ToolTip);
-    if ( !m_HelpText.empty() ) Window->SetHelpText(m_HelpText);
-}
-
-void wxsBaseProperties::BuildSetupWindowCode(wxString& Code,const wxString& WindowName,const wxString& AccessPrefix,wxsCodingLang Language)
-{
-    switch ( Language )
+    if ( Flags & wxsItem::flSource )
     {
-        case wxsCPP:
-        {
-            if ( !m_Enabled ) Code << AccessPrefix << _T("Disable();\n");
-            if ( m_Focused  ) Code << AccessPrefix << _T("SetFocus();\n");
-            if ( m_Hidden )   Code << AccessPrefix << _T("Hide();\n");
-
-            wxString FGCol = m_Fg.BuildCode(wxsCPP);
-            if ( !FGCol.empty() ) Code << AccessPrefix << _T("SetForegroundColour(") << FGCol << _T(");\n");
-
-            wxString BGCol = m_Bg.BuildCode(wxsCPP);
-            if ( !BGCol.empty() ) Code << AccessPrefix << _T("SetBackgroundColour(") << BGCol << _T(");\n");
-
-            wxString FontVal = m_Font.BuildFontCode(WindowName + _T("Font"), wxsCPP);
-            if ( !FontVal.empty() )
-            {
-                Code << FontVal;
-                Code << AccessPrefix << _T("SetFont(") << WindowName << _T("Font);\n");
-            }
-            if ( !m_ToolTip.empty()  ) Code << AccessPrefix << _T("SetToolTip(") << wxsCodeMarks::WxString(wxsCPP,m_ToolTip) << _T(");\n");
-            if ( !m_HelpText.empty() ) Code << AccessPrefix << _T("SetHelpText(") << wxsCodeMarks::WxString(wxsCPP,m_HelpText) << _T(");\n");
-            return;
-        }
-
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsBaseProperties::BuildSetupWindowCode"),Language);
-        }
+        // Min / max size not available in XRC
+        WXS_SIZE    (wxsBaseProperties,m_MinSize,wxsItem::flMinMaxSize,_("Default Min size"),_("Min Width"),_("Min Height"),_("Min size in dialog units"),_T("minsize"));
+        WXS_SIZE    (wxsBaseProperties,m_MaxSize,wxsItem::flMinMaxSize,_("Default Max size"),_("Max Width"),_("Max Height"),_("Max size in dialog units"),_T("maxsize"));
     }
-
 }
 
 void wxsBaseProperties::AddQPPChild(wxsAdvQPP* QPP,long Flags)

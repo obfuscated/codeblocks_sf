@@ -61,7 +61,7 @@ void wxsGenericDirCtrl::OnBuildCreatingCode(wxString& Code,const wxString& Windo
         case wxsCPP:
         {
             Code << Codef(Language,_T("%C(%W,%I,%n,%P,%S,%T,%n,%d,%N);\n"),DefaultFolder.c_str(),Filter.c_str(),DefaultFilter);
-            SetupWindowCode(Code,Language);
+            SetupWindowCode(Code,WindowParent,Language);
             return;
         }
 

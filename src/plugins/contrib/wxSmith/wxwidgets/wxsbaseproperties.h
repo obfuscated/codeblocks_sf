@@ -22,6 +22,8 @@ class wxsBaseProperties: public wxsPropertyContainer
 
         wxsPositionData m_Position;       ///< \brief Position
         wxsSizeData m_Size;               ///< \brief Size
+        wxsSizeData m_MinSize;            ///< \brief Mininum size (not available in XRC)
+        wxsSizeData m_MaxSize;            ///< \brief Maximum size (not available in XRC)
         bool m_Enabled;                   ///< \brief If false, widget is disabled (true by deefault)
         bool m_Focused;                   ///< \brief If true, widget is focused (false by default)
         bool m_Hidden;                    ///< \brief If true, widget is hidden (false by default)
@@ -41,26 +43,6 @@ class wxsBaseProperties: public wxsPropertyContainer
             m_ToolTip(wxEmptyString),
             m_HelpText(wxEmptyString)
         {}
-
-        /** \brief Function setting up created window using some of properties
-         *
-         * Properties set up are:
-         *  - Enabled
-         *  - Focused
-         *  - Hidden (skipped when not exact preview)
-         *  - FG - Foreground colour
-         *  - BG - Background colour
-         *  - Font
-         *  - ToolTip
-         *  - HelpText
-         */
-        void SetupWindow(wxWindow* Window,long Flags);
-
-        /** \brief Function generating code setting up some properties on given window
-         *
-         * Created code will do the same as SetupWindow function
-         */
-        void BuildSetupWindowCode(wxString& Code,const wxString& WindowName,const wxString& AccessPrefix,wxsCodingLang Language);
 
         /** \brief Function generating QPPChild Panel for most frequently used
          *         properties.

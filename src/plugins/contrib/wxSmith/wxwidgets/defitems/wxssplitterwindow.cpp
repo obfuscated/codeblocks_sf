@@ -131,7 +131,7 @@ void wxsSplitterWindow::OnBuildCreatingCode(wxString& Code,const wxString& Windo
         case wxsCPP:
         {
             Code << Codef(Language,_T("%C(%W,%I,%P,%S,%T,%N);\n"));
-            SetupWindowCode(Code,wxsCPP);
+            SetupWindowCode(Code,WindowParent,wxsCPP);
             if ( MinSize != -1 ) Code << Codef(Language,_T("%ASetMinimumPaneSize(%d);\n"),MinSize);
             AddChildrenCode(Code,wxsCPP);
             if ( GetChildCount() == 0 )

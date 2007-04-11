@@ -61,7 +61,7 @@ void wxsButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,
         {
             Code << Codef(Language,_T("%C(%W,%I,%t,%P,%S,%T,%V,%N);\n"),Label.c_str());
             if ( IsDefault ) Code << Codef(Language,_T("%ASetDefault();\n"));
-            SetupWindowCode(Code,Language);
+            SetupWindowCode(Code,WindowParent,Language);
             return;
         }
 

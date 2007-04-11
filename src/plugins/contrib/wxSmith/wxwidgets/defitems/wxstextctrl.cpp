@@ -95,7 +95,7 @@ void wxsTextCtrl::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
         {
             Code << Codef(Language,_T("%C(%W,%I,%t,%P,%S,%T,%V,%N);\n"),Text.c_str());
             if ( MaxLength > 0 ) Code << Codef(Language,_T("%ASetMaxLength(%d);\n"),MaxLength);
-            SetupWindowCode(Code,Language);
+            SetupWindowCode(Code,WindowParent,Language);
             return;
         }
 

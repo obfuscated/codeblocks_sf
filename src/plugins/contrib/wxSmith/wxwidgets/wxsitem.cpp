@@ -667,6 +667,102 @@ void wxsItem::Codef(wxsCodingLang Language,wxString WindowParent,const wxChar* F
     }
 }
 
+void wxsItem::BuildSetupWindowCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+{
+    switch ( Language )
+    {
+        case wxsCPP:
+        {
+            long PropertiesFlags = GetPropertiesFlags();
+
+            if ( PropertiesFlags&flMinMaxSize )
+            {
+                if ( !m_BaseProperties->m_MinSize.IsDefault )
+                {
+                    Code << Codef(Language,_T("%ASetMinSize(%z);\n"),&m_BaseProperties->m_MinSize);
+                }
+
+                if ( !m_BaseProperties->m_MaxSize.IsDefault )
+                {
+                    Code << Codef(Language,_T("%ASetMaxSize(%z);\n"),&m_BaseProperties->m_MaxSize);
+                }
+            }
+
+            if ( (PropertiesFlags&flEnabled) && !m_BaseProperties->m_Enabled ) Code << Codef(Language,_T("%ADisable();\n"));
+            if ( (PropertiesFlags&flFocused) && m_BaseProperties->m_Focused  ) Code << Codef(Language,_T("%ASetFocus();\n"));
+            if ( (PropertiesFlags&flHidden)  && m_BaseProperties->m_Hidden   ) Code << Codef(Language,_T("%AHide();\n"));
+
+            if ( PropertiesFlags&flColours )
+            {
+                wxString FGCol = m_BaseProperties->m_Fg.BuildCode(Language);
+                if ( !FGCol.empty() ) Code << GetAccessPrefix(Language) << _T("SetForegroundColour(") << FGCol << _T(");\n");
+
+                wxString BGCol = m_BaseProperties->m_Bg.BuildCode(Language);
+                if ( !BGCol.empty() ) Code << GetAccessPrefix(Language) << _T("SetBackgroundColour(") << BGCol << _T(");\n");
+            }
+
+            if ( PropertiesFlags&flFont )
+            {
+                wxString FontVal = m_BaseProperties->m_Font.BuildFontCode(GetVarName() + _T("Font"), Language);
+                if ( !FontVal.empty() )
+                {
+                    Code << FontVal;
+                    Code << GetAccessPrefix(Language) << _T("SetFont(") << GetVarName() << _T("Font);\n");
+                }
+            }
+
+            if ( (PropertiesFlags&flToolTip)  && !m_BaseProperties->m_ToolTip.IsEmpty()  ) Code << GetAccessPrefix(Language) << _T("SetToolTip(") << wxsCodeMarks::WxString(wxsCPP,m_BaseProperties->m_ToolTip) << _T(");\n");
+            if ( (PropertiesFlags&flHelpText) && !m_BaseProperties->m_HelpText.IsEmpty() ) Code << GetAccessPrefix(Language) << _T("SetHelpText(") << wxsCodeMarks::WxString(wxsCPP,m_BaseProperties->m_HelpText) << _T(");\n");
+            return;
+        }
+
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsItem::BuildSetupWindowCode"),Language);
+        }
+    }
+}
+
+void wxsItem::SetupWindow(wxWindow* Window,long Flags)
+{
+    bool IsExact = (Flags&wxsItem::pfExact) != 0;
+    long PropertiesFlags = GetPropertiesFlags();
+
+    if ( PropertiesFlags&flMinMaxSize && IsExact )
+    {
+        if ( !m_BaseProperties->m_MinSize.IsDefault )
+        {
+            Window->SetMinSize(m_BaseProperties->m_MinSize.GetSize(Window->GetParent()));
+        }
+
+        if ( !m_BaseProperties->m_MaxSize.IsDefault )
+        {
+            Window->SetMaxSize(m_BaseProperties->m_MaxSize.GetSize(Window->GetParent()));
+        }
+    }
+
+    if ( (PropertiesFlags&flEnabled) && !m_BaseProperties->m_Enabled ) Window->Disable();
+    if ( (PropertiesFlags&flFocused) && m_BaseProperties->m_Focused  ) Window->SetFocus();
+    if ( (PropertiesFlags&flHidden)  && m_BaseProperties->m_Hidden && IsExact ) Window->Hide();
+
+    if ( PropertiesFlags&flColours )
+    {
+        wxColour FGCol = m_BaseProperties->m_Fg.GetColour();
+        if ( FGCol.Ok() ) Window->SetForegroundColour(FGCol);
+        wxColour BGCol = m_BaseProperties->m_Bg.GetColour();
+        if ( BGCol.Ok() ) Window->SetBackgroundColour(BGCol);
+    }
+
+    if ( PropertiesFlags&flFont )
+    {
+        wxFont FontVal = m_BaseProperties->m_Font.BuildFont();
+        if ( FontVal.Ok() ) Window->SetFont(FontVal);
+    }
+
+    if ( (PropertiesFlags&flToolTip)  && !m_BaseProperties->m_ToolTip.empty() ) Window->SetToolTip(m_BaseProperties->m_ToolTip);
+    if ( (PropertiesFlags&flHelpText) && !m_BaseProperties->m_HelpText.empty() ) Window->SetHelpText(m_BaseProperties->m_HelpText);
+}
+
 bool wxsItem::OnMouseDClick(wxWindow* Preview,int PosX,int PosY)
 {
     // TODO: Create new event / search for current event

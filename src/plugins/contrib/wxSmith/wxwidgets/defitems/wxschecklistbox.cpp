@@ -75,7 +75,7 @@ void wxsCheckListBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
                 }
                 Code << _T(";\n");
             }
-            SetupWindowCode(Code,Language);
+            SetupWindowCode(Code,WindowParent,Language);
             return;
         }
 

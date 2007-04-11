@@ -111,7 +111,7 @@ void wxsContainer::OnAddItemQPP(wxsAdvQPP* QPP)
 
 wxWindow* wxsContainer::SetupWindow(wxWindow* Preview,long Flags)
 {
-    GetBaseProps()->SetupWindow(Preview,Flags);
+    wxsItem::SetupWindow(Preview,Flags);
     long ExStyle = m_StyleSet->GetWxStyle(m_ExStyleBits,true);
     if ( ExStyle != 0 )
     {
@@ -120,13 +120,13 @@ wxWindow* wxsContainer::SetupWindow(wxWindow* Preview,long Flags)
     return Preview;
 }
 
-void wxsContainer::SetupWindowCode(wxString& Code,wxsCodingLang Language)
+void wxsContainer::SetupWindowCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
 {
     switch ( Language )
     {
         case wxsCPP:
         {
-            GetBaseProps()->BuildSetupWindowCode(Code,GetVarName(),GetAccessPrefix(wxsCPP),wxsCPP);
+            BuildSetupWindowCode(Code,WindowParent,wxsCPP);
             if ( m_ExStyleBits )
             {
                 wxString ExStyleStr = m_StyleSet->GetString(m_ExStyleBits,true,wxsCPP);

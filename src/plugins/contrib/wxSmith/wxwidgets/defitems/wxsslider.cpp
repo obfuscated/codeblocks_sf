@@ -112,7 +112,7 @@ void wxsSlider::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,
             if ( ThumbLength )      Code << Codef(Language,_T("%ASetThumbLength(%d);\n"),ThumbLength);
             if ( Tick )             Code << Codef(Language,_T("%ASetTick(%d);\n"),Tick);
             if ( SelMin || SelMax ) Code << Codef(Language,_T("%ASetSelection(%d,%d);\n"),SelMin,SelMax);
-            SetupWindowCode(Code,Language);
+            SetupWindowCode(Code,WindowParent,Language);
             return;
         }
 

@@ -59,7 +59,7 @@ void wxsHtmlWindow::OnBuildCreatingCode(wxString& Code,const wxString& WindowPar
             if ( Borders.Value ) Code << Codef(Language,_T("%ASetBorders(%s);\n"),Borders.GetPixelsCode(WindowParent,wxsCPP).c_str());
             if ( !Url.empty() ) Code << Codef(Language,_T("%ALoadPage(%t);\n"),Url.c_str());
             else if ( !HtmlCode.empty() ) Code << Codef(Language,_T("%ASetPage(%t);\n"),HtmlCode.c_str());
-            SetupWindowCode(Code,Language);
+            SetupWindowCode(Code,WindowParent,Language);
             break;
         }
 

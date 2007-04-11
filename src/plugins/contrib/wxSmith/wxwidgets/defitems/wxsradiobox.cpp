@@ -88,7 +88,7 @@ void wxsRadioBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
             {
                 Code << Codef(Language,_T("%ASetSelection(%d);\n"),DefaultSelection);
             }
-            SetupWindowCode(Code,Language);
+            SetupWindowCode(Code,WindowParent,Language);
             return;
         }
 

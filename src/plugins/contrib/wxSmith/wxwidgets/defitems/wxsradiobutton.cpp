@@ -61,7 +61,7 @@ void wxsRadioButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowPa
         {
             Code << Codef(Language,_T("%C(%W,%I,%t,%P,%S,%T,%V,%N);\n"),Label.c_str());
             if ( IsSelected ) Code << Codef(Language,_T("%ASetValue(%b);\n"),true);
-            SetupWindowCode(Code,Language);
+            SetupWindowCode(Code,WindowParent,Language);
             return;
         }
 

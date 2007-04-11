@@ -61,7 +61,7 @@ void wxsToggleButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
         {
             Code << Codef(Language,_T("%C(%W,%I,%t,%P,%S,%T,%V,%N);\n"),Label.c_str());
             if ( IsChecked ) Code << Codef(Language,_T("%ASetValue(%b);\n"),true);
-            SetupWindowCode(Code,Language);
+            SetupWindowCode(Code,WindowParent,Language);
             return;
         }
 

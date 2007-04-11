@@ -63,6 +63,7 @@ class wxsItem: public wxsPropertyContainer
         static const long flFont      = 0x001000;  ///< \brief Item is using font
         static const long flHelpText  = 0x002000;  ///< \brief Item is using help text
         static const long flSubclass  = 0x004000;  ///< \brief Item is using subclassing
+        static const long flMinMaxSize= 0x008000;  ///< \brief Item is using SetMinSize / SetMaxSize functions
 
         // Flags used when generating preview
         static const long pfExact     = 0x000001;   ///< \brief Notify to create exact preview (without any editor-like goodies)
@@ -330,6 +331,12 @@ class wxsItem: public wxsPropertyContainer
          * to currently generated source code.
          */
         void Codef(const wxChar* Fmt,...);
+
+        /** \brief Generating code which uses most of base properties to set-up window */
+        void BuildSetupWindowCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
+
+        /** \brief Applying most of properties from base properties to given window */
+        void SetupWindow(wxWindow* Window,long Flags);
 
         /** \brief Getting properties availability flags
          *

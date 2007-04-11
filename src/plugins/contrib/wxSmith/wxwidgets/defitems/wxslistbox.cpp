@@ -75,7 +75,7 @@ void wxsListBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent
                 Code << _T(";\n");
             }
 
-            SetupWindowCode(Code,Language);
+            SetupWindowCode(Code,WindowParent,Language);
             return;
         }
 

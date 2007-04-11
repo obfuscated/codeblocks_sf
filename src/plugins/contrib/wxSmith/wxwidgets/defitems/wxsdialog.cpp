@@ -86,7 +86,7 @@ void wxsDialog::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,
             {
                 Codef(_T("%AMove(%P);\n"));
             }
-            SetupWindowCode(Code,Language);
+            SetupWindowCode(Code,WindowParent,Language);
             AddChildrenCode(Code,wxsCPP);
             if ( Centered )
             {

@@ -13,7 +13,7 @@ class wxsContainer: public wxsParent
     public:
 
         /** \brief Default properties flags used by widgets */
-        static const long flContainer = flVariable|flId|flPosition|flSize|flEnabled|flFocused|flHidden|flColours|flToolTip|flFont|flHelpText|flSubclass;
+        static const long flContainer = flVariable|flId|flPosition|flSize|flEnabled|flFocused|flHidden|flColours|flToolTip|flFont|flHelpText|flSubclass|flMinMaxSize;
 
         /** \brief Ctor
          *  \param Data data managment object handling this item
@@ -133,7 +133,7 @@ class wxsContainer: public wxsParent
          * Behaviour of this function is simillar to SetupWindow but this
          * one creates source code doing it instead of setting up real window
          */
-        void SetupWindowCode(wxString& Code,wxsCodingLang Language);
+        void SetupWindowCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
 
         /** \brief Function adding children items into preview window */
         void AddChildrenPreview(wxWindow* This,long Flags);
