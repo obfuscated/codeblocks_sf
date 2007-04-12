@@ -275,6 +275,7 @@ class DLLIMPORT cbEditor : public EditorBase
         bool CanRedo() const;
         bool HasSelection() const;
         bool CanPaste() const;
+        bool IsReadOnly() const;
 
 		// Workaround for shift-tab bug in wx2.4.2
 		void DoIndent(); /// Indents current line/block

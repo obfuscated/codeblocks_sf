@@ -235,6 +235,12 @@ class DLLIMPORT EditorBase : public wxPanel
           * @return True if there is something to paste, false if not.
           */
         virtual bool CanPaste() const { return false; }
+
+        /** Is the editor read-only?
+          *
+          * @return True if the editor is read-only, false if not.
+          */
+        virtual bool IsReadOnly() const { return false; }
     protected:
         /** Initializes filename data.
           * @param filename The editor's filename for initialization.

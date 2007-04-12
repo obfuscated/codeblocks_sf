@@ -1722,70 +1722,66 @@ void cbEditor::SetErrorLine(int line)
 
 void cbEditor::Undo()
 {
-    cbAssert(m_pControl);
-    if (m_SplitType != stNoSplit)
-        cbAssert(m_pControl2);
+    cbAssert(GetControl());
     GetControl()->Undo();
 }
 
 void cbEditor::Redo()
 {
-    cbAssert(m_pControl);
-    if (m_SplitType != stNoSplit)
-        cbAssert(m_pControl2);
+    cbAssert(GetControl());
     GetControl()->Redo();
 }
 
 void cbEditor::Cut()
 {
-    cbAssert(m_pControl);
-    if (m_SplitType != stNoSplit)
-        cbAssert(m_pControl2);
+    cbAssert(GetControl());
     GetControl()->Cut();
 }
 
 void cbEditor::Copy()
 {
-    cbAssert(m_pControl);
-    if (m_SplitType != stNoSplit)
-        cbAssert(m_pControl2);
+    cbAssert(GetControl());
     GetControl()->Copy();
 }
 
 void cbEditor::Paste()
 {
-    cbAssert(m_pControl);
-    if (m_SplitType != stNoSplit)
-        cbAssert(m_pControl2);
+    cbAssert(GetControl());
     GetControl()->Paste();
 }
 
 bool cbEditor::CanUndo() const
 {
-    cbAssert(m_pControl);
-    return m_pControl->CanUndo();
+    cbAssert(GetControl());
+    return !IsReadOnly() && GetControl()->CanUndo();
 }
 
 bool cbEditor::CanRedo() const
 {
-    cbAssert(m_pControl);
-    return m_pControl->CanRedo();
+    cbAssert(GetControl());
+    return !IsReadOnly() && GetControl()->CanRedo();
 }
 
 bool cbEditor::HasSelection() const
 {
-    cbAssert(m_pControl);
+    cbAssert(GetControl());
     cbStyledTextCtrl* control = GetControl();
     return control->GetSelectionStart() != control->GetSelectionEnd();
 }
 
 bool cbEditor::CanPaste() const
 {
-    cbAssert(m_pControl);
+    cbAssert(GetControl());
     if(platform::gtk)
-        return true;
+        return !IsReadOnly();
 
-    return m_pControl->CanPaste();
+    return GetControl()->CanPaste() && !IsReadOnly();
+}
+
+bool cbEditor::IsReadOnly() const
+{
+	cbAssert(GetControl());
+	return GetControl()->GetReadOnly();
 }
 
 bool cbEditor::LineHasMarker(int marker, int line) const
@@ -1800,15 +1796,15 @@ void cbEditor::MarkerToggle(int marker, int line)
     if (line == -1)
         line = GetControl()->GetCurrentLine();
     if (LineHasMarker(marker, line))
-        m_pControl->MarkerDelete(line, marker);
+        GetControl()->MarkerDelete(line, marker);
     else
-        m_pControl->MarkerAdd(line, marker);
+        GetControl()->MarkerAdd(line, marker);
 }
 
 void cbEditor::MarkerNext(int marker)
 {
     int line = GetControl()->GetCurrentLine() + 1;
-    int newLine = m_pControl->MarkerNext(line, 1 << marker);
+    int newLine = GetControl()->MarkerNext(line, 1 << marker);
     if (newLine != -1)
         GotoLine(newLine);
 }
@@ -1816,7 +1812,7 @@ void cbEditor::MarkerNext(int marker)
 void cbEditor::MarkerPrevious(int marker)
 {
     int line = GetControl()->GetCurrentLine() - 1;
-    int newLine = m_pControl->MarkerPrevious(line, 1 << marker);
+    int newLine = GetControl()->MarkerPrevious(line, 1 << marker);
     if (newLine != -1)
         GotoLine(newLine);
 }
@@ -1824,9 +1820,9 @@ void cbEditor::MarkerPrevious(int marker)
 void cbEditor::MarkLine(int marker, int line)
 {
     if (line == -1)
-        m_pControl->MarkerDeleteAll(marker);
+        GetControl()->MarkerDeleteAll(marker);
     else
-        m_pControl->MarkerAdd(line, marker);
+        GetControl()->MarkerAdd(line, marker);
 }
 
 void cbEditor::GotoMatchingBrace()
@@ -1943,17 +1939,17 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
 
         menu->Enable(idUndo, control->CanUndo());
         menu->Enable(idRedo, control->CanRedo());
-        menu->Enable(idCut, hasSel);
+        menu->Enable(idCut, !control->GetReadOnly());
         menu->Enable(idCopy, hasSel);
 
         if(platform::gtk) // a wxGTK bug causes the triggering of unexpected events
-            menu->Enable(idPaste, true);
+            menu->Enable(idPaste, !control->GetReadOnly());
         else
-            menu->Enable(idPaste, control->CanPaste());
+            menu->Enable(idPaste, !control->GetReadOnly() && control->CanPaste());
 
-        menu->Enable(idDelete, hasSel);
-        menu->Enable(idUpperCase, hasSel);
-        menu->Enable(idLowerCase, hasSel);
+        menu->Enable(idDelete, !control->GetReadOnly() && hasSel);
+        menu->Enable(idUpperCase, !control->GetReadOnly() && hasSel);
+        menu->Enable(idLowerCase, !control->GetReadOnly() && hasSel);
     }
     else if(id == idBookmarks)
     {

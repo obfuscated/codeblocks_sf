@@ -3194,6 +3194,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     bool canUndo = false;
     bool canRedo = false;
     bool canPaste = false;
+    bool canCut = false;
     int eolMode = -1;
 
     if(Manager::Get()->GetEditorManager() && !Manager::isappShuttingDown())
@@ -3212,11 +3213,12 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
         canRedo = eb->CanRedo();
         hasSel = eb->HasSelection();
         canPaste = eb->CanPaste();
+        canCut = !eb->IsReadOnly();
     }
 
     mbar->Enable(idEditUndo, eb && canUndo);
     mbar->Enable(idEditRedo, eb && canRedo);
-    mbar->Enable(idEditCut, eb && hasSel);
+    mbar->Enable(idEditCut, eb && canCut);
     mbar->Enable(idEditCopy, eb && hasSel);
     mbar->Enable(idEditPaste, eb && canPaste);
     mbar->Enable(idEditSwapHeaderSource, ed);
@@ -3265,7 +3267,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     {
         m_pToolbar->EnableTool(idEditUndo, eb && canUndo);
         m_pToolbar->EnableTool(idEditRedo, eb && canRedo);
-        m_pToolbar->EnableTool(idEditCut, eb && hasSel);
+        m_pToolbar->EnableTool(idEditCut, eb && canCut);
         m_pToolbar->EnableTool(idEditCopy, eb && hasSel);
         m_pToolbar->EnableTool(idEditPaste, eb && canPaste);
     }

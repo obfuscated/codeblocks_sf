@@ -544,6 +544,7 @@ namespace ScriptBindings
                 func(&EditorBase::CanUndo, "CanUndo").
                 func(&EditorBase::CanRedo, "CanRedo").
                 func(&EditorBase::CanPaste, "CanPaste").
+                func(&EditorBase::IsReadOnly, "IsReadOnly").
                 func(&EditorBase::HasSelection, "HasSelection");
 
         SqPlus::SQClassDef<cbEditor>("cbEditor", "EditorBase").
