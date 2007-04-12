@@ -3415,16 +3415,12 @@ void MainFrame::OnToggleStatusBar(wxCommandEvent& event)
     if (sb)
     {
         sb->Hide();
-        SetStatusBar(NULL);
+        SetStatusBar(0);
+        sb->Destroy();
     }
     else
         DoCreateStatusBar();
 
-// under Windows, the statusbar doesn't disappear immediately...
-#ifdef __WXMSW__
-    SendSizeEvent(); // make sure everything is laid out properly
-    Manager::ProcessPendingEvents(); // Tell wxWindows to process the event we just sent
-#endif // __WXMSW__
     DoUpdateStatusBar();
 }
 
