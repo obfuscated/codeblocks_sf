@@ -314,6 +314,12 @@
                             </object>
                             <object class="sizeritem">
                               <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                              <object class="wxCheckBox" name="chkAdvancedRegex">
+                                <label>Use Advanced RegEx searches</label>
+                              </object>
+                            </object>
+                            <object class="sizeritem">
+                              <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                               <object class="wxCheckBox" name="chkShowLineNumbers">
                                 <label>Show line numbers</label>
                               </object>
