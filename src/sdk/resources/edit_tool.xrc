@@ -107,6 +107,10 @@ $${PROJECT_NAME}
 $${PROJECT_DIR}
 $${ACTIVE_EDITOR_FILENAME}
 $${ALL_PROJECT_FILES}
+$${TARGET_OUTPUT_DIR}
+$${TARGET_NAME}
+$${TARGET_OUTPUT_BASENAME}
+$${TARGET_OUTPUT_FILE}
 $${MAKEFILE}</label>
             </object>
             <option>1</option>
