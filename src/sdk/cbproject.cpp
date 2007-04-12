@@ -32,6 +32,7 @@
 
 #include <wx/choicdlg.h>
 #include <wx/settings.h>
+#include <wx/filename.h>
 
 #ifndef CB_PRECOMP
     #include "cbproject.h" // class's header file
@@ -754,6 +755,7 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
 {
     if (!tree)
         return;
+    CalculateCommonTopLevelPath();
 
     int fldIdx = Manager::Get()->GetProjectManager()->FolderIconIndex();
     int vfldIdx = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
@@ -803,7 +805,9 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
         ftd->SetProjectFile(f);
         ftd->SetFolder(f->file.GetFullPath());
 
-        wxString nodetext = f->relativeToCommonTopLevelPath;
+        wxFileName nodefile = f->file;
+        nodefile.MakeRelativeTo(GetCommonTopLevelPath());
+        wxString nodetext = nodefile.GetFullPath();
         FileTreeData::FileTreeDataKind folders_kind = FileTreeData::ftdkFolder;
 
         wxTreeItemId parentNode = m_ProjectNode;

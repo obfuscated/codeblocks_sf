@@ -606,7 +606,7 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.Append(idMenuRemoveFile, _("Remove files..."));
             menu.Enable(idMenuRemoveFile, PopUpMenuOption);
             wxFileName f(ftd->GetFolder());
-            f.MakeRelativeTo(ftd->GetProject()->GetBasePath());
+            f.MakeRelativeTo(ftd->GetProject()->GetCommonTopLevelPath());
             menu.Append(idMenuRemoveFolderFilesPopup, wxString::Format(_("Remove %s*"), f.GetFullPath().c_str()));
             menu.Enable(idMenuRemoveFolderFilesPopup, PopUpMenuOption);
         }
