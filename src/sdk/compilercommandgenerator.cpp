@@ -265,13 +265,6 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     FixPathSeparators(compiler, tmpObject);
     FixPathSeparators(compiler, tmpFlatObject);
 
-    if (target)
-    {  // this one has to come first, since wxString::Replace, otherwise $object would go first
-    	// leaving nothing to replace for this $objects_output_dir
-    	tmp = target->GetObjectOutput();
-        FixPathSeparators(compiler, tmp);
-        macro.Replace(_T("$objects_output_dir"), tmp);
-    }
     macro.Replace(_T("$compiler"), compilerStr);
     macro.Replace(_T("$linker"), compiler->GetPrograms().LD);
     macro.Replace(_T("$lib_linker"), compiler->GetPrograms().LIB);
@@ -285,6 +278,14 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     macro.Replace(_T("$file"), tmpFile);
     macro.Replace(_T("$file_basename"), wxFileName(tmpFile).GetName());
     macro.Replace(_T("$dep_object"), tmpDeps);
+    if (target)
+    {  // this one has to come before $object, otherwise $object would go first
+       // leaving nothing to replace for this $objects_output_dir,
+       // and after $options because $objects_output_dir may be in compiler flags ($options).
+        tmp = target->GetObjectOutput();
+        FixPathSeparators(compiler, tmp);
+        macro.Replace(_T("$objects_output_dir"), tmp);
+    }
     macro.Replace(_T("$object"), tmpObject);
     macro.Replace(_T("$resource_output"), tmpObject);
     if (!target)
