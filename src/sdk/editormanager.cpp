@@ -1374,6 +1374,11 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
         if (!data->directionDown)       // up
             data->end = 0;
 
+        // selected text, if user has deslected since last, then change scope
+        if (data->scope == 1 &&
+            control->GetSelectionStart()==control->GetSelectionEnd())
+                data->scope = 0;
+                
         if (data->scope == 1) // selected text
         {
             if(data->NewSearch)
