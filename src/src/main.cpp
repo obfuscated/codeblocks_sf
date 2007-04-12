@@ -3228,6 +3228,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditEOLMode, ed);
     mbar->Enable(idEditEncoding, ed);
     mbar->Enable(idEditSpecialCommands, ed);
+	mbar->Enable(idEditSpecialCommandsCase, ed && hasSel);
     mbar->Enable(idEditCommentSelected, ed);
     mbar->Enable(idEditAutoComplete, ed);
     mbar->Enable(idEditUncommentSelected, ed);
