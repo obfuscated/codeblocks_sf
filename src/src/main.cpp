@@ -2725,6 +2725,86 @@ void MainFrame::OnEditSelectAll(wxCommandEvent& event)
         ed->GetControl()->SelectAll();
 }
 
+wxString GetCommentToken(cbStyledTextCtrl* stc)
+{
+    wxString comment;
+    switch(stc->GetLexer())
+    {
+        case wxSCI_LEX_CONTAINER: comment = _T(""); break;
+        case wxSCI_LEX_NULL: comment = _T(""); break;
+        case wxSCI_LEX_PYTHON: comment = _T("#"); break;
+        case wxSCI_LEX_CPP: comment = _T("//"); break;
+        case wxSCI_LEX_HTML: comment = _T(""); break; // uses pairs <!-- and -->
+        case wxSCI_LEX_XML: comment = _T(""); break;
+        case wxSCI_LEX_PERL: comment = _T("#"); break;
+        case wxSCI_LEX_SQL: comment = _T("--"); break;
+        case wxSCI_LEX_VB: comment = _T("'"); break;
+        case wxSCI_LEX_PROPERTIES: comment = _T("#"); break;
+        case wxSCI_LEX_ERRORLIST: comment = _T(""); break;
+        case wxSCI_LEX_MAKEFILE: comment = _T("#"); break;
+        case wxSCI_LEX_BATCH: comment = _T("REM "); break;
+        case wxSCI_LEX_XCODE: comment = _T(""); break;
+        case wxSCI_LEX_LATEX: comment = _T("%"); break;
+        case wxSCI_LEX_LUA: comment = _T("--"); break;
+        case wxSCI_LEX_DIFF: comment = _T(""); break;
+        case wxSCI_LEX_CONF: comment = _T(""); break;
+        case wxSCI_LEX_PASCAL: comment = _T("//"); break;  //delphi style comments, otherwise use { } or (* and *)
+        case wxSCI_LEX_AVE: comment = _T(""); break;
+        case wxSCI_LEX_ADA: comment = _T("--"); break;
+        case wxSCI_LEX_LISP: comment = _T(";"); break;
+        case wxSCI_LEX_RUBY: comment = _T("#"); break;
+        case wxSCI_LEX_EIFFEL: comment = _T("--"); break;
+        case wxSCI_LEX_EIFFELKW: comment = _T("--"); break;
+        case wxSCI_LEX_TCL: comment = _T(""); break;
+        case wxSCI_LEX_NNCRONTAB: comment = _T(""); break;
+        case wxSCI_LEX_BULLANT: comment = _T(""); break;
+        case wxSCI_LEX_VBSCRIPT: comment = _T("'"); break;
+        case wxSCI_LEX_BAAN: comment = _T(""); break;
+        case wxSCI_LEX_MATLAB: comment = _T("%"); break;
+        case wxSCI_LEX_SCRIPTOL: comment = _T("`"); break;
+        case wxSCI_LEX_ASM: comment = _T("#"); break;
+        case wxSCI_LEX_CPPNOCASE: comment = _T("//"); break;
+        case wxSCI_LEX_FORTRAN: comment = _T("!"); break;
+        case wxSCI_LEX_CSS: comment = _T(""); break; // uses /* and */
+        case wxSCI_LEX_POV: comment = _T("//@-"); break;
+        case wxSCI_LEX_LOUT: comment = _T("#"); break;
+        case wxSCI_LEX_ESCRIPT: comment = _T(""); break; //couldn't find
+        case wxSCI_LEX_PS: comment = _T("%"); break; // not sure if it's only one % or multiple
+        case wxSCI_LEX_NSIS: comment = _T(""); break;
+        case wxSCI_LEX_MMIXAL: comment = _T(""); break;
+        case wxSCI_LEX_CLW: comment = _T(""); break;
+        case wxSCI_LEX_CLWNOCASE: comment = _T(""); break;
+        case wxSCI_LEX_LOT: comment = _T(""); break;
+        case wxSCI_LEX_YAML: comment = _T(""); break;
+        case wxSCI_LEX_TEX: comment = _T("%"); break;
+        case wxSCI_LEX_METAPOST: comment = _T(""); break;
+        case wxSCI_LEX_POWERBASIC: comment = _T(""); break;
+        case wxSCI_LEX_FORTH: comment = _T(""); break;
+        case wxSCI_LEX_ERLANG: comment = _T(""); break;
+        case wxSCI_LEX_OCTAVE: comment = _T(""); break;
+        case wxSCI_LEX_MSSQL: comment = _T(""); break;
+        case wxSCI_LEX_VERILOG: comment = _T(""); break;
+        case wxSCI_LEX_KIX: comment = _T(""); break;
+        case wxSCI_LEX_SPECMAN: comment = _T(""); break;
+        case wxSCI_LEX_APDL: comment = _T(""); break;
+        case wxSCI_LEX_BASH: comment = _T("#"); break;
+        case wxSCI_LEX_VHDL: comment = _T(""); break;
+        case wxSCI_LEX_CAML: comment = _T(""); break;
+        case wxSCI_LEX_BLITZBASIC: comment = _T(""); break;
+        case wxSCI_LEX_PUREBASIC: comment = _T(""); break;
+        case wxSCI_LEX_HASKELL: comment = _T("--"); break;
+        case wxSCI_LEX_PHPSCRIPT: comment = _T("#"); break; // also allows c++'s //
+        case wxSCI_LEX_REBOL: comment = _T(""); break; // couldn't find
+        case wxSCI_LEX_SMALLTALK: comment = _T(""); break; // uses double quotes at start and end i.e. "comment"
+        case wxSCI_LEX_FLAGSHIP: comment = _T(""); break;
+        case wxSCI_LEX_CSOUND: comment = _T(""); break;
+        case wxSCI_LEX_FREEBASIC: comment = _T(""); break;
+        default: comment=_T("");
+    }
+    return comment;
+}
+
+
 /* This is a shameless rip-off of the original OnEditCommentSelected function,
  * now more suitingly named OnEditToggleCommentSelected (because that's what
  * it does :)
@@ -2735,11 +2815,17 @@ void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
     if (ed)
     {
         cbStyledTextCtrl* stc = ed->GetControl();
+        /// @todo comment is language dependant, but languages that don't support single line comments aren't be supported
+        wxString comment=GetCommentToken(stc);
+        if(comment==wxEmptyString)
+            return;
+
         stc->BeginUndoAction();
         if( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
         {
             int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
             int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
+            int curLine=startLine;
             /**
                 Fix a glitch: when selecting multiple lines and the caret
                 is at the start of the line after the last line selected,
@@ -2754,13 +2840,13 @@ void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
                 --endLine;
             }
 
-            while( startLine <= endLine )
+            while( curLine <= endLine )
             {
                 // For each line: comment.
-                /// @todo This should be language-dependent. We're currently assuming C++
-                stc->InsertText( stc->PositionFromLine( startLine ), _T( "//" ) );
-                ++startLine;
-            } // end while
+				stc->InsertText( stc->PositionFromLine( curLine ), comment );
+                ++curLine;
+			} // end while
+            stc->SetSelection(stc->PositionFromLine(startLine),stc->PositionFromLine(endLine)+stc->LineLength(endLine));
         }
         stc->EndUndoAction();
     }
@@ -2773,11 +2859,16 @@ void MainFrame::OnEditUncommentSelected(wxCommandEvent& event)
     if (ed)
     {
         cbStyledTextCtrl* stc = ed->GetControl();
+        wxString Comment=GetCommentToken(stc);
+        if(Comment==wxEmptyString)
+            return;
+
         stc->BeginUndoAction();
         if( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
         {
             int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
             int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
+            int curLine   = startLine;
             /**
                 Fix a glitch: when selecting multiple lines and the caret
                 is at the start of the line after the last line selected,
@@ -2792,23 +2883,23 @@ void MainFrame::OnEditUncommentSelected(wxCommandEvent& event)
                 --endLine;
             }
 
-            while( startLine <= endLine )
+            while( curLine <= endLine )
             {
                 // For each line: if it is commented, uncomment.
-                wxString strLine = stc->GetLine( startLine );
-                wxString Comment = _T("//");
+                wxString strLine = stc->GetLine( curLine );
                 int commentPos = strLine.Strip( wxString::leading ).Find( Comment );
                 if( commentPos == 0 )
                 {      // we know the comment is there (maybe preceded by white space)
                     int Pos = strLine.Find(Comment);
-                    int start = stc->PositionFromLine( startLine ) + Pos;
+                    int start = stc->PositionFromLine( curLine ) + Pos;
                     int end = start + Comment.Length();
                     stc->SetTargetStart( start );
                     stc->SetTargetEnd( end );
                     stc->ReplaceTarget( wxEmptyString );
                 }
-                ++startLine;
+                ++curLine;
             } // end while
+            stc->SetSelection(stc->PositionFromLine(startLine),stc->PositionFromLine(endLine)+stc->LineLength(endLine));
         }
         stc->EndUndoAction();
     }
@@ -2820,11 +2911,16 @@ void MainFrame::OnEditToggleCommentSelected(wxCommandEvent& event)
     if (ed)
     {
         cbStyledTextCtrl* stc = ed->GetControl();
+        wxString Comment=GetCommentToken(stc);
+        if(Comment==wxEmptyString)
+            return;
+
         stc->BeginUndoAction();
         if( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
         {
             int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
             int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
+            int curLine   = startLine;
             /**
                 Fix a glitch: when selecting multiple lines and the caret
                 is at the start of the line after the last line selected,
@@ -2839,30 +2935,28 @@ void MainFrame::OnEditToggleCommentSelected(wxCommandEvent& event)
                 --endLine;
             }
 
-            while( startLine <= endLine )
+            while( curLine <= endLine )
             {
                 // For each line: If it's commented, uncomment. Otherwise, comment.
-                wxString strLine = stc->GetLine( startLine );
-                wxString Comment = _T("//");
+                wxString strLine = stc->GetLine( curLine );
                 int commentPos = strLine.Strip( wxString::leading ).Find( Comment );
 
                 if( -1 == commentPos || commentPos > 0 )
                 {
-                    // Comment
-                    /// @todo This should be language-dependent. We're currently assuming C++
-                    stc->InsertText( stc->PositionFromLine( startLine ), Comment );
+                    stc->InsertText( stc->PositionFromLine( curLine ), Comment );
                 }
                 else
                 {      // we know the comment is there (maybe preceded by white space)
                     int Pos = strLine.Find(Comment);
-                    int start = stc->PositionFromLine( startLine ) + Pos;
+                    int start = stc->PositionFromLine( curLine ) + Pos;
                     int end = start + Comment.Length();
                     stc->SetTargetStart( start );
                     stc->SetTargetEnd( end );
                     stc->ReplaceTarget( wxEmptyString );
                 }
-                ++startLine;
+                ++curLine;
             }
+            stc->SetSelection(stc->PositionFromLine(startLine),stc->PositionFromLine(endLine)+stc->LineLength(endLine));
         }
         stc->EndUndoAction();
     }

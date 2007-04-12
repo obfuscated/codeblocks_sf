@@ -2345,16 +2345,33 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
             wxString indent = GetLineIndentString(currLine - 1);
             if (smartIndent)
             {
-                // if the last entered char before newline was an opening curly brace,
-                // increase indentation level (the closing brace is handled in another block)
+                cbStyledTextCtrl* stc = GetControl();
+                 // if the last entered char before newline was an opening curly brace,
+                 // increase indentation level (the closing brace is handled in another block)
+
+                // SMART INDENTING - THIS IS LANGUAGE SPECIFIC, BUT CURRENTLY ONLY IMPLEMENTED FOR C/C++ AND PYTHON
                 wxChar b = m_pData->GetLastNonWhitespaceChar();
-                if (b == _T('{'))
+                switch(stc->GetLexer())
                 {
-                    if(control->GetUseTabs())
-                        indent << _T('\t'); // 1 tab
-                    else
-                        indent << wxString(_T(' '), control->GetTabWidth()); // n spaces
-                }
+                    case wxSCI_LEX_CPP:
+                        if (b == _T('{'))
+                        {
+                            if(control->GetUseTabs())
+                                indent << _T('\t'); // 1 tab
+                            else
+                                indent << wxString(_T(' '), control->GetTabWidth()); // n spaces
+                        }
+                        break;
+                    case wxSCI_LEX_PYTHON:
+                        if (b == _T(':'))
+                        {
+                            if(control->GetUseTabs())
+                                indent << _T('\t'); // 1 tab
+                            else
+                                indent << wxString(_T(' '), control->GetTabWidth()); // n spaces
+                        }
+                        break;
+                 }
             }
             control->InsertText(pos, indent);
             control->GotoPos(pos + indent.Length());
