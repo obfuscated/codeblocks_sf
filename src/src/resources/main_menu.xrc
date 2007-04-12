@@ -540,7 +540,6 @@
       <object class="separator"/>
       <object class="wxMenuItem" name="idViewFocusEditor">
         <label>Focus editor</label>
-        <accel>Ctrl-Alt-E</accel>
         <help>Set focus on the active editor</help>
       </object>
     </object>
