@@ -114,6 +114,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np)
 	XRCCTRL(*this, "spnThreadsNum", wxSpinCtrl)->Enable(false);
 	XRCCTRL(*this, "chkFloatCB", wxCheckBox)->SetValue(cfg->ReadBool(_T("/as_floating_window"), false));
 	XRCCTRL(*this, "chkNoSB", wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_symbols_browser"), true));
+	XRCCTRL(*this, "txtFillupChars", wxTextCtrl)->SetValue(cfg->Read(_T("/fillup_chars"), wxEmptyString));
 
 	int timerDelay = cfg->ReadInt(_T("/cc_delay"), 500);
 	XRCCTRL(*this, "sliderDelay", wxSlider)->SetValue(timerDelay / 100);
@@ -251,6 +252,8 @@ void CCOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "spnMaxMatches", wxSpinCtrl)->Enable(en);
     XRCCTRL(*this, "sliderDelay", wxSlider)->Enable(en);
     XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "lblFillupChars", wxStaticText)->Enable(en);
+    XRCCTRL(*this, "txtFillupChars", wxTextCtrl)->Enable(en);
 
     en = !XRCCTRL(*this, "chkNoSB", wxCheckBox)->GetValue();
 	XRCCTRL(*this, "chkInheritance", wxCheckBox)->Enable(en);
@@ -285,6 +288,7 @@ void CCOptionsDlg::OnApply()
 	m_Parser.Options().useSmartSense = !XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->GetValue();
 
 	cfg->Write(_T("/use_symbols_browser"), (bool)!XRCCTRL(*this, "chkNoSB", wxCheckBox)->GetValue());
+	cfg->Write(_T("/fillup_chars"), XRCCTRL(*this, "txtFillupChars", wxTextCtrl)->GetValue());
 	m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
 	m_Parser.ClassBrowserOptions().expandNS = XRCCTRL(*this, "chkExpandNS", wxCheckBox)->GetValue();
 	cfg->Write(_T("/as_floating_window"), (bool)XRCCTRL(*this, "chkFloatCB", wxCheckBox)->GetValue());

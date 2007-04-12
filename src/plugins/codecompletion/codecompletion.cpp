@@ -553,7 +553,7 @@ int CodeCompletion::CodeComplete()
 #endif
             ed->GetControl()->AutoCompSetIgnoreCase(!caseSens);
             ed->GetControl()->AutoCompSetCancelAtStart(true);
-            ed->GetControl()->AutoCompSetFillUps(wxEmptyString);
+            ed->GetControl()->AutoCompSetFillUps(cfg->Read(_T("/fillup_chars"), wxEmptyString));
             ed->GetControl()->AutoCompSetChooseSingle(m_IsAutoPopup ? false : cfg->ReadBool(_T("/auto_select_one"), false));
             ed->GetControl()->AutoCompSetAutoHide(true);
             ed->GetControl()->AutoCompSetDropRestOfWord(m_IsAutoPopup ? false : true);
