@@ -1599,21 +1599,31 @@ bool cbEditor::AddBreakpoint(int line, bool notifyDebugger)
         return false;
     }
 
-    // set this once; the debugger won't change without a restart
-    static cbDebuggerPlugin* debugger = 0;
-    if (!debugger)
+	// Notify all debugger plugins
+    PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
+    if (!arr.GetCount())
+        return false;
+    bool accepted=false;
+    for(size_t i=0;i<arr.GetCount();i++)
     {
-        PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
-        if (!arr.GetCount())
-            return false;
-        debugger = (cbDebuggerPlugin*)arr[0];
+        cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[i];
         if (!debugger)
-            return false;
+            continue; //kinda scary if this isn't a debugger? perhaps this should be a logged error??
+        if (debugger->AddBreakpoint(m_Filename, line))
+        {
+            accepted=true;
+        }
     }
-
-    if (debugger->AddBreakpoint(m_Filename, line))
+	// If at least one breakpoint changed, return true
+	// (could still cause problems if one debugger previously responded to add but another
+	// now responds to remove of that bp - hopefully the debuggers are coded sufficiently well
+	// that this doesn't happen)
+    if(accepted)
+    {
         MarkerToggle(BREAKPOINT_MARKER, line);
-    return true;
+        return true;
+    }
+    return false;
 }
 
 bool cbEditor::RemoveBreakpoint(int line, bool notifyDebugger)
@@ -1629,21 +1639,26 @@ bool cbEditor::RemoveBreakpoint(int line, bool notifyDebugger)
         return false;
     }
 
-    // set this once; the debugger won't change without a restart
-    static cbDebuggerPlugin* debugger = 0;
-    if (!debugger)
+    PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
+    if (!arr.GetCount())
+        return false;
+    bool accepted=false;
+    for(size_t i=0;i<arr.GetCount();i++)
     {
-        PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
-        if (!arr.GetCount())
-            return false;
-        debugger = (cbDebuggerPlugin*)arr[0];
+        cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[i];
         if (!debugger)
-            return false;
+            continue; //kinda scary if this isn't a debugger? perhaps this should be a logged error??
+        if (debugger->RemoveBreakpoint(m_Filename, line))
+        {
+            accepted=true;
+        }
     }
-
-    if (debugger->RemoveBreakpoint(m_Filename, line))
+    if(accepted)
+    {
         MarkerToggle(BREAKPOINT_MARKER, line);
-    return true;
+        return true;
+    }
+    return false;
 }
 
 void cbEditor::ToggleBreakpoint(int line, bool notifyDebugger)
@@ -1659,17 +1674,23 @@ void cbEditor::ToggleBreakpoint(int line, bool notifyDebugger)
     PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
     if (!arr.GetCount())
         return;
-    cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[0];
-    if (HasBreakpoint(line))
+    bool toggle=false;
+    for(size_t i=0;i<arr.GetCount();i++)
     {
-        if (debugger->RemoveBreakpoint(m_Filename, line))
-            MarkerToggle(BREAKPOINT_MARKER, line);
+        cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[i];
+        if (HasBreakpoint(line))
+        {
+            if (debugger->RemoveBreakpoint(m_Filename, line))
+                toggle=true;
+        }
+        else
+        {
+            if (debugger->AddBreakpoint(m_Filename, line))
+                toggle=true;
+        }
     }
-    else
-    {
-        if (debugger->AddBreakpoint(m_Filename, line))
-            MarkerToggle(BREAKPOINT_MARKER, line);
-    }
+    if(toggle)
+        MarkerToggle(BREAKPOINT_MARKER, line);
 }
 
 bool cbEditor::HasBreakpoint(int line) const
@@ -2428,23 +2449,20 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
             m_pData->SetLineNumberColWidth();
         }
 
-        // get hold of debugger plugin
-        static cbDebuggerPlugin* debugger = 0;
-        // because the debugger plugin will *not* change throughout the
-        // program's lifetime, we can speed things up by keeping it in a static
-        // local variable...
-        if (!debugger)
+        // NB: I don't think polling for each debugger every time will slow things down enough
+        // to worry about unless there are automated tasks that call this routine regularly
+        //
+        // well, scintilla events happen regularly
+        // although we only reach this part of the code only if a line has been added/removed
+        // so, yes, it might not be that bad after all
+        PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
+        int startline = m_pControl->LineFromPosition(event.GetPosition());
+        for(size_t i=0;i<arr.GetCount();i++)
         {
-            PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
-            if (arr.GetCount())
-                debugger = (cbDebuggerPlugin*)arr[0];
-        }
-
-        if (debugger)
-        {
-            int startline = m_pControl->LineFromPosition(event.GetPosition());
+            cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[i];
             debugger->EditorLinesAddedOrRemoved(this, startline, linesAdded);
         }
+
     }
 
     OnScintillaEvent(event);
