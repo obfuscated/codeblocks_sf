@@ -2,11 +2,11 @@
 mkdir -p ../../../output/share/codeblocks/plugins
 cp -f ../../../devel/share/codeblocks/plugins/codesnippets ../../../output/share/codeblocks/plugins/codesnippets
 zip -j9 ../../../devel/share/codeblocks/codesnippets.zip ./manifest.xml
-cd ../../../
-echo "#!/bin/sh" > devel/codesnippets.sh
-echo 'APP_DIR=`pwd`' >> devel/codesnippets.sh
-echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> devel/codesnippets.sh
-echo "\$APP_DIR/share/codeblocks/plugins/codesnippets" >> devel/codesnippets.sh
-chmod +x devel/codesnippets.sh
-cp -f devel/codesnippets.sh output/codesnippets.sh
+##cd ../../../
+##echo "#!/bin/sh" > devel/codesnippets.sh
+##echo 'APP_DIR=`pwd`' >> devel/codesnippets.sh
+##echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> devel/codesnippets.sh
+##echo "\$APP_DIR/share/codeblocks/plugins/codesnippets" >> devel/codesnippets.sh
+##chmod +x devel/codesnippets.sh
+##cp -f devel/codesnippets.sh output/codesnippets.sh
 exit 0

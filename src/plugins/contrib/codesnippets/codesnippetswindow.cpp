@@ -911,17 +911,19 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
     // Was file deleted?
     if ( not wxFileExists(GetConfig()->SettingsSnippetsXmlFullPath) )
     {
-        if( GetFileChanged() ) // Already set the flag
-            return;;
-        wxString msg;
-        msg.Printf(_("%s \nhas been deleted, or is no longer available.\n"
-                     "Do you wish to keep the file open?\n"
-                     "Yes to keep the file, No to close it."), GetConfig()->SettingsSnippetsXmlFullPath.c_str());
-        if (messageBox(msg, whichApp + _("File changed!"), wxICON_QUESTION | wxYES_NO) == wxYES)
-            SetFileChanged(true);
-        else
-        {
-        }
+        //        if( GetFileChanged() ) // Already set the flag
+        //            return;;
+        //        wxString msg;
+        //        msg.Printf(_("%s \nhas been deleted, or is no longer available.\n"
+        //                     "Do you wish to keep the file open?\n"
+        //                     "Yes to keep the file, No to close it."), GetConfig()->SettingsSnippetsXmlFullPath.c_str());
+        //        if (messageBox(msg, whichApp + _("File changed!"), wxICON_QUESTION | wxYES_NO) == wxYES)
+        //            SetFileChanged(true);
+        //        else
+        //        {
+        //        }
+        m_isCheckingForExternallyModifiedFiles = false;
+        return; // return when file does not exists
     }
 
     wxFileName fname( GetConfig()->SettingsSnippetsXmlFullPath );
