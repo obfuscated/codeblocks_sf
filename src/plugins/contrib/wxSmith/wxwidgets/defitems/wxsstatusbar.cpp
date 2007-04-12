@@ -177,7 +177,10 @@ void wxsStatusBar::OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id
 
     for ( int i=0; i<m_Fields; i++ )
     {
-        if ( m_ParentIds[i] == Id )
+        if ( m_ParentIds[i]   == Id ||
+             m_WidthsIds[i]   == Id ||
+             m_StylesIds[i]   == Id ||
+             m_VarWidthIds[i] == Id )
         {
             m_Widths[i] = Grid->GetPropertyValueAsLong(m_WidthsIds[i]);
             m_Styles[i] = Grid->GetPropertyValueAsLong(m_StylesIds[i]);
