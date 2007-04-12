@@ -243,6 +243,8 @@ size_t CBProfilerExecDlg::ParseFlatProfile(wxArrayString msg, size_t begin, wxPr
 
     progress.Update((100*begin)/(msg.GetCount()-1),_("Parsing Flat Profile information. Please wait..."));
 
+
+    unsigned int spacePos[6] = {6, 16, 25, 34, 43, 52};
     // Parsing Call Graph
     for (n = begin ; n < msg.GetCount(); ++n )
     {
@@ -250,6 +252,42 @@ size_t CBProfilerExecDlg::ParseFlatProfile(wxArrayString msg, size_t begin, wxPr
             break;
         long item = outputFlatProfileArea->InsertItem(next,_T(""));
         outputFlatProfileArea->SetItemData(item, next);
+        // check that we have spaces where spaces are supposed to be
+		if (msg[n].Len() > spacePos[6]) {
+			bool need_parsing = false;
+			for (int i=0; i<6; ++i)
+			{
+				if (msg[n][spacePos[i]] != ' ')
+				{
+					need_parsing = true;
+					break;
+				}
+			}
+			// if profile output is not in perfect table format
+			// manually parse for space positions
+			if (need_parsing)
+			{
+				int count=0; int i=0; int len = msg[n].Len();
+				while (i < len && count < 6) {
+					// we start with spaces
+					while (msg[n][i] == ' ' && ++i < len);
+					if (i>=len) break;
+					// now we parse everything else than
+					while (msg[n][i] != ' ' && ++i < len);
+					if (i>=len) break;
+					// found a new space position
+					spacePos[count++] = i;
+				}
+			}
+		}
+
+        outputFlatProfileArea->SetItem(next, 0, ((msg[n].Mid(0,spacePos[0])).Trim(true)).Trim(false));
+        for (int i=1; i<6; ++i)
+			outputFlatProfileArea->SetItem(next, i,
+				((msg[n].Mid(spacePos[i-1],spacePos[i] - spacePos[i-1])).Trim(true)).Trim(false));
+        outputFlatProfileArea->SetItem(next, 6, ((msg[n].Mid(spacePos[5])).Trim(true)).Trim(false));
+
+/*
         outputFlatProfileArea->SetItem(next, 0, ((msg[n].Mid(0,6)).Trim(true)).Trim(false));
         outputFlatProfileArea->SetItem(next, 1, ((msg[n].Mid(6,10)).Trim(true)).Trim(false));
         outputFlatProfileArea->SetItem(next, 2, ((msg[n].Mid(16,9)).Trim(true)).Trim(false));
@@ -257,6 +295,7 @@ size_t CBProfilerExecDlg::ParseFlatProfile(wxArrayString msg, size_t begin, wxPr
         outputFlatProfileArea->SetItem(next, 4, ((msg[n].Mid(34,9)).Trim(true)).Trim(false));
         outputFlatProfileArea->SetItem(next, 5, ((msg[n].Mid(43,9)).Trim(true)).Trim(false));
         outputFlatProfileArea->SetItem(next, 6, ((msg[n].Mid(52)).Trim(true)).Trim(false));
+*/
         progress.Update((100*n)/(msg.GetCount()-1));
         ++next;
     }
