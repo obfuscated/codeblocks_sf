@@ -454,6 +454,8 @@ bool cbProject::SaveAs()
         NotifyPlugins(cbEVT_PROJECT_SAVE);
         return true;
     }
+
+    cbMessageBox(_("Couldn't save project ") + m_Filename + _("\n(Maybe the file is write-protected?)"), _("Warning"), wxICON_WARNING);
     return false;
 }
 
@@ -469,6 +471,8 @@ bool cbProject::Save()
         NotifyPlugins(cbEVT_PROJECT_SAVE);
         return true;
     }
+
+    cbMessageBox(_("Couldn't save project ") + m_Filename + _("\n(Maybe the file is write-protected?)"), _("Warning"), wxICON_WARNING);
     return false;
 }
 

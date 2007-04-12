@@ -2262,11 +2262,9 @@ void MainFrame::OnFileSaveAllFiles(wxCommandEvent& event)
 
 void MainFrame::OnFileSaveProject(wxCommandEvent& event)
 {
-    if (Manager::Get()->GetProjectManager()->SaveActiveProject() ||
-        Manager::Get()->GetProjectManager()->SaveActiveProjectAs())
+    // no need to call SaveActiveProjectAs(), because this is handled in cbProject::Save()
+    if (Manager::Get()->GetProjectManager()->SaveActiveProject())
         AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetActiveProject()->GetFilename());
-    else
-        cbMessageBox(_("Couldn't save project. (Maybe the file is write-protected?)"), _("Warning"), wxICON_WARNING);
     DoUpdateStatusBar();
     DoUpdateAppTitle();
 }
@@ -2275,16 +2273,13 @@ void MainFrame::OnFileSaveProjectAs(wxCommandEvent& event)
 {
     if (Manager::Get()->GetProjectManager()->SaveActiveProjectAs())
         AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetActiveProject()->GetFilename());
-    else
-        cbMessageBox(_("Couldn't save project. (Maybe the file is write-protected?)"), _("Warning"), wxICON_WARNING);
     DoUpdateStatusBar();
     DoUpdateAppTitle();
 }
 
 void MainFrame::OnFileSaveProjectAllProjects(wxCommandEvent& event)
 {
-    if (!Manager::Get()->GetProjectManager()->SaveAllProjects())
-        cbMessageBox(_("Couldn't save all projects. (Maybe some files are write-protected?)"), _("Warning"), wxICON_WARNING);
+    Manager::Get()->GetProjectManager()->SaveAllProjects();
     DoUpdateStatusBar();
     DoUpdateAppTitle();
 }
@@ -2358,16 +2353,12 @@ void MainFrame::OnFileSaveWorkspace(wxCommandEvent& event)
 {
     if (Manager::Get()->GetProjectManager()->SaveWorkspace())
         AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
-    else
-        cbMessageBox(_("Couldn't save workspace. (Maybe the file is write-protected?)"), _("Warning"), wxICON_WARNING);
 }
 
 void MainFrame::OnFileSaveWorkspaceAs(wxCommandEvent& event)
 {
     if (Manager::Get()->GetProjectManager()->SaveWorkspaceAs(_T("")))
         AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
-    else
-        cbMessageBox(_("Couldn't save workspace. (Maybe the file is write-protected?)"), _("Warning"), wxICON_WARNING);
 }
 
 void MainFrame::OnFileCloseWorkspace(wxCommandEvent& event)
