@@ -904,9 +904,9 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
             if (!cmp.IsEmpty() && !tmp.IsEmpty())
             {
                 tmp.Replace(_T("\\n"), _T("\n"));
-                file->customBuild[cmp].buildCommand = tmp;
+                file->SetCustomBuildCommand(cmp, tmp);
                 if (node->QueryIntAttribute("use", &tempval) == TIXML_SUCCESS)
-                    file->customBuild[cmp].useCustomBuildCommand = tempval != 0;
+                    file->SetUseCustomBuildCommand(cmp, tempval != 0);
             }
         }
         //

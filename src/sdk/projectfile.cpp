@@ -248,6 +248,26 @@ void ProjectFile::SetFileState(FileVisualState state)
     }
 }
 
+void ProjectFile::SetUseCustomBuildCommand(const wxString& compilerId, bool useCustomBuildCommand)
+{
+    customBuild[compilerId].useCustomBuildCommand = useCustomBuildCommand;
+}
+
+void ProjectFile::SetCustomBuildCommand(const wxString& compilerId, const wxString& newBuildCommand)
+{
+    customBuild[compilerId].buildCommand = newBuildCommand;
+}
+
+bool ProjectFile::GetUseCustomBuildCommand(const wxString& compilerId)
+{
+    return customBuild[compilerId].useCustomBuildCommand;
+}
+
+wxString ProjectFile::GetCustomBuildCommand(const wxString& compilerId)
+{
+    return customBuild[compilerId].buildCommand;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // pfDetails
 ////////////////////////////////////////////////////////////////////////////////

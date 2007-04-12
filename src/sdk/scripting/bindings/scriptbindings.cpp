@@ -337,6 +337,10 @@ namespace ScriptBindings
                 func(&ProjectFile::GetObjName, "GetObjName").
                 func(&ProjectFile::SetObjName, "SetObjName").
                 func(&ProjectFile::GetParentProject, "GetParentProject").
+                func(&ProjectFile::SetUseCustomBuildCommand, "SetUseCustomBuildCommand").
+                func(&ProjectFile::SetCustomBuildCommand, "SetCustomBuildCommand").
+                func(&ProjectFile::GetUseCustomBuildCommand, "GetUseCustomBuildCommand").
+                func(&ProjectFile::GetCustomBuildCommand, "GetCustomBuildCommand").
                 var(&ProjectFile::file, "file").
                 var(&ProjectFile::relativeFilename, "relativeFilename").
                 var(&ProjectFile::relativeToCommonTopLevelPath, "relativeToCommonTopLevelPath").

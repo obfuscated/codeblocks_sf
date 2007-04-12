@@ -84,6 +84,18 @@ class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
         /** @return The visual state (modified, read-only, etc). */
 		FileVisualState GetFileState() const;
 
+        /** Modify 'Use custom command to build this file' for a compilerId. */
+        void SetUseCustomBuildCommand(const wxString& compilerId, bool useCustomBuildCommand);
+
+        /** Modify customBuild command for a compilerId. */
+        void SetCustomBuildCommand(const wxString& compilerId, const wxString& newBuildCommand);
+
+        /** Read 'Use custom command to build this file' for a compilerId. */
+        bool GetUseCustomBuildCommand(const wxString& compilerId);
+
+        /** Read customBuild command for a compilerId. */
+        wxString GetCustomBuildCommand(const wxString& compilerId);
+
         /** The full filename of this file. Usually you need to read from it and never write to it.
           * @note If you set this anywhere in code,
           * you *MUST* call UpdateFileDetails() afterwards or it won't compile anymore
@@ -137,6 +149,7 @@ class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
         wxString virtual_path;
     protected:
         friend class cbProject;
+
         void DoUpdateFileDetails(ProjectBuildTarget* target);
         cbProject* project;
         FileVisualState m_VisualState;
