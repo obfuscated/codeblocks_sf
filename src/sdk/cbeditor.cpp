@@ -368,6 +368,8 @@ const int idCut = wxNewId();
 const int idCopy = wxNewId();
 const int idPaste = wxNewId();
 const int idDelete = wxNewId();
+const int idUpperCase = wxNewId();
+const int idLowerCase = wxNewId();
 const int idSelectAll = wxNewId();
 const int idSwapHeaderSource = wxNewId();
 const int idBookmarks = wxNewId();
@@ -406,6 +408,8 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
     EVT_MENU(idCopy, cbEditor::OnContextMenuEntry)
     EVT_MENU(idPaste, cbEditor::OnContextMenuEntry)
     EVT_MENU(idDelete, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idUpperCase, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idLowerCase, cbEditor::OnContextMenuEntry)
     EVT_MENU(idSelectAll, cbEditor::OnContextMenuEntry)
     EVT_MENU(idSwapHeaderSource, cbEditor::OnContextMenuEntry)
     EVT_MENU(idBookmarksToggle, cbEditor::OnContextMenuEntry)
@@ -1930,6 +1934,9 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
         menu->Append(idPaste, _("Paste"));
         menu->Append(idDelete, _("Delete"));
         menu->AppendSeparator();
+        menu->Append(idUpperCase, _("UPPERCASE"));
+        menu->Append(idLowerCase, _("lowercase"));
+        menu->AppendSeparator();
         menu->Append(idSelectAll, _("Select All"));
 
         bool hasSel = control->GetSelectionEnd() - control->GetSelectionStart() != 0;
@@ -1945,6 +1952,8 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
             menu->Enable(idPaste, control->CanPaste());
 
         menu->Enable(idDelete, hasSel);
+        menu->Enable(idUpperCase, hasSel);
+        menu->Enable(idLowerCase, hasSel);
     }
     else if(id == idBookmarks)
     {
@@ -2196,6 +2205,10 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         control->Paste();
     else if (id == idDelete)
         control->ReplaceSelection(wxEmptyString);
+    else if (id == idUpperCase)
+        control->UpperCase();
+    else if (id == idLowerCase)
+        control->LowerCase();
     else if (id == idSelectAll)
         control->SelectAll();
     else if (id == idSwapHeaderSource)
