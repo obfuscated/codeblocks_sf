@@ -451,6 +451,10 @@ void DebuggerGDB::OnRelease(bool appShutDown)
         m_pLog->Destroy();
         m_pLog = 0;
     }
+    // vars for Linux console
+    m_bIsConsole = false;
+    m_nConsolePid = 0;
+    m_ConsoleTty = wxEmptyString;
 }
 
 int DebuggerGDB::Configure()
@@ -1099,6 +1103,21 @@ int DebuggerGDB::Debug()
     m_State.GetDriver()->Prepare(target && target->GetTargetType() == ttConsoleOnly);
     m_State.ApplyBreakpoints();
 
+   #ifdef __WXGTK__
+    // create xterm and issue tty "/dev/pts/#" to GDB where
+    // # is the tty for the newly created xterm
+    m_bIsConsole = (target && target->GetTargetType() == ttConsoleOnly);
+    if (m_bIsConsole)
+    {
+        if (RunNixConsole() > 0 )
+        {   wxString gdbTtyCmd;
+            gdbTtyCmd << wxT("tty ") << m_ConsoleTty;
+            m_State.GetDriver()->QueueCommand(new DebuggerCmd(m_State.GetDriver(), gdbTtyCmd, true));
+            DebugLog(wxString::Format( _("Queued:[%s]"), gdbTtyCmd.c_str()) );
+        }
+    }//if
+   #endif//def __WXGTK__
+
     // Don't issue 'run' if attaching to a process (Bug #1391904)
     if (m_PidToAttach == 0)
         m_State.GetDriver()->Start(m_BreakOnEntry);
@@ -1578,6 +1597,7 @@ void DebuggerGDB::AddDataBreakpoint()
 
 void DebuggerGDB::Stop()
 {
+    // m_Process is PipedProcess I/O; m_Pid is debugger pid
     if (m_pProcess && m_Pid)
     {
         if (IsStopped())
@@ -2037,6 +2057,16 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
 
     // switch to the user-defined layout when finished debugging
     DoSwitchLayout(_T("layout_end"));
+
+	#ifdef __WXGTK__
+	// kill any linux console
+	if ( m_bIsConsole && (m_nConsolePid > 0) )
+	{
+		::wxKill(m_nConsolePid);
+		m_nConsolePid = 0;
+		m_bIsConsole = false;
+	}
+	#endif
 }
 
 void DebuggerGDB::OnBreakpointAdd(CodeBlocksEvent& event)
@@ -2289,4 +2319,106 @@ void DebuggerGDB::OnDetach(wxCommandEvent& event)
 void DebuggerGDB::OnSettings(wxCommandEvent& event)
 {
     Configure();
+}
+
+int DebuggerGDB::RunNixConsole()
+{
+
+    // start the xterm and put the shell to sleep with -e sleep 80000
+    // fetch the xterm tty so we can issue to gdb a "tty /dev/pts/#"
+    // redirecting program stdin/stdout/stderr to the xterm console.
+
+  #ifndef __WXMSW__
+    wxString cmd;
+    wxString title = wxT("Program Console");
+    m_nConsolePid = 0;
+    // for non-win platforms, use m_ConsoleTerm to run the console app
+    wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
+    term.Replace(_T("$TITLE"), _T("'") + title + _T("'"));
+    cmd << term << _T(" ");
+    cmd << wxT("sleep ");
+    cmd << wxString::Format(wxT("%d"),80000 + ::wxGetProcessId());
+
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(cmd);
+    DebugLog(wxString::Format( _("Executing: %s"), cmd.c_str()) );
+    //start xterm -e sleep {some unique # of seconds}
+    m_nConsolePid = wxExecute(cmd, wxEXEC_ASYNC);
+    if (m_nConsolePid <= 0) return -1;
+
+    // Issue the PS command to get the /dev/tty device name
+    // First, wait for the xterm to settle down, else PS won't see the sleep task
+    Manager::Yield();
+    ::wxSleep(1);
+    m_ConsoleTty = GetConsoleTty(m_nConsolePid);
+    if (not m_ConsoleTty.IsEmpty() )
+    {   // show what we found as tty
+        DebugLog(wxString::Format(wxT("GetConsoleTTY[%s]ConsolePid[%d]"),m_ConsoleTty.c_str(),m_nConsolePid));
+        return m_nConsolePid;
+    }
+    // failed to find the console tty
+    DebugLog( wxT("Console Execution error:failed to find console tty."));
+    if (m_nConsolePid != 0)::wxKill(m_nConsolePid);
+    m_nConsolePid = 0;
+  #endif//ndef __WWXMSW__
+    return -1;
+}
+
+wxString DebuggerGDB::GetConsoleTty(int ConsolePid)
+{
+
+    // execute the ps x -o command  and read PS output to get the /dev/tty field
+
+	unsigned long ConsPid = ConsolePid;
+	wxString psCmd;
+	wxArrayString psOutput;
+	wxArrayString psErrors;
+
+	psCmd << wxT("ps x -o tty,pid,command");
+    DebugLog(wxString::Format( _("Executing: %s"), psCmd.c_str()) );
+	int result = wxExecute(psCmd, psOutput, psErrors, wxEXEC_SYNC);
+	psCmd.Clear();
+	if (result != 0)
+	{   psCmd << wxT("Result of ps x:") << result;
+        DebugLog(wxString::Format( _("Execution Error:"), psCmd.c_str()) );
+        return wxEmptyString;
+	}
+
+    wxString ConsTtyStr;
+    wxString ConsPidStr;
+    ConsPidStr << ConsPid;
+    //find task with our unique sleep time
+    wxString uniqueSleepTimeStr;
+    uniqueSleepTimeStr << wxT("sleep ") << wxString::Format(wxT("%d"),80000 + ::wxGetProcessId());
+    // search the output of "ps pid" command
+    int knt = psOutput.GetCount();
+    for (int i=knt-1; i>-1; --i)
+    {   psCmd = psOutput.Item(i);
+        DebugLog(wxString::Format( _("PS result: %s"), psCmd.c_str()) );
+        // find the pts/# or tty/# or whatever it's called
+        // by seaching the output of "ps x -o tty,pid,command" command.
+        // The output of ps looks like:
+        // TT       PID   COMMAND
+        // pts/0    13342 /bin/sh ./run.sh
+        // pts/0    13343 /home/pecanpecan/devel/trunk/src/devel/codeblocks
+        // pts/0    13361 /usr/bin/gdb -nx -fullname -quiet -args ./conio
+        // pts/0    13362 xterm -font -*-*-*-*-*-*-20-*-*-*-*-*-*-* -T Program Console -e sleep 93343
+        // pts/2    13363 sleep 93343
+        // ?        13365 /home/pecan/proj/conio/conio
+        // pts/1    13370 ps x -o tty,pid,command
+
+        if (psCmd.Contains(uniqueSleepTimeStr))
+        do
+        {   // check for correct "sleep" line
+            if (psCmd.Contains(wxT("-T"))) break; //error;wrong sleep line.
+            // found "sleep 93343" string, extract tty field
+            ConsTtyStr = wxT("/dev/") + psCmd.BeforeFirst(' ');
+            DebugLog(wxString::Format( _("TTY is[%s]"), ConsTtyStr.c_str()) );
+            return ConsTtyStr;
+        }while(0);//if do
+    }//for
+
+    knt = psErrors.GetCount();
+    for (int i=0; i<knt; ++i)
+        DebugLog(wxString::Format( _("PS Error:%s"), psErrors.Item(i).c_str()) );
+    return wxEmptyString;
 }

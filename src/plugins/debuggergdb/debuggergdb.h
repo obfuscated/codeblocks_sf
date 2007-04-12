@@ -207,6 +207,13 @@ class DebuggerGDB : public cbDebuggerPlugin
 
         int m_HookId; // project loader hook ID
 
+        // Linux console support
+        int      RunNixConsole();
+        wxString GetConsoleTty(int ConsolePid);
+        bool     m_bIsConsole;
+        int      m_nConsolePid;
+        wxString m_ConsoleTty;
+
 		DECLARE_EVENT_TABLE()
 };
 
