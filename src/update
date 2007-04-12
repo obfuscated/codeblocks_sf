@@ -1,5 +1,13 @@
 #!/bin/sh
 
+if [ "x$MSYSTEM" != "x" ] ; then
+  EXEEXT=".exe"
+  LIBEXT="dll"
+else
+  EXEEXT=""
+  LIBEXT="so"
+fi
+
 echo Creating output directory tree
 
 mkdir -p output/share/codeblocks/lexers
@@ -69,29 +77,32 @@ cp -f scripts/*.script ${RESDIR}/scripts > /dev/null
 cp -f scripts/*.script output/share/codeblocks/scripts > /dev/null
 cp -f tips.txt devel/share/codeblocks > /dev/null
 cp -f tips.txt output/share/codeblocks > /dev/null
-cp -f tools/ConsoleRunner/cb_console_runner output > /dev/null
-cp -f tools/ConsoleRunner/cb_console_runner devel > /dev/null
-cp -f devel/codeblocks output > /dev/null
-cp -f devel/*.so output > /dev/null
-cp -f ${RESDIR}/plugins/*.so output/share/codeblocks/plugins > /dev/null
-echo Stripping debug info from output tree
-#strip output/codeblocks
-#strip output/*.so
-#strip output/share/codeblocks/plugins/*.so
+cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} output > /dev/null
+cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} devel > /dev/null
+cp -f devel/codeblocks${EXEEXT} output > /dev/null
+cp -f devel/*.${LIBEXT} output > /dev/null
+cp -f ${RESDIR}/plugins/*.${LIBEXT} output/share/codeblocks/plugins > /dev/null
 
-echo Creating launch-scripts
-echo "#!/bin/sh" > output/run.sh
-echo -n "APP_DIR=" >> output/run.sh
-echo `pwd`/output >> output/run.sh
-echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> output/run.sh
-echo "\$APP_DIR/codeblocks \$@" >> output/run.sh
-chmod +x output/run.sh
-echo "#!/bin/sh" > devel/run.sh
-echo -n "APP_DIR=" >> devel/run.sh
-echo `pwd`/devel >> devel/run.sh
-echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> devel/run.sh
-echo "\$APP_DIR/codeblocks \$@" >> devel/run.sh
-chmod +x devel/run.sh
+if [ "x$MSYSTEM" != "x" ] ; then
+  echo Stripping debug info from output tree
+  strip output/codeblocks${EXEEXT}
+  strip output/*.${LIBEXT}
+  strip output/share/codeblocks/plugins/*.${LIBEXT}
+else
+  echo Creating launch-scripts
+  echo "#!/bin/sh" > output/run.sh
+  echo -n "APP_DIR=" >> output/run.sh
+  echo `pwd`/output >> output/run.sh
+  echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> output/run.sh
+  echo "\$APP_DIR/codeblocks \$@" >> output/run.sh
+  chmod +x output/run.sh
+  echo "#!/bin/sh" > devel/run.sh
+  echo -n "APP_DIR=" >> devel/run.sh
+  echo `pwd`/devel >> devel/run.sh
+  echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> devel/run.sh
+  echo "\$APP_DIR/codeblocks \$@" >> devel/run.sh
+  chmod +x devel/run.sh
+fi
 
 ZIPCMD=
 RESDIR=
