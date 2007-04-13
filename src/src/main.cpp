@@ -2055,6 +2055,11 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
             else
                 AddToRecentFilesHistory(filename);
         }
+		if (tot == totProject) // Created project should be parsed
+        {
+            CodeBlocksEvent evt(cbEVT_PROJECT_OPEN, 0, prj);
+            Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+        }
         return;
     }
 
