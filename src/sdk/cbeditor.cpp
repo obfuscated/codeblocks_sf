@@ -1960,7 +1960,7 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
 
         menu->Enable(idUndo, control->CanUndo());
         menu->Enable(idRedo, control->CanRedo());
-        menu->Enable(idCut, !control->GetReadOnly());
+        menu->Enable(idCut, !control->GetReadOnly() && hasSel);
         menu->Enable(idCopy, hasSel);
 
         if(platform::gtk) // a wxGTK bug causes the triggering of unexpected events

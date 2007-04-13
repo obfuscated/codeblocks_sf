@@ -3303,7 +3303,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
         canRedo = eb->CanRedo();
         hasSel = eb->HasSelection();
         canPaste = eb->CanPaste();
-        canCut = !eb->IsReadOnly();
+        canCut = !eb->IsReadOnly() && hasSel;
     }
 
     mbar->Enable(idEditUndo, eb && canUndo);
@@ -3315,7 +3315,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditGotoMatchingBrace, ed);
     mbar->Enable(idEditHighlightMode, ed);
     mbar->Enable(idEditSelectAll, ed);
-    mbar->Enable(idEditBookmarks, eb);
+    mbar->Enable(idEditBookmarks, ed);
     mbar->Enable(idEditFolding, ed);
     mbar->Enable(idEditEOLMode, ed);
     mbar->Enable(idEditEncoding, ed);

@@ -1285,7 +1285,7 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 
 void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    bool hasEd = Manager::Get()->GetEditorManager()->GetActiveEditor() != 0;
+    bool hasEd = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() != 0;
     if (m_EditMenu)
     {
         m_EditMenu->Enable(idMenuCodeComplete, hasEd);
