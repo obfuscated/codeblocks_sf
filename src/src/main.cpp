@@ -3306,11 +3306,11 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
         canCut = !eb->IsReadOnly() && hasSel;
     }
 
-    mbar->Enable(idEditUndo, eb && canUndo);
-    mbar->Enable(idEditRedo, eb && canRedo);
-    mbar->Enable(idEditCut, eb && canCut);
-    mbar->Enable(idEditCopy, eb && hasSel);
-    mbar->Enable(idEditPaste, eb && canPaste);
+    mbar->Enable(idEditUndo, canUndo);
+    mbar->Enable(idEditRedo, canRedo);
+    mbar->Enable(idEditCut, canCut);
+    mbar->Enable(idEditCopy, hasSel);
+    mbar->Enable(idEditPaste, canPaste);
     mbar->Enable(idEditSwapHeaderSource, ed);
     mbar->Enable(idEditGotoMatchingBrace, ed);
     mbar->Enable(idEditHighlightMode, ed);
@@ -3355,11 +3355,11 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 
     if (m_pToolbar)
     {
-        m_pToolbar->EnableTool(idEditUndo, eb && canUndo);
-        m_pToolbar->EnableTool(idEditRedo, eb && canRedo);
-        m_pToolbar->EnableTool(idEditCut, eb && canCut);
-        m_pToolbar->EnableTool(idEditCopy, eb && hasSel);
-        m_pToolbar->EnableTool(idEditPaste, eb && canPaste);
+        m_pToolbar->EnableTool(idEditUndo, canUndo);
+        m_pToolbar->EnableTool(idEditRedo, canRedo);
+        m_pToolbar->EnableTool(idEditCut, canCut);
+        m_pToolbar->EnableTool(idEditCopy, hasSel);
+        m_pToolbar->EnableTool(idEditPaste, canPaste);
     }
 
     event.Skip();
