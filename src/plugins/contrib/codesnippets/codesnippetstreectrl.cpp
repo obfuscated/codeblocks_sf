@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 33 2007-04-03 02:45:43Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 47 2007-04-14 02:43:21Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -46,6 +46,7 @@
 #include "messagebox.h"
 #include "menuidentifiers.h"
 #include "editsnippetdlg.h"
+#include "editsnippetframe.h"
 
 
 IMPLEMENT_DYNAMIC_CLASS(CodeSnippetsTreeCtrl, wxTreeCtrl)
@@ -59,6 +60,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsTreeCtrl, wxTreeCtrl)
 	//FIXME: EVT_TREE_BEGIN_LABEL_EDIT(idSnippetsTreeCtrl,   CodeSnippetsTreeCtrl::OnBeginLabelEdit)
 	//FIXME: EVT_TREE_END_LABEL_EDIT(idSnippetsTreeCtrl,     CodeSnippetsTreeCtrl::OnEndLabelEdit)
 	EVT_TREE_SEL_CHANGED(idSnippetsTreeCtrl,CodeSnippetsTreeCtrl::OnItemSelected)
+	//EVT_TREE_SEL_CHANGING(idSnippetsTreeCtrl,CodeSnippetsTreeCtrl::OnItemSelectChanging)
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -97,6 +99,14 @@ CodeSnippetsTreeCtrl::~CodeSnippetsTreeCtrl()
 // ----------------------------------------------------------------------------
 {
         //dtor
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::OnItemSelectChanging(wxTreeEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // UNUSED
+    if (m_pTopDialog) event.Veto();
+    return;
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnItemSelected(wxTreeEvent& event)
@@ -193,6 +203,128 @@ int CodeSnippetsTreeCtrl::OnCompareItems(const wxTreeItemId& item1, const wxTree
 	{
 		return 0;
 	}
+}
+// ----------------------------------------------------------------------------
+wxTreeItemId CodeSnippetsTreeCtrl::FindItemByLabel(const wxString& searchTerms, const wxTreeItemId& node, int requestType)
+// ----------------------------------------------------------------------------
+{
+	wxTreeItemIdValue cookie;
+	wxTreeItemId item = GetSnippetsTreeCtrl()->GetFirstChild(node, cookie );
+
+	// Loop through all items
+	while(item.IsOk())
+	{
+		if (const SnippetItemData* itemData = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(item)))
+		{
+			bool ignoreThisType = false;
+
+			switch (itemData->GetType())
+			{
+				case SnippetItemData::TYPE_ROOT:
+					ignoreThisType = true;
+				break;
+
+				case SnippetItemData::TYPE_SNIPPET:
+					if (requestType == CodeSnippetsConfig::SCOPE_CATEGORIES)
+					{
+						ignoreThisType = true;
+					}
+				break;
+
+				case SnippetItemData::TYPE_CATEGORY:
+					if (requestType == CodeSnippetsConfig::SCOPE_SNIPPETS)
+					{
+						ignoreThisType = true;
+					}
+				break;
+			}
+
+			if (!ignoreThisType)
+			{
+				wxString label = GetSnippetsTreeCtrl()->GetItemText(item);
+
+				if(0 == label.Cmp(searchTerms))
+				{
+					return item;
+				}
+			}
+
+			if(GetSnippetsTreeCtrl()->ItemHasChildren(item))
+			{
+				wxTreeItemId search = FindItemByLabel(searchTerms, item, requestType);
+				if(search.IsOk())
+				{
+					return search;
+				}
+			}
+			item = GetSnippetsTreeCtrl()->GetNextChild(node, cookie);
+		}
+	}
+
+   // Return dummy item if search string was not found
+   wxTreeItemId dummyItem = (void*)(0);
+   return dummyItem;
+}
+// ----------------------------------------------------------------------------
+wxTreeItemId CodeSnippetsTreeCtrl::FindItemById(const wxTreeItemId& itemToFind, const wxTreeItemId& startNode, int itemToFindType)
+// ----------------------------------------------------------------------------
+{
+	wxTreeItemIdValue cookie;
+	wxTreeItemId item = GetSnippetsTreeCtrl()->GetFirstChild(startNode, cookie );
+
+	// Loop through all items
+	while(item.IsOk())
+	{
+		if (const SnippetItemData* itemData = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(item)))
+		{
+			bool ignoreThisType = false;
+
+			switch (itemData->GetType())
+			{
+				case SnippetItemData::TYPE_ROOT:
+					ignoreThisType = true;
+				break;
+
+				case SnippetItemData::TYPE_SNIPPET:
+					if (itemToFindType == CodeSnippetsConfig::SCOPE_CATEGORIES)
+					{
+						ignoreThisType = true;
+					}
+				break;
+
+				case SnippetItemData::TYPE_CATEGORY:
+					if (itemToFindType == CodeSnippetsConfig::SCOPE_SNIPPETS)
+					{
+						ignoreThisType = true;
+					}
+				break;
+			}
+
+			if (!ignoreThisType)
+			{
+				wxString label = GetSnippetsTreeCtrl()->GetItemText(item);
+
+				if( itemToFind == item)
+				{
+					return item;
+				}
+			}
+
+			if(GetSnippetsTreeCtrl()->ItemHasChildren(item))
+			{
+				wxTreeItemId search = FindItemById(itemToFind, item, itemToFindType);
+				if(search.IsOk())
+				{
+					return search;
+				}
+			}
+			item = GetSnippetsTreeCtrl()->GetNextChild(startNode, cookie);
+		}
+	}
+
+   // Return dummy item if search string was not found
+   wxTreeItemId dummyItem = (void*)(0);
+   return dummyItem;
 }
 
 // ----------------------------------------------------------------------------
@@ -436,7 +568,7 @@ wxTreeItemId CodeSnippetsTreeCtrl::AddCategory(const wxTreeItemId& parent, wxStr
 
 	if (editNow)
 	{
-		// Let the user to edit the category
+		// Let the user edit the category
 		EnsureVisible(newCategoryID);
 		EditLabel(newCategoryID);
 	}
@@ -449,7 +581,19 @@ bool CodeSnippetsTreeCtrl::RemoveItem(wxTreeItemId itemId)
 {
 	// Get the associated item id
 	wxTreeItemId itemID = itemId;
+    SnippetItemData* pItemData = (SnippetItemData*)(GetItemData(itemId));
 
+    // put deleted items in .trash category
+    wxTreeItemId trashId = FindItemByLabel(wxT(".trash"), GetRootItem(), CodeSnippetsConfig::SCOPE_CATEGORIES);
+    if ( trashId==(void*)0 )
+        trashId = AddCategory(GetRootItem(), wxT(".trash"), false);
+    // if item is NOT already in the trash, copy item to .trash item
+    if (not ( itemID == FindItemById( itemId, trashId, pItemData->GetType()) ))
+    {
+        TiXmlDocument* pDoc =  CopyTreeNodeToXmlDoc( itemID);
+        CopyXmlDocToTreeNode(pDoc, trashId);
+        delete pDoc;
+    }
 	// Sanity check
 	if (itemID != GetRootItem() )
 	{
@@ -481,8 +625,10 @@ void CodeSnippetsTreeCtrl::SaveFileModificationTime(wxDateTime savedTime)
     {   m_LastXmlModifiedTime = savedTime;
         return;
     }
-    wxFileName fname( GetConfig()->SettingsSnippetsXmlFullPath );
-    m_LastXmlModifiedTime = fname.GetModificationTime();
+    if (::wxFileExists(GetConfig()->SettingsSnippetsXmlFullPath) )
+    {   wxFileName fname( GetConfig()->SettingsSnippetsXmlFullPath );
+        m_LastXmlModifiedTime = fname.GetModificationTime();
+    }
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnBeginTreeItemDrag(wxTreeEvent& event)
@@ -547,33 +693,13 @@ void CodeSnippetsTreeCtrl::OnEndTreeItemDrag(wxTreeEvent& event)
         //    event.Allow();
         //else return;
 
+    // If user dragged item out of the window, it'll be dropped by the
+    // target application. So just clear the status and return.
     if (m_bMouseLeftWindow)
     {   // user dragged item out of the window
         m_bMouseLeftWindow = false;
         return;
     }
-
-    //    wxPoint  mousePosn = ::wxGetMousePosition();
-    //
-    //     LOGIT(wxT("pTree[%p][%s]"), pTree, pTree->GetName().c_str());
-    //     LOGIT(wxT("AtPoint[%p][%s]"), ::wxFindWindowAtPoint(mousePosn), ::wxFindWindowAtPoint(mousePosn)->GetName().c_str());
-    //     LOGIT(wxT("MainFrame[%p][%s]"),GetConfig()->GetMainFrame(), GetConfig()->GetMainFrame()->GetName().c_str());
-    //     wxWindow* p = (wxWindow*)GetConfig()->GetSnippetsWindow();
-    //     LOGIT(wxT("SnippetWindow[%p][%s]"), p,p->GetName().c_str());;
-    //     p = (wxWindow*)GetConfig()->GetSnippetsTreeCtrl();
-    //     LOGIT(wxT("SnippetTree[%p][%s]"), p, p->GetName().c_str());
-    //     wxPoint pt;
-    //     p = ::wxFindWindowAtPointer(pt);
-    //     LOGIT(wxT("AtPointer[%p][%s]"), p, p->GetName().c_str());
-
-    //    // Determine if the mouse is outside the Tree window
-    //    if (pTree == ::wxFindWindowAtPoint(mousePosn) )
-    //       event.Allow();
-    //    else
-    //    {   // put focus back on first selected item and return
-    //        pTree->SelectItem( sourceItem);
-    //         return;
-    //    }
 
     event.Allow();
     // if source and target are snippets, create a new category and enclose both.
@@ -585,22 +711,21 @@ void CodeSnippetsTreeCtrl::OnEndTreeItemDrag(wxTreeEvent& event)
     }
 
 
-    // Save the first item node to an Xml Document
-    // Load it into the second item node
-    // delete the first item node
+    // Save the source item node to an Xml Document
+    // Load it into the target item node
+    // delete the source item node
 
-    // create Xml document from dragged tree item
+    // create Xml document from source(dragged) tree item
     TiXmlDocument* pDoc = CopyTreeNodeToXmlDoc( sourceItem );
     if (not pDoc) return;
 
     TiXmlElement* root = pDoc->RootElement();
     if (root)
     {
-        // Get the first xml element
+        // Get the source xml element
         TiXmlElement* firstChild = root->FirstChildElement("item");
         if (firstChild)
-        {   // insert Tree items from xml document
-            //-LoadSnippets(firstChild, targetItem);
+        {   // insert into target Tree items from source xml document
             LoadItemsFromXmlNode( firstChild, targetItem);
         }
     }
@@ -920,6 +1045,22 @@ void CodeSnippetsTreeCtrl::CopySnippetsToXmlDoc(TiXmlNode* Node, const wxTreeIte
 	}
 }//CopySnippetsToXmlDoc
 // ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::CopyXmlDocToTreeNode(TiXmlDocument* pTiXmlDoc, wxTreeItemId targetItem  )
+// ----------------------------------------------------------------------------
+{
+    TiXmlElement* root = pTiXmlDoc->RootElement();
+    if (root)
+    {
+        // Get the source xml element
+        TiXmlElement* firstChild = root->FirstChildElement("item");
+        if (firstChild)
+        {   // insert into target Tree items from source xml document
+            LoadItemsFromXmlNode( firstChild, targetItem);
+        }
+    }
+
+}
+// ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::EditSnippetAsFileLink()
 // ----------------------------------------------------------------------------
 {
@@ -1182,9 +1323,12 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxStri
         // Wait for the non-modal edit dialog to finish
         int retcode = 0;
         wxSemaphore waitSem;
-        EditSnippetDlg* pdlg = new EditSnippetDlg(GetSnippetsTreeCtrl()->GetItemText(GetAssociatedItemID()),
-                                        itemData->GetSnippet(), &waitSem, fileName);
-        retcode = ExecuteDialog( pdlg, waitSem);
+//        EditSnippetDlg* pdlg = new EditSnippetDlg(GetSnippetsTreeCtrl()->GetItemText(GetAssociatedItemID()),
+//                                        itemData->GetSnippet(), &waitSem, &retcode, fileName);
+        wxString snippetText = itemData->GetSnippet();
+        EditSnippetFrame* pdlg = new EditSnippetFrame(GetSnippetsTreeCtrl()->GetItemText(GetAssociatedItemID()),
+                                        &snippetText, &waitSem, &retcode, fileName);
+        retcode = ExecuteFrame( pdlg, waitSem, retcode);
         // Save any changed data
 		if (retcode == wxID_OK)
 		{
@@ -1204,17 +1348,106 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxStri
 	}
 }
 // ----------------------------------------------------------------------------
+int CodeSnippetsTreeCtrl::ExecuteFrame(wxFrame* pdlg, wxSemaphore& waitSem, int& retcode)
+// ----------------------------------------------------------------------------
+{
+        m_pTopDialog = (wxDialog*)pdlg;
+        retcode = 0;
+
+        //- Disable the parent for user input until the edit dialog returns
+        //- This also causes scintilla's cursor to disappear until moving the mouse
+        //- from an enabled window back to scintilla
+        //-this->GetParent()->Disable();
+
+    //LOGIT( _T("ExecuteFrame") );
+    wxWindow* pw = this;
+    //LOGIT( _T("this[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+    if (pw && pw->GetParent()) //
+    {   pw = pw->GetParent();
+        //LOGIT( _T("parent1[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+    }
+    if (pw && pw->GetParent())  //This is the SnippetWindow parent
+    {   pw = pw->GetParent();
+        //LOGIT( _T("parent2[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+    }
+    //    if (pw && pw->GetParent())  //Snippet tree frame
+    //    {   pw = pw->GetParent();
+    //        LOGIT( _T("parent3[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+    //    }
+    //    if (pw && pw->GetParent())  //
+    //    {   pw = pw->GetParent();
+    //        LOGIT( _T("parent5[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+    //    }
+
+        // Grab CodeBlocks close function so dlg isn't orphaned|crashed on close)
+        GetConfig()->GetMainFrame()->Connect( wxEVT_CLOSE_WINDOW,
+            (wxObjectEventFunction)(wxEventFunction)
+            (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown,NULL,this);
+        // Grab parents close function so dlg isn't orphaned|crashed on close)
+        pw->Connect( wxEVT_CLOSE_WINDOW,
+            (wxObjectEventFunction)(wxEventFunction)
+            (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown,NULL,this);
+
+        #if defined(BUILDING_PLUGIN)
+          // Disable the plugin View menu item
+            Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, false);
+        #endif
+
+        if ( pdlg->Show() )
+        {
+            // Just check to see if the semaphore has been posted.
+            // Don't do a real wait, else the edit dialog will freeze
+            while( wxSEMA_BUSY == waitSem.TryWait())
+            {   waitSem.WaitTimeout(20);
+                wxYield();
+            }
+            // retcode set by return frame
+            //-retcode = pdlg->GetReturnCode();
+        }
+        // Release CodeBlocks closeWindow function
+        GetConfig()->GetMainFrame()->Disconnect( wxEVT_CLOSE_WINDOW,
+            (wxObjectEventFunction)(wxEventFunction)
+            (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown);
+        // Release parents closeWindow function
+        pw->Disconnect( wxEVT_CLOSE_WINDOW,
+            (wxObjectEventFunction)(wxEventFunction)
+            (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown);
+
+        #if defined(BUILDING_PLUGIN)
+          // Enable the plugin View menu item
+          Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
+        #endif
+
+		//- re-enable the tree for user input
+        //-this->GetParent()->Enable(true);
+
+        m_pTopDialog = 0;
+         LOGIT( _T("ExecuteFrame RetCode[%s]"), (retcode == wxID_OK)? wxT("OK"):wxT("Cancel") );
+        return retcode;
+}
+
+// ----------------------------------------------------------------------------
 int CodeSnippetsTreeCtrl::ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem)
 // ----------------------------------------------------------------------------
 {
-        m_pTopDialog = pdlg;
-        int retcode = 0;
+    m_pTopDialog = pdlg;
+    int retcode = 0;
 
-        // Disable the parent for user input until the edit dialog returns
-        this->GetParent()->Disable();
+    wxWindow* pw = this;
+    if (pw && pw->GetParent()) //
+    {   pw = pw->GetParent();
+    }
+    if (pw && pw->GetParent())  //This is the SnippetWindow parent
+    {   pw = pw->GetParent();
+    }
 
-        // Grab main apps close function so dlg isn't orphaned|crashed on close
-        GetConfig()->GetMainFrame()->Connect( wxEVT_CLOSE_WINDOW,
+    // Grab main apps close function so dlg isn't orphaned|crashed on close
+    GetConfig()->GetMainFrame()->Connect( wxEVT_CLOSE_WINDOW,
+        (wxObjectEventFunction)(wxEventFunction)
+        (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown,NULL,this);
+
+    // Grab parents close function so dlg isn't orphaned|crashed on close)
+    pw->Connect( wxEVT_CLOSE_WINDOW,
         (wxObjectEventFunction)(wxEventFunction)
         (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown,NULL,this);
 
@@ -1238,13 +1471,15 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem)
             (wxObjectEventFunction)(wxEventFunction)
             (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown);
 
+        // Release parents closeWindow function
+        pw->Disconnect( wxEVT_CLOSE_WINDOW,
+            (wxObjectEventFunction)(wxEventFunction)
+            (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown);
+
         #if defined(BUILDING_PLUGIN)
           // Enable the plugin View menu item
           Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
         #endif
-
-		// re-enable the parent for user input
-        this->GetParent()->Enable(true);
 
         m_pTopDialog = 0;
 

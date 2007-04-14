@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.cpp 32 2007-04-02 17:51:48Z Pecan $
+// RCS-ID: $Id: snippetsconfig.cpp 43 2007-04-11 19:25:25Z Pecan $
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
 #else
@@ -233,5 +233,53 @@ void CodeSnippetsConfig::SettingsSaveWinPosition()
     cfgFile.Write(wxT("WindowPosition"),  winPos) ;
      LOGIT( _T("SavingWindowPosition[%s]"), winPos.c_str() );
 
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsConfig::CenterChildOnParent(wxWindow* child)
+// ----------------------------------------------------------------------------
+{
+    //For docked window we cannot get its position. Just move
+    // the window over the last known parent position
+    if ( GetConfig()->IsPlugin() )
+    {   wxPoint parentPosn( GetConfig()->windowXpos+(GetConfig()->windowWidth>>1),
+            GetConfig()->windowYpos+(GetConfig()->windowHeight>>1) );
+        child->Move( parentPosn.x, parentPosn.y);
+        return;
+    }
+
+    // If application window
+    // Put Top left corner in center of parent (if possible)
+
+    int h; int w;
+    int x; int y;
+    int displayX; int displayY;
+    wxWindow* mainFrame = child->GetParent();
+    if (not mainFrame) return;
+
+    // move upper left dialog corner to center of parent
+    ::wxDisplaySize(&displayX, &displayY);
+    mainFrame->GetPosition(&x, &y );
+    mainFrame->ClientToScreen(&x, &y );
+    if ((x == 0) || (y == 0))
+        if (GetConfig()->pMainFrame)
+            GetConfig()->pMainFrame->GetPosition(&x, &y );
+    mainFrame->GetClientSize(&w,&h);
+
+    // move child underneath the mouse pointer
+    wxPoint movePosn = ::wxGetMousePosition();
+    movePosn.x = x+(w>>2);
+    movePosn.y = y+(h>>2);
+
+    // Make child is not off the screen
+    wxSize size = child->GetSize();
+    //-LOGIT( _T("X[%d]Y[%d]width[%d]height[%d]"), x,y,w,h );
+
+    if ( (movePosn.x+size.GetWidth()) > displayX)
+        movePosn.x = displayX-size.GetWidth();
+    if ( (movePosn.y+size.GetHeight()) > displayY)
+        movePosn.y = displayY-size.GetHeight();
+
+    child->Move(movePosn.x, movePosn.y);
+    return;
 }
 // ----------------------------------------------------------------------------

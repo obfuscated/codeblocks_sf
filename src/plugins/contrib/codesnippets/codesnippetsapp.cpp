@@ -184,23 +184,26 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
     do{
         // if codesnippets.ini is in the executable folder, use it
         cfgFilenameStr = m_ExecuteFolder + wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
-         LOGIT( _T("ExecName[%s]"),cfgFilenameStr.c_str() );
+         LOGIT( _T("ExecCfgName[%s]"),cfgFilenameStr.c_str() );
         if (::wxFileExists(cfgFilenameStr)) break;
 
         //if codeblocks has codesnippets.ini, use it
         cfgFilenameStr = m_ConfigFolder+wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
+         LOGIT( _T("MSWCfgName 1[%s]"),cfgFilenameStr.c_str() );
+        cfgFilenameStr = cfgFilenameStr.Lower();
+         LOGIT( _T("MSWCfgName 2[%s]"),cfgFilenameStr.c_str() );
         cfgFilenameStr.Replace(wxT("codesnippets"), wxT("codeblocks"),false);
-         LOGIT( _T("CodeblocksMSW[%s]"),cfgFilenameStr.c_str() );
+         LOGIT( _T("MSWCfgName 3[%s]"),cfgFilenameStr.c_str() );
         if (::wxFileExists(cfgFilenameStr) ) break;
 
         // if Linux has codesnippets.ini, use it
         cfgFilenameStr.Replace(wxT("codeblocks"),wxT(".codeblocks"));
-        LOGIT( _T("CodeblocksUNX[%s]"),cfgFilenameStr.c_str() );
+        LOGIT( _T("UNXCfgName[%s]"),cfgFilenameStr.c_str() );
         if (::wxFileExists(cfgFilenameStr)) break;
 
         //use the default.conf folder
         cfgFilenameStr = m_ConfigFolder + wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
-        LOGIT( _T("Default[%s]"),cfgFilenameStr.c_str() );
+        LOGIT( _T("DefaultCfgName[%s]"),cfgFilenameStr.c_str() );
     }while(0);
     GetConfig()->SettingsSnippetsCfgFullPath = cfgFilenameStr;
      LOGIT( _T("SettingsSnippetsCfgFullPath[%s]"),GetConfig()->SettingsSnippetsCfgFullPath.c_str() );
@@ -314,7 +317,7 @@ void CodeSnippetsAppFrame::OnFileLoad(wxCommandEvent& event)
     // Save any previously modified file
     if ( GetFileChanged() )
     {    // Ask users if they want to save the snippet xml file
-        int answer = messageBox( wxT("Save SnipList file?\n")+GetConfig()->SettingsSnippetsXmlFullPath,
+        int answer = messageBox( wxT("Save Snippets file?\n")+GetConfig()->SettingsSnippetsXmlFullPath,
                                                 wxT("Open"),wxYES_NO );
         if ( answer == wxYES)
         {

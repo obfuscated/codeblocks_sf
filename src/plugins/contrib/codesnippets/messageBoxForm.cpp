@@ -40,17 +40,17 @@ messageBoxForm::messageBoxForm( wxWindow* parent, int id, wxString title,
 
 	wxBoxSizer* bSizer3;
 	bSizer3 = new wxBoxSizer( wxVERTICAL );
-
+    m_pYesButton = m_pNoButton = m_pOkButton = m_pCancelButton = 0;
 
 	m_sdbSizer = new wxStdDialogButtonSizer();
 	if (dlgStyle & wxYES)
-	m_sdbSizer->AddButton( new wxButton( this, wxID_YES ) );
+	m_sdbSizer->AddButton( m_pYesButton = new wxButton( this, wxID_YES ) );
 	if (dlgStyle & wxNO)
-	m_sdbSizer->AddButton( new wxButton( this, wxID_NO ) );
+	m_sdbSizer->AddButton( m_pNoButton = new wxButton( this, wxID_NO ) );
 	if (dlgStyle & wxOK)
-	m_sdbSizer->AddButton( new wxButton( this, wxID_OK ) );
+	m_sdbSizer->AddButton( m_pOkButton = new wxButton( this, wxID_OK ) );
 	if (dlgStyle & wxCANCEL)
-	m_sdbSizer->AddButton( new wxButton( this, wxID_CANCEL ) );
+	m_sdbSizer->AddButton( m_pCancelButton = new wxButton( this, wxID_CANCEL ) );
 	m_sdbSizer->Realize();
 	bSizer3->Add( m_sdbSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 

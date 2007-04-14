@@ -29,9 +29,6 @@
 #include <wx/textctrl.h>
 #include <wx/filedlg.h>
 #include <wx/dirdlg.h>
-//#ifndef __WXMAC__
-//#include <wx/generic/dirdlgg.h>
-//#endif
 
 #include "codesnippetswindow.h"
 #include "snippetsconfig.h"
@@ -53,7 +50,7 @@ SettingsDlg::SettingsDlg(wxWindow* parent)
     // move dialog into the parents frame space
     //wxPoint mousePosn = ::wxGetMousePosition();
     //this->Move(mousePosn.x, mousePosn.y);
-    GetConfig()->GetSnippetsWindow()->CenterChildOnParent(this);
+    GetConfig()->CenterChildOnParent(this);
 
     // Initialize the properties fields
     m_ExtEditorTextCtrl-> SetValue( wxT("Enter filename of external editor") );

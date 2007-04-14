@@ -26,13 +26,13 @@
 
 class Edit;
 
-class EditSnippetDlg : public wxDialog
+class EditSnippetDlg : public wxFrame
 {
     friend class EditSnippetDropTarget;
 
 	public:
 		EditSnippetDlg(const wxString& snippetName, const wxString& snippetText,
-                            wxSemaphore* pWaitSem, wxString fileName=wxEmptyString);
+                            wxSemaphore* pWaitSem, int* pRetcode, wxString fileName=wxEmptyString);
 		~EditSnippetDlg();
 
 		wxString GetName();
@@ -45,17 +45,19 @@ class EditSnippetDlg : public wxDialog
 		void OnOK(wxCommandEvent& event);
 		void OnCancel(wxCommandEvent& event);
 		void OnHelp(wxCommandEvent& event);
+        void OnCloseWindow(wxCloseEvent& event);
 
-		wxStaticText* m_NameLbl;
-		wxTextCtrl* m_SnippetNameCtrl;
-		wxStaticText* m_SnippetLbl;
+		wxStaticText*   m_NameLbl;
+		wxTextCtrl*     m_SnippetNameCtrl;
+		wxStaticText*   m_SnippetLbl;
 		//wxTextCtrl* m_SnippetTextCtrl;
-		Edit* m_SnippetEditCtrl;
-		wxButton* m_OKBtn;
-		wxButton* m_CancelBtn;
-		wxButton* m_HelpBtn;
-		wxSemaphore* pWaitingSemaphore;
-		wxString     m_EditFileName;
+		Edit*           m_SnippetEditCtrl;
+		wxButton*       m_OKBtn;
+		wxButton*       m_CancelBtn;
+		wxButton*       m_HelpBtn;
+		wxSemaphore*    pWaitingSemaphore;
+		wxString        m_EditFileName;
+		int*            m_pReturnCode;
 
 		DECLARE_EVENT_TABLE()
 };

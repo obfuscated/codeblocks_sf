@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 33 2007-04-03 02:45:43Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 47 2007-04-14 02:43:21Z Pecan $
 
 #include "sdk.h"
 #ifndef CB_PRECOMB
@@ -114,7 +114,11 @@ void CodeSnippets::OnAttach()
       m_CfgFilenameStr = m_ExecuteFolder + wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
     if (::wxFileExists(m_CfgFilenameStr)) {;/*OK Use exe path*/}
     else //use the default.conf folder
-        m_CfgFilenameStr = m_ConfigFolder + wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
+    {   m_CfgFilenameStr = m_ConfigFolder + wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
+        // if default doesn't exist, create it
+        if (not ::wxDirExists(m_ConfigFolder))
+            ::wxMkdir(m_ConfigFolder);
+    }
     GetConfig()->SettingsSnippetsCfgFullPath = m_CfgFilenameStr;
      LOGIT( _T("SettingsSnippetsCfgFullPath[%s]"),GetConfig()->SettingsSnippetsCfgFullPath.c_str() );
 
@@ -127,11 +131,6 @@ void CodeSnippets::OnAttach()
     // load tree icons/images
     // ---------------------------------------
     GetConfig()->pSnipImages = new SnipImages();
-
-    //-// Check Destroyed windows for our docked window
-    //-Connect( wxEVT_DESTROY,
-    //-    (wxObjectEventFunction) (wxEventFunction)
-    //-    (wxCommandEventFunction) &CodeSnippets::OnWindowDestroy);
 
     // ---------------------------------------
     // setup snippet tree docking window
@@ -223,7 +222,7 @@ void CodeSnippets::CreateSnippetWindow()
         wxWindow* p = GetSnippetsWindow()->GetParent();
         int x,y,w,h;
         p->GetPosition(&x,&y); p->GetSize(&w,&h);
-         LOGIT(  _T("WinPostCreate[%s]X[%d]Y[%d]Width[%d]Height[%d]"), p->GetName().c_str(),x,y,w,h);
+         //LOGIT(  _T("WinPostCreate[%s]X[%d]Y[%d]Width[%d]Height[%d]"), p->GetName().c_str(),x,y,w,h);
    #endif
 
 }
@@ -281,6 +280,9 @@ void CodeSnippets::OnIdle(wxIdleEvent& event)
     // that tell us if the user closed the docked or floating window.
 
     if (not GetSnippetsWindow()) { event.Skip();return; }
+
+    if ( GetSnippetsWindow()->IsDialogBusy() ) {return;}
+
     bool bOpen = IsWindowReallyShown(GetSnippetsWindow());
     if ( (not bOpen) && GetSnippetsWindow())
     {   //Docked window is closed. Release our resources

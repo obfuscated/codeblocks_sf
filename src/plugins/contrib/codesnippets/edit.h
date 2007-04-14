@@ -27,6 +27,7 @@
 
 //! application headers
 #include "prefs.h"       // preferences
+#include "finddialogs.h"       // preferences
 
 
 //============================================================================
@@ -36,6 +37,7 @@
 class EditPrint;
 class EditProperties;
 class DragScrollEvents;
+
 
 //----------------------------------------------------------------------------
 //! Edit
@@ -66,11 +68,25 @@ public:
     void OnEditPaste (wxCommandEvent &event);
     // find
     void OnFind (wxCommandEvent &event);
+    void OnFindUI (wxUpdateUIEvent &event);
     void OnFindNext (wxCommandEvent &event);
+    void OnFindNextUI (wxUpdateUIEvent &event);
+    void OnFindPrev (wxCommandEvent &event);
+    void OnFindPrevUI (wxUpdateUIEvent &event);
+    // replace
     void OnReplace (wxCommandEvent &event);
+    void OnReplaceUI (wxUpdateUIEvent &event);
     void OnReplaceNext (wxCommandEvent &event);
+    void OnReplaceNextUI (wxUpdateUIEvent &event);
+    void OnReplaceAll (wxCommandEvent& event);
+
     void OnBraceMatch (wxCommandEvent &event);
+    void OnBraceMatchUI (wxUpdateUIEvent &event);
+
+
     void OnGoto (wxCommandEvent &event);
+    void OnGotoUI (wxUpdateUIEvent &event);
+
     void OnEditIndentInc (wxCommandEvent &event);
     void OnEditIndentRed (wxCommandEvent &event);
     void OnEditSelectAll (wxCommandEvent &event);
@@ -93,8 +109,10 @@ public:
     // styled text
     void OnMarginClick (wxScintillaEvent &event);
     void OnCharAdded  (wxScintillaEvent &event);
-    void OnScroll( wxScrollEvent& event );              //(pecan 2007/3/28)
-    void OnScrollWin( wxScrollWinEvent& event );        //(pecan 2007/3/28)
+    void OnEnterWindow(wxMouseEvent& event);
+    void OnLeaveWindow(wxMouseEvent& event);
+    void OnScroll(wxScrollEvent& event);
+    void OnScrollWin(wxScrollWinEvent& event);
 
 
     //! language/lexer
@@ -111,11 +129,15 @@ public:
     bool Modified ();
     wxString GetFilename () {return m_filename;};
     void SetFilename (const wxString &filename) {m_filename = filename;};
-    int GetLongestLinePixelWidth( int top_line = -1, int bottom_line = -1);
-
+    int GetLongestLinePixelWidth( int top_line = -1, int bottom_line = -1); //(pecan 2007/4/04)
 
 private:
 
+    int FindString(const wxString &str, int flags);
+
+    void    InitDragScroller();
+    DragScrollEvents* pDragScroller;        //(pecan 2007/3/29)
+    wxColour          m_SysWinBkgdColour;   //(pecan 2007/3/27)
     // file
     wxString m_filename;
 
@@ -129,9 +151,11 @@ private:
     int m_FoldingMargin;
     int m_DividerID;
 
-    void    InitDragScroller();
-    wxColour m_SysWinBkgdColour;    //(pecan 2007/3/27)
-    DragScrollEvents* pDragScroller; //(pecan 2007/3/29)
+    // find variables
+    myFindReplaceDlg* m_FindReplaceDlg;
+    int         m_startpos;
+    bool        m_replace;
+    myGotoDlg*  m_GotoDlg;
 
     DECLARE_EVENT_TABLE()
 };

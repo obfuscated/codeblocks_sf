@@ -18,6 +18,7 @@ libcodesnippets_la_SOURCES = 	codesnippets.cpp \
 			codesnippetswindow.cpp \
 			edit.cpp \
 			editsnippetdlg.cpp \
+			editsnippetframe.cpp \
 			messagebox.cpp \
 			messageBoxForm.cpp \
 			prefs.cpp \
@@ -28,6 +29,7 @@ libcodesnippets_la_SOURCES = 	codesnippets.cpp \
 			snippetpropertyform.cpp \
 			snippetsconfig.cpp \
 			snippetsimages.cpp \
+			finddialogs.cpp \
 			version.cpp
 
 noinst_HEADERS =  	codesnippets.h
@@ -37,6 +39,7 @@ noinst_HEADERS =  	codesnippets.h
 			defsext.h \
 			edit.h \
 			editsnippetdlg.h \
+			editsnippetframe.h \
 			menuidentifiers.h \
 			messagebox.h \
 			messageBoxForm.h \
@@ -48,6 +51,7 @@ noinst_HEADERS =  	codesnippets.h
 			snippetpropertyform.h \
 			snippetsconfig.h \
 			snippetsimages.h \
+			finddialogs.h \
 			version.h \
 			wx_pch.h
 

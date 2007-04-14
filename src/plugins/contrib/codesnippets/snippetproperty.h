@@ -52,10 +52,10 @@ class SnippetProperty : public SnippetPropertyForm
         void InvokeEditOnSnippetText();
         void InvokeEditOnSnippetFile();
 
-        Edit* GetSnippetEditCtrl(){return m_SnippetEditCtrl;}
+        Edit*       GetSnippetEditCtrl(){return m_SnippetEditCtrl;}
         wxTreeCtrl* GetSnippetsTreeCtrl(){return m_pTreeCtrl;}
-        wxString GetSnippet(){return m_pSnippetDataItem->GetSnippet();}
-        bool IsSnippetFile(){return m_pSnippetDataItem->IsSnippetFile();}
+        wxString    GetSnippet(){return m_pSnippetDataItem->GetSnippet();}
+        bool        IsSnippetFile(){return m_pSnippetDataItem->IsSnippetFile();}
 
         private:
         wxTreeItemId        m_TreeItemId;

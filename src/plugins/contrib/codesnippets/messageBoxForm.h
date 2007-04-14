@@ -42,6 +42,10 @@ class messageBoxForm : public wxDialog
                     int dlgStyle = wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxSTAY_ON_TOP,
                     int txtStyle = wxTE_CENTRE|wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER );
 
+    wxButton* m_pYesButton;
+    wxButton* m_pNoButton;
+    wxButton* m_pOkButton;
+    wxButton* m_pCancelButton;
 };
 
 #endif //__messageBoxForm__

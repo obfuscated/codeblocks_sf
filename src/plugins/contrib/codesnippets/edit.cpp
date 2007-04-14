@@ -33,7 +33,6 @@
 //! wxWindows headers
 #include <wx/file.h>     // raw file io support
 #include <wx/filename.h> // filename support
-#include <wx/settings.h> // system settings //(pecan 2007/3/27)
 #include <wx/fileconf.h>
 #include <wx/listctrl.h>
 
@@ -42,6 +41,9 @@
 #include "edit.h"        // edit module
 #include "version.h"
 #include "snippetsconfig.h"
+#include "messagebox.h"
+
+
 
 //----------------------------------------------------------------------------
 // resources
@@ -56,7 +58,7 @@
 //============================================================================
 // implementation
 //============================================================================
-
+wxString g_statustext;
 //----------------------------------------------------------------------------
 // Edit
 //----------------------------------------------------------------------------
@@ -64,9 +66,6 @@
 BEGIN_EVENT_TABLE (Edit, wxScintilla)
     // common
     EVT_SIZE (                         Edit::OnSize)
-    EVT_SCROLL(                        Edit::OnScroll)      //(pecan 2007/3/28)
-    EVT_SCROLLWIN(                     Edit::OnScrollWin)   //(pecan 2007/3/28)
-
     // edit
     EVT_MENU (wxID_CLEAR,              Edit::OnEditClear)
     EVT_MENU (wxID_CUT,                Edit::OnEditCut)
@@ -79,12 +78,21 @@ BEGIN_EVENT_TABLE (Edit, wxScintilla)
     EVT_MENU (wxID_REDO,               Edit::OnEditRedo)
     EVT_MENU (wxID_UNDO,               Edit::OnEditUndo)
     // find
-    EVT_MENU (wxID_FIND,               Edit::OnFind)
-    EVT_MENU (myID_FINDNEXT,           Edit::OnFindNext)
-    EVT_MENU (myID_REPLACE,            Edit::OnReplace)
-    EVT_MENU (myID_REPLACENEXT,        Edit::OnReplaceNext)
-    EVT_MENU (myID_BRACEMATCH,         Edit::OnBraceMatch)
+    EVT_MENU     (wxID_FIND,           Edit::OnFind)
+    EVT_UPDATE_UI(wxID_FIND,           Edit::OnFindUI)
+    EVT_MENU     (myID_FINDNEXT,       Edit::OnFindNext)
+    EVT_UPDATE_UI(myID_FINDNEXT,       Edit::OnFindNextUI)
+    EVT_MENU     (myID_FINDPREV,       Edit::OnFindPrev)
+    EVT_UPDATE_UI(myID_FINDPREV,       Edit::OnFindPrevUI)
+    // replace
+    EVT_MENU     (myID_REPLACE,        Edit::OnReplace)
+    EVT_UPDATE_UI(myID_REPLACE,        Edit::OnReplaceUI)
+    EVT_MENU     (myID_REPLACENEXT,    Edit::OnReplaceNext)
+    EVT_UPDATE_UI(myID_REPLACENEXT,    Edit::OnReplaceNextUI)
+    EVT_MENU     (myID_BRACEMATCH,     Edit::OnBraceMatch)
+    EVT_UPDATE_UI(myID_BRACEMATCH,     Edit::OnBraceMatchUI)
     EVT_MENU (myID_GOTO,               Edit::OnGoto)
+    EVT_UPDATE_UI (myID_GOTO,          Edit::OnGotoUI)
     // view
     EVT_MENU_RANGE (myID_HILIGHTFIRST, myID_HILIGHTLAST,
                                        Edit::OnHilightLang)
@@ -108,6 +116,12 @@ BEGIN_EVENT_TABLE (Edit, wxScintilla)
     // scintilla
     EVT_SCI_MARGINCLICK (-1,           Edit::OnMarginClick)
     EVT_SCI_CHARADDED (-1,             Edit::OnCharAdded)
+
+    EVT_ENTER_WINDOW( Edit::OnEnterWindow)
+    EVT_LEAVE_WINDOW( Edit::OnLeaveWindow)
+    EVT_SCROLL       (Edit::OnScroll)
+    EVT_SCROLLWIN    (Edit::OnScrollWin)
+
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -116,9 +130,11 @@ Edit::Edit (wxWindow *parent, wxWindowID id,
             const wxSize &size,
             long style)
 // ----------------------------------------------------------------------------
-    : wxScintilla (parent, id, pos, size, style) {
+    : wxScintilla (parent, id, pos, size, style)
+{
 
     m_SysWinBkgdColour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW); //(pecan 2007/3/27)
+
     m_filename = _T("");
     m_language = NULL;
 
@@ -141,10 +157,10 @@ Edit::Edit (wxWindow *parent, wxWindowID id,
     SetReadOnly (g_CommonPrefs.readOnlyInitial);
     SetWrapMode (g_CommonPrefs.wrapModeInitial?
                  wxSCI_WRAP_WORD: wxSCI_WRAP_NONE);
-    //-wxFont font (10, wxTELETYPE, wxNORMAL, wxNORMAL);
-    //-StyleSetFont (wxSCI_STYLE_DEFAULT, font);
 
-    // use the same font as CodeBlocks editor's
+    //wxFont font (10, wxTELETYPE, wxNORMAL, wxNORMAL);
+
+    // use the same font as CodeBlocks editor's //(pecan 2007/4/04)
     wxFont font(8, wxMODERN, wxNORMAL, wxBOLD);
     StyleSetFont (wxSCI_STYLE_DEFAULT, font);
 
@@ -154,12 +170,13 @@ Edit::Edit (wxWindow *parent, wxWindowID id,
     StyleSetBackground (wxSCI_STYLE_DEFAULT, m_SysWinBkgdColour); //(pecan 2007/3/27)
 
     StyleSetForeground (wxSCI_STYLE_LINENUMBER, wxColour (_T("DARK GREY")));
-    StyleSetBackground (wxSCI_STYLE_LINENUMBER, wxColour (_T("WHITE")));
-    StyleSetForeground(wxSCI_STYLE_INDENTGUIDE, wxColour (_T("DARK GREY")));
 
-    // --------------------------------
+    //-StyleSetBackground (wxSCI_STYLE_LINENUMBER, wxColour (_T("WHITE")));
+    StyleSetBackground (wxSCI_STYLE_DEFAULT, m_SysWinBkgdColour); //(pecan 2007/3/27)
+
+    StyleSetForeground(wxSCI_STYLE_INDENTGUIDE, wxColour (_T("DARK GREY")));
     InitializePrefs (DEFAULT_LANGUAGE);
-    // --------------------------------
+
     // set visibility
     SetVisiblePolicy (wxSCI_VISIBLE_STRICT|wxSCI_VISIBLE_SLOP, 1);
     SetXCaretPolicy (wxSCI_CARET_EVEN|wxSCI_VISIBLE_STRICT|wxSCI_CARET_SLOP, 1);
@@ -180,14 +197,12 @@ Edit::Edit (wxWindow *parent, wxWindowID id,
 
     // clear wrong default keys
 #if !defined(__WXGTK__)
-    // These are breaking use of Tab and Shift-Tab as chars //(pecan 2007/3/28)
-    //-CmdKeyClear (wxSCI_KEY_TAB, 0);
-    //-CmdKeyClear (wxSCI_KEY_TAB, wxSCI_SCMOD_SHIFT);
+    CmdKeyClear (wxSCI_KEY_TAB, 0);
+    CmdKeyClear (wxSCI_KEY_TAB, wxSCI_SCMOD_SHIFT);
 #endif
-    // These are breaking use of edit keys
-    //-CmdKeyClear ('A', wxSCI_SCMOD_CTRL);
+    CmdKeyClear ('A', wxSCI_SCMOD_CTRL);
 #if !defined(__WXGTK__)
-    //-CmdKeyClear ('C', wxSCI_SCMOD_CTRL);
+    CmdKeyClear ('C', wxSCI_SCMOD_CTRL);
 #endif
     CmdKeyClear ('D', wxSCI_SCMOD_CTRL);
     CmdKeyClear ('D', wxSCI_SCMOD_SHIFT | wxSCI_SCMOD_CTRL);
@@ -199,51 +214,108 @@ Edit::Edit (wxWindow *parent, wxWindowID id,
     CmdKeyClear ('U', wxSCI_SCMOD_CTRL);
     CmdKeyClear ('U', wxSCI_SCMOD_SHIFT | wxSCI_SCMOD_CTRL);
 #if !defined(__WXGTK__)
-    //-CmdKeyClear ('V', wxSCI_SCMOD_CTRL);
-    //-CmdKeyClear ('X', wxSCI_SCMOD_CTRL);
+    CmdKeyClear ('V', wxSCI_SCMOD_CTRL);
+    CmdKeyClear ('X', wxSCI_SCMOD_CTRL);
 #endif
-    //-CmdKeyClear ('Y', wxSCI_SCMOD_CTRL);
+    CmdKeyClear ('Y', wxSCI_SCMOD_CTRL);
 #if !defined(__WXGTK__)
-    //-CmdKeyClear ('Z', wxSCI_SCMOD_CTRL);
+    CmdKeyClear ('Z', wxSCI_SCMOD_CTRL);
 #endif
 
-    // miscellaneous
-    //-UsePopUp (0); //(pecan 2007/3/27)
-    UsePopUp(1);    // allow context menu //(pecan 2007/3/27)
+    // miscelaneous
+    //UsePopUp (0); //(pecan 2007/4/06)
+    UsePopUp (1);
     SetLayoutCache (wxSCI_CACHE_PAGE);
     SetBufferedDraw (1);
 
-    // Something is setting the tab width to 8 AFTER InitializePrefs() was called above
-    SetTabWidth(4); //(pecan 2007/3/28)
-
+    // Initialize mouse drag scrolling
     InitDragScroller();
 
-}//end ctor
+    // create dialogs
+    m_FindReplaceDlg = new myFindReplaceDlg (this);
+    m_startpos = 0;
+    m_replace = false;
+    m_GotoDlg = new myGotoDlg (this);
+
+}
 
 // ----------------------------------------------------------------------------
 Edit::~Edit ()
+// ----------------------------------------------------------------------------
 {
-    if (pDragScroller) do
+     // remove created objects
+    if (m_GotoDlg) delete m_GotoDlg;
+    if (m_FindReplaceDlg) delete m_FindReplaceDlg;
+
+}
+// ----------------------------------------------------------------------------
+int Edit::GetLongestLinePixelWidth(int top_line, int bottom_line)  //(pecan 2007/3/28)
+// ----------------------------------------------------------------------------
+{
+    int ste_ctrlCharLengths[32] = { 3, 3, 3, 3, 3, 3, 3, 3,
+                                       2, 2, 2, 2, 2, 2, 2, 2,
+                                       3, 3, 3, 3, 3, 3, 3, 3,
+                                       3, 2, 3, 3, 2, 2, 2, 2 };
+
+    int longest_len   = 0;
+    int first_line    = top_line < 0 ? GetFirstVisibleLine() : top_line;
+    int line_count    = GetLineCount();
+    int lines_visible = LinesOnScreen();
+    int last_line     = bottom_line < 0 ? wxMin(line_count, first_line + lines_visible) : bottom_line;
+    int tab_width     = GetTabWidth();
+    int ctrl_char_symbol = GetControlCharSymbol();
+
+    if (last_line < first_line)
     {
-        delete (pDragScroller);
-    }while(0);//end if pDragScroller
+        int tmp = first_line; first_line = last_line; last_line = tmp;
+    }
+
+    // FIXME this is not the best solution, but with some luck it'll work
+    //       Scintilla should provide this info from its LayoutCache
+    for (int n = first_line; n <= last_line; n++)
+    {
+        int len = LineLength(n);
+
+        int tabs = 0;
+        if ((tab_width > 1) && (len*tab_width > longest_len))
+        {
+            // need to sum up only how much of the tab is used
+            wxCharBuffer buf = GetLineRaw(n);
+            const char* c = buf.data();
+            for (int i = 0; i < len; i++, c++)
+            {
+                if (*c == '\t')
+                    tabs += tab_width - ((i + tabs) % tab_width);
+                else if ((ctrl_char_symbol >= 32) && (size_t(*c) < 32))
+                {
+                    // scintilla writes name of char
+                    tabs += ste_ctrlCharLengths[size_t(*c)] - 1;
+                }
+            }
+
+            //wxPrintf(wxT("line %d len %d pos %d\n"), n, len, len+tabs); fflush(stdout);
+        }
+        len += tabs + 3; // add a little extra if showing line endings
+        if (longest_len < len) longest_len = len;
+    }
+    // FIXME:
+    //return pEdit->TextWidth(wxSTC_STYLE_DEFAULT, wxString(longest_len, wxT('D')));
+    return TextWidth(0, wxString(longest_len, wxT('D')));
 }
-// ----------------------------------------------------------------------------
-void Edit::InitDragScroller()
-// ----------------------------------------------------------------------------
-{
-    pDragScroller = 0;
-    wxWindow* p = this->GetParent();
-    if (not p) return;
-    pDragScroller = new DragScrollEvents( this );
-}
+
 //----------------------------------------------------------------------------
 // common event handlers
-void Edit::OnSize( wxSizeEvent& event ) {
+// ----------------------------------------------------------------------------
+void Edit::OnSize( wxSizeEvent& event )
+// ----------------------------------------------------------------------------
+{
     int x = GetClientSize().x +
             (g_CommonPrefs.lineNumberEnable? m_LineNrMargin: 0) +
             (g_CommonPrefs.foldEnable? m_FoldingMargin: 0);
-    if (x > 0) SetScrollWidth (x);
+    //(pecan 2007/4/05)
+    //-if (x > 0) SetScrollWidth (x);
+    if (x > 0) SetScrollWidth (x<<1);
+    //(pecan 2007/4/05);
     event.Skip();
 }
 
@@ -278,19 +350,256 @@ void Edit::OnEditPaste (wxCommandEvent &WXUNUSED(event)) {
     Paste ();
 }
 
-void Edit::OnFind (wxCommandEvent &WXUNUSED(event)) {
+void Edit::OnFind (wxCommandEvent& event)
+{
+    m_startpos = GetCurrentPos();
+    SetTargetStart (m_startpos);
+    SetTargetEnd (m_startpos);
+    m_replace = false;
+    if (GetSelectionEnd()-GetSelectionStart() > 0)
+    {
+        m_FindReplaceDlg->SetFindString (GetSelectedText());
+    }
+    GetConfig()->CenterChildOnParent(m_FindReplaceDlg);
+    if (m_FindReplaceDlg->ShowModal () != wxID_OK) return;
+    OnFindNext (event);
 }
 
-void Edit::OnFindNext (wxCommandEvent &WXUNUSED(event)) {
+// ----------------------------------------------------------------------------
+void Edit::OnFindUI (wxUpdateUIEvent &event)
+// ----------------------------------------------------------------------------
+{
+     //LOGIT( _T("OnFindUI[%d]"),GetLength() );
+    event.Enable (GetLength() > 0);
 }
 
-void Edit::OnReplace (wxCommandEvent &WXUNUSED(event)) {
+// ----------------------------------------------------------------------------
+void Edit::OnFindNext (wxCommandEvent &WXUNUSED(event))
+// ----------------------------------------------------------------------------
+{
+    wxString findtext = m_FindReplaceDlg->GetFindString();
+    if (findtext.IsEmpty()) {
+        //wxMessageBox (_("Can't find anything with empty string"),
+        //              _("Find string"), wxOK | wxICON_INFORMATION, this);
+        messageBox (_("Can't find anything with empty string"),
+                      _("Find string"), wxOK | wxICON_INFORMATION);
+        return;
+    }
+    m_startpos = GetCurrentPos();
+    SetTargetStart (m_startpos);
+    SetTargetEnd (m_startpos);
+    int pos = FindString (findtext, m_FindReplaceDlg->GetFlags());
+    if (pos >= 0) {
+        EnsureCaretVisible();
+        SetSelection (pos, pos + findtext.Length());
+        g_statustext = _("Found text: ") + findtext;
+    }else{
+        //wxMessageBox (_("Can't anymore find the string: \"") + findtext + _("\""),
+        //              _("Find string"), wxOK | wxICON_INFORMATION, this);
+        messageBox (_("Can't anymore find the string: \"") + findtext + _("\""),
+                      _("Find string"), wxOK | wxICON_INFORMATION);
+        g_statustext = _("No more text found!");
+    }
+    SetSCIFocus(true);
+    SetFocus ();
+}
+// ----------------------------------------------------------------------------
+void Edit::OnFindNextUI (wxUpdateUIEvent &event)
+// ----------------------------------------------------------------------------
+{
+    //LOGIT( _T("Edit::OnFindNextUI[%d]"), event.GetId() );
+    event.Enable (GetLength() > 0);
+}
+// ----------------------------------------------------------------------------
+void Edit::OnFindPrev (wxCommandEvent &WXUNUSED(event))
+// ----------------------------------------------------------------------------
+{
+    wxString findtext = m_FindReplaceDlg->GetFindString();
+    if (findtext.IsEmpty()) {
+        //wxMessageBox (_("Can't find anything with empty string"),
+        //              _("Find string"), wxOK | wxICON_INFORMATION, this);
+        messageBox (_("Can't find anything with empty string"),
+                      _("Find string"), wxOK | wxICON_INFORMATION);
+        return;
+    }
+    m_startpos = GetCurrentPos() - findtext.Length();
+    if (m_startpos < 0) m_startpos = 0;
+    SetTargetStart (m_startpos);
+    SetTargetEnd (m_startpos);
+    int pos = FindString (findtext, m_FindReplaceDlg->GetFlags() & !myFR_DOWN);
+    if (pos >= 0) {
+        EnsureCaretVisible();
+        SetSelection (pos, pos + findtext.Length());
+        g_statustext = _("Found text: ") + findtext;
+    }else{
+        //wxMessageBox (_("Can't anymore find the string: \"") + findtext + _("\""),
+        //              _("Find string"), wxOK | wxICON_INFORMATION, this);
+        messageBox (_("Can't anymore find the string: \"") + findtext + _("\""),
+                      _("Find string"), wxOK | wxICON_INFORMATION);
+        g_statustext = _("No more text found!");
+    }
+    SetSCIFocus(true);
+    SetFocus ();
 }
 
-void Edit::OnReplaceNext (wxCommandEvent &WXUNUSED(event)) {
+// ----------------------------------------------------------------------------
+void Edit::OnFindPrevUI (wxUpdateUIEvent &event)
+// ----------------------------------------------------------------------------
+{
+    event.Enable (GetLength() > 0);
 }
 
-void Edit::OnBraceMatch (wxCommandEvent &WXUNUSED(event)) {
+// ----------------------------------------------------------------------------
+int Edit::FindString (const wxString &str, int flags)
+// ----------------------------------------------------------------------------
+{
+
+    // initialize direction
+    bool down = (flags & myFR_DOWN) > 0;
+    bool first;
+    if (down) {
+        SetTargetStart (GetTargetEnd());
+        first = m_startpos <= GetTargetEnd();
+        if (first) {
+            SetTargetEnd (GetLength() - 1);
+        }else{
+            SetTargetEnd (m_startpos);
+        }
+    }else{
+        SetTargetStart (GetTargetStart());
+        first = m_startpos >= GetTargetStart();
+        if (first) {
+            SetTargetEnd (0);
+        }else{
+            SetTargetEnd (m_startpos);
+        }
+    }
+
+    // set flags
+    int findFlags = 0;
+    if ((flags & myFR_MATCHCASE) > 0) findFlags |= wxSCI_FIND_MATCHCASE;
+    if ((flags & myFR_WHOLEWORD) > 0) findFlags |= wxSCI_FIND_WHOLEWORD;
+    if ((flags & myFR_FINDREGEX) > 0) findFlags |= wxSCI_FIND_REGEXP;
+    SetSearchFlags (findFlags);
+
+    // search string
+    int pos = SearchInTarget (str);
+    if (pos >= 0) return pos;
+
+    // search the rest if any
+    if (down && first) {
+        SetTargetStart (0);
+        SetTargetEnd (m_startpos);
+    }else if (!down && first) {
+        SetTargetStart (GetLength() - 1);
+        SetTargetEnd (m_startpos);
+    }else{
+        return pos;
+    }
+    return pos = SearchInTarget (str);
+}
+
+// ----------------------------------------------------------------------------
+void Edit::OnReplace (wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+    m_startpos = GetCurrentPos();
+    SetTargetStart (m_startpos);
+    SetTargetEnd (m_startpos);
+    m_replace = true;
+    if (GetSelectionEnd()-GetSelectionStart() > 0) {
+        m_FindReplaceDlg->SetFindString (GetSelectedText());
+    }
+    GetConfig()->CenterChildOnParent(m_FindReplaceDlg);
+    int retCode = m_FindReplaceDlg->ShowModal (myFR_REPLACEDIALOG);
+    if (retCode == wxID_OK) {
+        OnFindNext (event);
+    }else if (retCode == myID_REPLACE) {
+        OnReplaceNext (event);
+    }else if (retCode == myID_REPLACEALL) {
+        OnReplaceAll (event);
+    }
+
+}
+// ----------------------------------------------------------------------------
+void Edit::OnReplaceUI (wxUpdateUIEvent& event)
+// ----------------------------------------------------------------------------
+{
+    event.Enable (!GetReadOnly() && (GetLength() > 0));
+}
+
+// ----------------------------------------------------------------------------
+void Edit::OnReplaceNext (wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+    if (!m_replace) return;
+    wxString findtext = m_FindReplaceDlg->GetFindString();
+    if (findtext.IsEmpty()) {
+        //wxMessageBox (_("Can't find anything with empty string"),
+        //              _("Find string"), wxOK | wxICON_INFORMATION, this);
+        messageBox (_("Can't find anything with empty string"),
+                      _("Find string"), wxOK | wxICON_INFORMATION);
+        return;
+    }
+    int pos = FindString (findtext, m_FindReplaceDlg->GetFlags());
+    if (pos >= 0) {
+        SetSelection (pos, pos + findtext.Length());
+        wxString replacetext = m_FindReplaceDlg->GetReplaceString ();
+        ReplaceSelection (replacetext);
+        EnsureCaretVisible();
+        SetSelection (pos, pos + replacetext.Length());
+        g_statustext = _("Replaced text: ") + findtext;
+    }else{
+        //wxMessageBox (_("Can't anymore find the string: \"") + findtext + _("\""),
+        //              _("Replace string"), wxOK | wxICON_INFORMATION, this);
+        messageBox (_("Can't anymore find the string: \"") + findtext + _("\""),
+                      _("Replace string"), wxOK | wxICON_INFORMATION);
+        g_statustext = _("No more text found!");
+
+    }
+    SetSCIFocus(true);
+    SetFocus ();
+
+}
+
+// ----------------------------------------------------------------------------
+void Edit::OnReplaceNextUI (wxUpdateUIEvent& event)
+// ----------------------------------------------------------------------------
+{
+    event.Enable (!GetReadOnly() && (GetLength() > 0));
+}
+
+// ----------------------------------------------------------------------------
+void Edit::OnReplaceAll (wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+    if (!m_replace) return;
+    wxString findtext = m_FindReplaceDlg->GetFindString();
+    if (findtext.IsEmpty()) {
+        //wxMessageBox (_("Can't find anything with empty string"),
+        //              _("Find string"), wxOK | wxICON_INFORMATION, this);
+        messageBox (_("Can't find anything with empty string"),
+                      _("Find string"), wxOK | wxICON_INFORMATION);
+        return;
+    }
+    BeginUndoAction();
+    while (FindString (findtext, m_FindReplaceDlg->GetFlags()) >= 0) {
+        wxString replacetext = m_FindReplaceDlg->GetReplaceString ();
+        ReplaceTarget (replacetext);
+    }
+    EndUndoAction();
+    //wxMessageBox (_("All occurence of text \"") + findtext + _("\" have been replaced"),
+    //              _("Replace string"), wxOK | wxICON_INFORMATION, this);
+    messageBox (_("All occurence of text \"") + findtext + _("\" have been replaced"),
+                  _("Replace string"), wxOK | wxICON_INFORMATION);
+    g_statustext = _("All occurence have been replaced");
+    m_replace = false;
+}
+
+// ----------------------------------------------------------------------------
+void Edit::OnBraceMatch (wxCommandEvent &WXUNUSED(event))
+// ----------------------------------------------------------------------------
+{
     int min = GetCurrentPos ();
     int max = BraceMatch (min);
     if (max > (min+1)) {
@@ -300,84 +609,132 @@ void Edit::OnBraceMatch (wxCommandEvent &WXUNUSED(event)) {
         BraceBadLight (min);
     }
 }
-
-void Edit::OnGoto (wxCommandEvent &WXUNUSED(event)) {
+// ----------------------------------------------------------------------------
+void Edit::OnBraceMatchUI (wxUpdateUIEvent &event)
+// ----------------------------------------------------------------------------
+{
+    event.Enable (GetLength() > 0);
 }
 
-void Edit::OnEditIndentInc (wxCommandEvent &WXUNUSED(event)) {
+// ----------------------------------------------------------------------------
+void Edit::OnGoto (wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+    GetConfig()->CenterChildOnParent(m_GotoDlg);
+    if (m_GotoDlg->ShowModal() != wxID_OK) return;
+    int line = m_GotoDlg->GetPosition ();
+    if (line > 0) {
+        GotoLine (line - 1);
+        line = GetCurrentLine() - (GetFirstVisibleLine()+2);
+        if (line > 0) LineScroll (0, line);
+        g_statustext = _("Went to line: ") + wxString::Format (_T("%d"), line);
+    }else{
+        GotoLine (0);
+        g_statustext = _("Went to first line");
+    }
+    SetSCIFocus(true);
+    SetFocus ();
+
+}
+// ----------------------------------------------------------------------------
+void Edit::OnGotoUI (wxUpdateUIEvent &event)
+// ----------------------------------------------------------------------------
+{
+    event.Enable (GetLineCount() > 1);
+}
+
+
+void Edit::OnEditIndentInc (wxCommandEvent &WXUNUSED(event))
+{
     CmdKeyExecute (wxSCI_CMD_TAB);
 }
 
-void Edit::OnEditIndentRed (wxCommandEvent &WXUNUSED(event)) {
+void Edit::OnEditIndentRed (wxCommandEvent &WXUNUSED(event))
+{
     CmdKeyExecute (wxSCI_CMD_DELETEBACK);
 }
 
-void Edit::OnEditSelectAll (wxCommandEvent &WXUNUSED(event)) {
+void Edit::OnEditSelectAll (wxCommandEvent &WXUNUSED(event))
+{
     SetSelection (0, GetLength());
 }
 
-void Edit::OnEditSelectLine (wxCommandEvent &WXUNUSED(event)) {
+void Edit::OnEditSelectLine (wxCommandEvent &WXUNUSED(event))
+{
     int lineStart = PositionFromLine (GetCurrentLine());
     int lineEnd = PositionFromLine (GetCurrentLine() + 1);
     SetSelection (lineStart, lineEnd);
 }
 
-void Edit::OnHilightLang (wxCommandEvent &event) {
+void Edit::OnHilightLang (wxCommandEvent &event)
+{
     InitializePrefs (g_LanguagePrefs [event.GetId() - myID_HILIGHTFIRST].name);
 }
 
-void Edit::OnDisplayEOL (wxCommandEvent &WXUNUSED(event)) {
+void Edit::OnDisplayEOL (wxCommandEvent &WXUNUSED(event))
+{
     SetViewEOL (!GetViewEOL());
 }
 
-void Edit::OnIndentGuide (wxCommandEvent &WXUNUSED(event)) {
+void Edit::OnIndentGuide (wxCommandEvent &WXUNUSED(event))
+{
     SetIndentationGuides (!GetIndentationGuides());
 }
 
-void Edit::OnLineNumber (wxCommandEvent &WXUNUSED(event)) {
+void Edit::OnLineNumber (wxCommandEvent &WXUNUSED(event))
+{
     SetMarginWidth (m_LineNrID,
                     GetMarginWidth (m_LineNrID) == 0? m_LineNrMargin: 0);
 }
 
-void Edit::OnLongLineOn (wxCommandEvent &WXUNUSED(event)) {
+void Edit::OnLongLineOn (wxCommandEvent &WXUNUSED(event))
+{
     SetEdgeMode (GetEdgeMode() == 0? wxSCI_EDGE_LINE: wxSCI_EDGE_NONE);
 }
 
-void Edit::OnWhiteSpace (wxCommandEvent &WXUNUSED(event)) {
+void Edit::OnWhiteSpace (wxCommandEvent &WXUNUSED(event))
+{
     SetViewWhiteSpace (GetViewWhiteSpace() == 0?
                        wxSCI_WS_VISIBLEALWAYS: wxSCI_WS_INVISIBLE);
 }
 
-void Edit::OnFoldToggle (wxCommandEvent &WXUNUSED(event)) {
+void Edit::OnFoldToggle (wxCommandEvent &WXUNUSED(event))
+{
     ToggleFold (GetFoldParent(GetCurrentLine()));
 }
 
-void Edit::OnSetOverType (wxCommandEvent &WXUNUSED(event)) {
+void Edit::OnSetOverType (wxCommandEvent &WXUNUSED(event))
+{
     SetOvertype (!GetOvertype());
 }
 
-void Edit::OnSetReadOnly (wxCommandEvent &WXUNUSED(event)) {
+void Edit::OnSetReadOnly (wxCommandEvent &WXUNUSED(event))
+{
     SetReadOnly (!GetReadOnly());
 }
 
-void Edit::OnWrapmodeOn (wxCommandEvent &WXUNUSED(event)) {
+void Edit::OnWrapmodeOn (wxCommandEvent &WXUNUSED(event))
+{
     SetWrapMode (GetWrapMode() == 0? wxSCI_WRAP_WORD: wxSCI_WRAP_NONE);
 }
 
-void Edit::OnUseCharset (wxCommandEvent &event) {
+void Edit::OnUseCharset (wxCommandEvent &event)
+{
     int Nr;
     int charset = GetCodePage();
     switch (event.GetId()) {
         case myID_CHARSETANSI: {charset = wxSCI_CHARSET_ANSI; break;}
         case myID_CHARSETMAC: {charset = wxSCI_CHARSET_ANSI; break;}
     }
-    for (Nr = 0; Nr < wxSCI_STYLE_LASTPREDEFINED; Nr++) {
+    for (Nr = 0; Nr < wxSCI_STYLE_LASTPREDEFINED; Nr++)
+    {
         StyleSetCharacterSet (Nr, charset);
     }
     SetCodePage (charset);
 }
 
-void Edit::OnChangeCase (wxCommandEvent &event) {
+void Edit::OnChangeCase (wxCommandEvent &event)
+{
     switch (event.GetId()) {
         case myID_CHANGELOWER: {
             CmdKeyExecute (wxSCI_CMD_LOWERCASE);
@@ -390,7 +747,8 @@ void Edit::OnChangeCase (wxCommandEvent &event) {
     }
 }
 
-void Edit::OnConvertEOL (wxCommandEvent &event) {
+void Edit::OnConvertEOL (wxCommandEvent &event)
+{
     int eolMode = GetEOLMode();
     switch (event.GetId()) {
         case myID_CONVERTCR: { eolMode = wxSCI_EOL_CR; break;}
@@ -402,7 +760,8 @@ void Edit::OnConvertEOL (wxCommandEvent &event) {
 }
 
 //! misc
-void Edit::OnMarginClick (wxScintillaEvent &event) {
+void Edit::OnMarginClick (wxScintillaEvent &event)
+{
     if (event.GetMargin() == 2) {
         int lineClick = LineFromPosition (event.GetPosition());
         int levelClick = GetFoldLevel (lineClick);
@@ -412,7 +771,8 @@ void Edit::OnMarginClick (wxScintillaEvent &event) {
     }
 }
 
-void Edit::OnCharAdded (wxScintillaEvent &event) {
+void Edit::OnCharAdded (wxScintillaEvent &event)
+{
     char chr = event.GetKey();
     int currentLine = GetCurrentLine();
     // Change this if support for mac files with \r is needed
@@ -430,7 +790,6 @@ void Edit::OnCharAdded (wxScintillaEvent &event) {
 
 //----------------------------------------------------------------------------
 // private functions
-// ----------------------------------------------------------------------------
 wxString Edit::DeterminePrefs (const wxString &filename) {
 
     LanguageInfo const* curInfo;
@@ -455,9 +814,7 @@ wxString Edit::DeterminePrefs (const wxString &filename) {
 
 }
 
-// ----------------------------------------------------------------------------
 bool Edit::InitializePrefs (const wxString &name) {
-// ----------------------------------------------------------------------------
 
     // initialize styles
     StyleClearAll();
@@ -483,9 +840,9 @@ bool Edit::InitializePrefs (const wxString &name) {
     SetMarginType (m_LineNrID, wxSCI_MARGIN_NUMBER);
     StyleSetForeground (wxSCI_STYLE_LINENUMBER, wxColour (_T("DARK GREY")));
     //-StyleSetBackground (wxSCI_STYLE_LINENUMBER, wxColour (_T("WHITE")));
-    StyleSetBackground (wxSCI_STYLE_LINENUMBER, m_SysWinBkgdColour);
-    //-SetMarginWidth (m_LineNrID, g_CommonPrefs.lineNumberEnable? m_LineNrMargin: 0);
-    SetMarginWidth (m_LineNrID, 0);
+    StyleSetBackground (wxSCI_STYLE_DEFAULT, m_SysWinBkgdColour); //(pecan 2007/3/27)
+    SetMarginWidth (m_LineNrID,
+                    g_CommonPrefs.lineNumberEnable? m_LineNrMargin: 0);
 
     // set common styles
     StyleSetForeground (wxSCI_STYLE_DEFAULT, wxColour (_T("DARK GREY")));
@@ -498,7 +855,9 @@ bool Edit::InitializePrefs (const wxString &name) {
         for (Nr = 0; Nr < STYLE_TYPES_COUNT; Nr++) {
             if (curInfo->styles[Nr].type == -1) continue;
             const StyleInfo &curType = g_StylePrefs [curInfo->styles[Nr].type];
-            wxFont font (curType.fontsize, wxTELETYPE, wxNORMAL, wxNORMAL, false,
+            //-wxFont font (curType.fontsize, wxTELETYPE, wxNORMAL, wxNORMAL, false,
+            //-             curType.fontname);
+            wxFont font ( 8, wxMODERN, wxNORMAL, wxBOLD, false, //(pecan 2007/4/04)
                          curType.fontname);
             StyleSetFont (Nr, font);
             if (curType.foreground) {
@@ -506,9 +865,10 @@ bool Edit::InitializePrefs (const wxString &name) {
             }
             if (curType.background) {
                 //-StyleSetBackground (Nr, wxColour (curType.background));
-                StyleSetBackground (Nr, m_SysWinBkgdColour); //(pecan 2007/3/27)
+                StyleSetBackground (Nr, wxColour (m_SysWinBkgdColour)); //(pecan 2007/4/04)
             }
             StyleSetBold (Nr, (curType.fontstyle & TOKEN_STYLE_BOLD) > 0);
+            StyleSetBold (Nr, true); // set bold //(pecan 2007/4/04)
             StyleSetItalic (Nr, (curType.fontstyle & TOKEN_STYLE_ITALIC) > 0);
             StyleSetUnderline (Nr, (curType.fontstyle & TOKEN_STYLE_UNDERL) > 0);
             StyleSetVisible (Nr, (curType.fontstyle & TOKEN_STYLE_HIDDEN) == 0);
@@ -590,7 +950,10 @@ bool Edit::LoadFile () {
     return LoadFile (m_filename);
 }
 
-bool Edit::LoadFile (const wxString &filename) {
+// ----------------------------------------------------------------------------
+bool Edit::LoadFile (const wxString &filename)
+// ----------------------------------------------------------------------------
+{
 
     // load file in edit and clear undo
     if (!filename.IsEmpty()) m_filename = filename;
@@ -600,10 +963,23 @@ bool Edit::LoadFile (const wxString &filename) {
     wxFileName fname (m_filename);
     InitializePrefs (DeterminePrefs (fname.GetFullName()));
 
+    //(pecan 2007/4/05)
+    // calculate the smallest line number width to save space
+    int line_count = GetLineCount();
+    line_count = wxMax(line_count, 1)*10;
+    //-wxString lineStr((int)log10((double)line_count), wxT('5'));
+    wxString lineStr(wxString::Format(wxT("%d"), line_count));
+    int line_margin_width = TextWidth(wxSCI_STYLE_LINENUMBER, lineStr);
+    SetMarginWidth( m_LineNrID, line_margin_width);
+    //(pecan 2007/4/05)
+
     return true;
 }
 
-bool Edit::SaveFile () {
+// ----------------------------------------------------------------------------
+bool Edit::SaveFile ()
+// ----------------------------------------------------------------------------
+{
 
     // return if no change
     if (!Modified()) return true;
@@ -620,123 +996,35 @@ bool Edit::SaveFile () {
     return SaveFile (m_filename);
 }
 
-bool Edit::SaveFile (const wxString &filename) {
+// ----------------------------------------------------------------------------
+bool Edit::SaveFile (const wxString &filename)
+// ----------------------------------------------------------------------------
+{
 
     // return if no change
     if (!Modified()) return true;
+
+    //(pecan 2007/4/05)
+    // calculate the smallest line number width to save space
+    int line_count = GetLineCount();
+    line_count = wxMax(line_count, 1)*10;
+    //-wxString lineStr((int)log10((double)line_count), wxT('5'));
+    wxString lineStr(wxString::Format(wxT("%d"), line_count));
+    int line_margin_width = TextWidth(wxSCI_STYLE_LINENUMBER, lineStr);
+    SetMarginWidth( m_LineNrID, line_margin_width);
+    //(pecan 2007/4/05)
 
     return wxScintilla::SaveFile(filename);
 
 }
 
-bool Edit::Modified () {
+// ----------------------------------------------------------------------------
+bool Edit::Modified ()
+// ----------------------------------------------------------------------------
+{
 
     // return modified state
     return (GetModify() && !GetReadOnly());
-}
-// ----------------------------------------------------------------------------
-int Edit::GetLongestLinePixelWidth(int top_line, int bottom_line)  //(pecan 2007/3/28)
-// ----------------------------------------------------------------------------
-{
-    int ste_ctrlCharLengths[32] = { 3, 3, 3, 3, 3, 3, 3, 3,
-                                       2, 2, 2, 2, 2, 2, 2, 2,
-                                       3, 3, 3, 3, 3, 3, 3, 3,
-                                       3, 2, 3, 3, 2, 2, 2, 2 };
-
-    int longest_len   = 0;
-    int first_line    = top_line < 0 ? GetFirstVisibleLine() : top_line;
-    int line_count    = GetLineCount();
-    int lines_visible = LinesOnScreen();
-    int last_line     = bottom_line < 0 ? wxMin(line_count, first_line + lines_visible) : bottom_line;
-    int tab_width     = GetTabWidth();
-    int ctrl_char_symbol = GetControlCharSymbol();
-
-    if (last_line < first_line)
-    {
-        int tmp = first_line; first_line = last_line; last_line = tmp;
-    }
-
-    // FIXME this is not the best solution, but with some luck it'll work
-    //       Scintilla should provide this info from its LayoutCache
-    for (int n = first_line; n <= last_line; n++)
-    {
-        int len = LineLength(n);
-
-        int tabs = 0;
-        if ((tab_width > 1) && (len*tab_width > longest_len))
-        {
-            // need to sum up only how much of the tab is used
-            wxCharBuffer buf = GetLineRaw(n);
-            const char* c = buf.data();
-            for (int i = 0; i < len; i++, c++)
-            {
-                if (*c == '\t')
-                    tabs += tab_width - ((i + tabs) % tab_width);
-                else if ((ctrl_char_symbol >= 32) && (size_t(*c) < 32))
-                {
-                    // scintilla writes name of char
-                    tabs += ste_ctrlCharLengths[size_t(*c)] - 1;
-                }
-            }
-
-            //wxPrintf(wxT("line %d len %d pos %d\n"), n, len, len+tabs); fflush(stdout);
-        }
-        len += tabs + 3; // add a little extra if showing line endings
-        if (longest_len < len) longest_len = len;
-    }
-    // FIXME:
-    //return pEdit->TextWidth(wxSTC_STYLE_DEFAULT, wxString(longest_len, wxT('D')));
-    return TextWidth(0, wxString(longest_len, wxT('D')));
-}
-// ----------------------------------------------------------------------------
-void Edit::OnScroll( wxScrollEvent& event )     //(pecan 2007/3/28)
-// ----------------------------------------------------------------------------
-{
-    // this event is from user set wxScrollBars (niz, Scintilla scroll bars)
-    event.Skip();
-    if (event.GetOrientation() == wxVERTICAL) return;
-
-    Edit* pEdit = (Edit*)event.GetEventObject();
-
-    wxScrollBar *sb = (wxScrollBar*)event.GetEventObject();
-    int pos   = event.GetPosition();
-    int thumb = sb->GetThumbSize();
-    //int range = sb->GetRange();
-    int scroll_width = pEdit->GetScrollWidth();
-
-    // only check if at scroll end, wxEVT_SCROLL(WIN)_BOTTOM is not reliable
-    if (pos + thumb >= scroll_width)
-    {
-        int longest_len = GetLongestLinePixelWidth( );
-        if (longest_len > scroll_width)
-            pEdit->SetScrollWidth(longest_len);
-            //sb->SetScrollbar(pos, thumb, text_width, true);
-
-        sb->Refresh();
-    }
-}
-// ----------------------------------------------------------------------------
-void Edit::OnScrollWin( wxScrollWinEvent& event )       //(pecan 2007/3/28)
-// ----------------------------------------------------------------------------
-{
-    // this event is from this window's builtin scrollbars
-    event.Skip();
-    if (event.GetOrientation() == wxVERTICAL) return;
-
-    Edit* pEdit = (Edit*)event.GetEventObject();
-    int pos   = event.GetPosition(); //GetScrollPos(wxHORIZONTAL);
-    int thumb = GetScrollThumb(wxHORIZONTAL);
-    //int range = GetScrollRange(wxHORIZONTAL);
-    int scroll_width = pEdit->GetScrollWidth();
-
-    // only check if at scroll end, wxEVT_SCROLL(WIN)_BOTTOM is not reliable
-    if (pos + thumb >= scroll_width)
-    {
-        int longest_len = GetLongestLinePixelWidth();
-        if (longest_len > scroll_width)
-            pEdit->SetScrollWidth(longest_len);
-            //SetScrollbar(wxHORIZONTAL, pos, thumb, text_width, true);
-    }
 }
 
 //----------------------------------------------------------------------------
@@ -841,7 +1129,7 @@ EditProperties::EditProperties (Edit *edit,
     totalpane->Add (okButton, 0, wxALIGN_CENTER | wxALL, 10);
 
     SetSizerAndFit (totalpane);
-
+    GetConfig()->CenterChildOnParent(this);
     ShowModal();
 }
 
@@ -969,16 +1257,128 @@ bool EditPrint::PrintScaling (wxDC *dc){
 
     return true;
 }
+
+// ----------------------------------------------------------------------------
+void Edit::OnEnterWindow(wxMouseEvent& event)
+// ----------------------------------------------------------------------------
+{
+    event.Skip(); return;
+    // This is really annoying. CodeSnippetsTreeCtrl::ExecuteFrame()
+    // disables its parent to avoid the user closing the parent and leaving this
+    // window orphaned. But doing so causes the Scintilla editor to get focus
+    // with a hidden disabled cursor. So here, we enable both the editor and
+    // its frame.when the mouse enters the window.
+    // *Hack* *Hack* *Hack* *Hack*
+    // Enable this Edit window and its frame
+    LOGIT( _T("EVT_ENTER_WINDOW") );
+    wxWindow* pw = GetParent();
+    LOGIT( _T("parent[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+    pw->Enable();
+    pw->SetFocus();
+    Enable();
+    SetFocus();
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
+void Edit::OnLeaveWindow(wxMouseEvent& event)
+// ----------------------------------------------------------------------------
+{
+    event.Skip(); return;
+
+    // Disable the Snippet Tree Ctrl frame when leaving editor
+    // so user can't shut it down and leave us orphaned.
+    // *Hack* *Hack* *Hack* *Hack*
+
+    //LOGIT( _T("EVT_LEAVE_WINDOW") );
+    wxWindow* pw = GetParent();
+    //LOGIT( _T("parent1[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+    if (pw && pw->GetParent()) //Edit frame
+    {   pw = pw->GetParent();
+        //pw->Disable();
+        //LOGIT( _T("parent2[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+    }
+    if (pw && pw->GetParent())  // a panel
+    {   pw = pw->GetParent();
+        pw->Disable();          // This disables Snippet frame Whoop!
+        //LOGIT( _T("parent3[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+    }
+    if (pw && pw->GetParent())  //Snippet tree frame
+    {   pw = pw->GetParent();
+        //pw->Disable(); This disables CodeBlocks
+        //LOGIT( _T("parent4[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+    }
+    if (pw && pw->GetParent())  //CodeBlocks
+    {   pw = pw->GetParent();
+        //LOGIT( _T("parent5[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+    }
+
+     event.Skip();
+}
+// ----------------------------------------------------------------------------
+void Edit::OnScroll( wxScrollEvent& event )
+// ----------------------------------------------------------------------------
+{//(pecan 2007/4/05)
+    // this event is from user set wxScrollBars
+    event.Skip();
+    if (event.GetOrientation() == wxVERTICAL) return;
+
+    wxScrollBar *sb = (wxScrollBar*)event.GetEventObject();
+    int pos   = event.GetPosition();
+    int thumb = sb->GetThumbSize();
+    //int range = sb->GetRange();
+    int scroll_width = GetScrollWidth();
+
+    // only check if at scroll end, wxEVT_SCROLL(WIN)_BOTTOM is not reliable
+    if (pos + thumb >= scroll_width)
+    {
+        int longest_len = GetLongestLinePixelWidth();
+        if (longest_len > scroll_width)
+            SetScrollWidth(longest_len);
+            //sb->SetScrollbar(pos, thumb, text_width, true);
+
+        sb->Refresh();
+    }
+}
+// ----------------------------------------------------------------------------
+void Edit::OnScrollWin( wxScrollWinEvent& event )
+// ----------------------------------------------------------------------------
+{//(pecan 2007/4/05)
+
+    // this event is from this window's builtin scrollbars
+    event.Skip();
+    if (event.GetOrientation() == wxVERTICAL) return;
+
+    int pos   = event.GetPosition(); //GetScrollPos(wxHORIZONTAL);
+    int thumb = GetScrollThumb(wxHORIZONTAL);
+    //int range = GetScrollRange(wxHORIZONTAL);
+    int scroll_width = GetScrollWidth();
+
+    // only check if at scroll end, wxEVT_SCROLL(WIN)_BOTTOM is not reliable
+    if (pos + thumb >= scroll_width)
+    {
+        int longest_len = GetLongestLinePixelWidth();
+        if (longest_len > scroll_width)
+            SetScrollWidth(longest_len);
+            //SetScrollbar(wxHORIZONTAL, pos, thumb, text_width, true);
+    }
+}
+
+// ----------------------------------------------------------------------------
+void Edit::InitDragScroller()
+// ----------------------------------------------------------------------------
+{//(pecan 2007/4/05)
+
+    pDragScroller = 0;
+    wxWindow* p = this->GetParent();
+    if (not p) return;
+    pDragScroller = new DragScrollEvents( this );
+}
+
 // ----------------------------------------------------------------------------
 //      MOUSE DRAG and SCROLL Routines
 // ----------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(DragScrollEvents, wxEvtHandler)
-    //-Deprecated- EVT_MOUSE_EVENTS( DragScrollEvents::OnMouseEvent)
-    // Using Connect/Disconnect events  and EVT_CREATE/EVT_DESTROY
-    // wxWidgets events since split-windows were
-    // introduced without providing codeblocks events to plugins.
-    // Without CB events, event handlers were being leaked for each split
-    // window.
+    // none, using connect/disconnect events instead
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------

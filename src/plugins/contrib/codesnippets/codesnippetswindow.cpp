@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.cpp 32 2007-04-02 17:51:48Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.cpp 47 2007-04-14 02:43:21Z Pecan $
 
 #ifdef WX_PRECOMP //
     #include "wx_pch.h"
@@ -61,12 +61,10 @@
 #include "version.h"
 #include "codesnippetswindow.h"
 #include "snippetitemdata.h"
-//#include "editsnippetdlg.h"
 #include <tinyxml/tinyxml.h>
 #include "snippetsconfig.h"
 #include "snippetsimages.h"
 #include "codesnippetstreectrl.h"
-//#include "snippetproperty.h"
 #include "messagebox.h"
 #include "settingsdlg.h"
 #include "menuidentifiers.h"
@@ -88,6 +86,8 @@ int idSnippetsTreeCtrl          = wxNewId();
     // Context Menu items
 int idMnuAddSubCategory         = wxNewId();
 int idMnuRemove                 = wxNewId();
+int idMnuCopy                   = wxNewId();
+int idMnuPaste                  = wxNewId();
 int idMnuConvertToCategory      = wxNewId();
 int idMnuAddSnippet             = wxNewId();
 int idMnuApplySnippet           = wxNewId();
@@ -97,7 +97,6 @@ int idMnuSaveSnippetsToFile     = wxNewId();
 int idMnuRemoveAll              = wxNewId();
 int idMnuCopyToClipboard        = wxNewId();
 int idMnuEditSnippet            = wxNewId();
-//-int idMnuOpenAsFileLink         = wxNewId();
 int idMnuConvertToFileLink      = wxNewId();
 int idMnuProperties             = wxNewId();
 int idMnuSettings               = wxNewId();
@@ -116,6 +115,8 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
     // ---
 	// Tree menu events
 	EVT_MENU(idMnuRemove,           CodeSnippetsWindow::OnMnuRemove)
+	EVT_MENU(idMnuCopy,             CodeSnippetsWindow::OnMnuCopy)
+	EVT_MENU(idMnuPaste,            CodeSnippetsWindow::OnMnuPaste)
 	EVT_MENU(idMnuConvertToCategory,CodeSnippetsWindow::OnMnuConvertToCategory)
 	EVT_MENU(idMnuAddSubCategory,   CodeSnippetsWindow::OnMnuAddSubCategory)
 	EVT_MENU(idMnuAddSnippet,       CodeSnippetsWindow::OnMnuAddSnippet)
@@ -162,6 +163,7 @@ CodeSnippetsWindow::CodeSnippetsWindow(wxWindow* parent)
 	: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize)
 {
     m_isCheckingForExternallyModifiedFiles = false;
+    pTiXmlDoc = 0;
 
     if (not GetConfig()->pMainFrame)
         GetConfig()->pMainFrame = parent;
@@ -185,17 +187,11 @@ CodeSnippetsWindow::~CodeSnippetsWindow()
 // ----------------------------------------------------------------------------
 {
 	// Save the snippets
-	//-GetSnippetsTreeCtrl()->SaveItemsToFile(ConfigManager::GetFolder(sdConfig) + wxFILE_SEP_PATH + _T("codesnippets.xml"));
 	GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlFullPath);
 
-	//- Save the settings
-    //-	ConfigManager* cfgMan = Manager::Get()->GetConfigManager(_T("codesnippets"));
-    //-	cfgMan->Write(_T("casesensitive"), m_SearchConfig.caseSensitive);
-    //-	cfgMan->Write(_T("scope"), m_SearchConfig.scope);
     GetConfig()->SettingsSave();
 
-	// Release tree images
-	//-delete m_SnippetsTreeImageList;
+    if (pTiXmlDoc) { delete pTiXmlDoc; pTiXmlDoc = 0;}
 }
 //// ----------------------------------------------------------------------------
 // EVT_CLOSE does not work with wxAUI windows
@@ -214,10 +210,6 @@ void CodeSnippetsWindow::InitDlg()
 {
 	// Color which we're going to use as mask
 	wxColor maskColor(255, 0, 255);
-
-	// Directory where the images are located
-	wxString imagesDir;
-	imagesDir << _T("images") << wxFILE_SEP_PATH << _T("codesnippets") << wxFILE_SEP_PATH;
 
 	wxBoxSizer* parentSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -243,18 +235,10 @@ void CodeSnippetsWindow::InitDlg()
 
 	GetSnippetsTreeCtrl()->SetDropTarget(new SnippetsDropTarget(GetSnippetsTreeCtrl()));
 
-//-	m_SnippetsTreeImageList = new wxImageList(16, 16, true, 3);
-//-	for (int i = 0; i < SNIPPETS_TREE_IMAGE_COUNT; ++i)
-//-	{
-//-		wxBitmap imageFile = cbLoadBitmap(ConfigManager::LocateDataFile(imagesDir + snippetsTreeImageFileNames[i], sdDataUser|sdDataGlobal), wxBITMAP_TYPE_PNG);
-//-		m_SnippetsTreeImageList->Add(imageFile, maskColor);
-//-	}
-//-	GetSnippetsTreeCtrl()->SetImageList(m_SnippetsTreeImageList);
-
-        // set the treeCtrl image list
+    // set the treeCtrl image list
 	GetSnippetsTreeCtrl()->SetImageList(GetSnipImageList());
-        // Set pgm icon again, but from converted images
-//?	GetMainFrame()->SetIcon( GetSnippetsTreeCtrl()->GetImageList()->GetIcon(TREE_IMAGE_ALL_SNIPPETS) );
+    // Set pgm icon again, but from converted images
+    //?	GetMainFrame()->SetIcon( GetSnippetsTreeCtrl()->GetImageList()->GetIcon(TREE_IMAGE_ALL_SNIPPETS) );
 
 	// Add root item
 	SnippetItemData* rootData = new SnippetItemData(SnippetItemData::TYPE_ROOT);
@@ -365,7 +349,19 @@ void CodeSnippetsWindow::OnSearch(wxCommandEvent& /*event*/)
 void CodeSnippetsWindow::OnItemActivated(wxTreeEvent& event)
 // ----------------------------------------------------------------------------
 {
-	ApplySnippet(event.GetItem());
+
+    // Double click on snippet item
+    // if shift key is down, apply the snippet, else edit it.
+
+    if ( IsDialogBusy() ) return;
+
+    if (::wxGetKeyState(WXK_SHIFT) )
+    {    ApplySnippet(event.GetItem());
+        return;
+    }
+    wxCommandEvent ev;
+    OnMnuEditSnippet( ev )        ;
+    return;
 }
 
 // ----------------------------------------------------------------------------
@@ -375,6 +371,8 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
     // The context menu for the selected item has been requested, either by a
     // right click or by using the menu key.
 
+    if ( IsDialogBusy() ) return;
+
 	// Get the item associated with the event
 	if (const SnippetItemData* eventItem = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(event.GetItem())))
 	{
@@ -383,10 +381,13 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 		// Check the type of the item and add the menu items
 		switch (eventItem->GetType())
 		{
+		    // Root context menu
 			case SnippetItemData::TYPE_ROOT:
-				snippetsTreeMenu->Append(idMnuAddSnippet, _("Add code snippet"));
-				snippetsTreeMenu->Append(idMnuAddSubCategory, _("Add subcategory"));
+				snippetsTreeMenu->Append(idMnuAddSnippet, _("Add Snippet"));
+				snippetsTreeMenu->Append(idMnuAddSubCategory, _("Add SubCategory"));
 				snippetsTreeMenu->AppendSeparator();
+				snippetsTreeMenu->Append(idMnuPaste, _("Paste Items"));
+				snippetsTreeMenu->Enable(idMnuPaste, pTiXmlDoc);
 				snippetsTreeMenu->Append(idMnuRemoveAll, _("Remove all items"));
 
 				// Disable "Remove all items" if the root item does not have child items
@@ -394,8 +395,8 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 					snippetsTreeMenu->Enable(idMnuRemoveAll, false);
 
 				snippetsTreeMenu->AppendSeparator();
-				snippetsTreeMenu->Append(idMnuSaveSnippets, _("Save file"));
-				snippetsTreeMenu->Append(idMnuSaveSnippetsToFile, _("Save file As..."));
+				snippetsTreeMenu->Append(idMnuSaveSnippets, _("Save File"));
+				snippetsTreeMenu->Append(idMnuSaveSnippetsToFile, _("Save File As..."));
 
 				// Disable "Save to file..." if the root item does not have child items
 				if (!GetSnippetsTreeCtrl()->ItemHasChildren(GetSnippetsTreeCtrl()->GetRootItem()))
@@ -407,13 +408,13 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 				if (::wxGetKeyState(WXK_SHIFT))
 				{
 					// Add append from file entry
-					snippetsTreeMenu->Append(idMnuLoadSnippetsFromFile, _("Load from file (append)..."));
+					snippetsTreeMenu->Append(idMnuLoadSnippetsFromFile, _("Load from File (append)..."));
 					m_AppendItemsFromFile = true;
 				}
 				else
 				{
 					// Use the normal load from file entry
-					snippetsTreeMenu->Append(idMnuLoadSnippetsFromFile, _("Load from file..."));
+					snippetsTreeMenu->Append(idMnuLoadSnippetsFromFile, _("Load from File..."));
 					m_AppendItemsFromFile = false;
 				}
 
@@ -423,22 +424,31 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
                #endif
 			break;
 
+            // Category context menu
 			case SnippetItemData::TYPE_CATEGORY:
-				snippetsTreeMenu->Append(idMnuAddSnippet, _("Add code snippet"));
-				snippetsTreeMenu->Append(idMnuAddSubCategory, _("Add subcategory"));
+				snippetsTreeMenu->Append(idMnuAddSnippet, _("Add Snippet"));
+				snippetsTreeMenu->Append(idMnuAddSubCategory, _("Add SubCategory"));
 				snippetsTreeMenu->AppendSeparator();
+				snippetsTreeMenu->Append(idMnuCopy,  _("Copy  Category"));
+				snippetsTreeMenu->Append(idMnuPaste, _("Paste Tree Items"));
+				snippetsTreeMenu->Enable(idMnuPaste, pTiXmlDoc);
 				snippetsTreeMenu->Append(idMnuRemove, _("Remove"));
 			break;
 
+            // Snippet context menu
 			case SnippetItemData::TYPE_SNIPPET:
 				snippetsTreeMenu->Append(idMnuEditSnippet, _("Edit"));
                 if (GetConfig()->IsPlugin())
                 {   snippetsTreeMenu->Append(idMnuApplySnippet, _("Apply"));
                 }
-				snippetsTreeMenu->Append(idMnuCopyToClipboard, _("Copy to clipboard"));
+				snippetsTreeMenu->Append(idMnuCopyToClipboard, _("Copy to Clipboard"));
 				snippetsTreeMenu->AppendSeparator();
-				snippetsTreeMenu->Append(idMnuConvertToCategory, _("Convert to Catagory"));
+				snippetsTreeMenu->Append(idMnuConvertToCategory, _("Convert to Category"));
 				snippetsTreeMenu->Append(idMnuConvertToFileLink, _("Convert to File Link..."));
+				snippetsTreeMenu->AppendSeparator();
+				snippetsTreeMenu->Append(idMnuCopy,  _("Copy Tree Item"));
+				snippetsTreeMenu->Append(idMnuPaste, _("Paste Tree Item"));
+				snippetsTreeMenu->Enable(idMnuPaste, pTiXmlDoc);
 				snippetsTreeMenu->Append(idMnuRemove, _("Remove"));
 				snippetsTreeMenu->AppendSeparator();
                 snippetsTreeMenu->Append(idMnuProperties, _("Properties..."));
@@ -492,6 +502,37 @@ void CodeSnippetsWindow::OnMnuRemove(wxCommandEvent& /*event*/)
 //		SetFileChanged(true);
 //	}
     GetSnippetsTreeCtrl()->RemoveItem(itemID);
+}
+
+// ----------------------------------------------------------------------------
+void CodeSnippetsWindow::OnMnuCopy(wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // copy a tree item structure
+    SetActiveMenuId( event.GetId() );
+    if (pTiXmlDoc) { delete pTiXmlDoc; pTiXmlDoc = 0;}
+    pTiXmlDoc = GetSnippetsTreeCtrl()->CopyTreeNodeToXmlDoc( GetAssociatedItemID() );
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsWindow::OnMnuPaste(wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // paste a tree item structure into another tree item structure
+    SetActiveMenuId( event.GetId() );
+    if (not pTiXmlDoc) return;
+
+    // if target item is a snippet type, first convert it to a category
+    wxTreeItemId targetItem = GetAssociatedItemID();
+    if ( IsSnippet(targetItem) )
+    {
+        if ( targetItem = GetSnippetsTreeCtrl()->ConvertSnippetToCategory(targetItem))
+        {;}//ok
+        else return;
+        // now targetItem is a category
+    }
+
+    GetSnippetsTreeCtrl()->CopyXmlDocToTreeNode( pTiXmlDoc, targetItem  );
+    if (pTiXmlDoc){ delete pTiXmlDoc; pTiXmlDoc = 0; }
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuConvertToCategory(wxCommandEvent& event)
@@ -746,7 +787,7 @@ void CodeSnippetsWindow::OnMnuCopyToClipboard(wxCommandEvent& event)
 }
 
 // ----------------------------------------------------------------------------
-void CodeSnippetsWindow::OnMnuEditSnippet(wxCommandEvent& event)
+void CodeSnippetsWindow::OnMnuEditSnippet(wxCommandEvent& WXUNUSED(event))
 // ----------------------------------------------------------------------------
 {
     if (not IsSnippet() ) return;
@@ -852,7 +893,8 @@ bool CodeSnippetsWindow::AddTextToClipBoard(const wxString& text)
     wxTheClipboard->Close();
 
     #ifdef LOGGING
-     LOGIT( wxT("AddTextToClipBoard:Text[%s]"), text.GetData() );
+     //LOGIT( wxT("AddTextToClipBoard:Text[%s]"), text.GetData() );
+     LOGIT( wxT("AddTextToClipBoard()") );
     #endif //LOGGING
     return true;
 }
@@ -894,6 +936,7 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
 {
     // when we know we've changed the file internally, finesse this
 
+    if ( IsDialogBusy() ) return;
     if ( GetFileChanged() ) return;
 
     wxString whichApp = wxT("CodeSnippets Plugin ");
@@ -923,7 +966,7 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
         //        {
         //        }
         m_isCheckingForExternallyModifiedFiles = false;
-        return; // return when file does not exists
+        return; //return when file does not exist
     }
 
     wxFileName fname( GetConfig()->SettingsSnippetsXmlFullPath );
@@ -1004,52 +1047,6 @@ void CodeSnippetsWindow::OnMnuSaveSnippetAsFileLink(wxCommandEvent& event)
     // Open Snippet as file from context menu
     SetActiveMenuId( event.GetId() );
     GetSnippetsTreeCtrl()->SaveSnippetAsFileLink( );
-}
-// ----------------------------------------------------------------------------
-void CodeSnippetsWindow::CenterChildOnParent(wxWindow* child)
-// ----------------------------------------------------------------------------
-{
-    //For docked window we cannot get its position. Just move
-    // the window under the mouse pointer
-    if ( GetConfig()->IsPlugin() )
-    {   wxPoint mousePosn = ::wxGetMousePosition();
-        child->Move(mousePosn.x, mousePosn.y);
-        return;
-    }
-
-    // If application window
-    // Put Top left corner in center of parent (if possible)
-
-    int h; int w;
-    int x; int y;
-    int displayX; int displayY;
-    wxWindow* mainFrame = child->GetParent();
-    if (not mainFrame) return;
-
-    // move upper left dialog corner to center of parent
-    ::wxDisplaySize(&displayX, &displayY);
-    mainFrame->GetPosition(&x, &y );
-    if ((x == 0) || (y == 0))
-        if (GetConfig()->pMainFrame)
-            GetConfig()->pMainFrame->GetPosition(&x, &y );
-    mainFrame->GetClientSize(&w,&h);
-
-    // move child underneath the mouse pointer
-    wxPoint movePosn = ::wxGetMousePosition();
-    movePosn.x = x+(w>>2);
-    movePosn.y = y+(h>>2);
-
-    // Make child is not off the screen
-    wxSize size = child->GetSize();
-    //-LOGIT( _T("X[%d]Y[%d]width[%d]height[%d]"), x,y,w,h );
-
-    if ( (movePosn.x+size.GetWidth()) > displayX)
-        movePosn.x = displayX-size.GetWidth();
-    if ( (movePosn.y+size.GetHeight()) > displayY)
-        movePosn.y = displayY-size.GetHeight();
-
-    child->Move(movePosn.x, movePosn.y);
-    return;
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuAbout(wxCommandEvent& event)

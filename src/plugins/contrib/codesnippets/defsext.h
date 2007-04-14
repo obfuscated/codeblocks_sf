@@ -25,6 +25,7 @@
 //============================================================================
 
 #define DEFAULT_LANGUAGE _("<default>")
+
 #define PAGE_COMMON _("Common")
 #define PAGE_LANGUAGES _("Languages")
 #define PAGE_STYLE_TYPES _("Style types")
@@ -42,7 +43,9 @@ enum {
     myID_INDENTINC,
     myID_INDENTRED,
     myID_FINDNEXT,
+    myID_FINDPREV,
     myID_REPLACE,
+    myID_REPLACEALL,
     myID_REPLACENEXT,
     myID_BRACEMATCH,
     myID_GOTO,

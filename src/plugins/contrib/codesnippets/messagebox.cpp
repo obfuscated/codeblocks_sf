@@ -91,12 +91,14 @@ int messageBox( const wxString& message, const wxString& title, long dialogStyle
     int h; int w;
     int x; int y;
     int displayX; int displayY;
-    wxWindow* mainFrame = GetConfig()->pMainFrame;
     // move dialog box underneath the mouse pointer
     wxPoint movePosn = ::wxGetMousePosition();
+    wxWindow* mainFrame = ::wxFindWindowAtPoint(movePosn);
+    if (not mainFrame) mainFrame = GetConfig()->pMainFrame;
     // move upper left dialog corner to center of parent
     ::wxDisplaySize(&displayX, &displayY);
     mainFrame->GetPosition(&x, &y );
+    mainFrame->ClientToScreen(&x, &y );
     mainFrame->GetClientSize(&w,&h);
     movePosn.x = x+(w>>2);
     movePosn.y = y+(h>>2);
@@ -178,6 +180,10 @@ int messageBox( const wxString& message, const wxString& title, long dialogStyle
     //     LOGIT( _T("GetLastError[%d]"), bresult);
     //    #endif //LOGGING
     //}
+    if (pBox->m_pYesButton)
+        pBox->SetDefaultItem(pBox->m_pYesButton);
+    if (pBox->m_pOkButton)
+        pBox->SetDefaultItem(pBox->m_pOkButton);
 
     // return results
     int result = pBox->ShowModal();

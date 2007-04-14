@@ -19,14 +19,14 @@
 //----------------------------------------------------------------------------
 // headers
 //----------------------------------------------------------------------------
-#include "defsext.h"
+
 //! wxWindows headers
 
 //! wxScintilla headers
 #include <wx/wxscintilla.h>  // scintilla edit control
 
 //! application headers
-
+#include "defsext.h"
 
 //============================================================================
 // declarations

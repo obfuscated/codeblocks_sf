@@ -69,6 +69,7 @@
 		<ExtraCommands>
 			<Add after="./update" />
 		</ExtraCommands>
+		<Unit filename="Makefile.am" />
 		<Unit filename="codesnippets.cpp">
 			<Option target="Plugin-unix" />
 		</Unit>
@@ -88,6 +89,10 @@
 		<Unit filename="edit.h" />
 		<Unit filename="editsnippetdlg.cpp" />
 		<Unit filename="editsnippetdlg.h" />
+		<Unit filename="editsnippetframe.cpp" />
+		<Unit filename="editsnippetframe.h" />
+		<Unit filename="finddialogs.cpp" />
+		<Unit filename="finddialogs.h" />
 		<Unit filename="menuidentifiers.h" />
 		<Unit filename="messageBoxForm.cpp" />
 		<Unit filename="messageBoxForm.h" />
@@ -109,6 +114,8 @@
 		<Unit filename="snippetsconfig.h" />
 		<Unit filename="snippetsimages.cpp" />
 		<Unit filename="snippetsimages.h" />
+		<Unit filename="update" />
+		<Unit filename="update.bat" />
 		<Unit filename="version.cpp" />
 		<Unit filename="version.h" />
 		<Extensions>

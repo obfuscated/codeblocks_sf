@@ -70,6 +70,7 @@
 		<ExtraCommands>
 			<Add after="update.bat" />
 		</ExtraCommands>
+		<Unit filename="Makefile.am" />
 		<Unit filename="codesnippets.cpp">
 			<Option target="Plugin - Win32" />
 		</Unit>
@@ -91,6 +92,10 @@
 		<Unit filename="edit.h" />
 		<Unit filename="editsnippetdlg.cpp" />
 		<Unit filename="editsnippetdlg.h" />
+		<Unit filename="editsnippetframe.cpp" />
+		<Unit filename="editsnippetframe.h" />
+		<Unit filename="finddialogs.cpp" />
+		<Unit filename="finddialogs.h" />
 		<Unit filename="menuidentifiers.h" />
 		<Unit filename="messageBoxForm.cpp" />
 		<Unit filename="messageBoxForm.h" />

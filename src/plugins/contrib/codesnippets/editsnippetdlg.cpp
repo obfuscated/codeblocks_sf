@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: editsnippetdlg.cpp 32 2007-04-02 17:51:48Z Pecan $
+// RCS-ID: $Id: editsnippetdlg.cpp 43 2007-04-11 19:25:25Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -44,10 +44,12 @@
 #include "edit.h"
 #include "version.h"
 
-BEGIN_EVENT_TABLE(EditSnippetDlg, wxDialog)
+//-BEGIN_EVENT_TABLE(EditSnippetDlg, wxDialog)
+BEGIN_EVENT_TABLE(EditSnippetDlg, wxFrame)
 	EVT_BUTTON(wxID_OK,     EditSnippetDlg::OnOK)
 	EVT_BUTTON(wxID_CANCEL, EditSnippetDlg::OnCancel)
 	EVT_BUTTON(wxID_HELP,   EditSnippetDlg::OnHelp)
+	EVT_CLOSE(              EditSnippetDlg::OnCloseWindow)
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -79,15 +81,19 @@ bool EditSnippetDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& dat
 
 // ----------------------------------------------------------------------------
 EditSnippetDlg::EditSnippetDlg(const wxString& snippetName, const wxString& snippetText,
-                            wxSemaphore* pWaitSem, wxString fileName)
+                            wxSemaphore* pWaitSem, int* retcode, wxString fileName)
 // ----------------------------------------------------------------------------
 	//-: wxDialog(Manager::Get()->GetAppWindow(), wxID_ANY, _("Edit snippet"),
 	//: wxDialog( GetConfig()->pMainFrame, wxID_ANY, _T("Edit snippet"),
-	: wxDialog( GetConfig()->GetSnippetsWindow(), wxID_ANY, _T("Edit snippet"),
+//	: wxDialog( GetConfig()->GetSnippetsWindow(), wxID_ANY, _T("Edit snippet"),
+//		wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER)
+	: wxFrame( GetConfig()->GetSnippetsWindow(), wxID_ANY, _T("Edit snippet"),
 		wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER)
 {
     pWaitingSemaphore = pWaitSem;
     m_EditFileName = fileName;
+    m_pReturnCode = retcode;
+    *m_pReturnCode = wxID_CANCEL;
 
 	InitDlg();
 
@@ -128,7 +134,8 @@ EditSnippetDlg::EditSnippetDlg(const wxString& snippetName, const wxString& snip
 // ----------------------------------------------------------------------------
 EditSnippetDlg::~EditSnippetDlg()
 // ----------------------------------------------------------------------------
-{}
+{
+}
 // ----------------------------------------------------------------------------
 void EditSnippetDlg::EndSnippetDlg(int wxID_OKorCANCEL)
 // ----------------------------------------------------------------------------
@@ -239,7 +246,7 @@ void EditSnippetDlg::InitDlg()
 	Layout();
 
     // Place window over parent window
-    GetConfig()->GetSnippetsWindow()->CenterChildOnParent(this);
+    GetConfig()->CenterChildOnParent(this);
 
 }
 
@@ -263,7 +270,9 @@ void EditSnippetDlg::OnOK(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
     EndSnippetDlg(wxID_OK);
-	EndModal(wxID_OK);
+	//-EndModal(wxID_OK);
+	*m_pReturnCode = (wxID_OK);
+	Destroy();
 }
 
 // ----------------------------------------------------------------------------
@@ -271,7 +280,9 @@ void EditSnippetDlg::OnCancel(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
     EndSnippetDlg(wxID_CANCEL);
-	EndModal(wxID_CANCEL);
+	//-EndModal(wxID_CANCEL);
+	*m_pReturnCode = (wxID_CANCEL);
+	Destroy();
 }
 
 // ----------------------------------------------------------------------------
@@ -281,4 +292,12 @@ void EditSnippetDlg::OnHelp(wxCommandEvent& event)
 	// Link to the Wiki which contains information about the available macros
 	wxLaunchDefaultBrowser(_T("http://wiki.codeblocks.org/index.php?title=Builtin_variables"));
 }
+
+// ----------------------------------------------------------------------------
+void EditSnippetDlg::OnCloseWindow(wxCloseEvent& event)
+// ----------------------------------------------------------------------------
+{
+    OnCancel((wxCommandEvent&) event);
+}
+// ----------------------------------------------------------------------------
 

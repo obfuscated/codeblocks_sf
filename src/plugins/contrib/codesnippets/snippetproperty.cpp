@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetproperty.cpp 28 2007-04-01 14:32:57Z Pecan $
+// RCS-ID: $Id: snippetproperty.cpp 43 2007-04-11 19:25:25Z Pecan $
 // ----------------------------------------------------------------------------
 //  SnippetProperty.cpp                                         //(pecan 2006/9/12)
 // ----------------------------------------------------------------------------
@@ -98,7 +98,7 @@ SnippetProperty::SnippetProperty(wxTreeCtrl* pTree, wxTreeItemId itemId, wxSemap
     this->Move(mousePosn.x, mousePosn.y);
     this->SetSize(mousePosn.x, mousePosn.y, 460, 260);
     //SetSize(460, 260);
-    GetConfig()->GetSnippetsWindow()->CenterChildOnParent(this);
+    GetConfig()->CenterChildOnParent(this);
 
     m_pTreeCtrl = pTree;
     m_TreeItemId = itemId;

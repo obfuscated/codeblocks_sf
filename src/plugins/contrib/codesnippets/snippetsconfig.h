@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.h 32 2007-04-02 17:51:48Z Pecan $
+// RCS-ID: $Id: snippetsconfig.h 43 2007-04-11 19:25:25Z Pecan $
 
 
 #ifndef GLOBAL_H
@@ -53,12 +53,15 @@ class CodeSnippetsConfig
     void SettingsSave();
     void SettingsSaveWinPosition();
 
-    wxWindow* GetMainFrame(){return pMainFrame;}
+    wxWindow*   GetMainFrame(){return pMainFrame;}
     SnipImages* GetSnipImages(){return pSnipImages;}
     CodeSnippetsWindow* GetSnippetsWindow(){return pSnippetsWindow;}
-    void SetSnippetsTreeCtrl(CodeSnippetsTreeCtrl* p){ pSnippetsTreeCtrl=p;return;}
+    void        SetSnippetsTreeCtrl(CodeSnippetsTreeCtrl* p){ pSnippetsTreeCtrl=p;return;}
     CodeSnippetsTreeCtrl* GetSnippetsTreeCtrl(){return pSnippetsTreeCtrl;}
-    wxString GetVersion(){return m_VersionStr;}
+    wxString    GetVersion(){return m_VersionStr;}
+
+    void CenterChildOnParent(wxWindow* child);
+
 
    #if defined(BUILDING_PLUGIN)
     bool IsPlugin(){return true;}

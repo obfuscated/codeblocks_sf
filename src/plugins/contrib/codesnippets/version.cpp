@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 33 2007-04-03 02:45:43Z Pecan $
+// RCS-ID: $Id: version.cpp 47 2007-04-14 02:43:21Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -68,7 +68,7 @@ AppVersion::~AppVersion()
 //          16) Added WX_PRECOMP to all cpp files
 //          17) Check for externally changed file
 // ----------------------------------------------------------------------------
-//  Commit  1.1.51 2007/04/2
+//  Commit  1.1.54 2007/04/3
 //          18) change Version class to AppVersion to avoid CB conflict
 //          19) Added check for externally changed file to plugin version
 //          20) DeDocked & DeAllocated resources when Snippet window is closed
@@ -101,7 +101,7 @@ AppVersion::~AppVersion()
 //          47) Move floating window to last Menu->View->Hide position
 //          48) Rearrange menu needs sorting for better sense
 //          49) Place Edit dialog to last close position & size
-//          50) Fized Bug: mis-shown/mis-placed view. View Snippets. Open Edit. Drag Snippet floating wind.
+//          50) Fixed Bug: mis-shown/mis-placed view. View Snippets. Open Edit. Drag Snippet floating wind.
 //              It turns transparent and stays that way. Close Edit. View Closes but Menu is still active.
 //              View Snippets. Dock is now coverering CodeBlocks bec dock now has codeblocks size in .ini.
 //              Looks like wxAUI bug. Saying window is shown when it's not.
@@ -113,6 +113,60 @@ AppVersion::~AppVersion()
 //          55) Missing event.Skip() in OnIdle() caused debugger to hang.
 //  Commit  1.1.56 2007/04/12
 //          56) Avoid file changed dialog when .xml does not exist
+// ----------------------------------------------------------------------------
+//  Commit  1.1.72 2007/04/13
+//          55) Fix:App: Not finding MSW .XML & .ini file when CodeSnippets in camel case
+//          56) Initial conversion of editor dlg to EditSnippetsFrame() and wxCode editor
+//          57) SetMarginWidth according to max num lines in file/snippet
+//          58) Add OnScroll routines to correct horizontal scroll errors
+//          59) Add Editor menu items FindNext, FindPrev, correct saveFile logic
+//          60) Added context menu Copy/Paste of Snippets/Categories to any items.
+//          61) Plg: Placement: Center top left corner of child over parent.
+//          62) another const for snippetdlg
+//          63) Add ".trash" facility for snippet removal
+//          64) double click invokes edit, shift double click invokes apply
+//          65) Corrected messageBox for Edit use.
+//          66) EditSnippetFrame(): reset the undo history to avoid undoing to a blank page
+//          67) CenterChildOnParent() moved to editConfig()
+//          68) CenterChildOnParent() FindReplace dialog
+//          69) "56)" commit above, Edit::Replace, Edit::GoTo, Edit::MatchBrace, messageBoxs, SetDeaultItem
+//          70) ::wxMkDir(m_ConfigFolder) if it doesn't exist. CB bug.
+//              cf:http://forums.codeblocks.org/index.php?topic=5619.0;topicseen
+//          71) Place editor dlg windows (save file warning etc) over Snippet window
+//          72) Guard GetFileModificationTime() with if wxFileExists()
+//              Correct spelling of /dev/null in linux code
+// ----------------------------------------------------------------------------
+//  Commit  1.1.73 2007/04/13
+//          73) Block re-entry to code via wxCloseEvent(s) and IsDialogBusy()
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+//  ToDo    All
+//          Allow Settings dlg to override all .ini locations
+//          Hide/show search box
+//          Bug: renamed "new snippet" label is not sorted into place
+//          Add dragscrolling options to settingsdlg & snippetsconfig
+//          snippetsconfig.cpp should globally read/keep/save *all* config items for all classes
+//          Add ".Trash" facility for external file removal (ask to delete file)
+//          Bug: crash in file modification detection routines
+//              eg., Do Open/view Open/app Close/view Close/App MsgBox then crash
+//          Bug: on Linux, the executable folder is being reported incorrectly
+//              Code is in snippet "Finding Pgm Path"
+//          Help should invoke browser for wiki article
+//          Investigate Linux problem dragging item out of window (alternate X11 solution)
+//          Update wiki for Re-arranging Tree items
+//          Option to wxExecute CodeSnippets vs Docking Snippets
+//          App: if already running, minimize & restore window
+//          Bug: Plg: popup for long names is showing up behind the window
+//          Need a backup mechanism
+//          Bug:Plg: Tree pops over editor when moving mouse into CB window. Very Annoying.
+//          Bug: Properties Edit ctrl is not calc'ng max line margin width
+//  Other
+//          Bug: Nasty wxAUI Linux behavior. Left chick on CB main menu docks floating windows.
+//               Floating window won't dock when dragged to CB. Have to left click some main menu item.
+//          Possibility: When CodeSnippets Plgn is open, enable Copy/Paste/DragnDrop from any CB ctrl.
+// ----------------------------------------------------------------------------
+//
 // ----------------------------------------------------------------------------
 // Published Changes for Version 1.1:
 //    Ability to save Snippets as external files
@@ -142,33 +196,4 @@ AppVersion::~AppVersion()
 //    Work arounds to avoid wxAUI bugs on MSW/LINUX (cf. version.cpp)
 //
 // ----------------------------------------------------------------------------
-//  ToDo    All
-//          User should be reminded to save. On first exec, data is lost.
-//          Allow Settings dlg to override all .ini locations
-//          Bug: Minimizing edit dlg does not minimize, only moves it.
-//          Hide/show search box
-//          Bug: new snippet label is not sorted into place
-//          Bug: Horizonal scrollBar doesnt update until pulled then released
-//          Add dragscrolling configuration to settingsdlg & snippetsconfig
-//          snippetsconfig.cpp should read/keep/save *all* config items for all classes
-//          externally modified files w/default editor should warn user
-//          Add ".Trash" facility for external file removal
-//          Bug: crash in file modification detection routines
-//              Open/view Open/app Close/view Close/App MsgBox then crash
-//          Copy and paste whole catagories (for when out of view) like dragging them.
-//          Add Ctrl-S save ability to Editor
-//          Put file name beside "Name" when editing File Link
-//          Option: double click invokes editor
-//          Bug: on Linux, the executable dir is being reported incorrectly
-//          Help should invoke browser for wiki article
-//          Investigate Linux problem dragging item out of window (alternate X11 solution)
-//          Update wiki for Re-arranging Tree items
-//  Todo    Plugin
-//          Find work around for wxAUI floating window vs menu right click bug
-//          Option to wxExecute CodeSnippets vs Docking Snippets
-//  Other
-//          Bug: Nasty wxAUI Linux behavior. Left chick on CB main menu docks floating windows.
-//               Floating window won't dock when dragged to CB. Have to left click some main menu item.
-// ----------------------------------------------------------------------------
-//
 

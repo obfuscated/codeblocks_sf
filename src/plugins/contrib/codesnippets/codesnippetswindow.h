@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.h 32 2007-04-02 17:51:48Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.h 47 2007-04-14 02:43:21Z Pecan $
 
 #ifndef CODESNIPPETSWINDOW_H
 #define CODESNIPPETSWINDOW_H
@@ -72,41 +72,43 @@ class CodeSnippetsWindow : public wxPanel
 		~CodeSnippetsWindow();
 
         void SaveSnippetsToFile(const wxString& fileName);
-        bool    IsSnippet(wxTreeItemId item = (void*)0  )
+        bool IsSnippet(wxTreeItemId item = (void*)0  )
             { return GetSnippetsTreeCtrl()->IsSnippet(item); }
         bool IsFileSnippet(wxTreeItemId itemId=(void*)0)
             { return GetSnippetsTreeCtrl()->IsFileSnippet(itemId); }
 
         //Getter helper routines
-        CodeSnippetsTreeCtrl* GetSnippetsTreeCtrl(){ return m_SnippetsTreeCtrl ;}
-        wxImageList* GetSnipImageList(){ return GetConfig()->GetSnipImages()->GetSnipImageList();}
+        CodeSnippetsTreeCtrl*   GetSnippetsTreeCtrl(){ return m_SnippetsTreeCtrl ;}
+        wxImageList*            GetSnipImageList(){ return GetConfig()->GetSnipImages()->GetSnipImageList();}
+
         bool GetFileChanged( )
             {return GetSnippetsTreeCtrl()->GetFileChanged();}
         bool SetFileChanged( bool truefalse )
             {return GetSnippetsTreeCtrl()->SetFileChanged(truefalse);}
+
         wxString GetSnippet() { return GetSnippetsTreeCtrl()->GetSnippet();}
         wxString GetSnippet( wxTreeItemId itemId ) { return GetSnippetsTreeCtrl()->GetSnippet(itemId);}
         wxTreeItemId GetAssociatedItemID(){return GetSnippetsTreeCtrl()->GetAssociatedItemID();}
-        void CenterChildOnParent(wxWindow* child);
 
 
 	private:
 		void InitDlg();
 		void ApplySnippet(const wxTreeItemId& itemID);
 		void CheckForMacros(wxString& snippet);
-		wxTreeItemId SearchSnippet(const wxString& searchTerms, const wxTreeItemId& node);
 		bool AddTextToClipBoard(const wxString& text);
         void SetSnippetImage(wxTreeItemId itemId);
         void CheckForExternallyModifiedFiles();
         void ShowSnippetsAbout(wxString buildInfo);
+		wxTreeItemId SearchSnippet(const wxString& searchTerms, const wxTreeItemId& node);
+		bool IsDialogBusy(){return GetSnippetsTreeCtrl()->IsDialogBusy();}
 
 		wxTextCtrl*             m_SearchSnippetCtrl;
 		wxButton*               m_SearchCfgBtn;
 		CodeSnippetsTreeCtrl*   m_SnippetsTreeCtrl;
-		wxImageList*            m_SnippetsTreeImageList;
 		bool                    m_AppendItemsFromFile;
 //-		SearchConfiguration     m_SearchConfig;
 		bool                    m_isCheckingForExternallyModifiedFiles;
+        TiXmlDocument*          pTiXmlDoc;
 
 
 		void OnSearchCfg(wxCommandEvent& event);
@@ -138,6 +140,10 @@ class CodeSnippetsWindow : public wxPanel
         void OnMnuSettings(wxCommandEvent& event);
         void OnMnuAbout(wxCommandEvent& event);
         void OnShutdown(wxCloseEvent& event);
+        void OnMnuCopy(wxCommandEvent& event);
+        void OnMnuPaste(wxCommandEvent& event);
+
+
 
 		DECLARE_EVENT_TABLE()
 };
