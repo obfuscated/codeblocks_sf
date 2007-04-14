@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="11"  release="10" />
+    <Plugin name="wxSmithContribItems">
+        <Value title="wxSmith - Contrib Items" />
+        <Value version="0.1" />
+        <Value description="Set of contrib wxWidgets items for wxSmith" />
+        <Value author="" />
+        <Value authorEmail="" />
+        <Value authorWebsite="" />
+        <Value thanksTo="" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

@@ -17,6 +17,7 @@
 		<Project filename="plugins\contrib\symtab\symtab.cbp" />
 		<Project filename="plugins\contrib\regex_testbed\RegExTestbed.cbp" />
 		<Project filename="plugins\contrib\wxSmith\wxSmith.cbp" />
+		<Project filename="plugins\contrib\wxSmithContribItems\wxSmithContribItems.cbp" />
 		<Project filename="tools\cb_share_config\cb_share_config.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

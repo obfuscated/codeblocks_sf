@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="wxSmith - Contrib Items" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="wxSmithContribItems">
+				<Option platforms="Windows;" />
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\wxSmithContribItems.dll" prefix_auto="0" extension_auto="0" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="$(#cb)\devel\codeblocks.exe" />
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="wxSmithContribItems;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-g" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DTIXML_USE_STL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DWXMAKINGLIB_PROPGRID" />
+			<Add option="-DwxPG_COMPATIBILITY_1_0_0" />
+			<Add directory="$(#cb)\include" />
+			<Add directory="$(#cb)\include\wxscintilla\include" />
+			<Add directory="$(#wx.include)" />
+			<Add directory="$(#wx.lib)\gcc_dll\mswu" />
+			<Add directory="$(#CB.include)\propgrid\include" />
+			<Add directory="..\wxSmith" />
+			<Add directory="wxchart\wxchart-1.0\include" />
+		</Compiler>
+		<Linker>
+			<Add library="wxsmith" />
+			<Add library="codeblocks" />
+			<Add library="wxmsw26u" />
+			<Add directory="$(#cb)\devel" />
+			<Add directory="$(#wx.lib)\gcc_dll" />
+			<Add directory="..\..\..\devel\share\CodeBlocks\plugins" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\wxSmithContribItems.zip manifest.xml" />
+		</ExtraCommands>
+		<Unit filename="manifest.xml" />
+		<Unit filename="wxSmithContribItems.cpp" />
+		<Unit filename="wxSmithContribItems.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\axis.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\bar3dchartpoints.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\barchartpoints.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chart.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartart\chart_zin.bmp" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartart\chart_zin.xpm" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartart\chart_zot.bmp" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartart\chart_zot.xpm" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartcolors.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartctrl.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartdef.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartpoints.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartpointstypes.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\charttypes.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartwindow.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\label.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\legend.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\legendwindow.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\pie3dchartpoints.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\piechartpoints.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\points.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\xaxis.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\xaxiswindow.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\yaxis.h" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\yaxiswindow.h" />
+		<Unit filename="wxchart\wxchart-1.0\src\axis.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\bar3dchartpoints.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\barchartpoints.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\chart.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\chartcolors.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\chartctrl.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\chartwindow.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\label.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\legend.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\legendwindow.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\pie3dchartpoints.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\piechartpoints.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\points.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\xaxis.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\xaxiswindow.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\yaxis.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\src\yaxiswindow.cpp" />
+		<Unit filename="wxchart\wxchart16.png" />
+		<Unit filename="wxchart\wxchart16.xpm" />
+		<Unit filename="wxchart\wxchart32.png" />
+		<Unit filename="wxchart\wxchart32.xpm" />
+		<Unit filename="wxchart\wxschart.cpp" />
+		<Unit filename="wxchart\wxschart.h" />
+		<Extensions>
+			<code_completion />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
