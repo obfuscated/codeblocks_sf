@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 47 2007-04-14 02:43:21Z Pecan $
+// RCS-ID: $Id: version.cpp 49 2007-04-14 13:06:13Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -138,6 +138,9 @@ AppVersion::~AppVersion()
 // ----------------------------------------------------------------------------
 //  Commit  1.1.73 2007/04/13
 //          73) Block re-entry to code via wxCloseEvent(s) and IsDialogBusy()
+// ----------------------------------------------------------------------------
+//  Commit  1.1.74 2007/04/14
+//          74 ) Remove AMD64 ambiguity on finddlg wxComboBox call
 // ----------------------------------------------------------------------------
 //
 // ----------------------------------------------------------------------------
