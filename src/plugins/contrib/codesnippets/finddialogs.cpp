@@ -118,7 +118,7 @@ myFindReplaceDlg::myFindReplaceDlg (wxWindow *parent,
     m_finddir = new wxComboBox (this, -1, finddir,
                                 wxDefaultPosition, wxSize(200, -1),
                                 //0, NULL); //AMD64 ambiguity betw int vs wxArray
-                                (int)0, NULL);
+                                (int)0, (const wxString*) NULL);
     m_fdirsizer->Add (m_finddir, 1, wxALIGN_CENTRE_VERTICAL);
     m_findpane->Show (m_fdirsizer, false);
     m_findpane->Add (m_fdirsizer, 0, wxEXPAND | wxBOTTOM, 6);

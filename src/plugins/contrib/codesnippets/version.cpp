@@ -139,8 +139,9 @@ AppVersion::~AppVersion()
 //  Commit  1.1.73 2007/04/13
 //          73) Block re-entry to code via wxCloseEvent(s) and IsDialogBusy()
 // ----------------------------------------------------------------------------
-//  Commit  1.1.74 2007/04/14
+//  Commit  1.1.75 2007/04/14
 //          74 ) Remove AMD64 ambiguity on finddlg wxComboBox call
+//          75 ) Again: Remove AMD64 gentoo ambiguity on finddlg wxComboBox call
 // ----------------------------------------------------------------------------
 //
 // ----------------------------------------------------------------------------
