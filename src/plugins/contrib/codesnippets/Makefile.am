@@ -32,7 +32,7 @@ libcodesnippets_la_SOURCES = 	codesnippets.cpp \
 			finddialogs.cpp \
 			version.cpp
 
-noinst_HEADERS =  	codesnippets.h
+noinst_HEADERS =  	codesnippets.h \
 			codesnippetsapp.h \
 			codesnippetstreectrl.h \
 			codesnippetswindow.h \
@@ -55,7 +55,7 @@ noinst_HEADERS =  	codesnippets.h
 			version.h \
 			wx_pch.h
 
-EXTRA_DIST = 	codesnippets.cbp \
+EXTRA_DIST =	codesnippets.cbp \
 		codesnippets-unix.cbp \
 		update.bat \
 		update \

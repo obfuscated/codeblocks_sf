@@ -17,10 +17,12 @@ libwxsmithcontribitems_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-unde
 libwxsmithcontribitems_la_LIBADD = ../../../sdk/libcodeblocks.la \
 		       ../wxSmith/libwxsmith.la
 
-EXTRA_DIST = \
-$(srcdir)/*.cbp \
-$(srcdir)/*.bat \
-manifest.xml
+EXTRA_DIST = ./wxchart/wxchart-1.0/include/wx/chartart/*.xpm \
+		./wxchart/wxchart-1.0/include/wx/chartart/*.bmp \
+		./wxchart/*.xpm \
+		./wxchart/*.png \
+		$(srcdir)/*.cbp \
+		manifest.xml
 
 pkgdata_DATA = wxSmithContribItems.zip
 CLEANFILES = $(pkgdata_DATA)

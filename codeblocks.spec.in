@@ -203,9 +203,10 @@ fi
 %{pkgdata}/keybinder.zip
 %{pkgdata}/lib_finder.zip
 %{pkgdata}/Profiler.zip
-%{pkgdata}/SymTab.zip
 %{pkgdata}/RegExTestbed.zip
+%{pkgdata}/SymTab.zip
 %{pkgdata}/wxsmith.zip
+%{pkgdata}/wxSmithContribItems.zip
 %{pkgdata}/images/wxsmith/*
 %{pkgdata}/images/codesnippets/*
 %{pkgdata}/plugins/libbyogames.*
@@ -222,6 +223,7 @@ fi
 %{pkgdata}/plugins/libRegExTestbed.*
 %{pkgdata}/plugins/libSymTab.*
 %{pkgdata}/plugins/libwxsmith.*
+%{pkgdata}/plugins/libwxsmithcontribitems.*
 
 %files devel
 %defattr(-,root,root)
@@ -231,6 +233,8 @@ fi
 %{_includedir}/%{name}/*
 
 %changelog
+* Mon Apr 16 2007 Daniel Orb <danielorb2000@googlemail.com>
+- added wxsmithcontribitems files to filelist
 * Fri Jan  5 2007 Daniel Orb <danielorb2000@googlemail.com>
 - changed prefix on suse to default (from /opt/gnome to /usr)
 * Sun Dec  2 2006 Daniel Orb <danielorb2000@googlemail.com>
