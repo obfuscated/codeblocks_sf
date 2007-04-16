@@ -568,7 +568,7 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
 {
     // Memorize the currently focused window
 
-    wxWindow* focused = wxWindow::FindFocus();
+    //wxWindow* focused = wxWindow::FindFocus();
 
     int eventId = event.GetId();
 
@@ -639,9 +639,10 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
         OnConfig(event);
 
     // Return focus to previously focused window
-
-    if (focused)
-        focused->SetFocus();
+    /* NOTE (Biplab#1#): Commented the following lines to fix [Bug #10802]. Uncomment this if it
+    breaks anything or replace this with a better fix, when available. */
+    /*if (focused)
+        focused->SetFocus();*/
 }
 
 void CompilerGCC::AddBuildProgressBar()
@@ -2833,7 +2834,7 @@ void CompilerGCC::OnCompile(wxCommandEvent& event)
 
 void CompilerGCC::OnCompileFile(wxCommandEvent& event)
 {
-     wxFileName file;
+    wxFileName file;
     if (event.GetId() == idMenuCompileFileFromProjectManager)
     {
         // we 're called from a menu in ProjectManager
