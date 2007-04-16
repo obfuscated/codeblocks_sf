@@ -403,7 +403,9 @@ function VerifyLibFile(dir, file, type)
         && (!IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".lib")))
         && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file))
         && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".a")))
-        && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".lib"))) )
+        && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".lib")))
+		&& (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".la")))
+		&& (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".so"))))
 
     {
         ShowError(_T("The path you entered seems valid, but this wizard\n" +
