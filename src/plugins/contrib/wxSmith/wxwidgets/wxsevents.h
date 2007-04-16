@@ -1,6 +1,7 @@
 #ifndef WXSEVENTS_H
 #define WXSEVENTS_H
 
+#include <wx/arrstr.h>
 #include <tinyxml/tinyxml.h>
 
 #include "../wxscodinglang.h"
