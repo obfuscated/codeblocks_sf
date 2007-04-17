@@ -1420,6 +1420,8 @@ ProjectBuildTarget* cbProject::AddDefaultBuildTarget()
 
 ProjectBuildTarget* cbProject::AddBuildTarget(const wxString& targetName)
 {
+    if (GetBuildTarget(targetName)) // Don't add the target if it exists
+        return 0L;
     ProjectBuildTarget* target = new ProjectBuildTarget(this);
     target->m_Filename = m_Filename; // really important
     target->SetTitle(targetName);
