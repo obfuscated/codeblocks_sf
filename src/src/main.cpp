@@ -2042,7 +2042,12 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
         // verify that the open files are still in sync
         // the new file might have overwritten an existing one)
         Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
-        if(prj)
+
+        // If both are empty it means that the wizard has failed
+        if (!prj && filename.IsEmpty())
+            return;
+
+        if (prj)
         {
             prj->Save();
             prj->SaveAllFiles();
@@ -2055,7 +2060,7 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
             else
                 AddToRecentFilesHistory(filename);
         }
-		if (tot == totProject) // Created project should be parsed
+		if (prj && tot == totProject) // Created project should be parsed
         {
             CodeBlocksEvent evt(cbEVT_PROJECT_OPEN, 0, prj);
             Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
