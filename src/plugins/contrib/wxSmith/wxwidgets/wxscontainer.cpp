@@ -96,11 +96,13 @@ bool wxsContainer::OnCanAddChild(wxsItem* Item,bool ShowMessage)
 
 void wxsContainer::OnEnumItemProperties(long Flags)
 {
+    static const int Priority = 50;
+
     OnEnumContainerProperties(Flags);
     if ( m_StyleSet )
     {
-        WXS_STYLE(wxsContainer,m_StyleBits,0,_("Style"),_T("style"),m_StyleSet);
-        WXS_EXSTYLE(wxsContainer,m_ExStyleBits,0,_("Extra style"),_T("exstyle"),m_StyleSet);
+        WXS_STYLE_P(wxsContainer,m_StyleBits,_("Style"),_T("style"),m_StyleSet,Priority);
+        WXS_EXSTYLE_P(wxsContainer,m_ExStyleBits,_("Extra style"),_T("exstyle"),m_StyleSet,Priority);
     }
 }
 

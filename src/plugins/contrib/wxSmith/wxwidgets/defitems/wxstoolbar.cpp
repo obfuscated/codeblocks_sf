@@ -157,10 +157,10 @@ void wxsToolBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent
 
 void wxsToolBar::OnEnumToolProperties(long Flags)
 {
-    WXS_SIZE(wxsToolBar,m_BitmapSize,0,_("Use Bitmap size"),_("  Width"),_("  Height"),_("  In Dialog Units"),_T("bitmapsize"));
-    WXS_SIZE(wxsToolBar,m_Margins,0,_("Use Margins"),_("  Width"),_("  Height"),_("  In Dialog Units"),_T("margins"));
-    WXS_LONG(wxsToolBar,m_Packing,0,_("Packing"),_T("packing"),-1);
-    WXS_LONG(wxsToolBar,m_Separation,0,_("Separation"),_T("separation"),-1);
+    WXS_SIZE(wxsToolBar,m_BitmapSize,_("Use Bitmap size"),_("  Width"),_("  Height"),_("  In Dialog Units"),_T("bitmapsize"));
+    WXS_SIZE(wxsToolBar,m_Margins,_("Use Margins"),_("  Width"),_("  Height"),_("  In Dialog Units"),_T("margins"));
+    WXS_LONG(wxsToolBar,m_Packing,_("Packing"),_T("packing"),-1);
+    WXS_LONG(wxsToolBar,m_Separation,_("Separation"),_T("separation"),-1);
 }
 
 void wxsToolBar::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

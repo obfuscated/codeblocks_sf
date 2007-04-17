@@ -25,6 +25,7 @@
 
 namespace
 {
+    /*
     const long    OrientValues[] = { wxHORIZONTAL, wxVERTICAL, 0 };
     const wxChar* OrientNames[]  = { _T("wxHORIZONTAL"), _T("wxVERTICAL"), NULL };
 
@@ -48,6 +49,7 @@ namespace
                 return _T("Sizer Orientation");
             }
     };
+    */
 
     wxsRegisterItem<wxsStaticBoxSizer> Reg(_T("StaticBoxSizer"),wxsTSizer,_T("Layout"),40);
 }
@@ -87,9 +89,11 @@ void wxsStaticBoxSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& 
 
 void wxsStaticBoxSizer::OnEnumSizerProperties(long Flags)
 {
-    WXS_STRING(wxsStaticBoxSizer,Label,0,_("Label"),_T("label"),wxEmptyString,false,false);
-    static OrientProp Prop(wxsOFFSET(wxsStaticBoxSizer,Orient));
-    Property(Prop,0);
+    static const long    OrientValues[] = { wxHORIZONTAL, wxVERTICAL, 0 };
+    static const wxChar* OrientNames[]  = { _T("wxHORIZONTAL"), _T("wxVERTICAL"), NULL };
+
+    WXS_SHORT_STRING(wxsStaticBoxSizer,Label,_("Label"),_T("label"),_T(""),false);
+    WXS_ENUM(wxsStaticBoxSizer,Orient,_("Orientation"),_T("orient"),OrientValues,OrientNames,wxHORIZONTAL);
 }
 
 void wxsStaticBoxSizer::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

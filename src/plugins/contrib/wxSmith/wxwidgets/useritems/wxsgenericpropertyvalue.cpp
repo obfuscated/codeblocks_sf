@@ -125,63 +125,63 @@ void wxsGenericPropertyValue::OnEnumProperties(long Flags)
         case ptString:
         {
             wxsStringProperty Prop(m_PropertyName,m_Name,wxsOFFSET(wxsGenericPropertyValue,m_String),false,true,wxEmptyString);
-            Property(Prop,0);
+            Property(Prop);
             break;
         }
 
         case ptLongString:
         {
             wxsStringProperty Prop(m_PropertyName,m_Name,wxsOFFSET(wxsGenericPropertyValue,m_String),true,true,wxEmptyString);
-            Property(Prop,0);
+            Property(Prop);
             break;
         }
 
         case ptLong:
         {
             wxsLongProperty Prop(m_PropertyName,m_Name,wxsOFFSET(wxsGenericPropertyValue,m_Long));
-            Property(Prop,0);
+            Property(Prop);
             break;
         }
 
         case ptBool:
         {
             wxsBoolProperty Prop(m_PropertyName,m_Name,wxsOFFSET(wxsGenericPropertyValue,m_Bool));
-            Property(Prop,0);
+            Property(Prop);
             break;
         }
 
         case ptBitmap:
         {
             wxsBitmapProperty Prop(m_PropertyName,m_Name,wxsOFFSET(wxsGenericPropertyValue,m_Bitmap));
-            Property(Prop,0);
+            Property(Prop);
             break;
         }
 
         case ptColour:
         {
             wxsColourProperty Prop(m_PropertyName,m_Name,wxsOFFSET(wxsGenericPropertyValue,m_Colour));
-            Property(Prop,0);
+            Property(Prop);
             break;
         }
 
         case ptDimension:
         {
             wxsDimensionProperty Prop(m_PropertyName,m_PropertyName2,m_Name,wxsOFFSET(wxsGenericPropertyValue,m_Dimension));
-            Property(Prop,0);
+            Property(Prop);
             break;
         }
 
         case ptPosition:
         {
             wxsPositionProperty Prop(m_PropertyName,m_PropertyName2,m_PropertyName3,m_PropertyName4,m_Name,wxsOFFSET(wxsGenericPropertyValue,m_PositionSize));
-            Property(Prop,0);
+            Property(Prop);
             break;
         }
 
         case ptSize:
         {
             wxsSizeProperty Prop(m_PropertyName,m_PropertyName2,m_PropertyName3,m_PropertyName4,m_Name,wxsOFFSET(wxsGenericPropertyValue,m_PositionSize));
-            Property(Prop,0);
+            Property(Prop);
             break;
         }
     }

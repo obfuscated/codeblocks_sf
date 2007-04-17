@@ -88,9 +88,9 @@ wxObject* wxsSpinCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsSpinCtrl::OnEnumWidgetProperties(long Flags)
 {
-    WXS_STRING(wxsSpinCtrl,Value,0,_("Value"),_T("value"),_T(""),true,false)
-    WXS_LONG(wxsSpinCtrl,Min,0,_("Min"),_T("min"),0)
-    WXS_LONG(wxsSpinCtrl,Max,0,_("Max"),_T("max"),100)
+    WXS_SHORT_STRING(wxsSpinCtrl,Value,_("Value"),_T("value"),_T(""),true)
+    WXS_LONG(wxsSpinCtrl,Min,_("Min"),_T("min"),0)
+    WXS_LONG(wxsSpinCtrl,Max,_("Max"),_T("max"),100)
 }
 
 void wxsSpinCtrl::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

@@ -101,9 +101,9 @@ wxObject* wxsHtmlWindow::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsHtmlWindow::OnEnumWidgetProperties(long Flags)
 {
-    WXS_STRING(wxsHtmlWindow,Url,0,_("Url"),_T("url"),_T(""),false,false)
-    WXS_STRING(wxsHtmlWindow,HtmlCode,0,_("Html Code"),_T("htmlcode"),_T(""),true,false)
-    WXS_DIMENSION(wxsHtmlWindow,Borders,0,_("Borders"),_("Borders in Dialog Units"),_("borders"),0,false)
+    WXS_SHORT_STRING(wxsHtmlWindow,Url,_("Url"),_T("url"),_T(""),false)
+    WXS_STRING(wxsHtmlWindow,HtmlCode,_("Html Code"),_T("htmlcode"),_T(""),false)
+    WXS_DIMENSION(wxsHtmlWindow,Borders,_("Borders"),_("Borders in Dialog Units"),_("borders"),0,false)
 }
 
 void wxsHtmlWindow::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

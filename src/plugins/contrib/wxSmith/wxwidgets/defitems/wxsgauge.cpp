@@ -90,10 +90,10 @@ wxObject* wxsGauge::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsGauge::OnEnumWidgetProperties(long Flags)
 {
-    WXS_LONG(wxsGauge,Value,0,_("Value"),_T("value"),0)
-    WXS_LONG(wxsGauge,Range,0,_("Range"),_T("range"),100)
-    WXS_LONG(wxsGauge,Shadow,0,_("3D Shadow Width"),_T("shadow"),0)
-    WXS_LONG(wxsGauge,Bezel,0,_("Bezel Face Width"),_T("bezel"),0)
+    WXS_LONG(wxsGauge,Value,_("Value"),_T("value"),0)
+    WXS_LONG(wxsGauge,Range,_("Range"),_T("range"),100)
+    WXS_LONG(wxsGauge,Shadow,_("3D Shadow Width"),_T("shadow"),0)
+    WXS_LONG(wxsGauge,Bezel,_("Bezel Face Width"),_T("bezel"),0)
 }
 
 void wxsGauge::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

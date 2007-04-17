@@ -128,12 +128,11 @@ class wxsPropertyContainer
          *
          * \note This function may be called only inside OnEnumProperties function
          *
-         * \param Prop - reference to property object which will be used
-         * \param PropertyFlags - flags of availability, when 0, flag is always used,
-         *                        otherwise, all bits set in PropertyFlags must also
-         *                        be set in flags passed to OnEnumProperties
+         * \param Prop reference to property object which will be used
+         * \param Priority priority of this property, it's used while creating property grid
+         *        to arrange properties.
          */
-        void Property(wxsProperty& Prop,long PropertyFlags=0);
+        void Property(wxsProperty& Prop);
 
         /** \brief Function enumerating properties of other container
          * \note This function may be called only inside OnEnumProperties function

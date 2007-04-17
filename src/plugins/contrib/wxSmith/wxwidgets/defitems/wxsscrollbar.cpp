@@ -100,10 +100,10 @@ wxObject* wxsScrollBar::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsScrollBar::OnEnumWidgetProperties(long Flags)
 {
-   WXS_LONG(wxsScrollBar,Value,0,_("Value"),_T("value"),0)
-   WXS_LONG(wxsScrollBar,ThumbSize,0,_("ThumbSize"),_T("thumbsize"),0)
-   WXS_LONG(wxsScrollBar,Range,0,_("Range"),_T("range"),0)
-   WXS_LONG(wxsScrollBar,PageSize,0,_("PageSize"),_T("pagesize"),0)
+   WXS_LONG(wxsScrollBar,Value,_("Value"),_T("value"),0)
+   WXS_LONG(wxsScrollBar,ThumbSize,_("ThumbSize"),_T("thumbsize"),0)
+   WXS_LONG(wxsScrollBar,Range,_("Range"),_T("range"),0)
+   WXS_LONG(wxsScrollBar,PageSize,_("PageSize"),_T("pagesize"),0)
 }
 
 void wxsScrollBar::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

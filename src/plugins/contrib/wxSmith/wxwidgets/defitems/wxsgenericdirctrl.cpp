@@ -80,9 +80,9 @@ wxObject* wxsGenericDirCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsGenericDirCtrl::OnEnumWidgetProperties(long Flags)
 {
-    WXS_STRING(wxsGenericDirCtrl,DefaultFolder,0,_("Default Folder"),_T("defaultfolder"),_T(""),true,false)
-    WXS_STRING(wxsGenericDirCtrl,Filter,0,_("Filter"),_T("filter"),_T(""),true,false)
-    WXS_LONG(wxsGenericDirCtrl,DefaultFilter,0,_("Default Filter"),_T("defaultfilter"),0)
+    WXS_SHORT_STRING(wxsGenericDirCtrl,DefaultFolder,_("Default Folder"),_T("defaultfolder"),_T(""),true)
+    WXS_SHORT_STRING(wxsGenericDirCtrl,Filter,_("Filter"),_T("filter"),_T(""),true)
+    WXS_LONG(wxsGenericDirCtrl,DefaultFilter,_("Default Filter"),_T("defaultfilter"),0)
 }
 
 void wxsGenericDirCtrl::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

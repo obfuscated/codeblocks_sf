@@ -253,8 +253,8 @@ wxString wxsFontData::BuildFontCode(const wxString& FontName,wxsCodingLang Langu
 // Helper macros for fetching variables
 #define VALUE   wxsVARIABLE(Object,Offset,wxsFontData)
 
-wxsFontProperty::wxsFontProperty(const wxString& PGName,const wxString& DataName,long _Offset):
-    wxsCustomEditorProperty(PGName,DataName),
+wxsFontProperty::wxsFontProperty(const wxString& PGName,const wxString& DataName,long _Offset,int Priority):
+    wxsCustomEditorProperty(PGName,DataName,Priority),
     Offset(_Offset)
 {}
 

@@ -111,11 +111,11 @@ void wxsToolBarItem::OnEnumToolProperties(long Flags)
         case Normal:
         case Radio:
         case Check:
-            WXS_STRING(wxsToolBarItem,m_Label,0,_("Label"),_T("label"),_T(""),false,true);
-            WXS_BITMAP(wxsToolBarItem,m_Bitmap,0,_("Bitmap"),_T("bitmap"),_T("wxART_TOOLBAR"));
-            WXS_BITMAP(wxsToolBarItem,m_Bitmap2,0,_("Disabled bitmap"),_T("bitmap2"),_T("wxART_TOOLBAR"));
-            WXS_STRING(wxsToolBarItem,m_ToolTip,0,_("Tooltip"),_T("tooltip"),_T(""),false,false);
-            WXS_STRING(wxsToolBarItem,m_HelpText,0,_("Help text"),_T("longhelp"),_T(""),false,false);
+            WXS_SHORT_STRING(wxsToolBarItem,m_Label,_("Label"),_T("label"),_T(""),true);
+            WXS_BITMAP(wxsToolBarItem,m_Bitmap,_("Bitmap"),_T("bitmap"),_T("wxART_TOOLBAR"));
+            WXS_BITMAP(wxsToolBarItem,m_Bitmap2,_("Disabled bitmap"),_T("bitmap2"),_T("wxART_TOOLBAR"));
+            WXS_STRING(wxsToolBarItem,m_ToolTip,_("Tooltip"),_T("tooltip"),_T(""),false);
+            WXS_STRING(wxsToolBarItem,m_HelpText,_("Help text"),_T("longhelp"),_T(""),false);
             break;
 
         default:;

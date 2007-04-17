@@ -81,8 +81,8 @@ wxObject* wxsButton::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsButton::OnEnumWidgetProperties(long Flags)
 {
-    WXS_STRING(wxsButton,Label,0,_("Label"),_T("label"),_T(""),true,false)
-    WXS_BOOL  (wxsButton,IsDefault,0,_("Is default"),_T("default"),false)
+    WXS_STRING(wxsButton,Label,_("Label"),_T("label"),_T(""),false)
+    WXS_BOOL(wxsButton,IsDefault,_("Is default"),_T("default"),false)
 }
 
 void wxsButton::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

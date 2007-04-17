@@ -168,8 +168,8 @@ wxObject* wxsDialog::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsDialog::OnEnumContainerProperties(long Flags)
 {
-    WXS_STRING(wxsDialog,Title,0,_("Title"),_T("title"),_T(""),false,false)
-    WXS_BOOL  (wxsDialog,Centered,0,_("Centered"),_T("centered"),false);
+    WXS_SHORT_STRING(wxsDialog,Title,_("Title"),_T("title"),_T(""),false)
+    WXS_BOOL(wxsDialog,Centered,_("Centered"),_T("centered"),false);
 }
 
 void wxsDialog::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

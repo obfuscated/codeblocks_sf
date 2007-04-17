@@ -29,8 +29,8 @@
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,wxArrayString)
 
-wxsArrayStringProperty::wxsArrayStringProperty(const wxString& PGName,const wxString& DataName,const wxString& _DataSubName,long _Offset):
-    wxsCustomEditorProperty(PGName,DataName),
+wxsArrayStringProperty::wxsArrayStringProperty(const wxString& PGName,const wxString& DataName,const wxString& _DataSubName,long _Offset,int Priority):
+    wxsCustomEditorProperty(PGName,DataName,Priority),
     Offset(_Offset),
     DataSubName(_DataSubName)
 {}

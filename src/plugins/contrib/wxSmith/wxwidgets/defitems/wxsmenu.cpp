@@ -232,7 +232,7 @@ void wxsMenu::OnEnumToolProperties(long Flags)
     if ( GetParent() )
     {
         // If there's parent we got labl for this menu
-        WXS_STRING(wxsMenu,m_Label,0,_("Title"),_T("label"),_T(""),false,true);
+        WXS_SHORT_STRING(wxsMenu,m_Label,_("Title"),_T("label"),_T(""),true);
     }
 }
 

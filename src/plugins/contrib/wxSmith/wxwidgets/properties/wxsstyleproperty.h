@@ -38,13 +38,15 @@ class wxsStyleProperty: public wxsProperty
          *  \param Offset       offset for pointer to styleset class describing all styles
          *  \param Default      default style set (as string - names of styles separated through |)
          *  \param IsExtra      if true, this is extra style, false otherwise
+         *  \param Priority     priority of this property
          */
 		wxsStyleProperty(
             const wxString& StyleName,
             const wxString& DataName,
             long  Offset,
             long  StyleSetPtrOffset,
-            bool  IsExtra = false);
+            bool  IsExtra = false,
+            int Priority=100);
 
         /** \brief Returning type of this property */
         virtual const wxString GetTypeName() { return _T("Style"); }
@@ -73,30 +75,37 @@ class wxsStyleProperty: public wxsProperty
 /** \brief Macro automatically declaring style property
  *  \param ClassName name of class holding this property
  *  \param VarName name of long integer variable inside class used to keep style bits
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
- *         wxsPropertyContainer::Property \endlink for details, use 0 to always
- *         use this property
  *  \param PGName name used in property grid
  *  \param DataName name used in Xml / Data Streams
  *  \param StyleSetPtr pointer to wxsStyleSet structure describing styles (pointer must be declared inside class)
  */
-#define WXS_STYLE(ClassName,VarName,Flags,PGName,DataName,StyleSetPtr) \
-    static wxsStyleProperty PropertyStyle##ClassName##VarName(PGName,DataName,wxsOFFSET(ClassName,VarName),wxsOFFSET(ClassName,StyleSetPtr),false); \
-    Property(PropertyStyle##ClassName##VarName,Flags);
+#define WXS_STYLE(ClassName,VarName,PGName,DataName,StyleSetPtr) \
+    { static wxsStyleProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),wxsOFFSET(ClassName,StyleSetPtr),false); \
+      Property(_Property); }
 
-/** \brief Macro automatically declaring extra style property
+/** \brief Macro automatically declaring style property with custom priority
  *  \param ClassName name of class holding this property
  *  \param VarName name of long integer variable inside class used to keep style bits
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
- *         wxsPropertyContainer::Property \endlink for details, use 0 to always
- *         use this property
  *  \param PGName name used in property grid
  *  \param DataName name used in Xml / Data Streams
  *  \param StyleSetPtr pointer to wxsStyleSet structure describing styles (pointer must be declared inside class)
+ *  \param Priority priority of this property
  */
-#define WXS_EXSTYLE(ClassName,VarName,Flags,PGName,DataName,StyleSetPtr) \
-    static wxsStyleProperty ExPropertyStyle##ClassName##VarName(PGName,DataName,wxsOFFSET(ClassName,VarName),wxsOFFSET(ClassName,StyleSetPtr),true); \
-    Property(ExPropertyStyle##ClassName##VarName,Flags);
+#define WXS_STYLE_P(ClassName,VarName,PGName,DataName,StyleSetPtr,Priority) \
+    { static wxsStyleProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),wxsOFFSET(ClassName,StyleSetPtr),false,Priority); \
+      Property(_Property); }
+
+/** \brief Macro automatically declaring extra style property with custom priority
+ *  \param ClassName name of class holding this property
+ *  \param VarName name of long integer variable inside class used to keep style bits
+ *  \param PGName name used in property grid
+ *  \param DataName name used in Xml / Data Streams
+ *  \param StyleSetPtr pointer to wxsStyleSet structure describing styles (pointer must be declared inside class)
+ *  \param Priority priority of this property
+ */
+#define WXS_EXSTYLE_P(ClassName,VarName,PGName,DataName,StyleSetPtr,Priority) \
+    { static wxsStyleProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),wxsOFFSET(ClassName,StyleSetPtr),true,Priority); \
+      Property(_Property); }
 
 /** \} */
 

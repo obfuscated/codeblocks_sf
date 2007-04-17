@@ -92,9 +92,9 @@ wxObject* wxsSpinButton::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsSpinButton::OnEnumWidgetProperties(long Flags)
 {
-    WXS_LONG(wxsSpinButton,Value,0,_("Value"),_T("value"),0)
-    WXS_LONG(wxsSpinButton,Min,0,_("Min Value"),_T("min"),0)
-    WXS_LONG(wxsSpinButton,Max,0,_("Max Value"),_T("max"),0)
+    WXS_LONG(wxsSpinButton,Value,_("Value"),_T("value"),0)
+    WXS_LONG(wxsSpinButton,Min,_("Min Value"),_T("min"),0)
+    WXS_LONG(wxsSpinButton,Max,_("Max Value"),_T("max"),0)
 }
 
 void wxsSpinButton::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

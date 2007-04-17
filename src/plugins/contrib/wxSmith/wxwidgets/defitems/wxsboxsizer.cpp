@@ -25,30 +25,6 @@
 
 namespace
 {
-    const long    OrientValues[] = { wxHORIZONTAL, wxVERTICAL, 0 };
-    const wxChar* OrientNames[]  = { _T("wxHORIZONTAL"), _T("wxVERTICAL"), NULL };
-
-    class OrientProp: public wxsEnumProperty
-    {
-        public:
-            OrientProp(int Offset):
-                wxsEnumProperty(
-                    _("Orientation"),
-                    _T("orient"),
-                    Offset,
-                    OrientValues,
-                    OrientNames,
-                    false,
-                    wxHORIZONTAL,
-                    true)
-            {}
-
-            virtual const wxString GetTypeName()
-            {
-                return _T("Sizer Orientation");
-            }
-    };
-
     wxsRegisterItem<wxsBoxSizer> Reg(_T("BoxSizer"), wxsTSizer, _T("Layout"), 70);
 }
 
@@ -82,8 +58,9 @@ void wxsBoxSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& Window
 
 void wxsBoxSizer::OnEnumSizerProperties(long Flags)
 {
-    static OrientProp Prop(wxsOFFSET(wxsBoxSizer,Orient));
-    Property(Prop,0);
+    static const long    OrientValues[] = { wxHORIZONTAL, wxVERTICAL, 0 };
+    static const wxChar* OrientNames[]  = { _T("wxHORIZONTAL"), _T("wxVERTICAL"), NULL };
+    WXS_ENUM(wxsBoxSizer,Orient,_("Orientation"),_T("orient"),OrientValues,OrientNames,wxHORIZONTAL);
 }
 
 void wxsBoxSizer::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

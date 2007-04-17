@@ -30,8 +30,8 @@
 #define VALUE   wxsVARIABLE(Object,Offset,wxArrayString)
 #define CHECK   wxsVARIABLE(Object,CheckOffset,wxArrayBool)
 
-wxsArrayStringCheckProperty::wxsArrayStringCheckProperty(const wxString& PGName,const wxString& DataName,const wxString& _DataSubName,long _Offset,long _CheckOffset):
-    wxsCustomEditorProperty(PGName,DataName),
+wxsArrayStringCheckProperty::wxsArrayStringCheckProperty(const wxString& PGName,const wxString& DataName,const wxString& _DataSubName,long _Offset,long _CheckOffset,int Priority):
+    wxsCustomEditorProperty(PGName,DataName,Priority),
     Offset(_Offset),
     CheckOffset(_CheckOffset),
     DataSubName(_DataSubName)

@@ -22,6 +22,7 @@ class wxsEnumProperty: public wxsProperty
          *  \param UpdateEnteries   posting true here notifies, that arrays may change while property is shown in property grid
          *  \param Default          defaut value applied on read errors
          *  \param UseNamesInXml    if true, names will be stored inside xml node instead of values
+         *  \param Priority         priority of this property
          */
 		wxsEnumProperty(
             const wxString& PGName,
@@ -31,10 +32,12 @@ class wxsEnumProperty: public wxsProperty
             const wxChar** Names,
             bool UpdateEnteries=false,
             long Default=0,
-            bool UseNamesInXml=false);
+            bool UseNamesInXml=false,
+            int Priority=100);
 
     protected:
 
+        virtual const wxString GetTypeName() { return _T(""); }
         virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
         virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id, long Index);
         virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id, long Index);
@@ -51,5 +54,37 @@ class wxsEnumProperty: public wxsProperty
         const wxChar** Names;
         bool UseNamesInXml;
 };
+
+/** \addtogroup properties_macros
+ *  \{ */
+
+/** \brief Macro automatically declaring enum property
+ *  \param ClassName name of class holding this property
+ *  \param VarName name of variable of type long inside class
+ *  \param PGName name used in property grid
+ *  \param DataName name used in Xml / Data Streams
+ *  \param Values global array of long values for enums
+ *  \param Names global array of names (stored as wxChar*) for enums, ended with NULL entry
+ *  \param Default value applied on read errors / validation failures
+ */
+#define WXS_ENUM(ClassName,VarName,PGName,DataName,Values,Names,Default) \
+    { static wxsEnumProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Values,Names,false,Default,true); \
+      Property(_Property); }
+
+/** \brief Macro automatically declaring enum property with custom priority
+ *  \param ClassName name of class holding this property
+ *  \param VarName name of variable of type long inside class
+ *  \param PGName name used in property grid
+ *  \param DataName name used in Xml / Data Streams
+ *  \param Values global array of long values for enums
+ *  \param Names global array of names (stored as wxChar*) for enums, ended with NULL entry
+ *  \param Default value applied on read errors / validation failures
+ *  \param Priority priority of this property
+ */
+#define WXS_ENUM_P(ClassName,VarName,PGName,DataName,Values,Names,Default,Priority) \
+    { static wxsEnumProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Values,Names,false,Default,true,Priority); \
+      Property(_Property); }
+
+/** \} */
 
 #endif

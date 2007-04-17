@@ -188,11 +188,8 @@ wxsQuickPropsPanel* wxsPropertyContainer::BuildQuickPropertiesPanel(wxWindow* Pa
     return CurrentQP;
 }
 
-void wxsPropertyContainer::Property(wxsProperty& Prop,long PropertyFlags)
+void wxsPropertyContainer::Property(wxsProperty& Prop)
 {
-    // Filtering flags
-    if ( (Flags & PropertyFlags) != PropertyFlags ) return;
-
     // Property function works like kind of state machine, where current state
     // is determined by flPropGrid, flXml, flPropStream bits in Flags variable
     // and IsRead one. These are set up in one of public functions: XmlRead,

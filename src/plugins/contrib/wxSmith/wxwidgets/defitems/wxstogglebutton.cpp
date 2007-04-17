@@ -81,8 +81,8 @@ wxObject* wxsToggleButton::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsToggleButton::OnEnumWidgetProperties(long Flags)
 {
-    WXS_STRING(wxsToggleButton,Label,0,_("Label"),_T("label"),_T(""),true,false)
-    WXS_BOOL  (wxsToggleButton,IsChecked,0,_("Is checked"),_T("checked"),false)
+    WXS_STRING(wxsToggleButton,Label,_("Label"),_T("label"),_T(""),false)
+    WXS_BOOL(wxsToggleButton,IsChecked,_("Is checked"),_T("checked"),false)
 }
 
 void wxsToggleButton::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

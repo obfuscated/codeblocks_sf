@@ -65,8 +65,9 @@ wxsDimensionProperty::wxsDimensionProperty(
     const wxString&  DataName,
     long _Offset,
     long _DefaultValue,
-    bool _DefaultDialogUnits):
-        wxsProperty(PGName,DataName),
+    bool _DefaultDialogUnits,
+    int Priority):
+        wxsProperty(PGName,DataName,Priority),
         Offset(_Offset),
         DefaultValue(_DefaultValue),
         DefaultDialogUnits(_DefaultDialogUnits),

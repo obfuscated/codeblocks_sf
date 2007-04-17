@@ -24,8 +24,9 @@ class wxsArrayStringCheckProperty: public wxsCustomEditorProperty
          *  \param DataSubName  name of name applied for each array element
          *  \param Offset       offset of wxArrayString (returned from wxsOFFSET macro)
          *  \param CheckOffset  offset of wxArrayBool (returned from wxsOFFSET macro)
+         *  \param Priority     priority of this property
          */
-		wxsArrayStringCheckProperty(const wxString& PGName,const wxString& DataName,const wxString& DataSubName,long Offset,long CheckOffset);
+		wxsArrayStringCheckProperty(const wxString& PGName,const wxString& DataName,const wxString& DataSubName,long Offset,long CheckOffset,int Priority=100);
 
 		/** \brief Returning type name */
 		virtual const wxString GetTypeName() { return _T("wxArrayStringCheck"); }
@@ -54,16 +55,26 @@ class wxsArrayStringCheckProperty: public wxsCustomEditorProperty
  *  \param ClassName name of class holding this property
  *  \param StringVarName name of wxArrayString variable inside class
  *  \param BoolVarName name of wxArrayBool variable inside class
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
-           wxsPropertyContainer::Property \endlink for details, use 0 to always
-           use this property
  *  \param PGName name used in property grid
  *  \param DataName name used in Xml / Data Streams
  *  \param DataSubName name of subnode used in Xml / Data Streams
  */
-#define WXS_ARRAYSTRINGCHECK(ClassName,StringVarName,BoolVarName,Flags,PGName,DataName,DataSubName) \
-    static wxsArrayStringCheckProperty PropertyArrayStringCheck##ClassName##VarName(PGName,DataName,DataSubName,wxsOFFSET(ClassName,StringVarName),wxsOFFSET(ClassName,BoolVarName)); \
-    Property(PropertyArrayStringCheck##ClassName##VarName,Flags);
+#define WXS_ARRAYSTRINGCHECK(ClassName,StringVarName,BoolVarName,PGName,DataName,DataSubName) \
+    { static wxsArrayStringCheckProperty _Property(PGName,DataName,DataSubName,wxsOFFSET(ClassName,StringVarName),wxsOFFSET(ClassName,BoolVarName)); \
+      Property(_Property); }
+
+/** \brief Macro automatically declaring wxArrayStrting combined with wxArrayBool properties with custom priority
+ *  \param ClassName name of class holding this property
+ *  \param StringVarName name of wxArrayString variable inside class
+ *  \param BoolVarName name of wxArrayBool variable inside class
+ *  \param PGName name used in property grid
+ *  \param DataName name used in Xml / Data Streams
+ *  \param DataSubName name of subnode used in Xml / Data Streams
+ *  \param Priority priority of property
+ */
+#define WXS_ARRAYSTRINGCHECK_P(ClassName,StringVarName,BoolVarName,PGName,DataName,DataSubName,Priority) \
+    { static wxsArrayStringCheckProperty _Property(PGName,DataName,DataSubName,wxsOFFSET(ClassName,StringVarName),wxsOFFSET(ClassName,BoolVarName),Priority); \
+      Property(_Property); }
 
 /** \} */
 

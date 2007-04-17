@@ -104,19 +104,24 @@ long wxsItem::OnGetPropertiesFlags()
 
 void wxsItem::EnumItemProperties(long Flags)
 {
+    static const int Priority = 60;
+
     // Registering variable name / identifier
     // these values are skipped when storing into xml variable
     // because itis stored as attribute of XML element
     if ( (Flags & (flPropGrid|flPropStream)) != 0 )
     {
-        WXS_STRING(wxsItem,m_VarName,flVariable,_("Var name"),_T("var_name"),wxEmptyString,false,false);
-        if ( IsPointer() )
+        if ( Flags & flVariable )
         {
-            // If item is not pointer it must be declared globally
-            WXS_BOOL(wxsItem,m_IsMember,flVariable,_(" Is member"),_T("var_is_member"),true);
+            WXS_SHORT_STRING_P(wxsItem,m_VarName,_("Var name"),_T("var_name"),wxEmptyString,true,Priority);
+            if ( IsPointer() )
+            {
+                // If item is not pointer it must be declared globally
+                WXS_BOOL_P(wxsItem,m_IsMember,_(" Is member"),_T("var_is_member"),true,Priority);
+            }
         }
-        WXS_STRING(wxsItem,m_IdName,flId,_("Identifier"),_T("identifier"),wxEmptyString,false,false);
-        WXS_STRING(wxsItem,m_Subclass,flSubclass,_("Class name"),_T("subclass"),wxEmptyString,false,false);
+        if ( Flags & flId )       WXS_SHORT_STRING_P(wxsItem,m_IdName,_("Identifier"),_T("identifier"),wxEmptyString,true,Priority);
+        if ( Flags & flSubclass ) WXS_SHORT_STRING_P(wxsItem,m_Subclass,_("Class name"),_T("subclass"),wxEmptyString,false,Priority);
     }
 
     OnEnumItemProperties(Flags);

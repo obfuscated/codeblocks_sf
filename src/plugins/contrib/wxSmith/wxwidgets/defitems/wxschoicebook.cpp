@@ -63,8 +63,8 @@ namespace
 
             virtual void OnEnumProperties(long Flags)
             {
-                WXS_STRING(wxsChoicebookExtra,m_Label,0,_("Page name"),_T("label"),_T(""),false,false);
-                WXS_BOOL(wxsChoicebookExtra,m_Selected,0,_("Page selected"),_T("selected"),false);
+                WXS_SHORT_STRING(wxsChoicebookExtra,m_Label,_("Page name"),_T("label"),_T(""),false);
+                WXS_BOOL(wxsChoicebookExtra,m_Selected,_("Page selected"),_T("selected"),false);
             }
     };
 

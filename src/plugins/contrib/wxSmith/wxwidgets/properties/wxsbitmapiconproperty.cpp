@@ -113,8 +113,8 @@ bool wxsBitmapIconData::IsEmpty()
 // Helper macros for fetching variables
 #define VALUE   wxsVARIABLE(Object,Offset,wxsBitmapIconData)
 
-wxsBitmapIconProperty::wxsBitmapIconProperty(const wxString& PGName,const wxString& DataName,long _Offset,const wxString& _DefaultClient):
-    wxsCustomEditorProperty(PGName,DataName),
+wxsBitmapIconProperty::wxsBitmapIconProperty(const wxString& PGName,const wxString& DataName,long _Offset,const wxString& _DefaultClient,int Priority):
+    wxsCustomEditorProperty(PGName,DataName,Priority),
     Offset(_Offset),
     DefaultClient(_DefaultClient)
 {}

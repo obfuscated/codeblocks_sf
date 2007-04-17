@@ -30,8 +30,9 @@ class wxsSizerFlagsProperty: public wxsProperty
 
         /** \brief Ctor
          *  \param Offset   offset to long handling border flags
+         *  \param Priority         priority of this property
          */
-		wxsSizerFlagsProperty(long Offset);
+		wxsSizerFlagsProperty(long Offset,int Priority);
 
         /** \brief Returning type of this property */
         virtual const wxString GetTypeName() { return _T("SizerFlags"); }
@@ -70,16 +71,14 @@ class wxsSizerFlagsProperty: public wxsProperty
 /** \addtogroup ext_properties_macros
  *  \{ */
 
-/** \brief Macro automatically declaring sizer flags property
+/** \brief Macro automatically declaring sizer flags property with custom priority
  *  \param ClassName name of class holding this property
  *  \param VarName name of long integer variable inside class used to keep flags
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
- *         wxsPropertyContainer::Property \endlink for details, use 0 to always
- *         use this property
+ *  \param Priority priority of this property
  */
-#define WXS_SIZERFLAGS(ClassName,VarName,Flags) \
-    static wxsSizerFlagsProperty PropertySizerFlags##ClassName##VarName(wxsOFFSET(ClassName,VarName)); \
-    Property(PropertySizerFlags##ClassName##VarName,Flags);
+#define WXS_SIZERFLAGS_P(ClassName,VarName,Priority) \
+    { static wxsSizerFlagsProperty _Property(wxsOFFSET(ClassName,VarName),Priority); \
+      Property(_Property); }
 
 /** \} */
 

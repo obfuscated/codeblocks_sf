@@ -44,11 +44,13 @@ class wxsColourProperty: public wxsProperty
          *  \param PGName               name of property in Property Grid
          *  \param DataName             name of property in data stuctures
          *  \param ValueOffset          offset of wxColourPropertyValue member (taken from wxsOFFSET macro)
+         *  \param Priority         priority of this property
          */
 		wxsColourProperty(
             const wxString& PGName,
             const wxString& DataName,
-            long ValueOffset);
+            long ValueOffset,
+            int Priority=100);
 
 		/** \brief Returning type name */
 		virtual const wxString GetTypeName() { return _T("wxsColour"); }
@@ -83,15 +85,23 @@ class wxsColourProperty: public wxsProperty
 /** \brief Macro automatically declaring colour property
  *  \param ClassName name of class holding this property
  *  \param VarName name of wxsColourData variable inside class
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
-           wxsPropertyContainer::Property \endlink for details, use 0 to always
-           use this property
  *  \param PGName name used in property grid
  *  \param DataName name used in Xml / Data Streams
  */
-#define WXS_COLOUR(ClassName,VarName,Flags,PGName,DataName) \
-    static wxsColourProperty PropertyColour##ClassName##VarName(PGName,DataName,wxsOFFSET(ClassName,VarName)); \
-    Property(PropertyColour##ClassName##VarName,Flags);
+#define WXS_COLOUR(ClassName,VarName,PGName,DataName) \
+    { static wxsColourProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName)); \
+      Property(_Property); }
+
+/** \brief Macro automatically declaring colour property with custom priority
+ *  \param ClassName name of class holding this property
+ *  \param VarName name of wxsColourData variable inside class
+ *  \param PGName name used in property grid
+ *  \param DataName name used in Xml / Data Streams
+ *  \param Priority priority of this property
+ */
+#define WXS_COLOUR_P(ClassName,VarName,PGName,DataName,Priority) \
+    { static wxsColourProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Priority); \
+      Property(_Property); }
 
 /** \} */
 

@@ -77,7 +77,7 @@ wxObject* wxsStaticBitmap::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsStaticBitmap::OnEnumWidgetProperties(long Flags)
 {
-   WXS_BITMAP(wxsStaticBitmap,Bitmap,0,_("Bitmap"),_T("bitmap"),_T("wxART_OTHER"))
+   WXS_BITMAP(wxsStaticBitmap,Bitmap,_("Bitmap"),_T("bitmap"),_T("wxART_OTHER"))
 }
 
 void wxsStaticBitmap::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

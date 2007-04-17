@@ -103,7 +103,7 @@ wxObject* wxsCheckListBox::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsCheckListBox::OnEnumWidgetProperties(long Flags)
 {
-    WXS_ARRAYSTRINGCHECK(wxsCheckListBox,ArrayChoices,ArrayChecks,0,_("Choices"),_T("content"),_T("item"));
+    WXS_ARRAYSTRINGCHECK(wxsCheckListBox,ArrayChoices,ArrayChecks,_("Choices"),_T("content"),_T("item"));
 }
 
 void wxsCheckListBox::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

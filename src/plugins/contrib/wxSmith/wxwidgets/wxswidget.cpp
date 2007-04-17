@@ -46,11 +46,13 @@ wxsWidget::wxsWidget(
 
 void wxsWidget::OnEnumItemProperties(long Flags)
 {
+    static const int Priority = 50;
+
     OnEnumWidgetProperties(Flags);
     if ( m_StyleSet )
     {
-        WXS_STYLE(wxsWidget,m_StyleBits,0,_("Style"),_T("style"),m_StyleSet);
-        WXS_EXSTYLE(wxsWidget,m_ExStyleBits,0,_("Extra style"),_T("exstyle"),m_StyleSet);
+        WXS_STYLE_P(wxsWidget,m_StyleBits,_("Style"),_T("style"),m_StyleSet,Priority);
+        WXS_EXSTYLE_P(wxsWidget,m_ExStyleBits,_("Extra style"),_T("exstyle"),m_StyleSet,Priority);
     }
 }
 

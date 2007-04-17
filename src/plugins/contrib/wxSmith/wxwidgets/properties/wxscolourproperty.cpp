@@ -442,8 +442,9 @@ wxString wxsColourData::BuildCode(wxsCodingLang Language)
 wxsColourProperty::wxsColourProperty(
     const wxString& PGName,
     const wxString& DataName,
-    long _ValueOffset):
-        wxsProperty(PGName,DataName),
+    long _ValueOffset,
+    int Priority):
+        wxsProperty(PGName,DataName,Priority),
         ValueOffset(_ValueOffset)
 {}
 

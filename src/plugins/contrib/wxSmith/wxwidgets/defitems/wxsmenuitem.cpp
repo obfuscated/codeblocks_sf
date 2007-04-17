@@ -150,9 +150,9 @@ void wxsMenuItem::OnEnumToolProperties(long Flags)
             {
                 // When there are children (wxMenuItem maps to wxMenu class),
                 // only these properties are enabled
-                WXS_STRING(wxsMenuItem,m_Label,0,_("Label"),_T("label"),_T(""),false,true);
-                WXS_STRING(wxsMenuItem,m_Help,0,_T("Help text"),_T("help"),_T(""),false,false);
-                WXS_BOOL(wxsMenuItem,m_Enabled,0,_T("Enabled"),_T("enabled"),true);
+                WXS_SHORT_STRING(wxsMenuItem,m_Label,_("Label"),_T("label"),_T(""),true);
+                WXS_SHORT_STRING(wxsMenuItem,m_Help,_T("Help text"),_T("help"),_T(""),false);
+                WXS_BOOL(wxsMenuItem,m_Enabled,_T("Enabled"),_T("enabled"),true);
                 break;
             }
             // When there are no children, we threat this item as wxMenuItem
@@ -160,11 +160,11 @@ void wxsMenuItem::OnEnumToolProperties(long Flags)
      /* case Normal: */
         case Radio:
         case Check:
-            WXS_STRING(wxsMenuItem,m_Label,0,_("Label"),_T("label"),_T(""),false,true);
-            WXS_STRING(wxsMenuItem,m_Accelerator,0,_("Accelerator"),_T("accel"),_T(""),false,false);
-            WXS_STRING(wxsMenuItem,m_Help,0,_T("Help text"),_T("help"),_T(""),false,false);
-            WXS_BOOL(wxsMenuItem,m_Enabled,0,_T("Enabled"),_T("enabled"),true);
-            if ( m_Type == Check ) { WXS_BOOL(wxsMenuItem,m_Checked,0,_T("Checked"),_T("checked"),false); }
+            WXS_SHORT_STRING(wxsMenuItem,m_Label,_("Label"),_T("label"),_T(""),true);
+            WXS_SHORT_STRING(wxsMenuItem,m_Accelerator,_("Accelerator"),_T("accel"),_T(""),false);
+            WXS_SHORT_STRING(wxsMenuItem,m_Help,_T("Help text"),_T("help"),_T(""),false);
+            WXS_BOOL(wxsMenuItem,m_Enabled,_T("Enabled"),_T("enabled"),true);
+            if ( m_Type == Check ) { WXS_BOOL(wxsMenuItem,m_Checked,_T("Checked"),_T("checked"),false); }
             break;
 
         default:;

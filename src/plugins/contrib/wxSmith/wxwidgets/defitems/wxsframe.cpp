@@ -173,9 +173,9 @@ wxObject* wxsFrame::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsFrame::OnEnumContainerProperties(long Flags)
 {
-    WXS_STRING(wxsFrame,Title,0,_("Title"),_T("title"),_T(""),false,false)
-    WXS_BOOL  (wxsFrame,Centered,0,_("Centered"),_T("centered"),false);
-    WXS_ICON  (wxsFrame,Icon,0,_T("Icon"),_T("icon"),_T("wxART_FRAME_ICON"));
+    WXS_SHORT_STRING(wxsFrame,Title,_("Title"),_T("title"),_T(""),false)
+    WXS_BOOL(wxsFrame,Centered,_("Centered"),_T("centered"),false);
+    WXS_ICON(wxsFrame,Icon,_T("Icon"),_T("icon"),_T("wxART_FRAME_ICON"));
 }
 
 

@@ -65,11 +65,13 @@ class wxsFontProperty: public wxsCustomEditorProperty
          *  \param PGName       name of property in Property Grid
          *  \param DataName     name of property in data stuctures
          *  \param Offset       offset of wxsFontData structure (returned from wxsOFFSET macro)
+         *  \param Priority     priority of this property
          */
 		wxsFontProperty(
             const wxString& PGName,
             const wxString& DataName,
-            long Offset);
+            long Offset,
+            int Priority=100);
 
 		/** \brief Returning type name */
 		virtual const wxString GetTypeName() { return _T("wxFont"); }
@@ -95,15 +97,23 @@ class wxsFontProperty: public wxsCustomEditorProperty
 /** \brief Macro automatically declaring font property
  *  \param ClassName name of class holding this property
  *  \param VarName name of wxsFontData variable inside class
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
-           wxsPropertyContainer::Property \endlink for details, use 0 to always
-           use this property
  *  \param PGName name used in property grid
  *  \param DataName name used in Xml / Data Streams
  */
-#define WXS_FONT(ClassName,VarName,Flags,PGName,DataName) \
-    static wxsFontProperty PropertyFont##ClassName##VarName(PGName,DataName,wxsOFFSET(ClassName,VarName)); \
-    Property(PropertyFont##ClassName##VarName,Flags);
+#define WXS_FONT(ClassName,VarName,PGName,DataName) \
+    { static wxsFontProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName)); \
+      Property(_Property); }
+
+/** \brief Macro automatically declaring font property
+ *  \param ClassName name of class holding this property
+ *  \param VarName name of wxsFontData variable inside class
+ *  \param PGName name used in property grid
+ *  \param DataName name used in Xml / Data Streams
+ *  \param Priority priority of this property
+ */
+#define WXS_FONT_P(ClassName,VarName,PGName,DataName,Priority) \
+    { static wxsFontProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Priority); \
+      Property(_Property); }
 
 /** \} */
 

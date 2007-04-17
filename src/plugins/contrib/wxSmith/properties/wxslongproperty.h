@@ -13,8 +13,9 @@ class wxsLongProperty: public wxsProperty
          *  \param DataName name of property in data stuctures
          *  \param Offset   offset of value (returned from wxsOFFSET macro)
          *  \param Default  default value applied on read errors
+         *  \param Priority priority of this property
          */
-		wxsLongProperty(const wxString& PGName,const wxString& DataName,long Offset,long Default=0);
+		wxsLongProperty(const wxString& PGName,const wxString& DataName,long Offset,long Default=0,int Priority=100);
 
 		/** \brief Returning type name */
 		virtual const wxString GetTypeName() { return _T("long"); }
@@ -40,16 +41,24 @@ class wxsLongProperty: public wxsProperty
 /** \brief Macro automatically declaring long integer property
  *  \param ClassName name of class holding this property
  *  \param VarName name of variable inside class
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
- *         wxsPropertyContainer::Property \endlink for details, use 0 to always
- *         use this property
  *  \param PGName name used in property grid
  *  \param DataName name used in Xml / Data Streams
  *  \param Default value applied on read errors / validation failures
  */
-#define WXS_LONG(ClassName,VarName,Flags,PGName,DataName,Default) \
-    static wxsLongProperty PropertyLong##ClassName##VarName(PGName,DataName,wxsOFFSET(ClassName,VarName),Default); \
-    Property(PropertyLong##ClassName##VarName,Flags);
+#define WXS_LONG(ClassName,VarName,PGName,DataName,Default) \
+    { static wxsLongProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default); \
+      Property(_Property); }
+
+/** \brief Macro automatically declaring long integer property with custom priority
+ *  \param ClassName name of class holding this property
+ *  \param VarName name of variable inside class
+ *  \param PGName name used in property grid
+ *  \param DataName name used in Xml / Data Streams
+ *  \param Default value applied on read errors / validation failures
+ */
+#define WXS_LONG_P(ClassName,VarName,PGName,DataName,Default,Priority) \
+    { static wxsLongProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default,Priority); \
+      Property(_Property); }
 
 /** \} */
 

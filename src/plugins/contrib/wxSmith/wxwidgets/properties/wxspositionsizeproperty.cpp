@@ -94,8 +94,9 @@ wxsPositionSizeProperty::wxsPositionSizeProperty(
     const wxString& _PGYName,
     const wxString& _PGDUName,
     const wxString& DataName,
-    long _Offset):
-        wxsProperty(PGUseDefName,DataName),
+    long _Offset,
+    int Priority):
+        wxsProperty(PGUseDefName,DataName,Priority),
         PGXName(_PGXName),
         PGYName(_PGYName),
         PGDUName(_PGDUName),

@@ -116,8 +116,8 @@ wxObject* wxsTextCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsTextCtrl::OnEnumWidgetProperties(long Flags)
 {
-    WXS_STRING(wxsTextCtrl,Text,0,_("Text"),_T("value"),_T(""),true,false)
-    WXS_LONG(wxsTextCtrl,MaxLength,0,_("Max Length"),_T("maxlength"),0)
+    WXS_STRING(wxsTextCtrl,Text,_("Text"),_T("value"),_T(""),false)
+    WXS_LONG(wxsTextCtrl,MaxLength,_("Max Length"),_T("maxlength"),0)
 }
 
 void wxsTextCtrl::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

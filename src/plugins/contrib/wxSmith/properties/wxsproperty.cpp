@@ -27,8 +27,8 @@
 
 #include <globals.h>
 
-wxsProperty::wxsProperty(const wxString& _PGName, const wxString& _DataName):
-    PGName(_PGName), DataName(_DataName)
+wxsProperty::wxsProperty(const wxString& PGName, const wxString& DataName,int Priority):
+    m_PGName(PGName), m_DataName(DataName), m_Priority(Priority)
 {
 }
 

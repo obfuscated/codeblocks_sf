@@ -26,8 +26,8 @@
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,bool)
 
-wxsBoolProperty::wxsBoolProperty(const wxString& PGName,const wxString& DataName,long _Offset,bool _Default):
-    wxsProperty(PGName,DataName),
+wxsBoolProperty::wxsBoolProperty(const wxString& PGName,const wxString& DataName,long _Offset,bool _Default,int Priority):
+    wxsProperty(PGName,DataName,Priority),
     Offset(_Offset),
     Default(_Default)
 {}

@@ -125,6 +125,7 @@ class wxsPositionSizeProperty: public wxsProperty
          *  \param PGDUName     name of "use dialog units" property
          *  \param DataName     name of property in data stuctures
          *  \param Offset       offset to wxsPositionSizeData structure
+         *  \param Priority     priority of this property
          */
 		wxsPositionSizeProperty(
             const wxString& PGUseDefName,
@@ -132,7 +133,8 @@ class wxsPositionSizeProperty: public wxsProperty
             const wxString& PGYName,
             const wxString& PGDUName,
             const wxString& DataName,
-            long Offset);
+            long Offset,
+            int Priority=100);
 
 		/** \brief Returning type name */
 		virtual const wxString GetTypeName() { return _T("wxPosition wxSize"); }
@@ -164,36 +166,57 @@ typedef wxsPositionSizeProperty wxsSizeProperty;
 /** \brief Macro automatically declaring position property
  *  \param ClassName name of class holding this property
  *  \param VarName name of wxsPositionData structure inside container
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
- *         wxsPropertyContainer::Property \endlink for details, use 0 to always
- *         use this property
  *  \param PGDefName name of "default vlaue" property used in property grid
  *  \param PGXName name of X coordinate used in property grid
  *  \param PGYName name of Y coordinate used in property grid
  *  \param PGDUName name of "dialog units" switch used in property grid
  *  \param DataName name used in Xml / Data Streams
  */
-#define WXS_POSITION(ClassName,VarName,Flags,PGDefName,PGXName,PGYName,PGDUName,DataName) \
-    static wxsPositionProperty PropertyPosition##ClassName##VarName(PGDefName,PGXName,PGYName,PGDUName,DataName,wxsOFFSET(ClassName,VarName)); \
-    Property(PropertyPosition##ClassName##VarName,Flags);
+#define WXS_POSITION(ClassName,VarName,PGDefName,PGXName,PGYName,PGDUName,DataName) \
+    { static wxsPositionProperty _Property(PGDefName,PGXName,PGYName,PGDUName,DataName,wxsOFFSET(ClassName,VarName)); \
+      Property(_Property); }
+
+/** \brief Macro automatically declaring position property with custom priority
+ *  \param ClassName name of class holding this property
+ *  \param VarName name of wxsPositionData structure inside container
+ *  \param PGDefName name of "default vlaue" property used in property grid
+ *  \param PGXName name of X coordinate used in property grid
+ *  \param PGYName name of Y coordinate used in property grid
+ *  \param PGDUName name of "dialog units" switch used in property grid
+ *  \param DataName name used in Xml / Data Streams
+ *  \param Priority priority of this property
+ */
+#define WXS_POSITION_P(ClassName,VarName,PGDefName,PGXName,PGYName,PGDUName,DataName,Priority) \
+    { static wxsPositionProperty _Property(PGDefName,PGXName,PGYName,PGDUName,DataName,wxsOFFSET(ClassName,VarName),Priority); \
+      Property(_Property); }
 
 /** \brief Macro automatically declaring size property
  *  \param ClassName name of class holding this property
  *  \param VarName name of wxsSizeData structure inside container
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
- *         wxsPropertyContainer::Property \endlink for details, use 0 to always
- *         use this property
  *  \param PGDefName name of "default vlaue" property used in property grid
  *  \param PGWidthName name of Width used in property grid
  *  \param PGHeightName name of Height coordinate used in property grid
  *  \param PGDUName name of "dialog units" switch used in property grid
  *  \param DataName name used in Xml / Data Streams
  */
-#define WXS_SIZE(ClassName,VarName,Flags,PGDefName,PGWidthName,PGHeightName,PGDUName,DataName) \
-    static wxsSizeProperty PropertySize##ClassName##VarName(PGDefName,PGWidthName,PGHeightName,PGDUName,DataName,wxsOFFSET(ClassName,VarName)); \
-    Property(PropertySize##ClassName##VarName,Flags);
+#define WXS_SIZE(ClassName,VarName,PGDefName,PGWidthName,PGHeightName,PGDUName,DataName) \
+    { static wxsSizeProperty _Property(PGDefName,PGWidthName,PGHeightName,PGDUName,DataName,wxsOFFSET(ClassName,VarName)); \
+      Property(_Property); }
 
-/** \} */
+
+/** \brief Macro automatically declaring size property with custom priority
+ *  \param ClassName name of class holding this property
+ *  \param VarName name of wxsSizeData structure inside container
+ *  \param PGDefName name of "default vlaue" property used in property grid
+ *  \param PGWidthName name of Width used in property grid
+ *  \param PGHeightName name of Height coordinate used in property grid
+ *  \param PGDUName name of "dialog units" switch used in property grid
+ *  \param DataName name used in Xml / Data Streams
+ *  \param Priority priority of this property
+ */
+#define WXS_SIZE_P(ClassName,VarName,PGDefName,PGWidthName,PGHeightName,PGDUName,DataName,Priority) \
+    { static wxsSizeProperty _Property(PGDefName,PGWidthName,PGHeightName,PGDUName,DataName,wxsOFFSET(ClassName,VarName),Priority); \
+      Property(_Property); }/** \} */
 
 
 #endif

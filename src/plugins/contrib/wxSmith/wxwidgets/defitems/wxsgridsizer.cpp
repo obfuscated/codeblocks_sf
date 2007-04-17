@@ -62,10 +62,10 @@ void wxsGridSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& Windo
 
 void wxsGridSizer::OnEnumSizerProperties(long Flags)
 {
-    WXS_LONG(wxsGridSizer,Cols,0,_("Cols"),_T("cols"),0);
-    WXS_LONG(wxsGridSizer,Rows,0,_("Rows"),_T("rows"),0);
-    WXS_DIMENSION(wxsGridSizer,VGap,0,_("V-Gap"),_("V-Gap in dialog units"),_T("vgap"),0,false);
-    WXS_DIMENSION(wxsGridSizer,HGap,0,_("H-Gap"),_("H,y-Gap in dialog units"),_T("hgap"),0,false);
+    WXS_LONG(wxsGridSizer,Cols,_("Cols"),_T("cols"),0);
+    WXS_LONG(wxsGridSizer,Rows,_("Rows"),_T("rows"),0);
+    WXS_DIMENSION(wxsGridSizer,VGap,_("V-Gap"),_("V-Gap in dialog units"),_T("vgap"),0,false);
+    WXS_DIMENSION(wxsGridSizer,HGap,_("H-Gap"),_("H,y-Gap in dialog units"),_T("hgap"),0,false);
 }
 
 void wxsGridSizer::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

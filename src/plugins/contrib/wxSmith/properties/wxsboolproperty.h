@@ -14,7 +14,7 @@ class wxsBoolProperty: public wxsProperty
          *  \param Offset   offset of boolean (taken from wxsOFFSET macro)
          *  \param Default  default value applied on read errors
          */
-		wxsBoolProperty(const wxString& PGName,const wxString& DataName,long Offset,bool Default=0);
+		wxsBoolProperty(const wxString& PGName,const wxString& DataName,long Offset,bool Default=0,int Priority=100);
 
         /** \brief Returning type name */
         virtual const wxString GetTypeName() { return _T("bool"); }
@@ -40,16 +40,25 @@ class wxsBoolProperty: public wxsProperty
 /** \brief Macro automatically declaring boolean property
  *  \param ClassName name of class holding this property
  *  \param VarName name of variable inside class
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
-           wxsPropertyContainer::Property \endlink for details, use 0 to always
-           use this property
  *  \param PGName name used in property grid
  *  \param DataName name used in Xml / Data Streams
  *  \param Default value applied on read errors / validation failures
  */
-#define WXS_BOOL(ClassName,VarName,Flags,PGName,DataName,Default) \
-    static wxsBoolProperty PropertyBool##ClassName##VarName(PGName,DataName,wxsOFFSET(ClassName,VarName),Default); \
-    Property(PropertyBool##ClassName##VarName,Flags);
+#define WXS_BOOL(ClassName,VarName,PGName,DataName,Default) \
+    { static wxsBoolProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default); \
+      Property(_Property); }
+
+/** \brief Macro automatically declaring boolean property with custom priority
+ *  \param ClassName name of class holding this property
+ *  \param VarName name of variable inside class
+ *  \param PGName name used in property grid
+ *  \param DataName name used in Xml / Data Streams
+ *  \param Default value applied on read errors / validation failures
+ *  \param Priority priority of this property
+ */
+#define WXS_BOOL_P(ClassName,VarName,PGName,DataName,Default,Priority) \
+    { static wxsBoolProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Default,Priority); \
+      Property(_Property); }
 
 /** \} */
 

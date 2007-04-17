@@ -80,7 +80,7 @@ wxObject* wxsStaticText::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsStaticText::OnEnumWidgetProperties(long Flags)
 {
-    WXS_STRING(wxsStaticText,Label,0,_("Label"),_T("label"),_T(""),true,false)
+    WXS_STRING(wxsStaticText,Label,_("Label"),_T("label"),_T(""),true)
 }
 
 void wxsStaticText::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

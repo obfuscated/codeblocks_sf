@@ -104,8 +104,8 @@ wxObject* wxsListBox::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsListBox::OnEnumWidgetProperties(long Flags)
 {
-      WXS_ARRAYSTRING(wxsListBox,ArrayChoices,0,_("Choices"),_T("content"),_T("item"))
-      WXS_LONG(wxsListBox,DefaultSelection,0,_("Default"),_T("default"),0)
+      WXS_ARRAYSTRING(wxsListBox,ArrayChoices,_("Choices"),_T("content"),_T("item"))
+      WXS_LONG(wxsListBox,DefaultSelection,_("Default"),_T("default"),0)
 }
 
 void wxsListBox::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)

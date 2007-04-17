@@ -47,11 +47,13 @@ wxsTool::wxsTool(
 
 void wxsTool::OnEnumItemProperties(long Flags)
 {
+    static const int Priority = 50;
+
     OnEnumToolProperties(Flags);
     if ( m_StyleSet )
     {
-        WXS_STYLE(wxsTool,m_StyleBits,0,_("Style"),_T("style"),m_StyleSet);
-        WXS_EXSTYLE(wxsTool,m_ExStyleBits,0,_("Extra style"),_T("exstyle"),m_StyleSet);
+        WXS_STYLE_P(wxsTool,m_StyleBits,_("Style"),_T("style"),m_StyleSet,Priority);
+        WXS_EXSTYLE_P(wxsTool,m_ExStyleBits,_("Extra style"),_T("exstyle"),m_StyleSet,Priority);
     }
 }
 

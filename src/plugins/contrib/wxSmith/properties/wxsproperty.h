@@ -49,8 +49,9 @@ class wxsProperty
          *
          *  \param PGName name used in property grid
          *  \param DataName name used in data operations (including Xml/Xrc)
+         *  \param Priority priority of this property used when arranging properties in property grid
          */
-        wxsProperty(const wxString& PGName, const wxString& DataName);
+        wxsProperty(const wxString& PGName, const wxString& DataName,int Priority);
 
         /** \brief Dctor */
         virtual ~wxsProperty() {}
@@ -124,10 +125,13 @@ class wxsProperty
         virtual bool PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream) { return false; }
 
         /** \brief Getting name of PropertyGrid entry */
-        inline const wxString& GetPGName()   { return PGName; }
+        inline const wxString& GetPGName()   { return m_PGName; }
 
         /** \brief Getting name of data (Xml and others) entry */
-        inline const wxString& GetDataName() { return DataName; }
+        inline const wxString& GetDataName() { return m_DataName; }
+
+        /** \brief Getting priority of this property */
+        inline int GetPriority() { return m_Priority; }
 
         /** \brief Getting unique name of type
          *
@@ -230,8 +234,9 @@ class wxsProperty
 
     private:
 
-        wxString PGName;        ///< Name used inside property grid
-        wxString DataName;      ///< Name of data element (xml element)
+        wxString m_PGName;        ///< \brief Name used inside property grid
+        wxString m_DataName;      ///< \brief Name of data element (xml element)
+        int      m_Priority;      ///< \brief Priority of this property
 };
 
 /** \brief Macro fetching offset of variable from given object

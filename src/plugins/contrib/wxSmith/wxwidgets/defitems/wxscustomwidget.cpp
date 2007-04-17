@@ -88,17 +88,17 @@ void wxsCustomWidget::OnEnumWidgetProperties(long Flags)
     wxString XmlDataInit = m_XmlData;
     if ( GetResourceData()->GetPropertiesFilter() == flSource )
     {
-        WXS_STRING(wxsCustomWidget,m_CreatingCode,0,_("Creating code:"),_T("creating_code"),_T(""),true,true);
+        WXS_STRING(wxsCustomWidget,m_CreatingCode,_("Creating code:"),_T("creating_code"),_T(""),true);
     }
     else
     {
         if ( !(Flags&flXml) )
         {
-            WXS_STRING(wxsCustomWidget,m_XmlData,0,_("Xml Data:"),_T(""),_T(""),true,false);
+            WXS_STRING(wxsCustomWidget,m_XmlData,_("Xml Data:"),_T(""),_T(""),false);
         }
     }
 
-    WXS_STRING(wxsCustomWidget,m_Style,0,_("Style:"),_T("style"),_T("0"),false,false);
+    WXS_SHORT_STRING(wxsCustomWidget,m_Style,_("Style:"),_T("style"),_T("0"),false);
 
     if ( Flags&flPropGrid )
     {

@@ -31,8 +31,8 @@
 // TODO: Fix \n handling in property editor
 
 
-wxsStringProperty::wxsStringProperty(const wxString& PGName, const wxString& DataName,long _Offset,bool _IsLongString,bool _XmlStoreEmpty,const wxString& _Default):
-    wxsProperty(PGName,DataName),
+wxsStringProperty::wxsStringProperty(const wxString& PGName, const wxString& DataName,long _Offset,bool _IsLongString,bool _XmlStoreEmpty,const wxString& _Default,int Priority):
+    wxsProperty(PGName,DataName,Priority),
     Offset(_Offset),
     IsLongString(_IsLongString),
     XmlStoreEmpty(_XmlStoreEmpty),

@@ -36,8 +36,8 @@
 #define SHAPEDIND   0x05
 #define FIXEDIND    0x06
 
-wxsSizerFlagsProperty::wxsSizerFlagsProperty(long _Offset):
-        wxsProperty(_("Borders"),_T("flag")),
+wxsSizerFlagsProperty::wxsSizerFlagsProperty(long _Offset,int Priority):
+        wxsProperty(_("Borders"),_T("flag"),Priority),
         Offset(_Offset)
 {
 }

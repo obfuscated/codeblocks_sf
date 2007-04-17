@@ -24,7 +24,7 @@
 #include "wxsemptyproperty.h"
 
 wxsEmptyProperty::wxsEmptyProperty():
-    wxsProperty(_T("Empty"),_T("empty"))
+    wxsProperty(_T("Empty"),_T("empty"),100)
 {
 }
 

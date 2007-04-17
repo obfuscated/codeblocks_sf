@@ -131,12 +131,12 @@ void wxsFlexGridSizer::OnEnumSizerProperties(long Flags)
 {
     FixupList(GrowableCols);
     FixupList(GrowableRows);
-    WXS_LONG(wxsFlexGridSizer,Cols,0,_("Cols"),_T("cols"),0);
-    WXS_LONG(wxsFlexGridSizer,Rows,0,_("Rows"),_T("rows"),0);
-    WXS_DIMENSION(wxsFlexGridSizer,VGap,0,_("V-Gap"),_("V-Gap in dialog units"),_T("vgap"),0,false);
-    WXS_DIMENSION(wxsFlexGridSizer,HGap,0,_("H-Gap"),_("H,y-Gap in dialog units"),_T("hgap"),0,false);
-    WXS_STRING(wxsFlexGridSizer,GrowableCols,0,_("Growable cols"),_T("growablecols"),wxEmptyString,false,false);
-    WXS_STRING(wxsFlexGridSizer,GrowableRows,0,_("Growable rows"),_T("growablerows"),wxEmptyString,false,false);
+    WXS_LONG(wxsFlexGridSizer,Cols,_("Cols"),_T("cols"),0);
+    WXS_LONG(wxsFlexGridSizer,Rows,_("Rows"),_T("rows"),0);
+    WXS_DIMENSION(wxsFlexGridSizer,VGap,_("V-Gap"),_("V-Gap in dialog units"),_T("vgap"),0,false);
+    WXS_DIMENSION(wxsFlexGridSizer,HGap,_("H-Gap"),_("H,y-Gap in dialog units"),_T("hgap"),0,false);
+    WXS_SHORT_STRING(wxsFlexGridSizer,GrowableCols,_("Growable cols"),_T("growablecols"),_T(""),false);
+    WXS_SHORT_STRING(wxsFlexGridSizer,GrowableRows,_("Growable rows"),_T("growablerows"),_T(""),false);
     FixupList(GrowableCols);
     FixupList(GrowableRows);
 }

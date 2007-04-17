@@ -62,6 +62,7 @@ class wxsDimensionProperty: public wxsProperty
          *  \param Offset               offset of wxsDimensionData value (taken from wxsOFFSET macro)
          *  \param DefaultValue         default value applied on read errors
          *  \param DefaultDialogUnits   default value applied for pixel / dialog units switch on read errors
+         *  \param Priority             priority of this property
          */
 		wxsDimensionProperty(
             const wxString& PGName,
@@ -69,7 +70,8 @@ class wxsDimensionProperty: public wxsProperty
             const wxString& DataName,
             long Offset,
             long DefaultValue=0,
-            bool DefaultDialogUnits=false);
+            bool DefaultDialogUnits=false,
+            int Priority=100);
 
 		/** \brief Returning type name */
 		virtual const wxString GetTypeName() { return _T("wxsDimension"); }
@@ -98,18 +100,29 @@ class wxsDimensionProperty: public wxsProperty
 /** \brief Macro automatically declaring dimension property
  *  \param ClassName name of class holding this property
  *  \param VarName name of wxsDimensionData variable inside class
- *  \param Flags flags of availability, see \link wxsPropertyContainer::Property
-           wxsPropertyContainer::Property \endlink for details, use 0 to always
-           use this property
  *  \param PGName name used in property grid
  *  \param PGDUName name of "use dialog units" property in grid
  *  \param DataName name used in Xml / Data Streams
  *  \param Default default value for dimension (integer)
  *  \param DUDefault default value for dualog units (boolean)
  */
-#define WXS_DIMENSION(ClassName,VarName,Flags,PGName,PGDUName,DataName,Default,DUDefault) \
-    static wxsDimensionProperty PropertyDimension##ClassName##VarName(PGName,PGDUName,DataName,wxsOFFSET(ClassName,VarName),Default,DUDefault); \
-    Property(PropertyDimension##ClassName##VarName,Flags);
+#define WXS_DIMENSION(ClassName,VarName,PGName,PGDUName,DataName,Default,DUDefault) \
+    { static wxsDimensionProperty _Property(PGName,PGDUName,DataName,wxsOFFSET(ClassName,VarName),Default,DUDefault); \
+      Property(_Property); }
+
+/** \brief Macro automatically declaring dimension property with custom priority
+ *  \param ClassName name of class holding this property
+ *  \param VarName name of wxsDimensionData variable inside class
+ *  \param PGName name used in property grid
+ *  \param PGDUName name of "use dialog units" property in grid
+ *  \param DataName name used in Xml / Data Streams
+ *  \param Default default value for dimension (integer)
+ *  \param DUDefault default value for dualog units (boolean)
+ *  \param Priority priority of this property
+ */
+#define WXS_DIMENSION_P(ClassName,VarName,PGName,PGDUName,DataName,Default,DUDefault,Priority) \
+    { static wxsDimensionProperty _Property(PGName,PGDUName,DataName,wxsOFFSET(ClassName,VarName),Default,DUDefault,Priority); \
+      Property(_Property); }
 
 /** \} */
 
