@@ -58,6 +58,7 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#cb)/include" />
 			<Add directory="$(#cb)/include/wxscintilla/include" />
+			<Add directory="$(#cb)/include/wxFlatNotebook/include" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />

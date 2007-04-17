@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.h 47 2007-04-14 02:43:21Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.h 51 2007-04-17 15:50:16Z Pecan $
 
 #ifndef CODESNIPPETSTREECTRL_H
 #define CODESNIPPETSTREECTRL_H
@@ -26,6 +26,7 @@ class TiXmlNode;
 class TiXmlElement;
 
 #include <wx/treectrl.h>
+#include <wx/dynarray.h>
 #include "snippetitemdata.h"
 #include <tinyxml/tinyxml.h>
 #include "snippetproperty.h"
@@ -38,6 +39,8 @@ class TiXmlElement;
     #undef Absolute //wx Layout.h and STC conflicts
 #endif
 
+WX_DEFINE_ARRAY(wxDialog*, DlgPtrArray);
+WX_DEFINE_ARRAY(int, DlgRetcodeArray);
 
 // ----------------------------------------------------------------------------
 class CodeSnippetsTreeCtrl : public wxTreeCtrl
@@ -121,15 +124,13 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
                 if ( not ::wxFileExists( GetSnippet(itemId))) return false;
                 return true;
             }
-        bool IsDialogBusy(){return (m_pTopDialog != 0);}
+        bool IsTreeBusy(){return (m_pPropertiesDialog != 0);}
 
         void            SetSnippetImage(wxTreeItemId itemId);
         wxTreeItemId    GetAssociatedItemID(){return m_MnuAssociatedItemID;}
         void            SetAssociatedItemID(wxTreeItemId id){m_MnuAssociatedItemID = id;}
         bool            EditSnippetProperties(wxTreeItemId& itemId);
         int             ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem);
-        int             ExecuteFrame(wxFrame* pdlg, wxSemaphore& waitSem, int& retcode);
-
 
 	private:
 
@@ -142,8 +143,13 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         bool                    m_MouseCtrlKeyDown;
    		wxTreeItemId            m_MnuAssociatedItemID;
    		bool                    m_bMouseLeftWindow;
-        wxDialog*               m_pTopDialog;
+        wxDialog*               m_pPropertiesDialog;
    		CodeSnippetsTreeCtrl*   m_pSnippetsTreeCtrl;
+   		// Snippet Window Parent could be floating wxAUI window or CodeBlocks.
+   		wxWindow*               m_pSnippetWindowParent;
+   		bool                    m_bShutDown;
+   		DlgPtrArray             m_aDlgPtrs;
+   		DlgRetcodeArray         m_aDlgRetcodes;
 
        #if defined(__WXMSW__)
         void MSW_MouseMove(int x, int y );
@@ -161,11 +167,10 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         void OnBeginTreeItemDrag(wxTreeEvent& event);
         void OnEndTreeItemDrag(wxTreeEvent& event);
    		void OnLeaveWindow(wxMouseEvent& event);
+   		void OnEnterWindow(wxMouseEvent& event);
         void OnMouseEvent(wxMouseEvent& event);
         void OnShutdown(wxCloseEvent& event);
-
-
-
+        void OnIdle(wxIdleEvent& event);
 
 		// Must use this so overridden OnCompareItems() works on MSW,
 		// see wxWidgets Samples -> TreeCtrl sample

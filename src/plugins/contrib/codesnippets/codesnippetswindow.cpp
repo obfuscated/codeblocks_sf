@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.cpp 47 2007-04-14 02:43:21Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.cpp 51 2007-04-17 15:50:16Z Pecan $
 
 #ifdef WX_PRECOMP //
     #include "wx_pch.h"
@@ -353,7 +353,7 @@ void CodeSnippetsWindow::OnItemActivated(wxTreeEvent& event)
     // Double click on snippet item
     // if shift key is down, apply the snippet, else edit it.
 
-    if ( IsDialogBusy() ) return;
+    if ( IsTreeBusy() ) return;
 
     if (::wxGetKeyState(WXK_SHIFT) )
     {    ApplySnippet(event.GetItem());
@@ -371,7 +371,7 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
     // The context menu for the selected item has been requested, either by a
     // right click or by using the menu key.
 
-    if ( IsDialogBusy() ) return;
+    if ( IsTreeBusy() ) return;
 
 	// Get the item associated with the event
 	if (const SnippetItemData* eventItem = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(event.GetItem())))
@@ -936,7 +936,7 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
 {
     // when we know we've changed the file internally, finesse this
 
-    if ( IsDialogBusy() ) return;
+    if ( IsTreeBusy() ) return;
     if ( GetFileChanged() ) return;
 
     wxString whichApp = wxT("CodeSnippets Plugin ");

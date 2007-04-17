@@ -117,8 +117,8 @@ BEGIN_EVENT_TABLE (Edit, wxScintilla)
     EVT_SCI_MARGINCLICK (-1,           Edit::OnMarginClick)
     EVT_SCI_CHARADDED (-1,             Edit::OnCharAdded)
 
-    EVT_ENTER_WINDOW( Edit::OnEnterWindow)
-    EVT_LEAVE_WINDOW( Edit::OnLeaveWindow)
+    //-EVT_ENTER_WINDOW( Edit::OnEnterWindow)
+    //-EVT_LEAVE_WINDOW( Edit::OnLeaveWindow)
     EVT_SCROLL       (Edit::OnScroll)
     EVT_SCROLLWIN    (Edit::OnScrollWin)
 
@@ -1263,21 +1263,21 @@ void Edit::OnEnterWindow(wxMouseEvent& event)
 // ----------------------------------------------------------------------------
 {
     event.Skip(); return;
-    // This is really annoying. CodeSnippetsTreeCtrl::ExecuteFrame()
-    // disables its parent to avoid the user closing the parent and leaving this
-    // window orphaned. But doing so causes the Scintilla editor to get focus
-    // with a hidden disabled cursor. So here, we enable both the editor and
-    // its frame.when the mouse enters the window.
-    // *Hack* *Hack* *Hack* *Hack*
-    // Enable this Edit window and its frame
-    LOGIT( _T("EVT_ENTER_WINDOW") );
-    wxWindow* pw = GetParent();
-    LOGIT( _T("parent[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    pw->Enable();
-    pw->SetFocus();
-    Enable();
-    SetFocus();
-    event.Skip();
+//    // This is really annoying. CodeSnippetsTreeCtrl::ExecuteFrame()
+//    // disables its parent to avoid the user closing the parent and leaving this
+//    // window orphaned. But doing so causes the Scintilla editor to get focus
+//    // with a hidden disabled cursor. So here, we enable both the editor and
+//    // its frame.when the mouse enters the window.
+//    // *Hack* *Hack* *Hack* *Hack*
+//    // Enable this Edit window and its frame
+//    LOGIT( _T("EVT_ENTER_WINDOW") );
+//    wxWindow* pw = GetParent();
+//    LOGIT( _T("parent[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+//    pw->Enable();
+//    pw->SetFocus();
+//    Enable();
+//    SetFocus();
+//    event.Skip();
 }
 // ----------------------------------------------------------------------------
 void Edit::OnLeaveWindow(wxMouseEvent& event)
@@ -1285,34 +1285,34 @@ void Edit::OnLeaveWindow(wxMouseEvent& event)
 {
     event.Skip(); return;
 
-    // Disable the Snippet Tree Ctrl frame when leaving editor
-    // so user can't shut it down and leave us orphaned.
-    // *Hack* *Hack* *Hack* *Hack*
-
-    //LOGIT( _T("EVT_LEAVE_WINDOW") );
-    wxWindow* pw = GetParent();
-    //LOGIT( _T("parent1[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    if (pw && pw->GetParent()) //Edit frame
-    {   pw = pw->GetParent();
-        //pw->Disable();
-        //LOGIT( _T("parent2[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    }
-    if (pw && pw->GetParent())  // a panel
-    {   pw = pw->GetParent();
-        pw->Disable();          // This disables Snippet frame Whoop!
-        //LOGIT( _T("parent3[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    }
-    if (pw && pw->GetParent())  //Snippet tree frame
-    {   pw = pw->GetParent();
-        //pw->Disable(); This disables CodeBlocks
-        //LOGIT( _T("parent4[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    }
-    if (pw && pw->GetParent())  //CodeBlocks
-    {   pw = pw->GetParent();
-        //LOGIT( _T("parent5[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    }
-
-     event.Skip();
+//    // Disable the Snippet Tree Ctrl frame when leaving editor
+//    // so user can't shut it down and leave us orphaned.
+//    // *Hack* *Hack* *Hack* *Hack*
+//
+//    //LOGIT( _T("EVT_LEAVE_WINDOW") );
+//    wxWindow* pw = GetParent();
+//    //LOGIT( _T("parent1[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+//    if (pw && pw->GetParent()) //Edit frame
+//    {   pw = pw->GetParent();
+//        //pw->Disable();
+//        //LOGIT( _T("parent2[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+//    }
+//    if (pw && pw->GetParent())  // a panel
+//    {   pw = pw->GetParent();
+//        pw->Disable();          // This disables Snippet frame Whoop!
+//        //LOGIT( _T("parent3[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+//    }
+//    if (pw && pw->GetParent())  //Snippet tree frame
+//    {   pw = pw->GetParent();
+//        //pw->Disable(); This disables CodeBlocks
+//        //LOGIT( _T("parent4[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+//    }
+//    if (pw && pw->GetParent())  //CodeBlocks
+//    {   pw = pw->GetParent();
+//        //LOGIT( _T("parent5[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+//    }
+//
+//     event.Skip();
 }
 // ----------------------------------------------------------------------------
 void Edit::OnScroll( wxScrollEvent& event )

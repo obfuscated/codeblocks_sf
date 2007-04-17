@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 49 2007-04-14 13:06:13Z Pecan $
+// RCS-ID: $Id: version.cpp 51 2007-04-17 15:50:16Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -137,11 +137,16 @@ AppVersion::~AppVersion()
 //              Correct spelling of /dev/null in linux code
 // ----------------------------------------------------------------------------
 //  Commit  1.1.73 2007/04/13
-//          73) Block re-entry to code via wxCloseEvent(s) and IsDialogBusy()
+//          73) Block re-entry to code via wxCloseEvent(s) and IsTreeBusy()
 // ----------------------------------------------------------------------------
 //  Commit  1.1.75 2007/04/14
 //          74 ) Remove AMD64 ambiguity on finddlg wxComboBox call
 //          75 ) Again: Remove AMD64 gentoo ambiguity on finddlg wxComboBox call
+// ----------------------------------------------------------------------------
+//  Commit  1.2.03 2007/04/17
+//          01) Add multi-edit session support
+//          02) Add DragnDrop of File Links to/from CodeBlocks (MSW)
+//          03) cascade subsequent edit windows, else they stack.
 // ----------------------------------------------------------------------------
 //
 // ----------------------------------------------------------------------------
@@ -155,7 +160,7 @@ AppVersion::~AppVersion()
 //          Bug: crash in file modification detection routines
 //              eg., Do Open/view Open/app Close/view Close/App MsgBox then crash
 //          Bug: on Linux, the executable folder is being reported incorrectly
-//              Code is in snippet "Finding Pgm Path"
+//              Possible corrections code is in snippet "Finding Pgm Path"
 //          Help should invoke browser for wiki article
 //          Investigate Linux problem dragging item out of window (alternate X11 solution)
 //          Update wiki for Re-arranging Tree items
@@ -165,6 +170,10 @@ AppVersion::~AppVersion()
 //          Need a backup mechanism
 //          Bug:Plg: Tree pops over editor when moving mouse into CB window. Very Annoying.
 //          Bug: Properties Edit ctrl is not calc'ng max line margin width
+//          messageBox(s) should identify themselves as CodeSnippets msgs
+//          Not all messageBoxs are centered on client, eg, Replace
+//          --- multi editor ---
+//          If file already open in editor, just focus it. (use wxTreeItemId)
 //  Other
 //          Bug: Nasty wxAUI Linux behavior. Left chick on CB main menu docks floating windows.
 //               Floating window won't dock when dragged to CB. Have to left click some main menu item.

@@ -108,20 +108,24 @@ bool EditFrameDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
 } // end of OnDropText
 
 // ----------------------------------------------------------------------------
-EditSnippetFrame::EditSnippetFrame(const wxString& snippetName, wxString* pSnippetText,
-                            wxSemaphore* pWaitSem, int* retcode, wxString fileName)
+EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode )
 // ----------------------------------------------------------------------------
 	: wxFrame( GetConfig()->GetSnippetsWindow(), wxID_ANY, _T("Edit snippet"),
 		wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER)
 {
     //ctor
 
-    pWaitingSemaphore = pWaitSem;
-    m_EditFileName = fileName;
-    m_pEditSnippetText = pSnippetText;
-    m_EditSnippetLabel = snippetName;
-    m_pReturnCode = retcode;
-    *retcode = wxID_CANCEL;
+    //pWaitingSemaphore = pWaitSem;
+    m_SnippetItemId = TreeItemId;
+    m_EditSnippetText = GetConfig()->GetSnippetsTreeCtrl()->GetSnippet(TreeItemId);
+
+    m_EditFileName = wxEmptyString;
+    if ( (m_EditSnippetText.Length() < 129) && (::wxFileExists(m_EditSnippetText)) )
+        m_EditFileName = m_EditSnippetText;
+
+    m_EditSnippetLabel = GetConfig()->GetSnippetsTreeCtrl()->GetSnippetLabel(TreeItemId);
+    m_pReturnCode = pRetcode;
+    *pRetcode = 0;
     m_nReturnCode = wxID_CANCEL;
 
     // intitialize important variables
@@ -143,10 +147,10 @@ EditSnippetFrame::EditSnippetFrame(const wxString& snippetName, wxString* pSnipp
 
     // open first page
     m_pEdit = new Edit (this, -1);
-	if (not fileName.IsEmpty())
-                m_pEdit->LoadFile(fileName);
+	if (not m_EditFileName.IsEmpty())
+                m_pEdit->LoadFile(m_EditFileName);
     else
-    {    m_pEdit->SetText(*m_pEditSnippetText);
+    {    m_pEdit->SetText(m_EditSnippetText);
         // SetText() marked the file as modified
         // Unmarked it by saving to a dummy file
         #if defined(__WXMSW__)
@@ -234,11 +238,11 @@ void EditSnippetFrame::End_SnippetFrame(int wxID_OKorCANCEL)
     // XML data is in m_pEditSnippetText and will be obtained by the
     // parent via the GetText() call below.
 
-	*m_pReturnCode = (wxID_OKorCANCEL);
 
     // If parent is waiting on us, post we're finished
-	if (pWaitingSemaphore)
-        pWaitingSemaphore->Post();
+	//if (pWaitingSemaphore)
+    //    pWaitingSemaphore->Post();
+	*m_pReturnCode = (wxID_OKorCANCEL);
 }
 // ----------------------------------------------------------------------------
 wxString EditSnippetFrame::GetName()
@@ -255,7 +259,7 @@ wxString EditSnippetFrame::GetText()
 // ----------------------------------------------------------------------------
 {
     // data was saved by file close
-	return *m_pEditSnippetText;
+	return m_EditSnippetText;
 }
 
 // ----------------------------------------------------------------------------
@@ -289,7 +293,6 @@ void EditSnippetFrame::OnHelp(wxCommandEvent& event)
 void EditSnippetFrame::OnCloseWindow (wxCloseEvent &event)
 // ----------------------------------------------------------------------------
 {
-
     wxCommandEvent evt;
     OnFileClose (evt);
     if (m_pEdit && m_pEdit->Modified()) {
@@ -297,22 +300,6 @@ void EditSnippetFrame::OnCloseWindow (wxCloseEvent &event)
         return;
     }
     End_SnippetFrame(m_nReturnCode);
-    // re-enable. Edit may have disables us
-    wxWindow* pw = this;     //panel
-    LOGIT( _T("this[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    pw = GetParent();     //panel
-    LOGIT( _T("parent1[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    if (pw && pw->GetParent()) //CodeSnippets
-    {   pw = pw->GetParent();
-        pw->Enable();
-        LOGIT( _T("parent2[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    }
-    if (pw && pw->GetParent()) // no parent three
-    {   pw = pw->GetParent();
-        //pw->Enable();
-        LOGIT( _T("parent3[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    }
-
 
 }
 
@@ -361,7 +348,7 @@ void EditSnippetFrame::OnFileSave (wxCommandEvent &WXUNUSED(event))
         m_pEdit->SaveFile ();
     else
     {   // XML data to save
-        *m_pEditSnippetText = m_pEdit->GetText();
+        m_EditSnippetText = m_pEdit->GetText();
         // we just transfered the data, set wxID_OK.
         m_nReturnCode = wxID_OK;
         // Unmarked "modified"  by saving to a dummy file
@@ -414,7 +401,7 @@ void EditSnippetFrame::OnFileClose (wxCommandEvent &WXUNUSED(event))
             }
             else  // else save XML data
             {
-                *m_pEditSnippetText = m_pEdit->GetText();
+                m_EditSnippetText = m_pEdit->GetText();
                 m_nReturnCode = wxID_OK;
             }
         }
@@ -551,7 +538,7 @@ void EditSnippetFrame::CreateMenu ()
     menuEdit->Append (myID_FINDPREV,       _("Find pre&vious\tShift+F3"));
     menuEdit->Enable (myID_FINDPREV, false);
 
-    menuEdit->Append (myID_REPLACE, _("&Replace\tCtrl+H"));
+    menuEdit->Append (myID_REPLACE, _("&Replace\tCtrl+R"));
     menuEdit->Enable (myID_REPLACE, false);
     menuEdit->Append (myID_REPLACENEXT, _("Replace &again\tShift+F4"));
     menuEdit->Enable (myID_REPLACENEXT, false);

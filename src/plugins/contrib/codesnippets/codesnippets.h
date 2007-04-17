@@ -20,13 +20,20 @@
 #ifndef CODESNIPPETS_H_INCLUDED
 #define CODESNIPPETS_H_INCLUDED
 
+#include <wx/dnd.h>
+
 #include "cbplugin.h" // for "class cbPlugin"
 //#include "wxaui/manager.h"
 
 class CodeSnippetsWindow;
 
+// ----------------------------------------------------------------------------
 class CodeSnippets : public cbPlugin
+// ----------------------------------------------------------------------------
 {
+    friend class wxMyFileDropTarget;
+    friend class DropTargets;
+
 	public:
 		/** Constructor. */
 		CodeSnippets();
@@ -127,10 +134,20 @@ class CodeSnippets : public cbPlugin
 		CodeSnippetsWindow* m_pSnippetsWindow;
 		void SetSnippetsWindow(CodeSnippetsWindow* p);
 		CodeSnippetsWindow*  GetSnippetsWindow(){return m_pSnippetsWindow;}
+        void OnTreeCtrlEvent(wxTreeEvent& event);
 
 	private:
 
         void CreateSnippetWindow();
+        void SetTreeCtrlHandler(wxWindow *p, WXTYPE eventType);
+        void RemoveTreeCtrlHandler(wxWindow *p, WXTYPE eventType);
+        bool GetTreeSelectionData(wxTreeCtrl* pTree, wxString& selString);
+        wxArrayString* TextToFilenames(const wxString& string);
+        bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files);
+
+        #if defined(__WXMSW__)
+            void MSW_MouseMove(int x, int y );
+        #endif
 
 		void OnViewSnippets(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
@@ -139,8 +156,97 @@ class CodeSnippets : public cbPlugin
 		void OnIdle(wxIdleEvent& event);
 
 		wxWindow*   m_pAppWin;
+        ProjectManager* m_pPrjMan;
+        EditorManager*  m_pEdMan;
+        wxTreeCtrl*     m_pMgtTreeBeginDrag;
+        wxPoint         m_TreeMousePosn;
+        wxTreeItemId    m_TreeItemId;
+        wxString        m_TreeText;
 
 		DECLARE_EVENT_TABLE();
+
+}; //class CodeSnippets
+// ----------------------------------------------------------------------------
+//  ::MainFrame Drop Target (taken from ../src/main.cpp)
+// ----------------------------------------------------------------------------
+class wxMyFileDropTarget : public wxFileDropTarget
+// ----------------------------------------------------------------------------
+{
+    // This class declaration must mirror the one used in ::MainFrame
+    // We pass our filename array off to MainFrame using this class
+
+  public:
+    wxMyFileDropTarget(CodeSnippets* frame):m_frame(frame){}
+    virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
+    {
+        if(!m_frame) return false;
+        return m_frame->OnDropFiles(x,y,filenames);
+    }
+  private:
+    CodeSnippets* m_frame;
+};
+
+// ----------------------------------------------------------------------------
+// Local drop targets
+// ----------------------------------------------------------------------------
+class DropTargets: public wxDropTarget
+// ----------------------------------------------------------------------------
+{
+  public:
+
+    // constructor
+    DropTargets (CodeSnippets* pcbDndExtn);
+
+    virtual wxDragResult OnData (wxCoord x, wxCoord y, wxDragResult def);
+    bool OnDataText (wxCoord x, wxCoord y, const wxString& data);
+    bool OnDataFiles (wxCoord x, wxCoord y, const wxArrayString& filenames);
+
+    wxDragResult OnDragOver (wxCoord x, wxCoord y, wxDragResult def);
+    wxDragResult OnEnter (wxCoord x, wxCoord y, wxDragResult def);
+    virtual bool OnDrop(wxCoord x, wxCoord y)
+    {
+        //wxDropTarget::OnDrop
+        //virtual bool OnDrop(wxCoord x, wxCoord y)
+        //Called when the user drops a data object on the target.
+        //Return false to veto the operation.
+        #ifdef LOGGING
+         LOGIT( wxT("DropTargets:OnDrop") );
+        #endif //LOGGING
+        return true;
+    }
+
+    void OnLeave();
+
+  private:
+
+    CodeSnippets* m_pcbDndExtn;
+
+    wxFileDataObject *m_file;
+    wxTextDataObject *m_text;
+
+};
+//----------------------------------------------------------------------------
+// drop targets composite
+// ----------------------------------------------------------------------------
+class DropTargetsComposite: public wxDataObjectComposite
+// ----------------------------------------------------------------------------
+{
+  public:
+    // constructor
+    DropTargetsComposite () { m_dataObjectLast = NULL; };
+
+    bool SetData (const wxDataFormat& format, size_t len, const void *buf)
+    {
+        m_dataObjectLast = GetObject (format);
+        wxCHECK_MSG ( m_dataObjectLast, FALSE, wxT("unsupported format in wxDataObjectComposite"));
+        return m_dataObjectLast->SetData (len, buf);
+    }
+
+    wxDataObjectSimple *GetLastDataObject() { return m_dataObjectLast; }
+
+  private:
+    wxDataObjectSimple *m_dataObjectLast;
+
 };
 
 #endif // CODESNIPPETS_H_INCLUDED

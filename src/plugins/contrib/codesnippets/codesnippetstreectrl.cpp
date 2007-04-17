@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 48 2007-04-14 03:18:16Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 51 2007-04-17 15:50:16Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -55,12 +55,14 @@ BEGIN_EVENT_TABLE(CodeSnippetsTreeCtrl, wxTreeCtrl)
     //FIXME: EVT_TREE_ITEM_ACTIVATED(idSnippetsTreeCtrl,     CodeSnippetsTreeCtrl::OnItemActivated)
 	EVT_TREE_BEGIN_DRAG(idSnippetsTreeCtrl, CodeSnippetsTreeCtrl::OnBeginTreeItemDrag)
 	EVT_TREE_END_DRAG(idSnippetsTreeCtrl,   CodeSnippetsTreeCtrl::OnEndTreeItemDrag)
-	EVT_LEAVE_WINDOW(                       CodeSnippetsTreeCtrl::OnLeaveWindow) //(pecan 2006/9/10)
+	EVT_LEAVE_WINDOW(                       CodeSnippetsTreeCtrl::OnLeaveWindow)
+	EVT_ENTER_WINDOW(                       CodeSnippetsTreeCtrl::OnEnterWindow)
 	EVT_MOTION(                             CodeSnippetsTreeCtrl::OnMouseEvent)
 	//FIXME: EVT_TREE_BEGIN_LABEL_EDIT(idSnippetsTreeCtrl,   CodeSnippetsTreeCtrl::OnBeginLabelEdit)
 	//FIXME: EVT_TREE_END_LABEL_EDIT(idSnippetsTreeCtrl,     CodeSnippetsTreeCtrl::OnEndLabelEdit)
 	EVT_TREE_SEL_CHANGED(idSnippetsTreeCtrl,CodeSnippetsTreeCtrl::OnItemSelected)
 	//EVT_TREE_SEL_CHANGING(idSnippetsTreeCtrl,CodeSnippetsTreeCtrl::OnItemSelectChanging)
+	EVT_IDLE(                               CodeSnippetsTreeCtrl::OnIdle)
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -71,7 +73,8 @@ CodeSnippetsTreeCtrl::CodeSnippetsTreeCtrl(wxWindow *parent, const wxWindowID id
 {
     m_fileChanged = false;
     m_bMouseLeftWindow = false;
-    m_pTopDialog = 0;
+    m_pPropertiesDialog = 0;
+    m_bShutDown = false;
 
     m_pSnippetsTreeCtrl = this;
     GetConfig()->SetSnippetsTreeCtrl(this);
@@ -86,26 +89,58 @@ CodeSnippetsTreeCtrl::CodeSnippetsTreeCtrl(wxWindow *parent, const wxWindowID id
     if (m_pXDisplay){
         if ( ! XTestQueryExtension (m_pXDisplay, &Event, &Error, &Major, &Minor ) )
         {   // nope, extension not supported
-            LOGIT(wxT("XTest extension not supported"));
+            LOGIT(wxT("XTest extension not found"));
             XCloseDisplay(m_pXDisplay);
             m_pXDisplay = 0;
         }
     }
    #endif
+
+    wxWindow* pw = this;
+    LOGIT( _T("this[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+    if (pw && pw->GetParent()) //
+    {   pw = pw->GetParent();
+        LOGIT( _T("parent1[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+    }
+    if (pw && pw->GetParent())  //This is the SnippetWindow parent
+    {   pw = pw->GetParent();
+        LOGIT( _T("parent2[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+    }
+
+//    m_pSnippetWindowParent = pw;
+//    // Grab CodeBlocks close function so dlg isn't orphaned|crashed on close)
+//    GetConfig()->GetMainFrame()->Connect( wxEVT_CLOSE_WINDOW,
+//        (wxObjectEventFunction)(wxEventFunction)
+//        (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown,NULL,this);
+//    // Grab parents close function so dlg isn't orphaned|crashed on close)
+//    pw->Connect( wxEVT_CLOSE_WINDOW,
+//        (wxObjectEventFunction)(wxEventFunction)
+//        (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown,NULL,this);
+
 }
 
 // ----------------------------------------------------------------------------
 CodeSnippetsTreeCtrl::~CodeSnippetsTreeCtrl()
 // ----------------------------------------------------------------------------
 {
-        //dtor
+    //dtor
+
+//    // Release CodeBlocks closeWindow function
+//    GetConfig()->GetMainFrame()->Disconnect( wxEVT_CLOSE_WINDOW,
+//        (wxObjectEventFunction)(wxEventFunction)
+//        (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown);
+//    // Release parents closeWindow function
+//    m_pSnippetWindowParent->Disconnect( wxEVT_CLOSE_WINDOW,
+//        (wxObjectEventFunction)(wxEventFunction)
+//        (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown);
+
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnItemSelectChanging(wxTreeEvent& event)
 // ----------------------------------------------------------------------------
 {
     // UNUSED
-    if (m_pTopDialog) event.Veto();
+    //-if (m_pTopDialog) event.Veto();
     return;
 }
 // ----------------------------------------------------------------------------
@@ -745,11 +780,22 @@ void CodeSnippetsTreeCtrl::OnEndTreeItemDrag(wxTreeEvent& event)
 
 }//OnEndTreeItemDrag
 // ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::OnEnterWindow(wxMouseEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // a wxAUI window is not enabling the Tree ctrl so when leaving
+    // the disabled TreeCtrl, the scintilla editor doesnt show the cursor.
+    wxWindow* pw = (wxWindow*)event.GetEventObject();
+    pw->Enable();
+    pw->SetFocus();
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
 // ----------------------------------------------------------------------------
 {
     // unless we can compile with the X11/Xtst header we cannot
-    // allow dragging a tree item out of the treeCtrl. It really
+    // allow dragging a tree item out of the linux treeCtrl. It really
     // messes up the tree mouse navigation
     #if defined(__WXGTK__) && !defined(HAVEX11DEV)
      event.Skip(); return;
@@ -843,6 +889,7 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
 
         // move mouse into the Tree control
         wxPoint CurrentMousePosn = ::wxGetMousePosition();
+
       #if defined(__WXMSW__)
         MSW_MouseMove( m_TreeMousePosn.x, m_TreeMousePosn.y );
         // send mouse LeftKeyUp
@@ -853,6 +900,7 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
         // put mouse back in pre-moved "dropped" position
         MSW_MouseMove( CurrentMousePosn.x, CurrentMousePosn.y );
       #endif //(__WXMSW__)
+
       #if defined(__WXGTK__) && defined(HAVEX11DEV)
         if (m_pXDisplay)
         {   // move cursor to window and send a left button up event
@@ -863,7 +911,7 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
             XFlush(m_pXDisplay);
         }
       #endif//(__WXGTK__)&&(HAVEX11DEV)
-    }
+    }//if
 
     delete textData; //wxTextDataObject
     delete fileData; //wxFileDataObject
@@ -1320,117 +1368,40 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxStri
 // ----------------------------------------------------------------------------
 {
     if (SnippetItemData* itemData = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(GetAssociatedItemID() ))) 	{
-        // Wait for the non-modal edit dialog to finish
-        int retcode = 0;
-        wxSemaphore waitSem;
-//        EditSnippetDlg* pdlg = new EditSnippetDlg(GetSnippetsTreeCtrl()->GetItemText(GetAssociatedItemID()),
-//                                        itemData->GetSnippet(), &waitSem, &retcode, fileName);
         wxString snippetText = itemData->GetSnippet();
-        EditSnippetFrame* pdlg = new EditSnippetFrame(GetSnippetsTreeCtrl()->GetItemText(GetAssociatedItemID()),
-                                        &snippetText, &waitSem, &retcode, fileName);
-        retcode = ExecuteFrame( pdlg, waitSem, retcode);
-        // Save any changed data
-		if (retcode == wxID_OK)
-		{
-            // If XML text snippet, just save back to XML file
-            if (fileName.IsEmpty())
-            {
-                itemData->SetSnippet(pdlg->GetText());
-                GetSnippetsTreeCtrl()->SetItemText(GetAssociatedItemID(), pdlg->GetName());
-            }
-            else //This was an external file
-            {
-                ;// Modified external files already saved by dialog
-            }
-			SetFileChanged(true);
-		}
-        pdlg->Destroy();
-	}
-}
-// ----------------------------------------------------------------------------
-int CodeSnippetsTreeCtrl::ExecuteFrame(wxFrame* pdlg, wxSemaphore& waitSem, int& retcode)
-// ----------------------------------------------------------------------------
-{
-        m_pTopDialog = (wxDialog*)pdlg;
-        retcode = 0;
+        m_aDlgRetcodes.Add(0);
+        int* pRetcode = &m_aDlgRetcodes.Last();
 
-        //- Disable the parent for user input until the edit dialog returns
-        //- This also causes scintilla's cursor to disappear until moving the mouse
-        //- from an enabled window back to scintilla
-        //-this->GetParent()->Disable();
-
-    //LOGIT( _T("ExecuteFrame") );
-    wxWindow* pw = this;
-    //LOGIT( _T("this[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    if (pw && pw->GetParent()) //
-    {   pw = pw->GetParent();
-        //LOGIT( _T("parent1[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    }
-    if (pw && pw->GetParent())  //This is the SnippetWindow parent
-    {   pw = pw->GetParent();
-        //LOGIT( _T("parent2[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    }
-    //    if (pw && pw->GetParent())  //Snippet tree frame
-    //    {   pw = pw->GetParent();
-    //        LOGIT( _T("parent3[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    //    }
-    //    if (pw && pw->GetParent())  //
-    //    {   pw = pw->GetParent();
-    //        LOGIT( _T("parent5[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    //    }
-
-        // Grab CodeBlocks close function so dlg isn't orphaned|crashed on close)
-        GetConfig()->GetMainFrame()->Connect( wxEVT_CLOSE_WINDOW,
-            (wxObjectEventFunction)(wxEventFunction)
-            (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown,NULL,this);
-        // Grab parents close function so dlg isn't orphaned|crashed on close)
-        pw->Connect( wxEVT_CLOSE_WINDOW,
-            (wxObjectEventFunction)(wxEventFunction)
-            (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown,NULL,this);
-
-        #if defined(BUILDING_PLUGIN)
-          // Disable the plugin View menu item
-            Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, false);
-        #endif
+        EditSnippetFrame* pdlg = new EditSnippetFrame( GetAssociatedItemID(), pRetcode );
+        // cascade multiple editors
+        int knt = m_aDlgRetcodes.GetCount();
+        if (pdlg && (knt > 1) ){
+            int x,y;
+            pdlg->GetPosition(&x, &y );
+             if (0 == x){
+                pdlg->ClientToScreen(&x, &y );
+             }
+            knt = knt<<4;
+            pdlg->Move(x+knt,y+knt);
+        }
 
         if ( pdlg->Show() )
         {
-            // Just check to see if the semaphore has been posted.
-            // Don't do a real wait, else the edit dialog will freeze
-            while( wxSEMA_BUSY == waitSem.TryWait())
-            {   waitSem.WaitTimeout(20);
-                wxYield();
-            }
-            // retcode set by return frame
-            //-retcode = pdlg->GetReturnCode();
+            m_aDlgPtrs.Add((wxDialog*)pdlg);
         }
-        // Release CodeBlocks closeWindow function
-        GetConfig()->GetMainFrame()->Disconnect( wxEVT_CLOSE_WINDOW,
-            (wxObjectEventFunction)(wxEventFunction)
-            (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown);
-        // Release parents closeWindow function
-        pw->Disconnect( wxEVT_CLOSE_WINDOW,
-            (wxObjectEventFunction)(wxEventFunction)
-            (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown);
+        else
+            m_aDlgRetcodes.RemoveAt(m_aDlgRetcodes.GetCount());
 
-        #if defined(BUILDING_PLUGIN)
-          // Enable the plugin View menu item
-          Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
-        #endif
-
-		//- re-enable the tree for user input
-        //-this->GetParent()->Enable(true);
-
-        m_pTopDialog = 0;
-         LOGIT( _T("ExecuteFrame RetCode[%s]"), (retcode == wxID_OK)? wxT("OK"):wxT("Cancel") );
-        return retcode;
+	}//if
 }
 
 // ----------------------------------------------------------------------------
 int CodeSnippetsTreeCtrl::ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem)
 // ----------------------------------------------------------------------------
 {
-    m_pTopDialog = pdlg;
+    if (m_pPropertiesDialog) return 0;
+
+    m_pPropertiesDialog = pdlg;
     int retcode = 0;
 
     wxWindow* pw = this;
@@ -1481,23 +1452,99 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem)
           Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
         #endif
 
-        m_pTopDialog = 0;
+        m_pPropertiesDialog = 0;
 
         return retcode;
 }
 // ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::OnIdle(wxIdleEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // check to see if a editor has been posted & finish.
+
+    for (size_t i = 0; i < this->m_aDlgRetcodes.GetCount(); ++i )
+    {
+        // if we have a return code, this editor is done
+        if ( m_aDlgRetcodes.Item(i) == 0)
+            continue;
+
+        // else an edit frame is done, save any changed data
+        int retcode = m_aDlgRetcodes.Item(i);
+        EditSnippetFrame* pdlg = (EditSnippetFrame*)m_aDlgPtrs.Item(i);
+		if (retcode == wxID_OK)
+		{
+            // If XML text snippet, just save back to XML file
+            if (pdlg->GetFileName().IsEmpty())
+            {
+                SnippetItemData* pSnippetItemData = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(pdlg->GetSnippetId()));
+                pSnippetItemData->SetSnippet(pdlg->GetText());
+                GetSnippetsTreeCtrl()->SetItemText(pdlg->GetSnippetId(), pdlg->GetName());
+            }
+            else //This was an external file
+            {
+                ;// Modified external files already saved by dialog
+            }
+            // if text item type changed to link, set corrected icon
+            if ( pdlg->GetSnippetId().IsOk() )
+                SetSnippetImage(pdlg->GetSnippetId());
+			SetFileChanged(true);
+		}//if
+		if (pdlg && (not m_bShutDown) )
+        {
+            pdlg->Destroy();
+        }
+
+        // retcode set by return frame
+        //-retcode = pdlg->GetReturnCode();
+        m_aDlgRetcodes.Item(i) = 0;
+        m_aDlgPtrs.Item(i) = 0;
+    }//for
+
+    // when all editors terminate, free array storage
+    size_t alive = 0 ;
+    for (size_t i = 0; i < m_aDlgPtrs.GetCount(); ++i )
+    	alive |= (size_t)m_aDlgPtrs.Item(i);
+    if ( not alive )
+    {   m_aDlgRetcodes.Clear();
+        m_aDlgPtrs.Clear();
+    }
+
+    #if defined(BUILDING_PLUGIN)
+      // Enable the plugin View menu item
+      if ( 0 == m_aDlgPtrs.GetCount() )
+        Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
+    #endif
+
+}
+
+// ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnShutdown(wxCloseEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // Here because our Connect() intercepted wxTheApp EVT_CLOSE
-    // Blink this modeless dialog just like it was a modal dialog
-    wxWindow* oldTop = wxTheApp->GetTopWindow();
-    wxDialog* pdlg = this->m_pTopDialog;
-    wxTheApp->SetTopWindow( pdlg );
-    pdlg->RequestUserAttention();
-    wxTheApp->SetTopWindow(oldTop);
-    event.Veto();
-    //event.Skip(); causes app to crash
-    return;
+//    // Here because our Connect() intercepted wxTheApp EVT_CLOSE
+//    // Blink this modeless dialog just like it was a modal dialog
+//        //    wxWindow* oldTop = wxTheApp->GetTopWindow();
+//        //    wxDialog* pdlg = this->m_pTopDialog;
+//        //    wxTheApp->SetTopWindow( pdlg );
+//        //    pdlg->RequestUserAttention();
+//        //    wxTheApp->SetTopWindow(oldTop);
+//        //    event.Veto();
+//        //    //event.Skip(); causes app to crash
+//
+//    // This bool prevents crash when CodeBlocks is shutdown;
+//    this->m_bShutDown = true;
+//    for (size_t i = 0; i < this->m_aDlgPtrs.GetCount(); ++i )
+//    {
+//        wxDialog* pdlg = this->m_aDlgPtrs.Item(i);
+//        if (pdlg) pdlg->ProcessEvent(event);
+//    }
+//    #if defined(BUILDING_PLUGIN)
+//      // Enable the plugin View menu item
+//        asm("int3");
+//        Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
+//    #endif
+//
+//    event.Skip();
+//    return;
 }
 // ----------------------------------------------------------------------------

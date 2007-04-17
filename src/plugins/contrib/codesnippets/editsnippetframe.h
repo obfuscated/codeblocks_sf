@@ -5,20 +5,24 @@
 #include <wx/stattext.h>
 #include <wx/button.h>
 #include <wx/frame.h>
+#include <wx/treectrl.h>
 
 class Edit;
 
+// ----------------------------------------------------------------------------
 class EditSnippetFrame : public wxFrame
+// ----------------------------------------------------------------------------
 {
     friend class EditFrameDropTarget;
 
     public:
         //! constructor
-		EditSnippetFrame(const wxString& snippetName, wxString* pSnippetText,
-                            wxSemaphore* pWaitSem, int* pRetcode, wxString fileName=wxEmptyString);
-    public:
+		EditSnippetFrame(const wxTreeItemId SnippetItemId, int* pRetcode);
+
 		wxString GetName();
 		wxString GetText();
+		wxString GetFileName(){return m_EditFileName;};
+		wxTreeItemId GetSnippetId(){return m_SnippetItemId;}
         // edit object
 
         //! destructor
@@ -60,7 +64,7 @@ class EditSnippetFrame : public wxFrame
         void End_SnippetFrame(int wxID_OKorCANCEL);
         void CreateMenu ();
 
-		wxSemaphore*    pWaitingSemaphore;
+		//-wxSemaphore*    pWaitingSemaphore;
         Edit*           m_pEdit;
         wxColour        m_SysWinBkgdColour;    //(pecan 2007/3/27)
 		//wxStaticText*   m_NameLbl;
@@ -71,11 +75,12 @@ class EditSnippetFrame : public wxFrame
 		//wxButton*       m_HelpBtn;
 		wxString        m_EditFileName;
         wxString        m_EditSnippetLabel;
-        wxString*       m_pEditSnippetText;
+        wxString        m_EditSnippetText;
         // pointer to parents return code storage area
 		int*            m_pReturnCode;
 		// our return code to be placed in m_pReturnCode;
 		int             m_nReturnCode;
+		wxTreeItemId    m_SnippetItemId;
 
         //! creates the application menu bar
         wxMenuBar       *m_menuBar;

@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 47 2007-04-14 02:43:21Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 51 2007-04-17 15:50:16Z Pecan $
 
 #include "sdk.h"
 #ifndef CB_PRECOMB
@@ -31,13 +31,14 @@
 	#include "sdk_events.h"
 	#include <wx/stdpaths.h>
 #endif
-
+#include <wx/dnd.h>
 
 #include "version.h"
 #include "codesnippets.h"
 #include "codesnippetswindow.h"
 #include "snippetsconfig.h"
 //#include "wxAUI/manager.h"
+#include <wx/wxFlatNotebook/wxFlatNotebook.h>
 
 // Register the plugin
 namespace
@@ -136,7 +137,19 @@ void CodeSnippets::OnAttach()
     // setup snippet tree docking window
     // ---------------------------------------
     CreateSnippetWindow();
-}
+
+    // Set Drop targets so we can drag items in/out of the Project/Files Tree ctrls
+    // memorize manager of Open files tree
+    m_pPrjMan = Manager::Get()->GetProjectManager();
+	m_pEdMan  = Manager::Get()->GetEditorManager();
+    // set a drop target for the project managers wxFlatNotebook
+    m_pPrjMan->GetNotebook()->SetDropTarget(new DropTargets(this));
+    // set drop targets on the Project/File tree controls
+    m_pEdMan->GetTree()->SetDropTarget(new DropTargets(this));
+    SetTreeCtrlHandler( m_pPrjMan->GetTree(), wxEVT_COMMAND_TREE_BEGIN_DRAG );
+    SetTreeCtrlHandler( m_pEdMan->GetTree(),  wxEVT_COMMAND_TREE_BEGIN_DRAG );
+
+}//OnAttach
 
 // ----------------------------------------------------------------------------
 void CodeSnippets::OnRelease(bool appShutDown)
@@ -281,7 +294,7 @@ void CodeSnippets::OnIdle(wxIdleEvent& event)
 
     if (not GetSnippetsWindow()) { event.Skip();return; }
 
-    if ( GetSnippetsWindow()->IsDialogBusy() ) {return;}
+    if ( GetSnippetsWindow()->IsTreeBusy() ) {return;}
 
     bool bOpen = IsWindowReallyShown(GetSnippetsWindow());
     if ( (not bOpen) && GetSnippetsWindow())
@@ -399,3 +412,485 @@ void CodeSnippets::OnActivate(wxActivateEvent& event)
 //     LOGIT( _T("OnWindowClose[%p]"), pWindow );
 //     event.Skip();
 //}
+// ----------------------------------------------------------------------------
+bool CodeSnippets::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
+// ----------------------------------------------------------------------------
+{
+    // This is the drop routine for the Management Project/Files tree controls
+    // It's used to pass files off to MainFrame's drop method
+    #ifdef LOGGING
+     LOGIT( _T("CodeSnippets::OnDropFiles Entered") );
+    #endif //LOGGING
+    wxDropTarget*  pMainDrpTgt = GetConfig()->GetMainFrame()->GetDropTarget();
+    if (not pMainDrpTgt) {
+        #ifdef LOGGING
+         LOGIT( _T("CodeSnippets::OnDropFiles Error pMainDrpTgt is %p"),pMainDrpTgt );
+        #endif //LOGGING
+        return false;
+    }//fi
+    // invoke MainFrame wxFilesDropTarget
+    bool bRC = ((wxMyFileDropTarget*)pMainDrpTgt)->OnDropFiles(x, y, files);
+    #ifdef LOGGING
+     LOGIT( _T("CodeSnippets::OnDropFiles MainFrame returned %s"), bRC?wxT("True"):wxT("False") );
+    #endif //LOGGING
+    return bRC;
+}
+// ----------------------------------------------------------------------------
+bool CodeSnippets::GetTreeSelectionData(wxTreeCtrl* pTree, wxString& selString)
+// ----------------------------------------------------------------------------
+{
+    selString = wxEmptyString;
+
+    if (not pTree) { return false; }
+
+    if ( (pTree == m_pPrjMan->GetTree())
+        or (pTree == m_pEdMan->GetTree()) )
+        {/*ok*/;}
+    else{ return false; }
+    #ifdef LOGGING
+     LOGIT( _T("Focused Tree:%p"),pTree );
+    #endif //LOGGING
+
+    // check for a file selection in the treeCtrl
+    wxTreeItemId sel = pTree->GetSelection();
+    if (not sel) {return false;}
+    #ifdef LOGGING
+     LOGIT( _T("Selection:%d"), (unsigned int)sel);
+    #endif //LOGGING
+
+    // Opened Files Tree
+    if ( pTree == m_pEdMan->GetTree() ) {
+        selString = m_pEdMan->GetTreeItemFilename( sel );
+    }//fi Opened Files Tree
+
+    // Project Tree
+    if ( pTree == m_pPrjMan->GetTree() ) {
+        // create a string from highlighted Project treeCtrl item
+
+        // Workspace/root
+        if (sel && sel == pTree->GetRootItem())
+        {   // selected workspace
+            cbWorkspace* pWorkspace = m_pPrjMan->GetWorkspace();
+            if (not pWorkspace) {return false;}
+            selString = pWorkspace->GetFilename();
+            return (not selString.IsEmpty());
+        }//workspace
+
+        FileTreeData* ftd = (FileTreeData*)pTree->GetItemData(sel);
+        if (not ftd){return false;}
+
+        // if it is a project...
+        if (ftd->GetKind() == FileTreeData::ftdkProject)
+        {
+            cbProject* pPrj = ftd->GetProject();
+            if (pPrj) selString = pPrj->GetFilename();
+        }//Project
+
+        // if it is a file...
+        if (ftd->GetKind() == FileTreeData::ftdkFile)
+        {
+            // selected project file
+           ProjectFile* pPrjFile = ftd->GetProjectFile();
+            if (not pPrjFile) { return false;}
+            selString = pPrjFile->file.GetFullPath();
+        }//file
+    }//fi Project Tree
+
+    return (not selString.IsEmpty() ) ;
+
+}//GetTreeSelectionData
+// ----------------------------------------------------------------------------
+wxArrayString* CodeSnippets::TextToFilenames(const wxString& str)
+// ----------------------------------------------------------------------------
+{
+    // convert text to filenames acceptable to MainFrame Projects panel drop target
+
+    wxArrayString* pFilenames = new wxArrayString;
+
+    if (0 == str.Freq('\r'))
+        pFilenames->Add(str);
+    else{ // parse big string into individual filenames
+        wxString ostr;
+        for (size_t i=0; i<str.Length(); i++ ) {
+            if (str[i] != '\r') ostr.Append(str[i]);
+            else{
+                pFilenames->Add(ostr);
+                ostr.Empty();
+                if ( ((i+1)<str.Length()) && (str[i+1] == '\n') )
+                    i++;    //skip over newline
+            }//esle
+        }//rof
+        if (not ostr.IsEmpty()) pFilenames->Add(ostr);
+    }//esle
+
+    // verify filenames exists
+    for (size_t i=0;i<pFilenames->GetCount(); i++ ) {
+        #ifdef LOGGING
+         LOGIT( wxT("CodeSnippets::OnPaste:Text converted to filename %d:[%s]"), i,pFilenames->Item(i).GetData());
+        #endif //LOGGING
+        if (not wxFileExists(pFilenames->Item(i))) {
+             pFilenames->RemoveAt(i);
+             i--;
+        }
+    }
+
+    return pFilenames;
+}
+// ----------------------------------------------------------------------------
+// DropTargets
+// ----------------------------------------------------------------------------
+DropTargets::DropTargets (CodeSnippets* pcbDndExtn)
+           : wxDropTarget ()
+// ----------------------------------------------------------------------------
+{
+    //constructor
+
+    m_pcbDndExtn = pcbDndExtn;
+
+    // create targets
+    m_file = new wxFileDataObject();
+    m_text = new wxTextDataObject();
+
+    // set composite target
+    DropTargetsComposite *data = new DropTargetsComposite();
+    data->Add ((wxDataObjectSimple*)m_file);
+    data->Add ((wxDataObjectSimple*)m_text, true); // set as preferred
+    SetDataObject (data);
+    #ifdef LOGGING
+     LOGIT( wxT("DropTargets::ctor set") );
+    #endif //LOGGING
+
+}
+
+// ----------------------------------------------------------------------------
+// drop handlers
+// ----------------------------------------------------------------------------
+wxDragResult DropTargets::OnData (wxCoord x, wxCoord y, wxDragResult def)
+// ----------------------------------------------------------------------------
+{
+    //wxDropTarget::OnData
+    //virtual wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def)
+    //Called after OnDrop returns true. By default this will usually GetData
+    // and will return the suggested default value def.
+
+    // This is a composite drop target; handles both text and filenames
+    #ifdef LOGGING
+     LOGIT( wxT("DropTargets::OnData") );
+    #endif //LOGGING
+    if (!GetData()) return wxDragNone;
+
+    // get object
+    wxDataObjectSimple *obj = ((DropTargetsComposite *)GetDataObject())->GetLastDataObject();
+
+    if (obj == ((wxDataObjectSimple*)m_file)) {
+        if (not OnDataFiles (x, y, m_file->GetFilenames())) def = wxDragNone;
+    }else if (obj == ((wxDataObjectSimple*)m_text)) {
+        if (not OnDataText (x, y, m_text->GetText())) def = wxDragNone;
+    }else{
+        def = wxDragNone;
+    }
+
+    return def;
+}
+
+// ----------------------------------------------------------------------------
+bool DropTargets::OnDataFiles (wxCoord WXUNUSED(x), wxCoord WXUNUSED(y),
+                               const wxArrayString& filenames)
+// ----------------------------------------------------------------------------
+{
+    #ifdef LOGGING
+     LOGIT( wxT("DropTargets::OnDataFiles") );
+    #endif //LOGGING
+    m_pcbDndExtn->OnDropFiles(1, 1, filenames);
+    return TRUE;
+}
+
+// ----------------------------------------------------------------------------
+bool DropTargets::OnDataText (wxCoord x, wxCoord y, const wxString& data)
+// ----------------------------------------------------------------------------
+{
+    // convert text string to filename array and drop on target
+    #ifdef LOGGING
+     LOGIT( wxT("DropTargets::OnDataText") );
+    #endif //LOGGING
+    bool ok;
+    wxArrayString* pFilenames = m_pcbDndExtn->TextToFilenames(data);
+    if (pFilenames->GetCount()) ok = m_pcbDndExtn->OnDropFiles(1, 1, *pFilenames);
+    delete pFilenames;
+    //return ok;
+    // ---------------------------------------------------
+    // return false so source data doesn't get cut||deleted
+    // ---------------------------------------------------
+    return false;
+}
+
+// ----------------------------------------------------------------------------
+wxDragResult DropTargets::OnDragOver (wxCoord x, wxCoord y, wxDragResult def)
+// ----------------------------------------------------------------------------
+{
+    //wxDropTarget::OnDragOver
+    //virtual wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def)
+    //Called when the mouse is being dragged over the drop target. By default,
+    // this calls functions return the suggested return value def.
+
+    #ifdef LOGGING
+     LOGIT( wxT("DropTargets::OnDragOver") );
+    #endif //LOGGING
+    return wxDragCopy;
+}
+
+// ----------------------------------------------------------------------------
+wxDragResult DropTargets::OnEnter (wxCoord x, wxCoord y, wxDragResult def)
+// ----------------------------------------------------------------------------
+{
+    //wxDropTarget::OnEnter
+    //virtual wxDragResult OnEnter(wxCoord x, wxCoord y, wxDragResult def)
+    //Called when the mouse enters the drop target. By default, this calls OnDragOver.
+    //Better stated: Called when the mouse is down and dragging inside the drop target.
+
+    #ifdef LOGGING
+     LOGIT( wxT("DropTargets::OnEnter") );
+    #endif //LOGGING
+    return wxDragCopy;
+}
+
+// ----------------------------------------------------------------------------
+void DropTargets::OnLeave()
+// ----------------------------------------------------------------------------
+{
+    //wxDropTarget::OnLeave
+    //virtual void OnLeave()
+    //Called when the mouse leaves the drop target.
+    //Actually: when the mouse leaves the window with the drop target.
+
+    #ifdef LOGGING
+     LOGIT( wxT("DropTargets::OnLeave") );
+    #endif //LOGGING
+}
+// ----------------------------------------------------------------------------
+//   Events and Event support routines
+// ----------------------------------------------------------------------------
+void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // Drag event.
+    // When user drags left mouse key out of the Projects/Files tree,
+    // create a dropSource from the focused treeCtrl item
+
+    if (not m_IsAttached) {event.Skip(); return;}
+
+    // Events enabled from OnInit() by:
+    // SetTreeCtrlHandler(m_pPrjMan->GetTree(), wxEVT_TREE_DRAG_BEGIN );
+
+    // allow all others to process first
+    event.Skip();
+
+    wxTreeCtrl* pTree = (wxTreeCtrl*)event.GetEventObject();
+
+    #ifdef LOGGING
+    	 //LOGIT( wxT("CodeSnippets::OnTreeCtrlEvent %p"), pTree );
+    #endif //LOGGING
+
+    // -----------------------
+    // TREE_BEGIN_DRAG
+    // -----------------------
+
+    if (event.GetEventType() == wxEVT_COMMAND_TREE_BEGIN_DRAG)
+    {
+        #ifdef LOGGING
+         LOGIT( _T("TREE_BEGIN_DRAG %p"), pTree );
+        #endif //LOGGING
+
+        if (pTree == (wxTreeCtrl*)m_pPrjMan->GetTree())
+        {
+
+            m_pMgtTreeBeginDrag = pTree;
+            m_TreeMousePosn = ::wxGetMousePosition();
+            m_TreeItemId    =   event.GetItem();
+            pTree->SelectItem(m_TreeItemId);
+        }
+        m_TreeText = wxEmptyString;
+        if (not GetTreeSelectionData(pTree, m_TreeText))
+        {
+            m_TreeText = wxEmptyString;
+            m_pMgtTreeBeginDrag = 0;
+        }
+        return;
+    }//fi
+    // -----------------------
+    // TREE_END_DRAG
+    // -----------------------
+    if (event.GetEventType() == wxEVT_COMMAND_TREE_END_DRAG)
+    {
+        #ifdef LOGGING
+         LOGIT( _T("TREE_END_DRAG %p"), pTree );
+        #endif //LOGGING
+
+        m_TreeText = wxEmptyString;
+        if (pTree == (wxTreeCtrl*)m_pPrjMan->GetTree())
+           m_pMgtTreeBeginDrag = 0;
+        return;
+    }
+    // -----------------------
+    // LEAVE_WINDOW
+    // -----------------------
+    if (event.GetEventType() == wxEVT_LEAVE_WINDOW)
+    {
+        //user has dragged mouse out of Management/File window
+        #ifdef LOGGING
+         //LOGIT( _T("MOUSE EVT_LEAVE_WINDOW") );
+        #endif //LOGGING
+
+        // Left mouse key must be down (dragging)
+        if (not ((wxMouseEvent&)event).LeftIsDown() ) return;
+        // check if data is available
+        if ( m_TreeText.IsEmpty()) return;
+
+        #ifdef LOGGING
+         LOGIT( _T("TREE_LEAVE_WINDOW %p"), pTree );
+        #endif //LOGGING
+
+        // we now have data, create both a simple text and filename drop source
+        wxTextDataObject* textData = new wxTextDataObject();
+        wxFileDataObject* fileData = new wxFileDataObject();
+            // fill text and file sources with snippet
+        wxDropSource textSource( *textData, (wxWindow*)event.GetEventObject() );
+        textData->SetText( m_TreeText );
+        wxDropSource fileSource( *fileData, (wxWindow*)event.GetEventObject() );
+        fileData->AddFile( m_TreeText );
+            // set composite data object to contain both text and file data
+        wxDataObjectComposite *data = new wxDataObjectComposite();
+        data->Add( (wxDataObjectSimple*)textData );
+        data->Add( (wxDataObjectSimple*)fileData, true ); // set file data as preferred
+            // create the drop source containing both data types
+        wxDropSource source( *data, (wxWindow*)event.GetEventObject()  );
+        #ifdef LOGGING
+         LOGIT( _T("DropSource Text[%s],File[%s]"),
+                    textData->GetText().GetData(),
+                    fileData->GetFilenames().Item(0).GetData() );
+        #endif //LOGGING
+
+        // allow both copy and move
+        int flags = 0;
+        flags |= wxDrag_AllowMove;
+
+        wxDragResult result = source.DoDragDrop(flags);
+
+        #if LOGGING
+            wxString pc;
+            switch ( result )
+            {
+                case wxDragError:   pc = _T("Error!");    break;
+                case wxDragNone:    pc = _T("Nothing");   break;
+                case wxDragCopy:    pc = _T("Copied");    break;
+                case wxDragMove:    pc = _T("Moved");     break;
+                case wxDragCancel:  pc = _T("Cancelled"); break;
+                default:            pc = _T("Huh?");      break;
+            }
+            LOGIT( wxT("CodeSnippets::OnLeftDown DoDragDrop returned[%s]"),pc.GetData() );
+        #else
+            wxUnusedVar(result);
+        #endif // wxUSE_STATUSBAR
+
+        // ---MSW WORKAROUNG --------------------------------------------------
+        // Since we dragged outside the tree control with an EVT_TREE_DRAG_BEGIN
+        // pending, MSW will *not* send the EVT_TREE_DRAG_END from a
+        // mouse key up event until the user re-clicks inside the tree control.
+        // The mouse is still captured and the tree exibits very bad behavior.
+        // GTK does not have this problem.
+
+        // Send an MSW mouse_key_up to the tree control so it releases the
+        // mouse and and receives a EVT_TREE_DRAG_END event.
+
+       #if defined(__WXMSW__)
+        if ( m_pMgtTreeBeginDrag )
+        {   //send Mouse LeftKeyUp to Tree Control window
+            #ifdef LOGGING
+             LOGIT( _T("Sending Mouse LeftKeyUp") );
+            #endif //LOGGING
+
+            // move mouse into the Tree control
+            wxPoint CurrentMousePosn = ::wxGetMousePosition();
+            MSW_MouseMove( m_TreeMousePosn.x, m_TreeMousePosn.y );
+
+            // send mouse LeftKeyUp
+            INPUT Input         = {0};
+            Input.type          = INPUT_MOUSE;
+            Input.mi.dwFlags    = MOUSEEVENTF_LEFTUP;
+            ::SendInput(1,&Input,sizeof(INPUT));
+
+            // put mouse back in drag-end position
+            MSW_MouseMove( CurrentMousePosn.x, CurrentMousePosn.y );
+        }
+       #endif //(__WXMSW__)
+
+        delete textData ;
+        delete fileData ;
+
+        m_pMgtTreeBeginDrag = 0;
+        m_TreeText = wxEmptyString;
+    }//fi event.GetEventType()
+
+    return;
+
+}//OnTreeCtrlEvent
+// ----------------------------------------------------------------------------
+#if defined(__WXMSW__)
+void CodeSnippets::MSW_MouseMove(int x, int y )
+// ----------------------------------------------------------------------------
+{
+    // Move the MSW mouse to absolute screen coords x,y
+      double fScreenWidth   = ::GetSystemMetrics( SM_CXSCREEN )-1;
+      double fScreenHeight  = ::GetSystemMetrics( SM_CYSCREEN )-1;
+      double fx = x*(65535.0f/fScreenWidth);
+      double fy = y*(65535.0f/fScreenHeight);
+      INPUT  Input={0};
+      Input.type      = INPUT_MOUSE;
+      Input.mi.dwFlags  = MOUSEEVENTF_MOVE|MOUSEEVENTF_ABSOLUTE;
+      Input.mi.dx = (LONG)fx;
+      Input.mi.dy = (LONG)fy;
+      ::SendInput(1,&Input,sizeof(INPUT));
+}
+#endif
+// ----------------------------------------------------------------------------
+void CodeSnippets::SetTreeCtrlHandler(wxWindow *p, WXTYPE eventType)
+// ----------------------------------------------------------------------------
+{
+	if (!p ) return;		// already attached !!!
+
+    #ifdef LOGGING
+	 LOGIT(wxT("CodeSnippets::Attach - attaching to [%s] %p"), p->GetName().c_str(),p);
+    #endif //LOGGING
+
+    p->Connect(wxEVT_COMMAND_TREE_BEGIN_DRAG,       //eg.,wxEVT_LEAVE_WINDOW,
+                     wxTreeEventHandler(CodeSnippets::OnTreeCtrlEvent),
+                     NULL, this);
+    p->Connect(wxEVT_COMMAND_TREE_END_DRAG,       //eg.,wxEVT_LEAVE_WINDOW,
+                     wxTreeEventHandler(CodeSnippets::OnTreeCtrlEvent),
+                     NULL, this);
+    p->Connect(wxEVT_LEAVE_WINDOW,       //eg.,wxEVT_LEAVE_WINDOW,
+                     wxTreeEventHandler(CodeSnippets::OnTreeCtrlEvent),
+                     NULL, this);
+}
+// ----------------------------------------------------------------------------
+void CodeSnippets::RemoveTreeCtrlHandler(wxWindow *p, WXTYPE eventType)
+// ----------------------------------------------------------------------------
+{
+	if (!p ) return;		// already attached !!!
+
+    #ifdef LOGGING
+	 LOGIT(wxT("CodeSnippets::Detach - detaching to [%s] %p"), p->GetName().c_str(),p);
+    #endif //LOGGING
+
+    p->Disconnect(wxEVT_COMMAND_TREE_BEGIN_DRAG,       //eg.,wxEVT_LEAVE_WINDOW,
+                     wxTreeEventHandler(CodeSnippets::OnTreeCtrlEvent),
+                     NULL, this);
+    p->Disconnect(wxEVT_COMMAND_TREE_END_DRAG,       //eg.,wxEVT_LEAVE_WINDOW,
+                     wxTreeEventHandler(CodeSnippets::OnTreeCtrlEvent),
+                     NULL, this);
+    p->Disconnect(wxEVT_LEAVE_WINDOW,       //eg.,wxEVT_LEAVE_WINDOW,
+                     wxTreeEventHandler(CodeSnippets::OnTreeCtrlEvent),
+                     NULL, this);
+}
+// ----------------------------------------------------------------------------
+

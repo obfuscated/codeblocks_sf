@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.h 47 2007-04-14 02:43:21Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.h 51 2007-04-17 15:50:16Z Pecan $
 
 #ifndef CODESNIPPETSWINDOW_H
 #define CODESNIPPETSWINDOW_H
@@ -100,7 +100,7 @@ class CodeSnippetsWindow : public wxPanel
         void CheckForExternallyModifiedFiles();
         void ShowSnippetsAbout(wxString buildInfo);
 		wxTreeItemId SearchSnippet(const wxString& searchTerms, const wxTreeItemId& node);
-		bool IsDialogBusy(){return GetSnippetsTreeCtrl()->IsDialogBusy();}
+		bool IsTreeBusy(){return GetSnippetsTreeCtrl()->IsTreeBusy();}
 
 		wxTextCtrl*             m_SearchSnippetCtrl;
 		wxButton*               m_SearchCfgBtn;
