@@ -56,7 +56,7 @@ function OnLeave_QtPath(fwd)
             return false;
 		if (PLATFORM == PLATFORM_MSW && !VerifyLibFile(dir_nomacro_lib, _T("QtCore4"), _T("Qt's")))
 			return false;
-		else if (!VerifyLibFile(dir_nomacro_lib, _T("QtCore"), _T("Qt's")))
+		else if (PLATFORM != PLATFORM_MSW && !VerifyLibFile(dir_nomacro_lib, _T("QtCore"), _T("Qt's")))
 			return false;
 
 
