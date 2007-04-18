@@ -113,7 +113,7 @@ bool wxsFlagsProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Eleme
             int i = 0;
             for ( const wxChar** Ptr = Names; *Ptr; Ptr++, i++ )
             {
-                if ( (VALUE | Values[i]) == Values[i] )
+                if ( (VALUE & Values[i]) == Values[i] )
                 {
                     FlagsText << *Ptr << _T("|");
                 }
