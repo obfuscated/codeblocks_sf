@@ -486,6 +486,7 @@ void UsrGlblMgrEditDialog::NewVar(wxCommandEvent& event)
     if(d.ShowModal() == wxID_OK)
     {
         wxString name = d.GetValue();
+        Save();
         Sanitise(name);
         AddVar(name);
     }
