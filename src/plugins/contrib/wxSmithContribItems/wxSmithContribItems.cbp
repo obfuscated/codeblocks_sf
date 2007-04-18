@@ -13,6 +13,10 @@
 				<Option compiler="gcc" />
 				<Option host_application="$(#cb)\devel\codeblocks.exe" />
 			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+			</Environment>
 		</Build>
 		<VirtualTargets>
 			<Add alias="All" targets="wxSmithContribItems;" />
@@ -46,9 +50,9 @@
 		<Linker>
 			<Add library="wxsmith" />
 			<Add library="codeblocks" />
-			<Add library="wxmsw26u" />
+			<Add library="wxmsw26$(WX_SUFFIX)" />
 			<Add directory="$(#cb)\devel" />
-			<Add directory="$(#wx.lib)\gcc_dll" />
+			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="..\..\..\devel\share\CodeBlocks\plugins" />
 		</Linker>
 		<ExtraCommands>
