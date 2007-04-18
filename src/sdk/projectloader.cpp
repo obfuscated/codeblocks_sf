@@ -526,7 +526,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     {
         if (node->Attribute("platforms"))
         	platformsFinal = GetPlatformsFromString(cbC2U(node->Attribute("platforms")));
-        
+
         if (node->Attribute("use_console_runner"))
             use_console_runner = strncmp(node->Attribute("use_console_runner"), "0", 1) != 0;
 
@@ -865,6 +865,7 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
     bool foundLink = false;
     bool foundCompilerVar = false;
     bool foundTarget = false;
+    bool noTarget = false;
 
 //    Compiler* compiler = CompilerFactory::GetCompiler(m_pProject->GetCompilerID());
 
@@ -912,8 +913,14 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
         //
         if (node->Attribute("target"))
         {
-            file->AddBuildTarget(cbC2U(node->Attribute("target")));
-            foundTarget = true;
+            wxString targetName = cbC2U(node->Attribute("target"));
+            if (!targetName.IsSameAs(_T("<{~None~}>")))
+            {
+                file->AddBuildTarget(targetName);
+                foundTarget = true;
+            }
+            else
+                noTarget = true;
         }
 
         node = node->NextSiblingElement("Option");
@@ -931,7 +938,7 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
             file->compilerVar = _T("CPP");
     }
 
-    if (!foundTarget)
+    if (!foundTarget && !noTarget)
     {
         // add to all targets
         for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
@@ -1297,6 +1304,13 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         {
             for (unsigned int x = 0; x < f->buildTargets.GetCount(); ++x)
                 AddElement(unitnode, "Option", "target", f->buildTargets[x]);
+        }
+
+        /* Add a target with a weird name if no targets are present. *
+         * This will help us detecting a file with no targets.       */
+        if ((int)f->buildTargets.GetCount() == 0)
+        {
+            AddElement(unitnode, "Option", "target", _T("<{~None~}>"));
         }
     }
 
