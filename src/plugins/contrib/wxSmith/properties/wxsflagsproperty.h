@@ -21,6 +21,7 @@ class wxsFlagsProperty: public wxsProperty
          *  \param Names            array of names used for items in Values array, ending with NULL string
          *  \param UpdateEnteries   posting true here notifies, that arrays may change
          *  \param Default          defaut value applied on read errors
+         *  \param UseNamesInXml    if true, names will be stored inside xml node instead of values
          *  \param Priority         priority of this property
          */
 		wxsFlagsProperty(
@@ -31,6 +32,7 @@ class wxsFlagsProperty: public wxsProperty
             const wxChar** Names,
             bool UpdateEnteries=false,
             long Default=0,
+            bool UseNamesInXml=false,
             int Priority=100);
 
     protected:
@@ -50,6 +52,7 @@ class wxsFlagsProperty: public wxsProperty
         bool UpdateEnteries;
         const long* Values;
         const wxChar** Names;
+        bool UseNamesInXml;
 };
 
 /** \addtogroup properties_macros
@@ -65,7 +68,7 @@ class wxsFlagsProperty: public wxsProperty
  *  \param Default value applied on read errors / validation failures
  */
 #define WXS_FLAGS(ClassName,VarName,PGName,DataName,Values,Names,Default) \
-    { static wxsFlagsProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Values,Names,false,Default); \
+    { static wxsFlagsProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Values,Names,false,Default,true); \
       Property(_Property); }
 
 /** \brief Macro automatically declaring flags property with custom priority
@@ -79,7 +82,7 @@ class wxsFlagsProperty: public wxsProperty
  *  \param Priority priority of this property
  */
 #define WXS_FLAGS_P(ClassName,VarName,PGName,DataName,Values,Names,Default,Priority) \
-    { static wxsFlagsProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Values,Names,false,Default,Priority); \
+    { static wxsFlagsProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),Values,Names,false,Default,true,Priority); \
       Property(_Property); }
 
 /** \} */

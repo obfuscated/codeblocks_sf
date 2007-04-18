@@ -23,17 +23,19 @@
 
 #include "wxsflagsproperty.h"
 #include <globals.h>
+#include <wx/tokenzr.h>
 
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,long)
 
-wxsFlagsProperty::wxsFlagsProperty(const wxString& PGName, const wxString& DataName,long _Offset,const long* _Values,const wxChar** _Names,bool _UpdateEnteries,long _Default,int Priority):
+wxsFlagsProperty::wxsFlagsProperty(const wxString& PGName, const wxString& DataName,long _Offset,const long* _Values,const wxChar** _Names,bool _UpdateEnteries,long _Default,bool _UseNamesInXml,int Priority):
     wxsProperty(PGName,DataName,Priority),
     Offset(_Offset),
     Default(_Default),
     UpdateEnteries(_UpdateEnteries),
     Values(_Values),
-    Names(_Names)
+    Names(_Names),
+    UseNamesInXml(_UseNamesInXml)
 {}
 
 
@@ -72,7 +74,30 @@ bool wxsFlagsProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Elemen
         VALUE = Default;
         return false;
     }
-    VALUE = atol(Text);
+    if ( UseNamesInXml )
+    {
+        wxString TextS = cbC2U(Text);
+        wxStringTokenizer Tokenizer(cbC2U(Text),_T("| \t\n"), wxTOKEN_STRTOK);
+        VALUE = 0;
+        while ( Tokenizer.HasMoreTokens() )
+        {
+            wxString Token = Tokenizer.GetNextToken();
+            int i = 0;
+            for ( const wxChar** Ptr = Names; *Ptr; Ptr++, i++ )
+            {
+                if ( Token == *Ptr )
+                {
+                    VALUE |= Values[i];
+                    break;
+                }
+            }
+        }
+        return false;;
+    }
+    else
+    {
+        VALUE = atol(Text);
+    }
     return true;
 }
 
@@ -80,7 +105,29 @@ bool wxsFlagsProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Eleme
 {
     if ( VALUE != Default )
     {
-        Element->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%d"),VALUE))));
+        if ( UseNamesInXml )
+        {
+            wxString FlagsText;
+            int i = 0;
+            for ( const wxChar** Ptr = Names; *Ptr; Ptr++, i++ )
+            {
+                if ( (VALUE | Values[i]) == Values[i] )
+                {
+                    FlagsText << *Ptr << _T("|");
+                }
+            }
+
+            if ( !FlagsText.IsEmpty() )
+            {
+                // Removing last '|' character
+                FlagsText.RemoveLast();
+            }
+            Element->InsertEndChild(TiXmlText(cbU2C(FlagsText)));
+        }
+        else
+        {
+            Element->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%d"),VALUE))));
+        }
         return true;
     }
     return false;
