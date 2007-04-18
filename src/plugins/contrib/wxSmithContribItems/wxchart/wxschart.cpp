@@ -31,6 +31,11 @@ namespace
         WXS_ST_DEFAULTS()
     WXS_ST_END()
 
+
+    static const long DEFAULT_STYLE_FIX = 0x1000;
+    static const long Values[] = { USE_AXIS_X, USE_AXIS_Y, USE_LEGEND, USE_ZOOM_BUT, USE_DEPTH_BUT, USE_GRID, DEFAULT_STYLE_FIX };
+    static const wxChar* Names[] = { _T("USE_AXIS_X"), _T("USE_AXIS_Y"), _T("USE_LEGEND"), _T("USE_ZOOM_BUT"), _T("USE_DEPTH_BUT"), _T("USE_GRID"), _T("DEFAULT_STYLE"), NULL };
+
 }
 
 wxsChart::wxsChart(wxsItemResData* Data):
@@ -40,6 +45,7 @@ wxsChart::wxsChart(wxsItemResData* Data):
         NULL,               // Structure describing events, we have no events for wxChart
         wxsChartStyles)     // Structure describing styles
 {
+    m_Flags = DEFAULT_STYLE_FIX;
 }
 
 wxsChart::~wxsChart()
@@ -52,8 +58,19 @@ void wxsChart::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
     switch ( Language )
     {
         case wxsCPP:
-            Codef(_T("%C(%W,%I,DEFAULT_STYLE,%P,%S,%T);\n"));
+        {
+            wxString StyleCode;
+            for ( int i=0; Names[i]; i++ )
+            {
+                if ( m_Flags & Values[i] ) StyleCode << Names[i] << _T("|");
+            }
+
+            if ( StyleCode.IsEmpty() ) StyleCode = _T("0");
+            else                       StyleCode.RemoveLast();
+
+            Codef(_T("%C(%W,%I,(STYLE)(%s),%P,%S,%T);\n"),StyleCode.c_str());
             break;
+        }
 
         default:
             wxsCodeMarks::Unknown(_T("wxsChart::OnBuildCreatingCode"),Language);
@@ -62,11 +79,14 @@ void wxsChart::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
 
 wxObject* wxsChart::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-    return new wxChartCtrl(Parent,GetId(),DEFAULT_STYLE,Pos(Parent),Size(Parent),Style());
+    long RealFlags = m_Flags;
+    if ( RealFlags & DEFAULT_STYLE_FIX ) RealFlags |= DEFAULT_STYLE;
+    return new wxChartCtrl(Parent,GetId(),(STYLE)RealFlags,Pos(Parent),Size(Parent),Style());
 }
 
 void wxsChart::OnEnumWidgetProperties(long Flags)
 {
+    WXS_FLAGS(wxsChart,m_Flags,_("wxChart style"),_T("wxchart_style"),Values,Names, DEFAULT_STYLE_FIX )
 }
 
 void wxsChart::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
