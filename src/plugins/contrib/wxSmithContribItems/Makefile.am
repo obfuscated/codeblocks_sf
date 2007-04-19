@@ -24,11 +24,11 @@ EXTRA_DIST = ./wxchart/wxchart-1.0/include/wx/chartart/*.xpm \
 		$(srcdir)/*.cbp \
 		manifest.xml
 
-pkgdata_DATA = wxSmithContribItems.zip
+pkgdata_DATA = wxsmithcontribitems.zip
 CLEANFILES = $(pkgdata_DATA)
 
-wxSmithContribItems.zip:
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/wxSmithContribItems.zip manifest.xml > /dev/null
+wxsmithcontribitems.zip:
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/wxsmithcontribitems.zip manifest.xml > /dev/null
 
 libwxsmithcontribitems_la_SOURCES = \
 ./wxchart/wxchart-1.0/src/legendwindow.cpp \
