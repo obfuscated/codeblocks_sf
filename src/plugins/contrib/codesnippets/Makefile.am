@@ -34,7 +34,7 @@ libcodesnippets_la_SOURCES = 	codesnippets.cpp \
 			finddialogs.cpp \
 			version.cpp
 
-noinst_HEADERS =  	codesnippets.h
+noinst_HEADERS =  	codesnippets.h \
 			codesnippetsapp.h \
 			codesnippetstreectrl.h \
 			codesnippetswindow.h \
