@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.cpp 43 2007-04-11 19:25:25Z Pecan $
+// RCS-ID: $Id: snippetsconfig.cpp 54 2007-04-20 00:01:59Z Pecan $
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
 #else
@@ -90,6 +90,7 @@ CodeSnippetsConfig::CodeSnippetsConfig()
     windowWidth = 0;
     windowHeight = 0;
     m_VersionStr = SnippetVersion.GetVersion();
+    m_sWindowHandle = wxEmptyString;
 
 }
 
@@ -161,6 +162,9 @@ void CodeSnippetsConfig::SettingsLoad()
      LOGIT( _T("SettingsSnippetsXmlFullPath[%s]"),SettingsSnippetsXmlFullPath.c_str() );
     #endif //LOGGING
 
+    // read windowHandle. Will be empty if this is first instance
+    cfgFile.Read( wxT("WindowHandle"),  &m_sWindowHandle, wxEmptyString) ;
+
     // set a global snippets xml file path
     if (SettingsSnippetsXmlFullPath.IsEmpty())
         SettingsSnippetsXmlFullPath = stdPaths.GetUserDataDir() + wxFILE_SEP_PATH +  AppName+ _T(".xml");
@@ -203,6 +207,21 @@ void CodeSnippetsConfig::SettingsSave()
         cfgFile.Write(wxT("WindowPosition"),  winPos) ;
          LOGIT( _T("Saving WindowPosition[%s]"), winPos.c_str() );
     }
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsConfig::SettingsSaveString(const wxString settingName, const wxString settingValue )
+// ----------------------------------------------------------------------------
+{
+        // file will be saved in $HOME/codesnippets.ini
+
+    wxFileConfig cfgFile(wxEmptyString,                 // appname
+                        wxEmptyString,                  // vendor
+                        SettingsSnippetsCfgFullPath,    // local filename
+                        wxEmptyString,                  // global file
+                        wxCONFIG_USE_LOCAL_FILE);
+
+	cfgFile.Write( settingName,  settingValue ) ;
+
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsConfig::SettingsSaveWinPosition()

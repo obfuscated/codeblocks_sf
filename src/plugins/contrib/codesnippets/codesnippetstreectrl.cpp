@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 51 2007-04-17 15:50:16Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 54 2007-04-20 00:01:59Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -47,6 +47,9 @@
 #include "menuidentifiers.h"
 #include "editsnippetdlg.h"
 #include "editsnippetframe.h"
+#if defined(__WXGTK__)
+    #include "wx/gtk/win_gtk.h"
+#endif
 
 
 IMPLEMENT_DYNAMIC_CLASS(CodeSnippetsTreeCtrl, wxTreeCtrl)
@@ -79,33 +82,17 @@ CodeSnippetsTreeCtrl::CodeSnippetsTreeCtrl(wxWindow *parent, const wxWindowID id
     m_pSnippetsTreeCtrl = this;
     GetConfig()->SetSnippetsTreeCtrl(this);
 
-   #if defined(__WXGTK__) && defined(HAVEX11DEV)
-    // Get XWindows info
-    m_pXDisplay = 0;
-    int Event, Error;
-    int Major, Minor;
-    m_pXDisplay = XOpenDisplay( 0 );
-    // does the remote display have the Xtest-extension?
-    if (m_pXDisplay){
-        if ( ! XTestQueryExtension (m_pXDisplay, &Event, &Error, &Major, &Minor ) )
-        {   // nope, extension not supported
-            LOGIT(wxT("XTest extension not found"));
-            XCloseDisplay(m_pXDisplay);
-            m_pXDisplay = 0;
-        }
-    }
-   #endif
 
-    wxWindow* pw = this;
-    LOGIT( _T("this[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    if (pw && pw->GetParent()) //
-    {   pw = pw->GetParent();
-        LOGIT( _T("parent1[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    }
-    if (pw && pw->GetParent())  //This is the SnippetWindow parent
-    {   pw = pw->GetParent();
-        LOGIT( _T("parent2[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-    }
+//    wxWindow* pw = this;
+//    LOGIT( _T("this[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+//    if (pw && pw->GetParent()) //
+//    {   pw = pw->GetParent();
+//        LOGIT( _T("parent1[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+//    }
+//    if (pw && pw->GetParent())  //This is the SnippetWindow parent
+//    {   pw = pw->GetParent();
+//        LOGIT( _T("parent2[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
+//    }
 
 //    m_pSnippetWindowParent = pw;
 //    // Grab CodeBlocks close function so dlg isn't orphaned|crashed on close)
@@ -611,11 +598,11 @@ wxTreeItemId CodeSnippetsTreeCtrl::AddCategory(const wxTreeItemId& parent, wxStr
 	return newCategoryID;
 }
 // ----------------------------------------------------------------------------
-bool CodeSnippetsTreeCtrl::RemoveItem(wxTreeItemId itemId)
+bool CodeSnippetsTreeCtrl::RemoveItem(const wxTreeItemId RemoveItemId)
 // ----------------------------------------------------------------------------
 {
 	// Get the associated item id
-	wxTreeItemId itemID = itemId;
+	wxTreeItemId itemId = RemoveItemId;
     SnippetItemData* pItemData = (SnippetItemData*)(GetItemData(itemId));
 
     // put deleted items in .trash category
@@ -623,18 +610,18 @@ bool CodeSnippetsTreeCtrl::RemoveItem(wxTreeItemId itemId)
     if ( trashId==(void*)0 )
         trashId = AddCategory(GetRootItem(), wxT(".trash"), false);
     // if item is NOT already in the trash, copy item to .trash item
-    if (not ( itemID == FindItemById( itemId, trashId, pItemData->GetType()) ))
+    if (not ( FindItemById( itemId, trashId, pItemData->GetType()) ))
     {
-        TiXmlDocument* pDoc =  CopyTreeNodeToXmlDoc( itemID);
+        TiXmlDocument* pDoc =  CopyTreeNodeToXmlDoc( itemId);
         CopyXmlDocToTreeNode(pDoc, trashId);
         delete pDoc;
     }
 	// Sanity check
-	if (itemID != GetRootItem() )
+	if (itemId != GetRootItem() )
 	{
 		// No questions asked
-		DeleteChildren(itemID);
-		Delete(itemID);
+		DeleteChildren(itemId);
+		Delete(itemId);
         SetFileChanged(true);
 		return true;
 	}
@@ -797,9 +784,6 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
     // unless we can compile with the X11/Xtst header we cannot
     // allow dragging a tree item out of the linux treeCtrl. It really
     // messes up the tree mouse navigation
-    #if defined(__WXGTK__) && !defined(HAVEX11DEV)
-     event.Skip(); return;
-    #endif
 
     // -----------------------
     // LEAVE_WINDOW
@@ -875,14 +859,13 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
     // pending, WX will not send the EVT_TREE_DRAG_END from a
     // mouse_key_up event unless the user re-clicks inside the tree control.
     // The mouse is still captured and the tree exibits very bad behavior.
-    // GTK does not have this problem.
-    //2007/01/6 This *is* happening on andLinux
-
+    // Hack:
     // To solve this, send an mouse_key_up to the tree control so it
     // releases the mouse and receives an EVT_TREE_DRAG_END event.
 
     if ( m_pEvtTreeCtrlBeginDrag )
-    {   //send Mouse LeftKeyUp to Tree Control window
+    {
+        //send Mouse LeftKeyUp to Tree Control window
         #ifdef LOGGING
          //LOGIT( _T("Sending Mouse LeftKeyUp") );
         #endif //LOGGING
@@ -901,16 +884,38 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
         MSW_MouseMove( CurrentMousePosn.x, CurrentMousePosn.y );
       #endif //(__WXMSW__)
 
-      #if defined(__WXGTK__) && defined(HAVEX11DEV)
-        if (m_pXDisplay)
-        {   // move cursor to window and send a left button up event
-            XTestFakeMotionEvent(m_pXDisplay, -1, m_TreeMousePosn.x, m_TreeMousePosn.y, 0);
-            XTestFakeButtonEvent( m_pXDisplay, 1, false, 0);
-            // put mouse back in pre-moved "dropped" position
-            XTestFakeMotionEvent( m_pXDisplay, -1, CurrentMousePosn.x, CurrentMousePosn.y, 0 );
-            XFlush(m_pXDisplay);
-        }
-      #endif//(__WXGTK__)&&(HAVEX11DEV)
+      #if defined(__WXGTK__)
+        // move cursor to source window and send a left button up event
+        XWarpPointer (GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()),
+                None,              /* not source window -> move from anywhere */
+                GDK_WINDOW_XID(GDK_ROOT_PARENT()),  /* dest window */
+                0, 0, 0, 0,        /* not source window -> move from anywhere */
+                m_TreeMousePosn.x, m_TreeMousePosn.y );
+        // send LeftMouseRelease key
+        m_pEvtTreeCtrlBeginDrag->SetFocus();
+        GdkDisplay* display = gdk_display_get_default ();
+        int xx=0,yy=0;
+        GdkWindow* pGdkWindow = gdk_display_get_window_at_pointer( display, &xx, &yy);
+        // LOGIT(wxT("Tree[%p][%d %d]"), m_pEvtTreeCtrlBeginDrag,m_TreeMousePosn.x, m_TreeMousePosn.y);
+        // LOGIT(wxT("gdk [%p][%d %d]"), pWindow, xx, yy);
+        GdkEventButton evb;
+        memset(&evb, 0, sizeof(evb));
+        evb.type = GDK_BUTTON_RELEASE;
+        evb.window = pGdkWindow;
+        evb.x = xx;
+        evb.y = yy;
+        evb.state = GDK_BUTTON1_MASK;
+        evb.button = 1;
+        // gdk display put event, namely mouse release
+        gdk_display_put_event( display, (GdkEvent*)&evb);
+        // put mouse back in pre-moved "dropped" position
+        XWarpPointer (GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()),
+                None,              /* not source window -> move from anywhere */
+                GDK_WINDOW_XID(GDK_ROOT_PARENT()),  /* dest window */
+                0, 0, 0, 0,        /* not source window -> move from anywhere */
+                CurrentMousePosn.x, CurrentMousePosn.y );
+      #endif//(__WXGTK__)
+
     }//if
 
     delete textData; //wxTextDataObject
@@ -1367,6 +1372,17 @@ bool CodeSnippetsTreeCtrl::EditSnippetProperties(wxTreeItemId& itemId)
 void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxString fileName)
 // ----------------------------------------------------------------------------
 {
+    // just focus any already open snippet items
+    int knt = m_aDlgRetcodes.GetCount();
+    for (int i = 0; i<knt ; ++i )
+    {   EditSnippetFrame* pesf = (EditSnippetFrame*)m_aDlgPtrs.Item(i);
+        if (not pesf) continue;
+        if ( pesf->GetSnippetId() == GetAssociatedItemID() )
+    	{   m_aDlgPtrs.Item(i)->SetFocus();
+            return;
+    	}
+    }//for
+    // Create editor for snippet item
     if (SnippetItemData* itemData = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(GetAssociatedItemID() ))) 	{
         wxString snippetText = itemData->GetSnippet();
         m_aDlgRetcodes.Add(0);
@@ -1374,14 +1390,14 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxStri
 
         EditSnippetFrame* pdlg = new EditSnippetFrame( GetAssociatedItemID(), pRetcode );
         // cascade multiple editors
-        int knt = m_aDlgRetcodes.GetCount();
-        if (pdlg && (knt > 1) ){
+        int knt = m_aDlgPtrs.GetCount();
+        if (pdlg && (knt > 0) ){
             int x,y;
             pdlg->GetPosition(&x, &y );
              if (0 == x){
                 pdlg->ClientToScreen(&x, &y );
              }
-            knt = knt<<4;
+            knt = knt<<5;
             pdlg->Move(x+knt,y+knt);
         }
 
@@ -1501,10 +1517,11 @@ void CodeSnippetsTreeCtrl::OnIdle(wxIdleEvent& event)
     }//for
 
     // when all editors terminate, free array storage
-    size_t alive = 0 ;
-    for (size_t i = 0; i < m_aDlgPtrs.GetCount(); ++i )
-    	alive |= (size_t)m_aDlgPtrs.Item(i);
-    if ( not alive )
+    size_t editorsOpen = 0 ;
+    size_t knt = m_aDlgPtrs.GetCount();
+    for (size_t i = 0; i < knt; ++i )
+    	editorsOpen |= (size_t)m_aDlgPtrs.Item(i);
+    if ( knt && (not editorsOpen) )
     {   m_aDlgRetcodes.Clear();
         m_aDlgPtrs.Clear();
     }

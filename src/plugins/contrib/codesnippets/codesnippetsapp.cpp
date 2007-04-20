@@ -40,6 +40,7 @@ bool CodeSnippetsApp::OnInit()
     g_pConfig = new CodeSnippetsConfig;
 
 	CodeSnippetsAppFrame* frame = new CodeSnippetsAppFrame(0L, _("CodeSnippets"));
+	if (GetConfig()->m_sWindowHandle.IsEmpty() ) return false;
 	frame->Show();
 
 	return true;
@@ -144,28 +145,6 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
     #endif
     LOGIT(wxT("AppName is[%s]"),GetConfig()->AppName.c_str());
 
-#if wxUSE_MENUS
-        // create a menu bar
-    wxMenuBar* mbar = new wxMenuBar();
-    wxMenu* fileMenu = new wxMenu(_T(""));
-    fileMenu->Append(idMenuFileOpen, _("&Load File...\tCtrl-O"), _("Load Snippets"));
-    fileMenu->Append(idMenuFileSave, _("&Save\tCtrl-S"), _("Save Snippets"));
-    fileMenu->Append(idMenuFileSaveAs, _("Save &As..."), _("Save Snippets As..."));
-        fileMenu->Append(idMenuQuit, _("&Quit\tCtrl-Q"), _("Quit the application"));
-    mbar->Append(fileMenu, _("&File"));
-
-        // Settings menu
-    wxMenu* settingsMenu = new wxMenu(_T(""));
-    settingsMenu->Append(idMenuSettingsOptions, _("Options..."), _("Configuration Options"));
-    //settingsMenu->Append(idMenuSettingsSave, _("Save"), _("Save Settings"));
-    mbar->Append(settingsMenu, _("Settings"));
-        // About menu item
-    wxMenu* helpMenu = new wxMenu(_T(""));
-    helpMenu->Append(idMenuAbout, _("&About\tF1"), _("Show info about this application"));
-    mbar->Append(helpMenu, _("&Help"));
-
-    SetMenuBar(mbar);
-#endif // wxUSE_MENUS
 
     // Create filename like codesnippets.ini
     //memorize the key file name as {%HOME%}\codesnippets.ini
@@ -208,8 +187,68 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
     GetConfig()->SettingsSnippetsCfgFullPath = cfgFilenameStr;
      LOGIT( _T("SettingsSnippetsCfgFullPath[%s]"),GetConfig()->SettingsSnippetsCfgFullPath.c_str() );
 
+    // ---------------------
     // Initialize Globals
+    // ---------------------
     GetConfig()->SettingsLoad();
+
+    // -----------------------------------------
+    // Check for pgm instance already running
+    // -----------------------------------------
+    const wxString name = wxString::Format(wxT("CodeSnippets-%s"), wxGetUserId().c_str());
+    m_checker = new wxSingleInstanceChecker(name);
+
+   #if defined(__WXMSW__)
+    if ( m_checker->IsAnotherRunning() )
+    {   // Previous instance is running.
+        // Minimize then restore the first instance so pgm appears on active screen
+        // Get the first instance handle of the window from the config file
+        HWND pFirstInstance;
+        //-cfgFile.Read( wxT("WindowHandle"),  &windowHandle ) ;
+        unsigned long val;
+        if ( GetConfig()->m_sWindowHandle.ToULong( &val, 16) )
+        pFirstInstance = (HWND)val;
+        if (pFirstInstance && ::IsWindow(pFirstInstance) ){
+            ::ShowWindow(pFirstInstance,SW_FORCEMINIMIZE);  //minimize the window
+            ::ShowWindow(pFirstInstance,SW_RESTORE);        //restore the window
+            ::BringWindowToTop(pFirstInstance);
+       #if not defined(LOGGING)
+        }
+        else{
+       #endif
+            wxMessageBox(
+            wxT("CodeSnippets is already running."), name);
+        }//else
+        GetConfig()->m_sWindowHandle = wxEmptyString;
+        return ;
+    }//fi m_checker
+   #endif
+    // write the window handle to the config file for other instance loads
+    GetConfig()->m_sWindowHandle = wxString::Format( wxT("%p"),this->GetHandle());
+    GetConfig()->SettingsSaveString(wxT("WindowHandle"), GetConfig()->m_sWindowHandle);
+
+#if wxUSE_MENUS
+        // create a menu bar
+    wxMenuBar* mbar = new wxMenuBar();
+    wxMenu* fileMenu = new wxMenu(_T(""));
+    fileMenu->Append(idMenuFileOpen, _("&Load File...\tCtrl-O"), _("Load Snippets"));
+    fileMenu->Append(idMenuFileSave, _("&Save\tCtrl-S"), _("Save Snippets"));
+    fileMenu->Append(idMenuFileSaveAs, _("Save &As..."), _("Save Snippets As..."));
+        fileMenu->Append(idMenuQuit, _("&Quit\tCtrl-Q"), _("Quit the application"));
+    mbar->Append(fileMenu, _("&File"));
+
+        // Settings menu
+    wxMenu* settingsMenu = new wxMenu(_T(""));
+    settingsMenu->Append(idMenuSettingsOptions, _("Options..."), _("Configuration Options"));
+    //settingsMenu->Append(idMenuSettingsSave, _("Save"), _("Save Settings"));
+    mbar->Append(settingsMenu, _("Settings"));
+        // About menu item
+    wxMenu* helpMenu = new wxMenu(_T(""));
+    helpMenu->Append(idMenuAbout, _("&About\tF1"), _("Show info about this application"));
+    mbar->Append(helpMenu, _("&Help"));
+
+    SetMenuBar(mbar);
+#endif // wxUSE_MENUS
 
 #if wxUSE_STATUSBAR
     // create a status bar with some information about the used wxWidgets version
@@ -224,9 +263,15 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
     GetConfig()->pSnipImages = new SnipImages();
     SetIcon(GetConfig()->GetSnipImages()->GetSnipListIcon(TREE_IMAGE_ALL_SNIPPETS));
 
+    // ----------------------------
+    // create window
+    // -----------------------------
     // Create CodeSnippetsWindow with snippet tree
     GetConfig()->pMainFrame    = this;
     GetConfig()->pSnippetsWindow = new CodeSnippetsWindow(this);
+    // dont allow window to disappear
+    if ( GetConfig()->windowWidth<20 ) {GetConfig()->windowWidth = 100;}
+    if ( GetConfig()->windowHeight<40 ) {GetConfig()->windowHeight = 200;}
     SetSize(GetConfig()->windowXpos, GetConfig()->windowYpos,
             GetConfig()->windowWidth, GetConfig()->windowHeight);
 

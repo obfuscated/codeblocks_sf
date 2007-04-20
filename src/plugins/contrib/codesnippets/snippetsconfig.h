@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.h 43 2007-04-11 19:25:25Z Pecan $
+// RCS-ID: $Id: snippetsconfig.h 53 2007-04-18 14:35:57Z Pecan $
 
 
 #ifndef GLOBAL_H
@@ -52,6 +52,7 @@ class CodeSnippetsConfig
     void SettingsLoad();
     void SettingsSave();
     void SettingsSaveWinPosition();
+    void SettingsSaveString(const wxString settingName, const wxString settingValue );
 
     wxWindow*   GetMainFrame(){return pMainFrame;}
     SnipImages* GetSnipImages(){return pSnipImages;}
@@ -113,6 +114,7 @@ class CodeSnippetsConfig
     int          windowWidth;
     int          windowHeight;
     wxString     m_VersionStr;
+    wxString     m_sWindowHandle;
     SearchConfiguration     m_SearchConfig;
 
 

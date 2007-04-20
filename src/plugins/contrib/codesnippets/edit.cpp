@@ -396,7 +396,7 @@ void Edit::OnFindNext (wxCommandEvent &WXUNUSED(event))
     }else{
         //wxMessageBox (_("Can't anymore find the string: \"") + findtext + _("\""),
         //              _("Find string"), wxOK | wxICON_INFORMATION, this);
-        messageBox (_("Can't anymore find the string: \"") + findtext + _("\""),
+        messageBox (_("Cannot find the string: \"") + findtext + _("\""),
                       _("Find string"), wxOK | wxICON_INFORMATION);
         g_statustext = _("No more text found!");
     }

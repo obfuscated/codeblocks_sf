@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetproperty.cpp 43 2007-04-11 19:25:25Z Pecan $
+// RCS-ID: $Id: snippetproperty.cpp 52 2007-04-17 18:46:11Z Pecan $
 // ----------------------------------------------------------------------------
 //  SnippetProperty.cpp                                         //(pecan 2006/9/12)
 // ----------------------------------------------------------------------------
@@ -217,7 +217,8 @@ void SnippetProperty::InvokeEditOnSnippetText()
         wxFile tmpFile( tmpFileName.GetFullPath(), wxFile::write);
         if (not tmpFile.IsOpened() )
         {
-            wxMessageBox(wxT("Open failed for:")+tmpFileName.GetFullPath());
+            //wxMessageBox(wxT("Open failed for:")+tmpFileName.GetFullPath());
+            messageBox(wxT("Open failed for:")+tmpFileName.GetFullPath());
             return ;
         }
         wxString snippetData( GetSnippet() );

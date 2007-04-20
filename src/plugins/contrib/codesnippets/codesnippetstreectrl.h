@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.h 51 2007-04-17 15:50:16Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.h 54 2007-04-20 00:01:59Z Pecan $
 
 #ifndef CODESNIPPETSTREECTRL_H
 #define CODESNIPPETSTREECTRL_H
@@ -58,7 +58,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
 		void        SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemId& parentID);
 		void        AddCodeSnippet(const wxTreeItemId& parent, wxString title, wxString codeSnippet, bool editNow);
 		wxTreeItemId AddCategory(const wxTreeItemId& parent, wxString title, bool editNow);
-        bool        RemoveItem(wxTreeItemId itemId);
+        bool        RemoveItem(const wxTreeItemId itemId);
 
         bool        SetFileChanged(bool truefalse) { return m_fileChanged = truefalse; }
         bool        GetFileChanged() { return m_fileChanged; }
@@ -153,10 +153,6 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
 
        #if defined(__WXMSW__)
         void MSW_MouseMove(int x, int y );
-       #endif
-       #if defined(__WXGTK__) && defined(HAVEX11DEV)
-        // XDisplay pointer
-        Display* m_pXDisplay;
        #endif
 
         wxTreeItemId FindItemByLabel(const wxString& searchTerms, const wxTreeItemId& node, int requestType);

@@ -44,6 +44,8 @@ class CodeSnippetsApp : public wxApp
 #ifndef CODESNIPPETSAPPMAIN_H
 #define CODESNIPPETSAPPMAIN_H
 
+#include <wx/snglinst.h>    //single instance checker
+
 #include "codesnippetsapp.h"
 #include "snippetsconfig.h"
 #include "codesnippetswindow.h"
@@ -72,6 +74,8 @@ class CodeSnippetsAppFrame: public wxFrame
 		void OnActivate(wxActivateEvent& event);
 
 		wxString            buildInfo;
+        wxSingleInstanceChecker*  m_checker ;
+
 
 		DECLARE_EVENT_TABLE()
 };

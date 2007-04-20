@@ -177,7 +177,7 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
 	cfgFile.Read( wxT("EditDlgHeight"),     &GetConfig()->nEditDlgHeight, 400 ) ;
 	cfgFile.Read( wxT("EditDlgMaximized"),  &GetConfig()->bEditDlgMaximized, false );
 	//SetSize(GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight);
-    LOGIT( _T("EditDlgPositinIN X[%d]Y[%d]Width[%d]Height[%d]"),
+    LOGIT( _T("EditDlgPositin IN X[%d]Y[%d]Width[%d]Height[%d]"),
         GetConfig()->nEditDlgXpos,GetConfig()->nEditDlgYpos,
         GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight );
     SetSize(GetConfig()->nEditDlgXpos, GetConfig()->nEditDlgYpos, GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight);
@@ -222,7 +222,7 @@ void EditSnippetFrame::End_SnippetFrame(int wxID_OKorCANCEL)
         cfgFile.Write( wxT("EditDlgYpos"),  y );
         cfgFile.Write( wxT("EditDlgWidth"),  w );
         cfgFile.Write( wxT("EditDlgHeight"), h );
-         LOGIT( _T("EditDlgPositinOUT X[%d]Y[%d]Width[%d]Height[%d]"),x,y,w,h );
+         LOGIT( _T("EditDlgPositin OUT X[%d]Y[%d]Width[%d]Height[%d]"),x,y,w,h );
 
 		//  cfgMan->Write(_T("editdlg_maximized"), false);
         cfgFile.Write( wxT("EditDlgMaximized"),  false );
@@ -447,7 +447,8 @@ void EditSnippetFrame::OnPrintPreview (wxCommandEvent &WXUNUSED(event))
                             &printDialogData);
     if (!preview->Ok()) {
         delete preview;
-        wxMessageBox (_("There was a problem with previewing.\n\
+        /*wxMessageBox (_("There was a problem with previewing.\n\ */
+        messageBox (_("There was a problem with previewing.\n\
                          Perhaps your current printer is not correctly?"),
                       _("Previewing"), wxOK);
         return;
@@ -469,8 +470,9 @@ void EditSnippetFrame::OnPrint (wxCommandEvent &WXUNUSED(event))
     EditPrint printout (m_pEdit);
     if (!printer.Print (this, &printout, true)) {
         if (wxPrinter::GetLastError() == wxPRINTER_ERROR) {
-        wxMessageBox (_("There was a problem with printing.\n\
-                         Perhaps your current printer is not correctly?"),
+        /* wxMessageBox (_("There was a problem with printing.\n\ */
+        messageBox (_("There was a problem with printing.\n\
+                         Perhaps your current printer is not correctly configured?"),
                       _("Previewing"), wxOK);
             return;
         }

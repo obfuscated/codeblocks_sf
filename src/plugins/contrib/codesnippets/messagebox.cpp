@@ -70,8 +70,13 @@ int messageBox( const wxString& message, const wxString& title, long dialogStyle
     // Race condition:
     // This doesn't work well. wxWidgets reports the window and even IsShown()
     //  even when the debugger shows the window is already destroyed.
+
+    wxString msgTitle = title;
+    if (not title.Contains(wxT("CodeSnippets")))
+        msgTitle = (wxT("CodeSnippets - ")) + title;
+
     if (!wxTheApp->GetTopWindow()){
-        return wxMessageBox(message, title, dialogStyle);
+        return wxMessageBox(message, msgTitle, dialogStyle);
     }
 
     int dialogStyleDefault = wxCAPTION|wxDEFAULT_DIALOG_STYLE |wxRESIZE_BORDER|wxSTAY_ON_TOP ;
@@ -164,7 +169,7 @@ int messageBox( const wxString& message, const wxString& title, long dialogStyle
 
     // Create the custom message box
     messageBoxForm* pBox = new messageBoxCtrl( mainFrame, -1,
-        title, movePosn, size, dialogStyle, textStyle);
+        msgTitle, movePosn, size, dialogStyle, textStyle);
     pBox->m_messageBoxTextCtrl->SetBackgroundColour(newTextBkgnd);
     pBox->m_messageBoxTextCtrl->Clear();
     pBox->m_messageBoxTextCtrl->SetDefaultStyle( textAttr);

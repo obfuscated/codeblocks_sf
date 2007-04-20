@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 51 2007-04-17 15:50:16Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 54 2007-04-20 00:01:59Z Pecan $
 
 #include "sdk.h"
 #ifndef CB_PRECOMB
@@ -37,8 +37,10 @@
 #include "codesnippets.h"
 #include "codesnippetswindow.h"
 #include "snippetsconfig.h"
-//#include "wxAUI/manager.h"
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
+#if defined(__WXGTK__)
+    #include "wx/gtk/win_gtk.h"
+#endif
 
 // Register the plugin
 namespace
@@ -794,35 +796,67 @@ void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
 
         // ---MSW WORKAROUNG --------------------------------------------------
         // Since we dragged outside the tree control with an EVT_TREE_DRAG_BEGIN
-        // pending, MSW will *not* send the EVT_TREE_DRAG_END from a
+        // pending, Wx will *not* send the EVT_TREE_DRAG_END from a
         // mouse key up event until the user re-clicks inside the tree control.
         // The mouse is still captured and the tree exibits very bad behavior.
-        // GTK does not have this problem.
 
-        // Send an MSW mouse_key_up to the tree control so it releases the
+        // Send an mouse_key_up to the tree control so it releases the
         // mouse and and receives a EVT_TREE_DRAG_END event.
 
-       #if defined(__WXMSW__)
         if ( m_pMgtTreeBeginDrag )
-        {   //send Mouse LeftKeyUp to Tree Control window
+        {
+            //send Mouse LeftKeyUp to Tree Control window
             #ifdef LOGGING
              LOGIT( _T("Sending Mouse LeftKeyUp") );
             #endif //LOGGING
 
             // move mouse into the Tree control
             wxPoint CurrentMousePosn = ::wxGetMousePosition();
-            MSW_MouseMove( m_TreeMousePosn.x, m_TreeMousePosn.y );
+            #if defined(__WXMSW__)
+                MSW_MouseMove( m_TreeMousePosn.x, m_TreeMousePosn.y );
 
-            // send mouse LeftKeyUp
-            INPUT Input         = {0};
-            Input.type          = INPUT_MOUSE;
-            Input.mi.dwFlags    = MOUSEEVENTF_LEFTUP;
-            ::SendInput(1,&Input,sizeof(INPUT));
+                // send mouse LeftKeyUp
+                INPUT Input         = {0};
+                Input.type          = INPUT_MOUSE;
+                Input.mi.dwFlags    = MOUSEEVENTF_LEFTUP;
+                ::SendInput(1,&Input,sizeof(INPUT));
 
-            // put mouse back in drag-end position
-            MSW_MouseMove( CurrentMousePosn.x, CurrentMousePosn.y );
+                // put mouse back in drag-end position
+                MSW_MouseMove( CurrentMousePosn.x, CurrentMousePosn.y );
+            #endif //(__WXMSW__)
+            #if defined(__WXGTK__)
+                // move cursor to source window and send a left button up event
+                XWarpPointer (GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()),
+                        None,              /* not source window -> move from anywhere */
+                        GDK_WINDOW_XID(GDK_ROOT_PARENT()),  /* dest window */
+                        0, 0, 0, 0,        /* not source window -> move from anywhere */
+                        m_TreeMousePosn.x, m_TreeMousePosn.y );
+                // send LeftMouseRelease key
+                m_pMgtTreeBeginDrag->SetFocus();
+                GdkDisplay* display = gdk_display_get_default ();
+                int xx=0,yy=0;
+                GdkWindow* pGdkWindow = gdk_display_get_window_at_pointer( display, &xx, &yy);
+                // LOGIT(wxT("Tree[%p][%d %d]"), m_pEvtTreeCtrlBeginDrag,m_TreeMousePosn.x, m_TreeMousePosn.y);
+                // LOGIT(wxT("gdk [%p][%d %d]"), pWindow, xx, yy);
+                GdkEventButton evb;
+                memset(&evb, 0, sizeof(evb));
+                evb.type = GDK_BUTTON_RELEASE;
+                evb.window = pGdkWindow;
+                evb.x = xx;
+                evb.y = yy;
+                evb.state = GDK_BUTTON1_MASK;
+                evb.button = 1;
+                // gdk display put event, namely mouse release
+                gdk_display_put_event( display, (GdkEvent*)&evb);
+                // put mouse back in pre-moved "dropped" position
+                XWarpPointer (GDK_WINDOW_XDISPLAY(GDK_ROOT_PARENT()),
+                        None,              /* not source window -> move from anywhere */
+                        GDK_WINDOW_XID(GDK_ROOT_PARENT()),  /* dest window */
+                        0, 0, 0, 0,        /* not source window -> move from anywhere */
+                        CurrentMousePosn.x, CurrentMousePosn.y );
+            #endif//(__WXGTK__)
+
         }
-       #endif //(__WXMSW__)
 
         delete textData ;
         delete fileData ;
