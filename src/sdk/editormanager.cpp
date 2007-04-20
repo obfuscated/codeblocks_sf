@@ -1378,7 +1378,7 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
         if (data->scope == 1 &&
             control->GetSelectionStart()==control->GetSelectionEnd())
                 data->scope = 0;
-                
+
         if (data->scope == 1) // selected text
         {
             if(data->NewSearch)
@@ -2121,6 +2121,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 wxString msg;
                 msg.Printf(_("Not found: %s"), data->findText.c_str());
                 cbMessageBox(msg, _("Result"), wxICON_INFORMATION);
+                control->SetSCIFocus(true);
                 break; // done
             }
         }
@@ -2338,6 +2339,9 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         {
             msg.Printf(_("Not found: %s"), data->findText.c_str());
             cbMessageBox(msg, _("Result"), wxICON_INFORMATION);
+            cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+            if (ed)
+                ed->GetControl()->SetSCIFocus(true);
         }
         else
         {
