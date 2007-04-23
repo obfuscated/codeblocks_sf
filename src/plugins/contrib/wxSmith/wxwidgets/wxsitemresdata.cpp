@@ -756,7 +756,7 @@ void wxsItemResData::BuildEventHandlersCodeReq(wxsCodingLang Language,wxsItem* I
                     VarNameString = _T("FindWindow(XRCID(\"") + Item->GetIdName() + _T("\"))");
                 }
             }
-            Events.GenerateBindingCode(Code,IdString,VarNameString,Language);
+            Events.GenerateBindingCode(Code,IdString,VarNameString,Item->IsRootItem(),Language);
 
             wxsParent* Parent = Item->ConvertToParent();
             if ( Parent )

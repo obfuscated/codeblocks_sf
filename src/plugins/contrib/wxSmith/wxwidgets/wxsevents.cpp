@@ -112,7 +112,7 @@ void wxsEvents::XmlSaveFunctions(TiXmlElement* Element)
     }
 }
 
-void wxsEvents::GenerateBindingCode(wxString& Code,const wxString& IdString,const wxString& VarNameString,wxsCodingLang Language)
+void wxsEvents::GenerateBindingCode(wxString& Code,const wxString& IdString,const wxString& VarNameString,bool IsRoot,wxsCodingLang Language)
 {
     wxString ClassName = m_Item->GetResourceData()->GetClassName();
     switch ( Language )
@@ -132,10 +132,21 @@ void wxsEvents::GenerateBindingCode(wxString& Code,const wxString& IdString,cons
                             break;
 
                         case wxsEventDesc::NoId:
-                            Code << VarNameString << _T("->Connect(") << IdString
-                                 << _T(",") << m_EventArray[i].Type
-                                 << _T(",(wxObjectEventFunction)&") << ClassName << _T("::") << m_Functions[i]
-                                 << _T(",NULL,this);\n");
+
+                            if ( IsRoot )
+                            {
+                                // If this is root item, it's threaded as Id one
+                                Code << _T("Connect(") << IdString << _T(",")
+                                     << m_EventArray[i].Type << _T(",(wxObjectEventFunction)&")
+                                     << ClassName << _T("::") << m_Functions[i] << _T(");\n");
+                            }
+                            else
+                            {
+                                Code << VarNameString << _T("->Connect(") << IdString
+                                     << _T(",") << m_EventArray[i].Type
+                                     << _T(",(wxObjectEventFunction)&") << ClassName << _T("::") << m_Functions[i]
+                                     << _T(",NULL,this);\n");
+                            }
                             break;
 
                         default:
