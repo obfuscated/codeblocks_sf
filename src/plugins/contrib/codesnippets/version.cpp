@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 55 2007-04-20 20:26:50Z Pecan $
+// RCS-ID: $Id: version.cpp 60 2007-04-23 00:02:55Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -143,52 +143,6 @@ AppVersion::~AppVersion()
 //          74 ) Remove AMD64 ambiguity on finddlg wxComboBox call
 //          75 ) Again: Remove AMD64 gentoo ambiguity on finddlg wxComboBox call
 // ----------------------------------------------------------------------------
-//  Commit  1.2.03 2007/04/17
-//          01) Add multi-edit session support
-//          02) Add DragnDrop of File Links to/from CodeBlocks (MSW)
-//          03) cascade subsequent edit windows, else they stack.
-//          04-09 reserved for fixes
-// ----------------------------------------------------------------------------
-//  Commit  1.2.15 2007/04/20
-//          10) changed some wxMessageBox(s) to messageBox
-//          11) If file already open in editor, just focus it. (use wxTreeItemId)
-//          12) messageBox(s) identify themselves as CodeSnippets msgs
-//          13) Prevent window size of 0,0
-//          14) Prevent multiple instances of CodeSnippets
-//          15) Add DragnDrop of File Links to/from CodeBlocks (GTK)
-//          16 - 19) reserved for fixes
-// ----------------------------------------------------------------------------
-//  Commit  1.2.20
-//          20)
-// ----------------------------------------------------------------------------
-//
-// ----------------------------------------------------------------------------
-//  ToDo    All
-//          Allow Settings dlg to override all .ini locations
-//          Hide/show search box
-//          Bug: renamed "new snippet" label is not sorted into place
-//          Add dragscrolling options to settingsdlg & snippetsconfig
-//          snippetsconfig.cpp should globally read/keep/save *all* config items for all classes
-//          Add ".Trash" facility for external file removal (ask to delete file)
-//          Bug: crash in file modification detection routines
-//              eg., Do Open/view Open/app Close/view Close/App MsgBox then crash
-//          Bug: on Linux, the executable folder is being reported incorrectly
-//              Possible corrections code is in snippet "Finding Pgm Path"
-//          Help should invoke browser for wiki article
-//          Update wiki for Re-arranging Tree items/multi-editing/.trash
-//          Option to wxExecute CodeSnippets vs Docking Snippets
-//          Bug: Plg: popup for long names is showing up behind the window
-//          Need a backup mechanism
-//          Bug:Plg: Tree pops over editor when moving mouse into CB window. Very Annoying.
-//          Bug: Properties Edit ctrl is not calc'ng max line margin width
-//              Has disabled ctrl-x/c/v and context menu
-//  Other
-//          Bug: Nasty wxAUI Linux behavior. Left chick on CB main menu docks floating windows.
-//               Floating window won't dock when dragged to CB. Have to left click some main menu item.
-//          Possibility: When CodeSnippets Plgn is open, enable Copy/Paste/DragnDrop from any CB ctrl.
-// ----------------------------------------------------------------------------
-//
-// ----------------------------------------------------------------------------
 // Published Changes for Version 1.1:
 //    Ability to save Snippets as external files
 //    Ability to edit externally saved Snippet file
@@ -215,6 +169,56 @@ AppVersion::~AppVersion()
 //    About info and context menu entry
 //    Snippet Properties Dialog
 //    Work arounds to avoid wxAUI bugs on MSW/LINUX (cf. version.cpp)
+// ----------------------------------------------------------------------------
 //
 // ----------------------------------------------------------------------------
-
+//  Commit  1.2.03 2007/04/17
+//          01) Add multi-edit session support
+//          02) Add DragnDrop of File Links to/from CodeBlocks (MSW)
+//          03) cascade subsequent edit windows, else they stack.
+//          04-09 reserved for fixes
+// ----------------------------------------------------------------------------
+//  Commit  1.2.15 2007/04/20
+//          10) changed some wxMessageBox(s) to messageBox
+//          11) If file already open in editor, just focus it. (use wxTreeItemId)
+//          12) messageBox(s) identify themselves as CodeSnippets msgs
+//          13) Prevent window size of 0,0
+//          14) Prevent multiple instances of CodeSnippets
+//          15) Add DragnDrop of File Links to/from CodeBlocks (GTK)
+//          16 - 19) reserved for fixes
+// ----------------------------------------------------------------------------
+//  Commit  1.2.29 2007/04/23
+//          20) Removed old editSnippetDlg class
+//          21) Enabled Properties edit cut/copy/paste/undo/redo/selectAll
+//          22) Fixed: can't force close/switch when menu item active
+//          23) Add Index File backup facility
+//          24) stahta01 changes 2007/4/21 for wxGTK2.8
+//          25) Add ".trash" option to delete external file (ask to delete file)
+//          26) Corrected messageBox placement for floating vs docked window (again)
+//          27) Fixed Termination/OnActivate crash
+//          28) Fixed bug on Linux, the executable folder wx being reported incorrectly
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+//  ToDo    All
+//          Hide/show search box
+//          Bug: a renamed "new snippet" label is not sorted into place
+//              Maybe it shouldn't be?
+//          Add dragscrolling options to settingsdlg & snippetsconfig
+//          snippetsconfig.cpp should globally read/keep/save *all* config items for all classes
+//          Help should invoke browser for wiki article
+//          Update wiki for Re-arranging Tree items/multi-editing/.trash
+//              backup, wrapper execution, DragnDrop
+//          Option to wxExecute CodeSnippets wrapper vs Docking Snippets
+//          Bug:Plg: popup for long names is showing up behind the window
+//          Bug:Plg: Tree pops over editor when moving mouse into CB window. Very Annoying.
+//          Context menu should say "Copy FileName to Clipboard" when FileLink
+//          "XML load error" doesn't pop up when loading a "txt" file. Why?
+//  Other
+//          Bug: Nasty wxAUI Linux behavior. Left chick on CB main menu docks floating windows.
+//               Floating window won't dock when dragged to CB. Have to left click some main menu item.
+//          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"
+//              But who'll do that? Because OnEndTreeItemDrag() calls RemoveItem() from .trash;
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------

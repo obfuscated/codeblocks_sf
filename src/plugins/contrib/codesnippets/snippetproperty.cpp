@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetproperty.cpp 52 2007-04-17 18:46:11Z Pecan $
+// RCS-ID: $Id: snippetproperty.cpp 56 2007-04-21 05:07:51Z Pecan $
 // ----------------------------------------------------------------------------
 //  SnippetProperty.cpp                                         //(pecan 2006/9/12)
 // ----------------------------------------------------------------------------
@@ -53,6 +53,7 @@
     EVT_BUTTON(ID_SNIPPETBUTTON,    SnippetProperty::OnSnippetButton)
     EVT_BUTTON(ID_FILESELECTBUTTON, SnippetProperty::OnFileSelectButton)
    	//-EVT_LEAVE_WINDOW(               SnippetProperty::OnLeaveWindow)
+
    END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -91,6 +92,9 @@ SnippetProperty::SnippetProperty(wxTreeCtrl* pTree, wxTreeItemId itemId, wxSemap
     :SnippetPropertyForm(pTree->GetParent(),-1,wxT("Snippet Properties"))
 {
     // ctor
+
+    // The scintilla Editor is allocated by SnippetPropertyForm
+
     m_pWaitingSemaphore = pWaitSem;
     m_nScrollWidthMax = 0;
     // Move dialog into midpoint of parent window
@@ -115,19 +119,40 @@ SnippetProperty::SnippetProperty(wxTreeCtrl* pTree, wxTreeItemId itemId, wxSemap
 		// Check that we're using the correct item type
 		if (m_pSnippetDataItem->GetType() != SnippetItemData::TYPE_SNIPPET)
 		{
+		    // This shouldn't happen since the context menu only shows
+		    // properties on TYPE_SNIPPET
+
 			return;
 		}
 
         wxString snippetText = m_pSnippetDataItem->GetSnippet() ;
         if ( not snippetText.IsEmpty() )
+        {
             GetSnippetEditCtrl()-> SetText( snippetText );
+            // SetText() marked the file as modified
+            // Unmarked it by saving to a dummy file
+            #if defined(__WXMSW__)
+                m_SnippetEditCtrl->SaveFile(wxT("nul"));
+            #else
+                m_SnippetEditCtrl->SaveFile(wxT("/dev/null"));
+            #endif
+            // reset the undo history to avoid undoing to a blank page
+            m_SnippetEditCtrl->EmptyUndoBuffer();
+        }//if
+
 
         // reset horiz scroll max width
         m_nScrollWidthMax = GetSnippetEditCtrl()->GetLongestLinePixelWidth();
         GetSnippetEditCtrl()->SetScrollWidth(m_nScrollWidthMax);
-	}
+
+	}//if
 
 	SetDropTarget(new SnippetDropTarget(this));
+
+    // EVT_CHAR events
+    m_SnippetEditCtrl->Connect(wxEVT_KEY_DOWN,
+                     wxKeyEventHandler(SnippetProperty::OnKeyDownEvent),
+                     NULL, this);
 
 }//SnippetProperty ctor
 // ----------------------------------------------------------------------------
@@ -135,11 +160,61 @@ SnippetProperty::~SnippetProperty()
 // ----------------------------------------------------------------------------
 {
     //dtor
+    m_SnippetEditCtrl->Disconnect(wxEVT_KEY_DOWN,
+                     wxKeyEventHandler(SnippetProperty::OnKeyDownEvent),
+                     NULL, this);
+
 }
+// ----------------------------------------------------------------------------
+// edit events
+// ----------------------------------------------------------------------------
+void SnippetProperty::OnKeyDownEvent (wxKeyEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // pass cut/copy/paste/select/undo/redo on to scintilla
+    if ( not event.ControlDown() ) {event.Skip(); return;}
+    if ( event.ShiftDown() ) {event.Skip(); return;}
+
+    wxCommandEvent ev;
+    ev.SetEventType(wxEVT_COMMAND_MENU_SELECTED);
+    switch (event.GetKeyCode() )
+    {
+        case 'X': case 'x':
+            ev.SetId(wxID_CUT); break;
+        case 'C': case 'c':
+            ev.SetId(wxID_COPY); break;
+        case 'V': case 'v':
+            ev.SetId(wxID_PASTE); break;
+        case 'A': case 'a':
+            ev.SetId(wxID_SELECTALL); break;
+        case 'L': case 'l':
+            ev.SetId(myID_SELECTLINE); break;
+        case 'Y': case 'y':
+            ev.SetId(wxID_REDO); break;
+        case 'Z': case 'z':
+            ev.SetId(wxID_UNDO); break;
+
+        default: event.Skip(); return;
+    }
+
+    if (m_SnippetEditCtrl) m_SnippetEditCtrl->ProcessEvent (ev);
+
+}
+
+// ----------------------------------------------------------------------------
+void SnippetProperty::OnEditEvent (wxCommandEvent &event)
+// ----------------------------------------------------------------------------
+{
+     LOGIT( _T("SnippetProperty::OnEditEvent") );
+    if (m_SnippetEditCtrl) m_SnippetEditCtrl->ProcessEvent (event);
+}
+// ----------------------------------------------------------------------------
+//  Dialog events
 // ----------------------------------------------------------------------------
 void SnippetProperty::OnOk(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
+     LOGIT( _T("SnippetProperty::OnOK") );
     // set data to edited snippet
     m_pSnippetDataItem->SetSnippet( m_SnippetEditCtrl->GetText() );
     // label may have been edited
@@ -151,6 +226,7 @@ void SnippetProperty::OnOk(wxCommandEvent& event)
 void SnippetProperty::OnCancel(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
+     LOGIT( _T("SnippetProperty::OnCancel") );
     if (m_pWaitingSemaphore) m_pWaitingSemaphore->Post();
     this->EndModal(wxID_CANCEL);
 }

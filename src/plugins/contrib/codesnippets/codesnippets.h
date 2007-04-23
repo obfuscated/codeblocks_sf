@@ -144,6 +144,8 @@ class CodeSnippets : public cbPlugin
         bool GetTreeSelectionData(wxTreeCtrl* pTree, wxString& selString);
         wxArrayString* TextToFilenames(const wxString& string);
         bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files);
+        wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
+
 
         #if defined(__WXMSW__)
             void MSW_MouseMove(int x, int y );
@@ -155,13 +157,14 @@ class CodeSnippets : public cbPlugin
         void OnWindowDestroy(wxEvent& event);
 		void OnIdle(wxIdleEvent& event);
 
-		wxWindow*   m_pAppWin;
+		wxWindow*       m_pAppWin;
         ProjectManager* m_pPrjMan;
         EditorManager*  m_pEdMan;
         wxTreeCtrl*     m_pMgtTreeBeginDrag;
         wxPoint         m_TreeMousePosn;
         wxTreeItemId    m_TreeItemId;
         wxString        m_TreeText;
+        int             m_nOnActivateBusy;
 
 		DECLARE_EVENT_TABLE();
 

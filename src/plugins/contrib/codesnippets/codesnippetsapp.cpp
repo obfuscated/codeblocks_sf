@@ -6,6 +6,25 @@
  * Copyright: pecan ()
  * License:
  **************************************************************/
+/*
+	This file is part of Code Snippets, a plugin for Code::Blocks
+	Copyright (C) 2007 Pecan Heber
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+// RCS-ID: $Id: codesnippetsapp.cpp 60 2007-04-23 00:02:55Z Pecan $
 
 #ifdef WX_PRECOMP //
 #include "wx_pch.h"
@@ -23,6 +42,9 @@
 #include "snippetsconfig.h"
 #include "snippetsimages.h"
 #include "messagebox.h"
+
+//  missing mingw header definitions
+    #define MAPVK_VK_TO_VSC     0
 
 IMPLEMENT_APP(CodeSnippetsApp);
 
@@ -106,6 +128,7 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 int idMenuFileOpen              = wxNewId();
 int idMenuFileSave              = wxNewId();
 int idMenuFileSaveAs            = wxNewId();
+int idMenuFileBackup            = wxNewId();
 int idMenuQuit                  = wxNewId();
 int idMenuSettingsOptions       = wxNewId();
 int idMenuProperties            = wxNewId();
@@ -115,6 +138,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsAppFrame, wxFrame)
     EVT_MENU(idMenuFileOpen,        CodeSnippetsAppFrame::OnFileLoad)
     EVT_MENU(idMenuFileSave,        CodeSnippetsAppFrame::OnFileSave)
     EVT_MENU(idMenuFileSaveAs,      CodeSnippetsAppFrame::OnFileSaveAs)
+    EVT_MENU(idMenuFileBackup,      CodeSnippetsAppFrame::OnFileBackup)
     EVT_MENU(idMenuAbout,           CodeSnippetsAppFrame::OnAbout)
     EVT_MENU(idMenuQuit,            CodeSnippetsAppFrame::OnQuit)
     EVT_MENU(idMenuSettingsOptions, CodeSnippetsAppFrame::OnSettings)
@@ -128,6 +152,10 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
 // ----------------------------------------------------------------------------
     : wxFrame(frame, -1, title)
 {
+    GetConfig()->pMainFrame    = 0;
+    GetConfig()->pSnippetsWindow = 0;
+    m_bOnActivateBusy = 0;
+
     wxStandardPaths stdPaths;
 
     // initialize version and logging
@@ -149,7 +177,8 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
     // Create filename like codesnippets.ini
     //memorize the key file name as {%HOME%}\codesnippets.ini
     wxString m_ConfigFolder = stdPaths.GetUserDataDir();
-    wxString m_ExecuteFolder = stdPaths.GetDataDir();
+    //-wxString m_ExecuteFolder = stdPaths.GetDataDir(); Incorrect report on Linux
+    wxString m_ExecuteFolder = FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString);
 
     //GTK GetConfigFolder is returning double "//", eg, "/home/pecan//.codeblocks"
     // remove the double //s from filename //+v0.4.11
@@ -184,6 +213,7 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
         cfgFilenameStr = m_ConfigFolder + wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
         LOGIT( _T("DefaultCfgName[%s]"),cfgFilenameStr.c_str() );
     }while(0);
+
     GetConfig()->SettingsSnippetsCfgFullPath = cfgFilenameStr;
      LOGIT( _T("SettingsSnippetsCfgFullPath[%s]"),GetConfig()->SettingsSnippetsCfgFullPath.c_str() );
 
@@ -208,21 +238,20 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
         unsigned long val;
         if ( GetConfig()->m_sWindowHandle.ToULong( &val, 16) )
         pFirstInstance = (HWND)val;
-        if (pFirstInstance && ::IsWindow(pFirstInstance) ){
-            ::ShowWindow(pFirstInstance,SW_FORCEMINIMIZE);  //minimize the window
-            ::ShowWindow(pFirstInstance,SW_RESTORE);        //restore the window
-            ::BringWindowToTop(pFirstInstance);
-       #if not defined(LOGGING)
+        if (pFirstInstance && ::IsWindow(pFirstInstance) )
+        {
+            //wxMessageBox(wxT("CodeSnippets is already running."), name);
+            SwitchToThisWindow( pFirstInstance, true );
+            //-::ShowWindow(pFirstInstance,SW_FORCEMINIMIZE);  //minimize the window
+            //-::ShowWindow(pFirstInstance,SW_RESTORE);        //restore the window
+            //-::BringWindowToTop(pFirstInstance);
         }
-        else{
-       #endif
-            wxMessageBox(
-            wxT("CodeSnippets is already running."), name);
-        }//else
+        // Tell app class we're terminating
         GetConfig()->m_sWindowHandle = wxEmptyString;
         return ;
     }//fi m_checker
    #endif
+    // This is first instance of program
     // write the window handle to the config file for other instance loads
     GetConfig()->m_sWindowHandle = wxString::Format( wxT("%p"),this->GetHandle());
     GetConfig()->SettingsSaveString(wxT("WindowHandle"), GetConfig()->m_sWindowHandle);
@@ -231,10 +260,11 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
         // create a menu bar
     wxMenuBar* mbar = new wxMenuBar();
     wxMenu* fileMenu = new wxMenu(_T(""));
-    fileMenu->Append(idMenuFileOpen, _("&Load File...\tCtrl-O"), _("Load Snippets"));
-    fileMenu->Append(idMenuFileSave, _("&Save\tCtrl-S"), _("Save Snippets"));
-    fileMenu->Append(idMenuFileSaveAs, _("Save &As..."), _("Save Snippets As..."));
-        fileMenu->Append(idMenuQuit, _("&Quit\tCtrl-Q"), _("Quit the application"));
+    fileMenu->Append(idMenuFileOpen, _("&Load Index...\tCtrl-O"), _("Load Snippets"));
+    fileMenu->Append(idMenuFileSave, _("&Save Index\tCtrl-S"), _("Save Snippets"));
+    fileMenu->Append(idMenuFileSaveAs, _("Save Index &As..."), _("Save Snippets As..."));
+    fileMenu->Append(idMenuFileBackup, _("Backup Index "), _("Backup Snippets Index"));
+    fileMenu->Append(idMenuQuit, _("&Quit\tCtrl-Q"), _("Quit the application"));
     mbar->Append(fileMenu, _("&File"));
 
         // Settings menu
@@ -294,6 +324,9 @@ CodeSnippetsAppFrame::~CodeSnippetsAppFrame()
 void CodeSnippetsAppFrame::OnClose(wxCloseEvent &event)
 // ----------------------------------------------------------------------------
 {
+     // Don't close down if file checking is active
+    if (m_bOnActivateBusy)
+        return;
     Destroy();
 }
 
@@ -301,6 +334,9 @@ void CodeSnippetsAppFrame::OnClose(wxCloseEvent &event)
 void CodeSnippetsAppFrame::OnQuit(wxCommandEvent &event)
 // ----------------------------------------------------------------------------
 {
+    // Don't close down if file checking is active
+   if (m_bOnActivateBusy)
+        return;
     Destroy();
 }
 
@@ -310,40 +346,6 @@ void CodeSnippetsAppFrame::OnAbout(wxCommandEvent &event)
 {
     GetSnippetsWindow()->ShowSnippetsAbout( buildInfo );
 
-    //    SetActiveMenuId( event.GetId() );
-    //
-    //    //wxString msg = wxbuildinfo(long_f);
-    //    wxString helpText;
-    //    helpText << wxT(" Each Snippet item may specify either text or a File Link.\n")
-    //             << wxT("\n")
-    //             << wxT(" Snippets may be edited from within the context menu \n")
-    //             << wxT("\n")
-    //
-    //             << wxT(" File Link snippets are created by dragging text to a new snippet, \n")
-    //             << wxT(" then using the context menu to \"Convert to File Link\". \n")
-    //             << wxT(" The data will be written to the specified file and the filename \n")
-    //             << wxT(" will be placed in the snippets text area as a Link. \n")
-    //             << wxT("\n")
-    //
-    //             << wxT(" Snippets are accessed by using the context menu \"Edit\" \n")
-    //             << wxT(" or via the Properties context menu entry. \n")
-    //             << wxT("\n")
-    //
-    //             << wxT(" Use the \"Settings\" menu to specify an external editor and \n")
-    //             << wxT(" to specify a non-default Snippets index file. \n")
-    //             << wxT("\n")
-    //
-    //             << wxT(" Both the text and file snippets may be dragged outward (Windows only)\n")
-    //             << wxT(" or copied to the clipboard.\n")
-    //             << wxT("\n")
-    //
-    //             << wxT(" For MS Windows:\n")
-    //             << wxT(" Dragging a file snippet onto an external program window \n")
-    //             << wxT(" will open the file. Dragging it into the edit area will \n")
-    //             << wxT(" insert the text.\n");
-    //
-    //    messageBox(wxT("\n\n")+buildInfo+wxT("\n\n")+helpText, _("About"),wxOK, wxSIMPLE_BORDER);
-    //
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsAppFrame::OnSettings(wxCommandEvent& event)
@@ -398,30 +400,19 @@ void CodeSnippetsAppFrame::OnFileSaveAs(wxCommandEvent& event)
 
     SetActiveMenuId( event.GetId() );
 
-//    wxString newFileName = wxEmptyString;
-//    // Ask user for filename
-//    wxFileDialog dlg(this,                      //parent  window
-//                 _("Save as"),                  //message
-//                 wxEmptyString,                 //default directory
-//                 newFileName,                   //default file
-//                 wxT("*.*"),                    //wildcards
-//                 wxSAVE | wxOVERWRITE_PROMPT);  //style
-//    // move dialog into the parents frame space
-//    wxPoint mousePosn = ::wxGetMousePosition();
-//    (&dlg)->Move(mousePosn.x, mousePosn.y);
-//    if (dlg.ShowModal() != wxID_OK) return;
-//
-//    newFileName = dlg.GetPath();
-//
-//    #ifdef LOGGING
-//     LOGIT( _T("Save As filename[%s]"), newFileName.GetData() );
-//    #endif //LOGGING;
-//
-//    if ( newFileName.IsEmpty() ) return;
-//
-//    pSnippetsWindow->SaveSnippetsToFile(newFileName);
+    GetConfig()->GetSnippetsWindow()->OnMnuSaveSnippetsAs( event );
+    event.Skip();
+    return;
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsAppFrame::OnFileBackup(wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // backup the main xml file to file name with a sequential extension number
 
-    GetConfig()->pSnippetsWindow->OnMnuSaveSnippetsAs( event );
+    SetActiveMenuId( event.GetId() );
+
+    GetConfig()->GetSnippetsWindow()->OnMnuFileBackup( event );
     event.Skip();
     return;
 }
@@ -431,14 +422,75 @@ void CodeSnippetsAppFrame::OnActivate(wxActivateEvent& event)
 {
     // Application/Codeblocks has been activated
 
-    // Check that it's us that got activated
-     if (not event.GetActive()) { event.Skip();return; }
+    if ( m_bOnActivateBusy ) {event.Skip();return;}
+    ++m_bOnActivateBusy;
+    do{
+        // Check that it's us that got activated
+         if (not event.GetActive()) break;
 
-    //- LOGIT( _T(" OnActivate is CodeSnippet") );
-        CodeSnippetsWindow* p = GetConfig()->pSnippetsWindow;
-        p->CheckForExternallyModifiedFiles();
+         // Check that CodeSnippets actually has a file open
+        if (not GetConfig()->GetSnippetsWindow() )  break;
+        if (not GetConfig()->GetSnippetsTreeCtrl() ) break;
 
+            CodeSnippetsWindow* p = GetConfig()->pSnippetsWindow;
+            if (not p) break;
+            p->CheckForExternallyModifiedFiles();
+    }while(0);
+
+    m_bOnActivateBusy = 0;
     event.Skip();
     return;
+}
+// ----------------------------------------------------------------------------
+wxString CodeSnippetsAppFrame::FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName)
+// ----------------------------------------------------------------------------
+{
+    // Find the absolute path from where this application has been run.
+    // argv0 is wxTheApp->argv[0]
+    // cwd is the current working directory (at startup)
+    // appVariableName is the name of a variable containing the directory for this app, e.g.
+    // MYAPPDIR. This is checked first.
+
+    wxString str;
+
+    // Try appVariableName
+    if (!appVariableName.IsEmpty())
+    {
+        str = wxGetenv(appVariableName);
+        if (!str.IsEmpty())
+            return str;
+    }
+
+#if defined(__WXMAC__) && !defined(__DARWIN__)
+    // On Mac, the current directory is the relevant one when
+    // the application starts.
+    return cwd;
+#endif
+
+    if (wxIsAbsolutePath(argv0))
+        return wxPathOnly(argv0);
+    else
+    {
+        // Is it a relative path?
+        wxString currentDir(cwd);
+        if (currentDir.Last() != wxFILE_SEP_PATH)
+            currentDir += wxFILE_SEP_PATH;
+
+        str = currentDir + argv0;
+        if (wxFileExists(str))
+            return wxPathOnly(str);
+    }
+
+    // OK, it's neither an absolute path nor a relative path.
+    // Search PATH.
+
+    wxPathList pathList;
+    pathList.AddEnvList(wxT("PATH"));
+    str = pathList.FindAbsoluteValidPath(argv0);
+    if (!str.IsEmpty())
+        return wxPathOnly(str);
+
+    // Failed
+    return wxEmptyString;
 }
 // ----------------------------------------------------------------------------

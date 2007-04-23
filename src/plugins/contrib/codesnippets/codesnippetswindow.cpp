@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.cpp 51 2007-04-17 15:50:16Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.cpp 60 2007-04-23 00:02:55Z Pecan $
 
 #ifdef WX_PRECOMP //
     #include "wx_pch.h"
@@ -94,6 +94,7 @@ int idMnuApplySnippet           = wxNewId();
 int idMnuLoadSnippetsFromFile   = wxNewId();
 int idMnuSaveSnippets           = wxNewId();
 int idMnuSaveSnippetsToFile     = wxNewId();
+int idMnuFileBackup             = wxNewId();
 int idMnuRemoveAll              = wxNewId();
 int idMnuCopyToClipboard        = wxNewId();
 int idMnuEditSnippet            = wxNewId();
@@ -124,6 +125,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 	EVT_MENU(idMnuLoadSnippetsFromFile, CodeSnippetsWindow::OnMnuLoadSnippetsFromFile)
 	EVT_MENU(idMnuSaveSnippets,     CodeSnippetsWindow::OnMnuSaveSnippets)
 	EVT_MENU(idMnuSaveSnippetsToFile,CodeSnippetsWindow::OnMnuSaveSnippetsAs)
+	EVT_MENU(idMnuFileBackup,       CodeSnippetsWindow::OnMnuFileBackup)
 	EVT_MENU(idMnuRemoveAll,        CodeSnippetsWindow::OnMnuRemoveAll)
 	EVT_MENU(idMnuCopyToClipboard,  CodeSnippetsWindow::OnMnuCopyToClipboard)
 	EVT_MENU(idMnuEditSnippet,      CodeSnippetsWindow::OnMnuEditSnippet)
@@ -237,8 +239,6 @@ void CodeSnippetsWindow::InitDlg()
 
     // set the treeCtrl image list
 	GetSnippetsTreeCtrl()->SetImageList(GetSnipImageList());
-    // Set pgm icon again, but from converted images
-    //?	GetMainFrame()->SetIcon( GetSnippetsTreeCtrl()->GetImageList()->GetIcon(TREE_IMAGE_ALL_SNIPPETS) );
 
 	// Add root item
 	SnippetItemData* rootData = new SnippetItemData(SnippetItemData::TYPE_ROOT);
@@ -374,6 +374,8 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
     if ( IsTreeBusy() ) return;
 
 	// Get the item associated with the event
+	wxTreeItemId itemId = event.GetItem();
+
 	if (const SnippetItemData* eventItem = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(event.GetItem())))
 	{
 		wxMenu* snippetsTreeMenu = new wxMenu();
@@ -381,7 +383,9 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 		// Check the type of the item and add the menu items
 		switch (eventItem->GetType())
 		{
+		    // -----------------
 		    // Root context menu
+		    // -----------------
 			case SnippetItemData::TYPE_ROOT:
 				snippetsTreeMenu->Append(idMnuAddSnippet, _("Add Snippet"));
 				snippetsTreeMenu->Append(idMnuAddSubCategory, _("Add SubCategory"));
@@ -394,37 +398,45 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 				if (!GetSnippetsTreeCtrl()->ItemHasChildren(GetSnippetsTreeCtrl()->GetRootItem()))
 					snippetsTreeMenu->Enable(idMnuRemoveAll, false);
 
+                if ( GetConfig()->IsPlugin() )
+                {
+                    snippetsTreeMenu->AppendSeparator();
+                    snippetsTreeMenu->Append(idMnuSaveSnippets, _("Save Index"));
+                    snippetsTreeMenu->Append(idMnuSaveSnippetsToFile, _("Save Index As..."));
+                    snippetsTreeMenu->Append(idMnuFileBackup, _("Backup Main Index"));
+
+                    // Disable "Save to file..." if the root item does not have child items
+                    if (!GetSnippetsTreeCtrl()->ItemHasChildren(GetSnippetsTreeCtrl()->GetRootItem()))
+                    {	snippetsTreeMenu->Enable(idMnuSaveSnippetsToFile, false);
+                        snippetsTreeMenu->Enable(idMnuSaveSnippets, false);
+                        snippetsTreeMenu->Enable(idMnuFileBackup, false);
+                    }
+
+                    // Check if Shift key is pressed
+                    if (::wxGetKeyState(WXK_SHIFT))
+                    {
+                        // Add append from file entry
+                        snippetsTreeMenu->Append(idMnuLoadSnippetsFromFile, _("Load Index File (append)..."));
+                        m_AppendItemsFromFile = true;
+                    }
+                    else
+                    {
+                        // Use the normal load from file entry
+                        snippetsTreeMenu->Append(idMnuLoadSnippetsFromFile, _("Load Index File..."));
+                        m_AppendItemsFromFile = false;
+                    }
+                }//if IsPlugin
+
 				snippetsTreeMenu->AppendSeparator();
-				snippetsTreeMenu->Append(idMnuSaveSnippets, _("Save File"));
-				snippetsTreeMenu->Append(idMnuSaveSnippetsToFile, _("Save File As..."));
-
-				// Disable "Save to file..." if the root item does not have child items
-				if (!GetSnippetsTreeCtrl()->ItemHasChildren(GetSnippetsTreeCtrl()->GetRootItem()))
-				{	snippetsTreeMenu->Enable(idMnuSaveSnippetsToFile, false);
-					snippetsTreeMenu->Enable(idMnuSaveSnippets, false);
-				}
-
-				// Check if Shift key is pressed
-				if (::wxGetKeyState(WXK_SHIFT))
-				{
-					// Add append from file entry
-					snippetsTreeMenu->Append(idMnuLoadSnippetsFromFile, _("Load from File (append)..."));
-					m_AppendItemsFromFile = true;
-				}
-				else
-				{
-					// Use the normal load from file entry
-					snippetsTreeMenu->Append(idMnuLoadSnippetsFromFile, _("Load from File..."));
-					m_AppendItemsFromFile = false;
-				}
-
                 snippetsTreeMenu->Append(idMnuSettings, _("Settings..."));
                #if defined(BUILDING_PLUGIN)
                 snippetsTreeMenu->Append(idMnuAbout, _("About..."));
                #endif
 			break;
 
+            // ---------------------
             // Category context menu
+            // ---------------------
 			case SnippetItemData::TYPE_CATEGORY:
 				snippetsTreeMenu->Append(idMnuAddSnippet, _("Add Snippet"));
 				snippetsTreeMenu->Append(idMnuAddSubCategory, _("Add SubCategory"));
@@ -435,13 +447,21 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 				snippetsTreeMenu->Append(idMnuRemove, _("Remove"));
 			break;
 
+            // --------------------
             // Snippet context menu
+            // --------------------
 			case SnippetItemData::TYPE_SNIPPET:
-				snippetsTreeMenu->Append(idMnuEditSnippet, _("Edit"));
+                if ( IsFileSnippet(itemId) )
+                    snippetsTreeMenu->Append(idMnuEditSnippet, _("Edit File"));
+                else
+                    snippetsTreeMenu->Append(idMnuEditSnippet, _("Edit Text"));
                 if (GetConfig()->IsPlugin())
                 {   snippetsTreeMenu->Append(idMnuApplySnippet, _("Apply"));
                 }
-				snippetsTreeMenu->Append(idMnuCopyToClipboard, _("Copy to Clipboard"));
+                if ( IsFileSnippet(itemId) )
+                    snippetsTreeMenu->Append(idMnuCopyToClipboard, _("Clipboard <= FileName"));
+                else
+                    snippetsTreeMenu->Append(idMnuCopyToClipboard, _("Clipboard <= Text"));
 				snippetsTreeMenu->AppendSeparator();
 				snippetsTreeMenu->Append(idMnuConvertToCategory, _("Convert to Category"));
 				snippetsTreeMenu->Append(idMnuConvertToFileLink, _("Convert to File Link..."));
@@ -718,6 +738,32 @@ void CodeSnippetsWindow::OnMnuSaveSnippetsAs(wxCommandEvent& /*event*/)
 		GetSnippetsTreeCtrl()->SaveItemsToFile(dlg.GetPath());
 		SetFileChanged(false);
 	}
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsWindow::OnMnuFileBackup(wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // save the current XML data if changed
+    // append the next number onto the XML file name
+    // copy the XML Index to the new file name
+
+    if (GetFileChanged() ) OnMnuSaveSnippets(event);
+    const wxString IndexFile = GetConfig()->SettingsSnippetsXmlFullPath;
+    wxString bkupName = wxEmptyString;
+    unsigned i = 0;
+    while (true)
+    {
+        ++i;
+        bkupName = IndexFile;
+        bkupName << wxT(".")  << i;
+        if ( ::wxFileExists(bkupName) ) {continue;}
+        break;
+    }//while
+    int done = ::wxCopyFile(IndexFile, bkupName);
+    messageBox( wxString::Format( wxT("Backup %s for\n\n %s"),
+                done?wxT("succeeded"):wxT("failed"),
+                bkupName.c_str()) );
+
 }
 
 // ----------------------------------------------------------------------------
@@ -1105,7 +1151,6 @@ void CodeSnippetsWindow::ShowSnippetsAbout(wxString buildInfo)
              << wxT(" or copied to the clipboard.\n")
              << wxT("\n")
 
-             << wxT(" For MS Windows:\n")
              << wxT(" Dragging a file snippet onto an external program window \n")
              << wxT(" will open the file. Dragging it into the edit area will \n")
              << wxT(" insert the text.\n");

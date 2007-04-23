@@ -91,8 +91,12 @@
 		<Unit filename="defsext.h" />
 		<Unit filename="edit.cpp" />
 		<Unit filename="edit.h" />
-		<Unit filename="editsnippetdlg.cpp" />
-		<Unit filename="editsnippetdlg.h" />
+		<Unit filename="editsnippetdlg.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="editsnippetdlg.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="editsnippetframe.cpp" />
 		<Unit filename="editsnippetframe.h" />
 		<Unit filename="finddialogs.cpp" />

@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.cpp 54 2007-04-20 00:01:59Z Pecan $
+// RCS-ID: $Id: snippetsconfig.cpp 59 2007-04-22 19:23:46Z Pecan $
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
 #else
@@ -300,5 +300,71 @@ void CodeSnippetsConfig::CenterChildOnParent(wxWindow* child)
 
     child->Move(movePosn.x, movePosn.y);
     return;
+}
+// ----------------------------------------------------------------------------
+bool CodeSnippetsConfig::IsDockedWindow(wxWindow** pWindowRequest, wxPoint* pCoordRequest, wxSize* pSizeRequest)
+// ----------------------------------------------------------------------------
+{
+    // If window is Docked window, return its info
+
+    if ( IsApplication() ) {return false;}
+
+    wxWindow* pwFocused = wxWindow::FindFocus();
+    wxWindow* pmf = GetConfig()->GetMainFrame();
+    if ( not pwFocused ) {pwFocused = pmf;}
+
+     //LOGIT( _T("IsDocked pmf[%p]pFocused[%p]"),pmf,pwFocused );
+     //LOGIT( _T("IsDocked pmf[%s]pFocused[%s]"),pmf->GetName().c_str(),pwFocused->GetName().c_str() );
+
+    // if focused parent window != MainFrame, then not docked, it's floating
+    if (pwFocused->GetParent()) pwFocused = pwFocused->GetParent();
+    //LOGIT( _T("IsDocked parent[%p] named[%s]"),pwFocused,pwFocused->GetName().c_str() );
+    if (pwFocused->GetParent()) pwFocused = pwFocused->GetParent();
+    //LOGIT( _T("IsDocked GrandParent[%p] named[%s]"),pwFocused,pwFocused->GetName().c_str() );
+
+    if ( pmf != pwFocused ) {return false;}
+    // Have docked window
+    if (pWindowRequest) *pWindowRequest = pmf;
+    if (pCoordRequest)
+    {   *pCoordRequest = pmf->GetPosition();
+         if ( *pCoordRequest == wxPoint(0,0 ) )
+           pmf->ClientToScreen(&pCoordRequest->x, &pCoordRequest->y);
+    }
+    if (pSizeRequest) *pSizeRequest = pmf->GetSize();
+    return true;
+}
+// ----------------------------------------------------------------------------
+bool CodeSnippetsConfig::IsFloatingWindow(wxWindow** pWindowRequest, wxPoint* pCoordRequest, wxSize* pSizeRequest)
+// ----------------------------------------------------------------------------
+{
+    // If window is Docked window, return its info
+    if ( IsApplication() ) {return false;}
+
+    wxWindow* pwFocused = wxWindow::FindFocus();
+    wxWindow* pmf = GetConfig()->GetMainFrame();
+    if ( not pwFocused ) {pwFocused = pmf;}
+     //LOGIT( _T("IsFloating pmf[%p]pFocused[%p]"),pmf,pwFocused );
+     //LOGIT( _T("IsFloating pmf[%s]pFocused[%s]"),pmf->GetName().c_str(),pwFocused->GetName().c_str() );
+
+    // Floating windows have different parents than their original MainFrame
+    // if focused parent window == MainFrame, then docked, not floating
+    if (pwFocused->GetParent()) pwFocused = pwFocused->GetParent();
+    //LOGIT( _T("IsFloating parent[%p] named[%s]"),pwFocused,pwFocused->GetName().c_str() );
+    if (pwFocused->GetParent()) pwFocused = pwFocused->GetParent();
+    //LOGIT( _T("IsFloating GrandParent[%p] named[%s]"),pwFocused,pwFocused->GetName().c_str() );
+
+    if ( pmf == pwFocused ) {return false;}
+    LOGIT( _T("IsFloating New pmf[%p]pFocused[%p]"),pmf,pwFocused );
+
+    // Have floating window, point to reparented focused window
+    pmf = pwFocused;
+    if (pWindowRequest) *pWindowRequest = pmf;
+    if (pCoordRequest)
+    {   *pCoordRequest = pmf->GetPosition();
+         if ( *pCoordRequest == wxPoint(0,0 ) )
+           pmf->ClientToScreen(&pCoordRequest->x, &pCoordRequest->y);
+    }
+    if (pSizeRequest) *pSizeRequest = pmf->GetSize();
+    return true;
 }
 // ----------------------------------------------------------------------------

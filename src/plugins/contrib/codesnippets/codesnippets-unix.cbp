@@ -16,7 +16,6 @@
 					<Add option="-g" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-DNO_LOGGING" />
-					<Add option="-DNO_HAVEX11DEV" />
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />
@@ -31,7 +30,6 @@
 					<Add option="-g" />
 					<Add option="-DNO_LOGGING" />
 					<Add option="-DWX_PRECOMP" />
-					<Add option="-DNO_HAVEX11DEV" />
 				</Compiler>
 			</Target>
 		</Build>
@@ -83,8 +81,6 @@
 		<Unit filename="defsext.h" />
 		<Unit filename="edit.cpp" />
 		<Unit filename="edit.h" />
-		<Unit filename="editsnippetdlg.cpp" />
-		<Unit filename="editsnippetdlg.h" />
 		<Unit filename="editsnippetframe.cpp" />
 		<Unit filename="editsnippetframe.h" />
 		<Unit filename="finddialogs.cpp" />

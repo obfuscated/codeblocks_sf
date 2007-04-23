@@ -97,21 +97,35 @@ int messageBox( const wxString& message, const wxString& title, long dialogStyle
     int x; int y;
     int displayX; int displayY;
     // move dialog box underneath the mouse pointer
-    wxPoint movePosn = ::wxGetMousePosition();
-    wxWindow* mainFrame = ::wxFindWindowAtPoint(movePosn);
-    if (not mainFrame) mainFrame = GetConfig()->pMainFrame;
+    //wxPoint movePosn = ::wxGetMousePosition();
+    //wxWindow* mainFrame = ::wxFindWindowAtPoint(movePosn);
+    wxPoint movePosn = wxPoint(0,0);
+    wxWindow* mainFrame = 0;
+    wxPoint mainCoords;
+    wxSize mainSize;
+    // Find the frame for the type parent window. Standalone, Floating, or Docked
+    if (GetConfig()->IsDockedWindow(&mainFrame, &mainCoords, &mainSize)){;}
+        else if (GetConfig()->IsFloatingWindow(&mainFrame, &mainCoords, &mainSize)){;}
+            else{ // standalone parent
+                 mainFrame = GetConfig()->GetMainFrame();
+                 mainCoords = mainFrame->GetPosition();
+                 if ( mainCoords==wxPoint(0,0) )
+                    mainFrame->ClientToScreen(&mainCoords.x, &mainCoords.y );
+                mainSize = mainFrame->GetSize();
+            }//else
+     //LOGIT( _T("messageBox mainFrame[%p]"),mainFrame );
+     //if (mainFrame) LOGIT( _T("messageBox mainFrame Name[%s]"),mainFrame->GetName().c_str() );
+
     // move upper left dialog corner to center of parent
     ::wxDisplaySize(&displayX, &displayY);
-    mainFrame->GetPosition(&x, &y );
-    mainFrame->ClientToScreen(&x, &y );
-    mainFrame->GetClientSize(&w,&h);
+    x = mainCoords.x; y = mainCoords.y;
+    h = mainSize.GetHeight(); w = mainSize.GetWidth();
     movePosn.x = x+(w>>2);
     movePosn.y = y+(h>>2);
-    //wxWindow* pWin = pBox->GetParent();
 
     // Get button sizes
     wxSize buttonSize( 300, -1 );
-
+    //scan for number of lines in message
     int lines = message.Freq('\n');
     if (not lines) ++lines;
     // adjust the width to account for carriage returns

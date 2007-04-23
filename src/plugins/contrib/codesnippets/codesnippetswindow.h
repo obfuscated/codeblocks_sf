@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.h 51 2007-04-17 15:50:16Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.h 58 2007-04-22 04:40:57Z Pecan $
 
 #ifndef CODESNIPPETSWINDOW_H
 #define CODESNIPPETSWINDOW_H
@@ -36,7 +36,6 @@ class wxButton;
 class wxTreeCtrl;
 class wxCommandEvent;
 class wxTreeEvent;
-class EditSnippetDlg;
 
 // ----------------------------------------------------------------------------
 class CodeSnippetsWindow : public wxPanel
@@ -48,25 +47,6 @@ class CodeSnippetsWindow : public wxPanel
 	friend class CodeSnippets;
 
 	public:
-//		enum SearchScope
-//		{
-//			SCOPE_SNIPPETS,		// Searches only snippets
-//			SCOPE_CATEGORIES,	// Searches only categories
-//			SCOPE_BOTH			// Searches both snippets and categories
-//		};
-//
-//		struct SearchConfiguration
-//		{
-//			bool caseSensitive;
-//			SearchScope scope;
-//
-//			SearchConfiguration()
-//			{
-//				// Default settings
-//				caseSensitive = true;
-//				scope = SCOPE_BOTH;
-//			}
-//		};
 
 		CodeSnippetsWindow(wxWindow* parent);
 		~CodeSnippetsWindow();
@@ -142,8 +122,7 @@ class CodeSnippetsWindow : public wxPanel
         void OnShutdown(wxCloseEvent& event);
         void OnMnuCopy(wxCommandEvent& event);
         void OnMnuPaste(wxCommandEvent& event);
-
-
+        void OnMnuFileBackup(wxCommandEvent& event);
 
 		DECLARE_EVENT_TABLE()
 };

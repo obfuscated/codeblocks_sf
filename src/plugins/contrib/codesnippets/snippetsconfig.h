@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.h 53 2007-04-18 14:35:57Z Pecan $
+// RCS-ID: $Id: snippetsconfig.h 59 2007-04-22 19:23:46Z Pecan $
 
 
 #ifndef GLOBAL_H
@@ -71,6 +71,8 @@ class CodeSnippetsConfig
     bool IsPlugin(){return false;}
     bool IsApplication(){return true;}
    #endif
+   bool IsDockedWindow(wxWindow** pw = 0, wxPoint* pcoord = 0, wxSize* psize = 0);
+   bool IsFloatingWindow(wxWindow** pw = 0, wxPoint* pcoord = 0, wxSize* psize = 0);
 
     // Snippet Tree Search options
     enum SearchScope

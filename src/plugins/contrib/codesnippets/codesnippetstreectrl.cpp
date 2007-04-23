@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 54 2007-04-20 00:01:59Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 59 2007-04-22 19:23:46Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -45,12 +45,10 @@
 #include "snippetsconfig.h"
 #include "messagebox.h"
 #include "menuidentifiers.h"
-#include "editsnippetdlg.h"
 #include "editsnippetframe.h"
 #if defined(__WXGTK__)
     #include "wx/gtk/win_gtk.h"
 #endif
-
 
 IMPLEMENT_DYNAMIC_CLASS(CodeSnippetsTreeCtrl, wxTreeCtrl)
 
@@ -61,10 +59,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsTreeCtrl, wxTreeCtrl)
 	EVT_LEAVE_WINDOW(                       CodeSnippetsTreeCtrl::OnLeaveWindow)
 	EVT_ENTER_WINDOW(                       CodeSnippetsTreeCtrl::OnEnterWindow)
 	EVT_MOTION(                             CodeSnippetsTreeCtrl::OnMouseEvent)
-	//FIXME: EVT_TREE_BEGIN_LABEL_EDIT(idSnippetsTreeCtrl,   CodeSnippetsTreeCtrl::OnBeginLabelEdit)
-	//FIXME: EVT_TREE_END_LABEL_EDIT(idSnippetsTreeCtrl,     CodeSnippetsTreeCtrl::OnEndLabelEdit)
 	EVT_TREE_SEL_CHANGED(idSnippetsTreeCtrl,CodeSnippetsTreeCtrl::OnItemSelected)
-	//EVT_TREE_SEL_CHANGING(idSnippetsTreeCtrl,CodeSnippetsTreeCtrl::OnItemSelectChanging)
 	EVT_IDLE(                               CodeSnippetsTreeCtrl::OnIdle)
 END_EVENT_TABLE()
 
@@ -448,23 +443,12 @@ void CodeSnippetsTreeCtrl::LoadItemsFromXmlNode(const TiXmlElement* node, const 
 			}
 			else
 			{
-			  #if defined(BUILDING_PLUGIN)
-				Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Error loading XML file; element \"snippet\" cannot be found."));
-			  #else     //NOT defined(BUILDING_PLUGIN)
-			    //FIXME:
-			    wxMessageBox(_T("CodeSnippets: Error loading XML file; element \"snippet\" cannot be found."));
-			  #endif    //defined(BUILDING_PLUGIN)
+				messageBox(_T("CodeSnippets: Error loading XML file; element \"snippet\" cannot be found."));
 			}
 		}
 		else
 		{
-		  #if defined(BUILDING_PLUGIN)
-			// Unknown
-			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Error loading XML file; attribute \"type\" is \"") + itemType + _T("\" which is invalid item type."));
-		  #else
-		    //FIXME:
-		    wxMessageBox(_T("CodeSnippets: Error loading XML file; attribute \"type\" is \"") + itemType + _T("\" which is invalid item type."));
-          #endif
+		    messageBox(_T("CodeSnippets: Error loading XML file; attribute \"type\" is \"") + itemType + _T("\" which is invalid item type."));
 			return;
 		}
 	} // end for
@@ -603,29 +587,43 @@ bool CodeSnippetsTreeCtrl::RemoveItem(const wxTreeItemId RemoveItemId)
 {
 	// Get the associated item id
 	wxTreeItemId itemId = RemoveItemId;
+	// Sanity check
+	if (itemId==GetRootItem() ) return false;
+
     SnippetItemData* pItemData = (SnippetItemData*)(GetItemData(itemId));
 
     // put deleted items in .trash category
     wxTreeItemId trashId = FindItemByLabel(wxT(".trash"), GetRootItem(), CodeSnippetsConfig::SCOPE_CATEGORIES);
     if ( trashId==(void*)0 )
         trashId = AddCategory(GetRootItem(), wxT(".trash"), false);
-    // if item is NOT already in the trash, copy item to .trash item
+
+    // if item is NOT already in the trash, copy item to .trash category
     if (not ( FindItemById( itemId, trashId, pItemData->GetType()) ))
     {
         TiXmlDocument* pDoc =  CopyTreeNodeToXmlDoc( itemId);
         CopyXmlDocToTreeNode(pDoc, trashId);
         delete pDoc;
     }
-	// Sanity check
-	if (itemId != GetRootItem() )
-	{
-		// No questions asked
-		DeleteChildren(itemId);
-		Delete(itemId);
-        SetFileChanged(true);
-		return true;
-	}
-	return false;
+    else // item already in .trash
+    {
+        // if FileLink, memorize the filename
+        wxString filename = wxEmptyString;
+        if (IsFileSnippet(itemId)) filename = GetSnippet(itemId);
+        // if this was a FileLink, ask if user wants to delete file
+        if ( not filename.IsEmpty() ) {
+            int answer = messageBox( wxT("Delete physical file?\n\n")+filename,
+                                                    wxT("Delete"),wxYES_NO );
+            if ( answer == wxYES)
+                /*int done =*/ ::wxRemoveFile(filename);
+        }
+    }
+
+    // Delete the Snippet Tree Item
+    DeleteChildren(itemId);
+    Delete(itemId);
+    SetFileChanged(true);
+
+	return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -781,10 +779,6 @@ void CodeSnippetsTreeCtrl::OnEnterWindow(wxMouseEvent& event)
 void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // unless we can compile with the X11/Xtst header we cannot
-    // allow dragging a tree item out of the linux treeCtrl. It really
-    // messes up the tree mouse navigation
-
     // -----------------------
     // LEAVE_WINDOW
     // -----------------------
@@ -1274,8 +1268,8 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
     if ( ::wxFileExists( snippetData) )
     {   // item snippet is already a filename
         answer = messageBox(
-            wxT("Item is already a file link named:")+snippetData
-                + wxT(" \nAre you sure you want to rewrite the file?"),
+            wxT("Item is already a file link named:\n")+snippetData
+                + wxT(" \nAre you sure you want to rewrite the file?\n"),
             wxT("Warning"),wxYES|wxNO); //, GetMainFrame(), mousePosn.x, mousePosn.y);
         if ( wxYES == answer)
         {   // read data from old file

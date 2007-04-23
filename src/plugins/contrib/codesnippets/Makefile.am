@@ -19,7 +19,6 @@ libcodesnippets_la_SOURCES = 	codesnippets.cpp \
 			codesnippetstreectrl.cpp \
 			codesnippetswindow.cpp \
 			edit.cpp \
-			editsnippetdlg.cpp \
 			editsnippetframe.cpp \
 			messagebox.cpp \
 			messageBoxForm.cpp \
@@ -34,13 +33,12 @@ libcodesnippets_la_SOURCES = 	codesnippets.cpp \
 			finddialogs.cpp \
 			version.cpp
 
-noinst_HEADERS =  	codesnippets.h \
+noinst_HEADERS =  	codesnippets.h
 			codesnippetsapp.h \
 			codesnippetstreectrl.h \
 			codesnippetswindow.h \
 			defsext.h \
 			edit.h \
-			editsnippetdlg.h \
 			editsnippetframe.h \
 			menuidentifiers.h \
 			messagebox.h \

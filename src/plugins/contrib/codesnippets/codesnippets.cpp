@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 54 2007-04-20 00:01:59Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 60 2007-04-23 00:02:55Z Pecan $
 
 #include "sdk.h"
 #ifndef CB_PRECOMB
@@ -102,7 +102,8 @@ void CodeSnippets::OnAttach()
     wxStandardPaths stdPaths;
     //memorize the key file name as {%HOME%}\codesnippets.ini
     wxString m_ConfigFolder = stdPaths.GetUserDataDir();
-    wxString m_ExecuteFolder = stdPaths.GetDataDir();
+    //-wxString m_ExecuteFolder = stdPaths.GetDataDir();
+    wxString m_ExecuteFolder = FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString);
 
     //GTK GetConfigFolder is returning double "//?, eg, "/home/pecan//.codeblocks"
     // remove the double //s from filename //+v0.4.11
@@ -151,6 +152,8 @@ void CodeSnippets::OnAttach()
     SetTreeCtrlHandler( m_pPrjMan->GetTree(), wxEVT_COMMAND_TREE_BEGIN_DRAG );
     SetTreeCtrlHandler( m_pEdMan->GetTree(),  wxEVT_COMMAND_TREE_BEGIN_DRAG );
 
+    m_nOnActivateBusy = 0;
+
 }//OnAttach
 
 // ----------------------------------------------------------------------------
@@ -158,6 +161,11 @@ void CodeSnippets::OnRelease(bool appShutDown)
 // ----------------------------------------------------------------------------
 {
     if (not GetSnippetsWindow()) return;
+
+    // Don't close down if file checking is active
+    while ( m_nOnActivateBusy )
+    {   wxMilliSleep(10) ; wxYield();
+    }
 
 	CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
 	evt.pWindow = GetSnippetsWindow();
@@ -211,7 +219,7 @@ void CodeSnippets::CreateSnippetWindow()
 
 	CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
 	evt.name = _T("CodeSnippetsPane");
-	evt.title = _("CodeSnippets");
+	evt.title = _(" CodeSnippets");
 	evt.pWindow = GetSnippetsWindow();
 	evt.dockSide = CodeBlocksDockEvent::dsFloating;
 	// A bug in wxAUI interferes with the main menu when floating windows
@@ -237,7 +245,15 @@ void CodeSnippets::CreateSnippetWindow()
         wxWindow* p = GetSnippetsWindow()->GetParent();
         int x,y,w,h;
         p->GetPosition(&x,&y); p->GetSize(&w,&h);
-         //LOGIT(  _T("WinPostCreate[%s]X[%d]Y[%d]Width[%d]Height[%d]"), p->GetName().c_str(),x,y,w,h);
+        //LOGIT(  _T("WinPostCreate[%s]X[%d]Y[%d]Width[%d]Height[%d]"), p->GetName().c_str(),x,y,w,h);
+        //
+        // Set pgm icon again, but from converted images (NB: doesn't work on wxAUI windows)
+        //if (GetConfig()->IsFloatingWindow())
+        //{   asm("int3");
+        //    while (p->GetParent()) p = p->GetParent();
+        //    ((wxTopLevelWindow*)p)->SetIcon( GetConfig()->GetSnippetsTreeCtrl()->GetImageList()->GetIcon(TREE_IMAGE_ALL_SNIPPETS) );
+        //}
+
    #endif
 
 }
@@ -294,6 +310,9 @@ void CodeSnippets::OnIdle(wxIdleEvent& event)
     // our docked window to see if it has closed. There are no events
     // that tell us if the user closed the docked or floating window.
 
+    // Don't close down if file checking is active
+    if (m_nOnActivateBusy) { event.Skip();return; }
+
     if (not GetSnippetsWindow()) { event.Skip();return; }
 
     if ( GetSnippetsWindow()->IsTreeBusy() ) {return;}
@@ -318,16 +337,22 @@ void CodeSnippets::OnActivate(wxActivateEvent& event)
 
     // An application has been activated by the OS
 
-    // check that it's us that was activated
-    if (not event.GetActive()) { event.Skip();return; }
+    if ( m_nOnActivateBusy ) {event.Skip();return;}
 
-    // Wait until CodeSnippets actually has a file open
-    if (not GetConfig()->pSnippetsWindow) return;
+    ++m_nOnActivateBusy;
+    do{
+        // check that it's us that was activated
+        if (not event.GetActive()) break;
 
-    //LOGIT( _T(" OnActivate Plugin") );
+        // Check that CodeSnippets actually has a file open
+        if (not GetConfig()->GetSnippetsWindow() )   break;
+        if (not GetConfig()->GetSnippetsTreeCtrl() ) break;
 
         CodeSnippetsWindow* p = GetConfig()->pSnippetsWindow;
         p->CheckForExternallyModifiedFiles();
+
+    }while(0);
+    m_nOnActivateBusy = 0;
 
     event.Skip();
     return;
@@ -927,4 +952,55 @@ void CodeSnippets::RemoveTreeCtrlHandler(wxWindow *p, WXTYPE eventType)
                      NULL, this);
 }
 // ----------------------------------------------------------------------------
+wxString CodeSnippets::FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName)
+// ----------------------------------------------------------------------------
+{
+    // Find the absolute path where this application has been run from.
+    // argv0 is wxTheApp->argv[0]
+    // cwd is the current working directory (at startup)
+    // appVariableName is the name of a variable containing the directory for this app, e.g.
+    // MYAPPDIR. This is checked first.
+
+    wxString str;
+
+    // Try appVariableName
+    if (!appVariableName.IsEmpty())
+    {
+        str = wxGetenv(appVariableName);
+        if (!str.IsEmpty())
+            return str;
+    }
+
+#if defined(__WXMAC__) && !defined(__DARWIN__)
+    // On Mac, the current directory is the relevant one when
+    // the application starts.
+    return cwd;
+#endif
+
+    if (wxIsAbsolutePath(argv0))
+        return wxPathOnly(argv0);
+    else
+    {
+        // Is it a relative path?
+        wxString currentDir(cwd);
+        if (currentDir.Last() != wxFILE_SEP_PATH)
+            currentDir += wxFILE_SEP_PATH;
+
+        str = currentDir + argv0;
+        if (wxFileExists(str))
+            return wxPathOnly(str);
+    }
+
+    // OK, it's neither an absolute path nor a relative path.
+    // Search PATH.
+
+    wxPathList pathList;
+    pathList.AddEnvList(wxT("PATH"));
+    str = pathList.FindAbsoluteValidPath(argv0);
+    if (!str.IsEmpty())
+        return wxPathOnly(str);
+
+    // Failed
+    return wxEmptyString;
+}
 

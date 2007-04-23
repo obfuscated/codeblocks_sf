@@ -3,7 +3,7 @@
 // Purpose:     Find/Replace, Goto dialogs
 // Maintainer:  Otto Wyss
 // Created:     2003-01-20
-// RCS-ID:      $Id: dialogs.cpp,v 1.1 2005/03/17 20:03:41 wyo Exp $
+// RCS-ID:      $Id: finddialogs.cpp 59 2007-04-22 19:23:46Z Pecan $
 // Copyright:   (c) 2005 wyoGuide
 // Licence:     wxWindows
 //////////////////////////////////////////////////////////////////////////////
@@ -11,6 +11,26 @@
 //----------------------------------------------------------------------------
 // information
 //----------------------------------------------------------------------------
+/*
+	This file is part of Code Snippets, a plugin for Code::Blocks
+	Copyright (C) 2006 Arto Jonsson
+	Copyright (C) 2007 Pecan Heber
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+// RCS-ID: $Id: finddialogs.cpp 59 2007-04-22 19:23:46Z Pecan $
 
 
 //----------------------------------------------------------------------------
@@ -225,7 +245,7 @@ void myFindReplaceDlg::OnCancel (wxCommandEvent &WXUNUSED(event)) {
 }
 
 void myFindReplaceDlg::OnHelp (wxCommandEvent &WXUNUSED(event)) {
-    // FIXME: //(pecan 2007/4/05)
+    ////(pecan 2007/4/05)
     //-g_help->Display(_T("dialogs.html#findreplace"));
 }
 
@@ -565,7 +585,7 @@ myGotoDlg::myGotoDlg (wxWindow *parent,
 // event handlers
 
 void myGotoDlg::OnHelp (wxCommandEvent &WXUNUSED(event)) {
-    // FIXME:   //(pecan 2007/4/05)
+    // //(pecan 2007/4/05)
     //g_help->Display(_T("dialogs.html#gotoposition"));
 }
 

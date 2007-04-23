@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.h 54 2007-04-20 00:01:59Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.h 58 2007-04-22 04:40:57Z Pecan $
 
 #ifndef CODESNIPPETSTREECTRL_H
 #define CODESNIPPETSTREECTRL_H
@@ -31,17 +31,17 @@ class TiXmlElement;
 #include <tinyxml/tinyxml.h>
 #include "snippetproperty.h"
 
-#if defined(__WXGTK__)
-    #include <X11/Xlibint.h>
-    #include <X11/keysymdef.h>
-    #include <X11/keysym.h>
-    #include <X11/extensions/XTest.h>
-    #undef Absolute //wx Layout.h and STC conflicts
-#endif
+//#if defined(__WXGTK__)
+//    #include <X11/Xlibint.h>
+//    #include <X11/keysymdef.h>
+//    #include <X11/keysym.h>
+//    #include <X11/extensions/XTest.h>
+//    #undef Absolute //wx Layout.h and STC conflicts
+//#endif
 
 WX_DEFINE_ARRAY(wxDialog*, DlgPtrArray);
-WX_DEFINE_ARRAY(int, DlgRetcodeArray);
-
+//-WX_DEFINE_ARRAY(int, DlgRetcodeArray); //(stahta01 2007/4/21 for wxGTK2.8)
+WX_DEFINE_ARRAY_INT(int, DlgRetcodeArray);
 // ----------------------------------------------------------------------------
 class CodeSnippetsTreeCtrl : public wxTreeCtrl
 // ----------------------------------------------------------------------------
