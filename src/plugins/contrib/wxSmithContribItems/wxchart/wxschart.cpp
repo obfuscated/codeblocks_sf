@@ -1,6 +1,9 @@
 #include "wxschart.h"
 
-#include <wx/chartctrl.h>
+#include <wx/barchartpoints.h>
+#include <wx/bar3dchartpoints.h>
+#include <wx/piechartpoints.h>
+#include <wx/pie3dchartpoints.h>
 
 namespace
 {
@@ -50,8 +53,12 @@ wxsChart::wxsChart(wxsItemResData* Data):
 
 wxsChart::~wxsChart()
 {
+    for ( size_t i=0; i<m_ChartPointsDesc.Count(); i++ )
+    {
+        delete m_ChartPointsDesc[i];
+    }
+    m_ChartPointsDesc.Clear();
 }
-
 
 void wxsChart::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
 {
@@ -69,6 +76,43 @@ void wxsChart::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
             else                       StyleCode.RemoveLast();
 
             Codef(_T("%C(%W,%I,(STYLE)(%s),%P,%S,%T);\n"),StyleCode.c_str());
+
+            Codef(_T("{\n"));
+            for ( size_t i=0; i<m_ChartPointsDesc.Count(); i++ )
+            {
+                ChartPointsDesc* Desc = m_ChartPointsDesc[i];
+
+                wxString GenStr;
+                switch ( Desc->Type )
+                {
+                    case Bar:      GenStr = _T("wxBarChartPoints::CreateWxBarChartPoints"); break;
+                    case Bar3D:    GenStr = _T("wxBar3DChartPoints::CreateWxBar3DChartPoints"); break;
+                    case Pie:      GenStr = _T("wxPieChartPoints::CreateWxPieChartPoints"); break;
+                    case Pie3D:    GenStr = _T("wxPie3DChartPoints::CreateWxPie3DChartPoints"); break;
+                    case Points:   GenStr = _T("wxPointsCharPoints::CreateWxPointsChartPoints"); break;
+                    case Points3D: GenStr = _T("wxPoints3DCharPoints::CreateWxPoints3DChartPoints"); break;
+                    case Line:     GenStr = _T("wxLineCharPoints::CreateWxLineChartPoints"); break;
+                    case Line3D:   GenStr = _T("wxLine3DCharPoints::CreateWxLine3DChartPoints"); break;
+                    case Area:     GenStr = _T("wxAreaCharPoints::CreateWxAreaChartPoints"); break;
+                    case Area3D:   GenStr = _T("wxArea3DCharPoints::CreateWxArea3DChartPoints"); break;
+                    default:       GenStr = _T("wxBarChartPoints::CreateWxBarChartPoints"); break;
+                }
+
+                wxString VarStr = wxString::Format(_T("PointSet%d"),(int)i);
+
+                Codef(_T("\twxChartPoints* %v = %s(%t);\n"),VarStr.c_str(),GenStr.c_str(),Desc->Name.c_str());
+
+                for ( size_t j=0; j<Desc->Points.Count(); j++ )
+                {
+                    wxString PointStr = wxString::Format(_T("%lf,%lf"),Desc->Points[j]->X,Desc->Points[j]->Y);
+                    Codef(_T("\t%v->Add(%t,%s);\n"),VarStr.c_str(),Desc->Points[j]->Name.c_str(),PointStr.c_str());
+                }
+
+                Codef(_T("\t%AAdd(%v);\n"),VarStr.c_str());
+            }
+            Codef(_T("}\n"));
+
+
             break;
         }
 
@@ -81,7 +125,39 @@ wxObject* wxsChart::OnBuildPreview(wxWindow* Parent,long Flags)
 {
     long RealFlags = m_Flags;
     if ( RealFlags & DEFAULT_STYLE_FIX ) RealFlags |= DEFAULT_STYLE;
-    return new wxChartCtrl(Parent,GetId(),(STYLE)RealFlags,Pos(Parent),Size(Parent),Style());
+    wxChartCtrl* Chart = new wxChartCtrl(Parent,GetId(),(STYLE)RealFlags,Pos(Parent),Size(Parent),Style());
+
+    for ( size_t i=0; i<m_ChartPointsDesc.Count(); i++ )
+    {
+        ChartPointsDesc* Desc = m_ChartPointsDesc[i];
+        wxChartPoints* Points = NULL;
+
+        switch ( Desc->Type )
+        {
+            case Bar:      Points = wxBarChartPoints::CreateWxBarChartPoints(Desc->Name); break;
+            case Bar3D:    Points = wxBar3DChartPoints::CreateWxBar3DChartPoints(Desc->Name); break;
+            case Pie:      Points = wxPieChartPoints::CreateWxPieChartPoints(Desc->Name); break;
+            case Pie3D:    Points = wxPie3DChartPoints::CreateWxPie3DChartPoints(Desc->Name); break;
+            /*
+            case Points:   Points = wxPointsCharPoints::CreateWxPointsChartPoints(Desc->Name); break;
+            case Points3D: Points = wxPoints3DCharPoints::CreateWxPoints3DChartPoints(Desc->Name); break;
+            case Line:     Points = wxLineCharPoints::CreateWxLineChartPoints(Desc->Name); break;
+            case Line3D:   Points = wxLine3DCharPoints::CreateWxLine3DChartPoints(Desc->Name); break;
+            case Area:     Points = wxAreaCharPoints::CreateWxAreaChartPoints(Desc->Name); break;
+            case Area3D:   Points = wxArea3DCharPoints::CreateWxArea3DChartPoints(Desc->Name); break;
+            */
+            default:       Points = wxBarChartPoints::CreateWxBarChartPoints(Desc->Name); break;
+        }
+
+        for ( size_t j=0; j<Desc->Points.Count(); j++ )
+        {
+            Points->Add(Desc->Points[j]->Name,Desc->Points[j]->X,Desc->Points[j]->Y);
+        }
+
+        Chart->Add(Points);
+    }
+
+    return Chart;
 }
 
 void wxsChart::OnEnumWidgetProperties(long Flags)
@@ -93,7 +169,307 @@ void wxsChart::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingL
 {
     switch ( Language )
     {
-        case wxsCPP: Decl.Add(_T("<wx/chart.h>")); break;
-        default: wxsCodeMarks::Unknown(_T("wxsChart::OnEnumDeclFiles"),Language);
+        case wxsCPP:
+            Decl.Add(_T("<wx/chartctrl.h>"));
+            Def.Add(_T("<wx/barchartpoints.h>"));
+            Def.Add(_T("<wx/bar3dchartpoints.h>"));
+            Def.Add(_T("<wx/piechartpoints.h>"));
+            Def.Add(_T("<wx/pie3dchartpoints.h>"));
+            break;
+
+        default:
+            wxsCodeMarks::Unknown(_T("wxsChart::OnEnumDeclFiles"),Language);
     }
+}
+
+void wxsChart::OnAddExtraProperties(wxsPropertyGridManager* Grid)
+{
+    Grid->SetTargetPage(0);
+
+    m_ChartPointsCountId = Grid->Append(wxIntProperty(_("Number of data sets"),wxPG_LABEL,
+                                                      (int)m_ChartPointsDesc.Count()));
+
+    for ( int i=0; i<(int)m_ChartPointsDesc.Count(); i++ )
+    {
+        AppendPropertyForSet(Grid,i);
+    }
+
+    wxsWidget::OnAddExtraProperties(Grid);
+}
+
+void wxsChart::OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id)
+{
+    Grid->SetTargetPage(0);
+
+    if ( Id == m_ChartPointsCountId )
+    {
+        int OldValue = (int)m_ChartPointsDesc.Count();
+        int NewValue = Grid->GetPropertyValueAsInt(Id);
+
+        if ( NewValue<0 )
+        {
+            NewValue = 0;
+            Grid->SetPropertyValue(Id,NewValue);
+        }
+
+        if ( NewValue > OldValue )
+        {
+            // We have to generate new entries
+            for ( int i=OldValue; i<NewValue; i++ )
+            {
+                m_ChartPointsDesc.Add(new ChartPointsDesc());
+                AppendPropertyForSet(Grid,i);
+            }
+        }
+        else if ( NewValue < OldValue )
+        {
+            // We have to remove some entries
+            for ( int i=NewValue; i<OldValue; i++ )
+            {
+                Grid->Delete(m_ChartPointsDesc[i]->Id);
+                delete m_ChartPointsDesc[i];
+            }
+
+            m_ChartPointsDesc.RemoveAt(NewValue,OldValue-NewValue);
+        }
+
+        NotifyPropertyChange(true);
+        return;
+    }
+
+    for ( int i=0; i<(int)m_ChartPointsDesc.Count(); i++ )
+    {
+        if ( HandleChangeInSet(Grid,Id,i) ) return;
+    }
+
+    wxsWidget::OnExtraPropertyChanged(Grid,Id);
+}
+
+bool wxsChart::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
+{
+    for ( size_t i=0; i<m_ChartPointsDesc.Count(); i++ )
+    {
+        delete m_ChartPointsDesc[i];
+    }
+    m_ChartPointsDesc.Clear();
+
+    for ( TiXmlElement* DescElem = Element->FirstChildElement("chartpointset");
+          DescElem;
+          DescElem = DescElem->NextSiblingElement("chartpointset") )
+    {
+        ChartPointsDesc* Desc = new ChartPointsDesc;
+        Desc->Name    = cbC2U(DescElem->Attribute("name"));
+        wxString Type = cbC2U(DescElem->Attribute("type"));
+
+        if ( Type == _T("bar") )      Desc->Type = Bar;      else
+        if ( Type == _T("bar3d") )    Desc->Type = Bar3D;    else
+        if ( Type == _T("pie") )      Desc->Type = Pie;      else
+        if ( Type == _T("pie3d") )    Desc->Type = Pie3D;    else
+        /*
+        if ( Type == _T("points") )   Desc->Type = Points;   else
+        if ( Type == _T("points3d") ) Desc->Type = Points3D; else
+        if ( Type == _T("line") )     Desc->Type = Line;     else
+        if ( Type == _T("line3d") )   Desc->Type = Line3D;   else
+        if ( Type == _T("area") )     Desc->Type = Area;     else
+        if ( Type == _T("area3d") )   Desc->Type = Area3D;   else
+        */
+                                      Desc->Type = Bar;
+
+        for ( TiXmlElement* PointElem = DescElem->FirstChildElement("point");
+              PointElem;
+              PointElem = PointElem->NextSiblingElement("point") )
+        {
+            PointDesc* Point = new PointDesc;
+            Point->Name = cbC2U(PointElem->Attribute("name"));
+            (PointElem->QueryDoubleAttribute("x",&Point->X) == TIXML_SUCCESS) || (Point->X = 0.0);
+            (PointElem->QueryDoubleAttribute("y",&Point->Y) == TIXML_SUCCESS) || (Point->Y = 0.0);
+
+            Desc->Points.Add(Point);
+        }
+
+        m_ChartPointsDesc.Add(Desc);
+    }
+
+    return wxsWidget::OnXmlRead(Element,IsXRC,IsExtra);
+}
+
+bool wxsChart::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
+{
+    for ( size_t i=0; i<m_ChartPointsDesc.Count(); i++ )
+    {
+        ChartPointsDesc* Desc = m_ChartPointsDesc[i];
+        TiXmlElement* DescElem = Element->InsertEndChild(TiXmlElement("chartpointset"))->ToElement();
+
+        DescElem->SetAttribute("name",cbU2C(Desc->Name));
+        switch ( Desc->Type )
+        {
+            case Bar:      DescElem->SetAttribute("type","bar");      break;
+            case Bar3D:    DescElem->SetAttribute("type","bar3d");    break;
+            case Pie:      DescElem->SetAttribute("type","pie");      break;
+            case Pie3D:    DescElem->SetAttribute("type","pie3d");    break;
+            case Points:   DescElem->SetAttribute("type","points");   break;
+            case Points3D: DescElem->SetAttribute("type","points3d"); break;
+            case Line:     DescElem->SetAttribute("type","line");     break;
+            case Line3D:   DescElem->SetAttribute("type","line3d");   break;
+            case Area:     DescElem->SetAttribute("type","area");     break;
+            case Area3D:   DescElem->SetAttribute("type","area3d");   break;
+        }
+
+        for ( size_t j=0; j<Desc->Points.Count(); j++ )
+        {
+            PointDesc* PDesc = Desc->Points[j];
+            TiXmlElement* PointElem = DescElem->InsertEndChild(TiXmlElement("point"))->ToElement();
+            PointElem->SetAttribute("name",cbU2C(PDesc->Name));
+            PointElem->SetDoubleAttribute("x",PDesc->X);
+            PointElem->SetDoubleAttribute("y",PDesc->Y);
+        }
+    }
+
+    return wxsWidget::OnXmlWrite(Element,IsXRC,IsExtra);
+}
+
+void wxsChart::AppendPropertyForSet(wxsPropertyGridManager* Grid,int Position)
+{
+    ChartPointsDesc* Desc = m_ChartPointsDesc[Position];
+    wxString SetName = wxString::Format(_("Set %d"),Position+1);
+
+    Desc->Id = Grid->Append(wxParentProperty(SetName,wxPG_LABEL));
+
+    static const wxChar* Types[] =
+    {
+        _T("Bar"),    _T("Bar3D"),    _T("Pie"),  _T("Pie3D"),
+        NULL, // wxChartCtrl doesn't support all types yet
+        _T("Points"), _T("Points3D"), _T("Line"), _T("Line3D"),
+        _T("Area"),   _T("Area3D"),   NULL
+    };
+
+    static const long Values[] =
+    {
+        Bar, Bar3D, Pie, Pie3D, Points, Points3D, Line, Line3D, Area, Area3D
+    };
+
+    Desc->TypeId = Grid->AppendIn(Desc->Id,wxEnumProperty(_("Type"),wxPG_LABEL,Types,Values,Desc->Type));
+    Desc->NameId = Grid->AppendIn(Desc->Id,wxStringProperty(_("Name"),wxPG_LABEL,Desc->Name));
+    Desc->PointsCountId = Grid->AppendIn(Desc->Id,wxIntProperty(_("Number of points"),wxPG_LABEL,(int)Desc->Points.Count()));
+
+    for ( int i=0; i<(int)Desc->Points.Count(); i++ )
+    {
+        AppendPropertyForPoint(Grid,Desc,i);
+    }
+}
+
+bool wxsChart::HandleChangeInSet(wxsPropertyGridManager* Grid,wxPGId Id,int Position)
+{
+    ChartPointsDesc* Desc = m_ChartPointsDesc[Position];
+
+    bool Changed = false;
+    bool Global = Id==Desc->Id;
+
+    if ( Global || Id == Desc->TypeId )
+    {
+        Desc->Type = (PointsType)Grid->GetPropertyValueAsInt(Desc->TypeId);
+        Changed = true;
+    }
+
+    if ( Global || Id == Desc->NameId )
+    {
+        Desc->Name = Grid->GetPropertyValueAsString(Desc->NameId);
+        Changed = true;
+    }
+
+    if ( Global || Id == Desc->PointsCountId )
+    {
+        int OldValue = (int)Desc->Points.Count();
+        int NewValue = Grid->GetPropertyValueAsInt(Desc->PointsCountId);
+
+        if ( NewValue<0 )
+        {
+            NewValue = 0;
+            Grid->SetPropertyValue(Desc->PointsCountId,NewValue);
+        }
+
+        if ( NewValue > OldValue )
+        {
+            for ( int i=OldValue; i<NewValue; i++ )
+            {
+                PointDesc* NewPoint = new PointDesc;
+                NewPoint->X = 0.0;
+                NewPoint->Y = 0.0;
+                NewPoint->Name = wxString::Format(_("Point %d"),i+1);
+                Desc->Points.Add(NewPoint);
+                AppendPropertyForPoint(Grid,Desc,i);
+            }
+        }
+        else if ( NewValue < OldValue )
+        {
+            for ( int i=NewValue; i<OldValue; i++ )
+            {
+                Grid->Delete((Desc->Points[i])->Id);
+                delete Desc->Points[i];
+            }
+
+            Desc->Points.RemoveAt(NewValue,OldValue-NewValue);
+        }
+
+        Changed = true;
+    }
+
+    if ( !Changed )
+    {
+        for ( int i=0; i<(int)Desc->Points.Count(); i++ )
+        {
+            if ( HandleChangeInPoint(Grid,Id,Desc,i,Global) )
+            {
+                Changed = true;
+                if ( !Global ) break;
+            }
+        }
+    }
+
+    if ( Changed )
+    {
+        NotifyPropertyChange(true);
+        return true;
+    }
+
+    return false;
+}
+
+void wxsChart::AppendPropertyForPoint(wxsPropertyGridManager* Grid,ChartPointsDesc* SetDesc,int Position)
+{
+    PointDesc* Desc = SetDesc->Points[Position];
+    wxString Name = wxString::Format(_("Point %d"),Position+1);
+
+    Desc->Id = Grid->AppendIn(SetDesc->Id,wxParentProperty(Name,wxPG_LABEL));
+    Desc->NameId = Grid->AppendIn(Desc->Id,wxStringProperty(_("Name"),wxPG_LABEL,Desc->Name));
+    Desc->XId = Grid->AppendIn(Desc->Id,wxStringProperty(_("X"),wxPG_LABEL,wxString::Format(_T("%lf"),Desc->X)));
+    Desc->YId = Grid->AppendIn(Desc->Id,wxStringProperty(_("Y"),wxPG_LABEL,wxString::Format(_T("%lf"),Desc->Y)));
+}
+
+bool wxsChart::HandleChangeInPoint(wxsPropertyGridManager* Grid,wxPGId Id,ChartPointsDesc* SetDesc,int Position,bool Global)
+{
+    PointDesc* Desc = SetDesc->Points[Position];
+
+    bool Changed = false;
+    if ( Id == Desc->Id ) Global = true;
+
+    if ( Global || Id == Desc->NameId )
+    {
+        Desc->Name = Grid->GetPropertyValueAsString(Desc->NameId);
+        Changed = true;
+    }
+
+    if ( Global || Id == Desc->XId )
+    {
+        Grid->GetPropertyValueAsString(Desc->XId).ToDouble(&Desc->X);
+        Changed = true;
+    }
+
+    if ( Global || Id == Desc->YId )
+    {
+        Grid->GetPropertyValueAsString(Desc->YId).ToDouble(&Desc->Y);
+        Changed = true;
+    }
+
+    return Changed;
 }
