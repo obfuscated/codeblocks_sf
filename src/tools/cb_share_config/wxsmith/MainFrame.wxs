@@ -1,169 +1,164 @@
-<resource>
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
     <object class="wxFrame" name="MainFrame">
         <title>Welcome to Code::Blocks Share Config</title>
         <centered>1</centered>
-        <style>wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxTHICK_FRAME|wxSYSTEM_MENU|wxCLOSE_BOX|wxMINIMIZE_BOX</style>
+        <style>wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxSYSTEM_MENU|wxCLOSE_BOX|wxMINIMIZE_BOX</style>
         <bg>wxSYS_COLOUR_BTNFACE</bg>
+        <minsize>640,480</minsize>
         <object class="wxBoxSizer" variable="bszMain" member="yes">
             <orient>wxVERTICAL</orient>
             <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                 <object class="wxBoxSizer" variable="bszSteps" member="yes">
-                    <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                        <object class="wxStaticText" name="ID_TXT_STEPS" variable="txtSteps" member="yes">
-                            <label>Steps to do:&#x0A;- select the C::B source configuration file on the left&#x0A;- select the C::B destination configuration file on the right&#x0A;- select the sections you would like to transfer&#x0A;- verify again and do the transfer&#x0A;- save the modified (right) configuration</label>
+                        <object class="wxStaticBoxSizer" variable="sbsSteps" member="yes">
+                            <label>Steps to do:</label>
+                            <object class="sizeritem">
+                                <object class="wxStaticText" name="ID_LBL_STEPS" variable="lblSteps" member="yes">
+                                    <label>- select the C::B source configuration file on the left&#x0A;- select the C::B destination configuration file on the right&#x0A;- select the sections you would like to transfer&#x0A;- verify again and do the transfer&#x0A;- save the modified (right) configuration</label>
+                                </object>
+                                <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                <border>5</border>
+                                <option>1</option>
+                            </object>
                         </object>
+                        <flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                        <border>5</border>
+                        <option>1</option>
                     </object>
                 </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <border>5</border>
             </object>
             <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                 <object class="wxGridSizer" variable="grsFileLabel" member="yes">
-                    <rows>1</rows>
                     <cols>2</cols>
-                    <vgap>0</vgap>
-                    <hgap>0</hgap>
+                    <rows>1</rows>
                     <object class="sizeritem">
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                         <object class="wxStaticText" name="ID_LBL_FILE_SRC" variable="lblFileSrc" member="yes">
                             <label>Source configuration file:</label>
                         </object>
+                        <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                         <object class="wxStaticText" name="ID_LBL_FILE_DST" variable="lblFileDst" member="yes">
                             <label>Destination configuration file:</label>
                         </object>
+                        <flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <border>5</border>
                     </object>
                 </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <border>5</border>
             </object>
             <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                 <object class="wxGridSizer" variable="grsFile" member="yes">
-                    <rows>1</rows>
                     <cols>2</cols>
-                    <vgap>0</vgap>
-                    <hgap>0</hgap>
+                    <rows>1</rows>
                     <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
                         <object class="wxFlexGridSizer" variable="flsFileSrc" member="yes">
-                            <rows>1</rows>
                             <cols>2</cols>
-                            <vgap>0</vgap>
-                            <hgap>0</hgap>
+                            <rows>1</rows>
                             <growablecols>0</growablecols>
                             <object class="sizeritem">
-                                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                                 <object class="wxTextCtrl" name="ID_TXT_FILE_SRC" variable="txtFileSrc" member="yes">
-                                    <value></value>
                                     <style>wxTE_READONLY</style>
                                 </object>
+                                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                             </object>
                             <object class="sizeritem">
-                                <border>5</border>
-                                <flag>wxLEFT|wxALIGN_RIGHT|wxALIGN_TOP</flag>
                                 <object class="wxButton" name="ID_BTN_FILE_SRC" variable="btnFileSrc" member="yes">
                                     <label>...</label>
-                                    <handler entry="EVT_BUTTON" function="OnBtnFileSrcClick" />
                                     <size>32,-1</size>
+                                    <handler function="OnBtnFileSrcClick" entry="EVT_BUTTON" />
                                 </object>
+                                <flag>wxLEFT|wxALIGN_RIGHT|wxALIGN_TOP</flag>
+                                <border>5</border>
                             </object>
                         </object>
+                        <flag>wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                        <border>5</border>
                     </object>
                     <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxLEFT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
                         <object class="wxFlexGridSizer" variable="flsFileDst" member="yes">
-                            <rows>1</rows>
                             <cols>2</cols>
-                            <vgap>0</vgap>
-                            <hgap>0</hgap>
+                            <rows>1</rows>
                             <growablecols>0</growablecols>
                             <object class="sizeritem">
-                                <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                                 <object class="wxTextCtrl" name="ID_TXT_FILE_DST" variable="txtFileDst" member="yes">
-                                    <value></value>
                                     <style>wxTE_READONLY</style>
                                 </object>
+                                <flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                             </object>
                             <object class="sizeritem">
-                                <border>5</border>
-                                <flag>wxLEFT|wxALIGN_RIGHT|wxALIGN_TOP</flag>
                                 <object class="wxButton" name="ID_BTN_FILE_DST" variable="btnFileDst" member="yes">
                                     <label>...</label>
-                                    <handler entry="EVT_BUTTON" function="OnBtnFileDstClick" />
                                     <size>32,-1</size>
+                                    <handler function="OnBtnFileDstClick" entry="EVT_BUTTON" />
                                 </object>
+                                <flag>wxLEFT|wxALIGN_RIGHT|wxALIGN_TOP</flag>
+                                <border>5</border>
                             </object>
                         </object>
+                        <flag>wxLEFT|wxEXPAND|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+                        <border>5</border>
                     </object>
                 </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <border>5</border>
             </object>
             <object class="sizeritem">
-                <option>1</option>
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                 <object class="wxGridSizer" variable="grsCfg" member="yes">
-                    <rows>1</rows>
                     <cols>2</cols>
-                    <vgap>0</vgap>
-                    <hgap>0</hgap>
+                    <rows>1</rows>
                     <object class="sizeritem">
+                        <object class="wxCheckListBox" name="ID_CFG_SRC" variable="clbCfgSrc" member="yes" />
+                        <flag>wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                         <border>5</border>
-                        <flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                        <object class="wxCheckListBox" name="ID_CFG_SRC" variable="clbCfgSrc" member="yes">
-                            <content />
-                        </object>
                     </object>
                     <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                         <object class="wxListBox" name="ID_LST_CFG" variable="lstCfgDst" member="yes" />
+                        <flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <border>5</border>
                     </object>
                 </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <border>5</border>
+                <option>1</option>
             </object>
             <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                 <object class="wxGridSizer" variable="grsAction" member="yes">
-                    <rows>1</rows>
                     <cols>4</cols>
-                    <vgap>0</vgap>
-                    <hgap>0</hgap>
+                    <rows>1</rows>
                     <object class="sizeritem">
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
                         <object class="wxButton" name="ID_BTN_TRANSFER" variable="btnTransfer" member="yes">
                             <label>Transfer &gt;&gt;</label>
-                            <handler entry="EVT_BUTTON" function="OnBtnTransferClick" />
+                            <handler function="OnBtnTransferClick" entry="EVT_BUTTON" />
                         </object>
+                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="spacer">
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
+                        <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
                         <object class="wxButton" name="ID_BTN_SAVE" variable="btnSave" member="yes">
                             <label>Save</label>
-                            <handler entry="EVT_BUTTON" function="OnBtnSaveClick" />
+                            <handler function="OnBtnSaveClick" entry="EVT_BUTTON" />
                         </object>
+                        <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <border>5</border>
                     </object>
                     <object class="sizeritem">
-                        <flag>wxALL|wxALIGN_RIGHT|wxALIGN_TOP</flag>
                         <object class="wxButton" name="ID_BTN_CLOSE" variable="btnClose" member="yes">
                             <label>Close</label>
-                            <handler entry="EVT_BUTTON" function="OnBtnCloseClick" />
+                            <handler function="OnBtnCloseClick" entry="EVT_BUTTON" />
                         </object>
+                        <flag>wxALL|wxALIGN_RIGHT|wxALIGN_TOP</flag>
                     </object>
                 </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <border>5</border>
             </object>
         </object>
     </object>
-</resource>
+</wxsmith>

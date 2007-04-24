@@ -22,13 +22,33 @@
 
 //***********************************************************************
 
+//(*InternalHeaders(MainFrame)
+#include <wx/bitmap.h>
+#include <wx/font.h>
+#include <wx/fontenum.h>
+#include <wx/fontmap.h>
+#include <wx/image.h>
+#include <wx/intl.h>
+#include <wx/settings.h>
+//*)
+
+//(*IdInit(MainFrame)
+const long MainFrame::ID_LBL_STEPS = wxNewId();
+const long MainFrame::ID_LBL_FILE_SRC = wxNewId();
+const long MainFrame::ID_LBL_FILE_DST = wxNewId();
+const long MainFrame::ID_TXT_FILE_SRC = wxNewId();
+const long MainFrame::ID_BTN_FILE_SRC = wxNewId();
+const long MainFrame::ID_TXT_FILE_DST = wxNewId();
+const long MainFrame::ID_BTN_FILE_DST = wxNewId();
+const long MainFrame::ID_CFG_SRC = wxNewId();
+const long MainFrame::ID_LST_CFG = wxNewId();
+const long MainFrame::ID_BTN_TRANSFER = wxNewId();
+const long MainFrame::ID_BTN_SAVE = wxNewId();
+const long MainFrame::ID_BTN_CLOSE = wxNewId();
+//*)
+
 BEGIN_EVENT_TABLE(MainFrame,wxFrame)
 	//(*EventTable(MainFrame)
-	EVT_BUTTON(ID_BTN_FILE_SRC,MainFrame::OnBtnFileSrcClick)
-	EVT_BUTTON(ID_BTN_FILE_DST,MainFrame::OnBtnFileDstClick)
-	EVT_BUTTON(ID_BTN_TRANSFER,MainFrame::OnBtnTransferClick)
-	EVT_BUTTON(ID_BTN_SAVE,MainFrame::OnBtnSaveClick)
-	EVT_BUTTON(ID_BTN_CLOSE,MainFrame::OnBtnCloseClick)
 	//*)
 END_EVENT_TABLE()
 
@@ -39,62 +59,62 @@ MainFrame::MainFrame(wxWindow* parent,wxWindowID id) :
   mFileDst(wxT("")), mCfgDst(0), mCfgDstValid(false), mNodesDst()
 {
 	//(*Initialize(MainFrame)
-	Create(parent,id,_("Welcome to Code::Blocks Share Config"),wxDefaultPosition,wxDefaultSize,wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxTHICK_FRAME|wxSYSTEM_MENU|wxCLOSE_BOX|wxMINIMIZE_BOX,_T(""));
+	Create(parent,id,_("Welcome to Code::Blocks Share Config"),wxDefaultPosition,wxDefaultSize,wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxSYSTEM_MENU|wxCLOSE_BOX|wxMINIMIZE_BOX,_T("wxFrame"));
+	SetMinSize(wxSize(640,480));
 	SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 	bszMain = new wxBoxSizer(wxVERTICAL);
 	bszSteps = new wxBoxSizer(wxHORIZONTAL);
-	txtSteps = new wxStaticText(this,ID_TXT_STEPS,_("Steps to do:\n- select the C::B source configuration file on the left\n- select the C::B destination configuration file on the right\n- select the sections you would like to transfer\n- verify again and do the transfer\n- save the modified (right) configuration"),wxDefaultPosition,wxDefaultSize,0,_("ID_TXT_STEPS"));
-	bszSteps->Add(txtSteps,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,0);
+	sbsSteps = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Steps to do:"));
+	lblSteps = new wxStaticText(this,ID_LBL_STEPS,_("- select the C::B source configuration file on the left\n- select the C::B destination configuration file on the right\n- select the sections you would like to transfer\n- verify again and do the transfer\n- save the modified (right) configuration"),wxDefaultPosition,wxDefaultSize,0,_T("ID_LBL_STEPS"));
+	sbsSteps->Add(lblSteps,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	bszSteps->Add(sbsSteps,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	bszMain->Add(bszSteps,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
 	grsFileLabel = new wxGridSizer(1,2,0,0);
-	lblFileSrc = new wxStaticText(this,ID_LBL_FILE_SRC,_("Source configuration file:"),wxDefaultPosition,wxDefaultSize,0,_("ID_LBL_FILE_SRC"));
-	lblFileDst = new wxStaticText(this,ID_LBL_FILE_DST,_("Destination configuration file:"),wxDefaultPosition,wxDefaultSize,0,_("ID_LBL_FILE_DST"));
-	grsFileLabel->Add(lblFileSrc,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,0);
-	grsFileLabel->Add(lblFileDst,0,wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
+	lblFileSrc = new wxStaticText(this,ID_LBL_FILE_SRC,_("Source configuration file:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_LBL_FILE_SRC"));
+	grsFileLabel->Add(lblFileSrc,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	lblFileDst = new wxStaticText(this,ID_LBL_FILE_DST,_("Destination configuration file:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_LBL_FILE_DST"));
+	grsFileLabel->Add(lblFileDst,0,wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
+	bszMain->Add(grsFileLabel,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
 	grsFile = new wxGridSizer(1,2,0,0);
 	flsFileSrc = new wxFlexGridSizer(1,2,0,0);
 	flsFileSrc->AddGrowableCol(0);
-	txtFileSrc = new wxTextCtrl(this,ID_TXT_FILE_SRC,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_READONLY,wxDefaultValidator,_("ID_TXT_FILE_SRC"));
-	if ( 0 ) txtFileSrc->SetMaxLength(0);
-	btnFileSrc = new wxButton(this,ID_BTN_FILE_SRC,_("..."),wxDefaultPosition,wxSize(32,-1),0,wxDefaultValidator,_("ID_BTN_FILE_SRC"));
-	if (false) btnFileSrc->SetDefault();
-	flsFileSrc->Add(txtFileSrc,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,0);
+	txtFileSrc = new wxTextCtrl(this,ID_TXT_FILE_SRC,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_READONLY,wxDefaultValidator,_T("ID_TXT_FILE_SRC"));
+	flsFileSrc->Add(txtFileSrc,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	btnFileSrc = new wxButton(this,ID_BTN_FILE_SRC,_("..."),wxDefaultPosition,wxSize(32,-1),0,wxDefaultValidator,_T("ID_BTN_FILE_SRC"));
 	flsFileSrc->Add(btnFileSrc,0,wxLEFT|wxALIGN_RIGHT|wxALIGN_TOP,5);
+	grsFile->Add(flsFileSrc,0,wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
 	flsFileDst = new wxFlexGridSizer(1,2,0,0);
 	flsFileDst->AddGrowableCol(0);
-	txtFileDst = new wxTextCtrl(this,ID_TXT_FILE_DST,_T(""),wxDefaultPosition,wxDefaultSize,wxTE_READONLY,wxDefaultValidator,_("ID_TXT_FILE_DST"));
-	if ( 0 ) txtFileDst->SetMaxLength(0);
-	btnFileDst = new wxButton(this,ID_BTN_FILE_DST,_("..."),wxDefaultPosition,wxSize(32,-1),0,wxDefaultValidator,_("ID_BTN_FILE_DST"));
-	if (false) btnFileDst->SetDefault();
-	flsFileDst->Add(txtFileDst,0,wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,0);
+	txtFileDst = new wxTextCtrl(this,ID_TXT_FILE_DST,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_READONLY,wxDefaultValidator,_T("ID_TXT_FILE_DST"));
+	flsFileDst->Add(txtFileDst,0,wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	btnFileDst = new wxButton(this,ID_BTN_FILE_DST,_("..."),wxDefaultPosition,wxSize(32,-1),0,wxDefaultValidator,_T("ID_BTN_FILE_DST"));
 	flsFileDst->Add(btnFileDst,0,wxLEFT|wxALIGN_RIGHT|wxALIGN_TOP,5);
-	grsFile->Add(flsFileSrc,0,wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND,5);
-	grsFile->Add(flsFileDst,0,wxLEFT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxEXPAND,5);
+	grsFile->Add(flsFileDst,0,wxLEFT|wxEXPAND|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL,5);
+	bszMain->Add(grsFile,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
 	grsCfg = new wxGridSizer(1,2,0,0);
-	clbCfgSrc = new wxCheckListBox(this,ID_CFG_SRC,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_("ID_CFG_SRC"));
-	lstCfgDst = new wxListBox(this,ID_LST_CFG,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_("ID_LST_CFG"));
-	lstCfgDst->SetSelection(-1);
-	grsCfg->Add(clbCfgSrc,0,wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
-	grsCfg->Add(lstCfgDst,0,wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
+	clbCfgSrc = new wxCheckListBox(this,ID_CFG_SRC,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_T("ID_CFG_SRC"));
+	grsCfg->Add(clbCfgSrc,0,wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
+	lstCfgDst = new wxListBox(this,ID_LST_CFG,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_T("ID_LST_CFG"));
+	grsCfg->Add(lstCfgDst,0,wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
+	bszMain->Add(grsCfg,1,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
 	grsAction = new wxGridSizer(1,4,0,0);
-	btnTransfer = new wxButton(this,ID_BTN_TRANSFER,_("Transfer >>"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_BTN_TRANSFER"));
-	if (false) btnTransfer->SetDefault();
-	btnSave = new wxButton(this,ID_BTN_SAVE,_("Save"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_BTN_SAVE"));
-	if (false) btnSave->SetDefault();
-	btnClose = new wxButton(this,ID_BTN_CLOSE,_("Close"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_BTN_CLOSE"));
-	if (false) btnClose->SetDefault();
+	btnTransfer = new wxButton(this,ID_BTN_TRANSFER,_("Transfer >>"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BTN_TRANSFER"));
 	grsAction->Add(btnTransfer,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
-	grsAction->Add(-1,-1,0);
+	grsAction->Add(-1,-1,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	btnSave = new wxButton(this,ID_BTN_SAVE,_("Save"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BTN_SAVE"));
 	grsAction->Add(btnSave,0,wxLEFT|wxALIGN_LEFT|wxALIGN_TOP,5);
+	btnClose = new wxButton(this,ID_BTN_CLOSE,_("Close"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BTN_CLOSE"));
 	grsAction->Add(btnClose,0,wxALL|wxALIGN_RIGHT|wxALIGN_TOP,0);
-	bszMain->Add(bszSteps,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
-	bszMain->Add(grsFileLabel,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
-	bszMain->Add(grsFile,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
-	bszMain->Add(grsCfg,1,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
-	bszMain->Add(grsAction,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
-	this->SetSizer(bszMain);
+	bszMain->Add(grsAction,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
+	SetSizer(bszMain);
 	bszMain->Fit(this);
 	bszMain->SetSizeHints(this);
 	Center();
+	Connect(ID_BTN_FILE_SRC,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnFileSrcClick);
+	Connect(ID_BTN_FILE_DST,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnFileDstClick);
+	Connect(ID_BTN_TRANSFER,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnTransferClick);
+	Connect(ID_BTN_SAVE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnSaveClick);
+	Connect(ID_BTN_CLOSE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnCloseClick);
 	//*)
 }// MainFrame
 

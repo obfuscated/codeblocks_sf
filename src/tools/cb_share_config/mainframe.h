@@ -6,9 +6,7 @@
 #include <wx/button.h>
 #include <wx/checklst.h>
 #include <wx/frame.h>
-#include <wx/intl.h>
 #include <wx/listbox.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -31,21 +29,18 @@ class MainFrame: public wxFrame
 
 
 		//(*Identifiers(MainFrame)
-		enum Identifiers
-		{
-		  ID_TXT_STEPS = 0x1000,
-		  ID_LBL_FILE_SRC,
-		  ID_LBL_FILE_DST,
-		  ID_TXT_FILE_SRC,
-		  ID_BTN_FILE_SRC,
-		  ID_TXT_FILE_DST,
-		  ID_BTN_FILE_DST,
-		  ID_CFG_SRC,
-		  ID_LST_CFG,
-		  ID_BTN_TRANSFER,
-		  ID_BTN_SAVE,
-		  ID_BTN_CLOSE
-		};
+		static const long ID_LBL_STEPS;
+		static const long ID_LBL_FILE_SRC;
+		static const long ID_LBL_FILE_DST;
+		static const long ID_TXT_FILE_SRC;
+		static const long ID_BTN_FILE_SRC;
+		static const long ID_TXT_FILE_DST;
+		static const long ID_BTN_FILE_DST;
+		static const long ID_CFG_SRC;
+		static const long ID_LST_CFG;
+		static const long ID_BTN_TRANSFER;
+		static const long ID_BTN_SAVE;
+		static const long ID_BTN_CLOSE;
 		//*)
 
 //***********************************************************************
@@ -64,7 +59,8 @@ class MainFrame: public wxFrame
 		//(*Declarations(MainFrame)
 		wxBoxSizer* bszMain;
 		wxBoxSizer* bszSteps;
-		wxStaticText* txtSteps;
+		wxStaticBoxSizer* sbsSteps;
+		wxStaticText* lblSteps;
 		wxGridSizer* grsFileLabel;
 		wxStaticText* lblFileSrc;
 		wxStaticText* lblFileDst;
