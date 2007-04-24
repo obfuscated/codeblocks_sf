@@ -67,7 +67,7 @@ void wxsTimer::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
 
 void wxsTimer::OnEnumToolProperties(long Flags)
 {
-    WXS_LONG(wxsTimer,m_Interval,_("Inerval"),_T("interval"),0);
+    WXS_LONG(wxsTimer,m_Interval,_("Interval"),_T("interval"),0);
     WXS_BOOL(wxsTimer,m_OneShoot,_("One Shoot"),_T("oneshoot"),false);
 }
 
