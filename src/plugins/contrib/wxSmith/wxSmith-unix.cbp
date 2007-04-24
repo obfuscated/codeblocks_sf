@@ -106,6 +106,7 @@
 		<Unit filename="wxsmith.h" />
 		<Unit filename="wxsmithmime.cpp" />
 		<Unit filename="wxsmithmime.h" />
+		<Unit filename="wxsmithpluginregistrants.cpp" />
 		<Unit filename="wxsproject.cpp" />
 		<Unit filename="wxsproject.h" />
 		<Unit filename="wxsresource.cpp" />

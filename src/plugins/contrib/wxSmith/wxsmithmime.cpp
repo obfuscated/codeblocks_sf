@@ -27,11 +27,6 @@
 #include "wxsproject.h"
 #include "wxsextresmanager.h"
 
-namespace
-{
-    PluginRegistrant<wxSmithMime> reg(_T("wxSmithMime"));
-}
-
 // TODO: Do not access wxSmith's maps directly
 
 wxSmithMime::wxSmithMime()

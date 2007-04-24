@@ -35,7 +35,6 @@
 
 namespace
 {
-    PluginRegistrant<wxSmith> reg(_T("wxSmith"));
     int ConfigureId = wxNewId();
 }
 

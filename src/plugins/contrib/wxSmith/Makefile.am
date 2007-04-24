@@ -8,17 +8,27 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include/wxscintilla/include \
 		-I$(top_srcdir)/src/include/propgrid/include
 
-libdir = $(pkgdatadir)/plugins
+lib_LTLIBRARIES = libwxsmithlib.la libwxsmith.la
 
-lib_LTLIBRARIES = libwxsmith.la
+libwxsmith_la_libdir = $(pkgdatadir)/plugins
 
-libwxsmith_la_LDFLAGS = -version-info 0:1:0 -shared -no-undefined -avoid-version
+libwxsmith_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libwxsmith_la_LIBADD = ../../../sdk/libcodeblocks.la \
+libwxsmith_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la \
+				libwxsmithlib.la
+
+libwxsmithlib_la_libdir = $(libdir)
+
+libwxsmithlib_la_LDFLAGS = -version-info 0:1:0 -shared
+
+libwxsmithlib_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la \
 				properties/libwxsmith_properties.la \
 				wxwidgets/libwxsmith_wxwidgets.la
 
 libwxsmith_la_SOURCES = \
+./wxsmithpluginregistrants.cpp
+
+libwxsmithlib_la_SOURCES = \
 ./wxsadvqpp.cpp \
 ./wxsadvqppchild.cpp \
 ./wxscoder.cpp \
