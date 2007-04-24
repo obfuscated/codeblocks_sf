@@ -294,7 +294,23 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
         m_MasterPath = Programs + _T("\\Intel\\Compiler\\C++\\9.0");
     }
 #else
-    m_MasterPath = _T("/opt/intel/cc/9.0");
+    wxDir icc_dir(_T("/opt/intel/cc"));
+    if (icc_dir.IsOpened())
+    {
+        wxArrayString dirs;
+        wxIccDirTraverser IccDirTraverser(dirs);
+        icc_dir.Traverse(IccDirTraverser);
+        if (dirs.IsEmpty())
+            m_MasterPath = _T("/opt/intel/cc/9.0");
+        else
+        {
+            // Now sort the array in reverse order to get the latest version's path
+            dirs.Sort(true);
+            m_MasterPath = dirs[0];
+        }
+    }
+    else
+        m_MasterPath = _T("/opt/intel/cc/9.0");
 #endif
     AutoDetectResult ret = wxFileExists(m_MasterPath + extraDir + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
     if (ret == adrDetected)
@@ -309,7 +325,25 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
     wxGetEnv(_T("IDB_PATH"), &path);
     path += _T("IDB\\9.0\\IA32");
 #else
-    wxString path = _T("/opt/intel/idb/9.0");
+    wxString path;
+
+    wxDir icc_debug_dir(_T("/opt/intel/idb"));
+    if (icc_debug_dir.IsOpened())
+    {
+        wxArrayString debug_dirs;
+        wxIccDirTraverser IccDebugDirTraverser(debug_dirs);
+        icc_debug_dir.Traverse(IccDebugDirTraverser);
+        if (debug_dirs.IsEmpty())
+            path= _T("/opt/intel/idb/9.0");
+        else
+        {
+            // Now sort the array in reverse order to get the latest version's path
+            debug_dirs.Sort(true);
+            path = debug_dirs[0];
+        }
+    }
+    else
+        path= _T("/opt/intel/idb/9.0");
 #endif
 
     if (wxFileExists(path + sep + _T("bin") + sep + m_Programs.DBG)){
