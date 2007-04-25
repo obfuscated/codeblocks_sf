@@ -8,7 +8,7 @@
 		<Build>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\DragScroll.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\cbDragScroll" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\cbDragScroll" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\cbDragScroll" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -47,7 +47,7 @@
 			<Add directory="$(#CB.include)\wxscintilla\include" />
 		</Compiler>
 		<Linker>
-			<Add library="wxmsw26$(WX_SUFFIX)" />
+			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
 			<Add library="wxscintilla" />
 			<Add directory="$(#CB)\devel" />

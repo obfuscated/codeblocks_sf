@@ -10,7 +10,7 @@
 			<Target title="libbz2">
 				<Option output="bzip2\libbz2.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
-				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\devpak_plugin" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\devpak_plugin" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\devpak_plugin" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -18,7 +18,7 @@
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\devpakupdater.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="..\devpak_plugin" />
-				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\devpak_plugin" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\devpak_plugin" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\devpak_plugin" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -70,7 +70,7 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add library="codeblocks" />
-			<Add library="wxmsw26$(WX_SUFFIX)" />
+			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add directory="bzip2" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>

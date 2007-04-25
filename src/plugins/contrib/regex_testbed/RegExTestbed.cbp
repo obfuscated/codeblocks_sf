@@ -9,7 +9,7 @@
 		<Build>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\RegExTestbed.dll" prefix_auto="1" extension_auto="1" />
-				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\regex_testbed" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\regex_testbed" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\regex_testbed" />
 				<Option external_deps="..\..\..\devel\libcodeblocks.a;" />
 				<Option type="3" />
@@ -57,7 +57,7 @@
 			<Add directory="$(#WX.include)" />
 		</ResourceCompiler>
 		<Linker>
-			<Add library="wxmsw26$(WX_SUFFIX)" />
+			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="$(#CB.lib)" />
@@ -71,7 +71,7 @@
 		<Unit filename="regexdlg.h" />
 		<Extensions>
 			<code_completion />
-			<wxsmith>
+			<wxsmith version="1">
 				<dialog wxs_file="RegExDlg.wxs" class="RegExDlg" src_file="regexdlg.cpp" header_file="regexdlg.h" xrc_file="regexdlg.xrc" edit_mode="Xrc" />
 				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
 			</wxsmith>

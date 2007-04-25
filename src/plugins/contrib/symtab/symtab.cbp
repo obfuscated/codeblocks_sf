@@ -9,7 +9,7 @@
 		<Build>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\SymTab.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\symtab" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\symtab" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\symtab" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -51,7 +51,7 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add library="codeblocks" />
-			<Add library="wxmsw26$(WX_SUFFIX)" />
+			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add directory="$(#CB)\devel" />
 			<Add directory="$(#CB.lib)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />

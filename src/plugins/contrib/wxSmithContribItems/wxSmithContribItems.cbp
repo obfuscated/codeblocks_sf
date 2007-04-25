@@ -50,7 +50,7 @@
 		<Linker>
 			<Add library="wxsmith" />
 			<Add library="codeblocks" />
-			<Add library="wxmsw26$(WX_SUFFIX)" />
+			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add directory="$(#cb)\devel" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="..\..\..\devel\share\CodeBlocks\plugins" />
