@@ -20,13 +20,10 @@ class byoGameSelect: public wxDialog
 		virtual ~byoGameSelect();
 
 		//(*Identifiers(byoGameSelect)
-		enum Identifiers
-		{
-		    ID_LISTBOX1 = 0x1000,
-		    ID_PANEL1,
-		    ID_STATICLINE1,
-		    ID_STATICTEXT1
-		};
+		static const long ID_PANEL1;
+		static const long ID_STATICTEXT1;
+		static const long ID_LISTBOX1;
+		static const long ID_STATICLINE1;
 		//*)
 
 	protected:

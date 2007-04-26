@@ -77,9 +77,11 @@
 		<Extensions>
 			<code_completion />
 			<wxsmith version="1">
-				<dialog wxs_file="byoGameSelect.wxs" class="byoGameSelect" src_file="byogameselect.cpp" header_file="byogameselect.h" xrc_file="" edit_mode="Source" />
-				<panel wxs_file="byoConf.wxs" class="byoConf" src_file="byoconf.cpp" header_file="byoconf.h" xrc_file="" edit_mode="Source" />
-				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxDialog wxs="wxsmith/byoGameSelect.wxs" src="byogameselect.cpp" hdr="byogameselect.h" name="byoGameSelect" language="CPP" />
+					<wxPanel wxs="wxsmith/byoConf.wxs" src="byoconf.cpp" hdr="byoconf.h" name="byoConf" language="CPP" />
+				</resources>
 			</wxsmith>
 		</Extensions>
 	</Project>

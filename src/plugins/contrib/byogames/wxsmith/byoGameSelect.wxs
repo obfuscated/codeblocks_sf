@@ -1,97 +1,95 @@
-<resource>
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
     <object class="wxDialog" name="byoGameSelect">
         <title>Select game to play</title>
         <centered>1</centered>
-        <style>wxDEFAULT_DIALOG_STYLE</style>
         <object class="wxBoxSizer" variable="BoxSizer1" member="yes">
             <orient>wxVERTICAL</orient>
             <object class="sizeritem">
-                <border>4</border>
-                <flag>wxALIGN_CENTER|wxEXPAND</flag>
                 <object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
                     <bg>#000080</bg>
                     <object class="wxBoxSizer" variable="BoxSizer3" member="yes">
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
-                            <border>4</border>
-                            <flag>wxALL|wxALIGN_CENTER</flag>
                             <object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
                                 <label>BYO Games collection</label>
                                 <style>wxALIGN_CENTRE</style>
                                 <fg>wxSYS_COLOUR_CAPTIONTEXT</fg>
-                                <bg>#00007F</bg>
+                                <bg>#000080</bg>
                                 <font>
                                     <size>16</size>
                                     <style>italic</style>
-                                    <family>swiss</family>
                                     <underlined>1</underlined>
+                                    <family>swiss</family>
                                     <face>Arial</face>
                                 </font>
                             </object>
+                            <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                            <border>4</border>
                         </object>
                     </object>
                 </object>
+                <flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                <border>4</border>
             </object>
             <object class="sizeritem">
-                <option>1</option>
-                <border>4</border>
-                <flag>wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
                 <object class="wxBoxSizer" variable="BoxSizer4" member="yes">
-                    <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">
-                        <option>1</option>
-                        <border>4</border>
-                        <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
                         <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
-                            <orient>wxHORIZONTAL</orient>
                             <label>Select game</label>
                             <object class="sizeritem">
-                                <option>1</option>
-                                <border>4</border>
-                                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
                                 <object class="wxListBox" name="ID_LISTBOX1" variable="m_GamesList" member="yes">
                                     <size>320,177</size>
                                 </object>
+                                <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                <border>4</border>
+                                <option>1</option>
                             </object>
                             <object class="sizeritem">
-                                <border>4</border>
-                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER|wxEXPAND</flag>
                                 <object class="wxBoxSizer" variable="BoxSizer2" member="yes">
                                     <orient>wxVERTICAL</orient>
                                     <object class="sizeritem">
-                                        <border>4</border>
-                                        <flag>wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
                                         <object class="wxButton" name="wxID_OK" variable="Button1" member="yes">
                                             <label>Play</label>
-                                            <handler entry="EVT_BUTTON" function="OnPlay" />
+                                            <handler function="OnPlay" entry="EVT_BUTTON" />
                                         </object>
+                                        <flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>4</border>
                                     </object>
                                     <object class="sizeritem">
-                                        <border>4</border>
-                                        <flag>wxTOP|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
                                         <object class="wxStaticLine" name="ID_STATICLINE1" variable="StaticLine1" member="yes">
                                             <size>10,-1</size>
                                         </object>
+                                        <flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>4</border>
                                     </object>
                                     <object class="sizeritem">
-                                        <border>4</border>
-                                        <flag>wxTOP|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
                                         <object class="wxButton" name="wxID_CANCEL" variable="Button2" member="yes">
                                             <label>Cancel</label>
-                                            <handler entry="EVT_BUTTON" function="OnCancel" />
+                                            <handler function="OnCancel" entry="EVT_BUTTON" />
                                         </object>
+                                        <flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                        <border>4</border>
                                     </object>
                                     <object class="spacer">
-                                        <size>71,18</size>
+                                        <flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                                         <border>4</border>
-                                        <flag>wxALIGN_CENTER|wxEXPAND</flag>
+                                        <size>71,18</size>
                                     </object>
                                 </object>
+                                <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                                <border>4</border>
                             </object>
                         </object>
+                        <flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                        <border>4</border>
+                        <option>1</option>
                     </object>
                 </object>
+                <flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                <border>4</border>
+                <option>1</option>
             </object>
         </object>
     </object>
-</resource>
+</wxsmith>

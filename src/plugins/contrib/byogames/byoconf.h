@@ -27,27 +27,24 @@ class byoConf: public cbConfigurationPanel
 	protected:
 
 		//(*Identifiers(byoConf)
-		enum Identifiers
-		{
-		    ID_BUTTON1 = 0x1000,
-		    ID_BUTTON2,
-		    ID_BUTTON3,
-		    ID_BUTTON4,
-		    ID_BUTTON5,
-		    ID_BUTTON6,
-		    ID_CHECKBOX1,
-		    ID_CHECKBOX2,
-		    ID_CHECKBOX3,
-		    ID_SPINCTRL1,
-		    ID_SPINCTRL2,
-		    ID_SPINCTRL3,
-		    ID_STATICTEXT1,
-		    ID_STATICTEXT2,
-		    ID_STATICTEXT3,
-		    ID_STATICTEXT4,
-		    ID_STATICTEXT5,
-		    ID_STATICTEXT6
-		};
+		static const long ID_CHECKBOX1;
+		static const long ID_SPINCTRL1;
+		static const long ID_CHECKBOX2;
+		static const long ID_SPINCTRL2;
+		static const long ID_CHECKBOX3;
+		static const long ID_SPINCTRL3;
+		static const long ID_STATICTEXT1;
+		static const long ID_BUTTON1;
+		static const long ID_STATICTEXT2;
+		static const long ID_BUTTON2;
+		static const long ID_STATICTEXT3;
+		static const long ID_BUTTON3;
+		static const long ID_STATICTEXT4;
+		static const long ID_BUTTON4;
+		static const long ID_STATICTEXT5;
+		static const long ID_BUTTON5;
+		static const long ID_STATICTEXT6;
+		static const long ID_BUTTON6;
 		//*)
 		//(*Handlers(byoConf)
 		void BTWSRefresh(wxCommandEvent& event);
