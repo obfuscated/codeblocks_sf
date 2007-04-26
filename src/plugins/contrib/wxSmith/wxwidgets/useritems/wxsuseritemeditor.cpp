@@ -234,7 +234,7 @@ void wxsUserItemEditor::OnOk(wxCommandEvent& event)
     // Looking for some possible name conflicts
     wxArrayString AllNewNames;
     Manager.UnregisterAll();
-    for ( int i=0; i<m_ItemList->GetCount(); i++ )
+    for ( int i=0; i<(int)m_ItemList->GetCount(); i++ )
     {
         ItemDataCopy* Data = ((ItemDataCopy*)m_ItemList->GetClientObject(i));
         wxString Name = Data->m_Name;
@@ -274,7 +274,7 @@ void wxsUserItemEditor::OnOk(wxCommandEvent& event)
     // Updating items which/ have been managed before
     bool* UserMask = new bool[Manager.GetItemsCount()];
     for ( int i=0; i<Manager.GetItemsCount(); i++ ) UserMask[i] = false;
-    for ( int i=0; i<m_ItemList->GetCount(); i++ )
+    for ( int i=0; i<(int)m_ItemList->GetCount(); i++ )
     {
         ItemDataCopy* Data = (ItemDataCopy*)m_ItemList->GetClientObject(i);
         if ( Data->m_OriginalIndex < 0 ) continue;
@@ -306,7 +306,7 @@ void wxsUserItemEditor::OnOk(wxCommandEvent& event)
     delete[] UserMask;
 
     // Adding new items
-    for ( int i=0; i<m_ItemList->GetCount(); i++ )
+    for ( int i=0; i<(int)m_ItemList->GetCount(); i++ )
     {
         ItemDataCopy* Data = (ItemDataCopy*)m_ItemList->GetClientObject(i);
         if ( Data->m_OriginalIndex >= 0 ) continue;

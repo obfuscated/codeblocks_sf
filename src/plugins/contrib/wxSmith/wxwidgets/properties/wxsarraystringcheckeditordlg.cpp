@@ -153,7 +153,7 @@ void wxsArrayStringCheckEditorDlg::OnButton5Click(wxCommandEvent& event)
 {
     int Sel = StringList->GetSelection();
     if ( Sel == wxNOT_FOUND ) return;
-    if ( Sel >= StringList->GetCount()-1 ) return;
+    if ( Sel >= (int)StringList->GetCount()-1 ) return;
     bool Checked = StringList->IsChecked(Sel);
     wxString Str = StringList->GetString(Sel);
     StringList->Delete(Sel);

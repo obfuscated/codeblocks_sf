@@ -580,7 +580,7 @@ void wxsFontEditorDlg::OnFaceDelClick(wxCommandEvent& event)
     if ( Index != wxNOT_FOUND )
     {
         FaceList->Delete(Index);
-        if ( Index < FaceList->GetCount() )
+        if ( Index < (int)FaceList->GetCount() )
         {
             FaceList->SetSelection(Index);
         }
@@ -623,7 +623,7 @@ void wxsFontEditorDlg::OnFaceUpClick(wxCommandEvent& event)
 void wxsFontEditorDlg::OnFaceDownClick(wxCommandEvent& event)
 {
     int Index = FaceList->GetSelection();
-    if ( Index != wxNOT_FOUND && Index < FaceList->GetCount()-1 )
+    if ( Index != wxNOT_FOUND && Index < (int)FaceList->GetCount()-1 )
     {
         wxString Face = FaceList->GetString(Index);
         FaceList->Delete(Index);

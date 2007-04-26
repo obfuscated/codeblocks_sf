@@ -470,7 +470,7 @@ void wxsToolBarEditor::OnDownClick(wxCommandEvent& event)
     SelectItem(m_Selected);
     int SelIndex = m_Content->GetSelection();
     if ( SelIndex == wxNOT_FOUND ) return;
-    if ( SelIndex > m_Content->GetCount()-2  ) return;
+    if ( SelIndex > (int)m_Content->GetCount()-2  ) return;
     // We will delete next item and put it before this one
     ToolBarItem* Copy = new ToolBarItem(*((ToolBarItem*)m_Content->GetClientObject(SelIndex+1)));
     m_Content->Delete(SelIndex+1);
@@ -504,7 +504,7 @@ void wxsToolBarEditor::OnDelClick(wxCommandEvent& event)
                       wxYES_NO) == wxID_YES )
     {
         m_Content->Delete(Selection);
-        if ( m_Content->GetCount() == Selection ) Selection--;
+        if ( (int)m_Content->GetCount() == Selection ) Selection--;
         if ( Selection > 0 )
         {
             m_Content->SetSelection(Selection);
