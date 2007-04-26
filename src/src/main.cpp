@@ -3245,19 +3245,20 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     }
     EditorBase* ed = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetActiveEditor() : 0;
     cbProject* prj = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : 0L;
+    EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
     wxMenuBar* mbar = GetMenuBar();
 
-    bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
-    if(prj && prj->GetCurrentlyCompilingTarget())
-        canCloseProject = false;
+    bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown())
+                            && prj && !prj->GetCurrentlyCompilingTarget();
+
     mbar->Enable(idFileCloseProject,canCloseProject);
     mbar->Enable(idFileOpenRecentFileClearHistory, m_pFilesHistory->GetCount());
     mbar->Enable(idFileOpenRecentProjectClearHistory, m_pProjectsHistory->GetCount());
-    mbar->Enable(idFileClose, ed);
-    mbar->Enable(idFileCloseAll, ed);
+    mbar->Enable(idFileClose, ed && !sh);
+    mbar->Enable(idFileCloseAll, ed && !sh);
     mbar->Enable(idFileSave, ed && ed->GetModified());
-    mbar->Enable(idFileSaveAs, ed);
-    mbar->Enable(idFileSaveAllFiles, ed);
+    mbar->Enable(idFileSaveAs, ed && !sh);
+    mbar->Enable(idFileSaveAllFiles, ed && !sh);
     mbar->Enable(idFileSaveProject, prj && prj->GetModified() && canCloseProject);
     mbar->Enable(idFileSaveProjectAs, prj && canCloseProject);
     mbar->Enable(idFileOpenDefWorkspace, canCloseProject);
