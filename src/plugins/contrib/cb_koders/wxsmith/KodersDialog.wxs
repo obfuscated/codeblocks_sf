@@ -1,62 +1,56 @@
-<resource>
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
     <object class="wxDialog" name="KodersDialog">
         <title>Koders query</title>
         <centered>1</centered>
-        <style>wxDEFAULT_DIALOG_STYLE</style>
         <object class="wxBoxSizer" variable="bszMain" member="yes">
             <orient>wxVERTICAL</orient>
             <object class="sizeritem">
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                 <object class="wxBoxSizer" variable="bszIntro" member="yes">
-                    <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                         <object class="wxStaticText" name="ID_LBL_INTRO" variable="lblIntro" member="yes">
                             <label>Specify search to query the Koders webpage:</label>
                         </object>
+                        <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <border>5</border>
                     </object>
                 </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
             </object>
             <object class="sizeritem">
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                 <object class="wxBoxSizer" variable="bszSearch" member="yes">
-                    <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">
-                        <option>1</option>
-                        <border>5</border>
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                         <object class="wxTextCtrl" name="ID_TXT_SEARCH" variable="txtSearch" member="yes">
-                            <value></value>
+                            <tooltip>Enter keyword to search for (at koders)</tooltip>
                         </object>
+                        <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <border>5</border>
+                        <option>1</option>
                     </object>
                     <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxALL|wxALIGN_RIGHT|wxALIGN_TOP</flag>
                         <object class="wxButton" name="ID_BTN_SEARCH" variable="btnSearch" member="yes">
                             <label>Search</label>
                             <default>1</default>
-                            <handler entry="EVT_BUTTON" function="OnBtnSearchClick" />
+                            <tooltip>Click to search at the koders webpage...</tooltip>
+                            <handler function="OnBtnSearchClick" entry="EVT_BUTTON" />
                         </object>
+                        <flag>wxALL|wxALIGN_RIGHT|wxALIGN_TOP</flag>
+                        <border>5</border>
                     </object>
                 </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
             </object>
             <object class="sizeritem">
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                 <object class="wxBoxSizer" variable="bszFilter" member="yes">
-                    <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                         <object class="wxStaticText" name="ID_LBL_FILTER" variable="lblFilter" member="yes">
                             <label>Filter:</label>
                         </object>
+                        <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <border>5</border>
                     </object>
                     <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
                         <object class="wxChoice" name="ID_CHO_LANGUAGES" variable="choLanguages" member="yes">
-                            <selection>0</selection>
                             <content>
                                 <item>All Languages</item>
                                 <item>Ada</item>
@@ -90,13 +84,13 @@
                                 <item>VB</item>
                                 <item>VB.NET</item>
                             </content>
+                            <tooltip>Limit search to a specific programming language</tooltip>
                         </object>
+                        <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <border>5</border>
                     </object>
                     <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxALL|wxALIGN_RIGHT|wxALIGN_TOP|wxEXPAND</flag>
                         <object class="wxChoice" name="ID_CHO_LICENSES" variable="choLicenses" member="yes">
-                            <selection>0</selection>
                             <content>
                                 <item>All Licenses</item>
                                 <item>AFL</item>
@@ -120,10 +114,14 @@
                                 <item>ZLL</item>
                                 <item>ZPL</item>
                             </content>
+                            <tooltip>Limit search to a specific license type</tooltip>
                         </object>
+                        <flag>wxALL|wxEXPAND|wxALIGN_RIGHT|wxALIGN_TOP</flag>
+                        <border>5</border>
                     </object>
                 </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
             </object>
         </object>
     </object>
-</resource>
+</wxsmith>

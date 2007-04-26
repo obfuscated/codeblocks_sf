@@ -70,8 +70,10 @@
 		<Extensions>
 			<code_completion />
 			<wxsmith version="1">
-				<dialog wxs_file="KodersDialog.wxs" class="KodersDialog" src_file="kodersdialog.cpp" header_file="kodersdialog.h" xrc_file="" edit_mode="Source" />
-				<configuration app_src_file="" main_resource="" init_all_handlers="necessary" />
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxDialog wxs="wxsmith/KodersDialog.wxs" src="kodersdialog.cpp" hdr="kodersdialog.h" name="KodersDialog" language="CPP" />
+				</resources>
 			</wxsmith>
 		</Extensions>
 	</Project>
