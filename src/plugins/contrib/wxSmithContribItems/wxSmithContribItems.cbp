@@ -48,12 +48,11 @@
 			<Add directory="wxchart\wxchart-1.0\include" />
 		</Compiler>
 		<Linker>
-			<Add library="wxsmith" />
+			<Add library="wxsmithlib" />
 			<Add library="codeblocks" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add directory="$(#cb)\devel" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
-			<Add directory="..\..\..\devel\share\CodeBlocks\plugins" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\wxSmithContribItems.zip manifest.xml" />

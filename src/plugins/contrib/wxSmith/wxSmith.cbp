@@ -6,8 +6,8 @@
 		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="wxSmith">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\wxsmith.dll" prefix_auto="0" extension_auto="0" />
+			<Target title="wxSmithLib">
+				<Option output="..\..\..\devel\wxsmithlib.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmith" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\wxSmith" />
 				<Option type="3" />
@@ -15,13 +15,23 @@
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Option createStaticLib="1" />
 			</Target>
+			<Target title="wxSmith">
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\wxsmith.dll" prefix_auto="1" extension_auto="1" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Linker>
+					<Add library="wxsmithlib" />
+				</Linker>
+			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_CFG" value="" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="wxSmith;" />
+			<Add alias="All" targets="wxSmithLib;wxSmith;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -77,282 +87,834 @@
 			<Add after="update.bat" />
 			<Mode after="always" />
 		</ExtraCommands>
-		<Unit filename="properties\wxsarraystringeditordlg.cpp" />
-		<Unit filename="properties\wxsarraystringeditordlg.h" />
-		<Unit filename="properties\wxsarraystringproperty.cpp" />
-		<Unit filename="properties\wxsarraystringproperty.h" />
-		<Unit filename="properties\wxsboolproperty.cpp" />
-		<Unit filename="properties\wxsboolproperty.h" />
-		<Unit filename="properties\wxscustomeditorproperty.cpp" />
-		<Unit filename="properties\wxscustomeditorproperty.h" />
-		<Unit filename="properties\wxsemptyproperty.cpp" />
-		<Unit filename="properties\wxsemptyproperty.h" />
-		<Unit filename="properties\wxsenumproperty.cpp" />
-		<Unit filename="properties\wxsenumproperty.h" />
-		<Unit filename="properties\wxsflagsproperty.cpp" />
-		<Unit filename="properties\wxsflagsproperty.h" />
-		<Unit filename="properties\wxslongproperty.cpp" />
-		<Unit filename="properties\wxslongproperty.h" />
-		<Unit filename="properties\wxsproperties.h" />
-		<Unit filename="properties\wxsproperty.cpp" />
-		<Unit filename="properties\wxsproperty.h" />
-		<Unit filename="properties\wxspropertycontainer.cpp" />
-		<Unit filename="properties\wxspropertycontainer.h" />
-		<Unit filename="properties\wxspropertygridmanager.cpp" />
-		<Unit filename="properties\wxspropertygridmanager.h" />
-		<Unit filename="properties\wxspropertystream.cpp" />
-		<Unit filename="properties\wxspropertystream.h" />
-		<Unit filename="properties\wxsquickpropspanel.cpp" />
-		<Unit filename="properties\wxsquickpropspanel.h" />
-		<Unit filename="properties\wxsstringproperty.cpp" />
-		<Unit filename="properties\wxsstringproperty.h" />
-		<Unit filename="wxsadvqpp.cpp" />
-		<Unit filename="wxsadvqpp.h" />
-		<Unit filename="wxsadvqppchild.cpp" />
-		<Unit filename="wxsadvqppchild.h" />
-		<Unit filename="wxsautoresourcetreeimage.cpp" />
-		<Unit filename="wxsautoresourcetreeimage.h" />
-		<Unit filename="wxscoder.cpp" />
-		<Unit filename="wxscoder.h" />
-		<Unit filename="wxscodinglang.cpp" />
-		<Unit filename="wxscodinglang.h" />
-		<Unit filename="wxseditor.cpp" />
-		<Unit filename="wxseditor.h" />
-		<Unit filename="wxsextresmanager.cpp" />
-		<Unit filename="wxsextresmanager.h" />
-		<Unit filename="wxsgui.cpp" />
-		<Unit filename="wxsgui.h" />
-		<Unit filename="wxsguifactory.cpp" />
-		<Unit filename="wxsguifactory.h" />
-		<Unit filename="wxsmith.cpp" />
-		<Unit filename="wxsmith.h" />
-		<Unit filename="wxsmithmime.cpp" />
-		<Unit filename="wxsmithmime.h" />
-		<Unit filename="wxsmithpluginregistrants.cpp" />
-		<Unit filename="wxsproject.cpp" />
-		<Unit filename="wxsproject.h" />
-		<Unit filename="wxsresource.cpp" />
-		<Unit filename="wxsresource.h" />
-		<Unit filename="wxsresourcefactory.cpp" />
-		<Unit filename="wxsresourcefactory.h" />
-		<Unit filename="wxsresourcetree.cpp" />
-		<Unit filename="wxsresourcetree.h" />
-		<Unit filename="wxsresourcetreeitemdata.cpp" />
-		<Unit filename="wxsresourcetreeitemdata.h" />
-		<Unit filename="wxssettings.cpp" />
-		<Unit filename="wxssettings.h" />
-		<Unit filename="wxsstoringsplitterwindow.cpp" />
-		<Unit filename="wxsstoringsplitterwindow.h" />
-		<Unit filename="wxsversionconverter.cpp" />
-		<Unit filename="wxsversionconverter.h" />
-		<Unit filename="wxwidgets\defitems\wxsbitmapbutton.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsbitmapbutton.h" />
-		<Unit filename="wxwidgets\defitems\wxsboxsizer.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsboxsizer.h" />
-		<Unit filename="wxwidgets\defitems\wxsbutton.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsbutton.h" />
-		<Unit filename="wxwidgets\defitems\wxscalendarctrl.cpp" />
-		<Unit filename="wxwidgets\defitems\wxscalendarctrl.h" />
-		<Unit filename="wxwidgets\defitems\wxscheckbox.cpp" />
-		<Unit filename="wxwidgets\defitems\wxscheckbox.h" />
-		<Unit filename="wxwidgets\defitems\wxschecklistbox.cpp" />
-		<Unit filename="wxwidgets\defitems\wxschecklistbox.h" />
-		<Unit filename="wxwidgets\defitems\wxschoice.cpp" />
-		<Unit filename="wxwidgets\defitems\wxschoice.h" />
-		<Unit filename="wxwidgets\defitems\wxschoicebook.cpp" />
-		<Unit filename="wxwidgets\defitems\wxschoicebook.h" />
-		<Unit filename="wxwidgets\defitems\wxscombobox.cpp" />
-		<Unit filename="wxwidgets\defitems\wxscombobox.h" />
-		<Unit filename="wxwidgets\defitems\wxscustomwidget.cpp" />
-		<Unit filename="wxwidgets\defitems\wxscustomwidget.h" />
-		<Unit filename="wxwidgets\defitems\wxsdatepickerctrl.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsdatepickerctrl.h" />
-		<Unit filename="wxwidgets\defitems\wxsdialog.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsdialog.h" />
-		<Unit filename="wxwidgets\defitems\wxsflexgridsizer.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsflexgridsizer.h" />
-		<Unit filename="wxwidgets\defitems\wxsframe.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsframe.h" />
-		<Unit filename="wxwidgets\defitems\wxsgauge.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsgauge.h" />
-		<Unit filename="wxwidgets\defitems\wxsgenericdirctrl.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsgenericdirctrl.h" />
-		<Unit filename="wxwidgets\defitems\wxsgridsizer.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsgridsizer.h" />
-		<Unit filename="wxwidgets\defitems\wxshtmlwindow.cpp" />
-		<Unit filename="wxwidgets\defitems\wxshtmlwindow.h" />
-		<Unit filename="wxwidgets\defitems\wxslistbook.cpp" />
-		<Unit filename="wxwidgets\defitems\wxslistbook.h" />
-		<Unit filename="wxwidgets\defitems\wxslistbox.cpp" />
-		<Unit filename="wxwidgets\defitems\wxslistbox.h" />
-		<Unit filename="wxwidgets\defitems\wxslistctrl.cpp" />
-		<Unit filename="wxwidgets\defitems\wxslistctrl.h" />
-		<Unit filename="wxwidgets\defitems\wxsmenu.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsmenu.h" />
-		<Unit filename="wxwidgets\defitems\wxsmenubar.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsmenubar.h" />
-		<Unit filename="wxwidgets\defitems\wxsmenueditor.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsmenueditor.h" />
-		<Unit filename="wxwidgets\defitems\wxsmenuitem.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsmenuitem.h" />
-		<Unit filename="wxwidgets\defitems\wxsnotebook.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsnotebook.h" />
-		<Unit filename="wxwidgets\defitems\wxspanel.cpp" />
-		<Unit filename="wxwidgets\defitems\wxspanel.h" />
-		<Unit filename="wxwidgets\defitems\wxsradiobox.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsradiobox.h" />
-		<Unit filename="wxwidgets\defitems\wxsradiobutton.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsradiobutton.h" />
-		<Unit filename="wxwidgets\defitems\wxsscrollbar.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsscrollbar.h" />
-		<Unit filename="wxwidgets\defitems\wxsscrolledwindow.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsscrolledwindow.h" />
-		<Unit filename="wxwidgets\defitems\wxsslider.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsslider.h" />
-		<Unit filename="wxwidgets\defitems\wxsspacer.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsspacer.h" />
-		<Unit filename="wxwidgets\defitems\wxsspinbutton.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsspinbutton.h" />
-		<Unit filename="wxwidgets\defitems\wxsspinctrl.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsspinctrl.h" />
-		<Unit filename="wxwidgets\defitems\wxssplitterwindow.cpp" />
-		<Unit filename="wxwidgets\defitems\wxssplitterwindow.h" />
-		<Unit filename="wxwidgets\defitems\wxsstaticbitmap.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsstaticbitmap.h" />
-		<Unit filename="wxwidgets\defitems\wxsstaticbox.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsstaticbox.h" />
-		<Unit filename="wxwidgets\defitems\wxsstaticboxsizer.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsstaticboxsizer.h" />
-		<Unit filename="wxwidgets\defitems\wxsstaticline.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsstaticline.h" />
-		<Unit filename="wxwidgets\defitems\wxsstatictext.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsstatictext.h" />
-		<Unit filename="wxwidgets\defitems\wxsstatusbar.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsstatusbar.h" />
-		<Unit filename="wxwidgets\defitems\wxsstddialogbuttonsizer.cpp" />
-		<Unit filename="wxwidgets\defitems\wxsstddialogbuttonsizer.h" />
-		<Unit filename="wxwidgets\defitems\wxstextctrl.cpp" />
-		<Unit filename="wxwidgets\defitems\wxstextctrl.h" />
-		<Unit filename="wxwidgets\defitems\wxstimer.cpp" />
-		<Unit filename="wxwidgets\defitems\wxstimer.h" />
-		<Unit filename="wxwidgets\defitems\wxstogglebutton.cpp" />
-		<Unit filename="wxwidgets\defitems\wxstogglebutton.h" />
-		<Unit filename="wxwidgets\defitems\wxstoolbar.cpp" />
-		<Unit filename="wxwidgets\defitems\wxstoolbar.h" />
-		<Unit filename="wxwidgets\defitems\wxstoolbareditor.cpp" />
-		<Unit filename="wxwidgets\defitems\wxstoolbareditor.h" />
-		<Unit filename="wxwidgets\defitems\wxstoolbaritem.cpp" />
-		<Unit filename="wxwidgets\defitems\wxstoolbaritem.h" />
-		<Unit filename="wxwidgets\defitems\wxstreectrl.cpp" />
-		<Unit filename="wxwidgets\defitems\wxstreectrl.h" />
-		<Unit filename="wxwidgets\properties\wxsarraystringcheckeditordlg.cpp" />
-		<Unit filename="wxwidgets\properties\wxsarraystringcheckeditordlg.h" />
-		<Unit filename="wxwidgets\properties\wxsarraystringcheckproperty.cpp" />
-		<Unit filename="wxwidgets\properties\wxsarraystringcheckproperty.h" />
-		<Unit filename="wxwidgets\properties\wxsbitmapiconeditordlg.cpp" />
-		<Unit filename="wxwidgets\properties\wxsbitmapiconeditordlg.h" />
-		<Unit filename="wxwidgets\properties\wxsbitmapiconproperty.cpp" />
-		<Unit filename="wxwidgets\properties\wxsbitmapiconproperty.h" />
-		<Unit filename="wxwidgets\properties\wxscolourproperty.cpp" />
-		<Unit filename="wxwidgets\properties\wxscolourproperty.h" />
-		<Unit filename="wxwidgets\properties\wxsdimensionproperty.cpp" />
-		<Unit filename="wxwidgets\properties\wxsdimensionproperty.h" />
-		<Unit filename="wxwidgets\properties\wxsfonteditordlg.cpp" />
-		<Unit filename="wxwidgets\properties\wxsfonteditordlg.h" />
-		<Unit filename="wxwidgets\properties\wxsfontfaceeditordlg.cpp" />
-		<Unit filename="wxwidgets\properties\wxsfontfaceeditordlg.h" />
-		<Unit filename="wxwidgets\properties\wxsfontproperty.cpp" />
-		<Unit filename="wxwidgets\properties\wxsfontproperty.h" />
-		<Unit filename="wxwidgets\properties\wxspositionsizeproperty.cpp" />
-		<Unit filename="wxwidgets\properties\wxspositionsizeproperty.h" />
-		<Unit filename="wxwidgets\properties\wxssimplefonteditordlg.cpp" />
-		<Unit filename="wxwidgets\properties\wxssimplefonteditordlg.h" />
-		<Unit filename="wxwidgets\properties\wxssizerflagsproperty.cpp" />
-		<Unit filename="wxwidgets\properties\wxssizerflagsproperty.h" />
-		<Unit filename="wxwidgets\properties\wxsstyleproperty.cpp" />
-		<Unit filename="wxwidgets\properties\wxsstyleproperty.h" />
-		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvalue.cpp" />
-		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvalue.h" />
-		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvaluelist.cpp" />
-		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvaluelist.h" />
-		<Unit filename="wxwidgets\useritems\wxsuseritem.cpp" />
-		<Unit filename="wxwidgets\useritems\wxsuseritem.h" />
-		<Unit filename="wxwidgets\useritems\wxsuseritemdescription.cpp" />
-		<Unit filename="wxwidgets\useritems\wxsuseritemdescription.h" />
-		<Unit filename="wxwidgets\useritems\wxsuseritemeditor.cpp" />
-		<Unit filename="wxwidgets\useritems\wxsuseritemeditor.h" />
-		<Unit filename="wxwidgets\useritems\wxsuseritemmanager.cpp" />
-		<Unit filename="wxwidgets\useritems\wxsuseritemmanager.h" />
-		<Unit filename="wxwidgets\useritems\wxsuseritemproperties.cpp" />
-		<Unit filename="wxwidgets\useritems\wxsuseritemproperties.h" />
-		<Unit filename="wxwidgets\wxsbaseproperties.cpp" />
-		<Unit filename="wxwidgets\wxsbaseproperties.h" />
-		<Unit filename="wxwidgets\wxscontainer.cpp" />
-		<Unit filename="wxwidgets\wxscontainer.h" />
-		<Unit filename="wxwidgets\wxscorrector.cpp" />
-		<Unit filename="wxwidgets\wxscorrector.h" />
-		<Unit filename="wxwidgets\wxsdialogres.cpp" />
-		<Unit filename="wxwidgets\wxsdialogres.h" />
-		<Unit filename="wxwidgets\wxsdrawingwindow.cpp" />
-		<Unit filename="wxwidgets\wxsdrawingwindow.h" />
-		<Unit filename="wxwidgets\wxsevents.cpp" />
-		<Unit filename="wxwidgets\wxsevents.h" />
-		<Unit filename="wxwidgets\wxseventseditor.cpp" />
-		<Unit filename="wxwidgets\wxseventseditor.h" />
-		<Unit filename="wxwidgets\wxsexproperties.h" />
-		<Unit filename="wxwidgets\wxsframeres.cpp" />
-		<Unit filename="wxwidgets\wxsframeres.h" />
-		<Unit filename="wxwidgets\wxsitem.cpp" />
-		<Unit filename="wxwidgets\wxsitem.h" />
-		<Unit filename="wxwidgets\wxsitemeditor.cpp" />
-		<Unit filename="wxwidgets\wxsitemeditor.h" />
-		<Unit filename="wxwidgets\wxsitemeditorcontent.cpp" />
-		<Unit filename="wxwidgets\wxsitemeditorcontent.h" />
-		<Unit filename="wxwidgets\wxsitemeditordragassist.cpp" />
-		<Unit filename="wxwidgets\wxsitemeditordragassist.h" />
-		<Unit filename="wxwidgets\wxsitemfactory.cpp" />
-		<Unit filename="wxwidgets\wxsitemfactory.h" />
-		<Unit filename="wxwidgets\wxsiteminfo.h" />
-		<Unit filename="wxwidgets\wxsitemres.cpp" />
-		<Unit filename="wxwidgets\wxsitemres.h" />
-		<Unit filename="wxwidgets\wxsitemresdata.cpp" />
-		<Unit filename="wxwidgets\wxsitemresdata.h" />
-		<Unit filename="wxwidgets\wxsitemresdataobject.cpp" />
-		<Unit filename="wxwidgets\wxsitemresdataobject.h" />
-		<Unit filename="wxwidgets\wxsitemrestreedata.cpp" />
-		<Unit filename="wxwidgets\wxsitemrestreedata.h" />
-		<Unit filename="wxwidgets\wxsitemundobuffer.cpp" />
-		<Unit filename="wxwidgets\wxsitemundobuffer.h" />
-		<Unit filename="wxwidgets\wxsnewwindowdlg.cpp" />
-		<Unit filename="wxwidgets\wxsnewwindowdlg.h" />
-		<Unit filename="wxwidgets\wxspanelres.cpp" />
-		<Unit filename="wxwidgets\wxspanelres.h" />
-		<Unit filename="wxwidgets\wxsparent.cpp" />
-		<Unit filename="wxwidgets\wxsparent.h" />
-		<Unit filename="wxwidgets\wxspredefinedids.cpp" />
-		<Unit filename="wxwidgets\wxspredefinedids.h" />
-		<Unit filename="wxwidgets\wxssizer.cpp" />
-		<Unit filename="wxwidgets\wxssizer.h" />
-		<Unit filename="wxwidgets\wxssizerparentqp.cpp" />
-		<Unit filename="wxwidgets\wxssizerparentqp.h" />
-		<Unit filename="wxwidgets\wxsstyle.cpp" />
-		<Unit filename="wxwidgets\wxsstyle.h" />
-		<Unit filename="wxwidgets\wxstool.cpp" />
-		<Unit filename="wxwidgets\wxstool.h" />
-		<Unit filename="wxwidgets\wxstoolspace.cpp" />
-		<Unit filename="wxwidgets\wxstoolspace.h" />
-		<Unit filename="wxwidgets\wxswidget.cpp" />
-		<Unit filename="wxwidgets\wxswidget.h" />
-		<Unit filename="wxwidgets\wxwidgetsgui.cpp" />
-		<Unit filename="wxwidgets\wxwidgetsgui.h" />
-		<Unit filename="wxwidgets\wxwidgetsguiappadoptingdlg.cpp" />
-		<Unit filename="wxwidgets\wxwidgetsguiappadoptingdlg.h" />
-		<Unit filename="wxwidgets\wxwidgetsguiconfigpanel.cpp" />
-		<Unit filename="wxwidgets\wxwidgetsguiconfigpanel.h" />
-		<Unit filename="wxwidgets\wxwidgetsres.cpp" />
-		<Unit filename="wxwidgets\wxwidgetsres.h" />
-		<Unit filename="wxwidgets\wxwidgetsresfactory.cpp" />
-		<Unit filename="wxwidgets\wxwidgetsresfactory.h" />
+		<Unit filename="plugin\wxsmithpluginregistrants.cpp">
+			<Option target="wxSmith" />
+		</Unit>
+		<Unit filename="properties\wxsarraystringeditordlg.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsarraystringeditordlg.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsarraystringproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsarraystringproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsboolproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsboolproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxscustomeditorproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxscustomeditorproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsemptyproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsemptyproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsenumproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsenumproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsflagsproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsflagsproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxslongproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxslongproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsproperties.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxspropertycontainer.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxspropertycontainer.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxspropertygridmanager.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxspropertygridmanager.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxspropertystream.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxspropertystream.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsquickpropspanel.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsquickpropspanel.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsstringproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties\wxsstringproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsadvqpp.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsadvqpp.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsadvqppchild.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsadvqppchild.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsautoresourcetreeimage.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsautoresourcetreeimage.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxscoder.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxscoder.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxscodinglang.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxscodinglang.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxseditor.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxseditor.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsextresmanager.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsextresmanager.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsgui.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsgui.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsguifactory.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsguifactory.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsmith.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsmith.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsmithmime.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsmithmime.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsproject.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsproject.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsresource.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsresource.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsresourcefactory.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsresourcefactory.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsresourcetree.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsresourcetree.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsresourcetreeitemdata.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsresourcetreeitemdata.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxssettings.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxssettings.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsstoringsplitterwindow.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsstoringsplitterwindow.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsversionconverter.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxsversionconverter.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsbitmapbutton.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsbitmapbutton.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsboxsizer.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsboxsizer.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsbutton.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsbutton.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxscalendarctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxscalendarctrl.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxscheckbox.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxscheckbox.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxschecklistbox.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxschecklistbox.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxschoice.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxschoice.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxschoicebook.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxschoicebook.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxscombobox.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxscombobox.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxscustomwidget.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxscustomwidget.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsdatepickerctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsdatepickerctrl.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsdialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsdialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsflexgridsizer.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsflexgridsizer.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsframe.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsframe.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsgauge.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsgauge.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsgenericdirctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsgenericdirctrl.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsgridsizer.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsgridsizer.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxshtmlwindow.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxshtmlwindow.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxslistbook.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxslistbook.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxslistbox.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxslistbox.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxslistctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxslistctrl.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsmenu.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsmenu.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsmenubar.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsmenubar.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsmenueditor.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsmenueditor.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsmenuitem.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsmenuitem.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsnotebook.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsnotebook.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxspanel.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxspanel.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsradiobox.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsradiobox.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsradiobutton.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsradiobutton.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsscrollbar.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsscrollbar.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsscrolledwindow.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsscrolledwindow.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsslider.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsslider.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsspacer.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsspacer.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsspinbutton.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsspinbutton.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsspinctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsspinctrl.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxssplitterwindow.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxssplitterwindow.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstaticbitmap.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstaticbitmap.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstaticbox.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstaticbox.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstaticboxsizer.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstaticboxsizer.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstaticline.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstaticline.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstatictext.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstatictext.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstatusbar.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstatusbar.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstddialogbuttonsizer.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstddialogbuttonsizer.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxstextctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxstextctrl.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxstimer.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxstimer.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxstogglebutton.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxstogglebutton.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxstoolbar.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxstoolbar.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxstoolbareditor.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxstoolbareditor.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxstoolbaritem.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxstoolbaritem.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxstreectrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxstreectrl.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsarraystringcheckeditordlg.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsarraystringcheckeditordlg.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsarraystringcheckproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsarraystringcheckproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsbitmapiconeditordlg.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsbitmapiconeditordlg.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsbitmapiconproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsbitmapiconproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxscolourproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxscolourproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsdimensionproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsdimensionproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsfonteditordlg.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsfonteditordlg.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsfontfaceeditordlg.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsfontfaceeditordlg.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsfontproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsfontproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxspositionsizeproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxspositionsizeproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxssimplefonteditordlg.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxssimplefonteditordlg.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxssizerflagsproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxssizerflagsproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsstyleproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\properties\wxsstyleproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvalue.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvalue.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvaluelist.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvaluelist.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsuseritem.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsuseritem.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsuseritemdescription.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsuseritemdescription.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsuseritemeditor.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsuseritemeditor.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsuseritemmanager.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsuseritemmanager.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsuseritemproperties.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\useritems\wxsuseritemproperties.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsbaseproperties.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsbaseproperties.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxscontainer.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxscontainer.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxscorrector.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxscorrector.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsdialogres.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsdialogres.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsdrawingwindow.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsdrawingwindow.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsevents.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsevents.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxseventseditor.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxseventseditor.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsexproperties.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsframeres.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsframeres.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitem.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitem.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemeditor.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemeditor.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemeditorcontent.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemeditorcontent.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemeditordragassist.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemeditordragassist.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemfactory.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemfactory.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsiteminfo.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemres.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemres.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemresdata.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemresdata.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemresdataobject.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemresdataobject.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemrestreedata.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemrestreedata.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemundobuffer.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsitemundobuffer.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsnewwindowdlg.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsnewwindowdlg.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxspanelres.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxspanelres.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsparent.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsparent.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxspredefinedids.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxspredefinedids.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxssizer.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxssizer.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxssizerparentqp.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxssizerparentqp.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsstyle.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsstyle.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxstool.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxstool.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxstoolspace.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxstoolspace.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxswidget.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxswidget.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxwidgetsgui.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxwidgetsgui.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxwidgetsguiappadoptingdlg.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxwidgetsguiappadoptingdlg.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxwidgetsguiconfigpanel.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxwidgetsguiconfigpanel.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxwidgetsres.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxwidgetsres.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxwidgetsresfactory.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxwidgetsresfactory.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<wxsmith version="1">
