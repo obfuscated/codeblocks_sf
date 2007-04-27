@@ -294,9 +294,9 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
         m_MasterPath = Programs + _T("\\Intel\\Compiler\\C++\\9.0");
     }
 #else
-    wxDir icc_dir(_T("/opt/intel/cc"));
-    if (icc_dir.IsOpened())
+    if (wxDirExists(_T("/opt/intel")))
     {
+        wxDir icc_dir(_T("/opt/intel/cc"));
         wxArrayString dirs;
         wxIccDirTraverser IccDirTraverser(dirs);
         icc_dir.Traverse(IccDirTraverser);
@@ -327,9 +327,9 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
 #else
     wxString path;
 
-    wxDir icc_debug_dir(_T("/opt/intel/idb"));
-    if (icc_debug_dir.IsOpened())
+    if (wxDirExists(_T("/opt/intel")))
     {
+        wxDir icc_debug_dir(_T("/opt/intel/idb"));
         wxArrayString debug_dirs;
         wxIccDirTraverser IccDebugDirTraverser(debug_dirs);
         icc_debug_dir.Traverse(IccDebugDirTraverser);
