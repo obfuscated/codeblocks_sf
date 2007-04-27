@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: editsnippetframe.cpp 59 2007-04-22 19:23:46Z Pecan $
+// RCS-ID: $Id: editsnippetframe.cpp 62 2007-04-25 03:29:09Z Pecan $
 
 #include "editsnippetframe.h"
 
@@ -183,13 +183,13 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
     }
 
 	// Load the window's size
-    //	ConfigManager* cfgMan = Manager::Get()->GetConfigManager(_T("codesnippets"));
-    //	SetSize(cfgMan->ReadInt(_T("editdlg_w"), 500), cfgMan->ReadInt(_T("editdlg_h"), 400));
-    wxFileConfig cfgFile(wxEmptyString,     // appname
-                        wxEmptyString,      // vendor
-                        GetConfig()->SettingsSnippetsCfgFullPath,      // local filename
-                        wxEmptyString,      // global file
-                        wxCONFIG_USE_LOCAL_FILE);
+//    wxFileConfig cfgFile(wxEmptyString,     // appname
+//                        wxEmptyString,      // vendor
+//                        GetConfig()->SettingsSnippetsCfgFullPath,      // local filename
+//                        wxEmptyString,      // global file
+//                        wxCONFIG_USE_LOCAL_FILE);
+
+    wxFileConfig& cfgFile = *(GetConfig()->GetCfgFile());
 
     cfgFile.Read( wxT("EditDlgXpos"),       &GetConfig()->nEditDlgXpos,20);
     cfgFile.Read( wxT("EditDlgYpos"),       &GetConfig()->nEditDlgYpos,20);
@@ -225,34 +225,24 @@ void EditSnippetFrame::End_SnippetFrame(int wxID_OKorCANCEL)
 
 	// Save the window's size
 	//ConfigManager* cfgMan = Manager::Get()->GetConfigManager(_T("codesnippets"));
-    wxFileConfig cfgFile(wxEmptyString,     // appname
-                        wxEmptyString,      // vendor
-                        GetConfig()->SettingsSnippetsCfgFullPath,      // local filename
-                        wxEmptyString,      // global file
-                        wxCONFIG_USE_LOCAL_FILE);
+//    wxFileConfig cfgFile(wxEmptyString,     // appname
+//                        wxEmptyString,      // vendor
+//                        GetConfig()->SettingsSnippetsCfgFullPath,      // local filename
+//                        wxEmptyString,      // global file
+//                        wxCONFIG_USE_LOCAL_FILE);
 
-	//if (!IsMaximized())
-	//{
-		//wxSize windowSize = GetSize();
-        //	cfgMan->Write(_T("editdlg_w"), windowSize.GetWidth());
-        //	cfgMan->Write(_T("editdlg_h"), windowSize.GetHeight());
-        int x,y,w,h;
-        GetPosition(&x,&y); GetSize(&w,&h);
-        cfgFile.Write( wxT("EditDlgXpos"),  x );
-        cfgFile.Write( wxT("EditDlgYpos"),  y );
-        cfgFile.Write( wxT("EditDlgWidth"),  w );
-        cfgFile.Write( wxT("EditDlgHeight"), h );
-         LOGIT( _T("EditDlgPositin OUT X[%d]Y[%d]Width[%d]Height[%d]"),x,y,w,h );
+    wxFileConfig& cfgFile = *(GetConfig()->GetCfgFile());
 
-		//  cfgMan->Write(_T("editdlg_maximized"), false);
-        cfgFile.Write( wxT("EditDlgMaximized"),  false );
-	//}
-	//else
-	//{
-	//	//  cfgMan->Write(_T("editdlg_maximized"), true);
-	//	if (GetConfig()->IsPlugin())
-    //       cfgFile.Write( wxT("EditDlgMaximized"),  true );
-	//}
+    int x,y,w,h;
+    GetPosition(&x,&y); GetSize(&w,&h);
+    cfgFile.Write( wxT("EditDlgXpos"),  x );
+    cfgFile.Write( wxT("EditDlgYpos"),  y );
+    cfgFile.Write( wxT("EditDlgWidth"),  w );
+    cfgFile.Write( wxT("EditDlgHeight"), h );
+     LOGIT( _T("EditDlgPositin OUT X[%d]Y[%d]Width[%d]Height[%d]"),x,y,w,h );
+
+    cfgFile.Write( wxT("EditDlgMaximized"),  false );
+    cfgFile.Flush();
 
     // If this was an external file, it's already been saved by FileClose()
     // XML data is in m_pEditSnippetText and will be obtained by the

@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.cpp 60 2007-04-23 00:02:55Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.cpp 68 2007-04-27 21:08:11Z Pecan $
 
 #ifdef WX_PRECOMP //
     #include "wx_pch.h"
@@ -153,9 +153,10 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 	EVT_TREE_END_DRAG(idSnippetsTreeCtrl, CodeSnippetsWindow::OnEndDrag)
 	EVT_TREE_BEGIN_LABEL_EDIT(idSnippetsTreeCtrl, CodeSnippetsWindow::OnBeginLabelEdit)
 	EVT_TREE_END_LABEL_EDIT(idSnippetsTreeCtrl, CodeSnippetsWindow::OnEndLabelEdit)
-	EVT_TREE_ITEM_GETTOOLTIP(idSnippetsTreeCtrl, CodeSnippetsWindow::OnItemGetToolTip)
+	//EVT_TREE_ITEM_GETTOOLTIP(idSnippetsTreeCtrl, CodeSnippetsWindow::OnItemGetToolTip)
 	// ---
-	//-EVT_CLOSE( CodeSnippetsWindow::OnCloseWindow) Doesn't work on wxAUI windows
+	EVT_CLOSE( CodeSnippetsWindow::OnClose)
+	// EVT_CLOSE Doesn't work on wxAUI windows, this is called from a Connect
 
 END_EVENT_TABLE()
 
@@ -174,7 +175,7 @@ CodeSnippetsWindow::CodeSnippetsWindow(wxWindow* parent)
 	InitDlg();
 	m_AppendItemsFromFile = false;
 
-	// Load the settings
+	// Load the conf/ini settings
 	GetConfig()->SettingsLoad();
 
     wxString s(__FUNCTION__, wxConvUTF8);
@@ -191,21 +192,51 @@ CodeSnippetsWindow::~CodeSnippetsWindow()
 	// Save the snippets
 	GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlFullPath);
 
-    GetConfig()->SettingsSave();
+    //-Don't save settings here, status is not reliable when plugin
+    // Save at plugin OnRlease or app OnClose
+    //-GetConfig()->SettingsSave();
 
     if (pTiXmlDoc) { delete pTiXmlDoc; pTiXmlDoc = 0;}
 }
-//// ----------------------------------------------------------------------------
-// EVT_CLOSE does not work with wxAUI windows
-//// ----------------------------------------------------------------------------
-//void CodeSnippetsWindow::OnCloseWindow(wxCloseEvent& event)
-//// ----------------------------------------------------------------------------
-//{
-//    asm("int3");
-//    if (GetConfig()->IsPlugin())
-//        GetConfig()->SettingsSaveWinPosition();
-//    Destroy();
-//}
+// ----------------------------------------------------------------------------
+// EVT_CLOSE is not generated from wxAUI windows wx2.6.3
+// This routine is hooked from it's parent
+// ----------------------------------------------------------------------------
+void CodeSnippetsWindow::OnClose(wxCloseEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // this routine is Connect()ed for wxAUI->OnClose
+    // in codesnippets.cpp CreateSnippetsWindow() routine
+    // and Disconnect() in codesnippets.cpp OnIdle() when the
+    // window is closed.
+
+    if ( not GetConfig()->GetSnippetsWindow() )
+        {event.Skip();return;}
+     LOGIT( _T("OnClose [%p] [%s]"),GetConfig()->m_pEvtCloseConnect,
+            (GetConfig()->IsFloatingWindow())?wxT("Floating"):wxT("Docked"));
+     LOGIT( _T("Onclose Saving Settings"));
+    GetConfig()->SettingsSave();
+    if (GetConfig()->IsPlugin())
+    {
+        if ( GetConfig()->IsFloatingWindow() )
+        {   GetConfig()->SettingsSaveWinPosition();
+            // This connect was made in codesnippets.cpp OnViewSnippets()
+            // in order to catch the system close button
+            // This Disconnect causes a crash on wxMSW even tho I've verified the pointer is ok
+            //-if ( GetConfig()->m_pEvtCloseConnect )
+            //-{    GetConfig()->m_pEvtCloseConnect->Disconnect( wxEVT_CLOSE_WINDOW,
+            //-        (wxObjectEventFunction)(wxEventFunction)
+            //-        (wxCloseEventFunction) &CodeSnippetsWindow::OnClose,NULL,this);
+            //-    GetConfig()->m_pEvtCloseConnect = 0;
+            //-}
+        }//if
+    }//if
+
+    GetConfig()->m_pEvtCloseConnect = 0;
+    Destroy();
+    GetConfig()->pSnippetsWindow=0;
+    event.Skip();
+}
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::InitDlg()
 // ----------------------------------------------------------------------------
@@ -836,6 +867,7 @@ void CodeSnippetsWindow::OnMnuCopyToClipboard(wxCommandEvent& event)
 void CodeSnippetsWindow::OnMnuEditSnippet(wxCommandEvent& WXUNUSED(event))
 // ----------------------------------------------------------------------------
 {
+
     if (not IsSnippet() ) return;
 	if (SnippetItemData* itemData = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(GetAssociatedItemID() )))
 	{
@@ -1092,6 +1124,7 @@ void CodeSnippetsWindow::OnMnuSaveSnippetAsFileLink(wxCommandEvent& event)
 {
     // Open Snippet as file from context menu
     SetActiveMenuId( event.GetId() );
+
     GetSnippetsTreeCtrl()->SaveSnippetAsFileLink( );
 }
 // ----------------------------------------------------------------------------

@@ -24,7 +24,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetsapp.cpp 60 2007-04-23 00:02:55Z Pecan $
+// RCS-ID: $Id: codesnippetsapp.cpp 68 2007-04-27 21:08:11Z Pecan $
 
 #ifdef WX_PRECOMP //
 #include "wx_pch.h"
@@ -51,7 +51,7 @@ IMPLEMENT_APP(CodeSnippetsApp);
 BEGIN_EVENT_TABLE(CodeSnippetsApp, wxApp)
     // ---
     //-EVT_ACTIVATE_APP(        CodeSnippetsApp::OnActivateApp)
-    //-EVT_ACTIVATE(               CodeSnippetsApp::OnActivate)
+    //-EVT_ACTIVATE(            CodeSnippetsApp::OnActivate)
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -59,6 +59,7 @@ bool CodeSnippetsApp::OnInit()
 // ----------------------------------------------------------------------------
 {
     // Initialize the one and only global
+    // Must be done first to allocate config file
     g_pConfig = new CodeSnippetsConfig;
 
 	CodeSnippetsAppFrame* frame = new CodeSnippetsAppFrame(0L, _("CodeSnippets"));
@@ -144,6 +145,8 @@ BEGIN_EVENT_TABLE(CodeSnippetsAppFrame, wxFrame)
     EVT_MENU(idMenuSettingsOptions, CodeSnippetsAppFrame::OnSettings)
     // ---
     EVT_ACTIVATE(                   CodeSnippetsAppFrame::OnActivate)
+    EVT_CLOSE(                      CodeSnippetsAppFrame::OnClose)
+
     // ---
 END_EVENT_TABLE()
 
@@ -214,43 +217,43 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
         LOGIT( _T("DefaultCfgName[%s]"),cfgFilenameStr.c_str() );
     }while(0);
 
-    GetConfig()->SettingsSnippetsCfgFullPath = cfgFilenameStr;
-     LOGIT( _T("SettingsSnippetsCfgFullPath[%s]"),GetConfig()->SettingsSnippetsCfgFullPath.c_str() );
-
     // ---------------------
     // Initialize Globals
     // ---------------------
+    GetConfig()->SettingsSnippetsCfgFullPath = cfgFilenameStr;
+     LOGIT( _T("SettingsSnippetsCfgFullPath[%s]"),GetConfig()->SettingsSnippetsCfgFullPath.c_str() );
     GetConfig()->SettingsLoad();
 
-    // -----------------------------------------
-    // Check for pgm instance already running
-    // -----------------------------------------
-    const wxString name = wxString::Format(wxT("CodeSnippets-%s"), wxGetUserId().c_str());
-    m_checker = new wxSingleInstanceChecker(name);
+    #if defined(__WXMSW__)
+        // -----------------------------------------
+        // Check for pgm instance already running
+        // -----------------------------------------
+        const wxString name = wxString::Format(wxT("CodeSnippets-%s"), wxGetUserId().c_str());
+        m_checker = new wxSingleInstanceChecker(name);
 
-   #if defined(__WXMSW__)
-    if ( m_checker->IsAnotherRunning() )
-    {   // Previous instance is running.
-        // Minimize then restore the first instance so pgm appears on active screen
-        // Get the first instance handle of the window from the config file
-        HWND pFirstInstance;
-        //-cfgFile.Read( wxT("WindowHandle"),  &windowHandle ) ;
-        unsigned long val;
-        if ( GetConfig()->m_sWindowHandle.ToULong( &val, 16) )
-        pFirstInstance = (HWND)val;
-        if (pFirstInstance && ::IsWindow(pFirstInstance) )
-        {
-            //wxMessageBox(wxT("CodeSnippets is already running."), name);
-            SwitchToThisWindow( pFirstInstance, true );
-            //-::ShowWindow(pFirstInstance,SW_FORCEMINIMIZE);  //minimize the window
-            //-::ShowWindow(pFirstInstance,SW_RESTORE);        //restore the window
-            //-::BringWindowToTop(pFirstInstance);
-        }
-        // Tell app class we're terminating
-        GetConfig()->m_sWindowHandle = wxEmptyString;
-        return ;
-    }//fi m_checker
-   #endif
+        if ( m_checker->IsAnotherRunning() )
+        {   // Previous instance is running.
+            // Minimize then restore the first instance so pgm appears on active screen
+            // Get the first instance handle of the window from the config file
+            HWND pFirstInstance;
+            //-cfgFile.Read( wxT("WindowHandle"),  &windowHandle ) ;
+            unsigned long val;
+            if ( GetConfig()->m_sWindowHandle.ToULong( &val, 16) )
+            pFirstInstance = (HWND)val;
+            if (pFirstInstance && ::IsWindow(pFirstInstance) )
+            {
+                //wxMessageBox(wxT("CodeSnippets is already running."), name);
+                SwitchToThisWindow( pFirstInstance, true );
+                //-::ShowWindow(pFirstInstance,SW_FORCEMINIMIZE);  //minimize the window
+                //-::ShowWindow(pFirstInstance,SW_RESTORE);        //restore the window
+                //-::BringWindowToTop(pFirstInstance);
+            }
+            // Tell app class we're terminating
+            GetConfig()->m_sWindowHandle = wxEmptyString;
+            return ;
+        }//fi m_checker
+    #endif //WXMSW
+
     // This is first instance of program
     // write the window handle to the config file for other instance loads
     GetConfig()->m_sWindowHandle = wxString::Format( wxT("%p"),this->GetHandle());
@@ -312,6 +315,7 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
     buildInfo = buildInfo + wxT("\n\n\t")+wxT("Original Code by Arto Jonsson");
     buildInfo = buildInfo + wxT("\n\t")+wxT("Modified/Enhanced by Pecan Heber");
 
+
 }
 
 // ----------------------------------------------------------------------------
@@ -327,6 +331,12 @@ void CodeSnippetsAppFrame::OnClose(wxCloseEvent &event)
      // Don't close down if file checking is active
     if (m_bOnActivateBusy)
         return;
+
+    // EVT_CLOSE is never called for codesnippetswindow because it derives from
+    // wxPanel, not wxWindow, so we'll invoke it here. It saves the files
+    if ( GetConfig()->GetSnippetsWindow() )
+        GetConfig()->GetSnippetsWindow()->OnClose(event);
+
     Destroy();
 }
 
@@ -364,7 +374,7 @@ void CodeSnippetsAppFrame::OnFileLoad(wxCommandEvent& event)
     // Save any previously modified file
     if ( GetFileChanged() )
     {    // Ask users if they want to save the snippet xml file
-        int answer = messageBox( wxT("Save Snippets file?\n")+GetConfig()->SettingsSnippetsXmlFullPath,
+        int answer = messageBox( wxT("Save Snippets file?\n\n")+GetConfig()->SettingsSnippetsXmlFullPath,
                                                 wxT("Open"),wxYES_NO );
         if ( answer == wxYES)
         {
@@ -432,7 +442,7 @@ void CodeSnippetsAppFrame::OnActivate(wxActivateEvent& event)
         if (not GetConfig()->GetSnippetsWindow() )  break;
         if (not GetConfig()->GetSnippetsTreeCtrl() ) break;
 
-            CodeSnippetsWindow* p = GetConfig()->pSnippetsWindow;
+            CodeSnippetsWindow* p = GetConfig()->GetSnippetsWindow();
             if (not p) break;
             p->CheckForExternallyModifiedFiles();
     }while(0);

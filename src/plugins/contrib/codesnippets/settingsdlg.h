@@ -34,9 +34,9 @@ class SettingsDlg : public SettingsDlgForm
         wxPoint pos;
         void OnOk(wxCommandEvent& event);
         void OnExtEditorButton(wxCommandEvent& event);
-        void OnSnippetFileButton(wxCommandEvent& event);
+        void OnSnippetFolderButton(wxCommandEvent& event);
 
-        void     OnSettingsSave(wxCommandEvent& event);
+        //-void     OnSettingsSave(wxCommandEvent& event);
         void     GetFileName(wxString& newFileName);
         wxString AskForPathName();
 
@@ -45,7 +45,6 @@ class SettingsDlg : public SettingsDlgForm
         wxTreeItemId        m_TreeItemId;
         SnippetItemData*    m_pSnippetDataItem;
         wxTreeCtrl*         m_pTreeCtrl;
-
 
     DECLARE_EVENT_TABLE()
 };

@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.h 58 2007-04-22 04:40:57Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.h 62 2007-04-25 03:29:09Z Pecan $
 
 #ifndef CODESNIPPETSWINDOW_H
 #define CODESNIPPETSWINDOW_H
@@ -123,6 +123,7 @@ class CodeSnippetsWindow : public wxPanel
         void OnMnuCopy(wxCommandEvent& event);
         void OnMnuPaste(wxCommandEvent& event);
         void OnMnuFileBackup(wxCommandEvent& event);
+        void OnClose(wxCloseEvent& event);
 
 		DECLARE_EVENT_TABLE()
 };

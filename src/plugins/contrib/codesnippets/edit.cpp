@@ -25,7 +25,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID:      $Id: edit.cpp 58 2007-04-22 04:40:57Z Pecan $
+// RCS-ID:      $Id: edit.cpp 62 2007-04-25 03:29:09Z Pecan $
 
 //----------------------------------------------------------------------------
 // informations
@@ -1422,23 +1422,28 @@ DragScrollEvents::DragScrollEvents(wxWindow *window)
     //MouseRightKeyCtrl       = 0 ;
     MouseContextDelay       = 192;
 
-    wxString CfgFilenameStr = GetConfig()->SettingsSnippetsCfgFullPath;
-    LOGIT(_T("DragScroll Config Filename:[%s]"), CfgFilenameStr.c_str());
-    // read configuaton file
-    wxFileConfig cfgFile(wxEmptyString,     // appname
-                        wxEmptyString,      // vendor
-                        CfgFilenameStr,     // local filename
-                        wxEmptyString,      // global file
-                        wxCONFIG_USE_LOCAL_FILE);
+//    wxString CfgFilenameStr = GetConfig()->SettingsSnippetsCfgFullPath;
+//    LOGIT(_T("DragScroll Config Filename:[%s]"), CfgFilenameStr.c_str());
+//    // read configuaton file
+//    wxFileConfig cfgFile(wxEmptyString,     // appname
+//                        wxEmptyString,      // vendor
+//                        CfgFilenameStr,     // local filename
+//                        wxEmptyString,      // global file
+//                        wxCONFIG_USE_LOCAL_FILE);
+//
+//    cfgFile.Read(_T("MouseDragScrollEnabled"),  &MouseDragScrollEnabled ) ;
+//	cfgFile.Read(_T("MouseEditorFocusEnabled"), &MouseEditorFocusEnabled ) ;
+//	cfgFile.Read(_T("MouseFocusEnabled"),       &MouseFocusEnabled ) ;
+//	cfgFile.Read(_T("MouseDragDirection"),      &MouseDragDirection ) ;
+//	cfgFile.Read(_T("MouseDragKey"),            &MouseDragKey ) ;
+//	cfgFile.Read(_T("MouseDragSensitivity"),    &MouseDragSensitivity ) ;
+//	cfgFile.Read(_T("MouseToLineRatio"),        &MouseToLineRatio ) ;
+//	cfgFile.Read(_T("MouseContextDelay"),       &MouseContextDelay ) ;
+//	//cfgFile.Read(_T("MouseRightKeyCtrl"),       &MouseRightKeyCtrl) ;
 
-    cfgFile.Read(_T("MouseDragScrollEnabled"),  &MouseDragScrollEnabled ) ;
-	cfgFile.Read(_T("MouseEditorFocusEnabled"), &MouseEditorFocusEnabled ) ;
-	cfgFile.Read(_T("MouseFocusEnabled"),       &MouseFocusEnabled ) ;
-	cfgFile.Read(_T("MouseDragDirection"),      &MouseDragDirection ) ;
-	cfgFile.Read(_T("MouseDragKey"),            &MouseDragKey ) ;
-	cfgFile.Read(_T("MouseDragSensitivity"),    &MouseDragSensitivity ) ;
-	cfgFile.Read(_T("MouseToLineRatio"),        &MouseToLineRatio ) ;
-	//cfgFile.Read(_T("MouseRightKeyCtrl"),       &MouseRightKeyCtrl) ;
+	MouseDragSensitivity = GetConfig()->MouseDragSensitivity ;
+	MouseToLineRatio     = GetConfig()->MouseToLineRatio;
+	MouseContextDelay    = GetConfig()->MouseContextDelay;
 
     #ifdef LOGGING
         LOGIT(_T("MouseDragScrollEnabled:%d"),  MouseDragScrollEnabled ) ;
@@ -1448,6 +1453,7 @@ DragScrollEvents::DragScrollEvents(wxWindow *window)
         LOGIT(_T("MouseDragKey:%d"),            MouseDragKey ) ;
         LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity ) ;
         LOGIT(_T("MouseToLineRatio:%d"),        MouseToLineRatio ) ;
+        LOGIT(_T("MouseContextDelay:%d"),       MouseContextDelay ) ;
         //LOGIT(_T("MouseRightKeyCtrl:%d"),       MouseRightKeyCtrl ) ;
     #endif //LOGGING
 

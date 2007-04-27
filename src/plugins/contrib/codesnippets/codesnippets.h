@@ -24,6 +24,7 @@
 
 #include "cbplugin.h" // for "class cbPlugin"
 //#include "wxaui/manager.h"
+#include "snippetsconfig.h"
 
 class CodeSnippetsWindow;
 
@@ -131,9 +132,8 @@ class CodeSnippets : public cbPlugin
 		void OnRelease(bool appShutDown);
 
 		// ---
-		CodeSnippetsWindow* m_pSnippetsWindow;
 		void SetSnippetsWindow(CodeSnippetsWindow* p);
-		CodeSnippetsWindow*  GetSnippetsWindow(){return m_pSnippetsWindow;}
+		CodeSnippetsWindow*  GetSnippetsWindow(){return GetConfig()->GetSnippetsWindow();}
         void OnTreeCtrlEvent(wxTreeEvent& event);
 
 	private:
@@ -145,7 +145,8 @@ class CodeSnippets : public cbPlugin
         wxArrayString* TextToFilenames(const wxString& string);
         bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files);
         wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
-
+        int LaunchProcess(const wxString& cmd, const wxString& cwd);
+        long LaunchExternalSnippets();
 
         #if defined(__WXMSW__)
             void MSW_MouseMove(int x, int y );
@@ -165,6 +166,7 @@ class CodeSnippets : public cbPlugin
         wxTreeItemId    m_TreeItemId;
         wxString        m_TreeText;
         int             m_nOnActivateBusy;
+        long            m_Pid;
 
 		DECLARE_EVENT_TABLE();
 

@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.h 58 2007-04-22 04:40:57Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.h 68 2007-04-27 21:08:11Z Pecan $
 
 #ifndef CODESNIPPETSTREECTRL_H
 #define CODESNIPPETSTREECTRL_H
@@ -66,6 +66,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         wxDateTime  GetSavedFileModificationTime(){ return m_LastXmlModifiedTime;}
         wxTreeItemId ConvertSnippetToCategory(wxTreeItemId itemId);
         void        OnItemSelected(wxTreeEvent& event);
+        void        OnItemRightSelected(wxTreeEvent& event);
         void        OnItemSelectChanging(wxTreeEvent& event);
 
         void        EditSnippetAsFileLink();
@@ -111,14 +112,14 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
 
         bool IsSnippet(wxTreeItemId treeItemId = (void*)0)
             {   wxTreeItemId itemId = treeItemId;
-                if (not itemId.IsOk()) itemId = GetSelection();
+                if (itemId == (void*)0) itemId = GetSelection();
                 if (not itemId.IsOk()) return false;
                 SnippetItemData* pItem = (SnippetItemData*)(GetItemData(itemId));
                 return pItem->IsSnippet();
             }
         bool IsFileSnippet (wxTreeItemId treeItemId = (void*)0 )
             {   wxTreeItemId itemId = treeItemId;
-                if (not itemId.IsOk()) itemId = GetSelection();
+                if ( itemId == (void*)0) itemId = GetSelection();
                 if (not itemId.IsOk()) return false;
                 if (not IsSnippet(itemId) ) return false;
                 if ( not ::wxFileExists( GetSnippet(itemId))) return false;

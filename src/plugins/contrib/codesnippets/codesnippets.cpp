@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 60 2007-04-23 00:02:55Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 68 2007-04-27 21:08:11Z Pecan $
 
 #include "sdk.h"
 #ifndef CB_PRECOMB
@@ -31,15 +31,19 @@
 	#include "sdk_events.h"
 	#include <wx/stdpaths.h>
 #endif
+
 #include <wx/dnd.h>
 
 #include "version.h"
 #include "codesnippets.h"
 #include "codesnippetswindow.h"
 #include "snippetsconfig.h"
+#include "messagebox.h"
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
+
 #if defined(__WXGTK__)
     #include "wx/gtk/win_gtk.h"
+    #include <gdk/gdkx.h>
 #endif
 
 // Register the plugin
@@ -76,19 +80,21 @@ void CodeSnippets::OnAttach()
 // ----------------------------------------------------------------------------
 {
     // Initialize one and only Global class
+    // Must be done first to allocate config file
     g_pConfig = new CodeSnippetsConfig;
 
     // initialize version and logging
     m_pAppWin = Manager::Get()->GetAppWindow();
     GetConfig()->AppName = wxT("codesnippets");
+    GetConfig()->pMainFrame  = Manager::Get()->GetAppWindow() ;
 
     AppVersion pgmVersion;
 
     #if LOGGING
-     m_pLog = new wxLogWindow( m_pAppWin, _T(" CodeSnippets Log"),true,false);
+     m_pLog = new wxLogWindow( m_pAppWin, _T(" CodeSnippets Plugin"),true,false);
      wxLog::SetActiveTarget( m_pLog);
      m_pLog->Flush();
-     m_pLog->GetFrame()->SetSize(20,20,600,300);
+     m_pLog->GetFrame()->SetSize(20,30,600,300);
      LOGIT( _T("CodeSnippets Plugin Logging Started[%s]"),pgmVersion.GetVersion().c_str());
     #endif
 
@@ -101,45 +107,34 @@ void CodeSnippets::OnAttach()
     // ---------------------------------------
     wxStandardPaths stdPaths;
     //memorize the key file name as {%HOME%}\codesnippets.ini
-    wxString m_ConfigFolder = stdPaths.GetUserDataDir();
+    GetConfig()->m_ConfigFolder = stdPaths.GetUserDataDir();
     //-wxString m_ExecuteFolder = stdPaths.GetDataDir();
-    wxString m_ExecuteFolder = FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString);
+    GetConfig()->m_ExecuteFolder = FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString);
 
     //GTK GetConfigFolder is returning double "//?, eg, "/home/pecan//.codeblocks"
     // remove the double //s from filename //+v0.4.11
-    m_ConfigFolder.Replace(_T("//"),_T("/"));
-    m_ExecuteFolder.Replace(_T("//"),_T("/"));
-    LOGIT(wxT("CfgFolder[%s]"),m_ConfigFolder.c_str());
-    LOGIT(wxT("ExecFolder[%s]"),m_ExecuteFolder.c_str());
+    GetConfig()->m_ConfigFolder.Replace(_T("//"),_T("/"));
+    GetConfig()->m_ExecuteFolder.Replace(_T("//"),_T("/"));
+    LOGIT(wxT("CfgFolder[%s]"),GetConfig()->m_ConfigFolder.c_str());
+    LOGIT(wxT("ExecFolder[%s]"),GetConfig()->m_ExecuteFolder.c_str());
 
     // if codesnippets.ini is in the executable folder, use it
     // else use the default config folder
     wxString
-      m_CfgFilenameStr = m_ExecuteFolder + wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
+      m_CfgFilenameStr = GetConfig()->m_ExecuteFolder + wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
     if (::wxFileExists(m_CfgFilenameStr)) {;/*OK Use exe path*/}
     else //use the default.conf folder
-    {   m_CfgFilenameStr = m_ConfigFolder + wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
+    {   m_CfgFilenameStr = GetConfig()->m_ConfigFolder + wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
         // if default doesn't exist, create it
-        if (not ::wxDirExists(m_ConfigFolder))
-            ::wxMkdir(m_ConfigFolder);
+        if (not ::wxDirExists(GetConfig()->m_ConfigFolder))
+            ::wxMkdir(GetConfig()->m_ConfigFolder);
     }
-    GetConfig()->SettingsSnippetsCfgFullPath = m_CfgFilenameStr;
-     LOGIT( _T("SettingsSnippetsCfgFullPath[%s]"),GetConfig()->SettingsSnippetsCfgFullPath.c_str() );
-
     // ---------------------------------------
     // Initialize Globals
     // ---------------------------------------
+    GetConfig()->SettingsSnippetsCfgFullPath = m_CfgFilenameStr;
+     LOGIT( _T("SettingsSnippetsCfgFullPath[%s]"),GetConfig()->SettingsSnippetsCfgFullPath.c_str() );
     GetConfig()->SettingsLoad();
-
-    // ---------------------------------------
-    // load tree icons/images
-    // ---------------------------------------
-    GetConfig()->pSnipImages = new SnipImages();
-
-    // ---------------------------------------
-    // setup snippet tree docking window
-    // ---------------------------------------
-    CreateSnippetWindow();
 
     // Set Drop targets so we can drag items in/out of the Project/Files Tree ctrls
     // memorize manager of Open files tree
@@ -153,6 +148,17 @@ void CodeSnippets::OnAttach()
     SetTreeCtrlHandler( m_pEdMan->GetTree(),  wxEVT_COMMAND_TREE_BEGIN_DRAG );
 
     m_nOnActivateBusy = 0;
+    m_Pid = 0;
+
+    // ---------------------------------------
+    // load tree icons/images
+    // ---------------------------------------
+    GetConfig()->pSnipImages = new SnipImages();
+
+    // ---------------------------------------
+    // setup snippet tree docking window
+    // ---------------------------------------
+    CreateSnippetWindow();
 
 }//OnAttach
 
@@ -160,6 +166,13 @@ void CodeSnippets::OnAttach()
 void CodeSnippets::OnRelease(bool appShutDown)
 // ----------------------------------------------------------------------------
 {
+    // watch out, CodeBlocks can enter this routine multiple times
+
+    // Kill External Snippets if we started it.
+    int result = 0;
+    if ( m_Pid ) result = wxKill(m_Pid);
+    if (0==result) m_Pid = 0;
+
     if (not GetSnippetsWindow()) return;
 
     // Don't close down if file checking is active
@@ -167,12 +180,19 @@ void CodeSnippets::OnRelease(bool appShutDown)
     {   wxMilliSleep(10) ; wxYield();
     }
 
-	CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
-	evt.pWindow = GetSnippetsWindow();
-	Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+//     LOGIT( _T("OnRelease Saving Settings"));
+//    GetConfig()->SettingsSave();
 
-	GetSnippetsWindow()->Destroy();
-	SetSnippetsWindow(0);
+    // If floating window, we have to close it or CB crashes
+    if ( GetConfig()->IsFloatingWindow() )
+    {
+        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+        evt.pWindow = GetSnippetsWindow();
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+        GetSnippetsWindow()->Destroy();
+        SetSnippetsWindow(0);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -204,10 +224,17 @@ void CodeSnippets::BuildMenu(wxMenuBar* menuBar)
 void CodeSnippets::CreateSnippetWindow()
 // ----------------------------------------------------------------------------
 {
+    // Launch the executable if user specified "External" WindowState
+    // GetConfig()->m_Pid will contain the resulting Pid if successful
+   	if ( GetConfig()->GetSettingsWindowState().Contains(wxT("External")) )
+    {
+        /*bool result =*/ LaunchExternalSnippets();
+        return;
+    }
+
     // ---------------------------------------
     // setup snippet tree docking window
     // ---------------------------------------
-    GetConfig()->pMainFrame  = Manager::Get()->GetAppWindow() ;
 	SetSnippetsWindow( new CodeSnippetsWindow(GetConfig()->pMainFrame));
 
     // Floating windows must be set by their parent
@@ -221,86 +248,185 @@ void CodeSnippets::CreateSnippetWindow()
 	evt.name = _T("CodeSnippetsPane");
 	evt.title = _(" CodeSnippets");
 	evt.pWindow = GetSnippetsWindow();
-	evt.dockSide = CodeBlocksDockEvent::dsFloating;
-	// A bug in wxAUI interferes with the main menu when floating windows
-	#if defined(__WXGTK__)
-	  evt.dockSide = CodeBlocksDockEvent::dsBottom;
-    #endif
 	evt.desiredSize.Set(300, 400);
 	evt.floatingSize.Set(300, 400);
-	evt.minimumSize.Set(1, 1);
+	evt.minimumSize.Set( 30, 40 );
+	// assume floating window
+    evt.dockSide = CodeBlocksDockEvent::dsFloating;
+////    #if defined(__WXMSW__)
+////        evt.stretch = false; //must be false for Floating window (MSW)
+////    #else
+        evt.stretch = true; //must be true for Floating window (GTK)
+////    #endif
+
+	if ( GetConfig()->GetSettingsWindowState().Contains(wxT("Docked")) )
+	{
+        evt.dockSide = CodeBlocksDockEvent::dsLeft;
+        evt.stretch = true;
+	}
+
+     //LOGIT( _T("CreateSnippetWindow[%s]"), GetConfig()->GetSettingsWindowState().c_str() );
 	Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
-   #if defined(BUILDING_PLUGIN)
-        #if !defined(__WXGTK__)
-            // Set floating window to last position and size (except linux with buggy wxAUI)
-            GetSnippetsWindow()->GetParent()->SetSize(GetConfig()->windowXpos, GetConfig()->windowYpos,
-                    GetConfig()->windowWidth, GetConfig()->windowHeight);
-        #endif
-        //    LOGIT( _T("[%s]X[%d]Y[%d]Width[%d]Height[%d]"),
-        //            GetSnippetsWindow()->GetParent()->GetName().c_str(),
-        //            GetConfig()->windowXpos, GetConfig()->windowYpos,
-        //            GetConfig()->windowWidth, GetConfig()->windowHeight);
-        //GetSnippetsWindow()->GetParent()->SetSize(20,20,300,400);
-        wxWindow* p = GetSnippetsWindow()->GetParent();
-        int x,y,w,h;
-        p->GetPosition(&x,&y); p->GetSize(&w,&h);
-        //LOGIT(  _T("WinPostCreate[%s]X[%d]Y[%d]Width[%d]Height[%d]"), p->GetName().c_str(),x,y,w,h);
-        //
-        // Set pgm icon again, but from converted images (NB: doesn't work on wxAUI windows)
-        //if (GetConfig()->IsFloatingWindow())
-        //{   asm("int3");
-        //    while (p->GetParent()) p = p->GetParent();
-        //    ((wxTopLevelWindow*)p)->SetIcon( GetConfig()->GetSnippetsTreeCtrl()->GetImageList()->GetIcon(TREE_IMAGE_ALL_SNIPPETS) );
-        //}
 
-   #endif
+    #if defined(__WXMSW__)
+    // Linux never creates an initial floating window. So skip this.
+        // Set floating window to last position and size (except linux with buggy wxAUI)
+        //if ( evt.dockSide==CodeBlocksDockEvent::dsFloating)
+        if ( GetConfig()->IsFloatingWindow())
+        {
+            GetSnippetsWindow()->GetParent()->SetSize(GetConfig()->windowXpos, GetConfig()->windowYpos,
+                GetConfig()->windowWidth, GetConfig()->windowHeight);
+            // connect to the wxAUI EVT_CLOSE event
+            if ( not GetConfig()->m_pEvtCloseConnect )
+            {   GetSnippetsWindow()->GetParent()->Connect( wxEVT_CLOSE_WINDOW,
+                        (wxObjectEventFunction)(wxEventFunction)
+                        (wxCloseEventFunction) &CodeSnippetsWindow::OnClose,NULL,this);
+                GetConfig()->m_pEvtCloseConnect = GetSnippetsWindow()->GetParent();
+            }
+        }
+    #endif
+
+    //    LOGIT( _T("[%s]X[%d]Y[%d]Width[%d]Height[%d]"),
+    //            GetSnippetsWindow()->GetParent()->GetName().c_str(),
+    //            GetConfig()->windowXpos, GetConfig()->windowYpos,
+    //            GetConfig()->windowWidth, GetConfig()->windowHeight);
+    //GetSnippetsWindow()->GetParent()->SetSize(20,20,300,400);
+    //wxWindow* p = GetSnippetsWindow()->GetParent();
+    //int x,y,w,h;
+    //p->GetPosition(&x,&y); p->GetSize(&w,&h);
+    //LOGIT(  _T("WinPostCreate[%s]X[%d]Y[%d]Width[%d]Height[%d]"), p->GetName().c_str(),x,y,w,h);
+    //
+    // Set pgm icon again, but from converted images (NB: doesn't work on wxAUI windows)
+    //if (GetConfig()->IsFloatingWindow())
+    //{   asm("int3");
+    //    while (p->GetParent()) p = p->GetParent();
+    //    ((wxTopLevelWindow*)p)->SetIcon( GetConfig()->GetSnippetsTreeCtrl()->GetImageList()->GetIcon(TREE_IMAGE_ALL_SNIPPETS) );
+    //}
+
 
 }
 // ----------------------------------------------------------------------------
 void CodeSnippets::SetSnippetsWindow(CodeSnippetsWindow* p)
 // ----------------------------------------------------------------------------
 {
-    m_pSnippetsWindow = p;
     GetConfig()->pSnippetsWindow = p;
 }
 // ----------------------------------------------------------------------------
 void CodeSnippets::OnViewSnippets(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
-    if (not GetSnippetsWindow())
-    {   // Snippets Window is closed, initialize and open it.
+        // ---------------------------------------
+        // Check for snippet independent window
+        // ---------------------------------------
+    if ( GetConfig()->GetSettingsWindowState().Contains(wxT("External")) )
+    {
+         LOGIT( _T("OnView External m_Pid[%lu] Checked[%d]"), m_Pid, event.IsChecked() );
+        if ( (not m_Pid) && event.IsChecked() )
+        {    CreateSnippetWindow();
+            LOGIT( _T("m_Pid[%lu]"), m_Pid );
+            return;
+        }
+        if ( m_Pid && (not event.IsChecked()) )
+        {   // user closing external snippets with View/Snippets menu item
+            // FIXME: if we kill the pgm, it never saves its data
+            //::wxKill(m_Pid);
+            //m_Pid = 0;
+            // LOGIT( _T("m_Pid[%lu]"), m_Pid );
+            return;
+        }
+    }
+    else if ( m_Pid )
+    {   // user changed from Independent window to someting else ;
+        // FIXME: if we kill, pgm never saves its data
+////        ::wxKill(m_Pid);
+////        m_Pid = 0;
+    }
         // ---------------------------------------
         // setup snippet tree docking window
         // ---------------------------------------
+
+     if (not GetSnippetsWindow())
+    {   // Snippets Window is closed, initialize and open it.
         CreateSnippetWindow();
     }
-    // remember last window position
+
+    LOGIT( _T("OnView Floating[%d] Checked[%d] IsShown[%d]"),
+            GetConfig()->IsFloatingWindow(),
+            event.IsChecked(),
+            IsWindowReallyShown(GetSnippetsWindow())
+            );
+
+    // hiding window remember last window position
     if ( IsWindowReallyShown(GetSnippetsWindow()) ) do
-    {   if (not event.IsChecked())
+    {   if (not event.IsChecked()) //hiding window
         {   //wxAUI is so lousy, we have to check that it's *not* giving us
             // the position and size of CodeBlocks.
-            wxWindow* pw = GetConfig()->GetSnippetsWindow()->GetParent();
-            if (pw && (pw == GetConfig()->GetMainFrame()) ) break;
-            GetConfig()->SettingsSaveWinPosition();
+            if ( GetConfig()->IsFloatingWindow() )
+            {
+                GetConfig()->SettingsSaveWinPosition();
+                if ( GetConfig()->m_pEvtCloseConnect )
+                    GetSnippetsWindow()->GetParent()->Disconnect( wxEVT_CLOSE_WINDOW,
+                        (wxObjectEventFunction)(wxEventFunction)
+                        (wxCloseEventFunction) &CodeSnippetsWindow::OnClose,NULL,this);
+                GetConfig()->m_pEvtCloseConnect = 0;
+            }
+
+            LOGIT( _T("OnViewSnippets Saving Settings on HideWindow"));
+            GetConfig()->SettingsSave();
         }
     }while(0);
 
 	CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
 	evt.pWindow = GetSnippetsWindow();
 	Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
+    // connect to the wxAUI EVT_CLOSE event
+    if ( event.IsChecked() && GetConfig()->IsFloatingWindow()  )
+    {   if( not GetConfig()->m_pEvtCloseConnect )
+        {   GetSnippetsWindow()->GetParent()->Connect( wxEVT_CLOSE_WINDOW,
+                (wxObjectEventFunction)(wxEventFunction)
+                (wxCloseEventFunction) &CodeSnippetsWindow::OnClose,NULL,this);
+            GetConfig()->m_pEvtCloseConnect = GetSnippetsWindow()->GetParent();
+        }
+    }//if
 }
 
 // ----------------------------------------------------------------------------
 void CodeSnippets::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
-    if (not GetSnippetsWindow())
-    {   Manager::Get()->GetAppWindow()->GetMenuBar()->Check(idViewSnippets, false);
+
+    wxMenuBar* pbar = Manager::Get()->GetAppWindow()->GetMenuBar();
+
+    // check for externally started CodeSnippets
+    if (not GetSnippetsWindow() && (not m_Pid) )
+    {   pbar->Check(idViewSnippets, false);
          return;
     }
+    // check if external CodeSnippets terminated without us
+    if ( (not GetSnippetsWindow()) && m_Pid )
+    {
+        if (not wxProcess::Exists(m_Pid))
+            m_Pid = 0;
+        pbar->Check(idViewSnippets, m_Pid);
+        return;
+    }
+
+    // Floating or Docked snippets window
 	// Check if the Code Snippets window is visible, if it's not, uncheck the menu item
-	Manager::Get()->GetAppWindow()->GetMenuBar()->Check(idViewSnippets, IsWindowReallyShown(GetSnippetsWindow()));
+	if (GetSnippetsWindow() )
+    {    pbar->Check(idViewSnippets, IsWindowReallyShown(GetSnippetsWindow()));
+        return;
+    }
+
+    // check for independent window running
+    if (m_Pid)
+    {
+        pbar->Check(idViewSnippets, m_Pid!=0);
+
+    }
+
 }
 // ----------------------------------------------------------------------------
 void CodeSnippets::OnIdle(wxIdleEvent& event)
@@ -309,6 +435,12 @@ void CodeSnippets::OnIdle(wxIdleEvent& event)
     // Because the current wxAUI is such a lousy interface, we have to poll
     // our docked window to see if it has closed. There are no events
     // that tell us if the user closed the docked or floating window.
+
+    // Unfortunately wxAUI crashes when we close a docked window
+    // When user closes docked window with system [x] button, wxAUI crashes
+    // This seems to have been fixed in wx2.8.3
+    ////    if ( GetConfig()->IsDockedWindow() )
+    ////         { event.Skip(); return; }
 
     // Don't close down if file checking is active
     if (m_nOnActivateBusy) { event.Skip();return; }
@@ -319,10 +451,22 @@ void CodeSnippets::OnIdle(wxIdleEvent& event)
 
     bool bOpen = IsWindowReallyShown(GetSnippetsWindow());
     if ( (not bOpen) && GetSnippetsWindow())
-    {   //Docked window is closed. Release our resources
+    {   //Docked/Floating window is closed. Release our resources
+        if ( GetConfig()->m_pEvtCloseConnect
+                && GetConfig()->IsFloatingWindow())
+        {    GetConfig()->m_pEvtCloseConnect->Disconnect( wxEVT_CLOSE_WINDOW,
+                (wxObjectEventFunction)(wxEventFunction)
+                (wxCloseEventFunction) &CodeSnippetsWindow::OnClose,NULL,this);
+        }
+        // dragging a floating to a docked orphans the Connect(EVT_CLOSE)
+        // because wxAUI fails to tell us what the user is doing
+        // but the Connect()ed window has been Destroyed() by wxAUI anyway.
+        GetConfig()->m_pEvtCloseConnect = 0;
+
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = GetSnippetsWindow();
         Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+
         GetSnippetsWindow()->Destroy();
         SetSnippetsWindow(0);
         LOGIT( _T("OnIdle:SnippetsWindow [%s]"), bOpen?wxT("Open"):wxT("Closed") );
@@ -348,7 +492,7 @@ void CodeSnippets::OnActivate(wxActivateEvent& event)
         if (not GetConfig()->GetSnippetsWindow() )   break;
         if (not GetConfig()->GetSnippetsTreeCtrl() ) break;
 
-        CodeSnippetsWindow* p = GetConfig()->pSnippetsWindow;
+        CodeSnippetsWindow* p = GetConfig()->GetSnippetsWindow();
         p->CheckForExternallyModifiedFiles();
 
     }while(0);
@@ -1003,4 +1147,103 @@ wxString CodeSnippets::FindAppPath(const wxString& argv0, const wxString& cwd, c
     // Failed
     return wxEmptyString;
 }
+// ----------------------------------------------------------------------------
+int CodeSnippets::LaunchProcess(const wxString& cmd, const wxString& cwd)
+// ----------------------------------------------------------------------------
+{
 
+    #if defined(__WXMSW__)
+        // Append DLL folder to MSW path
+        wxString mswPath;
+        wxGetEnv(wxT("PATH"),&mswPath);
+        mswPath = mswPath + wxT(";") + GetConfig()->m_ExecuteFolder;
+        wxSetEnv(_T("PATH"), mswPath);
+        wxGetEnv(wxT("PATH"),&mswPath);
+         LOGIT( _T("Path set to[%s]"), mswPath.c_str() );
+    #endif
+
+    #ifndef __WXMSW__
+        // setup dynamic linker path
+    #if defined(__APPLE__) && defined(__MACH__)
+        wxSetEnv(_T("DYLD_LIBRARY_PATH"), _T(".:$DYLD_LIBRARY_PATH"));
+    #else
+        wxSetEnv(_T("LD_LIBRARY_PATH"), _T(".:$LD_LIBRARY_PATH"));
+    #endif // __APPLE__ && __MACH__
+    #endif
+
+    // start codesnippets
+    //Manager::Get()->GetMessageManager()->AppendLog(m_PageIndex, _("Starting program: "));
+    Manager::Get()->GetMessageManager()->Log(0, _("Starting program:")+cmd);
+    m_Pid = wxExecute(cmd, wxEXEC_ASYNC);
+     LOGIT( _T("Launch [%s\n] from [%s]\n] Pid[%lu]"), cmd.c_str(), cwd.c_str(), m_Pid );
+
+    #ifdef __WXMAC__
+        if (m_Pid == -1)
+        {
+            // Great! We got a fake PID. Time to Go Fish with our "ps" rod:
+
+            m_Pid = 0;
+            pid_t mypid = getpid();
+            wxString mypidStr;
+            mypidStr << mypid;
+
+            long pspid = 0;
+            wxString psCmd;
+            wxArrayString psOutput;
+            wxArrayString psErrors;
+
+            psCmd << wxT("/bin/ps -o ppid,pid,command");
+            DebugLog(wxString::Format( _("Executing: %s"), psCmd.c_str()) );
+            int result = wxExecute(psCmd, psOutput, psErrors, wxEXEC_SYNC);
+
+            mypidStr << wxT(" ");
+
+            for (int i = 0; i < psOutput.GetCount(); ++i)
+            { //  PPID   PID COMMAND
+               wxString psLine = psOutput.Item(i);
+               if (psLine.StartsWith(mypidStr) && psLine.Contains(wxT("codesnippets")))
+               {
+                   wxString pidStr = psLine.Mid(mypidStr.Length());
+                   pidStr = pidStr.BeforeFirst(' ');
+                   if (pidStr.ToLong(&pspid))
+                   {
+                       m_Pid = pspid;
+                       break;
+                   }
+               }
+             }
+
+            for (int i = 0; i < psErrors.GetCount(); ++i)
+                DebugLog(wxString::Format( _("PS Error:%s"), psErrors.Item(i).c_str()) );
+        }//if(m_Pid == -1)
+    #endif
+
+    if (!m_Pid)
+    {
+        //Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("failed"));
+        Manager::Get()->GetMessageManager()->Log(0, _("failed"));
+        return -1;
+    }
+    //Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("done"));
+    Manager::Get()->GetMessageManager()->Log(0, _("done"));
+    return 0;
+}
+// ----------------------------------------------------------------------------
+long CodeSnippets::LaunchExternalSnippets()
+// ----------------------------------------------------------------------------
+{
+   // Launch the executable if user specified "External" WindowState
+   // Save the Pid in a tempfile so plugin can monitor its existance
+
+        wxString PgmFullPath = GetConfig()->m_ExecuteFolder+wxFILE_SEP_PATH
+                    + wxT("/share/codeblocks/plugins/codesnippets");
+    bool result = LaunchProcess(PgmFullPath, wxGetCwd());
+     LOGIT( _T("Launch Result[%d] m_Pid[%lu]"),result, m_Pid );
+    if ( 0 != result )
+    {  wxString msg(wxString::Format(wxT("Error [%d] Launching\n %s\n"),result, PgmFullPath.c_str()));
+       messageBox( msg );
+    }
+
+    return result;
+}
+// ----------------------------------------------------------------------------

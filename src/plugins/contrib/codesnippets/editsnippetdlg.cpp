@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: editsnippetdlg.cpp 43 2007-04-11 19:25:25Z Pecan $
+// RCS-ID: $Id: editsnippetdlg.cpp 62 2007-04-25 03:29:09Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -39,17 +39,24 @@
 
 
 #include "codesnippetswindow.h"
-#include "editsnippetdlg.h"
 #include "snippetsconfig.h"
 #include "edit.h"
 #include "version.h"
 
-//-BEGIN_EVENT_TABLE(EditSnippetDlg, wxDialog)
 BEGIN_EVENT_TABLE(EditSnippetDlg, wxFrame)
-	EVT_BUTTON(wxID_OK,     EditSnippetDlg::OnOK)
-	EVT_BUTTON(wxID_CANCEL, EditSnippetDlg::OnCancel)
-	EVT_BUTTON(wxID_HELP,   EditSnippetDlg::OnHelp)
-	EVT_CLOSE(              EditSnippetDlg::OnCloseWindow)
+////	//EVT_BUTTON(wxID_OK,     EditSnippetDlg::OnOK)
+////	//EVT_BUTTON(wxID_CANCEL, EditSnippetDlg::OnCancel)
+////	//EVT_BUTTON(wxID_HELP,   EditSnippetDlg::OnHelp)
+////	//EVT_CLOSE(              EditSnippetDlg::OnCloseWindow)
+////    //-- Edit Keys --
+////    EVT_CHAR( EditSnippetDlg::OnCharEvent)
+////    EVT_MENU (wxID_CUT,              EditSnippetDlg::OnEditEvent)
+////    EVT_MENU (wxID_COPY,             EditSnippetDlg::OnEditEvent)
+////    EVT_MENU (wxID_PASTE,            EditSnippetDlg::OnEditEvent)
+////    EVT_MENU (wxID_SELECTALL,        EditSnippetDlg::OnEditEvent)
+////    EVT_MENU (myID_SELECTLINE,       EditSnippetDlg::OnEditEvent)
+////    EVT_MENU (wxID_REDO,             EditSnippetDlg::OnEditEvent)
+////    EVT_MENU (wxID_UNDO,             EditSnippetDlg::OnEditEvent)
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -83,10 +90,6 @@ bool EditSnippetDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& dat
 EditSnippetDlg::EditSnippetDlg(const wxString& snippetName, const wxString& snippetText,
                             wxSemaphore* pWaitSem, int* retcode, wxString fileName)
 // ----------------------------------------------------------------------------
-	//-: wxDialog(Manager::Get()->GetAppWindow(), wxID_ANY, _("Edit snippet"),
-	//: wxDialog( GetConfig()->pMainFrame, wxID_ANY, _T("Edit snippet"),
-//	: wxDialog( GetConfig()->GetSnippetsWindow(), wxID_ANY, _T("Edit snippet"),
-//		wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER)
 	: wxFrame( GetConfig()->GetSnippetsWindow(), wxID_ANY, _T("Edit snippet"),
 		wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER)
 {
@@ -98,7 +101,6 @@ EditSnippetDlg::EditSnippetDlg(const wxString& snippetName, const wxString& snip
 	InitDlg();
 
 	m_SnippetNameCtrl->SetValue(snippetName);
-	//m_SnippetTextCtrl->SetValue(snippetText);
 	m_SnippetEditCtrl->SetText(snippetText);
 
 	if (not fileName.IsEmpty())
@@ -124,18 +126,39 @@ EditSnippetDlg::EditSnippetDlg(const wxString& snippetName, const wxString& snip
         GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight );
     SetSize(GetConfig()->nEditDlgXpos, GetConfig()->nEditDlgYpos, GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight);
 
-//	if (( GetConfig()->IsPlugin()) && (GetConfig()->bEditDlgMaximized) )
-//		Maximize(true);
-
 	SetDropTarget(new EditSnippetDropTarget(this));
 	m_SnippetEditCtrl->SetFocus();
+
 }
 
 // ----------------------------------------------------------------------------
 EditSnippetDlg::~EditSnippetDlg()
 // ----------------------------------------------------------------------------
 {
+    // Do not delete the edit control. The calling wrapper will do it.
 }
+// ----------------------------------------------------------------------------
+// edit events
+// ----------------------------------------------------------------------------
+void EditSnippetDlg::OnCharEvent (wxKeyEvent& event)
+// ----------------------------------------------------------------------------
+{
+     LOGIT( _T("EditSnippetDlg OnEditEvent") );
+    if ( not event.ControlDown() ) {event.Skip(); return;}
+    if ( event.ShiftDown() ) {event.Skip(); return;}
+
+    wxCommandEvent ev;
+    switch (event.GetKeyCode() )
+    {
+        case 'A':
+        case 'a':
+            ev.SetId(wxID_SELECTALL); break;
+        default: event.Skip(); return;
+    }
+    if (m_SnippetEditCtrl) m_SnippetEditCtrl->ProcessEvent (ev);
+
+}
+
 // ----------------------------------------------------------------------------
 void EditSnippetDlg::EndSnippetDlg(int wxID_OKorCANCEL)
 // ----------------------------------------------------------------------------
@@ -166,13 +189,6 @@ void EditSnippetDlg::EndSnippetDlg(int wxID_OKorCANCEL)
 
 		//  cfgMan->Write(_T("editdlg_maximized"), false);
         cfgFile.Write( wxT("EditDlgMaximized"),  false );
-	//}
-	//else
-	//{
-	//	//  cfgMan->Write(_T("editdlg_maximized"), true);
-	//	if (GetConfig()->IsPlugin())
-    //       cfgFile.Write( wxT("EditDlgMaximized"),  true );
-	//}
 
     // If this was an external file, save it
     if ( (not m_EditFileName.IsEmpty()) && (wxID_OKorCANCEL == wxID_OK) )
@@ -203,9 +219,7 @@ void EditSnippetDlg::InitDlg()
 	m_SnippetLbl = new wxStaticText(this, wxID_ANY, _T("&Snippet:"), wxDefaultPosition, wxDefaultSize, 0);
 	snippetDataSizer->Add(m_SnippetLbl, 0, wxTOP|wxRIGHT|wxLEFT, 5);
 
-	//-m_SnippetTextCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_PROCESS_TAB);
 	m_SnippetEditCtrl = new Edit(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_DONTWRAP|wxTE_PROCESS_TAB);
-	//-snippetDataSizer->Add(m_SnippetTextCtrl, 1, wxALL|wxEXPAND, 5);
 	snippetDataSizer->Add(m_SnippetEditCtrl, 1, wxALL|wxEXPAND, 5);
 
 	dlgSizer->Add(snippetDataSizer, 1, wxEXPAND, 5);
@@ -261,7 +275,6 @@ wxString EditSnippetDlg::GetName()
 wxString EditSnippetDlg::GetText()
 // ----------------------------------------------------------------------------
 {
-	//return m_SnippetTextCtrl->GetValue();
 	return m_SnippetEditCtrl->GetText();
 }
 
@@ -297,6 +310,7 @@ void EditSnippetDlg::OnHelp(wxCommandEvent& event)
 void EditSnippetDlg::OnCloseWindow(wxCloseEvent& event)
 // ----------------------------------------------------------------------------
 {
+     LOGIT( _T("EditSnippetDlg::OnCloseWindow") );
     OnCancel((wxCommandEvent&) event);
 }
 // ----------------------------------------------------------------------------

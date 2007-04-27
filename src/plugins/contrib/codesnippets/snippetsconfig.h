@@ -16,13 +16,15 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.h 59 2007-04-22 19:23:46Z Pecan $
+// RCS-ID: $Id: snippetsconfig.h 68 2007-04-27 21:08:11Z Pecan $
 
 
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
 #include <wx/frame.h>
+#include <wx/fileconf.h>
+
 
 class CodeSnippetsWindow;
 #include "snippetsimages.h"
@@ -53,16 +55,18 @@ class CodeSnippetsConfig
     void SettingsSave();
     void SettingsSaveWinPosition();
     void SettingsSaveString(const wxString settingName, const wxString settingValue );
+    wxString SettingsReadString(const wxString settingName );
+    wxString GetSettingsWindowState();
 
-    wxWindow*   GetMainFrame(){return pMainFrame;}
-    SnipImages* GetSnipImages(){return pSnipImages;}
+    wxWindow*       GetMainFrame(){return pMainFrame;}
+    SnipImages*     GetSnipImages(){return pSnipImages;}
     CodeSnippetsWindow* GetSnippetsWindow(){return pSnippetsWindow;}
-    void        SetSnippetsTreeCtrl(CodeSnippetsTreeCtrl* p){ pSnippetsTreeCtrl=p;return;}
+    void            SetSnippetsTreeCtrl(CodeSnippetsTreeCtrl* p){ pSnippetsTreeCtrl=p;return;}
     CodeSnippetsTreeCtrl* GetSnippetsTreeCtrl(){return pSnippetsTreeCtrl;}
-    wxString    GetVersion(){return m_VersionStr;}
+    wxString        GetVersion(){return m_VersionStr;}
+    wxFileConfig*   GetCfgFile(){return m_pCfgFile;}
 
     void CenterChildOnParent(wxWindow* child);
-
 
    #if defined(BUILDING_PLUGIN)
     bool IsPlugin(){return true;}
@@ -71,8 +75,9 @@ class CodeSnippetsConfig
     bool IsPlugin(){return false;}
     bool IsApplication(){return true;}
    #endif
-   bool IsDockedWindow(wxWindow** pw = 0, wxPoint* pcoord = 0, wxSize* psize = 0);
-   bool IsFloatingWindow(wxWindow** pw = 0, wxPoint* pcoord = 0, wxSize* psize = 0);
+
+   bool  IsDockedWindow(wxWindow** pw = 0, wxPoint* pcoord = 0, wxSize* psize = 0);
+   bool  IsFloatingWindow(wxWindow** pw = 0, wxPoint* pcoord = 0, wxSize* psize = 0);
 
     // Snippet Tree Search options
     enum SearchScope
@@ -101,10 +106,13 @@ class CodeSnippetsConfig
 	wxString     SettingsExternalEditor;
 	wxString     SettingsSnippetsXmlFullPath;
 	wxString     SettingsSnippetsCfgFullPath;
+	wxString     SettingsSnippetsFolder;
+    // the key file name as {%HOME%}\codesnippets.ini
+    wxString m_ConfigFolder;
+    // the programs executable folder
+    wxString m_ExecuteFolder;
+
 	bool         SettingsSearchBox;
-    //	ConfigManager* cfgMan = Manager::Get()->GetConfigManager(_T("codesnippets"));
-    //	m_SearchConfig.caseSensitive = cfgMan->ReadBool(_T("casesensitive"), true);
-    //	m_SearchConfig.scope = SearchScope(cfgMan->ReadInt(_T("scope"), 2));
     SnipImages*  pSnipImages;
     int          nEditDlgXpos;
     int          nEditDlgYpos;
@@ -118,7 +126,15 @@ class CodeSnippetsConfig
     wxString     m_VersionStr;
     wxString     m_sWindowHandle;
     SearchConfiguration     m_SearchConfig;
+    wxFileConfig* m_pCfgFile;
+    wxString     SettingsWindowState;
 
+    // Mouse DragScrolling settings
+    int         MouseDragSensitivity;
+    int         MouseToLineRatio;
+    int         MouseContextDelay;
+
+    wxWindow*   m_pEvtCloseConnect;
 
 };
 

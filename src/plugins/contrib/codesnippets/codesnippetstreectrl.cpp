@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 59 2007-04-22 19:23:46Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 68 2007-04-27 21:08:11Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -48,6 +48,7 @@
 #include "editsnippetframe.h"
 #if defined(__WXGTK__)
     #include "wx/gtk/win_gtk.h"
+    #include <gdk/gdkx.h>
 #endif
 
 IMPLEMENT_DYNAMIC_CLASS(CodeSnippetsTreeCtrl, wxTreeCtrl)
@@ -60,6 +61,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsTreeCtrl, wxTreeCtrl)
 	EVT_ENTER_WINDOW(                       CodeSnippetsTreeCtrl::OnEnterWindow)
 	EVT_MOTION(                             CodeSnippetsTreeCtrl::OnMouseEvent)
 	EVT_TREE_SEL_CHANGED(idSnippetsTreeCtrl,CodeSnippetsTreeCtrl::OnItemSelected)
+	EVT_TREE_ITEM_RIGHT_CLICK(idSnippetsTreeCtrl, CodeSnippetsTreeCtrl::OnItemRightSelected)
 	EVT_IDLE(                               CodeSnippetsTreeCtrl::OnIdle)
 END_EVENT_TABLE()
 
@@ -77,28 +79,6 @@ CodeSnippetsTreeCtrl::CodeSnippetsTreeCtrl(wxWindow *parent, const wxWindowID id
     m_pSnippetsTreeCtrl = this;
     GetConfig()->SetSnippetsTreeCtrl(this);
 
-
-//    wxWindow* pw = this;
-//    LOGIT( _T("this[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-//    if (pw && pw->GetParent()) //
-//    {   pw = pw->GetParent();
-//        LOGIT( _T("parent1[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-//    }
-//    if (pw && pw->GetParent())  //This is the SnippetWindow parent
-//    {   pw = pw->GetParent();
-//        LOGIT( _T("parent2[%s]Title[%s]"),pw->GetName().c_str(),pw->GetTitle().c_str() );
-//    }
-
-//    m_pSnippetWindowParent = pw;
-//    // Grab CodeBlocks close function so dlg isn't orphaned|crashed on close)
-//    GetConfig()->GetMainFrame()->Connect( wxEVT_CLOSE_WINDOW,
-//        (wxObjectEventFunction)(wxEventFunction)
-//        (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown,NULL,this);
-//    // Grab parents close function so dlg isn't orphaned|crashed on close)
-//    pw->Connect( wxEVT_CLOSE_WINDOW,
-//        (wxObjectEventFunction)(wxEventFunction)
-//        (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown,NULL,this);
-
 }
 
 // ----------------------------------------------------------------------------
@@ -106,15 +86,6 @@ CodeSnippetsTreeCtrl::~CodeSnippetsTreeCtrl()
 // ----------------------------------------------------------------------------
 {
     //dtor
-
-//    // Release CodeBlocks closeWindow function
-//    GetConfig()->GetMainFrame()->Disconnect( wxEVT_CLOSE_WINDOW,
-//        (wxObjectEventFunction)(wxEventFunction)
-//        (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown);
-//    // Release parents closeWindow function
-//    m_pSnippetWindowParent->Disconnect( wxEVT_CLOSE_WINDOW,
-//        (wxObjectEventFunction)(wxEventFunction)
-//        (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown);
 
 }
 // ----------------------------------------------------------------------------
@@ -158,8 +129,18 @@ void CodeSnippetsTreeCtrl::OnItemSelected(wxTreeEvent& event)
 		m_MnuAssociatedItemID = eventItem->GetId();
 
 	}
-}
 
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::OnItemRightSelected(wxTreeEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // on wx2.8.3, Right click does not select the item.
+    // The selection is still on he previous item.
+    // So we'll select it ourself.
+
+    SelectItem(event.GetItem());                                                         //(pecan 2006/9/12)
+}
 // ----------------------------------------------------------------------------
 int CodeSnippetsTreeCtrl::OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2)
 // ----------------------------------------------------------------------------
@@ -704,6 +685,12 @@ void CodeSnippetsTreeCtrl::OnEndTreeItemDrag(wxTreeEvent& event)
 
     wxTreeItemId targetItem = (wxTreeItemId)event.GetItem();
     wxTreeItemId sourceItem = m_MnuAssociatedItemID;
+    if ( not sourceItem.IsOk() ){return;}
+    if ( not targetItem.IsOk() ){return;}
+    if (not m_pEvtTreeCtrlBeginDrag)
+    {
+        event.Skip(); return;
+    }
 
     // veto the drag if mouse has moved out of the Tree window
         // Note: Even if mouse is dragged out of the tree window,
@@ -1301,12 +1288,12 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
         //#endif //LOGGING
 
     // Ask user for filename
-    wxFileDialog dlg(this,                      //parent  window
-                 _("Save as text file"),        //message
-                 wxEmptyString,                 //default directory
-                 newFileName,                   //default file
-                 wxT("*.*"),                    //wildcards
-                 wxSAVE | wxOVERWRITE_PROMPT);  //style
+    wxFileDialog dlg(this,                              //parent  window
+                 _("Save as text file"),                //message
+                 GetConfig()->SettingsSnippetsFolder,   //default directory
+                 newFileName,                           //default file
+                 wxT("*.*"),                            //wildcards
+                 wxSAVE | wxOVERWRITE_PROMPT);          //style
     // move dialog into the parents frame space
     wxPoint mousePosn = ::wxGetMousePosition();
     (&dlg)->Move(mousePosn.x, mousePosn.y);

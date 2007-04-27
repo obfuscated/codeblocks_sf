@@ -39,7 +39,7 @@
    BEGIN_EVENT_TABLE(SettingsDlg, SettingsDlgForm)
     EVT_BUTTON(wxID_OK,            SettingsDlg::OnOk)
     EVT_BUTTON(ID_EXTEDITORBUTTON, SettingsDlg::OnExtEditorButton)
-    EVT_BUTTON(ID_SNIPPETFILEBUTTON, SettingsDlg::OnSnippetFileButton)
+    EVT_BUTTON(ID_SNIPPETFILEBUTTON, SettingsDlg::OnSnippetFolderButton)
    END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -54,16 +54,35 @@ SettingsDlg::SettingsDlg(wxWindow* parent)
 
     // Initialize the properties fields
     m_ExtEditorTextCtrl-> SetValue( wxT("Enter filename of external editor") );
-    m_SnippetFileTextCtrl->SetValue(wxT("Enter filename of Snippet XML file") );
+    m_SnippetFileTextCtrl->SetValue(wxT("Enter Snippets storage Folder") );
 
 	// Put the old external editor filename into the textCtrl
     if ( not GetConfig()->SettingsExternalEditor.IsEmpty() )
         m_ExtEditorTextCtrl-> SetValue( GetConfig()->SettingsExternalEditor );
 
-	// Put the old Snippet XML filename into the textCtrl
-    if ( not GetConfig()->SettingsSnippetsXmlFullPath.IsEmpty() )
-        m_SnippetFileTextCtrl-> SetValue( GetConfig()->SettingsSnippetsXmlFullPath );
+	// Put the old Snippet XML folder into the textCtrl
+    if ( not GetConfig()->SettingsSnippetsFolder.IsEmpty() )
+        m_SnippetFileTextCtrl-> SetValue( GetConfig()->SettingsSnippetsFolder );
+    // Read Mouse DragScrolling settings
 
+    // "Adaptive Mouse Speed Sensitivity"
+    m_MouseSpeedSlider->SetValue(GetConfig()->MouseDragSensitivity );
+    // "Mouse Movement to Scroll Ratio"
+    m_MouseScrollSlider->SetValue( GetConfig()->MouseToLineRatio );
+    // "Context Menu Delay (millisec)"
+    m_MouseDelaylider->SetValue( GetConfig()->MouseContextDelay );
+
+    wxString windowState = GetConfig()->GetSettingsWindowState();
+    if ( windowState.Contains(wxT("Floating")) ) {m_RadioFloatBtn->SetValue(true);}
+    if ( windowState.Contains(wxT("Docked")) ) {  m_RadioDockBtn->SetValue(true);}
+    if ( windowState.Contains(wxT("External")) ) {m_RadioExternalBtn->SetValue(true);}
+
+}
+// ----------------------------------------------------------------------------
+SettingsDlg::~SettingsDlg()
+// ----------------------------------------------------------------------------
+{
+    //dtor
 }
 // ----------------------------------------------------------------------------
 void SettingsDlg::OnOk(wxCommandEvent& event)
@@ -77,12 +96,26 @@ void SettingsDlg::OnOk(wxCommandEvent& event)
 
     filename = m_SnippetFileTextCtrl->GetValue();
     if ( not filename.IsEmpty() )
-        GetConfig()->SettingsSnippetsXmlFullPath = filename;
+        GetConfig()->SettingsSnippetsFolder = filename;
     else
-        GetConfig()->SettingsSnippetsXmlFullPath = wxEmptyString;
+        GetConfig()->SettingsSnippetsFolder = wxEmptyString;
+
+    // "Adaptive Mouse Speed Sensitivity"
+    GetConfig()->MouseDragSensitivity = m_MouseSpeedSlider->GetValue();
+    // "Mouse Movement to Scroll Ratio"
+    GetConfig()->MouseToLineRatio = m_MouseScrollSlider->GetValue();
+    // "Context Menu Delay (millisec)"
+    GetConfig()->MouseContextDelay = m_MouseDelaylider->GetValue();
+
+    wxString windowState = wxT("Floating");
+    if (m_RadioFloatBtn->GetValue() )   windowState = wxT("Floating");
+    if (m_RadioDockBtn->GetValue() )    windowState = wxT("Docked");
+    if (m_RadioExternalBtn->GetValue()) windowState = wxT("External");
+    GetConfig()->SettingsWindowState = windowState;
 
     this->EndModal(wxID_OK);
-    OnSettingsSave( event);
+    LOGIT( _T("OnOK Saving Settings"));
+    GetConfig()->SettingsSave();
 }
 // ----------------------------------------------------------------------------
 void SettingsDlg::OnExtEditorButton(wxCommandEvent& event)
@@ -96,15 +129,15 @@ void SettingsDlg::OnExtEditorButton(wxCommandEvent& event)
         m_ExtEditorTextCtrl-> SetValue( newFileName );
 }
 // ----------------------------------------------------------------------------
-void SettingsDlg::OnSnippetFileButton(wxCommandEvent& event)
+void SettingsDlg::OnSnippetFolderButton(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // Ask user for filename of editor program
-    wxString newFileName;
-    newFileName = AskForPathName();
+    // Ask user for folder to store external snippets
+    wxString newFolderName;
+    newFolderName = AskForPathName();
 
-    if (not newFileName.IsEmpty())
-        m_SnippetFileTextCtrl-> SetValue( newFileName+wxFILE_SEP_PATH+wxT("sniplist.xml") );
+    if (not newFolderName.IsEmpty())
+        m_SnippetFileTextCtrl-> SetValue( newFolderName) ;
 }
 // ----------------------------------------------------------------------------
 void SettingsDlg::GetFileName(wxString& newFileName)
@@ -150,28 +183,6 @@ wxString SettingsDlg::AskForPathName()       //(pecan 2006/10/06)
 
     if (dlg.ShowModal() != wxID_OK) return wxEmptyString;
     return newPathName = dlg.GetPath();
-}
-// ----------------------------------------------------------------------------
-void SettingsDlg::OnSettingsSave(wxCommandEvent& event)
-// ----------------------------------------------------------------------------
-{
-        // file will be saved in $HOME/sniplist.ini
-
-    wxFileConfig cfgFile(wxEmptyString, // appname
-                        wxEmptyString,      // vendor
-                        GetConfig()->SettingsSnippetsCfgFullPath,    // local filename
-                        wxEmptyString,                  // global file
-                        wxCONFIG_USE_LOCAL_FILE);
-
-	cfgFile.Write( wxT("ExternalEditor"),  m_ExtEditorTextCtrl->GetValue() );
-	cfgFile.Write( wxT("SnippetFile"),     m_SnippetFileTextCtrl->GetValue() );
-	cfgFile.Flush();
-}
-// ----------------------------------------------------------------------------
-SettingsDlg::~SettingsDlg()
-// ----------------------------------------------------------------------------
-{
-    //dtor
 }
 // ----------------------------------------------------------------------------
 

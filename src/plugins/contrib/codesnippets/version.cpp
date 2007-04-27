@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 60 2007-04-23 00:02:55Z Pecan $
+// RCS-ID: $Id: version.cpp 68 2007-04-27 21:08:11Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -197,23 +197,37 @@ AppVersion::~AppVersion()
 //          26) Corrected messageBox placement for floating vs docked window (again)
 //          27) Fixed Termination/OnActivate crash
 //          28) Fixed bug on Linux, the executable folder wx being reported incorrectly
+//          29-32) reserved
 // ----------------------------------------------------------------------------
-//
+//  Commit  1.2.42 2007/04/27
+//          33) Add dragscrolling options to settingsdlg() & snippetsconfig()
+//          34) snippetsconfig() globally manages all config items for all classes
+//          35) Fixes to allow docked window to restart at  previous position
+//          35) More hacking to work around wxAUI docked/floating windows deficiencies
+//          35) Added settings preference for window type & mouse scrolling
+//          36) Corrections for linux settings preferences
+//          37) Corrected path for codesnippets; add wxLearner gtkx.h includes for *nix
+//          38) Fixes to OnUpdateUI routine when switching between window types
+//          39) Verfied wx2.8.3 fixed closing Docked window crash
+//          40) Added wxProcess::Exists() to check on external snippets window
+//          41) Fixed wx2.8.3 RightClick not selecting tree item
+//          42) Fixed external snippet storage folder not being recorded
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
 //          Bug: a renamed "new snippet" label is not sorted into place
 //              Maybe it shouldn't be?
-//          Add dragscrolling options to settingsdlg & snippetsconfig
-//          snippetsconfig.cpp should globally read/keep/save *all* config items for all classes
 //          Help should invoke browser for wiki article
 //          Update wiki for Re-arranging Tree items/multi-editing/.trash
 //              backup, wrapper execution, DragnDrop
-//          Option to wxExecute CodeSnippets wrapper vs Docking Snippets
-//          Bug:Plg: popup for long names is showing up behind the window
 //          Bug:Plg: Tree pops over editor when moving mouse into CB window. Very Annoying.
-//          Context menu should say "Copy FileName to Clipboard" when FileLink
 //          "XML load error" doesn't pop up when loading a "txt" file. Why?
+//          MSW path may already have ";" tacked to end. What happens?
+//          Bug: Dlgs are clearing the status bar
+//          Bug: App:Settings not preserving ini options when using wxKill
+//          OnRelease kills external snippets. XML & ini not saved
+//          FullScreen CB: edit windows disappear behind CB. Give user Dialog vs Frame choice
+//              Or maybe an alway-on-top frame?
 //  Other
 //          Bug: Nasty wxAUI Linux behavior. Left chick on CB main menu docks floating windows.
 //               Floating window won't dock when dragged to CB. Have to left click some main menu item.
