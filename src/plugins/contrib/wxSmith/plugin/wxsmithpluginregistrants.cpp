@@ -21,8 +21,8 @@
 * $HeadURL$
 */
 
-#include "wxsmith.h"
-#include "wxsmithmime.h"
+#include "../wxsmith.h"
+#include "../wxsmithmime.h"
 
 namespace
 {

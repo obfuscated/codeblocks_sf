@@ -319,6 +319,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/symtab/resources/Makefile
 	src/plugins/contrib/regex_testbed/Makefile
 	src/plugins/contrib/wxSmith/Makefile
+	src/plugins/contrib/wxSmith/plugin/Makefile
 	src/plugins/contrib/wxSmith/properties/Makefile
 	src/plugins/contrib/wxSmith/wxwidgets/Makefile
 	src/plugins/contrib/wxSmith/wxwidgets/properties/Makefile
