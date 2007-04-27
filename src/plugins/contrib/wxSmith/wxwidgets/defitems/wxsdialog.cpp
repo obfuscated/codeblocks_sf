@@ -144,7 +144,11 @@ wxObject* wxsDialog::OnBuildPreview(wxWindow* Parent,long Flags)
             {
                 NewSize.SetDefaults(wxSize(400,450));
                 NewItem->SetSize(NewSize);
-                NewItem->SetBestFittingSize(NewSize);
+                #if wxCHECK_VERSION(2,8,0)
+                    NewItem->SetInitialSize(NewSize);
+                #else
+                    NewItem->SetBestFittingSize(NewSize);
+                #endif
                 if ( GetChildCount() == 1 )
                 {
                     // If there's only one child it's size gets dialog's size
@@ -158,7 +162,11 @@ wxObject* wxsDialog::OnBuildPreview(wxWindow* Parent,long Flags)
             else
             {
                 NewItem->SetSize(NewSize);
-                NewItem->SetBestFittingSize(NewSize);
+                #if wxCHECK_VERSION(2,8,0)
+                    NewItem->SetInitialSize(NewSize);
+                #else
+                    NewItem->SetBestFittingSize(NewSize);
+                #endif
             }
         }
     }

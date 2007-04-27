@@ -41,6 +41,8 @@
 #include <wx/settings.h>
 //*)
 
+#include <wx/notebook.h>
+
 // TODO: Add notebook images
 namespace
 {

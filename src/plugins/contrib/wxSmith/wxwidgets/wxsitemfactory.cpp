@@ -102,7 +102,7 @@ wxsItemFactory::wxsItemFactory(const wxsItemInfo* Info):
     ItemMap()[Info->ClassName] = this;
 }
 
-wxsItemFactory::wxsItemFactory(const wxsItemInfo* Info,const wxString& ClassName):
+wxsItemFactory::wxsItemFactory(const wxsItemInfo* Info,wxString ClassName):
     m_Info(Info)
 {
     if ( Info==NULL ) return;

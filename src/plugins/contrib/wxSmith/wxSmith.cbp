@@ -4,6 +4,7 @@
 	<Project>
 		<Option title="wxSmith" />
 		<Option pch_mode="0" />
+		<Option default_target="wxSmithLib" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxSmithLib">

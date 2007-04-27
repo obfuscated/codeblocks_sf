@@ -59,7 +59,7 @@ class wxsItemFactory
 		 *         It may be used when Info is going to be created
 		 *         inside constructor.
 		 */
-        wxsItemFactory(const wxsItemInfo* Info,const wxString& ClassName);
+        wxsItemFactory(const wxsItemInfo* Info,wxString ClassName);
 
         /** \brief Dctor */
 		virtual ~wxsItemFactory();
@@ -90,15 +90,15 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
 
         /** \brief Ctor - bitmaps are generated from wxBitmap classes */
         wxsRegisterItem(
-            const wxString& ClassName,
+            wxString ClassName,
             wxsItemType Type,
-            const wxString& License,
-            const wxString& Author,
-            const wxString& Email,
-            const wxString& Site,
-            const wxString& Category,
+            wxString License,
+            wxString Author,
+            wxString Email,
+            wxString Site,
+            wxString Category,
             long Priority,
-            const wxString& DefaultVarName,
+            wxString DefaultVarName,
             long Languages,
             unsigned short VerHi,
             unsigned short VerLo,
@@ -128,20 +128,20 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
 
         /** \brief Ctor - bitmaps are loaded from files */
         wxsRegisterItem(
-            const wxString& ClassName,
+            wxString ClassName,
             wxsItemType Type,
-            const wxString& License,
-            const wxString& Author,
-            const wxString& Email,
-            const wxString& Site,
-            const wxString& Category,
+            wxString License,
+            wxString Author,
+            wxString Email,
+            wxString Site,
+            wxString Category,
             long Priority,
-            const wxString& DefaultVarName,
+            wxString DefaultVarName,
             long Languages,
             unsigned short VerHi,
             unsigned short VerLo,
-            const wxString& Bmp32FileName,
-            const wxString& Bmp16FileName,
+            wxString Bmp32FileName,
+            wxString Bmp16FileName,
             bool AllowInXRC = true
             ): wxsItemFactory(&Info,ClassName),
                m_TreeImage(Bmp16FileName)
@@ -168,9 +168,9 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
 
         /** \brief Ctor for built-in items from wxWidgets - sets most of data fields to default */
         wxsRegisterItem(
-            const wxString& ClassNameWithoutWx,
+            wxString ClassNameWithoutWx,
             wxsItemType Type,
-            const wxString& Category,
+            wxString Category,
             long Priority,
             bool AllowInXRC=true):
                 wxsItemFactory(&Info,_T("wx") + ClassNameWithoutWx),
