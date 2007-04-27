@@ -2113,8 +2113,10 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
             RemoveFilesRecursively(sel);
         }
         prj->CalculateCommonTopLevelPath();
-        if (prj->GetCommonTopLevelPath() == oldpath)
+        if (prj->GetCommonTopLevelPath() == oldpath && !is_virtual)
             m_pTree->Delete(sel);
+        else if (is_virtual)
+            prj->VirtualFolderDeleted(m_pTree, sel);
         RebuildTree();
     }
 }

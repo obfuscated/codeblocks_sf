@@ -784,15 +784,12 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
         // add a default category "Others" for all non-matching file-types
         others = tree->AppendItem(m_ProjectNode, _("Others"), fldIdx, fldIdx);
     }
-    else
+    // Now add any virtual folders
+    for (size_t i = 0; i < m_VirtualFolders.GetCount(); ++i)
     {
-        // add any virtual folders
-        for (size_t i = 0; i < m_VirtualFolders.GetCount(); ++i)
-        {
-            ftd = new FileTreeData(this, FileTreeData::ftdkVirtualFolder);
-            ftd->SetFolder(m_VirtualFolders[i]);
-            AddTreeNode(tree, m_VirtualFolders[i], m_ProjectNode, true, FileTreeData::ftdkVirtualFolder, true, vfldIdx, ftd);
-        }
+        ftd = new FileTreeData(this, FileTreeData::ftdkVirtualFolder);
+        ftd->SetFolder(m_VirtualFolders[i]);
+        AddTreeNode(tree, m_VirtualFolders[i], m_ProjectNode, true, FileTreeData::ftdkVirtualFolder, true, vfldIdx, ftd);
     }
 
     // iterate all project files and add them to the tree
@@ -812,7 +809,8 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
 
         wxTreeItemId parentNode = m_ProjectNode;
         // check if files grouping is enabled and find the group parent
-        if (categorize && pGroupNodes && fgam)
+        // Also make a check that the file is not under virtual folder
+        if (categorize && pGroupNodes && fgam && f->virtual_path.IsEmpty())
         {
             bool found = false;
             for (unsigned int i = 0; i < fgam->GetGroupsCount(); ++i)
@@ -829,9 +827,8 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
             if (!found)
                 parentNode = others;
         }
-
-        // virtual folders
-        if (!f->virtual_path.IsEmpty())
+        /* Else Put the file under virtual folder */
+        else
         {
             nodetext = f->virtual_path + wxFILE_SEP_PATH + f->file.GetFullName();
             folders_kind = FileTreeData::ftdkVirtualFolder;
