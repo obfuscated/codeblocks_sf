@@ -42,17 +42,11 @@
 #include <wx/splitter.h>
 
 // ---------------------------------------------------------------------------
-//  Define RC2 for codeblocks V1.0RC2 or RC3 for HEAD
-// ---------------------------------------------------------------------------
-//#define RC2 0
-//#define RC3 1
-
-// ---------------------------------------------------------------------------
 //  Logging / debugging
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.0.39 2007/02/28"
+#define VERSION "1.1.01 2007/04/28"
 //----------------------------------------
 
 #if defined(dsLOGGING)
@@ -101,7 +95,7 @@ class cbDragScroll : public cbPlugin
         int  GetMouseDragKey()           { return MouseDragKey; }
         int  GetMouseDragSensitivity()   { return MouseDragSensitivity; }
         int  GetMouseToLineRatio()       { return MouseToLineRatio; }
-        int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl; }
+////        int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl; }
         int  GetMouseContextDelay()      { return MouseContextDelay; }
 
         wxWindow* m_pMS_Window;
@@ -121,6 +115,7 @@ class cbDragScroll : public cbPlugin
 
         wxWindow* winExists(wxWindow *parent);
         wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
+        wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
         void OnWindowOpen(wxEvent& event);
         void OnWindowClose(wxEvent& event);
 
@@ -389,7 +384,10 @@ private:
 //              GTK cannot scroll a wxListCtrl
 //          38) Corrected GTK dialog layout
 // ----------------------------------------------------------------------------
-//  Commit  1.0.39
+//  Commit  1.0.39 2007/02/28
 //          39) If exists executable folder .ini file, use it.
+// ----------------------------------------------------------------------------
+//  Commit  1.1.01 2007/04/28
+//          01) Removed wx2.6.3 workarounds fixed by wx2.8.3
 // ----------------------------------------------------------------------------
 #endif // DRAGSCROLL_H

@@ -101,11 +101,11 @@ void cbDragScroll::OnAttach()
     // Create filename like cbDragScroll.ini
     //memorize the key file name as {%HOME%}\cbDragScroll.ini
     m_ConfigFolder = ConfigManager::GetConfigFolder();
-    m_ExecuteFolder = ConfigManager::GetExecutableFolder();
     m_DataFolder = ConfigManager::GetDataFolder();
+    ////m_ExecuteFolder = ConfigManager::GetExecutableFolder();
+    m_ExecuteFolder = FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString);
 
     //GTK GetConfigFolder is returning double "//?, eg, "/home/pecan//.codeblocks"
-
     // remove the double //s from filename //+v0.4.11
     m_ConfigFolder.Replace(_T("//"),_T("/"));
     m_ExecuteFolder.Replace(_T("//"),_T("/"));
@@ -200,7 +200,7 @@ cbConfigurationPanel* cbDragScroll::GetConfigurationPanel(wxWindow* parent)
     pDlg->SetMouseDragKey ( MouseDragKey );
     pDlg->SetMouseDragSensitivity ( MouseDragSensitivity );
     pDlg->SetMouseToLineRatio ( MouseToLineRatio );
-    pDlg->SetMouseRightKeyCtrl ( MouseRightKeyCtrl );
+////    pDlg->SetMouseRightKeyCtrl ( MouseRightKeyCtrl );
     pDlg->SetMouseContextDelay ( MouseContextDelay );
 
 
@@ -221,7 +221,7 @@ void cbDragScroll::OnDialogDone(cbDragScrollCfg* pDlg)
     MouseDragKey            = pDlg->GetMouseDragKey();
     MouseDragSensitivity    = pDlg->GetMouseDragSensitivity();
     MouseToLineRatio        = pDlg->GetMouseToLineRatio();
-    MouseRightKeyCtrl       = pDlg->GetMouseRightKeyCtrl();
+////    MouseRightKeyCtrl       = pDlg->GetMouseRightKeyCtrl();
     MouseContextDelay       = pDlg->GetMouseContextDelay();
     #ifdef LOGGING
      LOGIT(_T("MouseDragScrollEnabled:%d"),  MouseDragScrollEnabled);
@@ -519,6 +519,60 @@ void cbDragScroll::DetachAll()
 
 }//DetachAll
 // ----------------------------------------------------------------------------
+wxString cbDragScroll::FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName)
+// ----------------------------------------------------------------------------
+{
+    // Find the absolute path where this application has been run from.
+    // argv0 is wxTheApp->argv[0]
+    // cwd is the current working directory (at startup)
+    // appVariableName is the name of a variable containing the directory for this app, e.g.
+    // MYAPPDIR. This is checked first.
+
+    wxString str;
+
+    // Try appVariableName
+    if (!appVariableName.IsEmpty())
+    {
+        str = wxGetenv(appVariableName);
+        if (!str.IsEmpty())
+            return str;
+    }
+
+#if defined(__WXMAC__) && !defined(__DARWIN__)
+    // On Mac, the current directory is the relevant one when
+    // the application starts.
+    return cwd;
+#endif
+
+    if (wxIsAbsolutePath(argv0))
+        return wxPathOnly(argv0);
+    else
+    {
+        // Is it a relative path?
+        wxString currentDir(cwd);
+        if (currentDir.Last() != wxFILE_SEP_PATH)
+            currentDir += wxFILE_SEP_PATH;
+
+        str = currentDir + argv0;
+        if (wxFileExists(str))
+            return wxPathOnly(str);
+    }
+
+    // OK, it's neither an absolute path nor a relative path.
+    // Search PATH.
+
+    wxPathList pathList;
+    pathList.AddEnvList(wxT("PATH"));
+    str = pathList.FindAbsoluteValidPath(argv0);
+    if (!str.IsEmpty())
+        return wxPathOnly(str);
+
+    // Failed
+    return wxEmptyString;
+}
+// ----------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
 //    cbDragScroll Routines to push/remove mouse event handlers
 // ----------------------------------------------------------------------------
 void cbDragScroll::OnAppStartupDone(CodeBlocksEvent& event)
@@ -642,13 +696,13 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
     if ( event.GetEventType() ==  wxEVT_MOUSEWHEEL)
         { event.Skip(); return; }
 
-//    //Returns the string form of the class name.
-//    const wxChar* pClassName = 0;
-//    if (m_pEvtObject)
-//        pClassName = m_pEvtObject->GetClassInfo()->GetClassName();
-//    #ifdef LOGGING
-//     LOGIT( _T("ClassName[%s]"), pClassName );
-//    #endif //LOGGING
+////    //Returns the string form of the class name.
+////    const wxChar* pClassName = 0;
+////    if (m_pEvtObject)
+////        pClassName = m_pEvtObject->GetClassInfo()->GetClassName();
+////    #ifdef LOGGING
+////     LOGIT( _T("ClassName[%s]"), pClassName );
+////    #endif //LOGGING
 
     // differentialte window, left, right split window
     cbEditor* ed = 0;
@@ -718,7 +772,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
             // If hiding Right mouse keydown from ListCtrls, return v0.22
             // RightMouseDown is causing an immediate selection in the control
             // This stops it.
-            if (pDS->GetMouseRightKeyCtrl()) return;
+////            if (pDS->GetMouseRightKeyCtrl()) return;
             event.Skip(); //v0.21
             return;
      }
@@ -783,7 +837,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
       // scroll the client area
       if (abs(dX) > abs(dY))
        {
-          scrollx = int(dX * m_RatioX); scrolly = 0;
+            scrolly = 0; scrollx = int(dX * m_RatioX);
        }
       else
        {
@@ -810,7 +864,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
             if ( scrolly)
                 ((wxWindow*)m_pEvtObject)->ScrollLines(scrolly);
             else  // use listCtrl for x scrolling
-                ((wxListCtrl*)m_pEvtObject)->ScrollList(scrollx,scrolly);
+                ((wxListCtrl*)m_pEvtObject)->ScrollList(scrollx<<2,scrolly);
         }//esle
     }//else if
 
@@ -822,7 +876,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
 
 ///////////////////////////////////////////////////////////////////////////////
 // ----------------------------------------------------------------------------
-//      MOUSE SCROLLING __WXGTK__
+//      __WXGTK__ MOUSE SCROLLING __WXGTK__
 // ----------------------------------------------------------------------------
 ///////////////////////////////////////////////////////////////////////////////
 #if defined(__WXGTK__) || defined(__WXMAC__)
@@ -939,15 +993,16 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
                 }
             }//endelse
         }//else wait for movement
-        // --------------------------------
-        // Dont do the following on Linux, it kills all context menus
-        // --------------------------------
-        //// If hiding Right mouse keydown from ListCtrls, return v0.22
-        //// RightMouseDown is causing an immediate selection in the control
-        //// This stops it.
-        //if (pDS->GetMouseRightKeyCtrl()) return;
-        //event.Skip(); //v0.21
-        //return;
+
+////        // --------------------------------
+////        // Dont do the following on Linux, it kills all context menus
+////        // --------------------------------
+////        //// If hiding Right mouse keydown from ListCtrls, return v0.22
+////        //// RightMouseDown is causing an immediate selection in the control
+////        //// This stops it.
+////        //if (pDS->GetMouseRightKeyCtrl()) return;
+////        //event.Skip(); //v0.21
+////        //return;
 
         //no mouse movements, so pass off to context menu processing
         event.Skip();
@@ -1015,7 +1070,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
       // scroll the client area
       if (abs(dX) > abs(dY))
        {
-          scrollx = int(dX * m_RatioX); scrolly = 0;
+            scrolly = 0; scrollx = int(dX * m_RatioX);
        }
       else
        {

@@ -70,7 +70,7 @@ class cbDragScrollCfg: public cbConfigurationPanel
         int  GetMouseDragKey()           { return MouseKeyChoice->GetSelection(); }
         int  GetMouseDragSensitivity()   { return Sensitivity->GetValue(); }
         int  GetMouseToLineRatio()       { return MouseToLineRatio->GetValue(); }
-        int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl->GetValue(); }
+////        int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl->GetValue(); }
         int  GetMouseContextDelay()      { return MouseContextDelay->GetValue(); }
 
         void SetMouseDragScrollEnabled(bool value)
@@ -87,8 +87,8 @@ class cbDragScrollCfg: public cbConfigurationPanel
                 { Sensitivity->SetValue(value); }
         void SetMouseToLineRatio(int value)
                 { MouseToLineRatio->SetValue(value); }
-        void SetMouseRightKeyCtrl(int value)
-                { MouseRightKeyCtrl->SetValue(value); }
+////        void SetMouseRightKeyCtrl(int value)
+////                { MouseRightKeyCtrl->SetValue(value); }
         void SetMouseContextDelay(int value)
                 { MouseContextDelay->SetValue(value); }
 
@@ -104,7 +104,7 @@ class cbDragScrollCfg: public cbConfigurationPanel
 		wxCheckBox* ScrollEnabled;
 		wxCheckBox* EditorFocusEnabled;
 		wxCheckBox* MouseFocusEnabled;
-		wxCheckBox* MouseRightKeyCtrl;
+////		wxCheckBox* MouseRightKeyCtrl;
 		wxRadioBox* ScrollDirection;
 		wxStaticText* StaticText2;
 		wxChoice* MouseKeyChoice;

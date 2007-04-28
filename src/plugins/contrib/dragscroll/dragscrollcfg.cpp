@@ -35,12 +35,12 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	MouseFocusEnabled = new wxCheckBox(this,ID_MOUSEENABLEDFOCUS,_("Focus follows Mouse"),wxPoint(-1,-1),wxDefaultSize,0);
 	MouseFocusEnabled->SetValue(false);
 
-    //Hide Right keydown events from ListCtrl windows
-	MouseRightKeyCtrl = new wxCheckBox(this,ID_EDITORENABLEDFOCUS,_("Smooth Message List Scrolling"),wxPoint(-1,-1),wxDefaultSize,0);
-	MouseRightKeyCtrl->SetValue(false);
-	//MouseRightKeyCtrl->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
-	StaticTextMRKC = new wxStaticText(this,ID_STATICTEXTMRKC,_("(Conflicts with some Context Menus)"),wxDefaultPosition,wxDefaultSize,0);
-	//StaticTextMRKC->SetFont(wxFont(7,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
+////    //Hide Right keydown events from ListCtrl windows
+////	MouseRightKeyCtrl = new wxCheckBox(this,ID_EDITORENABLEDFOCUS,_("Smooth Message List Scrolling"),wxPoint(-1,-1),wxDefaultSize,0);
+////	MouseRightKeyCtrl->SetValue(false);
+////	//MouseRightKeyCtrl->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
+////	StaticTextMRKC = new wxStaticText(this,ID_STATICTEXTMRKC,_("(Conflicts with some Context Menus)"),wxDefaultPosition,wxDefaultSize,0);
+////	//StaticTextMRKC->SetFont(wxFont(7,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
 
 	wxString wxRadioBoxChoices_ScrollDirection[2];
 	wxRadioBoxChoices_ScrollDirection[0] = _("With Mouse");
@@ -95,8 +95,8 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	FlexGridSizer1->Add(EditorFocusEnabled,1,wxALL|wxALIGN_CENTER,5);
 	FlexGridSizer1->Add(MouseFocusEnabled,1,wxALL|wxALIGN_CENTER,5);
 
-	FlexGridSizer1->Add(MouseRightKeyCtrl,1,(wxALL&~wxBOTTOM)|wxALIGN_CENTER,5);
-	FlexGridSizer1->Add(StaticTextMRKC,1,(wxALL&~wxTOP)|wxALIGN_CENTER,0);
+////	FlexGridSizer1->Add(MouseRightKeyCtrl,1,(wxALL&~wxBOTTOM)|wxALIGN_CENTER,5);
+////	FlexGridSizer1->Add(StaticTextMRKC,1,(wxALL&~wxTOP)|wxALIGN_CENTER,0);
 
 	FlexGridSizer1->AddSpacer(2);
 	FlexGridSizer1->Add(ScrollDirection,1,wxALL|wxALIGN_CENTER,5);
