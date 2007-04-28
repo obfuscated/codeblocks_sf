@@ -1,6 +1,6 @@
 # ======================================================================================
 # Author: Francesco Montorsi
-# RCS-ID: $Id: configure.ac,v 1.1 2006/06/14 14:03:24 pgava Exp $
+# RCS-ID: $Id$
 #
 # A basic "configure.ac" for a wxCode component.
 # See 
