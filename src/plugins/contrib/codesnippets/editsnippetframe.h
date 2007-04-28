@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: editsnippetframe.h 58 2007-04-22 04:40:57Z Pecan $
+// RCS-ID: $Id: editsnippetframe.h 70 2007-04-28 16:04:53Z Pecan $
 
 #ifndef EDITSNIPPETFRAME_H
 #define EDITSNIPPETFRAME_H
@@ -51,6 +51,9 @@ class EditSnippetFrame : public wxFrame
         //! event handlers
         //! common
         void OnCloseWindow (wxCloseEvent &event);
+        void OnFocusWindow (wxFocusEvent &event);
+        void OnKillFocusWindow (wxFocusEvent &event);
+        void OnLeaveWindow (wxMouseEvent &event);
         void OnAbout (wxCommandEvent &event);
         void OnExit (wxCommandEvent &event);
         //-void OnTimerEvent (wxTimerEvent &event);

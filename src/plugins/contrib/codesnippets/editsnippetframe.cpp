@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: editsnippetframe.cpp 62 2007-04-25 03:29:09Z Pecan $
+// RCS-ID: $Id: editsnippetframe.cpp 70 2007-04-28 16:04:53Z Pecan $
 
 #include "editsnippetframe.h"
 
@@ -35,6 +35,10 @@
 BEGIN_EVENT_TABLE (EditSnippetFrame, wxFrame)
     // common
     EVT_CLOSE (                      EditSnippetFrame::OnCloseWindow)
+    //-- EVT_CLOSE works, but the next three EVTs never get called
+    EVT_SET_FOCUS  (                 EditSnippetFrame::OnFocusWindow)
+    EVT_KILL_FOCUS (                 EditSnippetFrame::OnKillFocusWindow)
+    EVT_LEAVE_WINDOW (               EditSnippetFrame::OnLeaveWindow)
     // file
     EVT_MENU (wxID_OPEN,             EditSnippetFrame::OnFileOpen)
     EVT_MENU (wxID_SAVE,             EditSnippetFrame::OnFileSave)
@@ -205,7 +209,27 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
 //	if (( GetConfig()->IsPlugin()) && (GetConfig()->bEditDlgMaximized) )
 //		Maximize(true);
 
-	//SetDropTarget(new EditFrameDropTarget(this));
+
+	//EVT_SET_FOCUS, EVT_KILL_FOCUS, EVT_ENTER_WINDER, EVT_LEAVE_WINDOW
+	// never get invoked by wsWidgets for this frame. So we'll connect instead.
+////    m_pEdit->Connect(wxEVT_ENTER_WINDOW,
+////                    (wxObjectEventFunction)(wxEventFunction)
+////                    (wxMouseEventFunction)&EditSnippetFrame::OnEnterWindow,
+////                     NULL, this);
+    m_pEdit->Connect(wxEVT_LEAVE_WINDOW,
+                    (wxObjectEventFunction)(wxEventFunction)
+                    (wxMouseEventFunction)&EditSnippetFrame::OnLeaveWindow,
+                     NULL, this);
+    m_pEdit->Connect(wxEVT_SET_FOCUS,
+                    (wxObjectEventFunction)(wxEventFunction)
+                    (wxFocusEventFunction)&EditSnippetFrame::OnFocusWindow,
+                     NULL, this);
+    m_pEdit->Connect(wxEVT_KILL_FOCUS,
+                    (wxObjectEventFunction)(wxEventFunction)
+                    (wxFocusEventFunction)&EditSnippetFrame::OnKillFocusWindow,
+                     NULL, this);
+
+    //SetDropTarget(new EditFrameDropTarget(this));
 	m_pEdit->SetFocus();
 
 }
@@ -308,6 +332,28 @@ void EditSnippetFrame::OnCloseWindow (wxCloseEvent &event)
     }
     End_SnippetFrame(m_nReturnCode);
 
+}
+// ----------------------------------------------------------------------------
+void EditSnippetFrame::OnFocusWindow (wxFocusEvent &event)
+// ----------------------------------------------------------------------------
+{
+    MakeModal(true);
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
+void EditSnippetFrame::OnKillFocusWindow (wxFocusEvent &event)
+// ----------------------------------------------------------------------------
+{
+    MakeModal(false);
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
+void EditSnippetFrame::OnLeaveWindow (wxMouseEvent &event)
+// ----------------------------------------------------------------------------
+{
+
+    MakeModal(false);
+    event.Skip();
 }
 
 // ----------------------------------------------------------------------------

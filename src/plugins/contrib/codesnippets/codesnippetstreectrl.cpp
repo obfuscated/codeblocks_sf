@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 68 2007-04-27 21:08:11Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 70 2007-04-28 16:04:53Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -1468,6 +1468,7 @@ void CodeSnippetsTreeCtrl::OnIdle(wxIdleEvent& event)
         // else an edit frame is done, save any changed data
         int retcode = m_aDlgRetcodes.Item(i);
         EditSnippetFrame* pdlg = (EditSnippetFrame*)m_aDlgPtrs.Item(i);
+        pdlg->MakeModal(false);
 		if (retcode == wxID_OK)
 		{
             // If XML text snippet, just save back to XML file

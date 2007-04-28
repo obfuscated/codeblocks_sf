@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.cpp 68 2007-04-27 21:08:11Z Pecan $
+// RCS-ID: $Id: snippetsconfig.cpp 70 2007-04-28 16:04:53Z Pecan $
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
 #else
@@ -473,4 +473,12 @@ bool CodeSnippetsConfig::IsFloatingWindow(wxWindow** pWindowRequest, wxPoint* pC
     if (pSizeRequest) *pSizeRequest = pmf->GetSize();
     //LOGIT( _T("IsFloating[%s]"),wxT("true"));
     return true;
+}
+// ----------------------------------------------------------------------------
+bool CodeSnippetsConfig::IsExternalWindow()
+// ----------------------------------------------------------------------------
+{
+  	if ( GetConfig()->GetSettingsWindowState().Contains(wxT("External")) )
+        return true;
+    return false;
 }

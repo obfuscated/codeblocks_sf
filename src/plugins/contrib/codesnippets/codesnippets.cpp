@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 68 2007-04-27 21:08:11Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 70 2007-04-28 16:04:53Z Pecan $
 
 #include "sdk.h"
 #ifndef CB_PRECOMB
@@ -155,6 +155,8 @@ void CodeSnippets::OnAttach()
     // ---------------------------------------
     GetConfig()->pSnipImages = new SnipImages();
 
+    // wait on user to open an external window with the view/snippets menu
+    if ( GetConfig()->IsExternalWindow() ) {return;}
     // ---------------------------------------
     // setup snippet tree docking window
     // ---------------------------------------

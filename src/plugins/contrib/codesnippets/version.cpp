@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 68 2007-04-27 21:08:11Z Pecan $
+// RCS-ID: $Id: version.cpp 70 2007-04-28 16:04:53Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -212,6 +212,11 @@ AppVersion::~AppVersion()
 //          40) Added wxProcess::Exists() to check on external snippets window
 //          41) Fixed wx2.8.3 RightClick not selecting tree item
 //          42) Fixed external snippet storage folder not being recorded
+//          43-49) reserved
+// ----------------------------------------------------------------------------
+//  Commit  1.2.51 2007/04/28
+//          50) On startup, wait for user to open external window with view/snippets menu
+//          51) Fixed CB fullscreen editor focus. Make editors modal while they have focus.
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
@@ -220,14 +225,17 @@ AppVersion::~AppVersion()
 //          Help should invoke browser for wiki article
 //          Update wiki for Re-arranging Tree items/multi-editing/.trash
 //              backup, wrapper execution, DragnDrop
-//          Bug:Plg: Tree pops over editor when moving mouse into CB window. Very Annoying.
+//          Bug:Plg: Floating Tree pops over editor when moving mouse into CB window. Very Annoying.
+//              Because wxAUI uses wxMiniFrame with stay-on-top
 //          "XML load error" doesn't pop up when loading a "txt" file. Why?
 //          MSW path may already have ";" tacked to end. What happens?
-//          Bug: Dlgs are clearing the status bar
-//          Bug: App:Settings not preserving ini options when using wxKill
-//          OnRelease kills external snippets. XML & ini not saved
-//          FullScreen CB: edit windows disappear behind CB. Give user Dialog vs Frame choice
-//              Or maybe an alway-on-top frame?
+//          Bug: Dlgs/messaageBox(s) are clearing the status bar
+//          App:Settings not preserving ini options when using wxKill
+//              OnRelease kills external pgm. XML & ini not saved
+//              Plg:Find way to close external win with view/snippets menu
+//              Could start pgm with arg = InvokingPid=xxxx, then do keepalive check.
+//          "File has changed" pops up even when file has NOT changed.
+//          Option for ToolTips and max chars shown
 //  Other
 //          Bug: Nasty wxAUI Linux behavior. Left chick on CB main menu docks floating windows.
 //               Floating window won't dock when dragged to CB. Have to left click some main menu item.
