@@ -102,6 +102,8 @@ class Wiz : public cbWizardPlugin
         void SetRadioboxSelection(const wxString& name, int sel);
 
         int GetListboxSelection(const wxString& name);
+        wxString GetListboxSelections(const wxString& name);
+        wxString GetListboxStringSelections(const wxString& name);
         void SetListboxSelection(const wxString& name, int sel);
 
         void SetTextControlValue(const wxString& name, const wxString& value);

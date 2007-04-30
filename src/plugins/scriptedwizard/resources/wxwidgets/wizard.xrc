@@ -270,164 +270,29 @@ only with GCC</label>
         </object>
       </object>
       <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxJpeg">
-          <label>wxWidgets JPEG Library</label>
-          <checked>0</checked>
+        <object class="wxListBox" name="lstWxLibs">
+          <content>
+            <item>wxRichText</item>
+            <item>wxAui</item>
+            <item>wxXrc</item>
+            <item>wxDbGrid</item>
+            <item>wxOdbc</item>
+            <item>wxMedia</item>
+            <item>wxNet</item>
+            <item>wxGl</item>
+            <item>wxQa</item>
+            <item>wxXml</item>
+            <item>wxAdv</item>
+            <item>wxHtml</item>
+            <item>wxJpeg</item>
+            <item>wxTiff</item>
+            <item>wxRegex</item>
+            <item>wxExpat</item>
+          </content>
+          <style>wxLB_MULTIPLE</style>
         </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxTiff">
-          <label>wxWidgets TIFF Library</label>
-          <checked>0</checked>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxRegExp">
-          <label>wxWidgets Regular Expression Library</label>
-          <checked>0</checked>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxExpat">
-          <label>wxWidgets Expat Library</label>
-          <checked>0</checked>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxXml">
-          <label>wxWidgets XML Library</label>
-          <checked>0</checked>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxXrc">
-          <label>wxWidgets XRC Library</label>
-          <checked>0</checked>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
         <flag>wxALL|wxGROW</flag>
         <border>8</border>
-        <object class="wxCheckBox" name="chkWxAdv">
-          <label>wxWidgets Adv Library</label>
-          <checked>0</checked>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxMore">
-          <font>
-            <weight>bold</weight>
-          </font>
-          <label>Add more wxWidgets libraries</label>
-          <checked>0</checked>
-        </object>
-      </object>
-    </object>
-  </object>
-  <object class="wxPanel" name="WxAdvLib">
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-        <object class="wxStaticText" name="LabelHeading">
-          <label>Please select the advanced libraries you want to include in\nthe project.</label>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxAdvUI">
-          <label>wxWidgets Advanced UI Library</label>
-          <checked>0</checked>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxHtml">
-          <label>wxWidgets HTML Library</label>
-          <checked>0</checked>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxOdbc">
-          <label>wxWidgets ODBC Library</label>
-          <checked>0</checked>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxMedia">
-          <label>wxWidgets Media Library</label>
-          <checked>0</checked>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxNet">
-          <label>wxWidgets Net Library</label>
-          <checked>0</checked>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxOgl">
-          <label>wxWidgets OpenGL Library</label>
-          <checked>0</checked>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxQa">
-          <label>wxWidgets QA Library</label>
-          <checked>0</checked>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <option>0</option>
-        <flag>wxALL</flag>
-        <border>8</border>
-        <object class="wxCheckBox" name="chkWxRichText">
-          <label>wxWidgets RichText Library</label>
-          <checked>0</checked>
-        </object>
       </object>
     </object>
   </object>

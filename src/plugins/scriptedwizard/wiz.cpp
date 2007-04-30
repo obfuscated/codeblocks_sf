@@ -556,6 +556,13 @@ CompileTargetBase* Wiz::RunTargetWizard(wxString* pFilename)
     target->SetIncludeInTargetAll(false);
     target->SetObjectOutput(GetTargetObjectOutputDir());
     target->SetWorkingDir(GetTargetOutputDir());
+    // Assign this target to all project files
+    for (int i = 0; i < theproject->GetFilesCount(); ++i)
+    {
+        ProjectFile* pf = theproject->GetFile(i);
+        if (pf)
+            pf->AddBuildTarget(GetTargetName());
+    }
 
     // add all the template files (if any)
     // first get the dirs with the files by calling GetFilesDir()
@@ -864,6 +871,48 @@ int Wiz::GetListboxSelection(const wxString& name)
 }
 
 
+wxString Wiz::GetListboxSelections(const wxString& name)
+{
+    wxWizardPage* page = m_pWizard->GetCurrentPage();
+    if (page)
+    {
+        wxListBox* lbox = dynamic_cast<wxListBox*>(page->FindWindowByName(name, page));
+        if (lbox)
+        {
+            wxString result;
+            size_t i;
+            wxArrayInt selections;
+            lbox->GetSelections(selections);
+            for (i = 0; i < selections.GetCount(); ++i)
+                result.Append(wxString::Format(_T("%d;"), selections[i]));
+            return result;
+        }
+    }
+    return wxEmptyString;
+}
+
+
+wxString Wiz::GetListboxStringSelections(const wxString& name)
+{
+    wxWizardPage* page = m_pWizard->GetCurrentPage();
+    if (page)
+    {
+        wxListBox* lbox = dynamic_cast<wxListBox*>(page->FindWindowByName(name, page));
+        if (lbox)
+        {
+            wxString result;
+            size_t i;
+            wxArrayInt selections;
+            lbox->GetSelections(selections);
+            for (i = 0; i < selections.GetCount(); ++i)
+                result.Append(lbox->GetString(selections[i]) + _T(";"));
+            return result;
+        }
+    }
+    return wxEmptyString;
+}
+
+
 void Wiz::SetListboxSelection(const wxString& name, int sel)
 {
     wxWizardPage* page = m_pWizard->GetCurrentPage();
@@ -1117,8 +1166,10 @@ wxString Wiz::GetProjectTitle()
 
 wxString Wiz::GetCompilerID()
 {
-    if (m_pWizCompilerPanel)
+    if (m_pWizCompilerPanel && GetWizardType() == totProject)
         return m_pWizCompilerPanel->GetCompilerID();
+    else if (GetWizardType() == totTarget && m_pWizBuildTargetPanel)
+        return m_pWizBuildTargetPanel->GetCompilerID();
     return m_DefCompilerID;
 }
 
@@ -1309,6 +1360,8 @@ void Wiz::RegisterWizard()
             func(&Wiz::GetRadioboxSelection, "GetRadioboxSelection").
             func(&Wiz::SetRadioboxSelection, "SetRadioboxSelection").
             func(&Wiz::GetListboxSelection, "GetListboxSelection").
+            func(&Wiz::GetListboxSelections, "GetListboxSelections").
+            func(&Wiz::GetListboxStringSelections, "GetListboxStringSelections").
             func(&Wiz::SetListboxSelection, "SetListboxSelection").
             // get various common info
             func(&Wiz::GetWizardType, "GetWizardType").
