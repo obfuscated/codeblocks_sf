@@ -827,8 +827,12 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
             if (!found)
                 parentNode = others;
         }
-        /* Else Put the file under virtual folder */
-        else
+        else if ((!categorize || !pGroupNodes || !fgam) && f->virtual_path.IsEmpty())
+        {
+            parentNode = m_ProjectNode;
+        }
+        /* Else put the file under virtual folder */
+        else if (!f->virtual_path.IsEmpty())
         {
             nodetext = f->virtual_path + wxFILE_SEP_PATH + f->file.GetFullName();
             folders_kind = FileTreeData::ftdkVirtualFolder;
