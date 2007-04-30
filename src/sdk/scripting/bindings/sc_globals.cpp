@@ -130,6 +130,8 @@ namespace ScriptBindings
         SqPlus::RegisterGlobal(getUVM, "GetUserVariableManager");
         SqPlus::RegisterGlobal(getSM, "GetScriptingManager");
         SqPlus::RegisterGlobal(getCF, "GetCompilerFactory");
+        SqPlus::RegisterGlobal(GetArrayFromString, "GetArrayFromString");
+        SqPlus::RegisterGlobal(GetStringFromArray, "GetStringFromArray");
 
         SqPlus::RegisterGlobal(ConfigManager::GetFolder, "GetFolder");
         SqPlus::RegisterGlobal(ConfigManager::LocateDataFile, "LocateDataFile");

@@ -121,7 +121,27 @@ namespace ScriptBindings
         wxFileName& self = *SqPlus::GetInstance<wxFileName>(v, 1);
         return sa.Return((const SQChar*)self.GetFullPath().mb_str(wxConvUTF8));
     }
-    
+
+
+///////////////////
+// wxArrayString //
+///////////////////
+
+    SQInteger wxArrayString_Index(HSQUIRRELVM v)
+    {
+        StackHandler sa(v);
+        wxArrayString& self = *SqPlus::GetInstance<wxArrayString>(v, 1);
+        wxString inpstr = *SqPlus::GetInstance<wxString>(v, 2);
+        bool chkCase = true;
+        bool frmEnd = false;
+        if (sa.GetParamCount() >= 3)
+            chkCase = sa.GetBool(3);
+        if (sa.GetParamCount() == 4)
+            frmEnd = sa.GetBool(4);
+        return sa.Return((SQInteger)self.Index((wxChar*)inpstr.wc_str(), chkCase, frmEnd));
+    }
+
+
 ////////////////
 // wxColour //
 ////////////////
@@ -133,7 +153,7 @@ namespace ScriptBindings
         wxString str = wxString::Format(_T("[r=%d, g=%d, b=%d]"), self.Red(), self.Green(), self.Blue());
         return sa.Return((const SQChar*)str.mb_str(wxConvUTF8));
     }
-    
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -227,9 +247,10 @@ namespace ScriptBindings
                 func(&wxArrayString::Add, "Add").
                 func(&wxArrayString::Clear, "Clear").
 //                func(&wxArrayString::Index, "Index").
+                staticFuncVarArgs(&wxArrayString_Index, "Index", "*").
                 func(&wxArrayString::GetCount, "GetCount").
                 func(&wxArrayString::Item, "Item");
-        
+
 #if wxCHECK_VERSION(2, 8, 0)
         typedef void(wxColour::*WXC_SET)(const unsigned char, const unsigned char, const unsigned char, const unsigned char);
 #else
