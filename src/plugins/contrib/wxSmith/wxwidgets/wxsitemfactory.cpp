@@ -98,21 +98,23 @@ int wxsItemFactory::LoadImage(const wxString& FileName)
 wxsItemFactory::wxsItemFactory(const wxsItemInfo* Info):
     m_Info(Info)
 {
+    m_Name = Info->ClassName;
     if ( Info==NULL ) return;
-    ItemMap()[Info->ClassName] = this;
+    ItemMap()[m_Name] = this;
 }
 
 wxsItemFactory::wxsItemFactory(const wxsItemInfo* Info,wxString ClassName):
     m_Info(Info)
 {
+    m_Name = ClassName;
     if ( Info==NULL ) return;
-    ItemMap()[ClassName] = this;
+    ItemMap()[m_Name] = this;
 }
 
 wxsItemFactory::~wxsItemFactory()
 {
     if ( !m_Info ) return;
-    ItemMapT::iterator it = ItemMap().find(m_Info->ClassName);
+    ItemMapT::iterator it = ItemMap().find(m_Name);
     if ( it == ItemMap().end() ) return;
     if ( it->second!=this ) return;
     ItemMap().erase(it);

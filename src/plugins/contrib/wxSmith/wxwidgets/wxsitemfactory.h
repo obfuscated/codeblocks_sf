@@ -77,6 +77,7 @@ class wxsItemFactory
         static ItemMapT& ItemMap();
 
         const wxsItemInfo* m_Info;          ///< \brief Info of item handled by this instance
+        wxString m_Name;                    ///< \brief Item's name
         static ItemMapT::iterator m_Iter;   ///< \brief Iterator used for GetFirstInfo / GetNextInfo
 };
 

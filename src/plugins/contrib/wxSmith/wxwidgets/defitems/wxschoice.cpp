@@ -84,7 +84,7 @@ void wxsChoice::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,
 
 wxObject* wxsChoice::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-    wxChoice* Preview = new wxChoice(Parent,GetId(),Pos(Parent),Size(Parent),Style());
+    wxChoice* Preview = new wxChoice(Parent,GetId(),Pos(Parent),Size(Parent),0,NULL,Style());
 
     for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
     {
