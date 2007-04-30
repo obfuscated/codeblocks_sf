@@ -3250,15 +3250,17 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
 
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown())
                             && prj && !prj->GetCurrentlyCompilingTarget();
+    bool canClose = ed && !(sh && Manager::Get()->GetEditorManager()->GetEditorsCount() == 1);
+    bool canSaveFiles = ed && !(sh && Manager::Get()->GetEditorManager()->GetEditorsCount() == 1);
 
     mbar->Enable(idFileCloseProject,canCloseProject);
     mbar->Enable(idFileOpenRecentFileClearHistory, m_pFilesHistory->GetCount());
     mbar->Enable(idFileOpenRecentProjectClearHistory, m_pProjectsHistory->GetCount());
-    mbar->Enable(idFileClose, ed && !sh);
-    mbar->Enable(idFileCloseAll, ed && !sh);
+    mbar->Enable(idFileClose, canClose);
+    mbar->Enable(idFileCloseAll, canClose);
     mbar->Enable(idFileSave, ed && ed->GetModified());
-    mbar->Enable(idFileSaveAs, ed && !sh);
-    mbar->Enable(idFileSaveAllFiles, ed && !sh);
+    mbar->Enable(idFileSaveAs, canSaveFiles);
+    mbar->Enable(idFileSaveAllFiles, canSaveFiles);
     mbar->Enable(idFileSaveProject, prj && prj->GetModified() && canCloseProject);
     mbar->Enable(idFileSaveProjectAs, prj && canCloseProject);
     mbar->Enable(idFileOpenDefWorkspace, canCloseProject);
