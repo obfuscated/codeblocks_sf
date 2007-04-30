@@ -20,7 +20,6 @@ libcodesnippets_la_SOURCES = 	codesnippets.cpp \
 			codesnippetstreectrl.cpp \
 			codesnippetswindow.cpp \
 			edit.cpp \
-			editsnippetdlg.cpp \
 			editsnippetframe.cpp \
 			messagebox.cpp \
 			messageBoxForm.cpp \
@@ -41,7 +40,6 @@ noinst_HEADERS =  	codesnippets.h \
 			codesnippetswindow.h \
 			defsext.h \
 			edit.h \
-			editsnippetdlg.h \
 			editsnippetframe.h \
 			menuidentifiers.h \
 			messagebox.h \
