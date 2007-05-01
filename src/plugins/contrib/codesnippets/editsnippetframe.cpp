@@ -337,7 +337,12 @@ void EditSnippetFrame::OnCloseWindow (wxCloseEvent &event)
 void EditSnippetFrame::OnFocusWindow (wxFocusEvent &event)
 // ----------------------------------------------------------------------------
 {
+    if ( GetConfig()->IsExternalWindow() )
+    { event.Skip(); return; }
+
+    // must be floating or docked snippets
     MakeModal(true);
+    //Raise(); //<=doesn't seem to do anything here
     event.Skip();
 }
 // ----------------------------------------------------------------------------

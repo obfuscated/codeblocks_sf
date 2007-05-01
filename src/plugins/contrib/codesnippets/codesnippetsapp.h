@@ -24,7 +24,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetsapp.h 63 2007-04-25 16:37:27Z Pecan $
+// RCS-ID: $Id: codesnippetsapp.h 71 2007-04-28 21:13:28Z Pecan $
 
 #ifndef CODESNIPPETSAPP_H
 #define CODESNIPPETSAPP_H
@@ -69,6 +69,8 @@ class CodeSnippetsApp : public wxApp
 #include "snippetsconfig.h"
 #include "codesnippetswindow.h"
 
+class wxMemoryMappedFile;
+
 // ----------------------------------------------------------------------------
 class CodeSnippetsAppFrame: public wxFrame
 // ----------------------------------------------------------------------------
@@ -94,11 +96,22 @@ class CodeSnippetsAppFrame: public wxFrame
 		void OnAbout(wxCommandEvent& event);
 		void OnActivate(wxActivateEvent& event);
 		void OnFileBackup(wxCommandEvent& event);
+		void OnTimerAlarm(wxTimerEvent& event);
+        void OnIdle(wxIdleEvent& event);
+
+        void StartKeepAliveTimer(int secs){ m_Timer.Start( secs*1000, wxTIMER_ONE_SHOT); }
+        void StopKeepAliveTimer(){ m_Timer.Stop();}
+        bool ReleaseMemoryMappedFile();
 
 		wxString            buildInfo;
-        wxSingleInstanceChecker*  m_checker ;
-        int                  m_bOnActivateBusy;
+        wxString            versionStr;
 
+        wxSingleInstanceChecker*  m_checker ;
+        int                 m_bOnActivateBusy;
+        long                m_lKeepAlivePid;
+        wxMemoryMappedFile* m_pMappedFile;
+
+        wxTimer             m_Timer;
 
 		DECLARE_EVENT_TABLE()
 };

@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 70 2007-04-28 16:04:53Z Pecan $
+// RCS-ID: $Id: version.cpp 71 2007-04-28 21:13:28Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -217,25 +217,36 @@ AppVersion::~AppVersion()
 //  Commit  1.2.51 2007/04/28
 //          50) On startup, wait for user to open external window with view/snippets menu
 //          51) Fixed CB fullscreen editor focus. Make editors modal while they have focus.
+//          52-55) reserved
+// ----------------------------------------------------------------------------
+//  Commit  1.2.60
+//          56) Restore statusbar text on idle
+//          57) Pass independent window a keepAlive Pid. ping it to save data.
+//          58) Add plgn communications to independent windows via memory mapped file
+//          59) Clean up temp memory mapped file on termination
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
-//          Bug: a renamed "new snippet" label is not sorted into place
+//          a renamed "new snippet" label is not sorted into place
 //              Maybe it shouldn't be?
 //          Help should invoke browser for wiki article
 //          Update wiki for Re-arranging Tree items/multi-editing/.trash
 //              backup, wrapper execution, DragnDrop
-//          Bug:Plg: Floating Tree pops over editor when moving mouse into CB window. Very Annoying.
-//              Because wxAUI uses wxMiniFrame with stay-on-top
+//          Plg: Floating Tree pops over editor when moving mouse into CB window. Very Annoying.
+//              Because wxAUI uses wxMiniFrame with stay-on-top, else it'll get lost
+//              since miniFrames aren't placed on the task bar.
 //          "XML load error" doesn't pop up when loading a "txt" file. Why?
 //          MSW path may already have ";" tacked to end. What happens?
-//          Bug: Dlgs/messaageBox(s) are clearing the status bar
-//          App:Settings not preserving ini options when using wxKill
-//              OnRelease kills external pgm. XML & ini not saved
-//              Plg:Find way to close external win with view/snippets menu
-//              Could start pgm with arg = InvokingPid=xxxx, then do keepalive check.
-//          "File has changed" pops up even when file has NOT changed.
-//          Option for ToolTips and max chars shown
+//          "File has changed" msg pops up even when file has NOT changed.
+//          Add option for ToolTips and max chars shown
+//          #ifdef out linux options dlg spacer (can't with wxFormBuilder)
+//              Maybe just a line instead of a spacer will work
+//          Verify:If independent snippets, plg shouldnt save conf OR xml
+//          Since making editors modal, have to move into the editor, then out
+//              again to re-enable Snippets tree. Even External win does this.
+//              Try going modal ONLY if CB is in full screen.
+//          Closing the Floating windoe while editor is modal freezes CB.
+//              Couldn't re-create. But OnClose should un-modal all wins.
 //  Other
 //          Bug: Nasty wxAUI Linux behavior. Left chick on CB main menu docks floating windows.
 //               Floating window won't dock when dragged to CB. Have to left click some main menu item.

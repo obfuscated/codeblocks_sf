@@ -24,7 +24,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetsapp.cpp 69 2007-04-27 23:58:11Z Pecan $
+// RCS-ID: $Id: codesnippetsapp.cpp 71 2007-04-28 21:13:28Z Pecan $
 
 #ifdef WX_PRECOMP //
 #include "wx_pch.h"
@@ -35,6 +35,7 @@
 #endif //__BORLANDC__
 
 #include <wx/stdpaths.h>
+#include <wx/process.h>
 
 #include "version.h"
 #include "codesnippetsapp.h"
@@ -42,6 +43,7 @@
 #include "snippetsconfig.h"
 #include "snippetsimages.h"
 #include "messagebox.h"
+#include "memorymappedfile.h"
 
 //  missing mingw header definitions
     #define MAPVK_VK_TO_VSC     0
@@ -144,8 +146,11 @@ BEGIN_EVENT_TABLE(CodeSnippetsAppFrame, wxFrame)
     EVT_MENU(idMenuQuit,            CodeSnippetsAppFrame::OnQuit)
     EVT_MENU(idMenuSettingsOptions, CodeSnippetsAppFrame::OnSettings)
     // ---
+    EVT_TIMER(-1,                   CodeSnippetsAppFrame::OnTimerAlarm)
+    // ---
     EVT_ACTIVATE(                   CodeSnippetsAppFrame::OnActivate)
     EVT_CLOSE(                      CodeSnippetsAppFrame::OnClose)
+    EVT_IDLE(                       CodeSnippetsAppFrame::OnIdle)
 
     // ---
 END_EVENT_TABLE()
@@ -154,14 +159,19 @@ END_EVENT_TABLE()
 CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title)
 // ----------------------------------------------------------------------------
     : wxFrame(frame, -1, title)
+      ,m_Timer(this,0)
 {
     GetConfig()->pMainFrame    = 0;
     GetConfig()->pSnippetsWindow = 0;
     m_bOnActivateBusy = 0;
+    m_lKeepAlivePid = 0;
+    m_pMappedFile = 0;
 
     wxStandardPaths stdPaths;
 
+    // -------------------------------
     // initialize version and logging
+    // -------------------------------
     AppVersion* pVersion = new AppVersion;
     GetConfig()->pMainFrame = this;
     //-GetConfig()->AppName = wxTheApp->GetAppName();
@@ -190,7 +200,9 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
     LOGIT(wxT("CfgFolder[%s]"),m_ConfigFolder.c_str());
     LOGIT(wxT("ExecFolder[%s]"),m_ExecuteFolder.c_str());
 
+    // --------------------
     // Find the config file
+    // --------------------
     wxString cfgFilenameStr;
     do{
         // if codesnippets.ini is in the executable folder, use it
@@ -259,8 +271,9 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
     GetConfig()->m_sWindowHandle = wxString::Format( wxT("%p"),this->GetHandle());
     GetConfig()->SettingsSaveString(wxT("WindowHandle"), GetConfig()->m_sWindowHandle);
 
-#if wxUSE_MENUS
+        // -----------------
         // create a menu bar
+        // -----------------
     wxMenuBar* mbar = new wxMenuBar();
     wxMenu* fileMenu = new wxMenu(_T(""));
     fileMenu->Append(idMenuFileOpen, _("&Load Index...\tCtrl-O"), _("Load Snippets"));
@@ -281,16 +294,15 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
     mbar->Append(helpMenu, _("&Help"));
 
     SetMenuBar(mbar);
-#endif // wxUSE_MENUS
 
-#if wxUSE_STATUSBAR
-    // create a status bar with some information about the used wxWidgets version
+    // -------------------
+    // Create Status Bar
+    // -------------------
+    // create a status bar with wxWidgets info
     CreateStatusBar(1);
-    wxString versionStr;
     versionStr = versionStr + wxT("CodeSnippets") + wxT(" ") + pVersion->GetVersion();
     SetStatusText( versionStr, 0);
     SetStatusText(wxbuildinfo(short_f), 1);
-#endif // wxUSE_STATUSBAR
 
         // set the frame icon
     GetConfig()->pSnipImages = new SnipImages();
@@ -315,13 +327,102 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
     buildInfo = buildInfo + wxT("\n\n\t")+wxT("Original Code by Arto Jonsson");
     buildInfo = buildInfo + wxT("\n\t")+wxT("Modified/Enhanced by Pecan Heber");
 
+    // -------------------------------------
+    // Setup KeepAlive check
+    // -------------------------------------
+    // we may have been invoked with a parameter of KeepAlivePid=####
+    if ( wxTheApp->argc >1 ) do
+    {
+        wxString keepAliveArg = wxTheApp->argv[1];
+        if ( not keepAliveArg.Contains(wxT("KeepAlivePid")) ) break;
+        wxString keepAlivePid = keepAliveArg.AfterLast('=');
+        keepAlivePid.ToLong(&m_lKeepAlivePid);
+         LOGIT( _T("App: KeepAlivePid is [%lu]"), m_lKeepAlivePid );
 
-}
+        // Find the "semaphore" file and map it to memory, when the plugin
+        // clears the KeepAlivePid string, we'll terminate.
+        // To memory map a file there must exists a non-zero length file
+        #if defined(__WXMSW__)
+            wxString mappedFileName = wxT("/temp/cbsnippetspid") +keepAlivePid+ wxT(".plg");
+        #else
+            wxString mappedFileName = wxT("/tmp/cbsnippetspid") +keepAlivePid+  wxT(".plg");
+        #endif
+         LOGIT( _T("mappedFileName[%s]"),mappedFileName.GetData() );
+        // Map the file
+        m_pMappedFile = new  wxMemoryMappedFile( mappedFileName, true);
+        if ( not m_pMappedFile )  break;
+        if ( not m_pMappedFile->IsOk() )
+        {
+            messageBox(wxString::Format(wxT("Error %d allocating\n%s\n\n"), m_pMappedFile->GetLastError(), mappedFileName.GetData() ));
+            delete m_pMappedFile;
+            m_pMappedFile = 0;
+            break;
+        }
+
+        if ( m_lKeepAlivePid )
+        {    StartKeepAliveTimer( 2 );
+             LOGIT( _T("StartKeepAliveTimer for[%lu]"),m_lKeepAlivePid );
+        }
+
+    }while(0);
+}//ctor
 
 // ----------------------------------------------------------------------------
 CodeSnippetsAppFrame::~CodeSnippetsAppFrame()
 // ----------------------------------------------------------------------------
 {
+}
+// ----------------------------------------------------------------------------
+wxString CodeSnippetsAppFrame::FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName)
+// ----------------------------------------------------------------------------
+{
+    // Find the absolute path from where this application has been run.
+    // argv0 is wxTheApp->argv[0]
+    // cwd is the current working directory (at startup)
+    // appVariableName is the name of a variable containing the directory for this app, e.g.
+    // MYAPPDIR. This is checked first.
+
+    wxString str;
+
+    // Try appVariableName
+    if (!appVariableName.IsEmpty())
+    {
+        str = wxGetenv(appVariableName);
+        if (!str.IsEmpty())
+            return str;
+    }
+
+#if defined(__WXMAC__) && !defined(__DARWIN__)
+    // On Mac, the current directory is the relevant one when
+    // the application starts.
+    return cwd;
+#endif
+
+    if (wxIsAbsolutePath(argv0))
+        return wxPathOnly(argv0);
+    else
+    {
+        // Is it a relative path?
+        wxString currentDir(cwd);
+        if (currentDir.Last() != wxFILE_SEP_PATH)
+            currentDir += wxFILE_SEP_PATH;
+
+        str = currentDir + argv0;
+        if (wxFileExists(str))
+            return wxPathOnly(str);
+    }
+
+    // OK, it's neither an absolute path nor a relative path.
+    // Search PATH.
+
+    wxPathList pathList;
+    pathList.AddEnvList(wxT("PATH"));
+    str = pathList.FindAbsoluteValidPath(argv0);
+    if (!str.IsEmpty())
+        return wxPathOnly(str);
+
+    // Failed
+    return wxEmptyString;
 }
 
 // ----------------------------------------------------------------------------
@@ -332,11 +433,11 @@ void CodeSnippetsAppFrame::OnClose(wxCloseEvent &event)
     if (m_bOnActivateBusy)
         return;
 
-    // EVT_CLOSE is never called for codesnippetswindow because it derives from
+    // EVT_CLOSE is never called for codesnippetswindow. Maybe bec it derives from
     // wxPanel, not wxWindow, so we'll invoke it here. It saves the files
     if ( GetConfig()->GetSnippetsWindow() )
         GetConfig()->GetSnippetsWindow()->OnClose(event);
-
+    ReleaseMemoryMappedFile();
     Destroy();
 }
 
@@ -345,9 +446,10 @@ void CodeSnippetsAppFrame::OnQuit(wxCommandEvent &event)
 // ----------------------------------------------------------------------------
 {
     // Don't close down if file checking is active
-   if (m_bOnActivateBusy)
+    if (m_bOnActivateBusy)
         return;
-    Destroy();
+    wxCloseEvent evtClose;
+    OnClose(evtClose);
 }
 
 // ----------------------------------------------------------------------------
@@ -452,55 +554,68 @@ void CodeSnippetsAppFrame::OnActivate(wxActivateEvent& event)
     return;
 }
 // ----------------------------------------------------------------------------
-wxString CodeSnippetsAppFrame::FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName)
+void CodeSnippetsAppFrame::OnTimerAlarm(wxTimerEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // Find the absolute path from where this application has been run.
-    // argv0 is wxTheApp->argv[0]
-    // cwd is the current working directory (at startup)
-    // appVariableName is the name of a variable containing the directory for this app, e.g.
-    // MYAPPDIR. This is checked first.
+    // Check the memory mapped file to see if CodeSnippets plugin
+    // cleared its pid. If so, terminate
 
-    wxString str;
+    char* pMappedData = (char*)m_pMappedFile->GetStream();
+    long lPluginPid = atol(pMappedData);
+    wxString keepAlivePid(wxString::Format(wxT("%lu"),m_lKeepAlivePid));
+    // LOGIT( _T("lPluginPid[%lu] KeepAlivePid[%lu]"), lPluginPid, m_lKeepAlivePid );
 
-    // Try appVariableName
-    if (!appVariableName.IsEmpty())
+
+    if ( lPluginPid != m_lKeepAlivePid )
     {
-        str = wxGetenv(appVariableName);
-        if (!str.IsEmpty())
-            return str;
+        ReleaseMemoryMappedFile();
+        wxCloseEvent evtClose;
+        OnClose(evtClose);
+        event.Skip();
+        return;
     }
-
-#if defined(__WXMAC__) && !defined(__DARWIN__)
-    // On Mac, the current directory is the relevant one when
-    // the application starts.
-    return cwd;
-#endif
-
-    if (wxIsAbsolutePath(argv0))
-        return wxPathOnly(argv0);
-    else
+    // When this pgm invoked by another pgm, we got a pid argument
+    // if our creator pid is gone, terminate this pgm
+    if ( m_lKeepAlivePid  && (not wxProcess::Exists( m_lKeepAlivePid )) )
     {
-        // Is it a relative path?
-        wxString currentDir(cwd);
-        if (currentDir.Last() != wxFILE_SEP_PATH)
-            currentDir += wxFILE_SEP_PATH;
-
-        str = currentDir + argv0;
-        if (wxFileExists(str))
-            return wxPathOnly(str);
+        ReleaseMemoryMappedFile();
+        wxCloseEvent evtClose;
+        OnClose(evtClose);
+        event.Skip();
+        return;
     }
+    // our creator is still alive
+    StartKeepAliveTimer( 1 );
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsAppFrame::OnIdle(wxIdleEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // when menu help clears the statusbar, put back the version string
+    wxStatusBar* sb = GetStatusBar();
+    if ( sb->GetStatusText() == wxEmptyString )
+    { sb->SetStatusText( versionStr);
+    }
+}
+// ----------------------------------------------------------------------------
+bool CodeSnippetsAppFrame::ReleaseMemoryMappedFile()
+// ----------------------------------------------------------------------------
+{
+    // Unmap & delete the memory mapped file used to communicate with the
+    // external snippets process
+    if ( not m_pMappedFile ) return true;
+    if ( m_pMappedFile->IsOk() )
+        m_pMappedFile->UnmapFile();
+    delete m_pMappedFile;
+    m_pMappedFile = 0;
 
-    // OK, it's neither an absolute path nor a relative path.
-    // Search PATH.
-
-    wxPathList pathList;
-    pathList.AddEnvList(wxT("PATH"));
-    str = pathList.FindAbsoluteValidPath(argv0);
-    if (!str.IsEmpty())
-        return wxPathOnly(str);
-
-    // Failed
-    return wxEmptyString;
+    wxString keepAlivePid(wxString::Format(wxT("%lu"), m_lKeepAlivePid));
+    #if defined(__WXMSW__)
+        wxString mappedFileName = wxT("/temp/cbsnippetspid") +keepAlivePid+ wxT(".plg");
+    #else
+        wxString mappedFileName = wxT("/tmp/cbsnippetspid") +keepAlivePid+  wxT(".plg");
+    #endif
+    bool result = ::wxRemoveFile( mappedFileName );
+    return result;
 }
 // ----------------------------------------------------------------------------

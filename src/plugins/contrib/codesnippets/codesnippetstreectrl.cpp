@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 70 2007-04-28 16:04:53Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 71 2007-04-28 21:13:28Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -833,7 +833,7 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
         LOGIT( wxT("ScrapList::OnLeftDown DoDragDrop returned[%s]"),pc.GetData() );
     #else
         wxUnusedVar(result);
-    #endif // wxUSE_STATUSBAR
+    #endif
 
     // ---WORKAROUNG --------------------------------------------------
     // Since we dragged outside the tree control with an EVT_TREE_DRAG_BEGIN
@@ -1514,7 +1514,7 @@ void CodeSnippetsTreeCtrl::OnIdle(wxIdleEvent& event)
         Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
     #endif
 
-}
+}//OnIdle
 
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnShutdown(wxCloseEvent& event)

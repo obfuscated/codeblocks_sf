@@ -450,7 +450,8 @@ bool CodeSnippetsConfig::IsFloatingWindow(wxWindow** pWindowRequest, wxPoint* pC
         if (pwSnippet->GetName() == wxT("frame")) break;
     }
     // Get CodeBlocks main window
-    wxWindow* pwCodeBlocks = Manager::Get()->GetAppWindow();
+    //wxWindow* pwCodeBlocks = Manager::Get()->GetAppWindow();
+    wxWindow* pwCodeBlocks = wxTheApp->GetTopWindow();
      //LOGIT( _T("IsFloating pwSnippet[%p]pwCodeBlocks[%p]"),pwSnippet,pwCodeBlocks );
      //LOGIT( _T("IsFloating pwSnippet[%s]pwCodeBlocks[%s]"),pwSnippet->GetName().c_str(),pwCodeBlocks->GetName().c_str() );
 

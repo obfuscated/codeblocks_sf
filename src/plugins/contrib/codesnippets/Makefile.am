@@ -32,6 +32,7 @@ libcodesnippets_la_SOURCES = 	codesnippets.cpp \
 			snippetsconfig.cpp \
 			snippetsimages.cpp \
 			finddialogs.cpp \
+			memorymappedfile.cpp \
 			version.cpp
 
 noinst_HEADERS =  	codesnippets.h \
@@ -53,6 +54,7 @@ noinst_HEADERS =  	codesnippets.h \
 			snippetsconfig.h \
 			snippetsimages.h \
 			finddialogs.h \
+			memorymappedfile.h \
 			version.h \
 			wx_pch.h
 

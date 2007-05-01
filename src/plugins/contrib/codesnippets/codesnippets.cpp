@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 70 2007-04-28 16:04:53Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 71 2007-04-28 21:13:28Z Pecan $
 
 #include "sdk.h"
 #ifndef CB_PRECOMB
@@ -40,6 +40,7 @@
 #include "snippetsconfig.h"
 #include "messagebox.h"
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
+#include "memorymappedfile.h"
 
 #if defined(__WXGTK__)
     #include "wx/gtk/win_gtk.h"
@@ -148,7 +149,8 @@ void CodeSnippets::OnAttach()
     SetTreeCtrlHandler( m_pEdMan->GetTree(),  wxEVT_COMMAND_TREE_BEGIN_DRAG );
 
     m_nOnActivateBusy = 0;
-    m_Pid = 0;
+    m_ExternalPid = 0;
+    m_pMappedFile = 0;
 
     // ---------------------------------------
     // load tree icons/images
@@ -170,20 +172,25 @@ void CodeSnippets::OnRelease(bool appShutDown)
 {
     // watch out, CodeBlocks can enter this routine multiple times
 
-    // Kill External Snippets if we started it.
-    int result = 0;
-    if ( m_Pid ) result = wxKill(m_Pid);
-    if (0==result) m_Pid = 0;
+    // Unmap and delete the temporary memory mapped communications file
+    ReleaseMemoryMappedFile();
 
+    wxString myPid(wxString::Format(wxT("%lu"),::wxGetProcessId()));
+    #if defined(__WXMSW__)
+        wxString mappedFileName = wxT("/temp/cbsnippetspid") +myPid+ wxT(".plg");
+    #else
+        wxString mappedFileName = wxT("/tmp/cbsnippetspid") +myPid+  wxT(".plg");
+    #endif
+    bool result = ::wxRemoveFile( mappedFileName );
+    wxUnusedVar(result);
+    // ----------------------------------
     if (not GetSnippetsWindow()) return;
+    // ----------------------------------
 
     // Don't close down if file checking is active
     while ( m_nOnActivateBusy )
     {   wxMilliSleep(10) ; wxYield();
     }
-
-//     LOGIT( _T("OnRelease Saving Settings"));
-//    GetConfig()->SettingsSave();
 
     // If floating window, we have to close it or CB crashes
     if ( GetConfig()->IsFloatingWindow() )
@@ -195,6 +202,8 @@ void CodeSnippets::OnRelease(bool appShutDown)
         GetSnippetsWindow()->Destroy();
         SetSnippetsWindow(0);
     }
+
+
 }
 
 // ----------------------------------------------------------------------------
@@ -227,7 +236,8 @@ void CodeSnippets::CreateSnippetWindow()
 // ----------------------------------------------------------------------------
 {
     // Launch the executable if user specified "External" WindowState
-    // GetConfig()->m_Pid will contain the resulting Pid if successful
+
+    // GetConfig()->m_ExternalPid will contain the resulting launched pgm Pid if successful
    	if ( GetConfig()->GetSettingsWindowState().Contains(wxT("External")) )
     {
         /*bool result =*/ LaunchExternalSnippets();
@@ -309,11 +319,44 @@ void CodeSnippets::CreateSnippetWindow()
 
 }
 // ----------------------------------------------------------------------------
+void CodeSnippets::TellExternalSnippetsToTerminate()
+// ----------------------------------------------------------------------------
+{
+    // Get ptr to mapped area and zero my pid as a terminate signal
+    // Unmap the file so child can remove it.
+    char* pMappedData = (char*)m_pMappedFile->GetStream();
+    char onebyte[1] = {0};
+    std::strncpy(pMappedData, onebyte, 1);
+    wxYield();
+}
+// ----------------------------------------------------------------------------
+bool CodeSnippets::ReleaseMemoryMappedFile()
+// ----------------------------------------------------------------------------
+{
+    // Unmap & delete the memory mapped file used to communicate with the
+    // external snippets process
+    if ( not m_pMappedFile ) return true;
+    if ( m_pMappedFile->IsOk() )
+        m_pMappedFile->UnmapFile();
+    delete m_pMappedFile;
+    m_pMappedFile = 0;
+
+    wxString myPid(wxString::Format(wxT("%lu"),::wxGetProcessId()));
+    #if defined(__WXMSW__)
+        wxString mappedFileName = wxT("/temp/cbsnippetspid") +myPid+ wxT(".plg");
+    #else
+        wxString mappedFileName = wxT("/tmp/cbsnippetspid") +myPid+  wxT(".plg");
+    #endif
+    bool result = ::wxRemoveFile( mappedFileName );
+    return result;
+}
+// ----------------------------------------------------------------------------
 void CodeSnippets::SetSnippetsWindow(CodeSnippetsWindow* p)
 // ----------------------------------------------------------------------------
 {
     GetConfig()->pSnippetsWindow = p;
 }
+
 // ----------------------------------------------------------------------------
 void CodeSnippets::OnViewSnippets(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
@@ -323,26 +366,27 @@ void CodeSnippets::OnViewSnippets(wxCommandEvent& event)
         // ---------------------------------------
     if ( GetConfig()->GetSettingsWindowState().Contains(wxT("External")) )
     {
-         LOGIT( _T("OnView External m_Pid[%lu] Checked[%d]"), m_Pid, event.IsChecked() );
-        if ( (not m_Pid) && event.IsChecked() )
+         LOGIT( _T("OnView External m_ExternalPid[%lu] Checked[%d]"), m_ExternalPid, event.IsChecked() );
+        if ( (not m_ExternalPid) && event.IsChecked() )
         {    CreateSnippetWindow();
-            LOGIT( _T("m_Pid[%lu]"), m_Pid );
+            LOGIT( _T("m_ExternalPid[%lu]"), m_ExternalPid );
             return;
         }
-        if ( m_Pid && (not event.IsChecked()) )
+        if ( m_ExternalPid && (not event.IsChecked()) )
         {   // user closing external snippets with View/Snippets menu item
-            // FIXME: if we kill the pgm, it never saves its data
-            //::wxKill(m_Pid);
-            //m_Pid = 0;
-            // LOGIT( _T("m_Pid[%lu]"), m_Pid );
+            // Signal, via mapped file, external snippets to terminate
+            // LOGIT( _T("m_ExternalPid[%lu]"), m_ExternalPid );
+            TellExternalSnippetsToTerminate();
+            ReleaseMemoryMappedFile();
+            m_ExternalPid = 0;
             return;
         }
     }
-    else if ( m_Pid )
+    else if ( m_ExternalPid )
     {   // user changed from Independent window to someting else ;
-        // FIXME: if we kill, pgm never saves its data
-////        ::wxKill(m_Pid);
-////        m_Pid = 0;
+        TellExternalSnippetsToTerminate();
+        ReleaseMemoryMappedFile();
+        m_ExternalPid = 0;
     }
         // ---------------------------------------
         // setup snippet tree docking window
@@ -402,20 +446,25 @@ void CodeSnippets::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     wxMenuBar* pbar = Manager::Get()->GetAppWindow()->GetMenuBar();
 
     // check for externally started CodeSnippets
-    if (not GetSnippetsWindow() && (not m_Pid) )
+    if (not GetSnippetsWindow() && (not m_ExternalPid) )
     {   pbar->Check(idViewSnippets, false);
          return;
     }
     // check if external CodeSnippets terminated without us
-    if ( (not GetSnippetsWindow()) && m_Pid )
+    if ( (not GetSnippetsWindow()) && m_ExternalPid )
     {
-        if (not wxProcess::Exists(m_Pid))
-            m_Pid = 0;
-        pbar->Check(idViewSnippets, m_Pid);
+        if (not ::wxProcess::Exists(m_ExternalPid))
+        {
+            ReleaseMemoryMappedFile();
+            m_ExternalPid = 0;
+        }
+        pbar->Check(idViewSnippets, m_ExternalPid);
         return;
     }
 
+    // -----------------------------------
     // Floating or Docked snippets window
+    // -----------------------------------
 	// Check if the Code Snippets window is visible, if it's not, uncheck the menu item
 	if (GetSnippetsWindow() )
     {    pbar->Check(idViewSnippets, IsWindowReallyShown(GetSnippetsWindow()));
@@ -423,9 +472,9 @@ void CodeSnippets::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     }
 
     // check for independent window running
-    if (m_Pid)
+    if (m_ExternalPid)
     {
-        pbar->Check(idViewSnippets, m_Pid!=0);
+        pbar->Check(idViewSnippets, m_ExternalPid!=0);
 
     }
 
@@ -963,7 +1012,7 @@ void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
             LOGIT( wxT("CodeSnippets::OnLeftDown DoDragDrop returned[%s]"),pc.GetData() );
         #else
             wxUnusedVar(result);
-        #endif // wxUSE_STATUSBAR
+        #endif
 
         // ---MSW WORKAROUNG --------------------------------------------------
         // Since we dragged outside the tree control with an EVT_TREE_DRAG_BEGIN
@@ -1174,17 +1223,16 @@ int CodeSnippets::LaunchProcess(const wxString& cmd, const wxString& cwd)
     #endif
 
     // start codesnippets
-    //Manager::Get()->GetMessageManager()->AppendLog(m_PageIndex, _("Starting program: "));
-    Manager::Get()->GetMessageManager()->Log(0, _("Starting program:")+cmd);
-    m_Pid = wxExecute(cmd, wxEXEC_ASYNC);
-     LOGIT( _T("Launch [%s\n] from [%s]\n] Pid[%lu]"), cmd.c_str(), cwd.c_str(), m_Pid );
+    Manager::Get()->GetMessageManager()->DebugLog( _("Starting program:")+cmd);
+    m_ExternalPid = wxExecute(cmd, wxEXEC_ASYNC);
+     LOGIT( _T("Launch [%s\n] from [%s]\n] Pid[%lu]"), cmd.c_str(), cwd.c_str(), m_ExternalPid );
 
-    #ifdef __WXMAC__
-        if (m_Pid == -1)
+    #if defined(__WXMAC__)
+        if (m_ExternalPid == -1)
         {
             // Great! We got a fake PID. Time to Go Fish with our "ps" rod:
 
-            m_Pid = 0;
+            m_ExternalPid = 0;
             pid_t mypid = getpid();
             wxString mypidStr;
             mypidStr << mypid;
@@ -1195,7 +1243,7 @@ int CodeSnippets::LaunchProcess(const wxString& cmd, const wxString& cwd)
             wxArrayString psErrors;
 
             psCmd << wxT("/bin/ps -o ppid,pid,command");
-            DebugLog(wxString::Format( _("Executing: %s"), psCmd.c_str()) );
+            Manager::Get()->GetMessageManager()->DebugLog(wxString::Format( _("Executing: %s"), psCmd.c_str()) );
             int result = wxExecute(psCmd, psOutput, psErrors, wxEXEC_SYNC);
 
             mypidStr << wxT(" ");
@@ -1209,25 +1257,26 @@ int CodeSnippets::LaunchProcess(const wxString& cmd, const wxString& cwd)
                    pidStr = pidStr.BeforeFirst(' ');
                    if (pidStr.ToLong(&pspid))
                    {
-                       m_Pid = pspid;
+                       m_ExternalPid = pspid;
                        break;
                    }
                }
              }
 
             for (int i = 0; i < psErrors.GetCount(); ++i)
-                DebugLog(wxString::Format( _("PS Error:%s"), psErrors.Item(i).c_str()) );
-        }//if(m_Pid == -1)
+                Manager::Get()->GetMessageManager()->DebugLog(wxString::Format( _("PS Error:%s"), psErrors.Item(i).c_str()) );
+
+        }//if(m_ExternalPid == -1)
     #endif
 
-    if (!m_Pid)
+    if (!m_ExternalPid)
     {
         //Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("failed"));
-        Manager::Get()->GetMessageManager()->Log(0, _("failed"));
+        Manager::Get()->GetMessageManager()->DebugLog( _("failed"));
         return -1;
     }
     //Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("done"));
-    Manager::Get()->GetMessageManager()->Log(0, _("done"));
+    Manager::Get()->GetMessageManager()->DebugLog( _("done"));
     return 0;
 }
 // ----------------------------------------------------------------------------
@@ -1235,12 +1284,52 @@ long CodeSnippets::LaunchExternalSnippets()
 // ----------------------------------------------------------------------------
 {
    // Launch the executable if user specified "External" WindowState
-   // Save the Pid in a tempfile so plugin can monitor its existance
 
-        wxString PgmFullPath = GetConfig()->m_ExecuteFolder+wxFILE_SEP_PATH
+    // First, create a memory mapped file with our Pid in it.
+    // The launched process will check for the Pid to disappear
+    // and terminate, saving its data and conf settings
+
+    // deallocate any previously mapped file
+    ReleaseMemoryMappedFile();
+
+    // make a unique mapped file name with my pid
+    wxString myPid(wxString::Format(wxT("%lu"),::wxGetProcessId()));
+    // To memory map a file there must exists a non-zero length file
+    #if defined(__WXMSW__)
+        wxString mappedFileName = wxT("/temp/cbsnippetspid") +myPid+ wxT(".plg");
+    #else
+        wxString mappedFileName = wxT("/tmp/cbsnippetspid") +myPid+  wxT(".plg");
+    #endif
+    wxFile mappedFile;
+    mappedFile.Create( mappedFileName, true);
+    char buf[1024] = {0};
+    mappedFile.Write(buf,1024);
+    mappedFile.Close();
+    m_pMappedFile = 0;
+
+    // Map the file
+    m_pMappedFile = new  wxMemoryMappedFile( mappedFileName, false);
+    if ( not m_pMappedFile ) { return -1;}
+    if ( not m_pMappedFile->IsOk() )
+    {
+        messageBox(wxString::Format(wxT("Error %d allocating\n%s\n\n"), m_pMappedFile->GetLastError(), mappedFileName.GetData() ));
+        return -1;
+    }
+    // Get ptr to mapped area and write my pid as a semaphore flag
+    char* pMappedData = (char*)m_pMappedFile->GetStream();
+    std::strncpy(pMappedData, cbU2C(myPid), myPid.Length());
+    //pMappedFile->UnmapFile(); will deallocate the file (so will the dtor)
+
+    // Launch the external process
+    wxString PgmFullPath =
+                    GetConfig()->m_ExecuteFolder
                     + wxT("/share/codeblocks/plugins/codesnippets");
-    bool result = LaunchProcess(PgmFullPath, wxGetCwd());
-     LOGIT( _T("Launch Result[%d] m_Pid[%lu]"),result, m_Pid );
+    wxString pgmArgs( wxString::Format( wxT("KeepAlivePid=%lu"), ::wxGetProcessId() ) );
+    wxString command = PgmFullPath + wxT(" ") + pgmArgs;
+
+     LOGIT( _T("Launching[%s]"), command.GetData());
+    bool result = LaunchProcess(command, wxGetCwd());
+     LOGIT( _T("Launch Result[%d] m_ExternalPid[%lu]"),result, m_ExternalPid );
     if ( 0 != result )
     {  wxString msg(wxString::Format(wxT("Error [%d] Launching\n %s\n"),result, PgmFullPath.c_str()));
        messageBox( msg );

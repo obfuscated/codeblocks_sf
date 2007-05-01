@@ -85,6 +85,8 @@
 		<Unit filename="editsnippetframe.h" />
 		<Unit filename="finddialogs.cpp" />
 		<Unit filename="finddialogs.h" />
+		<Unit filename="memorymappedfile.cpp" />
+		<Unit filename="memorymappedfile.h" />
 		<Unit filename="menuidentifiers.h" />
 		<Unit filename="messageBoxForm.cpp" />
 		<Unit filename="messageBoxForm.h" />

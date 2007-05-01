@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.cpp 68 2007-04-27 21:08:11Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.cpp 71 2007-04-28 21:13:28Z Pecan $
 
 #ifdef WX_PRECOMP //
     #include "wx_pch.h"
@@ -155,8 +155,9 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 	EVT_TREE_END_LABEL_EDIT(idSnippetsTreeCtrl, CodeSnippetsWindow::OnEndLabelEdit)
 	//EVT_TREE_ITEM_GETTOOLTIP(idSnippetsTreeCtrl, CodeSnippetsWindow::OnItemGetToolTip)
 	// ---
-	EVT_CLOSE( CodeSnippetsWindow::OnClose)
 	// EVT_CLOSE Doesn't work on wxAUI windows, this is called from a Connect
+	EVT_CLOSE( CodeSnippetsWindow::OnClose) //never occurs with wxAUI
+	// EVT_IDLE(   CodeSnippetsWindow::OnIdle) //works ok
 
 END_EVENT_TABLE()
 
@@ -212,9 +213,7 @@ void CodeSnippetsWindow::OnClose(wxCloseEvent& event)
 
     if ( not GetConfig()->GetSnippetsWindow() )
         {event.Skip();return;}
-     LOGIT( _T("OnClose [%p] [%s]"),GetConfig()->m_pEvtCloseConnect,
-            (GetConfig()->IsFloatingWindow())?wxT("Floating"):wxT("Docked"));
-     LOGIT( _T("Onclose Saving Settings"));
+     LOGIT( _T("CodeSnippetsWindow::Onclose Saving Settings"));
     GetConfig()->SettingsSave();
     if (GetConfig()->IsPlugin())
     {
@@ -1126,6 +1125,12 @@ void CodeSnippetsWindow::OnMnuSaveSnippetAsFileLink(wxCommandEvent& event)
     SetActiveMenuId( event.GetId() );
 
     GetSnippetsTreeCtrl()->SaveSnippetAsFileLink( );
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsWindow::OnIdle(wxIdleEvent& event)
+// ----------------------------------------------------------------------------
+{
+
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuAbout(wxCommandEvent& event)

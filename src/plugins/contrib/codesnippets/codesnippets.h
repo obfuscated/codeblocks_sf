@@ -26,7 +26,9 @@
 //#include "wxaui/manager.h"
 #include "snippetsconfig.h"
 
+
 class CodeSnippetsWindow;
+class wxMemoryMappedFile;
 
 // ----------------------------------------------------------------------------
 class CodeSnippets : public cbPlugin
@@ -147,6 +149,8 @@ class CodeSnippets : public cbPlugin
         wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
         int LaunchProcess(const wxString& cmd, const wxString& cwd);
         long LaunchExternalSnippets();
+        bool ReleaseMemoryMappedFile();
+        void TellExternalSnippetsToTerminate();
 
         #if defined(__WXMSW__)
             void MSW_MouseMove(int x, int y );
@@ -166,7 +170,9 @@ class CodeSnippets : public cbPlugin
         wxTreeItemId    m_TreeItemId;
         wxString        m_TreeText;
         int             m_nOnActivateBusy;
-        long            m_Pid;
+        long            m_ExternalPid;
+        wxMemoryMappedFile* m_pMappedFile;
+
 
 		DECLARE_EVENT_TABLE();
 
