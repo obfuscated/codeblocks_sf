@@ -138,7 +138,7 @@ namespace ScriptBindings
             chkCase = sa.GetBool(3);
         if (sa.GetParamCount() == 4)
             frmEnd = sa.GetBool(4);
-        return sa.Return((SQInteger)self.Index((wxChar*)inpstr.wc_str(), chkCase, frmEnd));
+        return sa.Return((SQInteger)self.Index(inpstr.c_str(), chkCase, frmEnd));
     }
 
 
