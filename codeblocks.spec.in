@@ -206,7 +206,7 @@ fi
 %{pkgdata}/RegExTestbed.zip
 %{pkgdata}/SymTab.zip
 %{pkgdata}/wxsmith.zip
-%{pkgdata}/wxSmithContribItems.zip
+%{pkgdata}/wxsmithcontribitems.zip
 %{pkgdata}/images/wxsmith/*
 %{pkgdata}/images/codesnippets/*
 %{pkgdata}/plugins/libbyogames.*
@@ -223,6 +223,7 @@ fi
 %{pkgdata}/plugins/libRegExTestbed.*
 %{pkgdata}/plugins/libSymTab.*
 %{pkgdata}/plugins/libwxsmith.*
+%{pkgdata}/plugins/libwxsmithlib.*
 %{pkgdata}/plugins/libwxsmithcontribitems.*
 
 %files devel
