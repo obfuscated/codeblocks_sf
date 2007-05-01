@@ -565,32 +565,12 @@ function SetupProject(project)
 	// set project options
     if (PLATFORM != PLATFORM_MSW)
     {
-		/* For Linux / Mac */
-		if (ChoiceWxUnixLib == 1)
-		{
-			local flags;
-			flags = _T("`wx-config ");
-			flags = flags + _T(" --version=") + LibWxVer;
-			flags = flags + (IsDLL == false ? _T(" --static=yes") : _T(" --static=no"));
-			flags = flags + (IsUnicode == true ? _T(" --unicode=yes") : _T(" --unicode=no"));
-			local target = project.GetBuildTarget(Wizard.GetDebugName());
-			if (!IsNull(target))
-			{
-				target.AddCompilerOption(flags + _T(" --debug=yes --cflags`"));
-				target.AddLinkerOption(flags + _T(" --debug=yes --libs`"));
-			}
-			local target = project.GetBuildTarget(Wizard.GetReleaseName());
-			if (!IsNull(target))
-			{
-				target.AddCompilerOption(flags + _T(" --debug=no --cflags`"));
-				target.AddLinkerOption(flags + _T(" --debug=no --libs`"));
-			}
-		}
-		else
-		{
-			project.AddCompilerOption(_T("`wx-config --cflags`"));
-			project.AddLinkerOption(_T("`wx-config --libs`"));
-		}
+		local target = project.GetBuildTarget(Wizard.GetDebugName());
+		if (!IsNull(target))
+			SetupTarget(target, true);
+		local target = project.GetBuildTarget(Wizard.GetReleaseName());
+		if (!IsNull(target))
+			SetupTarget(target, false);
 
 		// Now enable PCH
 	    if (WantPCH && GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
@@ -607,23 +587,6 @@ function SetupProject(project)
 	            project.AddCompilerOption(_T("-DWX_PRECOMP"));
 	        }
 	    }
-	    
-        if (PLATFORM == PLATFORM_MAC)
-        {
-            // still need the resource fork hack to run unbundled wxWidgets applications:
-            local rezflags = _T("/Developer/Tools/Rez -d __DARWIN__ -t APPL Carbon.r -o");
-            
-            local target = project.GetBuildTarget(Wizard.GetDebugName());
-            if (!IsNull(target))
-            {
-                target.AddCommandsAfterBuild(rezflags + _T(" $(TARGET_OUTPUT_FILE)"));
-            }
-            local target = project.GetBuildTarget(Wizard.GetReleaseName());
-            if (!IsNull(target))
-            {
-                target.AddCommandsAfterBuild(rezflags + _T(" $(TARGET_OUTPUT_FILE)"));
-            }
-        }
     }
     else
     {
@@ -857,7 +820,45 @@ function SetupTarget(target, is_debug)
 	if (!is_debug)
 		LibDebugSuffix = _T("");
 
-	if (PLATFORM == PLATFORM_MSW)
+	/* For Linux / Mac */
+	if (PLATFORM != PLATFORM_MSW)
+	{
+		if (ChoiceWxUnixLib == 1)
+		{
+			local flags;
+			flags = _T("`wx-config ");
+			flags = flags + _T(" --version=") + LibWxVer;
+			flags = flags + (IsDLL == false ? _T(" --static=yes") : _T(" --static=no"));
+			flags = flags + (IsUnicode == true ? _T(" --unicode=yes") : _T(" --unicode=no"));
+			if (is_debug)
+			{
+				target.AddCompilerOption(flags + _T(" --debug=yes --cflags`"));
+				target.AddLinkerOption(flags + _T(" --debug=yes --libs`"));
+			}
+			if (!is_debug)
+			{
+				target.AddCompilerOption(flags + _T(" --debug=no --cflags`"));
+				target.AddLinkerOption(flags + _T(" --debug=no --libs`"));
+			}
+		}
+		else
+		{
+			project.AddCompilerOption(_T("`wx-config --cflags`"));
+			project.AddLinkerOption(_T("`wx-config --libs`"));
+		}
+		
+		if (PLATFORM == PLATFORM_MAC)
+        {
+            // still need the resource fork hack to run unbundled wxWidgets applications:
+            local rezflags = _T("/Developer/Tools/Rez -d __DARWIN__ -t APPL Carbon.r -o");
+            
+            if (!IsNull(target))
+            {
+                target.AddCommandsAfterBuild(rezflags + _T(" $(TARGET_OUTPUT_FILE)"));
+            }
+        }
+	}
+	else if (PLATFORM == PLATFORM_MSW)
 	{
 		local libdir = LibPath + _T("/msw");
 		if (IsUnicode)
