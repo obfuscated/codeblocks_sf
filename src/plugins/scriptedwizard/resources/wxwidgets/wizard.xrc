@@ -289,7 +289,7 @@ only with GCC</label>
             <item>wxRegex</item>
             <item>wxExpat</item>
           </content>
-          <style>wxLB_MULTIPLE</style>
+          <style>wxLB_EXTENDED</style>
         </object>
         <flag>wxALL|wxGROW</flag>
         <border>8</border>
