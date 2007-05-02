@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 71 2007-04-28 21:13:28Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 72 2007-05-01 15:19:27Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -1359,7 +1359,9 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxStri
     {   EditSnippetFrame* pesf = (EditSnippetFrame*)m_aDlgPtrs.Item(i);
         if (not pesf) continue;
         if ( pesf->GetSnippetId() == GetAssociatedItemID() )
-    	{   m_aDlgPtrs.Item(i)->SetFocus();
+    	{
+    	    m_aDlgPtrs.Item(i)->Iconize(false);
+    	    m_aDlgPtrs.Item(i)->SetFocus();
             return;
     	}
     }//for

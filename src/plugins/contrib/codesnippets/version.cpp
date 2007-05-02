@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 71 2007-04-28 21:13:28Z Pecan $
+// RCS-ID: $Id: version.cpp 72 2007-05-01 15:19:27Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -219,11 +219,16 @@ AppVersion::~AppVersion()
 //          51) Fixed CB fullscreen editor focus. Make editors modal while they have focus.
 //          52-55) reserved
 // ----------------------------------------------------------------------------
-//  Commit  1.2.60
+//  Commit  1.2.59 2007/05/1
 //          56) Restore statusbar text on idle
 //          57) Pass independent window a keepAlive Pid. ping it to save data.
 //          58) Add plgn communications to independent windows via memory mapped file
 //          59) Clean up temp memory mapped file on termination
+// ----------------------------------------------------------------------------
+//  Commit  1.2.61 2007/05/2
+//          60) Change modal editors to wxFRAME_FLOAT_ON_PARENT (works much better)
+//          61) UnIconize and focus hidden|iconsized editors when user re-selects tree item
+//          62) Corrections to FindAppPath() when pgm started without .exe .bat etc.
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
@@ -232,9 +237,6 @@ AppVersion::~AppVersion()
 //          Help should invoke browser for wiki article
 //          Update wiki for Re-arranging Tree items/multi-editing/.trash
 //              backup, wrapper execution, DragnDrop
-//          Plg: Floating Tree pops over editor when moving mouse into CB window. Very Annoying.
-//              Because wxAUI uses wxMiniFrame with stay-on-top, else it'll get lost
-//              since miniFrames aren't placed on the task bar.
 //          "XML load error" doesn't pop up when loading a "txt" file. Why?
 //          MSW path may already have ";" tacked to end. What happens?
 //          "File has changed" msg pops up even when file has NOT changed.
@@ -247,6 +249,8 @@ AppVersion::~AppVersion()
 //              Try going modal ONLY if CB is in full screen.
 //          Closing the Floating windoe while editor is modal freezes CB.
 //              Couldn't re-create. But OnClose should un-modal all wins.
+//          Neither wxSTAY_ON_TOP nor wxFRAME_FLOAT_ON_PARENT work on Linux wx2.6.3
+//              Iconize(false) did not work on my andLinux
 //  Other
 //          Bug: Nasty wxAUI Linux behavior. Left chick on CB main menu docks floating windows.
 //               Floating window won't dock when dragged to CB. Have to left click some main menu item.

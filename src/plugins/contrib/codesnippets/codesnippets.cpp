@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 71 2007-04-28 21:13:28Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 72 2007-05-01 15:19:27Z Pecan $
 
 #include "sdk.h"
 #ifndef CB_PRECOMB
@@ -110,6 +110,7 @@ void CodeSnippets::OnAttach()
     //memorize the key file name as {%HOME%}\codesnippets.ini
     GetConfig()->m_ConfigFolder = stdPaths.GetUserDataDir();
     //-wxString m_ExecuteFolder = stdPaths.GetDataDir();
+     LOGIT( _T("Argv[0][%s] Cwd[%s]"), wxTheApp->argv[0], ::wxGetCwd().GetData() );
     GetConfig()->m_ExecuteFolder = FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString);
 
     //GTK GetConfigFolder is returning double "//?, eg, "/home/pecan//.codeblocks"
@@ -1172,8 +1173,21 @@ wxString CodeSnippets::FindAppPath(const wxString& argv0, const wxString& cwd, c
     return cwd;
 #endif
 
-    if (wxIsAbsolutePath(argv0))
-        return wxPathOnly(argv0);
+    wxString argv0Str = argv0;
+    #if defined(__WXMSW__)
+        do{
+            if (argv0Str.Contains(wxT(".exe")) ) break;
+            if (argv0Str.Contains(wxT(".bat")) ) break;
+            if (argv0Str.Contains(wxT(".cmd")) ) break;
+            argv0Str.Append(wxT(".exe"));
+        }while(0);
+    #endif
+
+    if (wxIsAbsolutePath(argv0Str))
+    {
+        LOGIT( _T("FindAppPath: AbsolutePath[%s]"), wxPathOnly(argv0Str).GetData() );
+        return wxPathOnly(argv0Str);
+    }
     else
     {
         // Is it a relative path?
@@ -1181,9 +1195,12 @@ wxString CodeSnippets::FindAppPath(const wxString& argv0, const wxString& cwd, c
         if (currentDir.Last() != wxFILE_SEP_PATH)
             currentDir += wxFILE_SEP_PATH;
 
-        str = currentDir + argv0;
+        str = currentDir + argv0Str;
         if (wxFileExists(str))
+        {
+            LOGIT( _T("FindAppPath: RelativePath[%s]"), wxPathOnly(str).GetData() );
             return wxPathOnly(str);
+        }
     }
 
     // OK, it's neither an absolute path nor a relative path.
@@ -1191,12 +1208,17 @@ wxString CodeSnippets::FindAppPath(const wxString& argv0, const wxString& cwd, c
 
     wxPathList pathList;
     pathList.AddEnvList(wxT("PATH"));
-    str = pathList.FindAbsoluteValidPath(argv0);
+    str = pathList.FindAbsoluteValidPath(argv0Str);
     if (!str.IsEmpty())
+    {
+        LOGIT( _T("FindAppPath: SearchPath[%s]"), wxPathOnly(str).GetData() );
         return wxPathOnly(str);
+    }
 
     // Failed
+     LOGIT(  _T("FindAppPath: Failed, returning cwd") );
     return wxEmptyString;
+    //return cwd;
 }
 // ----------------------------------------------------------------------------
 int CodeSnippets::LaunchProcess(const wxString& cmd, const wxString& cwd)

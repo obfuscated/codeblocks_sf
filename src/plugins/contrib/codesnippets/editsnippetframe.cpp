@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: editsnippetframe.cpp 70 2007-04-28 16:04:53Z Pecan $
+// RCS-ID: $Id: editsnippetframe.cpp 72 2007-05-01 15:19:27Z Pecan $
 
 #include "editsnippetframe.h"
 
@@ -135,7 +135,7 @@ bool EditFrameDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
 EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode )
 // ----------------------------------------------------------------------------
 	: wxFrame( GetConfig()->GetSnippetsWindow(), wxID_ANY, _T("Edit snippet"),
-		wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxMAXIMIZE_BOX|wxRESIZE_BORDER)
+		wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE|wxFRAME_FLOAT_ON_PARENT)
 {
     //ctor
 
@@ -232,6 +232,10 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
     //SetDropTarget(new EditFrameDropTarget(this));
 	m_pEdit->SetFocus();
 
+	#if defined(__WXGTK__)
+	GtkWidget* gtkWindow = GetHandle();
+	gtkWindow->gdk_window_set_keep_above();
+	#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -341,7 +345,7 @@ void EditSnippetFrame::OnFocusWindow (wxFocusEvent &event)
     { event.Skip(); return; }
 
     // must be floating or docked snippets
-    MakeModal(true);
+    //MakeModal(true); <= using wxFRAME_FLOAT_ON_PARENT works much better
     //Raise(); //<=doesn't seem to do anything here
     event.Skip();
 }
@@ -349,7 +353,7 @@ void EditSnippetFrame::OnFocusWindow (wxFocusEvent &event)
 void EditSnippetFrame::OnKillFocusWindow (wxFocusEvent &event)
 // ----------------------------------------------------------------------------
 {
-    MakeModal(false);
+    //MakeModal(false);<= using wxFRAME_FLOAT_ON_PARENT works much better
     event.Skip();
 }
 // ----------------------------------------------------------------------------
@@ -357,7 +361,7 @@ void EditSnippetFrame::OnLeaveWindow (wxMouseEvent &event)
 // ----------------------------------------------------------------------------
 {
 
-    MakeModal(false);
+    //MakeModal(false);<= using wxFRAME_FLOAT_ON_PARENT works much better
     event.Skip();
 }
 

@@ -24,7 +24,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetsapp.cpp 71 2007-04-28 21:13:28Z Pecan $
+// RCS-ID: $Id: codesnippetsapp.cpp 72 2007-05-01 15:19:27Z Pecan $
 
 #ifdef WX_PRECOMP //
 #include "wx_pch.h"
@@ -376,7 +376,7 @@ CodeSnippetsAppFrame::~CodeSnippetsAppFrame()
 wxString CodeSnippetsAppFrame::FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName)
 // ----------------------------------------------------------------------------
 {
-    // Find the absolute path from where this application has been run.
+    // Find the absolute path where this application has been run from.
     // argv0 is wxTheApp->argv[0]
     // cwd is the current working directory (at startup)
     // appVariableName is the name of a variable containing the directory for this app, e.g.
@@ -398,8 +398,21 @@ wxString CodeSnippetsAppFrame::FindAppPath(const wxString& argv0, const wxString
     return cwd;
 #endif
 
-    if (wxIsAbsolutePath(argv0))
-        return wxPathOnly(argv0);
+    wxString argv0Str = argv0;
+    #if defined(__WXMSW__)
+        do{
+            if (argv0Str.Contains(wxT(".exe")) ) break;
+            if (argv0Str.Contains(wxT(".bat")) ) break;
+            if (argv0Str.Contains(wxT(".cmd")) ) break;
+            argv0Str.Append(wxT(".exe"));
+        }while(0);
+    #endif
+
+    if (wxIsAbsolutePath(argv0Str))
+    {
+        LOGIT( _T("FindAppPath: AbsolutePath[%s]"), wxPathOnly(argv0Str).GetData() );
+        return wxPathOnly(argv0Str);
+    }
     else
     {
         // Is it a relative path?
@@ -407,9 +420,12 @@ wxString CodeSnippetsAppFrame::FindAppPath(const wxString& argv0, const wxString
         if (currentDir.Last() != wxFILE_SEP_PATH)
             currentDir += wxFILE_SEP_PATH;
 
-        str = currentDir + argv0;
+        str = currentDir + argv0Str;
         if (wxFileExists(str))
+        {
+            LOGIT( _T("FindAppPath: RelativePath[%s]"), wxPathOnly(str).GetData() );
             return wxPathOnly(str);
+        }
     }
 
     // OK, it's neither an absolute path nor a relative path.
@@ -417,12 +433,17 @@ wxString CodeSnippetsAppFrame::FindAppPath(const wxString& argv0, const wxString
 
     wxPathList pathList;
     pathList.AddEnvList(wxT("PATH"));
-    str = pathList.FindAbsoluteValidPath(argv0);
+    str = pathList.FindAbsoluteValidPath(argv0Str);
     if (!str.IsEmpty())
+    {
+        LOGIT( _T("FindAppPath: SearchPath[%s]"), wxPathOnly(str).GetData() );
         return wxPathOnly(str);
+    }
 
     // Failed
+     LOGIT(  _T("FindAppPath: Failed, returning cwd") );
     return wxEmptyString;
+    //return cwd;
 }
 
 // ----------------------------------------------------------------------------
