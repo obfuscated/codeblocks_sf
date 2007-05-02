@@ -70,6 +70,7 @@
                                 <object class="wxButton" name="ID_BTN_FILE_SRC" variable="btnFileSrc" member="yes">
                                     <label>...</label>
                                     <size>32,-1</size>
+                                    <tooltip>Select the source C::B configuration file.</tooltip>
                                     <handler function="OnBtnFileSrcClick" entry="EVT_BUTTON" />
                                 </object>
                                 <flag>wxLEFT|wxALIGN_RIGHT|wxALIGN_TOP</flag>
@@ -94,6 +95,7 @@
                                 <object class="wxButton" name="ID_BTN_FILE_DST" variable="btnFileDst" member="yes">
                                     <label>...</label>
                                     <size>32,-1</size>
+                                    <tooltip>Select the destination C::B configuration file.</tooltip>
                                     <handler function="OnBtnFileDstClick" entry="EVT_BUTTON" />
                                 </object>
                                 <flag>wxLEFT|wxALIGN_RIGHT|wxALIGN_TOP</flag>
@@ -128,11 +130,12 @@
             </object>
             <object class="sizeritem">
                 <object class="wxGridSizer" variable="grsAction" member="yes">
-                    <cols>4</cols>
+                    <cols>6</cols>
                     <rows>1</rows>
                     <object class="sizeritem">
                         <object class="wxButton" name="ID_BTN_TRANSFER" variable="btnTransfer" member="yes">
                             <label>Transfer &gt;&gt;</label>
+                            <tooltip>Transfer the selection on the left to right.</tooltip>
                             <handler function="OnBtnTransferClick" entry="EVT_BUTTON" />
                         </object>
                         <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -141,16 +144,30 @@
                         <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="sizeritem">
+                        <object class="wxButton" name="ID_BTN_EXPORT" variable="btnExport" member="yes">
+                            <label>Export</label>
+                            <tooltip>Export the selection on the left to a C::B config backup file.</tooltip>
+                            <handler function="OnBtnExportClick" entry="EVT_BUTTON" />
+                        </object>
+                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <option>1</option>
+                    </object>
+                    <object class="sizeritem">
                         <object class="wxButton" name="ID_BTN_SAVE" variable="btnSave" member="yes">
                             <label>Save</label>
+                            <tooltip>Save the selection on the right into the C::B destination config file.</tooltip>
                             <handler function="OnBtnSaveClick" entry="EVT_BUTTON" />
                         </object>
                         <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
                         <border>5</border>
                     </object>
+                    <object class="spacer">
+                        <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                    </object>
                     <object class="sizeritem">
                         <object class="wxButton" name="ID_BTN_CLOSE" variable="btnClose" member="yes">
                             <label>Close</label>
+                            <tooltip>Close the application.</tooltip>
                             <handler function="OnBtnCloseClick" entry="EVT_BUTTON" />
                         </object>
                         <flag>wxALL|wxALIGN_RIGHT|wxALIGN_TOP</flag>
