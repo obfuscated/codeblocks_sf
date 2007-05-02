@@ -13,7 +13,6 @@
 #if CB_PRECOMP
   #include "sdk.h"
 #else
-  #include <wx/arrstr.h>
   #include <wx/button.h>
   #include <wx/checklst.h>
   #include <wx/utils.h>
@@ -31,7 +30,7 @@
 // Register the plugin
 namespace
 {
-    PluginRegistrant<EnvVars> reg(_T("EnvVars"));
+  PluginRegistrant<EnvVars> reg(_T("EnvVars"));
 };
 
 BEGIN_EVENT_TABLE(EnvVars, cbPlugin)
@@ -52,6 +51,98 @@ BEGIN_EVENT_TABLE(EnvVarsConfigDlg, wxPanel)
   EVT_BUTTON        (XRCID("btnClearEnvVars"), EnvVarsConfigDlg::OnClearEnvVarsClick)
   EVT_BUTTON        (XRCID("btnSetEnvVars"),   EnvVarsConfigDlg::OnSetEnvVarsClick)
 END_EVENT_TABLE()
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+// Global
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+namespace nsEnvVars
+{
+  const wxString EnvVarsSep = _T("|");
+
+  wxArrayString EnvvarStringTokeniser(const wxString& str)
+  {
+    // tokenise string like:
+    // C:\Path;"D:\Other Path"
+
+    wxArrayString out;
+
+    wxString search = str;
+    search.Trim(true).Trim(false);
+
+    // trivial case: string is empty or consists of blanks only
+    if (search.IsEmpty())
+      return out;
+
+    wxString token;
+    bool     inside_quot = false;
+    size_t   pos         = 0;
+    while (pos < search.Length())
+    {
+      wxString current_char = search.GetChar(pos);
+
+      // for e.g. /libpath:"C:\My Folder"
+      if (current_char.CompareTo(_T("\""))==0) // equality
+        inside_quot = !inside_quot;
+
+      if ((current_char.CompareTo(nsEnvVars::EnvVarsSep)==0) && (!inside_quot))
+      {
+        if (!token.IsEmpty())
+        {
+          out.Add(token);
+          token.Clear();
+        }
+      }
+      else
+        token.Append(current_char);
+
+      pos++;
+      // Append final token
+      if ((pos==search.Length()) && (!inside_quot) && (!token.IsEmpty()))
+        out.Add(token);
+    }
+
+    return out;
+  }// EnvvarStringTokeniser
+
+  bool EnvvarApply(wxArrayString &envvar, wxCheckListBox* lstEnvVars = NULL)
+  {
+    if (envvar.GetCount() == 3)
+    {
+      wxString check = envvar[0];
+      wxString key   = envvar[1];
+      wxString value = envvar[2];
+
+      bool bCheck = check.Trim(true).Trim(false).IsSameAs(_T("1"))?true:false;
+      key.Trim(true).Trim(false);
+      value.Trim(true).Trim(false);
+
+      int sel = 0;
+      if (lstEnvVars)
+      {
+        sel = lstEnvVars->Append(key + _T(" = ") + value);
+        lstEnvVars->Check(sel, bCheck);
+      }
+
+      if (bCheck)
+      {
+        if (!wxSetEnv(key, value))
+        {
+          Manager::Get()->GetMessageManager()->DebugLog(_("Setting environment variable '%s' failed."),
+            key.c_str());
+          if (lstEnvVars)
+            lstEnvVars->Check(sel, false); // Unset to visualise it's NOT set
+        }
+        else
+        {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }// EnvvarApply
+}// nsEnvVars
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 // Class EnvVars
@@ -80,30 +171,23 @@ void EnvVars::OnAttach()
     return;
 
   wxArrayString list = cfg->EnumerateKeys(_T("/"));
-  for (unsigned int i = 0; i < list.GetCount(); ++i)
+  size_t envvars_total   = list.GetCount();
+  size_t envvars_applied = 0;
+  for (unsigned int i = 0; i < envvars_total; ++i)
   {
-    // Format: [checked?];[key];[value]
-    wxArrayString array = GetArrayFromString(cfg->Read(list[i]));
-    if (array.GetCount() == 3)
-    {
-      wxString check = array[0];
-      wxString key   = array[1];
-      wxString value = array[2];
-
-      bool bCheck = check.Trim(true).Trim(false).IsSameAs(_T("1"))?true:false;
-      key.Trim(true).Trim(false);
-      value.Trim(true).Trim(false);
-
-      if (bCheck)
-      {
-        if (!wxSetEnv(key, value))
-        {
-          Manager::Get()->GetMessageManager()->Log(_("Setting environment variable '%s' failed."),
-            key.c_str());
-        }
-      }
-    }
+    // Format: [checked?]|[key]|[value]
+    wxArrayString array = nsEnvVars::EnvvarStringTokeniser(cfg->Read(list[i]));
+    if (nsEnvVars::EnvvarApply(array))
+      envvars_applied++;
+    else
+      Manager::Get()->GetMessageManager()->DebugLog(_("Invalid envvar array at position #%d?!"), i);
 	}// for
+
+	if (envvars_total>0)
+	{
+    Manager::Get()->GetMessageManager()->DebugLog(_("%d/%d envvars applied within C::B focus."),
+      envvars_applied, envvars_total);
+  }
 }// OnAttach
 
 void EnvVars::OnRelease(bool appShutDown)
@@ -159,34 +243,23 @@ void EnvVarsConfigDlg::LoadSettings()
     return;
 
   wxArrayString list = cfg->EnumerateKeys(_T("/"));
-  for (unsigned int i = 0; i < list.GetCount(); ++i)
+  size_t envvars_total   = list.GetCount();
+  size_t envvars_applied = 0;
+  for (unsigned int i = 0; i < envvars_total; ++i)
   {
-    // Format: [checked?];[key];[value]
-    wxArrayString array = GetArrayFromString(cfg->Read(list[i]));
-    if (array.GetCount() == 3)
-    {
-      wxString check = array[0];
-      wxString key   = array[1];
-      wxString value = array[2];
-
-      bool bCheck = check.Trim(true).Trim(false).IsSameAs(_T("1"))?true:false;
-      key.Trim(true).Trim(false);
-      value.Trim(true).Trim(false);
-
-      int sel = lstEnvVars->Append(key + _T(" = ") + value);
-      lstEnvVars->Check(sel, bCheck);
-
-      if (bCheck)
-      {
-        if (!wxSetEnv(key, value))
-        {
-          Manager::Get()->GetMessageManager()->Log(_("Setting environment variable '%s' failed."),
-            key.c_str());
-          lstEnvVars->Check(sel, false); // Unset to visualise it's NOT set
-        }
-      }
-    }
+    // Format: [checked?]|[key]|[value]
+    wxArrayString array = nsEnvVars::EnvvarStringTokeniser(cfg->Read(list[i]));
+    if (nsEnvVars::EnvvarApply(array, lstEnvVars))
+      envvars_applied++;
+    else
+      Manager::Get()->GetMessageManager()->DebugLog(_("Invalid envvar array at position #%d?!"), i);
 	}// for
+
+	if (envvars_total>0)
+	{
+    Manager::Get()->GetMessageManager()->DebugLog(_("%d/%d envvars applied within C::B focus."),
+      envvars_applied, envvars_total);
+  }
 }// EnvVarsConfigDlg
 
 void EnvVarsConfigDlg::SaveSettings()
@@ -212,13 +285,14 @@ void EnvVarsConfigDlg::SaveSettings()
 
   for (int i=0; i<lstEnvVars->GetCount(); ++i)
   {
-    // Format: [checked?];[key];[value]
+    // Format: [checked?]|[key]|[value]
     wxString check = (lstEnvVars->IsChecked(i))?_T("1"):_T("0");
     wxString key   = lstEnvVars->GetString(i).BeforeFirst(_T('=')).Trim(true).Trim(false);
     wxString value = lstEnvVars->GetString(i).AfterFirst(_T('=')).Trim(true).Trim(false);
 
     wxString txt;
-    txt << check << _T(";") << key << _T(";") << value;
+    txt << check << nsEnvVars::EnvVarsSep << key
+                 << nsEnvVars::EnvVarsSep << value;
 
     wxString cfg_key;
     cfg_key.Printf(_T("EnvVar%d"), i);
@@ -422,7 +496,7 @@ void EnvVarsConfigDlg::OnClearEnvVarsClick(wxCommandEvent& WXUNUSED(event))
             if (envsNotUnSet.IsEmpty())
               envsNotUnSet << key;
             else
-              envsNotUnSet << _T(";") << key;
+              envsNotUnSet << _T(", ") << key;
           }
         }
       }
@@ -471,7 +545,7 @@ void EnvVarsConfigDlg::OnSetEnvVarsClick(wxCommandEvent& WXUNUSED(event))
             if (envsNotSet.IsEmpty())
               envsNotSet << key;
             else
-              envsNotSet << _T(";") << key;
+              envsNotSet << _T(", ") << key;
           }
         }
       }

@@ -13,6 +13,7 @@
 #ifndef ENVVARS_H
 #define ENVVARS_H
 
+#include <wx/arrstr.h>
 #include <wx/intl.h>
 #include <wx/string.h>
 
