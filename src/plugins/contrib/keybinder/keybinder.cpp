@@ -996,28 +996,33 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
                     j,k,pMenuItem,pMenuItem->GetLabel().GetData(), menuItemKeyStr.GetData() );
             #endif
             m_arrCmd.Item(k)->Update(pMenuItem);
-            // ** pMenuItem will be invalid now if item was destroyed/created/updated **
-            //^^Above applies only to update() code used with wxWidgets 2.6.2,now deprecated
+            // *^^* pMenuItem will be invalid now if item was destroyed/created/updated **
         }
         else{
             // a menu id failed to match any in the file bindings
-            // it's probably had its id dynamically assigned
+            // it's probably had its id dynamically (re)assigned
             if (not (pMenuItem->GetKind() == wxITEM_SEPARATOR)
                 && (not wxMenuCmd::IsNumericMenuItem(pMenuItem)) )
             {
                 #ifdef LOGGING
-                 LOGIT(wxT("UpdateAllCmd ById Failed on:%d:%d:%p:%s"),j,k,pMenuItem,pMenuItem->GetText().GetData() );
+                 LOGIT(wxT("UpdateAllCmd ById Failed on:%d:%d:%p:[%d][%s]"),j,k, pMenuItem, pMenuItem->GetId(), pMenuItem->GetText().GetData() );
                 #endif
-                // Try to find the wxCmd that matches this menu label
-                if (-1 != (k = FindMatchingName(pMenuItem->GetLabel() )))
-                {   // Look for wxCmd with this menu label
-                    #ifdef LOGGING
-                     LOGIT(wxT("UpdateAllCmd ByLabel on:%d:%d:%p:[%s] key[%s]"),
-                            j,k,pMenuItem,pMenuItem->GetLabel().GetData(), menuItemKeyStr.GetData() );
-                    #endif
-                    m_arrCmd.Item(k)->Update(pMenuItem);
-                }//if
-            }//if
+                Manager::Get()->GetMessageManager()->DebugLog(wxString::Format(wxT("KeyBinder failed UpdateById on[%d][%s]"), nMenuItemID, pMenuItem->GetText().GetData()));
+////                // When a .ini id cannot be found: (menu ids have shifted)
+////                // The following code causes real problems when menu labels are duplicates
+////                // eg,. if two items have the label "cut", the second ones key will
+////                // be assigned to the first. So "Cut" (line)Ctrl-T will end up in
+////                // "Cut"(marked), overwriting Ctrl-X
+////                // Try to find the wxCmd that matches this menu label
+////                if (-1 != (k = FindMatchingName(pMenuItem->GetLabel() )))
+////                {   // Look for wxCmd with this menu label
+////                    #ifdef LOGGING
+////                     LOGIT(wxT("UpdateAllCmd ByLabel on:%d:%d:%p:[%s] key[%s]"),
+////                            j,k,pMenuItem,pMenuItem->GetLabel().GetData(), menuItemKeyStr.GetData() );
+////                    #endif
+////                    m_arrCmd.Item(k)->Update(pMenuItem);
+////                }//if
+            }//if (not...
         }
     }//rof
 }//updateSubmenu
@@ -1687,7 +1692,7 @@ wxKeyConfigPanel::~wxKeyConfigPanel()
 {
 	// with the AddXXXXX functions we created wxKeyProfiles which we
 	// then added into the m_pKeyProfiles combobox... we now must delete them.
-	for (int i=0; i < m_pKeyProfiles->GetCount(); i++) {
+	for (size_t i=0; i < m_pKeyProfiles->GetCount(); i++) {
 		wxKeyProfile *data = (wxKeyProfile *)m_pKeyProfiles->GetClientData(i);
 
 		// we can delete the client data safely because wxComboBox will leave
@@ -2111,7 +2116,7 @@ wxKeyProfileArray wxKeyConfigPanel::GetProfiles() const
 	// NB: it's very important to *copy* the profiles into the new array
 	//     since the destructor of wxKeyConfigPanel expects the m_pKeyProfiles
 	//     control to contain always valid pointers NOT shared with anyone else
-	for (int i=0; i < m_pKeyProfiles->GetCount(); i++)
+	for (size_t i=0; i < m_pKeyProfiles->GetCount(); i++)
 		arr.Add(new wxKeyProfile(*GetProfile(i)));
 	arr.SetSelProfile(GetSelProfileIdx());
 
@@ -2618,7 +2623,7 @@ void wxKeyConfigPanel::OnAddProfile(wxCommandEvent &)
 
 		// if the name is the same of one of the existing profiles, we have to abort...
 		valid = TRUE;
-		for (int j=0; j < m_pKeyProfiles->GetCount(); j++)
+		for (size_t j=0; j < m_pKeyProfiles->GetCount(); j++)
 			valid &= (GetProfile(j)->GetName() != dlg.GetValue());
 
 		if (!valid) {

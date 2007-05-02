@@ -144,14 +144,10 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
 // ----------------------------------------------------------------------------
 void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
 // ----------------------------------------------------------------------------
-{ //v0.4.4 changes to use bitmapped menuitems
-  //v0.4.6 Rebuild menuitems when bitmapped.
-
-    //v0.4.17
+{
     // Test if caller wants a different menu item than in keybinder array
     wxMenuItem* pLclMnuItem = m_pItem;
     if (pSpecificMenuItem) pLclMnuItem = pSpecificMenuItem;
-    //+v0.4
     // verify menu item has not changed its id or disappeared
     if ( NULL==m_pMenuBar->FindItem(m_nId) )
         return;
@@ -159,7 +155,6 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
         if (m_pMenuBar->FindItem(m_nId) != pLclMnuItem)
             return;
 
-    //+v0.3
     // leave numeric menu items alone. They get replaced by CodeBlocks
     if (IsNumericMenuItem(pLclMnuItem))
       return;
@@ -173,7 +168,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
 	if (m_nShortcuts <= 0) {
         if ( ! pItemAccel) return;
         #if LOGGING
-		 LOGIT(wxT("wxMenuCmd::Update - Removing shortcuts [%s] for [%s]"), strText.c_str(),newtext.c_str());
+		 LOGIT(wxT("wxMenuCmd::Update - Removing shortcuts [%d][%s] for [%d][%s]"),pLclMnuItem->GetId(), strText.c_str(), m_nId, newtext.c_str());
 		#endif
 		// set "non bitmapped" text to preserve menu width
         pLclMnuItem->SetText(newtext);
@@ -198,7 +193,7 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) // for __WXMSW__
          && ( pItemAccel->GetKeyCode() == pPrfAccel->GetKeyCode() ) )
          return;
     #if LOGGING
-     LOGIT(wxT("wxMenuCmd::Update - Setting shortcuts for [%s]"), newtext.c_str());
+     LOGIT(wxT("wxMenuCmd::Update - Setting shortcuts for [%d][%s]"), pLclMnuItem->GetId(), newtext.c_str());
     #endif
     pLclMnuItem->SetText(newtext);
     //now rebuild the menuitem if bitmapped

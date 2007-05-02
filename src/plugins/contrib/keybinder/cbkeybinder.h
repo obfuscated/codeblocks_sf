@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.23 2007/03/24"
+#define VERSION "1.0.30 2007/04/21"
 // -----------------------------------
 class MyDialog;
 
@@ -56,6 +56,7 @@ class MyDialog;
 // ----------------------------------------------------------------------------
 class cbKeyBinder : public cbPlugin
 {
+    friend class MyDialog;
 	public:
 		cbKeyBinder();
 		~cbKeyBinder();
@@ -96,11 +97,11 @@ class cbKeyBinder : public cbPlugin
         void UpdateArr(wxKeyProfileArray &r);
         void Rebind();
         // key definition configuration dialog
-        cbConfigurationPanel* OnKeybindings(wxWindow* parent);
-        void OnKeybindingsDialogDone(MyDialog* dlg);
+        cbConfigurationPanel* OnKeyConfig(wxWindow* parent);
+        void OnKeyConfigDialogDone(MyDialog* dlg);
 
         // save/load key definitions
-        void OnSave();
+        void OnSave(bool backitup);
         void OnLoad();
         // Enable/Disable Merge
         int EnableMerge(bool allow);
@@ -127,6 +128,10 @@ class cbKeyBinder : public cbPlugin
         void DetachEditor(wxWindow* pWindow);
         void MergeDynamicMenus();
         void OnAppStartShutdown(wxCommandEvent& event);
+        void OnIdle(wxIdleEvent& event);
+        void OnTimerAlarm(wxTimerEvent& event);
+        void OnMenuBarModify(wxCommandEvent& event);
+
 
         wxWindow*       pcbWindow;              //main app window
         wxArrayPtrVoid  m_EditorPtrs;           //attached editor windows
@@ -140,6 +145,9 @@ class cbKeyBinder : public cbPlugin
         wxTimer         m_Timer;
         void    StartMergeTimer(int secs){ m_Timer.Start( secs*1000, wxTIMER_ONE_SHOT); }
         void    StopMergeTimer(){ m_Timer.Stop();}
+        bool    m_bTimerAlarm;
+        bool    m_bAppShutDown;
+        bool    m_bConfigBusy;
 
 
 		DECLARE_EVENT_TABLE()
@@ -473,7 +481,7 @@ private:
 //  closed  2006/07/12 open 2006/07/12 reverted
 //          Secondary profiles are not being recorded. Getting
 //          "DialogDone: NO key changes" message, the Primary is then set
-//          Resolution: cbKeyBinder::OnKeybindingsDialogDone compare function not
+//          Resolution: cbKeyBinder::OnKeyConfigDialogDone compare function not
 //          taking into account multiple keyprofiles in the keyBinderProfileArray.
 // -----------------------------------------------------------------------------
 //  closed  2006/07/15 open    2006/07/15 reverted
@@ -595,7 +603,7 @@ private:
 //          side effect of dynamic merging.
 //          A: caused by merging before invoking UpdateArr() in OnLoad().
 //  closed  Deleteing a secondary profile fails when no keys were changed.
-//          A: caused by profile compare code in OnKeybindingsDialogDone() reporting
+//          A: caused by profile compare code in OnKeyConfigDialogDone() reporting
 //             no changes even when a secondary profile was deleted.
 //  Todo    2007/01/29
 //          Save() .ini file to .ini.bak, then rename it to .ini
@@ -651,5 +659,15 @@ private:
 //  Commit  1.0.24 2007/03/31
 //          23) Remove dynamic merge from OnRelease() to avoid recording CB core menu deletions
 //          24) Reinstate Menu UpdateByLabel when UpdateByID fails
+// ----------------------------------------------------------------------------
+//  Commit  1.0.30 2007/05/2
+//          25) Create backup keys .ini.bak only on successful user definition save
+//          26) Set guards against merging when possible app shutdown
+//          27) Add ConfigBusy guard to OnIdle() merging
+//          28) Added EVT_MENUBAR_CREATE_BEGIN/END, but they're never called. Even if
+//              they were, they're not called during Tools menu changes.
+//          29) Corrected for warning msg in wx2.8.3
+//          30) Removed key assignment via text search when id search fails.(wxKeyBinder::UpdateSubMenu).
+//               Causes too much grief.
 // ----------------------------------------------------------------------------
 //

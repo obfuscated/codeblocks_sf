@@ -43,9 +43,11 @@ BEGIN_EVENT_TABLE(cbKeyBinder, cbPlugin)
 	EVT_EDITOR_CLOSE    (cbKeyBinder::OnEditorClose)
 	EVT_PROJECT_OPEN    (cbKeyBinder::OnProjectOpened)
 	EVT_APP_STARTUP_DONE(cbKeyBinder::OnAppStartupDone)
-    EVT_APP_START_SHUTDOWN(cbKeyBinder::OnAppStartShutdown) //this is never called
-    //EVT_IDLE            (cbKeyBinder::OnIdle)
-    EVT_TIMER           (-1, cbKeyBinder::OnMergeTimer)
+    EVT_APP_START_SHUTDOWN(cbKeyBinder::OnAppStartShutdown)
+    EVT_MENUBAR_CREATE_BEGIN(cbKeyBinder::OnMenuBarModify) //never invoked
+    EVT_MENUBAR_CREATE_END  (cbKeyBinder::OnMenuBarModify) //never invoked
+    EVT_IDLE            (cbKeyBinder::OnIdle)
+    EVT_TIMER       (-1, cbKeyBinder::OnTimerAlarm)
 END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 
@@ -105,6 +107,10 @@ void cbKeyBinder::OnAttach()
 	m_pKeyProfArr = new wxKeyProfileArray;
 	m_bBound = FALSE;   //say keys are unbound to menus
 	m_MenuModifiedByMerge = 0;
+	m_bTimerAlarm = false;
+	m_bAppShutDown = false;
+	m_bConfigBusy = false;
+	IsMerging(false);
 
 	// Add window names to which keybinder may attach
 	// a "*" allows attaching to ALL windows for debugging
@@ -185,7 +191,7 @@ cbConfigurationPanel* cbKeyBinder::GetConfigurationPanel(wxWindow* parent)
     if(!IsAttached()) {	return 0;}
 
     //call configuation dialogue
-    return OnKeybindings(parent);
+    return OnKeyConfig(parent);
 }
 // ----------------------------------------------------------------------------
 //  cbKeyBinder BuildMenu
@@ -406,10 +412,10 @@ void cbKeyBinder::MergeDynamicMenus()
     // dont allow re-entry from other calls (eg. OnTimer() )
     EnableMerge(false);
 
-    #ifdef LOGGING
-     if ( n != 1)
-     LOGIT( _T("MergeDynamicMenus: EnabelMerge Out of synch. Count[%d]"), n );
-    #endif //LOGGING
+    //#ifdef LOGGING
+    // if ( n != 1)
+    // LOGIT( _T("MergeDynamicMenus: EnabelMerge Out of synch. Count[%d]"), n );
+    //#endif //LOGGING
 
     IsMerging(true);
     m_MenuModifiedByMerge +=
@@ -429,11 +435,13 @@ void cbKeyBinder::MergeDynamicMenus()
 
 }//MergeDynamicMenus
 // ----------------------------------------------------------------------------
-cbConfigurationPanel* cbKeyBinder::OnKeybindings(wxWindow* parent)
+cbConfigurationPanel* cbKeyBinder::OnKeyConfig(wxWindow* parent)
 // ----------------------------------------------------------------------------
 {
+    // user key configuration/definition dialog
+
     #ifdef LOGGING
-     LOGIT(_T("cbKB:OnKeybindings()"));
+     LOGIT(_T("cbKB:OnKeyConfig()"));
     #endif
 
     //wait for a good key file load()
@@ -444,6 +452,7 @@ cbConfigurationPanel* cbKeyBinder::OnKeybindings(wxWindow* parent)
     MergeDynamicMenus();                                               //v0.4.25
     // Disable menu merging while in settings dialog
     // MyDialog dtor will re-enable menu merging
+    m_bConfigBusy = true;
     EnableMerge(false);
 
     // Set options and invoke the configuation dialog
@@ -471,12 +480,12 @@ cbConfigurationPanel* cbKeyBinder::OnKeybindings(wxWindow* parent)
     // enable|disable keyprofiles combo box
     dlg->m_p->EnableKeyProfiles(bprofiles);
 
-    // when the configuration panel is closed with OK, OnKeybindingsDialogDone() will be called
+    // when the configuration panel is closed with OK, OnKeyConfigDialogDone() will be called
     return dlg;
 
-}//OnKeybindings
+}//OnKeyConfig
 // ----------------------------------------------------------------------------
-void cbKeyBinder::OnKeybindingsDialogDone(MyDialog* dlg)
+void cbKeyBinder::OnKeyConfigDialogDone(MyDialog* dlg)
 // ----------------------------------------------------------------------------
 {
     // The configuration panel has run its OnApply() function.
@@ -492,41 +501,16 @@ void cbKeyBinder::OnKeybindingsDialogDone(MyDialog* dlg)
     bool modified = false;
     dlg->m_p->ApplyChanges();
 
-    // -----------Disabled-----------------------------
-    // comparing profiles to avoid excessive processing
-    // temporarily disabled. Need a flag to show that
-    // a secondary/primary profile may have been deleted.
-    // Else we keep applying the old profiles
-    // ------------------------------------------1.0.12--
-    // check if any key modifications //v0.4.13
-//    wxKeyProfileArray* pNewKBA = new wxKeyProfileArray;
-//    *pNewKBA = dlg->m_p->GetProfiles();
-//    int newSel = pNewKBA->GetSelProfileIdx();               //+v0.4.24
-//    int oldSel = m_pKeyProfArr->GetSelProfileIdx();         //+v0.4.24
-//
-//    if ( ( newSel == oldSel )                               //+v0.4.24
-//        && ( *(pNewKBA->Item(newSel)) == *(m_pKeyProfArr->Item(oldSel)) ) )
-//    {
-//        LOGIT(_T("DialogDone: NO key changes NewIdx[%d] OldIdx[%d]"),
-//                newSel, oldSel);
-//    }
-//    else
-//    {   // update our array (we gave a copy of it to MyDialog)
         modified = true;
         *m_pKeyProfArr = dlg->m_p->GetProfiles();
-//      LOGIT(_T("DialogDone keys MODIFIED"));
-//    }
-//    delete pNewKBA;
     // don't delete "dlg" variable; CodeBlocks will destroy it
 
     //update Windows/EventHanders from changed wxKeyProfile
-//    if ( modified || m_MenuModifiedByMerge)
-    {   // update attaches and menu items
-        UpdateArr(*m_pKeyProfArr) ;
-        //Save the key profiles to external storage
-        OnSave();
-        m_MenuModifiedByMerge = 0;
-    }//fi
+    // update attaches and menu items
+    UpdateArr(*m_pKeyProfArr) ;
+    //Save the key profiles to external storage
+    OnSave(true);
+    m_MenuModifiedByMerge = 0;
 
     // select the right keyprofile
     #if LOGGING
@@ -540,7 +524,7 @@ void cbKeyBinder::OnKeybindingsDialogDone(MyDialog* dlg)
             wxT("Profile selected"));
     #endif
 
-}//OnKeybindingsDialogDone
+}//OnKeyConfigDialogDone
 // ----------------------------------------------------------------------------
 void cbKeyBinder::OnLoad()
 // ----------------------------------------------------------------------------
@@ -647,23 +631,13 @@ void cbKeyBinder::OnLoad()
 
 }//OnLoad
 // ----------------------------------------------------------------------------
-void cbKeyBinder::OnSave()
+void cbKeyBinder::OnSave(bool backitup)
 // ----------------------------------------------------------------------------
 {
     // Save the key profile(s) to a file
 
-    bool done = false;
-    // copy the .ini file to a .ini.bak file
-    if (::wxFileExists(m_sKeyFilename) )
-    {
-        done = ::wxCopyFile(m_sKeyFilename, m_sKeyFilename+_T(".bak"));
-        #if LOGGING
-          if ( done )
-            LOGIT(_T("cbKB:File %s copied to .bak"),m_sKeyFilename.GetData());
-        #endif
-    }//if (done..
-
     // delete the key definition file (removes invalid menuitem id's)
+    bool done = false;
     done = ::wxRemoveFile(m_sKeyFilename);
     #if LOGGING
       if (done)
@@ -686,6 +660,18 @@ void cbKeyBinder::OnSave()
 		LOGIT(wxString::Format(wxT("All the [%d] keyprofiles ([%d] commands ")
 			wxT("in total) have been saved in \n\"")+path, //+wxT(".ini\""),
               m_pKeyProfArr->GetCount(), total) );
+
+        // copy the .ini file to a .ini.bak file
+        done = false;
+        if ( backitup && ::wxFileExists(m_sKeyFilename) )
+        {
+            done = ::wxCopyFile(m_sKeyFilename, m_sKeyFilename+_T(".bak"));
+            #if LOGGING
+              if ( done )
+                LOGIT(_T("cbKB:File %s copied to .bak"),m_sKeyFilename.GetData());
+            #endif
+    }//if (done..
+
 
 	 } else {
 
@@ -738,6 +724,7 @@ MyDialog::MyDialog(cbKeyBinder* binder, wxKeyProfileArray &prof,
 MyDialog::~MyDialog()
 {
     m_pBinder->EnableMerge(true);
+    m_pBinder->m_bConfigBusy = false;
 }
 // ----------------------------------------------------------------------------
 
@@ -745,7 +732,7 @@ MyDialog::~MyDialog()
 void MyDialog::OnApply()
 // ----------------------------------------------------------------------------
 {
-    m_pBinder->OnKeybindingsDialogDone(this);
+    m_pBinder->OnKeyConfigDialogDone(this);
 }
 // ----------------------------------------------------------------------------
 void cbKeyBinder::OnProjectOpened(CodeBlocksEvent& event)
@@ -828,7 +815,7 @@ void cbKeyBinder::AttachEditor(wxWindow* pWindow)
             //Rebind keys to newly opened windows
             m_pKeyProfArr->GetSelProfile()->Attach(thisEditor);
             #if LOGGING
-             LOGIT(_T("cbKB:AttachEditor %s %p"), thisEditor->GetTitle().c_str(), thisEditor);
+             LOGIT(_T("cbKB:AttachEditor %s %p"), thisEditor->GetLabel().c_str(), thisEditor);
             #endif
          }
      }
@@ -856,7 +843,7 @@ void cbKeyBinder::DetachEditor(wxWindow* pWindow)
             m_pKeyProfArr->GetSelProfile()->Detach(thisEditor);
             m_EditorPtrs.Remove(thisEditor);
             #if LOGGING
-             LOGIT(_T("cbKB:DetachEditor %s %p"), thisEditor->GetTitle().c_str(), thisEditor);
+             LOGIT(_T("cbKB:DetachEditor %s %p"), thisEditor->GetLabel().c_str(), thisEditor);
             #endif
          }//if
      }
@@ -896,7 +883,7 @@ void cbKeyBinder::OnEditorOpen(CodeBlocksEvent& event)
             //Rebind keys to newly opened windows
             m_pKeyProfArr->GetSelProfile()->Attach(thisEditor);
             #if LOGGING
-             LOGIT(_T("cbKB:OnEditorOpen/Attach %s %p"), thisEditor->GetTitle().c_str(), thisEditor);
+             LOGIT(_T("cbKB:OnEditorOpen/Attach %s %p"), thisEditor->GetLabel().c_str(), thisEditor);
             #endif
          }
      }
@@ -934,7 +921,7 @@ void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
             m_pKeyProfArr->GetSelProfile()->Detach(thisEditor);
             m_EditorPtrs.Remove(thisEditor);
             #if LOGGING
-             LOGIT(_T("cbKB:OnEditorClose/Detach %s %p"), thisEditor->GetTitle().c_str(), thisEditor);
+             LOGIT(_T("cbKB:OnEditorClose/Detach %s %p"), thisEditor->GetLabel().c_str(), thisEditor);
             #endif
          }//if
      }
@@ -1036,13 +1023,29 @@ void cbKeyBinder::OnWindowDestroyEvent(wxEvent& event)
     event.Skip();
 }//OnWindowClose
 // ----------------------------------------------------------------------------
-void cbKeyBinder::OnMergeTimer(wxTimerEvent& event)
+void cbKeyBinder::OnTimerAlarm(wxTimerEvent& event)
+// ----------------------------------------------------------------------------
+{
+    m_bTimerAlarm = true;
+}
+// ----------------------------------------------------------------------------
+void cbKeyBinder::OnIdle(wxIdleEvent& event)
 // ----------------------------------------------------------------------------
 {
     // Scan the menu and enter any modified menu items into the array of
     //  key bindings
 
-    if (not m_bBound) { event.Skip(); return; }
+    if ( not m_bTimerAlarm) { event.Skip(); return; }
+    // LOGIT( _T("OnIdle m_bTimerAlarm[%d]"), m_bTimerAlarm );
+
+    if ( m_bAppShutDown )   { event.Skip(); return; }
+    if ( not m_bBound )     { event.Skip(); return; }
+
+    // LOGIT( _T("OnIdle IsMerging[%d]"), IsMerging() );
+    if ( IsMerging() )      { event.Skip(); return; }
+
+    // LOGIT( _T("OnIdle m_bConfigBusy[%d]"), m_bConfigBusy );
+    if ( m_bConfigBusy )    { event.Skip(); return; }
 
     if ( IsEnabledMerge() )
     {
@@ -1050,21 +1053,21 @@ void cbKeyBinder::OnMergeTimer(wxTimerEvent& event)
         MergeDynamicMenus();
         if (m_MenuModifiedByMerge){
             #ifdef LOGGING
-              //-LOGIT( _T("OnIdle:Modified:%d Seconds:%d"), m_MenuModifiedByMerge, elapsedSecs.GetLo() );
-              LOGIT( _T("OnTimer:Modified:%d"), m_MenuModifiedByMerge );
+              LOGIT( _T("OnIdle:Modified:%d"), m_MenuModifiedByMerge );
             #endif //LOGGING
             // write changed key profile to disk
             EnableMerge(false);
-            OnSave();
+            if (not m_bAppShutDown)
+                OnSave(false);
             m_MenuModifiedByMerge = 0;
-            EnableMerge(true);
         }
     }//fi IsEnableMerge...
 
     // re-enable the timer
-    StartMergeTimer(15);
+    m_bTimerAlarm = false;
+    if (not m_bAppShutDown) EnableMerge(true);
     event.Skip();
-}//onIdle
+}//OnMergeTimer
 // ----------------------------------------------------------------------------
 void cbKeyBinder::OnAppStartShutdown(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
@@ -1072,12 +1075,31 @@ void cbKeyBinder::OnAppStartShutdown(wxCommandEvent& event)
     // currently this is defined in the sdk, but not implemented
     // and never called. Another sdk gotcha! And another reason to avoid it.
      LOGIT( _T("OnAppStartShutdown") );
+    m_bAppShutDown = true;
 	// stop the merge timer
-    StopMergeTimer();
     EnableMerge(false);
-//    OnSave();
-//    asm("int3");
+    m_bTimerAlarm = false;
+    // wait for any current merge to complete
+    for (int i=0;i<5 ;++i )
+    {   if ( IsMerging() )
+            {Sleep(1); wxYield();}
+        else break;
+    }
+    EnableMerge(false);
 
     event.Skip(); // allow others to process it too
+}
+// ----------------------------------------------------------------------------
+void cbKeyBinder::OnMenuBarModify(wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // CodeBlocks is beginning or ending menu modification
+    // Bug: this routine is never invoked by CB core
+    // KeyBinder was going to use it to preserve the accelerators on
+    // the Tools menu. But, alas, it's never called when the tools menu is changed.
+
+    int modType = event.GetEventType();
+     LOGIT( _T("OnMenuBarModify[%d]"), modType );
+    event.Skip();
 }
 // ----------------------------------------------------------------------------
