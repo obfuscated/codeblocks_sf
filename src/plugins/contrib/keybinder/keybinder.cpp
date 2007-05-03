@@ -38,8 +38,8 @@
 #include "wx/config.h"
 #include "wx/tokenzr.h"
 
-#include "Manager.h"
-#include "MessageManager.h"
+#include "manager.h"
+#include "messagemanager.h"
 
 
 
