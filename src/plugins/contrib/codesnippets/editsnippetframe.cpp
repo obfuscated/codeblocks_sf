@@ -232,10 +232,6 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
     //SetDropTarget(new EditFrameDropTarget(this));
 	m_pEdit->SetFocus();
 
-	#if defined(__WXGTK__)
-	GtkWidget* gtkWindow = GetHandle();
-	gtkWindow->gdk_window_set_keep_above();
-	#endif
 }
 
 // ----------------------------------------------------------------------------
