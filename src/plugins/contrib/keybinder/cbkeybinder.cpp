@@ -1082,7 +1082,7 @@ void cbKeyBinder::OnAppStartShutdown(wxCommandEvent& event)
     // wait for any current merge to complete
     for (int i=0;i<5 ;++i )
     {   if ( IsMerging() )
-            {Sleep(1); wxYield();}
+            {wxSleep(1); wxYield();}
         else break;
     }
     EnableMerge(false);
