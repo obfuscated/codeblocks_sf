@@ -21,16 +21,16 @@ class wxSplitterWindow;
 
 class cbStyledTextCtrl : public wxScintilla
 {
-	public:
-		cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);
-		virtual ~cbStyledTextCtrl();
-	protected:
-		void OnContextMenu(wxContextMenuEvent& event);
-		void OnKillFocus(wxFocusEvent& event);
-		void OnGPM(wxMouseEvent& event);
-	private:
-		wxWindow* m_pParent;
-		DECLARE_EVENT_TABLE()
+    public:
+        cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);
+        virtual ~cbStyledTextCtrl();
+    protected:
+        void OnContextMenu(wxContextMenuEvent& event);
+        void OnKillFocus(wxFocusEvent& event);
+        void OnGPM(wxMouseEvent& event);
+    private:
+        wxWindow* m_pParent;
+        DECLARE_EVENT_TABLE()
 };
 
 /** @brief A file editor
@@ -47,23 +47,23 @@ class cbStyledTextCtrl : public wxScintilla
 class DLLIMPORT cbEditor : public EditorBase
 {
         DECLARE_EVENT_TABLE()
-    	friend class EditorManager;
+        friend class EditorManager;
 
     protected:
-		/** cbEditor constructor.
-		  * @param parent the parent notebook - you should use EditorManager::Get()
-		  * @param filename the filename to open. If filename is empty, it creates a
-		  * new, empty, editor.
-		  * @param theme the initial colour set to use\n
-		  * <em>Note: you cannot create a cbEditor object directly. Instead
-		  * use EditorManager's methods to do it...</em>
-		  */
-		cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme = 0L);
+        /** cbEditor constructor.
+          * @param parent the parent notebook - you should use EditorManager::Get()
+          * @param filename the filename to open. If filename is empty, it creates a
+          * new, empty, editor.
+          * @param theme the initial colour set to use\n
+          * <em>Note: you cannot create a cbEditor object directly. Instead
+          * use EditorManager's methods to do it...</em>
+          */
+        cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme = 0L);
         /** Don't use this. It throws an exception if you do. */
         cbEditor(const cbEditor& rhs) : EditorBase(rhs) { cbThrow(_T("Can't call cbEditor's copy ctor!!!")); }
-		/** cbEditor destructor. */
-		~cbEditor();
-	public:
+        /** cbEditor destructor. */
+        ~cbEditor();
+    public:
         enum SplitType
         {
             stNoSplit = 0,
@@ -74,111 +74,111 @@ class DLLIMPORT cbEditor : public EditorBase
         /** Don't use this. It throws an exception if you do. */
         virtual void operator=(const cbEditor& rhs){ cbThrow(_T("Can't assign an cbEditor* !!!")); }
 
-		// properties
+        // properties
 
-		/** Returns a pointer to the underlying cbStyledTextCtrl object (which
-		  * itself is the wxWindows implementation of Scintilla). If you want
-		  * to mess with the actual contents of an editor, this is the object
-		  * you want to get.
-		  * @remarks If the editor is split, this function returns the control
-		  * which currently has the keyboard focus. Don't save this pointer
-		  * because it might be invalid at any later time...
-		  */
+        /** Returns a pointer to the underlying cbStyledTextCtrl object (which
+          * itself is the wxWindows implementation of Scintilla). If you want
+          * to mess with the actual contents of an editor, this is the object
+          * you want to get.
+          * @remarks If the editor is split, this function returns the control
+          * which currently has the keyboard focus. Don't save this pointer
+          * because it might be invalid at any later time...
+          */
         cbStyledTextCtrl* GetControl() const;
 
-		/** Returns a pointer to the left (or top) split-view cbStyledTextCtrl.
-		  * This function always returns a valid pointer.
-		  */
+        /** Returns a pointer to the left (or top) split-view cbStyledTextCtrl.
+          * This function always returns a valid pointer.
+          */
         cbStyledTextCtrl* GetLeftSplitViewControl() const { return m_pControl; }
 
-		/** Returns a pointer to the right (or bottom) split-view cbStyledTextCtrl.
-		  * This function may return NULL if the editor is not split.
-		  */
+        /** Returns a pointer to the right (or bottom) split-view cbStyledTextCtrl.
+          * This function may return NULL if the editor is not split.
+          */
         cbStyledTextCtrl* GetRightSplitViewControl() const { return m_pControl2; }
 
         /** Returns the state of split-view for this editor. */
         SplitType GetSplitType() const { return m_SplitType; }
 
-		/** Returns true if editor is OK, i.e. constructor was called with a filename
-		  * parameter and file was opened succesfully. If it returns false, you
-		  * should delete the editor...
-		  */
-		bool IsOK() const { return m_IsOK; }
+        /** Returns true if editor is OK, i.e. constructor was called with a filename
+          * parameter and file was opened succesfully. If it returns false, you
+          * should delete the editor...
+          */
+        bool IsOK() const { return m_IsOK; }
 
-		/** Sets the editor title. For tabbed interface, it sets the corresponding
-		  * tab text, while for MDI interface it sets the MDI window title...
-		  */
-		void SetEditorTitle(const wxString& title);
+        /** Sets the editor title. For tabbed interface, it sets the corresponding
+          * tab text, while for MDI interface it sets the MDI window title...
+          */
+        void SetEditorTitle(const wxString& title);
 
-		/** Returns true if editor is modified, false otherwise */
-		bool GetModified() const;
+        /** Returns true if editor is modified, false otherwise */
+        bool GetModified() const;
 
-		/** Set the editor's modification state to \c modified. */
-		void SetModified(bool modified = true);
+        /** Set the editor's modification state to \c modified. */
+        void SetModified(bool modified = true);
 
-		/** Set the ProjectFile pointer associated with this editor. All editors
-		  * which belong to a project file, should have this set. All others should return NULL.
-		  * Optionally you can preserve the "modified" flag of the file.
-		  */
-		void SetProjectFile(ProjectFile* project_file,bool preserve_modified = false);
+        /** Set the ProjectFile pointer associated with this editor. All editors
+          * which belong to a project file, should have this set. All others should return NULL.
+          * Optionally you can preserve the "modified" flag of the file.
+          */
+        void SetProjectFile(ProjectFile* project_file,bool preserve_modified = false);
 
-		/** Read the ProjectFile pointer associated with this editor. All editors
-		  * which belong to a project file, have this set. All others return NULL.
-		  */
-		ProjectFile* GetProjectFile() const { return m_pProjectFile; }
+        /** Read the ProjectFile pointer associated with this editor. All editors
+          * which belong to a project file, have this set. All others return NULL.
+          */
+        ProjectFile* GetProjectFile() const { return m_pProjectFile; }
 
-		/** Updates the associated ProjectFile object with the editor's caret
-		  * position, top visible line and its open state. Used in devProject
-		  * layout information, so that each time the user opens a project
-		  * file in the IDE, it opens exactly in the same state it was when last
-		  * closed.
-		  */
-		void UpdateProjectFile();
+        /** Updates the associated ProjectFile object with the editor's caret
+          * position, top visible line and its open state. Used in devProject
+          * layout information, so that each time the user opens a project
+          * file in the IDE, it opens exactly in the same state it was when last
+          * closed.
+          */
+        void UpdateProjectFile();
 
-		/** Save editor contents. Returns true on success, false otherwise. */
-		bool Save();
+        /** Save editor contents. Returns true on success, false otherwise. */
+        bool Save();
 
-		/** Save editor contents under a different filename. Returns true on success, false otherwise. */
-		bool SaveAs();
+        /** Save editor contents under a different filename. Returns true on success, false otherwise. */
+        bool SaveAs();
 
-		/** Unimplemented */
-		bool RenameTo(const wxString& filename, bool deleteOldFromDisk = false);
+        /** Unimplemented */
+        bool RenameTo(const wxString& filename, bool deleteOldFromDisk = false);
 
-		/** Save fold states within a new cbStyledTextCtrl. This saves the whole document, thus saving the fold states before the Fold Options Change*/
-		bool SaveFoldState();
+        /** Save fold states within a new cbStyledTextCtrl. This saves the whole document, thus saving the fold states before the Fold Options Change*/
+        bool SaveFoldState();
 
-		/** Fix fold states by comparing foldBackup with m_pControl. This is a temp fix for the Scintilla bug*/
-		bool FixFoldState();
+        /** Fix fold states by comparing foldBackup with m_pControl. This is a temp fix for the Scintilla bug*/
+        bool FixFoldState();
 
-		/** Fold all editor folds (hides blocks of code). */
-		void FoldAll();
+        /** Fold all editor folds (hides blocks of code). */
+        void FoldAll();
 
-		/** Unfold all editor folds (shows blocks of code). */
-		void UnfoldAll();
+        /** Unfold all editor folds (shows blocks of code). */
+        void UnfoldAll();
 
-		/** Toggle all editor folds (inverts the show/hide state of blocks of code). */
-		void ToggleAllFolds();
+        /** Toggle all editor folds (inverts the show/hide state of blocks of code). */
+        void ToggleAllFolds();
 
-		/** Folds the block containing \c line. If \c line is -1, folds the block containing the caret. */
-		void FoldBlockFromLine(int line = -1);
+        /** Folds the block containing \c line. If \c line is -1, folds the block containing the caret. */
+        void FoldBlockFromLine(int line = -1);
 
-		/** Unfolds the block containing \c line. If \c line is -1, unfolds the block containing the caret. */
-		void UnfoldBlockFromLine(int line = -1);
+        /** Unfolds the block containing \c line. If \c line is -1, unfolds the block containing the caret. */
+        void UnfoldBlockFromLine(int line = -1);
 
-		/** Toggles folding of the block containing \c line. If \c line is -1, toggles folding of the block containing the caret. */
-		void ToggleFoldBlockFromLine(int line = -1);
+        /** Toggles folding of the block containing \c line. If \c line is -1, toggles folding of the block containing the caret. */
+        void ToggleFoldBlockFromLine(int line = -1);
 
-		/** Set the colour set to use. */
-		void SetColourSet(EditorColourSet* theme);
+        /** Set the colour set to use. */
+        void SetColourSet(EditorColourSet* theme);
 
-		/** Get the colour set in use. */
-		EditorColourSet* GetColourSet() const { return m_pTheme; }
+        /** Get the colour set in use. */
+        EditorColourSet* GetColourSet() const { return m_pTheme; }
 
-		/** Jumps to the matching brace (if there is one). */
-		void GotoMatchingBrace();
+        /** Jumps to the matching brace (if there is one). */
+        void GotoMatchingBrace();
 
-		/** Highlights the brace pair (one of the braces must be under the cursor) */
-		void HighlightBraces();
+        /** Highlights the brace pair (one of the braces must be under the cursor) */
+        void HighlightBraces();
 
         /** Returns the specified line's (0-based) indentation (whitespace) in spaces. If line is -1, it uses the current line */
         int GetLineIndentInSpaces(int line = -1) const;
@@ -214,7 +214,7 @@ class DLLIMPORT cbEditor : public EditorBase
           * These keywords/code pairs can be edited in the editor configuration
           * dialog.
           */
-		void AutoComplete();
+        void AutoComplete();
 
         /** Move the caret at the specified line.
           * @param line Line to move caret to.
@@ -277,9 +277,9 @@ class DLLIMPORT cbEditor : public EditorBase
         bool CanPaste() const;
         bool IsReadOnly() const;
 
-		// Workaround for shift-tab bug in wx2.4.2
-		void DoIndent(); /// Indents current line/block
-		void DoUnIndent(); /// UnIndents current line/block
+        // Workaround for shift-tab bug in wx2.4.2
+        void DoIndent(); /// Indents current line/block
+        void DoUnIndent(); /// UnIndents current line/block
 
         // misc. functions
         virtual wxMenu* CreateContextSubMenu(long id);
@@ -305,9 +305,9 @@ class DLLIMPORT cbEditor : public EditorBase
         void MarkerPrevious(int marker);
         void MarkLine(int marker, int line);
 
-		void DoFoldAll(int fold); // 0=unfold, 1=fold, 2=toggle
-		void DoFoldBlockFromLine(int line, int fold); // 0=unfold, 1=fold, 2=toggle
-		bool DoFoldLine(int line, int fold); // 0=unfold, 1=fold, 2=toggle
+        void DoFoldAll(int fold); // 0=unfold, 1=fold, 2=toggle
+        void DoFoldBlockFromLine(int line, int fold); // 0=unfold, 1=fold, 2=toggle
+        bool DoFoldLine(int line, int fold); // 0=unfold, 1=fold, 2=toggle
         cbStyledTextCtrl* CreateEditor();
         void SetEditorStyle();
         void SetEditorStyleBeforeFileOpen();
@@ -317,24 +317,24 @@ class DLLIMPORT cbEditor : public EditorBase
         void DetectEncoding();
         bool Open(bool detectEncoding = true);
         void DoAskForCodeCompletion(); // relevant to code-completion plugins
-		static wxColour GetOptionColour(const wxString& option, const wxColour _default);
-		void NotifyPlugins(wxEventType type, int intArg = 0, const wxString& strArg = wxEmptyString, int xArg = 0, int yArg = 0);
+        static wxColour GetOptionColour(const wxString& option, const wxColour _default);
+        void NotifyPlugins(wxEventType type, int intArg = 0, const wxString& strArg = wxEmptyString, int xArg = 0, int yArg = 0);
 
         // events
         void OnMarginClick(wxScintillaEvent& event);
         void OnEditorUpdateUI(wxScintillaEvent& event);
         void OnEditorChange(wxScintillaEvent& event);
         void OnEditorCharAdded(wxScintillaEvent& event);
-		void OnEditorDwellStart(wxScintillaEvent& event);
-		void OnEditorDwellEnd(wxScintillaEvent& event);
-		void OnEditorModified(wxScintillaEvent& event);
-		void OnUserListSelection(wxScintillaEvent& event);
-		void OnZoom(wxScintillaEvent& event);
-		void OnScintillaEvent(wxScintillaEvent& event);
-		void OnClose(wxCloseEvent& event);
+        void OnEditorDwellStart(wxScintillaEvent& event);
+        void OnEditorDwellEnd(wxScintillaEvent& event);
+        void OnEditorModified(wxScintillaEvent& event);
+        void OnUserListSelection(wxScintillaEvent& event);
+        void OnZoom(wxScintillaEvent& event);
+        void OnScintillaEvent(wxScintillaEvent& event);
+        void OnClose(wxCloseEvent& event);
 
-		// one event handler for all popup menu entries
-		void OnContextMenuEntry(wxCommandEvent& event);
+        // one event handler for all popup menu entries
+        void OnContextMenuEntry(wxCommandEvent& event);
         bool OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type);    //pecan 2006/03/22
         void OnAfterBuildContextMenu(ModuleType type);                              //pecan 2006/03/22
 
@@ -349,12 +349,12 @@ class DLLIMPORT cbEditor : public EditorBase
         cbStyledTextCtrl* m_foldBackup;
         SplitType m_SplitType;
         int m_ID;
-		bool m_Modified;
-		int m_Index;
+        bool m_Modified;
+        int m_Index;
         wxTimer m_timerWait;
-		ProjectFile* m_pProjectFile;
-		EditorColourSet* m_pTheme;
-		HighlightLanguage m_lang;
+        ProjectFile* m_pProjectFile;
+        EditorColourSet* m_pTheme;
+        HighlightLanguage m_lang;
         wxDateTime m_LastModified; // to check if the file was modified outside the editor
 
         // DO NOT ADD ANY MORE VARIABLES HERE!

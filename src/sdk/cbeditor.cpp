@@ -59,17 +59,17 @@
 
 const wxString g_EditorModified = _T("*");
 
-#define ERROR_MARKER		1
-#define ERROR_STYLE			wxSCI_MARK_SMALLRECT
+#define ERROR_MARKER        1
+#define ERROR_STYLE            wxSCI_MARK_SMALLRECT
 
-#define BOOKMARK_MARKER		2
-#define BOOKMARK_STYLE 		wxSCI_MARK_ARROW
+#define BOOKMARK_MARKER        2
+#define BOOKMARK_STYLE         wxSCI_MARK_ARROW
 
-#define BREAKPOINT_MARKER	3
-#define BREAKPOINT_STYLE 	wxSCI_MARK_CIRCLE
+#define BREAKPOINT_MARKER    3
+#define BREAKPOINT_STYLE     wxSCI_MARK_CIRCLE
 
-#define DEBUG_MARKER		4
-#define DEBUG_STYLE 		wxSCI_MARK_ARROW
+#define DEBUG_MARKER        4
+#define DEBUG_STYLE         wxSCI_MARK_ARROW
 
 BEGIN_EVENT_TABLE(cbStyledTextCtrl, wxScintilla)
     EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
@@ -103,20 +103,20 @@ void cbStyledTextCtrl::OnKillFocus(wxFocusEvent& event)
 
 void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
 {
-	if ( m_pParent != NULL )
-	{
-		cbEditor* pParent = dynamic_cast<cbEditor*>(m_pParent);
-		if ( pParent != NULL )
-		{
-			const bool is_right_click = event.GetPosition()!=wxDefaultPosition;
-			const wxPoint mp(is_right_click ? event.GetPosition() : wxDefaultPosition);
-			pParent->DisplayContextMenu(mp,mtEditorManager);
-		}
-		else
-		{
-			event.Skip();
-		}
-	}
+    if ( m_pParent != NULL )
+    {
+        cbEditor* pParent = dynamic_cast<cbEditor*>(m_pParent);
+        if ( pParent != NULL )
+        {
+            const bool is_right_click = event.GetPosition()!=wxDefaultPosition;
+            const wxPoint mp(is_right_click ? event.GetPosition() : wxDefaultPosition);
+            pParent->DisplayContextMenu(mp,mtEditorManager);
+        }
+        else
+        {
+            event.Skip();
+        }
+    }
 }
 
 void cbStyledTextCtrl::OnGPM(wxMouseEvent& event)
@@ -1249,7 +1249,7 @@ bool cbEditor::SaveAs()
     wxString Extension = fname.GetExt();
     wxString Filter;
     if (!Extension.IsEmpty())
-    {	// use the current extension as the filter
+    {    // use the current extension as the filter
         // Select filter belonging to this file type:
         Extension.Prepend(_T("."));
         Filter = FileFilters::GetFilterString(Extension);
@@ -1320,71 +1320,71 @@ bool cbEditor::RenameTo(const wxString& filename, bool deleteOldFromDisk)
 
 bool cbEditor::SaveFoldState()
 {
-	bool bRet = false;
-	if(m_foldBackup = CreateEditor())
-	{
-		ApplyStyles(m_foldBackup);
-		m_foldBackup->SetText(m_pControl->GetText());
-		int count = m_pControl->GetLineCount();
-		for (int i = 0; i < count; ++i)
-		{
-			m_foldBackup->SetFoldLevel(i,m_pControl->GetFoldLevel(i));
-		}
-		bRet = true;
-	}
-	return bRet;
+    bool bRet = false;
+    if(m_foldBackup = CreateEditor())
+    {
+        ApplyStyles(m_foldBackup);
+        m_foldBackup->SetText(m_pControl->GetText());
+        int count = m_pControl->GetLineCount();
+        for (int i = 0; i < count; ++i)
+        {
+            m_foldBackup->SetFoldLevel(i,m_pControl->GetFoldLevel(i));
+        }
+        bRet = true;
+    }
+    return bRet;
 } // end of SaveFoldState
 
 bool cbEditor::FixFoldState()
 {
-	bool bRet = false;
-	if(m_foldBackup)
-	{
-		int backupLength = m_foldBackup->GetLineCount();
-		int realLength = m_pControl->GetLineCount();
-		if(backupLength == realLength) //It is supposed to be the same, but you never know :)
-		{
-			ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
-			if (mgr->ReadBool(_T("/folding/show_folds"), true)) //Only fix the folds if the folds are enabled
-			{
-				m_pControl->Colourise(0, -1); // the *most* important part!
-				m_foldBackup->Colourise(0, -1); // " Not so sure here.. but what the hell :)
-				int count = m_pControl->GetLineCount();
-				for (int i = 0; i < count; ++i)
-				{
-					int oldFoldLevel = m_foldBackup->GetFoldLevel(i);
-					int newFoldLevel = m_pControl->GetFoldLevel(i);
-					if(oldFoldLevel != newFoldLevel)
-					{
-						if(m_pControl->GetLineVisible(i) == true)
-						{
-							m_pControl->SetFoldExpanded(i, true);
-						}
-						else
-						{
-							int parent = m_foldBackup->GetFoldParent(i);
-							while(parent != -1)
-							{
-								m_pControl->ToggleFold(parent);
-								parent = m_foldBackup->GetFoldParent(parent);
-							}
-							m_pControl->ShowLines(i, i);
-							parent = m_foldBackup->GetFoldParent(i);
-							while(parent != -1)
-							{
-								m_pControl->ToggleFold(parent);
-								parent = m_foldBackup->GetFoldParent(parent);
-							}
-						}
-					}
-				}
-			}
-			bRet = true;
-		}
-		m_foldBackup->Destroy();
-		m_foldBackup = 0;
-	}
-	return bRet;
+    bool bRet = false;
+    if(m_foldBackup)
+    {
+        int backupLength = m_foldBackup->GetLineCount();
+        int realLength = m_pControl->GetLineCount();
+        if(backupLength == realLength) //It is supposed to be the same, but you never know :)
+        {
+            ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+            if (mgr->ReadBool(_T("/folding/show_folds"), true)) //Only fix the folds if the folds are enabled
+            {
+                m_pControl->Colourise(0, -1); // the *most* important part!
+                m_foldBackup->Colourise(0, -1); // " Not so sure here.. but what the hell :)
+                int count = m_pControl->GetLineCount();
+                for (int i = 0; i < count; ++i)
+                {
+                    int oldFoldLevel = m_foldBackup->GetFoldLevel(i);
+                    int newFoldLevel = m_pControl->GetFoldLevel(i);
+                    if(oldFoldLevel != newFoldLevel)
+                    {
+                        if(m_pControl->GetLineVisible(i) == true)
+                        {
+                            m_pControl->SetFoldExpanded(i, true);
+                        }
+                        else
+                        {
+                            int parent = m_foldBackup->GetFoldParent(i);
+                            while(parent != -1)
+                            {
+                                m_pControl->ToggleFold(parent);
+                                parent = m_foldBackup->GetFoldParent(parent);
+                            }
+                            m_pControl->ShowLines(i, i);
+                            parent = m_foldBackup->GetFoldParent(i);
+                            while(parent != -1)
+                            {
+                                m_pControl->ToggleFold(parent);
+                                parent = m_foldBackup->GetFoldParent(parent);
+                            }
+                        }
+                    }
+                }
+            }
+            bRet = true;
+        }
+        m_foldBackup->Destroy();
+        m_foldBackup = 0;
+    }
+    return bRet;
 } // end of FixFoldState
 
 void cbEditor::AutoComplete()
@@ -1599,7 +1599,7 @@ bool cbEditor::AddBreakpoint(int line, bool notifyDebugger)
         return false;
     }
 
-	// Notify all debugger plugins
+    // Notify all debugger plugins
     PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
     if (!arr.GetCount())
         return false;
@@ -1614,10 +1614,10 @@ bool cbEditor::AddBreakpoint(int line, bool notifyDebugger)
             accepted=true;
         }
     }
-	// If at least one breakpoint changed, return true
-	// (could still cause problems if one debugger previously responded to add but another
-	// now responds to remove of that bp - hopefully the debuggers are coded sufficiently well
-	// that this doesn't happen)
+    // If at least one breakpoint changed, return true
+    // (could still cause problems if one debugger previously responded to add but another
+    // now responds to remove of that bp - hopefully the debuggers are coded sufficiently well
+    // that this doesn't happen)
     if(accepted)
     {
         MarkerToggle(BREAKPOINT_MARKER, line);
@@ -1801,8 +1801,8 @@ bool cbEditor::CanPaste() const
 
 bool cbEditor::IsReadOnly() const
 {
-	cbAssert(GetControl());
-	return GetControl()->GetReadOnly();
+    cbAssert(GetControl());
+    return GetControl()->GetReadOnly();
 }
 
 bool cbEditor::LineHasMarker(int marker, int line) const
@@ -2264,13 +2264,13 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
     {
         if (m_pProjectFile)
             m_pProjectFile->ShowOptions(this);
-		else
-		{
-			// active editor not-in-project
-			ProjectFileOptionsDlg dlg(this, GetFilename());
-			PlaceWindow(&dlg);
-			dlg.ShowModal();
-		}
+        else
+        {
+            // active editor not-in-project
+            ProjectFileOptionsDlg dlg(this, GetFilename());
+            PlaceWindow(&dlg);
+            dlg.ShowModal();
+        }
     }
     else if (id == idBreakpointAdd)
         AddBreakpoint(m_pData->m_LastMarginMenuLine);

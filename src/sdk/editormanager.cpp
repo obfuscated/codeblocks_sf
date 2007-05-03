@@ -61,6 +61,7 @@
 #include "confirmreplacedlg.h"
 #include "filefilters.h"
 #include "searchresultslog.h"
+#include "projectfileoptionsdlg.h"
 
 #include "wx/wxFlatNotebook/wxFlatNotebook.h"
 
@@ -115,6 +116,7 @@ static const int idNBTabSaveAll = wxNewId();
 static const int idNBSwapHeaderSource = wxNewId();
 static const int idNBTabTop = wxNewId();
 static const int idNBTabBottom = wxNewId();
+static const int idNBProperties = wxNewId();
 static const int idNB = wxNewId();
 
 /** *******************************************************
@@ -190,6 +192,7 @@ BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
     EVT_MENU(idNBTabSave, EditorManager::OnSave)
     EVT_MENU(idNBTabSaveAll, EditorManager::OnSaveAll)
     EVT_MENU(idNBSwapHeaderSource, EditorManager::OnSwapHeaderSource)
+    EVT_MENU(idNBProperties, EditorManager::OnProperties)
     EVT_MENU(idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles)
 #ifdef USE_OPENFILES_TREE
     EVT_UPDATE_UI(ID_EditorManager, EditorManager::OnUpdateUI)
@@ -1168,36 +1171,36 @@ bool EditorManager::SwapActiveHeaderSource()
     // We couldn't find the file, maybe it does not exist. Ask the user if we
     // should create it:
     if (cbMessageBox(_("The file does not exist. Do you want to create it?"),
-				_("Error"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
+                _("Error"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
     {
-		cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
-		if (project)
-			wxSetWorkingDirectory(project->GetBasePath());
+        cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+        if (project)
+            wxSetWorkingDirectory(project->GetBasePath());
 
-		// Create a suggestion for the new file name:
+        // Create a suggestion for the new file name:
         if (ft == ftHeader)
-			fn.SetExt(FileFilters::CPP_EXT);
-		else if (ft == ftSource)
-			fn.SetExt(FileFilters::H_EXT);
-		// else? Well, if the filename is not changed we could possibly
-		// overwrite an existing file with our suggestion.
+            fn.SetExt(FileFilters::CPP_EXT);
+        else if (ft == ftSource)
+            fn.SetExt(FileFilters::H_EXT);
+        // else? Well, if the filename is not changed we could possibly
+        // overwrite an existing file with our suggestion.
 
-    	cbEditor* newEd = New(fn.GetFullPath());
-		if (cbMessageBox(_("Do you want to add this new file in the active project?"),
-					_("Add file to project"),
-					wxYES_NO | wxICON_QUESTION) == wxID_YES)
-		{
-			wxArrayInt targets;
-			if (Manager::Get()->GetProjectManager()->AddFileToProject(newEd->GetFilename(), project, targets) != 0)
-			{
-				ProjectFile* pf = project->GetFileByFilename(newEd->GetFilename(), false);
-				newEd->SetProjectFile(pf);
-				Manager::Get()->GetProjectManager()->RebuildTree();
-			}
-		}
-		// verify that the open files are still in sync
-		// the new file might have overwritten an existing one)
-		Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
+        cbEditor* newEd = New(fn.GetFullPath());
+        if (cbMessageBox(_("Do you want to add this new file in the active project?"),
+                    _("Add file to project"),
+                    wxYES_NO | wxICON_QUESTION) == wxID_YES)
+        {
+            wxArrayInt targets;
+            if (Manager::Get()->GetProjectManager()->AddFileToProject(newEd->GetFilename(), project, targets) != 0)
+            {
+                ProjectFile* pf = project->GetFileByFilename(newEd->GetFilename(), false);
+                newEd->SetProjectFile(pf);
+                Manager::Get()->GetProjectManager()->RebuildTree();
+            }
+        }
+        // verify that the open files are still in sync
+        // the new file might have overwritten an existing one)
+        Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
     }
     return 0L;
 }
@@ -1347,8 +1350,8 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
         // there can be a selection, the last found match)
         if(data->scope== 0 && data->NewSearch && (ssta != cpos || send != cpos))
         {
-        	ssta = cpos;
-        	send = cpos;
+            ssta = cpos;
+            send = cpos;
         }
 
 
@@ -1609,14 +1612,14 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 }
                 else
                 {
-                	if(data->end < diff)
-                	{
-					   data->end = 0;
-                	}
-                	else
-                	{
+                    if(data->end < diff)
+                    {
+                       data->end = 0;
+                    }
+                    else
+                    {
                        data->end -= diff;
-                	}
+                    }
                 }
             }
             else
@@ -1674,33 +1677,33 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
     }
     else if (data->scope == 2) // find in workspace
     {
-		// loop over all the projects in the workspace (they are contained in the ProjectManager)
-		const ProjectsArray* pProjects = Manager::Get()->GetProjectManager()->GetProjects();
-		if(pProjects)
-		{
-			int count = pProjects->GetCount();
-			for (int idxProject = 0; idxProject < count; ++idxProject)
-			{
-				cbProject* pProject = pProjects->Item(idxProject);
-				if(pProject)
-				{
-					wxString fullpath = _T("");
-					for (int idxFile = 0; idxFile < pProject->GetFilesCount(); ++idxFile)
-					{
-						ProjectFile* pf = pProject->GetFile(idxFile);
-						if (pf)
-						{
-							fullpath = pf->file.GetFullPath();
-							if (filesList.Index(fullpath) == -1) // avoid adding duplicates
-							{
-								if(wxFileExists(fullpath))  // Does the file exist?
-									filesList.Add(fullpath);
-							}
-						}
-					} // end for : idx : idxFile
-				}
-			} // end for : idx : idxProject
-		}
+        // loop over all the projects in the workspace (they are contained in the ProjectManager)
+        const ProjectsArray* pProjects = Manager::Get()->GetProjectManager()->GetProjects();
+        if(pProjects)
+        {
+            int count = pProjects->GetCount();
+            for (int idxProject = 0; idxProject < count; ++idxProject)
+            {
+                cbProject* pProject = pProjects->Item(idxProject);
+                if(pProject)
+                {
+                    wxString fullpath = _T("");
+                    for (int idxFile = 0; idxFile < pProject->GetFilesCount(); ++idxFile)
+                    {
+                        ProjectFile* pf = pProject->GetFile(idxFile);
+                        if (pf)
+                        {
+                            fullpath = pf->file.GetFullPath();
+                            if (filesList.Index(fullpath) == -1) // avoid adding duplicates
+                            {
+                                if(wxFileExists(fullpath))  // Does the file exist?
+                                    filesList.Add(fullpath);
+                            }
+                        }
+                    } // end for : idx : idxFile
+                }
+            } // end for : idx : idxProject
+        }
     }
 
     // if the list is empty, leave
@@ -2207,16 +2210,16 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     }
     else if (data->scope == 3) // find in workspace
     {
-		// loop over all the projects in the workspace (they are contained in the ProjectManager)
-		const ProjectsArray* pProjects = Manager::Get()->GetProjectManager()->GetProjects();
+        // loop over all the projects in the workspace (they are contained in the ProjectManager)
+        const ProjectsArray* pProjects = Manager::Get()->GetProjectManager()->GetProjects();
         int count = 0;
-		if(pProjects)
+        if(pProjects)
             count = pProjects->GetCount();
-		if(!count)
-		{
-		    cbMessageBox(_("No workspace to search in!"), _("Error"), wxICON_WARNING);
-		    return 0;
-		}
+        if(!count)
+        {
+            cbMessageBox(_("No workspace to search in!"), _("Error"), wxICON_WARNING);
+            return 0;
+        }
         for (int idxProject = 0; idxProject < count; ++idxProject)
         {
             cbProject* pProject = pProjects->Item(idxProject);
@@ -2472,6 +2475,9 @@ void EditorManager::OnPageContextMenu(wxFlatNotebookEvent& event)
     cbEditor* ed = GetBuiltinEditor(event.GetSelection());
     if (ed)
     {
+        pop->AppendSeparator();
+        pop->Append(idNBProperties, _("Properties..."));
+
         wxMenu* splitMenu = new wxMenu;
         splitMenu->Append(idNBTabSplitHorz, _("Horizontally"));
         splitMenu->Append(idNBTabSplitVert, _("Vertically"));
@@ -2544,6 +2550,15 @@ void EditorManager::OnTabPosition(wxCommandEvent& event)
     m_pNotebook->SetWindowStyleFlag(style);
     // (style & wxFNB_BOTTOM) saves info only about the the tabs position
     Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/editor_tabs_bottom"), (bool)(style & wxFNB_BOTTOM));
+}
+
+void EditorManager::OnProperties(wxCommandEvent& event)
+{
+    // active editor not-in-project
+    ProjectFileOptionsDlg dlg(Manager::Get()->GetAppWindow(),
+                              GetActiveEditor()->GetFilename());
+    PlaceWindow(&dlg);
+    dlg.ShowModal();
 }
 
 void EditorManager::OnAppDoneStartup(wxCommandEvent& event)

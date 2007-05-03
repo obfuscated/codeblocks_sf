@@ -148,6 +148,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void OnSaveAll(wxCommandEvent& event);
         void OnSwapHeaderSource(wxCommandEvent& event);
         void OnTabPosition(wxCommandEvent& event);
+        void OnProperties(wxCommandEvent& event);
         void OnAppDoneStartup(wxCommandEvent& event);
         void OnAppStartShutdown(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
@@ -197,7 +198,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         int m_SearchLogIndex;
         int m_SashPosition;
         int m_zoom;
-		bool m_isCheckingForExternallyModifiedFiles;
+        bool m_isCheckingForExternallyModifiedFiles;
         friend struct EditorManagerInternalData;
         EditorManagerInternalData* m_pData;
 
