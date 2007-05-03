@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 72 2007-05-01 15:19:27Z Pecan $
+// RCS-ID: $Id: version.cpp 74 2007-05-03 20:57:17Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -229,6 +229,9 @@ AppVersion::~AppVersion()
 //          60) Change modal editors to wxFRAME_FLOAT_ON_PARENT (works much better)
 //          61) UnIconize and focus hidden|iconsized editors when user re-selects tree item
 //          62) Corrections to FindAppPath() when pgm started without .exe .bat etc.
+// ----------------------------------------------------------------------------
+//  Commit  1.2.63 2007/05/3
+//          63) Incorporate mappedmemoryfile fixes by Tim S
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box

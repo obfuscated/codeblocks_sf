@@ -11,7 +11,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "memorymappedfile.h"
-#if defined(__WXGTK__)
+#if defined(__WXGTK__)|| defined(__WXMAC__)
     #include "errno.h"
 #endif
 
@@ -218,6 +218,15 @@ wxULongLong wxMemoryMappedFile::GetFileSize64(const wxMemoryMappedFileHandleType
     {
         return wxULongLong(INVALID_FILE_SIZE);
     }
+#elif defined(__BSD__) || defined(__DARWIN__)
+    // Thanks to Tim S for this fix.
+   off_t size = lseek(hFile, 0, SEEK_END);
+   lseek(hFile, 0, SEEK_SET);//go back to the start of the file
+   if (-1 == size)
+   {
+      throw wxMemoryMappedInvalidFileSize();
+   }
+   return wxULongLong(size);
 #else
     off64_t size = lseek64(hFile, 0, SEEK_END);
     lseek64(hFile, 0, SEEK_SET);//go back to the start of the file

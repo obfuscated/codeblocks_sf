@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 72 2007-05-01 15:19:27Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 73 2007-05-02 20:19:20Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
