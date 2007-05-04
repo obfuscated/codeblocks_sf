@@ -39,7 +39,7 @@ class CodeSnippetsWindow;
     int     GetActiveMenuId();
     void    SetActiveMenuId(int menuid);
 
-   #if !defined(BUILDING_PLUGIN)
+   #if !defined(IS_PLUGIN_CODE)
     wxString cbC2U(const char* str);
     const wxWX2MBbuf cbU2C(const wxString& str);
    #endif
@@ -68,10 +68,10 @@ class CodeSnippetsConfig
 
     void CenterChildOnParent(wxWindow* child);
 
-   #if defined(BUILDING_PLUGIN)
+   #if defined(IS_PLUGIN_CODE)
     bool IsPlugin(){return true;}
     bool IsApplication(){return false;}
-   #else //not defined(BUILDING_PLUGIN)
+   #else //not defined(IS_PLUGIN_CODE)
     bool IsPlugin(){return false;}
     bool IsApplication(){return true;}
    #endif

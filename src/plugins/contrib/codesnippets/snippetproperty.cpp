@@ -31,7 +31,7 @@
     #include <wx/filename.h>
     #include <wx/dnd.h>
 
-#if defined(BUILDING_PLUGIN)
+#if defined(IS_PLUGIN_CODE)
     #include "sdk.h"
 #endif
 
@@ -246,7 +246,7 @@ void SnippetProperty::OnSnippetButton(wxCommandEvent& event)
 
     // Snippet button clicked from menubar edit(Menu) or properties context(Mnu)
     if ( ( g_activeMenuId == idMnuProperties ) //note: mnu vs menu
-        #if !defined(BUILDING_PLUGIN)
+        #if !defined(IS_PLUGIN_CODE)
         || ( g_activeMenuId == idMenuProperties)
         #endif
         )

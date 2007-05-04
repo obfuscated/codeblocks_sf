@@ -15,6 +15,7 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DNO_LOGGING" />
+					<Add option="-DIS_PLUGIN_CODE" />
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />
@@ -27,6 +28,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-DWXUSINGDLL" />
 					<Add option="-DNO_LOGGING" />
 					<Add option="-DWX_PRECOMP" />
 				</Compiler>
@@ -44,10 +46,8 @@
 			<Add option="-Winvalid-pch" />
 			<Add option="-fPIC" />
 			<Add option="`pkg-config --cflags gtk+-2.0`" />
-			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
-			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#cb)/include" />
 			<Add directory="$(#cb)/include/wxscintilla/include" />
 			<Add directory="$(#cb)/include/wxFlatNotebook/include" />

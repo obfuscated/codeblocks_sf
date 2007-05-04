@@ -43,7 +43,7 @@
     // ------------------------------------
     // UTF8 conversion routines
     // ------------------------------------
-   #if defined(BUILDING_PLUGIN)
+   #if defined(IS_PLUGIN_CODE)
      #include "globals.h"  // codeblocks sdk globals.h
    #else
     // Return @c str as a proper unicode-compatible string
@@ -65,7 +65,7 @@
             return (wxChar*)str.mb_str();
         #endif
     }
-   #endif //defined(BUILDING_PLUGIN)
+   #endif //defined(IS_PLUGIN_CODE)
 
 // ----------------------------------------------------------------------------
 CodeSnippetsConfig::CodeSnippetsConfig()

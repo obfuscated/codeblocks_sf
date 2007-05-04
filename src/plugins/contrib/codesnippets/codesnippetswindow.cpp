@@ -43,7 +43,7 @@
 #pragma hdrstop
 #endif //__BORLANDC__
 
-#if defined(BUILDING_PLUGIN)
+#if defined(IS_PLUGIN_CODE)
     #if defined(CB_PRECOMP)
         #include "sdk.h"
     #else
@@ -132,7 +132,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 	EVT_MENU(idMnuConvertToFileLink,CodeSnippetsWindow::OnMnuSaveSnippetAsFileLink)
 	EVT_MENU(idMnuProperties,       CodeSnippetsWindow::OnMnuProperties)
 	EVT_MENU(idMnuSettings,         CodeSnippetsWindow::OnMnuSettings)
-   #if defined(BUILDING_PLUGIN)
+   #if defined(IS_PLUGIN_CODE)
 	EVT_MENU(idMnuAbout,            CodeSnippetsWindow::OnMnuAbout)
    #endif
 	// ---
@@ -459,7 +459,7 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 
 				snippetsTreeMenu->AppendSeparator();
                 snippetsTreeMenu->Append(idMnuSettings, _("Settings..."));
-               #if defined(BUILDING_PLUGIN)
+               #if defined(IS_PLUGIN_CODE)
                 snippetsTreeMenu->Append(idMnuAbout, _("About..."));
                #endif
 			break;
@@ -618,7 +618,7 @@ void CodeSnippetsWindow::ApplySnippet(const wxTreeItemId& itemID)
 		{
 			return;
 		}
-      #if defined(BUILDING_PLUGIN)
+      #if defined(IS_PLUGIN_CODE)
 		// Check that editor is open
 		EditorManager* editorMan = Manager::Get()->GetEditorManager();
 		if(!editorMan)
@@ -643,9 +643,9 @@ void CodeSnippetsWindow::ApplySnippet(const wxTreeItemId& itemID)
             snippet.Replace(wxT("\n"), wxT('\n') + editor->GetLineIndentString(ctrl->GetCurrentLine()));
             ctrl->AddText(snippet);
 		}
-	  #else //NOT defined(BUILDING_PLUGIN)
+	  #else //NOT defined(IS_PLUGIN_CODE)
         AddTextToClipBoard( item->GetSnippet() );
-	  #endif //defined(BUILDING_PLUGIN)
+	  #endif //defined(IS_PLUGIN_CODE)
 	}
 }
 
@@ -896,7 +896,7 @@ void CodeSnippetsWindow::CheckForMacros(wxString& snippet)
 // ----------------------------------------------------------------------------
 {
     //FIXME: CheckForMacros in App???
-  #if defined(BUILDING_PLUGIN)
+  #if defined(IS_PLUGIN_CODE)
 	// Copied from cbEditor::Autocomplete, I admit it
 	int macroPos = snippet.Find(_T("$("));
 	while (macroPos != -1)

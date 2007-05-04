@@ -15,6 +15,7 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DIS_PLUGIN_CODE" />
 					<Add option="-DNO_LOGGING" />
 				</Compiler>
 				<Linker>

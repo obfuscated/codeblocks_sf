@@ -29,7 +29,7 @@
     #include <wx/dataobj.h>
     #include <wx/dnd.h>
 
-#if defined(BUILDING_PLUGIN)
+#if defined(IS_PLUGIN_CODE)
     #include "sdk.h"
     #ifndef CB_PRECOMP
         #include "manager.h"
@@ -498,7 +498,7 @@ bool CodeSnippetsTreeCtrl::LoadItemsFromFile(const wxString& fileName, bool bApp
 
 			// Overwrite it
 			wxCopyFile(fileName, backupFile, true);
-           #if defined(BUILDING_PLUGIN)
+           #if defined(IS_PLUGIN_CODE)
 			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + cbC2U(doc.ErrorDesc()));
 			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Backup of the failed file has been created."));
 		   #else
@@ -1421,7 +1421,7 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem)
         (wxObjectEventFunction)(wxEventFunction)
         (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown,NULL,this);
 
-        #if defined(BUILDING_PLUGIN)
+        #if defined(IS_PLUGIN_CODE)
           // Disable the plugin View menu item
             Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, false);
         #endif
@@ -1446,7 +1446,7 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem)
             (wxObjectEventFunction)(wxEventFunction)
             (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown);
 
-        #if defined(BUILDING_PLUGIN)
+        #if defined(IS_PLUGIN_CODE)
           // Enable the plugin View menu item
           Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
         #endif
@@ -1510,7 +1510,7 @@ void CodeSnippetsTreeCtrl::OnIdle(wxIdleEvent& event)
         m_aDlgPtrs.Clear();
     }
 
-    #if defined(BUILDING_PLUGIN)
+    #if defined(IS_PLUGIN_CODE)
       // Enable the plugin View menu item
       if ( 0 == m_aDlgPtrs.GetCount() )
         Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
@@ -1539,7 +1539,7 @@ void CodeSnippetsTreeCtrl::OnShutdown(wxCloseEvent& event)
 //        wxDialog* pdlg = this->m_aDlgPtrs.Item(i);
 //        if (pdlg) pdlg->ProcessEvent(event);
 //    }
-//    #if defined(BUILDING_PLUGIN)
+//    #if defined(IS_PLUGIN_CODE)
 //      // Enable the plugin View menu item
 //        asm("int3");
 //        Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);

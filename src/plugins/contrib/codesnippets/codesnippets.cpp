@@ -19,6 +19,10 @@
 */
 // RCS-ID: $Id: codesnippets.cpp 73 2007-05-02 20:19:20Z Pecan $
 
+#if !defined(IS_PLUGIN_CODE)
+    #error IS_PLUGIN_CODE *not* defined for plugin code
+#endif
+
 #include "sdk.h"
 #ifndef CB_PRECOMB
 	#include <wx/event.h>
@@ -251,7 +255,7 @@ void CodeSnippets::CreateSnippetWindow()
 	SetSnippetsWindow( new CodeSnippetsWindow(GetConfig()->pMainFrame));
 
     // Floating windows must be set by their parent
-   #if !defined(BUILDING_PLUGIN)
+   #if !defined(IS_PLUGIN_CODE)
     // We can position an application window
     GetSnippetsWindow()->SetSize(GetConfig()->windowXpos, GetConfig()->windowYpos,
             GetConfig()->windowWidth, GetConfig()->windowHeight);

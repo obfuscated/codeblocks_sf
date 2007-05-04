@@ -30,11 +30,11 @@ extern int idMenuSettingsOptions;
 extern int idMnuConvertToFileLink      ;
 
 
-#if defined(BUILDING_PLUGIN)
+#if defined(IS_PLUGIN_CODE)
 extern int idViewSnippets ;
 #endif
 
-#if !defined(BUILDING_PLUGIN)
+#if !defined(IS_PLUGIN_CODE)
 extern int idMenuProperties    ;
 #endif
 

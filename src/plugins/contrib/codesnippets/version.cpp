@@ -233,6 +233,9 @@ AppVersion::~AppVersion()
 //  Commit  1.2.63 2007/05/3
 //          63) Incorporate mappedmemoryfile fixes by Tim S
 // ----------------------------------------------------------------------------
+//  Commit  1.2.64 2007/05/4
+//          63) Corrections to code for removing unix BUILDING_PLUGIN
+// ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
 //          a renamed "new snippet" label is not sorted into place

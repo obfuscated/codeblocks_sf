@@ -26,6 +26,10 @@
 */
 // RCS-ID: $Id: codesnippetsapp.cpp 73 2007-05-02 20:19:20Z Pecan $
 
+#if defined(IS_PLUGIN_CODE)
+    #error IS_PLUGIN_CODE defined in non plugin code
+#endif
+
 #ifdef WX_PRECOMP //
 #include "wx_pch.h"
 #endif
