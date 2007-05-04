@@ -4,14 +4,16 @@
 #include <wx/dialog.h>
 #include <pluginmanager.h>
 
-class wxDockArt;
+#include <pluginmanager.h>
+
+class wxAuiDockArt;
 class wxListbookEvent;
 class wxCheckListBox;
 
 class EnvironmentSettingsDlg : public wxDialog
 {
 	public:
-		EnvironmentSettingsDlg(wxWindow* parent, wxDockArt* art);
+		EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* art);
 		virtual ~EnvironmentSettingsDlg();
 		virtual void EndModal(int retCode);
 	protected:
@@ -32,7 +34,7 @@ class EnvironmentSettingsDlg : public wxDialog
         void LoadListbookImages();
         void UpdateListbookImages();
 
-        wxDockArt* m_pArt;
+        wxAuiDockArt* m_pArt;
         ConfigurationPanelsArray m_PluginPanels;
         DECLARE_EVENT_TABLE()
 };

@@ -1,84 +1,91 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <resource>
-  <object class="wxDialog" name="dlgConfigureTools">
-    <title>User-defined tools</title>
-    <centered>1</centered>
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
+    <object class="wxDialog" name="dlgConfigureTools">
+        <title>User-defined tools</title>
+        <centered>1</centered>
+        <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
         <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxListBox" name="lstTools">
-              <content/>
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <object class="wxBoxSizer">
+                    <object class="sizeritem">
+                        <object class="wxListBox" name="lstTools" />
+                        <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <option>2</option>
+                    </object>
+                    <object class="sizeritem">
+                        <object class="wxBoxSizer">
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                                <object class="wxButton" name="btnUp">
+                                    <label>Move &amp;up</label>
+                                </object>
+                                <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                            </object>
+                            <object class="sizeritem">
+                                <object class="wxButton" name="btnDown">
+                                    <label>Move &amp;down</label>
+                                </object>
+                                <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                            </object>
+                            <object class="spacer">
+                                <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                <size>0,16</size>
+                            </object>
+                            <object class="sizeritem">
+                                <object class="wxButton" name="btnAdd">
+                                    <label>&amp;Add</label>
+                                </object>
+                                <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                            </object>
+                            <object class="sizeritem">
+                                <object class="wxButton" name="btnAddSeparator">
+                                    <label>Add &amp;separator</label>
+                                </object>
+                                <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                            </object>
+                            <object class="spacer">
+                                <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+                                <size>0,16</size>
+                            </object>
+                            <object class="sizeritem">
+                                <object class="wxButton" name="btnEdit">
+                                    <label>&amp;Edit</label>
+                                </object>
+                                <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                            </object>
+                            <object class="sizeritem">
+                                <object class="wxButton" name="btnRemove">
+                                    <label>&amp;Remove</label>
+                                </object>
+                                <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                            </object>
+                        </object>
+                        <flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                        <border>8</border>
+                        <option>1</option>
+                    </object>
+                </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <border>8</border>
+                <option>1</option>
             </object>
-            <option>1</option>
-            <flag>wxEXPAND</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxBoxSizer">
-              <orient>wxVERTICAL</orient>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnUp">
-                  <label>Move &amp;up</label>
-                </object>
-                <flag>wxGROW</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnDown">
-                  <label>Move &amp;down</label>
-                </object>
-                <flag>wxGROW</flag>
-              </object>
-              <object class="spacer">
-                <size>0,16</size>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnAdd">
-                  <label>&amp;Add</label>
-                </object>
-                <flag>wxGROW</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnEdit">
-                  <label>&amp;Edit</label>
-                </object>
-                <flag>wxGROW</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnRemove">
-                  <label>&amp;Remove</label>
-                </object>
-                <flag>wxGROW</flag>
-              </object>
+            <object class="sizeritem">
+                <object class="wxStaticLine" name="ID_STATICLINE1" />
+                <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <border>8</border>
             </object>
-            <flag>wxLEFT|wxEXPAND</flag>
-            <border>8</border>
-          </object>
+            <object class="sizeritem">
+                <object class="wxStdDialogButtonSizer">
+                    <object class="button">
+                        <object class="wxButton" name="wxID_OK">
+                            <label></label>
+                        </object>
+                    </object>
+                </object>
+                <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+                <border>8</border>
+            </object>
         </object>
-        <option>1</option>
-        <flag>wxALL|wxEXPAND</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStdDialogButtonSizer">
-          <object class="button">
-            <object class="wxButton" name="wxID_OK">
-              <label></label>
-              <label>&amp;Ok</label>
-              <default>1</default>
-            </object>
-          </object>
-        </object>
-        <flag>wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
     </object>
-  </object>
 </resource>

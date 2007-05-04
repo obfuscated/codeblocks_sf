@@ -158,7 +158,8 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
     }
     
     // check for existing files; if found, notify about overwriting them
-    if (wxDir::GetAllFiles(path, 0) > 0)
+    wxDir dir(path);
+    if (dir.HasFiles() || dir.HasSubDirs())
     {
 		if (cbMessageBox(path + _(" already contains other files.\n"
 								"If you continue, files with the same names WILL BE OVERWRITTEN.\n"

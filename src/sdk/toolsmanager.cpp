@@ -327,6 +327,11 @@ void ToolsManager::BuildToolsMenu(wxMenu* menu)
     for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
     {
         cbTool* tool = node->GetData();
+        if (tool->GetName() == CB_TOOLS_SEPARATOR)
+        {
+            m_ItemsManager.Add(menu, wxID_SEPARATOR, _T(""), _T(""));
+            continue;
+        }
         if (tool->GetMenuId() == -1)
         {
             tool->SetMenuId(wxNewId());

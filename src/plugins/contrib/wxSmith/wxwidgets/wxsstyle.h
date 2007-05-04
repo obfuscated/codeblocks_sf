@@ -7,6 +7,7 @@
 
 #include "../wxscodinglang.h"
 #include <wx/dynarray.h>
+#include <wx/arrstr.h>
 
 // TODO: Think about non-macro implementation
 

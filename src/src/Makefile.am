@@ -44,6 +44,7 @@ codeblocks_SOURCES = app.cpp \
 
 noinst_HEADERS = app.h \
 			appglobals.h \
+			aui_compat.h \
 			compilersettingsdlg.h \
 			crashhandler.h \
 			dlgabout.h \

@@ -2043,9 +2043,6 @@
 		<Unit filename="sdk/projecttemplateloader.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/propgrid/include/wx/propgrid/propgrid.i">
-			<Option target="wxPropertyGrid" />
-		</Unit>
 		<Unit filename="sdk/propgrid/src/propgrid/advprops.cpp">
 			<Option target="wxPropertyGrid" />
 		</Unit>
@@ -2810,6 +2807,9 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/appglobals.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/aui_compat.h">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/compilersettingsdlg.cpp">

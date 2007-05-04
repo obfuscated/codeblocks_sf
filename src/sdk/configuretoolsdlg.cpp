@@ -46,6 +46,7 @@ BEGIN_EVENT_TABLE(ConfigureToolsDlg, wxDialog)
 	EVT_BUTTON(XRCID("btnAdd"), 	ConfigureToolsDlg::OnAdd)
 	EVT_BUTTON(XRCID("btnEdit"), 	ConfigureToolsDlg::OnEdit)
 	EVT_BUTTON(XRCID("btnRemove"), 	ConfigureToolsDlg::OnRemove)
+	EVT_BUTTON(XRCID("btnAddSeparator"), 	ConfigureToolsDlg::OnAddSeparator)
 	EVT_BUTTON(XRCID("btnUp"), 		ConfigureToolsDlg::OnUp)
 	EVT_BUTTON(XRCID("btnDown"), 	ConfigureToolsDlg::OnDown)
 	EVT_UPDATE_UI(-1,				ConfigureToolsDlg::OnUpdateUI)
@@ -93,8 +94,12 @@ void ConfigureToolsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 	bool hasSel = list->GetSelection() != -1;
 	bool notFirst = list->GetSelection() > 0;
 	bool notLast = (list->GetSelection() < list->GetCount() -1) && hasSel;
+	bool notSeparator = true;
 
-	XRCCTRL(*this, "btnEdit", wxButton)->Enable(hasSel);
+	if(hasSel)
+        notSeparator = Manager::Get()->GetToolsManager()->GetToolByIndex(list->GetSelection())->GetName() != CB_TOOLS_SEPARATOR;
+
+	XRCCTRL(*this, "btnEdit", wxButton)->Enable(hasSel && notSeparator);
 	XRCCTRL(*this, "btnRemove", wxButton)->Enable(hasSel);
 	XRCCTRL(*this, "btnUp", wxButton)->Enable(notFirst);
 	XRCCTRL(*this, "btnDown", wxButton)->Enable(notLast);
@@ -130,6 +135,15 @@ void ConfigureToolsDlg::OnRemove(wxCommandEvent& /*event*/)
 		DoFillList();
 	}
 } // end of OnRemove
+
+void ConfigureToolsDlg::OnAddSeparator(wxCommandEvent& /*event*/)
+{
+    cbTool tool;
+    tool.SetName(CB_TOOLS_SEPARATOR);
+    tool.SetCommand(CB_TOOLS_SEPARATOR);
+    Manager::Get()->GetToolsManager()->AddTool(&tool);
+    DoFillList();
+} // end of OnAddSeparator
 
 void ConfigureToolsDlg::OnUp(wxCommandEvent& /*event*/)
 {

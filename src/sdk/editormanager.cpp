@@ -1494,7 +1494,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
             } else
                 pos=-1;
         }
-        if (pos != -1)
+        if (pos != -1 && data->start!=data->end)
         {
             control->GotoPos(pos);
             control->EnsureVisible(control->LineFromPosition(pos));
@@ -1847,7 +1847,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
                     pos=-1;
             }
 
-            if (pos == -1)
+            if (pos == -1 || data->start==data->end)
                 break;
 
             if (confirm)
@@ -2053,7 +2053,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
             } else
                 pos=-1;
         }
-        if (pos != -1)
+        if (pos != -1 && data->start!=data->end)
         {
             control->GotoPos(pos);
             control->EnsureVisible(control->LineFromPosition(pos));

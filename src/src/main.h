@@ -15,7 +15,7 @@
 #include "scripting/bindings/sc_base_types.h"
 
 // wxAUI
-#include "wxAUI/manager.h"
+#include "aui_compat.h"
 
 WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, PluginIDsMap);
 WX_DECLARE_HASH_MAP(cbPlugin*, wxToolBar*, wxPointerHash, wxPointerEqual, PluginToolbarsMap);
@@ -29,7 +29,7 @@ class wxFlatNotebook;
 class MainFrame : public wxFrame
 {
     private:
-        wxFrameManager m_LayoutManager;
+        wxAuiManager m_LayoutManager;
         LayoutViewsMap m_LayoutViews;
     public:
         wxAcceleratorTable* m_pAccel;

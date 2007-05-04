@@ -23,6 +23,7 @@
 
 #include "wxsnotebook.h"
 #include "../../wxsadvqppchild.h"
+#include <wx/notebook.h>
 
 //(*Headers(wxsNotebookParentQP)
 #include <wx/checkbox.h>

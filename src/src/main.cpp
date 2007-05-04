@@ -474,6 +474,9 @@ END_EVENT_TABLE()
 
 MainFrame::MainFrame(wxWindow* parent)
        : wxFrame(parent, -1, _T("MainWin"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
+       #if wxCHECK_VERSION(2,8,0)
+       m_LayoutManager(this),
+       #endif
        m_pAccel(0L),
        m_pFilesHistory(0),
        m_pProjectsHistory(0),
@@ -488,8 +491,10 @@ MainFrame::MainFrame(wxWindow* parent)
        m_InitiatedShutdown(false),
        m_ScriptConsoleID(-1)
 {
+#if !wxCHECK_VERSION(2,8,0)
     // tell wxFrameManager to manage this frame
     m_LayoutManager.SetFrame(this);
+#endif
 
 #if defined( _MSC_VER ) && defined( _DEBUG )
     int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
@@ -608,13 +613,13 @@ void MainFrame::CreateIDE()
 
     // project manager
     Manager::Get(this);
-    m_LayoutManager.AddPane(Manager::Get()->GetProjectManager()->GetNotebook(), wxPaneInfo().
+    m_LayoutManager.AddPane(Manager::Get()->GetProjectManager()->GetNotebook(), wxAuiPaneInfo().
                               Name(wxT("ManagementPane")).Caption(_("Management")).
                               BestSize(wxSize(leftW, clientsize.GetHeight())).MinSize(wxSize(100,100)).
                               Left().Layer(1));
 
     // message manager
-    m_LayoutManager.AddPane(Manager::Get()->GetMessageManager()->GetNotebook(), wxPaneInfo().
+    m_LayoutManager.AddPane(Manager::Get()->GetMessageManager()->GetNotebook(), wxAuiPaneInfo().
                               Name(wxT("MessagesPane")).Caption(_("Messages")).
                               BestSize(wxSize(clientsize.GetWidth(), bottomH)).//MinSize(wxSize(50,50)).
                               Bottom());
@@ -629,7 +634,7 @@ void MainFrame::CreateIDE()
     SetToolBar(0);
 
     // editor manager
-    m_LayoutManager.AddPane(m_pEdMan->GetNotebook(), wxPaneInfo().Name(wxT("MainPane")).
+    m_LayoutManager.AddPane(m_pEdMan->GetNotebook(), wxAuiPaneInfo().Name(wxT("MainPane")).
                             CentrePane());
 
     DoUpdateLayout();
@@ -874,7 +879,7 @@ void MainFrame::CreateToolbars()
     m_pToolbar->SetBestFittingSize();
 
     // add toolbars in docking system
-    m_LayoutManager.AddPane(m_pToolbar, wxPaneInfo().
+    m_LayoutManager.AddPane(m_pToolbar, wxAuiPaneInfo().
                           Name(wxT("MainToolbar")).Caption(_("Main Toolbar")).
                           ToolbarPane().Top());
     DoUpdateLayout();
@@ -1174,11 +1179,11 @@ bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
 void MainFrame::DoFixToolbarsLayout()
 {
     // because the user might change the toolbar icons size, we must cater for it...
-    wxPaneInfoArray& panes = m_LayoutManager.GetAllPanes();
+    wxAuiPaneInfoArray& panes = m_LayoutManager.GetAllPanes();
     for (size_t i = 0; i < panes.GetCount(); ++i)
     {
-        wxPaneInfo& info = panes[i];
-        if (info.state & wxPaneInfo::optionToolbar)
+        wxAuiPaneInfo& info = panes[i];
+        if (info.state & wxAuiPaneInfo::optionToolbar)
         {
             info.best_size = info.window->GetSize();
         }
@@ -1259,7 +1264,7 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
             cbThrow(_T("No plugin info?!?"));
 
         static int row = 1;
-        m_LayoutManager.AddPane(tb, wxPaneInfo().
+        m_LayoutManager.AddPane(tb, wxAuiPaneInfo().
                               Name(info->name + _T("Toolbar")).Caption(info->title + _(" Toolbar")).
                               ToolbarPane().Top().Row(row++));
         DoUpdateLayout();
@@ -1557,18 +1562,18 @@ void MainFrame::DoUpdateEditorStyle()
 void MainFrame::DoUpdateLayoutColours()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
-    wxDockArt* art = m_LayoutManager.GetArtProvider();
+    wxAuiDockArt* art = m_LayoutManager.GetArtProvider();
 
     m_LayoutManager.SetFlags(wxAUI_MGR_DEFAULT | wxAUI_MGR_ALLOW_ACTIVE_PANE | wxAUI_MGR_TRANSPARENT_DRAG);
-    art->SetMetric(wxAUI_ART_PANE_BORDER_SIZE,   cfg->ReadInt(_T("/environment/aui/border_size"), art->GetMetric(wxAUI_ART_PANE_BORDER_SIZE)));
-    art->SetMetric(wxAUI_ART_SASH_SIZE,          cfg->ReadInt(_T("/environment/aui/sash_size"), art->GetMetric(wxAUI_ART_SASH_SIZE)));
-    art->SetMetric(wxAUI_ART_CAPTION_SIZE,       cfg->ReadInt(_T("/environment/aui/caption_size"), art->GetMetric(wxAUI_ART_CAPTION_SIZE)));
-    art->SetColour(wxAUI_ART_ACTIVE_CAPTION_COLOUR,              cfg->ReadColour(_T("/environment/aui/active_caption_colour"), art->GetColour(wxAUI_ART_ACTIVE_CAPTION_COLOUR)));
-    art->SetColour(wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR,     cfg->ReadColour(_T("/environment/aui/active_caption_gradient_colour"), art->GetColour(wxAUI_ART_ACTIVE_CAPTION_GRADIENT_COLOUR)));
-    art->SetColour(wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR,         cfg->ReadColour(_T("/environment/aui/active_caption_text_colour"), art->GetColour(wxAUI_ART_ACTIVE_CAPTION_TEXT_COLOUR)));
-    art->SetColour(wxAUI_ART_INACTIVE_CAPTION_COLOUR,            cfg->ReadColour(_T("/environment/aui/inactive_caption_colour"), art->GetColour(wxAUI_ART_INACTIVE_CAPTION_COLOUR)));
-    art->SetColour(wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR,   cfg->ReadColour(_T("/environment/aui/inactive_caption_gradient_colour"), art->GetColour(wxAUI_ART_INACTIVE_CAPTION_GRADIENT_COLOUR)));
-    art->SetColour(wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR,       cfg->ReadColour(_T("/environment/aui/inactive_caption_text_colour"), art->GetColour(wxAUI_ART_INACTIVE_CAPTION_TEXT_COLOUR)));
+    art->SetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE,   cfg->ReadInt(_T("/environment/aui/border_size"), art->GetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE)));
+    art->SetMetric(wxAUI_DOCKART_SASH_SIZE,          cfg->ReadInt(_T("/environment/aui/sash_size"), art->GetMetric(wxAUI_DOCKART_SASH_SIZE)));
+    art->SetMetric(wxAUI_DOCKART_CAPTION_SIZE,       cfg->ReadInt(_T("/environment/aui/caption_size"), art->GetMetric(wxAUI_DOCKART_CAPTION_SIZE)));
+    art->SetColour(wxAUI_DOCKART_ACTIVE_CAPTION_COLOUR,              cfg->ReadColour(_T("/environment/aui/active_caption_colour"), art->GetColour(wxAUI_DOCKART_ACTIVE_CAPTION_COLOUR)));
+    art->SetColour(wxAUI_DOCKART_ACTIVE_CAPTION_GRADIENT_COLOUR,     cfg->ReadColour(_T("/environment/aui/active_caption_gradient_colour"), art->GetColour(wxAUI_DOCKART_ACTIVE_CAPTION_GRADIENT_COLOUR)));
+    art->SetColour(wxAUI_DOCKART_ACTIVE_CAPTION_TEXT_COLOUR,         cfg->ReadColour(_T("/environment/aui/active_caption_text_colour"), art->GetColour(wxAUI_DOCKART_ACTIVE_CAPTION_TEXT_COLOUR)));
+    art->SetColour(wxAUI_DOCKART_INACTIVE_CAPTION_COLOUR,            cfg->ReadColour(_T("/environment/aui/inactive_caption_colour"), art->GetColour(wxAUI_DOCKART_INACTIVE_CAPTION_COLOUR)));
+    art->SetColour(wxAUI_DOCKART_INACTIVE_CAPTION_GRADIENT_COLOUR,   cfg->ReadColour(_T("/environment/aui/inactive_caption_gradient_colour"), art->GetColour(wxAUI_DOCKART_INACTIVE_CAPTION_GRADIENT_COLOUR)));
+    art->SetColour(wxAUI_DOCKART_INACTIVE_CAPTION_TEXT_COLOUR,       cfg->ReadColour(_T("/environment/aui/inactive_caption_text_colour"), art->GetColour(wxAUI_DOCKART_INACTIVE_CAPTION_TEXT_COLOUR)));
 
     DoUpdateLayout();
 }
@@ -3723,7 +3728,7 @@ void MainFrame::OnRequestDockWindow(CodeBlocksDockEvent& event)
     if (Manager::isappShuttingDown())
         return;
 
-    wxPaneInfo info;
+    wxAuiPaneInfo info;
     wxString name = event.name;
     if (name.IsEmpty())
     {

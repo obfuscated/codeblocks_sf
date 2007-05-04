@@ -3,6 +3,7 @@
 
 #include <wx/arrstr.h>
 #include <tinyxml/tinyxml.h>
+#include <wx/arrstr.h>
 
 #include "../wxscodinglang.h"
 

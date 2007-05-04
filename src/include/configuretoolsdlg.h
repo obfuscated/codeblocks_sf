@@ -19,6 +19,7 @@ class ConfigureToolsDlg : public wxDialog
 		void OnAdd(wxCommandEvent& event);
 		void OnEdit(wxCommandEvent& event);
 		void OnRemove(wxCommandEvent& event);
+		void OnAddSeparator(wxCommandEvent& event);
 		void OnUp(wxCommandEvent& event);
 		void OnDown(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);

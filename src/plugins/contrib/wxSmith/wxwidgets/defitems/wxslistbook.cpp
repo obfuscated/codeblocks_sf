@@ -298,7 +298,8 @@ bool wxsListbook::OnMouseClick(wxWindow* Preview,int PosX,int PosY)
 {
     UpdateCurrentSelection();
     wxListbook* Listbook = (wxListbook*)Preview;
-    int Hit = Listbook->HitTest(wxPoint(PosX,PosY));
+    // for some reason, HitTest() is public in wxBookCtrlBase but they chose to make it protected in wxListbook...
+    int Hit = ((wxBookCtrlBase*)Listbook)->HitTest(wxPoint(PosX,PosY));
     if ( Hit != wxNOT_FOUND )
     {
         wxsItem* OldSel = m_CurrentSelection;

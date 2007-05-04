@@ -525,6 +525,9 @@
 		<Unit filename="include\cbthreadpool_extras.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include\cbtool.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include\cbworkspace.h">
 			<Option target="sdk" />
 		</Unit>
@@ -2621,6 +2624,9 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src\associations.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src\aui_compat.h">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src\compilersettingsdlg.cpp">

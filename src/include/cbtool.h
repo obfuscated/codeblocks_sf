@@ -3,6 +3,8 @@
 
 #include <wx/string.h>
 
+#define CB_TOOLS_SEPARATOR _T("---separator---")
+
 class cbTool
 {
   public:
