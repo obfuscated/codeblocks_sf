@@ -25,7 +25,6 @@
 #include <wx/spinctrl.h>
 #include <wx/colordlg.h>
 #include <wx/msgdlg.h>
-#include "aui_compat.h"
 #include "appglobals.h"
 #include "globals.h"
 #include "associations.h"
