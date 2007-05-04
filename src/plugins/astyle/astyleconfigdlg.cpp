@@ -64,7 +64,7 @@ void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
       break;
 
     case aspsGnu:
-      sample = _T("namespace foospace\n  {\n  int Foo()\n  {\n    if (isBar)\n      {\n        bar();\n        return 1;\n      }\n    else\n      return 0;\n  }\n}");
+      sample = _T("namespace foospace\n  {\n    int Foo()\n    {\n      if (isBar)\n        {\n          bar();\n          return 1;\n        }\n      else\n        return 0;\n    }\n  }");
       XRCCTRL(*this, "rbGNU", wxRadioButton)->SetValue(true);
       break;
 
@@ -141,7 +141,7 @@ void AstyleConfigDlg::OnPreview(wxCommandEvent& WXUNUSED(event))
     text += _T('\n');
   }
 
-  formatter.init(new ASStreamIterator(0, text, _T('\n')));
+  formatter.init(new ASStreamIterator(0, text));
 
   while (formatter.hasMoreLines())
   {

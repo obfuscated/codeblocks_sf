@@ -109,15 +109,15 @@ int AStylePlugin::Execute()
 
     switch (ed->GetControl()->GetEOLMode())
     {
-    case wxSCI_EOL_CRLF:
-        eolChars = _T("\r\n");
-        break;
-    case wxSCI_EOL_CR:
-        eolChars = _T("\r");
-        break;
-    case wxSCI_EOL_LF:
-        eolChars = _T("\n");
-        break;
+        case wxSCI_EOL_CRLF:
+            eolChars = _T("\r\n");
+            break;
+        case wxSCI_EOL_CR:
+            eolChars = _T("\r");
+            break;
+        case wxSCI_EOL_LF:
+            eolChars = _T("\n");
+            break;
     }
 
     if (edText.size() && edText.Last() != _T('\r') && edText.Last() != _T('\n'))
@@ -125,7 +125,7 @@ int AStylePlugin::Execute()
         edText += eolChars;
     }
 
-    ASStreamIterator *asi = new ASStreamIterator(ed, edText, eolChars);
+    ASStreamIterator *asi = new ASStreamIterator(ed, edText);
 
     formatter.init(asi);
 

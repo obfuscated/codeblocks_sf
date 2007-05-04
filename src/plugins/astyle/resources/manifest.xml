@@ -4,7 +4,7 @@
     <Plugin name="AStylePlugin">
         <Value title="Source code formatter (AStyle)" />
         <Value version="1.2" />
-        <Value description="Uses AStyle 1.19 to reformat your sources. Useful when copying
+        <Value description="Uses AStyle 1.20.2 to reformat your sources. Useful when copying
 code from the net or if you just want to reformat your sources
 based on a specific style.
 The configuration dialog for this plugin can be found clicking on Settings -> Editor (Source formatter)." />

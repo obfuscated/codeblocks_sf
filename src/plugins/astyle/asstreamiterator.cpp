@@ -1,8 +1,8 @@
 #include "asstreamiterator.h"
 #include "globals.h"
 
-ASStreamIterator::ASStreamIterator(cbEditor *cbe, const wxChar* in, const wxString& eolChars)
-: m_cbe(cbe), m_In(in), m_EOL(eolChars), m_curline(0), m_foundBookmark(false)
+ASStreamIterator::ASStreamIterator(cbEditor *cbe, const wxChar* in)
+: m_cbe(cbe), m_In(in), m_curline(0), m_foundBookmark(false)
 {
 	//ctor
 }
@@ -17,14 +17,11 @@ bool ASStreamIterator::hasMoreLines() const
     return (*m_In) != 0;
 }
 
-bool ASStreamIterator::IsEOL(wxChar ch)
+inline bool ASStreamIterator::IsEOL(wxChar ch)
 {
-  for (unsigned int i = 0; i < m_EOL.Length(); ++i)
+  if (ch == _T('\r') || ch == _T('\n'))
   {
-    if (ch == m_EOL[i])
-    {
       return true;
-    }
   }
 
   return false;
@@ -55,7 +52,7 @@ std::string ASStreamIterator::nextLine()
     if (IsEOL(*m_In))
     {
       // if CRLF (two chars) peek next char (avoid duplicating empty-lines)
-      if (m_EOL.Length() > 1 && IsEOL(*(m_In + 1)))
+      if (*m_In != *(m_In + 1) && IsEOL(*(m_In + 1)))
       {
         ++m_In;
       }

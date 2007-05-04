@@ -6,19 +6,20 @@
  *   reformatting tool for C, C++, C# and Java source files.
  *   http://astyle.sourceforge.net
  *
- *   The "Artistic Style" project, including all files needed to compile
- *   it, is free software; you can redistribute it and/or modify it
- *   under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License,
- *   or (at your option) any later version.
+ *   The "Artistic Style" project, including all files needed to 
+ *   compile it, is free software; you can redistribute it and/or 
+ *   modify it under the terms of the GNU Lesser General Public 
+ *   License as published by the Free Software Foundation; either
+ *   version 2.1 of the License, or (at your option) any later 
+ *   version.
  *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
+ *   GNU Lesser General Public License for more details.
  *
- *   You should have received a copy of the GNU General Public
- *   License along with this program; if not, write to the
+ *   You should have received a copy of the GNU Lesser General Public
+ *   License along with this project; if not, write to the 
  *   Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  *   Boston, MA  02110-1301, USA.
  *
@@ -30,6 +31,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <time.h>
 
 // for G++ implementation of string.compare:
 // compare((str), (place), (length))  instead of  compare(place, length, str)
@@ -58,12 +60,12 @@
 
 using namespace astyle;
 
-const string _version = "1.19";
+const char* _version = "1.20.2";
 
 // some compilers want this declared
 bool parseOption(ASFormatter &formatter, const string &arg, const string &errorInfo);
 
-#if defined(ASTYLE_GUI) || defined(ASTYLE_DLL)
+#ifdef ASTYLE_LIB
 // GUI function pointers
 typedef void (STDCALL *fpError)(int, char*);       // pointer to callback error handler
 typedef char* (STDCALL *fpAlloc)(unsigned long);   // pointer to callback memory allocation
@@ -72,7 +74,9 @@ stringstream *_err = NULL;
 #else
 // console variables
 ostream *_err = &cerr;
+bool purgeOrigIn = false;
 string _suffix = ".orig";
+stringstream _msg;          // info messages are not printed until a file is read
 #endif
 bool _modeManuallySet;
 
@@ -91,6 +95,7 @@ class ASStreamIterator :
 	private:
 		T * inStream;
 		string buffer;
+		bool inStreamEOF;
 };
 
 template<typename T>
@@ -98,21 +103,20 @@ ASStreamIterator<T>::ASStreamIterator(T *in)
 {
 	inStream = in;
 	buffer.reserve(200);
+	inStreamEOF = false;
 }
 
 
 template<typename T>
 ASStreamIterator<T>::~ASStreamIterator()
 {
-// NEW operator has been removed
-//    delete inStream;
 }
 
 
 template<typename T>
 bool ASStreamIterator<T>::hasMoreLines() const
 {
-	return !inStream->eof();
+	return !inStreamEOF;
 }
 
 
@@ -125,18 +129,60 @@ bool ASStreamIterator<T>::hasMoreLines() const
 template<typename T>
 string ASStreamIterator<T>::nextLine()
 {
-	getline(*inStream, buffer);
-	size_t lineLength = buffer.length();
+	char ch;
+	char LF = '\n';
+	char CR = '\r';
+	inStream->get(ch);
+	buffer.clear();
 
-	if (lineLength > 0 && buffer[lineLength-1] == '\r')
+	while (!inStream->eof() && ch != LF && ch != CR)
 	{
-		eolWindows++;
-		buffer.erase(lineLength - 1);
+		buffer.append(1, ch);
+		inStream->get(ch);
 	}
-	else
-		eolUnix++;
+	
+	if (inStream->eof())
+	{
+		inStreamEOF = true;
+		return buffer;
+	}
+	
+	int peekch = inStream->peek();
 
-	return string(buffer);
+	if (ch == CR)		// CR/LF is windows otherwise Mac OS 9 
+	{
+		if (peekch == LF)
+		{
+			inStream->get();
+			eolWindows++;
+		}
+		else 
+			eolMacOld++;
+	}
+	else				// LF is Linux, allow for improbable LF/CR
+	{
+		if (peekch == CR)
+		{
+			inStream->get();
+			eolWindows++;
+		}
+		else 
+			eolLinux++;
+	}
+
+	// set output end of line character
+	if (eolWindows >= eolLinux)
+		if (eolWindows >= eolMacOld)
+			strcpy(outputEOL, "\r\n");  // Windows (CRLF)
+		else
+			strcpy(outputEOL, "\r");    // MacOld (CR)
+	else
+		if (eolLinux >= eolMacOld)
+			strcpy(outputEOL, "\n");    // Linux (LF)
+		else
+			strcpy(outputEOL, "\r");    // MacOld (CR)
+	
+	return buffer;
 }
 
 
@@ -203,6 +249,42 @@ bool parseOptions(ASFormatter &formatter,
 	return ok;
 }
 
+void importOptions(istream &in, vector<string> &optionsVector)
+{
+	char ch;
+	string currentToken;
+
+	while (in)
+	{
+		currentToken = "";
+		do
+		{
+			in.get(ch);
+			if (in.eof())
+				break;
+			// treat '#' as line comments
+			if (ch == '#')
+				while (in)
+				{
+					in.get(ch);
+					if (ch == '\n')
+						break;
+				}
+
+			// break options on spaces, tabs or new-lines
+			if (in.eof() || ch == ' ' || ch == '\t' || ch == '\n')
+				break;
+			else
+				currentToken.append(1, ch);
+
+		}
+		while (in);
+
+		if (currentToken.length() != 0)
+			optionsVector.push_back(currentToken);
+	}
+}
+
 bool isParamOption(const string &arg, const char *option)
 {
 	bool retVal = arg.compare(0, strlen(option), option) == 0;
@@ -211,6 +293,22 @@ bool isParamOption(const string &arg, const char *option)
 		if (!isdigit(arg[1]))
 			retVal = false;
 	return retVal;
+}
+
+void isOptionError(const string &arg, const string &errorInfo)
+{
+#ifdef ASTYLE_LIB
+	if (_err->str().length() == 0)		
+	{
+		(*_err) << errorInfo << endl;	// need main error message
+		(*_err) << arg;					// output the option in error
+	}
+	else								
+		(*_err) << endl << arg;			// put endl after previous option
+#else
+	if(errorInfo.length() > 0)			// to avoid a compiler warning
+		(*_err) << "Error in param: " << arg << endl;
+#endif
 }
 
 bool isParamOption(const string &arg, const char *option1, const char *option2)
@@ -293,7 +391,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
 		if (spaceNumParam.length() > 0)
 			spaceNum = atoi(spaceNumParam.c_str());
 		if (spaceNum < 2 || spaceNum > 20)
-			(*_err) << "Error in param: " << arg << endl;
+			isOptionError(arg, errorInfo);
 		else
 			formatter.setTabIndentation(spaceNum, false);
 	}
@@ -304,7 +402,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
 		if (spaceNumParam.length() > 0)
 			spaceNum = atoi(spaceNumParam.c_str());
 		if (spaceNum < 2 || spaceNum > 20)
-			(*_err) << "Error in param: " << arg << endl;
+			isOptionError(arg, errorInfo);
 		else
 			formatter.setTabIndentation(spaceNum, true);
 	}
@@ -319,7 +417,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
 		if (spaceNumParam.length() > 0)
 			spaceNum = atoi(spaceNumParam.c_str());
 		if (spaceNum < 2 || spaceNum > 20)
-			(*_err) << "Error in param: " << arg << endl;
+			isOptionError(arg, errorInfo);
 		else
 			formatter.setSpaceIndentation(spaceNum);
 	}
@@ -334,7 +432,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
 		if (minIndentParam.length() > 0)
 			minIndent = atoi(minIndentParam.c_str());
 		if (minIndent > 40)
-			(*_err) << "Error in param: " << arg << endl;
+			isOptionError(arg, errorInfo);
 		else
 			formatter.setMinConditionalIndentLength(minIndent);
 	}
@@ -345,7 +443,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
 		if (maxIndentParam.length() > 0)
 			maxIndent = atoi(maxIndentParam.c_str());
 		if (maxIndent > 80)
-			(*_err) << "Error in param: " << arg << endl;
+			isOptionError(arg, errorInfo);
 		else
 			formatter.setMaxInStatementIndentLength(maxIndent);
 	}
@@ -377,7 +475,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
 	{
 		formatter.setLabelIndent(true);
 	}
-	else if ( IS_OPTION(arg, "brackets=break-closing-headers") )
+	else if ( IS_OPTIONS(arg, "y", "brackets=break-closing") )
 	{
 		formatter.setBreakClosingHeaderBracketsMode(true);
 	}
@@ -426,7 +524,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
 	{
 		formatter.setEmptyLineFill(true);
 	}
-	else if ( IS_OPTION(arg, "indent-preprocessor") )
+	else if ( IS_OPTIONS(arg, "w", "indent-preprocessor") )
 	{
 		formatter.setPreprocessorIndent(true);
 	}
@@ -434,35 +532,38 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
 	{
 		formatter.setTabSpaceConversionMode(true);
 	}
-	else if ( IS_OPTION(arg, "break-blocks=all") )
+	else if ( IS_OPTIONS(arg, "F", "break-blocks=all") )
 	{
 		formatter.setBreakBlocksMode(true);
 		formatter.setBreakClosingHeaderBlocksMode(true);
 	}
-	else if ( IS_OPTION(arg, "break-blocks") )
+	else if ( IS_OPTIONS(arg, "f", "break-blocks") )
 	{
 		formatter.setBreakBlocksMode(true);
 	}
-	else if ( IS_OPTION(arg, "break-elseifs") )
+	else if ( IS_OPTIONS(arg, "e", "break-elseifs") )
 	{
 		formatter.setBreakElseIfsMode(true);
 	}
-// Options used by GUI
-#if defined(ASTYLE_GUI) || defined(ASTYLE_DLL)
+#ifdef ASTYLE_LIB
+	// End of options used by GUI
 	else
-	{
-		if (_err->str().length() == 0)
-			(*_err) << errorInfo << endl;
-		(*_err) << endl << arg;
-		return false; // unknown option
-	}
-// Options used by console
+		isOptionError(arg, errorInfo);
 #else
+	// Options used by only console
+	else if ( IS_OPTIONS(arg, "n", "suffix=none") )
+	{
+		purgeOrigIn = true;
+	}
 	else if ( isParamOption(arg, "suffix=") )
 	{
 		string suffixParam = GET_PARAM(arg, "suffix=");
 		if (suffixParam.length() > 0)
+		{
 			_suffix = suffixParam;
+			if (_suffix[0] != '.')
+				_suffix = '.' + _suffix;
+		}
 	}
 	else if ( IS_OPTIONS(arg, "X", "errors-to-standard-output") )
 	{
@@ -484,40 +585,41 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
 }
 
 
-#if defined(ASTYLE_GUI) || defined(ASTYLE_DLL)
+#ifdef ASTYLE_LIB
 // *************************   GUI functions   *****************************************************
 /*
- * IMPORTANT linker must have the command line parameter  /EXPORT:AStyleMain=_AStyleMain@16
+ * IMPORTANT VC DLL linker must have the parameter  /EXPORT:AStyleMain=_AStyleMain@16
+ *                                                  /EXPORT:AStyleGetVersion=_AStyleGetVersion@0 
  * For Dll only - "warning C4702: unreachable code" in the <vector> header
- *                is caused by using the Optimization options .
+ *                is caused by using the Optimization options.
  *                /O2   Maximize speed
- *                /Og   Global optimizations
- *                /Ob2  Any suitable inline expansion
- *                This is a bug in the Microsoft compiler.  The program runs over twice as fast
- *                with the options set.  There hasn't been any problem so far.
+ *                /O1   Minimize size
+ *                /Ob2  Inline Expansion
+ *                This is a bug in the Microsoft compiler.  The program runs about twice as fast
+ *                with the options set.  There haven't been any problems so far.
 */
 extern "C" EXPORT char* STDCALL
-	AStyleMain(char*  lpTextIn,                // pointer to the data to be formatted
-	           char*  lpOptions,               // pointer to AStyle options, separated by \n
+	AStyleMain(char*   pSourceIn,              // pointer to the source to be formatted
+	           char*   pOptions,               // pointer to AStyle options, separated by \n
 	           fpError fpErrorHandler,         // pointer to error handler function
 	           fpAlloc fpMemoryAlloc)          // pointer to memory allocation function
 {
-	if (fpErrorHandler == NULL)
+	if (fpErrorHandler == NULL)			// cannot display a message if no error handler
 		return NULL;
 
-	if (lpTextIn == NULL)
+	if (pSourceIn == NULL)
 	{
-		fpErrorHandler(101, "No pointer to text input.\n- File will not be formatted.");
+		fpErrorHandler(101, "No pointer to source input!\nThe file will not be formatted.");
 		return NULL;
 	}
-	if (lpOptions == NULL)
+	if (pOptions == NULL)
 	{
-		fpErrorHandler(102, "No pointer to AStyle options.\n- File will not be formatted.");
+		fpErrorHandler(102, "No pointer to AStyle options!\nThe file will not be formatted.");
 		return NULL;
 	}
 	if (fpMemoryAlloc == NULL)
 	{
-		fpErrorHandler(103, "No pointer to memory allocation function.\n- File will not be formatted.");
+		fpErrorHandler(103, "No pointer to memory allocation function!\nThe file will not be formatted.");
 		return NULL;
 	}
 
@@ -525,27 +627,24 @@ extern "C" EXPORT char* STDCALL
 
 	string arg;
 	vector<string> optionsVector;
-	istringstream opt(lpOptions);
+	istringstream opt(pOptions);
 	_err = new stringstream;
 
-	while (getline(opt, arg))
-		optionsVector.push_back(arg);
+	importOptions(opt, optionsVector);
 
 	parseOptions(formatter,
 	             optionsVector.begin(),
 	             optionsVector.end(),
-	             "Unknown Artistic Style options!");
+				 "Unknown Artistic Style options!\n"
+				 "The following options were not processed:");
 
 	if (_err->str().length() > 0)
-	{
-		(*_err) << "\n\n- These options will not be processed.     ";
-		fpErrorHandler(201, (char*) _err->str().c_str());
-	}
+		fpErrorHandler(210, (char*) _err->str().c_str());
 
 	delete _err;
 	_err = NULL;
 
-	istringstream in(lpTextIn);
+	istringstream in(pSourceIn);
 	ASStreamIterator<istringstream> streamIterator(&in);
 	ostringstream out;
 	formatter.init(&streamIterator);
@@ -553,62 +652,29 @@ extern "C" EXPORT char* STDCALL
 	while (formatter.hasMoreLines())
 	{
 		out << formatter.nextLine();
-		if (streamIterator.eolWindows > streamIterator.eolUnix)
-			out << '\r';
-		out << endl;
+		out << streamIterator.outputEOL;
 	}
 
 	unsigned long textSizeOut = out.str().length();
-	char* textOut = fpMemoryAlloc(textSizeOut + 1);     // call memory allocation function
-//    textOut = NULL;           // for testing
-	if (textOut == NULL)
+	char* pTextOut = fpMemoryAlloc(textSizeOut + 1);     // call memory allocation function
+//    pTextOut = NULL;           // for testing
+	if (pTextOut == NULL)
 	{
-		fpErrorHandler(110, "Allocation failure on Artistic Style output.\n- File will not be formatted.");
+		fpErrorHandler(110, "Allocation failure on output!\nThe file will not be formatted.");
 		return NULL;
 	}
 
-	strcpy(textOut, out.str().c_str());
+	strcpy(pTextOut, out.str().c_str());
 
-	return textOut;
+	return pTextOut;
+}
+
+extern "C" EXPORT const char* STDCALL AStyleGetVersion (void)
+{
+	return _version;
 }
 
 #else
-
-void importOptions(istream &in, vector<string> &optionsVector)
-{
-	char ch;
-	string currentToken;
-
-	while (in)
-	{
-		currentToken = "";
-		do
-		{
-			in.get(ch);
-			if (in.eof())
-				break;
-			// treat '#' as line comments
-			if (ch == '#')
-				while (in)
-				{
-					in.get(ch);
-					if (ch == '\n')
-						break;
-				}
-
-			// break options on spaces, tabs or new-lines
-			if (ch == ' ' || ch == '\t' || ch == '\n')
-				break;
-			else
-				currentToken.append(1, ch);
-
-		}
-		while (in);
-
-		if (currentToken.length() != 0)
-			optionsVector.push_back(currentToken);
-	}
-}
 
 bool stringEndsWith(const string &str, const string &suffix)
 {
@@ -638,7 +704,7 @@ void error(const char *why, const char* what)
 void printHelp()
 {
 	(*_err) << endl;
-	(*_err) << "                            Artistic Style " << _version.c_str() << endl;
+	(*_err) << "                            Artistic Style " << _version << endl;
 	(*_err) << "                              by Tal Davidson\n";
 	(*_err) << "                               and Jim Pattee\n";
 	(*_err) << endl;
@@ -711,7 +777,7 @@ void printHelp()
 	(*_err) << "    Break definition-block brackets and attach command-block\n";
 	(*_err) << "    brackets.\n";
 	(*_err) << endl;
-	(*_err) << "    --brackets=break-closing-headers\n";
+	(*_err) << "    --brackets=break-closing   OR   -y\n";
 	(*_err) << "    Break brackets before closing headers (e.g. 'else', 'catch', ...).\n";
 	(*_err) << "    Should be appended to --brackets=attach or --brackets=linux.\n";
 	(*_err) << endl;
@@ -744,7 +810,7 @@ void printHelp()
 	(*_err) << "    the current indentation level, rather than being\n";
 	(*_err) << "    flushed completely to the left (which is the default).\n";
 	(*_err) << endl;
-	(*_err) << "    --indent-preprocessor\n";
+	(*_err) << "    --indent-preprocessor   OR   -w\n";
 	(*_err) << "    Indent multi-line #define statements.\n";
 	(*_err) << endl;
 	(*_err) << "    --max-instatement-indent=#   OR   -M#\n";
@@ -757,14 +823,14 @@ void printHelp()
 	(*_err) << endl;
 	(*_err) << "Formatting options:\n";
 	(*_err) << "-------------------\n";
-	(*_err) << "    --break-blocks\n";
+	(*_err) << "    --break-blocks   OR   -f\n";
 	(*_err) << "    Insert empty lines around unrelated blocks, labels, classes, ...\n";
 	(*_err) << endl;
-	(*_err) << "    --break-blocks=all\n";
+	(*_err) << "    --break-blocks=all   OR   -F\n";
 	(*_err) << "    Like --break-blocks, except also insert empty lines \n";
 	(*_err) << "    around closing headers (e.g. 'else', 'catch', ...).\n";
 	(*_err) << endl;
-	(*_err) << "    --break-elseifs\n";
+	(*_err) << "    --break-elseifs   OR   -e\n";
 	(*_err) << "    Break 'else if()' statements into two different lines.\n";
 	(*_err) << endl;
 	(*_err) << "    --pad=oper   OR   -p\n";
@@ -808,6 +874,9 @@ void printHelp()
 	(*_err) << "--------------\n";
 	(*_err) << "    --suffix=####\n";
 	(*_err) << "    Append the suffix #### instead of '.orig' to original filename.\n";
+	(*_err) << endl;
+	(*_err) << "    --suffix=none   OR   -n\n";
+	(*_err) << "    Do not retain a backup of the original file.\n";
 	(*_err) << endl;
 	(*_err) << "    --options=####\n";
 	(*_err) << "    Specify an options file #### to read and use.\n";
@@ -854,11 +923,9 @@ int main(int argc, char *argv[])
 	bool shouldPrintHelp = false;
 	bool shouldParseOptionsFile = true;
 
-	_err = &cerr;
-	_suffix = ".orig";
 	_modeManuallySet = false;
 
-	(*_err) << "\nArtistic Style " << _version << endl;      // begin formatting
+	_msg << "\nArtistic Style " << _version << endl;
 	// manage flags
 	for (int i = 1; i < argc; i++)
 	{
@@ -915,7 +982,7 @@ int main(int argc, char *argv[])
 			ifstream optionsIn(optionsFileName.c_str());
 			if (optionsIn)
 			{
-				(*_err) << "Using default options file " << optionsFileName << endl;
+				_msg << "Using default options file " << optionsFileName << endl;
 				vector<string> fileOptionsVector;
 				importOptions(optionsIn, fileOptionsVector);
 				ok = parseOptions(formatter,
@@ -953,9 +1020,6 @@ int main(int argc, char *argv[])
 	// if no files have been given, use cin for input and cout for output
 	if (fileNameVector.empty())
 	{
-		// display file formatting message
-		(*_err) << "formatting cin\n" << endl;
-
 		ASStreamIterator<istream> streamIterator(&cin);
 
 		formatter.init(&streamIterator);
@@ -964,13 +1028,15 @@ int main(int argc, char *argv[])
 		{
 			cout << formatter.nextLine();
 			if (formatter.hasMoreLines())
-				cout << endl;
+				cout << streamIterator.outputEOL;
 		}
 		cout.flush();
 	}
 	else
 	{
 		// indent the given files
+		cout << _msg.str().c_str();
+		clock_t startTime = clock();
 		for (size_t i = 0; i < fileNameVector.size(); i++)
 		{
 			string originalFileName = fileNameVector[i];
@@ -988,11 +1054,11 @@ int main(int argc, char *argv[])
 			if (rename(originalFileName.c_str(), inFileName.c_str()) < 0)
 				error("Could not rename ", string(originalFileName + " to " + inFileName).c_str());
 
-			ifstream in(inFileName.c_str());
+			ifstream in(inFileName.c_str(), ios::binary);
 			if (!in)
 				error("Could not open input file", inFileName.c_str());
 
-			ofstream out(originalFileName.c_str());
+			ofstream out(originalFileName.c_str(), ios::binary);
 			if (!out)
 				error("Could not open output file", originalFileName.c_str());
 
@@ -1010,7 +1076,7 @@ int main(int argc, char *argv[])
 				}
 			}
 			// display file formatting message
-			(*_err) << "formatting " << originalFileName.c_str() << endl;
+			cout << "formatting " << originalFileName.c_str() << endl;
 
 			ASStreamIterator<istream> streamIterator(&in);
 			formatter.init(&streamIterator);
@@ -1018,18 +1084,26 @@ int main(int argc, char *argv[])
 			while (formatter.hasMoreLines())
 			{
 				out << formatter.nextLine();
+				// the last line does not get an eol
 				if (formatter.hasMoreLines())
-				{
-					if (streamIterator.eolWindows > streamIterator.eolUnix)
-						out << '\r';
-					out << endl;
-				}
+					out << streamIterator.outputEOL;
 			}
 			out.flush();
 			out.close();
 			in.close();
+			if (purgeOrigIn)
+				remove(inFileName.c_str());
 		}
-		(*_err) << endl;                    // all files formatted
+		// all files formatted
+		clock_t stopTime = clock();
+		float secs = (float) (stopTime - startTime) / CLOCKS_PER_SEC;
+		// show tenths of a second if time is less than 20 seconds
+		cout.precision(2);
+		if (secs >= 100 || (secs >= 10 && secs < 20))
+			cout.precision(3);
+		cout << "total time " << secs << " seconds" << endl;
+		cout.precision(0);
+		cout << endl;                    
 	}
 	return 0;
 }

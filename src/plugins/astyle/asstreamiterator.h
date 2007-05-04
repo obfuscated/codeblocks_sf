@@ -9,7 +9,7 @@
 class ASStreamIterator : public astyle::ASSourceIterator
 {
 	public:
-		ASStreamIterator(cbEditor *cbe, const wxChar *in, const wxString &eolChars);
+		ASStreamIterator(cbEditor *cbe, const wxChar *in);
 		virtual ~ASStreamIterator();
 
     bool hasMoreLines() const;
@@ -21,7 +21,6 @@ class ASStreamIterator : public astyle::ASSourceIterator
         bool IsEOL(wxChar ch);
         cbEditor *m_cbe;
         const wxChar *m_In;
-        const wxString m_EOL;
         wxChar buffer[2048];
         int m_curline;
         bool m_foundBookmark;

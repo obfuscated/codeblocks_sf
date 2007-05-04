@@ -20,7 +20,78 @@
         <P>&nbsp;</P>
         <blockquote>
         
-            <H3>Artistic Style 1.19</H3>
+            <H3>Artistic Style 1.20&nbsp; (January 2007)</H3>
+        
+             <blockquote>
+             
+             	<p>Release 1.20.2 fixed problems with the new stream I/O 
+				procedure added in release 1.20.1.&nbsp;Release 1.20.1&nbsp;improved the processing for Mac OS X 
+				platforms. The compatibility with 
+				<a href="http://assortedgeekery.com/archives/2005/03/22/reindenting-c-in-textwrangler-and-bbedit-using-astyle" 
+				target="_blank" title="open new window">TextWrangler</a> was improved. 
+				There is now a separate release for Mac. </p>
+
+           		<p>Artistic Style will now indent message maps for Microsoft 
+                Foundation Class (MFC) and event tables for wxWidgets. The option <nobr>--brackets=break-closing-headers</nobr> has been 
+                shortened to <nobr>--brackets=break-closing</nobr> and a short option added <nobr>(-y).</nobr> There have been short options added for 
+                <nobr>--break-elseifs</nobr> <nobr>(-e),</nobr> <nobr>--indent-preprocessor</nobr> <nobr>(-w),</nobr> <nobr>--break-blocks</nobr> 
+                <nobr>(-f),</nobr> and <nobr>--break-blocks=all</nobr> <nobr>(-F).</nobr></p>
+
+                <p>With this release the Artistic Style license changes from the 
+				GNU General Public License (GPL) to the GNU <em>Lesser</em> General Public 
+				License (LGPL). You can use Artistic Style for free or 
+				commercial software without charge. Projects that use Artistic Style do not 
+				have to make the their source code available. If Artistic Style 
+				itself is modified, however, the modified Artistic Style source 
+				code must be made available. See the
+				<a href="license.html">GNU Lesser General Public License</a> for 
+				more information.</p>
+				<p>There is a new preprocessor option to aid developers in using Artistic Style with a Graphical User Interface 
+						(GUI). It is no longer necessary to remove the source 
+						module astyle_main.cpp and write embedded code to call 
+						the formatter. It can be compiled as a static library 
+				or a shared library (DLL), or the entire source 
+						code can be included in the project. See the
+				<a href="develop.html">Artistic Style Developer Information</a> 
+				for the calling procedure and other details.</p>
+				<p>There is a sample GUI program for Windows available at
+				<a href="http://www.geocities.com/jpattee/"  target="_blank"
+				title="open new window">http://www.geocities.com/jpattee/</a>. 
+				It uses the unmodified 
+				Artistic Style compiled for a GUI. The source code needs some 
+				work so it is not available for now. It should work under Linux 
+				using WINE. Future enhancements and platform support will depend 
+				on the response to the sample program.</p>
+				<p>To support the new Artistic Style preprocessor option there are new 
+				makefiles and project files. Windows users have a project 
+				file for Microsoft Visual C++ 2003 (version 7). Linux users have 
+				a new makefile that has several new options. The location 
+				of both files is in the build directory.  Be sure to read 
+				the <a href="install.html">Artistic Style Install Information</a> 
+				for the details.</p>
+				
+				<p>Intel® is now offering it's C++ and Fortran compilers free for 
+				non-commercial use.  Information is available at the 
+				<a href="http://www3.intel.com/cd/software/products/asmo-na/eng/" 
+				 target="_blank"
+				title="open new window">Intel® 
+				Software Development Products</a> website. Click on the 
+				<a href="http://www3.intel.com/cd/software/products/asmo-na/eng/download/download/" 
+				 target="_blank" title="open new window">
+				Free Non-Commercial Download</a> link to see if you qualify. The Intel 
+				Compilers on Windows and Linux require that other compilers be 
+				installed (Microsoft Visual C++ or GNU gcc respectively). This 
+				is because the Intel Compilers require the header files, runtime 
+				libraries and linkers distributed as part of these other 
+				compilers. If you want to use this compiler there is now a makefile (makeintel) 
+				included with the project.  See <a href="install.html">Artistic Style Install Information</a> 
+				for instructions.</p>
+
+				<p>&nbsp;</p>
+
+        	</blockquote>
+
+            <H3>Artistic Style 1.19&nbsp; (July 2006)</H3>
             <blockquote>
 
                 <p>Most changes this release were again concerned with the 
