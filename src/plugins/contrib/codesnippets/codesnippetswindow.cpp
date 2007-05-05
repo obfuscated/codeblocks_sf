@@ -44,6 +44,7 @@
 #endif //__BORLANDC__
 
 #if defined(BUILDING_PLUGIN)
+    //NB: linux makefile does not define BUILDING_PLUGIN
     #if defined(CB_PRECOMP)
         #include "sdk.h"
     #else
@@ -132,9 +133,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 	EVT_MENU(idMnuConvertToFileLink,CodeSnippetsWindow::OnMnuSaveSnippetAsFileLink)
 	EVT_MENU(idMnuProperties,       CodeSnippetsWindow::OnMnuProperties)
 	EVT_MENU(idMnuSettings,         CodeSnippetsWindow::OnMnuSettings)
-   #if defined(BUILDING_PLUGIN)
 	EVT_MENU(idMnuAbout,            CodeSnippetsWindow::OnMnuAbout)
-   #endif
 	// ---
 
 	// Search config menu event
@@ -459,9 +458,8 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 
 				snippetsTreeMenu->AppendSeparator();
                 snippetsTreeMenu->Append(idMnuSettings, _("Settings..."));
-               #if defined(BUILDING_PLUGIN)
-                snippetsTreeMenu->Append(idMnuAbout, _("About..."));
-               #endif
+               if ( GetConfig()->IsPlugin() )
+                    snippetsTreeMenu->Append(idMnuAbout, _("About..."));
 			break;
 
             // ---------------------
@@ -485,9 +483,14 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
                     snippetsTreeMenu->Append(idMnuEditSnippet, _("Edit File"));
                 else
                     snippetsTreeMenu->Append(idMnuEditSnippet, _("Edit Text"));
+
+                // linux makefile does not allow preprocessor BUILDING_PLUGIN
+                // so we just turn off access to the code that needs it
+                #if defined(__WXMSW__)
                 if (GetConfig()->IsPlugin())
                 {   snippetsTreeMenu->Append(idMnuApplySnippet, _("Apply"));
                 }
+                #endif
                 if ( IsFileSnippet(itemId) )
                     snippetsTreeMenu->Append(idMnuCopyToClipboard, _("Clipboard <= FileName"));
                 else
@@ -619,6 +622,7 @@ void CodeSnippetsWindow::ApplySnippet(const wxTreeItemId& itemID)
 			return;
 		}
       #if defined(BUILDING_PLUGIN)
+        //NB: linux makefile does not define BUILDING_PLUGIN, making this unavailabe to linux
 		// Check that editor is open
 		EditorManager* editorMan = Manager::Get()->GetEditorManager();
 		if(!editorMan)
@@ -897,6 +901,7 @@ void CodeSnippetsWindow::CheckForMacros(wxString& snippet)
 {
     //FIXME: CheckForMacros in App???
   #if defined(BUILDING_PLUGIN)
+    //NB: linux makefile does not define BUILDING_PLUGIN
 	// Copied from cbEditor::Autocomplete, I admit it
 	int macroPos = snippet.Find(_T("$("));
 	while (macroPos != -1)

@@ -108,7 +108,7 @@ AppVersion::~AppVersion()
 //          51) Fixed Bug: When window is docked, we're recording CodeBlocks posn & size
 //          52) Removed initial Linux floating window to avoid wxAUI menu bug.(cf."Other" category)
 //          53) Updated codesnippets.cbp, readme.html, codesnippets.am
-//          54) Fix unix error. Add const to use of wxWX2MBbuf cbU2C(const wxString& str);
+//          54) Fix unix error. Add const to use of wxWX2MBbuf csU2C(const wxString& str);
 //  Commit  1.1.55 2007/04/10
 //          55) Missing event.Skip() in OnIdle() caused debugger to hang.
 //  Commit  1.1.56 2007/04/12
@@ -232,6 +232,12 @@ AppVersion::~AppVersion()
 // ----------------------------------------------------------------------------
 //  Commit  1.2.63 2007/05/3
 //          63) Incorporate mappedmemoryfile fixes by Tim S
+// ----------------------------------------------------------------------------
+//  Commit  1.2.64
+//          64) Reverted to .63 after linux makefile barfed on preprocessor flags
+// ----------------------------------------------------------------------------
+//  Commit  1.2.65 2007/05/5
+//          65) Removed or disabled all code on linux which depended on makefile preprocessor flags
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box

@@ -39,10 +39,8 @@ class CodeSnippetsWindow;
     int     GetActiveMenuId();
     void    SetActiveMenuId(int menuid);
 
-   #if !defined(BUILDING_PLUGIN)
-    wxString cbC2U(const char* str);
-    const wxWX2MBbuf cbU2C(const wxString& str);
-   #endif
+    wxString csC2U(const char* str);
+    const wxWX2MBbuf csU2C(const wxString& str);
 // ----------------------------------------------------------------------------
 class CodeSnippetsConfig
 // ----------------------------------------------------------------------------
@@ -59,6 +57,7 @@ class CodeSnippetsConfig
     wxString GetSettingsWindowState();
 
     wxWindow*       GetMainFrame(){return pMainFrame;}
+    wxMenuBar*      GetMenuBar(){return m_pMenuBar;}
     SnipImages*     GetSnipImages(){return pSnipImages;}
     CodeSnippetsWindow* GetSnippetsWindow(){return pSnippetsWindow;}
     void            SetSnippetsTreeCtrl(CodeSnippetsTreeCtrl* p){ pSnippetsTreeCtrl=p;return;}
@@ -68,13 +67,8 @@ class CodeSnippetsConfig
 
     void CenterChildOnParent(wxWindow* child);
 
-   #if defined(BUILDING_PLUGIN)
-    bool IsPlugin(){return true;}
-    bool IsApplication(){return false;}
-   #else //not defined(BUILDING_PLUGIN)
-    bool IsPlugin(){return false;}
-    bool IsApplication(){return true;}
-   #endif
+    bool IsPlugin(){return m_bIsPlugin;}
+    bool IsApplication(){return not m_bIsPlugin;}
 
     bool  IsDockedWindow(wxWindow** pw = 0, wxPoint* pcoord = 0, wxSize* psize = 0);
     bool  IsFloatingWindow(wxWindow** pw = 0, wxPoint* pcoord = 0, wxSize* psize = 0);
@@ -102,6 +96,7 @@ class CodeSnippetsConfig
 
     wxString     AppName;
     wxWindow*    pMainFrame;
+    wxMenuBar*   m_pMenuBar;
     CodeSnippetsWindow*   pSnippetsWindow;
     CodeSnippetsTreeCtrl* pSnippetsTreeCtrl;
 	wxString     SettingsExternalEditor;
@@ -129,6 +124,7 @@ class CodeSnippetsConfig
     SearchConfiguration     m_SearchConfig;
     wxFileConfig* m_pCfgFile;
     wxString     SettingsWindowState;
+    bool         m_bIsPlugin;
 
     // Mouse DragScrolling settings
     int         MouseDragSensitivity;

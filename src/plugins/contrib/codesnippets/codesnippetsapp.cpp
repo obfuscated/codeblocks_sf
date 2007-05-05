@@ -63,6 +63,7 @@ bool CodeSnippetsApp::OnInit()
     // Initialize the one and only global
     // Must be done first to allocate config file
     g_pConfig = new CodeSnippetsConfig;
+    g_pConfig->m_bIsPlugin = false;
 
 	CodeSnippetsAppFrame* frame = new CodeSnippetsAppFrame(0L, _("CodeSnippets"));
 	if (GetConfig()->m_sWindowHandle.IsEmpty() ) return false;
@@ -127,6 +128,10 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 
     return wxbuild;
 }
+// dummy definition of idViewSnippets because it exists in the plugin
+// but not in the app. But is referenced in the app anyway because the CB
+// linux makefile does not allow preprocessor definitions to get rid of it
+int idViewSnippets = wxNewId();
 
 int idMenuFileOpen              = wxNewId();
 int idMenuFileSave              = wxNewId();
@@ -294,6 +299,7 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
     mbar->Append(helpMenu, _("&Help"));
 
     SetMenuBar(mbar);
+    GetConfig()->m_pMenuBar = mbar;
 
     // -------------------
     // Create Status Bar

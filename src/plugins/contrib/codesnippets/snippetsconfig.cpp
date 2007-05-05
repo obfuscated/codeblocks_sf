@@ -43,11 +43,8 @@
     // ------------------------------------
     // UTF8 conversion routines
     // ------------------------------------
-   #if defined(BUILDING_PLUGIN)
-     #include "globals.h"  // codeblocks sdk globals.h
-   #else
     // Return @c str as a proper unicode-compatible string
-    wxString cbC2U(const char* str)
+    wxString csC2U(const char* str)
     {
         #if wxUSE_UNICODE
             return wxString(str, wxConvUTF8);
@@ -57,7 +54,7 @@
     }
 
     // Return multibyte (C string) representation of the string
-    const wxWX2MBbuf cbU2C(const wxString& str)
+    const wxWX2MBbuf csU2C(const wxString& str)
     {
         #if wxUSE_UNICODE
             return str.mb_str(wxConvUTF8);
@@ -65,7 +62,6 @@
             return (wxChar*)str.mb_str();
         #endif
     }
-   #endif //defined(BUILDING_PLUGIN)
 
 // ----------------------------------------------------------------------------
 CodeSnippetsConfig::CodeSnippetsConfig()
@@ -77,9 +73,11 @@ CodeSnippetsConfig::CodeSnippetsConfig()
 
     AppName = wxEmptyString;
     pMainFrame = 0;
+    m_pMenuBar = 0;
     pSnippetsWindow = 0;
     pSnippetsTreeCtrl = 0;
     m_pCfgFile = 0;
+    m_bIsPlugin = 0;
 	SettingsExternalEditor = wxEmptyString;
 	SettingsSnippetsCfgFullPath = wxEmptyString;
 	SettingsSnippetsXmlFullPath = wxEmptyString;
@@ -172,7 +170,7 @@ void CodeSnippetsConfig::SettingsLoad()
     cfgFile.Read( wxT("WindowPosition"),  &winPos, wxEmptyString) ;
     if ( not winPos.IsEmpty() )
     {
-        const wxWX2MBbuf buf = cbU2C(winPos);
+        const wxWX2MBbuf buf = csU2C(winPos);
         std::string cstring( buf );
         std::stringstream istream(cstring);
         istream >> windowXpos ;

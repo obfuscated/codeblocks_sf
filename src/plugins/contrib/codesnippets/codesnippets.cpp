@@ -83,11 +83,13 @@ void CodeSnippets::OnAttach()
     // Initialize one and only Global class
     // Must be done first to allocate config file
     g_pConfig = new CodeSnippetsConfig;
+    g_pConfig->m_bIsPlugin = true;
 
     // initialize version and logging
     m_pAppWin = Manager::Get()->GetAppWindow();
     GetConfig()->AppName = wxT("codesnippets");
     GetConfig()->pMainFrame  = Manager::Get()->GetAppWindow() ;
+    GetConfig()->m_pMenuBar = Manager::Get()->GetAppWindow()->GetMenuBar();
 
     AppVersion pgmVersion;
 
@@ -165,6 +167,8 @@ void CodeSnippets::OnAttach()
     // ---------------------------------------
     CreateSnippetWindow();
 
+    LOGIT(wxT("idViewSnippets[%d]"), idViewSnippets);
+
 }//OnAttach
 
 // ----------------------------------------------------------------------------
@@ -211,8 +215,10 @@ void CodeSnippets::OnRelease(bool appShutDown)
 void CodeSnippets::BuildMenu(wxMenuBar* menuBar)
 // ----------------------------------------------------------------------------
 {
+    GetConfig()->m_pMenuBar = menuBar;
+
 	int idx = menuBar->FindMenu(_("View"));
-	if (idx != wxNOT_FOUND)
+	if (idx != wxNOT_FOUND) do
 	{
 		wxMenu* viewMenu = menuBar->GetMenu(idx);
 		wxMenuItemList& items = viewMenu->GetMenuItems();
@@ -223,13 +229,14 @@ void CodeSnippets::BuildMenu(wxMenuBar* menuBar)
 			if (items[i]->IsSeparator())
 			{
 				viewMenu->InsertCheckItem(i, idViewSnippets, _("Code snippets"), _("Toggle displaying the code snippets."));
-				return;
+				break;
 			}
 		}
 
 		// Not found, just append
 		viewMenu->AppendCheckItem(idViewSnippets, _("Code snippets"), _("Toggle displaying the code snippets."));
-	}
+	}while(0);
+	LOGIT(wxT("Menubar[%p]idViewSnippets[%d]"),menuBar, idViewSnippets);
 }
 
 // ----------------------------------------------------------------------------
@@ -251,11 +258,11 @@ void CodeSnippets::CreateSnippetWindow()
 	SetSnippetsWindow( new CodeSnippetsWindow(GetConfig()->pMainFrame));
 
     // Floating windows must be set by their parent
-   #if !defined(BUILDING_PLUGIN)
-    // We can position an application window
-    GetSnippetsWindow()->SetSize(GetConfig()->windowXpos, GetConfig()->windowYpos,
+   if ( GetConfig()->IsApplication() )
+   {     // We can position an application window
+        GetSnippetsWindow()->SetSize(GetConfig()->windowXpos, GetConfig()->windowYpos,
             GetConfig()->windowWidth, GetConfig()->windowHeight);
-   #endif
+   }
 
 	CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
 	evt.name = _T("CodeSnippetsPane");

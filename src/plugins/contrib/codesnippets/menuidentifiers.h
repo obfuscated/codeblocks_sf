@@ -30,11 +30,13 @@ extern int idMenuSettingsOptions;
 extern int idMnuConvertToFileLink      ;
 
 
-#if defined(BUILDING_PLUGIN)
+//#if defined(__WXMSW__) && defined(BUILDING_PLUGIN)
+ //NB: linux makefile does not define BUILDING_PLUGIN
 extern int idViewSnippets ;
-#endif
+//#endif
 
-#if !defined(BUILDING_PLUGIN)
+#if defined(__WXMSW__) && !defined(BUILDING_PLUGIN)
+ //NB: linux makefile does not define BUILDING_PLUGIN
 extern int idMenuProperties    ;
 #endif
 

@@ -15,7 +15,6 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DNO_LOGGING" />
-					<Add option="-DBUILDING_PLUGIN" />
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />
