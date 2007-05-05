@@ -19,8 +19,8 @@
 // RCS-ID: $Id: snippetsconfig.h 70 2007-04-28 16:04:53Z Pecan $
 
 
-#ifndef GLOBAL_H
-#define GLOBAL_H
+#ifndef SNIPPET_GLOBAL_H
+#define SNIPPET_GLOBAL_H
 
 #include <wx/frame.h>
 #include <wx/fileconf.h>
@@ -39,10 +39,9 @@ class CodeSnippetsWindow;
     int     GetActiveMenuId();
     void    SetActiveMenuId(int menuid);
 
-   #if !defined(IS_PLUGIN_CODE)
-    wxString cbC2U(const char* str);
-    const wxWX2MBbuf cbU2C(const wxString& str);
-   #endif
+        // use our local copy of CodeBlocks routines
+        wxString csC2U(const char* str);
+        const wxWX2MBbuf csU2C(const wxString& str);
 // ----------------------------------------------------------------------------
 class CodeSnippetsConfig
 // ----------------------------------------------------------------------------
@@ -68,10 +67,10 @@ class CodeSnippetsConfig
 
     void CenterChildOnParent(wxWindow* child);
 
-   #if defined(IS_PLUGIN_CODE)
+   #if defined(BUILDING_PLUGIN)
     bool IsPlugin(){return true;}
     bool IsApplication(){return false;}
-   #else //not defined(IS_PLUGIN_CODE)
+   #else //not defined(BUILDING_PLUGIN)
     bool IsPlugin(){return false;}
     bool IsApplication(){return true;}
    #endif
@@ -139,4 +138,4 @@ class CodeSnippetsConfig
 
 };
 
-#endif // GLOBAL_H
+#endif // SNIPPET_GLOBAL_H

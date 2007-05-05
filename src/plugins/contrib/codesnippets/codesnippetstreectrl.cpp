@@ -29,7 +29,7 @@
     #include <wx/dataobj.h>
     #include <wx/dnd.h>
 
-#if defined(IS_PLUGIN_CODE)
+#if defined(BUILDING_PLUGIN)
     #include "sdk.h"
     #ifndef CB_PRECOMP
         #include "manager.h"
@@ -342,7 +342,7 @@ void CodeSnippetsTreeCtrl::SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemI
 			TiXmlElement element("item");
 
 			// Write the item's name
-			element.SetAttribute("name", cbU2C(GetItemText(item)));
+			element.SetAttribute("name", csU2C(GetItemText(item)));
 
 			if (data->GetType() == SnippetItemData::TYPE_CATEGORY)
 			{
@@ -362,7 +362,7 @@ void CodeSnippetsTreeCtrl::SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemI
 				element.SetAttribute("type", "snippet");
 
 				TiXmlElement snippetElement("snippet");
-				TiXmlText snippetElementText(cbU2C(data->GetSnippet()));
+				TiXmlText snippetElementText(csU2C(data->GetSnippet()));
 
 				snippetElement.InsertEndChild(snippetElementText);
 
@@ -389,8 +389,8 @@ void CodeSnippetsTreeCtrl::LoadItemsFromXmlNode(const TiXmlElement* node, const 
 	for (; node; node = node->NextSiblingElement())
 	{
 		// Check if the node has attributes
-		const wxString itemName(cbC2U(node->Attribute("name")));
-		const wxString itemType(cbC2U(node->Attribute("type")));
+		const wxString itemName(csC2U(node->Attribute("name")));
+		const wxString itemType(csC2U(node->Attribute("type")));
 
 		// Check the item type
 		if (itemType == _T("category"))
@@ -413,7 +413,7 @@ void CodeSnippetsTreeCtrl::LoadItemsFromXmlNode(const TiXmlElement* node, const 
 				{
 					if (snippetElementText->ToText())
 					{
-						AddCodeSnippet(parentID, itemName, cbC2U(snippetElementText->Value()), false);
+						AddCodeSnippet(parentID, itemName, csC2U(snippetElementText->Value()), false);
 					}
 				}
 				else
@@ -498,12 +498,12 @@ bool CodeSnippetsTreeCtrl::LoadItemsFromFile(const wxString& fileName, bool bApp
 
 			// Overwrite it
 			wxCopyFile(fileName, backupFile, true);
-           #if defined(IS_PLUGIN_CODE)
-			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + cbC2U(doc.ErrorDesc()));
+           #if defined(BUILDING_PLUGIN)
+			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + csC2U(doc.ErrorDesc()));
 			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Backup of the failed file has been created."));
 		   #else
-            //-wxMessageBox(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + cbC2U(doc.ErrorDesc()));
-            messageBox(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + cbC2U(doc.ErrorDesc()));
+            //-wxMessageBox(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + csC2U(doc.ErrorDesc()));
+            messageBox(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + csC2U(doc.ErrorDesc()));
    			//-wxMessageBox(_T("CodeSnippets: Backup of the failed file has been created."));
    			messageBox(_T("CodeSnippets: Backup of the failed file has been created."));
 		   #endif
@@ -1185,7 +1185,7 @@ void CodeSnippetsTreeCtrl::EditSnippetAsText()
         return ;
     }
     wxString snippetData( GetSnippet() );
-    tmpFile.Write( cbU2C(snippetData), snippetData.Length());
+    tmpFile.Write( csU2C(snippetData), snippetData.Length());
     tmpFile.Close();
         // Invoke the external editor on the temporary file
         // file name must be surrounded with quotes when using wxExecute
@@ -1222,7 +1222,7 @@ void CodeSnippetsTreeCtrl::EditSnippetAsText()
     #endif //LOGGING
 
         // convert data back to internal format
-    snippetData = cbC2U( pBuf );
+    snippetData = csC2U( pBuf );
 
      #ifdef LOGGING
       //LOGIT( _T("snippetData[%s]"), snippetData.GetData() );
@@ -1269,7 +1269,7 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
             char* pBuf = new char[fileSize+1];
             oldFile.Read( pBuf, fileSize );
             pBuf[fileSize] = 0;
-            snippetData = cbC2U(  pBuf );
+            snippetData = csC2U(  pBuf );
             oldFile.Close();
             delete [] pBuf;
         }
@@ -1313,7 +1313,7 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
         messageBox(wxT("Open failed for:")+newFileName);
         return ;
     }
-    newFile.Write( cbU2C(snippetData), snippetData.Length());
+    newFile.Write( csU2C(snippetData), snippetData.Length());
     newFile.Close();
     // update Tree item
     SetSnippet( newFileName );
@@ -1421,7 +1421,7 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem)
         (wxObjectEventFunction)(wxEventFunction)
         (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown,NULL,this);
 
-        #if defined(IS_PLUGIN_CODE)
+        #if defined(BUILDING_PLUGIN)
           // Disable the plugin View menu item
             Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, false);
         #endif
@@ -1446,7 +1446,7 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem)
             (wxObjectEventFunction)(wxEventFunction)
             (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown);
 
-        #if defined(IS_PLUGIN_CODE)
+        #if defined(BUILDING_PLUGIN)
           // Enable the plugin View menu item
           Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
         #endif
@@ -1510,7 +1510,7 @@ void CodeSnippetsTreeCtrl::OnIdle(wxIdleEvent& event)
         m_aDlgPtrs.Clear();
     }
 
-    #if defined(IS_PLUGIN_CODE)
+    #if defined(BUILDING_PLUGIN)
       // Enable the plugin View menu item
       if ( 0 == m_aDlgPtrs.GetCount() )
         Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
@@ -1539,7 +1539,7 @@ void CodeSnippetsTreeCtrl::OnShutdown(wxCloseEvent& event)
 //        wxDialog* pdlg = this->m_aDlgPtrs.Item(i);
 //        if (pdlg) pdlg->ProcessEvent(event);
 //    }
-//    #if defined(IS_PLUGIN_CODE)
+//    #if defined(BUILDING_PLUGIN)
 //      // Enable the plugin View menu item
 //        asm("int3");
 //        Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);

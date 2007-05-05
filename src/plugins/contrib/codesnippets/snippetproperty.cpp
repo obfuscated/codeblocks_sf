@@ -31,7 +31,9 @@
     #include <wx/filename.h>
     #include <wx/dnd.h>
 
-#if defined(IS_PLUGIN_CODE)
+#if defined(BUILDING_PLUGIN)
+    #include "sdk_common.h"
+#else
     #include "sdk.h"
 #endif
 
@@ -246,7 +248,7 @@ void SnippetProperty::OnSnippetButton(wxCommandEvent& event)
 
     // Snippet button clicked from menubar edit(Menu) or properties context(Mnu)
     if ( ( g_activeMenuId == idMnuProperties ) //note: mnu vs menu
-        #if !defined(IS_PLUGIN_CODE)
+        #if !defined(BUILDING_PLUGIN)
         || ( g_activeMenuId == idMenuProperties)
         #endif
         )
@@ -298,7 +300,7 @@ void SnippetProperty::InvokeEditOnSnippetText()
             return ;
         }
         wxString snippetData( GetSnippet() );
-        tmpFile.Write( cbU2C(snippetData), snippetData.Length());
+        tmpFile.Write( csU2C(snippetData), snippetData.Length());
         tmpFile.Close();
             // Invoke the external editor on the temporary file
             // file name must be surrounded with quotes when using wxExecute
@@ -335,7 +337,7 @@ void SnippetProperty::InvokeEditOnSnippetText()
         #endif //LOGGING
 
             // convert data back to internal format
-        snippetData = cbC2U( pBuf );
+        snippetData = csC2U( pBuf );
 
          #ifdef LOGGING
           //LOGIT( _T("snippetData[%s]"), snippetData.GetData() );
