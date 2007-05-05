@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 74 2007-05-03 20:57:17Z Pecan $
+// RCS-ID: $Id: version.cpp 75 2007-05-05 03:28:42Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -108,7 +108,7 @@ AppVersion::~AppVersion()
 //          51) Fixed Bug: When window is docked, we're recording CodeBlocks posn & size
 //          52) Removed initial Linux floating window to avoid wxAUI menu bug.(cf."Other" category)
 //          53) Updated codesnippets.cbp, readme.html, codesnippets.am
-//          54) Fix unix error. Add const to use of wxWX2MBbuf csU2C(const wxString& str);
+//          54) Fix unix error. Add const to use of wxWX2MBbuf cbU2C(const wxString& str);
 //  Commit  1.1.55 2007/04/10
 //          55) Missing event.Skip() in OnIdle() caused debugger to hang.
 //  Commit  1.1.56 2007/04/12
@@ -232,9 +232,6 @@ AppVersion::~AppVersion()
 // ----------------------------------------------------------------------------
 //  Commit  1.2.63 2007/05/3
 //          63) Incorporate mappedmemoryfile fixes by Tim S
-// ----------------------------------------------------------------------------
-//  Commit  1.2.64 2007/05/4
-//          64) Workarounds build process to allow BUILDING_PLUGIN compile flag
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box

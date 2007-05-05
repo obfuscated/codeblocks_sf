@@ -16,11 +16,11 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.h 70 2007-04-28 16:04:53Z Pecan $
+// RCS-ID: $Id: snippetsconfig.h 75 2007-05-05 03:28:42Z Pecan $
 
 
-#ifndef SNIPPET_GLOBAL_H
-#define SNIPPET_GLOBAL_H
+#ifndef GLOBAL_H
+#define GLOBAL_H
 
 #include <wx/frame.h>
 #include <wx/fileconf.h>
@@ -39,9 +39,10 @@ class CodeSnippetsWindow;
     int     GetActiveMenuId();
     void    SetActiveMenuId(int menuid);
 
-        // use our local copy of CodeBlocks routines
-        wxString csC2U(const char* str);
-        const wxWX2MBbuf csU2C(const wxString& str);
+   #if !defined(BUILDING_PLUGIN)
+    wxString cbC2U(const char* str);
+    const wxWX2MBbuf cbU2C(const wxString& str);
+   #endif
 // ----------------------------------------------------------------------------
 class CodeSnippetsConfig
 // ----------------------------------------------------------------------------
@@ -138,4 +139,4 @@ class CodeSnippetsConfig
 
 };
 
-#endif // SNIPPET_GLOBAL_H
+#endif // GLOBAL_H

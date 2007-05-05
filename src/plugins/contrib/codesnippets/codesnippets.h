@@ -1,7 +1,6 @@
 /*
 	This file is part of Code Snippets, a plugin for Code::Blocks
 	Copyright (C) 2006 Arto Jonsson
-	Copyright (C) 2007 Pecan Heber
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License

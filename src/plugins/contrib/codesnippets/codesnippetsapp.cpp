@@ -24,11 +24,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetsapp.cpp 73 2007-05-02 20:19:20Z Pecan $
-
-#if defined(BUILDING_PLUGIN)
-    #error BUILDING_PLUGIN defined in *NON*-plugin code, remove it.
-#endif
+// RCS-ID: $Id: codesnippetsapp.cpp 75 2007-05-05 03:28:42Z Pecan $
 
 #ifdef WX_PRECOMP //
 #include "wx_pch.h"

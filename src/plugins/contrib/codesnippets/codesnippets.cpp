@@ -17,34 +17,21 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 73 2007-05-02 20:19:20Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 75 2007-05-05 03:28:42Z Pecan $
 
-// ------------------------------------------------------------------------
-// Defining local compiler flags cause Killerbots unix
-// Makefile to sputter,choke and barf. So here we'll just use the non-precompiled
-// headers in able to define BUILDING_PLLUGINS.
-// ------------------------------------------------------------------------
-//#include "sdk.h"
-#include "sdk_common.h"
-#include "projectmanager.h"
-#include "cbworkspace.h"
-#include "editormanager.h"
-#include "manager.h"
-#include "sdk_events.h"
-#include "cbproject.h"
-#include "messagemanager.h"
-
-//#ifndef CB_PRECOMP
+#include "sdk.h"
+#ifndef CB_PRECOMB
 	#include <wx/event.h>
 	#include <wx/frame.h> // Manager::Get()->GetAppWindow()
 	#include <wx/intl.h>
 	#include <wx/menu.h>
 	#include <wx/menuitem.h>
 	#include <wx/string.h>
-	#include <wx/process.h>
-//#endif
+	#include "manager.h"
+	#include "sdk_events.h"
+	#include <wx/stdpaths.h>
+#endif
 
-#include <wx/stdpaths.h>
 #include <wx/dnd.h>
 
 #include "version.h"
@@ -58,10 +45,6 @@
 #if defined(__WXGTK__)
     #include "wx/gtk/win_gtk.h"
     #include <gdk/gdkx.h>
-#endif
-
-#if !defined(BUILDING_PLUGIN)
-    #error BUILDING_PLUGIN define *MISSING* for plugin code. Please define it.
 #endif
 
 // Register the plugin
@@ -1356,7 +1339,7 @@ long CodeSnippets::LaunchExternalSnippets()
     }
     // Get ptr to mapped area and write my pid as a semaphore flag
     char* pMappedData = (char*)m_pMappedFile->GetStream();
-    std::strncpy(pMappedData, csU2C(myPid), myPid.Length());
+    std::strncpy(pMappedData, cbU2C(myPid), myPid.Length());
     //pMappedFile->UnmapFile(); will deallocate the file (so will the dtor)
 
     // Launch the external process

@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetproperty.cpp 56 2007-04-21 05:07:51Z Pecan $
+// RCS-ID: $Id: snippetproperty.cpp 75 2007-05-05 03:28:42Z Pecan $
 // ----------------------------------------------------------------------------
 //  SnippetProperty.cpp                                         //(pecan 2006/9/12)
 // ----------------------------------------------------------------------------
@@ -32,8 +32,6 @@
     #include <wx/dnd.h>
 
 #if defined(BUILDING_PLUGIN)
-    #include "sdk_common.h"
-#else
     #include "sdk.h"
 #endif
 
@@ -300,7 +298,7 @@ void SnippetProperty::InvokeEditOnSnippetText()
             return ;
         }
         wxString snippetData( GetSnippet() );
-        tmpFile.Write( csU2C(snippetData), snippetData.Length());
+        tmpFile.Write( cbU2C(snippetData), snippetData.Length());
         tmpFile.Close();
             // Invoke the external editor on the temporary file
             // file name must be surrounded with quotes when using wxExecute
@@ -337,7 +335,7 @@ void SnippetProperty::InvokeEditOnSnippetText()
         #endif //LOGGING
 
             // convert data back to internal format
-        snippetData = csC2U( pBuf );
+        snippetData = cbC2U( pBuf );
 
          #ifdef LOGGING
           //LOGIT( _T("snippetData[%s]"), snippetData.GetData() );

@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 73 2007-05-02 20:19:20Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 75 2007-05-05 03:28:42Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -342,7 +342,7 @@ void CodeSnippetsTreeCtrl::SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemI
 			TiXmlElement element("item");
 
 			// Write the item's name
-			element.SetAttribute("name", csU2C(GetItemText(item)));
+			element.SetAttribute("name", cbU2C(GetItemText(item)));
 
 			if (data->GetType() == SnippetItemData::TYPE_CATEGORY)
 			{
@@ -362,7 +362,7 @@ void CodeSnippetsTreeCtrl::SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemI
 				element.SetAttribute("type", "snippet");
 
 				TiXmlElement snippetElement("snippet");
-				TiXmlText snippetElementText(csU2C(data->GetSnippet()));
+				TiXmlText snippetElementText(cbU2C(data->GetSnippet()));
 
 				snippetElement.InsertEndChild(snippetElementText);
 
@@ -389,8 +389,8 @@ void CodeSnippetsTreeCtrl::LoadItemsFromXmlNode(const TiXmlElement* node, const 
 	for (; node; node = node->NextSiblingElement())
 	{
 		// Check if the node has attributes
-		const wxString itemName(csC2U(node->Attribute("name")));
-		const wxString itemType(csC2U(node->Attribute("type")));
+		const wxString itemName(cbC2U(node->Attribute("name")));
+		const wxString itemType(cbC2U(node->Attribute("type")));
 
 		// Check the item type
 		if (itemType == _T("category"))
@@ -413,7 +413,7 @@ void CodeSnippetsTreeCtrl::LoadItemsFromXmlNode(const TiXmlElement* node, const 
 				{
 					if (snippetElementText->ToText())
 					{
-						AddCodeSnippet(parentID, itemName, csC2U(snippetElementText->Value()), false);
+						AddCodeSnippet(parentID, itemName, cbC2U(snippetElementText->Value()), false);
 					}
 				}
 				else
@@ -499,11 +499,11 @@ bool CodeSnippetsTreeCtrl::LoadItemsFromFile(const wxString& fileName, bool bApp
 			// Overwrite it
 			wxCopyFile(fileName, backupFile, true);
            #if defined(BUILDING_PLUGIN)
-			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + csC2U(doc.ErrorDesc()));
+			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + cbC2U(doc.ErrorDesc()));
 			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Backup of the failed file has been created."));
 		   #else
-            //-wxMessageBox(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + csC2U(doc.ErrorDesc()));
-            messageBox(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + csC2U(doc.ErrorDesc()));
+            //-wxMessageBox(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + cbC2U(doc.ErrorDesc()));
+            messageBox(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + cbC2U(doc.ErrorDesc()));
    			//-wxMessageBox(_T("CodeSnippets: Backup of the failed file has been created."));
    			messageBox(_T("CodeSnippets: Backup of the failed file has been created."));
 		   #endif
@@ -1185,7 +1185,7 @@ void CodeSnippetsTreeCtrl::EditSnippetAsText()
         return ;
     }
     wxString snippetData( GetSnippet() );
-    tmpFile.Write( csU2C(snippetData), snippetData.Length());
+    tmpFile.Write( cbU2C(snippetData), snippetData.Length());
     tmpFile.Close();
         // Invoke the external editor on the temporary file
         // file name must be surrounded with quotes when using wxExecute
@@ -1222,7 +1222,7 @@ void CodeSnippetsTreeCtrl::EditSnippetAsText()
     #endif //LOGGING
 
         // convert data back to internal format
-    snippetData = csC2U( pBuf );
+    snippetData = cbC2U( pBuf );
 
      #ifdef LOGGING
       //LOGIT( _T("snippetData[%s]"), snippetData.GetData() );
@@ -1269,7 +1269,7 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
             char* pBuf = new char[fileSize+1];
             oldFile.Read( pBuf, fileSize );
             pBuf[fileSize] = 0;
-            snippetData = csC2U(  pBuf );
+            snippetData = cbC2U(  pBuf );
             oldFile.Close();
             delete [] pBuf;
         }
@@ -1313,7 +1313,7 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
         messageBox(wxT("Open failed for:")+newFileName);
         return ;
     }
-    newFile.Write( csU2C(snippetData), snippetData.Length());
+    newFile.Write( cbU2C(snippetData), snippetData.Length());
     newFile.Close();
     // update Tree item
     SetSnippet( newFileName );

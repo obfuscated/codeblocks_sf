@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.cpp 72 2007-05-01 15:19:27Z Pecan $
+// RCS-ID: $Id: snippetsconfig.cpp 75 2007-05-05 03:28:42Z Pecan $
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
 #else
@@ -43,8 +43,11 @@
     // ------------------------------------
     // UTF8 conversion routines
     // ------------------------------------
+   #if defined(BUILDING_PLUGIN)
+     #include "globals.h"  // codeblocks sdk globals.h
+   #else
     // Return @c str as a proper unicode-compatible string
-    wxString csC2U(const char* str)
+    wxString cbC2U(const char* str)
     {
         #if wxUSE_UNICODE
             return wxString(str, wxConvUTF8);
@@ -54,7 +57,7 @@
     }
 
     // Return multibyte (C string) representation of the string
-    const wxWX2MBbuf csU2C(const wxString& str)
+    const wxWX2MBbuf cbU2C(const wxString& str)
     {
         #if wxUSE_UNICODE
             return str.mb_str(wxConvUTF8);
@@ -62,6 +65,7 @@
             return (wxChar*)str.mb_str();
         #endif
     }
+   #endif //defined(BUILDING_PLUGIN)
 
 // ----------------------------------------------------------------------------
 CodeSnippetsConfig::CodeSnippetsConfig()
@@ -168,7 +172,7 @@ void CodeSnippetsConfig::SettingsLoad()
     cfgFile.Read( wxT("WindowPosition"),  &winPos, wxEmptyString) ;
     if ( not winPos.IsEmpty() )
     {
-        const wxWX2MBbuf buf = csU2C(winPos);
+        const wxWX2MBbuf buf = cbU2C(winPos);
         std::string cstring( buf );
         std::stringstream istream(cstring);
         istream >> windowXpos ;
