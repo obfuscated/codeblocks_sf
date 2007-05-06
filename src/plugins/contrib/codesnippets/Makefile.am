@@ -4,8 +4,8 @@ INCLUDES = $(WX_CXXFLAGS) \
         $(WX_GTK2_CFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/include/wxscintilla/include \
-        -I$(top_srcdir)/src/include/wxFlatNotebook/include
-
+        -I$(top_srcdir)/src/include/wxFlatNotebook/include \
+        -DBUILDING_PLUGIN
 
 libdir = $(pkgdatadir)/plugins
 
@@ -15,8 +15,7 @@ libcodesnippets_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -
 
 libcodesnippets_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
 
-libcodesnippets_la_SOURCES = 	codesnippets.cpp \
-			codesnippetsapp.cpp \
+libcodesnippets_la_SOURCES = codesnippets.cpp \
 			codesnippetstreectrl.cpp \
 			codesnippetswindow.cpp \
 			edit.cpp \
@@ -36,7 +35,6 @@ libcodesnippets_la_SOURCES = 	codesnippets.cpp \
 			version.cpp
 
 noinst_HEADERS =  	codesnippets.h \
-			codesnippetsapp.h \
 			codesnippetstreectrl.h \
 			codesnippetswindow.h \
 			defsext.h \
