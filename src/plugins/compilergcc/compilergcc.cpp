@@ -559,7 +559,11 @@ bool CompilerGCC::BuildToolBar(wxToolBar* toolBar)
     Manager::Get()->AddonToolBar(toolBar,_T("compiler_toolbar")+my_16x16);
     m_ToolTarget = XRCCTRL(*toolBar, "idToolTarget", wxComboBox);
     toolBar->Realize();
+    #if wxCHECK_VERSION(2, 8, 0)
+    toolBar->SetInitialSize();
+    #else
     toolBar->SetBestFittingSize();
+    #endif
     DoRecreateTargetMenu(); // make sure the tool target combo is up-to-date
     return true;
 }

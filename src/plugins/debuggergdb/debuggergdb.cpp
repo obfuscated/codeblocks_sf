@@ -77,7 +77,7 @@
 #if (_WIN32_WINNT >= 0x0501)
 typedef WINBASEAPI BOOL WINAPI (*DebugBreakProcessApiCall)(HANDLE);
 DebugBreakProcessApiCall DebugBreakProcessFunc = 0;
-HINSTANCE kernelLib = 0; 
+HINSTANCE kernelLib = 0;
 #endif
 
 // valid debugger command constants
@@ -249,7 +249,7 @@ DebuggerGDB::DebuggerGDB()
 
 	// get a function pointer to DebugBreakProcess under windows (XP+)
 	#if (_WIN32_WINNT >= 0x0501)
-	kernelLib = LoadLibrary(TEXT("kernel32.dll")); 
+	kernelLib = LoadLibrary(TEXT("kernel32.dll"));
 	if (kernelLib)
 		DebugBreakProcessFunc = (DebugBreakProcessApiCall)GetProcAddress(kernelLib, "DebugBreakProcess");
 	#endif
@@ -259,7 +259,7 @@ DebuggerGDB::~DebuggerGDB()
 {
 	#if (_WIN32_WINNT >= 0x0501)
 	if (kernelLib)
-		FreeLibrary(kernelLib); 
+		FreeLibrary(kernelLib);
 	#endif
 }
 
@@ -578,7 +578,11 @@ bool DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
     wxString my_16x16=Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
     Manager::AddonToolBar(toolBar,wxString(_T("debugger_toolbar"))+my_16x16);
     toolBar->Realize();
+    #if wxCHECK_VERSION(2, 8, 0)
+    toolBar->SetInitialSize();
+    #else
     toolBar->SetBestFittingSize();
+    #endif
     return true;
 #else
     return false;
@@ -747,12 +751,12 @@ int DebuggerGDB::LaunchProcess(const wxString& cmd, const wxString& cwd)
     if (m_Pid == -1)
     {
         // Great! We got a fake PID. Time to Go Fish with our "ps" rod:
-        
+
         m_Pid = 0;
         pid_t mypid = getpid();
         wxString mypidStr;
         mypidStr << mypid;
-        
+
         long pspid = 0;
         wxString psCmd;
         wxArrayString psOutput;
@@ -783,7 +787,7 @@ int DebuggerGDB::LaunchProcess(const wxString& cmd, const wxString& cwd)
             DebugLog(wxString::Format( _("PS Error:%s"), psErrors.Item(i).c_str()) );
     }
 #endif
-    
+
     if (!m_Pid)
     {
         delete m_pProcess;
