@@ -223,7 +223,7 @@ fi
 %{pkgdata}/plugins/libRegExTestbed.*
 %{pkgdata}/plugins/libSymTab.*
 %{pkgdata}/plugins/libwxsmith.*
-%{_bindir}/libwxsmithlib.*
+%{_libdir}/libwxsmithlib.*
 %{pkgdata}/plugins/libwxsmithcontribitems.*
 
 %files devel

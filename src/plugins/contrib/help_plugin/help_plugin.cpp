@@ -40,6 +40,7 @@
 #include <projectmanager.h>
 #include <cbeditor.h>
 #include <cbproject.h>
+#include <macrosmanager.h>
 
 #include <wx/help.h> //(wxWindows chooses the appropriate help controller class)
 #include <wx/helpbase.h> //(wxHelpControllerBase class)

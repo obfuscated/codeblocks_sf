@@ -31,6 +31,7 @@
     #include <wx/menu.h>
     #include <wx/splitter.h>
     #include <wx/imaglist.h>
+    #include <wx/regex.h>
 
     #include "editormanager.h" // class's header file
     #include "configmanager.h"

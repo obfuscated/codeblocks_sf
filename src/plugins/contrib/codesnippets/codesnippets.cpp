@@ -29,7 +29,13 @@
 	#include <wx/string.h>
 	#include "manager.h"
 	#include "sdk_events.h"
+	#include "messagemanager.h"
+	#include "projectmanager.h"
+	#include "editormanager.h"
+	#include "cbproject.h"
+	#include "cbworkspace.h"
 	#include <wx/stdpaths.h>
+	#include <wx/process.h>
 #endif
 
 #include <wx/dnd.h>

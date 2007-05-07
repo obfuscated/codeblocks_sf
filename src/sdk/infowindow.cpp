@@ -5,6 +5,7 @@
     #include <wx/stattext.h>
     #include <wx/sizer.h>
     #include <wx/settings.h>
+    #include <wx/statbmp.h>
     #include "infowindow.h"
     #include "manager.h"
 #endif
