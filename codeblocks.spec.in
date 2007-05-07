@@ -6,7 +6,7 @@
 %define _mandrake       %(if [ -f /etc/mandrake-release ]; then echo 1; else echo 0; fi)
 %define _version        1.0_0.svn.%{_svnrev}
 %define _rel		0
-%define _release	%{_rel}	
+%define _release	%{_rel}
 
 
 %if %_suse
@@ -223,7 +223,7 @@ fi
 %{pkgdata}/plugins/libRegExTestbed.*
 %{pkgdata}/plugins/libSymTab.*
 %{pkgdata}/plugins/libwxsmith.*
-%{pkgdata}/plugins/libwxsmithlib.*
+%{_bindir}/libwxsmithlib.*
 %{pkgdata}/plugins/libwxsmithcontribitems.*
 
 %files devel
