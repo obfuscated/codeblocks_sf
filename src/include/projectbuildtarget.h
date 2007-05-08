@@ -88,7 +88,7 @@ class DLLIMPORT ProjectBuildTarget : public BlockAllocated<ProjectBuildTarget, 1
           * ConsoleRunner is an external utility program that waits for a keypress
           * after the target is executed.
           * @return True if ConsoleRunner should be used, false if not. */
-        virtual bool GetUseConsoleRunner();
+        virtual bool GetUseConsoleRunner() const;
 
         /** Set if ConsoleRunner should be used.
           * Valid only for targets generating a console executable.

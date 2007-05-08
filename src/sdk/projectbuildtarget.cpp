@@ -129,7 +129,7 @@ void ProjectBuildTarget::SetCreateStaticLib(bool createIt)
     }
 }
 
-bool ProjectBuildTarget::GetUseConsoleRunner()
+bool ProjectBuildTarget::GetUseConsoleRunner() const
 {
     return GetTargetType() == ttConsoleOnly ? m_UseConsoleRunner : false;
 }
