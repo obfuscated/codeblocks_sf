@@ -111,7 +111,7 @@ void ClassWizardDlg::DoGuardBlock()
 void ClassWizardDlg::OnNameChange(wxCommandEvent& event)
 {
     wxString name = XRCCTRL(*this, "txtName", wxTextCtrl)->GetValue();
-    name.MakeLower();
+    //name.MakeLower();
     while (name.Replace(_T("::"), _T("/")))
         ;
     XRCCTRL(*this, "txtHeader", wxTextCtrl)->SetValue(name + _T(".h"));
