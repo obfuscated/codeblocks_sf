@@ -104,7 +104,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
                                                         TargetFilenameGenerationPolicy* extensionOut) const;
 
         virtual const wxString& GetFilename() const;
-        virtual const wxString& GetTitle(); ///< Read the target's title
+        virtual const wxString& GetTitle() const; ///< Read the target's title
         virtual void SetTitle(const wxString& title); ///< Set the target's title
         virtual void SetOutputFilename(const wxString& filename); ///< Set the target's output filename
         virtual void SetWorkingDir(const wxString& dirname); ///< Set the target's working dir on execution (valid only for executable targets)

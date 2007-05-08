@@ -51,15 +51,17 @@ ProjectBuildTarget::~ProjectBuildTarget()
 {
 }
 
-cbProject* ProjectBuildTarget::GetParentProject() {
+cbProject* ProjectBuildTarget::GetParentProject()
+{
     return m_Project;
 }
 
-wxString ProjectBuildTarget::GetFullTitle() {
+wxString ProjectBuildTarget::GetFullTitle() const
+{
     return m_Project->GetTitle() + _T(" - ") + GetTitle();
 }
 
-const wxString & ProjectBuildTarget::GetExternalDeps()
+const wxString & ProjectBuildTarget::GetExternalDeps() const
 {
     return m_ExternalDeps;
 }
@@ -73,7 +75,7 @@ void ProjectBuildTarget::SetExternalDeps(const wxString& deps)
     }
 }
 
-const wxString & ProjectBuildTarget::GetAdditionalOutputFiles()
+const wxString & ProjectBuildTarget::GetAdditionalOutputFiles() const
 {
     return m_AdditionalOutputFiles;
 }
@@ -87,7 +89,7 @@ void ProjectBuildTarget::SetAdditionalOutputFiles(const wxString& files)
     }
 }
 
-bool ProjectBuildTarget::GetIncludeInTargetAll()
+bool ProjectBuildTarget::GetIncludeInTargetAll() const
 {
 	return m_BuildWithAll;
 }
@@ -101,7 +103,7 @@ void ProjectBuildTarget::SetIncludeInTargetAll(bool buildIt)
 	}
 }
 
-bool ProjectBuildTarget::GetCreateDefFile()
+bool ProjectBuildTarget::GetCreateDefFile() const
 {
     return m_CreateDefFile;
 }

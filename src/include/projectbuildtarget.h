@@ -29,14 +29,14 @@ class DLLIMPORT ProjectBuildTarget : public BlockAllocated<ProjectBuildTarget, 1
         /** @return The target's parent project. */
         virtual cbProject* GetParentProject();
         /** @return The full title, i.e. "projectname - targetname". */
-        virtual wxString GetFullTitle();
+        virtual wxString GetFullTitle() const;
 
         //properties
 
         /** @return A string containing a list of all the external files this target depends on.
           * If any of the files in this list is newer than the target's output, the target is relinked.
           */
-        virtual const wxString& GetExternalDeps();
+        virtual const wxString& GetExternalDeps() const;
 
         /** Set a list of all the external files this targets depends on.
           * If any of the files in this list is newer than the target's output, the target is relinked.
@@ -48,7 +48,7 @@ class DLLIMPORT ProjectBuildTarget : public BlockAllocated<ProjectBuildTarget, 1
           * If any of the files in this list is older than the list returned by
           * GetExternalDeps(), the target is relinked.
           */
-        virtual const wxString& GetAdditionalOutputFiles();
+        virtual const wxString& GetAdditionalOutputFiles() const;
 
         /** Set a list of all additional output files this targets creates, besides its main output.
           * If any of the files in this list is older than the list returned by
@@ -59,7 +59,7 @@ class DLLIMPORT ProjectBuildTarget : public BlockAllocated<ProjectBuildTarget, 1
 
         /** Deprecated, do not use at all!
           * @return True if this target should be built when the virtual target "All" is selected, false if not. */
-        virtual bool GetIncludeInTargetAll();
+        virtual bool GetIncludeInTargetAll() const;
 
         /** Deprecated, do not use at all!
           * Set if this target should be built when the virtual target "All" is selected.
@@ -68,7 +68,7 @@ class DLLIMPORT ProjectBuildTarget : public BlockAllocated<ProjectBuildTarget, 1
 
         /** Valid only for targets generating dynamic libraries (DLLs or SOs).
           * @return True if the target creates a DEF imports file. */
-        virtual bool GetCreateDefFile();
+        virtual bool GetCreateDefFile() const;
 
         /** Set if the target creates a DEF imports file.
           * Valid only for targets generating dynamic libraries (DLLs or SOs).

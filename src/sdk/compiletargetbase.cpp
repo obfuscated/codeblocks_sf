@@ -83,7 +83,7 @@ const wxString& CompileTargetBase::GetFilename() const
 	return m_Filename;
 }
 
-const wxString& CompileTargetBase::GetTitle()
+const wxString& CompileTargetBase::GetTitle() const
 {
 	return m_Title;
 }
