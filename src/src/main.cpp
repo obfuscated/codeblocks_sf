@@ -876,7 +876,11 @@ void MainFrame::CreateToolbars()
     Manager::Get()->AddonToolBar(m_pToolbar,xrcToolbarName);
 
     m_pToolbar->Realize();
+    #if wxCHECK_VERSION(2, 8, 0)
+    m_pToolbar->SetInitialSize();
+    #else
     m_pToolbar->SetBestFittingSize();
+    #endif
 
     // add toolbars in docking system
     m_LayoutManager.AddPane(m_pToolbar, wxAuiPaneInfo().
@@ -1234,14 +1238,27 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
                     ++ccount;
                 }
             }
+            #if wxCHECK_VERSION(2, 8, 0)
+            wxSize s(w + tb->GetEffectiveMinSize().GetWidth() - (ccount * (tb->GetToolSize().GetWidth() / 3)), 0);
+            tb->SetInitialSize(s);
+            #else
             wxSize s(w + tb->GetBestFittingSize().GetWidth() - (ccount * (tb->GetToolSize().GetWidth() / 3)), 0);
             tb->SetBestFittingSize(s);
+            #endif
         }
         else
+            #if wxCHECK_VERSION(2, 8, 0)
+            tb->SetInitialSize();
+            #else
             tb->SetBestFittingSize();
+            #endif
         // end of HACK
 #else
+        #if wxCHECK_VERSION(2, 8, 0)
+        tb->SetInitialSize();
+        #else
         tb->SetBestFittingSize();
+        #endif
 #endif
 
         // add View->Toolbars menu item for toolbar
