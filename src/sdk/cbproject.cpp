@@ -170,7 +170,7 @@ void cbProject::SetCompilerID(const wxString& id)
     }
 }
 
-bool cbProject::GetModified()
+bool cbProject::GetModified() const
 {
     // check base options
     if (CompileOptionsBase::GetModified())
@@ -409,7 +409,7 @@ void cbProject::CalculateCommonTopLevelPath()
     Manager::Get()->GetMessageManager()->DebugLog(_T("Project's common toplevel path: %s"), m_CommonTopLevelPath.c_str());
 }
 
-wxString cbProject::GetCommonTopLevelPath()
+wxString cbProject::GetCommonTopLevelPath() const
 {
     return m_CommonTopLevelPath;
 }

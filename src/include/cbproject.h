@@ -114,10 +114,10 @@ class DLLIMPORT cbProject : public CompileTargetBase
         void CalculateCommonTopLevelPath();
 
         /** @return the top-level path common to all project files. */
-        wxString GetCommonTopLevelPath();
+        wxString GetCommonTopLevelPath() const;
 
         /** @return True if the project is modified in any way. */
-        bool GetModified();
+        bool GetModified() const;
 
         /** Mark the project as modified or not.
           * @param modified If true, the project is marked as modified. If false, as not-modified.
