@@ -24,7 +24,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetsapp.cpp 75 2007-05-05 03:28:42Z Pecan $
+// RCS-ID: $Id: codesnippetsapp.cpp 78 2007-05-08 01:00:54Z Pecan $
 
 #ifdef WX_PRECOMP //
 #include "wx_pch.h"
@@ -44,6 +44,12 @@
 #include "snippetsimages.h"
 #include "messagebox.h"
 #include "memorymappedfile.h"
+
+// The app needs a flag to disable some plugin calls
+#if defined(BUILDING_PLUGIN)
+    #error preprocessor BUILDING_PLUGIN flag must *not* be defined for this target
+#endif
+
 
 //  missing mingw header definitions
     #define MAPVK_VK_TO_VSC     0

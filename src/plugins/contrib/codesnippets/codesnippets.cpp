@@ -17,26 +17,28 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 75 2007-05-05 03:28:42Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 78 2007-05-08 01:00:54Z Pecan $
 
+#if defined(CB_PRECOMP)
 #include "sdk.h"
-#ifndef CB_PRECOMB
+#else
+    #include "sdk_common.h"
 	#include <wx/event.h>
 	#include <wx/frame.h> // Manager::Get()->GetAppWindow()
 	#include <wx/intl.h>
 	#include <wx/menu.h>
 	#include <wx/menuitem.h>
 	#include <wx/string.h>
-	#include "manager.h"
 	#include "sdk_events.h"
-	#include "messagemanager.h"
+	#include "manager.h"
 	#include "projectmanager.h"
 	#include "editormanager.h"
-	#include "cbproject.h"
 	#include "cbworkspace.h"
+	#include "cbproject.h"
+	#include "messagemanager.h"
+#endif
 	#include <wx/stdpaths.h>
 	#include <wx/process.h>
-#endif
 
 #include <wx/dnd.h>
 
@@ -51,6 +53,11 @@
 #if defined(__WXGTK__)
     #include "wx/gtk/win_gtk.h"
     #include <gdk/gdkx.h>
+#endif
+
+// The plugin needs a flag ON to enable some code for the plugin
+#if !defined(BUILDING_PLUGIN)
+    #error preprocessor BUILDING_PLUGIN flag required for this target
 #endif
 
 // Register the plugin
@@ -1355,14 +1362,30 @@ long CodeSnippets::LaunchExternalSnippets()
     std::strncpy(pMappedData, cbU2C(myPid), myPid.Length());
     //pMappedFile->UnmapFile(); will deallocate the file (so will the dtor)
 
+
     // Launch the external process
-    wxString PgmFullPath =
-                    GetConfig()->m_ExecuteFolder
+    wxString execFolder = GetConfig()->m_ExecuteFolder;
+    wxString PgmFullPath ;
+    do {
+        PgmFullPath = execFolder + wxT("/codesnippets");
+        #if defined(__WXMSW__)
+            PgmFullPath << wxT(".exe");
+        #endif
+        if ( ::wxFileExists(PgmFullPath) ) break;
+        LOGIT(wxT("codesnippets not found at[%s]"),PgmFullPath.GetData());
+
+        PgmFullPath = execFolder
                     + wxT("/share/codeblocks/plugins/codesnippets");
+        #if defined(__WXMSW__)
+            PgmFullPath << wxT(".exe") ;
+        #endif
+    }while(0);
+
     wxString pgmArgs( wxString::Format( wxT("KeepAlivePid=%lu"), ::wxGetProcessId() ) );
     wxString command = PgmFullPath + wxT(" ") + pgmArgs;
 
      LOGIT( _T("Launching[%s]"), command.GetData());
+
     bool result = LaunchProcess(command, wxGetCwd());
      LOGIT( _T("Launch Result[%d] m_ExternalPid[%lu]"),result, m_ExternalPid );
     if ( 0 != result )

@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.cpp 72 2007-05-01 15:19:27Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.cpp 78 2007-05-08 01:00:54Z Pecan $
 
 #ifdef WX_PRECOMP //
     #include "wx_pch.h"
@@ -486,7 +486,7 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 
                 // linux makefile does not allow preprocessor BUILDING_PLUGIN
                 // so we just turn off access to the code that needs it
-                #if defined(__WXMSW__)
+                #if defined(_WXMSW_)
                 if (GetConfig()->IsPlugin())
                 {   snippetsTreeMenu->Append(idMnuApplySnippet, _("Apply"));
                 }

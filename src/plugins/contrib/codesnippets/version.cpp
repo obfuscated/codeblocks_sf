@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 75 2007-05-05 03:28:42Z Pecan $
+// RCS-ID: $Id: version.cpp 78 2007-05-08 01:00:54Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -239,6 +239,9 @@ AppVersion::~AppVersion()
 //  Commit  1.2.65 2007/05/5
 //          65) Removed or disabled all code on linux which depended on makefile preprocessor flags
 // ----------------------------------------------------------------------------
+//  Commit  1.2.66 2007/05/7
+//          66) Modified code, cbp's and Makefile.am's to allow linux preprocessor defs
+// ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
 //          a renamed "new snippet" label is not sorted into place
@@ -249,6 +252,10 @@ AppVersion::~AppVersion()
 //          "XML load error" doesn't pop up when loading a "txt" file. Why?
 //          MSW path may already have ";" tacked to end. What happens?
 //          "File has changed" msg pops up even when file has NOT changed.
+//              Open CB, with floating window default. Set to External window. Close
+//              floating window with system X. Open external window with View/CodeSnippets.
+//              View a text file, Close CB. You'll get the "file changed" when none has.
+//              AND, window stays up even tho CB is gone.
 //          Add option for ToolTips and max chars shown
 //          #ifdef out linux options dlg spacer (can't with wxFormBuilder)
 //              Maybe just a line instead of a spacer will work

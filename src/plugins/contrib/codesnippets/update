@@ -1,6 +1,3 @@
 #!/bin/bash
-mkdir -p ../../../output/share/codeblocks/plugins
-cp -f ../../../devel/share/codeblocks/plugins/codesnippets ../../../output/share/codeblocks/plugins/codesnippets
-strip ../../../output/share/codeblocks/plugins/codesnippets
 zip -j9 ../../../devel/share/codeblocks/codesnippets.zip ./manifest.xml
 exit 0

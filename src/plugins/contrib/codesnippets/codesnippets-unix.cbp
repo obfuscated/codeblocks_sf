@@ -15,13 +15,14 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DNO_LOGGING" />
+					<Add option="-DBUILDING_PLUGIN" />
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />
 				</Linker>
 			</Target>
 			<Target title="App-unix">
-				<Option output="../../../devel/share/codeblocks/plugins/codesnippets" prefix_auto="0" extension_auto="0" />
+				<Option output="../../../devel/codesnippets" prefix_auto="0" extension_auto="0" />
 				<Option object_output=".obj/app" />
 				<Option type="0" />
 				<Option compiler="gcc" />
@@ -29,6 +30,7 @@
 					<Add option="-g" />
 					<Add option="-DNO_LOGGING" />
 					<Add option="-DWXUSINGDLL" />
+					<Add option="-DCB_PRECOMP" />
 				</Compiler>
 			</Target>
 		</Build>
@@ -45,7 +47,6 @@
 			<Add option="-fPIC" />
 			<Add option="`pkg-config --cflags gtk+-2.0`" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DCB_PRECOMP" />
 			<Add directory="$(#cb)/include" />
 			<Add directory="$(#cb)/include/wxscintilla/include" />
 			<Add directory="$(#cb)/include/wxFlatNotebook/include" />
