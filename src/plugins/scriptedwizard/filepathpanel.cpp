@@ -131,14 +131,14 @@ int FilePathPanel::GetTargetIndex()
 {
     int selection = -1;
 
-    if (m_Selection > clbTargets->GetCount()-2) // (m_Selection >= clbTargets->GetCount()-1)
+    if (m_Selection > static_cast<int>(clbTargets->GetCount()) - 2) // (m_Selection >= clbTargets->GetCount()-1)
     {
         m_Selection = -1; // Reset -> notify about "last item" with -1
         return m_Selection;
     }
 
     // start with next (x+1) or first (-1+1 = 0) item
-    for (selection = m_Selection+1; selection<clbTargets->GetCount(); ++selection)
+    for (selection = m_Selection + 1; selection < static_cast<int>(clbTargets->GetCount()); ++selection)
     {
         if (clbTargets->IsChecked(selection))
             break; // selection found. break for-loop to save item's index
@@ -187,15 +187,19 @@ void FilePathPanel::OnchkAddToProjectChange(wxCommandEvent& event)
 
 void FilePathPanel::OnbtnAllClick(wxCommandEvent& event)
 {
-    for (int i=0; i<clbTargets->GetCount(); ++i)
+    for (int i = 0; i < static_cast<int>(clbTargets->GetCount()); ++i)
+    {
         clbTargets->Check(i, true);
-}
+    }
+} // end of OnbtnAllClick
 
 void FilePathPanel::OnbtnNoneClick(wxCommandEvent& event)
 {
-    for (int i=0; i<clbTargets->GetCount(); ++i)
+    for (int i = 0; i < static_cast<int>(clbTargets->GetCount()); ++i)
+    {
         clbTargets->Check(i, false);
-}
+    }
+} // end of OnbtnNoneClick
 
 void FilePathPanel::ToggleVisibility(bool on)
 {
