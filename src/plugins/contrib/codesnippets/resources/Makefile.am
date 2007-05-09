@@ -13,7 +13,10 @@ bin_PROGRAMS = codesnippets
 codesnippets_LDFLAGS = 
 
 ##codesnippets_LIBADD = $(PLUGIN_WX_LIBS) ../../../../sdk/libcodeblocks.la
-codesnippets_LDADD = $(PLUGIN_WX_LIBS) ../../../../sdk/libcodeblocks.la
+##codesnippets_LDADD = $(PLUGIN_WX_LIBS) ../../../../sdk/libcodeblocks.la
+codesnippets_LDADD =  -L../../../../base/tinyxml -ltinyxml \
+            -L../../../../sdk/wxscintilla -lwxscintilla \
+			$(PLUGIN_WX_LIBS) $(WX_LIBS)
 
 codesnippets_SOURCES = 	../codesnippetsapp.cpp \
 			../codesnippetstreectrl.cpp \
