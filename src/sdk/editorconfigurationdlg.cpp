@@ -630,12 +630,14 @@ void EditorConfigurationDlg::OnRenameColourTheme(wxCommandEvent& event)
         return;
 
     wxString name = dlg.GetValue();
+    wxString oldName = m_Theme->GetName();
     wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
     int idx = cmbThemes->GetSelection();
     if (idx != wxNOT_FOUND)
         cmbThemes->SetString(idx, name);
-    Manager::Get()->GetConfigManager(_T("editor"))->DeleteSubPath(_T("/colour_sets/") + m_Theme->GetName());
     m_Theme->SetName(name);
+    m_Theme->Save();
+    Manager::Get()->GetConfigManager(_T("editor"))->DeleteSubPath(_T("/colour_sets/") + oldName);
 
     cmbThemes->SetSelection(cmbThemes->FindString(name));
     ChangeTheme();

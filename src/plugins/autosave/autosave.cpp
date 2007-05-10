@@ -147,7 +147,7 @@ void Autosave::OnTimer(wxTimerEvent& e)
                         wxString filename = file.GetFullPath();
                         wxString temp = filename + _T(".temp");
                         wxString save = filename + _T(".save");
-                        if(::wxCopyFile(filename, temp))
+                        if(::wxFileExists(filename) && ::wxCopyFile(filename, temp))
                         {
                             p->SaveLayout();
                             ::wxRenameFile(filename, save);
