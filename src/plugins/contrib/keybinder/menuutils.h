@@ -26,8 +26,11 @@
 
 //! Returns the ID of the first menu item with the given name which
 //! is found inside the given menu bar.
-int /*-lf-WXDLLIMPEXP_KEYBINDER*/ wxFindMenuItem(wxMenuBar *, const wxString &strMenuItemName);
+//int /*-lf-WXDLLIMPEXP_KEYBINDER*/ wxFindMenuItem(wxMenuBar *, const wxString &strMenuItemName);
 
+int wxFindMenuItem(wxMenuBar *, const wxString &strMenuItemName);
+int FindMenuDuplicateCount(wxMenuBar *p, const wxString &str);
+int FindMenuDuplicateItems(wxMenu* pMenu, wxString& rStr, int& rCount);
 
 // some useful macros
 #define wxSAFE_DELETE(x)					{ if (x) delete x; x = NULL; }

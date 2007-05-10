@@ -31,12 +31,16 @@
 
 // static
 wxMenuBar *wxMenuCmd::m_pMenuBar = NULL;
+extern wxKeyProfileArray* m_pKeyProfArr;  // ptr to key profile array in cbKeybinder
+
 
 // ----------------------------------------------------------------------------
 // Global utility functions
 // ----------------------------------------------------------------------------
 
+// ----------------------------------------------------------------------------
 int wxFindMenuItem(wxMenuBar *p, const wxString &str)
+// ----------------------------------------------------------------------------
 {
 	int id = wxNOT_FOUND;
 
@@ -49,6 +53,57 @@ int wxFindMenuItem(wxMenuBar *p, const wxString &str)
 
 	return id;
 }
+
+// ----------------------------------------------------------------------------
+int FindMenuDuplicateCount(wxMenuBar *p, wxString &str)
+// ----------------------------------------------------------------------------
+{
+	//int id = wxNOT_FOUND;
+	int count = 0;
+
+	for (int i=0; i < (int)p->GetMenuCount(); i++) {
+
+		//id = p->GetMenu(i)->FindItem(str);
+		//if (id != wxNOT_FOUND)
+		//	count++;
+		FindMenuDuplicateItems( p->GetMenu(i), str, count);
+	}
+
+	return count;
+}
+// ----------------------------------------------------------------------------
+int FindMenuDuplicateItems(wxMenu* pMenu, wxString& rStr, int& rCount)
+// ----------------------------------------------------------------------------
+{
+    // Recursively scan & count submenu items with name rStr
+
+    size_t itemKnt = pMenu->GetMenuItemCount();
+    for (size_t j=0; j<itemKnt; j++ )
+    {
+        // check each item on this subMenu
+        wxMenuItem* pMenuItem = pMenu->FindItemByPosition(j);
+        // recursively walk down to deepest submenu
+        if ( pMenuItem->GetSubMenu() )
+            FindMenuDuplicateItems( pMenuItem->GetSubMenu(), rStr, rCount );
+        //---------------------------
+        // Now at deepest menu items
+        //---------------------------
+        // skip separater menu items
+        if (pMenuItem->GetKind() == wxITEM_SEPARATOR) continue;
+        //int nMenuItemID = pMenuItem->GetId();
+
+        // Skip any menu items beginning with numerics
+        if (wxMenuCmd::IsNumericMenuItem(pMenuItem)) continue;
+
+        // Find matching menu item in keybinder array of commands
+        wxString menuItemLabel = pMenuItem->GetLabel();
+        if (rStr == pMenuItem->GetLabel() )
+        {    rCount++;
+             LOGIT( _T("Duplicate menu item [%d][%s]"), pMenuItem->GetId(), pMenuItem->GetLabel().GetData()  );
+        }
+    }//for
+    return rCount;
+}//mergeSubmenu
 
 /*
 #ifdef __WXGTK__
@@ -308,20 +363,30 @@ wxCmd *wxMenuCmd::CreateNew(wxString cmdName, int id)
     wxMenuItem* p_ById = m_pMenuBar->FindItem(id);
     if ( p_ById && (p_ById->GetLabel() == cmdName) )
         p = p_ById;
-    else {
-        //find first menu item by this name
+    else
+    {    // find first menu item by this name
+         LOGIT( _T("CreateNew()Unmatched id[%d][%s]"), id, cmdName.GetData() );
         int actualMenuID = wxFindMenuItem(m_pMenuBar,cmdName);
         if (wxNOT_FOUND != actualMenuID)
             p = m_pMenuBar->FindItem(actualMenuID);
-    }
+        // CodeBlocks has duplicate menu item text also, so what me may have found
+        // is the first of a pair of duplicates. Do not clobber the first duplicate key if
+        // already assigned. Just don't process it. //(pecan 2007/5/10)
+        if ( FindMenuDuplicateCount(m_pMenuBar, cmdName) > 1 )
+        {   p = 0;
+            LOGIT( _T("CreatNew()Skipped duplicate[%d][%s]"), id, cmdName.GetData() );
+            Manager::Get()->GetMessageManager()->DebugLog(wxString::Format(wxT("KeyBinder skipped duplicates for[%d][%s]"), id, cmdName.GetData()));
+        }
+    }//else
     ////wxLogDebug(_T("CreateNew(): id:%d new:[%s],Menu[%s]"), id, cmdName.GetData(), p->GetLabel().GetData());
 	if (!p)
-	 {
-            wxLogDebug(_T("CreateNew()UnMatched id:%d name:%s"), id, cmdName.GetData());
-            return NULL;
-	 }
+    {
+        wxLogDebug(_T("CreateNew()not created[%d][%s]"), id, cmdName.GetData());
+        return NULL;
+	}
 	//-v0.5
 	//-wxASSERT(id == p->GetId());
+	 //LOGIT( _T("CreatingNew for [%d][%s]"), id, cmdName.GetData() );
 	return new wxMenuCmd(p);
 }
 

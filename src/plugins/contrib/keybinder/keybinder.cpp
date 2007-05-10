@@ -38,8 +38,6 @@
 #include "wx/config.h"
 #include "wx/tokenzr.h"
 
-#include "manager.h"
-#include "messagemanager.h"
 
 
 
@@ -135,16 +133,17 @@ END_EVENT_TABLE()
 	#define compatibility_iterator			Node*
 #endif
 
-
+// ------------------
 // some statics
+// ------------------
 int wxCmd::m_nCmdTypes = 0;
-wxCmd::wxCmdType wxCmd::m_arrCmdType[];
+    wxCmd::wxCmdType wxCmd::m_arrCmdType[];
 // window names allowed for which keybinder may attach()
 wxArrayString wxKeyBinder::usableWindows;                    //+v0.4.4
-//window used by AttachRecursively, App.TopWindow
+// window used by AttachRecursively, App.TopWindow
 wxWindow* mainAppWindow = 0;
-extern wxString* pKeyFilename;
-
+extern wxString* pKeyFilename;          // Name of .ini key file
+extern wxKeyProfileArray* m_pKeyProfArr;  // ptr to key profile array in cbKeybinder
 
 // ----------------------------------------------------------------------------
 // wxKeyBind STATIC utilities
@@ -857,7 +856,7 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
                 && (GetShortcutStr(nMenuItemID,0) != menuItemKeyStr)  )
                changed = 3;
             //if (changed)
-            //{
+            //{ //show change in log
             //    #ifdef LOGGING
             //     LOGIT( _T("MnuLabel[%s] MnuKey[%s]"), menuItemLabel.GetData(), menuItemKeyStr.GetData() );
             //     int n = pCmd->GetShortcutCount();
@@ -890,7 +889,7 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
                     p->RemoveShortcut(n, true);
                 }
             }//endwhile
-            // if changed < 4, remove the existing mis-matching wxCmd entry
+            // if changed < 4(not found in array), remove the existing mis-matching wxCmd entry
             if (changed<4)
             {   // remove pre-existing mis-matching wxCmd
                 RemoveCmd(pCmd);
@@ -917,7 +916,7 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
         else
         {   // menu item has not changed
             #ifdef LOGGING
-             //LOGIT(wxT("Merge:NoChange:%d:%d:%p:%s"),j,nMenuItemID,pMenuItem,pMenuItem->GetText().GetData() );
+             LOGIT(wxT("Merge:NoChange:%d:%d:%p:%s"),j,nMenuItemID,pMenuItem,pMenuItem->GetText().GetData() );
             #endif
         }
         // count changed array wxCmd items
@@ -994,8 +993,8 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
         {
             GetMenuItemAccStr(pMenuItem, menuItemKeyStr);
             #ifdef LOGGING
-             LOGIT(wxT("UpdateAllCmd ById on:%d:%d:%p:[%s] key[%s]"),
-                    j,k,pMenuItem,pMenuItem->GetLabel().GetData(), menuItemKeyStr.GetData() );
+             LOGIT(wxT("UpdateAllCmd ById Ok on:[%d][%s] key[%s]"),
+                    pMenuItem->GetId(),pMenuItem->GetLabel().GetData(), menuItemKeyStr.GetData() );
             #endif
             m_arrCmd.Item(k)->Update(pMenuItem);
             // *^^* pMenuItem will be invalid now if item was destroyed/created/updated **
@@ -1007,7 +1006,7 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
                 && (not wxMenuCmd::IsNumericMenuItem(pMenuItem)) )
             {
                 #ifdef LOGGING
-                 LOGIT(wxT("UpdateAllCmd ById Failed on:%d:%d:%p:[%d][%s]"),j,k, pMenuItem, pMenuItem->GetId(), pMenuItem->GetText().GetData() );
+                 LOGIT(wxT("UpdateAllCmd ById Failed on:[%d][%s]"), pMenuItem->GetId(), pMenuItem->GetText().GetData() );
                 #endif
                 Manager::Get()->GetMessageManager()->DebugLog(wxString::Format(wxT("KeyBinder failed UpdateById on[%d][%s]"), nMenuItemID, pMenuItem->GetText().GetData()));
 ////                // When a .ini id cannot be found: (menu ids have shifted)

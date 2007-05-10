@@ -25,7 +25,7 @@
 //#include <wx/datetime.h>
 
 // ----------------------------------------------------------------------------
-wxString* pKeyFilename = 0; //used by keybinder key definition dialog
+wxString* pKeyFilename = 0;     // used by keybinder key definition dialog
 // ----------------------------------------------------------------------------
 
 // Register the plugin
@@ -47,7 +47,7 @@ BEGIN_EVENT_TABLE(cbKeyBinder, cbPlugin)
     EVT_MENUBAR_CREATE_BEGIN(cbKeyBinder::OnMenuBarModify) //never invoked
     EVT_MENUBAR_CREATE_END  (cbKeyBinder::OnMenuBarModify) //never invoked
     EVT_IDLE            (cbKeyBinder::OnIdle)
-    EVT_TIMER       (-1, cbKeyBinder::OnTimerAlarm)
+    //-EVT_TIMER       (-1, cbKeyBinder::OnTimerAlarm)
 END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 
@@ -389,7 +389,8 @@ int cbKeyBinder::EnableMerge(bool allow)
     }
     // enable Merge
     m_mergeEnabled  = (m_mergeEnabled < 0 ? 1 : ++m_mergeEnabled );
-    StartMergeTimer( 15 );
+    // StartMergetTimer removed for testing 2007/05/10
+    //-StartMergeTimer( 15 );
     return m_mergeEnabled;
 }//LockMerge
 // ----------------------------------------------------------------------------// ----------------------------------------------------------------------------
@@ -1082,7 +1083,7 @@ void cbKeyBinder::OnAppStartShutdown(wxCommandEvent& event)
     // wait for any current merge to complete
     for (int i=0;i<5 ;++i )
     {   if ( IsMerging() )
-            {wxSleep(1); wxYield();}
+            {Sleep(1); wxYield();}
         else break;
     }
     EnableMerge(false);
