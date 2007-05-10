@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 78 2007-05-08 01:00:54Z Pecan $
+// RCS-ID: $Id: version.cpp 79 2007-05-09 17:57:41Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -241,6 +241,16 @@ AppVersion::~AppVersion()
 // ----------------------------------------------------------------------------
 //  Commit  1.2.66 2007/05/7
 //          66) Modified code, cbp's and Makefile.am's to allow linux preprocessor defs
+// ----------------------------------------------------------------------------
+//  Commit  1.2.66 2007/05/7
+//          66) Modified code, cbp's and Makefile.am's to allow linux preprocessor defs
+//          1.2.66 2007/05/9
+//          67) Commited w/o version change
+//				Changed resource/Makefile.am LDADD to only use needed libs
+// ----------------------------------------------------------------------------
+//  Commit  1.2.69 2007/05/9
+//          68) update.bat remove old unused commands
+//          69) Set LD_LIBRARY_PATH relative to AppPath
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box

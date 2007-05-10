@@ -1257,11 +1257,19 @@ int CodeSnippets::LaunchProcess(const wxString& cmd, const wxString& cwd)
 
     #ifndef __WXMSW__
         // setup dynamic linker path
-    #if defined(__APPLE__) && defined(__MACH__)
-        wxSetEnv(_T("DYLD_LIBRARY_PATH"), _T(".:$DYLD_LIBRARY_PATH"));
-    #else
-        wxSetEnv(_T("LD_LIBRARY_PATH"), _T(".:$LD_LIBRARY_PATH"));
-    #endif // __APPLE__ && __MACH__
+        #if defined(__APPLE__) && defined(__MACH__)
+            wxSetEnv(_T("DYLD_LIBRARY_PATH"), _T(".:$DYLD_LIBRARY_PATH"));
+        #else   // it's linux
+            //wxString ldLibraryPath = wxT(".:");
+            wxString ldLibraryPath = ::wxPathOnly( cmd ) + wxT("/");
+            if ( wxDirExists( ldLibraryPath + wxT("./lib")) ) ldLibraryPath << wxT("./lib");
+            if ( wxDirExists( ldLibraryPath + wxT("../lib")) ) ldLibraryPath << wxT("../lib");
+            ldLibraryPath << wxT(":$LD_LIBRARY_PATH");
+            wxSetEnv( _T("LD_LIBRARY_PATH"), ldLibraryPath );
+            wxGetEnv( _T("LD_LIBRARY_PATH"), &ldLibraryPath );
+            Manager::Get()->GetMessageManager()->DebugLog(wxString::Format( _("CodeSnippets CWD: %s"), cwd.c_str()) );
+            Manager::Get()->GetMessageManager()->DebugLog(wxString::Format( _("CodeSnippets LD_LIBRARY_PATH is: %s"), ldLibraryPath.c_str()) );
+        #endif // __APPLE__ && __MACH__
     #endif
 
     // start codesnippets
