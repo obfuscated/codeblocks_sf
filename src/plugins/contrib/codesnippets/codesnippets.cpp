@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 78 2007-05-08 01:00:54Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 81 2007-05-10 20:03:53Z Pecan $
 
 #if defined(CB_PRECOMP)
 #include "sdk.h"
@@ -229,6 +229,7 @@ void CodeSnippets::BuildMenu(wxMenuBar* menuBar)
 // ----------------------------------------------------------------------------
 {
     GetConfig()->m_pMenuBar = menuBar;
+    bool isSet = false;
 
 	int idx = menuBar->FindMenu(_("View"));
 	if (idx != wxNOT_FOUND) do
@@ -242,12 +243,14 @@ void CodeSnippets::BuildMenu(wxMenuBar* menuBar)
 			if (items[i]->IsSeparator())
 			{
 				viewMenu->InsertCheckItem(i, idViewSnippets, _("Code snippets"), _("Toggle displaying the code snippets."));
+				isSet = true;
 				break;
 			}
-		}
+		}//for
 
 		// Not found, just append
-		viewMenu->AppendCheckItem(idViewSnippets, _("Code snippets"), _("Toggle displaying the code snippets."));
+		if (not isSet)
+            viewMenu->AppendCheckItem(idViewSnippets, _("Code snippets"), _("Toggle displaying the code snippets."));
 	}while(0);
 	LOGIT(wxT("Menubar[%p]idViewSnippets[%d]"),menuBar, idViewSnippets);
 }

@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 79 2007-05-09 17:57:41Z Pecan $
+// RCS-ID: $Id: version.cpp 81 2007-05-10 20:03:53Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -251,6 +251,9 @@ AppVersion::~AppVersion()
 //  Commit  1.2.69 2007/05/9
 //          68) update.bat remove old unused commands
 //          69) Set LD_LIBRARY_PATH relative to AppPath
+// ----------------------------------------------------------------------------
+//  Commit  1.2.70 2007/05/10
+//          70) Fix duplicate menu entry
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
