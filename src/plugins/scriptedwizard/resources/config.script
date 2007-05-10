@@ -22,7 +22,7 @@ function RegisterWizards()
     if (PLATFORM == PLATFORM_MSW)
         RegisterWizard(wizProject, _T("gtk"),          _T("GTK+ project"),          _T("GUI"));
     RegisterWizard(wizProject,     _T("irrlicht"),     _T("Irrlicht project"),      _T("2D/3D Graphics"));
-    RegisterWizard(wizProject,     _T("lf"),     		_T("Lightfeather 3D project"),      _T("2D/3D Graphics"));
+    RegisterWizard(wizProject,     _T("lf"),           _T("Lightfeather project"),  _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("opengl"),       _T("OpenGL project"),        _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("ogre"),         _T("Ogre project"),          _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("plugins"),      _T("Code::Blocks plugin"),   _T("Code::Blocks"));
@@ -41,7 +41,7 @@ function RegisterWizards()
     RegisterWizard(wizTarget,      _T("console"),      _T("Console"),               _T("Console"));
     if (PLATFORM == PLATFORM_MSW)
         RegisterWizard(wizTarget,  _T("dll"),          _T("Dynamic Link Library"),  _T("Console"));
-	RegisterWizard(wizTarget,      _T("wxwidgets"),    _T("wxWidgets"),				_T("GUI"));
+    RegisterWizard(wizTarget,      _T("wxwidgets"),    _T("wxWidgets"),             _T("GUI"));
 
     //
     // file wizards

@@ -732,7 +732,24 @@ void Wiz::CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxStri
         CreateDirRecursively(dstdir);
 
         // copy the file
-        wxCopyFile(srcfile, dstfile, true);
+        wxFileName dstfile_chk(dstfile);
+        bool do_copy = true; // default case: file most likely does *not* exist
+        if (wxFileName::FileExists(dstfile))
+        {
+            wxString query_overwrite;
+            query_overwrite.Printf(
+              _T("Warning:\n")
+              _T("The wizard is about OVERWRITE the following existing file:\n")+
+              wxFileName(dstfile).GetFullPath()+_T("\n\n")+
+              _T("Are you sure that you want to OVERWRITE the file?\n\n")+
+              _T("(If you answer 'No' the existing file will be kept.)"));
+            if (cbMessageBox(query_overwrite, _T("Confirmation"),
+                             wxICON_QUESTION | wxYES_NO) != wxYES)
+            {
+                do_copy = false; // keep the old (existing) file
+            }
+        }
+        if (do_copy) wxCopyFile(srcfile, dstfile, true);
 
         // and add it to the project
         fname.MakeRelativeTo(prjdir);

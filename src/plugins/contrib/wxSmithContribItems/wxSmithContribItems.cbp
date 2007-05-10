@@ -44,7 +44,7 @@
 			<Add directory="$(#cb)\include" />
 			<Add directory="$(#cb)\include\wxscintilla\include" />
 			<Add directory="$(#wx.include)" />
-			<Add directory="$(#wx.lib)\gcc_dll\mswu" />
+			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#CB.include)\propgrid\include" />
 			<Add directory="..\wxSmith" />
 			<Add directory="wxchart\wxchart-1.0\include" />
