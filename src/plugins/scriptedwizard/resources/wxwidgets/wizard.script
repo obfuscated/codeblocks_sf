@@ -843,8 +843,8 @@ function SetupTarget(target, is_debug)
 		}
 		else
 		{
-			project.AddCompilerOption(_T("`wx-config --cflags`"));
-			project.AddLinkerOption(_T("`wx-config --libs`"));
+			target.AddCompilerOption(_T("`wx-config --cflags`"));
+			target.AddLinkerOption(_T("`wx-config --libs`"));
 		}
 		
 		if (PLATFORM == PLATFORM_MAC)
