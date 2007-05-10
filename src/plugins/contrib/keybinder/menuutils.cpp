@@ -24,6 +24,25 @@
 #include "wx/wx.h"
 #endif
 
+#if defined(CB_PRECOMP)
+#include "sdk.h"
+#else
+    #include "sdk_common.h"
+	#include <wx/event.h>
+	#include <wx/frame.h> // Manager::Get()->GetAppWindow()
+	#include <wx/intl.h>
+	#include <wx/menu.h>
+	#include <wx/menuitem.h>
+	#include <wx/string.h>
+	#include "sdk_events.h"
+	#include "manager.h"
+	#include "projectmanager.h"
+	#include "editormanager.h"
+	#include "cbworkspace.h"
+	#include "cbproject.h"
+	#include "messagemanager.h"
+#endif
+
 // includes
 //-#include "debugging.h"
 #include "menuutils.h"
