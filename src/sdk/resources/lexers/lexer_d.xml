@@ -76,19 +76,25 @@
 				<Keywords>
 						<Language index="0"
 								value="abstract alias align asm assert auto 
-								bit body break byte case cast catch cdouble
-								cent cfloat char class const continue
-								creal dchar debug default delegate delete
-								deprecated do double else enum export
-								extern false final finally float for foreach
-								function goto idouble if ifloat import in
-								inout int interface invariant ireal is 	long
-								mixin module new null out override 	package
-								pragma private protected public real return
-								short static struct super switch synchronized
-								template this throw true try typedef typeid
-								typeof ubyte ucent uint ulong union unittest
-								ushort version void volatile wchar while with"/>
+								body bool break byte 
+								case cast catch cdouble cent cfloat char 
+								class const continue creal 
+								dchar debug default delegate delete 
+								deprecated do double 
+								else enum export extern 
+								false final finally float for foreach foreach_reverse function 
+								goto 
+								idouble if ifloat import in inout int interface invariant ireal is 
+								lazy long 
+								macro mixin module 
+								new null out override 
+								package pragma private protected public 
+								real ref return
+								scope short static struct super switch synchronized
+								template this throw true try typedef typeid typeof 
+								ubyte ucent uint ulong union unittest ushort 
+								version void volatile 
+								wchar while with"/>
 						<User index="1"/>
 						<Documentation index="2"
 								value="a addindex addtogroup anchor arg attention
