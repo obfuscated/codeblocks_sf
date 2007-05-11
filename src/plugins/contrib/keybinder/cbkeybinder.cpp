@@ -10,18 +10,21 @@
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
 
-#include <sdk.h>
+#ifdef CB_PRECOMP
+    #include <sdk.h>
+#else
+    #include "sdk_common.h"
+    #include "sdk_events.h"
+#endif
 
 #if defined(__GNUG__) && !defined(__APPLE__)
 	#pragma implementation "cbkeybinder.h"
 #endif
 
+#include "wxscintilla/include/wx/wxscintilla.h"
 #include "cbkeybinder.h"
 #include <licenses.h> // defines some common licenses (like the GPL)
 
-#ifndef CB_PRECOMP
-    #include "sdk_events.h"
-#endif
 #include "manager.h"
 #include "messagemanager.h"
 

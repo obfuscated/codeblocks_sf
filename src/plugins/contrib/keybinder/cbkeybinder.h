@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.32 2007/05/10"
+#define VERSION "1.0.33 2007/05/11"
 // -----------------------------------
 class MyDialog;
 
@@ -673,5 +673,8 @@ private:
 //  Commit  1.0.32 2007/05/10
 //          31) Removed OnIdle() dynamic merging. Set Merge just before user definitions.
 //          32) Fixed disappearing "duplicate" menu items. If mismatched id, just leave 'em alone.
+// ----------------------------------------------------------------------------
+//  Commit  1.0.33 2007/05/11
+//          33) Fixes for use of non-precompiled headers
 // ----------------------------------------------------------------------------
 //
