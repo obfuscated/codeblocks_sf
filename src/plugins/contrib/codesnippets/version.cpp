@@ -255,6 +255,9 @@ AppVersion::~AppVersion()
 //  Commit  1.2.70 2007/05/10
 //          70) Fix duplicate menu entry
 // ----------------------------------------------------------------------------
+//  Commit  1.2.71 2007/05/11
+//          71) Fixes for use of non-precompiled headers
+// ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
 //          a renamed "new snippet" label is not sorted into place

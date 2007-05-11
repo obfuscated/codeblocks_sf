@@ -42,7 +42,7 @@
 //! wxWindows headers
 
 //! wxScintilla headers
-#include <wx/wxscintilla.h>  // scintilla edit control
+#include <wxscintilla/include/wx/wxscintilla.h>  // scintilla edit control
 
 //! application headers
 #include "prefs.h"       // preferences

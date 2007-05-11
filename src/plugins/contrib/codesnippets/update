@@ -1,3 +1,6 @@
 #!/bin/bash
+mkdir -p ../../../output
+cp -f ../../../devel/codesnippets ../../../output/codesnippets
+strip ../../../output/codesnippets
 zip -j9 ../../../devel/share/codeblocks/codesnippets.zip ./manifest.xml
 exit 0
