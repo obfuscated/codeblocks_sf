@@ -12,9 +12,8 @@
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-#if CB_PRECOMP
-  #include "sdk.h"
-#else
+#include "sdk.h"
+#ifndef CB_PRECOMP
   #include <wx/arrstr.h>
   #include <wx/menu.h>
   #include <wx/toolbar.h>

@@ -11,7 +11,7 @@
  */
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
+#include "sdk.h"
 #ifndef CB_PRECOMP
   #include <wx/checklst.h>
 
