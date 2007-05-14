@@ -11,9 +11,9 @@ libenvvars_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid
 
 libenvvars_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
 
-libenvvars_la_SOURCES = envvars.cpp
+libenvvars_la_SOURCES = envvars.cpp envvars_cdfdlg.cpp envvars_common.cpp
 
-noinst_HEADERS = envvars.h
+noinst_HEADERS = envvars.h envvars_cdfdlg.h envvars_common.h
 
 EXTRA_DIST = envvars.cbp envvars-unix.cbp envvars.xrc manifest.xml
 

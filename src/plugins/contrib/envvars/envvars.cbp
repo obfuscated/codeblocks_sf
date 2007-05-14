@@ -2,17 +2,33 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="EnvVars Plug-In" />
+		<Option title="EnvVars" />
 		<Option pch_mode="0" />
+		<Option default_target="default" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\envvars.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\envvars" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--profile=foo" />
+				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Compiler>
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DWX_PRECOMP" />
+				</Compiler>
+			</Target>
+			<Target title="no_pch">
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\envvars.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs\2.6\plugins\contrib\envvars" />
 				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\envvars" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Compiler>
+					<Add option="-DNOPCH" />
+				</Compiler>
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
@@ -30,8 +46,6 @@
 			<Add option="-fexceptions" />
 			<Add option='-include &quot;sdk.h&quot;' />
 			<Add option="-DBUILDING_PLUGIN" />
-			<Add option="-DCB_PRECOMP" />
-			<Add option="-DWX_PRECOMP" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
@@ -60,6 +74,10 @@
 		<Unit filename="envvars.cpp" />
 		<Unit filename="envvars.h" />
 		<Unit filename="envvars.xrc" />
+		<Unit filename="envvars_cfgdlg.cpp" />
+		<Unit filename="envvars_cfgdlg.h" />
+		<Unit filename="envvars_common.cpp" />
+		<Unit filename="envvars_common.h" />
 		<Unit filename="manifest.xml" />
 		<Extensions>
 			<code_completion />

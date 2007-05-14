@@ -4,73 +4,104 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxStaticText">
+        <object class="wxStaticText" name="lblSetup">
           <label>Setup (toggle) environment variables:</label>
         </object>
-        <flag>wxALL|wxEXPAND|wxALIGN_LEFT</flag>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
         <border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxCheckListBox" name="lstEnvVars">
           <content/>
-          <style>wxLB_SINGLE|wxLB_HSCROLL|wxLB_NEEDED_SB</style>
+          <style>wxLB_HSCROLL|wxLB_SINGLE|wxLB_NEEDED_SB</style>
         </object>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
         <option>1</option>
-        <flag>wxALL|wxEXPAND|wxALIGN_CENTRE</flag>
+      </object>
+      <object class="sizeritem">
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <object class="wxStaticText" name="lblSet">
+              <label>Select/Create/Remove envvar - set:</label>
+            </object>
+            <flag>wxTOP|wxEXPAND|wxGROW</flag>
+            <border>4</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxChoice" name="choSet">
+              <content/>
+            </object>
+            <option>1</option>
+            <flag>wxLEFT|wxRIGHT|wxEXPAND|wxGROW|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnCreateSet">
+              <label>Create...</label>
+            </object>
+            <flag>wxALL|wxEXPAND|wxGROW|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnRemoveSet">
+              <label>Remove</label>
+            </object>
+            <flag>wxLEFT|wxEXPAND|wxGROW|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
+            <border>8</border>
+          </object>
+        </object>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
         <border>8</border>
       </object>
       <object class="sizeritem">
-        <object class="wxStaticText">
+        <object class="wxStaticText" name="lblNote">
           <label>NOTE: These variables are applied on startup (or manually) within the focus of Code::Blocks.</label>
+          <style>wxALIGN_CENTRE</style>
           <fg>#800000</fg>
         </object>
-        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
         <border>8</border>
       </object>
       <object class="sizeritem">
         <object class="wxBoxSizer">
-          <orient>wxVERTICAL</orient>
+          <object class="spacer">
+            <option>1</option>
+            <flag>wxALL|wxEXPAND|wxGROW</flag>
+          </object>
           <object class="sizeritem">
-            <object class="wxBoxSizer">
-              <orient>wxHORIZONTAL</orient>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnAddEnvVar">
-                  <label>Add</label>
-                </object>
-                <flag>wxALL</flag>
-                <border>5</border>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnEditEnvVar">
-                  <label>Edit</label>
-                </object>
-                <flag>wxALL</flag>
-                <border>5</border>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnDeleteEnvVar">
-                  <label>Delete</label>
-                </object>
-                <flag>wxALL</flag>
-                <border>5</border>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnClearEnvVars">
-                  <label>Clear</label>
-                </object>
-                <flag>wxALL</flag>
-                <border>5</border>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnSetEnvVars">
-                  <label>Set now</label>
-                </object>
-                <flag>wxALL</flag>
-                <border>5</border>
-              </object>
+            <object class="wxButton" name="btnAddEnvVar">
+              <label>Add</label>
             </object>
-            <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
-            <border>5</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnEditEnvVar">
+              <label>Edit</label>
+            </object>
+            <flag>wxLEFT|wxRIGHT</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnDeleteEnvVar">
+              <label>Delete</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnClearEnvVars">
+              <label>Clear</label>
+            </object>
+            <flag>wxLEFT|wxRIGHT</flag>
+            <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnSetEnvVars">
+              <label>Set now</label>
+            </object>
+          </object>
+          <orient>wxHORIZONTAL</orient>
+          <object class="spacer">
+            <option>1</option>
+            <flag>wxALL|wxEXPAND|wxGROW</flag>
           </object>
         </object>
         <flag>wxALL|wxEXPAND|wxGROW</flag>

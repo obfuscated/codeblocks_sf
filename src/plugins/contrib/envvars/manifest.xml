@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="10" release="0" />
     <Plugin name="EnvVars">
         <Value title="Environment variables" />
-        <Value version="0.92" />
+        <Value version="0.95" />
         <Value description="Sets up environment variables within the focus of Code::Blocks." />
         <Value author="Martin Halle" />
         <Value authorEmail="codeblocks@martin-halle.de" />
