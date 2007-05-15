@@ -155,6 +155,8 @@
 		<Unit filename="wxwidgets/defitems/wxsgauge.h" />
 		<Unit filename="wxwidgets/defitems/wxsgenericdirctrl.cpp" />
 		<Unit filename="wxwidgets/defitems/wxsgenericdirctrl.h" />
+		<Unit filename="wxwidgets/defitems/wxsgrid.cpp" />
+		<Unit filename="wxwidgets/defitems/wxsgrid.h" />
 		<Unit filename="wxwidgets/defitems/wxsgridsizer.cpp" />
 		<Unit filename="wxwidgets/defitems/wxsgridsizer.h" />
 		<Unit filename="wxwidgets/defitems/wxshtmlwindow.cpp" />
