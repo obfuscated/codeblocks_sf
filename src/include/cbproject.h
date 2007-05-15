@@ -93,7 +93,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         ~cbProject();
 
         /** @return True if the project fully loaded, false if not. */
-        bool IsLoaded(){ return m_Loaded; }
+        bool IsLoaded() const { return m_Loaded; }
 
         /** (Re)build the project tree.
           * @param tree The wxTreeCtrl to use.
