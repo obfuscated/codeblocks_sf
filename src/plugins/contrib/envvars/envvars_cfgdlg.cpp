@@ -19,8 +19,10 @@
   #include <wx/choice.h>
   #include <wx/xrc/xmlres.h>
 
+  #include "globals.h"
   #include "manager.h"
   #include "configmanager.h"
+  #include "messagemanager.h"
 #endif
 
 #include "editpairdlg.h"

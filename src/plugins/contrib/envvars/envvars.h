@@ -22,6 +22,7 @@ class wxMenuBar;
 class wxToolBar;
 
 #include "cbplugin.h" // the base class we 're inheriting
+#include "cbproject.h"
 #include "configurationpanel.h"
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

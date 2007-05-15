@@ -18,6 +18,7 @@
   #include <wx/menu.h>
   #include <wx/toolbar.h>
 
+  #include "globals.h"
   #include "manager.h"
   #include "configmanager.h"
   #include "messagemanager.h"
