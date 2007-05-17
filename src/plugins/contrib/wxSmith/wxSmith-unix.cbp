@@ -251,14 +251,6 @@
 		<Unit filename="wxwidgets/properties/wxssizerflagsproperty.h" />
 		<Unit filename="wxwidgets/properties/wxsstyleproperty.cpp" />
 		<Unit filename="wxwidgets/properties/wxsstyleproperty.h" />
-		<Unit filename="wxwidgets/useritems/wxsuseritem.cpp">
-			<Option link="0" />
-		</Unit>
-		<Unit filename="wxwidgets/useritems/wxsuseritem.h" />
-		<Unit filename="wxwidgets/useritems/wxsuseritemmanager.cpp">
-			<Option link="0" />
-		</Unit>
-		<Unit filename="wxwidgets/useritems/wxsuseritemmanager.h" />
 		<Unit filename="wxwidgets/wxsbaseproperties.cpp" />
 		<Unit filename="wxwidgets/wxsbaseproperties.h" />
 		<Unit filename="wxwidgets/wxscontainer.cpp" />

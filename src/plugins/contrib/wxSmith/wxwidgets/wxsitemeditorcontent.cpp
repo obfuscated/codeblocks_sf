@@ -29,7 +29,6 @@
 #include "wxsitemeditor.h"
 
 BEGIN_EVENT_TABLE(wxsItemEditorContent,wxsDrawingWindow)
-    EVT_MOUSE_EVENTS(wxsItemEditorContent::OnMouse)
 END_EVENT_TABLE()
 
 wxsItemEditorContent::wxsItemEditorContent(wxWindow* Parent,wxsItemResData* Data,wxsItemEditor* Editor):
@@ -276,7 +275,7 @@ wxsItemEditorContent::DragPointData* wxsItemEditorContent::FindDragPointFromItem
     return NULL;
 }
 
-void wxsItemEditorContent::OnMouse(wxMouseEvent& event)
+void wxsItemEditorContent::MouseExtra(wxMouseEvent& event)
 {
     switch ( m_MouseState )
     {

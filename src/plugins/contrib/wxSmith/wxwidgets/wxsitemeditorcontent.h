@@ -104,7 +104,7 @@ class wxsItemEditorContent: public wxsDrawingWindow
 
 
         /** \brief Processing mouse events */
-        void OnMouse(wxMouseEvent& event);
+        void MouseExtra(wxMouseEvent& event);
 
         void OnMouseIdle(wxMouseEvent& event);
         void OnMouseDraggingPoint(wxMouseEvent& event);

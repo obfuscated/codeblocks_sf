@@ -676,48 +676,6 @@
 		<Unit filename="wxwidgets\properties\wxsstyleproperty.h">
 			<Option target="wxSmithLib" />
 		</Unit>
-		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvalue.cpp">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvalue.h">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvaluelist.cpp">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\useritems\wxsgenericpropertyvaluelist.h">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\useritems\wxsuseritem.cpp">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\useritems\wxsuseritem.h">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\useritems\wxsuseritemdescription.cpp">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\useritems\wxsuseritemdescription.h">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\useritems\wxsuseritemeditor.cpp">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\useritems\wxsuseritemeditor.h">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\useritems\wxsuseritemmanager.cpp">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\useritems\wxsuseritemmanager.h">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\useritems\wxsuseritemproperties.cpp">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\useritems\wxsuseritemproperties.h">
-			<Option target="wxSmithLib" />
-		</Unit>
 		<Unit filename="wxwidgets\wxsbaseproperties.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>

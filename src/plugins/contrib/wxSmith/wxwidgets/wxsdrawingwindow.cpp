@@ -161,7 +161,7 @@ void wxsDrawingWindow::PanelMouse(wxMouseEvent& event)
 {
     event.SetEventObject(this);
     event.SetId(GetId());
-    ProcessEvent(event);
+    MouseExtra(event);
 }
 
 void wxsDrawingWindow::PanelKeyboard(wxKeyEvent& event)

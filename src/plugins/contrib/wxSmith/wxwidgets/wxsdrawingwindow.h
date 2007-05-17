@@ -75,6 +75,9 @@ class wxsDrawingWindow: public wxScrolledWindow
          */
         virtual void PaintExtra(wxDC* DC) = 0;
 
+        /** \brief Function called to support mouse events in thos window */
+        virtual void MouseExtra(wxMouseEvent& event) {}
+
     private:
 
         void PanelPaint(wxPaintEvent& event);
