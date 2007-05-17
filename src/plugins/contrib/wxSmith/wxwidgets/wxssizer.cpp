@@ -189,9 +189,19 @@ wxObject* wxsSizer::OnBuildPreview(wxWindow* Parent,long Flags)
 
     if ( !(Flags & pfExact) )
     {
-        NewParent->SetSizer(Sizer);
-        Sizer->Fit(NewParent);
-        Sizer->SetSizeHints(NewParent);
+        if ( !GetChildCount() )
+        {
+            // Setting custom size for childless sizer to prevent
+            // zero-size items
+            NewParent->SetSize(wxSize(20,20));
+        }
+        else
+        {
+            NewParent->SetSizer(Sizer);
+            Sizer->Fit(NewParent);
+            Sizer->SetSizeHints(NewParent);
+        }
+
         return NewParent;
     }
 
@@ -264,4 +274,3 @@ bool wxsSizer::OnCodefExtension(wxsCodingLang Language,wxString& Result,const wx
 {
     return wxsParent::OnCodefExtension(Language,Result,FmtChar,ap);
 }
-
