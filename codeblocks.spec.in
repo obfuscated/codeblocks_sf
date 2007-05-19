@@ -192,6 +192,7 @@ fi
 %files contrib
 %defattr(-,root,root)
 %{_bindir}/cb_share_config
+%{_bindir}/codesnippets
 %{pkgdata}/byogames.zip
 %{pkgdata}/cb_koders.zip
 %{pkgdata}/codesnippets.zip
