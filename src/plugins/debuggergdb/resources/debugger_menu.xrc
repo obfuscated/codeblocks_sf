@@ -44,7 +44,7 @@
       
       <label>Next instruction</label>
       
-      <bitmap>images\16x16\dbgnext.png</bitmap>
+      <bitmap>images\16x16\dbgstepi.png</bitmap>
       
       <accel>Alt-F7</accel>
       
