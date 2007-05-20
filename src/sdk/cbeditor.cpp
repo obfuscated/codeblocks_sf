@@ -1257,7 +1257,7 @@ bool cbEditor::SaveAs()
     else if(mgr)
     {
         // File type is unknown. Select the last used filter:
-        wxString Filter = mgr->Read(_T("/file_dialogs/save_file_as/filter"), _T("C/C++ files"));
+        Filter = mgr->Read(_T("/file_dialogs/save_file_as/filter"), _T("C/C++ files"));
     }
     if(!Filter.IsEmpty())
     {
@@ -1302,10 +1302,10 @@ bool cbEditor::SaveAs()
         wxString Filter;
         if(FileFilters::GetFilterNameFromIndex(Filters, Index, Filter))
         {
-            mgr->Write(_T("/file_dialogs/file_new_open/filter"), Filter);
+            mgr->Write(_T("/file_dialogs/save_file_as/filter"), Filter);
         }
         wxString Test = dlg->GetDirectory();
-        mgr->Write(_T("/file_dialogs/file_new_open/directory"), dlg->GetDirectory());
+        mgr->Write(_T("/file_dialogs/save_file_as/directory"), dlg->GetDirectory());
     }
     dlg->Destroy();
     return Save();
