@@ -39,7 +39,6 @@ namespace
 
     WXS_EV_BEGIN(wxsStaticBoxEvents)
         WXS_EVI(EVT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEvent,Click)
-        WXS_EV_DEFAULTS()
     WXS_EV_END()
 }
 

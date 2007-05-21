@@ -38,7 +38,6 @@ namespace
 
 
     WXS_EV_BEGIN(wxsGaugeEvents)
-        WXS_EV_DEFAULTS()
     WXS_EV_END()
 }
 

@@ -37,7 +37,6 @@ namespace
 
     WXS_EV_BEGIN(wxsCheckBoxEvents)
         WXS_EVI(EVT_CHECKBOX,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEvent,Click)
-        WXS_EV_DEFAULTS()
     WXS_EV_END()
 }
 

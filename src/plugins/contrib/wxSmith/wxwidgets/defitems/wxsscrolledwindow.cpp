@@ -31,7 +31,6 @@ namespace
         WXS_ST_CATEGORY("wxScrolledWindow")
         WXS_ST(wxHSCROLL)
         WXS_ST(wxVSCROLL)
-     //   WXS_ST(wxNO_3D)      // removed in 2.6
         WXS_ST(wxTAB_TRAVERSAL)
         WXS_EXST(wxWS_EX_VALIDATE_RECURSIVELY)
     WXS_ST_END()

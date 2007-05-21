@@ -33,7 +33,6 @@ namespace
 
 
     WXS_EV_BEGIN(wxsStaticBitmapEvents)
-        WXS_EV_DEFAULTS()
     WXS_EV_END()
 }
 

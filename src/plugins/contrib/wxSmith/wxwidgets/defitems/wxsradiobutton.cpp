@@ -38,7 +38,6 @@ namespace
 
     WXS_EV_BEGIN(wxsRadioButtonEvents)
         WXS_EVI(EVT_RADIOBUTTON,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEvent,Select)
-        WXS_EV_DEFAULTS()
     WXS_EV_END()
 }
 

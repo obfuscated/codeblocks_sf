@@ -37,7 +37,6 @@ namespace
 
 
     WXS_EV_BEGIN(wxsStaticLineEvents)
-        WXS_EV_DEFAULTS()
     WXS_EV_END()
 }
 

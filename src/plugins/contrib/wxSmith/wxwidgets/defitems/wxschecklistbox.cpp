@@ -41,7 +41,6 @@ namespace
 
     WXS_EV_BEGIN(wxsCheckListBoxEvents)
         WXS_EVI(EVT_CHECKLISTBOX,wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,wxCommandEvent,Toggled)
-        WXS_EV_DEFAULTS()
     WXS_EV_END()
 }
 

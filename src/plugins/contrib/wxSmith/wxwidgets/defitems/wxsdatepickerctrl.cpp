@@ -41,7 +41,6 @@ namespace
 
     WXS_EV_BEGIN(wxsDatePickerCtrlEvents)
         WXS_EVI(EVT_DATE_CHANGED,wxEVT_DATE_CHANGED,wxDataEvent,Changed)
-        WXS_EV_DEFAULTS()
     WXS_EV_END()
 }
 

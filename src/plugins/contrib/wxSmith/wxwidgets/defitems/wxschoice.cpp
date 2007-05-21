@@ -35,7 +35,6 @@ namespace
 
     WXS_EV_BEGIN(wxsChoiceEvents)
         WXS_EVI(EVT_CHOICE,wxEVT_COMMAND_CHOICE_SELECTED,wxCommandEvent,Select)
-        WXS_EV_DEFAULTS()
     WXS_EV_END()
 }
 

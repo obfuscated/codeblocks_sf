@@ -36,7 +36,6 @@ namespace
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsStaticTextEvents)
-        WXS_EV_DEFAULTS()
     WXS_EV_END()
 
 }

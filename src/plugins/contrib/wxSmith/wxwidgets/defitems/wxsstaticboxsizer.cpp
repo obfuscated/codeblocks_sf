@@ -25,32 +25,6 @@
 
 namespace
 {
-    /*
-    const long    OrientValues[] = { wxHORIZONTAL, wxVERTICAL, 0 };
-    const wxChar* OrientNames[]  = { _T("wxHORIZONTAL"), _T("wxVERTICAL"), NULL };
-
-    class OrientProp: public wxsEnumProperty
-    {
-        public:
-            OrientProp(int Offset):
-                wxsEnumProperty(
-                    _("Orientation"),
-                    _T("orient"),
-                    Offset,
-                    OrientValues,
-                    OrientNames,
-                    false,
-                    wxHORIZONTAL,
-                    true)
-                {}
-
-            virtual const wxString GetTypeName()
-            {
-                return _T("Sizer Orientation");
-            }
-    };
-    */
-
     wxsRegisterItem<wxsStaticBoxSizer> Reg(_T("StaticBoxSizer"),wxsTSizer,_T("Layout"),40);
 }
 

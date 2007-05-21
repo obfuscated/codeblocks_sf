@@ -83,7 +83,7 @@ class wxsCoder
             bool CodeHasEnd);
 
         /** \brief Rebuilding code to support current editor settings */
-        void RebuildCode(wxString& BaseIndentation,wxString& Code);
+        void RebuildCode(wxString& BaseIndentation,wxString& Code,wxString& EOL);
 
         /** \brief Cutting off given number of spaces at every new line */
         wxString CutSpaces(wxString Code,int Count);

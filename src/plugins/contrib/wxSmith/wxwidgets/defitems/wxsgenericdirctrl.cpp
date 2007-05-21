@@ -40,7 +40,6 @@ namespace
 
 
     WXS_EV_BEGIN(wxsGenericDirCtrlEvents)
-        WXS_EV_DEFAULTS()
     WXS_EV_END()
 }
 

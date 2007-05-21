@@ -43,7 +43,6 @@ namespace
 
     WXS_EV_BEGIN(wxsSpinCtrlEvents)
         WXS_EVI(EVT_SPINCTRL,wxEVT_COMMAND_SPINCTRL_UPDATED,wxSpinEvent,Change)
-        WXS_EV_DEFAULTS()
     WXS_EV_END()
 }
 

@@ -37,8 +37,6 @@ namespace
 
     WXS_EV_BEGIN(wxsToggleButtonEvents)
         WXS_EVI(EVT_TOGGLEBUTTON,wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,wxCommandEvent,Toggle)
-        WXS_EV_DEFAULTS()
-
     WXS_EV_END()
 }
 

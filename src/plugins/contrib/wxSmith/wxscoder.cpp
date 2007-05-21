@@ -62,9 +62,31 @@ void wxsCoder::AddCode(const wxString& FileName,const wxString& Header,const wxS
 bool wxsCoder::ApplyChanges(cbEditor* Editor,const wxString& Header,const wxString& End,wxString Code,bool CodeHasHeader,bool CodeHasEnd)
 {
 	cbStyledTextCtrl* Ctrl = Editor->GetControl();
+	int FullLength = Ctrl->GetLength();
+
+    // Detecting EOL style in source
+    wxString EOL;
+    for ( int i=0; i<FullLength; i++ )
+    {
+        wxChar ch = Ctrl->GetCharAt(i);
+        if ( ch==_T('\n') || ch==_T('\r') )
+        {
+            EOL = ch;
+            if ( ++i < FullLength )
+            {
+                wxChar ch2 = Ctrl->GetCharAt(i);
+                if ( (ch2==_T('\n') || ch2==_T('\r')) && ch!=ch2 )
+                {
+                    EOL.Append(ch2);
+                }
+            }
+            break;
+        }
+    }
+
+    // Searching for beginning of section to replace
 	Ctrl->SetSearchFlags(wxSCI_FIND_MATCHCASE);
 	Ctrl->SetTargetStart(0);
-	int FullLength = Ctrl->GetLength();
 	Ctrl->SetTargetEnd(FullLength);
 	int Position = Ctrl->SearchInTarget(Header);
 
@@ -88,6 +110,7 @@ bool wxsCoder::ApplyChanges(cbEditor* Editor,const wxString& Header,const wxStri
         return false;
     }
 
+    // Fetching indentation
     wxString BaseIndentation;
     int IndentPos = Position;
     while ( --IndentPos >= 0 )
@@ -102,7 +125,7 @@ bool wxsCoder::ApplyChanges(cbEditor* Editor,const wxString& Header,const wxStri
             ( ch == _T('\t') ) ? _T('\t') : _T(' '));
     }
 
-    RebuildCode(BaseIndentation,Code);
+    RebuildCode(BaseIndentation,Code,EOL);
 
     // Fixing up positions to contain or not header / ending sequence
     if ( !CodeHasHeader ) Position += Header.Length();
@@ -143,6 +166,28 @@ bool wxsCoder::ApplyChanges(const wxString& FileName,const wxString& Header,cons
     }
     File.Close();
 
+    // Detecting EOL in this sources
+    wxString EOL;
+    for ( int i=0; i<Content.Length(); i++ )
+    {
+        wxChar ch = Content.GetChar(i);
+        if ( ch==_T('\n') || ch==_T('\r') )
+        {
+            EOL = ch;
+            if ( ++i < Content.Length() )
+            {
+                wxChar ch2 = Content.GetChar(i);
+                if ( (ch2==_T('\n') || ch2==_T('\r')) && ch!=ch2 )
+                {
+                    EOL.Append(ch2);
+                }
+            }
+            break;
+        }
+
+    }
+
+
     int Position = Content.First(Header);
 
     if ( Position == -1 )
@@ -173,6 +218,7 @@ bool wxsCoder::ApplyChanges(const wxString& FileName,const wxString& Header,cons
     // Including ending sequence if necessary
     if ( CodeHasEnd ) EndPosition += End.Length();
 
+    // Fetching indentation
     wxString BaseIndentation;
     while ( --IndentPos >= 0 )
     {
@@ -186,7 +232,7 @@ bool wxsCoder::ApplyChanges(const wxString& FileName,const wxString& Header,cons
             ( ch == _T('\t') ) ? _T('\t') : _T(' '));
     }
 
-    RebuildCode(BaseIndentation,Code);
+    RebuildCode(BaseIndentation,Code,EOL);
 
     // Checking if code has really changed
     if ( Content.Mid(0,EndPosition) == Code )
@@ -321,7 +367,7 @@ void wxsCoder::PutFullCode(const wxString& FileName,const wxString& Code)
     }
 }
 
-void wxsCoder::RebuildCode(wxString& BaseIndentation,wxString& Code)
+void wxsCoder::RebuildCode(wxString& BaseIndentation,wxString& Code,wxString& EOL)
 {
     bool UseTab = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_tab"), false);
     int TabSize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
@@ -332,21 +378,17 @@ void wxsCoder::RebuildCode(wxString& BaseIndentation,wxString& Code)
         Code.Replace(_T("\t"),wxString(_T(' '),TabSize));
     }
 
-    switch ( EolMode )
+    if ( EOL.IsEmpty() )
     {
-        case 1:
-            BaseIndentation.Prepend(_T("\r"));
-            break;
-
-        case 2:
-            BaseIndentation.Prepend(_T("\n"));
-            break;
-
-        default:
-            BaseIndentation.Prepend(_T("\r\n"));
+        switch ( EolMode )
+        {
+            case 1:  EOL = _T("\r"); break;
+            case 2:  EOL = _T("\n"); break;
+            default: EOL = _T("\r\n");
+        }
     }
 
-
+    BaseIndentation.Prepend(EOL);
     Code.Replace(_T("\n"),BaseIndentation);
 }
 
