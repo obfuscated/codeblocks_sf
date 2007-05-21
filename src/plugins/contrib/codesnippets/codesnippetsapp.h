@@ -24,7 +24,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetsapp.h 72 2007-05-01 15:19:27Z Pecan $
+// RCS-ID: $Id: codesnippetsapp.h 83 2007-05-19 20:30:36Z Pecan $
 
 #ifndef CODESNIPPETSAPP_H
 #define CODESNIPPETSAPP_H
@@ -38,6 +38,8 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+
+#include <wx/docview.h> //wxFileHistory
 
 // ----------------------------------------------------------------------------
 class CodeSnippetsApp : public wxApp
@@ -81,7 +83,8 @@ class CodeSnippetsAppFrame: public wxFrame
 
 		bool GetFileChanged(){ return GetConfig()->pSnippetsWindow->GetFileChanged(); }
         wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
-
+        void OnRecentFileReopen(wxCommandEvent& event);
+        void OnRecentFileClearHistory(wxCommandEvent& event);
 
 	private:
 
@@ -103,6 +106,10 @@ class CodeSnippetsAppFrame: public wxFrame
         void StopKeepAliveTimer(){ m_Timer.Stop();}
         bool ReleaseMemoryMappedFile();
 
+        void InitializeRecentFilesHistory();
+        void TerminateRecentFilesHistory();
+        void AddToRecentFilesHistory(const wxString& FileName);
+
 		wxString            buildInfo;
         wxString            versionStr;
 
@@ -110,6 +117,7 @@ class CodeSnippetsAppFrame: public wxFrame
         int                 m_bOnActivateBusy;
         long                m_lKeepAlivePid;
         wxMemoryMappedFile* m_pMappedFile;
+        wxFileHistory*      m_pFilesHistory;
 
         wxTimer             m_Timer;
 

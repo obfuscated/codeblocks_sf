@@ -24,7 +24,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetsapp.cpp 78 2007-05-08 01:00:54Z Pecan $
+// RCS-ID: $Id: codesnippetsapp.cpp 84 2007-05-21 18:15:43Z Pecan $
 
 #ifdef WX_PRECOMP //
 #include "wx_pch.h"
@@ -56,10 +56,12 @@
 
 IMPLEMENT_APP(CodeSnippetsApp);
 
+int fileOpenRecentFilesSubMenu =        wxNewId();
+int idFileOpenRecentFileClearHistory =  wxNewId();
+int idFileOpenRecentFile =              wxNewId();
+
 BEGIN_EVENT_TABLE(CodeSnippetsApp, wxApp)
-    // ---
-    //-EVT_ACTIVATE_APP(        CodeSnippetsApp::OnActivateApp)
-    //-EVT_ACTIVATE(            CodeSnippetsApp::OnActivate)
+    // --- See below for CodeSnippetsAppFrame events ---
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -162,7 +164,9 @@ BEGIN_EVENT_TABLE(CodeSnippetsAppFrame, wxFrame)
     EVT_ACTIVATE(                   CodeSnippetsAppFrame::OnActivate)
     EVT_CLOSE(                      CodeSnippetsAppFrame::OnClose)
     EVT_IDLE(                       CodeSnippetsAppFrame::OnIdle)
-
+    // -- recently used --
+    EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9,      CodeSnippetsAppFrame::OnRecentFileReopen)
+    EVT_MENU(idFileOpenRecentFileClearHistory,  CodeSnippetsAppFrame::OnRecentFileClearHistory)
     // ---
 END_EVENT_TABLE()
 
@@ -177,6 +181,7 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
     m_bOnActivateBusy = 0;
     m_lKeepAlivePid = 0;
     m_pMappedFile = 0;
+    m_pFilesHistory = 0;
 
     wxStandardPaths stdPaths;
 
@@ -291,7 +296,11 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
     fileMenu->Append(idMenuFileSave, _("&Save Index\tCtrl-S"), _("Save Snippets"));
     fileMenu->Append(idMenuFileSaveAs, _("Save Index &As..."), _("Save Snippets As..."));
     fileMenu->Append(idMenuFileBackup, _("Backup Index "), _("Backup Snippets Index"));
-    fileMenu->Append(idMenuQuit, _("&Quit\tCtrl-Q"), _("Quit the application"));
+
+    wxMenu* fileOpenRecentFilesSubMenu = new wxMenu(wxT(""));
+    fileOpenRecentFilesSubMenu->Append(idFileOpenRecentFileClearHistory, _("Clear History"), _("Clear Recent History"));
+    fileMenu->Append(idFileOpenRecentFile, _("Recent History"), fileOpenRecentFilesSubMenu , _("Recent Files History"));
+    fileMenu->Append(idMenuQuit, _("&Quit\tAlt-F4"), _("Quit the application"));
     mbar->Append(fileMenu, _("&File"));
 
         // Settings menu
@@ -306,6 +315,9 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
 
     SetMenuBar(mbar);
     GetConfig()->m_pMenuBar = mbar;
+
+    // Initialize recent files history
+    InitializeRecentFilesHistory();
 
     // -------------------
     // Create Status Bar
@@ -467,10 +479,13 @@ void CodeSnippetsAppFrame::OnClose(wxCloseEvent &event)
         return;
 
     // EVT_CLOSE is never called for codesnippetswindow. Maybe bec it derives from
-    // wxPanel, not wxWindow, so we'll invoke it here. It saves the files
+    // wxPanel, not wxWindow, so we'll invoke it here. It saves the xml indexes.
     if ( GetConfig()->GetSnippetsWindow() )
         GetConfig()->GetSnippetsWindow()->OnClose(event);
     ReleaseMemoryMappedFile();
+    // save recently opened indexes
+    TerminateRecentFilesHistory();
+
     Destroy();
 }
 
@@ -520,6 +535,7 @@ void CodeSnippetsAppFrame::OnFileLoad(wxCommandEvent& event)
     }//fi
 
     GetConfig()->pSnippetsWindow->OnMnuLoadSnippetsFromFile( event);
+    AddToRecentFilesHistory( GetConfig()->SettingsSnippetsXmlFullPath );
     return;
 }
 // ----------------------------------------------------------------------------
@@ -651,4 +667,168 @@ bool CodeSnippetsAppFrame::ReleaseMemoryMappedFile()
     bool result = ::wxRemoveFile( mappedFileName );
     return result;
 }
+// ----------------------------------------------------------------------------
+void CodeSnippetsAppFrame::InitializeRecentFilesHistory()
+// ----------------------------------------------------------------------------
+{
+    TerminateRecentFilesHistory();
+
+    wxMenuBar* mbar = GetMenuBar();
+    if (!mbar)
+        return;
+    int pos = mbar->FindMenu(_("&File"));
+    if (pos != wxNOT_FOUND)
+    {
+        m_pFilesHistory = new wxFileHistory(9, wxID_FILE1);
+
+        wxMenu* menu = mbar->GetMenu(pos);
+        if (!menu)
+            return;
+        wxMenu* recentFiles = 0;
+        wxMenuItem* clear = menu->FindItem(idFileOpenRecentFileClearHistory, &recentFiles);
+        if (recentFiles)
+        {
+            recentFiles->Remove(clear);
+
+            wxFileConfig& cfgFile = *(GetConfig()->GetCfgFile());
+            m_pFilesHistory->Load( cfgFile );
+            wxArrayString files;
+            //int fknt = (int)m_pFilesHistory->GetCount();
+            for (int i = 0; i < (int)m_pFilesHistory->GetCount(); ++i)
+                files.Add(m_pFilesHistory->GetHistoryFile(i) ) ;
+
+            for (int i = (int)files.GetCount() - 1; i >= 0; --i)
+            {
+                if(wxFileExists(files[i]))
+                    m_pFilesHistory->AddFileToHistory(files[i]);
+            }
+            m_pFilesHistory->UseMenu(recentFiles);
+            m_pFilesHistory->AddFilesToMenu(recentFiles);
+            if (recentFiles->GetMenuItemCount())
+                recentFiles->AppendSeparator();
+            recentFiles->Append(clear);
+        }
+    }
+}//InitializeRecentFilesHistory
+// ----------------------------------------------------------------------------
+void CodeSnippetsAppFrame::AddToRecentFilesHistory(const wxString& FileName)
+// ----------------------------------------------------------------------------
+{
+    wxString filename = FileName;
+#ifdef __WXMSW__
+    // for windows, look for case-insensitive matches
+    // if found, don't add it
+    wxString low = filename.Lower();
+    for (size_t i = 0; i < m_pFilesHistory->GetCount(); ++i)
+    {
+        if (low == m_pFilesHistory->GetHistoryFile(i).Lower())
+        {    // it exists, set filename to the existing name, so it can become
+            // the most recent one
+            filename = m_pFilesHistory->GetHistoryFile(i);
+            break;
+        }
+    }
+#endif
+
+    m_pFilesHistory->AddFileToHistory(filename);
+
+    // because we append "clear history" menu to the end of the list,
+    // each time we must add a history item we have to:
+    // a) remove "Clear history"
+    // b) clear the menu
+    // c) fill it with the history items
+    // and d) append "Clear history"...
+    wxMenuBar* mbar = GetMenuBar();
+    if (!mbar)
+        return;
+    int pos = mbar->FindMenu(_("&File"));
+    if (pos == wxNOT_FOUND)
+        return;
+    wxMenu* menu = mbar->GetMenu(pos);
+    if (!menu)
+        return;
+    wxMenu* recentFiles = 0;
+    wxMenuItem* clear = menu->FindItem(idFileOpenRecentFileClearHistory, &recentFiles);
+    if (clear && recentFiles)
+    {
+        // a)
+        recentFiles->Remove(clear);
+        // b)
+        m_pFilesHistory->RemoveMenu(recentFiles);
+        while (recentFiles->GetMenuItemCount())
+            recentFiles->Delete(recentFiles->GetMenuItems()[0]);
+        // c)
+        m_pFilesHistory->UseMenu(recentFiles);
+        m_pFilesHistory->AddFilesToMenu(recentFiles);
+        // d)
+        if (recentFiles->GetMenuItemCount())
+            recentFiles->AppendSeparator();
+        recentFiles->Append(clear);
+    }
+    //-b_RecentFilesModified = true;
+
+}//AddToRecentFilesHistory
+// ----------------------------------------------------------------------------
+void CodeSnippetsAppFrame::TerminateRecentFilesHistory()
+// ----------------------------------------------------------------------------
+{
+    if (m_pFilesHistory)
+    {
+        wxArrayString files;
+        for (unsigned int i = 0; i < m_pFilesHistory->GetCount(); ++i)
+            files.Add(m_pFilesHistory->GetHistoryFile(i));
+
+        wxFileConfig& cfgFile = *(GetConfig()->GetCfgFile());
+        m_pFilesHistory->Save( cfgFile );
+        cfgFile.Flush();
+
+        wxMenuBar* mbar = GetMenuBar();
+        if (mbar)
+        {
+            int pos = mbar->FindMenu(_("&File"));
+            if (pos != wxNOT_FOUND)
+            {
+                wxMenu* menu = mbar->GetMenu(pos);
+                if (menu)
+                {
+                    wxMenu* recentFiles = 0;
+                    menu->FindItem(idFileOpenRecentFileClearHistory, &recentFiles);
+                    if (recentFiles)
+                        m_pFilesHistory->RemoveMenu(recentFiles);
+                }
+            }
+        }
+        delete m_pFilesHistory;
+        m_pFilesHistory = 0;
+    }
+    //-b_RecentFilesModified = false;
+}//TerminateRecentFilesHistory
+// ----------------------------------------------------------------------------
+void CodeSnippetsAppFrame::OnRecentFileReopen(wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+    size_t id = event.GetId() - wxID_FILE1;
+    wxString fname = m_pFilesHistory->GetHistoryFile(id);
+//    if (!OpenGeneric(fname, true))
+//    {
+//        AskToRemoveFileFromHistory(m_pFilesHistory, id);
+//    }
+    if (::wxFileExists(fname))
+    {
+        GetConfig()->SettingsSnippetsXmlFullPath = fname;
+        GetSnippetsWindow()->GetSnippetsTreeCtrl()->LoadItemsFromFile( fname, false);
+        GetSnippetsWindow()->GetSnippetsTreeCtrl()->SetFileChanged(false);
+        GetSnippetsWindow()->GetSnippetsTreeCtrl()->SaveFileModificationTime();
+    }
+}//OnFileReopen
+// ----------------------------------------------------------------------------
+void CodeSnippetsAppFrame::OnRecentFileClearHistory(wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+    while (m_pFilesHistory->GetCount())
+    {
+        m_pFilesHistory->RemoveFileFromHistory(0);
+    }
+
+}//OnFileOpenRecentClearHistory
 // ----------------------------------------------------------------------------

@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: snippetitemdata.h 19 2007-03-27 02:56:47Z Pecan $
+// RCS-ID: $Id: snippetitemdata.h 84 2007-05-21 18:15:43Z Pecan $
 
 #ifndef SNIPPETITEMDATA_H
 #define SNIPPETITEMDATA_H
@@ -46,6 +46,7 @@ class SnippetItemData : public wxTreeItemData
 		wxString        GetSnippet() const { return m_Snippet; }
 		void            SetSnippet(wxString snippet){ m_Snippet = snippet;}
 
+        bool IsCategory(){ return (GetType() == SnippetItemData::TYPE_CATEGORY); }
         bool IsSnippet(){ return (GetType() == SnippetItemData::TYPE_SNIPPET); }
         bool IsSnippetFile()
             {	// verify snippet is file type snippet

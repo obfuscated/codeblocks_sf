@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 75 2007-05-05 03:28:42Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 84 2007-05-21 18:15:43Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -647,7 +647,7 @@ void CodeSnippetsTreeCtrl::OnBeginTreeItemDrag(wxTreeEvent& event)
     //#endif //LOGGING
 
     #ifdef LOGGING
-     LOGIT( _T("TREE_BEGIN_DRAG %p"), pTree );
+     LOGIT( _T("TREE_CTRL_BEGIN_DRAG %p"), pTree );
     #endif //LOGGING
     // On MSW the current selection may not be the same as the current itemId
     // If the user just clicks and drags, the two are different
@@ -659,9 +659,11 @@ void CodeSnippetsTreeCtrl::OnBeginTreeItemDrag(wxTreeEvent& event)
     m_MnuAssociatedItemID = m_TreeItemId;
     m_TreeMousePosn       = ::wxGetMousePosition();
     m_TreeText            = pTree->GetSnippet(m_TreeItemId);
+    if ( IsCategory(m_TreeItemId) )
+        m_TreeText = GetSnippetLabel(m_TreeItemId);
     if (m_TreeText.IsEmpty())
         m_pEvtTreeCtrlBeginDrag = 0;
-
+     //LOGIT( _T("TREE_CTRL_BEGIN_DRAG TreeText[%s]"), m_TreeText.GetData() );
     event.Allow();
 
     // -----------------------------------------
@@ -682,7 +684,7 @@ void CodeSnippetsTreeCtrl::OnEndTreeItemDrag(wxTreeEvent& event)
 
     #ifdef LOGGING
      wxTreeCtrl* pTree = (wxTreeCtrl*)event.GetEventObject();
-     LOGIT( _T("TREE_END_DRAG %p"), pTree );
+     LOGIT( _T("TREE_CTRL_END_DRAG %p"), pTree );
     #endif //LOGGING
 
     wxTreeItemId targetItem = (wxTreeItemId)event.GetItem();

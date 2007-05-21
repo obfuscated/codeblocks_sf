@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 81 2007-05-10 20:03:53Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 84 2007-05-21 18:15:43Z Pecan $
 
 #if defined(CB_PRECOMP)
 #include "sdk.h"
@@ -944,7 +944,7 @@ void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
     if (event.GetEventType() == wxEVT_COMMAND_TREE_BEGIN_DRAG)
     {
         #ifdef LOGGING
-         LOGIT( _T("TREE_BEGIN_DRAG %p"), pTree );
+         LOGIT( _T("Plugin_TREE_BEGIN_DRAG %p"), pTree );
         #endif //LOGGING
 
         if (pTree == (wxTreeCtrl*)m_pPrjMan->GetTree())
@@ -969,7 +969,7 @@ void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
     if (event.GetEventType() == wxEVT_COMMAND_TREE_END_DRAG)
     {
         #ifdef LOGGING
-         LOGIT( _T("TREE_END_DRAG %p"), pTree );
+         LOGIT( _T("Plugin_TREE_END_DRAG %p"), pTree );
         #endif //LOGGING
 
         m_TreeText = wxEmptyString;

@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 81 2007-05-10 20:03:53Z Pecan $
+// RCS-ID: $Id: version.cpp 84 2007-05-21 18:15:43Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -258,6 +258,10 @@ AppVersion::~AppVersion()
 //  Commit  1.2.71 2007/05/11
 //          71) Fixes for use of non-precompiled headers
 // ----------------------------------------------------------------------------
+//  Commit  1.2.73 2007/05/21
+//          72) Add Recently Used Indexes
+//          73) Fix error in category drag
+// ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
 //          a renamed "new snippet" label is not sorted into place
@@ -276,16 +280,9 @@ AppVersion::~AppVersion()
 //          #ifdef out linux options dlg spacer (can't with wxFormBuilder)
 //              Maybe just a line instead of a spacer will work
 //          Verify:If independent snippets, plg shouldnt save conf OR xml
-//          Since making editors modal, have to move into the editor, then out
-//              again to re-enable Snippets tree. Even External win does this.
-//              Try going modal ONLY if CB is in full screen.
-//          Closing the Floating windoe while editor is modal freezes CB.
-//              Couldn't re-create. But OnClose should un-modal all wins.
-//          Neither wxSTAY_ON_TOP nor wxFRAME_FLOAT_ON_PARENT work on Linux wx2.6.3
-//              Iconize(false) did not work on my andLinux
+//          Iconize(false) did not work on Linux
+//          Enter key should open/close categories like left/right key
 //  Other
-//          Bug: Nasty wxAUI Linux behavior. Left chick on CB main menu docks floating windows.
-//               Floating window won't dock when dragged to CB. Have to left click some main menu item.
 //          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"
 //              But who'll do that? Because OnEndTreeItemDrag() calls RemoveItem() from .trash;
 // ----------------------------------------------------------------------------

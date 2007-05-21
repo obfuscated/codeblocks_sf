@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.h 68 2007-04-27 21:08:11Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.h 84 2007-05-21 18:15:43Z Pecan $
 
 #ifndef CODESNIPPETSTREECTRL_H
 #define CODESNIPPETSTREECTRL_H
@@ -110,6 +110,13 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
                 return;
             }
 
+        bool IsCategory(wxTreeItemId treeItemId = (void*)0)
+            {   wxTreeItemId itemId = treeItemId;
+                if (itemId == (void*)0) itemId = GetSelection();
+                if (not itemId.IsOk()) return false;
+                SnippetItemData* pItem = (SnippetItemData*)(GetItemData(itemId));
+                return pItem->IsCategory();
+            }
         bool IsSnippet(wxTreeItemId treeItemId = (void*)0)
             {   wxTreeItemId itemId = treeItemId;
                 if (itemId == (void*)0) itemId = GetSelection();
