@@ -732,7 +732,6 @@ void Wiz::CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxStri
         CreateDirRecursively(dstdir);
 
         // copy the file
-        wxFileName dstfile_chk(dstfile);
         bool do_copy = true; // default case: file most likely does *not* exist
         if (wxFileName::FileExists(dstfile))
         {
@@ -744,7 +743,7 @@ void Wiz::CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxStri
               _T("Are you sure that you want to OVERWRITE the file?\n\n")+
               _T("(If you answer 'No' the existing file will be kept.)"));
             if (cbMessageBox(query_overwrite, _T("Confirmation"),
-                             wxICON_QUESTION | wxYES_NO) != wxYES)
+                             wxICON_QUESTION | wxYES_NO) != wxID_YES)
             {
                 do_copy = false; // keep the old (existing) file
             }
