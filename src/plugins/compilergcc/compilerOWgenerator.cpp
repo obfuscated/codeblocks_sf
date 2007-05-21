@@ -20,16 +20,18 @@ wxString CompilerOWGenerator::SetupLibrariesDirs(Compiler* compiler, ProjectBuil
     wxArrayString LibDirs = compiler->GetLibDirs();
     if (LibDirs.IsEmpty())
         return wxEmptyString;
-    int i, Count = LibDirs.GetCount();
-    wxString Result = _T("");
-    for (i = 0; i < Count; ++i)
-        Result = Result + compiler->GetSwitches().libDirs + LibDirs[i] + _T(" ");
-    //Now Read all the targets
-    LibDirs = target->GetLibDirs();
-    Count = LibDirs.GetCount();
-    for (i = 0; i < Count; ++i)
-        Result = Result + compiler->GetSwitches().libDirs + LibDirs[i] + _T(" ");
-    LibDirs = compiler->GetLinkLibs();
+    int i, j, Count = LibDirs.GetCount();
+    wxString Result = compiler->GetSwitches().libDirs + _T(" ");
+    for (j = 0; j < 3; ++j)
+    {
+        if (j == 1)
+            LibDirs = target->GetParentProject()->GetLibDirs();
+        else if (j == 2)
+            LibDirs = target->GetLibDirs();
+        Count = LibDirs.GetCount();
+        for (i = 0; i < Count; ++i)
+            Result = Result + LibDirs[i] + _T(";");
+    }
     return Result;
 }
 
@@ -130,18 +132,24 @@ wxString CompilerOWGenerator::SetupLinkerOptions(Compiler* compiler, ProjectBuil
 wxString CompilerOWGenerator::SetupLinkLibraries(Compiler* compiler, ProjectBuildTarget* target)
 {
     wxString Result;
-    int i, Count;
+    int i, ProjectLibCount, TargetLibCount;
     wxArrayString Libs;
 
     Libs = target->GetParentProject()->GetLinkLibs();
-    Result = _T("");
-    Count = Libs.GetCount();
-    for (i = 0; i < Count; ++i)
-        Result = Result + _T("library ") + Libs[i] + _T(" ");
+    Result = _T("library ");
+    ProjectLibCount = Libs.GetCount();
+    for (i = 0; i < ProjectLibCount; ++i)
+        Result = Result + Libs[i] + _T(",");
     Libs = target->GetLinkLibs();
-    Count = Libs.GetCount();
-    for (i = 0; i < Count; ++i)
-        Result = Result + _T("library ") + Libs[i] + _T(" ");
+    TargetLibCount = Libs.GetCount();
+    for (i = 0; i < TargetLibCount; ++i)
+        Result = Result + Libs[i] + _T(",");
+    // Now trim trailing spaces, if any, and the ',' at the end
+    Result.Trim(true);
+    if (Result.Right(1).IsSameAs(_T(",")))
+        Result = Result.BeforeLast(_T(','));
+    if (ProjectLibCount == 0 && TargetLibCount == 0)
+        return wxEmptyString;
 
     return Result;
 }

@@ -510,6 +510,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     wxString linkfiles;
     wxString FlatLinkFiles;
     wxString resfiles;
+    bool IsOpenWatcom = target->GetCompilerID().IsSameAs(_T("ow"));
 
     time_t outputtime;
     depsTimeStamp(output.mb_str(), &outputtime);
@@ -547,6 +548,8 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking stage skipped (build target has no object files to link)"));
         return ret;
     }
+    if (IsOpenWatcom && target->GetTargetType() != ttStaticLib)
+        linkfiles << _T("file ");
     for (unsigned int i = 0; i < files.GetCount(); ++i)
     {
         ProjectFile* pf = files[i];
@@ -566,7 +569,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         {
             // -----------------------------------------
             // Following lines have been modified for OpenWatcom
-            if (compiler->GetID().IsSameAs(_T("ow")))
+            if (IsOpenWatcom)
                 resfiles << _T("option resource=") << Object << _T(" ");
             else
                 resfiles << Object << _T(" ");
@@ -576,10 +579,10 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         {
             // -----------------------------------------
             // Following lines have been modified for OpenWatcom
-            if (compiler->GetID().IsSameAs(_T("ow")) && (!compiler->GetPrograms().LIB.IsSameAs(_T("wlib.exe"))))
+            if (IsOpenWatcom && target->GetTargetType() != ttStaticLib)
             {
-                linkfiles << _T("file ") << prependHack << Object << _T(" "); // see QUICK HACK above (prependHack)
-                FlatLinkFiles << _T("file ") << prependHack << pfd.object_file_flat << _T(" "); // see QUICK HACK above (prependHack)
+                linkfiles << prependHack << Object << _T(","); // see QUICK HACK above (prependHack)
+                FlatLinkFiles << prependHack << pfd.object_file_flat << _T(","); // see QUICK HACK above (prependHack)
             }
             else
             {
@@ -601,6 +604,12 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         // Why was this here?
 //        if(m_doYield)
 //            Manager::Yield();
+    }
+    if (IsOpenWatcom)
+    {
+        linkfiles.Trim();
+        if (linkfiles.Right(1).IsSameAs(_T(",")))
+            linkfiles = linkfiles.BeforeLast(_T(','));
     }
 
     if (!force)
