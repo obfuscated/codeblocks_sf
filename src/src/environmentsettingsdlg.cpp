@@ -25,6 +25,7 @@
 #include <wx/spinctrl.h>
 #include <wx/colordlg.h>
 #include <wx/msgdlg.h>
+#include <wx/imaglist.h>
 #include "appglobals.h"
 #include "globals.h"
 #include "associations.h"

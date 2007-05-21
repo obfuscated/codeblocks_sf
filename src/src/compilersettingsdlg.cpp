@@ -21,6 +21,7 @@
 #include <wx/listctrl.h>
 #include <wx/checklst.h>
 #include <wx/filename.h>
+#include <wx/imaglist.h>
 
 #include "configurationpanel.h"
 #include "compilersettingsdlg.h"

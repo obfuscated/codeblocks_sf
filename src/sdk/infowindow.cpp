@@ -6,6 +6,8 @@
     #include <wx/sizer.h>
     #include <wx/settings.h>
     #include <wx/statbmp.h>
+    #include <wx/panel.h>
+    #include <wx/frame.h>
     #include "infowindow.h"
     #include "manager.h"
 #endif

@@ -8,6 +8,7 @@
     #include "globals.h"
 #endif
 #include <wx/clipbrd.h>
+#include <wx/dataobj.h>
 #include "compilererrors.h"
 #include "compilermessages.h"
 

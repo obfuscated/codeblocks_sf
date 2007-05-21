@@ -42,6 +42,7 @@
     #include <wx/listbox.h>
     #include <wx/colordlg.h>
     #include <wx/radiobox.h>
+    #include <wx/imaglist.h>
 #endif
 
 #include <wx/fontdlg.h>
