@@ -1758,7 +1758,23 @@ void ProjectManager::OnProjectFileActivated(wxTreeEvent& event)
     if(!MiscTreeItemData::OwnerCheck(event,m_pTree,this))
         return;
     #endif
-    DoOpenSelectedFile();
+
+    wxTreeItemId id = event.GetItem();
+    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(id);
+    if (ftd && ftd->GetKind() == FileTreeData::ftdkProject)
+    {
+        if (ftd->GetProject() != m_pActiveProject)
+        {
+            SetProject(ftd->GetProject(), false);
+            // prevent item expand state toggle when project is activated
+            #ifdef __WXMSW__
+            // toggle it one time so that it is toggled back by wx
+            m_pTree->IsExpanded(id) ? m_pTree->Collapse(id) : m_pTree->Expand(id);
+            #endif
+        }
+    }
+    else
+        DoOpenSelectedFile();
 }
 
 void ProjectManager::OnExecParameters(wxCommandEvent& event)
