@@ -89,8 +89,8 @@
                 <border>8</border>
               </object>
               <object class="sizeritem">
-                <object class="wxChoicebook" name="nbMain">
-                  <object class="choicebookpage">
+                <object class="wxNotebook" name="nbMain">
+                  <object class="notebookpage">
                     <label>Compiler settings</label>
                     <object class="wxPanel" name="tabCompiler">
                       <object class="wxBoxSizer">
@@ -203,7 +203,7 @@
                       </object>
                     </object>
                   </object>
-                  <object class="choicebookpage">
+                  <object class="notebookpage">
                     <label>Linker settings</label>
                     <object class="wxPanel" name="tabLinker">
                       <object class="wxBoxSizer">
@@ -342,7 +342,7 @@
                       </object>
                     </object>
                   </object>
-                  <object class="choicebookpage">
+                  <object class="notebookpage">
                     <label>Search directories</label>
                     <object class="wxPanel" name="tabDirs">
                       <object class="wxBoxSizer">
@@ -562,7 +562,7 @@
                       </object>
                     </object>
                   </object>
-                  <object class="choicebookpage">
+                  <object class="notebookpage">
                     <label>Pre/post build steps</label>
                     <object class="wxPanel" name="tabExtras">
                       <object class="wxBoxSizer">
@@ -611,7 +611,7 @@
                       </object>
                     </object>
                   </object>
-                  <object class="choicebookpage">
+                  <object class="notebookpage">
                     <label>Toolchain executables</label>
                     <object class="wxPanel" name="tabPrograms">
                       <object class="wxBoxSizer">
@@ -905,7 +905,7 @@ or in any of the &quot;Additional paths&quot;...</label>
                       </object>
                     </object>
                   </object>
-                  <object class="choicebookpage">
+                  <object class="notebookpage">
                     <label>Custom variables</label>
                     <object class="wxPanel" name="tabVars">
                       <object class="wxBoxSizer">
@@ -970,7 +970,7 @@ or in any of the &quot;Additional paths&quot;...</label>
                       </object>
                     </object>
                   </object>
-                  <object class="choicebookpage">
+                  <object class="notebookpage">
                     <label>&quot;Make&quot; commands</label>
                     <object class="wxPanel" name="tabMake">
                       <object class="wxBoxSizer">
@@ -1050,7 +1050,7 @@ Makefile.</label>
                       </object>
                     </object>
                   </object>
-                  <object class="choicebookpage">
+                  <object class="notebookpage">
                     <label>Other settings</label>
                     <object class="wxPanel" name="tabOther">
                       <object class="wxBoxSizer">

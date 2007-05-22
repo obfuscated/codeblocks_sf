@@ -6,9 +6,9 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxChoicebook" name="nbMain">
+        <object class="wxNotebook" name="nbMain">
           <usenotebooksizer>1</usenotebooksizer>
-          <object class="choicebookpage">
+          <object class="notebookpage">
             <label>Project settings</label>
             <object class="wxPanel" name="tabProject">
               <object class="wxBoxSizer">
@@ -195,7 +195,7 @@ differing on extension only)</label>
               </object>
             </object>
           </object>
-          <object class="choicebookpage">
+          <object class="notebookpage">
             <label>Build targets</label>
             <object class="wxPanel" name="tabTargets">
               <object class="wxBoxSizer">
@@ -549,7 +549,7 @@ from target...</label>
               </object>
             </object>
           </object>
-          <object class="choicebookpage">
+          <object class="notebookpage">
             <label>Build scripts</label>
             <object class="wxPanel" name="tabScripts">
               <object class="wxBoxSizer">
@@ -642,7 +642,7 @@ from target...</label>
               </object>
             </object>
           </object>
-          <object class="choicebookpage">
+          <object class="notebookpage">
             <label>Notes</label>
             <object class="wxPanel" name="tabNotes">
               <object class="wxBoxSizer">

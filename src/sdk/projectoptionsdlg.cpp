@@ -50,10 +50,10 @@
     #include <wx/sizer.h>
     #include <wx/textdlg.h>
     #include <wx/filedlg.h>
+	#include <wx/notebook.h>
 #endif
 
 #include <wx/radiobox.h>
-#include <wx/choicebk.h>
 
 #include "scripting/sqplus/sqplus.h"
 
@@ -175,7 +175,7 @@ void ProjectOptionsDlg::BuildScriptsTree()
 
 void ProjectOptionsDlg::AddPluginPanels()
 {
-    wxChoicebook* nb = XRCCTRL(*this, "nbMain", wxChoicebook);
+    wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
 
     Manager::Get()->GetPluginManager()->GetProjectConfigurationPanels(nb, m_Project, m_PluginPanels);
 

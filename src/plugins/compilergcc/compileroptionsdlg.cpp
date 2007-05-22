@@ -44,9 +44,9 @@
     #include "messagemanager.h"
     #include "projectmanager.h"
     #include <wx/spinctrl.h>
+	#include <wx/notebook.h>
 #endif
 #include <wx/filedlg.h>
-#include <wx/choicebk.h>
 #include "cbexception.h"
 #include "annoyingdialog.h"
 #include "compileroptionsdlg.h"
@@ -240,7 +240,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
 
     wxTreeCtrl* tree = XRCCTRL(*this, "tcScope", wxTreeCtrl);
     wxSizer* sizer = tree->GetContainingSizer();
-	wxChoicebook* nb = XRCCTRL(*this, "nbMain", wxChoicebook);
+	wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
     if (!m_pProject)
     {
         // global settings
@@ -1075,7 +1075,7 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
     // as a consequence might need to be re-enabled when another target/project is chosen in the tree)
     if(compilerIdx != -1)
     {
-        if(wxChoicebook* nb = XRCCTRL(*this, "nbMain", wxChoicebook))
+        if(wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook))
         {
             nb->Enable();
         }
@@ -1108,7 +1108,7 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
         }
         else
         { // the user cancelled and wants to keep the compiler
-            if(wxChoicebook* nb = XRCCTRL(*this, "nbMain", wxChoicebook))
+            if(wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook))
             {
                 nb->Disable();
             }
