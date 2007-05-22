@@ -2160,12 +2160,17 @@ void DebuggerGDB::OnEditorOpened(CodeBlocksEvent& event)
     // when an editor opens, look if we have breakpoints for it
     // and notify it...
     EditorBase* ed = event.GetEditor();
+    wxFileName bpFileName, edFileName;
     if (ed)
     {
         for (unsigned int i = 0; i < m_State.GetBreakpoints().GetCount(); ++i)
         {
             DebuggerBreakpoint* bp = m_State.GetBreakpoints()[i];
-            if (bp->filename.Matches(ed->GetFilename()))
+            bpFileName.Assign(bp->filename);
+            edFileName.Assign(ed->GetFilename());
+            bpFileName.Normalize();
+            edFileName.Normalize();
+            if (bpFileName.GetFullPath().Matches(edFileName.GetFullPath()))
                 ed->ToggleBreakpoint(bp->line, false);
         }
     }
