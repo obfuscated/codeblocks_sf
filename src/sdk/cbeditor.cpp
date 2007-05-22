@@ -1279,7 +1279,7 @@ bool cbEditor::SaveAs()
     wxFileDialog* dlg = new wxFileDialog(Manager::Get()->GetAppWindow(),
                                          _("Save file"),
                                          Path,
-                                         fname.GetName(),
+                                         fname.GetFullName(),
                                          Filters,
                                          wxSAVE | wxOVERWRITE_PROMPT);
     dlg->SetFilterIndex(StoredIndex);
