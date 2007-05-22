@@ -221,7 +221,7 @@ class CompilerGCC : public cbCompilerPlugin
         void PreprocessJob(cbProject* project, const wxString& targetName);
         BuildJobTarget GetNextJob();
         BuildJobTarget& PeekNextJob();
-        
+
         void AddBuildProgressBar();
         void RemoveBuildProgressBar();
 
@@ -248,7 +248,7 @@ class CompilerGCC : public cbCompilerPlugin
         wxTimer m_timerIdleWakeUp;
         SimpleTextLog* m_Log;
         CompilerMessages* m_pListLog;
-		wxComboBox* m_ToolTarget;
+		wxChoice* m_ToolTarget;
 		bool m_RunAfterCompile;
 		wxString m_CdRun;
 		wxString m_RunCmd;
@@ -280,7 +280,7 @@ class CompilerGCC : public cbCompilerPlugin
         wxString m_BuildLogTitle;
         wxString m_BuildLogContents;
         wxDateTime m_BuildStartTime;
-        
+
         // build progress
         size_t m_MaxProgress;
         size_t m_CurrentProgress;

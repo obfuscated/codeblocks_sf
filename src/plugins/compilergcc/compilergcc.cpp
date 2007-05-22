@@ -557,7 +557,7 @@ bool CompilerGCC::BuildToolBar(wxToolBar* toolBar)
     m_pTbar = toolBar;
     wxString my_16x16=Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
     Manager::Get()->AddonToolBar(toolBar,_T("compiler_toolbar")+my_16x16);
-    m_ToolTarget = XRCCTRL(*toolBar, "idToolTarget", wxComboBox);
+    m_ToolTarget = XRCCTRL(*toolBar, "idToolTarget", wxChoice);
     toolBar->Realize();
     #if wxCHECK_VERSION(2, 8, 0)
     toolBar->SetInitialSize();
@@ -3119,7 +3119,7 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
         tbar->EnableTool(idMenuRebuild, !running && prj);
         tbar->EnableTool(idMenuKillProcess, running && prj);
 
-        m_ToolTarget = XRCCTRL(*tbar, "idToolTarget", wxComboBox);
+        m_ToolTarget = XRCCTRL(*tbar, "idToolTarget", wxChoice);
         if (m_ToolTarget)
             m_ToolTarget->Enable(!running && prj);
     }

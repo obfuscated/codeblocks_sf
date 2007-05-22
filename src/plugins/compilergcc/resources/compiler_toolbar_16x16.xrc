@@ -31,10 +31,9 @@
     <object class="wxStaticText" name="idToolTargetLabel">
       <label>Build target:</label>
     </object>
-    <object class="wxComboBox" name="idToolTarget">
+    <object class="wxChoice" name="idToolTarget">
 		<content/>
 	    <size>160,-1</size>
-		<style>wxCB_READONLY</style>
     </object>
   </object>
 </resource>
