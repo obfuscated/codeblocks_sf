@@ -231,8 +231,6 @@ void ToolsManager::DoRemoveTool(ToolsList::Node* node)
 {
     if (node)
     {
-        if (node->GetData()->GetMenuId() != -1)
-            m_Menu->Delete(node->GetData()->GetMenuId());
         m_Tools.DeleteNode(node);
         SaveTools();
     }
