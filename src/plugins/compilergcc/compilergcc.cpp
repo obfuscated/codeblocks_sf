@@ -219,7 +219,7 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_MENU(idMenuExportMakefile,                  CompilerGCC::Dispatcher)
     EVT_MENU(idMenuSettings,                        CompilerGCC::Dispatcher)
 
-    EVT_COMBOBOX(idToolTarget,                      CompilerGCC::OnSelectTarget)
+    EVT_CHOICE(idToolTarget,                      CompilerGCC::OnSelectTarget)
 
     EVT_PROJECT_ACTIVATE(CompilerGCC::OnProjectActivated)
     EVT_PROJECT_OPEN(CompilerGCC::OnProjectLoaded)
