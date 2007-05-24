@@ -8,7 +8,7 @@
 #include <wx/msw/registry.h>
 
 CompilerBCC::CompilerBCC()
-    : Compiler(_("Borland C++ Compiler 5.5"), _T("bcc"))
+    : Compiler(_("Borland C++ Compiler (5.5, 5.82)"), _T("bcc"))
 {
     Reset();
 }
@@ -162,11 +162,28 @@ void CompilerBCC::LoadDefaultRegExArray()
 
 AutoDetectResult CompilerBCC::AutoDetectInstallationDir()
 {
-    // just a guess; the default installation dir
-    m_MasterPath = _T("C:\\Borland\\BCC55");
+    wxArrayString l_MasterPath_Arr, l_RegKey_Arr;
+    // Fill assumed masterpaths and reg keys
+    l_MasterPath_Arr.Add(_T("C:\\Program Files\\Borland\\BDS\\4.0"));
+    l_MasterPath_Arr.Add(_T("C:\\Borland\\BCC55"));
+    l_RegKey_Arr.Add(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Borland\\BDS\\4.0"));
+    l_RegKey_Arr.Add(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Borland\\C++Builder\\5.0"));
 
     // try to detect Installation dir
-    wxRegKey key(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Borland\\C++Builder\\5.0"));
+    int match = -1;
+    for (int i = 0; i < 2; ++i)
+    {
+        wxRegKey* tkey = new wxRegKey(l_RegKey_Arr[i]);
+        if ((tkey && tkey->Exists()) || wxDirExists(l_MasterPath_Arr[i]))
+        {
+            match = i;
+            break;
+        }
+    }
+    if (match < 0)
+        match = 0;
+    m_MasterPath = l_MasterPath_Arr[match];
+    wxRegKey key(l_RegKey_Arr[match]);
     if(key.Exists() && key.Open(wxRegKey::Read))
     {
         wxString dir;
@@ -183,6 +200,7 @@ AutoDetectResult CompilerBCC::AutoDetectInstallationDir()
     {
         AddIncludeDir(m_MasterPath + sep + _T("include"));
         AddLibDir(m_MasterPath + sep + _T("lib"));
+        AddLibDir(m_MasterPath + sep + _T("lib") + sep + _T("psdk"));
     }
 
     return wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
