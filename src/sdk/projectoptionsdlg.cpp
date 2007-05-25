@@ -108,7 +108,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
 	m_pCompiler(0L)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgProjectOptions"));
-    
+
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
     int count = m_Project->GetFilesCount();
     for (int i = 0; i < count; ++i)
@@ -754,7 +754,7 @@ void ProjectOptionsDlg::OnFileToggleMarkClick(wxCommandEvent& event)
     ProjectBuildTarget* target = m_Project->GetBuildTarget(targetIdx);
 
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
-    for (int i = 0; i < list->GetCount(); ++i)
+    for (unsigned int i = 0; i < list->GetCount(); ++i)
 	{
 		ProjectFile* pf = m_Project->GetFile(i);
 		list->Check(i, !list->IsChecked(i));
@@ -917,7 +917,7 @@ void ProjectOptionsDlg::OnRemoveScript(wxCommandEvent& event)
     base->RemoveBuildScript(script);
     int isel = ctrl->GetSelection();
     ctrl->Delete(isel);
-    ctrl->SetSelection(isel < ctrl->GetCount() ? isel : --isel );
+    ctrl->SetSelection(isel < (int)(ctrl->GetCount()) ? isel : --isel );
 }
 
 void ProjectOptionsDlg::OnPlatform(wxCommandEvent& event)
@@ -978,7 +978,7 @@ void ProjectOptionsDlg::OnScriptMoveUp(wxSpinEvent& event)
 void ProjectOptionsDlg::OnScriptMoveDown(wxSpinEvent& event)
 {
     wxListBox* ctrl = XRCCTRL(*this, "lstPreScripts", wxListBox);
-    if (!ctrl || ctrl->GetSelection() == ctrl->GetCount() - 1)
+    if (!ctrl || ctrl->GetSelection() == (int)(ctrl->GetCount()) - 1)
         return;
 
 	wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);

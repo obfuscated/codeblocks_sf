@@ -93,7 +93,7 @@ void ConfigureToolsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 	const wxListBox* list = XRCCTRL(*this, "lstTools", wxListBox);
 	bool hasSel = list->GetSelection() != -1;
 	bool notFirst = list->GetSelection() > 0;
-	bool notLast = (list->GetSelection() < list->GetCount() -1) && hasSel;
+	bool notLast = (list->GetSelection() < (int)(list->GetCount()) -1) && hasSel;
 	bool notSeparator = true;
 
 	if(hasSel)

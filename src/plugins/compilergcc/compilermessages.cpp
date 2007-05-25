@@ -100,7 +100,11 @@ void CompilerMessages::OnCopyToClipboard(wxCommandEvent& event)
 
         // file:line: msg
         text << m_pList->GetItemText(i) << _T(':') << line << _T(": ");
-        text << msg << _T('\n');
+        text << msg;
+#ifdef __WIN32__
+        text << _T('\r'); // Add CR for Windows clipboard
+#endif
+        text << _T('\n');
     }
 
     if (!text.IsEmpty() && wxTheClipboard->Open())

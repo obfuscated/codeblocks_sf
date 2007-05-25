@@ -857,7 +857,7 @@ void CompilerOptionsDlg::OptionsToText()
 
     // linker options and libs
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
-    for (int i = 0; i < lstLibs->GetCount(); ++i)
+    for (unsigned int i = 0; i < lstLibs->GetCount(); ++i)
         m_LinkLibs.Add(lstLibs->GetString(i));
 }
 
@@ -1407,7 +1407,7 @@ void CompilerOptionsDlg::OnCopyDirsClick(wxCommandEvent& /*event*/)
     if (!base)
         return;
     wxNotebook* nb = XRCCTRL(*this, "nbDirs", wxNotebook);
-    for (int i = 0; i < control->GetCount(); ++i)
+    for (unsigned int i = 0; i < control->GetCount(); ++i)
     {
         switch (nb->GetSelection())
         {
@@ -1505,7 +1505,7 @@ void CompilerOptionsDlg::OnClearVarClick(wxCommandEvent& /*event*/)
                         wxYES | wxNO | wxICON_QUESTION) == wxID_YES)
     {
         // Unset all variables of lstVars
-        for (int i=0; i<lstVars->GetCount(); i++)
+        for (unsigned int i=0; i<lstVars->GetCount(); i++)
         {
             wxString key = lstVars->GetString(i).BeforeFirst(_T('=')).Trim(true);
             if (!key.IsEmpty())
@@ -1553,7 +1553,8 @@ void CompilerOptionsDlg::OnAddCompilerClick(wxCommandEvent& /*event*/)
                 break;
         } // end switch
     }
-    wxChoice* cmb = XRCCTRL(*this, "cmbCompiler", wxChoice);
+    wxChoice* cmb = 0;
+    cmb = XRCCTRL(*this, "cmbCompiler", wxChoice);
     wxString value = wxGetTextFromUser(_("Please enter the new compiler's name:"),
                                     _("Add new compiler"),
                                     _("Copy of ") + CompilerFactory::GetCompiler(m_CurrentCompilerIdx)->GetName());
@@ -1618,7 +1619,7 @@ void CompilerOptionsDlg::OnRemoveCompilerClick(wxCommandEvent& /*event*/)
         int compilerIdx = m_CurrentCompilerIdx;
         CompilerFactory::RemoveCompiler(CompilerFactory::GetCompiler(compilerIdx));
         cmb->Delete(compilerIdx);
-        while (compilerIdx >= cmb->GetCount())
+        while (compilerIdx >= (int)(cmb->GetCount()))
             --compilerIdx;
         cmb->SetSelection(compilerIdx);
         m_CurrentCompilerIdx = compilerIdx;
@@ -1747,7 +1748,7 @@ void CompilerOptionsDlg::OnCopyLibsClick(wxCommandEvent& /*event*/)
                                 : reinterpret_cast<CompileOptionsBase*>(m_pProject->GetBuildTarget(sel));
     if (!base)
         return;
-    for (int i = 0; i < lstLibs->GetCount(); ++i)
+    for (unsigned int i = 0; i < lstLibs->GetCount(); ++i)
     {
         base->AddLinkLib(lstLibs->GetString(i));
     }
@@ -1854,7 +1855,7 @@ void CompilerOptionsDlg::OnMoveLibUpClick(wxSpinEvent& /*event*/)
 void CompilerOptionsDlg::OnMoveLibDownClick(wxSpinEvent& /*event*/)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
-    if (lstLibs->GetSelection() == lstLibs->GetCount() - 1)
+    if (lstLibs->GetSelection() == (int)(lstLibs->GetCount()) - 1)
         return;
     int sel = lstLibs->GetSelection();
     wxString lib = lstLibs->GetStringSelection();
@@ -1880,7 +1881,7 @@ void CompilerOptionsDlg::OnMoveDirUpClick(wxSpinEvent& /*event*/)
 void CompilerOptionsDlg::OnMoveDirDownClick(wxSpinEvent& /*event*/)
 {
     wxListBox* lst = GetDirsListBox();
-    if (!lst || lst->GetSelection() == lst->GetCount() - 1)
+    if (!lst || lst->GetSelection() == (int)(lst->GetCount()) - 1)
         return;
     int sel = lst->GetSelection();
     wxString lib = lst->GetStringSelection();
