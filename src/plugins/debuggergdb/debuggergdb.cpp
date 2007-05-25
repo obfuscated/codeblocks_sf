@@ -948,7 +948,7 @@ int DebuggerGDB::Debug()
         msgMan->AppendLog(m_PageIndex, _("Selecting target: "));
         if (!project->BuildTargetValid(tgt, false))
         {
-            int tgtIdx = project->SelectTarget(tgtIdx);
+            int tgtIdx = project->SelectTarget();
             if (tgtIdx == -1)
             {
                 msgMan->Log(m_PageIndex, _("canceled"));
