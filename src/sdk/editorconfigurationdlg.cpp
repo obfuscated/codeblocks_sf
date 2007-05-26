@@ -243,8 +243,13 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     // add all plugins configuration panels
     AddPluginPanels();
 
+	// the following code causes a huge dialog to be created with wx2.8.4
+	// commenting it out fixes the problem (along with some XRC surgery)
+	// if this causes problems with earlier wx versions we might need to
+	// add a platform/version #ifdef...
+	
     // make sure everything is laid out properly
-    GetSizer()->SetSizeHints(this);
+//    GetSizer()->SetSizeHints(this);
 }
 
 EditorConfigurationDlg::~EditorConfigurationDlg()
