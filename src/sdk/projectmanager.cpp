@@ -2260,7 +2260,7 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
             {
                 ProjectFile* pf = project->GetFile(ftd->GetFileIndex());
                 if (pf)
-                    pf->ShowOptions(m_pTree);
+                    pf->ShowOptions(Manager::Get()->GetAppWindow());
             }
         }
     }
@@ -2271,11 +2271,11 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
         {
             ProjectFile* pf = ed->GetProjectFile();
             if (pf)
-                pf->ShowOptions(m_pTree);
+                pf->ShowOptions(Manager::Get()->GetAppWindow());
             else
             {
                 // active editor not-in-project
-                ProjectFileOptionsDlg dlg(m_pTree, ed->GetFilename());
+                ProjectFileOptionsDlg dlg(Manager::Get()->GetAppWindow(), ed->GetFilename());
                 PlaceWindow(&dlg);
                 dlg.ShowModal();
             }
