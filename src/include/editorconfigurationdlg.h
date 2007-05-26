@@ -60,6 +60,7 @@ class EditorConfigurationDlg : public wxDialog
 		int m_LastAutoCompKeyword;
 		AutoCompleteMap m_AutoCompMap;
         ConfigurationPanelsArray m_PluginPanels;
+        wxString m_FontString; // This is to store font data temporarily
 
     	DECLARE_EVENT_TABLE()
 };

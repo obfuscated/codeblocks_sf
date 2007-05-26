@@ -112,6 +112,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgConfigureEditor"));
 
 	XRCCTRL(*this, "lblEditorFont", wxStaticText)->SetLabel(_("This is sample text"));
+	m_FontString = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);
 	UpdateSampleFont(false);
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
@@ -247,7 +248,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
 	// commenting it out fixes the problem (along with some XRC surgery)
 	// if this causes problems with earlier wx versions we might need to
 	// add a platform/version #ifdef...
-	
+
     // make sure everything is laid out properly
 //    GetSizer()->SetSizeHints(this);
 }
@@ -464,12 +465,11 @@ void EditorConfigurationDlg::UpdateSampleFont(bool askForNewFont)
 {
     // 8 point is not readable on Mac OS X, increase font size:
     wxFont tmpFont(platform::macosx ? 10 : 8, wxMODERN, wxNORMAL, wxNORMAL);
-    wxString fontstring = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);
 
-    if (!fontstring.IsEmpty())
+    if (!m_FontString.IsEmpty())
     {
         wxNativeFontInfo nfi;
-        nfi.FromString(fontstring);
+        nfi.FromString(m_FontString);
         tmpFont.SetNativeFontInfo(nfi);
     }
 
@@ -490,6 +490,7 @@ void EditorConfigurationDlg::UpdateSampleFont(bool askForNewFont)
     {
     	wxFont font = dlg.GetFontData().GetChosenFont();
 		XRCCTRL(*this, "lblEditorFont", wxStaticText)->SetFont(font);
+		m_FontString = font.GetNativeFontInfoDesc();
 		ApplyColours();
     }
 }
