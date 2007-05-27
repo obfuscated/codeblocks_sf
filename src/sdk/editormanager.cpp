@@ -2306,7 +2306,11 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         // make the filename relative
         wxString filename = filesList[i];
         if (filename.StartsWith(data->searchPath))
-            filename.Remove(0, data->searchPath.Length());
+        {
+            wxFileName fname(filename);
+            fname.MakeRelativeTo(data->searchPath);
+            filename = fname.GetFullPath();
+        }
 
         // log it
         LogSearch(filename, line + 1, control->GetLine(line));
