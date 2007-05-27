@@ -17,6 +17,7 @@ class SelectTargetDlg : public wxDialog
 		ProjectBuildTarget* GetSelectionTarget();
 	private:
 		void OnListboxSelection(wxCommandEvent& event);
+		void OnListboxDClick(wxCommandEvent& event);
         void OnCheckboxSelection(wxCommandEvent& event);
         void OnHostApplicationButtonClick(wxCommandEvent& event);
 		void UpdateSelected();
