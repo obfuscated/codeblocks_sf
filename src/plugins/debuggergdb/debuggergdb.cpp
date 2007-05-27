@@ -1719,7 +1719,7 @@ wxString DebuggerGDB::GetEditorWordAtCaret()
 void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
 {
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-    bool en = prj || m_PidToAttach != 0;
+    bool en = (prj && !prj->GetCurrentlyCompilingTarget()) || m_PidToAttach != 0;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
     bool stopped = IsStopped();
