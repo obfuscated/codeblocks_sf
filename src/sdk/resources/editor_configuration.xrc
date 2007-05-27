@@ -912,6 +912,7 @@
                                                     <item>C/C++ Header File</item>
                                                 </content>
                                                 <style>wxCB_READONLY</style>
+												<selection>0</selection>
                                             </object>
                                             <flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                             <border>8</border>
