@@ -1295,7 +1295,6 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     m_LastFindReplaceData->hiddenSearch = dlg->GetHidden();
     m_LastFindReplaceData->initialreplacing = false;
     m_LastFindReplaceData->NewSearch = true;
-    m_LastFindReplaceData->findUsesSelectedText = hasSelection;
     if(control)
     {   // if editor : store the selection start/end
         // only use this in case of !findInFiles and scope==1 (search in selection)
