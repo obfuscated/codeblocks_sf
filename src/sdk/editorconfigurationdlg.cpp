@@ -794,7 +794,7 @@ void EditorConfigurationDlg::OnAutoCompDelete(wxCommandEvent& event)
     {
         m_AutoCompMap.erase(it);
         lstKeyword->Delete(sel);
-        if (sel >= lstKeyword->GetCount())
+        if (sel >= (int)(lstKeyword->GetCount()))
             sel = lstKeyword->GetCount() - 1;
         lstKeyword->SetSelection(sel);
         if (sel != -1)
