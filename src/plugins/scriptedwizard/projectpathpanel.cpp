@@ -82,10 +82,9 @@ void ProjectPathPanel::Update()
     wxString final = txtPrjPath->GetValue();
     if (!final.IsEmpty())
     {
-        if (final.Last() != _T('/') && final.Last() != _T('\\'))
-            final << wxFILE_SEP_PATH;
-        if (txtPrjName->GetValue())
-            final << txtPrjName->GetValue() << wxFILE_SEP_PATH << txtPrjName->GetValue() << FileFilters::CODEBLOCKS_DOT_EXT;
+        wxFileName fname(txtPrjName->GetValue());
+        fname.MakeAbsolute(final);
+        final = fname.GetFullPath();
     }
     if (final.IsEmpty() || txtPrjName->GetValue().IsEmpty())
         final = _("<invalid path>");
@@ -107,5 +106,10 @@ void ProjectPathPanel::OntxtFinalDirText(wxCommandEvent& event)
 
 void ProjectPathPanel::OntxtPrjTitleText(wxCommandEvent& event)
 {
-    txtPrjName->SetValue(txtPrjTitle->GetValue());
+    wxString prjtitle = txtPrjTitle->GetValue();
+    // Make a check if the project title has any extension or not
+    if (!prjtitle.IsEmpty() &&
+        !prjtitle.Right(4).IsSameAs(FileFilters::CODEBLOCKS_DOT_EXT))
+        prjtitle = prjtitle + FileFilters::CODEBLOCKS_DOT_EXT;
+    txtPrjName->SetValue(prjtitle);
 }
