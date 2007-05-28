@@ -112,4 +112,6 @@ void ProjectPathPanel::OntxtPrjTitleText(wxCommandEvent& event)
         !prjtitle.Right(4).IsSameAs(FileFilters::CODEBLOCKS_DOT_EXT))
         prjtitle = prjtitle + FileFilters::CODEBLOCKS_DOT_EXT;
     txtPrjName->SetValue(prjtitle);
+// FIXME (Biplab#1#): In Linux, text update event is not thrown
+    Update();
 }
