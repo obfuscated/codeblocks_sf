@@ -243,6 +243,7 @@ class MainFrame : public wxFrame
         bool DoCloseCurrentWorkspace();
         bool DoOpenProject(const wxString& filename, bool addToHistory = true);
         bool DoOpenFile(const wxString& filename, bool addToHistory = true);
+        void DoOnFileOpen(bool bProject = false);
 
         void DoCreateStatusBar();
         void DoUpdateStatusBar();

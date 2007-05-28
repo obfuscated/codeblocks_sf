@@ -1684,7 +1684,7 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
     if(link.IsSameAs(_T("CB_CMD_NEW_PROJECT")))
         OnFileNewWhat(evt);
     else if(link.IsSameAs(_T("CB_CMD_OPEN_PROJECT")))
-        OnFileOpen(evt);
+        DoOnFileOpen(true);
 //    else if (link.IsSameAs(_T("CB_CMD_CONF_ENVIRONMENT")))
 //        OnSettingsEnvironment(evt);
 //    else if (link.IsSameAs(_T("CB_CMD_CONF_EDITOR")))
@@ -2169,7 +2169,14 @@ void MainFrame::OnFileNew(wxCommandEvent& event)
         PopupMenu(popup); // this will lead us in OnFileNewWhat() - the meat is there ;)
 }
 
-void MainFrame::OnFileOpen(wxCommandEvent& event)
+// in case we are opening a project (bProject == true) we do not want to interfere
+// with 'last type of files' (probably the call was open (existing) project on the
+// start here page --> so we know it's a project --> set the filter accordingly
+// but as said don't force the 'last used type of files' to change, that should
+// only change when an open file is carried out (so (source) file <---> project (file) )
+// TODO : when regular file open and user manually sets filter to project files --> will change
+//		the last type : is that expected behaviour ???
+void MainFrame::DoOnFileOpen(bool bProject)
 {
     wxString Filters = FileFilters::GetFilterString();
     // the value returned by GetIndexForFilterAll() is updated by GetFilterString()
@@ -2178,12 +2185,19 @@ void MainFrame::OnFileOpen(wxCommandEvent& event)
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("app"));
     if(mgr)
     {
-        wxString Filter = mgr->Read(_T("/file_dialogs/file_new_open/filter"));
-        if(!Filter.IsEmpty())
-        {
-            FileFilters::GetFilterIndexFromName(Filters, Filter, StoredIndex);
-        }
-        Path = mgr->Read(_T("/file_dialogs/file_new_open/directory"), Path);
+    	if(!bProject)
+    	{
+			wxString Filter = mgr->Read(_T("/file_dialogs/file_new_open/filter"));
+			if(!Filter.IsEmpty())
+			{
+				FileFilters::GetFilterIndexFromName(Filters, Filter, StoredIndex);
+			}
+			Path = mgr->Read(_T("/file_dialogs/file_new_open/directory"), Path);
+    	}
+    	else
+    	{
+    		FileFilters::GetFilterIndexFromName(Filters, _("Code::Blocks project files"), StoredIndex);
+    	}
     }
     wxFileDialog* dlg = new wxFileDialog(this,
                             _("Open file"),
@@ -2197,7 +2211,8 @@ void MainFrame::OnFileOpen(wxCommandEvent& event)
     if (dlg->ShowModal() == wxID_OK)
     {
         // store the last used filter and directory
-        if(mgr)
+        // as said : don't do this in case of an 'open project'
+        if(mgr && !bProject)
         {
             int Index = dlg->GetFilterIndex();
             wxString Filter;
@@ -2214,7 +2229,12 @@ void MainFrame::OnFileOpen(wxCommandEvent& event)
     }
 
     dlg->Destroy();
-}
+} // end of DoOnFileOpen
+
+void MainFrame::OnFileOpen(wxCommandEvent& event)
+{
+	DoOnFileOpen(false); // through file menu (not sure if we are opening a project)
+} // end of OnFileOpen
 
 void MainFrame::OnFileReopenProject(wxCommandEvent& event)
 {
