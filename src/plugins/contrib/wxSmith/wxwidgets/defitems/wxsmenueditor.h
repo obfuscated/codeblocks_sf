@@ -48,6 +48,8 @@ class wxsMenuEditor: public wxPanel
         struct MenuItem
         {
             Type      m_Type;
+            wxString  m_Variable;
+            bool      m_IsMember;
             wxString  m_Id;
             wxString  m_Label;
             wxString  m_Accelerator;
