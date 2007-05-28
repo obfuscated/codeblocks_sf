@@ -69,14 +69,12 @@ void CompileTargetBase::SetTargetFilenameGenerationPolicy(TargetFilenameGenerati
     SetModified(true);
 }
 
-void CompileTargetBase::GetTargetFilenameGenerationPolicy(TargetFilenameGenerationPolicy* prefixOut,
-                                                        TargetFilenameGenerationPolicy* extensionOut) const
+void CompileTargetBase::GetTargetFilenameGenerationPolicy(TargetFilenameGenerationPolicy& prefixOut,
+                                                        TargetFilenameGenerationPolicy& extensionOut) const
 {
-    if (prefixOut)
-        *prefixOut = m_PrefixGenerationPolicy;
-    if (extensionOut)
-        *extensionOut = m_ExtensionGenerationPolicy;
-}
+    prefixOut = m_PrefixGenerationPolicy;
+    extensionOut = m_ExtensionGenerationPolicy;
+} // end of GetTargetFilenameGenerationPolicy
 
 const wxString& CompileTargetBase::GetFilename() const
 {
@@ -269,12 +267,20 @@ void CompileTargetBase::GenerateTargetFilename(wxString& filename) const
                 wxString prefix = compiler ? compiler->GetSwitches().libPrefix : _T("");
                 // avoid adding the prefix, if already there
                 if (!prefix.IsEmpty() && !fname.GetName().StartsWith(prefix))
+                {
                     filename << prefix;
+                }
             }
             if (m_ExtensionGenerationPolicy == tgfpPlatformDefault)
-                filename << fname.GetName() << FileFilters::STATICLIB_DOT_EXT;
+            {
+                Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+                wxString Ext = compiler ? compiler->GetSwitches().libExtension : FileFilters::STATICLIB_EXT;
+                filename << fname.GetName() << _T(".") << Ext;
+            }
             else
+            {
                 filename << fname.GetFullName();
+            }
             break;
         }
         default:

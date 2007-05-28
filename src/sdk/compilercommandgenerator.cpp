@@ -418,9 +418,20 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
     Manager::Get()->GetMacrosManager()->ReplaceMacros(fnameString, target);
     wxFileName fname(fnameString);
 
-    if (!fname.GetName().StartsWith(compiler->GetSwitches().libPrefix))
-        fname.SetName(compiler->GetSwitches().libPrefix + fname.GetName());
-    fname.SetExt(compiler->GetSwitches().libExtension);
+	TargetFilenameGenerationPolicy PrefixPolicy;
+	TargetFilenameGenerationPolicy ExtensionPolicy;
+	target->GetTargetFilenameGenerationPolicy(PrefixPolicy, ExtensionPolicy);
+	if(PrefixPolicy == tgfpPlatformDefault)
+	{
+		if (!fname.GetName().StartsWith(compiler->GetSwitches().libPrefix))
+		{
+			fname.SetName(compiler->GetSwitches().libPrefix + fname.GetName());
+		}
+	}
+	if(ExtensionPolicy == tgfpPlatformDefault)
+	{
+		fname.SetExt(compiler->GetSwitches().libExtension);
+	}
     result = UnixFilename(fname.GetFullPath());
     QuoteStringIfNeeded(result);
     FixPathSeparators(compiler, result);

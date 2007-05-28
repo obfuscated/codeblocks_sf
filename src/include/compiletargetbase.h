@@ -100,8 +100,8 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
           */
         virtual void SetTargetFilenameGenerationPolicy(TargetFilenameGenerationPolicy prefix,
                                                         TargetFilenameGenerationPolicy extension);
-        virtual void GetTargetFilenameGenerationPolicy(TargetFilenameGenerationPolicy* prefixOut,
-                                                        TargetFilenameGenerationPolicy* extensionOut) const;
+        virtual void GetTargetFilenameGenerationPolicy(TargetFilenameGenerationPolicy& prefixOut,
+                                                        TargetFilenameGenerationPolicy& extensionOut) const;
 
         virtual const wxString& GetFilename() const;
         virtual const wxString& GetTitle() const; ///< Read the target's title

@@ -1106,7 +1106,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             TiXmlElement* outnode = AddElement(tgtnode, "Option", "output", target->GetOutputFilename());
             TargetFilenameGenerationPolicy prefixPolicy;
             TargetFilenameGenerationPolicy extensionPolicy;
-            target->GetTargetFilenameGenerationPolicy(&prefixPolicy, &extensionPolicy);
+            target->GetTargetFilenameGenerationPolicy(prefixPolicy, extensionPolicy);
             outnode->SetAttribute("prefix_auto", prefixPolicy == tgfpPlatformDefault ? "1" : "0");
             outnode->SetAttribute("extension_auto", extensionPolicy == tgfpPlatformDefault ? "1" : "0");
 

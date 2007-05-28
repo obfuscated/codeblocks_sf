@@ -246,7 +246,7 @@ void ProjectOptionsDlg::DoTargetChange(bool saveOld)
 
     TargetFilenameGenerationPolicy prefixPolicy;
     TargetFilenameGenerationPolicy extensionPolicy;
-    target->GetTargetFilenameGenerationPolicy(&prefixPolicy, &extensionPolicy);
+    target->GetTargetFilenameGenerationPolicy(prefixPolicy, extensionPolicy);
     XRCCTRL(*this, "chkAutoGenPrefix", wxCheckBox)->SetValue(prefixPolicy == tgfpPlatformDefault);
     XRCCTRL(*this, "chkAutoGenExt", wxCheckBox)->SetValue(extensionPolicy == tgfpPlatformDefault);
 
