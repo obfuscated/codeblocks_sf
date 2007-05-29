@@ -83,7 +83,8 @@ void ProjectPathPanel::Update()
     if (!final.IsEmpty())
     {
         wxFileName fname(txtPrjName->GetValue());
-        fname.MakeAbsolute(final);
+        wxFileName prjpath(final, wxEmptyString);
+        fname.MakeAbsolute(prjpath.GetPathWithSep() + fname.GetName());
         final = fname.GetFullPath();
     }
     if (final.IsEmpty() || txtPrjName->GetValue().IsEmpty())
@@ -113,5 +114,7 @@ void ProjectPathPanel::OntxtPrjTitleText(wxCommandEvent& event)
         prjtitle = prjtitle + FileFilters::CODEBLOCKS_DOT_EXT;
     txtPrjName->SetValue(prjtitle);
 // FIXME (Biplab#1#): In Linux, text update event is not thrown
+    #ifndef __WXMSW__
     Update();
+    #endif
 }
