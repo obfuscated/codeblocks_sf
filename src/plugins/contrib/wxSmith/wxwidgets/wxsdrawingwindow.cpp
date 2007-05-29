@@ -81,7 +81,6 @@ class wxsDrawingWindow::DrawingPanel: public wxPanel
         void OnEraseBack(wxEraseEvent& event)
         {
         }
-
 };
 
 BEGIN_EVENT_TABLE(wxsDrawingWindow,wxScrolledWindow)
@@ -144,7 +143,7 @@ void wxsDrawingWindow::PanelPaint(wxPaintEvent& event)
     wxPaintDC PaintDC(Panel);
     if ( !DuringFetch )
     {
-        if ( IsBlockFetch ||  NoNeedToRefetch() )
+        if ( IsBlockFetch || NoNeedToRefetch() )
         {
             wxBitmap BmpCopy = Bitmap->GetSubBitmap(wxRect(0,0,Bitmap->GetWidth(),Bitmap->GetHeight()));
             wxBufferedDC DC(&PaintDC,BmpCopy);
@@ -262,6 +261,24 @@ void wxsDrawingWindow::HideChildren()
 
 bool wxsDrawingWindow::NoNeedToRefetch()
 {
+    // Testing if this window is disabled which usually means
+    // that there's some dialog shown in modal
+    // modal dialogs may cause some artefacts on editor so we will
+    // block any refetching while they're shown and will force
+    // updating content when dialog will be hidden
+    for ( wxWindow* Window = this; Window; Window = Window->GetParent() )
+    {
+        if ( !Window->IsEnabled() || !Window->IsShown() )
+        {
+            Manager::Get()->GetMessageManager()->DebugLog(_T("Modal dialog detected"));
+            WasContentChanged = true;
+            return false;
+        }
+    }
+
+    // If there's no risk that some dialog is shown in modal,
+    // we check if WasContentChanged flag is set or position / size
+    // of area is changed.
     int NewSizeX=0, NewSizeY=0;
     int NewVirtX=0, NewVirtY=0;
 
