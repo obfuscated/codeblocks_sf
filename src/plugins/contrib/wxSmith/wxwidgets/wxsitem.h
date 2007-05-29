@@ -110,7 +110,7 @@ class wxsItem: public wxsPropertyContainer
         inline wxString GetVarName() { return IsRootItem() ? _T("this") : m_VarName; }
 
         /** \brief Setting variabne name */
-        inline void SetVarName(const wxString& NewName) { m_VarName = NewName; }
+        void SetVarName(const wxString& NewName);
 
         /** \brief Getting create prefix for item
          *
@@ -566,6 +566,9 @@ class wxsItem: public wxsPropertyContainer
 
         /** \brief Internal version of Codef function */
         void Codef(wxsCodingLang Language,wxString WindowParent,const wxChar* Fmt,wxString& Result,va_list ap);
+
+        /** \brief Updating label of this item in resource tree */
+        void UpdateTreeLabel();
 
         const wxsItemInfo* m_Info;              ///< \brief Pointer to item's info structure
         wxsEvents m_Events;                     ///< \brief Object managing events

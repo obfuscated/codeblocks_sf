@@ -263,6 +263,7 @@ void wxsItem::ClearSelection()
 void wxsItem::OnPropertyChanged()
 {
     GetResourceData()->NotifyChange(this);
+    UpdateTreeLabel();
 }
 
 void wxsItem::OnSubPropertyChanged(wxsPropertyContainer*)
@@ -286,6 +287,26 @@ void wxsItem::OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id)
 bool wxsItem::IsRootItem()
 {
     return m_ResourceData->GetRootItem() == this;
+}
+
+void wxsItem::SetVarName(const wxString& NewName)
+{
+    m_VarName = NewName;
+    UpdateTreeLabel();
+}
+
+void wxsItem::UpdateTreeLabel()
+{
+    wxsResourceItemId Id;
+    if ( GetResourceData()->GetTreeId(Id,this) )
+    {
+        int IconId;
+        wxString NewLabel = OnGetTreeLabel(IconId);
+        if ( wxsResourceTree::Get()->GetItemText(Id) != NewLabel )
+        {
+            wxsResourceTree::Get()->SetItemText(Id,NewLabel);
+        }
+    }
 }
 
 wxString wxsItem::GetCreatePrefix(wxsCodingLang Language)

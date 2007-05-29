@@ -136,6 +136,9 @@ class wxsItemResData
         /** \brief Getting pointer to current source code string */
         inline wxString* GetCurentCode() { return m_CurrentCode; }
 
+        /** \brief Searching for tree id in main resource tree for given item */
+        inline bool GetTreeId(wxsResourceItemId& Id,wxsItem* Item) { return FindId(Id,Item); }
+
         /* ************************ */
         /*  Undo buffer operations  */
         /* ************************ */
