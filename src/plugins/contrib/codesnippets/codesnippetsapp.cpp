@@ -809,16 +809,26 @@ void CodeSnippetsAppFrame::OnRecentFileReopen(wxCommandEvent& event)
 {
     size_t id = event.GetId() - wxID_FILE1;
     wxString fname = m_pFilesHistory->GetHistoryFile(id);
-//    if (!OpenGeneric(fname, true))
-//    {
-//        AskToRemoveFileFromHistory(m_pFilesHistory, id);
-//    }
+////    if (!OpenGeneric(fname, true))
+////    {
+////        AskToRemoveFileFromHistory(m_pFilesHistory, id);
+////    }
+
+    // save any changes
+    if (GetFileChanged() ) OnFileSave(event);
+
+    // load specified recent xml index
     if (::wxFileExists(fname))
     {
         GetConfig()->SettingsSnippetsXmlFullPath = fname;
         GetSnippetsWindow()->GetSnippetsTreeCtrl()->LoadItemsFromFile( fname, false);
         GetSnippetsWindow()->GetSnippetsTreeCtrl()->SetFileChanged(false);
         GetSnippetsWindow()->GetSnippetsTreeCtrl()->SaveFileModificationTime();
+    }
+    else
+    {   // file not found
+        wxString msg(wxString::Format(wxT("File not found:\n%s\n\n"),fname.GetData()));
+        messageBox( msg );
     }
 }//OnFileReopen
 // ----------------------------------------------------------------------------

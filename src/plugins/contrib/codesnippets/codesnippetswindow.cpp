@@ -44,7 +44,6 @@
 #endif //__BORLANDC__
 
 #if defined(BUILDING_PLUGIN)
-    //NB: linux makefile does not define BUILDING_PLUGIN
     #if defined(CB_PRECOMP)
         #include "sdk.h"
     #else
@@ -155,7 +154,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 	EVT_TREE_END_LABEL_EDIT(idSnippetsTreeCtrl, CodeSnippetsWindow::OnEndLabelEdit)
 	//EVT_TREE_ITEM_GETTOOLTIP(idSnippetsTreeCtrl, CodeSnippetsWindow::OnItemGetToolTip)
 	// ---
-	// EVT_CLOSE Doesn't work on wxAUI windows, this is called from a Connect
+	// EVT_CLOSE Doesn't work on wxAUI windows, this is called from a Connect()
 	EVT_CLOSE( CodeSnippetsWindow::OnClose) //never occurs with wxAUI
 	// EVT_IDLE(   CodeSnippetsWindow::OnIdle) //works ok
 
@@ -198,6 +197,8 @@ CodeSnippetsWindow::~CodeSnippetsWindow()
     //-GetConfig()->SettingsSave();
 
     if (pTiXmlDoc) { delete pTiXmlDoc; pTiXmlDoc = 0;}
+  	GetConfig()->pSnippetsSearchCtrl = 0;
+
 }
 // ----------------------------------------------------------------------------
 // EVT_CLOSE is not generated from wxAUI windows wx2.6.3
@@ -273,6 +274,7 @@ void CodeSnippetsWindow::InitDlg()
 	// Add root item
 	SnippetItemData* rootData = new SnippetItemData(SnippetItemData::TYPE_ROOT);
 	GetSnippetsTreeCtrl()->AddRoot(_("All snippets"), 0, -1, rootData);
+	GetConfig()->pSnippetsSearchCtrl = m_SearchSnippetCtrl;
 }
 
 // ----------------------------------------------------------------------------
@@ -485,9 +487,7 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
                 else
                     snippetsTreeMenu->Append(idMnuEditSnippet, _("Edit Text"));
 
-                // linux makefile does not allow preprocessor BUILDING_PLUGIN
-                // so we just turn off access to the code that needs it
-                #if defined(_WXMSW_)
+                #if defined(BUILDING_PLUGIN)
                 if (GetConfig()->IsPlugin())
                 {   snippetsTreeMenu->Append(idMnuApplySnippet, _("Apply"));
                 }
@@ -623,7 +623,6 @@ void CodeSnippetsWindow::ApplySnippet(const wxTreeItemId& itemID)
 			return;
 		}
       #if defined(BUILDING_PLUGIN)
-        //NB: linux makefile does not define BUILDING_PLUGIN, making this unavailabe to linux
 		// Check that editor is open
 		EditorManager* editorMan = Manager::Get()->GetEditorManager();
 		if(!editorMan)
@@ -850,6 +849,7 @@ void CodeSnippetsWindow::OnMnuClear(wxCommandEvent& event)
 {
     // search->clear context menu item
 	m_SearchSnippetCtrl->Clear();
+
 }
 
 // ----------------------------------------------------------------------------
@@ -902,7 +902,6 @@ void CodeSnippetsWindow::CheckForMacros(wxString& snippet)
 {
     //FIXME: CheckForMacros in App???
   #if defined(BUILDING_PLUGIN)
-    //NB: linux makefile does not define BUILDING_PLUGIN
 	// Copied from cbEditor::Autocomplete, I admit it
 	int macroPos = snippet.Find(_T("$("));
 	while (macroPos != -1)
@@ -1136,7 +1135,8 @@ void CodeSnippetsWindow::OnMnuSaveSnippetAsFileLink(wxCommandEvent& event)
 void CodeSnippetsWindow::OnIdle(wxIdleEvent& event)
 // ----------------------------------------------------------------------------
 {
-
+    event.Skip();
+    return;
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuAbout(wxCommandEvent& event)
@@ -1191,7 +1191,7 @@ void CodeSnippetsWindow::ShowSnippetsAbout(wxString buildInfo)
              << wxT(" to specify a non-default Snippets index file. \n")
              << wxT("\n")
 
-             << wxT(" Both the text and file snippets may be dragged outward (Windows only)\n")
+             << wxT(" Both the text and file snippets may be dragged outward\n")
              << wxT(" or copied to the clipboard.\n")
              << wxT("\n")
 
@@ -1209,6 +1209,7 @@ bool SnippetsDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
 // ----------------------------------------------------------------------------
 {
     // This Drop routine refers to dragging external text onto a tree item
+
 	// Set focus to the Code snippets window
 	m_TreeCtrl->SetFocus();
 

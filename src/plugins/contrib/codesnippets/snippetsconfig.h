@@ -25,12 +25,11 @@
 #include <wx/frame.h>
 #include <wx/fileconf.h>
 
-
-class CodeSnippetsWindow;
 #include "snippetsimages.h"
 
     class CodeSnippetsConfig;
     class CodeSnippetsTreeCtrl;
+    class CodeSnippetsWindow;
 
     extern CodeSnippetsConfig* g_pConfig;
     CodeSnippetsConfig* GetConfig();
@@ -59,11 +58,13 @@ class CodeSnippetsConfig
     wxWindow*       GetMainFrame(){return pMainFrame;}
     wxMenuBar*      GetMenuBar(){return m_pMenuBar;}
     SnipImages*     GetSnipImages(){return pSnipImages;}
-    CodeSnippetsWindow* GetSnippetsWindow(){return pSnippetsWindow;}
-    void            SetSnippetsTreeCtrl(CodeSnippetsTreeCtrl* p){ pSnippetsTreeCtrl=p;return;}
-    CodeSnippetsTreeCtrl* GetSnippetsTreeCtrl(){return pSnippetsTreeCtrl;}
-    wxString        GetVersion(){return m_VersionStr;}
-    wxFileConfig*   GetCfgFile(){return m_pCfgFile;}
+
+    CodeSnippetsWindow*     GetSnippetsWindow(){return pSnippetsWindow;}
+    wxTextCtrl*             GetSnippetsSearchCtrl(){return pSnippetsSearchCtrl;}
+    CodeSnippetsTreeCtrl*   GetSnippetsTreeCtrl(){return pSnippetsTreeCtrl;}
+    void                    SetSnippetsTreeCtrl(CodeSnippetsTreeCtrl* p){ pSnippetsTreeCtrl=p;return;}
+    wxString                GetVersion(){return m_VersionStr;}
+    wxFileConfig*           GetCfgFile(){return m_pCfgFile;}
 
     void CenterChildOnParent(wxWindow* child);
 
@@ -97,8 +98,9 @@ class CodeSnippetsConfig
     wxString     AppName;
     wxWindow*    pMainFrame;
     wxMenuBar*   m_pMenuBar;
-    CodeSnippetsWindow*   pSnippetsWindow;
-    CodeSnippetsTreeCtrl* pSnippetsTreeCtrl;
+    CodeSnippetsWindow*     pSnippetsWindow;
+    CodeSnippetsTreeCtrl*   pSnippetsTreeCtrl;
+    wxTextCtrl*             pSnippetsSearchCtrl;
 	wxString     SettingsExternalEditor;
 	wxString     SettingsSnippetsXmlFullPath;
 	wxString     SettingsSnippetsCfgFullPath;

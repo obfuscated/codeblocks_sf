@@ -262,10 +262,15 @@ AppVersion::~AppVersion()
 //          72) Add Recently Used Indexes
 //          73) Fix error in category drag
 // ----------------------------------------------------------------------------
+//  Commit  1.2.76 2007/05/29
+//          74) Fixed: Not saving xml changes before "recently used" load
+//          75) Show filename base as root item label
+//          Verify:If external snippets, plgn *shouldnt* save conf OR xml on exit
+//              Ok: saves done by OnClose SnippetsWindow & Tree routines
+//          76) Fix "Apply" menu item, misspelled _WX... preprocessor
+// ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
-//          a renamed "new snippet" label is not sorted into place
-//              Maybe it shouldn't be?
 //          Help should invoke browser for wiki article
 //          Update wiki for Re-arranging Tree items/multi-editing/.trash
 //              backup, wrapper execution, DragnDrop
@@ -276,15 +281,15 @@ AppVersion::~AppVersion()
 //              floating window with system X. Open external window with View/CodeSnippets.
 //              View a text file, Close CB. You'll get the "file changed" when none has.
 //              AND, window stays up even tho CB is gone.
-//          Add option for ToolTips and max chars shown
+//          Add option for ToolTips and max chars shown (tool tips is currently disabled)
 //          #ifdef out linux options dlg spacer (can't with wxFormBuilder)
 //              Maybe just a line instead of a spacer will work
-//          Verify:If independent snippets, plg shouldnt save conf OR xml
-//          Iconize(false) did not work on Linux
+//          Iconize(false) did not work on Linux. check when GTK is at 2.8.4
 //          Enter key should open/close categories like left/right key
+//          Docked wxAUI (MSW) window still bombs when using system [x] to close
 //  Other
 //          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"
-//              But who'll do that? Because OnEndTreeItemDrag() calls RemoveItem() from .trash;
+//              But who'll do that? Reason: OnEndTreeItemDrag() calls RemoveItem() from .trash;
 // ----------------------------------------------------------------------------
 //
 // ----------------------------------------------------------------------------

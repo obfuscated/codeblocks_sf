@@ -76,6 +76,7 @@ CodeSnippetsConfig::CodeSnippetsConfig()
     m_pMenuBar = 0;
     pSnippetsWindow = 0;
     pSnippetsTreeCtrl = 0;
+    pSnippetsSearchCtrl = 0;
     m_pCfgFile = 0;
     m_bIsPlugin = 0;
 	SettingsExternalEditor = wxEmptyString;

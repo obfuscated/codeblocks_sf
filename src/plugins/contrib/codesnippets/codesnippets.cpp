@@ -188,7 +188,9 @@ void CodeSnippets::OnAttach()
 void CodeSnippets::OnRelease(bool appShutDown)
 // ----------------------------------------------------------------------------
 {
+    // ------------------------------------------------------------
     // watch out, CodeBlocks can enter this routine multiple times
+    // ------------------------------------------------------------
 
     // Unmap and delete the temporary memory mapped communications file
     ReleaseMemoryMappedFile();
@@ -347,7 +349,6 @@ void CodeSnippets::TellExternalSnippetsToTerminate()
 // ----------------------------------------------------------------------------
 {
     // Get ptr to mapped area and zero my pid as a terminate signal
-    // Unmap the file so child can remove it.
     char* pMappedData = (char*)m_pMappedFile->GetStream();
     char onebyte[1] = {0};
     std::strncpy(pMappedData, onebyte, 1);
@@ -513,7 +514,6 @@ void CodeSnippets::OnIdle(wxIdleEvent& event)
 
     // Unfortunately wxAUI crashes when we close a docked window
     // When user closes docked window with system [x] button, wxAUI crashes
-    // This seems to have been fixed in wx2.8.3
     ////    if ( GetConfig()->IsDockedWindow() )
     ////         { event.Skip(); return; }
 
@@ -663,7 +663,7 @@ bool CodeSnippets::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
 // ----------------------------------------------------------------------------
 {
     // This is the drop routine for the Management Project/Files tree controls
-    // It's used to pass files off to MainFrame's drop method
+    // It's used to pass files off to CB MainFrame's drop method
     #ifdef LOGGING
      LOGIT( _T("CodeSnippets::OnDropFiles Entered") );
     #endif //LOGGING

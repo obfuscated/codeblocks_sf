@@ -28,9 +28,9 @@
     #include <wx/filename.h>
     #include <wx/dataobj.h>
     #include <wx/dnd.h>
+    #include <wx/filename.h>
 
 #if defined(BUILDING_PLUGIN)
- //NB: linux makefile does not define BUILDING_PLUGIN
     #include "sdk.h"
     #ifndef CB_PRECOMP
         #include "manager.h"
@@ -500,7 +500,6 @@ bool CodeSnippetsTreeCtrl::LoadItemsFromFile(const wxString& fileName, bool bApp
 			// Overwrite it
 			wxCopyFile(fileName, backupFile, true);
            #if defined(BUILDING_PLUGIN)
-            // Linux makefile does not define BUILDING_PLUGIN
 			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + csC2U(doc.ErrorDesc()));
 			Manager::Get()->GetMessageManager()->DebugLog(_T("CodeSnippets: Backup of the failed file has been created."));
 		   #else
@@ -514,6 +513,12 @@ bool CodeSnippetsTreeCtrl::LoadItemsFromFile(const wxString& fileName, bool bApp
 	// Show the first level of items
 	if (  GetRootItem() && GetRootItem().IsOk())
         Expand( GetRootItem() );
+
+    // show filename window banner
+    wxString nameOnly;
+    wxFileName::SplitPath( fileName, 0, &nameOnly, 0);
+    // Edit the root node's title so that the user sees file name
+    GetSnippetsTreeCtrl()->SetItemText(GetSnippetsTreeCtrl()->GetRootItem(), wxString::Format(_("%s"), nameOnly.GetData()));
 
     SetFileChanged(false);
     SaveFileModificationTime();
@@ -1425,11 +1430,6 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem)
         (wxObjectEventFunction)(wxEventFunction)
         (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown,NULL,this);
 
-////        #if defined(BUILDING_PLUGIN)
-////            //NB: linux makefile does not define BUILDING_PLUGIN
-////            // Disable the plugin View menu item
-////            Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, false);
-////        #endif
         // The following works fine on windows, but does not disable the menu item on linux.
         // *and*, I no longer care.
         if ( GetConfig()->IsPlugin() )
@@ -1455,11 +1455,6 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem)
             (wxObjectEventFunction)(wxEventFunction)
             (wxCloseEventFunction) &CodeSnippetsTreeCtrl::OnShutdown);
 
-////        #if defined(BUILDING_PLUGIN)
-////            //NB: linux makefile does not define BUILDING_PLUGIN
-////            // Enable the plugin View menu item
-////            Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
-////        #endif
         if ( GetConfig()->IsPlugin() )
             GetConfig()->GetMenuBar()->Enable(idViewSnippets, true);
 
@@ -1471,7 +1466,7 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem)
 void CodeSnippetsTreeCtrl::OnIdle(wxIdleEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // check to see if a editor has been posted & finish.
+    // check to see if an editor has been posted & finish.
 
     for (size_t i = 0; i < this->m_aDlgRetcodes.GetCount(); ++i )
     {
@@ -1522,15 +1517,19 @@ void CodeSnippetsTreeCtrl::OnIdle(wxIdleEvent& event)
         m_aDlgPtrs.Clear();
     }
 
-////    #if defined(BUILDING_PLUGIN)
-////        //NB: linux makefile does not define BUILDING_PLUGIN
-////        // Enable the plugin View menu item
-////      if ( 0 == m_aDlgPtrs.GetCount() )
-////        Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
-////    #endif
     if ( GetConfig()->IsPlugin() )
         GetConfig()->GetMenuBar()->Enable(idViewSnippets, true);
 
+    // if search text is empty, show filename as root item
+    // Edit the root node's title so that the user sees file name
+    if ( GetConfig()->GetSnippetsSearchCtrl()->GetValue().IsEmpty() )
+    {   wxString nameOnly;
+        wxFileName::SplitPath( GetConfig()->SettingsSnippetsXmlFullPath, 0, &nameOnly, 0);
+        // avoid excessive refresh
+        wxString currentValue = GetItemText(GetSnippetsTreeCtrl()->GetRootItem());
+        if (currentValue != nameOnly)
+            GetSnippetsTreeCtrl()->SetItemText(GetSnippetsTreeCtrl()->GetRootItem(), wxString::Format(_("%s"), nameOnly.GetData()));
+    }
 }//OnIdle
 
 // ----------------------------------------------------------------------------
