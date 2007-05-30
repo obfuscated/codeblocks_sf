@@ -15,9 +15,6 @@
 //----------------------------------------------------------------------------
 // Headers
 //----------------------------------------------------------------------------
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "chartwindow.h"
-#endif
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -32,7 +29,7 @@
 
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		CWxChartWindow
-//	DESC:		
+//	DESC:
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
@@ -83,12 +80,12 @@ public:
 private:
 	wxChart m_Chart;
 	wxScrolledWindow *m_WinParent;
-    bool m_UseGrid;   
-       
+    bool m_UseGrid;
+
     // Draw helper function
     //-----------------
     void DrawHLines(CHART_HPAINT hp, CHART_HRECT hr);
-    
+
 	// wxWindows events
 	//-----------------
     void OnPaint(wxPaintEvent &event);
@@ -105,25 +102,25 @@ private:
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		Add()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	CChartPoints* cp
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 inline void wxChartWindow::Add(
 	wxChartPoints* cp
-) 
-{ 
-	m_Chart.Add( cp ); 
+)
+{
+	m_Chart.Add( cp );
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		Clear()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
-inline void wxChartWindow::Clear() 
-{ 
+inline void wxChartWindow::Clear()
+{
 	m_Chart.Clear();
 }
 

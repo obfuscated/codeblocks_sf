@@ -16,10 +16,6 @@
 // Headers
 //----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "xaxiswindow.h"
-#endif
-
 #include <wx/window.h>
 
 #include "wx/xaxis.h"
@@ -32,7 +28,7 @@ const int XAXIS_HEIGHT	= 60;	// height in pixels
 
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		wxXAxisWindow
-//	DESC:		
+//	DESC:
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++

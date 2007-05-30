@@ -15,9 +15,6 @@
 //----------------------------------------------------------------------------
 // Headers
 //----------------------------------------------------------------------------
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "legend.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
@@ -60,7 +57,7 @@ struct ArrowDescriptor
     int m_x;
     int m_y;
     int m_d;
-    bool m_sel;       
+    bool m_sel;
     ArrowDescriptor() : m_x(0), m_y(0), m_d(0), m_sel(false) {};
 };
 
@@ -71,14 +68,14 @@ WX_DECLARE_OBJARRAY(DescLegend, ListLegendDesc);
 
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		wxLegend
-//	DESC:		
+//	DESC:
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
 WXDLLIMPEXP_CHART class wxLegend
 {
 public:
-    
+
     // ctor
     //-----
     wxLegend();
@@ -91,7 +88,7 @@ public:
     // Redraw arraw whne mouse over
     //-----------------------------
     void DrawArrow(CHART_HPAINT hp, int pos, bool over);
-    
+
     // Dec/Inc page
     //-------------
     void IncPage();
@@ -117,14 +114,14 @@ private:
 
     // Drawing Utilities
     //------------------
-    void DrawArrow(CHART_HPAINT hp, int x, int y, int size, 
+    void DrawArrow(CHART_HPAINT hp, int x, int y, int size,
                    int pos, bool over);
     void WriteLabel(CHART_HPAINT hp, int x, int y, int page);
 
     // Get number of pages
     //--------------------
     int NumPages() const;
-   
+
 };
 
 #endif // __LEGEND_H__

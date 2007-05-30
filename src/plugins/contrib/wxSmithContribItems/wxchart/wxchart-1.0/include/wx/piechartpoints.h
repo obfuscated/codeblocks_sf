@@ -15,9 +15,6 @@
 //----------------------------------------------------------------------------
 // Headers
 //----------------------------------------------------------------------------
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "piecharpoints.h"
-#endif
 
 #include "wx/points.h"
 #include "wx/chartcolors.h"
@@ -44,60 +41,60 @@ public:
     // If this is allow after the bcp is out of scope the list has
     // a pointer which has been deallocated!
     //------------------------------------------------------------
-    static wxPieChartPoints* CreateWxPieChartPoints(wxString name, 
-            ChartColor c = wxCHART_NOCOLOR, bool showlabel = false); 
+    static wxPieChartPoints* CreateWxPieChartPoints(wxString name,
+            ChartColor c = wxCHART_NOCOLOR, bool showlabel = false);
 
 	virtual ~wxPieChartPoints() {};
 
 	// Draw the series of points
 	//--------------------------
-	void Draw(CHART_HPAINT hp, CHART_HRECT hr);
+	virtual void Draw(CHART_HPAINT hp, CHART_HRECT hr);
 
 	// Get n-th point information
 	//---------------------------
-	ChartValue GetXVal(int n) const;
-	ChartValue GetYVal(int n) const;
-    wxString GetName(int n) const;
-	ChartColor GetColor(int n) const;
+	virtual ChartValue GetXVal(int n) const;
+	virtual ChartValue GetYVal(int n) const;
+    virtual wxString GetName(int n) const;
+	virtual ChartColor GetColor(int n) const;
 
 	// Get stat values
 	//----------------
-	int GetCount() const;
-	ChartValue GetMaxX() const;
-	ChartValue GetMaxY() const;
-	ChartValue GetMinX() const;
-	ChartValue GetMinY() const;
+	virtual int GetCount() const;
+	virtual ChartValue GetMaxX() const;
+	virtual ChartValue GetMaxY() const;
+	virtual ChartValue GetMinX() const;
+	virtual ChartValue GetMinY() const;
 
 	// Get/Set zoom
 	//-------------
-	void SetZoom(double z);
-	double GetZoom();
+	virtual void SetZoom(double z);
+	virtual double GetZoom();
 
 	// Set sizes for drawing
 	//----------------------
-	void SetSizes(ChartSizes sizes);
-	const ChartSizes& GetSizes() const;
+	virtual void SetSizes(ChartSizes sizes);
+	virtual const ChartSizes& GetSizes() const;
 
 	// Get/Set Color
 	//--------------
-	ChartColor GetColor() const;
-	void SetColor(ChartColor c);
+	virtual ChartColor GetColor() const;
+	virtual void SetColor(ChartColor c);
 
 	// Get/Set Name
 	//--------------
-	wxString GetName() const;
-	void SetName(wxString name);
+	virtual wxString GetName() const;
+	virtual void SetName(wxString name);
 
 	// Add point
 	//----------
-	void Add(wxString name, ChartValue x, ChartValue y);
-	void Add(wxString name, ChartValue x, ChartValue y, 
+	virtual void Add(wxString name, ChartValue x, ChartValue y);
+	virtual void Add(wxString name, ChartValue x, ChartValue y,
 			 ChartColor c);
 
 	// Set/Get Display option
 	//-----------------------
-	void SetDisplayTag(wxDISPLAY_LABEL d);
-	wxDISPLAY_LABEL GetDisplayTag() const;
+	virtual void SetDisplayTag(wxDISPLAY_LABEL d);
+	virtual wxDISPLAY_LABEL GetDisplayTag() const;
 
 private:
 	wxPoints m_Points;
@@ -105,9 +102,9 @@ private:
 	ChartColor m_Color;
 	double m_Zoom;
 	wxDISPLAY_LABEL m_PieTag;
-    bool m_ShowLabel;   
+    bool m_ShowLabel;
 	ChartSizes m_Sizes;
-    
+
     // ctor
     // has to be created on the heap!
     //-------------------------------

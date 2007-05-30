@@ -14,9 +14,6 @@
 //----------------------------------------------------------------------------
 
 // wx
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "legend.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
@@ -41,22 +38,22 @@ WX_DEFINE_OBJARRAY(ListLegendDesc);
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       dtor
-//  DESC:       
+//  DESC:
 //  PARAMETERS: None
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
-wxLegend::wxLegend() 
+wxLegend::wxLegend()
     : m_Page(0)
 {
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       dtor
-//  DESC:       
+//  DESC:
 //  PARAMETERS: None
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
-wxLegend::~wxLegend() 
+wxLegend::~wxLegend()
 {
     m_lDescs.Clear();
 }
@@ -64,16 +61,16 @@ wxLegend::~wxLegend()
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		Add()
 //	DESC:		List descriptos utilities
-//	PARAMETERS:	const wxString &lbl, 
+//	PARAMETERS:	const wxString &lbl,
 //				const ChartColor &col
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxLegend::Add(
-	const wxString &lbl, 
+	const wxString &lbl,
 	const ChartColor &col
-) 
-{ 
-	m_lDescs.Add( DescLegend(lbl, col) ); 
+)
+{
+	m_lDescs.Add( DescLegend(lbl, col) );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -82,9 +79,9 @@ void wxLegend::Add(
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
-void wxLegend::Clear() 
-{ 
-	m_lDescs.Clear(); 
+void wxLegend::Clear()
+{
+	m_lDescs.Clear();
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -95,7 +92,7 @@ void wxLegend::Clear()
 //----------------------------------------------------------------------E-+++
 int wxLegend::GetCount() const
 {
-	return ( m_lDescs.GetCount() ); 
+	return ( m_lDescs.GetCount() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -109,7 +106,7 @@ ChartColor wxLegend::GetColor(
 ) const
 {
 	ChartColor colRes = wxCHART_NOCOLOR;
-	
+
     int iMax = GetCount();
 	if ( iMax > n )
 	{
@@ -130,12 +127,12 @@ wxString wxLegend::GetLabel(
 ) const
 {
     wxString lblRes = wxEmptyString;
-	
+
 	int iMax = GetCount();
 	if ( iMax > n )
 	{
         lblRes = m_lDescs.Item( n ).m_lbl;
-           
+
 	}
 
 	return ( lblRes );
@@ -144,15 +141,15 @@ wxString wxLegend::GetLabel(
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       Draw()
 //  DESC:       Draw legend
-//  PARAMETERS: CHART_HPAINT hp, 
+//  PARAMETERS: CHART_HPAINT hp,
 //              CHART_HRECT hr
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 void wxLegend::Draw(
-    CHART_HPAINT hp, 
+    CHART_HPAINT hp,
     CHART_HRECT hr
 )
-{    
+{
     int iPages = NumPages();
     int iLines = iPages > 0 ? ROWS_PAGE : GetCount();
     wxCoord h;
@@ -170,7 +167,7 @@ void wxLegend::Draw(
     {
         hp->SetBrush( *wxGREY_BRUSH );
         hp->SetPen( *wxBLACK_PEN );
-        
+
         DrawArrow( hp, x+hr->w/2, y, 8, ARROW_UP, false );
         hp->DrawLine( x+15, y+10, x+hr->w-15, y+10);
         DrawArrow( hp, x+hr->w/2, y + 20, 8, ARROW_DOWN, false );
@@ -209,7 +206,7 @@ void wxLegend::IncPage()
     int iDatas = GetCount();
     int iPages = NumPages();
 
-    if ( iPages * ROWS_PAGE != iDatas ) 
+    if ( iPages * ROWS_PAGE != iDatas )
         iPages += 1;
 
     if ( m_Page + 1 < iPages )
@@ -232,12 +229,12 @@ void wxLegend::DecPage()
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       IsInArrowUp()
 //  DESC:       Mouse utilities
-//  PARAMETERS: int x, 
+//  PARAMETERS: int x,
 //              int y
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 bool wxLegend::IsInArrowUp(
-    int x, 
+    int x,
     int y
 )
 {
@@ -252,12 +249,12 @@ bool wxLegend::IsInArrowUp(
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       IsInArrowUp()
 //  DESC:       Mouse utilities
-//  PARAMETERS: int x, 
+//  PARAMETERS: int x,
 //              int y
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 bool wxLegend::IsInArrowDown(
-    int x, 
+    int x,
     int y
 )
 {
@@ -272,29 +269,29 @@ bool wxLegend::IsInArrowDown(
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       DrawArrow()
 //  DESC:       Draw arrow
-//  PARAMETERS: CHART_HPAINT hp, 
+//  PARAMETERS: CHART_HPAINT hp,
 //              int pos,
 //              bool over
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 void wxLegend::DrawArrow(
-    CHART_HPAINT hp, 
+    CHART_HPAINT hp,
     int pos,
     bool over
 )
-{    
+{
     //-----------------------------------------------------------------------
     // Get actual configuration
     //-----------------------------------------------------------------------
     wxBrush oldBrush = hp->GetBrush();
     wxPen oldPen = hp->GetPen();
-    
+
     //-----------------------------------------------------------------------
     // if mouse over use different colours
     //-----------------------------------------------------------------------
-    
+
     if (over)
-    {        
+    {
         hp->SetBrush( *wxBLACK_BRUSH );
         hp->SetPen( *wxBLACK_PEN );
     }
@@ -303,7 +300,7 @@ void wxLegend::DrawArrow(
         hp->SetBrush( *wxGREY_BRUSH );
         hp->SetPen( *wxBLACK_PEN );
     }
-    
+
     if ( pos == ARROW_DOWN )
     {
         //-------------------------------------------------------------------
@@ -324,20 +321,20 @@ void wxLegend::DrawArrow(
             DrawArrow(hp, m_ArrowUp.m_x, m_ArrowUp.m_y, 8, pos, over);
         }
     }
-        
+
     //-----------------------------------------------------------------------
     // Set old colours
     //-----------------------------------------------------------------------
     hp->SetBrush( oldBrush );
     hp->SetPen( oldPen );
-    
+
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       DrawArrow()
 //  DESC:       Draw arrow
-//  PARAMETERS: CHART_HPAINT hp, 
-//              int x, 
+//  PARAMETERS: CHART_HPAINT hp,
+//              int x,
 //              int y,
 //              int size,
 //              int pos,
@@ -345,20 +342,20 @@ void wxLegend::DrawArrow(
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 void wxLegend::DrawArrow(
-    CHART_HPAINT hp, 
-    int x, 
+    CHART_HPAINT hp,
+    int x,
     int y,
     int size,
     int pos,
     bool over
 )
-{    
+{
     if ( pos == ARROW_DOWN )
         size *= (-1);
 
-    wxPoint points[] = { 
-        wxPoint( x, y ), 
-        wxPoint( x - size, y + size ), 
+    wxPoint points[] = {
+        wxPoint( x, y ),
+        wxPoint( x - size, y + size ),
         wxPoint( x + size, y + size) };
     hp->DrawPolygon( 3, points );
 
@@ -367,33 +364,33 @@ void wxLegend::DrawArrow(
         m_ArrowUp.m_x = x;
         m_ArrowUp.m_y = y;
         m_ArrowUp.m_d = y + size/2;
-        m_ArrowUp.m_sel = over;           
+        m_ArrowUp.m_sel = over;
     }
     else
     {
         m_ArrowDown.m_x = x;
         m_ArrowDown.m_y = y;
         m_ArrowDown.m_d = y + size/2;;
-        m_ArrowDown.m_sel = over;           
+        m_ArrowDown.m_sel = over;
     }
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       WriteLabel()
-//  DESC:       Write ROWS_PAGE labels starting from page 
-//  PARAMETERS: CHART_HPAINT hp, 
-//              int x, 
-//              int y, 
+//  DESC:       Write ROWS_PAGE labels starting from page
+//  PARAMETERS: CHART_HPAINT hp,
+//              int x,
+//              int y,
 //              int page
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 void wxLegend::WriteLabel(
-    CHART_HPAINT hp, 
-    int x, 
-    int y, 
+    CHART_HPAINT hp,
+    int x,
+    int y,
     int page
 )
-{    
+{
     int iDatas = GetCount();
 
     wxFont font(8, wxROMAN, wxNORMAL, wxNORMAL);
@@ -401,20 +398,20 @@ void wxLegend::WriteLabel(
     hp->SetPen( *wxBLACK_PEN );
 
     wxString label;
-    
-    for ( int iData = page * ROWS_PAGE; 
-          iData < iDatas && iData < (page+1) * ROWS_PAGE; 
+
+    for ( int iData = page * ROWS_PAGE;
+          iData < iDatas && iData < (page+1) * ROWS_PAGE;
           ++ iData )
     {
         hp->SetBrush( wxBrush(GetColor(iData), wxSOLID) );
         hp->SetPen( *wxTRANSPARENT_PEN );
         hp->DrawRectangle( x, y+2, 10, 10 );
-        
+
         hp->SetPen( *wxBLACK_PEN );
         label = GetLabel( iData ).c_str();
         label.Truncate( 5 );
         hp->DrawText( label, x + 15, y );
-        
+
         y += ROW_SIZE;
     }
 }

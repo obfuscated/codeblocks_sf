@@ -16,10 +16,6 @@
 // Headers
 //----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "legendwindow.h"
-#endif
-
 #include <wx/window.h>
 
 #include "wx/legend.h"
@@ -32,7 +28,7 @@ const int LEGEND_HEIGHT	= 60;	// height in pixels
 
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		wxLegendWindow
-//	DESC:		
+//	DESC:
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
@@ -64,7 +60,7 @@ private:
     void OnPaint(wxPaintEvent &event);
     void OnMouse(wxMouseEvent &event);
     void OnMouseMove(wxMouseEvent &event);
-    
+
     DECLARE_CLASS(wxLegendWindow)
     DECLARE_EVENT_TABLE()
 };

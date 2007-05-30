@@ -13,9 +13,6 @@
 // Headers
 //----------------------------------------------------------------------------
 // wx
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "chart.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
@@ -34,7 +31,7 @@ WX_DEFINE_OBJARRAY(ListChartPoints);
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		ctor
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -44,19 +41,19 @@ wxChart::wxChart()
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		dtor
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
-wxChart::~wxChart() 
+wxChart::~wxChart()
 {
 	wxChartPoints* cptmp;
 
     size_t num = m_LCP.GetCount();
-    
-    for ( size_t loop = 0; 
-          loop < num; 
-          loop++ ) 
+
+    for ( size_t loop = 0;
+          loop < num;
+          loop++ )
     {
         cptmp = m_LCP.Item(loop);
         delete cptmp;
@@ -67,25 +64,25 @@ wxChart::~wxChart()
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		Add()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	CChartPoints* cp
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxChart::Add(
 	wxChartPoints* cp
-) 
+)
 {
-	m_LCP.Add(cp); 
+	m_LCP.Add(cp);
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		Clear()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
-void wxChart::Clear() 
-{ 
+void wxChart::Clear()
+{
 	m_LCP.Clear();
 }
 
@@ -100,10 +97,10 @@ ChartValue wxChart::GetMaxX() const
 	ChartValue valTmp, valRes = 0;
 
     size_t num = m_LCP.GetCount();
-    
-    for ( size_t loop = 0; 
-          loop < num; 
-          loop++ ) 
+
+    for ( size_t loop = 0;
+          loop < num;
+          loop++ )
     {
         valTmp = (m_LCP.Item(loop))->GetMaxX();
         if ( valTmp > valRes )
@@ -111,13 +108,13 @@ ChartValue wxChart::GetMaxX() const
     }
 
     //-----------------------------------------------------------------------
-    // if MaxX is 0 could be a Pie chart that doesn't have points like 
-    // Bar chart so force this to be something != from 0, otherwise 
+    // if MaxX is 0 could be a Pie chart that doesn't have points like
+    // Bar chart so force this to be something != from 0, otherwise
     // wont be draw
     //-----------------------------------------------------------------------
     if ( valRes == 0 )
         valRes = 10;
-    
+
 	return ( valRes );
 }
 
@@ -132,11 +129,11 @@ ChartValue wxChart::GetMinX() const
 	ChartValue valTmp, valRes = 0;
 
     size_t num = m_LCP.GetCount();
-    
-    for ( size_t loop = 0; 
-          loop < num; 
-          loop++ ) 
-    {            
+
+    for ( size_t loop = 0;
+          loop < num;
+          loop++ )
+    {
         valTmp = (m_LCP.Item(loop))->GetMinX();
         if ( loop == 0 )
             valRes = valTmp;
@@ -159,24 +156,24 @@ ChartValue wxChart::GetMaxY() const
 	ChartValue valTmp, valRes = 0;
 
     size_t num = m_LCP.GetCount();
-    
-    for ( size_t loop = 0; 
-          loop < num; 
-          loop++ ) 
-    {                    
+
+    for ( size_t loop = 0;
+          loop < num;
+          loop++ )
+    {
         valTmp = (m_LCP.Item(loop))->GetMaxY();
         if ( valTmp > valRes )
             valRes = valTmp;
     }
 
     //-----------------------------------------------------------------------
-    // if MaxY is 0 could be a Pie chart that doesn't have points like 
-    // Bar chart so force this to be something != from 0, otherwise 
+    // if MaxY is 0 could be a Pie chart that doesn't have points like
+    // Bar chart so force this to be something != from 0, otherwise
     // wont be draw
     //-----------------------------------------------------------------------
     if ( valRes == 0 )
         valRes = 10;
-    
+
     return ( valRes );
 }
 
@@ -191,11 +188,11 @@ ChartValue wxChart::GetMinY() const
 	ChartValue valTmp, valRes = 0;
 
     size_t num = m_LCP.GetCount();
-    
-    for ( size_t loop = 0; 
-          loop < num; 
-          loop++ ) 
-    {                        
+
+    for ( size_t loop = 0;
+          loop < num;
+          loop++ )
+    {
         valTmp = (m_LCP.Item(loop))->GetMinY();
         if ( loop == 0 )
             valRes = valTmp;
@@ -203,7 +200,7 @@ ChartValue wxChart::GetMinY() const
             if ( valTmp < valRes )
                 valRes = valTmp;
     }
-	
+
 	return ( valRes );
 }
 
@@ -217,17 +214,17 @@ ChartValue wxChart::GetMinY() const
 int wxChart::GetNumBarPoints() const
 {
 	int valRes = 0;
-	
+
     size_t num = m_LCP.GetCount();
-    
-    for ( size_t loop = 0; 
-          loop < num; 
-          loop++ ) 
-    {                            
+
+    for ( size_t loop = 0;
+          loop < num;
+          loop++ )
+    {
         if ( *(m_LCP.Item(loop)) == wxChartPointsTypes::Bar() )
             valRes += 1;
     }
-   
+
 	return ( valRes );
 }
 
@@ -243,11 +240,11 @@ int wxChart::GetNumBar3DPoints() const
 	int valRes = 0;
 
     size_t num = m_LCP.GetCount();
-    
-    for ( size_t loop = 0; 
-          loop < num; 
-          loop++ ) 
-    {                            
+
+    for ( size_t loop = 0;
+          loop < num;
+          loop++ )
+    {
         if ( *(m_LCP.Item(loop)) == wxChartPointsTypes::Bar3D() )
             valRes += 1;
     }
@@ -266,10 +263,10 @@ void wxChart::SetZoom(
 )
 {
     size_t num = m_LCP.GetCount();
-    
-    for ( size_t loop = 0; 
-          loop < num; 
-          loop++ ) 
+
+    for ( size_t loop = 0;
+          loop < num;
+          loop++ )
     {
         (m_LCP.Item(loop))->SetZoom( z );
     }
@@ -284,14 +281,14 @@ void wxChart::SetZoom(
 double wxChart::GetZoom() const
 {
     size_t num = m_LCP.GetCount();
-    
-    for ( size_t loop = 0; 
-          loop < num; 
-        ) 
+
+    for ( size_t loop = 0;
+          loop < num;
+        )
     {
         return (m_LCP.Item(loop))->GetZoom();
     }
-    
+
     return 1; // default Zoom set to 1
 }
 
@@ -306,10 +303,10 @@ void wxChart::SetSizes(
 )
 {
     size_t num = m_LCP.GetCount();
-    
-    for ( size_t loop = 0; 
-          loop < num; 
-          loop++ ) 
+
+    for ( size_t loop = 0;
+          loop < num;
+          loop++ )
     {
         (m_LCP.Item(loop))->SetSizes( sizes );
     }
@@ -324,54 +321,54 @@ void wxChart::SetSizes(
 ChartSizes wxChart::GetSizes() const
 {
     size_t num = m_LCP.GetCount();
-    
-    for ( size_t loop = 0; 
-          loop < num; 
-        ) 
+
+    for ( size_t loop = 0;
+          loop < num;
+        )
     {
         return (m_LCP.Item(loop))->GetSizes();
     }
-    
+
     return ChartSizes();
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		Draw()
-//	DESC:		
-//	PARAMETERS:	CHART_HPAINT hp, 
+//	DESC:
+//	PARAMETERS:	CHART_HPAINT hp,
 //				CHART_HRECT hr
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxChart::Draw(
-	CHART_HPAINT hp, 
+	CHART_HPAINT hp,
 	CHART_HRECT hr
-) 
-{ 
+)
+{
 	int iBarCounter = 0;
 	int iBar3DCounter = 0;
 	int xTmp = hr->x;
 
     size_t num = m_LCP.GetCount();
-    for ( size_t loop = 0; 
-          loop < num; 
-          loop++ ) 
+    for ( size_t loop = 0;
+          loop < num;
+          loop++ )
 	{
 		//-------------------------------------------------------------------
 		// Count the number of Bar-Bar3d charts so when more than one bar is
-		// present the first one is draw at position x, the second one at 
+		// present the first one is draw at position x, the second one at
 		// position x+1*bar_width so just next to the previous one
 		//-------------------------------------------------------------------
-        
+
         ChartSizes sizes = m_LCP.Item(loop)->GetSizes();
-        hr->x += ( 
-            iBarCounter * 
+        hr->x += (
+            iBarCounter *
                 static_cast<int>(sizes.wbar * m_LCP.Item(loop)->GetZoom()) +
-            iBar3DCounter * 
+            iBar3DCounter *
                 static_cast<int>(sizes.wbar3d * m_LCP.Item(loop)->GetZoom())
         );
-        
+
 		if ( *(m_LCP.Item(loop)) == wxChartPointsTypes::Bar() )
-		{			
+		{
 			iBarCounter += 1;
 		}
 		else if ( *m_LCP.Item(loop) == wxChartPointsTypes::Bar3D() )
@@ -383,7 +380,7 @@ void wxChart::Draw(
 		// draw all
 		//-------------------------------------------------------------------
 		m_LCP.Item(loop)->Draw( hp, hr );
-		
+
 		hr->x = xTmp;
 	}
 }

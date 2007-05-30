@@ -16,10 +16,6 @@
 // Headers
 //----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "chartctrl.h"
-#endif
-
 #include <wx/scrolwin.h>
 
 #include "chartwindow.h"
@@ -30,7 +26,7 @@
 //----------------------------------------------------------------------------
 // Headers
 //----------------------------------------------------------------------------
-    
+
 // ChartCtrl styles
 //-----------------
 enum STYLE
@@ -42,13 +38,13 @@ enum STYLE
     USE_ZOOM_BUT    = 0x08,
     USE_DEPTH_BUT   = 0x10,
     USE_GRID        = 0x20,
-    DEFAULT_STYLE   = USE_AXIS_X | USE_AXIS_Y | USE_LEGEND | 
+    DEFAULT_STYLE   = USE_AXIS_X | USE_AXIS_Y | USE_LEGEND |
                         USE_ZOOM_BUT | USE_DEPTH_BUT | USE_GRID
 };
 
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		wxChartCtrl
-//	DESC:		
+//	DESC:
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
@@ -57,10 +53,10 @@ WXDLLIMPEXP_CHART class wxChartCtrl : public wxScrolledWindow
 public:
 
 	wxChartCtrl() {};	// for IMPLEMENT_DYNAMIC_CLASS
-    wxChartCtrl(wxWindow *parent, wxWindowID id, 
+    wxChartCtrl(wxWindow *parent, wxWindowID id,
 				 STYLE style = DEFAULT_STYLE,
-				 const wxPoint &pos = wxDefaultPosition, 
-			     const wxSize &size = wxDefaultSize, 
+				 const wxPoint &pos = wxDefaultPosition,
+			     const wxSize &size = wxDefaultSize,
 				 int flags = wxSIMPLE_BORDER);
 
 	~wxChartCtrl();
@@ -97,7 +93,7 @@ private:
 
 	// Calculate width
 	//----------------
-	int CalWidth(int n, int nbar, int nbar3d, 
+	int CalWidth(int n, int nbar, int nbar3d,
 				 int wbar, int wbar3d, int gap);
 
 	// Zoom utility

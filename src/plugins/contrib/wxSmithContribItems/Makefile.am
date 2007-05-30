@@ -34,31 +34,27 @@ wxsmithcontribitems.zip:
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/wxsmithcontribitems.zip manifest.xml > /dev/null
 
 libwxsmithcontribitems_la_SOURCES = \
+./wxchart/wxchart-1.0/src/legendwindow.cpp \
+./wxchart/wxchart-1.0/src/points.cpp \
+./wxchart/wxchart-1.0/src/chartcolors.cpp \
+./wxchart/wxchart-1.0/src/label.cpp \
+./wxchart/wxchart-1.0/src/chartwindow.cpp \
+./wxchart/wxchart-1.0/src/chart.cpp \
+./wxchart/wxchart-1.0/src/piechartpoints.cpp \
+./wxchart/wxchart-1.0/src/xaxis.cpp \
+./wxchart/wxchart-1.0/src/bar3dchartpoints.cpp \
+./wxchart/wxchart-1.0/src/axis.cpp \
+./wxchart/wxchart-1.0/src/xaxiswindow.cpp \
+./wxchart/wxchart-1.0/src/legend.cpp \
+./wxchart/wxchart-1.0/src/yaxiswindow.cpp \
+./wxchart/wxchart-1.0/src/barchartpoints.cpp \
+./wxchart/wxchart-1.0/src/pie3dchartpoints.cpp \
+./wxchart/wxchart-1.0/src/chartctrl.cpp \
+./wxchart/wxchart-1.0/src/yaxis.cpp \
+./wxchart/wxschart.cpp \
 ./wxthings/wxthings/src/toggle.cpp \
 ./wxthings/wxscustombutton.cpp \
 ./wxSmithContribItems.cpp
-
-#./wxchart/wxchart-1.0/src/legendwindow.cpp \
-#./wxchart/wxchart-1.0/src/points.cpp \
-#./wxchart/wxchart-1.0/src/chartcolors.cpp \
-#./wxchart/wxchart-1.0/src/label.cpp \
-#./wxchart/wxchart-1.0/src/chartwindow.cpp \
-#./wxchart/wxchart-1.0/src/chart.cpp \
-#./wxchart/wxchart-1.0/src/piechartpoints.cpp \
-#./wxchart/wxchart-1.0/src/xaxis.cpp \
-#./wxchart/wxchart-1.0/src/bar3dchartpoints.cpp \
-#./wxchart/wxchart-1.0/src/axis.cpp \
-#./wxchart/wxchart-1.0/src/xaxiswindow.cpp \
-#./wxchart/wxchart-1.0/src/legend.cpp \
-#./wxchart/wxchart-1.0/src/yaxiswindow.cpp \
-#./wxchart/wxchart-1.0/src/barchartpoints.cpp \
-#./wxchart/wxchart-1.0/src/pie3dchartpoints.cpp \
-#./wxchart/wxchart-1.0/src/chartctrl.cpp \
-#./wxchart/wxchart-1.0/src/yaxis.cpp \
-#./wxchart/wxchart-1.0/samples/wxchart.cpp \
-#./wxchart/wxschart.cpp 
-
-
 
 noinst_HEADERS = \
 ./wxchart/wxschart.h \

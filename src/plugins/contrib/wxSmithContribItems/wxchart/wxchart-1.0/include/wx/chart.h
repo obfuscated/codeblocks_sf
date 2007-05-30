@@ -15,9 +15,6 @@
 //----------------------------------------------------------------------------
 // Headers
 //----------------------------------------------------------------------------
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "chart.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
@@ -39,7 +36,7 @@ WX_DECLARE_OBJARRAY(wxChartPoints*, ListChartPoints);
 
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		wxChart
-//	DESC:		
+//	DESC:
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++

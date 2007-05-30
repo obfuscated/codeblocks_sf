@@ -15,9 +15,6 @@
 //----------------------------------------------------------------------------
 // Headers
 //----------------------------------------------------------------------------
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "pie3dcharpoints.h"
-#endif
 
 #include "wx/points.h"
 #include "wx/chartcolors.h"
@@ -44,8 +41,8 @@ public:
     // If this is allow after the bcp is out of scope the list has
     // a pointer which has been deallocated!
     //------------------------------------------------------------
-    static wxPie3DChartPoints* CreateWxPie3DChartPoints(wxString name, 
-            ChartColor c = wxCHART_NOCOLOR, bool showlabel = false); 
+    static wxPie3DChartPoints* CreateWxPie3DChartPoints(wxString name,
+            ChartColor c = wxCHART_NOCOLOR, bool showlabel = false);
 
 	virtual ~wxPie3DChartPoints() {};
 
@@ -91,7 +88,7 @@ public:
 	// Add point
 	//----------
 	void Add(wxString name, ChartValue x, ChartValue y);
-	void Add(wxString name, ChartValue x, ChartValue y, 
+	void Add(wxString name, ChartValue x, ChartValue y,
 			 ChartColor c);
 
 	// Set/Get Display option
@@ -105,9 +102,9 @@ private:
 	ChartColor m_Color;
 	double m_Zoom;
 	wxDISPLAY_LABEL m_PieTag;
-    bool m_ShowLabel;   
+    bool m_ShowLabel;
 	ChartSizes m_Sizes;
-    
+
     // ctor
     // has to be created on the heap!
     //-------------------------------

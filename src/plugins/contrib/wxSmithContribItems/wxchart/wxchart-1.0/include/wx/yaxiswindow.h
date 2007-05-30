@@ -16,10 +16,6 @@
 // Headers
 //----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "yaxiswindow.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
@@ -42,7 +38,7 @@ const int YAXIS_HEIGHT	= 30;	// height in pixels
 
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		wxYAxisWindow
-//	DESC:		
+//	DESC:
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
@@ -50,7 +46,7 @@ WXDLLIMPEXP_CHART class wxYAxisWindow : public wxWindow
 {
 public:
 	wxYAxisWindow() {};	// for IMPLEMENT_DYNAMIC_CLASS
-	wxYAxisWindow(wxScrolledWindow *parent, 
+	wxYAxisWindow(wxScrolledWindow *parent,
                    ChartValue max = 0, ChartValue min = 0);
 
 	// access CWxYAxis's Get/Set virtual size
@@ -74,7 +70,7 @@ public:
 private:
 	wxScrolledWindow *m_WinParent;
     wxYAxis m_YAxis;
-    
+
 	// events
 	//-------
     void OnPaint(wxPaintEvent &event);

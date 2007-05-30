@@ -14,9 +14,6 @@
 //----------------------------------------------------------------------------
 
 // wx
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "xaxiswindow.h"
-#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
@@ -42,13 +39,13 @@ END_EVENT_TABLE()
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		ctor
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	wxScrolledWindow* parent
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxXAxisWindow::wxXAxisWindow(
 	 wxScrolledWindow *parent
-):  wxWindow(parent, -1, wxDefaultPosition, 
+):  wxWindow(parent, -1, wxDefaultPosition,
 			 wxSize(XAXIS_WIDTH, XAXIS_HEIGHT)/*, wxSIMPLE_BORDER*/),
 	m_WinParent(parent)
 {
@@ -57,7 +54,7 @@ wxXAxisWindow::wxXAxisWindow(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		SetVirtualMax
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	ChartValue v
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -70,7 +67,7 @@ void wxXAxisWindow::SetVirtualMax(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		SetVirtualMin
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	ChartValue v
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -83,7 +80,7 @@ void wxXAxisWindow::SetVirtualMin(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetVirtualMax
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		ChartValue
 //----------------------------------------------------------------------E-+++
@@ -94,7 +91,7 @@ ChartValue wxXAxisWindow::GetVirtualMax() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetVirtualMin
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		ChartValue
 //----------------------------------------------------------------------E-+++
@@ -174,14 +171,14 @@ void wxXAxisWindow::Draw(
 	GetClientSize( &r.w, &r.h );
 
 	//-----------------------------------------------------------------------
-	// Draw x-axis 
+	// Draw x-axis
 	//-----------------------------------------------------------------------
 	m_XAxis.Draw( hp, &r );
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		OnPaint()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	wxPaintEvent &event
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -199,7 +196,7 @@ void wxXAxisWindow::OnPaint(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		OnMouse()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	wxMouseEvent &event
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
