@@ -25,7 +25,6 @@ namespace
 
     WXS_EV_BEGIN(wxsCustomButtonEvents)
         WXS_EVI(EVT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEvent,Click)
-        WXS_EVI(EVT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEvent,Click)
         WXS_EVI(EVT_TOGGLEBUTTON,wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,wxCommandEvent,Toggle)
         WXS_EV_DEFAULTS()
     WXS_EV_END()
@@ -71,15 +70,14 @@ void wxsCustomButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
                 }
             }
 
-            if ( !Style.IsEmpty() )
-            {
-                Style.Append(_T('|'));
-            }
-
             for ( int i=0; LabelPositionNames[i]; i++ )
             {
                 if ( m_LabelPosition == LabelPositionValues[i] )
                 {
+                    if ( !Style.IsEmpty() )
+                    {
+                        Style.Append(_T('|'));
+                    }
                     Style.Append(LabelPositionNames[i]);
                     break;
                 }
@@ -89,31 +87,31 @@ void wxsCustomButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
             {
                 if ( !Style.IsEmpty() )
                 {
-                    Style.Append(_T("|"));
+                    Style.Append(_T('|'));
                 }
                 Style.Append(_T("wxCUSTBUT_FLAT"));
             }
 
-            if ( Style.EndsWith(_T("|")) )
+            if ( Style.IsEmpty() )
             {
-                Style.RemoveLast();
+                Style = _T("0");
             }
 
-            Codef(_T("%C(%W,%I,%t,%i,%P,%S,%s,%V,%N);\n"),m_Label.c_str(),&m_Bitmap,Style.c_str());
+            Codef(_T("%C(%W,%I,%t,%i,%P,%S,%s,%V,%N);\n"),m_Label.c_str(),&m_Bitmap,wxART_OTHER,Style.c_str());
 
             if ( !m_BitmapSelected.IsEmpty() )
             {
-                Codef(_T("%ASetBitmapSelected(%i);\n"),&m_BitmapSelected);
+                Codef(_T("%ASetBitmapSelected(%i);\n"),&m_BitmapSelected,wxART_OTHER);
             }
 
             if ( !m_BitmapFocused.IsEmpty() )
             {
-                Codef(_T("%ASetBitmapFocus(%i);\n"),&m_BitmapFocused);
+                Codef(_T("%ASetBitmapFocus(%i);\n"),&m_BitmapFocused,wxART_OTHER);
             }
 
             if ( !m_BitmapDisabled.IsEmpty() )
             {
-                Codef(_T("%ASetBitmapDisabled(%i);\n"),&m_BitmapDisabled);
+                Codef(_T("%ASetBitmapDisabled(%i);\n"),&m_BitmapDisabled,wxART_OTHER);
             }
             else if ( !m_Bitmap.IsEmpty() )
             {
@@ -188,6 +186,8 @@ wxObject* wxsCustomButton::OnBuildPreview(wxWindow* Parent,long Flags)
     {
         Button->SetBitmapMargin(m_BitmapMargins.GetSize(Parent));
     }
+
+    return Button;
 }
 
 void wxsCustomButton::OnEnumWidgetProperties(long Flags)
