@@ -476,14 +476,14 @@ void wxsItemEditor::InitializeImages()
 
     static const wxString NormalNames[] =
     {
-        _T("insertinto.png"),
-        _T("insertafter.png"),
-        _T("insertbefore.png"),
-        _T("deletewidget.png"),
-        _T("showpreview.png"),
-        _T("quickpropsopen.png"),
-        _T("quickpropsclose.png"),
-        _T("selected.png")
+        _T("insertinto32.png"),
+        _T("insertafter32.png"),
+        _T("insertbefore32.png"),
+        _T("deletewidget32.png"),
+        _T("showpreview32.png"),
+        _T("quickpropsopen32.png"),
+        _T("quickpropsclose32.png"),
+        _T("selected32.png")
     };
 
     static const wxString SmallNames[] =

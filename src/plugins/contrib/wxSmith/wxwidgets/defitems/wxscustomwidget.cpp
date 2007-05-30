@@ -35,7 +35,7 @@ namespace
         _T("Custom"),
         wxsCPP,
         0,0,
-        _T("images/wxsmith/Custom.png"),
+        _T("images/wxsmith/Custom32.png"),
         _T("images/wxsmith/Custom16.png"));
 
     WXS_EV_BEGIN(wxsCustomWidgetEvents)

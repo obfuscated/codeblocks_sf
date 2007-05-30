@@ -192,7 +192,7 @@ template<class T> class wxsRegisterItem: public wxsItemFactory
             Info.AllowInXRC = AllowInXRC;
 
             wxString DataPath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
-            Info.Icon32.LoadFile(DataPath+Info.ClassName+_T(".png"),wxBITMAP_TYPE_PNG);
+            Info.Icon32.LoadFile(DataPath+Info.ClassName+_T("32.png"),wxBITMAP_TYPE_PNG);
             Info.Icon16.LoadFile(DataPath+Info.ClassName+_T("16.png"),wxBITMAP_TYPE_PNG);
 
             Info.TreeIconId = m_TreeImage.GetIndex();
