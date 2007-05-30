@@ -16,6 +16,7 @@
 #include "compiler_defs.h"
 #include <compilerfactory.h>
 #include <wx/timer.h>
+#include <wx/choice.h>
 
 #define MAX_TARGETS 128
 
