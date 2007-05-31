@@ -857,7 +857,7 @@ void CompilerOptionsDlg::OptionsToText()
 
     // linker options and libs
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
-    for (unsigned int i = 0; i < lstLibs->GetCount(); ++i)
+    for (int i = 0; i < lstLibs->GetCount(); ++i)
         m_LinkLibs.Add(lstLibs->GetString(i));
 }
 
@@ -1407,7 +1407,7 @@ void CompilerOptionsDlg::OnCopyDirsClick(wxCommandEvent& /*event*/)
     if (!base)
         return;
     wxNotebook* nb = XRCCTRL(*this, "nbDirs", wxNotebook);
-    for (unsigned int i = 0; i < control->GetCount(); ++i)
+    for (int i = 0; i < control->GetCount(); ++i)
     {
         switch (nb->GetSelection())
         {
@@ -1505,7 +1505,7 @@ void CompilerOptionsDlg::OnClearVarClick(wxCommandEvent& /*event*/)
                         wxYES | wxNO | wxICON_QUESTION) == wxID_YES)
     {
         // Unset all variables of lstVars
-        for (unsigned int i=0; i<lstVars->GetCount(); i++)
+        for (int i=0; i<lstVars->GetCount(); i++)
         {
             wxString key = lstVars->GetString(i).BeforeFirst(_T('=')).Trim(true);
             if (!key.IsEmpty())
@@ -1748,7 +1748,7 @@ void CompilerOptionsDlg::OnCopyLibsClick(wxCommandEvent& /*event*/)
                                 : reinterpret_cast<CompileOptionsBase*>(m_pProject->GetBuildTarget(sel));
     if (!base)
         return;
-    for (unsigned int i = 0; i < lstLibs->GetCount(); ++i)
+    for (int i = 0; i < lstLibs->GetCount(); ++i)
     {
         base->AddLinkLib(lstLibs->GetString(i));
     }

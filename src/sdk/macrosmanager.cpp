@@ -48,6 +48,7 @@
 
 #include "scripting/sqplus/sqplus.h"
 #include "scripting/bindings/scriptbindings.h"
+#include "prep.h"
 
 using namespace std;
 
@@ -117,22 +118,25 @@ void MacrosManager::ClearProjectKeys()
     macros[_T("LANGUAGE")]  = wxLocale::GetLanguageName(wxLocale::GetSystemLanguage());
     macros[_T("ENCODING")]  = wxLocale::GetSystemEncodingName();
 
-#ifdef __WIN32__
-    const wxString cmd(_T("cmd /c "));
-    macros[_T("CMD_CP")]  = cmd + _T("copy");
-    macros[_T("CMD_RM")]  = cmd + _T("del");
-    macros[_T("CMD_MV")]  = cmd + _T("move");
-    macros[_T("CMD_NULL")]  = cmd + _T("NUL");
-    macros[_T("CMD_MKDIR")] = cmd + _T("md");
-    macros[_T("CMD_RMDIR")] = cmd + _T("rd");
-#else
-    macros[_T("CMD_CP")]  = _T("cp");
-    macros[_T("CMD_RM")]  = _T("rm");
-    macros[_T("CMD_MV")]  = _T("mv");
-    macros[_T("CMD_NULL")]  = _T("/dev/null");
-    macros[_T("CMD_MKDIR")]  = _T("mkdir");
-    macros[_T("CMD_RMDIR")]  = _T("rmdir");
-#endif
+    if (platform::windows)
+    {
+        const wxString cmd(_T("cmd /c "));
+        macros[_T("CMD_CP")]  = cmd + _T("copy");
+        macros[_T("CMD_RM")]  = cmd + _T("del");
+        macros[_T("CMD_MV")]  = cmd + _T("move");
+        macros[_T("CMD_NULL")]  = cmd + _T("NUL");
+        macros[_T("CMD_MKDIR")] = cmd + _T("md");
+        macros[_T("CMD_RMDIR")] = cmd + _T("rd");
+    }
+    else
+    {
+        macros[_T("CMD_CP")]  = _T("cp");
+        macros[_T("CMD_RM")]  = _T("rm");
+        macros[_T("CMD_MV")]  = _T("mv");
+        macros[_T("CMD_NULL")]  = _T("/dev/null");
+        macros[_T("CMD_MKDIR")]  = _T("mkdir");
+        macros[_T("CMD_RMDIR")]  = _T("rmdir");
+    }
 }
 
 void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuildTarget* target)

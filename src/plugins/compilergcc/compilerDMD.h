@@ -8,15 +8,15 @@
 
 class CompilerDMD : public Compiler
 {
-	public:
-		CompilerDMD();
-		virtual ~CompilerDMD();
+    public:
+        CompilerDMD();
+        virtual ~CompilerDMD();
         virtual void Reset();
-		virtual void LoadDefaultRegExArray();
+        virtual void LoadDefaultRegExArray();
         virtual AutoDetectResult AutoDetectInstallationDir();
-	protected:
+    protected:
         Compiler * CreateCopy();
-	private:
+    private:
 };
 
 #endif // COMPILERDMD_H

@@ -2,11 +2,12 @@
 // this compiler is valid only in windows and linux
 
 #include <sdk.h>
-#include "compilerDMD.h"
 #include <wx/log.h>
 #include <wx/intl.h>
 #include <wx/regex.h>
 #include <wx/config.h>
+#include "compilerDMD.h"
+#include "prep.h"
 
 #ifdef __WXMSW__
     #include <wx/msw/registry.h>
@@ -20,7 +21,7 @@ CompilerDMD::CompilerDMD()
 
 CompilerDMD::~CompilerDMD()
 {
-	//dtor
+    //dtor
 }
 
 Compiler * CompilerDMD::CreateCopy()
@@ -32,65 +33,67 @@ Compiler * CompilerDMD::CreateCopy()
 
 void CompilerDMD::Reset()
 {
-	#ifdef __WXMSW__
-	m_Programs.C = _T("dmd.exe");
-	m_Programs.CPP = _T("dmd.exe");
-	m_Programs.LD = _T("dmd.exe");
-	m_Programs.LIB = _T("lib.exe");
-	m_Programs.DBG = _T("windbg.exe");
-	m_Programs.WINDRES = _T("dmd.exe");
-	m_Programs.MAKE = _T("make.exe");
+    if (platform::windows)
+    {
+        m_Programs.C = _T("dmd.exe");
+        m_Programs.CPP = _T("dmd.exe");
+        m_Programs.LD = _T("dmd.exe");
+        m_Programs.LIB = _T("lib.exe");
+        m_Programs.DBG = _T("windbg.exe");
+        m_Programs.WINDRES = _T("dmd.exe");
+        m_Programs.MAKE = _T("make.exe");
 
-	m_Switches.includeDirs = _T("-I");
-	m_Switches.libDirs = _T("");
-	m_Switches.linkLibs = _T("");
-	m_Switches.libPrefix = _T("");
-	m_Switches.libExtension = _T("lib");
-	m_Switches.defines = _T("-version=");
-	m_Switches.genericSwitch = _T("-");
-	m_Switches.objectExtension = _T("obj");
-	m_Switches.needDependencies = false;
-	m_Switches.forceCompilerUseQuotes = false;
-	m_Switches.forceLinkerUseQuotes = true;
-	m_Switches.logging = clogSimple;
-	m_Switches.buildMethod = cbmDirect;
-	m_Switches.linkerNeedsLibPrefix = false;
-	m_Switches.linkerNeedsLibExtension = true;
+        m_Switches.includeDirs = _T("-I");
+        m_Switches.libDirs = _T("");
+        m_Switches.linkLibs = _T("");
+        m_Switches.libPrefix = _T("");
+        m_Switches.libExtension = _T("lib");
+        m_Switches.defines = _T("-version=");
+        m_Switches.genericSwitch = _T("-");
+        m_Switches.objectExtension = _T("obj");
+        m_Switches.needDependencies = false;
+        m_Switches.forceCompilerUseQuotes = false;
+        m_Switches.forceLinkerUseQuotes = true;
+        m_Switches.logging = clogSimple;
+        m_Switches.buildMethod = cbmDirect;
+        m_Switches.linkerNeedsLibPrefix = false;
+        m_Switches.linkerNeedsLibExtension = true;
 
-	// FIXME (hd#1#): should be work on: we need $res_options
-	m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp $resource_output $res_includes $file");
-	m_Commands[(int)ctLinkExeCmd] = _T("$linker $exe_output $link_options $link_objects $libs");
-	m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker $exe_output $link_options $link_objects $libs");
+        // FIXME (hd#1#): should be work on: we need $res_options
+        m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp $resource_output $res_includes $file");
+        m_Commands[(int)ctLinkExeCmd] = _T("$linker $exe_output $link_options $link_objects $libs");
+        m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker $exe_output $link_options $link_objects $libs");
+    }
+    else
+    {
+        m_Programs.C = _T("dmd");
+        m_Programs.CPP = _T("dmd");
+        m_Programs.LD = _T("gcc");
+        m_Programs.LIB = _T("ar");
+        m_Programs.DBG = _T("gdb");
+        m_Programs.WINDRES = _T("");
+        m_Programs.MAKE = _T("make");
 
-	#else // linux
-	m_Programs.C = _T("dmd");
-	m_Programs.CPP = _T("dmd");
-	m_Programs.LD = _T("gcc");
-	m_Programs.LIB = _T("ar");
-	m_Programs.DBG = _T("gdb");
-	m_Programs.WINDRES = _T("");
-	m_Programs.MAKE = _T("make");
+        m_Switches.includeDirs = _T("-I");
+        m_Switches.libDirs = _T("-L");
+        m_Switches.linkLibs = _T("-l");
+        m_Switches.libPrefix = _T("lib");
+        m_Switches.libExtension = _T("a");
+        m_Switches.defines = _T("-version=");
+        m_Switches.genericSwitch = _T("-");
+        m_Switches.objectExtension = _T("o");
+        m_Switches.needDependencies = false;
+        m_Switches.forceCompilerUseQuotes = false;
+        m_Switches.forceLinkerUseQuotes = false;
+        m_Switches.logging = clogSimple;
+        m_Switches.buildMethod = cbmDirect;
+        m_Switches.linkerNeedsLibPrefix = false;
+        m_Switches.linkerNeedsLibExtension = false;
 
-	m_Switches.includeDirs = _T("-I");
-	m_Switches.libDirs = _T("-L");
-	m_Switches.linkLibs = _T("-l");
-	m_Switches.libPrefix = _T("lib");
-	m_Switches.libExtension = _T("a");
-	m_Switches.defines = _T("-version=");
-	m_Switches.genericSwitch = _T("-");
-	m_Switches.objectExtension = _T("o");
-	m_Switches.needDependencies = false;
-	m_Switches.forceCompilerUseQuotes = false;
-	m_Switches.forceLinkerUseQuotes = false;
-	m_Switches.logging = clogSimple;
-	m_Switches.buildMethod = cbmDirect;
-	m_Switches.linkerNeedsLibPrefix = false;
-	m_Switches.linkerNeedsLibExtension = false;
-
- 	m_Commands[(int)ctCompileResourceCmd] = _T("");
-	m_Commands[(int)ctLinkExeCmd] = _T("$linker -o $exe_output $link_options $link_objects $libs");
-	m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker -o $exe_output $link_options $link_objects $libs");
-	#endif
+        m_Commands[(int)ctCompileResourceCmd] = _T("");
+        m_Commands[(int)ctLinkExeCmd] = _T("$linker -o $exe_output $link_options $link_objects $libs");
+        m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker -o $exe_output $link_options $link_objects $libs");
+    }
 
     m_Commands[(int)ctCompileObjectCmd] = _T("$compiler $options $includes -c $file -of$object");
     m_Commands[(int)ctLinkDynamicCmd] = _T("$linker $exe_output $link_options $link_objects $libs $link_resobjects");
@@ -99,8 +102,8 @@ void CompilerDMD::Reset()
 
     m_Options.ClearOptions();
 
-	//. m_Options.AddOption(_("Alignment of struct members"), "-a[1|2|4|8]", _("Architecture"));
-	//m_Options.AddOption(_("compile only, do not link"), _T("-c"), _("D Features"));
+    //. m_Options.AddOption(_("Alignment of struct members"), "-a[1|2|4|8]", _("Architecture"));
+    //m_Options.AddOption(_("compile only, do not link"), _T("-c"), _("D Features"));
     m_Options.AddOption(_("instrument for code coverage analysis"), _T("-cov"), _("D Features"));
     m_Options.AddOption(_("generate documentation from source"), _T("-D"), _("D Features"));
     m_Options.AddOption(_("allow deprecated features"), _T("-d"), _("D Features"));
@@ -123,10 +126,11 @@ void CompilerDMD::Reset()
     m_CompilerOptions.Clear();
     m_LinkerOptions.Clear();
     m_LinkLibs.Clear();
-	#ifndef __WXMSW__
-	m_LinkLibs.Add(_("pthread"));
-	m_LinkLibs.Add(_("m"));
-	#endif
+    if (!platform::windows)
+    {
+      m_LinkLibs.Add(_("pthread"));
+      m_LinkLibs.Add(_("m"));
+    }
     m_CmdsBefore.Clear();
     m_CmdsAfter.Clear();
 }
@@ -148,17 +152,23 @@ AutoDetectResult CompilerDMD::AutoDetectInstallationDir()
     // NOTE (mandrav#1#): which doesn't seem to exist if you don't have the CD version ;)
 
     // just a guess; the default installation dir
-	#ifdef __WXMSW__
-	m_MasterPath = _T("C:\\dmd");
-	wxString incPath=m_MasterPath + sep + _T("src") + sep + _T("phobos");
-	wxString libPath=m_MasterPath + sep + _T("lib");
-	wxString libName=_T("phobos.lib");
-	#else // linux
-	m_MasterPath = wxFileExists(_T("/usr/local/bin/dmd")) ? _T("/usr/local") : _T("/usr");
-	wxString incPath=m_MasterPath + sep + _T("lib") + sep + _T("phobos");
-	wxString libPath=m_MasterPath + sep + _T("lib");
-	wxString libName=_T("phobos");
-	#endif
+    wxString incPath;
+    wxString libPath;
+    wxString libName;
+    if (platform::windows)
+    {
+        m_MasterPath = _T("C:\\dmd");
+        incPath = m_MasterPath + sep + _T("src") + sep + _T("phobos");
+        libPath = m_MasterPath + sep + _T("lib");
+        libName = _T("phobos.lib");
+    }
+    else
+    {
+      m_MasterPath = wxFileExists(_T("/usr/local/bin/dmd")) ? _T("/usr/local") : _T("/usr");
+      incPath = m_MasterPath + sep + _T("lib") + sep + _T("phobos");
+      libPath = m_MasterPath + sep + _T("lib");
+      libName = _T("phobos");
+    }
 
     if (!m_MasterPath.IsEmpty())
     {

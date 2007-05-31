@@ -103,39 +103,41 @@ cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, 
   SetClientSize(w, h);
   CentreOnScreen();
 
-#ifndef __WXMAC__
-  int x = GetPosition().x;
-  int y = GetPosition().y;
-
   wxScreenDC screen_dc;
-#endif
   wxMemoryDC label_dc;
+
+  int x;
+  int y;
+
+  if (!platform::macosx)
+  {
+    x = GetPosition().x;
+    y = GetPosition().y;
+  }
 
   m_label.Create(w, h);
 
   label_dc.SelectObject(m_label);
-#ifndef __WXMAC__
-  label_dc.Blit(0, 0, w, h, &screen_dc, x, y);
-#else
-  label_dc.SetBackground(*wxWHITE_BRUSH);
-  label_dc.Clear();
-#endif
+  if (!platform::macosx)
+  {
+    label_dc.Blit(0, 0, w, h, &screen_dc, x, y);
+  }
+  else
+  {
+    label_dc.SetBackground(*wxWHITE_BRUSH);
+    label_dc.Clear();
+  }
   label_dc.DrawBitmap(label, 0, 0, true);
   label_dc.SelectObject(wxNullBitmap);
 
-  #ifdef __WIN32__
-  //  Surprise: SetShape() does not seem to work...?
-  //  See DoPaint() -- we simulate it using the clip rect
-  #endif
   SetShape(r);
 
   Show(true);
   SetThemeEnabled(false); // seems to be useful by description
   SetBackgroundStyle(wxBG_STYLE_CUSTOM); // the trick for GTK+ (notice it's after Show())
 
-#ifdef __WXMAC__
-  Centre(wxBOTH | wxCENTRE_ON_SCREEN); // centre only works when the window is showing
-#endif
+  if (platform::macosx)
+    Centre(wxBOTH | wxCENTRE_ON_SCREEN); // centre only works when the window is showing
 
   if(platform::windows || platform::macosx)
     Update();

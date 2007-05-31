@@ -311,22 +311,24 @@ void CompilerGCC::OnAttach()
         idMenuSelectTargetOther[i] = wxNewId();
     // register built-in compilers
     CompilerFactory::RegisterCompiler(new CompilerMINGW);
-#ifdef __WXMSW__
-    CompilerFactory::RegisterCompiler(new CompilerMSVC);
-    CompilerFactory::RegisterCompiler(new CompilerMSVC8);
-    CompilerFactory::RegisterCompiler(new CompilerBCC);
-    CompilerFactory::RegisterCompiler(new CompilerDMC);
-    CompilerFactory::RegisterCompiler(new CompilerOW);
-    CompilerFactory::RegisterCompiler(new CompilerGNUARM);
-    CompilerFactory::RegisterCompiler(new CompilerCYGWIN);
-#endif
+    if (platform::windows)
+    {
+        CompilerFactory::RegisterCompiler(new CompilerMSVC);
+        CompilerFactory::RegisterCompiler(new CompilerMSVC8);
+        CompilerFactory::RegisterCompiler(new CompilerBCC);
+        CompilerFactory::RegisterCompiler(new CompilerDMC);
+        CompilerFactory::RegisterCompiler(new CompilerOW);
+        CompilerFactory::RegisterCompiler(new CompilerGNUARM);
+        CompilerFactory::RegisterCompiler(new CompilerCYGWIN);
+    }
     CompilerFactory::RegisterCompiler(new CompilerICC);
     CompilerFactory::RegisterCompiler(new CompilerSDCC);
     CompilerFactory::RegisterCompiler(new CompilerTcc);
+    if (platform::windows)
+        CompilerFactory::RegisterCompiler(new CompilerLCC);
     CompilerFactory::RegisterCompiler(new CompilerGDC);
-#if defined(_WIN32) || defined(__linux__)
-    CompilerFactory::RegisterCompiler(new CompilerDMD);
-#endif
+    if (platform::windows || platform::linux)
+        CompilerFactory::RegisterCompiler(new CompilerDMD);
 
     // register (if any) user-copies of built-in compilers
     CompilerFactory::RegisterUserCompilers();
@@ -781,11 +783,12 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
     else
     {
         m_EnvironmentMsg.Clear();
-#ifdef __WXMSW__
-#define PATH_SEP _T(";")
-#else
-#define PATH_SEP _T(":")
-#endif
+        wxString path_sep;
+        if (platform::windows)
+            path_sep = _T(";");
+        else
+            path_sep = _T(":");
+
         // add extra compiler paths in PATH
         wxString oldpath = envPath;
         envPath.Clear();
@@ -793,18 +796,17 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
         {
             if (!extraPaths[i].IsEmpty())
             {
-                envPath += extraPaths[i] + PATH_SEP;
+                envPath += extraPaths[i] + path_sep;
             }
         }
         envPath = envPath + oldpath;
 
         // add bin path to PATH env. var.
         if (wxFileExists(masterPath + sep + _T("bin") + sep + gcc))
-            envPath = masterPath + sep + _T("bin") + PATH_SEP + envPath;
+            envPath = masterPath + sep + _T("bin") + path_sep + envPath;
         else if (wxFileExists(masterPath + sep + gcc))
-            envPath = masterPath + PATH_SEP + envPath;
+            envPath = masterPath + path_sep + envPath;
         wxSetEnv(_T("PATH"), envPath);
-#undef PATH_SEP
     }
 }
 
@@ -1582,12 +1584,13 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
     wxString exe_filename = fname.GetFullPath();
     wxString cmd;
 
-#ifndef __WXMSW__
-    // for non-win platforms, use m_ConsoleTerm to run the console app
-    wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
-    term.Replace(_T("$TITLE"), _T("'") + exe_filename + _T("'"));
-    cmd << term << strSPACE;
-#endif
+    if (!platform::windows)
+    {
+        // for non-win platforms, use m_ConsoleTerm to run the console app
+        wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
+        term.Replace(_T("$TITLE"), _T("'") + exe_filename + _T("'"));
+        cmd << term << strSPACE;
+    }
     wxString baseDir = ConfigManager::GetExecutableFolder();
 
     if (wxFileExists(baseDir + strSLASH + strCONSOLE_RUNNER))
@@ -1752,15 +1755,16 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 
     wxString script = command;
 
-#ifdef __WXMAC__
-    if (target->GetTargetType() == ttConsoleOnly &&
-        script.GetChar(0) == '\'' && script.GetChar(script.length()-1) == '\'')
+    if (platform::macosx)
+    {
+        if (target->GetTargetType() == ttConsoleOnly &&
+            script.GetChar(0) == '\'' && script.GetChar(script.length()-1) == '\'')
         script = script.Mid(1,script.length()-2); // skip outmost single-quotes
 
-    // convert embedded quotes to AppleScript syntax
-    script.Replace(_T("\""), _T("\"&quote&\""), true);
-    script.Replace(_T("\'"), _T("\"&ASCII character 39&\""), true);
-#endif
+        // convert embedded quotes to AppleScript syntax
+        script.Replace(_T("\""), _T("\"&quote&\""), true);
+        script.Replace(_T("\'"), _T("\"&ASCII character 39&\""), true);
+    }
 
     if (!cmd.Replace(_T("$SCRIPT"), script))
         // if they didn't specify $SCRIPT, append:
@@ -2653,9 +2657,8 @@ int CompilerGCC::KillProcess()
         if (!m_Processes[i])
             continue;
 
-    #ifdef __WXMSW__
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Aborting process %d ... Be patient!"), i);
-    #endif // __WXMSW__
+        if (platform::windows)
+            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Aborting process %d ... Be patient!"), i);
 
         // Close input pipe
         m_Processes[i]->CloseOutput();
@@ -2663,22 +2666,24 @@ int CompilerGCC::KillProcess()
 
         ret = wxProcess::Kill(m_Pid[i], wxSIGTERM);
 
-    #ifndef __WXMSW__
-        if(ret != wxKILL_OK)
+        if (!platform::windows)
         {
-            // No need to tell the user about the errors - just keep him waiting.
-            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Aborting process %d ..."), i);
+            if(ret != wxKILL_OK)
+            {
+                // No need to tell the user about the errors - just keep him waiting.
+                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Aborting process %d ..."), i);
+            }
+            else switch (ret)
+            {
+//                case wxKILL_ACCESS_DENIED: cbMessageBox(_("Access denied")); break;
+//                case wxKILL_NO_PROCESS: cbMessageBox(_("No process")); break;
+//                case wxKILL_BAD_SIGNAL: cbMessageBox(_("Bad signal")); break;
+//                case wxKILL_ERROR: cbMessageBox(_("Unspecified error")); break;
+                case wxKILL_OK:
+                default: break;
+                // Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Process killed..."));
+            }
         }
-        else switch (ret)
-        {
-//            case wxKILL_ACCESS_DENIED: cbMessageBox(_("Access denied")); break;
-//            case wxKILL_NO_PROCESS: cbMessageBox(_("No process")); break;
-//            case wxKILL_BAD_SIGNAL: cbMessageBox(_("Bad signal")); break;
-//            case wxKILL_ERROR: cbMessageBox(_("Unspecified error")); break;
-            case wxKILL_OK:
-            default: break;//Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Process killed..."));
-        }
-    #endif // __WXMSW__
     }
     return ret;
 }
