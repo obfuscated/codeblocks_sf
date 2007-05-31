@@ -504,6 +504,7 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
 		}
 	}
 	control->SetLexer(mset.m_Lexers);
+	control->SetStyleBits(control->GetStyleBitsNeeded());
 	for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
 	{
         control->SetKeyWords(i, mset.m_Keywords[i]);

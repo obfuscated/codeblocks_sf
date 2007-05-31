@@ -324,11 +324,10 @@ void CompilerGCC::OnAttach()
     CompilerFactory::RegisterCompiler(new CompilerICC);
     CompilerFactory::RegisterCompiler(new CompilerSDCC);
     CompilerFactory::RegisterCompiler(new CompilerTcc);
-    if (platform::windows)
-        CompilerFactory::RegisterCompiler(new CompilerLCC);
     CompilerFactory::RegisterCompiler(new CompilerGDC);
-    if (platform::windows || platform::linux)
-        CompilerFactory::RegisterCompiler(new CompilerDMD);
+#if defined(__WIN32__) || defined(__linux__)
+    CompilerFactory::RegisterCompiler(new CompilerDMD);
+#endif
 
     // register (if any) user-copies of built-in compilers
     CompilerFactory::RegisterUserCompilers();

@@ -50,6 +50,76 @@
                         index="17"
                         fg="0,0,0"
                         italics="1"/>
+                <Style name="PHP Section"
+                        index="18"
+                        fg="200,0,200"
+                        italics="1"/>
+				<Style name="PHP Default"
+						index="118"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Complex Variable"
+						index="104"
+						fg="0,127,0"
+						bg="255,248,248"
+						italics="1"/>
+				<Style name="HString"
+						index="119"
+						fg="0,0,255"/>
+				<Style name="Simple String"
+						index="120"
+						fg="0,0,255"/>
+				<Style name="Word"
+						index="121"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="Number"
+						index="122"
+						fg="240,0,240"/>
+				<Style name="Variable"
+						index="123"
+						fg="0,0,128"/>
+				<Style name="Comment"
+						index="124"
+						fg="160,160,160"/>
+				<Style name="Comment (line)"
+						index="125"
+						fg="128,128,255"
+						bold="1"/>
+				<Style name="HString Variable"
+						index="126"
+						fg="0,0,255"
+						bold="1"/>
+				<Style name="Operator"
+						index="127"
+						fg="255,0,0"/>
+				<Style name="Selection"
+						index="-99"
+						bg="192,192,192"/>
+				<Style name="Active line"
+						index="-98"
+						bg="255,255,160"/>
+				<Style name="Breakpoint line"
+						index="-2"
+						bg="255,160,160"/>
+				<Style name="Debugger active line"
+						index="-3"
+						bg="160,160,255"/>
+				<Style name="Compiler error line"
+						index="-4"
+						bg="255,128,0"/>
+				<Style name="Matching brace highlight"
+						index="34"
+						bg="128,255,255"
+						bold="1"/>
+				<Style name="No matching brace highlight"
+						index="35"
+						fg="255,255,255"
+						bg="255,0,0"
+						bold="1"/>
                 <Keywords>
                         <!-- HTML elements and attributes -->
                         <Set index="0"
@@ -89,6 +159,14 @@
                                    footer gauge header m menubar menulabel nav progress section switch tabbo
                                    active command contenteditable ping
                                    public !doctype"/>
+						<Set index="4"
+							value="and array as bool boolean break case cfunction class const continue declare
+                     default die directory do double echo else elseif empty enddeclare endfor
+                     endforeach endif endswitch endwhile eval exit extends false float for
+                     foreach function global if include include_once int integer isset list new
+                     null object old_function or parent print real require require_once resource
+                     return static stdclass string switch true unset use var while xor __class__
+                     __file__ __function__ __line__ __sleep __wakeup"/>
                 </Keywords>
 				<SampleCode value="lexer_html.sample"/>
         </Lexer>
