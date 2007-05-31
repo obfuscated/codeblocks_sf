@@ -1198,6 +1198,12 @@
 		<Unit filename="plugins\compilergcc\compilerGNUARM.h">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUAVR.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUAVR.h">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins\compilergcc\compilerICC.cpp">
 			<Option target="Compiler" />
 		</Unit>

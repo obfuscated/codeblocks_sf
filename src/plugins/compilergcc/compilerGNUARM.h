@@ -1,7 +1,7 @@
 #ifndef COMPILER_GNUARM_H
 #define COMPILER_GNUARM_H
 
-#include <compiler.h>
+#include "compiler.h"
 
 class CompilerGNUARM : public Compiler
 {

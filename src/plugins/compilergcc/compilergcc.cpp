@@ -68,6 +68,7 @@
     #include "compilerGDC.h"
     #include "compilerDMD.h"
     #include "compilerGNUARM.h"
+    #include "compilerGNUAVR.h"
     #include "compilerCYGWIN.h"
 #endif
 #ifdef __WXMAC__
@@ -319,6 +320,7 @@ void CompilerGCC::OnAttach()
     CompilerFactory::RegisterCompiler(new CompilerDMC);
     CompilerFactory::RegisterCompiler(new CompilerOW);
     CompilerFactory::RegisterCompiler(new CompilerGNUARM);
+    CompilerFactory::RegisterCompiler(new CompilerGNUAVR);
     CompilerFactory::RegisterCompiler(new CompilerCYGWIN);
 #endif
     CompilerFactory::RegisterCompiler(new CompilerICC);

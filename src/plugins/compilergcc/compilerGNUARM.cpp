@@ -2,16 +2,14 @@
  * $Id: compilerMINGW.cpp 1429 2005-12-02 23:25:50Z mandrav $
  */
 
-#include <sdk.h>
+#include "sdk.h"
+#ifndef CB_PRECOMP
 #include <wx/intl.h>
 #include <wx/regex.h>
-#include <wx/config.h>
-#include <wx/fileconf.h>
-#include <wx/msgdlg.h>
-#include <wx/log.h>
-#include "manager.h"
-#include "messagemanager.h"
-#include "configmanager.h"
+#include <wx/utils.h> // wxGetOSDirectory, wxGetEnv
+#endif
+#include <wx/filefn.h> // wxFileExists
+#include <wx/fileconf.h> // wxFileConfig
 #include "compilerGNUARM.h"
 
 CompilerGNUARM::CompilerGNUARM()
@@ -168,7 +166,7 @@ void CompilerGNUARM::Reset()
     m_LinkLibs.Clear();
     m_CmdsBefore.Clear();
     m_CmdsAfter.Clear();
-}
+} // end of Reset
 
 void CompilerGNUARM::LoadDefaultRegExArray()
 {
@@ -219,4 +217,4 @@ AutoDetectResult CompilerGNUARM::AutoDetectInstallationDir()
         AddLibDir(m_MasterPath + sep + _T("lib"));
     }
     return ret;
-}
+} // end of AutoDetectInstallationDir

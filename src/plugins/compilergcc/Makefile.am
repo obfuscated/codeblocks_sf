@@ -37,6 +37,7 @@ libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 			compilerOWgenerator.cpp \
 			compilerSDCC.cpp \
 			compilerGNUARM.cpp \
+			compilerGNUAVR.cpp \
 			compilerTcc.cpp \
 			directcommands.cpp \
 			makefilegenerator.cpp
@@ -60,6 +61,7 @@ noinst_HEADERS = advancedcompileroptionsdlg.h \
 			compilerOWgenerator.h \
 			compilerSDCC.h \
 			compilerGNUARM.h \
+			compilerGNUAVR.h \
 			compilerTcc.h \
 			directcommands.h \
 			makefilegenerator.h
