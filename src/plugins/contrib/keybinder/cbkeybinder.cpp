@@ -53,7 +53,7 @@ BEGIN_EVENT_TABLE(cbKeyBinder, cbPlugin)
     EVT_MENUBAR_CREATE_BEGIN(cbKeyBinder::OnMenuBarModify) //never invoked
     EVT_MENUBAR_CREATE_END  (cbKeyBinder::OnMenuBarModify) //never invoked
     EVT_IDLE            (cbKeyBinder::OnIdle)
-    //-EVT_TIMER       (-1, cbKeyBinder::OnTimerAlarm)
+    EVT_TIMER           (-1, cbKeyBinder::OnTimerAlarm)
 END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 
@@ -396,7 +396,8 @@ int cbKeyBinder::EnableMerge(bool allow)
     // enable Merge
     m_mergeEnabled  = (m_mergeEnabled < 0 ? 1 : ++m_mergeEnabled );
     // StartMergetTimer removed for testing 2007/05/10
-    //-StartMergeTimer( 15 );
+    //  re-enables 2007/05/31 to record plugin menu key changes
+    StartMergeTimer( 15 );
     return m_mergeEnabled;
 }//LockMerge
 // ----------------------------------------------------------------------------// ----------------------------------------------------------------------------
@@ -631,7 +632,7 @@ void cbKeyBinder::OnLoad()
 	}
 
     #ifdef LOGGING
-	 LOGIT(_T("OnLoad()End\n"));
+	 LOGIT(_T("OnLoad()Ended, EnableMerge[%d]"), IsEnabledMerge());
 	#endif
     if (not IsEnabledMerge()) EnableMerge(true);
 	return;

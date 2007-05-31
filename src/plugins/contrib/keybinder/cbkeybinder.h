@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.33 2007/05/11"
+#define VERSION "1.0.34 2007/05/31"
 // -----------------------------------
 class MyDialog;
 
@@ -149,8 +149,8 @@ class cbKeyBinder : public cbPlugin
         bool    m_bAppShutDown;
         bool    m_bConfigBusy;
 
-
 		DECLARE_EVENT_TABLE()
+
 };//class cbKeyBinder
 // ----------------------------------------------------------------------------
 //  MyDialog class declaration
@@ -676,5 +676,8 @@ private:
 // ----------------------------------------------------------------------------
 //  Commit  1.0.33 2007/05/11
 //          33) Fixes for use of non-precompiled headers
+// ----------------------------------------------------------------------------
+//  Commit  1.0.34 2007/05/31
+//          34) Re-enabled dynamic merge eliminating consideration of duplicates
 // ----------------------------------------------------------------------------
 //
