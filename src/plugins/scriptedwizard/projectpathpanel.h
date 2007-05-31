@@ -25,14 +25,17 @@ class ProjectPathPanel: public wxPanel
 		virtual ~ProjectPathPanel();
 
 		void SetPath(const wxString& path)
-		{ 
-		    txtPrjPath->SetValue(path); 
+		{
+		    txtPrjPath->SetValue(path);
 //		    if (!path.IsEmpty())
 //                txtPrjName->SetFocus();
             Update();
         }
 		wxString GetPath(){ return txtPrjPath->GetValue(); }
-		wxString GetName(){ return txtPrjName->GetValue(); }
+		//wxString GetName(){ return txtPrjName->GetValue(); }
+// NOTE (Biplab#1#): This is a temporary fix. This function
+// need to be renamed according to it's visual representation
+		wxString GetName(){ return txtPrjTitle->GetValue(); }
 		wxString GetFullFileName(){ return txtFinalDir->GetValue(); }
 		wxString GetTitle(){ return txtPrjTitle->GetValue(); }
 
@@ -57,7 +60,7 @@ class ProjectPathPanel: public wxPanel
         void Update();
         void UpdateFromResulting();
         bool m_LockUpdates;
-        
+
 		//(*Handlers(ProjectPathPanel)
 		void OnFullPathChanged(wxCommandEvent& event);
 		void OntxtFinalDirText(wxCommandEvent& event);
