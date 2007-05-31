@@ -1,102 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-    <object class="wxDialog" name="RegExDlg">
-        <title>Regular expressions testbed</title>
-        <handler entry="EVT_INIT_DIALOG" function="OnInit" />
-        <style>wxDEFAULT_DIALOG_STYLE</style>
-        <object class="wxBoxSizer">
-            <orient>wxVERTICAL</orient>
-            <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                <object class="wxStaticText" name="ID_LBL_REGEX" variable="lblRegEx" member="no">
-                    <label>Regular expression:</label>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="ID_TXT_REGEX" variable="txtRegEx" member="yes">
-                    <value />
-                    <size>410,24</size>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                <object class="wxStaticText" name="ID_LBL_INPUT" variable="lblInput" member="no">
-                    <label>Test input:</label>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="ID_TXT_INPUT" variable="txtInput" member="yes">
-                    <value />
-                    <size>410,133</size>
-                    <style>wxTE_MULTILINE</style>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                <object class="wxStaticText" name="ID_LBL_OUTPUT" variable="lblOutput" member="no">
-                    <label>Test output (result):</label>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="ID_TXT_OUTPUT" variable="txtOutput" member="yes">
-                    <value />
-                    <size>410,133</size>
-                    <style>wxTE_MULTILINE|wxTE_READONLY</style>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxStaticLine" name="ID_STL_LINE" variable="stlLine" member="no">
-                    <size>10,-1</size>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_CENTER</flag>
-                <object class="wxBoxSizer">
-                    <orient>wxHORIZONTAL</orient>
-                    <object class="sizeritem">
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                        <object class="wxButton" name="ID_BTN_TEXT" variable="btnTest" member="yes">
-                            <label>Test</label>
-                            <default>1</default>
-                            <handler entry="EVT_BUTTON" function="OnTestClick" />
-                        </object>
-                    </object>
-                    <object class="sizeritem">
-                        <border>5</border>
-                        <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                        <object class="wxButton" name="wxID_CANCEL" variable="btnCancel" member="yes">
-                            <label>Close</label>
-                        </object>
-                    </object>
-                </object>
-            </object>
-        </object>
-    </object>
     <resource_extra>
-        <object root="1">
-            <handler entry="EVT_INIT_DIALOG" function="OnInit" />
-        </object>
-        <object variable="lblRegEx" member="no" name="ID_LBL_REGEX" class="wxStaticText" />
-        <object variable="txtRegEx" member="yes" name="ID_TXT_REGEX" class="wxTextCtrl" />
-        <object variable="lblInput" member="no" name="ID_LBL_INPUT" class="wxStaticText" />
-        <object variable="txtInput" member="yes" name="ID_TXT_INPUT" class="wxTextCtrl" />
-        <object variable="lblOutput" member="no" name="ID_LBL_OUTPUT" class="wxStaticText" />
-        <object variable="txtOutput" member="yes" name="ID_TXT_OUTPUT" class="wxTextCtrl" />
-        <object variable="stlLine" member="no" name="ID_STL_LINE" class="wxStaticLine" />
-        <object variable="btnTest" member="yes" name="ID_BTN_TEXT" class="wxButton">
-            <handler entry="EVT_BUTTON" function="OnTestClick" />
-        </object>
-        <object variable="btnCancel" member="yes" name="wxID_CANCEL" class="wxButton" />
+        <object root="1" />
+        <object name="ID_3" class="wxStaticText" variable="StaticText1" member="no" />
+        <object name="ID_REGEX" class="wxTextCtrl" variable="m_regex" member="yes" />
+        <object name="ID_QUOTED" class="wxTextCtrl" variable="m_quoted" member="yes" />
+        <object name="ID_1" class="wxStaticText" variable="StaticText2" member="no" />
+        <object name="ID_LIBRARY" class="wxChoice" variable="m_library" member="yes" />
+        <object name="ID_NOCASE" class="wxCheckBox" variable="m_nocase" member="yes" />
+        <object name="ID_NEWLINES" class="wxCheckBox" variable="m_newlines" member="yes" />
+        <object name="ID_STATICTEXT1" class="wxStaticText" variable="StaticText3" member="no" />
+        <object name="ID_TEXT" class="wxTextCtrl" variable="m_text" member="yes" />
+        <object name="ID_OUT" class="wxHtmlWindow" variable="m_output" member="yes" />
     </resource_extra>
 </wxsmith>

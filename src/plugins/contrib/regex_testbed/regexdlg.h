@@ -7,16 +7,14 @@
     #pragma hdrstop
 #endif
 
-//(*Headers(RegExDlg)
-#include <wx/button.h>
+//(*Headers(regex_dialog)
+#include <wx/checkbox.h>
+#include <wx/choice.h>
 #include <wx/dialog.h>
-#include <wx/intl.h>
-#include <wx/settings.h>
+#include <wx/html/htmlwin.h>
 #include <wx/sizer.h>
-#include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/xrc/xmlres.h>
 //*)
 
 #include <wx/html/htmlwin.h>
@@ -35,15 +33,14 @@ class RegExDlg: public wxDialog
 		RegExDlg(wxWindow* parent,wxWindowID id = -1);
 		virtual ~RegExDlg();
 
-		//(*Identifiers(RegExDlg)
+		//(*Identifiers(regex_dialog)
 		//*)
 
 		void EndModal(int retCode);
 
 	protected:
 
-		//(*Handlers(RegExDlg)
-		void OnCloseButton(wxCommandEvent& event){ Close(); };
+		//(*Handlers(regex_dialog)
 		void RunBenchmark(wxCommandEvent& event);
 		void OnInit(wxInitDialogEvent& event);
 		void OnRegExItemActivated(wxListEvent& event);
@@ -56,13 +53,15 @@ class RegExDlg: public wxDialog
         wxArrayString GetBuiltinMatches(const wxString& text);
         wxArrayString GetPregMatches(const wxString& text);
 
-        wxTextCtrl *m_regex;
-        wxTextCtrl *m_quoted;
-        wxChoice *m_library;
-        wxCheckBox *m_nocase;
-        wxCheckBox *m_newlines;
-        wxTextCtrl *m_text;
-        wxHtmlWindow *m_output;
+        //(*Declarations(regex_dialog)
+        wxTextCtrl* m_regex;
+        wxTextCtrl* m_quoted;
+        wxChoice* m_library;
+        wxCheckBox* m_nocase;
+        wxCheckBox* m_newlines;
+        wxTextCtrl* m_text;
+        wxHtmlWindow* m_output;
+        //*)
 
         wxRegEx m_wxre;
 

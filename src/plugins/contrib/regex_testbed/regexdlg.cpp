@@ -9,32 +9,37 @@
     #include <configmanager.h>
 #endif
 
-//(*InternalHeaders(RegExDlg)
+//(*InternalHeaders(regex_dialog)
+#include <wx/bitmap.h>
+#include <wx/font.h>
+#include <wx/fontenum.h>
+#include <wx/fontmap.h>
+#include <wx/image.h>
+#include <wx/intl.h>
+#include <wx/settings.h>
+#include <wx/xrc/xmlres.h>
 //*)
 
-//(*IdInit(RegExDlg)
+//(*IdInit(regex_dialog)
 //*)
 
 BEGIN_EVENT_TABLE(RegExDlg,wxDialog)
 	EVT_INIT_DIALOG(RegExDlg::OnInit)
-	EVT_BUTTON(XRCID("ID_BENCHMARK"), RegExDlg::RunBenchmark)
-	EVT_BUTTON(XRCID("ID_CLOSE"), RegExDlg::OnCloseButton)
 	EVT_UPDATE_UI(-1, RegExDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
 RegExDlg::RegExDlg(wxWindow* parent,wxWindowID id)
 {
-	wxXmlResource::Get()->LoadDialog(this,parent,_T("regex_dialog"));
-
-	m_regex = XRCCTRL(*this,"ID_REGEX", wxTextCtrl);
-	m_quoted = XRCCTRL(*this,"ID_QUOTED", wxTextCtrl);
-
-	m_library = XRCCTRL(*this,"ID_LIBRARY", wxChoice);
-	m_nocase = XRCCTRL(*this,"ID_NOCASE", wxCheckBox);
-	m_newlines = XRCCTRL(*this,"ID_NEWLINES", wxCheckBox);
-
-	m_text = XRCCTRL(*this,"ID_TEXT", wxTextCtrl);
-	m_output = XRCCTRL(*this,"ID_OUT", wxHtmlWindow);
+    //(*Initialize(regex_dialog)
+    wxXmlResource::Get()->LoadObject(this,parent,_T("regex_dialog"),_T("wxDialog"));
+    m_regex = (wxTextCtrl*)FindWindow(XRCID("ID_REGEX"));
+    m_quoted = (wxTextCtrl*)FindWindow(XRCID("ID_QUOTED"));
+    m_library = (wxChoice*)FindWindow(XRCID("ID_LIBRARY"));
+    m_nocase = (wxCheckBox*)FindWindow(XRCID("ID_NOCASE"));
+    m_newlines = (wxCheckBox*)FindWindow(XRCID("ID_NEWLINES"));
+    m_text = (wxTextCtrl*)FindWindow(XRCID("ID_TEXT"));
+    m_output = (wxHtmlWindow*)FindWindow(XRCID("ID_OUT"));
+    //*)
 
     assert(m_regex);
     assert(m_quoted);

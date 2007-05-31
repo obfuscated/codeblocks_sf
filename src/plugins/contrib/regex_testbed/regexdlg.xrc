@@ -3,126 +3,90 @@
         <title>Regular expression utility</title>
         <centered>1</centered>
         <object class="wxFlexGridSizer">
-            <rows>0</rows>
             <cols>1</cols>
-            <vgap>0</vgap>
-            <hgap>0</hgap>
             <growablecols>0</growablecols>
             <growablerows>4</growablerows>
             <object class="sizeritem">
-                <border>10</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                 <object class="wxStaticText" name="ID_3">
                     <label>Regular expression:</label>
                 </object>
+                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                <border>10</border>
             </object>
             <object class="sizeritem">
-                <border>10</border>
-                <flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
                 <object class="wxTextCtrl" name="ID_REGEX">
-                    <value></value>
                     <size>80,-1</size>
                 </object>
-            </object>
-            <object class="sizeritem">
+                <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                 <border>10</border>
-                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="ID_QUOTED">
-                    <value></value>
-                    <size>80,-1</size>
-                </object>
             </object>
             <object class="sizeritem">
-                <border>5</border>
-                <flag>wxRIGHT|wxTOP|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
+                <object class="wxTextCtrl" name="ID_QUOTED">
+                    <size>80,-1</size>
+                </object>
+                <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                <border>10</border>
+            </object>
+            <object class="sizeritem">
                 <object class="wxBoxSizer">
-                    <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">
-                        <border>10</border>
-                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER</flag>
                         <object class="wxStaticText" name="ID_1">
                             <label>Regex library:</label>
                         </object>
+                        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                        <border>10</border>
                     </object>
                     <object class="sizeritem">
-                        <border>10</border>
-                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                         <object class="wxChoice" name="ID_LIBRARY">
                             <content>
                                 <item>wxWidgets (wxRE_EXTENDED)</item>
                                 <item>wxWidgets (wxRE_ADVANCED)</item>
                                 <item>wxWidgets (wxRE_BASIC)</item>
-                                <!-- <item>PCRE 6.7</item>
-                                <item>GNU regex 0.12</item> -->
                             </content>
                         </object>
+                        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                        <border>10</border>
                     </object>
                     <object class="sizeritem">
-                        <border>10</border>
-                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER</flag>
                         <object class="wxCheckBox" name="ID_NOCASE">
                             <label>Case insensitive</label>
                         </object>
+                        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                        <border>10</border>
                     </object>
                     <object class="sizeritem">
-                        <border>10</border>
-                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER</flag>
                         <object class="wxCheckBox" name="ID_NEWLINES">
                             <label>Match newlines</label>
                         </object>
+                        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+                        <border>10</border>
                     </object>
                 </object>
+                <flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                <border>5</border>
             </object>
             <object class="sizeritem">
-                <border>10</border>
-                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                 <object class="wxStaticText" name="ID_STATICTEXT1">
                     <label>Text:</label>
                 </object>
+                <flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                <border>10</border>
             </object>
             <object class="sizeritem">
-                <border>10</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
                 <object class="wxTextCtrl" name="ID_TEXT">
-                    <value></value>
-                    <size>600,60</size>
                     <style>wxTE_MULTILINE</style>
+                    <size>600,60</size>
                 </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                <border>10</border>
             </object>
             <object class="sizeritem">
-                <border>10</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
                 <object class="wxHtmlWindow" name="ID_OUT">
                     <size>80,200</size>
                 </object>
+                <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                <border>10</border>
             </object>
-<!--
-            <object class="sizeritem">
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxFlexGridSizer">
-                    <rows>0</rows>
-                    <cols>2</cols>
-                    <vgap>0</vgap>
-                    <hgap>0</hgap>
-                    <growablecols>0</growablecols>
-                    <object class="sizeritem">
-                        <border>10</border>
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                        <object class="wxButton" name="ID_BENCHMARK">
-                            <label>Benchmark</label>
-                            <enabled>0</enabled>
-                        </object>
-                    </object>
-                    <object class="sizeritem">
-                        <border>10</border>
-                        <flag>wxALL|wxALIGN_CENTER</flag>
-                        <object class="wxButton" name="ID_CLOSE">
-                            <label>Close</label>
-                        </object>
-                    </object>
-                </object>
-            </object>
--->
         </object>
     </object>
 </resource>
