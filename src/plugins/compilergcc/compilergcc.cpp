@@ -311,16 +311,16 @@ void CompilerGCC::OnAttach()
         idMenuSelectTargetOther[i] = wxNewId();
     // register built-in compilers
     CompilerFactory::RegisterCompiler(new CompilerMINGW);
-    if (platform::windows)
-    {
-        CompilerFactory::RegisterCompiler(new CompilerMSVC);
-        CompilerFactory::RegisterCompiler(new CompilerMSVC8);
-        CompilerFactory::RegisterCompiler(new CompilerBCC);
-        CompilerFactory::RegisterCompiler(new CompilerDMC);
-        CompilerFactory::RegisterCompiler(new CompilerOW);
-        CompilerFactory::RegisterCompiler(new CompilerGNUARM);
-        CompilerFactory::RegisterCompiler(new CompilerCYGWIN);
-    }
+#ifdef __WXMSW__
+    // can't use platform::windows here due to classes do *not* exist on other platform than windows!
+    CompilerFactory::RegisterCompiler(new CompilerMSVC);
+    CompilerFactory::RegisterCompiler(new CompilerMSVC8);
+    CompilerFactory::RegisterCompiler(new CompilerBCC);
+    CompilerFactory::RegisterCompiler(new CompilerDMC);
+    CompilerFactory::RegisterCompiler(new CompilerOW);
+    CompilerFactory::RegisterCompiler(new CompilerGNUARM);
+    CompilerFactory::RegisterCompiler(new CompilerCYGWIN);
+#endif
     CompilerFactory::RegisterCompiler(new CompilerICC);
     CompilerFactory::RegisterCompiler(new CompilerSDCC);
     CompilerFactory::RegisterCompiler(new CompilerTcc);

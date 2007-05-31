@@ -41,6 +41,7 @@
 #endif
 
 #include "annoyingdialog.h"
+#include "prep.h"
 #include <wx/settings.h>
 #include <wx/filedlg.h>
 #include <wx/dirdlg.h>
@@ -229,7 +230,7 @@ void PluginsConfigurationDlg::OnInstall(wxCommandEvent& event)
                         _("Select plugin to install"),
                         wxEmptyString, wxEmptyString,
                         _T("Code::Blocks Plugins (*.cbplugin)|*.cbplugin"),
-                        wxOPEN | wxFILE_MUST_EXIST | wxMULTIPLE);
+                        wxOPEN | wxFILE_MUST_EXIST | wxMULTIPLE | compatibility::wxHideReadonly);
     if (fd.ShowModal() != wxID_OK)
         return;
 

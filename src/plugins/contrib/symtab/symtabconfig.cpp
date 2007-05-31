@@ -22,6 +22,7 @@
 #endif
 
 #include "symtabconfig.h"
+#include "prep.h"
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
@@ -198,11 +199,7 @@ void SymTabConfigDlg::OnLibrary(wxCommandEvent& WXUNUSED(event))
 #endif
   wxString es       = wxEmptyString;
 
-  wxFileDialog fd(parent, caption, es, es, wildcard, wxOPEN
-#if (WXWIN_COMPATIBILITY_2_4)
-                            | wxHIDE_READONLY
-#endif
-                            );
+  wxFileDialog fd(parent, caption, es, es, wildcard, wxOPEN|compatibility::wxHideReadonly);
   if (fd.ShowModal() == wxID_OK)
   {
     wxString path = fd.GetPath();
@@ -220,18 +217,15 @@ void SymTabConfigDlg::OnNM(wxCommandEvent& WXUNUSED(event))
 #endif
 
   wxString caption  = _T("Choose NM application");
-#ifdef __WXMSW__
-  wxString wildcard = _T("All files (*.*)|*.*");
-#else
-  wxString wildcard = _T("All files (*)|*");
-#endif
-  wxString es       = wxEmptyString;
+  wxString wildcard;
+  if (platform::windows)
+    wildcard = _T("All files (*.*)|*.*");
+  else
+    wildcard = _T("All files (*)|*");
 
-  wxFileDialog fd(parent, caption, es, es, wildcard, wxOPEN
-#if (WXWIN_COMPATIBILITY_2_4)
-                            | wxHIDE_READONLY
-#endif
-                            );
+  wxString es = wxEmptyString;
+
+  wxFileDialog fd(parent, caption, es, es, wildcard, wxOPEN|compatibility::wxHideReadonly);
   if (fd.ShowModal() == wxID_OK)
   {
     wxString path = fd.GetPath();

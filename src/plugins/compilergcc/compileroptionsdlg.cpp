@@ -1587,7 +1587,7 @@ void CompilerOptionsDlg::OnAddCompilerClick(wxCommandEvent& /*event*/)
             cmb->SetSelection(cmb->GetCount() - 1);
             // refresh settings in dialog
             DoFillCompilerDependentSettings();
-            cbMessageBox(_("The new compiler has been added! Don't forget to update the \"Programs\" page..."));
+            cbMessageBox(_("The new compiler has been added! Don't forget to update the \"Toolchain executables\" page..."));
         }
     }
     if(m_bDirty)

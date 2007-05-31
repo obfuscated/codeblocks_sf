@@ -30,7 +30,7 @@
 #include "cbprofiler.h"
 #include "cbprofilerconfig.h"
 #include "cbprofilerexec.h"
-
+#include "prep.h"
 
 // Register the plugin
 namespace
@@ -189,11 +189,7 @@ int CBProfiler::Execute()
                 else
                 {
                     wxFileDialog filedialog(Manager::Get()->GetAppWindow(), _("Locate profile information"),
-                                            _T(""),_T("gmon.out"),_T("*.*"),wxOPEN|wxFILE_MUST_EXIST
-#if (WXWIN_COMPATIBILITY_2_4)
-                                            | wxHIDE_READONLY
-#endif
-                                            );
+                                            _T(""),_T("gmon.out"),_T("*.*"),wxOPEN|wxFILE_MUST_EXIST|compatibility::wxHideReadonly);
                     if (filedialog.ShowModal() == wxID_OK)
                     {
                         dataname = filedialog.GetPath();

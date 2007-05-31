@@ -37,6 +37,8 @@
 #include <wx/settings.h>
 //*)
 
+#include <prep.h>
+
 //(*IdInit(wxWidgetsGUIConfigPanel)
 const long wxWidgetsGUIConfigPanel::ID_STATICTEXT1 = wxNewId();
 const long wxWidgetsGUIConfigPanel::ID_TEXTCTRL1 = wxNewId();
@@ -144,11 +146,7 @@ void wxWidgetsGUIConfigPanel::OnButton1Click(wxCommandEvent& event)
         _("XRC files (*.xrc)|*.xrc|"
           "Zipped files (*.zip)|*.zip|"
           "All files (*)|*"),
-        wxOPEN | wxFILE_MUST_EXIST
-#if WXWIN_COMPATIBILITY_2_4
-        | wxHIDE_READONLY
-#endif
-    );
+        wxOPEN | wxFILE_MUST_EXIST | compatibility::wxHideReadonly);
 
     if ( !FileName.empty() )
     {

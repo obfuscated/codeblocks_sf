@@ -26,6 +26,7 @@
 
 #include <wx/filedlg.h>
 #include <projectmanager.h>
+#include <prep.h>
 
 //(*InternalHeaders(wxWidgetsGUIAppAdoptingDlg)
 #include <wx/bitmap.h>
@@ -204,7 +205,7 @@ void wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick(wxCommandEvent& event)
         _T(""),
         _T(""),
         _("C++ sources (*.cpp)|*.cpp|All files|*.*"),
-        wxOPEN | wxFILE_MUST_EXIST );
+        wxOPEN | wxFILE_MUST_EXIST | compatibility::wxHideReadonly);
     if ( FileName.empty() )
     {
         return;
