@@ -63,7 +63,7 @@ class wxsStringProperty: public wxsProperty
  *  \param XmlStoreEmpty true if strings equal to default value should be written to xml structure, false otherwise
  */
 #define WXS_STRING(ClassName,VarName,PGName,DataName,Default,XmlStoreEmpty) \
-    { static wxsStringProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),false,XmlStoreEmpty,Default); \
+    { static wxsStringProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),true,XmlStoreEmpty,Default); \
       Property(_Property); }
 
 /** \brief Macro automatically declaring one-line wxString property with custom priority
@@ -89,7 +89,7 @@ class wxsStringProperty: public wxsProperty
  *  \param Priority priority of this property
  */
 #define WXS_STRING_P(ClassName,VarName,PGName,DataName,Default,XmlStoreEmpty,Priority) \
-    { static wxsStringProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),false,XmlStoreEmpty,Default,Priority); \
+    { static wxsStringProperty _Property(PGName,DataName,wxsOFFSET(ClassName,VarName),true,XmlStoreEmpty,Default,Priority); \
       Property(_Property); }
 
 /** \} */
