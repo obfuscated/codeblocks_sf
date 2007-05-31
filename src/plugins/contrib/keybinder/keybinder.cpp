@@ -1711,7 +1711,7 @@ wxKeyConfigPanel::~wxKeyConfigPanel()
 {
 	// with the AddXXXXX functions we created wxKeyProfiles which we
 	// then added into the m_pKeyProfiles combobox... we now must delete them.
-	for (size_t i=0; i < m_pKeyProfiles->GetCount(); i++) {
+	for (int i=0; i < m_pKeyProfiles->GetCount(); i++) {
 		wxKeyProfile *data = (wxKeyProfile *)m_pKeyProfiles->GetClientData(i);
 
 		// we can delete the client data safely because wxComboBox will leave
@@ -2135,7 +2135,7 @@ wxKeyProfileArray wxKeyConfigPanel::GetProfiles() const
 	// NB: it's very important to *copy* the profiles into the new array
 	//     since the destructor of wxKeyConfigPanel expects the m_pKeyProfiles
 	//     control to contain always valid pointers NOT shared with anyone else
-	for (size_t i=0; i < m_pKeyProfiles->GetCount(); i++)
+	for (int i=0; i < m_pKeyProfiles->GetCount(); i++)
 		arr.Add(new wxKeyProfile(*GetProfile(i)));
 	arr.SetSelProfile(GetSelProfileIdx());
 
@@ -2642,7 +2642,7 @@ void wxKeyConfigPanel::OnAddProfile(wxCommandEvent &)
 
 		// if the name is the same of one of the existing profiles, we have to abort...
 		valid = TRUE;
-		for (size_t j=0; j < m_pKeyProfiles->GetCount(); j++)
+		for (int j=0; j < m_pKeyProfiles->GetCount(); j++)
 			valid &= (GetProfile(j)->GetName() != dlg.GetValue());
 
 		if (!valid) {

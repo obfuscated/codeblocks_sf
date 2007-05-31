@@ -8,7 +8,7 @@
 		<Build>
 			<Target title="default">
 				<Option output="../../devel/cb_share_config" prefix_auto="0" extension_auto="0" />
-				<Option object_output="../../.objs/2.6" />
+				<Option object_output="../../.objs" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 			</Target>

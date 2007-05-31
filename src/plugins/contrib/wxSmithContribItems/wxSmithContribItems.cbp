@@ -9,6 +9,7 @@
 			<Target title="wxSmithContribItems">
 				<Option platforms="Windows;" />
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\wxSmithContribItems.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="$(#cb)\devel\codeblocks.exe" />

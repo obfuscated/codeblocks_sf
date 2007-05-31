@@ -2,13 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="copystrings" />
+		<Option title="CopyStrings" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\copystrings.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\copystrings" />
-				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\copystrings" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 			</Target>

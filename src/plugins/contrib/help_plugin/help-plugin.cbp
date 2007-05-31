@@ -2,14 +2,13 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Help Plugin (wx2.6)" />
+		<Option title="Help" />
 		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="help_plugin">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\help_plugin.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\help_plugin" />
-				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\help_plugin" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />

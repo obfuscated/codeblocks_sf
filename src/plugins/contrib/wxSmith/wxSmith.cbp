@@ -9,8 +9,7 @@
 		<Build>
 			<Target title="wxSmithLib">
 				<Option output="..\..\..\devel\wxsmithlib.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmith" />
-				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\wxSmith" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithLib" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
@@ -18,6 +17,7 @@
 			</Target>
 			<Target title="wxSmith">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\wxsmith.dll" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmith" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />

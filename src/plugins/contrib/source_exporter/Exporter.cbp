@@ -10,7 +10,6 @@
 				<Option output="libwxPdfDocument.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter" />
-				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\Exporter" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option projectCompilerOptionsRelation="2" />
@@ -19,7 +18,6 @@
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\Exporter.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter" />
-				<Option deps_output="..\..\..\.deps\2.6\plugins\contrib\Exporter" />
 				<Option external_deps="libwxPdfDocument.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
