@@ -116,7 +116,10 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
     XRCCTRL(*this, "chkSearchHidden", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/search_hidden"), false));
 
 	if (!m_Complete)
+	{
         XRCCTRL(*this, "nbFind", wxNotebook)->DeletePage(0); // no active editor, so only find-in-files
+        XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
+	}
 	else if (findInFilesActive)
 	{
 		XRCCTRL(*this, "nbFind", wxNotebook)->SetSelection(1); // Search->Find in Files was selected
@@ -140,7 +143,7 @@ FindDlg::~FindDlg()
 	else
 		combo = XRCCTRL(*this, "cmbFind1", wxComboBox);
     wxArrayString previous;
-    for (int i = 0; (i < combo->GetCount()) && (i < 10); ++i)
+    for (int i = 0; (i < (int)combo->GetCount()) && (i < 10); ++i)
     {
         if (!combo->GetString(i).IsEmpty())
             previous.Add(combo->GetString(i));
