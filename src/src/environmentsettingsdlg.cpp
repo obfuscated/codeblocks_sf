@@ -420,7 +420,7 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 
         ConfigManagerContainer::StringSet dialogs = acfg->ReadSSet(_T("/disabled"));
 
-        for (int i = 0; i < lb->GetCount(); ++i)
+        for (int i = 0; i < (int)lb->GetCount(); ++i)
         {
             if (lb->IsChecked(i))
                 dialogs.erase(lb->GetString(i));

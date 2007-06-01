@@ -93,7 +93,7 @@ void EditWatchesDlg::OnRemove(wxCommandEvent& event)
     XRCCTRL(*this, "lstWatches", wxListBox)->Delete(sel);
     m_LastSel = -1;
     FillWatches();
-    sel = sel == XRCCTRL(*this, "lstWatches", wxListBox)->GetCount() - 1 ? sel - 1 : sel;
+    sel = sel == (int)XRCCTRL(*this, "lstWatches", wxListBox)->GetCount() - 1 ? sel - 1 : sel;
     FillRecord(sel);
 }
 

@@ -323,7 +323,7 @@ void ManageAssocsDialog::OnApply(wxCommandEvent& event)
 	wxChar name[MAX_PATH] = {0};
 	GetModuleFileName(0L, name, MAX_PATH);
 
-    for(int i = 0; i < list->GetCount(); ++i)
+    for(int i = 0; i < (int)list->GetCount(); ++i)
     {
         if(list->IsChecked(i))
             ::DoSetAssociation(name, i);

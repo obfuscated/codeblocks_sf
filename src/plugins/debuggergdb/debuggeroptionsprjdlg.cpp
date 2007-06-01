@@ -124,7 +124,7 @@ void DebuggerOptionsProjectDlg::OnApply()
     wxListBox* control = XRCCTRL(*this, "lstSearchDirs", wxListBox);
 
     m_OldPaths.Clear();
-    for (int i = 0; i < control->GetCount(); ++i)
+    for (int i = 0; i < (int)control->GetCount(); ++i)
     {
         m_OldPaths.Add(control->GetString(i));
     }
