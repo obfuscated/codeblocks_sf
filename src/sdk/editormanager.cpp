@@ -2144,15 +2144,15 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
 
 int EditorManager::FindInFiles(cbFindReplaceData* data)
 {
+    if (!data || data->findText.IsEmpty())
+        return 0;
+
     // clear old search results
     if ( data->delOldSearches )
     {
         m_pSearchLog->GetListControl()->DeleteAllItems();
     }
     int oldcount = m_pSearchLog->GetListControl()->GetItemCount();
-
-    if (!data || data->findText.IsEmpty())
-        return 0;
 
     // let's make a list of all the files to search in
     wxArrayString filesList;
@@ -2251,8 +2251,8 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         return 0;
     }
 
-    // now that are list is filled, we 'll search
-    // but first we 'll create a hidden cbStyledTextCtrl to do the search for us ;)
+    // now that list is filled, we'll search
+    // but first we'll create a hidden cbStyledTextCtrl to do the search for us ;)
     cbStyledTextCtrl* control = new cbStyledTextCtrl(m_pNotebook, -1, wxDefaultPosition, wxSize(0, 0));
     control->Show(false); //hidden
 
@@ -2285,8 +2285,11 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         // re-initialize the find struct for every file searched
         *data = localData;
 
-        // first load the file in the control
-        if (!control->LoadFile(filesList[i]))
+        // check if the file is already opened in built-in editor and do search in it
+        cbEditor* ed = IsBuiltinOpen(filesList[i]);
+        if (ed)
+            control->SetText(ed->GetControl()->GetText());
+        else if (!control->LoadFile(filesList[i])) // else load the file in the control
         {
             //            LOGSTREAM << _("Failed opening ") << filesList[i] << wxT('\n');
             continue; // failed
@@ -2969,5 +2972,6 @@ int EditorManager::GetZoom() const
 {
     return m_zoom;
 }
+
 
 
