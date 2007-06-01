@@ -85,11 +85,14 @@ bool wxsStringProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Eleme
     {
         if ( *Ch == _T('_') )
         {
-            if ( *++Ch != _T('_') )
+            if ( *++Ch == _T('_') )
             {
-                Result << _T('&');
+                Result << _T('_');
             }
-            Result << *Ch;
+            else
+            {
+                Result << _T('&') << *Ch;
+            }
         }
         else if ( *Ch == _T('\\') )
         {
@@ -121,8 +124,8 @@ bool wxsStringProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Elem
         {
             switch ( *Ch )
             {
-                case _T('_'):  Result << _T("__"); break;
-                case _T('&'):  Result << _T('_');  break;     // We could leave this to be translated into &amp; but this looks nicer ;)
+                case _T('_'):  Result << _T("__"); break;       // TODO: This is NOT compatible with xrc file when there's no version entry or version is less than 2.3.0.1
+                //case _T('&'):  Result << _T('_');  break;     // We could leave this to be translated into &amp; but this looks nicer ;)
                 case _T('\\'): Result << _T("\\\\"); break;
                 // We could handle \n and \r here too but this is not necessary since XRC loading
                 // routines also handle \n and \r chars
