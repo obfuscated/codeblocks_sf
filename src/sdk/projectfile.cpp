@@ -348,6 +348,11 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
         if (pf->GetParentProject())
         {
             wxFileName fname(pf->relativeToCommonTopLevelPath);
+            /* Make a check on Windows if they belong to same drive or not. *
+             * In case they belong to different volumes, then don't prepend *
+             * project's relative base path */
+            if (platform::windows && (!fname.GetVolume().IsSameAs(prjbase.GetVolume())))
+                objOut = sep = wxEmptyString;
             if (ft == ftResource || ft == ftResourceBin)
             {
                 if (pf->GetParentProject()->GetExtendedObjectNamesGeneration())
