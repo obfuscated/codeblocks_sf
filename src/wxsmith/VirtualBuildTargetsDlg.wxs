@@ -1,100 +1,22 @@
-<resource>
-    <object class="wxDialog" name="VirtualBuildTargetsDlg">
-        <title>Virtual build targets</title>
-        <centered>1</centered>
-        <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
-        <object class="wxBoxSizer">
-            <orient>wxVERTICAL</orient>
-            <object class="sizeritem">
-                <option>1</option>
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxBoxSizer">
-                    <orient>wxHORIZONTAL</orient>
-                    <object class="sizeritem">
-                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                        <object class="wxStaticBoxSizer">
-                            <orient>wxVERTICAL</orient>
-                            <label>Alias</label>
-                            <object class="sizeritem">
-                                <option>1</option>
-                                <border>5</border>
-                                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                <object class="wxListBox" name="ID_LISTBOX1" variable="lstAliases" member="yes">
-                                    <handler entry="EVT_LISTBOX" function="OnAliasesSelect" />
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <border>5</border>
-                                <flag>wxRIGHT|wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP</flag>
-                                <object class="wxBoxSizer">
-                                    <orient>wxHORIZONTAL</orient>
-                                    <object class="sizeritem">
-                                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                        <object class="wxButton" name="ID_BUTTON1" variable="btnAdd" member="yes">
-                                            <label>&amp;Add</label>
-                                            <handler entry="EVT_BUTTON" function="OnAddClick" />
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <border>5</border>
-                                        <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                        <object class="wxButton" name="ID_BUTTON2" variable="btnEdit" member="yes">
-                                            <label>&amp;Edit</label>
-                                            <handler entry="EVT_BUTTON" function="OnEditClick" />
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <border>5</border>
-                                        <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                        <object class="wxButton" name="ID_BUTTON3" variable="btnRemove" member="yes">
-                                            <label>&amp;Remove</label>
-                                            <handler entry="EVT_BUTTON" function="OnRemoveClick" />
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
-                    <object class="sizeritem">
-                        <option>1</option>
-                        <border>5</border>
-                        <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                        <object class="wxStaticBoxSizer">
-                            <orient>wxHORIZONTAL</orient>
-                            <label>Build targets contained</label>
-                            <object class="sizeritem">
-                                <option>1</option>
-                                <border>5</border>
-                                <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                                <object class="wxCheckListBox" name="ID_CHECKLISTBOX1" variable="lstTargets" member="yes">
-                                    <content />
-                                    <handler entry="EVT_CHECKLISTBOX" function="OnTargetsToggled" />
-                                    <size>212,207</size>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxStaticLine" name="ID_STATICLINE1" variable="StaticLine1" member="no">
-                    <size>10,-1</size>
-                </object>
-            </object>
-            <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_CENTER</flag>
-                <object class="wxStdDialogButtonSizer">
-                    <object class="button">
-                        <object class="wxButton" name="wxID_OK">
-                            <label>&amp;Close</label>
-                        </object>
-                    </object>
-                </object>
-            </object>
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+    <resource_extra>
+        <object root="1" />
+        <object name="ID_LISTBOX1" class="wxListBox" variable="lstAliases" member="yes">
+            <handler function="OnAliasesSelect" entry="EVT_LISTBOX" />
         </object>
-    </object>
-</resource>
+        <object name="ID_BUTTON1" class="wxButton" variable="btnAdd" member="yes">
+            <handler function="OnAddClick" entry="EVT_BUTTON" />
+        </object>
+        <object name="ID_BUTTON2" class="wxButton" variable="btnEdit" member="yes">
+            <handler function="OnEditClick" entry="EVT_BUTTON" />
+        </object>
+        <object name="ID_BUTTON3" class="wxButton" variable="btnRemove" member="yes">
+            <handler function="OnRemoveClick" entry="EVT_BUTTON" />
+        </object>
+        <object name="ID_CHECKLISTBOX1" class="wxCheckListBox" variable="lstTargets" member="yes">
+            <handler function="OnTargetsToggled" entry="EVT_CHECKLISTBOX" />
+        </object>
+        <object name="ID_STATICLINE1" class="wxStaticLine" variable="StaticLine1" member="no" />
+    </resource_extra>
+</wxsmith>

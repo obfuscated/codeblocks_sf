@@ -4,14 +4,71 @@
 #include <wx/utils.h>
 #include <wx/choicdlg.h> // wxGetSingleChoiceIndex
 
+//(*InternalHeaders(CCDebugInfo)
+#include <wx/bitmap.h>
+#include <wx/font.h>
+#include <wx/fontenum.h>
+#include <wx/fontmap.h>
+#include <wx/image.h>
+#include <wx/intl.h>
+#include <wx/settings.h>
+//*)
+
+//(*IdInit(CCDebugInfo)
+const long CCDebugInfo::ID_NOTEBOOK1 = wxNewId();
+const long CCDebugInfo::ID_PANEL1 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT29 = wxNewId();
+const long CCDebugInfo::ID_TEXTCTRL1 = wxNewId();
+const long CCDebugInfo::ID_BUTTON1 = wxNewId();
+const long CCDebugInfo::ID_STATICLINE1 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT17 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT18 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT1 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT2 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT9 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT10 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT11 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT12 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT3 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT4 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT5 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT6 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT7 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT8 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT13 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT14 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT15 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT16 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT32 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT33 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT19 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT20 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT22 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT24 = wxNewId();
+const long CCDebugInfo::ID_BUTTON4 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT30 = wxNewId();
+const long CCDebugInfo::ID_COMBOBOX3 = wxNewId();
+const long CCDebugInfo::ID_BUTTON5 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT21 = wxNewId();
+const long CCDebugInfo::ID_COMBOBOX2 = wxNewId();
+const long CCDebugInfo::ID_BUTTON3 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT23 = wxNewId();
+const long CCDebugInfo::ID_COMBOBOX1 = wxNewId();
+const long CCDebugInfo::ID_BUTTON2 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT25 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT26 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT27 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT28 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT34 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT35 = wxNewId();
+const long CCDebugInfo::ID_PANEL2 = wxNewId();
+const long CCDebugInfo::ID_LISTBOX1 = wxNewId();
+const long CCDebugInfo::ID_STATICTEXT31 = wxNewId();
+const long CCDebugInfo::ID_STATICLINE2 = wxNewId();
+//*)
+
 BEGIN_EVENT_TABLE(CCDebugInfo,wxDialog)
 	//(*EventTable(CCDebugInfo)
-	EVT_INIT_DIALOG(CCDebugInfo::OnInit)
-	EVT_BUTTON(ID_BUTTON1,CCDebugInfo::OnFindClick)
-	EVT_BUTTON(ID_BUTTON4,CCDebugInfo::OnGoParentClick)
-	EVT_BUTTON(ID_BUTTON5,CCDebugInfo::OnGoChildrenClick)
-	EVT_BUTTON(ID_BUTTON3,CCDebugInfo::OnGoAscClick)
-	EVT_BUTTON(ID_BUTTON2,CCDebugInfo::OnGoDescClick)
 	//*)
 END_EVENT_TABLE()
 
@@ -23,150 +80,151 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token)
 	//(*Initialize(CCDebugInfo)
 	wxBoxSizer* BoxSizer1;
 	wxBoxSizer* BoxSizer2;
-
-	Create(parent,id,_("Code-completion debug tool"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTAB_TRAVERSAL,_T(""));
+	
+	Create(parent,id,_("Code-completion debug tool"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTAB_TRAVERSAL,_T("wxDialog"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	Notebook1 = new wxNotebook(this,ID_NOTEBOOK1,wxDefaultPosition,wxDefaultSize,0,_("ID_NOTEBOOK1"));
-	Panel1 = new wxPanel(Notebook1,ID_PANEL1,wxDefaultPosition,wxDefaultSize,0,_("ID_PANEL1"));
+	Notebook1 = new wxNotebook(this,ID_NOTEBOOK1,wxDefaultPosition,wxDefaultSize,0,_T("ID_NOTEBOOK1"));
+	Panel1 = new wxPanel(Notebook1,ID_PANEL1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("ID_PANEL1"));
 	BoxSizer2 = new wxBoxSizer(wxVERTICAL);
 	BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-	StaticText29 = new wxStaticText(Panel1,ID_STATICTEXT29,_("Find:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT29"));
-	txtFilter = new wxTextCtrl(Panel1,ID_TEXTCTRL1,_("*"),wxDefaultPosition,wxSize(401,21),0,wxDefaultValidator,_("ID_TEXTCTRL1"));
-	if ( 0 ) txtFilter->SetMaxLength(0);
-	btnFind = new wxButton(Panel1,ID_BUTTON1,_("Find"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_("ID_BUTTON1"));
-	if (true) btnFind->SetDefault();
+	StaticText29 = new wxStaticText(Panel1,ID_STATICTEXT29,_("Find:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT29"));
 	BoxSizer4->Add(StaticText29,0,wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,6);
+	txtFilter = new wxTextCtrl(Panel1,ID_TEXTCTRL1,_("*"),wxDefaultPosition,wxSize(401,21),0,wxDefaultValidator,_T("ID_TEXTCTRL1"));
 	BoxSizer4->Add(txtFilter,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
+	btnFind = new wxButton(Panel1,ID_BUTTON1,_("Find"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON1"));
+	btnFind->SetDefault();
 	BoxSizer4->Add(btnFind,0,wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-	StaticLine1 = new wxStaticLine(Panel1,ID_STATICLINE1,wxDefaultPosition,wxSize(10,-1),0,_("ID_STATICLINE1"));
+	BoxSizer2->Add(BoxSizer4,0,wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
+	StaticLine1 = new wxStaticLine(Panel1,ID_STATICLINE1,wxDefaultPosition,wxSize(10,-1),wxLI_HORIZONTAL,_T("ID_STATICLINE1"));
+	BoxSizer2->Add(StaticLine1,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
 	FlexGridSizer1 = new wxFlexGridSizer(0,2,5,5);
 	FlexGridSizer1->AddGrowableCol(1);
-	StaticText17 = new wxStaticText(Panel1,ID_STATICTEXT17,_("ID:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT17"));
-	txtID = new wxStaticText(Panel1,ID_STATICTEXT18,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT18"));
-	StaticText1 = new wxStaticText(Panel1,ID_STATICTEXT1,_("Name:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT1"));
-	txtName = new wxStaticText(Panel1,ID_STATICTEXT2,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT2"));
-	StaticText9 = new wxStaticText(Panel1,ID_STATICTEXT9,_("Kind:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT9"));
-	txtKind = new wxStaticText(Panel1,ID_STATICTEXT10,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT10"));
-	StaticText11 = new wxStaticText(Panel1,ID_STATICTEXT11,_("Scope:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT11"));
-	txtScope = new wxStaticText(Panel1,ID_STATICTEXT12,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT12"));
-	StaticText3 = new wxStaticText(Panel1,ID_STATICTEXT3,_("Type:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT3"));
-	txtType = new wxStaticText(Panel1,ID_STATICTEXT4,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT4"));
-	StaticText5 = new wxStaticText(Panel1,ID_STATICTEXT5,_("Actual type:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT5"));
-	txtActualType = new wxStaticText(Panel1,ID_STATICTEXT6,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT6"));
-	StaticText7 = new wxStaticText(Panel1,ID_STATICTEXT7,_("Arguments:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT7"));
-	txtArgs = new wxStaticText(Panel1,ID_STATICTEXT8,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT8"));
-	StaticText13 = new wxStaticText(Panel1,ID_STATICTEXT13,_("Is operator\?"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT13"));
-	txtIsOp = new wxStaticText(Panel1,ID_STATICTEXT14,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT14"));
-	StaticText15 = new wxStaticText(Panel1,ID_STATICTEXT15,_("Is local\?"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT15"));
-	txtIsLocal = new wxStaticText(Panel1,ID_STATICTEXT16,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT16"));
-	StaticText32 = new wxStaticText(Panel1,ID_STATICTEXT32,_("Is temp\?"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT32"));
-	txtIsTemp = new wxStaticText(Panel1,ID_STATICTEXT33,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT33"));
-	StaticText19 = new wxStaticText(Panel1,ID_STATICTEXT19,_("Namespace:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT19"));
-	txtNamespace = new wxStaticText(Panel1,ID_STATICTEXT20,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT20"));
-	StaticText22 = new wxStaticText(Panel1,ID_STATICTEXT22,_("Parent:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT22"));
-	BoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
-	txtParent = new wxStaticText(Panel1,ID_STATICTEXT24,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT24"));
-	btnGoParent = new wxButton(Panel1,ID_BUTTON4,_("Go"),wxDefaultPosition,wxSize(36,23),0,wxDefaultValidator,_("ID_BUTTON4"));
-	if (false) btnGoParent->SetDefault();
-	BoxSizer7->Add(txtParent,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
-	BoxSizer7->Add(btnGoParent,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
-	StaticText30 = new wxStaticText(Panel1,ID_STATICTEXT30,_("Children:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT30"));
-	BoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
-	cmbChildren = new wxComboBox(Panel1,ID_COMBOBOX3,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_("ID_COMBOBOX3"));
-	btnGoChildren = new wxButton(Panel1,ID_BUTTON5,_("Go"),wxDefaultPosition,wxSize(36,23),0,wxDefaultValidator,_("ID_BUTTON5"));
-	if (false) btnGoChildren->SetDefault();
-	BoxSizer8->Add(cmbChildren,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
-	BoxSizer8->Add(btnGoChildren,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
-	StaticText21 = new wxStaticText(Panel1,ID_STATICTEXT21,_("Ancestors:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT21"));
-	BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
-	cmbAncestors = new wxComboBox(Panel1,ID_COMBOBOX2,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_("ID_COMBOBOX2"));
-	btnGoAsc = new wxButton(Panel1,ID_BUTTON3,_("Go"),wxDefaultPosition,wxSize(36,23),0,wxDefaultValidator,_("ID_BUTTON3"));
-	if (false) btnGoAsc->SetDefault();
-	BoxSizer6->Add(cmbAncestors,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
-	BoxSizer6->Add(btnGoAsc,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
-	StaticText23 = new wxStaticText(Panel1,ID_STATICTEXT23,_("Descendants:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT23"));
-	BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-	cmbDescendants = new wxComboBox(Panel1,ID_COMBOBOX1,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_("ID_COMBOBOX1"));
-	btnGoDesc = new wxButton(Panel1,ID_BUTTON2,_("Go"),wxDefaultPosition,wxSize(36,23),0,wxDefaultValidator,_("ID_BUTTON2"));
-	if (false) btnGoDesc->SetDefault();
-	BoxSizer5->Add(cmbDescendants,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
-	BoxSizer5->Add(btnGoDesc,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
-	StaticText25 = new wxStaticText(Panel1,ID_STATICTEXT25,_("Decl. filename:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT25"));
-	txtDeclFile = new wxStaticText(Panel1,ID_STATICTEXT26,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT26"));
-	StaticText27 = new wxStaticText(Panel1,ID_STATICTEXT27,_("Impl. filename:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT27"));
-	txtImplFile = new wxStaticText(Panel1,ID_STATICTEXT28,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT28"));
-	StaticText34 = new wxStaticText(Panel1,ID_STATICTEXT34,_("User data:"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT34"));
-	txtUserData = new wxStaticText(Panel1,ID_STATICTEXT35,_T(""),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT35"));
+	StaticText17 = new wxStaticText(Panel1,ID_STATICTEXT17,_("ID:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT17"));
 	FlexGridSizer1->Add(StaticText17,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	txtID = new wxStaticText(Panel1,ID_STATICTEXT18,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT18"));
 	FlexGridSizer1->Add(txtID,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText1 = new wxStaticText(Panel1,ID_STATICTEXT1,_("Name:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));
 	FlexGridSizer1->Add(StaticText1,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	txtName = new wxStaticText(Panel1,ID_STATICTEXT2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT2"));
 	FlexGridSizer1->Add(txtName,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText9 = new wxStaticText(Panel1,ID_STATICTEXT9,_("Kind:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT9"));
 	FlexGridSizer1->Add(StaticText9,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	txtKind = new wxStaticText(Panel1,ID_STATICTEXT10,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT10"));
 	FlexGridSizer1->Add(txtKind,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText11 = new wxStaticText(Panel1,ID_STATICTEXT11,_("Scope:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT11"));
 	FlexGridSizer1->Add(StaticText11,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	txtScope = new wxStaticText(Panel1,ID_STATICTEXT12,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT12"));
 	FlexGridSizer1->Add(txtScope,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText3 = new wxStaticText(Panel1,ID_STATICTEXT3,_("Type:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT3"));
 	FlexGridSizer1->Add(StaticText3,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	txtType = new wxStaticText(Panel1,ID_STATICTEXT4,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT4"));
 	FlexGridSizer1->Add(txtType,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText5 = new wxStaticText(Panel1,ID_STATICTEXT5,_("Actual type:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT5"));
 	FlexGridSizer1->Add(StaticText5,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	txtActualType = new wxStaticText(Panel1,ID_STATICTEXT6,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT6"));
 	FlexGridSizer1->Add(txtActualType,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText7 = new wxStaticText(Panel1,ID_STATICTEXT7,_("Arguments:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT7"));
 	FlexGridSizer1->Add(StaticText7,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	txtArgs = new wxStaticText(Panel1,ID_STATICTEXT8,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT8"));
 	FlexGridSizer1->Add(txtArgs,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText13 = new wxStaticText(Panel1,ID_STATICTEXT13,_("Is operator\?"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT13"));
 	FlexGridSizer1->Add(StaticText13,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	txtIsOp = new wxStaticText(Panel1,ID_STATICTEXT14,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT14"));
 	FlexGridSizer1->Add(txtIsOp,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText15 = new wxStaticText(Panel1,ID_STATICTEXT15,_("Is local\?"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT15"));
 	FlexGridSizer1->Add(StaticText15,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	txtIsLocal = new wxStaticText(Panel1,ID_STATICTEXT16,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT16"));
 	FlexGridSizer1->Add(txtIsLocal,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText32 = new wxStaticText(Panel1,ID_STATICTEXT32,_("Is temp\?"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT32"));
 	FlexGridSizer1->Add(StaticText32,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	txtIsTemp = new wxStaticText(Panel1,ID_STATICTEXT33,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT33"));
 	FlexGridSizer1->Add(txtIsTemp,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText19 = new wxStaticText(Panel1,ID_STATICTEXT19,_("Namespace:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT19"));
 	FlexGridSizer1->Add(StaticText19,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	txtNamespace = new wxStaticText(Panel1,ID_STATICTEXT20,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT20"));
 	FlexGridSizer1->Add(txtNamespace,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText22 = new wxStaticText(Panel1,ID_STATICTEXT22,_("Parent:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT22"));
 	FlexGridSizer1->Add(StaticText22,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
-	FlexGridSizer1->Add(BoxSizer7,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,0);
+	BoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
+	txtParent = new wxStaticText(Panel1,ID_STATICTEXT24,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT24"));
+	BoxSizer7->Add(txtParent,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
+	btnGoParent = new wxButton(Panel1,ID_BUTTON4,_("Go"),wxDefaultPosition,wxSize(36,23),0,wxDefaultValidator,_T("ID_BUTTON4"));
+	BoxSizer7->Add(btnGoParent,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
+	FlexGridSizer1->Add(BoxSizer7,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText30 = new wxStaticText(Panel1,ID_STATICTEXT30,_("Children:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT30"));
 	FlexGridSizer1->Add(StaticText30,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
-	FlexGridSizer1->Add(BoxSizer8,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,0);
+	BoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
+	cmbChildren = new wxComboBox(Panel1,ID_COMBOBOX3,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_T("ID_COMBOBOX3"));
+	BoxSizer8->Add(cmbChildren,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
+	btnGoChildren = new wxButton(Panel1,ID_BUTTON5,_("Go"),wxDefaultPosition,wxSize(36,23),0,wxDefaultValidator,_T("ID_BUTTON5"));
+	BoxSizer8->Add(btnGoChildren,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
+	FlexGridSizer1->Add(BoxSizer8,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText21 = new wxStaticText(Panel1,ID_STATICTEXT21,_("Ancestors:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT21"));
 	FlexGridSizer1->Add(StaticText21,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
-	FlexGridSizer1->Add(BoxSizer6,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,0);
+	BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
+	cmbAncestors = new wxComboBox(Panel1,ID_COMBOBOX2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_T("ID_COMBOBOX2"));
+	BoxSizer6->Add(cmbAncestors,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
+	btnGoAsc = new wxButton(Panel1,ID_BUTTON3,_("Go"),wxDefaultPosition,wxSize(36,23),0,wxDefaultValidator,_T("ID_BUTTON3"));
+	BoxSizer6->Add(btnGoAsc,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
+	FlexGridSizer1->Add(BoxSizer6,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText23 = new wxStaticText(Panel1,ID_STATICTEXT23,_("Descendants:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT23"));
 	FlexGridSizer1->Add(StaticText23,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
-	FlexGridSizer1->Add(BoxSizer5,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,0);
+	BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
+	cmbDescendants = new wxComboBox(Panel1,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_T("ID_COMBOBOX1"));
+	BoxSizer5->Add(cmbDescendants,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
+	btnGoDesc = new wxButton(Panel1,ID_BUTTON2,_("Go"),wxDefaultPosition,wxSize(36,23),0,wxDefaultValidator,_T("ID_BUTTON2"));
+	BoxSizer5->Add(btnGoDesc,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
+	FlexGridSizer1->Add(BoxSizer5,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText25 = new wxStaticText(Panel1,ID_STATICTEXT25,_("Decl. filename:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT25"));
 	FlexGridSizer1->Add(StaticText25,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	txtDeclFile = new wxStaticText(Panel1,ID_STATICTEXT26,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT26"));
 	FlexGridSizer1->Add(txtDeclFile,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText27 = new wxStaticText(Panel1,ID_STATICTEXT27,_("Impl. filename:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT27"));
 	FlexGridSizer1->Add(StaticText27,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	txtImplFile = new wxStaticText(Panel1,ID_STATICTEXT28,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT28"));
 	FlexGridSizer1->Add(txtImplFile,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText34 = new wxStaticText(Panel1,ID_STATICTEXT34,_("User data:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT34"));
 	FlexGridSizer1->Add(StaticText34,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	txtUserData = new wxStaticText(Panel1,ID_STATICTEXT35,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT35"));
 	FlexGridSizer1->Add(txtUserData,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
-	BoxSizer2->Add(BoxSizer4,0,wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
-	BoxSizer2->Add(StaticLine1,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
-	BoxSizer2->Add(FlexGridSizer1,0,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
+	BoxSizer2->Add(FlexGridSizer1,0,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
 	Panel1->SetSizer(BoxSizer2);
 	BoxSizer2->Fit(Panel1);
 	BoxSizer2->SetSizeHints(Panel1);
-	Panel2 = new wxPanel(Notebook1,ID_PANEL2,wxDefaultPosition,wxDefaultSize,0,_("ID_PANEL2"));
+	Panel2 = new wxPanel(Notebook1,ID_PANEL2,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("ID_PANEL2"));
 	BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-	lstFiles = new wxListBox(Panel2,ID_LISTBOX1,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_("ID_LISTBOX1"));
-	lstFiles->SetSelection(-1);
-	BoxSizer3->Add(lstFiles,1,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
+	lstFiles = new wxListBox(Panel2,ID_LISTBOX1,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_T("ID_LISTBOX1"));
+	BoxSizer3->Add(lstFiles,1,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
 	Panel2->SetSizer(BoxSizer3);
 	BoxSizer3->Fit(Panel2);
 	BoxSizer3->SetSizeHints(Panel2);
 	Notebook1->AddPage(Panel1,_("Tokens"),false);
 	Notebook1->AddPage(Panel2,_("Files list"),false);
-	lblInfo = new wxStaticText(this,ID_STATICTEXT31,_("The parser contains 0 tokens found in 0 files"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT31"));
-	StaticLine2 = new wxStaticLine(this,ID_STATICLINE2,wxDefaultPosition,wxSize(10,-1),0,_("ID_STATICLINE2"));
+	BoxSizer1->Add(Notebook1,1,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
+	lblInfo = new wxStaticText(this,ID_STATICTEXT31,_("The parser contains 0 tokens found in 0 files"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT31"));
+	BoxSizer1->Add(lblInfo,0,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
+	StaticLine2 = new wxStaticLine(this,ID_STATICLINE2,wxDefaultPosition,wxSize(10,-1),wxLI_HORIZONTAL,_T("ID_STATICLINE2"));
+	BoxSizer1->Add(StaticLine2,0,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
 	StdDialogButtonSizer1->AddButton(new wxButton(this,wxID_CANCEL,_("Close")));
 	StdDialogButtonSizer1->Realize();
-	BoxSizer1->Add(Notebook1,1,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
-	BoxSizer1->Add(lblInfo,0,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,5);
-	BoxSizer1->Add(StaticLine2,0,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND,5);
-	BoxSizer1->Add(StdDialogButtonSizer1,0,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER,5);
-	this->SetSizer(BoxSizer1);
+	BoxSizer1->Add(StdDialogButtonSizer1,0,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
 	Center();
+	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnFindClick);
+	Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoParentClick);
+	Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoChildrenClick);
+	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoAscClick);
+	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoDescClick);
 	//*)
 }
 
 CCDebugInfo::~CCDebugInfo()
 {
+    //(*Destroy(CCDebugInfo)
+	//*)
 }
 
 

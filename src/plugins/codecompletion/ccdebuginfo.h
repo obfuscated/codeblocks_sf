@@ -11,11 +11,9 @@
 #include <wx/button.h>
 #include <wx/combobox.h>
 #include <wx/dialog.h>
-#include <wx/intl.h>
 #include <wx/listbox.h>
 #include <wx/notebook.h>
 #include <wx/panel.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/statline.h>
 #include <wx/stattext.h>
@@ -42,59 +40,56 @@ class CCDebugInfo: public wxDialog
 		void FillDescendants();
 
 		//(*Identifiers(CCDebugInfo)
-		enum Identifiers
-		{
-		    ID_NOTEBOOK1 = 0x1000,
-		    ID_PANEL1,
-		    ID_STATICTEXT29,
-		    ID_TEXTCTRL1,
-		    ID_BUTTON1,
-		    ID_STATICLINE1,
-		    ID_STATICTEXT17,
-		    ID_STATICTEXT18,
-		    ID_STATICTEXT1,
-		    ID_STATICTEXT2,
-		    ID_STATICTEXT9,
-		    ID_STATICTEXT10,
-		    ID_STATICTEXT11,
-		    ID_STATICTEXT12,
-		    ID_STATICTEXT3,
-		    ID_STATICTEXT4,
-		    ID_STATICTEXT5,
-		    ID_STATICTEXT6,
-		    ID_STATICTEXT7,
-		    ID_STATICTEXT8,
-		    ID_STATICTEXT13,
-		    ID_STATICTEXT14,
-		    ID_STATICTEXT15,
-		    ID_STATICTEXT16,
-		    ID_STATICTEXT32,
-		    ID_STATICTEXT33,
-		    ID_STATICTEXT19,
-		    ID_STATICTEXT20,
-		    ID_STATICTEXT22,
-		    ID_STATICTEXT24,
-		    ID_BUTTON4,
-		    ID_STATICTEXT30,
-		    ID_COMBOBOX3,
-		    ID_BUTTON5,
-		    ID_STATICTEXT21,
-		    ID_COMBOBOX2,
-		    ID_BUTTON3,
-		    ID_STATICTEXT23,
-		    ID_COMBOBOX1,
-		    ID_BUTTON2,
-		    ID_STATICTEXT25,
-		    ID_STATICTEXT26,
-		    ID_STATICTEXT27,
-		    ID_STATICTEXT28,
-		    ID_STATICTEXT34,
-		    ID_STATICTEXT35,
-		    ID_PANEL2,
-		    ID_LISTBOX1,
-		    ID_STATICTEXT31,
-		    ID_STATICLINE2
-		};
+		static const long ID_NOTEBOOK1;
+		static const long ID_PANEL1;
+		static const long ID_STATICTEXT29;
+		static const long ID_TEXTCTRL1;
+		static const long ID_BUTTON1;
+		static const long ID_STATICLINE1;
+		static const long ID_STATICTEXT17;
+		static const long ID_STATICTEXT18;
+		static const long ID_STATICTEXT1;
+		static const long ID_STATICTEXT2;
+		static const long ID_STATICTEXT9;
+		static const long ID_STATICTEXT10;
+		static const long ID_STATICTEXT11;
+		static const long ID_STATICTEXT12;
+		static const long ID_STATICTEXT3;
+		static const long ID_STATICTEXT4;
+		static const long ID_STATICTEXT5;
+		static const long ID_STATICTEXT6;
+		static const long ID_STATICTEXT7;
+		static const long ID_STATICTEXT8;
+		static const long ID_STATICTEXT13;
+		static const long ID_STATICTEXT14;
+		static const long ID_STATICTEXT15;
+		static const long ID_STATICTEXT16;
+		static const long ID_STATICTEXT32;
+		static const long ID_STATICTEXT33;
+		static const long ID_STATICTEXT19;
+		static const long ID_STATICTEXT20;
+		static const long ID_STATICTEXT22;
+		static const long ID_STATICTEXT24;
+		static const long ID_BUTTON4;
+		static const long ID_STATICTEXT30;
+		static const long ID_COMBOBOX3;
+		static const long ID_BUTTON5;
+		static const long ID_STATICTEXT21;
+		static const long ID_COMBOBOX2;
+		static const long ID_BUTTON3;
+		static const long ID_STATICTEXT23;
+		static const long ID_COMBOBOX1;
+		static const long ID_BUTTON2;
+		static const long ID_STATICTEXT25;
+		static const long ID_STATICTEXT26;
+		static const long ID_STATICTEXT27;
+		static const long ID_STATICTEXT28;
+		static const long ID_STATICTEXT34;
+		static const long ID_STATICTEXT35;
+		static const long ID_PANEL2;
+		static const long ID_LISTBOX1;
+		static const long ID_STATICTEXT31;
+		static const long ID_STATICLINE2;
 		//*)
 
 	protected:

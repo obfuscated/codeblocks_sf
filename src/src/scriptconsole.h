@@ -9,9 +9,7 @@
 
 //(*Headers(ScriptConsole)
 #include <wx/button.h>
-#include <wx/intl.h>
 #include <wx/panel.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -29,16 +27,13 @@ class ScriptConsole: public wxPanel
         void Log(const wxString& msg);
 
 		//(*Identifiers(ScriptConsole)
-		enum Identifiers
-		{
-		    ID_BUTTON1 = 0x1000,
-		    ID_BUTTON2,
-		    ID_BUTTON3,
-		    ID_PANEL1,
-		    ID_STATICTEXT1,
-		    ID_TEXTCTRL1,
-		    ID_TEXTCTRL2
-		};
+		static const long ID_TEXTCTRL1;
+		static const long ID_PANEL1;
+		static const long ID_STATICTEXT1;
+		static const long ID_TEXTCTRL2;
+		static const long ID_BUTTON1;
+		static const long ID_BUTTON2;
+		static const long ID_BUTTON3;
 		//*)
 
 //	protected:

@@ -8,15 +8,23 @@
     #include "wx/utils.h"
 #endif
 
+//(*InternalHeaders(VirtualBuildTargetsDlg)
+#include <wx/bitmap.h>
+#include <wx/font.h>
+#include <wx/fontenum.h>
+#include <wx/fontmap.h>
+#include <wx/image.h>
+#include <wx/intl.h>
+#include <wx/settings.h>
+#include <wx/xrc/xmlres.h>
+//*)
+
+//(*IdInit(VirtualBuildTargetsDlg)
+//*)
+
 BEGIN_EVENT_TABLE(VirtualBuildTargetsDlg,wxDialog)
 	//(*EventTable(VirtualBuildTargetsDlg)
-	EVT_LISTBOX(XRCID("ID_LISTBOX1"),VirtualBuildTargetsDlg::OnAliasesSelect)
-	EVT_BUTTON(XRCID("ID_BUTTON1"),VirtualBuildTargetsDlg::OnAddClick)
-	EVT_BUTTON(XRCID("ID_BUTTON2"),VirtualBuildTargetsDlg::OnEditClick)
-	EVT_BUTTON(XRCID("ID_BUTTON3"),VirtualBuildTargetsDlg::OnRemoveClick)
-	EVT_CHECKLISTBOX(XRCID("ID_CHECKLISTBOX1"),VirtualBuildTargetsDlg::OnTargetsToggled)
 	//*)
-
 	EVT_UPDATE_UI(-1, VirtualBuildTargetsDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
@@ -29,12 +37,17 @@ VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID id, c
     m_pProject(project)
 {
 	//(*Initialize(VirtualBuildTargetsDlg)
-	wxXmlResource::Get()->LoadDialog(this,parent,_T("VirtualBuildTargetsDlg"));
-	lstAliases = XRCCTRL(*this,"ID_LISTBOX1",wxListBox);
-	btnAdd = XRCCTRL(*this,"ID_BUTTON1",wxButton);
-	btnEdit = XRCCTRL(*this,"ID_BUTTON2",wxButton);
-	btnRemove = XRCCTRL(*this,"ID_BUTTON3",wxButton);
-	lstTargets = XRCCTRL(*this,"ID_CHECKLISTBOX1",wxCheckListBox);
+	wxXmlResource::Get()->LoadObject(this,parent,_T("VirtualBuildTargetsDlg"),_T("wxDialog"));
+	lstAliases = (wxListBox*)FindWindow(XRCID("ID_LISTBOX1"));
+	btnAdd = (wxButton*)FindWindow(XRCID("ID_BUTTON1"));
+	btnEdit = (wxButton*)FindWindow(XRCID("ID_BUTTON2"));
+	btnRemove = (wxButton*)FindWindow(XRCID("ID_BUTTON3"));
+	lstTargets = (wxCheckListBox*)FindWindow(XRCID("ID_CHECKLISTBOX1"));
+	Connect(XRCID("ID_LISTBOX1"),wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAliasesSelect);
+	Connect(XRCID("ID_BUTTON1"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAddClick);
+	Connect(XRCID("ID_BUTTON2"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnEditClick);
+	Connect(XRCID("ID_BUTTON3"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnRemoveClick);
+	Connect(XRCID("ID_CHECKLISTBOX1"),wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnTargetsToggled);
 	//*)
 
 	// fill aliases
@@ -50,6 +63,8 @@ VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID id, c
 
 VirtualBuildTargetsDlg::~VirtualBuildTargetsDlg()
 {
+    //(*Destroy(VirtualBuildTargetsDlg)
+	//*)
 }
 
 void VirtualBuildTargetsDlg::SetVirtualTarget(const wxString& targetName)

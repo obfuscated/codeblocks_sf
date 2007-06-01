@@ -11,12 +11,9 @@
 #include <wx/button.h>
 #include <wx/checklst.h>
 #include <wx/dialog.h>
-#include <wx/intl.h>
 #include <wx/listbox.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/statline.h>
-#include <wx/xrc/xmlres.h>
 //*)
 
 class cbProject;
