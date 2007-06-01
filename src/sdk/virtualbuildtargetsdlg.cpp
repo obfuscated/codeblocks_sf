@@ -57,7 +57,7 @@ void VirtualBuildTargetsDlg::SetVirtualTarget(const wxString& targetName)
     if (!lstTargets->IsEnabled())
         return;
     wxArrayString checked;
-    for (int i = 0; i < lstTargets->GetCount(); ++i)
+    for (int i = 0; i < (int)lstTargets->GetCount(); ++i)
     {
         if (lstTargets->IsChecked(i))
             checked.Add(lstTargets->GetString(i));
@@ -124,7 +124,7 @@ void VirtualBuildTargetsDlg::OnEditClick(wxCommandEvent& event)
     wxString targetName = wxGetTextFromUser(_("Enter the new virtual build target name:"),
                                             _("Edit virtual build target"),
                                             lstAliases->GetStringSelection());
-    
+
     // is name unchanged, or user cancelled?
     if (targetName.IsEmpty() || targetName == lstAliases->GetStringSelection())
         return;

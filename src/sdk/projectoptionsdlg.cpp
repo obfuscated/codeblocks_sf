@@ -754,7 +754,7 @@ void ProjectOptionsDlg::OnFileToggleMarkClick(wxCommandEvent& event)
     ProjectBuildTarget* target = m_Project->GetBuildTarget(targetIdx);
 
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
-    for (int i = 0; i < list->GetCount(); ++i)
+    for (int i = 0; i < (int)list->GetCount(); ++i)
 	{
 		ProjectFile* pf = m_Project->GetFile(i);
 		list->Check(i, !list->IsChecked(i));

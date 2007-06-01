@@ -67,7 +67,7 @@ void EditArrayOrderDlg::OnUpdateUI(wxUpdateUIEvent& event)
     wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
 
     XRCCTRL(*this, "btnMoveUp", wxButton)->Enable(list->GetSelection() > 0);
-    XRCCTRL(*this, "btnMoveDown", wxButton)->Enable(list->GetSelection() >= 0 && list->GetSelection() < list->GetCount() - 1);
+    XRCCTRL(*this, "btnMoveDown", wxButton)->Enable(list->GetSelection() >= 0 && list->GetSelection() < (int)list->GetCount() - 1);
 }
 
 void EditArrayOrderDlg::OnMoveUp(wxCommandEvent& event)
@@ -89,7 +89,7 @@ void EditArrayOrderDlg::OnMoveDown(wxCommandEvent& event)
     wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
     int sel = list->GetSelection();
 
-    if (sel < list->GetCount() - 1)
+    if (sel < (int)list->GetCount() - 1)
     {
         wxString tmp = list->GetString(sel);
         list->Delete(sel);
@@ -105,7 +105,7 @@ void EditArrayOrderDlg::EndModal(int retCode)
         wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
 
         m_Array.Clear();
-        for (int i = 0; i < list->GetCount(); ++i)
+        for (int i = 0; i < (int)list->GetCount(); ++i)
             m_Array.Add(list->GetString(i));
     }
 

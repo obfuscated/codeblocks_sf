@@ -148,7 +148,7 @@ void ReplaceDlg::FillComboWithLastValues(wxComboBox* combo, const wxString& conf
 void ReplaceDlg::SaveComboValues(wxComboBox* combo, const wxString& configKey)
 {
 	wxArrayString values;
-	for (int i = 0; (i < combo->GetCount()) && (i < 10); ++i)
+	for (int i = 0; (i < (int)combo->GetCount()) && (i < 10); ++i)
 	{
 		if (!combo->GetString(i).IsEmpty())
 			values.Add(combo->GetString(i));

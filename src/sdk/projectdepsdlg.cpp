@@ -73,7 +73,7 @@ bool ProjectDepsDlg::SaveList()
     Manager::Get()->GetProjectManager()->ClearProjectDependencies(thisprj);
 
     // now set the the new deps
-    for (int i = 0; i < lst->GetCount(); ++i)
+    for (int i = 0; i < (int)lst->GetCount(); ++i)
     {
         if (!lst->IsChecked(i))
             continue;

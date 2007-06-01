@@ -67,7 +67,7 @@ void EditArrayFileDlg::EndModal(int retCode)
 	{
 		wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
 		m_Array.Clear();
-		for (int i = 0; i < list->GetCount(); ++i)
+		for (int i = 0; i < (int)list->GetCount(); ++i)
 		{
 			m_Array.Add(list->GetString(i));
 		}

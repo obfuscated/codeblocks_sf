@@ -346,7 +346,7 @@ void ProjectFileOptionsDlg::EndModal(int retCode)
     {
         m_ProjectFile->buildTargets.Clear();
         wxCheckListBox *list = XRCCTRL(*this, "lstTargets", wxCheckListBox);
-        for (int i = 0; i < list->GetCount(); i++)
+        for (int i = 0; i < (int)list->GetCount(); i++)
         {
             if (list->IsChecked(i))
                 m_ProjectFile->AddBuildTarget(list->GetString(i));
