@@ -57,9 +57,8 @@ void SearchResultsLog::SyncEditor(int selIndex)
     wxFileName filename(m_pList->GetItemText(selIndex));
     wxString file;
     if (!filename.IsAbsolute())
-        file = m_Base + wxFILE_SEP_PATH + filename.GetFullPath();
-    else
-        file = filename.GetFullPath();
+        filename.MakeAbsolute(m_Base);
+    file = filename.GetFullPath();
 
     wxListItem li;
     li.m_itemId = selIndex;
