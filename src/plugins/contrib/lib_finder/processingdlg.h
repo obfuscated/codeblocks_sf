@@ -10,7 +10,6 @@
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/gauge.h>
-#include <wx/intl.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 //*)
@@ -30,12 +29,9 @@ class ProcessingDlg: public wxDialog
 		virtual ~ProcessingDlg();
 
 		//(*Identifiers(ProcessingDlg)
-		enum Identifiers
-		{
-		    ID_BUTTON1 = 0x1000,
-		    ID_GAUGE1,
-		    ID_STATICTEXT1
-		};
+		static const long ID_STATICTEXT1;
+		static const long ID_GAUGE1;
+		static const long ID_BUTTON1;
 		//*)
 
 		bool ReadDirs(const wxArrayString& Dirs);

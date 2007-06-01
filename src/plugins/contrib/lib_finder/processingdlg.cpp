@@ -10,14 +10,23 @@
 #include "resultmap.h"
 
 //(*InternalHeaders(ProcessingDlg)
+#include <wx/bitmap.h>
+#include <wx/font.h>
+#include <wx/fontenum.h>
+#include <wx/fontmap.h>
+#include <wx/image.h>
+#include <wx/intl.h>
+#include <wx/settings.h>
 //*)
 
 //(*IdInit(ProcessingDlg)
+const long ProcessingDlg::ID_STATICTEXT1 = wxNewId();
+const long ProcessingDlg::ID_GAUGE1 = wxNewId();
+const long ProcessingDlg::ID_BUTTON1 = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(ProcessingDlg,wxDialog)
 	//(*EventTable(ProcessingDlg)
-	EVT_BUTTON(ID_BUTTON1,ProcessingDlg::OnButton1Click)
 	//*)
 END_EVENT_TABLE()
 
@@ -25,23 +34,20 @@ ProcessingDlg::ProcessingDlg(wxWindow* parent,wxWindowID id):
     StopFlag(false)
 {
 	//(*Initialize(ProcessingDlg)
-	Create(parent,id,_T(""),wxDefaultPosition,wxDefaultSize,wxCAPTION);
+	Create(parent,id,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxCAPTION,_T("wxDialog"));
 	FlexGridSizer1 = new wxFlexGridSizer(0,1,0,0);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL,this,_("Processing"));
-	Status = new wxStaticText(this,ID_STATICTEXT1,_("Waiting"),wxDefaultPosition,wxDefaultSize,wxST_NO_AUTORESIZE);
-	Gauge1 = new wxGauge(this,ID_GAUGE1,100,wxDefaultPosition,wxSize(288,12),0);
-	if ( 0 ) Gauge1->SetValue(0);
-	if ( 0 ) Gauge1->SetValue(0);
-	if ( 0 ) Gauge1->SetValue(0);
-	StaticBoxSizer1->Add(Status,0,wxALIGN_CENTER|wxEXPAND,0);
-	StaticBoxSizer1->Add(Gauge1,1,wxALIGN_CENTER,5);
-	StopBtn = new wxButton(this,ID_BUTTON1,_("Stop"),wxDefaultPosition,wxDefaultSize,0);
-	if (false) StopBtn->SetDefault();
-	FlexGridSizer1->Add(StaticBoxSizer1,1,wxALL|wxALIGN_CENTER,5);
-	FlexGridSizer1->Add(StopBtn,1,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER,5);
-	this->SetSizer(FlexGridSizer1);
+	Status = new wxStaticText(this,ID_STATICTEXT1,_("Waiting"),wxDefaultPosition,wxDefaultSize,wxST_NO_AUTORESIZE,_T("ID_STATICTEXT1"));
+	StaticBoxSizer1->Add(Status,0,wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,0);
+	Gauge1 = new wxGauge(this,ID_GAUGE1,100,wxDefaultPosition,wxSize(288,12),0,wxDefaultValidator,_T("ID_GAUGE1"));
+	StaticBoxSizer1->Add(Gauge1,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	FlexGridSizer1->Add(StaticBoxSizer1,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	StopBtn = new wxButton(this,ID_BUTTON1,_("Stop"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON1"));
+	FlexGridSizer1->Add(StopBtn,1,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
+	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProcessingDlg::OnButton1Click);
 	//*)
 }
 
