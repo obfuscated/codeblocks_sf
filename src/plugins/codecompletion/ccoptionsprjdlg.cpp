@@ -122,7 +122,7 @@ void CCOptionsProjectDlg::OnApply()
 {
     wxArrayString newpaths;
     wxListBox* control = XRCCTRL(*this, "lstPaths", wxListBox);
-    for (int i = 0; i < control->GetCount(); ++i)
+    for (int i = 0; i < (int)control->GetCount(); ++i)
     {
         newpaths.Add(control->GetString(i));
     }

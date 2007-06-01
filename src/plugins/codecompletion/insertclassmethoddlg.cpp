@@ -42,7 +42,7 @@ wxArrayString InsertClassMethodDlg::GetCode() const
     wxArrayString array;
     const wxCheckListBox* clb = XRCCTRL(*this, "chklstMethods", wxCheckListBox);
 
-    for (int i = 0; i < clb->GetCount(); ++i)
+    for (int i = 0; i < (int)clb->GetCount(); ++i)
     {
         if (clb->IsChecked(i))
         {

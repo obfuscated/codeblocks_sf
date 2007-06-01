@@ -99,7 +99,7 @@ void AddTodoDlg::SaveUsers() const
 	wxChoice* cmb = XRCCTRL(*this, "chcUser", wxChoice);
 	wxArrayString users;
 
-	for (int i = 0; i < cmb->GetCount(); ++i)
+	for (int i = 0; i < (int)cmb->GetCount(); ++i)
 	{
 		users.Add(cmb->GetString(i));
 	}
@@ -152,7 +152,7 @@ void AddTodoDlg::EndModal(int retVal)
         m_Types.Clear();
         if (cmb->FindString(cmb->GetStringSelection()) == wxNOT_FOUND)
             m_Types.Add(cmb->GetStringSelection());
-        for (int i = 0; i < cmb->GetCount(); ++i)
+        for (int i = 0; i < (int)cmb->GetCount(); ++i)
         {
             m_Types.Add(cmb->GetString(i));
         }
