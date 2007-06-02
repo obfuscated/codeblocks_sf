@@ -47,6 +47,11 @@ void wxsBaseProperties::OnEnumProperties(long Flags)
             WXS_SIZE_P(wxsBaseProperties,m_MinSize,_("Default Min size"),_("Min Width"),_("Min Height"),_("Min size in dialog units"),_T("minsize"),Priority);
             WXS_SIZE_P(wxsBaseProperties,m_MaxSize,_("Default Max size"),_("Max Width"),_("Max Height"),_("Max size in dialog units"),_T("maxsize"),Priority);
         }
+
+        if ( Flags & wxsItem::flExtraCode )
+        {
+            WXS_STRING_P(wxsBaseProperties,m_ExtraCode,_("Extra code"),_T("extra_code"), wxEmptyString,false,Priority);
+        }
     }
 }
 

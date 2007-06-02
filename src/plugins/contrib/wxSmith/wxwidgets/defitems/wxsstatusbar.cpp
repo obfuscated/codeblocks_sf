@@ -38,7 +38,7 @@ namespace
 }
 
 wxsStatusBar::wxsStatusBar(wxsItemResData* Data):
-    wxsTool(Data,&Reg.Info,NULL,wxsStatusBarStyles,flVariable|flId|flSubclass),
+    wxsTool(Data,&Reg.Info,NULL,wxsStatusBarStyles,flVariable|flId|flSubclass|flExtraCode),
     m_Fields(1)
 {
     UpdateArraysSize(m_Fields);
@@ -74,6 +74,7 @@ void wxsStatusBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowPare
                 Codef(_T("%ASetStatusStyles(%d,%v);\n"),m_Fields,StylesVarName.c_str());
                 Codef(_T("SetStatusBar(%v);\n"),GetVarName().c_str());
             }
+            BuildSetupWindowCode(Code, WindowParent, Language);
             break;
 
         default:

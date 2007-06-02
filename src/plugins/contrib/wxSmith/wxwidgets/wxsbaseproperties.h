@@ -5,9 +5,6 @@
 #include "../wxsadvqpp.h"
 #include "../wxscodinglang.h"
 
-// TODO: Use flags also wneh creating source code / preview - this will
-//       prevent using properties which are not used by item
-
 /** \brief Structure holding most commonly used properties
  *
  * This class doesn't support style since it require too many informations
@@ -32,6 +29,9 @@ class wxsBaseProperties: public wxsPropertyContainer
         wxsFontData m_Font;               ///< \brief Font
         wxString m_ToolTip;               ///< \brief Tooltip
         wxString m_HelpText;              ///< \brief Help text
+        wxString m_ExtraCode;             ///< \brief User's extra item initialization code
+
+
 
         /** \brief Constructor - it will be used to set default values */
         wxsBaseProperties():
@@ -41,7 +41,8 @@ class wxsBaseProperties: public wxsPropertyContainer
             m_Fg(wxsCOLOUR_DEFAULT),
             m_Bg(wxsCOLOUR_DEFAULT),
             m_ToolTip(wxEmptyString),
-            m_HelpText(wxEmptyString)
+            m_HelpText(wxEmptyString),
+            m_ExtraCode(wxEmptyString)
         {}
 
         /** \brief Function generating QPPChild Panel for most frequently used

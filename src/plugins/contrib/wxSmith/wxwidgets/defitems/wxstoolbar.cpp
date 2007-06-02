@@ -84,7 +84,7 @@ wxsToolBar::wxsToolBar(wxsItemResData* Data):
         &Reg.Info,
         NULL,
         wxsToolBarStyles,
-        flVariable|flId|flSubclass),
+        flVariable|flId|flSubclass|flExtraCode),
     m_Packing(-1),
     m_Separation(-1)
 {
@@ -147,6 +147,7 @@ void wxsToolBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent
                 {
                     Codef(_T("SetToolBar(%v);\n"),GetVarName().c_str());
                 }
+                BuildSetupWindowCode(Code, WindowParent, Language);
             }
             break;
 

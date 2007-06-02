@@ -22,7 +22,7 @@ class wxsWidget: public wxsItem
     public:
 
         /** \brief Default properties flags used by widgets */
-        static const long flWidget = flVariable|flId|flPosition|flSize|flEnabled|flFocused|flHidden|flColours|flToolTip|flFont|flHelpText|flSubclass|flMinMaxSize;
+        static const long flWidget = flVariable|flId|flPosition|flSize|flEnabled|flFocused|flHidden|flColours|flToolTip|flFont|flHelpText|flSubclass|flMinMaxSize|flExtraCode;
 
         /** \brief Ctor
          *  \param Data data managment object handling this item

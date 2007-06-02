@@ -43,7 +43,8 @@ wxsItem::wxsItem(wxsItemResData* ResourceData,const wxsItemInfo* Info,long Prope
 {
     if ( m_PropertiesFlags &
             (flPosition|flSize|flEnabled|flFocused|flHidden|
-             flColours|flToolTip|flFont|flHelpText) )
+             flColours|flToolTip|flFont|flHelpText|flSubclass|
+             flMinMaxSize|flExtraCode) )
     {
         m_BaseProperties = new wxsBaseProperties;
     }
@@ -737,8 +738,18 @@ void wxsItem::BuildSetupWindowCode(wxString& Code,const wxString& WindowParent,w
                 }
             }
 
-            if ( (PropertiesFlags&flToolTip)  && !m_BaseProperties->m_ToolTip.IsEmpty()  ) Code << GetAccessPrefix(Language) << _T("SetToolTip(") << wxsCodeMarks::WxString(wxsCPP,m_BaseProperties->m_ToolTip) << _T(");\n");
-            if ( (PropertiesFlags&flHelpText) && !m_BaseProperties->m_HelpText.IsEmpty() ) Code << GetAccessPrefix(Language) << _T("SetHelpText(") << wxsCodeMarks::WxString(wxsCPP,m_BaseProperties->m_HelpText) << _T(");\n");
+            if ( (PropertiesFlags&flToolTip)  && !m_BaseProperties->m_ToolTip.IsEmpty()  )   Code << GetAccessPrefix(Language) << _T("SetToolTip(") << wxsCodeMarks::WxString(wxsCPP,m_BaseProperties->m_ToolTip) << _T(");\n");
+            if ( (PropertiesFlags&flHelpText) && !m_BaseProperties->m_HelpText.IsEmpty() )   Code << GetAccessPrefix(Language) << _T("SetHelpText(") << wxsCodeMarks::WxString(wxsCPP,m_BaseProperties->m_HelpText) << _T(");\n");
+            if ( (PropertiesFlags&flExtraCode) && !m_BaseProperties->m_ExtraCode.IsEmpty() )
+            {
+                wxString& ExtraCode = m_BaseProperties->m_ExtraCode;
+                Code << ExtraCode;
+                // Adding extra \n character if it's not presend in extra code
+                if ( ExtraCode.GetChar(ExtraCode.Length()-1) != _T('\n') )
+                {
+                    Code << _T('\n');
+                }
+            }
             return;
         }
 

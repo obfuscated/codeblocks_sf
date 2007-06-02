@@ -41,7 +41,7 @@ wxsTimer::wxsTimer(wxsItemResData* Data):
         &Reg.Info,
         wxsTimerEvents,
         NULL,
-        flVariable|flId|flSubclass)
+        flVariable|flId|flSubclass|flExtraCode)
 {
     m_Interval = 0;
     m_OneShoot = false;
@@ -55,6 +55,7 @@ void wxsTimer::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
         {
             Code << Codef(Language,_T("%ASetOwner(this,%I);\n"));
             if ( m_Interval > 0 ) Code << Codef(Language,_T("%AStart(%d,%b);\n"),m_Interval,m_OneShoot);
+            BuildSetupWindowCode(Code, WindowParent, Language);
             return;
         }
 

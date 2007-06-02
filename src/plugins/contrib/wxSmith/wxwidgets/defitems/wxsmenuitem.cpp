@@ -46,7 +46,7 @@ wxsMenuItem::wxsMenuItem(wxsItemResData* Data,bool BreakOrSeparator):
         &Info,
         BreakOrSeparator?NULL:wxsMenuItemEvents,
         NULL,
-        BreakOrSeparator?0:flVariable|flId),
+        BreakOrSeparator?0:flVariable|flId|flExtraCode),
     m_Type(Normal),
     m_Enabled(true),
     m_Checked(false)
@@ -133,6 +133,7 @@ void wxsMenuItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
                 }
 
             }
+            BuildSetupWindowCode(Code, WindowParent, Language);
             break;
 
         default:

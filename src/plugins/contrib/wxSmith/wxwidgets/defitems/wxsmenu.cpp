@@ -63,7 +63,7 @@ namespace
 }
 
 wxsMenu::wxsMenu(wxsItemResData* Data):
-    wxsTool(Data,&Reg.Info,NULL,NULL,flVariable|flSubclass)
+    wxsTool(Data,&Reg.Info,NULL,NULL,flVariable|flSubclass|flExtraCode)
 {
 }
 
@@ -220,6 +220,7 @@ void wxsMenu::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wx
                     GetVarName().c_str(),
                     m_Label.c_str());
             }
+            BuildSetupWindowCode(Code, WindowParent, Language);
             break;
 
         default:

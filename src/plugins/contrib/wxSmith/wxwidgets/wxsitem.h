@@ -64,6 +64,7 @@ class wxsItem: public wxsPropertyContainer
         static const long flHelpText  = 0x002000;  ///< \brief Item is using help text
         static const long flSubclass  = 0x004000;  ///< \brief Item is using subclassing
         static const long flMinMaxSize= 0x008000;  ///< \brief Item is using SetMinSize / SetMaxSize functions
+        static const long flExtraCode = 0x010000;  ///< \brief Item is using extra item initialization code
 
         // Flags used when generating preview
         static const long pfExact     = 0x000001;   ///< \brief Notify to create exact preview (without any editor-like goodies)
