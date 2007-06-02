@@ -40,6 +40,24 @@ namespace
 
     /** \brief Identifier used by internal DrawingPanel class inside wxsDrawingWindow */
     const int DrawingPanelId = wxNewId();
+
+    /** \brief Identifier used by refresh timer */
+    const int RefreshTimerId = wxNewId();
+
+    /** \brief Types of paint delays */
+    enum RepaintDelayType
+    {
+        None,
+        Yield,
+        TimerFast,
+        TimerNormal
+    };
+
+    inline RepaintDelayType GetDelayType()
+    {
+        // Looks like this gives best results so far on both linux and windows
+        return TimerNormal;
+    }
 }
 
 
@@ -79,7 +97,7 @@ class wxsDrawingWindow::DrawingPanel: public wxPanel
         }
 
         /** \brief Dctor */
-        virtual ~ DrawingPanel()
+        virtual ~DrawingPanel()
         {
             m_Parent->Panel = NULL;
         }
@@ -105,10 +123,13 @@ wxsDrawingWindow::wxsDrawingWindow(wxWindow* Parent,wxWindowID id):
     LastSizeY(0),
     LastVirtX(0),
     LastVirtY(0),
-    WasContentChanged(false)
+    WasContentChanged(false),
+    IsDestroyed(false),
+    RefreshTimer(this,RefreshTimerId)
 {
     // Strange - it seems that by declaring this event in event table, it's not processed
-    Connect(-1,-1,wxEVT_FETCH_SEQUENCE,(wxObjectEventFunction)&wxsDrawingWindow::OnFetchSequence);
+    Connect(-1,wxEVT_FETCH_SEQUENCE,(wxObjectEventFunction)&wxsDrawingWindow::OnFetchSequence);
+    Connect(RefreshTimerId,wxEVT_TIMER,(wxObjectEventFunction)&wxsDrawingWindow::OnRefreshTimer);
     Panel = new DrawingPanel(this);
     Panel->Hide();
     SetScrollbars(5,5,1,1,0,0,true);
@@ -116,6 +137,7 @@ wxsDrawingWindow::wxsDrawingWindow(wxWindow* Parent,wxWindowID id):
 
 wxsDrawingWindow::~wxsDrawingWindow()
 {
+    IsDestroyed = true;
     if ( Bitmap ) delete Bitmap;
     Panel = NULL;
 }
@@ -200,6 +222,7 @@ void wxsDrawingWindow::StartFetchingSequence()
 void wxsDrawingWindow::OnFetchSequence(wxCommandEvent& event)
 {
     if ( !Panel ) return;
+    if ( IsDestroyed ) return;
 
     // Hiding panel to show content under it
     // If panel is hidden, there's no need to hide it and show children
@@ -212,23 +235,66 @@ void wxsDrawingWindow::OnFetchSequence(wxCommandEvent& event)
     }
     Update();
 
-    // Processing all pending events, it MUST be done
-    // to repaint the content of window
-    Manager::Yield();
+    // Here we have requested to hide panel and show children
+    // But since wxWidges does some updates on events, we
+    // have to introduce some delay and allow wxWidgets to
+    // do it's stuff before we can read bitmap directly from screen
+    switch ( GetDelayType() )
+    {
+        case None:
+            // We don't wait at all assuming that everything is
+            // shown now
+            FetchSequencePhase2();
+            break;
+
+        case Yield:
+            // We call Yield() to let wxWidgets process all messages
+            // This can be dangerous in some environments when calling
+            // Yield() may internally destroy this class (happens on Linux)
+            Manager::Yield();
+            FetchSequencePhase2();
+            break;
+
+        case TimerNormal:
+            // We start timer that will send event after some time.
+            // We assume here that before timer event is processed,
+            // all events used to udpate screen will be processed.
+            RefreshTimer.Start(50,true);
+            break;
+
+        case TimerFast:
+            // This version is simillar to TimerNormal, but with the difference is
+            // that here's almost no gap between refresh request and refresh
+            // execution. This may not be preffered on some platforms where
+            // timer events have high priority and are called before processing
+            // any pending events on queue. In such situation, it may lead to
+            // some unprocessed events which should update screen's content
+            // while fetching bitmap.
+            RefreshTimer.Start(1,true);
+            break;
+    }
+
+}
+
+void wxsDrawingWindow::OnRefreshTimer(wxTimerEvent& event)
+{
+    FetchSequencePhase2();
+}
+
+void wxsDrawingWindow::FetchSequencePhase2()
+{
+    if ( !Panel ) return;
+    if ( IsDestroyed ) return;
     FetchScreen();
     HideChildren();
     Panel->Show();
-    Manager::Yield();
-    Panel->Update();
-    Manager::Yield();
-
-    FastRepaint();
-    Manager::Yield();
     DuringFetch = false;
 }
 
 void wxsDrawingWindow::FetchScreen()
 {
+    if ( !Bitmap ) return;
+
     // Fetching preview directly from screen
 	wxScreenDC DC;
 	wxMemoryDC DestDC;
@@ -314,4 +380,10 @@ bool wxsDrawingWindow::NoNeedToRefetch()
     }
 
     return true;
+}
+
+bool wxsDrawingWindow::Destroy()
+{
+    IsDestroyed = true;
+    return wxScrolledWindow::Destroy();
 }

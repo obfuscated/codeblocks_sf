@@ -85,6 +85,9 @@ class wxsDrawingWindow: public wxScrolledWindow
         void PanelKeyboard(wxKeyEvent& event);
 
         void OnFetchSequence(wxCommandEvent& event);
+        void OnRefreshTimer(wxTimerEvent& event);
+
+        virtual bool Destroy();
 
         /** \brief Function stating sequence fetching editor's background
          *
@@ -93,6 +96,13 @@ class wxsDrawingWindow: public wxScrolledWindow
          * Bitmap is valid.
          */
         void StartFetchingSequence();
+
+        /** \brief Starting second step of fetch sequence
+         *
+         * In this step, the screen content is grabbed from the screen
+         * and put into internall bitmap.
+         */
+        void FetchSequencePhase2();
 
         /** \brief Function copying screen data into bitmap */
         void FetchScreen();
@@ -113,14 +123,17 @@ class wxsDrawingWindow: public wxScrolledWindow
 
         class DrawingPanel;
 
-        DrawingPanel* Panel;        /// \brief Panel put over children
-        wxBitmap* Bitmap;           /// \brief Bitmap with fetched window content (may be valid partially)
-        bool IsBlockFetch;          /// \brief Flag used to block fetching background (may be set by user)
-        bool DuringFetch;           /// \brief Set to true if we're during fetching sequence
-        int DuringChangeCnt;        /// \brief When >0, window's content is changed somewhere
-        int LastSizeX, LastSizeY;   /// \brief client size during last fetch
-        int LastVirtX, LastVirtY;   /// \brief virtusl area shift relative to client area during last fetch
-        bool WasContentChanged;     /// \brief If there was a call to WasContentChanged from last fetch
+        DrawingPanel* Panel;        ///< \brief Panel put over children
+        wxBitmap* Bitmap;           ///< \brief Bitmap with fetched window content (may be valid partially)
+        bool IsBlockFetch;          ///< \brief Flag used to block fetching background (may be set by user)
+        bool DuringFetch;           ///< \brief Set to true if we're during fetching sequence
+        int DuringChangeCnt;        ///< \brief When >0, window's content is changed somewhere
+        int LastSizeX, LastSizeY;   ///< \brief client size during last fetch
+        int LastVirtX, LastVirtY;   ///< \brief virtusl area shift relative to client area during last fetch
+        bool WasContentChanged;     ///< \brief If there was a call to WasContentChanged from last fetch
+        bool IsDestroyed;           ///< \brief Set to true after calling Destroy(), used to track destroyed but not yet deleted windows
+
+        wxTimer RefreshTimer;       ///< \brief Timer used wihle fetching screen content
 
         DECLARE_EVENT_TABLE()
 };
