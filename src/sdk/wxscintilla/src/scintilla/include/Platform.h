@@ -47,6 +47,7 @@
 
 #endif
 
+#include <wx/stopwatch.h>
 
 // Underlying the implementation of the platform classes are platform specific types.
 // Sometimes these need to be passed around by client code so they are defined here
@@ -435,6 +436,8 @@ class ElapsedTime {
 public:
 	ElapsedTime();
 	double Duration(bool reset=false);
+private:
+    wxStopWatch m_StopWatch;
 };
 
 /**

@@ -1382,11 +1382,13 @@ int Platform::DBCSCharMaxLength() {
 //----------------------------------------------------------------------
 
 ElapsedTime::ElapsedTime() {
-    wxStartTimer();
+    m_StopWatch.Start();
 }
 
 double ElapsedTime::Duration(bool reset) {
-    double result = wxGetElapsedTime(reset);
+    double result = m_StopWatch.Time();
+    if(reset)
+        m_StopWatch.Start();
     result /= 1000.0;
     return result;
 }

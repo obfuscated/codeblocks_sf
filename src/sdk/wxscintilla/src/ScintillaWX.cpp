@@ -684,7 +684,7 @@ void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
     PRectangle rcClient = GetClientRectangle();
     paintingAllText = rcPaint.Contains(rcClient);
 
-    dc->BeginDrawing();
+//    dc->BeginDrawing(); // Deprecated - it's an empty function anyway
     ClipChildren(*dc, rcPaint);
     Paint(surfaceWindow, rcPaint);
 
@@ -695,7 +695,7 @@ void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
         FullPaint();
     }
     paintState = notPainting;
-    dc->EndDrawing();
+//    dc->EndDrawing(); // Deprecated - it's an empty function anyway
 }
 
 
