@@ -915,9 +915,10 @@ void PluginManager::LoadAllPlugins()
             probPlugin = _T("");
     }
 
+    PluginElement* elem = 0;
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
-        PluginElement* elem = m_Plugins[i];
+        elem = m_Plugins[i];
         cbPlugin* plug = elem->plugin;
         if (!plug || plug->IsAttached())
             continue;

@@ -658,7 +658,8 @@ void MainFrame::RegisterScriptFunctions()
 
 void MainFrame::RunStartupScripts()
 {
-    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("scripting"));
+    ConfigManager* mgr = 0;
+    mgr = Manager::Get()->GetConfigManager(_T("scripting"));
     wxArrayString keys = mgr->EnumerateKeys(_T("/startup_scripts"));
 
     for (size_t i = 0; i < keys.GetCount(); ++i)
