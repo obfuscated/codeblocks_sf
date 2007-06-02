@@ -145,19 +145,17 @@ FindDlg::~FindDlg()
     wxArrayString previous;
     for (int i = 0; (i < (int)combo->GetCount()) && (i < 10); ++i)
     {
-        if (!combo->GetString(i).IsEmpty())
+        if (!combo->GetString(i).IsEmpty() && (previous.Index(combo->GetString(i)) == wxNOT_FOUND))
             previous.Add(combo->GetString(i));
     }
+    // Now bump the latest search string to top
     wxString find = combo->GetValue();
-    int prev_pos = combo->FindString(find);
+    int prev_pos = previous.Index(find);
     if (prev_pos > 0)
     {
-        // if it's already in the list at a position other than the top, we'll bump it to the
-        // top by deleting the duplicate item before we add the current search item to the top
-        combo->Delete(prev_pos);
-    }
-    if (prev_pos != 0)
+        previous.RemoveAt(prev_pos);
         previous.Insert(find, 0);
+    }
 
     cfg->Write(CONF_GROUP _T("/last"), previous);
 
