@@ -644,38 +644,24 @@ void wxsItemEditor::BuildPalette(wxNotebook* Palette)
             const wxsItemInfo* Info = Items[j];
             const wxBitmap& Icon = ( PalIconSize() == 16L ) ? Info->Icon16 : Info->Icon32;
 
-            if ( Icon.Ok() )
+            if ( AllowNonXRCItems || Info->AllowInXRC )
             {
-                wxBitmapButton* Btn =
-                    new wxBitmapButton(CurrentPanel,-1,Icon,
-                        wxDefaultPosition,wxDefaultSize,wxBU_AUTODRAW,
-                        wxDefaultValidator, Info->ClassName);
-                RowSizer->Add(Btn,0,wxALIGN_CENTER);
-                if ( !AllowNonXRCItems && !Info->AllowInXRC )
+                wxWindow* Btn;
+                if ( Icon.Ok() )
                 {
-                    Btn->Disable();
-                    Btn->SetToolTip(Info->ClassName + _(" (Not available for XRC-based resources)"));
+                    Btn = new wxBitmapButton(CurrentPanel,-1,Icon,
+                              wxDefaultPosition,wxDefaultSize,wxBU_AUTODRAW,
+                              wxDefaultValidator, Info->ClassName);
+                    RowSizer->Add(Btn,0,wxALIGN_CENTER);
                 }
                 else
                 {
-                    Btn->SetToolTip(Info->ClassName);
+                    Btn = new wxButton(CurrentPanel,-1,Info->ClassName,
+                              wxDefaultPosition,wxDefaultSize,0,
+                              wxDefaultValidator,Info->ClassName);
+                    RowSizer->Add(Btn,0,wxGROW);
                 }
-            }
-            else
-            {
-                wxButton* Btn = new wxButton(CurrentPanel,-1,Info->ClassName,
-                    wxDefaultPosition,wxDefaultSize,0,
-                    wxDefaultValidator,Info->ClassName);
-                RowSizer->Add(Btn,0,wxGROW);
-                if ( !AllowNonXRCItems && !Info->AllowInXRC )
-                {
-                    Btn->Disable();
-                    Btn->SetToolTip(Info->ClassName + _(" (Not available for XRC-based resources)"));
-                }
-                else
-                {
-                    Btn->SetToolTip(Info->ClassName);
-                }
+                Btn->SetToolTip(Info->ClassName);
             }
         }
         CurrentPanel->SetSizer(RowSizer);
