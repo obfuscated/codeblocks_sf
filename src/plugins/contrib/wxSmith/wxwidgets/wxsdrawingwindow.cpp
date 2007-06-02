@@ -53,7 +53,7 @@ class wxsDrawingWindow::DrawingPanel: public wxPanel
     public:
 
         /** \brief Ctor */
-        DrawingPanel(wxsDrawingWindow* Parent): wxPanel(Parent,DrawingPanelId)
+        DrawingPanel(wxsDrawingWindow* Parent): wxPanel(Parent,DrawingPanelId), m_Parent(Parent)
         {
             // Connecting event handlers of drawing window
             Connect(DrawingPanelId,wxEVT_PAINT,(wxObjectEventFunction)&wxsDrawingWindow::PanelPaint,NULL,Parent);
@@ -78,9 +78,17 @@ class wxsDrawingWindow::DrawingPanel: public wxPanel
             Connect(DrawingPanelId,wxEVT_ERASE_BACKGROUND,(wxObjectEventFunction)&wxsDrawingWindow::DrawingPanel::OnEraseBack);
         }
 
+        /** \brief Dctor */
+        virtual ~ DrawingPanel()
+        {
+            m_Parent->Panel = NULL;
+        }
+
         void OnEraseBack(wxEraseEvent& event)
         {
         }
+
+        wxsDrawingWindow* m_Parent;
 };
 
 BEGIN_EVENT_TABLE(wxsDrawingWindow,wxScrolledWindow)
@@ -109,11 +117,12 @@ wxsDrawingWindow::wxsDrawingWindow(wxWindow* Parent,wxWindowID id):
 wxsDrawingWindow::~wxsDrawingWindow()
 {
     if ( Bitmap ) delete Bitmap;
+    Panel = NULL;
 }
 
 void wxsDrawingWindow::BeforeContentChanged()
 {
-    if ( !DuringChangeCnt++ )
+    if ( !DuringChangeCnt++ && Panel )
     {
         Panel->Hide();
     }
@@ -121,7 +130,7 @@ void wxsDrawingWindow::BeforeContentChanged()
 
 void wxsDrawingWindow::AfterContentChanged()
 {
-    if ( !--DuringChangeCnt )
+    if ( !--DuringChangeCnt && Panel )
     {
         WasContentChanged = true;
         wxSize Size = GetVirtualSize();
@@ -140,6 +149,8 @@ void wxsDrawingWindow::AfterContentChanged()
 
 void wxsDrawingWindow::PanelPaint(wxPaintEvent& event)
 {
+    if ( !Panel ) return;
+
     wxPaintDC PaintDC(Panel);
     if ( !DuringFetch )
     {
@@ -188,6 +199,8 @@ void wxsDrawingWindow::StartFetchingSequence()
 
 void wxsDrawingWindow::OnFetchSequence(wxCommandEvent& event)
 {
+    if ( !Panel ) return;
+
     // Hiding panel to show content under it
     // If panel is hidden, there's no need to hide it and show children
     // because fetching sequence has been raised from AfterContentChanged()
@@ -229,6 +242,7 @@ void wxsDrawingWindow::FetchScreen()
 
 void wxsDrawingWindow::FastRepaint()
 {
+    if ( !Panel ) return;
     wxClientDC ClientDC(Panel);
     wxBitmap BmpCopy = Bitmap->GetSubBitmap(wxRect(0,0,Bitmap->GetWidth(),Bitmap->GetHeight()));
     wxBufferedDC DC(&ClientDC,BmpCopy);
