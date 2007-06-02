@@ -259,6 +259,8 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
 
 wxsFontEditorDlg::~wxsFontEditorDlg()
 {
+    //(*Destroy(wxsFontEditorDlg)
+    //*)
 }
 
 void wxsFontEditorDlg::OnButton1Click(wxCommandEvent& event)

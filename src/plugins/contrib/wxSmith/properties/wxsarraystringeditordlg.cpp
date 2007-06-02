@@ -84,6 +84,8 @@ wxsArrayStringEditorDlg::wxsArrayStringEditorDlg(wxWindow* parent,wxArrayString&
 
 wxsArrayStringEditorDlg::~wxsArrayStringEditorDlg()
 {
+    //(*Destroy(wxsArrayStringEditorDlg)
+    //*)
 }
 
 

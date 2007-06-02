@@ -68,7 +68,7 @@ wxsSizerParentQP::wxsSizerParentQP(wxsAdvQPP* parent,wxsSizerExtra* Extra,wxWind
 	wxFlexGridSizer* FlexGridSizer2;
 	wxGridSizer* GridSizer1;
 	wxStaticBoxSizer* StaticBoxSizer2;
-	
+
 	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("id"));
 	FlexGridSizer1 = new wxFlexGridSizer(0,1,0,0);
 	FlexGridSizer1->AddGrowableCol(1);
@@ -233,6 +233,12 @@ void wxsSizerParentQP::SaveData()
     if ( PlaceRT->GetValue() || PlaceRC->GetValue() || PlaceRB->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::AlignRight;
 
     NotifyChange();
+}
+
+wxsSizerParentQP::~wxsSizerParentQP()
+{
+    //(*Destroy(wxsSizerParentQP)
+    //*)
 }
 
 void wxsSizerParentQP::OnBrdDlgChange(wxCommandEvent& event)

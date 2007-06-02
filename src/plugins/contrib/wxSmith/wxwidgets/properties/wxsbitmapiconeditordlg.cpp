@@ -196,6 +196,8 @@ wxsBitmapIconEditorDlg::wxsBitmapIconEditorDlg(wxWindow* parent,wxsBitmapIconDat
 
 wxsBitmapIconEditorDlg::~wxsBitmapIconEditorDlg()
 {
+    //(*Destroy(wxsBitmapIconEditorDlg)
+    //*)
 }
 
 void wxsBitmapIconEditorDlg::OnTimer(wxTimerEvent& event)

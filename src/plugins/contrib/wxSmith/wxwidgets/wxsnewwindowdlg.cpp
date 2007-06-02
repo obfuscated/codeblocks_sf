@@ -34,6 +34,7 @@
 
 //(*InternalHeaders(wxsNewWindowDlg)
 #include <wx/bitmap.h>
+#include <wx/button.h>
 #include <wx/font.h>
 #include <wx/fontenum.h>
 #include <wx/fontmap.h>
@@ -52,7 +53,6 @@ const long wxsNewWindowDlg::ID_TEXTCTRL3 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX1 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL4 = wxNewId();
 const long wxsNewWindowDlg::ID_STATICTEXT4 = wxNewId();
-const long wxsNewWindowDlg::ID_CUSTOM1 = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(wxsNewWindowDlg,wxDialog)
@@ -77,8 +77,8 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     wxStaticText* StaticText2;
     wxStaticText* StaticText3;
     wxStaticText* StaticText4;
-    
-    Create(parent,id,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("id"));
+
+    Create(parent,id,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("wxDialog"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL,this,_("Options"));
     FlexGridSizer1 = new wxFlexGridSizer(0,2,5,5);
@@ -96,6 +96,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_Source = new wxTextCtrl(this,ID_TEXTCTRL3,wxEmptyString,wxDefaultPosition,wxSize(80,-1),0,wxDefaultValidator,_T("ID_TEXTCTRL3"));
     FlexGridSizer1->Add(m_Source,0,wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
     m_UseXrc = new wxCheckBox(this,ID_CHECKBOX1,_("Xrc File:"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX1"));
+    m_UseXrc->SetValue(false);
     FlexGridSizer1->Add(m_UseXrc,0,wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
     m_Xrc = new wxTextCtrl(this,ID_TEXTCTRL4,wxEmptyString,wxDefaultPosition,wxSize(80,-1),0,wxDefaultValidator,_T("ID_TEXTCTRL4"));
     FlexGridSizer1->Add(m_Xrc,0,wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
@@ -103,12 +104,15 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     StaticText4 = new wxStaticText(this,ID_STATICTEXT4,_("Warning:\nWhen adding resource in Xrc mode,\nthis resource must be manually loaded.\nFor details see wxXmlResource::Load()\nand wxXmlResource::Get()."),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE,_T("ID_STATICTEXT4"));
     StaticBoxSizer1->Add(StaticText4,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
     BoxSizer1->Add(StaticBoxSizer1,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-    Custom1 = CreateStdDialogButtonSizer(wxOK|wxCANCEL);
-    BoxSizer1->Add(Custom1,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
+    StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
+    StdDialogButtonSizer1->AddButton(new wxButton(this,wxID_OK,wxEmptyString));
+    StdDialogButtonSizer1->AddButton(new wxButton(this,wxID_CANCEL,wxEmptyString));
+    StdDialogButtonSizer1->Realize();
+    BoxSizer1->Add(StdDialogButtonSizer1,1,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
     SetSizer(BoxSizer1);
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
-    Centre();
+    Center();
     Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnClassChanged);
     Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnHeaderChanged);
     Connect(ID_TEXTCTRL3,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnSourceChanged);
@@ -130,6 +134,8 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
 
 wxsNewWindowDlg::~wxsNewWindowDlg()
 {
+    //(*Destroy(wxsNewWindowDlg)
+    //*)
 }
 
 void wxsNewWindowDlg::OnCancel(wxCommandEvent& event)

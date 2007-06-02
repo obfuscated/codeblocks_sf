@@ -59,7 +59,7 @@ wxWidgetsGUIConfigPanel::wxWidgetsGUIConfigPanel(wxWindow* parent,wxWidgetsGUI* 
 {
     static const wxWindowID id = -1;
 	//(*Initialize(wxWidgetsGUIConfigPanel)
-	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("id"));
+	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL,this,_("Automatically loaded resources:"));
@@ -88,8 +88,10 @@ wxWidgetsGUIConfigPanel::wxWidgetsGUIConfigPanel(wxWindow* parent,wxWidgetsGUI* 
 	StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("XRC system initialization"));
 	BoxSizer5 = new wxBoxSizer(wxVERTICAL);
 	InitAll = new wxCheckBox(this,ID_CHECKBOX2,_("Call wxXmlResource::InitAllHandlers()"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX2"));
+	InitAll->SetValue(false);
 	BoxSizer5->Add(InitAll,0,wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
 	InitAllNecessary = new wxCheckBox(this,ID_CHECKBOX1,_("Only when necessary"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX1"));
+	InitAllNecessary->SetValue(false);
 	InitAllNecessary->Disable();
 	BoxSizer5->Add(InitAllNecessary,0,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
 	StaticBoxSizer3->Add(BoxSizer5,1,wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
@@ -130,6 +132,8 @@ wxWidgetsGUIConfigPanel::wxWidgetsGUIConfigPanel(wxWindow* parent,wxWidgetsGUI* 
 
 wxWidgetsGUIConfigPanel::~wxWidgetsGUIConfigPanel()
 {
+    //(*Destroy(wxWidgetsGUIConfigPanel)
+    //*)
 }
 
 

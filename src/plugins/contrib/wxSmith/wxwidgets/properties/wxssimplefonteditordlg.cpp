@@ -57,7 +57,7 @@ wxsSimpleFontEditorDlg::wxsSimpleFontEditorDlg(wxWindow* parent,wxsFontData& Dat
     m_Data(Data)
 {
 	//(*Initialize(wxsSimpleFontEditorDlg)
-	Create(parent,id,_("Font settings"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("id"));
+	Create(parent,id,_("Font settings"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("wxDialog"));
 	FlexGridSizer1 = new wxFlexGridSizer(0,1,0,0);
 	BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Current font"));
@@ -96,12 +96,12 @@ wxsSimpleFontEditorDlg::wxsSimpleFontEditorDlg(wxWindow* parent,wxsFontData& Dat
 	StdDialogButtonSizer1->AddButton(new wxButton(this,wxID_OK,wxEmptyString));
 	StdDialogButtonSizer1->AddButton(new wxButton(this,wxID_CANCEL,wxEmptyString));
 	StdDialogButtonSizer1->Realize();
-	BoxSizer1->Add(StdDialogButtonSizer1,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BoxSizer1->Add(StdDialogButtonSizer1,1,wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	FlexGridSizer1->Add(BoxSizer1,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
-	Centre();
+	Center();
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSimpleFontEditorDlg::OnButton1Click);
 	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSimpleFontEditorDlg::OnButton3Click);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSimpleFontEditorDlg::OnButton2Click);
@@ -113,6 +113,8 @@ wxsSimpleFontEditorDlg::wxsSimpleFontEditorDlg(wxWindow* parent,wxsFontData& Dat
 
 wxsSimpleFontEditorDlg::~wxsSimpleFontEditorDlg()
 {
+    //(*Destroy(wxsSimpleFontEditorDlg)
+    //*)
 }
 
 void wxsSimpleFontEditorDlg::UpdateFontDescription()

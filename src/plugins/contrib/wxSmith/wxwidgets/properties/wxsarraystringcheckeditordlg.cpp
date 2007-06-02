@@ -58,7 +58,7 @@ wxsArrayStringCheckEditorDlg::wxsArrayStringCheckEditorDlg(wxWindow* parent,wxAr
     Bools(_Bools)
 {
 	//(*Initialize(wxsArrayStringCheckEditorDlg)
-	Create(parent,id,_("Choices:"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("id"));
+	Create(parent,id,_("Choices:"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("wxDialog"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
 	EditArea = new wxTextCtrl(this,ID_TEXTCTRL1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL1"));
@@ -93,7 +93,7 @@ wxsArrayStringCheckEditorDlg::wxsArrayStringCheckEditorDlg(wxWindow* parent,wxAr
 	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
-	Centre();
+	Center();
 	Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsArrayStringCheckEditorDlg::OnButton1Click);
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringCheckEditorDlg::OnButton1Click);
 	Connect(ID_CHECKLISTBOX1,wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,(wxObjectEventFunction)&wxsArrayStringCheckEditorDlg::OnStringListToggled);
@@ -114,6 +114,8 @@ wxsArrayStringCheckEditorDlg::wxsArrayStringCheckEditorDlg(wxWindow* parent,wxAr
 
 wxsArrayStringCheckEditorDlg::~wxsArrayStringCheckEditorDlg()
 {
+    //(*Destroy(wxsArrayStringCheckEditorDlg)
+    //*)
 }
 
 

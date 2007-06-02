@@ -17,6 +17,7 @@ class wxsSizerParentQP: public wxsAdvQPPChild
 	public:
 
 		wxsSizerParentQP(wxsAdvQPP* parent,wxsSizerExtra* Extra,wxWindowID id = -1);
+		virtual ~wxsSizerParentQP();
 
 		//(*Identifiers(wxsSizerParentQP)
 		static const long ID_CHECKBOX1;

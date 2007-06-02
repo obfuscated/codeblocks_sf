@@ -28,7 +28,6 @@ class wxsNewWindowDlg : public wxDialog
         static const long ID_CHECKBOX1;
         static const long ID_TEXTCTRL4;
         static const long ID_STATICTEXT4;
-        static const long ID_CUSTOM1;
         //*)
 
 	protected:
@@ -52,7 +51,7 @@ class wxsNewWindowDlg : public wxDialog
         wxTextCtrl* m_Source;
         wxCheckBox* m_UseXrc;
         wxTextCtrl* m_Xrc;
-        wxStdDialogButtonSizer* Custom1;
+        wxStdDialogButtonSizer* StdDialogButtonSizer1;
         //*)
 
         virtual bool PrepareResource(wxWidgetsRes* Res) { return true; }

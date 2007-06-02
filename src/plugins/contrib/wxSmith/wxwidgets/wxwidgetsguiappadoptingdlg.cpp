@@ -118,6 +118,8 @@ wxWidgetsGUIAppAdoptingDlg::wxWidgetsGUIAppAdoptingDlg(wxWindow* parent,wxWidget
 
 wxWidgetsGUIAppAdoptingDlg::~wxWidgetsGUIAppAdoptingDlg()
 {
+    //(*Destroy(wxWidgetsGUIAppAdoptingDlg)
+    //*)
 }
 
 void wxWidgetsGUIAppAdoptingDlg::OnButton6Click(wxCommandEvent& event)

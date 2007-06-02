@@ -82,8 +82,8 @@ wxsSettings::wxsSettings(wxWindow* parent,wxWindowID id)
 	wxStaticText* StaticText3;
 	wxStaticText* StaticText4;
 	wxStaticText* StaticText5;
-	
-	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("id"));
+
+	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
 	FlexGridSizer1 = new wxFlexGridSizer(0,1,0,0);
 	FlexGridSizer1->AddGrowableCol(0);
 	FlexGridSizer6 = new wxFlexGridSizer(0,1,0,0);
@@ -127,8 +127,8 @@ wxsSettings::wxsSettings(wxWindow* parent,wxWindowID id)
 	FlexGridSizer5 = new wxFlexGridSizer(0,2,0,0);
 	StaticText7 = new wxStaticText(this,ID_STATICTEXT7,_("Proportion:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT7"));
 	FlexGridSizer5->Add(StaticText7,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	spinProportion = new wxSpinCtrl(this,ID_SPINCTRL2,_("0"),wxDefaultPosition,wxDefaultSize,0,0,100,0,_T("ID_SPINCTRL2"));
-	spinProportion->SetValue(_("0"));
+	spinProportion = new wxSpinCtrl(this,ID_SPINCTRL2,_T("0"),wxDefaultPosition,wxDefaultSize,0,0,100,0,_T("ID_SPINCTRL2"));
+	spinProportion->SetValue(_T("0"));
 	FlexGridSizer5->Add(spinProportion,1,wxALL|wxALIGN_LEFT|wxALIGN_TOP,5);
 	StaticText8 = new wxStaticText(this,ID_STATICTEXT8,_("Border flags:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT8"));
 	FlexGridSizer5->Add(StaticText8,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
@@ -149,10 +149,12 @@ wxsSettings::wxsSettings(wxWindow* parent,wxWindowID id)
 	StaticText9 = new wxStaticText(this,ID_STATICTEXT9,_("Expand:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT9"));
 	FlexGridSizer5->Add(StaticText9,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	chkExpand = new wxCheckBox(this,ID_CHECKBOX5,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX5"));
+	chkExpand->SetValue(false);
 	FlexGridSizer5->Add(chkExpand,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
 	StaticText10 = new wxStaticText(this,ID_STATICTEXT10,_("Shaped:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT10"));
 	FlexGridSizer5->Add(StaticText10,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	chkShaped = new wxCheckBox(this,ID_CHECKBOX6,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX6"));
+	chkShaped->SetValue(false);
 	FlexGridSizer5->Add(chkShaped,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
 	StaticText12 = new wxStaticText(this,ID_STATICTEXT12,_("Placement:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT12"));
 	FlexGridSizer5->Add(StaticText12,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
@@ -169,11 +171,12 @@ wxsSettings::wxsSettings(wxWindow* parent,wxWindowID id)
 	FlexGridSizer5->Add(choicePlacement,1,wxALL|wxALIGN_LEFT|wxALIGN_TOP,5);
 	StaticText13 = new wxStaticText(this,ID_STATICTEXT13,_("Border:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT13"));
 	FlexGridSizer5->Add(StaticText13,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	spinBorder = new wxSpinCtrl(this,ID_SPINCTRL3,_("0"),wxDefaultPosition,wxDefaultSize,0,0,100,0,_T("ID_SPINCTRL3"));
-	spinBorder->SetValue(_("0"));
+	spinBorder = new wxSpinCtrl(this,ID_SPINCTRL3,_T("0"),wxDefaultPosition,wxDefaultSize,0,0,100,0,_T("ID_SPINCTRL3"));
+	spinBorder->SetValue(_T("0"));
 	FlexGridSizer5->Add(spinBorder,1,wxALL|wxALIGN_LEFT|wxALIGN_TOP,5);
 	FlexGridSizer5->Add(16,8,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	chkBorderDU = new wxCheckBox(this,ID_CHECKBOX8,_("Use dialog units"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX8"));
+	chkBorderDU->SetValue(false);
 	FlexGridSizer5->Add(chkBorderDU,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	StaticBoxSizer2->Add(FlexGridSizer5,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	FlexGridSizer6->Add(StaticBoxSizer2,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
@@ -275,6 +278,8 @@ wxsSettings::wxsSettings(wxWindow* parent,wxWindowID id)
 
 wxsSettings::~wxsSettings()
 {
+	//(*Destroy(wxsSettings)
+	//*)
 }
 
 void wxsSettings::OnDragTargetColClick(wxCommandEvent& event)

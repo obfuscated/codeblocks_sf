@@ -102,7 +102,11 @@ namespace
                 Label->Connect(-1,wxEVT_KILL_FOCUS,(wxObjectEventFunction)&wxsNotebookParentQP::OnLabelKillFocus,NULL,this);
             }
 
-            virtual ~wxsNotebookParentQP() {}
+            virtual ~wxsNotebookParentQP()
+            {
+                //(*Destroy(wxsNotebookParentQP)
+                //*)
+            }
 
         private:
 

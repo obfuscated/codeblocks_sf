@@ -97,7 +97,7 @@ void wxsMenuEditor::CreateContent(wxWindow* parent)
 {
     wxWindowID id = wxID_ANY;
 	//(*Initialize(wxsMenuEditor)
-	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("id"));
+	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
 	BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Content"));
 	m_Content = new wxTreeCtrl(this,ID_TREECTRL1,wxDefaultPosition,wxSize(200,295),wxTR_HIDE_ROOT|wxTR_DEFAULT_STYLE,wxDefaultValidator,_T("ID_TREECTRL1"));
@@ -199,6 +199,8 @@ void wxsMenuEditor::CreateContent(wxWindow* parent)
 wxsMenuEditor::~wxsMenuEditor()
 {
     DeleteDataCopy();
+    //(*Destroy(wxsMenuEditor)
+    //*)
 }
 
 void wxsMenuEditor::CreateDataCopy()

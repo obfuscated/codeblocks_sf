@@ -77,6 +77,8 @@ wxsFontFaceEditorDlg::wxsFontFaceEditorDlg(wxWindow* parent,wxString& _Face,wxWi
 
 wxsFontFaceEditorDlg::~wxsFontFaceEditorDlg()
 {
+    //(*Destroy(wxsFontFaceEditorDlg)
+    //*)
 }
 
 void wxsFontFaceEditorDlg::OnButton2Click(wxCommandEvent& event)

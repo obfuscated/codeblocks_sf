@@ -99,7 +99,11 @@ namespace
                 Label->Connect(-1,wxEVT_KILL_FOCUS,(wxObjectEventFunction)&wxsChoicebookParentQP::OnLabelKillFocus,NULL,this);
             }
 
-            virtual ~wxsChoicebookParentQP() {}
+            virtual ~wxsChoicebookParentQP()
+            {
+                //(*Destroy(wxsChoicebookParentQP)
+                //*)
+            }
 
         private:
 
