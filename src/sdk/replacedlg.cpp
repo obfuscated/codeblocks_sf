@@ -73,7 +73,7 @@ ReplaceDlg::ReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelect
 	XRCCTRL(*this, "rbDirection", wxRadioBox)->Enable(!XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue()); // if regex, only forward searches
 	XRCCTRL(*this, "rbOrigin", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/origin"), 0));
 	XRCCTRL(*this, "rbScope1", wxRadioBox)->SetSelection(hasSelection);
-	XRCCTRL(*this, "rbScope1", wxRadioBox)->Enable(hasSelection);
+	//XRCCTRL(*this, "rbScope1", wxRadioBox)->Enable(hasSelection);
 	// special key, uses same config for both find & replace options
 	XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->SetValue(cfg->ReadBool(_T("/find_options/auto_wrap_search"), true));
 

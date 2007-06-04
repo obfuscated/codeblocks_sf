@@ -1222,14 +1222,10 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
         int wordEnd = control->WordEndPosition(control->GetCurrentPos(), true);
         wxString wordAtCursor = control->GetTextRange(wordStart, wordEnd);
         phraseAtCursor = control->GetSelectedText();
-        // if selected text is the last searched text, don't suggest "search in selection"
-        if ((m_LastFindReplaceData &&
-                !phraseAtCursor.IsEmpty() &&
-                phraseAtCursor == m_LastFindReplaceData->findText)
-                || phraseAtCursor == wordAtCursor)
-        {
+        // if selected text is part of a single line, don't suggest "search in selection"
+        if (control->LineFromPosition(control->GetSelectionStart())
+            == control->LineFromPosition(control->GetSelectionEnd()))
             hasSelection = false;
-        }
 
         if ( phraseAtCursor.IsEmpty())
             phraseAtCursor = wordAtCursor;

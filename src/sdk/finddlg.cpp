@@ -89,7 +89,7 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
 	XRCCTRL(*this, "rbDirection", wxRadioBox)->Enable(!XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue()); // if regex, only forward searches
 	XRCCTRL(*this, "rbOrigin", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/origin"), 0));
 	XRCCTRL(*this, "rbScope1", wxRadioBox)->SetSelection(hasSelection);
-	XRCCTRL(*this, "rbScope1", wxRadioBox)->Enable(hasSelection);
+	//XRCCTRL(*this, "rbScope1", wxRadioBox)->Enable(hasSelection);
 
 	// find in files options
 	XRCCTRL(*this, "cmbFind2", wxComboBox)->SetValue(initial);
