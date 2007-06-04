@@ -66,7 +66,7 @@ wxWidgetsGUIAppAdoptingDlg::wxWidgetsGUIAppAdoptingDlg(wxWindow* parent,wxWidget
     m_Run(true)
 {
 	//(*Initialize(wxWidgetsGUIAppAdoptingDlg)
-	Create(parent,id,_("Integrating application class with wxSmith"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER,_T("id"));
+	Create(parent,id,_("Integrating application class with wxSmith"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER,_T("wxDialog"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL,this,_("Files with application class:"));

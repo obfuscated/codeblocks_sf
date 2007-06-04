@@ -350,9 +350,8 @@ bool wxsDrawingWindow::NoNeedToRefetch()
     {
         if ( !Window->IsEnabled() || !Window->IsShown() )
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Modal dialog detected"));
             WasContentChanged = true;
-            return false;
+            return true;
         }
     }
 
