@@ -151,11 +151,9 @@ FindDlg::~FindDlg()
     // Now bump the latest search string to top
     wxString find = combo->GetValue();
     int prev_pos = previous.Index(find);
-    if (prev_pos > 0)
-    {
+    if (prev_pos != wxNOT_FOUND)
         previous.RemoveAt(prev_pos);
-        previous.Insert(find, 0);
-    }
+    previous.Insert(find, 0);
 
     cfg->Write(CONF_GROUP _T("/last"), previous);
 
