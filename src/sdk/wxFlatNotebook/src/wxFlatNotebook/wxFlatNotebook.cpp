@@ -253,6 +253,7 @@ void wxFlatNotebook::SetSelection(size_t page)
 		event.SetSelection( (int)page );
 		event.SetOldSelection( oldSelection );
 		event.SetEventObject( this );
+		GetEventHandler()->ProcessEvent(event);
 
 		if( !event.IsAllowed() )
 		{
