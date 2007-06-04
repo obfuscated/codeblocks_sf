@@ -55,13 +55,20 @@ static const wxChar* PredefinedIds[] =
     _T("wxART_GO_TO_PARENT"),
     _T("wxART_GO_HOME"),
     _T("wxART_FILE_OPEN"),
+    _T("wxART_FILE_SAVE"),
+    _T("wxART_FILE_SAVE_AS"),
     _T("wxART_PRINT"),
     _T("wxART_HELP"),
     _T("wxART_TIP"),
     _T("wxART_REPORT_VIEW"),
     _T("wxART_LIST_VIEW"),
     _T("wxART_NEW_DIR"),
+    _T("wxART_HARDDISK"),
+    _T("wxART_FLOPPY"),
+    _T("wxART_CDROM"),
+    _T("wxART_REMOVABLE"),
     _T("wxART_FOLDER"),
+    _T("wxART_FOLDER_OPEN"),
     _T("wxART_GO_DIR_UP"),
     _T("wxART_EXECUTABLE_FILE"),
     _T("wxART_NORMAL_FILE"),
@@ -72,6 +79,16 @@ static const wxChar* PredefinedIds[] =
     _T("wxART_WARNING"),
     _T("wxART_INFORMATION"),
     _T("wxART_MISSING_IMAGE"),
+    _T("wxART_COPY"),
+    _T("wxART_CUT"),
+    _T("wxART_PASTE"),
+    _T("wxART_DELETE"),
+    _T("wxART_NEW"),
+    _T("wxART_UNDO"),
+    _T("wxART_REDO"),
+    _T("wxART_QUIT"),
+    _T("wxART_FIND"),
+    _T("wxART_FIND_AND_REPLACE"),
     NULL
 };
 
@@ -115,7 +132,7 @@ wxsBitmapIconEditorDlg::wxsBitmapIconEditorDlg(wxWindow* parent,wxsBitmapIconDat
     Data(_Data)
 {
 	//(*Initialize(wxsBitmapIconEditorDlg)
-    Create(parent,id,_("Image editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX,_T("id"));
+	Create(parent,id,_("Image editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER,_T("wxDialog"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Image options"));
@@ -140,11 +157,11 @@ wxsBitmapIconEditorDlg::wxsBitmapIconEditorDlg(wxWindow* parent,wxsBitmapIconDat
 	FlexGridSizer2 = new wxFlexGridSizer(0,2,0,0);
 	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Art Id:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));
 	FlexGridSizer2->Add(StaticText1,1,wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-	ArtId = new wxComboBox(this,ID_COMBOBOX2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_T("ID_COMBOBOX2"));
+	ArtId = new wxComboBox(this,ID_COMBOBOX2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_SORT,wxDefaultValidator,_T("ID_COMBOBOX2"));
 	FlexGridSizer2->Add(ArtId,1,wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Art Client:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT2"));
 	FlexGridSizer2->Add(StaticText2,1,wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-	ArtClient = new wxComboBox(this,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_T("ID_COMBOBOX1"));
+	ArtClient = new wxComboBox(this,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_SORT,wxDefaultValidator,_T("ID_COMBOBOX1"));
 	FlexGridSizer2->Add(ArtClient,1,wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer4->Add(FlexGridSizer2,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	FlexGridSizer1->Add(BoxSizer4,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);

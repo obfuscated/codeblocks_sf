@@ -107,6 +107,12 @@ void wxsMenuItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
                         m_Help.c_str(),
                         ItemType);
 
+                    if ( !m_Bitmap.IsEmpty() )
+                    {
+                        wxString BmpCode = m_Bitmap.BuildCode(true,wxEmptyString,Language,wxART_OTHER);
+                        Codef(_T("%ASetBitmap(%s);\n"), BmpCode.c_str());
+                    }
+
                     Codef(_T("%MAppend(%v);\n"),GetVarName().c_str());
                     if ( !m_Enabled )
                     {
@@ -166,6 +172,10 @@ void wxsMenuItem::OnEnumToolProperties(long Flags)
             WXS_SHORT_STRING(wxsMenuItem,m_Help,_T("Help text"),_T("help"),_T(""),false);
             WXS_BOOL(wxsMenuItem,m_Enabled,_T("Enabled"),_T("enabled"),true);
             if ( m_Type == Check ) { WXS_BOOL(wxsMenuItem,m_Checked,_T("Checked"),_T("checked"),false); }
+            if ( m_Type == Normal )
+            {
+                WXS_BITMAP(wxsMenuItem,m_Bitmap,_("Bitmap"),_T("bitmap"),_T("wxART_OTHER"))
+            }
             break;
 
         default:;

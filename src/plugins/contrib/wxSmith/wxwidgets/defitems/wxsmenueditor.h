@@ -54,6 +54,7 @@ class wxsMenuEditor: public wxPanel
             wxString  m_Label;
             wxString  m_Accelerator;
             wxString  m_Help;
+            wxsBitmapData m_Bitmap;
             wxString  m_ExtraCode;
             bool      m_Enabled;
             bool      m_Checked;

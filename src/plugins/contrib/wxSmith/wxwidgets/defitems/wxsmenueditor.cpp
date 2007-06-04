@@ -280,6 +280,7 @@ void wxsMenuEditor::CreateDataCopyReq(wxsMenuItem* Menu,MenuItem* Parent)
     Parent->m_Help = Menu->m_Help;
     Parent->m_Enabled = Menu->m_Enabled;
     Parent->m_Checked = Menu->m_Checked;
+    Parent->m_Bitmap = Menu->m_Bitmap;
 
     wxsEvents& Events = Menu->GetEvents();
     if ( Events.GetCount()>0 )
@@ -566,6 +567,7 @@ void wxsMenuEditor::StoreDataCopyReq(wxsParent* Parent,MenuItem* Item)
         if ( UseHelp        ) Menu->m_Help = Item->m_Help;
         if ( UseEnabled     ) Menu->m_Enabled = Item->m_Enabled;
         if ( UseChecked     ) Menu->m_Checked = Item->m_Checked;
+        Menu->m_Bitmap = Item->m_Bitmap;
 
         wxsEvents& Events = Menu->GetEvents();
         if ( Events.GetCount()>0 )

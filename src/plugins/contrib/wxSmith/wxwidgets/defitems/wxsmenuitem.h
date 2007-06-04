@@ -41,6 +41,7 @@ class wxsMenuItem: public wxsTool
         wxString m_Help;                            ///< \brief Help string
         bool     m_Enabled;                         ///< \brief True to make item enabled
         bool     m_Checked;                         ///< \brief True to make this item checked
+        wxsBitmapData m_Bitmap;                     ///< \brief Bitmap associated with this menu item
 
         friend class wxsMenuEditor;
 };

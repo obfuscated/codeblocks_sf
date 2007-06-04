@@ -122,7 +122,11 @@ wxString wxsFontData::BuildFontCode(const wxString& FontName,wxsCodingLang Langu
                 Code << Enumerator << _T(".EnumerateFacenames();\n");
 
                 // Fetching array of face names
-                Code << _T("wxArrayString& ") << FacesStr << _T(" = *") << Enumerator << _T(".GetFacenames();\n");
+                Code << _T("#if wxCHECK_VERSION(2, 8, 0)\n");
+                Code << _T("\tconst wxArrayString& ") << FacesStr << _T(" = ") << Enumerator << _T(".GetFacenames();\n");
+                Code << _T("#else\n");
+                Code << _T("\twxArrayString& ") << FacesStr << _T(" = *") << Enumerator << _T(".GetFacenames();\n");
+                Code << _T("#endif\n");
 
                 // Generating local variable which will hold the name of face
                 Code << _T("wxString ") << FaceName << _T(";\n");
