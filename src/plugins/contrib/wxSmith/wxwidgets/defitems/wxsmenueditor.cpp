@@ -248,7 +248,7 @@ void wxsMenuEditor::CreateDataCopyReq(wxsMenuBar* Menu,MenuItem* Parent)
         ChildItem->m_Type = wxsMenuItem::Normal;
         ChildItem->m_Variable = ChildMenu->GetVarName();
         ChildItem->m_IsMember = ChildMenu->GetIsMember();
-        ChildItem->m_ExtraCode = ChildMenu->GetBaseProps()->m_ExtraCode;
+        if ( ChildMenu->GetBaseProps() ) ChildItem->m_ExtraCode = ChildMenu->GetBaseProps()->m_ExtraCode;
         ChildItem->m_Label = ChildMenu->m_Label;
         ChildItem->m_Enabled = true;
         ChildItem->m_Checked = false;
@@ -273,7 +273,7 @@ void wxsMenuEditor::CreateDataCopyReq(wxsMenuItem* Menu,MenuItem* Parent)
     Parent->m_Type = Menu->m_Type;
     Parent->m_Variable = Menu->GetVarName();
     Parent->m_IsMember = Menu->GetIsMember();
-    Parent->m_ExtraCode = Menu->GetBaseProps()->m_ExtraCode;
+    if ( Menu->GetBaseProps() ) Parent->m_ExtraCode = Menu->GetBaseProps()->m_ExtraCode;
     Parent->m_Id = Menu->GetIdName();
     Parent->m_Label = Menu->m_Label;
     Parent->m_Accelerator = Menu->m_Accelerator;
@@ -517,7 +517,7 @@ void wxsMenuEditor::StoreDataCopy()
                 NewMenu->m_Label = Item->m_Label;
                 NewMenu->SetVarName(Item->m_Variable);
                 NewMenu->SetIsMember(Item->m_IsMember);
-                NewMenu->GetBaseProps()->m_ExtraCode = Item->m_ExtraCode;
+                if ( NewMenu->GetBaseProps() ) NewMenu->GetBaseProps()->m_ExtraCode = Item->m_ExtraCode;
                 m_MenuBar->AddChild(NewMenu);
                 StoreDataCopyReq(NewMenu,Item->m_Child);
             }
@@ -552,7 +552,7 @@ void wxsMenuEditor::StoreDataCopyReq(wxsParent* Parent,MenuItem* Item)
 
         Menu->SetVarName(Item->m_Variable);
         Menu->SetIsMember(Item->m_IsMember);
-        Menu->GetBaseProps()->m_ExtraCode = Item->m_ExtraCode;
+        if ( Menu->GetBaseProps() ) Menu->GetBaseProps()->m_ExtraCode = Item->m_ExtraCode;
         Menu->SetIdName(_T(""));
         Menu->m_Label.Clear();
         Menu->m_Accelerator.Clear();
