@@ -695,6 +695,9 @@ void wxsItemEditor::OnDelete(wxCommandEvent& event)
 void wxsItemEditor::OnPreview(wxCommandEvent& event)
 {
     if ( !m_Data ) return;
+
+    m_Content->BlockFetch(true);
+
     if ( m_Data->IsPreview() )
     {
         m_Data->HidePreview();
@@ -703,6 +706,8 @@ void wxsItemEditor::OnPreview(wxCommandEvent& event)
     {
         m_Data->ShowPreview();
     }
+
+    m_Content->BlockFetch(false);
 }
 
 void wxsItemEditor::OnQuickProps(wxCommandEvent& event)

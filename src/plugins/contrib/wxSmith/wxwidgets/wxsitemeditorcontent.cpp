@@ -450,6 +450,7 @@ void wxsItemEditorContent::OnMouseDraggingPoint(wxMouseEvent& event)
 
     if ( !event.LeftIsDown() )
     {
+        // Finalizing change
         m_Data->BeginChange();
 
         wxsBaseProperties* Props = m_CurDragPoint->Item->GetBaseProps();
@@ -490,7 +491,21 @@ void wxsItemEditorContent::OnMouseDraggingPoint(wxMouseEvent& event)
                     }
                     else
                     {
-                        Props->m_Position.SetPosition(wxPoint(NewPosX,NewPosY),Preview->GetParent());
+                        if ( m_CurDragItem->GetParent() )
+                        {
+                            // Adjusting position to parent coordinates
+                            int ParentPosX = 0, ParentPosY = 0, ParentSizeX = 0, ParentSizeY = 0;
+                            if ( FindAbsoluteRect(m_CurDragItem->GetParent(),ParentPosX,ParentPosY,ParentSizeX,ParentSizeY) )
+                            {
+                                NewPosX -= ParentPosX;
+                                NewPosY -= ParentPosY;
+                                Props->m_Position.SetPosition(wxPoint(NewPosX,NewPosY),Preview->GetParent());
+                            }
+                        }
+                        else
+                        {
+                            // TODO: Update default position of window
+                        }
                     }
                 }
 
@@ -618,6 +633,7 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
 
     if ( !event.LeftIsDown() )
     {
+        // Finalizing change
         m_Data->BeginChange();
 
         if ( m_CurDragPoint->PosX != m_CurDragPoint->DragInitPosX ||
@@ -634,8 +650,7 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
                 {
                     wxsParent* CurParent = m_CurDragItem->GetParent();
 
-                    if ( CurParent != NewParent ||
-                         NewParent->GetType() == wxsTSizer )
+                    if ( CurParent != NewParent || NewParent->GetType() == wxsTSizer )
                     {
                         if ( AtCursor != m_CurDragItem )
                         {
@@ -668,25 +683,20 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
                     {
                         if ( NewParent->GetType() == wxsTSizer )
                         {
-                                Props->m_Position.SetPosition(wxDefaultPosition,NULL);
+                            Props->m_Position.SetPosition(wxDefaultPosition,NULL);
                         }
                         else
                         {
                             // Calculating new position
-                            int PosX;
-                            int PosY;
-                            int SizeX;
-                            int SizeY;
-                            if ( FindAbsoluteRect(m_CurDragItem,PosX,PosY,SizeX,SizeY) )
+                            int ParentPosX = 0, ParentPosY = 0, ParentSizeX = 0, ParentSizeY = 0;
+                            if ( FindAbsoluteRect(NewParent,ParentPosX,ParentPosY,ParentSizeX,ParentSizeY) )
                             {
-                                PosX += m_CurDragPoint->PosX - m_CurDragPoint->DragInitPosX;
-                                PosY += m_CurDragPoint->PosY - m_CurDragPoint->DragInitPosY;
-                                ClientToScreen(&PosX,&PosY);
+                                int NewPosX = m_CurDragPoint->ItemPoints[LeftTop]->PosX - ParentPosX;
+                                int NewPosY = m_CurDragPoint->ItemPoints[LeftTop]->PosY - ParentPosY;
                                 wxWindow* PreviewParent = GetPreviewWindow(m_CurDragItem)->GetParent();
                                 if ( PreviewParent )
                                 {
-                                    PreviewParent->ScreenToClient(&PosX,&PosY);
-                                    Props->m_Position.SetPosition(wxPoint(PosX,PosY),PreviewParent);
+                                    Props->m_Position.SetPosition(wxPoint(NewPosX,NewPosY),PreviewParent);
                                 }
                             }
                         }
