@@ -1,6 +1,12 @@
 #ifndef WXSRESOURCETREE_H
 #define WXSRESOURCETREE_H
 
+#ifndef WX_PRECOMP
+#   ifdef __WXMSW__
+#       include <wx/msw/wrapwin.h>  // Needed to prevent LoadImage define bug.
+#   endif
+#endif
+
 #include <wx/treectrl.h>
 
 class wxsResource;
