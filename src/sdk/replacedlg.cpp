@@ -150,12 +150,14 @@ void ReplaceDlg::SaveComboValues(wxComboBox* combo, const wxString& configKey)
 	wxArrayString values;
 	for (int i = 0; (i < (int)combo->GetCount()) && (i < 10); ++i)
 	{
-		if (!combo->GetString(i).IsEmpty())
+		if (!combo->GetString(i).IsEmpty() && (values.Index(combo->GetString(i)) == wxNOT_FOUND))
 			values.Add(combo->GetString(i));
 	}
 	wxString find = combo->GetValue();
-	if (combo->FindString(find) == -1)
-		values.Insert(find, 0);
+    int prev_pos = values.Index(find);
+    if (prev_pos != wxNOT_FOUND)
+        values.RemoveAt(prev_pos);
+    values.Insert(find, 0);
 	Manager::Get()->GetConfigManager(_T("editor"))->Write(configKey, values);
 }
 
