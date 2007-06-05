@@ -1,5 +1,8 @@
 #include "sdk_precomp.h"
+#ifndef CB_PRECOMP
 #include <wx/file.h>
+#include <wx/string.h>
+#endif // CB_PRECOMP
 #include "encodingdetector.h"
 
 EncodingDetector::EncodingDetector(const wxString& filename)
@@ -52,7 +55,7 @@ bool EncodingDetector::DetectEncoding(const wxString& filename)
         return false;
 
     // BOM is max 4 bytes
-    char buff[4] = {};
+    char buff[4] = {'\0'};
     file.Read((void*)buff, 4);
     file.Close();
 
@@ -172,4 +175,4 @@ bool EncodingDetector::DetectEncoding(const wxString& filename)
     }
 
     return true;
-}
+} // end of DetectEncoding

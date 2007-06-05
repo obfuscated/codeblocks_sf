@@ -2,8 +2,9 @@
 #define ENCODINGDETECTOR_H
 
 #include "settings.h"
-#include <wx/string.h>
 #include <wx/fontmap.h>
+
+class wxString;
 
 /** Try to detect the encoding of a file on disk. */
 class DLLIMPORT EncodingDetector
