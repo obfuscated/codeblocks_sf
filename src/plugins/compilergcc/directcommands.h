@@ -20,27 +20,27 @@ WX_DEFINE_ARRAY(ProjectFile*, MyFilesArray); // keep our own copy, to sort it by
 
 class DirectCommands
 {
-	public:
-		DirectCommands(CompilerGCC* compilerPlugin,
+    public:
+        DirectCommands(CompilerGCC* compilerPlugin,
                         Compiler* compiler,
                         cbProject* project,
                         int logPageIndex = 0);
-		~DirectCommands();
+        ~DirectCommands();
 
         wxArrayString GetPreBuildCommands(ProjectBuildTarget* target);
         wxArrayString GetPostBuildCommands(ProjectBuildTarget* target);
-		wxArrayString CompileFile(ProjectBuildTarget* target, ProjectFile* pf, bool force = false);
-		wxArrayString GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf);
-		wxArrayString GetCompileSingleFileCommand(const wxString& filename);
-		wxArrayString GetCompileCommands(ProjectBuildTarget* target, bool force = false);
-		wxArrayString GetTargetCompileCommands(ProjectBuildTarget* target, bool force = false);
-		wxArrayString GetLinkCommands(ProjectBuildTarget* target, bool force = false);
-		wxArrayString GetTargetLinkCommands(ProjectBuildTarget* target, bool force = false);
-		wxArrayString GetCleanCommands(ProjectBuildTarget* target, bool distclean = false);
-		wxArrayString GetCleanSingleFileCommand(const wxString& filename);
-		wxArrayString GetTargetCleanCommands(ProjectBuildTarget* target, bool distclean = false);
-		bool m_doYield;
-	protected:
+        wxArrayString CompileFile(ProjectBuildTarget* target, ProjectFile* pf, bool force = false);
+        wxArrayString GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf);
+        wxArrayString GetCompileSingleFileCommand(const wxString& filename);
+        wxArrayString GetCompileCommands(ProjectBuildTarget* target, bool force = false);
+        wxArrayString GetTargetCompileCommands(ProjectBuildTarget* target, bool force = false);
+        wxArrayString GetLinkCommands(ProjectBuildTarget* target, bool force = false);
+        wxArrayString GetTargetLinkCommands(ProjectBuildTarget* target, bool force = false);
+        wxArrayString GetCleanCommands(ProjectBuildTarget* target, bool distclean = false);
+        wxArrayString GetCleanSingleFileCommand(const wxString& filename);
+        wxArrayString GetTargetCleanCommands(ProjectBuildTarget* target, bool distclean = false);
+        bool m_doYield;
+    protected:
         bool AreExternalDepsOutdated(const wxString& buildOutput, const wxString& additionalFiles, const wxString& externalDeps);
         bool IsObjectOutdated(ProjectBuildTarget* target, const pfDetails& pfd, wxString* errorStr = 0);
         void DepsSearchStart(ProjectBuildTarget* target);
@@ -52,7 +52,7 @@ class DirectCommands
         Compiler* m_pCompiler;
         cbProject* m_pProject;
         ProjectBuildTarget* m_pCurrTarget; // temp
-	private:
+    private:
 };
 
 #endif // DIRECTCOMMANDS_H

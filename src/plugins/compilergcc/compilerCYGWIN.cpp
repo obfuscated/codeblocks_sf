@@ -1,4 +1,5 @@
 #ifdef __WXMSW__
+// this compiler is valid only in windows
 
 #include "compilerCYGWIN.h"
 #include <wx/filefn.h>

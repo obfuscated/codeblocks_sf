@@ -11,6 +11,7 @@
 */
 
 #include <sdk.h>
+#include <prep.h>
 #include "compilerSDCC.h"
 #include <wx/intl.h>
 #include <wx/regex.h>
@@ -43,23 +44,26 @@ Compiler * CompilerSDCC::CreateCopy()
 
 void CompilerSDCC::Reset()
 {
-#ifdef __WXMSW__
-    m_Programs.C = _T("sdcc.exe");
-    m_Programs.CPP = _T("sdcc.exe");
-    m_Programs.LD = _T("sdcc.exe");
-    m_Programs.DBG = _T("sdcdb.exe");
-    m_Programs.LIB = _T("sdcclib.exe");
-    m_Programs.WINDRES = _T("");
-    m_Programs.MAKE = _T("make.exe");
-#else
-    m_Programs.C = _T("sdcc");
-    m_Programs.CPP = _T("sdcc");
-    m_Programs.LD = _T("sdcc");
-    m_Programs.DBG = _T("sdcdb");
-    m_Programs.LIB = _T("sdcclib");
-    m_Programs.WINDRES = _T("");
-    m_Programs.MAKE = _T("make");
-#endif
+    if (platform::windows)
+    {
+        m_Programs.C = _T("sdcc.exe");
+        m_Programs.CPP = _T("sdcc.exe");
+        m_Programs.LD = _T("sdcc.exe");
+        m_Programs.DBG = _T("sdcdb.exe");
+        m_Programs.LIB = _T("sdcclib.exe");
+        m_Programs.WINDRES = _T("");
+        m_Programs.MAKE = _T("make.exe");
+    }
+    else
+    {
+        m_Programs.C = _T("sdcc");
+        m_Programs.CPP = _T("sdcc");
+        m_Programs.LD = _T("sdcc");
+        m_Programs.DBG = _T("sdcdb");
+        m_Programs.LIB = _T("sdcclib");
+        m_Programs.WINDRES = _T("");
+        m_Programs.MAKE = _T("make");
+    }
     m_Switches.includeDirs = _T("-I");
     m_Switches.libDirs = _T("-L");
     m_Switches.linkLibs = _T("-l");
@@ -164,32 +168,33 @@ void CompilerSDCC::LoadDefaultRegExArray()
 
 AutoDetectResult CompilerSDCC::AutoDetectInstallationDir()
 {
-#ifdef __WXMSW__
-    wxLogNull ln;
-    wxRegKey key; // defaults to HKCR
-    key.SetName(wxT("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\SDCC"));
-    if (key.Open())
-        // found; read it
-        key.QueryValue(wxT("UninstallString"), m_MasterPath);
-
-    if (m_MasterPath.IsEmpty())
-        // just a guess; the default installation dir
-        m_MasterPath = wxT("C:\\sdcc");
-    else {
-        wxFileName fn(m_MasterPath);
-        m_MasterPath = fn.GetPath();
-    }
-
-    if (!m_MasterPath.IsEmpty())
+    if (platform::windows)
     {
-        AddIncludeDir(m_MasterPath + wxFILE_SEP_PATH + wxT("include"));
-        AddLibDir(m_MasterPath + wxFILE_SEP_PATH + wxT("lib"));
-        m_ExtraPaths.Add(m_MasterPath + wxFILE_SEP_PATH + wxT("bin"));
-    }
-
-#else
-    m_MasterPath=_T("/usr/local/bin"); // default
+#ifdef __WXMSW__ // for wxRegKey
+        wxLogNull ln;
+        wxRegKey key;   // defaults to HKCR
+        key.SetName(wxT("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\SDCC"));
+        if (key.Open()) // found; read it
+            key.QueryValue(wxT("UninstallString"), m_MasterPath);
 #endif
+
+        if (m_MasterPath.IsEmpty())
+            // just a guess; the default installation dir
+            m_MasterPath = wxT("C:\\sdcc");
+        else {
+            wxFileName fn(m_MasterPath);
+            m_MasterPath = fn.GetPath();
+        }
+
+        if (!m_MasterPath.IsEmpty())
+        {
+            AddIncludeDir(m_MasterPath + wxFILE_SEP_PATH + wxT("include"));
+            AddLibDir(m_MasterPath + wxFILE_SEP_PATH + wxT("lib"));
+            m_ExtraPaths.Add(m_MasterPath + wxFILE_SEP_PATH + wxT("bin"));
+        }
+    }
+    else
+        m_MasterPath=_T("/usr/local/bin"); // default
 
     return wxFileExists(m_MasterPath + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + m_Programs.C) ? adrDetected : adrGuessed;
 }

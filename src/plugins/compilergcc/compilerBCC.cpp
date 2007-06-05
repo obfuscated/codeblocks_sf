@@ -169,12 +169,14 @@ AutoDetectResult CompilerBCC::AutoDetectInstallationDir()
     l_RegKey_Arr.Add(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Borland\\BDS\\4.0"));
     l_RegKey_Arr.Add(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Borland\\C++Builder\\5.0"));
 
+    wxLogNull no_log_here;
+
     // try to detect Installation dir
     int match = -1;
     for (int i = 0; i < 2; ++i)
     {
-        wxRegKey* tkey = new wxRegKey(l_RegKey_Arr[i]);
-        if ((tkey && tkey->Exists()) || wxDirExists(l_MasterPath_Arr[i]))
+        wxRegKey tkey(l_RegKey_Arr[i]);
+        if (tkey.Exists() || wxDirExists(l_MasterPath_Arr[i]))
         {
             match = i;
             break;

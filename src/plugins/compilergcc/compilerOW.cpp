@@ -8,10 +8,7 @@
 #include <wx/regex.h>
 #include <wx/config.h>
 #include <wx/utils.h>
-
-#ifdef __WXMSW__
-    #include <wx/msw/registry.h>
-#endif
+#include <wx/msw/registry.h>
 
 #include <messagemanager.h>
 #include <manager.h>
@@ -351,7 +348,6 @@ void CompilerOW::LoadDefaultRegExArray()
 
 AutoDetectResult CompilerOW::AutoDetectInstallationDir()
 {
-#ifdef __WXMSW__
     wxLogNull ln;
     /* Following code is Not necessary as OpenWatcom does not write to
        Registry anymore */
@@ -376,7 +372,6 @@ AutoDetectResult CompilerOW::AutoDetectInstallationDir()
         m_ExtraPaths.Add(m_MasterPath + wxFILE_SEP_PATH + wxT("binnt"));
         m_ExtraPaths.Add(m_MasterPath + wxFILE_SEP_PATH + wxT("binw"));
     }
-#endif
     wxSetEnv(wxT("WATCOM"), m_MasterPath);
 
     return wxFileExists(m_MasterPath + wxFILE_SEP_PATH + wxT("binnt") + wxFILE_SEP_PATH + m_Programs.C) ? adrDetected : adrGuessed;

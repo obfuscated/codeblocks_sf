@@ -1,7 +1,8 @@
+#ifdef __WXMSW__
+// this compiler is valid only in windows
+
 #ifndef COMPILER_CYGWIN_H
 #define COMPILER_CYGWIN_H
-
-#ifdef __WXMSW__
 
 #include "compilerMINGW.h"
 
@@ -18,6 +19,6 @@ class CompilerCYGWIN : public CompilerMINGW
 
 };
 
-#endif // __WXMSW__
-
 #endif // COMPILER_CYGWIN_H
+
+#endif // __WXMSW__

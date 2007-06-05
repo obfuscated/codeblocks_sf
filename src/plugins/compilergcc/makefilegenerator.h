@@ -17,11 +17,11 @@ class CustomVars;
  */
 class MakefileGenerator
 {
-	public:
-		// class constructor
-		MakefileGenerator(CompilerGCC* compiler, cbProject* project, const wxString& makefile, int logIndex);
-		// class destructor
-		~MakefileGenerator();
+    public:
+        // class constructor
+        MakefileGenerator(CompilerGCC* compiler, cbProject* project, const wxString& makefile, int logIndex);
+        // class destructor
+        ~MakefileGenerator();
         bool CreateMakefile();
         void ReplaceMacros(ProjectBuildTarget* bt, ProjectFile* pf, wxString& text);
         void QuoteStringIfNeeded(wxString& str, bool force = false);
@@ -60,10 +60,10 @@ class MakefileGenerator
         void DoAddMakefileCFlags(wxString& buffer);
         void DoAddMakefileLDFlags(wxString& buffer);
         void DoAddMakefileTargets(wxString& buffer);
-		void DoAddPhonyTargets(wxString& buffer);
+        void DoAddPhonyTargets(wxString& buffer);
         void DoAddMakefileTarget_All(wxString& buffer);
         void DoAddMakefileTargets_BeforeAfter(wxString& buffer);
-		void DoAddMakefileCommands(const wxString& desc, const wxString& prefix, const wxArrayString& commands, wxString& buffer);
+        void DoAddMakefileCommands(const wxString& desc, const wxString& prefix, const wxArrayString& commands, wxString& buffer);
         void DoAddMakefileTarget_Clean(wxString& buffer);
         void DoAddMakefileTarget_Dist(wxString& buffer);
         void DoAddMakefileTarget_Depend(wxString& buffer);
@@ -78,10 +78,10 @@ class MakefileGenerator
         wxString GetObjectFile(ProjectFile* pf, ProjectBuildTarget* target);
         wxString GetDependencyFile(ProjectFile* pf, ProjectBuildTarget* target);
         void UpdateCompiler(ProjectBuildTarget* target = 0);
-		void DoPrepareFiles();
-		void DoPrepareValidTargets();
-		bool IsTargetValid(ProjectBuildTarget* target);
-		void RecursiveCreateDir(wxString& buffer, const wxArrayString& subdirs, wxArrayString& guardList);
+        void DoPrepareFiles();
+        void DoPrepareValidTargets();
+        bool IsTargetValid(ProjectBuildTarget* target);
+        void RecursiveCreateDir(wxString& buffer, const wxArrayString& subdirs, wxArrayString& guardList);
         wxString ReplaceCompilerMacros(CommandType et,
                                     const wxString& compilerVar,
                                     ProjectBuildTarget* target,
@@ -89,16 +89,16 @@ class MakefileGenerator
                                     const wxString& object,
                                     const wxString& deps);
 
-		CompilerGCC* m_Compiler;
-		Compiler* m_CompilerSet;
+        CompilerGCC* m_Compiler;
+        Compiler* m_CompilerSet;
         cbProject* m_Project;
         wxString m_Makefile;
-		TargetsArray m_LinkableTargets;
+        TargetsArray m_LinkableTargets;
         FilesArray m_Files;
         ObjectFilesArray m_ObjectFiles;
         int m_LogIndex;
 
-		wxString m_Quiet; // used for compiler simple log
+        wxString m_Quiet; // used for compiler simple log
     private:
         bool m_GeneratingMakefile;
 };

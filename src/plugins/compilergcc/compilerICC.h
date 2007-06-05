@@ -1,7 +1,7 @@
 /********************************************************************
-	filename:		compilerICC.h
-	created by:	Yorgos Pagles (yop [at] protiamail.gr)
-	description:	Support of Intel's ICC compiler for CodeBlocks IDE
+    filename:        compilerICC.h
+    created by:    Yorgos Pagles (yop [at] protiamail.gr)
+    description:    Support of Intel's ICC compiler for CodeBlocks IDE
 ********************************************************************/
 #ifndef COMPILER_ICC_H
 #define COMPILER_ICC_H
@@ -38,15 +38,15 @@ class wxIccDirTraverser : public wxDirTraverser
 
 class CompilerICC : public Compiler
 {
-	public:
-		CompilerICC();
-		virtual ~CompilerICC();
+    public:
+        CompilerICC();
+        virtual ~CompilerICC();
         virtual void Reset();
-		virtual void LoadDefaultRegExArray();
+        virtual void LoadDefaultRegExArray();
         virtual AutoDetectResult AutoDetectInstallationDir();
     protected:
         virtual Compiler* CreateCopy();
-	private:
+    private:
 };
 
 #endif // COMPILER_ICC_H

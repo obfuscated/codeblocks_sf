@@ -8,10 +8,6 @@
 #include <wx/regex.h>
 #include <wx/config.h>
 
-#ifdef __WXMSW__
-    #include <wx/msw/registry.h>
-#endif
-
 CompilerDMC::CompilerDMC()
     : Compiler(_("Digital Mars Compiler"), _T("dmc"))
 {

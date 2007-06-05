@@ -5,15 +5,15 @@
 #include <wx/dialog.h>
 #include <wx/string.h>
 #ifdef __WXMSW__
-	#include <wx/msw/registry.h>
-	#include <shlobj.h> // for SHChangeNotify()
-	#define DDE_SERVICE	_T("CODEBLOCKS")
-	#define DDE_TOPIC	_T("CodeBlocksDDEServer")
-	#ifdef __CBDEBUG__
+    #include <wx/msw/registry.h>
+    #include <shlobj.h> // for SHChangeNotify()
+    #define DDE_SERVICE    _T("CODEBLOCKS")
+    #define DDE_TOPIC    _T("CodeBlocksDDEServer")
+    #ifdef __CBDEBUG__
         #include <windows.h>
         #include <wincon.h>
         #include <wx/log.h>
-	#endif
+    #endif
 #endif
 class wxCheckListBox;
 class wxWindow;
@@ -47,23 +47,23 @@ class ManageAssocsDialog : public wxDialog
 {
     wxCheckListBox* list;
 
-	public:
-		ManageAssocsDialog(wxWindow* parent);
-	protected:
+    public:
+        ManageAssocsDialog(wxWindow* parent);
+    protected:
         void OnApply(wxCommandEvent& event);
         void OnCancel(wxCommandEvent& event);
         void OnClearAll(wxCommandEvent& event);
-	private:
+    private:
         DECLARE_EVENT_TABLE()
 };
 
 class AskAssocDialog : public wxDialog
 {
-	public:
-		AskAssocDialog(wxWindow* parent);
-	protected:
+    public:
+        AskAssocDialog(wxWindow* parent);
+    protected:
         void OnOK(wxCommandEvent& event);
-	private:
+    private:
         DECLARE_EVENT_TABLE()
 };
 

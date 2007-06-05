@@ -2,11 +2,12 @@
  * $Id: compilerMINGW.cpp 1429 2005-12-02 23:25:50Z mandrav $
  */
 
-#include "sdk.h"
+#include <sdk.h>
+#include <prep.h>
 #ifndef CB_PRECOMP
-#include <wx/intl.h>
-#include <wx/regex.h>
-#include <wx/utils.h> // wxGetOSDirectory, wxGetEnv
+    #include <wx/intl.h>
+    #include <wx/regex.h>
+    #include <wx/utils.h> // wxGetOSDirectory, wxGetEnv
 #endif
 #include <wx/filefn.h> // wxFileExists
 #include <wx/fileconf.h> // wxFileConfig
@@ -32,23 +33,26 @@ Compiler * CompilerGNUARM::CreateCopy()
 
 void CompilerGNUARM::Reset()
 {
-#ifdef __WXMSW__
-    m_Programs.C = _T("arm-elf-gcc.exe");
-    m_Programs.CPP = _T("arm-elf-g++.exe");
-    m_Programs.LD = _T("arm-elf-g++.exe");
-    m_Programs.DBG = _T("arm-elf-gdb.exe");
-    m_Programs.LIB = _T("arm-elf-ar.exe");
-    m_Programs.WINDRES = _T("");
-    m_Programs.MAKE = _T("make.exe");
-#else
-    m_Programs.C = _T("arm-elf-gcc");
-    m_Programs.CPP = _T("arm-elf-g++");
-    m_Programs.LD = _T("arm-elf-g++");
-    m_Programs.DBG = _T("arm-elf-gdb");
-    m_Programs.LIB = _T("arm-elf-ar");
-    m_Programs.WINDRES = _T("");
-    m_Programs.MAKE = _T("make");
-#endif
+    if (platform::windows)
+    {
+        m_Programs.C = _T("arm-elf-gcc.exe");
+        m_Programs.CPP = _T("arm-elf-g++.exe");
+        m_Programs.LD = _T("arm-elf-g++.exe");
+        m_Programs.DBG = _T("arm-elf-gdb.exe");
+        m_Programs.LIB = _T("arm-elf-ar.exe");
+        m_Programs.WINDRES = _T("");
+        m_Programs.MAKE = _T("make.exe");
+    }
+    else
+    {
+        m_Programs.C = _T("arm-elf-gcc");
+        m_Programs.CPP = _T("arm-elf-g++");
+        m_Programs.LD = _T("arm-elf-g++");
+        m_Programs.DBG = _T("arm-elf-gdb");
+        m_Programs.LIB = _T("arm-elf-ar");
+        m_Programs.WINDRES = _T("");
+        m_Programs.MAKE = _T("make");
+    }
     m_Switches.includeDirs = _T("-I");
     m_Switches.libDirs = _T("-L");
     m_Switches.linkLibs = _T("-l");
@@ -75,12 +79,11 @@ void CompilerGNUARM::Reset()
                 true,
                 _T("-O -O1 -O2 -O3 -Os"),
                 _("You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."));
-#ifdef __WXMSW__
-    #define GPROF_LINK _T("-pg -lgmon")
-#else
-    #define GPROF_LINK _T("-pg")
-#endif
-    m_Options.AddOption(_("Profile code when executed"), _T("-pg"), _("Profiling"), GPROF_LINK);
+
+    wxString gprof_link = _T("-pg");
+    if (platform::windows)
+        gprof_link = _T("-pg -lgmon");
+    m_Options.AddOption(_("Profile code when executed"), _T("-pg"), _("Profiling"), gprof_link);
 
     wxString category = _("Warnings");
 
@@ -149,13 +152,16 @@ void CompilerGNUARM::Reset()
     m_Commands[(int)ctGenDependenciesCmd] = _T("$compiler -MM $options -MF $dep_object -MT $object $includes $file");
     m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp -i $file -J rc -o $resource_output -O coff $res_includes");
     m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs");
-#ifdef __WXMSW__
-    m_Commands[(int)ctLinkExeCmd] = _T("$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -mwindows");
-    m_Commands[(int)ctLinkDynamicCmd] = _T("$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs");
-#else
-    m_Commands[(int)ctLinkExeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // no -mwindows
-    m_Commands[(int)ctLinkDynamicCmd] = _T("$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs");
-#endif
+    if (platform::windows)
+    {
+        m_Commands[(int)ctLinkExeCmd] = _T("$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -mwindows");
+        m_Commands[(int)ctLinkDynamicCmd] = _T("$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs");
+    }
+    else
+    {
+        m_Commands[(int)ctLinkExeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // no -mwindows
+        m_Commands[(int)ctLinkDynamicCmd] = _T("$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs");
+    }
     m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker -r -s $static_output $link_objects");
     m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
@@ -189,27 +195,29 @@ void CompilerGNUARM::LoadDefaultRegExArray()
 AutoDetectResult CompilerGNUARM::AutoDetectInstallationDir()
 {
     wxString sep = wxFileName::GetPathSeparator();
-#ifdef __WXMSW__
-    // Search for GNUARM installation dir
-    wxString windir = wxGetOSDirectory();
-    wxFileConfig ini(_T(""), _T(""), windir + _T("/GnuARM.ini"), _T(""), wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
-    // need it as const , so correct overloaded method will be selected
-    wxString Programs = _T("C:\\Program Files");
-    // what's the "Program Files" location
-    // TO DO : support 64 bit ->    32 bit apps are in "ProgramFiles(x86)"
-    //                              64 bit apps are in "ProgramFiles"
-    wxGetEnv(_T("ProgramFiles"), &Programs);
-    // need it as const , so correct overloaded method will be selected
-    const wxString ProgramsConst = Programs + _T("\\GNUARM");
-    m_MasterPath = ini.Read(_T("/InstallSettings/InstallPath"), ProgramsConst);
-
-    if (wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C))
+    if (platform::windows)
     {
-        m_Programs.MAKE = _T("make.exe"); // we distribute "make" not "mingw32-make"
+        // Search for GNUARM installation dir
+        wxString windir = wxGetOSDirectory();
+        wxFileConfig ini(_T(""), _T(""), windir + _T("/GnuARM.ini"), _T(""), wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_NO_ESCAPE_CHARACTERS);
+        // need it as const , so correct overloaded method will be selected
+        wxString Programs = _T("C:\\Program Files");
+        // what's the "Program Files" location
+        // TO DO : support 64 bit ->    32 bit apps are in "ProgramFiles(x86)"
+        //                              64 bit apps are in "ProgramFiles"
+        wxGetEnv(_T("ProgramFiles"), &Programs);
+        // need it as const , so correct overloaded method will be selected
+        const wxString ProgramsConst = Programs + _T("\\GNUARM");
+        m_MasterPath = ini.Read(_T("/InstallSettings/InstallPath"), ProgramsConst);
+
+        if (wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C))
+        {
+            m_Programs.MAKE = _T("make.exe"); // we distribute "make" not "mingw32-make"
+        }
     }
-#else
-    m_MasterPath = _T("/usr");
-#endif
+    else
+        m_MasterPath = _T("/usr");
+
     AutoDetectResult ret = wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
     if (ret == adrDetected)
     {

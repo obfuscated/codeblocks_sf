@@ -24,7 +24,8 @@
 * $HeadURL$
 */
 
-#include "sdk.h"
+#include <sdk.h>
+#include <prep.h>
 #ifndef CB_PRECOMP
     #include <wx/arrstr.h>
     #include <wx/button.h>
@@ -1931,15 +1932,14 @@ void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)
         return; // called from invalid caller
 
     // common part follows
+    wxString file_selection = _("All files (*)|*");
+    if (platform::windows)
+        file_selection = _("Executable files (*.exe)|*.exe");
     wxFileDialog* dlg = new wxFileDialog(this,
                             _("Select file"),
                             XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue() + _T("/bin"),
                             obj->GetValue(),
-                            #ifdef __WXMSW__
-                            _("Executable files (*.exe)|*.exe"),
-                            #else
-                            _("All files (*)|*"),
-                            #endif
+                            file_selection,
                             wxOPEN | wxFILE_MUST_EXIST | compatibility::wxHideReadonly );
     dlg->SetFilterIndex(0);
 

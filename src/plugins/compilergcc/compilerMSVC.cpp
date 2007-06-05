@@ -8,10 +8,7 @@
 #include <wx/intl.h>
 #include <wx/regex.h>
 #include <wx/config.h>
-
-#ifdef __WXMSW__
-    #include <wx/msw/registry.h>
-#endif
+#include <wx/msw/registry.h>
 
 CompilerMSVC::CompilerMSVC()
     : Compiler(_("Microsoft Visual C++ Toolkit 2003"), _T("msvctk"))
@@ -132,7 +129,6 @@ void CompilerMSVC::LoadDefaultRegExArray()
 AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
 {
     wxString sep = wxFileName::GetPathSeparator();
-#ifdef __WXMSW__
     wxLogNull ln;
 
     // Read the VCToolkitInstallDir environment variable
@@ -185,9 +181,6 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
             }
         }
     }
-#else
-    m_MasterPath=_T("."); // doesn't matter under non-win32 platforms...
-#endif
 
     return wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
 }

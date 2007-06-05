@@ -8,10 +8,7 @@
 #include <wx/intl.h>
 #include <wx/regex.h>
 #include <wx/config.h>
-
-#ifdef __WXMSW__
-    #include <wx/msw/registry.h>
-#endif
+#include <wx/msw/registry.h>
 
 CompilerMSVC8::CompilerMSVC8()
     : Compiler(_("Microsoft Visual C++ 2005"), _T("msvc8"))
@@ -178,7 +175,6 @@ void CompilerMSVC8::LoadDefaultRegExArray()
 AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
 {
     wxString sep = wxFileName::GetPathSeparator();
-#ifdef __WXMSW__
     wxLogNull ln;
     wxString idepath;
 
@@ -212,7 +208,6 @@ AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
 
     if (!m_MasterPath.IsEmpty())
     {
-
         wxLogNull no_log_here;
         wxRegKey key; // defaults to HKCR
         bool sdkfound = false;
@@ -288,9 +283,6 @@ AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
         }
         key.Close();
     }
-#else
-    m_MasterPath=_T("."); // doesn't matter under non-win32 platforms...
-#endif
 
     return wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
 }

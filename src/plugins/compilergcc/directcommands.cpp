@@ -132,11 +132,11 @@ wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFil
         DepsSearchStart(target);
 
         const pfDetails& pfd = pf->GetFileDetails(target);
-		wxString err;
+        wxString err;
         if (!IsObjectOutdated(target, pfd, &err))
         {
-        	if (!err.IsEmpty())
-				ret.Add(wxString(COMPILER_SIMPLE_LOG) + err);
+            if (!err.IsEmpty())
+                ret.Add(wxString(COMPILER_SIMPLE_LOG) + err);
             return ret;
         }
     }
@@ -166,7 +166,7 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
     // create output dir
     if (!pfd.object_dir_native.IsEmpty() && !CreateDirRecursively(pfd.object_dir_native, 0755))
     {
-		cbMessageBox(_("Can't create object output directory ") + pfd.object_dir_native);
+        cbMessageBox(_("Can't create object output directory ") + pfd.object_dir_native);
     }
 
     bool isResource = ft == ftResource;
@@ -193,13 +193,13 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         wxString source_file;
         if (compiler->GetSwitches().UseFullSourcePaths)
         {
-			source_file = UnixFilename(pfd.source_file_absolute_native);
-			// for resource files, use short from if path because if windres bug with spaces-in-paths
-			if (isResource)
-				source_file = pf->file.GetShortPath();
+            source_file = UnixFilename(pfd.source_file_absolute_native);
+            // for resource files, use short from if path because if windres bug with spaces-in-paths
+            if (isResource)
+                source_file = pf->file.GetShortPath();
         }
-		else
-			source_file = pfd.source_file;
+        else
+            source_file = pfd.source_file;
         QuoteStringIfNeeded(source_file);
         compiler->GenerateCommandLine(compilerCmd,
                                          target,
@@ -367,13 +367,13 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
                 AppendArray(targetcompile, ret);
             }
         }
-	}
+    }
     return ret;
 }
 
 wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* target, bool force)
 {
-//	Manager::Get()->GetMessageManager()->DebugLog(wxString("-----GetTargetCompileCommands-----"));
+//    Manager::Get()->GetMessageManager()->DebugLog(wxString("-----GetTargetCompileCommands-----"));
     wxArrayString ret;
 //    ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Switching to target: ") + target->GetTitle());
     // NOTE: added this to notify compiler about the active target.
@@ -397,7 +397,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
     {
         ProjectFile* pf = files[i];
         const pfDetails& pfd = pf->GetFileDetails(target);
-		wxString err;
+        wxString err;
         if (force || IsObjectOutdated(target, pfd, &err))
         {
             // compile file
@@ -406,8 +406,8 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
         }
         else
         {
-        	if (!err.IsEmpty())
-				ret.Add(wxString(COMPILER_SIMPLE_LOG) + err);
+            if (!err.IsEmpty())
+                ret.Add(wxString(COMPILER_SIMPLE_LOG) + err);
         }
         if(m_doYield)
             Manager::Yield();
@@ -654,16 +654,16 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             kind_of_output = _("native");
             break;
 
-		case ttCommandsOnly:
+        case ttCommandsOnly:
             // add target post-build commands
             ret.Clear();
             AppendArray(GetPostBuildCommands(target), ret);
-			return ret;
-			break;
+            return ret;
+            break;
         default:
-			wxString ex;
-			ex.Printf(_T("Encountered invalid TargetType (value = %d)"), target->GetTargetType());
-			cbThrow(ex);
+            wxString ex;
+            ex.Printf(_T("Encountered invalid TargetType (value = %d)"), target->GetTargetType());
+            cbThrow(ex);
         break;
     }
     wxString compilerCmd = compiler->GetCommand(ct);
@@ -783,7 +783,7 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
         // let's check the additional output files
         for (size_t x = 0; x < files.GetCount(); ++x)
         {
-        	if (files[i].IsEmpty())
+            if (files[i].IsEmpty())
                 continue;
 
             Manager::Get()->GetMacrosManager()->ReplaceMacros(files[i]);
@@ -828,8 +828,8 @@ bool DirectCommands::IsObjectOutdated(ProjectBuildTarget* target, const pfDetail
     depsTimeStamp(pfd.source_file_absolute_native.mb_str(), &timeSrc);
     if (!timeSrc)
     {
-    	if (errorStr)
-			*errorStr = _("WARNING: Can't read file's timestamp: ") + pfd.source_file_absolute_native;
+        if (errorStr)
+            *errorStr = _("WARNING: Can't read file's timestamp: ") + pfd.source_file_absolute_native;
         return false;
     }
 
@@ -867,15 +867,15 @@ void DirectCommands::DepsSearchStart(ProjectBuildTarget* target)
 {
     depsSearchStart();
 
-	MacrosManager* mm = Manager::Get()->GetMacrosManager();
+    MacrosManager* mm = Manager::Get()->GetMacrosManager();
     wxArrayString incs = m_pCompiler->GetCompilerSearchDirs(target);
 
     for (unsigned int i = 0; i < incs.GetCount(); ++i)
     {
-		// replace custom vars in include dirs
+        // replace custom vars in include dirs
         mm->ReplaceMacros(incs[i], target);
-		// actually add search dirs for deps
-		depsAddSearchDir(incs[i].mb_str());
+        // actually add search dirs for deps
+        depsAddSearchDir(incs[i].mb_str());
     }
 
     // We could add the "global" compiler directories too, but we normally
