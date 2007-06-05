@@ -160,7 +160,7 @@ void ScriptingSettingsDlg::EndModal(int retCode)
         }
 
         mgr = Manager::Get()->GetConfigManager(_T("security"));
-        mgr->Write(_T("CreateDirRecursively"), XRCCTRL(*this, "chkMkDir", wxCheckBox)->GetValue());
+        mgr->Write(_T("CreateDir"), XRCCTRL(*this, "chkMkDir", wxCheckBox)->GetValue());
         mgr->Write(_T("RemoveDir"), XRCCTRL(*this, "chkRmDir", wxCheckBox)->GetValue());
         mgr->Write(_T("CopyFile"), XRCCTRL(*this, "chkCp", wxCheckBox)->GetValue());
         mgr->Write(_T("RenameFile"), XRCCTRL(*this, "chkMv", wxCheckBox)->GetValue());
