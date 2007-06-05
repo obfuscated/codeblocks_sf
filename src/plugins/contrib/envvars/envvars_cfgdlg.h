@@ -27,26 +27,39 @@ class EnvVars;
 
 class EnvVarsConfigDlg : public cbConfigurationPanel
 {
-  EnvVars* plugin;
-
 public:
-           EnvVarsConfigDlg(wxWindow* parent, EnvVars* plug);
+  /// Ctor
+           EnvVarsConfigDlg(wxWindow* parent, EnvVars* plugin);
+  /// Dtor
   virtual ~EnvVarsConfigDlg()
   { };
 
+  /// returns the title of the plugin configuration panel
   virtual wxString GetTitle() const
   { return _T("Environment variables"); }
+
+  /// returns the title of the plugin's bitmap to use for settings
   virtual wxString GetBitmapBaseName() const
   { return _T("generic-plugin"); }
 
+protected:
+  /// Fires if the UI is being updated (wx event)
+  void OnUpdateUI         (wxUpdateUIEvent& event);
+
 private:
+  /// Fires if the "apply" button is pressed inside C::B settings
   virtual void OnApply()
   { SaveSettings(); }
-  virtual void OnCancel()
-  { }
 
+  /// Fires if the "cancel" button is pressed inside C::B settings
+  virtual void OnCancel()
+  { ; }
+
+  /// Load all settings (envvar sets) from global C::B config
   void LoadSettings();
+  /// Save all settings (envvar sets) to global C::B config
   void SaveSettings();
+  /// Save settings (of specific active envvar set) to global C::B config
   void SaveSettingsActiveSet(wxString active_set);
 
   void OnAddEnvVarClick   (wxCommandEvent&  event);
@@ -59,7 +72,7 @@ private:
   void OnClearEnvVarsClick(wxCommandEvent&  event);
   void OnSetEnvVarsClick  (wxCommandEvent&  event);
 
-  void OnUpdateUI         (wxUpdateUIEvent& event);
+  EnvVars* m_pPlugin; //!< pointer to the EnvVars plugin (the parent)
 
   DECLARE_EVENT_TABLE()
 };

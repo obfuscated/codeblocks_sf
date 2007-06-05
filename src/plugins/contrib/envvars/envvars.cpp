@@ -18,18 +18,27 @@
   #include <wx/menu.h>
   #include <wx/toolbar.h>
 
+  #include <tinyxml/tinyxml.h>
+
+  #include "cbproject.h"
   #include "globals.h"
   #include "manager.h"
   #include "configmanager.h"
   #include "messagemanager.h"
 #endif
 
+#include "projectloader_hooks.h"
+
 #include "envvars_common.h"
 #include "envvars_cfgdlg.h"
+#include "envvars_prjoptdlg.h"
 #include "envvars.h"
 
 // Uncomment this for tracing of method calls in C::B's DebugLog:
 //#define TRACE_ENVVARS
+
+// TODO (Morten#5#): remove envvars of currently active set upon ProjectActivated (is that a good way?)
+// TODO (Morten#5#): apply default envvar set (is still stored in /active_set from config) on ProjectClosed
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -40,14 +49,115 @@ namespace
 };
 
 BEGIN_EVENT_TABLE(EnvVars, cbPlugin)
+  EVT_PROJECT_ACTIVATE(EnvVars::OnProjectActivated)
 END_EVENT_TABLE()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 EnvVars::EnvVars()
 {
-  //ctor
+  // hook to project loading procedure
+  ProjectLoaderHooks::HookFunctorBase* envvar_hook =
+    new ProjectLoaderHooks::HookFunctor<EnvVars>(this, &EnvVars::OnProjectLoadingHook);
+
+  m_EnvVarHookID = ProjectLoaderHooks::RegisterHook(envvar_hook);
 }// EnvVars
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+EnvVars::~EnvVars()
+{
+  ProjectLoaderHooks::UnregisterHook(m_EnvVarHookID, true);
+}// ~EnvVars
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+void EnvVars::SetProjectEnvvarSet(cbProject* project, const wxString& envvar_set)
+{
+#if TRACE_ENVVARS
+  DBGLOG(_T("SetProjectEnvvarSet"));
+#endif
+
+  m_ProjectSets[project] = envvar_set;
+  nsEnvVars::EnvvarSetDiscard();
+  nsEnvVars::EnvvarSetApply(envvar_set); // apply currently active envvar set for wxEmptyString
+}// SetProjectEnvvarSet
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+void EnvVars::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem,
+                                   bool loading)
+{
+#if TRACE_ENVVARS
+  DBGLOG(_T("OnProjectLoadingHook"));
+#endif
+
+  if (loading)
+  {
+    TiXmlElement* CCConf = elem->FirstChildElement("envvars");
+    if (CCConf)
+    {
+      m_ProjectSets[project] = cbC2U(CCConf->Attribute("set"));
+      if (m_ProjectSets[project].IsEmpty()) // no envvar set to apply setup
+        return;
+
+      if (!nsEnvVars::EnvvarSetExists(m_ProjectSets[project]))
+        EnvvarSetWarning(m_ProjectSets[project]);
+    }
+  }
+  else
+  {
+    // Hook called when saving project file.
+    TiXmlElement* node = elem->InsertEndChild(TiXmlElement("envvars"))->ToElement();
+    if (!m_ProjectSets[project].IsEmpty())
+      node->SetAttribute("set",  cbU2C(m_ProjectSets[project]));
+  }
+}// OnProjectLoadingHook
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
+{
+#if TRACE_ENVVARS
+  DBGLOG(_T("OnProjectActivated"));
+#endif
+
+  if (IsAttached())
+  {
+    wxString envvar_set = m_ProjectSets[event.GetProject()];
+    if (envvar_set.IsEmpty()) // there is no envvar set to apply
+      nsEnvVars::EnvvarSetApply(); // apply currently active envvar set
+    else                      // there is an envvar set setup to apply
+    {
+      if (nsEnvVars::EnvvarSetExists(envvar_set))
+      {
+        DBGLOG(_T("EnvVars: Setting up envvars set '")+envvar_set+_T("' for activated project."));
+        nsEnvVars::EnvvarSetDiscard(); // remove currently active envvars
+        nsEnvVars::EnvvarSetApply(envvar_set);
+      }
+      else
+        EnvvarSetWarning(envvar_set);
+    }
+  }
+
+  event.Skip(); // propagate the event to other listeners
+}// OnProjectActivated
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+void EnvVars::OnProjectClosed(CodeBlocksEvent& event)
+{
+#if TRACE_ENVVARS
+  DBGLOG(_T("OnProjectClosed"));
+#endif
+
+  if (IsAttached())
+    m_ProjectSets.erase(event.GetProject());
+
+  nsEnvVars::EnvvarSetApply(); // apply currently active envvar set
+
+  event.Skip(); // propagate the event to other listeners
+}// OnProjectClosed
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -68,36 +178,7 @@ void EnvVars::OnAttach()
   if (!cfg)
     return;
 
-  // Read the currently active envvar set
-  wxString active_set = cfg->Read(_T("/active_set"));
-  if (active_set.IsEmpty())
-    active_set = nsEnvVars::EnvVarsDefault;
-
-  // Show currently activated set in debug log (for reference)
-  wxString active_set_path = nsEnvVars::GetSetPathByName(active_set);
-  DBGLOG(_T("Active envvar set is '%s', config path '%s'."),
-    active_set.c_str(), active_set_path.c_str());
-
-  // Read and show all envvars from currently active set in listbox
-  wxArrayString vars     = nsEnvVars::GetEnvvarsBySetPath(active_set_path);
-  size_t envvars_total   = vars.GetCount();
-  size_t envvars_applied = 0;
-  for (unsigned int i=0; i<envvars_total; ++i)
-  {
-    // Format: [checked?]|[key]|[value]
-    wxArrayString var_array = nsEnvVars::EnvvarStringTokeniser(vars[i]);
-    if (nsEnvVars::EnvvarApply(var_array))
-      envvars_applied++;
-    else
-      DBGLOG(_("Invalid envvar in '%s' at position #%d."),
-        active_set_path.c_str(), i);
-	}// for
-
-	if (envvars_total>0)
-	{
-    DBGLOG(_("%d/%d envvars applied within C::B focus."),
-      envvars_applied, envvars_total);
-  }
+  nsEnvVars::EnvvarSetApply(); // will apply the currently active envvar set
 }// OnAttach
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -106,16 +187,6 @@ void EnvVars::OnRelease(bool appShutDown)
 {
   // Nothing to do (so far...)
 }// OnRelease
-
-// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
-cbConfigurationPanel* EnvVars::GetConfigurationPanel(wxWindow* parent)
-{
-  EnvVarsConfigDlg* dlg = new EnvVarsConfigDlg(parent, this);
-  // deleted by the caller
-
-  return dlg;
-}// GetConfigurationPanel
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -129,3 +200,38 @@ int EnvVars::Configure()
   // Nothing to do (so far...) -> just return success
   return 0;
 }// Configure
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+cbConfigurationPanel* EnvVars::GetConfigurationPanel(wxWindow* parent)
+{
+  EnvVarsConfigDlg* dlg = new EnvVarsConfigDlg(parent, this);
+  // deleted by the caller
+
+  return dlg;
+}// GetConfigurationPanel
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+cbConfigurationPanel* EnvVars::GetProjectConfigurationPanel(wxWindow* parent,
+                                                            cbProject* project)
+{
+  EnvVarsProjectOptionsDlg* dlg = new EnvVarsProjectOptionsDlg(parent, this, project);
+  // deleted by the caller
+
+  return dlg;
+}// GetProjectConfigurationPanel
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+void EnvVars::EnvvarSetWarning(const wxString& envvar_set)
+{
+#if TRACE_ENVVARS
+  DBGLOG(_T("EnvvarSetWarning"));
+#endif
+
+  wxString warning_msg;
+  warning_msg.Printf(_("Warning: The project contained a reference to an envvar set\n"
+                       "('%s') that could not be found."), envvar_set.c_str());
+  cbMessageBox(warning_msg, _("EnvVars Plugin Warning"), wxICON_WARNING);
+}// EnvvarSetWarning

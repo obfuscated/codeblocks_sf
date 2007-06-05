@@ -8,20 +8,20 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\envvars.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\envvars" />
+				<Option output="$(#cb)\devel\share\codeblocks\plugins\envvars.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="$(#cb)\.objs\plugins\contrib\envvars" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--profile=foo" />
-				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option host_application="$(#cb)\devel\codeblocks" />
 				<Compiler>
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DWX_PRECOMP" />
 				</Compiler>
 			</Target>
 			<Target title="no_pch">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\envvars.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\envvars" />
+				<Option output="$(#cb)\devel\share\codeblocks\plugins\envvars.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="$(#cb)\.objs\plugins\contrib\envvars" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
@@ -67,7 +67,7 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\envvars.zip manifest.xml *.xrc" />
+			<Add after="zip -j9 $(#cb)/devel/share/codeblocks/envvars.zip manifest.xml *.xrc" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="envvars.cpp" />
@@ -77,7 +77,10 @@
 		<Unit filename="envvars_cfgdlg.h" />
 		<Unit filename="envvars_common.cpp" />
 		<Unit filename="envvars_common.h" />
+		<Unit filename="envvars_prjoptdlg.cpp" />
+		<Unit filename="envvars_prjoptdlg.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="project_settings.xrc" />
 		<Extensions>
 			<code_completion />
 		</Extensions>

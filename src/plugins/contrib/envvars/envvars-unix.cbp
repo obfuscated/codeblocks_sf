@@ -8,10 +8,10 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="../../../devel/share/codeblocks/plugins/libenvvars.so" prefix_auto="0" extension_auto="0" />
+				<Option output="$(#cb)/devel/share/codeblocks/plugins/libenvvars.so" prefix_auto="0" extension_auto="0" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="../../../devel/codeblocks" />
+				<Option host_application="$(#cb)/devel/codeblocks" />
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
@@ -42,12 +42,20 @@
 			<Add directory="$(#CB.LIB)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ../../../devel/share/codeblocks/envvars.zip manifest.xml *.xrc" />
+			<Add after="zip -j9 $(#cb)/devel/share/codeblocks/envvars.zip manifest.xml *.xrc" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="envvars.cpp" />
 		<Unit filename="envvars.h" />
 		<Unit filename="envvars.xrc" />
+		<Unit filename="envvars_cfgdlg.cpp" />
+		<Unit filename="envvars_cfgdlg.h" />
+		<Unit filename="envvars_common.cpp" />
+		<Unit filename="envvars_common.h" />
+		<Unit filename="envvars_prjoptdlg.cpp" />
+		<Unit filename="envvars_prjoptdlg.h" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="project_settings.xrc" />
 		<Extensions>
 			<code_completion />
 		</Extensions>

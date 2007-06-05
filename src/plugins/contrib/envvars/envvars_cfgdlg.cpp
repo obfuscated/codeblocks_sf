@@ -14,9 +14,12 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
+  #include <wx/arrstr.h>
   #include <wx/button.h>
   #include <wx/checklst.h>
   #include <wx/choice.h>
+  #include <wx/panel.h>
+  #include <wx/textdlg.h>
   #include <wx/xrc/xmlres.h>
 
   #include "globals.h"
@@ -58,12 +61,46 @@ END_EVENT_TABLE()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-EnvVarsConfigDlg::EnvVarsConfigDlg(wxWindow* parent, EnvVars* plug) :
-  plugin(plug)
+EnvVarsConfigDlg::EnvVarsConfigDlg(wxWindow* parent, EnvVars* plugin):
+  m_pPlugin(plugin)
 {
   wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgEnvVars"));
   LoadSettings();
 }// EnvVarsConfigDlg
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+void EnvVarsConfigDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
+{
+#if TRACE_ENVVARS
+	if (Manager::Get() && Manager::Get()->GetMessageManager());
+    DBGLOG(_T("OnUpdateUI"));
+#endif
+
+  bool en;
+
+  // toggle remove envvar set button
+  wxChoice* choSet = XRCCTRL(*this, "choSet", wxChoice);
+  if (!choSet)
+    return;
+  en = (choSet->GetCount() > 1);
+  XRCCTRL(*this, "btnRemoveSet",    wxButton)->Enable(en);
+
+  // toggle edit/delete/clear/set env vars buttons
+  wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
+  if (!lstEnvVars)
+    return;
+  if (lstEnvVars->IsEmpty())
+    return;
+
+  en = (lstEnvVars->GetSelection() >= 0);
+  XRCCTRL(*this, "btnEditEnvVar",   wxButton)->Enable(en);
+  XRCCTRL(*this, "btnDeleteEnvVar", wxButton)->Enable(en);
+
+  en = (lstEnvVars->GetCount() != 0);
+  XRCCTRL(*this, "btnClearEnvVars", wxButton)->Enable(en);
+  XRCCTRL(*this, "btnSetEnvVars",   wxButton)->Enable(en);
+}// OnUpdateUI
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -92,15 +129,13 @@ void EnvVarsConfigDlg::LoadSettings()
     return;
 
   // Read the currently active envvar set
-  wxString active_set = cfg->Read(_T("/active_set"));
-  if (active_set.IsEmpty())
-    active_set = nsEnvVars::EnvVarsDefault;
-  int active_set_idx = 0;
+  wxString active_set     = nsEnvVars::GetActiveSetName();
+  int      active_set_idx = 0;
 
   // Read all envvar sets available
   wxArrayString set_names = nsEnvVars::GetEnvvarSetNames();
   unsigned int  num_sets  = set_names.GetCount();
-  DBGLOG(_T("Found %d envvar sets in config."), num_sets);
+  DBGLOG(_T("EnvVars: Found %d envvar sets in config."), num_sets);
   unsigned int num_sets_applied = 0;
   for (unsigned int i=0; i<num_sets; ++i)
   {
@@ -109,13 +144,13 @@ void EnvVarsConfigDlg::LoadSettings()
       active_set_idx = i;
     num_sets_applied++;
   }
-  DBGLOG(_T("Setup %d/%d envvar sets from config."), num_sets_applied, num_sets);
+  DBGLOG(_T("EnvVars: Setup %d/%d envvar sets from config."), num_sets_applied, num_sets);
   if (choSet->GetCount()>active_set_idx) // Select the last active set (from config)
     choSet->SetSelection(active_set_idx);
 
   // Show currently activated set in debug log (for reference)
   wxString active_set_path = nsEnvVars::GetSetPathByName(active_set);
-  DBGLOG(_T("Active envvar set is '%s' at index %d, config path '%s'."),
+  DBGLOG(_T("EnvVars: Active envvar set is '%s' at index %d, config path '%s'."),
     active_set.c_str(), active_set_idx, active_set_path.c_str());
 
   // Read and show all envvars from currently active set in listbox
@@ -129,12 +164,12 @@ void EnvVarsConfigDlg::LoadSettings()
     if (nsEnvVars::EnvvarApply(var_array, lstEnvVars))
       envvars_applied++;
     else
-      DBGLOG(_("Invalid envvar in '%s' at position #%d."),
+      DBGLOG(_("EnvVars: Invalid envvar in '%s' at position #%d."),
         active_set_path.c_str(), i);
 	}// for
 
 	if (envvars_total>0)
-    DBGLOG(_("%d/%d envvars applied within C::B focus."),
+    DBGLOG(_("EnvVars: %d/%d envvars applied within C::B focus."),
       envvars_applied, envvars_total);
 }// LoadSettings
 
@@ -166,11 +201,11 @@ void EnvVarsConfigDlg::SaveSettings()
   SaveSettingsActiveSet(active_set);
 
   wxString active_set_path = nsEnvVars::GetSetPathByName(active_set, false);
-  DBGLOG(_T("Removing (old) envvar set '%s' at path '%s' from config."),
+  DBGLOG(_T("EnvVars: Removing (old) envvar set '%s' at path '%s' from config."),
     active_set.c_str(), active_set_path.c_str());
   cfg->DeleteSubPath(active_set_path);
 
-	DBGLOG(_T("Saving (new) envvar set '%s'."), active_set.c_str());
+	DBGLOG(_T("EnvVars: Saving (new) envvar set '%s'."), active_set.c_str());
   cfg->SetPath(active_set_path);
 
   for (int i=0; i<lstEnvVars->GetCount(); ++i)
@@ -206,6 +241,7 @@ void EnvVarsConfigDlg::SaveSettingsActiveSet(wxString active_set)
   if (active_set.IsEmpty())
     active_set = nsEnvVars::EnvVarsDefault;
 
+  DBGLOG(_T("EnvVars: Saving '%s' as active envvar set to config."), active_set.c_str());
   cfg->Write(_T("/active_set"), active_set);
 }// SaveSettingsActiveSet
 
@@ -273,7 +309,7 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
   key.Trim(true).Trim(false);
   value.Trim(true).Trim(false);
 
-  // filter illegal environment variables with no key
+  // filter illegal envvars with no key
   if (key.IsEmpty())
   {
     cbMessageBox(_("Cannot set an empty environment variable key."),
@@ -281,12 +317,12 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
     return;
   }
 
-  // is this environment variable to be set?
+  // is this envvar to be set?
   bool bDoSet = (   ((key != old_key) || (value != old_value))
                  && lstEnvVars->IsChecked(sel) );
   if (bDoSet)
   {
-    // unset the old environment variable if it's key name has changed
+    // unset the old envvar if it's key name has changed
     if (key != old_key)
     {
       nsEnvVars::EnvvarDiscard(old_key); // Don't care about return value
@@ -294,7 +330,7 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
         return;
     }
 
-    // set the new environment variable
+    // set the new envvar
     nsEnvVars::EnvvarApply(key, value, lstEnvVars, sel); // Don't care about return value
   }
 
@@ -326,13 +362,13 @@ void EnvVarsConfigDlg::OnToggleEnvVarClick(wxCommandEvent& event)
 
   if (bCheck)
   {
-    // Is has been toggled ON -> set environment variable now
+    // Is has been toggled ON -> set envvar now
     wxString value = lstEnvVars->GetString(sel).AfterFirst(_T('=')).Trim(true).Trim(false);
     nsEnvVars::EnvvarApply(key, value, lstEnvVars, sel); // Don't care about return value
   }
   else
   {
-    // Is has been toggled OFF -> unsset environment variable now
+    // Is has been toggled OFF -> unsset envvar now
     nsEnvVars::EnvvarDiscard(key); // Don't care about return value
   }
 }// OnToggleEnvVarClick
@@ -351,11 +387,12 @@ void EnvVarsConfigDlg::OnSetClick(wxCommandEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void EnvVarsConfigDlg::OnCreateSetClick(wxCommandEvent& event)
+void EnvVarsConfigDlg::OnCreateSetClick(wxCommandEvent& WXUNUSED(event))
 {
 #if TRACE_ENVVARS
 	DBGLOG(_T("OnCreateSetClick"));
 #endif
+
   wxString set = wxGetTextFromUser(_("Enter (lower case) name for new environment variables set:"),
                                    _("Input Set"), nsEnvVars::EnvVarsDefault);
   if (set.IsEmpty())
@@ -379,7 +416,7 @@ void EnvVarsConfigDlg::OnCreateSetClick(wxCommandEvent& event)
   if (!lstEnvVars)
     return;
 
-  DBGLOG(_T("Unsetting variables of envvar set '%s'."),
+  DBGLOG(_T("EnvVars: Unsetting variables of envvar set '%s'."),
     choSet->GetString(choSet->GetCurrentSelection()).c_str());
   nsEnvVars::EnvvarsClear(lstEnvVars); // Don't care about return value
   lstEnvVars->Clear();
@@ -393,11 +430,12 @@ void EnvVarsConfigDlg::OnCreateSetClick(wxCommandEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void EnvVarsConfigDlg::OnRemoveSetClick(wxCommandEvent& event)
+void EnvVarsConfigDlg::OnRemoveSetClick(wxCommandEvent& WXUNUSED(event))
 {
 #if TRACE_ENVVARS
 	DBGLOG(_T("OnRemoveSetClick"));
 #endif
+
   wxChoice* choSet = XRCCTRL(*this, "choSet", wxChoice);
   if (!choSet)
     return;
@@ -426,12 +464,12 @@ void EnvVarsConfigDlg::OnRemoveSetClick(wxCommandEvent& event)
     wxString active_set     = choSet->GetString(active_set_idx);
 
     // Remove envvars from C::B focus (and listbox)
-    DBGLOG(_T("Unsetting variables of envvar set '%s'."), active_set.c_str());
+    DBGLOG(_T("EnvVars: Unsetting variables of envvar set '%s'."), active_set.c_str());
     nsEnvVars::EnvvarsClear(lstEnvVars); // Don't care about return value
 
     // Remove envvars set from config
     wxString active_set_path = nsEnvVars::GetSetPathByName(active_set, false);
-    DBGLOG(_T("Removing envvar set '%s' at path '%s' from config."),
+    DBGLOG(_T("EnvVars: Removing envvar set '%s' at path '%s' from config."),
       active_set.c_str(), active_set_path.c_str());
     cfg->DeleteSubPath(active_set_path);
 
@@ -531,7 +569,7 @@ void EnvVarsConfigDlg::OnSetEnvVarsClick(wxCommandEvent& WXUNUSED(event))
       {
         if (!nsEnvVars::EnvvarApply(key, value))
         {
-          // Setting env.-variable failed. Remember this key to report later.
+          // Setting envvar failed. Remember this key to report later.
           if (envsNotSet.IsEmpty())
             envsNotSet << key;
           else
@@ -549,37 +587,3 @@ void EnvVarsConfigDlg::OnSetEnvVarsClick(wxCommandEvent& WXUNUSED(event))
     cbMessageBox(msg, _("Error"), wxOK | wxCENTRE | wxICON_ERROR);
   }
 }// OnSetEnvVarsClick
-
-// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
-void EnvVarsConfigDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
-{
-#if TRACE_ENVVARS
-	if (Manager::Get() && Manager::Get()->GetMessageManager());
-    DBGLOG(_T("OnUpdateUI"));
-#endif
-
-  bool en;
-
-  // toggle remove envvar set button
-  wxChoice* choSet = XRCCTRL(*this, "choSet", wxChoice);
-  if (!choSet)
-    return;
-  en = (choSet->GetCount() > 1);
-  XRCCTRL(*this, "btnRemoveSet",    wxButton)->Enable(en);
-
-  // toggle edit/delete/clear/set env vars buttons
-  wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
-  if (!lstEnvVars)
-    return;
-  if (lstEnvVars->IsEmpty())
-    return;
-
-  en = (lstEnvVars->GetSelection() >= 0);
-  XRCCTRL(*this, "btnEditEnvVar",   wxButton)->Enable(en);
-  XRCCTRL(*this, "btnDeleteEnvVar", wxButton)->Enable(en);
-
-  en = (lstEnvVars->GetCount() != 0);
-  XRCCTRL(*this, "btnClearEnvVars", wxButton)->Enable(en);
-  XRCCTRL(*this, "btnSetEnvVars",   wxButton)->Enable(en);
-}// OnUpdateUI

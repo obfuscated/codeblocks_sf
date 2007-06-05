@@ -4,22 +4,6 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
-        <object class="wxStaticText" name="lblSetup">
-          <label>Setup (toggle) environment variables:</label>
-        </object>
-        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxCheckListBox" name="lstEnvVars">
-          <content/>
-          <style>wxLB_HSCROLL|wxLB_SINGLE|wxLB_NEEDED_SB</style>
-        </object>
-        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
-        <border>8</border>
-        <option>1</option>
-      </object>
-      <object class="sizeritem">
         <object class="wxBoxSizer">
           <orient>wxHORIZONTAL</orient>
           <object class="sizeritem">
@@ -53,6 +37,22 @@
         </object>
         <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
         <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticText" name="lblSetup">
+          <label>Setup (toggle) environment variables:</label>
+        </object>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxCheckListBox" name="lstEnvVars">
+          <content/>
+          <style>wxLB_HSCROLL|wxLB_SINGLE|wxLB_NEEDED_SB</style>
+        </object>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
+        <border>8</border>
+        <option>1</option>
       </object>
       <object class="sizeritem">
         <object class="wxStaticText" name="lblNote">
