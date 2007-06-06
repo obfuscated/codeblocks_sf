@@ -128,6 +128,10 @@ wxArrayString nsEnvVars::GetEnvvarSetNames()
 
 wxString nsEnvVars::GetActiveSetName()
 {
+#if TRACE_ENVVARS
+  DBGLOG(_T("GetActiveSetName"));
+#endif
+
   wxString active_set = nsEnvVars::EnvVarsDefault;
 
   // load and apply configuration (to application only)

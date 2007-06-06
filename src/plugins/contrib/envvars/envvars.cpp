@@ -164,8 +164,7 @@ void EnvVars::OnProjectClosed(CodeBlocksEvent& event)
 void EnvVars::OnAttach()
 {
 #if TRACE_ENVVARS
-	if (Manager::Get() && Manager::Get()->GetMessageManager());
-    DBGLOG(_T("OnAttach"));
+  DBGLOG(_T("OnAttach"));
 #endif
 
   if(!Manager::LoadResource(_T("envvars.zip")))
@@ -193,8 +192,7 @@ void EnvVars::OnRelease(bool appShutDown)
 int EnvVars::Configure()
 {
 #if TRACE_ENVVARS
-	if (Manager::Get() && Manager::Get()->GetMessageManager());
-    DBGLOG(_T("Configure"));
+  DBGLOG(_T("Configure"));
 #endif
 
   // Nothing to do (so far...) -> just return success

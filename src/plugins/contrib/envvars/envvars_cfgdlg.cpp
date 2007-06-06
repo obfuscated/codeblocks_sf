@@ -73,8 +73,7 @@ EnvVarsConfigDlg::EnvVarsConfigDlg(wxWindow* parent, EnvVars* plugin):
 void EnvVarsConfigDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
 {
 #if TRACE_ENVVARS
-	if (Manager::Get() && Manager::Get()->GetMessageManager());
-    DBGLOG(_T("OnUpdateUI"));
+  DBGLOG(_T("OnUpdateUI"));
 #endif
 
   bool en;
@@ -107,8 +106,7 @@ void EnvVarsConfigDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
 void EnvVarsConfigDlg::LoadSettings()
 {
 #if TRACE_ENVVARS
-	if (Manager::Get() && Manager::Get()->GetMessageManager());
-    DBGLOG(_T("LoadSettings"));
+  DBGLOG(_T("LoadSettings"));
 #endif
 
   wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
@@ -230,8 +228,7 @@ void EnvVarsConfigDlg::SaveSettings()
 void EnvVarsConfigDlg::SaveSettingsActiveSet(wxString active_set)
 {
 #if TRACE_ENVVARS
-	if (Manager::Get() && Manager::Get()->GetMessageManager());
-    DBGLOG(_T("SaveSettingsActiveSet"));
+  DBGLOG(_T("SaveSettingsActiveSet"));
 #endif
 
   ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));

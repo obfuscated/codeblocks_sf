@@ -100,6 +100,8 @@ static char * cpp_keyword_xpm[] = {
 int idMenuCodeComplete = wxNewId();
 int idMenuShowCallTip = wxNewId();
 int idMenuGotoFunction = wxNewId();
+int idMenuGotoPrevFunction = wxNewId();
+int idMenuGotoNextFunction = wxNewId();
 int idViewClassBrowser = wxNewId();
 int idEditorSubMenu = wxNewId();
 int idClassMethod = wxNewId();
@@ -120,6 +122,8 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_MENU(idMenuCodeComplete, CodeCompletion::OnCodeComplete)
     EVT_MENU(idMenuShowCallTip, CodeCompletion::OnShowCallTip)
     EVT_MENU(idMenuGotoFunction, CodeCompletion::OnGotoFunction)
+    EVT_MENU(idMenuGotoPrevFunction, CodeCompletion::OnGotoPrevFunction)
+    EVT_MENU(idMenuGotoNextFunction, CodeCompletion::OnGotoNextFunction)
     EVT_MENU(idClassMethod, CodeCompletion::OnClassMethod)
     EVT_MENU(idUnimplementedClassMethods, CodeCompletion::OnUnimplementedClassMethods)
     EVT_MENU(idGotoDeclaration, CodeCompletion::OnGotoDeclaration)
@@ -241,6 +245,8 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
     {
         m_SearchMenu = menuBar->GetMenu(pos);
         m_SearchMenu->Append(idMenuGotoFunction, _("Goto function...\tCtrl-Alt-G"));
+        m_SearchMenu->Append(idMenuGotoPrevFunction, _("Goto previous function\tCtrl-PgUp"));
+        m_SearchMenu->Append(idMenuGotoNextFunction, _("Goto next function\tCtrl-PgDn"));
     }
     else
         Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find Search menu!"));
@@ -397,7 +403,11 @@ void CodeCompletion::OnRelease(bool appShutDown)
         m_EditMenu->Delete(idMenuShowCallTip);
     }
     if (m_SearchMenu)
+    {
         m_SearchMenu->Delete(idMenuGotoFunction);
+        m_SearchMenu->Delete(idMenuGotoPrevFunction);
+        m_SearchMenu->Delete(idMenuGotoNextFunction);
+    }
 }
 
 static int SortCCList(const wxString& first, const wxString& second)
@@ -437,9 +447,6 @@ int CodeCompletion::CodeComplete()
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
     EditorManager* edMan = Manager::Get()->GetEditorManager();
-//  Plugins are destroyed prior to EditorManager, so this is guaranteed to be valid at all times
-//    if (!edMan)
-//        return -2;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
         return -3;
@@ -599,8 +606,6 @@ void CodeCompletion::CodeCompleteIncludes()
         return;
 
     EditorManager* edMan = Manager::Get()->GetEditorManager();
-//    if (!edMan)
-//        return;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
         return;
@@ -744,8 +749,6 @@ int CodeCompletion::DoClassMethodDeclImpl()
         return -1;
 
     EditorManager* edMan = Manager::Get()->GetEditorManager();
-//    if (!edMan)
-//        return -2;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
         return -3;
@@ -793,8 +796,6 @@ int CodeCompletion::DoAllMethodsImpl()
         return -1;
 
     EditorManager* edMan = Manager::Get()->GetEditorManager();
-//    if (!edMan)
-//        return -2;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
         return -3;
@@ -892,8 +893,6 @@ int CodeCompletion::DoAllMethodsImpl()
 void CodeCompletion::DoCodeComplete()
 {
     EditorManager* edMan = Manager::Get()->GetEditorManager();
-//    if (!edMan)
-//        return;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
         return;
@@ -921,8 +920,6 @@ void CodeCompletion::DoInsertCodeCompleteToken(wxString tokName)
         tokName.Remove(pos);
 
     EditorManager* edMan = Manager::Get()->GetEditorManager();
-//    if (!edMan)
-//        return;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if (!ed)
         return;
@@ -1082,17 +1079,75 @@ int CodeCompletion::NameSpacePosition() const
 int CodeCompletion::FunctionPosition() const
 {
     int retValue = -1; // -1 : not found
-    for(unsigned int idxFn = 0; idxFn < m_FunctionsScope.size(); ++idxFn)
+    for (unsigned int idxFn = 0; idxFn < m_FunctionsScope.size(); ++idxFn)
     {
-            const FunctionScope fs = m_FunctionsScope[idxFn];
-            if (fs.StartLine <= m_CurrentLine && fs.EndLine >= m_CurrentLine)
-            {    // got it :)
-                retValue = static_cast<int>(idxFn);
-                break;
-            }
-    } // end for : idx : idxFn
+        const FunctionScope fs = m_FunctionsScope[idxFn];
+        if (fs.StartLine <= m_CurrentLine && fs.EndLine >= m_CurrentLine)
+        {    // got it :)
+            retValue = static_cast<int>(idxFn);
+            break;
+        }
+    }
     return retValue;
-} // end of FunctionPosition
+}
+
+void CodeCompletion::GotoFunctionPrevNext(bool next /* = false */)
+{
+    EditorManager* edMan = Manager::Get()->GetEditorManager();
+    cbEditor* ed = edMan->GetBuiltinActiveEditor();
+    if (!ed)
+        return;
+
+    int current_line = ed->GetControl()->GetCurrentLine();
+
+    // search previous/next function from current line, default: previous
+    int line = -1;  // -1 : not found
+    if (m_FunctionsScope.size())
+    {
+        unsigned int best_func = 0;
+        bool found_best_func   = false;
+        for (unsigned int idx_func=0; idx_func<m_FunctionsScope.size(); ++idx_func)
+        {
+            int best_func_line  = m_FunctionsScope[best_func].StartLine;
+            int func_start_line = m_FunctionsScope[idx_func].StartLine;
+            if (next)
+            {
+                if         (best_func_line  > current_line)     // candidate: is after current line
+                {
+                    if (   (func_start_line > current_line  )   // another candidate
+                        && (func_start_line < best_func_line) ) // decide which is more near
+                    { best_func = idx_func; found_best_func = true; }
+                }
+                else if    (func_start_line > current_line)     // candidate: is after current line
+                {     best_func = idx_func; found_best_func = true; }
+            }
+            else // prev
+            {
+                if         (best_func_line  < current_line)     // candidate: is before current line
+                {
+                    if (   (func_start_line < current_line  )   // another candidate
+                        && (func_start_line > best_func_line) ) // decide which is more near
+                    { best_func = idx_func; found_best_func = true; }
+                }
+                else if    (func_start_line < current_line)     // candidate: is before current line
+                {     best_func = idx_func; found_best_func = true; }
+            }
+        }
+
+        if      (found_best_func)
+        { line = m_FunctionsScope[best_func].StartLine; }
+        else if ( next && m_FunctionsScope[best_func].StartLine>current_line)
+        { line = m_FunctionsScope[best_func].StartLine; }
+        else if (!next && m_FunctionsScope[best_func].StartLine<current_line)
+        { line = m_FunctionsScope[best_func].StartLine; }
+    }
+
+    if (line != -1)
+    {
+        ed->GotoLine(line);
+        ed->SetFocus();
+    }
+}
 
 void CodeCompletion::ParseFunctionsAndFillToolbar()
 {
@@ -1298,7 +1353,9 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 
     if (m_SearchMenu)
     {
-        m_SearchMenu->Enable(idMenuGotoFunction, hasEd);
+        m_SearchMenu->Enable(idMenuGotoFunction,     hasEd);
+        m_SearchMenu->Enable(idMenuGotoPrevFunction, hasEd);
+        m_SearchMenu->Enable(idMenuGotoNextFunction, hasEd);
     }
 
     if (m_ViewMenu)
@@ -1330,10 +1387,8 @@ void CodeCompletion::OnShowCallTip(wxCommandEvent& event)
 void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
 {
     EditorManager* edMan = Manager::Get()->GetEditorManager();
-//       if (!edMan)
-//           return;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
-       if (!ed)
+    if (!ed)
         return;
 
     Parser parser(this);
@@ -1373,6 +1428,16 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
     }
 }
 
+void CodeCompletion::OnGotoPrevFunction(wxCommandEvent& event)
+{
+    GotoFunctionPrevNext(); // prev function
+}
+
+void CodeCompletion::OnGotoNextFunction(wxCommandEvent& event)
+{
+    GotoFunctionPrevNext(true); // next function
+}
+
 void CodeCompletion::OnClassMethod(wxCommandEvent& event)
 {
     DoClassMethodDeclImpl();
@@ -1386,8 +1451,6 @@ void CodeCompletion::OnUnimplementedClassMethods(wxCommandEvent& event)
 void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 {
     EditorManager* edMan = Manager::Get()->GetEditorManager();
-//       if (!edMan)
-//           return;
 
     wxString txt = m_LastKeyword;
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("Go to decl for '%s'"), txt.c_str());

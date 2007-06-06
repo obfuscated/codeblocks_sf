@@ -25,6 +25,9 @@
 #include "envvars_common.h"
 #include "envvars_prjoptdlg.h"
 
+// Uncomment this for tracing of method calls in C::B's DebugLog:
+//#define TRACE_ENVVARS
+
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 BEGIN_EVENT_TABLE(EnvVarsProjectOptionsDlg, wxPanel)
@@ -76,6 +79,10 @@ EnvVarsProjectOptionsDlg::~EnvVarsProjectOptionsDlg()
 
 void EnvVarsProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
+#if TRACE_ENVVARS
+  DBGLOG(_T("OnUpdateUI"));
+#endif
+
   wxCheckBox* checkbox_control = XRCCTRL(*this, "chkEnvvarSet", wxCheckBox);
   if (checkbox_control)
   {
@@ -90,6 +97,10 @@ void EnvVarsProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 
 void EnvVarsProjectOptionsDlg::OnApply()
 {
+#if TRACE_ENVVARS
+  DBGLOG(_T("OnApply"));
+#endif
+
   wxCheckBox* checkbox_control = XRCCTRL(*this, "chkEnvvarSet", wxCheckBox);
   if (checkbox_control && checkbox_control->IsChecked())
   {

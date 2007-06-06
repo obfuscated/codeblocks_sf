@@ -64,6 +64,8 @@ class CodeCompletion : public cbCodeCompletionPlugin
         void OnCodeComplete(wxCommandEvent& event);
         void OnShowCallTip(wxCommandEvent& event);
         void OnGotoFunction(wxCommandEvent& event);
+        void OnGotoPrevFunction(wxCommandEvent& event);
+        void OnGotoNextFunction(wxCommandEvent& event);
         void OnClassMethod(wxCommandEvent& event);
         void OnUnimplementedClassMethods(wxCommandEvent& event);
         void OnGotoDeclaration(wxCommandEvent& event);
@@ -87,6 +89,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         int DoClassMethodDeclImpl();
         int DoAllMethodsImpl();
         int FunctionPosition() const;
+        void GotoFunctionPrevNext(bool next = false);
         int NameSpacePosition() const;
         void OnFunctionsParsingTimer(wxTimerEvent& event);
         void OnFunction(wxCommandEvent& event);
