@@ -59,10 +59,6 @@
 		<Unit filename="libraryconfigmanager.h" />
 		<Unit filename="libraryresult.h" />
 		<Unit filename="manifest.xml" />
-		<Unit filename="pch.h">
-			<Option compile="1" />
-			<Option weight="0" />
-		</Unit>
 		<Unit filename="processingdlg.cpp" />
 		<Unit filename="processingdlg.h" />
 		<Unit filename="resultmap.cpp" />

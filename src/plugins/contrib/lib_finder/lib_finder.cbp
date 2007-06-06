@@ -28,7 +28,6 @@
 			<Add option="-pipe" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
-			<Add option="-include pch.h" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-mthreads" />
 			<Add option="-DcbDEBUG" />
@@ -75,10 +74,6 @@
 		<Unit filename="libraryconfigmanager.h" />
 		<Unit filename="libraryresult.h" />
 		<Unit filename="manifest.xml" />
-		<Unit filename="pch.h">
-			<Option compile="1" />
-			<Option weight="0" />
-		</Unit>
 		<Unit filename="processingdlg.cpp" />
 		<Unit filename="processingdlg.h" />
 		<Unit filename="resultmap.cpp" />

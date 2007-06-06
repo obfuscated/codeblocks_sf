@@ -13,5 +13,4 @@ cb_share_config_SOURCES = app.cpp \
 			mainframe.cpp
 
 noinst_HEADERS = app.h \
-			mainframe.h \
-			wx_pch.h
+			mainframe.h

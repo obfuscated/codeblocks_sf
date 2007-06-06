@@ -40,10 +40,6 @@
 		<Unit filename="app.h" />
 		<Unit filename="mainframe.cpp" />
 		<Unit filename="mainframe.h" />
-		<Unit filename="wx_pch.h">
-			<Option compile="1" />
-			<Option weight="0" />
-		</Unit>
 		<Unit filename="wxsmith/MainFrame.wxs" />
 		<Extensions>
 			<code_completion />

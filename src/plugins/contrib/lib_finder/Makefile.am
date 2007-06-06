@@ -21,7 +21,6 @@ noinst_HEADERS =  	dirlistdlg.h \
 			libraryconfig.h \
 			libraryconfigmanager.h \
 			libraryresult.h \
-			pch.h \
 			processingdlg.h \
 			resultmap.h
 

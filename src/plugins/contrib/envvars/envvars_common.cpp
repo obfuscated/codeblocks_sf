@@ -13,6 +13,7 @@
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 #include "sdk.h"
+#include "prep.h"
 #ifndef CB_PRECOMP
   #include <wx/checklst.h>
   #include <wx/utils.h>
@@ -20,6 +21,7 @@
   #include "configmanager.h"
   #include "globals.h"
   #include "manager.h"
+  #include "macrosmanager.h"
   #include "messagemanager.h"
 #endif
 
@@ -236,9 +238,16 @@ bool nsEnvVars::EnvvarVeto(const wxString& key, wxCheckListBox* lstEnvVars, int 
 
   if (wxGetEnv(key, NULL))
   {
+    wxString recursion;
+    if (platform::windows) recursion = _T("PATH=%PATH%;C:\\NewPath");
+    else                   recursion = _T("PATH=$PATH:/new_path");
+
     wxString warn_exist;
-    warn_exist.Printf(_("Warning: Environment variable '%s' exists.\n"
-                        "Continue with updating it's value?"), key.c_str());
+    warn_exist.Printf(_("Warning: Environment variable '%s' is already set.\n"
+                        "Continue with updating it's value?\n"
+                        "(Recursions like '%s' will be considered.)"),
+                        key.c_str(), recursion.c_str());
+
     if (cbMessageBox(warn_exist, _("Confirmation"),
                      wxYES_NO | wxICON_QUESTION) == wxID_NO)
     {
@@ -305,10 +314,14 @@ bool nsEnvVars::EnvvarDiscard(const wxString &key)
   DBGLOG(_T("EnvvarDiscard"));
 #endif
 
-  if (!wxUnsetEnv(key))
+  // Replace all macros the user might have setup for the key
+  wxString the_key = key;
+  Manager::Get()->GetMacrosManager()->ReplaceMacros(the_key);
+
+  if (!wxUnsetEnv(the_key))
   {
     Manager::Get()->GetMessageManager()->Log(
-      _("Unsetting environment variable '%s' failed."), key.c_str());
+      _("Unsetting environment variable '%s' failed."), the_key.c_str());
     return false;
   }
 
@@ -324,9 +337,30 @@ bool nsEnvVars::EnvvarApply(const wxString& key, const wxString& value,
   DBGLOG(_T("EnvvarApply"));
 #endif
 
-  if (!wxSetEnv(key, value))
+  // Key:   Replace all macros the user might have used
+  wxString the_key = key;
+  Manager::Get()->GetMacrosManager()->ReplaceMacros(the_key);
+
+  // Value: First, expand stuff like:
+  //        set PATH=%PATH%;C:\NewPath OR export PATH=$PATH:/new_path
+  //        After, replace all macros the user might have used in addition
+  wxString the_value = value;
+  wxString value_set;
+  bool     is_set    = wxGetEnv(the_key, &value_set);
+  if (is_set)
   {
-    DBGLOG(_("EnvVars: Setting environment variable '%s' failed."), key.c_str());
+    wxString recursion;
+    if (platform::windows) recursion = _T("%")+the_key+_("%");
+    else                   recursion = _T("$")+the_key;
+
+    if (the_value.Contains(recursion))
+      the_value.Replace(recursion.c_str(), value_set.c_str());
+  }
+  Manager::Get()->GetMacrosManager()->ReplaceMacros(the_value);
+
+  if (!wxSetEnv(the_key, the_value))
+  {
+    DBGLOG(_("EnvVars: Setting environment variable '%s' failed."), the_key.c_str());
     if (lstEnvVars && (sel>=0))
       lstEnvVars->Check(sel, false); // Unset to visualise it's NOT set
     return false;
