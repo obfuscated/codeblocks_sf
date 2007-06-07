@@ -240,7 +240,7 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     //memorize the key file name as {%HOME%}\cbKeyBinder+{ver}.ini
     //m_sKeyFilename = ConfigManager::GetConfigFolder();
     m_sConfigFolder = ConfigManager::GetConfigFolder();
-    m_sExecuteFolder = ConfigManager::GetExecutableFolder();
+    m_sExecuteFolder = FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString);
     m_sDataFolder = ConfigManager::GetDataFolder();
 
     //*bug* GTK GetConfigFolder is returning double "//?, eg, "/home/pecan//.codeblocks"
@@ -259,21 +259,24 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     // remove the dots from version string (using first 3 chars)
     sPluginVersion.Replace(_T("."),_T(""));
 
+    // get the CodeBlocks "personality" argument
+    wxString m_Personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
+	if (m_Personality == wxT("default")) m_Personality = wxEmptyString;
+    LOGIT( _T("Personality is[%s]"), m_Personality.GetData() );
+
     // if cbKeyBinder##.ini is in the executable folder, use it
     // else use the default config folder
     m_sKeyFilePath = m_sExecuteFolder;
-    m_sKeyFilename = m_sKeyFilePath
-         << wxFILE_SEP_PATH
-         << info->name<<sPluginVersion
-         <<_T(".ini");
+    m_sKeyFilename = m_sKeyFilePath + wxFILE_SEP_PATH;
+    if (not m_Personality.IsEmpty()) m_sKeyFilename << m_Personality + wxT(".") ;
+    m_sKeyFilename << info->name<< sPluginVersion <<_T(".ini");
     if (::wxFileExists(m_sKeyFilename)) {;/*OK Use exe path*/}
     else //use the default.conf folder
     {
         m_sKeyFilePath = m_sConfigFolder;
-        m_sKeyFilename = m_sKeyFilePath
-            << wxFILE_SEP_PATH
-            << info->name<<sPluginVersion
-            <<_T(".ini");
+        m_sKeyFilename = m_sKeyFilePath + wxFILE_SEP_PATH;
+        if (not m_Personality.IsEmpty()) m_sKeyFilename << m_Personality + wxT(".") ;
+        m_sKeyFilename << info->name<<sPluginVersion << _T(".ini");
     }
 
     #if LOGGING
@@ -1109,5 +1112,78 @@ void cbKeyBinder::OnMenuBarModify(wxCommandEvent& event)
     int modType = event.GetEventType();
      LOGIT( _T("OnMenuBarModify[%d]"), modType );
     event.Skip();
+}
+// ----------------------------------------------------------------------------
+wxString cbKeyBinder::FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName)
+// ----------------------------------------------------------------------------
+{
+    // Find the absolute path from where this application has been run.
+    // argv0 is wxTheApp->argv[0]
+    // cwd is the current working directory (at startup)
+    // appVariableName is the name of a variable containing the directory for this app, e.g.
+    // MYAPPDIR. This is checked first.
+
+    wxString str;
+
+    // Try appVariableName
+    if (!appVariableName.IsEmpty())
+    {
+        str = wxGetenv(appVariableName);
+        if (!str.IsEmpty())
+            return str;
+    }
+
+#if defined(__WXMAC__) && !defined(__DARWIN__)
+    // On Mac, the current directory is the relevant one when
+    // the application starts.
+    return cwd;
+#endif
+
+    wxString argv0Str = argv0;
+    #if defined(__WXMSW__)
+        do{
+            if (argv0Str.Contains(wxT(".exe")) ) break;
+            if (argv0Str.Contains(wxT(".bat")) ) break;
+            if (argv0Str.Contains(wxT(".cmd")) ) break;
+            argv0Str.Append(wxT(".exe"));
+        }while(0);
+    #endif
+
+    if (wxIsAbsolutePath(argv0Str))
+    {
+        LOGIT( _T("FindAppPath: AbsolutePath[%s]"), wxPathOnly(argv0Str).GetData() );
+        return wxPathOnly(argv0Str);
+    }
+    else
+    {
+        // Is it a relative path?
+        wxString currentDir(cwd);
+        if (currentDir.Last() != wxFILE_SEP_PATH)
+            currentDir += wxFILE_SEP_PATH;
+
+        str = currentDir + argv0Str;
+        if (wxFileExists(str))
+        {
+            LOGIT( _T("FindAppPath: RelativePath[%s]"), wxPathOnly(str).GetData() );
+            return wxPathOnly(str);
+        }
+    }
+
+    // OK, it's neither an absolute path nor a relative path.
+    // Search PATH.
+
+    wxPathList pathList;
+    pathList.AddEnvList(wxT("PATH"));
+    str = pathList.FindAbsoluteValidPath(argv0Str);
+    if (!str.IsEmpty())
+    {
+        LOGIT( _T("FindAppPath: SearchPath[%s]"), wxPathOnly(str).GetData() );
+        return wxPathOnly(str);
+    }
+
+    // Failed
+     LOGIT(  _T("FindAppPath: Failed, returning cwd") );
+    return wxEmptyString;
+    //return cwd;
 }
 // ----------------------------------------------------------------------------

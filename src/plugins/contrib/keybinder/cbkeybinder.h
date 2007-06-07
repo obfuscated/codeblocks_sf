@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.34 2007/05/31"
+#define VERSION "1.0.35 2007/06/7"
 // -----------------------------------
 class MyDialog;
 
@@ -131,6 +131,7 @@ class cbKeyBinder : public cbPlugin
         void OnIdle(wxIdleEvent& event);
         void OnTimerAlarm(wxTimerEvent& event);
         void OnMenuBarModify(wxCommandEvent& event);
+        wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
 
 
         wxWindow*       pcbWindow;              //main app window
@@ -679,5 +680,8 @@ private:
 // ----------------------------------------------------------------------------
 //  Commit  1.0.34 2007/05/31
 //          34) Re-enabled dynamic merge eliminating consideration of duplicates
+// ----------------------------------------------------------------------------
+//  Commit  1.0.35 2007/06/7
+//          35) Prepend --personality arg to cbKeybinder.ini filename
 // ----------------------------------------------------------------------------
 //
