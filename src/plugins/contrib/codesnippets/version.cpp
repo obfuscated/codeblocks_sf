@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 84 2007-05-21 18:15:43Z Pecan $
+// RCS-ID: $Id: version.cpp 85 2007-05-29 15:40:31Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -268,6 +268,9 @@ AppVersion::~AppVersion()
 //          Verify:If external snippets, plgn *shouldnt* save conf OR xml on exit
 //              Ok: saves done by OnClose SnippetsWindow & Tree routines
 //          76) Fix "Apply" menu item, misspelled _WX... preprocessor
+// ----------------------------------------------------------------------------
+//  Commit  1.2.77
+//          77) Prepend CodeBlocks --personality= argument to codesnippets.ini
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box

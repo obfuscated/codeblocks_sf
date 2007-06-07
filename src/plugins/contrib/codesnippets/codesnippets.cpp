@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 84 2007-05-21 18:15:43Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 85 2007-05-29 15:40:31Z Pecan $
 
 #if defined(CB_PRECOMP)
 #include "sdk.h"
@@ -33,6 +33,7 @@
 	#include "manager.h"
 	#include "projectmanager.h"
 	#include "editormanager.h"
+	#include "personalitymanager.h"
 	#include "cbworkspace.h"
 	#include "cbproject.h"
 	#include "messagemanager.h"
@@ -135,13 +136,22 @@ void CodeSnippets::OnAttach()
     LOGIT(wxT("CfgFolder[%s]"),GetConfig()->m_ConfigFolder.c_str());
     LOGIT(wxT("ExecFolder[%s]"),GetConfig()->m_ExecuteFolder.c_str());
 
+    // get the CodeBlocks "personality" argument
+    wxString m_Personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
+    if (m_Personality == wxT("default")) m_Personality = wxEmptyString;
+     LOGIT( _T("Personality is[%s]"), m_Personality.GetData() );
+
     // if codesnippets.ini is in the executable folder, use it
     // else use the default config folder
-    wxString
-      m_CfgFilenameStr = GetConfig()->m_ExecuteFolder + wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
+    wxString m_CfgFilenameStr = GetConfig()->m_ExecuteFolder + wxFILE_SEP_PATH;
+    if (not m_Personality.IsEmpty()) m_CfgFilenameStr << m_Personality + wxT(".") ;
+    m_CfgFilenameStr << GetConfig()->AppName + _T(".ini");
+
     if (::wxFileExists(m_CfgFilenameStr)) {;/*OK Use exe path*/}
-    else //use the default.conf folder
-    {   m_CfgFilenameStr = GetConfig()->m_ConfigFolder + wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
+    else // use the default.conf folder
+    {   m_CfgFilenameStr = GetConfig()->m_ConfigFolder + wxFILE_SEP_PATH;
+        if (not m_Personality.IsEmpty()) m_CfgFilenameStr <<  m_Personality + wxT(".") ;
+        m_CfgFilenameStr << GetConfig()->AppName + _T(".ini");
         // if default doesn't exist, create it
         if (not ::wxDirExists(GetConfig()->m_ConfigFolder))
             ::wxMkdir(GetConfig()->m_ConfigFolder);
