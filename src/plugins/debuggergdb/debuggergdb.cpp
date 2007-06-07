@@ -2173,6 +2173,16 @@ void DebuggerGDB::OnEditorOpened(CodeBlocksEvent& event)
             if (bpFileName.GetFullPath().Matches(edFileName.GetFullPath()))
                 ed->ToggleBreakpoint(bp->line, false);
         }
+        // Now check and highlight the active line under debugging
+        if (m_State.HasDriver())
+        {
+            const Cursor& line_cursor = m_State.GetDriver()->GetCursor();
+            wxFileName dbgFileName(line_cursor.file);
+            dbgFileName.Normalize();
+            if (dbgFileName.GetFullPath().IsSameAs(edFileName.GetFullPath())
+                && line_cursor.line != -1)
+                ed->SetDebugLine(line_cursor.line - 1);
+        }
     }
     event.Skip(); // must do
 }
