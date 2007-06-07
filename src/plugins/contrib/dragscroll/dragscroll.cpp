@@ -110,13 +110,23 @@ void cbDragScroll::OnAttach()
     m_ConfigFolder.Replace(_T("//"),_T("/"));
     m_ExecuteFolder.Replace(_T("//"),_T("/"));
 
+    // get the CodeBlocks "personality" argument
+    wxString m_Personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
+	if (m_Personality == wxT("default")) m_Personality = wxEmptyString;
+     LOGIT( _T("Personality is[%s]"), m_Personality.GetData() );
+
     // if DragScroll.ini is in the executable folder, use it
     // else use the default config folder
-    m_CfgFilenameStr = m_ExecuteFolder + wxFILE_SEP_PATH + _T("DragScroll.ini");
+    m_CfgFilenameStr = m_ExecuteFolder + wxFILE_SEP_PATH;
+    if (not m_Personality.IsEmpty()) m_CfgFilenameStr << m_Personality + wxT(".") ;
+    m_CfgFilenameStr << _T("DragScroll.ini");
+
     if (::wxFileExists(m_CfgFilenameStr)) {;/*OK Use exe path*/}
     else //use the default.conf folder
-        m_CfgFilenameStr = m_ConfigFolder + wxFILE_SEP_PATH + _T("DragScroll.ini");
-
+    {   m_CfgFilenameStr = m_ConfigFolder + wxFILE_SEP_PATH;
+        if (not m_Personality.IsEmpty()) m_CfgFilenameStr << m_Personality + wxT(".") ;
+        m_CfgFilenameStr << _T("DragScroll.ini");
+    }
     LOGIT(_T("DragScroll Config Filename:[%s]"), m_CfgFilenameStr.GetData());
     // read configuaton file
     wxFileConfig cfgFile(wxEmptyString,     // appname
