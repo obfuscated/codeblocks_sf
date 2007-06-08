@@ -26,7 +26,7 @@ class GenericSingleChoiceList: public wxPanel
 		virtual ~GenericSingleChoiceList();
 
         void SetChoices(const wxArrayString& choices, int defChoice);
-        int GetChoice(){ return GenericChoiceList->GetSelection(); }
+        int GetChoice() const { return GenericChoiceList->GetSelection(); }
         void SetChoice(int choice){ GenericChoiceList->SetSelection(choice); }
         void SetDescription(const wxString& descr)
         {

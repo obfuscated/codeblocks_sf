@@ -172,7 +172,7 @@ class WizGenericSingleChoiceList : public WizPageBase
         WizGenericSingleChoiceList(const wxString& pageId, const wxString& descr, const wxArrayString& choices, int defChoice, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
         ~WizGenericSingleChoiceList();
 
-        int GetChoice();
+        int GetChoice() const;
         void SetChoice(int choice);
 
         void OnPageChanging(wxWizardEvent& event);

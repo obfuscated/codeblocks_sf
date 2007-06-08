@@ -715,7 +715,7 @@ WizGenericSingleChoiceList::~WizGenericSingleChoiceList()
 }
 
 //------------------------------------------------------------------------------
-int WizGenericSingleChoiceList::GetChoice()
+int WizGenericSingleChoiceList::GetChoice() const
 {
     return m_pGenericSingleChoiceList->GetChoice();
 }

@@ -1,4 +1,5 @@
 #include "genericsinglechoicelist.h"
+#include "prep.h"
 
 BEGIN_EVENT_TABLE(GenericSingleChoiceList,wxPanel)
 	//(*EventTable(GenericSingleChoiceList)
