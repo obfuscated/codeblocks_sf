@@ -30,7 +30,7 @@ class SelectIncludeFile: public wxDialog
 		//(*Identifiers(SelectIncludeFile)
 		//*)
 
-	protected:
+	private:
 
 		//(*Handlers(SelectIncludeFile)
 		void OnOk(wxCommandEvent& event);
@@ -41,7 +41,6 @@ class SelectIncludeFile: public wxDialog
 		wxListBox* ListBox1;
 		//*)
 
-	private:
 		wxString m_SelectedIncludeFile;
 		DECLARE_EVENT_TABLE()
 };
