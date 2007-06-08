@@ -212,9 +212,9 @@ WizInfoPanel::~WizInfoPanel()
 
 void WizInfoPanel::OnPageChanging(wxWizardEvent& event)
 {
-    if (!m_SkipPage && event.GetDirection() != 0) // !=0 forward, ==0 backward
+    if (!GetSkipPage() && event.GetDirection() != 0) // !=0 forward, ==0 backward
     {
-        m_SkipPage = m_InfoPanel->chkSkip->GetValue();
+        SetSkipPage(m_InfoPanel->chkSkip->GetValue());
     }
 
     WizPageBase::OnPageChanging(event);
@@ -240,10 +240,12 @@ WizFilePathPanel::~WizFilePathPanel()
 {
 }
 
-int WizFilePathPanel::GetTargetIndex()
+int WizFilePathPanel::GetTargetIndex() const
 {
     if (m_pFilePathPanel)
+    {
         return m_pFilePathPanel->GetTargetIndex();
+    }
     return -1;
 }
 
@@ -293,25 +295,25 @@ WizProjectPathPanel::~WizProjectPathPanel()
 }
 
 //------------------------------------------------------------------------------
-wxString WizProjectPathPanel::GetPath()
+wxString WizProjectPathPanel::GetPath() const
 {
     return AppendPathSepIfNeeded(m_pProjectPathPanel->GetPath());
 }
 
 //------------------------------------------------------------------------------
-wxString WizProjectPathPanel::GetName()
+wxString WizProjectPathPanel::GetName() const
 {
     return m_pProjectPathPanel->GetName();
 }
 
 //------------------------------------------------------------------------------
-wxString WizProjectPathPanel::GetFullFileName()
+wxString WizProjectPathPanel::GetFullFileName() const
 {
     return m_pProjectPathPanel->GetFullFileName();
 }
 
 //------------------------------------------------------------------------------
-wxString WizProjectPathPanel::GetTitle()
+wxString WizProjectPathPanel::GetTitle() const
 {
     return m_pProjectPathPanel->GetTitle();
 }
@@ -434,7 +436,7 @@ void WizGenericSelectPathPanel::OnPageChanging(wxWizardEvent& event)
 
     if (event.GetDirection() != 0 && event.IsAllowed())
     {
-        Manager::Get()->GetConfigManager(_T("project_wizard"))->Write(_T("/generic_paths/") + m_PageName, m_pGenericSelectPath->txtFolder->GetValue());
+        Manager::Get()->GetConfigManager(_T("project_wizard"))->Write(_T("/generic_paths/") + GetPageName(), m_pGenericSelectPath->txtFolder->GetValue());
     }
 }
 
@@ -494,7 +496,7 @@ WizCompilerPanel::~WizCompilerPanel()
 }
 
 //------------------------------------------------------------------------------
-wxString WizCompilerPanel::GetCompilerID()
+wxString WizCompilerPanel::GetCompilerID() const
 {
     Compiler* compiler = CompilerFactory::GetCompilerByName(m_pCompilerPanel->GetCompilerCombo()->GetStringSelection());
     if (compiler)
@@ -503,49 +505,49 @@ wxString WizCompilerPanel::GetCompilerID()
 }
 
 //------------------------------------------------------------------------------
-bool WizCompilerPanel::GetWantDebug()
+bool WizCompilerPanel::GetWantDebug() const
 {
     return m_pCompilerPanel->GetWantDebug();
 }
 
 //------------------------------------------------------------------------------
-wxString WizCompilerPanel::GetDebugName()
+wxString WizCompilerPanel::GetDebugName() const
 {
     return m_pCompilerPanel->GetDebugName();
 }
 
 //------------------------------------------------------------------------------
-wxString WizCompilerPanel::GetDebugOutputDir()
+wxString WizCompilerPanel::GetDebugOutputDir() const
 {
     return AppendPathSepIfNeeded(m_pCompilerPanel->GetDebugOutputDir());
 }
 
 //------------------------------------------------------------------------------
-wxString WizCompilerPanel::GetDebugObjectOutputDir()
+wxString WizCompilerPanel::GetDebugObjectOutputDir() const
 {
     return AppendPathSepIfNeeded(m_pCompilerPanel->GetDebugObjectOutputDir());
 }
 
 //------------------------------------------------------------------------------
-bool WizCompilerPanel::GetWantRelease()
+bool WizCompilerPanel::GetWantRelease() const
 {
     return m_pCompilerPanel->GetWantRelease();
 }
 
 //------------------------------------------------------------------------------
-wxString WizCompilerPanel::GetReleaseName()
+wxString WizCompilerPanel::GetReleaseName() const
 {
     return m_pCompilerPanel->GetReleaseName();
 }
 
 //------------------------------------------------------------------------------
-wxString WizCompilerPanel::GetReleaseOutputDir()
+wxString WizCompilerPanel::GetReleaseOutputDir() const
 {
     return AppendPathSepIfNeeded(m_pCompilerPanel->GetReleaseOutputDir());
 }
 
 //------------------------------------------------------------------------------
-wxString WizCompilerPanel::GetReleaseObjectOutputDir()
+wxString WizCompilerPanel::GetReleaseObjectOutputDir() const
 {
     return AppendPathSepIfNeeded(m_pCompilerPanel->GetReleaseObjectOutputDir());
 }
@@ -635,7 +637,7 @@ WizBuildTargetPanel::~WizBuildTargetPanel()
 }
 
 //------------------------------------------------------------------------------
-wxString WizBuildTargetPanel::GetCompilerID()
+wxString WizBuildTargetPanel::GetCompilerID() const
 {
     if (!m_pBuildTargetPanel->GetCompilerCombo()->IsShown())
         return wxEmptyString;
@@ -647,25 +649,25 @@ wxString WizBuildTargetPanel::GetCompilerID()
 }
 
 //------------------------------------------------------------------------------
-bool WizBuildTargetPanel::GetEnableDebug()
+bool WizBuildTargetPanel::GetEnableDebug() const
 {
     return m_pBuildTargetPanel->GetEnableDebug();
 }
 
 //------------------------------------------------------------------------------
-wxString WizBuildTargetPanel::GetTargetName()
+wxString WizBuildTargetPanel::GetTargetName() const
 {
     return m_pBuildTargetPanel->GetTargetName();
 }
 
 //------------------------------------------------------------------------------
-wxString WizBuildTargetPanel::GetTargetOutputDir()
+wxString WizBuildTargetPanel::GetTargetOutputDir() const
 {
     return AppendPathSepIfNeeded(m_pBuildTargetPanel->GetOutputDir());
 }
 
 //------------------------------------------------------------------------------
-wxString WizBuildTargetPanel::GetTargetObjectOutputDir()
+wxString WizBuildTargetPanel::GetTargetObjectOutputDir() const
 {
     return AppendPathSepIfNeeded(m_pBuildTargetPanel->GetObjectOutputDir());
 }
@@ -734,6 +736,6 @@ void WizGenericSingleChoiceList::OnPageChanging(wxWizardEvent& event)
     // save selection value
     if (event.GetDirection() != 0 && event.IsAllowed())
     {
-        Manager::Get()->GetConfigManager(_T("project_wizard"))->Write(_T("/generic_single_choices/") + m_PageName, (int)m_pGenericSingleChoiceList->GetChoice());
+        Manager::Get()->GetConfigManager(_T("project_wizard"))->Write(_T("/generic_single_choices/") + GetPageName(), (int)m_pGenericSingleChoiceList->GetChoice());
     }
 }

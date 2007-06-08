@@ -26,9 +26,9 @@ class FilePathPanel: public wxPanel
 		FilePathPanel(wxWindow* parent,wxWindowID id = -1);
 		virtual ~FilePathPanel();
 
-        wxString GetFilename(){ return txtFilename->GetValue(); }
-        wxString GetHeaderGuard(){ return txtGuard->IsShown() ? txtGuard->GetValue() : _T(""); }
-        bool GetAddToProject(){ return chkAddToProject->GetValue(); }
+        wxString GetFilename() const { return txtFilename->GetValue(); }
+        wxString GetHeaderGuard() const { return txtGuard->IsShown() ? txtGuard->GetValue() : _T(""); }
+        bool GetAddToProject() const { return chkAddToProject->GetValue(); }
         void SetAddToProject(bool add);
         int GetTargetIndex();
         void SetFilePathSelectionFilter(const wxString& filter){ m_ExtFilter = filter; }
@@ -55,7 +55,7 @@ class FilePathPanel: public wxPanel
 		};
 		//*)
 
-	protected:
+	private:
 
 		//(*Handlers(FilePathPanel)
 		void OntxtFilenameText(wxCommandEvent& event);
@@ -84,7 +84,6 @@ class FilePathPanel: public wxPanel
 		wxString m_ExtFilter;
 		int m_Selection;
 
-	private:
 		void ToggleVisibility(bool on);
 
 		DECLARE_EVENT_TABLE()

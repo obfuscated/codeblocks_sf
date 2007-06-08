@@ -25,22 +25,22 @@ class CompilerPanel: public wxPanel
         void EnableConfigurationTargets(bool en);
 
         void SetWantDebug(bool want){ chkConfDebug->SetValue(want); }
-        bool GetWantDebug(){ return chkConfDebug->IsChecked() && chkConfDebug->IsShown(); }
+        bool GetWantDebug() const { return chkConfDebug->IsChecked() && chkConfDebug->IsShown(); }
         void SetDebugName(const wxString& name){ txtDbgName->SetValue(name); }
-        wxString GetDebugName(){ return txtDbgName->GetValue(); }
+        wxString GetDebugName() const { return txtDbgName->GetValue(); }
         void SetDebugOutputDir(const wxString& dir){ txtDbgOut->SetValue(dir); }
-        wxString GetDebugOutputDir(){ return txtDbgOut->GetValue(); }
+        wxString GetDebugOutputDir() const { return txtDbgOut->GetValue(); }
         void SetDebugObjectOutputDir(const wxString& dir){ txtDbgObjOut->SetValue(dir); }
-        wxString GetDebugObjectOutputDir(){ return txtDbgObjOut->GetValue(); }
+        wxString GetDebugObjectOutputDir() const { return txtDbgObjOut->GetValue(); }
 
         void SetWantRelease(bool want){ chkConfRelease->SetValue(want); }
-        bool GetWantRelease(){ return chkConfRelease->IsChecked() && chkConfRelease->IsShown(); }
+        bool GetWantRelease() const { return chkConfRelease->IsChecked() && chkConfRelease->IsShown(); }
         void SetReleaseName(const wxString& name){ txtRelName->SetValue(name); }
-        wxString GetReleaseName(){ return txtRelName->GetValue(); }
+        wxString GetReleaseName() const { return txtRelName->GetValue(); }
         void SetReleaseOutputDir(const wxString& dir){ txtRelOut->SetValue(dir); }
-        wxString GetReleaseOutputDir(){ return txtRelOut->GetValue(); }
+        wxString GetReleaseOutputDir() const { return txtRelOut->GetValue(); }
         void SetReleaseObjectOutputDir(const wxString& dir){ txtRelObjOut->SetValue(dir); }
-        wxString GetReleaseObjectOutputDir(){ return txtRelObjOut->GetValue(); }
+        wxString GetReleaseObjectOutputDir() const { return txtRelObjOut->GetValue(); }
 
 		//(*Identifiers(CompilerPanel)
 		enum Identifiers
@@ -63,7 +63,7 @@ class CompilerPanel: public wxPanel
 		};
 		//*)
 
-	protected:
+	private:
 
 		//(*Handlers(CompilerPanel)
 		void OnDebugChange(wxCommandEvent& event);
@@ -86,8 +86,6 @@ class CompilerPanel: public wxPanel
 		wxTextCtrl* txtRelOut;
 		wxTextCtrl* txtRelObjOut;
 		//*)
-
-	private:
 
 		DECLARE_EVENT_TABLE()
 };

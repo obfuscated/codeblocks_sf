@@ -127,6 +127,7 @@ void FilePathPanel::SetAddToProject(bool add)
     ToggleVisibility(add);
 }
 
+// note : design not so nice because the function is not const !!!
 int FilePathPanel::GetTargetIndex()
 {
     int selection = -1;

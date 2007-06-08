@@ -39,10 +39,10 @@ class BuildTargetPanel: public wxPanel
         }
 
         wxComboBox* GetCompilerCombo(){ return cmbCompiler; }
-        bool GetEnableDebug(){ return chkEnableDebug->IsChecked(); }
-        wxString GetTargetName(){ return txtName->GetValue(); }
-        wxString GetOutputDir(){ return txtOut->GetValue(); }
-        wxString GetObjectOutputDir(){ return txtObjOut->GetValue(); }
+        bool GetEnableDebug() const { return chkEnableDebug->IsChecked(); }
+        wxString GetTargetName() const { return txtName->GetValue(); }
+        wxString GetOutputDir() const { return txtOut->GetValue(); }
+        wxString GetObjectOutputDir() const { return txtObjOut->GetValue(); }
 
 
         //(*Identifiers(BuildTargetPanel)
@@ -61,7 +61,7 @@ class BuildTargetPanel: public wxPanel
         };
         //*)
 
-    protected:
+    private:
 
         //(*Handlers(BuildTargetPanel)
         void OntxtNameText(wxCommandEvent& event);
@@ -77,8 +77,6 @@ class BuildTargetPanel: public wxPanel
         wxTextCtrl* txtObjOut;
         wxCheckBox* chkEnableDebug;
         //*)
-
-    private:
 
         DECLARE_EVENT_TABLE()
 };

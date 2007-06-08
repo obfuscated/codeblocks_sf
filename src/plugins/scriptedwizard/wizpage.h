@@ -25,18 +25,22 @@ class WizPageBase : public wxWizardPageSimple
         WizPageBase(const wxString& pageName, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
         ~WizPageBase();
 
-        virtual bool SkipPage(){ return m_SkipPage; } // default: false
+        virtual bool SkipPage() const { return m_SkipPage; } // default: false
 
         virtual void OnPageChanging(wxWizardEvent& event);
         virtual void OnPageChanged(wxWizardEvent& event);
 
         virtual wxWizardPage* GetPrev() const;
         virtual wxWizardPage* GetNext() const;
-    protected:
+        wxString GetPageName() const {return m_PageName;}
+        bool GetSkipPage() const {return m_SkipPage;}
+        void SetSkipPage(bool SkipPage) {m_SkipPage = SkipPage;}
+
+    private:
         static PagesByName s_PagesByName;
         wxString m_PageName;
         bool m_SkipPage;
-    private:
+
         DECLARE_EVENT_TABLE()
 };
 
@@ -46,7 +50,6 @@ class WizPage : public WizPageBase
         WizPage(const wxString& panelName, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
         ~WizPage();
         void OnButton(wxCommandEvent& event);
-    protected:
     private:
         DECLARE_EVENT_TABLE()
 };
@@ -58,9 +61,8 @@ class WizInfoPanel : public WizPageBase
         ~WizInfoPanel();
 
         virtual void OnPageChanging(wxWizardEvent& event);
-    protected:
-        InfoPanel* m_InfoPanel;
     private:
+        InfoPanel* m_InfoPanel;
 };
 
 class WizFilePathPanel : public WizPageBase
@@ -69,20 +71,19 @@ class WizFilePathPanel : public WizPageBase
         WizFilePathPanel(bool showHeaderGuard, wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
         ~WizFilePathPanel();
 
-        wxString GetFilename(){ return m_Filename; }
-        wxString GetHeaderGuard(){ return m_HeaderGuard; }
-        bool GetAddToProject(){ return m_AddToProject; }
-        int GetTargetIndex();
+        wxString GetFilename() const { return m_Filename; }
+        wxString GetHeaderGuard() const { return m_HeaderGuard; }
+        bool GetAddToProject() const { return m_AddToProject; }
+        int GetTargetIndex() const;
         void SetFilePathSelectionFilter(const wxString& filter);
 
         void OnPageChanging(wxWizardEvent& event);
-    protected:
+    private:
         FilePathPanel* m_pFilePathPanel;
         wxString m_Filename;
         wxString m_HeaderGuard;
         bool m_AddToProject;
         int m_TargetIndex;
-    private:
 };
 
 class WizProjectPathPanel : public WizPageBase
@@ -91,17 +92,17 @@ class WizProjectPathPanel : public WizPageBase
         WizProjectPathPanel(wxWizard* parent, const wxBitmap& bitmap = wxNullBitmap);
         ~WizProjectPathPanel();
 
-        wxString GetPath();
-        wxString GetName();
-        wxString GetFullFileName();
-        wxString GetTitle();
+        wxString GetPath() const;
+        wxString GetName() const;
+        wxString GetFullFileName() const;
+        wxString GetTitle() const;
 
         void OnButton(wxCommandEvent& event);
         virtual void OnPageChanging(wxWizardEvent& event);
         virtual void OnPageChanged(wxWizardEvent& event);
-    protected:
-        ProjectPathPanel* m_pProjectPathPanel;
     private:
+        ProjectPathPanel* m_pProjectPathPanel;
+
         DECLARE_EVENT_TABLE()
 };
 
@@ -114,9 +115,9 @@ class WizGenericSelectPathPanel : public WizPageBase
 
         void OnButton(wxCommandEvent& event);
         virtual void OnPageChanging(wxWizardEvent& event);
-    protected:
-        GenericSelectPath* m_pGenericSelectPath;
     private:
+        GenericSelectPath* m_pGenericSelectPath;
+
         DECLARE_EVENT_TABLE()
 };
 
@@ -127,21 +128,20 @@ class WizCompilerPanel : public WizPageBase
                         bool allowCompilerChange = true, bool allowConfigChange = true);
         ~WizCompilerPanel();
 
-        wxString GetCompilerID();
-        bool GetWantDebug();
-        wxString GetDebugName();
-        wxString GetDebugOutputDir();
-        wxString GetDebugObjectOutputDir();
-        bool GetWantRelease();
-        wxString GetReleaseName();
-        wxString GetReleaseOutputDir();
-        wxString GetReleaseObjectOutputDir();
+        wxString GetCompilerID() const;
+        bool GetWantDebug() const;
+        wxString GetDebugName() const;
+        wxString GetDebugOutputDir() const;
+        wxString GetDebugObjectOutputDir() const;
+        bool GetWantRelease() const;
+        wxString GetReleaseName() const;
+        wxString GetReleaseOutputDir() const;
+        wxString GetReleaseObjectOutputDir() const;
 
         void OnPageChanging(wxWizardEvent& event);
-    protected:
+    private:
         CompilerPanel* m_pCompilerPanel;
         bool m_AllowConfigChange;
-    private:
 };
 
 class WizBuildTargetPanel : public WizPageBase
@@ -154,16 +154,15 @@ class WizBuildTargetPanel : public WizPageBase
                         bool allowCompilerChange = true);
         ~WizBuildTargetPanel();
 
-        wxString GetCompilerID();
-        bool GetEnableDebug();
-        wxString GetTargetName();
-        wxString GetTargetOutputDir();
-        wxString GetTargetObjectOutputDir();
+        wxString GetCompilerID() const;
+        bool GetEnableDebug() const;
+        wxString GetTargetName() const;
+        wxString GetTargetOutputDir() const;
+        wxString GetTargetObjectOutputDir() const;
 
         void OnPageChanging(wxWizardEvent& event);
-    protected:
-        BuildTargetPanel* m_pBuildTargetPanel;
     private:
+        BuildTargetPanel* m_pBuildTargetPanel;
 };
 
 class WizGenericSingleChoiceList : public WizPageBase
@@ -176,9 +175,8 @@ class WizGenericSingleChoiceList : public WizPageBase
         void SetChoice(int choice);
 
         void OnPageChanging(wxWizardEvent& event);
-    protected:
-        GenericSingleChoiceList* m_pGenericSingleChoiceList;
     private:
+        GenericSingleChoiceList* m_pGenericSingleChoiceList;
 };
 
 #endif // WIZPAGE_H

@@ -31,13 +31,13 @@ class ProjectPathPanel: public wxPanel
 //                txtPrjName->SetFocus();
             Update();
         }
-		wxString GetPath(){ return txtPrjPath->GetValue(); }
+		wxString GetPath() const { return txtPrjPath->GetValue(); }
 		//wxString GetName(){ return txtPrjName->GetValue(); }
 // NOTE (Biplab#1#): This is a temporary fix. This function
 // need to be renamed according to it's visual representation
-		wxString GetName(){ return txtPrjTitle->GetValue(); }
-		wxString GetFullFileName(){ return txtFinalDir->GetValue(); }
-		wxString GetTitle(){ return txtPrjTitle->GetValue(); }
+		wxString GetName() const { return txtPrjTitle->GetValue(); }
+		wxString GetFullFileName() const { return txtFinalDir->GetValue(); }
+		wxString GetTitle() const { return txtPrjTitle->GetValue(); }
 
 		//(*Identifiers(ProjectPathPanel)
 		enum Identifiers
@@ -55,7 +55,7 @@ class ProjectPathPanel: public wxPanel
 		};
 		//*)
 
-	protected:
+	private:
 
         void Update();
         void UpdateFromResulting();
@@ -76,8 +76,6 @@ class ProjectPathPanel: public wxPanel
 		wxTextCtrl* txtPrjName;
 		wxTextCtrl* txtFinalDir;
 		//*)
-
-	private:
 
 		DECLARE_EVENT_TABLE()
 };
