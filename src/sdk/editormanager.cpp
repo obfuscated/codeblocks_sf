@@ -1440,10 +1440,13 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
         flags |= wxSCI_FIND_REGEXP;
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
             flags |= wxSCI_FIND_POSIX;
+        #ifdef wxHAS_REGEX_ADVANCED
         AdvRegex=Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
+        #endif
     }
 
     wxRegEx re;
+    #ifdef wxHAS_REGEX_ADVANCED
     if(AdvRegex)
     {
         if(data->matchCase)
@@ -1451,6 +1454,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
         else
             re.Compile(data->findText,wxRE_ADVANCED|wxRE_NEWLINE|wxRE_ICASE);
     }
+    #endif
 
     control->BeginUndoAction();
     int pos = -1;
@@ -1724,10 +1728,13 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
         flags |= wxSCI_FIND_REGEXP;
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
             flags |= wxSCI_FIND_POSIX;
+        #ifdef wxHAS_REGEX_ADVANCED
         AdvRegex=Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
+        #endif
     }
 
     wxRegEx re;
+    #ifdef wxHAS_REGEX_ADVANCED
     if(AdvRegex)
     {
         if(data->matchCase)
@@ -1735,6 +1742,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
         else
             re.Compile(data->findText,wxRE_ADVANCED|wxRE_NEWLINE|wxRE_ICASE);
     }
+    #endif
 
 
     bool replace = false;
@@ -1999,10 +2007,13 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         flags |= wxSCI_FIND_REGEXP;
         if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_posix_style_regexes"), false))
             flags |= wxSCI_FIND_POSIX;
+        #ifdef wxHAS_REGEX_ADVANCED
         AdvRegex=Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_advanced_regexes"), false);
+        #endif
     }
 
     wxRegEx re;
+    #ifdef wxHAS_REGEX_ADVANCED
     if(AdvRegex)
     {
         if(data->matchCase)
@@ -2010,6 +2021,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         else
             re.Compile(data->findText,wxRE_ADVANCED|wxRE_NEWLINE|wxRE_ICASE);
     }
+    #endif
 
     int pos = -1;
     // avoid infinite loop when wrapping search around, eventually crashing WinLogon O.O
@@ -2968,6 +2980,7 @@ int EditorManager::GetZoom() const
 {
     return m_zoom;
 }
+
 
 
 
