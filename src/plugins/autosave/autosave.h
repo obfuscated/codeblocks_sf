@@ -57,7 +57,7 @@ class AutosaveConfigDlg : public cbConfigurationPanel
         virtual wxString GetBitmapBaseName() const { return _T("autosave"); }
         virtual void OnApply(){ SaveSettings(); }
         virtual void OnCancel(){}
-
+	private:
         void LoadSettings();
         void SaveSettings();
 };
