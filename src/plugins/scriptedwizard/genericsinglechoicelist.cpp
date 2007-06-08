@@ -15,7 +15,11 @@ GenericSingleChoiceList::GenericSingleChoiceList(wxWindow* parent,wxWindowID id)
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	lblDescr = new wxStaticText(this,ID_STATICTEXT1,_("Description"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT1"));
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL,this,_("Please make a selection"));
-	GenericChoiceList = new wxListBox(this,ID_LISTBOX1,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_("ID_LISTBOX1"));
+/* FIXME (Biplab#1#): This is a hack. Need to check this against newer wx for a fix */
+    if (platform::linux && wxMinimumVersion<2, 8>::eval)
+        GenericChoiceList = new wxListBox(this,ID_LISTBOX1,wxDefaultPosition,wxSize(100, 100),0,0,0,wxDefaultValidator,_("ID_LISTBOX1"));
+    else
+        GenericChoiceList = new wxListBox(this,ID_LISTBOX1,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_("ID_LISTBOX1"));
 	GenericChoiceList->SetSelection(-1);
 	StaticBoxSizer1->Add(GenericChoiceList,1,wxALL|wxALIGN_CENTER|wxEXPAND,4);
 	BoxSizer1->Add(lblDescr,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,8);
