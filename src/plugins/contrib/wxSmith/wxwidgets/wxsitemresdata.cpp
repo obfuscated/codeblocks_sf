@@ -1052,7 +1052,9 @@ bool wxsItemResData::CanPaste()
 void wxsItemResData::Cut()
 {
     Copy();
+    BeginChange();
     DeleteSelected();
+    EndChange();
 }
 
 void wxsItemResData::Copy()
