@@ -373,14 +373,16 @@ bool wxsEventsEditor::CreateNewFunction(const wxsEventDesc* Event,const wxString
                 _T("{\n")
                 _T("}\n");
 
+            // TODO: Replace line endings with propert string
+
             cbStyledTextCtrl* Ctrl = Editor->GetControl();
+            int LineNumber = Ctrl->GetLineCount();
             Ctrl->DocumentEnd();
             Ctrl->AddText(NewFunctionCode);
-            Ctrl->LineUp();
-            Ctrl->LineUp();
-            Ctrl->LineEnd();
-
             Editor->SetModified();
+            Editor->Activate();
+            Editor->GotoLine(LineNumber+2);
+            Ctrl->LineEnd();
             return true;
         }
 
