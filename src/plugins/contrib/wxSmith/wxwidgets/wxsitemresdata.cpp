@@ -1091,50 +1091,20 @@ void wxsItemResData::CopyReq(wxsItem* Item,wxsItemResDataObject* Data)
     }
 }
 
-void wxsItemResData::Paste()
+void wxsItemResData::Paste(wxsParent* Parent,int Position)
 {
     if ( !m_RootItem ) return;
     if ( !wxTheClipboard->Open() ) return;
-    bool RootIsParent = (m_RootItem->ConvertToParent()!=NULL);
 
     wxsItemResDataObject Data;
     if ( wxTheClipboard->GetData(Data) )
     {
-        wxsItem* Reference = m_RootSelection;
-        if ( !Reference ) Reference = m_RootItem;
-
-        // Checking where we can paste these items
-
-        wxsParent* Parent = Reference->GetParent();
-        int Index = 0;
-        if ( !Parent )
-        {
-            Parent = m_RootItem->ConvertToParent();
-            if ( Parent )
-            {
-                Reference = Parent->GetChild(Parent->GetChildCount()-1);
-            }
-            else
-            {
-                Reference = NULL;
-            }
-        }
-
-        while ( Reference != NULL &&
-                Reference->GetType() == wxsTSizer &&
-                Parent != NULL &&
-                Parent->GetType() != wxsTSizer )
-        {
-            Parent = Reference->ConvertToParent();
-            Reference = Parent->GetChild(Parent->GetChildCount()-1);
-        }
-        Index = (Reference&&Parent) ? Parent->GetChildIndex(Reference) : 0;
-
         int Cnt = Data.GetItemCount();
         if ( Cnt )
         {
             BeginChange();
             m_RootItem->ClearSelection();
+            m_RootSelection = NULL;
             for ( int i=0; i<Cnt; i++ )
             {
                 wxsItem* Insert = Data.BuildItem(this,i);
@@ -1145,25 +1115,30 @@ void wxsItemResData::Paste()
                         if ( InsertNewTool(Insert->ConvertToTool()) )
                         {
                             Insert->SetIsSelected(true);
+                            if ( !m_RootSelection )
+                            {
+                                m_RootSelection = Insert;
+                            }
                         }
                     }
                     else
                     {
-                        if ( Parent && RootIsParent )
+                        if ( InsertNew(Insert,Parent,Position++) )
                         {
-                            if ( InsertNew(Insert,Parent,Index++) )
+                            Insert->SetIsSelected(true);
+                            if ( !m_RootSelection )
                             {
-                                Insert->SetIsSelected(true);
+                                m_RootSelection = Insert;
                             }
-                        }
-                        else
-                        {
-                            delete Insert;
                         }
                     }
                 }
             }
 
+            if ( !m_RootSelection )
+            {
+                m_RootSelection = m_RootItem;
+            }
             EndChange();
         }
     }
@@ -1368,7 +1343,7 @@ bool wxsItemResData::InsertNew(wxsItem* New,wxsParent* Parent,int Position)
     }
 
     m_Corrector.BeforePaste(New);
-    if ( !Parent->AddChild(New,Position) )
+    if ( !Parent || !Parent->AddChild(New,Position) )
     {
         delete New;
         return false;

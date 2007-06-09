@@ -342,7 +342,26 @@ void wxsItemEditor::Copy()
 
 void wxsItemEditor::Paste()
 {
-    if ( m_Data ) m_Data->Paste();
+    if ( !m_Data ) return;
+
+    wxsItem* Reference = GetReferenceItem(m_InsType);
+    if ( !Reference ) return;
+    wxsParent* Parent = Reference->GetParent();
+    int RefIndex = Parent ? Parent->GetChildIndex(Reference) : -1;
+
+    switch ( m_InsType )
+    {
+        case itAfter:
+            RefIndex++;
+            break;
+
+        case itInto:
+            Parent = Reference->ConvertToParent();
+            RefIndex = Parent ? Parent->GetChildCount() : 0;
+            break;
+    }
+
+    m_Data->Paste(Parent,RefIndex);
 }
 
 void wxsItemEditor::InsertRequest(const wxString& Name)
@@ -350,32 +369,6 @@ void wxsItemEditor::InsertRequest(const wxString& Name)
     const wxsItemInfo* Info = wxsItemFactory::GetInfo(Name);
     if ( !Info ) return;
     bool IsTool = Info->Type == wxsTTool;
-    /*
-    {
-        // Tools are threated differently :)
-        wxsItem* New = wxsItemFactory::Build(Name,m_Data);
-        if ( !New ) return;
-        wxsTool* Tool = New->ConvertToTool();
-        if ( !Tool )
-        {
-            delete New;
-            return;
-        }
-        if ( !Tool->CanAddToResource(m_Data,true) )
-        {
-            delete Tool;
-            return;
-        }
-        m_Data->BeginChange();
-        if ( m_Data->InsertNewTool(Tool) )
-        {
-            m_Data->SelectItem(New,true);
-        }
-        m_Data->EndChange();
-        return;
-    }
-    */
-
     wxsItem* Reference = GetReferenceItem(m_InsType);
     if ( !Reference )
     {

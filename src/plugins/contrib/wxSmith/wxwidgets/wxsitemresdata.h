@@ -168,8 +168,11 @@ class wxsItemResData
 		/** \brief Copying current selectin to clipboard */
 		void Copy();
 
-		/** \brief Pasting current selection from clipboard */
-		void Paste();
+		/** \brief Pasting components from clipboard
+		 *  \param Parent parent for new items
+		 *  \param Position initial position for new items
+		 */
+		void Paste(wxsParent* Parent,int Position);
 
 
 		/* ********************** */
