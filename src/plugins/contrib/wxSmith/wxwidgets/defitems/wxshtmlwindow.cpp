@@ -78,11 +78,11 @@ wxObject* wxsHtmlWindow::OnBuildPreview(wxWindow* Parent,long Flags)
     }
     if ( !Url.empty() )
     {
-//        if ( Flags & pfExact )
-//        {
-//            Preview->LoadPage(Url);
-//        }
-//        else
+        if ( Flags & pfExact )
+        {
+            Preview->LoadPage(Url);
+        }
+        else
         {
             Preview->SetPage(
                 wxString(_T("<body><center>")) +

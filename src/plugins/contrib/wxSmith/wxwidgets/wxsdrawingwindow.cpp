@@ -287,8 +287,8 @@ void wxsDrawingWindow::FetchSequencePhase2()
     if ( IsDestroyed ) return;
     FetchScreen();
     HideChildren();
-    Panel->Show();
     DuringFetch = false;
+    Panel->Show();
 }
 
 void wxsDrawingWindow::FetchScreen()

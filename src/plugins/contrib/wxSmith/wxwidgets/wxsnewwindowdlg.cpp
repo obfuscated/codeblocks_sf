@@ -252,6 +252,13 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
         return;
     }
 
+    // Disable button to prevent more clicks while resource is created
+    wxWindow* OkBtn = FindWindowById(wxID_OK);
+    if ( OkBtn )
+    {
+        OkBtn->Disable();
+    }
+
     // Adding new files to project
     wxArrayInt Targets;
     Manager::Get()->GetProjectManager()->AddFileToProject(Hdr,cbProj,Targets);

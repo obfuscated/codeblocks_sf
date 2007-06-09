@@ -1481,7 +1481,7 @@ void wxsItemResData::StoreTreeIds()
     }
     for ( int i=0; i<GetToolsCount(); i++ )
     {
-        m_IdMap[m_Tools[i]] = m_Tools[i]->GetLastTreeItemId();
+        StoreTreeIdsReq(m_Tools[i]);
     }
 }
 
