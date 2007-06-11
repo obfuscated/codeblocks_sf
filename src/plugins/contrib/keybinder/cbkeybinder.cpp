@@ -27,6 +27,7 @@
 
 #include "manager.h"
 #include "messagemanager.h"
+#include "personalitymanager.h"
 
 //#include <wx/datetime.h>
 
