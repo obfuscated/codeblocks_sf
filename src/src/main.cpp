@@ -3828,14 +3828,8 @@ void MainFrame::OnRequestHideDockWindow(CodeBlocksDockEvent& event)
 
 void MainFrame::OnDockWindowVisibility(CodeBlocksDockEvent& event)
 {
-    if (m_ScriptConsoleID != -1)
-    {
-        m_ScriptConsoleVisible = Manager::Get()->GetMessageManager()->IsLogVisible(m_ScriptConsoleID);
-        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/show_script_console"), m_ScriptConsoleVisible);
-        wxUpdateUIEvent e;
-        e.SetId(idViewScriptConsole);
-        OnViewMenuUpdateUI(e);
-    }
+    if (m_ScriptConsoleID != -1 && event.GetId() == m_ScriptConsoleID)
+        ShowHideScriptConsole();
 }
 
 void MainFrame::OnLayoutSwitch(CodeBlocksLayoutEvent& event)
