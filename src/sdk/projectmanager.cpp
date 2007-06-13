@@ -118,6 +118,7 @@ int idMenuTreeCloseWorkspace = wxNewId();
 int idMenuAddVirtualFolder = wxNewId();
 int idMenuDeleteVirtualFolder = wxNewId();
 
+static const int idMenuFindFile = wxNewId();
 static const int idNB = wxNewId();
 static const int idNB_TabTop = wxNewId();
 static const int idNB_TabBottom = wxNewId();
@@ -205,6 +206,7 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuViewUseFolders, ProjectManager::OnViewUseFolders)
     EVT_MENU(idMenuViewUseFoldersPopup, ProjectManager::OnViewUseFolders)
     EVT_MENU(idMenuViewFileMasks, ProjectManager::OnViewFileMasks)
+    EVT_MENU(idMenuFindFile, ProjectManager::OnFindFile)
     EVT_IDLE(ProjectManager::OnIdle)
 END_EVENT_TABLE()
 
@@ -536,6 +538,9 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.Append(idMenuRemoveFile, _("Remove files..."));
             menu.Enable(idMenuRemoveFile, PopUpMenuOption);
             menu.AppendSeparator();
+            menu.Append(idMenuFindFile, _("Find file..."));
+            menu.Enable(idMenuFindFile, PopUpMenuOption);
+            menu.AppendSeparator();
             menu.Append(idMenuAddVirtualFolder, _("Add new virtual folder..."));
             if (is_vfolder)
                 menu.Append(idMenuDeleteVirtualFolder, _("Delete this virtual folder..."));
@@ -605,6 +610,10 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.AppendSeparator();
             menu.Append(idMenuRemoveFile, _("Remove files..."));
             menu.Enable(idMenuRemoveFile, PopUpMenuOption);
+            menu.AppendSeparator();
+            menu.Append(idMenuFindFile, _("Find file..."));
+            menu.Enable(idMenuFindFile, PopUpMenuOption);
+            menu.AppendSeparator();
             wxFileName f(ftd->GetFolder());
             f.MakeRelativeTo(ftd->GetProject()->GetCommonTopLevelPath());
             menu.Append(idMenuRemoveFolderFilesPopup, wxString::Format(_("Remove %s*"), f.GetFullPath().c_str()));
@@ -619,6 +628,9 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.AppendSeparator();
             menu.Append(idMenuRemoveFile, _("Remove files..."));
             menu.Append(idMenuRemoveFolderFilesPopup, wxString::Format(_("Remove %s*"), ftd->GetFolder().c_str()));
+            menu.AppendSeparator();
+            menu.Append(idMenuFindFile, _("Find file..."));
+            menu.Enable(idMenuFindFile, PopUpMenuOption);
         }
 
         // ask any plugins to add items in this menu
@@ -668,6 +680,8 @@ it differs from the block currently in CreateMenu() by the following two IDs */
         menu.Append(idMenuTreeSaveWorkspace, _("Save workspace"));
         menu.Append(idMenuTreeSaveAsWorkspace, _("Save workspace as..."));
         menu.AppendSeparator();
+		menu.Append(idMenuFindFile, _("Find file..."));
+		menu.AppendSeparator();
         menu.Append(idMenuTreeCloseWorkspace, _("Close workspace"));
     }
 
@@ -2333,6 +2347,52 @@ void ProjectManager::OnViewFileMasks(wxCommandEvent& event)
         RebuildTree();
     }
 }
+
+wxTreeItemId ProjectManager::FindItem( wxTreeItemId Node, const wxString& Search) const
+{
+	wxTreeItemIdValue cookie;
+	wxTreeItemId item = m_pTree->GetFirstChild(Node, cookie );
+	while( item.IsOk() )
+	{
+		if( Search.IsSameAs( m_pTree->GetItemText( item ) ) )
+		{
+			return item;
+		}
+		else if( m_pTree->ItemHasChildren( item ) )
+		{
+			wxTreeItemId SearchId = FindItem( item, Search );
+			if( SearchId.IsOk() )
+			{
+				return SearchId;
+			}
+		}
+
+		item = m_pTree->GetNextChild(Node, cookie);
+	} // end while
+	wxTreeItemId notFound;
+	return notFound;
+} // end of FindItem
+
+void ProjectManager::OnFindFile(wxCommandEvent& event)
+{
+	wxString text = wxGetTextFromUser(_("Please enter the name of the file you are searching:"), _("Find file..."));
+	if( !text.IsEmpty() )
+	{
+		wxTreeItemId sel = m_pTree->GetSelection();
+
+		wxTreeItemId found = FindItem( sel, text );
+
+		if( found.IsOk() )
+		{
+			m_pTree->UnselectAll();
+			m_pTree->SelectItem( found );
+		}
+		else
+		{
+			cbMessageBox(_("The file couldn't be found!"), _(""), wxICON_INFORMATION);
+		}
+	}
+} // end of OnFindFile
 
 void ProjectManager::OnAddVirtualFolder(wxCommandEvent& event)
 {

@@ -402,6 +402,8 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void OnViewCategorize(wxCommandEvent& event);
         void OnViewUseFolders(wxCommandEvent& event);
         void OnViewFileMasks(wxCommandEvent& event);
+        void OnFindFile(wxCommandEvent& event);
+        wxTreeItemId FindItem(wxTreeItemId Node, const wxString& Search) const;
         void OnBeginEditNode(wxTreeEvent& event);
         void OnEndEditNode(wxTreeEvent& event);
         void OnAddVirtualFolder(wxCommandEvent& event);
