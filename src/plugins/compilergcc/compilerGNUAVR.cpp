@@ -188,6 +188,7 @@ void CompilerGNUAVR::LoadDefaultRegExArray()
     m_RegExes.Add(RegExStruct(_("Linker error (lib not found)"), cltError, _T(".*(ld.*):[ \t](cannot find.*)"), 2, 1));
     m_RegExes.Add(RegExStruct(_("Undefined reference"), cltError, _T("(") + FilePathWithSpaces + _T("):[ \t](undefined reference.*)"), 2, 1));
     m_RegExes.Add(RegExStruct(_("General warning"), cltWarning, _T("([Ww]arning:[ \t].*)"), 1));
+    m_RegExes.Add(RegExStruct(_("Auto-import info"), cltWarning, _T("([Ii]nfo:[ \t].*)\\(auto-import\\)"), 1));
 } // end of LoadDefaultRegExArray
 
 AutoDetectResult CompilerGNUAVR::AutoDetectInstallationDir()

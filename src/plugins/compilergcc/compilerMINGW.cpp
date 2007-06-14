@@ -197,6 +197,7 @@ void CompilerMINGW::LoadDefaultRegExArray()
     m_RegExes.Add(RegExStruct(_("Linker error (lib not found)"), cltError, _T(".*(ld.*):[ \t](cannot find.*)"), 2, 1));
     m_RegExes.Add(RegExStruct(_("Undefined reference"), cltError, _T("(") + FilePathWithSpaces + _T("):[ \t](undefined reference.*)"), 2, 1));
     m_RegExes.Add(RegExStruct(_("General warning"), cltWarning, _T("([Ww]arning:[ \t].*)"), 1));
+    m_RegExes.Add(RegExStruct(_("Auto-import info"), cltWarning, _T("([Ii]nfo:[ \t].*)\\(auto-import\\)"), 1));
 }
 
 AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
@@ -255,11 +256,7 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
         m_MasterPath = _T("/usr");
 
     AutoDetectResult ret = wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
-    if (ret == adrDetected)
-    {
-        // don't add dirs. GCC knows where its files are located
-//        AddIncludeDir(m_MasterPath + sep + _T("include"));
-//        AddLibDir(m_MasterPath + sep + _T("lib"));
-    }
+    // don't add lib/include dirs. GCC knows where its files are located
+
     return ret;
 }
