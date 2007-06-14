@@ -60,7 +60,7 @@
           <style>wxALIGN_CENTRE</style>
           <fg>#800000</fg>
         </object>
-        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTRE|wxALIGN_TOP</flag>
         <border>8</border>
       </object>
       <object class="sizeritem">
@@ -104,7 +104,14 @@
             <flag>wxALL|wxEXPAND|wxGROW</flag>
           </object>
         </object>
-        <flag>wxALL|wxEXPAND|wxGROW</flag>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxCheckBox" name="chkDebugLog">
+          <label>Enable full envvar debug output to the C::B debug console.</label>
+        </object>
+        <flag>wxALL|wxEXPAND|wxALIGN_CENTRE_HORIZONTAL</flag>
         <border>8</border>
       </object>
     </object>

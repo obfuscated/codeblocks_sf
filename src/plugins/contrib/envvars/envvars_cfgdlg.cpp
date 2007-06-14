@@ -16,6 +16,7 @@
 #ifndef CB_PRECOMP
   #include <wx/arrstr.h>
   #include <wx/button.h>
+  #include <wx/checkbox.h>
   #include <wx/checklst.h>
   #include <wx/choice.h>
   #include <wx/panel.h>
@@ -109,22 +110,26 @@ void EnvVarsConfigDlg::LoadSettings()
   DBGLOG(_T("LoadSettings"));
 #endif
 
-  wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
-  if (!lstEnvVars)
-    return;
-
-  lstEnvVars->Clear();
-
   wxChoice* choSet = XRCCTRL(*this, "choSet", wxChoice);
   if (!choSet)
     return;
 
-  choSet->Clear();
+  wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
+  if (!lstEnvVars)
+    return;
+
+  wxCheckBox* chkDebugLog = XRCCTRL(*this, "chkDebugLog", wxCheckBox);
+  if (!chkDebugLog)
+    return;
 
   // load and apply configuration (to application and GUI)
   ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));
   if (!cfg)
     return;
+
+  choSet->Clear();
+  lstEnvVars->Clear();
+  chkDebugLog->SetValue(cfg->ReadBool(_T("/debug_log")));
 
   // Read the currently active envvar set
   wxString active_set     = nsEnvVars::GetActiveSetName();
@@ -133,7 +138,7 @@ void EnvVarsConfigDlg::LoadSettings()
   // Read all envvar sets available
   wxArrayString set_names = nsEnvVars::GetEnvvarSetNames();
   unsigned int  num_sets  = set_names.GetCount();
-  DBGLOG(_T("EnvVars: Found %d envvar sets in config."), num_sets);
+  EV_DBGLOG(_T("EnvVars: Found %d envvar sets in config."), num_sets);
   unsigned int num_sets_applied = 0;
   for (unsigned int i=0; i<num_sets; ++i)
   {
@@ -142,13 +147,13 @@ void EnvVarsConfigDlg::LoadSettings()
       active_set_idx = i;
     num_sets_applied++;
   }
-  DBGLOG(_T("EnvVars: Setup %d/%d envvar sets from config."), num_sets_applied, num_sets);
+  EV_DBGLOG(_T("EnvVars: Setup %d/%d envvar sets from config."), num_sets_applied, num_sets);
   if (choSet->GetCount()>active_set_idx) // Select the last active set (from config)
     choSet->SetSelection(active_set_idx);
 
   // Show currently activated set in debug log (for reference)
   wxString active_set_path = nsEnvVars::GetSetPathByName(active_set);
-  DBGLOG(_T("EnvVars: Active envvar set is '%s' at index %d, config path '%s'."),
+  EV_DBGLOG(_T("EnvVars: Active envvar set is '%s' at index %d, config path '%s'."),
     active_set.c_str(), active_set_idx, active_set_path.c_str());
 
   // Read and show all envvars from currently active set in listbox
@@ -162,12 +167,12 @@ void EnvVarsConfigDlg::LoadSettings()
     if (nsEnvVars::EnvvarApply(var_array, lstEnvVars))
       envvars_applied++;
     else
-      DBGLOG(_("EnvVars: Invalid envvar in '%s' at position #%d."),
+      EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%d."),
         active_set_path.c_str(), i);
 	}// for
 
 	if (envvars_total>0)
-    DBGLOG(_("EnvVars: %d/%d envvars applied within C::B focus."),
+    EV_DBGLOG(_T("EnvVars: %d/%d envvars applied within C::B focus."),
       envvars_applied, envvars_total);
 }// LoadSettings
 
@@ -180,12 +185,16 @@ void EnvVarsConfigDlg::SaveSettings()
     DBGLOG(_T("SaveSettings"));
 #endif
 
+  wxChoice* choSet = XRCCTRL(*this, "choSet", wxChoice);
+  if (!choSet)
+    return;
+
   wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
   if (!lstEnvVars)
     return;
 
-  wxChoice* choSet = XRCCTRL(*this, "choSet", wxChoice);
-  if (!choSet)
+  wxCheckBox* chkDebugLog = XRCCTRL(*this, "chkDebugLog", wxCheckBox);
+  if (!chkDebugLog)
     return;
 
   ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));
@@ -199,11 +208,11 @@ void EnvVarsConfigDlg::SaveSettings()
   SaveSettingsActiveSet(active_set);
 
   wxString active_set_path = nsEnvVars::GetSetPathByName(active_set, false);
-  DBGLOG(_T("EnvVars: Removing (old) envvar set '%s' at path '%s' from config."),
+  EV_DBGLOG(_T("EnvVars: Removing (old) envvar set '%s' at path '%s' from config."),
     active_set.c_str(), active_set_path.c_str());
   cfg->DeleteSubPath(active_set_path);
 
-	DBGLOG(_T("EnvVars: Saving (new) envvar set '%s'."), active_set.c_str());
+	EV_DBGLOG(_T("EnvVars: Saving (new) envvar set '%s'."), active_set.c_str());
   cfg->SetPath(active_set_path);
 
   for (int i=0; i<lstEnvVars->GetCount(); ++i)
@@ -221,6 +230,8 @@ void EnvVarsConfigDlg::SaveSettings()
     cfg_key.Printf(_T("EnvVar%d"), i);
 		cfg->Write(cfg_key, txt);
 	}// for
+
+  cfg->Write(_T("/debug_log"), chkDebugLog->GetValue());
 }// SaveSettings
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -238,7 +249,7 @@ void EnvVarsConfigDlg::SaveSettingsActiveSet(wxString active_set)
   if (active_set.IsEmpty())
     active_set = nsEnvVars::EnvVarsDefault;
 
-  DBGLOG(_T("EnvVars: Saving '%s' as active envvar set to config."), active_set.c_str());
+  EV_DBGLOG(_T("EnvVars: Saving '%s' as active envvar set to config."), active_set.c_str());
   cfg->Write(_T("/active_set"), active_set);
 }// SaveSettingsActiveSet
 
@@ -413,7 +424,7 @@ void EnvVarsConfigDlg::OnCreateSetClick(wxCommandEvent& WXUNUSED(event))
   if (!lstEnvVars)
     return;
 
-  DBGLOG(_T("EnvVars: Unsetting variables of envvar set '%s'."),
+  EV_DBGLOG(_T("EnvVars: Unsetting variables of envvar set '%s'."),
     choSet->GetString(choSet->GetCurrentSelection()).c_str());
   nsEnvVars::EnvvarsClear(lstEnvVars); // Don't care about return value
   lstEnvVars->Clear();
@@ -461,12 +472,12 @@ void EnvVarsConfigDlg::OnRemoveSetClick(wxCommandEvent& WXUNUSED(event))
     wxString active_set     = choSet->GetString(active_set_idx);
 
     // Remove envvars from C::B focus (and listbox)
-    DBGLOG(_T("EnvVars: Unsetting variables of envvar set '%s'."), active_set.c_str());
+    EV_DBGLOG(_T("EnvVars: Unsetting variables of envvar set '%s'."), active_set.c_str());
     nsEnvVars::EnvvarsClear(lstEnvVars); // Don't care about return value
 
     // Remove envvars set from config
     wxString active_set_path = nsEnvVars::GetSetPathByName(active_set, false);
-    DBGLOG(_T("EnvVars: Removing envvar set '%s' at path '%s' from config."),
+    EV_DBGLOG(_T("EnvVars: Removing envvar set '%s' at path '%s' from config."),
       active_set.c_str(), active_set_path.c_str());
     cfg->DeleteSubPath(active_set_path);
 

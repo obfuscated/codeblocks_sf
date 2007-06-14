@@ -20,12 +20,17 @@
 
 class wxCheckListBox;
 
+#define EV_DBGLOG nsEnvVars::EnvVarsDebugLog
+
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 namespace nsEnvVars
 {
   extern const wxString EnvVarsSep;     //!< separator for envvars in config
   extern const wxString EnvVarsDefault; //!< name of default envvar set
+
+  /// Prints a message to C::B's debug log depending on debug activated or not
+  void          EnvVarsDebugLog(const wxChar* msg, ...);
 
   /// Tokenises an envvar string into sub-strings
   wxArrayString EnvvarStringTokeniser(const wxString& str);

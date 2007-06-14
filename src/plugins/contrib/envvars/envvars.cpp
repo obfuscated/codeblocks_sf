@@ -37,9 +37,6 @@
 // Uncomment this for tracing of method calls in C::B's DebugLog:
 //#define TRACE_ENVVARS
 
-// TODO (Morten#5#): remove envvars of currently active set upon ProjectActivated (is that a good way?)
-// TODO (Morten#5#): apply default envvar set (is still stored in /active_set from config) on ProjectClosed
-
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 // Register the plugin
@@ -79,7 +76,12 @@ void EnvVars::SetProjectEnvvarSet(cbProject* project, const wxString& envvar_set
 #endif
 
   m_ProjectSets[project] = envvar_set;
-  nsEnvVars::EnvvarSetDiscard();
+  EV_DBGLOG(_T("EnvVars: Discarding envvars set '")+nsEnvVars::GetActiveSetName()+_T("'."));
+  nsEnvVars::EnvvarSetDiscard(); // remove currently active envvars
+  if (envvar_set.IsEmpty())
+    EV_DBGLOG(_T("EnvVars: Setting up default envvars set."));
+  else
+    EV_DBGLOG(_T("EnvVars: Setting up envvars set '")+envvar_set+_T("' for activated project."));
   nsEnvVars::EnvvarSetApply(envvar_set); // apply currently active envvar set for wxEmptyString
 }// SetProjectEnvvarSet
 
@@ -131,8 +133,12 @@ void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
     {
       if (nsEnvVars::EnvvarSetExists(envvar_set))
       {
-        DBGLOG(_T("EnvVars: Setting up envvars set '")+envvar_set+_T("' for activated project."));
+        EV_DBGLOG(_T("EnvVars: Discarding envvars set '")+nsEnvVars::GetActiveSetName()+_T("'."));
         nsEnvVars::EnvvarSetDiscard(); // remove currently active envvars
+        if (envvar_set.IsEmpty())
+          EV_DBGLOG(_T("EnvVars: Setting up default envvars set."));
+        else
+          EV_DBGLOG(_T("EnvVars: Setting up envvars set '")+envvar_set+_T("' for activated project."));
         nsEnvVars::EnvvarSetApply(envvar_set);
       }
       else

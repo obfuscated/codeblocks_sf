@@ -37,6 +37,30 @@ const wxString nsEnvVars::EnvVarsDefault = _T("default");
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
+void nsEnvVars::EnvVarsDebugLog(const wxChar* msg, ...)
+{
+  // load and apply configuration (to application only)
+  ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));
+  if (!cfg)
+    return;
+
+  // get whether to print debug message to debug log or not
+  bool debug_log = cfg->ReadBool(_T("/debug_log"));
+  if (!debug_log)
+    return;
+
+  wxString log_msg;
+  va_list  arg_list;
+
+  va_start(arg_list, msg);
+  log_msg = wxString::FormatV(msg, arg_list);
+  va_end(arg_list);
+
+  DBGLOG(log_msg);
+}// EnvVarsDebugLog
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
 wxArrayString nsEnvVars::EnvvarStringTokeniser(const wxString& str)
 {
 #if TRACE_ENVVARS
@@ -105,7 +129,7 @@ wxArrayString nsEnvVars::GetEnvvarSetNames()
   // Read all envvar sets available
   wxArrayString sets     = cfg->EnumerateSubPaths(_T("/sets"));
   unsigned int  num_sets = sets.GetCount();
-  DBGLOG(_T("EnvVars: Found %d envvar sets in config."), num_sets);
+  EV_DBGLOG(_T("EnvVars: Found %d envvar sets in config."), num_sets);
 
   if (num_sets==0)
     set_names.Add(nsEnvVars::EnvVarsDefault);
@@ -144,7 +168,7 @@ wxString nsEnvVars::GetActiveSetName()
   if (!active_set_cfg.IsEmpty())
     active_set = active_set_cfg;
 
-  DBGLOG(_T("EnvVars: Obtained '%s' as active envvar set from config."), active_set.c_str());
+  EV_DBGLOG(_T("EnvVars: Obtained '%s' as active envvar set from config."), active_set.c_str());
   return active_set;
 }// GetActiveSetName
 
@@ -192,7 +216,7 @@ wxArrayString nsEnvVars::GetEnvvarsBySetPath(const wxString& set_path)
 #endif
 
   wxArrayString envvars;
-  DBGLOG(_T("EnvVars: Searching for envvars in path '%s'."), set_path.c_str());
+  EV_DBGLOG(_T("EnvVars: Searching for envvars in path '%s'."), set_path.c_str());
 
   ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));
   if (!cfg || set_path.IsEmpty())
@@ -206,9 +230,9 @@ wxArrayString nsEnvVars::GetEnvvarsBySetPath(const wxString& set_path)
     if (!envvar.IsEmpty())
       envvars.Add(envvar);
     else
-      DBGLOG(_T("EnvVars: Warning: empty envvar detected and skipped."));
+      EV_DBGLOG(_T("EnvVars: Warning: empty envvar detected and skipped."));
   }
-  DBGLOG(_T("EnvVars: Read %d/%d envvars in path '%s'."),
+  EV_DBGLOG(_T("EnvVars: Read %d/%d envvars in path '%s'."),
     envvars.GetCount(), num_envvars, set_path.c_str());
 
   return envvars;
@@ -364,7 +388,7 @@ bool nsEnvVars::EnvvarApply(const wxString& key, const wxString& value,
 
   if (!wxSetEnv(the_key, the_value))
   {
-    DBGLOG(_("EnvVars: Setting environment variable '%s' failed."), the_key.c_str());
+    EV_DBGLOG(_T("EnvVars: Setting environment variable '%s' failed."), the_key.c_str());
     if (lstEnvVars && (sel>=0))
       lstEnvVars->Check(sel, false); // Unset to visualise it's NOT set
     return false;
@@ -429,7 +453,7 @@ void nsEnvVars::EnvvarSetApply(const wxString& set_name)
 
   // Show currently activated set in debug log (for reference)
   wxString set_path = nsEnvVars::GetSetPathByName(set_to_apply);
-  DBGLOG(_T("EnvVars: Active envvar set is '%s', config path '%s'."),
+  EV_DBGLOG(_T("EnvVars: Active envvar set is '%s', config path '%s'."),
     set_to_apply.c_str(), set_path.c_str());
 
   // Read and apply all envvars from currently active set in config
@@ -443,13 +467,13 @@ void nsEnvVars::EnvvarSetApply(const wxString& set_name)
     if (nsEnvVars::EnvvarApply(var_array))
       envvars_applied++;
     else
-      DBGLOG(_("EnvVars: Invalid envvar in '%s' at position #%d."),
+      EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%d."),
         set_path.c_str(), i);
 	}// for
 
 	if (envvars_total>0)
 	{
-    DBGLOG(_("EnvVars: %d/%d envvars applied within C::B focus."),
+    EV_DBGLOG(_T("EnvVars: %d/%d envvars applied within C::B focus."),
       envvars_applied, envvars_total);
   }
 }// EnvvarSetApply
@@ -473,7 +497,7 @@ void nsEnvVars::EnvvarSetDiscard(const wxString& set_name)
 
   // Show currently activated set in debug log (for reference)
   wxString set_path = nsEnvVars::GetSetPathByName(set_to_discard);
-  DBGLOG(_T("EnvVars: Active envvar set is '%s', config path '%s'."),
+  EV_DBGLOG(_T("EnvVars: Active envvar set is '%s', config path '%s'."),
     set_to_discard.c_str(), set_path.c_str());
 
   // Read and apply all envvars from currently active set in config
@@ -490,13 +514,13 @@ void nsEnvVars::EnvvarSetDiscard(const wxString& set_name)
         envvars_discarded++;
     }
     else
-      DBGLOG(_("EnvVars: Invalid envvar in '%s' at position #%d."),
+      EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%d."),
         set_path.c_str(), i);
 	}// for
 
 	if (envvars_total>0)
 	{
-    DBGLOG(_("EnvVars: %d/%d envvars discarded within C::B focus."),
+    EV_DBGLOG(_T("EnvVars: %d/%d envvars discarded within C::B focus."),
       envvars_discarded, envvars_total);
   }
 }// EnvvarSetDiscard
