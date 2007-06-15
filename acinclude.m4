@@ -155,7 +155,7 @@ fi
 
 AC_MSG_CHECKING(whether to build the scripted wizard plugin)
 prw_default="yes"
-AC_ARG_ENABLE(project-wizard, [AC_HELP_STRING([--enable-scripted-wizard], [build the scripted wizard plugin (default YES)])],,
+AC_ARG_ENABLE(scripted-wizard, [AC_HELP_STRING([--enable-scripted-wizard], [build the scripted wizard plugin (default YES)])],,
                        enable_prw=$prw_default)
 AM_CONDITIONAL([BUILD_SCRIPTEDWIZARD], [test "x$enable_prw" = "xyes"])
 if test "x$enable_prw" = "xyes"; then
