@@ -382,7 +382,18 @@ bool nsEnvVars::EnvvarApply(const wxString& key, const wxString& value,
     else                   recursion = _T("$")+the_key;
 
     if (the_value.Contains(recursion))
+    {
+      // Avoid endless recursion if the value set contains e.g. $PATH, too
+      if (value_set.Contains(recursion))
+      {
+        EV_DBGLOG(_T("EnvVars: Setting environment variable '%s' failed "
+                     "due to unsresolvable recursion."), the_key.c_str());
+        if (lstEnvVars && (sel>=0))
+          lstEnvVars->Check(sel, false); // Unset to visualise it's NOT set
+        return false;
+      }
       the_value.Replace(recursion.c_str(), value_set.c_str());
+    }
   }
   Manager::Get()->GetMacrosManager()->ReplaceMacros(the_value);
 
