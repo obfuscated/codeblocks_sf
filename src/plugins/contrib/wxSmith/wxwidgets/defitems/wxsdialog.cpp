@@ -41,7 +41,6 @@ namespace
      //   WXS_ST(wxDIALOG_MODELESS) // removed in 2.6
         WXS_ST(wxDIALOG_NO_PARENT)
         WXS_ST(wxTAB_TRAVERSAL)
-        WXS_ST(wxWS_EX_VALIDATE_RECURSIVELY)
         WXS_ST(wxDIALOG_EX_METAL)
         WXS_ST(wxMAXIMIZE_BOX)
         WXS_ST(wxMINIMIZE_BOX)
@@ -51,6 +50,7 @@ namespace
     // NOTE (cyberkoa#1#):  wxDIALOG_EX_CONTEXTHELP & wxDIALOG_EX_METAL are
     // extended style which need 2 steps construction
      //   WXS_ST_MASK(wxNO_3D,wxsSFWin,0,true) // removed in 2.6
+        WXS_EXST_MASK(wxWS_EX_VALIDATE_RECURSIVELY, wxsSFAll, 0, true);
         WXS_EXST_MASK(wxDIALOG_EX_CONTEXTHELP,wxsSFWin,0,true)
         WXS_EXST_MASK(wxDIALOG_EX_METAL,wxsSFOSX,0,true)
     WXS_ST_END()

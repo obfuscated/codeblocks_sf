@@ -49,7 +49,7 @@ namespace
 
      //   WXS_ST(wxNO_3D)
         WXS_ST(wxTAB_TRAVERSAL)
-        WXS_ST(wxWS_EX_VALIDATE_RECURSIVELY)
+        WXS_EXST_MASK(wxWS_EX_VALIDATE_RECURSIVELY, wxsSFAll, 0, true);
         WXS_EXST_MASK(wxDIALOG_EX_CONTEXTHELP,wxsSFWin,0,true)
         WXS_EXST_MASK(wxDIALOG_EX_METAL,wxsSFOSX,0,true)
 
