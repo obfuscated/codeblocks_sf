@@ -2958,7 +2958,9 @@ void EditorManager::OnTreeItemRightClick(wxTreeEvent &event)
 
 void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    if (m_pData->m_SetFocusFlag)
+    /* Don't process UpdateUI event when the app is closing.
+     * It may crash C::B */
+    if (!Manager::Get()->IsAppShuttingDown() && m_pData->m_SetFocusFlag)
     {
         cbEditor* ed = GetBuiltinActiveEditor();
         if (ed)
