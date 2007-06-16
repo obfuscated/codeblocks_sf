@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.35 2007/06/7"
+#define VERSION "1.0.38 2007/06/15"
 // -----------------------------------
 class MyDialog;
 
@@ -101,7 +101,7 @@ class cbKeyBinder : public cbPlugin
         void OnKeyConfigDialogDone(MyDialog* dlg);
 
         // save/load key definitions
-        void OnSave(bool backitup);
+        void OnSave(bool backitup = false);
         void OnLoad();
         // Enable/Disable Merge
         int EnableMerge(bool allow);
@@ -683,5 +683,10 @@ private:
 // ----------------------------------------------------------------------------
 //  Commit  1.0.35 2007/06/7
 //          35) Prepend --personality arg to cbKeybinder.ini filename
+// ----------------------------------------------------------------------------
+//  Commit  1.0.38 2007/06/15
+//          36) Use full menu path as key value in external storage
+//          37) Resolve unmatched menu id's with full menu path
+//          38) Add Tool menu shortcut preservation via cbEVT_MENUBAR_CREATE_BEGIN/END events
 // ----------------------------------------------------------------------------
 //

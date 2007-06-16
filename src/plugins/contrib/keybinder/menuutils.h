@@ -135,8 +135,9 @@ protected:
 	#endif
 };//wxMenuCmd
 
-
-
+// ***************************************************************************
+//                          wxMenuWalker
+// ***************************************************************************
 //! The base class for a generic tree-walker algorithm.
 //! To perform your task, provide the implementation of the #OnMenuWalk
 //! and #OnMenuItemWalk functions.
@@ -205,8 +206,9 @@ protected:		// the core functions
 
 };
 
-
-
+// ***************************************************************************
+//              wxExTreeItemData
+// ***************************************************************************
 //! The data associated to each node of a tree used by
 //! - wxMenuTreeWalker
 //! - wxKeyConfigPanel
@@ -237,7 +239,9 @@ public:
 	}
 };
 
-
+// ***************************************************************************
+//                  wxMenuTreeWalker
+// ***************************************************************************
 //! A wxMenuWalker-derived class which uses the recursive capabilities
 //! of the tree-walker algorithm to populate a wxTreeCtrl with a
 //! structure identical to the given menubar.
@@ -266,7 +270,8 @@ public:
 	//! Works like #FillTreeBranch but this function also removes all the tree
 	//! items (before starting) and then builds the root with the given label.
 	void FillTreeCtrl(wxMenuBar *p, wxTreeCtrl *ctrl,
-		const wxString &rootname = wxT("root")) {
+                        const wxString &rootname = wxT("root"))
+    {
 		ctrl->DeleteAllItems();
 		FillTreeBranch(p, ctrl, ctrl->AddRoot(rootname));
 	}
@@ -277,8 +282,10 @@ protected:
 	void *OnMenuItemWalk(wxMenuBar *p, wxMenuItem *, void *);
 	void DeleteData(void *data);
 };
-// ----------------------------------------------------------------------------
 
+// ***************************************************************************
+//                  wxExComboItemData
+// ***************************************************************************
 //! The data associated with each entry of the combobox given
 //! to the wxMenuComboListWalker class.
 //! Contains the array of labels of the menu items contained
@@ -307,7 +314,9 @@ public:
 		{ m_arrID[n] = id; }
 };
 
-
+// ***************************************************************************
+//                  wxMenuCombListWalker
+// ***************************************************************************
 //! A wxMenuWalker-derived class which fills the given wxComboBox
 //! with items associated with wxExComboItemData classes.
 //! The labels of the items of the wxComboBox are the titles of
@@ -338,8 +347,9 @@ protected:
  	void DeleteData(void *data);
 };
 
-
-
+// ***************************************************************************
+//                  wxMenuShortcutWalker
+// ***************************************************************************
 //! An helper class which is used by wxKeyBinder to import the
 //! wxMenuCmd associated to a menu bar.
 //! This function uses the wxMenuWalker algorithm to create a

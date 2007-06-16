@@ -27,7 +27,6 @@
 
 #include "manager.h"
 #include "messagemanager.h"
-#include "personalitymanager.h"
 
 //#include <wx/datetime.h>
 
@@ -521,7 +520,8 @@ void cbKeyBinder::OnKeyConfigDialogDone(MyDialog* dlg)
     // update attaches and menu items
     UpdateArr(*m_pKeyProfArr) ;
     //Save the key profiles to external storage
-    OnSave(true);
+    bool backUpCfg = true;
+    OnSave( backUpCfg = true);
     m_MenuModifiedByMerge = 0;
 
     // select the right keyprofile
@@ -580,7 +580,7 @@ void cbKeyBinder::OnLoad()
 
     wxFileConfig cfg(wxEmptyString,         // appname
                     wxEmptyString,          // vendor
-                    strLoadFilename,        // loacal file
+                    strLoadFilename,        // local file
                     wxEmptyString,          // global file
                     wxCONFIG_USE_LOCAL_FILE);
 
@@ -1070,15 +1070,16 @@ void cbKeyBinder::OnIdle(wxIdleEvent& event)
             // write changed key profile to disk
             EnableMerge(false);
             if (not m_bAppShutDown)
-                OnSave(false);
+                OnSave();
             m_MenuModifiedByMerge = 0;
         }
+        // re-enable the timer
+        m_bTimerAlarm = false;
+        if (not m_bAppShutDown) EnableMerge(true);
     }//fi IsEnableMerge...
 
-    // re-enable the timer
-    m_bTimerAlarm = false;
-    if (not m_bAppShutDown) EnableMerge(true);
     event.Skip();
+
 }//OnMergeTimer
 // ----------------------------------------------------------------------------
 void cbKeyBinder::OnAppStartShutdown(wxCommandEvent& event)
@@ -1106,12 +1107,25 @@ void cbKeyBinder::OnMenuBarModify(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
     // CodeBlocks is beginning or ending menu modification
-    // Bug: this routine is never invoked by CB core
-    // KeyBinder was going to use it to preserve the accelerators on
-    // the Tools menu. But, alas, it's never called when the tools menu is changed.
 
+    wxString sEventType;
     int modType = event.GetEventType();
-     LOGIT( _T("OnMenuBarModify[%d]"), modType );
+    if ( modType == cbEVT_MENUBAR_CREATE_BEGIN ) sEventType = wxT("BEGIN");
+    if ( modType == cbEVT_MENUBAR_CREATE_END ) sEventType = wxT("END");
+    LOGIT( _T("OnMenuBarModify[%d][%s]"), modType , sEventType.c_str() );
+
+    if ( modType == cbEVT_MENUBAR_CREATE_BEGIN )
+    {
+        for (int i=0;i<5 ;++i )
+        {   if ( IsMerging() )
+                {::wxSleep(1); wxYield();}
+            else break;
+        }
+        EnableMerge( false );
+    }
+
+    if ( modType == cbEVT_MENUBAR_CREATE_END )
+        OnLoad();
     event.Skip();
 }
 // ----------------------------------------------------------------------------

@@ -35,12 +35,6 @@
 #include "sdk.h"
 #else
     #include "sdk_common.h"
-	#include <wx/event.h>
-	#include <wx/frame.h> // Manager::Get()->GetAppWindow()
-	#include <wx/intl.h>
-	#include <wx/menu.h>
-	#include <wx/menuitem.h>
-	#include <wx/string.h>
 	#include "sdk_events.h"
 	#include "manager.h"
 	#include "projectmanager.h"
@@ -51,14 +45,19 @@
 #endif
 
 // includes
+#include <wx/event.h>
+#include <wx/frame.h> // Manager::Get()->GetAppWindow()
+#include <wx/intl.h>
+#include <wx/menu.h>
+#include <wx/menuitem.h>
+#include <wx/string.h>
 #include "wx/statline.h"
 #include "keybinder.h"
 #include "menuutils.h"
 #include "wx/config.h"
 #include "wx/tokenzr.h"
 
-
-
+extern wxString GetFullMenuPath(int);
 
 // class definition for wxKeyProfile
 IMPLEMENT_CLASS(wxKeyProfile, wxKeyBinder)
@@ -154,14 +153,14 @@ END_EVENT_TABLE()
 // ------------------
 // some statics
 // ------------------
-int wxCmd::m_nCmdTypes = 0;
+    int wxCmd::m_nCmdTypes = 0;
     wxCmd::wxCmdType wxCmd::m_arrCmdType[];
 // window names allowed for which keybinder may attach()
-wxArrayString wxKeyBinder::usableWindows;                    //+v0.4.4
+    wxArrayString wxKeyBinder::usableWindows;                    //+v0.4.4
 // window used by AttachRecursively, App.TopWindow
-wxWindow* mainAppWindow = 0;
-extern wxString* pKeyFilename;          // Name of .ini key file
-extern wxKeyProfileArray* m_pKeyProfArr;  // ptr to key profile array in cbKeybinder
+    wxWindow* mainAppWindow = 0;
+    extern wxString* pKeyFilename;              // Name of .ini key file
+    extern wxKeyProfileArray* m_pKeyProfArr;    // ptr to key profile array in cbKeybinder
 
 // ----------------------------------------------------------------------------
 // wxKeyBind STATIC utilities
@@ -643,6 +642,27 @@ void wxCmd::AddCmdType(int type, wxCmdCreationFnc f)
 	m_nCmdTypes++;
 }
 
+//// ----------------------------------------------------------------------------
+//bool wxCmd::Save(wxConfigBase *p, const wxString &key, bool bCleanOld) const
+//// ----------------------------------------------------------------------------
+//{
+//	// build the shortcut string separating each one with a "|"
+//	wxString shortcuts;
+//	for (int j=0; j < GetShortcutCount(); j++)
+//		shortcuts += GetShortcut(j)->GetStr() + wxT("|");
+//
+//	// write the entry in the format NAME|DESC|SHORTCUT1|SHORTCUT2...|SHORTCUTn
+//	wxString value = wxString::Format(wxT("%s|%s|%s"),
+//									GetName().c_str(),
+//									GetDescription().c_str(),
+//									shortcuts.c_str());
+//
+//	// does the given key already exists ?
+//	if (bCleanOld && p->Exists(key))
+//		p->DeleteEntry(key);		// delete old stuff...
+//
+//	return p->Write(key, value);
+//}
 // ----------------------------------------------------------------------------
 bool wxCmd::Save(wxConfigBase *p, const wxString &key, bool bCleanOld) const
 // ----------------------------------------------------------------------------
@@ -652,9 +672,13 @@ bool wxCmd::Save(wxConfigBase *p, const wxString &key, bool bCleanOld) const
 	for (int j=0; j < GetShortcutCount(); j++)
 		shortcuts += GetShortcut(j)->GetStr() + wxT("|");
 
+    wxString fullMenuPath = GetFullMenuPath(GetId());
+    //LOGIT( _T("\nfullPath[%s]"), fullMenuPath.c_str() );
+
 	// write the entry in the format NAME|DESC|SHORTCUT1|SHORTCUT2...|SHORTCUTn
 	wxString value = wxString::Format(wxT("%s|%s|%s"),
-									GetName().c_str(),
+									//GetName().c_str(),
+									fullMenuPath.c_str(),       //(pecan 2007/6/15)
 									GetDescription().c_str(),
 									shortcuts.c_str());
 
@@ -662,6 +686,7 @@ bool wxCmd::Save(wxConfigBase *p, const wxString &key, bool bCleanOld) const
 	if (bCleanOld && p->Exists(key))
 		p->DeleteEntry(key);		// delete old stuff...
 
+    //LOGIT( _T("wxCmd::Save Key[%s] value[%s]"), key.c_str(), value.c_str() );
 	return p->Write(key, value);
 }
 // ----------------------------------------------------------------------------
@@ -679,8 +704,16 @@ bool wxCmd::Load(wxConfigBase *p, const wxString &key)
 	if (m_strName.IsEmpty())
 		return FALSE;	// this is an invalid entry...
 
+    //(pecan 2007/6/15)
+    wxString fullMenuPath = m_strName;
+    m_strName = fullMenuPath.AfterLast(wxT('\\'));
+    //LOGIT( _T("wxCmd::Load fullMenuPath[%s],m_strName[%s]"), fullMenuPath.c_str(), m_strName.c_str() );
+
 	// the ID of this command should have been already set by the caller
-	// which created us...
+	// which created us... niz, wxCmd::Create() called from wxKeyBinder::Load().
+	// NB: the id came from the cfg file and it could be invalid if the menu
+	// id's have changed or shifted. Happens a lot during CodeBlocks development
+	// or when a plugin farts a bunch with the menu items.
 	wxASSERT_MSG(m_nId != wxID_INVALID,
 		wxT("ID must be set while creating of this wxCmd"));
 
@@ -1007,12 +1040,12 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
         // Find item in array of keybinder commands
         int k=0;
         wxString menuItemKeyStr;
-        if ( -1 != ( k = FindCmd(nMenuItemID) ) )   //item found
+        if ( -1 != ( k = FindCmd(nMenuItemID) ) )   //item found in local array
         {
             GetMenuItemAccStr(pMenuItem, menuItemKeyStr);
             #ifdef LOGGING
-             LOGIT(wxT("UpdateAllCmd ById Ok on:[%d][%s] key[%s]"),
-                    pMenuItem->GetId(),pMenuItem->GetLabel().GetData(), menuItemKeyStr.GetData() );
+             //LOGIT(wxT("UpdateAllCmd ById Ok on:[%d][%s] key[%s]"),
+             //       pMenuItem->GetId(),pMenuItem->GetLabel().GetData(), menuItemKeyStr.GetData() );
             #endif
             m_arrCmd.Item(k)->Update(pMenuItem);
             // *^^* pMenuItem will be invalid now if item was destroyed/created/updated **
@@ -1025,8 +1058,9 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
             {
                 #ifdef LOGGING
                  LOGIT(wxT("UpdateAllCmd ById Failed on:[%d][%s]"), pMenuItem->GetId(), pMenuItem->GetText().GetData() );
+                #else
+                 Manager::Get()->GetMessageManager()->DebugLog(wxString::Format(wxT("KeyBinder failed UpdateById on[%d][%s]"), nMenuItemID, pMenuItem->GetText().GetData()));
                 #endif
-                Manager::Get()->GetMessageManager()->DebugLog(wxString::Format(wxT("KeyBinder failed UpdateById on[%d][%s]"), nMenuItemID, pMenuItem->GetText().GetData()));
 ////                // When a .ini id cannot be found: (menu ids have shifted)
 ////                // The following code causes real problems when menu labels are duplicates
 ////                // eg,. if two items have the label "cut", the second ones key will
@@ -1053,18 +1087,18 @@ void wxKeyBinder::UpdateAllCmd(wxMenuBar* pMenuBar) {     //v0.4.17
         return;		// we are not attached to any window... we can skip
                     // this update...
 
-    //v0.4.17 //pecan 2006/4/23
+    //pecan 2006/4/23
     // This code used to update the menus using the keybinder array as the source
-    // But that missed duplicate menu items, so.. we update using the menus
-    // as the source and the array as a database
+    // But that missed duplicate menu items, and plugin added items.
+    // so.. we update using the menus as the source and the array as a database
 
     //for (int i=0; i < (int)m_arrCmd.GetCount(); i++)
     //	m_arrCmd.Item(i)->Update();
 
-    //v 0.4.17 //pecan 2006/4/22
+    //pecan 2006/4/22
     // Menu items used to be updated by referencing the keybinder array info as source.
     // But this missed duplicate menu items, updating only the first duplicate.
-    // So.. search, referencing the menu items as source, and update.;
+    // So.. search, referencing the menu items as source
 
    //menu bar item count (level 1)
     size_t nLevel1Knt = pMenuBar->GetMenuCount();
@@ -1275,6 +1309,7 @@ void wxKeyBinder::DetachAll()
 	m_arrHandlers.Clear();
 
 }//DetachAll
+
 // ----------------------------------------------------------------------------
 //  wxKeyBinder ImportMenuBarCmd
 // ----------------------------------------------------------------------------
@@ -1423,7 +1458,7 @@ bool wxKeyBinder::Load(wxConfigBase *p, const wxString &key)
 	while (cont) {
 
 		// try to decode this entry
-		if (str.StartsWith(wxCMD_CONFIG_PREFIX))
+		if (str.StartsWith(wxCMD_CONFIG_PREFIX))    // "bind" string ?
 		{
 			wxString id(str.BeforeFirst(wxT('-')));
 			wxString type(str.AfterFirst(wxT('-')));
@@ -1447,11 +1482,7 @@ bool wxKeyBinder::Load(wxConfigBase *p, const wxString &key)
 				 {  //-v0.3 cont = FALSE; continue to load next command
                     //-break;
 				 }
-				wxCmd *cmd = wxCmd::CreateNew(cmdName, ntype, nid);
-				//-v0.3 if (!cmd || !cmd->Load(p, str)) {
-					//-v0.3 cont = FALSE;
-					//-v0.3 break;
-				//-v0.3}
+				wxCmd* cmd = wxCmd::CreateNew(cmdName, ntype, nid);
                 if (cmd && cmd->Load(p, str))
                  {
                     m_arrCmd.Add(cmd);		// add to the array
