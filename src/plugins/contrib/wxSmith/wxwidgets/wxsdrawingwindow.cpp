@@ -55,7 +55,7 @@ namespace
 
     inline RepaintDelayType GetDelayType()
     {
-        // Looks like this gives best results so far on both linux and windows
+        if ( platform::macosx ) return Yield;
         return TimerNormal;
     }
 }
@@ -233,6 +233,7 @@ void wxsDrawingWindow::OnFetchSequence(wxCommandEvent& event)
         Panel->Hide();
         ShowChildren();
     }
+    Refresh();
     Update();
 
     // Here we have requested to hide panel and show children
