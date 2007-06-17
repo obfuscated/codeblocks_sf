@@ -32,6 +32,7 @@
 
 #include <manager.h>
 #include <messagemanager.h>
+#include <prep.h>
 
 namespace
 {
