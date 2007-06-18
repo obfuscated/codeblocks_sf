@@ -428,12 +428,14 @@ from target...</label>
                                 <object class="sizeritem">
                                   <object class="wxCheckBox" name="chkAutoGenPrefix">
                                     <label>Auto-generate filename prefix</label>
+                                    <checked>1</checked>
                                   </object>
                                   <flag>wxEXPAND</flag>
                                 </object>
                                 <object class="sizeritem">
                                   <object class="wxCheckBox" name="chkAutoGenExt">
                                     <label>Auto-generate filename extension</label>
+                                    <checked>1</checked>
                                   </object>
                                   <flag>wxTOP|wxEXPAND</flag>
                                   <border>4</border>
