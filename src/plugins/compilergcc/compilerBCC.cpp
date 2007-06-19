@@ -138,7 +138,7 @@ void CompilerBCC::Reset()
     m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp -32 -fo$resource_output $res_includes $file");
     m_Commands[(int)ctLinkExeCmd] = _T("$linker -q -aa  $link_options $libdirs c0w32 $link_objects,$exe_output,,$libs,,$link_resobjects");
     m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker -q -ap  $link_options $libdirs c0x32 $link_objects,$exe_output,,$libs,,$link_resobjects");
-    m_Commands[(int)ctLinkDynamicCmd] = _T("$linker -q $libdirs -o $exe_output $libs $link_objects $link_options");
+    m_Commands[(int)ctLinkDynamicCmd] = _T("$linker -q $libdirs -Tpd $link_options $link_objects,$exe_output,,$libs,,$link_resobjects");
     m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker /C $static_output $+-link_objects,$def_output");
     m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 

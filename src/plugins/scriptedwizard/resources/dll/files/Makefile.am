@@ -1,3 +1,4 @@
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/dll/files
 
-dist_pkgdata_DATA = main.cpp
+dist_pkgdata_DATA = main.cpp \
+					main.h
