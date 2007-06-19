@@ -319,7 +319,7 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& event)
                 "Filename: %s\n"
                 "Line number: %s\n"
                 "Message: %s"),
-                clt == cltNormal ? _("Info") : (clt == cltError ? _("Error") : _("Warning")),
+                clt == cltNormal ? _("Normal") : (clt == cltInfo ? _("Info") : (clt == cltError ? _("Error") : _("Warning"))),
                 compiler->GetLastErrorFilename().c_str(),
                 compiler->GetLastErrorLine().c_str(),
                 compiler->GetLastError().c_str()

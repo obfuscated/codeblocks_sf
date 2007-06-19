@@ -43,7 +43,7 @@ const wxString Compiler::FilePathWithSpaces = _T("[][{}() \t#%$~A-Za-z0-9_:+/\\.
 // when this is different from what is saved in the config, a message appears
 // to the user saying that default settings have changed and asks him if he wants to
 // use his own settings or the new defaults
-const wxString CompilerSettingsVersion = _T("0.0.1");
+const wxString CompilerSettingsVersion = _T("0.0.2");
 
 CompilerSwitches::CompilerSwitches()
 {	// default based upon gnu
@@ -153,13 +153,13 @@ bool Compiler::IsValid()
         return true; // still initializing, don't try to test now
 
     m_NeedValidityCheck = false;
-    
+
     if (!SupportsCurrentPlatform())
     {
     	m_Valid = false;
     	return false;
     }
-    
+
     wxString tmp = m_MasterPath + _T("/bin/") + m_Programs.C;
     Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
     m_Valid = wxFileExists(tmp);
@@ -284,7 +284,7 @@ void Compiler::MirrorCurrentSettings()
 	m_Mirror.Switches = m_Switches;
 	m_Mirror.Options = m_Options;
 	m_Mirror.RegExes = m_RegExes;
-	
+
 	m_Mirror.CompilerOptions_ = m_CompilerOptions;
 	m_Mirror.LinkerOptions = m_LinkerOptions;
 	m_Mirror.IncludeDirs = m_IncludeDirs;
@@ -293,7 +293,7 @@ void Compiler::MirrorCurrentSettings()
 	m_Mirror.LinkLibs = m_LinkLibs;
 	m_Mirror.CmdsBefore = m_CmdsBefore;
 	m_Mirror.CmdsAfter = m_CmdsAfter;
-	
+
 	m_Mirrored = true;
 }
 
@@ -564,7 +564,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
 		key.Remove(0, 2);
 		if (!key.ToLong(&index, 10))
 			continue;
-		
+
 		// 'index' now holds the regex index.
 		// read everything and either assign it to an existing regex
 		// if the index exists, or add a new regex
@@ -582,7 +582,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
         rs.msg[2] = cfg->ReadInt(group + _T("/msg3"), 0);
         rs.filename = cfg->ReadInt(group + _T("/filename"), 0);
         rs.line = cfg->ReadInt(group + _T("/line"), 0);
-        
+
         if (index <= (long)m_RegExes.GetCount())
 			m_RegExes[index - 1] = rs;
 		else
@@ -595,7 +595,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
 	wxArrayString list = cfg->EnumerateKeys(configpath);
 	for (unsigned int i = 0; i < list.GetCount(); ++i)
 		SetVar(list[i], cfg->Read(configpath + _T('/') + list[i]), false);
-	
+
 	if (versionMismatch)
 	{
 		wxString msg;

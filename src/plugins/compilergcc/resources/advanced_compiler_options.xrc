@@ -229,6 +229,7 @@ The first matching parsing expression is selected.</label>
                             <object class="sizeritem">
                               <object class="wxComboBox" name="cmbRegexType">
                                 <content>
+                                  <item>Normal</item>
                                   <item>Info</item>
                                   <item>Warning</item>
                                   <item>Error</item>

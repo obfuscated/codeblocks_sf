@@ -2844,6 +2844,7 @@ void CompilerGCC::OnCompile(wxCommandEvent& event)
 
 void CompilerGCC::OnCompileFile(wxCommandEvent& event)
 {
+    // TODO (Rick#1#): Clean the file so it will always recompile
     wxFileName file;
     if (event.GetId() == idMenuCompileFileFromProjectManager)
     {
@@ -3202,7 +3203,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
     }
 
     // log to build messages if warning/error
-    if (clt != cltNormal)
+    if (clt > cltNormal)
     {
         // display current project/target "header" in build messages, if different since last warning/error
         static ProjectBuildTarget* last_bt = 0;
@@ -3241,7 +3242,7 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
     wxColour c;
     switch (lt)
     {
-        case cltNormal: c = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT); break;
+        case cltNormal: case cltInfo: c = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT); break;
         case cltWarning: c = COLOUR_NAVY; break;
         case cltError: c = *wxRED; break;
     }
@@ -3271,7 +3272,7 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
         if (isTitle)
             m_BuildLogContents << _T("</b>");
 
-        if (lt != cltNormal)
+        if (lt >= cltWarning)
             m_BuildLogContents << _T("</font>");
 
         m_BuildLogContents << _T("<br />\n");

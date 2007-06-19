@@ -47,6 +47,7 @@ class ProjectFile;
 enum CompilerLineType
 {
     cltNormal,
+    cltInfo,
     cltWarning,
     cltError
 };
@@ -321,7 +322,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         CompilerCommandGenerator* m_pGenerator;
         bool m_Valid; // 'valid' flag
         bool m_NeedValidityCheck; // flag to re-check validity (raised when changing compiler paths)
-        
+
         // "mirror" default settings for comparing when saving (to save only those that differ from defaults)
         struct MirrorSettings
         {
@@ -329,7 +330,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 			wxString MasterPath;
 			wxArrayString ExtraPaths;
 			CompilerPrograms Programs;
-			
+
 			// these are the CompileOptionsBase settings that each compiler keeps on a global level
 			wxArrayString CompilerOptions_;
 			wxArrayString LinkerOptions;
@@ -339,7 +340,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 			wxArrayString LinkLibs;
 			wxArrayString CmdsBefore;
 			wxArrayString CmdsAfter;
-			
+
 			// below are the settings that the user is asked to revert to defaults (if defaults have changed)
 			wxString Commands[COMPILER_COMMAND_TYPES_COUNT];
 			CompilerSwitches Switches;
