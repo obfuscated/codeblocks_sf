@@ -29,6 +29,7 @@
 #include <wx/dcscreen.h>
 #include <wx/dcmemory.h>
 #include <wx/dcbuffer.h>
+#include <wx/app.h>
 
 #include <manager.h>
 #include <messagemanager.h>
@@ -343,6 +344,15 @@ void wxsDrawingWindow::HideChildren()
 
 bool wxsDrawingWindow::NoNeedToRefetch()
 {
+    // Testing current application is not active, If it's not,
+    // We block any fetches because fetching may read part
+    // of other application
+    if ( wxTheApp && !wxTheApp->IsActive() )
+    {
+        WasContentChanged = true;
+        return true;
+    }
+
     // Testing if this window is disabled which usually means
     // that there's some dialog shown in modal
     // modal dialogs may cause some artefacts on editor so we will
