@@ -243,7 +243,7 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
                     m_Wizards[index].title,
                     m_Wizards[index].wizardPNG,
                     wxDefaultPosition,
-                    wxDEFAULT_DIALOG_STYLE);
+                    wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
     if (!Manager::Get()->GetScriptingManager()->LoadScript(global_commons) && // load global common functions
         !Manager::Get()->GetScriptingManager()->LoadScript(user_commons)) // and/or load user common functions
@@ -1089,7 +1089,7 @@ void Wiz::Finalize()
 
     // allow the wizard to size itself around the pages
     #if wxCHECK_VERSION(2, 8, 0)
-        m_pWizard->GetPageAreaSizer()->Add(m_Pages[0]);
+        //m_pWizard->GetPageAreaSizer()->Add(m_Pages[0]);
     #else
         for (size_t i = 1; i < m_Pages.GetCount(); ++i)
             m_pWizard->GetPageAreaSizer()->Add(m_Pages[i]);
