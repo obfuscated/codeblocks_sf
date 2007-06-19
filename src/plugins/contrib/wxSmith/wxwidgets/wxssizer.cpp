@@ -189,15 +189,17 @@ wxObject* wxsSizer::OnBuildPreview(wxWindow* Parent,long Flags)
 
     if ( !(Flags & pfExact) )
     {
+        NewParent->SetSizer(Sizer);
         if ( !GetChildCount() )
         {
             // Setting custom size for childless sizer to prevent
             // zero-size items
+            NewParent->SetInitialSize(wxSize(20,20));
+            NewParent->SetSizeHints(20,20);
             NewParent->SetSize(wxSize(20,20));
         }
         else
         {
-            NewParent->SetSizer(Sizer);
             Sizer->Fit(NewParent);
             Sizer->SetSizeHints(NewParent);
         }
