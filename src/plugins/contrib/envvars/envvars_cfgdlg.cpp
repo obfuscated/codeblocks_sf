@@ -148,7 +148,7 @@ void EnvVarsConfigDlg::LoadSettings()
     num_sets_applied++;
   }
   EV_DBGLOG(_T("EnvVars: Setup %d/%d envvar sets from config."), num_sets_applied, num_sets);
-  if (choSet->GetCount()>active_set_idx) // Select the last active set (from config)
+  if ((int)choSet->GetCount()>active_set_idx) // Select the last active set (from config)
     choSet->SetSelection(active_set_idx);
 
   // Show currently activated set in debug log (for reference)
@@ -215,7 +215,7 @@ void EnvVarsConfigDlg::SaveSettings()
 	EV_DBGLOG(_T("EnvVars: Saving (new) envvar set '%s'."), active_set.c_str());
   cfg->SetPath(active_set_path);
 
-  for (int i=0; i<lstEnvVars->GetCount(); ++i)
+  for (int i=0; i<(int)lstEnvVars->GetCount(); ++i)
   {
     // Format: [checked?]|[key]|[value]
     wxString check = (lstEnvVars->IsChecked(i))?_T("1"):_T("0");
@@ -410,7 +410,7 @@ void EnvVarsConfigDlg::OnCreateSetClick(wxCommandEvent& WXUNUSED(event))
   if (!choSet)
     return;
 
-  for (int i=0; i<choSet->GetCount(); ++i)
+  for (int i=0; i<(int)choSet->GetCount(); ++i)
   {
     if (set.MakeLower().IsSameAs(choSet->GetString(i).MakeLower()))
     {
@@ -567,7 +567,7 @@ void EnvVarsConfigDlg::OnSetEnvVarsClick(wxCommandEvent& WXUNUSED(event))
   wxString envsNotSet(wxEmptyString);
 
   // Set all (checked) variables of lstEnvVars
-  for (int i=0; i<lstEnvVars->GetCount(); ++i)
+  for (int i=0; i<(int)lstEnvVars->GetCount(); ++i)
   {
     if (lstEnvVars->IsChecked(i))
     {

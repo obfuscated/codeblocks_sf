@@ -299,7 +299,7 @@ bool nsEnvVars::EnvvarsClear(wxCheckListBox* lstEnvVars)
   wxString envsNotUnSet(wxEmptyString);
 
   // Unset all (checked) variables of lstEnvVars
-  for (int i=0; i<lstEnvVars->GetCount(); ++i)
+  for (int i=0; i<(int)lstEnvVars->GetCount(); ++i)
   {
     // Note: It's better not to just clear all because wxUnsetEnv would
     //       fail in case an envvar is not set (not checked).
