@@ -46,7 +46,7 @@ class ProjectFile;
 /// Enum categorizing compiler's output line as warning/error/info/normal
 enum CompilerLineType
 {
-    cltNormal,
+    cltNormal = 0,
     cltWarning,
     cltError,
     cltInfo
