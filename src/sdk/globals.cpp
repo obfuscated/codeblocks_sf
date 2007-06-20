@@ -455,6 +455,7 @@ bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
     buff[len]='\0';
 
 	DetectEncodingAndConvert(buff, st, encoding);
+	delete buff;
 
     return true;
 }
