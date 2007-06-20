@@ -230,9 +230,9 @@ The first matching parsing expression is selected.</label>
                               <object class="wxComboBox" name="cmbRegexType">
                                 <content>
                                   <item>Normal</item>
-                                  <item>Info</item>
                                   <item>Warning</item>
                                   <item>Error</item>
+                                  <item>Info</item>
                                 </content>
                                 <selection>1</selection>
                                 <style>wxCB_READONLY</style>

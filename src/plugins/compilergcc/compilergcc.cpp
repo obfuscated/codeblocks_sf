@@ -3202,8 +3202,8 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
         return;
     }
 
-    // log to build messages if info/warning/error
-    if (clt > cltNormal)
+    // log to build messages if info/warning/error (aka != normal)
+    if (clt != cltNormal)
     {
         // display current project/target "header" in build messages, if different since last warning/error
         static ProjectBuildTarget* last_bt = 0;
@@ -3259,22 +3259,34 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
     if (log & ltFile)
     {
         if (forceErrorColour)
+        {
             m_BuildLogContents << _T("<font color=\"#a00000\">");
+        }
         else if (lt == cltError)
+        {
             m_BuildLogContents << _T("<font color=\"#ff0000\">");
+        }
         else if (lt == cltWarning)
+        {
             m_BuildLogContents << _T("<font color=\"#0000ff\">");
+        }
 
         if (isTitle)
+        {
             m_BuildLogContents << _T("<b>");
+        }
 
         m_BuildLogContents << message;
 
         if (isTitle)
+        {
             m_BuildLogContents << _T("</b>");
+        }
 
-        if (lt >= cltWarning)
+        if (lt == cltWarning || lt == cltError || forceErrorColour)
+        {
             m_BuildLogContents << _T("</font>");
+        }
 
         m_BuildLogContents << _T("<br />\n");
     }
