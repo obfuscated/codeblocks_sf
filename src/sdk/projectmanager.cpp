@@ -219,6 +219,8 @@ ProjectManager::ProjectManager()
     m_TreeFreezeCounter(0),
     m_IsLoadingProject(false),
     m_IsLoadingWorkspace(false),
+    m_IsClosingProject(false),
+    m_IsClosingWorkspace(false),
     m_InitialDir(_T("")),
     m_isCheckingForExternallyModifiedProjects(false)
 {
@@ -948,6 +950,7 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
     int index = m_pProjects->Index(project);
     if (index == wxNOT_FOUND)
         return false;
+    m_IsClosingProject = true;
     Manager::Get()->GetEditorManager()->UpdateProjectFiles(project);
 //    project->SaveTreeState(m_pTree);
     project->SaveLayout();
@@ -974,6 +977,7 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
 //        RebuildTree();
     if(!m_InitialDir.IsEmpty()) // Restore the working directory
         wxFileName::SetCwd(m_InitialDir);
+    m_IsClosingProject = false;
     return true;
 }
 
@@ -1224,6 +1228,7 @@ bool ProjectManager::CloseWorkspace()
         if (!CloseAllProjects(true))
             return false;
 
+        m_IsClosingWorkspace = true;
         delete m_pWorkspace;
         m_pWorkspace = 0;
 
@@ -1233,15 +1238,36 @@ bool ProjectManager::CloseWorkspace()
             if (!Manager::IsAppShuttingDown())
                 RebuildTree(); // update the workspace icon if required
         }
+        m_IsClosingWorkspace = false;
     }
     else
         return CloseAllProjects(false);
     return true;
 }
 
+bool ProjectManager::IsLoadingProject()
+{
+    return m_IsLoadingProject;
+}
+
+bool ProjectManager::IsLoadingWorkspace()
+{
+    return m_IsLoadingWorkspace;
+}
+
 bool ProjectManager::IsLoading()
 {
     return (m_IsLoadingProject || m_IsLoadingWorkspace);
+}
+
+bool ProjectManager::IsClosingProject()
+{
+    return m_IsClosingProject;
+}
+
+bool ProjectManager::IsClosingWorkspace()
+{
+    return m_IsClosingWorkspace;
 }
 
 void ProjectManager::FreezeTree()

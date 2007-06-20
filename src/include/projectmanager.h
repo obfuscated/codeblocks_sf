@@ -265,10 +265,26 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * the workspace, if it is modified)
           */
         bool CloseWorkspace();
+        /** Check if the project manager is loading a project.
+          * @return True if it's loading a project, false otherwise
+          */
+        bool IsLoadingProject();
+        /** Check if the project manager is loading a workspace.
+          * @return True if it's loading a workspace, false otherwise
+          */
+        bool IsLoadingWorkspace();
         /** Check if the project manager is loading a project/workspace.
-          * @return True if it's loading a workspace/project, false otherwise
+          * @return True if it's loading a project/workspace, false otherwise
           */
         bool IsLoading();
+        /** Check if the project manager is closing a project.
+          * @return True if it's closing a project, false otherwise
+          */
+        bool IsClosingProject();
+        /** Check if the project manager is closing a workspace.
+          * @return True if it's closing a workspace, false otherwise
+          */
+        bool IsClosingWorkspace();
         /** Get the current workspace filename.
           * @return The current workspace filename.
           */
@@ -429,6 +445,8 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         int m_TreeFreezeCounter;
         bool m_IsLoadingProject;
         bool m_IsLoadingWorkspace;
+        bool m_IsClosingProject;
+        bool m_IsClosingWorkspace;
         wxString m_InitialDir;
         wxTreeItemId m_DraggingItem;
         bool m_isCheckingForExternallyModifiedProjects;
