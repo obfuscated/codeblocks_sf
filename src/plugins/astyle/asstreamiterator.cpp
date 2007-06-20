@@ -35,16 +35,13 @@ std::string ASStreamIterator::nextLine()
     m_foundBookmark = true;
   }
 
-  wxChar *filterPtr;
-
-  memset(buffer, 0, sizeof(buffer));
-  filterPtr = buffer;
+  m_buffer.clear();
 
   while (*m_In != 0)
   {
     if (!IsEOL(*m_In))
     {
-      *filterPtr++ = *m_In;
+      m_buffer.push_back(*m_In);
     }
 
     ++m_In;
@@ -61,8 +58,8 @@ std::string ASStreamIterator::nextLine()
     }
   }
 
-  *filterPtr = 0;
+  m_buffer.push_back(0);
   ++m_curline;
 
-  return std::string(cbU2C(buffer));
+  return std::string(cbU2C(&m_buffer[0]));
 }

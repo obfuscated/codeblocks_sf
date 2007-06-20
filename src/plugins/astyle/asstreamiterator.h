@@ -4,6 +4,7 @@
 #include <iostream>
 #include <wx/string.h>
 #include <cbeditor.h>
+#include <vector>
 #include "./astyle/astyle.h"
 
 class ASStreamIterator : public astyle::ASSourceIterator
@@ -21,7 +22,7 @@ class ASStreamIterator : public astyle::ASSourceIterator
         bool IsEOL(wxChar ch);
         cbEditor *m_cbe;
         const wxChar *m_In;
-        wxChar buffer[2048];
+        std::vector<wxChar> m_buffer;
         int m_curline;
         bool m_foundBookmark;
 	private:
