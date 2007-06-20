@@ -43,13 +43,13 @@ class ProjectFile;
     The macro substitution happens in compiler's MakefileGenerator.
 */
 
-/// Enum categorizing compiler's output line as warning/error/normal
+/// Enum categorizing compiler's output line as warning/error/info/normal
 enum CompilerLineType
 {
     cltNormal,
-    cltInfo,
     cltWarning,
-    cltError
+    cltError,
+    cltInfo
 };
 
 // regexes array declaration
