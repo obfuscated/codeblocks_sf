@@ -3202,7 +3202,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
         return;
     }
 
-    // log to build messages if warning/error
+    // log to build messages if info/warning/error
     if (clt > cltNormal)
     {
         // display current project/target "header" in build messages, if different since last warning/error
@@ -3242,9 +3242,10 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
     wxColour c;
     switch (lt)
     {
-        case cltNormal: case cltInfo: c = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT); break;
+        case cltNormal:
+        case cltInfo:    c = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT); break;
         case cltWarning: c = COLOUR_NAVY; break;
-        case cltError: c = *wxRED; break;
+        case cltError:   c = *wxRED; break;
     }
     m_pListLog->GetListControl()->SetItemTextColour(m_pListLog->GetListControl()->GetItemCount() - 1, c);
 
