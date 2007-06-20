@@ -381,6 +381,7 @@ void CodeCompletion::OnAttach()
     m_EditorHookId = EditorHooks::RegisterHook(myhook);
 
     m_timer.Start(2000, wxTIMER_ONE_SHOT);
+    m_InitDone = true;
 }
 
 void CodeCompletion::OnRelease(bool appShutDown)
@@ -1237,6 +1238,17 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
 
 void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 {
+    ProjectManager* PrjMan = Manager::Get()->GetProjectManager();
+    if (  (PrjMan
+        && (PrjMan->IsLoadingProject()
+        || PrjMan->IsLoadingWorkspace()
+        || PrjMan->IsClosingProject()
+        || PrjMan->IsClosingWorkspace()))
+        || Manager::Get()->IsAppShuttingDown())
+    {
+        event.Skip();
+        return;
+    }
     EditorBase* eb = event.GetEditor();
     if (IsAttached() && m_InitDone)
     {
