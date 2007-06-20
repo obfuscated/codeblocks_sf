@@ -1,6 +1,11 @@
 #include "genericsinglechoicelist.h"
 #include "prep.h"
 
+//(*IdInit(GenericSingleChoiceList)
+const long GenericSingleChoiceList::ID_STATICTEXT1 = wxNewId();
+const long GenericSingleChoiceList::ID_LISTBOX1 = wxNewId();
+//*)
+
 BEGIN_EVENT_TABLE(GenericSingleChoiceList,wxPanel)
 	//(*EventTable(GenericSingleChoiceList)
 	//*)
@@ -11,21 +16,16 @@ GenericSingleChoiceList::GenericSingleChoiceList(wxWindow* parent,wxWindowID id)
 	//(*Initialize(GenericSingleChoiceList)
 	wxBoxSizer* BoxSizer1;
 	wxStaticBoxSizer* StaticBoxSizer1;
-
-	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T(""));
+	
+	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	lblDescr = new wxStaticText(this,ID_STATICTEXT1,_("Description"),wxDefaultPosition,wxDefaultSize,0,_("ID_STATICTEXT1"));
+	lblDescr = new wxStaticText(this,ID_STATICTEXT1,_("Description"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));
+	BoxSizer1->Add(lblDescr,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,8);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL,this,_("Please make a selection"));
-/* FIXME (Biplab#1#): This is a hack. Need to check this against newer wx for a fix */
-    if (platform::linux && wxMinimumVersion<2, 8>::eval)
-        GenericChoiceList = new wxListBox(this,ID_LISTBOX1,wxDefaultPosition,wxSize(100, 100),0,0,0,wxDefaultValidator,_("ID_LISTBOX1"));
-    else
-        GenericChoiceList = new wxListBox(this,ID_LISTBOX1,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_("ID_LISTBOX1"));
-	GenericChoiceList->SetSelection(-1);
-	StaticBoxSizer1->Add(GenericChoiceList,1,wxALL|wxALIGN_CENTER|wxEXPAND,4);
-	BoxSizer1->Add(lblDescr,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,8);
-	BoxSizer1->Add(StaticBoxSizer1,0,wxALL|wxALIGN_CENTER|wxEXPAND,8);
-	this->SetSizer(BoxSizer1);
+	GenericChoiceList = new wxListBox(this,ID_LISTBOX1,wxDefaultPosition,wxSize(232,131),0,0,wxLB_HSCROLL|wxLB_SINGLE,wxDefaultValidator,_T("ID_LISTBOX1"));
+	StaticBoxSizer1->Add(GenericChoiceList,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
+	BoxSizer1->Add(StaticBoxSizer1,1,wxALL|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,8);
+	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
 	//*)

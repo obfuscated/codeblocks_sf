@@ -9,9 +9,7 @@
 
 //(*Headers(InfoPanel)
 #include <wx/checkbox.h>
-#include <wx/intl.h>
 #include <wx/panel.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 //*)
@@ -24,11 +22,8 @@ class InfoPanel: public wxPanel
 		virtual ~InfoPanel();
 
 		//(*Identifiers(InfoPanel)
-		enum Identifiers
-		{
-		    ID_CHECKBOX1 = 0x1000,
-		    ID_STATICTEXT1
-		};
+		static const long ID_STATICTEXT1;
+		static const long ID_CHECKBOX1;
 		//*)
 
         void SetIntroText(const wxString& intro_msg)

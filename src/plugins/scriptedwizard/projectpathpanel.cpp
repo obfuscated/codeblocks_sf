@@ -2,12 +2,21 @@
 #include <filefilters.h>
 #include <wx/filename.h>
 
+//(*IdInit(ProjectPathPanel)
+const long ProjectPathPanel::ID_STATICTEXT1 = wxNewId();
+const long ProjectPathPanel::ID_STATICTEXT4 = wxNewId();
+const long ProjectPathPanel::ID_TEXTCTRL3 = wxNewId();
+const long ProjectPathPanel::ID_STATICTEXT2 = wxNewId();
+const long ProjectPathPanel::ID_TEXTCTRL1 = wxNewId();
+const long ProjectPathPanel::ID_BUTTON1 = wxNewId();
+const long ProjectPathPanel::ID_STATICTEXT3 = wxNewId();
+const long ProjectPathPanel::ID_TEXTCTRL2 = wxNewId();
+const long ProjectPathPanel::ID_STATICTEXT5 = wxNewId();
+const long ProjectPathPanel::ID_TEXTCTRL4 = wxNewId();
+//*)
+
 BEGIN_EVENT_TABLE(ProjectPathPanel,wxPanel)
 	//(*EventTable(ProjectPathPanel)
-	EVT_TEXT(ID_TEXTCTRL3,ProjectPathPanel::OntxtPrjTitleText)
-	EVT_TEXT(ID_TEXTCTRL1,ProjectPathPanel::OnFullPathChanged)
-	EVT_TEXT(ID_TEXTCTRL2,ProjectPathPanel::OnFullPathChanged)
-	EVT_TEXT(ID_TEXTCTRL4,ProjectPathPanel::OntxtFinalDirText)
 	//*)
 END_EVENT_TABLE()
 
@@ -23,39 +32,38 @@ ProjectPathPanel::ProjectPathPanel(wxWindow* parent,wxWindowID id)
 	wxStaticText* StaticText2;
 	wxStaticText* StaticText3;
 	wxStaticText* StaticText5;
-
-	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL);
+	
+	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Please select the folder where you want the new project\nto be created as well as its title."),wxDefaultPosition,wxDefaultSize,wxST_NO_AUTORESIZE);
-	StaticText4 = new wxStaticText(this,ID_STATICTEXT4,_("Project title:"),wxDefaultPosition,wxDefaultSize,0);
-	txtPrjTitle = new wxTextCtrl(this,ID_TEXTCTRL3,_T(""),wxDefaultPosition,wxDefaultSize,0);
-	if ( 0 ) txtPrjTitle->SetMaxLength(0);
-	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Folder to create project in:"),wxDefaultPosition,wxDefaultSize,0);
+	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Please select the folder where you want the new project\nto be created as well as its title."),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));
+	BoxSizer1->Add(StaticText1,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,8);
+	StaticText4 = new wxStaticText(this,ID_STATICTEXT4,_("Project title:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT4"));
+	BoxSizer1->Add(StaticText4,0,wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,8);
+	txtPrjTitle = new wxTextCtrl(this,ID_TEXTCTRL3,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL3"));
+	BoxSizer1->Add(txtPrjTitle,0,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,8);
+	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Folder to create project in:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT2"));
+	BoxSizer1->Add(StaticText2,0,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,8);
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	txtPrjPath = new wxTextCtrl(this,ID_TEXTCTRL1,_("Text"),wxDefaultPosition,wxDefaultSize,0);
-	if ( 0 ) txtPrjPath->SetMaxLength(0);
-	btnPrjPathBrowse = new wxButton(this,ID_BUTTON1,_("..."),wxDefaultPosition,wxSize(22,22),0);
-	if (false) btnPrjPathBrowse->SetDefault();
-	BoxSizer2->Add(txtPrjPath,1,wxALIGN_CENTER,5);
-	BoxSizer2->Add(btnPrjPathBrowse,0,wxALIGN_CENTER,5);
-	StaticText3 = new wxStaticText(this,ID_STATICTEXT3,_("Project filename:"),wxDefaultPosition,wxDefaultSize,0);
-	txtPrjName = new wxTextCtrl(this,ID_TEXTCTRL2,_T(""),wxDefaultPosition,wxDefaultSize,0);
-	if ( 0 ) txtPrjName->SetMaxLength(0);
-	StaticText5 = new wxStaticText(this,ID_STATICTEXT5,_("Resulting filename:"),wxDefaultPosition,wxDefaultSize,0);
-	txtFinalDir = new wxTextCtrl(this,ID_TEXTCTRL4,_T(""),wxDefaultPosition,wxDefaultSize,0);
-	if ( 0 ) txtFinalDir->SetMaxLength(0);
-	BoxSizer1->Add(StaticText1,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,8);
-	BoxSizer1->Add(StaticText4,0,wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,8);
-	BoxSizer1->Add(txtPrjTitle,0,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,8);
-	BoxSizer1->Add(StaticText2,0,wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,8);
-	BoxSizer1->Add(BoxSizer2,0,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,8);
-	BoxSizer1->Add(StaticText3,0,wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,8);
-	BoxSizer1->Add(txtPrjName,0,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,8);
+	txtPrjPath = new wxTextCtrl(this,ID_TEXTCTRL1,_("Text"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL1"));
+	BoxSizer2->Add(txtPrjPath,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	btnPrjPathBrowse = new wxButton(this,ID_BUTTON1,_("..."),wxDefaultPosition,wxSize(22,22),0,wxDefaultValidator,_T("ID_BUTTON1"));
+	BoxSizer2->Add(btnPrjPathBrowse,0,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	BoxSizer1->Add(BoxSizer2,0,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,8);
+	StaticText3 = new wxStaticText(this,ID_STATICTEXT3,_("Project filename:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT3"));
+	BoxSizer1->Add(StaticText3,0,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,8);
+	txtPrjName = new wxTextCtrl(this,ID_TEXTCTRL2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL2"));
+	BoxSizer1->Add(txtPrjName,0,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,8);
+	StaticText5 = new wxStaticText(this,ID_STATICTEXT5,_("Resulting filename:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT5"));
 	BoxSizer1->Add(StaticText5,0,wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP,8);
-	BoxSizer1->Add(txtFinalDir,0,wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND,8);
-	this->SetSizer(BoxSizer1);
+	txtFinalDir = new wxTextCtrl(this,ID_TEXTCTRL4,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL4"));
+	BoxSizer1->Add(txtFinalDir,0,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,8);
+	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
+	Connect(ID_TEXTCTRL3,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&ProjectPathPanel::OntxtPrjTitleText);
+	Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&ProjectPathPanel::OnFullPathChanged);
+	Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&ProjectPathPanel::OnFullPathChanged);
+	Connect(ID_TEXTCTRL4,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&ProjectPathPanel::OntxtFinalDirText);
 	//*)
 }
 

@@ -33,5 +33,3 @@ noinst_HEADERS = buildtargetpanel.h \
 					projectpathpanel.h \
 					wiz.h \
 					wizpage.h
-
-EXTRA_DIST = $(srcdir)/wxsmith/*

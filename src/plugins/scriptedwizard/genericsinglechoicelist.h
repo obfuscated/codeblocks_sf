@@ -8,10 +8,8 @@
 #endif
 
 //(*Headers(GenericSingleChoiceList)
-#include <wx/intl.h>
 #include <wx/listbox.h>
 #include <wx/panel.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 //*)
@@ -37,11 +35,8 @@ class GenericSingleChoiceList: public wxPanel
         }
 
 		//(*Identifiers(GenericSingleChoiceList)
-		enum Identifiers
-		{
-		    ID_LISTBOX1 = 0x1000,
-		    ID_STATICTEXT1
-		};
+		static const long ID_STATICTEXT1;
+		static const long ID_LISTBOX1;
 		//*)
 
 	protected:

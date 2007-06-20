@@ -6,9 +6,7 @@
 //(*Headers(CompilerPanel)
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
-#include <wx/intl.h>
 #include <wx/panel.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -43,24 +41,21 @@ class CompilerPanel: public wxPanel
         wxString GetReleaseObjectOutputDir() const { return txtRelObjOut->GetValue(); }
 
 		//(*Identifiers(CompilerPanel)
-		enum Identifiers
-		{
-		    ID_STATICTEXT1 = 0x1000,
-		    ID_STATICTEXT2,
-		    ID_COMBOBOX1,
-		    ID_CHECKBOX1,
-		    ID_TEXTCTRL3,
-		    ID_STATICTEXT3,
-		    ID_TEXTCTRL1,
-		    ID_STATICTEXT4,
-		    ID_TEXTCTRL2,
-		    ID_CHECKBOX3,
-		    ID_TEXTCTRL4,
-		    ID_STATICTEXT7,
-		    ID_TEXTCTRL5,
-		    ID_STATICTEXT8,
-		    ID_TEXTCTRL6
-		};
+		static const long ID_STATICTEXT1;
+		static const long ID_STATICTEXT2;
+		static const long ID_COMBOBOX1;
+		static const long ID_CHECKBOX1;
+		static const long ID_TEXTCTRL3;
+		static const long ID_STATICTEXT3;
+		static const long ID_TEXTCTRL1;
+		static const long ID_STATICTEXT4;
+		static const long ID_TEXTCTRL2;
+		static const long ID_CHECKBOX3;
+		static const long ID_TEXTCTRL4;
+		static const long ID_STATICTEXT7;
+		static const long ID_TEXTCTRL5;
+		static const long ID_STATICTEXT8;
+		static const long ID_TEXTCTRL6;
 		//*)
 
 	private:

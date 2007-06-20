@@ -9,9 +9,7 @@
 
 //(*Headers(ProjectPathPanel)
 #include <wx/button.h>
-#include <wx/intl.h>
 #include <wx/panel.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -40,19 +38,16 @@ class ProjectPathPanel: public wxPanel
 		wxString GetTitle() const { return txtPrjTitle->GetValue(); }
 
 		//(*Identifiers(ProjectPathPanel)
-		enum Identifiers
-		{
-		    ID_BUTTON1 = 0x1000,
-		    ID_STATICTEXT1,
-		    ID_STATICTEXT2,
-		    ID_STATICTEXT3,
-		    ID_STATICTEXT4,
-		    ID_STATICTEXT5,
-		    ID_TEXTCTRL1,
-		    ID_TEXTCTRL2,
-		    ID_TEXTCTRL3,
-		    ID_TEXTCTRL4
-		};
+		static const long ID_STATICTEXT1;
+		static const long ID_STATICTEXT4;
+		static const long ID_TEXTCTRL3;
+		static const long ID_STATICTEXT2;
+		static const long ID_TEXTCTRL1;
+		static const long ID_BUTTON1;
+		static const long ID_STATICTEXT3;
+		static const long ID_TEXTCTRL2;
+		static const long ID_STATICTEXT5;
+		static const long ID_TEXTCTRL4;
 		//*)
 
 	private:

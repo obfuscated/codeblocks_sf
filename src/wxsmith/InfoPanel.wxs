@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+    <object class="wxPanel" name="InfoPanel">
+        <object class="wxBoxSizer" variable="BoxSizer1" member="yes">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <object class="wxStaticText" name="ID_STATICTEXT1" variable="lblIntro" member="yes">
+                    <label>Welcome to the new console application wizard!&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;</label>
+                    <style>wxST_NO_AUTORESIZE</style>
+                </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <border>8</border>
+                <option>1</option>
+            </object>
+            <object class="sizeritem">
+                <object class="wxCheckBox" name="ID_CHECKBOX1" variable="chkSkip" member="yes">
+                    <label>Skip this page next time</label>
+                </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <border>8</border>
+            </object>
+        </object>
+    </object>
+</wxsmith>

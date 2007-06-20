@@ -10,7 +10,6 @@
 //(*Headers(BuildTargetPanel)
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
-#include <wx/intl.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
@@ -46,19 +45,16 @@ class BuildTargetPanel: public wxPanel
 
 
         //(*Identifiers(BuildTargetPanel)
-        enum Identifiers
-        {
-            ID_CHECKBOX1 = 0x1000,
-            ID_COMBOBOX1,
-            ID_STATICTEXT1,
-            ID_STATICTEXT2,
-            ID_STATICTEXT3,
-            ID_STATICTEXT4,
-            ID_STATICTEXT5,
-            ID_TEXTCTRL1,
-            ID_TEXTCTRL2,
-            ID_TEXTCTRL3
-        };
+        static const long ID_STATICTEXT1;
+        static const long ID_STATICTEXT3;
+        static const long ID_TEXTCTRL1;
+        static const long ID_STATICTEXT2;
+        static const long ID_COMBOBOX1;
+        static const long ID_STATICTEXT4;
+        static const long ID_TEXTCTRL2;
+        static const long ID_STATICTEXT5;
+        static const long ID_TEXTCTRL3;
+        static const long ID_CHECKBOX1;
         //*)
 
     private:

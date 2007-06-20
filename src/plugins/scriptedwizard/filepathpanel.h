@@ -11,9 +11,7 @@
 #include <wx/button.h>
 #include <wx/checkbox.h>
 #include <wx/checklst.h>
-#include <wx/intl.h>
 #include <wx/panel.h>
-#include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -39,20 +37,17 @@ class FilePathPanel: public wxPanel
         }
 
 		//(*Identifiers(FilePathPanel)
-		enum Identifiers
-		{
-		  ID_STATICTEXT1 = 0x1000,
-		  ID_STATICTEXT2,
-		  ID_TEXTCTRL1,
-		  ID_BUTTON1,
-		  ID_STATICTEXT3,
-		  ID_TEXTCTRL2,
-		  ID_CHECKBOX1,
-		  ID_STATICTEXT4,
-		  ID_CHECKLISTBOX2,
-		  ID_BUTTON2,
-		  ID_BUTTON3
-		};
+		static const long ID_STATICTEXT1;
+		static const long ID_STATICTEXT2;
+		static const long ID_TEXTCTRL1;
+		static const long ID_BUTTON1;
+		static const long ID_STATICTEXT3;
+		static const long ID_TEXTCTRL2;
+		static const long ID_CHECKBOX1;
+		static const long ID_STATICTEXT4;
+		static const long ID_CHECKLISTBOX2;
+		static const long ID_BUTTON2;
+		static const long ID_BUTTON3;
 		//*)
 
 	private:
@@ -72,13 +67,12 @@ class FilePathPanel: public wxPanel
 		wxStaticText* lblGuard;
 		wxTextCtrl* txtGuard;
 		wxCheckBox* chkAddToProject;
-		wxBoxSizer* BoxSizer3;
-		wxBoxSizer* BoxSizer4;
-		wxBoxSizer* BoxSizer5;
+		wxFlexGridSizer* FlexGridSizer1;
 		wxCheckListBox* clbTargets;
 		wxBoxSizer* BoxSizer6;
 		wxButton* btnAll;
 		wxButton* btnNone;
+		wxBoxSizer* BoxSizer3;
 		//*)
 
 		wxString m_ExtFilter;
