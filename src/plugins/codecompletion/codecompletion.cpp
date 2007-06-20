@@ -984,7 +984,10 @@ void CodeCompletion::OnStartParsingProjects(wxTimerEvent& event)
 void CodeCompletion::OnProjectOpened(CodeBlocksEvent& event)
 {
     if (IsAttached() && m_InitDone)
+    {
         m_NativeParsers.AddParser(event.GetProject());
+        ParseFunctionsAndFillToolbar();
+    }
     event.Skip();
 }
 
