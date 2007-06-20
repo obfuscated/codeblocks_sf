@@ -445,7 +445,7 @@ bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
     }
 
     char* buff = new char[len+1];
-    if (!buff)
+    if (!buff) // remark by killerbot : this is useless, since when out of mem --> exception (this is not malloc you know)
     {
         file.Close();
         return false;
@@ -455,10 +455,10 @@ bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
     buff[len]='\0';
 
 	DetectEncodingAndConvert(buff, st, encoding);
-	delete buff;
+	delete [] buff;
 
     return true;
-}
+} // end of cbRead
 
 wxString cbReadFileContents(wxFile& file, wxFontEncoding encoding)
 {
