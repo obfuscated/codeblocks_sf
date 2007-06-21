@@ -226,8 +226,9 @@ void wxsVersionConverter::AdoptOldSourceFile(const wxString& FileName,const wxSt
 
     if ( !IsInternalHeaders || !IsIdInit )
     {
-
-        wxString Content = wxsCoder::Get()->GetFullCode(FileName);
+        wxFontEncoding Encoding;
+        bool UseBOM;
+        wxString Content = wxsCoder::Get()->GetFullCode(FileName,Encoding,UseBOM);
 
         int Pos = 0;
         if ( !IsInternalHeaders )
@@ -276,7 +277,7 @@ void wxsVersionConverter::AdoptOldSourceFile(const wxString& FileName,const wxSt
 
             Content = Content.Mid(0,Pos) + AddIdInit + Content.Mid(Pos);
         }
-        wxsCoder::Get()->PutFullCode(FileName,Content);
+        wxsCoder::Get()->PutFullCode(FileName,Content,Encoding,UseBOM);
     }
 }
 

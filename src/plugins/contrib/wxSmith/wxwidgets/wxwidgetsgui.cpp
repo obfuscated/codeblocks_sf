@@ -285,7 +285,9 @@ bool wxWidgetsGUI::ScanForApp(ProjectFile* File)
     if ( IsAppSourceManaged(File->relativeFilename,Lang) ) return true;
 
     // Fetching source code
-    wxString Source = wxsCoder::Get()->GetFullCode(File->file.GetFullPath());
+    wxFontEncoding Encoding;
+    bool UseBOM;
+    wxString Source = wxsCoder::Get()->GetFullCode(File->file.GetFullPath(),Encoding,UseBOM);
 
     // Searching for app class
     if ( GetAppClassName(Source,Lang).empty() ) return false;
@@ -312,7 +314,9 @@ bool wxWidgetsGUI::AddSmithToApp(const wxString& RelativeFileName,wxsCodingLang 
     {
         wxString FullPath = GetProjectPath()+RelativeFileName;
         // Need to create some extra blocks of code.
-        wxString Source = wxsCoder::Get()->GetFullCode(FullPath);
+        wxFontEncoding Encoding;
+        bool UseBOM;
+        wxString Source = wxsCoder::Get()->GetFullCode(FullPath,Encoding,UseBOM);
         if ( Source.empty() ) return false;
 
         switch ( Lang )
@@ -384,7 +388,7 @@ bool wxWidgetsGUI::AddSmithToApp(const wxString& RelativeFileName,wxsCodingLang 
                     + Source.Mid(Pos);
 
                 // Writing new source back to files / editor
-                wxsCoder::Get()->PutFullCode(FullPath,Source);
+                wxsCoder::Get()->PutFullCode(FullPath,Source,Encoding,UseBOM);
                 break;
             }
             default:;

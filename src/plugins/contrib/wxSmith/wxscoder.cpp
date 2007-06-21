@@ -27,7 +27,30 @@
 #include <editormanager.h>
 #include <configmanager.h>
 #include <messagemanager.h>
-#include <wx/ffile.h>
+#include <encodingdetector.h>
+#include <globals.h>
+#include <wx/file.h>
+
+namespace
+{
+    bool ReadFileContentWithProperEncoding(const wxString& FileName,wxString& Content,wxFontEncoding& Encoding,bool& UseBOM)
+    {
+        EncodingDetector Detector(FileName);
+        if ( !Detector.IsOK() ) return false;
+        Encoding = Detector.GetFontEncoding();
+        if ( Encoding == wxFONTENCODING_ISO8859_1 )
+        {
+            wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxLocale::GetSystemEncodingName());
+            Encoding = wxFontMapper::GetEncodingFromName(enc_name);
+        }
+        UseBOM = Detector.UsesBOM();
+        wxFile Fl(FileName,wxFile::read);
+        if ( !Fl.IsOpened() ) return false;
+        if ( !cbRead(Fl,Content,Encoding) ) return false;
+        Content.Remove(0,Detector.GetBOMSizeInBytes() / sizeof(wxChar));
+        return true;
+    }
+}
 
 static wxsCoder SingletonObject;
 wxsCoder* wxsCoder::Singleton = &SingletonObject;
@@ -150,21 +173,16 @@ bool wxsCoder::ApplyChanges(cbEditor* Editor,const wxString& Header,const wxStri
 
 bool wxsCoder::ApplyChanges(const wxString& FileName,const wxString& Header,const wxString& End,wxString Code,bool CodeHasHeader,bool CodeHasEnd)
 {
-    wxFFile File(FileName,_T("rb"));
-    if ( !File.IsOpened() )
-    {
-    	DBGLOG(_("wxSmith: Couldn't open file '%s' for reading"),FileName.c_str());
-    	return false;
-    }
-
-    // TODO: Fix encoding issues
+    // Reading file content
     wxString Content;
-    if ( !File.ReadAll(&Content) )
+    wxFontEncoding Encoding;
+    bool UseBOM;
+
+    if ( !ReadFileContentWithProperEncoding(FileName,Content,Encoding,UseBOM) )
     {
-        DBGLOG(_("wxSmith: Couldn't read from file '%s'"),FileName.c_str());
+    	DBGLOG(_("wxSmith: Couldn't open file '%s'"),FileName.c_str());
     	return false;
     }
-    File.Close();
 
     // Detecting EOL in this sources
     wxString EOL;
@@ -243,20 +261,8 @@ bool wxsCoder::ApplyChanges(const wxString& FileName,const wxString& Header,cons
     Result += Code;
     Result += Content.Remove(0,EndPosition);
 
-    if ( !File.Open(FileName,_T("wb")) )
-    {
-    	DBGLOG(_("wxSmith: Couldn't open file '%s' for writing"),FileName.c_str());
-    	return false;
-    }
-
-    // TODO: Fix encoding issues
-    if ( !File.Write(Result) )
-    {
-    	DBGLOG(_("Couldn't write to file '%s'"),FileName.c_str());
-    	return false;
-    }
-
-	return true;
+    // Storing the result
+    return cbSaveToFile(FileName,Result,Encoding,UseBOM);
 }
 
 wxString wxsCoder::GetCode(const wxString& FileName,const wxString& Header,const wxString& End,bool IncludeHeader,bool IncludeEnd)
@@ -301,10 +307,11 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& Header,const
     }
     else
     {
-        wxFFile File(FileName,_T("r"));
         wxString Content;
-        if ( !File.IsOpened() ) return _T("");
-        if ( !File.ReadAll(&Content) ) return _T("");
+        wxFontEncoding Encoding;
+        bool UseBOM;
+        if ( !ReadFileContentWithProperEncoding(FileName,Content,Encoding,UseBOM) ) return _T("");
+
         int Position = Content.First(Header);
         if ( Position == -1 ) return _T("");
         int SpacesCut = 0;
@@ -327,7 +334,7 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& Header,const
     }
 }
 
-wxString wxsCoder::GetFullCode(const wxString& FileName)
+wxString wxsCoder::GetFullCode(const wxString& FileName,wxFontEncoding& Encoding,bool &UseBOM)
 {
     // Checking if editor is opened
 	EditorManager* EM = Manager::Get()->GetEditorManager();
@@ -336,20 +343,20 @@ wxString wxsCoder::GetFullCode(const wxString& FileName)
 
     if ( Editor )
     {
+        Encoding = Editor->GetEncoding();
+        UseBOM = Editor->GetUseBom();
         cbStyledTextCtrl* Ctrl = Editor->GetControl();
         return Ctrl->GetText();
     }
     else
     {
-        wxFFile File(FileName,_T("r"));
         wxString Content;
-        if ( !File.IsOpened() ) return _T("");
-        if ( !File.ReadAll(&Content) ) return _T("");
+        if ( !ReadFileContentWithProperEncoding(FileName,Content,Encoding,UseBOM) ) return _T("");
         return Content;
     }
 }
 
-void wxsCoder::PutFullCode(const wxString& FileName,const wxString& Code)
+void wxsCoder::PutFullCode(const wxString& FileName,const wxString& Code,wxFontEncoding Encoding,bool UseBOM)
 {
     // Searching for file in opened file list
 	EditorManager* EM = Manager::Get()->GetEditorManager();
@@ -362,8 +369,7 @@ void wxsCoder::PutFullCode(const wxString& FileName,const wxString& Code)
     }
     else
     {
-        wxFile Fl(FileName,wxFile::write);
-        Fl.Write(Code);
+        cbSaveToFile(FileName,Code,Encoding,UseBOM);
     }
 }
 

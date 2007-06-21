@@ -53,10 +53,10 @@ class wxsCoder
             bool IncludeEnd=false);
 
         /** \brief Getting full file code */
-        wxString GetFullCode(const wxString& FileName);
+        wxString GetFullCode(const wxString& FileName,wxFontEncoding& Encoding,bool &UseBOM);
 
         /** \brief Writing code for whole file */
-        void PutFullCode(const wxString& FileName,const wxString& Code);
+        void PutFullCode(const wxString& FileName,const wxString& Code,wxFontEncoding Encoding,bool UseBOM);
 
 		/** \brief Function getting singleton object from system */
 		static wxsCoder* Get() { return Singleton; }
