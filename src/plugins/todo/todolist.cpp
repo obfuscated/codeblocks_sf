@@ -20,6 +20,7 @@
 #include "configmanager.h"
 #include "editormanager.h"
 #include "manager.h"
+#include "projectmanager.h"
 //#include "messagemanager.h"
 #include "sdk_events.h"
 #endif
