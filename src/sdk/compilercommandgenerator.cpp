@@ -421,14 +421,14 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
 	TargetFilenameGenerationPolicy PrefixPolicy;
 	TargetFilenameGenerationPolicy ExtensionPolicy;
 	target->GetTargetFilenameGenerationPolicy(PrefixPolicy, ExtensionPolicy);
-	if(PrefixPolicy == tgfpPlatformDefault)
+	if ((PrefixPolicy == tgfpPlatformDefault) || (target->GetTargetType() == ttDynamicLib))
 	{
 		if (!fname.GetName().StartsWith(compiler->GetSwitches().libPrefix))
 		{
 			fname.SetName(compiler->GetSwitches().libPrefix + fname.GetName());
 		}
 	}
-	if(ExtensionPolicy == tgfpPlatformDefault)
+	if ((ExtensionPolicy == tgfpPlatformDefault) || (target->GetTargetType() == ttDynamicLib))
 	{
 		fname.SetExt(compiler->GetSwitches().libExtension);
 	}
