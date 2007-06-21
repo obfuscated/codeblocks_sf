@@ -1,8 +1,6 @@
 #ifndef GENERICSELECTPATH_H
 #define GENERICSELECTPATH_H
 
-#include <wx/wxprec.h>
-
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
@@ -14,6 +12,8 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 //*)
+
+class wxString;
 
 class GenericSelectPath: public wxPanel
 {

@@ -1,5 +1,8 @@
 #include "genericsinglechoicelist.h"
-#include "prep.h"
+
+#include <wx/arrstr.h>
+#include <wx/intl.h>
+#include <wx/string.h>
 
 //(*IdInit(GenericSingleChoiceList)
 const long GenericSingleChoiceList::ID_STATICTEXT1 = wxNewId();
@@ -16,7 +19,7 @@ GenericSingleChoiceList::GenericSingleChoiceList(wxWindow* parent,wxWindowID id)
 	//(*Initialize(GenericSingleChoiceList)
 	wxBoxSizer* BoxSizer1;
 	wxStaticBoxSizer* StaticBoxSizer1;
-	
+
 	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	lblDescr = new wxStaticText(this,ID_STATICTEXT1,_("Description"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));

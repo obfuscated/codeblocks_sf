@@ -1,8 +1,6 @@
 #ifndef GENERICSINGLECHOICELIST_H
 #define GENERICSINGLECHOICELIST_H
 
-#include <wx/wxprec.h>
-
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
@@ -14,7 +12,8 @@
 #include <wx/stattext.h>
 //*)
 
-#include <wx/dynarray.h>
+class wxArrayString;
+class wxString;
 
 class GenericSingleChoiceList: public wxPanel
 {
