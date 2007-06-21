@@ -1,5 +1,7 @@
 #include "buildtargetpanel.h"
 
+#include <wx/intl.h>
+
 //(*IdInit(BuildTargetPanel)
 const long BuildTargetPanel::ID_STATICTEXT1 = wxNewId();
 const long BuildTargetPanel::ID_STATICTEXT3 = wxNewId();
@@ -31,7 +33,7 @@ BuildTargetPanel::BuildTargetPanel(wxWindow* parent,wxWindowID id)
     wxFlexGridSizer* FlexGridSizer1;
     wxStaticText* StaticText4;
     wxStaticText* StaticText5;
-    
+
     Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Please setup the options for the new build target."),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));

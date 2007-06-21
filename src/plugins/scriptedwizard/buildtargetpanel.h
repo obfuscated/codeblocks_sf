@@ -16,6 +16,8 @@
 #include <wx/textctrl.h>
 //*)
 
+#include <wx/string.h>
+
 class BuildTargetPanel: public wxPanel
 {
     public:
