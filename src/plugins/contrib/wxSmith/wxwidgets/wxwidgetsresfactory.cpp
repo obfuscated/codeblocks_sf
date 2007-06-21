@@ -31,6 +31,7 @@
 #include "../wxsmith.h"
 
 #include <wx/choicdlg.h>
+#include <tinyxml/tinywxuni.h>
 #include <sqplus.h>
 #include <sc_base_types.h>
 
@@ -74,8 +75,8 @@ namespace
         wxString ResourceType;
 
         // First thing we fetch resource name and type from wxs file
-        TiXmlDocument Doc(cbU2C(WxsProject->GetProjectPath() + WxsFile));
-        if ( Doc.LoadFile() )
+        TiXmlDocument Doc;
+        if ( TinyXML::LoadDocument(WxsProject->GetProjectPath()+WxsFile,&Doc) )
         {
             TiXmlElement* Root = Doc.RootElement();
             if ( Root )
@@ -207,7 +208,7 @@ bool wxWidgetsResFactory::OnCanHandleExternal(const wxString& FileName)
 wxsResource* wxWidgetsResFactory::OnBuildExternal(const wxString& FileName)
 {
     TiXmlDocument Doc;
-    if ( !Doc.LoadFile(cbU2C(FileName)) ) return NULL;
+    if ( !TinyXML::LoadDocument(FileName,&Doc) ) return NULL;
 
     wxArrayString ResourcesFound;
     wxArrayElement XmlElements;

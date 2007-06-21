@@ -29,6 +29,7 @@
 #include "../wxscoder.h"
 
 #include <wx/clipbrd.h>
+#include <tinyxml/tinywxuni.h>
 
 namespace
 {
@@ -177,8 +178,8 @@ bool wxsItemResData::SilentLoad()
 
 bool wxsItemResData::LoadInFileMode()
 {
-    TiXmlDocument Doc(cbU2C(m_XrcFileName));
-    if ( !Doc.LoadFile() ) return false;
+    TiXmlDocument Doc;
+    if ( !TinyXML::LoadDocument(m_XrcFileName,&Doc) ) return false;
 
     TiXmlElement* Resource = Doc.FirstChildElement("resource");
     if ( !Resource ) return false;
@@ -205,10 +206,10 @@ bool wxsItemResData::LoadInMixedMode()
 {
     // TODO: Check if source / header files have required blocks of code
 
-    TiXmlDocument DocExtra(cbU2C(m_WxsFileName));
-    if ( !DocExtra.LoadFile() ) return false;
-    TiXmlDocument DocXrc(cbU2C(m_XrcFileName));
-    if ( !DocXrc.LoadFile() ) return false;
+    TiXmlDocument DocExtra;
+    if ( !TinyXML::LoadDocument(m_WxsFileName,&DocExtra) ) return false;
+    TiXmlDocument DocXrc;
+    if ( !TinyXML::LoadDocument(m_XrcFileName,&DocXrc) ) return false;
 
     // Loading XRC data from Xrc file
 
@@ -309,8 +310,8 @@ bool wxsItemResData::LoadInSourceMode()
 {
     // TODO: Check if source / header files have required blocks of code
 
-    TiXmlDocument Doc(cbU2C(m_WxsFileName));
-    if ( !Doc.LoadFile() )
+    TiXmlDocument Doc;
+    if ( !TinyXML::LoadDocument(m_WxsFileName,&Doc)  )
     {
         DBGLOG(_T("wxSmith: Error loading wxs file (Col: %d, Row:%d): ") + cbC2U(Doc.ErrorDesc()),Doc.ErrorCol(),Doc.ErrorRow());
         return false;
@@ -406,7 +407,7 @@ bool wxsItemResData::SaveInMixedMode()
 
     // Storing extra data into Wxs file
 
-    TiXmlDocument Doc(cbU2C(m_WxsFileName));
+    TiXmlDocument Doc;
 
     Doc.InsertEndChild(TiXmlDeclaration("1.0","utf-8",""));
     TiXmlElement* wxSmithNode = Doc.InsertEndChild(TiXmlElement("wxsmith"))->ToElement();
@@ -419,7 +420,7 @@ bool wxsItemResData::SaveInMixedMode()
         SaveExtraDataReq(m_Tools[i],Extra);
     }
 
-    if ( Doc.SaveFile() )
+    if ( TinyXML::SaveDocument(m_WxsFileName,&Doc) )
     {
         m_Undo.Saved();
         return true;
@@ -461,7 +462,7 @@ void wxsItemResData::SaveExtraDataReq(wxsItem* Item,TiXmlElement* Node)
 
 bool wxsItemResData::SaveInSourceMode()
 {
-    TiXmlDocument Doc(cbU2C(m_WxsFileName));
+    TiXmlDocument Doc;
 
     Doc.InsertEndChild(TiXmlDeclaration("1.0","utf-8",""));
     TiXmlElement* wxSmithNode = Doc.InsertEndChild(TiXmlElement("wxsmith"))->ToElement();
@@ -476,7 +477,7 @@ bool wxsItemResData::SaveInSourceMode()
         m_Tools[i]->XmlWrite(ToolElement,true,true);
     }
 
-    if ( Doc.SaveFile() )
+    if ( TinyXML::SaveDocument(m_WxsFileName,&Doc) )
     {
         m_Undo.Saved();
         return true;
@@ -923,7 +924,7 @@ bool wxsItemResData::RebuildXrcFile()
     TiXmlElement* Resources;
     TiXmlElement* Object;
 
-    if ( Doc.LoadFile(cbU2C(m_XrcFileName)) )
+    if ( TinyXML::LoadDocument(m_XrcFileName,&Doc) )
     {
         Resources = Doc.FirstChildElement("resource");
     }
@@ -965,7 +966,7 @@ bool wxsItemResData::RebuildXrcFile()
     }
 
     // ... and save back the file
-    return Doc.SaveFile(cbU2C(m_XrcFileName));
+    return TinyXML::SaveDocument(m_XrcFileName,&Doc);
 }
 
 void wxsItemResData::BeginChange()

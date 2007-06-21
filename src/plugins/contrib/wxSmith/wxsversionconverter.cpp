@@ -27,6 +27,7 @@
 
 #include <globals.h>
 #include <wx/string.h>
+#include <tinyxml/tinywxuni.h>
 
 // TODO: This is same as in wxsproject.h, make one set instead of two
 namespace
@@ -121,8 +122,8 @@ TiXmlElement* wxsVersionConverter::ConvertFromOldConfig(TiXmlElement* ConfigNode
 
 void wxsVersionConverter::ConvertOldWxsFile(const wxString& FileName,bool UsingXrc) const
 {
-    TiXmlDocument Doc(cbU2C(FileName));
-    if ( !Doc.LoadFile() ) return;
+    TiXmlDocument Doc;
+    if ( !TinyXML::LoadDocument(FileName,&Doc) ) return;
 
     TiXmlElement* Smith = Doc.FirstChildElement("resource");
     if ( Smith )
@@ -138,7 +139,7 @@ void wxsVersionConverter::ConvertOldWxsFile(const wxString& FileName,bool UsingX
         GatherExtraFromOldResourceReq(Resource,Extra,true);
     }
 
-    Doc.SaveFile();
+    TinyXML::SaveDocument(FileName,&Doc);
 }
 
 void wxsVersionConverter::GatherExtraFromOldResourceReq(TiXmlElement* Object,TiXmlElement* Extra,bool Root) const
