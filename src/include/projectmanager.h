@@ -265,6 +265,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * the workspace, if it is modified)
           */
         bool CloseWorkspace();
+
         /** Check if the project manager is loading a project.
           * @return True if it's loading a project, false otherwise
           */
@@ -285,6 +286,15 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * @return True if it's closing a workspace, false otherwise
           */
         bool IsClosingWorkspace();
+        /** Check if the project manager is loading/closing a project/workspace.
+          * @return True if it is loading/closing something, false otherwise
+          */
+        bool IsLoadingOrClosing();
+        /** For use with plugins. Checks whether files in the project MAY be processed.
+          * This function has been made static for your convenience :)
+          * @return true if Loading,closing a project/workspace, or if the app is shutting down. False otherwise
+          */
+        static bool IsBusy();
         /** Get the current workspace filename.
           * @return The current workspace filename.
           */

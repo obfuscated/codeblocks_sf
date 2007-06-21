@@ -1245,6 +1245,26 @@ bool ProjectManager::CloseWorkspace()
     return true;
 }
 
+// This function is static for your convenience :)
+bool ProjectManager::IsBusy()
+{
+    if(Manager::IsAppShuttingDown())
+    {
+        return true;
+    }
+    ProjectManager* projman = Manager::Get()->GetProjectManager();
+    if(!projman)
+    {
+        return true;
+    }
+    return projman->IsLoadingOrClosing();
+}
+
+bool ProjectManager::IsLoadingOrClosing()
+{
+    return (m_IsLoadingProject || m_IsLoadingWorkspace || m_IsClosingProject || m_IsClosingWorkspace);
+}
+
 bool ProjectManager::IsLoadingProject()
 {
     return m_IsLoadingProject;

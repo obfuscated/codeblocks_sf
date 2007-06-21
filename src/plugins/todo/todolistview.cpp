@@ -25,19 +25,21 @@
 
 int idSource = wxNewId();
 int idUser = wxNewId();
-int idRefresh = wxNewId();
+int idButtonRefresh = wxNewId();
 
 BEGIN_EVENT_TABLE(ToDoListView, SimpleListLog)
 	EVT_COMBOBOX(idSource, ToDoListView::OnComboChange)
 	EVT_COMBOBOX(idUser, ToDoListView::OnComboChange)
-	EVT_BUTTON(idRefresh, ToDoListView::OnRefresh)
+	EVT_BUTTON(idButtonRefresh, ToDoListView::OnButtonRefresh)
 END_EVENT_TABLE()
 
 ToDoListView::ToDoListView(int numCols, int widths[], const wxArrayString& titles, const wxArrayString& m_Types)
     : SimpleListLog(numCols, widths, titles),
     m_pSource(0L),
     m_pUser(0L),
-    m_Types(m_Types)
+    m_Types(m_Types),
+    m_LastFile(wxEmptyString),
+    m_ignore(false)
 {
 	//ctor
     int id = m_pList->GetId();
@@ -70,7 +72,7 @@ ToDoListView::ToDoListView(int numCols, int widths[], const wxArrayString& title
         m_pUser->SetSelection(0);
         hbs->Add(m_pUser, 0, wxLEFT, 8);
 
-        m_pRefresh = new wxButton(this, idRefresh, _("Refresh list"));
+        m_pRefresh = new wxButton(this, idButtonRefresh, _("Refresh list"));
         hbs->Add(m_pRefresh, 0, wxLEFT, 8);
 
         bs->Add(hbs, 0, wxGROW | wxALL, 8);
@@ -110,6 +112,31 @@ void ToDoListView::FillList()
 	LoadUsers();
 	GetListControl()->Freeze();
 	Clear();
+    m_Items.Clear();
+
+    TodoItemsMap::iterator it;
+
+    if(m_pSource->GetSelection()==0) // Single file
+	{
+        wxString filename(wxEmptyString);
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor());
+        if(ed)
+            filename = ed->GetFilename();
+        for(unsigned int i = 0; i < m_itemsmap[filename].size(); i++)
+        {
+            m_Items.Add(m_itemsmap[filename][i]);
+        }
+	}
+    else
+    {
+        for(it = m_itemsmap.begin();it != m_itemsmap.end();++it)
+        {
+            for(unsigned int i = 0; i < it->second.size(); i++)
+            {
+                m_Items.Add(it->second[i]);
+            }
+        }
+    }
 
 	for (unsigned int i = 0; i < m_Items.GetCount(); ++i)
 	{
@@ -129,11 +156,32 @@ void ToDoListView::FillList()
 	GetListControl()->Thaw();
 }
 
+void ToDoListView::ParseCurrent(bool forced)
+{
+    if(m_ignore)
+        return; // Reentrancy
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor());
+    if(ed)
+    {
+        wxString filename = ed->GetFilename();
+        if(forced || filename != m_LastFile)
+        {
+            m_LastFile = filename;
+            m_Items.Clear();
+            ParseEditor(ed);
+        }
+    }
+    FillList();
+}
+
 void ToDoListView::Parse()
 {
 //    wxBusyCursor busy;
-
 	// based on user prefs, parse files for todo items
+    if(m_ignore)
+        return; // Reentrancy
+    Clear();
+    m_itemsmap.clear();
 	m_Items.Clear();
 
 	switch (m_pSource->GetSelection())
@@ -195,8 +243,8 @@ int ToDoListView::CalculateLineNumber(const wxString& buffer, int upTo)
 
 void ToDoListView::ParseEditor(cbEditor* pEditor)
 {
-	if (pEditor)
-		ParseBuffer(pEditor->GetControl()->GetText(), pEditor->GetFilename());
+    if (pEditor)
+        ParseBuffer(pEditor->GetControl()->GetText(), pEditor->GetFilename());
 }
 
 void ToDoListView::ParseFile(const wxString& filename)
@@ -223,6 +271,8 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
     // TODO (mandrav#0#): Implement code to do this and the other...
 	// and a generic version...
     // TODO: Implement code to do this and the other...
+
+    m_itemsmap[filename].clear();
 
 	for (unsigned int i = 0; i < m_Types.GetCount(); ++i)
 	{
@@ -356,7 +406,8 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 				item.user.Trim(false);
 				item.line = CalculateLineNumber(buffer, pos);
 				item.lineStr << wxString::Format(_T("%d"), item.line + 1); // 1-based line number for list
-				m_Items.Add(item);
+				m_itemsmap[filename].push_back(item);
+				// m_Items.Add(item);
 			}
 			else
 				break; // invalid style...
@@ -376,6 +427,19 @@ void ToDoListView::OnListItemSelected(wxListEvent& event)
 {
     if (event.GetIndex() == -1)
         return;
+    FocusEntry(event.GetIndex());
+}
+
+void ToDoListView::OnButtonRefresh(wxCommandEvent& event)
+{
+    Parse();
+}
+
+void ToDoListView::OnDoubleClick( wxListEvent& event )
+{    //pecan 1/2/2006 12PM // Switched with OnListItemSelected by Rick 20/07/2007
+
+    if (event.GetIndex() == -1)
+        return;
     unsigned int idx = GetListControl()->GetItemData(event.GetIndex());
     wxString file = m_Items[idx].filename;
     long int line = m_Items[idx].line;
@@ -387,20 +451,13 @@ void ToDoListView::OnListItemSelected(wxListEvent& event)
 	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(file);
 	if (ed)
 	{
+		bool old_ignore = m_ignore;
+		m_ignore = true;
 		ed->Activate();
 		ed->GotoLine(line);
+		FocusEntry(idx);
+		m_ignore = old_ignore;
     }
-}
-
-void ToDoListView::OnRefresh(wxCommandEvent& event)
-{
-    Parse();
-}
-
-void ToDoListView::OnDoubleClick( wxListEvent& event )
-{    //pecan 1/2/2006 12PM
-    FocusEntry(event.GetIndex());
-    OnListItemSelected(event);
 }
 
 void ToDoListView::FocusEntry(size_t index)                 //pecan 1/2/2006 12PM

@@ -28,7 +28,6 @@ class CodeBlocksEvent;
 class ToDoListView;
 class FileTreeData;
 
-
 class ToDoList : public cbPlugin
 {
 	public:
@@ -41,16 +40,26 @@ class ToDoList : public cbPlugin
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 	private:
+		void OnAppDoneStartup(CodeBlocksEvent& event);
 		void OnViewList(wxCommandEvent& event);
 		void OnAddItem(wxCommandEvent& event);
 		void OnReparse(CodeBlocksEvent& event);
+        void OnReparseCurrent(CodeBlocksEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
+		void OnStartParsingProjects(wxTimerEvent& event);
         void LoadTypes();
         void SaveTypes();
+        void ParseCurrent(bool forced = false);
+        void Parse();
+
 		ToDoListView* m_pListLog;
 		int m_ListPageIndex;
 		bool m_AutoRefresh;
+		bool m_InitDone;
+		bool m_ParsePending;
 		wxArrayString m_Types;
+		wxTimer m_timer;
+
 		DECLARE_EVENT_TABLE()
 };
 

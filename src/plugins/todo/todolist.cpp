@@ -40,22 +40,26 @@ namespace
 
 const int idViewTodo = wxNewId();
 const int idAddTodo = wxNewId();
+const int idStartParsing = wxNewId();
 
 BEGIN_EVENT_TABLE(ToDoList, cbPlugin)
 	EVT_UPDATE_UI(idViewTodo, ToDoList::OnUpdateUI)
 	EVT_MENU(idViewTodo, ToDoList::OnViewList)
 	EVT_MENU(idAddTodo, ToDoList::OnAddItem)
-    EVT_EDITOR_OPEN(ToDoList::OnReparse)
-    EVT_EDITOR_SAVE(ToDoList::OnReparse)
-    EVT_EDITOR_ACTIVATED(ToDoList::OnReparse)
-	EVT_EDITOR_CLOSE(ToDoList::OnReparse)
+    EVT_APP_STARTUP_DONE(ToDoList::OnAppDoneStartup)
+    EVT_EDITOR_OPEN(ToDoList::OnReparseCurrent)
+    EVT_EDITOR_SAVE(ToDoList::OnReparseCurrent)
+    EVT_EDITOR_ACTIVATED(ToDoList::OnReparseCurrent)
+	EVT_EDITOR_CLOSE(ToDoList::OnReparseCurrent)
     EVT_PROJECT_CLOSE(ToDoList::OnReparse)
     EVT_PROJECT_ACTIVATE(ToDoList::OnReparse)
     EVT_PROJECT_FILE_ADDED(ToDoList::OnReparse)
     EVT_PROJECT_FILE_REMOVED(ToDoList::OnReparse)
 END_EVENT_TABLE()
 
-ToDoList::ToDoList()
+ToDoList::ToDoList() :
+m_InitDone(false),
+m_ParsePending(false)
 {
 	//ctor
     if(!Manager::LoadResource(_T("todo.zip")))
@@ -182,6 +186,13 @@ void ToDoList::SaveTypes()
 }
 
 // events
+
+void ToDoList::OnAppDoneStartup(CodeBlocksEvent& event)
+{
+    m_InitDone = true;
+    Parse();
+    event.Skip();
+}
 
 void ToDoList::OnUpdateUI(wxUpdateUIEvent& event)
 {
@@ -339,12 +350,47 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
 	control->GotoPos(origPos);
 	control->EnsureCaretVisible();
 
-	m_pListLog->Parse();
+	ParseCurrent(true);
 } // end of OnAddItem
 
 void ToDoList::OnReparse(CodeBlocksEvent& event)
 {
-    if (m_AutoRefresh)
-        m_pListLog->Parse();
+    if (m_InitDone && m_AutoRefresh && !(ProjectManager::IsBusy()))
+    {
+        Parse();
+    }
+    else
+    {
+        m_ParsePending = true;
+        m_pListLog->Clear();
+    }
     event.Skip();
+}
+
+void ToDoList::OnReparseCurrent(CodeBlocksEvent& event)
+{
+    bool forced = (event.GetEventType() == cbEVT_EDITOR_OPEN || event.GetEventType() == cbEVT_EDITOR_SAVE);
+    if (m_InitDone && m_AutoRefresh && !(ProjectManager::IsBusy()))
+    {
+        if(m_ParsePending)
+        {
+            m_ParsePending = false;
+            Parse();
+        }
+        else
+        {
+            ParseCurrent(forced);
+        }
+    }
+    event.Skip();
+}
+
+void ToDoList::ParseCurrent(bool forced)
+{
+    m_pListLog->ParseCurrent(forced);
+}
+
+void ToDoList::Parse()
+{
+    m_pListLog->Parse();
 }
