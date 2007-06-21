@@ -1,6 +1,7 @@
 #include "projectpathpanel.h"
 #include <filefilters.h>
 #include <wx/filename.h>
+#include <wx/intl.h>
 
 //(*IdInit(ProjectPathPanel)
 const long ProjectPathPanel::ID_STATICTEXT1 = wxNewId();
@@ -32,7 +33,7 @@ ProjectPathPanel::ProjectPathPanel(wxWindow* parent,wxWindowID id)
 	wxStaticText* StaticText2;
 	wxStaticText* StaticText3;
 	wxStaticText* StaticText5;
-	
+
 	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Please select the folder where you want the new project\nto be created as well as its title."),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));

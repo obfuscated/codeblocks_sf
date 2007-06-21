@@ -1,8 +1,6 @@
 #ifndef PROJECTPATHPANEL_H
 #define PROJECTPATHPANEL_H
 
-#include <wx/wxprec.h>
-
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif
@@ -14,6 +12,8 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 //*)
+
+#include <wx/string.h>
 
 class ProjectPathPanel: public wxPanel
 {
