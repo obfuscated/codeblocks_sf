@@ -59,7 +59,7 @@ cbConfigurationPanel* wxWidgetsGUI::OnBuildConfigurationPanel(wxWindow* Parent)
 void wxWidgetsGUI::OnRebuildApplicationCode()
 {
     bool IsAnyXRC = false;
-    wxWidgetsRes* MainResPtr = NULL;
+    wxWidgetsRes* MainResPtr = 0;
 
     size_t Count = GetProject()->GetResourcesCount();
     for ( size_t i=0; i<Count; i++ )
@@ -183,7 +183,7 @@ bool wxWidgetsGUI::OnCheckIfApplicationManaged()
 
 bool wxWidgetsGUI::OnCreateApplicationBinding()
 {
-    wxWidgetsGUIAppAdoptingDlg Dlg(NULL,this);
+    wxWidgetsGUIAppAdoptingDlg Dlg(0,this);
     Dlg.ShowModal();
     return OnCheckIfApplicationManaged();
 }
@@ -506,7 +506,7 @@ void wxWidgetsGUI::EnumerateMainResources(wxArrayString& Names)
     for ( int i=0; i<Count; i++ )
     {
         wxWidgetsRes* Res = wxDynamicCast(GetProject()->GetResource(i),wxWidgetsRes);
-        if ( Res == NULL ) continue;
+        if ( Res == 0 ) continue;
         if ( Res->GetGUI() != GetName() ) continue;
         if ( !Res->OnGetCanBeMain() ) continue;
         if ( Res->GetLanguage() != m_AppLanguage ) continue;

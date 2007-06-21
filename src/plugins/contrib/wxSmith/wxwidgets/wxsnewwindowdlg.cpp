@@ -205,7 +205,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
 
     // Creating new resource
     wxString WxsFile = Class + _T(".wxs");
-    wxsItemRes* NewResource = NULL;
+    wxsItemRes* NewResource = 0;
 
     if ( m_Type == _T("wxDialog") )
     {

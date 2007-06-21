@@ -57,7 +57,7 @@ wxsResource::wxsResource(wxsProject* Owner,const wxString& ResourceType,const wx
     m_ResourceName(wxEmptyString),
     m_GUI(GUI),
     m_Owner(Owner),
-    m_Editor(NULL),
+    m_Editor(0),
     m_Language(wxsCPP)
 {}
 
@@ -66,7 +66,7 @@ wxsResource::~wxsResource()
     if ( m_Editor )
     {
         wxsEditor* EditorStore = m_Editor;
-        m_Editor = NULL;
+        m_Editor = 0;
         EditorStore->Close();
     }
 }
@@ -94,7 +94,7 @@ void wxsResource::EditClose()
 
 void wxsResource::EditorClosed()
 {
-    m_Editor = NULL;
+    m_Editor = 0;
     if ( !m_Owner )
     {
         wxsExtRes()->EditorClosed(this);

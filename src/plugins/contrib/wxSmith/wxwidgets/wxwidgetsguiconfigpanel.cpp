@@ -79,7 +79,7 @@ wxWidgetsGUIConfigPanel::wxWidgetsGUIConfigPanel(wxWindow* parent,wxWidgetsGUI* 
 	FlexGridSizer1 = new wxFlexGridSizer(0,1,0,0);
 	FlexGridSizer1->AddGrowableCol(0);
 	FlexGridSizer1->AddGrowableRow(0);
-	MainRes = new wxComboBox(this,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxSize(201,21),0,NULL,wxCB_READONLY,wxDefaultValidator,_T("ID_COMBOBOX1"));
+	MainRes = new wxComboBox(this,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxSize(201,21),0,0,wxCB_READONLY,wxDefaultValidator,_T("ID_COMBOBOX1"));
 	FlexGridSizer1->Add(MainRes,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Window selected here will be created and\nshown while initializing application.\nYou should use one of frames here.\nUsing dialog as main resource is also\nacceptable but may lead to problems\nwith terminating application\nafter closing main dialog."),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE,_T("ID_STATICTEXT2"));
 	FlexGridSizer1->Add(StaticText2,1,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);

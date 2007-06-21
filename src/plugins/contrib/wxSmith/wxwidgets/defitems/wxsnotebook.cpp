@@ -99,7 +99,7 @@ namespace
                 //*)
                 ReadData();
 
-                Label->Connect(-1,wxEVT_KILL_FOCUS,(wxObjectEventFunction)&wxsNotebookParentQP::OnLabelKillFocus,NULL,this);
+                Label->Connect(-1,wxEVT_KILL_FOCUS,(wxObjectEventFunction)&wxsNotebookParentQP::OnLabelKillFocus,0,this);
             }
 
             virtual ~wxsNotebookParentQP()
@@ -335,7 +335,7 @@ bool wxsNotebook::OnEnsureChildPreviewVisible(wxsItem* Child)
 
 void wxsNotebook::UpdateCurrentSelection()
 {
-    wxsItem* NewCurrentSelection = NULL;
+    wxsItem* NewCurrentSelection = 0;
     for ( int i=0; i<GetChildCount(); i++ )
     {
         if ( m_CurrentSelection == GetChild(i) ) return;

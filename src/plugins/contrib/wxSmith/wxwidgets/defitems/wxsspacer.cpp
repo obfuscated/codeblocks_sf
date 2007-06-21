@@ -68,7 +68,7 @@ namespace
 
 }
 
-wxsSpacer::wxsSpacer(wxsItemResData* Data): wxsItem(Data,&Reg.Info,flSize,NULL)
+wxsSpacer::wxsSpacer(wxsItemResData* Data): wxsItem(Data,&Reg.Info,flSize,0)
 {}
 
 void wxsSpacer::OnEnumItemProperties(long Flags)
@@ -79,7 +79,7 @@ wxObject* wxsSpacer::OnBuildPreview(wxWindow* Parent,long Flags)
     if ( Flags & pfExact )
     {
         wxSize Sz = GetBaseProps()->m_Size.GetSize(Parent);
-        return new wxSizerItem(Sz.GetWidth(),Sz.GetHeight(),0,0,0,NULL);
+        return new wxSizerItem(Sz.GetWidth(),Sz.GetHeight(),0,0,0,0);
     }
     return new wxsSpacerPreview(Parent,GetBaseProps()->m_Size.GetSize(Parent));
 }
@@ -90,7 +90,7 @@ void wxsSpacer::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,
     wxsSizerExtra* Extra = (wxsSizerExtra*) GetParent()->GetChildExtra(Index);
     wxString ParentName = GetParent()->GetVarName();
 
-    if ( Extra == NULL ) return;
+    if ( Extra == 0 ) return;
 
     switch ( Language )
     {

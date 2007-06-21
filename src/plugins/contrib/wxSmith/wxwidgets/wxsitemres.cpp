@@ -120,7 +120,7 @@ wxsItemRes::wxsItemRes(wxsProject* Owner,const wxString& Type,bool CanBeMain):
 
 
 wxsItemRes::wxsItemRes(const wxString& FileName,const TiXmlElement* XrcElem,const wxString& Type):
-    wxWidgetsRes(NULL,Type),
+    wxWidgetsRes(0,Type),
     m_WxsFileName(wxEmptyString),
     m_SrcFileName(wxEmptyString),
     m_HdrFileName(wxEmptyString),

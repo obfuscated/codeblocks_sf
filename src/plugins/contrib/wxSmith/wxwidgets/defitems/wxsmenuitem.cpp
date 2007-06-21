@@ -44,8 +44,8 @@ wxsMenuItem::wxsMenuItem(wxsItemResData* Data,bool BreakOrSeparator):
     wxsTool(
         Data,
         &Info,
-        BreakOrSeparator?NULL:wxsMenuItemEvents,
-        NULL,
+        BreakOrSeparator?0:wxsMenuItemEvents,
+        0,
         BreakOrSeparator?0:flVariable|flId|flExtraCode),
     m_Type(Normal),
     m_Enabled(true),

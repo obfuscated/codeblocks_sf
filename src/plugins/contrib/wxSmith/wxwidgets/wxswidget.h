@@ -30,14 +30,14 @@ class wxsWidget: public wxsItem
          *         (see wxsBaseProperties for details)
          *  \param Info pointer to static widget info
          *  \param EventArray pointer to static set of events
-         *  \param StyleSet set of used styles, if NULL, this widget won't
+         *  \param StyleSet set of used styles, if 0, this widget won't
          *         provide styles by default
          */
         wxsWidget(
             wxsItemResData* Data,
             const wxsItemInfo* Info,
-            const wxsEventDesc* EventArray = NULL,
-            const wxsStyleSet* StyleSet=NULL,
+            const wxsEventDesc* EventArray = 0,
+            const wxsStyleSet* StyleSet=0,
             long PropertiesFlags = flWidget);
 
     protected:

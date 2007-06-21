@@ -164,7 +164,7 @@ class wxsPropertyContainer
         }
 
         /** \brief Function building quick properties window */
-        virtual wxsQuickPropsPanel* OnCreateQuickProperties(wxWindow* Parent) { return NULL; }
+        virtual wxsQuickPropsPanel* OnCreateQuickProperties(wxWindow* Parent) { return 0; }
 
         /** \brief Function notifying that one of properties has changed
          *

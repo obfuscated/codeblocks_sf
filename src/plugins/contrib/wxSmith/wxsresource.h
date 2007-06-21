@@ -58,9 +58,9 @@ class wxsResource: public wxObject
         void EditClose();
 
         /** \brief Checking if editor for this resource is opened */
-        inline bool IsEditorOpened() { return m_Editor!=NULL; }
+        inline bool IsEditorOpened() { return m_Editor!=0; }
 
-        /** \brief Getting pointer to editor or NULL if there's none */
+        /** \brief Getting pointer to editor or 0 if there's none */
         inline wxsEditor* GetEditor() { return m_Editor; }
 
         /** \brief Getting tree item id in resource browser */

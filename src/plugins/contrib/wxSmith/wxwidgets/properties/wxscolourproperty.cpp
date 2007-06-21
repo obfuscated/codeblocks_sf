@@ -52,7 +52,7 @@ namespace
             wxColourPropertyValue   m_value;
     };
 
-    WX_PG_DECLARE_PROPERTY(wxsMyColourProperty,const wxColourPropertyValue&,*((wxColourPropertyValue*)NULL))
+    WX_PG_DECLARE_PROPERTY(wxsMyColourProperty,const wxColourPropertyValue&,*((wxColourPropertyValue*)0))
 
     static const wxChar* wxsColourLabels[] = {
         _("Default"),
@@ -150,7 +150,7 @@ namespace
     {
         wxColourPropertyValue* pval = wxPGVariantToWxObjectPtr(value,wxColourPropertyValue);
 
-        if ( pval == (wxColourPropertyValue*) NULL )
+        if ( pval == (wxColourPropertyValue*) 0 )
         {
             m_value.m_type = wxsCOLOUR_DEFAULT;
             m_value.m_colour = *wxWHITE;

@@ -42,7 +42,7 @@ wxsGUIFactory::~wxsGUIFactory()
 
 wxsGUI* wxsGUIFactory::Build(const wxString& Name,wxsProject* Project)
 {
-    if ( GetHash().find(Name) == GetHash().end() ) return NULL;
+    if ( GetHash().find(Name) == GetHash().end() ) return 0;
     wxsGUIFactory* Factory = GetHash()[Name];
     wxsGUI* NewGUI = Factory->OnCreate(Project);
     if ( NewGUI->GetName() != Name )
@@ -52,7 +52,7 @@ wxsGUI* wxsGUIFactory::Build(const wxString& Name,wxsProject* Project)
         DBGLOG(_T("wxSmith:   Looks like bug in one wf wxsGUIFactory-derived classes or"));
         DBGLOG(_T("wxSmith:   some hack attempt."));
         delete NewGUI;
-        return NULL;
+        return 0;
     }
     return NewGUI;
 }
@@ -61,7 +61,7 @@ wxsGUI* wxsGUIFactory::SelectNew(const wxString& Message,wxsProject* Project)
 {
     if ( GetHash().empty() )
     {
-        return NULL;
+        return 0;
     }
     if ( GetHash().size() == 1 )
     {
@@ -77,7 +77,7 @@ wxsGUI* wxsGUIFactory::SelectNew(const wxString& Message,wxsProject* Project)
     wxString SelectedGUI = ::wxGetSingleChoice(Message,_("Select GUI"), GUIList);
     if ( SelectedGUI.empty() )
     {
-        return NULL;
+        return 0;
     }
 
     return Build(SelectedGUI,Project);

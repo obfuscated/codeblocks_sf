@@ -78,7 +78,7 @@ wxString wxsSizerExtra::AllParamsCode(const wxString& WindowParent,wxsCodingLang
 }
 
 wxsSizer::wxsSizer(wxsItemResData* Data,const wxsItemInfo* Info):
-    wxsParent(Data,Info,flVariable|flSubclass,NULL)
+    wxsParent(Data,Info,flVariable|flSubclass,0)
 {
 }
 

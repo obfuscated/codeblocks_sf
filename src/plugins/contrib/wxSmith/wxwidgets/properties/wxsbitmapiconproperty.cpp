@@ -121,7 +121,7 @@ wxsBitmapIconProperty::wxsBitmapIconProperty(const wxString& PGName,const wxStri
 
 bool wxsBitmapIconProperty::ShowEditor(wxsPropertyContainer* Object)
 {
-    wxsBitmapIconEditorDlg Dlg(NULL,VALUE,DefaultClient);
+    wxsBitmapIconEditorDlg Dlg(0,VALUE,DefaultClient);
     return Dlg.ShowModal() == wxID_OK;
 }
 

@@ -91,7 +91,7 @@ class wxsProperty
         /** \brief Fuunction reading value from xml element
          *
          * \param Object class where data should be stored
-         * \param Element Xml element for this property, may be NULL - in such case,
+         * \param Element Xml element for this property, may be 0 - in such case,
          *        default value should be applied
          * \return true on read success, false when applied default value
          */
@@ -103,7 +103,7 @@ class wxsProperty
          * this usually happens when value is equal to default one.
          *
          * \param Object class from which data should be read
-         * \param Element Xml element for this property, is not NULL
+         * \param Element Xml element for this property, is not 0
          * \return True of write success, false when this element should not be stored
          */
         virtual bool XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element) { return false; }
@@ -172,7 +172,7 @@ class wxsProperty
         long GetPropertiesFlags(wxsPropertyContainer* Object);
 
         /** \brief Helper function for fetching value from xml element
-         *  \param Elem - element holding value, may be NULL
+         *  \param Elem - element holding value, may be 0
          *  \param Value - here string will be stored
          *  \param SubChild - name of sub node, if empty, Elem will be used
          *  \return true when string exist, false if it does not exist
@@ -187,7 +187,7 @@ class wxsProperty
         static void XmlSetString(TiXmlElement* Elem,const wxString& Value,const wxString& SubChild = wxEmptyString);
 
         /** \brief Helper function for fetching long integer value from xml element
-         *  \param Elem - element holding value, may be NULL
+         *  \param Elem - element holding value, may be 0
          *  \param Value - here value will be stored
          *  \param SubChild - name of sub node, if empty, Elem will be used
          *  \return true when value exist and is valid long integer, false otherwie
@@ -209,7 +209,7 @@ class wxsProperty
         }
 
         /** \brief Helper function for fetching bool value from xml element
-         *  \param Elem - element holding value, may be NULL
+         *  \param Elem - element holding value, may be 0
          *  \param Value - here value will be stored
          *  \param SubChild - name of sub node, if empty, Elem will be used
          *  \return true when value exist and is valid bool, false otherwie

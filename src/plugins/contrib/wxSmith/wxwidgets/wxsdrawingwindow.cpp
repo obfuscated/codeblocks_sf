@@ -76,23 +76,23 @@ class wxsDrawingWindow::DrawingPanel: public wxPanel
         DrawingPanel(wxsDrawingWindow* Parent): wxPanel(Parent,DrawingPanelId), m_Parent(Parent)
         {
             // Connecting event handlers of drawing window
-            Connect(DrawingPanelId,wxEVT_PAINT,(wxObjectEventFunction)&wxsDrawingWindow::PanelPaint,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_LEFT_DOWN,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_LEFT_UP,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_LEFT_DCLICK,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_MIDDLE_DOWN,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_MIDDLE_UP,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_MIDDLE_DCLICK,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_RIGHT_DOWN,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_RIGHT_UP,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_RIGHT_DCLICK,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_MOTION,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_ENTER_WINDOW,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_LEAVE_WINDOW,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_MOUSEWHEEL,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_KEY_DOWN,(wxObjectEventFunction)&wxsDrawingWindow::PanelKeyboard,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_KEY_UP,(wxObjectEventFunction)&wxsDrawingWindow::PanelKeyboard,NULL,Parent);
-            Connect(DrawingPanelId,wxEVT_CHAR,(wxObjectEventFunction)&wxsDrawingWindow::PanelKeyboard,NULL,Parent);
+            Connect(DrawingPanelId,wxEVT_PAINT,(wxObjectEventFunction)&wxsDrawingWindow::PanelPaint,0,Parent);
+            Connect(DrawingPanelId,wxEVT_LEFT_DOWN,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
+            Connect(DrawingPanelId,wxEVT_LEFT_UP,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
+            Connect(DrawingPanelId,wxEVT_LEFT_DCLICK,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
+            Connect(DrawingPanelId,wxEVT_MIDDLE_DOWN,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
+            Connect(DrawingPanelId,wxEVT_MIDDLE_UP,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
+            Connect(DrawingPanelId,wxEVT_MIDDLE_DCLICK,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
+            Connect(DrawingPanelId,wxEVT_RIGHT_DOWN,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
+            Connect(DrawingPanelId,wxEVT_RIGHT_UP,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
+            Connect(DrawingPanelId,wxEVT_RIGHT_DCLICK,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
+            Connect(DrawingPanelId,wxEVT_MOTION,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
+            Connect(DrawingPanelId,wxEVT_ENTER_WINDOW,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
+            Connect(DrawingPanelId,wxEVT_LEAVE_WINDOW,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
+            Connect(DrawingPanelId,wxEVT_MOUSEWHEEL,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
+            Connect(DrawingPanelId,wxEVT_KEY_DOWN,(wxObjectEventFunction)&wxsDrawingWindow::PanelKeyboard,0,Parent);
+            Connect(DrawingPanelId,wxEVT_KEY_UP,(wxObjectEventFunction)&wxsDrawingWindow::PanelKeyboard,0,Parent);
+            Connect(DrawingPanelId,wxEVT_CHAR,(wxObjectEventFunction)&wxsDrawingWindow::PanelKeyboard,0,Parent);
 
             // Connecting handler for empty erase event handler
             Connect(DrawingPanelId,wxEVT_ERASE_BACKGROUND,(wxObjectEventFunction)&wxsDrawingWindow::DrawingPanel::OnEraseBack);
@@ -101,7 +101,7 @@ class wxsDrawingWindow::DrawingPanel: public wxPanel
         /** \brief Dctor */
         virtual ~DrawingPanel()
         {
-            m_Parent->Panel = NULL;
+            m_Parent->Panel = 0;
         }
 
         void OnEraseBack(wxEraseEvent& event)
@@ -116,8 +116,8 @@ END_EVENT_TABLE()
 
 wxsDrawingWindow::wxsDrawingWindow(wxWindow* Parent,wxWindowID id):
     wxScrolledWindow(Parent,id),
-    Panel(NULL),
-    Bitmap(NULL),
+    Panel(0),
+    Bitmap(0),
     IsBlockFetch(false),
     DuringFetch(false),
     DuringChangeCnt(0),
@@ -141,7 +141,7 @@ wxsDrawingWindow::~wxsDrawingWindow()
 {
     IsDestroyed = true;
     if ( Bitmap ) delete Bitmap;
-    Panel = NULL;
+    Panel = 0;
 }
 
 void wxsDrawingWindow::BeforeContentChanged()

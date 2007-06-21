@@ -70,7 +70,7 @@ BEGIN_EVENT_TABLE(wxsToolBarEditor,wxPanel)
 END_EVENT_TABLE()
 
 wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
-    m_Selected(NULL),
+    m_Selected(0),
     m_ToolBar(ToolBar),
     m_BlockTextChange(false)
 {
@@ -217,7 +217,7 @@ wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
 
 	if ( m_Content->GetCount() == 0 )
 	{
-	    SelectItem(NULL);
+	    SelectItem(0);
 	}
 	else
 	{
@@ -236,7 +236,7 @@ void wxsToolBarEditor::OnTypeChanged(wxCommandEvent& event)
 {
     // Saving data
     ToolBarItem* Selected = m_Selected;
-    SelectItem(NULL);           // Storing current content
+    SelectItem(0);           // Storing current content
     SelectItem(Selected);       // Updating screen's content
 }
 
@@ -339,7 +339,7 @@ void wxsToolBarEditor::Onm_ContentSelect(wxCommandEvent& event)
     int Selection = m_Content->GetSelection();
     if ( Selection == wxNOT_FOUND )
     {
-        SelectItem(NULL);
+        SelectItem(0);
     }
     else
     {
@@ -361,7 +361,7 @@ void wxsToolBarEditor::Onm_LabelText(wxCommandEvent& event)
 void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
 {
     m_BlockTextChange = true;
-    if ( m_Selected != NULL )
+    if ( m_Selected != 0 )
     {
         // Storing current content
         // If it's control we do not store anything since
@@ -513,7 +513,7 @@ void wxsToolBarEditor::OnDelClick(wxCommandEvent& event)
         else
         {
             m_Content->SetSelection(wxNOT_FOUND);
-            SelectItem(NULL);
+            SelectItem(0);
         }
     }
 }
@@ -525,7 +525,7 @@ void wxsToolBarEditor::OnBitmapClick(wxCommandEvent& event)
     SelectItem(Selected);
     wxsBitmapIconEditorDlg Dlg(this,Selected->m_Bitmap,_T("wxART_TOOLBAR"));
     Dlg.ShowModal();
-    SelectItem(NULL);
+    SelectItem(0);
     SelectItem(Selected);
 }
 
@@ -537,6 +537,6 @@ void wxsToolBarEditor::OnBitmap2Click(wxCommandEvent& event)
     SelectItem(Selected);
     wxsBitmapIconEditorDlg Dlg(this,Selected->m_Bitmap2,_T("wxART_TOOLBAR"));
     Dlg.ShowModal();
-    SelectItem(NULL);
+    SelectItem(0);
     SelectItem(Selected);
 }

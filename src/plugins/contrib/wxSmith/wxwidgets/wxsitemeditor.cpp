@@ -46,22 +46,22 @@ namespace
 
 wxsItemEditor::wxsItemEditor(wxWindow* parent,wxsItemRes* Resource):
     wxsEditor(parent,wxEmptyString,Resource),
-    m_Data(NULL),
-    m_Content(NULL),
-    m_WidgetsSet(NULL),
-    m_VertSizer(NULL),
-    m_HorizSizer(NULL),
-    m_QPSizer(NULL),
-    m_OpsSizer(NULL),
-    m_QPArea(NULL),
-    m_InsIntoBtn(NULL),
-    m_InsBeforeBtn(NULL),
-    m_InsAfterBtn(NULL),
-    m_DelBtn(NULL),
-    m_PreviewBtn(NULL),
-    m_QuickPanelBtn(NULL),
-    m_TopPreview(NULL),
-    m_PreviewBackground(NULL),
+    m_Data(0),
+    m_Content(0),
+    m_WidgetsSet(0),
+    m_VertSizer(0),
+    m_HorizSizer(0),
+    m_QPSizer(0),
+    m_OpsSizer(0),
+    m_QPArea(0),
+    m_InsIntoBtn(0),
+    m_InsBeforeBtn(0),
+    m_InsAfterBtn(0),
+    m_DelBtn(0),
+    m_PreviewBtn(0),
+    m_QuickPanelBtn(0),
+    m_TopPreview(0),
+    m_PreviewBackground(0),
     m_InsType(itBefore),
     m_InsTypeMask(itBefore),
     m_QuickPropsOpen(false)
@@ -184,10 +184,10 @@ void wxsItemEditor::RebuildPreview()
     // If there's previous preview, deleting it
     if ( m_PreviewBackground )
     {
-        m_Content->SetSizer(NULL);
+        m_Content->SetSizer(0);
         delete m_PreviewBackground;
-        m_TopPreview = NULL;
-        m_PreviewBackground = NULL;
+        m_TopPreview = 0;
+        m_PreviewBackground = 0;
     }
 
     // Generating preview
@@ -726,7 +726,7 @@ void wxsItemEditor::RebuildQuickProps(wxsItem* Selection)
     int QPx, QPy;
     // TODO: Check if content of previous QPPanel shouldn't be stored into item
     m_QPArea->GetViewStart(&QPx,&QPy);
-    m_QPArea->SetSizer(NULL);
+    m_QPArea->SetSizer(0);
     m_QPArea->DestroyChildren();
     m_QPSizer = new wxBoxSizer(wxVERTICAL);
     m_QPArea->SetSizer(m_QPSizer);

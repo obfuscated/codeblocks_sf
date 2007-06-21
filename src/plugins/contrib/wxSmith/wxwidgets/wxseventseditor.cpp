@@ -35,8 +35,8 @@ namespace
 }
 
 wxsEventsEditor::wxsEventsEditor():
-    m_Item(NULL),
-    m_Events(NULL),
+    m_Item(0),
+    m_Events(0),
     m_Source(),
     m_Header(),
     m_Class(),
@@ -46,8 +46,8 @@ wxsEventsEditor::wxsEventsEditor():
 
 wxsEventsEditor::~wxsEventsEditor()
 {
-    m_Item = NULL;
-    m_Events = NULL;
+    m_Item = 0;
+    m_Events = 0;
     m_Ids.Clear();
 }
 
@@ -60,8 +60,8 @@ wxsEventsEditor& wxsEventsEditor::Get()
 void wxsEventsEditor::BuildEvents(wxsItem* Item,wxsPropertyGridManager* Grid)
 {
     m_Item = Item;
-    m_Data = NULL;
-    m_Events = NULL;
+    m_Data = 0;
+    m_Events = 0;
     m_Ids.Clear();
     m_Source.Clear();
     m_Header.Clear();

@@ -26,13 +26,13 @@
 #include <manager.h>
 
 wxsItemEditorDragAssist::wxsItemEditorDragAssist(wxsItemEditorContent* Content):
-    m_PreviousTarget(NULL),
-    m_PreviousParent(NULL),
+    m_PreviousTarget(0),
+    m_PreviousParent(0),
     m_PreviousAddAfter(false),
-    m_TargetBitmap(NULL),
+    m_TargetBitmap(0),
     m_TargetRect(0,0,0,0),
     m_IsTarget(false),
-    m_ParentBitmap(NULL),
+    m_ParentBitmap(0),
     m_ParentRect(0,0,0,0),
     m_IsParent(false),
     m_Content(Content)
@@ -47,17 +47,17 @@ wxsItemEditorDragAssist::~wxsItemEditorDragAssist()
 
 void wxsItemEditorDragAssist::NewDragging()
 {
-    m_PreviousTarget = NULL;
-    m_PreviousParent = NULL;
+    m_PreviousTarget = 0;
+    m_PreviousParent = 0;
     if ( m_TargetBitmap )
     {
         delete m_TargetBitmap;
-        m_TargetBitmap = NULL;
+        m_TargetBitmap = 0;
     }
     if ( m_ParentBitmap )
     {
         delete m_ParentBitmap;
-        m_ParentBitmap = NULL;
+        m_ParentBitmap = 0;
     }
     m_IsTarget = false;
     m_IsParent = false;
@@ -132,7 +132,7 @@ void wxsItemEditorDragAssist::RebuildParentAssist()
         if ( m_ParentBitmap )
         {
             delete m_ParentBitmap;
-            m_ParentBitmap = NULL;
+            m_ParentBitmap = 0;
         }
 
         switch ( AssistType() )
@@ -157,7 +157,7 @@ void wxsItemEditorDragAssist::RebuildParentAssist()
         if ( m_ParentBitmap )
         {
             delete m_ParentBitmap;
-            m_ParentBitmap = NULL;
+            m_ParentBitmap = 0;
         }
         m_IsParent = false;
     }
@@ -180,7 +180,7 @@ void wxsItemEditorDragAssist::RebuildTargetAssist()
         if ( m_TargetBitmap )
         {
             delete m_TargetBitmap;
-            m_TargetBitmap = NULL;
+            m_TargetBitmap = 0;
         }
 
         switch ( AssistType() )
@@ -205,7 +205,7 @@ void wxsItemEditorDragAssist::RebuildTargetAssist()
         if ( m_TargetBitmap )
         {
             delete m_TargetBitmap;
-            m_TargetBitmap = NULL;
+            m_TargetBitmap = 0;
         }
         m_IsTarget = false;
     }

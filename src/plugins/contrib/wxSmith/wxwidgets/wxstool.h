@@ -15,8 +15,8 @@ class wxsTool: public wxsParent
         wxsTool(
             wxsItemResData* Data,
             const wxsItemInfo* Info,
-            const wxsEventDesc* EventArray = NULL,
-            const wxsStyleSet* StyleSet=NULL,
+            const wxsEventDesc* EventArray = 0,
+            const wxsStyleSet* StyleSet=0,
             long PropertiesFlags = flTool);
 
         /** \brief Function checking if this tool can be added to this resource
@@ -92,7 +92,7 @@ class wxsTool: public wxsParent
         virtual wxsTool* ConvertToTool() { return this; }
 
         /** \brief Tools don't generate preview */
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags) { return NULL; }
+        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags) { return 0; }
 
         const wxsStyleSet* m_StyleSet;
         wxString m_DefaultStyle;

@@ -54,7 +54,7 @@ void wxsChoice::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%P,%S,0,NULL,%T,%V,%N);\n"));
+            Code << Codef(Language,_T("%C(%W,%I,%P,%S,0,0,%T,%V,%N);\n"));
 
             for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
             {
@@ -83,7 +83,7 @@ void wxsChoice::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,
 
 wxObject* wxsChoice::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-    wxChoice* Preview = new wxChoice(Parent,GetId(),Pos(Parent),Size(Parent),0,NULL,Style());
+    wxChoice* Preview = new wxChoice(Parent,GetId(),Pos(Parent),Size(Parent),0,0,Style());
 
     for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
     {

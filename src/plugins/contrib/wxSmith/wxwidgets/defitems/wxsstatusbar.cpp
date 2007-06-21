@@ -33,12 +33,12 @@ namespace
         WXS_ST(wxST_SIZEGRIP)
     WXS_ST_END()
 
-    const wxChar* FieldStyles[] = { _T("wxSB_NORMAL"), _T("wxSB_FLAT"), _T("wxSB_RAISED"), NULL };
+    const wxChar* FieldStyles[] = { _T("wxSB_NORMAL"), _T("wxSB_FLAT"), _T("wxSB_RAISED"), 0 };
     const long FieldStylesVal[] = { wxSB_NORMAL, wxSB_FLAT, wxSB_RAISED };
 }
 
 wxsStatusBar::wxsStatusBar(wxsItemResData* Data):
-    wxsTool(Data,&Reg.Info,NULL,wxsStatusBarStyles,flVariable|flId|flSubclass|flExtraCode),
+    wxsTool(Data,&Reg.Info,0,wxsStatusBarStyles,flVariable|flId|flSubclass|flExtraCode),
     m_Fields(1)
 {
     UpdateArraysSize(m_Fields);

@@ -36,8 +36,8 @@ wxsItemEditorContent::wxsItemEditorContent(wxWindow* Parent,wxsItemResData* Data
     m_Data(Data),
     m_Editor(Editor),
     m_MouseState(msIdle),
-    m_AssistTarget(NULL),
-    m_AssistParent(NULL),
+    m_AssistTarget(0),
+    m_AssistParent(0),
     m_AssistAddAfter(false)
 {
     m_Assist = new wxsItemEditorDragAssist(this);
@@ -220,12 +220,12 @@ wxsItem* wxsItemEditorContent::FindItemAtPos(int PosX,int PosY,wxsItem* SearchIn
     int itemSizeX;
     int itemSizeY;
 
-    if ( !FindAbsoluteRect(SearchIn,itemPosX,itemPosY,itemSizeX,itemSizeY) ) return NULL;
+    if ( !FindAbsoluteRect(SearchIn,itemPosX,itemPosY,itemSizeX,itemSizeY) ) return 0;
 
-    if ( PosX < itemPosX ) return NULL;
-    if ( PosX >= (itemPosX+itemSizeX) ) return NULL;
-    if ( PosY < itemPosY ) return NULL;
-    if ( PosY >= (itemPosY+itemSizeY) ) return NULL;
+    if ( PosX < itemPosX ) return 0;
+    if ( PosX >= (itemPosX+itemSizeX) ) return 0;
+    if ( PosY < itemPosY ) return 0;
+    if ( PosY >= (itemPosY+itemSizeY) ) return 0;
 
     wxsParent* parent = SearchIn->ConvertToParent();
     if ( parent )
@@ -260,7 +260,7 @@ wxsItemEditorContent::DragPointData* wxsItemEditorContent::FindDragPointAtPos(in
 
 // TODO (SpOoN#1#): Search for edges
 
-    return NULL;
+    return 0;
 }
 
 wxsItemEditorContent::DragPointData* wxsItemEditorContent::FindDragPointFromItem(wxsItem* Item)
@@ -272,7 +272,7 @@ wxsItemEditorContent::DragPointData* wxsItemEditorContent::FindDragPointFromItem
             return m_DragPoints[i];
         }
     }
-    return NULL;
+    return 0;
 }
 
 void wxsItemEditorContent::MouseExtra(wxMouseEvent& event)
@@ -624,8 +624,8 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
             m_DragPoints[i]->PosY = m_DragPoints[i]->DragInitPosY;
         }
         m_MouseState = msIdle;
-        m_AssistParent = NULL;
-        m_AssistTarget = NULL;
+        m_AssistParent = 0;
+        m_AssistTarget = 0;
         m_AssistAddAfter = false;
         m_Assist->NewDragging();
         return;
@@ -639,8 +639,8 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
         if ( m_CurDragPoint->PosX != m_CurDragPoint->DragInitPosX ||
              m_CurDragPoint->PosY != m_CurDragPoint->DragInitPosY )
         {
-            wxsParent* NewParent = NULL;
-            wxsItem* AtCursor = NULL;
+            wxsParent* NewParent = 0;
+            wxsItem* AtCursor = 0;
             bool AddAfter = true;
             if ( FindDraggingItemTarget(event.GetX(),event.GetY(),m_CurDragItem,NewParent,AtCursor,AddAfter) )
             {
@@ -683,7 +683,7 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
                     {
                         if ( NewParent->GetType() == wxsTSizer )
                         {
-                            Props->m_Position.SetPosition(wxDefaultPosition,NULL);
+                            Props->m_Position.SetPosition(wxDefaultPosition,0);
                         }
                         else
                         {
@@ -705,8 +705,8 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
             }
         }
         m_MouseState = msIdle;
-        m_AssistTarget = NULL;
-        m_AssistParent = NULL;
+        m_AssistTarget = 0;
+        m_AssistParent = 0;
         m_AssistAddAfter = false;
         m_Assist->NewDragging();
         m_Data->EndChange();
@@ -724,8 +724,8 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
 
     if ( !FindDraggingItemTarget(event.GetX(),event.GetY(),m_CurDragItem,m_AssistParent,m_AssistTarget,m_AssistAddAfter) )
     {
-        m_AssistTarget = NULL;
-        m_AssistParent = NULL;
+        m_AssistTarget = 0;
+        m_AssistParent = 0;
         m_AssistAddAfter = false;
     }
     FastRepaint();
@@ -749,7 +749,7 @@ bool wxsItemEditorContent::FindDraggingItemTarget(int PosX,int PosY,wxsItem* Dra
 
     if ( NewParent && !::wxGetKeyState(WXK_ALT) )
     {
-        AtCursor = NULL;
+        AtCursor = 0;
         AddAfter = true;
         return true;
     }
@@ -781,7 +781,7 @@ bool wxsItemEditorContent::FindDraggingItemTarget(int PosX,int PosY,wxsItem* Dra
     }
     else
     {
-        AtCursor = NULL;
+        AtCursor = 0;
         AddAfter = true;
     }
     return true;
@@ -804,9 +804,9 @@ void wxsItemEditorContent::AfterPreviewChanged()
 
 wxWindow* wxsItemEditorContent::GetPreviewWindow(wxsItem* Item)
 {
-    if ( !Item ) return NULL;
+    if ( !Item ) return 0;
     ItemToWindowT::iterator i = m_ItemToWindow.find(Item);
-    if ( i==m_ItemToWindow.end() ) return NULL;
+    if ( i==m_ItemToWindow.end() ) return 0;
     return (*i).second;
 }
 

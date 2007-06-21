@@ -46,7 +46,7 @@ void wxsCoder::AddCode(const wxString& FileName,const wxString& Header,const wxS
 
     // Searching for file in opened file list
 	EditorManager* EM = Manager::Get()->GetEditorManager();
-	assert ( EM != NULL );
+	assert ( EM != 0 );
     cbEditor* Editor = EM->GetBuiltinEditor(FixedFileName);
 
     if ( Editor )
@@ -265,7 +265,7 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& Header,const
 
     // Checking if editor is opened
 	EditorManager* EM = Manager::Get()->GetEditorManager();
-	assert ( EM != NULL );
+	assert ( EM != 0 );
     cbEditor* Editor = EM->GetBuiltinEditor(FileName);
 
     if ( Editor )
@@ -331,7 +331,7 @@ wxString wxsCoder::GetFullCode(const wxString& FileName)
 {
     // Checking if editor is opened
 	EditorManager* EM = Manager::Get()->GetEditorManager();
-	assert ( EM != NULL );
+	assert ( EM != 0 );
     cbEditor* Editor = EM->GetBuiltinEditor(FileName);
 
     if ( Editor )
@@ -353,7 +353,7 @@ void wxsCoder::PutFullCode(const wxString& FileName,const wxString& Code)
 {
     // Searching for file in opened file list
 	EditorManager* EM = Manager::Get()->GetEditorManager();
-	assert ( EM != NULL );
+	assert ( EM != 0 );
     cbEditor* Editor = EM->GetBuiltinEditor(FileName);
 
     if ( Editor )

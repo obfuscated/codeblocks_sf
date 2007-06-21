@@ -64,7 +64,7 @@ void wxsStaticBoxSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& 
 void wxsStaticBoxSizer::OnEnumSizerProperties(long Flags)
 {
     static const long    OrientValues[] = { wxHORIZONTAL, wxVERTICAL, 0 };
-    static const wxChar* OrientNames[]  = { _T("wxHORIZONTAL"), _T("wxVERTICAL"), NULL };
+    static const wxChar* OrientNames[]  = { _T("wxHORIZONTAL"), _T("wxVERTICAL"), 0 };
 
     WXS_SHORT_STRING(wxsStaticBoxSizer,Label,_("Label"),_T("label"),_T(""),false);
     WXS_ENUM(wxsStaticBoxSizer,Orient,_("Orientation"),_T("orient"),OrientValues,OrientNames,wxHORIZONTAL);

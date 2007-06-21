@@ -59,7 +59,7 @@ void wxsCheckListBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%P,%S,0,NULL,%T,%V,%N);\n"));
+            Code << Codef(Language,_T("%C(%W,%I,%P,%S,0,0,%T,%V,%N);\n"));
 
             for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
             {
@@ -88,7 +88,7 @@ void wxsCheckListBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
 
 wxObject* wxsCheckListBox::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-    wxCheckListBox* Preview = new wxCheckListBox(Parent,GetId(),Pos(Parent),Size(Parent),0,NULL,Style());
+    wxCheckListBox* Preview = new wxCheckListBox(Parent,GetId(),Pos(Parent),Size(Parent),0,0,Style());
     for ( size_t i = 0; i < ArrayChoices.GetCount(); ++i )
     {
         int Val = Preview->Append(ArrayChoices[i]);

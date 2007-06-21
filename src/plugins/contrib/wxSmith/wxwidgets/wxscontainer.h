@@ -19,7 +19,7 @@ class wxsContainer: public wxsParent
          *  \param Data data managment object handling this item
          *  \param Info pointer to static widget info
          *  \param EventArray pointer to static set of events
-         *  \param StyleSet set of used styles, if NULL, this widget won't
+         *  \param StyleSet set of used styles, if 0, this widget won't
          *         provide styles by default
          *  \param PropertiesFlags flags filtering sed base properties
          *         (see wxsBaseProperties for details)
@@ -27,8 +27,8 @@ class wxsContainer: public wxsParent
         wxsContainer(
             wxsItemResData* Data,
             const wxsItemInfo* Info,
-            const wxsEventDesc* EventArray = NULL,
-            const wxsStyleSet* StyleSet=NULL,
+            const wxsEventDesc* EventArray = 0,
+            const wxsStyleSet* StyleSet=0,
             long PropertiesFlags=flContainer);
 
     protected:

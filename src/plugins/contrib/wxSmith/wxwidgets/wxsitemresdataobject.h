@@ -36,7 +36,7 @@ class wxsItemResDataObject : public wxDataObject
 		/** \brief Building wxsItem class from this data object
 		 *  \param Resource - resource owning item
 		 *  \param Index - id of item (in range 0..GetWidgetCount()-1)
-		 *  \return created item or NULL on error
+		 *  \return created item or 0 on error
 		 */
 		wxsItem* BuildItem(wxsItemResData* Data,int Index = 0) const;
 

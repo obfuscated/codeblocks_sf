@@ -92,7 +92,7 @@ wxsSettings::wxsSettings(wxWindow* parent,wxWindowID id)
 	FlexGridSizer2 = new wxFlexGridSizer(0,2,0,0);
 	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Drag Assistance Type"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT2"));
 	FlexGridSizer2->Add(StaticText2,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	DragAssistType = new wxComboBox(this,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_T("ID_COMBOBOX1"));
+	DragAssistType = new wxComboBox(this,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,0,wxCB_READONLY,wxDefaultValidator,_T("ID_COMBOBOX1"));
 	DragAssistType->SetSelection( DragAssistType->Append(_("None")) );
 	DragAssistType->Append(_("Simple"));
 	DragAssistType->Append(_("Colour Mix"));
@@ -158,7 +158,7 @@ wxsSettings::wxsSettings(wxWindow* parent,wxWindowID id)
 	FlexGridSizer5->Add(chkShaped,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
 	StaticText12 = new wxStaticText(this,ID_STATICTEXT12,_("Placement:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT12"));
 	FlexGridSizer5->Add(StaticText12,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	choicePlacement = new wxChoice(this,ID_CHOICE1,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_T("ID_CHOICE1"));
+	choicePlacement = new wxChoice(this,ID_CHOICE1,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_T("ID_CHOICE1"));
 	choicePlacement->SetSelection( choicePlacement->Append(_("Left-Top")) );
 	choicePlacement->Append(_("Top"));
 	choicePlacement->Append(_("Right-Top"));

@@ -40,7 +40,7 @@ wxsTimer::wxsTimer(wxsItemResData* Data):
         Data,
         &Reg.Info,
         wxsTimerEvents,
-        NULL,
+        0,
         flVariable|flId|flSubclass|flExtraCode)
 {
     m_Interval = 0;

@@ -28,7 +28,7 @@
 namespace
 {
     const long    OrientValues[] = { wxHORIZONTAL, wxVERTICAL, 0 };
-    const wxChar* OrientNames[]  = { _T("horizontal"), _T("vertical"), NULL };
+    const wxChar* OrientNames[]  = { _T("horizontal"), _T("vertical"), 0 };
 
 /*
     class OrientProp: public wxsEnumProperty
@@ -163,7 +163,7 @@ void wxsSplitterWindow::OnBuildCreatingCode(wxString& Code,const wxString& Windo
 void wxsSplitterWindow::OnEnumContainerProperties(long Flags)
 {
     static const long    OrientValues[] = { wxHORIZONTAL, wxVERTICAL, 0 };
-    static const wxChar* OrientNames[]  = { _T("horizontal"), _T("vertical"), NULL };
+    static const wxChar* OrientNames[]  = { _T("horizontal"), _T("vertical"), 0 };
 
     WXS_LONG(wxsSplitterWindow,SashPos,_("Sash position"),_T("sashpos"),0);
     WXS_LONG(wxsSplitterWindow,MinSize,_("Min. pane size"),_T("minsize"),-1);

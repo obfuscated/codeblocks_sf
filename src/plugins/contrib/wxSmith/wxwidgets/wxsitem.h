@@ -70,8 +70,8 @@ class wxsItem: public wxsPropertyContainer
         static const long pfExact     = 0x000001;   ///< \brief Notify to create exact preview (without any editor-like goodies)
 
         /** \brief Ctor
-         * \param Resource resource containingthis widget, must not be NULL
-         * \param Events array of events used by this object (may be NULL if item doesn't use events)
+         * \param Resource resource containingthis widget, must not be 0
+         * \param Events array of events used by this object (may be 0 if item doesn't use events)
          */
         wxsItem(wxsItemResData* Data,const wxsItemInfo* Info,long PropertiesFlags,const wxsEventDesc* Events);
 
@@ -235,16 +235,16 @@ class wxsItem: public wxsPropertyContainer
         inline wxsResourceItemId GetLastTreeItemId() { return m_LastTreeId; }
 
         /** \brief Function converting this item to wxsParent class
-         *  \return Pointer to wxsParent class or NULL if class hasn't been
+         *  \return Pointer to wxsParent class or 0 if class hasn't been
          *          derived from it
          */
-        virtual wxsParent* ConvertToParent() { return NULL; }
+        virtual wxsParent* ConvertToParent() { return 0; }
 
         /** \brief Function converting this item to wxsTool class
-         *  \return Pointer to wxsTool class or NULL if class hasn't been
+         *  \return Pointer to wxsTool class or 0 if class hasn't been
          *          derived from it
          */
-        virtual wxsTool* ConvertToTool() { return NULL; }
+        virtual wxsTool* ConvertToTool() { return 0; }
 
         /** \brief Function returinng pointer to wxsBaseProperties class if item uses it. */
         virtual wxsBaseProperties* GetBaseProps() { return m_BaseProperties; }

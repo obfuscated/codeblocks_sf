@@ -28,7 +28,7 @@
 wxsItem* wxsItemFactory::Build(const wxString& Name,wxsItemResData* Data)
 {
     ItemMapT::iterator it = ItemMap().find(Name);
-    if ( it == ItemMap().end() ) return NULL;
+    if ( it == ItemMap().end() ) return 0;
     wxsItem* Item = it->second->OnBuild(Data);
 
     // Checking few things in item's info
@@ -39,7 +39,7 @@ wxsItem* wxsItemFactory::Build(const wxString& Name,wxsItemResData* Data)
             {
                 // Fake item
                 delete Item;
-                return NULL;
+                return 0;
             }
             break;
 
@@ -48,7 +48,7 @@ wxsItem* wxsItemFactory::Build(const wxString& Name,wxsItemResData* Data)
             {
                 // Fake item
                 delete Item;
-                return NULL;
+                return 0;
             }
             break;
 
@@ -59,7 +59,7 @@ wxsItem* wxsItemFactory::Build(const wxString& Name,wxsItemResData* Data)
 
         default:
             delete Item;
-            return NULL;
+            return 0;
     }
 
     return Item;
@@ -68,21 +68,21 @@ wxsItem* wxsItemFactory::Build(const wxString& Name,wxsItemResData* Data)
 const wxsItemInfo* wxsItemFactory::GetInfo(const wxString& Name)
 {
     ItemMapT::iterator it = ItemMap().find(Name);
-    if ( it == ItemMap().end() ) return NULL;
+    if ( it == ItemMap().end() ) return 0;
     return it->second->m_Info;
 }
 
 const wxsItemInfo* wxsItemFactory::GetFirstInfo()
 {
     m_Iter = ItemMap().begin();
-    return (m_Iter==ItemMap().end()) ? NULL : m_Iter->second->m_Info;
+    return (m_Iter==ItemMap().end()) ? 0 : m_Iter->second->m_Info;
 }
 
 const wxsItemInfo* wxsItemFactory::GetNextInfo()
 {
-    if ( m_Iter==ItemMap().end() ) return NULL;
+    if ( m_Iter==ItemMap().end() ) return 0;
     ++m_Iter;
-    return (m_Iter==ItemMap().end()) ? NULL : m_Iter->second->m_Info;
+    return (m_Iter==ItemMap().end()) ? 0 : m_Iter->second->m_Info;
 }
 
 wxImageList& wxsItemFactory::GetImageList()
@@ -99,7 +99,7 @@ wxsItemFactory::wxsItemFactory(const wxsItemInfo* Info):
     m_Info(Info)
 {
     m_Name = Info->ClassName;
-    if ( Info==NULL ) return;
+    if ( Info==0 ) return;
     ItemMap()[m_Name] = this;
 }
 
@@ -107,7 +107,7 @@ wxsItemFactory::wxsItemFactory(const wxsItemInfo* Info,wxString ClassName):
     m_Info(Info)
 {
     m_Name = ClassName;
-    if ( Info==NULL ) return;
+    if ( Info==0 ) return;
     ItemMap()[m_Name] = this;
 }
 

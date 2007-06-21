@@ -37,7 +37,7 @@ wxsArrayStringProperty::wxsArrayStringProperty(const wxString& PGName,const wxSt
 
 bool wxsArrayStringProperty::ShowEditor(wxsPropertyContainer* Object)
 {
-    wxsArrayStringEditorDlg Dlg(NULL,VALUE);
+    wxsArrayStringEditorDlg Dlg(0,VALUE);
     return Dlg.ShowModal() == wxID_OK;
 }
 

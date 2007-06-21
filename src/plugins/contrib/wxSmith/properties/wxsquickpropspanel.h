@@ -16,7 +16,7 @@ class wxsPropertyContainer;
  *
  * Important thing is that when reading / writing properties to panel,
  * GetPropertiesContaier method should be used. And it must always be compared
- * to NULL. If it's null, it does mean that property container has already been
+ * to 0. If it's null, it does mean that property container has already been
  * deleted but quick properties window still remains.
  *
  * Note that NotifyChange() must be called any time value of property changes.
@@ -31,48 +31,48 @@ class wxsQuickPropsPanel: public wxPanel
          * it, wxPanel class must be initialized using Create() method.
          */
         wxsQuickPropsPanel(wxsPropertyContainer* PC);
-            
+
         /** \brief ctor
          *
-         * Set of parameters is almost identical to wxPanel ones. Added 
+         * Set of parameters is almost identical to wxPanel ones. Added
          * wxsPropertyContainer param.
          */
         wxsQuickPropsPanel(
             wxWindow* parent,
             wxsPropertyContainer* PC,
-            wxWindowID id = -1, 
-            const wxPoint& pos = wxDefaultPosition, 
-            const wxSize& size = wxDefaultSize, 
-            long style = wxTAB_TRAVERSAL, 
+            wxWindowID id = -1,
+            const wxPoint& pos = wxDefaultPosition,
+            const wxSize& size = wxDefaultSize,
+            long style = wxTAB_TRAVERSAL,
             const wxString& name = _T("wxsQuickPropsPanel"));
-        
+
         /** \brief Dctor */
         virtual ~wxsQuickPropsPanel();
-        
+
         /** \brief Getting associated property container */
         inline wxsPropertyContainer* GetPropertyContainer() { return Container; }
-        
+
     protected:
-    
-        /** \brief Function notifying about change of properties in container 
+
+        /** \brief Function notifying about change of properties in container
          *
          * This function is called whenever user changed value of any property
-         * in property grid or elsewhere. It should reread all values and 
+         * in property grid or elsewhere. It should reread all values and
          * update content of quick properties panel.
          */
         virtual void Update() {}
-        
+
         /** \brief Function notifying that value of any property has changed inside quick properties.
          *
          * This function causes property grid and other things using properties
          * to recreate it's content.
          */
         void NotifyChange();
-        
+
     private:
-    
-        wxsPropertyContainer* Container;        ///< Container associated with this panel or NULL
-        
+
+        wxsPropertyContainer* Container;        ///< Container associated with this panel or 0
+
         friend class wxsPropertyContainer;
 };
 

@@ -58,7 +58,7 @@ void wxsComboBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,wxEmptyString,%P,%S,0,NULL,%T,%V,%N);\n"));
+            Code << Codef(Language,_T("%C(%W,%I,wxEmptyString,%P,%S,0,0,%T,%V,%N);\n"));
 
             for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
             {

@@ -34,7 +34,7 @@ wxsPropertyGridManager::wxsPropertyGridManager(
     long style,
     const wxChar* name):
         wxPropertyGridManager(parent,id,pos,size,style,name),
-        MainContainer(NULL)
+        MainContainer(0)
 {
     Singleton = this;
 }
@@ -48,10 +48,10 @@ wxsPropertyGridManager::~wxsPropertyGridManager()
     PGContainersSet.clear();
     ClearPage(0);
     PreviousIndex = -1;
-    PreviousProperty = NULL;
+    PreviousProperty = 0;
     if ( Singleton == this )
     {
-        Singleton = NULL;
+        Singleton = 0;
     }
 }
 
@@ -69,11 +69,11 @@ void wxsPropertyGridManager::OnChange(wxPropertyGridEvent& event)
             Container->NotifyPropertyChangeFromPropertyGrid();
 
             // Notifying about sub property change
-            if ( Container!=MainContainer && MainContainer!=NULL )
+            if ( Container!=MainContainer && MainContainer!=0 )
             {
                 MainContainer->OnSubPropertyChanged(Container);
             }
-            Update(NULL);
+            Update(0);
             return;
         }
     }
@@ -106,8 +106,8 @@ void wxsPropertyGridManager::UnbindAll()
     PGContainersSet.clear();
     ClearPage(0);
     PreviousIndex = -1;
-    PreviousProperty = NULL;
-    SetNewMainContainer(NULL);
+    PreviousProperty = 0;
+    SetNewMainContainer(0);
 }
 
 void wxsPropertyGridManager::UnbindPropertyContainer(wxsPropertyContainer* PC)
@@ -142,7 +142,7 @@ void wxsPropertyGridManager::UnbindPropertyContainer(wxsPropertyContainer* PC)
     // If there are no properties, we have unbinded main property container
     if ( !PGIDs.Count() )
     {
-        SetNewMainContainer(NULL);
+        SetNewMainContainer(0);
     }
 }
 
@@ -174,7 +174,7 @@ void wxsPropertyGridManager::SetNewMainContainer(wxsPropertyContainer* Container
     OnContainerChanged(MainContainer);
 }
 
-wxsPropertyGridManager* wxsPropertyGridManager::Singleton = NULL;
+wxsPropertyGridManager* wxsPropertyGridManager::Singleton = 0;
 
 BEGIN_EVENT_TABLE(wxsPropertyGridManager,wxPropertyGridManager)
     EVT_PG_CHANGED(-1,wxsPropertyGridManager::OnChange)

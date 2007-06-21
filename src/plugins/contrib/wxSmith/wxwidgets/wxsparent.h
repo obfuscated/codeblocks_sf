@@ -98,7 +98,7 @@ class wxsParent: public wxsItem
          * This function may be overridden in child classes to add extra
          * configuration for each child, f.ex. configuration of sizer enteries.
          */
-        virtual wxsPropertyContainer* OnBuildExtra() { return NULL; }
+        virtual wxsPropertyContainer* OnBuildExtra() { return 0; }
 
         /** \brief Returning name of additional object created for child items
          *

@@ -116,8 +116,8 @@ class wxsMenuEditor: public wxPanel
         /** \brief Getting previous item in this node */
         MenuItem* GetPrevious(MenuItem* Item);
 
-        wxsMenuBar* m_MenuBar;  ///< \brief Edited menu bar, NULL if editing menu
-        wxsMenu*    m_Menu;     ///< \brief Edited menu, NULL if editing menu bar
+        wxsMenuBar* m_MenuBar;  ///< \brief Edited menu bar, 0 if editing menu
+        wxsMenu*    m_Menu;     ///< \brief Edited menu, 0 if editing menu bar
         MenuItem*   m_First;    ///< \brief First child item od edited resource
         MenuItem*   m_Selected; ///< \brief Currently selected item
         bool        m_BlockSel; ///< \brief Flag for blockig select events from tree ctrl

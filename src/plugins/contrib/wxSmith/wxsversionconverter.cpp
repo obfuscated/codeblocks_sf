@@ -59,7 +59,7 @@ TiXmlElement* wxsVersionConverter::ConvertFromOldConfig(TiXmlElement* ConfigNode
     if ( cbMessageBox(_("This project uses old wxSmith configuration format\n"
                         "Would you like me to convert to new one?\n"),
                       _("wxSmith: Converting from old format"),
-                      wxYES_NO) != wxID_YES ) return NULL;
+                      wxYES_NO) != wxID_YES ) return 0;
 
     TiXmlElement* NewConfig = Doc->InsertEndChild(TiXmlElement("wxSmith"))->ToElement();
     TiXmlElement* Resources = NewConfig->InsertEndChild(TiXmlElement("resources"))->ToElement();
@@ -98,7 +98,7 @@ TiXmlElement* wxsVersionConverter::ConvertFromOldConfig(TiXmlElement* ConfigNode
 
                 if ( Wxs && Class && Src && Hdr && Mode )
                 {
-                    if ( cbC2U(Mode) == _T("Source") ) Xrc = NULL;
+                    if ( cbC2U(Mode) == _T("Source") ) Xrc = 0;
                     TiXmlElement* Res = Resources->InsertEndChild(TiXmlElement(
                         NodeName == _T("dialog") ? "wxDialog" :
                         NodeName == _T("frame")  ? "wxFrame" :
@@ -111,7 +111,7 @@ TiXmlElement* wxsVersionConverter::ConvertFromOldConfig(TiXmlElement* ConfigNode
                     Res->SetAttribute("name",Class);
                     Res->SetAttribute("language","CPP");
 
-                    ConvertOldWxsFile(Project->GetProjectPath()+_T("wxsmith/")+cbC2U(Wxs),Xrc!=NULL);
+                    ConvertOldWxsFile(Project->GetProjectPath()+_T("wxsmith/")+cbC2U(Wxs),Xrc!=0);
                     AdoptOldSourceFile(Project->GetProjectPath()+cbC2U(Src),cbC2U(Class));
                 }
             }
@@ -152,7 +152,7 @@ void wxsVersionConverter::GatherExtraFromOldResourceReq(TiXmlElement* Object,TiX
     {
         if ( Object->Attribute("class") && (Root || Object->Attribute("name")) )
         {
-            TiXmlElement* ThisExtra = NULL;
+            TiXmlElement* ThisExtra = 0;
 
             // Checking if we got variable name
             if ( Object->Attribute("variable") && Object->Attribute("member") )
@@ -470,5 +470,5 @@ bool wxsVersionConverter::LineContainDirectivesOnly(const wxString& Code,int& Be
 TiXmlElement* wxsVersionConverter::Convert(TiXmlElement* ConfigNode,TiXmlDocument* Doc,wxsProject* Project) const
 {
     // Currently there's only one version of wxSmith, no need to convert
-    return NULL;
+    return 0;
 }

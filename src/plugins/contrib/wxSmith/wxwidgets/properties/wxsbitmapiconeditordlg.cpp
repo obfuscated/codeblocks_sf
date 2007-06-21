@@ -89,7 +89,7 @@ static const wxChar* PredefinedIds[] =
     _T("wxART_QUIT"),
     _T("wxART_FIND"),
     _T("wxART_FIND_AND_REPLACE"),
-    NULL
+    0
 };
 
 static const wxChar* PredefinedClients[] =
@@ -102,7 +102,7 @@ static const wxChar* PredefinedClients[] =
     _T("wxART_HELP_BROWSER"),
     _T("wxART_MESSAGE_BOX"),
     _T("wxART_OTHER"),
-    NULL
+    0
 };
 
 
@@ -127,7 +127,7 @@ BEGIN_EVENT_TABLE(wxsBitmapIconEditorDlg,wxDialog)
 END_EVENT_TABLE()
 
 wxsBitmapIconEditorDlg::wxsBitmapIconEditorDlg(wxWindow* parent,wxsBitmapIconData& _Data,const wxString& _DefaultClient,wxWindowID id):
-    Timer1(NULL),
+    Timer1(0),
     DefaultClient(_DefaultClient),
     Data(_Data)
 {
@@ -157,11 +157,11 @@ wxsBitmapIconEditorDlg::wxsBitmapIconEditorDlg(wxWindow* parent,wxsBitmapIconDat
 	FlexGridSizer2 = new wxFlexGridSizer(0,2,0,0);
 	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Art Id:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));
 	FlexGridSizer2->Add(StaticText1,1,wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-	ArtId = new wxComboBox(this,ID_COMBOBOX2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_SORT,wxDefaultValidator,_T("ID_COMBOBOX2"));
+	ArtId = new wxComboBox(this,ID_COMBOBOX2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,0,wxCB_SORT,wxDefaultValidator,_T("ID_COMBOBOX2"));
 	FlexGridSizer2->Add(ArtId,1,wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Art Client:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT2"));
 	FlexGridSizer2->Add(StaticText2,1,wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-	ArtClient = new wxComboBox(this,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_SORT,wxDefaultValidator,_T("ID_COMBOBOX1"));
+	ArtClient = new wxComboBox(this,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,0,wxCB_SORT,wxDefaultValidator,_T("ID_COMBOBOX1"));
 	FlexGridSizer2->Add(ArtClient,1,wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer4->Add(FlexGridSizer2,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	FlexGridSizer1->Add(BoxSizer4,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);

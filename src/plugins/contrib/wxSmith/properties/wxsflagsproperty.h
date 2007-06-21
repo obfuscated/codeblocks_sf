@@ -18,7 +18,7 @@ class wxsFlagsProperty: public wxsProperty
          *  \param DataName         name of property used in data structures
          *  \param Offset           offset of long integer holding value (taken from wxsOFFSET macro)
          *  \param Values           array of long integer with values of flags
-         *  \param Names            array of names used for items in Values array, ending with NULL string
+         *  \param Names            array of names used for items in Values array, ending with 0 string
          *  \param UpdateEnteries   posting true here notifies, that arrays may change
          *  \param Default          defaut value applied on read errors
          *  \param UseNamesInXml    if true, names will be stored inside xml node instead of values
@@ -64,7 +64,7 @@ class wxsFlagsProperty: public wxsProperty
  *  \param PGName name used in property grid
  *  \param DataName name used in Xml / Data Streams
  *  \param Values global array of long values for flags
- *  \param Names global array of names (stored as wxChar*) for flags, ended with NULL entry
+ *  \param Names global array of names (stored as wxChar*) for flags, ended with 0 entry
  *  \param Default value applied on read errors / validation failures
  */
 #define WXS_FLAGS(ClassName,VarName,PGName,DataName,Values,Names,Default) \
@@ -77,7 +77,7 @@ class wxsFlagsProperty: public wxsProperty
  *  \param PGName name used in property grid
  *  \param DataName name used in Xml / Data Streams
  *  \param Values global array of long values for flags
- *  \param Names global array of names (stored as wxChar*) for flags, ended with NULL entry
+ *  \param Names global array of names (stored as wxChar*) for flags, ended with 0 entry
  *  \param Default value applied on read errors / validation failures
  *  \param Priority priority of this property
  */

@@ -40,7 +40,7 @@ namespace
 
 wxsProject::wxsProject(cbProject* Project):
     m_Project(Project),
-    m_GUI(NULL),
+    m_GUI(0),
     m_UnknownConfig("unknown_config"),
     m_UnknownResources("unknown_resource"),
     m_WasModifiedDuringLoad(false)
@@ -56,12 +56,12 @@ wxsProject::wxsProject(cbProject* Project):
 wxsProject::~wxsProject()
 {
     delete m_GUI;
-    m_GUI = NULL;
+    m_GUI = 0;
 
     for ( size_t i=m_Resources.Count(); i-->0; )
     {
         delete m_Resources[i];
-        m_Resources[i] = NULL;
+        m_Resources[i] = 0;
     }
     m_Resources.Clear();
 
@@ -227,7 +227,7 @@ void wxsProject::WriteConfiguration(TiXmlElement* element)
 
 bool wxsProject::AddResource(wxsResource* NewResource)
 {
-    if ( NewResource == NULL )
+    if ( NewResource == 0 )
     {
         return false;
     }
@@ -235,7 +235,7 @@ bool wxsProject::AddResource(wxsResource* NewResource)
     const wxString& Type = NewResource->GetResourceType();
     const wxString& Name = NewResource->GetResourceName();
 
-    if ( FindResource(Name) != NULL )
+    if ( FindResource(Name) != 0 )
     {
         return false;
     }
@@ -257,7 +257,7 @@ wxsResource* wxsProject::FindResource(const wxString& Name)
         }
     }
 
-    return NULL;
+    return 0;
 }
 
 void wxsProject::Configure()
@@ -280,7 +280,7 @@ void wxsProject::Configure()
                                 "Should I create proper bindings?"),_("wxSmith"),wxYES_NO) == wxNO ) return;
             if ( !m_GUI->CreateApplicationBinding() ) return;
         }
-        cbConfigurationDialog Dlg(NULL,-1,_("Configuring wxSmith"));
+        cbConfigurationDialog Dlg(0,-1,_("Configuring wxSmith"));
         Dlg.AttachConfigurationPanel(m_GUI->BuildConfigurationPanel(&Dlg));
         Dlg.ShowModal();
     }
@@ -295,7 +295,7 @@ cbConfigurationPanel* wxsProject::GetProjectConfigurationPanel(wxWindow* parent)
             return m_GUI->BuildConfigurationPanel(parent);
         }
     }
-    return NULL;
+    return 0;
 }
 
 wxString wxsProject::GetProjectPath()

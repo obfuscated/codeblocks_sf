@@ -55,7 +55,7 @@ class wxsProject
         inline int GetResourcesCount() { return (int)m_Resources.Count(); }
 
         /** \brief Getting resource from index */
-        inline wxsResource* GetResource(int Index) { return ((Index>=0)&(Index<GetResourcesCount()))?m_Resources[Index]:NULL; }
+        inline wxsResource* GetResource(int Index) { return ((Index>=0)&(Index<GetResourcesCount()))?m_Resources[Index]:0; }
 
         /** \brief Function checking if given file can be opened from this project
          * \param FileName name of file used by this resource

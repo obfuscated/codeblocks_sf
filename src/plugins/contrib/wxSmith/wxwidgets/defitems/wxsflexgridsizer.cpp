@@ -25,7 +25,7 @@
 
 namespace
 {
-    wxArrayInt GetArray(const wxString& String,bool* Valid = NULL)
+    wxArrayInt GetArray(const wxString& String,bool* Valid = 0)
     {
         wxStringTokenizer Tokens(String,_T(","));
         wxArrayInt Array;

@@ -102,7 +102,7 @@ class wxsItemResData
         inline bool GetModified() { return m_Undo.IsModified(); }
 
         /** \brief Getting root item
-         *  \return pointer to item on success, NULL when data wasn't initialized properly
+         *  \return pointer to item on success, 0 when data wasn't initialized properly
          */
         inline wxsItem* GetRootItem() { return m_RootItem; }
 
@@ -185,7 +185,7 @@ class wxsItemResData
 		/** \brief Selecting one item */
 		bool SelectItem(wxsItem* Item,bool UnselectOther);
 
-		/** \brief Getting last selected item or NULL if there's no valid selection */
+		/** \brief Getting last selected item or 0 if there's no valid selection */
 		inline wxsItem* GetLastSelection() { return m_RootSelection; }
 
 		/* ******************* */
@@ -231,7 +231,7 @@ class wxsItemResData
         /* ******************* */
 
         /** \brief Checking if there's preview already */
-        inline bool IsPreview() { return m_Preview!=NULL; }
+        inline bool IsPreview() { return m_Preview!=0; }
 
         /** \brief Showing preview of current resource content */
         bool ShowPreview();
@@ -240,7 +240,7 @@ class wxsItemResData
         bool HidePreview();
 
         /** \brief Function notifying that preview has been closed externally */
-        inline void NotifyPreviewClosed() { m_Preview = NULL; }
+        inline void NotifyPreviewClosed() { m_Preview = 0; }
 
         /* *********************** */
         /*  Notification handlers  */

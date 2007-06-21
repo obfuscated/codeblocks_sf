@@ -33,7 +33,7 @@ class wxsItemFactory
 
         /** \brief Returning info for item with given name
          *  \param ClassName name of item's class
-         *  \return Pointer to info or NULL if there's no such item
+         *  \return Pointer to info or 0 if there's no such item
          */
         static const wxsItemInfo* GetInfo(const wxString& ClassName);
 

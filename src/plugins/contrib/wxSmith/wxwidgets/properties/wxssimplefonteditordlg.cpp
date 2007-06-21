@@ -186,7 +186,7 @@ void wxsSimpleFontEditorDlg::OnOK(wxCommandEvent& event)
 
 void wxsSimpleFontEditorDlg::OnButton1Click(wxCommandEvent& event)
 {
-    wxFont Font = ::wxGetFontFromUser(NULL,m_WorkingCopy.BuildFont());
+    wxFont Font = ::wxGetFontFromUser(0,m_WorkingCopy.BuildFont());
     if ( !Font.Ok() ) return;
 
     m_WorkingCopy.Size = Font.GetPointSize();

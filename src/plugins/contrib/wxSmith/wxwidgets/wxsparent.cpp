@@ -47,8 +47,8 @@ wxsParent::~wxsParent()
 
 wxsItem* wxsParent::GetChild(int Index)
 {
-    if ( Index < 0 ) return NULL;
-    if ( Index >= GetChildCount() ) return NULL;
+    if ( Index < 0 ) return 0;
+    if ( Index >= GetChildCount() ) return 0;
     return Children[Index];
 }
 
@@ -58,7 +58,7 @@ bool wxsParent::AddChild(wxsItem* Child,int Position)
     if ( Child->GetType() == wxsTTool && GetType() != wxsTTool ) return false;
     if ( !CanAddChild(Child,true) ) return false;
     if ( !Child->CanAddToParent(this,true) ) return false;
-    if ( Child->GetParent() != NULL )
+    if ( Child->GetParent() != 0 )
     {
         Child->GetParent()->UnbindChild(Child);
     }
@@ -131,7 +131,7 @@ bool wxsParent::IsGrandChild(wxsItem* Child,bool Safe)
 {
     if ( !Safe )
     {
-        while ( Child != NULL )
+        while ( Child != 0 )
         {
             if ( Child == this ) return true;
             Child = Child->GetParent();
@@ -198,8 +198,8 @@ void wxsParent::OnAddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
 
 wxsPropertyContainer* wxsParent::GetChildExtra(int Index)
 {
-    if ( Index < 0 ) return NULL;
-    if ( Index >= GetChildCount() ) return NULL;
+    if ( Index < 0 ) return 0;
+    if ( Index >= GetChildCount() ) return 0;
     return Extra[Index];
 }
 

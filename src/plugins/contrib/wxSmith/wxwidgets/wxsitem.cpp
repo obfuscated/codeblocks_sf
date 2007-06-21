@@ -30,14 +30,14 @@
 wxsItem::wxsItem(wxsItemResData* ResourceData,const wxsItemInfo* Info,long PropertiesFlags,const wxsEventDesc* Events):
     m_Info(Info),
     m_Events(Events,this),
-    m_Parent(NULL),
+    m_Parent(0),
     m_ResourceData(ResourceData),
     m_VarName(_T("")),
     m_IdName(_T("")),
     m_IsMember(true),
-    m_BaseProperties(NULL),
+    m_BaseProperties(0),
     m_PropertiesFlags(PropertiesFlags),
-    m_LastPreview(NULL),
+    m_LastPreview(0),
     m_IsSelected(false),
     m_IsExpanded(false)
 {
@@ -57,7 +57,7 @@ wxsItem::~wxsItem()
 
 void wxsItem::OnEnumProperties(long Flags)
 {
-    if ( (Flags & flPropGrid) && (m_Parent != NULL) )
+    if ( (Flags & flPropGrid) && (m_Parent != 0) )
     {
         // Parent item does take care of enumerating properties if we are
         // ceating property grid
@@ -73,7 +73,7 @@ wxsQuickPropsPanel* wxsItem::OnCreateQuickProperties(wxWindow* ParentWnd)
 {
     wxsAdvQPP* Panel = new wxsAdvQPP(ParentWnd,this);
 
-    if ( m_Parent != NULL )
+    if ( m_Parent != 0 )
     {
         // Parent item does take care of inserting QPP Children
         m_Parent->OnAddChildQPP(this,Panel);

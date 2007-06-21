@@ -42,7 +42,7 @@ END_EVENT_TABLE()
 
 wxsToolSpace::wxsToolSpace(wxWindow* Parent,wxsItemResData* Data):
     wxScrolledWindow(Parent),
-    m_First(NULL),
+    m_First(0),
     m_Count(0),
     m_Data(Data),
     m_Unstable(false)
@@ -69,7 +69,7 @@ void wxsToolSpace::BeforePreviewChanged()
 
 void wxsToolSpace::AfterPreviewChanged()
 {
-    Entry* Last = NULL;
+    Entry* Last = 0;
 
     // Clearing current content
     while ( m_First )
@@ -103,7 +103,7 @@ void wxsToolSpace::AfterPreviewChanged()
 
     if ( Last )
     {
-        Last->m_Next = NULL;
+        Last->m_Next = 0;
     }
 
     m_Unstable = false;
@@ -184,7 +184,7 @@ void wxsToolSpace::OnMouseClick(wxMouseEvent& event)
             m_Data->SelectItem(Tool->m_Tool,false);
         }
 
-        Tool->m_Tool->MouseClick(NULL,PosX,PosY);
+        Tool->m_Tool->MouseClick(0,PosX,PosY);
     }
 }
 
@@ -200,7 +200,7 @@ void wxsToolSpace::OnMouseDClick(wxMouseEvent& event)
 
     if ( Tool )
     {
-        Tool->m_Tool->MouseDClick(NULL,PosX,PosY);
+        Tool->m_Tool->MouseDClick(0,PosX,PosY);
     }
 }
 
@@ -216,7 +216,7 @@ void wxsToolSpace::OnMouseRight(wxMouseEvent& event)
 
     if ( Tool )
     {
-        Tool->m_Tool->MouseRightClick(NULL,PosX,PosY);
+        Tool->m_Tool->MouseRightClick(0,PosX,PosY);
     }
 }
 
@@ -230,14 +230,14 @@ void wxsToolSpace::RecalculateVirtualSize()
 wxsToolSpace::Entry* wxsToolSpace::FindEntry(int& PosX,int& PosY)
 {
     // TODO: Check if mouse coordinates are yet shifted to virtual area
-    if ( PosY < ExtraBorderSize ) return NULL;
-    if ( PosY >= ExtraBorderSize + IconSize ) return NULL;
+    if ( PosY < ExtraBorderSize ) return 0;
+    if ( PosY >= ExtraBorderSize + IconSize ) return 0;
 
     int ToolNumber = PosX / (ExtraBorderSize + IconSize);
     int InToolPos  = PosX % (ExtraBorderSize + IconSize);
 
-    if ( ToolNumber >= m_Count ) return NULL;
-    if ( InToolPos < ExtraBorderSize ) return NULL;
+    if ( ToolNumber >= m_Count ) return 0;
+    if ( InToolPos < ExtraBorderSize ) return 0;
 
     PosY -= ExtraBorderSize;
     PosX -= ExtraBorderSize + ToolNumber*(ExtraBorderSize+IconSize);

@@ -57,13 +57,13 @@ wxsItemResData::wxsItemResData(
         m_TreeId(TreeId),
         m_Editor(Editor),
         m_Functions(Functions),
-        m_RootItem(NULL),
-        m_RootSelection(NULL),
-        m_Preview(NULL),
+        m_RootItem(0),
+        m_RootSelection(0),
+        m_Preview(0),
         m_Corrector(this),
         m_IsOK(false),
         m_LockCount(0),
-        m_CurrentCode(NULL)
+        m_CurrentCode(0)
 {
     if (  WxsFileName.empty() &&
           SrcFileName.empty() &&
@@ -110,8 +110,8 @@ wxsItemResData::~wxsItemResData()
         RebuildFiles();
     }
     delete m_RootItem;
-    m_RootItem = NULL;
-    m_RootSelection = NULL;
+    m_RootItem = 0;
+    m_RootSelection = 0;
     for ( int i=0; i<GetToolsCount(); i++ )
     {
         delete m_Tools[i];
@@ -649,7 +649,7 @@ void wxsItemResData::BuildCreatingCode(wxsCodingLang Lang,wxString& Code)
 
         default:;
     }
-    m_CurrentCode = NULL;
+    m_CurrentCode = 0;
 }
 
 void wxsItemResData::BuildXrcLoadingCode(wxsCodingLang Language,wxString& Code)
@@ -724,7 +724,7 @@ void wxsItemResData::BuildEventHandlersCode(wxsCodingLang Language,wxString& Cod
     {
         BuildEventHandlersCodeReq(Language,m_Tools[i],Code);
     }
-    m_CurrentCode = NULL;
+    m_CurrentCode = 0;
 }
 
 void wxsItemResData::BuildEventHandlersCodeReq(wxsCodingLang Language,wxsItem* Item,wxString& Code)
@@ -1003,7 +1003,7 @@ void wxsItemResData::EndChange()
 
 bool wxsItemResData::ValidateRootSelection()
 {
-    wxsItem* NewSelection = NULL;
+    wxsItem* NewSelection = 0;
     if ( ValidateRootSelectionReq(m_RootItem,NewSelection) )
     {
         return true;
@@ -1105,7 +1105,7 @@ void wxsItemResData::Paste(wxsParent* Parent,int Position)
         {
             BeginChange();
             m_RootItem->ClearSelection();
-            m_RootSelection = NULL;
+            m_RootSelection = 0;
             for ( int i=0; i<Cnt; i++ )
             {
                 wxsItem* Insert = Data.BuildItem(this,i);
@@ -1421,7 +1421,7 @@ bool wxsItemResData::ShowPreview()
     }
 
     m_Preview = BuildExactPreview(m_Editor);
-    return m_Preview!=NULL;
+    return m_Preview!=0;
 }
 
 bool wxsItemResData::HidePreview()
@@ -1431,7 +1431,7 @@ bool wxsItemResData::HidePreview()
         return false;
     }
     m_Preview->Destroy();
-    m_Preview = NULL;
+    m_Preview = 0;
     return true;
 }
 

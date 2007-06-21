@@ -86,7 +86,7 @@ namespace
 }
 
 wxsStdDialogButtonSizer::wxsStdDialogButtonSizer(wxsItemResData* Data):
-    wxsItem(Data,&Reg.Info,flVariable|flSubclass,NULL)
+    wxsItem(Data,&Reg.Info,flVariable|flSubclass,0)
 {
     for ( int i=0; i<NumButtons; i++ )
     {

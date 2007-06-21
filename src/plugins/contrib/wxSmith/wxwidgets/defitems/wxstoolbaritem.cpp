@@ -46,8 +46,8 @@ wxsToolBarItem::wxsToolBarItem(wxsItemResData* Data,bool IsSeparator):
     wxsTool(
         Data,
         &Info,
-        IsSeparator?NULL:wxsToolBarItemEvents,
-        NULL,
+        IsSeparator?0:wxsToolBarItemEvents,
+        0,
         IsSeparator?0:flVariable|flId),
     m_Type(IsSeparator?Separator:Normal)
 {

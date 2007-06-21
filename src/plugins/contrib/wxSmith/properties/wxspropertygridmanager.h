@@ -54,7 +54,7 @@ class wxsPropertyGridManager: public wxPropertyGridManager
         /** \brief Function notifying about change of main wxsPropertyContainer
          *
          * \param NewContainer new container associated with this manager,
-         *        if NULL, container has been unbinded and manager must be cleared.
+         *        if 0, container has been unbinded and manager must be cleared.
          */
         virtual void OnContainerChanged(wxsPropertyContainer* NewContainer) {}
 
@@ -74,7 +74,7 @@ class wxsPropertyGridManager: public wxPropertyGridManager
         void UnbindPropertyContainer(wxsPropertyContainer* PC);
 
         /** \brief Function updating content of property grid
-         *  \param PC container which changed it's content, if NULL, content
+         *  \param PC container which changed it's content, if 0, content
          *         will always be updated, no matter if it's shown in grid
          */
         void Update(wxsPropertyContainer* PC);

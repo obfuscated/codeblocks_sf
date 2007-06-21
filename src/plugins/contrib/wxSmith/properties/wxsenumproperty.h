@@ -18,7 +18,7 @@ class wxsEnumProperty: public wxsProperty
          *  \param DataName         name of property used in data structures
          *  \param Offset           offset of long integer holding enumerated value (taken from wxsOFFSET macro)
          *  \param Values           array of long integer values which can be enumerated
-         *  \param Names            array of names used for items in Values array, ending with NULL
+         *  \param Names            array of names used for items in Values array, ending with 0
          *  \param UpdateEnteries   posting true here notifies, that arrays may change while property is shown in property grid
          *  \param Default          defaut value applied on read errors
          *  \param UseNamesInXml    if true, names will be stored inside xml node instead of values
@@ -64,7 +64,7 @@ class wxsEnumProperty: public wxsProperty
  *  \param PGName name used in property grid
  *  \param DataName name used in Xml / Data Streams
  *  \param Values global array of long values for enums
- *  \param Names global array of names (stored as wxChar*) for enums, ended with NULL entry
+ *  \param Names global array of names (stored as wxChar*) for enums, ended with 0 entry
  *  \param Default value applied on read errors / validation failures
  */
 #define WXS_ENUM(ClassName,VarName,PGName,DataName,Values,Names,Default) \
@@ -77,7 +77,7 @@ class wxsEnumProperty: public wxsProperty
  *  \param PGName name used in property grid
  *  \param DataName name used in Xml / Data Streams
  *  \param Values global array of long values for enums
- *  \param Names global array of names (stored as wxChar*) for enums, ended with NULL entry
+ *  \param Names global array of names (stored as wxChar*) for enums, ended with 0 entry
  *  \param Default value applied on read errors / validation failures
  *  \param Priority priority of this property
  */

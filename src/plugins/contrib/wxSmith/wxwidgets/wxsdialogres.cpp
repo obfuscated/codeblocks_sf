@@ -83,7 +83,7 @@ const wxString wxsDialogRes::ResType = _T("wxDialog");
 wxString wxsDialogRes::OnGetAppBuildingCode()
 {
     return wxString::Format(
-        _T("\t%s Dlg(NULL);\n")
+        _T("\t%s Dlg(0);\n")
         _T("\tSetTopWindow(&Dlg);\n")
         _T("\tDlg.ShowModal();\n")
         _T("\twxsOK = false;\n"),

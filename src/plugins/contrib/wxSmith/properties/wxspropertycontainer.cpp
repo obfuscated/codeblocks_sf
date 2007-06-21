@@ -33,12 +33,12 @@
 
 long wxsPropertyContainer::Flags = 0;
 bool wxsPropertyContainer::IsRead = false;
-TiXmlElement* wxsPropertyContainer::CurrentElement = NULL;
-wxsPropertyStream* wxsPropertyContainer::CurrentStream = NULL;
+TiXmlElement* wxsPropertyContainer::CurrentElement = 0;
+wxsPropertyStream* wxsPropertyContainer::CurrentStream = 0;
 wxMutex wxsPropertyContainer::Mutex;
 
 wxsPropertyContainer::wxsPropertyContainer():
-    CurrentQP(NULL),
+    CurrentQP(0),
     BlockChangeCallback(false)
 {
 }
@@ -54,8 +54,8 @@ wxsPropertyContainer::~wxsPropertyContainer()
     // Unbinding prom quick properties if there's one
     if ( CurrentQP )
     {
-        CurrentQP->Container = NULL;
-        CurrentQP = NULL;
+        CurrentQP->Container = 0;
+        CurrentQP = 0;
     }
 }
 
@@ -178,7 +178,7 @@ wxsQuickPropsPanel* wxsPropertyContainer::BuildQuickPropertiesPanel(wxWindow* Pa
 {
     if ( CurrentQP )
     {
-        CurrentQP->Container = NULL;
+        CurrentQP->Container = 0;
     }
 
     CurrentQP = OnCreateQuickProperties(Parent);

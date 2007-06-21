@@ -145,7 +145,7 @@ void wxsEvents::GenerateBindingCode(wxString& Code,const wxString& IdString,cons
                                 Code << VarNameString << _T("->Connect(") << IdString
                                      << _T(",") << m_EventArray[i].Type
                                      << _T(",(wxObjectEventFunction)&") << ClassName << _T("::") << m_Functions[i]
-                                     << _T(",NULL,this);\n");
+                                     << _T(",0,this);\n");
                             }
                             break;
 

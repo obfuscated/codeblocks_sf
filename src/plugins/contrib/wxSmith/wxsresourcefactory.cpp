@@ -25,11 +25,11 @@
 
 // TODO: Support dynamic loading / unloading of factories
 
-wxsResourceFactory* wxsResourceFactory::m_UpdateQueue = NULL;
-wxsResourceFactory* wxsResourceFactory::m_Initialized = NULL;
+wxsResourceFactory* wxsResourceFactory::m_UpdateQueue = 0;
+wxsResourceFactory* wxsResourceFactory::m_Initialized = 0;
 wxsResourceFactory::HashT wxsResourceFactory::m_Hash;
 wxString wxsResourceFactory::m_LastExternalName;
-wxsResourceFactory* wxsResourceFactory::m_LastExternalFactory = NULL;
+wxsResourceFactory* wxsResourceFactory::m_LastExternalFactory = 0;
 bool wxsResourceFactory::m_AllAttached = false;
 
 wxsResourceFactory::wxsResourceFactory()
@@ -86,7 +86,7 @@ wxsResource* wxsResourceFactory::Build(const wxString& ResourceType,wxsProject* 
     ResourceInfo& Info = m_Hash[ResourceType];
     if ( !Info.m_Factory )
     {
-        return NULL;
+        return 0;
     }
     return Info.m_Factory->OnCreate(Info.m_Number,Project);
 }
@@ -104,7 +104,7 @@ bool wxsResourceFactory::CanHandleExternal(const wxString& FileName)
         }
     }
     m_LastExternalName = wxEmptyString;
-    m_LastExternalFactory = NULL;
+    m_LastExternalFactory = 0;
     return false;
 }
 
@@ -120,7 +120,7 @@ wxsResource* wxsResourceFactory::BuildExternal(const wxString& FileName)
         wxsResource* Res = Factory->OnBuildExternal(FileName);
         if ( Res ) return Res;
     }
-    return NULL;
+    return 0;
 }
 
 void wxsResourceFactory::BuildSmithMenu(wxMenu* menu)
@@ -128,7 +128,7 @@ void wxsResourceFactory::BuildSmithMenu(wxMenu* menu)
     InitializeFromQueue();
     for ( HashT::iterator i=m_Hash.begin(); i!=m_Hash.end(); ++i )
     {
-        if ( i->second.m_Factory == NULL ) continue;
+        if ( i->second.m_Factory == 0 ) continue;
         wxString MenuEntry = _T("Add ") + i->first;
         menu->Append(i->second.m_MenuId,MenuEntry);
     }
@@ -138,7 +138,7 @@ bool wxsResourceFactory::NewResourceMenu(int Id,wxsProject* Project)
 {
     for ( HashT::iterator i=m_Hash.begin(); i!=m_Hash.end(); ++i )
     {
-        if ( i->second.m_Factory == NULL ) continue;
+        if ( i->second.m_Factory == 0 ) continue;
         if ( i->second.m_MenuId == Id )
         {
             return i->second.m_Factory->OnNewWizard(i->second.m_Number,Project);

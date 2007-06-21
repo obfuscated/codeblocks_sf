@@ -69,7 +69,7 @@ wxsArrayStringCheckEditorDlg::wxsArrayStringCheckEditorDlg(wxWindow* parent,wxAr
 	StaticLine1 = new wxStaticLine(this,ID_STATICLINE1,wxDefaultPosition,wxSize(10,-1),wxLI_HORIZONTAL,_T("ID_STATICLINE1"));
 	BoxSizer1->Add(StaticLine1,0,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-	StringList = new wxCheckListBox(this,ID_CHECKLISTBOX1,wxDefaultPosition,wxSize(180,255),0,NULL,0,wxDefaultValidator,_T("ID_CHECKLISTBOX1"));
+	StringList = new wxCheckListBox(this,ID_CHECKLISTBOX1,wxDefaultPosition,wxSize(180,255),0,0,0,wxDefaultValidator,_T("ID_CHECKLISTBOX1"));
 	BoxSizer3->Add(StringList,1,wxTOP|wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer4 = new wxBoxSizer(wxVERTICAL);
 	Button2 = new wxButton(this,ID_BUTTON2,_("Update"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON2"));

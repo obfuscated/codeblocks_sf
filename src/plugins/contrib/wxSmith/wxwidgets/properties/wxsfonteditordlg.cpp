@@ -97,7 +97,7 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
 	BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
 	BoxSizer5 = new wxBoxSizer(wxVERTICAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Font type"));
-	FontType = new wxChoice(this,ID_CHOICE1,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_T("ID_CHOICE1"));
+	FontType = new wxChoice(this,ID_CHOICE1,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_T("ID_CHOICE1"));
 	FontType->SetSelection( FontType->Append(_("Default font")) );
 	FontType->Append(_("Custom font"));
 	FontType->Append(_("System-based font"));
@@ -114,7 +114,7 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
 	BaseFontTxt = new wxStaticText(this,ID_STATICTEXT1,_("Base Font:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));
 	BaseFontSizer->Add(BaseFontTxt,1,wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	FlexGridSizer2->Add(BaseFontSizer,1,wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	BaseFontVal = new wxChoice(this,ID_CHOICE2,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_T("ID_CHOICE2"));
+	BaseFontVal = new wxChoice(this,ID_CHOICE2,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_T("ID_CHOICE2"));
 	BaseFontVal->SetSelection( BaseFontVal->Append(_("wxSYS_OEM_FIXED_FONT")) );
 	BaseFontVal->Append(_("wxSYS_ANSI_FIXED_FONT"));
 	BaseFontVal->Append(_("wxSYS_ANSI_VAR_FONT"));
@@ -126,7 +126,7 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
 	FlexGridSizer2->Add(BaseFontVal,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	FamUse = new wxCheckBox(this,ID_CHECKBOX2,_("Family:"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX2"));
 	FlexGridSizer2->Add(FamUse,1,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-	FamVal = new wxComboBox(this,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_T("ID_COMBOBOX1"));
+	FamVal = new wxComboBox(this,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_T("ID_COMBOBOX1"));
 	FamVal->SetSelection( FamVal->Append(_("Decorative")) );
 	FamVal->Append(_("Roman"));
 	FamVal->Append(_("Script"));
@@ -136,7 +136,7 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
 	FlexGridSizer2->Add(FamVal,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	EncodUse = new wxCheckBox(this,ID_CHECKBOX1,_("Font encoding:"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX1"));
 	FlexGridSizer2->Add(EncodUse,1,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-	EncodVal = new wxChoice(this,ID_CHOICE3,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_T("ID_CHOICE3"));
+	EncodVal = new wxChoice(this,ID_CHOICE3,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_T("ID_CHOICE3"));
 	FlexGridSizer2->Add(EncodVal,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	SizeUse = new wxCheckBox(this,ID_CHECKBOX7,_("Size:"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX7"));
 	FlexGridSizer2->Add(SizeUse,1,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);

@@ -38,7 +38,7 @@ namespace
     int ConfigureId = wxNewId();
 }
 
-wxSmith* wxSmith::m_Singleton = NULL;
+wxSmith* wxSmith::m_Singleton = 0;
 
 BEGIN_EVENT_TABLE(wxSmith, cbPlugin)
     EVT_PROJECT_OPEN(wxSmith::OnProjectOpened)
@@ -61,10 +61,10 @@ void wxSmith::OnAttach()
     // No more instances of wxSmith class can be found here,
     // even if it's on another dll/so, m_Singleton will point
     // to different memory locations
-    wxASSERT(m_Singleton == NULL);
+    wxASSERT(m_Singleton == 0);
 
     wxFlatNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
-    wxASSERT(Notebook!=NULL);
+    wxASSERT(Notebook!=0);
 
     // Creating main splitting object
     m_Splitter = new wxsStoringSplitterWindow(Notebook);
@@ -106,7 +106,7 @@ void wxSmith::OnRelease(bool appShutDown)
         if ( i->second )
         {
             delete i->second;
-            i->second = NULL;
+            i->second = 0;
         }
     }
     wxsExtResManager::Get()->DeleteAll();
@@ -117,7 +117,7 @@ void wxSmith::OnRelease(bool appShutDown)
 
     if ( m_Singleton == this )
     {
-        m_Singleton = NULL;
+        m_Singleton = 0;
     }
 }
 
@@ -129,7 +129,7 @@ cbConfigurationPanel* wxSmith::GetConfigurationPanel(wxWindow* parent)
 cbConfigurationPanel* wxSmith::GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
 {
     ProjectMapI i = m_ProjectMap.find(project);
-    if ( i == m_ProjectMap.end() ) return NULL;
+    if ( i == m_ProjectMap.end() ) return 0;
     return i->second->GetProjectConfigurationPanel(parent);
 }
 
@@ -318,7 +318,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     if ( !Element ) return;
 
     // Creating fake resource and testing if xrc can be loaded without any errors
-    wxsItem* Test = wxsGEN(cbC2U(Element->Attribute("class")),NULL);
+    wxsItem* Test = wxsGEN(cbC2U(Element->Attribute("class")),0);
     if ( !Test )
     {
     	// Something went wrong - default factory is not working ?
@@ -340,7 +340,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     delete Test;
 
     // Displaying configuration dialog - it will handle adding resource to project
-    wxsImportXrcDlg Dlg(NULL,Element);
+    wxsImportXrcDlg Dlg(0,Element);
     Dlg.ShowModal();
 }
 */

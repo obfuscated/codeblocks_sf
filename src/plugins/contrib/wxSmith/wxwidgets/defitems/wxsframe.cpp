@@ -115,8 +115,8 @@ void wxsFrame::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
 
 wxObject* wxsFrame::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-    wxWindow* NewItem = NULL;
-    wxFrame* Frm = NULL;
+    wxWindow* NewItem = 0;
+    wxFrame* Frm = 0;
 
     // In case of frame and dialog when in "Exact" mode, we do not create
     // new object, but use Parent and call Create for it.
@@ -125,7 +125,7 @@ wxObject* wxsFrame::OnBuildPreview(wxWindow* Parent,long Flags)
         Frm = wxDynamicCast(Parent,wxFrame);
         if ( Frm )
         {
-            Frm->Create(NULL,GetId(),Title,wxDefaultPosition,wxDefaultSize,Style());
+            Frm->Create(0,GetId(),Title,wxDefaultPosition,wxDefaultSize,Style());
             Frm->SetClientSize(Size(wxTheApp->GetTopWindow()));
             Frm->Move(Pos(wxTheApp->GetTopWindow()));
         }

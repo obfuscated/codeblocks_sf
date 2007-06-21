@@ -80,7 +80,7 @@ void wxsRadioBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
 
             Code << Codef(Language,_T("%C(%W,%I,%t,%P,%S,%d,%s,%d,%T,%V,%N);\n"),
                         Label.c_str(),ArrayChoices.GetCount(),
-                        (ArrayChoices.IsEmpty()?_T("NULL"):(_T("wxRadioBoxChoices_")+GetVarName()).c_str()),
+                        (ArrayChoices.IsEmpty()?_T("0"):(_T("wxRadioBoxChoices_")+GetVarName()).c_str()),
                         Dimension);
 
             if ( DefaultSelection >= 0 && DefaultSelection < (int)ArrayChoices.GetCount() )
