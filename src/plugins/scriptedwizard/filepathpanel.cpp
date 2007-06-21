@@ -1,6 +1,7 @@
 #include <sdk.h>
 #ifndef CB_PRECOMP
     #include <wx/filedlg.h>
+    #include <wx/intl.h>
     #include <cbproject.h>
     #include <projectbuildtarget.h>
     #include <projectmanager.h>
@@ -45,7 +46,7 @@ FilePathPanel::FilePathPanel(wxWindow* parent,wxWindowID id) :
 	wxStaticText* StaticText1;
 	wxStaticText* StaticText2;
 	wxStaticText* StaticText4;
-	
+
 	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Please enter the file\'s location and name and\nwhether to add it to the active project."),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));

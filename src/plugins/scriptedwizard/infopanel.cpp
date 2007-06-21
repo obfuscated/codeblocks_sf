@@ -1,5 +1,8 @@
 #include "infopanel.h"
 
+#include <wx/intl.h>
+#include <wx/string.h>
+
 //(*IdInit(InfoPanel)
 const long InfoPanel::ID_STATICTEXT1 = wxNewId();
 const long InfoPanel::ID_CHECKBOX1 = wxNewId();

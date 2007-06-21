@@ -14,6 +14,8 @@
 #include <wx/stattext.h>
 //*)
 
+class wxString;
+
 class InfoPanel: public wxPanel
 {
 	public:
@@ -49,4 +51,4 @@ class InfoPanel: public wxPanel
 		DECLARE_EVENT_TABLE()
 };
 
-#endif
+#endif // INFOPANEL_H

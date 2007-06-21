@@ -17,6 +17,8 @@
 #include <wx/textctrl.h>
 //*)
 
+#include <wx/string.h>
+
 class FilePathPanel: public wxPanel
 {
 	public:
