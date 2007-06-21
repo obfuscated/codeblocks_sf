@@ -35,6 +35,7 @@
 #include "projectloader_hooks.h"
 #include "annoyingdialog.h"
 #include "configmanager.h"
+#include "tinyxml/tinywxuni.h"
 
 ProjectLoader::ProjectLoader(cbProject* project)
     : m_pProject(project),
@@ -59,8 +60,8 @@ bool ProjectLoader::Open(const wxString& filename)
 
     wxStopWatch sw;
     pMsg->DebugLog(_T("Loading project file..."));
-    TiXmlDocument doc(filename.mb_str());
-    if (!doc.LoadFile())
+    TiXmlDocument doc;
+    if (!TinyXML::LoadDocument(filename, &doc))
         return false;
 
     pMsg->DebugLog(_T("Parsing project file..."));

@@ -30,6 +30,7 @@
 
 
 #include "tinyxml/tinyxml.h"
+#include "tinyxml/tinywxuni.h"
 
 WorkspaceLoader::WorkspaceLoader()
 {
@@ -46,8 +47,8 @@ inline MessageManager* GetpMsg() { return Manager::Get()->GetMessageManager(); }
 
 bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
 {
-    TiXmlDocument doc(filename.mb_str());
-    if (!doc.LoadFile())
+    TiXmlDocument doc;
+    if (!TinyXML::LoadDocument(filename, &doc))
         return false;
 
 //    ProjectManager* pMan = Manager::Get()->GetProjectManager();

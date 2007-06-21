@@ -27,6 +27,7 @@
 
 #include "projectlayoutloader.h"
 #include "tinyxml/tinyxml.h"
+#include "tinyxml/tinywxuni.h"
 
 ProjectLayoutLoader::ProjectLayoutLoader(cbProject* project)
     : m_pProject(project),
@@ -45,8 +46,8 @@ ProjectLayoutLoader::~ProjectLayoutLoader()
 
 bool ProjectLayoutLoader::Open(const wxString& filename)
 {
-    TiXmlDocument doc(filename.mb_str());
-    if (!doc.LoadFile())
+    TiXmlDocument doc;
+    if (!TinyXML::LoadDocument(filename, &doc))
         return false;
 
     ProjectManager* pMan = Manager::Get()->GetProjectManager();
