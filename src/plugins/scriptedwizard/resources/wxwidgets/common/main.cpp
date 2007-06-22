@@ -1,10 +1,10 @@
 /***************************************************************
- * Name:      [PROJECT_NAME]Main.cpp
+ * Name:      [FILENAME_PREFIX]Main.cpp
  * Purpose:   Code for Application Frame
  * Author:    [AUTHOR_NAME] ([AUTHOR_EMAIL])
  * Created:   [NOW]
  * Copyright: [AUTHOR_NAME] ([AUTHOR_WWW])
- * License:   
+ * License:
  **************************************************************/
 
 #ifdef WX_PRECOMP
@@ -15,7 +15,7 @@
 #pragma hdrstop
 #endif //__BORLANDC__
 
-#include "[PROJECT_NAME]Main.h"
+#include "[FILENAME_PREFIX]Main.h"
 
 //helper functions
 enum wxbuildinfoformat {
@@ -45,13 +45,13 @@ wxString wxbuildinfo(wxbuildinfoformat format)
     return wxbuild;
 }
 
-[IF WXFRAME][IF NONE]BEGIN_EVENT_TABLE([PROJECT_NAME]Frame, wxFrame)
-	EVT_CLOSE([PROJECT_NAME]Frame::OnClose)
-    EVT_MENU(idMenuQuit, [PROJECT_NAME]Frame::OnQuit)
-    EVT_MENU(idMenuAbout, [PROJECT_NAME]Frame::OnAbout)
+[IF WXFRAME][IF NONE]BEGIN_EVENT_TABLE([CLASS_PREFIX]Frame, wxFrame)
+	EVT_CLOSE([CLASS_PREFIX]Frame::OnClose)
+    EVT_MENU(idMenuQuit, [CLASS_PREFIX]Frame::OnQuit)
+    EVT_MENU(idMenuAbout, [CLASS_PREFIX]Frame::OnAbout)
 END_EVENT_TABLE()
 
-[PROJECT_NAME]Frame::[PROJECT_NAME]Frame(wxFrame *frame, const wxString& title)
+[CLASS_PREFIX]Frame::[CLASS_PREFIX]Frame(wxFrame *frame, const wxString& title)
     : wxFrame(frame, -1, title)
 {
 #if wxUSE_MENUS
@@ -76,7 +76,7 @@ END_EVENT_TABLE()
 #endif // wxUSE_STATUSBAR
 
 }[ENDIF NONE]
-[IF WXFB][PROJECT_NAME]Frame::[PROJECT_NAME]Frame(wxFrame *frame)
+[IF WXFB][CLASS_PREFIX]Frame::[CLASS_PREFIX]Frame(wxFrame *frame)
 	: GUIFrame(frame)
 {
 #if wxUSE_STATUSBAR
@@ -85,32 +85,32 @@ END_EVENT_TABLE()
 #endif
 }[ENDIF WXFB]
 
-[PROJECT_NAME]Frame::~[PROJECT_NAME]Frame()
+[CLASS_PREFIX]Frame::~[CLASS_PREFIX]Frame()
 {
 }
 
-void [PROJECT_NAME]Frame::OnClose(wxCloseEvent &event)
-{
-    Destroy();
-}
-
-void [PROJECT_NAME]Frame::OnQuit(wxCommandEvent &event)
+void [CLASS_PREFIX]Frame::OnClose(wxCloseEvent &event)
 {
     Destroy();
 }
 
-void [PROJECT_NAME]Frame::OnAbout(wxCommandEvent &event)
+void [CLASS_PREFIX]Frame::OnQuit(wxCommandEvent &event)
+{
+    Destroy();
+}
+
+void [CLASS_PREFIX]Frame::OnAbout(wxCommandEvent &event)
 {
     wxString msg = wxbuildinfo(long_f);
     wxMessageBox(msg, _("Welcome to..."));
 }[ENDIF WXFRAME]
-[IF WXDIALOG][IF NONE]BEGIN_EVENT_TABLE([PROJECT_NAME]Dialog, wxDialog)
-	EVT_CLOSE([PROJECT_NAME]Dialog::OnClose)
-    EVT_BUTTON(idBtnQuit, [PROJECT_NAME]Dialog::OnQuit)
-    EVT_BUTTON(idBtnAbout, [PROJECT_NAME]Dialog::OnAbout)
+[IF WXDIALOG][IF NONE]BEGIN_EVENT_TABLE([CLASS_PREFIX]Dialog, wxDialog)
+	EVT_CLOSE([CLASS_PREFIX]Dialog::OnClose)
+    EVT_BUTTON(idBtnQuit, [CLASS_PREFIX]Dialog::OnQuit)
+    EVT_BUTTON(idBtnAbout, [CLASS_PREFIX]Dialog::OnAbout)
 END_EVENT_TABLE()
 
-[PROJECT_NAME]Dialog::[PROJECT_NAME]Dialog(wxDialog *dlg, const wxString &title)
+[CLASS_PREFIX]Dialog::[CLASS_PREFIX]Dialog(wxDialog *dlg, const wxString &title)
     : wxDialog(dlg, -1, title)
 {
 	this->SetSizeHints(wxDefaultSize, wxDefaultSize);
@@ -132,26 +132,26 @@ END_EVENT_TABLE()
 	this->Layout();
 	bSizer1->Fit(this);
 }[ENDIF NONE]
-[IF WXFB][PROJECT_NAME]Dialog::[PROJECT_NAME]Dialog(wxDialog *dlg)
+[IF WXFB][CLASS_PREFIX]Dialog::[CLASS_PREFIX]Dialog(wxDialog *dlg)
     : GUIDialog(dlg)
 {
 }[ENDIF WXFB]
 
-[PROJECT_NAME]Dialog::~[PROJECT_NAME]Dialog()
+[CLASS_PREFIX]Dialog::~[CLASS_PREFIX]Dialog()
 {
 }
 
-void [PROJECT_NAME]Dialog::OnClose(wxCloseEvent &event)
-{
-    Destroy();
-}
-
-void [PROJECT_NAME]Dialog::OnQuit(wxCommandEvent &event)
+void [CLASS_PREFIX]Dialog::OnClose(wxCloseEvent &event)
 {
     Destroy();
 }
 
-void [PROJECT_NAME]Dialog::OnAbout(wxCommandEvent &event)
+void [CLASS_PREFIX]Dialog::OnQuit(wxCommandEvent &event)
+{
+    Destroy();
+}
+
+void [CLASS_PREFIX]Dialog::OnAbout(wxCommandEvent &event)
 {
     wxString msg = wxbuildinfo(long_f);
     wxMessageBox(msg, _("Welcome to..."));

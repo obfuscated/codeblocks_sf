@@ -1,5 +1,5 @@
 /***************************************************************
- * Name:      [PROJECT_NAME]Main.cpp
+ * Name:      [FILENAME_PREFIX]Main.cpp
  * Purpose:   Code for Application Frame
  * Author:    [AUTHOR_NAME] ([AUTHOR_EMAIL])
  * Created:   [NOW]
@@ -11,11 +11,11 @@
 #include "wx_pch.h"
 #endif
 
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif //__BORLANDC__
+#include "[FILENAME_PREFIX]Main.h"
+#include <wx/msgdlg.h>
 
-#include "[PROJECT_NAME]Main.h"
+//(*InternalHeaders([CLASS_PREFIX][IF WXFRAME]Frame[ENDIF WXFRAME][IF WXDIALOG]Dialog[ENDIF WXDIALOG])
+//*)
 
 //helper functions
 enum wxbuildinfoformat {
@@ -43,67 +43,61 @@ wxString wxbuildinfo(wxbuildinfoformat format)
     return wxbuild;
 }
 
-[IF WXFRAME]//(*InternalHeaders([PROJECT_NAME]Frame)
+[IF WXFRAME]//(*IdInit([CLASS_PREFIX]Frame)
 //*)
 
-//(*IdInit([PROJECT_NAME]Frame)
-//*)
-
-BEGIN_EVENT_TABLE([PROJECT_NAME]Frame,wxFrame)
-	//(*EventTable([PROJECT_NAME]Frame)
+BEGIN_EVENT_TABLE([CLASS_PREFIX]Frame,wxFrame)
+	//(*EventTable([CLASS_PREFIX]Frame)
 	//*)
 END_EVENT_TABLE()
 
-[PROJECT_NAME]Frame::[PROJECT_NAME]Frame(wxWindow* parent,wxWindowID id)
+[CLASS_PREFIX]Frame::[CLASS_PREFIX]Frame(wxWindow* parent,wxWindowID id)
 {
-	//(*Initialize([PROJECT_NAME]Frame)
+	//(*Initialize([CLASS_PREFIX]Frame)
 	//*)
 }
 
-[PROJECT_NAME]Frame::~[PROJECT_NAME]Frame()
+[CLASS_PREFIX]Frame::~[CLASS_PREFIX]Frame()
 {
-	//(*Destroy([PROJECT_NAME]Frame)
+	//(*Destroy([CLASS_PREFIX]Frame)
 	//*)
 }
 
-void [PROJECT_NAME]Frame::OnQuit(wxCommandEvent& event)
+void [CLASS_PREFIX]Frame::OnQuit(wxCommandEvent& event)
 {
     Close();
 }
 
-void [PROJECT_NAME]Frame::OnAbout(wxCommandEvent& event)
+void [CLASS_PREFIX]Frame::OnAbout(wxCommandEvent& event)
 {
     wxString msg = wxbuildinfo(long_f);
     wxMessageBox(msg, _("Welcome to..."));
-}[ENDIF WXFRAME][IF WXDIALOG]//(*InternalHeaders([PROJECT_NAME]Dialog)
+}[ENDIF WXFRAME][IF WXDIALOG]//(*IdInit([CLASS_PREFIX]Dialog)
 //*)
 
-//(*IdInit([PROJECT_NAME]Dialog)
-//*)
-
-BEGIN_EVENT_TABLE([PROJECT_NAME]Dialog,wxDialog)
-	//(*EventTable([PROJECT_NAME]Dialog)
+BEGIN_EVENT_TABLE([CLASS_PREFIX]Dialog,wxDialog)
+	//(*EventTable([CLASS_PREFIX]Dialog)
 	//*)
 END_EVENT_TABLE()
 
-[PROJECT_NAME]Dialog::[PROJECT_NAME]Dialog(wxWindow* parent,wxWindowID id)
+[CLASS_PREFIX]Dialog::[CLASS_PREFIX]Dialog(wxWindow* parent,wxWindowID id)
 {
-	//(*Initialize([PROJECT_NAME]Dialog)
+	//(*Initialize([CLASS_PREFIX]Dialog)
 	//*)
 }
 
-[PROJECT_NAME]Dialog::~[PROJECT_NAME]Dialog()
+[CLASS_PREFIX]Dialog::~[CLASS_PREFIX]Dialog()
 {
-	//(*Destroy([PROJECT_NAME]Dialog)
+	//(*Destroy([CLASS_PREFIX]Dialog)
 	//*)
 }
 
-void [PROJECT_NAME]Dialog::OnQuit(wxCommandEvent& event)
+void [CLASS_PREFIX]Dialog::OnQuit(wxCommandEvent& event)
 {
     Close();
 }
 
-void [PROJECT_NAME]Dialog::OnAbout(wxCommandEvent& event)
+void [CLASS_PREFIX]Dialog::OnAbout(wxCommandEvent& event)
 {
     wxString msg = wxbuildinfo(long_f);
     wxMessageBox(msg, _("Welcome to..."));

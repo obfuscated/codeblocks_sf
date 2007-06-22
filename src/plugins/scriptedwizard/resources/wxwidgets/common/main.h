@@ -1,22 +1,22 @@
 /***************************************************************
- * Name:      [PROJECT_NAME]Main.h
+ * Name:      [FILENAME_PREFIX]Main.h
  * Purpose:   Defines Application Frame
  * Author:    [AUTHOR_NAME] ([AUTHOR_EMAIL])
  * Created:   [NOW]
  * Copyright: [AUTHOR_NAME] ([AUTHOR_WWW])
- * License:   
+ * License:
  **************************************************************/
 
 #ifndef [PROJECT_HDR]MAIN_H
 #define [PROJECT_HDR]MAIN_H
 
-#include "[PROJECT_NAME]App.h"
+#include "[FILENAME_PREFIX]App.h"
 
-[IF WXFRAME][IF NONE]class [PROJECT_NAME]Frame: public wxFrame
+[IF WXFRAME][IF NONE]class [CLASS_PREFIX]Frame: public wxFrame
 {
 	public:
-		[PROJECT_NAME]Frame(wxFrame *frame, const wxString& title);
-		~[PROJECT_NAME]Frame();
+		[CLASS_PREFIX]Frame(wxFrame *frame, const wxString& title);
+		~[CLASS_PREFIX]Frame();
 	private:
 		enum
 		{
@@ -30,11 +30,11 @@
 };[ENDIF NONE]
 [IF WXFB]#include "GUIFrame.h"
 
-class [PROJECT_NAME]Frame: public GUIFrame
+class [CLASS_PREFIX]Frame: public GUIFrame
 {
 	public:
-		[PROJECT_NAME]Frame(wxFrame *frame);
-		~[PROJECT_NAME]Frame();
+		[CLASS_PREFIX]Frame(wxFrame *frame);
+		~[CLASS_PREFIX]Frame();
 	private:
 		virtual void OnClose(wxCloseEvent& event);
 		virtual void OnQuit(wxCommandEvent& event);
@@ -42,12 +42,12 @@ class [PROJECT_NAME]Frame: public GUIFrame
 };[ENDIF WXFB][ENDIF WXFRAME]
 [IF WXDIALOG][IF NONE]#include <wx/button.h>
 #include <wx/statline.h>
-class [PROJECT_NAME]Dialog: public wxDialog
+class [CLASS_PREFIX]Dialog: public wxDialog
 {
 	public:
-		[PROJECT_NAME]Dialog(wxDialog *dlg, const wxString& title);
-		~[PROJECT_NAME]Dialog();
-		
+		[CLASS_PREFIX]Dialog(wxDialog *dlg, const wxString& title);
+		~[CLASS_PREFIX]Dialog();
+
 	protected:
 		enum
 		{
@@ -58,7 +58,7 @@ class [PROJECT_NAME]Dialog: public wxDialog
 		wxButton* BtnAbout;
 		wxStaticLine* m_staticline1;
 		wxButton* BtnQuit;
-		
+
 	private:
 		void OnClose(wxCloseEvent& event);
 		void OnQuit(wxCommandEvent& event);
@@ -67,14 +67,14 @@ class [PROJECT_NAME]Dialog: public wxDialog
 };[ENDIF NONE]
 [IF WXFB]#include "GUIDialog.h"
 
-class [PROJECT_NAME]Dialog: public GUIDialog
+class [CLASS_PREFIX]Dialog: public GUIDialog
 {
 	public:
-		[PROJECT_NAME]Dialog(wxDialog *dlg);
-		~[PROJECT_NAME]Dialog();
+		[CLASS_PREFIX]Dialog(wxDialog *dlg);
+		~[CLASS_PREFIX]Dialog();
 	private:
 		virtual void OnClose(wxCloseEvent& event);
 		virtual void OnQuit(wxCommandEvent& event);
 		virtual void OnAbout(wxCommandEvent& event);
 };[ENDIF WXFB][ENDIF WXDIALOG]
-#endif // [PROJECT_NAME]MAIN_H
+#endif // [PROJECT_HDR]MAIN_H

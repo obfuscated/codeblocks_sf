@@ -1,5 +1,5 @@
 /***************************************************************
- * Name:      [PROJECT_NAME]Main.h
+ * Name:      [FILENAME_PREFIX]Main.h
  * Purpose:   Defines Application Frame
  * Author:    [AUTHOR_NAME] ([AUTHOR_EMAIL])
  * Created:   [NOW]
@@ -10,54 +10,52 @@
 #ifndef [PROJECT_HDR]MAIN_H
 #define [PROJECT_HDR]MAIN_H
 
-#include "[PROJECT_NAME]App.h"
-
-[IF WXFRAME]//(*Headers([PROJECT_NAME]Frame)
+[IF WXFRAME]//(*Headers([CLASS_PREFIX]Frame)
 //*)
 
-class [PROJECT_NAME]Frame: public wxFrame
+class [CLASS_PREFIX]Frame: public wxFrame
 {
 	public:
 
-		[PROJECT_NAME]Frame(wxWindow* parent,wxWindowID id = -1);
-		virtual ~[PROJECT_NAME]Frame();
+		[CLASS_PREFIX]Frame(wxWindow* parent,wxWindowID id = -1);
+		virtual ~[CLASS_PREFIX]Frame();
 
 	private:
 
-		//(*Handlers([PROJECT_NAME]Frame)
+		//(*Handlers([CLASS_PREFIX]Frame)
 		void OnQuit(wxCommandEvent& event);
 		void OnAbout(wxCommandEvent& event);
 		//*)
 
-		//(*Identifiers([PROJECT_NAME]Frame)
+		//(*Identifiers([CLASS_PREFIX]Frame)
 		//*)
 
-		//(*Declarations([PROJECT_NAME]Frame)
+		//(*Declarations([CLASS_PREFIX]Frame)
 		//*)
 
 		DECLARE_EVENT_TABLE()
-};[ENDIF WXFRAME][IF WXDIALOG]//(*Headers([PROJECT_NAME]Dialog)
+};[ENDIF WXFRAME][IF WXDIALOG]//(*Headers([CLASS_PREFIX]Dialog)
 //*)
 
-class [PROJECT_NAME]Dialog: public wxDialog
+class [CLASS_PREFIX]Dialog: public wxDialog
 {
 	public:
 
-		[PROJECT_NAME]Dialog(wxWindow* parent,wxWindowID id = -1);
-		virtual ~[PROJECT_NAME]Dialog();
+		[CLASS_PREFIX]Dialog(wxWindow* parent,wxWindowID id = -1);
+		virtual ~[CLASS_PREFIX]Dialog();
 
 	private:
 
-		//(*Handlers([PROJECT_NAME]Dialog)
+		//(*Handlers([CLASS_PREFIX]Dialog)
 		void OnQuit(wxCommandEvent& event);
 		void OnAbout(wxCommandEvent& event);
 		//*)
 
-		//(*Identifiers([PROJECT_NAME]Dialog)
+		//(*Identifiers([CLASS_PREFIX]Dialog)
 
 		//*)
 
-		//(*Declarations([PROJECT_NAME]Dialog)
+		//(*Declarations([CLASS_PREFIX]Dialog)
 
 		//*)
 
