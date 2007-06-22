@@ -118,11 +118,13 @@ wxsItemResData::~wxsItemResData()
     }
     m_Tools.clear();
     m_PropertiesFilter = 0;
-    wxsResourceItemId ParentId = wxsResourceTree::Get()->GetItemParent(m_TreeId);
-    // Selecting parent to prevent reopening resource on wxGTK
-    wxsResourceTree::Get()->SelectItem(ParentId);
-    wxsResourceTree::Get()->DeleteChildren(m_TreeId);
-
+    if ( wxsResourceTree::Get() )
+    {
+        wxsResourceItemId ParentId = wxsResourceTree::Get()->GetItemParent(m_TreeId);
+        // Selecting parent to prevent reopening resource on wxGTK
+        wxsResourceTree::Get()->SelectItem(ParentId);
+        wxsResourceTree::Get()->DeleteChildren(m_TreeId);
+    }
 }
 
 bool wxsItemResData::Load()
