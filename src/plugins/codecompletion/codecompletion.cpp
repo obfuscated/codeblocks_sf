@@ -1241,22 +1241,11 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
 
 void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 {
-    ProjectManager* PrjMan = Manager::Get()->GetProjectManager();
-    if (  (PrjMan
-        && (PrjMan->IsLoadingProject()
-        || PrjMan->IsLoadingWorkspace()
-        || PrjMan->IsClosingProject()
-        || PrjMan->IsClosingWorkspace()))
-        || Manager::Get()->IsAppShuttingDown())
+    if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
     {
-        event.Skip();
-        return;
-    }
-    EditorBase* eb = event.GetEditor();
-    if (IsAttached() && m_InitDone)
-    {
+        EditorBase* eb = event.GetEditor();
         m_NativeParsers.OnEditorActivated(eb);
-        m_FunctionsParsingTimer.Start(1000, wxTIMER_ONE_SHOT); // one second delay should be ok
+        m_FunctionsParsingTimer.Start(200, wxTIMER_ONE_SHOT); // delay reduced to 200ms - it's safe now.
     }
 
     event.Skip();
