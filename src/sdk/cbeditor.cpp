@@ -2523,7 +2523,7 @@ void cbEditor::OnZoom(wxScintillaEvent& event)
 void cbEditor::OnScintillaEvent(wxScintillaEvent& event)
 {
     // call any hooked functors
-    if (EditorHooks::HasRegisteredHooks())
+    if (!ProjectManager::IsBusy() && EditorHooks::HasRegisteredHooks())
     {
         EditorHooks::CallHooks(this, event);
     }
