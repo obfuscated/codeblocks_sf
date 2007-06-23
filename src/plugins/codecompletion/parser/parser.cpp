@@ -529,7 +529,9 @@ bool Parser::ParseBufferForFunctions(const wxString& buffer)
                                             false,
                                             opts,
                                             m_pTempTokens);
-    return thread->Parse();
+    bool result = thread->Parse();
+    delete thread;
+    return result;
 }
 
 bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
@@ -543,7 +545,9 @@ bool Parser::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString&
                                             false,
                                             opts,
                                             m_pTempTokens);
-    return thread->ParseBufferForUsingNamespace(buffer, result);
+    bool bresult = thread->ParseBufferForUsingNamespace(buffer, result);
+    delete thread;
+    return bresult;
 }
 
 bool Parser::RemoveFile(const wxString& filename)
