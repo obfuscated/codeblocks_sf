@@ -12,39 +12,10 @@
 #include <wx/timer.h>
 #include <map>
 #include <vector>
-#include <queue>
 
 class cbEditor;
 class wxScintillaEvent;
 class wxChoice;
-class CodeCompletion;
-
-struct CodeCompletion_FunctionScope
-{
-    int StartLine;
-    int EndLine;
-    wxString Name;
-    wxString Scope;
-};
-
-struct CodeCompletion_NameSpace
-{
-    int StartLine;
-    int EndLine;
-    wxString Name;
-};
-
-typedef std::vector<CodeCompletion_FunctionScope> FunctionsScopeVec;
-typedef std::vector<CodeCompletion_NameSpace> NameSpaceVec;
-typedef std::queue<wxString> FileParsingQueue;
-
-struct FunctionsScopePerFile
-{
-    FunctionsScopeVec m_FunctionsScope;
-    NameSpaceVec m_NameSpaces;
-};
-
-typedef map<wxString,FunctionsScopePerFile> FunctionsScopeMap;
 
 class CodeCompletion : public cbCodeCompletionPlugin
 {
@@ -68,6 +39,20 @@ class CodeCompletion : public cbCodeCompletionPlugin
         virtual void CodeCompleteIncludes();
 
         void EditorEventHook(cbEditor* editor, wxScintillaEvent& event);
+
+        struct FunctionScope
+        {
+            int StartLine;
+            int EndLine;
+            wxString Name;
+            wxString Scope;
+        };
+        struct NameSpace
+        {
+            int StartLine;
+            int EndLine;
+            wxString Name;
+        };
 
     private:
 
@@ -95,7 +80,6 @@ class CodeCompletion : public cbCodeCompletionPlugin
         void OnProjectFileRemoved(CodeBlocksEvent& event);
         void OnUserListSelection(CodeBlocksEvent& event);
         void OnReparseActiveEditor(CodeBlocksEvent& event);
-        void OnEditorOpen(CodeBlocksEvent& event);
         void OnEditorActivated(CodeBlocksEvent& event);
         void OnEditorClosed(CodeBlocksEvent& event);
         void OnParserEnd(wxCommandEvent& event);
@@ -109,9 +93,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         int NameSpacePosition() const;
         void OnFunctionsParsingTimer(wxTimerEvent& event);
         void OnFunction(wxCommandEvent& event);
-        void ParseFunctions();
-        void FillToolbar();
-        void ParseFunctionsAndFillToolbar();
+        void ParseFunctionsAndFillToolbar(); // will change soon
 
         int m_PageIndex;
         bool m_InitDone;
@@ -136,16 +118,8 @@ class CodeCompletion : public cbCodeCompletionPlugin
 
         wxChoice* m_Function;
         wxChoice* m_Scope;
-
-
-        FunctionsScopeVec m_FunctionsScope;
-        NameSpaceVec m_NameSpaces;
-        FunctionsScopeMap m_AllFunctionsScopes;
-        FileParsingQueue m_ParsingQueue; // For the Function toolbar
-        wxString m_CurrentEditor; // For the Function toolbar
-        wxString m_LastEditor;
-        bool m_ToolbarChanged;
-
+        std::vector<FunctionScope> m_FunctionsScope;
+        std::vector<NameSpace> m_NameSpaces;
         int StartIdxNameSpaceInScope;
         int m_CurrentLine;
 
