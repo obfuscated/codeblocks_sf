@@ -32,6 +32,7 @@
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
 #include <projectloader_hooks.h>
 #include <projectmanager.h>
+#include <messagemanager.h>
 
 namespace
 {
@@ -173,9 +174,8 @@ void wxSmith::OnProjectOpened(CodeBlocksEvent& event)
 {
     event.Skip();
     cbProject* Proj = event.GetProject();
-    ProjectMapI i = m_ProjectMap.find(Proj);
-    if ( i == m_ProjectMap.end() ) return;
-    wxsProject* wxsProj = i->second;
+    wxsProject* wxsProj = GetSmithProject(Proj);
+    wxsProj->UpdateName();
     Proj->SetModified(wxsProj->GetWasModifiedDuringLoad());
 }
 
