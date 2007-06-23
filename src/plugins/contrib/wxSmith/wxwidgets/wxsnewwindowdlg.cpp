@@ -31,6 +31,8 @@
 
 #include <messagemanager.h>
 #include <projectmanager.h>
+#include <cbproject.h>
+#include <projectfile.h>
 
 //(*InternalHeaders(wxsNewWindowDlg)
 #include <wx/bitmap.h>
@@ -52,6 +54,8 @@ const long wxsNewWindowDlg::ID_STATICTEXT3 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL3 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX1 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL4 = wxNewId();
+const long wxsNewWindowDlg::ID_CHECKBOX2 = wxNewId();
+const long wxsNewWindowDlg::ID_COMBOBOX1 = wxNewId();
 const long wxsNewWindowDlg::ID_STATICTEXT4 = wxNewId();
 //*)
 
@@ -100,8 +104,13 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     FlexGridSizer1->Add(m_UseXrc,0,wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
     m_Xrc = new wxTextCtrl(this,ID_TEXTCTRL4,wxEmptyString,wxDefaultPosition,wxSize(80,-1),0,wxDefaultValidator,_T("ID_TEXTCTRL4"));
     FlexGridSizer1->Add(m_Xrc,0,wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
+    m_UsePCH = new wxCheckBox(this,ID_CHECKBOX2,_("Use PCH:"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX2"));
+    m_UsePCH->SetValue(false);
+    FlexGridSizer1->Add(m_UsePCH,1,wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+    m_Pch = new wxComboBox(this,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_T("ID_COMBOBOX1"));
+    FlexGridSizer1->Add(m_Pch,1,wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
     StaticBoxSizer1->Add(FlexGridSizer1,0,wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-    StaticText4 = new wxStaticText(this,ID_STATICTEXT4,_("Warning:\nWhen adding resource in Xrc mode,\nthis resource must be manually loaded.\nFor details see wxXmlResource::Load()\nand wxXmlResource::Get()."),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE,_T("ID_STATICTEXT4"));
+    StaticText4 = new wxStaticText(this,ID_STATICTEXT4,_("Warning:\nWhen adding resource in Xrc mode,\nthis resource must be loaded before it\'s used.\nTo do this either call wxXmlResource::Load()\nor add xrc file to list of loaded resources\nin wxSmith\'s project options"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE,_T("ID_STATICTEXT4"));
     StaticBoxSizer1->Add(StaticText4,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
     BoxSizer1->Add(StaticBoxSizer1,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
     StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
@@ -118,17 +127,19 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     Connect(ID_TEXTCTRL3,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnSourceChanged);
     Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsNewWindowDlg::OnUseXrcChange);
     Connect(ID_TEXTCTRL4,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnXrcChanged);
+    Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsNewWindowDlg::OnUsePCHClick);
     //*)
 
     m_BlockText = true;
     wxString StrippedName = ResType.Mid(2);
     wxString ResName = wxString::Format(_("New%s"),StrippedName.c_str());
     m_Class->SetValue(ResName);
-    m_Source->SetValue(ResName.Lower()+_T(".cpp"));
-    m_Header->SetValue(ResName.Lower()+_T(".h"));
-    m_Xrc->SetValue(ResName.Lower()+_T(".xrc"));
+    m_Source->SetValue(ResName+_T(".cpp"));
+    m_Header->SetValue(ResName+_T(".h"));
+    m_Xrc->SetValue(ResName+_T(".xrc"));
     m_Xrc->Disable();
     SetTitle(wxString::Format(_("New %s resource"),ResType.c_str()));
+    DetectPchFile();
     m_BlockText = false;
 }
 
@@ -150,6 +161,8 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
 	wxString Src   = m_Source->GetValue();
 	wxString Hdr   = m_Header->GetValue();
 	wxString Xrc   = CreateXrc ? m_Xrc->GetValue() : _T("");
+	bool UsePCH    = m_UsePCH->GetValue();
+	wxString Pch   = m_Pch->GetValue();
 
     cbProject* cbProj = m_Project->GetCBProject();
 
@@ -227,7 +240,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     }
 
     // Building new data
-    if ( !NewResource->CreateNewResource(Class,Src,GenSource,Hdr,GenHeader,Xrc,GenXRC) )
+    if ( !NewResource->CreateNewResource(Class,Src,GenSource,Hdr,GenHeader,Xrc,GenXRC,Pch,UsePCH) )
     {
         delete NewResource;
         DBGLOG(_T("wxSmith: Couldn't generate new resource"));
@@ -278,9 +291,9 @@ void wxsNewWindowDlg::OnClassChanged(wxCommandEvent& event)
 {
     if ( m_BlockText ) return;
     m_BlockText = true;
-    if ( m_HeaderNotTouched ) m_Header->SetValue((m_Class->GetValue() + _T(".h")).MakeLower());
-    if ( m_SourceNotTouched ) m_Source->SetValue((m_Class->GetValue() + _T(".cpp")).MakeLower());
-    if ( m_XrcNotTouched ) m_Xrc->SetValue((m_Class->GetValue() + _T(".xrc")).MakeLower());
+    if ( m_HeaderNotTouched ) m_Header->SetValue(m_Class->GetValue() + _T(".h"));
+    if ( m_SourceNotTouched ) m_Source->SetValue(m_Class->GetValue() + _T(".cpp"));
+    if ( m_XrcNotTouched ) m_Xrc->SetValue(m_Class->GetValue() + _T(".xrc"));
     m_BlockText = false;
 }
 
@@ -300,12 +313,12 @@ void wxsNewWindowDlg::OnHeaderChanged(wxCommandEvent& event)
     FN.SetExt(_T("cpp"));
     if ( m_SourceNotTouched )
     {
-        m_Source->SetValue(FN.GetFullPath());
+        m_Source->SetValue(FN.GetFullPath(wxPATH_UNIX));
     }
     FN.SetExt(_T("xrc"));
     if ( m_XrcNotTouched )
     {
-        m_Xrc->SetValue(FN.GetFullPath());
+        m_Xrc->SetValue(FN.GetFullPath(wxPATH_UNIX));
     }
     m_HeaderNotTouched = false;
     m_BlockText = false;
@@ -322,4 +335,46 @@ void wxsNewWindowDlg::OnXrcChanged(wxCommandEvent& event)
     m_BlockText = true;
     m_XrcNotTouched = false;
     m_BlockText = false;
+}
+
+wxString wxsNewWindowDlg::DetectPchFile()
+{
+    // Searching for files that are good candidates for pch files
+    cbProject* Proj = m_Project->GetCBProject();
+    for ( int i=0; i<Proj->GetFilesCount(); i++ )
+    {
+        ProjectFile* File = Proj->GetFile(i);
+        if ( File && File->file.GetExt()==_T("h") && File->compile )
+        {
+            int Index = m_Pch->Append(File->relativeFilename);
+            if ( File->file.GetFullName() == _T("wx_pch.h") )
+            {
+                // Since wx_pch.h is default pch file generated
+                // by wizard, it's preffered as pch choice
+                m_Pch->SetSelection(Index);
+            }
+        }
+    }
+
+    // Updating the rest of stuff
+    if ( m_Pch->GetCount() == 0 )
+    {
+        m_UsePCH->SetValue(false);
+        m_Pch->Disable();
+    }
+    else
+    {
+        m_UsePCH->SetValue(true);
+        if ( m_Pch->GetSelection() == wxNOT_FOUND )
+        {
+            m_Pch->SetSelection(0);
+        }
+    }
+
+    return m_Pch->GetStringSelection();
+}
+
+void wxsNewWindowDlg::OnUsePCHClick(wxCommandEvent& event)
+{
+    m_Pch->Enable(m_UsePCH->GetValue());
 }

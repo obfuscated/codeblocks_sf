@@ -53,6 +53,8 @@ class wxsItemRes: public wxWidgetsRes, public wxsItemResFunctions
             bool GenHdr,
             const wxString& Xrc,
             bool GenXrc,
+            const wxString& Pch,
+            bool UsePch,
             const wxString& Wxs=wxEmptyString);
 
         inline const wxString& GetWxsFileName() { return m_WxsFileName; }

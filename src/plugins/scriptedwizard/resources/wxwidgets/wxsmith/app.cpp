@@ -7,10 +7,7 @@
  * License:
  **************************************************************/
 
-#ifdef WX_PRECOMP
 #include "wx_pch.h"
-#endif
-
 #include "[FILENAME_PREFIX]App.h"
 
 //(*AppHeaders

@@ -3,6 +3,7 @@
 
 //(*Headers(wxsNewWindowDlg)
 #include <wx/checkbox.h>
+#include <wx/combobox.h>
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
@@ -27,6 +28,8 @@ class wxsNewWindowDlg : public wxDialog
         static const long ID_TEXTCTRL3;
         static const long ID_CHECKBOX1;
         static const long ID_TEXTCTRL4;
+        static const long ID_CHECKBOX2;
+        static const long ID_COMBOBOX1;
         static const long ID_STATICTEXT4;
         //*)
 
@@ -40,6 +43,7 @@ class wxsNewWindowDlg : public wxDialog
         void OnHeaderChanged(wxCommandEvent& evend);
         void OnUseXrcChange(wxCommandEvent& event);
         void OnXrcChanged(wxCommandEvent& event);
+        void OnUsePCHClick(wxCommandEvent& event);
         //*)
 
         //(*Declarations(wxsNewWindowDlg)
@@ -51,10 +55,14 @@ class wxsNewWindowDlg : public wxDialog
         wxTextCtrl* m_Source;
         wxCheckBox* m_UseXrc;
         wxTextCtrl* m_Xrc;
+        wxCheckBox* m_UsePCH;
+        wxComboBox* m_Pch;
         wxStdDialogButtonSizer* StdDialogButtonSizer1;
         //*)
 
         virtual bool PrepareResource(wxWidgetsRes* Res) { return true; }
+
+        wxString DetectPchFile();
 
 	private:
 

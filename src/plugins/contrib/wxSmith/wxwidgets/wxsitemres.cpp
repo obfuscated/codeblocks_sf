@@ -192,7 +192,7 @@ bool wxsItemRes::OnGetCanBeMain()
     return m_CanBeMain;
 }
 
-bool wxsItemRes::CreateNewResource(const wxString& Class,const wxString& Src, bool GenSrc,const wxString& Hdr, bool GenHdr,const wxString& Xrc, bool GenXrc,const wxString& Wxs)
+bool wxsItemRes::CreateNewResource(const wxString& Class,const wxString& Src, bool GenSrc,const wxString& Hdr, bool GenHdr,const wxString& Xrc, bool GenXrc,const wxString& Pch,bool UsePCH,const wxString& Wxs)
 {
     wxFileName HFN(GetProjectPath()+Hdr);
     SetLanguage(wxsCodeMarks::IdFromExt(HFN.GetExt()));
@@ -214,6 +214,8 @@ bool wxsItemRes::CreateNewResource(const wxString& Class,const wxString& Src, bo
                 Header.Replace(_T("$(Guard)"),Guard);
                 Header.Replace(_T("$(ClassName)"),Class);
                 Header.Replace(_T("$(BaseClassName)"),GetResourceType());
+                // TODO: Use wxsCoder to save file's content, so it will
+                //       have proper encoding and EOL stuff
                 if ( !File.Write(Header) ) return false;
             }
 
@@ -225,10 +227,19 @@ bool wxsItemRes::CreateNewResource(const wxString& Class,const wxString& Src, bo
                 wxFile File(Name,wxFile::write);
                 HFN.MakeRelativeTo(wxFileName(Name).GetPath());
                 wxString Include = HFN.GetFullPath(wxPATH_UNIX);
-                wxString Source = CppEmptySource;
+                wxString Source;
+                if ( UsePCH )
+                {
+                    wxFileName PCH(GetProjectPath()+Pch);
+                    PCH.MakeRelativeTo(wxFileName(Name).GetPath());
+                    Source << _T("#include \"") << PCH.GetFullPath(wxPATH_UNIX) << _T("\"\n");
+                }
+                Source << CppEmptySource;
                 Source.Replace(_T("$(Include)"),Include);
                 Source.Replace(_T("$(ClassName)"),Class);
                 Source.Replace(_T("$(BaseClassName)"),GetResourceType());
+                // TODO: Use wxsCoder to save file's content, so it will
+                //       have proper encoding and EOL stuff
                 if ( !File.Write(Source) ) return false;
             }
 
@@ -254,7 +265,7 @@ bool wxsItemRes::CreateNewResource(const wxString& Class,const wxString& Src, bo
                         return false;
                     }
                 }
-                WxsNameBase += _T("/") + Class.Lower();
+                WxsNameBase += _T("/") + Class;
                 WxsName = WxsNameBase + _T(".wxs");
                 int Cnt = 0;
                 for(;;)

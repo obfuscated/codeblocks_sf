@@ -123,6 +123,7 @@ namespace
             MainResSource,false,
             MainResHeader,false,
             wxEmptyString,false,
+            _T(""), false,
             WxsFile);
 
         // Registering new resource inside project

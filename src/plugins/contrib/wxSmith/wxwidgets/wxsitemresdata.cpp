@@ -856,6 +856,7 @@ void wxsItemResData::BuildIncludesCode(wxsCodingLang Language,wxString& LocalInc
             }
 
             LocalHeaders.Add(_T("<wx/intl.h>"));
+            LocalHeaders.Add(_T("<wx/string.h>"));
             // TODO: Use these headers dynamically, not always
             LocalHeaders.Add(_T("<wx/bitmap.h>"));
             LocalHeaders.Add(_T("<wx/image.h>"));
