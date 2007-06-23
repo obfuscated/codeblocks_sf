@@ -842,7 +842,11 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
     // sort out any global user vars that need to be defined now (in a batch) :)
     // but only if not loading workspace (else LoadWorkspace() will handle this)
     if (!m_IsLoadingWorkspace)
+    {
         Manager::Get()->GetUserVariableManager()->Arrogate();
+        CodeBlocksEvent event(cbEVT_WORKSPACE_LOADED);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+    }
 
     s_CanShutdown = true;
     return result;
@@ -1171,6 +1175,10 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
                         project->ShowNotes(true);
                 }
             }
+        }
+        {
+            CodeBlocksEvent event(cbEVT_WORKSPACE_LOADED);
+            Manager::Get()->GetPluginManager()->NotifyPlugins(event);
         }
     }
     else
