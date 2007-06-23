@@ -7,7 +7,7 @@
  * License:
  **************************************************************/
 
-#ifdef WX_PRECOMP //
+#ifdef WX_PRECOMP
 #include "wx_pch.h"
 #endif
 
