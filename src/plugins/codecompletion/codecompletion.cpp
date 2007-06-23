@@ -136,7 +136,7 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_TIMER(idCodeCompleteTimer, CodeCompletion::OnCodeCompleteTimer)
 
     EVT_EDITOR_SAVE(CodeCompletion::OnReparseActiveEditor)
-    EVT_EDITOR_OPEN(CodeCompletion::OnEditorActivated)
+    EVT_EDITOR_OPEN(CodeCompletion::OnEditorOpen)
     EVT_EDITOR_ACTIVATED(CodeCompletion::OnEditorActivated)
     EVT_EDITOR_TOOLTIP(CodeCompletion::OnValueTooltip)
     EVT_EDITOR_CLOSE(CodeCompletion::OnEditorClosed)
@@ -163,6 +163,9 @@ CodeCompletion::CodeCompletion() :
     m_pCodeCompletionLastEditor(0),
     m_ActiveCalltipsNest(0),
     m_IsAutoPopup(false),
+    m_CurrentEditor(wxEmptyString),
+    m_LastEditor(wxEmptyString),
+    m_ToolbarChanged(true),
     m_CurrentLine(0),
     m_FunctionsParsingTimer(this, idFunctionsParsingTimer)
 {
@@ -983,7 +986,7 @@ void CodeCompletion::OnStartParsingProjects(wxTimerEvent& event)
 
 void CodeCompletion::OnProjectOpened(CodeBlocksEvent& event)
 {
-    if (IsAttached() && m_InitDone)
+    if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
     {
         m_NativeParsers.AddParser(event.GetProject());
         ParseFunctionsAndFillToolbar();
@@ -993,7 +996,7 @@ void CodeCompletion::OnProjectOpened(CodeBlocksEvent& event)
 
 void CodeCompletion::OnProjectActivated(CodeBlocksEvent& event)
 {
-    if (IsAttached() && m_InitDone)
+    if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
         m_NativeParsers.SetClassBrowserProject(event.GetProject());
     event.Skip();
 }
@@ -1032,8 +1035,9 @@ void CodeCompletion::OnUserListSelection(CodeBlocksEvent& event)
 
 void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
 {
-    if (IsAttached() && m_InitDone)
+    if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
     {
+        OnEditorOpen(event);
         EditorBase* ed = event.GetEditor();
         if (!ed)
             return;
@@ -1041,13 +1045,12 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
         if (!parser)
             return;
         parser->Reparse(ed->GetFilename());
-        ParseFunctionsAndFillToolbar();
     }
     event.Skip();
 }
 
 // compare method for the sort algorithm for our FunctionScope struct
-bool LessFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
+bool LessFunctionScope(const CodeCompletion_FunctionScope& fs1, const CodeCompletion_FunctionScope& fs2)
 {
     if(fs1.Name == fs2.Name)
     {
@@ -1066,7 +1069,7 @@ int CodeCompletion::NameSpacePosition() const
     int retValue = -1; // -1 : not found
     for(unsigned int idxNs = 0; idxNs < m_NameSpaces.size(); ++idxNs)
     {
-            const NameSpace Ns = m_NameSpaces[idxNs];
+            const CodeCompletion_NameSpace Ns = m_NameSpaces[idxNs];
             if (Ns.StartLine <= m_CurrentLine && Ns.EndLine >= m_CurrentLine)
             {    // got one, maybe there might be a btter fitting namespace (embedded namespaces)
                 // so keep on looking
@@ -1085,7 +1088,7 @@ int CodeCompletion::FunctionPosition() const
     int retValue = -1; // -1 : not found
     for (unsigned int idxFn = 0; idxFn < m_FunctionsScope.size(); ++idxFn)
     {
-        const FunctionScope fs = m_FunctionsScope[idxFn];
+        const CodeCompletion_FunctionScope fs = m_FunctionsScope[idxFn];
         if (fs.StartLine <= m_CurrentLine && fs.EndLine >= m_CurrentLine)
         {    // got it :)
             retValue = static_cast<int>(idxFn);
@@ -1153,69 +1156,121 @@ void CodeCompletion::GotoFunctionPrevNext(bool next /* = false */)
     }
 }
 
+void CodeCompletion::ParseFunctions()
+{
+    Parser parser(this);
+    EditorManager* edMan = Manager::Get()->GetEditorManager();
+    if(!edMan) // Closing the app?
+        return;
+    while(m_ParsingQueue.size())
+    {
+        wxString filename = m_ParsingQueue.front();
+        m_ParsingQueue.pop();
+        if(filename.IsEmpty())
+            continue;
+        cbEditor* ed = edMan->GetBuiltinEditor(filename);
+        if(!ed)
+            continue;
+
+        FunctionsScopePerFile* funcdata = &(m_AllFunctionsScopes[filename]);
+        funcdata->m_FunctionsScope.clear();
+        funcdata->m_NameSpaces.clear();
+        TokensTree* tmptree = parser.GetTempTokens();
+        tmptree->clear();
+        parser.ParseBufferForFunctions(ed->GetControl()->GetText());
+
+        for(size_t i = 0; i < tmptree->size(); ++i)
+        {
+            const Token* token = tmptree->at(i);
+            if (token && (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor)
+                && token->m_ImplLine != 0)
+            {
+                CodeCompletion_FunctionScope func;
+                func.StartLine = token->m_ImplLine - 1;
+                func.EndLine = token->m_ImplLineEnd - 1;
+                func.Scope = token->GetNamespace();
+                wxString result = token->m_Name;
+                result << token->m_Args;
+                if (!token->m_Type.IsEmpty())
+                    result << _T(" : ") << token->m_Type;
+                func.Name = result;
+                funcdata->m_FunctionsScope.push_back(func);
+            }
+            else if(token && token->m_TokenKind == tkNamespace)
+            {
+                CodeCompletion_NameSpace Ns;
+                Ns.StartLine = token->m_ImplLine - 1;
+                Ns.EndLine = token->m_ImplLineEnd - 1;
+                Ns.Name = token->m_Name;
+                funcdata->m_NameSpaces.push_back(Ns);
+    //        Manager::Get()->GetMessageManager()->DebugLog(_T("namespace ") + token->m_Name);
+    //       wxString Log;
+    //        Log.Printf(_("start %d and end %d"), token->m_ImplLine, token->m_ImplLineEnd);
+    //        Manager::Get()->GetMessageManager()->DebugLog(Log);
+            }
+        }
+        // sort the vector
+        sort(funcdata->m_FunctionsScope.begin(), funcdata->m_FunctionsScope.end(), LessFunctionScope);
+    }
+    m_ToolbarChanged = true;
+}
+
 void CodeCompletion::ParseFunctionsAndFillToolbar()
 {
-    m_Function->Clear();
-    m_Scope->Clear();
-    m_FunctionsScope.clear();
-    m_NameSpaces.clear();
-    // let's parse the current editor for funtions
+    ParseFunctions();
+    FillToolbar();
+}
+
+void CodeCompletion::FillToolbar()
+{
     EditorManager* edMan = Manager::Get()->GetEditorManager();
-    cbEditor* ed = edMan->GetBuiltinActiveEditor();
-    if (!ed)
+    if(!edMan) // Closing the app?
         return;
-    Parser parser(this);
-    parser.ParseBufferForFunctions(ed->GetControl()->GetText());
 
-    TokensTree* tmptree = parser.GetTempTokens();
-    for(size_t i = 0; i < tmptree->size(); ++i)
+    // First of all, check if we have a valid editor. If not, get outta here.
+    cbEditor *ed = edMan->GetBuiltinActiveEditor();
+    if(!ed) // Not a valid editor - let's get out of here
     {
-        const Token* token = tmptree->at(i);
-        if (token && (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor)
-            && token->m_ImplLine != 0)
-        {
-            FunctionScope func;
-            func.StartLine = token->m_ImplLine - 1;
-            func.EndLine = token->m_ImplLineEnd - 1;
-            func.Scope = token->GetNamespace();
-            wxString result = token->m_Name;
-            result << token->m_Args;
-            if (!token->m_Type.IsEmpty())
-                result << _T(" : ") << token->m_Type;
-            func.Name = result;
-            m_FunctionsScope.push_back(func);
-        }
-        else if(token && token->m_TokenKind == tkNamespace)
-        {
-            NameSpace Ns;
-            Ns.StartLine = token->m_ImplLine - 1;
-            Ns.EndLine = token->m_ImplLineEnd - 1;
-            Ns.Name = token->m_Name;
-            m_NameSpaces.push_back(Ns);
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("namespace ") + token->m_Name);
-//       wxString Log;
-//        Log.Printf(_("start %d and end %d"), token->m_ImplLine, token->m_ImplLineEnd);
-//        Manager::Get()->GetMessageManager()->DebugLog(Log);
-        }
+        m_Function->Clear();
+        m_Scope->Clear();
+        return;
     }
-    // sort the vector
-    sort(m_FunctionsScope.begin(), m_FunctionsScope.end(), LessFunctionScope);
-    // add to the choice controls
-    for(unsigned int idxFn = 0; idxFn < m_FunctionsScope.size(); ++idxFn)
-    {
-        const FunctionScope fs = m_FunctionsScope[idxFn];
-        m_Function->Append(fs.Name);
-        m_Scope->Append(fs.Scope);
-    } // end for : idx : idxFn
-    // add namespaces to the scope
-    StartIdxNameSpaceInScope = m_FunctionsScope.size();
-    for(unsigned int idxNs = 0; idxNs < m_NameSpaces.size(); ++idxNs)
-    {
-        const NameSpace Ns = m_NameSpaces[idxNs];
-        m_Scope->Append(Ns.Name);
-    } // end for : idx : idxNs
 
+    // Now update the function search data, or the Function Toolbar will get dizzy
+    m_CurrentEditor = ed->GetFilename();
+    FunctionsScopePerFile* funcdata = &(m_AllFunctionsScopes[m_CurrentEditor]);
+    m_FunctionsScope = funcdata->m_FunctionsScope;
+    m_NameSpaces = funcdata->m_NameSpaces;
 
+    // Does the toolbar need a refresh?
+    if(m_LastEditor != m_CurrentEditor || m_ToolbarChanged)
+    {
+
+        // Upddate the last editor and changed flag...
+        m_LastEditor = m_CurrentEditor;
+        m_ToolbarChanged = false;
+
+        // ...and refresh the toolbars.
+        m_Function->Clear();
+        m_Scope->Clear();
+
+        // add to the choice controls
+        for(unsigned int idxFn = 0; idxFn < m_FunctionsScope.size(); ++idxFn)
+        {
+            const CodeCompletion_FunctionScope fs = m_FunctionsScope[idxFn];
+            m_Function->Append(fs.Name);
+            m_Scope->Append(fs.Scope);
+        } // end for : idx : idxFn
+        // add namespaces to the scope
+        StartIdxNameSpaceInScope = m_FunctionsScope.size();
+        for(unsigned int idxNs = 0; idxNs < m_NameSpaces.size(); ++idxNs)
+        {
+            const CodeCompletion_NameSpace Ns = m_NameSpaces[idxNs];
+            m_Scope->Append(Ns.Name);
+        } // end for : idx : idxNs
+    }
+
+    // Finally, find the current function and update
     m_CurrentLine = ed->GetControl()->GetCurrentLine();
     int sel = FunctionPosition();
     if(sel != -1)
@@ -1237,7 +1292,27 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
             m_Scope->SetSelection(wxNOT_FOUND);
         }
     }
-} // end of ParseFunctionsAndFillToolbar
+
+} // end of FillToolbar
+
+void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
+{
+    if(!Manager::IsAppShuttingDown() && IsAttached() && m_InitDone)
+    {
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
+        wxString filename(wxEmptyString);
+        if(ed)
+        {
+            filename = ed->GetFilename();
+            m_ParsingQueue.push(filename);
+        }
+    }
+    if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
+    {
+        m_FunctionsParsingTimer.Start(50, wxTIMER_ONE_SHOT); // delay set to 50 - it's safe now.
+    }
+    event.Skip();
+}
 
 void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 {
@@ -1245,7 +1320,7 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
     {
         EditorBase* eb = event.GetEditor();
         m_NativeParsers.OnEditorActivated(eb);
-        m_FunctionsParsingTimer.Start(200, wxTIMER_ONE_SHOT); // delay reduced to 200ms - it's safe now.
+        FillToolbar();
     }
 
     event.Skip();
@@ -1255,6 +1330,14 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
 {
     // clear toolbar when closing editor
     m_Function->Clear();
+
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
+        wxString filename(wxEmptyString);
+        if(ed)
+            filename = ed->GetFilename();
+    m_AllFunctionsScopes[filename].m_FunctionsScope.clear();
+    m_AllFunctionsScopes[filename].m_NameSpaces.clear();
+    m_CurrentEditor = wxEmptyString;
 
     event.Skip();
 }
