@@ -16,38 +16,37 @@
 class cbEditor;
 class wxScintillaEvent;
 class wxChoice;
-class CodeCompletion;
-
-struct CodeCompletion_FunctionScope
-{
-    int StartLine;
-    int EndLine;
-    wxString Name;
-    wxString Scope;
-};
-
-struct CodeCompletion_NameSpace
-{
-    int StartLine;
-    int EndLine;
-    wxString Name;
-};
-
-typedef std::vector<CodeCompletion_FunctionScope> FunctionsScopeVec;
-typedef std::vector<CodeCompletion_NameSpace> NameSpaceVec;
-
-struct FunctionsScopePerFile
-{
-    FunctionsScopeVec m_FunctionsScope;
-    NameSpaceVec m_NameSpaces;
-    bool parsed;
-};
-
-typedef map<wxString,FunctionsScopePerFile> FunctionsScopeMap;
 
 class CodeCompletion : public cbCodeCompletionPlugin
 {
     public:
+	struct FunctionScope
+	{
+		int StartLine;
+		int EndLine;
+		wxString Name;
+		wxString Scope;
+	};
+
+	struct NameSpace
+	{
+		int StartLine;
+		int EndLine;
+		wxString Name;
+	};
+
+	typedef std::vector<FunctionScope> FunctionsScopeVec;
+	typedef std::vector<NameSpace> NameSpaceVec;
+
+	struct FunctionsScopePerFile
+	{
+		FunctionsScopeVec m_FunctionsScope;
+		NameSpaceVec m_NameSpaces;
+		bool parsed;
+	};
+
+	typedef map<wxString,FunctionsScopePerFile> FunctionsScopeMap;
+
         CodeCompletion();
         ~CodeCompletion();
 

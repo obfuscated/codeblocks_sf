@@ -1050,7 +1050,7 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
 }
 
 // compare method for the sort algorithm for our FunctionScope struct
-bool LessFunctionScope(const CodeCompletion_FunctionScope& fs1, const CodeCompletion_FunctionScope& fs2)
+bool LessFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
 {
     if(fs1.Name == fs2.Name)
     {
@@ -1069,7 +1069,7 @@ int CodeCompletion::NameSpacePosition() const
     int retValue = -1; // -1 : not found
     for(unsigned int idxNs = 0; idxNs < m_NameSpaces.size(); ++idxNs)
     {
-            const CodeCompletion_NameSpace Ns = m_NameSpaces[idxNs];
+            const NameSpace Ns = m_NameSpaces[idxNs];
             if (Ns.StartLine <= m_CurrentLine && Ns.EndLine >= m_CurrentLine)
             {    // got one, maybe there might be a btter fitting namespace (embedded namespaces)
                 // so keep on looking
@@ -1088,7 +1088,7 @@ int CodeCompletion::FunctionPosition() const
     int retValue = -1; // -1 : not found
     for (unsigned int idxFn = 0; idxFn < m_FunctionsScope.size(); ++idxFn)
     {
-        const CodeCompletion_FunctionScope fs = m_FunctionsScope[idxFn];
+        const FunctionScope fs = m_FunctionsScope[idxFn];
         if (fs.StartLine <= m_CurrentLine && fs.EndLine >= m_CurrentLine)
         {    // got it :)
             retValue = static_cast<int>(idxFn);
@@ -1192,7 +1192,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
             if (token && (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor)
                 && token->m_ImplLine != 0)
             {
-                CodeCompletion_FunctionScope func;
+                FunctionScope func;
                 func.StartLine = token->m_ImplLine - 1;
                 func.EndLine = token->m_ImplLineEnd - 1;
                 func.Scope = token->GetNamespace();
@@ -1205,7 +1205,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
             }
             else if(token && token->m_TokenKind == tkNamespace)
             {
-                CodeCompletion_NameSpace Ns;
+                NameSpace Ns;
                 Ns.StartLine = token->m_ImplLine - 1;
                 Ns.EndLine = token->m_ImplLineEnd - 1;
                 Ns.Name = token->m_Name;
@@ -1239,7 +1239,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
         // add to the choice controls
         for(unsigned int idxFn = 0; idxFn < m_FunctionsScope.size(); ++idxFn)
         {
-            const CodeCompletion_FunctionScope fs = m_FunctionsScope[idxFn];
+            const FunctionScope fs = m_FunctionsScope[idxFn];
             m_Function->Append(fs.Name);
             m_Scope->Append(fs.Scope);
         } // end for : idx : idxFn
@@ -1247,7 +1247,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
         StartIdxNameSpaceInScope = m_FunctionsScope.size();
         for(unsigned int idxNs = 0; idxNs < m_NameSpaces.size(); ++idxNs)
         {
-            const CodeCompletion_NameSpace Ns = m_NameSpaces[idxNs];
+            const NameSpace Ns = m_NameSpaces[idxNs];
             m_Scope->Append(Ns.Name);
         } // end for : idx : idxNs
     }
