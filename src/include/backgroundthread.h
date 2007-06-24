@@ -27,13 +27,18 @@
 * BackgroundThreadPool is a low overhead thread pool implementation around BackgroundThread.
 */
 
-
 class AbstractJob
 {
+    friend class BackgroundThread;
+
+    bool deleted;
+    bool done;
+
 public:
-    AbstractJob(){};
+    AbstractJob() : deleted(false), done(false) {};
     virtual ~AbstractJob(){};
     virtual void operator()() = 0;
+    void Delete() { deleted = true; if(done) delete this;};
 };
 
 
@@ -150,10 +155,20 @@ public:
                 break;
 
             job = queue->Pop();
-            (*job)();
 
-            if(ownsJobs)
+            if(job->deleted)
+            {
                 delete job;
+                continue;
+            }
+
+            (*job)();
+            job->done = true;
+
+            if(job->deleted || ownsJobs)
+            {
+                delete job;
+            }
         }
         return 0;
     };

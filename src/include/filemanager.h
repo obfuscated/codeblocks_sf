@@ -53,6 +53,40 @@ public:
 };
 
 
+class Loader
+{
+    LoaderBase* ptr;
+    void* operator new(size_t size);
+
+public:
+    Loader() : ptr(0) {};
+    Loader(LoaderBase* in) : ptr(in) {};
+    Loader(Loader& in) : ptr(in.ptr) { in.ptr = 0; };
+
+    ~Loader() { delete ptr; };
+
+    Loader& operator=(LoaderBase* in)
+    {
+        ptr = in;
+        return *this;
+    };
+
+    Loader& operator=(Loader& in)
+    {
+        ptr = in.ptr;
+        in.ptr = 0;
+        return *this;
+    };
+
+    wxString FileName() const { return ptr->FileName(); };
+    bool Sync() { return ptr->Sync(); };
+    char* GetData() { return ptr->GetData(); };
+    size_t GetLength() { return ptr->GetLength(); };
+    void Delete() { ptr->Delete(); ptr = 0; };
+};
+
+
+
 class FileLoader : public LoaderBase
 {
 public:
