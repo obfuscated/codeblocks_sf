@@ -248,6 +248,7 @@ bool TAR::ExtractFile(Record* rec, const wxString& dirname, wxString& status, wx
                 memset(buffer, 0, rec->size);
                 if (fread(buffer, rec->size, 1, m_pFile) != 1)
                 {
+                    delete[] buffer;
                     fclose(out);
                     fseek(m_pFile, oldpos, SEEK_SET);
                     status << _("Failure reading file ") << path << _T("\n");
