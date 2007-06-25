@@ -163,7 +163,7 @@ void CodeStatExecDlg::CountLines(wxFileName filename, LanguageDef &language,
                                  long int &comment_lines, long int &empty_lines, long int &total_lines)
 {
 	wxTextFile file;
-	if (file.Open(filename.GetFullPath()))
+	if (file.Open(filename.GetFullPath(),wxConvFile))
 	{
 		bool multi_line_comment = false;
 		total_lines += file.GetLineCount();

@@ -1732,27 +1732,6 @@
 		<Unit filename="plugins\scriptedwizard\wizpage.h">
 			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins\scriptedwizard\wxsmith\BuildTargetPanel.wxs">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins\scriptedwizard\wxsmith\CompilerPanel.wxs">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins\scriptedwizard\wxsmith\FilePathPanel.wxs">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins\scriptedwizard\wxsmith\GenericSelectPath.wxs">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins\scriptedwizard\wxsmith\GenericSingleChoiceList.wxs">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins\scriptedwizard\wxsmith\InfoPanel.wxs">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins\scriptedwizard\wxsmith\ProjectPathPanel.wxs">
-			<Option target="Scripted wizard" />
-		</Unit>
 		<Unit filename="plugins\todo\addtododlg.cpp">
 			<Option target="To-do" />
 		</Unit>
@@ -2739,6 +2718,7 @@
 		</Unit>
 		<Extensions>
 			<code_completion />
+			<envvars />
 			<wxsmith version="1">
 				<resources>
 					<wxDialog wxs="wxsmith/VirtualBuildTargetsDlg.wxs" src="sdk/virtualbuildtargetsdlg.cpp" hdr="include/virtualbuildtargetsdlg.h" xrc="sdk/resources/virtualbuildtargetsdlg.xrc" name="VirtualBuildTargetsDlg" language="CPP" />
