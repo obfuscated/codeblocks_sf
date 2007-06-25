@@ -147,15 +147,6 @@
             <option>0</option>
             <flag>wxALL</flag>
             <border>8</border>
-            <object class="wxCheckBox" name="chkWxUnixEmpty">
-              <label>Create Empty Project</label>
-              <checked>0</checked>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <option>0</option>
-            <flag>wxALL</flag>
-            <border>8</border>
             <object class="wxCheckBox" name="chkWxConfSo">
               <label>Use Dynamic wxWidgets Lib</label>
               <checked>0</checked>
@@ -170,16 +161,34 @@
               <checked>0</checked>
             </object>
           </object>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <object class="wxStaticBoxSizer">
+          <label>Other Options</label>
+          <orient>wxVERTICAL</orient>
           <object class="sizeritem">
             <option>0</option>
             <flag>wxALL|wxEXPAND</flag>
             <border>8</border>
-            <object class="wxCheckBox" name="chkWxConfPCH">
+            <object class="wxCheckBox" name="chkWxUnixConfPCH">
               <label>Create and use precompiled header (PCH)</label>
               <checked>0</checked>
             </object>
           </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxALL</flag>
+            <border>8</border>
+            <object class="wxCheckBox" name="chkWxUnixEmpty">
+              <label>Create Empty Project</label>
+              <checked>0</checked>
+            </object>
+          </object>
         </object>
+        <option>0</option>
+        <flag>wxALL|wxEXPAND</flag>
+        <border>8</border>
       </object>
     </object>
   </object>

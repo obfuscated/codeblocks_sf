@@ -42,7 +42,7 @@ FileName <- _T(""); // Filename for wizard
 ProjAuthor <- _T(""); // Project Author
 ProjEmail <- _T(""); // Author's e-mail
 ProjWebsite <- _T(""); // Project website
-PCHFileName <- _T(""); // PCH filename
+PCHFileName <- _T("wx_pch.h"); // PCH filename
 ChoiceWxUnixLib <- 0; // wx lib choice in Unix; 0 for default, 1 for advanced
 ChkWxDebug <- true; // Adds wxdebug and debug wx lib. By default it's set to True
 GuiBuilder <- 0; // Default to None. 0-None, 1-wxSmith, 2-wxFormBuilder
@@ -429,6 +429,9 @@ function OnEnter_WxConfUnix(fwd)
     if (fwd)
     {
         Wizard.SetRadioboxSelection(_T("m_radioBoxWxChoice"), ChoiceWxUnixLib);
+        Wizard.CheckCheckbox(_T("chkWxConfSo"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/dll"), 0)));
+        Wizard.CheckCheckbox(_T("chkWxConfUnicode"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/unicode"), 0)));
+        Wizard.CheckCheckbox(_T("chkWxUnixConfPCH"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/pch"), 0)));
 		OnClick_m_radioBoxWxChoice();
     }
     return true;
@@ -443,40 +446,39 @@ function OnLeave_WxConfUnix(fwd)
 		{
 			IsDLL = Wizard.IsCheckboxChecked(_T("chkWxConfSo"));
 			IsUnicode = Wizard.IsCheckboxChecked(_T("chkWxConfUnicode"));
-			IsEmpty = Wizard.IsCheckboxChecked(_T("chkWxUnixEmpty")); // Checks option for Empty Project
-			WantPCH = Wizard.IsCheckboxChecked(_T("chkWxConfPCH"));
-
-		    if (!GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")) && WantPCH)
-		    {
-		        ShowWarning(_T("Precompiled headers currently only work for GNU GCC.\n" +
-		                    "They are disabled for all other compilers."));
-		        WantPCH = false;
-		        //Wizard.CheckCheckbox(_T("chkConfPCH"), false);
-		    }
-
-			if (WxVersion == 0)
-				LibWxVer = _T("2.6");
-			else if (WxVersion == 1)
-				LibWxVer = _T("2.8");
-			else if (WxVersion == 2)
-				LibWxVer = _T("2.9");
-
-			// Ask the user whether wizard shall add PCH support when empty Project is selected
-			if (IsEmpty && WantPCH)
-			{
-				local msg = _T("You have selected PCH support for Empty project.\n");
-				msg = msg + _T("Wizard will NOT add PCH support as it can't be added without adding any file.\n\n");
-				msg = msg + _T("Please add the PCH header later to Project");
-				ShowInfo(msg);
-				WantPCH = false; // Sorry! Wizard can't add PCH support
-			}
-			PCHFileName = _T("wx_pch.h");
-
-			// Now write the setting to Configuration
-		    ConfigManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
-			ConfigManager.Write(_T("/wx_project_wizard/unicode"), BoolToInt(IsUnicode));
-			ConfigManager.Write(_T("/wx_project_wizard/pch"), BoolToInt(WantPCH));
 		}
+        IsEmpty = Wizard.IsCheckboxChecked(_T("chkWxUnixEmpty")); // Checks option for Empty Project
+        WantPCH = Wizard.IsCheckboxChecked(_T("chkWxUnixConfPCH"));
+
+        if (!GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")) && WantPCH)
+        {
+            ShowWarning(_T("Precompiled headers currently only work for GNU GCC.\n" +
+                        "They are disabled for all other compilers."));
+            WantPCH = false;
+        }
+
+        if (WxVersion == 0)
+            LibWxVer = _T("2.6");
+        else if (WxVersion == 1)
+            LibWxVer = _T("2.8");
+        else if (WxVersion == 2)
+            LibWxVer = _T("2.9");
+
+        // Ask the user whether wizard shall add PCH support when empty Project is selected
+        if (IsEmpty && WantPCH)
+        {
+            local msg = _T("You have selected PCH support for Empty project.\n");
+            msg = msg + _T("Wizard will NOT add PCH support as it can't be added without adding any file.\n\n");
+            msg = msg + _T("Please add the PCH header later to Project");
+            ShowInfo(msg);
+            WantPCH = false; // Sorry! Wizard can't add PCH support
+        }
+        PCHFileName = _T("wx_pch.h");
+
+        // Now write the setting to Configuration
+        ConfigManager.Write(_T("/wx_project_wizard/dll"), BoolToInt(IsDLL));
+        ConfigManager.Write(_T("/wx_project_wizard/unicode"), BoolToInt(IsUnicode));
+        ConfigManager.Write(_T("/wx_project_wizard/pch"), BoolToInt(WantPCH));
 	}
     return true;
 }
@@ -486,17 +488,13 @@ function OnClick_m_radioBoxWxChoice()
 	ChoiceWxUnixLib = Wizard.GetRadioboxSelection(_T("m_radioBoxWxChoice"));
 	if (ChoiceWxUnixLib == 0) // Means default choice
 	{
-		Wizard.EnableWindow(_T("chkWxUnixEmpty"), false);
 		Wizard.EnableWindow(_T("chkWxConfSo"), false);
 		Wizard.EnableWindow(_T("chkWxConfUnicode"), false);
-		Wizard.EnableWindow(_T("chkWxConfPCH"), false);
 	}
 	else
 	{
-		Wizard.EnableWindow(_T("chkWxUnixEmpty"), true);
 		Wizard.EnableWindow(_T("chkWxConfSo"), true);
 		Wizard.EnableWindow(_T("chkWxConfUnicode"), true);
-		Wizard.EnableWindow(_T("chkWxConfPCH"), true);
 	}
 }
 
