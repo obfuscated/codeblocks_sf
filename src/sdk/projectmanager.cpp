@@ -844,6 +844,9 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
     if (!m_IsLoadingWorkspace)
     {
         Manager::Get()->GetUserVariableManager()->Arrogate();
+    }
+    if (!IsBusy())
+    {
         CodeBlocksEvent event(cbEVT_WORKSPACE_LOADED);
         Manager::Get()->GetPluginManager()->NotifyPlugins(event);
     }
@@ -919,6 +922,7 @@ bool ProjectManager::CloseAllProjects(bool dontsave)
         if(!QueryCloseAllProjects())
             return false;
     FreezeTree();
+    m_IsClosingProject = true;
     while (m_pProjects->GetCount() != 0)
     {
 // Commented it by Heromyth
@@ -926,6 +930,7 @@ bool ProjectManager::CloseAllProjects(bool dontsave)
         if (!CloseProject(m_pProjects->Item(0), true, false))
         {
             UnfreezeTree(true);
+            m_IsClosingProject = false;
             return false;
         }
     }
@@ -934,6 +939,16 @@ bool ProjectManager::CloseAllProjects(bool dontsave)
     UnfreezeTree(true);
     if(!m_InitialDir.IsEmpty())
         wxFileName::SetCwd(m_InitialDir);
+    m_IsClosingProject = false;
+    if(!IsBusy())
+    {
+        // If we're closing the workspace, CloseWorkspace() will send the event
+        // Otherwise, send it here.
+        // NOTE: Perhaps we should change the name to EVT_WORKSPACE_CHANGED ?
+        // Because that's what we're doing.
+        CodeBlocksEvent event(cbEVT_WORKSPACE_LOADED);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+    }
     return true;
 }
 
@@ -954,6 +969,10 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
     int index = m_pProjects->Index(project);
     if (index == wxNOT_FOUND)
         return false;
+
+    // CloseProject is also called by CloseAllProjects, so we need to save
+    // the state of m_IsClosingProject.
+    bool isClosingOtherProjects = m_IsClosingProject;
     m_IsClosingProject = true;
     Manager::Get()->GetEditorManager()->UpdateProjectFiles(project);
 //    project->SaveTreeState(m_pTree);
@@ -981,7 +1000,14 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
 //        RebuildTree();
     if(!m_InitialDir.IsEmpty()) // Restore the working directory
         wxFileName::SetCwd(m_InitialDir);
-    m_IsClosingProject = false;
+    m_IsClosingProject = isClosingOtherProjects;
+    if(!IsBusy())
+    {
+        // If we're not loading/closing the workspace, or closing other projects,
+        // tell the plugins that the workspace has been updated.
+        CodeBlocksEvent event(cbEVT_WORKSPACE_LOADED);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+    }
     return true;
 }
 
@@ -1114,9 +1140,13 @@ cbWorkspace* ProjectManager::GetWorkspace()
 
 bool ProjectManager::LoadWorkspace(const wxString& filename)
 {
-    if (!CloseWorkspace())
-        return false; // didn't close
     m_IsLoadingWorkspace=true;
+    if (!CloseWorkspace())
+    {
+        m_IsLoadingWorkspace=false;
+        return false; // didn't close
+    }
+
     FreezeTree();
     m_pTree->AppendItem(m_pTree->GetRootItem(), _("Loading workspace..."));
     m_pTree->Expand(m_pTree->GetRootItem());
@@ -1176,16 +1206,19 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
                 }
             }
         }
-        {
-            CodeBlocksEvent event(cbEVT_WORKSPACE_LOADED);
-            Manager::Get()->GetPluginManager()->NotifyPlugins(event);
-        }
     }
     else
     {
-        m_IsLoadingWorkspace=false;
         CloseWorkspace();
     }
+    m_IsLoadingWorkspace=false;
+    {
+        // We need to update the plugins to tell that we've finished loading
+        // the workspace.
+        CodeBlocksEvent event(cbEVT_WORKSPACE_LOADED);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+    }
+
     return success;
 }
 
@@ -1229,14 +1262,22 @@ bool ProjectManager::QueryCloseWorkspace()
 
 bool ProjectManager::CloseWorkspace()
 {
+
+    bool result = false;
+    m_IsClosingWorkspace = true;
     if (m_pWorkspace)
     {
         if (!QueryCloseWorkspace())
+        {
+            m_IsClosingWorkspace = false;
             return false;
+        }
         if (!CloseAllProjects(true))
+        {
+            m_IsClosingWorkspace = false;
             return false;
+        }
 
-        m_IsClosingWorkspace = true;
         delete m_pWorkspace;
         m_pWorkspace = 0;
 
@@ -1246,11 +1287,24 @@ bool ProjectManager::CloseWorkspace()
             if (!Manager::IsAppShuttingDown())
                 RebuildTree(); // update the workspace icon if required
         }
-        m_IsClosingWorkspace = false;
+        result = true;
     }
     else
-        return CloseAllProjects(false);
-    return true;
+        result = CloseAllProjects(false);
+    m_IsClosingWorkspace = false;
+    if(!IsBusy())
+    {
+        // EVT_WORKSPACE_LOADED must also be sent to the plugins in case
+        // we close the workspace, for example, to update the class browser.
+        // But we MUST NOT send the event if we're called by LoadWorkspace(),
+        // because the event would get sent twice.
+        // To detect this case, we use IsBusy(), which will also check if the
+        // app's shutting down. In either case, the event is not sent.
+
+        CodeBlocksEvent event(cbEVT_WORKSPACE_LOADED);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+    }
+    return result;
 }
 
 // This function is static for your convenience :)
