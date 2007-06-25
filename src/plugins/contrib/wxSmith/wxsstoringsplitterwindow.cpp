@@ -39,7 +39,7 @@ wxsStoringSplitterWindow::wxsStoringSplitterWindow(wxWindow* Parent): wxPanel(Pa
     wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
     Sizer->Add( Splitter = new wxSplitterWindow(this,SplitterId), 1, wxGROW|wxALL );
     SetSizer(Sizer);
-    SplitPosition = Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/res_panel_split"),Splitter->GetSize().GetHeight()/2);
+    SplitPosition = Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/res_panel_split"),-1);
 }
 
 void wxsStoringSplitterWindow::Split(wxWindow* Top,wxWindow* Bottom,int SashPosition)
@@ -74,6 +74,8 @@ int wxsStoringSplitterWindow::SplitterFixup(int Position)
 {
     int Height = GetSize().GetHeight();
 	int MinMargin = Height / 2;
+
+    if ( Position<0 || Position>Height ) return Height/2;
 
 	if ( MinMargin > MIN_MARGIN ) MinMargin = MIN_MARGIN;
 	if ( Position < MinMargin ) Position = MinMargin;
