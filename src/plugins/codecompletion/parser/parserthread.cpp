@@ -1189,13 +1189,13 @@ void ParserThread::HandleClass(bool isClass)
 void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 {
 //    DBGLOG(_T("Adding function '")+name+_T("': m_Str='")+m_Str+_T("'"));
-    int lineNr = m_Tokenizer.GetLineNumber();
-    int lineStart = 0;
-    int lineEnd = 0;
-	wxString args = m_Tokenizer.GetToken();
-    wxString peek = m_Tokenizer.PeekToken();
+        wxString args = m_Tokenizer.GetToken();
+        wxString peek = m_Tokenizer.PeekToken();
 	if (!m_Str.StartsWith(ParserConsts::kw_friend))
 	{
+        int lineNr = m_Tokenizer.GetLineNumber();
+        int lineStart = 0;
+        int lineEnd = 0;
         bool isCtor = m_Str.IsEmpty();
         bool isDtor = m_Str.StartsWith(ParserConsts::tilde);
         Token* localParent = 0;
@@ -1224,6 +1224,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 //        Log("Adding function '"+name+"': m_Str='"+m_Str+"'"+", enc_ns="+(m_EncounteredNamespaces.GetCount()?m_EncounteredNamespaces[0]:"nil"));
 
 		bool isImpl = false;
+		bool IsConst = false;
 		while (!peek.IsEmpty()) // !eof
 		{
             if (peek == ParserConsts::colon) // probably a ctor with member initializers
@@ -1244,17 +1245,29 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
                 break;
             }
             else if (peek == ParserConsts::clbrace || peek == ParserConsts::semicolon)
+            {
                 break; // function decl
-            else if (peek != ParserConsts::kw_const)
+            }
+            else if (peek == ParserConsts::kw_const)
+            {
+            	IsConst= true;
+            }
+            else
+            {
                 break; // darned macros that do not end with a semicolon :/
+            }
 
             // if we reached here, eat the token so peek gets a new value
             m_Tokenizer.GetToken();
 		    peek = m_Tokenizer.PeekToken();
 		}
-		DoAddToken(kind, name, lineNr, lineStart, lineEnd, args, isOperator, isImpl);
+		Token* NewToken =  DoAddToken(kind, name, lineNr, lineStart, lineEnd, args, isOperator, isImpl);
+		if(NewToken)
+		{
+			NewToken->m_IsConst = IsConst;
+		}
 	}
-}
+} // end of HandleFunction
 
 void ParserThread::HandleEnum()
 {

@@ -886,6 +886,10 @@ int CodeCompletion::DoAllMethodsImpl()
             str << ed->GetLineIndentString(line - 1);
             str << _T("/** @brief ") << token->m_Name << _T("\n  *\n  * @todo: document this function\n  */\n");
             str << token->m_Type << _T(" ") << token->GetParentName() << _T("::") << token->m_Name << token->m_Args;
+            if(token->m_IsConst)
+            {
+				str << _T(" const");
+            }
             str << _T("\n{\n\n}\n\n");
 
             // add code in editor

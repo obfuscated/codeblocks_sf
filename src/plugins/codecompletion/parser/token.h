@@ -79,7 +79,7 @@ class Token  : public BlockAllocated<Token, 10000>
 		void RemoveChild(int child);
 		wxString GetNamespace() const;
 		bool InheritsFrom(int idx) const;
-		const wxString DisplayName();
+		wxString DisplayName() const;
 		wxString GetTokenKindString() const;
 		wxString GetTokenScopeString() const;
         wxString GetFilename() const;
@@ -89,7 +89,7 @@ class Token  : public BlockAllocated<Token, 10000>
 		bool SerializeIn(wxInputStream* f);
 		bool SerializeOut(wxOutputStream* f);
 		int GetSelf() { return m_Self; } // current index in the tree
-		const wxString GetParentName();
+		wxString GetParentName();
 		Token* GetParentToken();
 		TokensTree* GetTree() { return m_pTree; }
 
@@ -109,6 +109,7 @@ class Token  : public BlockAllocated<Token, 10000>
 		bool m_IsOperator;
 		bool m_IsLocal; // found in a local file?
 		bool m_IsTemp; // if true, the tree deletes it in FreeTemporaries()
+		bool m_IsConst;	// the member method is const (yes/no)
 
         int m_ParentIndex;
         TokenIdxSet m_Children;

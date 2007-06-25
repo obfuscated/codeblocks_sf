@@ -114,7 +114,7 @@ Token::~Token()
     //dtor
 }
 
-const wxString Token::GetParentName()
+wxString Token::GetParentName()
 {
     wxString parentname = _T("");
     wxCriticalSectionLocker* lock = 0;
@@ -128,7 +128,7 @@ const wxString Token::GetParentName()
     return parentname;
 }
 
-const wxString Token::DisplayName()
+wxString Token::DisplayName() const
 {
 //    wxString result(_T(""));
 //    wxString parentname = GetParentName();
