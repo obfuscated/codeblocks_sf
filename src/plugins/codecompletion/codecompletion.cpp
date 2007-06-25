@@ -132,7 +132,6 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 
     EVT_MENU(idViewClassBrowser, CodeCompletion::OnViewClassBrowser)
 
-    EVT_TIMER(idStartParsingProjects, CodeCompletion::OnStartParsingProjects)
     EVT_TIMER(idCodeCompleteTimer, CodeCompletion::OnCodeCompleteTimer)
     EVT_TIMER(idFunctionsParsingTimer, CodeCompletion::OnStartParsingFunctions)
 
@@ -143,8 +142,7 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_EDITOR_CLOSE(CodeCompletion::OnEditorClosed)
 
     EVT_APP_STARTUP_DONE(CodeCompletion::OnAppDoneStartup)
-    EVT_WORKSPACE_LOADED(CodeCompletion::OnProjectOpened)
-    EVT_PROJECT_OPEN(CodeCompletion::OnProjectOpened)
+    EVT_WORKSPACE_LOADED(CodeCompletion::OnWorkspaceLoaded)
     EVT_PROJECT_ACTIVATE(CodeCompletion::OnProjectActivated)
     EVT_PROJECT_CLOSE(CodeCompletion::OnProjectClosed)
     EVT_PROJECT_FILE_ADDED(CodeCompletion::OnProjectFileAdded)
@@ -158,7 +156,6 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
 END_EVENT_TABLE()
 
 CodeCompletion::CodeCompletion() :
-    m_timer(this, idStartParsingProjects),
     m_EditorHookId(0),
     m_timerCodeCompletion(this, idCodeCompleteTimer),
     m_pCodeCompletionLastEditor(0),
@@ -365,11 +362,18 @@ void CodeCompletion::OnAttach()
 {
     m_PageIndex = -1;
     m_InitDone = false;
-    m_EditMenu = 0L;
-    m_SearchMenu = 0L;
-    m_ViewMenu = 0L;
-    m_Function = 0L;
-    m_Scope = 0L;
+    m_EditMenu = 0;
+    m_SearchMenu = 0;
+    m_ViewMenu = 0;
+    m_Function = 0;
+    m_Scope = 0;
+    m_ParsedProjects.clear();
+    m_FunctionsScope.clear();
+    m_NameSpaces.clear();
+    m_AllFunctionsScopes.clear();
+    m_ToolbarChanged = true; // by default
+
+    m_LastFile = wxEmptyString;
 
     LoadTokenReplacements();
 
@@ -383,14 +387,11 @@ void CodeCompletion::OnAttach()
     EditorHooks::HookFunctorBase* myhook = new EditorHooks::HookFunctor<CodeCompletion>(this, &CodeCompletion::EditorEventHook);
     m_EditorHookId = EditorHooks::RegisterHook(myhook);
 
-    m_timer.Start(2000, wxTIMER_ONE_SHOT);
     m_InitDone = true;
 }
 
 void CodeCompletion::OnRelease(bool appShutDown)
 {
-    m_timer.Stop();
-
     SaveTokenReplacements();
 
     // unregister hook
@@ -399,6 +400,11 @@ void CodeCompletion::OnRelease(bool appShutDown)
 
     m_NativeParsers.RemoveClassBrowser(appShutDown);
     m_NativeParsers.ClearParsers();
+    m_ParsedProjects.clear();
+    m_FunctionsScope.clear();
+    m_NameSpaces.clear();
+    m_AllFunctionsScopes.clear();
+    m_ToolbarChanged = false;
 
 /* TODO (mandrav#1#): Delete separator line too... */
     if (m_EditMenu)
@@ -957,7 +963,6 @@ void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent& event)
     // This is to prevent the Splash Screen from delaying so much. By adding the
     // timer, the splash screen is closed and Code::Blocks doesn't take so long
     // in starting.
-    m_timer.Start(200, wxTIMER_ONE_SHOT);
     event.Skip();
 }
 
@@ -974,28 +979,50 @@ void CodeCompletion::OnCodeCompleteTimer(wxTimerEvent& event)
     }
 }
 
-void CodeCompletion::OnStartParsingProjects(wxTimerEvent& event)
+void CodeCompletion::ParseActiveProjects()
 {
     // parse all active projects
     m_InitDone = false;
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
     for (unsigned int i = 0; i < prjMan->GetProjects()->GetCount(); ++i)
-        m_NativeParsers.AddParser(prjMan->GetProjects()->Item(i));
+    {
+        cbProject* curproject = prjMan->GetProjects()->Item(i);
+        if(m_ParsedProjects.find(curproject)==m_ParsedProjects.end())
+        {
+            m_ParsedProjects.insert(curproject);
+            m_NativeParsers.AddParser(curproject);
+        }
+    }
     m_InitDone = true;
 }
 
-void CodeCompletion::OnProjectOpened(CodeBlocksEvent& event)
+void CodeCompletion::OnWorkspaceLoaded(CodeBlocksEvent& event)
 {
-    if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
+    // EVT_WORKSPACE_LOADED is a powerful event, it's sent after any project
+    // has finished loading or closing. It's the *LAST* event to be sent when
+    // the workspace has been changed, and it's not sent if the application is
+    // shutting down. So it's the ideal time to parse files and update your
+    // widgets.
+    if (IsAttached() && m_InitDone)
     {
-        m_NativeParsers.AddParser(event.GetProject());
+        // Parse the projects
+        ParseActiveProjects();
+        // Update the Function toolbar
         ParseFunctionsAndFillToolbar();
+        // Update the class browser
+        ProjectManager* prjMan = Manager::Get()->GetProjectManager();
+        m_NativeParsers.SetClassBrowserProject(prjMan->GetActiveProject());
     }
     event.Skip();
 }
 
 void CodeCompletion::OnProjectActivated(CodeBlocksEvent& event)
 {
+    // The Class browser shouldn't be updated if we're in the middle of loading/closing
+    // a project/workspace, because the class browser would need to be updated again.
+    // So we need to update it with the EVT_WORKSPACE_LOADED event, which gets
+    // triggered after everything's finished loading/closing.
+
     if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
         m_NativeParsers.SetClassBrowserProject(event.GetProject());
     event.Skip();
@@ -1003,8 +1030,13 @@ void CodeCompletion::OnProjectActivated(CodeBlocksEvent& event)
 
 void CodeCompletion::OnProjectClosed(CodeBlocksEvent& event)
 {
+    // After this, the Class Browser needs to be updated. It will happen
+    // when we receive the next EVT_PROJECT_ACTIVATED event.
     if (IsAttached() && m_InitDone)
+    {
+        m_ParsedProjects.erase(event.GetProject());
         m_NativeParsers.RemoveParser(event.GetProject());
+    }
     event.Skip();
 }
 

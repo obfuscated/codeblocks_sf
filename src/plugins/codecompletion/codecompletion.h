@@ -12,6 +12,7 @@
 #include <wx/timer.h>
 #include <map>
 #include <vector>
+#include <set>
 
 class cbEditor;
 class wxScintillaEvent;
@@ -84,9 +85,8 @@ class CodeCompletion : public cbCodeCompletionPlugin
         void OnGotoDeclaration(wxCommandEvent& event);
         void OnOpenIncludeFile(wxCommandEvent& event);
         void OnAppDoneStartup(CodeBlocksEvent& event);
-        void OnStartParsingProjects(wxTimerEvent& event);
         void OnCodeCompleteTimer(wxTimerEvent& event);
-        void OnProjectOpened(CodeBlocksEvent& event);
+        void OnWorkspaceLoaded(CodeBlocksEvent& event);
         void OnProjectActivated(CodeBlocksEvent& event);
         void OnProjectClosed(CodeBlocksEvent& event);
         void OnProjectFileAdded(CodeBlocksEvent& event);
@@ -105,6 +105,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         int FunctionPosition() const;
         void GotoFunctionPrevNext(bool next = false);
         int NameSpacePosition() const;
+        void ParseActiveProjects();
         void OnStartParsingFunctions(wxTimerEvent& event);
         void OnFunction(wxCommandEvent& event);
         void ParseFunctionsAndFillToolbar(bool force = false);
@@ -120,7 +121,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         wxMenu* m_SearchMenu;
         wxMenu* m_ViewMenu;
         NativeParser m_NativeParsers;
-        wxTimer m_timer;
+        set<cbProject*,less<cbProject*> > m_ParsedProjects;
 
         int m_EditorHookId;
         int m_LastPosForCodeCompletion;
