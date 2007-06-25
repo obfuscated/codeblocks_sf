@@ -23,6 +23,7 @@
 
 #include "wxseditor.h"
 #include "wxsresource.h"
+#include "wxsmith.h"
 
 #include <wx/wx.h>
 
@@ -30,6 +31,7 @@ wxsEditor::wxsEditor(wxWindow* parent, const wxString& title,wxsResource* Resour
     EditorBase(parent,title),
     m_Resource(Resource)
 {
+    wxSmith::Get()->ShowResourcesTab();
 }
 
 wxsEditor::~wxsEditor()

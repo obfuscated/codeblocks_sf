@@ -237,6 +237,12 @@ wxsProject* wxSmith::GetSmithProject(cbProject* Proj)
     return i->second;
 }
 
+void wxSmith::ShowResourcesTab()
+{
+    wxFlatNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
+    Notebook->SetSelection( Notebook->GetPageIndex(m_Splitter) );
+}
+
 // TODO: Move to resources\wxwidgets
 /*
 

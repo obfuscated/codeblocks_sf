@@ -76,6 +76,9 @@ class wxSmith : public cbPlugin
         /** \brief Helper operator used to convert wxS projects to C::B projects */
         inline cbProject* operator[](wxsProject* Proj) { return GetCBProject(Proj); }
 
+        /** \brief Bringing up the resources tab to the view */
+        void ShowResourcesTab();
+
 	private:
 
         WX_DECLARE_HASH_MAP(cbProject*,wxsProject*,wxPointerHash,wxPointerEqual,ProjectMapT);
