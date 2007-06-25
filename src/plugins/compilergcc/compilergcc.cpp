@@ -96,8 +96,10 @@ namespace ScriptBindings
 
 #if defined(__APPLE__) && defined(__MACH__)
     #define LIBRARY_ENVVAR _T("DYLD_LIBRARY_PATH")
-#else
+#elif !defined(__WXMSW__)
     #define LIBRARY_ENVVAR _T("LD_LIBRARY_PATH")
+#else
+    #define LIBRARY_ENVVAR _T("PATH")
 #endif
 
 namespace
@@ -1162,6 +1164,9 @@ int CompilerGCC::DoRunQueue()
         return DoRunQueue(); // move on
     }
 
+	wxString oldLibPath; // keep old PATH/LD_LIBRARY_PATH contents
+	wxGetEnv(LIBRARY_ENVVAR, &oldLibPath);
+
     bool pipe = true;
     int flags = wxEXEC_ASYNC;
     if (cmd->isRun)
@@ -1171,8 +1176,19 @@ int CompilerGCC::DoRunQueue()
         dir = m_CdRun;
 
 		// setup dynamic linker path
-		if (!platform::windows)
-			wxSetEnv(LIBRARY_ENVVAR, _T(".:$") LIBRARY_ENVVAR);
+		Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+		if (compiler)
+		{
+			wxString newLibPath;
+			const wxString libPathSep = platform::windows ? _T(";") : _T(":");
+			newLibPath << _T(".") << libPathSep;
+			newLibPath << GetStringFromArray(compiler->GetLinkerSearchDirs(cmd->target), libPathSep);
+			if (newLibPath.SubString(newLibPath.Length() - 1, 1) != libPathSep)
+				newLibPath << libPathSep;
+			newLibPath << _T("$") << LIBRARY_ENVVAR;
+			wxSetEnv(LIBRARY_ENVVAR, newLibPath);
+//			LogMessage(_T("LIBRARY_ENVVAR=") + newLibPath, cltInfo);
+		}
     }
 
     // special shell used only for build commands
@@ -1202,6 +1218,9 @@ int CompilerGCC::DoRunQueue()
     }
     else
         m_timerIdleWakeUp.Start(100);
+
+	// restore dynamic linker path
+	wxSetEnv(LIBRARY_ENVVAR, oldLibPath);
 
     delete cmd;
     return DoRunQueue();
@@ -1709,7 +1728,6 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
                 //                 -- Csh Programming Considered Harmful
                 command << DEFAULT_CONSOLE_SHELL << strSPACE;
             }
-            command << _T("'") << LIBRARY_ENVVAR _T("=.:$") LIBRARY_ENVVAR << _T(" ");
         }
         // should console runner be used?
         if (target->GetUseConsoleRunner())
@@ -1733,18 +1751,14 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         }
         wxString tmp = target->GetHostApplication();
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(tmp);
-        command << _T("\"") << tmp << _T("\" ");
+        command << tmp << strSPACE;
         command << target->GetExecutionParameters();
     }
     else if (target->GetTargetType() != ttCommandsOnly)
     {
         wxString tmp = f.GetFullPath();
-        command << _T("\"") << tmp << _T("\" ");
+        command << tmp << strSPACE;
         command << target->GetExecutionParameters();
-
-        // closing single-quote for xterm command line
-        if (target->GetTargetType() == ttConsoleOnly && !platform::windows)
-            command << _T("'");
     }
     else
     {

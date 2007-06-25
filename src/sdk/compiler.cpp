@@ -265,6 +265,16 @@ const wxArrayString& Compiler::GetCompilerSearchDirs(ProjectBuildTarget* target)
 	return m_pGenerator->GetCompilerSearchDirs(target);
 }
 
+const wxArrayString& Compiler::GetLinkerSearchDirs(ProjectBuildTarget* target)
+{
+	static wxArrayString retIfError;
+	retIfError.Clear();
+	if (!m_pGenerator)
+		return retIfError;
+
+	return m_pGenerator->GetLinkerSearchDirs(target);
+}
+
 void Compiler::MirrorCurrentSettings()
 {
 	// run just once

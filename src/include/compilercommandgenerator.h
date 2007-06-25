@@ -41,7 +41,7 @@ class DLLIMPORT CompilerCommandGenerator
                                         const wxString& FlatObject,
                                         const wxString& deps);
 
-		/** @brief Get the full include dirs used in the actuall command line.
+		/** @brief Get the full include dirs used in the actual command line.
 		  *
 		  * These are the actual include dirs that will be used for building
 		  * and might be different than target->GetIncludeDirs(). This is
@@ -50,6 +50,16 @@ class DLLIMPORT CompilerCommandGenerator
 		  * @note This is only valid after Init() has been called.
 		  */
 		virtual const wxArrayString& GetCompilerSearchDirs(ProjectBuildTarget* target);
+		
+		/** @brief Get the full linker dirs used in the actual command line.
+		  *
+		  * These are the actual linker dirs that will be used for building
+		  * and might be different than target->GetLibDirs(). This is
+		  * because it's the sum of target linker dirs + project linker dirs +
+		  * build-script linker dirs.
+		  * @note This is only valid after Init() has been called.
+		  */
+		virtual const wxArrayString& GetLinkerSearchDirs(ProjectBuildTarget* target);
     protected:
         virtual void DoBuildScripts(cbProject* project, CompileTargetBase* target, const wxString& funcName);
         virtual wxString GetOrderedOptions(const ProjectBuildTarget* target, OptionsRelationType rel, const wxString& project_options, const wxString& target_options);
@@ -78,7 +88,8 @@ class DLLIMPORT CompilerCommandGenerator
 
         wxString m_PrjIncPath; ///< directive to add the project's top-level path in compiler search dirs (ready for the command line)
 
-		SearchDirsMap m_CompilerSearchDirs; ///< array of final search dirs, per-target
+		SearchDirsMap m_CompilerSearchDirs; ///< array of final compiler search dirs, per-target
+		SearchDirsMap m_LinkerSearchDirs; ///< array of final linker search dirs, per-target
     private:
         void ExpandBackticks(wxString& str);
         BackticksMap m_Backticks;

@@ -265,6 +265,16 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 		  */
 		virtual const wxArrayString& GetCompilerSearchDirs(ProjectBuildTarget* target);
 
+		/** @brief Get the full linker dirs used in the actual command line.
+		  *
+		  * These are the actual linker dirs that will be used for building
+		  * and might be different than target->GetLibDirs(). This is
+		  * because it's the sum of target linker dirs + project linker dirs +
+		  * build-script linker dirs.
+		  * @note This is only valid after Init() has been called.
+		  */
+		virtual const wxArrayString& GetLinkerSearchDirs(ProjectBuildTarget* target);
+
         /** @brief Save settings */
         virtual void SaveSettings(const wxString& baseKey);
         /** @brief Load settings */

@@ -49,6 +49,7 @@ void CompilerCommandGenerator::Init(cbProject* project)
     m_Backticks.clear();
 
     m_CompilerSearchDirs.clear();
+    m_LinkerSearchDirs.clear();
 
     // access the default compiler
     Compiler* compiler = CompilerFactory::GetDefaultCompiler();
@@ -523,6 +524,19 @@ wxString CompilerCommandGenerator::SetupLibrariesDirs(Compiler* compiler, Projec
 
     if (target)
     {
+		// currently, we ignore compiler search dirs (despite the var's name)
+		// we only care about project/target search dirs
+		wxArrayString prjSearchDirs = target->GetParentProject()->GetLibDirs();
+		wxArrayString tgtSearchDirs = target->GetLibDirs();
+		wxArrayString searchDirs;
+        searchDirs = GetOrderedOptions(target, ortLibDirs, prjSearchDirs, tgtSearchDirs);
+        // replace vars
+        for (unsigned int x = 0; x < searchDirs.GetCount(); ++x)
+        {
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(searchDirs[x], target);
+        }
+        m_LinkerSearchDirs.insert(m_LinkerSearchDirs.end(), std::make_pair(target, searchDirs));
+
         // target dirs
         wxString tstr;
         const wxArrayString& arr = target->GetLibDirs();
@@ -766,6 +780,18 @@ const wxArrayString& CompilerCommandGenerator::GetCompilerSearchDirs(ProjectBuil
 
 	SearchDirsMap::iterator it = m_CompilerSearchDirs.find(target);
 	if (it == m_CompilerSearchDirs.end())
+		return retIfError;
+
+	return it->second;
+}
+
+const wxArrayString& CompilerCommandGenerator::GetLinkerSearchDirs(ProjectBuildTarget* target)
+{
+	static wxArrayString retIfError;
+	retIfError.Clear();
+
+	SearchDirsMap::iterator it = m_LinkerSearchDirs.find(target);
+	if (it == m_LinkerSearchDirs.end())
 		return retIfError;
 
 	return it->second;
