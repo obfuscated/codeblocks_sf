@@ -96,10 +96,13 @@ namespace ScriptBindings
 
 #if defined(__APPLE__) && defined(__MACH__)
     #define LIBRARY_ENVVAR _T("DYLD_LIBRARY_PATH")
+    #define LIBRARY_ENVVAR_DOLLAR _T("$") LIBRARY_ENVVAR
 #elif !defined(__WXMSW__)
     #define LIBRARY_ENVVAR _T("LD_LIBRARY_PATH")
+    #define LIBRARY_ENVVAR_DOLLAR _T("$") LIBRARY_ENVVAR
 #else
     #define LIBRARY_ENVVAR _T("PATH")
+    #define LIBRARY_ENVVAR_DOLLAR _T("%") LIBRARY_ENVVAR _T("%")
 #endif
 
 namespace
@@ -1185,7 +1188,7 @@ int CompilerGCC::DoRunQueue()
 			newLibPath << GetStringFromArray(compiler->GetLinkerSearchDirs(cmd->target), libPathSep);
 			if (newLibPath.SubString(newLibPath.Length() - 1, 1) != libPathSep)
 				newLibPath << libPathSep;
-			newLibPath << _T("$") << LIBRARY_ENVVAR;
+			newLibPath << LIBRARY_ENVVAR_DOLLAR;
 			wxSetEnv(LIBRARY_ENVVAR, newLibPath);
 //			LogMessage(_T("LIBRARY_ENVVAR=") + newLibPath, cltInfo);
 		}
