@@ -31,6 +31,7 @@
     #include "cbeditor.h"
     #include "configmanager.h"
     #include "messagemanager.h"
+    #include "filemanager.h"
     #include "manager.h"
     #include <wx/log.h>
     #include <wx/dir.h>
